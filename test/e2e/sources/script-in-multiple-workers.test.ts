@@ -85,7 +85,7 @@ describe('Multi-Workers', function() {
         // This typically happens too quickly to cause DevTools to switch to the other thread, so
         // click on the other paused thread.
         await devToolsPage.waitFor(THREADS_SELECTOR + '[aria-expanded="true"]');
-        await devToolsPage.click('.thread-item:has( .thread-item-paused-state:not(:empty)):not(.selected)');
+        await devToolsPage.click('.thread-item:has( .thread-item-paused-state:not(:empty))[aria-selected="false"]');
 
         // Now two workers are expanded
         await devToolsPage.waitFor(expandedWorker + ' ~ ' + expandedWorker);

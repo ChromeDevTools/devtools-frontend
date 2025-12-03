@@ -1,16 +1,17 @@
 // Copyright 2014 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 
 import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import {Icon} from '../../ui/kit/kit.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import threadsSidebarPaneStyles from './threadsSidebarPane.css.js';
+
+const {html, render, nothing} = Lit;
 
 const UIStrings = {
   /**
@@ -21,25 +22,56 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/sources/ThreadsSidebarPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
+interface Thread {
+  name: string;
+  paused: boolean;
+  selected: boolean;
+  onSelect: () => void;
+}
+
+interface ViewInput {
+  threads: Thread[];
+}
+
+// clang-format off
+const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLElement): void => {
+  render(html`
+    <style>${threadsSidebarPaneStyles}</style>
+    <div role="listbox">
+    ${input.threads.map(thread => html`
+      <button
+        class="thread-item"
+        @click=${thread.onSelect}
+        tabindex="0"
+        aria-selected=${thread.selected}
+        role="option"
+      >
+        <div class="thread-item-title">${thread.name}</div>
+        <div class="thread-item-paused-state">${thread.paused ? i18nString(UIStrings.paused) : ''}</div>
+        ${thread.selected ? html`<devtools-icon name="large-arrow-right-filled" class="selected-thread-icon"></devtools-icon>` : nothing}
+      </button>
+    `)}
+    </div>
+  `, target);
+};
+// clang-format on
+
+type View = typeof DEFAULT_VIEW;
+
 export class ThreadsSidebarPane extends UI.Widget.VBox implements
-    SDK.TargetManager.SDKModelObserver<SDK.DebuggerModel.DebuggerModel>,
-    UI.ListControl.ListDelegate<SDK.DebuggerModel.DebuggerModel> {
-  private readonly items: UI.ListModel.ListModel<SDK.DebuggerModel.DebuggerModel>;
-  private readonly list: UI.ListControl.ListControl<SDK.DebuggerModel.DebuggerModel>;
-  private selectedModel: SDK.DebuggerModel.DebuggerModel|null;
+    SDK.TargetManager.SDKModelObserver<SDK.DebuggerModel.DebuggerModel> {
+  #debuggerModels = new Set<SDK.DebuggerModel.DebuggerModel>();
+  #selectedModel: SDK.DebuggerModel.DebuggerModel|null;
+  #view: View;
 
-  constructor() {
-    super({
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
+    super(element, {
       jslog: `${VisualLogging.section('sources.threads')}`,
-      useShadowDom: true,
     });
-    this.registerRequiredCSS(threadsSidebarPaneStyles);
+    this.#view = view;
 
-    this.items = new UI.ListModel.ListModel();
-    this.list = new UI.ListControl.ListControl(this.items, this, UI.ListControl.ListMode.NonViewport);
     const currentTarget = UI.Context.Context.instance().flavor(SDK.Target.Target);
-    this.selectedModel = currentTarget !== null ? currentTarget.model(SDK.DebuggerModel.DebuggerModel) : null;
-    this.contentElement.appendChild(this.list.element);
+    this.#selectedModel = currentTarget?.model(SDK.DebuggerModel.DebuggerModel) ?? null;
 
     UI.Context.Context.instance().addFlavorChangeListener(SDK.Target.Target, this.targetFlavorChanged, this);
     SDK.TargetManager.TargetManager.instance().observeModels(SDK.DebuggerModel.DebuggerModel, this);
@@ -49,106 +81,69 @@ export class ThreadsSidebarPane extends UI.Widget.VBox implements
     return SDK.TargetManager.TargetManager.instance().models(SDK.DebuggerModel.DebuggerModel).length >= 2;
   }
 
-  createElementForItem(debuggerModel: SDK.DebuggerModel.DebuggerModel): Element {
-    const element = document.createElement('div');
-    element.classList.add('thread-item');
-    const title = element.createChild('div', 'thread-item-title');
-    const pausedState = element.createChild('div', 'thread-item-paused-state');
-    const icon = new Icon();
-    icon.name = 'large-arrow-right-filled';
-    icon.classList.add('selected-thread-icon', 'small');
-    element.appendChild(icon);
-    element.tabIndex = -1;
-    self.onInvokeElement(element, event => {
-      UI.Context.Context.instance().setFlavor(SDK.Target.Target, debuggerModel.target());
-      event.consume(true);
-    });
-    const isSelected = UI.Context.Context.instance().flavor(SDK.Target.Target) === debuggerModel.target();
-    element.classList.toggle('selected', isSelected);
-    UI.ARIAUtils.setSelected(element, isSelected);
-
-    function updateTitle(): void {
-      const executionContext = debuggerModel.runtimeModel().defaultExecutionContext();
-      title.textContent = executionContext?.label() ? executionContext.label() : debuggerModel.target().name();
-    }
-
-    function updatePausedState(): void {
-      pausedState.textContent = debuggerModel.isPaused() ? i18nString(UIStrings.paused) : '';
-    }
-
-    function targetNameChanged(event: Common.EventTarget.EventTargetEvent<SDK.Target.Target>): void {
-      const target = event.data;
-      if (target === debuggerModel.target()) {
-        updateTitle();
-      }
-    }
-
-    debuggerModel.addEventListener(SDK.DebuggerModel.Events.DebuggerPaused, updatePausedState);
-    debuggerModel.addEventListener(SDK.DebuggerModel.Events.DebuggerResumed, updatePausedState);
-    debuggerModel.runtimeModel().addEventListener(SDK.RuntimeModel.Events.ExecutionContextChanged, updateTitle);
-    SDK.TargetManager.TargetManager.instance().addEventListener(
-        SDK.TargetManager.Events.NAME_CHANGED, targetNameChanged);
-
-    updatePausedState();
-    updateTitle();
-    return element;
+  override wasShown(): void {
+    super.wasShown();
+    this.requestUpdate();
   }
 
-  heightForItem(_debuggerModel: SDK.DebuggerModel.DebuggerModel): number {
-    console.assert(false);  // Should not be called.
-    return 0;
+  #getThreadName(debuggerModel: SDK.DebuggerModel.DebuggerModel): string {
+    const executionContext = debuggerModel.runtimeModel().defaultExecutionContext();
+    return executionContext?.label() || debuggerModel.target().name();
   }
 
-  isItemSelectable(_debuggerModel: SDK.DebuggerModel.DebuggerModel): boolean {
-    return true;
+  #handleThreadSelect(debuggerModel: SDK.DebuggerModel.DebuggerModel): void {
+    UI.Context.Context.instance().setFlavor(SDK.Target.Target, debuggerModel.target());
   }
 
-  selectedItemChanged(
-      _from: SDK.DebuggerModel.DebuggerModel|null, _to: SDK.DebuggerModel.DebuggerModel|null, fromElement: Element|null,
-      toElement: Element|null): void {
-    const fromEle = (fromElement as HTMLElement | null);
-    if (fromEle) {
-      fromEle.tabIndex = -1;
+  #updatePausedState = (): void => {
+    this.requestUpdate();
+  };
+
+  #targetNameChanged = (event: Common.EventTarget.EventTargetEvent<SDK.Target.Target>): void => {
+    const target = event.data;
+    const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
+    if (debuggerModel && this.#debuggerModels.has(debuggerModel)) {
+      this.requestUpdate();
     }
-    const toEle = (toElement as HTMLElement | null);
-    if (toEle) {
-      this.setDefaultFocusedElement(toEle);
-      toEle.tabIndex = 0;
-      if (this.hasFocus()) {
-        toEle.focus();
-      }
-    }
-  }
+  };
 
-  updateSelectedItemARIA(_fromElement: Element|null, _toElement: Element|null): boolean {
-    return false;
+  override performUpdate(): void {
+    const threads: Thread[] =
+        Array.from(this.#debuggerModels).map(debuggerModel => ({
+                                               name: this.#getThreadName(debuggerModel),
+                                               paused: debuggerModel.isPaused(),
+                                               selected: this.#selectedModel === debuggerModel,
+                                               onSelect: () => this.#handleThreadSelect(debuggerModel),
+                                             }));
+    this.#view({threads}, undefined, this.contentElement);
   }
 
   modelAdded(debuggerModel: SDK.DebuggerModel.DebuggerModel): void {
-    this.items.insert(this.items.length, debuggerModel);
-    const currentTarget = UI.Context.Context.instance().flavor(SDK.Target.Target);
-    if (currentTarget === debuggerModel.target()) {
-      this.list.selectItem(debuggerModel);
-    }
+    this.#debuggerModels.add(debuggerModel);
+    debuggerModel.addEventListener(SDK.DebuggerModel.Events.DebuggerPaused, this.#updatePausedState);
+    debuggerModel.addEventListener(SDK.DebuggerModel.Events.DebuggerResumed, this.#updatePausedState);
+    debuggerModel.runtimeModel().addEventListener(
+        SDK.RuntimeModel.Events.ExecutionContextChanged, this.requestUpdate, this);
+    SDK.TargetManager.TargetManager.instance().addEventListener(
+        SDK.TargetManager.Events.NAME_CHANGED, this.#targetNameChanged);
+
+    this.requestUpdate();
   }
 
   modelRemoved(debuggerModel: SDK.DebuggerModel.DebuggerModel): void {
-    this.items.remove(this.items.indexOf(debuggerModel));
+    this.#debuggerModels.delete(debuggerModel);
+    debuggerModel.removeEventListener(SDK.DebuggerModel.Events.DebuggerPaused, this.#updatePausedState);
+    debuggerModel.removeEventListener(SDK.DebuggerModel.Events.DebuggerResumed, this.#updatePausedState);
+    debuggerModel.runtimeModel().removeEventListener(
+        SDK.RuntimeModel.Events.ExecutionContextChanged, this.requestUpdate, this);
+    SDK.TargetManager.TargetManager.instance().removeEventListener(
+        SDK.TargetManager.Events.NAME_CHANGED, this.#targetNameChanged);
+
+    this.requestUpdate();
   }
 
   private targetFlavorChanged({data: target}: Common.EventTarget.EventTargetEvent<SDK.Target.Target>): void {
-    const hadFocus = this.hasFocus();
-    const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
-    this.list.selectItem(debuggerModel);
-    if (debuggerModel) {
-      this.list.refreshItem(debuggerModel);
-    }
-    if (this.selectedModel !== null) {
-      this.list.refreshItem(this.selectedModel);
-    }
-    this.selectedModel = debuggerModel;
-    if (hadFocus) {
-      this.focus();
-    }
+    this.#selectedModel = target.model(SDK.DebuggerModel.DebuggerModel);
+    this.requestUpdate();
   }
 }

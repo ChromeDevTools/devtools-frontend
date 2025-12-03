@@ -176,6 +176,7 @@ devtools_ui_module("unittests") {
     "SourcesPanel.test.ts",
     "SourcesView.test.ts",
     "TabbedEditorContainer.test.ts",
+    "ThreadsSidebarPane.test.ts",
     "UISourceCodeFrame.test.ts",
   ]
 

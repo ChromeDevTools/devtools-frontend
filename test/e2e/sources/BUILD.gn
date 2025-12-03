@@ -43,6 +43,7 @@ ts_e2e_library("sources") {
     "sourceurl.test.ts",
     "syntax-highlighting.test.ts",
     "text-editor.test.ts",
+    "threads-sidebar-pane.test.ts",
     "watch-expressions.test.ts",
     "worker-relative-sourcemap.test.ts",
   ]

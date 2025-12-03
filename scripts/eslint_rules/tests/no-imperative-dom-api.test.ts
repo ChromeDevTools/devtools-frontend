@@ -1544,5 +1544,34 @@ class SomeWidget extends UI.Widget.Widget {
 }`,
       errors: [{messageId: 'preferTemplateLiterals'}],
     },
+    {
+      filename: 'front_end/ui/components/component/file.ts',
+      code: `
+class SomeWidget extends UI.Widget.Widget {
+  constructor() {
+    super();
+    const colorSwatch = new InlineEditor.ColorSwatch.ColorSwatch();
+    colorSwatch.color = Common.Color.parse('red');
+    colorSwatch.readonly = true;
+    this.contentElement.appendChild(colorSwatch);
+  }
+}`,
+      output: `
+
+export const DEFAULT_VIEW = (input, _output, target) => {
+  render(html\`
+    <div>
+      <devtools-color-swatch .color=\${Common.Color.parse('red')} .readonly=\${true}></devtools-color-swatch>
+    </div>\`,
+    target, {host: input});
+};
+
+class SomeWidget extends UI.Widget.Widget {
+  constructor() {
+    super();
+  }
+}`,
+      errors: [{messageId: 'preferTemplateLiterals'}],
+    },
   ],
 });

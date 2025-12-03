@@ -12,6 +12,7 @@ import {ariaUtils} from './no-imperative-dom-api/aria-utils.ts';
 import {getEnclosingExpression, isIdentifier} from './no-imperative-dom-api/ast.ts';
 import {button} from './no-imperative-dom-api/button.ts';
 import {ClassMember} from './no-imperative-dom-api/class-member.ts';
+import {colorSwatch} from './no-imperative-dom-api/color-swatch.ts';
 import {dataGrid} from './no-imperative-dom-api/data-grid.ts';
 import {domApiDevtoolsExtensions} from './no-imperative-dom-api/dom-api-devtools-extensions.ts';
 import {domApi} from './no-imperative-dom-api/dom-api.ts';
@@ -55,6 +56,7 @@ export default createRule({
       adorner.create(context),
       ariaUtils.create(context),
       button.create(context),
+      colorSwatch.create(context),
       dataGrid.create(context),
       domApi.create(context),
       domApiDevtoolsExtensions.create(context),

@@ -5,6 +5,7 @@
 import type * as Common from '../../core/common/common.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {
   describeWithMockConnection,
@@ -140,6 +141,37 @@ describeWithMockConnection('ExtensionStorageItemsView', function() {
     }
 
     await RenderCoordinator.done();
+    view.detach();
+  });
+
+  it('screenshot test', async () => {
+    assert.exists(extensionStorageModel);
+    sinon.stub(extensionStorageModel.agent, 'invoke_getStorageItems')
+        .withArgs({id: TEST_EXTENSION_ID, storageArea: Protocol.Extensions.StorageArea.Local})
+        .resolves({
+          data: EXAMPLE_DATA,
+          getError: () => undefined,
+        });
+
+    const parent = document.createElement('div');
+    parent.style.width = '780px';
+    parent.style.height = '400px';
+    renderElementIntoDOM(parent);
+
+    const view = new View.ExtensionStorageItemsView(extensionStorage);
+    view.markAsRoot();
+    view.show(parent);
+    const target = view.element;
+    target.style.display = 'flex';
+    target.style.width = '780px';
+    target.style.height = '400px';
+
+    const itemsListener = new ExtensionStorageItemsListener(view.extensionStorageItemsDispatcher);
+    await itemsListener.waitForItemsRefreshed();
+
+    await view.updateComplete;
+
+    await assertScreenshot('application/extension-storage-item-view.png');
     view.detach();
   });
 });

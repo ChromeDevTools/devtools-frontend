@@ -31,6 +31,7 @@
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Geometry from '../../models/geometry/geometry.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import type {WidgetOptions} from '../../ui/legacy/Widget.js';
 import {Directives as LitDirectives, html, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
@@ -110,7 +111,7 @@ export abstract class KeyValueStorageItemsView extends UI.Widget.VBox {
 
   constructor(
       title: string, id: string, editable: boolean, view?: View,
-      metadataView?: ApplicationComponents.StorageMetadataView.StorageMetadataView) {
+      metadataView?: ApplicationComponents.StorageMetadataView.StorageMetadataView, opts?: WidgetOptions) {
     metadataView ??= new ApplicationComponents.StorageMetadataView.StorageMetadataView();
     if (!view) {
       view = (input: ViewInput, output: ViewOutput, target: HTMLElement) => {
@@ -168,7 +169,7 @@ export abstract class KeyValueStorageItemsView extends UI.Widget.VBox {
             target);
       };
     }
-    super();
+    super(opts);
     this.metadataView = metadataView;
     this.#editable = editable;
     this.#view = view;

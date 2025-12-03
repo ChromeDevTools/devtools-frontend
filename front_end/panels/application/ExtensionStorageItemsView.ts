@@ -1,7 +1,6 @@
 // Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 
 /*
  * Copyright (C) 2008 Nokia Inc.  All rights reserved.
@@ -74,10 +73,9 @@ export class ExtensionStorageItemsView extends KeyValueStorageItemsView {
       Common.ObjectWrapper.ObjectWrapper<ExtensionStorageItemsDispatcher.EventTypes>;
 
   constructor(extensionStorage: ExtensionStorage, view?: KeyValueStorageItemsViewFunction) {
-    super(i18nString(UIStrings.extensionStorageItems), 'extension-storage', true, view);
-
-    this.element.setAttribute('jslog', `${VisualLogging.pane().context('extension-storage-data')}`);
-    this.element.classList.add('storage-view', 'table');
+    super(
+        i18nString(UIStrings.extensionStorageItems), 'extension-storage', true, view, undefined,
+        {jslog: `${VisualLogging.pane().context('extension-storage-data')}`, classes: ['storage-view', 'table']});
 
     this.extensionStorageItemsDispatcher =
         new Common.ObjectWrapper.ObjectWrapper<ExtensionStorageItemsDispatcher.EventTypes>();

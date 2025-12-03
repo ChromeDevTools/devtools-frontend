@@ -638,6 +638,7 @@ export class TargetBase {
 
 /** These are not logged as console.error */
 const IGNORED_ERRORS = new Set<CDPErrorStatus>([
+  CDPErrorStatus.DEVTOOLS_REHYDRATION_ERROR,
   CDPErrorStatus.DEVTOOLS_STUB_ERROR,
   CDPErrorStatus.SERVER_ERROR,
   CDPErrorStatus.SESSION_NOT_FOUND,

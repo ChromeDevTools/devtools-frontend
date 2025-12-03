@@ -42,6 +42,7 @@ export enum CDPErrorStatus {
   SERVER_ERROR = -32000,
   SESSION_NOT_FOUND = SERVER_ERROR - 1,
   DEVTOOLS_STUB_ERROR = -32015,
+  DEVTOOLS_REHYDRATION_ERROR = -32016,
 }
 
 export interface CDPError {

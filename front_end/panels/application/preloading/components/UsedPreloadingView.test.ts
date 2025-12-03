@@ -14,6 +14,7 @@ import {
 import {describeWithEnvironment} from '../../../../testing/EnvironmentHelpers.js';
 import * as RenderCoordinator from '../../../../ui/components/render_coordinator/render_coordinator.js';
 import * as ReportView from '../../../../ui/components/report_view/report_view.js';
+import * as UI from '../../../../ui/legacy/legacy.js';
 
 import * as PreloadingComponents from './components.js';
 
@@ -547,10 +548,10 @@ describeWithEnvironment('UsedPreloadingView', () => {
     assert.include(headers[1]?.textContent, 'Current URL');
     assert.include(sections[1]?.textContent, 'https://example.com/prerendered.html#alpha');
     assert.include(headers[2]?.textContent, 'URLs being speculatively loaded by the initiating page');
-    const grid = sections[2].querySelector('devtools-resources-mismatched-preloading-grid');
+    const grid = UI.Widget.Widget.get(sections[2].querySelector('.devtools-resources-mismatched-preloading-grid')!);
     assert.instanceOf(grid, PreloadingComponents.MismatchedPreloadingGrid.MismatchedPreloadingGrid);
     assertGridContents(
-        grid,
+        grid.element,
         ['URL', 'Action', 'Status'],
         [
           ['https://example.com/prerendered.html#betalpha', 'Prerender', 'Ready'],
@@ -619,7 +620,7 @@ describeWithEnvironment('UsedPreloadingView', () => {
     assert.include(headers[1]?.textContent, 'Current URL');
     assert.include(sections[1]?.textContent, 'https://example.com/no-preloads.html');
     assert.include(headers[2]?.textContent, 'URLs being speculatively loaded by the initiating page');
-    assert.exists(sections[2].querySelector('devtools-resources-mismatched-preloading-grid'));
+    assert.exists(sections[2].querySelector('.devtools-resources-mismatched-preloading-grid'));
 
     assert.include(headers[3]?.textContent, 'Speculations initiated by this page');
     const badges = sections[3]?.querySelectorAll('.status-badge span') || [];

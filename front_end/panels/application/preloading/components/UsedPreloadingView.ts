@@ -16,12 +16,12 @@ import * as SDK from '../../../../core/sdk/sdk.js';
 import * as Protocol from '../../../../generated/protocol.js';
 import * as LegacyWrapper from '../../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as RenderCoordinator from '../../../../ui/components/render_coordinator/render_coordinator.js';
-import type * as UI from '../../../../ui/legacy/legacy.js';
+import * as UI from '../../../../ui/legacy/legacy.js';
 import * as Lit from '../../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js';
 import * as PreloadingHelper from '../helper/helper.js';
 
-import type * as MismatchedPreloadingGrid from './MismatchedPreloadingGrid.js';
+import * as MismatchedPreloadingGrid from './MismatchedPreloadingGrid.js';
 import {prefetchFailureReason, prerenderFailureReason} from './PreloadingString.js';
 import usedPreloadingStyles from './usedPreloadingView.css.js';
 
@@ -337,8 +337,9 @@ export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableCom
       <devtools-report-section-header>${i18nString(UIStrings.preloadedURLs)}</devtools-report-section-header>
       <devtools-report-section
       jslog=${VisualLogging.section('preloaded-urls')}>
-        <devtools-resources-mismatched-preloading-grid
-          .data=${data as MismatchedPreloadingGrid.MismatchedPreloadingGridData}></devtools-resources-mismatched-preloading-grid>
+        <devtools-widget
+          .widgetConfig=${UI.Widget.widgetConfig(MismatchedPreloadingGrid.MismatchedPreloadingGrid, {data})}
+        ></devtools-widget>
       </devtools-report-section>
     `;
     // clang-format on

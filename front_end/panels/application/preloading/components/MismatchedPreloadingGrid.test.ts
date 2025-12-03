@@ -10,10 +10,10 @@ import {
   getCellByIndexes,
 } from '../../../../testing/DataGridHelpers.js';
 import {
+  raf,
   renderElementIntoDOM,
 } from '../../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../../testing/EnvironmentHelpers.js';
-import * as RenderCoordinator from '../../../../ui/components/render_coordinator/render_coordinator.js';
 
 import * as PreloadingComponents from './components.js';
 
@@ -28,11 +28,16 @@ async function renderMismatchedPreloadingGrid(
     data: PreloadingComponents.MismatchedPreloadingGrid.MismatchedPreloadingGridData): Promise<HTMLElement> {
   const component = new PreloadingComponents.MismatchedPreloadingGrid.MismatchedPreloadingGrid();
   component.data = data;
+  component.markAsRoot();
   renderElementIntoDOM(component);
-  assert.isNotNull(component.shadowRoot);
-  await RenderCoordinator.done();
+  assert.isNotNull(component.element.shadowRoot);
 
-  return component;
+  // wait for Widget render
+  await component.updateComplete;
+  // and for its data grid component to render
+  await raf();
+
+  return component.element;
 }
 
 function assertDiff(

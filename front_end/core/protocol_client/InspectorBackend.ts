@@ -695,7 +695,10 @@ class AgentPrototype {
           if ('result' in response) {
             return {...response.result, getError: () => undefined};
           }
-          return {getError: () => undefined};
+          return {
+            getError: () => `Command ${method} returned neither result nor an error, params: ${
+                JSON.stringify(request, undefined, 2)}`,
+          };
         });
   }
 }

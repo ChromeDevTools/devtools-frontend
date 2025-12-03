@@ -1,7 +1,6 @@
 // Copyright 2018 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 
 import '../../ui/legacy/legacy.js';
 import '../../ui/legacy/components/data_grid/data_grid.js';
@@ -665,46 +664,63 @@ export class CommandAutocompleteSuggestionProvider {
   }
 }
 
-export class InfoWidget extends UI.Widget.VBox {
-  private readonly tabbedPane: UI.TabbedPane.TabbedPane;
+interface InfoWidgetViewInput {
   request: Record<string, unknown>|undefined;
   response: Record<string, unknown>|undefined;
   type: 'sent'|'received'|undefined;
   selectedTab: 'request'|'response'|undefined;
-  constructor(element: HTMLElement) {
+}
+
+type InfoWidgetView = (input: InfoWidgetViewInput, output: undefined, target: HTMLElement) => void;
+
+const INFO_WIDGET_VIEW: InfoWidgetView = (input, _output, target) => {
+  // clang-format off
+  render(html`<devtools-widget .widgetConfig=${widgetConfig(UI.TabbedPane.TabbedPane, {
+    tabs: [
+      {
+        id: 'request',
+        title: i18nString(UIStrings.request),
+        view: input.type === undefined ?
+            new UI.EmptyWidget.EmptyWidget(
+                i18nString(UIStrings.noMessageSelected), i18nString(UIStrings.selectAMessageToView)) :
+            SourceFrame.JSONView.JSONView.createViewSync(input.request || null),
+        enabled: input.type === 'sent',
+        selected: input.selectedTab === 'request',
+      },
+      {
+        id: 'response',
+        title: i18nString(UIStrings.response),
+        view: input.type === undefined ?
+            new UI.EmptyWidget.EmptyWidget(
+                i18nString(UIStrings.noMessageSelected), i18nString(UIStrings.selectAMessageToView)) :
+            SourceFrame.JSONView.JSONView.createViewSync(input.response || null),
+        selected: input.selectedTab === 'response',
+      }
+    ]})}>
+  </devtools-widget>`, target);
+  // clang-format on
+};
+
+export class InfoWidget extends UI.Widget.VBox {
+  #view: InfoWidgetView;
+  request: Record<string, unknown>|undefined;
+  response: Record<string, unknown>|undefined;
+  type: 'sent'|'received'|undefined;
+  constructor(element: HTMLElement, view = INFO_WIDGET_VIEW) {
     super(element);
-    this.tabbedPane = new UI.TabbedPane.TabbedPane();
-    this.tabbedPane.appendTab('request', i18nString(UIStrings.request), new UI.Widget.Widget());
-    this.tabbedPane.appendTab('response', i18nString(UIStrings.response), new UI.Widget.Widget());
-    this.tabbedPane.show(this.contentElement);
-    this.tabbedPane.selectTab('response');
-    this.request = {};
+    this.#view = view;
+    this.requestUpdate();
   }
 
   override performUpdate(): void {
-    if (!this.request && !this.response) {
-      this.tabbedPane.changeTabView(
-          'request',
-          new UI.EmptyWidget.EmptyWidget(
-              i18nString(UIStrings.noMessageSelected), i18nString(UIStrings.selectAMessageToView)));
-      this.tabbedPane.changeTabView(
-          'response',
-          new UI.EmptyWidget.EmptyWidget(
-              i18nString(UIStrings.noMessageSelected), i18nString(UIStrings.selectAMessageToView)));
-      return;
-    }
-
-    const requestEnabled = this.type && this.type === 'sent';
-    this.tabbedPane.setTabEnabled('request', Boolean(requestEnabled));
-    if (!requestEnabled) {
-      this.tabbedPane.selectTab('response');
-    }
-
-    this.tabbedPane.changeTabView('request', SourceFrame.JSONView.JSONView.createViewSync(this.request || null));
-    this.tabbedPane.changeTabView('response', SourceFrame.JSONView.JSONView.createViewSync(this.response || null));
-    if (this.selectedTab) {
-      this.tabbedPane.selectTab(this.selectedTab);
-    }
+    this.#view(
+        {
+          request: this.request,
+          response: this.response,
+          type: this.type,
+          selectedTab: this.type !== 'sent' ? 'response' : undefined,
+        },
+        undefined, this.contentElement);
   }
 }
 

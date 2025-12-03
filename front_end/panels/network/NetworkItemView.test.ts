@@ -14,7 +14,6 @@ import {
 } from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import {setUpEnvironment} from '../../testing/OverridesHelpers.js';
-import type * as UI from '../../ui/legacy/legacy.js';
 
 import * as NetworkForward from './forward/forward.js';
 import * as Network from './network.js';
@@ -36,8 +35,8 @@ function renderNetworkItemView(request?: SDK.NetworkRequest.NetworkRequest): Net
   return networkItemView;
 }
 
-function getOverrideIndicator(tabs: UI.TabbedPane.TabbedPaneTab[], tabId: string): HTMLElement|null {
-  const tab = tabs.find(tab => tab.id === tabId)?.tabElement;
+function getOverrideIndicator(view: Network.NetworkItemView.NetworkItemView, tabId: string): HTMLElement|null {
+  const tab = view.tabsById.get(tabId)?.tabElement;
   const statusDot = tab?.querySelector('.status-dot');
 
   return statusDot ? statusDot as HTMLElement : null;
@@ -84,8 +83,8 @@ describeWithEnvironment('NetworkItemView', () => {
     request.originalResponseHeaders = [{name: 'foo', value: 'original'}];
 
     const networkItemView = renderNetworkItemView(request);
-    const headersIndicator = getOverrideIndicator(networkItemView['tabs'], 'headers-component');
-    const responseIndicator = getOverrideIndicator(networkItemView['tabs'], 'response');
+    const headersIndicator = getOverrideIndicator(networkItemView, 'headers-component');
+    const responseIndicator = getOverrideIndicator(networkItemView, 'response');
 
     networkItemView.detach();
 
@@ -99,8 +98,8 @@ describeWithEnvironment('NetworkItemView', () => {
     request.originalResponseHeaders = [{name: 'foo', value: 'original'}];
 
     const networkItemView = renderNetworkItemView(request);
-    const headersIndicator = getOverrideIndicator(networkItemView['tabs'], 'headers-component');
-    const responseIndicator = getOverrideIndicator(networkItemView['tabs'], 'response');
+    const headersIndicator = getOverrideIndicator(networkItemView, 'headers-component');
+    const responseIndicator = getOverrideIndicator(networkItemView, 'response');
 
     networkItemView.detach();
 
@@ -113,8 +112,8 @@ describeWithEnvironment('NetworkItemView', () => {
     request.hasOverriddenContent = true;
 
     const networkItemView = renderNetworkItemView(request);
-    const headersIndicator = getOverrideIndicator(networkItemView['tabs'], 'headers-component');
-    const responseIndicator = getOverrideIndicator(networkItemView['tabs'], 'response');
+    const headersIndicator = getOverrideIndicator(networkItemView, 'headers-component');
+    const responseIndicator = getOverrideIndicator(networkItemView, 'response');
 
     networkItemView.detach();
 
@@ -124,8 +123,8 @@ describeWithEnvironment('NetworkItemView', () => {
 
   it('does not show indicator for unoverriden request', () => {
     const networkItemView = renderNetworkItemView(request);
-    const headersIndicator = getOverrideIndicator(networkItemView['tabs'], 'headers-component');
-    const responseIndicator = getOverrideIndicator(networkItemView['tabs'], 'response');
+    const headersIndicator = getOverrideIndicator(networkItemView, 'headers-component');
+    const responseIndicator = getOverrideIndicator(networkItemView, 'response');
 
     networkItemView.detach();
 

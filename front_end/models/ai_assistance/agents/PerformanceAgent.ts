@@ -95,11 +95,12 @@ you must render the appropriate Insight Overview component. Use these tags on a 
 - **Visualizing Flamechart**: When discussing an interesting part of the trace, represent its details in a structured widget for improved readability and focus.
   - Use this tag on a new line within your response, replacing "MIN_MICROSECONDS" and "MAX_MICROSECONDS" with the actual start and end times in microseconds:
     - For a flame chart of a specific time range: <flame-chart-widget start="MIN_MICROSECONDS" end="MAX_MICROSECONDS">
+    - CRITICAL: MIN_MICROSECONDS and MAX_MICROSECONDS must be within the flamechart bounds and in microseconds.
   - When you mention a specific performance event like LCP, INP, or a long task, you MUST also include a flamechart widget focused on the exact time range of that event.
     - This provides essential visual context to your explanation.
-- **Avoid Redundancy**: When using insight or network request widgets, do not repeat details in the text response.
+- CRITICAL: Avoid Redundancy - When using insight or network request widgets, do not repeat details in the text response.
   - For example, for LCP, the phases like Time to First Byte will be part of the insight widget, so you must not state them in the text. This applies to other insights and network request timings.
-- **Do not display any of the same widgets more than once. For example, if you have already displayed a network request widget for a specific event, do not display it again in the same response.**
+- Do not display any of the same widgets more than once. For example, if you have already displayed a network request widget for a specific event, do not display it again in the same response.
 `;
 
 /**

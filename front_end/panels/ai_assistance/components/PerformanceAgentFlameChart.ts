@@ -36,9 +36,6 @@ export class PerformanceAgentFlameChart extends HTMLElement implements PerfUI.Fl
     if (!data.parsedTrace) {
       return;
     }
-    if (data.parsedTrace === this.#parsedTrace) {
-      return;
-    }
     this.#parsedTrace = data.parsedTrace;
     const entityMapper = new Trace.EntityMapper.EntityMapper(data.parsedTrace);
     this.#dataProvider.setModel(data.parsedTrace, entityMapper);
@@ -47,12 +44,25 @@ export class PerformanceAgentFlameChart extends HTMLElement implements PerfUI.Fl
       expandTracks: () => true,
     });
 
-    const bounds = Trace.Helpers.Timing.traceWindowMicroSecondsToMilliSeconds({
-      min: Trace.Types.Timing.Micro(data.start),
-      max: Trace.Types.Timing.Micro(data.end),
-      range: Trace.Types.Timing.Micro(data.end - data.start)
-    });
+    let start = Trace.Types.Timing.Micro(data.start);
+    let end = Trace.Types.Timing.Micro(data.end);
 
+    const minTraceTime = data.parsedTrace.data.Meta.traceBounds.min;
+    const maxTraceTime = data.parsedTrace.data.Meta.traceBounds.max;
+
+    // If the start and end are not within the trace, display the whole trace duration.
+    if (start < 0 || end < 0 || start >= end || start === end || start < minTraceTime || end > maxTraceTime) {
+      start = minTraceTime;
+      end = maxTraceTime;
+      // eslint-disable-next-line no-console
+      console.log('[GreenDev] Flamechart widget bounds reset to the whole trace duration.');
+    }
+
+    const bounds = Trace.Helpers.Timing.traceWindowMicroSecondsToMilliSeconds({
+      min: Trace.Types.Timing.Micro(start),
+      max: Trace.Types.Timing.Micro(end),
+      range: Trace.Types.Timing.Micro(end - start),
+    });
     this.#flameChart.setWindowTimes(bounds.min, bounds.max);
     this.#flameChart.setSize(600, 200);
     this.#render();

@@ -22,7 +22,6 @@ const {UIStrings, i18nString} = Trace.Insights.Models.SlowCSSSelector;
 const {html} = Lit;
 
 export class SlowCSSSelector extends BaseInsightComponent<SlowCSSSelectorInsightModel> {
-  static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-slow-css-selector`;
   override internalName = 'slow-css-selector';
   #selectorLocations = new Map<string, Protocol.CSS.SourceRange[]>();
 
@@ -162,11 +161,3 @@ export class SlowCSSSelector extends BaseInsightComponent<SlowCSSSelectorInsight
     return html`${sections}`;
   }
 }
-
-declare global {
-  interface HTMLElementTagNameMap {
-    'devtools-performance-slow-css-selector': SlowCSSSelector;
-  }
-}
-
-customElements.define('devtools-performance-slow-css-selector', SlowCSSSelector);

@@ -8,7 +8,6 @@ import {
 } from '../../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../../../testing/TraceLoader.js';
-import * as RenderCoordinator from '../../../../ui/components/render_coordinator/render_coordinator.js';
 
 import * as Insights from './insights.js';
 
@@ -26,16 +25,16 @@ describeWithEnvironment('CLSCulprits component', () => {
     component.selected = true;
 
     renderElementIntoDOM(component);
-    await RenderCoordinator.done();
-    assert.isOk(component.shadowRoot);
+    await component.updateComplete;
+    assert.isOk(component.element.shadowRoot);
 
-    const titleText = getCleanTextContentFromSingleElement(component.shadowRoot, '.insight-title');
+    const titleText = getCleanTextContentFromSingleElement(component.element.shadowRoot, '.insight-title');
     assert.strictEqual(titleText, 'Layout shift culprits');
 
-    const worstClusterText = getCleanTextContentFromSingleElement(component.shadowRoot, '.worst-cluster');
+    const worstClusterText = getCleanTextContentFromSingleElement(component.element.shadowRoot, '.worst-cluster');
     assert.strictEqual(worstClusterText, 'Worst cluster: Layout shift cluster @ 1.37 s');
 
-    const culpritsList = component.shadowRoot.querySelector<HTMLElement>('.worst-culprits');
+    const culpritsList = component.element.shadowRoot.querySelector<HTMLElement>('.worst-culprits');
     assert.isOk(culpritsList);
     assert.strictEqual(
         culpritsList.deepInnerText(),

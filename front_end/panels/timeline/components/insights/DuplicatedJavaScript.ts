@@ -21,7 +21,6 @@ const {UIStrings, i18nString} = Trace.Insights.Models.DuplicatedJavaScript;
 const {html} = Lit;
 
 export class DuplicatedJavaScript extends BaseInsightComponent<DuplicatedJavaScriptInsightModel> {
-  static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-duplicated-javascript`;
   override internalName = 'duplicated-javascript';
   #treemapData: Utils.Treemap.TreemapData|null = null;
 
@@ -118,11 +117,3 @@ export class DuplicatedJavaScript extends BaseInsightComponent<DuplicatedJavaScr
     // clang-format on
   }
 }
-
-declare global {
-  interface HTMLElementTagNameMap {
-    'devtools-performance-duplicated-javascript': DuplicatedJavaScript;
-  }
-}
-
-customElements.define('devtools-performance-duplicated-javascript', DuplicatedJavaScript);

@@ -16,7 +16,6 @@ const {UIStrings, i18nString, createOverlayForRequest} = Trace.Insights.Models.R
 const {html} = Lit;
 
 export class RenderBlocking extends BaseInsightComponent<RenderBlockingInsightModel> {
-  static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-render-blocking-requests`;
   override internalName = 'render-blocking-requests';
 
   mapToRow(request: Trace.Types.Events.SyntheticNetworkRequest): TableDataRow {
@@ -71,11 +70,3 @@ export class RenderBlocking extends BaseInsightComponent<RenderBlockingInsightMo
     // clang-format on
   }
 }
-
-declare global {
-  interface HTMLElementTagNameMap {
-    'devtools-performance-render-blocking-requests': RenderBlocking;
-  }
-}
-
-customElements.define('devtools-performance-render-blocking-requests', RenderBlocking);

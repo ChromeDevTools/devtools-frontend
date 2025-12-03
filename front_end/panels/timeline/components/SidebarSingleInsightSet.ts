@@ -14,7 +14,6 @@ import * as Lit from '../../../ui/lit/lit.js';
 import {nothing} from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
-import type {BaseInsightComponent} from './insights/BaseInsightComponent.js';
 import {md, shouldRenderForCategory} from './insights/Helpers.js';
 import * as Insights from './insights/insights.js';
 import type {ActiveInsight} from './Sidebar.js';
@@ -70,6 +69,7 @@ const UIStrings = {
       'There are many reasons why local and field metrics [may not match](https://web.dev/articles/lab-and-field-data-differences). ' +
       'Adjust [throttling settings and device emulation](https://developer.chrome.com/docs/devtools/device-mode) to analyze traces more similar to the average user\'s environment.',
 } as const;
+
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/SidebarSingleInsightSet.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
@@ -80,44 +80,16 @@ export interface SidebarSingleInsightSetData {
   parsedTrace: Trace.TraceModel.ParsedTrace|null;
 }
 
-type InsightNameToComponentMapping =
-    Record<string, typeof Insights.BaseInsightComponent.BaseInsightComponent<Trace.Insights.Types.InsightModel>>;
-
 interface CategorizedInsightData {
-  componentClass: typeof Insights.BaseInsightComponent.BaseInsightComponent<Trace.Insights.Types.InsightModel>;
+  insightName: string;
   model: Trace.Insights.Types.InsightModel;
 }
-
-/**
- * Every insight (INCLUDING experimental ones).
- *
- * Order does not matter (but keep alphabetized).
- */
-const INSIGHT_NAME_TO_COMPONENT: InsightNameToComponentMapping = {
-  Cache: Insights.Cache.Cache,
-  CLSCulprits: Insights.CLSCulprits.CLSCulprits,
-  DocumentLatency: Insights.DocumentLatency.DocumentLatency,
-  DOMSize: Insights.DOMSize.DOMSize,
-  DuplicatedJavaScript: Insights.DuplicatedJavaScript.DuplicatedJavaScript,
-  FontDisplay: Insights.FontDisplay.FontDisplay,
-  ForcedReflow: Insights.ForcedReflow.ForcedReflow,
-  ImageDelivery: Insights.ImageDelivery.ImageDelivery,
-  INPBreakdown: Insights.INPBreakdown.INPBreakdown,
-  LCPDiscovery: Insights.LCPDiscovery.LCPDiscovery,
-  LCPBreakdown: Insights.LCPBreakdown.LCPBreakdown,
-  LegacyJavaScript: Insights.LegacyJavaScript.LegacyJavaScript,
-  ModernHTTP: Insights.ModernHTTP.ModernHTTP,
-  NetworkDependencyTree: Insights.NetworkDependencyTree.NetworkDependencyTree,
-  RenderBlocking: Insights.RenderBlocking.RenderBlocking,
-  SlowCSSSelector: Insights.SlowCSSSelector.SlowCSSSelector,
-  ThirdParties: Insights.ThirdParties.ThirdParties,
-  Viewport: Insights.Viewport.Viewport,
-};
 
 export class SidebarSingleInsightSet extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
 
-  #activeInsightElement: BaseInsightComponent<Trace.Insights.Types.InsightModel>|null = null;
+  #insightRenderer = new Insights.InsightRenderer.InsightRenderer();
+  #activeInsightElement: HTMLElement|null = null;
 
   #data: SidebarSingleInsightSetData = {
     insightSetKey: null,
@@ -389,20 +361,15 @@ export class SidebarSingleInsightSet extends HTMLElement {
     const shownInsights: CategorizedInsightData[] = [];
     const passedInsights: CategorizedInsightData[] = [];
 
-    for (const [name, model] of Object.entries(insightSet.model)) {
-      const componentClass = INSIGHT_NAME_TO_COMPONENT[name as keyof Trace.Insights.Types.InsightModels];
-      if (!componentClass) {
-        continue;
-      }
-
+    for (const [insightName, model] of Object.entries(insightSet.model)) {
       if (!model || !shouldRenderForCategory({activeCategory, insightCategory: model.category})) {
         continue;
       }
 
       if (model.state === 'pass') {
-        passedInsights.push({componentClass, model});
+        passedInsights.push({insightName, model});
       } else {
-        shownInsights.push({componentClass, model});
+        shownInsights.push({insightName, model});
       }
     }
     return {shownInsights, passedInsights};
@@ -426,32 +393,25 @@ export class SidebarSingleInsightSet extends HTMLElement {
         );
 
     const renderInsightComponent = (insightData: CategorizedInsightData): Lit.LitTemplate => {
-      const {componentClass, model} = insightData;
       if (!this.#data.parsedTrace?.insights) {
         return nothing;
       }
 
+      const {insightName, model} = insightData;
       const agentFocus = AIAssistance.AIContext.AgentFocus.fromInsight(this.#data.parsedTrace, model);
-      // clang-format off
-      /* eslint-disable lit/binding-positions,lit/no-invalid-html */
-      return html`<div>
-        <${componentClass.litTagName}
-          .selected=${this.#data.activeInsight?.model === model}
-          ${Lit.Directives.ref(elem => {
-            if(this.#data.activeInsight?.model === model && elem) {
-              this.#activeInsightElement = elem as BaseInsightComponent<Trace.Insights.Types.InsightModel>;
-            }
-          })}
-          .parsedTrace=${this.#data.parsedTrace}
-          .model=${model}
-          .bounds=${insightSet.bounds}
-          .insightSetKey=${insightSetKey}
-          .agentFocus=${agentFocus}
-          .fieldMetrics=${fieldMetrics}>
-        </${componentClass.litTagName}>
-      </div>`;
-      /* eslint-enable lit/binding-positions,lit/no-invalid-html */
-      // clang-format on
+
+      const widgetElement =
+          this.#insightRenderer.renderInsightToWidgetElement(this.#data.parsedTrace, insightSet, model, insightName, {
+            selected: this.#data.activeInsight?.model === model,
+            agentFocus,
+            fieldMetrics,
+          });
+
+      if (this.#data.activeInsight?.model === model) {
+        this.#activeInsightElement = widgetElement;
+      }
+
+      return html`${widgetElement}`;
     };
 
     const shownInsights = shownInsightsData.map(renderInsightComponent);
@@ -482,14 +442,20 @@ export class SidebarSingleInsightSet extends HTMLElement {
       return;
     }
 
+    const insightSet = parsedTrace.insights.get(insightSetKey);
+    if (!insightSet) {
+      Lit.render(Lit.nothing, this.#shadow, {host: this});
+      return;
+    }
+
     // clang-format off
     Lit.render(html`
       <style>${sidebarSingleInsightSetStyles}</style>
       <div class="navigation">
         ${this.#renderMetrics(insightSetKey)}
         ${this.#renderInsights(parsedTrace.insights, insightSetKey)}
-        </div>
-      `, this.#shadow, {host: this});
+      </div>
+    `, this.#shadow, {host: this});
     // clang-format on
   }
 }

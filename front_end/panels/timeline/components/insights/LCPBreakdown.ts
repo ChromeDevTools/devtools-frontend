@@ -18,7 +18,6 @@ const {UIStrings, i18nString} = Trace.Insights.Models.LCPBreakdown;
 const {html} = Lit;
 
 export class LCPBreakdown extends BaseInsightComponent<LCPBreakdownInsightModel> {
-  static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-lcp-breakdown`;
   override internalName = 'lcp-by-phase';
   #overlay: Trace.Types.Overlays.TimespanBreakdown|null = null;
 
@@ -136,11 +135,3 @@ export class LCPBreakdown extends BaseInsightComponent<LCPBreakdownInsightModel>
     return html`${sections}`;
   }
 }
-
-declare global {
-  interface HTMLElementTagNameMap {
-    'devtools-performance-lcp-breakdown': LCPBreakdown;
-  }
-}
-
-customElements.define('devtools-performance-lcp-breakdown', LCPBreakdown);

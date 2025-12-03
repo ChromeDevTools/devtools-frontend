@@ -8,6 +8,7 @@ import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {getInsightSetOrError} from '../../../testing/InsightHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
+import type * as UI from '../../../ui/legacy/legacy.js';
 
 import * as Components from './components.js';
 import type * as InsightComponents from './insights/insights.js';
@@ -17,8 +18,9 @@ type BaseInsightComponent =
 
 function getUserVisibleInsights(component: Components.SidebarSingleInsightSet.SidebarSingleInsightSet): string[] {
   assert.isOk(component.shadowRoot);
-  return [...component.shadowRoot.querySelectorAll<BaseInsightComponent>('[data-insight-name]')]
-      .flatMap(component => getCleanTextContentFromElements(component.shadowRoot!, '.insight-title'))
+  return [
+    ...component.shadowRoot.querySelectorAll<UI.Widget.WidgetElement<BaseInsightComponent>>('[data-insight-name]')
+  ].flatMap(component => getCleanTextContentFromElements(component.shadowRoot!, '.insight-title'))
       .filter(Boolean);
 }
 
@@ -28,7 +30,8 @@ function getPassedInsights(component: Components.SidebarSingleInsightSet.Sidebar
   assert.isOk(passedInsightsSection);
   passedInsightsSection.open = true;
   return [
-    ...passedInsightsSection.querySelectorAll<BaseInsightComponent>('.passed-insights-section [data-insight-name]')
+    ...passedInsightsSection.querySelectorAll<UI.Widget.WidgetElement<BaseInsightComponent>>(
+        '.passed-insights-section [data-insight-name]')
   ].flatMap(component => getCleanTextContentFromElements(component.shadowRoot!, '.insight-title'));
 }
 
@@ -148,11 +151,12 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
     };
     await RenderCoordinator.done();
 
-    const expandedInsight =
-        [...component.shadowRoot!.querySelectorAll<BaseInsightComponent>('[data-insight-name]')].find(insight => {
-          return insight.selected;
-        });
+    const expandedInsight = [
+      ...component.shadowRoot!.querySelectorAll<UI.Widget.WidgetElement<BaseInsightComponent>>('[data-insight-name]')
+    ].find(el => {
+      return el.getWidget()?.selected;
+    });
     assert.isOk(expandedInsight);
-    assert.strictEqual(expandedInsight.model?.title, 'LCP breakdown');
+    assert.strictEqual(expandedInsight.getWidget()?.model?.title, 'LCP breakdown');
   });
 });

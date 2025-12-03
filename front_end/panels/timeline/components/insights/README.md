@@ -17,10 +17,9 @@ When creating your component, extend the `BaseInsightComponent` class (defined i
 
 In your component you can access all this data via `this.data.X`, where `X` is one of the keys listed above.
 
-You will have to define 4 properties on your component:
+You will have to define some properties on your component:
 
-1. `static readonly litTagName` is the HTML tag name given to your element (define this just as you do for all custom elements).
-2. `override internalName: string` is a name used to identify the insight. It **must be unique across all insights** and is used to track if it is active or not.
+1. `override internalName: string` is a name used to identify the insight. It **must be unique across all insights** and is used to track if it is active or not.
 
 > Go to KnownContextValues.ts and add your insight: `timeline.toggle-insight.your-insight-name` and `timeline.insights.your-insight-name`.
 

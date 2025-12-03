@@ -17,7 +17,6 @@ const {UIStrings, i18nString, createOverlayForRequest} = Trace.Insights.Models.M
 const {html} = Lit;
 
 export class ModernHTTP extends BaseInsightComponent<ModernHTTPInsightModel> {
-  static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-modern-http`;
   override internalName = 'modern-http';
 
   protected override hasAskAiSupport(): boolean {
@@ -68,11 +67,3 @@ export class ModernHTTP extends BaseInsightComponent<ModernHTTPInsightModel> {
     // clang-format on
   }
 }
-
-declare global {
-  interface HTMLElementTagNameMap {
-    'devtools-performance-modern-http': ModernHTTP;
-  }
-}
-
-customElements.define('devtools-performance-modern-http', ModernHTTP);

@@ -28,45 +28,9 @@ import type * as PerformanceAgentFlameChart from './PerformanceAgentFlameChart.j
 const {html} = Lit.StaticHtml;
 const {ref, createRef} = Lit.Directives;
 
-type InsightNameToComponentMapping =
-    Record<string, typeof Insights.BaseInsightComponent.BaseInsightComponent<Trace.Insights.Types.InsightModel>>;
-
-const INSIGHT_NAME_TO_COMPONENT: InsightNameToComponentMapping = {
-  Cache: Insights.Cache.Cache,
-  CLSCulprits: Insights.CLSCulprits.CLSCulprits,
-  DocumentLatency: Insights.DocumentLatency.DocumentLatency,
-  DOMSize: Insights.DOMSize.DOMSize,
-  DuplicatedJavaScript: Insights.DuplicatedJavaScript.DuplicatedJavaScript,
-  FontDisplay: Insights.FontDisplay.FontDisplay,
-  ForcedReflow: Insights.ForcedReflow.ForcedReflow,
-  ImageDelivery: Insights.ImageDelivery.ImageDelivery,
-  INPBreakdown: Insights.INPBreakdown.INPBreakdown,
-  LCPDiscovery: Insights.LCPDiscovery.LCPDiscovery,
-  LCPBreakdown: Insights.LCPBreakdown.LCPBreakdown,
-  LegacyJavaScript: Insights.LegacyJavaScript.LegacyJavaScript,
-  ModernHTTP: Insights.ModernHTTP.ModernHTTP,
-  NetworkDependencyTree: Insights.NetworkDependencyTree.NetworkDependencyTree,
-  RenderBlocking: Insights.RenderBlocking.RenderBlocking,
-  SlowCSSSelector: Insights.SlowCSSSelector.SlowCSSSelector,
-  ThirdParties: Insights.ThirdParties.ThirdParties,
-  Viewport: Insights.Viewport.Viewport,
-};
-
-function renderInsight(insightName: string, model: Trace.Insights.Types.InsightModel): Lit.LitTemplate {
-  const componentClass = INSIGHT_NAME_TO_COMPONENT[insightName as keyof Trace.Insights.Types.InsightModels];
-
-  if (!componentClass) {
-    return Lit.nothing;
-  }
-  /* eslint-disable lit/binding-positions,lit/no-invalid-html */
-  return html`<div><${componentClass.litTagName}
-  .model=${model}
-  .selected=${true}
-  .isAIAssistanceContext=${true}>
-  </${componentClass.litTagName}></div>`;
-}
-
 export class PerformanceAgentMarkdownRenderer extends MarkdownRendererWithCodeBlock {
+  #insightRenderer = new Insights.InsightRenderer.InsightRenderer();
+
   constructor(
       private mainFrameId = '',
       private lookupEvent: (key: Trace.Types.File.SerializableKey) => Trace.Types.Events.Event | null = () => null,
@@ -75,6 +39,10 @@ export class PerformanceAgentMarkdownRenderer extends MarkdownRendererWithCodeBl
   }
 
   override templateForToken(token: Marked.Marked.MarkedToken): Lit.LitTemplate|null {
+    if (!this.parsedTrace) {
+      return null;
+    }
+
     // NOTE: The custom tag handling below (e.g., <ai-insight>, <network-request-widget>)
     // is part of a prototype for the GreenDev project and is only rendered when the GreenDev
     // feature is enabled.
@@ -82,7 +50,6 @@ export class PerformanceAgentMarkdownRenderer extends MarkdownRendererWithCodeBl
       if (token.text.includes('<flame-chart-widget')) {
         const startMatch = token.text.match(/start="?(\d+)"?/);
         const endMatch = token.text.match(/end="?(\d+)"?/);
-        if (this.parsedTrace) {
           const start = startMatch ? Number(startMatch[1]) : this.parsedTrace.data.Meta.traceBounds.min;
           const end = endMatch ? Number(endMatch[1]) : this.parsedTrace.data.Meta.traceBounds.max;
           return html`<devtools-performance-agent-flame-chart .data=${{
@@ -91,7 +58,6 @@ export class PerformanceAgentMarkdownRenderer extends MarkdownRendererWithCodeBl
             end,
           } as PerformanceAgentFlameChart.PerformanceAgentFlameChartData}
           }></devtools-performance-agent-flame-chart>`;
-        }
       }
 
       // Flexible regex to match the tag name and a value a.
@@ -110,7 +76,7 @@ export class PerformanceAgentMarkdownRenderer extends MarkdownRendererWithCodeBl
       if (tagName === 'ai-insight' && value) {
         const componentName = value;
 
-        const insightSet = this.parsedTrace?.insights?.values().next().value;
+        const insightSet = this.parsedTrace.insights?.values().next().value;
         const insightM = insightSet?.model[componentName as Trace.Insights.Types.InsightKeys];
 
         if (!insightM) {
@@ -121,7 +87,10 @@ export class PerformanceAgentMarkdownRenderer extends MarkdownRendererWithCodeBl
           headerText: `Insight - ${componentName}`
         }
         }>
-        ${renderInsight(componentName, insightM)}
+        ${this.#insightRenderer.renderInsightToWidgetElement(this.parsedTrace, insightSet, insightM, componentName, {
+          selected: true,
+          isAIAssistanceContext: true
+        })}
         </devtools-collapsible-assistance-content-widget>`;
       }
       if (tagName === 'network-request-widget' && value) {

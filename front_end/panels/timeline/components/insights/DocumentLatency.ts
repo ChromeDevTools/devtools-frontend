@@ -13,7 +13,6 @@ import {BaseInsightComponent} from './BaseInsightComponent.js';
 const {html} = Lit;
 
 export class DocumentLatency extends BaseInsightComponent<DocumentLatencyInsightModel> {
-  static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-document-latency`;
   override internalName = 'document-latency';
 
   protected override hasAskAiSupport(): boolean {
@@ -34,11 +33,3 @@ export class DocumentLatency extends BaseInsightComponent<DocumentLatencyInsight
     // clang-format on
   }
 }
-
-declare global {
-  interface HTMLElementTagNameMap {
-    'devtools-performance-document-latency': DocumentLatency;
-  }
-}
-
-customElements.define('devtools-performance-document-latency', DocumentLatency);

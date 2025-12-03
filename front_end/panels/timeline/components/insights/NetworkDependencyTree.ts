@@ -26,7 +26,6 @@ const {html} = Lit;
 export const MAX_CHAINS_TO_SHOW = 5;
 
 export class NetworkDependencyTree extends BaseInsightComponent<NetworkDependencyTreeInsightModel> {
-  static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-long-critical-network-tree`;
   override internalName = 'long-critical-network-tree';
 
   #relatedRequests: Set<Trace.Types.Events.SyntheticNetworkRequest>|null = null;
@@ -304,11 +303,3 @@ export class NetworkDependencyTree extends BaseInsightComponent<NetworkDependenc
     `;
   }
 }
-
-declare global {
-  interface HTMLElementTagNameMap {
-    'devtools-performance-long-critical-network-tree': NetworkDependencyTree;
-  }
-}
-
-customElements.define('devtools-performance-long-critical-network-tree', NetworkDependencyTree);

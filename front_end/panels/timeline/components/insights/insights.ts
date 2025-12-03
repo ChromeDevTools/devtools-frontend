@@ -15,6 +15,7 @@ import * as ForcedReflow from './ForcedReflow.js';
 import * as Helpers from './Helpers.js';
 import * as ImageDelivery from './ImageDelivery.js';
 import * as INPBreakdown from './INPBreakdown.js';
+import * as InsightRenderer from './InsightRenderer.js';
 import * as LCPBreakdown from './LCPBreakdown.js';
 import * as LCPDiscovery from './LCPDiscovery.js';
 import * as LegacyJavaScript from './LegacyJavaScript.js';
@@ -43,6 +44,7 @@ export {
   Helpers,
   ImageDelivery,
   INPBreakdown,
+  InsightRenderer,
   LCPBreakdown,
   LCPDiscovery,
   LegacyJavaScript,

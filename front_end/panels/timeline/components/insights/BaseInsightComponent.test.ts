@@ -9,7 +9,6 @@ import * as Badges from '../../../../models/badges/badges.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import {dispatchClickEvent, renderElementIntoDOM} from '../../../../testing/DOMHelpers.js';
 import {describeWithEnvironment, updateHostConfig} from '../../../../testing/EnvironmentHelpers.js';
-import * as RenderCoordinator from '../../../../ui/components/render_coordinator/render_coordinator.js';
 import * as UI from '../../../../ui/legacy/legacy.js';
 import * as Lit from '../../../../ui/lit/lit.js';
 
@@ -45,8 +44,6 @@ describeWithEnvironment('BaseInsightComponent', () => {
       return html`<div>test content</div>`;
     }
   }
-  customElements.define('test-insight-component-no-ai-support', TestInsightComponentNoAISupport);
-  customElements.define('test-insight-component-ai-support', TestInsightComponentWithAISupport);
 
   describe('sidebar insight component rendering', () => {
     it('renders insight title even when not active', async () => {
@@ -62,16 +59,16 @@ describeWithEnvironment('BaseInsightComponent', () => {
         state: 'fail',
         frameId: '123',
       };
+
       renderElementIntoDOM(component);
+      await component.updateComplete;
+      assert.isNotNull(component.element.shadowRoot);
 
-      await RenderCoordinator.done();
-
-      assert.isNotNull(component.shadowRoot);
-      const titleElement = component.shadowRoot.querySelector<HTMLElement>('.insight-title');
+      const titleElement = component.element.shadowRoot.querySelector<HTMLElement>('.insight-title');
       assert.isNotNull(titleElement);
-      const descElement = component.shadowRoot.querySelector<HTMLElement>('.insight-description');
+      const descElement = component.element.shadowRoot.querySelector<HTMLElement>('.insight-description');
       assert.isNull(descElement);
-      const contentElement = component.shadowRoot.querySelector<HTMLElement>('.insight-content');
+      const contentElement = component.element.shadowRoot.querySelector<HTMLElement>('.insight-content');
       assert.isNull(contentElement);
       assert.deepEqual(titleElement.textContent, 'LCP by Phase');
     });
@@ -89,21 +86,22 @@ describeWithEnvironment('BaseInsightComponent', () => {
         state: 'fail',
         frameId: '123',
       };
+
       renderElementIntoDOM(component);
+      await component.updateComplete;
+      assert.isNotNull(component.element.shadowRoot);
 
-      await RenderCoordinator.done();
-
-      assert.isNotNull(component.shadowRoot);
-      const titleElement = component.shadowRoot.querySelector<HTMLElement>('.insight-title');
+      assert.isNotNull(component.element.shadowRoot);
+      const titleElement = component.element.shadowRoot.querySelector<HTMLElement>('.insight-title');
       assert.isNotNull(titleElement);
       assert.deepEqual(titleElement.textContent, 'LCP by Phase');
 
-      const descElement = component.shadowRoot.querySelector<HTMLElement>('.insight-description');
+      const descElement = component.element.shadowRoot.querySelector<HTMLElement>('.insight-description');
       assert.isNotNull(descElement);
       // It's in the markdown component.
       assert.include(descElement.children[0].shadowRoot?.textContent?.trim(), 'some description');
 
-      const contentElement = component.shadowRoot.querySelector<HTMLElement>('.insight-content');
+      const contentElement = component.element.shadowRoot.querySelector<HTMLElement>('.insight-content');
       assert.isNotNull(contentElement);
       assert.strictEqual(contentElement.textContent, 'test content');
     });
@@ -124,23 +122,23 @@ describeWithEnvironment('BaseInsightComponent', () => {
         state: 'fail',
         frameId: '123',
       };
-      renderElementIntoDOM(component);
-      await RenderCoordinator.done();
 
-      assert.isNotNull(component.shadowRoot);
-      const header = component.shadowRoot.querySelector<HTMLElement>('header');
+      renderElementIntoDOM(component);
+      await component.updateComplete;
+      assert.isNotNull(component.element.shadowRoot);
+
+      assert.isNotNull(component.element.shadowRoot);
+      const header = component.element.shadowRoot.querySelector<HTMLElement>('header');
       assert.isNotNull(header);
 
       dispatchClickEvent(header);
-      await RenderCoordinator.done();
+      await component.updateComplete;
 
       sinon.assert.calledWith(recordAction, Badges.BadgeAction.PERFORMANCE_INSIGHT_CLICKED);
     });
   });
 
   describe('estimated savings output', () => {
-    // used for defining the custom element and making it unique
-    let testComponentIndex = 0;
     function makeTestComponent(opts: {wastedBytes?: number, timeSavings?: number}) {
       class TestInsight extends BaseInsightComponent<Trace.Insights.Types.InsightModel> {
         override internalName = 'test-insight';
@@ -160,7 +158,6 @@ describeWithEnvironment('BaseInsightComponent', () => {
           return html`<div>test content</div>`;
         }
       }
-      customElements.define(`test-insight-est-savings-${testComponentIndex++}`, TestInsight);
       return new TestInsight();
     }
 
@@ -176,10 +173,12 @@ describeWithEnvironment('BaseInsightComponent', () => {
         state: 'fail',
         frameId: '123',
       };
-      renderElementIntoDOM(component);
 
-      await RenderCoordinator.done();
-      const estSavings = component.shadowRoot?.querySelector<HTMLElement>('slot[name=insight-savings]');
+      renderElementIntoDOM(component);
+      await component.updateComplete;
+      assert.isNotNull(component.element.shadowRoot);
+
+      const estSavings = component.element.shadowRoot?.querySelector<HTMLElement>('slot[name=insight-savings]');
       assert.isOk(estSavings);
       assert.strictEqual(estSavings.innerText, 'Est savings: 50 ms & 5.0 kB');
     });
@@ -196,10 +195,12 @@ describeWithEnvironment('BaseInsightComponent', () => {
         state: 'fail',
         frameId: '123',
       };
-      renderElementIntoDOM(component);
 
-      await RenderCoordinator.done();
-      const estSavings = component.shadowRoot?.querySelector<HTMLElement>('slot[name=insight-savings]');
+      renderElementIntoDOM(component);
+      await component.updateComplete;
+      assert.isNotNull(component.element.shadowRoot);
+
+      const estSavings = component.element.shadowRoot?.querySelector<HTMLElement>('slot[name=insight-savings]');
       assert.isOk(estSavings);
       assert.strictEqual(estSavings.innerText, 'Est savings: 5.0 kB');
     });
@@ -216,10 +217,12 @@ describeWithEnvironment('BaseInsightComponent', () => {
         state: 'fail',
         frameId: '123',
       };
-      renderElementIntoDOM(component);
 
-      await RenderCoordinator.done();
-      const estSavings = component.shadowRoot?.querySelector<HTMLElement>('slot[name=insight-savings]');
+      renderElementIntoDOM(component);
+      await component.updateComplete;
+      assert.isNotNull(component.element.shadowRoot);
+
+      const estSavings = component.element.shadowRoot?.querySelector<HTMLElement>('slot[name=insight-savings]');
       assert.isOk(estSavings);
       assert.strictEqual(estSavings.innerText, 'Est savings: 50 ms');
     });
@@ -236,10 +239,12 @@ describeWithEnvironment('BaseInsightComponent', () => {
         state: 'fail',
         frameId: '123',
       };
-      renderElementIntoDOM(component);
 
-      await RenderCoordinator.done();
-      const label = component.shadowRoot?.querySelector('header')?.getAttribute('aria-label');
+      renderElementIntoDOM(component);
+      await component.updateComplete;
+      assert.isNotNull(component.element.shadowRoot);
+
+      const label = component.element.shadowRoot?.querySelector('header')?.getAttribute('aria-label');
       assert.isOk(label);
 
       assert.strictEqual(
@@ -269,9 +274,11 @@ describeWithEnvironment('BaseInsightComponent', () => {
       component.model = FAKE_LCP_MODEL;
       // We don't need a real trace for these tests.
       component.bounds = FAKE_INSIGHT_SET_BOUNDS;
-      renderElementIntoDOM(component);
 
-      await RenderCoordinator.done();
+      renderElementIntoDOM(component);
+      await component.updateComplete;
+      assert.isNotNull(component.element.shadowRoot);
+
       return component;
     }
 
@@ -285,8 +292,8 @@ describeWithEnvironment('BaseInsightComponent', () => {
         }
       });
       const component = await renderComponent({insightHasAISupport: true});
-      assert.isOk(component.shadowRoot);
-      const button = component.shadowRoot.querySelector('devtools-button[data-insights-ask-ai]');
+      assert.isOk(component.element.shadowRoot);
+      const button = component.element.shadowRoot.querySelector('devtools-button[data-insights-ask-ai]');
       assert.isOk(button);
     });
 
@@ -297,8 +304,8 @@ describeWithEnvironment('BaseInsightComponent', () => {
         }
       });
       const component = await renderComponent({insightHasAISupport: true});
-      assert.isOk(component.shadowRoot);
-      const button = component.shadowRoot.querySelector('devtools-button[data-insights-ask-ai]');
+      assert.isOk(component.element.shadowRoot);
+      const button = component.element.shadowRoot.querySelector('devtools-button[data-insights-ask-ai]');
       assert.isNotOk(button);
     });
 
@@ -312,8 +319,8 @@ describeWithEnvironment('BaseInsightComponent', () => {
         }
       });
       const component = await renderComponent({insightHasAISupport: true});
-      assert.isOk(component.shadowRoot);
-      const button = component.shadowRoot.querySelector('devtools-button[data-insights-ask-ai]');
+      assert.isOk(component.element.shadowRoot);
+      const button = component.element.shadowRoot.querySelector('devtools-button[data-insights-ask-ai]');
       assert.isOk(button);
       assert.strictEqual(button.getAttribute('aria-label'), 'Ask AI about LCP by Phase insight');
     });
@@ -328,8 +335,8 @@ describeWithEnvironment('BaseInsightComponent', () => {
         }
       });
       const component = await renderComponent({insightHasAISupport: true});
-      assert.isOk(component.shadowRoot);
-      const button = component.shadowRoot.querySelector('devtools-button[data-insights-ask-ai]');
+      assert.isOk(component.element.shadowRoot);
+      const button = component.element.shadowRoot.querySelector('devtools-button[data-insights-ask-ai]');
       assert.isNull(button);
     });
 
@@ -340,8 +347,8 @@ describeWithEnvironment('BaseInsightComponent', () => {
         }
       });
       const component = await renderComponent({insightHasAISupport: false});
-      assert.isOk(component.shadowRoot);
-      const button = component.shadowRoot.querySelector('devtools-button[data-insights-ask-ai]');
+      assert.isOk(component.element.shadowRoot);
+      const button = component.element.shadowRoot.querySelector('devtools-button[data-insights-ask-ai]');
       assert.isNull(button);
     });
 
@@ -358,8 +365,8 @@ describeWithEnvironment('BaseInsightComponent', () => {
       });
       const component = await renderComponent({insightHasAISupport: true});
       component.agentFocus = focus;
-      assert.isOk(component.shadowRoot);
-      const button = component.shadowRoot.querySelector('devtools-button[data-insights-ask-ai]');
+      assert.isOk(component.element.shadowRoot);
+      const button = component.element.shadowRoot.querySelector('devtools-button[data-insights-ask-ai]');
       assert.isOk(button);
       sinon.stub(UI.ActionRegistry.ActionRegistry.instance(), 'hasAction')
           .withArgs(sinon.match(/drjones\.performance-panel-context/))
@@ -393,7 +400,7 @@ describeWithEnvironment('BaseInsightComponent', () => {
       component.agentFocus = focus;
       component.insightSetKey = 'key';
       component.model = mockInsight;
-      const header = component.shadowRoot?.querySelector('header');
+      const header = component.element.shadowRoot?.querySelector('header');
       assert.isOk(header);
       dispatchClickEvent(header);
       const newFocus = UI.Context.Context.instance().flavor(AIAssistance.AIContext.AgentFocus);
@@ -409,8 +416,8 @@ describeWithEnvironment('BaseInsightComponent', () => {
       });
       const component = await renderComponent(
           {insightHasAISupport: true});  // The Insight supports it, but the feature is not enabled
-      assert.isOk(component.shadowRoot);
-      const button = component.shadowRoot.querySelector('devtools-button[data-insights-ask-ai]');
+      assert.isOk(component.element.shadowRoot);
+      const button = component.element.shadowRoot.querySelector('devtools-button[data-insights-ask-ai]');
       assert.isNull(button);
     });
   });

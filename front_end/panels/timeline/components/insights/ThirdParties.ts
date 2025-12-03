@@ -17,7 +17,6 @@ const {html} = Lit;
 const MAX_TO_SHOW = 5;
 
 export class ThirdParties extends BaseInsightComponent<ThirdPartiesInsightModel> {
-  static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-third-parties`;
   override internalName = 'third-parties';
 
   #mainThreadTimeAggregator: RowLimitAggregator<Trace.Extras.ThirdParties.EntitySummary> = {
@@ -110,11 +109,3 @@ export class ThirdParties extends BaseInsightComponent<ThirdPartiesInsightModel>
     return html`${sections}`;
   }
 }
-
-declare global {
-  interface HTMLElementTagNameMap {
-    'devtools-performance-third-parties': ThirdParties;
-  }
-}
-
-customElements.define('devtools-performance-third-parties', ThirdParties);

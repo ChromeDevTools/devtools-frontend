@@ -21,7 +21,6 @@ const {UIStrings, i18nString} = Trace.Insights.Models.DOMSize;
 const {html} = Lit;
 
 export class DOMSize extends BaseInsightComponent<DOMSizeInsightModel> {
-  static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-dom-size`;
   override internalName = 'dom-size';
 
   protected override hasAskAiSupport(): boolean {
@@ -128,11 +127,3 @@ export class DOMSize extends BaseInsightComponent<DOMSizeInsightModel> {
     // clang-format on
   }
 }
-
-declare global {
-  interface HTMLElementTagNameMap {
-    'devtools-performance-dom-size': DOMSize;
-  }
-}
-
-customElements.define('devtools-performance-dom-size', DOMSize);

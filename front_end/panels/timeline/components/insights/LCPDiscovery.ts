@@ -1,7 +1,6 @@
 // Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 
 import './Checklist.js';
 
@@ -22,7 +21,6 @@ const {html} = Lit;
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/LCPDiscovery.ts', UIStrings);
 
 export class LCPDiscovery extends BaseInsightComponent<LCPDiscoveryInsightModel> {
-  static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-lcp-discovery`;
   override internalName = 'lcp-discovery';
 
   protected override hasAskAiSupport(): boolean {
@@ -61,10 +59,13 @@ export class LCPDiscovery extends BaseInsightComponent<LCPDiscoveryInsightModel>
   }
 
   #renderDiscoveryDelay(delay: Trace.Types.Timing.Micro): HTMLElement {
+    // Trace.Types.Overlays.TimespanBreakdownEntryBreakdown needs an HTMLElement, which we have to localize here.
+    /* eslint-disable @devtools/no-imperative-dom-api */
     const timeWrapper = document.createElement('span');
     timeWrapper.classList.add('discovery-time-ms');
     timeWrapper.innerText = i18n.TimeUtilities.formatMicroSecondsAsMillisFixed(delay);
     return uiI18n.getFormatLocalizedString(str_, UIStrings.lcpLoadDelay, {PH1: timeWrapper});
+    /* eslint-enable @devtools/no-imperative-dom-api */
   }
 
   override renderContent(): Lit.LitTemplate {
@@ -94,11 +95,3 @@ export class LCPDiscovery extends BaseInsightComponent<LCPDiscoveryInsightModel>
     // clang-format on
   }
 }
-
-declare global {
-  interface HTMLElementTagNameMap {
-    'devtools-performance-lcp-discovery': LCPDiscovery;
-  }
-}
-
-customElements.define('devtools-performance-lcp-discovery', LCPDiscovery);

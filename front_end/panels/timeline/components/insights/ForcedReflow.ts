@@ -19,7 +19,6 @@ const {UIStrings, i18nString, createOverlayForEvents} = Trace.Insights.Models.Fo
 const {html, nothing} = Lit;
 
 export class ForcedReflow extends BaseInsightComponent<ForcedReflowInsightModel> {
-  static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-forced-reflow`;
   override internalName = 'forced-reflow';
 
   protected override hasAskAiSupport(): boolean {
@@ -113,11 +112,3 @@ export class ForcedReflow extends BaseInsightComponent<ForcedReflowInsightModel>
     // clang-format on
   }
 }
-
-declare global {
-  interface HTMLElementTagNameMap {
-    'devtools-performance-forced-reflow': ForcedReflow;
-  }
-}
-
-customElements.define('devtools-performance-forced-reflow', ForcedReflow);

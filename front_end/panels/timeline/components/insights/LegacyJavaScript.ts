@@ -22,7 +22,6 @@ const {UIStrings, i18nString} = Trace.Insights.Models.LegacyJavaScript;
 const {html} = Lit;
 
 export class LegacyJavaScript extends BaseInsightComponent<LegacyJavaScriptInsightModel> {
-  static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-legacy-javascript`;
   override internalName = 'legacy-javascript';
 
   override getEstimatedSavingsTime(): Trace.Types.Timing.Milli|null {
@@ -98,11 +97,3 @@ export class LegacyJavaScript extends BaseInsightComponent<LegacyJavaScriptInsig
     // clang-format on
   }
 }
-
-declare global {
-  interface HTMLElementTagNameMap {
-    'devtools-performance-legacy-javascript': LegacyJavaScript;
-  }
-}
-
-customElements.define('devtools-performance-legacy-javascript', LegacyJavaScript);

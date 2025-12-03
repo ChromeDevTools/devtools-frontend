@@ -18,7 +18,6 @@ const {UIStrings, i18nString, createOverlayForRequest} = Trace.Insights.Models.C
 const {html} = Lit;
 
 export class Cache extends BaseInsightComponent<CacheInsightModel> {
-  static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-cache`;
   override internalName = 'cache';
 
   protected override hasAskAiSupport(): boolean {
@@ -68,11 +67,3 @@ export class Cache extends BaseInsightComponent<CacheInsightModel> {
     // clang-format on
   }
 }
-
-declare global {
-  interface HTMLElementTagNameMap {
-    'devtools-performance-cache': Cache;
-  }
-}
-
-customElements.define('devtools-performance-cache', Cache);

@@ -17,7 +17,6 @@ const {UIStrings, i18nString, createOverlaysForSubpart} = Trace.Insights.Models.
 const {html} = Lit;
 
 export class INPBreakdown extends BaseInsightComponent<INPBreakdownInsightModel> {
-  static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-inp-breakdown`;
   override internalName = 'inp';
 
   protected override hasAskAiSupport(): boolean {
@@ -60,11 +59,3 @@ export class INPBreakdown extends BaseInsightComponent<INPBreakdownInsightModel>
     // clang-format on
   }
 }
-
-declare global {
-  interface HTMLElementTagNameMap {
-    'devtools-performance-inp-breakdown': INPBreakdown;
-  }
-}
-
-customElements.define('devtools-performance-inp-breakdown', INPBreakdown);

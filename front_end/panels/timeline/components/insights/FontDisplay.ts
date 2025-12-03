@@ -18,7 +18,6 @@ const {UIStrings, i18nString} = Trace.Insights.Models.FontDisplay;
 const {html} = Lit;
 
 export class FontDisplay extends BaseInsightComponent<FontDisplayInsightModel> {
-  static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-font-display`;
   override internalName = 'font-display';
   #overlayForRequest = new Map<Trace.Types.Events.Event, Trace.Types.Overlays.Overlay>();
 
@@ -88,11 +87,3 @@ export class FontDisplay extends BaseInsightComponent<FontDisplayInsightModel> {
     // clang-format on
   }
 }
-
-declare global {
-  interface HTMLElementTagNameMap {
-    'devtools-performance-font-display': FontDisplay;
-  }
-}
-
-customElements.define('devtools-performance-font-display', FontDisplay);

@@ -12,7 +12,6 @@ import {nodeLink} from './NodeLink.js';
 const {html} = Lit;
 
 export class Viewport extends BaseInsightComponent<ViewportInsightModel> {
-  static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-viewport`;
   override internalName = 'viewport';
 
   protected override hasAskAiSupport(): boolean {
@@ -46,11 +45,3 @@ export class Viewport extends BaseInsightComponent<ViewportInsightModel> {
     // clang-format on
   }
 }
-
-declare global {
-  interface HTMLElementTagNameMap {
-    'devtools-performance-viewport': Viewport;
-  }
-}
-
-customElements.define('devtools-performance-viewport', Viewport);

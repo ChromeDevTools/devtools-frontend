@@ -17,7 +17,6 @@ const {UIStrings, i18nString, createOverlayForRequest} = Trace.Insights.Models.I
 const {html} = Lit;
 
 export class ImageDelivery extends BaseInsightComponent<ImageDeliveryInsightModel> {
-  static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-image-delivery`;
   override internalName = 'image-delivery';
 
   mapToRow(image: Trace.Insights.Models.ImageDelivery.OptimizableImage): TableDataRow {
@@ -69,11 +68,3 @@ export class ImageDelivery extends BaseInsightComponent<ImageDeliveryInsightMode
     // clang-format on
   }
 }
-
-declare global {
-  interface HTMLElementTagNameMap {
-    'devtools-performance-image-delivery': ImageDelivery;
-  }
-}
-
-customElements.define('devtools-performance-image-delivery', ImageDelivery);

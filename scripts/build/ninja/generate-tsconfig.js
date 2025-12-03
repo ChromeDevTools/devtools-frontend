@@ -1,13 +1,15 @@
 // Copyright 2020 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-const fs = require('node:fs');
-const path = require('node:path');
+import fs from 'node:fs';
+import path from 'node:path';
 
 const [, , tsconfigLocation, originalFileLocation, ...dependencies] = process.argv;
 
-const originalFrontendMappedLocation =
-    path.relative(path.dirname(tsconfigLocation), path.join(process.cwd(), originalFileLocation));
+const originalFrontendMappedLocation = path.relative(
+    path.dirname(tsconfigLocation),
+    path.join(process.cwd(), originalFileLocation),
+);
 
 const generatedTSConfig = {
   compilerOptions: {
@@ -16,9 +18,7 @@ const generatedTSConfig = {
     baseUrl: '.',
     rootDir: path.dirname(originalFrontendMappedLocation),
   },
-  files: [
-    originalFrontendMappedLocation,
-  ],
+  files: [originalFrontendMappedLocation],
   references: dependencies.map(dep => {
     // Deps come in the form of :foo, ../some/path:foo or
     // ../some/path, which means we can split on the colon and

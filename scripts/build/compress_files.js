@@ -2,10 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const crypto = require('node:crypto');
-const fs = require('node:fs');
-const {pipeline, Readable} = require('node:stream');
-const zlib = require('node:zlib');
+import crypto from 'node:crypto';
+import fs from 'node:fs';
+import {pipeline, Readable} from 'node:stream';
+import zlib from 'node:zlib';
 
 const {promises: pfs} = fs;
 
@@ -47,8 +47,8 @@ async function brotli(sourceData, compressedFilename) {
   // easily check if a resource has been brotli compressed.
   // It should be kept in sync with https://source.chromium.org/chromium/chromium/src/+/main:tools/grit/grit/constants.py;l=25;drc=84ef659584d3beb83b44cc168d02244dbd6b8f87.
   const brotliConst = new Uint8Array(2);
-  brotliConst[0] = 0x1E;
-  brotliConst[1] = 0x9B;
+  brotliConst[0] = 0x1e;
+  brotliConst[1] = 0x9b;
 
   // The length of the uncompressed data is also appended to the start,
   // truncated to 6 bytes, little-endian.
@@ -57,19 +57,29 @@ async function brotli(sourceData, compressedFilename) {
   output.write(Buffer.from(brotliConst));
   output.write(Buffer.from(sizeHeader));
   return new Promise((resolve, reject) => {
-    pipeline(Readable.from(sourceData), zlib.createBrotliCompress(), output, err => {
-      return err ? reject(err) : resolve();
-    });
+    pipeline(
+        Readable.from(sourceData),
+        zlib.createBrotliCompress(),
+        output,
+        err => {
+          return err ? reject(err) : resolve();
+        },
+    );
   });
 }
 
 async function compressFile(filename) {
   const compressedFilename = filename + '.compressed';
   const hashFilename = filename + '.hash';
-  const prevHash = await fileExists(hashFilename) ? await readTextFile(hashFilename) : '';
+
+  let prevHash = '';
+  if (await fileExists(hashFilename)) {
+    prevHash = await readTextFile(hashFilename);
+  }
+
   const sourceData = await readBinaryFile(filename);
   const currHash = sha1(sourceData);
-  if (prevHash !== currHash || !await fileExists(compressedFilename)) {
+  if (prevHash !== currHash || !(await fileExists(compressedFilename))) {
     await writeTextFile(hashFilename, currHash);
     await brotli(sourceData, compressedFilename);
   }

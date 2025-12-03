@@ -4,7 +4,7 @@
 
 // @ts-check
 
-const path = require('node:path');
+import path from 'node:path';
 
 /**
  * `path.dirname` does not include trailing slashes. If we would always
@@ -34,11 +34,11 @@ const path = require('node:path');
  * @param file
  * @returns
  */
-function dirnameWithSeparator(file) {
+export function dirnameWithSeparator(file) {
   return path.dirname(file) + path.sep;
 }
 
-function devtoolsPlugin(source, importer) {
+export function devtoolsPlugin(source, importer) {
   if (!importer) {
     return null;
   }
@@ -54,7 +54,9 @@ function devtoolsPlugin(source, importer) {
   }
 
   const currentDirectory = path.normalize(dirnameWithSeparator(importer));
-  const importedFilelocation = path.normalize(path.join(currentDirectory, source));
+  const importedFilelocation = path.normalize(
+      path.join(currentDirectory, source),
+  );
   const importedFileDirectory = dirnameWithSeparator(importedFilelocation);
 
   // Generated files are part of other directories, as they are only imported once
@@ -80,21 +82,43 @@ function devtoolsPlugin(source, importer) {
   // e.g. it'll pick up third_party/lit/lit.js is its own entrypoint
 
   // The CodeMirror addons look like bundles (addon/comment/comment.js) but are not.
-  if (importedFileDirectory.includes(path.join('front_end', 'third_party', 'codemirror', 'package'))) {
+  if (importedFileDirectory.includes(
+          path.join('front_end', 'third_party', 'codemirror', 'package'),
+          )) {
     return null;
   }
 
   // The LightHouse bundle shouldn't be processed by `terser` again, as it is uniquely built
-  if (importedFilelocation.includes(path.join('front_end', 'third_party', 'lighthouse', 'lighthouse-dt-bundle.js'))) {
+  if (importedFilelocation.includes(
+          path.join(
+              'front_end',
+              'third_party',
+              'lighthouse',
+              'lighthouse-dt-bundle.js',
+              ),
+          )) {
     return {
       id: importedFilelocation,
       external: true,
     };
   }
 
-  if (importedFileDirectory.includes(path.join('front_end', 'third_party', 'puppeteer', 'package'))) {
+  if (importedFileDirectory.includes(
+          path.join('front_end', 'third_party', 'puppeteer', 'package'),
+          )) {
     // Ignore possible dynamic imports from the Node folder.
-    if (importedFileDirectory.includes(path.join('front_end', 'third_party', 'puppeteer', 'package', 'lib', 'esm', 'puppeteer', 'node'))) {
+    if (importedFileDirectory.includes(
+            path.join(
+                'front_end',
+                'third_party',
+                'puppeteer',
+                'package',
+                'lib',
+                'esm',
+                'puppeteer',
+                'node',
+                ),
+            )) {
       return {
         id: importedFilelocation,
         external: true,
@@ -106,14 +130,23 @@ function devtoolsPlugin(source, importer) {
     };
   }
 
-  if (importedFileDirectory.includes(path.join('front_end', 'third_party', 'puppeteer-replay', 'package'))) {
+  if (importedFileDirectory.includes(
+          path.join('front_end', 'third_party', 'puppeteer-replay', 'package'),
+          )) {
     return {
       id: importedFilelocation,
       external: false,
     };
   }
 
-  if (importedFileDirectory.includes(path.join('front_end', 'third_party', 'source-map-scopes-codec', 'package'))) {
+  if (importedFileDirectory.includes(
+          path.join(
+              'front_end',
+              'third_party',
+              'source-map-scopes-codec',
+              'package',
+              ),
+          )) {
     return {
       id: importedFilelocation,
       external: false,
@@ -121,7 +154,9 @@ function devtoolsPlugin(source, importer) {
   }
 
   const importedFileName = path.basename(importedFilelocation, '.js');
-  const importedFileParentDirectory = path.basename(path.dirname(importedFilelocation));
+  const importedFileParentDirectory = path.basename(
+      path.dirname(importedFilelocation),
+  );
   const isExternal = importedFileName === importedFileParentDirectory;
 
   return {
@@ -130,7 +165,7 @@ function devtoolsPlugin(source, importer) {
   };
 }
 
-function esbuildPlugin(outdir) {
+export function esbuildPlugin(outdir) {
   return args => {
     // args.importer is absolute path in esbuild.
     const res = devtoolsPlugin(args.path, args.importer);
@@ -157,8 +192,3 @@ function esbuildPlugin(outdir) {
     };
   };
 }
-
-module.exports = {
-  devtoolsPlugin,
-  esbuildPlugin
-};

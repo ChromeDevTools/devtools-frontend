@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const {assert} = require('chai');
+import {assert} from 'chai';
 
-const {codeForFile} = require('../generate_css_js_files.js');
+import {codeForFile} from '../generate_css_js_files.js';
 
 describe('generating CSS JS files', () => {
   it('minifies code when not in debug mode', async () => {

@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const fs = require('node:fs');
+import * as fs from 'node:fs';
 
 /**
  * Only write content to a file if the content is different that what it previously contained.
@@ -16,12 +16,15 @@ const fs = require('node:fs');
  * @param generatedFileLocation Location to write to
  * @param newContents The contents to write (or noop if unchanged with previous content)
  */
-module.exports.writeIfChanged = (generatedFileLocation, newContents) => {
+export function writeIfChanged(generatedFileLocation, newContents) {
   if (fs.existsSync(generatedFileLocation)) {
-    if (fs.readFileSync(generatedFileLocation, {encoding: 'utf8', flag: 'r'}) === newContents) {
+    if (fs.readFileSync(generatedFileLocation, {
+          encoding: 'utf8',
+          flag: 'r',
+        }) === newContents) {
       return;
     }
   }
 
   fs.writeFileSync(generatedFileLocation, newContents, {encoding: 'utf-8'});
-};
+}

@@ -2,10 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const {assert} = require('chai');
-const path = require('node:path');
+import {assert} from 'chai';
+import path from 'node:path';
 
-const {devtoolsPlugin, esbuildPlugin} = require('../devtools_plugin.js');
+import {devtoolsPlugin, esbuildPlugin} from '../devtools_plugin.js';
 
 describe('devtools_plugin can compute paths with', () => {
   it('same directory import', () => {
@@ -68,7 +68,7 @@ describe('devtools_plugin can compute paths with', () => {
 });
 
 describe('esbuild_plugin can compute paths with', () => {
-  const srcdir = __dirname;
+  const srcdir = import.meta.dirname;
   const outdir = path.join(srcdir, 'out');
   const plugin = esbuildPlugin(outdir);
   it('same directory import', () => {

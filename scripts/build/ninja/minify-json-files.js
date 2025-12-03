@@ -2,10 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const fs = require('node:fs');
-const path = require('node:path');
+import fs from 'node:fs';
+import path from 'node:path';
 
-const {writeIfChanged} = require('./write-if-changed.js');
+import {writeIfChanged} from './write-if-changed.js';
 
 const [, , dest, ...files] = process.argv;
 

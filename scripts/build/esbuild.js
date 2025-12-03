@@ -4,12 +4,12 @@
 
 // @ts-check
 
-const os = require('node:os');
-const path = require('node:path');
+import os from 'node:os';
+import path from 'node:path';
 
-const {devtoolsRootPath} = require('../devtools_paths.js');
+import {devtoolsRootPath} from '../devtools_paths.js';
 
-const {esbuildPlugin} = require('./devtools_plugin.js');
+import {esbuildPlugin} from './devtools_plugin.js';
 
 // esbuild module uses binary in this path.
 const binaryName = os.type() === 'Windows_NT' ? 'esbuild.exe' : 'esbuild';
@@ -20,8 +20,8 @@ process.env.ESBUILD_BINARY_PATH = path.join(
     binaryName,
 );
 // This needs to be after the ESBUILD_BINARY_PATH is set
-// eslint-disable-next-line import/order
-const esbuild = require('esbuild');
+
+const esbuild = await import('esbuild');
 
 const entryPoints = [process.argv[2]];
 const outfile = process.argv[3];

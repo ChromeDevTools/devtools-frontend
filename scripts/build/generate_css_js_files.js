@@ -1,13 +1,13 @@
 // Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-const cssnano = require('cssnano');
-const cssnanoPresetLite = require('cssnano-preset-lite');
-const fs = require('node:fs');
-const path = require('node:path');
-const postcss = require('postcss');
+import cssnano from 'cssnano';
+import cssnanoPresetLite from 'cssnano-preset-lite';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
+import postcss from 'postcss';
 
-const {writeIfChanged} = require('./ninja/write-if-changed.js');
+import {writeIfChanged} from './ninja/write-if-changed.js';
 
 async function runCSSMinification(input, fileName) {
   // postcss needs to be given a fileName, even though it doesn't read from it nor write to it.
@@ -17,8 +17,13 @@ async function runCSSMinification(input, fileName) {
                  ]).process(input, {from: fileName});
   return result.css;
 }
-
-async function codeForFile({fileName, input, isDebug, buildTimestamp}) {
+// Exported only so it can be unit tested.
+export async function codeForFile({
+  fileName,
+  input,
+  isDebug,
+  buildTimestamp,
+}) {
   input = input.replace(/\`/g, '\\\'');
   input = input.replace(/\\/g, '\\\\');
 
@@ -33,9 +38,6 @@ async function codeForFile({fileName, input, isDebug, buildTimestamp}) {
 export default \`${stylesheetContents}
 /*# sourceURL=\${import.meta.resolve('./${fileName}')} */\`;`;
 }
-
-// Exported only so it can be unit tested.
-exports.codeForFile = codeForFile;
 
 async function runMain() {
   const [, , buildTimestamp, isDebugString, targetName, srcDir, targetGenDir, files, ] = process.argv;
@@ -78,6 +80,6 @@ async function runMain() {
   );
 }
 
-if (require.main === module) {
+if (import.meta.main) {
   runMain();
 }

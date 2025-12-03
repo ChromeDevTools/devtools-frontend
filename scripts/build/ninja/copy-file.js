@@ -1,10 +1,11 @@
 // Copyright 2020 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-const fs = require('node:fs');
-const path = require('node:path');
+import fs from 'node:fs';
+import path from 'node:path';
 
-const {writeIfChanged} = require('./write-if-changed.js');
+import {writeIfChanged} from './write-if-changed.js';
+
 const [, , src, dest] = process.argv;
 
 const srcPath = path.join(process.cwd(), src);

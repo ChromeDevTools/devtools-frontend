@@ -19,439 +19,440 @@ var consoleInsight_css_default = `/*
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file.
  */
-
-* {
-  padding: 0;
-  margin: 0;
-  box-sizing: border-box;
-}
-
-:host {
-  font-family: var(--default-font-family);
-  font-size: inherit;
-  display: block;
-}
-
-.wrapper {
-  background-color: var(--sys-color-cdt-base-container);
-  border-radius: 16px;
-  container-type: inline-size;
-  display: grid;
-  animation: expand var(--sys-motion-duration-medium2) var(--sys-motion-easing-emphasized) forwards;
-}
-
-.wrapper.closing {
-  animation: collapse var(--sys-motion-duration-medium2) var(--sys-motion-easing-emphasized) forwards;
-}
-
-@keyframes expand {
-  from {
-    grid-template-rows: 0fr;
-  }
-
-  to {
-    grid-template-rows: 1fr;
-  }
-}
-
-@keyframes collapse {
-  from {
-    grid-template-rows: 1fr;
-  }
-
-  to {
-    grid-template-rows: 0fr;
-    padding-top: 0;
-    padding-bottom: 0;
-  }
-}
-
-.animation-wrapper {
-  overflow: hidden;
-  padding: var(--sys-size-6) var(--sys-size-8);
-}
-
-.wrapper.top {
-  border-radius: 16px 16px 4px 4px;
-}
-
-.wrapper.bottom {
-  margin-top: 5px;
-  border-radius: 4px 4px 16px 16px;
-}
-
-header {
-  display: flex;
-  flex-direction: row;
-  gap: 6px;
-  color: var(--sys-color-on-surface);
-  font-size: 13px;
-  font-style: normal;
-  font-weight: 500;
-  margin-bottom: var(--sys-size-6);
-  align-items: center;
-}
-
-header:focus-visible {
-  outline: none;
-}
-
-header > .filler {
-  display: flex;
-  flex-direction: row;
-  gap: var(--sys-size-5);
-  align-items: center;
-  flex: 1;
-}
-
-.reminder-container {
-  border-radius: var(--sys-size-5);
-  background-color: var(--sys-color-surface4);
-  padding: var(--sys-size-8);
-  font-weight: var(--ref-typeface-weight-medium);
-
-  h3 {
-    font: inherit;
-  }
-}
-
-.reminder-items {
-  display: grid;
-  grid-template-columns: var(--sys-size-8) auto;
-  gap: var(--sys-size-5) var(--sys-size-6);
-  margin-top: var(--sys-size-6);
-  line-height: var(--sys-size-8);
-  font-weight: var(--ref-typeface-weight-regular);
-}
-
-main {
-  --override-markdown-view-message-color: var(--sys-color-on-surface);
-
-  color: var(--sys-color-on-surface);
-  font-size: 12px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 20px;
-
-  p {
-    margin-block: 1em;
-  }
-
-  ul {
-    list-style-type: none;
-    list-style-position: inside;
-    padding-inline-start: 0.2em;
-
-    li {
-      display: list-item;
-      list-style-type: disc;
-      list-style-position: outside;
-      margin-inline-start: 1em;
-    }
-
-    li::marker {
-      font-size: 11px;
-      line-height: 1;
-    }
-  }
-
-  label {
-    display: inline-flex;
-    flex-direction: row;
-    gap: 0.5em;
-
-    input,
-    span {
-      vertical-align: middle;
-    }
-
-    input[type="checkbox"] {
-      margin-top: 0.3em;
-    }
-  }
-}
-
-.opt-in-teaser {
-  display: flex;
-  gap: var(--sys-size-5);
-}
-
-devtools-markdown-view {
-  margin-bottom: 12px;
-}
-
-footer {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  color: var(--sys-color-on-surface);
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
-  margin-top: 14px;
-  gap: 32px;
-}
-
-@container (max-width: 600px) {
-  footer {
-    gap: 8px;
-  }
-}
-
-footer > .filler {
-  flex: 1;
-}
-
-footer .rating {
-  display: flex;
-  flex-direction: row;
-  gap: 8px;
-}
-
-textarea {
-  height: 84px;
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid var(--sys-color-neutral-outline);
-  width: 100%;
-  font-family: var(--default-font-family);
-  font-size: inherit;
-}
-
-.buttons {
-  display: flex;
-  gap: 5px;
-}
-
-@media (width <= 500px) {
-  .buttons {
-    flex-wrap: wrap;
-  }
-}
-
-main .buttons {
-  margin-top: 12px;
-}
-
-.disclaimer {
-  display: flex;
-  gap: 2px;
-  color: var(--sys-color-on-surface-subtle);
-  font-size: 11px;
-  align-items: flex-start;
-  flex-direction: column;
-}
-
-.link {
-  color: var(--sys-color-primary);
-  text-decoration-line: underline;
-
-  devtools-icon {
-    color: var(--sys-color-primary);
-    width: 14px;
-    height: 14px;
-  }
-}
-
-button.link {
-  border: none;
-  background: none;
-  cursor: pointer;
-  font: inherit;
-}
-
-.loader {
-  background:
-    linear-gradient(
-      130deg,
-      transparent 0%,
-      var(--sys-color-gradient-tertiary) 20%,
-      var(--sys-color-gradient-primary) 40%,
-      transparent 60%,
-      var(--sys-color-gradient-tertiary) 80%,
-      var(--sys-color-gradient-primary) 100%
-    );
-  background-position: 0% 0%;
-  background-size: 250% 250%;
-  animation: gradient 5s infinite linear;
-}
-
-@keyframes gradient {
-  0% { background-position: 0 0; }
-  100% { background-position: 100% 100%; }
-}
-
-summary {
-  font-size: 12px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 20px;
-}
-
-details {
-  overflow: hidden;
-  margin-top: 10px;
-}
-
-::details-content {
-  height: 0;
-  transition:
-    height var(--sys-motion-duration-short4) var(--sys-motion-easing-emphasized),
-    content-visibility var(--sys-motion-duration-short4) var(--sys-motion-easing-emphasized) allow-discrete;
-}
-
-[open]::details-content {
-  height: auto;
-}
-
-details.references {
-  /* This transition is only added because there is no \\'transitionend\\' event in
-     JS for the \\'::details-content\\' transition. */
-  transition: margin-bottom var(--sys-motion-duration-short4) var(--sys-motion-easing-emphasized);
-}
-
-details.references[open] {
-  /* This transition does not affect the actual UI because of collapsing margins. */
-  margin-bottom: var(--sys-size-1);
-}
-
-h2 {
-  display: block;
-  font-size: var(--sys-size-7);
-  margin: 0;
-  font-weight: var(--ref-typeface-weight-medium);
-  line-height: var(--sys-size-9);
-}
-
-h2:focus-visible {
-  outline: none;
-}
-
-.info {
-  width: 20px;
-  height: 20px;
-}
-
-.badge {
-  background: linear-gradient(135deg, var(--sys-color-gradient-primary), var(--sys-color-gradient-tertiary));
-  border-radius: var(--sys-size-3);
-  height: var(--sys-size-9);
-
-  devtools-icon {
-    margin: var(--sys-size-2);
-  }
-}
-
-.header-icon-container {
-  background: linear-gradient(135deg, var(--sys-color-gradient-primary), var(--sys-color-gradient-tertiary));
-  border-radius: var(--sys-size-4);
-  height: 36px;
-  width: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.close-button {
-  align-self: flex-start;
-}
-
-.sources-list {
-  padding-left: var(--sys-size-6);
-  margin-bottom: var(--sys-size-6);
-  list-style: none;
-  counter-reset: sources;
-  display: grid;
-  grid-template-columns: var(--sys-size-9) auto;
-  list-style-position: inside;
-}
-
-.sources-list li {
-  display: contents;
-}
-
-.sources-list li::before {
-  counter-increment: sources;
-  content: "[" counter(sources) "]";
-  display: table-cell;
-}
-
-.sources-list x-link.highlighted {
-  animation: highlight-fadeout 2s;
-}
-
-@keyframes highlight-fadeout {
-  from {
-    background-color: var(--sys-color-yellow-container);
-  }
-
-  to {
-    background-color: transparent;
-  }
-}
-
-.references-list {
-  padding-left: var(--sys-size-8);
-}
-
-.references-list li {
-  padding-left: var(--sys-size-3);
-}
-
-details h3 {
-  font-size: 10px;
-  font-weight: var(--ref-typeface-weight-medium);
-  text-transform: uppercase;
-  color: var(--sys-color-on-surface-subtle);
-  padding-left: var(--sys-size-6);
-}
-
-.error-message {
-  font: var(--sys-typescale-body4-bold);
-}
-
-@scope (.insight-sources) {
-  :root {
+@scope to (devtools-widget > *) {
+  * {
     padding: 0;
     margin: 0;
     box-sizing: border-box;
+  }
+
+  :scope {
+    font-family: var(--default-font-family);
+    font-size: inherit;
     display: block;
   }
 
-  ul {
-    color: var(--sys-color-primary);
+  .wrapper {
+    background-color: var(--sys-color-cdt-base-container);
+    border-radius: 16px;
+    container-type: inline-size;
+    display: grid;
+    animation: expand var(--sys-motion-duration-medium2) var(--sys-motion-easing-emphasized) forwards;
+  }
+
+  .wrapper.closing {
+    animation: collapse var(--sys-motion-duration-medium2) var(--sys-motion-easing-emphasized) forwards;
+  }
+
+  @keyframes expand {
+    from {
+      grid-template-rows: 0fr;
+    }
+
+    to {
+      grid-template-rows: 1fr;
+    }
+  }
+
+  @keyframes collapse {
+    from {
+      grid-template-rows: 1fr;
+    }
+
+    to {
+      grid-template-rows: 0fr;
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+  }
+
+  .animation-wrapper {
+    overflow: hidden;
+    padding: var(--sys-size-6) var(--sys-size-8);
+  }
+
+  .wrapper.top {
+    border-radius: 16px 16px 4px 4px;
+  }
+
+  .wrapper.bottom {
+    margin-top: 5px;
+    border-radius: 4px 4px 16px 16px;
+  }
+
+  header {
+    display: flex;
+    flex-direction: row;
+    gap: 6px;
+    color: var(--sys-color-on-surface);
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 500;
+    margin-bottom: var(--sys-size-6);
+    align-items: center;
+  }
+
+  header:focus-visible {
+    outline: none;
+  }
+
+  header > .filler {
+    display: flex;
+    flex-direction: row;
+    gap: var(--sys-size-5);
+    align-items: center;
+    flex: 1;
+  }
+
+  .reminder-container {
+    border-radius: var(--sys-size-5);
+    background-color: var(--sys-color-surface4);
+    padding: var(--sys-size-8);
+    font-weight: var(--ref-typeface-weight-medium);
+
+    h3 {
+      font: inherit;
+    }
+  }
+
+  .reminder-items {
+    display: grid;
+    grid-template-columns: var(--sys-size-8) auto;
+    gap: var(--sys-size-5) var(--sys-size-6);
+    margin-top: var(--sys-size-6);
+    line-height: var(--sys-size-8);
+    font-weight: var(--ref-typeface-weight-regular);
+  }
+
+  main {
+    --override-markdown-view-message-color: var(--sys-color-on-surface);
+
+    color: var(--sys-color-on-surface);
     font-size: 12px;
     font-style: normal;
     font-weight: 400;
-    line-height: 18px;
-    margin-top: 8px;
+    line-height: 20px;
+
+    p {
+      margin-block: 1em;
+    }
+
+    ul {
+      list-style-type: none;
+      list-style-position: inside;
+      padding-inline-start: 0.2em;
+
+      li {
+        display: list-item;
+        list-style-type: disc;
+        list-style-position: outside;
+        margin-inline-start: 1em;
+      }
+
+      li::marker {
+        font-size: 11px;
+        line-height: 1;
+      }
+    }
+
+    label {
+      display: inline-flex;
+      flex-direction: row;
+      gap: 0.5em;
+
+      input,
+      span {
+        vertical-align: middle;
+      }
+
+      input[type="checkbox"] {
+        margin-top: 0.3em;
+      }
+    }
+  }
+
+  .opt-in-teaser {
+    display: flex;
+    gap: var(--sys-size-5);
+  }
+
+  devtools-markdown-view {
+    margin-bottom: 12px;
+  }
+
+  footer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    color: var(--sys-color-on-surface);
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    margin-top: 14px;
+    gap: 32px;
+  }
+
+  @container (max-width: 600px) {
+    footer {
+      gap: 8px;
+    }
+  }
+
+  footer > .filler {
+    flex: 1;
+  }
+
+  footer .rating {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+  }
+
+  textarea {
+    height: 84px;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid var(--sys-color-neutral-outline);
+    width: 100%;
+    font-family: var(--default-font-family);
+    font-size: inherit;
+  }
+
+  .buttons {
+    display: flex;
+    gap: 5px;
+  }
+
+  @media (width <= 500px) {
+    .buttons {
+      flex-wrap: wrap;
+    }
+  }
+
+  main .buttons {
+    margin-top: 12px;
+  }
+
+  .disclaimer {
+    display: flex;
+    gap: 2px;
+    color: var(--sys-color-on-surface-subtle);
+    font-size: 11px;
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .link {
+    color: var(--sys-color-primary);
+    text-decoration-line: underline;
+
+    devtools-icon {
+      color: var(--sys-color-primary);
+      width: 14px;
+      height: 14px;
+    }
+  }
+
+  button.link {
+    border: none;
+    background: none;
+    cursor: pointer;
+    font: inherit;
+  }
+
+  .loader {
+    background:
+      linear-gradient(
+        130deg,
+        transparent 0%,
+        var(--sys-color-gradient-tertiary) 20%,
+        var(--sys-color-gradient-primary) 40%,
+        transparent 60%,
+        var(--sys-color-gradient-tertiary) 80%,
+        var(--sys-color-gradient-primary) 100%
+      );
+    background-position: 0% 0%;
+    background-size: 250% 250%;
+    animation: gradient 5s infinite linear;
+  }
+
+  @keyframes gradient {
+    0% { background-position: 0 0; }
+    100% { background-position: 100% 100%; }
+  }
+
+  summary {
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px;
+  }
+
+  details {
+    overflow: hidden;
+    margin-top: 10px;
+  }
+
+  ::details-content {
+    height: 0;
+    transition:
+      height var(--sys-motion-duration-short4) var(--sys-motion-easing-emphasized),
+      content-visibility var(--sys-motion-duration-short4) var(--sys-motion-easing-emphasized) allow-discrete;
+  }
+
+  [open]::details-content {
+    height: auto;
+  }
+
+  details.references {
+    /* This transition is only added because there is no \\'transitionend\\' event in
+      JS for the \\'::details-content\\' transition. */
+    transition: margin-bottom var(--sys-motion-duration-short4) var(--sys-motion-easing-emphasized);
+  }
+
+  details.references[open] {
+    /* This transition does not affect the actual UI because of collapsing margins. */
+    margin-bottom: var(--sys-size-1);
+  }
+
+  h2 {
+    display: block;
+    font-size: var(--sys-size-7);
+    margin: 0;
+    font-weight: var(--ref-typeface-weight-medium);
+    line-height: var(--sys-size-9);
+  }
+
+  h2:focus-visible {
+    outline: none;
+  }
+
+  .info {
+    width: 20px;
+    height: 20px;
+  }
+
+  .badge {
+    background: linear-gradient(135deg, var(--sys-color-gradient-primary), var(--sys-color-gradient-tertiary));
+    border-radius: var(--sys-size-3);
+    height: var(--sys-size-9);
+
+    devtools-icon {
+      margin: var(--sys-size-2);
+    }
+  }
+
+  .header-icon-container {
+    background: linear-gradient(135deg, var(--sys-color-gradient-primary), var(--sys-color-gradient-tertiary));
+    border-radius: var(--sys-size-4);
+    height: 36px;
+    width: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .close-button {
+    align-self: flex-start;
+  }
+
+  .sources-list {
+    padding-left: var(--sys-size-6);
+    margin-bottom: var(--sys-size-6);
+    list-style: none;
+    counter-reset: sources;
+    display: grid;
+    grid-template-columns: var(--sys-size-9) auto;
+    list-style-position: inside;
+  }
+
+  .sources-list li {
+    display: contents;
+  }
+
+  .sources-list li::before {
+    counter-increment: sources;
+    content: "[" counter(sources) "]";
+    display: table-cell;
+  }
+
+  .sources-list x-link.highlighted {
+    animation: highlight-fadeout 2s;
+  }
+
+  @keyframes highlight-fadeout {
+    from {
+      background-color: var(--sys-color-yellow-container);
+    }
+
+    to {
+      background-color: transparent;
+    }
+  }
+
+  .references-list {
+    padding-left: var(--sys-size-8);
+  }
+
+  .references-list li {
+    padding-left: var(--sys-size-3);
+  }
+
+  details h3 {
+    font-size: 10px;
+    font-weight: var(--ref-typeface-weight-medium);
+    text-transform: uppercase;
+    color: var(--sys-color-on-surface-subtle);
     padding-left: var(--sys-size-6);
   }
 
-  li {
-    list-style-type: none;
+  .error-message {
+    font: var(--sys-typescale-body4-bold);
   }
 
-  ul .link {
-    color: var(--sys-color-primary);
-    display: inline-flex !important; /* stylelint-disable-line declaration-no-important */
-    align-items: center;
-    gap: 4px;
-    text-decoration-line: underline;
-  }
+  @scope (.insight-sources) {
+    :root {
+      padding: 0;
+      margin: 0;
+      box-sizing: border-box;
+      display: block;
+    }
 
-  devtools-icon {
-    height: 16px;
-    width: 16px;
-    margin-right: var(--sys-size-1);
-  }
+    ul {
+      color: var(--sys-color-primary);
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 18px;
+      margin-top: 8px;
+      padding-left: var(--sys-size-6);
+    }
 
-  devtools-icon[name="open-externally"] {
-    color: var(--icon-link);
-  }
+    li {
+      list-style-type: none;
+    }
 
-  .source-disclaimer {
-    color: var(--sys-color-on-surface-subtle);
+    ul .link {
+      color: var(--sys-color-primary);
+      display: inline-flex !important; /* stylelint-disable-line declaration-no-important */
+      align-items: center;
+      gap: 4px;
+      text-decoration-line: underline;
+    }
+
+    devtools-icon {
+      height: 16px;
+      width: 16px;
+      margin-right: var(--sys-size-1);
+    }
+
+    devtools-icon[name="open-externally"] {
+      color: var(--icon-link);
+    }
+
+    .source-disclaimer {
+      color: var(--sys-color-on-surface-subtle);
+    }
   }
 }
 
@@ -648,7 +649,7 @@ function renderLearnMoreAboutInsights() {
     ${i18nString(UIStrings.learnMore)}
   </x-link>`;
 }
-function maybeRenderSources(directCitationUrls, highlightedCitationIndex, output) {
+function maybeRenderSources(directCitationUrls, highlightedCitationIndex, onCitationAnimationEnd, output) {
   if (!directCitationUrls.length) {
     return Lit.nothing;
   }
@@ -663,6 +664,7 @@ function maybeRenderSources(directCitationUrls, highlightedCitationIndex, output
             ${Directives.ref((e) => {
     output.citationLinks[index] = e;
   })}
+            @animationend=${onCitationAnimationEnd}
           >
             ${url}
           </x-link>
@@ -735,7 +737,7 @@ function renderInsight(insight, { renderer, disableAnimations, areReferenceDetai
             @transitionend=${callbacks.onReferencesOpen}
           >
             <summary>${i18nString(UIStrings.references)}</summary>
-            ${maybeRenderSources(insight.directCitationUrls, highlightedCitationIndex, output)}
+            ${maybeRenderSources(insight.directCitationUrls, highlightedCitationIndex, callbacks.onCitationAnimationEnd, output)}
             ${maybeRenderRelatedContent(insight.relatedUrls, insight.directCitationUrls)}
           </details>
         ` : Lit.nothing}
@@ -1008,15 +1010,16 @@ var DEFAULT_VIEW = (input, output, target) => {
     </div>
   `, target);
 };
-var ConsoleInsight = class _ConsoleInsight extends HTMLElement {
+var ConsoleInsight = class _ConsoleInsight extends UI.Widget.Widget {
   static async create(promptBuilder, aidaClient) {
     const aidaPreconditions = await Host.AidaClient.AidaClient.checkAccessPreconditions();
-    const component = new _ConsoleInsight(promptBuilder, aidaClient, aidaPreconditions);
-    component.classList.add("devtools-console-insight");
-    return component;
+    const widget = document.createElement("devtools-widget");
+    widget.classList.add("devtools-console-insight");
+    widget.widgetConfig = UI.Widget.widgetConfig((element) => new _ConsoleInsight(promptBuilder, aidaClient, aidaPreconditions, element));
+    return widget;
   }
-  #shadow = this.attachShadow({ mode: "open" });
   disableAnimations = false;
+  #view;
   #promptBuilder;
   #aidaClient;
   #renderer;
@@ -1035,8 +1038,9 @@ var ConsoleInsight = class _ConsoleInsight extends HTMLElement {
   #aidaPreconditions;
   #boundOnAidaAvailabilityChange;
   #marked;
-  constructor(promptBuilder, aidaClient, aidaPreconditions) {
-    super();
+  constructor(promptBuilder, aidaClient, aidaPreconditions, element, view = DEFAULT_VIEW) {
+    super(element);
+    this.#view = view;
     this.#promptBuilder = promptBuilder;
     this.#aidaClient = aidaClient;
     this.#aidaPreconditions = aidaPreconditions;
@@ -1045,8 +1049,7 @@ var ConsoleInsight = class _ConsoleInsight extends HTMLElement {
     this.#marked = new Marked.Marked.Marked({ extensions: [markedExtension] });
     this.#state = this.#getStateFromAidaAvailability();
     this.#boundOnAidaAvailabilityChange = this.#onAidaAvailabilityChange.bind(this);
-    this.#render();
-    this.focus();
+    this.requestUpdate();
   }
   #citationClickHandler(index) {
     if (this.#state.type !== "insight") {
@@ -1055,7 +1058,7 @@ var ConsoleInsight = class _ConsoleInsight extends HTMLElement {
     const areDetailsAlreadyExpanded = this.#areReferenceDetailsOpen;
     this.#areReferenceDetailsOpen = true;
     this.#highlightedCitationIndex = index - 1;
-    this.#render();
+    this.requestUpdate();
     if (areDetailsAlreadyExpanded) {
       this.#scrollToHighlightedCitation();
     }
@@ -1109,7 +1112,9 @@ var ConsoleInsight = class _ConsoleInsight extends HTMLElement {
   #getOnboardingCompletedSetting() {
     return Common.Settings.Settings.instance().createLocalSetting("console-insights-onboarding-finished", false);
   }
-  connectedCallback() {
+  wasShown() {
+    super.wasShown();
+    this.focus();
     this.#consoleInsightsEnabledSetting?.addChangeListener(this.#onConsoleInsightsSettingChanged, this);
     const blockedByAge = Root.Runtime.hostConfig.aidaAvailability?.blockedByAge === true;
     if (this.#state.type === "loading" && this.#consoleInsightsEnabledSetting?.getIfNotDisabled() === true && !blockedByAge && this.#state.consentOnboardingCompleted) {
@@ -1122,7 +1127,8 @@ var ConsoleInsight = class _ConsoleInsight extends HTMLElement {
     }
     void this.#generateInsightIfNeeded();
   }
-  disconnectedCallback() {
+  willHide() {
+    super.willHide();
     this.#consoleInsightsEnabledSetting?.removeChangeListener(this.#onConsoleInsightsSettingChanged, this);
     Host.AidaClient.HostConfigTracker.instance().removeEventListener("aidaAvailabilityChanged", this.#boundOnAidaAvailabilityChange);
   }
@@ -1158,7 +1164,7 @@ var ConsoleInsight = class _ConsoleInsight extends HTMLElement {
   #transitionTo(newState) {
     this.#stateChanging = this.#state.type !== newState.type;
     this.#state = newState;
-    this.#render();
+    this.requestUpdate();
   }
   async #generateInsightIfNeeded() {
     if (this.#state.type !== "loading") {
@@ -1189,19 +1195,21 @@ var ConsoleInsight = class _ConsoleInsight extends HTMLElement {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightsReminderTeaserCanceled);
     }
     this.#closing = true;
-    this.#render();
+    this.requestUpdate();
   }
   #onAnimationEnd() {
     if (this.#closing) {
-      this.dispatchEvent(new CloseEvent());
+      this.contentElement.dispatchEvent(new CloseEvent());
       return;
     }
     if (this.#stateChanging) {
       this.#headerRef.value?.focus();
     }
+  }
+  #onCitationAnimationEnd() {
     if (this.#highlightedCitationIndex !== -1) {
       this.#highlightedCitationIndex = -1;
-      this.#render();
+      this.requestUpdate();
     }
   }
   #onRating(isPositive) {
@@ -1215,7 +1223,7 @@ var ConsoleInsight = class _ConsoleInsight extends HTMLElement {
       return;
     }
     this.#selectedRating = isPositive;
-    this.#render();
+    this.requestUpdate();
     if (this.#selectedRating) {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightRatedPositive);
     } else {
@@ -1384,7 +1392,7 @@ var ConsoleInsight = class _ConsoleInsight extends HTMLElement {
       if (!detailsElement.open) {
         this.#highlightedCitationIndex = -1;
       }
-      this.#render();
+      this.requestUpdate();
     }
   }
   #onDisclaimerSettingsLink() {
@@ -1398,12 +1406,13 @@ var ConsoleInsight = class _ConsoleInsight extends HTMLElement {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightsOptInTeaserSettingsLinkClicked);
     void UI.ViewManager.ViewManager.instance().showView("chrome-ai");
   }
-  #render() {
+  performUpdate() {
     const input = {
       state: this.#state,
       closing: this.#closing,
       disableAnimations: this.disableAnimations,
       renderer: this.#renderer,
+      citationClickHandler: this.#citationClickHandler.bind(this),
       selectedRating: this.#selectedRating,
       noLogging: Root.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue === Root.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING,
       areReferenceDetailsOpen: this.#areReferenceDetailsOpen,
@@ -1411,6 +1420,7 @@ var ConsoleInsight = class _ConsoleInsight extends HTMLElement {
       callbacks: {
         onClose: this.#onClose.bind(this),
         onAnimationEnd: this.#onAnimationEnd.bind(this),
+        onCitationAnimationEnd: this.#onCitationAnimationEnd.bind(this),
         onSearch: this.#onSearch.bind(this),
         onRating: this.#onRating.bind(this),
         onReport: this.#onReport.bind(this),
@@ -1427,11 +1437,10 @@ var ConsoleInsight = class _ConsoleInsight extends HTMLElement {
       headerRef: this.#headerRef,
       citationLinks: []
     };
-    DEFAULT_VIEW(input, output, this.#shadow);
+    this.#view(input, output, this.contentElement);
     this.#citationLinks = output.citationLinks;
   }
 };
-customElements.define("devtools-console-insight", ConsoleInsight);
 
 // gen/front_end/panels/explain/ActionDelegate.js
 import * as Host2 from "./../../core/host/host.js";

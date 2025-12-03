@@ -11331,23 +11331,17 @@ var NetworkLogView = class _NetworkLogView extends Common16.ObjectWrapper.eventM
     if (request) {
       const openAiAssistanceId = "drjones.network-panel-context";
       if (UI22.ActionRegistry.ActionRegistry.instance().hasAction(openAiAssistanceId)) {
-        let appendSubmenuPromptAction = function(submenu, action, label, prompt, jslogContext) {
-          submenu.defaultSection().appendItem(label, () => action.execute({ prompt }), { disabled: !action.enabled(), jslogContext });
+        let appendSubmenuPromptAction = function(submenu2, action2, label, prompt, jslogContext) {
+          submenu2.defaultSection().appendItem(label, () => action2.execute({ prompt }), { disabled: !action2.enabled(), jslogContext });
         };
         UI22.Context.Context.instance().setFlavor(SDK14.NetworkRequest.NetworkRequest, request);
-        if (Root2.Runtime.hostConfig.devToolsAiSubmenuPrompts?.enabled) {
-          const action = UI22.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
-          const submenu = contextMenu.footerSection().appendSubMenuItem(action.title(), false, openAiAssistanceId, Root2.Runtime.hostConfig.devToolsAiAssistanceNetworkAgent?.featureName);
-          submenu.defaultSection().appendAction(openAiAssistanceId, i18nString19(UIStrings19.startAChat));
-          appendSubmenuPromptAction(submenu, action, i18nString19(UIStrings19.explainPurpose), "What is the purpose of this request?", openAiAssistanceId + ".purpose");
-          appendSubmenuPromptAction(submenu, action, i18nString19(UIStrings19.explainSlowness), "Why is this request taking so long?", openAiAssistanceId + ".slowness");
-          appendSubmenuPromptAction(submenu, action, i18nString19(UIStrings19.explainFailures), "Why is the request failing?", openAiAssistanceId + ".failures");
-          appendSubmenuPromptAction(submenu, action, i18nString19(UIStrings19.assessSecurityHeaders), "Are there any security headers present?", openAiAssistanceId + ".security");
-        } else if (Root2.Runtime.hostConfig.devToolsAiDebugWithAi?.enabled) {
-          contextMenu.footerSection().appendAction(openAiAssistanceId, void 0, false, void 0, Root2.Runtime.hostConfig.devToolsAiAssistanceNetworkAgent?.featureName);
-        } else {
-          contextMenu.footerSection().appendAction(openAiAssistanceId);
-        }
+        const action = UI22.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
+        const submenu = contextMenu.footerSection().appendSubMenuItem(action.title(), false, openAiAssistanceId);
+        submenu.defaultSection().appendAction(openAiAssistanceId, i18nString19(UIStrings19.startAChat));
+        appendSubmenuPromptAction(submenu, action, i18nString19(UIStrings19.explainPurpose), "What is the purpose of this request?", openAiAssistanceId + ".purpose");
+        appendSubmenuPromptAction(submenu, action, i18nString19(UIStrings19.explainSlowness), "Why is this request taking so long?", openAiAssistanceId + ".slowness");
+        appendSubmenuPromptAction(submenu, action, i18nString19(UIStrings19.explainFailures), "Why is the request failing?", openAiAssistanceId + ".failures");
+        appendSubmenuPromptAction(submenu, action, i18nString19(UIStrings19.assessSecurityHeaders), "Are there any security headers present?", openAiAssistanceId + ".security");
       }
       copyMenu.defaultSection().appendItem(i18nString19(UIStrings19.copyURL), Host9.InspectorFrontendHost.InspectorFrontendHostInstance.copyText.bind(Host9.InspectorFrontendHost.InspectorFrontendHostInstance, request.contentURL()), { jslogContext: "copy-url" });
       copyMenu.footerSection().appendItem(filtered ? i18nString19(UIStrings19.copyAllListedURLs) : i18nString19(UIStrings19.copyAllURLs), this.copyAllURLs.bind(this), { jslogContext: "copy-all-urls" });

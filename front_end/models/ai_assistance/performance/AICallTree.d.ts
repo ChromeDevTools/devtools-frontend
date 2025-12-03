@@ -1,3 +1,4 @@
+import type * as Protocol from '../../../generated/protocol.js';
 import * as Trace from '../../../models/trace/trace.js';
 export interface FromTimeOnThreadOptions {
     thread: {
@@ -65,6 +66,8 @@ export declare class AICallTree {
     breadthFirstWalk(nodes: MapIterator<Trace.Extras.TraceTree.Node>, serializeNodeCallback: (currentNode: Trace.Extras.TraceTree.Node, nodeId: number, childrenStartingId?: number) => void): void;
     serialize(headerLevel?: number): string;
     stringifyNode(node: Trace.Extras.TraceTree.Node, nodeId: number, parsedTrace: Trace.TraceModel.ParsedTrace, selectedNode: Trace.Extras.TraceTree.Node | null, allUrls: string[], childStartingNodeIndex?: number): string;
+    topCallFramesBySelfTime(limit: number): Protocol.Runtime.CallFrame[];
+    topCallFrameByTotalTime(): Protocol.Runtime.CallFrame | null;
     logDebug(): void;
 }
 /**

@@ -257,23 +257,26 @@ var RemoteObjectPreviewFormatter = class _RemoteObjectPreviewFormatter {
     return html`<span class='object-value-${subtype || type}' title=${ifDefined(title)}>${preview()}</span>`;
   }
   renderEvaluationResultPreview(result, allowErrors) {
-    const fragment = document.createDocumentFragment();
     if ("error" in result) {
-      return fragment;
+      return nothing;
     }
     if (result.exceptionDetails?.exception?.description) {
       const exception = result.exceptionDetails.exception.description;
       if (exception.startsWith("TypeError: ") || allowErrors) {
-        render(html`<span>${result.exceptionDetails.text} ${exception}</span>`, fragment);
+        return html`<span>${result.exceptionDetails.text} ${exception}</span>`;
       }
-      return fragment;
+      return nothing;
     }
     const { preview, type, subtype, className, description } = result.object;
     if (preview && type === "object" && subtype !== "node" && subtype !== "trustedtype") {
-      render(this.renderObjectPreview(preview), fragment);
-    } else {
-      render(this.renderPropertyPreview(type, subtype, className, Platform.StringUtilities.trimEndWithMaxLength(description || "", 400)), fragment);
+      return this.renderObjectPreview(preview);
     }
+    return this.renderPropertyPreview(type, subtype, className, Platform.StringUtilities.trimEndWithMaxLength(description || "", 400));
+  }
+  /** @deprecated (crbug.com/457388389) Use lit version instead */
+  renderEvaluationResultPreviewFragment(result, allowErrors) {
+    const fragment = document.createDocumentFragment();
+    render(this.renderEvaluationResultPreview(result, allowErrors), fragment);
     return fragment;
   }
 };
@@ -352,7 +355,7 @@ var JavaScriptREPL = class _JavaScriptREPL {
       return { preview: document.createDocumentFragment(), result: null };
     }
     const formatter = new RemoteObjectPreviewFormatter();
-    const preview = formatter.renderEvaluationResultPreview(result, allowErrors);
+    const preview = formatter.renderEvaluationResultPreviewFragment(result, allowErrors);
     return { preview, result };
   }
 };

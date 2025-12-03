@@ -3,13 +3,13 @@
 // found in the LICENSE file.
 import '../../../../ui/kit/kit.js';
 import './Table.js';
-import './NodeLink.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import * as Lit from '../../../../ui/lit/lit.js';
 import { BaseInsightComponent } from './BaseInsightComponent.js';
 import { eventRef } from './EventRef.js';
 import { md } from './Helpers.js';
+import { nodeLink } from './NodeLink.js';
 const { UIStrings, i18nString } = Trace.Insights.Models.DOMSize;
 const { html } = Lit;
 export class DOMSize extends BaseInsightComponent {
@@ -22,32 +22,20 @@ export class DOMSize extends BaseInsightComponent {
         const rows = [];
         if (domStatsData.maxDepth) {
             const { nodeId, nodeName } = domStatsData.maxDepth;
-            // clang-format off
-            const template = html `
-        <devtools-performance-node-link
-          .data=${{
+            const template = nodeLink({
                 backendNodeId: nodeId,
                 frame: domStatsData.frame,
                 fallbackText: nodeName,
-            }}>
-        </devtools-performance-node-link>
-      `;
-            // clang-format on
+            });
             rows.push({ values: [i18nString(UIStrings.maxDOMDepth), template] });
         }
         if (domStatsData.maxChildren) {
             const { nodeId, nodeName } = domStatsData.maxChildren;
-            // clang-format off
-            const template = html `
-        <devtools-performance-node-link
-          .data=${{
+            const template = nodeLink({
                 backendNodeId: nodeId,
                 frame: domStatsData.frame,
                 fallbackText: nodeName,
-            }}>
-        </devtools-performance-node-link>
-      `;
-            // clang-format on
+            });
             rows.push({ values: [i18nString(UIStrings.maxChildren), template] });
         }
         if (!rows.length) {

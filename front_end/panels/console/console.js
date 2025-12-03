@@ -2507,14 +2507,14 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
         result.appendChild(this.formatParameterAsObject(remoteObject, false));
         return;
       }
-      const renderResult = await UI2.UIUtils.Renderer.render(node);
-      if (renderResult) {
-        this.selectableChildren.push(renderResult);
+      const renderResult2 = await UI2.UIUtils.Renderer.render(node);
+      if (renderResult2) {
+        this.selectableChildren.push(renderResult2);
         const resizeObserver = new ResizeObserver(() => {
-          this.messageResized({ data: renderResult.element });
+          this.messageResized({ data: renderResult2.element });
         });
-        resizeObserver.observe(renderResult.element);
-        result.appendChild(renderResult.element);
+        resizeObserver.observe(renderResult2.element);
+        result.appendChild(renderResult2.element);
       } else {
         result.appendChild(this.formatParameterAsObject(remoteObject, false));
       }
@@ -4527,14 +4527,19 @@ var ConsoleInsightTeaser = class extends UI3.Widget.Widget {
 var ConsolePinPane_exports = {};
 __export(ConsolePinPane_exports, {
   ConsolePin: () => ConsolePin,
+  ConsolePinModel: () => ConsolePinModel,
   ConsolePinPane: () => ConsolePinPane,
-  ConsolePinPresenter: () => ConsolePinPresenter
+  ConsolePinPresenter: () => ConsolePinPresenter,
+  DEFAULT_PANE_VIEW: () => DEFAULT_PANE_VIEW,
+  DEFAULT_VIEW: () => DEFAULT_VIEW2
 });
 import * as Common6 from "./../../core/common/common.js";
 import * as i18n7 from "./../../core/i18n/i18n.js";
+import * as Platform3 from "./../../core/platform/platform.js";
 import * as Root3 from "./../../core/root/root.js";
 import * as SDK5 from "./../../core/sdk/sdk.js";
 import * as CodeMirror from "./../../third_party/codemirror.next/codemirror.next.js";
+import { Directives, html as html2, nothing as nothing2, render as render3 } from "./../../third_party/lit/lit.js";
 import * as Buttons3 from "./../../ui/components/buttons/buttons.js";
 import * as TextEditor from "./../../ui/components/text_editor/text_editor.js";
 import * as ObjectUI2 from "./../../ui/legacy/components/object_ui/object_ui.js";
@@ -4620,6 +4625,7 @@ var consolePinPane_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./consolePinPane.css")} */`;
 
 // gen/front_end/panels/console/ConsolePinPane.js
+var { createRef, ref } = Directives;
 var UIStrings3 = {
   /**
    * @description A context menu item in the Console Pin Pane of the Console panel
@@ -4657,47 +4663,43 @@ var UIStrings3 = {
 };
 var str_3 = i18n7.i18n.registerUIStrings("panels/console/ConsolePinPane.ts", UIStrings3);
 var i18nString3 = i18n7.i18n.getLocalizedString.bind(void 0, str_3);
-var elementToConsolePin = /* @__PURE__ */ new WeakMap();
+var DEFAULT_PANE_VIEW = (input, _output, target) => {
+  render3(html2`
+    <style>${consolePinPane_css_default}</style>
+    <div class='console-pins monospace' jslog=${VisualLogging3.pane("console-pins")} @contextmenu=${input.onContextMenu}>
+    ${input.pins.map((pin) => html2`
+        <devtools-widget .widgetConfig=${UI4.Widget.widgetConfig(ConsolePinPresenter, {
+    pin,
+    focusOut: input.focusOut,
+    onRemove: () => input.onRemove(pin)
+  })}></devtools-widget>`)}
+    </div>`, target);
+};
 var ConsolePinPane = class extends UI4.Widget.VBox {
-  liveExpressionButton;
-  focusOut;
-  pins;
-  pinsSetting;
-  throttler;
-  constructor(liveExpressionButton, focusOut) {
+  #view;
+  /** When creating a new pin, we'll focus it after rendering the editor */
+  #newPin;
+  #pinModel;
+  #focusOut;
+  constructor(focusOut, view = DEFAULT_PANE_VIEW) {
     super({ useShadowDom: true });
-    this.liveExpressionButton = liveExpressionButton;
-    this.focusOut = focusOut;
-    this.throttler = new Common6.Throttler.Throttler(250);
-    this.registerRequiredCSS(consolePinPane_css_default, objectValue_css_default);
-    this.contentElement.classList.add("console-pins", "monospace");
-    this.contentElement.addEventListener("contextmenu", this.contextMenuEventFired.bind(this), false);
-    this.contentElement.setAttribute("jslog", `${VisualLogging3.pane("console-pins")}`);
-    this.pins = /* @__PURE__ */ new Set();
-    this.pinsSetting = Common6.Settings.Settings.instance().createLocalSetting("console-pins", []);
-    for (const expression of this.pinsSetting.get()) {
-      this.addPin(expression);
-    }
+    this.#focusOut = focusOut;
+    this.#view = view;
+    this.#pinModel = new ConsolePinModel(Common6.Settings.Settings.instance());
   }
   willHide() {
     super.willHide();
-    for (const pin of this.pins) {
-      pin.setHovered(false);
-    }
-  }
-  savePins() {
-    const toSave = Array.from(this.pins).map((pin) => pin.expression());
-    this.pinsSetting.set(toSave);
+    this.#pinModel.stopPeriodicEvaluate();
   }
   contextMenuEventFired(event) {
     const contextMenu = new UI4.ContextMenu.ContextMenu(event);
     const target = UI4.UIUtils.deepElementFromEvent(event);
     if (target) {
-      const targetPinElement = target.enclosingNodeOrSelfWithClass("console-pin");
+      const targetPinElement = target.enclosingNodeOrSelfWithClass("widget");
       if (targetPinElement) {
-        const targetPin = elementToConsolePin.get(targetPinElement);
-        if (targetPin) {
-          contextMenu.editSection().appendItem(i18nString3(UIStrings3.removeExpression), this.removePin.bind(this, targetPin), { jslogContext: "remove-expression" });
+        const targetPin = UI4.Widget.Widget.get(targetPinElement);
+        if (targetPin instanceof ConsolePinPresenter) {
+          contextMenu.editSection().appendItem(i18nString3(UIStrings3.removeExpression), () => targetPin.pin ? this.removePin(targetPin.pin) : void 0, { jslogContext: "remove-expression" });
           targetPin.appendToContextMenu(contextMenu);
         }
       }
@@ -4706,130 +4708,151 @@ var ConsolePinPane = class extends UI4.Widget.VBox {
     void contextMenu.show();
   }
   removeAllPins() {
-    for (const pin of this.pins) {
-      this.removePin(pin);
-    }
+    this.#pinModel.removeAll();
+    this.requestUpdate();
   }
   removePin(pin) {
-    pin.element().remove();
-    const newFocusedPin = this.focusedPinAfterDeletion(pin);
-    this.pins.delete(pin);
-    this.savePins();
-    if (newFocusedPin) {
-      void newFocusedPin.focus();
-    } else {
-      this.liveExpressionButton.focus();
-    }
+    this.#pinModel.remove(pin);
+    this.requestUpdate();
   }
   addPin(expression, userGesture) {
-    const pin = new ConsolePinPresenter(expression, this, this.focusOut);
-    this.contentElement.appendChild(pin.element());
-    this.pins.add(pin);
-    this.savePins();
+    const pin = this.#pinModel.add(expression);
     if (userGesture) {
-      void pin.focus();
+      this.#newPin = pin;
     }
     this.requestUpdate();
   }
-  focusedPinAfterDeletion(deletedPin) {
-    const pinArray = Array.from(this.pins);
-    for (let i = 0; i < pinArray.length; i++) {
-      if (pinArray[i] === deletedPin) {
-        if (pinArray.length === 1) {
-          return null;
-        }
-        if (i === pinArray.length - 1) {
-          return pinArray[i - 1];
-        }
-        return pinArray[i + 1];
+  wasShown() {
+    super.wasShown();
+    this.#pinModel.startPeriodicEvaluate();
+    this.requestUpdate();
+  }
+  performUpdate() {
+    this.#view({
+      pins: [...this.#pinModel.pins],
+      focusOut: this.#focusOut,
+      onRemove: (pin) => this.removePin(pin),
+      onContextMenu: this.contextMenuEventFired.bind(this)
+    }, {}, this.contentElement);
+    for (const child of this.children()) {
+      if (child instanceof ConsolePinPresenter && child.pin === this.#newPin) {
+        void child.updateComplete.then(() => child.focus());
       }
     }
-    return null;
+    this.#newPin = void 0;
+  }
+};
+var DEFAULT_VIEW2 = (input, output, target) => {
+  const deleteIconLabel = input.expression ? i18nString3(UIStrings3.removeExpressionS, { PH1: input.expression }) : i18nString3(UIStrings3.removeBlankExpression);
+  const deleteRef = createRef();
+  const editorRef = createRef();
+  const isError = input.result && !("error" in input.result) && input.result?.exceptionDetails && !SDK5.RuntimeModel.RuntimeModel.isSideEffectFailure(input.result);
+  render3(html2`
+    <style>${consolePinPane_css_default}</style>
+    <style>${objectValue_css_default}</style>
+    <div class='console-pin ${isError ? "error-level" : ""}'>
+      <devtools-button class='close-button'
+          .iconName=${"cross"}
+          .variant=${"icon"}
+          .size=${"MICRO"}
+          tabindex=0
+          aria-label=${deleteIconLabel}
+          @click=${(event) => {
+    input.onDelete();
+    event.consume(true);
+  }}
+          @keydown=${(event) => {
+    if (Platform3.KeyboardUtilities.isEnterOrSpaceKey(event)) {
+      input.onDelete();
+      event.consume(true);
+    }
+  }}
+          ${ref(deleteRef)}
+      ></devtools-button>
+      <div class='console-pin-name'
+          title=${input.expression}
+          jslog=${VisualLogging3.textField().track({ change: true })}
+          @keydown=${(event) => {
+    if (event.key === "Escape") {
+      event.consume();
+    }
+  }}
+      >
+        <devtools-text-editor .state=${input.editorState} ${ref(editorRef)} tabindex=0
+        ></devtools-text-editor>
+      </div>
+      <div class='console-pin-preview'
+          @mouseenter=${() => input.onPreviewHoverChange(true)}
+          @mouseleave=${() => input.onPreviewHoverChange(false)}
+          @click=${(event) => input.onPreviewClick(event)}
+      >
+        ${renderResult(input.result, input.isEditing)}
+      </div>
+    </div>
+    `, target);
+  Object.assign(output, {
+    deletePinIcon: deleteRef.value,
+    editor: editorRef.value
+  });
+};
+var FORMATTER = new ObjectUI2.RemoteObjectPreviewFormatter.RemoteObjectPreviewFormatter();
+function renderResult(result, isEditing) {
+  if (!result) {
+    return nothing2;
+  }
+  if (result && SDK5.RuntimeModel.RuntimeModel.isSideEffectFailure(result)) {
+    return html2`<span class='object-value-calculate-value-button' title=${i18nString3(UIStrings3.evaluateAllowingSideEffects)}>(…)</span>`;
+  }
+  const renderedPreview = FORMATTER.renderEvaluationResultPreview(result, !isEditing);
+  if (renderedPreview === nothing2 && !isEditing) {
+    return html2`${i18nString3(UIStrings3.notAvailable)}`;
+  }
+  return renderedPreview;
+}
+var ConsolePinPresenter = class extends UI4.Widget.Widget {
+  #pin;
+  #focusOut;
+  #onRemove;
+  #view;
+  #pinEditor;
+  #editor;
+  #hovered = false;
+  #lastNode = null;
+  #deletePinIcon;
+  constructor(element, view = DEFAULT_VIEW2) {
+    super(element);
+    this.#view = view;
+    this.#pinEditor = {
+      workingCopy: () => this.#editor?.state.doc.toString() ?? "",
+      workingCopyWithHint: () => this.#editor ? TextEditor.Config.contentIncludingHint(this.#editor.editor) : "",
+      isEditing: () => Boolean(this.#editor?.editor.hasFocus)
+    };
   }
   wasShown() {
     super.wasShown();
-    void this.throttler.schedule(this.requestUpdate.bind(this));
+    this.#pin?.addEventListener("EVALUATE_RESULT_READY", this.requestUpdate, this);
+    this.requestUpdate();
   }
-  async performUpdate() {
-    if (!this.pins.size || !this.isShowing()) {
-      return;
-    }
-    const updatePromises = Array.from(this.pins, (pin) => pin.updatePreview());
-    await Promise.all(updatePromises);
-    this.updatedForTest();
-    void this.throttler.schedule(this.requestUpdate.bind(this));
+  willHide() {
+    super.willHide();
+    this.#pin?.removeEventListener("EVALUATE_RESULT_READY", this.requestUpdate, this);
+    this.setHovered(false);
   }
-  updatedForTest() {
+  set pin(pin) {
+    this.#pin?.removeEventListener("EVALUATE_RESULT_READY", this.requestUpdate, this);
+    this.#pin = pin;
+    this.#pin.setEditor(this.#pinEditor);
+    this.#pin.addEventListener("EVALUATE_RESULT_READY", this.requestUpdate, this);
+    this.requestUpdate();
   }
-};
-var ConsolePinPresenter = class {
-  pinPane;
-  focusOut;
-  pin;
-  pinEditor;
-  pinElement;
-  pinPreview;
-  editor;
-  hovered;
-  lastNode;
-  deletePinIcon;
-  constructor(expression, pinPane, focusOut) {
-    this.pinPane = pinPane;
-    this.focusOut = focusOut;
-    this.deletePinIcon = new Buttons3.Button.Button();
-    this.deletePinIcon.data = {
-      variant: "icon",
-      iconName: "cross",
-      size: "MICRO"
-      /* Buttons.Button.Size.MICRO */
-    };
-    this.deletePinIcon.classList.add("close-button");
-    this.deletePinIcon.setAttribute("jslog", `${VisualLogging3.close().track({ click: true })}`);
-    this.deletePinIcon.tabIndex = 0;
-    if (expression.length) {
-      UI4.ARIAUtils.setLabel(this.deletePinIcon, i18nString3(UIStrings3.removeExpressionS, { PH1: expression }));
-    } else {
-      UI4.ARIAUtils.setLabel(this.deletePinIcon, i18nString3(UIStrings3.removeBlankExpression));
-    }
-    self.onInvokeElement(this.deletePinIcon, (event) => {
-      pinPane.removePin(this);
-      event.consume(true);
-    });
-    const fragment = UI4.Fragment.Fragment.build`
-  <div class='console-pin'>
-  ${this.deletePinIcon}
-  <div class='console-pin-name' $='name' jslog="${VisualLogging3.textField().track({
-      change: true
-    })}"></div>
-  <div class='console-pin-preview' $='preview'></div>
-  </div>`;
-    this.pinElement = fragment.element();
-    this.pinPreview = fragment.$("preview");
-    const nameElement = fragment.$("name");
-    UI4.Tooltip.Tooltip.install(nameElement, expression);
-    elementToConsolePin.set(this.pinElement, this);
-    this.hovered = false;
-    this.lastNode = null;
-    this.editor = this.#createEditor(expression, nameElement);
-    this.pinEditor = {
-      workingCopy: () => this.editor.state.doc.toString(),
-      workingCopyWithHint: () => TextEditor.Config.contentIncludingHint(this.editor.editor),
-      isEditing: () => this.pinElement.hasFocus()
-    };
-    this.pin = new ConsolePin(this.pinEditor, expression);
-    this.pinPreview.addEventListener("mouseenter", this.setHovered.bind(this, true), false);
-    this.pinPreview.addEventListener("mouseleave", this.setHovered.bind(this, false), false);
-    this.pinPreview.addEventListener("click", (event) => {
-      if (this.lastNode) {
-        void Common6.Revealer.reveal(this.lastNode);
-        event.consume();
-      }
-    }, false);
-    nameElement.addEventListener("keydown", (event) => {
-      if (event.key === "Escape") {
-        event.consume();
-      }
-    });
+  get pin() {
+    return this.#pin;
+  }
+  set focusOut(focusOut) {
+    this.#focusOut = focusOut;
+  }
+  set onRemove(onRemove) {
+    this.#onRemove = onRemove;
   }
   #createInitialEditorState(doc) {
     const extensions = [
@@ -4842,45 +4865,45 @@ var ConsolePinPresenter = class {
         {
           key: "Escape",
           run: (view) => {
-            view.dispatch({ changes: { from: 0, to: view.state.doc.length, insert: this.pin.expression } });
-            this.focusOut();
+            view.dispatch({ changes: { from: 0, to: view.state.doc.length, insert: this.#pin?.expression ?? "" } });
+            this.#focusOut?.();
             return true;
           }
         },
         {
           key: "Enter",
           run: () => {
-            this.focusOut();
+            this.#focusOut?.();
             return true;
           }
         },
         {
           key: "Mod-Enter",
           run: () => {
-            this.focusOut();
+            this.#focusOut?.();
             return true;
           }
         },
         {
           key: "Tab",
           run: (view) => {
-            if (CodeMirror.completionStatus(this.editor.state) !== null) {
+            if (CodeMirror.completionStatus(view.state) !== null) {
               return false;
             }
-            view.dispatch({ changes: { from: 0, to: view.state.doc.length, insert: this.pin.expression } });
-            this.focusOut();
+            view.dispatch({ changes: { from: 0, to: view.state.doc.length, insert: this.#pin?.expression ?? "" } });
+            this.#focusOut?.();
             return true;
           }
         },
         {
           key: "Shift-Tab",
           run: (view) => {
-            if (CodeMirror.completionStatus(this.editor.state) !== null) {
+            if (CodeMirror.completionStatus(view.state) !== null) {
               return false;
             }
-            view.dispatch({ changes: { from: 0, to: view.state.doc.length, insert: this.pin.expression } });
-            this.editor.blur();
-            this.deletePinIcon.focus();
+            view.dispatch({ changes: { from: 0, to: view.state.doc.length, insert: this.#pin?.expression ?? "" } });
+            this.#editor?.blur();
+            this.#deletePinIcon.focus();
             return true;
           }
         }
@@ -4895,99 +4918,142 @@ var ConsolePinPresenter = class {
     }
     return CodeMirror.EditorState.create({ doc, extensions });
   }
-  #createEditor(doc, parent) {
-    const editor = new TextEditor.TextEditor.TextEditor(this.#createInitialEditorState(doc));
-    parent.appendChild(editor);
-    return editor;
-  }
   #onBlur(editor) {
-    const commitedAsIs = this.pin.commit();
-    this.pinPane.savePins();
-    const newExpression = this.pin.expression;
-    if (newExpression.length) {
-      UI4.ARIAUtils.setLabel(this.deletePinIcon, i18nString3(UIStrings3.removeExpressionS, { PH1: newExpression }));
-    } else {
-      UI4.ARIAUtils.setLabel(this.deletePinIcon, i18nString3(UIStrings3.removeBlankExpression));
-    }
-    editor.dispatch({
-      selection: { anchor: this.pin.expression.length },
-      changes: !commitedAsIs ? { from: 0, to: this.editor.state.doc.length, insert: newExpression } : void 0
-    });
-  }
-  setHovered(hovered) {
-    if (this.hovered === hovered) {
+    if (!this.#pin) {
       return;
     }
-    this.hovered = hovered;
-    if (!hovered && this.lastNode) {
+    const commitedAsIs = this.#pin.commit();
+    editor.dispatch({
+      selection: { anchor: this.#pin.expression.length },
+      changes: !commitedAsIs ? { from: 0, to: editor.state.doc.length, insert: this.#pin.expression } : void 0
+    });
+    this.requestUpdate();
+  }
+  setHovered(hovered) {
+    if (this.#hovered === hovered) {
+      return;
+    }
+    this.#hovered = hovered;
+    if (!hovered && this.#lastNode) {
       SDK5.OverlayModel.OverlayModel.hideDOMNodeHighlight();
     }
   }
-  expression() {
-    return this.pin.expression;
-  }
-  element() {
-    return this.pinElement;
-  }
   async focus() {
-    const editor = this.editor;
-    editor.editor.focus();
-    editor.dispatch({ selection: { anchor: editor.state.doc.length } });
+    const editor = this.#editor;
+    if (editor) {
+      editor.editor.focus();
+      editor.dispatch({ selection: { anchor: editor.state.doc.length } });
+    }
   }
   appendToContextMenu(contextMenu) {
-    const { lastResult } = this.pin;
+    if (!this.#pin) {
+      return;
+    }
+    const { lastResult } = this.#pin;
     if (lastResult && !("error" in lastResult) && lastResult.object) {
       contextMenu.appendApplicableItems(lastResult.object);
-      this.pin.skipReleaseLastResult();
+      this.#pin.skipReleaseLastResult();
     }
   }
-  async updatePreview() {
-    if (!this.editor) {
+  performUpdate() {
+    if (!this.#pin) {
       return;
     }
-    const executionContext = UI4.Context.Context.instance().flavor(SDK5.RuntimeModel.ExecutionContext);
-    if (!executionContext) {
-      return;
-    }
-    const { result, node } = await this.pin.evaluate(executionContext);
-    const formatter = new ObjectUI2.RemoteObjectPreviewFormatter.RemoteObjectPreviewFormatter();
-    const preview = result ? formatter.renderEvaluationResultPreview(result) : document.createDocumentFragment();
-    const previewText = preview.deepTextContent();
-    if (!previewText || previewText !== this.pinPreview.deepTextContent()) {
-      this.pinPreview.removeChildren();
-      if (result && SDK5.RuntimeModel.RuntimeModel.isSideEffectFailure(result)) {
-        const sideEffectLabel = this.pinPreview.createChild("span", "object-value-calculate-value-button");
-        sideEffectLabel.textContent = "(\u2026)";
-        UI4.Tooltip.Tooltip.install(sideEffectLabel, i18nString3(UIStrings3.evaluateAllowingSideEffects));
-      } else if (previewText) {
-        this.pinPreview.appendChild(preview);
-      } else if (!this.pinEditor.isEditing()) {
-        UI4.UIUtils.createTextChild(this.pinPreview, i18nString3(UIStrings3.notAvailable));
+    const output = {};
+    this.#view({
+      expression: this.#pin.expression,
+      editorState: this.#editor?.state ?? this.#createInitialEditorState(this.#pin.expression),
+      result: this.#pin.lastResult,
+      isEditing: this.#pinEditor.isEditing(),
+      onDelete: () => this.#onRemove?.(),
+      onPreviewHoverChange: (hovered) => this.setHovered(hovered),
+      onPreviewClick: (event) => {
+        if (this.#lastNode) {
+          void Common6.Revealer.reveal(this.#lastNode);
+          event.consume();
+        }
       }
-      UI4.Tooltip.Tooltip.install(this.pinPreview, previewText);
+    }, output, this.contentElement);
+    const { deletePinIcon, editor } = output;
+    if (!deletePinIcon || !editor) {
+      throw new Error("Broken view function, expected output");
     }
-    if (this.hovered) {
+    this.#deletePinIcon = deletePinIcon;
+    this.#editor = editor;
+    const node = this.#pin.lastNode;
+    if (this.#hovered) {
       if (node) {
         SDK5.OverlayModel.OverlayModel.highlightObjectAsDOMNode(node);
-      } else if (this.lastNode) {
+      } else if (this.#lastNode) {
         SDK5.OverlayModel.OverlayModel.hideDOMNodeHighlight();
       }
     }
-    this.lastNode = node || null;
-    const isError = result && !("error" in result) && result.exceptionDetails && !SDK5.RuntimeModel.RuntimeModel.isSideEffectFailure(result);
-    this.pinElement.classList.toggle("error-level", Boolean(isError));
+    this.#lastNode = node || null;
   }
 };
-var ConsolePin = class {
-  #editor;
+var ConsolePinModel = class {
+  #setting;
+  #pins = /* @__PURE__ */ new Set();
+  #throttler = new Common6.Throttler.Throttler(250);
+  #active = false;
+  constructor(settings) {
+    this.#setting = settings.createLocalSetting("console-pins", []);
+    for (const expression of this.#setting.get()) {
+      this.add(expression);
+    }
+  }
+  get pins() {
+    return this.#pins;
+  }
+  add(expression) {
+    const pin = new ConsolePin(expression, () => this.#save());
+    this.#pins.add(pin);
+    this.#save();
+    return pin;
+  }
+  remove(pin) {
+    this.#pins.delete(pin);
+    this.#save();
+  }
+  removeAll() {
+    this.#pins.clear();
+    this.#save();
+  }
+  startPeriodicEvaluate() {
+    this.#active = true;
+    void this.#evaluateAllPins();
+  }
+  stopPeriodicEvaluate() {
+    this.#active = false;
+  }
+  async #evaluateAllPins() {
+    if (!this.#active) {
+      return;
+    }
+    const executionContext = UI4.Context.Context.instance().flavor(SDK5.RuntimeModel.ExecutionContext);
+    if (executionContext) {
+      await Promise.all(this.#pins.values().map((pin) => pin.evaluate(executionContext)));
+    }
+    void this.#throttler.schedule(this.#evaluateAllPins.bind(this));
+  }
+  #save() {
+    const expressions = this.#pins.values().map((pin) => pin.expression).toArray();
+    this.#setting.set(expressions);
+  }
+};
+var ConsolePin = class extends Common6.ObjectWrapper.ObjectWrapper {
   #expression;
+  #onCommit;
+  #editor;
   // We track the last evaluation result for this pin so we can release the RemoteObject.
   #lastResult = null;
+  #lastNode = null;
   #lastExecutionContext = null;
   #releaseLastResult = true;
-  constructor(editor, expression) {
-    this.#editor = editor;
+  constructor(expression, onCommit) {
+    super();
     this.#expression = expression;
+    this.#onCommit = onCommit;
   }
   get expression() {
     return this.#expression;
@@ -4995,23 +5061,34 @@ var ConsolePin = class {
   get lastResult() {
     return this.#lastResult;
   }
+  /** A short cut in case `lastResult` is a DOM node */
+  get lastNode() {
+    return this.#lastNode;
+  }
   skipReleaseLastResult() {
     this.#releaseLastResult = false;
+  }
+  setEditor(editor) {
+    this.#editor = editor;
   }
   /**
    * Commit the current working copy from the editor.
    * @returns true, iff the working copy was commited as-is.
    */
   commit() {
+    if (!this.#editor) {
+      return false;
+    }
     const text = this.#editor.workingCopy();
     const trimmedText = text.trim();
     this.#expression = trimmedText;
+    this.#onCommit();
     return this.#expression === text;
   }
   /** Evaluates the current working copy of the pinned expression. If the result is a DOM node, we return that separately for convenience.  */
   async evaluate(executionContext) {
-    const editorText = this.#editor.workingCopyWithHint();
-    const throwOnSideEffect = this.#editor.isEditing() && editorText !== this.#expression;
+    const editorText = this.#editor?.workingCopyWithHint() ?? "";
+    const throwOnSideEffect = Boolean(this.#editor?.isEditing()) && editorText !== this.#expression;
     const timeout = throwOnSideEffect ? 250 : void 0;
     const result = await ObjectUI2.JavaScriptREPL.JavaScriptREPL.evaluate(
       editorText,
@@ -5033,9 +5110,11 @@ var ConsolePin = class {
     this.#lastExecutionContext = executionContext;
     this.#releaseLastResult = true;
     if (result && !("error" in result) && result.object.type === "object" && result.object.subtype === "node") {
-      return { result, node: result.object };
+      this.#lastNode = result.object;
+    } else {
+      this.#lastNode = null;
     }
-    return { result, node: null };
+    this.dispatchEventToListeners("EVALUATE_RESULT_READY", this);
   }
 };
 
@@ -5044,7 +5123,7 @@ var ConsoleSidebar_exports = {};
 __export(ConsoleSidebar_exports, {
   ConsoleFilterGroup: () => ConsoleFilterGroup,
   ConsoleSidebar: () => ConsoleSidebar,
-  DEFAULT_VIEW: () => DEFAULT_VIEW2
+  DEFAULT_VIEW: () => DEFAULT_VIEW3
 });
 import * as Common7 from "./../../core/common/common.js";
 import * as i18n9 from "./../../core/i18n/i18n.js";
@@ -5127,7 +5206,7 @@ var UIStrings4 = {
 };
 var str_4 = i18n9.i18n.registerUIStrings("panels/console/ConsoleSidebar.ts", UIStrings4);
 var i18nString4 = i18n9.i18n.getLocalizedString.bind(void 0, str_4);
-var { render: render3, html: html2, nothing: nothing2, Directives } = Lit2;
+var { render: render4, html: html3, nothing: nothing3, Directives: Directives2 } = Lit2;
 var GROUP_ICONS = {
   [
     "message"
@@ -5154,7 +5233,7 @@ var GROUP_ICONS = {
     /* GroupName.VERBOSE */
   ]: { icon: "bug", label: UIStrings4.dVerbose }
 };
-var DEFAULT_VIEW2 = (input, output, target) => {
+var DEFAULT_VIEW3 = (input, output, target) => {
   const nodeFilterMap = /* @__PURE__ */ new WeakMap();
   const onSelectionChanged = (event) => {
     const filter = nodeFilterMap.get(event.detail);
@@ -5162,16 +5241,16 @@ var DEFAULT_VIEW2 = (input, output, target) => {
       input.onSelectionChanged(filter);
     }
   };
-  render3(html2`<devtools-tree
+  render4(html3`<devtools-tree
         navigation-variant
         hide-overflow
         @select=${onSelectionChanged}
-        .template=${html2`
+        .template=${html3`
           <ul role="tree">
-            ${input.groups.map((group) => html2`
+            ${input.groups.map((group) => html3`
               <li
                 role="treeitem"
-                ${Directives.ref((element) => element && nodeFilterMap.set(element, group.filter))}
+                ${Directives2.ref((element) => element && nodeFilterMap.set(element, group.filter))}
                 ?selected=${group.filter === input.selectedFilter}>
                   <style>${consoleSidebar_css_default}</style>
                   <devtools-icon name=${GROUP_ICONS[group.name].icon}></devtools-icon>
@@ -5179,11 +5258,11 @@ var DEFAULT_VIEW2 = (input, output, target) => {
   i18nString4(GROUP_ICONS[group.name].label, {
     n: group.messageCount
   })}
-                  ${group.messageCount === 0 ? nothing2 : html2`
+                  ${group.messageCount === 0 ? nothing3 : html3`
                   <ul role="group" hidden>
-                    ${group.urlGroups.values().map((urlGroup) => html2`
+                    ${group.urlGroups.values().map((urlGroup) => html3`
                       <li
-                        ${Directives.ref((element) => element && nodeFilterMap.set(element, urlGroup.filter))}
+                        ${Directives2.ref((element) => element && nodeFilterMap.set(element, urlGroup.filter))}
                         role="treeitem"
                         ?selected=${urlGroup.filter === input.selectedFilter}
                         title=${urlGroup.url ?? ""}>
@@ -5266,7 +5345,7 @@ var ConsoleSidebar = class extends Common7.ObjectWrapper.eventMixin(UI5.Widget.V
   ];
   #selectedFilterSetting = Common7.Settings.Settings.instance().createSetting("console.sidebar-selected-filter", null);
   #selectedFilter = this.#groups.find((group) => group.name === this.#selectedFilterSetting.get())?.filter;
-  constructor(element, view = DEFAULT_VIEW2) {
+  constructor(element, view = DEFAULT_VIEW3) {
     super(element, {
       jslog: `${VisualLogging4.pane("sidebar").track({ resize: true })}`,
       useShadowDom: true
@@ -5312,7 +5391,7 @@ var ConsoleViewport_exports = {};
 __export(ConsoleViewport_exports, {
   ConsoleViewport: () => ConsoleViewport
 });
-import * as Platform3 from "./../../core/platform/platform.js";
+import * as Platform4 from "./../../core/platform/platform.js";
 import * as Components3 from "./../../ui/legacy/components/utils/utils.js";
 import * as UI6 from "./../../ui/legacy/legacy.js";
 var ConsoleViewport = class {
@@ -5699,7 +5778,7 @@ var ConsoleViewport = class {
       this.firstActiveIndex = Math.max(this.itemCount - Math.ceil(activeHeight / this.provider.minimumRowHeight()), 0);
       this.lastActiveIndex = this.itemCount - 1;
     } else {
-      this.firstActiveIndex = Math.max(Platform3.ArrayUtilities.lowerBound(this.cumulativeHeights, visibleFrom + 1 - (activeHeight - visibleHeight) / 2, Platform3.ArrayUtilities.DEFAULT_COMPARATOR), 0);
+      this.firstActiveIndex = Math.max(Platform4.ArrayUtilities.lowerBound(this.cumulativeHeights, visibleFrom + 1 - (activeHeight - visibleHeight) / 2, Platform4.ArrayUtilities.DEFAULT_COMPARATOR), 0);
       this.lastActiveIndex = this.firstActiveIndex + Math.ceil(activeHeight / this.provider.minimumRowHeight()) - 1;
       this.lastActiveIndex = Math.min(this.lastActiveIndex, this.itemCount - 1);
     }
@@ -5836,7 +5915,7 @@ var ConsoleViewport = class {
       return -1;
     }
     this.rebuildCumulativeHeightsIfNeeded();
-    return Platform3.ArrayUtilities.lowerBound(this.cumulativeHeights, this.element.scrollTop + 1, Platform3.ArrayUtilities.DEFAULT_COMPARATOR);
+    return Platform4.ArrayUtilities.lowerBound(this.cumulativeHeights, this.element.scrollTop + 1, Platform4.ArrayUtilities.DEFAULT_COMPARATOR);
   }
   lastVisibleIndex() {
     if (!this.cumulativeHeights.length) {
@@ -5845,7 +5924,7 @@ var ConsoleViewport = class {
     this.rebuildCumulativeHeightsIfNeeded();
     const scrollBottom = this.element.scrollTop + this.element.clientHeight;
     const right = this.itemCount - 1;
-    return Platform3.ArrayUtilities.lowerBound(this.cumulativeHeights, scrollBottom, Platform3.ArrayUtilities.DEFAULT_COMPARATOR, void 0, right);
+    return Platform4.ArrayUtilities.lowerBound(this.cumulativeHeights, scrollBottom, Platform4.ArrayUtilities.DEFAULT_COMPARATOR, void 0, right);
   }
   renderedElementAt(index) {
     if (index === -1 || index < this.firstActiveIndex || index > this.lastActiveIndex) {
@@ -5924,7 +6003,7 @@ import * as Badges from "./../../models/badges/badges.js";
 import * as Formatter2 from "./../../models/formatter/formatter.js";
 import * as SourceMapScopes from "./../../models/source_map_scopes/source_map_scopes.js";
 import * as CodeMirror2 from "./../../third_party/codemirror.next/codemirror.next.js";
-import * as TextEditor3 from "./../../ui/components/text_editor/text_editor.js";
+import * as TextEditor2 from "./../../ui/components/text_editor/text_editor.js";
 import { Icon as Icon2 } from "./../../ui/kit/kit.js";
 import * as ObjectUI3 from "./../../ui/legacy/components/object_ui/object_ui.js";
 import * as UI9 from "./../../ui/legacy/legacy.js";
@@ -5952,7 +6031,7 @@ import "./../../ui/legacy/legacy.js";
 import * as Common8 from "./../../core/common/common.js";
 import * as Host3 from "./../../core/host/host.js";
 import * as i18n11 from "./../../core/i18n/i18n.js";
-import * as Platform4 from "./../../core/platform/platform.js";
+import * as Platform5 from "./../../core/platform/platform.js";
 import * as Root4 from "./../../core/root/root.js";
 import * as SDK7 from "./../../core/sdk/sdk.js";
 import * as Bindings3 from "./../../models/bindings/bindings.js";
@@ -6339,7 +6418,7 @@ var ConsoleView = class _ConsoleView extends UI7.Widget.VBox {
       settingsPane.classList.add("hidden");
     }
     this.showSettingsPaneSetting.addChangeListener(() => settingsPane.classList.toggle("hidden", !this.showSettingsPaneSetting.get()));
-    this.pinPane = new ConsolePinPane(liveExpressionButton, () => this.prompt.focus());
+    this.pinPane = new ConsolePinPane(() => this.prompt.focus());
     this.pinPane.element.classList.add("console-view-pinpane");
     this.pinPane.element.classList.remove("flex-auto");
     this.pinPane.show(this.contentsElement);
@@ -6659,7 +6738,7 @@ var ConsoleView = class _ConsoleView extends UI7.Widget.VBox {
     if (!this.consoleMessages.length || timeComparator(viewMessage, this.consoleMessages[this.consoleMessages.length - 1]) > 0) {
       insertAt = this.consoleMessages.length;
     } else {
-      insertAt = Platform4.ArrayUtilities.upperBound(this.consoleMessages, viewMessage, timeComparator);
+      insertAt = Platform5.ArrayUtilities.upperBound(this.consoleMessages, viewMessage, timeComparator);
     }
     const insertedInMiddle = insertAt < this.consoleMessages.length;
     this.consoleMessages.splice(insertAt, 0, viewMessage);
@@ -6669,13 +6748,13 @@ var ConsoleView = class _ConsoleView extends UI7.Widget.VBox {
         this.selfXssWarningDisabledSetting.set(true);
       }
     } else if (message.type !== SDK7.ConsoleModel.FrontendMessageType.Result) {
-      const consoleGroupStartIndex = Platform4.ArrayUtilities.upperBound(this.consoleGroupStarts, viewMessage, timeComparator) - 1;
+      const consoleGroupStartIndex = Platform5.ArrayUtilities.upperBound(this.consoleGroupStarts, viewMessage, timeComparator) - 1;
       if (consoleGroupStartIndex >= 0) {
         const currentGroup = this.consoleGroupStarts[consoleGroupStartIndex];
         addToGroup(viewMessage, currentGroup);
       }
       if (message.isGroupStartMessage()) {
-        insertAt = Platform4.ArrayUtilities.upperBound(this.consoleGroupStarts, viewMessage, timeComparator);
+        insertAt = Platform5.ArrayUtilities.upperBound(this.consoleGroupStarts, viewMessage, timeComparator);
         this.consoleGroupStarts.splice(insertAt, 0, viewMessage);
       }
     }
@@ -6894,7 +6973,7 @@ var ConsoleView = class _ConsoleView extends UI7.Widget.VBox {
   async saveConsole() {
     const url = SDK7.TargetManager.TargetManager.instance().scopeTarget().inspectedURL();
     const parsedURL = Common8.ParsedURL.ParsedURL.fromString(url);
-    const filename = Platform4.StringUtilities.sprintf("%s-%d.log", parsedURL ? parsedURL.host : "console", Date.now());
+    const filename = Platform5.StringUtilities.sprintf("%s-%d.log", parsedURL ? parsedURL.host : "console", Date.now());
     const stream = new Bindings3.FileUtils.FileOutputStream();
     const progressIndicator = document.createElement("devtools-progress");
     progressIndicator.title = i18nString5(UIStrings5.writingFile);
@@ -7224,7 +7303,7 @@ var ConsoleView = class _ConsoleView extends UI7.Widget.VBox {
       const message2 = this.visibleViewMessages[matchRange.messageIndex];
       message2.searchHighlightNode(matchRange.matchIndex).classList.remove(Highlighting2.highlightedCurrentSearchResultClassName);
     }
-    index = Platform4.NumberUtilities.mod(index, this.regexMatchRanges.length);
+    index = Platform5.NumberUtilities.mod(index, this.regexMatchRanges.length);
     this.currentMatchRangeIndex = index;
     this.#searchableView.updateCurrentMatchIndex(index);
     matchRange = this.regexMatchRanges[index];
@@ -7650,7 +7729,7 @@ var consolePrompt_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./consolePrompt.css")} */`;
 
 // gen/front_end/panels/console/ConsolePrompt.js
-var { Direction } = TextEditor3.TextEditorHistory;
+var { Direction } = TextEditor2.TextEditorHistory;
 var UIStrings6 = {
   /**
    * @description Text in Console Prompt of the Console panel
@@ -7706,7 +7785,7 @@ var ConsolePrompt = class extends Common9.ObjectWrapper.eventMixin(UI9.Widget.Wi
     if (Root5.Runtime.Runtime.queryParam("noJavaScriptCompletion") !== "true") {
       return [
         CodeMirror2.javascript.javascript(),
-        TextEditor3.JavaScript.completion()
+        TextEditor2.JavaScript.completion()
       ];
     }
     return [CodeMirror2.javascript.javascriptLanguage];
@@ -7725,7 +7804,7 @@ var ConsolePrompt = class extends Common9.ObjectWrapper.eventMixin(UI9.Widget.Wi
     });
     this.registerRequiredCSS(consolePrompt_css_default);
     this.addCompletionsFromHistory = true;
-    this.#history = new TextEditor3.AutocompleteHistory.AutocompleteHistory(Common9.Settings.Settings.instance().createLocalSetting("console-history", []));
+    this.#history = new TextEditor2.AutocompleteHistory.AutocompleteHistory(Common9.Settings.Settings.instance().createLocalSetting("console-history", []));
     this.initialText = "";
     this.eagerPreviewElement = document.createElement("div");
     this.eagerPreviewElement.classList.add("console-eager-preview");
@@ -7750,17 +7829,17 @@ var ConsolePrompt = class extends Common9.ObjectWrapper.eventMixin(UI9.Widget.Wi
     this.element.tabIndex = 0;
     this.previewRequestForTest = null;
     this.highlightingNode = false;
-    const argumentHints = TextEditor3.JavaScript.argumentHints();
+    const argumentHints = TextEditor2.JavaScript.argumentHints();
     this.#argumentHintsState = argumentHints[0];
-    const autocompleteOnEnter = TextEditor3.Config.DynamicSetting.bool("console-autocomplete-on-enter", [], TextEditor3.Config.conservativeCompletion);
+    const autocompleteOnEnter = TextEditor2.Config.DynamicSetting.bool("console-autocomplete-on-enter", [], TextEditor2.Config.conservativeCompletion);
     const extensions = [
       CodeMirror2.keymap.of(this.editorKeymap()),
       CodeMirror2.EditorView.updateListener.of((update) => this.editorUpdate(update)),
       argumentHints,
       autocompleteOnEnter.instance(),
-      TextEditor3.Config.showCompletionHint,
-      TextEditor3.Config.baseConfiguration(this.initialText),
-      TextEditor3.Config.autocompletion.instance(),
+      TextEditor2.Config.showCompletionHint,
+      TextEditor2.Config.baseConfiguration(this.initialText),
+      TextEditor2.Config.autocompletion.instance(),
       CodeMirror2.javascript.javascriptLanguage.data.of({
         autocomplete: (context) => this.addCompletionsFromHistory ? this.#editorHistory.historyCompletions(context) : null
       }),
@@ -7775,18 +7854,18 @@ var ConsolePrompt = class extends Common9.ObjectWrapper.eventMixin(UI9.Widget.Wi
         this.teaser = new PanelCommon2.AiCodeCompletionTeaser({ onDetach: this.detachAiCodeCompletionTeaser.bind(this) });
         extensions.push(this.placeholderCompartment.of([]));
       }
-      extensions.push(TextEditor3.Config.aiAutoCompleteSuggestion);
+      extensions.push(TextEditor2.Config.aiAutoCompleteSuggestion);
     }
     const doc = this.initialText;
     const editorState = CodeMirror2.EditorState.create({ doc, extensions });
-    this.editor = new TextEditor3.TextEditor.TextEditor(editorState);
+    this.editor = new TextEditor2.TextEditor.TextEditor(editorState);
     this.editor.addEventListener("keydown", (event) => {
       if (event.defaultPrevented) {
         event.stopPropagation();
       }
     });
     editorContainerElement.appendChild(this.editor);
-    this.#editorHistory = new TextEditor3.TextEditorHistory.TextEditorHistory(this.editor, this.#history);
+    this.#editorHistory = new TextEditor2.TextEditorHistory.TextEditorHistory(this.editor, this.#history);
     if (this.hasFocus()) {
       this.focus();
     }
@@ -7813,7 +7892,7 @@ var ConsolePrompt = class extends Common9.ObjectWrapper.eventMixin(UI9.Widget.Wi
   }
   onTextChanged(docContentChanged) {
     if (this.eagerEvalSetting.get()) {
-      const asSoonAsPossible = !TextEditor3.Config.contentIncludingHint(this.editor.editor);
+      const asSoonAsPossible = !TextEditor2.Config.contentIncludingHint(this.editor.editor);
       this.previewRequestForTest = this.textChangeThrottler.schedule(
         this.requestPreviewBound,
         asSoonAsPossible ? "AsSoonAsPossible" : "Default"
@@ -7864,7 +7943,7 @@ var ConsolePrompt = class extends Common9.ObjectWrapper.eventMixin(UI9.Widget.Wi
   }
   async requestPreview() {
     const id = ++this.requestPreviewCurrent;
-    const text = TextEditor3.Config.contentIncludingHint(this.editor.editor).trim();
+    const text = TextEditor2.Config.contentIncludingHint(this.editor.editor).trim();
     const executionContext = UI9.Context.Context.instance().flavor(SDK8.RuntimeModel.ExecutionContext);
     const { preview, result } = await ObjectUI3.JavaScriptREPL.JavaScriptREPL.evaluateAndBuildPreview(
       text,
@@ -7877,7 +7956,7 @@ var ConsolePrompt = class extends Common9.ObjectWrapper.eventMixin(UI9.Widget.Wi
       return;
     }
     this.innerPreviewElement.removeChildren();
-    if (preview.deepTextContent() !== TextEditor3.Config.contentIncludingHint(this.editor.editor).trim()) {
+    if (preview.deepTextContent() !== TextEditor2.Config.contentIncludingHint(this.editor.editor).trim()) {
       this.innerPreviewElement.appendChild(preview);
     }
     if (result && "object" in result && result.object?.subtype === "node") {
@@ -7978,7 +8057,7 @@ var ConsolePrompt = class extends Common9.ObjectWrapper.eventMixin(UI9.Widget.Wi
       keymap3.push({
         key: "Tab",
         run: () => {
-          const { accepted, suggestion } = TextEditor3.Config.acceptAiAutoCompleteSuggestion(this.editor.editor);
+          const { accepted, suggestion } = TextEditor2.Config.acceptAiAutoCompleteSuggestion(this.editor.editor);
           if (accepted) {
             this.dispatchEventToListeners("AiCodeCompletionSuggestionAccepted", { citations: this.aiCodeCompletionCitations });
             if (suggestion?.rpcGlobalId) {
@@ -7992,12 +8071,12 @@ var ConsolePrompt = class extends Common9.ObjectWrapper.eventMixin(UI9.Widget.Wi
     return keymap3;
   }
   runOnEscape() {
-    if (TextEditor3.JavaScript.closeArgumentsHintsTooltip(this.editor.editor, this.#argumentHintsState)) {
+    if (TextEditor2.JavaScript.closeArgumentsHintsTooltip(this.editor.editor, this.#argumentHintsState)) {
       return true;
     }
-    if (this.aiCodeCompletion && TextEditor3.Config.hasActiveAiSuggestion(this.editor.state)) {
+    if (this.aiCodeCompletion && TextEditor2.Config.hasActiveAiSuggestion(this.editor.state)) {
       this.editor.dispatch({
-        effects: TextEditor3.Config.setAiAutoCompleteSuggestion.of(null)
+        effects: TextEditor2.Config.setAiAutoCompleteSuggestion.of(null)
       });
       return true;
     }
@@ -8012,7 +8091,7 @@ var ConsolePrompt = class extends Common9.ObjectWrapper.eventMixin(UI9.Widget.Wi
       return true;
     }
     const currentExecutionContext = UI9.Context.Context.instance().flavor(SDK8.RuntimeModel.ExecutionContext);
-    const isExpressionComplete = await TextEditor3.JavaScript.isExpressionComplete(doc.toString());
+    const isExpressionComplete = await TextEditor2.JavaScript.isExpressionComplete(doc.toString());
     if (currentExecutionContext !== UI9.Context.Context.instance().flavor(SDK8.RuntimeModel.ExecutionContext)) {
       return false;
     }
@@ -8044,7 +8123,7 @@ var ConsolePrompt = class extends Common9.ObjectWrapper.eventMixin(UI9.Widget.Wi
     }
     if (await this.enterWillEvaluate(forceEvaluate)) {
       this.appendCommand(this.text(), true);
-      TextEditor3.JavaScript.closeArgumentsHintsTooltip(this.editor.editor, this.#argumentHintsState);
+      TextEditor2.JavaScript.closeArgumentsHintsTooltip(this.editor.editor, this.#argumentHintsState);
       this.editor.dispatch({
         changes: { from: 0, to: this.editor.state.doc.length },
         scrollIntoView: true
@@ -8121,9 +8200,9 @@ var ConsolePrompt = class extends Common9.ObjectWrapper.eventMixin(UI9.Widget.Wi
     }
     this.aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion({ aidaClient: this.aidaClient }, "console", {
       getSelectionHead: () => this.editor.editor.state.selection.main.head,
-      getCompletionHint: () => this.editor.editor.plugin(TextEditor3.Config.showCompletionHint)?.currentHint,
+      getCompletionHint: () => this.editor.editor.plugin(TextEditor2.Config.showCompletionHint)?.currentHint,
       setAiAutoCompletion: (suggestion) => {
-        this.editor.dispatch({ effects: TextEditor3.Config.setAiAutoCompleteSuggestion.of(suggestion) });
+        this.editor.dispatch({ effects: TextEditor2.Config.setAiAutoCompleteSuggestion.of(suggestion) });
       }
     }, ["\n\n"]);
     this.aiCodeCompletion.addEventListener("ResponseReceived", (event) => {
@@ -8150,7 +8229,7 @@ var ConsolePrompt = class extends Common9.ObjectWrapper.eventMixin(UI9.Widget.Wi
         this.onAiCodeCompletionSettingChanged();
         if (this.teaser) {
           this.editor.dispatch({
-            effects: this.placeholderCompartment.reconfigure([TextEditor3.AiCodeCompletionTeaserPlaceholder.aiCodeCompletionTeaserPlaceholder(this.teaser)])
+            effects: this.placeholderCompartment.reconfigure([TextEditor2.AiCodeCompletionTeaserPlaceholder.aiCodeCompletionTeaserPlaceholder(this.teaser)])
           });
         }
       } else if (this.aiCodeCompletion) {

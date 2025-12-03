@@ -5872,7 +5872,6 @@ for (const action of actions) {
 // gen/front_end/panels/ai_assistance/ai_assistance-meta.js
 import * as Common13 from "./../../core/common/common.js";
 import * as i18n35 from "./../../core/i18n/i18n.js";
-import * as Root7 from "./../../core/root/root.js";
 import * as UI15 from "./../../ui/legacy/legacy.js";
 var UIStrings17 = {
   /**
@@ -5888,11 +5887,6 @@ var UIStrings17 = {
    * the settings tab.
    */
   enableAiAssistance: "Enable AI assistance",
-  /**
-   * @description Text of a tooltip to redirect to the AI assistance panel with
-   * the current element as context
-   */
-  askAi: "Ask AI",
   /**
    * @description Text of a context menu item to redirect to the AI assistance panel with
    * the current context
@@ -5950,19 +5944,12 @@ function isFileAgentFeatureAvailable(config) {
 function isAnyFeatureAvailable(config) {
   return isStylingAgentFeatureAvailable(config) || isNetworkAgentFeatureAvailable(config) || isPerformanceAgentFeatureAvailable(config) || isFileAgentFeatureAvailable(config);
 }
-function titleForAiAssistanceActions() {
-  if (Root7.Runtime.hostConfig.devToolsAiDebugWithAi?.enabled || Root7.Runtime.hostConfig.devToolsAiSubmenuPrompts?.enabled) {
-    return i18nLazyString17(UIStrings17.debugWithAi)();
-  }
-  return i18nLazyString17(UIStrings17.askAi)();
-}
 UI15.ViewManager.registerViewExtension({
   location: "drawer-view",
   id: "freestyler",
   commandPrompt: i18nLazyString17(UIStrings17.showAiAssistance),
   title: i18nLazyString17(UIStrings17.aiAssistance),
   order: 10,
-  featurePromotionId: "ai-assistance",
   persistence: "closeable",
   hasToolbar: false,
   condition: (config) => isAnyFeatureAvailable(config) && !isPolicyRestricted2(config),
@@ -6002,7 +5989,7 @@ UI15.ActionRegistration.registerActionExtension({
     return [];
   },
   category: "GLOBAL",
-  title: titleForAiAssistanceActions,
+  title: i18nLazyString17(UIStrings17.debugWithAi),
   configurableBindings: false,
   featurePromotionId: "ai-assistance",
   async loadActionDelegate() {
@@ -6017,7 +6004,7 @@ UI15.ActionRegistration.registerActionExtension({
     return [];
   },
   category: "GLOBAL",
-  title: titleForAiAssistanceActions,
+  title: i18nLazyString17(UIStrings17.debugWithAi),
   configurableBindings: false,
   async loadActionDelegate() {
     const AiAssistance = await loadAiAssistanceModule();
@@ -6031,7 +6018,7 @@ UI15.ActionRegistration.registerActionExtension({
     return [];
   },
   category: "GLOBAL",
-  title: titleForAiAssistanceActions,
+  title: i18nLazyString17(UIStrings17.debugWithAi),
   configurableBindings: false,
   async loadActionDelegate() {
     const AiAssistance = await loadAiAssistanceModule();
@@ -6045,7 +6032,7 @@ UI15.ActionRegistration.registerActionExtension({
     return [];
   },
   category: "GLOBAL",
-  title: titleForAiAssistanceActions,
+  title: i18nLazyString17(UIStrings17.debugWithAi),
   configurableBindings: false,
   async loadActionDelegate() {
     const AiAssistance = await loadAiAssistanceModule();
@@ -6059,7 +6046,7 @@ UI15.ActionRegistration.registerActionExtension({
     return [];
   },
   category: "GLOBAL",
-  title: titleForAiAssistanceActions,
+  title: i18nLazyString17(UIStrings17.debugWithAi),
   configurableBindings: false,
   async loadActionDelegate() {
     const AiAssistance = await loadAiAssistanceModule();
@@ -6073,7 +6060,7 @@ UI15.ActionRegistration.registerActionExtension({
     return [];
   },
   category: "GLOBAL",
-  title: titleForAiAssistanceActions,
+  title: i18nLazyString17(UIStrings17.debugWithAi),
   configurableBindings: false,
   async loadActionDelegate() {
     const AiAssistance = await loadAiAssistanceModule();
@@ -6087,7 +6074,7 @@ UI15.ActionRegistration.registerActionExtension({
     return [];
   },
   category: "GLOBAL",
-  title: titleForAiAssistanceActions,
+  title: i18nLazyString17(UIStrings17.debugWithAi),
   configurableBindings: false,
   async loadActionDelegate() {
     const AiAssistance = await loadAiAssistanceModule();
@@ -6101,7 +6088,7 @@ UI15.ActionRegistration.registerActionExtension({
     return [];
   },
   category: "GLOBAL",
-  title: titleForAiAssistanceActions,
+  title: i18nLazyString17(UIStrings17.debugWithAi),
   configurableBindings: false,
   async loadActionDelegate() {
     const AiAssistance = await loadAiAssistanceModule();

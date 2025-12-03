@@ -16987,26 +16987,20 @@ var TimelineFlameChartDataProvider = class extends Common16.ObjectWrapper.Object
     if (perfAIEntryPointEnabled && this.parsedTrace) {
       const callTree = AIAssistance2.AICallTree.AICallTree.fromEvent(entry, this.parsedTrace);
       if (callTree) {
+        let appendSubmenuPromptAction = function(submenu2, action3, label, prompt, jslogContext) {
+          submenu2.defaultSection().appendItem(label, () => action3.execute({ prompt }), { disabled: !action3.enabled(), jslogContext });
+        };
         const action2 = UI19.ActionRegistry.ActionRegistry.instance().getAction(PERF_AI_ACTION_ID);
-        if (Root6.Runtime.hostConfig.devToolsAiSubmenuPrompts?.enabled) {
-          let appendSubmenuPromptAction = function(submenu2, action3, label, prompt, jslogContext) {
-            submenu2.defaultSection().appendItem(label, () => action3.execute({ prompt }), { disabled: !action3.enabled(), jslogContext });
-          };
-          const submenu = contextMenu.footerSection().appendSubMenuItem(action2.title(), false, PERF_AI_ACTION_ID, Root6.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.featureName);
-          submenu.defaultSection().appendAction(PERF_AI_ACTION_ID, i18nString27(UIStrings27.startAChat));
-          submenu.defaultSection().appendItem(i18nString27(UIStrings27.labelEntry), () => {
-            this.dispatchEventToListeners("EntryLabelAnnotationAdded", { entryIndex, withLinkCreationButton: false });
-          }, {
-            jslogContext: "timeline.annotations.create-entry-label"
-          });
-          appendSubmenuPromptAction(submenu, action2, i18nString27(UIStrings27.assessThePurpose), "What's the purpose of this entry?", PERF_AI_ACTION_ID + ".purpose");
-          appendSubmenuPromptAction(submenu, action2, i18nString27(UIStrings27.identifyTimeSpent), "Where is most time being spent in this call tree?", PERF_AI_ACTION_ID + ".time-spent");
-          appendSubmenuPromptAction(submenu, action2, i18nString27(UIStrings27.findImprovements), "How can I reduce the time of this call tree?", PERF_AI_ACTION_ID + ".improvements");
-        } else if (Root6.Runtime.hostConfig.devToolsAiDebugWithAi?.enabled) {
-          contextMenu.footerSection().appendAction(PERF_AI_ACTION_ID, void 0, false, void 0, Root6.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.featureName);
-        } else {
-          contextMenu.footerSection().appendAction(PERF_AI_ACTION_ID);
-        }
+        const submenu = contextMenu.footerSection().appendSubMenuItem(action2.title(), false, PERF_AI_ACTION_ID);
+        submenu.defaultSection().appendAction(PERF_AI_ACTION_ID, i18nString27(UIStrings27.startAChat));
+        submenu.defaultSection().appendItem(i18nString27(UIStrings27.labelEntry), () => {
+          this.dispatchEventToListeners("EntryLabelAnnotationAdded", { entryIndex, withLinkCreationButton: false });
+        }, {
+          jslogContext: "timeline.annotations.create-entry-label"
+        });
+        appendSubmenuPromptAction(submenu, action2, i18nString27(UIStrings27.assessThePurpose), "What's the purpose of this entry?", PERF_AI_ACTION_ID + ".purpose");
+        appendSubmenuPromptAction(submenu, action2, i18nString27(UIStrings27.identifyTimeSpent), "Where is most time being spent in this call tree?", PERF_AI_ACTION_ID + ".time-spent");
+        appendSubmenuPromptAction(submenu, action2, i18nString27(UIStrings27.findImprovements), "How can I reduce the time of this call tree?", PERF_AI_ACTION_ID + ".improvements");
       }
     }
     if (!possibleActions) {

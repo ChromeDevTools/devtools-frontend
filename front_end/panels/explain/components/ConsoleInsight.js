@@ -210,7 +210,7 @@ function renderLearnMoreAboutInsights() {
   </x-link>`;
     // clang-format on
 }
-function maybeRenderSources(directCitationUrls, highlightedCitationIndex, output) {
+function maybeRenderSources(directCitationUrls, highlightedCitationIndex, onCitationAnimationEnd, output) {
     if (!directCitationUrls.length) {
         return Lit.nothing;
     }
@@ -224,6 +224,7 @@ function maybeRenderSources(directCitationUrls, highlightedCitationIndex, output
             class=${Directives.classMap({ link: true, highlighted: index === highlightedCitationIndex })}
             jslog=${VisualLogging.link('references.console-insights').track({ click: true })}
             ${Directives.ref(e => { output.citationLinks[index] = e; })}
+            @animationend=${onCitationAnimationEnd}
           >
             ${url}
           </x-link>
@@ -304,7 +305,7 @@ function renderInsight(insight, { renderer, disableAnimations, areReferenceDetai
             @transitionend=${callbacks.onReferencesOpen}
           >
             <summary>${i18nString(UIStrings.references)}</summary>
-            ${maybeRenderSources(insight.directCitationUrls, highlightedCitationIndex, output)}
+            ${maybeRenderSources(insight.directCitationUrls, highlightedCitationIndex, callbacks.onCitationAnimationEnd, output)}
             ${maybeRenderRelatedContent(insight.relatedUrls, insight.directCitationUrls)}
           </details>
         ` : Lit.nothing}
@@ -606,15 +607,16 @@ export const DEFAULT_VIEW = (input, output, target) => {
   `, target);
     // clang-format on
 };
-export class ConsoleInsight extends HTMLElement {
+export class ConsoleInsight extends UI.Widget.Widget {
     static async create(promptBuilder, aidaClient) {
         const aidaPreconditions = await Host.AidaClient.AidaClient.checkAccessPreconditions();
-        const component = new ConsoleInsight(promptBuilder, aidaClient, aidaPreconditions);
-        component.classList.add('devtools-console-insight');
-        return component;
+        const widget = document.createElement('devtools-widget');
+        widget.classList.add('devtools-console-insight');
+        widget.widgetConfig = UI.Widget.widgetConfig(element => new ConsoleInsight(promptBuilder, aidaClient, aidaPreconditions, element));
+        return widget;
     }
-    #shadow = this.attachShadow({ mode: 'open' });
     disableAnimations = false;
+    #view;
     #promptBuilder;
     #aidaClient;
     #renderer;
@@ -632,8 +634,9 @@ export class ConsoleInsight extends HTMLElement {
     #aidaPreconditions;
     #boundOnAidaAvailabilityChange;
     #marked;
-    constructor(promptBuilder, aidaClient, aidaPreconditions) {
-        super();
+    constructor(promptBuilder, aidaClient, aidaPreconditions, element, view = DEFAULT_VIEW) {
+        super(element);
+        this.#view = view;
         this.#promptBuilder = promptBuilder;
         this.#aidaClient = aidaClient;
         this.#aidaPreconditions = aidaPreconditions;
@@ -642,8 +645,7 @@ export class ConsoleInsight extends HTMLElement {
         this.#marked = new Marked.Marked.Marked({ extensions: [markedExtension] });
         this.#state = this.#getStateFromAidaAvailability();
         this.#boundOnAidaAvailabilityChange = this.#onAidaAvailabilityChange.bind(this);
-        this.#render();
-        this.focus();
+        this.requestUpdate();
     }
     #citationClickHandler(index) {
         if (this.#state.type !== "insight" /* State.INSIGHT */) {
@@ -653,7 +655,7 @@ export class ConsoleInsight extends HTMLElement {
         this.#areReferenceDetailsOpen = true;
         // index is 1-based, #currentHighlightedCitationIndex is 0-based
         this.#highlightedCitationIndex = index - 1;
-        this.#render();
+        this.requestUpdate();
         // If details are open, focus and scroll to citation immediately. Otherwise wait for opening transition.
         if (areDetailsAlreadyExpanded) {
             this.#scrollToHighlightedCitation();
@@ -707,7 +709,9 @@ export class ConsoleInsight extends HTMLElement {
     #getOnboardingCompletedSetting() {
         return Common.Settings.Settings.instance().createLocalSetting('console-insights-onboarding-finished', false);
     }
-    connectedCallback() {
+    wasShown() {
+        super.wasShown();
+        this.focus();
         this.#consoleInsightsEnabledSetting?.addChangeListener(this.#onConsoleInsightsSettingChanged, this);
         const blockedByAge = Root.Runtime.hostConfig.aidaAvailability?.blockedByAge === true;
         if (this.#state.type === "loading" /* State.LOADING */ && this.#consoleInsightsEnabledSetting?.getIfNotDisabled() === true &&
@@ -724,7 +728,8 @@ export class ConsoleInsight extends HTMLElement {
         }
         void this.#generateInsightIfNeeded();
     }
-    disconnectedCallback() {
+    willHide() {
+        super.willHide();
         this.#consoleInsightsEnabledSetting?.removeChangeListener(this.#onConsoleInsightsSettingChanged, this);
         Host.AidaClient.HostConfigTracker.instance().removeEventListener("aidaAvailabilityChanged" /* Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED */, this.#boundOnAidaAvailabilityChange);
     }
@@ -762,7 +767,7 @@ export class ConsoleInsight extends HTMLElement {
     #transitionTo(newState) {
         this.#stateChanging = this.#state.type !== newState.type;
         this.#state = newState;
-        this.#render();
+        this.requestUpdate();
     }
     async #generateInsightIfNeeded() {
         if (this.#state.type !== "loading" /* State.LOADING */) {
@@ -793,19 +798,21 @@ export class ConsoleInsight extends HTMLElement {
             Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightsReminderTeaserCanceled);
         }
         this.#closing = true;
-        this.#render();
+        this.requestUpdate();
     }
     #onAnimationEnd() {
         if (this.#closing) {
-            this.dispatchEvent(new CloseEvent());
+            this.contentElement.dispatchEvent(new CloseEvent());
             return;
         }
         if (this.#stateChanging) {
             this.#headerRef.value?.focus();
         }
+    }
+    #onCitationAnimationEnd() {
         if (this.#highlightedCitationIndex !== -1) {
             this.#highlightedCitationIndex = -1;
-            this.#render();
+            this.requestUpdate();
         }
     }
     #onRating(isPositive) {
@@ -820,7 +827,7 @@ export class ConsoleInsight extends HTMLElement {
             return;
         }
         this.#selectedRating = isPositive;
-        this.#render();
+        this.requestUpdate();
         if (this.#selectedRating) {
             Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightRatedPositive);
         }
@@ -1013,7 +1020,7 @@ export class ConsoleInsight extends HTMLElement {
             if (!detailsElement.open) {
                 this.#highlightedCitationIndex = -1;
             }
-            this.#render();
+            this.requestUpdate();
         }
     }
     #onDisclaimerSettingsLink() {
@@ -1027,12 +1034,13 @@ export class ConsoleInsight extends HTMLElement {
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightsOptInTeaserSettingsLinkClicked);
         void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
     }
-    #render() {
+    performUpdate() {
         const input = {
             state: this.#state,
             closing: this.#closing,
             disableAnimations: this.disableAnimations,
             renderer: this.#renderer,
+            citationClickHandler: this.#citationClickHandler.bind(this),
             selectedRating: this.#selectedRating,
             noLogging: Root.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue ===
                 Root.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING,
@@ -1041,6 +1049,7 @@ export class ConsoleInsight extends HTMLElement {
             callbacks: {
                 onClose: this.#onClose.bind(this),
                 onAnimationEnd: this.#onAnimationEnd.bind(this),
+                onCitationAnimationEnd: this.#onCitationAnimationEnd.bind(this),
                 onSearch: this.#onSearch.bind(this),
                 onRating: this.#onRating.bind(this),
                 onReport: this.#onReport.bind(this),
@@ -1057,9 +1066,8 @@ export class ConsoleInsight extends HTMLElement {
             headerRef: this.#headerRef,
             citationLinks: [],
         };
-        DEFAULT_VIEW(input, output, this.#shadow);
+        this.#view(input, output, this.contentElement);
         this.#citationLinks = output.citationLinks;
     }
 }
-customElements.define('devtools-console-insight', ConsoleInsight);
 //# sourceMappingURL=ConsoleInsight.js.map

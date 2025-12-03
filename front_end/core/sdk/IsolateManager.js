@@ -35,6 +35,12 @@ export class IsolateManager extends Common.ObjectWrapper.ObjectWrapper {
             observer.isolateAdded(isolate);
         }
     }
+    unobserveIsolates(observer) {
+        this.#observers.delete(observer);
+        if (!this.#observers.size) {
+            this.#pollId++;
+        }
+    }
     modelAdded(model) {
         void this.#modelAdded(model);
     }

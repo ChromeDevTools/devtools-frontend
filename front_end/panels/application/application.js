@@ -29,11 +29,11 @@ __export(ApplicationPanelSidebar_exports, {
 import * as Common16 from "./../../core/common/common.js";
 import * as Host9 from "./../../core/host/host.js";
 import * as i18n55 from "./../../core/i18n/i18n.js";
-import * as Platform7 from "./../../core/platform/platform.js";
+import * as Platform8 from "./../../core/platform/platform.js";
 import * as SDK23 from "./../../core/sdk/sdk.js";
 import * as IssuesManager from "./../../models/issues_manager/issues_manager.js";
 import * as LegacyWrapper7 from "./../../ui/components/legacy_wrapper/legacy_wrapper.js";
-import { createIcon as createIcon12 } from "./../../ui/kit/kit.js";
+import { createIcon as createIcon11 } from "./../../ui/kit/kit.js";
 import * as SourceFrame5 from "./../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI22 from "./../../ui/legacy/legacy.js";
 
@@ -93,8 +93,8 @@ var ExpandableApplicationPanelTreeElement = class extends ApplicationPanelTreeEl
   get itemURL() {
     return "category://" + this.categoryName;
   }
-  setLink(link5) {
-    this.categoryLink = link5;
+  setLink(link4) {
+    this.categoryLink = link4;
   }
   onselect(selectedByUser) {
     super.onselect(selectedByUser);
@@ -136,16 +136,17 @@ var AppManifestView_exports = {};
 __export(AppManifestView_exports, {
   AppManifestView: () => AppManifestView
 });
+import "./../../ui/kit/kit.js";
 import * as Common2 from "./../../core/common/common.js";
 import * as Host from "./../../core/host/host.js";
 import * as i18n from "./../../core/i18n/i18n.js";
+import * as Platform from "./../../core/platform/platform.js";
 import * as SDK from "./../../core/sdk/sdk.js";
 import * as Buttons from "./../../ui/components/buttons/buttons.js";
-import * as uiI18n from "./../../ui/i18n/i18n.js";
-import { createIcon } from "./../../ui/kit/kit.js";
 import * as InlineEditor from "./../../ui/legacy/components/inline_editor/inline_editor.js";
 import * as Components from "./../../ui/legacy/components/utils/utils.js";
 import * as UI2 from "./../../ui/legacy/legacy.js";
+import { html, i18nTemplate, nothing, render } from "./../../ui/lit/lit.js";
 import * as VisualLogging from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/application/appManifestView.css.js
@@ -620,6 +621,11 @@ var AppManifestView = class extends Common2.ObjectWrapper.eventMixin(UI2.Widget.
   serviceWorkerManager;
   overlayModel;
   protocolHandlersView;
+  manifestUrl;
+  manifestData;
+  manifestErrors;
+  installabilityErrors;
+  appIdResponse;
   constructor(emptyView, reportView, throttler) {
     super({
       jslog: `${VisualLogging.pane("manifest")}`,
@@ -664,6 +670,11 @@ var AppManifestView = class extends Common2.ObjectWrapper.eventMixin(UI2.Widget.
     this.throttler = throttler;
     SDK.TargetManager.TargetManager.instance().observeTargets(this);
     this.registeredListeners = [];
+    this.manifestUrl = Platform.DevToolsPath.EmptyUrlString;
+    this.manifestData = null;
+    this.manifestErrors = [];
+    this.installabilityErrors = [];
+    this.appIdResponse = null;
   }
   getStaticSections() {
     return [
@@ -719,13 +730,23 @@ var AppManifestView = class extends Common2.ObjectWrapper.eventMixin(UI2.Widget.
       this.resourceTreeModel.getInstallabilityErrors(),
       this.resourceTreeModel.getAppId()
     ]);
-    void this.throttler.schedule(
-      () => this.renderManifest(url, data, errors, installabilityErrors, appId),
-      immediately ? "AsSoonAsPossible" : "Default"
-      /* Common.Throttler.Scheduling.DEFAULT */
-    );
+    this.manifestUrl = url;
+    this.manifestData = data;
+    this.manifestErrors = errors;
+    this.installabilityErrors = installabilityErrors;
+    this.appIdResponse = appId;
+    if (immediately) {
+      await this.performUpdate();
+    } else {
+      await this.requestUpdate();
+    }
   }
-  async renderManifest(url, data, errors, installabilityErrors, appIdResponse) {
+  async performUpdate() {
+    const url = this.manifestUrl;
+    let data = this.manifestData;
+    const errors = this.manifestErrors;
+    const installabilityErrors = this.installabilityErrors;
+    const appIdResponse = this.appIdResponse;
     const appId = appIdResponse?.appId || null;
     const recommendedId = appIdResponse?.recommendedId || null;
     if ((!data || data === "{}") && !errors.length) {
@@ -737,12 +758,37 @@ var AppManifestView = class extends Common2.ObjectWrapper.eventMixin(UI2.Widget.
     this.emptyView.hideWidget();
     this.reportView.showWidget();
     this.dispatchEventToListeners("ManifestDetected", true);
-    const link5 = Components.Linkifier.Linkifier.linkifyURL(url);
-    link5.tabIndex = 0;
-    this.reportView.setURL(link5);
+    const link4 = Components.Linkifier.Linkifier.linkifyURL(url, { tabStop: true });
+    this.reportView.setURL(link4);
+    if (!data) {
+      this.renderErrors([], errors, []);
+      return;
+    }
+    if (data.charCodeAt(0) === 65279) {
+      data = data.slice(1);
+    }
+    const parsedManifest = JSON.parse(data);
+    const warnings = this.renderIdentity(parsedManifest, appId, recommendedId);
+    this.renderPresentation(parsedManifest, url);
+    this.renderProtocolHandlers(parsedManifest, url);
+    const { imageResourceErrors: iconErrors } = await this.renderIcons(parsedManifest, url);
+    const { warnings: shortcutWarnings, imageResourceErrors: shortcutImageErrors } = await this.renderShortcuts(parsedManifest, url);
+    warnings.push(...shortcutWarnings);
+    const { warnings: screenshotWarnings, imageResourceErrors: screenshotImageErrors } = await this.renderScreenshots(parsedManifest, url);
+    warnings.push(...screenshotWarnings);
+    const imageErrors = [...iconErrors, ...shortcutImageErrors, ...screenshotImageErrors];
+    this.renderInstallability(installabilityErrors);
+    await this.renderWindowControls(parsedManifest, url);
+    this.renderErrors(warnings, errors, imageErrors);
+    this.dispatchEventToListeners(
+      "ManifestRendered"
+      /* Events.MANIFEST_RENDERED */
+    );
+  }
+  renderErrors(warnings, manifestErrors, imageErrors) {
     this.errorsSection.clearContent();
-    this.errorsSection.element.classList.toggle("hidden", !errors.length);
-    for (const error of errors) {
+    this.errorsSection.element.classList.toggle("hidden", !manifestErrors.length && !warnings.length && !imageErrors.length);
+    for (const error of manifestErrors) {
       const icon = UI2.UIUtils.createIconLabel({
         title: error.message,
         iconName: error.critical ? "cross-circle-filled" : "warning-filled",
@@ -750,76 +796,80 @@ var AppManifestView = class extends Common2.ObjectWrapper.eventMixin(UI2.Widget.
       });
       this.errorsSection.appendRow().appendChild(icon);
     }
-    if (!data) {
-      return;
+    for (const warning of warnings) {
+      const msgElement = document.createTextNode(warning);
+      this.errorsSection.appendRow().appendChild(msgElement);
     }
-    if (data.charCodeAt(0) === 65279) {
-      data = data.slice(1);
+    for (const error of imageErrors) {
+      const msgElement = document.createTextNode(error);
+      this.errorsSection.appendRow().appendChild(msgElement);
     }
-    const parsedManifest = JSON.parse(data);
-    this.nameField.textContent = stringProperty("name");
-    this.shortNameField.textContent = stringProperty("short_name");
+  }
+  renderIdentity(parsedManifest, appId, recommendedId) {
+    this.nameField.textContent = this.stringProperty(parsedManifest, "name");
+    this.shortNameField.textContent = this.stringProperty(parsedManifest, "short_name");
     const warnings = [];
-    const description = stringProperty("description");
+    const description = this.stringProperty(parsedManifest, "description");
     this.descriptionField.textContent = description;
     if (description.length > 300) {
       warnings.push(i18nString(UIStrings.descriptionMayBeTruncated));
     }
-    const startURL = stringProperty("start_url");
     if (appId && recommendedId) {
       const appIdField = this.identitySection.appendField(i18nString(UIStrings.computedAppId));
       UI2.ARIAUtils.setLabel(appIdField, "App Id");
-      appIdField.textContent = appId;
-      const helpIcon = createIcon("help", "inline-icon");
-      helpIcon.title = i18nString(UIStrings.appIdExplainer);
-      helpIcon.setAttribute("jslog", `${VisualLogging.action("help").track({ hover: true })}`);
-      appIdField.appendChild(helpIcon);
-      const learnMoreLink = UI2.XLink.XLink.create("https://developer.chrome.com/blog/pwa-manifest-id/", i18nString(UIStrings.learnMore), void 0, void 0, "learn-more");
-      appIdField.appendChild(learnMoreLink);
-      if (!stringProperty("id")) {
-        const suggestedIdNote = appIdField.createChild("div", "multiline-value");
-        const suggestedIdSpan = document.createElement("code");
-        suggestedIdSpan.textContent = recommendedId;
-        const copyButton = new Buttons.Button.Button();
-        copyButton.data = {
-          variant: "icon",
-          iconName: "copy",
-          size: "SMALL",
-          jslogContext: "manifest.copy-id",
-          title: i18nString(UIStrings.copyToClipboard)
-        };
-        copyButton.className = "inline-button";
-        copyButton.addEventListener("click", () => {
-          UI2.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.copiedToClipboard, { PH1: recommendedId }));
-          Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(recommendedId);
-        });
-        suggestedIdNote.appendChild(uiI18n.getFormatLocalizedString(str_, UIStrings.appIdNote, { PH1: suggestedIdSpan, PH2: copyButton }));
-      }
+      const onCopy = () => {
+        UI2.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.copiedToClipboard, { PH1: recommendedId }));
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(recommendedId);
+      };
+      render(html`
+        ${appId}
+        <devtools-icon class="inline-icon" name="help" title=${i18nString(UIStrings.appIdExplainer)}
+            jslog=${VisualLogging.action("help").track({ hover: true })}>
+        </devtools-icon>
+        <devtools-link href="https://developer.chrome.com/blog/pwa-manifest-id/"
+                      .jslogContext=${"learn-more"}>
+          ${i18nString(UIStrings.learnMore)}
+        </devtools-link>
+        ${!this.stringProperty(parsedManifest, "id") ? html`
+          <div class="multiline-value">
+            ${i18nTemplate(str_, UIStrings.appIdNote, {
+        PH1: html`<code>${recommendedId}</code>`,
+        PH2: html`<devtools-button class="inline-button" @click=${onCopy}
+                          .iconName=${"copy"}
+                          .variant=${"icon"}
+                          .size=${"SMALL"}
+                          .jslogContext=${"manifest.copy-id"}
+                          .title=${i18nString(UIStrings.copyToClipboard)}>
+                        </devtools-button>`
+      })}
+        </div>` : nothing}`, appIdField);
     } else {
       this.identitySection.removeField(i18nString(UIStrings.computedAppId));
     }
+    return warnings;
+  }
+  renderPresentation(parsedManifest, url) {
+    const startURL = this.stringProperty(parsedManifest, "start_url");
     this.startURLField.removeChildren();
     if (startURL) {
       const completeURL = Common2.ParsedURL.ParsedURL.completeURL(url, startURL);
       if (completeURL) {
-        const link6 = Components.Linkifier.Linkifier.linkifyURL(completeURL, { text: startURL });
-        link6.tabIndex = 0;
-        link6.setAttribute("jslog", `${VisualLogging.link("start-url").track({ click: true })}`);
-        this.startURLField.appendChild(link6);
+        const link4 = Components.Linkifier.Linkifier.linkifyURL(completeURL, { text: startURL, tabStop: true, jslogContext: "start-url" });
+        this.startURLField.appendChild(link4);
       }
     }
-    this.themeColorSwatch.classList.toggle("hidden", !stringProperty("theme_color"));
-    const themeColor = Common2.Color.parse(stringProperty("theme_color") || "white") || Common2.Color.parse("white");
+    this.themeColorSwatch.classList.toggle("hidden", !this.stringProperty(parsedManifest, "theme_color"));
+    const themeColor = Common2.Color.parse(this.stringProperty(parsedManifest, "theme_color") || "white") || Common2.Color.parse("white");
     if (themeColor) {
       this.themeColorSwatch.renderColor(themeColor);
     }
-    this.backgroundColorSwatch.classList.toggle("hidden", !stringProperty("background_color"));
-    const backgroundColor = Common2.Color.parse(stringProperty("background_color") || "white") || Common2.Color.parse("white");
+    this.backgroundColorSwatch.classList.toggle("hidden", !this.stringProperty(parsedManifest, "background_color"));
+    const backgroundColor = Common2.Color.parse(this.stringProperty(parsedManifest, "background_color") || "white") || Common2.Color.parse("white");
     if (backgroundColor) {
       this.backgroundColorSwatch.renderColor(backgroundColor);
     }
-    this.orientationField.textContent = stringProperty("orientation");
-    const displayType = stringProperty("display");
+    this.orientationField.textContent = this.stringProperty(parsedManifest, "orientation");
+    const displayType = this.stringProperty(parsedManifest, "display");
     this.displayField.textContent = displayType;
     const noteTaking = parsedManifest["note_taking"] || {};
     const newNoteUrl = noteTaking["new_note_url"];
@@ -828,39 +878,32 @@ var AppManifestView = class extends Common2.ObjectWrapper.eventMixin(UI2.Widget.
     this.newNoteUrlField.removeChildren();
     if (hasNewNoteUrl) {
       const completeURL = Common2.ParsedURL.ParsedURL.completeURL(url, newNoteUrl);
-      const link6 = Components.Linkifier.Linkifier.linkifyURL(completeURL, { text: newNoteUrl });
-      link6.tabIndex = 0;
-      this.newNoteUrlField.appendChild(link6);
+      const link4 = Components.Linkifier.Linkifier.linkifyURL(completeURL, { text: newNoteUrl, tabStop: true });
+      this.newNoteUrlField.appendChild(link4);
     }
+  }
+  renderProtocolHandlers(parsedManifest, url) {
     const protocolHandlers = parsedManifest["protocol_handlers"] || [];
     this.protocolHandlersView.protocolHandlers = protocolHandlers;
     this.protocolHandlersView.manifestLink = url;
+  }
+  async renderIcons(parsedManifest, url) {
     const icons = parsedManifest["icons"] || [];
     this.iconsSection.clearContent();
-    const shortcuts = parsedManifest["shortcuts"] || [];
-    for (const shortcutsSection of this.shortcutSections) {
-      shortcutsSection.detach(
-        /** overrideHideOnDetach= */
-        true
-      );
-    }
-    const screenshots = parsedManifest["screenshots"] || [];
-    for (const screenshotSection of this.screenshotsSections) {
-      screenshotSection.detach(
-        /** overrideHideOnDetach= */
-        true
-      );
-    }
     const imageErrors = [];
-    const setIconMaskedCheckbox = UI2.UIUtils.CheckboxLabel.create(i18nString(UIStrings.showOnlyTheMinimumSafeAreaFor));
-    setIconMaskedCheckbox.classList.add("mask-checkbox");
-    setIconMaskedCheckbox.setAttribute("jslog", `${VisualLogging.toggle("show-minimal-safe-area-for-maskable-icons").track({ change: true })}`);
-    setIconMaskedCheckbox.addEventListener("click", () => {
-      this.iconsSection.setIconMasked(setIconMaskedCheckbox.checked);
-    });
-    this.iconsSection.appendRow().appendChild(setIconMaskedCheckbox);
-    const documentationLink = UI2.XLink.XLink.create("https://web.dev/maskable-icon/", i18nString(UIStrings.documentationOnMaskableIcons), void 0, void 0, "learn-more");
-    this.iconsSection.appendRow().appendChild(uiI18n.getFormatLocalizedString(str_, UIStrings.needHelpReadOurS, { PH1: documentationLink }));
+    render(html`<devtools-checkbox class="mask-checkbox"
+        jslog=${VisualLogging.toggle("show-minimal-safe-area-for-maskable-icons").track({ change: true })}
+        @click=${(event) => {
+      this.iconsSection.setIconMasked(event.target.checked);
+    }}>
+      ${i18nString(UIStrings.showOnlyTheMinimumSafeAreaFor)}
+    </devtools-checkbox>`, this.iconsSection.appendRow());
+    render(i18nTemplate(str_, UIStrings.needHelpReadOurS, {
+      PH1: html`
+            <devtools-link href="https://web.dev/maskable-icon/" .jslogContext=${"learn-more"}>
+              ${i18nString(UIStrings.documentationOnMaskableIcons)}
+            </devtools-link>`
+    }), this.iconsSection.appendRow());
     let squareSizedIconAvailable = false;
     for (const icon of icons) {
       const result = await this.appendImageResourceToSection(
@@ -876,6 +919,18 @@ var AppManifestView = class extends Common2.ObjectWrapper.eventMixin(UI2.Widget.
     if (!squareSizedIconAvailable) {
       imageErrors.push(i18nString(UIStrings.sSShouldHaveSquareIcon));
     }
+    return { imageResourceErrors: imageErrors };
+  }
+  async renderShortcuts(parsedManifest, url) {
+    const shortcuts = parsedManifest["shortcuts"] || [];
+    for (const shortcutsSection of this.shortcutSections) {
+      shortcutsSection.detach(
+        /** overrideHideOnDetach= */
+        true
+      );
+    }
+    const warnings = [];
+    const imageErrors = [];
     if (shortcuts.length > 4) {
       warnings.push(i18nString(UIStrings.shortcutsMayBeNotAvailable));
     }
@@ -893,10 +948,8 @@ var AppManifestView = class extends Common2.ObjectWrapper.eventMixin(UI2.Widget.
       }
       const urlField = shortcutSection.appendFlexedField(i18nString(UIStrings.url));
       const shortcutUrl = Common2.ParsedURL.ParsedURL.completeURL(url, shortcut.url);
-      const link6 = Components.Linkifier.Linkifier.linkifyURL(shortcutUrl, { text: shortcut.url });
-      link6.setAttribute("jslog", `${VisualLogging.link("shortcut").track({ click: true })}`);
-      link6.tabIndex = 0;
-      urlField.appendChild(link6);
+      const link4 = Components.Linkifier.Linkifier.linkifyURL(shortcutUrl, { text: shortcut.url, tabStop: true, jslogContext: "shortcut" });
+      urlField.appendChild(link4);
       const shortcutIcons = shortcut.icons || [];
       let hasShortcutIconLargeEnough = false;
       for (const shortcutIcon of shortcutIcons) {
@@ -910,7 +963,7 @@ var AppManifestView = class extends Common2.ObjectWrapper.eventMixin(UI2.Widget.
         imageErrors.push(...shortcutIconErrors);
         if (!hasShortcutIconLargeEnough && shortcutIcon.sizes) {
           const shortcutIconSize = shortcutIcon.sizes.match(/^(\d+)x(\d+)$/);
-          if (shortcutIconSize && shortcutIconSize[1] >= 96 && shortcutIconSize[2] >= 96) {
+          if (shortcutIconSize && Number(shortcutIconSize[1]) >= 96 && Number(shortcutIconSize[2]) >= 96) {
             hasShortcutIconLargeEnough = true;
           }
         }
@@ -920,6 +973,18 @@ var AppManifestView = class extends Common2.ObjectWrapper.eventMixin(UI2.Widget.
       }
       shortcutIndex++;
     }
+    return { warnings, imageResourceErrors: imageErrors };
+  }
+  async renderScreenshots(parsedManifest, url) {
+    const screenshots = parsedManifest["screenshots"] || [];
+    for (const screenshotSection of this.screenshotsSections) {
+      screenshotSection.detach(
+        /** overrideHideOnDetach= */
+        true
+      );
+    }
+    const warnings = [];
+    const imageErrors = [];
     let screenshotIndex = 1;
     const formFactorScreenshotDimensions = /* @__PURE__ */ new Map();
     let haveScreenshotsDifferentAspectRatio = false;
@@ -969,6 +1034,9 @@ var AppManifestView = class extends Common2.ObjectWrapper.eventMixin(UI2.Widget.
     if (screenshotsForMobile.length > 5) {
       warnings.push(i18nString(UIStrings.tooManyScreenshotsForMobile));
     }
+    return { warnings, imageResourceErrors: imageErrors };
+  }
+  renderInstallability(installabilityErrors) {
     this.installabilitySection.clearContent();
     this.installabilitySection.element.classList.toggle("hidden", !installabilityErrors.length);
     const errorMessages = this.getInstallabilityErrorMessages(installabilityErrors);
@@ -976,50 +1044,51 @@ var AppManifestView = class extends Common2.ObjectWrapper.eventMixin(UI2.Widget.
       const msgElement = document.createTextNode(error);
       this.installabilitySection.appendRow().appendChild(msgElement);
     }
-    this.errorsSection.element.classList.toggle("hidden", !errors.length && !imageErrors.length && !warnings.length);
-    for (const warning of warnings) {
-      const msgElement = document.createTextNode(warning);
-      this.errorsSection.appendRow().appendChild(msgElement);
+  }
+  stringProperty(parsedManifest, name) {
+    const value = parsedManifest[name];
+    if (typeof value !== "string") {
+      return "";
     }
-    for (const error of imageErrors) {
-      const msgElement = document.createTextNode(error);
-      this.errorsSection.appendRow().appendChild(msgElement);
-    }
-    function stringProperty(name) {
-      const value = parsedManifest[name];
-      if (typeof value !== "string") {
-        return "";
-      }
-      return value;
-    }
+    return value;
+  }
+  async renderWindowControls(parsedManifest, url) {
     this.windowControlsSection.clearContent();
     const displayOverride = parsedManifest["display_override"] || [];
     const hasWco = displayOverride.includes("window-controls-overlay");
-    const displayOverrideLink = UI2.XLink.XLink.create("https://developer.mozilla.org/en-US/docs/Web/Manifest/display_override", "display-override", void 0, void 0, "display-override");
-    const displayOverrideText = document.createElement("code");
-    displayOverrideText.appendChild(displayOverrideLink);
-    const wcoStatusMessage = this.windowControlsSection.appendRow();
     if (hasWco) {
-      const checkmarkIcon = createIcon("check-circle", "inline-icon");
-      wcoStatusMessage.appendChild(checkmarkIcon);
-      const wco = document.createElement("code");
-      wco.classList.add("wco");
-      wco.textContent = "window-controls-overlay";
-      wcoStatusMessage.appendChild(uiI18n.getFormatLocalizedString(str_, UIStrings.wcoFound, { PH1: wco, PH2: displayOverrideText, PH3: link5 }));
+      render(html`
+        <devtools-icon class="inline-icon" name="check-circle"></devtools-icon>
+        ${i18nTemplate(str_, UIStrings.wcoFound, {
+        PH1: html`<code class="wco">window-controls-overlay</code>`,
+        PH2: html`<code>
+            <devtools-link href="https://developer.mozilla.org/en-US/docs/Web/Manifest/display_override"
+                          .jslogContext=${"display-override"}>
+              display-override
+            </devtools-link>
+          </code>`,
+        PH3: html`${Components.Linkifier.Linkifier.linkifyURL(url)}`
+      })}`, this.windowControlsSection.appendRow());
       if (this.overlayModel) {
-        await this.appendWindowControlsToSection(this.overlayModel, url, stringProperty("theme_color"));
+        await this.appendWindowControlsToSection(this.overlayModel, url, this.stringProperty(parsedManifest, "theme_color"));
       }
     } else {
-      const infoIcon = createIcon("info", "inline-icon");
-      wcoStatusMessage.appendChild(infoIcon);
-      wcoStatusMessage.appendChild(uiI18n.getFormatLocalizedString(str_, UIStrings.wcoNotFound, { PH1: displayOverrideText }));
+      render(html`
+        <devtools-icon class="inline-icon" name="info"></devtools-icon>
+        ${i18nTemplate(str_, UIStrings.wcoNotFound, {
+        PH1: html`<code>
+              <devtools-link href="https://developer.mozilla.org/en-US/docs/Web/Manifest/display_override"
+                            .jslogContext=${"display-override"}>
+                display-override
+            </devtools-link>
+          </code>`
+      })}`, this.windowControlsSection.appendRow());
     }
-    const wcoDocumentationLink = UI2.XLink.XLink.create("https://learn.microsoft.com/en-us/microsoft-edge/progressive-web-apps-chromium/how-to/window-controls-overlay", i18nString(UIStrings.customizePwaTitleBar), void 0, void 0, "customize-pwa-tittle-bar");
-    this.windowControlsSection.appendRow().appendChild(uiI18n.getFormatLocalizedString(str_, UIStrings.wcoNeedHelpReadMore, { PH1: wcoDocumentationLink }));
-    this.dispatchEventToListeners(
-      "ManifestRendered"
-      /* Events.MANIFEST_RENDERED */
-    );
+    render(i18nTemplate(str_, UIStrings.wcoNeedHelpReadMore, { PH1: html`<devtools-link
+        href="https://learn.microsoft.com/en-us/microsoft-edge/progressive-web-apps-chromium/how-to/window-controls-overlay"
+        .jslogContext=${"customize-pwa-tittle-bar"}>
+      ${i18nString(UIStrings.customizePwaTitleBar)}
+    </devtools-link>` }), this.windowControlsSection.appendRow());
   }
   getInstallabilityErrorMessages(installabilityErrors) {
     const errorMessages = [];
@@ -1265,26 +1334,38 @@ var AppManifestView = class extends Common2.ObjectWrapper.eventMixin(UI2.Widget.
       return;
     }
     await overlayModel.toggleWindowControlsToolbar(false);
-    const wcoOsCheckbox = UI2.UIUtils.CheckboxLabel.create(i18nString(UIStrings.selectWindowControlsOverlayEmulationOs), false);
-    wcoOsCheckbox.addEventListener("click", async () => {
-      await this.overlayModel?.toggleWindowControlsToolbar(wcoOsCheckbox.checked);
-    });
-    const osSelectElement = wcoOsCheckbox.createChild("select");
-    osSelectElement.appendChild(UI2.UIUtils.createOption("Windows", "Windows", "windows"));
-    osSelectElement.appendChild(UI2.UIUtils.createOption("macOS", "Mac", "macos"));
-    osSelectElement.appendChild(UI2.UIUtils.createOption("Linux", "Linux", "linux"));
-    osSelectElement.selectedIndex = 0;
-    if (this.overlayModel) {
-      osSelectElement.value = this.overlayModel?.getWindowControlsConfig().selectedPlatform;
-    }
-    osSelectElement.addEventListener("change", async () => {
+    let wcoToolbarEnabled = false;
+    const onSelectOs = async (event) => {
+      const osSelectElement = event.target;
       const selectedOS = osSelectElement.options[osSelectElement.selectedIndex].value;
       if (this.overlayModel) {
         this.overlayModel.setWindowControlsPlatform(selectedOS);
-        await this.overlayModel.toggleWindowControlsToolbar(wcoOsCheckbox.checked);
+        await this.overlayModel.toggleWindowControlsToolbar(wcoToolbarEnabled);
       }
-    });
-    this.windowControlsSection.appendRow().appendChild(wcoOsCheckbox);
+    };
+    render(html`
+      <devtools-checkbox @click=${async (event) => {
+      wcoToolbarEnabled = event.target.checked;
+      await this.overlayModel?.toggleWindowControlsToolbar(wcoToolbarEnabled);
+    }}
+          title=${i18nString(UIStrings.selectWindowControlsOverlayEmulationOs)}>
+        ${i18nString(UIStrings.selectWindowControlsOverlayEmulationOs)}
+      </devtools-checkbox>
+      <select value=${this.overlayModel?.getWindowControlsConfig().selectedPlatform ?? ""}
+              @change=${onSelectOs} .selectedIndex=${0}>
+        <option value=${"Windows"}
+                jslog=${VisualLogging.item("windows").track({ click: true })}>
+          Windows
+        </option>
+        <option value=${"Mac"}
+                jslog=${VisualLogging.item("macos").track({ click: true })}>
+          macOS
+        </option>
+        <option value=${"Linux"}
+                jslog=${VisualLogging.item("linux").track({ click: true })}>
+          Linux
+        </option>
+      </select>`, this.windowControlsSection.appendRow());
     overlayModel.setWindowControlsThemeColor(themeColor);
   }
 };
@@ -1292,7 +1373,7 @@ var AppManifestView = class extends Common2.ObjectWrapper.eventMixin(UI2.Widget.
 // gen/front_end/panels/application/BackForwardCacheTreeElement.js
 import * as Host2 from "./../../core/host/host.js";
 import * as i18n3 from "./../../core/i18n/i18n.js";
-import { createIcon as createIcon2 } from "./../../ui/kit/kit.js";
+import { createIcon } from "./../../ui/kit/kit.js";
 import * as ApplicationComponents2 from "./components/components.js";
 var UIStrings2 = {
   /**
@@ -1306,7 +1387,7 @@ var BackForwardCacheTreeElement = class extends ApplicationPanelTreeElement {
   view;
   constructor(resourcesPanel) {
     super(resourcesPanel, i18nString2(UIStrings2.backForwardCache), false, "bfcache");
-    const icon = createIcon2("database");
+    const icon = createIcon("database");
     this.setLeadingIcons([icon]);
   }
   get itemURL() {
@@ -1377,7 +1458,7 @@ __export(BackgroundServiceView_exports, {
 });
 import "./../../ui/legacy/legacy.js";
 import * as i18n5 from "./../../core/i18n/i18n.js";
-import * as Platform from "./../../core/platform/platform.js";
+import * as Platform2 from "./../../core/platform/platform.js";
 import * as SDK3 from "./../../core/sdk/sdk.js";
 import * as Bindings from "./../../models/bindings/bindings.js";
 import * as Buttons2 from "./../../ui/components/buttons/buttons.js";
@@ -1638,7 +1719,7 @@ var BackgroundServiceView = class _BackgroundServiceView extends UI3.Widget.VBox
   }
   constructor(serviceName, model) {
     super({
-      jslog: `${VisualLogging2.pane().context(Platform.StringUtilities.toKebabCase(serviceName))}`,
+      jslog: `${VisualLogging2.pane().context(Platform2.StringUtilities.toKebabCase(serviceName))}`,
       useShadowDom: true
     });
     this.registerRequiredCSS(emptyWidget_css_default, backgroundServiceView_css_default);
@@ -1908,7 +1989,7 @@ var BackgroundServiceView = class _BackgroundServiceView extends UI3.Widget.VBox
    * Saves all currently displayed events in a file (JSON format).
    */
   async saveToFile() {
-    const fileName = `${this.serviceName}-${Platform.DateUtilities.toISO8601Compact(/* @__PURE__ */ new Date())}.json`;
+    const fileName = `${this.serviceName}-${Platform2.DateUtilities.toISO8601Compact(/* @__PURE__ */ new Date())}.json`;
     const stream = new Bindings.FileUtils.FileOutputStream();
     const accepted = await stream.open(fileName);
     if (!accepted) {
@@ -1923,7 +2004,7 @@ var EventDataNode = class extends DataGrid.DataGrid.DataGridNode {
   eventMetadata;
   constructor(data, eventMetadata) {
     super(data);
-    this.eventMetadata = eventMetadata.sort((m1, m2) => Platform.StringUtilities.compare(m1.key, m2.key));
+    this.eventMetadata = eventMetadata.sort((m1, m2) => Platform2.StringUtilities.compare(m1.key, m2.key));
   }
   createPreview() {
     const preview = new UI3.Widget.VBox();
@@ -1974,7 +2055,7 @@ __export(BounceTrackingMitigationsTreeElement_exports, {
 import * as Host3 from "./../../core/host/host.js";
 import * as i18n7 from "./../../core/i18n/i18n.js";
 import * as LegacyWrapper from "./../../ui/components/legacy_wrapper/legacy_wrapper.js";
-import { createIcon as createIcon3 } from "./../../ui/kit/kit.js";
+import { createIcon as createIcon2 } from "./../../ui/kit/kit.js";
 import * as UI4 from "./../../ui/legacy/legacy.js";
 import * as ApplicationComponents3 from "./components/components.js";
 var UIStrings4 = {
@@ -1989,7 +2070,7 @@ var BounceTrackingMitigationsTreeElement = class extends ApplicationPanelTreeEle
   view;
   constructor(resourcesPanel) {
     super(resourcesPanel, i18nString4(UIStrings4.bounceTrackingMitigations), false, "bounce-tracking-mitigations");
-    const icon = createIcon3("database");
+    const icon = createIcon2("database");
     this.setLeadingIcons([icon]);
   }
   get itemURL() {
@@ -2388,7 +2469,7 @@ import * as CspEvaluator from "./../../third_party/csp_evaluator/csp_evaluator.j
 import * as Buttons3 from "./../../ui/components/buttons/buttons.js";
 import * as Components2 from "./../../ui/legacy/components/utils/utils.js";
 import * as UI6 from "./../../ui/legacy/legacy.js";
-import { html as html2, nothing as nothing2, render as render2 } from "./../../ui/lit/lit.js";
+import { html as html3, nothing as nothing3, render as render3 } from "./../../ui/lit/lit.js";
 import * as VisualLogging3 from "./../../ui/visual_logging/visual_logging.js";
 import * as ApplicationComponents4 from "./components/components.js";
 
@@ -2524,7 +2605,7 @@ import "./../../ui/legacy/legacy.js";
 import "./../../ui/components/adorners/adorners.js";
 import * as i18n9 from "./../../core/i18n/i18n.js";
 import * as UI5 from "./../../ui/legacy/legacy.js";
-import { Directives, html, nothing, render } from "./../../ui/lit/lit.js";
+import { Directives, html as html2, nothing as nothing2, render as render2 } from "./../../ui/lit/lit.js";
 
 // gen/front_end/panels/application/originTrialTokenRows.css.js
 var originTrialTokenRows_css_default = `/*
@@ -2665,16 +2746,16 @@ var str_5 = i18n9.i18n.registerUIStrings("panels/application/OriginTrialTreeView
 var i18nString5 = i18n9.i18n.getLocalizedString.bind(void 0, str_5);
 function renderOriginTrialTree(originTrial) {
   const success = originTrial.status === "Enabled";
-  return html`
+  return html2`
     <li role="treeitem">
       ${originTrial.trialName}
       <devtools-adorner class="badge-${success ? "success" : "error"}">
         ${originTrial.status}
       </devtools-adorner>
-      ${originTrial.tokensWithStatus.length > 1 ? html`
+      ${originTrial.tokensWithStatus.length > 1 ? html2`
         <devtools-adorner class="badge-secondary">
           ${i18nString5(UIStrings5.tokens, { PH1: originTrial.tokensWithStatus.length })}
-        </devtools-adorner>` : nothing}
+        </devtools-adorner>` : nothing2}
       <ul role="group" hidden>
         ${originTrial.tokensWithStatus.length > 1 ? originTrial.tokensWithStatus.map(renderTokenNode) : renderTokenDetailsNodes(originTrial.tokensWithStatus[0])}
       </ul>
@@ -2682,7 +2763,7 @@ function renderOriginTrialTree(originTrial) {
 }
 function renderTokenNode(token) {
   const success = token.status === "Success";
-  return html`
+  return html2`
     <li role="treeitem">
       ${i18nString5(UIStrings5.token)}
       <devtools-adorner class="token-status-badge badge-${success ? "success" : "error"}">
@@ -2694,20 +2775,20 @@ function renderTokenNode(token) {
     </li>`;
 }
 function renderTokenDetails(token) {
-  return html`
+  return html2`
     <li role="treeitem">
       <devtools-widget .widgetConfig=${widgetConfig(OriginTrialTokenRows, { data: token })}>
       </devtools-widget>
     </li>`;
 }
 function renderTokenDetailsNodes(token) {
-  return html`
+  return html2`
     ${renderTokenDetails(token)}
     ${renderRawTokenTextNode(token.rawTokenText)}
   `;
 }
 function renderRawTokenTextNode(tokenText) {
-  return html`
+  return html2`
     <li role="treeitem">
       ${i18nString5(UIStrings5.rawTokenText)}
       <ul role="group" hidden>
@@ -2721,7 +2802,7 @@ function renderRawTokenTextNode(tokenText) {
 }
 var ROWS_DEFAULT_VIEW = (input, _output, target) => {
   const success = input.tokenWithStatus.status === "Success";
-  render(html`
+  render2(html2`
     <style>
       ${originTrialTokenRows_css_default}
       ${originTrialTreeView_css_default}
@@ -2733,7 +2814,7 @@ var ROWS_DEFAULT_VIEW = (input, _output, target) => {
           ${input.tokenWithStatus.status}
         </devtools-adorner>
       </div>
-      ${input.parsedTokenDetails.map((field) => html`
+      ${input.parsedTokenDetails.map((field) => html2`
         <div class="key">${field.name}</div>
         <div class="value">
           <div class=${classMap({ "error-text": Boolean(field.value.hasError) })}>
@@ -2816,16 +2897,16 @@ var OriginTrialTokenRows = class extends UI5.Widget.Widget {
 };
 var DEFAULT_VIEW = (input, _output, target) => {
   if (!input.trials.length) {
-    render(html`
+    render2(html2`
       <span class="status-badge">
         <devtools-icon class="medium" name="clear"></devtools-icon>
         <span>${i18nString5(UIStrings5.noTrialTokens)}</span>
       </span>`, target);
     return;
   }
-  render(html`
+  render2(html2`
     <style>${originTrialTreeView_css_default}</style>
-    <devtools-tree .template=${html`
+    <devtools-tree .template=${html2`
       <style>${originTrialTreeView_css_default}</style>
       <ul role="tree">
         ${input.trials.map(renderOriginTrialTree)}
@@ -3077,7 +3158,7 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
   if (!input.frame) {
     return;
   }
-  render2(html2`
+  render3(html3`
     <style>${frameDetailsReportView_css_default}</style>
     <devtools-report .data=${{ reportTitle: input.frame.displayName() }}
     jslog=${VisualLogging3.pane("frames")}>
@@ -3085,22 +3166,22 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
       ${renderIsolationSection(input)}
       ${renderApiAvailabilitySection(input.frame)}
       ${renderOriginTrial(input.trials)}
-      ${input.permissionsPolicies ? html2`
+      ${input.permissionsPolicies ? html3`
           <devtools-widget .widgetConfig=${widgetConfig2(ApplicationComponents4.PermissionsPolicySection.PermissionsPolicySection, {
     policies: input.permissionsPolicies,
     showDetails: false
   })}>
-          </devtools-widget>` : nothing2}
-      ${input.protocolMonitorExperimentEnabled ? renderAdditionalInfoSection(input.frame) : nothing2}
+          </devtools-widget>` : nothing3}
+      ${input.protocolMonitorExperimentEnabled ? renderAdditionalInfoSection(input.frame) : nothing3}
     </devtools-report>
   `, target);
 };
 function renderOriginTrial(trials) {
   if (!trials) {
-    return nothing2;
+    return nothing3;
   }
   const data = { trials };
-  return html2`
+  return html3`
     <devtools-report-section-header>
       ${i18n11.i18n.lockedString("Origin trials")}
     </devtools-report-section-header>
@@ -3119,15 +3200,15 @@ function renderOriginTrial(trials) {
 }
 function renderDocumentSection(input) {
   if (!input.frame) {
-    return nothing2;
+    return nothing3;
   }
-  return html2`
+  return html3`
       <devtools-report-section-header>${i18nString6(UIStrings6.document)}</devtools-report-section-header>
       <devtools-report-key>${i18nString6(UIStrings6.url)}</devtools-report-key>
       <devtools-report-value>
         <div class="inline-items">
-          ${!input.frame?.unreachableUrl() ? renderSourcesLinkForURL(input.onRevealInSources) : nothing2}
-          ${input.onRevealInNetwork ? renderNetworkLinkForURL(input.onRevealInNetwork) : nothing2}
+          ${!input.frame?.unreachableUrl() ? renderSourcesLinkForURL(input.onRevealInSources) : nothing3}
+          ${input.onRevealInNetwork ? renderNetworkLinkForURL(input.onRevealInNetwork) : nothing3}
           <div class="text-ellipsis" title=${input.frame.url}>${input.frame.url}</div>
         </div>
       </devtools-report-value>
@@ -3147,9 +3228,9 @@ function renderNetworkLinkForURL(onRevealInNetwork) {
 }
 function maybeRenderUnreachableURL(unreachableUrl) {
   if (!unreachableUrl) {
-    return nothing2;
+    return nothing3;
   }
-  return html2`
+  return html3`
       <devtools-report-key>${i18nString6(UIStrings6.unreachableUrl)}</devtools-report-key>
       <devtools-report-value>
         <div class="inline-items">
@@ -3175,22 +3256,22 @@ function renderNetworkLinkForUnreachableURL(unreachableUrlString) {
       ]));
     }, "unreachable-url.reveal-in-network");
   }
-  return nothing2;
+  return nothing3;
 }
 function maybeRenderOrigin(securityOrigin) {
   if (securityOrigin && securityOrigin !== "://") {
-    return html2`
+    return html3`
         <devtools-report-key>${i18nString6(UIStrings6.origin)}</devtools-report-key>
         <devtools-report-value>
           <div class="text-ellipsis" title=${securityOrigin}>${securityOrigin}</div>
         </devtools-report-value>
       `;
   }
-  return nothing2;
+  return nothing3;
 }
 function renderOwnerElement(linkTargetDOMNode) {
   if (linkTargetDOMNode) {
-    return html2`
+    return html3`
         <devtools-report-key>${i18nString6(UIStrings6.ownerElement)}</devtools-report-key>
         <devtools-report-value class="without-min-width">
           <div class="inline-items">
@@ -3202,11 +3283,11 @@ function renderOwnerElement(linkTargetDOMNode) {
         </devtools-report-value>
       `;
   }
-  return nothing2;
+  return nothing3;
 }
 function maybeRenderCreationStacktrace(stackTrace, target) {
   if (stackTrace && target) {
-    return html2`
+    return html3`
         <devtools-report-key title=${i18nString6(UIStrings6.creationStackTraceExplanation)}>${i18nString6(UIStrings6.creationStackTrace)}</devtools-report-key>
         <devtools-report-value jslog=${VisualLogging3.section("frame-creation-stack-trace")}>
           <devtools-widget .widgetConfig=${UI6.Widget.widgetConfig(Components2.JSPresentationUtils.StackTracePreviewContent, { target, stackTrace, options: { expandable: true } })}>
@@ -3214,7 +3295,7 @@ function maybeRenderCreationStacktrace(stackTrace, target) {
         </devtools-report-value>
       `;
   }
-  return nothing2;
+  return nothing3;
 }
 function getAdFrameTypeStrings(type) {
   switch (type) {
@@ -3236,14 +3317,14 @@ function getAdFrameExplanationString(explanation) {
 }
 function maybeRenderAdStatus(adFrameType, adFrameStatus) {
   if (adFrameType === void 0 || adFrameType === "none") {
-    return nothing2;
+    return nothing3;
   }
   const typeStrings = getAdFrameTypeStrings(adFrameType);
-  const rows = [html2`<div title=${typeStrings.description}>${typeStrings.value}</div>`];
+  const rows = [html3`<div title=${typeStrings.description}>${typeStrings.value}</div>`];
   for (const explanation of adFrameStatus?.explanations || []) {
-    rows.push(html2`<div>${getAdFrameExplanationString(explanation)}</div>`);
+    rows.push(html3`<div>${getAdFrameExplanationString(explanation)}</div>`);
   }
-  return html2`
+  return html3`
       <devtools-report-key>${i18nString6(UIStrings6.adStatus)}</devtools-report-key>
       <devtools-report-value class="ad-status-list" jslog=${VisualLogging3.section("ad-status")}>
         <devtools-expandable-list .data=${{ rows, title: i18nString6(UIStrings6.adStatus) }}>
@@ -3252,13 +3333,13 @@ function maybeRenderAdStatus(adFrameType, adFrameStatus) {
 }
 function maybeRenderCreatorAdScriptAncestry(adFrameType, target, adScriptAncestry) {
   if (adFrameType === "none") {
-    return nothing2;
+    return nothing3;
   }
   if (!target || !adScriptAncestry || adScriptAncestry.ancestryChain.length === 0) {
-    return nothing2;
+    return nothing3;
   }
   const rows = adScriptAncestry.ancestryChain.map((adScriptId) => {
-    return html2`<div>
+    return html3`<div>
       <devtools-widget .widgetConfig=${widgetConfig2(Components2.Linkifier.ScriptLocationLink, {
       target,
       scriptId: adScriptId.scriptId,
@@ -3268,23 +3349,23 @@ function maybeRenderCreatorAdScriptAncestry(adFrameType, target, adScriptAncestr
     </div>`;
   });
   const shouldRenderFilterlistRule = adScriptAncestry.rootScriptFilterlistRule !== void 0;
-  return html2`
+  return html3`
       <devtools-report-key>${i18nString6(UIStrings6.creatorAdScriptAncestry)}</devtools-report-key>
       <devtools-report-value class="creator-ad-script-ancestry-list" jslog=${VisualLogging3.section("creator-ad-script-ancestry")}>
         <devtools-expandable-list .data=${{ rows, title: i18nString6(UIStrings6.creatorAdScriptAncestry) }}>
         </devtools-expandable-list>
       </devtools-report-value>
-      ${shouldRenderFilterlistRule ? html2`
+      ${shouldRenderFilterlistRule ? html3`
         <devtools-report-key>${i18nString6(UIStrings6.rootScriptFilterlistRule)}</devtools-report-key>
         <devtools-report-value jslog=${VisualLogging3.section("root-script-filterlist-rule")}>${adScriptAncestry.rootScriptFilterlistRule}</devtools-report-value>
-      ` : nothing2}
+      ` : nothing3}
     `;
 }
 function renderIsolationSection(input) {
   if (!input.frame) {
-    return nothing2;
+    return nothing3;
   }
-  return html2`
+  return html3`
       <devtools-report-section-header>${i18nString6(UIStrings6.securityIsolation)}</devtools-report-section-header>
       <devtools-report-key>${i18nString6(UIStrings6.secureContext)}</devtools-report-key>
       <devtools-report-value>
@@ -3301,9 +3382,9 @@ function renderIsolationSection(input) {
 function maybeRenderSecureContextExplanation(frame) {
   const explanation = getSecureContextExplanation(frame);
   if (explanation) {
-    return html2`<span class="inline-comment">${explanation}</span>`;
+    return html3`<span class="inline-comment">${explanation}</span>`;
   }
-  return nothing2;
+  return nothing3;
 }
 function getSecureContextExplanation(frame) {
   switch (frame?.getSecureContextType()) {
@@ -3320,7 +3401,7 @@ function getSecureContextExplanation(frame) {
 }
 function maybeRenderCoopCoepCSPStatus(info) {
   if (info) {
-    return html2`
+    return html3`
           ${maybeRenderCrossOriginStatus(
       info.coep,
       i18n11.i18n.lockedString("Cross-Origin Embedder Policy (COEP)"),
@@ -3336,11 +3417,11 @@ function maybeRenderCoopCoepCSPStatus(info) {
           ${renderCSPSection(info.csp)}
         `;
   }
-  return nothing2;
+  return nothing3;
 }
 function maybeRenderCrossOriginStatus(info, policyName, noneValue) {
   if (!info) {
-    return nothing2;
+    return nothing3;
   }
   function crossOriginValueToString(value) {
     switch (value) {
@@ -3369,12 +3450,12 @@ function maybeRenderCrossOriginStatus(info, policyName, noneValue) {
   const isEnabled = info.value !== noneValue;
   const isReportOnly = !isEnabled && info.reportOnlyValue !== noneValue;
   const endpoint = isEnabled ? info.reportingEndpoint : info.reportOnlyReportingEndpoint;
-  return html2`
+  return html3`
       <devtools-report-key>${policyName}</devtools-report-key>
       <devtools-report-value>
         ${crossOriginValueToString(isEnabled ? info.value : info.reportOnlyValue)}
-        ${isReportOnly ? html2`<span class="inline-comment">report-only</span>` : nothing2}
-        ${endpoint ? html2`<span class="inline-name">${i18nString6(UIStrings6.reportingTo)}</span>${endpoint}` : nothing2}
+        ${isReportOnly ? html3`<span class="inline-comment">report-only</span>` : nothing3}
+        ${endpoint ? html3`<span class="inline-name">${i18nString6(UIStrings6.reportingTo)}</span>${endpoint}` : nothing3}
       </devtools-report-value>
     `;
 }
@@ -3382,7 +3463,7 @@ function renderEffectiveDirectives(directives) {
   const parsedDirectives = new CspEvaluator.CspParser.CspParser(directives).csp.directives;
   const result = [];
   for (const directive in parsedDirectives) {
-    result.push(html2`
+    result.push(html3`
           <div>
             <span class="bold">${directive}</span>
             ${": " + parsedDirectives[directive]?.join(", ")}
@@ -3391,9 +3472,9 @@ function renderEffectiveDirectives(directives) {
   return result;
 }
 function renderSingleCSP(cspInfo, divider) {
-  return html2`
+  return html3`
       <devtools-report-key>
-        ${cspInfo.isEnforced ? i18n11.i18n.lockedString("Content-Security-Policy") : html2`
+        ${cspInfo.isEnforced ? i18n11.i18n.lockedString("Content-Security-Policy") : html3`
           ${i18n11.i18n.lockedString("Content-Security-Policy-Report-Only")}
           <devtools-button
             .iconName=${"help"}
@@ -3410,16 +3491,16 @@ function renderSingleCSP(cspInfo, divider) {
         ${cspInfo.source === "HTTP" ? i18n11.i18n.lockedString("HTTP header") : i18n11.i18n.lockedString("Meta tag")}
         ${renderEffectiveDirectives(cspInfo.effectiveDirectives)}
       </devtools-report-value>
-      ${divider ? html2`<devtools-report-divider class="subsection-divider"></devtools-report-divider>` : nothing2}
+      ${divider ? html3`<devtools-report-divider class="subsection-divider"></devtools-report-divider>` : nothing3}
     `;
 }
 function renderCSPSection(cspInfos) {
-  return html2`
+  return html3`
       <devtools-report-divider></devtools-report-divider>
       <devtools-report-section-header>
         ${i18nString6(UIStrings6.contentSecurityPolicy)}
       </devtools-report-section-header>
-      ${cspInfos?.length ? cspInfos.map((cspInfo, index) => renderSingleCSP(cspInfo, index < cspInfos?.length - 1)) : html2`
+      ${cspInfos?.length ? cspInfos.map((cspInfo, index) => renderSingleCSP(cspInfo, index < cspInfos?.length - 1)) : html3`
         <devtools-report-key>
           ${i18n11.i18n.lockedString("Content-Security-Policy")}
         </devtools-report-key>
@@ -3431,9 +3512,9 @@ function renderCSPSection(cspInfos) {
 }
 function renderApiAvailabilitySection(frame) {
   if (!frame) {
-    return nothing2;
+    return nothing3;
   }
-  return html2`
+  return html3`
       <devtools-report-section-header>
         ${i18nString6(UIStrings6.apiAvailability)}
       </devtools-report-section-header>
@@ -3458,18 +3539,18 @@ function renderSharedArrayBufferAvailability(frame) {
       let renderHint = function(frame2) {
         switch (frame2.getCrossOriginIsolatedContextType()) {
           case "Isolated":
-            return nothing2;
+            return nothing3;
           case "NotIsolated":
             if (sabAvailable) {
-              return html2`
+              return html3`
                   <span class="inline-comment">
                     ${i18nString6(UIStrings6.willRequireCrossoriginIsolated)}
                   </span>`;
             }
-            return html2`<span class="inline-comment">${i18nString6(UIStrings6.requiresCrossoriginIsolated)}</span>`;
+            return html3`<span class="inline-comment">${i18nString6(UIStrings6.requiresCrossoriginIsolated)}</span>`;
           case "NotIsolatedFeatureDisabled":
             if (!sabTransferAvailable) {
-              return html2`
+              return html3`
                   <span class="inline-comment">
                     ${i18nString6(UIStrings6.transferRequiresCrossoriginIsolatedPermission)}
                     <code> cross-origin-isolated</code>
@@ -3477,7 +3558,7 @@ function renderSharedArrayBufferAvailability(frame) {
             }
             break;
         }
-        return nothing2;
+        return nothing3;
       };
       const sabAvailable = features.includes(
         "SharedArrayBuffers"
@@ -3489,7 +3570,7 @@ function renderSharedArrayBufferAvailability(frame) {
       );
       const availabilityText = sabTransferAvailable ? i18nString6(UIStrings6.availableTransferable) : sabAvailable ? i18nString6(UIStrings6.availableNotTransferable) : i18nString6(UIStrings6.unavailable);
       const tooltipText = sabTransferAvailable ? i18nString6(UIStrings6.sharedarraybufferConstructorIs) : sabAvailable ? i18nString6(UIStrings6.sharedarraybufferConstructorIsAvailable) : "";
-      return html2`
+      return html3`
           <devtools-report-key>SharedArrayBuffers</devtools-report-key>
           <devtools-report-value title=${tooltipText}>
             ${availabilityText}\xA0${renderHint(frame)}
@@ -3497,27 +3578,27 @@ function renderSharedArrayBufferAvailability(frame) {
         `;
     }
   }
-  return nothing2;
+  return nothing3;
 }
 function renderMeasureMemoryAvailability(frame) {
   if (frame) {
     const measureMemoryAvailable = frame.isCrossOriginIsolated();
     const availabilityText = measureMemoryAvailable ? i18nString6(UIStrings6.available) : i18nString6(UIStrings6.unavailable);
     const tooltipText = measureMemoryAvailable ? i18nString6(UIStrings6.thePerformanceAPI) : i18nString6(UIStrings6.thePerformancemeasureuseragentspecificmemory);
-    return html2`
+    return html3`
         <devtools-report-key>${i18nString6(UIStrings6.measureMemory)}</devtools-report-key>
         <devtools-report-value>
           <span title=${tooltipText}>${availabilityText}</span>\xA0<x-link class="link" href="https://web.dev/monitor-total-page-memory-usage/" jslog=${VisualLogging3.link("learn-more.monitor-memory-usage").track({ click: true })}>${i18nString6(UIStrings6.learnMore)}</x-link>
         </devtools-report-value>
       `;
   }
-  return nothing2;
+  return nothing3;
 }
 function renderAdditionalInfoSection(frame) {
   if (!frame) {
-    return nothing2;
+    return nothing3;
   }
-  return html2`
+  return html3`
       <devtools-report-section-header
         title=${i18nString6(UIStrings6.thisAdditionalDebugging)}
       >${i18nString6(UIStrings6.additionalInformation)}</devtools-report-section-header>
@@ -4223,7 +4304,7 @@ var indexedDBViews_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./indexedDBViews.css")} */`;
 
 // gen/front_end/panels/application/IndexedDBViews.js
-var { html: html3 } = Lit;
+var { html: html4 } = Lit;
 var UIStrings7 = {
   /**
    * @description Text in Indexed DBViews of the Application panel
@@ -4356,7 +4437,7 @@ var IDBDatabaseView = class extends ApplicationComponents5.StorageMetadataView.S
     if (!this.database) {
       return Lit.nothing;
     }
-    return html3`
+    return html4`
       ${await super.renderReportContent()}
       ${this.key(i18nString7(UIStrings7.version))}
       ${this.value(this.database.version.toString())}
@@ -4883,7 +4964,7 @@ __export(InterestGroupTreeElement_exports, {
 import * as Host4 from "./../../core/host/host.js";
 import * as i18n17 from "./../../core/i18n/i18n.js";
 import * as SDK10 from "./../../core/sdk/sdk.js";
-import { createIcon as createIcon4 } from "./../../ui/kit/kit.js";
+import { createIcon as createIcon3 } from "./../../ui/kit/kit.js";
 
 // gen/front_end/panels/application/InterestGroupStorageView.js
 var InterestGroupStorageView_exports = {};
@@ -5043,7 +5124,7 @@ var InterestGroupTreeElement = class extends ApplicationPanelTreeElement {
   view;
   constructor(storagePanel) {
     super(storagePanel, i18nString9(UIStrings9.interestGroups), false, "interest-groups");
-    const interestGroupIcon = createIcon4("database");
+    const interestGroupIcon = createIcon3("database");
     this.setLeadingIcons([interestGroupIcon]);
     this.view = new InterestGroupStorageView(this);
   }
@@ -5081,7 +5162,7 @@ __export(OpenedWindowDetailsView_exports, {
 import * as Common7 from "./../../core/common/common.js";
 import * as i18n19 from "./../../core/i18n/i18n.js";
 import * as SDK11 from "./../../core/sdk/sdk.js";
-import { createIcon as createIcon5 } from "./../../ui/kit/kit.js";
+import { createIcon as createIcon4 } from "./../../ui/kit/kit.js";
 import * as UI9 from "./../../ui/legacy/legacy.js";
 
 // gen/front_end/panels/application/openedWindowDetailsView.css.js
@@ -5239,7 +5320,7 @@ var str_10 = i18n19.i18n.registerUIStrings("panels/application/OpenedWindowDetai
 var i18nString10 = i18n19.i18n.getLocalizedString.bind(void 0, str_10);
 var booleanToYesNo = (b) => b ? i18nString10(UIStrings10.yes) : i18nString10(UIStrings10.no);
 function linkifyIcon(iconType, title, eventHandler) {
-  const icon = createIcon5(iconType, "icon-link devtools-link");
+  const icon = createIcon4(iconType, "icon-link devtools-link");
   const button = document.createElement("button");
   UI9.Tooltip.Tooltip.install(button, title);
   button.classList.add("devtools-link", "link-style", "text-button");
@@ -5417,7 +5498,7 @@ __export(PreloadingTreeElement_exports, {
   PreloadingSummaryTreeElement: () => PreloadingSummaryTreeElement
 });
 import * as i18n25 from "./../../core/i18n/i18n.js";
-import { createIcon as createIcon6 } from "./../../ui/kit/kit.js";
+import { createIcon as createIcon5 } from "./../../ui/kit/kit.js";
 import * as PreloadingHelper from "./preloading/helper/helper.js";
 
 // gen/front_end/panels/application/preloading/PreloadingView.js
@@ -5431,18 +5512,18 @@ __export(PreloadingView_exports, {
 import "./../../ui/legacy/legacy.js";
 import * as Common8 from "./../../core/common/common.js";
 import * as i18n23 from "./../../core/i18n/i18n.js";
-import * as Platform3 from "./../../core/platform/platform.js";
+import * as Platform4 from "./../../core/platform/platform.js";
 import { assertNotNullOrUndefined as assertNotNullOrUndefined2 } from "./../../core/platform/platform.js";
 import * as SDK13 from "./../../core/sdk/sdk.js";
 import * as Buttons5 from "./../../ui/components/buttons/buttons.js";
 import * as UI10 from "./../../ui/legacy/legacy.js";
-import { html as html4, render as render3 } from "./../../ui/lit/lit.js";
+import { html as html5, render as render4 } from "./../../ui/lit/lit.js";
 import * as VisualLogging6 from "./../../ui/visual_logging/visual_logging.js";
 import * as PreloadingComponents from "./preloading/components/components.js";
 
 // gen/front_end/panels/application/preloading/components/PreloadingString.js
 import * as i18n21 from "./../../core/i18n/i18n.js";
-import * as Platform2 from "./../../core/platform/platform.js";
+import * as Platform3 from "./../../core/platform/platform.js";
 import { assertNotNullOrUndefined } from "./../../core/platform/platform.js";
 import * as SDK12 from "./../../core/sdk/sdk.js";
 import * as Bindings3 from "./../../models/bindings/bindings.js";
@@ -6052,7 +6133,7 @@ var PreloadingRuleSetView = class extends UI10.Widget.VBox {
       this.shouldPrettyPrint = !this.shouldPrettyPrint;
       this.updateRuleSetDetails();
     };
-    render3(html4`
+    render4(html5`
         <div class="empty-state">
           <span class="empty-state-header">${i18nString12(UIStrings12.noRulesDetected)}</span>
           <div class="empty-state-description">
@@ -6170,7 +6251,7 @@ var PreloadingAttemptView = class extends UI10.Widget.VBox {
     this.ruleSetSelector = new PreloadingRuleSetSelector(() => this.render());
     toolbar6.appendToolbarItem(this.ruleSetSelector.item());
     this.preloadingGrid.addEventListener("select", this.onPreloadingGridCellFocused.bind(this));
-    render3(html4`
+    render4(html5`
         <div class="empty-state">
           <span class="empty-state-header">${i18nString12(UIStrings12.noPrefetchAttempts)}</span>
           <div class="empty-state-description">
@@ -6398,7 +6479,7 @@ var PreloadingRuleSetSelector = class {
     const element = document.createElement("div");
     const shadowRoot = UI10.UIUtils.createShadowRootWithCoreStyles(element, { cssFile: preloadingViewDropDown_css_default });
     const title = shadowRoot.createChild("div", "title");
-    UI10.UIUtils.createTextChild(title, Platform3.StringUtilities.trimEndWithMaxLength(this.titleFor(id), 100));
+    UI10.UIUtils.createTextChild(title, Platform4.StringUtilities.trimEndWithMaxLength(this.titleFor(id), 100));
     const subTitle = shadowRoot.createChild("div", "subtitle");
     UI10.UIUtils.createTextChild(subTitle, this.subtitleFor(id));
     return element;
@@ -6457,7 +6538,7 @@ var PreloadingTreeElementBase = class extends ApplicationPanelTreeElement {
     super(panel, title, false, "speculative-loads");
     this.#viewConstructor = viewConstructor;
     this.#path = path;
-    const icon = createIcon6("speculative-loads");
+    const icon = createIcon5("speculative-loads");
     this.setLeadingIcons([icon]);
     this.#selected = false;
   }
@@ -6491,7 +6572,7 @@ var PreloadingSummaryTreeElement = class extends ExpandableApplicationPanelTreeE
   #attempt = null;
   constructor(panel) {
     super(panel, i18nString13(UIStrings13.speculativeLoads), "", "", "preloading");
-    const icon = createIcon6("speculative-loads");
+    const icon = createIcon5("speculative-loads");
     this.setLeadingIcons([icon]);
     this.#selected = false;
   }
@@ -6577,7 +6658,7 @@ var PreloadingAttemptTreeElement = class extends PreloadingTreeElementBase {
 // gen/front_end/panels/application/ReportingApiTreeElement.js
 import * as Host5 from "./../../core/host/host.js";
 import * as i18n29 from "./../../core/i18n/i18n.js";
-import { createIcon as createIcon7 } from "./../../ui/kit/kit.js";
+import { createIcon as createIcon6 } from "./../../ui/kit/kit.js";
 
 // gen/front_end/panels/application/ReportingApiView.js
 var ReportingApiView_exports = {};
@@ -6590,7 +6671,7 @@ import * as i18n27 from "./../../core/i18n/i18n.js";
 import * as SDK14 from "./../../core/sdk/sdk.js";
 import * as SourceFrame2 from "./../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI11 from "./../../ui/legacy/legacy.js";
-import { html as html5, render as render4 } from "./../../ui/lit/lit.js";
+import { html as html6, render as render5 } from "./../../ui/lit/lit.js";
 import * as VisualLogging7 from "./../../ui/visual_logging/visual_logging.js";
 import * as ApplicationComponents7 from "./components/components.js";
 var { widgetConfig: widgetConfig3 } = UI11.Widget;
@@ -6625,10 +6706,10 @@ var i18nString14 = i18n27.i18n.getLocalizedString.bind(void 0, str_14);
 var REPORTING_API_EXPLANATION_URL = "https://developer.chrome.com/docs/capabilities/web-apis/reporting-api";
 var DEFAULT_VIEW3 = (input, output, target) => {
   if (input.hasReports || input.hasEndpoints) {
-    render4(html5`
+    render5(html6`
       <style>${UI11.inspectorCommonStyles}</style>
       <devtools-split-view sidebar-position="second" sidebar-initial-size="150" jslog=${VisualLogging7.pane("reporting-api")}>
-        ${input.hasReports ? html5`
+        ${input.hasReports ? html6`
           <devtools-split-view slot="main" sidebar-position="second" sidebar-initial-size="150">
             <div slot="main">
               <devtools-widget .widgetConfig=${widgetConfig3(ApplicationComponents7.ReportsGrid.ReportsGrid, {
@@ -6637,11 +6718,11 @@ var DEFAULT_VIEW3 = (input, output, target) => {
     })}></devtools-widget>
             </div>
             <div slot="sidebar" class="vbox" jslog=${VisualLogging7.pane("preview").track({ resize: true })}>
-              ${input.focusedReport ? html5`
+              ${input.focusedReport ? html6`
                 <devtools-widget .widgetConfig=${widgetConfig3(SourceFrame2.JSONView.SearchableJsonView, {
       jsonObject: input.focusedReport.body
     })}></devtools-widget>
-              ` : html5`
+              ` : html6`
                 <devtools-widget .widgetConfig=${widgetConfig3(UI11.EmptyWidget.EmptyWidget, {
       header: i18nString14(UIStrings14.noReportSelected),
       text: i18nString14(UIStrings14.clickToDisplayBody)
@@ -6649,7 +6730,7 @@ var DEFAULT_VIEW3 = (input, output, target) => {
               `}
             </div>
           </devtools-split-view>
-        ` : html5`
+        ` : html6`
           <div slot="main">
             <devtools-widget .widgetConfig=${widgetConfig3(ApplicationComponents7.ReportsGrid.ReportsGrid, {
       reports: input.reports,
@@ -6665,7 +6746,7 @@ var DEFAULT_VIEW3 = (input, output, target) => {
       </devtools-split-view>
     `, target);
   } else {
-    render4(html5`
+    render5(html6`
       <devtools-widget .widgetConfig=${widgetConfig3(UI11.EmptyWidget.EmptyWidget, {
       header: i18nString14(UIStrings14.noReportOrEndpoint),
       text: i18nString14(UIStrings14.reportingApiDescription),
@@ -6753,7 +6834,7 @@ var ReportingApiTreeElement = class extends ApplicationPanelTreeElement {
   view;
   constructor(storagePanel) {
     super(storagePanel, i18nString15(UIStrings15.reportingApi), false, "reporting-api");
-    const icon = createIcon7("document");
+    const icon = createIcon6("document");
     this.setLeadingIcons([icon]);
   }
   get itemURL() {
@@ -6836,7 +6917,7 @@ devtools-icon.navigator-font-tree-item {
 import * as Host6 from "./../../core/host/host.js";
 import * as i18n33 from "./../../core/i18n/i18n.js";
 import * as SDK16 from "./../../core/sdk/sdk.js";
-import { createIcon as createIcon8 } from "./../../ui/kit/kit.js";
+import { createIcon as createIcon7 } from "./../../ui/kit/kit.js";
 import * as UI13 from "./../../ui/legacy/legacy.js";
 
 // gen/front_end/panels/application/ServiceWorkerCacheViews.js
@@ -6849,7 +6930,7 @@ __export(ServiceWorkerCacheViews_exports, {
 import "./../../ui/legacy/legacy.js";
 import * as Common9 from "./../../core/common/common.js";
 import * as i18n31 from "./../../core/i18n/i18n.js";
-import * as Platform4 from "./../../core/platform/platform.js";
+import * as Platform5 from "./../../core/platform/platform.js";
 import * as SDK15 from "./../../core/sdk/sdk.js";
 import * as TextUtils from "./../../models/text_utils/text_utils.js";
 import * as LegacyWrapper3 from "./../../ui/components/legacy_wrapper/legacy_wrapper.js";
@@ -7274,7 +7355,7 @@ var ServiceWorkerCacheView = class extends UI12.View.SimpleView {
     }
   }
   createRequest(entry) {
-    const request = SDK15.NetworkRequest.NetworkRequest.createWithoutBackendRequest("cache-storage-" + entry.requestURL, entry.requestURL, Platform4.DevToolsPath.EmptyUrlString, null);
+    const request = SDK15.NetworkRequest.NetworkRequest.createWithoutBackendRequest("cache-storage-" + entry.requestURL, entry.requestURL, Platform5.DevToolsPath.EmptyUrlString, null);
     request.requestMethod = entry.requestMethod;
     request.setRequestHeaders(entry.requestHeaders);
     request.statusCode = entry.responseStatus;
@@ -7286,7 +7367,7 @@ var ServiceWorkerCacheView = class extends UI12.View.SimpleView {
     let header = entry.responseHeaders.find((header2) => header2.name.toLowerCase() === "content-type");
     let mimeType = "text/plain";
     if (header) {
-      const result = Platform4.MimeType.parseContentType(header.value);
+      const result = Platform5.MimeType.parseContentType(header.value);
       if (result.mimeType) {
         mimeType = result.mimeType;
       }
@@ -7330,7 +7411,7 @@ var DataGridNode = class extends DataGrid5.DataGrid.DataGridNode {
     this.number = number;
     const parsed = new Common9.ParsedURL.ParsedURL(request.url());
     if (parsed.isValid) {
-      this.name = Platform4.StringUtilities.trimURL(request.url(), parsed.domain());
+      this.name = Platform5.StringUtilities.trimURL(request.url(), parsed.domain());
     } else {
       this.name = request.url();
     }
@@ -7446,7 +7527,7 @@ var ServiceWorkerCacheTreeElement = class extends ExpandableApplicationPanelTree
   storageBucket;
   constructor(resourcesPanel, storageBucket) {
     super(resourcesPanel, i18nString17(UIStrings17.cacheStorage), i18nString17(UIStrings17.noCacheStorage), i18nString17(UIStrings17.cacheStorageDescription), "cache-storage");
-    const icon = createIcon8("database");
+    const icon = createIcon7("database");
     this.setLink("https://developer.chrome.com/docs/devtools/storage/cache/");
     this.setLeadingIcons([icon]);
     this.swCacheModels = /* @__PURE__ */ new Set();
@@ -7548,7 +7629,7 @@ var SWCacheTreeElement = class extends ApplicationPanelTreeElement {
     this.model = model;
     this.cache = cache;
     this.view = null;
-    const icon = createIcon8("table");
+    const icon = createIcon7("table");
     this.setLeadingIcons([icon]);
   }
   get itemURL() {
@@ -8677,10 +8758,10 @@ var Section = class {
     this.sourceField.removeChildren();
     const fileName = Common10.ParsedURL.ParsedURL.extractName(version.scriptURL);
     const name = this.sourceField.createChild("div", "report-field-value-filename");
-    const link5 = Components3.Linkifier.Linkifier.linkifyURL(version.scriptURL, { text: fileName });
-    link5.tabIndex = 0;
-    link5.setAttribute("jslog", `${VisualLogging10.link("source-location").track({ click: true })}`);
-    name.appendChild(link5);
+    const link4 = Components3.Linkifier.Linkifier.linkifyURL(version.scriptURL, { text: fileName });
+    link4.tabIndex = 0;
+    link4.setAttribute("jslog", `${VisualLogging10.link("source-location").track({ click: true })}`);
+    name.appendChild(link4);
     if (this.registration.errors.length) {
       const errorsLabel = UI15.UIUtils.createIconLabel({
         title: String(this.registration.errors.length),
@@ -8881,7 +8962,7 @@ __export(SharedStorageListTreeElement_exports, {
 });
 import * as Common11 from "./../../core/common/common.js";
 import * as i18n41 from "./../../core/i18n/i18n.js";
-import { createIcon as createIcon9 } from "./../../ui/kit/kit.js";
+import { createIcon as createIcon8 } from "./../../ui/kit/kit.js";
 
 // gen/front_end/panels/application/SharedStorageEventsView.js
 var SharedStorageEventsView_exports = {};
@@ -9018,7 +9099,7 @@ var SharedStorageListTreeElement = class extends ApplicationPanelTreeElement {
   constructor(resourcesPanel, expandedSettingsDefault = false) {
     super(resourcesPanel, i18nString21(UIStrings21.sharedStorage), false, "shared-storage");
     this.#expandedSetting = Common11.Settings.Settings.instance().createSetting("resources-shared-storage-expanded", expandedSettingsDefault);
-    const sharedStorageIcon = createIcon9("database");
+    const sharedStorageIcon = createIcon8("database");
     this.setLeadingIcons([sharedStorageIcon]);
     this.view = new SharedStorageEventsView();
   }
@@ -9250,7 +9331,7 @@ __export(KeyValueStorageItemsView_exports, {
 import * as i18n45 from "./../../core/i18n/i18n.js";
 import * as Geometry from "./../../models/geometry/geometry.js";
 import * as UI18 from "./../../ui/legacy/legacy.js";
-import { Directives as LitDirectives, html as html7, nothing as nothing4, render as render6 } from "./../../ui/lit/lit.js";
+import { Directives as LitDirectives, html as html8, nothing as nothing5, render as render7 } from "./../../ui/lit/lit.js";
 import * as VisualLogging13 from "./../../ui/visual_logging/visual_logging.js";
 import * as ApplicationComponents12 from "./components/components.js";
 
@@ -9263,7 +9344,7 @@ __export(StorageItemsToolbar_exports, {
 import "./../../ui/legacy/legacy.js";
 import * as Common13 from "./../../core/common/common.js";
 import * as i18n43 from "./../../core/i18n/i18n.js";
-import * as Platform5 from "./../../core/platform/platform.js";
+import * as Platform6 from "./../../core/platform/platform.js";
 import * as Buttons7 from "./../../ui/components/buttons/buttons.js";
 import * as UI17 from "./../../ui/legacy/legacy.js";
 import * as Lit2 from "./../../ui/lit/lit.js";
@@ -9289,11 +9370,11 @@ var UIStrings22 = {
 };
 var str_22 = i18n43.i18n.registerUIStrings("panels/application/StorageItemsToolbar.ts", UIStrings22);
 var i18nString22 = i18n43.i18n.getLocalizedString.bind(void 0, str_22);
-var { html: html6, render: render5 } = Lit2;
+var { html: html7, render: render6 } = Lit2;
 var DEFAULT_VIEW4 = (input, _output, target) => {
-  render5(
+  render6(
     // clang-format off
-    html6`
+    html7`
       <devtools-toolbar class="top-resources-toolbar"
                         jslog=${VisualLogging12.toolbar()}>
         <devtools-button title=${i18nString22(UIStrings22.refresh)}
@@ -9325,7 +9406,7 @@ var DEFAULT_VIEW4 = (input, _output, target) => {
     })}
                          .iconName=${"cross"}
                          .variant=${"toolbar"}></devtools-button>
-        ${input.mainToolbarItems.map((item) => item.element)}
+        ${input.mainToolbarItems.map((item2) => item2.element)}
       </devtools-toolbar>
       ${input.metadataView}`,
     // clang-format on
@@ -9392,15 +9473,15 @@ var StorageItemsToolbar = class extends Common13.ObjectWrapper.eventMixin(UI17.W
     this.#deleteAllButtonIconName = glyph;
     this.requestUpdate();
   }
-  appendToolbarItem(item) {
-    this.#mainToolbarItems.push(item);
+  appendToolbarItem(item2) {
+    this.#mainToolbarItems.push(item2);
     this.requestUpdate();
   }
   setStorageKey(storageKey) {
     this.metadataView.setStorageKey(storageKey);
   }
   filterChanged({ detail: text }) {
-    this.filterRegex = text ? new RegExp(Platform5.StringUtilities.escapeForRegExp(text), "i") : null;
+    this.filterRegex = text ? new RegExp(Platform6.StringUtilities.escapeForRegExp(text), "i") : null;
     this.dispatchEventToListeners(
       "Refresh"
       /* StorageItemsToolbar.Events.REFRESH */
@@ -9469,8 +9550,8 @@ var KeyValueStorageItemsView = class extends UI18.Widget.VBox {
     metadataView ??= new ApplicationComponents12.StorageMetadataView.StorageMetadataView();
     if (!view) {
       view = (input, output, target) => {
-        render6(
-          html7`
+        render7(
+          html8`
             <devtools-widget
               .widgetConfig=${widgetConfig4(StorageItemsToolbar, { metadataView })}
               class=flex-none
@@ -9500,14 +9581,14 @@ var KeyValueStorageItemsView = class extends UI18.Widget.VBox {
                         ${i18nString23(UIStrings23.value)}
                       </th>
                     </tr>
-                    ${repeat(input.items, (item) => item.key, (item) => html7`
-                      <tr data-key=${item.key} data-value=${item.value}
-                          @select=${() => input.onSelect(item)}
-                          @edit=${(e) => input.onEdit(item.key, item.value, e.detail.columnId, e.detail.valueBeforeEditing, e.detail.newText)}
-                          @delete=${() => input.onDelete(item.key)}
-                          selected=${input.selectedKey === item.key || nothing4}>
-                        <td>${item.key}</td>
-                        <td>${item.value.substr(0, MAX_VALUE_LENGTH)}</td>
+                    ${repeat(input.items, (item2) => item2.key, (item2) => html8`
+                      <tr data-key=${item2.key} data-value=${item2.value}
+                          @select=${() => input.onSelect(item2)}
+                          @edit=${(e) => input.onEdit(item2.key, item2.value, e.detail.columnId, e.detail.valueBeforeEditing, e.detail.newText)}
+                          @delete=${() => input.onDelete(item2.key)}
+                          selected=${input.selectedKey === item2.key || nothing5}>
+                        <td>${item2.key}</td>
+                        <td>${item2.value.substr(0, MAX_VALUE_LENGTH)}</td>
                       </tr>`)}
                       <tr placeholder></tr>
                   </table>
@@ -9556,12 +9637,12 @@ var KeyValueStorageItemsView = class extends UI18.Widget.VBox {
       selectedKey: this.#selectedKey,
       editable: this.#editable,
       preview: this.#preview,
-      onSelect: (item) => {
-        this.#toolbar?.setCanDeleteSelected(Boolean(item));
-        if (!item) {
+      onSelect: (item2) => {
+        this.#toolbar?.setCanDeleteSelected(Boolean(item2));
+        if (!item2) {
           void this.#previewEntry(null);
         } else {
-          void this.#previewEntry(item);
+          void this.#previewEntry(item2);
         }
       },
       onSort: (ascending) => {
@@ -9595,7 +9676,7 @@ var KeyValueStorageItemsView = class extends UI18.Widget.VBox {
     this.#toolbar?.setCanDeleteSelected(false);
   }
   itemRemoved(key) {
-    const index = this.#items.findIndex((item) => item.key === key);
+    const index = this.#items.findIndex((item2) => item2.key === key);
     if (index === -1) {
       return;
     }
@@ -9604,21 +9685,21 @@ var KeyValueStorageItemsView = class extends UI18.Widget.VBox {
     this.#toolbar?.setCanDeleteSelected(this.#items.length > 1);
   }
   itemAdded(key, value) {
-    if (this.#items.some((item) => item.key === key)) {
+    if (this.#items.some((item2) => item2.key === key)) {
       return;
     }
     this.#items.push({ key, value });
     this.performUpdate();
   }
   itemUpdated(key, value) {
-    const item = this.#items.find((item2) => item2.key === key);
-    if (!item) {
+    const item2 = this.#items.find((item3) => item3.key === key);
+    if (!item2) {
       return;
     }
-    if (item.value === value) {
+    if (item2.value === value) {
       return;
     }
-    item.value = value;
+    item2.value = value;
     this.performUpdate();
     if (this.#selectedKey !== key) {
       return;
@@ -9631,7 +9712,7 @@ var KeyValueStorageItemsView = class extends UI18.Widget.VBox {
   showItems(items) {
     const sortDirection = this.#isSortOrderAscending ? 1 : -1;
     this.#items = [...items].sort((item1, item2) => sortDirection * (item1.key > item2.key ? 1 : -1));
-    const selectedItem = this.#items.find((item) => item.key === this.#selectedKey);
+    const selectedItem = this.#items.find((item2) => item2.key === this.#selectedKey);
     if (!selectedItem) {
       this.#selectedKey = null;
     } else {
@@ -9713,7 +9794,7 @@ var KeyValueStorageItemsView = class extends UI18.Widget.VBox {
     this.performUpdate();
   }
   keys() {
-    return this.#items.map((item) => item.key);
+    return this.#items.map((item2) => item2.key);
   }
 };
 
@@ -9827,7 +9908,7 @@ var SharedStorageItemsView = class _SharedStorageItemsView extends KeyValueStora
   }
   #showSharedStorageItems(items) {
     if (this.toolbar) {
-      const filteredList = items.filter((item) => this.toolbar?.filterRegex?.test(`${item.key} ${item.value}`) ?? true);
+      const filteredList = items.filter((item2) => this.toolbar?.filterRegex?.test(`${item2.key} ${item2.value}`) ?? true);
       this.showItems(filteredList);
     }
   }
@@ -9875,7 +9956,7 @@ __export(StorageBucketsTreeElement_exports, {
 import * as i18n49 from "./../../core/i18n/i18n.js";
 import * as SDK21 from "./../../core/sdk/sdk.js";
 import * as LegacyWrapper5 from "./../../ui/components/legacy_wrapper/legacy_wrapper.js";
-import { createIcon as createIcon10 } from "./../../ui/kit/kit.js";
+import { createIcon as createIcon9 } from "./../../ui/kit/kit.js";
 import * as UI20 from "./../../ui/legacy/legacy.js";
 import { StorageMetadataView as StorageMetadataView5 } from "./components/components.js";
 var UIStrings25 = {
@@ -9905,7 +9986,7 @@ var StorageBucketsTreeParentElement = class extends ExpandableApplicationPanelTr
   bucketTreeElements = /* @__PURE__ */ new Set();
   constructor(storagePanel) {
     super(storagePanel, i18nString25(UIStrings25.storageBuckets), i18nString25(UIStrings25.noStorageBuckets), i18nString25(UIStrings25.storageBucketsDescription), "storage-buckets");
-    const icon = createIcon10("bucket");
+    const icon = createIcon9("bucket");
     this.setLeadingIcons([icon]);
     this.setLink("https://github.com/WICG/storage-buckets/blob/gh-pages/explainer.md");
   }
@@ -9980,7 +10061,7 @@ var StorageBucketsTreeElement = class extends ExpandableApplicationPanelTreeElem
     super(resourcesPanel, `${bucket.name} - ${origin}`, "", "", "storage-bucket");
     this.bucketModel = model;
     this.storageBucketInfo = bucketInfo;
-    const icon = createIcon10("database");
+    const icon = createIcon9("database");
     this.setLeadingIcons([icon]);
   }
   initialize() {
@@ -10028,9 +10109,9 @@ __export(StorageView_exports, {
 });
 import * as Common15 from "./../../core/common/common.js";
 import * as i18n51 from "./../../core/i18n/i18n.js";
-import * as Platform6 from "./../../core/platform/platform.js";
+import * as Platform7 from "./../../core/platform/platform.js";
 import * as SDK22 from "./../../core/sdk/sdk.js";
-import * as uiI18n2 from "./../../ui/i18n/i18n.js";
+import * as uiI18n from "./../../ui/i18n/i18n.js";
 import { Icon } from "./../../ui/kit/kit.js";
 import * as PerfUI from "./../../ui/legacy/components/perf_ui/perf_ui.js";
 import * as SettingsUI from "./../../ui/legacy/components/settings_ui/settings_ui.js";
@@ -10293,7 +10374,7 @@ var StorageView = class _StorageView extends UI21.Widget.VBox {
     this.storageKey = null;
     this.settings = /* @__PURE__ */ new Map();
     for (const type of AllStorageTypes) {
-      this.settings.set(type, Common15.Settings.Settings.instance().createSetting("clear-storage-" + Platform6.StringUtilities.toKebabCase(type), true));
+      this.settings.set(type, Common15.Settings.Settings.instance().createSetting("clear-storage-" + Platform7.StringUtilities.toKebabCase(type), true));
     }
     this.includeThirdPartyCookiesSetting = Common15.Settings.Settings.instance().createSetting("clear-storage-include-third-party-cookies", false);
     const clearButtonSection = this.reportView.appendSection("", "clear-storage-button").appendRow();
@@ -10590,7 +10671,7 @@ var StorageView = class _StorageView extends UI21.Widget.VBox {
     const usageAsString = i18n51.ByteUtilities.bytesToString(response.usage);
     const formattedQuotaAsString = i18nString26(UIStrings26.storageWithCustomMarker, { PH1: quotaAsString });
     const quota = quotaOverridden ? UI21.Fragment.Fragment.build`<b>${formattedQuotaAsString}</b>`.element() : quotaAsString;
-    const element = uiI18n2.getFormatLocalizedString(str_26, UIStrings26.storageQuotaUsed, { PH1: usageAsString, PH2: quota });
+    const element = uiI18n.getFormatLocalizedString(str_26, UIStrings26.storageQuotaUsed, { PH1: usageAsString, PH2: quota });
     this.quotaRow.appendChild(element);
     UI21.Tooltip.Tooltip.install(this.quotaRow, i18nString26(UIStrings26.storageQuotaUsedWithBytes, { PH1: response.usage.toLocaleString(), PH2: response.quota.toLocaleString() }));
     if (!response.overrideActive && response.quota < 125829120) {
@@ -10685,7 +10766,7 @@ __export(TrustTokensTreeElement_exports, {
 });
 import * as Host8 from "./../../core/host/host.js";
 import * as i18n53 from "./../../core/i18n/i18n.js";
-import { createIcon as createIcon11 } from "./../../ui/kit/kit.js";
+import { createIcon as createIcon10 } from "./../../ui/kit/kit.js";
 import * as ApplicationComponents14 from "./components/components.js";
 var UIStrings27 = {
   /**
@@ -10700,7 +10781,7 @@ var TrustTokensTreeElement = class extends ApplicationPanelTreeElement {
   view;
   constructor(storagePanel) {
     super(storagePanel, i18nString27(UIStrings27.trustTokens), false, "private-state-tokens");
-    const icon = createIcon11("database");
+    const icon = createIcon10("database");
     this.setLeadingIcons([icon]);
   }
   get itemURL() {
@@ -11007,17 +11088,17 @@ var ApplicationPanelSidebar = class extends UI22.Widget.VBox {
     const storageTreeElement = this.addSidebarSection(storageSectionTitle, "storage");
     this.localStorageListTreeElement = new ExpandableApplicationPanelTreeElement(panel, i18nString28(UIStrings28.localStorage), i18nString28(UIStrings28.noLocalStorage), i18nString28(UIStrings28.localStorageDescription), "local-storage");
     this.localStorageListTreeElement.setLink("https://developer.chrome.com/docs/devtools/storage/localstorage/");
-    const localStorageIcon = createIcon12("table");
+    const localStorageIcon = createIcon11("table");
     this.localStorageListTreeElement.setLeadingIcons([localStorageIcon]);
     storageTreeElement.appendChild(this.localStorageListTreeElement);
     this.sessionStorageListTreeElement = new ExpandableApplicationPanelTreeElement(panel, i18nString28(UIStrings28.sessionStorage), i18nString28(UIStrings28.noSessionStorage), i18nString28(UIStrings28.sessionStorageDescription), "session-storage");
     this.sessionStorageListTreeElement.setLink("https://developer.chrome.com/docs/devtools/storage/sessionstorage/");
-    const sessionStorageIcon = createIcon12("table");
+    const sessionStorageIcon = createIcon11("table");
     this.sessionStorageListTreeElement.setLeadingIcons([sessionStorageIcon]);
     storageTreeElement.appendChild(this.sessionStorageListTreeElement);
     this.extensionStorageListTreeElement = new ExpandableApplicationPanelTreeElement(panel, i18nString28(UIStrings28.extensionStorage), i18nString28(UIStrings28.noExtensionStorage), i18nString28(UIStrings28.extensionStorageDescription), "extension-storage");
     this.extensionStorageListTreeElement.setLink("https://developer.chrome.com/docs/extensions/reference/api/storage/");
-    const extensionStorageIcon = createIcon12("table");
+    const extensionStorageIcon = createIcon11("table");
     this.extensionStorageListTreeElement.setLeadingIcons([extensionStorageIcon]);
     storageTreeElement.appendChild(this.extensionStorageListTreeElement);
     this.indexedDBListTreeElement = new IndexedDBTreeElement(panel);
@@ -11025,7 +11106,7 @@ var ApplicationPanelSidebar = class extends UI22.Widget.VBox {
     storageTreeElement.appendChild(this.indexedDBListTreeElement);
     this.cookieListTreeElement = new ExpandableApplicationPanelTreeElement(panel, i18nString28(UIStrings28.cookies), i18nString28(UIStrings28.noCookies), i18nString28(UIStrings28.cookiesDescription), "cookies");
     this.cookieListTreeElement.setLink("https://developer.chrome.com/docs/devtools/storage/cookies/");
-    const cookieIcon = createIcon12("cookie");
+    const cookieIcon = createIcon11("cookie");
     this.cookieListTreeElement.setLeadingIcons([cookieIcon]);
     storageTreeElement.appendChild(this.cookieListTreeElement);
     this.trustTokensTreeElement = new TrustTokensTreeElement(panel);
@@ -11511,12 +11592,12 @@ var BackgroundServiceTreeElement = class extends ApplicationPanelTreeElement {
   model;
   #selected;
   constructor(storagePanel, serviceName) {
-    super(storagePanel, BackgroundServiceView.getUIString(serviceName), false, Platform7.StringUtilities.toKebabCase(serviceName));
+    super(storagePanel, BackgroundServiceView.getUIString(serviceName), false, Platform8.StringUtilities.toKebabCase(serviceName));
     this.serviceName = serviceName;
     this.#selected = false;
     this.view = null;
     this.model = null;
-    const backgroundServiceIcon = createIcon12(this.getIconType());
+    const backgroundServiceIcon = createIcon11(this.getIconType());
     this.setLeadingIcons([backgroundServiceIcon]);
   }
   getIconType() {
@@ -11572,7 +11653,7 @@ var ServiceWorkersTreeElement = class extends ApplicationPanelTreeElement {
   view;
   constructor(storagePanel) {
     super(storagePanel, i18n55.i18n.lockedString("Service workers"), false, "service-workers");
-    const icon = createIcon12("gears");
+    const icon = createIcon11("gears");
     this.setLeadingIcons([icon]);
   }
   get itemURL() {
@@ -11592,7 +11673,7 @@ var AppManifestTreeElement = class extends ApplicationPanelTreeElement {
   view;
   constructor(storagePanel) {
     super(storagePanel, i18nString28(UIStrings28.manifest), true, "manifest");
-    const icon = createIcon12("document");
+    const icon = createIcon11("document");
     this.setLeadingIcons([icon]);
     self.onInvokeElement(this.listItemElement, this.onInvoke.bind(this));
     const emptyView = new UI22.EmptyWidget.EmptyWidget(i18nString28(UIStrings28.noManifestDetected), i18nString28(UIStrings28.manifestDescription));
@@ -11636,7 +11717,7 @@ var ManifestChildTreeElement = class extends ApplicationPanelTreeElement {
   #sectionFieldElement;
   constructor(storagePanel, element, childTitle, fieldElement, jslogContext) {
     super(storagePanel, childTitle, false, jslogContext);
-    const icon = createIcon12("document");
+    const icon = createIcon11("document");
     this.setLeadingIcons([icon]);
     this.#sectionElement = element;
     this.#sectionFieldElement = fieldElement;
@@ -11674,7 +11755,7 @@ var ClearStorageTreeElement = class extends ApplicationPanelTreeElement {
   view;
   constructor(storagePanel) {
     super(storagePanel, i18nString28(UIStrings28.storage), false, "storage");
-    const icon = createIcon12("database");
+    const icon = createIcon11("database");
     this.setLeadingIcons([icon]);
   }
   get itemURL() {
@@ -11695,7 +11776,7 @@ var IndexedDBTreeElement = class extends ExpandableApplicationPanelTreeElement {
   storageBucket;
   constructor(storagePanel, storageBucket) {
     super(storagePanel, i18nString28(UIStrings28.indexeddb), i18nString28(UIStrings28.noIndexeddb), i18nString28(UIStrings28.indexeddbDescription), "indexed-db");
-    const icon = createIcon12("database");
+    const icon = createIcon11("database");
     this.setLeadingIcons([icon]);
     this.idbDatabaseTreeElements = [];
     this.storageBucket = storageBucket;
@@ -11767,7 +11848,7 @@ var IndexedDBTreeElement = class extends ExpandableApplicationPanelTreeElement {
   removeIDBDatabaseTreeElement(idbDatabaseTreeElement) {
     idbDatabaseTreeElement.clear();
     this.removeChild(idbDatabaseTreeElement);
-    Platform7.ArrayUtilities.removeElement(this.idbDatabaseTreeElements, idbDatabaseTreeElement);
+    Platform8.ArrayUtilities.removeElement(this.idbDatabaseTreeElements, idbDatabaseTreeElement);
     this.setExpandable(this.childCount() > 0);
   }
   indexedDBLoaded({ data: { database, model, entriesUpdated } }) {
@@ -11802,7 +11883,7 @@ var IDBDatabaseTreeElement = class extends ApplicationPanelTreeElement {
     this.model = model;
     this.databaseId = databaseId;
     this.idbObjectStoreTreeElements = /* @__PURE__ */ new Map();
-    const icon = createIcon12("database");
+    const icon = createIcon11("database");
     this.setLeadingIcons([icon]);
     this.model.addEventListener(Events2.DatabaseNamesRefreshed, this.refreshIndexedDB, this);
   }
@@ -11908,7 +11989,7 @@ var IDBObjectStoreTreeElement = class extends ApplicationPanelTreeElement {
     this.idbIndexTreeElements = /* @__PURE__ */ new Map();
     this.objectStore = objectStore;
     this.view = null;
-    const icon = createIcon12("table");
+    const icon = createIcon11("table");
     this.setLeadingIcons([icon]);
   }
   get itemURL() {
@@ -12077,7 +12158,7 @@ var DOMStorageTreeElement = class extends ApplicationPanelTreeElement {
   constructor(storagePanel, domStorage) {
     super(storagePanel, domStorage.storageKey ? SDK23.StorageKeyManager.parseStorageKey(domStorage.storageKey).origin : i18nString28(UIStrings28.localFiles), false, domStorage.isLocalStorage ? "local-storage-for-domain" : "session-storage-for-domain");
     this.domStorage = domStorage;
-    const icon = createIcon12("table");
+    const icon = createIcon11("table");
     this.setLeadingIcons([icon]);
   }
   get itemURL() {
@@ -12104,7 +12185,7 @@ var ExtensionStorageTreeElement = class extends ApplicationPanelTreeElement {
   constructor(storagePanel, extensionStorage) {
     super(storagePanel, nameForExtensionStorageArea(extensionStorage.storageArea), false, "extension-storage-for-domain");
     this.extensionStorage = extensionStorage;
-    const icon = createIcon12("table");
+    const icon = createIcon11("table");
     this.setLeadingIcons([icon]);
   }
   get storageArea() {
@@ -12134,7 +12215,7 @@ var ExtensionStorageTreeParentElement = class extends ApplicationPanelTreeElemen
   constructor(storagePanel, extensionId, extensionName) {
     super(storagePanel, extensionName || extensionId, true, "extension-storage-for-domain");
     this.extensionId = extensionId;
-    const icon = createIcon12("table");
+    const icon = createIcon11("table");
     this.setLeadingIcons([icon]);
   }
   get itemURL() {
@@ -12149,7 +12230,7 @@ var CookieTreeElement = class extends ApplicationPanelTreeElement {
     this.target = frame.resourceTreeModel().target();
     this.#cookieDomain = cookieUrl.securityOrigin();
     this.tooltip = i18nString28(UIStrings28.cookiesUsedByFramesFromS, { PH1: this.#cookieDomain });
-    const icon = createIcon12("cookie");
+    const icon = createIcon11("cookie");
     if (IssuesManager.RelatedIssue.hasThirdPartyPhaseoutCookieIssueForDomain(cookieUrl.domain())) {
       icon.name = "warning-filled";
       this.tooltip = i18nString28(UIStrings28.thirdPartyPhaseout, { PH1: this.#cookieDomain });
@@ -12192,8 +12273,8 @@ var StorageCategoryView = class extends UI22.Widget.VBox {
   setHeadline(header) {
     this.emptyWidget.header = header;
   }
-  setLink(link5) {
-    this.emptyWidget.link = link5;
+  setLink(link4) {
+    this.emptyWidget.link = link4;
   }
 };
 var ResourcesSection = class {
@@ -12410,7 +12491,7 @@ var FrameTreeElement = class _FrameTreeElement extends ApplicationPanelTreeEleme
     return frame.unreachableUrl() ? "iframe-crossed" : "iframe";
   }
   async frameNavigated(frame) {
-    const icon = createIcon12(this.getIconTypeForFrame(frame));
+    const icon = createIcon11(this.getIconTypeForFrame(frame));
     if (frame.unreachableUrl()) {
       icon.classList.add("red-icon");
     }
@@ -12571,7 +12652,7 @@ var FrameResourceTreeElement = class extends ApplicationPanelTreeElement {
     this.previewPromise = null;
     this.tooltip = resource.url;
     resourceToFrameResourceTreeElement.set(this.resource, this);
-    const icon = createIcon12("document", "navigator-file-tree-item");
+    const icon = createIcon11("document", "navigator-file-tree-item");
     icon.classList.add("navigator-" + resource.resourceType().name() + "-tree-item");
     this.setLeadingIcons([icon]);
   }
@@ -12649,7 +12730,7 @@ var FrameWindowTreeElement = class extends ApplicationPanelTreeElement {
   }
   updateIcon(canAccessOpener) {
     const iconType = canAccessOpener ? "popup" : "frame";
-    const icon = createIcon12(iconType);
+    const icon = createIcon11(iconType);
     this.setLeadingIcons([icon]);
   }
   update(targetInfo) {
@@ -12692,7 +12773,7 @@ var WorkerTreeElement = class extends ApplicationPanelTreeElement {
     super(storagePanel, targetInfo.title || targetInfo.url || i18nString28(UIStrings28.worker), false, "worker");
     this.targetInfo = targetInfo;
     this.view = null;
-    const icon = createIcon12("gears", "navigator-file-tree-item");
+    const icon = createIcon11("gears", "navigator-file-tree-item");
     this.setLeadingIcons([icon]);
   }
   onselect(selectedByUser) {
@@ -12999,7 +13080,7 @@ var CookieItemsView = class extends UI23.Widget.VBox {
       }
       return false;
     };
-    return items.filter((item) => this.#toolbar.filterRegex?.test(keyFunction(item)) ?? true).filter(predicate);
+    return items.filter((item2) => this.#toolbar.filterRegex?.test(keyFunction(item2)) ?? true).filter(predicate);
   }
   /**
    * This will only delete the currently visible cookies.
@@ -13128,7 +13209,7 @@ var DOMStorageItemsView = class extends KeyValueStorageItemsView {
       return;
     }
     const { filterRegex } = this.toolbar;
-    const filteredItems = items.map((item) => ({ key: item[0], value: item[1] })).filter((item) => filterRegex?.test(`${item.key} ${item.value}`) ?? true);
+    const filteredItems = items.map((item2) => ({ key: item2[0], value: item2[1] })).filter((item2) => filterRegex?.test(`${item2.key} ${item2.value}`) ?? true);
     this.showItems(filteredItems);
   }
   deleteAllItems() {
@@ -13237,7 +13318,7 @@ var ExtensionStorageItemsView = class extends KeyValueStorageItemsView {
     if (!items || !this.toolbar) {
       return;
     }
-    const filteredItems = Object.entries(items).map(([key, value]) => ({ key, value: typeof value === "string" ? value : JSON.stringify(value) })).filter((item) => this.toolbar?.filterRegex?.test(`${item.key} ${item.value}`) ?? true);
+    const filteredItems = Object.entries(items).map(([key, value]) => ({ key, value: typeof value === "string" ? value : JSON.stringify(value) })).filter((item2) => this.toolbar?.filterRegex?.test(`${item2.key} ${item2.value}`) ?? true);
     this.showItems(filteredItems);
     this.extensionStorageItemsDispatcher.dispatchEventToListeners(
       "ItemsRefreshed"
@@ -13267,7 +13348,7 @@ __export(ResourcesPanel_exports, {
 });
 import "./../../ui/legacy/legacy.js";
 import * as Common20 from "./../../core/common/common.js";
-import * as Platform8 from "./../../core/platform/platform.js";
+import * as Platform9 from "./../../core/platform/platform.js";
 import * as SDK25 from "./../../core/sdk/sdk.js";
 import * as SourceFrame8 from "./../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI26 from "./../../ui/legacy/legacy.js";
@@ -13505,7 +13586,7 @@ var ResourcesPanel = class _ResourcesPanel extends UI26.Panel.PanelWithSidebar {
     this.storageViewToolbar.classList.toggle("hidden", true);
     if (view instanceof UI26.View.SimpleView) {
       void view.toolbarItems().then((items) => {
-        items.map((item) => this.storageViewToolbar.appendToolbarItem(item));
+        items.map((item2) => this.storageViewToolbar.appendToolbarItem(item2));
         this.storageViewToolbar.classList.toggle("hidden", !items.length);
       });
     }
@@ -13523,7 +13604,7 @@ var ResourcesPanel = class _ResourcesPanel extends UI26.Panel.PanelWithSidebar {
     if (!this.categoryView) {
       this.categoryView = new StorageCategoryView();
     }
-    this.categoryView.element.setAttribute("jslog", `${VisualLogging19.pane().context(Platform8.StringUtilities.toKebabCase(categoryName))}`);
+    this.categoryView.element.setAttribute("jslog", `${VisualLogging19.pane().context(Platform9.StringUtilities.toKebabCase(categoryName))}`);
     this.categoryView.setHeadline(categoryHeadline);
     this.categoryView.setText(categoryDescription);
     this.categoryView.setLink(categoryLink);

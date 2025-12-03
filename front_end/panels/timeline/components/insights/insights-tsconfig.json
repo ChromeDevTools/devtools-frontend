@@ -48,6 +48,7 @@
     "../../../../../../../../front_end/panels/timeline/components/insights/Helpers.ts",
     "../../../../../../../../front_end/panels/timeline/components/insights/INPBreakdown.ts",
     "../../../../../../../../front_end/panels/timeline/components/insights/ImageDelivery.ts",
+    "../../../../../../../../front_end/panels/timeline/components/insights/ImageRef.ts",
     "../../../../../../../../front_end/panels/timeline/components/insights/LCPBreakdown.ts",
     "../../../../../../../../front_end/panels/timeline/components/insights/LCPDiscovery.ts",
     "../../../../../../../../front_end/panels/timeline/components/insights/LegacyJavaScript.ts",

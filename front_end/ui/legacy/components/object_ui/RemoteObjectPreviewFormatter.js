@@ -203,28 +203,27 @@ export class RemoteObjectPreviewFormatter {
         return html `<span class='object-value-${(subtype || type)}' title=${ifDefined(title)}>${preview()}</span>`;
     }
     renderEvaluationResultPreview(result, allowErrors) {
-        // TODO(crbug.com/457388389): Return a `LitTemplate` here once callers can handle that.
-        const fragment = document.createDocumentFragment();
         if ('error' in result) {
-            return fragment;
+            return nothing;
         }
         if (result.exceptionDetails?.exception?.description) {
             const exception = result.exceptionDetails.exception.description;
             if (exception.startsWith('TypeError: ') || allowErrors) {
-                /* eslint-disable-next-line  @devtools/no-lit-render-outside-of-view */
-                render(html `<span>${result.exceptionDetails.text} ${exception}</span>`, fragment);
+                return html `<span>${result.exceptionDetails.text} ${exception}</span>`;
             }
-            return fragment;
+            return nothing;
         }
         const { preview, type, subtype, className, description } = result.object;
         if (preview && type === 'object' && subtype !== 'node' && subtype !== 'trustedtype') {
-            /* eslint-disable-next-line  @devtools/no-lit-render-outside-of-view */
-            render(this.renderObjectPreview(preview), fragment);
+            return this.renderObjectPreview(preview);
         }
-        else {
-            /* eslint-disable-next-line  @devtools/no-lit-render-outside-of-view */
-            render(this.renderPropertyPreview(type, subtype, className, Platform.StringUtilities.trimEndWithMaxLength(description || '', 400)), fragment);
-        }
+        return this.renderPropertyPreview(type, subtype, className, Platform.StringUtilities.trimEndWithMaxLength(description || '', 400));
+    }
+    /** @deprecated (crbug.com/457388389) Use lit version instead */
+    renderEvaluationResultPreviewFragment(result, allowErrors) {
+        const fragment = document.createDocumentFragment();
+        /* eslint-disable-next-line  @devtools/no-lit-render-outside-of-view */
+        render(this.renderEvaluationResultPreview(result, allowErrors), fragment);
         return fragment;
     }
 }

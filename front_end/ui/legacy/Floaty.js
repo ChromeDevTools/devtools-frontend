@@ -46,6 +46,11 @@ export class Floaty {
         this.#insertIntoDOM();
     }
     #onKeyShortcut(e) {
+        const origin = e.composedPath().at(0);
+        // If the user was typing into an input field, don't make it trigger the Floaty.
+        if (origin && (origin instanceof HTMLTextAreaElement || origin instanceof HTMLInputElement)) {
+            return;
+        }
         if (e.key === 'f') {
             this.open();
         }

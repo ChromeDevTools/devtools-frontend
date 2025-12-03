@@ -10,6 +10,7 @@ import * as LegacyComponents from '../../../ui/legacy/components/utils/utils.js'
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as Insights from './insights/insights.js';
+import { nodeLink } from './insights/NodeLink.js';
 import layoutShiftDetailsStyles from './layoutShiftDetails.css.js';
 const { html, render } = Lit;
 const MAX_URL_LENGTH = 20;
@@ -296,14 +297,11 @@ function renderShiftedElements(shift, elementsShifted) {
     return html `
       ${elementsShifted?.map(el => {
         if (el.node_id !== undefined) {
-            return html `
-            <devtools-performance-node-link
-              .data=${{
+            return nodeLink({
                 backendNodeId: el.node_id,
                 frame: shift.args.frame,
                 fallbackHtmlSnippet: el.debug_name,
-            }}>
-            </devtools-performance-node-link>`;
+            });
         }
         return Lit.nothing;
     })}`;
@@ -323,20 +321,17 @@ function renderAnimation(failure, onEventClick) {
     // clang-format on
 }
 function renderUnsizedImage(frame, unsizedImage) {
-    // clang-format off
-    const el = html `
-      <devtools-performance-node-link
-        .data=${{
+    const nodeLinkEl = nodeLink({
         backendNodeId: unsizedImage.backendNodeId,
         frame,
         fallbackUrl: unsizedImage.paintImageEvent.args.data.url,
-    }}>
-      </devtools-performance-node-link>`;
+    });
+    // clang-format off
     return html `
-      <span class="culprit">
-        <span class="culprit-type">${i18nString(UIStrings.unsizedImage)}: </span>
-        <span class="culprit-value">${el}</span>
-      </span>`;
+    <span class="culprit">
+      <span class="culprit-type">${i18nString(UIStrings.unsizedImage)}: </span>
+      <span class="culprit-value">${nodeLinkEl}</span>
+    </span>`;
     // clang-format on
 }
 function renderFontRequest(request) {

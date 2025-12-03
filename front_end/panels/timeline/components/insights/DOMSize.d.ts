@@ -1,6 +1,5 @@
 import '../../../../ui/kit/kit.js';
 import './Table.js';
-import './NodeLink.js';
 import type { DOMSizeInsightModel } from '../../../../models/trace/insights/DOMSize.js';
 import * as Lit from '../../../../ui/lit/lit.js';
 import { BaseInsightComponent } from './BaseInsightComponent.js';

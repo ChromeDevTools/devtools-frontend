@@ -7807,6 +7807,10 @@ var NativeFunctions = [
     signatures: [["type", "?eventInitDict"]]
   },
   {
+    name: "GamepadRawInputChangeEvent",
+    signatures: [["type", "?eventInitDict"]]
+  },
+  {
     name: "addStroke",
     signatures: [["stroke"]]
   },

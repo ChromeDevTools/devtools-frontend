@@ -1,3 +1,4 @@
+import type * as Platform from '../../../core/platform/platform.js';
 import type * as SourceMapScopes from '../../source_map_scopes/source_map_scopes.js';
 import * as Trace from '../../trace/trace.js';
 import type { AICallTree } from '../performance/AICallTree.js';
@@ -8,22 +9,24 @@ export interface NetworkRequestFormatOptions {
 }
 export declare class PerformanceTraceFormatter {
     #private;
+    resolveFunctionCode?: (url: Platform.DevToolsPath.UrlString, line: number, column: number) => Promise<SourceMapScopes.FunctionCodeResolver.FunctionCode | null>;
     constructor(focus: AgentFocus);
     serializeEvent(event: Trace.Types.Events.Event): string;
     serializeBounds(bounds: Trace.Types.Timing.TraceWindowMicro): string;
     formatTraceSummary(): string;
-    formatCriticalRequests(): string;
-    formatMainThreadBottomUpSummary(): string;
-    formatThirdPartySummary(): string;
-    formatLongestTasks(): string;
-    formatMainThreadTrackSummary(bounds: Trace.Types.Timing.TraceWindowMicro): string;
+    formatCriticalRequests(): Promise<string>;
+    formatMainThreadBottomUpSummary(): Promise<string>;
+    formatThirdPartySummary(): Promise<string>;
+    formatLongestTasks(): Promise<string>;
+    formatMainThreadTrackSummary(bounds: Trace.Types.Timing.TraceWindowMicro): Promise<string>;
     formatNetworkTrackSummary(bounds: Trace.Types.Timing.TraceWindowMicro): string;
-    formatCallTree(tree: AICallTree, headerLevel?: number): string;
+    formatCallTree(tree: AICallTree, headerLevel?: number): Promise<string>;
     formatNetworkRequests(requests: readonly Trace.Types.Events.SyntheticNetworkRequest[], options?: NetworkRequestFormatOptions): string;
     static callFrameDataFormatDescription: string;
     /**
      * Network requests format description that is sent to the model as a fact.
      */
     static networkDataFormatDescription: string;
+    resolveFunctionCodeAtLocation(url: Platform.DevToolsPath.UrlString, line: number, column: number): Promise<SourceMapScopes.FunctionCodeResolver.FunctionCode | null>;
     formatFunctionCode(code: SourceMapScopes.FunctionCodeResolver.FunctionCode): string;
 }

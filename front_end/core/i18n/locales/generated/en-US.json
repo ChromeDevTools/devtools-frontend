@@ -3044,9 +3044,6 @@
   "panels/ai_assistance/ai_assistance-meta.ts | aiAssistance": {
     "message": "AI assistance"
   },
-  "panels/ai_assistance/ai_assistance-meta.ts | askAi": {
-    "message": "Ask AI"
-  },
   "panels/ai_assistance/ai_assistance-meta.ts | debugWithAi": {
     "message": "Debug with AI"
   },

@@ -485,7 +485,7 @@ export class PerformanceAgent extends AiAgent {
         // Clear any previous facts in case the user changed the active context.
         this.clearFacts();
         if (options.selected && focus) {
-            this.#addFacts(options.selected);
+            await this.#addFacts(options.selected);
         }
         yield* super.run(initialQuery, options);
     }
@@ -499,11 +499,11 @@ export class PerformanceAgent extends AiAgent {
         }
         this.#traceFacts.push({ text: `Trace summary:\n${text}`, metadata: { source: 'devtools', score: ScorePriority.REQUIRED } });
     }
-    #createFactForCriticalRequests() {
+    async #createFactForCriticalRequests() {
         if (!this.#formatter) {
             return;
         }
-        const text = this.#formatter.formatCriticalRequests();
+        const text = await this.#formatter.formatCriticalRequests();
         if (!text) {
             return;
         }
@@ -512,11 +512,12 @@ export class PerformanceAgent extends AiAgent {
             metadata: { source: 'devtools', score: ScorePriority.CRITICAL },
         });
     }
-    #createFactForMainThreadBottomUpSummary() {
+    async #createFactForMainThreadBottomUpSummary() {
         if (!this.#formatter) {
             return;
         }
-        const text = this.#formatter.formatMainThreadBottomUpSummary();
+        const formatter = this.#formatter;
+        const text = await formatter.formatMainThreadBottomUpSummary();
         if (!text) {
             return;
         }
@@ -525,11 +526,11 @@ export class PerformanceAgent extends AiAgent {
             metadata: { source: 'devtools', score: ScorePriority.CRITICAL },
         });
     }
-    #createFactForThirdPartySummary() {
+    async #createFactForThirdPartySummary() {
         if (!this.#formatter) {
             return;
         }
-        const text = this.#formatter.formatThirdPartySummary();
+        const text = await this.#formatter.formatThirdPartySummary();
         if (!text) {
             return;
         }
@@ -538,11 +539,11 @@ export class PerformanceAgent extends AiAgent {
             metadata: { source: 'devtools', score: ScorePriority.CRITICAL },
         });
     }
-    #createFactForLongestTasks() {
+    async #createFactForLongestTasks() {
         if (!this.#formatter) {
             return;
         }
-        const text = this.#formatter.formatLongestTasks();
+        const text = await this.#formatter.formatLongestTasks();
         if (!text) {
             return;
         }
@@ -551,7 +552,7 @@ export class PerformanceAgent extends AiAgent {
             metadata: { source: 'devtools', score: ScorePriority.CRITICAL },
         });
     }
-    #addFacts(context) {
+    async #addFacts(context) {
         const focus = context.getItem();
         if (!context.external) {
             this.addFact(this.#notExternalExtraPreambleFact);
@@ -563,12 +564,23 @@ export class PerformanceAgent extends AiAgent {
         this.addFact(this.#callFrameDataDescriptionFact);
         this.addFact(this.#networkDataDescriptionFact);
         if (!this.#traceFacts.length) {
+            const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+            if (!target) {
+                throw new Error('missing target');
+            }
             this.#formatter = new PerformanceTraceFormatter(focus);
+            this.#formatter.resolveFunctionCode =
+                async (url, line, column) => {
+                    if (!target) {
+                        return null;
+                    }
+                    return await SourceMapScopes.FunctionCodeResolver.getFunctionCodeFromLocation(target, url, line, column, { contextLength: 200, contextLineLength: 5, appendProfileData: true });
+                };
             this.#createFactForTraceSummary();
-            this.#createFactForCriticalRequests();
-            this.#createFactForMainThreadBottomUpSummary();
-            this.#createFactForThirdPartySummary();
-            this.#createFactForLongestTasks();
+            await this.#createFactForCriticalRequests();
+            await this.#createFactForMainThreadBottomUpSummary();
+            await this.#createFactForThirdPartySummary();
+            await this.#createFactForLongestTasks();
         }
         for (const fact of this.#traceFacts) {
             this.addFact(fact);
@@ -712,7 +724,8 @@ export class PerformanceAgent extends AiAgent {
                 if (!bounds) {
                     return { error: 'invalid bounds' };
                 }
-                const summary = this.#formatter.formatMainThreadTrackSummary(bounds);
+                const formatter = this.#formatter;
+                const summary = await formatter.formatMainThreadTrackSummary(bounds);
                 if (this.#isFunctionResponseTooLarge(summary)) {
                     return {
                         error: 'getMainThreadTrackSummary response is too large. Try investigating using other functions, or a more narrow bounds',
@@ -802,7 +815,8 @@ export class PerformanceAgent extends AiAgent {
                 if (!tree) {
                     return { error: 'No call tree found' };
                 }
-                const callTree = this.#formatter.formatCallTree(tree);
+                const formatter = this.#formatter;
+                const callTree = await formatter.formatCallTree(tree);
                 const key = `getDetailedCallTree(${args.eventKey})`;
                 this.#cacheFunctionResult(focus, key, callTree);
                 return { result: { callTree } };
@@ -859,7 +873,7 @@ export class PerformanceAgent extends AiAgent {
             });
         }
         this.declareFunction('getFunctionCode', {
-            description: 'Returns the code for a function defined at the given location.',
+            description: 'Returns the code for a function defined at the given location. The result is annotated with the runtime performance of each line of code.',
             parameters: {
                 type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
                 description: '',
@@ -904,7 +918,7 @@ export class PerformanceAgent extends AiAgent {
                     throw new Error('missing target');
                 }
                 const url = args.scriptUrl;
-                const code = await SourceMapScopes.FunctionCodeResolver.getFunctionCodeFromLocation(target, url, args.line, args.column, { contextLength: 200, contextLineLength: 5, appendProfileData: true });
+                const code = await this.#formatter.resolveFunctionCodeAtLocation(url, args.line, args.column);
                 if (!code) {
                     return { error: 'Could not find code' };
                 }

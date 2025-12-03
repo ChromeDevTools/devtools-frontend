@@ -9711,18 +9711,12 @@ var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
       const editorElement = this.element.querySelector("devtools-text-editor");
       if (!eventTarget.isSelfOrDescendant(editorElement) && uiSourceCode.contentType().isTextType()) {
         UI18.Context.Context.instance().setFlavor(Workspace21.UISourceCode.UISourceCode, uiSourceCode);
-        if (Root3.Runtime.hostConfig.devToolsAiSubmenuPrompts?.enabled) {
-          const action3 = UI18.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
-          const submenu = contextMenu.footerSection().appendSubMenuItem(action3.title(), false, openAiAssistanceId, Root3.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.featureName);
-          submenu.defaultSection().appendAction("drjones.sources-panel-context", i18nString16(UIStrings17.startAChat));
-          appendSubmenuPromptAction(submenu, action3, i18nString16(UIStrings17.assessPerformance), "Is this script optimized for performance?", openAiAssistanceId + ".performance");
-          appendSubmenuPromptAction(submenu, action3, i18nString16(UIStrings17.explainThisScript), "What does this script do?", openAiAssistanceId + ".script");
-          appendSubmenuPromptAction(submenu, action3, i18nString16(UIStrings17.explainInputHandling), "Does the script handle user input safely", openAiAssistanceId + ".input");
-        } else if (Root3.Runtime.hostConfig.devToolsAiDebugWithAi?.enabled) {
-          contextMenu.footerSection().appendAction(openAiAssistanceId, void 0, false, void 0, Root3.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.featureName);
-        } else {
-          contextMenu.footerSection().appendAction(openAiAssistanceId);
-        }
+        const action3 = UI18.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
+        const submenu = contextMenu.footerSection().appendSubMenuItem(action3.title(), false, openAiAssistanceId);
+        submenu.defaultSection().appendAction("drjones.sources-panel-context", i18nString16(UIStrings17.startAChat));
+        appendSubmenuPromptAction(submenu, action3, i18nString16(UIStrings17.assessPerformance), "Is this script optimized for performance?", openAiAssistanceId + ".performance");
+        appendSubmenuPromptAction(submenu, action3, i18nString16(UIStrings17.explainThisScript), "What does this script do?", openAiAssistanceId + ".script");
+        appendSubmenuPromptAction(submenu, action3, i18nString16(UIStrings17.explainInputHandling), "Does the script handle user input safely", openAiAssistanceId + ".input");
       }
     }
     if (uiSourceCode.contentType().hasScripts() && Bindings8.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().scriptsForUISourceCode(uiSourceCode).every((script) => script.isJavaScript())) {

@@ -12220,152 +12220,140 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI16.TreeOutline.Tr
     let menuItem;
     const openAiAssistanceId = "freestyler.element-panel-context";
     if (UI16.ActionRegistry.ActionRegistry.instance().hasAction(openAiAssistanceId)) {
-      let appendSubmenuPromptAction = function(submenu, action2, label, prompt, jslogContext) {
-        submenu.defaultSection().appendItem(label, () => {
-          void action2.execute({ prompt });
+      let appendSubmenuPromptAction = function(submenu2, action3, label, prompt, jslogContext) {
+        submenu2.defaultSection().appendItem(label, () => {
+          void action3.execute({ prompt });
           UI16.UIUtils.PromotionManager.instance().recordFeatureInteraction(openAiAssistanceId);
-        }, { disabled: !action2.enabled(), jslogContext });
+        }, { disabled: !action3.enabled(), jslogContext });
       };
       UI16.Context.Context.instance().setFlavor(SDK14.DOMModel.DOMNode, this.nodeInternal);
-      if (Root6.Runtime.hostConfig.devToolsAiSubmenuPrompts?.enabled) {
-        const action2 = UI16.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
-        const featureName = UI16.UIUtils.PromotionManager.instance().maybeShowPromotion(openAiAssistanceId) ? Root6.Runtime.hostConfig.devToolsAiSubmenuPrompts?.featureName : void 0;
-        const submenu = contextMenu.footerSection().appendSubMenuItem(action2.title(), false, openAiAssistanceId, featureName);
-        submenu.defaultSection().appendAction(openAiAssistanceId, i18nString11(UIStrings12.startAChat));
-        const submenuConfigs = [
-          {
-            condition: (props) => Boolean(props?.isFlex),
-            items: [
-              {
-                label: i18nString11(UIStrings12.wrapTheseItems),
-                prompt: "How can I make flex items wrap?",
-                jslogContextSuffix: ".flex-wrap"
-              },
-              {
-                label: i18nString11(UIStrings12.distributeItemsEvenly),
-                prompt: "How do I distribute flex items evenly?",
-                jslogContextSuffix: ".flex-distribute"
-              },
-              {
-                label: i18nString11(UIStrings12.explainFlexbox),
-                prompt: "What is flexbox?",
-                jslogContextSuffix: ".flex-what"
-              }
-            ]
-          },
-          {
-            condition: (props) => Boolean(props?.isGrid && !props?.isSubgrid),
-            items: [
-              {
-                label: i18nString11(UIStrings12.alignItems),
-                prompt: "How do I align items in a grid?",
-                jslogContextSuffix: ".grid-align"
-              },
-              {
-                label: i18nString11(UIStrings12.addPadding),
-                prompt: "How to add spacing between grid items?",
-                jslogContextSuffix: ".grid-gap"
-              },
-              {
-                label: i18nString11(UIStrings12.explainGridLayout),
-                prompt: "How does grid layout work?",
-                jslogContextSuffix: ".grid-how"
-              }
-            ]
-          },
-          {
-            condition: (props) => Boolean(props?.isSubgrid),
-            items: [
-              {
-                label: i18nString11(UIStrings12.findGridDefinition),
-                prompt: "Where is this grid defined?",
-                jslogContextSuffix: ".subgrid-where"
-              },
-              {
-                label: i18nString11(UIStrings12.changeParentProperties),
-                prompt: "How to overwrite parent grid properties?",
-                jslogContextSuffix: ".subgrid-override"
-              },
-              {
-                label: i18nString11(UIStrings12.explainSubgrids),
-                prompt: "How do subgrids work?",
-                jslogContextSuffix: ".subgrid-how"
-              }
-            ]
-          },
-          {
-            condition: (props) => Boolean(props?.hasScroll),
-            items: [
-              {
-                label: i18nString11(UIStrings12.removeScrollbars),
-                prompt: "How do I remove scrollbars for this element?",
-                jslogContextSuffix: ".scroll-remove"
-              },
-              {
-                label: i18nString11(UIStrings12.styleScrollbars),
-                prompt: "How can I style a scrollbar?",
-                jslogContextSuffix: ".scroll-style"
-              },
-              {
-                label: i18nString11(UIStrings12.explainScrollbars),
-                prompt: "Why does this element scroll?",
-                jslogContextSuffix: ".scroll-why"
-              }
-            ]
-          },
-          {
-            condition: (props) => Boolean(props?.isContainer),
-            items: [
-              {
-                label: i18nString11(UIStrings12.explainContainerQueries),
-                prompt: "What are container queries?",
-                jslogContextSuffix: ".container-what"
-              },
-              {
-                label: i18nString11(UIStrings12.explainContainerTypes),
-                prompt: "How do I use container-type?",
-                jslogContextSuffix: ".container-how"
-              },
-              {
-                label: i18nString11(UIStrings12.explainContainerContext),
-                prompt: "What's the container context for this element?",
-                jslogContextSuffix: ".container-context"
-              }
-            ]
-          },
-          {
-            // Default items
-            condition: () => true,
-            items: [
-              {
-                label: i18nString11(UIStrings12.assessVisibility),
-                prompt: "Why isn\u2019t this element visible?",
-                jslogContextSuffix: ".visibility"
-              },
-              {
-                label: i18nString11(UIStrings12.centerElement),
-                prompt: "How do I center this element?",
-                jslogContextSuffix: ".center"
-              }
-            ]
-          }
-        ];
-        const layoutProps = await this.nodeInternal.domModel().cssModel().getLayoutPropertiesFromComputedStyle(this.nodeInternal.id);
-        const config = submenuConfigs.find((c) => c.condition(layoutProps));
-        if (config) {
-          for (const item2 of config.items) {
-            appendSubmenuPromptAction(submenu, action2, item2.label, item2.prompt, openAiAssistanceId + item2.jslogContextSuffix);
-          }
+      const action2 = UI16.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
+      const submenu = contextMenu.footerSection().appendSubMenuItem(action2.title(), false, openAiAssistanceId);
+      submenu.defaultSection().appendAction(openAiAssistanceId, i18nString11(UIStrings12.startAChat));
+      const submenuConfigs = [
+        {
+          condition: (props) => Boolean(props?.isFlex),
+          items: [
+            {
+              label: i18nString11(UIStrings12.wrapTheseItems),
+              prompt: "How can I make flex items wrap?",
+              jslogContextSuffix: ".flex-wrap"
+            },
+            {
+              label: i18nString11(UIStrings12.distributeItemsEvenly),
+              prompt: "How do I distribute flex items evenly?",
+              jslogContextSuffix: ".flex-distribute"
+            },
+            {
+              label: i18nString11(UIStrings12.explainFlexbox),
+              prompt: "What is flexbox?",
+              jslogContextSuffix: ".flex-what"
+            }
+          ]
+        },
+        {
+          condition: (props) => Boolean(props?.isGrid && !props?.isSubgrid),
+          items: [
+            {
+              label: i18nString11(UIStrings12.alignItems),
+              prompt: "How do I align items in a grid?",
+              jslogContextSuffix: ".grid-align"
+            },
+            {
+              label: i18nString11(UIStrings12.addPadding),
+              prompt: "How to add spacing between grid items?",
+              jslogContextSuffix: ".grid-gap"
+            },
+            {
+              label: i18nString11(UIStrings12.explainGridLayout),
+              prompt: "How does grid layout work?",
+              jslogContextSuffix: ".grid-how"
+            }
+          ]
+        },
+        {
+          condition: (props) => Boolean(props?.isSubgrid),
+          items: [
+            {
+              label: i18nString11(UIStrings12.findGridDefinition),
+              prompt: "Where is this grid defined?",
+              jslogContextSuffix: ".subgrid-where"
+            },
+            {
+              label: i18nString11(UIStrings12.changeParentProperties),
+              prompt: "How to overwrite parent grid properties?",
+              jslogContextSuffix: ".subgrid-override"
+            },
+            {
+              label: i18nString11(UIStrings12.explainSubgrids),
+              prompt: "How do subgrids work?",
+              jslogContextSuffix: ".subgrid-how"
+            }
+          ]
+        },
+        {
+          condition: (props) => Boolean(props?.hasScroll),
+          items: [
+            {
+              label: i18nString11(UIStrings12.removeScrollbars),
+              prompt: "How do I remove scrollbars for this element?",
+              jslogContextSuffix: ".scroll-remove"
+            },
+            {
+              label: i18nString11(UIStrings12.styleScrollbars),
+              prompt: "How can I style a scrollbar?",
+              jslogContextSuffix: ".scroll-style"
+            },
+            {
+              label: i18nString11(UIStrings12.explainScrollbars),
+              prompt: "Why does this element scroll?",
+              jslogContextSuffix: ".scroll-why"
+            }
+          ]
+        },
+        {
+          condition: (props) => Boolean(props?.isContainer),
+          items: [
+            {
+              label: i18nString11(UIStrings12.explainContainerQueries),
+              prompt: "What are container queries?",
+              jslogContextSuffix: ".container-what"
+            },
+            {
+              label: i18nString11(UIStrings12.explainContainerTypes),
+              prompt: "How do I use container-type?",
+              jslogContextSuffix: ".container-how"
+            },
+            {
+              label: i18nString11(UIStrings12.explainContainerContext),
+              prompt: "What's the container context for this element?",
+              jslogContextSuffix: ".container-context"
+            }
+          ]
+        },
+        {
+          // Default items
+          condition: () => true,
+          items: [
+            {
+              label: i18nString11(UIStrings12.assessVisibility),
+              prompt: "Why isn\u2019t this element visible?",
+              jslogContextSuffix: ".visibility"
+            },
+            {
+              label: i18nString11(UIStrings12.centerElement),
+              prompt: "How do I center this element?",
+              jslogContextSuffix: ".center"
+            }
+          ]
         }
-      } else if (Root6.Runtime.hostConfig.devToolsAiDebugWithAi?.enabled) {
-        const featureName = UI16.UIUtils.PromotionManager.instance().maybeShowPromotion(openAiAssistanceId) ? Root6.Runtime.hostConfig.devToolsAiDebugWithAi?.featureName : void 0;
-        const action2 = UI16.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
-        contextMenu.footerSection().appendItem(action2.title(), () => {
-          void action2.execute();
-          UI16.UIUtils.PromotionManager.instance().recordFeatureInteraction(openAiAssistanceId);
-        }, { jslogContext: openAiAssistanceId, disabled: !action2.enabled(), featureName });
-      } else {
-        contextMenu.footerSection().appendAction(openAiAssistanceId);
+      ];
+      const layoutProps = await this.nodeInternal.domModel().cssModel().getLayoutPropertiesFromComputedStyle(this.nodeInternal.id);
+      const config = submenuConfigs.find((c) => c.condition(layoutProps));
+      if (config) {
+        for (const item2 of config.items) {
+          appendSubmenuPromptAction(submenu, action2, item2.label, item2.prompt, openAiAssistanceId + item2.jslogContextSuffix);
+        }
       }
     }
     menuItem = contextMenu.clipboardSection().appendItem(i18nString11(UIStrings12.cut), treeOutline.performCopyOrCut.bind(treeOutline, true, this.nodeInternal), { disabled: !this.hasEditableNode(), jslogContext: "cut" });

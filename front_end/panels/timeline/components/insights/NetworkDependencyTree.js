@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import './Table.js';
-import './NodeLink.js';
 import '../../../../ui/kit/kit.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Trace from '../../../../models/trace/trace.js';
@@ -11,6 +10,7 @@ import { BaseInsightComponent } from './BaseInsightComponent.js';
 import { eventRef } from './EventRef.js';
 import { md } from './Helpers.js';
 import networkDependencyTreeInsightStyles from './networkDependencyTreeInsight.css.js';
+import { nodeLink } from './NodeLink.js';
 import { renderOthersLabel } from './Table.js';
 const { UIStrings, i18nString } = Trace.Insights.Models.NetworkDependencyTree;
 const { html } = Lit;
@@ -189,16 +189,11 @@ export class NetworkDependencyTree extends BaseInsightComponent {
                     subRows,
                 };
             }
-            // clang-format off
-            const nodeEl = html `
-        <devtools-performance-node-link
-          .data=${{
+            const nodeEl = nodeLink({
                 backendNodeId: preconnectOrigin.node_id,
                 frame: preconnectOrigin.frame,
                 fallbackHtmlSnippet: `<link rel="preconnect" href="${preconnectOrigin.url}">`,
-            }}>
-        </devtools-performance-node-link>`;
-            // clang-format on
+            });
             return {
                 values: [preconnectOrigin.url, nodeEl],
                 subRows,

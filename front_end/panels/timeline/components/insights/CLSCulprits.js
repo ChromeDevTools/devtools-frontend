@@ -1,12 +1,12 @@
 // Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import './NodeLink.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import * as Lit from '../../../../ui/lit/lit.js';
 import { BaseInsightComponent } from './BaseInsightComponent.js';
 import { EventReferenceClick } from './EventRef.js';
+import { nodeLink } from './NodeLink.js';
 const { UIStrings, i18nString } = Trace.Insights.Models.CLSCulprits;
 const { html } = Lit;
 export class CLSCulprits extends BaseInsightComponent {
@@ -38,13 +38,11 @@ export class CLSCulprits extends BaseInsightComponent {
                 return html `
                 <li>
                   ${culprit.description}
-                  <devtools-performance-node-link
-                    .data=${{
+                  ${nodeLink({
                     backendNodeId: culprit.backendNodeId,
                     frame: culprit.frame,
                     fallbackUrl: culprit.url,
-                }}>
-                  </devtools-performance-node-link>
+                })}
                 </li>`;
             }
             return html `<li>${culprit.description}</li>`;

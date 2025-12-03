@@ -482,7 +482,6 @@ panels/recorder/components/CreateRecordingView.test.js
 panels/recorder/components/RecordingListView.test.js
 panels/recorder/components/RecordingView.test.js
 panels/recorder/components/ReplaySection.test.js
-panels/recorder/components/SelectButton.test.js
 panels/recorder/components/StepEditor.test.js
 panels/recorder/components/StepView.test.js
 panels/recorder/converters/LighthouseConverter.test.js

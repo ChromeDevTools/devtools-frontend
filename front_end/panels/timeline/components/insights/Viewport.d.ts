@@ -1,4 +1,3 @@
-import './NodeLink.js';
 import type { ViewportInsightModel } from '../../../../models/trace/insights/Viewport.js';
 import type * as Trace from '../../../../models/trace/trace.js';
 import * as Lit from '../../../../ui/lit/lit.js';

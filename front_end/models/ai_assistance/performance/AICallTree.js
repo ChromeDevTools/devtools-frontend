@@ -319,6 +319,41 @@ export class AICallTree {
         }
         return line;
     }
+    topCallFramesBySelfTime(limit) {
+        const functionNodesByCallFrame = new Map();
+        this.breadthFirstWalk(this.rootNode.children().values(), node => {
+            if (Trace.Types.Events.isProfileCall(node.event)) {
+                const callFrame = node.event.callFrame;
+                const callFrameKey = `${callFrame.scriptId}:${callFrame.lineNumber}:${callFrame.columnNumber}`;
+                const array = functionNodesByCallFrame.get(callFrameKey) ?? [];
+                array.push(node);
+                functionNodesByCallFrame.set(callFrameKey, array);
+            }
+        });
+        return [...functionNodesByCallFrame.values()]
+            .map(nodes => {
+            return {
+                callFrame: nodes[0].event.callFrame,
+                selfTime: nodes.reduce((total, cur) => total + cur.selfTime, 0),
+            };
+        })
+            .sort((a, b) => b.selfTime - a.selfTime)
+            .slice(0, limit)
+            .map(({ callFrame }) => callFrame);
+    }
+    topCallFrameByTotalTime() {
+        let topChild = null;
+        let topProfileCallEvent = null;
+        for (const child of this.rootNode.children().values()) {
+            if (Trace.Types.Events.isProfileCall(child.event)) {
+                if (!topChild || child.totalTime > topChild.totalTime) {
+                    topChild = child;
+                    topProfileCallEvent = child.event;
+                }
+            }
+        }
+        return topProfileCallEvent?.callFrame ?? null;
+    }
     // Only used for debugging.
     logDebug() {
         const str = this.serialize();

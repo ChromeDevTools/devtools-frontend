@@ -2164,18 +2164,126 @@ customElements.define("devtools-interaction-breakdown", InteractionBreakdown);
 // gen/front_end/panels/timeline/components/LayoutShiftDetails.js
 var LayoutShiftDetails_exports = {};
 __export(LayoutShiftDetails_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW2,
+  DEFAULT_VIEW: () => DEFAULT_VIEW3,
   LayoutShiftDetails: () => LayoutShiftDetails
 });
 import * as i18n17 from "./../../../core/i18n/i18n.js";
-import * as SDK3 from "./../../../core/sdk/sdk.js";
+import * as SDK4 from "./../../../core/sdk/sdk.js";
 import * as Helpers3 from "./../../../models/trace/helpers/helpers.js";
 import * as Trace3 from "./../../../models/trace/trace.js";
+import * as Buttons5 from "./../../../ui/components/buttons/buttons.js";
+import * as LegacyComponents2 from "./../../../ui/legacy/components/utils/utils.js";
+import * as UI9 from "./../../../ui/legacy/legacy.js";
+import * as Lit9 from "./../../../ui/lit/lit.js";
+import * as Insights from "./insights/insights.js";
+
+// gen/front_end/panels/timeline/components/insights/NodeLink.js
+import * as SDK3 from "./../../../core/sdk/sdk.js";
 import * as Buttons4 from "./../../../ui/components/buttons/buttons.js";
 import * as LegacyComponents from "./../../../ui/legacy/components/utils/utils.js";
 import * as UI8 from "./../../../ui/legacy/legacy.js";
 import * as Lit8 from "./../../../ui/lit/lit.js";
-import * as Insights from "./insights/insights.js";
+import * as PanelsCommon from "./../../common/common.js";
+var { html: html8 } = Lit8;
+var { widgetConfig } = UI8.Widget;
+var DEFAULT_VIEW2 = (input, output, target) => {
+  const { relatedNodeEl, fallbackUrl, fallbackHtmlSnippet, fallbackText } = input;
+  let template;
+  if (relatedNodeEl) {
+    template = html8`<div class='node-link'>${relatedNodeEl}</div>`;
+  } else if (fallbackUrl) {
+    const MAX_URL_LENGTH4 = 20;
+    const options = {
+      tabStop: true,
+      showColumnNumber: false,
+      inlineFrameIndex: 0,
+      maxLength: MAX_URL_LENGTH4
+    };
+    const linkEl = LegacyComponents.Linkifier.Linkifier.linkifyURL(fallbackUrl, options);
+    template = html8`<div class='node-link'>
+      <style>${Buttons4.textButtonStyles}</style>
+      ${linkEl}
+    </div>`;
+  } else if (fallbackHtmlSnippet) {
+    template = html8`<pre style='text-wrap: auto'>${fallbackHtmlSnippet}</pre>`;
+  } else if (fallbackText) {
+    template = html8`<span>${fallbackText}</span>`;
+  } else {
+    template = Lit8.nothing;
+  }
+  Lit8.render(template, target);
+};
+var NodeLink = class extends UI8.Widget.Widget {
+  #view;
+  #backendNodeId;
+  #frame;
+  #options;
+  #fallbackUrl;
+  #fallbackHtmlSnippet;
+  #fallbackText;
+  /**
+   * Track the linkified Node for a given backend NodeID to avoid repeated lookups on re-render.
+   * Also tracks if we fail to resolve a node, to ensure we don't try on each subsequent re-render.
+   */
+  #linkifiedNodeForBackendId = /* @__PURE__ */ new Map();
+  constructor(element, view = DEFAULT_VIEW2) {
+    super(element, { useShadowDom: true });
+    this.#view = view;
+  }
+  set data(data) {
+    this.#backendNodeId = data.backendNodeId;
+    this.#frame = data.frame;
+    this.#options = data.options;
+    this.#fallbackUrl = data.fallbackUrl;
+    this.#fallbackHtmlSnippet = data.fallbackHtmlSnippet;
+    this.#fallbackText = data.fallbackText;
+    this.requestUpdate();
+  }
+  async #linkify() {
+    if (this.#backendNodeId === void 0) {
+      return;
+    }
+    const fromCache = this.#linkifiedNodeForBackendId.get(this.#backendNodeId);
+    if (fromCache) {
+      if (fromCache === "NO_NODE_FOUND") {
+        return void 0;
+      }
+      return fromCache;
+    }
+    const target = SDK3.TargetManager.TargetManager.instance().primaryPageTarget();
+    const domModel = target?.model(SDK3.DOMModel.DOMModel);
+    if (!domModel) {
+      return void 0;
+    }
+    const domNodesMap = await domModel.pushNodesByBackendIdsToFrontend(/* @__PURE__ */ new Set([this.#backendNodeId]));
+    const node = domNodesMap?.get(this.#backendNodeId);
+    if (!node) {
+      this.#linkifiedNodeForBackendId.set(this.#backendNodeId, "NO_NODE_FOUND");
+      return;
+    }
+    if (node.frameId() !== this.#frame) {
+      this.#linkifiedNodeForBackendId.set(this.#backendNodeId, "NO_NODE_FOUND");
+      return;
+    }
+    const linkedNode = PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(node, this.#options);
+    this.#linkifiedNodeForBackendId.set(this.#backendNodeId, linkedNode);
+    return linkedNode;
+  }
+  async performUpdate() {
+    const input = {
+      relatedNodeEl: await this.#linkify(),
+      fallbackUrl: this.#fallbackUrl,
+      fallbackHtmlSnippet: this.#fallbackHtmlSnippet,
+      fallbackText: this.#fallbackText
+    };
+    this.#view(input, void 0, this.contentElement);
+  }
+};
+function nodeLink(data) {
+  return html8`<devtools-widget .widgetConfig=${widgetConfig(NodeLink, {
+    data
+  })}></devtools-widget>`;
+}
 
 // gen/front_end/panels/timeline/components/layoutShiftDetails.css.js
 var layoutShiftDetails_css_default = `/*
@@ -2304,7 +2412,7 @@ var layoutShiftDetails_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./layoutShiftDetails.css")} */`;
 
 // gen/front_end/panels/timeline/components/LayoutShiftDetails.js
-var { html: html8, render: render8 } = Lit8;
+var { html: html9, render: render9 } = Lit9;
 var MAX_URL_LENGTH = 20;
 var UIStrings9 = {
   /**
@@ -2364,12 +2472,12 @@ var UIStrings9 = {
 };
 var str_9 = i18n17.i18n.registerUIStrings("panels/timeline/components/LayoutShiftDetails.ts", UIStrings9);
 var i18nString9 = i18n17.i18n.getLocalizedString.bind(void 0, str_9);
-var LayoutShiftDetails = class extends UI8.Widget.Widget {
+var LayoutShiftDetails = class extends UI9.Widget.Widget {
   #view;
   #event = null;
   #parsedTrace = null;
   #isFreshRecording = false;
-  constructor(element, view = DEFAULT_VIEW2) {
+  constructor(element, view = DEFAULT_VIEW3) {
     super(element);
     this.#view = view;
   }
@@ -2414,15 +2522,15 @@ var LayoutShiftDetails = class extends UI8.Widget.Widget {
     }, {}, this.contentElement);
   }
 };
-var DEFAULT_VIEW2 = (input, _output, target) => {
+var DEFAULT_VIEW3 = (input, _output, target) => {
   if (!input.event || !input.parsedTrace) {
-    render8(Lit8.nothing, target);
+    render9(Lit9.nothing, target);
     return;
   }
   const title = Trace3.Name.forEntry(input.event);
-  render8(html8`
+  render9(html9`
         <style>${layoutShiftDetails_css_default}</style>
-        <style>${Buttons4.textButtonStyles}</style>
+        <style>${Buttons5.textButtonStyles}</style>
 
       <div class="layout-shift-summary-details">
         <div
@@ -2444,11 +2552,11 @@ function findInsightSet(insightSets, navigationId) {
 }
 function renderLayoutShiftDetails(layoutShift, insightSets, parsedTrace, isFreshRecording, onEventClick) {
   if (!insightSets) {
-    return Lit8.nothing;
+    return Lit9.nothing;
   }
   const clsInsight = findInsightSet(insightSets, layoutShift.args.data?.navigationId)?.model.CLSCulprits;
   if (!clsInsight) {
-    return Lit8.nothing;
+    return Lit9.nothing;
   }
   const rootCauses = clsInsight.shifts.get(layoutShift);
   let elementsShifted = layoutShift.args.data?.impacted_nodes ?? [];
@@ -2460,16 +2568,16 @@ function renderLayoutShiftDetails(layoutShift, insightSets, parsedTrace, isFresh
   const parentCluster = clsInsight.clusters.find((cluster) => {
     return cluster.events.find((event) => event === layoutShift);
   });
-  return html8`
+  return html9`
       <table class="layout-shift-details-table">
         <thead class="table-title">
           <tr>
             <th>${i18nString9(UIStrings9.startTime)}</th>
             <th>${i18nString9(UIStrings9.shiftScore)}</th>
-            ${hasShiftedElements ? html8`
-              <th>${i18nString9(UIStrings9.elementsShifted)}</th>` : Lit8.nothing}
-            ${hasCulprits ? html8`
-              <th>${i18nString9(UIStrings9.culprit)}</th> ` : Lit8.nothing}
+            ${hasShiftedElements ? html9`
+              <th>${i18nString9(UIStrings9.elementsShifted)}</th>` : Lit9.nothing}
+            ${hasCulprits ? html9`
+              <th>${i18nString9(UIStrings9.culprit)}</th> ` : Lit9.nothing}
           </tr>
         </thead>
         <tbody>
@@ -2481,23 +2589,23 @@ function renderLayoutShiftDetails(layoutShift, insightSets, parsedTrace, isFresh
 }
 function renderLayoutShiftClusterDetails(cluster, insightSets, parsedTrace, onEventClick) {
   if (!insightSets) {
-    return Lit8.nothing;
+    return Lit9.nothing;
   }
   const clsInsight = findInsightSet(insightSets, cluster.navigationId)?.model.CLSCulprits;
   if (!clsInsight) {
-    return Lit8.nothing;
+    return Lit9.nothing;
   }
   const clusterCulprits = Array.from(clsInsight.shifts.entries()).filter(([key]) => cluster.events.includes(key)).map(([, value]) => value).flatMap((x) => Object.values(x)).flat();
   const hasCulprits = Boolean(clusterCulprits.length);
-  return html8`
+  return html9`
     <table class="layout-shift-details-table">
       <thead class="table-title">
         <tr>
           <th>${i18nString9(UIStrings9.startTime)}</th>
           <th>${i18nString9(UIStrings9.shiftScore)}</th>
           <th>${i18nString9(UIStrings9.elementsShifted)}</th>
-          ${hasCulprits ? html8`
-            <th>${i18nString9(UIStrings9.culprit)}</th> ` : Lit8.nothing}
+          ${hasCulprits ? html9`
+            <th>${i18nString9(UIStrings9.culprit)}</th> ` : Lit9.nothing}
         </tr>
       </thead>
       <tbody>
@@ -2518,99 +2626,93 @@ function renderLayoutShiftClusterDetails(cluster, insightSets, parsedTrace, onEv
 function renderShiftRow(currentShift, userHasSingleShiftSelected, parsedTrace, elementsShifted, onEventClick, rootCauses) {
   const score = currentShift.args.data?.weighted_score_delta;
   if (!score) {
-    return Lit8.nothing;
+    return Lit9.nothing;
   }
   const hasCulprits = Boolean(rootCauses && (rootCauses.webFonts.length || rootCauses.iframes.length || rootCauses.nonCompositedAnimations.length || rootCauses.unsizedImages.length));
-  return html8`
+  return html9`
       <tr class="shift-row" data-ts=${currentShift.ts}>
         <td>${renderStartTime(currentShift, userHasSingleShiftSelected, parsedTrace, onEventClick)}</td>
         <td>${score.toFixed(4)}</td>
-        ${elementsShifted.length ? html8`
+        ${elementsShifted.length ? html9`
           <td>
             <div class="elements-shifted">
               ${renderShiftedElements(currentShift, elementsShifted)}
             </div>
-          </td>` : Lit8.nothing}
-        ${hasCulprits ? html8`
+          </td>` : Lit9.nothing}
+        ${hasCulprits ? html9`
           <td class="culprits">
             ${rootCauses?.webFonts.map((fontReq) => renderFontRequest(fontReq))}
             ${rootCauses?.iframes.map((iframe) => renderIframe(iframe))}
             ${rootCauses?.nonCompositedAnimations.map((failure) => renderAnimation(failure, onEventClick))}
             ${rootCauses?.unsizedImages.map((unsizedImage) => renderUnsizedImage(currentShift.args.frame, unsizedImage))}
-          </td>` : Lit8.nothing}
+          </td>` : Lit9.nothing}
       </tr>`;
 }
 function renderStartTime(shift, userHasSingleShiftSelected, parsedTrace, onEventClick) {
   const ts = Trace3.Types.Timing.Micro(shift.ts - parsedTrace.data.Meta.traceBounds.min);
   if (userHasSingleShiftSelected) {
-    return html8`${i18n17.TimeUtilities.preciseMillisToString(Helpers3.Timing.microToMilli(ts))}`;
+    return html9`${i18n17.TimeUtilities.preciseMillisToString(Helpers3.Timing.microToMilli(ts))}`;
   }
   const shiftTs = i18n17.TimeUtilities.formatMicroSecondsTime(ts);
-  return html8`
+  return html9`
          <button type="button" class="timeline-link" @click=${() => onEventClick(shift)}>${i18nString9(UIStrings9.layoutShift, { PH1: shiftTs })}</button>`;
 }
 function renderParentCluster(cluster, onEventClick, parsedTrace) {
   if (!cluster) {
-    return Lit8.nothing;
+    return Lit9.nothing;
   }
   const ts = Trace3.Types.Timing.Micro(cluster.ts - (parsedTrace.data.Meta.traceBounds.min ?? 0));
   const clusterTs = i18n17.TimeUtilities.formatMicroSecondsTime(ts);
-  return html8`
+  return html9`
       <span class="parent-cluster">${i18nString9(UIStrings9.parentCluster)}:<button type="button" class="timeline-link parent-cluster-link" @click=${() => onEventClick(cluster)}>${i18nString9(UIStrings9.cluster, { PH1: clusterTs })}</button>
       </span>`;
 }
 function renderShiftedElements(shift, elementsShifted) {
-  return html8`
+  return html9`
       ${elementsShifted?.map((el) => {
     if (el.node_id !== void 0) {
-      return html8`
-            <devtools-performance-node-link
-              .data=${{
+      return nodeLink({
         backendNodeId: el.node_id,
         frame: shift.args.frame,
         fallbackHtmlSnippet: el.debug_name
-      }}>
-            </devtools-performance-node-link>`;
+      });
     }
-    return Lit8.nothing;
+    return Lit9.nothing;
   })}`;
 }
 function renderAnimation(failure, onEventClick) {
   const event = failure.animation;
   if (!event) {
-    return Lit8.nothing;
+    return Lit9.nothing;
   }
-  return html8`
+  return html9`
         <span class="culprit">
         <span class="culprit-type">${i18nString9(UIStrings9.nonCompositedAnimation)}: </span>
         <button type="button" class="culprit-value timeline-link" @click=${() => onEventClick(event)}>${i18nString9(UIStrings9.animation)}</button>
       </span>`;
 }
 function renderUnsizedImage(frame, unsizedImage) {
-  const el = html8`
-      <devtools-performance-node-link
-        .data=${{
+  const nodeLinkEl = nodeLink({
     backendNodeId: unsizedImage.backendNodeId,
     frame,
     fallbackUrl: unsizedImage.paintImageEvent.args.data.url
-  }}>
-      </devtools-performance-node-link>`;
-  return html8`
-      <span class="culprit">
-        <span class="culprit-type">${i18nString9(UIStrings9.unsizedImage)}: </span>
-        <span class="culprit-value">${el}</span>
-      </span>`;
+  });
+  return html9`
+    <span class="culprit">
+      <span class="culprit-type">${i18nString9(UIStrings9.unsizedImage)}: </span>
+      <span class="culprit-value">${nodeLinkEl}</span>
+    </span>`;
 }
 function renderFontRequest(request) {
   const linkifiedURL = linkifyURL(request.args.data.url);
-  return html8`
+  return html9`
       <span class="culprit">
         <span class="culprit-type">${i18nString9(UIStrings9.fontRequest)}: </span>
         <span class="culprit-value">${linkifiedURL}</span>
       </span>`;
 }
 function linkifyURL(url) {
-  return LegacyComponents.Linkifier.Linkifier.linkifyURL(url, {
+  return LegacyComponents2.Linkifier.Linkifier.linkifyURL(url, {
     tabStop: true,
     showColumnNumber: false,
     inlineFrameIndex: 0,
@@ -2619,14 +2721,14 @@ function linkifyURL(url) {
 }
 function renderIframe(iframeRootCause) {
   const domLoadingId = iframeRootCause.frame;
-  const domLoadingFrame = SDK3.FrameManager.FrameManager.instance().getFrame(domLoadingId);
+  const domLoadingFrame = SDK4.FrameManager.FrameManager.instance().getFrame(domLoadingId);
   let el;
   if (domLoadingFrame) {
-    el = LegacyComponents.Linkifier.Linkifier.linkifyRevealable(domLoadingFrame, domLoadingFrame.displayName());
+    el = LegacyComponents2.Linkifier.Linkifier.linkifyRevealable(domLoadingFrame, domLoadingFrame.displayName());
   } else {
     el = linkifyURL(iframeRootCause.url);
   }
-  return html8`
+  return html9`
       <span class="culprit">
         <span class="culprit-type"> ${i18nString9(UIStrings9.injectedIframe)}: </span>
         <span class="culprit-value">${el}</span>
@@ -2651,9 +2753,9 @@ import "./../../../ui/components/menus/menus.js";
 import * as Common4 from "./../../../core/common/common.js";
 import * as i18n19 from "./../../../core/i18n/i18n.js";
 import * as Platform3 from "./../../../core/platform/platform.js";
-import * as SDK4 from "./../../../core/sdk/sdk.js";
+import * as SDK5 from "./../../../core/sdk/sdk.js";
 import * as ComponentHelpers6 from "./../../../ui/components/helpers/helpers.js";
-import * as Lit9 from "./../../../ui/lit/lit.js";
+import * as Lit10 from "./../../../ui/lit/lit.js";
 import * as VisualLogging5 from "./../../../ui/visual_logging/visual_logging.js";
 import * as MobileThrottling2 from "./../../mobile_throttling/mobile_throttling.js";
 
@@ -2686,7 +2788,7 @@ devtools-select-menu {
 /*# sourceURL=${import.meta.resolve("./networkThrottlingSelector.css")} */`;
 
 // gen/front_end/panels/timeline/components/NetworkThrottlingSelector.js
-var { html: html9, nothing: nothing7 } = Lit9;
+var { html: html10, nothing: nothing8 } = Lit10;
 var UIStrings10 = {
   /**
    * @description Text label for a selection box showing which network throttling option is applied.
@@ -2736,7 +2838,7 @@ var NetworkThrottlingSelector = class extends HTMLElement {
     super();
     this.#customNetworkConditionsSetting = Common4.Settings.Settings.instance().moduleSetting("custom-network-conditions");
     this.#resetPresets();
-    this.#currentConditions = SDK4.NetworkManager.MultitargetNetworkManager.instance().networkConditions();
+    this.#currentConditions = SDK5.NetworkManager.MultitargetNetworkManager.instance().networkConditions();
     this.#render();
   }
   set recommendedConditions(recommendedConditions) {
@@ -2744,12 +2846,12 @@ var NetworkThrottlingSelector = class extends HTMLElement {
     void ComponentHelpers6.ScheduledRender.scheduleRender(this, this.#render);
   }
   connectedCallback() {
-    SDK4.NetworkManager.MultitargetNetworkManager.instance().addEventListener("ConditionsChanged", this.#onConditionsChanged, this);
+    SDK5.NetworkManager.MultitargetNetworkManager.instance().addEventListener("ConditionsChanged", this.#onConditionsChanged, this);
     this.#onConditionsChanged();
     this.#customNetworkConditionsSetting.addChangeListener(this.#onSettingChanged, this);
   }
   disconnectedCallback() {
-    SDK4.NetworkManager.MultitargetNetworkManager.instance().removeEventListener("ConditionsChanged", this.#onConditionsChanged, this);
+    SDK5.NetworkManager.MultitargetNetworkManager.instance().removeEventListener("ConditionsChanged", this.#onConditionsChanged, this);
     this.#customNetworkConditionsSetting.removeChangeListener(this.#onSettingChanged, this);
   }
   #resetPresets() {
@@ -2757,7 +2859,7 @@ var NetworkThrottlingSelector = class extends HTMLElement {
       {
         name: i18nString10(UIStrings10.disabled),
         items: [
-          SDK4.NetworkManager.NoThrottlingConditions
+          SDK5.NetworkManager.NoThrottlingConditions
         ]
       },
       {
@@ -2773,7 +2875,7 @@ var NetworkThrottlingSelector = class extends HTMLElement {
     ];
   }
   #onConditionsChanged() {
-    this.#currentConditions = SDK4.NetworkManager.MultitargetNetworkManager.instance().networkConditions();
+    this.#currentConditions = SDK5.NetworkManager.MultitargetNetworkManager.instance().networkConditions();
     void ComponentHelpers6.ScheduledRender.scheduleRender(this, this.#render);
   }
   #onMenuItemSelected(event) {
@@ -2782,7 +2884,7 @@ var NetworkThrottlingSelector = class extends HTMLElement {
       return keyForItem === event.itemValue;
     });
     if (newConditions) {
-      SDK4.NetworkManager.MultitargetNetworkManager.instance().setNetworkConditions(newConditions);
+      SDK5.NetworkManager.MultitargetNetworkManager.instance().setNetworkConditions(newConditions);
     }
   }
   #onSettingChanged() {
@@ -2808,12 +2910,12 @@ var NetworkThrottlingSelector = class extends HTMLElement {
     const selectionTitle = this.#getConditionsTitle(this.#currentConditions);
     const selectedConditionsKey = this.#keyForNetworkConditions(this.#currentConditions);
     let recommendedInfoEl;
-    if (this.#recommendedConditions && this.#currentConditions === SDK4.NetworkManager.NoThrottlingConditions) {
-      recommendedInfoEl = html9`<devtools-icon
+    if (this.#recommendedConditions && this.#currentConditions === SDK5.NetworkManager.NoThrottlingConditions) {
+      recommendedInfoEl = html10`<devtools-icon
         title=${i18nString10(UIStrings10.recommendedThrottlingReason)}
         name=info></devtools-icon>`;
     }
-    const output = html9`
+    const output = html10`
       <style>${networkThrottlingSelector_css_default}</style>
       <devtools-select-menu
         @selectmenuselected=${this.#onMenuItemSelected}
@@ -2826,7 +2928,7 @@ var NetworkThrottlingSelector = class extends HTMLElement {
         .title=${i18nString10(UIStrings10.networkThrottling, { PH1: selectionTitle })}
       >
         ${this.#groups.map((group) => {
-      return html9`
+      return html10`
             <devtools-menu-group .name=${group.name} .title=${group.name}>
               ${group.items.map((conditions) => {
         let title = this.#getConditionsTitle(conditions);
@@ -2835,7 +2937,7 @@ var NetworkThrottlingSelector = class extends HTMLElement {
         }
         const key = this.#keyForNetworkConditions(conditions);
         const jslogContext = group.jslogContext || Platform3.StringUtilities.toKebabCase(conditions.i18nTitleKey || title);
-        return html9`
+        return html10`
                   <devtools-menu-item
                     .value=${key}
                     .selected=${selectedConditionsKey === key}
@@ -2846,7 +2948,7 @@ var NetworkThrottlingSelector = class extends HTMLElement {
                   </devtools-menu-item>
                 `;
       })}
-              ${group.showCustomAddOption ? html9`
+              ${group.showCustomAddOption ? html10`
                 <devtools-menu-item
                   .value=${1}
                   .title=${i18nString10(UIStrings10.add)}
@@ -2855,14 +2957,14 @@ var NetworkThrottlingSelector = class extends HTMLElement {
                 >
                   ${i18nString10(UIStrings10.add)}
                 </devtools-menu-item>
-              ` : nothing7}
+              ` : nothing8}
             </devtools-menu-group>
           `;
     })}
       </devtools-select-menu>
       ${recommendedInfoEl}
     `;
-    Lit9.render(output, this.#shadow, { host: this });
+    Lit10.render(output, this.#shadow, { host: this });
   };
 };
 customElements.define("devtools-network-throttling-selector", NetworkThrottlingSelector);
@@ -2878,10 +2980,10 @@ __export(MetricCard_exports, {
 import * as i18n25 from "./../../../core/i18n/i18n.js";
 import * as Platform5 from "./../../../core/platform/platform.js";
 import * as CrUXManager5 from "./../../../models/crux-manager/crux-manager.js";
-import * as Buttons5 from "./../../../ui/components/buttons/buttons.js";
+import * as Buttons6 from "./../../../ui/components/buttons/buttons.js";
 import * as ComponentHelpers7 from "./../../../ui/components/helpers/helpers.js";
 import * as UIHelpers from "./../../../ui/helpers/helpers.js";
-import * as Lit10 from "./../../../ui/lit/lit.js";
+import * as Lit11 from "./../../../ui/lit/lit.js";
 
 // gen/front_end/panels/timeline/components/metricCard.css.js
 var metricCard_css_default = `/*
@@ -3621,7 +3723,7 @@ function determineCompareRating(metric, localValue, fieldValue) {
 }
 
 // gen/front_end/panels/timeline/components/MetricCard.js
-var { html: html10, nothing: nothing9 } = Lit10;
+var { html: html11, nothing: nothing10 } = Lit11;
 var UIStrings13 = {
   /**
    * @description Label for a metric value that was measured in the local environment.
@@ -3899,16 +4001,16 @@ var MetricCard = class extends HTMLElement {
     const localValue = this.#getLocalValue();
     if (localValue === void 0) {
       if (this.#data.metric === "INP") {
-        return html10`
+        return html11`
           <div class="compare-text">${i18nString12(UIStrings13.interactToMeasure)}</div>
         `;
       }
-      return Lit10.nothing;
+      return Lit11.nothing;
     }
     const compare = this.#getCompareRating();
     const rating = rateMetric(localValue, this.#getThresholds());
     const valueEl = renderMetricValue(this.#getMetricValueLogContext(true), localValue, this.#getThresholds(), this.#getFormatFn(), { dim: true });
-    return html10`
+    return html11`
       <div class="compare-text">
         ${renderCompareText({
       metric: i18n25.i18n.lockedString(this.#data.metric),
@@ -3922,7 +4024,7 @@ var MetricCard = class extends HTMLElement {
   #renderEnvironmentRecommendations() {
     const compare = this.#getCompareRating();
     if (!compare || compare === "similar") {
-      return Lit10.nothing;
+      return Lit11.nothing;
     }
     const recs = [];
     const metric = this.#data.metric;
@@ -3947,12 +4049,12 @@ var MetricCard = class extends HTMLElement {
       recs.push(i18nString12(UIStrings13.recDynamicContentCLS));
     }
     if (!recs.length) {
-      return Lit10.nothing;
+      return Lit11.nothing;
     }
-    return html10`
+    return html11`
       <details class="environment-recs">
         <summary>${i18nString12(UIStrings13.considerTesting)}</summary>
-        <ul class="environment-recs-list">${recs.map((rec) => html10`<li>${rec}</li>`)}</ul>
+        <ul class="environment-recs-list">${recs.map((rec) => html11`<li>${rec}</li>`)}</ul>
       </details>
     `;
   }
@@ -3963,18 +4065,18 @@ var MetricCard = class extends HTMLElement {
     const localValue = this.#getLocalValue();
     if (localValue === void 0) {
       if (this.#data.metric === "INP") {
-        return html10`
+        return html11`
           <div class="detailed-compare-text">${i18nString12(UIStrings13.interactToMeasure)}</div>
         `;
       }
-      return Lit10.nothing;
+      return Lit11.nothing;
     }
     const localRating = rateMetric(localValue, this.#getThresholds());
     const fieldValue = this.#getFieldValue();
     const fieldRating = fieldValue !== void 0 ? rateMetric(fieldValue, this.#getThresholds()) : void 0;
     const localValueEl = renderMetricValue(this.#getMetricValueLogContext(true), localValue, this.#getThresholds(), this.#getFormatFn(), { dim: true });
     const fieldValueEl = renderMetricValue(this.#getMetricValueLogContext(false), fieldValue, this.#getThresholds(), this.#getFormatFn(), { dim: true });
-    return html10`
+    return html11`
       <div class="detailed-compare-text">${renderDetailedCompareText({
       metric: i18n25.i18n.lockedString(this.#data.metric),
       localRating,
@@ -4014,26 +4116,26 @@ var MetricCard = class extends HTMLElement {
     const fieldEnabled = CrUXManager5.CrUXManager.instance().getConfigSetting().get().enabled;
     const format = this.#getFormatFn();
     const thresholds = this.#getThresholds();
-    const goodLabel = html10`
+    const goodLabel = html11`
       <div class="bucket-label">
         <span>${i18nString12(UIStrings13.good)}</span>
         <span class="bucket-range"> ${i18nString12(UIStrings13.leqRange, { PH1: format(thresholds[0]) })}</span>
       </div>
     `;
-    const needsImprovementLabel = html10`
+    const needsImprovementLabel = html11`
       <div class="bucket-label">
         <span>${i18nString12(UIStrings13.needsImprovement)}</span>
         <span class="bucket-range"> ${i18nString12(UIStrings13.betweenRange, { PH1: format(thresholds[0]), PH2: format(thresholds[1]) })}</span>
       </div>
     `;
-    const poorLabel = html10`
+    const poorLabel = html11`
       <div class="bucket-label">
         <span>${i18nString12(UIStrings13.poor)}</span>
         <span class="bucket-range"> ${i18nString12(UIStrings13.gtRange, { PH1: format(thresholds[1]) })}</span>
       </div>
     `;
     if (!fieldEnabled) {
-      return html10`
+      return html11`
         <div class="bucket-summaries">
           ${goodLabel}
           ${needsImprovementLabel}
@@ -4041,7 +4143,7 @@ var MetricCard = class extends HTMLElement {
         </div>
       `;
     }
-    return html10`
+    return html11`
       <div class="bucket-summaries histogram">
         ${goodLabel}
         <div class="histogram-bar good-bg" style="width: ${this.#getBarWidthForRating("good")}"></div>
@@ -4057,27 +4159,27 @@ var MetricCard = class extends HTMLElement {
   }
   #renderPhaseTable(phases) {
     const hasFieldData = phases.every((phase) => phase[2] !== void 0);
-    return html10`
+    return html11`
       <hr class="divider">
       <div class="phase-table" role="table">
         <div class="phase-table-row phase-table-header-row" role="row">
           <div role="columnheader" style="grid-column: 1">${i18nString12(UIStrings13.phase)}</div>
           <div role="columnheader" class="phase-table-value" style="grid-column: 2">${i18nString12(UIStrings13.localValue)}</div>
-          ${hasFieldData ? html10`
+          ${hasFieldData ? html11`
             <div
               role="columnheader"
               class="phase-table-value"
               style="grid-column: 3"
               title=${i18nString12(UIStrings13.field75thPercentile)}>${i18nString12(UIStrings13.fieldP75)}</div>
-          ` : nothing9}
+          ` : nothing10}
         </div>
-        ${phases.map((phase) => html10`
+        ${phases.map((phase) => html11`
           <div class="phase-table-row" role="row">
             <div role="cell">${phase[0]}</div>
             <div role="cell" class="phase-table-value">${i18n25.TimeUtilities.preciseMillisToString(phase[1])}</div>
-            ${phase[2] !== void 0 ? html10`
+            ${phase[2] !== void 0 ? html11`
               <div role="cell" class="phase-table-value">${i18n25.TimeUtilities.preciseMillisToString(phase[2])}</div>
-            ` : nothing9}
+            ` : nothing10}
           </div>
         `)}
       </div>
@@ -4092,7 +4194,7 @@ var MetricCard = class extends HTMLElement {
     const formatFn = this.#getFormatFn();
     const localValueEl = renderMetricValue(this.#getMetricValueLogContext(true), localValue, thresholds, formatFn);
     const fieldValueEl = renderMetricValue(this.#getMetricValueLogContext(false), fieldValue, thresholds, formatFn);
-    const output = html10`
+    const output = html11`
       <style>${metricCard_css_default}</style>
       <style>${metricValueStyles_css_default}</style>
       <div class="metric-card">
@@ -4115,20 +4217,20 @@ var MetricCard = class extends HTMLElement {
         >
           <div class="metric-source-block">
             <div class="metric-source-value" id="local-value">${localValueEl}</div>
-            ${fieldEnabled ? html10`<div class="metric-source-label">${i18nString12(UIStrings13.localValue)}</div>` : nothing9}
+            ${fieldEnabled ? html11`<div class="metric-source-label">${i18nString12(UIStrings13.localValue)}</div>` : nothing10}
           </div>
-          ${fieldEnabled ? html10`
+          ${fieldEnabled ? html11`
             <div class="metric-source-block">
               <div class="metric-source-value" id="field-value">${fieldValueEl}</div>
               <div class="metric-source-label">${i18nString12(UIStrings13.field75thPercentile)}</div>
             </div>
-          ` : nothing9}
+          ` : nothing10}
           <div
             id="tooltip"
             class="tooltip"
             role="tooltip"
             aria-label=${i18nString12(UIStrings13.viewCardDetails)}
-            ${Lit10.Directives.ref((el) => {
+            ${Lit11.Directives.ref((el) => {
       if (el instanceof HTMLElement) {
         this.#tooltipEl = el;
       }
@@ -4140,22 +4242,22 @@ var MetricCard = class extends HTMLElement {
                   ${this.#renderDetailedCompareString()}
                   <hr class="divider">
                   ${this.#renderFieldHistogram()}
-                  ${localValue && this.#data.phases ? this.#renderPhaseTable(this.#data.phases) : nothing9}
+                  ${localValue && this.#data.phases ? this.#renderPhaseTable(this.#data.phases) : nothing10}
                 </div>
               </div>
             </div>
           </div>
         </div>
-        ${fieldEnabled ? html10`<hr class="divider">` : nothing9}
+        ${fieldEnabled ? html11`<hr class="divider">` : nothing10}
         ${this.#renderCompareString()}
-        ${this.#data.warnings?.map((warning) => html10`
+        ${this.#data.warnings?.map((warning) => html11`
           <div class="warning">${warning}</div>
         `)}
         ${this.#renderEnvironmentRecommendations()}
         <slot name="extra-info"></slot>
       </div>
     `;
-    Lit10.render(output, this.#shadow, { host: this });
+    Lit11.render(output, this.#shadow, { host: this });
   };
 };
 customElements.define("devtools-metric-card", MetricCard);
@@ -4164,35 +4266,35 @@ customElements.define("devtools-metric-card", MetricCard);
 import * as Common5 from "./../../../core/common/common.js";
 import * as i18n27 from "./../../../core/i18n/i18n.js";
 import * as Root from "./../../../core/root/root.js";
-import * as SDK6 from "./../../../core/sdk/sdk.js";
+import * as SDK7 from "./../../../core/sdk/sdk.js";
 import * as CrUXManager9 from "./../../../models/crux-manager/crux-manager.js";
 import * as EmulationModel from "./../../../models/emulation/emulation.js";
 import * as LiveMetrics from "./../../../models/live-metrics/live-metrics.js";
 import * as Trace5 from "./../../../models/trace/trace.js";
-import * as Buttons6 from "./../../../ui/components/buttons/buttons.js";
+import * as Buttons7 from "./../../../ui/components/buttons/buttons.js";
 import * as ComponentHelpers8 from "./../../../ui/components/helpers/helpers.js";
 import * as LegacyWrapper from "./../../../ui/components/legacy_wrapper/legacy_wrapper.js";
 import * as RenderCoordinator2 from "./../../../ui/components/render_coordinator/render_coordinator.js";
 import * as uiI18n4 from "./../../../ui/i18n/i18n.js";
-import * as UI9 from "./../../../ui/legacy/legacy.js";
-import * as Lit12 from "./../../../ui/lit/lit.js";
+import * as UI10 from "./../../../ui/legacy/legacy.js";
+import * as Lit13 from "./../../../ui/lit/lit.js";
 import * as VisualLogging7 from "./../../../ui/visual_logging/visual_logging.js";
-import * as PanelsCommon from "./../../common/common.js";
+import * as PanelsCommon2 from "./../../common/common.js";
 
 // gen/front_end/panels/timeline/utils/Helpers.js
 import * as Platform6 from "./../../../core/platform/platform.js";
-import * as SDK5 from "./../../../core/sdk/sdk.js";
+import * as SDK6 from "./../../../core/sdk/sdk.js";
 import * as CrUXManager7 from "./../../../models/crux-manager/crux-manager.js";
 function getThrottlingRecommendations() {
-  let cpuOption = SDK5.CPUThrottlingManager.CalibratedMidTierMobileThrottlingOption;
+  let cpuOption = SDK6.CPUThrottlingManager.CalibratedMidTierMobileThrottlingOption;
   if (cpuOption.rate() === 0) {
-    cpuOption = SDK5.CPUThrottlingManager.MidTierThrottlingOption;
+    cpuOption = SDK6.CPUThrottlingManager.MidTierThrottlingOption;
   }
   let networkConditions = null;
   const response = CrUXManager7.CrUXManager.instance().getSelectedFieldMetricData("round_trip_time");
   if (response?.percentiles) {
     const rtt = Number(response.percentiles.p75);
-    networkConditions = SDK5.NetworkManager.getRecommendedNetworkPreset(rtt);
+    networkConditions = SDK6.NetworkManager.getRecommendedNetworkPreset(rtt);
   }
   return {
     cpuOption,
@@ -4204,15 +4306,15 @@ function getThrottlingRecommendations() {
 import "./../../../ui/components/markdown_view/markdown_view.js";
 import * as Trace4 from "./../../../models/trace/trace.js";
 import * as Marked from "./../../../third_party/marked/marked.js";
-import * as Lit11 from "./../../../ui/lit/lit.js";
-var { html: html11 } = Lit11;
+import * as Lit12 from "./../../../ui/lit/lit.js";
+var { html: html12 } = Lit12;
 function shouldRenderForCategory(options) {
   return options.activeCategory === Trace4.Insights.Types.InsightCategory.ALL || options.activeCategory === options.insightCategory;
 }
 function md(markdown) {
   const tokens = Marked.Marked.lexer(markdown);
   const data = { tokens };
-  return html11`<devtools-markdown-view .data=${data}></devtools-markdown-view>`;
+  return html12`<devtools-markdown-view .data=${data}></devtools-markdown-view>`;
 }
 
 // gen/front_end/panels/timeline/components/liveMetricsView.css.js
@@ -4612,8 +4714,8 @@ x-link {
 /*# sourceURL=${import.meta.resolve("./liveMetricsView.css")} */`;
 
 // gen/front_end/panels/timeline/components/LiveMetricsView.js
-var { html: html12, nothing: nothing11 } = Lit12;
-var { widgetConfig } = UI9.Widget;
+var { html: html13, nothing: nothing12 } = Lit13;
+var { widgetConfig: widgetConfig2 } = UI10.Widget;
 var DEVICE_OPTION_LIST = ["AUTO", ...CrUXManager9.DEVICE_SCOPE_LIST];
 var RTT_MINIMUM = 60;
 var UIStrings14 = {
@@ -4887,8 +4989,8 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
   #deviceModeModel = EmulationModel.DeviceModeModel.DeviceModeModel.tryInstance();
   constructor() {
     super();
-    this.#toggleRecordAction = UI9.ActionRegistry.ActionRegistry.instance().getAction("timeline.toggle-recording");
-    this.#recordReloadAction = UI9.ActionRegistry.ActionRegistry.instance().getAction("timeline.record-reload");
+    this.#toggleRecordAction = UI10.ActionRegistry.ActionRegistry.instance().getAction("timeline.toggle-recording");
+    this.#recordReloadAction = UI10.ActionRegistry.ActionRegistry.instance().getAction("timeline.record-reload");
   }
   #onMetricStatus(event) {
     this.#lcpValue = event.data.lcp;
@@ -4975,10 +5077,10 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
   }
   #renderLcpCard() {
     const fieldData = this.#cruxManager.getSelectedFieldMetricData("largest_contentful_paint");
-    const nodeLink = this.#lcpValue?.nodeRef && PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(this.#lcpValue?.nodeRef);
+    const nodeLink2 = this.#lcpValue?.nodeRef && PanelsCommon2.DOMLinkifier.Linkifier.instance().linkify(this.#lcpValue?.nodeRef);
     const phases = this.#lcpValue?.phases;
     const fieldPhases = this.#getLcpFieldPhases();
-    return html12`
+    return html13`
       <devtools-metric-card .data=${{
       metric: "LCP",
       localValue: this.#lcpValue?.value,
@@ -4993,15 +5095,15 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
         [i18nString13(UIStrings14.elementRenderDelay), phases.elementRenderDelay, fieldPhases?.elementRenderDelay]
       ]
     }}>
-        ${nodeLink ? html12`
+        ${nodeLink2 ? html13`
             <div class="related-info" slot="extra-info">
               <span class="related-info-label">${i18nString13(UIStrings14.lcpElement)}</span>
               <span class="related-info-link">
-               <devtools-widget .widgetConfig=${widgetConfig(PanelsCommon.DOMLinkifier.DOMNodeLink, { node: this.#lcpValue?.nodeRef })}>
+               <devtools-widget .widgetConfig=${widgetConfig2(PanelsCommon2.DOMLinkifier.DOMNodeLink, { node: this.#lcpValue?.nodeRef })}>
                </devtools-widget>
               </span>
             </div>
-          ` : nothing11}
+          ` : nothing12}
       </devtools-metric-card>
     `;
   }
@@ -5009,7 +5111,7 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
     const fieldData = this.#cruxManager.getSelectedFieldMetricData("cumulative_layout_shift");
     const clusterIds = new Set(this.#clsValue?.clusterShiftIds || []);
     const clusterIsVisible = clusterIds.size > 0 && this.#layoutShifts.some((layoutShift) => clusterIds.has(layoutShift.uniqueLayoutShiftId));
-    return html12`
+    return html13`
       <devtools-metric-card .data=${{
       metric: "CLS",
       localValue: this.#clsValue?.value,
@@ -5018,7 +5120,7 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
       tooltipContainer: this.#tooltipContainerEl,
       warnings: this.#clsValue?.warnings
     }}>
-        ${clusterIsVisible ? html12`
+        ${clusterIsVisible ? html13`
           <div class="related-info" slot="extra-info">
             <span class="related-info-label">${i18nString13(UIStrings14.worstCluster)}</span>
             <button
@@ -5028,7 +5130,7 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
               jslog=${VisualLogging7.action("timeline.landing.show-cls-cluster").track({ click: true })}
             >${i18nString13(UIStrings14.numShifts, { shiftCount: clusterIds.size })}</button>
           </div>
-        ` : nothing11}
+        ` : nothing12}
       </devtools-metric-card>
     `;
   }
@@ -5036,7 +5138,7 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
     const fieldData = this.#cruxManager.getSelectedFieldMetricData("interaction_to_next_paint");
     const phases = this.#inpValue?.phases;
     const interaction = this.#inpValue && this.#interactions.get(this.#inpValue.interactionId);
-    return html12`
+    return html13`
       <devtools-metric-card .data=${{
       metric: "INP",
       localValue: this.#inpValue?.value,
@@ -5050,7 +5152,7 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
         [i18nString13(UIStrings14.presentationDelay), phases.presentationDelay]
       ]
     }}>
-        ${interaction ? html12`
+        ${interaction ? html13`
           <div class="related-info" slot="extra-info">
             <span class="related-info-label">${i18nString13(UIStrings14.inpInteractionLink)}</span>
             <button
@@ -5060,7 +5162,7 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
               jslog=${VisualLogging7.action("timeline.landing.show-inp-interaction").track({ click: true })}
             >${interaction.interactionType}</button>
           </div>
-        ` : nothing11}
+        ` : nothing12}
       </devtools-metric-card>
     `;
   }
@@ -5068,7 +5170,7 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
     function onClick() {
       void action6.execute();
     }
-    return html12`
+    return html13`
       <div class="record-action">
         <devtools-button @click=${onClick} .data=${{
       variant: "text",
@@ -5079,7 +5181,7 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
     }}>
           ${action6.title()}
         </devtools-button>
-        <span class="shortcut-label">${UI9.ShortcutRegistry.ShortcutRegistry.instance().shortcutTitleForAction(action6.id())}</span>
+        <span class="shortcut-label">${UI10.ShortcutRegistry.ShortcutRegistry.instance().shortcutTitleForAction(action6.id())}</span>
       </div>
     `;
   }
@@ -5095,7 +5197,7 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
     if (rtt < RTT_MINIMUM) {
       return i18nString13(UIStrings14.tryDisablingThrottling);
     }
-    const conditions = SDK6.NetworkManager.getRecommendedNetworkPreset(rtt);
+    const conditions = SDK7.NetworkManager.getRecommendedNetworkPreset(rtt);
     if (!conditions) {
       return null;
     }
@@ -5121,17 +5223,17 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
     networkRecEl.classList.add("environment-rec");
     networkRecEl.textContent = this.#getNetworkRecTitle() || i18nString13(UIStrings14.notEnoughData);
     const recs = getThrottlingRecommendations();
-    return html12`
+    return html13`
       <h3 class="card-title">${i18nString13(UIStrings14.environmentSettings)}</h3>
       <div class="device-toolbar-description">${md(i18nString13(UIStrings14.useDeviceToolbar))}</div>
-      ${fieldEnabled ? html12`
+      ${fieldEnabled ? html13`
         <ul class="environment-recs-list">
           <li>${uiI18n4.getFormatLocalizedString(str_14, UIStrings14.device, { PH1: deviceRecEl })}</li>
           <li>${uiI18n4.getFormatLocalizedString(str_14, UIStrings14.network, { PH1: networkRecEl })}</li>
         </ul>
-      ` : nothing11}
+      ` : nothing12}
       <div class="environment-option">
-        <devtools-widget .widgetConfig=${widgetConfig(CPUThrottlingSelector, { recommendedOption: recs.cpuOption })}></devtools-widget>
+        <devtools-widget .widgetConfig=${widgetConfig2(CPUThrottlingSelector, { recommendedOption: recs.cpuOption })}></devtools-widget>
       </div>
       <div class="environment-option">
         <devtools-network-throttling-selector .recommendedConditions=${recs.networkConditions}></devtools-network-throttling-selector>
@@ -5165,14 +5267,14 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
   }
   #renderPageScopeSetting() {
     if (!this.#cruxManager.getConfigSetting().get().enabled) {
-      return Lit12.nothing;
+      return Lit13.nothing;
     }
     const urlLabel = this.#getPageScopeLabel("url");
     const originLabel = this.#getPageScopeLabel("origin");
     const buttonTitle = this.#cruxManager.fieldPageScope === "url" ? urlLabel : originLabel;
     const accessibleTitle = i18nString13(UIStrings14.showFieldDataForPage, { PH1: buttonTitle });
     const shouldDisable = !this.#cruxManager.pageResult?.["url-ALL"] && !this.#cruxManager.pageResult?.["origin-ALL"];
-    return html12`
+    return html13`
       <devtools-select-menu
         id="page-scope-select"
         class="field-data-option"
@@ -5236,11 +5338,11 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
   }
   #renderDeviceScopeSetting() {
     if (!this.#cruxManager.getConfigSetting().get().enabled) {
-      return Lit12.nothing;
+      return Lit13.nothing;
     }
     const shouldDisable = !this.#cruxManager.getFieldResponse(this.#cruxManager.fieldPageScope, "ALL");
     const currentDeviceLabel = this.#getLabelForDeviceOption(this.#cruxManager.fieldDeviceOption);
-    return html12`
+    return html13`
       <devtools-select-menu
         id="device-scope-select"
         class="field-data-option"
@@ -5254,7 +5356,7 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
         title=${i18nString13(UIStrings14.showFieldDataForDevice, { PH1: currentDeviceLabel })}
       >
         ${DEVICE_OPTION_LIST.map((deviceOption) => {
-      return html12`
+      return html13`
             <devtools-menu-item
               .value=${deviceOption}
               .selected=${this.#cruxManager.fieldDeviceOption === deviceOption}
@@ -5296,11 +5398,11 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
   }
   #renderFieldDataHistoryLink() {
     if (!this.#cruxManager.getConfigSetting().get().enabled) {
-      return Lit12.nothing;
+      return Lit13.nothing;
     }
     const normalizedUrl = this.#cruxManager.pageResult?.normalizedUrl;
     if (!normalizedUrl) {
-      return Lit12.nothing;
+      return Lit13.nothing;
     }
     const tmp = new URL("https://cruxvis.withgoogle.com/");
     tmp.searchParams.set("view", "cwvsummary");
@@ -5310,7 +5412,7 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
     const device = this.#cruxManager.getSelectedDeviceScope();
     tmp.searchParams.set("device", device);
     const cruxVis = `${tmp.origin}/#/${tmp.search}`;
-    return html12`
+    return html13`
         (<x-link href=${cruxVis}
                  class="local-field-link"
                  title=${i18nString13(UIStrings14.fieldDataHistoryTooltip)}
@@ -5325,12 +5427,12 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
     const message = uiI18n4.getFormatLocalizedString(str_14, UIStrings14.collectionPeriod, {
       PH1: dateEl
     });
-    const fieldDataHistoryLink = range ? this.#renderFieldDataHistoryLink() : Lit12.nothing;
+    const fieldDataHistoryLink = range ? this.#renderFieldDataHistoryLink() : Lit13.nothing;
     const warnings = this.#cruxManager.pageResult?.warnings || [];
-    return html12`
+    return html13`
       <div class="field-data-message">
         <div>${message} ${fieldDataHistoryLink}</div>
-        ${warnings.map((warning) => html12`
+        ${warnings.map((warning) => html13`
           <div class="field-data-warning">${warning}</div>
         `)}
       </div>
@@ -5340,20 +5442,20 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
     if (this.#cruxManager.getConfigSetting().get().enabled) {
       return this.#renderCollectionPeriod();
     }
-    const linkEl = UI9.XLink.XLink.create("https://developer.chrome.com/docs/crux", i18n27.i18n.lockedString("Chrome UX Report"));
+    const linkEl = UI10.XLink.XLink.create("https://developer.chrome.com/docs/crux", i18n27.i18n.lockedString("Chrome UX Report"));
     const messageEl = uiI18n4.getFormatLocalizedString(str_14, UIStrings14.seeHowYourLocalMetricsCompare, { PH1: linkEl });
-    return html12`
+    return html13`
       <div class="field-data-message">${messageEl}</div>
     `;
   }
   #renderLogSection() {
-    return html12`
+    return html13`
       <section
         class="logs-section"
         aria-label=${i18nString13(UIStrings14.eventLogs)}
       >
         <devtools-live-metrics-logs
-          ${Lit12.Directives.ref((el) => {
+          ${Lit13.Directives.ref((el) => {
       if (el instanceof HTMLElement) {
         this.#logsEl = el;
       }
@@ -5379,7 +5481,7 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
         block: "center"
       });
       interactionEl.focus();
-      UI9.UIUtils.runCSSAnimationOnce(interactionEl, "highlight");
+      UI10.UIUtils.runCSSAnimationOnce(interactionEl, "highlight");
     });
   }
   async #logExtraInteractionDetails(interaction) {
@@ -5390,12 +5492,12 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
   }
   #renderInteractionsLog() {
     if (!this.#interactions.size) {
-      return Lit12.nothing;
+      return Lit13.nothing;
     }
-    return html12`
+    return html13`
       <ol class="log"
         slot="interactions-log-content"
-        ${Lit12.Directives.ref((el) => {
+        ${Lit13.Directives.ref((el) => {
       if (el instanceof HTMLElement) {
         this.#interactionsListEl = el;
       }
@@ -5405,29 +5507,29 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
       const metricValue = renderMetricValue("timeline.landing.interaction-event-timing", interaction.duration, INP_THRESHOLDS, (v) => i18n27.TimeUtilities.preciseMillisToString(v), { dim: true });
       const isP98Excluded = this.#inpValue && this.#inpValue.value < interaction.duration;
       const isInp = this.#inpValue?.interactionId === interaction.interactionId;
-      return html12`
+      return html13`
             <li id=${interaction.interactionId} class="log-item interaction" tabindex="-1">
               <details>
                 <summary>
                   <span class="interaction-type">
-                    ${interaction.interactionType} ${isInp ? html12`<span class="interaction-inp-chip" title=${i18nString13(UIStrings14.inpInteraction)}>INP</span>` : nothing11}
+                    ${interaction.interactionType} ${isInp ? html13`<span class="interaction-inp-chip" title=${i18nString13(UIStrings14.inpInteraction)}>INP</span>` : nothing12}
                   </span>
                   <span class="interaction-node">
-                    <devtools-widget .widgetConfig=${widgetConfig(PanelsCommon.DOMLinkifier.DOMNodeLink, { node: interaction.nodeRef })}>
+                    <devtools-widget .widgetConfig=${widgetConfig2(PanelsCommon2.DOMLinkifier.DOMNodeLink, { node: interaction.nodeRef })}>
                     </devtools-widget>
                   </span>
-                  ${isP98Excluded ? html12`<devtools-icon
+                  ${isP98Excluded ? html13`<devtools-icon
                     class="interaction-info"
                     name="info"
                     title=${i18nString13(UIStrings14.interactionExcluded)}
-                  ></devtools-icon>` : nothing11}
+                  ></devtools-icon>` : nothing12}
                   <span class="interaction-duration">${metricValue}</span>
                 </summary>
                 <div class="phase-table" role="table">
                   <div class="phase-table-row phase-table-header-row" role="row">
                     <div role="columnheader">${i18nString13(UIStrings14.phase)}</div>
                     <div role="columnheader">
-                      ${interaction.longAnimationFrameTimings.length ? html12`
+                      ${interaction.longAnimationFrameTimings.length ? html13`
                         <button
                           class="log-extra-details-button"
                           title=${i18nString13(UIStrings14.logToConsole)}
@@ -5480,18 +5582,18 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
       });
       layoutShiftEls[0].focus();
       for (const layoutShiftEl of layoutShiftEls) {
-        UI9.UIUtils.runCSSAnimationOnce(layoutShiftEl, "highlight");
+        UI10.UIUtils.runCSSAnimationOnce(layoutShiftEl, "highlight");
       }
     });
   }
   #renderLayoutShiftsLog() {
     if (!this.#layoutShifts.length) {
-      return Lit12.nothing;
+      return Lit13.nothing;
     }
-    return html12`
+    return html13`
       <ol class="log"
         slot="layout-shifts-log-content"
-        ${Lit12.Directives.ref((el) => {
+        ${Lit13.Directives.ref((el) => {
       if (el instanceof HTMLElement) {
         this.#layoutShiftsListEl = el;
       }
@@ -5507,13 +5609,13 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
         (v) => v.toFixed(4),
         { dim: true }
       );
-      return html12`
+      return html13`
             <li id=${layoutShift.uniqueLayoutShiftId} class="log-item layout-shift" tabindex="-1">
               <div class="layout-shift-score">Layout shift score: ${metricValue}</div>
               <div class="layout-shift-nodes">
-                ${layoutShift.affectedNodeRefs.map((node) => html12`
+                ${layoutShift.affectedNodeRefs.map((node) => html13`
                   <div class="layout-shift-node">
-                    <devtools-widget .widgetConfig=${widgetConfig(PanelsCommon.DOMLinkifier.DOMNodeLink, { node })}>
+                    <devtools-widget .widgetConfig=${widgetConfig2(PanelsCommon2.DOMLinkifier.DOMNodeLink, { node })}>
                     </devtools-widget>
                   </div>
                 `)}
@@ -5525,7 +5627,7 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
     `;
   }
   #renderNodeView() {
-    return html12`
+    return html13`
       <style>${liveMetricsView_css_default}</style>
       <style>${metricValueStyles_css_default}</style>
       <div class="node-view">
@@ -5539,13 +5641,13 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
   }
   #render = () => {
     if (this.isNode) {
-      Lit12.render(this.#renderNodeView(), this.#shadow, { host: this });
+      Lit13.render(this.#renderNodeView(), this.#shadow, { host: this });
       return;
     }
     const fieldEnabled = this.#cruxManager.getConfigSetting().get().enabled;
     const liveMetricsTitle = fieldEnabled ? i18nString13(UIStrings14.localAndFieldMetrics) : i18nString13(UIStrings14.localMetrics);
     const helpLink = "https://web.dev/articles/lab-and-field-data-differences#lab_data_versus_field_data";
-    const output = html12`
+    const output = html13`
       <style>${liveMetricsView_css_default}</style>
       <style>${metricValueStyles_css_default}</style>
       <div class="container">
@@ -5553,7 +5655,7 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
           <main class="live-metrics">
             <h2 class="section-title">${liveMetricsTitle}</h2>
             <div class="metric-cards"
-              ${Lit12.Directives.ref((el) => {
+              ${Lit13.Directives.ref((el) => {
       if (el instanceof HTMLElement) {
         this.#tooltipContainerEl = el;
       }
@@ -5600,10 +5702,10 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
         </div>
       </div>
     `;
-    Lit12.render(output, this.#shadow, { host: this });
+    Lit13.render(output, this.#shadow, { host: this });
   };
 };
-var LiveMetricsLogs = class extends UI9.Widget.WidgetElement {
+var LiveMetricsLogs = class extends UI10.Widget.WidgetElement {
   #tabbedPane;
   constructor() {
     super();
@@ -5630,18 +5732,18 @@ var LiveMetricsLogs = class extends UI9.Widget.WidgetElement {
     }
   }
   createWidget() {
-    const containerWidget = new UI9.Widget.Widget(this, { useShadowDom: true });
+    const containerWidget = new UI10.Widget.Widget(this, { useShadowDom: true });
     containerWidget.contentElement.style.display = "contents";
-    this.#tabbedPane = new UI9.TabbedPane.TabbedPane();
+    this.#tabbedPane = new UI10.TabbedPane.TabbedPane();
     const interactionsSlot = document.createElement("slot");
     interactionsSlot.name = "interactions-log-content";
-    const interactionsTab = UI9.Widget.Widget.getOrCreateWidget(interactionsSlot);
+    const interactionsTab = UI10.Widget.Widget.getOrCreateWidget(interactionsSlot);
     this.#tabbedPane.appendTab("interactions", i18nString13(UIStrings14.interactions), interactionsTab, void 0, void 0, void 0, void 0, void 0, "timeline.landing.interactions-log");
     const layoutShiftsSlot = document.createElement("slot");
     layoutShiftsSlot.name = "layout-shifts-log-content";
-    const layoutShiftsTab = UI9.Widget.Widget.getOrCreateWidget(layoutShiftsSlot);
+    const layoutShiftsTab = UI10.Widget.Widget.getOrCreateWidget(layoutShiftsSlot);
     this.#tabbedPane.appendTab("layout-shifts", i18nString13(UIStrings14.layoutShifts), layoutShiftsTab, void 0, void 0, void 0, void 0, void 0, "timeline.landing.layout-shifts-log");
-    const clearButton = new UI9.Toolbar.ToolbarButton(i18nString13(UIStrings14.clearCurrentLog), "clear", void 0, "timeline.landing.clear-log");
+    const clearButton = new UI10.Toolbar.ToolbarButton(i18nString13(UIStrings14.clearCurrentLog), "clear", void 0, "timeline.landing.clear-log");
     clearButton.addEventListener("Click", this.#clearCurrentLog, this);
     this.#tabbedPane.rightToolbar().appendToolbarItem(clearButton);
     this.#tabbedPane.show(containerWidget.contentElement);
@@ -5654,17 +5756,17 @@ customElements.define("devtools-live-metrics-logs", LiveMetricsLogs);
 // gen/front_end/panels/timeline/components/NetworkRequestDetails.js
 var NetworkRequestDetails_exports = {};
 __export(NetworkRequestDetails_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW3,
+  DEFAULT_VIEW: () => DEFAULT_VIEW4,
   NetworkRequestDetails: () => NetworkRequestDetails
 });
 import "./../../../ui/components/request_link_icon/request_link_icon.js";
 import * as i18n31 from "./../../../core/i18n/i18n.js";
-import * as SDK8 from "./../../../core/sdk/sdk.js";
+import * as SDK9 from "./../../../core/sdk/sdk.js";
 import * as Helpers6 from "./../../../models/trace/helpers/helpers.js";
 import * as Trace7 from "./../../../models/trace/trace.js";
-import * as LegacyComponents2 from "./../../../ui/legacy/components/utils/utils.js";
-import * as UI10 from "./../../../ui/legacy/legacy.js";
-import * as Lit14 from "./../../../ui/lit/lit.js";
+import * as LegacyComponents3 from "./../../../ui/legacy/components/utils/utils.js";
+import * as UI11 from "./../../../ui/legacy/legacy.js";
+import * as Lit15 from "./../../../ui/lit/lit.js";
 
 // gen/front_end/panels/timeline/components/networkRequestDetails.css.js
 var networkRequestDetails_css_default = `/*
@@ -5958,12 +6060,12 @@ __export(NetworkRequestTooltip_exports, {
 import "./../../../ui/kit/kit.js";
 import * as i18n29 from "./../../../core/i18n/i18n.js";
 import * as Platform7 from "./../../../core/platform/platform.js";
-import * as SDK7 from "./../../../core/sdk/sdk.js";
+import * as SDK8 from "./../../../core/sdk/sdk.js";
 import * as Trace6 from "./../../../models/trace/trace.js";
 import * as PerfUI from "./../../../ui/legacy/components/perf_ui/perf_ui.js";
-import * as Lit13 from "./../../../ui/lit/lit.js";
+import * as Lit14 from "./../../../ui/lit/lit.js";
 import * as TimelineUtils from "./../utils/utils.js";
-var { html: html13, nothing: nothing13, Directives: { classMap, ifDefined: ifDefined2 } } = Lit13;
+var { html: html14, nothing: nothing14, Directives: { classMap, ifDefined: ifDefined2 } } = Lit14;
 var MAX_URL_LENGTH2 = 60;
 var UIStrings15 = {
   /**
@@ -6021,9 +6123,9 @@ var NetworkRequestTooltip = class _NetworkRequestTooltip extends HTMLElement {
   }
   static renderPriorityValue(networkRequest) {
     if (networkRequest.args.data.priority === networkRequest.args.data.initialPriority) {
-      return html13`${PerfUI.NetworkPriorities.uiLabelForNetworkPriority(networkRequest.args.data.priority)}`;
+      return html14`${PerfUI.NetworkPriorities.uiLabelForNetworkPriority(networkRequest.args.data.priority)}`;
     }
-    return html13`${PerfUI.NetworkPriorities.uiLabelForNetworkPriority(networkRequest.args.data.initialPriority)}
+    return html14`${PerfUI.NetworkPriorities.uiLabelForNetworkPriority(networkRequest.args.data.initialPriority)}
         <devtools-icon name="arrow-forward" class="priority"></devtools-icon>
         ${PerfUI.NetworkPriorities.uiLabelForNetworkPriority(networkRequest.args.data.priority)}`;
   }
@@ -6040,25 +6142,25 @@ var NetworkRequestTooltip = class _NetworkRequestTooltip extends HTMLElement {
     const styleForDownloading = {
       backgroundColor: color
     };
-    const sdkNetworkRequest = SDK7.TraceObject.RevealableNetworkRequest.create(networkRequest);
-    const wasThrottled = sdkNetworkRequest && SDK7.NetworkManager.MultitargetNetworkManager.instance().appliedRequestConditions(sdkNetworkRequest.networkRequest);
+    const sdkNetworkRequest = SDK8.TraceObject.RevealableNetworkRequest.create(networkRequest);
+    const wasThrottled = sdkNetworkRequest && SDK8.NetworkManager.MultitargetNetworkManager.instance().appliedRequestConditions(sdkNetworkRequest.networkRequest);
     const throttledTitle = wasThrottled ? i18nString14(UIStrings15.wasThrottled, {
       PH1: typeof wasThrottled.conditions.title === "string" ? wasThrottled.conditions.title : wasThrottled.conditions.title()
     }) : void 0;
-    const leftWhisker = html13`<span class="whisker-left"> <span class="horizontal"></span> </span>`;
-    const rightWhisker = html13`<span class="whisker-right"> <span class="horizontal"></span> </span>`;
+    const leftWhisker = html14`<span class="whisker-left"> <span class="horizontal"></span> </span>`;
+    const rightWhisker = html14`<span class="whisker-right"> <span class="horizontal"></span> </span>`;
     const classes = classMap({
       ["timings-row timings-row--duration"]: true,
       throttled: Boolean(wasThrottled?.urlPattern)
     });
-    return html13`
+    return html14`
       <div
         class=${classes}
         title=${ifDefined2(throttledTitle)}>
-        ${wasThrottled?.urlPattern ? html13`<devtools-icon
+        ${wasThrottled?.urlPattern ? html14`<devtools-icon
           class=indicator
           name=watch
-          ></devtools-icon>` : html13`<span class="indicator"></span>`}
+          ></devtools-icon>` : html14`<span class="indicator"></span>`}
         ${i18nString14(UIStrings15.duration)}
          <span class="time"> ${i18n29.TimeUtilities.formatMicroSecondsTime(networkRequest.dur)} </span>
       </div>
@@ -6068,12 +6170,12 @@ var NetworkRequestTooltip = class _NetworkRequestTooltip extends HTMLElement {
         <span class="time"> ${i18n29.TimeUtilities.formatMicroSecondsTime(queueing)} </span>
       </div>
       <div class="timings-row">
-        <span class="indicator" style=${Lit13.Directives.styleMap(styleForWaiting)}></span>
+        <span class="indicator" style=${Lit14.Directives.styleMap(styleForWaiting)}></span>
         ${i18nString14(UIStrings15.requestSentAndWaiting)}
         <span class="time"> ${i18n29.TimeUtilities.formatMicroSecondsTime(requestPlusWaiting)} </span>
       </div>
       <div class="timings-row">
-        <span class="indicator" style=${Lit13.Directives.styleMap(styleForDownloading)}></span>
+        <span class="indicator" style=${Lit14.Directives.styleMap(styleForDownloading)}></span>
         ${i18nString14(UIStrings15.contentDownloading)}
         <span class="time"> ${i18n29.TimeUtilities.formatMicroSecondsTime(download)} </span>
       </div>
@@ -6087,15 +6189,15 @@ var NetworkRequestTooltip = class _NetworkRequestTooltip extends HTMLElement {
   static renderRedirects(networkRequest) {
     const redirectRows = [];
     if (networkRequest.args.data.redirects.length > 0) {
-      redirectRows.push(html13`
+      redirectRows.push(html14`
         <div class="redirects-row">
           ${i18nString14(UIStrings15.redirects)}
         </div>
       `);
       for (const redirect of networkRequest.args.data.redirects) {
-        redirectRows.push(html13`<div class="redirects-row"> ${redirect.url}</div>`);
+        redirectRows.push(html14`<div class="redirects-row"> ${redirect.url}</div>`);
       }
-      return html13`${redirectRows}`;
+      return html14`${redirectRows}`;
     }
     return null;
   }
@@ -6110,9 +6212,9 @@ var NetworkRequestTooltip = class _NetworkRequestTooltip extends HTMLElement {
     const entity = this.#data.entityMapper ? this.#data.entityMapper.entityForEvent(this.#data.networkRequest) : null;
     const originWithEntity = TimelineUtils.Helpers.formatOriginWithEntity(url, entity, true);
     const redirectsHtml = _NetworkRequestTooltip.renderRedirects(this.#data.networkRequest);
-    const sdkNetworkRequest = SDK7.TraceObject.RevealableNetworkRequest.create(this.#data.networkRequest);
-    const wasThrottled = sdkNetworkRequest && SDK7.NetworkManager.MultitargetNetworkManager.instance().appliedRequestConditions(sdkNetworkRequest.networkRequest);
-    const output = html13`
+    const sdkNetworkRequest = SDK8.TraceObject.RevealableNetworkRequest.create(this.#data.networkRequest);
+    const wasThrottled = sdkNetworkRequest && SDK8.NetworkManager.MultitargetNetworkManager.instance().appliedRequestConditions(sdkNetworkRequest.networkRequest);
+    const output = html14`
       <style>${networkRequestTooltip_css_default}</style>
       <div class="performance-card">
         <div class="url">${Platform7.StringUtilities.trimMiddle(url.href.replace(url.origin, ""), MAX_URL_LENGTH2)}</div>
@@ -6120,34 +6222,34 @@ var NetworkRequestTooltip = class _NetworkRequestTooltip extends HTMLElement {
 
         <div class="divider"></div>
         <div class="network-category">
-          <span class="network-category-chip" style=${Lit13.Directives.styleMap(chipStyle)}>
+          <span class="network-category-chip" style=${Lit14.Directives.styleMap(chipStyle)}>
           </span>${networkResourceCategory(this.#data.networkRequest)}
         </div>
         <div class="priority-row">${i18nString14(UIStrings15.priority)}: ${_NetworkRequestTooltip.renderPriorityValue(this.#data.networkRequest)}</div>
-        ${wasThrottled ? html13`
+        ${wasThrottled ? html14`
         <div class="throttled-row">
           ${i18nString14(UIStrings15.wasThrottled, {
       PH1: typeof wasThrottled.conditions.title === "string" ? wasThrottled.conditions.title : wasThrottled.conditions.title()
     })}
-        </div>` : nothing13}
-        ${Trace6.Helpers.Network.isSyntheticNetworkRequestEventRenderBlocking(this.#data.networkRequest) ? html13`<div class="render-blocking"> ${i18nString14(UIStrings15.renderBlocking)} </div>` : Lit13.nothing}
+        </div>` : nothing14}
+        ${Trace6.Helpers.Network.isSyntheticNetworkRequestEventRenderBlocking(this.#data.networkRequest) ? html14`<div class="render-blocking"> ${i18nString14(UIStrings15.renderBlocking)} </div>` : Lit14.nothing}
         <div class="divider"></div>
 
         ${_NetworkRequestTooltip.renderTimings(this.#data.networkRequest)}
 
-        ${redirectsHtml ? html13`
+        ${redirectsHtml ? html14`
           <div class="divider"></div>
           ${redirectsHtml}
-        ` : Lit13.nothing}
+        ` : Lit14.nothing}
       </div>
     `;
-    Lit13.render(output, this.#shadow, { host: this });
+    Lit14.render(output, this.#shadow, { host: this });
   }
 };
 customElements.define("devtools-performance-network-request-tooltip", NetworkRequestTooltip);
 
 // gen/front_end/panels/timeline/components/NetworkRequestDetails.js
-var { html: html14, render: render13 } = Lit14;
+var { html: html15, render: render14 } = Lit15;
 var MAX_URL_LENGTH3 = 100;
 var UIStrings16 = {
   /**
@@ -6241,7 +6343,7 @@ var UIStrings16 = {
 };
 var str_16 = i18n31.i18n.registerUIStrings("panels/timeline/components/NetworkRequestDetails.ts", UIStrings16);
 var i18nString15 = i18n31.i18n.getLocalizedString.bind(void 0, str_16);
-var NetworkRequestDetails = class extends UI10.Widget.Widget {
+var NetworkRequestDetails = class extends UI11.Widget.Widget {
   #view;
   #request = null;
   #requestPreviewElements = /* @__PURE__ */ new WeakMap();
@@ -6250,7 +6352,7 @@ var NetworkRequestDetails = class extends UI10.Widget.Widget {
   #linkifier = null;
   #serverTimings = null;
   #parsedTrace = null;
-  constructor(element, view = DEFAULT_VIEW3) {
+  constructor(element, view = DEFAULT_VIEW4) {
     super(element);
     this.#view = view;
     this.requestUpdate();
@@ -6273,7 +6375,7 @@ var NetworkRequestDetails = class extends UI10.Widget.Widget {
       const headerName = header.name.toLocaleLowerCase();
       if (headerName === "server-timing" || headerName === "server-timing-test") {
         header.name = "server-timing";
-        this.#serverTimings = SDK8.ServerTiming.ServerTiming.parseHeaders([header]);
+        this.#serverTimings = SDK9.ServerTiming.ServerTiming.parseHeaders([header]);
         break;
       }
     }
@@ -6295,15 +6397,15 @@ var NetworkRequestDetails = class extends UI10.Widget.Widget {
     }, {}, this.contentElement);
   }
 };
-var DEFAULT_VIEW3 = (input, _output, target) => {
+var DEFAULT_VIEW4 = (input, _output, target) => {
   if (!input.request) {
-    render13(Lit14.nothing, target);
+    render14(Lit15.nothing, target);
     return;
   }
   const { request } = input;
   const { data } = request.args;
   const redirectsHtml = NetworkRequestTooltip.renderRedirects(request);
-  render13(html14`
+  render14(html15`
         <style>${networkRequestDetails_css_default}</style>
         <style>${networkRequestTooltip_css_default}</style>
 
@@ -6311,7 +6413,7 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
           ${renderTitle(input.request)}
           ${renderURL(input.request)}
           <div class="network-request-details-cols">
-            ${Lit14.Directives.until(renderPreviewElement(input.request, input.target, input.previewElementsCache))}
+            ${Lit15.Directives.until(renderPreviewElement(input.request, input.target, input.previewElementsCache))}
             <div class="network-request-details-col">
               ${renderRow(i18nString15(UIStrings16.requestMethod), data.requestMethod)}
               ${renderRow(i18nString15(UIStrings16.protocol), data.protocol)}
@@ -6330,12 +6432,12 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
               </div>
             </div>
             ${renderServerTimings(input.serverTimings)}
-            ${redirectsHtml ? html14`
+            ${redirectsHtml ? html15`
               <div class="column-divider"></div>
               <div class="network-request-details-col redirect-details">
                 ${redirectsHtml}
               </div>
-            ` : Lit14.nothing}
+            ` : Lit15.nothing}
             </div>
             ${renderInitiatedBy(request, input.parsedTrace, input.target, input.linkifier)}
           </div>
@@ -6346,9 +6448,9 @@ function renderTitle(request) {
   const style = {
     backgroundColor: `${colorForNetworkRequest(request)}`
   };
-  return html14`
+  return html15`
     <div class="network-request-details-title">
-      <div style=${Lit14.Directives.styleMap(style)}></div>
+      <div style=${Lit15.Directives.styleMap(style)}></div>
       ${i18nString15(UIStrings16.networkRequest)}
     </div>
   `;
@@ -6360,53 +6462,53 @@ function renderURL(request) {
     inlineFrameIndex: 0,
     maxLength: MAX_URL_LENGTH3
   };
-  const linkifiedURL = LegacyComponents2.Linkifier.Linkifier.linkifyURL(request.args.data.url, options);
-  const networkRequest = SDK8.TraceObject.RevealableNetworkRequest.create(request);
+  const linkifiedURL = LegacyComponents3.Linkifier.Linkifier.linkifyURL(request.args.data.url, options);
+  const networkRequest = SDK9.TraceObject.RevealableNetworkRequest.create(request);
   if (networkRequest) {
     linkifiedURL.addEventListener("contextmenu", (event) => {
-      const contextMenu = new UI10.ContextMenu.ContextMenu(event);
+      const contextMenu = new UI11.ContextMenu.ContextMenu(event);
       contextMenu.appendApplicableItems(networkRequest);
       void contextMenu.show();
     });
-    const urlElement = html14`
+    const urlElement = html15`
         ${linkifiedURL}
         <devtools-request-link-icon .data=${{ request: networkRequest.networkRequest }}>
         </devtools-request-link-icon>
       `;
-    return html14`<div class="network-request-details-item">${urlElement}</div>`;
+    return html15`<div class="network-request-details-item">${urlElement}</div>`;
   }
-  return html14`<div class="network-request-details-item">${linkifiedURL}</div>`;
+  return html15`<div class="network-request-details-item">${linkifiedURL}</div>`;
 }
 async function renderPreviewElement(request, target, previewElementsCache) {
   if (!request.args.data.url || !target) {
-    return Lit14.nothing;
+    return Lit15.nothing;
   }
   const url = request.args.data.url;
   if (!previewElementsCache.get(request)) {
     const previewOpts = {
-      imageAltText: LegacyComponents2.ImagePreview.ImagePreview.defaultAltTextForImageURL(url),
+      imageAltText: LegacyComponents3.ImagePreview.ImagePreview.defaultAltTextForImageURL(url),
       precomputedFeatures: void 0,
       align: "start",
       hideFileData: true
     };
-    const previewElement = await LegacyComponents2.ImagePreview.ImagePreview.build(url, false, previewOpts);
+    const previewElement = await LegacyComponents3.ImagePreview.ImagePreview.build(url, false, previewOpts);
     if (previewElement) {
       previewElementsCache.set(request, previewElement);
     }
   }
   const requestPreviewElement = previewElementsCache.get(request);
   if (requestPreviewElement) {
-    return html14`
+    return html15`
       <div class="network-request-details-col">${requestPreviewElement}</div>
       <div class="column-divider"></div>`;
   }
-  return Lit14.nothing;
+  return Lit15.nothing;
 }
 function renderRow(title, value) {
   if (!value) {
-    return Lit14.nothing;
+    return Lit15.nothing;
   }
-  return html14`
+  return html15`
       <div class="network-request-details-row">
         <div class="title">${title}</div>
         <div class="value">${value}</div>
@@ -6431,7 +6533,7 @@ function renderEncodedDataLength(request) {
 }
 function renderBlockingRow(request) {
   if (!Helpers6.Network.isSyntheticNetworkRequestEventRenderBlocking(request)) {
-    return Lit14.nothing;
+    return Lit15.nothing;
   }
   let renderBlockingText;
   switch (request.args.data.renderBlocking) {
@@ -6442,7 +6544,7 @@ function renderBlockingRow(request) {
       renderBlockingText = UIStrings16.inBodyParserBlocking;
       break;
     default:
-      return Lit14.nothing;
+      return Lit15.nothing;
   }
   return renderRow(i18nString15(UIStrings16.blocking), renderBlockingText);
 }
@@ -6452,19 +6554,19 @@ function renderFromCache(request) {
 }
 function renderThirdPartyEntity(request, entityMapper) {
   if (!entityMapper) {
-    return Lit14.nothing;
+    return Lit15.nothing;
   }
   const entity = entityMapper.entityForEvent(request);
   if (!entity) {
-    return Lit14.nothing;
+    return Lit15.nothing;
   }
   return renderRow(i18nString15(UIStrings16.entity), entity.name);
 }
 function renderServerTimings(timings) {
   if (!timings || timings.length === 0) {
-    return Lit14.nothing;
+    return Lit15.nothing;
   }
-  return html14`
+  return html15`
     <div class="column-divider"></div>
     <div class="network-request-details-col server-timings">
       <div class="server-timing-column-header">${i18nString15(UIStrings16.serverTiming)}</div>
@@ -6472,7 +6574,7 @@ function renderServerTimings(timings) {
       <div class="server-timing-column-header">${i18nString15(UIStrings16.time)}</div>
       ${timings.map((timing) => {
     const classes = timing.metric.startsWith("(c") ? "synthetic value" : "value";
-    return html14`
+    return html15`
           <div class=${classes}>${timing.metric || "-"}</div>
           <div class=${classes}>${timing.description || "-"}</div>
           <div class=${classes}>${timing.value || "-"}</div>
@@ -6482,7 +6584,7 @@ function renderServerTimings(timings) {
 }
 function renderInitiatedBy(request, parsedTrace, target, linkifier) {
   if (!linkifier) {
-    return Lit14.nothing;
+    return Lit15.nothing;
   }
   const hasStackTrace = Trace7.Helpers.Trace.stackTraceInEvent(request) !== null;
   let link2 = null;
@@ -6510,9 +6612,9 @@ function renderInitiatedBy(request, parsedTrace, target, linkifier) {
     );
   }
   if (!link2) {
-    return Lit14.nothing;
+    return Lit15.nothing;
   }
-  return html14`
+  return html15`
       <div class="network-request-details-item">
         <div class="title">${i18nString15(UIStrings16.initiatedBy)}</div>
         <div class="value focusable-outline">${link2}</div>
@@ -6522,12 +6624,12 @@ function renderInitiatedBy(request, parsedTrace, target, linkifier) {
 // gen/front_end/panels/timeline/components/RelatedInsightChips.js
 var RelatedInsightChips_exports = {};
 __export(RelatedInsightChips_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW4,
+  DEFAULT_VIEW: () => DEFAULT_VIEW5,
   RelatedInsightChips: () => RelatedInsightChips
 });
 import * as i18n33 from "./../../../core/i18n/i18n.js";
-import * as UI11 from "./../../../ui/legacy/legacy.js";
-import * as Lit15 from "./../../../ui/lit/lit.js";
+import * as UI12 from "./../../../ui/legacy/legacy.js";
+import * as Lit16 from "./../../../ui/lit/lit.js";
 
 // gen/front_end/panels/timeline/components/relatedInsightChips.css.js
 var relatedInsightChips_css_default = `/*
@@ -6612,7 +6714,7 @@ var relatedInsightChips_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./relatedInsightChips.css")} */`;
 
 // gen/front_end/panels/timeline/components/RelatedInsightChips.js
-var { html: html15, render: render14 } = Lit15;
+var { html: html16, render: render15 } = Lit16;
 var UIStrings17 = {
   /**
    * @description prefix shown next to related insight chips
@@ -6626,11 +6728,11 @@ var UIStrings17 = {
 };
 var str_17 = i18n33.i18n.registerUIStrings("panels/timeline/components/RelatedInsightChips.ts", UIStrings17);
 var i18nString16 = i18n33.i18n.getLocalizedString.bind(void 0, str_17);
-var RelatedInsightChips = class extends UI11.Widget.Widget {
+var RelatedInsightChips = class extends UI12.Widget.Widget {
   #view;
   #activeEvent = null;
   #eventToInsightsMap = /* @__PURE__ */ new Map();
-  constructor(element, view = DEFAULT_VIEW4) {
+  constructor(element, view = DEFAULT_VIEW5) {
     super(element);
     this.#view = view;
   }
@@ -6656,15 +6758,15 @@ var RelatedInsightChips = class extends UI11.Widget.Widget {
     this.#view(input, {}, this.contentElement);
   }
 };
-var DEFAULT_VIEW4 = (input, _output, target) => {
+var DEFAULT_VIEW5 = (input, _output, target) => {
   const { activeEvent, eventToInsightsMap } = input;
   const relatedInsights = activeEvent ? eventToInsightsMap.get(activeEvent) ?? [] : [];
   if (!activeEvent || eventToInsightsMap.size === 0 || relatedInsights.length === 0) {
-    render14(Lit15.nothing, target);
+    render15(Lit16.nothing, target);
     return;
   }
   const insightMessages = relatedInsights.flatMap((insight) => {
-    return insight.messages.map((message) => html15`
+    return insight.messages.map((message) => html16`
           <li class="insight-message-box">
             <button type="button" @click=${(event) => {
       event.preventDefault();
@@ -6679,7 +6781,7 @@ var DEFAULT_VIEW4 = (input, _output, target) => {
         `);
   });
   const insightChips = relatedInsights.flatMap((insight) => {
-    return [html15`
+    return [html16`
           <li class="insight-chip">
             <button type="button" @click=${(event) => {
       event.preventDefault();
@@ -6691,7 +6793,7 @@ var DEFAULT_VIEW4 = (input, _output, target) => {
           </li>
         `];
   });
-  render14(html15`<style>${relatedInsightChips_css_default}</style>
+  render15(html16`<style>${relatedInsightChips_css_default}</style>
         <ul>${insightMessages}</ul>
         <ul>${insightChips}</ul>`, target);
 };
@@ -6708,7 +6810,7 @@ __export(Sidebar_exports, {
   SidebarWidget: () => SidebarWidget
 });
 import * as RenderCoordinator3 from "./../../../ui/components/render_coordinator/render_coordinator.js";
-import * as UI13 from "./../../../ui/legacy/legacy.js";
+import * as UI14 from "./../../../ui/legacy/legacy.js";
 
 // gen/front_end/panels/timeline/components/insights/SidebarInsight.js
 var InsightActivated = class _InsightActivated extends Event {
@@ -6731,7 +6833,7 @@ var InsightDeactivated = class _InsightDeactivated extends Event {
 // gen/front_end/panels/timeline/components/SidebarAnnotationsTab.js
 var SidebarAnnotationsTab_exports = {};
 __export(SidebarAnnotationsTab_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW5,
+  DEFAULT_VIEW: () => DEFAULT_VIEW6,
   SidebarAnnotationsTab: () => SidebarAnnotationsTab
 });
 import "./../../../ui/components/settings/settings.js";
@@ -6740,9 +6842,9 @@ import * as i18n35 from "./../../../core/i18n/i18n.js";
 import * as Platform8 from "./../../../core/platform/platform.js";
 import * as Trace8 from "./../../../models/trace/trace.js";
 import * as TraceBounds3 from "./../../../services/trace_bounds/trace_bounds.js";
-import * as UI12 from "./../../../ui/legacy/legacy.js";
+import * as UI13 from "./../../../ui/legacy/legacy.js";
 import * as ThemeSupport3 from "./../../../ui/legacy/theme_support/theme_support.js";
-import * as Lit16 from "./../../../ui/lit/lit.js";
+import * as Lit17 from "./../../../ui/lit/lit.js";
 import * as VisualLogging8 from "./../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/timeline/components/sidebarAnnotationsTab.css.js
@@ -6857,7 +6959,7 @@ var sidebarAnnotationsTab_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./sidebarAnnotationsTab.css")} */`;
 
 // gen/front_end/panels/timeline/components/SidebarAnnotationsTab.js
-var { html: html16, render: render15 } = Lit16;
+var { html: html17, render: render16 } = Lit17;
 var diagramImageUrl = new URL("../../../Images/performance-panel-diagram.svg", import.meta.url).toString();
 var entryLabelImageUrl = new URL("../../../Images/performance-panel-entry-label.svg", import.meta.url).toString();
 var timeRangeImageUrl = new URL("../../../Images/performance-panel-time-range.svg", import.meta.url).toString();
@@ -6925,14 +7027,14 @@ var UIStrings18 = {
 };
 var str_18 = i18n35.i18n.registerUIStrings("panels/timeline/components/SidebarAnnotationsTab.ts", UIStrings18);
 var i18nString17 = i18n35.i18n.getLocalizedString.bind(void 0, str_18);
-var SidebarAnnotationsTab = class extends UI12.Widget.Widget {
+var SidebarAnnotationsTab = class extends UI13.Widget.Widget {
   #annotations = [];
   // A map with annotated entries and the colours that are used to display them in the FlameChart.
   // We need this map to display the entries in the sidebar with the same colours.
   #annotationEntryToColorMap = /* @__PURE__ */ new Map();
   #annotationsHiddenSetting;
   #view;
-  constructor(view = DEFAULT_VIEW5) {
+  constructor(view = DEFAULT_VIEW6) {
     super();
     this.#view = view;
     this.#annotationsHiddenSetting = Common6.Settings.Settings.instance().moduleSetting("annotations-hidden");
@@ -7065,8 +7167,8 @@ function renderAnnotationIdentifier(annotation, annotationEntryToColorMap) {
         backgroundColor,
         color
       };
-      return html16`
-            <span class="annotation-identifier" style=${Lit16.Directives.styleMap(styleForAnnotationIdentifier)}>
+      return html17`
+            <span class="annotation-identifier" style=${Lit17.Directives.styleMap(styleForAnnotationIdentifier)}>
               ${entryName}
             </span>
       `;
@@ -7075,7 +7177,7 @@ function renderAnnotationIdentifier(annotation, annotationEntryToColorMap) {
       const minTraceBoundsMilli = TraceBounds3.TraceBounds.BoundsManager.instance().state()?.milli.entireTraceBounds.min ?? 0;
       const timeRangeStartInMs = Math.round(Trace8.Helpers.Timing.microToMilli(annotation.bounds.min) - minTraceBoundsMilli);
       const timeRangeEndInMs = Math.round(Trace8.Helpers.Timing.microToMilli(annotation.bounds.max) - minTraceBoundsMilli);
-      return html16`
+      return html17`
             <span class="annotation-identifier time-range">
               ${timeRangeStartInMs} - ${timeRangeEndInMs} ms
             </span>
@@ -7089,9 +7191,9 @@ function renderAnnotationIdentifier(annotation, annotationEntryToColorMap) {
         backgroundColor: fromBackgroundColor,
         color: fromTextColor
       };
-      return html16`
+      return html17`
         <div class="entries-link">
-          <span class="annotation-identifier" style=${Lit16.Directives.styleMap(styleForFromAnnotationIdentifier)}>
+          <span class="annotation-identifier" style=${Lit17.Directives.styleMap(styleForFromAnnotationIdentifier)}>
             ${entryFromName}
           </span>
           <devtools-icon name="arrow-forward" class="inline-icon large">
@@ -7113,12 +7215,12 @@ function renderEntryToIdentifier(annotation, annotationEntryToColorMap) {
       backgroundColor: toBackgroundColor,
       color: toTextColor
     };
-    return html16`
-      <span class="annotation-identifier" style=${Lit16.Directives.styleMap(styleForToAnnotationIdentifier)}>
+    return html17`
+      <span class="annotation-identifier" style=${Lit17.Directives.styleMap(styleForToAnnotationIdentifier)}>
         ${entryToName}
       </span>`;
   }
-  return Lit16.nothing;
+  return Lit17.nothing;
 }
 function jslogForAnnotation(annotation) {
   switch (annotation.type) {
@@ -7133,7 +7235,7 @@ function jslogForAnnotation(annotation) {
   }
 }
 function renderTutorial() {
-  return html16`<div class="annotation-tutorial-container">
+  return html17`<div class="annotation-tutorial-container">
     ${i18nString17(UIStrings18.annotationGetStarted)}
       <div class="tutorial-card">
         <div class="tutorial-image"><img src=${entryLabelImageUrl}></img></div>
@@ -7157,14 +7259,14 @@ function renderTutorial() {
       </div>
     </div>`;
 }
-var DEFAULT_VIEW5 = (input, _output, target) => {
-  render15(html16`
+var DEFAULT_VIEW6 = (input, _output, target) => {
+  render16(html17`
       <style>${sidebarAnnotationsTab_css_default}</style>
       <span class="annotations">
-        ${input.annotations.length === 0 ? renderTutorial() : html16`
+        ${input.annotations.length === 0 ? renderTutorial() : html17`
             ${input.annotations.map((annotation) => {
     const label = detailedAriaDescriptionForAnnotation(annotation);
-    return html16`
+    return html17`
                 <div class="annotation-container"
                   @click=${() => input.onAnnotationClick(annotation)}
                   @mouseover=${() => annotation.type === "ENTRY_LABEL" ? input.onAnnotationHover(annotation) : null}
@@ -7211,10 +7313,10 @@ import * as Platform9 from "./../../../core/platform/platform.js";
 import * as AIAssistance from "./../../../models/ai_assistance/ai_assistance.js";
 import * as CrUXManager11 from "./../../../models/crux-manager/crux-manager.js";
 import * as Trace9 from "./../../../models/trace/trace.js";
-import * as Buttons7 from "./../../../ui/components/buttons/buttons.js";
+import * as Buttons8 from "./../../../ui/components/buttons/buttons.js";
 import * as ComponentHelpers9 from "./../../../ui/components/helpers/helpers.js";
-import * as Lit17 from "./../../../ui/lit/lit.js";
-import { nothing as nothing18 } from "./../../../ui/lit/lit.js";
+import * as Lit18 from "./../../../ui/lit/lit.js";
+import { nothing as nothing19 } from "./../../../ui/lit/lit.js";
 import * as VisualLogging9 from "./../../../ui/visual_logging/visual_logging.js";
 import * as Insights4 from "./insights/insights.js";
 
@@ -7343,7 +7445,7 @@ var sidebarSingleInsightSet_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./sidebarSingleInsightSet.css")} */`;
 
 // gen/front_end/panels/timeline/components/SidebarSingleInsightSet.js
-var { html: html17 } = Lit17.StaticHtml;
+var { html: html18 } = Lit18.StaticHtml;
 var UIStrings19 = {
   /**
    * @description title used for a metric value to tell the user about its score classification
@@ -7480,7 +7582,7 @@ var SidebarSingleInsightSet = class _SidebarSingleInsightSet extends HTMLElement
       Platform9.TypeScriptUtilities.assertNever(metric, `Unexpected metric ${metric}`);
     }
     const title = value !== null ? i18nString18(UIStrings19.metricScore, { PH1: metric, PH2: valueText, PH3: classification }) : i18nString18(UIStrings19.metricScoreUnavailable, { PH1: metric });
-    return this.#metricIsVisible(metric) ? html17`
+    return this.#metricIsVisible(metric) ? html18`
       <button class="metric"
         @click=${relevantEvent ? this.#onClickMetric.bind(this, relevantEvent) : null}
         title=${title}
@@ -7488,7 +7590,7 @@ var SidebarSingleInsightSet = class _SidebarSingleInsightSet extends HTMLElement
       >
         <div class="metric-value metric-value-${classification}">${valueDisplay}</div>
       </button>
-    ` : Lit17.nothing;
+    ` : Lit18.nothing;
   }
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   #getLocalMetrics(insightSetKey) {
@@ -7547,7 +7649,7 @@ var SidebarSingleInsightSet = class _SidebarSingleInsightSet extends HTMLElement
     const lcpEl = this.#renderMetricValue("LCP", local.lcp?.value ?? null, local.lcp?.event ?? null);
     const inpEl = this.#renderMetricValue("INP", local.inp?.value ?? null, local.inp?.event ?? null);
     const clsEl = this.#renderMetricValue("CLS", local.cls?.value ?? null, local.cls?.worstClusterEvent ?? null);
-    const localMetricsTemplateResult = html17`
+    const localMetricsTemplateResult = html18`
       <div class="metrics-row">
         <span>${lcpEl}</span>
         <span>${inpEl}</span>
@@ -7566,7 +7668,7 @@ var SidebarSingleInsightSet = class _SidebarSingleInsightSet extends HTMLElement
       if (lcp?.pageScope === "url" || inp?.pageScope === "url") {
         scope = i18nString18(UIStrings19.urlOption);
       }
-      fieldMetricsTemplateResult = html17`
+      fieldMetricsTemplateResult = html18`
         <div class="metrics-row">
           <span>${lcpEl2}</span>
           <span>${inpEl2}</span>
@@ -7586,7 +7688,7 @@ var SidebarSingleInsightSet = class _SidebarSingleInsightSet extends HTMLElement
     };
     let fieldIsDifferentEl;
     if (!this.#dismissedFieldMismatchNotice && fieldValues && this.#isFieldWorseThanLocal(localValues, fieldValues)) {
-      fieldIsDifferentEl = html17`
+      fieldIsDifferentEl = html18`
         <div class="field-mismatch-notice" jslog=${VisualLogging9.section("timeline.insights.field-mismatch")}>
           <h3>${i18nString18(UIStrings19.fieldMismatchTitle)}</h3>
           <devtools-button
@@ -7601,7 +7703,7 @@ var SidebarSingleInsightSet = class _SidebarSingleInsightSet extends HTMLElement
       `;
     }
     const classes = { metrics: true, "metrics--field": Boolean(fieldMetricsTemplateResult) };
-    const metricsTableEl = html17`<div class=${Lit17.Directives.classMap(classes)}>
+    const metricsTableEl = html18`<div class=${Lit18.Directives.classMap(classes)}>
       <div class="metrics-row">
         <span class="metric-label">LCP</span>
         <span class="metric-label">INP</span>
@@ -7611,7 +7713,7 @@ var SidebarSingleInsightSet = class _SidebarSingleInsightSet extends HTMLElement
       ${localMetricsTemplateResult}
       ${fieldMetricsTemplateResult}
     </div>`;
-    return html17`
+    return html18`
       ${metricsTableEl}
       ${fieldIsDifferentEl}
     `;
@@ -7642,20 +7744,20 @@ var SidebarSingleInsightSet = class _SidebarSingleInsightSet extends HTMLElement
   #renderInsights(insights, insightSetKey) {
     const insightSet = insights?.get(insightSetKey);
     if (!insightSet) {
-      return Lit17.nothing;
+      return Lit18.nothing;
     }
     const fieldMetrics = this.#getFieldMetrics(insightSetKey);
     const { shownInsights: shownInsightsData, passedInsights: passedInsightsData } = _SidebarSingleInsightSet.categorizeInsights(insights, insightSetKey, this.#data.activeCategory);
     const renderInsightComponent = (insightData) => {
       const { componentClass, model } = insightData;
       if (!this.#data.parsedTrace?.insights) {
-        return nothing18;
+        return nothing19;
       }
       const agentFocus = AIAssistance.AIContext.AgentFocus.fromInsight(this.#data.parsedTrace, model);
-      return html17`<div>
+      return html18`<div>
         <${componentClass.litTagName}
           .selected=${this.#data.activeInsight?.model === model}
-          ${Lit17.Directives.ref((elem) => {
+          ${Lit18.Directives.ref((elem) => {
         if (this.#data.activeInsight?.model === model && elem) {
           this.#activeInsightElement = elem;
         }
@@ -7671,25 +7773,25 @@ var SidebarSingleInsightSet = class _SidebarSingleInsightSet extends HTMLElement
     };
     const shownInsights = shownInsightsData.map(renderInsightComponent);
     const passedInsights = passedInsightsData.map(renderInsightComponent);
-    return html17`
+    return html18`
       ${shownInsights}
-      ${passedInsights.length ? html17`
+      ${passedInsights.length ? html18`
         <details class="passed-insights-section">
           <summary>${i18nString18(UIStrings19.passedInsights, {
       PH1: passedInsights.length
     })}</summary>
           ${passedInsights}
         </details>
-      ` : Lit17.nothing}
+      ` : Lit18.nothing}
     `;
   }
   #render() {
     const { parsedTrace, insightSetKey } = this.#data;
     if (!parsedTrace?.insights || !insightSetKey) {
-      Lit17.render(Lit17.nothing, this.#shadow, { host: this });
+      Lit18.render(Lit18.nothing, this.#shadow, { host: this });
       return;
     }
-    Lit17.render(html17`
+    Lit18.render(html18`
       <style>${sidebarSingleInsightSet_css_default}</style>
       <div class="navigation">
         ${this.#renderMetrics(insightSetKey)}
@@ -7702,9 +7804,9 @@ customElements.define("devtools-performance-sidebar-single-navigation", SidebarS
 
 // gen/front_end/panels/timeline/components/SidebarInsightsTab.js
 import * as Trace10 from "./../../../models/trace/trace.js";
-import * as Buttons8 from "./../../../ui/components/buttons/buttons.js";
+import * as Buttons9 from "./../../../ui/components/buttons/buttons.js";
 import * as ComponentHelpers10 from "./../../../ui/components/helpers/helpers.js";
-import * as Lit18 from "./../../../ui/lit/lit.js";
+import * as Lit19 from "./../../../ui/lit/lit.js";
 import * as Utils from "./../utils/utils.js";
 import * as Insights6 from "./insights/insights.js";
 
@@ -7784,7 +7886,7 @@ var sidebarInsightsTab_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./sidebarInsightsTab.css")} */`;
 
 // gen/front_end/panels/timeline/components/SidebarInsightsTab.js
-var { html: html18 } = Lit18;
+var { html: html19 } = Lit19;
 var SidebarInsightsTab = class extends HTMLElement {
   #shadow = this.attachShadow({ mode: "open" });
   #parsedTrace = null;
@@ -7845,11 +7947,11 @@ var SidebarInsightsTab = class extends HTMLElement {
     this.dispatchEvent(new Insights6.SidebarInsight.InsightSetZoom(data.bounds));
   }
   #renderZoomButton(insightSetToggled) {
-    const classes = Lit18.Directives.classMap({
+    const classes = Lit19.Directives.classMap({
       "zoom-icon": true,
       active: insightSetToggled
     });
-    return html18`
+    return html19`
     <div class=${classes}>
         <devtools-button .data=${{
       variant: "icon",
@@ -7859,11 +7961,11 @@ var SidebarInsightsTab = class extends HTMLElement {
       ></devtools-button></div>`;
   }
   #renderDropdownIcon(insightSetToggled) {
-    const containerClasses = Lit18.Directives.classMap({
+    const containerClasses = Lit19.Directives.classMap({
       "dropdown-icon": true,
       active: insightSetToggled
     });
-    return html18`
+    return html19`
       <div class=${containerClasses}>
         <devtools-button .data=${{
       variant: "icon",
@@ -7885,7 +7987,7 @@ var SidebarInsightsTab = class extends HTMLElement {
   }
   #render() {
     if (!this.#parsedTrace?.insights) {
-      Lit18.render(Lit18.nothing, this.#shadow, { host: this });
+      Lit19.render(Lit19.nothing, this.#shadow, { host: this });
       return;
     }
     const insights = this.#parsedTrace.insights;
@@ -7893,7 +7995,7 @@ var SidebarInsightsTab = class extends HTMLElement {
     const labels = Utils.Helpers.createUrlLabels([...insights.values()].map(({ url }) => url));
     const contents = (
       // clang-format off
-      html18`
+      html19`
       <style>${sidebarInsightsTab_css_default}</style>
       <div class="insight-sets-wrapper">
         ${[...insights.values()].map(({ id, url }, index) => {
@@ -7903,14 +8005,14 @@ var SidebarInsightsTab = class extends HTMLElement {
           activeInsight: this.#activeInsight,
           parsedTrace: this.#parsedTrace
         };
-        const contents2 = html18`
+        const contents2 = html19`
             <devtools-performance-sidebar-single-navigation
               data-insight-set-key=${id}
               .data=${data}>
             </devtools-performance-sidebar-single-navigation>
           `;
         if (hasMultipleInsightSets) {
-          return html18`<details
+          return html19`<details
               ?open=${id === this.#selectedInsightSetKey}
             >
               <summary
@@ -7930,8 +8032,8 @@ var SidebarInsightsTab = class extends HTMLElement {
       </div>
     `
     );
-    const result = Lit18.Directives.repeat([contents], () => this.#parsedTrace, (template) => template);
-    Lit18.render(result, this.#shadow, { host: this });
+    const result = Lit19.Directives.repeat([contents], () => this.#parsedTrace, (template) => template);
+    Lit19.render(result, this.#shadow, { host: this });
   }
 };
 customElements.define("devtools-performance-sidebar-insights", SidebarInsightsTab);
@@ -7970,8 +8072,8 @@ var AnnotationHoverOut = class _AnnotationHoverOut extends Event {
 var DEFAULT_SIDEBAR_TAB = "insights";
 var DEFAULT_SIDEBAR_WIDTH_PX = 240;
 var MIN_SIDEBAR_WIDTH_PX = 170;
-var SidebarWidget = class extends UI13.Widget.VBox {
-  #tabbedPane = new UI13.TabbedPane.TabbedPane();
+var SidebarWidget = class extends UI14.Widget.VBox {
+  #tabbedPane = new UI14.TabbedPane.TabbedPane();
   #insightsView = new InsightsView();
   #annotationsView = new AnnotationsView();
   /**
@@ -8039,7 +8141,7 @@ var SidebarWidget = class extends UI13.Widget.VBox {
     }
   }
 };
-var InsightsView = class extends UI13.Widget.VBox {
+var InsightsView = class extends UI14.Widget.VBox {
   #component = new SidebarInsightsTab();
   constructor() {
     super();
@@ -8061,7 +8163,7 @@ var InsightsView = class extends UI13.Widget.VBox {
     }
   }
 };
-var AnnotationsView = class extends UI13.Widget.VBox {
+var AnnotationsView = class extends UI14.Widget.VBox {
   #component = new SidebarAnnotationsTab();
   constructor() {
     super();
@@ -8088,8 +8190,8 @@ __export(TimelineSummary_exports, {
   CategorySummary: () => CategorySummary
 });
 import * as i18n39 from "./../../../core/i18n/i18n.js";
-import * as UI14 from "./../../../ui/legacy/legacy.js";
-import * as Lit19 from "./../../../ui/lit/lit.js";
+import * as UI15 from "./../../../ui/legacy/legacy.js";
+import * as Lit20 from "./../../../ui/lit/lit.js";
 
 // gen/front_end/panels/timeline/components/timelineSummary.css.js
 var timelineSummary_css_default = `/*
@@ -8167,7 +8269,7 @@ var timelineSummary_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./timelineSummary.css")} */`;
 
 // gen/front_end/panels/timeline/components/TimelineSummary.js
-var { render: render18, html: html19 } = Lit19;
+var { render: render19, html: html20 } = Lit20;
 var UIStrings20 = {
   /**
    * @description Text for total
@@ -8183,7 +8285,7 @@ var UIStrings20 = {
 var str_20 = i18n39.i18n.registerUIStrings("panels/timeline/components/TimelineSummary.ts", UIStrings20);
 var i18nString19 = i18n39.i18n.getLocalizedString.bind(void 0, str_20);
 var CategorySummary = class extends HTMLElement {
-  #shadow = UI14.UIUtils.createShadowRootWithCoreStyles(this, { cssFile: timelineSummary_css_default, delegatesFocus: void 0 });
+  #shadow = UI15.UIUtils.createShadowRootWithCoreStyles(this, { cssFile: timelineSummary_css_default, delegatesFocus: void 0 });
   #rangeStart = 0;
   #rangeEnd = 0;
   #total = 0;
@@ -8196,12 +8298,12 @@ var CategorySummary = class extends HTMLElement {
     this.#render();
   }
   #render() {
-    const output = html19`
+    const output = html20`
           <div class="timeline-summary">
               <div class="summary-range">${i18nString19(UIStrings20.rangeSS, { PH1: i18n39.TimeUtilities.millisToString(this.#rangeStart), PH2: i18n39.TimeUtilities.millisToString(this.#rangeEnd) })}</div>
               <div class="category-summary">
                   ${this.#categories.map((category) => {
-      return html19`
+      return html20`
                           <div class="category-row">
                           <div class="category-swatch" style="background-color: ${category.color};"></div>
                           <div class="category-name">${category.title}</div>
@@ -8228,7 +8330,7 @@ var CategorySummary = class extends HTMLElement {
           </div>
 
         </div>`;
-    render18(output, this.#shadow, { host: this });
+    render19(output, this.#shadow, { host: this });
   }
 };
 customElements.define("devtools-performance-timeline-summary", CategorySummary);

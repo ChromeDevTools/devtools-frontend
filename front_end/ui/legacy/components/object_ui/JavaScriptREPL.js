@@ -77,7 +77,7 @@ export class JavaScriptREPL {
             return { preview: document.createDocumentFragment(), result: null };
         }
         const formatter = new RemoteObjectPreviewFormatter();
-        const preview = formatter.renderEvaluationResultPreview(result, allowErrors);
+        const preview = formatter.renderEvaluationResultPreviewFragment(result, allowErrors);
         return { preview, result };
     }
 }

@@ -1,16 +1,48 @@
 // Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
 import * as SDK from '../../../../core/sdk/sdk.js';
 import * as Buttons from '../../../../ui/components/buttons/buttons.js';
-import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
 import * as LegacyComponents from '../../../../ui/legacy/components/utils/utils.js';
+import * as UI from '../../../../ui/legacy/legacy.js';
 import * as Lit from '../../../../ui/lit/lit.js';
 import * as PanelsCommon from '../../../common/common.js';
 const { html } = Lit;
-export class NodeLink extends HTMLElement {
-    #shadow = this.attachShadow({ mode: 'open' });
+const { widgetConfig } = UI.Widget;
+export const DEFAULT_VIEW = (input, output, target) => {
+    const { relatedNodeEl, fallbackUrl, fallbackHtmlSnippet, fallbackText, } = input;
+    let template;
+    if (relatedNodeEl) {
+        template = html `<div class='node-link'>${relatedNodeEl}</div>`;
+    }
+    else if (fallbackUrl) {
+        const MAX_URL_LENGTH = 20;
+        const options = {
+            tabStop: true,
+            showColumnNumber: false,
+            inlineFrameIndex: 0,
+            maxLength: MAX_URL_LENGTH,
+        };
+        const linkEl = LegacyComponents.Linkifier.Linkifier.linkifyURL(fallbackUrl, options);
+        template = html `<div class='node-link'>
+      <style>${Buttons.textButtonStyles}</style>
+      ${linkEl}
+    </div>`;
+    }
+    else if (fallbackHtmlSnippet) {
+        // TODO: Use CodeHighlighter.
+        template = html `<pre style='text-wrap: auto'>${fallbackHtmlSnippet}</pre>`;
+    }
+    else if (fallbackText) {
+        template = html `<span>${fallbackText}</span>`;
+    }
+    else {
+        template = Lit.nothing;
+    }
+    Lit.render(template, target);
+};
+export class NodeLink extends UI.Widget.Widget {
+    #view;
     #backendNodeId;
     #frame;
     #options;
@@ -22,6 +54,10 @@ export class NodeLink extends HTMLElement {
      * Also tracks if we fail to resolve a node, to ensure we don't try on each subsequent re-render.
      */
     #linkifiedNodeForBackendId = new Map();
+    constructor(element, view = DEFAULT_VIEW) {
+        super(element, { useShadowDom: true });
+        this.#view = view;
+    }
     set data(data) {
         this.#backendNodeId = data.backendNodeId;
         this.#frame = data.frame;
@@ -29,7 +65,7 @@ export class NodeLink extends HTMLElement {
         this.#fallbackUrl = data.fallbackUrl;
         this.#fallbackHtmlSnippet = data.fallbackHtmlSnippet;
         this.#fallbackText = data.fallbackText;
-        void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
+        this.requestUpdate();
     }
     async #linkify() {
         if (this.#backendNodeId === undefined) {
@@ -63,38 +99,19 @@ export class NodeLink extends HTMLElement {
         this.#linkifiedNodeForBackendId.set(this.#backendNodeId, linkedNode);
         return linkedNode;
     }
-    async #render() {
-        const relatedNodeEl = await this.#linkify();
-        let template;
-        if (relatedNodeEl) {
-            template = html `<div class='node-link'>${relatedNodeEl}</div>`;
-        }
-        else if (this.#fallbackUrl) {
-            const MAX_URL_LENGTH = 20;
-            const options = {
-                tabStop: true,
-                showColumnNumber: false,
-                inlineFrameIndex: 0,
-                maxLength: MAX_URL_LENGTH,
-            };
-            const linkEl = LegacyComponents.Linkifier.Linkifier.linkifyURL(this.#fallbackUrl, options);
-            template = html `<div class='node-link'>
-        <style>${Buttons.textButtonStyles}</style>
-        ${linkEl}
-      </div>`;
-        }
-        else if (this.#fallbackHtmlSnippet) {
-            // TODO: Use CodeHighlighter.
-            template = html `<pre style='text-wrap: auto'>${this.#fallbackHtmlSnippet}</pre>`;
-        }
-        else if (this.#fallbackText) {
-            template = html `<span>${this.#fallbackText}</span>`;
-        }
-        else {
-            template = Lit.nothing;
-        }
-        Lit.render(template, this.#shadow, { host: this });
+    async performUpdate() {
+        const input = {
+            relatedNodeEl: await this.#linkify(),
+            fallbackUrl: this.#fallbackUrl,
+            fallbackHtmlSnippet: this.#fallbackHtmlSnippet,
+            fallbackText: this.#fallbackText,
+        };
+        this.#view(input, undefined, this.contentElement);
     }
 }
-customElements.define('devtools-performance-node-link', NodeLink);
+export function nodeLink(data) {
+    return html `<devtools-widget .widgetConfig=${widgetConfig(NodeLink, {
+        data,
+    })}></devtools-widget>`;
+}
 //# sourceMappingURL=NodeLink.js.map

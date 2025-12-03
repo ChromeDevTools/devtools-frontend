@@ -1,5 +1,4 @@
 import './Table.js';
-import './NodeLink.js';
 import '../../../../ui/kit/kit.js';
 import type { CriticalRequestNode, NetworkDependencyTreeInsightModel } from '../../../../models/trace/insights/NetworkDependencyTree.js';
 import * as Lit from '../../../../ui/lit/lit.js';

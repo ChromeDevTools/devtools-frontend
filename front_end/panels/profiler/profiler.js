@@ -1389,17 +1389,18 @@ var IsolateSelector = class _IsolateSelector extends UI2.Widget.VBox {
     const trendIntervalMinutes = Math.round(SDK.IsolateManager.MemoryTrendWindowMs / 6e4);
     UI2.Tooltip.Tooltip.install(this.totalTrendDiv, i18nString2(UIStrings2.totalPageJsHeapSizeChangeTrend, { PH1: trendIntervalMinutes }));
     UI2.Tooltip.Tooltip.install(this.totalValueDiv, i18nString2(UIStrings2.totalPageJsHeapSizeAcrossAllVm));
-    SDK.IsolateManager.IsolateManager.instance().observeIsolates(this);
     SDK.TargetManager.TargetManager.instance().addEventListener("NameChanged", this.targetChanged, this);
     SDK.TargetManager.TargetManager.instance().addEventListener("InspectedURLChanged", this.targetChanged, this);
   }
   wasShown() {
     super.wasShown();
+    SDK.IsolateManager.IsolateManager.instance().observeIsolates(this);
     SDK.IsolateManager.IsolateManager.instance().addEventListener("MemoryChanged", this.heapStatsChanged, this);
   }
   willHide() {
     super.willHide();
     SDK.IsolateManager.IsolateManager.instance().removeEventListener("MemoryChanged", this.heapStatsChanged, this);
+    SDK.IsolateManager.IsolateManager.instance().unobserveIsolates(this);
   }
   isolateAdded(isolate) {
     this.list.element.tabIndex = 0;

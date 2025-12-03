@@ -4582,6 +4582,13 @@ var generatedProperties = [
     "name": "timeline-trigger"
   },
   {
+    "longhands": [
+      "timeline-trigger-exit-range-start",
+      "timeline-trigger-exit-range-end"
+    ],
+    "name": "timeline-trigger-exit-range"
+  },
+  {
     "name": "timeline-trigger-exit-range-end"
   },
   {
@@ -4589,6 +4596,13 @@ var generatedProperties = [
   },
   {
     "name": "timeline-trigger-name"
+  },
+  {
+    "longhands": [
+      "timeline-trigger-range-start",
+      "timeline-trigger-range-end"
+    ],
+    "name": "timeline-trigger-range"
   },
   {
     "name": "timeline-trigger-range-end"
@@ -34332,6 +34346,12 @@ var IsolateManager = class _IsolateManager extends Common39.ObjectWrapper.Object
     this.#observers.add(observer);
     for (const isolate of this.#isolates.values()) {
       observer.isolateAdded(isolate);
+    }
+  }
+  unobserveIsolates(observer) {
+    this.#observers.delete(observer);
+    if (!this.#observers.size) {
+      this.#pollId++;
     }
   }
   modelAdded(model) {

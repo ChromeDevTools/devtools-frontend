@@ -13,6 +13,8 @@ export class PerformanceTraceFormatter {
     #parsedTrace;
     #insightSet;
     #eventsSerializer;
+    #formattedFunctionCodes = new Set();
+    resolveFunctionCode;
     constructor(focus) {
         this.#focus = focus;
         this.#parsedTrace = focus.parsedTrace;
@@ -186,7 +188,7 @@ export class PerformanceTraceFormatter {
         }
         return parts.join('\n');
     }
-    #formatFactByInsightSet(options) {
+    async #formatFactByInsightSet(options) {
         const { insights, title, description, empty, cb } = options;
         const lines = [`# ${title}\n`];
         if (description) {
@@ -198,7 +200,7 @@ export class PerformanceTraceFormatter {
                 if (multipleInsightSets) {
                     lines.push(`## insight set id: ${insightSet.id}\n`);
                 }
-                lines.push((cb(insightSet) ?? empty) + '\n');
+                lines.push((await cb(insightSet) ?? empty) + '\n');
             }
         }
         else {
@@ -212,7 +214,7 @@ export class PerformanceTraceFormatter {
             insights: parsedTrace.insights,
             title: 'Critical network requests',
             empty: 'none',
-            cb: insightSet => {
+            cb: async (insightSet) => {
                 const criticalRequests = [];
                 const walkRequest = (node) => {
                     criticalRequests.push(node.request);
@@ -223,7 +225,7 @@ export class PerformanceTraceFormatter {
             },
         });
     }
-    #serializeBottomUpRootNode(rootNode, limit) {
+    async #serializeBottomUpRootNode(rootNode, limit) {
         // Sorted by selfTime.
         // No nodes less than 1 ms.
         // Limit.
@@ -231,15 +233,20 @@ export class PerformanceTraceFormatter {
             .filter(n => n.totalTime >= 1)
             .sort((a, b) => b.selfTime - a.selfTime)
             .slice(0, limit);
+        const callFrames = [];
         function nodeToText(node) {
             const event = node.event;
             let frame;
             if (Trace.Types.Events.isProfileCall(event)) {
                 frame = event.callFrame;
+                if (node.selfTime >= 100 && callFrames.length < 3) {
+                    callFrames.push(frame);
+                }
             }
             else {
                 frame = Trace.Helpers.Trace.getStackTraceTopCallFrameInEventPayload(event);
             }
+            // TODO(crbug.com/452333154): this is not source mapped.
             let source = Trace.Name.forEntry(event);
             if (frame?.url) {
                 source += ` (url: ${frame.url}`;
@@ -253,7 +260,8 @@ export class PerformanceTraceFormatter {
             }
             return `- self: ${millis(node.selfTime)}, total: ${millis(node.totalTime)}, source: ${source}`;
         }
-        return topNodes.map(node => nodeToText.call(this, node)).join('\n');
+        return topNodes.map(node => nodeToText.call(this, node)).join('\n') +
+            await this.#serializeRelevantFunctions(callFrames);
     }
     #getSerializeBottomUpRootNodeFormat(limit) {
         return `This is the bottom-up summary for the entire trace. Only the top ${limit} activities (sorted by self time) are shown. An activity is all the aggregated time spent on the same type of work. For example, it can be all the time spent in a specific JavaScript function, or all the time spent in a specific browser rendering stage (like layout, v8 compile, parsing html). "Self time" represents the aggregated time spent directly in an activity, across all occurrences. "Total time" represents the aggregated time spent in an activity or any of its children.`;
@@ -266,9 +274,9 @@ export class PerformanceTraceFormatter {
             title: 'Main thread bottom-up summary',
             description: this.#getSerializeBottomUpRootNodeFormat(limit),
             empty: 'no activity',
-            cb: insightSet => {
+            cb: async (insightSet) => {
                 const rootNode = AIQueries.mainThreadActivityBottomUpSingleNavigation(insightSet.navigation?.args.data?.navigationId, insightSet.bounds, parsedTrace);
-                return rootNode ? this.#serializeBottomUpRootNode(rootNode, limit) : null;
+                return rootNode ? await this.#serializeBottomUpRootNode(rootNode, limit) : null;
             },
         });
     }
@@ -291,7 +299,7 @@ export class PerformanceTraceFormatter {
             insights: parsedTrace.insights,
             title: '3rd party summary',
             empty: 'no 3rd parties',
-            cb: insightSet => {
+            cb: async (insightSet) => {
                 const thirdPartySummaries = Trace.Extras.ThirdParties.summarizeByThirdParty(parsedTrace.data, insightSet.bounds);
                 return thirdPartySummaries.length ? this.#formatThirdPartyEntitySummaries(thirdPartySummaries) : null;
             },
@@ -303,7 +311,7 @@ export class PerformanceTraceFormatter {
             insights: parsedTrace.insights,
             title: 'Longest tasks',
             empty: 'none',
-            cb: insightSet => {
+            cb: async (insightSet) => {
                 const longestTaskTrees = AIQueries.longestTasks(insightSet.navigation?.args.data?.navigationId, insightSet.bounds, parsedTrace, 3);
                 if (!longestTaskTrees?.length) {
                     return null;
@@ -350,7 +358,7 @@ export class PerformanceTraceFormatter {
         }
         return results.join('\n');
     }
-    formatMainThreadTrackSummary(bounds) {
+    async formatMainThreadTrackSummary(bounds) {
         if (!this.#parsedTrace.insights) {
             return 'No main thread activity found';
         }
@@ -359,14 +367,14 @@ export class PerformanceTraceFormatter {
         const topDownTree = AIQueries.mainThreadActivityTopDown(insightSet?.navigation?.args.data?.navigationId, bounds, this.#parsedTrace);
         if (topDownTree) {
             results.push('# Top-down main thread summary');
-            results.push(this.formatCallTree(topDownTree, 2 /* headerLevel */));
+            results.push(await this.formatCallTree(topDownTree, 2 /* headerLevel */));
         }
         const bottomUpRootNode = AIQueries.mainThreadActivityBottomUp(bounds, this.#parsedTrace);
         if (bottomUpRootNode) {
             results.push('# Bottom-up main thread summary');
             const limit = 20;
             results.push(this.#getSerializeBottomUpRootNodeFormat(limit));
-            results.push(this.#serializeBottomUpRootNode(bottomUpRootNode, limit));
+            results.push(await this.#serializeBottomUpRootNode(bottomUpRootNode, limit));
         }
         const thirdPartySummaries = Trace.Extras.ThirdParties.summarizeByThirdParty(this.#parsedTrace.data, bounds);
         if (thirdPartySummaries.length) {
@@ -398,8 +406,19 @@ export class PerformanceTraceFormatter {
         }
         return results.join('\n\n');
     }
-    formatCallTree(tree, headerLevel = 1) {
-        return `${tree.serialize(headerLevel)}\n\nIMPORTANT: Never show eventKey to the user.`;
+    async formatCallTree(tree, headerLevel = 1) {
+        let result = `${tree.serialize(headerLevel)}\n\nIMPORTANT: Never show eventKey to the user.\n`;
+        const relevantCallFrames = [];
+        if (tree.selectedNode && Trace.Types.Events.isProfileCall(tree.selectedNode.event)) {
+            relevantCallFrames.push(tree.selectedNode.event.callFrame);
+        }
+        const topCallFrameByTotalTime = tree.topCallFrameByTotalTime();
+        if (topCallFrameByTotalTime) {
+            relevantCallFrames.push(topCallFrameByTotalTime);
+        }
+        relevantCallFrames.push(...tree.topCallFramesBySelfTime(3));
+        result += await this.#serializeRelevantFunctions(relevantCallFrames);
+        return result;
     }
     formatNetworkRequests(requests, options) {
         if (requests.length === 0) {
@@ -656,18 +675,62 @@ The order of headers corresponds to an internal fixed list. If a header is not p
         ];
         return parts.join(';');
     }
+    resolveFunctionCodeAtLocation(url, line, column) {
+        if (!this.resolveFunctionCode) {
+            throw new Error('missing resolveFunctionCode');
+        }
+        return this.resolveFunctionCode(url, line, column);
+    }
     formatFunctionCode(code) {
+        return this.#getFormattedFunctionCodeExplainer() + '\n\n' + this.#formatFunctionCode(code);
+    }
+    #getFormattedFunctionCodeExplainer() {
+        return 'The following are markdown block(s) of code that ran in the page, each representing a separate function. <FUNCTION_START> and <FUNCTION_END> marks the exact function declaration, and everything outside that is provided for additional context. Comments at the end of each line indicate the runtime performance cost of that code. Do not show the user the function markers or the additional context.';
+    }
+    #functionCodeToKey(code) {
+        return code.functionBounds.uiSourceCode.url() + ':' + code.functionBounds.range.toString();
+    }
+    #hasFormattedFunctionCode(code) {
+        return this.#formattedFunctionCodes.has(this.#functionCodeToKey(code));
+    }
+    #formatFunctionCode(code) {
+        this.#formattedFunctionCodes.add(this.#functionCodeToKey(code));
         const { startLine, startColumn } = code.range;
         const { startLine: contextStartLine, startColumn: contextStartColumn, endLine: contextEndLine, endColumn: contextEndColumn } = code.rangeWithContext;
-        const name = code.functionBounds.name;
+        const name = code.functionBounds.name || '(anonymous)';
         const url = code.functionBounds.uiSourceCode.url();
         const parts = [];
         parts.push(`${name} @ ${url}:${startLine}:${startColumn}. With added context, chunk is from ${contextStartLine}:${contextStartColumn} to ${contextEndLine}:${contextEndColumn}`);
-        parts.push('\nThe following is a markdown block of JavaScript. <FUNCTION_START> and <FUNCTION_END> marks the exact function declaration, and everything outside that is provided for additional context. Comments at the end of each line indicate the runtime performance cost of that code. Do not show the user the function markers or the additional context.\n');
         parts.push('```');
         parts.push(code.codeWithContext);
         parts.push('```');
         return parts.join('\n');
+    }
+    /**
+     * Appends the code of each call frame's function, but only if the function was not
+     * serialized previously.
+     */
+    async #serializeRelevantFunctions(callFrames) {
+        const resolveFunctionCode = this.resolveFunctionCode;
+        if (!resolveFunctionCode) {
+            return '';
+        }
+        const functionCodeStrings = [];
+        const functionCodes = await Promise.all(callFrames.map(frame => resolveFunctionCode(frame.url, frame.lineNumber, frame.columnNumber)));
+        for (const code of functionCodes) {
+            if (code && !this.#hasFormattedFunctionCode(code)) {
+                functionCodeStrings.push(this.#formatFunctionCode(code));
+            }
+        }
+        if (!functionCodeStrings.length) {
+            return '';
+        }
+        return '\n' + [
+            this.#getFormattedFunctionCodeExplainer(),
+            functionCodeStrings.length > 1 ? `Here are ${functionCodeStrings.length} relevant functions:` :
+                `Here is a relevant function:`,
+            ...functionCodeStrings,
+        ].join('\n\n');
     }
 }
 //# sourceMappingURL=PerformanceTraceFormatter.js.map

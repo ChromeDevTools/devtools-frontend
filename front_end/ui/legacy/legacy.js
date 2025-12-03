@@ -2828,6 +2828,10 @@ var Floaty = class _Floaty {
     this.#insertIntoDOM();
   }
   #onKeyShortcut(e) {
+    const origin = e.composedPath().at(0);
+    if (origin && (origin instanceof HTMLTextAreaElement || origin instanceof HTMLInputElement)) {
+      return;
+    }
     if (e.key === "f") {
       this.open();
     }

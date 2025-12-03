@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import * as Root from '../../core/root/root.js';
 import * as UI from '../../ui/legacy/legacy.js';
 /*
   * TODO(nvitkov): b/346933425
@@ -24,11 +23,6 @@ const UIStrings = {
      * the settings tab.
      */
     enableAiAssistance: 'Enable AI assistance',
-    /**
-     * @description Text of a tooltip to redirect to the AI assistance panel with
-     * the current element as context
-     */
-    askAi: 'Ask AI',
     /**
      * @description Text of a context menu item to redirect to the AI assistance panel with
      * the current context
@@ -87,20 +81,12 @@ function isAnyFeatureAvailable(config) {
     return isStylingAgentFeatureAvailable(config) || isNetworkAgentFeatureAvailable(config) ||
         isPerformanceAgentFeatureAvailable(config) || isFileAgentFeatureAvailable(config);
 }
-function titleForAiAssistanceActions() {
-    if (Root.Runtime.hostConfig.devToolsAiDebugWithAi?.enabled ||
-        Root.Runtime.hostConfig.devToolsAiSubmenuPrompts?.enabled) {
-        return i18nLazyString(UIStrings.debugWithAi)();
-    }
-    return i18nLazyString(UIStrings.askAi)();
-}
 UI.ViewManager.registerViewExtension({
     location: "drawer-view" /* UI.ViewManager.ViewLocationValues.DRAWER_VIEW */,
     id: 'freestyler',
     commandPrompt: i18nLazyString(UIStrings.showAiAssistance),
     title: i18nLazyString(UIStrings.aiAssistance),
     order: 10,
-    featurePromotionId: 'ai-assistance',
     persistence: "closeable" /* UI.ViewManager.ViewPersistence.CLOSEABLE */,
     hasToolbar: false,
     condition: config => isAnyFeatureAvailable(config) && !isPolicyRestricted(config),
@@ -140,7 +126,7 @@ UI.ActionRegistration.registerActionExtension({
         return [];
     },
     category: "GLOBAL" /* UI.ActionRegistration.ActionCategory.GLOBAL */,
-    title: titleForAiAssistanceActions,
+    title: i18nLazyString(UIStrings.debugWithAi),
     configurableBindings: false,
     featurePromotionId: 'ai-assistance',
     async loadActionDelegate() {
@@ -155,7 +141,7 @@ UI.ActionRegistration.registerActionExtension({
         return [];
     },
     category: "GLOBAL" /* UI.ActionRegistration.ActionCategory.GLOBAL */,
-    title: titleForAiAssistanceActions,
+    title: i18nLazyString(UIStrings.debugWithAi),
     configurableBindings: false,
     async loadActionDelegate() {
         const AiAssistance = await loadAiAssistanceModule();
@@ -169,7 +155,7 @@ UI.ActionRegistration.registerActionExtension({
         return [];
     },
     category: "GLOBAL" /* UI.ActionRegistration.ActionCategory.GLOBAL */,
-    title: titleForAiAssistanceActions,
+    title: i18nLazyString(UIStrings.debugWithAi),
     configurableBindings: false,
     async loadActionDelegate() {
         const AiAssistance = await loadAiAssistanceModule();
@@ -183,7 +169,7 @@ UI.ActionRegistration.registerActionExtension({
         return [];
     },
     category: "GLOBAL" /* UI.ActionRegistration.ActionCategory.GLOBAL */,
-    title: titleForAiAssistanceActions,
+    title: i18nLazyString(UIStrings.debugWithAi),
     configurableBindings: false,
     async loadActionDelegate() {
         const AiAssistance = await loadAiAssistanceModule();
@@ -197,7 +183,7 @@ UI.ActionRegistration.registerActionExtension({
         return [];
     },
     category: "GLOBAL" /* UI.ActionRegistration.ActionCategory.GLOBAL */,
-    title: titleForAiAssistanceActions,
+    title: i18nLazyString(UIStrings.debugWithAi),
     configurableBindings: false,
     async loadActionDelegate() {
         const AiAssistance = await loadAiAssistanceModule();
@@ -211,7 +197,7 @@ UI.ActionRegistration.registerActionExtension({
         return [];
     },
     category: "GLOBAL" /* UI.ActionRegistration.ActionCategory.GLOBAL */,
-    title: titleForAiAssistanceActions,
+    title: i18nLazyString(UIStrings.debugWithAi),
     configurableBindings: false,
     async loadActionDelegate() {
         const AiAssistance = await loadAiAssistanceModule();
@@ -225,7 +211,7 @@ UI.ActionRegistration.registerActionExtension({
         return [];
     },
     category: "GLOBAL" /* UI.ActionRegistration.ActionCategory.GLOBAL */,
-    title: titleForAiAssistanceActions,
+    title: i18nLazyString(UIStrings.debugWithAi),
     configurableBindings: false,
     async loadActionDelegate() {
         const AiAssistance = await loadAiAssistanceModule();
@@ -239,7 +225,7 @@ UI.ActionRegistration.registerActionExtension({
         return [];
     },
     category: "GLOBAL" /* UI.ActionRegistration.ActionCategory.GLOBAL */,
-    title: titleForAiAssistanceActions,
+    title: i18nLazyString(UIStrings.debugWithAi),
     configurableBindings: false,
     async loadActionDelegate() {
         const AiAssistance = await loadAiAssistanceModule();

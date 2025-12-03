@@ -25,7 +25,7 @@ describe('Media query inspector', () => {
       return markers.length >= 3 ? markers : undefined;
     });
     const markersContent = await Promise.all(inspectorMarkers.map(node => {
-      return node.evaluate(node => node.textContent);
+      return node.evaluate(node => node.textContent.replaceAll(/\s+/g, ''));
     }));
     assert.deepEqual(
         markersContent,

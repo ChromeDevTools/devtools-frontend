@@ -1,7 +1,6 @@
 // Copyright 2014 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -9,7 +8,9 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import type * as Workspace from '../../models/workspace/workspace.js';
+import {Directives, html, nothing, render} from '../../third_party/lit/lit.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import type {LitTemplate} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import mediaQueryInspectorStyles from './mediaQueryInspector.css.js';
@@ -23,40 +24,165 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/emulation/MediaQueryInspector.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
+const {classMap} = Directives;
+
+export interface ViewInput {
+  zoomFactor: number;
+  markers: Map<Section, MediaQueryMarker[]>;
+  onMediaQueryClicked: (model: MediaQueryUIModel) => void;
+  onContextMenu: (event: Event, locations: SDK.CSSModel.CSSLocation[]) => void;
+}
+
+export interface MediaQueryMarker {
+  active: boolean;
+  model: MediaQueryUIModel;
+  locations: SDK.CSSModel.CSSLocation[];
+}
+
+export const DEFAULT_VIEW = (input: ViewInput, _output: object, target: HTMLElement): void => {
+  const createBarClassMap = (marker: MediaQueryMarker): Record<string, boolean> => ({
+    'media-inspector-bar': true,
+    'media-inspector-marker-inactive': !marker.active,
+  });
+  // clang-format off
+  render(html`
+    <style>${mediaQueryInspectorStyles}</style>
+    <div class='media-inspector-view'>
+    ${input.markers.entries().map(([section, markers]) => html`
+      <div class='media-inspector-marker-container'>
+        ${markers.map(marker => html`
+          <div
+              class=${classMap(createBarClassMap(marker))}
+              @click=${() => input.onMediaQueryClicked(marker.model)}
+              @contextmenu=${(event: Event) => input.onContextMenu(event, marker.locations)}
+          >
+            ${section === Section.MAX
+              ? renderMaxSection(input.zoomFactor, marker.model)
+              : section === Section.MIN_MAX
+                ? renderMinMaxSection(input.zoomFactor, marker.model)
+                : renderMinSection(input.zoomFactor, marker.model)}
+          </div>
+        `)}
+      </div>
+    `).toArray()}
+    </div>`, target);
+  // clang-format on
+};
+
+function renderMaxSection(zoomFactor: number, model: MediaQueryUIModel): LitTemplate {
+  // clang-format off
+  return html`
+    <div class='media-inspector-marker-spacer'></div>
+    <div
+        class='media-inspector-marker media-inspector-marker-max-width'
+        style=${'width: ' + model.maxWidthValue(zoomFactor) + 'px'}
+        title=${model.mediaText()}
+    >
+      ${renderLabel(model.maxWidthExpression(), false, false)}
+      ${renderLabel(model.maxWidthExpression(), true, true)}
+    </div>
+    <div class='media-inspector-marker-spacer'></div>
+  `;
+  // clang-format on
+}
+
+function renderMinMaxSection(zoomFactor: number, model: MediaQueryUIModel): LitTemplate {
+  const width = (model.maxWidthValue(zoomFactor) - model.minWidthValue(zoomFactor)) * 0.5;
+  // clang-format off
+  return html`
+    <div class='media-inspector-marker-spacer'></div>
+    <div
+        class='media-inspector-marker media-inspector-marker-min-max-width'
+        style=${'width: ' + width + 'px'}
+        title=${model.mediaText()}
+    >
+      ${renderLabel(model.maxWidthExpression(), true, false)}
+      ${renderLabel(model.minWidthExpression(), false, true)}
+    </div>
+    <div class='media-inspector-marker-spacer' style=${'flex: 0 0 ' + model.minWidthValue(zoomFactor) + 'px'}></div>
+    <div
+        class='media-inspector-marker media-inspector-marker-min-max-width'
+        style=${'width: ' + width + 'px'}
+        title=${model.mediaText()}
+    >
+      ${renderLabel(model.minWidthExpression(), true, false)}
+      ${renderLabel(model.maxWidthExpression(), false, true)}
+    </div>
+    <div class='media-inspector-marker-spacer'></div>
+  `;
+  // clang-format on
+}
+
+function renderMinSection(zoomFactor: number, model: MediaQueryUIModel): LitTemplate {
+  // clang-format off
+  return html`
+    <div
+        class='media-inspector-marker media-inspector-marker-min-width media-inspector-marker-min-width-left'
+        title=${model.mediaText()}
+    >${renderLabel(model.minWidthExpression(), false, false)}</div>
+    <div class='media-inspector-marker-spacer' style=${'flex: 0 0 ' + model.minWidthValue(zoomFactor) + 'px'}></div>
+    <div
+        class='media-inspector-marker media-inspector-marker-min-width media-inspector-marker-min-width-right'
+        title=${model.mediaText()}
+    >${renderLabel(model.minWidthExpression(), true, true)}</div>
+  `;
+  // clang-format on
+}
+
+function renderLabel(
+    expression: SDK.CSSMedia.CSSMediaQueryExpression|null, atLeft: boolean, leftAlign: boolean): LitTemplate {
+  if (!expression) {
+    return nothing;
+  }
+
+  const containerClassMap = {
+    'media-inspector-marker-label-container': true,
+    'media-inspector-marker-label-container-left': atLeft,
+    'media-inspector-marker-label-container-right': !atLeft
+  };
+  const labelClassMap = {
+    'media-inspector-marker-label': true,
+    'media-inspector-label-left': leftAlign,
+    'media-inspector-label-right': !leftAlign
+  };
+
+  // clang-format off
+  return html`
+    <div class=${classMap(containerClassMap)}>
+      <span class=${classMap(labelClassMap)}>${expression.value()}${expression.unit()}</span>
+    </div>
+  `;
+  // clang-format on
+}
+
 export class MediaQueryInspector extends UI.Widget.Widget implements
     SDK.TargetManager.SDKModelObserver<SDK.CSSModel.CSSModel> {
+  private readonly view: typeof DEFAULT_VIEW;
   private readonly mediaThrottler: Common.Throttler.Throttler;
   private readonly getWidthCallback: () => number;
   private readonly setWidthCallback: (arg0: number) => void;
   private scale: number;
-  elementsToMediaQueryModel: WeakMap<Element, MediaQueryUIModel>;
-  elementsToCSSLocations: WeakMap<Element, SDK.CSSModel.CSSLocation[]>;
   private cssModel?: SDK.CSSModel.CSSModel;
   private cachedQueryModels?: MediaQueryUIModel[];
 
   constructor(
       getWidthCallback: () => number, setWidthCallback: (arg0: number) => void,
-      mediaThrottler: Common.Throttler.Throttler) {
+      mediaThrottler: Common.Throttler.Throttler, view = DEFAULT_VIEW) {
     super({
       jslog: `${VisualLogging.mediaInspectorView().track({click: true})}`,
       useShadowDom: true,
     });
-    this.registerRequiredCSS(mediaQueryInspectorStyles);
-    this.contentElement.classList.add('media-inspector-view');
-    this.contentElement.addEventListener('click', this.onMediaQueryClicked.bind(this), false);
-    this.contentElement.addEventListener('contextmenu', this.onContextMenu.bind(this), false);
+    this.view = view;
     this.mediaThrottler = mediaThrottler;
 
     this.getWidthCallback = getWidthCallback;
     this.setWidthCallback = setWidthCallback;
     this.scale = 1;
 
-    this.elementsToMediaQueryModel = new WeakMap();
-    this.elementsToCSSLocations = new WeakMap();
-
     SDK.TargetManager.TargetManager.instance().observeModels(SDK.CSSModel.CSSModel, this);
     UI.ZoomManager.ZoomManager.instance().addEventListener(
-        UI.ZoomManager.Events.ZOOM_CHANGED, this.renderMediaQueries.bind(this), this);
+        UI.ZoomManager.Events.ZOOM_CHANGED, this.requestUpdate.bind(this), this);
   }
 
   modelAdded(cssModel: SDK.CSSModel.CSSModel): void {
@@ -88,19 +214,10 @@ export class MediaQueryInspector extends UI.Widget.Widget implements
       return;
     }
     this.scale = scale;
-    this.renderMediaQueries();
+    this.performUpdate();
   }
 
-  private onMediaQueryClicked(event: Event): void {
-    const mediaQueryMarker = (event.target as Node).enclosingNodeOrSelfWithClass('media-inspector-bar');
-    if (!mediaQueryMarker) {
-      return;
-    }
-
-    const model = this.elementsToMediaQueryModel.get(mediaQueryMarker);
-    if (!model) {
-      return;
-    }
+  private onMediaQueryClicked(model: MediaQueryUIModel): void {
     const modelMaxWidth = model.maxWidthExpression();
     const modelMinWidth = model.minWidthExpression();
 
@@ -120,17 +237,11 @@ export class MediaQueryInspector extends UI.Widget.Widget implements
     }
   }
 
-  private onContextMenu(event: Event): void {
+  private onContextMenu(event: Event, locations: SDK.CSSModel.CSSLocation[]): void {
     if (!this.cssModel?.isEnabled()) {
       return;
     }
 
-    const mediaQueryMarker = (event.target as Node).enclosingNodeOrSelfWithClass('media-inspector-bar');
-    if (!mediaQueryMarker) {
-      return;
-    }
-
-    const locations = this.elementsToCSSLocations.get(mediaQueryMarker) || [];
     const uiLocations = new Map<string, Workspace.UISourceCode.UILocation>();
     for (let i = 0; i < locations.length; ++i) {
       const uiLocation =
@@ -214,24 +325,20 @@ export class MediaQueryInspector extends UI.Widget.Widget implements
       return;
     }
     this.cachedQueryModels = queryModels;
-    this.renderMediaQueries();
+    this.requestUpdate();
 
     function compareModels(model1: MediaQueryUIModel, model2: MediaQueryUIModel): number {
       return model1.compareTo(model2);
     }
   }
 
-  private renderMediaQueries(): void {
-    if (!this.cachedQueryModels || !this.isShowing()) {
-      return;
+  private buildMediaQueryMarkers(): MediaQueryMarker[] {
+    if (!this.cachedQueryModels) {
+      return [];
     }
 
-    const markers = [];
-    let lastMarker: {
-      active: boolean,
-      model: MediaQueryUIModel,
-      locations: SDK.CSSModel.CSSLocation[],
-    }|null = null;
+    const markers: MediaQueryMarker[] = [];
+    let lastMarker: MediaQueryMarker|null = null;
     for (const model of this.cachedQueryModels) {
       if (lastMarker?.model.dimensionsEqual(model)) {
         lastMarker.active = lastMarker.active || model.active();
@@ -239,7 +346,7 @@ export class MediaQueryInspector extends UI.Widget.Widget implements
         lastMarker = {
           active: model.active(),
           model,
-          locations: ([] as SDK.CSSModel.CSSLocation[]),
+          locations: [],
         };
         markers.push(lastMarker);
       }
@@ -249,23 +356,7 @@ export class MediaQueryInspector extends UI.Widget.Widget implements
       }
     }
 
-    this.contentElement.removeChildren();
-
-    let container: HTMLElement|null = null;
-    for (let i = 0; i < markers.length; ++i) {
-      if (!i || markers[i].model.section() !== markers[i - 1].model.section()) {
-        container = this.contentElement.createChild('div', 'media-inspector-marker-container');
-      }
-      const marker = markers[i];
-      const bar = this.createElementFromMediaQueryModel(marker.model);
-      this.elementsToMediaQueryModel.set(bar, marker.model);
-      this.elementsToCSSLocations.set(bar, marker.locations);
-      bar.classList.toggle('media-inspector-marker-inactive', !marker.active);
-      if (!container) {
-        throw new Error('Could not find container to render media queries into.');
-      }
-      container.appendChild(bar);
-    }
+    return markers;
   }
 
   private zoomFactor(): number {
@@ -275,75 +366,20 @@ export class MediaQueryInspector extends UI.Widget.Widget implements
   override wasShown(): void {
     super.wasShown();
     this.scheduleMediaQueriesUpdate();
+    this.performUpdate();  // Trigger a manual update eagerly, DeviceModeView needs to measure our height.
   }
 
-  private createElementFromMediaQueryModel(model: MediaQueryUIModel): Element {
-    const zoomFactor = this.zoomFactor();
-    const minWidthExpression = model.minWidthExpression();
-    const maxWidthExpression = model.maxWidthExpression();
-    const minWidthValue = minWidthExpression ? (minWidthExpression.computedLength() || 0) / zoomFactor : 0;
-    const maxWidthValue = maxWidthExpression ? (maxWidthExpression.computedLength() || 0) / zoomFactor : 0;
-    const result = document.createElement('div');
-    result.classList.add('media-inspector-bar');
+  override performUpdate(): void {
+    const markers = Map.groupBy(this.buildMediaQueryMarkers(), marker => marker.model.section());
 
-    if (model.section() === Section.MAX) {
-      result.createChild('div', 'media-inspector-marker-spacer');
-      const markerElement = result.createChild('div', 'media-inspector-marker media-inspector-marker-max-width');
-      markerElement.style.width = maxWidthValue + 'px';
-      UI.Tooltip.Tooltip.install(markerElement, model.mediaText());
-      appendLabel(markerElement, model.maxWidthExpression(), false, false);
-      appendLabel(markerElement, model.maxWidthExpression(), true, true);
-      result.createChild('div', 'media-inspector-marker-spacer');
-    }
-
-    if (model.section() === Section.MIN_MAX) {
-      result.createChild('div', 'media-inspector-marker-spacer');
-      const leftElement = result.createChild('div', 'media-inspector-marker media-inspector-marker-min-max-width');
-      leftElement.style.width = (maxWidthValue - minWidthValue) * 0.5 + 'px';
-      UI.Tooltip.Tooltip.install(leftElement, model.mediaText());
-      appendLabel(leftElement, model.maxWidthExpression(), true, false);
-      appendLabel(leftElement, model.minWidthExpression(), false, true);
-      result.createChild('div', 'media-inspector-marker-spacer').style.flex = '0 0 ' + minWidthValue + 'px';
-      const rightElement = result.createChild('div', 'media-inspector-marker media-inspector-marker-min-max-width');
-      rightElement.style.width = (maxWidthValue - minWidthValue) * 0.5 + 'px';
-      UI.Tooltip.Tooltip.install(rightElement, model.mediaText());
-      appendLabel(rightElement, model.minWidthExpression(), true, false);
-      appendLabel(rightElement, model.maxWidthExpression(), false, true);
-      result.createChild('div', 'media-inspector-marker-spacer');
-    }
-
-    if (model.section() === Section.MIN) {
-      const leftElement = result.createChild(
-          'div', 'media-inspector-marker media-inspector-marker-min-width media-inspector-marker-min-width-left');
-      UI.Tooltip.Tooltip.install(leftElement, model.mediaText());
-      appendLabel(leftElement, model.minWidthExpression(), false, false);
-      result.createChild('div', 'media-inspector-marker-spacer').style.flex = '0 0 ' + minWidthValue + 'px';
-      const rightElement = result.createChild(
-          'div', 'media-inspector-marker media-inspector-marker-min-width media-inspector-marker-min-width-right');
-      UI.Tooltip.Tooltip.install(rightElement, model.mediaText());
-      appendLabel(rightElement, model.minWidthExpression(), true, true);
-    }
-
-    function appendLabel(
-        marker: Element, expression: SDK.CSSMedia.CSSMediaQueryExpression|null, atLeft: boolean,
-        leftAlign: boolean): void {
-      if (!expression) {
-        return;
-      }
-      marker
-          .createChild(
-              'div',
-              'media-inspector-marker-label-container ' +
-                  (atLeft ? 'media-inspector-marker-label-container-left' :
-                            'media-inspector-marker-label-container-right'))
-          .createChild(
-              'span',
-              'media-inspector-marker-label ' +
-                  (leftAlign ? 'media-inspector-label-left' : 'media-inspector-label-right'))
-          .textContent = expression.value() + expression.unit();
-    }
-
-    return result;
+    this.view(
+        {
+          zoomFactor: this.zoomFactor(),
+          markers,
+          onMediaQueryClicked: this.onMediaQueryClicked.bind(this),
+          onContextMenu: this.onContextMenu.bind(this),
+        },
+        {}, this.contentElement);
   }
 }
 
@@ -500,6 +536,16 @@ export class MediaQueryUIModel {
 
   maxWidthExpression(): SDK.CSSMedia.CSSMediaQueryExpression|null {
     return this.#maxWidthExpression;
+  }
+
+  minWidthValue(zoomFactor: number): number {
+    const minWidthExpression = this.minWidthExpression();
+    return minWidthExpression ? (minWidthExpression.computedLength() || 0) / zoomFactor : 0;
+  }
+
+  maxWidthValue(zoomFactor: number): number {
+    const maxWidthExpression = this.maxWidthExpression();
+    return maxWidthExpression ? (maxWidthExpression.computedLength() || 0) / zoomFactor : 0;
   }
 
   active(): boolean {

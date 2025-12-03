@@ -4,6 +4,7 @@
 /* eslint-disable @devtools/no-imperative-dom-api, @devtools/no-lit-render-outside-of-view */
 
 import '../../ui/kit/kit.js';
+import '../../ui/legacy/components/inline_editor/inline_editor.js';
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
@@ -12,7 +13,6 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
-import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {html, i18nTemplate, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
@@ -493,6 +493,13 @@ interface Manifest {
 }
 /* eslint-enable @typescript-eslint/naming-convention */
 
+interface ReportSectionItem {
+  content: LitTemplate|string|HTMLElement;
+  title?: string;
+  label?: string;
+  flexed?: boolean;
+}
+
 export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(UI.Widget.VBox)
     implements SDK.TargetManager.Observer {
   private readonly emptyView: UI.EmptyWidget.EmptyWidget;
@@ -506,15 +513,6 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
   private readonly protocolHandlersSection: UI.ReportView.Section;
   private readonly shortcutSections: UI.ReportView.Section[];
   private readonly screenshotsSections: UI.ReportView.Section[];
-  private nameField: HTMLElement;
-  private shortNameField: HTMLElement;
-  private descriptionField: Element;
-  private readonly startURLField: HTMLElement;
-  private readonly themeColorSwatch: InlineEditor.ColorSwatch.ColorSwatch;
-  private readonly backgroundColorSwatch: InlineEditor.ColorSwatch.ColorSwatch;
-  private orientationField: HTMLElement;
-  private displayField: HTMLElement;
-  private readonly newNoteUrlField: HTMLElement;
   private readonly throttler: Common.Throttler.Throttler;
   private registeredListeners: Common.EventTarget.EventDescriptor[];
   private target?: SDK.Target.Target;
@@ -567,26 +565,6 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
         this.reportView.appendSection(UIStrings.windowControlsOverlay, undefined, 'window-controls-overlay');
     this.shortcutSections = [];
     this.screenshotsSections = [];
-
-    this.nameField = this.identitySection.appendField(i18nString(UIStrings.name));
-    this.shortNameField = this.identitySection.appendField(i18nString(UIStrings.shortName));
-    this.descriptionField = this.identitySection.appendFlexedField(i18nString(UIStrings.description));
-
-    this.startURLField = this.presentationSection.appendField(i18nString(UIStrings.startUrl));
-    UI.ARIAUtils.setLabel(this.startURLField, i18nString(UIStrings.startUrl));
-
-    const themeColorField = this.presentationSection.appendField(i18nString(UIStrings.themeColor));
-    this.themeColorSwatch = new InlineEditor.ColorSwatch.ColorSwatch();
-    themeColorField.appendChild(this.themeColorSwatch);
-
-    const backgroundColorField = this.presentationSection.appendField(i18nString(UIStrings.backgroundColor));
-    this.backgroundColorSwatch = new InlineEditor.ColorSwatch.ColorSwatch();
-    backgroundColorField.appendChild(this.backgroundColorSwatch);
-
-    this.orientationField = this.presentationSection.appendField(i18nString(UIStrings.orientation));
-    this.displayField = this.presentationSection.appendField(i18nString(UIStrings.display));
-
-    this.newNoteUrlField = this.presentationSection.appendField(i18nString(UIStrings.newNoteUrl));
 
     this.throttler = throttler;
     SDK.TargetManager.TargetManager.instance().observeTargets(this);
@@ -727,7 +705,7 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
     const imageErrors = [...iconErrors, ...shortcutImageErrors, ...screenshotImageErrors];
 
     this.renderInstallability(installabilityErrors);
-    await this.renderWindowControls(parsedManifest, url);
+    await this.renderWindowControlsSection(parsedManifest, url);
 
     this.renderErrors(warnings, errors, imageErrors);
 
@@ -762,27 +740,26 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
 
   private renderIdentity(parsedManifest: Manifest, appId: string|null, recommendedId: string|null):
       Platform.UIString.LocalizedString[] {
-    this.nameField.textContent = this.stringProperty(parsedManifest, 'name');
-    this.shortNameField.textContent = this.stringProperty(parsedManifest, 'short_name');
-
-    const warnings = [];
-
     const description = this.stringProperty(parsedManifest, 'description');
-    this.descriptionField.textContent = description;
+    const warnings = [];
     // See https://crbug.com/1354304 for details.
     if (description.length > 300) {
       warnings.push(i18nString(UIStrings.descriptionMayBeTruncated));
     }
 
+    const fields: ReportSectionItem[] = [];
+    fields.push({title: i18nString(UIStrings.name), content: this.stringProperty(parsedManifest, 'name')});
+    fields.push({title: i18nString(UIStrings.shortName), content: this.stringProperty(parsedManifest, 'short_name')});
+    fields.push(
+        {title: i18nString(UIStrings.description), content: this.stringProperty(parsedManifest, 'description')});
+
     if (appId && recommendedId) {
-      const appIdField = this.identitySection.appendField(i18nString(UIStrings.computedAppId));
-      UI.ARIAUtils.setLabel(appIdField, 'App Id');
       const onCopy = (): void => {
         UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.copiedToClipboard, {PH1: recommendedId}));
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(recommendedId);
       };
       // clang-format off
-      render(html`
+      fields.push({title: i18nString(UIStrings.computedAppId), label: 'App Id', content: html`
         ${appId}
         <devtools-icon class="inline-icon" name="help" title=${i18nString(UIStrings.appIdExplainer)}
             jslog=${VisualLogging.action('help').track({hover: true})}>
@@ -803,53 +780,58 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
                           .title=${i18nString(UIStrings.copyToClipboard)}>
                         </devtools-button>`,
             })}
-        </div>` : nothing}`, appIdField);
+        </div>` : nothing}`});
       // clang-format on
     } else {
       this.identitySection.removeField(i18nString(UIStrings.computedAppId));
     }
+    this.setSectionContents(fields, this.identitySection);
     return warnings;
   }
 
   private renderPresentation(parsedManifest: Manifest, url: Platform.DevToolsPath.UrlString): void {
     const startURL = this.stringProperty(parsedManifest, 'start_url');
-    this.startURLField.removeChildren();
-    if (startURL) {
-      const completeURL = Common.ParsedURL.ParsedURL.completeURL(url, startURL);
-      if (completeURL) {
-        const link = Components.Linkifier.Linkifier.linkifyURL(
-            completeURL, ({text: startURL, tabStop: true, jslogContext: 'start-url'}));
-        this.startURLField.appendChild(link);
-      }
-    }
-
-    this.themeColorSwatch.classList.toggle('hidden', !this.stringProperty(parsedManifest, 'theme_color'));
-    const themeColor = Common.Color.parse(this.stringProperty(parsedManifest, 'theme_color') || 'white') ||
-        Common.Color.parse('white');
-    if (themeColor) {
-      this.themeColorSwatch.color = themeColor;
-    }
-    this.backgroundColorSwatch.classList.toggle('hidden', !this.stringProperty(parsedManifest, 'background_color'));
-    const backgroundColor = Common.Color.parse(this.stringProperty(parsedManifest, 'background_color') || 'white') ||
-        Common.Color.parse('white');
-    if (backgroundColor) {
-      this.backgroundColorSwatch.color = backgroundColor;
-    }
-
-    this.orientationField.textContent = this.stringProperty(parsedManifest, 'orientation');
-    const displayType = this.stringProperty(parsedManifest, 'display');
-    this.displayField.textContent = displayType;
-
+    const completeURL = startURL ? Common.ParsedURL.ParsedURL.completeURL(url, startURL) : null;
+    const themeColorString = this.stringProperty(parsedManifest, 'theme_color');
+    const themeColor = themeColorString ? Common.Color.parse(themeColorString) ?? Common.Color.parse('white') : null;
+    const backgroundColorString = this.stringProperty(parsedManifest, 'background_color');
+    const backgroundColor =
+        backgroundColorString ? Common.Color.parse(backgroundColorString) ?? Common.Color.parse('white') : null;
     const noteTaking = parsedManifest['note_taking'] || {};
     const newNoteUrl = noteTaking['new_note_url'];
     const hasNewNoteUrl = typeof newNoteUrl === 'string';
-    this.newNoteUrlField.parentElement?.classList.toggle('hidden', !hasNewNoteUrl);
-    this.newNoteUrlField.removeChildren();
-    if (hasNewNoteUrl) {
-      const completeURL = (Common.ParsedURL.ParsedURL.completeURL(url, newNoteUrl) as Platform.DevToolsPath.UrlString);
-      const link = Components.Linkifier.Linkifier.linkifyURL(completeURL, ({text: newNoteUrl, tabStop: true}));
-      this.newNoteUrlField.appendChild(link);
+    const completeNewNoteUrl = hasNewNoteUrl ?
+        (Common.ParsedURL.ParsedURL.completeURL(url, newNoteUrl) as Platform.DevToolsPath.UrlString) :
+        null;
+    const fields: ReportSectionItem[] = [
+      {
+        title: i18nString(UIStrings.startUrl),
+        label: i18nString(UIStrings.startUrl),
+        content: completeURL ? Components.Linkifier.Linkifier.linkifyURL(
+                                   completeURL, ({text: startURL, tabStop: true, jslogContext: 'start-url'})) :
+                               nothing
+      },
+      {
+        title: i18nString(UIStrings.themeColor),
+        content: themeColor ? html`<devtools-color-swatch .color=${themeColor}></devtools-color-swatch>` : nothing
+      },
+      {
+        title: i18nString(UIStrings.backgroundColor),
+        content: backgroundColor ? html`<devtools-color-swatch .color=${backgroundColor}></devtools-color-swatch>` :
+                                   nothing
+      },
+      {title: i18nString(UIStrings.orientation), content: this.stringProperty(parsedManifest, 'orientation')},
+      {title: i18nString(UIStrings.display), content: this.stringProperty(parsedManifest, 'display')},
+    ];
+    if (completeNewNoteUrl) {
+      fields.push({
+        title: i18nString(UIStrings.newNoteUrl),
+        content: hasNewNoteUrl ?
+            Components.Linkifier.Linkifier.linkifyURL(completeNewNoteUrl, ({text: newNoteUrl, tabStop: true})) :
+            nothing
+      });
     }
+    this.setSectionContents(fields, this.presentationSection);
   }
 
   private renderProtocolHandlers(parsedManifest: Manifest, url: Platform.DevToolsPath.UrlString): void {
@@ -864,41 +846,35 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
     this.iconsSection.clearContent();
 
     const imageErrors: Platform.UIString.LocalizedString[] = [];
-
-    // clang-format off
-    render(html`<devtools-checkbox class="mask-checkbox"
-        jslog=${VisualLogging.toggle('show-minimal-safe-area-for-maskable-icons')
-                              .track({change: true})}
-        @click=${(event: Event) => { this.iconsSection.setIconMasked((event.target as HTMLInputElement).checked); }}>
-      ${i18nString(UIStrings.showOnlyTheMinimumSafeAreaFor)}
-    </devtools-checkbox>`, this.iconsSection.appendRow());
-    // clang-format on
-
-    render(
-        i18nTemplate(str_, UIStrings.needHelpReadOurS, {
+    const contents: ReportSectionItem[] = [
+      // clang-format off
+      {
+        content: html`<devtools-checkbox class="mask-checkbox"
+          jslog=${VisualLogging.toggle('show-minimal-safe-area-for-maskable-icons')
+                                .track({change: true})}
+          @click=${(event: Event) => { this.iconsSection.setIconMasked((event.target as HTMLInputElement).checked); }}>
+        ${i18nString(UIStrings.showOnlyTheMinimumSafeAreaFor)}
+      </devtools-checkbox>`},
+      // clang-format on
+      {
+        content: i18nTemplate(str_, UIStrings.needHelpReadOurS, {
           PH1: html`
             <devtools-link href="https://web.dev/maskable-icon/" .jslogContext=${'learn-more'}>
               ${i18nString(UIStrings.documentationOnMaskableIcons)}
             </devtools-link>`,
-        }),
-        this.iconsSection.appendRow());
+        })
+      },
+    ];
     let squareSizedIconAvailable = false;
-    const fields = new Map<string, LitTemplate[]>();
     for (const icon of icons) {
       const result = await this.processImageResource(url, icon, /** isScreenshot= */ false);
       if (result.title && result.content) {
-        const fieldContent: LitTemplate[] = fields.get(result.title) || [];
-        if (!fields.has(result.title)) {
-          fields.set(result.title, fieldContent);
-        }
-        fieldContent.push(result.content);
+        contents.push({title: result.title, content: result.content, flexed: true});
       }
       imageErrors.push(...result.imageResourceErrors);
       squareSizedIconAvailable = result.squareSizedIconAvailable || squareSizedIconAvailable;
     }
-    for (const [title, content] of fields) {
-      render(content, this.iconsSection.appendFlexedField(title));
-    }
+    this.setSectionContents(contents, this.iconsSection);
     if (!squareSizedIconAvailable) {
       imageErrors.push(i18nString(UIStrings.sSShouldHaveSquareIcon));
     }
@@ -925,31 +901,30 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
       shortcutSection.element.setAttribute('jslog', `${VisualLogging.section('shortcuts')}`);
       this.shortcutSections.push(shortcutSection);
 
-      shortcutSection.appendFlexedField(i18nString(UIStrings.name), shortcut.name);
+      const fields: ReportSectionItem[] = [
+        {title: i18nString(UIStrings.name), flexed: true, content: shortcut.name},
+      ];
       if (shortcut.short_name) {
-        shortcutSection.appendFlexedField(i18nString(UIStrings.shortName), shortcut.short_name);
+        fields.push({title: i18nString(UIStrings.shortName), flexed: true, content: shortcut.short_name});
       }
       if (shortcut.description) {
-        shortcutSection.appendFlexedField(i18nString(UIStrings.description), shortcut.description);
+        fields.push({title: i18nString(UIStrings.description), flexed: true, content: shortcut.description});
       }
-      const urlField = shortcutSection.appendFlexedField(i18nString(UIStrings.url));
       const shortcutUrl = Common.ParsedURL.ParsedURL.completeURL(url, shortcut.url) as Platform.DevToolsPath.UrlString;
-      const link = Components.Linkifier.Linkifier.linkifyURL(
-          shortcutUrl, ({text: shortcut.url, tabStop: true, jslogContext: 'shortcut'}));
-      urlField.appendChild(link);
+      fields.push({
+        title: i18nString(UIStrings.url),
+        flexed: true,
+        content: Components.Linkifier.Linkifier.linkifyURL(
+            shortcutUrl, ({text: shortcut.url, tabStop: true, jslogContext: 'shortcut'}))
+      });
 
       const shortcutIcons = shortcut.icons || [];
       let hasShortcutIconLargeEnough = false;
-      const fields = new Map<string, LitTemplate[]>();
       for (const shortcutIcon of shortcutIcons) {
         const {imageResourceErrors: shortcutIconErrors, title, content} =
             await this.processImageResource(url, shortcutIcon, /** isScreenshot= */ false);
         if (title && content) {
-          const fieldContent: LitTemplate[] = fields.get(title) || [];
-          if (!fields.has(title)) {
-            fields.set(title, fieldContent);
-          }
-          fieldContent.push(content);
+          fields.push({title, content, flexed: true});
         }
         imageErrors.push(...shortcutIconErrors);
         if (!hasShortcutIconLargeEnough && shortcutIcon.sizes) {
@@ -959,9 +934,7 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
           }
         }
       }
-      for (const [title, content] of fields) {
-        render(content, shortcutSection.appendFlexedField(title));
-      }
+      this.setSectionContents(fields, shortcutSection);
       if (!hasShortcutIconLargeEnough) {
         imageErrors.push(i18nString(UIStrings.shortcutSShouldIncludeAXPixel, {PH1: shortcutIndex}));
       }
@@ -987,22 +960,24 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
       const screenshotSection =
           this.reportView.appendSection(i18nString(UIStrings.screenshotS, {PH1: screenshotIndex}));
       this.screenshotsSections.push(screenshotSection);
+      const fields: ReportSectionItem[] = [];
 
       if (screenshot.form_factor) {
-        screenshotSection.appendFlexedField(i18nString(UIStrings.formFactor), screenshot.form_factor);
+        fields.push({title: i18nString(UIStrings.formFactor), flexed: true, content: screenshot.form_factor});
       }
       if (screenshot.label) {
-        screenshotSection.appendFlexedField(i18nString(UIStrings.label), screenshot.label);
+        fields.push({title: i18nString(UIStrings.label), flexed: true, content: screenshot.label});
       }
       if (screenshot.platform) {
-        screenshotSection.appendFlexedField(i18nString(UIStrings.platform), screenshot.platform);
+        fields.push({title: i18nString(UIStrings.platform), flexed: true, content: screenshot.platform});
       }
 
       const {imageResourceErrors: screenshotErrors, naturalWidth: width, naturalHeight: height, title, content} =
           await this.processImageResource(url, screenshot, /** isScreenshot= */ true);
-      if (title) {
-        render(content, screenshotSection.appendFlexedField(title));
+      if (title && content) {
+        fields.push({title, content, flexed: true});
       }
+      this.setSectionContents(fields, screenshotSection);
       imageErrors.push(...screenshotErrors);
 
       if (screenshot.form_factor && width && height) {
@@ -1046,10 +1021,7 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
     this.installabilitySection.clearContent();
     this.installabilitySection.element.classList.toggle('hidden', !installabilityErrors.length);
     const errorMessages = this.getInstallabilityErrorMessages(installabilityErrors);
-    for (const error of errorMessages) {
-      const msgElement = document.createTextNode(error);
-      this.installabilitySection.appendRow().appendChild(msgElement);
-    }
+    this.setSectionContents(errorMessages.map(content => ({content})), this.installabilitySection);
   }
 
   private stringProperty(parsedManifest: Manifest, name: keyof Manifest): string {
@@ -1060,13 +1032,14 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
     return value;
   }
 
-  private async renderWindowControls(parsedManifest: Manifest, url: Platform.DevToolsPath.UrlString): Promise<void> {
-    this.windowControlsSection.clearContent();
+  private async renderWindowControlsSection(parsedManifest: Manifest, url: Platform.DevToolsPath.UrlString):
+      Promise<void> {
     const displayOverride = parsedManifest['display_override'] || [];
     const hasWco = displayOverride.includes('window-controls-overlay');
+    const contents: ReportSectionItem[] = [];
     if (hasWco) {
       // clang-format off
-      render(html`
+      contents.push({content: html`
         <devtools-icon class="inline-icon" name="check-circle"></devtools-icon>
         ${i18nTemplate(str_, UIStrings.wcoFound, {
           PH1: html`<code class="wco">window-controls-overlay</code>`,
@@ -1077,15 +1050,18 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
             </devtools-link>
           </code>`,
           PH3: html`${Components.Linkifier.Linkifier.linkifyURL(url)}`,
-        })}`, this.windowControlsSection.appendRow());
+        })}`});
       // clang-format on
       if (this.overlayModel) {
-        await this.appendWindowControlsToSection(
-            this.overlayModel, url, this.stringProperty(parsedManifest, 'theme_color'));
+        const controls =
+            await this.renderWindowControls(this.overlayModel, url, this.stringProperty(parsedManifest, 'theme_color'));
+        if (controls) {
+          contents.push(controls);
+        }
       }
     } else {
       // clang-format off
-      render(html`
+      contents.push({content: html`
         <devtools-icon class="inline-icon" name="info"></devtools-icon>
         ${i18nTemplate(str_, UIStrings.wcoNotFound, {
           PH1: html`<code>
@@ -1093,16 +1069,18 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
                             .jslogContext=${'display-override'}>
                 display-override
             </devtools-link>
-          </code>`})}`, this.windowControlsSection.appendRow());
+          </code>`})}`});
       // clang-format on
     }
     // clang-format off
-    render(i18nTemplate(str_, UIStrings.wcoNeedHelpReadMore, { PH1: html`<devtools-link
+    contents.push({content: i18nTemplate(str_, UIStrings.wcoNeedHelpReadMore, { PH1: html`<devtools-link
         href="https://learn.microsoft.com/en-us/microsoft-edge/progressive-web-apps-chromium/how-to/window-controls-overlay"
         .jslogContext=${'customize-pwa-tittle-bar'}>
       ${i18nString(UIStrings.customizePwaTitleBar)}
-    </devtools-link>`}), this.windowControlsSection.appendRow());
+    </devtools-link>`})});
     // clang-format on
+    this.windowControlsSection.clearContent();
+    this.setSectionContents(contents, this.windowControlsSection);
   }
 
   getInstallabilityErrorMessages(installabilityErrors: Protocol.Page.InstallabilityError[]): string[] {
@@ -1382,13 +1360,13 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
     return {imageResourceErrors, squareSizedIconAvailable, naturalWidth, naturalHeight, title, content};
   }
 
-  private async appendWindowControlsToSection(
+  private async renderWindowControls(
       overlayModel: SDK.OverlayModel.OverlayModel, url: Platform.DevToolsPath.UrlString,
-      themeColor: string): Promise<void> {
+      themeColor: string): Promise<ReportSectionItem|null> {
     const wcoStyleSheetText = await overlayModel.hasStyleSheetText(url);
 
     if (!wcoStyleSheetText) {
-      return;
+      return null;
     }
 
     await overlayModel.toggleWindowControlsToolbar(false);
@@ -1403,8 +1381,10 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
       }
     };
 
+    overlayModel.setWindowControlsThemeColor(themeColor);
+
     // clang-format off
-    render(html`
+    return {content: html`
       <devtools-checkbox @click=${async (event: Event) => {
             wcoToolbarEnabled = (event.target as HTMLInputElement).checked;
             await this.overlayModel?.toggleWindowControlsToolbar(wcoToolbarEnabled);
@@ -1426,10 +1406,30 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
                 jslog=${VisualLogging.item('linux').track({click: true})}>
           Linux
         </option>
-      </select>`, this.windowControlsSection.appendRow());
+      </select>`};
     // clang-format on
+  }
 
-    overlayModel.setWindowControlsThemeColor(themeColor);
+  setSectionContents(items: ReportSectionItem[], section: UI.ReportView.Section): void {
+    const contents = new Map<string, Array<LitTemplate|string|HTMLElement>>();
+    for (const item of items) {
+      if (!item.title) {
+        render(item.content, section.appendRow());
+        continue;
+      }
+      const element = item.flexed ? section.appendFlexedField(item.title) : section.appendField(item.title);
+      if (item.label) {
+        UI.ARIAUtils.setLabel(element, item.label);
+      }
+      const fieldContent = contents.get(item.title) || [];
+      if (!contents.has(item.title)) {
+        contents.set(item.title, fieldContent);
+      }
+      fieldContent.push(item.content);
+    }
+    for (const [title, content] of contents) {
+      render(content, section.appendField(title));
+    }
   }
 }
 

@@ -4,7 +4,6 @@
 
 import {
   getElementsWithinComponent,
-  getEventPromise,
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
 import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
@@ -18,16 +17,18 @@ describe('ValueInterpreterSettings', () => {
   setupLocaleHooks();
   function setUpComponent() {
     const component = new LinearMemoryInspectorComponents.ValueInterpreterSettings.ValueInterpreterSettings();
+    const onToggle = sinon.spy();
     const data = {
       valueTypes: new Set([
         LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.INT8,
         LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.FLOAT64,
         LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.POINTER32,
       ]),
+      onToggle,
     };
     component.data = data;
     renderElementIntoDOM(component);
-    return {component, data};
+    return {component, data, onToggle};
   }
 
   it('renders all checkboxes', () => {
@@ -46,21 +47,20 @@ describe('ValueInterpreterSettings', () => {
     ]);
   });
 
-  it('triggers an event on checkbox click', async () => {
-    const {component} = setUpComponent();
+  it('triggers a callback on checkbox click', async () => {
+    const {component, onToggle} = setUpComponent();
     const checkboxes = getElementsWithinComponent(component, SETTINGS_LABEL_SELECTOR, UI.UIUtils.CheckboxLabel);
 
     for (const checkbox of checkboxes) {
       const title = checkbox.title;
       const checked = checkbox.checked;
 
-      const eventPromise = getEventPromise<LinearMemoryInspectorComponents.ValueInterpreterSettings.TypeToggleEvent>(
-          component, 'typetoggle');
       checkbox.click();
-      const event = await eventPromise;
 
-      assert.strictEqual(`${event.data.type}`, title);
-      assert.strictEqual(checkbox.checked, !checked);
+      sinon.assert.callCount(onToggle, 1);
+      assert.deepEqual(onToggle.lastCall.args, [title, !checked]);
+
+      onToggle.resetHistory();
     }
   });
 

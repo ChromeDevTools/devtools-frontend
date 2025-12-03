@@ -27,6 +27,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export interface ValueInterpreterSettingsData {
   valueTypes: Set<ValueType>;
+  onToggle: (type: ValueType, checked: boolean) => void;
 }
 
 const enum ValueTypeGroup {
@@ -52,22 +53,14 @@ function valueTypeGroupToLocalizedString(group: ValueTypeGroup): string {
   return group;
 }
 
-export class TypeToggleEvent extends Event {
-  static readonly eventName = 'typetoggle';
-  data: {type: ValueType, checked: boolean};
-
-  constructor(type: ValueType, checked: boolean) {
-    super(TypeToggleEvent.eventName);
-    this.data = {type, checked};
-  }
-}
-
 export class ValueInterpreterSettings extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
   #valueTypes = new Set<ValueType>();
+  #onToggle: (type: ValueType, checked: boolean) => void = () => {};
 
   set data(data: ValueInterpreterSettingsData) {
     this.#valueTypes = data.valueTypes;
+    this.#onToggle = data.onToggle;
     this.#render();
   }
 
@@ -106,7 +99,7 @@ export class ValueInterpreterSettings extends HTMLElement {
 
   #onTypeToggle(type: ValueType, event: Event): void {
     const checkbox = event.target as HTMLInputElement;
-    this.dispatchEvent(new TypeToggleEvent(type, checkbox.checked));
+    this.#onToggle(type, checkbox.checked);
   }
 }
 

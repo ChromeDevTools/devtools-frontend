@@ -9,6 +9,7 @@ import {
 } from '../../../testing/DOMHelpers.js';
 import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
+import * as UI from '../../../ui/legacy/legacy.js';
 
 import * as LinearMemoryInspectorComponents from './components.js';
 
@@ -77,14 +78,16 @@ describe('LinearMemoryValueInterpreter', () => {
     const settings = getElementWithinComponent(
         component, SETTINGS_SELECTOR,
         LinearMemoryInspectorComponents.ValueInterpreterSettings.ValueInterpreterSettings);
+
+    const checkbox = getElementWithinComponent(settings, 'devtools-checkbox', UI.UIUtils.CheckboxLabel);
+    const expectedType = checkbox.title;
+    const expectedChecked = !checkbox.checked;
+
     const eventPromise =
         getEventPromise<LinearMemoryInspectorComponents.LinearMemoryValueInterpreter.ValueTypeToggledEvent>(
             component, 'valuetypetoggled');
-    const expectedType = LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.FLOAT64;
-    const expectedChecked = true;
-    const typeToggleEvent =
-        new LinearMemoryInspectorComponents.ValueInterpreterSettings.TypeToggleEvent(expectedType, expectedChecked);
-    settings.dispatchEvent(typeToggleEvent);
+
+    checkbox.click();
 
     const event = await eventPromise;
     assert.strictEqual(event.data.type, expectedType);

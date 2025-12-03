@@ -16,7 +16,6 @@ import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import linearMemoryValueInterpreterStyles from './linearMemoryValueInterpreter.css.js';
 import {Endianness, type ValueType, type ValueTypeMode} from './ValueInterpreterDisplayUtils.js';
-import type {TypeToggleEvent} from './ValueInterpreterSettings.js';
 
 const UIStrings = {
   /**
@@ -104,8 +103,7 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
           ${this.#showSettings ?
             html`
               <devtools-linear-memory-inspector-interpreter-settings
-                .data=${{ valueTypes: this.#valueTypes }}
-                @typetoggle=${this.#onTypeToggle}>
+                .data=${{ valueTypes: this.#valueTypes, onToggle: this.#onSettingTypeToggle }}>
               </devtools-linear-memory-inspector-interpreter-settings>` :
             html`
               <devtools-linear-memory-inspector-interpreter-display
@@ -158,9 +156,9 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
     this.#render();
   }
 
-  #onTypeToggle(e: TypeToggleEvent): void {
-    this.dispatchEvent(new ValueTypeToggledEvent(e.data.type, e.data.checked));
-  }
+  #onSettingTypeToggle = (type: ValueType, checked: boolean): void => {
+    this.dispatchEvent(new ValueTypeToggledEvent(type, checked));
+  };
 }
 
 customElements.define('devtools-linear-memory-inspector-interpreter', LinearMemoryValueInterpreter);

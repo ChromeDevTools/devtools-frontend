@@ -1427,7 +1427,6 @@ grd_files_unbundled_sources = [
   "front_end/panels/application/preloading/components/PreloadingDetailsReportView.js",
   "front_end/panels/application/preloading/components/PreloadingDisabledInfobar.js",
   "front_end/panels/application/preloading/components/PreloadingGrid.js",
-  "front_end/panels/application/preloading/components/PreloadingMismatchedHeadersGrid.js",
   "front_end/panels/application/preloading/components/PreloadingString.js",
   "front_end/panels/application/preloading/components/RuleSetDetailsView.css.js",
   "front_end/panels/application/preloading/components/RuleSetDetailsView.js",

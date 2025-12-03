@@ -350,4 +350,81 @@ describe('Adornment in the Elements Tab', function() {
 
     await waitForNoAdornersOnSelectedNode(devToolsPage);
   });
+
+  it('displays popover adorners', async ({devToolsPage, inspectedPage}) => {
+    await inspectedPage.goToResource('elements/adornment-popover.html');
+    await prepareElementsTab(devToolsPage);
+
+    await waitForAdorners(
+        [
+          {textContent: 'popover', isActive: false},
+          {textContent: 'popover', isActive: false},
+        ],
+        devToolsPage);
+  });
+
+  it('can toggle popover adorner', async ({devToolsPage, inspectedPage}) => {
+    await inspectedPage.goToResource('elements/adornment-popover.html');
+    await prepareElementsTab(devToolsPage);
+
+    const activePopoverSelector = '[aria-label="Stop keeping this popover open"]';
+    await waitForAdorners(
+        [
+          {textContent: 'popover', isActive: false},
+          {textContent: 'popover', isActive: false},
+        ],
+        devToolsPage, activePopoverSelector);
+
+    let adorners = await devToolsPage.$$('[aria-label="Keep this popover open"]');
+    await adorners[0].click();
+    await waitForAdorners(
+        [
+          {textContent: 'popover', isActive: true},
+          {textContent: 'popover', isActive: false},
+        ],
+        devToolsPage, activePopoverSelector);
+
+    adorners = await devToolsPage.$$('[aria-label="Stop keeping this popover open"]');
+    await adorners[0].click();
+    await waitForAdorners(
+        [
+          {textContent: 'popover', isActive: false},
+          {textContent: 'popover', isActive: false},
+        ],
+        devToolsPage, activePopoverSelector);
+  });
+
+  it('popover adorner does not toggled off when another popover is force-opened',
+     async ({devToolsPage, inspectedPage}) => {
+       await inspectedPage.goToResource('elements/adornment-popover.html');
+       await prepareElementsTab(devToolsPage);
+
+       const activePopoverSelector = '[aria-label="Stop keeping this popover open"]';
+       await waitForAdorners(
+           [
+             {textContent: 'popover', isActive: false},
+             {textContent: 'popover', isActive: false},
+           ],
+           devToolsPage, activePopoverSelector);
+
+       let adorners = await devToolsPage.$$('[aria-label="Keep this popover open"]');
+       await adorners[0].click();
+       await waitForAdorners(
+           [
+             {textContent: 'popover', isActive: true},
+             {textContent: 'popover', isActive: false},
+           ],
+           devToolsPage, activePopoverSelector);
+
+       adorners = await devToolsPage.$$('[aria-label="Keep this popover open"]');
+       await adorners[0].click();
+       await waitForAdorners(
+           [
+             {textContent: 'popover', isActive: true}, {textContent: 'top-layer (1)', isActive: false},
+             {textContent: 'popover', isActive: true}, {textContent: 'top-layer (2)', isActive: false},
+             {textContent: 'reveal', isActive: false}, {textContent: 'reveal', isActive: false},
+             {textContent: 'reveal', isActive: false}, {textContent: 'reveal', isActive: false}
+           ],
+           devToolsPage, activePopoverSelector);
+     });
 });

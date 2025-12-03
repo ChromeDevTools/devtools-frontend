@@ -208,7 +208,7 @@ export class CookiesTable extends UI.Widget.VBox {
                id="cookies-table"
                striped
                ?inline=${input.renderInline}
-               @create=${input.onCreate}
+               @create=${(e: CustomEvent<CookieData>) => input.onCreate(e.detail)}
                @refresh=${input.onRefresh}
                @deselect=${() => input.onSelect(undefined)}
           >

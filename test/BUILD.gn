@@ -37,4 +37,4 @@ checkout_root = rebase_path("//", target_gen_dir)
 build_root = rebase_path(root_build_dir, target_gen_dir)
 write_file(
     "$target_gen_dir/build.js",
-    "module.exports = {SOURCE_ROOT: '$source_root', CHECKOUT_ROOT: '$checkout_root', BUILD_ROOT: '$build_root', BUILD_WITH_CHROMIUM: $build_with_chromium};")
+    "export default {SOURCE_ROOT: '$source_root', CHECKOUT_ROOT: '$checkout_root', BUILD_ROOT: '$build_root', BUILD_WITH_CHROMIUM: $build_with_chromium};")

@@ -4,11 +4,17 @@
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+// TODO: Fix this as they are extraneous dependencies
+// The type that get resolve are wrong, so keep the required
+import chalkImport from 'chalk';
+// @ts-expect-error
+import * as diffImport from 'diff';
+
 import * as ResultsDb from './resultsdb.js';
 import {ScreenshotError} from './screenshot-error.js';
 
-const chalk = require('chalk');
-const diff = require('diff');
+const chalk: any = chalkImport;
+const diff: any = diffImport;
 
 type DiffCallback = (line: string) => string;
 function*

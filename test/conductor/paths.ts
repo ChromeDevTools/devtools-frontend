@@ -5,7 +5,9 @@
 import * as os from 'node:os';
 import * as path from 'node:path';
 
-const build = require('../build.js');
+// @ts-expect-error created at test/BUILD.gn
+import build from '../build.js';
+
 export const SOURCE_ROOT = path.join(__dirname, '..', build.SOURCE_ROOT);
 export const CHECKOUT_ROOT = path.join(__dirname, '..', build.CHECKOUT_ROOT);
 export const BUILD_ROOT = path.join(__dirname, '..', build.BUILD_ROOT);

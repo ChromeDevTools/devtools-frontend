@@ -237,11 +237,11 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
         RequestTimingView.create(request, calculator), i18nString(UIStrings.requestAndResponseTimeline));
 
     if (request.trustTokenParams()) {
+      const trustTokensView = new NetworkComponents.RequestTrustTokensView.RequestTrustTokensView();
+      trustTokensView.request = request;
       this.appendTab(
           NetworkForward.UIRequestLocation.UIRequestTabs.TRUST_TOKENS, i18nString(UIStrings.trustTokens),
-          LegacyWrapper.LegacyWrapper.legacyWrapper(
-              UI.Widget.VBox, new NetworkComponents.RequestTrustTokensView.RequestTrustTokensView(request)),
-          i18nString(UIStrings.trustTokenOperationDetails));
+          trustTokensView, i18nString(UIStrings.trustTokenOperationDetails));
     }
 
     this.#initialTab = initialTab || this.#resourceViewTabSetting.get();

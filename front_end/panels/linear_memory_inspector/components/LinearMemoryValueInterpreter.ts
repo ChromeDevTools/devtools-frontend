@@ -5,7 +5,6 @@
 
 import '../../../ui/kit/kit.js';
 import './ValueInterpreterDisplay.js';
-import './ValueInterpreterSettings.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
@@ -16,6 +15,7 @@ import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import linearMemoryValueInterpreterStyles from './linearMemoryValueInterpreter.css.js';
 import {Endianness, type ValueType, type ValueTypeMode} from './ValueInterpreterDisplayUtils.js';
+import {ValueInterpreterSettings} from './ValueInterpreterSettings.js';
 
 const UIStrings = {
   /**
@@ -33,6 +33,7 @@ const str_ =
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 const {render, html} = Lit;
+const {widgetConfig} = UI.Widget;
 
 export class EndiannessChangedEvent extends Event {
   static readonly eventName = 'endiannesschanged';
@@ -102,9 +103,9 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
         <div>
           ${this.#showSettings ?
             html`
-              <devtools-linear-memory-inspector-interpreter-settings
-                .data=${{ valueTypes: this.#valueTypes, onToggle: this.#onSettingTypeToggle }}>
-              </devtools-linear-memory-inspector-interpreter-settings>` :
+              <devtools-widget .widgetConfig=${widgetConfig(ValueInterpreterSettings, {
+                valueTypes: this.#valueTypes, onToggle: this.#onSettingTypeToggle })}>
+              </devtools-widget>` :
             html`
               <devtools-linear-memory-inspector-interpreter-display
                 .data=${{

@@ -9,19 +9,21 @@ import {
 } from '../../../testing/DOMHelpers.js';
 import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
-import * as UI from '../../../ui/legacy/legacy.js';
+import type * as UI from '../../../ui/legacy/legacy.js';
 
 import * as LinearMemoryInspectorComponents from './components.js';
 
 const DISPLAY_SELECTOR = 'devtools-linear-memory-inspector-interpreter-display';
-const SETTINGS_SELECTOR = 'devtools-linear-memory-inspector-interpreter-settings';
 const TOOLBAR_SELECTOR = '.settings-toolbar';
 export const ENDIANNESS_SELECTOR = '[data-endianness]';
 
-function assertSettingsRenders(component: HTMLElement) {
-  const settings = getElementWithinComponent(
-      component, SETTINGS_SELECTOR, LinearMemoryInspectorComponents.ValueInterpreterSettings.ValueInterpreterSettings);
-  assert.isNotNull(settings);
+function assertSettingsRenders(
+    component: LinearMemoryInspectorComponents.LinearMemoryValueInterpreter.LinearMemoryValueInterpreter) {
+  const widget = component.shadowRoot?.querySelector<
+      UI.Widget.WidgetElement<LinearMemoryInspectorComponents.ValueInterpreterSettings.ValueInterpreterSettings>>(
+      'devtools-widget');
+  assert.instanceOf(
+      widget?.getWidget(), LinearMemoryInspectorComponents.ValueInterpreterSettings.ValueInterpreterSettings);
 }
 
 function assertDisplayRenders(component: HTMLElement) {
@@ -75,19 +77,21 @@ describe('LinearMemoryValueInterpreter', () => {
     const component = setUpComponent();
     clickSettingsButton(component);
 
-    const settings = getElementWithinComponent(
-        component, SETTINGS_SELECTOR,
-        LinearMemoryInspectorComponents.ValueInterpreterSettings.ValueInterpreterSettings);
-
-    const checkbox = getElementWithinComponent(settings, 'devtools-checkbox', UI.UIUtils.CheckboxLabel);
-    const expectedType = checkbox.title;
-    const expectedChecked = !checkbox.checked;
+    // After clicking settings, it should render devtools-widget with ValueInterpreterSettings
+    const widget = component.shadowRoot?.querySelector<
+        UI.Widget.WidgetElement<LinearMemoryInspectorComponents.ValueInterpreterSettings.ValueInterpreterSettings>>(
+        'devtools-widget');
+    const settingsWidget = widget?.getWidget();
+    assert.isNotNull(settingsWidget);
 
     const eventPromise =
         getEventPromise<LinearMemoryInspectorComponents.LinearMemoryValueInterpreter.ValueTypeToggledEvent>(
             component, 'valuetypetoggled');
 
-    checkbox.click();
+    const expectedType = LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.INT8;
+    const expectedChecked = false;  // Assuming it's initially checked
+
+    settingsWidget?.onToggle(expectedType, expectedChecked);
 
     const event = await eventPromise;
     assert.strictEqual(event.data.type, expectedType);

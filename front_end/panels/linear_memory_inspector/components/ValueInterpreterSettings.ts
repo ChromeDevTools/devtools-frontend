@@ -1,12 +1,10 @@
 // Copyright 2020 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
-
-import '../../../ui/legacy/legacy.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
+import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
@@ -24,11 +22,6 @@ const UIStrings = {
 const str_ =
     i18n.i18n.registerUIStrings('panels/linear_memory_inspector/components/ValueInterpreterSettings.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-
-export interface ValueInterpreterSettingsData {
-  valueTypes: Set<ValueType>;
-  onToggle: (type: ValueType, checked: boolean) => void;
-}
 
 const enum ValueTypeGroup {
   INTEGER = 'Integer',
@@ -53,61 +46,74 @@ function valueTypeGroupToLocalizedString(group: ValueTypeGroup): string {
   return group;
 }
 
-export class ValueInterpreterSettings extends HTMLElement {
-  readonly #shadow = this.attachShadow({mode: 'open'});
-  #valueTypes = new Set<ValueType>();
-  #onToggle: (type: ValueType, checked: boolean) => void = () => {};
+export interface ViewInput {
+  valueTypes: Set<ValueType>;
+  onToggle: (type: ValueType, checked: boolean) => void;
+}
 
-  set data(data: ValueInterpreterSettingsData) {
-    this.#valueTypes = data.valueTypes;
-    this.#onToggle = data.onToggle;
-    this.#render();
-  }
-
-  #render(): void {
-    // Disabled until https://crbug.com/1079231 is fixed.
-    // clang-format off
+export const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLElement): void => {
+  // clang-format off
     render(html`
       <style>${valueInterpreterSettingsStyles}</style>
       <div class="settings" jslog=${VisualLogging.pane('settings')}>
        ${[...GROUP_TO_TYPES.keys()].map(group => {
+        const types = GROUP_TO_TYPES.get(group) ?? [];
         return html`
           <div class="value-types-selection">
             <span class="group">${valueTypeGroupToLocalizedString(group)}</span>
-            ${this.#plotTypeSelections(group)}
+            ${types.map(type => {
+            return html`
+                <devtools-checkbox
+                  title=${valueTypeToLocalizedString(type)}
+                  ?checked=${input.valueTypes.has(type)}
+                  @change=${(e: Event) => {
+                    const checkbox = e.target as HTMLInputElement;
+                    input.onToggle(type, checkbox.checked);
+                  }} jslog=${VisualLogging.toggle().track({change: true}).context(Platform.StringUtilities.toKebabCase(type))}
+                  }>${valueTypeToLocalizedString(type)}</devtools-checkbox>
+         `;})}
           </div>
         `;})}
       </div>
-      `, this.#shadow, {host: this});
+      `, target);
+};
+// clang-format on
+
+export type View = typeof DEFAULT_VIEW;
+
+export class ValueInterpreterSettings extends UI.Widget.Widget {
+  #view: View;
+  #valueTypes = new Set<ValueType>();
+  #onToggle: (type: ValueType, checked: boolean) => void = () => {};
+
+  constructor(element?: HTMLElement, view = DEFAULT_VIEW) {
+    super(element);
+    this.#view = view;
   }
 
-  #plotTypeSelections(group: ValueTypeGroup): Lit.TemplateResult {
-    const types = GROUP_TO_TYPES.get(group);
-    if (!types) {
-      throw new Error(`Unknown group ${group}`);
-    }
-    return html`
-      ${types.map(type => {
-        return html`
-            <devtools-checkbox
-              title=${valueTypeToLocalizedString(type)}
-              ?checked=${this.#valueTypes.has(type)}
-              @change=${(e: Event) => this.#onTypeToggle(type, e)} jslog=${VisualLogging.toggle().track({change: true}).context(Platform.StringUtilities.toKebabCase(type))}
-              >${valueTypeToLocalizedString(type)}</devtools-checkbox>
-     `;})}`;
+  get valueTypes(): Set<ValueType> {
+    return this.#valueTypes;
   }
 
-  #onTypeToggle(type: ValueType, event: Event): void {
-    const checkbox = event.target as HTMLInputElement;
-    this.#onToggle(type, checkbox.checked);
+  set valueTypes(value: Set<ValueType>) {
+    this.#valueTypes = value;
+    this.requestUpdate();
   }
-}
 
-customElements.define('devtools-linear-memory-inspector-interpreter-settings', ValueInterpreterSettings);
+  get onToggle(): (type: ValueType, checked: boolean) => void {
+    return this.#onToggle;
+  }
 
-declare global {
+  set onToggle(value: (type: ValueType, checked: boolean) => void) {
+    this.#onToggle = value;
+    this.requestUpdate();
+  }
 
-interface HTMLElementTagNameMap {
-    'devtools-linear-memory-inspector-interpreter-settings': ValueInterpreterSettings;
+  override performUpdate(): void {
+    const viewInput = {
+      valueTypes: this.#valueTypes,
+      onToggle: this.#onToggle,
+    };
+    this.#view(viewInput, undefined, this.contentElement);
   }
 }

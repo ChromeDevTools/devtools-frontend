@@ -500,6 +500,85 @@ interface ReportSectionItem {
   flexed?: boolean;
 }
 
+interface IdentitySectionData {
+  name: string;
+  shortName: string;
+  description: string;
+  appId: string|null;
+  recommendedId: string|null;
+  hasId: boolean;
+  warnings: Platform.UIString.LocalizedString[];
+}
+
+interface PresentationSectionData {
+  startUrl: string;
+  completeStartUrl: Platform.DevToolsPath.UrlString|null;
+  themeColor: Common.Color.Color|null;
+  backgroundColor: Common.Color.Color|null;
+  orientation: string;
+  display: string;
+  newNoteUrl?: string;
+  hasNewNoteUrl: boolean;
+  completeNewNoteUrl: Platform.DevToolsPath.UrlString|null;
+}
+
+interface ProtocolHandlersSectionData {
+  protocolHandlers: Protocol.Page.ProtocolHandler[];
+  manifestLink: Platform.DevToolsPath.UrlString;
+}
+
+interface IconsSectionData {
+  icons: ProcessedImageResource[];
+  imageResourceErrors: Platform.UIString.LocalizedString[];
+}
+
+interface ProcessedShortcut {
+  name: string;
+  shortName?: string;
+  description?: string;
+  url: string;
+  shortcutUrl: Platform.DevToolsPath.UrlString;
+  icons: ProcessedImageResource[];
+}
+
+interface ShortcutsSectionData {
+  shortcuts: ProcessedShortcut[];
+  warnings: Platform.UIString.LocalizedString[];
+  imageResourceErrors: Platform.UIString.LocalizedString[];
+}
+
+interface ProcessedScreenshot {
+  screenshot: Screenshot;
+  processedImage: ProcessedImageResource;
+}
+
+interface ScreenshotsSectionData {
+  screenshots: ProcessedScreenshot[];
+  warnings: Platform.UIString.LocalizedString[];
+  imageResourceErrors: Platform.UIString.LocalizedString[];
+}
+
+interface WindowControlsSectionData {
+  hasWco: boolean;
+  themeColor: string;
+  wcoStyleSheetText: boolean;
+  url: Platform.DevToolsPath.UrlString;
+}
+
+type ProcessedImageResource = {
+  imageResourceErrors: Platform.UIString.LocalizedString[],
+  imageUrl?: string,
+  squareSizedIconAvailable?: boolean,
+}|{
+  imageResourceErrors: Platform.UIString.LocalizedString[],
+  imageUrl: string,
+  squareSizedIconAvailable: boolean,
+  title: string,
+  naturalWidth: number,
+  naturalHeight: number,
+  imageSrc: string,
+};
+
 export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(UI.Widget.VBox)
     implements SDK.TargetManager.Observer {
   private readonly emptyView: UI.EmptyWidget.EmptyWidget;
@@ -525,6 +604,7 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
   private manifestErrors: Protocol.Page.AppManifestError[];
   private installabilityErrors: Protocol.Page.InstallabilityError[];
   private appIdResponse: Protocol.Page.GetAppIdResponse|null;
+  private wcoToolbarEnabled = false;
 
   constructor(
       emptyView: UI.EmptyWidget.EmptyWidget, reportView: UI.ReportView.ReportView,
@@ -688,24 +768,42 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
 
     const parsedManifest = JSON.parse(data);
 
-    const warnings = this.renderIdentity(parsedManifest, appId, recommendedId);
+    const identityData = this.processIdentity(parsedManifest, appId, recommendedId);
+    this.renderIdentity(identityData);
 
-    this.renderPresentation(parsedManifest, url);
-    this.renderProtocolHandlers(parsedManifest, url);
+    const presentationData = this.processPresentation(parsedManifest, url);
+    this.renderPresentation(presentationData);
+    const protocolHandlersData = this.processProtocolHandlers(parsedManifest, url);
+    this.renderProtocolHandlers(protocolHandlersData);
 
-    const {imageResourceErrors: iconErrors} = await this.renderIcons(parsedManifest, url);
-    const {warnings: shortcutWarnings, imageResourceErrors: shortcutImageErrors} =
-        await this.renderShortcuts(parsedManifest, url);
-    warnings.push(...shortcutWarnings);
+    const iconsData = await this.processIcons(parsedManifest, url);
+    this.renderIcons(iconsData);
+    const shortcutsData = await this.processShortcuts(parsedManifest, url);
+    this.renderShortcuts(shortcutsData);
 
-    const {warnings: screenshotWarnings, imageResourceErrors: screenshotImageErrors} =
-        await this.renderScreenshots(parsedManifest, url);
-    warnings.push(...screenshotWarnings);
+    const screenshotsData = await this.processScreenshots(parsedManifest, url);
+    this.renderScreenshots(screenshotsData);
 
-    const imageErrors = [...iconErrors, ...shortcutImageErrors, ...screenshotImageErrors];
+    const warnings = [
+      ...identityData.warnings,
+      ...shortcutsData.warnings,
+      ...screenshotsData.warnings,
+    ];
+
+    const imageErrors = [
+      ...iconsData.imageResourceErrors,
+      ...shortcutsData.imageResourceErrors,
+      ...screenshotsData.imageResourceErrors,
+    ];
 
     this.renderInstallability(installabilityErrors);
-    await this.renderWindowControlsSection(parsedManifest, url);
+    const windowControlsData = await this.processWindowControls(parsedManifest, url);
+    const selectedPlatform = this.overlayModel?.getWindowControlsConfig().selectedPlatform;
+    const onSelectOs = this.overlayModel ?
+        (selectedOS: SDK.OverlayModel.EmulatedOSType) => this.onSelectOs(selectedOS, windowControlsData.themeColor) :
+        undefined;
+    const onToggleWcoToolbar = this.overlayModel ? (enabled: boolean) => this.onToggleWcoToolbar(enabled) : undefined;
+    await this.renderWindowControlsSection(windowControlsData, selectedPlatform, onSelectOs, onToggleWcoToolbar);
 
     this.renderErrors(warnings, errors, imageErrors);
 
@@ -738,20 +836,12 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
     }
   }
 
-  private renderIdentity(parsedManifest: Manifest, appId: string|null, recommendedId: string|null):
-      Platform.UIString.LocalizedString[] {
-    const description = this.stringProperty(parsedManifest, 'description');
-    const warnings = [];
-    // See https://crbug.com/1354304 for details.
-    if (description.length > 300) {
-      warnings.push(i18nString(UIStrings.descriptionMayBeTruncated));
-    }
-
+  private renderIdentity(identityData: IdentitySectionData): void {
+    const {name, shortName, description, appId, recommendedId, hasId} = identityData;
     const fields: ReportSectionItem[] = [];
-    fields.push({title: i18nString(UIStrings.name), content: this.stringProperty(parsedManifest, 'name')});
-    fields.push({title: i18nString(UIStrings.shortName), content: this.stringProperty(parsedManifest, 'short_name')});
-    fields.push(
-        {title: i18nString(UIStrings.description), content: this.stringProperty(parsedManifest, 'description')});
+    fields.push({title: i18nString(UIStrings.name), content: name});
+    fields.push({title: i18nString(UIStrings.shortName), content: shortName});
+    fields.push({title: i18nString(UIStrings.description), content: description});
 
     if (appId && recommendedId) {
       const onCopy = (): void => {
@@ -768,7 +858,7 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
                       .jslogContext=${'learn-more'}>
           ${i18nString(UIStrings.learnMore)}
         </devtools-link>
-        ${!this.stringProperty(parsedManifest, 'id') ? html`
+        ${!hasId ? html`
           <div class="multiline-value">
             ${i18nTemplate(str_, UIStrings.appIdNote, {
               PH1: html`<code>${recommendedId}</code>`,
@@ -786,66 +876,70 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
       this.identitySection.removeField(i18nString(UIStrings.computedAppId));
     }
     this.setSectionContents(fields, this.identitySection);
-    return warnings;
   }
 
-  private renderPresentation(parsedManifest: Manifest, url: Platform.DevToolsPath.UrlString): void {
-    const startURL = this.stringProperty(parsedManifest, 'start_url');
-    const completeURL = startURL ? Common.ParsedURL.ParsedURL.completeURL(url, startURL) : null;
-    const themeColorString = this.stringProperty(parsedManifest, 'theme_color');
-    const themeColor = themeColorString ? Common.Color.parse(themeColorString) ?? Common.Color.parse('white') : null;
-    const backgroundColorString = this.stringProperty(parsedManifest, 'background_color');
-    const backgroundColor =
-        backgroundColorString ? Common.Color.parse(backgroundColorString) ?? Common.Color.parse('white') : null;
-    const noteTaking = parsedManifest['note_taking'] || {};
-    const newNoteUrl = noteTaking['new_note_url'];
-    const hasNewNoteUrl = typeof newNoteUrl === 'string';
-    const completeNewNoteUrl = hasNewNoteUrl ?
-        (Common.ParsedURL.ParsedURL.completeURL(url, newNoteUrl) as Platform.DevToolsPath.UrlString) :
-        null;
+  private renderPresentation(presentationData: PresentationSectionData): void {
+    const {
+      startUrl,
+      completeStartUrl,
+      themeColor,
+      backgroundColor,
+      orientation,
+      display,
+      newNoteUrl,
+      hasNewNoteUrl,
+      completeNewNoteUrl,
+    } = presentationData;
     const fields: ReportSectionItem[] = [
       {
         title: i18nString(UIStrings.startUrl),
         label: i18nString(UIStrings.startUrl),
-        content: completeURL ? Components.Linkifier.Linkifier.linkifyURL(
-                                   completeURL, ({text: startURL, tabStop: true, jslogContext: 'start-url'})) :
-                               nothing
+        content: completeStartUrl ?
+            Components.Linkifier.Linkifier.linkifyURL(
+                completeStartUrl, ({text: startUrl, tabStop: true, jslogContext: 'start-url'})) :
+            nothing,
       },
       {
         title: i18nString(UIStrings.themeColor),
-        content: themeColor ? html`<devtools-color-swatch .color=${themeColor}></devtools-color-swatch>` : nothing
+        content: themeColor ? html`<devtools-color-swatch .color=${themeColor}></devtools-color-swatch>` : nothing,
       },
       {
         title: i18nString(UIStrings.backgroundColor),
         content: backgroundColor ? html`<devtools-color-swatch .color=${backgroundColor}></devtools-color-swatch>` :
-                                   nothing
+                                   nothing,
       },
-      {title: i18nString(UIStrings.orientation), content: this.stringProperty(parsedManifest, 'orientation')},
-      {title: i18nString(UIStrings.display), content: this.stringProperty(parsedManifest, 'display')},
+      {title: i18nString(UIStrings.orientation), content: orientation},
+      {title: i18nString(UIStrings.display), content: display},
     ];
     if (completeNewNoteUrl) {
       fields.push({
         title: i18nString(UIStrings.newNoteUrl),
         content: hasNewNoteUrl ?
             Components.Linkifier.Linkifier.linkifyURL(completeNewNoteUrl, ({text: newNoteUrl, tabStop: true})) :
-            nothing
+            nothing,
       });
     }
     this.setSectionContents(fields, this.presentationSection);
   }
 
-  private renderProtocolHandlers(parsedManifest: Manifest, url: Platform.DevToolsPath.UrlString): void {
-    const protocolHandlers = parsedManifest['protocol_handlers'] || [];
-    this.protocolHandlersView.protocolHandlers = protocolHandlers;
-    this.protocolHandlersView.manifestLink = url;
+  private renderProtocolHandlers(data: ProtocolHandlersSectionData): void {
+    this.protocolHandlersView.protocolHandlers = data.protocolHandlers;
+    this.protocolHandlersView.manifestLink = data.manifestLink;
   }
 
-  private async renderIcons(parsedManifest: Manifest, url: Platform.DevToolsPath.UrlString):
-      Promise<{imageResourceErrors: Platform.UIString.LocalizedString[]}> {
-    const icons = parsedManifest['icons'] || [];
+  private renderImage(imageSrc: string, imageUrl: string, naturalWidth: number): LitTemplate {
+    // clang-format off
+    return html`
+      <div class="image-wrapper">
+        <img src=${imageSrc} alt=${i18nString(UIStrings.imageFromS, {PH1: imageUrl})}
+            width=${naturalWidth}>
+      </div>`;
+    // clang-format on
+  }
+
+  private renderIcons(data: IconsSectionData): void {
     this.iconsSection.clearContent();
 
-    const imageErrors: Platform.UIString.LocalizedString[] = [];
     const contents: ReportSectionItem[] = [
       // clang-format off
       {
@@ -865,38 +959,23 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
         })
       },
     ];
-    let squareSizedIconAvailable = false;
-    for (const icon of icons) {
-      const result = await this.processImageResource(url, icon, /** isScreenshot= */ false);
-      if (result.title && result.content) {
-        contents.push({title: result.title, content: result.content, flexed: true});
+    for (const icon of data.icons) {
+      if ('imageSrc' in icon) {
+        const content = this.renderImage(icon.imageSrc, icon.imageUrl, icon.naturalWidth);
+        contents.push({title: icon.title, content, flexed: true});
       }
-      imageErrors.push(...result.imageResourceErrors);
-      squareSizedIconAvailable = result.squareSizedIconAvailable || squareSizedIconAvailable;
     }
     this.setSectionContents(contents, this.iconsSection);
-    if (!squareSizedIconAvailable) {
-      imageErrors.push(i18nString(UIStrings.sSShouldHaveSquareIcon));
-    }
-    return {imageResourceErrors: imageErrors};
   }
 
-  private async renderShortcuts(parsedManifest: Manifest, url: Platform.DevToolsPath.UrlString): Promise<
-      {warnings: Platform.UIString.LocalizedString[], imageResourceErrors: Platform.UIString.LocalizedString[]}> {
-    const shortcuts = parsedManifest['shortcuts'] || [];
+  private renderShortcuts(data: ShortcutsSectionData): void {
     for (const shortcutsSection of this.shortcutSections) {
       shortcutsSection.detach(/** overrideHideOnDetach= */ true);
     }
-
-    const warnings: Platform.UIString.LocalizedString[] = [];
-    const imageErrors: Platform.UIString.LocalizedString[] = [];
-
-    if (shortcuts.length > 4) {
-      warnings.push(i18nString(UIStrings.shortcutsMayBeNotAvailable));
-    }
+    this.shortcutSections.length = 0;
 
     let shortcutIndex = 1;
-    for (const shortcut of shortcuts) {
+    for (const shortcut of data.shortcuts) {
       const shortcutSection = this.reportView.appendSection(i18nString(UIStrings.shortcutS, {PH1: shortcutIndex}));
       shortcutSection.element.setAttribute('jslog', `${VisualLogging.section('shortcuts')}`);
       this.shortcutSections.push(shortcutSection);
@@ -904,59 +983,39 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
       const fields: ReportSectionItem[] = [
         {title: i18nString(UIStrings.name), flexed: true, content: shortcut.name},
       ];
-      if (shortcut.short_name) {
-        fields.push({title: i18nString(UIStrings.shortName), flexed: true, content: shortcut.short_name});
+      if (shortcut.shortName) {
+        fields.push({title: i18nString(UIStrings.shortName), flexed: true, content: shortcut.shortName});
       }
       if (shortcut.description) {
         fields.push({title: i18nString(UIStrings.description), flexed: true, content: shortcut.description});
       }
-      const shortcutUrl = Common.ParsedURL.ParsedURL.completeURL(url, shortcut.url) as Platform.DevToolsPath.UrlString;
       fields.push({
         title: i18nString(UIStrings.url),
         flexed: true,
         content: Components.Linkifier.Linkifier.linkifyURL(
-            shortcutUrl, ({text: shortcut.url, tabStop: true, jslogContext: 'shortcut'}))
+            shortcut.shortcutUrl, ({text: shortcut.url, tabStop: true, jslogContext: 'shortcut'}))
       });
 
-      const shortcutIcons = shortcut.icons || [];
-      let hasShortcutIconLargeEnough = false;
-      for (const shortcutIcon of shortcutIcons) {
-        const {imageResourceErrors: shortcutIconErrors, title, content} =
-            await this.processImageResource(url, shortcutIcon, /** isScreenshot= */ false);
-        if (title && content) {
-          fields.push({title, content, flexed: true});
-        }
-        imageErrors.push(...shortcutIconErrors);
-        if (!hasShortcutIconLargeEnough && shortcutIcon.sizes) {
-          const shortcutIconSize = shortcutIcon.sizes.match(/^(\d+)x(\d+)$/);
-          if (shortcutIconSize && Number(shortcutIconSize[1]) >= 96 && Number(shortcutIconSize[2]) >= 96) {
-            hasShortcutIconLargeEnough = true;
-          }
+      for (const shortcutIcon of shortcut.icons) {
+        if ('imageSrc' in shortcutIcon) {
+          const content = this.renderImage(shortcutIcon.imageSrc, shortcutIcon.imageUrl, shortcutIcon.naturalWidth);
+          fields.push({title: shortcutIcon.title, content, flexed: true});
         }
       }
       this.setSectionContents(fields, shortcutSection);
-      if (!hasShortcutIconLargeEnough) {
-        imageErrors.push(i18nString(UIStrings.shortcutSShouldIncludeAXPixel, {PH1: shortcutIndex}));
-      }
       shortcutIndex++;
     }
-    return {warnings, imageResourceErrors: imageErrors};
   }
 
-  private async renderScreenshots(parsedManifest: Manifest, url: Platform.DevToolsPath.UrlString): Promise<
-      {warnings: Platform.UIString.LocalizedString[], imageResourceErrors: Platform.UIString.LocalizedString[]}> {
-    const screenshots: Screenshot[] = parsedManifest['screenshots'] || [];
+  private renderScreenshots(data: ScreenshotsSectionData): void {
     for (const screenshotSection of this.screenshotsSections) {
       screenshotSection.detach(/** overrideHideOnDetach= */ true);
     }
-
-    const warnings: Platform.UIString.LocalizedString[] = [];
-    const imageErrors: Platform.UIString.LocalizedString[] = [];
+    this.screenshotsSections.length = 0;
 
     let screenshotIndex = 1;
-    const formFactorScreenshotDimensions = new Map<string, {width: number, height: number}>();
-    let haveScreenshotsDifferentAspectRatio = false;
-    for (const screenshot of screenshots) {
+    for (const processedScreenshot of data.screenshots) {
+      const {screenshot, processedImage} = processedScreenshot;
       const screenshotSection =
           this.reportView.appendSection(i18nString(UIStrings.screenshotS, {PH1: screenshotIndex}));
       this.screenshotsSections.push(screenshotSection);
@@ -972,49 +1031,13 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
         fields.push({title: i18nString(UIStrings.platform), flexed: true, content: screenshot.platform});
       }
 
-      const {imageResourceErrors: screenshotErrors, naturalWidth: width, naturalHeight: height, title, content} =
-          await this.processImageResource(url, screenshot, /** isScreenshot= */ true);
-      if (title && content) {
-        fields.push({title, content, flexed: true});
+      if ('imageSrc' in processedImage) {
+        const content = this.renderImage(processedImage.imageSrc, processedImage.imageUrl, processedImage.naturalWidth);
+        fields.push({title: processedImage.title, content, flexed: true});
       }
       this.setSectionContents(fields, screenshotSection);
-      imageErrors.push(...screenshotErrors);
-
-      if (screenshot.form_factor && width && height) {
-        formFactorScreenshotDimensions.has(screenshot.form_factor) ||
-            formFactorScreenshotDimensions.set(screenshot.form_factor, {width, height});
-        const formFactorFirstScreenshotDimensions = formFactorScreenshotDimensions.get(screenshot.form_factor);
-        if (formFactorFirstScreenshotDimensions) {
-          haveScreenshotsDifferentAspectRatio = haveScreenshotsDifferentAspectRatio ||
-              (width * formFactorFirstScreenshotDimensions.height !==
-               height * formFactorFirstScreenshotDimensions.width);
-        }
-      }
-
       screenshotIndex++;
     }
-
-    if (haveScreenshotsDifferentAspectRatio) {
-      warnings.push(i18nString(UIStrings.screenshotsMustHaveSameAspectRatio));
-    }
-
-    const screenshotsForDesktop = screenshots.filter(screenshot => screenshot.form_factor === 'wide');
-    const screenshotsForMobile = screenshots.filter(screenshot => screenshot.form_factor !== 'wide');
-
-    if (screenshotsForDesktop.length < 1) {
-      warnings.push(i18nString(UIStrings.noScreenshotsForRicherPWAInstallOnDesktop));
-    }
-    if (screenshotsForMobile.length < 1) {
-      warnings.push(i18nString(UIStrings.noScreenshotsForRicherPWAInstallOnMobile));
-    }
-    if (screenshotsForDesktop.length > 8) {
-      warnings.push(i18nString(UIStrings.tooManyScreenshotsForDesktop));
-    }
-    if (screenshotsForMobile.length > 5) {
-      warnings.push(i18nString(UIStrings.tooManyScreenshotsForMobile));
-    }
-
-    return {warnings, imageResourceErrors: imageErrors};
   }
 
   private renderInstallability(installabilityErrors: Protocol.Page.InstallabilityError[]): void {
@@ -1032,10 +1055,11 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
     return value;
   }
 
-  private async renderWindowControlsSection(parsedManifest: Manifest, url: Platform.DevToolsPath.UrlString):
-      Promise<void> {
-    const displayOverride = parsedManifest['display_override'] || [];
-    const hasWco = displayOverride.includes('window-controls-overlay');
+  private async renderWindowControlsSection(
+      data: WindowControlsSectionData, selectedPlatform?: string,
+      onSelectOs?: (selectedOS: SDK.OverlayModel.EmulatedOSType) => Promise<void>,
+      onToggleWcoToolbar?: (enabled: boolean) => Promise<void>): Promise<void> {
+    const {hasWco, url} = data;
     const contents: ReportSectionItem[] = [];
     if (hasWco) {
       // clang-format off
@@ -1052,12 +1076,9 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
           PH3: html`${Components.Linkifier.Linkifier.linkifyURL(url)}`,
         })}`});
       // clang-format on
-      if (this.overlayModel) {
-        const controls =
-            await this.renderWindowControls(this.overlayModel, url, this.stringProperty(parsedManifest, 'theme_color'));
-        if (controls) {
-          contents.push(controls);
-        }
+      if (selectedPlatform && onSelectOs && onToggleWcoToolbar) {
+        const controls = this.renderWindowControls(selectedPlatform, onSelectOs, onToggleWcoToolbar);
+        contents.push(controls);
       }
     } else {
       // clang-format off
@@ -1283,16 +1304,9 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
   }
 
   private async processImageResource(
-      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      baseUrl: Platform.DevToolsPath.UrlString, imageResource: any, isScreenshot: boolean): Promise<{
-    imageResourceErrors: Platform.UIString.LocalizedString[],
-    title?: string,
-    content?: LitTemplate,
-    squareSizedIconAvailable?: boolean,
-    naturalWidth?: number,
-    naturalHeight?: number,
-  }> {
+      baseUrl: Platform.DevToolsPath.UrlString,
+      imageResource: any,  // eslint-disable-line @typescript-eslint/no-explicit-any
+      isScreenshot: boolean): Promise<ProcessedImageResource> {
     const imageResourceErrors: Platform.UIString.LocalizedString[] = [];
     const resourceName = isScreenshot ? i18nString(UIStrings.screenshot) : i18nString(UIStrings.icon);
     if (!imageResource.src) {
@@ -1303,12 +1317,12 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
     if (!imageUrl) {
       imageResourceErrors.push(
           i18nString(UIStrings.sUrlSFailedToParse, {PH1: resourceName, PH2: imageResource['src']}));
-      return {imageResourceErrors};
+      return {imageResourceErrors, imageUrl: imageResource['src']};
     }
     const result = await this.loadImage(imageUrl);
     if (!result) {
       imageResourceErrors.push(i18nString(UIStrings.sSFailedToLoad, {PH1: resourceName, PH2: imageUrl}));
-      return {imageResourceErrors};
+      return {imageResourceErrors, imageUrl};
     }
     const {src, naturalWidth, naturalHeight} = result;
     const sizes = this.parseSizes(imageResource['sizes'], resourceName, imageUrl, imageResourceErrors);
@@ -1350,50 +1364,48 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
       imageResourceErrors.push(i18nString(UIStrings.avoidPurposeAnyAndMaskable));
     }
 
-    // clang-format off
-    const content = html`
-      <div class="image-wrapper">
-        <img src=${src} alt=${i18nString(UIStrings.imageFromS, {PH1: imageUrl})}
-            width=${naturalWidth}>
-      </div>`;
-    // clang-format on
-    return {imageResourceErrors, squareSizedIconAvailable, naturalWidth, naturalHeight, title, content};
+    return {
+      imageResourceErrors,
+      squareSizedIconAvailable,
+      naturalWidth,
+      naturalHeight,
+      title,
+      imageSrc: src,
+      imageUrl,
+    };
   }
 
-  private async renderWindowControls(
-      overlayModel: SDK.OverlayModel.OverlayModel, url: Platform.DevToolsPath.UrlString,
-      themeColor: string): Promise<ReportSectionItem|null> {
-    const wcoStyleSheetText = await overlayModel.hasStyleSheetText(url);
-
-    if (!wcoStyleSheetText) {
-      return null;
+  private async onToggleWcoToolbar(enabled: boolean): Promise<void> {
+    this.wcoToolbarEnabled = enabled;
+    if (this.overlayModel) {
+      await this.overlayModel.toggleWindowControlsToolbar(this.wcoToolbarEnabled);
     }
+  }
 
-    await overlayModel.toggleWindowControlsToolbar(false);
-    let wcoToolbarEnabled = false;
-    const onSelectOs = async(event: Event): Promise<void> => {
-      const osSelectElement = event.target as HTMLSelectElement;
-      const selectedOS =
-          osSelectElement.options[osSelectElement.selectedIndex].value as SDK.OverlayModel.EmulatedOSType;
-      if (this.overlayModel) {
-        this.overlayModel.setWindowControlsPlatform(selectedOS);
-        await this.overlayModel.toggleWindowControlsToolbar(wcoToolbarEnabled);
-      }
-    };
+  private async onSelectOs(selectedOS: SDK.OverlayModel.EmulatedOSType, themeColor: string): Promise<void> {
+    if (this.overlayModel) {
+      this.overlayModel.setWindowControlsPlatform(selectedOS);
+      this.overlayModel.setWindowControlsThemeColor(themeColor);
+      await this.overlayModel.toggleWindowControlsToolbar(this.wcoToolbarEnabled);
+    }
+  }
 
-    overlayModel.setWindowControlsThemeColor(themeColor);
-
+  private renderWindowControls(
+      selectedPlatform: string, onSelectOs: (selectedOS: SDK.OverlayModel.EmulatedOSType) => Promise<void>,
+      onToggleWcoToolbar: (enabled: boolean) => Promise<void>): ReportSectionItem {
     // clang-format off
     return {content: html`
-      <devtools-checkbox @click=${async (event: Event) => {
-            wcoToolbarEnabled = (event.target as HTMLInputElement).checked;
-            await this.overlayModel?.toggleWindowControlsToolbar(wcoToolbarEnabled);
-          }}
+      <devtools-checkbox @click=${(event: Event) => onToggleWcoToolbar((event.target as HTMLInputElement).checked)}
           title=${i18nString(UIStrings.selectWindowControlsOverlayEmulationOs)}>
         ${i18nString(UIStrings.selectWindowControlsOverlayEmulationOs)}
       </devtools-checkbox>
-      <select value=${this.overlayModel?.getWindowControlsConfig().selectedPlatform ?? ''}
-              @change=${onSelectOs} .selectedIndex=${0}>
+      <select value=${selectedPlatform}
+              @change=${(event: Event): void => {
+                const target = event.target as HTMLSelectElement;
+                const selectedOS = target.options[target.selectedIndex].value;
+                void onSelectOs(selectedOS as SDK.OverlayModel.EmulatedOSType);
+              }}
+             .selectedIndex=${0}>
         <option value=${SDK.OverlayModel.EmulatedOSType.WINDOWS}
                 jslog=${VisualLogging.item('windows').track({click: true})}>
           Windows
@@ -1430,6 +1442,198 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
     for (const [title, content] of contents) {
       render(content, section.appendField(title));
     }
+  }
+
+  private processIdentity(parsedManifest: Manifest, appId: string|null, recommendedId: string|null):
+      IdentitySectionData {
+    const description = this.stringProperty(parsedManifest, 'description');
+    const warnings: Platform.UIString.LocalizedString[] = [];
+    // See https://crbug.com/1354304 for details.
+    if (description.length > 300) {
+      warnings.push(i18nString(UIStrings.descriptionMayBeTruncated));
+    }
+    return {
+      name: this.stringProperty(parsedManifest, 'name'),
+      shortName: this.stringProperty(parsedManifest, 'short_name'),
+      description: this.stringProperty(parsedManifest, 'description'),
+      appId,
+      recommendedId,
+      hasId: Boolean(this.stringProperty(parsedManifest, 'id')),
+      warnings,
+    };
+  }
+
+  private async processIcons(parsedManifest: Manifest, url: Platform.DevToolsPath.UrlString):
+      Promise<IconsSectionData> {
+    const icons = parsedManifest['icons'] || [];
+    const imageErrors: Platform.UIString.LocalizedString[] = [];
+    const processedIcons: ProcessedImageResource[] = [];
+    let squareSizedIconAvailable = false;
+
+    for (const icon of icons) {
+      const result = await this.processImageResource(url, icon, /** isScreenshot= */ false);
+      processedIcons.push(result);
+      imageErrors.push(...result.imageResourceErrors);
+      squareSizedIconAvailable = result.squareSizedIconAvailable || squareSizedIconAvailable;
+    }
+
+    if (!squareSizedIconAvailable) {
+      imageErrors.push(i18nString(UIStrings.sSShouldHaveSquareIcon));
+    }
+    return {icons: processedIcons, imageResourceErrors: imageErrors};
+  }
+
+  private async processShortcuts(parsedManifest: Manifest, url: Platform.DevToolsPath.UrlString):
+      Promise<ShortcutsSectionData> {
+    const shortcuts = parsedManifest['shortcuts'] || [];
+    const processedShortcuts: ProcessedShortcut[] = [];
+
+    const warnings: Platform.UIString.LocalizedString[] = [];
+    const imageErrors: Platform.UIString.LocalizedString[] = [];
+
+    if (shortcuts.length > 4) {
+      warnings.push(i18nString(UIStrings.shortcutsMayBeNotAvailable));
+    }
+
+    let shortcutIndex = 1;
+    for (const shortcut of shortcuts) {
+      const shortcutUrl = Common.ParsedURL.ParsedURL.completeURL(url, shortcut.url) as Platform.DevToolsPath.UrlString;
+      const shortcutIcons = shortcut.icons || [];
+      const processedIcons: ProcessedImageResource[] = [];
+      let hasShortcutIconLargeEnough = false;
+
+      for (const shortcutIcon of shortcutIcons) {
+        const result = await this.processImageResource(url, shortcutIcon, /** isScreenshot= */ false);
+        processedIcons.push(result);
+        imageErrors.push(...result.imageResourceErrors);
+        if (!hasShortcutIconLargeEnough && shortcutIcon.sizes) {
+          const shortcutIconSize = shortcutIcon.sizes.match(/^(\d+)x(\d+)$/);
+          if (shortcutIconSize && Number(shortcutIconSize[1]) >= 96 && Number(shortcutIconSize[2]) >= 96) {
+            hasShortcutIconLargeEnough = true;
+          }
+        }
+      }
+
+      processedShortcuts.push({
+        name: shortcut.name,
+        shortName: shortcut.short_name,
+        description: shortcut.description,
+        url: shortcut.url,
+        shortcutUrl,
+        icons: processedIcons,
+      });
+
+      if (!hasShortcutIconLargeEnough) {
+        imageErrors.push(i18nString(UIStrings.shortcutSShouldIncludeAXPixel, {PH1: shortcutIndex}));
+      }
+      shortcutIndex++;
+    }
+    return {shortcuts: processedShortcuts, warnings, imageResourceErrors: imageErrors};
+  }
+
+  private async processScreenshots(parsedManifest: Manifest, url: Platform.DevToolsPath.UrlString):
+      Promise<ScreenshotsSectionData> {
+    const screenshots: Screenshot[] = parsedManifest['screenshots'] || [];
+    const processedScreenshots: ProcessedScreenshot[] = [];
+
+    const warnings: Platform.UIString.LocalizedString[] = [];
+    const imageErrors: Platform.UIString.LocalizedString[] = [];
+
+    let haveScreenshotsDifferentAspectRatio = false;
+    const formFactorScreenshotDimensions = new Map<string, {width: number, height: number}>();
+    for (const screenshot of screenshots) {
+      const result = await this.processImageResource(url, screenshot, /** isScreenshot= */ true);
+      processedScreenshots.push({screenshot, processedImage: result});
+      imageErrors.push(...result.imageResourceErrors);
+
+      if (screenshot.form_factor && 'naturalWidth' in result) {
+        const width = result.naturalWidth;
+        const height = result.naturalHeight;
+        formFactorScreenshotDimensions.has(screenshot.form_factor) ||
+            formFactorScreenshotDimensions.set(screenshot.form_factor, {width, height});
+        const formFactorFirstScreenshotDimensions = formFactorScreenshotDimensions.get(screenshot.form_factor);
+        if (formFactorFirstScreenshotDimensions) {
+          haveScreenshotsDifferentAspectRatio = haveScreenshotsDifferentAspectRatio ||
+              (width * formFactorFirstScreenshotDimensions.height !==
+               height * formFactorFirstScreenshotDimensions.width);
+        }
+      }
+    }
+
+    if (haveScreenshotsDifferentAspectRatio) {
+      warnings.push(i18nString(UIStrings.screenshotsMustHaveSameAspectRatio));
+    }
+
+    const screenshotsForDesktop = screenshots.filter(screenshot => screenshot.form_factor === 'wide');
+    const screenshotsForMobile = screenshots.filter(screenshot => screenshot.form_factor !== 'wide');
+
+    if (screenshotsForDesktop.length < 1) {
+      warnings.push(i18nString(UIStrings.noScreenshotsForRicherPWAInstallOnDesktop));
+    }
+    if (screenshotsForMobile.length < 1) {
+      warnings.push(i18nString(UIStrings.noScreenshotsForRicherPWAInstallOnMobile));
+    }
+    if (screenshotsForDesktop.length > 8) {
+      warnings.push(i18nString(UIStrings.tooManyScreenshotsForDesktop));
+    }
+    if (screenshotsForMobile.length > 5) {
+      warnings.push(i18nString(UIStrings.tooManyScreenshotsForMobile));
+    }
+
+    return {screenshots: processedScreenshots, warnings, imageResourceErrors: imageErrors};
+  }
+
+  private async processWindowControls(parsedManifest: Manifest, url: Platform.DevToolsPath.UrlString):
+      Promise<WindowControlsSectionData> {
+    const displayOverride = parsedManifest['display_override'] || [];
+    const hasWco = displayOverride.includes('window-controls-overlay');
+    const themeColor = this.stringProperty(parsedManifest, 'theme_color');
+    let wcoStyleSheetText = false;
+    if (this.overlayModel) {
+      wcoStyleSheetText = await this.overlayModel.hasStyleSheetText(url);
+    }
+    return {
+      hasWco,
+      themeColor,
+      wcoStyleSheetText,
+      url,
+    };
+  }
+
+  private processPresentation(parsedManifest: Manifest, url: Platform.DevToolsPath.UrlString): PresentationSectionData {
+    const startURL = this.stringProperty(parsedManifest, 'start_url');
+    const completeURL = startURL ? Common.ParsedURL.ParsedURL.completeURL(url, startURL) : null;
+    const themeColorString = this.stringProperty(parsedManifest, 'theme_color');
+    const themeColor = themeColorString ? Common.Color.parse(themeColorString) ?? Common.Color.parse('white') : null;
+    const backgroundColorString = this.stringProperty(parsedManifest, 'background_color');
+    const backgroundColor =
+        backgroundColorString ? Common.Color.parse(backgroundColorString) ?? Common.Color.parse('white') : null;
+    const noteTaking = parsedManifest['note_taking'] || {};
+    const newNoteUrl = noteTaking['new_note_url'];
+    const hasNewNoteUrl = typeof newNoteUrl === 'string';
+    const completeNewNoteUrl = hasNewNoteUrl ?
+        (Common.ParsedURL.ParsedURL.completeURL(url, newNoteUrl) as Platform.DevToolsPath.UrlString) :
+        null;
+
+    return {
+      startUrl: startURL,
+      completeStartUrl: completeURL,
+      themeColor,
+      backgroundColor,
+      orientation: this.stringProperty(parsedManifest, 'orientation'),
+      display: this.stringProperty(parsedManifest, 'display'),
+      newNoteUrl,
+      hasNewNoteUrl,
+      completeNewNoteUrl,
+    };
+  }
+
+  private processProtocolHandlers(parsedManifest: Manifest, url: Platform.DevToolsPath.UrlString):
+      ProtocolHandlersSectionData {
+    return {
+      protocolHandlers: parsedManifest['protocol_handlers'] || [],
+      manifestLink: url,
+    };
   }
 }
 

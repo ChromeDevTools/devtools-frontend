@@ -7,43 +7,28 @@ import {
   renderElementIntoDOM,
 } from '../../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../../testing/EnvironmentHelpers.js';
-import * as RenderCoordinator from '../../../../ui/components/render_coordinator/render_coordinator.js';
-import type * as TextEditor from '../../../../ui/components/text_editor/text_editor.js';
+import {createViewFunctionStub} from '../../../../testing/ViewFunctionHelpers.js';
 
 import * as PreloadingComponents from './components.js';
 
-async function renderRuleSetDetailsView(
-    data: PreloadingComponents.RuleSetDetailsView.RuleSetDetailsViewData,
-    shouldPrettyPrint: boolean): Promise<HTMLElement> {
-  const component = new PreloadingComponents.RuleSetDetailsView.RuleSetDetailsView();
-  component.shouldPrettyPrint = shouldPrettyPrint;
-  component.data = data;
+function renderRuleSetDetailsView() {
+  const view = createViewFunctionStub(PreloadingComponents.RuleSetDetailsView.RuleSetDetailsView);
+  const component = new PreloadingComponents.RuleSetDetailsView.RuleSetDetailsView(undefined, view);
   renderElementIntoDOM(component);
-  assert.isNotNull(component.shadowRoot);
-  await RenderCoordinator.done();
-
-  return component;
+  return {component, view};
 }
 
 describeWithEnvironment('RuleSetDetailsView', () => {
   it('renders placeholder if not selected', async () => {
-    const data = null;
+    const {component, view} = renderRuleSetDetailsView();
+    component.ruleSet = null;
 
-    const component = await renderRuleSetDetailsView(data, false);
-    assert.isNotNull(component.shadowRoot);
-    assert.exists(component.shadowRoot.querySelector('.empty-state'));
-
-    const header = component.shadowRoot.querySelector('.empty-state-header')?.textContent;
-    const description = component.shadowRoot.querySelector('.empty-state-description')?.textContent;
-    assert.deepEqual(header, 'No element selected');
-    assert.deepEqual(description, 'Select an element for more details');
+    assert.isNull(await view.nextInput);
   });
 
   it('renders rule set', async () => {
-    const data: Protocol.Preload.RuleSet = {
-      id: 'ruleSetId:1' as Protocol.Preload.RuleSetId,
-      loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
-      sourceText: `
+    const {component, view} = renderRuleSetDetailsView();
+    const sourceText = `
 {
   "prefetch": [
     {
@@ -52,126 +37,64 @@ describeWithEnvironment('RuleSetDetailsView', () => {
     }
   ]
 }
-`,
+`;
+    component.ruleSet = {
+      id: 'ruleSetId:1' as Protocol.Preload.RuleSetId,
+      loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
+      sourceText,
       backendNodeId: 1 as Protocol.DOM.BackendNodeId,
     };
-    const component = await renderRuleSetDetailsView(data, false);
-    assert.isUndefined(component.shadowRoot?.getElementById('error-message-text')?.textContent);
+    component.shouldPrettyPrint = false;
 
-    const textEditor = component.shadowRoot?.querySelector('devtools-text-editor') as TextEditor.TextEditor.TextEditor;
-    assert.strictEqual(textEditor.state.doc.toString(), data.sourceText);
+    const input = await view.nextInput;
+    assert.exists(input);
+    assert.isUndefined(input.errorMessage);
+    assert.strictEqual(input.sourceText, sourceText);
   });
 
-  it('renders rule set from Speculation-Rules HTTP header', async () => {
-    const data: Protocol.Preload.RuleSet = {
+  it('renders url when included', async () => {
+    const {component, view} = renderRuleSetDetailsView();
+    component.ruleSet = {
       id: 'ruleSetId:1' as Protocol.Preload.RuleSetId,
       loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
-      sourceText: `
-{
-  "prefetch": [
-    {
-      "source": "list",
-      "urls": ["/subresource.js"]
-    }
-  ]
-}
-`,
+      sourceText: '<something valid>',
       url: 'https://example.com/speculationrules.json',
       requestId: 'requestId' as Protocol.Network.RequestId,
     };
-    const component = await renderRuleSetDetailsView(data, false);
-    assert.isUndefined(component.shadowRoot?.getElementById('error-message-text')?.textContent);
-    const textEditor = component.shadowRoot?.querySelector('devtools-text-editor') as TextEditor.TextEditor.TextEditor;
-    assert.strictEqual(textEditor.state.doc.toString(), data.sourceText);
+
+    const input = await view.nextInput;
+    assert.exists(input);
+    assert.strictEqual(input.url, 'https://example.com/speculationrules.json');
   });
 
-  it('renders invalid rule set, broken JSON', async () => {
-    const data: Protocol.Preload.RuleSet = {
+  it('renders the error message', async () => {
+    const {component, view} = renderRuleSetDetailsView();
+    component.ruleSet = {
       id: 'ruleSetId:1' as Protocol.Preload.RuleSetId,
       loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
-      sourceText: `
-{
-  "prefetch": [
-    {
-      "source": "list",
-`,
+      sourceText: '<something invalid>',
       backendNodeId: 1 as Protocol.DOM.BackendNodeId,
       errorType: Protocol.Preload.RuleSetErrorType.SourceIsNotJsonObject,
       errorMessage: 'Line: 6, column: 1, Syntax error.',
     };
-    const component = await renderRuleSetDetailsView(data, false);
-    assert.deepEqual(
-        component.shadowRoot?.getElementById('error-message-text')?.textContent, 'Line: 6, column: 1, Syntax error.');
-    const textEditor = component.shadowRoot?.querySelector('devtools-text-editor') as TextEditor.TextEditor.TextEditor;
-    assert.strictEqual(textEditor.state.doc.toString(), data.sourceText);
+
+    const input = await view.nextInput;
+    assert.exists(input);
+    assert.strictEqual(input.errorMessage, 'Line: 6, column: 1, Syntax error.');
   });
 
-  it('renders invalid rule set, invalid top-level key', async () => {
-    const data: Protocol.Preload.RuleSet = {
-      id: 'ruleSetId:1' as Protocol.Preload.RuleSetId,
-      loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
-      sourceText: `
-{
-  "prefetch": [
-    {
-      "source": "list",
-      "urls": ["/subresource.js"]
-    }
-  ],
-  "tag": "マイルール"
-}
-`,
-      backendNodeId: 1 as Protocol.DOM.BackendNodeId,
-      errorType: Protocol.Preload.RuleSetErrorType.InvalidRulesetLevelTag,
-      errorMessage: 'Tag value is invalid: must be ASCII printable.',
-    };
-    const component = await renderRuleSetDetailsView(data, false);
-    assert.deepEqual(
-        component.shadowRoot?.getElementById('error-message-text')?.textContent,
-        'Tag value is invalid: must be ASCII printable.');
-    const textEditor = component.shadowRoot?.querySelector('devtools-text-editor') as TextEditor.TextEditor.TextEditor;
-    assert.strictEqual(textEditor.state.doc.toString(), data.sourceText);
-  });
-
-  it('renders invalid rule set, lacking `urls`', async () => {
-    const data: Protocol.Preload.RuleSet = {
-      id: 'ruleSetId:1' as Protocol.Preload.RuleSetId,
-      loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
-      sourceText: `
-{
-  "prefetch": [
-    {
-      "source": "list"
-    }
-  ]
-}
-`,
-      backendNodeId: 1 as Protocol.DOM.BackendNodeId,
-      errorType: Protocol.Preload.RuleSetErrorType.InvalidRulesSkipped,
-      errorMessage: 'A list rule must have a "urls" array.',
-    };
-    const component = await renderRuleSetDetailsView(data, false);
-    assert.deepEqual(
-        component.shadowRoot?.getElementById('error-message-text')?.textContent,
-        'A list rule must have a "urls" array.');
-    const textEditor = component.shadowRoot?.querySelector('devtools-text-editor') as TextEditor.TextEditor.TextEditor;
-    assert.strictEqual(textEditor.state.doc.toString(), data.sourceText);
-  });
-
-  it('renders formatted rule set', async () => {
-    const data: Protocol.Preload.RuleSet = {
+  it('formats the source text', async () => {
+    const {component, view} = renderRuleSetDetailsView();
+    component.ruleSet = {
       id: 'ruleSetId:1' as Protocol.Preload.RuleSetId,
       loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
       sourceText: '{"prefetch":[{"source": "list","urls": ["/subresource.js"]}]}',
       backendNodeId: 1 as Protocol.DOM.BackendNodeId,
     };
-    const component = await renderRuleSetDetailsView(data, true);
-    assert.isUndefined(component.shadowRoot?.getElementById('error-message-text')?.textContent);
 
-    const textEditor = component.shadowRoot?.querySelector('devtools-text-editor') as TextEditor.TextEditor.TextEditor;
-    // Formatted sourceText should be different from the data.sourceText in this case.
-    assert.notEqual(textEditor.state.doc.toString(), data.sourceText);
-    assert.strictEqual(textEditor.state.doc.toString(), `{
+    const input = await view.nextInput;
+    assert.exists(input);
+    assert.strictEqual(input.sourceText, `{
     "prefetch": [
         {
             "source": "list",

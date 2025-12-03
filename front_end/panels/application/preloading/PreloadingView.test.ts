@@ -20,6 +20,8 @@ import * as ReportView from '../../../ui/components/report_view/report_view.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Resources from '../application.js';
 
+import type * as PreloadingComponents from './components/components.js';
+
 const zip2 = <T, S>(xs: T[], ys: S[]) => {
   assert.strictEqual(xs.length, ys.length);
 
@@ -387,8 +389,6 @@ describeWithMockConnection('PreloadingRuleSetView', () => {
 
     const ruleSetGridComponent = view.getRuleSetGridForTest();
     assert.isNotNull(ruleSetGridComponent.shadowRoot);
-    const ruleSetDetailsComponent = view.getRuleSetDetailsForTest();
-    assert.isNotNull(ruleSetDetailsComponent.shadowRoot);
 
     assertGridContents(
         ruleSetGridComponent,
@@ -402,11 +402,18 @@ describeWithMockConnection('PreloadingRuleSetView', () => {
     ruleSetGridComponent.dispatchEvent(new CustomEvent('select', {detail: 'ruleSetId:0.2'}));
 
     await RenderCoordinator.done();
+    const ruleSetDetailsElement =
+        view.contentElement
+            .querySelector<UI.Widget.WidgetElement<PreloadingComponents.RuleSetDetailsView.RuleSetDetailsView>>(
+                'devtools-widget');
+    const ruleSetDetailsComponent = ruleSetDetailsElement?.getWidget();
+    assert.exists(ruleSetDetailsComponent);
+    await ruleSetDetailsComponent.updateComplete;
 
     assert.deepEqual(
-        ruleSetDetailsComponent.shadowRoot?.getElementById('ruleset-url')?.textContent, 'https://example.com/');
+        ruleSetDetailsComponent.contentElement.querySelector('#ruleset-url')?.textContent, 'https://example.com/');
     assert.deepEqual(
-        ruleSetDetailsComponent.shadowRoot?.getElementById('error-message-text')?.textContent, 'fake error message');
+        ruleSetDetailsComponent.contentElement.querySelector('#error-message-text')?.textContent, 'fake error message');
   });
 
   // TODO(https://crbug.com/1384419): Check that preloading attempts for

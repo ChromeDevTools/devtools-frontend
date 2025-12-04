@@ -221,6 +221,40 @@ luci.tree_closer(
     failed_step_regexp_exclude = EXCLUDED_STEPS,
 )
 
+luci.realm(
+    name = "@project",
+    bindings = [
+        # Allow everyone (including non-logged-in users) to see the tree status.
+        luci.binding(
+            roles = "role/treestatus.limitedReader",
+            groups = [
+                "all",
+            ],
+        ),
+        # Only allow Googlers to see PII.
+        luci.binding(
+            roles = "role/treestatus.reader",
+            groups = [
+                "googlers",
+            ],
+            users = [
+                "chromium-status-hr@appspot.gserviceaccount.com",
+                "luci-notify@appspot.gserviceaccount.com",
+            ],
+        ),
+        # Only allow Googlers and service accounts.
+        luci.binding(
+            roles = "role/treestatus.writer",
+            groups = [
+                "googlers",
+            ],
+            users = [
+                "luci-notify@appspot.gserviceaccount.com",
+            ],
+        ),
+    ],
+)
+
 luci.notifier(
     name = "autoroll sheriff notifier",
     on_occurrence = ["FAILURE", "SUCCESS"],

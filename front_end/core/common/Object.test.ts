@@ -83,5 +83,20 @@ describe('ObjectWrapper', () => {
         obj.dispatchEventToListeners('foo');
       });
     });
+
+    it('handle errors in sync event handlers', () => {
+      const callback = sinon.stub();
+      const throwCallback = sinon.stub().throws('Sync throw');
+      const callbackTwo = sinon.stub();
+      obj.addEventListener('foo', callback);
+      obj.addEventListener('foo', throwCallback);
+      obj.addEventListener('foo', callbackTwo);
+
+      obj.dispatchEventToListeners('foo');
+
+      sinon.assert.calledOnce(callback);
+      sinon.assert.calledOnce(throwCallback);
+      sinon.assert.calledOnce(callbackTwo);
+    });
   });
 });

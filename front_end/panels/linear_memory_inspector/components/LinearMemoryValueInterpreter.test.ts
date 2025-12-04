@@ -13,7 +13,6 @@ import type * as UI from '../../../ui/legacy/legacy.js';
 
 import * as LinearMemoryInspectorComponents from './components.js';
 
-const DISPLAY_SELECTOR = 'devtools-linear-memory-inspector-interpreter-display';
 const TOOLBAR_SELECTOR = '.settings-toolbar';
 export const ENDIANNESS_SELECTOR = '[data-endianness]';
 
@@ -27,9 +26,11 @@ function assertSettingsRenders(
 }
 
 function assertDisplayRenders(component: HTMLElement) {
-  const display = getElementWithinComponent(
-      component, DISPLAY_SELECTOR, LinearMemoryInspectorComponents.ValueInterpreterDisplay.ValueInterpreterDisplay);
-  assert.isNotNull(display);
+  const widget = component.shadowRoot?.querySelector<
+      UI.Widget.WidgetElement<LinearMemoryInspectorComponents.ValueInterpreterDisplay.ValueInterpreterDisplay>>(
+      'devtools-widget');
+  assert.instanceOf(
+      widget?.getWidget(), LinearMemoryInspectorComponents.ValueInterpreterDisplay.ValueInterpreterDisplay);
 }
 
 function clickSettingsButton(
@@ -48,6 +49,8 @@ describe('LinearMemoryValueInterpreter', () => {
       endianness: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.Endianness.LITTLE,
       valueTypes: new Set([LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.INT8]),
       memoryLength: buffer.byteLength,
+      onValueTypeModeChange: () => {},
+      onJumpToAddressClicked: () => {},
     };
     renderElementIntoDOM(component);
     return component;

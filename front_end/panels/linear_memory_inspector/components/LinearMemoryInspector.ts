@@ -23,7 +23,6 @@ import {
 import type {EndiannessChangedEvent, ValueTypeToggledEvent} from './LinearMemoryValueInterpreter.js';
 import type {ByteSelectedEvent, ResizeEvent} from './LinearMemoryViewer.js';
 import type {HighlightInfo} from './LinearMemoryViewerUtils.js';
-import type {JumpToPointerAddressEvent, ValueTypeModeChangedEvent} from './ValueInterpreterDisplay.js';
 import {
   Endianness,
   getDefaultValueTypeMapping,
@@ -122,12 +121,12 @@ export interface ViewInput {
   onAddressChange: (e: AddressInputChangedEvent) => void;
   onNavigatePage: (e: PageNavigationEvent) => void;
   onNavigateHistory: (e: HistoryNavigationEvent) => boolean;
-  onJumpToAddress: (e: JumpToPointerAddressEvent|{data: number}) => void;
+  onJumpToAddress: (address: number) => void;
   onDeleteMemoryHighlight: (info: HighlightInfo) => void;
   onByteSelected: (e: ByteSelectedEvent) => void;
   onResize: (e: ResizeEvent) => void;
   onValueTypeToggled: (e: ValueTypeToggledEvent) => void;
-  onValueTypeModeChanged: (e: ValueTypeModeChangedEvent) => void;
+  onValueTypeModeChanged: (type: ValueType, mode: ValueTypeMode) => void;
   onEndiannessChanged: (e: EndiannessChangedEvent) => void;
   memorySlice: Uint8Array<ArrayBuffer>;
   viewerStart: number;
@@ -167,7 +166,7 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: Record<string, unknown>,
       <devtools-widget .widgetConfig=${widgetConfig(LinearMemoryHighlightChipList, {
         highlightInfos: highlightedMemoryAreas,
         focusedMemoryHighlight,
-        jumpToAddress: (address: number) => input.onJumpToAddress({data: address}),
+        jumpToAddress: (address: number) => input.onJumpToAddress(address),
         deleteHighlight: input.onDeleteMemoryHighlight,
       })}>
       </devtools-widget>
@@ -201,11 +200,11 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: Record<string, unknown>,
             valueTypeModes: input.valueTypeModes,
             endianness: input.endianness,
             memoryLength: input.outerMemoryLength,
+            onValueTypeModeChange: input.onValueTypeModeChanged,
+            onJumpToAddressClicked: input.onJumpToAddress
           }}
         @valuetypetoggled=${input.onValueTypeToggled}
-        @valuetypemodechanged=${input.onValueTypeModeChanged}
         @endiannesschanged=${input.onEndiannessChanged}
-        @jumptopointeraddress=${input.onJumpToAddress}
         >
       </devtools-linear-memory-inspector-interpreter>
     </div>`}
@@ -379,13 +378,9 @@ export class LinearMemoryInspector extends Common.ObjectWrapper.eventMixin<Event
     this.#view(viewInput, {}, this.contentElement);
   }
 
-  #onJumpToAddress(e: JumpToPointerAddressEvent|{data: number}): void {
-    // Stop event from bubbling up, since no element further up needs the event.
-    if (e instanceof Event) {
-      e.stopPropagation();
-    }
+  #onJumpToAddress(address: number): void {
     this.#currentNavigatorMode = Mode.SUBMITTED;
-    const addressInRange = Math.max(0, Math.min(e.data, this.#outerMemoryLength - 1));
+    const addressInRange = Math.max(0, Math.min(address, this.#outerMemoryLength - 1));
     this.#jumpToAddress(addressInRange);
   }
 
@@ -446,9 +441,7 @@ export class LinearMemoryInspector extends Common.ObjectWrapper.eventMixin<Event
     void this.requestUpdate();
   }
 
-  #onValueTypeModeChanged(e: ValueTypeModeChangedEvent): void {
-    e.stopImmediatePropagation();
-    const {type, mode} = e.data;
+  #onValueTypeModeChanged(type: ValueType, mode: ValueTypeMode): void {
     this.#valueTypeModes.set(type, mode);
     this.dispatchEventToListeners(Events.SETTINGS_CHANGED, this.#createSettings());
     void this.requestUpdate();

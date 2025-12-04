@@ -1,11 +1,11 @@
 // Copyright 2020 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 import '../../../ui/kit/kit.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';
+import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
@@ -51,7 +51,7 @@ const UIStrings = {
 const str_ =
     i18n.i18n.registerUIStrings('panels/linear_memory_inspector/components/ValueInterpreterDisplay.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-const {render, html} = Lit;
+const {render, nothing, html} = Lit;
 
 const SORTED_VALUE_TYPES = Array.from(getDefaultValueTypeMapping().keys());
 
@@ -63,188 +63,207 @@ export interface ValueDisplayData {
   valueTypeModes?: Map<ValueType, ValueTypeMode>;
 }
 
-export class ValueTypeModeChangedEvent extends Event {
-  static readonly eventName = 'valuetypemodechanged';
-  data: {type: ValueType, mode: ValueTypeMode};
-
-  constructor(type: ValueType, mode: ValueTypeMode) {
-    super(ValueTypeModeChangedEvent.eventName, {
-      composed: true,
-    });
-    this.data = {type, mode};
-  }
+export interface ViewInput {
+  buffer: ArrayBuffer;
+  valueTypes: ValueType[];
+  endianness: Endianness;
+  memoryLength: number;
+  valueTypeModes: Map<ValueType, ValueTypeMode>;
+  onValueTypeModeChange: (type: ValueType, mode: ValueTypeMode) => void;
+  onJumpToAddressClicked: (address: number) => void;
 }
+type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 
-export class JumpToPointerAddressEvent extends Event {
-  static readonly eventName = 'jumptopointeraddress';
-  data: number;
-
-  constructor(address: number) {
-    super(JumpToPointerAddressEvent.eventName, {
-      composed: true,
-    });
-    this.data = address;
+export const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target: HTMLElement): void => {
+  function parse(signed: boolean, type: ValueType): string {
+    return format(
+        {buffer: input.buffer, endianness: input.endianness, type, signed, mode: input.valueTypeModes.get(type)});
   }
-}
+  const parseSigned = parse.bind(this, true);
+  const parseUnsigned = parse.bind(this, false);
 
-export class ValueInterpreterDisplay extends HTMLElement {
-  readonly #shadow = this.attachShadow({mode: 'open'});
-  #endianness = Endianness.LITTLE;
-  #buffer = new ArrayBuffer(0);
-  #valueTypes = new Set<ValueType>();
-  #valueTypeModeConfig: Map<ValueType, ValueTypeMode> = getDefaultValueTypeMapping();
-  #memoryLength = 0;
-
-  set data(data: ValueDisplayData) {
-    this.#buffer = data.buffer;
-    this.#endianness = data.endianness;
-    this.#valueTypes = data.valueTypes;
-    this.#memoryLength = data.memoryLength;
-
-    if (data.valueTypeModes) {
-      data.valueTypeModes.forEach((mode, valueType) => {
-        if (isValidMode(valueType, mode)) {
-          this.#valueTypeModeConfig.set(valueType, mode);
-        }
-      });
-    }
-
-    this.#render();
-  }
-
-  #render(): void {
-    // Disabled until https://crbug.com/1079231 is fixed.
-    // clang-format off
+  // Disabled until https://crbug.com/1079231 is fixed.
+  // clang-format off
     render(html`
       <style>${UI.inspectorCommonStyles}</style>
       <style>${valueInterpreterDisplayStyles}</style>
       <div class="value-types">
-        ${SORTED_VALUE_TYPES.map(type => this.#valueTypes.has(type) ? this.#showValue(type) : '')}
+        ${input.valueTypes.map(type => {
+          const address = isPointer(type)? getPointerAddress(type, input.buffer, input.endianness): 0;
+          const jumpDisabled = Number.isNaN(address) || BigInt(address) >= BigInt(input.memoryLength);
+          const signed = parseSigned(type);
+          const unsigned = parseUnsigned(type);
+          return isNumber(type) ? html`
+            <span class="value-type-cell selectable-text">${i18n.i18n.lockedString(type)}</span>
+              <div>
+                <select title=${i18nString(UIStrings.changeValueTypeMode)}
+                  data-mode-settings="true"
+                  jslog=${VisualLogging.dropDown('linear-memory-inspector.value-type-mode').track({change: true})}
+                  @change=${(e: Event) =>
+                    input.onValueTypeModeChange(type, (e.target as HTMLSelectElement).value as ValueTypeMode)}>
+                    ${VALUE_TYPE_MODE_LIST.filter(x => isValidMode(type, x)).map(mode => {
+                      return html`
+                        <option value=${mode} .selected=${input.valueTypeModes.get(type) === mode}
+                                jslog=${VisualLogging.item(mode).track({click: true})}>${
+                          i18n.i18n.lockedString(mode)}
+                        </option>`;
+                    })}
+                </select>
+              </div>
+            ${renderSignedAndUnsigned(signed, unsigned, type, input.valueTypeModes.get(type))}`:
+          isPointer(type) ? html`
+            <span class="value-type-cell-no-mode value-type-cell selectable-text">${i18n.i18n.lockedString(type)}</span>
+            <div class="value-type-cell">
+              <div class="value-type-value-with-link" data-value="true">
+              <span class="selectable-text">${unsigned}</span>
+                <devtools-button
+                  data-jump="true"
+                  title=${jumpDisabled ? i18nString(UIStrings.addressOutOfRange) : i18nString(UIStrings.jumpToPointer)}
+                  .disabled=${jumpDisabled}
+                  jslog=${VisualLogging.action('linear-memory-inspector.jump-to-address').track({click: true})}
+                  @click=${() => input.onJumpToAddressClicked(Number(address))}
+                  .variant=${Buttons.Button.Variant.ICON_TOGGLE}
+                  .iconName=${'open-externally'}
+                  .size=${Buttons.Button.Size.SMALL}>
+                </devtools-button>
+              </div>
+            </div>`: nothing;
+        })}
       </div>
-    `, this.#shadow, {host: this},
-    );
-    // clang-format on
+    `, target);
+  // clang-format on
+};
+
+function renderSignedAndUnsigned(
+    signedValue: string, unsignedValue: string, type: ValueType, mode: ValueTypeMode|undefined): Lit.TemplateResult {
+  const showSignedAndUnsigned =
+      signedValue !== unsignedValue && mode !== ValueTypeMode.HEXADECIMAL && mode !== ValueTypeMode.OCTAL;
+
+  const unsignedRendered = html`<span class="value-type-cell selectable-text"  title=${
+      i18nString(UIStrings.unsignedValue)} data-value="true">${unsignedValue}</span>`;
+  if (!showSignedAndUnsigned) {
+    return unsignedRendered;
   }
 
-  #showValue(type: ValueType): Lit.TemplateResult {
-    if (isNumber(type)) {
-      return this.#renderNumberValues(type);
-    }
-    if (isPointer(type)) {
-      return this.#renderPointerValue(type);
-    }
-    throw new Error(`No known way to format ${type}`);
-  }
+  // Some values are too long to show in one line, we're putting them into the next line.
+  const showInMultipleLines = type === ValueType.INT32 || type === ValueType.INT64;
+  const signedRendered = html`<span class="selectable-text" data-value="true" title=${
+      i18nString(UIStrings.signedValue)}>${signedValue}</span>`;
 
-  #renderPointerValue(type: ValueType): Lit.TemplateResult {
-    const unsignedValue = this.#parse({type, signed: false});
-    const address = getPointerAddress(type, this.#buffer, this.#endianness);
-    const jumpDisabled = Number.isNaN(address) || BigInt(address) >= BigInt(this.#memoryLength);
-    const buttonTitle = jumpDisabled ? i18nString(UIStrings.addressOutOfRange) : i18nString(UIStrings.jumpToPointer);
-    const iconColor = jumpDisabled ? 'var(--icon-default)' : 'var(--icon-link)';
-    // Disabled until https://crbug.com/1079231 is fixed.
-    // clang-format off
+  if (showInMultipleLines) {
     return html`
-      <span class="value-type-cell-no-mode value-type-cell selectable-text">${i18n.i18n.lockedString(type)}</span>
-      <div class="value-type-cell">
-        <div class="value-type-value-with-link" data-value="true">
-        <span class="selectable-text">${unsignedValue}</span>
-          ${
-            html`
-              <button class="jump-to-button" data-jump="true" title=${buttonTitle} ?disabled=${jumpDisabled}
-                jslog=${VisualLogging.action('linear-memory-inspector.jump-to-address').track({click: true})}
-                @click=${this.#onJumpToAddressClicked.bind(this, Number(address))}>
-                <devtools-icon name="open-externally" class="medium" style="color: ${iconColor}">
-                </devtools-icon>
-              </button>`}
-        </div>
-      </div>
-    `;
-    // clang-format on
-  }
-
-  #onJumpToAddressClicked(address: number): void {
-    this.dispatchEvent(new JumpToPointerAddressEvent(address));
-  }
-
-  #renderNumberValues(type: ValueType): Lit.TemplateResult {
-    // Disabled until https://crbug.com/1079231 is fixed.
-    // clang-format off
-    return html`
-      <span class="value-type-cell selectable-text">${i18n.i18n.lockedString(type)}</span>
-      <div>
-        <select title=${i18nString(UIStrings.changeValueTypeMode)}
-          data-mode-settings="true"
-          jslog=${VisualLogging.dropDown('linear-memory-inspector.value-type-mode').track({change: true})}
-          @change=${this.#onValueTypeModeChange.bind(this, type)}>
-            ${VALUE_TYPE_MODE_LIST.filter(x => isValidMode(type, x)).map(mode => {
-              return html`
-                <option value=${mode} .selected=${this.#valueTypeModeConfig.get(type) === mode}
-                        jslog=${VisualLogging.item(mode).track({click: true})}>${
-                  i18n.i18n.lockedString(mode)}
-                </option>`;
-            })}
-        </select>
-      </div>
-      ${this.#renderSignedAndUnsigned(type)}
-    `;
-    // clang-format on
-  }
-
-  #renderSignedAndUnsigned(type: ValueType): Lit.TemplateResult {
-    const unsignedValue = this.#parse({type, signed: false});
-    const signedValue = this.#parse({type, signed: true});
-    const mode = this.#valueTypeModeConfig.get(type);
-    const showSignedAndUnsigned =
-        signedValue !== unsignedValue && mode !== ValueTypeMode.HEXADECIMAL && mode !== ValueTypeMode.OCTAL;
-
-    const unsignedRendered = html`<span class="value-type-cell selectable-text"  title=${
-        i18nString(UIStrings.unsignedValue)} data-value="true">${unsignedValue}</span>`;
-    if (!showSignedAndUnsigned) {
-      return unsignedRendered;
-    }
-
-    // Some values are too long to show in one line, we're putting them into the next line.
-    const showInMultipleLines = type === ValueType.INT32 || type === ValueType.INT64;
-    const signedRendered = html`<span class="selectable-text" data-value="true" title=${
-        i18nString(UIStrings.signedValue)}>${signedValue}</span>`;
-
-    if (showInMultipleLines) {
-      return html`
         <div class="value-type-cell">
           ${unsignedRendered}
           ${signedRendered}
         </div>
         `;
-    }
+  }
 
-    return html`
+  return html`
       <div class="value-type-cell" style="flex-direction: row;">
         ${unsignedRendered}
         <span class="signed-divider"></span>
         ${signedRendered}
       </div>
     `;
-  }
-
-  #onValueTypeModeChange(type: ValueType, event: Event): void {
-    event.preventDefault();
-    const select = event.target as HTMLInputElement;
-    const mode = select.value as ValueTypeMode;
-    this.dispatchEvent(new ValueTypeModeChangedEvent(type, mode));
-  }
-
-  #parse(data: {type: ValueType, signed?: boolean}): string {
-    const mode = this.#valueTypeModeConfig.get(data.type);
-    return format(
-        {buffer: this.#buffer, type: data.type, endianness: this.#endianness, signed: data.signed || false, mode});
-  }
 }
 
-customElements.define('devtools-linear-memory-inspector-interpreter-display', ValueInterpreterDisplay);
+export class ValueInterpreterDisplay extends UI.Widget.Widget {
+  readonly #view: View;
+  #endianness = Endianness.LITTLE;
+  #buffer = new ArrayBuffer(0);
+  #valueTypes = new Set<ValueType>();
+  #valueTypeModeConfig: Map<ValueType, ValueTypeMode> = getDefaultValueTypeMapping();
+  #memoryLength = 0;
+  #onValueTypeModeChange: (type: ValueType, mode: ValueTypeMode) => void = () => {};
+  #onJumpToAddressClicked: (address: number) => void = () => {};
 
-declare global {
-  interface HTMLElementTagNameMap {
-    'devtools-linear-memory-inspector-interpreter-display': ValueInterpreterDisplay;
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
+    super(element);
+    this.#view = view;
+  }
+
+  set onValueTypeModeChange(callback: (type: ValueType, mode: ValueTypeMode) => void) {
+    this.#onValueTypeModeChange = callback;
+    this.performUpdate();
+  }
+
+  get onValueTypeModeChange(): (type: ValueType, mode: ValueTypeMode) => void {
+    return this.#onValueTypeModeChange;
+  }
+
+  set onJumpToAddressClicked(callback: (address: number) => void) {
+    this.#onJumpToAddressClicked = callback;
+    this.performUpdate();
+  }
+
+  get onJumpToAddressClicked(): (address: number) => void {
+    return this.#onJumpToAddressClicked;
+  }
+
+  get valueTypeModes(): Map<ValueType, ValueTypeMode> {
+    return this.#valueTypeModeConfig;
+  }
+
+  set valueTypeModes(modes: Map<ValueType, ValueTypeMode>) {
+    const newMap = getDefaultValueTypeMapping();
+    modes.forEach((mode, type) => {
+      if (isValidMode(type, mode)) {
+        newMap.set(type, mode);
+      }
+    });
+    this.#valueTypeModeConfig = newMap;
+    this.requestUpdate();
+  }
+
+  get valueTypes(): Set<ValueType> {
+    return this.#valueTypes;
+  }
+
+  set valueTypes(valueTypes: Set<ValueType>) {
+    this.#valueTypes = valueTypes;
+    this.requestUpdate();
+  }
+
+  get buffer(): ArrayBuffer {
+    return this.#buffer;
+  }
+
+  set buffer(buffer: ArrayBuffer) {
+    this.#buffer = buffer;
+    this.requestUpdate();
+  }
+
+  get endianness(): Endianness {
+    return this.#endianness;
+  }
+
+  set endianness(endianness: Endianness) {
+    this.#endianness = endianness;
+    this.requestUpdate();
+  }
+
+  get memoryLength(): number {
+    return this.#memoryLength;
+  }
+
+  set memoryLength(memoryLength: number) {
+    this.#memoryLength = memoryLength;
+    this.requestUpdate();
+  }
+
+  override performUpdate(): void {
+    const valueTypes = SORTED_VALUE_TYPES.filter(type => this.#valueTypes.has(type));
+    this.#view(
+        {
+          buffer: this.#buffer,
+          valueTypes,
+          endianness: this.#endianness,
+          memoryLength: this.#memoryLength,
+          valueTypeModes: this.#valueTypeModeConfig,
+          onValueTypeModeChange: this.#onValueTypeModeChange,
+          onJumpToAddressClicked: this.#onJumpToAddressClicked,
+        },
+        undefined, this.contentElement);
   }
 }

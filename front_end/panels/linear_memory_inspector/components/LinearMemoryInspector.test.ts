@@ -199,8 +199,7 @@ describe('LinearMemoryInspector', () => {
     component.endianness = LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.Endianness.LITTLE;
     await view.nextInput;
 
-    const event = new LinearMemoryInspectorComponents.ValueInterpreterDisplay.JumpToPointerAddressEvent(2);
-    view.input.onJumpToAddress(event);
+    view.input.onJumpToAddress(2);
     const newViewInput = await view.nextInput;
 
     const expectedSelectedByte = new DataView(memory.buffer).getUint32(0, true);
@@ -285,9 +284,7 @@ describe('LinearMemoryInspector', () => {
         component.once(LinearMemoryInspectorComponents.LinearMemoryInspector.Events.SETTINGS_CHANGED);
     const valueType = LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.INT16;
     const valueTypeMode = LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueTypeMode.HEXADECIMAL;
-    view.input.onValueTypeModeChanged(
-        new LinearMemoryInspectorComponents.ValueInterpreterDisplay.ValueTypeModeChangedEvent(
-            valueType, valueTypeMode));
+    view.input.onValueTypeModeChanged(valueType, valueTypeMode);
     const {valueTypes, modes} = await settingsPromise;
     assert.isTrue(valueTypes.has(valueType));
     assert.strictEqual(modes.get(valueType), valueTypeMode);

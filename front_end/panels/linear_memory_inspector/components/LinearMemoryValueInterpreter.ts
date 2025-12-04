@@ -4,7 +4,6 @@
 /* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 import '../../../ui/kit/kit.js';
-import './ValueInterpreterDisplay.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
@@ -14,6 +13,7 @@ import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import linearMemoryValueInterpreterStyles from './linearMemoryValueInterpreter.css.js';
+import {ValueInterpreterDisplay} from './ValueInterpreterDisplay.js';
 import {Endianness, type ValueType, type ValueTypeMode} from './ValueInterpreterDisplayUtils.js';
 import {ValueInterpreterSettings} from './ValueInterpreterSettings.js';
 
@@ -61,9 +61,13 @@ export interface LinearMemoryValueInterpreterData {
   endianness: Endianness;
   valueTypeModes?: Map<ValueType, ValueTypeMode>;
   memoryLength: number;
+  onValueTypeModeChange: (type: ValueType, mode: ValueTypeMode) => void;
+  onJumpToAddressClicked: (address: number) => void;
 }
 
 export class LinearMemoryValueInterpreter extends HTMLElement {
+  #onValueTypeModeChange: (type: ValueType, mode: ValueTypeMode) => void = () => {};
+  #onJumpToAddressClicked: (address: number) => void = () => {};
   readonly #shadow = this.attachShadow({mode: 'open'});
   #endianness = Endianness.LITTLE;
   #buffer = new ArrayBuffer(0);
@@ -78,6 +82,8 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
     this.#valueTypes = data.valueTypes;
     this.#valueTypeModeConfig = data.valueTypeModes || new Map();
     this.#memoryLength = data.memoryLength;
+    this.#onValueTypeModeChange = data.onValueTypeModeChange;
+    this.#onJumpToAddressClicked = data.onJumpToAddressClicked;
     this.#render();
   }
 
@@ -107,15 +113,16 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
                 valueTypes: this.#valueTypes, onToggle: this.#onSettingTypeToggle })}>
               </devtools-widget>` :
             html`
-              <devtools-linear-memory-inspector-interpreter-display
-                .data=${{
+              <devtools-widget .widgetConfig=${widgetConfig(ValueInterpreterDisplay, {
                   buffer: this.#buffer,
                   valueTypes: this.#valueTypes,
                   endianness: this.#endianness,
                   valueTypeModes: this.#valueTypeModeConfig,
                   memoryLength: this.#memoryLength,
-                }}>
-              </devtools-linear-memory-inspector-interpreter-display>`}
+                  onValueTypeModeChange: this.#onValueTypeModeChange,
+                  onJumpToAddressClicked: this.#onJumpToAddressClicked,
+                })}>
+              </devtools-widget>`}
         </div>
       </div>
     `,

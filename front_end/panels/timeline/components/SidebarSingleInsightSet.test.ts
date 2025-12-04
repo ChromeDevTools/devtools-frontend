@@ -7,7 +7,6 @@ import {getCleanTextContentFromElements, renderElementIntoDOM} from '../../../te
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {getInsightSetOrError} from '../../../testing/InsightHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
-import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import type * as UI from '../../../ui/legacy/legacy.js';
 
 import * as Components from './components.js';
@@ -15,24 +14,25 @@ import type * as InsightComponents from './insights/insights.js';
 
 type BaseInsightComponent =
     InsightComponents.BaseInsightComponent.BaseInsightComponent<Trace.Insights.Types.InsightModel>;
+type BaseInsightWidget = UI.Widget.WidgetElement<BaseInsightComponent>;
 
 function getUserVisibleInsights(component: Components.SidebarSingleInsightSet.SidebarSingleInsightSet): string[] {
-  assert.isOk(component.shadowRoot);
+  assert.isOk(component.element.shadowRoot);
   return [
-    ...component.shadowRoot.querySelectorAll<UI.Widget.WidgetElement<BaseInsightComponent>>('[data-insight-name]')
-  ].flatMap(component => getCleanTextContentFromElements(component.shadowRoot!, '.insight-title'))
+    ...component.element.shadowRoot.querySelectorAll<BaseInsightWidget>('[data-insight-name]')
+  ].flatMap(component => getCleanTextContentFromElements(component.getWidget()?.element.shadowRoot!, '.insight-title'))
       .filter(Boolean);
 }
 
 function getPassedInsights(component: Components.SidebarSingleInsightSet.SidebarSingleInsightSet): string[] {
-  assert.isOk(component.shadowRoot);
-  const passedInsightsSection = component.shadowRoot.querySelector<HTMLDetailsElement>('.passed-insights-section');
+  assert.isOk(component.element.shadowRoot);
+  const passedInsightsSection =
+      component.element.shadowRoot.querySelector<HTMLDetailsElement>('.passed-insights-section');
   assert.isOk(passedInsightsSection);
   passedInsightsSection.open = true;
   return [
-    ...passedInsightsSection.querySelectorAll<UI.Widget.WidgetElement<BaseInsightComponent>>(
-        '.passed-insights-section [data-insight-name]')
-  ].flatMap(component => getCleanTextContentFromElements(component.shadowRoot!, '.insight-title'));
+    ...passedInsightsSection.querySelectorAll<BaseInsightWidget>('.passed-insights-section [data-insight-name]')
+  ].flatMap(component => getCleanTextContentFromElements(component.getWidget()?.element.shadowRoot!, '.insight-title'));
 }
 
 describeWithEnvironment('SidebarSingleInsightSet', () => {
@@ -52,7 +52,7 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
       activeInsight: null,
       parsedTrace,
     };
-    await RenderCoordinator.done();
+    await component.updateComplete;
 
     const userVisibleTitles = getUserVisibleInsights(component);
     assert.deepEqual(userVisibleTitles, [
@@ -95,7 +95,7 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
       activeInsight: null,
       parsedTrace,
     };
-    await RenderCoordinator.done();
+    await component.updateComplete;
     const userVisibleTitles = getUserVisibleInsights(component);
     // Does not include "font display", which is experimental.
     assert.deepEqual(userVisibleTitles, [
@@ -149,13 +149,12 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
       },
       parsedTrace,
     };
-    await RenderCoordinator.done();
+    await component.updateComplete;
 
-    const expandedInsight = [
-      ...component.shadowRoot!.querySelectorAll<UI.Widget.WidgetElement<BaseInsightComponent>>('[data-insight-name]')
-    ].find(el => {
-      return el.getWidget()?.selected;
-    });
+    const expandedInsight =
+        [...component.element.shadowRoot!.querySelectorAll<BaseInsightWidget>('[data-insight-name]')].find(el => {
+          return el.getWidget()?.selected;
+        });
     assert.isOk(expandedInsight);
     assert.strictEqual(expandedInsight.getWidget()?.model?.title, 'LCP breakdown');
   });

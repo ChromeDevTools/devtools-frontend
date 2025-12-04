@@ -3,18 +3,17 @@
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-lit-render-outside-of-view */
 
-import './SidebarSingleInsightSet.js';
-
 import * as Trace from '../../../models/trace/trace.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
+import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as Utils from '../utils/utils.js';
 
 import * as Insights from './insights/insights.js';
 import type {ActiveInsight} from './Sidebar.js';
 import sidebarInsightsTabStyles from './sidebarInsightsTab.css.js';
-import type {SidebarSingleInsightSet, SidebarSingleInsightSetData} from './SidebarSingleInsightSet.js';
+import {SidebarSingleInsightSet, type SidebarSingleInsightSetData} from './SidebarSingleInsightSet.js';
 
 const {html} = Lit;
 
@@ -138,13 +137,11 @@ export class SidebarInsightsTab extends HTMLElement {
     if (!this.#activeInsight) {
       return;
     }
+
     // Find the right set for this insight via the set key.
-    const set = this.#shadow?.querySelector<SidebarSingleInsightSet>(
-        `devtools-performance-sidebar-single-navigation[data-insight-set-key="${this.#activeInsight.insightSetKey}"]`);
-    if (!set) {
-      return;
-    }
-    set.highlightActiveInsight();
+    const set = this.#shadow?.querySelector<UI.Widget.WidgetElement<SidebarSingleInsightSet>>(
+        `[data-insight-set-key="${this.#activeInsight.insightSetKey}"]`);
+    set?.getWidget()?.highlightActiveInsight();
   }
 
   #render(): void {
@@ -171,10 +168,10 @@ export class SidebarInsightsTab extends HTMLElement {
           };
 
           const contents = html`
-            <devtools-performance-sidebar-single-navigation
+            <devtools-widget
               data-insight-set-key=${id}
-              .data=${data}>
-            </devtools-performance-sidebar-single-navigation>
+              .widgetConfig=${UI.Widget.widgetConfig(SidebarSingleInsightSet, {data})}
+            ></devtools-widget>
           `;
 
           if (hasMultipleInsightSets) {

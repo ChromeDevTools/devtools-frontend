@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-imperative-dom-api */
+/* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 /*
  * Copyright (C) 2008 Apple Inc. All Rights Reserved.
@@ -40,6 +41,7 @@ import * as SourceMapScopes from '../../models/source_map_scopes/source_map_scop
 import * as Workspace from '../../models/workspace/workspace.js';
 import {Icon} from '../../ui/kit/kit.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import {Directives, html, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import callStackSidebarPaneStyles from './callStackSidebarPane.css.js';
@@ -88,6 +90,8 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/sources/CallStackSidebarPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
+const {createRef, ref} = Directives;
+
 let callstackSidebarPaneInstance: CallStackSidebarPane;
 
 export class CallStackSidebarPane extends UI.View.SimpleView implements UI.ContextFlavorListener.ContextFlavorListener,
@@ -115,11 +119,33 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
       viewId: 'sources.callstack',
       useShadowDom: true,
     });
-    this.registerRequiredCSS(callStackSidebarPaneStyles);
 
-    ({element: this.ignoreListMessageElement, checkbox: this.ignoreListCheckboxElement} =
-         this.createIgnoreListMessageElementAndCheckbox());
-    this.contentElement.appendChild(this.ignoreListMessageElement);
+    const [ignoreListMessageRef, ignoreListCheckboxRef] = [
+      createRef<HTMLElement>(),
+      createRef<HTMLInputElement>(),
+    ];
+    const ignoreListCheckboxChanged = (): void => {
+      this.showIgnoreListed = Boolean(ignoreListCheckboxRef.value?.checked);
+      for (const item of this.items) {
+        this.refreshItem(item);
+      }
+    };
+
+    // clang-format off
+    render(html`
+      <style>${callStackSidebarPaneStyles}</style>
+      <div class='ignore-listed-message' ${ref(ignoreListMessageRef)}>
+        <label class='ignore-listed-message-label'>
+          <input type='checkbox' tabindex=0 class='ignore-listed-checkbox'
+              @change=${ignoreListCheckboxChanged} ${ref(ignoreListCheckboxRef)}></input>
+          ${i18nString(UIStrings.showIgnorelistedFrames)}
+        </label>
+      </div>
+    `, this.contentElement);
+    // clang-format on
+
+    this.ignoreListMessageElement = ignoreListMessageRef.value as HTMLElement;
+    this.ignoreListCheckboxElement = ignoreListCheckboxRef.value as HTMLInputElement;
 
     this.notPausedMessageElement = this.contentElement.createChild('div', 'gray-info-message');
     this.notPausedMessageElement.textContent = i18nString(UIStrings.notPaused);
@@ -373,26 +399,6 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
 
   updateSelectedItemARIA(_fromElement: Element|null, _toElement: Element|null): boolean {
     return true;
-  }
-
-  private createIgnoreListMessageElementAndCheckbox(): {element: Element, checkbox: HTMLInputElement} {
-    const element = document.createElement('div');
-    element.classList.add('ignore-listed-message');
-    const label = element.createChild('label');
-    label.classList.add('ignore-listed-message-label');
-    const checkbox = label.createChild('input');
-    checkbox.tabIndex = 0;
-    checkbox.type = 'checkbox';
-    checkbox.classList.add('ignore-listed-checkbox');
-    label.append(i18nString(UIStrings.showIgnorelistedFrames));
-    const showAll = (): void => {
-      this.showIgnoreListed = checkbox.checked;
-      for (const item of this.items) {
-        this.refreshItem(item);
-      }
-    };
-    checkbox.addEventListener('click', showAll);
-    return {element, checkbox};
   }
 
   private createShowMoreMessageElement(): Element {

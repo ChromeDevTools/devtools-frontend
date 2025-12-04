@@ -1,26 +1,21 @@
 // Copyright 2023 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 import '../../../../ui/components/report_view/report_view.js';
+import '../../../../ui/kit/kit.js';
 
 import * as i18n from '../../../../core/i18n/i18n.js';
-import type * as Platform from '../../../../core/platform/platform.js';
-import type * as Protocol from '../../../../generated/protocol.js';
+import * as Platform from '../../../../core/platform/platform.js';
 import * as Buttons from '../../../../ui/components/buttons/buttons.js';
-import * as ChromeLink from '../../../../ui/components/chrome_link/chrome_link.js';
 import * as Dialogs from '../../../../ui/components/dialogs/dialogs.js';
-import * as LegacyWrapper from '../../../../ui/components/legacy_wrapper/legacy_wrapper.js';
-import * as RenderCoordinator from '../../../../ui/components/render_coordinator/render_coordinator.js';
-import * as uiI18n from '../../../../ui/i18n/i18n.js';
-import type * as UI from '../../../../ui/legacy/legacy.js';
-import * as Lit from '../../../../ui/lit/lit.js';
+import * as UI from '../../../../ui/legacy/legacy.js';
+import {html, i18nTemplate, type LitTemplate, nothing, render} from '../../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js';
 
 import preloadingDisabledInfobarStyles from './preloadingDisabledInfobar.css.js';
 
-const {html} = Lit;
+const {urlString} = Platform.DevToolsPath;
 
 const UIStrings = {
   /**
@@ -100,154 +95,195 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 const LINK = 'https://developer.chrome.com/blog/prerender-pages/';
 
-export class PreloadingDisabledInfobar extends LegacyWrapper.LegacyWrapper.WrappableComponent<UI.Widget.VBox> {
-  readonly #shadow = this.attachShadow({mode: 'open'});
-  #data: Protocol.Preload.PreloadEnabledStateUpdatedEvent = {
-    disabledByPreference: false,
-    disabledByDataSaver: false,
-    disabledByBatterySaver: false,
-    disabledByHoldbackPrefetchSpeculationRules: false,
-    disabledByHoldbackPrerenderSpeculationRules: false,
-  };
-
-  connectedCallback(): void {
-    void this.#render();
-  }
-
-  set data(data: Protocol.Preload.PreloadEnabledStateUpdatedEvent) {
-    this.#data = data;
-    void this.#render();
-  }
-
-  async #render(): Promise<void> {
-    await RenderCoordinator.write('PreloadingDisabledInfobar render', () => {
-      Lit.render(this.#renderTemplate(), this.#shadow, {host: this});
-    });
-  }
-
-  #renderTemplate(): Lit.LitTemplate {
-    const forceEnabled =
-        this.#data.disabledByHoldbackPrefetchSpeculationRules || this.#data.disabledByHoldbackPrerenderSpeculationRules;
-    const disabled =
-        this.#data.disabledByPreference || this.#data.disabledByDataSaver || this.#data.disabledByBatterySaver;
-
-    let header;
-    if (disabled) {
-      header = i18nString(UIStrings.infobarPreloadingIsDisabled);
-    } else if (forceEnabled) {
-      header = i18nString(UIStrings.infobarPreloadingIsForceEnabled);
-    } else {
-      return Lit.nothing;
-    }
-
-    // Disabled until https://crbug.com/1079231 is fixed.
-    // clang-format off
-    return html`
-      <style>${preloadingDisabledInfobarStyles}</style>
-      <div id='container'>
-        <span id='header'>
-          ${header}
-        </span>
-
-        <devtools-button-dialog
-          .data=${{
-            iconName: 'info',
-            variant: Buttons.Button.Variant.ICON,
-            closeButton: true,
-            position: Dialogs.Dialog.DialogVerticalPosition.AUTO,
-            horizontalAlignment: Dialogs.Dialog.DialogHorizontalAlignment.AUTO,
-            closeOnESC: true,
-            closeOnScroll: false,
-            dialogTitle: i18nString(UIStrings.titleReasonsPreventingPreloading),
-          } as Dialogs.ButtonDialog.ButtonDialogData}
-          jslog=${VisualLogging.dialog('preloading-disabled').track({resize: true, keydown: 'Escape'})}
-        >
-          ${this.#dialogContents()}
-        </devtools-button-dialog>
-      </div>
-    `;
-    // clang-format on
-  }
-
-  #dialogContents(): Lit.LitTemplate {
-    return html`
-      <div id='contents'>
-        <devtools-report>
-          ${this.#maybeDisableByPreference()}
-          ${this.#maybeDisableByDataSaver()}
-          ${this.#maybeDisableByBatterySaver()}
-          ${this.#maybeDisableByHoldbackPrefetchSpeculationRules()}
-          ${this.#maybeDisableByHoldbackPrerenderSpeculationRules()}
-        </devtools-report>
-        <div id='footer'>
-          <x-link class="devtools-link" tabindex="0" href=${LINK} 
-          jslog=${VisualLogging.link().track({click: true, keydown: 'Enter|Space'}).context('learn-more')}
-          >${i18nString(UIStrings.footerLearnMore)}</x-link>
-          <x-link class="icon-link devtools-link" tabindex="0" href=${LINK}></x-link>
-        </div>
-      </div>
-    `;
-  }
-
-  #maybeKeyValue(shouldShow: boolean, header: string, description: string|Element): Lit.LitTemplate {
-    if (!shouldShow) {
-      return Lit.nothing;
-    }
-
-    return html`
-      <div class='key'>
-        ${header}
-      </div>
-      <div class='value'>
-        ${description}
-      </div>
-    `;
-  }
-
-  #maybeDisableByPreference(): Lit.LitTemplate {
-    const preloadingSettingLink = new ChromeLink.ChromeLink.ChromeLink();
-    preloadingSettingLink.href = 'chrome://settings/performance' as Platform.DevToolsPath.UrlString;
-    preloadingSettingLink.textContent = i18nString(UIStrings.preloadingPagesSettings);
-    const extensionsSettingLink = new ChromeLink.ChromeLink.ChromeLink();
-    extensionsSettingLink.href = 'chrome://extensions' as Platform.DevToolsPath.UrlString;
-    extensionsSettingLink.textContent = i18nString(UIStrings.extensionsSettings);
-    const description = uiI18n.getFormatLocalizedString(
-        str_, UIStrings.descriptionDisabledByPreference, {PH1: preloadingSettingLink, PH2: extensionsSettingLink});
-    return this.#maybeKeyValue(
-        this.#data.disabledByPreference, i18nString(UIStrings.headerDisabledByPreference), description);
-  }
-
-  #maybeDisableByDataSaver(): Lit.LitTemplate {
-    return this.#maybeKeyValue(
-        this.#data.disabledByDataSaver, i18nString(UIStrings.headerDisabledByDataSaver),
-        i18nString(UIStrings.descriptionDisabledByDataSaver));
-  }
-
-  #maybeDisableByBatterySaver(): Lit.LitTemplate {
-    return this.#maybeKeyValue(
-        this.#data.disabledByBatterySaver, i18nString(UIStrings.headerDisabledByBatterySaver),
-        i18nString(UIStrings.descriptionDisabledByBatterySaver));
-  }
-
-  #maybeDisableByHoldbackPrefetchSpeculationRules(): Lit.LitTemplate {
-    return this.#maybeKeyValue(
-        this.#data.disabledByHoldbackPrefetchSpeculationRules,
-        i18nString(UIStrings.headerDisabledByHoldbackPrefetchSpeculationRules),
-        i18nString(UIStrings.descriptionDisabledByHoldbackPrefetchSpeculationRules));
-  }
-
-  #maybeDisableByHoldbackPrerenderSpeculationRules(): Lit.LitTemplate {
-    return this.#maybeKeyValue(
-        this.#data.disabledByHoldbackPrerenderSpeculationRules,
-        i18nString(UIStrings.headerDisabledByHoldbackPrerenderSpeculationRules),
-        i18nString(UIStrings.descriptionDisabledByHoldbackPrerenderSpeculationRules));
-  }
+export interface ViewInput {
+  header: Platform.UIString.LocalizedString|null;
+  warnings: Array<{
+    key: Platform.UIString.LocalizedString,
+    valueId: string,
+    placeholders?: Record<string, {
+                  title: Platform.UIString.LocalizedString,
+                  href: Platform.DevToolsPath.UrlString,
+                }>,
+  }>;
 }
 
-customElements.define('devtools-resources-preloading-disabled-infobar', PreloadingDisabledInfobar);
+type ViewOutput = unknown;
 
-declare global {
-  interface HTMLElementTagNameMap {
-    'devtools-resources-preloading-disabled-infobar': PreloadingDisabledInfobar;
+export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement|DocumentFragment) => void;
+
+export const DEFAULT_VIEW: View = (input, _output, target) => {
+  let template: LitTemplate = nothing;
+  if (input.header !== null) {
+    // Disabled until https://crbug.com/1079231 is fixed.
+    // clang-format off
+    template = html`
+        <style>${preloadingDisabledInfobarStyles}</style>
+        <div id="container">
+          <span id="header">${input.header}</span>
+          <devtools-button-dialog .data=${{
+                                    iconName: 'info',
+                                    variant: Buttons.Button.Variant.ICON,
+                                    closeButton: true,
+                                    position: Dialogs.Dialog.DialogVerticalPosition.AUTO,
+                                    horizontalAlignment: Dialogs.Dialog.DialogHorizontalAlignment.AUTO,
+                                    closeOnESC: true,
+                                    closeOnScroll: false,
+                                    dialogTitle: i18nString(UIStrings.titleReasonsPreventingPreloading),
+                                  } as Dialogs.ButtonDialog.ButtonDialogData}
+                                  jslog=${VisualLogging.dialog('preloading-disabled').track({resize: true, keydown: 'Escape'})}>
+            <div id="contents">
+              <devtools-report>
+                ${input.warnings.map(({key, valueId, placeholders = {}}) => {
+                  const value = i18nTemplate(
+                      str_, valueId,
+                      Object.fromEntries(Object.entries(placeholders).map(
+                          ([key, {title, href}]) =>
+                              [key, html`<devtools-link href=${href}>${title}</devtools-link>`])));
+                  return html`
+                      <div class="key">${key}</div>
+                      <div class="value">${value}</div>
+                    `;
+                })}
+              </devtools-report>
+              <div id="footer">
+                <devtools-link href=${LINK} jslogcontext="learn-more">
+                  ${i18nString(UIStrings.footerLearnMore)}
+                </devtools-link>
+              </div>
+            </div>
+          </devtools-button-dialog>
+        </div>`;
+    // clang-format on
+  }
+  render(template, target);
+};
+
+export class PreloadingDisabledInfobar extends UI.Widget.VBox {
+  #view: View;
+  #disabledByPreference = false;
+  #disabledByDataSaver = false;
+  #disabledByBatterySaver = false;
+  #disabledByHoldbackPrefetchSpeculationRules = false;
+  #disabledByHoldbackPrerenderSpeculationRules = false;
+
+  constructor(view: View = DEFAULT_VIEW) {
+    super({useShadowDom: true});
+    this.#view = view;
+  }
+
+  get disabledByPreference(): boolean {
+    return this.#disabledByPreference;
+  }
+
+  set disabledByPreference(value: boolean) {
+    if (this.#disabledByPreference !== value) {
+      this.#disabledByPreference = value;
+      this.requestUpdate();
+    }
+  }
+
+  get disabledByDataSaver(): boolean {
+    return this.#disabledByDataSaver;
+  }
+
+  set disabledByDataSaver(value: boolean) {
+    if (this.#disabledByDataSaver !== value) {
+      this.#disabledByDataSaver = value;
+      this.requestUpdate();
+    }
+  }
+
+  get disabledByBatterySaver(): boolean {
+    return this.#disabledByBatterySaver;
+  }
+
+  set disabledByBatterySaver(value: boolean) {
+    if (this.#disabledByBatterySaver !== value) {
+      this.#disabledByBatterySaver = value;
+      this.requestUpdate();
+    }
+  }
+
+  get disabledByHoldbackPrefetchSpeculationRules(): boolean {
+    return this.#disabledByHoldbackPrefetchSpeculationRules;
+  }
+
+  set disabledByHoldbackPrefetchSpeculationRules(value: boolean) {
+    if (this.#disabledByHoldbackPrefetchSpeculationRules !== value) {
+      this.#disabledByHoldbackPrefetchSpeculationRules = value;
+      this.requestUpdate();
+    }
+  }
+
+  get disabledByHoldbackPrerenderSpeculationRules(): boolean {
+    return this.#disabledByHoldbackPrerenderSpeculationRules;
+  }
+
+  set disabledByHoldbackPrerenderSpeculationRules(value: boolean) {
+    if (this.#disabledByHoldbackPrerenderSpeculationRules !== value) {
+      this.#disabledByHoldbackPrerenderSpeculationRules = value;
+      this.requestUpdate();
+    }
+  }
+
+  override wasShown(): void {
+    super.wasShown();
+    this.requestUpdate();
+  }
+
+  override performUpdate(): void {
+    let header: Platform.UIString.LocalizedString|null = null;
+    if (this.#disabledByPreference || this.#disabledByDataSaver || this.#disabledByBatterySaver) {
+      header = i18nString(UIStrings.infobarPreloadingIsDisabled);
+    } else if (this.#disabledByHoldbackPrefetchSpeculationRules || this.#disabledByHoldbackPrerenderSpeculationRules) {
+      header = i18nString(UIStrings.infobarPreloadingIsForceEnabled);
+    }
+    const warnings = [];
+    if (this.#disabledByPreference) {
+      warnings.push({
+        key: i18nString(UIStrings.headerDisabledByPreference),
+        valueId: UIStrings.descriptionDisabledByPreference,
+        placeholders: {
+          PH1: {
+            title: i18nString(UIStrings.preloadingPagesSettings),
+            href: urlString`chrome://settings/performance`,
+          },
+          PH2: {
+            title: i18nString(UIStrings.extensionsSettings),
+            href: urlString`chrome://extensions`,
+          },
+        },
+      });
+    }
+    if (this.#disabledByDataSaver) {
+      warnings.push({
+        key: i18nString(UIStrings.headerDisabledByDataSaver),
+        valueId: UIStrings.descriptionDisabledByDataSaver,
+      });
+    }
+    if (this.#disabledByBatterySaver) {
+      warnings.push({
+        key: i18nString(UIStrings.headerDisabledByBatterySaver),
+        valueId: UIStrings.descriptionDisabledByBatterySaver,
+      });
+    }
+    if (this.#disabledByHoldbackPrefetchSpeculationRules) {
+      warnings.push({
+        key: i18nString(UIStrings.headerDisabledByHoldbackPrefetchSpeculationRules),
+        valueId: UIStrings.descriptionDisabledByHoldbackPrefetchSpeculationRules,
+      });
+    }
+    if (this.#disabledByHoldbackPrerenderSpeculationRules) {
+      warnings.push({
+        key: i18nString(UIStrings.headerDisabledByHoldbackPrerenderSpeculationRules),
+        valueId: UIStrings.descriptionDisabledByHoldbackPrerenderSpeculationRules,
+      });
+    }
+    const input: ViewInput = {
+      header,
+      warnings,
+    };
+    const output: ViewOutput = undefined;
+    this.#view(input, output, this.contentElement);
   }
 }

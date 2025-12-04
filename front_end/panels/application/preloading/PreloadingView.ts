@@ -197,7 +197,7 @@ export class PreloadingRuleSetView extends UI.Widget.VBox {
   private focusedRuleSetId: Protocol.Preload.RuleSetId|null = null;
 
   private readonly warningsContainer: HTMLDivElement;
-  private readonly warningsView = new PreloadingWarningsView();
+  private readonly warningsView = new PreloadingComponents.PreloadingDisabledInfobar.PreloadingDisabledInfobar();
   private readonly hsplit: HTMLElement;
   private readonly ruleSetGrid = new PreloadingComponents.RuleSetGrid.RuleSetGrid();
   private readonly ruleSetDetailsRef:
@@ -215,8 +215,9 @@ export class PreloadingRuleSetView extends UI.Widget.VBox {
         SDK.PreloadingModel.PreloadingModel, SDK.PreloadingModel.Events.MODEL_UPDATED, this.render, this,
         {scoped: true});
     SDK.TargetManager.TargetManager.instance().addModelListener(
-        SDK.PreloadingModel.PreloadingModel, SDK.PreloadingModel.Events.WARNINGS_UPDATED,
-        this.warningsView.onWarningsUpdated, this.warningsView, {scoped: true});
+        SDK.PreloadingModel.PreloadingModel, SDK.PreloadingModel.Events.WARNINGS_UPDATED, e => {
+          Object.assign(this.warningsView, e.data);
+        }, this, {scoped: true});
 
     // this (VBox)
     //   +- warningsContainer
@@ -362,7 +363,7 @@ export class PreloadingAttemptView extends UI.Widget.VBox {
   private focusedPreloadingAttemptId: SDK.PreloadingModel.PreloadingAttemptId|null = null;
 
   private readonly warningsContainer: HTMLDivElement;
-  private readonly warningsView = new PreloadingWarningsView();
+  private readonly warningsView = new PreloadingComponents.PreloadingDisabledInfobar.PreloadingDisabledInfobar();
   private readonly preloadingGrid = new PreloadingComponents.PreloadingGrid.PreloadingGrid();
   private readonly preloadingDetails =
       new PreloadingComponents.PreloadingDetailsReportView.PreloadingDetailsReportView();
@@ -381,8 +382,9 @@ export class PreloadingAttemptView extends UI.Widget.VBox {
         SDK.PreloadingModel.PreloadingModel, SDK.PreloadingModel.Events.MODEL_UPDATED, this.render, this,
         {scoped: true});
     SDK.TargetManager.TargetManager.instance().addModelListener(
-        SDK.PreloadingModel.PreloadingModel, SDK.PreloadingModel.Events.WARNINGS_UPDATED,
-        this.warningsView.onWarningsUpdated, this.warningsView, {scoped: true});
+        SDK.PreloadingModel.PreloadingModel, SDK.PreloadingModel.Events.WARNINGS_UPDATED, e => {
+          Object.assign(this.warningsView, e.data);
+        }, this, {scoped: true});
 
     // this (VBox)
     //   +- warningsContainer
@@ -526,7 +528,7 @@ export class PreloadingSummaryView extends UI.Widget.VBox {
   private model: SDK.PreloadingModel.PreloadingModel;
 
   private readonly warningsContainer: HTMLDivElement;
-  private readonly warningsView = new PreloadingWarningsView();
+  private readonly warningsView = new PreloadingComponents.PreloadingDisabledInfobar.PreloadingDisabledInfobar();
   private readonly usedPreloading = new PreloadingComponents.UsedPreloadingView.UsedPreloadingView();
 
   constructor(model: SDK.PreloadingModel.PreloadingModel) {
@@ -542,8 +544,9 @@ export class PreloadingSummaryView extends UI.Widget.VBox {
         SDK.PreloadingModel.PreloadingModel, SDK.PreloadingModel.Events.MODEL_UPDATED, this.render, this,
         {scoped: true});
     SDK.TargetManager.TargetManager.instance().addModelListener(
-        SDK.PreloadingModel.PreloadingModel, SDK.PreloadingModel.Events.WARNINGS_UPDATED,
-        this.warningsView.onWarningsUpdated, this.warningsView, {scoped: true});
+        SDK.PreloadingModel.PreloadingModel, SDK.PreloadingModel.Events.WARNINGS_UPDATED, e => {
+          Object.assign(this.warningsView, e.data);
+        }, this, {scoped: true});
 
     this.warningsContainer = document.createElement('div');
     this.warningsContainer.classList.add('flex-none');
@@ -724,23 +727,5 @@ class PreloadingRuleSetSelector implements
       _from: Protocol.Preload.RuleSetId|typeof AllRuleSetRootId,
       _to: Protocol.Preload.RuleSetId|typeof AllRuleSetRootId, _fromElement: Element|null,
       _toElement: Element|null): void {
-  }
-}
-
-export class PreloadingWarningsView extends UI.Widget.VBox {
-  private readonly infobar = new PreloadingComponents.PreloadingDisabledInfobar.PreloadingDisabledInfobar();
-
-  constructor() {
-    super();
-    this.registerRequiredCSS(emptyWidgetStyles);
-  }
-
-  override wasShown(): void {
-    super.wasShown();
-    this.contentElement.append(this.infobar);
-  }
-
-  onWarningsUpdated(args: Common.EventTarget.EventTargetEvent<Protocol.Preload.PreloadEnabledStateUpdatedEvent>): void {
-    this.infobar.data = args.data;
   }
 }

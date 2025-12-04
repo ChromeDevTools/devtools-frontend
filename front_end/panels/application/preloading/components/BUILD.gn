@@ -42,7 +42,6 @@ devtools_ui_module("components") {
     "../../../../panels/network/forward:bundle",
     "../../../../ui/components/adorners:bundle",
     "../../../../ui/components/buttons:bundle",
-    "../../../../ui/components/chrome_link:bundle",
     "../../../../ui/components/dialogs:bundle",
     "../../../../ui/components/expandable_list:bundle",
     "../../../../ui/components/legacy_wrapper:bundle",
@@ -85,6 +84,7 @@ devtools_ui_module("unittests") {
   sources = [
     "MismatchedPreloadingGrid.test.ts",
     "PreloadingDetailsReportView.test.ts",
+    "PreloadingDisabledInfobar.test.ts",
     "PreloadingGrid.test.ts",
     "RuleSetDetailsView.test.ts",
     "RuleSetGrid.test.ts",

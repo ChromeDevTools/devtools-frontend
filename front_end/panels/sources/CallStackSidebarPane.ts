@@ -120,9 +120,10 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
       useShadowDom: true,
     });
 
-    const [ignoreListMessageRef, ignoreListCheckboxRef] = [
+    const [ignoreListMessageRef, ignoreListCheckboxRef, notPausedRef] = [
       createRef<HTMLElement>(),
       createRef<HTMLInputElement>(),
+      createRef<HTMLElement>(),
     ];
     const ignoreListCheckboxChanged = (): void => {
       this.showIgnoreListed = Boolean(ignoreListCheckboxRef.value?.checked);
@@ -141,15 +142,15 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
           ${i18nString(UIStrings.showIgnorelistedFrames)}
         </label>
       </div>
+      <div class='gray-info-message' tabindex=-1 ${ref(notPausedRef)}>
+        ${i18nString(UIStrings.notPaused)}
+      </div>
     `, this.contentElement);
     // clang-format on
 
     this.ignoreListMessageElement = ignoreListMessageRef.value as HTMLElement;
     this.ignoreListCheckboxElement = ignoreListCheckboxRef.value as HTMLInputElement;
-
-    this.notPausedMessageElement = this.contentElement.createChild('div', 'gray-info-message');
-    this.notPausedMessageElement.textContent = i18nString(UIStrings.notPaused);
-    this.notPausedMessageElement.tabIndex = -1;
+    this.notPausedMessageElement = notPausedRef.value as HTMLElement;
 
     this.callFrameWarningsElement = this.contentElement.createChild('div', 'call-frame-warnings-message');
     const icon = new Icon();

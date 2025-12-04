@@ -200,6 +200,7 @@ export class PreloadingRuleSetView extends UI.Widget.VBox {
   private readonly warningsView = new PreloadingComponents.PreloadingDisabledInfobar.PreloadingDisabledInfobar();
   private readonly hsplit: HTMLElement;
   private readonly ruleSetGrid = new PreloadingComponents.RuleSetGrid.RuleSetGrid();
+  private readonly ruleSetGridContainerRef = createRef<HTMLDivElement>();
   private readonly ruleSetDetailsRef:
       Directives.Ref<UI.Widget.WidgetElement<PreloadingComponents.RuleSetDetailsView.RuleSetDetailsView>>;
 
@@ -236,7 +237,8 @@ export class PreloadingRuleSetView extends UI.Widget.VBox {
     this.contentElement.insertBefore(this.warningsContainer, this.contentElement.firstChild);
     this.warningsView.show(this.warningsContainer);
 
-    this.ruleSetGrid.addEventListener('select', this.onRuleSetsGridCellFocused.bind(this));
+    this.ruleSetGrid.addEventListener(
+        PreloadingComponents.RuleSetGrid.Events.SELECT, this.onRuleSetsGridCellFocused, this);
     this.ruleSetDetailsRef =
         createRef<UI.Widget.WidgetElement<PreloadingComponents.RuleSetDetailsView.RuleSetDetailsView>>();
     const onPrettyPrintToggle = (): void => {
@@ -259,8 +261,7 @@ export class PreloadingRuleSetView extends UI.Widget.VBox {
           </div>
         </div>
         <devtools-split-view sidebar-position="second">
-          <div slot="main">
-            ${this.ruleSetGrid}
+          <div slot="main" ${ref(this.ruleSetGridContainerRef)}>
           </div>
           <div slot="sidebar" jslog=${VisualLogging.section('rule-set-details')}>
             <devtools-widget .widgetConfig=${UI.Widget.widgetConfig(PreloadingComponents.RuleSetDetailsView.RuleSetDetailsView, {
@@ -336,14 +337,18 @@ export class PreloadingRuleSetView extends UI.Widget.VBox {
         preloadsStatusSummary: PreloadingUIUtils.preloadsStatusSummary(countsByStatus),
       };
     });
-    this.ruleSetGrid.update({rows: ruleSetRows, pageURL: pageURL()});
+    this.ruleSetGrid.data = {rows: ruleSetRows, pageURL: pageURL()};
     this.contentElement.classList.toggle('empty', ruleSetRows.length === 0);
     this.updateRuleSetDetails();
+
+    const container = this.ruleSetGridContainerRef.value;
+    if (container && this.ruleSetGrid.element.parentElement !== container) {
+      this.ruleSetGrid.show(container);
+    }
   }
 
-  private onRuleSetsGridCellFocused(event: Event): void {
-    const focusedEvent = event as CustomEvent<Protocol.Preload.RuleSetId>;
-    this.focusedRuleSetId = focusedEvent.detail;
+  private onRuleSetsGridCellFocused(event: Common.EventTarget.EventTargetEvent<Protocol.Preload.RuleSetId>): void {
+    this.focusedRuleSetId = event.data;
     this.render();
   }
 

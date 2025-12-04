@@ -20,13 +20,15 @@ import * as ReportView from '../../../ui/components/report_view/report_view.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Resources from '../application.js';
 
-import type * as PreloadingComponents from './components/components.js';
+import * as PreloadingComponents from './components/components.js';
 
 const zip2 = <T, S>(xs: T[], ys: S[]) => {
   assert.strictEqual(xs.length, ys.length);
 
   return Array.from(xs.map((_, i) => [xs[i], ys[i]]));
 };
+
+const doubleRaf = () => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
 
 /** Holds targets and ids, and emits events. **/
 class NavigationEmulator {
@@ -355,12 +357,13 @@ describeWithMockConnection('PreloadingRuleSetView', () => {
     });
 
     await RenderCoordinator.done();
+    await doubleRaf();
 
-    const ruleSetGridComponent = view.getRuleSetGridForTest();
-    assert.isNotNull(ruleSetGridComponent.shadowRoot);
+    const ruleSetGrid = view.getRuleSetGridForTest();
+    assert.isNotNull(ruleSetGrid.element.shadowRoot);
 
     assertGridContents(
-        ruleSetGridComponent,
+        ruleSetGrid.element,
         ['Rule set', 'Status'],
         [
           ['example.com/', '1 running'],
@@ -386,12 +389,13 @@ describeWithMockConnection('PreloadingRuleSetView', () => {
 `);
 
     await RenderCoordinator.done();
+    await doubleRaf();
 
-    const ruleSetGridComponent = view.getRuleSetGridForTest();
-    assert.isNotNull(ruleSetGridComponent.shadowRoot);
+    const ruleSetGrid = view.getRuleSetGridForTest();
+    assert.isNotNull(ruleSetGrid.element.shadowRoot);
 
     assertGridContents(
-        ruleSetGridComponent,
+        ruleSetGrid.element,
         ['Rule set', 'Status'],
         [
           ['example.com/', '1 error'],
@@ -399,7 +403,8 @@ describeWithMockConnection('PreloadingRuleSetView', () => {
 
     );
 
-    ruleSetGridComponent.dispatchEvent(new CustomEvent('select', {detail: 'ruleSetId:0.2'}));
+    ruleSetGrid.dispatchEventToListeners(
+        PreloadingComponents.RuleSetGrid.Events.SELECT, 'ruleSetId:0.2' as Protocol.Preload.RuleSetId);
 
     await RenderCoordinator.done();
     const ruleSetDetailsElement =
@@ -438,12 +443,13 @@ describeWithMockConnection('PreloadingRuleSetView', () => {
     await emulator.navigateAndDispatchEvents('notprerendered.html');
 
     await RenderCoordinator.done();
+    await doubleRaf();
 
-    const ruleSetGridComponent = view.getRuleSetGridForTest();
-    assert.isNotNull(ruleSetGridComponent.shadowRoot);
+    const ruleSetGrid = view.getRuleSetGridForTest();
+    assert.isNotNull(ruleSetGrid.element.shadowRoot);
 
     assertGridContents(
-        ruleSetGridComponent,
+        ruleSetGrid.element,
         ['Rule set', 'Status'],
         [],
     );
@@ -468,12 +474,13 @@ describeWithMockConnection('PreloadingRuleSetView', () => {
     await emulator.activateAndDispatchEvents('prerendered.html');
 
     await RenderCoordinator.done();
+    await doubleRaf();
 
-    const ruleSetGridComponent = view.getRuleSetGridForTest();
-    assert.isNotNull(ruleSetGridComponent.shadowRoot);
+    const ruleSetGrid = view.getRuleSetGridForTest();
+    assert.isNotNull(ruleSetGrid.element.shadowRoot);
 
     assertGridContents(
-        ruleSetGridComponent,
+        ruleSetGrid.element,
         ['Rule set', 'Status'],
         [],
     );
@@ -517,12 +524,13 @@ describeWithMockConnection('PreloadingRuleSetView', () => {
     });
 
     await RenderCoordinator.done();
+    await doubleRaf();
 
-    const ruleSetGridComponent = view.getRuleSetGridForTest();
-    assert.isNotNull(ruleSetGridComponent.shadowRoot);
+    const ruleSetGrid = view.getRuleSetGridForTest();
+    assert.isNotNull(ruleSetGrid.element.shadowRoot);
 
     assertGridContents(
-        ruleSetGridComponent,
+        ruleSetGrid.element,
         ['Rule set', 'Status'],
         [
           ['example.com/', ''],

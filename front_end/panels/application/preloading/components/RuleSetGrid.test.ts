@@ -2,191 +2,147 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../../../core/common/common.js';
 import * as Platform from '../../../../core/platform/platform.js';
-import * as Protocol from '../../../../generated/protocol.js';
-import {assertGridContents} from '../../../../testing/DataGridHelpers.js';
-import {renderElementIntoDOM} from '../../../../testing/DOMHelpers.js';
-import {describeWithEnvironment} from '../../../../testing/EnvironmentHelpers.js';
-import * as RenderCoordinator from '../../../../ui/components/render_coordinator/render_coordinator.js';
+import * as SDK from '../../../../core/sdk/sdk.js';
+import type * as Protocol from '../../../../generated/protocol.js';
+import {createTarget, describeWithEnvironment} from '../../../../testing/EnvironmentHelpers.js';
+import {createViewFunctionStub} from '../../../../testing/ViewFunctionHelpers.js';
+import * as NetworkForward from '../../../network/forward/forward.js';
+import * as PreloadingHelper from '../helper/helper.js';
 
 import * as PreloadingComponents from './components.js';
 
 const {urlString} = Platform.DevToolsPath;
 
-async function assertRenderResult(
-    rowsInput: PreloadingComponents.RuleSetGrid.RuleSetGridData, headerExpected: string[],
-    rowsExpected: string[][]): Promise<Element> {
-  const component = new PreloadingComponents.RuleSetGrid.RuleSetGrid();
-  component.style.display = 'block';
-  component.style.width = '640px';
-  component.style.height = '480px';
-  component.update(rowsInput);
-  renderElementIntoDOM(component);
-  await RenderCoordinator.done();
-
-  return assertGridContents(
-      component,
-      headerExpected,
-      rowsExpected,
-  );
-}
-
 describeWithEnvironment('RuleSetGrid', () => {
-  it('renders grid', async () => {
-    await assertRenderResult(
-        {
-          rows: [{
-            ruleSet: {
-              id: 'ruleSetId:0.1' as Protocol.Preload.RuleSetId,
-              loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
-              sourceText: `
-{
-  "prefetch":[
-    {
-      "source": "list",
-      "urls": ["/prefetched.html"]
-    }
-  ]
-}
-`,
-            },
-            preloadsStatusSummary: '1 Not triggered, 2 Ready, 3 Failure',
-          }],
-          pageURL: urlString`https://example.com/`,
+  it('updates view with correct data', async () => {
+    const view = createViewFunctionStub(PreloadingComponents.RuleSetGrid.RuleSetGrid);
+    const ruleSetGrid = new PreloadingComponents.RuleSetGrid.RuleSetGrid(view);
+    const data: PreloadingComponents.RuleSetGrid.RuleSetGridData = {
+      rows: [{
+        ruleSet: {
+          id: 'ruleSetId:0.1' as Protocol.Preload.RuleSetId,
+          loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
+          sourceText: '{}',
         },
-        ['Rule set', 'Status'],
-        [
-          ['example.com/', '1 Not triggered, 2 Ready, 3 Failure'],
-        ],
-    );
+        preloadsStatusSummary: 'Summary',
+      }],
+      pageURL: urlString`https://example.com/`,
+    };
+
+    ruleSetGrid.data = data;
+    const input = await view.nextInput;
+    assert.deepEqual(input.data, data);
   });
 
-  it('renders tag instead of url correctly', async () => {
-    await assertRenderResult(
-        {
-          rows: [{
-            ruleSet: {
-              id: 'ruleSetId:0.1' as Protocol.Preload.RuleSetId,
-              loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
-              tag: 'tag1',
-              sourceText: `
-{
-  "tag": "tag1",
-  "prefetch":[
-    {
-      "source": "list",
-      "urls": ["/prefetched.html"]
-    }
-  ]
-}
-`,
-            },
-            preloadsStatusSummary: '1 Not triggered, 2 Ready, 3 Failure',
-          }],
-          pageURL: urlString`https://example.com/`,
-        },
-        ['Rule set', 'Status'],
-        [
-          ['\"tag1\"', '1 Not triggered, 2 Ready, 3 Failure'],
-        ],
-    );
+  it('dispatches select event on onSelect', async () => {
+    const view = createViewFunctionStub(PreloadingComponents.RuleSetGrid.RuleSetGrid);
+    const ruleSetGrid = new PreloadingComponents.RuleSetGrid.RuleSetGrid(view);
+    const data: PreloadingComponents.RuleSetGrid.RuleSetGridData = {
+      rows: [],
+      pageURL: urlString`https://example.com/`,
+    };
+    ruleSetGrid.data = data;
+    const input = await view.nextInput;
+
+    const eventPromise = ruleSetGrid.once(PreloadingComponents.RuleSetGrid.Events.SELECT);
+
+    input.onSelect('ruleSetId:1' as Protocol.Preload.RuleSetId);
+
+    const ruleSetId = await eventPromise;
+    assert.strictEqual(ruleSetId, 'ruleSetId:1');
   });
 
-  it('shows short url for out-of-document speculation rules', async () => {
-    await assertRenderResult(
-        {
-          rows: [{
-            ruleSet: {
-              id: 'ruleSetId:0.1' as Protocol.Preload.RuleSetId,
-              loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
-              sourceText: `
-{
-  "prefetch":[
-    {
-      "source": "list",
-      "urls": ["/prefetched.html"]
-    }
-  ]
-}
-`,
-              url: 'https://example.com/assets/speculation-rules.json',
-            },
-            preloadsStatusSummary: '1 Not triggered, 2 Ready, 3 Failure',
-          }],
-          pageURL: urlString`https://example.com/`,
-        },
-        ['Rule set', 'Status'],
-        [
-          ['example.com/assets/speculation-rules.json', '1 Not triggered, 2 Ready, 3 Failure'],
-        ],
-    );
+  it('reveals in elements on onRevealInElements', async () => {
+    const view = createViewFunctionStub(PreloadingComponents.RuleSetGrid.RuleSetGrid);
+    const ruleSetGrid = new PreloadingComponents.RuleSetGrid.RuleSetGrid(view);
+    const target = createTarget();
+    SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
+    const revealStub = sinon.stub(Common.Revealer.RevealerRegistry.prototype, 'reveal');
+
+    const data: PreloadingComponents.RuleSetGrid.RuleSetGridData = {
+      rows: [],
+      pageURL: urlString`https://example.com/`,
+    };
+    ruleSetGrid.data = data;
+    const input = await view.nextInput;
+
+    const ruleSet = {
+      id: 'ruleSetId:1' as Protocol.Preload.RuleSetId,
+      loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
+      sourceText: '{}',
+      backendNodeId: 42 as Protocol.DOM.BackendNodeId,
+    };
+    input.onRevealInElements(ruleSet);
+
+    sinon.assert.calledOnce(revealStub);
+    const revealedObject = revealStub.firstCall.args[0];
+    assert.instanceOf(revealedObject, SDK.DOMModel.DeferredDOMNode);
+    assert.strictEqual((revealedObject as SDK.DOMModel.DeferredDOMNode).backendNodeId(), 42);
   });
 
-  it('shows error counts', async () => {
-    await assertRenderResult(
-        {
-          rows: [
-            {
-              ruleSet: {
-                id: 'ruleSetId:0.1' as Protocol.Preload.RuleSetId,
-                loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
-                sourceText: `
-{
-  "prefetch":[
-    {
-      "source": "list-typo",
-      "urls": ["/prefetched.html"]
-    }
-  ]
-}
-`,
-                errorType: Protocol.Preload.RuleSetErrorType.InvalidRulesSkipped,
-                errorMessage: 'fake error message',
-              },
-              preloadsStatusSummary: '1 Not triggered, 2 Ready, 3 Failure',
-            },
-            {
-              ruleSet: {
-                id: 'ruleSetId:0.1' as Protocol.Preload.RuleSetId,
-                loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
-                sourceText: `
-{"invalidJson"
-`,
-                errorType: Protocol.Preload.RuleSetErrorType.SourceIsNotJsonObject,
-                errorMessage: 'fake error message',
-              },
-              preloadsStatusSummary: '',
-            },
-            {
-              ruleSet: {
-                id: 'ruleSetId:0.2' as Protocol.Preload.RuleSetId,
-                loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
-                tag: 'マイルール',
-                sourceText: `
-{
-  "prefetch": [
-    {
-      "source": "list",
-      "urls": ["/prefetched.html"]
-    }
-  ],
-  "tag": "マイルール"
-}
-`,
-                errorType: Protocol.Preload.RuleSetErrorType.InvalidRulesetLevelTag,
-                errorMessage: 'Tag value is invalid: must be ASCII printable.',
-              },
-              preloadsStatusSummary: '',
-            },
-          ],
-          pageURL: urlString`https://example.com/`,
-        },
-        ['Rule set', 'Status'],
-        [
-          ['example.com/', '1 error 1 Not triggered, 2 Ready, 3 Failure'],
-          ['example.com/', '1 error'],
-          ['example.com/', '1 error'],
-        ],
-    );
+  it('reveals in network on onRevealInNetwork', async () => {
+    const view = createViewFunctionStub(PreloadingComponents.RuleSetGrid.RuleSetGrid);
+    const ruleSetGrid = new PreloadingComponents.RuleSetGrid.RuleSetGrid(view);
+    const target = createTarget();
+    SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
+    const networkManager = target.model(SDK.NetworkManager.NetworkManager);
+    assert.exists(networkManager);
+    const request = {requestId: 'requestId:1'} as unknown as SDK.NetworkRequest.NetworkRequest;
+
+    // Explicitly stub the method on the instance to avoid potential issues with prototype stubbing
+    const requestForIdStub = sinon.stub();
+    requestForIdStub.withArgs('requestId:1').returns(request);
+    networkManager!.requestForId = requestForIdStub;
+
+    const revealStub = sinon.stub(Common.Revealer.RevealerRegistry.prototype, 'reveal');
+
+    const data: PreloadingComponents.RuleSetGrid.RuleSetGridData = {
+      rows: [],
+      pageURL: urlString`https://example.com/`,
+    };
+    ruleSetGrid.data = data;
+    const input = await view.nextInput;
+
+    const ruleSet = {
+      id: 'ruleSetId:1' as Protocol.Preload.RuleSetId,
+      loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
+      sourceText: '{}',
+      requestId: 'requestId:1' as Protocol.Network.RequestId,
+      url: 'https://example.com/rules.json',
+    };
+    input.onRevealInNetwork(ruleSet);
+
+    sinon.assert.calledOnce(revealStub);
+    const revealedObject = revealStub.firstCall.args[0];
+    assert.instanceOf(revealedObject, NetworkForward.UIRequestLocation.UIRequestLocation);
+    assert.strictEqual((revealedObject as NetworkForward.UIRequestLocation.UIRequestLocation).request, request);
+  });
+
+  it('reveals preloads on onRevealPreloadsAssociatedWithRuleSet', async () => {
+    const view = createViewFunctionStub(PreloadingComponents.RuleSetGrid.RuleSetGrid);
+    const ruleSetGrid = new PreloadingComponents.RuleSetGrid.RuleSetGrid(view);
+    const revealStub = sinon.stub(Common.Revealer.RevealerRegistry.prototype, 'reveal');
+
+    const data: PreloadingComponents.RuleSetGrid.RuleSetGridData = {
+      rows: [],
+      pageURL: urlString`https://example.com/`,
+    };
+    ruleSetGrid.data = data;
+    const input = await view.nextInput;
+
+    const ruleSet = {
+      id: 'ruleSetId:1' as Protocol.Preload.RuleSetId,
+      loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
+      sourceText: '{}',
+    };
+    input.onRevealPreloadsAssociatedWithRuleSet(ruleSet);
+
+    sinon.assert.calledOnce(revealStub);
+    const revealedObject = revealStub.firstCall.args[0];
+    assert.instanceOf(revealedObject, PreloadingHelper.PreloadingForward.AttemptViewWithFilter);
+    assert.strictEqual(
+        (revealedObject as PreloadingHelper.PreloadingForward.AttemptViewWithFilter).ruleSetId, 'ruleSetId:1');
   });
 });

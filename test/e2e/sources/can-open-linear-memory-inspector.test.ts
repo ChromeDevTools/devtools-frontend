@@ -142,14 +142,18 @@ describe('Scope View', () => {
 
     await selectOption(select, 'hex');
 
-    const newValueElement = await devToolsPage.$('div + .value-type-cell', interpreter);
-    const newValue = await newValueElement.evaluate(e => (e as HTMLElement).innerText);
+    const newValue = await devToolsPage.waitForFunction(async () => {
+      const newValueElement = await devToolsPage.$('div + .value-type-cell', interpreter);
+      const textContent = await newValueElement.evaluate(e => (e as HTMLElement).innerText);
+      if (!textContent.trim().startsWith('0x')) {
+        return false;
+      }
+      return textContent;
+    });
 
     // The standard format is decimal.
     // We expect the value to start with 0x... in hex mode.
     assert.match(oldValue, /^[0-9]+$/);
-    assert.match(newValue, /^0x/);
-
     assert.strictEqual(parseInt(oldValue, 10), parseInt(newValue, 16));
   });
 

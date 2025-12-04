@@ -133,6 +133,17 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
       }
     };
 
+    this.items = new UI.ListModel.ListModel();
+    this.list = new UI.ListControl.ListControl(this.items, this, UI.ListControl.ListMode.NonViewport);
+    this.list.element.addEventListener('contextmenu', this.onContextMenu.bind(this), false);
+    self.onInvokeElement(this.list.element, event => {
+      const item = this.list.itemForNode((event.target as Node | null));
+      if (item) {
+        this.activateItem(item);
+        event.consume(true);
+      }
+    });
+
     // clang-format off
     render(html`
       <style>${callStackSidebarPaneStyles}</style>
@@ -150,6 +161,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
         <devtools-icon .name=${'warning-filled'} class='call-frame-warning-icon small'></devtools-icon>
         ${i18nString(UIStrings.callFrameWarnings)}
       </div>
+      ${this.list.element}
     `, this.contentElement);
     // clang-format on
 
@@ -157,18 +169,6 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
     this.ignoreListCheckboxElement = ignoreListCheckboxRef.value as HTMLInputElement;
     this.notPausedMessageElement = notPausedRef.value as HTMLElement;
     this.callFrameWarningsElement = warningRef.value as HTMLElement;
-
-    this.items = new UI.ListModel.ListModel();
-    this.list = new UI.ListControl.ListControl(this.items, this, UI.ListControl.ListMode.NonViewport);
-    this.contentElement.appendChild(this.list.element);
-    this.list.element.addEventListener('contextmenu', this.onContextMenu.bind(this), false);
-    self.onInvokeElement(this.list.element, event => {
-      const item = this.list.itemForNode((event.target as Node | null));
-      if (item) {
-        this.activateItem(item);
-        event.consume(true);
-      }
-    });
 
     this.showMoreMessageElement = this.createShowMoreMessageElement();
     this.showMoreMessageElement.classList.add('hidden');

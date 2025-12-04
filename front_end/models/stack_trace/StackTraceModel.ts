@@ -75,14 +75,16 @@ export class StackTraceModel extends SDK.SDKModel.SDKModel<unknown> {
     return fragment;
   }
 
-  async #createAsyncFragments(stackTrace: Protocol.Runtime.StackTrace, rawFramesToUIFrames: TranslateRawFrames):
-      Promise<AsyncFragmentImpl[]> {
+  async #createAsyncFragments(
+      stackTraceOrPausedEvent: Protocol.Runtime.StackTrace|Protocol.Debugger.PausedEvent,
+      rawFramesToUIFrames: TranslateRawFrames): Promise<AsyncFragmentImpl[]> {
     const asyncFragments: AsyncFragmentImpl[] = [];
     const translatePromises: Array<Promise<unknown>> = [];
 
     const debuggerModel = this.target().model(SDK.DebuggerModel.DebuggerModel);
     if (debuggerModel) {
-      for await (const {stackTrace: asyncStackTrace, target} of debuggerModel.iterateAsyncParents(stackTrace)) {
+      for await (
+          const {stackTrace: asyncStackTrace, target} of debuggerModel.iterateAsyncParents(stackTraceOrPausedEvent)) {
         if (asyncStackTrace.callFrames.length === 0) {
           // Skip empty async fragments, they don't add value.
           continue;

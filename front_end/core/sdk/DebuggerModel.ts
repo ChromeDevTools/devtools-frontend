@@ -942,10 +942,15 @@ export class DebuggerModel extends SDKModel<EventTypes> {
    * Important: This iterator will not yield the "synchronous" part of the stack trace, only the async parent chain.
    */
   async *
-      iterateAsyncParents(stackTraceOrPausedDetails: Protocol.Runtime.StackTrace|DebuggerPausedDetails):
+      iterateAsyncParents(
+          stackTraceOrPausedDetails: Protocol.Runtime.StackTrace|
+          Pick<DebuggerPausedDetails, 'asyncStackTrace'|'asyncStackTraceId'>):
           AsyncGenerator<{stackTrace: Protocol.Runtime.StackTrace, target: Target}> {
     // We make `DebuggerPausedDetails` look like a stack trace. We are only interested in `parent` and `parentId` in any case.
-    let stackTrace: Protocol.Runtime.StackTrace = stackTraceOrPausedDetails instanceof DebuggerPausedDetails ?
+    const isPausedDetails = (details: typeof stackTraceOrPausedDetails):
+        details is Pick<DebuggerPausedDetails, 'asyncStackTrace'|'asyncStackTraceId'> =>
+            !('parent' in details) && !('parentId' in details);
+    let stackTrace: Protocol.Runtime.StackTrace = isPausedDetails(stackTraceOrPausedDetails) ?
         {
           callFrames: [],
           parent: stackTraceOrPausedDetails.asyncStackTrace,
@@ -1507,8 +1512,8 @@ export class DebuggerPausedDetails {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   auxData: Record<string, any>|undefined;
   breakpointIds: string[];
-  asyncStackTrace: Protocol.Runtime.StackTrace|undefined;
-  asyncStackTraceId: Protocol.Runtime.StackTraceId|undefined;
+  asyncStackTrace?: Protocol.Runtime.StackTrace;
+  asyncStackTraceId?: Protocol.Runtime.StackTraceId;
   constructor(
       debuggerModel: DebuggerModel,
       callFrames: Protocol.Debugger.CallFrame[],

@@ -52,6 +52,7 @@ const defaultRequest = {
     {name: 'content-length', value: '661'},
   ],
   requestHeadersText: () => '',
+  cached: () => true,
   requestHeaders: () =>
       [{name: ':method', value: 'GET'}, {name: 'accept-encoding', value: 'gzip, deflate, br'},
        {name: 'cache-control', value: 'no-cache'}],
@@ -77,7 +78,7 @@ async function renderHeadersComponent(request: SDK.NetworkRequest.NetworkRequest
   const component = new NetworkComponents.RequestHeadersView.RequestHeadersView(request);
   renderElementIntoDOM(component);
   component.wasShown();
-  await RenderCoordinator.done({waitForWork: true});
+  await RenderCoordinator.done();
   return component;
 }
 

@@ -1,6 +1,7 @@
 // Copyright 2023 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
 import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Trace from '../../models/trace/trace.js';
@@ -153,9 +154,7 @@ export class InteractionsTrackAppender implements TrackAppender {
 
   setPopoverInfo(event: Trace.Types.Events.Event, info: PopoverInfo): void {
     if (Trace.Types.Events.isSyntheticInteraction(event)) {
-      const breakdown = new Components.InteractionBreakdown.InteractionBreakdown();
-      breakdown.entry = event;
-      info.additionalElements.push(breakdown);
+      info.additionalElements.push(Components.InteractionBreakdown.InteractionBreakdown.createWidgetElement(event));
     }
   }
 }

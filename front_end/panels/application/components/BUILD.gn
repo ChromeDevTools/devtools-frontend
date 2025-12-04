@@ -55,7 +55,6 @@ devtools_ui_module("components") {
     "../../../third_party/csp_evaluator:bundle",
     "../../../ui/components/adorners:bundle",
     "../../../ui/components/buttons:bundle",
-    "../../../ui/components/chrome_link:bundle",
     "../../../ui/components/expandable_list:bundle",
     "../../../ui/components/input:bundle",
     "../../../ui/components/legacy_wrapper:bundle",

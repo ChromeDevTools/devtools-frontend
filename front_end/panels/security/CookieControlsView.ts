@@ -4,7 +4,6 @@
 
 import '../../ui/components/switch/switch.js';
 import '../../ui/kit/kit.js';
-import '../../ui/components/chrome_link/chrome_link.js';
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';

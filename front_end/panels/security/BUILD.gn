@@ -42,7 +42,6 @@ devtools_ui_module("security") {
     "../../models/issues_manager:bundle",
     "../../panels/network/forward:bundle",
     "../../ui/components/buttons:bundle",
-    "../../ui/components/chrome_link:bundle",
     "../../ui/components/input:bundle",
     "../../ui/components/switch:bundle",
     "../../ui/i18n:bundle",

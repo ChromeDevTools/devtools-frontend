@@ -25,6 +25,19 @@ const UIStrings = {
   /**
    * @description Text in App Manifest View of the Application panel
    */
+  noManifestDetected: 'No manifest detected',
+  /**
+   * @description Description text on manifests in App Manifest View of the Application panel which describes the app manifest view tab
+   */
+  manifestDescription:
+      'A manifest defines how your app appears on phone’s home screens and what the app looks like on launch.',
+  /**
+   * @description Text in App Manifest View of the Application panel
+   */
+  appManifest: 'Manifest',
+  /**
+   * @description Text in App Manifest View of the Application panel
+   */
   errorsAndWarnings: 'Errors and warnings',
   /**
    * @description Text in App Manifest View of the Application panel
@@ -1047,7 +1060,7 @@ interface ViewInput {
 
 type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 
-const DEFAULT_VIEW: View = (input, _output, _target) => {
+export const DEFAULT_VIEW: View = (input, _output, _target) => {
   const {
     reportView,
     errorsSection,
@@ -1117,7 +1130,6 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
   private readonly protocolHandlersSection: UI.ReportView.Section;
   private readonly shortcutSections: UI.ReportView.Section[];
   private readonly screenshotsSections: UI.ReportView.Section[];
-  private readonly throttler: Common.Throttler.Throttler;
   private registeredListeners: Common.EventTarget.EventDescriptor[];
   private target?: SDK.Target.Target;
   private resourceTreeModel?: SDK.ResourceTreeModel.ResourceTreeModel|null;
@@ -1132,9 +1144,7 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
   private wcoToolbarEnabled = false;
   private readonly view: View;
 
-  constructor(
-      emptyView: UI.EmptyWidget.EmptyWidget, reportView: UI.ReportView.ReportView,
-      throttler: Common.Throttler.Throttler, view: View = DEFAULT_VIEW) {
+  constructor(view: View = DEFAULT_VIEW) {
     super({
       jslog: `${VisualLogging.pane('manifest')}`,
       useShadowDom: true,
@@ -1144,13 +1154,14 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
 
     this.contentElement.classList.add('manifest-container');
 
-    this.emptyView = emptyView;
+    this.emptyView = new UI.EmptyWidget.EmptyWidget(
+        i18nString(UIStrings.noManifestDetected), i18nString(UIStrings.manifestDescription));
     this.emptyView.link = 'https://web.dev/add-manifest/' as Platform.DevToolsPath.UrlString;
 
     this.emptyView.show(this.contentElement);
     this.emptyView.hideWidget();
 
-    this.reportView = reportView;
+    this.reportView = new UI.ReportView.ReportView(i18nString(UIStrings.appManifest));
     this.reportView.registerRequiredCSS(appManifestViewStyles);
     this.reportView.element.classList.add('manifest-view-header');
     this.reportView.show(this.contentElement);
@@ -1173,7 +1184,6 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
     this.shortcutSections = [];
     this.screenshotsSections = [];
 
-    this.throttler = throttler;
     SDK.TargetManager.TargetManager.instance().observeTargets(this);
     this.registeredListeners = [];
 
@@ -1357,8 +1367,6 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
           onToggleWcoToolbar,
         },
         undefined, this.contentElement);
-
-    this.dispatchEventToListeners(Events.MANIFEST_RENDERED);
   }
 
   private stringProperty(parsedManifest: Manifest, name: keyof Manifest): string {
@@ -1765,10 +1773,8 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
 
 export const enum Events {
   MANIFEST_DETECTED = 'ManifestDetected',
-  MANIFEST_RENDERED = 'ManifestRendered',
 }
 
 export interface EventTypes {
   [Events.MANIFEST_DETECTED]: boolean;
-  [Events.MANIFEST_RENDERED]: void;
 }

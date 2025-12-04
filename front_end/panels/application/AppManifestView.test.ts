@@ -2,13 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import {getCleanTextContentFromElements, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {createViewFunctionStub, type ViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Application from './application.js';
@@ -21,18 +21,15 @@ describeWithMockConnection('AppManifestView', () => {
   const FIXTURES_640X320_URL = `${new URL('./fixtures/640x320.png', import.meta.url)}`;
 
   let target: SDK.Target.Target;
-  let emptyView: UI.EmptyWidget.EmptyWidget;
-  let reportView: UI.ReportView.ReportView;
-  let throttler: Common.Throttler.Throttler;
   let view: Application.AppManifestView.AppManifestView;
+  let viewFunction: ViewFunctionStub<typeof Application.AppManifestView.AppManifestView>;
+
   beforeEach(() => {
     stubNoopSettings();
     const tabTarget = createTarget({type: SDK.Target.Type.TAB});
     createTarget({parentTarget: tabTarget, subtype: 'prerender'});
     target = createTarget({parentTarget: tabTarget});
-    emptyView = new UI.EmptyWidget.EmptyWidget('', '');
-    reportView = new UI.ReportView.ReportView('');
-    throttler = new Common.Throttler.Throttler(0);
+    viewFunction = createViewFunctionStub(Application.AppManifestView.AppManifestView);
   });
 
   afterEach(() => {
@@ -51,28 +48,22 @@ describeWithMockConnection('AppManifestView', () => {
     sinon.stub(resourceTreeModel, 'getInstallabilityErrors').resolves([]);
     sinon.stub(resourceTreeModel, 'getAppId').resolves({} as Protocol.Page.GetAppIdResponse);
 
-    view = new Application.AppManifestView.AppManifestView(emptyView, reportView, throttler);
+    view = new Application.AppManifestView.AppManifestView(viewFunction);
     renderElementIntoDOM(view);
 
-    await new Promise(resolve => {
-      view.addEventListener(Application.AppManifestView.Events.MANIFEST_DETECTED, resolve, {once: true});
-    });
-    assert.isTrue(emptyView.isShowing());
-    assert.isFalse(reportView.isShowing());
+    await viewFunction.nextInput;
+    assert.isTrue(viewFunction.input.emptyView.isShowing());
+    assert.isFalse(viewFunction.input.reportView.isShowing());
 
     resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.DOMContentLoaded, 42);
-    await new Promise(resolve => {
-      view.addEventListener(Application.AppManifestView.Events.MANIFEST_DETECTED, resolve, {once: true});
-    });
-    assert.isTrue(emptyView.isShowing());
-    assert.isFalse(reportView.isShowing());
+    await viewFunction.nextInput;
+    assert.isTrue(viewFunction.input.emptyView.isShowing());
+    assert.isFalse(viewFunction.input.reportView.isShowing());
 
     resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.DOMContentLoaded, 42);
-    await new Promise(resolve => {
-      view.addEventListener(Application.AppManifestView.Events.MANIFEST_DETECTED, resolve, {once: true});
-    });
-    assert.isFalse(emptyView.isShowing());
-    assert.isTrue(reportView.isShowing());
+    await viewFunction.nextInput;
+    assert.isFalse(viewFunction.input.emptyView.isShowing());
+    assert.isTrue(viewFunction.input.reportView.isShowing());
   });
 
   it('shows pwa wco if available', async () => {
@@ -86,21 +77,17 @@ describeWithMockConnection('AppManifestView', () => {
     sinon.stub(resourceTreeModel, 'getInstallabilityErrors').resolves([]);
     sinon.stub(resourceTreeModel, 'getAppId').resolves({} as Protocol.Page.GetAppIdResponse);
 
-    view = new Application.AppManifestView.AppManifestView(emptyView, reportView, throttler);
+    view = new Application.AppManifestView.AppManifestView(viewFunction);
     renderElementIntoDOM(view);
 
     resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.DOMContentLoaded, 42);
-    await new Promise(resolve => {
-      view.addEventListener(Application.AppManifestView.Events.MANIFEST_RENDERED, resolve, {once: true});
-    });
+    const {windowControlsData} = await viewFunction.nextInput;
 
-    const manifestSections = view.getStaticSections();
-    const values = getCleanTextContentFromElements(manifestSections[4].getFieldElement(), '.wco');
-    assert.deepEqual(values, ['window-controls-overlay']);
+    assert.isTrue(windowControlsData?.hasWco);
   });
 
   it('can parse ‘sizes’-field', async () => {
-    view = new Application.AppManifestView.AppManifestView(emptyView, reportView, throttler);
+    view = new Application.AppManifestView.AppManifestView(viewFunction);
     const parsed =
         view.parseSizes('512x512', 'Icon' as Platform.UIString.LocalizedString, 'https://web.dev/image.html', []);
     const expected = [{
@@ -112,7 +99,7 @@ describeWithMockConnection('AppManifestView', () => {
   });
 
   it('can handle missing ‘sizes’-field', async () => {
-    view = new Application.AppManifestView.AppManifestView(emptyView, reportView, throttler);
+    view = new Application.AppManifestView.AppManifestView(viewFunction);
     const parsed = view.parseSizes(
         undefined as unknown as string, 'Icon' as Platform.UIString.LocalizedString, 'https://web.dev/image.html', []);
     assert.deepEqual(parsed, []);
@@ -141,18 +128,12 @@ describeWithMockConnection('AppManifestView', () => {
       }
     });
 
-    view = new Application.AppManifestView.AppManifestView(emptyView, reportView, throttler);
+    view = new Application.AppManifestView.AppManifestView(viewFunction);
     renderElementIntoDOM(view);
 
-    await new Promise(resolve => {
-      view.addEventListener(Application.AppManifestView.Events.MANIFEST_RENDERED, resolve, {once: true});
-    });
+    const {warnings, errors, imageErrors} = await viewFunction.nextInput;
 
-    const warningSection = reportView.element.shadowRoot?.querySelector('.report-section');
-    assert.exists(warningSection);
-    const warnings = warningSection.querySelectorAll<HTMLDivElement>('.report-row');
-    assert.exists(warnings);
-    return Array.from(warnings).map(warning => warning.textContent || '');
+    return [...warnings ?? [], ...errors?.map(error => error.message) ?? [], ...imageErrors ?? []];
   }
 
   it('displays warnings for too many shortcuts and not enough screenshots', async () => {
@@ -307,21 +288,38 @@ describeWithMockConnection('AppManifestView', () => {
   });
 
   it('displays "form-factor", "platform" and "label" properties for screenshots', async () => {
-    await renderWithWarnings(`{
-        "screenshots": [
-          {
-            "src": "${FIXTURES_320X320_URL}",
-            "type": "image/png",
-            "sizes": "320x320",
-            "form_factor": "wide",
-            "label": "Dummy Screenshot",
-            "platform": "windows"
+    const emptyView = new UI.EmptyWidget.EmptyWidget('', '');
+    const reportView = new UI.ReportView.ReportView('');
+    const viewInput = {
+      reportView,
+      emptyView,
+      screenshotsSections: [],
+      screenshotsData: {
+        screenshots: [{
+          screenshot: {
+            src: FIXTURES_320X320_URL,
+            type: 'image/png',
+            sizes: '320x320',
+            form_factor: 'wide',
+            label: 'Dummy Screenshot',
+            platform: 'windows'
+          },
+          processedImage: {
+            imageResourceErrors: [],
+            squareSizedIconAvailable: true,
+            naturalWidth: 320,
+            naturalHeight: 320,
+            title: '320×320px\nimage/png',
+            imageSrc: '',
+            imageUrl: FIXTURES_320X320_URL,
           }
-        ]
-      }`);
-
-    const screenshotSection =
-        reportView.element.shadowRoot?.querySelectorAll<HTMLDivElement>('.report-section')[7] || null;
+        }],
+        imageResourceErrors: [],
+        warnings: [],
+      }
+    };
+    Application.AppManifestView.DEFAULT_VIEW(viewInput, undefined, viewInput.reportView.element);
+    const screenshotSection = reportView.element.shadowRoot?.querySelector<HTMLDivElement>('.report-section') || null;
     assert.instanceOf(screenshotSection, HTMLDivElement);
     assert.deepEqual(
         getCleanTextContentFromElements(screenshotSection, '.report-field-name').slice(0, 3),

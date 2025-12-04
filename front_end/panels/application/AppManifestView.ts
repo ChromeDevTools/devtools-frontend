@@ -494,7 +494,7 @@ interface Manifest {
 /* eslint-enable @typescript-eslint/naming-convention */
 
 interface ReportSectionItem {
-  content: LitTemplate|string|HTMLElement;
+  content: LitTemplate|LitTemplate[]|string|HTMLElement;
   title?: string;
   label?: string;
   flexed?: boolean;
@@ -528,7 +528,7 @@ interface ProtocolHandlersSectionData {
 }
 
 interface IconsSectionData {
-  icons: ProcessedImageResource[];
+  icons: Map<string, ProcessedImageResource[]>;
   imageResourceErrors: Platform.UIString.LocalizedString[];
 }
 
@@ -538,7 +538,7 @@ interface ProcessedShortcut {
   description?: string;
   url: string;
   shortcutUrl: Platform.DevToolsPath.UrlString;
-  icons: ProcessedImageResource[];
+  icons: Map<string, ProcessedImageResource[]>;
 }
 
 interface ShortcutsSectionData {
@@ -959,11 +959,10 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
         })
       },
     ];
-    for (const icon of data.icons) {
-      if ('imageSrc' in icon) {
-        const content = this.renderImage(icon.imageSrc, icon.imageUrl, icon.naturalWidth);
-        contents.push({title: icon.title, content, flexed: true});
-      }
+    for (const [title, images] of data.icons) {
+      const content = images.filter(icon => 'imageSrc' in icon)
+                          .map(icon => this.renderImage(icon.imageSrc, icon.imageUrl, icon.naturalWidth));
+      contents.push({title, content, flexed: true});
     }
     this.setSectionContents(contents, this.iconsSection);
   }
@@ -993,14 +992,13 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
         title: i18nString(UIStrings.url),
         flexed: true,
         content: Components.Linkifier.Linkifier.linkifyURL(
-            shortcut.shortcutUrl, ({text: shortcut.url, tabStop: true, jslogContext: 'shortcut'}))
+            shortcut.shortcutUrl, ({text: shortcut.url, tabStop: true, jslogContext: 'shortcut'})),
       });
 
-      for (const shortcutIcon of shortcut.icons) {
-        if ('imageSrc' in shortcutIcon) {
-          const content = this.renderImage(shortcutIcon.imageSrc, shortcutIcon.imageUrl, shortcutIcon.naturalWidth);
-          fields.push({title: shortcutIcon.title, content, flexed: true});
-        }
+      for (const [title, images] of shortcut.icons) {
+        const content = images.filter(icon => 'imageSrc' in icon)
+                            .map(icon => this.renderImage(icon.imageSrc, icon.imageUrl, icon.naturalWidth));
+        fields.push({title, content, flexed: true});
       }
       this.setSectionContents(fields, shortcutSection);
       shortcutIndex++;
@@ -1423,7 +1421,6 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
   }
 
   setSectionContents(items: ReportSectionItem[], section: UI.ReportView.Section): void {
-    const contents = new Map<string, Array<LitTemplate|string|HTMLElement>>();
     for (const item of items) {
       if (!item.title) {
         render(item.content, section.appendRow());
@@ -1433,14 +1430,7 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
       if (item.label) {
         UI.ARIAUtils.setLabel(element, item.label);
       }
-      const fieldContent = contents.get(item.title) || [];
-      if (!contents.has(item.title)) {
-        contents.set(item.title, fieldContent);
-      }
-      fieldContent.push(item.content);
-    }
-    for (const [title, content] of contents) {
-      render(content, section.appendField(title));
+      render(item.content, element);
     }
   }
 
@@ -1474,13 +1464,21 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
       const result = await this.processImageResource(url, icon, /** isScreenshot= */ false);
       processedIcons.push(result);
       imageErrors.push(...result.imageResourceErrors);
-      squareSizedIconAvailable = result.squareSizedIconAvailable || squareSizedIconAvailable;
+
+      if (result.squareSizedIconAvailable) {
+        squareSizedIconAvailable = true;
+      }
     }
+
+    const processedIconsByTitle = Map.groupBy(
+        processedIcons.filter((icon): icon is ProcessedImageResource&{title: string} => 'title' in icon),
+        img => img.title,
+    );
 
     if (!squareSizedIconAvailable) {
       imageErrors.push(i18nString(UIStrings.sSShouldHaveSquareIcon));
     }
-    return {icons: processedIcons, imageResourceErrors: imageErrors};
+    return {icons: processedIconsByTitle, imageResourceErrors: imageErrors};
   }
 
   private async processShortcuts(parsedManifest: Manifest, url: Platform.DevToolsPath.UrlString):
@@ -1506,6 +1504,7 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
         const result = await this.processImageResource(url, shortcutIcon, /** isScreenshot= */ false);
         processedIcons.push(result);
         imageErrors.push(...result.imageResourceErrors);
+
         if (!hasShortcutIconLargeEnough && shortcutIcon.sizes) {
           const shortcutIconSize = shortcutIcon.sizes.match(/^(\d+)x(\d+)$/);
           if (shortcutIconSize && Number(shortcutIconSize[1]) >= 96 && Number(shortcutIconSize[2]) >= 96) {
@@ -1514,13 +1513,18 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
         }
       }
 
+      const iconsByTitle = Map.groupBy(
+          processedIcons.filter(icon => 'title' in icon),
+          img => img.title,
+      );
+
       processedShortcuts.push({
         name: shortcut.name,
         shortName: shortcut.short_name,
         description: shortcut.description,
         url: shortcut.url,
         shortcutUrl,
-        icons: processedIcons,
+        icons: iconsByTitle,
       });
 
       if (!hasShortcutIconLargeEnough) {

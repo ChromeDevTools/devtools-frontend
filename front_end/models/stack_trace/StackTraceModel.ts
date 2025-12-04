@@ -37,29 +37,12 @@ export class StackTraceModel extends SDK.SDKModel.SDKModel<unknown> {
 
   async createFromProtocolRuntime(stackTrace: Protocol.Runtime.StackTrace, rawFramesToUIFrames: TranslateRawFrames):
       Promise<StackTrace.StackTrace.StackTrace> {
-    const translatePromises: Array<Promise<unknown>> = [];
+    const [syncFragment, asyncFragments] = await Promise.all([
+      this.#createSyncFragment(stackTrace, rawFramesToUIFrames),
+      this.#createAsyncFragments(stackTrace, rawFramesToUIFrames),
+    ]);
 
-    const fragment = this.#createFragment(stackTrace.callFrames);
-    translatePromises.push(this.#translateFragment(fragment, rawFramesToUIFrames));
-
-    const asyncFragments: AsyncFragmentImpl[] = [];
-    const debuggerModel = this.target().model(SDK.DebuggerModel.DebuggerModel);
-    if (debuggerModel) {
-      for await (const {stackTrace: asyncStackTrace, target} of debuggerModel.iterateAsyncParents(stackTrace)) {
-        if (asyncStackTrace.callFrames.length === 0) {
-          // Skip empty async fragments, they don't add value.
-          continue;
-        }
-        const model = StackTraceModel.#modelForTarget(target);
-        const asyncFragment = model.#createFragment(asyncStackTrace.callFrames);
-        translatePromises.push(model.#translateFragment(asyncFragment, rawFramesToUIFrames));
-        asyncFragments.push(new AsyncFragmentImpl(asyncStackTrace.description ?? '', asyncFragment));
-      }
-    }
-
-    await Promise.all(translatePromises);
-
-    return new StackTraceImpl(fragment, asyncFragments);
+    return new StackTraceImpl(syncFragment, asyncFragments);
   }
 
   /** Trigger re-translation of all fragments with the provide script in their call stack */
@@ -83,6 +66,36 @@ export class StackTraceModel extends SDK.SDKModel.SDKModel<unknown> {
     for (const stackTrace of stackTracesToUpdate) {
       stackTrace.dispatchEventToListeners(StackTrace.StackTrace.Events.UPDATED);
     }
+  }
+
+  async #createSyncFragment(stackTrace: Protocol.Runtime.StackTrace, rawFramesToUIFrames: TranslateRawFrames):
+      Promise<FragmentImpl> {
+    const fragment = this.#createFragment(stackTrace.callFrames);
+    await this.#translateFragment(fragment, rawFramesToUIFrames);
+    return fragment;
+  }
+
+  async #createAsyncFragments(stackTrace: Protocol.Runtime.StackTrace, rawFramesToUIFrames: TranslateRawFrames):
+      Promise<AsyncFragmentImpl[]> {
+    const asyncFragments: AsyncFragmentImpl[] = [];
+    const translatePromises: Array<Promise<unknown>> = [];
+
+    const debuggerModel = this.target().model(SDK.DebuggerModel.DebuggerModel);
+    if (debuggerModel) {
+      for await (const {stackTrace: asyncStackTrace, target} of debuggerModel.iterateAsyncParents(stackTrace)) {
+        if (asyncStackTrace.callFrames.length === 0) {
+          // Skip empty async fragments, they don't add value.
+          continue;
+        }
+        const model = StackTraceModel.#modelForTarget(target);
+        const fragment = model.#createFragment(asyncStackTrace.callFrames);
+        translatePromises.push(model.#translateFragment(fragment, rawFramesToUIFrames));
+        asyncFragments.push(new AsyncFragmentImpl(asyncStackTrace.description ?? '', fragment));
+      }
+    }
+
+    await Promise.all(translatePromises);
+    return asyncFragments;
   }
 
   #createFragment(frames: RawFrame[]): FragmentImpl {

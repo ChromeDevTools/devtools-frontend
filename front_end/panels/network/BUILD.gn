@@ -160,6 +160,7 @@ devtools_ui_module("unittests") {
     "RequestConditionsDrawer.test.ts",
     "RequestCookiesView.test.ts",
     "RequestHTMLView.test.ts",
+    "RequestInitiatorView.test.ts",
     "RequestPayloadView.test.ts",
     "RequestPreviewView.test.ts",
     "RequestResponseView.test.ts",

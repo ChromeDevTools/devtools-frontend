@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-imperative-dom-api */
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -34,106 +33,49 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/network/RequestInitiatorView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-export class RequestInitiatorView extends UI.Widget.VBox {
-  private readonly linkifier: Components.Linkifier.Linkifier;
-  private readonly request: SDK.NetworkRequest.NetworkRequest;
+export interface ViewInput {
+  initiatorGraph: Logs.NetworkLog.InitiatorGraph;
+  hasStackTrace: boolean;
+  request: SDK.NetworkRequest.NetworkRequest;
+  linkifier: Components.Linkifier.Linkifier;
+  target?: SDK.Target.Target;
+}
 
-  constructor(request: SDK.NetworkRequest.NetworkRequest) {
-    super({jslog: `${VisualLogging.pane('initiator').track({resize: true})}`});
+export const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLElement): void => {
+  const hasInitiatorData =
+      input.initiatorGraph.initiators.size > 1 || input.initiatorGraph.initiated.size > 1 || input.hasStackTrace;
 
-    this.element.classList.add('request-initiator-view');
-    this.linkifier = new Components.Linkifier.Linkifier();
-    this.request = request;
-  }
-
-  static createStackTracePreview(
-      request: SDK.NetworkRequest.NetworkRequest, linkifier: Components.Linkifier.Linkifier,
-      focusableLink?: boolean): Components.JSPresentationUtils.StackTracePreviewContent|null {
-    const initiator = request.initiator();
-    if (!initiator?.stack) {
-      return null;
-    }
-    const networkManager = SDK.NetworkManager.NetworkManager.forRequest(request);
-    const target = networkManager ? networkManager.target() : undefined;
-    return new Components.JSPresentationUtils.StackTracePreviewContent(
-        undefined, target, linkifier, {runtimeStackTrace: initiator.stack, tabStops: focusableLink});
-  }
-
-  override performUpdate(): void {
-    const initiatorGraph = Logs.NetworkLog.NetworkLog.instance().initiatorGraphForRequest(this.request);
-    const hasStackTrace = this.request.initiator()?.stack;
-    const hasInitiatorData = initiatorGraph.initiators.size > 1 || initiatorGraph.initiated.size > 1 || hasStackTrace;
-
-    if (!hasInitiatorData) {
-      render(
-          html`
-        <devtools-widget .widgetConfig${widgetConfig(UI.EmptyWidget.EmptyWidget, {
-            text: i18nString(UIStrings.noInitiator)
-          })}>
-        </devtools-widget>
-      `,
-          this.contentElement, {host: this});
-      return;
-    }
-
+  if (!hasInitiatorData) {
     render(
         html`
-      <div class="request-initiator-view-tree" jslog=${VisualLogging.tree('initiator-tree')}>
-        <devtools-tree .template=${
-            html`
-          <style>
-            ${requestInitiatorViewTreeStyles}
-          </style>
-          <ul role="tree">
-             ${hasStackTrace ? this.#renderStackTraceSection() : nothing}
-             ${
-                (initiatorGraph.initiators.size > 1 || initiatorGraph.initiated.size > 1) ?
-                    this.#renderInitiatorChain(initiatorGraph) :
-                    nothing}
-          </ul>
-        `}></devtools-tree>
+      <div class="empty-view" style="display: flex; justify-content: center; align-items: center; height: 100%; color: var(--sys-color-token-subtle);">
+        ${i18nString(UIStrings.noInitiator)}
       </div>
     `,
-        this.contentElement, {host: this});
+        target);
+    return;
   }
 
-  #renderStackTraceSection(): Lit.TemplateResult {
-    const networkManager = SDK.NetworkManager.NetworkManager.forRequest(this.request);
-    const target = networkManager ? networkManager.target() : undefined;
+  const renderStackTraceSection = (): Lit.TemplateResult => {
     return html`
       <li role="treeitem" class="request-initiator-view-section-title" aria-expanded="true">
         ${i18nString(UIStrings.requestCallStack)}
         <ul role="group">
           <li role="treeitem">
             <devtools-widget .widgetConfig=${widgetConfig(Components.JSPresentationUtils.StackTracePreviewContent, {
-      target: target || undefined,
-      linkifier: this.linkifier,
-      options: {runtimeStackTrace: this.request.initiator()?.stack, tabStops: true}
+      target: input.target,
+      linkifier: input.linkifier,
+      options: {runtimeStackTrace: input.request.initiator()?.stack, tabStops: true}
     })}></devtools-widget>
           </li>
         </ul>
       </li>
     `;
-  }
+  };
 
-  #renderInitiatorChain(initiatorGraph: Logs.NetworkLog.InitiatorGraph): Lit.TemplateResult {
-    const initiators = Array.from(initiatorGraph.initiators).reverse();
-    const visited = new Set<SDK.NetworkRequest.NetworkRequest>();
-    visited.add(this.request);
-    return html`
-      <li role="treeitem" class="request-initiator-view-section-title" aria-expanded="true">
-        ${i18nString(UIStrings.requestInitiatorChain)}
-        <ul role="group">
-          ${this.#renderInitiatorNodes(initiators, 0, initiatorGraph.initiated, visited)}
-        </ul>
-      </li>
-    `;
-  }
-
-  #renderInitiatorNodes(
-      initiators: SDK.NetworkRequest.NetworkRequest[], index: number,
-      initiated: Map<SDK.NetworkRequest.NetworkRequest, SDK.NetworkRequest.NetworkRequest>,
-      visited: Set<SDK.NetworkRequest.NetworkRequest>): Lit.TemplateResult {
+  const renderInitiatorNodes = (initiators: SDK.NetworkRequest.NetworkRequest[], index: number,
+                                initiated: Map<SDK.NetworkRequest.NetworkRequest, SDK.NetworkRequest.NetworkRequest>,
+                                visited: Set<SDK.NetworkRequest.NetworkRequest>): Lit.TemplateResult => {
     if (index >= initiators.length) {
       return html`${nothing}`;
     }
@@ -144,17 +86,16 @@ export class RequestInitiatorView extends UI.Widget.VBox {
       <li role="treeitem" ?selected=${isCurrentRequest} aria-expanded="true">
         <span style=${isCurrentRequest ? 'font-weight: bold' : ''}>${request.url()}</span>
         <ul role="group">
-          ${this.#renderInitiatorNodes(initiators, index + 1, initiated, visited)}
-          ${isCurrentRequest ? this.#renderInitiatedNodes(initiated, request, visited) : nothing}
+          ${renderInitiatorNodes(initiators, index + 1, initiated, visited)}
+          ${isCurrentRequest ? renderInitiatedNodes(initiated, request, visited) : nothing}
         </ul>
       </li>
     `;
-  }
+  };
 
-  #renderInitiatedNodes(
-      initiated: Map<SDK.NetworkRequest.NetworkRequest, SDK.NetworkRequest.NetworkRequest>,
-      parentRequest: SDK.NetworkRequest.NetworkRequest,
-      visited: Set<SDK.NetworkRequest.NetworkRequest>): Lit.TemplateResult {
+  const renderInitiatedNodes = (initiated: Map<SDK.NetworkRequest.NetworkRequest, SDK.NetworkRequest.NetworkRequest>,
+                                parentRequest: SDK.NetworkRequest.NetworkRequest,
+                                visited: Set<SDK.NetworkRequest.NetworkRequest>): Lit.TemplateResult => {
     const children = [];
     for (const [request, initiator] of initiated) {
       if (initiator === parentRequest) {
@@ -172,14 +113,93 @@ export class RequestInitiatorView extends UI.Widget.VBox {
       }
       return html`
         <li role="treeitem" aria-expanded="true">
-          ${child.url()}
-          ${
-          shouldRecurse ? html`<ul role="group">${this.#renderInitiatedNodes(initiated, child, visited)}</ul>` :
-                          nothing}}
+          <span>${child.url()}</span>
+          ${shouldRecurse ? html`<ul>${renderInitiatedNodes(initiated, child, visited)}</ul>` : nothing}
         </li>
       `;
     })}
     `;
+  };
+
+  const renderInitiatorChain = (initiatorGraph: Logs.NetworkLog.InitiatorGraph): Lit.TemplateResult => {
+    const initiators = Array.from(initiatorGraph.initiators).reverse();
+    const visited = new Set<SDK.NetworkRequest.NetworkRequest>();
+    visited.add(input.request);
+    return html`
+      <li role="treeitem" class="request-initiator-view-section-title" aria-expanded="true">
+        ${i18nString(UIStrings.requestInitiatorChain)}
+        <ul role="group">
+          ${renderInitiatorNodes(initiators, 0, initiatorGraph.initiated, visited)}
+        </ul>
+      </li>
+    `;
+  };
+
+  render(
+      html`
+    <div class="request-initiator-view-tree" jslog=${VisualLogging.tree('initiator-tree')}>
+      <devtools-tree .template=${
+          html`
+        <style>
+          ${requestInitiatorViewTreeStyles}
+        </style>
+        <ul role="tree">
+           ${input.hasStackTrace ? renderStackTraceSection() : Lit.nothing}
+           ${
+              (input.initiatorGraph.initiators.size > 1 || input.initiatorGraph.initiated.size > 1) ?
+                  renderInitiatorChain(input.initiatorGraph) :
+                  Lit.nothing}
+        </ul>
+      `}></devtools-tree>
+    </div>
+  `,
+      target);
+};
+
+type View = typeof DEFAULT_VIEW;
+
+export class RequestInitiatorView extends UI.Widget.VBox {
+  private readonly linkifier: Components.Linkifier.Linkifier;
+  private readonly request: SDK.NetworkRequest.NetworkRequest;
+  #view: View;
+
+  constructor(request: SDK.NetworkRequest.NetworkRequest, view: View = DEFAULT_VIEW) {
+    super({jslog: `${VisualLogging.pane('initiator').track({resize: true})}`});
+
+    this.element.classList.add('request-initiator-view');
+    this.linkifier = new Components.Linkifier.Linkifier();
+    this.request = request;
+    this.#view = view;
+  }
+
+  static createStackTracePreview(
+      request: SDK.NetworkRequest.NetworkRequest, linkifier: Components.Linkifier.Linkifier,
+      focusableLink?: boolean): Components.JSPresentationUtils.StackTracePreviewContent|null {
+    const initiator = request.initiator();
+    if (!initiator?.stack) {
+      return null;
+    }
+    const networkManager = SDK.NetworkManager.NetworkManager.forRequest(request);
+    const target = networkManager ? networkManager.target() : undefined;
+    return new Components.JSPresentationUtils.StackTracePreviewContent(
+        undefined, target, linkifier, {runtimeStackTrace: initiator.stack, tabStops: focusableLink});
+  }
+
+  override performUpdate(): void {
+    const initiatorGraph = Logs.NetworkLog.NetworkLog.instance().initiatorGraphForRequest(this.request);
+    const hasStackTrace = !!this.request.initiator()?.stack;
+    const networkManager = SDK.NetworkManager.NetworkManager.forRequest(this.request);
+    const target = networkManager ? networkManager.target() : undefined;
+
+    const viewInput: ViewInput = {
+      initiatorGraph,
+      hasStackTrace,
+      request: this.request,
+      linkifier: this.linkifier,
+      target: target || undefined,
+    };
+
+    this.#view(viewInput, undefined, this.contentElement);
   }
 
   override wasShown(): void {

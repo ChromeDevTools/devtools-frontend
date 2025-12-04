@@ -120,9 +120,10 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
       useShadowDom: true,
     });
 
-    const [ignoreListMessageRef, ignoreListCheckboxRef, notPausedRef] = [
+    const [ignoreListMessageRef, ignoreListCheckboxRef, notPausedRef, warningRef] = [
       createRef<HTMLElement>(),
       createRef<HTMLInputElement>(),
+      createRef<HTMLElement>(),
       createRef<HTMLElement>(),
     ];
     const ignoreListCheckboxChanged = (): void => {
@@ -145,20 +146,17 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
       <div class='gray-info-message' tabindex=-1 ${ref(notPausedRef)}>
         ${i18nString(UIStrings.notPaused)}
       </div>
+      <div class='call-frame-warnings-message' tabindex=-1 ${ref(warningRef)}>
+        <devtools-icon .name=${'warning-filled'} class='call-frame-warning-icon small'></devtools-icon>
+        ${i18nString(UIStrings.callFrameWarnings)}
+      </div>
     `, this.contentElement);
     // clang-format on
 
     this.ignoreListMessageElement = ignoreListMessageRef.value as HTMLElement;
     this.ignoreListCheckboxElement = ignoreListCheckboxRef.value as HTMLInputElement;
     this.notPausedMessageElement = notPausedRef.value as HTMLElement;
-
-    this.callFrameWarningsElement = this.contentElement.createChild('div', 'call-frame-warnings-message');
-    const icon = new Icon();
-    icon.name = 'warning-filled';
-    icon.classList.add('call-frame-warning-icon', 'small');
-    this.callFrameWarningsElement.appendChild(icon);
-    this.callFrameWarningsElement.appendChild(document.createTextNode(i18nString(UIStrings.callFrameWarnings)));
-    this.callFrameWarningsElement.tabIndex = -1;
+    this.callFrameWarningsElement = warningRef.value as HTMLElement;
 
     this.items = new UI.ListModel.ListModel();
     this.list = new UI.ListControl.ListControl(this.items, this, UI.ListControl.ListMode.NonViewport);

@@ -1,8 +1,6 @@
 // Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
-/* eslint-disable @devtools/no-imperative-dom-api */
 
 import '../../../ui/components/menus/menus.js';
 
@@ -12,13 +10,13 @@ import * as Platform from '../../../core/platform/platform.js';
 import * as Workspace from '../../../models/workspace/workspace.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as Dialogs from '../../../ui/components/dialogs/dialogs.js';
-import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 
 import ignoreListSettingStyles from './ignoreListSetting.css.js';
 
-const {html} = Lit;
+const {html, Directives} = Lit;
+const {live} = Directives;
 
 const UIStrings = {
   /**
@@ -58,45 +56,143 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/IgnoreListSetting.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export class IgnoreListSetting extends HTMLElement {
-  readonly #shadow = this.attachShadow({mode: 'open'});
+interface ViewInput {
+  ignoreListEnabled: boolean;
+  regexes: Common.Settings.RegExpSettingItem[];
+  newRegexValue: string;
+  newRegexChecked: boolean;
+  onExistingRegexEnableToggle: (regex: Common.Settings.RegExpSettingItem, checked: boolean) => void;
+  onRemoveRegexByIndex: (index: number) => void;
+  onNewRegexInputBlur: (value: string) => void;
+  onNewRegexInputChange: (value: string) => void;
+  onNewRegexInputFocus: (value: string) => void;
+  onNewRegexAdd: (value: string) => void;
+  onNewRegexCancel: () => void;
+}
+
+type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+
+export const DEFAULT_VIEW: View = (input, output, target) => {
+  const {
+    ignoreListEnabled,
+    regexes,
+    newRegexValue,
+    newRegexChecked,
+    onExistingRegexEnableToggle,
+    onRemoveRegexByIndex,
+    onNewRegexInputBlur,
+    onNewRegexInputChange,
+    onNewRegexInputFocus,
+    onNewRegexAdd,
+    onNewRegexCancel,
+  } = input;
+
+  function renderItem(regex: Common.Settings.RegExpSettingItem, index: number): Lit.TemplateResult {
+    const helpText = i18nString(UIStrings.ignoreScriptsWhoseNamesMatchS, {regex: regex.pattern});
+
+    // clang-format off
+    return html`
+      <div class='regex-row'>
+        <devtools-checkbox title=${helpText} aria-label=${helpText} ?checked=${!regex.disabled}
+          @change=${(event: Event) => onExistingRegexEnableToggle(regex, (event.currentTarget as UI.UIUtils.CheckboxLabel).checked)}
+          .jslogContext=${'timeline.ignore-list-pattern'}>${regex.pattern}</devtools-checkbox>
+        <devtools-button
+            @click=${() => onRemoveRegexByIndex(index)}
+            .data=${{
+              variant: Buttons.Button.Variant.ICON,
+              iconName: 'bin',
+              title: i18nString(UIStrings.removeRegex, {regex: regex.pattern}),
+              jslogContext: 'timeline.ignore-list-pattern.remove',
+            } as Buttons.Button.ButtonData}>
+        </devtools-button>
+      </div>
+    `;
+    // clang-format on
+  }
+
+  // clang-format off
+  Lit.render(html`
+    <style>${ignoreListSettingStyles}</style>
+    <devtools-button-dialog
+      @contextmenu=${(e: Event) => e.stopPropagation() /* Prevent the event making its way to the TimelinePanel element which will cause the "Load Profile" context menu to appear. */}
+      .data=${{
+        openOnRender: false,
+        jslogContext: 'timeline.ignore-list',
+        variant: Buttons.Button.Variant.TOOLBAR,
+        iconName: 'compress',
+        disabled: !ignoreListEnabled,
+        iconTitle: i18nString(UIStrings.showIgnoreListSettingDialog),
+        horizontalAlignment: Dialogs.Dialog.DialogHorizontalAlignment.AUTO,
+        closeButton: true,
+        dialogTitle: i18nString(UIStrings.ignoreList),
+      } as Dialogs.ButtonDialog.ButtonDialogData}>
+      <div class='ignore-list-setting-content'>
+        <div class='ignore-list-setting-description'>${i18nString(UIStrings.ignoreListDescription)}</div>
+        ${regexes.map(renderItem)}
+
+        <div class='new-regex-row'>
+          <devtools-checkbox
+            title=${i18nString(UIStrings.ignoreScriptsWhoseNamesMatchNewRegex)}
+            .jslogContext=${'timeline.ignore-list-new-regex.checkbox'}
+            .checked=${newRegexChecked}
+          >
+          </devtools-checkbox>
+          <input
+            @blur=${(event: Event) => onNewRegexInputBlur((event.currentTarget as HTMLInputElement).value)}
+            @input=${(event: Event) => onNewRegexInputChange((event.currentTarget as HTMLInputElement).value)}
+            @focus=${(event: Event) => onNewRegexInputFocus((event.currentTarget as HTMLInputElement).value)}
+            @keydown=${(event: KeyboardEvent) => {
+              const el = event.currentTarget as HTMLInputElement;
+              if (event.key === Platform.KeyboardUtilities.ENTER_KEY) {
+                onNewRegexAdd(el.value);
+              } else if (event.key === Platform.KeyboardUtilities.ESCAPE_KEY) {
+                onNewRegexCancel();
+                el.blur();
+                // Escape key will close the dialog, and toggle the `Console` drawer. So we need to ignore other listeners.
+                event.stopImmediatePropagation();
+              }
+            }}
+            class="harmony-input new-regex-text-input"
+            title=${i18nString(UIStrings.addNewRegex)}
+            placeholder='/framework\\.js$'
+            .value=${live(newRegexValue)}
+            .jslogContext=${'timeline.ignore-list-new-regex.text'}>
+          </input>
+        </div>
+      </div>
+    </devtools-button-dialog>
+  `, target);
+  // clang-format on
+};
+
+export class IgnoreListSetting extends UI.Widget.Widget {
+  static createWidgetElement(): UI.Widget.WidgetElement<IgnoreListSetting> {
+    const widgetElement = document.createElement('devtools-widget') as UI.Widget.WidgetElement<IgnoreListSetting>;
+    widgetElement.widgetConfig = UI.Widget.widgetConfig(IgnoreListSetting);
+    return widgetElement;
+  }
+
+  #view: View;
   readonly #ignoreListEnabled: Common.Settings.Setting<boolean> =
       Common.Settings.Settings.instance().moduleSetting('enable-ignore-listing');
   readonly #regexPatterns = this.#getSkipStackFramesPatternSetting().getAsArray();
-
-  #newRegexCheckbox = UI.UIUtils.CheckboxLabel.create(
-      /* title*/ undefined, /* checked*/ false, /* subtitle*/ undefined,
-      /* jslogContext*/ 'timeline.ignore-list-new-regex.checkbox');
-  #newRegexInput = UI.UIUtils.createInput(
-      /* className*/ 'new-regex-text-input', /* type*/ 'text', /* jslogContext*/ 'timeline.ignore-list-new-regex.text');
-
+  #newRegexValue = '';
+  #newRegexChecked = false;
   #editingRegexSetting: Common.Settings.RegExpSettingItem|null = null;
 
-  constructor() {
-    super();
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
+    super(element, {useShadowDom: true});
+    this.#view = view;
 
-    this.#initAddNewItem();
+    // Otherwise the button in the toolbar is too wide.
+    this.element.classList.remove('vbox', 'flex-auto');
 
     Common.Settings.Settings.instance()
         .moduleSetting('skip-stack-frames-pattern')
-        .addChangeListener(this.#scheduleRender.bind(this));
+        .addChangeListener(this.requestUpdate.bind(this));
     Common.Settings.Settings.instance()
         .moduleSetting('enable-ignore-listing')
-        .addChangeListener(this.#scheduleRender.bind(this));
-  }
-
-  connectedCallback(): void {
-    this.#scheduleRender();
-
-    // Prevent the event making its way to the TimelinePanel element which will
-    // cause the "Load Profile" context menu to appear.
-    this.addEventListener('contextmenu', e => {
-      e.stopPropagation();
-    });
-  }
-
-  #scheduleRender(): void {
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
+        .addChangeListener(this.requestUpdate.bind(this));
   }
 
   #getSkipStackFramesPatternSetting(): Common.Settings.RegExpSetting {
@@ -104,9 +200,9 @@ export class IgnoreListSetting extends HTMLElement {
         Common.Settings.RegExpSetting;
   }
 
-  #startEditing(): void {
+  #onNewRegexInputFocus(value: string): void {
     // Do not need to trim here because this is a temporary one, we will trim the input when finish editing,
-    this.#editingRegexSetting = {pattern: this.#newRegexInput.value, disabled: false, disabledForUrl: undefined};
+    this.#editingRegexSetting = {pattern: value, disabled: false, disabledForUrl: undefined};
     // We need to push the temp regex here to update the flame chart.
     // We are using the "skip-stack-frames-pattern" setting to determine which is rendered on flame chart. And the push
     // here will update the setting's value.
@@ -131,40 +227,32 @@ export class IgnoreListSetting extends HTMLElement {
   }
 
   #resetInput(): void {
-    this.#newRegexCheckbox.checked = false;
-    this.#newRegexInput.value = '';
+    this.#newRegexValue = '';
+    this.#newRegexChecked = false;
+    this.requestUpdate();
   }
 
-  #addNewRegexToIgnoreList(): void {
-    const newRegex = this.#newRegexInput.value.trim();
+  #onNewRegexInputBlur(value: string): void {
+    const newRegex = value.trim();
 
     this.#finishEditing();
     if (!regexInputIsValid(newRegex)) {
       // It the new regex is invalid, let's skip it.
       return;
     }
+
     Workspace.IgnoreListManager.IgnoreListManager.instance().addRegexToIgnoreList(newRegex);
     this.#resetInput();
   }
 
-  #handleKeyDown(event: KeyboardEvent): void {
-    // When user press the 'Enter', the current regex will be added and user can keep adding more regexes.
-    if (event.key === Platform.KeyboardUtilities.ENTER_KEY) {
-      this.#addNewRegexToIgnoreList();
-      this.#startEditing();
-      return;
-    }
+  #onNewRegexAdd(value: string): void {
+    this.#onNewRegexInputBlur(value);
+    this.#onNewRegexInputFocus('');
+  }
 
-    // When user press the 'Escape', it means cancel the editing, so the current regex won't be added and the input will
-    // lose focus.
-    if (event.key === Platform.KeyboardUtilities.ESCAPE_KEY) {
-      // Escape key will close the dialog, and toggle the `Console` drawer. So we need to ignore other listeners.
-      event.stopImmediatePropagation();
-
-      this.#finishEditing();
-      this.#resetInput();
-      this.#newRegexInput.blur();
-    }
+  #onNewRegexCancel(): void {
+    this.#finishEditing();
+    this.#resetInput();
   }
 
   /**
@@ -184,8 +272,9 @@ export class IgnoreListSetting extends HTMLElement {
     return this.#regexPatterns;
   }
 
-  #handleInputChange(): void {
-    const newRegex = this.#newRegexInput.value.trim();
+  #onNewRegexInputChange(value: string): void {
+    const newRegex = value.trim();
+    this.#newRegexValue = newRegex;
 
     if (this.#editingRegexSetting && regexInputIsValid(newRegex)) {
       this.#editingRegexSetting.pattern = newRegex;
@@ -194,35 +283,13 @@ export class IgnoreListSetting extends HTMLElement {
     }
   }
 
-  #initAddNewItem(): void {
-    this.#newRegexInput.placeholder = '/framework\\.js$';
-
-    const checkboxHelpText = i18nString(UIStrings.ignoreScriptsWhoseNamesMatchNewRegex);
-    const inputHelpText = i18nString(UIStrings.addNewRegex);
-    UI.Tooltip.Tooltip.install(this.#newRegexCheckbox, checkboxHelpText);
-    UI.Tooltip.Tooltip.install(this.#newRegexInput, inputHelpText);
-
-    this.#newRegexInput.addEventListener('blur', this.#addNewRegexToIgnoreList.bind(this), false);
-    this.#newRegexInput.addEventListener('keydown', this.#handleKeyDown.bind(this), false);
-    this.#newRegexInput.addEventListener('input', this.#handleInputChange.bind(this), false);
-    this.#newRegexInput.addEventListener('focus', this.#startEditing.bind(this), false);
-  }
-
-  #renderNewRegexRow(): Lit.TemplateResult {
-    // clang-format off
-    return html`
-      <div class='new-regex-row'>${this.#newRegexCheckbox}${this.#newRegexInput}</div>
-    `;
-    // clang-format on
-  }
-
   /**
    * Deal with an existing regex being toggled. Note that this handler only
    * deals with enabling/disabling regexes already in the ignore list, it does
    * not deal with enabling/disabling the new regex.
    */
-  #onExistingRegexEnableToggle(regex: Common.Settings.RegExpSettingItem, checkbox: UI.UIUtils.CheckboxLabel): void {
-    regex.disabled = !checkbox.checked;
+  #onExistingRegexEnableToggle(regex: Common.Settings.RegExpSettingItem, checked: boolean): void {
+    regex.disabled = !checked;
     // Technically we don't need to call the set function, because the regex is a reference, so it changed the setting
     // value directly.
     // But we need to call the set function to trigger the setting change event. which is needed by view update of flame
@@ -232,73 +299,28 @@ export class IgnoreListSetting extends HTMLElement {
     // the user.
   }
 
-  #removeRegexByIndex(index: number): void {
+  #onRemoveRegexByIndex(index: number): void {
     this.#regexPatterns.splice(index, 1);
     // Call the set function to trigger the setting change event. we listen to this event and will update this component
     // and the flame chart.
     this.#getSkipStackFramesPatternSetting().setAsArray(this.#regexPatterns);
   }
 
-  #renderItem(regex: Common.Settings.RegExpSettingItem, index: number): Lit.TemplateResult {
-    const checkboxWithLabel = UI.UIUtils.CheckboxLabel.createWithStringLiteral(
-        regex.pattern, !regex.disabled, /* jslogContext*/ 'timeline.ignore-list-pattern');
-    const helpText = i18nString(UIStrings.ignoreScriptsWhoseNamesMatchS, {regex: regex.pattern});
-    UI.Tooltip.Tooltip.install(checkboxWithLabel, helpText);
-    checkboxWithLabel.ariaLabel = helpText;
-    checkboxWithLabel.addEventListener(
-        'change', this.#onExistingRegexEnableToggle.bind(this, regex, checkboxWithLabel), false);
-    // clang-format off
-    return html`
-      <div class='regex-row'>
-        ${checkboxWithLabel}
-        <devtools-button
-            @click=${this.#removeRegexByIndex.bind(this, index)}
-            .data=${{
-            variant: Buttons.Button.Variant.ICON,
-            iconName: 'bin',
-            title: i18nString(UIStrings.removeRegex, {regex: regex.pattern}),
-            jslogContext: 'timeline.ignore-list-pattern.remove',
-          } as Buttons.Button.ButtonData}></devtools-button>
-      </div>
-    `;
-    // clang-format on
-  }
-
-  #render(): void {
-    if (!ComponentHelpers.ScheduledRender.isScheduledRender(this)) {
-      throw new Error('Ignore List setting dialog render was not scheduled');
-    }
-    // clang-format off
-    const output = html`
-      <style>${ignoreListSettingStyles}</style>
-      <devtools-button-dialog .data=${{
-          openOnRender: false,
-          jslogContext: 'timeline.ignore-list',
-          variant: Buttons.Button.Variant.TOOLBAR,
-          iconName: 'compress',
-          disabled: !this.#ignoreListEnabled.get(),
-          iconTitle: i18nString(UIStrings.showIgnoreListSettingDialog),
-          horizontalAlignment: Dialogs.Dialog.DialogHorizontalAlignment.AUTO,
-          closeButton: true,
-          dialogTitle: i18nString(UIStrings.ignoreList),
-        } as Dialogs.ButtonDialog.ButtonDialogData}>
-        <div class='ignore-list-setting-content'>
-          <div class='ignore-list-setting-description'>${i18nString(UIStrings.ignoreListDescription)}</div>
-          ${this.#getExistingRegexes().map(this.#renderItem.bind(this))}
-          ${this.#renderNewRegexRow()}
-        </div>
-      </devtools-button-dialog>
-    `;
-    // clang-format on
-    Lit.render(output, this.#shadow, {host: this});
-  }
-}
-
-customElements.define('devtools-perf-ignore-list-setting', IgnoreListSetting);
-
-declare global {
-  interface HTMLElementTagNameMap {
-    'devtools-perf-ignore-list-setting': IgnoreListSetting;
+  override performUpdate(): void {
+    const input: ViewInput = {
+      ignoreListEnabled: this.#ignoreListEnabled.get(),
+      regexes: this.#getExistingRegexes(),
+      newRegexValue: this.#newRegexValue,
+      newRegexChecked: this.#newRegexChecked,
+      onExistingRegexEnableToggle: this.#onExistingRegexEnableToggle.bind(this),
+      onRemoveRegexByIndex: this.#onRemoveRegexByIndex.bind(this),
+      onNewRegexInputBlur: this.#onNewRegexInputBlur.bind(this),
+      onNewRegexInputChange: this.#onNewRegexInputChange.bind(this),
+      onNewRegexInputFocus: this.#onNewRegexInputFocus.bind(this),
+      onNewRegexAdd: this.#onNewRegexAdd.bind(this),
+      onNewRegexCancel: this.#onNewRegexCancel.bind(this),
+    };
+    this.#view(input, undefined, this.contentElement);
   }
 }
 

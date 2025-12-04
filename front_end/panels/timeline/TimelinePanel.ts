@@ -1143,8 +1143,8 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
 
     // Ignore list setting
     this.panelToolbar.appendSeparator();
-    const showIgnoreListSetting = new TimelineComponents.IgnoreListSetting.IgnoreListSetting();
-    this.panelToolbar.appendToolbarItem(new UI.Toolbar.ToolbarItem(showIgnoreListSetting));
+    this.panelToolbar.appendToolbarItem(
+        new UI.Toolbar.ToolbarItem(TimelineComponents.IgnoreListSetting.IgnoreListSetting.createWidgetElement()));
 
     if (this.#dimThirdPartiesSetting) {
       const dimThirdPartiesCheckbox =

@@ -105,7 +105,6 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
   private readonly showMoreMessageElement: Element;
   private showIgnoreListed = false;
   private readonly locationPool = new Bindings.LiveLocation.LiveLocationPool();
-  private readonly updateThrottler = new Common.Throttler.Throttler(100);
   private maxAsyncStackChainDepth = defaultMaxAsyncStackChainDepth;
   private readonly updateItemThrottler = new Common.Throttler.Throttler(100);
   private readonly scheduledForUpdateItems = new Set<Item>();
@@ -147,7 +146,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
 
     const onShowMoreClicked = (): void => {
       this.maxAsyncStackChainDepth += defaultMaxAsyncStackChainDepth;
-      this.update();
+      this.requestUpdate();
     };
 
     // clang-format off
@@ -180,7 +179,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
     this.callFrameWarningsElement = warningRef.value as HTMLElement;
     this.showMoreMessageElement = showMoreRef.value as HTMLElement;
 
-    this.update();
+    this.requestUpdate();
 
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebugInfoAttached, this.debugInfoAttached, this);
@@ -201,11 +200,11 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
     this.showIgnoreListed = false;
     this.ignoreListCheckboxElement.checked = false;
     this.maxAsyncStackChainDepth = defaultMaxAsyncStackChainDepth;
-    this.update();
+    this.requestUpdate();
   }
 
   private debugInfoAttached(): void {
-    this.update();
+    this.requestUpdate();
   }
 
   private setSourceMapSubscription(debuggerModel: SDK.DebuggerModel.DebuggerModel|null): void {
@@ -226,11 +225,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
     }
   }
 
-  update(): void {
-    void this.updateThrottler.schedule(() => this.doUpdate());
-  }
-
-  async doUpdate(): Promise<void> {
+  override async performUpdate(): Promise<void> {
     this.locationPool.disposeAll();
 
     this.callFrameWarningsElement.classList.add('hidden');

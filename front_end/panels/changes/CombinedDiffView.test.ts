@@ -69,8 +69,12 @@ describeWithEnvironment('CombinedDiffView', () => {
   beforeEach(() => {
     const workspace = createWorkspace();
     workspaceDiff = createWorkspaceDiff({workspace});
-    ({uiSourceCode} = createFileSystemUISourceCode(
-         {url: URL, content: ORIGINAL_CONTENT, mimeType: 'text/javascript', fileSystemPath: 'file:///workspace'}));
+    ({uiSourceCode} = createFileSystemUISourceCode({
+       url: URL,
+       content: ORIGINAL_CONTENT,
+       mimeType: 'text/javascript',
+       fileSystemPath: 'file:///workspace',
+     }));
   });
 
   it('should render modified UISourceCode from a workspaceDiff on initial render', async () => {

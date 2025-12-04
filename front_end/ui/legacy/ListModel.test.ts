@@ -33,7 +33,7 @@ describe('ListModel', () => {
     assert.deepEqual([...model], [5, 6, 7, 1, 2, 10]);
   });
 
-  it('supports removing list elements', () => {
+  it('supports removing list elements last', () => {
     const model = new UI.ListModel.ListModel([5, 6, 7, 1, 2, 10]);
     model.remove(model.length - 1);
     assert.deepEqual([...model], [5, 6, 7, 1, 2]);
@@ -45,7 +45,7 @@ describe('ListModel', () => {
     assert.deepEqual([...model], [5, 6, 7, 1]);
   });
 
-  it('supports replacing list elements in place', () => {
+  it('supports inserting list elements in place', () => {
     const model = new UI.ListModel.ListModel([5, 6, 7, 1]);
     model.insert(1, 8);
     assert.deepEqual([...model], [5, 8, 6, 7, 1]);

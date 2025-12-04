@@ -101,7 +101,7 @@ describe('CookieParser', () => {
       sinon.assert.calledOnceWithExactly(stub, 'Failed getting cookie attribute: Discard');
     });
 
-    it('handles multiple cookies with an invalid attribute', () => {
+    it('handles multiple cookies with an invalid attribute for max-age', () => {
       const stub = sinon.stub(console, 'error');
       parseAndExpectSetCookies(
           `cookie1 = value; max-age= 1440; Domain   =.example.com

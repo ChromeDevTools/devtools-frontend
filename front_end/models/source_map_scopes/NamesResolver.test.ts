@@ -111,17 +111,12 @@ describeWithMockConnection('NameResolver', () => {
       scopes: '          {B        BBBBB   B        B   B         B   }',
     },
     {
-      name: 'computes identifiers with nested scopes, var lifting',
-      source: 'function f(x) { let outer = x; { var b = x; return b } }',
-      scopes: '          {B        BBBBB   B        B   B         B   }',
-    },
-    {
       name: 'computes identifiers in catch clause',
       source: 'function f(x) { try { } catch (e) { let a = e + x; } }',
       scopes: '          {                   <B            B   F  > }',
     },
     {
-      name: 'computes identifiers in catch clause',
+      name: 'computes identifiers in catch clause with return',
       source: 'function f(x) { try { } catch (e) { let a = e; return a; } }',
       scopes: '          {                       <     B   F         B  > }',
     },

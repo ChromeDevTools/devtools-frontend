@@ -2051,7 +2051,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       assert.strictEqual(originalText, evaluationSpy.args[0][0].textContent);
     });
 
-    it('shows the original text during tracing when evaluation fails', async () => {
+    it('should try to resolve the values for the correct property name', async () => {
       const cssModel = stylesSidebarPane.cssModel();
       assert.exists(cssModel);
       const resolveValuesStub = sinon.stub(cssModel, 'resolveValues').resolves([]);

@@ -570,21 +570,21 @@ describeWithEnvironment('BreakpointsSidebarController', () => {
       assert.lengthOf(actualViewData.groups[0].breakpointItems, 1);
     });
 
-    it('correctly extracts the enabled state', async () => {
+    it('correctly extracts the enabled state for true', async () => {
       const {groups} =
           await setUpTestWithOneBreakpointLocation({file: '', lineNumber: 0, columnNumber: 0, enabled: true});
       const breakpointItem = groups[0].breakpointItems[0];
       assert.strictEqual(breakpointItem.status, Sources.BreakpointsView.BreakpointStatus.ENABLED);
     });
 
-    it('correctly extracts the enabled state', async () => {
+    it('correctly extracts the enabled state for false', async () => {
       const {groups} =
           await setUpTestWithOneBreakpointLocation({file: '', lineNumber: 0, columnNumber: 0, enabled: false});
       const breakpointItem = groups[0].breakpointItems[0];
       assert.strictEqual(breakpointItem.status, Sources.BreakpointsView.BreakpointStatus.DISABLED);
     });
 
-    it('correctly extracts the enabled state', async () => {
+    it('correctly extracts the enabled state for multiple', async () => {
       const testData = [
         createLocationTestData(TEST_JS_FILE, 3, 15, true /* enabled */),
         createLocationTestData(TEST_JS_FILE, 3, 15, false /* enabled */),

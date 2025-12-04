@@ -89,29 +89,6 @@ describeWithEnvironment('RequestHeaderSection', () => {
     assert.isTrue(highlightedHeader?.highlight);
   });
 
-  it('highlights the requested header', async () => {
-    const request = {
-      cachedInMemory: () => true,
-      cached: () => false,
-      requestHeaders: () =>
-          [{name: 'Ab', value: 'second'},
-           {name: 'test', value: 'fifth'},
-           {name: 'name', value: 'fourth'},
-           {name: 'abc', value: 'third'},
-           {name: 'aa', value: 'first'},
-    ],
-      requestHeadersText: () => 'placeholderText',
-    } as unknown as SDK.NetworkRequest.NetworkRequest;
-
-    const {view, widget} = await renderRequestHeaderSection(request);
-    widget.toReveal = {section: NetworkForward.UIRequestLocation.UIHeaderSection.REQUEST, header: 'Ab'};
-    await view.nextInput;
-
-    const headers = view.input.headers;
-    const highlightedHeader = headers.find(header => header.name === 'ab');
-    assert.isTrue(highlightedHeader?.highlight);
-  });
-
   it('correctly sets cached state', async () => {
     const request = {
       cachedInMemory: () => true,

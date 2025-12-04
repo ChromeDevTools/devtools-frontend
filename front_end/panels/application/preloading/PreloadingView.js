@@ -13,12 +13,13 @@ import * as Buttons from '../../../ui/components/buttons/buttons.js';
 // eslint-disable-next-line @devtools/es-modules-import
 import emptyWidgetStyles from '../../../ui/legacy/emptyWidget.css.js';
 import * as UI from '../../../ui/legacy/legacy.js';
-import { html, render } from '../../../ui/lit/lit.js';
+import { Directives, html, render } from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as PreloadingComponents from './components/components.js';
 import { ruleSetTagOrLocationShort } from './components/PreloadingString.js';
 import preloadingViewStyles from './preloadingView.css.js';
 import preloadingViewDropDownStyles from './preloadingViewDropDown.css.js';
+const { createRef, ref } = Directives;
 const UIStrings = {
     /**
      * @description DropDown title for filtering preloading attempts by rule set
@@ -177,7 +178,7 @@ export class PreloadingRuleSetView extends UI.Widget.VBox {
     warningsView = new PreloadingWarningsView();
     hsplit;
     ruleSetGrid = new PreloadingComponents.RuleSetGrid.RuleSetGrid();
-    ruleSetDetails = new PreloadingComponents.RuleSetDetailsView.RuleSetDetailsView();
+    ruleSetDetailsRef;
     shouldPrettyPrint = Common.Settings.Settings.instance().moduleSetting('auto-pretty-print-minified').get();
     constructor(model) {
         super({ useShadowDom: true });
@@ -202,6 +203,8 @@ export class PreloadingRuleSetView extends UI.Widget.VBox {
         this.contentElement.insertBefore(this.warningsContainer, this.contentElement.firstChild);
         this.warningsView.show(this.warningsContainer);
         this.ruleSetGrid.addEventListener('select', this.onRuleSetsGridCellFocused.bind(this));
+        this.ruleSetDetailsRef =
+            createRef();
         const onPrettyPrintToggle = () => {
             this.shouldPrettyPrint = !this.shouldPrettyPrint;
             this.updateRuleSetDetails();
@@ -224,7 +227,10 @@ export class PreloadingRuleSetView extends UI.Widget.VBox {
             ${this.ruleSetGrid}
           </div>
           <div slot="sidebar" jslog=${VisualLogging.section('rule-set-details')}>
-            ${this.ruleSetDetails}
+            <devtools-widget .widgetConfig=${UI.Widget.widgetConfig(PreloadingComponents.RuleSetDetailsView.RuleSetDetailsView, {
+            ruleSet: this.getRuleSet(),
+            shouldPrettyPrint: this.shouldPrettyPrint,
+        })} ${ref(this.ruleSetDetailsRef)}></devtools-widget>
           </div>
         </devtools-split-view>
         <div class="pretty-print-button" style="border-top: 1px solid var(--sys-color-divider)">
@@ -258,16 +264,22 @@ export class PreloadingRuleSetView extends UI.Widget.VBox {
         this.render();
     }
     updateRuleSetDetails() {
-        const id = this.focusedRuleSetId;
-        const ruleSet = id === null ? null : this.model.getRuleSetById(id);
-        this.ruleSetDetails.shouldPrettyPrint = this.shouldPrettyPrint;
-        this.ruleSetDetails.data = ruleSet;
+        const ruleSet = this.getRuleSet();
+        const widget = this.ruleSetDetailsRef.value?.getWidget();
+        if (widget) {
+            widget.shouldPrettyPrint = this.shouldPrettyPrint;
+            widget.ruleSet = ruleSet;
+        }
         if (ruleSet === null) {
             this.hsplit.setAttribute('sidebar-visibility', 'hidden');
         }
         else {
             this.hsplit.removeAttribute('sidebar-visibility');
         }
+    }
+    getRuleSet() {
+        const id = this.focusedRuleSetId;
+        return id === null ? null : this.model.getRuleSetById(id);
     }
     render() {
         // Update rule sets grid
@@ -293,9 +305,6 @@ export class PreloadingRuleSetView extends UI.Widget.VBox {
     }
     getRuleSetGridForTest() {
         return this.ruleSetGrid;
-    }
-    getRuleSetDetailsForTest() {
-        return this.ruleSetDetails;
     }
 }
 export class PreloadingAttemptView extends UI.Widget.VBox {

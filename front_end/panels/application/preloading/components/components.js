@@ -7,6 +7,7 @@ var __export = (target, all) => {
 // gen/front_end/panels/application/preloading/components/MismatchedPreloadingGrid.js
 var MismatchedPreloadingGrid_exports = {};
 __export(MismatchedPreloadingGrid_exports, {
+  DEFAULT_VIEW: () => DEFAULT_VIEW,
   MismatchedPreloadingGrid: () => MismatchedPreloadingGrid,
   i18nString: () => i18nString2
 });
@@ -14,7 +15,7 @@ import "./../../../../ui/legacy/components/data_grid/data_grid.js";
 import * as i18n3 from "./../../../../core/i18n/i18n.js";
 import * as SDK2 from "./../../../../core/sdk/sdk.js";
 import * as Diff from "./../../../../third_party/diff/diff.js";
-import * as LegacyWrapper from "./../../../../ui/components/legacy_wrapper/legacy_wrapper.js";
+import * as UI from "./../../../../ui/legacy/legacy.js";
 import * as Lit from "./../../../../ui/lit/lit.js";
 
 // gen/front_end/panels/application/preloading/components/PreloadingString.js
@@ -785,74 +786,81 @@ var PreloadingUIUtils = class {
     }
   }
 };
-var MismatchedPreloadingGrid = class extends LegacyWrapper.LegacyWrapper.WrappableComponent {
-  #shadow = this.attachShadow({ mode: "open" });
+var DEFAULT_VIEW = (input, _output, target) => {
+  render(html`
+    <devtools-data-grid striped inline>
+      <table>
+        <tr>
+          <th id="url" weight="40" sortable>
+            ${i18nString2(UIStrings2.url)}
+          </th>
+          <th id="action" weight="15" sortable>
+            ${i18nString2(UIStrings2.action)}
+          </th>
+          <th id="status" weight="15" sortable>
+            ${i18nString2(UIStrings2.status)}
+          </th>
+        </tr>
+        ${input.rows.map((row) => ({
+    row,
+    diffScore: Diff.Diff.DiffWrapper.characterScore(row.url, input.pageURL)
+  })).sort((a, b) => b.diffScore - a.diffScore).map(({ row }) => html`
+              <tr>
+                <td>
+                  <div>${charDiff(row.url, input.pageURL).map((diffOp) => {
+    const s = diffOp[1];
+    switch (diffOp[0]) {
+      case Diff.Diff.Operation.Equal:
+        return html`<span>${s}</span>`;
+      case Diff.Diff.Operation.Insert:
+        return html`<span style=${styleMap({
+          color: "var(--sys-color-green)",
+          "text-decoration": "line-through"
+        })}
+                              >${s}</span>`;
+      case Diff.Diff.Operation.Delete:
+        return html`<span style=${styleMap({ color: "var(--sys-color-error)" })}>${s}</span>`;
+      case Diff.Diff.Operation.Edit:
+        return html`<span style=${styleMap({
+          color: "var(--sys-color-green",
+          "text-decoration": "line-through"
+        })}
+                          >${s}</span>`;
+      default:
+        throw new Error("unreachable");
+    }
+  })}
+                  </div>
+                </td>
+                <td>${capitalizedAction(row.action)}</td>
+                <td>${PreloadingUIUtils.status(row.status)}</td>
+              </tr>
+            `)}
+      </table>
+    </devtools-data-grid>`, target);
+};
+var MismatchedPreloadingGrid = class extends UI.Widget.Widget {
   #data = null;
-  connectedCallback() {
-    this.#render();
+  #view;
+  constructor(element, view = DEFAULT_VIEW) {
+    super(element, { classes: ["devtools-resources-mismatched-preloading-grid"], useShadowDom: true });
+    this.#view = view;
+  }
+  wasShown() {
+    super.wasShown();
+    this.requestUpdate();
   }
   set data(data) {
     this.#data = data;
-    this.#render();
+    this.requestUpdate();
   }
-  #render() {
+  performUpdate() {
     if (!this.#data) {
       return;
     }
-    const { pageURL } = this.#data;
-    render(html`<devtools-data-grid striped inline>
-          <table>
-            <tr>
-              <th id="url" weight="40" sortable>
-                ${i18nString2(UIStrings2.url)}
-              </th>
-              <th id="action" weight="15" sortable>
-                ${i18nString2(UIStrings2.action)}
-              </th>
-              <th id="status" weight="15" sortable>
-                ${i18nString2(UIStrings2.status)}
-              </th>
-            </tr>
-            ${this.#data.rows.map((row) => ({
-      row,
-      diffScore: Diff.Diff.DiffWrapper.characterScore(row.url, pageURL)
-    })).sort((a, b) => b.diffScore - a.diffScore).map(({ row }) => html`
-                <tr>
-                  <td>
-                    <div>${charDiff(row.url, pageURL).map((diffOp) => {
-      const s = diffOp[1];
-      switch (diffOp[0]) {
-        case Diff.Diff.Operation.Equal:
-          return html`<span>${s}</span>`;
-        case Diff.Diff.Operation.Insert:
-          return html`<span style=${styleMap({
-            color: "var(--sys-color-green)",
-            "text-decoration": "line-through"
-          })}
-                               >${s}</span>`;
-        case Diff.Diff.Operation.Delete:
-          return html`<span style=${styleMap({ color: "var(--sys-color-error)" })}>${s}</span>`;
-        case Diff.Diff.Operation.Edit:
-          return html`<span style=${styleMap({
-            color: "var(--sys-color-green",
-            "text-decoration": "line-through"
-          })}
-                            >${s}</span>`;
-        default:
-          throw new Error("unreachable");
-      }
-    })}
-                    </div>
-                  </td>
-                  <td>${capitalizedAction(row.action)}</td>
-                  <td>${PreloadingUIUtils.status(row.status)}</td>
-                </tr>
-              `)}
-          </table>
-        </devtools-data-grid>`, this.#shadow, { host: this });
+    this.#view(this.#data, {}, this.contentElement);
   }
 };
-customElements.define("devtools-resources-mismatched-preloading-grid", MismatchedPreloadingGrid);
 
 // gen/front_end/panels/application/preloading/components/PreloadingDetailsReportView.js
 var PreloadingDetailsReportView_exports = {};
@@ -867,9 +875,9 @@ import { assertNotNullOrUndefined as assertNotNullOrUndefined2 } from "./../../.
 import * as SDK3 from "./../../../../core/sdk/sdk.js";
 import * as Logs from "./../../../../models/logs/logs.js";
 import * as Buttons from "./../../../../ui/components/buttons/buttons.js";
-import * as LegacyWrapper3 from "./../../../../ui/components/legacy_wrapper/legacy_wrapper.js";
+import * as LegacyWrapper from "./../../../../ui/components/legacy_wrapper/legacy_wrapper.js";
 import * as RenderCoordinator from "./../../../../ui/components/render_coordinator/render_coordinator.js";
-import * as UI from "./../../../../ui/legacy/legacy.js";
+import * as UI2 from "./../../../../ui/legacy/legacy.js";
 import * as Lit2 from "./../../../../ui/lit/lit.js";
 import * as VisualLogging from "./../../../../ui/visual_logging/visual_logging.js";
 import * as PreloadingHelper from "./../helper/helper.js";
@@ -1030,7 +1038,7 @@ var PreloadingUIUtils2 = class {
     }
   }
 };
-var PreloadingDetailsReportView = class extends LegacyWrapper3.LegacyWrapper.WrappableComponent {
+var PreloadingDetailsReportView = class extends LegacyWrapper.LegacyWrapper.WrappableComponent {
   #shadow = this.attachShadow({ mode: "open" });
   #data = null;
   set data(data) {
@@ -1042,7 +1050,7 @@ var PreloadingDetailsReportView = class extends LegacyWrapper3.LegacyWrapper.Wra
       if (this.#data === null) {
         Lit2.render(html2`
           <style>${preloadingDetailsReportView_css_default}</style>
-          <style>${UI.inspectorCommonStyles}</style>
+          <style>${UI2.inspectorCommonStyles}</style>
           <div class="empty-state">
             <span class="empty-state-header">${i18nString3(UIStrings3.noElementSelected)}</span>
             <span class="empty-state-description">${i18nString3(UIStrings3.selectAnElementForMoreDetails)}</span>
@@ -1055,7 +1063,7 @@ var PreloadingDetailsReportView = class extends LegacyWrapper3.LegacyWrapper.Wra
       const isFallbackToPrefetch = pipeline.getPrerender()?.status === "Failure" && (pipeline.getPrefetch()?.status === "Ready" || pipeline.getPrefetch()?.status === "Success");
       Lit2.render(html2`
         <style>${preloadingDetailsReportView_css_default}</style>
-        <style>${UI.inspectorCommonStyles}</style>
+        <style>${UI2.inspectorCommonStyles}</style>
         <devtools-report
           .data=${{ reportTitle: "Speculative Loading Attempt" }}
           jslog=${VisualLogging.section("preloading-details")}>
@@ -1134,7 +1142,7 @@ var PreloadingDetailsReportView = class extends LegacyWrapper3.LegacyWrapper.Wra
         if (prerenderTarget === void 0) {
           return;
         }
-        UI.Context.Context.instance().setFlavor(SDK3.Target.Target, prerenderTarget);
+        UI2.Context.Context.instance().setFlavor(SDK3.Target.Target, prerenderTarget);
       };
       maybeInspectButton = html2`
           <devtools-button
@@ -1254,7 +1262,7 @@ import * as i18n7 from "./../../../../core/i18n/i18n.js";
 import * as Buttons2 from "./../../../../ui/components/buttons/buttons.js";
 import * as ChromeLink from "./../../../../ui/components/chrome_link/chrome_link.js";
 import * as Dialogs from "./../../../../ui/components/dialogs/dialogs.js";
-import * as LegacyWrapper5 from "./../../../../ui/components/legacy_wrapper/legacy_wrapper.js";
+import * as LegacyWrapper3 from "./../../../../ui/components/legacy_wrapper/legacy_wrapper.js";
 import * as RenderCoordinator2 from "./../../../../ui/components/render_coordinator/render_coordinator.js";
 import * as uiI18n from "./../../../../ui/i18n/i18n.js";
 import * as Lit3 from "./../../../../ui/lit/lit.js";
@@ -1373,7 +1381,7 @@ var UIStrings4 = {
 var str_4 = i18n7.i18n.registerUIStrings("panels/application/preloading/components/PreloadingDisabledInfobar.ts", UIStrings4);
 var i18nString4 = i18n7.i18n.getLocalizedString.bind(void 0, str_4);
 var LINK = "https://developer.chrome.com/blog/prerender-pages/";
-var PreloadingDisabledInfobar = class extends LegacyWrapper5.LegacyWrapper.WrappableComponent {
+var PreloadingDisabledInfobar = class extends LegacyWrapper3.LegacyWrapper.WrappableComponent {
   #shadow = this.attachShadow({ mode: "open" });
   #data = {
     disabledByPreference: false,
@@ -1498,7 +1506,7 @@ import "./../../../../ui/kit/kit.js";
 import * as Common2 from "./../../../../core/common/common.js";
 import * as i18n9 from "./../../../../core/i18n/i18n.js";
 import * as SDK4 from "./../../../../core/sdk/sdk.js";
-import * as LegacyWrapper7 from "./../../../../ui/components/legacy_wrapper/legacy_wrapper.js";
+import * as LegacyWrapper5 from "./../../../../ui/components/legacy_wrapper/legacy_wrapper.js";
 import * as Lit4 from "./../../../../ui/lit/lit.js";
 
 // gen/front_end/panels/application/preloading/components/preloadingGrid.css.js
@@ -1567,7 +1575,7 @@ var UIStrings5 = {
 var str_5 = i18n9.i18n.registerUIStrings("panels/application/preloading/components/PreloadingGrid.ts", UIStrings5);
 var i18nString5 = i18n9.i18n.getLocalizedString.bind(void 0, str_5);
 var { render: render4, html: html4, Directives: { styleMap: styleMap2 } } = Lit4;
-var PreloadingGrid = class extends LegacyWrapper7.LegacyWrapper.WrappableComponent {
+var PreloadingGrid = class extends LegacyWrapper5.LegacyWrapper.WrappableComponent {
   #shadow = this.attachShadow({ mode: "open" });
   #data = null;
   connectedCallback() {
@@ -1632,101 +1640,20 @@ var PreloadingGrid = class extends LegacyWrapper7.LegacyWrapper.WrappableCompone
 };
 customElements.define("devtools-resources-preloading-grid", PreloadingGrid);
 
-// gen/front_end/panels/application/preloading/components/PreloadingMismatchedHeadersGrid.js
-var PreloadingMismatchedHeadersGrid_exports = {};
-__export(PreloadingMismatchedHeadersGrid_exports, {
-  PreloadingMismatchedHeadersGrid: () => PreloadingMismatchedHeadersGrid,
-  i18nString: () => i18nString6
-});
-import "./../../../../ui/legacy/components/data_grid/data_grid.js";
-import * as i18n11 from "./../../../../core/i18n/i18n.js";
-import * as LegacyWrapper9 from "./../../../../ui/components/legacy_wrapper/legacy_wrapper.js";
-import * as Lit5 from "./../../../../ui/lit/lit.js";
-var UIStrings6 = {
-  /**
-   * @description The name of the HTTP request header.
-   */
-  headerName: "Header name",
-  /**
-   * @description The value of the HTTP request header in initial navigation.
-   */
-  initialNavigationValue: "Value in initial navigation",
-  /**
-   * @description The value of the HTTP request header in activation navigation.
-   */
-  activationNavigationValue: "Value in activation navigation",
-  /**
-   * @description The string to indicate the value of the header is missing.
-   */
-  missing: "(missing)"
-};
-var str_6 = i18n11.i18n.registerUIStrings("panels/application/preloading/components/PreloadingMismatchedHeadersGrid.ts", UIStrings6);
-var i18nString6 = i18n11.i18n.getLocalizedString.bind(void 0, str_6);
-var { render: render5, html: html5 } = Lit5;
-var PreloadingMismatchedHeadersGrid = class extends LegacyWrapper9.LegacyWrapper.WrappableComponent {
-  #shadow = this.attachShadow({ mode: "open" });
-  #data = null;
-  connectedCallback() {
-    this.#render();
-  }
-  set data(data) {
-    if (data.mismatchedHeaders === null) {
-      return;
-    }
-    this.#data = data;
-    this.#render();
-  }
-  #render() {
-    if (!this.#data?.mismatchedHeaders) {
-      return;
-    }
-    render5(html5`
-        <style>${preloadingGrid_css_default}</style>
-        <div class="preloading-container">
-          <devtools-data-grid striped inline>
-            <table>
-              <tr>
-                <th id="header-name" weight="30" sortable>
-                  ${i18nString6(UIStrings6.headerName)}
-                </th>
-                <th id="initial-value" weight="30" sortable>
-                  ${i18nString6(UIStrings6.initialNavigationValue)}
-                </th>
-                <th id="activation-value" weight="30" sortable>
-                  ${i18nString6(UIStrings6.activationNavigationValue)}
-                </th>
-              </tr>
-              ${this.#data.mismatchedHeaders.map((mismatchedHeaders) => html5`
-                <tr>
-                  <td>${mismatchedHeaders.headerName}</td>
-                  <td>${mismatchedHeaders.initialValue ?? i18nString6(UIStrings6.missing)}</td>
-                  <td>${mismatchedHeaders.activationValue ?? i18nString6(UIStrings6.missing)}</td>
-                </tr>
-              `)}
-            </table>
-          </devtools-data-grid>
-        </div>
-      `, this.#shadow, { host: this });
-  }
-};
-customElements.define("devtools-resources-preloading-mismatched-headers-grid", PreloadingMismatchedHeadersGrid);
-
 // gen/front_end/panels/application/preloading/components/RuleSetDetailsView.js
 var RuleSetDetailsView_exports = {};
 __export(RuleSetDetailsView_exports, {
+  DEFAULT_VIEW: () => DEFAULT_VIEW2,
   RuleSetDetailsView: () => RuleSetDetailsView
 });
-import * as i18n13 from "./../../../../core/i18n/i18n.js";
-import { assertNotNullOrUndefined as assertNotNullOrUndefined3 } from "./../../../../core/platform/platform.js";
+import * as i18n11 from "./../../../../core/i18n/i18n.js";
 import * as SDK5 from "./../../../../core/sdk/sdk.js";
 import * as Formatter from "./../../../../models/formatter/formatter.js";
 import * as CodeMirror from "./../../../../third_party/codemirror.next/codemirror.next.js";
 import * as CodeHighlighter from "./../../../../ui/components/code_highlighter/code_highlighter.js";
-import * as LegacyWrapper11 from "./../../../../ui/components/legacy_wrapper/legacy_wrapper.js";
-import * as RenderCoordinator3 from "./../../../../ui/components/render_coordinator/render_coordinator.js";
 import * as TextEditor from "./../../../../ui/components/text_editor/text_editor.js";
-import * as UI2 from "./../../../../ui/legacy/legacy.js";
-import * as Lit6 from "./../../../../ui/lit/lit.js";
+import * as UI3 from "./../../../../ui/legacy/legacy.js";
+import { html as html5, nothing as nothing3, render as render5 } from "./../../../../ui/lit/lit.js";
 
 // gen/front_end/panels/application/preloading/components/RuleSetDetailsView.css.js
 var RuleSetDetailsView_css_default = `/*
@@ -1760,8 +1687,7 @@ var RuleSetDetailsView_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./RuleSetDetailsView.css")} */`;
 
 // gen/front_end/panels/application/preloading/components/RuleSetDetailsView.js
-var { html: html6 } = Lit6;
-var UIStrings7 = {
+var UIStrings6 = {
   /**
    * @description Text in RuleSetDetailsView of the Application panel if no element is selected. An element here is an item in a
    *             table of speculation rules. Speculation rules define the rules when and which urls should be prefetched.
@@ -1775,103 +1701,101 @@ var UIStrings7 = {
    */
   selectAnElementForMoreDetails: "Select an element for more details"
 };
-var str_7 = i18n13.i18n.registerUIStrings("panels/application/preloading/components/RuleSetDetailsView.ts", UIStrings7);
-var i18nString7 = i18n13.i18n.getLocalizedString.bind(void 0, str_7);
+var str_6 = i18n11.i18n.registerUIStrings("panels/application/preloading/components/RuleSetDetailsView.ts", UIStrings6);
+var i18nString6 = i18n11.i18n.getLocalizedString.bind(void 0, str_6);
 var codeMirrorJsonType = await CodeHighlighter.CodeHighlighter.languageFromMIME("application/json");
-var RuleSetDetailsView = class extends LegacyWrapper11.LegacyWrapper.WrappableComponent {
-  #shadow = this.attachShadow({ mode: "open" });
-  #data = null;
+var DEFAULT_VIEW2 = (input, _output, target) => {
+  render5(html5`
+    <style>${RuleSetDetailsView_css_default}</style>
+    <style>${UI3.inspectorCommonStyles}</style>
+    ${input ? html5`
+        <div class="content">
+          <div class="ruleset-header" id="ruleset-url">${input.url}</div>
+          ${input.errorMessage ? html5`
+            <div class="ruleset-header">
+              <devtools-icon name="cross-circle" class="medium">
+              </devtools-icon>
+              <span id="error-message-text">${input.errorMessage}</span>
+            </div>
+          ` : nothing3}
+        </div>
+        <div class="text-ellipsis">
+          <devtools-text-editor .style.flexGrow=${"1"} .state=${input.editorState}></devtools-text-editor>
+        </div>` : html5`
+          <div class="placeholder">
+            <div class="empty-state">
+              <span class="empty-state-header">${i18nString6(UIStrings6.noElementSelected)}</span>
+              <span class="empty-state-description">${i18nString6(UIStrings6.selectAnElementForMoreDetails)}</span>
+            </div>
+          </div>`}
+    `, target);
+};
+var RuleSetDetailsView = class extends UI3.Widget.VBox {
+  #view;
+  #ruleSet = null;
   #shouldPrettyPrint = true;
-  #editorState;
-  set data(data) {
-    this.#data = data;
-    void this.#render();
+  constructor(element, view = DEFAULT_VIEW2) {
+    super(element, { useShadowDom: true });
+    this.#view = view;
+  }
+  wasShown() {
+    super.wasShown();
+    this.requestUpdate();
+  }
+  set ruleSet(ruleSet) {
+    this.#ruleSet = ruleSet;
+    this.requestUpdate();
   }
   set shouldPrettyPrint(shouldPrettyPrint) {
     this.#shouldPrettyPrint = shouldPrettyPrint;
+    this.requestUpdate();
   }
-  async #render() {
-    await RenderCoordinator3.write("RuleSetDetailsView render", async () => {
-      if (this.#data === null) {
-        Lit6.render(html6`
-          <style>${RuleSetDetailsView_css_default}</style>
-          <style>${UI2.inspectorCommonStyles}</style>
-          <div class="placeholder">
-            <div class="empty-state">
-              <span class="empty-state-header">${i18nString7(UIStrings7.noElementSelected)}</span>
-              <span class="empty-state-description">${i18nString7(UIStrings7.selectAnElementForMoreDetails)}</span>
-            </div>
-          </div>
-      `, this.#shadow, { host: this });
-        return;
-      }
-      const sourceText = await this.#getSourceText();
-      Lit6.render(html6`
-        <style>${RuleSetDetailsView_css_default}</style>
-        <style>${UI2.inspectorCommonStyles}</style>
-        <div class="content">
-          <div class="ruleset-header" id="ruleset-url">${this.#data?.url || SDK5.TargetManager.TargetManager.instance().inspectedURL()}</div>
-          ${this.#maybeError()}
-        </div>
-        <div class="text-ellipsis">
-          ${this.#renderSource(sourceText)}
-        </div>
-      `, this.#shadow, { host: this });
-    });
-  }
-  // TODO(https://crbug.com/1425354): Support i18n.
-  #maybeError() {
-    assertNotNullOrUndefined3(this.#data);
-    if (this.#data.errorMessage === void 0) {
-      return Lit6.nothing;
+  async performUpdate() {
+    if (!this.#ruleSet) {
+      this.#view(null, {}, this.contentElement);
+      return;
     }
-    return html6`
-      <div class="ruleset-header">
-        <devtools-icon name="cross-circle" class="medium">
-        </devtools-icon>
-        <span id="error-message-text">${this.#data.errorMessage}</span>
-      </div>
-    `;
-  }
-  #renderSource(sourceText) {
-    this.#editorState = CodeMirror.EditorState.create({
+    const sourceText = await this.#getSourceText();
+    const editorState = CodeMirror.EditorState.create({
       doc: sourceText,
       extensions: [
-        TextEditor.Config.baseConfiguration(sourceText || ""),
+        TextEditor.Config.baseConfiguration(sourceText),
         CodeMirror.lineNumbers(),
         CodeMirror.EditorState.readOnly.of(true),
         codeMirrorJsonType,
         CodeMirror.syntaxHighlighting(CodeHighlighter.CodeHighlighter.highlightStyle)
       ]
     });
-    return html6`
-      <devtools-text-editor .style.flexGrow=${"1"} .state=${this.#editorState}></devtools-text-editor>
-    `;
+    this.#view({
+      url: this.#ruleSet.url || SDK5.TargetManager.TargetManager.instance().inspectedURL(),
+      errorMessage: this.#ruleSet.errorMessage,
+      editorState,
+      sourceText
+    }, {}, this.contentElement);
   }
   async #getSourceText() {
-    if (this.#shouldPrettyPrint && this.#data?.sourceText !== void 0) {
-      const formattedResult = await Formatter.ScriptFormatter.formatScriptContent("application/json", this.#data.sourceText);
+    if (this.#shouldPrettyPrint && this.#ruleSet?.sourceText !== void 0) {
+      const formattedResult = await Formatter.ScriptFormatter.formatScriptContent("application/json", this.#ruleSet.sourceText);
       return formattedResult.formattedContent;
     }
-    return this.#data?.sourceText || "";
+    return this.#ruleSet?.sourceText || "";
   }
 };
-customElements.define("devtools-resources-rulesets-details-view", RuleSetDetailsView);
 
 // gen/front_end/panels/application/preloading/components/RuleSetGrid.js
 var RuleSetGrid_exports = {};
 __export(RuleSetGrid_exports, {
   RuleSetGrid: () => RuleSetGrid,
-  i18nString: () => i18nString8
+  i18nString: () => i18nString7
 });
 import "./../../../../ui/legacy/components/data_grid/data_grid.js";
 import "./../../../../ui/kit/kit.js";
 import * as Common3 from "./../../../../core/common/common.js";
-import * as i18n15 from "./../../../../core/i18n/i18n.js";
-import { assertNotNullOrUndefined as assertNotNullOrUndefined4 } from "./../../../../core/platform/platform.js";
+import * as i18n13 from "./../../../../core/i18n/i18n.js";
+import { assertNotNullOrUndefined as assertNotNullOrUndefined3 } from "./../../../../core/platform/platform.js";
 import * as SDK6 from "./../../../../core/sdk/sdk.js";
-import * as LegacyWrapper13 from "./../../../../ui/components/legacy_wrapper/legacy_wrapper.js";
-import * as Lit7 from "./../../../../ui/lit/lit.js";
+import * as LegacyWrapper7 from "./../../../../ui/components/legacy_wrapper/legacy_wrapper.js";
+import * as Lit5 from "./../../../../ui/lit/lit.js";
 import * as VisualLogging3 from "./../../../../ui/visual_logging/visual_logging.js";
 import * as NetworkForward from "./../../../network/forward/forward.js";
 import * as PreloadingHelper2 from "./../helper/helper.js";
@@ -1905,8 +1829,8 @@ devtools-data-grid {
 /*# sourceURL=${import.meta.resolve("./ruleSetGrid.css")} */`;
 
 // gen/front_end/panels/application/preloading/components/RuleSetGrid.js
-var { html: html7, Directives: { styleMap: styleMap3 } } = Lit7;
-var UIStrings8 = {
+var { html: html6, Directives: { styleMap: styleMap3 } } = Lit5;
+var UIStrings7 = {
   /**
    * @description Column header: Short URL of rule set.
    */
@@ -1932,9 +1856,9 @@ var UIStrings8 = {
    */
   buttonRevealPreloadsAssociatedWithRuleSet: "Reveal speculative loads associated with this rule set"
 };
-var str_8 = i18n15.i18n.registerUIStrings("panels/application/preloading/components/RuleSetGrid.ts", UIStrings8);
-var i18nString8 = i18n15.i18n.getLocalizedString.bind(void 0, str_8);
-var RuleSetGrid = class extends LegacyWrapper13.LegacyWrapper.WrappableComponent {
+var str_7 = i18n13.i18n.registerUIStrings("panels/application/preloading/components/RuleSetGrid.ts", UIStrings7);
+var i18nString7 = i18n13.i18n.getLocalizedString.bind(void 0, str_7);
+var RuleSetGrid = class extends LegacyWrapper7.LegacyWrapper.WrappableComponent {
   #shadow = this.attachShadow({ mode: "open" });
   #data = null;
   connectedCallback() {
@@ -1952,7 +1876,7 @@ var RuleSetGrid = class extends LegacyWrapper13.LegacyWrapper.WrappableComponent
     }
   }
   async #revealSpeculationRulesInElements(ruleSet) {
-    assertNotNullOrUndefined4(ruleSet.backendNodeId);
+    assertNotNullOrUndefined3(ruleSet.backendNodeId);
     const target = SDK6.TargetManager.TargetManager.instance().scopeTarget();
     if (target === null) {
       return;
@@ -1960,7 +1884,7 @@ var RuleSetGrid = class extends LegacyWrapper13.LegacyWrapper.WrappableComponent
     await Common3.Revealer.reveal(new SDK6.DOMModel.DeferredDOMNode(target, ruleSet.backendNodeId));
   }
   async #revealSpeculationRulesInNetwork(ruleSet) {
-    assertNotNullOrUndefined4(ruleSet.requestId);
+    assertNotNullOrUndefined3(ruleSet.requestId);
     const request = SDK6.TargetManager.TargetManager.instance().scopeTarget()?.model(SDK6.NetworkManager.NetworkManager)?.requestForId(ruleSet.requestId) || null;
     if (request === null) {
       return;
@@ -1976,30 +1900,30 @@ var RuleSetGrid = class extends LegacyWrapper13.LegacyWrapper.WrappableComponent
       return;
     }
     const { rows, pageURL } = this.#data;
-    Lit7.render(html7`
+    Lit5.render(html6`
         <style>${ruleSetGrid_css_default}</style>
         <div class="ruleset-container" jslog=${VisualLogging3.pane("preloading-rules")}>
           <devtools-data-grid striped>
             <table>
               <tr>
                 <th id="rule-set" weight="20" sortable>
-                  ${i18nString8(UIStrings8.ruleSet)}
+                  ${i18nString7(UIStrings7.ruleSet)}
                 </th>
                 <th id="status" weight="80" sortable>
-                  ${i18nString8(UIStrings8.status)}
+                  ${i18nString7(UIStrings7.status)}
                 </th>
               </tr>
               ${rows.map(({ ruleSet, preloadsStatusSummary }) => {
       const location = ruleSetTagOrLocationShort(ruleSet, pageURL);
       const revealInElements = ruleSet.backendNodeId !== void 0;
       const revealInNetwork = ruleSet.url !== void 0 && ruleSet.requestId;
-      return html7`
+      return html6`
                   <tr @select=${() => this.dispatchEvent(new CustomEvent("select", { detail: ruleSet.id }))}>
                     <td>
-                      ${revealInElements || revealInNetwork ? html7`
+                      ${revealInElements || revealInNetwork ? html6`
                         <button class="link" role="link"
                             @click=${() => this.#revealSpeculationRules(ruleSet)}
-                            title=${revealInElements ? i18nString8(UIStrings8.clickToOpenInElementsPanel) : i18nString8(UIStrings8.clickToOpenInNetworkPanel)}
+                            title=${revealInElements ? i18nString7(UIStrings7.clickToOpenInElementsPanel) : i18nString7(UIStrings7.clickToOpenInNetworkPanel)}
                             style=${styleMap3({
         border: "none",
         background: "none",
@@ -2021,13 +1945,13 @@ var RuleSetGrid = class extends LegacyWrapper13.LegacyWrapper.WrappableComponent
                           </button>` : location}
                   </td>
                   <td>
-                    ${ruleSet.errorType !== void 0 ? html7`
+                    ${ruleSet.errorType !== void 0 ? html6`
                       <span style=${styleMap3({ color: "var(--sys-color-error)" })}>
-                        ${i18nString8(UIStrings8.errors, { errorCount: 1 })}
-                      </span>` : ""} ${ruleSet.errorType !== "SourceIsNotJsonObject" && ruleSet.errorType !== "InvalidRulesetLevelTag" ? html7`
+                        ${i18nString7(UIStrings7.errors, { errorCount: 1 })}
+                      </span>` : ""} ${ruleSet.errorType !== "SourceIsNotJsonObject" && ruleSet.errorType !== "InvalidRulesetLevelTag" ? html6`
                       <button class="link" role="link"
                         @click=${() => this.#revealAttemptViewWithFilter(ruleSet)}
-                        title=${i18nString8(UIStrings8.buttonRevealPreloadsAssociatedWithRuleSet)}
+                        title=${i18nString7(UIStrings7.buttonRevealPreloadsAssociatedWithRuleSet)}
                         style=${styleMap3({
         color: "var(--sys-color-primary)",
         "text-decoration": "underline",
@@ -2060,12 +1984,13 @@ __export(UsedPreloadingView_exports, {
 import "./../../../../ui/kit/kit.js";
 import "./../../../../ui/components/report_view/report_view.js";
 import * as Common4 from "./../../../../core/common/common.js";
-import * as i18n17 from "./../../../../core/i18n/i18n.js";
-import { assertNotNullOrUndefined as assertNotNullOrUndefined5 } from "./../../../../core/platform/platform.js";
+import * as i18n15 from "./../../../../core/i18n/i18n.js";
+import { assertNotNullOrUndefined as assertNotNullOrUndefined4 } from "./../../../../core/platform/platform.js";
 import * as SDK7 from "./../../../../core/sdk/sdk.js";
-import * as LegacyWrapper15 from "./../../../../ui/components/legacy_wrapper/legacy_wrapper.js";
-import * as RenderCoordinator4 from "./../../../../ui/components/render_coordinator/render_coordinator.js";
-import * as Lit8 from "./../../../../ui/lit/lit.js";
+import * as LegacyWrapper9 from "./../../../../ui/components/legacy_wrapper/legacy_wrapper.js";
+import * as RenderCoordinator3 from "./../../../../ui/components/render_coordinator/render_coordinator.js";
+import * as UI4 from "./../../../../ui/legacy/legacy.js";
+import * as Lit6 from "./../../../../ui/lit/lit.js";
 import * as VisualLogging4 from "./../../../../ui/visual_logging/visual_logging.js";
 import * as PreloadingHelper3 from "./../helper/helper.js";
 
@@ -2150,8 +2075,8 @@ devtools-report-divider {
 /*# sourceURL=${import.meta.resolve("./usedPreloadingView.css")} */`;
 
 // gen/front_end/panels/application/preloading/components/UsedPreloadingView.js
-var { html: html8 } = Lit8;
-var UIStrings9 = {
+var { html: html7 } = Lit6;
+var UIStrings8 = {
   /**
    * @description Header for preloading status.
    */
@@ -2239,11 +2164,27 @@ var UIStrings9 = {
   /**
    * @description Label for badge, indicating how many failed speculations there are.
    */
-  badgeFailureWithCount: "{n, plural, =1 {# failure} other {# failures}}"
+  badgeFailureWithCount: "{n, plural, =1 {# failure} other {# failures}}",
+  /**
+   * @description The name of the HTTP request header.
+   */
+  headerName: "Header name",
+  /**
+   * @description The value of the HTTP request header in initial navigation.
+   */
+  initialNavigationValue: "Value in initial navigation",
+  /**
+   * @description The value of the HTTP request header in activation navigation.
+   */
+  activationNavigationValue: "Value in activation navigation",
+  /**
+   * @description The string to indicate the value of the header is missing.
+   */
+  missing: "(missing)"
 };
-var str_9 = i18n17.i18n.registerUIStrings("panels/application/preloading/components/UsedPreloadingView.ts", UIStrings9);
-var i18nString9 = i18n17.i18n.getLocalizedString.bind(void 0, str_9);
-var UsedPreloadingView = class extends LegacyWrapper15.LegacyWrapper.WrappableComponent {
+var str_8 = i18n15.i18n.registerUIStrings("panels/application/preloading/components/UsedPreloadingView.ts", UIStrings8);
+var i18nString8 = i18n15.i18n.getLocalizedString.bind(void 0, str_8);
+var UsedPreloadingView = class extends LegacyWrapper9.LegacyWrapper.WrappableComponent {
   #shadow = this.attachShadow({ mode: "open" });
   #data = {
     pageURL: "",
@@ -2255,12 +2196,12 @@ var UsedPreloadingView = class extends LegacyWrapper15.LegacyWrapper.WrappableCo
     void this.#render();
   }
   async #render() {
-    await RenderCoordinator4.write("UsedPreloadingView render", () => {
-      Lit8.render(this.#renderTemplate(), this.#shadow, { host: this });
+    await RenderCoordinator3.write("UsedPreloadingView render", () => {
+      Lit6.render(this.#renderTemplate(), this.#shadow, { host: this });
     });
   }
   #renderTemplate() {
-    return html8`
+    return html7`
       <style>${usedPreloadingView_css_default}</style>
       <devtools-report>
         ${this.#speculativeLoadingStatusForThisPageSections()}
@@ -2276,7 +2217,7 @@ var UsedPreloadingView = class extends LegacyWrapper15.LegacyWrapper.WrappableCo
             class="link devtools-link"
             href=${"https://developer.chrome.com/blog/prerender-pages/"}
             jslog=${VisualLogging4.link().track({ click: true, keydown: "Enter|Space" }).context("learn-more")}
-          >${i18nString9(UIStrings9.learnMore)}</x-link>
+          >${i18nString8(UIStrings8.learnMore)}</x-link>
         </devtools-report-section>
       </devtools-report>
     `;
@@ -2318,48 +2259,48 @@ var UsedPreloadingView = class extends LegacyWrapper15.LegacyWrapper.WrappableCo
     switch (kind) {
       case "DowngradedPrerenderToPrefetchAndUsed":
         badge = this.#badgeSuccess();
-        basicMessage = html8`${i18nString9(UIStrings9.downgradedPrefetchUsed)}`;
+        basicMessage = html7`${i18nString8(UIStrings8.downgradedPrefetchUsed)}`;
         break;
       case "PrefetchUsed":
         badge = this.#badgeSuccess();
-        basicMessage = html8`${i18nString9(UIStrings9.prefetchUsed)}`;
+        basicMessage = html7`${i18nString8(UIStrings8.prefetchUsed)}`;
         break;
       case "PrerenderUsed":
         badge = this.#badgeSuccess();
-        basicMessage = html8`${i18nString9(UIStrings9.prerenderUsed)}`;
+        basicMessage = html7`${i18nString8(UIStrings8.prerenderUsed)}`;
         break;
       case "PrefetchFailed":
         badge = this.#badgeFailure();
-        basicMessage = html8`${i18nString9(UIStrings9.prefetchFailed)}`;
+        basicMessage = html7`${i18nString8(UIStrings8.prefetchFailed)}`;
         break;
       case "PrerenderFailed":
         badge = this.#badgeFailure();
-        basicMessage = html8`${i18nString9(UIStrings9.prerenderFailed)}`;
+        basicMessage = html7`${i18nString8(UIStrings8.prerenderFailed)}`;
         break;
       case "NoPreloads":
-        badge = this.#badgeNeutral(i18nString9(UIStrings9.badgeNoSpeculativeLoads));
-        basicMessage = html8`${i18nString9(UIStrings9.noPreloads)}`;
+        badge = this.#badgeNeutral(i18nString8(UIStrings8.badgeNoSpeculativeLoads));
+        basicMessage = html7`${i18nString8(UIStrings8.noPreloads)}`;
         break;
     }
     let maybeFailureReasonMessage;
     if (kind === "PrefetchFailed") {
-      assertNotNullOrUndefined5(prefetch);
+      assertNotNullOrUndefined4(prefetch);
       maybeFailureReasonMessage = prefetchFailureReason(prefetch);
     } else if (kind === "PrerenderFailed" || kind === "DowngradedPrerenderToPrefetchAndUsed") {
-      assertNotNullOrUndefined5(prerenderLike);
+      assertNotNullOrUndefined4(prerenderLike);
       maybeFailureReasonMessage = prerenderFailureReason(prerenderLike);
     }
-    let maybeFailureReason = Lit8.nothing;
+    let maybeFailureReason = Lit6.nothing;
     if (maybeFailureReasonMessage !== void 0) {
-      maybeFailureReason = html8`
-      <devtools-report-section-header>${i18nString9(UIStrings9.detailsFailureReason)}</devtools-report-section-header>
+      maybeFailureReason = html7`
+      <devtools-report-section-header>${i18nString8(UIStrings8.detailsFailureReason)}</devtools-report-section-header>
       <devtools-report-section>
         ${maybeFailureReasonMessage}
       </devtools-report-section>
       `;
     }
-    return html8`
-      <devtools-report-section-header>${i18nString9(UIStrings9.speculativeLoadingStatusForThisPage)}</devtools-report-section-header>
+    return html7`
+      <devtools-report-section-header>${i18nString8(UIStrings8.speculativeLoadingStatusForThisPage)}</devtools-report-section-header>
       <devtools-report-section>
         <div>
           <div class="status-badge-container">
@@ -2379,7 +2320,7 @@ var UsedPreloadingView = class extends LegacyWrapper15.LegacyWrapper.WrappableCo
   }
   #maybeMismatchedSections(kind) {
     if (kind !== "NoPreloads" || this.#data.previousAttempts.length === 0) {
-      return Lit8.nothing;
+      return Lit6.nothing;
     }
     const rows = this.#data.previousAttempts.map((attempt) => {
       return {
@@ -2392,8 +2333,8 @@ var UsedPreloadingView = class extends LegacyWrapper15.LegacyWrapper.WrappableCo
       pageURL: this.#data.pageURL,
       rows
     };
-    return html8`
-      <devtools-report-section-header>${i18nString9(UIStrings9.currentURL)}</devtools-report-section-header>
+    return html7`
+      <devtools-report-section-header>${i18nString8(UIStrings8.currentURL)}</devtools-report-section-header>
       <devtools-report-section>
         <x-link
           class="link devtools-link"
@@ -2402,27 +2343,51 @@ var UsedPreloadingView = class extends LegacyWrapper15.LegacyWrapper.WrappableCo
         >${this.#data.pageURL}</x-link>
       </devtools-report-section>
 
-      <devtools-report-section-header>${i18nString9(UIStrings9.preloadedURLs)}</devtools-report-section-header>
+      <devtools-report-section-header>${i18nString8(UIStrings8.preloadedURLs)}</devtools-report-section-header>
       <devtools-report-section
       jslog=${VisualLogging4.section("preloaded-urls")}>
-        <devtools-resources-mismatched-preloading-grid
-          .data=${data}></devtools-resources-mismatched-preloading-grid>
+        <devtools-widget
+          .widgetConfig=${UI4.Widget.widgetConfig(MismatchedPreloadingGrid, { data })}
+        ></devtools-widget>
       </devtools-report-section>
     `;
   }
   #maybeMismatchedHTTPHeadersSections() {
     const attempt = this.#data.previousAttempts.find((attempt2) => this.#isPrerenderAttempt(attempt2) && attempt2.mismatchedHeaders !== null);
-    if (attempt === void 0) {
-      return Lit8.nothing;
+    if (!attempt?.mismatchedHeaders) {
+      return Lit6.nothing;
     }
     if (attempt.key.url !== this.#data.pageURL) {
       throw new Error("unreachable");
     }
-    return html8`
-      <devtools-report-section-header>${i18nString9(UIStrings9.mismatchedHeadersDetail)}</devtools-report-section-header>
+    return html7`
+      <devtools-report-section-header>${i18nString8(UIStrings8.mismatchedHeadersDetail)}</devtools-report-section-header>
       <devtools-report-section>
-        <devtools-resources-preloading-mismatched-headers-grid
-          .data=${attempt}></devtools-resources-preloading-mismatched-headers-grid>
+        <style>${preloadingGrid_css_default}</style>
+        <div class="preloading-container">
+          <devtools-data-grid striped inline>
+            <table>
+              <tr>
+                <th id="header-name" weight="30" sortable>
+                  ${i18nString8(UIStrings8.headerName)}
+                </th>
+                <th id="initial-value" weight="30" sortable>
+                  ${i18nString8(UIStrings8.initialNavigationValue)}
+                </th>
+                <th id="activation-value" weight="30" sortable>
+                  ${i18nString8(UIStrings8.activationNavigationValue)}
+                </th>
+              </tr>
+              ${attempt.mismatchedHeaders.map((mismatchedHeaders) => html7`
+                <tr>
+                  <td>${mismatchedHeaders.headerName}</td>
+                  <td>${mismatchedHeaders.initialValue ?? i18nString8(UIStrings8.missing)}</td>
+                  <td>${mismatchedHeaders.activationValue ?? i18nString8(UIStrings8.missing)}</td>
+                </tr>
+              `)}
+            </table>
+          </devtools-data-grid>
+        </div>
       </devtools-report-section>
     `;
   }
@@ -2452,13 +2417,13 @@ var UsedPreloadingView = class extends LegacyWrapper15.LegacyWrapper.WrappableCo
     ) ?? 0);
     const badges = [];
     if (this.#data.currentAttempts.length === 0) {
-      badges.push(this.#badgeNeutral(i18nString9(UIStrings9.badgeNoSpeculativeLoads)));
+      badges.push(this.#badgeNeutral(i18nString8(UIStrings8.badgeNoSpeculativeLoads)));
     }
     if (notTriggeredCount > 0) {
-      badges.push(this.#badgeNeutral(i18nString9(UIStrings9.badgeNotTriggeredWithCount, { n: notTriggeredCount })));
+      badges.push(this.#badgeNeutral(i18nString8(UIStrings8.badgeNotTriggeredWithCount, { n: notTriggeredCount })));
     }
     if (inProgressCount > 0) {
-      badges.push(this.#badgeNeutral(i18nString9(UIStrings9.badgeInProgressWithCount, { n: inProgressCount })));
+      badges.push(this.#badgeNeutral(i18nString8(UIStrings8.badgeInProgressWithCount, { n: inProgressCount })));
     }
     if (readyCount > 0) {
       badges.push(this.#badgeSuccess(readyCount));
@@ -2472,8 +2437,8 @@ var UsedPreloadingView = class extends LegacyWrapper15.LegacyWrapper.WrappableCo
     const revealAttemptViewWithFilter = () => {
       void Common4.Revealer.reveal(new PreloadingHelper3.PreloadingForward.AttemptViewWithFilter(null));
     };
-    return html8`
-      <devtools-report-section-header>${i18nString9(UIStrings9.speculationsInitiatedByThisPage)}</devtools-report-section-header>
+    return html7`
+      <devtools-report-section-header>${i18nString8(UIStrings8.speculationsInitiatedByThisPage)}</devtools-report-section-header>
       <devtools-report-section>
         <div>
           <div class="status-badge-container">
@@ -2483,12 +2448,12 @@ var UsedPreloadingView = class extends LegacyWrapper15.LegacyWrapper.WrappableCo
           <div class="reveal-links">
             <button class="link devtools-link" @click=${revealRuleSetView}
             jslog=${VisualLogging4.action("view-all-rules").track({ click: true })}>
-              ${i18nString9(UIStrings9.viewAllRules)}
+              ${i18nString8(UIStrings8.viewAllRules)}
             </button>
            ・
             <button class="link devtools-link" @click=${revealAttemptViewWithFilter}
             jslog=${VisualLogging4.action("view-all-speculations").track({ click: true })}>
-             ${i18nString9(UIStrings9.viewAllSpeculations)}
+             ${i18nString8(UIStrings8.viewAllSpeculations)}
             </button>
           </div>
         </div>
@@ -2498,18 +2463,18 @@ var UsedPreloadingView = class extends LegacyWrapper15.LegacyWrapper.WrappableCo
   #badgeSuccess(count) {
     let message;
     if (count === void 0) {
-      message = i18nString9(UIStrings9.badgeSuccess);
+      message = i18nString8(UIStrings8.badgeSuccess);
     } else {
-      message = i18nString9(UIStrings9.badgeSuccessWithCount, { n: count });
+      message = i18nString8(UIStrings8.badgeSuccessWithCount, { n: count });
     }
     return this.#badge("status-badge status-badge-success", "check-circle", message);
   }
   #badgeFailure(count) {
     let message;
     if (count === void 0) {
-      message = i18nString9(UIStrings9.badgeFailure);
+      message = i18nString8(UIStrings8.badgeFailure);
     } else {
-      message = i18nString9(UIStrings9.badgeFailureWithCount, { n: count });
+      message = i18nString8(UIStrings8.badgeFailureWithCount, { n: count });
     }
     return this.#badge("status-badge status-badge-failure", "cross-circle", message);
   }
@@ -2517,7 +2482,7 @@ var UsedPreloadingView = class extends LegacyWrapper15.LegacyWrapper.WrappableCo
     return this.#badge("status-badge status-badge-neutral", "clear", message);
   }
   #badge(klass, iconName, message) {
-    return html8`
+    return html7`
       <span class=${klass}>
         <devtools-icon name=${iconName}></devtools-icon>
         <span>
@@ -2533,7 +2498,6 @@ export {
   PreloadingDetailsReportView_exports as PreloadingDetailsReportView,
   PreloadingDisabledInfobar_exports as PreloadingDisabledInfobar,
   PreloadingGrid_exports as PreloadingGrid,
-  PreloadingMismatchedHeadersGrid_exports as PreloadingMismatchedHeadersGrid,
   RuleSetDetailsView_exports as RuleSetDetailsView,
   RuleSetGrid_exports as RuleSetGrid,
   UsedPreloadingView_exports as UsedPreloadingView

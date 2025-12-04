@@ -203,6 +203,7 @@ sources/sources-list.test.js
 sources/sourceurl.test.js
 sources/syntax-highlighting.test.js
 sources/text-editor.test.js
+sources/threads-sidebar-pane.test.js
 sources/watch-expressions.test.js
 sources/worker-relative-sourcemap.test.js
 targets/worklet.test.js

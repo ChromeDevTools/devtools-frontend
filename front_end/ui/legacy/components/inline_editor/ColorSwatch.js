@@ -39,49 +39,52 @@ export class ClickEvent extends Event {
     }
 }
 export class ColorSwatch extends HTMLElement {
-    shadow = this.attachShadow({ mode: 'open' });
-    tooltip = i18nString(UIStrings.shiftclickToChangeColorFormat);
-    color = null;
-    readonly = false;
+    #shadow = this.attachShadow({ mode: 'open' });
+    #tooltip = i18nString(UIStrings.shiftclickToChangeColorFormat);
+    #color = null;
+    #readonly = false;
     constructor(tooltip) {
         super();
         if (tooltip) {
-            this.tooltip = tooltip;
+            this.#tooltip = tooltip;
         }
         this.tabIndex = -1;
-        this.addEventListener('keydown', e => this.onActivate(e));
+        this.addEventListener('keydown', e => this.#onActivate(e));
     }
     static isColorSwatch(element) {
         return element.localName === 'devtools-color-swatch';
     }
-    setReadonly(readonly) {
-        if (this.readonly === readonly) {
+    get readonly() {
+        return this.#readonly;
+    }
+    set readonly(readonly) {
+        if (this.#readonly === readonly) {
             return;
         }
-        this.readonly = readonly;
-        if (this.color) {
-            this.renderColor(this.color);
+        this.#readonly = readonly;
+        if (this.#color) {
+            this.color = this.#color;
         }
     }
-    getColor() {
-        return this.color;
+    get color() {
+        return this.#color;
     }
     get anchorBox() {
-        const swatch = this.shadow.querySelector('.color-swatch');
+        const swatch = this.#shadow.querySelector('.color-swatch');
         return swatch ? swatch.boxInWindow() : null;
     }
     getText() {
-        return this.color?.getAuthoredText() ?? this.color?.asString();
+        return this.#color?.getAuthoredText() ?? this.#color?.asString();
     }
     /**
      * Render this swatch given a color object or text to be parsed as a color.
      * @param color The color object or string to use for this swatch.
      */
-    renderColor(color) {
-        this.color = color;
+    set color(color) {
+        this.#color = color;
         const colorSwatchClasses = Lit.Directives.classMap({
             'color-swatch': true,
-            readonly: this.readonly,
+            readonly: this.#readonly,
         });
         // Disabled until https://crbug.com/1079231 is fixed.
         // clang-format off
@@ -91,17 +94,18 @@ export class ColorSwatch extends HTMLElement {
         // re-format the HTML code.
         Lit.render(html `<style>${colorSwatchStyles}</style><span
           class=${colorSwatchClasses}
-          title=${this.tooltip}><span
+          title=${this.#tooltip}><span
             class="color-swatch-inner"
             style="background-color: ${color.asString()};"
             jslog=${VisualLogging.showStyleEditor('color').track({ click: true })}
-            @click=${this.onActivate}
-            @mousedown=${this.consume}
-            @dblclick=${this.consume}></span></span>`, this.shadow, { host: this });
+            @click=${this.#onActivate}
+            @mousedown=${this.#consume}
+            @dblclick=${this.#consume}></span></span>`, this.#shadow, { host: this });
         // clang-format on
+        this.dispatchEvent(new ColorChangedEvent(color));
     }
-    onActivate(e) {
-        if (this.readonly) {
+    #onActivate(e) {
+        if (this.#readonly) {
             return;
         }
         if ((e instanceof KeyboardEvent && e.key !== 'Enter' && e.key !== ' ') ||
@@ -110,24 +114,20 @@ export class ColorSwatch extends HTMLElement {
         }
         if (e.shiftKey) {
             e.stopPropagation();
-            this.showFormatPicker(e);
+            this.#showFormatPicker(e);
             return;
         }
         this.dispatchEvent(new ClickEvent());
-        this.consume(e);
+        this.#consume(e);
     }
-    consume(e) {
+    #consume(e) {
         e.stopPropagation();
     }
-    setColor(color) {
-        this.renderColor(color);
-        this.dispatchEvent(new ColorChangedEvent(color));
-    }
-    showFormatPicker(e) {
-        if (!this.color) {
+    #showFormatPicker(e) {
+        if (!this.#color) {
             return;
         }
-        const contextMenu = new ColorPicker.FormatPickerContextMenu.FormatPickerContextMenu(this.color);
+        const contextMenu = new ColorPicker.FormatPickerContextMenu.FormatPickerContextMenu(this.#color);
         void contextMenu.show(e, color => {
             this.dispatchEvent(new ColorFormatChangedEvent(color));
         });

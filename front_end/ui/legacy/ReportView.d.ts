@@ -40,7 +40,7 @@ export declare class Section extends VBox {
     appendButtonToHeader(button: Buttons.Button.Button): void;
     setHeaderButtonsState(disabled: boolean): void;
     appendField(title: string, textValue?: string): HTMLElement;
-    appendFlexedField(title: string, textValue?: string): Element;
+    appendFlexedField(title: string, textValue?: string): HTMLElement;
     removeField(title: string): void;
     setFieldVisible(title: string, visible: boolean): void;
     fieldValue(title: string): Element | null;

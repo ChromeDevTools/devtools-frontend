@@ -148,7 +148,7 @@ export class ColorSwatchPopoverIcon extends Common.ObjectWrapper.ObjectWrapper {
             this.swatchPopoverHelper.hide(true);
             return;
         }
-        const color = this.swatch.getColor();
+        const color = this.swatch.color;
         if (!color) {
             return;
         }
@@ -215,7 +215,7 @@ export class ColorSwatchPopoverIcon extends Common.ObjectWrapper.ObjectWrapper {
         if (!color) {
             return;
         }
-        this.swatch.renderColor(color);
+        this.swatch.color = color;
         this.dispatchEventToListeners("colorchanged" /* ColorSwatchPopoverIconEvents.COLOR_CHANGED */, color);
     }
     onScroll(_event) {

@@ -10,7 +10,6 @@ import { createLimitedRows, renderOthersLabel } from './Table.js';
 const { UIStrings, i18nString, createOverlayForRequest } = Trace.Insights.Models.ImageDelivery;
 const { html } = Lit;
 export class ImageDelivery extends BaseInsightComponent {
-    static litTagName = Lit.StaticHtml.literal `devtools-performance-image-delivery`;
     internalName = 'image-delivery';
     mapToRow(image) {
         return {
@@ -52,5 +51,4 @@ export class ImageDelivery extends BaseInsightComponent {
         // clang-format on
     }
 }
-customElements.define('devtools-performance-image-delivery', ImageDelivery);
 //# sourceMappingURL=ImageDelivery.js.map

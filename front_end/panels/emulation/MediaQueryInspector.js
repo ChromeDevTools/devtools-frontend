@@ -1,12 +1,12 @@
 // Copyright 2014 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
+import { Directives, html, nothing, render } from '../../third_party/lit/lit.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import mediaQueryInspectorStyles from './mediaQueryInspector.css.js';
@@ -19,32 +19,135 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/emulation/MediaQueryInspector.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+const { classMap } = Directives;
+export const DEFAULT_VIEW = (input, _output, target) => {
+    const createBarClassMap = (marker) => ({
+        'media-inspector-bar': true,
+        'media-inspector-marker-inactive': !marker.active,
+    });
+    // clang-format off
+    render(html `
+    <style>${mediaQueryInspectorStyles}</style>
+    <div class='media-inspector-view'>
+    ${input.markers.entries().map(([section, markers]) => html `
+      <div class='media-inspector-marker-container'>
+        ${markers.map(marker => html `
+          <div
+              class=${classMap(createBarClassMap(marker))}
+              @click=${() => input.onMediaQueryClicked(marker.model)}
+              @contextmenu=${(event) => input.onContextMenu(event, marker.locations)}
+          >
+            ${section === 0 /* Section.MAX */
+        ? renderMaxSection(input.zoomFactor, marker.model)
+        : section === 1 /* Section.MIN_MAX */
+            ? renderMinMaxSection(input.zoomFactor, marker.model)
+            : renderMinSection(input.zoomFactor, marker.model)}
+          </div>
+        `)}
+      </div>
+    `).toArray()}
+    </div>`, target);
+    // clang-format on
+};
+function renderMaxSection(zoomFactor, model) {
+    // clang-format off
+    return html `
+    <div class='media-inspector-marker-spacer'></div>
+    <div
+        class='media-inspector-marker media-inspector-marker-max-width'
+        style=${'width: ' + model.maxWidthValue(zoomFactor) + 'px'}
+        title=${model.mediaText()}
+    >
+      ${renderLabel(model.maxWidthExpression(), false, false)}
+      ${renderLabel(model.maxWidthExpression(), true, true)}
+    </div>
+    <div class='media-inspector-marker-spacer'></div>
+  `;
+    // clang-format on
+}
+function renderMinMaxSection(zoomFactor, model) {
+    const width = (model.maxWidthValue(zoomFactor) - model.minWidthValue(zoomFactor)) * 0.5;
+    // clang-format off
+    return html `
+    <div class='media-inspector-marker-spacer'></div>
+    <div
+        class='media-inspector-marker media-inspector-marker-min-max-width'
+        style=${'width: ' + width + 'px'}
+        title=${model.mediaText()}
+    >
+      ${renderLabel(model.maxWidthExpression(), true, false)}
+      ${renderLabel(model.minWidthExpression(), false, true)}
+    </div>
+    <div class='media-inspector-marker-spacer' style=${'flex: 0 0 ' + model.minWidthValue(zoomFactor) + 'px'}></div>
+    <div
+        class='media-inspector-marker media-inspector-marker-min-max-width'
+        style=${'width: ' + width + 'px'}
+        title=${model.mediaText()}
+    >
+      ${renderLabel(model.minWidthExpression(), true, false)}
+      ${renderLabel(model.maxWidthExpression(), false, true)}
+    </div>
+    <div class='media-inspector-marker-spacer'></div>
+  `;
+    // clang-format on
+}
+function renderMinSection(zoomFactor, model) {
+    // clang-format off
+    return html `
+    <div
+        class='media-inspector-marker media-inspector-marker-min-width media-inspector-marker-min-width-left'
+        title=${model.mediaText()}
+    >${renderLabel(model.minWidthExpression(), false, false)}</div>
+    <div class='media-inspector-marker-spacer' style=${'flex: 0 0 ' + model.minWidthValue(zoomFactor) + 'px'}></div>
+    <div
+        class='media-inspector-marker media-inspector-marker-min-width media-inspector-marker-min-width-right'
+        title=${model.mediaText()}
+    >${renderLabel(model.minWidthExpression(), true, true)}</div>
+  `;
+    // clang-format on
+}
+function renderLabel(expression, atLeft, leftAlign) {
+    if (!expression) {
+        return nothing;
+    }
+    const containerClassMap = {
+        'media-inspector-marker-label-container': true,
+        'media-inspector-marker-label-container-left': atLeft,
+        'media-inspector-marker-label-container-right': !atLeft
+    };
+    const labelClassMap = {
+        'media-inspector-marker-label': true,
+        'media-inspector-label-left': leftAlign,
+        'media-inspector-label-right': !leftAlign
+    };
+    // clang-format off
+    return html `
+    <div class=${classMap(containerClassMap)}>
+      <span class=${classMap(labelClassMap)}>${expression.value()}${expression.unit()}</span>
+    </div>
+  `;
+    // clang-format on
+}
 export class MediaQueryInspector extends UI.Widget.Widget {
+    view;
     mediaThrottler;
     getWidthCallback;
     setWidthCallback;
     scale;
-    elementsToMediaQueryModel;
-    elementsToCSSLocations;
     cssModel;
     cachedQueryModels;
-    constructor(getWidthCallback, setWidthCallback, mediaThrottler) {
+    constructor(getWidthCallback, setWidthCallback, mediaThrottler, view = DEFAULT_VIEW) {
         super({
             jslog: `${VisualLogging.mediaInspectorView().track({ click: true })}`,
             useShadowDom: true,
         });
-        this.registerRequiredCSS(mediaQueryInspectorStyles);
-        this.contentElement.classList.add('media-inspector-view');
-        this.contentElement.addEventListener('click', this.onMediaQueryClicked.bind(this), false);
-        this.contentElement.addEventListener('contextmenu', this.onContextMenu.bind(this), false);
+        this.view = view;
         this.mediaThrottler = mediaThrottler;
         this.getWidthCallback = getWidthCallback;
         this.setWidthCallback = setWidthCallback;
         this.scale = 1;
-        this.elementsToMediaQueryModel = new WeakMap();
-        this.elementsToCSSLocations = new WeakMap();
         SDK.TargetManager.TargetManager.instance().observeModels(SDK.CSSModel.CSSModel, this);
-        UI.ZoomManager.ZoomManager.instance().addEventListener("ZoomChanged" /* UI.ZoomManager.Events.ZOOM_CHANGED */, this.renderMediaQueries.bind(this), this);
+        UI.ZoomManager.ZoomManager.instance().addEventListener("ZoomChanged" /* UI.ZoomManager.Events.ZOOM_CHANGED */, this.requestUpdate.bind(this), this);
     }
     modelAdded(cssModel) {
         // FIXME: adapt this to multiple targets.
@@ -72,17 +175,9 @@ export class MediaQueryInspector extends UI.Widget.Widget {
             return;
         }
         this.scale = scale;
-        this.renderMediaQueries();
+        this.performUpdate();
     }
-    onMediaQueryClicked(event) {
-        const mediaQueryMarker = event.target.enclosingNodeOrSelfWithClass('media-inspector-bar');
-        if (!mediaQueryMarker) {
-            return;
-        }
-        const model = this.elementsToMediaQueryModel.get(mediaQueryMarker);
-        if (!model) {
-            return;
-        }
+    onMediaQueryClicked(model) {
         const modelMaxWidth = model.maxWidthExpression();
         const modelMinWidth = model.minWidthExpression();
         if (model.section() === 0 /* Section.MAX */) {
@@ -101,15 +196,10 @@ export class MediaQueryInspector extends UI.Widget.Widget {
             this.setWidthCallback(modelMaxWidth ? modelMaxWidth.computedLength() || 0 : 0);
         }
     }
-    onContextMenu(event) {
+    onContextMenu(event, locations) {
         if (!this.cssModel?.isEnabled()) {
             return;
         }
-        const mediaQueryMarker = event.target.enclosingNodeOrSelfWithClass('media-inspector-bar');
-        if (!mediaQueryMarker) {
-            return;
-        }
-        const locations = this.elementsToCSSLocations.get(mediaQueryMarker) || [];
         const uiLocations = new Map();
         for (let i = 0; i < locations.length; ++i) {
             const uiLocation = Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance().rawLocationToUILocation(locations[i]);
@@ -180,14 +270,14 @@ export class MediaQueryInspector extends UI.Widget.Widget {
             return;
         }
         this.cachedQueryModels = queryModels;
-        this.renderMediaQueries();
+        this.requestUpdate();
         function compareModels(model1, model2) {
             return model1.compareTo(model2);
         }
     }
-    renderMediaQueries() {
-        if (!this.cachedQueryModels || !this.isShowing()) {
-            return;
+    buildMediaQueryMarkers() {
+        if (!this.cachedQueryModels) {
+            return [];
         }
         const markers = [];
         let lastMarker = null;
@@ -208,22 +298,7 @@ export class MediaQueryInspector extends UI.Widget.Widget {
                 lastMarker.locations.push(rawLocation);
             }
         }
-        this.contentElement.removeChildren();
-        let container = null;
-        for (let i = 0; i < markers.length; ++i) {
-            if (!i || markers[i].model.section() !== markers[i - 1].model.section()) {
-                container = this.contentElement.createChild('div', 'media-inspector-marker-container');
-            }
-            const marker = markers[i];
-            const bar = this.createElementFromMediaQueryModel(marker.model);
-            this.elementsToMediaQueryModel.set(bar, marker.model);
-            this.elementsToCSSLocations.set(bar, marker.locations);
-            bar.classList.toggle('media-inspector-marker-inactive', !marker.active);
-            if (!container) {
-                throw new Error('Could not find container to render media queries into.');
-            }
-            container.appendChild(bar);
-        }
+        return markers;
     }
     zoomFactor() {
         return UI.ZoomManager.ZoomManager.instance().zoomFactor() / this.scale;
@@ -231,61 +306,16 @@ export class MediaQueryInspector extends UI.Widget.Widget {
     wasShown() {
         super.wasShown();
         this.scheduleMediaQueriesUpdate();
+        this.performUpdate(); // Trigger a manual update eagerly, DeviceModeView needs to measure our height.
     }
-    createElementFromMediaQueryModel(model) {
-        const zoomFactor = this.zoomFactor();
-        const minWidthExpression = model.minWidthExpression();
-        const maxWidthExpression = model.maxWidthExpression();
-        const minWidthValue = minWidthExpression ? (minWidthExpression.computedLength() || 0) / zoomFactor : 0;
-        const maxWidthValue = maxWidthExpression ? (maxWidthExpression.computedLength() || 0) / zoomFactor : 0;
-        const result = document.createElement('div');
-        result.classList.add('media-inspector-bar');
-        if (model.section() === 0 /* Section.MAX */) {
-            result.createChild('div', 'media-inspector-marker-spacer');
-            const markerElement = result.createChild('div', 'media-inspector-marker media-inspector-marker-max-width');
-            markerElement.style.width = maxWidthValue + 'px';
-            UI.Tooltip.Tooltip.install(markerElement, model.mediaText());
-            appendLabel(markerElement, model.maxWidthExpression(), false, false);
-            appendLabel(markerElement, model.maxWidthExpression(), true, true);
-            result.createChild('div', 'media-inspector-marker-spacer');
-        }
-        if (model.section() === 1 /* Section.MIN_MAX */) {
-            result.createChild('div', 'media-inspector-marker-spacer');
-            const leftElement = result.createChild('div', 'media-inspector-marker media-inspector-marker-min-max-width');
-            leftElement.style.width = (maxWidthValue - minWidthValue) * 0.5 + 'px';
-            UI.Tooltip.Tooltip.install(leftElement, model.mediaText());
-            appendLabel(leftElement, model.maxWidthExpression(), true, false);
-            appendLabel(leftElement, model.minWidthExpression(), false, true);
-            result.createChild('div', 'media-inspector-marker-spacer').style.flex = '0 0 ' + minWidthValue + 'px';
-            const rightElement = result.createChild('div', 'media-inspector-marker media-inspector-marker-min-max-width');
-            rightElement.style.width = (maxWidthValue - minWidthValue) * 0.5 + 'px';
-            UI.Tooltip.Tooltip.install(rightElement, model.mediaText());
-            appendLabel(rightElement, model.minWidthExpression(), true, false);
-            appendLabel(rightElement, model.maxWidthExpression(), false, true);
-            result.createChild('div', 'media-inspector-marker-spacer');
-        }
-        if (model.section() === 2 /* Section.MIN */) {
-            const leftElement = result.createChild('div', 'media-inspector-marker media-inspector-marker-min-width media-inspector-marker-min-width-left');
-            UI.Tooltip.Tooltip.install(leftElement, model.mediaText());
-            appendLabel(leftElement, model.minWidthExpression(), false, false);
-            result.createChild('div', 'media-inspector-marker-spacer').style.flex = '0 0 ' + minWidthValue + 'px';
-            const rightElement = result.createChild('div', 'media-inspector-marker media-inspector-marker-min-width media-inspector-marker-min-width-right');
-            UI.Tooltip.Tooltip.install(rightElement, model.mediaText());
-            appendLabel(rightElement, model.minWidthExpression(), true, true);
-        }
-        function appendLabel(marker, expression, atLeft, leftAlign) {
-            if (!expression) {
-                return;
-            }
-            marker
-                .createChild('div', 'media-inspector-marker-label-container ' +
-                (atLeft ? 'media-inspector-marker-label-container-left' :
-                    'media-inspector-marker-label-container-right'))
-                .createChild('span', 'media-inspector-marker-label ' +
-                (leftAlign ? 'media-inspector-label-left' : 'media-inspector-label-right'))
-                .textContent = expression.value() + expression.unit();
-        }
-        return result;
+    performUpdate() {
+        const markers = Map.groupBy(this.buildMediaQueryMarkers(), marker => marker.model.section());
+        this.view({
+            zoomFactor: this.zoomFactor(),
+            markers,
+            onMediaQueryClicked: this.onMediaQueryClicked.bind(this),
+            onContextMenu: this.onContextMenu.bind(this),
+        }, {}, this.contentElement);
     }
 }
 export class MediaQueryUIModel {
@@ -417,6 +447,14 @@ export class MediaQueryUIModel {
     }
     maxWidthExpression() {
         return this.#maxWidthExpression;
+    }
+    minWidthValue(zoomFactor) {
+        const minWidthExpression = this.minWidthExpression();
+        return minWidthExpression ? (minWidthExpression.computedLength() || 0) / zoomFactor : 0;
+    }
+    maxWidthValue(zoomFactor) {
+        const maxWidthExpression = this.maxWidthExpression();
+        return maxWidthExpression ? (maxWidthExpression.computedLength() || 0) / zoomFactor : 0;
     }
     active() {
         return this.#active;

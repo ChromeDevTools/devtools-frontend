@@ -16,6 +16,7 @@ export declare class EmptyWidget extends VBox {
     set link(link: Platform.DevToolsPath.UrlString | undefined | null);
     set text(text: string);
     set header(header: string);
+    set extraElements(elements: HTMLElement[]);
     performUpdate(): void;
 }
 export {};

@@ -1,5 +1,5 @@
 import type * as Platform from '../platform/platform.js';
-import type * as ProtocolClient from '../protocol_client/protocol_client.js';
+import * as ProtocolClient from '../protocol_client/protocol_client.js';
 import type { ProtocolMessage, RehydratingExecutionContext, RehydratingResource, RehydratingScript, RehydratingTarget, ServerMessage } from './RehydratingObject.js';
 import { TraceObject } from './TraceObject.js';
 export interface RehydratingConnectionInterface {

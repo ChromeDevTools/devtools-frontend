@@ -24,12 +24,14 @@ export interface ViewInput {
     containerAdornerActive: boolean;
     flexAdornerActive: boolean;
     gridAdornerActive: boolean;
+    popoverAdornerActive: boolean;
     showAdAdorner: boolean;
     showContainerAdorner: boolean;
     showFlexAdorner: boolean;
     showGridAdorner: boolean;
     showGridLanesAdorner: boolean;
     showMediaAdorner: boolean;
+    showPopoverAdorner: boolean;
     isSubgrid: boolean;
     adorners?: Set<Adorners.Adorner.Adorner>;
     nodeInfo?: DocumentFragment;
@@ -40,6 +42,7 @@ export interface ViewInput {
     onFlexAdornerClick: (e: Event) => void;
     onGridAdornerClick: (e: Event) => void;
     onMediaAdornerClick: (e: Event) => void;
+    onPopoverAdornerClick: (e: Event) => void;
 }
 export interface ViewOutput {
     gutterContainer?: HTMLElement;
@@ -153,7 +156,6 @@ export declare class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     removeAdornersByType(adornerType?: ElementsComponents.AdornerManager.RegisteredAdorners): void;
     updateAdorners(): void;
     updateStyleAdorners(): Promise<void>;
-    pushPopoverAdorner(): void;
     pushScrollSnapAdorner(): void;
     pushStartingStyleAdorner(): void;
     updateScrollAdorner(): void;

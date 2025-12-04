@@ -10,7 +10,6 @@ const { UIStrings, i18nString, createOverlaysForSummary } = Trace.Insights.Model
 const { html } = Lit;
 const MAX_TO_SHOW = 5;
 export class ThirdParties extends BaseInsightComponent {
-    static litTagName = Lit.StaticHtml.literal `devtools-performance-third-parties`;
     internalName = 'third-parties';
     #mainThreadTimeAggregator = {
         mapToRow: summary => ({
@@ -90,5 +89,4 @@ export class ThirdParties extends BaseInsightComponent {
         return html `${sections}`;
     }
 }
-customElements.define('devtools-performance-third-parties', ThirdParties);
 //# sourceMappingURL=ThirdParties.js.map

@@ -10,7 +10,6 @@ import { BaseInsightComponent } from './BaseInsightComponent.js';
 const { UIStrings, i18nString, createOverlaysForSubpart } = Trace.Insights.Models.INPBreakdown;
 const { html } = Lit;
 export class INPBreakdown extends BaseInsightComponent {
-    static litTagName = Lit.StaticHtml.literal `devtools-performance-inp-breakdown`;
     internalName = 'inp';
     hasAskAiSupport() {
         return this.model?.longestInteractionEvent !== undefined;
@@ -48,5 +47,4 @@ export class INPBreakdown extends BaseInsightComponent {
         // clang-format on
     }
 }
-customElements.define('devtools-performance-inp-breakdown', INPBreakdown);
 //# sourceMappingURL=INPBreakdown.js.map

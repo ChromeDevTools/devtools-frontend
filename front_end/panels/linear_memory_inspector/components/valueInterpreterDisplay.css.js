@@ -44,19 +44,6 @@ export default `/*
   grid-column: 1 / 3;
 }
 
-.jump-to-button {
-  display: flex;
-  width: 20px;
-  height: 20px;
-  border: none;
-  padding: 0;
-  outline: none;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  background-color: var(--sys-color-cdt-base-container);
-}
-
 .signed-divider {
   width: 1px;
   height: 15px;

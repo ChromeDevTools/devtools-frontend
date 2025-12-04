@@ -444,6 +444,7 @@ export class TargetBase {
 }
 /** These are not logged as console.error */
 const IGNORED_ERRORS = new Set([
+    CDPErrorStatus.DEVTOOLS_REHYDRATION_ERROR,
     CDPErrorStatus.DEVTOOLS_STUB_ERROR,
     CDPErrorStatus.SERVER_ERROR,
     CDPErrorStatus.SESSION_NOT_FOUND,
@@ -491,7 +492,9 @@ class AgentPrototype {
             if ('result' in response) {
                 return { ...response.result, getError: () => undefined };
             }
-            return { getError: () => undefined };
+            return {
+                getError: () => `Command ${method} returned neither result nor an error, params: ${JSON.stringify(request, undefined, 2)}`,
+            };
         });
     }
 }

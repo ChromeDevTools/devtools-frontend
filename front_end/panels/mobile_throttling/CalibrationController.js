@@ -1,7 +1,6 @@
 // Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 const UIStrings = {
@@ -69,6 +68,8 @@ export class CalibrationController {
         this.#runtimeModel = runtimeModel;
         this.#emulationModel = emulationModel;
         this.#originalUrl = primaryPageTarget.inspectedURL();
+        // The following functions runs in the inspected page so we don't use lit for rendering.
+        /* eslint-disable @devtools/no-imperative-dom-api */
         function setupTestPage(text) {
             const textEl = document.createElement('span');
             textEl.textContent = text;
@@ -92,6 +93,7 @@ export class CalibrationController {
             moonEl.textContent = '🌑';
             moonEl.style.cssText = 'font-size: 5em';
         }
+        /* eslint-enable @devtools/no-imperative-dom-api */
         await primaryPageTarget.pageAgent().invoke_navigate({ url: 'about:blank' });
         await runtimeModel.agent.invoke_evaluate({
             expression: `

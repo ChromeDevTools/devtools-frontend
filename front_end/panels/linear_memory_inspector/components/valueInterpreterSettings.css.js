@@ -9,27 +9,29 @@ export default `/*
  * found in the LICENSE file.
  */
 
-:host {
-  flex: auto;
-  display: flex;
-  min-height: 20px;
-}
+@scope to (devtools-widget > *) {
+  :scope {
+    flex: auto;
+    display: flex;
+    min-height: 20px;
+  }
 
-.settings {
-  display: flex;
-  flex-wrap: wrap;
-  margin: 0 12px 12px;
-  gap: 15px 45px;
-}
+  .settings {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 12px 12px;
+    gap: 15px 45px;
+  }
 
-.value-types-selection {
-  display: flex;
-  flex-direction: column;
-}
+  .value-types-selection {
+    display: flex;
+    flex-direction: column;
+  }
 
-.group {
-  font-weight: bold;
-  margin-bottom: var(--sys-size-6);
+  .group {
+    font-weight: bold;
+    margin-bottom: var(--sys-size-6);
+  }
 }
 
 /*# sourceURL=${import.meta.resolve('./valueInterpreterSettings.css')} */`;

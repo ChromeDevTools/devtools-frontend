@@ -6,7 +6,6 @@ import { BaseInsightComponent } from './BaseInsightComponent.js';
 import { type TableDataRow } from './Table.js';
 export declare class FontDisplay extends BaseInsightComponent<FontDisplayInsightModel> {
     #private;
-    static readonly litTagName: Lit.StaticHtml.StaticValue;
     internalName: string;
     protected hasAskAiSupport(): boolean;
     protected createOverlays(): Trace.Types.Overlays.Overlay[];
@@ -14,9 +13,4 @@ export declare class FontDisplay extends BaseInsightComponent<FontDisplayInsight
     createAggregatedTableRow(remaining: Trace.Insights.Models.FontDisplay.RemoteFont[]): TableDataRow;
     getEstimatedSavingsTime(): Trace.Types.Timing.Milli | null;
     renderContent(): Lit.LitTemplate;
-}
-declare global {
-    interface HTMLElementTagNameMap {
-        'devtools-performance-font-display': FontDisplay;
-    }
 }

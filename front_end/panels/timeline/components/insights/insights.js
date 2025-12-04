@@ -15,7 +15,6 @@ import * as Root from "./../../../../core/root/root.js";
 import * as AIAssistance from "./../../../../models/ai_assistance/ai_assistance.js";
 import * as Badges from "./../../../../models/badges/badges.js";
 import * as Buttons from "./../../../../ui/components/buttons/buttons.js";
-import * as ComponentHelpers from "./../../../../ui/components/helpers/helpers.js";
 import * as UI from "./../../../../ui/legacy/legacy.js";
 import * as Lit2 from "./../../../../ui/lit/lit.js";
 import * as VisualLogging from "./../../../../ui/visual_logging/visual_logging.js";
@@ -344,11 +343,90 @@ var UIStrings = {
 };
 var str_ = i18n.i18n.registerUIStrings("panels/timeline/components/insights/BaseInsightComponent.ts", UIStrings);
 var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);
-var BaseInsightComponent = class extends HTMLElement {
-  // So we can use the TypeScript BaseInsight class without getting warnings
-  // about litTagName. Every child should overwrite this.
-  static litTagName = Lit2.StaticHtml.literal``;
-  shadow = this.attachShadow({ mode: "open" });
+var DEFAULT_VIEW = (input, output, target) => {
+  const { internalName, model, selected, estimatedSavingsString, estimatedSavingsAriaLabel, isAIAssistanceContext, canShowAskAI, dispatchInsightToggle, renderContent, onHeaderKeyDown, onAskAIButtonClick } = input;
+  const containerClasses = Lit2.Directives.classMap({
+    insight: true,
+    closed: !selected || isAIAssistanceContext,
+    "ai-assistance-context": isAIAssistanceContext
+  });
+  let ariaLabel = `${i18nString(UIStrings.viewDetails, { PH1: model.title })}`;
+  if (estimatedSavingsAriaLabel) {
+    ariaLabel += ` ${estimatedSavingsAriaLabel}`;
+  }
+  function renderInsightContent() {
+    if (!selected) {
+      return Lit2.nothing;
+    }
+    const aiLabel = "Debug with AI";
+    const ariaLabel2 = `Ask AI about ${model.title} insight`;
+    const content = renderContent();
+    return html2`
+      <div class="insight-body">
+        <div class="insight-description">${md(model.description)}</div>
+        <div class="insight-content">${content}</div>
+        ${canShowAskAI ? html2`
+          <div class="ask-ai-btn-wrap">
+            <devtools-button class="ask-ai"
+              .variant=${"outlined"}
+              .iconName=${"smart-assistant"}
+              data-insights-ask-ai
+              jslog=${VisualLogging.action(`timeline.insight-ask-ai.${internalName}`).track({ click: true })}
+              @click=${onAskAIButtonClick}
+              aria-label=${ariaLabel2}
+            >${aiLabel}</devtools-button>
+          </div>
+        ` : Lit2.nothing}
+      </div>`;
+  }
+  function renderHoverIcon() {
+    if (isAIAssistanceContext) {
+      return Lit2.nothing;
+    }
+    const containerClasses2 = Lit2.Directives.classMap({
+      "insight-hover-icon": true,
+      active: selected
+    });
+    return html2`
+      <div class=${containerClasses2} inert>
+        <devtools-button .data=${{
+      variant: "icon",
+      iconName: "chevron-down",
+      size: "SMALL"
+    }}
+      ></devtools-button>
+      </div>
+    `;
+  }
+  Lit2.render(html2`
+    <style>${baseInsightComponent_css_default}</style>
+    <div class=${containerClasses}>
+      <header @click=${dispatchInsightToggle}
+        @keydown=${onHeaderKeyDown}
+        jslog=${VisualLogging.action(`timeline.toggle-insight.${internalName}`).track({ click: true })}
+        data-insight-header-title=${model?.title}
+        tabIndex="0"
+        role="button"
+        aria-expanded=${selected}
+        aria-label=${ariaLabel}
+      >
+        ${renderHoverIcon()}
+        <h3 class="insight-title">${model?.title}</h3>
+        ${estimatedSavingsString ? html2`
+          <slot name="insight-savings" class="insight-savings">
+            <span title=${estimatedSavingsAriaLabel ?? ""}>${estimatedSavingsString}</span>
+          </slot>
+        </div>` : Lit2.nothing}
+      </header>
+      ${renderInsightContent()}
+    </div>
+  `, target);
+  if (selected) {
+    requestAnimationFrame(() => requestAnimationFrame(() => target.scrollIntoViewIfNeeded()));
+  }
+};
+var BaseInsightComponent = class extends UI.Widget.Widget {
+  #view;
   // This flag tracks if the Insights AI feature is enabled within Chrome for
   // the active user.
   #askAiEnabled = false;
@@ -360,6 +438,11 @@ var BaseInsightComponent = class extends HTMLElement {
   #agentFocus = null;
   #fieldMetrics = null;
   #parsedTrace = null;
+  #initialOverlays = null;
+  constructor(element, view = DEFAULT_VIEW) {
+    super(element, { useShadowDom: true });
+    this.#view = view;
+  }
   get model() {
     return this.#model;
   }
@@ -371,10 +454,6 @@ var BaseInsightComponent = class extends HTMLElement {
     selectedRowEl: null,
     selectionIsSticky: false
   };
-  #initialOverlays = null;
-  scheduleRender() {
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
-  }
   // Insights that do support the AI feature can override this to return true.
   // The "Ask AI" button will only be shown for an Insight if this
   // is true and if the feature has been enabled by the user and they meet the
@@ -382,23 +461,25 @@ var BaseInsightComponent = class extends HTMLElement {
   hasAskAiSupport() {
     return false;
   }
-  connectedCallback() {
-    this.setAttribute("jslog", `${VisualLogging.section(`timeline.insights.${this.internalName}`)}`);
-    this.dataset.insightName = this.internalName;
+  wasShown() {
+    super.wasShown();
+    this.element.dataset.insightName = this.internalName;
     const { devToolsAiAssistancePerformanceAgent } = Root.Runtime.hostConfig;
     this.#askAiEnabled = Boolean(devToolsAiAssistancePerformanceAgent?.enabled);
   }
   set isAIAssistanceContext(isAIAssistanceContext) {
     this.#isAIAssistanceContext = isAIAssistanceContext;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
+    this.requestUpdate();
   }
   set selected(selected) {
     if (!this.#selected && selected) {
       const options = this.getOverlayOptionsForInitialOverlays();
-      this.dispatchEvent(new InsightProvideOverlays(this.getInitialOverlays(), options));
+      this.element.dispatchEvent(new InsightProvideOverlays(this.getInitialOverlays(), options));
     }
-    this.#selected = selected;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
+    if (this.#selected !== selected) {
+      this.#selected = selected;
+      this.requestUpdate();
+    }
   }
   get selected() {
     return this.#selected;
@@ -408,18 +489,18 @@ var BaseInsightComponent = class extends HTMLElement {
   }
   set model(model) {
     this.#model = model;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
+    this.requestUpdate();
   }
   set insightSetKey(insightSetKey) {
     this.data.insightSetKey = insightSetKey;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
+    this.requestUpdate();
   }
   get bounds() {
     return this.data.bounds;
   }
   set bounds(bounds) {
     this.data.bounds = bounds;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
+    this.requestUpdate();
   }
   set agentFocus(agentFocus) {
     this.#agentFocus = agentFocus;
@@ -434,14 +515,14 @@ var BaseInsightComponent = class extends HTMLElement {
     return { updateTraceWindow: true };
   }
   #dispatchInsightToggle() {
-    if (!this.data.insightSetKey || !this.model) {
+    if (!this.data.insightSetKey || !this.#model) {
       return;
     }
     if (this.#parsedTrace && UI.Floaty.enabled()) {
       const floatyHandled = UI.Floaty.onFloatyClick({
         type: "PERFORMANCE_INSIGHT",
         data: {
-          insight: this.model,
+          insight: this.#model,
           trace: this.#parsedTrace
         }
       });
@@ -451,46 +532,26 @@ var BaseInsightComponent = class extends HTMLElement {
     }
     const focus = UI.Context.Context.instance().flavor(AIAssistance.AIContext.AgentFocus);
     if (this.#selected) {
-      this.dispatchEvent(new InsightDeactivated());
+      this.element.dispatchEvent(new InsightDeactivated());
       if (focus) {
         UI.Context.Context.instance().setFlavor(AIAssistance.AIContext.AgentFocus, focus.withInsight(null));
       }
       return;
     }
     if (focus) {
-      UI.Context.Context.instance().setFlavor(AIAssistance.AIContext.AgentFocus, focus.withInsight(this.model));
+      UI.Context.Context.instance().setFlavor(AIAssistance.AIContext.AgentFocus, focus.withInsight(this.#model));
     }
     Badges.UserBadges.instance().recordAction(Badges.BadgeAction.PERFORMANCE_INSIGHT_CLICKED);
     this.sharedTableState.selectedRowEl?.classList.remove("selected");
     this.sharedTableState.selectedRowEl = null;
     this.sharedTableState.selectionIsSticky = false;
-    this.dispatchEvent(new InsightActivated(this.model, this.data.insightSetKey));
-  }
-  #renderHoverIcon(insightIsActive) {
-    if (this.#isAIAssistanceContext) {
-      return Lit2.nothing;
-    }
-    const containerClasses = Lit2.Directives.classMap({
-      "insight-hover-icon": true,
-      active: insightIsActive
-    });
-    return html2`
-      <div class=${containerClasses} inert>
-        <devtools-button .data=${{
-      variant: "icon",
-      iconName: "chevron-down",
-      size: "SMALL"
-    }}
-      ></devtools-button>
-      </div>
-
-    `;
+    this.element.dispatchEvent(new InsightActivated(this.#model, this.data.insightSetKey));
   }
   /**
    * Ensure that if the user presses enter or space on a header, we treat it
    * like a click and toggle the insight.
    */
-  #handleHeaderKeyDown(event) {
+  #onHeaderKeyDown(event) {
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
       event.stopPropagation();
@@ -511,10 +572,10 @@ var BaseInsightComponent = class extends HTMLElement {
       return;
     }
     if (!overlays) {
-      this.dispatchEvent(new InsightProvideOverlays(this.getInitialOverlays(), this.getOverlayOptionsForInitialOverlays()));
+      this.element.dispatchEvent(new InsightProvideOverlays(this.getInitialOverlays(), this.getOverlayOptionsForInitialOverlays()));
       return;
     }
-    this.dispatchEvent(new InsightProvideOverlays(overlays, options));
+    this.element.dispatchEvent(new InsightProvideOverlays(overlays, options));
   }
   getInitialOverlays() {
     if (this.#initialOverlays) {
@@ -524,19 +585,32 @@ var BaseInsightComponent = class extends HTMLElement {
     return this.#initialOverlays;
   }
   createOverlays() {
-    return this.model?.createOverlays?.() ?? [];
+    return this.#model?.createOverlays?.() ?? [];
   }
-  #render() {
-    if (!this.model) {
+  performUpdate() {
+    if (!this.#model) {
       return;
     }
-    this.#renderWithContent();
+    const input = {
+      internalName: this.internalName,
+      model: this.#model,
+      selected: this.#selected,
+      estimatedSavingsString: this.getEstimatedSavingsString(),
+      estimatedSavingsAriaLabel: this.#getEstimatedSavingsAriaLabel(),
+      isAIAssistanceContext: this.#isAIAssistanceContext,
+      canShowAskAI: this.#canShowAskAI(),
+      dispatchInsightToggle: () => this.#dispatchInsightToggle(),
+      renderContent: () => this.renderContent(),
+      onHeaderKeyDown: () => this.#onHeaderKeyDown,
+      onAskAIButtonClick: () => this.#onAskAIButtonClick()
+    };
+    this.#view(input, void 0, this.contentElement);
   }
   getEstimatedSavingsTime() {
     return null;
   }
   getEstimatedSavingsBytes() {
-    return this.model?.wastedBytes ?? null;
+    return this.#model?.wastedBytes ?? null;
   }
   #getEstimatedSavingsTextParts() {
     const savingsTime = this.getEstimatedSavingsTime();
@@ -573,7 +647,7 @@ var BaseInsightComponent = class extends HTMLElement {
     }
     return null;
   }
-  #getEstimatedSavingsString() {
+  getEstimatedSavingsString() {
     const { bytesString, timeString } = this.#getEstimatedSavingsTextParts();
     if (timeString && bytesString) {
       return i18nString(UIStrings.estimatedSavingsTimingAndBytes, {
@@ -593,7 +667,7 @@ var BaseInsightComponent = class extends HTMLElement {
     }
     return null;
   }
-  #askAIButtonClick() {
+  #onAskAIButtonClick() {
     if (!this.#agentFocus) {
       return;
     }
@@ -603,7 +677,7 @@ var BaseInsightComponent = class extends HTMLElement {
     }
     let focus = UI.Context.Context.instance().flavor(AIAssistance.AIContext.AgentFocus);
     if (focus) {
-      focus = focus.withInsight(this.model);
+      focus = focus.withInsight(this.#model);
     } else {
       focus = this.#agentFocus;
     }
@@ -617,75 +691,6 @@ var BaseInsightComponent = class extends HTMLElement {
     }
     const aiAvailable = Root.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue !== Root.Runtime.GenAiEnterprisePolicyValue.DISABLE && this.#askAiEnabled && Root.Runtime.hostConfig.aidaAvailability?.enabled === true;
     return aiAvailable && this.hasAskAiSupport();
-  }
-  #renderInsightContent(insightModel) {
-    if (!this.#selected) {
-      return Lit2.nothing;
-    }
-    const aiLabel = "Debug with AI";
-    const ariaLabel = `Ask AI about ${insightModel.title} insight`;
-    const content = this.renderContent();
-    return html2`
-      <div class="insight-body">
-        <div class="insight-description">${md(insightModel.description)}</div>
-        <div class="insight-content">${content}</div>
-        ${this.#canShowAskAI() ? html2`
-          <div class="ask-ai-btn-wrap">
-            <devtools-button class="ask-ai"
-              .variant=${"outlined"}
-              .iconName=${"smart-assistant"}
-              data-insights-ask-ai
-              jslog=${VisualLogging.action(`timeline.insight-ask-ai.${this.internalName}`).track({ click: true })}
-              @click=${this.#askAIButtonClick}
-              aria-label=${ariaLabel}
-            >${aiLabel}</devtools-button>
-          </div>
-        ` : Lit2.nothing}
-      </div>`;
-  }
-  #renderWithContent() {
-    if (!this.#model) {
-      Lit2.render(Lit2.nothing, this.shadow, { host: this });
-      return;
-    }
-    const containerClasses = Lit2.Directives.classMap({
-      insight: true,
-      closed: !this.#selected || this.#isAIAssistanceContext,
-      "ai-assistance-context": this.#isAIAssistanceContext
-    });
-    const estimatedSavingsString = this.#getEstimatedSavingsString();
-    const estimatedSavingsAriaLabel = this.#getEstimatedSavingsAriaLabel();
-    let ariaLabel = `${i18nString(UIStrings.viewDetails, { PH1: this.#model.title })}`;
-    if (estimatedSavingsAriaLabel) {
-      ariaLabel += ` ${estimatedSavingsAriaLabel}`;
-    }
-    const output = html2`
-      <style>${baseInsightComponent_css_default}</style>
-      <div class=${containerClasses}>
-        <header @click=${this.#dispatchInsightToggle}
-          @keydown=${this.#handleHeaderKeyDown}
-          jslog=${VisualLogging.action(`timeline.toggle-insight.${this.internalName}`).track({ click: true })}
-          data-insight-header-title=${this.#model?.title}
-          tabIndex="0"
-          role="button"
-          aria-expanded=${this.#selected}
-          aria-label=${ariaLabel}
-        >
-          ${this.#renderHoverIcon(this.#selected)}
-          <h3 class="insight-title">${this.#model?.title}</h3>
-          ${estimatedSavingsString ? html2`
-            <slot name="insight-savings" class="insight-savings">
-              <span title=${estimatedSavingsAriaLabel ?? ""}>${estimatedSavingsString}</span>
-            </slot>
-          </div>` : Lit2.nothing}
-        </header>
-        ${this.#renderInsightContent(this.#model)}
-      </div>
-    `;
-    Lit2.render(output, this.shadow, { host: this });
-    if (this.#selected) {
-      requestAnimationFrame(() => requestAnimationFrame(() => this.scrollIntoViewIfNeeded()));
-    }
   }
 };
 
@@ -704,13 +709,13 @@ __export(Table_exports, {
   renderOthersLabel: () => renderOthersLabel
 });
 import * as i18n3 from "./../../../../core/i18n/i18n.js";
-import * as ComponentHelpers2 from "./../../../../ui/components/helpers/helpers.js";
+import * as ComponentHelpers from "./../../../../ui/components/helpers/helpers.js";
 import * as Lit4 from "./../../../../ui/lit/lit.js";
 
 // gen/front_end/panels/timeline/components/insights/EventRef.js
 var EventRef_exports = {};
 __export(EventRef_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW,
+  DEFAULT_VIEW: () => DEFAULT_VIEW2,
   EventReferenceClick: () => EventReferenceClick,
   eventRef: () => eventRef
 });
@@ -728,7 +733,7 @@ var EventReferenceClick = class _EventReferenceClick extends Event {
     this.event = event;
   }
 };
-var DEFAULT_VIEW = (input, output, target) => {
+var DEFAULT_VIEW2 = (input, output, target) => {
   const { text, event } = input;
   Lit3.render(html3`
     <style>${baseInsightComponent_css_default}</style>
@@ -744,7 +749,7 @@ var EventRef = class extends UI2.Widget.Widget {
   #view;
   #text = null;
   #event = null;
-  constructor(element, view = DEFAULT_VIEW) {
+  constructor(element, view = DEFAULT_VIEW2) {
     super(element, { useShadowDom: true });
     this.#view = view;
   }
@@ -897,10 +902,10 @@ var Table = class extends HTMLElement {
     this.#headers = data.headers;
     this.#rows = data.rows;
     this.#interactive = this.#rows.some((row) => row.overlays || row.subRows?.length);
-    void ComponentHelpers2.ScheduledRender.scheduleRender(this, this.#render);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
   connectedCallback() {
-    void ComponentHelpers2.ScheduledRender.scheduleRender(this, this.#render);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
   #onHoverRow(e) {
     if (!this.#flattenedRows) {
@@ -1050,7 +1055,6 @@ import * as Lit5 from "./../../../../ui/lit/lit.js";
 var { UIStrings: UIStrings3, i18nString: i18nString3, createOverlayForRequest } = Trace3.Insights.Models.Cache;
 var { html: html5 } = Lit5;
 var Cache = class extends BaseInsightComponent {
-  static litTagName = Lit5.StaticHtml.literal`devtools-performance-cache`;
   internalName = "cache";
   hasAskAiSupport() {
     return true;
@@ -1089,7 +1093,6 @@ var Cache = class extends BaseInsightComponent {
       </div>`;
   }
 };
-customElements.define("devtools-performance-cache", Cache);
 
 // gen/front_end/panels/timeline/components/insights/Checklist.js
 var Checklist_exports = {};
@@ -1098,7 +1101,7 @@ __export(Checklist_exports, {
 });
 import "./../../../../ui/kit/kit.js";
 import * as i18n6 from "./../../../../core/i18n/i18n.js";
-import * as ComponentHelpers3 from "./../../../../ui/components/helpers/helpers.js";
+import * as ComponentHelpers2 from "./../../../../ui/components/helpers/helpers.js";
 import * as Lit6 from "./../../../../ui/lit/lit.js";
 
 // gen/front_end/panels/timeline/components/insights/checklist.css.js
@@ -1159,10 +1162,10 @@ var Checklist = class extends HTMLElement {
   #checklist;
   set checklist(checklist) {
     this.#checklist = checklist;
-    void ComponentHelpers3.ScheduledRender.scheduleRender(this, this.#render);
+    void ComponentHelpers2.ScheduledRender.scheduleRender(this, this.#render);
   }
   connectedCallback() {
-    void ComponentHelpers3.ScheduledRender.scheduleRender(this, this.#render);
+    void ComponentHelpers2.ScheduledRender.scheduleRender(this, this.#render);
   }
   #getIcon(check) {
     const icon = check.value ? "check-circle" : "clear";
@@ -1203,7 +1206,7 @@ import * as Lit8 from "./../../../../ui/lit/lit.js";
 // gen/front_end/panels/timeline/components/insights/NodeLink.js
 var NodeLink_exports = {};
 __export(NodeLink_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW2,
+  DEFAULT_VIEW: () => DEFAULT_VIEW3,
   NodeLink: () => NodeLink,
   nodeLink: () => nodeLink
 });
@@ -1215,7 +1218,7 @@ import * as Lit7 from "./../../../../ui/lit/lit.js";
 import * as PanelsCommon from "./../../../common/common.js";
 var { html: html7 } = Lit7;
 var { widgetConfig: widgetConfig2 } = UI3.Widget;
-var DEFAULT_VIEW2 = (input, output, target) => {
+var DEFAULT_VIEW3 = (input, output, target) => {
   const { relatedNodeEl, fallbackUrl, fallbackHtmlSnippet, fallbackText } = input;
   let template;
   if (relatedNodeEl) {
@@ -1255,7 +1258,7 @@ var NodeLink = class extends UI3.Widget.Widget {
    * Also tracks if we fail to resolve a node, to ensure we don't try on each subsequent re-render.
    */
   #linkifiedNodeForBackendId = /* @__PURE__ */ new Map();
-  constructor(element, view = DEFAULT_VIEW2) {
+  constructor(element, view = DEFAULT_VIEW3) {
     super(element, { useShadowDom: true });
     this.#view = view;
   }
@@ -1318,7 +1321,6 @@ function nodeLink(data) {
 var { UIStrings: UIStrings5, i18nString: i18nString5 } = Trace4.Insights.Models.CLSCulprits;
 var { html: html8 } = Lit8;
 var CLSCulprits = class extends BaseInsightComponent {
-  static litTagName = Lit8.StaticHtml.literal`devtools-performance-cls-culprits`;
   internalName = "cls-culprits";
   hasAskAiSupport() {
     return true;
@@ -1330,7 +1332,7 @@ var CLSCulprits = class extends BaseInsightComponent {
     return this.model.createOverlays?.() ?? [];
   }
   #clickEvent(event) {
-    this.dispatchEvent(new EventReferenceClick(event));
+    this.element.dispatchEvent(new EventReferenceClick(event));
   }
   #renderCulpritsSection(culprits) {
     if (culprits.length === 0) {
@@ -1376,7 +1378,6 @@ var CLSCulprits = class extends BaseInsightComponent {
     `;
   }
 };
-customElements.define("devtools-performance-cls-culprits", CLSCulprits);
 
 // gen/front_end/panels/timeline/components/insights/DocumentLatency.js
 var DocumentLatency_exports = {};
@@ -1386,7 +1387,6 @@ __export(DocumentLatency_exports, {
 import * as Lit9 from "./../../../../ui/lit/lit.js";
 var { html: html9 } = Lit9;
 var DocumentLatency = class extends BaseInsightComponent {
-  static litTagName = Lit9.StaticHtml.literal`devtools-performance-document-latency`;
   internalName = "document-latency";
   hasAskAiSupport() {
     return true;
@@ -1401,7 +1401,6 @@ var DocumentLatency = class extends BaseInsightComponent {
     return html9`<devtools-performance-checklist .checklist=${this.model.data.checklist}></devtools-performance-checklist>`;
   }
 };
-customElements.define("devtools-performance-document-latency", DocumentLatency);
 
 // gen/front_end/panels/timeline/components/insights/DOMSize.js
 var DOMSize_exports = {};
@@ -1415,7 +1414,6 @@ import * as Lit10 from "./../../../../ui/lit/lit.js";
 var { UIStrings: UIStrings6, i18nString: i18nString6 } = Trace5.Insights.Models.DOMSize;
 var { html: html10 } = Lit10;
 var DOMSize = class extends BaseInsightComponent {
-  static litTagName = Lit10.StaticHtml.literal`devtools-performance-dom-size`;
   internalName = "dom-size";
   hasAskAiSupport() {
     return true;
@@ -1504,7 +1502,6 @@ var DOMSize = class extends BaseInsightComponent {
     `;
   }
 };
-customElements.define("devtools-performance-dom-size", DOMSize);
 
 // gen/front_end/panels/timeline/components/insights/DuplicatedJavaScript.js
 var DuplicatedJavaScript_exports = {};
@@ -1547,7 +1544,6 @@ function scriptRef(script) {
 var { UIStrings: UIStrings7, i18nString: i18nString7 } = Trace6.Insights.Models.DuplicatedJavaScript;
 var { html: html11 } = Lit11;
 var DuplicatedJavaScript = class extends BaseInsightComponent {
-  static litTagName = Lit11.StaticHtml.literal`devtools-performance-duplicated-javascript`;
   internalName = "duplicated-javascript";
   #treemapData = null;
   #shouldShowTreemap() {
@@ -1628,7 +1624,6 @@ var DuplicatedJavaScript = class extends BaseInsightComponent {
     `;
   }
 };
-customElements.define("devtools-performance-duplicated-javascript", DuplicatedJavaScript);
 
 // gen/front_end/panels/timeline/components/insights/FontDisplay.js
 var FontDisplay_exports = {};
@@ -1641,7 +1636,6 @@ import * as Lit12 from "./../../../../ui/lit/lit.js";
 var { UIStrings: UIStrings8, i18nString: i18nString8 } = Trace7.Insights.Models.FontDisplay;
 var { html: html12 } = Lit12;
 var FontDisplay = class extends BaseInsightComponent {
-  static litTagName = Lit12.StaticHtml.literal`devtools-performance-font-display`;
   internalName = "font-display";
   #overlayForRequest = /* @__PURE__ */ new Map();
   hasAskAiSupport() {
@@ -1697,7 +1691,6 @@ var FontDisplay = class extends BaseInsightComponent {
       </div>`;
   }
 };
-customElements.define("devtools-performance-font-display", FontDisplay);
 
 // gen/front_end/panels/timeline/components/insights/ForcedReflow.js
 var ForcedReflow_exports = {};
@@ -1712,7 +1705,6 @@ import * as Lit13 from "./../../../../ui/lit/lit.js";
 var { UIStrings: UIStrings9, i18nString: i18nString9, createOverlayForEvents } = Trace8.Insights.Models.ForcedReflow;
 var { html: html13, nothing: nothing10 } = Lit13;
 var ForcedReflow = class extends BaseInsightComponent {
-  static litTagName = Lit13.StaticHtml.literal`devtools-performance-forced-reflow`;
   internalName = "forced-reflow";
   hasAskAiSupport() {
     return true;
@@ -1790,7 +1782,6 @@ var ForcedReflow = class extends BaseInsightComponent {
       </div>`;
   }
 };
-customElements.define("devtools-performance-forced-reflow", ForcedReflow);
 
 // gen/front_end/panels/timeline/components/insights/ImageDelivery.js
 var ImageDelivery_exports = {};
@@ -1808,7 +1799,7 @@ import * as UI4 from "./../../../../ui/legacy/legacy.js";
 import * as Lit14 from "./../../../../ui/lit/lit.js";
 var { html: html14 } = Lit14;
 var { widgetConfig: widgetConfig3 } = UI4.Widget;
-var DEFAULT_VIEW3 = (input, output, target) => {
+var DEFAULT_VIEW4 = (input, output, target) => {
   const { request, imageDataUrl } = input;
   const img = imageDataUrl ? html14`<img src=${imageDataUrl} class="element-img"/>` : Lit14.nothing;
   Lit14.render(html14`
@@ -1826,7 +1817,7 @@ var ImageRef = class extends UI4.Widget.Widget {
   #view;
   #request;
   #imageDataUrl;
-  constructor(element, view = DEFAULT_VIEW3) {
+  constructor(element, view = DEFAULT_VIEW4) {
     super(element, { useShadowDom: true });
     this.#view = view;
   }
@@ -1881,7 +1872,6 @@ function imageRef(request) {
 var { UIStrings: UIStrings10, i18nString: i18nString10, createOverlayForRequest: createOverlayForRequest2 } = Trace9.Insights.Models.ImageDelivery;
 var { html: html15 } = Lit15;
 var ImageDelivery = class extends BaseInsightComponent {
-  static litTagName = Lit15.StaticHtml.literal`devtools-performance-image-delivery`;
   internalName = "image-delivery";
   mapToRow(image) {
     return {
@@ -1921,7 +1911,6 @@ var ImageDelivery = class extends BaseInsightComponent {
     `;
   }
 };
-customElements.define("devtools-performance-image-delivery", ImageDelivery);
 
 // gen/front_end/panels/timeline/components/insights/INPBreakdown.js
 var INPBreakdown_exports = {};
@@ -1935,7 +1924,6 @@ import * as Lit16 from "./../../../../ui/lit/lit.js";
 var { UIStrings: UIStrings11, i18nString: i18nString11, createOverlaysForSubpart } = Trace10.Insights.Models.INPBreakdown;
 var { html: html16 } = Lit16;
 var INPBreakdown = class extends BaseInsightComponent {
-  static litTagName = Lit16.StaticHtml.literal`devtools-performance-inp-breakdown`;
   internalName = "inp";
   hasAskAiSupport() {
     return this.model?.longestInteractionEvent !== void 0;
@@ -1971,7 +1959,13 @@ var INPBreakdown = class extends BaseInsightComponent {
       </div>`;
   }
 };
-customElements.define("devtools-performance-inp-breakdown", INPBreakdown);
+
+// gen/front_end/panels/timeline/components/insights/InsightRenderer.js
+var InsightRenderer_exports = {};
+__export(InsightRenderer_exports, {
+  InsightRenderer: () => InsightRenderer
+});
+import * as UI5 from "./../../../../ui/legacy/legacy.js";
 
 // gen/front_end/panels/timeline/components/insights/LCPBreakdown.js
 var LCPBreakdown_exports = {};
@@ -1984,7 +1978,6 @@ import * as Lit17 from "./../../../../ui/lit/lit.js";
 var { UIStrings: UIStrings12, i18nString: i18nString12 } = Trace11.Insights.Models.LCPBreakdown;
 var { html: html17 } = Lit17;
 var LCPBreakdown = class extends BaseInsightComponent {
-  static litTagName = Lit17.StaticHtml.literal`devtools-performance-lcp-breakdown`;
   internalName = "lcp-by-phase";
   #overlay = null;
   hasAskAiSupport() {
@@ -2047,13 +2040,13 @@ var LCPBreakdown = class extends BaseInsightComponent {
       return html17`<div class="insight-section">${i18nString12(UIStrings12.noLcp)}</div>`;
     }
     const rows = Object.values(subparts).map((subpart) => {
-      const section2 = this.#overlay?.sections.find((section3) => subpart.label === section3.label);
+      const section = this.#overlay?.sections.find((section2) => subpart.label === section2.label);
       const timing = Trace11.Helpers.Timing.microToMilli(subpart.range);
       return {
         values: [subpart.label, i18n15.TimeUtilities.preciseMillisToString(timing)],
-        overlays: section2 && [{
+        overlays: section && [{
           type: "TIMESPAN_BREAKDOWN",
-          sections: [section2]
+          sections: [section]
         }]
       };
     });
@@ -2076,7 +2069,6 @@ var LCPBreakdown = class extends BaseInsightComponent {
     return html17`${sections}`;
   }
 };
-customElements.define("devtools-performance-lcp-breakdown", LCPBreakdown);
 
 // gen/front_end/panels/timeline/components/insights/LCPDiscovery.js
 var LCPDiscovery_exports = {};
@@ -2091,7 +2083,6 @@ var { UIStrings: UIStrings13, i18nString: i18nString13, getImageData } = Trace12
 var { html: html18 } = Lit18;
 var str_4 = i18n16.i18n.registerUIStrings("models/trace/insights/LCPDiscovery.ts", UIStrings13);
 var LCPDiscovery = class extends BaseInsightComponent {
-  static litTagName = Lit18.StaticHtml.literal`devtools-performance-lcp-discovery`;
   internalName = "lcp-discovery";
   hasAskAiSupport() {
     return true;
@@ -2148,7 +2139,6 @@ var LCPDiscovery = class extends BaseInsightComponent {
       </div>`;
   }
 };
-customElements.define("devtools-performance-lcp-discovery", LCPDiscovery);
 
 // gen/front_end/panels/timeline/components/insights/LegacyJavaScript.js
 var LegacyJavaScript_exports = {};
@@ -2164,7 +2154,6 @@ import * as Lit19 from "./../../../../ui/lit/lit.js";
 var { UIStrings: UIStrings14, i18nString: i18nString14 } = Trace13.Insights.Models.LegacyJavaScript;
 var { html: html19 } = Lit19;
 var LegacyJavaScript = class extends BaseInsightComponent {
-  static litTagName = Lit19.StaticHtml.literal`devtools-performance-legacy-javascript`;
   internalName = "legacy-javascript";
   getEstimatedSavingsTime() {
     return this.model?.metricSavings?.FCP ?? null;
@@ -2224,7 +2213,6 @@ var LegacyJavaScript = class extends BaseInsightComponent {
     `;
   }
 };
-customElements.define("devtools-performance-legacy-javascript", LegacyJavaScript);
 
 // gen/front_end/panels/timeline/components/insights/ModernHTTP.js
 var ModernHTTP_exports = {};
@@ -2236,7 +2224,6 @@ import * as Lit20 from "./../../../../ui/lit/lit.js";
 var { UIStrings: UIStrings15, i18nString: i18nString15, createOverlayForRequest: createOverlayForRequest3 } = Trace14.Insights.Models.ModernHTTP;
 var { html: html20 } = Lit20;
 var ModernHTTP = class extends BaseInsightComponent {
-  static litTagName = Lit20.StaticHtml.literal`devtools-performance-modern-http`;
   internalName = "modern-http";
   hasAskAiSupport() {
     return true;
@@ -2276,7 +2263,6 @@ var ModernHTTP = class extends BaseInsightComponent {
       </div>`;
   }
 };
-customElements.define("devtools-performance-modern-http", ModernHTTP);
 
 // gen/front_end/panels/timeline/components/insights/NetworkDependencyTree.js
 var NetworkDependencyTree_exports = {};
@@ -2321,7 +2307,6 @@ var { UIStrings: UIStrings16, i18nString: i18nString16 } = Trace15.Insights.Mode
 var { html: html21 } = Lit21;
 var MAX_CHAINS_TO_SHOW = 5;
 var NetworkDependencyTree = class extends BaseInsightComponent {
-  static litTagName = Lit21.StaticHtml.literal`devtools-performance-long-critical-network-tree`;
   internalName = "long-critical-network-tree";
   #relatedRequests = null;
   #countOfChains = 0;
@@ -2540,7 +2525,6 @@ var NetworkDependencyTree = class extends BaseInsightComponent {
     `;
   }
 };
-customElements.define("devtools-performance-long-critical-network-tree", NetworkDependencyTree);
 
 // gen/front_end/panels/timeline/components/insights/RenderBlocking.js
 var RenderBlocking_exports = {};
@@ -2553,7 +2537,6 @@ import * as Lit22 from "./../../../../ui/lit/lit.js";
 var { UIStrings: UIStrings17, i18nString: i18nString17, createOverlayForRequest: createOverlayForRequest4 } = Trace16.Insights.Models.RenderBlocking;
 var { html: html22 } = Lit22;
 var RenderBlocking = class extends BaseInsightComponent {
-  static litTagName = Lit22.StaticHtml.literal`devtools-performance-render-blocking-requests`;
   internalName = "render-blocking-requests";
   mapToRow(request) {
     return {
@@ -2598,7 +2581,6 @@ var RenderBlocking = class extends BaseInsightComponent {
     `;
   }
 };
-customElements.define("devtools-performance-render-blocking-requests", RenderBlocking);
 
 // gen/front_end/panels/timeline/components/insights/SlowCSSSelector.js
 var SlowCSSSelector_exports = {};
@@ -2614,7 +2596,6 @@ import * as Lit23 from "./../../../../ui/lit/lit.js";
 var { UIStrings: UIStrings18, i18nString: i18nString18 } = Trace17.Insights.Models.SlowCSSSelector;
 var { html: html23 } = Lit23;
 var SlowCSSSelector = class extends BaseInsightComponent {
-  static litTagName = Lit23.StaticHtml.literal`devtools-performance-slow-css-selector`;
   internalName = "slow-css-selector";
   #selectorLocations = /* @__PURE__ */ new Map();
   hasAskAiSupport() {
@@ -2727,7 +2708,6 @@ var SlowCSSSelector = class extends BaseInsightComponent {
     return html23`${sections}`;
   }
 };
-customElements.define("devtools-performance-slow-css-selector", SlowCSSSelector);
 
 // gen/front_end/panels/timeline/components/insights/ThirdParties.js
 var ThirdParties_exports = {};
@@ -2741,7 +2721,6 @@ var { UIStrings: UIStrings19, i18nString: i18nString19, createOverlaysForSummary
 var { html: html24 } = Lit24;
 var MAX_TO_SHOW = 5;
 var ThirdParties = class extends BaseInsightComponent {
-  static litTagName = Lit24.StaticHtml.literal`devtools-performance-third-parties`;
   internalName = "third-parties";
   #mainThreadTimeAggregator = {
     mapToRow: (summary) => ({
@@ -2817,10 +2796,6 @@ var ThirdParties = class extends BaseInsightComponent {
     return html24`${sections}`;
   }
 };
-customElements.define("devtools-performance-third-parties", ThirdParties);
-
-// gen/front_end/panels/timeline/components/insights/types.js
-var types_exports = {};
 
 // gen/front_end/panels/timeline/components/insights/Viewport.js
 var Viewport_exports = {};
@@ -2830,7 +2805,6 @@ __export(Viewport_exports, {
 import * as Lit25 from "./../../../../ui/lit/lit.js";
 var { html: html25 } = Lit25;
 var Viewport = class extends BaseInsightComponent {
-  static litTagName = Lit25.StaticHtml.literal`devtools-performance-viewport`;
   internalName = "viewport";
   hasAskAiSupport() {
     return true;
@@ -2857,7 +2831,58 @@ var Viewport = class extends BaseInsightComponent {
       </div>`;
   }
 };
-customElements.define("devtools-performance-viewport", Viewport);
+
+// gen/front_end/panels/timeline/components/insights/InsightRenderer.js
+var { widgetConfig: widgetConfig4 } = UI5.Widget;
+var INSIGHT_NAME_TO_COMPONENT = {
+  Cache,
+  CLSCulprits,
+  DocumentLatency,
+  DOMSize,
+  DuplicatedJavaScript,
+  FontDisplay,
+  ForcedReflow,
+  ImageDelivery,
+  INPBreakdown,
+  LCPDiscovery,
+  LCPBreakdown,
+  LegacyJavaScript,
+  ModernHTTP,
+  NetworkDependencyTree,
+  RenderBlocking,
+  SlowCSSSelector,
+  ThirdParties,
+  Viewport
+};
+var InsightRenderer = class {
+  #insightWidgetCache = /* @__PURE__ */ new WeakMap();
+  renderInsightToWidgetElement(parsedTrace, insightSet, model, insightName, options) {
+    let widgetElement = this.#insightWidgetCache.get(model);
+    if (!widgetElement) {
+      widgetElement = document.createElement("devtools-widget");
+      const componentClass = INSIGHT_NAME_TO_COMPONENT[insightName];
+      const widget2 = new componentClass(widgetElement);
+      widget2.selected = false;
+      widget2.parsedTrace = parsedTrace;
+      widget2.model = model;
+      widget2.bounds = insightSet.bounds;
+      widget2.insightSetKey = insightSet.id;
+      Object.assign(widget2, options);
+      widgetElement.widgetConfig = widgetConfig4(() => {
+        return widget2;
+      });
+      this.#insightWidgetCache.set(model, widgetElement);
+    }
+    const widget = widgetElement.getWidget();
+    if (widget) {
+      Object.assign(widget, options);
+    }
+    return widgetElement;
+  }
+};
+
+// gen/front_end/panels/timeline/components/insights/types.js
+var types_exports = {};
 export {
   BaseInsightComponent_exports as BaseInsightComponent,
   CLSCulprits_exports as CLSCulprits,
@@ -2872,6 +2897,7 @@ export {
   Helpers_exports as Helpers,
   INPBreakdown_exports as INPBreakdown,
   ImageDelivery_exports as ImageDelivery,
+  InsightRenderer_exports as InsightRenderer,
   LCPBreakdown_exports as LCPBreakdown,
   LCPDiscovery_exports as LCPDiscovery,
   LegacyJavaScript_exports as LegacyJavaScript,

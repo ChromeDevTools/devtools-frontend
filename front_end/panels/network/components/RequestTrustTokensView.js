@@ -1,16 +1,15 @@
 // Copyright 2020 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
 import '../../../ui/components/report_view/report_view.js';
 import '../../../ui/kit/kit.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as SDK from '../../../core/sdk/sdk.js';
-import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wrapper.js';
+import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import requestTrustTokensViewStyles from './RequestTrustTokensView.css.js';
-const { html } = Lit;
+const { html, render } = Lit;
 const UIStrings = {
     /**
      * @description Section heading in the Trust Token tab
@@ -92,130 +91,150 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/network/components/RequestTrustTokensView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-export class RequestTrustTokensView extends LegacyWrapper.LegacyWrapper.WrappableComponent {
-    #shadow = this.attachShadow({ mode: 'open' });
-    #request;
-    constructor(request) {
-        super();
+function renderRowIfValuePresent(key, value, isCode) {
+    if (!value || (Array.isArray(value) && value.length === 0)) {
+        return Lit.nothing;
+    }
+    // clang-format off
+    return html `
+    <devtools-report-key>${key}</devtools-report-key>
+    <devtools-report-value class=${isCode ? 'code' : ''}>
+      ${Array.isArray(value) ? html `
+        <ul class="issuers-list">
+            ${value.map(item => html `<li>${item}</li>`)}
+        </ul>` :
+        value}
+    </devtools-report-value>
+  `;
+    // clang-format on
+}
+const renderResultSection = (status, description, issuedTokenCount) => {
+    if (!status) {
+        return Lit.nothing;
+    }
+    // clang-format off
+    return html `
+    <devtools-report-section-header>${i18nString(UIStrings.result)}</devtools-report-section-header>
+    <devtools-report-key>${i18nString(UIStrings.status)}</devtools-report-key>
+    <devtools-report-value>
+      <span>
+        <devtools-icon class="status-icon medium ${status === 'Success' ? 'success' : 'failure'}"
+        name=${status === 'Success' ? 'check-circle' : 'cross-circle-filled'}>
+        </devtools-icon>
+        <strong>${status === 'Success' ? i18nString(UIStrings.success) : i18nString(UIStrings.failure)}</strong>
+        ${description ? html ` ${description}` : Lit.nothing}
+      </span>
+    </devtools-report-value>
+    ${renderRowIfValuePresent(i18nString(UIStrings.numberOfIssuedTokens), issuedTokenCount)}
+    <devtools-report-divider></devtools-report-divider>
+    `;
+    // clang-format on
+};
+const renderParameterSection = (params) => {
+    if (!params || params.length === 0) {
+        return Lit.nothing;
+    }
+    // clang-format off
+    return html `
+    <devtools-report-section-header jslog=${VisualLogging.pane('trust-tokens').track({ resize: true })}>
+      ${i18nString(UIStrings.parameters)}
+    </devtools-report-section-header>
+    ${params.map(param => renderRowIfValuePresent(param.name, param.value, param.isCode))}
+    <devtools-report-divider></devtools-report-divider>
+  `;
+    // clang-format on
+};
+// clang-format off
+export const DEFAULT_VIEW = (input, output, target) => {
+    render(html `
+    <style>${requestTrustTokensViewStyles}</style>
+    <devtools-report>
+      ${renderParameterSection(input.params)}
+      ${renderResultSection(input.status, input.description, input.issuedTokenCount)}
+    </devtools-report>
+  `, target);
+};
+// clang-format on
+export class RequestTrustTokensView extends UI.Widget.Widget {
+    #request = null;
+    #view;
+    constructor(element, view = DEFAULT_VIEW) {
+        super(element);
+        this.#view = view;
+    }
+    get request() {
+        return this.#request;
+    }
+    set request(request) {
+        if (this.#request === request) {
+            return;
+        }
+        this.#unsubscribe();
         this.#request = request;
+        this.#subscribe();
+        this.requestUpdate();
+    }
+    #subscribe() {
+        if (this.#request && this.isShowing()) {
+            this.#request.addEventListener(SDK.NetworkRequest.Events.TRUST_TOKEN_RESULT_ADDED, this.requestUpdate, this);
+        }
+    }
+    #unsubscribe() {
+        if (this.#request) {
+            this.#request.removeEventListener(SDK.NetworkRequest.Events.TRUST_TOKEN_RESULT_ADDED, this.requestUpdate, this);
+        }
     }
     wasShown() {
         super.wasShown();
-        this.#request.addEventListener(SDK.NetworkRequest.Events.TRUST_TOKEN_RESULT_ADDED, this.render, this);
-        void this.render();
+        this.#subscribe();
+        this.requestUpdate();
     }
     willHide() {
         super.willHide();
-        this.#request.removeEventListener(SDK.NetworkRequest.Events.TRUST_TOKEN_RESULT_ADDED, this.render, this);
+        this.#unsubscribe();
     }
-    async render() {
-        if (!this.#request) {
-            throw new Error('Trying to render a Trust Token report without providing data');
+    performUpdate() {
+        if (!this.request) {
+            return;
         }
-        // Disabled until https://crbug.com/1079231 is fixed.
-        // clang-format off
-        Lit.render(html `
-      <style>${requestTrustTokensViewStyles}</style>
-      <devtools-report>
-        ${this.#renderParameterSection()}
-        ${this.#renderResultSection()}
-      </devtools-report>
-    `, this.#shadow, { host: this });
-        // clang-format on
-    }
-    #renderParameterSection() {
-        const trustTokenParams = this.#request.trustTokenParams();
-        if (!trustTokenParams) {
-            return Lit.nothing;
+        const trustTokenParams = this.request.trustTokenParams();
+        const trustTokenResult = this.request.trustTokenOperationDoneEvent();
+        const viewInput = {};
+        if (trustTokenParams) {
+            viewInput.params = [
+                { name: i18nString(UIStrings.type), value: trustTokenParams.operation.toString(), isCode: true },
+            ];
+            if (trustTokenParams.operation === "Redemption" /* Protocol.Network.TrustTokenOperationType.Redemption */) {
+                viewInput.params.push({
+                    name: i18nString(UIStrings.refreshPolicy),
+                    value: trustTokenParams.refreshPolicy.toString(),
+                    isCode: true,
+                });
+            }
+            if (trustTokenParams.issuers && trustTokenParams.issuers.length > 0) {
+                viewInput.params.push({ name: i18nString(UIStrings.issuers), value: trustTokenParams.issuers });
+            }
+            if (trustTokenResult?.topLevelOrigin) {
+                viewInput.params.push({ name: i18nString(UIStrings.topLevelOrigin), value: trustTokenResult.topLevelOrigin });
+            }
+            if (trustTokenResult?.issuerOrigin) {
+                viewInput.params.push({ name: i18nString(UIStrings.issuer), value: trustTokenResult.issuerOrigin });
+            }
         }
-        return html `
-      <devtools-report-section-header jslog=${VisualLogging.pane('trust-tokens').track({
-            resize: true,
-        })}>${i18nString(UIStrings.parameters)}</devtools-report-section-header>
-      ${renderRowWithCodeValue(i18nString(UIStrings.type), trustTokenParams.operation.toString())}
-      ${this.#renderRefreshPolicy(trustTokenParams)}
-      ${this.#renderIssuers(trustTokenParams)}
-      ${this.#renderIssuerAndTopLevelOriginFromResult()}
-      <devtools-report-divider></devtools-report-divider>
-    `;
-    }
-    #renderRefreshPolicy(params) {
-        if (params.operation !== "Redemption" /* Protocol.Network.TrustTokenOperationType.Redemption */) {
-            return Lit.nothing;
+        if (trustTokenResult) {
+            viewInput.status = statusConsideredSuccess(trustTokenResult.status) ? 'Success' : 'Failure';
+            viewInput.description = getDetailedTextForStatusCode(trustTokenResult.status) ?? undefined;
+            viewInput.issuedTokenCount = trustTokenResult.type === "Issuance" /* Protocol.Network.TrustTokenOperationType.Issuance */ ?
+                trustTokenResult.issuedTokenCount :
+                undefined;
         }
-        return renderRowWithCodeValue(i18nString(UIStrings.refreshPolicy), params.refreshPolicy.toString());
-    }
-    #renderIssuers(params) {
-        if (!params.issuers || params.issuers.length === 0) {
-            return Lit.nothing;
-        }
-        return html `
-      <devtools-report-key>${i18nString(UIStrings.issuers)}</devtools-report-key>
-      <devtools-report-value>
-        <ul class="issuers-list">
-          ${params.issuers.map(issuer => html `<li>${issuer}</li>`)}
-        </ul>
-      </devtools-report-value>
-    `;
-    }
-    // The issuer and top level origin are technically parameters but reported in the
-    // result structure due to the timing when they are calculated in the backend.
-    // Nonetheless, we show them as part of the parameter section.
-    #renderIssuerAndTopLevelOriginFromResult() {
-        const trustTokenResult = this.#request.trustTokenOperationDoneEvent();
-        if (!trustTokenResult) {
-            return Lit.nothing;
-        }
-        return html `
-      ${renderSimpleRowIfValuePresent(i18nString(UIStrings.topLevelOrigin), trustTokenResult.topLevelOrigin)}
-      ${renderSimpleRowIfValuePresent(i18nString(UIStrings.issuer), trustTokenResult.issuerOrigin)}`;
-    }
-    #renderResultSection() {
-        const trustTokenResult = this.#request.trustTokenOperationDoneEvent();
-        if (!trustTokenResult) {
-            return Lit.nothing;
-        }
-        return html `
-      <devtools-report-section-header>${i18nString(UIStrings.result)}</devtools-report-section-header>
-      <devtools-report-key>${i18nString(UIStrings.status)}</devtools-report-key>
-      <devtools-report-value>
-        <span>
-          <devtools-icon class="status-icon medium"
-            .data=${getIconForStatusCode(trustTokenResult.status)}>
-          </devtools-icon>
-          <strong>${getSimplifiedStatusTextForStatusCode(trustTokenResult.status)}</strong>
-          ${getDetailedTextForStatusCode(trustTokenResult.status)}
-        </span>
-      </devtools-report-value>
-      ${this.#renderIssuedTokenCount(trustTokenResult)}
-      <devtools-report-divider></devtools-report-divider>
-      `;
-    }
-    #renderIssuedTokenCount(result) {
-        if (result.type !== "Issuance" /* Protocol.Network.TrustTokenOperationType.Issuance */) {
-            return Lit.nothing;
-        }
-        return renderSimpleRowIfValuePresent(i18nString(UIStrings.numberOfIssuedTokens), result.issuedTokenCount);
+        this.#view(viewInput, undefined, this.contentElement);
     }
 }
-const SUCCESS_ICON_DATA = {
-    color: 'var(--icon-checkmark-green)',
-    iconName: 'check-circle',
-};
-const FAILURE_ICON_DATA = {
-    color: 'var(--icon-error)',
-    iconName: 'cross-circle-filled',
-};
 export function statusConsideredSuccess(status) {
     return status === "Ok" /* Protocol.Network.TrustTokenOperationDoneEventStatus.Ok */ ||
         status === "AlreadyExists" /* Protocol.Network.TrustTokenOperationDoneEventStatus.AlreadyExists */ ||
         status === "FulfilledLocally" /* Protocol.Network.TrustTokenOperationDoneEventStatus.FulfilledLocally */;
-}
-function getIconForStatusCode(status) {
-    return statusConsideredSuccess(status) ? SUCCESS_ICON_DATA : FAILURE_ICON_DATA;
-}
-function getSimplifiedStatusTextForStatusCode(status) {
-    return statusConsideredSuccess(status) ? i18nString(UIStrings.success) : i18nString(UIStrings.failure);
 }
 function getDetailedTextForStatusCode(status) {
     switch (status) {
@@ -243,20 +262,4 @@ function getDetailedTextForStatusCode(status) {
             return i18nString(UIStrings.perSiteLimit);
     }
 }
-function renderSimpleRowIfValuePresent(key, value) {
-    if (value === undefined) {
-        return Lit.nothing;
-    }
-    return html `
-    <devtools-report-key>${key}</devtools-report-key>
-    <devtools-report-value>${value}</devtools-report-value>
-  `;
-}
-function renderRowWithCodeValue(key, value) {
-    return html `
-    <devtools-report-key>${key}</devtools-report-key>
-    <devtools-report-value class="code">${value}</devtools-report-value>
-  `;
-}
-customElements.define('devtools-trust-token-report', RequestTrustTokensView);
 //# sourceMappingURL=RequestTrustTokensView.js.map

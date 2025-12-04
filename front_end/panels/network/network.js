@@ -7046,7 +7046,9 @@ var NetworkItemView = class extends UI17.TabbedPane.TabbedPane {
     this.appendTab("initiator", i18nString16(UIStrings16.initiator), new RequestInitiatorView(request), i18nString16(UIStrings16.requestInitiatorCallStack));
     this.appendTab("timing", i18nString16(UIStrings16.timing), RequestTimingView.create(request, calculator), i18nString16(UIStrings16.requestAndResponseTimeline));
     if (request.trustTokenParams()) {
-      this.appendTab("trust-tokens", i18nString16(UIStrings16.trustTokens), LegacyWrapper.LegacyWrapper.legacyWrapper(UI17.Widget.VBox, new NetworkComponents.RequestTrustTokensView.RequestTrustTokensView(request)), i18nString16(UIStrings16.trustTokenOperationDetails));
+      const trustTokensView = new NetworkComponents.RequestTrustTokensView.RequestTrustTokensView();
+      trustTokensView.request = request;
+      this.appendTab("trust-tokens", i18nString16(UIStrings16.trustTokens), trustTokensView, i18nString16(UIStrings16.trustTokenOperationDetails));
     }
     this.#initialTab = initialTab || this.#resourceViewTabSetting.get();
     this.setAutoSelectFirstItemOnShow(false);

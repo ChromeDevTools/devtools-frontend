@@ -87,16 +87,23 @@ export declare class CommandAutocompleteSuggestionProvider {
     buildTextPromptCompletions: (expression: string, prefix: string, force?: boolean) => Promise<UI.SuggestBox.Suggestions>;
     addEntry(value: string): void;
 }
-export declare class InfoWidget extends UI.Widget.VBox {
-    private readonly tabbedPane;
+interface InfoWidgetViewInput {
     request: Record<string, unknown> | undefined;
     response: Record<string, unknown> | undefined;
     type: 'sent' | 'received' | undefined;
     selectedTab: 'request' | 'response' | undefined;
-    constructor(element: HTMLElement);
+}
+type InfoWidgetView = (input: InfoWidgetViewInput, output: undefined, target: HTMLElement) => void;
+export declare class InfoWidget extends UI.Widget.VBox {
+    #private;
+    request: Record<string, unknown> | undefined;
+    response: Record<string, unknown> | undefined;
+    type: 'sent' | 'received' | undefined;
+    constructor(element: HTMLElement, view?: InfoWidgetView);
     performUpdate(): void;
 }
 export declare function parseCommandInput(input: string): {
     command: string;
     parameters: Record<string, unknown>;
 };
+export {};

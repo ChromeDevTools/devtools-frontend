@@ -28,19 +28,8 @@ export default `/*
   transition: background-color 0.2s ease-in-out;
 }
 
-.header::after {
-  content: '▶';
-  display: inline-block;
-  margin-left: 8px;
-  transition: transform 0.2s ease-in-out;
-}
-
 :host([open]) .header {
   border-bottom: 1px solid var(--sys-color-outline);
-}
-
-:host([open]) .header::after {
-  transform: rotate(90deg);
 }
 
 .content {

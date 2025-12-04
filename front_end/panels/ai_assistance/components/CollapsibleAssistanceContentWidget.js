@@ -2,8 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-lit-render-outside-of-view */
-import { html, render } from '../../../ui/lit/lit.js';
+import * as Buttons from '../../../ui/components/buttons/buttons.js';
+import * as Lit from '../../../ui/lit/lit.js';
 import styles from './collapsibleAssistanceContentWidget.css.js';
+const { render, html } = Lit;
 export class CollapsibleAssistanceContentWidget extends HTMLElement {
     #shadow = this.attachShadow({ mode: 'open' });
     #isCollapsed = true;
@@ -23,13 +25,25 @@ export class CollapsibleAssistanceContentWidget extends HTMLElement {
         // clang-format off
         const output = html `
       <style>${styles}</style>
-      <details>
-      <summary class="header" @click=${this.#toggleCollapse}>
-        ${this.#headerText}
-      </summary>
-      <div class="content">
-        <slot></slot>
-      </div>
+      <details ?open=${!this.#isCollapsed}>
+        <summary class="header" @click=${(event) => {
+            event.preventDefault();
+            this.#toggleCollapse();
+        }}>
+          <devtools-button .data=${{
+            variant: "icon" /* Buttons.Button.Variant.ICON */,
+            iconName: this.#isCollapsed ? 'triangle-right' : 'triangle-down',
+            color: 'var(--sys-color-on-surface)',
+            width: '14px',
+            height: '14px',
+        }}
+          >
+          </devtools-button>
+          ${this.#headerText}
+        </summary>
+        <div class="content">
+          <slot></slot>
+        </div>
       </details>
     `;
         render(output, this.#shadow, { host: this });

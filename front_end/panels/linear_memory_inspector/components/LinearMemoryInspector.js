@@ -67,7 +67,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
       <devtools-widget .widgetConfig=${widgetConfig(LinearMemoryHighlightChipList, {
         highlightInfos: highlightedMemoryAreas,
         focusedMemoryHighlight,
-        jumpToAddress: (address) => input.onJumpToAddress({ data: address }),
+        jumpToAddress: (address) => input.onJumpToAddress(address),
         deleteHighlight: input.onDeleteMemoryHighlight,
     })}>
       </devtools-widget>
@@ -95,11 +95,11 @@ export const DEFAULT_VIEW = (input, _output, target) => {
         valueTypeModes: input.valueTypeModes,
         endianness: input.endianness,
         memoryLength: input.outerMemoryLength,
+        onValueTypeModeChange: input.onValueTypeModeChanged,
+        onJumpToAddressClicked: input.onJumpToAddress
     }}
         @valuetypetoggled=${input.onValueTypeToggled}
-        @valuetypemodechanged=${input.onValueTypeModeChanged}
         @endiannesschanged=${input.onEndiannessChanged}
-        @jumptopointeraddress=${input.onJumpToAddress}
         >
       </devtools-linear-memory-inspector-interpreter>
     </div>`}
@@ -242,13 +242,9 @@ export class LinearMemoryInspector extends Common.ObjectWrapper.eventMixin(UI.Wi
         };
         this.#view(viewInput, {}, this.contentElement);
     }
-    #onJumpToAddress(e) {
-        // Stop event from bubbling up, since no element further up needs the event.
-        if (e instanceof Event) {
-            e.stopPropagation();
-        }
+    #onJumpToAddress(address) {
         this.#currentNavigatorMode = "Submitted" /* Mode.SUBMITTED */;
-        const addressInRange = Math.max(0, Math.min(e.data, this.#outerMemoryLength - 1));
+        const addressInRange = Math.max(0, Math.min(address, this.#outerMemoryLength - 1));
         this.#jumpToAddress(addressInRange);
     }
     #onDeleteMemoryHighlight(highlight) {
@@ -300,9 +296,7 @@ export class LinearMemoryInspector extends Common.ObjectWrapper.eventMixin(UI.Wi
         this.dispatchEventToListeners("SettingsChanged" /* Events.SETTINGS_CHANGED */, this.#createSettings());
         void this.requestUpdate();
     }
-    #onValueTypeModeChanged(e) {
-        e.stopImmediatePropagation();
-        const { type, mode } = e.data;
+    #onValueTypeModeChanged(type, mode) {
         this.#valueTypeModes.set(type, mode);
         this.dispatchEventToListeners("SettingsChanged" /* Events.SETTINGS_CHANGED */, this.#createSettings());
         void this.requestUpdate();

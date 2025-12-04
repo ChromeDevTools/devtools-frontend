@@ -14,6 +14,7 @@ import * as ForcedReflow from './ForcedReflow.js';
 import * as Helpers from './Helpers.js';
 import * as ImageDelivery from './ImageDelivery.js';
 import * as INPBreakdown from './INPBreakdown.js';
+import * as InsightRenderer from './InsightRenderer.js';
 import * as LCPBreakdown from './LCPBreakdown.js';
 import * as LCPDiscovery from './LCPDiscovery.js';
 import * as LegacyJavaScript from './LegacyJavaScript.js';
@@ -27,5 +28,5 @@ import * as Table from './Table.js';
 import * as ThirdParties from './ThirdParties.js';
 import * as Types from './types.js';
 import * as Viewport from './Viewport.js';
-export { BaseInsightComponent, Cache, Checklist, CLSCulprits, DocumentLatency, DOMSize, DuplicatedJavaScript, EventRef, FontDisplay, ForcedReflow, Helpers, ImageDelivery, INPBreakdown, LCPBreakdown, LCPDiscovery, LegacyJavaScript, ModernHTTP, NetworkDependencyTree, NodeLink, RenderBlocking, SidebarInsight, SlowCSSSelector, Table, ThirdParties, Types, Viewport, };
+export { BaseInsightComponent, Cache, Checklist, CLSCulprits, DocumentLatency, DOMSize, DuplicatedJavaScript, EventRef, FontDisplay, ForcedReflow, Helpers, ImageDelivery, INPBreakdown, InsightRenderer, LCPBreakdown, LCPDiscovery, LegacyJavaScript, ModernHTTP, NetworkDependencyTree, NodeLink, RenderBlocking, SidebarInsight, SlowCSSSelector, Table, ThirdParties, Types, Viewport, };
 //# sourceMappingURL=insights.prebundle.js.map

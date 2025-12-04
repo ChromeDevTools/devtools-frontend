@@ -12,7 +12,6 @@ import { BaseInsightComponent } from './BaseInsightComponent.js';
 const { UIStrings, i18nString } = Trace.Insights.Models.SlowCSSSelector;
 const { html } = Lit;
 export class SlowCSSSelector extends BaseInsightComponent {
-    static litTagName = Lit.StaticHtml.literal `devtools-performance-slow-css-selector`;
     internalName = 'slow-css-selector';
     #selectorLocations = new Map();
     hasAskAiSupport() {
@@ -132,5 +131,4 @@ export class SlowCSSSelector extends BaseInsightComponent {
         return html `${sections}`;
     }
 }
-customElements.define('devtools-performance-slow-css-selector', SlowCSSSelector);
 //# sourceMappingURL=SlowCSSSelector.js.map

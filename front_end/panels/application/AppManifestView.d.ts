@@ -73,11 +73,11 @@ export declare class AppManifestView extends AppManifestView_base implements SDK
     getInstallabilityErrorMessages(installabilityErrors: Protocol.Page.InstallabilityError[]): string[];
     private loadImage;
     parseSizes(sizes: string, resourceName: Platform.UIString.LocalizedString, imageUrl: string, imageResourceErrors: Platform.UIString.LocalizedString[]): ParsedSize[];
-    checkSizeProblem(size: ParsedSize, image: HTMLImageElement, resourceName: Platform.UIString.LocalizedString, imageUrl: string): {
+    checkSizeProblem(size: ParsedSize, naturalWidth: number, naturalHeight: number, resourceName: Platform.UIString.LocalizedString, imageUrl: string): {
         hasSquareSize: boolean;
         error?: Platform.UIString.LocalizedString;
     };
-    private appendImageResourceToSection;
+    private processImageResource;
     private appendWindowControlsToSection;
 }
 export declare const enum Events {

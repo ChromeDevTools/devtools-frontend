@@ -1,4 +1,5 @@
 import * as UI from '../../ui/legacy/legacy.js';
+import type { WidgetOptions } from '../../ui/legacy/Widget.js';
 import * as ApplicationComponents from './components/components.js';
 import { StorageItemsToolbar } from './StorageItemsToolbar.js';
 type Widget = UI.Widget.Widget;
@@ -31,7 +32,7 @@ export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) =
 export declare abstract class KeyValueStorageItemsView extends UI.Widget.VBox {
     #private;
     readonly metadataView: ApplicationComponents.StorageMetadataView.StorageMetadataView;
-    constructor(title: string, id: string, editable: boolean, view?: View, metadataView?: ApplicationComponents.StorageMetadataView.StorageMetadataView);
+    constructor(title: string, id: string, editable: boolean, view?: View, metadataView?: ApplicationComponents.StorageMetadataView.StorageMetadataView, opts?: WidgetOptions);
     wasShown(): void;
     performUpdate(): void;
     protected get toolbar(): StorageItemsToolbar | undefined;

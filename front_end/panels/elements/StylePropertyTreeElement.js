@@ -327,7 +327,7 @@ export class VariableRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
         context.addControl('color', colorSwatch);
         if (fromFallback) {
             renderedFallback?.cssControls.get('color')?.forEach(innerSwatch => innerSwatch.addEventListener(InlineEditor.ColorSwatch.ColorChangedEvent.eventName, ev => {
-                colorSwatch.setColor(ev.data.color);
+                colorSwatch.color = ev.data.color;
             }));
         }
         return [colorSwatch, varSwatch];
@@ -423,7 +423,7 @@ export class AttributeRenderer extends rendererBase(SDK.CSSPropertyParserMatcher
         context.addControl('color', colorSwatch);
         if (fromFallback) {
             renderedFallback?.cssControls.get('color')?.forEach(innerSwatch => innerSwatch.addEventListener(InlineEditor.ColorSwatch.ColorChangedEvent.eventName, ev => {
-                colorSwatch.setColor(ev.data.color);
+                colorSwatch.color = ev.data.color;
             }));
         }
         return [colorSwatch, varSwatch];
@@ -563,20 +563,20 @@ export class ColorRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.Co
             context.ast.text(match.node.getChild('Callee')).match(/^(hsla?|hwba?)/)) {
             const [angle] = cssControls.get('angle') ?? [];
             if (angle instanceof InlineEditor.CSSAngle.CSSAngle) {
-                angle.updateProperty(swatch.getColor()?.asString() ?? '');
+                angle.updateProperty(swatch.color?.asString() ?? '');
                 angle.addEventListener(InlineEditor.InlineEditorUtils.ValueChangedEvent.eventName, ev => {
                     const hue = Common.Color.parseHueNumeric(ev.data.value);
-                    const color = swatch.getColor();
+                    const color = swatch.color;
                     if (!hue || !color) {
                         return;
                     }
                     if (color.is("hsl" /* Common.Color.Format.HSL */) || color.is("hsla" /* Common.Color.Format.HSLA */)) {
-                        swatch.setColor(new Common.Color.HSL(hue, color.s, color.l, color.alpha));
+                        swatch.color = new Common.Color.HSL(hue, color.s, color.l, color.alpha);
                     }
                     else if (color.is("hwb" /* Common.Color.Format.HWB */) || color.is("hwba" /* Common.Color.Format.HWBA */)) {
-                        swatch.setColor(new Common.Color.HWB(hue, color.w, color.b, color.alpha));
+                        swatch.color = new Common.Color.HWB(hue, color.w, color.b, color.alpha);
                     }
-                    angle.updateProperty(swatch.getColor()?.asString() ?? '');
+                    angle.updateProperty(swatch.color?.asString() ?? '');
                 });
             }
         }
@@ -587,9 +587,9 @@ export class ColorRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.Co
         const shiftClickMessage = i18nString(UIStrings.shiftClickToChangeColorFormat);
         const tooltip = editable ? i18nString(UIStrings.openColorPickerS, { PH1: shiftClickMessage }) : '';
         const swatch = new InlineEditor.ColorSwatch.ColorSwatch(tooltip);
-        swatch.setReadonly(!editable);
+        swatch.readonly = !editable;
         if (color) {
-            swatch.renderColor(color);
+            swatch.color = color;
         }
         if (this.#treeElement?.editable()) {
             const treeElement = this.#treeElement;
@@ -608,7 +608,7 @@ export class ColorRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.Co
             const swatchIcon = new ColorSwatchPopoverIcon(treeElement, treeElement.parentPane().swatchPopoverHelper(), swatch);
             swatchIcon.addEventListener("colorchanged" /* ColorSwatchPopoverIconEvents.COLOR_CHANGED */, ev => {
                 valueChild.textContent = ev.data.getAuthoredText() ?? ev.data.asString();
-                swatch.setColor(ev.data);
+                swatch.color = ev.data;
             });
             if (treeElement.property.name === 'color') {
                 void this.#addColorContrastInfo(swatchIcon);
@@ -667,13 +667,15 @@ export class LightDarkColorRenderer extends rendererBase(SDK.CSSPropertyParserMa
             return;
         }
         const activeColorSwatches = (activeColor === match.light ? lightControls : darkControls).get('color');
-        activeColorSwatches?.forEach(swatch => swatch.addEventListener(InlineEditor.ColorSwatch.ColorChangedEvent.eventName, ev => colorSwatch.setColor(ev.data.color)));
+        activeColorSwatches?.forEach(swatch => swatch.addEventListener(InlineEditor.ColorSwatch.ColorChangedEvent.eventName, ev => {
+            colorSwatch.color = ev.data.color;
+        }));
         const inactiveColor = (activeColor === match.light) ? dark : light;
         const colorText = context.matchedResult.getComputedTextRange(activeColor[0], activeColor[activeColor.length - 1]);
         const color = colorText && Common.Color.parse(colorText);
         inactiveColor.classList.add('inactive-value');
         if (color) {
-            colorSwatch.renderColor(color);
+            colorSwatch.color = color;
         }
     }
     // Returns the syntax node group corresponding the active color scheme:
@@ -771,7 +773,7 @@ export class ColorMixRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
                     if (results) {
                         const color = Common.Color.parse(results[0]);
                         if (color) {
-                            swatch.setColor(color.as("hexa" /* Common.Color.Format.HEXA */));
+                            swatch.color = color.as("hexa" /* Common.Color.Format.HEXA */);
                             return true;
                         }
                     }

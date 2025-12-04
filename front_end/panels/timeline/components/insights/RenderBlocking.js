@@ -10,7 +10,6 @@ import { createLimitedRows, renderOthersLabel } from './Table.js';
 const { UIStrings, i18nString, createOverlayForRequest } = Trace.Insights.Models.RenderBlocking;
 const { html } = Lit;
 export class RenderBlocking extends BaseInsightComponent {
-    static litTagName = Lit.StaticHtml.literal `devtools-performance-render-blocking-requests`;
     internalName = 'render-blocking-requests';
     mapToRow(request) {
         return {
@@ -57,5 +56,4 @@ export class RenderBlocking extends BaseInsightComponent {
         // clang-format on
     }
 }
-customElements.define('devtools-performance-render-blocking-requests', RenderBlocking);
 //# sourceMappingURL=RenderBlocking.js.map

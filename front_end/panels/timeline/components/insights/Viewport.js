@@ -6,7 +6,6 @@ import { BaseInsightComponent } from './BaseInsightComponent.js';
 import { nodeLink } from './NodeLink.js';
 const { html } = Lit;
 export class Viewport extends BaseInsightComponent {
-    static litTagName = Lit.StaticHtml.literal `devtools-performance-viewport`;
     internalName = 'viewport';
     hasAskAiSupport() {
         return true;
@@ -35,5 +34,4 @@ export class Viewport extends BaseInsightComponent {
         // clang-format on
     }
 }
-customElements.define('devtools-performance-viewport', Viewport);
 //# sourceMappingURL=Viewport.js.map

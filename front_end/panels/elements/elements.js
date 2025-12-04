@@ -476,7 +476,7 @@ var ColorSwatchPopoverIcon = class _ColorSwatchPopoverIcon extends Common.Object
       this.swatchPopoverHelper.hide(true);
       return;
     }
-    const color = this.swatch.getColor();
+    const color = this.swatch.color;
     if (!color) {
       return;
     }
@@ -603,7 +603,7 @@ var ColorSwatchPopoverIcon = class _ColorSwatchPopoverIcon extends Common.Object
     if (!color) {
       return;
     }
-    this.swatch.renderColor(color);
+    this.swatch.color = color;
     this.dispatchEventToListeners("colorchanged", color);
   }
   onScroll(_event) {
@@ -3155,7 +3155,7 @@ var VariableRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatchers
     context.addControl("color", colorSwatch);
     if (fromFallback) {
       renderedFallback?.cssControls.get("color")?.forEach((innerSwatch) => innerSwatch.addEventListener(InlineEditor2.ColorSwatch.ColorChangedEvent.eventName, (ev) => {
-        colorSwatch.setColor(ev.data.color);
+        colorSwatch.color = ev.data.color;
       }));
     }
     return [colorSwatch, varSwatch];
@@ -3239,7 +3239,7 @@ var AttributeRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatcher
     context.addControl("color", colorSwatch);
     if (fromFallback) {
       renderedFallback?.cssControls.get("color")?.forEach((innerSwatch) => innerSwatch.addEventListener(InlineEditor2.ColorSwatch.ColorChangedEvent.eventName, (ev) => {
-        colorSwatch.setColor(ev.data.color);
+        colorSwatch.color = ev.data.color;
       }));
     }
     return [colorSwatch, varSwatch];
@@ -3377,10 +3377,10 @@ var ColorRenderer = class _ColorRenderer extends rendererBase(SDK6.CSSPropertyPa
     if (cssControls && match.node.name === "CallExpression" && context.ast.text(match.node.getChild("Callee")).match(/^(hsla?|hwba?)/)) {
       const [angle] = cssControls.get("angle") ?? [];
       if (angle instanceof InlineEditor2.CSSAngle.CSSAngle) {
-        angle.updateProperty(swatch.getColor()?.asString() ?? "");
+        angle.updateProperty(swatch.color?.asString() ?? "");
         angle.addEventListener(InlineEditor2.InlineEditorUtils.ValueChangedEvent.eventName, (ev) => {
           const hue = Common3.Color.parseHueNumeric(ev.data.value);
-          const color2 = swatch.getColor();
+          const color2 = swatch.color;
           if (!hue || !color2) {
             return;
           }
@@ -3391,7 +3391,7 @@ var ColorRenderer = class _ColorRenderer extends rendererBase(SDK6.CSSPropertyPa
             "hsla"
             /* Common.Color.Format.HSLA */
           )) {
-            swatch.setColor(new Common3.Color.HSL(hue, color2.s, color2.l, color2.alpha));
+            swatch.color = new Common3.Color.HSL(hue, color2.s, color2.l, color2.alpha);
           } else if (color2.is(
             "hwb"
             /* Common.Color.Format.HWB */
@@ -3399,9 +3399,9 @@ var ColorRenderer = class _ColorRenderer extends rendererBase(SDK6.CSSPropertyPa
             "hwba"
             /* Common.Color.Format.HWBA */
           )) {
-            swatch.setColor(new Common3.Color.HWB(hue, color2.w, color2.b, color2.alpha));
+            swatch.color = new Common3.Color.HWB(hue, color2.w, color2.b, color2.alpha);
           }
-          angle.updateProperty(swatch.getColor()?.asString() ?? "");
+          angle.updateProperty(swatch.color?.asString() ?? "");
         });
       }
     }
@@ -3412,9 +3412,9 @@ var ColorRenderer = class _ColorRenderer extends rendererBase(SDK6.CSSPropertyPa
     const shiftClickMessage = i18nString5(UIStrings5.shiftClickToChangeColorFormat);
     const tooltip = editable ? i18nString5(UIStrings5.openColorPickerS, { PH1: shiftClickMessage }) : "";
     const swatch = new InlineEditor2.ColorSwatch.ColorSwatch(tooltip);
-    swatch.setReadonly(!editable);
+    swatch.readonly = !editable;
     if (color) {
-      swatch.renderColor(color);
+      swatch.color = color;
     }
     if (this.#treeElement?.editable()) {
       const treeElement = this.#treeElement;
@@ -3436,7 +3436,7 @@ var ColorRenderer = class _ColorRenderer extends rendererBase(SDK6.CSSPropertyPa
       const swatchIcon = new ColorSwatchPopoverIcon(treeElement, treeElement.parentPane().swatchPopoverHelper(), swatch);
       swatchIcon.addEventListener("colorchanged", (ev) => {
         valueChild.textContent = ev.data.getAuthoredText() ?? ev.data.asString();
-        swatch.setColor(ev.data);
+        swatch.color = ev.data;
       });
       if (treeElement.property.name === "color") {
         void this.#addColorContrastInfo(swatchIcon);
@@ -3492,13 +3492,15 @@ var LightDarkColorRenderer = class extends rendererBase(SDK6.CSSPropertyParserMa
       return;
     }
     const activeColorSwatches = (activeColor === match.light ? lightControls : darkControls).get("color");
-    activeColorSwatches?.forEach((swatch) => swatch.addEventListener(InlineEditor2.ColorSwatch.ColorChangedEvent.eventName, (ev) => colorSwatch.setColor(ev.data.color)));
+    activeColorSwatches?.forEach((swatch) => swatch.addEventListener(InlineEditor2.ColorSwatch.ColorChangedEvent.eventName, (ev) => {
+      colorSwatch.color = ev.data.color;
+    }));
     const inactiveColor = activeColor === match.light ? dark : light;
     const colorText = context.matchedResult.getComputedTextRange(activeColor[0], activeColor[activeColor.length - 1]);
     const color = colorText && Common3.Color.parse(colorText);
     inactiveColor.classList.add("inactive-value");
     if (color) {
-      colorSwatch.renderColor(color);
+      colorSwatch.color = color;
     }
   }
   // Returns the syntax node group corresponding the active color scheme:
@@ -3593,10 +3595,10 @@ var ColorMixRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatchers
           if (results) {
             const color = Common3.Color.parse(results[0]);
             if (color) {
-              swatch2.setColor(color.as(
+              swatch2.color = color.as(
                 "hexa"
                 /* Common.Color.Format.HEXA */
-              ));
+              );
               return true;
             }
           }
@@ -9328,7 +9330,7 @@ var CSSPropertyPrompt = class extends UI11.TextPrompt.TextPrompt {
     }
     function colorSwatchRenderer(color) {
       const swatch = new InlineEditor3.ColorSwatch.ColorSwatch();
-      swatch.renderColor(color);
+      swatch.color = color;
       swatch.style.pointerEvents = "none";
       return swatch;
     }
@@ -9959,8 +9961,8 @@ var ColorRenderer2 = class extends rendererBase(SDK10.CSSPropertyParserMatchers.
       return [document.createTextNode(match.text)];
     }
     const swatch = new InlineEditor4.ColorSwatch.ColorSwatch();
-    swatch.setReadonly(true);
-    swatch.renderColor(color);
+    swatch.readonly = true;
+    swatch.color = color;
     const valueElement = document.createElement("span");
     valueElement.textContent = match.text;
     swatch.addEventListener(InlineEditor4.ColorSwatch.ColorChangedEvent.eventName, (event) => {
@@ -11477,7 +11479,8 @@ var DEFAULT_VIEW3 = (input, output, target) => {
   const subgridAdornerConfig = ElementsComponents5.AdornerManager.getRegisteredAdorner(ElementsComponents5.AdornerManager.RegisteredAdorners.SUBGRID);
   const gridLanesAdornerConfig = ElementsComponents5.AdornerManager.getRegisteredAdorner(ElementsComponents5.AdornerManager.RegisteredAdorners.GRID_LANES);
   const mediaAdornerConfig = ElementsComponents5.AdornerManager.getRegisteredAdorner(ElementsComponents5.AdornerManager.RegisteredAdorners.MEDIA);
-  const hasAdorners = input.adorners?.size || input.showAdAdorner || input.showContainerAdorner || input.showFlexAdorner || input.showGridAdorner || input.showGridLanesAdorner || input.showMediaAdorner;
+  const popoverAdornerConfig = ElementsComponents5.AdornerManager.getRegisteredAdorner(ElementsComponents5.AdornerManager.RegisteredAdorners.POPOVER);
+  const hasAdorners = input.adorners?.size || input.showAdAdorner || input.showContainerAdorner || input.showFlexAdorner || input.showGridAdorner || input.showGridLanesAdorner || input.showMediaAdorner || input.showPopoverAdorner;
   render5(html8`
     <div ${ref2((el) => {
     output.contentElement = el;
@@ -11596,6 +11599,25 @@ var DEFAULT_VIEW3 = (input, output, target) => {
             ${mediaAdornerConfig.name}<devtools-icon name="select-element"></devtools-icon>
           </span>
         </devtools-adorner>` : nothing2}
+        ${input.showPopoverAdorner ? html8`<devtools-adorner
+          class=clickable
+          role=button
+          toggleable=true
+          tabindex=0
+          .data=${{ name: popoverAdornerConfig.name, jslogContext: popoverAdornerConfig.name }}
+          jslog=${VisualLogging8.adorner(popoverAdornerConfig.name).track({ click: true })}
+          active=${input.popoverAdornerActive}
+          aria-label=${input.popoverAdornerActive ? i18nString11(UIStrings12.stopForceOpenPopover) : i18nString11(UIStrings12.forceOpenPopover)}
+          @click=${input.onPopoverAdornerClick}
+          @keydown=${(event) => {
+    if (event.code === "Enter" || event.code === "Space") {
+      input.onPopoverAdornerClick(event);
+      event.stopPropagation();
+    }
+  }}
+          ${adornerRef(input)}>
+          <span>${popoverAdornerConfig.name}</span>
+        </devtools-adorner>` : nothing2}
         ${repeat(Array.from((input.adorners ?? /* @__PURE__ */ new Set()).values()).sort(adornerComparator), (adorner2) => {
     return adorner2;
   })}
@@ -11631,6 +11653,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI16.TreeOutline.Tr
   #containerAdornerActive = false;
   #flexAdornerActive = false;
   #gridAdornerActive = false;
+  #popoverAdornerActive = false;
   #layout = null;
   constructor(node, isClosingTag) {
     super();
@@ -11759,7 +11782,9 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI16.TreeOutline.Tr
       showGridAdorner: Boolean(this.#layout?.isGrid) && !this.isClosingTag(),
       showGridLanesAdorner: Boolean(this.#layout?.isGridLanes) && !this.isClosingTag(),
       showMediaAdorner: this.node().isMediaNode() && !this.isClosingTag(),
+      showPopoverAdorner: Boolean(Root6.Runtime.hostConfig.devToolsAllowPopoverForcing?.enabled) && Boolean(this.node().attributes().find((attr) => attr.name === "popover")) && !this.isClosingTag(),
       gridAdornerActive: this.#gridAdornerActive,
+      popoverAdornerActive: this.#popoverAdornerActive,
       isSubgrid: Boolean(this.#layout?.isSubgrid),
       nodeInfo: this.#nodeInfo,
       onGutterClick: this.showContextMenu.bind(this),
@@ -11772,7 +11797,8 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI16.TreeOutline.Tr
       onContainerAdornerClick: (event) => this.#onContainerAdornerClick(event),
       onFlexAdornerClick: (event) => this.#onFlexAdornerClick(event),
       onGridAdornerClick: (event) => this.#onGridAdornerClick(event),
-      onMediaAdornerClick: (event) => this.#onMediaAdornerClick(event)
+      onMediaAdornerClick: (event) => this.#onMediaAdornerClick(event),
+      onPopoverAdornerClick: (event) => this.#onPopoverAdornerClick(event)
     }, this, this.listItemElement);
   }
   #onContainerAdornerClick(event) {
@@ -13457,7 +13483,6 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI16.TreeOutline.Tr
     this.removeAdornersByType(ElementsComponents5.AdornerManager.RegisteredAdorners.SCROLL_SNAP);
     this.removeAdornersByType(ElementsComponents5.AdornerManager.RegisteredAdorners.MEDIA);
     this.removeAdornersByType(ElementsComponents5.AdornerManager.RegisteredAdorners.STARTING_STYLE);
-    this.removeAdornersByType(ElementsComponents5.AdornerManager.RegisteredAdorners.POPOVER);
     if (layout) {
       if (layout.hasScroll) {
         this.pushScrollSnapAdorner();
@@ -13469,40 +13494,20 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI16.TreeOutline.Tr
         this.pushStartingStyleAdorner();
       }
     }
-    if (node.attributes().find((attr) => attr.name === "popover")) {
-      this.pushPopoverAdorner();
-    }
   }
-  pushPopoverAdorner() {
-    if (!Root6.Runtime.hostConfig.devToolsAllowPopoverForcing?.enabled) {
-      return;
-    }
+  async #onPopoverAdornerClick(event) {
+    event.stopPropagation();
     const node = this.node();
     const nodeId = node.id;
-    const config = ElementsComponents5.AdornerManager.getRegisteredAdorner(ElementsComponents5.AdornerManager.RegisteredAdorners.POPOVER);
-    const adorner2 = this.adorn(config);
-    const onClick = async () => {
-      const { nodeIds } = await node.domModel().agent.invoke_forceShowPopover({ nodeId, enable: adorner2.isActive() });
-      if (adorner2.isActive()) {
-        Badges3.UserBadges.instance().recordAction(Badges3.BadgeAction.MODERN_DOM_BADGE_CLICKED);
-      }
-      for (const closedPopoverNodeId of nodeIds) {
-        const node2 = this.node().domModel().nodeForId(closedPopoverNodeId);
-        const treeElement = node2 && this.treeOutline?.treeElementByNode.get(node2);
-        if (!treeElement || !isOpeningTag(treeElement.tagTypeContext)) {
-          return;
-        }
-        const adorner3 = this.#adorners.values().find((adorner4) => adorner4.name === config.name);
-        adorner3?.toggle(false);
-      }
-    };
-    adorner2.addInteraction(onClick, {
-      isToggle: true,
-      shouldPropagateOnKeydown: false,
-      ariaLabelDefault: i18nString11(UIStrings12.forceOpenPopover),
-      ariaLabelActive: i18nString11(UIStrings12.stopForceOpenPopover)
-    });
-    this.#adorners.add(adorner2);
+    if (!nodeId) {
+      return;
+    }
+    await node.domModel().agent.invoke_forceShowPopover({ nodeId, enable: !this.#popoverAdornerActive });
+    this.#popoverAdornerActive = !this.#popoverAdornerActive;
+    if (this.#popoverAdornerActive) {
+      Badges3.UserBadges.instance().recordAction(Badges3.BadgeAction.MODERN_DOM_BADGE_CLICKED);
+    }
+    this.performUpdate();
   }
   pushScrollSnapAdorner() {
     const node = this.node();

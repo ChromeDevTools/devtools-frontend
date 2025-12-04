@@ -31,7 +31,8 @@ export declare enum CDPErrorStatus {
     INTERNAL_ERROR = -32603,
     SERVER_ERROR = -32000,
     SESSION_NOT_FOUND = -32001,
-    DEVTOOLS_STUB_ERROR = -32015
+    DEVTOOLS_STUB_ERROR = -32015,
+    DEVTOOLS_REHYDRATION_ERROR = -32016
 }
 export interface CDPError {
     code: CDPErrorStatus;

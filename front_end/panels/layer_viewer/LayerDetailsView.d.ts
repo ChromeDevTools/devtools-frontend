@@ -1,7 +1,16 @@
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import { type LayerView, type LayerViewHost, type Selection } from './LayerViewHost.js';
+import { type LayerView, type LayerViewHost, type Selection, type SnapshotSelection } from './LayerViewHost.js';
+export interface ViewInput {
+    layer: SDK.LayerTreeBase.Layer | null;
+    snapshotSelection: SnapshotSelection | null;
+    compositingReasons: string[];
+    onScrollRectClick: (index: number, event: Event) => void;
+    onPaintProfilerRequested: () => void;
+}
+export type ViewOutput = undefined;
+export declare const DEFAULT_VIEW: (input: ViewInput, _output: ViewOutput, target: HTMLElement) => void;
 declare const LayerDetailsView_base: (new (...args: any[]) => {
     "__#private@#events": Common.ObjectWrapper.ObjectWrapper<EventTypes>;
     addEventListener<T extends Events.PAINT_PROFILER_REQUESTED>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<EventTypes[T], any>) => void, thisObject?: Object): Common.EventTarget.EventDescriptor<EventTypes, T>;
@@ -12,33 +21,20 @@ declare const LayerDetailsView_base: (new (...args: any[]) => {
 }) & typeof UI.Widget.Widget;
 export declare class LayerDetailsView extends LayerDetailsView_base implements LayerView {
     private readonly layerViewHost;
-    private readonly emptyWidget;
     private layerSnapshotMap;
-    private tableElement;
-    private tbodyElement;
-    private sizeCell;
-    private compositingReasonsCell;
-    private memoryEstimateCell;
-    private paintCountCell;
-    private scrollRectsCell;
-    private stickyPositionConstraintCell;
-    private paintProfilerLink;
     private selection;
-    constructor(layerViewHost: LayerViewHost);
+    private compositingReasons;
+    private readonly view;
+    constructor(layerViewHost: LayerViewHost, view?: typeof DEFAULT_VIEW);
     hoverObject(_selection: Selection | null): void;
     selectObject(selection: Selection | null): void;
     setLayerTree(_layerTree: SDK.LayerTreeBase.LayerTreeBase | null): void;
     wasShown(): void;
     private onScrollRectClicked;
     private invokeProfilerLink;
-    private createScrollRectElement;
-    private formatStickyAncestorLayer;
-    private createStickyAncestorChild;
-    private populateStickyPositionConstraintCell;
     update(): void;
-    private buildContent;
-    private createRow;
     private updateCompositingReasons;
+    performUpdate(): void;
 }
 export declare const enum Events {
     PAINT_PROFILER_REQUESTED = "PaintProfilerRequested"

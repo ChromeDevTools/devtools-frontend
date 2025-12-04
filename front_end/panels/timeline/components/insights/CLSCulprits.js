@@ -10,7 +10,6 @@ import { nodeLink } from './NodeLink.js';
 const { UIStrings, i18nString } = Trace.Insights.Models.CLSCulprits;
 const { html } = Lit;
 export class CLSCulprits extends BaseInsightComponent {
-    static litTagName = Lit.StaticHtml.literal `devtools-performance-cls-culprits`;
     internalName = 'cls-culprits';
     hasAskAiSupport() {
         return true;
@@ -22,7 +21,7 @@ export class CLSCulprits extends BaseInsightComponent {
         return this.model.createOverlays?.() ?? [];
     }
     #clickEvent(event) {
-        this.dispatchEvent(new EventReferenceClick(event));
+        this.element.dispatchEvent(new EventReferenceClick(event));
     }
     #renderCulpritsSection(culprits) {
         if (culprits.length === 0) {
@@ -72,5 +71,4 @@ export class CLSCulprits extends BaseInsightComponent {
         // clang-format on
     }
 }
-customElements.define('devtools-performance-cls-culprits', CLSCulprits);
 //# sourceMappingURL=CLSCulprits.js.map

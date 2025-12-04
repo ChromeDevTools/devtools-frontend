@@ -1,16 +1,20 @@
 import type * as Protocol from '../../../../generated/protocol.js';
-import * as LegacyWrapper from '../../../../ui/components/legacy_wrapper/legacy_wrapper.js';
+import * as CodeMirror from '../../../../third_party/codemirror.next/codemirror.next.js';
 import * as UI from '../../../../ui/legacy/legacy.js';
 type RuleSet = Protocol.Preload.RuleSet;
-export type RuleSetDetailsViewData = RuleSet | null;
-export declare class RuleSetDetailsView extends LegacyWrapper.LegacyWrapper.WrappableComponent<UI.Widget.VBox> {
-    #private;
-    set data(data: RuleSetDetailsViewData);
-    set shouldPrettyPrint(shouldPrettyPrint: boolean);
+export interface ViewInput {
+    url: string;
+    errorMessage?: string;
+    editorState: CodeMirror.EditorState;
+    sourceText: string;
 }
-declare global {
-    interface HTMLElementTagNameMap {
-        'devtools-resources-rulesets-details-view': RuleSetDetailsView;
-    }
+export declare const DEFAULT_VIEW: (input: ViewInput | null, _output: object, target: HTMLElement) => void;
+export declare class RuleSetDetailsView extends UI.Widget.VBox {
+    #private;
+    constructor(element?: HTMLElement, view?: (input: ViewInput | null, _output: object, target: HTMLElement) => void);
+    wasShown(): void;
+    set ruleSet(ruleSet: RuleSet | null);
+    set shouldPrettyPrint(shouldPrettyPrint: boolean);
+    performUpdate(): Promise<void>;
 }
 export {};

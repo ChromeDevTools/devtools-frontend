@@ -16,6 +16,9 @@ export default `/*
   line-height: 15px;
   display: flex;
   flex-wrap: wrap;
+  appearance: none;
+  border-width: 0;
+  background-color: var(--sys-color-cdt-base-container);
 }
 
 .thread-item + .thread-item {
@@ -44,14 +47,11 @@ export default `/*
 }
 
 .selected-thread-icon {
-  display: none;
   position: absolute;
   top: 3px;
   left: 4px;
-}
-
-.thread-item.selected .selected-thread-icon {
-  display: block;
+  width: 16px;
+  height: 16px;
 }
 
 @media (forced-colors: active) {

@@ -10,7 +10,6 @@ import { createLimitedRows, renderOthersLabel } from './Table.js';
 const { UIStrings, i18nString, createOverlayForRequest } = Trace.Insights.Models.ModernHTTP;
 const { html } = Lit;
 export class ModernHTTP extends BaseInsightComponent {
-    static litTagName = Lit.StaticHtml.literal `devtools-performance-modern-http`;
     internalName = 'modern-http';
     hasAskAiSupport() {
         return true;
@@ -52,5 +51,4 @@ export class ModernHTTP extends BaseInsightComponent {
         // clang-format on
     }
 }
-customElements.define('devtools-performance-modern-http', ModernHTTP);
 //# sourceMappingURL=ModernHTTP.js.map

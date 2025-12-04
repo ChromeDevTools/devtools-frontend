@@ -1,14 +1,13 @@
 // Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
+/* eslint-disable @devtools/no-imperative-dom-api */
 import '../../../../ui/components/markdown_view/markdown_view.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Root from '../../../../core/root/root.js';
 import * as AIAssistance from '../../../../models/ai_assistance/ai_assistance.js';
 import * as Badges from '../../../../models/badges/badges.js';
 import * as Buttons from '../../../../ui/components/buttons/buttons.js';
-import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
 import * as UI from '../../../../ui/legacy/legacy.js';
 import * as Lit from '../../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js';
@@ -55,11 +54,99 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/BaseInsightComponent.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-export class BaseInsightComponent extends HTMLElement {
-    // So we can use the TypeScript BaseInsight class without getting warnings
-    // about litTagName. Every child should overwrite this.
-    static litTagName = Lit.StaticHtml.literal ``;
-    shadow = this.attachShadow({ mode: 'open' });
+const DEFAULT_VIEW = (input, output, target) => {
+    const { internalName, model, selected, estimatedSavingsString, estimatedSavingsAriaLabel, isAIAssistanceContext, canShowAskAI, dispatchInsightToggle, renderContent, onHeaderKeyDown, onAskAIButtonClick, } = input;
+    const containerClasses = Lit.Directives.classMap({
+        insight: true,
+        closed: !selected || isAIAssistanceContext,
+        'ai-assistance-context': isAIAssistanceContext,
+    });
+    let ariaLabel = `${i18nString(UIStrings.viewDetails, { PH1: model.title })}`;
+    if (estimatedSavingsAriaLabel) {
+        // space prefix is deliberate to add a gap after the view details text
+        ariaLabel += ` ${estimatedSavingsAriaLabel}`;
+    }
+    function renderInsightContent() {
+        if (!selected) {
+            return Lit.nothing;
+        }
+        const aiLabel = 'Debug with AI';
+        const ariaLabel = `Ask AI about ${model.title} insight`;
+        const content = renderContent();
+        // clang-format off
+        return html `
+      <div class="insight-body">
+        <div class="insight-description">${md(model.description)}</div>
+        <div class="insight-content">${content}</div>
+        ${canShowAskAI ? html `
+          <div class="ask-ai-btn-wrap">
+            <devtools-button class="ask-ai"
+              .variant=${"outlined" /* Buttons.Button.Variant.OUTLINED */}
+              .iconName=${'smart-assistant'}
+              data-insights-ask-ai
+              jslog=${VisualLogging.action(`timeline.insight-ask-ai.${internalName}`).track({ click: true })}
+              @click=${onAskAIButtonClick}
+              aria-label=${ariaLabel}
+            >${aiLabel}</devtools-button>
+          </div>
+        ` : Lit.nothing}
+      </div>`;
+        // clang-format on
+    }
+    function renderHoverIcon() {
+        if (isAIAssistanceContext) {
+            return Lit.nothing;
+        }
+        const containerClasses = Lit.Directives.classMap({
+            'insight-hover-icon': true,
+            active: selected,
+        });
+        // clang-format off
+        return html `
+      <div class=${containerClasses} inert>
+        <devtools-button .data=${{
+            variant: "icon" /* Buttons.Button.Variant.ICON */,
+            iconName: 'chevron-down',
+            size: "SMALL" /* Buttons.Button.Size.SMALL */,
+        }}
+      ></devtools-button>
+      </div>
+    `;
+        // clang-format on
+    }
+    // clang-format off
+    Lit.render(html `
+    <style>${baseInsightComponentStyles}</style>
+    <div class=${containerClasses}>
+      <header @click=${dispatchInsightToggle}
+        @keydown=${onHeaderKeyDown}
+        jslog=${VisualLogging.action(`timeline.toggle-insight.${internalName}`).track({ click: true })}
+        data-insight-header-title=${model?.title}
+        tabIndex="0"
+        role="button"
+        aria-expanded=${selected}
+        aria-label=${ariaLabel}
+      >
+        ${renderHoverIcon()}
+        <h3 class="insight-title">${model?.title}</h3>
+        ${estimatedSavingsString ?
+        html `
+          <slot name="insight-savings" class="insight-savings">
+            <span title=${estimatedSavingsAriaLabel ?? ''}>${estimatedSavingsString}</span>
+          </slot>
+        </div>`
+        : Lit.nothing}
+      </header>
+      ${renderInsightContent()}
+    </div>
+  `, target);
+    // clang-format on
+    if (selected) {
+        requestAnimationFrame(() => requestAnimationFrame(() => target.scrollIntoViewIfNeeded()));
+    }
+};
+export class BaseInsightComponent extends UI.Widget.Widget {
+    #view;
     // This flag tracks if the Insights AI feature is enabled within Chrome for
     // the active user.
     #askAiEnabled = false;
@@ -71,6 +158,11 @@ export class BaseInsightComponent extends HTMLElement {
     #agentFocus = null;
     #fieldMetrics = null;
     #parsedTrace = null;
+    #initialOverlays = null;
+    constructor(element, view = DEFAULT_VIEW) {
+        super(element, { useShadowDom: true });
+        this.#view = view;
+    }
     get model() {
         return this.#model;
     }
@@ -82,10 +174,6 @@ export class BaseInsightComponent extends HTMLElement {
         selectedRowEl: null,
         selectionIsSticky: false,
     };
-    #initialOverlays = null;
-    scheduleRender() {
-        void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
-    }
     // Insights that do support the AI feature can override this to return true.
     // The "Ask AI" button will only be shown for an Insight if this
     // is true and if the feature has been enabled by the user and they meet the
@@ -93,24 +181,26 @@ export class BaseInsightComponent extends HTMLElement {
     hasAskAiSupport() {
         return false;
     }
-    connectedCallback() {
-        this.setAttribute('jslog', `${VisualLogging.section(`timeline.insights.${this.internalName}`)}`);
+    wasShown() {
+        super.wasShown();
         // Used for unit test purposes when querying the DOM.
-        this.dataset.insightName = this.internalName;
+        this.element.dataset.insightName = this.internalName;
         const { devToolsAiAssistancePerformanceAgent } = Root.Runtime.hostConfig;
         this.#askAiEnabled = Boolean(devToolsAiAssistancePerformanceAgent?.enabled);
     }
     set isAIAssistanceContext(isAIAssistanceContext) {
         this.#isAIAssistanceContext = isAIAssistanceContext;
-        void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
+        this.requestUpdate();
     }
     set selected(selected) {
         if (!this.#selected && selected) {
             const options = this.getOverlayOptionsForInitialOverlays();
-            this.dispatchEvent(new SidebarInsight.InsightProvideOverlays(this.getInitialOverlays(), options));
+            this.element.dispatchEvent(new SidebarInsight.InsightProvideOverlays(this.getInitialOverlays(), options));
         }
-        this.#selected = selected;
-        void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
+        if (this.#selected !== selected) {
+            this.#selected = selected;
+            this.requestUpdate();
+        }
     }
     get selected() {
         return this.#selected;
@@ -120,18 +210,18 @@ export class BaseInsightComponent extends HTMLElement {
     }
     set model(model) {
         this.#model = model;
-        void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
+        this.requestUpdate();
     }
     set insightSetKey(insightSetKey) {
         this.data.insightSetKey = insightSetKey;
-        void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
+        this.requestUpdate();
     }
     get bounds() {
         return this.data.bounds;
     }
     set bounds(bounds) {
         this.data.bounds = bounds;
-        void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
+        this.requestUpdate();
     }
     set agentFocus(agentFocus) {
         this.#agentFocus = agentFocus;
@@ -146,7 +236,7 @@ export class BaseInsightComponent extends HTMLElement {
         return { updateTraceWindow: true };
     }
     #dispatchInsightToggle() {
-        if (!this.data.insightSetKey || !this.model) {
+        if (!this.data.insightSetKey || !this.#model) {
             // Shouldn't happen, but needed to satisfy TS.
             return;
         }
@@ -154,7 +244,7 @@ export class BaseInsightComponent extends HTMLElement {
             const floatyHandled = UI.Floaty.onFloatyClick({
                 type: "PERFORMANCE_INSIGHT" /* UI.Floaty.FloatyContextTypes.PERFORMANCE_INSIGHT */,
                 data: {
-                    insight: this.model,
+                    insight: this.#model,
                     trace: this.#parsedTrace,
                 }
             });
@@ -164,7 +254,7 @@ export class BaseInsightComponent extends HTMLElement {
         }
         const focus = UI.Context.Context.instance().flavor(AIAssistance.AIContext.AgentFocus);
         if (this.#selected) {
-            this.dispatchEvent(new SidebarInsight.InsightDeactivated());
+            this.element.dispatchEvent(new SidebarInsight.InsightDeactivated());
             // Clear agent (but only if currently focused on an insight).
             if (focus) {
                 UI.Context.Context.instance().setFlavor(AIAssistance.AIContext.AgentFocus, focus.withInsight(null));
@@ -172,41 +262,19 @@ export class BaseInsightComponent extends HTMLElement {
             return;
         }
         if (focus) {
-            UI.Context.Context.instance().setFlavor(AIAssistance.AIContext.AgentFocus, focus.withInsight(this.model));
+            UI.Context.Context.instance().setFlavor(AIAssistance.AIContext.AgentFocus, focus.withInsight(this.#model));
         }
         Badges.UserBadges.instance().recordAction(Badges.BadgeAction.PERFORMANCE_INSIGHT_CLICKED);
         this.sharedTableState.selectedRowEl?.classList.remove('selected');
         this.sharedTableState.selectedRowEl = null;
         this.sharedTableState.selectionIsSticky = false;
-        this.dispatchEvent(new SidebarInsight.InsightActivated(this.model, this.data.insightSetKey));
-    }
-    #renderHoverIcon(insightIsActive) {
-        if (this.#isAIAssistanceContext) {
-            return Lit.nothing;
-        }
-        // clang-format off
-        const containerClasses = Lit.Directives.classMap({
-            'insight-hover-icon': true,
-            active: insightIsActive,
-        });
-        return html `
-      <div class=${containerClasses} inert>
-        <devtools-button .data=${{
-            variant: "icon" /* Buttons.Button.Variant.ICON */,
-            iconName: 'chevron-down',
-            size: "SMALL" /* Buttons.Button.Size.SMALL */,
-        }}
-      ></devtools-button>
-      </div>
-
-    `;
-        // clang-format on
+        this.element.dispatchEvent(new SidebarInsight.InsightActivated(this.#model, this.data.insightSetKey));
     }
     /**
      * Ensure that if the user presses enter or space on a header, we treat it
      * like a click and toggle the insight.
      */
-    #handleHeaderKeyDown(event) {
+    #onHeaderKeyDown(event) {
         if (event.key === 'Enter' || event.key === ' ') {
             event.preventDefault();
             event.stopPropagation();
@@ -227,10 +295,10 @@ export class BaseInsightComponent extends HTMLElement {
             return;
         }
         if (!overlays) {
-            this.dispatchEvent(new SidebarInsight.InsightProvideOverlays(this.getInitialOverlays(), this.getOverlayOptionsForInitialOverlays()));
+            this.element.dispatchEvent(new SidebarInsight.InsightProvideOverlays(this.getInitialOverlays(), this.getOverlayOptionsForInitialOverlays()));
             return;
         }
-        this.dispatchEvent(new SidebarInsight.InsightProvideOverlays(overlays, options));
+        this.element.dispatchEvent(new SidebarInsight.InsightProvideOverlays(overlays, options));
     }
     getInitialOverlays() {
         if (this.#initialOverlays) {
@@ -240,19 +308,32 @@ export class BaseInsightComponent extends HTMLElement {
         return this.#initialOverlays;
     }
     createOverlays() {
-        return this.model?.createOverlays?.() ?? [];
+        return this.#model?.createOverlays?.() ?? [];
     }
-    #render() {
-        if (!this.model) {
+    performUpdate() {
+        if (!this.#model) {
             return;
         }
-        this.#renderWithContent();
+        const input = {
+            internalName: this.internalName,
+            model: this.#model,
+            selected: this.#selected,
+            estimatedSavingsString: this.getEstimatedSavingsString(),
+            estimatedSavingsAriaLabel: this.#getEstimatedSavingsAriaLabel(),
+            isAIAssistanceContext: this.#isAIAssistanceContext,
+            canShowAskAI: this.#canShowAskAI(),
+            dispatchInsightToggle: () => this.#dispatchInsightToggle(),
+            renderContent: () => this.renderContent(),
+            onHeaderKeyDown: () => this.#onHeaderKeyDown,
+            onAskAIButtonClick: () => this.#onAskAIButtonClick(),
+        };
+        this.#view(input, undefined, this.contentElement);
     }
     getEstimatedSavingsTime() {
         return null;
     }
     getEstimatedSavingsBytes() {
-        return this.model?.wastedBytes ?? null;
+        return this.#model?.wastedBytes ?? null;
     }
     #getEstimatedSavingsTextParts() {
         const savingsTime = this.getEstimatedSavingsTime();
@@ -289,7 +370,7 @@ export class BaseInsightComponent extends HTMLElement {
         }
         return null;
     }
-    #getEstimatedSavingsString() {
+    getEstimatedSavingsString() {
         const { bytesString, timeString } = this.#getEstimatedSavingsTextParts();
         if (timeString && bytesString) {
             return i18nString(UIStrings.estimatedSavingsTimingAndBytes, {
@@ -309,7 +390,7 @@ export class BaseInsightComponent extends HTMLElement {
         }
         return null;
     }
-    #askAIButtonClick() {
+    #onAskAIButtonClick() {
         if (!this.#agentFocus) {
             return;
         }
@@ -320,7 +401,7 @@ export class BaseInsightComponent extends HTMLElement {
         }
         let focus = UI.Context.Context.instance().flavor(AIAssistance.AIContext.AgentFocus);
         if (focus) {
-            focus = focus.withInsight(this.model);
+            focus = focus.withInsight(this.#model);
         }
         else {
             focus = this.#agentFocus;
@@ -338,84 +419,6 @@ export class BaseInsightComponent extends HTMLElement {
             Root.Runtime.GenAiEnterprisePolicyValue.DISABLE &&
             this.#askAiEnabled && Root.Runtime.hostConfig.aidaAvailability?.enabled === true;
         return aiAvailable && this.hasAskAiSupport();
-    }
-    #renderInsightContent(insightModel) {
-        if (!this.#selected) {
-            return Lit.nothing;
-        }
-        const aiLabel = 'Debug with AI';
-        const ariaLabel = `Ask AI about ${insightModel.title} insight`;
-        // Only render the insight body content if it is selected.
-        // To avoid re-rendering triggered from elsewhere.
-        const content = this.renderContent();
-        // clang-format off
-        return html `
-      <div class="insight-body">
-        <div class="insight-description">${md(insightModel.description)}</div>
-        <div class="insight-content">${content}</div>
-        ${this.#canShowAskAI() ? html `
-          <div class="ask-ai-btn-wrap">
-            <devtools-button class="ask-ai"
-              .variant=${"outlined" /* Buttons.Button.Variant.OUTLINED */}
-              .iconName=${'smart-assistant'}
-              data-insights-ask-ai
-              jslog=${VisualLogging.action(`timeline.insight-ask-ai.${this.internalName}`).track({ click: true })}
-              @click=${this.#askAIButtonClick}
-              aria-label=${ariaLabel}
-            >${aiLabel}</devtools-button>
-          </div>
-        ` : Lit.nothing}
-      </div>`;
-        // clang-format on
-    }
-    #renderWithContent() {
-        if (!this.#model) {
-            Lit.render(Lit.nothing, this.shadow, { host: this });
-            return;
-        }
-        const containerClasses = Lit.Directives.classMap({
-            insight: true,
-            closed: !this.#selected || this.#isAIAssistanceContext,
-            'ai-assistance-context': this.#isAIAssistanceContext,
-        });
-        const estimatedSavingsString = this.#getEstimatedSavingsString();
-        const estimatedSavingsAriaLabel = this.#getEstimatedSavingsAriaLabel();
-        let ariaLabel = `${i18nString(UIStrings.viewDetails, { PH1: this.#model.title })}`;
-        if (estimatedSavingsAriaLabel) {
-            // space prefix is deliberate to add a gap after the view details text
-            ariaLabel += ` ${estimatedSavingsAriaLabel}`;
-        }
-        // clang-format off
-        const output = html `
-      <style>${baseInsightComponentStyles}</style>
-      <div class=${containerClasses}>
-        <header @click=${this.#dispatchInsightToggle}
-          @keydown=${this.#handleHeaderKeyDown}
-          jslog=${VisualLogging.action(`timeline.toggle-insight.${this.internalName}`).track({ click: true })}
-          data-insight-header-title=${this.#model?.title}
-          tabIndex="0"
-          role="button"
-          aria-expanded=${this.#selected}
-          aria-label=${ariaLabel}
-        >
-          ${this.#renderHoverIcon(this.#selected)}
-          <h3 class="insight-title">${this.#model?.title}</h3>
-          ${estimatedSavingsString ?
-            html `
-            <slot name="insight-savings" class="insight-savings">
-              <span title=${estimatedSavingsAriaLabel ?? ''}>${estimatedSavingsString}</span>
-            </slot>
-          </div>`
-            : Lit.nothing}
-        </header>
-        ${this.#renderInsightContent(this.#model)}
-      </div>
-    `;
-        // clang-format on
-        Lit.render(output, this.shadow, { host: this });
-        if (this.#selected) {
-            requestAnimationFrame(() => requestAnimationFrame(() => this.scrollIntoViewIfNeeded()));
-        }
     }
 }
 //# sourceMappingURL=BaseInsightComponent.js.map

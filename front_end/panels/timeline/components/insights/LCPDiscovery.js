@@ -1,7 +1,6 @@
 // Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 import './Checklist.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Trace from '../../../../models/trace/trace.js';
@@ -14,7 +13,6 @@ const { html } = Lit;
 // eslint-disable-next-line @devtools/l10n-filename-matches
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/LCPDiscovery.ts', UIStrings);
 export class LCPDiscovery extends BaseInsightComponent {
-    static litTagName = Lit.StaticHtml.literal `devtools-performance-lcp-discovery`;
     internalName = 'lcp-discovery';
     hasAskAiSupport() {
         return true;
@@ -44,10 +42,13 @@ export class LCPDiscovery extends BaseInsightComponent {
         return getImageData(this.model)?.estimatedSavings ?? null;
     }
     #renderDiscoveryDelay(delay) {
+        // Trace.Types.Overlays.TimespanBreakdownEntryBreakdown needs an HTMLElement, which we have to localize here.
+        /* eslint-disable @devtools/no-imperative-dom-api */
         const timeWrapper = document.createElement('span');
         timeWrapper.classList.add('discovery-time-ms');
         timeWrapper.innerText = i18n.TimeUtilities.formatMicroSecondsAsMillisFixed(delay);
         return uiI18n.getFormatLocalizedString(str_, UIStrings.lcpLoadDelay, { PH1: timeWrapper });
+        /* eslint-enable @devtools/no-imperative-dom-api */
     }
     renderContent() {
         if (!this.model) {
@@ -73,5 +74,4 @@ export class LCPDiscovery extends BaseInsightComponent {
         // clang-format on
     }
 }
-customElements.define('devtools-performance-lcp-discovery', LCPDiscovery);
 //# sourceMappingURL=LCPDiscovery.js.map

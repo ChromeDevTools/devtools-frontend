@@ -13,7 +13,6 @@ import { scriptRef } from './ScriptRef.js';
 const { UIStrings, i18nString } = Trace.Insights.Models.LegacyJavaScript;
 const { html } = Lit;
 export class LegacyJavaScript extends BaseInsightComponent {
-    static litTagName = Lit.StaticHtml.literal `devtools-performance-legacy-javascript`;
     internalName = 'legacy-javascript';
     getEstimatedSavingsTime() {
         return this.model?.metricSavings?.FCP ?? null;
@@ -75,5 +74,4 @@ export class LegacyJavaScript extends BaseInsightComponent {
         // clang-format on
     }
 }
-customElements.define('devtools-performance-legacy-javascript', LegacyJavaScript);
 //# sourceMappingURL=LegacyJavaScript.js.map

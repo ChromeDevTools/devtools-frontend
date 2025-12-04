@@ -8,22 +8,32 @@ export default `/*
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file.
  */
-.code {
-  font-family: var(--monospace-font-family);
-  font-size: var(--monospace-font-size);
-}
+@scope to (devtools-widget > *) {
+  .code {
+    font-family: var(--monospace-font-family);
+    font-size: var(--monospace-font-size);
+  }
 
-.issuers-list {
-  display: flex;
-  flex-direction: column;
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-}
+  .issuers-list {
+    display: flex;
+    flex-direction: column;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
 
-.status-icon {
-  margin: 0 0.3em 2px 0;
-  vertical-align: middle;
+  .status-icon {
+    margin: 0 0.3em 2px 0;
+    vertical-align: middle;
+
+    &.failure {
+      color: var(--icon-error);
+    }
+
+    &.success {
+      color: var(--icon-checkmark-green);
+    }
+  }
 }
 
 /*# sourceURL=${import.meta.resolve('./RequestTrustTokensView.css')} */`;

@@ -20,42 +20,11 @@ import * as Insights from '../../timeline/components/insights/insights.js';
 import { MarkdownRendererWithCodeBlock } from './MarkdownRendererWithCodeBlock.js';
 const { html } = Lit.StaticHtml;
 const { ref, createRef } = Lit.Directives;
-const INSIGHT_NAME_TO_COMPONENT = {
-    Cache: Insights.Cache.Cache,
-    CLSCulprits: Insights.CLSCulprits.CLSCulprits,
-    DocumentLatency: Insights.DocumentLatency.DocumentLatency,
-    DOMSize: Insights.DOMSize.DOMSize,
-    DuplicatedJavaScript: Insights.DuplicatedJavaScript.DuplicatedJavaScript,
-    FontDisplay: Insights.FontDisplay.FontDisplay,
-    ForcedReflow: Insights.ForcedReflow.ForcedReflow,
-    ImageDelivery: Insights.ImageDelivery.ImageDelivery,
-    INPBreakdown: Insights.INPBreakdown.INPBreakdown,
-    LCPDiscovery: Insights.LCPDiscovery.LCPDiscovery,
-    LCPBreakdown: Insights.LCPBreakdown.LCPBreakdown,
-    LegacyJavaScript: Insights.LegacyJavaScript.LegacyJavaScript,
-    ModernHTTP: Insights.ModernHTTP.ModernHTTP,
-    NetworkDependencyTree: Insights.NetworkDependencyTree.NetworkDependencyTree,
-    RenderBlocking: Insights.RenderBlocking.RenderBlocking,
-    SlowCSSSelector: Insights.SlowCSSSelector.SlowCSSSelector,
-    ThirdParties: Insights.ThirdParties.ThirdParties,
-    Viewport: Insights.Viewport.Viewport,
-};
-function renderInsight(insightName, model) {
-    const componentClass = INSIGHT_NAME_TO_COMPONENT[insightName];
-    if (!componentClass) {
-        return Lit.nothing;
-    }
-    /* eslint-disable lit/binding-positions,lit/no-invalid-html */
-    return html `<div><${componentClass.litTagName}
-  .model=${model}
-  .selected=${true}
-  .isAIAssistanceContext=${true}>
-  </${componentClass.litTagName}></div>`;
-}
 export class PerformanceAgentMarkdownRenderer extends MarkdownRendererWithCodeBlock {
     mainFrameId;
     lookupEvent;
     parsedTrace;
+    #insightRenderer = new Insights.InsightRenderer.InsightRenderer();
     constructor(mainFrameId = '', lookupEvent = () => null, parsedTrace = null) {
         super();
         this.mainFrameId = mainFrameId;
@@ -63,6 +32,9 @@ export class PerformanceAgentMarkdownRenderer extends MarkdownRendererWithCodeBl
         this.parsedTrace = parsedTrace;
     }
     templateForToken(token) {
+        if (!this.parsedTrace) {
+            return null;
+        }
         // NOTE: The custom tag handling below (e.g., <ai-insight>, <network-request-widget>)
         // is part of a prototype for the GreenDev project and is only rendered when the GreenDev
         // feature is enabled.
@@ -70,16 +42,14 @@ export class PerformanceAgentMarkdownRenderer extends MarkdownRendererWithCodeBl
             if (token.text.includes('<flame-chart-widget')) {
                 const startMatch = token.text.match(/start="?(\d+)"?/);
                 const endMatch = token.text.match(/end="?(\d+)"?/);
-                if (this.parsedTrace) {
-                    const start = startMatch ? Number(startMatch[1]) : this.parsedTrace.data.Meta.traceBounds.min;
-                    const end = endMatch ? Number(endMatch[1]) : this.parsedTrace.data.Meta.traceBounds.max;
-                    return html `<devtools-performance-agent-flame-chart .data=${{
-                        parsedTrace: this.parsedTrace,
-                        start,
-                        end,
-                    }}
+                const start = startMatch ? Number(startMatch[1]) : this.parsedTrace.data.Meta.traceBounds.min;
+                const end = endMatch ? Number(endMatch[1]) : this.parsedTrace.data.Meta.traceBounds.max;
+                return html `<devtools-performance-agent-flame-chart .data=${{
+                    parsedTrace: this.parsedTrace,
+                    start,
+                    end,
+                }}
           }></devtools-performance-agent-flame-chart>`;
-                }
             }
             // Flexible regex to match the tag name and a value a.
             // match[1]: tagName (e.g., 'ai-insight', 'network-request-widget')
@@ -93,15 +63,18 @@ export class PerformanceAgentMarkdownRenderer extends MarkdownRendererWithCodeBl
             const value = match[2];
             if (tagName === 'ai-insight' && value) {
                 const componentName = value;
-                const insightSet = this.parsedTrace?.insights?.values().next().value;
+                const insightSet = this.parsedTrace.insights?.values().next().value;
                 const insightM = insightSet?.model[componentName];
                 if (!insightM) {
                     return null;
                 }
                 return html `<devtools-collapsible-assistance-content-widget  .data=${{
-                    headerText: 'Insight'
+                    headerText: `Insight - ${componentName}`
                 }}>
-        ${renderInsight(componentName, insightM)}
+        ${this.#insightRenderer.renderInsightToWidgetElement(this.parsedTrace, insightSet, insightM, componentName, {
+                    selected: true,
+                    isAIAssistanceContext: true
+                })}
         </devtools-collapsible-assistance-content-widget>`;
             }
             if (tagName === 'network-request-widget' && value) {
@@ -120,7 +93,7 @@ export class PerformanceAgentMarkdownRenderer extends MarkdownRendererWithCodeBl
                         const calculator = new NetworkTimeCalculator.NetworkTimeCalculator(true);
                         return html `<devtools-collapsible-assistance-content-widget
             .data=${{
-                            headerText: 'Network Request'
+                            headerText: `Network Request: ${networkRequest.url().length > 80 ? networkRequest.url().slice(0, 80) + '...' : networkRequest.url()}`
                         }}>
             <devtools-widget class="actions" .widgetConfig=${UI.Widget.widgetConfig(Network.RequestTimingView.RequestTimingView, {
                             request: networkRequest,

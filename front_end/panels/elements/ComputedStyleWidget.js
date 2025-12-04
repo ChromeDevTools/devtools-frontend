@@ -173,8 +173,8 @@ class ColorRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.ColorMatc
             return [document.createTextNode(match.text)];
         }
         const swatch = new InlineEditor.ColorSwatch.ColorSwatch();
-        swatch.setReadonly(true);
-        swatch.renderColor(color);
+        swatch.readonly = true;
+        swatch.color = color;
         const valueElement = document.createElement('span');
         valueElement.textContent = match.text;
         swatch.addEventListener(InlineEditor.ColorSwatch.ColorChangedEvent.eventName, (event) => {

@@ -251,7 +251,7 @@ var LinearMemoryHighlightChipList = class extends UI.Widget.Widget {
 // gen/front_end/panels/linear_memory_inspector/components/LinearMemoryInspector.js
 var LinearMemoryInspector_exports = {};
 __export(LinearMemoryInspector_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW2,
+  DEFAULT_VIEW: () => DEFAULT_VIEW4,
   LinearMemoryInspector: () => LinearMemoryInspector
 });
 
@@ -263,16 +263,73 @@ __export(LinearMemoryValueInterpreter_exports, {
   ValueTypeToggledEvent: () => ValueTypeToggledEvent
 });
 import "./../../../ui/kit/kit.js";
+import * as i18n9 from "./../../../core/i18n/i18n.js";
+import * as Platform3 from "./../../../core/platform/platform.js";
+import * as Buttons2 from "./../../../ui/components/buttons/buttons.js";
+import * as UI4 from "./../../../ui/legacy/legacy.js";
+import * as Lit3 from "./../../../ui/lit/lit.js";
+import * as VisualLogging4 from "./../../../ui/visual_logging/visual_logging.js";
+
+// gen/front_end/panels/linear_memory_inspector/components/linearMemoryValueInterpreter.css.js
+var linearMemoryValueInterpreter_css_default = `/*
+ * Copyright 2021 The Chromium Authors
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+:host {
+  flex: auto;
+  display: flex;
+}
+
+.value-interpreter {
+  border: 1px solid var(--sys-color-divider);
+  background-color: var(--sys-color-cdt-base-container);
+  overflow: hidden;
+  width: 400px;
+}
+
+.settings-toolbar {
+  min-height: 26px;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  padding-left: var(--sys-size-3);
+  padding-right: var(--sys-size-3);
+  align-items: center;
+}
+
+.settings-toolbar-button {
+  padding: 0;
+  width: 20px;
+  height: 20px;
+  border: none;
+  outline: none;
+  background-color: transparent;
+}
+
+.settings-toolbar-button.active devtools-icon {
+  color: var(--icon-toggled);
+}
+
+.divider {
+  display: block;
+  height: 1px;
+  margin-bottom: 12px;
+  background-color: var(--sys-color-divider);
+}
+
+/*# sourceURL=${import.meta.resolve("./linearMemoryValueInterpreter.css")} */`;
 
 // gen/front_end/panels/linear_memory_inspector/components/ValueInterpreterDisplay.js
 var ValueInterpreterDisplay_exports = {};
 __export(ValueInterpreterDisplay_exports, {
-  JumpToPointerAddressEvent: () => JumpToPointerAddressEvent,
-  ValueInterpreterDisplay: () => ValueInterpreterDisplay,
-  ValueTypeModeChangedEvent: () => ValueTypeModeChangedEvent
+  DEFAULT_VIEW: () => DEFAULT_VIEW2,
+  ValueInterpreterDisplay: () => ValueInterpreterDisplay
 });
 import "./../../../ui/kit/kit.js";
 import * as i18n5 from "./../../../core/i18n/i18n.js";
+import * as Buttons from "./../../../ui/components/buttons/buttons.js";
 import * as UI2 from "./../../../ui/legacy/legacy.js";
 import * as Lit from "./../../../ui/lit/lit.js";
 import * as VisualLogging2 from "./../../../ui/visual_logging/visual_logging.js";
@@ -317,19 +374,6 @@ var valueInterpreterDisplay_css_default = `/*
 
 .value-type-cell-no-mode {
   grid-column: 1 / 3;
-}
-
-.jump-to-button {
-  display: flex;
-  width: 20px;
-  height: 20px;
-  border: none;
-  padding: 0;
-  outline: none;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  background-color: var(--sys-color-cdt-base-container);
 }
 
 .signed-divider {
@@ -584,160 +628,176 @@ var UIStrings3 = {
 };
 var str_3 = i18n5.i18n.registerUIStrings("panels/linear_memory_inspector/components/ValueInterpreterDisplay.ts", UIStrings3);
 var i18nString3 = i18n5.i18n.getLocalizedString.bind(void 0, str_3);
-var { render: render2, html: html2 } = Lit;
+var { render: render2, nothing, html: html2 } = Lit;
 var SORTED_VALUE_TYPES = Array.from(getDefaultValueTypeMapping().keys());
-var ValueTypeModeChangedEvent = class _ValueTypeModeChangedEvent extends Event {
-  static eventName = "valuetypemodechanged";
-  data;
-  constructor(type, mode) {
-    super(_ValueTypeModeChangedEvent.eventName, {
-      composed: true
-    });
-    this.data = { type, mode };
+var DEFAULT_VIEW2 = (input, _output, target) => {
+  function parse(signed, type) {
+    return format({ buffer: input.buffer, endianness: input.endianness, type, signed, mode: input.valueTypeModes.get(type) });
   }
-};
-var JumpToPointerAddressEvent = class _JumpToPointerAddressEvent extends Event {
-  static eventName = "jumptopointeraddress";
-  data;
-  constructor(address) {
-    super(_JumpToPointerAddressEvent.eventName, {
-      composed: true
-    });
-    this.data = address;
-  }
-};
-var ValueInterpreterDisplay = class extends HTMLElement {
-  #shadow = this.attachShadow({ mode: "open" });
-  #endianness = "Little Endian";
-  #buffer = new ArrayBuffer(0);
-  #valueTypes = /* @__PURE__ */ new Set();
-  #valueTypeModeConfig = getDefaultValueTypeMapping();
-  #memoryLength = 0;
-  set data(data) {
-    this.#buffer = data.buffer;
-    this.#endianness = data.endianness;
-    this.#valueTypes = data.valueTypes;
-    this.#memoryLength = data.memoryLength;
-    if (data.valueTypeModes) {
-      data.valueTypeModes.forEach((mode, valueType) => {
-        if (isValidMode(valueType, mode)) {
-          this.#valueTypeModeConfig.set(valueType, mode);
-        }
-      });
-    }
-    this.#render();
-  }
-  #render() {
-    render2(html2`
+  const parseSigned = parse.bind(void 0, true);
+  const parseUnsigned = parse.bind(void 0, false);
+  render2(html2`
       <style>${UI2.inspectorCommonStyles}</style>
       <style>${valueInterpreterDisplay_css_default}</style>
       <div class="value-types">
-        ${SORTED_VALUE_TYPES.map((type) => this.#valueTypes.has(type) ? this.#showValue(type) : "")}
-      </div>
-    `, this.#shadow, { host: this });
-  }
-  #showValue(type) {
-    if (isNumber(type)) {
-      return this.#renderNumberValues(type);
-    }
-    if (isPointer(type)) {
-      return this.#renderPointerValue(type);
-    }
-    throw new Error(`No known way to format ${type}`);
-  }
-  #renderPointerValue(type) {
-    const unsignedValue = this.#parse({ type, signed: false });
-    const address = getPointerAddress(type, this.#buffer, this.#endianness);
-    const jumpDisabled = Number.isNaN(address) || BigInt(address) >= BigInt(this.#memoryLength);
-    const buttonTitle = jumpDisabled ? i18nString3(UIStrings3.addressOutOfRange) : i18nString3(UIStrings3.jumpToPointer);
-    const iconColor = jumpDisabled ? "var(--icon-default)" : "var(--icon-link)";
-    return html2`
-      <span class="value-type-cell-no-mode value-type-cell selectable-text">${i18n5.i18n.lockedString(type)}</span>
-      <div class="value-type-cell">
-        <div class="value-type-value-with-link" data-value="true">
-        <span class="selectable-text">${unsignedValue}</span>
-          ${html2`
-              <button class="jump-to-button" data-jump="true" title=${buttonTitle} ?disabled=${jumpDisabled}
-                jslog=${VisualLogging2.action("linear-memory-inspector.jump-to-address").track({ click: true })}
-                @click=${this.#onJumpToAddressClicked.bind(this, Number(address))}>
-                <devtools-icon name="open-externally" class="medium" style="color: ${iconColor}">
-                </devtools-icon>
-              </button>`}
-        </div>
-      </div>
-    `;
-  }
-  #onJumpToAddressClicked(address) {
-    this.dispatchEvent(new JumpToPointerAddressEvent(address));
-  }
-  #renderNumberValues(type) {
-    return html2`
-      <span class="value-type-cell selectable-text">${i18n5.i18n.lockedString(type)}</span>
-      <div>
-        <select title=${i18nString3(UIStrings3.changeValueTypeMode)}
-          data-mode-settings="true"
-          jslog=${VisualLogging2.dropDown("linear-memory-inspector.value-type-mode").track({ change: true })}
-          @change=${this.#onValueTypeModeChange.bind(this, type)}>
-            ${VALUE_TYPE_MODE_LIST.filter((x) => isValidMode(type, x)).map((mode) => {
+        ${input.valueTypes.map((type) => {
+    const address = isPointer(type) ? getPointerAddress(type, input.buffer, input.endianness) : 0;
+    const jumpDisabled = Number.isNaN(address) || BigInt(address) >= BigInt(input.memoryLength);
+    const signed = parseSigned(type);
+    const unsigned = parseUnsigned(type);
+    return isNumber(type) ? html2`
+            <span class="value-type-cell selectable-text">${i18n5.i18n.lockedString(type)}</span>
+              <div>
+                <select title=${i18nString3(UIStrings3.changeValueTypeMode)}
+                  data-mode-settings="true"
+                  jslog=${VisualLogging2.dropDown("linear-memory-inspector.value-type-mode").track({ change: true })}
+                  @change=${(e) => input.onValueTypeModeChange(type, e.target.value)}>
+                    ${VALUE_TYPE_MODE_LIST.filter((x) => isValidMode(type, x)).map((mode) => {
       return html2`
-                <option value=${mode} .selected=${this.#valueTypeModeConfig.get(type) === mode}
-                        jslog=${VisualLogging2.item(mode).track({ click: true })}>${i18n5.i18n.lockedString(mode)}
-                </option>`;
+                        <option value=${mode} .selected=${input.valueTypeModes.get(type) === mode}
+                                jslog=${VisualLogging2.item(mode).track({ click: true })}>${i18n5.i18n.lockedString(mode)}
+                        </option>`;
     })}
-        </select>
+                </select>
+              </div>
+            ${renderSignedAndUnsigned(signed, unsigned, type, input.valueTypeModes.get(type))}` : isPointer(type) ? html2`
+            <span class="value-type-cell-no-mode value-type-cell selectable-text">${i18n5.i18n.lockedString(type)}</span>
+            <div class="value-type-cell">
+              <div class="value-type-value-with-link" data-value="true">
+              <span class="selectable-text">${unsigned}</span>
+                <devtools-button
+                  data-jump="true"
+                  title=${jumpDisabled ? i18nString3(UIStrings3.addressOutOfRange) : i18nString3(UIStrings3.jumpToPointer)}
+                  .disabled=${jumpDisabled}
+                  jslog=${VisualLogging2.action("linear-memory-inspector.jump-to-address").track({ click: true })}
+                  @click=${() => input.onJumpToAddressClicked(Number(address))}
+                  .variant=${"icon_toggle"}
+                  .iconName=${"open-externally"}
+                  .size=${"SMALL"}>
+                </devtools-button>
+              </div>
+            </div>` : nothing;
+  })}
       </div>
-      ${this.#renderSignedAndUnsigned(type)}
-    `;
+    `, target);
+};
+function renderSignedAndUnsigned(signedValue, unsignedValue, type, mode) {
+  const showSignedAndUnsigned = signedValue !== unsignedValue && mode !== "hex" && mode !== "oct";
+  const unsignedRendered = html2`<span class="value-type-cell selectable-text"  title=${i18nString3(UIStrings3.unsignedValue)} data-value="true">${unsignedValue}</span>`;
+  if (!showSignedAndUnsigned) {
+    return unsignedRendered;
   }
-  #renderSignedAndUnsigned(type) {
-    const unsignedValue = this.#parse({ type, signed: false });
-    const signedValue = this.#parse({ type, signed: true });
-    const mode = this.#valueTypeModeConfig.get(type);
-    const showSignedAndUnsigned = signedValue !== unsignedValue && mode !== "hex" && mode !== "oct";
-    const unsignedRendered = html2`<span class="value-type-cell selectable-text"  title=${i18nString3(UIStrings3.unsignedValue)} data-value="true">${unsignedValue}</span>`;
-    if (!showSignedAndUnsigned) {
-      return unsignedRendered;
-    }
-    const showInMultipleLines = type === "Integer 32-bit" || type === "Integer 64-bit";
-    const signedRendered = html2`<span class="selectable-text" data-value="true" title=${i18nString3(UIStrings3.signedValue)}>${signedValue}</span>`;
-    if (showInMultipleLines) {
-      return html2`
+  const showInMultipleLines = type === "Integer 32-bit" || type === "Integer 64-bit";
+  const signedRendered = html2`<span class="selectable-text" data-value="true" title=${i18nString3(UIStrings3.signedValue)}>${signedValue}</span>`;
+  if (showInMultipleLines) {
+    return html2`
         <div class="value-type-cell">
           ${unsignedRendered}
           ${signedRendered}
         </div>
         `;
-    }
-    return html2`
+  }
+  return html2`
       <div class="value-type-cell" style="flex-direction: row;">
         ${unsignedRendered}
         <span class="signed-divider"></span>
         ${signedRendered}
       </div>
     `;
+}
+var ValueInterpreterDisplay = class extends UI2.Widget.Widget {
+  #view;
+  #endianness = "Little Endian";
+  #buffer = new ArrayBuffer(0);
+  #valueTypes = /* @__PURE__ */ new Set();
+  #valueTypeModeConfig = getDefaultValueTypeMapping();
+  #memoryLength = 0;
+  #onValueTypeModeChange = () => {
+  };
+  #onJumpToAddressClicked = () => {
+  };
+  constructor(element, view = DEFAULT_VIEW2) {
+    super(element);
+    this.#view = view;
   }
-  #onValueTypeModeChange(type, event) {
-    event.preventDefault();
-    const select = event.target;
-    const mode = select.value;
-    this.dispatchEvent(new ValueTypeModeChangedEvent(type, mode));
+  set onValueTypeModeChange(callback) {
+    this.#onValueTypeModeChange = callback;
+    this.performUpdate();
   }
-  #parse(data) {
-    const mode = this.#valueTypeModeConfig.get(data.type);
-    return format({ buffer: this.#buffer, type: data.type, endianness: this.#endianness, signed: data.signed || false, mode });
+  get onValueTypeModeChange() {
+    return this.#onValueTypeModeChange;
+  }
+  set onJumpToAddressClicked(callback) {
+    this.#onJumpToAddressClicked = callback;
+    this.performUpdate();
+  }
+  get onJumpToAddressClicked() {
+    return this.#onJumpToAddressClicked;
+  }
+  get valueTypeModes() {
+    return this.#valueTypeModeConfig;
+  }
+  set valueTypeModes(modes) {
+    const newMap = getDefaultValueTypeMapping();
+    modes.forEach((mode, type) => {
+      if (isValidMode(type, mode)) {
+        newMap.set(type, mode);
+      }
+    });
+    this.#valueTypeModeConfig = newMap;
+    this.requestUpdate();
+  }
+  get valueTypes() {
+    return this.#valueTypes;
+  }
+  set valueTypes(valueTypes) {
+    this.#valueTypes = valueTypes;
+    this.requestUpdate();
+  }
+  get buffer() {
+    return this.#buffer;
+  }
+  set buffer(buffer) {
+    this.#buffer = buffer;
+    this.requestUpdate();
+  }
+  get endianness() {
+    return this.#endianness;
+  }
+  set endianness(endianness) {
+    this.#endianness = endianness;
+    this.requestUpdate();
+  }
+  get memoryLength() {
+    return this.#memoryLength;
+  }
+  set memoryLength(memoryLength) {
+    this.#memoryLength = memoryLength;
+    this.requestUpdate();
+  }
+  performUpdate() {
+    const valueTypes = SORTED_VALUE_TYPES.filter((type) => this.#valueTypes.has(type));
+    this.#view({
+      buffer: this.#buffer,
+      valueTypes,
+      endianness: this.#endianness,
+      memoryLength: this.#memoryLength,
+      valueTypeModes: this.#valueTypeModeConfig,
+      onValueTypeModeChange: this.#onValueTypeModeChange,
+      onJumpToAddressClicked: this.#onJumpToAddressClicked
+    }, void 0, this.contentElement);
   }
 };
-customElements.define("devtools-linear-memory-inspector-interpreter-display", ValueInterpreterDisplay);
 
 // gen/front_end/panels/linear_memory_inspector/components/ValueInterpreterSettings.js
 var ValueInterpreterSettings_exports = {};
 __export(ValueInterpreterSettings_exports, {
-  TypeToggleEvent: () => TypeToggleEvent,
+  DEFAULT_VIEW: () => DEFAULT_VIEW3,
   ValueInterpreterSettings: () => ValueInterpreterSettings
 });
-import "./../../../ui/legacy/legacy.js";
 import * as i18n7 from "./../../../core/i18n/i18n.js";
 import * as Platform2 from "./../../../core/platform/platform.js";
+import * as UI3 from "./../../../ui/legacy/legacy.js";
 import * as Lit2 from "./../../../ui/lit/lit.js";
 import * as VisualLogging3 from "./../../../ui/visual_logging/visual_logging.js";
 
@@ -748,27 +808,29 @@ var valueInterpreterSettings_css_default = `/*
  * found in the LICENSE file.
  */
 
-:host {
-  flex: auto;
-  display: flex;
-  min-height: 20px;
-}
+@scope to (devtools-widget > *) {
+  :scope {
+    flex: auto;
+    display: flex;
+    min-height: 20px;
+  }
 
-.settings {
-  display: flex;
-  flex-wrap: wrap;
-  margin: 0 12px 12px;
-  gap: 15px 45px;
-}
+  .settings {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 12px 12px;
+    gap: 15px 45px;
+  }
 
-.value-types-selection {
-  display: flex;
-  flex-direction: column;
-}
+  .value-types-selection {
+    display: flex;
+    flex-direction: column;
+  }
 
-.group {
-  font-weight: bold;
-  margin-bottom: var(--sys-size-6);
+  .group {
+    font-weight: bold;
+    margin-bottom: var(--sys-size-6);
+  }
 }
 
 /*# sourceURL=${import.meta.resolve("./valueInterpreterSettings.css")} */`;
@@ -808,117 +870,64 @@ function valueTypeGroupToLocalizedString(group) {
   }
   return group;
 }
-var TypeToggleEvent = class _TypeToggleEvent extends Event {
-  static eventName = "typetoggle";
-  data;
-  constructor(type, checked) {
-    super(_TypeToggleEvent.eventName);
-    this.data = { type, checked };
-  }
-};
-var ValueInterpreterSettings = class extends HTMLElement {
-  #shadow = this.attachShadow({ mode: "open" });
-  #valueTypes = /* @__PURE__ */ new Set();
-  set data(data) {
-    this.#valueTypes = data.valueTypes;
-    this.#render();
-  }
-  #render() {
-    render3(html3`
+var DEFAULT_VIEW3 = (input, _output, target) => {
+  render3(html3`
       <style>${valueInterpreterSettings_css_default}</style>
       <div class="settings" jslog=${VisualLogging3.pane("settings")}>
        ${[...GROUP_TO_TYPES.keys()].map((group) => {
-      return html3`
+    const types = GROUP_TO_TYPES.get(group) ?? [];
+    return html3`
           <div class="value-types-selection">
             <span class="group">${valueTypeGroupToLocalizedString(group)}</span>
-            ${this.#plotTypeSelections(group)}
+            ${types.map((type) => {
+      return html3`
+                <devtools-checkbox
+                  title=${valueTypeToLocalizedString(type)}
+                  ?checked=${input.valueTypes.has(type)}
+                  @change=${(e) => {
+        const checkbox = e.target;
+        input.onToggle(type, checkbox.checked);
+      }} jslog=${VisualLogging3.toggle().track({ change: true }).context(Platform2.StringUtilities.toKebabCase(type))}
+                  }>${valueTypeToLocalizedString(type)}</devtools-checkbox>
+         `;
+    })}
           </div>
         `;
-    })}
+  })}
       </div>
-      `, this.#shadow, { host: this });
+      `, target);
+};
+var ValueInterpreterSettings = class extends UI3.Widget.Widget {
+  #view;
+  #valueTypes = /* @__PURE__ */ new Set();
+  #onToggle = () => {
+  };
+  constructor(element, view = DEFAULT_VIEW3) {
+    super(element);
+    this.#view = view;
   }
-  #plotTypeSelections(group) {
-    const types = GROUP_TO_TYPES.get(group);
-    if (!types) {
-      throw new Error(`Unknown group ${group}`);
-    }
-    return html3`
-      ${types.map((type) => {
-      return html3`
-            <devtools-checkbox
-              title=${valueTypeToLocalizedString(type)}
-              ?checked=${this.#valueTypes.has(type)}
-              @change=${(e) => this.#onTypeToggle(type, e)} jslog=${VisualLogging3.toggle().track({ change: true }).context(Platform2.StringUtilities.toKebabCase(type))}
-              >${valueTypeToLocalizedString(type)}</devtools-checkbox>
-     `;
-    })}`;
+  get valueTypes() {
+    return this.#valueTypes;
   }
-  #onTypeToggle(type, event) {
-    const checkbox = event.target;
-    this.dispatchEvent(new TypeToggleEvent(type, checkbox.checked));
+  set valueTypes(value) {
+    this.#valueTypes = value;
+    this.requestUpdate();
+  }
+  get onToggle() {
+    return this.#onToggle;
+  }
+  set onToggle(value) {
+    this.#onToggle = value;
+    this.requestUpdate();
+  }
+  performUpdate() {
+    const viewInput = {
+      valueTypes: this.#valueTypes,
+      onToggle: this.#onToggle
+    };
+    this.#view(viewInput, void 0, this.contentElement);
   }
 };
-customElements.define("devtools-linear-memory-inspector-interpreter-settings", ValueInterpreterSettings);
-
-// gen/front_end/panels/linear_memory_inspector/components/LinearMemoryValueInterpreter.js
-import * as i18n9 from "./../../../core/i18n/i18n.js";
-import * as Platform3 from "./../../../core/platform/platform.js";
-import * as Buttons from "./../../../ui/components/buttons/buttons.js";
-import * as UI3 from "./../../../ui/legacy/legacy.js";
-import * as Lit3 from "./../../../ui/lit/lit.js";
-import * as VisualLogging4 from "./../../../ui/visual_logging/visual_logging.js";
-
-// gen/front_end/panels/linear_memory_inspector/components/linearMemoryValueInterpreter.css.js
-var linearMemoryValueInterpreter_css_default = `/*
- * Copyright 2021 The Chromium Authors
- * Use of this source code is governed by a BSD-style license that can be
- * found in the LICENSE file.
- */
-
-:host {
-  flex: auto;
-  display: flex;
-}
-
-.value-interpreter {
-  border: 1px solid var(--sys-color-divider);
-  background-color: var(--sys-color-cdt-base-container);
-  overflow: hidden;
-  width: 400px;
-}
-
-.settings-toolbar {
-  min-height: 26px;
-  display: flex;
-  flex-wrap: nowrap;
-  justify-content: space-between;
-  padding-left: var(--sys-size-3);
-  padding-right: var(--sys-size-3);
-  align-items: center;
-}
-
-.settings-toolbar-button {
-  padding: 0;
-  width: 20px;
-  height: 20px;
-  border: none;
-  outline: none;
-  background-color: transparent;
-}
-
-.settings-toolbar-button.active devtools-icon {
-  color: var(--icon-toggled);
-}
-
-.divider {
-  display: block;
-  height: 1px;
-  margin-bottom: 12px;
-  background-color: var(--sys-color-divider);
-}
-
-/*# sourceURL=${import.meta.resolve("./linearMemoryValueInterpreter.css")} */`;
 
 // gen/front_end/panels/linear_memory_inspector/components/LinearMemoryValueInterpreter.js
 var UIStrings5 = {
@@ -935,6 +944,7 @@ var UIStrings5 = {
 var str_5 = i18n9.i18n.registerUIStrings("panels/linear_memory_inspector/components/LinearMemoryValueInterpreter.ts", UIStrings5);
 var i18nString5 = i18n9.i18n.getLocalizedString.bind(void 0, str_5);
 var { render: render4, html: html4 } = Lit3;
+var { widgetConfig } = UI4.Widget;
 var EndiannessChangedEvent = class _EndiannessChangedEvent extends Event {
   static eventName = "endiannesschanged";
   data;
@@ -952,6 +962,10 @@ var ValueTypeToggledEvent = class _ValueTypeToggledEvent extends Event {
   }
 };
 var LinearMemoryValueInterpreter = class extends HTMLElement {
+  #onValueTypeModeChange = () => {
+  };
+  #onJumpToAddressClicked = () => {
+  };
   #shadow = this.attachShadow({ mode: "open" });
   #endianness = "Little Endian";
   #buffer = new ArrayBuffer(0);
@@ -965,11 +979,13 @@ var LinearMemoryValueInterpreter = class extends HTMLElement {
     this.#valueTypes = data.valueTypes;
     this.#valueTypeModeConfig = data.valueTypeModes || /* @__PURE__ */ new Map();
     this.#memoryLength = data.memoryLength;
+    this.#onValueTypeModeChange = data.onValueTypeModeChange;
+    this.#onJumpToAddressClicked = data.onJumpToAddressClicked;
     this.#render();
   }
   #render() {
     render4(html4`
-      <style>${UI3.inspectorCommonStyles}</style>
+      <style>${UI4.inspectorCommonStyles}</style>
       <style>${linearMemoryValueInterpreter_css_default}</style>
       <div class="value-interpreter">
         <div class="settings-toolbar">
@@ -986,19 +1002,21 @@ var LinearMemoryValueInterpreter = class extends HTMLElement {
         <span class="divider"></span>
         <div>
           ${this.#showSettings ? html4`
-              <devtools-linear-memory-inspector-interpreter-settings
-                .data=${{ valueTypes: this.#valueTypes }}
-                @typetoggle=${this.#onTypeToggle}>
-              </devtools-linear-memory-inspector-interpreter-settings>` : html4`
-              <devtools-linear-memory-inspector-interpreter-display
-                .data=${{
+              <devtools-widget .widgetConfig=${widgetConfig(ValueInterpreterSettings, {
+      valueTypes: this.#valueTypes,
+      onToggle: this.#onSettingTypeToggle
+    })}>
+              </devtools-widget>` : html4`
+              <devtools-widget .widgetConfig=${widgetConfig(ValueInterpreterDisplay, {
       buffer: this.#buffer,
       valueTypes: this.#valueTypes,
       endianness: this.#endianness,
       valueTypeModes: this.#valueTypeModeConfig,
-      memoryLength: this.#memoryLength
-    }}>
-              </devtools-linear-memory-inspector-interpreter-display>`}
+      memoryLength: this.#memoryLength,
+      onValueTypeModeChange: this.#onValueTypeModeChange,
+      onJumpToAddressClicked: this.#onJumpToAddressClicked
+    })}>
+              </devtools-widget>`}
         </div>
       </div>
     `, this.#shadow, { host: this });
@@ -1033,9 +1051,9 @@ var LinearMemoryValueInterpreter = class extends HTMLElement {
     this.#showSettings = !this.#showSettings;
     this.#render();
   }
-  #onTypeToggle(e) {
-    this.dispatchEvent(new ValueTypeToggledEvent(e.data.type, e.data.checked));
-  }
+  #onSettingTypeToggle = (type, checked) => {
+    this.dispatchEvent(new ValueTypeToggledEvent(type, checked));
+  };
 };
 customElements.define("devtools-linear-memory-inspector-interpreter", LinearMemoryValueInterpreter);
 
@@ -1396,8 +1414,8 @@ customElements.define("devtools-linear-memory-inspector-viewer", LinearMemoryVie
 // gen/front_end/panels/linear_memory_inspector/components/LinearMemoryInspector.js
 import * as Common from "./../../../core/common/common.js";
 import * as i18n11 from "./../../../core/i18n/i18n.js";
-import * as UI4 from "./../../../ui/legacy/legacy.js";
-import { html as html6, nothing, render as render6 } from "./../../../ui/lit/lit.js";
+import * as UI5 from "./../../../ui/legacy/legacy.js";
+import { html as html6, nothing as nothing2, render as render6 } from "./../../../ui/lit/lit.js";
 
 // gen/front_end/panels/linear_memory_inspector/components/linearMemoryInspector.css.js
 var linearMemoryInspector_css_default = `/*
@@ -1453,7 +1471,7 @@ var UIStrings6 = {
 };
 var str_6 = i18n11.i18n.registerUIStrings("panels/linear_memory_inspector/components/LinearMemoryInspector.ts", UIStrings6);
 var i18nString6 = i18n11.i18n.getLocalizedString.bind(void 0, str_6);
-var { widgetConfig } = UI4.Widget;
+var { widgetConfig: widgetConfig2 } = UI5.Widget;
 var AddressHistoryEntry = class {
   #address = 0;
   #callback;
@@ -1471,7 +1489,7 @@ var AddressHistoryEntry = class {
     this.#callback(this.#address);
   }
 };
-var DEFAULT_VIEW2 = (input, _output, target) => {
+var DEFAULT_VIEW4 = (input, _output, target) => {
   const navigatorAddressToShow = input.currentNavigatorMode === "Submitted" ? formatAddress(input.address) : input.currentNavigatorAddressLine;
   const navigatorAddressIsValid = isValidAddress(navigatorAddressToShow, input.outerMemoryLength);
   const invalidAddressMsg = i18nString6(UIStrings6.addressHasToBeANumberBetweenSAnd, { PH1: formatAddress(0), PH2: formatAddress(input.outerMemoryLength) });
@@ -1494,10 +1512,10 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
         @addressinputchanged=${input.onAddressChange}
         @pagenavigation=${input.onNavigatePage}
         @historynavigation=${input.onNavigateHistory}></devtools-linear-memory-inspector-navigator>
-      <devtools-widget .widgetConfig=${widgetConfig(LinearMemoryHighlightChipList, {
+      <devtools-widget .widgetConfig=${widgetConfig2(LinearMemoryHighlightChipList, {
     highlightInfos: highlightedMemoryAreas,
     focusedMemoryHighlight,
-    jumpToAddress: (address) => input.onJumpToAddress({ data: address }),
+    jumpToAddress: (address) => input.onJumpToAddress(address),
     deleteHighlight: input.onDeleteMemoryHighlight
   })}>
       </devtools-widget>
@@ -1514,7 +1532,7 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
         @resize=${input.onResize}>
       </devtools-linear-memory-inspector-viewer>
     </div>
-    ${input.hideValueInspector ? nothing : html6`
+    ${input.hideValueInspector ? nothing2 : html6`
     <div class="value-interpreter">
       <devtools-linear-memory-inspector-interpreter
         .data=${{
@@ -1522,12 +1540,12 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
     valueTypes: input.valueTypes,
     valueTypeModes: input.valueTypeModes,
     endianness: input.endianness,
-    memoryLength: input.outerMemoryLength
+    memoryLength: input.outerMemoryLength,
+    onValueTypeModeChange: input.onValueTypeModeChanged,
+    onJumpToAddressClicked: input.onJumpToAddress
   }}
         @valuetypetoggled=${input.onValueTypeToggled}
-        @valuetypemodechanged=${input.onValueTypeModeChanged}
         @endiannesschanged=${input.onEndiannessChanged}
-        @jumptopointeraddress=${input.onJumpToAddress}
         >
       </devtools-linear-memory-inspector-interpreter>
     </div>`}
@@ -1556,7 +1574,7 @@ function getSmallestEnclosingMemoryHighlight(highlightedMemoryAreas, address) {
   }
   return smallestEnclosingHighlight;
 }
-var LinearMemoryInspector = class extends Common.ObjectWrapper.eventMixin(UI4.Widget.Widget) {
+var LinearMemoryInspector = class extends Common.ObjectWrapper.eventMixin(UI5.Widget.Widget) {
   #history = new Common.SimpleHistoryManager.SimpleHistoryManager(10);
   #memory = new Uint8Array();
   #memoryOffset = 0;
@@ -1573,7 +1591,7 @@ var LinearMemoryInspector = class extends Common.ObjectWrapper.eventMixin(UI4.Wi
   #view;
   constructor(element, view) {
     super(element);
-    this.#view = view ?? DEFAULT_VIEW2;
+    this.#view = view ?? DEFAULT_VIEW4;
   }
   set memory(value) {
     this.#memory = value;
@@ -1659,12 +1677,9 @@ var LinearMemoryInspector = class extends Common.ObjectWrapper.eventMixin(UI4.Wi
     };
     this.#view(viewInput, {}, this.contentElement);
   }
-  #onJumpToAddress(e) {
-    if (e instanceof Event) {
-      e.stopPropagation();
-    }
+  #onJumpToAddress(address) {
     this.#currentNavigatorMode = "Submitted";
-    const addressInRange = Math.max(0, Math.min(e.data, this.#outerMemoryLength - 1));
+    const addressInRange = Math.max(0, Math.min(address, this.#outerMemoryLength - 1));
     this.#jumpToAddress(addressInRange);
   }
   #onDeleteMemoryHighlight(highlight) {
@@ -1714,9 +1729,7 @@ var LinearMemoryInspector = class extends Common.ObjectWrapper.eventMixin(UI4.Wi
     this.dispatchEventToListeners("SettingsChanged", this.#createSettings());
     void this.requestUpdate();
   }
-  #onValueTypeModeChanged(e) {
-    e.stopImmediatePropagation();
-    const { type, mode } = e.data;
+  #onValueTypeModeChanged(type, mode) {
     this.#valueTypeModes.set(type, mode);
     this.dispatchEventToListeners("SettingsChanged", this.#createSettings());
     void this.requestUpdate();
@@ -1764,7 +1777,7 @@ __export(LinearMemoryNavigator_exports, {
 });
 import "./../../../ui/kit/kit.js";
 import * as i18n13 from "./../../../core/i18n/i18n.js";
-import * as Buttons2 from "./../../../ui/components/buttons/buttons.js";
+import * as Buttons3 from "./../../../ui/components/buttons/buttons.js";
 import * as Lit5 from "./../../../ui/lit/lit.js";
 import * as VisualLogging6 from "./../../../ui/visual_logging/visual_logging.js";
 

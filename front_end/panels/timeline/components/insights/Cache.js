@@ -11,7 +11,6 @@ import { createLimitedRows, renderOthersLabel } from './Table.js';
 const { UIStrings, i18nString, createOverlayForRequest } = Trace.Insights.Models.Cache;
 const { html } = Lit;
 export class Cache extends BaseInsightComponent {
-    static litTagName = Lit.StaticHtml.literal `devtools-performance-cache`;
     internalName = 'cache';
     hasAskAiSupport() {
         return true;
@@ -52,5 +51,4 @@ export class Cache extends BaseInsightComponent {
         // clang-format on
     }
 }
-customElements.define('devtools-performance-cache', Cache);
 //# sourceMappingURL=Cache.js.map

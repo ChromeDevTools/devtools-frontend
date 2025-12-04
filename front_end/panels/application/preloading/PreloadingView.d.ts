@@ -12,18 +12,18 @@ export declare class PreloadingRuleSetView extends UI.Widget.VBox {
     private readonly warningsView;
     private readonly hsplit;
     private readonly ruleSetGrid;
-    private readonly ruleSetDetails;
+    private readonly ruleSetDetailsRef;
     private shouldPrettyPrint;
     constructor(model: SDK.PreloadingModel.PreloadingModel);
     wasShown(): void;
     onScopeChange(): void;
     revealRuleSet(revealInfo: PreloadingHelper.PreloadingForward.RuleSetView): void;
     private updateRuleSetDetails;
+    private getRuleSet;
     render(): void;
     private onRuleSetsGridCellFocused;
     getInfobarContainerForTest(): HTMLElement;
     getRuleSetGridForTest(): PreloadingComponents.RuleSetGrid.RuleSetGrid;
-    getRuleSetDetailsForTest(): PreloadingComponents.RuleSetDetailsView.RuleSetDetailsView;
 }
 export declare class PreloadingAttemptView extends UI.Widget.VBox {
     private model;

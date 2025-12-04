@@ -17,11 +17,11 @@ import * as Badges from "./../../models/badges/badges.js";
 import * as TextUtils from "./../../models/text_utils/text_utils.js";
 import * as Workspace6 from "./../../models/workspace/workspace.js";
 import * as Annotations from "./../../ui/components/annotations/annotations.js";
-import * as Buttons5 from "./../../ui/components/buttons/buttons.js";
+import * as Buttons6 from "./../../ui/components/buttons/buttons.js";
 import * as Snackbars from "./../../ui/components/snackbars/snackbars.js";
 import * as UIHelpers2 from "./../../ui/helpers/helpers.js";
 import * as UI8 from "./../../ui/legacy/legacy.js";
-import * as Lit5 from "./../../ui/lit/lit.js";
+import * as Lit6 from "./../../ui/lit/lit.js";
 import * as VisualLogging7 from "./../../ui/visual_logging/visual_logging.js";
 import * as NetworkForward from "./../network/forward/forward.js";
 import * as NetworkPanel from "./../network/network.js";
@@ -4106,7 +4106,8 @@ var MarkdownRendererWithCodeBlock = class extends MarkdownView.MarkdownView.Mark
 };
 
 // gen/front_end/panels/ai_assistance/components/CollapsibleAssistanceContentWidget.js
-import { html as html7, render as render7 } from "./../../ui/lit/lit.js";
+import * as Buttons5 from "./../../ui/components/buttons/buttons.js";
+import * as Lit3 from "./../../ui/lit/lit.js";
 
 // gen/front_end/panels/ai_assistance/components/collapsibleAssistanceContentWidget.css.js
 var collapsibleAssistanceContentWidget_css_default = `/*
@@ -4134,19 +4135,8 @@ var collapsibleAssistanceContentWidget_css_default = `/*
   transition: background-color 0.2s ease-in-out;
 }
 
-.header::after {
-  content: '\u25B6';
-  display: inline-block;
-  margin-left: 8px;
-  transition: transform 0.2s ease-in-out;
-}
-
 :host([open]) .header {
   border-bottom: 1px solid var(--sys-color-outline);
-}
-
-:host([open]) .header::after {
-  transform: rotate(90deg);
 }
 
 .content {
@@ -4157,6 +4147,7 @@ var collapsibleAssistanceContentWidget_css_default = `/*
 /*# sourceURL=${import.meta.resolve("././components/collapsibleAssistanceContentWidget.css")} */`;
 
 // gen/front_end/panels/ai_assistance/components/CollapsibleAssistanceContentWidget.js
+var { render: render7, html: html7 } = Lit3;
 var CollapsibleAssistanceContentWidget = class extends HTMLElement {
   #shadow = this.attachShadow({ mode: "open" });
   #isCollapsed = true;
@@ -4175,13 +4166,25 @@ var CollapsibleAssistanceContentWidget = class extends HTMLElement {
   #render() {
     const output = html7`
       <style>${collapsibleAssistanceContentWidget_css_default}</style>
-      <details>
-      <summary class="header" @click=${this.#toggleCollapse}>
-        ${this.#headerText}
-      </summary>
-      <div class="content">
-        <slot></slot>
-      </div>
+      <details ?open=${!this.#isCollapsed}>
+        <summary class="header" @click=${(event) => {
+      event.preventDefault();
+      this.#toggleCollapse();
+    }}>
+          <devtools-button .data=${{
+      variant: "icon",
+      iconName: this.#isCollapsed ? "triangle-right" : "triangle-down",
+      color: "var(--sys-color-on-surface)",
+      width: "14px",
+      height: "14px"
+    }}
+          >
+          </devtools-button>
+          ${this.#headerText}
+        </summary>
+        <div class="content">
+          <slot></slot>
+        </div>
       </details>
     `;
     render7(output, this.#shadow, { host: this });
@@ -4196,9 +4199,9 @@ import "./../timeline/components/components.js";
 // gen/front_end/panels/ai_assistance/components/PerformanceAgentFlameChart.js
 import * as Trace2 from "./../../models/trace/trace.js";
 import * as PerfUI from "./../../ui/legacy/components/perf_ui/perf_ui.js";
-import * as Lit3 from "./../../ui/lit/lit.js";
+import * as Lit4 from "./../../ui/lit/lit.js";
 import * as Timeline from "./../timeline/timeline.js";
-var { html: html8 } = Lit3;
+var { html: html8 } = Lit4;
 var PerformanceAgentFlameChart = class extends HTMLElement {
   #shadow = this.attachShadow({ mode: "open" });
   #flameChartContainer = document.createElement("div");
@@ -4217,9 +4220,6 @@ var PerformanceAgentFlameChart = class extends HTMLElement {
     if (!data.parsedTrace) {
       return;
     }
-    if (data.parsedTrace === this.#parsedTrace) {
-      return;
-    }
     this.#parsedTrace = data.parsedTrace;
     const entityMapper = new Trace2.EntityMapper.EntityMapper(data.parsedTrace);
     this.#dataProvider.setModel(data.parsedTrace, entityMapper);
@@ -4227,10 +4227,19 @@ var PerformanceAgentFlameChart = class extends HTMLElement {
       filterTracks: (trackName) => trackName.startsWith("Main"),
       expandTracks: () => true
     });
+    let start = Trace2.Types.Timing.Micro(data.start);
+    let end = Trace2.Types.Timing.Micro(data.end);
+    const minTraceTime = data.parsedTrace.data.Meta.traceBounds.min;
+    const maxTraceTime = data.parsedTrace.data.Meta.traceBounds.max;
+    if (start < 0 || end < 0 || start >= end || start === end || start < minTraceTime || end > maxTraceTime) {
+      start = minTraceTime;
+      end = maxTraceTime;
+      console.log("[GreenDev] Flamechart widget bounds reset to the whole trace duration.");
+    }
     const bounds = Trace2.Helpers.Timing.traceWindowMicroSecondsToMilliSeconds({
-      min: Trace2.Types.Timing.Micro(data.start),
-      max: Trace2.Types.Timing.Micro(data.end),
-      range: Trace2.Types.Timing.Micro(data.end - data.start)
+      min: Trace2.Types.Timing.Micro(start),
+      max: Trace2.Types.Timing.Micro(end),
+      range: Trace2.Types.Timing.Micro(end - start)
     });
     this.#flameChart.setWindowTimes(bounds.min, bounds.max);
     this.#flameChart.setSize(600, 200);
@@ -4264,7 +4273,7 @@ var PerformanceAgentFlameChart = class extends HTMLElement {
         </style>
         ${this.#flameChartContainer}
       `;
-    Lit3.render(output, this.#shadow, { host: this });
+    Lit4.render(output, this.#shadow, { host: this });
     this.#flameChart.update();
     this.#flameChart.setSize(600, 200);
   }
@@ -4290,47 +4299,17 @@ import * as NetworkTimeCalculator from "./../../models/network_time_calculator/n
 import * as Helpers2 from "./../../models/trace/helpers/helpers.js";
 import * as Trace3 from "./../../models/trace/trace.js";
 import * as UI7 from "./../../ui/legacy/legacy.js";
-import * as Lit4 from "./../../ui/lit/lit.js";
+import * as Lit5 from "./../../ui/lit/lit.js";
 import * as PanelsCommon2 from "./../common/common.js";
 import * as Network from "./../network/network.js";
 import * as Insights from "./../timeline/components/insights/insights.js";
-var { html: html9 } = Lit4.StaticHtml;
-var { ref: ref3, createRef } = Lit4.Directives;
-var INSIGHT_NAME_TO_COMPONENT = {
-  Cache: Insights.Cache.Cache,
-  CLSCulprits: Insights.CLSCulprits.CLSCulprits,
-  DocumentLatency: Insights.DocumentLatency.DocumentLatency,
-  DOMSize: Insights.DOMSize.DOMSize,
-  DuplicatedJavaScript: Insights.DuplicatedJavaScript.DuplicatedJavaScript,
-  FontDisplay: Insights.FontDisplay.FontDisplay,
-  ForcedReflow: Insights.ForcedReflow.ForcedReflow,
-  ImageDelivery: Insights.ImageDelivery.ImageDelivery,
-  INPBreakdown: Insights.INPBreakdown.INPBreakdown,
-  LCPDiscovery: Insights.LCPDiscovery.LCPDiscovery,
-  LCPBreakdown: Insights.LCPBreakdown.LCPBreakdown,
-  LegacyJavaScript: Insights.LegacyJavaScript.LegacyJavaScript,
-  ModernHTTP: Insights.ModernHTTP.ModernHTTP,
-  NetworkDependencyTree: Insights.NetworkDependencyTree.NetworkDependencyTree,
-  RenderBlocking: Insights.RenderBlocking.RenderBlocking,
-  SlowCSSSelector: Insights.SlowCSSSelector.SlowCSSSelector,
-  ThirdParties: Insights.ThirdParties.ThirdParties,
-  Viewport: Insights.Viewport.Viewport
-};
-function renderInsight(insightName, model) {
-  const componentClass = INSIGHT_NAME_TO_COMPONENT[insightName];
-  if (!componentClass) {
-    return Lit4.nothing;
-  }
-  return html9`<div><${componentClass.litTagName}
-  .model=${model}
-  .selected=${true}
-  .isAIAssistanceContext=${true}>
-  </${componentClass.litTagName}></div>`;
-}
+var { html: html9 } = Lit5.StaticHtml;
+var { ref: ref3, createRef } = Lit5.Directives;
 var PerformanceAgentMarkdownRenderer = class extends MarkdownRendererWithCodeBlock {
   mainFrameId;
   lookupEvent;
   parsedTrace;
+  #insightRenderer = new Insights.InsightRenderer.InsightRenderer();
   constructor(mainFrameId = "", lookupEvent = () => null, parsedTrace = null) {
     super();
     this.mainFrameId = mainFrameId;
@@ -4338,20 +4317,21 @@ var PerformanceAgentMarkdownRenderer = class extends MarkdownRendererWithCodeBlo
     this.parsedTrace = parsedTrace;
   }
   templateForToken(token) {
+    if (!this.parsedTrace) {
+      return null;
+    }
     if (token.type === "html" && Boolean(Root6.Runtime.hostConfig.devToolsGreenDevUi?.enabled)) {
       if (token.text.includes("<flame-chart-widget")) {
         const startMatch = token.text.match(/start="?(\d+)"?/);
         const endMatch = token.text.match(/end="?(\d+)"?/);
-        if (this.parsedTrace) {
-          const start = startMatch ? Number(startMatch[1]) : this.parsedTrace.data.Meta.traceBounds.min;
-          const end = endMatch ? Number(endMatch[1]) : this.parsedTrace.data.Meta.traceBounds.max;
-          return html9`<devtools-performance-agent-flame-chart .data=${{
-            parsedTrace: this.parsedTrace,
-            start,
-            end
-          }}
+        const start = startMatch ? Number(startMatch[1]) : this.parsedTrace.data.Meta.traceBounds.min;
+        const end = endMatch ? Number(endMatch[1]) : this.parsedTrace.data.Meta.traceBounds.max;
+        return html9`<devtools-performance-agent-flame-chart .data=${{
+          parsedTrace: this.parsedTrace,
+          start,
+          end
+        }}
           }></devtools-performance-agent-flame-chart>`;
-        }
       }
       const regex = /<([a-z-]+)\s+value="([^"]+)">/;
       const match = token.text.match(regex);
@@ -4362,15 +4342,18 @@ var PerformanceAgentMarkdownRenderer = class extends MarkdownRendererWithCodeBlo
       const value = match[2];
       if (tagName === "ai-insight" && value) {
         const componentName = value;
-        const insightSet = this.parsedTrace?.insights?.values().next().value;
+        const insightSet = this.parsedTrace.insights?.values().next().value;
         const insightM = insightSet?.model[componentName];
         if (!insightM) {
           return null;
         }
         return html9`<devtools-collapsible-assistance-content-widget  .data=${{
-          headerText: "Insight"
+          headerText: `Insight - ${componentName}`
         }}>
-        ${renderInsight(componentName, insightM)}
+        ${this.#insightRenderer.renderInsightToWidgetElement(this.parsedTrace, insightSet, insightM, componentName, {
+          selected: true,
+          isAIAssistanceContext: true
+        })}
         </devtools-collapsible-assistance-content-widget>`;
       }
       if (tagName === "network-request-widget" && value) {
@@ -4383,7 +4366,7 @@ var PerformanceAgentMarkdownRenderer = class extends MarkdownRendererWithCodeBlo
             const calculator = new NetworkTimeCalculator.NetworkTimeCalculator(true);
             return html9`<devtools-collapsible-assistance-content-widget
             .data=${{
-              headerText: "Network Request"
+              headerText: `Network Request: ${networkRequest.url().length > 80 ? networkRequest.url().slice(0, 80) + "..." : networkRequest.url()}`
             }}>
             <devtools-widget class="actions" .widgetConfig=${UI7.Widget.widgetConfig(Network.RequestTimingView.RequestTimingView, {
               request: networkRequest,
@@ -4468,7 +4451,7 @@ var PerformanceAgentMarkdownRenderer = class extends MarkdownRendererWithCodeBlo
 };
 
 // gen/front_end/panels/ai_assistance/AiAssistancePanel.js
-var { html: html10 } = Lit5;
+var { html: html10 } = Lit6;
 var AI_ASSISTANCE_SEND_FEEDBACK = "https://crbug.com/364805393";
 var AI_ASSISTANCE_HELP = "https://developer.chrome.com/docs/devtools/ai-assistance";
 var SCREENSHOT_QUALITY = 100;
@@ -4698,7 +4681,7 @@ function toolbarView(input) {
           .iconName=${"history"}
           .jslogContext=${"freestyler.history"}
           .populateMenuCall=${input.populateHistoryMenu}
-        ></devtools-menu-button>` : Lit5.nothing}
+        ></devtools-menu-button>` : Lit6.nothing}
         ${input.showActiveConversationActions ? html10`
           <devtools-button
               title=${i18nString3(UIStrings3.deleteChat)}
@@ -4716,7 +4699,7 @@ function toolbarView(input) {
             .jslogContext=${"export-ai-conversation"}
             .variant=${"toolbar"}
             @click=${input.onExportConversationClick}>
-          </devtools-button>` : Lit5.nothing}
+          </devtools-button>` : Lit6.nothing}
       </devtools-toolbar>
       <devtools-toolbar class="freestyler-right-toolbar" role="presentation">
         <devtools-link
@@ -4750,7 +4733,7 @@ function defaultView(input, output, target) {
       case "chat-view":
         return html10`<devtools-ai-chat-view
           .props=${input.props}
-          ${Lit5.Directives.ref((el) => {
+          ${Lit6.Directives.ref((el) => {
           if (!el || !(el instanceof ChatView)) {
             return;
           }
@@ -4769,7 +4752,7 @@ function defaultView(input, output, target) {
         ></devtools-widget>`;
     }
   }
-  Lit5.render(html10`
+  Lit6.render(html10`
       ${toolbarView(input)}
       <div class="ai-assistance-view-container">${renderState()}</div>
     `, target);

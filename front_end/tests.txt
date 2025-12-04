@@ -347,7 +347,6 @@ panels/application/components/TrustTokensView.test.js
 panels/application/preloading/components/MismatchedPreloadingGrid.test.js
 panels/application/preloading/components/PreloadingDetailsReportView.test.js
 panels/application/preloading/components/PreloadingGrid.test.js
-panels/application/preloading/components/PreloadingMismatchedHeadersGrid.test.js
 panels/application/preloading/components/RuleSetDetailsView.test.js
 panels/application/preloading/components/RuleSetGrid.test.js
 panels/application/preloading/components/UsedPreloadingView.test.js
@@ -530,6 +529,7 @@ panels/sources/SourcesNavigator.test.js
 panels/sources/SourcesPanel.test.js
 panels/sources/SourcesView.test.js
 panels/sources/TabbedEditorContainer.test.js
+panels/sources/ThreadsSidebarPane.test.js
 panels/sources/UISourceCodeFrame.test.js
 panels/sources/components/HeadersView.test.js
 panels/timeline/AnnotationHelpers.test.js

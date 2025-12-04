@@ -2,17 +2,28 @@ import '../../../ui/components/report_view/report_view.js';
 import '../../../ui/kit/kit.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Protocol from '../../../generated/protocol.js';
-import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wrapper.js';
-export declare class RequestTrustTokensView extends LegacyWrapper.LegacyWrapper.WrappableComponent {
+import * as UI from '../../../ui/legacy/legacy.js';
+type Status = 'Success' | 'Failure';
+export interface ViewInput {
+    params?: Array<{
+        name: string;
+        value: string | string[];
+        isCode?: boolean;
+    }>;
+    status?: Status;
+    description?: string;
+    issuedTokenCount?: number;
+}
+type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+export declare const DEFAULT_VIEW: View;
+export declare class RequestTrustTokensView extends UI.Widget.Widget {
     #private;
-    constructor(request: SDK.NetworkRequest.NetworkRequest);
+    constructor(element?: HTMLElement, view?: View);
+    get request(): SDK.NetworkRequest.NetworkRequest | null;
+    set request(request: SDK.NetworkRequest.NetworkRequest | null);
     wasShown(): void;
     willHide(): void;
-    render(): Promise<void>;
+    performUpdate(): void;
 }
 export declare function statusConsideredSuccess(status: Protocol.Network.TrustTokenOperationDoneEventStatus): boolean;
-declare global {
-    interface HTMLElementTagNameMap {
-        'devtools-trust-token-report': RequestTrustTokensView;
-    }
-}
+export {};

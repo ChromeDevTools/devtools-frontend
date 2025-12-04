@@ -7493,28 +7493,9 @@ var UIStrings19 = {
 };
 var str_19 = i18n37.i18n.registerUIStrings("panels/timeline/components/SidebarSingleInsightSet.ts", UIStrings19);
 var i18nString18 = i18n37.i18n.getLocalizedString.bind(void 0, str_19);
-var INSIGHT_NAME_TO_COMPONENT = {
-  Cache: Insights4.Cache.Cache,
-  CLSCulprits: Insights4.CLSCulprits.CLSCulprits,
-  DocumentLatency: Insights4.DocumentLatency.DocumentLatency,
-  DOMSize: Insights4.DOMSize.DOMSize,
-  DuplicatedJavaScript: Insights4.DuplicatedJavaScript.DuplicatedJavaScript,
-  FontDisplay: Insights4.FontDisplay.FontDisplay,
-  ForcedReflow: Insights4.ForcedReflow.ForcedReflow,
-  ImageDelivery: Insights4.ImageDelivery.ImageDelivery,
-  INPBreakdown: Insights4.INPBreakdown.INPBreakdown,
-  LCPDiscovery: Insights4.LCPDiscovery.LCPDiscovery,
-  LCPBreakdown: Insights4.LCPBreakdown.LCPBreakdown,
-  LegacyJavaScript: Insights4.LegacyJavaScript.LegacyJavaScript,
-  ModernHTTP: Insights4.ModernHTTP.ModernHTTP,
-  NetworkDependencyTree: Insights4.NetworkDependencyTree.NetworkDependencyTree,
-  RenderBlocking: Insights4.RenderBlocking.RenderBlocking,
-  SlowCSSSelector: Insights4.SlowCSSSelector.SlowCSSSelector,
-  ThirdParties: Insights4.ThirdParties.ThirdParties,
-  Viewport: Insights4.Viewport.Viewport
-};
 var SidebarSingleInsightSet = class _SidebarSingleInsightSet extends HTMLElement {
   #shadow = this.attachShadow({ mode: "open" });
+  #insightRenderer = new Insights4.InsightRenderer.InsightRenderer();
   #activeInsightElement = null;
   #data = {
     insightSetKey: null,
@@ -7725,18 +7706,14 @@ var SidebarSingleInsightSet = class _SidebarSingleInsightSet extends HTMLElement
     }
     const shownInsights = [];
     const passedInsights = [];
-    for (const [name, model] of Object.entries(insightSet.model)) {
-      const componentClass = INSIGHT_NAME_TO_COMPONENT[name];
-      if (!componentClass) {
-        continue;
-      }
+    for (const [insightName, model] of Object.entries(insightSet.model)) {
       if (!model || !shouldRenderForCategory({ activeCategory, insightCategory: model.category })) {
         continue;
       }
       if (model.state === "pass") {
-        passedInsights.push({ componentClass, model });
+        passedInsights.push({ insightName, model });
       } else {
-        shownInsights.push({ componentClass, model });
+        shownInsights.push({ insightName, model });
       }
     }
     return { shownInsights, passedInsights };
@@ -7749,27 +7726,20 @@ var SidebarSingleInsightSet = class _SidebarSingleInsightSet extends HTMLElement
     const fieldMetrics = this.#getFieldMetrics(insightSetKey);
     const { shownInsights: shownInsightsData, passedInsights: passedInsightsData } = _SidebarSingleInsightSet.categorizeInsights(insights, insightSetKey, this.#data.activeCategory);
     const renderInsightComponent = (insightData) => {
-      const { componentClass, model } = insightData;
       if (!this.#data.parsedTrace?.insights) {
         return nothing19;
       }
+      const { insightName, model } = insightData;
       const agentFocus = AIAssistance.AIContext.AgentFocus.fromInsight(this.#data.parsedTrace, model);
-      return html18`<div>
-        <${componentClass.litTagName}
-          .selected=${this.#data.activeInsight?.model === model}
-          ${Lit18.Directives.ref((elem) => {
-        if (this.#data.activeInsight?.model === model && elem) {
-          this.#activeInsightElement = elem;
-        }
-      })}
-          .parsedTrace=${this.#data.parsedTrace}
-          .model=${model}
-          .bounds=${insightSet.bounds}
-          .insightSetKey=${insightSetKey}
-          .agentFocus=${agentFocus}
-          .fieldMetrics=${fieldMetrics}>
-        </${componentClass.litTagName}>
-      </div>`;
+      const widgetElement = this.#insightRenderer.renderInsightToWidgetElement(this.#data.parsedTrace, insightSet, model, insightName, {
+        selected: this.#data.activeInsight?.model === model,
+        agentFocus,
+        fieldMetrics
+      });
+      if (this.#data.activeInsight?.model === model) {
+        this.#activeInsightElement = widgetElement;
+      }
+      return html18`${widgetElement}`;
     };
     const shownInsights = shownInsightsData.map(renderInsightComponent);
     const passedInsights = passedInsightsData.map(renderInsightComponent);
@@ -7791,13 +7761,18 @@ var SidebarSingleInsightSet = class _SidebarSingleInsightSet extends HTMLElement
       Lit18.render(Lit18.nothing, this.#shadow, { host: this });
       return;
     }
+    const insightSet = parsedTrace.insights.get(insightSetKey);
+    if (!insightSet) {
+      Lit18.render(Lit18.nothing, this.#shadow, { host: this });
+      return;
+    }
     Lit18.render(html18`
       <style>${sidebarSingleInsightSet_css_default}</style>
       <div class="navigation">
         ${this.#renderMetrics(insightSetKey)}
         ${this.#renderInsights(parsedTrace.insights, insightSetKey)}
-        </div>
-      `, this.#shadow, { host: this });
+      </div>
+    `, this.#shadow, { host: this });
   }
 };
 customElements.define("devtools-performance-sidebar-single-navigation", SidebarSingleInsightSet);

@@ -13,7 +13,6 @@ import { nodeLink } from './NodeLink.js';
 const { UIStrings, i18nString } = Trace.Insights.Models.DOMSize;
 const { html } = Lit;
 export class DOMSize extends BaseInsightComponent {
-    static litTagName = Lit.StaticHtml.literal `devtools-performance-dom-size`;
     internalName = 'dom-size';
     hasAskAiSupport() {
         return true;
@@ -108,5 +107,4 @@ export class DOMSize extends BaseInsightComponent {
         // clang-format on
     }
 }
-customElements.define('devtools-performance-dom-size', DOMSize);
 //# sourceMappingURL=DOMSize.js.map

@@ -9,7 +9,6 @@ import { BaseInsightComponent } from './BaseInsightComponent.js';
 const { UIStrings, i18nString } = Trace.Insights.Models.LCPBreakdown;
 const { html } = Lit;
 export class LCPBreakdown extends BaseInsightComponent {
-    static litTagName = Lit.StaticHtml.literal `devtools-performance-lcp-breakdown`;
     internalName = 'lcp-by-phase';
     #overlay = null;
     hasAskAiSupport() {
@@ -104,5 +103,4 @@ export class LCPBreakdown extends BaseInsightComponent {
         return html `${sections}`;
     }
 }
-customElements.define('devtools-performance-lcp-breakdown', LCPBreakdown);
 //# sourceMappingURL=LCPBreakdown.js.map

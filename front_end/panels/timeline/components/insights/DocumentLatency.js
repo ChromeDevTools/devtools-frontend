@@ -6,7 +6,6 @@ import * as Lit from '../../../../ui/lit/lit.js';
 import { BaseInsightComponent } from './BaseInsightComponent.js';
 const { html } = Lit;
 export class DocumentLatency extends BaseInsightComponent {
-    static litTagName = Lit.StaticHtml.literal `devtools-performance-document-latency`;
     internalName = 'document-latency';
     hasAskAiSupport() {
         return true;
@@ -23,5 +22,4 @@ export class DocumentLatency extends BaseInsightComponent {
         // clang-format on
     }
 }
-customElements.define('devtools-performance-document-latency', DocumentLatency);
 //# sourceMappingURL=DocumentLatency.js.map

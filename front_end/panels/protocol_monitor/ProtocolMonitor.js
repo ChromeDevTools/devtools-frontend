@@ -1,7 +1,6 @@
 // Copyright 2018 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 import '../../ui/legacy/legacy.js';
 import '../../ui/legacy/components/data_grid/data_grid.js';
 import * as Host from '../../core/host/host.js';
@@ -565,37 +564,49 @@ export class CommandAutocompleteSuggestionProvider {
         }
     }
 }
+const INFO_WIDGET_VIEW = (input, _output, target) => {
+    // clang-format off
+    render(html `<devtools-widget .widgetConfig=${widgetConfig(UI.TabbedPane.TabbedPane, {
+        tabs: [
+            {
+                id: 'request',
+                title: i18nString(UIStrings.request),
+                view: input.type === undefined ?
+                    new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.noMessageSelected), i18nString(UIStrings.selectAMessageToView)) :
+                    SourceFrame.JSONView.JSONView.createViewSync(input.request || null),
+                enabled: input.type === 'sent',
+                selected: input.selectedTab === 'request',
+            },
+            {
+                id: 'response',
+                title: i18nString(UIStrings.response),
+                view: input.type === undefined ?
+                    new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.noMessageSelected), i18nString(UIStrings.selectAMessageToView)) :
+                    SourceFrame.JSONView.JSONView.createViewSync(input.response || null),
+                selected: input.selectedTab === 'response',
+            }
+        ]
+    })}>
+  </devtools-widget>`, target);
+    // clang-format on
+};
 export class InfoWidget extends UI.Widget.VBox {
-    tabbedPane;
+    #view;
     request;
     response;
     type;
-    selectedTab;
-    constructor(element) {
+    constructor(element, view = INFO_WIDGET_VIEW) {
         super(element);
-        this.tabbedPane = new UI.TabbedPane.TabbedPane();
-        this.tabbedPane.appendTab('request', i18nString(UIStrings.request), new UI.Widget.Widget());
-        this.tabbedPane.appendTab('response', i18nString(UIStrings.response), new UI.Widget.Widget());
-        this.tabbedPane.show(this.contentElement);
-        this.tabbedPane.selectTab('response');
-        this.request = {};
+        this.#view = view;
+        this.requestUpdate();
     }
     performUpdate() {
-        if (!this.request && !this.response) {
-            this.tabbedPane.changeTabView('request', new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.noMessageSelected), i18nString(UIStrings.selectAMessageToView)));
-            this.tabbedPane.changeTabView('response', new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.noMessageSelected), i18nString(UIStrings.selectAMessageToView)));
-            return;
-        }
-        const requestEnabled = this.type && this.type === 'sent';
-        this.tabbedPane.setTabEnabled('request', Boolean(requestEnabled));
-        if (!requestEnabled) {
-            this.tabbedPane.selectTab('response');
-        }
-        this.tabbedPane.changeTabView('request', SourceFrame.JSONView.JSONView.createViewSync(this.request || null));
-        this.tabbedPane.changeTabView('response', SourceFrame.JSONView.JSONView.createViewSync(this.response || null));
-        if (this.selectedTab) {
-            this.tabbedPane.selectTab(this.selectedTab);
-        }
+        this.#view({
+            request: this.request,
+            response: this.response,
+            type: this.type,
+            selectedTab: this.type !== 'sent' ? 'response' : undefined,
+        }, undefined, this.contentElement);
     }
 }
 export function parseCommandInput(input) {

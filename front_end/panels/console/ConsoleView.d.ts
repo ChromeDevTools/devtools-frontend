@@ -2,6 +2,7 @@ import '../../ui/legacy/legacy.js';
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import type * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { ConsoleFilter, type LevelsMask } from './ConsoleFilter.js';
 import { ConsolePinPane } from './ConsolePinPane.js';
@@ -62,9 +63,10 @@ export declare class ConsoleView extends UI.Widget.VBox implements UI.Searchable
     private issueToolbarThrottle;
     private requestResolver;
     private issueResolver;
-    private aiCodeCompletionSetting;
+    aiCodeCompletionConfig?: TextEditor.AiCodeCompletionProvider.AiCodeCompletionConfig;
     private aiCodeCompletionSummaryToolbarContainer?;
     private aiCodeCompletionSummaryToolbar?;
+    private aiCodeCompletionCitations;
     constructor(viewportThrottlerTimeout: number);
     static instance(opts?: {
         forceNew: boolean;
@@ -112,6 +114,7 @@ export declare class ConsoleView extends UI.Widget.VBox implements UI.Searchable
     private messageAppendedForTests;
     private createViewMessage;
     private onMessageResized;
+    getConsoleMessageHistory(): string;
     private consoleCleared;
     private handleContextMenuEvent;
     private saveConsole;
@@ -127,7 +130,6 @@ export declare class ConsoleView extends UI.Widget.VBox implements UI.Searchable
     private registerShortcuts;
     private clearPromptBackwards;
     private promptKeyDown;
-    private keyDown;
     private printResult;
     private commandEvaluated;
     elementsToRestoreScrollPositionsFor(): Element[];
@@ -149,8 +151,8 @@ export declare class ConsoleView extends UI.Widget.VBox implements UI.Searchable
     private promptTextChanged;
     private promptTextChangedForTest;
     private isScrolledToBottom;
-    private onAiCodeCompletionSettingChanged;
-    private isAiCodeCompletionEnabled;
+    private setupAiCodeCompletion;
+    private cleanupAiCodeCompletion;
 }
 export declare class ConsoleViewFilter {
     private readonly filterChanged;

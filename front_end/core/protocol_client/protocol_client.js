@@ -19,6 +19,7 @@ var CDPErrorStatus;
   CDPErrorStatus2[CDPErrorStatus2["SERVER_ERROR"] = -32e3] = "SERVER_ERROR";
   CDPErrorStatus2[CDPErrorStatus2["SESSION_NOT_FOUND"] = -32001] = "SESSION_NOT_FOUND";
   CDPErrorStatus2[CDPErrorStatus2["DEVTOOLS_STUB_ERROR"] = -32015] = "DEVTOOLS_STUB_ERROR";
+  CDPErrorStatus2[CDPErrorStatus2["DEVTOOLS_REHYDRATION_ERROR"] = -32016] = "DEVTOOLS_REHYDRATION_ERROR";
 })(CDPErrorStatus || (CDPErrorStatus = {}));
 
 // gen/front_end/core/protocol_client/ConnectionTransport.js
@@ -1963,6 +1964,7 @@ var TargetBase = class {
   }
 };
 var IGNORED_ERRORS = /* @__PURE__ */ new Set([
+  CDPErrorStatus.DEVTOOLS_REHYDRATION_ERROR,
   CDPErrorStatus.DEVTOOLS_STUB_ERROR,
   CDPErrorStatus.SERVER_ERROR,
   CDPErrorStatus.SESSION_NOT_FOUND
@@ -1999,7 +2001,9 @@ var AgentPrototype = class {
       if ("result" in response) {
         return { ...response.result, getError: () => void 0 };
       }
-      return { getError: () => void 0 };
+      return {
+        getError: () => `Command ${method} returned neither result nor an error, params: ${JSON.stringify(request, void 0, 2)}`
+      };
     });
   }
 };

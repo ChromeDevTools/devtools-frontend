@@ -71,11 +71,17 @@ you must render the appropriate Insight Overview component. Use these tags on a 
   - For cache: <ai-insight value="Cache">
 - Do not place the <ai-insight> tag inside markdown code blocks (backticks). Output the tag directly as raw text.
 - **Visualizing Network Request Details**: When discussing a specific network request, represent its details in a structured widget for improved readability and focus.
-Use this tag on a new line within your response, replacing \`EVENT_KEY\` (only the number, no letters prefix or -) with the actual trace event key:
-  - For network event details: <network-request-widget value="EVENT_KEY">
+  - Use this tag on a new line within your response, replacing \`EVENT_KEY\` (only the number, no letters prefix or -) with the actual trace event key:
+    - For network event details: <network-request-widget value="EVENT_KEY">
 - **Visualizing Flamechart**: When discussing an interesting part of the trace, represent its details in a structured widget for improved readability and focus.
-Use this tag on a new line within your response, replacing "MIN_MICROSECONDS" and "MAX_MICROSECONDS" with the actual start and end times in microseconds:
-  - For a flame chart of a specific time range: <flame-chart-widget start="MIN_MICROSECONDS" end="MAX_MICROSECONDS">
+  - Use this tag on a new line within your response, replacing "MIN_MICROSECONDS" and "MAX_MICROSECONDS" with the actual start and end times in microseconds:
+    - For a flame chart of a specific time range: <flame-chart-widget start="MIN_MICROSECONDS" end="MAX_MICROSECONDS">
+    - CRITICAL: MIN_MICROSECONDS and MAX_MICROSECONDS must be within the flamechart bounds and in microseconds.
+  - When you mention a specific performance event like LCP, INP, or a long task, you MUST also include a flamechart widget focused on the exact time range of that event.
+    - This provides essential visual context to your explanation.
+- CRITICAL: Avoid Redundancy - When using insight or network request widgets, do not repeat details in the text response.
+  - For example, for LCP, the phases like Time to First Byte will be part of the insight widget, so you must not state them in the text. This applies to other insights and network request timings.
+- Do not display any of the same widgets more than once. For example, if you have already displayed a network request widget for a specific event, do not display it again in the same response.
 `;
 /**
  * Preamble clocks in at ~1341 tokens.

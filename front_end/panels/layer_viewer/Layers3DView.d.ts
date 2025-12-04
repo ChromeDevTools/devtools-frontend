@@ -4,6 +4,19 @@ import type * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { type LayerView, type LayerViewHost, Selection } from './LayerViewHost.js';
+export interface ViewInput {
+    panelToolbar: UI.Toolbar.Toolbar;
+    onDoubleClick: (event: Event) => void;
+    onMouseDown: (event: Event) => void;
+    onMouseUp: (event: Event) => void;
+    onMouseMove: (event: Event) => void;
+    onContextMenu: (event: Event) => void;
+    error?: 'missing-root' | 'webgl-disabled';
+}
+export interface ViewOutput {
+    canvasElement?: HTMLCanvasElement;
+}
+export declare const DEFAULT_VIEW: (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
 declare const Layers3DView_base: (new (...args: any[]) => {
     "__#private@#events": Common.ObjectWrapper.ObjectWrapper<EventTypes>;
     addEventListener<T extends keyof EventTypes>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<EventTypes[T], any>) => void, thisObject?: Object): Common.EventTarget.EventDescriptor<EventTypes, T>;
@@ -14,10 +27,8 @@ declare const Layers3DView_base: (new (...args: any[]) => {
 }) & typeof UI.Widget.VBox;
 export declare class Layers3DView extends Layers3DView_base implements LayerView {
     #private;
-    private failBanner;
     private readonly layerViewHost;
     private transformController;
-    private canvasElement;
     private lastSelection;
     private layerTree;
     private readonly textureManager;
@@ -37,12 +48,13 @@ export declare class Layers3DView extends Layers3DView_base implements LayerView
     private dimensionsForAutoscale?;
     private needsUpdate?;
     private updateScheduled?;
-    private panelToolbar?;
+    private panelToolbar;
     private showSlowScrollRectsSetting?;
     private showPaintsSetting?;
     private mouseDownX?;
     private mouseDownY?;
-    constructor(layerViewHost: LayerViewHost);
+    constructor(layerViewHost: LayerViewHost, view?: (input: ViewInput, output: ViewOutput, target: HTMLElement) => void);
+    performUpdate(): void;
     setLayerTree(layerTree: SDK.LayerTreeBase.LayerTreeBase | null): void;
     showImageForLayer(layer: SDK.LayerTreeBase.Layer, imageURL?: string): void;
     onResize(): void;
@@ -77,11 +89,9 @@ export declare class Layers3DView extends Layers3DView_base implements LayerView
     private drawTexture;
     private drawViewportAndChrome;
     private drawViewRect;
-    update(): void;
-    private webglDisabledBanner;
+    updateData(): void;
     private selectionFromEventPoint;
     private createVisibilitySetting;
-    private initToolbar;
     private onContextMenu;
     private onMouseMove;
     private onMouseDown;

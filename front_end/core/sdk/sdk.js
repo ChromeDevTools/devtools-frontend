@@ -31156,7 +31156,7 @@ __export(Connections_exports, {
 import * as i18n29 from "./../i18n/i18n.js";
 import * as Common34 from "./../common/common.js";
 import * as Host7 from "./../host/host.js";
-import * as ProtocolClient2 from "./../protocol_client/protocol_client.js";
+import * as ProtocolClient3 from "./../protocol_client/protocol_client.js";
 import * as Root12 from "./../root/root.js";
 
 // gen/front_end/core/sdk/RehydratingConnection.js
@@ -31167,6 +31167,7 @@ __export(RehydratingConnection_exports, {
 });
 import * as Common33 from "./../common/common.js";
 import * as i18n27 from "./../i18n/i18n.js";
+import * as ProtocolClient2 from "./../protocol_client/protocol_client.js";
 import * as Root11 from "./../root/root.js";
 
 // gen/front_end/core/sdk/EnhancedTracesParser.js
@@ -31771,7 +31772,10 @@ var RehydratingSession = class extends RehydratingSessionBase {
       default:
         this.sendMessageToFrontend({
           id: data.id,
-          result: {}
+          error: {
+            message: `Command ${data.method} not implemented in RehydratingSession.`,
+            code: ProtocolClient2.CDPConnection.CDPErrorStatus.DEVTOOLS_STUB_ERROR
+          }
         });
         break;
     }
@@ -32078,7 +32082,7 @@ var StubTransport = class {
     const messageObject = JSON.parse(message);
     const error = {
       message: "This is a stub connection, can't dispatch message.",
-      code: ProtocolClient2.CDPConnection.CDPErrorStatus.DEVTOOLS_STUB_ERROR,
+      code: ProtocolClient3.CDPConnection.CDPErrorStatus.DEVTOOLS_STUB_ERROR,
       data: messageObject
     };
     if (this.onMessage) {
@@ -32094,7 +32098,7 @@ var StubTransport = class {
   }
 };
 async function initMainConnection(createRootTarget, onConnectionLost) {
-  ProtocolClient2.ConnectionTransport.ConnectionTransport.setFactory(createMainTransport.bind(null, onConnectionLost));
+  ProtocolClient3.ConnectionTransport.ConnectionTransport.setFactory(createMainTransport.bind(null, onConnectionLost));
   await createRootTarget();
   Host7.InspectorFrontendHost.InspectorFrontendHostInstance.connectionReady();
 }

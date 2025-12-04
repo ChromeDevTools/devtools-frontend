@@ -79,7 +79,7 @@ export class KeyValueStorageItemsView extends UI.Widget.VBox {
     #editable;
     #toolbar;
     metadataView;
-    constructor(title, id, editable, view, metadataView) {
+    constructor(title, id, editable, view, metadataView, opts) {
         metadataView ??= new ApplicationComponents.StorageMetadataView.StorageMetadataView();
         if (!view) {
             view = (input, output, target) => {
@@ -136,7 +136,7 @@ export class KeyValueStorageItemsView extends UI.Widget.VBox {
                 target);
             };
         }
-        super();
+        super(opts);
         this.metadataView = metadataView;
         this.#editable = editable;
         this.#view = view;

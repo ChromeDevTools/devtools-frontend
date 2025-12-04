@@ -4,7 +4,6 @@
 /* eslint-disable @devtools/no-lit-render-outside-of-view */
 import '../../../../ui/kit/kit.js';
 import '../../../../ui/components/report_view/report_view.js';
-import './PreloadingMismatchedHeadersGrid.js';
 import './MismatchedPreloadingGrid.js';
 import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
@@ -12,9 +11,12 @@ import { assertNotNullOrUndefined } from '../../../../core/platform/platform.js'
 import * as SDK from '../../../../core/sdk/sdk.js';
 import * as LegacyWrapper from '../../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as RenderCoordinator from '../../../../ui/components/render_coordinator/render_coordinator.js';
+import * as UI from '../../../../ui/legacy/legacy.js';
 import * as Lit from '../../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js';
 import * as PreloadingHelper from '../helper/helper.js';
+import * as MismatchedPreloadingGrid from './MismatchedPreloadingGrid.js';
+import preloadingGridStyles from './preloadingGrid.css.js';
 import { prefetchFailureReason, prerenderFailureReason } from './PreloadingString.js';
 import usedPreloadingStyles from './usedPreloadingView.css.js';
 const { html } = Lit;
@@ -107,6 +109,22 @@ const UIStrings = {
      * @description Label for badge, indicating how many failed speculations there are.
      */
     badgeFailureWithCount: '{n, plural, =1 {# failure} other {# failures}}',
+    /**
+     * @description The name of the HTTP request header.
+     */
+    headerName: 'Header name',
+    /**
+     * @description The value of the HTTP request header in initial navigation.
+     */
+    initialNavigationValue: 'Value in initial navigation',
+    /**
+     * @description The value of the HTTP request header in activation navigation.
+     */
+    activationNavigationValue: 'Value in activation navigation',
+    /**
+     * @description The string to indicate the value of the header is missing.
+     */
+    missing: '(missing)',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/preloading/components/UsedPreloadingView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -297,15 +315,16 @@ export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableCom
       <devtools-report-section-header>${i18nString(UIStrings.preloadedURLs)}</devtools-report-section-header>
       <devtools-report-section
       jslog=${VisualLogging.section('preloaded-urls')}>
-        <devtools-resources-mismatched-preloading-grid
-          .data=${data}></devtools-resources-mismatched-preloading-grid>
+        <devtools-widget
+          .widgetConfig=${UI.Widget.widgetConfig(MismatchedPreloadingGrid.MismatchedPreloadingGrid, { data })}
+        ></devtools-widget>
       </devtools-report-section>
     `;
         // clang-format on
     }
     #maybeMismatchedHTTPHeadersSections() {
         const attempt = this.#data.previousAttempts.find(attempt => this.#isPrerenderAttempt(attempt) && attempt.mismatchedHeaders !== null);
-        if (attempt === undefined) {
+        if (!attempt?.mismatchedHeaders) {
             return Lit.nothing;
         }
         if (attempt.key.url !== this.#data.pageURL) {
@@ -319,8 +338,31 @@ export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableCom
         return html `
       <devtools-report-section-header>${i18nString(UIStrings.mismatchedHeadersDetail)}</devtools-report-section-header>
       <devtools-report-section>
-        <devtools-resources-preloading-mismatched-headers-grid
-          .data=${attempt}></devtools-resources-preloading-mismatched-headers-grid>
+        <style>${preloadingGridStyles}</style>
+        <div class="preloading-container">
+          <devtools-data-grid striped inline>
+            <table>
+              <tr>
+                <th id="header-name" weight="30" sortable>
+                  ${i18nString(UIStrings.headerName)}
+                </th>
+                <th id="initial-value" weight="30" sortable>
+                  ${i18nString(UIStrings.initialNavigationValue)}
+                </th>
+                <th id="activation-value" weight="30" sortable>
+                  ${i18nString(UIStrings.activationNavigationValue)}
+                </th>
+              </tr>
+              ${attempt.mismatchedHeaders.map(mismatchedHeaders => html `
+                <tr>
+                  <td>${mismatchedHeaders.headerName}</td>
+                  <td>${mismatchedHeaders.initialValue ?? i18nString(UIStrings.missing)}</td>
+                  <td>${mismatchedHeaders.activationValue ?? i18nString(UIStrings.missing)}</td>
+                </tr>
+              `)}
+            </table>
+          </devtools-data-grid>
+        </div>
       </devtools-report-section>
     `;
         // clang-format on

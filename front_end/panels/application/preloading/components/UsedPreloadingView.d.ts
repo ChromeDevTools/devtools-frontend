@@ -1,11 +1,10 @@
 import '../../../../ui/kit/kit.js';
 import '../../../../ui/components/report_view/report_view.js';
-import './PreloadingMismatchedHeadersGrid.js';
 import './MismatchedPreloadingGrid.js';
 import type * as Platform from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import * as LegacyWrapper from '../../../../ui/components/legacy_wrapper/legacy_wrapper.js';
-import type * as UI from '../../../../ui/legacy/legacy.js';
+import * as UI from '../../../../ui/legacy/legacy.js';
 export interface UsedPreloadingViewData {
     pageURL: Platform.DevToolsPath.UrlString;
     previousAttempts: SDK.PreloadingModel.PreloadingAttempt[];

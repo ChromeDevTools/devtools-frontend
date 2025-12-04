@@ -13,7 +13,6 @@ import { scriptRef } from './ScriptRef.js';
 const { UIStrings, i18nString } = Trace.Insights.Models.DuplicatedJavaScript;
 const { html } = Lit;
 export class DuplicatedJavaScript extends BaseInsightComponent {
-    static litTagName = Lit.StaticHtml.literal `devtools-performance-duplicated-javascript`;
     internalName = 'duplicated-javascript';
     #treemapData = null;
     #shouldShowTreemap() {
@@ -96,5 +95,4 @@ export class DuplicatedJavaScript extends BaseInsightComponent {
         // clang-format on
     }
 }
-customElements.define('devtools-performance-duplicated-javascript', DuplicatedJavaScript);
 //# sourceMappingURL=DuplicatedJavaScript.js.map

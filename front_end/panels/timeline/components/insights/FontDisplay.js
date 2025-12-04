@@ -11,7 +11,6 @@ import { createLimitedRows, renderOthersLabel } from './Table.js';
 const { UIStrings, i18nString } = Trace.Insights.Models.FontDisplay;
 const { html } = Lit;
 export class FontDisplay extends BaseInsightComponent {
-    static litTagName = Lit.StaticHtml.literal `devtools-performance-font-display`;
     internalName = 'font-display';
     #overlayForRequest = new Map();
     hasAskAiSupport() {
@@ -69,5 +68,4 @@ export class FontDisplay extends BaseInsightComponent {
         // clang-format on
     }
 }
-customElements.define('devtools-performance-font-display', FontDisplay);
 //# sourceMappingURL=FontDisplay.js.map

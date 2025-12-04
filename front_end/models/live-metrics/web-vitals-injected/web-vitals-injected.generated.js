@@ -1028,6 +1028,7 @@
   var EVENT_BINDING_NAME = "__chromium_devtools_metrics_reporter";
   var INTERNAL_KILL_SWITCH = "__chromium_devtools_kill_live_metrics";
   var SCRIPTS_PER_LOAF_LIMIT = 10;
+  var LOAF_LIMIT = 5;
   function getUniqueLayoutShiftId(entry) {
     return `layout-shift-${entry.value}-${entry.startTime}`;
   }
@@ -1191,7 +1192,7 @@
               interactionType: interaction.attribution.interactionType,
               eventName: interaction.entries[0].name,
               // To limit the amount of events, just get the last 5 LoAFs
-              longAnimationFrameEntries: limitScripts(interaction.attribution.longAnimationFrameEntries.slice(-5).map(loaf => loaf.toJSON())),
+              longAnimationFrameEntries: limitScripts(interaction.attribution.longAnimationFrameEntries.slice(-LOAF_LIMIT).map(loaf => loaf.toJSON())),
           };
           const target = interaction.attribution.interactionTarget;
           if (target) {

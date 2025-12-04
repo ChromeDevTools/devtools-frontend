@@ -365,8 +365,10 @@ export const DEFAULT_VIEW = (input, output, target) => {
     const subgridAdornerConfig = ElementsComponents.AdornerManager.getRegisteredAdorner(ElementsComponents.AdornerManager.RegisteredAdorners.SUBGRID);
     const gridLanesAdornerConfig = ElementsComponents.AdornerManager.getRegisteredAdorner(ElementsComponents.AdornerManager.RegisteredAdorners.GRID_LANES);
     const mediaAdornerConfig = ElementsComponents.AdornerManager.getRegisteredAdorner(ElementsComponents.AdornerManager.RegisteredAdorners.MEDIA);
+    const popoverAdornerConfig = ElementsComponents.AdornerManager.getRegisteredAdorner(ElementsComponents.AdornerManager.RegisteredAdorners.POPOVER);
     const hasAdorners = input.adorners?.size || input.showAdAdorner || input.showContainerAdorner ||
-        input.showFlexAdorner || input.showGridAdorner || input.showGridLanesAdorner || input.showMediaAdorner;
+        input.showFlexAdorner || input.showGridAdorner || input.showGridLanesAdorner || input.showMediaAdorner ||
+        input.showPopoverAdorner;
     // clang-format off
     render(html `
     <div ${ref(el => { output.contentElement = el; })}>
@@ -480,6 +482,25 @@ export const DEFAULT_VIEW = (input, output, target) => {
             ${mediaAdornerConfig.name}<devtools-icon name="select-element"></devtools-icon>
           </span>
         </devtools-adorner>` : nothing}
+        ${input.showPopoverAdorner ? html `<devtools-adorner
+          class=clickable
+          role=button
+          toggleable=true
+          tabindex=0
+          .data=${{ name: popoverAdornerConfig.name, jslogContext: popoverAdornerConfig.name }}
+          jslog=${VisualLogging.adorner(popoverAdornerConfig.name).track({ click: true })}
+          active=${input.popoverAdornerActive}
+          aria-label=${input.popoverAdornerActive ? i18nString(UIStrings.stopForceOpenPopover) : i18nString(UIStrings.forceOpenPopover)}
+          @click=${input.onPopoverAdornerClick}
+          @keydown=${(event) => {
+        if (event.code === 'Enter' || event.code === 'Space') {
+            input.onPopoverAdornerClick(event);
+            event.stopPropagation();
+        }
+    }}
+          ${adornerRef(input)}>
+          <span>${popoverAdornerConfig.name}</span>
+        </devtools-adorner>` : nothing}
         ${repeat(Array.from((input.adorners ?? new Set()).values()).sort(adornerComparator), adorner => {
         return adorner;
     })}
@@ -516,6 +537,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     #containerAdornerActive = false;
     #flexAdornerActive = false;
     #gridAdornerActive = false;
+    #popoverAdornerActive = false;
     #layout = null;
     constructor(node, isClosingTag) {
         // The title will be updated in onattach.
@@ -644,7 +666,10 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
             showGridAdorner: Boolean(this.#layout?.isGrid) && !this.isClosingTag(),
             showGridLanesAdorner: Boolean(this.#layout?.isGridLanes) && !this.isClosingTag(),
             showMediaAdorner: this.node().isMediaNode() && !this.isClosingTag(),
+            showPopoverAdorner: Boolean(Root.Runtime.hostConfig.devToolsAllowPopoverForcing?.enabled) &&
+                Boolean(this.node().attributes().find(attr => attr.name === 'popover')) && !this.isClosingTag(),
             gridAdornerActive: this.#gridAdornerActive,
+            popoverAdornerActive: this.#popoverAdornerActive,
             isSubgrid: Boolean(this.#layout?.isSubgrid),
             nodeInfo: this.#nodeInfo,
             onGutterClick: this.showContextMenu.bind(this),
@@ -658,6 +683,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
             onFlexAdornerClick: (event) => this.#onFlexAdornerClick(event),
             onGridAdornerClick: (event) => this.#onGridAdornerClick(event),
             onMediaAdornerClick: (event) => this.#onMediaAdornerClick(event),
+            onPopoverAdornerClick: (event) => this.#onPopoverAdornerClick(event),
         }, this, this.listItemElement);
     }
     #onContainerAdornerClick(event) {
@@ -2437,7 +2463,6 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         this.removeAdornersByType(ElementsComponents.AdornerManager.RegisteredAdorners.SCROLL_SNAP);
         this.removeAdornersByType(ElementsComponents.AdornerManager.RegisteredAdorners.MEDIA);
         this.removeAdornersByType(ElementsComponents.AdornerManager.RegisteredAdorners.STARTING_STYLE);
-        this.removeAdornersByType(ElementsComponents.AdornerManager.RegisteredAdorners.POPOVER);
         if (layout) {
             if (layout.hasScroll) {
                 this.pushScrollSnapAdorner();
@@ -2449,40 +2474,20 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
                 this.pushStartingStyleAdorner();
             }
         }
-        if (node.attributes().find(attr => attr.name === 'popover')) {
-            this.pushPopoverAdorner();
-        }
     }
-    pushPopoverAdorner() {
-        if (!Root.Runtime.hostConfig.devToolsAllowPopoverForcing?.enabled) {
-            return;
-        }
+    async #onPopoverAdornerClick(event) {
+        event.stopPropagation();
         const node = this.node();
         const nodeId = node.id;
-        const config = ElementsComponents.AdornerManager.getRegisteredAdorner(ElementsComponents.AdornerManager.RegisteredAdorners.POPOVER);
-        const adorner = this.adorn(config);
-        const onClick = async () => {
-            const { nodeIds } = await node.domModel().agent.invoke_forceShowPopover({ nodeId, enable: adorner.isActive() });
-            if (adorner.isActive()) {
-                Badges.UserBadges.instance().recordAction(Badges.BadgeAction.MODERN_DOM_BADGE_CLICKED);
-            }
-            for (const closedPopoverNodeId of nodeIds) {
-                const node = this.node().domModel().nodeForId(closedPopoverNodeId);
-                const treeElement = node && this.treeOutline?.treeElementByNode.get(node);
-                if (!treeElement || !isOpeningTag(treeElement.tagTypeContext)) {
-                    return;
-                }
-                const adorner = this.#adorners.values().find(adorner => adorner.name === config.name);
-                adorner?.toggle(false);
-            }
-        };
-        adorner.addInteraction(onClick, {
-            isToggle: true,
-            shouldPropagateOnKeydown: false,
-            ariaLabelDefault: i18nString(UIStrings.forceOpenPopover),
-            ariaLabelActive: i18nString(UIStrings.stopForceOpenPopover),
-        });
-        this.#adorners.add(adorner);
+        if (!nodeId) {
+            return;
+        }
+        await node.domModel().agent.invoke_forceShowPopover({ nodeId, enable: !this.#popoverAdornerActive });
+        this.#popoverAdornerActive = !this.#popoverAdornerActive;
+        if (this.#popoverAdornerActive) {
+            Badges.UserBadges.instance().recordAction(Badges.BadgeAction.MODERN_DOM_BADGE_CLICKED);
+        }
+        this.performUpdate();
     }
     pushScrollSnapAdorner() {
         const node = this.node();

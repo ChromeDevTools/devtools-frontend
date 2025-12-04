@@ -1718,37 +1718,43 @@ var CommandAutocompleteSuggestionProvider = class {
     }
   }
 };
+var INFO_WIDGET_VIEW = (input, _output, target) => {
+  render2(html2`<devtools-widget .widgetConfig=${widgetConfig(UI2.TabbedPane.TabbedPane, {
+    tabs: [
+      {
+        id: "request",
+        title: i18nString2(UIStrings2.request),
+        view: input.type === void 0 ? new UI2.EmptyWidget.EmptyWidget(i18nString2(UIStrings2.noMessageSelected), i18nString2(UIStrings2.selectAMessageToView)) : SourceFrame.JSONView.JSONView.createViewSync(input.request || null),
+        enabled: input.type === "sent",
+        selected: input.selectedTab === "request"
+      },
+      {
+        id: "response",
+        title: i18nString2(UIStrings2.response),
+        view: input.type === void 0 ? new UI2.EmptyWidget.EmptyWidget(i18nString2(UIStrings2.noMessageSelected), i18nString2(UIStrings2.selectAMessageToView)) : SourceFrame.JSONView.JSONView.createViewSync(input.response || null),
+        selected: input.selectedTab === "response"
+      }
+    ]
+  })}>
+  </devtools-widget>`, target);
+};
 var InfoWidget = class extends UI2.Widget.VBox {
-  tabbedPane;
+  #view;
   request;
   response;
   type;
-  selectedTab;
-  constructor(element) {
+  constructor(element, view = INFO_WIDGET_VIEW) {
     super(element);
-    this.tabbedPane = new UI2.TabbedPane.TabbedPane();
-    this.tabbedPane.appendTab("request", i18nString2(UIStrings2.request), new UI2.Widget.Widget());
-    this.tabbedPane.appendTab("response", i18nString2(UIStrings2.response), new UI2.Widget.Widget());
-    this.tabbedPane.show(this.contentElement);
-    this.tabbedPane.selectTab("response");
-    this.request = {};
+    this.#view = view;
+    this.requestUpdate();
   }
   performUpdate() {
-    if (!this.request && !this.response) {
-      this.tabbedPane.changeTabView("request", new UI2.EmptyWidget.EmptyWidget(i18nString2(UIStrings2.noMessageSelected), i18nString2(UIStrings2.selectAMessageToView)));
-      this.tabbedPane.changeTabView("response", new UI2.EmptyWidget.EmptyWidget(i18nString2(UIStrings2.noMessageSelected), i18nString2(UIStrings2.selectAMessageToView)));
-      return;
-    }
-    const requestEnabled = this.type && this.type === "sent";
-    this.tabbedPane.setTabEnabled("request", Boolean(requestEnabled));
-    if (!requestEnabled) {
-      this.tabbedPane.selectTab("response");
-    }
-    this.tabbedPane.changeTabView("request", SourceFrame.JSONView.JSONView.createViewSync(this.request || null));
-    this.tabbedPane.changeTabView("response", SourceFrame.JSONView.JSONView.createViewSync(this.response || null));
-    if (this.selectedTab) {
-      this.tabbedPane.selectTab(this.selectedTab);
-    }
+    this.#view({
+      request: this.request,
+      response: this.response,
+      type: this.type,
+      selectedTab: this.type !== "sent" ? "response" : void 0
+    }, void 0, this.contentElement);
   }
 };
 function parseCommandInput(input) {

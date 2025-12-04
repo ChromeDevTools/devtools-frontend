@@ -4943,18 +4943,6 @@
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "Status"
   },
-  "panels/application/preloading/components/PreloadingMismatchedHeadersGrid.ts | activationNavigationValue": {
-    "message": "Value in activation navigation"
-  },
-  "panels/application/preloading/components/PreloadingMismatchedHeadersGrid.ts | headerName": {
-    "message": "Header name"
-  },
-  "panels/application/preloading/components/PreloadingMismatchedHeadersGrid.ts | initialNavigationValue": {
-    "message": "Value in initial navigation"
-  },
-  "panels/application/preloading/components/PreloadingMismatchedHeadersGrid.ts | missing": {
-    "message": "(missing)"
-  },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchEvictedAfterBrowsingDataRemoved": {
     "message": "The prefetch was discarded because browsing data was removed."
   },
@@ -5231,6 +5219,9 @@
   "panels/application/preloading/components/RuleSetGrid.ts | status": {
     "message": "Status"
   },
+  "panels/application/preloading/components/UsedPreloadingView.ts | activationNavigationValue": {
+    "message": "Value in activation navigation"
+  },
   "panels/application/preloading/components/UsedPreloadingView.ts | badgeFailure": {
     "message": "Failure"
   },
@@ -5261,11 +5252,20 @@
   "panels/application/preloading/components/UsedPreloadingView.ts | downgradedPrefetchUsed": {
     "message": "The initiating page attempted to prerender this page's URL. The prerender failed, but the resulting response body was still used as a prefetch."
   },
+  "panels/application/preloading/components/UsedPreloadingView.ts | headerName": {
+    "message": "Header name"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | initialNavigationValue": {
+    "message": "Value in initial navigation"
+  },
   "panels/application/preloading/components/UsedPreloadingView.ts | learnMore": {
     "message": "Learn more: Speculative loading on developer.chrome.com"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | mismatchedHeadersDetail": {
     "message": "Mismatched HTTP request headers"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | missing": {
+    "message": "(missing)"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | noPreloads": {
     "message": "The initiating page did not attempt to speculatively load this page's URL."

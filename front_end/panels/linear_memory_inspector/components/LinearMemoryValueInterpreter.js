@@ -3,8 +3,6 @@
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-lit-render-outside-of-view */
 import '../../../ui/kit/kit.js';
-import './ValueInterpreterDisplay.js';
-import './ValueInterpreterSettings.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
@@ -12,6 +10,8 @@ import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import linearMemoryValueInterpreterStyles from './linearMemoryValueInterpreter.css.js';
+import { ValueInterpreterDisplay } from './ValueInterpreterDisplay.js';
+import { ValueInterpreterSettings } from './ValueInterpreterSettings.js';
 const UIStrings = {
     /**
      * @description Tooltip text that appears when hovering over the gear button to open and close settings in the Linear memory inspector. These settings
@@ -26,6 +26,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/linear_memory_inspector/components/LinearMemoryValueInterpreter.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const { render, html } = Lit;
+const { widgetConfig } = UI.Widget;
 export class EndiannessChangedEvent extends Event {
     static eventName = 'endiannesschanged';
     data;
@@ -43,6 +44,8 @@ export class ValueTypeToggledEvent extends Event {
     }
 }
 export class LinearMemoryValueInterpreter extends HTMLElement {
+    #onValueTypeModeChange = () => { };
+    #onJumpToAddressClicked = () => { };
     #shadow = this.attachShadow({ mode: 'open' });
     #endianness = "Little Endian" /* Endianness.LITTLE */;
     #buffer = new ArrayBuffer(0);
@@ -56,6 +59,8 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
         this.#valueTypes = data.valueTypes;
         this.#valueTypeModeConfig = data.valueTypeModes || new Map();
         this.#memoryLength = data.memoryLength;
+        this.#onValueTypeModeChange = data.onValueTypeModeChange;
+        this.#onJumpToAddressClicked = data.onJumpToAddressClicked;
         this.#render();
     }
     #render() {
@@ -80,20 +85,21 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
         <div>
           ${this.#showSettings ?
             html `
-              <devtools-linear-memory-inspector-interpreter-settings
-                .data=${{ valueTypes: this.#valueTypes }}
-                @typetoggle=${this.#onTypeToggle}>
-              </devtools-linear-memory-inspector-interpreter-settings>` :
+              <devtools-widget .widgetConfig=${widgetConfig(ValueInterpreterSettings, {
+                valueTypes: this.#valueTypes, onToggle: this.#onSettingTypeToggle
+            })}>
+              </devtools-widget>` :
             html `
-              <devtools-linear-memory-inspector-interpreter-display
-                .data=${{
+              <devtools-widget .widgetConfig=${widgetConfig(ValueInterpreterDisplay, {
                 buffer: this.#buffer,
                 valueTypes: this.#valueTypes,
                 endianness: this.#endianness,
                 valueTypeModes: this.#valueTypeModeConfig,
                 memoryLength: this.#memoryLength,
-            }}>
-              </devtools-linear-memory-inspector-interpreter-display>`}
+                onValueTypeModeChange: this.#onValueTypeModeChange,
+                onJumpToAddressClicked: this.#onJumpToAddressClicked,
+            })}>
+              </devtools-widget>`}
         </div>
       </div>
     `, this.#shadow, { host: this });
@@ -128,9 +134,9 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
         this.#showSettings = !this.#showSettings;
         this.#render();
     }
-    #onTypeToggle(e) {
-        this.dispatchEvent(new ValueTypeToggledEvent(e.data.type, e.data.checked));
-    }
+    #onSettingTypeToggle = (type, checked) => {
+        this.dispatchEvent(new ValueTypeToggledEvent(type, checked));
+    };
 }
 customElements.define('devtools-linear-memory-inspector-interpreter', LinearMemoryValueInterpreter);
 //# sourceMappingURL=LinearMemoryValueInterpreter.js.map

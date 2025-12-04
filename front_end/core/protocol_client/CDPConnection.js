@@ -14,5 +14,6 @@ export var CDPErrorStatus;
     CDPErrorStatus[CDPErrorStatus["SERVER_ERROR"] = -32000] = "SERVER_ERROR";
     CDPErrorStatus[CDPErrorStatus["SESSION_NOT_FOUND"] = -32001] = "SESSION_NOT_FOUND";
     CDPErrorStatus[CDPErrorStatus["DEVTOOLS_STUB_ERROR"] = -32015] = "DEVTOOLS_STUB_ERROR";
+    CDPErrorStatus[CDPErrorStatus["DEVTOOLS_REHYDRATION_ERROR"] = -32016] = "DEVTOOLS_REHYDRATION_ERROR";
 })(CDPErrorStatus || (CDPErrorStatus = {}));
 //# sourceMappingURL=CDPConnection.js.map

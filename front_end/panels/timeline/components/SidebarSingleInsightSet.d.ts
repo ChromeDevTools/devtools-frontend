@@ -1,5 +1,4 @@
 import * as Trace from '../../../models/trace/trace.js';
-import * as Insights from './insights/insights.js';
 import type { ActiveInsight } from './Sidebar.js';
 export interface SidebarSingleInsightSetData {
     insightSetKey: Trace.Types.Events.NavigationId | null;
@@ -8,7 +7,7 @@ export interface SidebarSingleInsightSetData {
     parsedTrace: Trace.TraceModel.ParsedTrace | null;
 }
 interface CategorizedInsightData {
-    componentClass: typeof Insights.BaseInsightComponent.BaseInsightComponent<Trace.Insights.Types.InsightModel>;
+    insightName: string;
     model: Trace.Insights.Types.InsightModel;
 }
 export declare class SidebarSingleInsightSet extends HTMLElement {

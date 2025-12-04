@@ -6,16 +6,10 @@ import type * as Overlays from '../../overlays/overlays.js';
 import { BaseInsightComponent } from './BaseInsightComponent.js';
 export declare class LCPBreakdown extends BaseInsightComponent<LCPBreakdownInsightModel> {
     #private;
-    static readonly litTagName: Lit.StaticHtml.StaticValue;
     internalName: string;
     protected hasAskAiSupport(): boolean;
     protected createOverlays(): Trace.Types.Overlays.Overlay[];
     toggleTemporaryOverlays(overlays: Trace.Types.Overlays.Overlay[] | null, options: Overlays.Overlays.TimelineOverlaySetOptions): void;
     getOverlayOptionsForInitialOverlays(): Overlays.Overlays.TimelineOverlaySetOptions;
     renderContent(): Lit.LitTemplate;
-}
-declare global {
-    interface HTMLElementTagNameMap {
-        'devtools-performance-lcp-breakdown': LCPBreakdown;
-    }
 }

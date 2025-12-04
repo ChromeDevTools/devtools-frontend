@@ -7,6 +7,18 @@ import { Icon } from '../kit/kit.js';
 import { ContextMenu } from './ContextMenu.js';
 import type { Toolbar } from './Toolbar.js';
 import { VBox, type Widget } from './Widget.js';
+export interface TabInfo {
+    id: string;
+    title: string;
+    view: Widget;
+    tabTooltip?: string;
+    isCloseable?: boolean;
+    previewFeature?: boolean;
+    index?: number;
+    jslogContext?: string;
+    enabled?: boolean;
+    selected?: boolean;
+}
 declare const TabbedPane_base: (new (...args: any[]) => {
     "__#private@#events": Common.ObjectWrapper.ObjectWrapper<EventTypes>;
     addEventListener<T extends keyof EventTypes>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<EventTypes[T], any>) => void, thisObject?: Object): Common.EventTarget.EventDescriptor<EventTypes, T>;
@@ -20,7 +32,6 @@ export declare class TabbedPane extends TabbedPane_base {
     private readonly headerContentsElement;
     tabSlider: HTMLDivElement;
     readonly tabsElement: HTMLElement;
-    private tabs;
     private readonly tabsHistory;
     tabsById: Map<string, TabbedPaneTab>;
     private currentTabLocked;
@@ -84,6 +95,8 @@ export declare class TabbedPane extends TabbedPane_base {
     private clearMeasuredWidths;
     changeTabTitle(id: string, tabTitle: string, tabTooltip?: string): void;
     changeTabView(id: string, view: Widget): void;
+    get tabs(): TabInfo[];
+    set tabs(tabs: TabInfo[]);
     onResize(): void;
     headerResized(): void;
     wasShown(): void;

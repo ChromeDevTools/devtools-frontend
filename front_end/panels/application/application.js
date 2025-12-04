@@ -861,12 +861,12 @@ var AppManifestView = class extends Common2.ObjectWrapper.eventMixin(UI2.Widget.
     this.themeColorSwatch.classList.toggle("hidden", !this.stringProperty(parsedManifest, "theme_color"));
     const themeColor = Common2.Color.parse(this.stringProperty(parsedManifest, "theme_color") || "white") || Common2.Color.parse("white");
     if (themeColor) {
-      this.themeColorSwatch.renderColor(themeColor);
+      this.themeColorSwatch.color = themeColor;
     }
     this.backgroundColorSwatch.classList.toggle("hidden", !this.stringProperty(parsedManifest, "background_color"));
     const backgroundColor = Common2.Color.parse(this.stringProperty(parsedManifest, "background_color") || "white") || Common2.Color.parse("white");
     if (backgroundColor) {
-      this.backgroundColorSwatch.renderColor(backgroundColor);
+      this.backgroundColorSwatch.color = backgroundColor;
     }
     this.orientationField.textContent = this.stringProperty(parsedManifest, "orientation");
     const displayType = this.stringProperty(parsedManifest, "display");
@@ -905,16 +905,26 @@ var AppManifestView = class extends Common2.ObjectWrapper.eventMixin(UI2.Widget.
             </devtools-link>`
     }), this.iconsSection.appendRow());
     let squareSizedIconAvailable = false;
+    const fields = /* @__PURE__ */ new Map();
     for (const icon of icons) {
-      const result = await this.appendImageResourceToSection(
+      const result = await this.processImageResource(
         url,
         icon,
-        this.iconsSection,
         /** isScreenshot= */
         false
       );
+      if (result.title && result.content) {
+        const fieldContent = fields.get(result.title) || [];
+        if (!fields.has(result.title)) {
+          fields.set(result.title, fieldContent);
+        }
+        fieldContent.push(result.content);
+      }
       imageErrors.push(...result.imageResourceErrors);
       squareSizedIconAvailable = result.squareSizedIconAvailable || squareSizedIconAvailable;
+    }
+    for (const [title, content] of fields) {
+      render(content, this.iconsSection.appendFlexedField(title));
     }
     if (!squareSizedIconAvailable) {
       imageErrors.push(i18nString(UIStrings.sSShouldHaveSquareIcon));
@@ -952,14 +962,21 @@ var AppManifestView = class extends Common2.ObjectWrapper.eventMixin(UI2.Widget.
       urlField.appendChild(link4);
       const shortcutIcons = shortcut.icons || [];
       let hasShortcutIconLargeEnough = false;
+      const fields = /* @__PURE__ */ new Map();
       for (const shortcutIcon of shortcutIcons) {
-        const { imageResourceErrors: shortcutIconErrors } = await this.appendImageResourceToSection(
+        const { imageResourceErrors: shortcutIconErrors, title, content } = await this.processImageResource(
           url,
           shortcutIcon,
-          shortcutSection,
           /** isScreenshot= */
           false
         );
+        if (title && content) {
+          const fieldContent = fields.get(title) || [];
+          if (!fields.has(title)) {
+            fields.set(title, fieldContent);
+          }
+          fieldContent.push(content);
+        }
         imageErrors.push(...shortcutIconErrors);
         if (!hasShortcutIconLargeEnough && shortcutIcon.sizes) {
           const shortcutIconSize = shortcutIcon.sizes.match(/^(\d+)x(\d+)$/);
@@ -967,6 +984,9 @@ var AppManifestView = class extends Common2.ObjectWrapper.eventMixin(UI2.Widget.
             hasShortcutIconLargeEnough = true;
           }
         }
+      }
+      for (const [title, content] of fields) {
+        render(content, shortcutSection.appendFlexedField(title));
       }
       if (!hasShortcutIconLargeEnough) {
         imageErrors.push(i18nString(UIStrings.shortcutSShouldIncludeAXPixel, { PH1: shortcutIndex }));
@@ -1000,13 +1020,15 @@ var AppManifestView = class extends Common2.ObjectWrapper.eventMixin(UI2.Widget.
       if (screenshot.platform) {
         screenshotSection.appendFlexedField(i18nString(UIStrings.platform), screenshot.platform);
       }
-      const { imageResourceErrors: screenshotErrors, naturalWidth: width, naturalHeight: height } = await this.appendImageResourceToSection(
+      const { imageResourceErrors: screenshotErrors, naturalWidth: width, naturalHeight: height, title, content } = await this.processImageResource(
         url,
         screenshot,
-        screenshotSection,
         /** isScreenshot= */
         true
       );
+      if (title) {
+        render(content, screenshotSection.appendFlexedField(title));
+      }
       imageErrors.push(...screenshotErrors);
       if (screenshot.form_factor && width && height) {
         formFactorScreenshotDimensions.has(screenshot.form_factor) || formFactorScreenshotDimensions.set(screenshot.form_factor, { width, height });
@@ -1200,19 +1222,15 @@ var AppManifestView = class extends Common2.ObjectWrapper.eventMixin(UI2.Widget.
       /* isBinary=*/
       true
     );
-    const wrapper = document.createElement("div");
-    wrapper.classList.add("image-wrapper");
     const image = document.createElement("img");
     const result = new Promise((resolve, reject) => {
       image.onload = resolve;
       image.onerror = reject;
     });
     image.src = "data:application/octet-stream;base64," + await Common2.Base64.encode(content);
-    image.alt = i18nString(UIStrings.imageFromS, { PH1: url });
-    wrapper.appendChild(image);
     try {
       await result;
-      return { wrapper, image };
+      return { naturalWidth: image.naturalWidth, naturalHeight: image.naturalHeight, src: image.src };
     } catch {
     }
     return null;
@@ -1239,16 +1257,16 @@ var AppManifestView = class extends Common2.ObjectWrapper.eventMixin(UI2.Widget.
     }
     return parsedSizes;
   }
-  checkSizeProblem(size, image, resourceName, imageUrl) {
+  checkSizeProblem(size, naturalWidth, naturalHeight, resourceName, imageUrl) {
     if ("any" in size) {
-      return { hasSquareSize: image.naturalWidth === image.naturalHeight };
+      return { hasSquareSize: naturalWidth === naturalHeight };
     }
     const hasSquareSize = size.width === size.height;
-    if (image.naturalWidth !== size.width && image.naturalHeight !== size.height) {
+    if (naturalWidth !== size.width && naturalHeight !== size.height) {
       return {
         error: i18nString(UIStrings.actualSizeSspxOfSSDoesNotMatch, {
-          PH1: image.naturalWidth,
-          PH2: image.naturalHeight,
+          PH1: naturalWidth,
+          PH2: naturalHeight,
           PH3: resourceName,
           PH4: imageUrl,
           PH5: size.width,
@@ -1257,21 +1275,21 @@ var AppManifestView = class extends Common2.ObjectWrapper.eventMixin(UI2.Widget.
         hasSquareSize
       };
     }
-    if (image.naturalWidth !== size.width) {
+    if (naturalWidth !== size.width) {
       return {
-        error: i18nString(UIStrings.actualWidthSpxOfSSDoesNotMatch, { PH1: image.naturalWidth, PH2: resourceName, PH3: imageUrl, PH4: size.width }),
+        error: i18nString(UIStrings.actualWidthSpxOfSSDoesNotMatch, { PH1: naturalWidth, PH2: resourceName, PH3: imageUrl, PH4: size.width }),
         hasSquareSize
       };
     }
-    if (image.naturalHeight !== size.height) {
+    if (naturalHeight !== size.height) {
       return {
-        error: i18nString(UIStrings.actualHeightSpxOfSSDoesNotMatch, { PH1: image.naturalHeight, PH2: resourceName, PH3: imageUrl, PH4: size.height }),
+        error: i18nString(UIStrings.actualHeightSpxOfSSDoesNotMatch, { PH1: naturalHeight, PH2: resourceName, PH3: imageUrl, PH4: size.height }),
         hasSquareSize
       };
     }
     return { hasSquareSize };
   }
-  async appendImageResourceToSection(baseUrl, imageResource, section9, isScreenshot) {
+  async processImageResource(baseUrl, imageResource, isScreenshot) {
     const imageResourceErrors = [];
     const resourceName = isScreenshot ? i18nString(UIStrings.screenshot) : i18nString(UIStrings.icon);
     if (!imageResource.src) {
@@ -1288,11 +1306,9 @@ var AppManifestView = class extends Common2.ObjectWrapper.eventMixin(UI2.Widget.
       imageResourceErrors.push(i18nString(UIStrings.sSFailedToLoad, { PH1: resourceName, PH2: imageUrl }));
       return { imageResourceErrors };
     }
-    const { wrapper, image } = result;
-    const { naturalWidth, naturalHeight } = image;
+    const { src, naturalWidth, naturalHeight } = result;
     const sizes = this.parseSizes(imageResource["sizes"], resourceName, imageUrl, imageResourceErrors);
     const title = sizes.map((x) => x.formatted).join(" ") + "\n" + (imageResource["type"] || "");
-    const field = section9.appendFlexedField(title);
     let squareSizedIconAvailable = false;
     if (!imageResource.sizes) {
       imageResourceErrors.push(i18nString(UIStrings.sSDoesNotSpecifyItsSizeInThe, { PH1: resourceName, PH2: imageUrl }));
@@ -1301,13 +1317,13 @@ var AppManifestView = class extends Common2.ObjectWrapper.eventMixin(UI2.Widget.
         imageResourceErrors.push(i18nString(UIStrings.screenshotPixelSize, { url: imageUrl }));
       }
       for (const size of sizes) {
-        const { error, hasSquareSize } = this.checkSizeProblem(size, image, resourceName, imageUrl);
+        const { error, hasSquareSize } = this.checkSizeProblem(size, naturalWidth, naturalHeight, resourceName, imageUrl);
         squareSizedIconAvailable = squareSizedIconAvailable || hasSquareSize;
         if (error) {
           imageResourceErrors.push(error);
         } else if (isScreenshot) {
-          const width = "any" in size ? image.naturalWidth : size.width;
-          const height = "any" in size ? image.naturalHeight : size.height;
+          const width = "any" in size ? naturalWidth : size.width;
+          const height = "any" in size ? naturalHeight : size.height;
           if (width < 320 || height < 320) {
             imageResourceErrors.push(i18nString(UIStrings.sSSizeShouldBeAtLeast320, { PH1: resourceName, PH2: imageUrl }));
           } else if (width > 3840 || height > 3840) {
@@ -1320,13 +1336,16 @@ var AppManifestView = class extends Common2.ObjectWrapper.eventMixin(UI2.Widget.
         }
       }
     }
-    image.width = image.naturalWidth;
     const purpose = typeof imageResource["purpose"] === "string" ? imageResource["purpose"].toLowerCase() : "";
     if (purpose.includes("any") && purpose.includes("maskable")) {
       imageResourceErrors.push(i18nString(UIStrings.avoidPurposeAnyAndMaskable));
     }
-    field.appendChild(wrapper);
-    return { imageResourceErrors, squareSizedIconAvailable, naturalWidth, naturalHeight };
+    const content = html`
+      <div class="image-wrapper">
+        <img src=${src} alt=${i18nString(UIStrings.imageFromS, { PH1: imageUrl })}
+            width=${naturalWidth}>
+      </div>`;
+    return { imageResourceErrors, squareSizedIconAvailable, naturalWidth, naturalHeight, title, content };
   }
   async appendWindowControlsToSection(overlayModel, url, themeColor) {
     const wcoStyleSheetText = await overlayModel.hasStyleSheetText(url);
@@ -5517,7 +5536,7 @@ import { assertNotNullOrUndefined as assertNotNullOrUndefined2 } from "./../../c
 import * as SDK13 from "./../../core/sdk/sdk.js";
 import * as Buttons5 from "./../../ui/components/buttons/buttons.js";
 import * as UI10 from "./../../ui/legacy/legacy.js";
-import { html as html5, render as render4 } from "./../../ui/lit/lit.js";
+import { Directives as Directives2, html as html5, render as render4 } from "./../../ui/lit/lit.js";
 import * as VisualLogging6 from "./../../ui/visual_logging/visual_logging.js";
 import * as PreloadingComponents from "./preloading/components/components.js";
 
@@ -5964,6 +5983,7 @@ var preloadingViewDropDown_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./preloading/preloadingViewDropDown.css")} */`;
 
 // gen/front_end/panels/application/preloading/PreloadingView.js
+var { createRef, ref } = Directives2;
 var UIStrings12 = {
   /**
    * @description DropDown title for filtering preloading attempts by rule set
@@ -6115,7 +6135,7 @@ var PreloadingRuleSetView = class extends UI10.Widget.VBox {
   warningsView = new PreloadingWarningsView();
   hsplit;
   ruleSetGrid = new PreloadingComponents.RuleSetGrid.RuleSetGrid();
-  ruleSetDetails = new PreloadingComponents.RuleSetDetailsView.RuleSetDetailsView();
+  ruleSetDetailsRef;
   shouldPrettyPrint = Common8.Settings.Settings.instance().moduleSetting("auto-pretty-print-minified").get();
   constructor(model) {
     super({ useShadowDom: true });
@@ -6129,6 +6149,7 @@ var PreloadingRuleSetView = class extends UI10.Widget.VBox {
     this.contentElement.insertBefore(this.warningsContainer, this.contentElement.firstChild);
     this.warningsView.show(this.warningsContainer);
     this.ruleSetGrid.addEventListener("select", this.onRuleSetsGridCellFocused.bind(this));
+    this.ruleSetDetailsRef = createRef();
     const onPrettyPrintToggle = () => {
       this.shouldPrettyPrint = !this.shouldPrettyPrint;
       this.updateRuleSetDetails();
@@ -6150,7 +6171,10 @@ var PreloadingRuleSetView = class extends UI10.Widget.VBox {
             ${this.ruleSetGrid}
           </div>
           <div slot="sidebar" jslog=${VisualLogging6.section("rule-set-details")}>
-            ${this.ruleSetDetails}
+            <devtools-widget .widgetConfig=${UI10.Widget.widgetConfig(PreloadingComponents.RuleSetDetailsView.RuleSetDetailsView, {
+      ruleSet: this.getRuleSet(),
+      shouldPrettyPrint: this.shouldPrettyPrint
+    })} ${ref(this.ruleSetDetailsRef)}></devtools-widget>
           </div>
         </devtools-split-view>
         <div class="pretty-print-button" style="border-top: 1px solid var(--sys-color-divider)">
@@ -6183,15 +6207,21 @@ var PreloadingRuleSetView = class extends UI10.Widget.VBox {
     this.render();
   }
   updateRuleSetDetails() {
-    const id = this.focusedRuleSetId;
-    const ruleSet = id === null ? null : this.model.getRuleSetById(id);
-    this.ruleSetDetails.shouldPrettyPrint = this.shouldPrettyPrint;
-    this.ruleSetDetails.data = ruleSet;
+    const ruleSet = this.getRuleSet();
+    const widget = this.ruleSetDetailsRef.value?.getWidget();
+    if (widget) {
+      widget.shouldPrettyPrint = this.shouldPrettyPrint;
+      widget.ruleSet = ruleSet;
+    }
     if (ruleSet === null) {
       this.hsplit.setAttribute("sidebar-visibility", "hidden");
     } else {
       this.hsplit.removeAttribute("sidebar-visibility");
     }
+  }
+  getRuleSet() {
+    const id = this.focusedRuleSetId;
+    return id === null ? null : this.model.getRuleSetById(id);
   }
   render() {
     const countsByRuleSetId = this.model.getPreloadCountsByRuleSetId();
@@ -6216,9 +6246,6 @@ var PreloadingRuleSetView = class extends UI10.Widget.VBox {
   }
   getRuleSetGridForTest() {
     return this.ruleSetGrid;
-  }
-  getRuleSetDetailsForTest() {
-    return this.ruleSetDetails;
   }
 };
 var PreloadingAttemptView = class extends UI10.Widget.VBox {
@@ -9546,7 +9573,7 @@ var KeyValueStorageItemsView = class extends UI18.Widget.VBox {
   #editable;
   #toolbar;
   metadataView;
-  constructor(title, id, editable, view, metadataView) {
+  constructor(title, id, editable, view, metadataView, opts) {
     metadataView ??= new ApplicationComponents12.StorageMetadataView.StorageMetadataView();
     if (!view) {
       view = (input, output, target) => {
@@ -9606,7 +9633,7 @@ var KeyValueStorageItemsView = class extends UI18.Widget.VBox {
         );
       };
     }
-    super();
+    super(opts);
     this.metadataView = metadataView;
     this.#editable = editable;
     this.#view = view;
@@ -13253,9 +13280,7 @@ var ExtensionStorageItemsView = class extends KeyValueStorageItemsView {
   #extensionStorage;
   extensionStorageItemsDispatcher;
   constructor(extensionStorage, view) {
-    super(i18nString31(UIStrings31.extensionStorageItems), "extension-storage", true, view);
-    this.element.setAttribute("jslog", `${VisualLogging18.pane().context("extension-storage-data")}`);
-    this.element.classList.add("storage-view", "table");
+    super(i18nString31(UIStrings31.extensionStorageItems), "extension-storage", true, view, void 0, { jslog: `${VisualLogging18.pane().context("extension-storage-data")}`, classes: ["storage-view", "table"] });
     this.extensionStorageItemsDispatcher = new Common19.ObjectWrapper.ObjectWrapper();
     this.setStorage(extensionStorage);
   }

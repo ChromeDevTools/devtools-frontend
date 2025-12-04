@@ -16,7 +16,6 @@ const { UIStrings, i18nString } = Trace.Insights.Models.NetworkDependencyTree;
 const { html } = Lit;
 export const MAX_CHAINS_TO_SHOW = 5;
 export class NetworkDependencyTree extends BaseInsightComponent {
-    static litTagName = Lit.StaticHtml.literal `devtools-performance-long-critical-network-tree`;
     internalName = 'long-critical-network-tree';
     #relatedRequests = null;
     #countOfChains = 0;
@@ -260,5 +259,4 @@ export class NetworkDependencyTree extends BaseInsightComponent {
     `;
     }
 }
-customElements.define('devtools-performance-long-critical-network-tree', NetworkDependencyTree);
 //# sourceMappingURL=NetworkDependencyTree.js.map

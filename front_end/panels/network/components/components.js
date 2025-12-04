@@ -2395,6 +2395,7 @@ customElements.define("devtools-request-headers-category", Category);
 // gen/front_end/panels/network/components/RequestTrustTokensView.js
 var RequestTrustTokensView_exports = {};
 __export(RequestTrustTokensView_exports, {
+  DEFAULT_VIEW: () => DEFAULT_VIEW2,
   RequestTrustTokensView: () => RequestTrustTokensView,
   statusConsideredSuccess: () => statusConsideredSuccess
 });
@@ -2402,7 +2403,7 @@ import "./../../../ui/components/report_view/report_view.js";
 import "./../../../ui/kit/kit.js";
 import * as i18n11 from "./../../../core/i18n/i18n.js";
 import * as SDK4 from "./../../../core/sdk/sdk.js";
-import * as LegacyWrapper3 from "./../../../ui/components/legacy_wrapper/legacy_wrapper.js";
+import * as UI4 from "./../../../ui/legacy/legacy.js";
 import * as Lit5 from "./../../../ui/lit/lit.js";
 import * as VisualLogging7 from "./../../../ui/visual_logging/visual_logging.js";
 
@@ -2412,28 +2413,38 @@ var RequestTrustTokensView_css_default = `/*
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file.
  */
-.code {
-  font-family: var(--monospace-font-family);
-  font-size: var(--monospace-font-size);
-}
+@scope to (devtools-widget > *) {
+  .code {
+    font-family: var(--monospace-font-family);
+    font-size: var(--monospace-font-size);
+  }
 
-.issuers-list {
-  display: flex;
-  flex-direction: column;
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-}
+  .issuers-list {
+    display: flex;
+    flex-direction: column;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
 
-.status-icon {
-  margin: 0 0.3em 2px 0;
-  vertical-align: middle;
+  .status-icon {
+    margin: 0 0.3em 2px 0;
+    vertical-align: middle;
+
+    &.failure {
+      color: var(--icon-error);
+    }
+
+    &.success {
+      color: var(--icon-checkmark-green);
+    }
+  }
 }
 
 /*# sourceURL=${import.meta.resolve("./RequestTrustTokensView.css")} */`;
 
 // gen/front_end/panels/network/components/RequestTrustTokensView.js
-var { html: html7 } = Lit5;
+var { html: html7, render: render7 } = Lit5;
 var UIStrings6 = {
   /**
    * @description Section heading in the Trust Token tab
@@ -2515,125 +2526,137 @@ var UIStrings6 = {
 };
 var str_6 = i18n11.i18n.registerUIStrings("panels/network/components/RequestTrustTokensView.ts", UIStrings6);
 var i18nString6 = i18n11.i18n.getLocalizedString.bind(void 0, str_6);
-var RequestTrustTokensView = class extends LegacyWrapper3.LegacyWrapper.WrappableComponent {
-  #shadow = this.attachShadow({ mode: "open" });
-  #request;
-  constructor(request) {
-    super();
+function renderRowIfValuePresent(key, value2, isCode) {
+  if (!value2 || Array.isArray(value2) && value2.length === 0) {
+    return Lit5.nothing;
+  }
+  return html7`
+    <devtools-report-key>${key}</devtools-report-key>
+    <devtools-report-value class=${isCode ? "code" : ""}>
+      ${Array.isArray(value2) ? html7`
+        <ul class="issuers-list">
+            ${value2.map((item3) => html7`<li>${item3}</li>`)}
+        </ul>` : value2}
+    </devtools-report-value>
+  `;
+}
+var renderResultSection = (status, description, issuedTokenCount) => {
+  if (!status) {
+    return Lit5.nothing;
+  }
+  return html7`
+    <devtools-report-section-header>${i18nString6(UIStrings6.result)}</devtools-report-section-header>
+    <devtools-report-key>${i18nString6(UIStrings6.status)}</devtools-report-key>
+    <devtools-report-value>
+      <span>
+        <devtools-icon class="status-icon medium ${status === "Success" ? "success" : "failure"}"
+        name=${status === "Success" ? "check-circle" : "cross-circle-filled"}>
+        </devtools-icon>
+        <strong>${status === "Success" ? i18nString6(UIStrings6.success) : i18nString6(UIStrings6.failure)}</strong>
+        ${description ? html7` ${description}` : Lit5.nothing}
+      </span>
+    </devtools-report-value>
+    ${renderRowIfValuePresent(i18nString6(UIStrings6.numberOfIssuedTokens), issuedTokenCount)}
+    <devtools-report-divider></devtools-report-divider>
+    `;
+};
+var renderParameterSection = (params) => {
+  if (!params || params.length === 0) {
+    return Lit5.nothing;
+  }
+  return html7`
+    <devtools-report-section-header jslog=${VisualLogging7.pane("trust-tokens").track({ resize: true })}>
+      ${i18nString6(UIStrings6.parameters)}
+    </devtools-report-section-header>
+    ${params.map((param) => renderRowIfValuePresent(param.name, param.value, param.isCode))}
+    <devtools-report-divider></devtools-report-divider>
+  `;
+};
+var DEFAULT_VIEW2 = (input, output, target) => {
+  render7(html7`
+    <style>${RequestTrustTokensView_css_default}</style>
+    <devtools-report>
+      ${renderParameterSection(input.params)}
+      ${renderResultSection(input.status, input.description, input.issuedTokenCount)}
+    </devtools-report>
+  `, target);
+};
+var RequestTrustTokensView = class extends UI4.Widget.Widget {
+  #request = null;
+  #view;
+  constructor(element, view = DEFAULT_VIEW2) {
+    super(element);
+    this.#view = view;
+  }
+  get request() {
+    return this.#request;
+  }
+  set request(request) {
+    if (this.#request === request) {
+      return;
+    }
+    this.#unsubscribe();
     this.#request = request;
+    this.#subscribe();
+    this.requestUpdate();
+  }
+  #subscribe() {
+    if (this.#request && this.isShowing()) {
+      this.#request.addEventListener(SDK4.NetworkRequest.Events.TRUST_TOKEN_RESULT_ADDED, this.requestUpdate, this);
+    }
+  }
+  #unsubscribe() {
+    if (this.#request) {
+      this.#request.removeEventListener(SDK4.NetworkRequest.Events.TRUST_TOKEN_RESULT_ADDED, this.requestUpdate, this);
+    }
   }
   wasShown() {
     super.wasShown();
-    this.#request.addEventListener(SDK4.NetworkRequest.Events.TRUST_TOKEN_RESULT_ADDED, this.render, this);
-    void this.render();
+    this.#subscribe();
+    this.requestUpdate();
   }
   willHide() {
     super.willHide();
-    this.#request.removeEventListener(SDK4.NetworkRequest.Events.TRUST_TOKEN_RESULT_ADDED, this.render, this);
+    this.#unsubscribe();
   }
-  async render() {
-    if (!this.#request) {
-      throw new Error("Trying to render a Trust Token report without providing data");
+  performUpdate() {
+    if (!this.request) {
+      return;
     }
-    Lit5.render(html7`
-      <style>${RequestTrustTokensView_css_default}</style>
-      <devtools-report>
-        ${this.#renderParameterSection()}
-        ${this.#renderResultSection()}
-      </devtools-report>
-    `, this.#shadow, { host: this });
-  }
-  #renderParameterSection() {
-    const trustTokenParams = this.#request.trustTokenParams();
-    if (!trustTokenParams) {
-      return Lit5.nothing;
+    const trustTokenParams = this.request.trustTokenParams();
+    const trustTokenResult = this.request.trustTokenOperationDoneEvent();
+    const viewInput = {};
+    if (trustTokenParams) {
+      viewInput.params = [
+        { name: i18nString6(UIStrings6.type), value: trustTokenParams.operation.toString(), isCode: true }
+      ];
+      if (trustTokenParams.operation === "Redemption") {
+        viewInput.params.push({
+          name: i18nString6(UIStrings6.refreshPolicy),
+          value: trustTokenParams.refreshPolicy.toString(),
+          isCode: true
+        });
+      }
+      if (trustTokenParams.issuers && trustTokenParams.issuers.length > 0) {
+        viewInput.params.push({ name: i18nString6(UIStrings6.issuers), value: trustTokenParams.issuers });
+      }
+      if (trustTokenResult?.topLevelOrigin) {
+        viewInput.params.push({ name: i18nString6(UIStrings6.topLevelOrigin), value: trustTokenResult.topLevelOrigin });
+      }
+      if (trustTokenResult?.issuerOrigin) {
+        viewInput.params.push({ name: i18nString6(UIStrings6.issuer), value: trustTokenResult.issuerOrigin });
+      }
     }
-    return html7`
-      <devtools-report-section-header jslog=${VisualLogging7.pane("trust-tokens").track({
-      resize: true
-    })}>${i18nString6(UIStrings6.parameters)}</devtools-report-section-header>
-      ${renderRowWithCodeValue(i18nString6(UIStrings6.type), trustTokenParams.operation.toString())}
-      ${this.#renderRefreshPolicy(trustTokenParams)}
-      ${this.#renderIssuers(trustTokenParams)}
-      ${this.#renderIssuerAndTopLevelOriginFromResult()}
-      <devtools-report-divider></devtools-report-divider>
-    `;
-  }
-  #renderRefreshPolicy(params) {
-    if (params.operation !== "Redemption") {
-      return Lit5.nothing;
+    if (trustTokenResult) {
+      viewInput.status = statusConsideredSuccess(trustTokenResult.status) ? "Success" : "Failure";
+      viewInput.description = getDetailedTextForStatusCode(trustTokenResult.status) ?? void 0;
+      viewInput.issuedTokenCount = trustTokenResult.type === "Issuance" ? trustTokenResult.issuedTokenCount : void 0;
     }
-    return renderRowWithCodeValue(i18nString6(UIStrings6.refreshPolicy), params.refreshPolicy.toString());
+    this.#view(viewInput, void 0, this.contentElement);
   }
-  #renderIssuers(params) {
-    if (!params.issuers || params.issuers.length === 0) {
-      return Lit5.nothing;
-    }
-    return html7`
-      <devtools-report-key>${i18nString6(UIStrings6.issuers)}</devtools-report-key>
-      <devtools-report-value>
-        <ul class="issuers-list">
-          ${params.issuers.map((issuer) => html7`<li>${issuer}</li>`)}
-        </ul>
-      </devtools-report-value>
-    `;
-  }
-  // The issuer and top level origin are technically parameters but reported in the
-  // result structure due to the timing when they are calculated in the backend.
-  // Nonetheless, we show them as part of the parameter section.
-  #renderIssuerAndTopLevelOriginFromResult() {
-    const trustTokenResult = this.#request.trustTokenOperationDoneEvent();
-    if (!trustTokenResult) {
-      return Lit5.nothing;
-    }
-    return html7`
-      ${renderSimpleRowIfValuePresent(i18nString6(UIStrings6.topLevelOrigin), trustTokenResult.topLevelOrigin)}
-      ${renderSimpleRowIfValuePresent(i18nString6(UIStrings6.issuer), trustTokenResult.issuerOrigin)}`;
-  }
-  #renderResultSection() {
-    const trustTokenResult = this.#request.trustTokenOperationDoneEvent();
-    if (!trustTokenResult) {
-      return Lit5.nothing;
-    }
-    return html7`
-      <devtools-report-section-header>${i18nString6(UIStrings6.result)}</devtools-report-section-header>
-      <devtools-report-key>${i18nString6(UIStrings6.status)}</devtools-report-key>
-      <devtools-report-value>
-        <span>
-          <devtools-icon class="status-icon medium"
-            .data=${getIconForStatusCode(trustTokenResult.status)}>
-          </devtools-icon>
-          <strong>${getSimplifiedStatusTextForStatusCode(trustTokenResult.status)}</strong>
-          ${getDetailedTextForStatusCode(trustTokenResult.status)}
-        </span>
-      </devtools-report-value>
-      ${this.#renderIssuedTokenCount(trustTokenResult)}
-      <devtools-report-divider></devtools-report-divider>
-      `;
-  }
-  #renderIssuedTokenCount(result) {
-    if (result.type !== "Issuance") {
-      return Lit5.nothing;
-    }
-    return renderSimpleRowIfValuePresent(i18nString6(UIStrings6.numberOfIssuedTokens), result.issuedTokenCount);
-  }
-};
-var SUCCESS_ICON_DATA = {
-  color: "var(--icon-checkmark-green)",
-  iconName: "check-circle"
-};
-var FAILURE_ICON_DATA = {
-  color: "var(--icon-error)",
-  iconName: "cross-circle-filled"
 };
 function statusConsideredSuccess(status) {
   return status === "Ok" || status === "AlreadyExists" || status === "FulfilledLocally";
-}
-function getIconForStatusCode(status) {
-  return statusConsideredSuccess(status) ? SUCCESS_ICON_DATA : FAILURE_ICON_DATA;
-}
-function getSimplifiedStatusTextForStatusCode(status) {
-  return statusConsideredSuccess(status) ? i18nString6(UIStrings6.success) : i18nString6(UIStrings6.failure);
 }
 function getDetailedTextForStatusCode(status) {
   switch (status) {
@@ -2661,22 +2684,6 @@ function getDetailedTextForStatusCode(status) {
       return i18nString6(UIStrings6.perSiteLimit);
   }
 }
-function renderSimpleRowIfValuePresent(key, value2) {
-  if (value2 === void 0) {
-    return Lit5.nothing;
-  }
-  return html7`
-    <devtools-report-key>${key}</devtools-report-key>
-    <devtools-report-value>${value2}</devtools-report-value>
-  `;
-}
-function renderRowWithCodeValue(key, value2) {
-  return html7`
-    <devtools-report-key>${key}</devtools-report-key>
-    <devtools-report-value class="code">${value2}</devtools-report-value>
-  `;
-}
-customElements.define("devtools-trust-token-report", RequestTrustTokensView);
 export {
   DirectSocketConnectionView_exports as DirectSocketConnectionView,
   EditableSpan_exports as EditableSpan,

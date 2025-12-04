@@ -12,7 +12,6 @@ import { createLimitedRows, renderOthersLabel } from './Table.js';
 const { UIStrings, i18nString, createOverlayForEvents } = Trace.Insights.Models.ForcedReflow;
 const { html, nothing } = Lit;
 export class ForcedReflow extends BaseInsightComponent {
-    static litTagName = Lit.StaticHtml.literal `devtools-performance-forced-reflow`;
     internalName = 'forced-reflow';
     hasAskAiSupport() {
         return true;
@@ -92,5 +91,4 @@ export class ForcedReflow extends BaseInsightComponent {
         // clang-format on
     }
 }
-customElements.define('devtools-performance-forced-reflow', ForcedReflow);
 //# sourceMappingURL=ForcedReflow.js.map

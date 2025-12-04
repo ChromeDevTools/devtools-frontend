@@ -39,7 +39,6 @@
     "../../../../../../../../front_end/panels/application/preloading/components/PreloadingDetailsReportView.ts",
     "../../../../../../../../front_end/panels/application/preloading/components/PreloadingDisabledInfobar.ts",
     "../../../../../../../../front_end/panels/application/preloading/components/PreloadingGrid.ts",
-    "../../../../../../../../front_end/panels/application/preloading/components/PreloadingMismatchedHeadersGrid.ts",
     "../../../../../../../../front_end/panels/application/preloading/components/PreloadingString.ts",
     "../../../../../../../../front_end/panels/application/preloading/components/RuleSetDetailsView.ts",
     "../../../../../../../../front_end/panels/application/preloading/components/RuleSetGrid.ts",

@@ -3355,7 +3355,7 @@ var ColorSwatchWidget = class extends CodeMirror3.WidgetType {
   }
   toDOM(view) {
     const swatch = new InlineEditor.ColorSwatch.ColorSwatch(i18nString7(UIStrings8.openColorPicker));
-    swatch.renderColor(this.#color);
+    swatch.color = this.#color;
     const value2 = swatch.createChild("span");
     value2.textContent = this.#text;
     value2.setAttribute("hidden", "true");
@@ -3363,13 +3363,13 @@ var ColorSwatchWidget = class extends CodeMirror3.WidgetType {
       const insert = event.data.color.getAuthoredText() ?? event.data.color.asString();
       view.dispatch({ changes: { from: this.#from, to: this.#from + this.#text.length, insert } });
       this.#text = insert;
-      this.#color = swatch.getColor();
+      this.#color = swatch.color;
     });
     swatch.addEventListener(InlineEditor.ColorSwatch.ColorFormatChangedEvent.eventName, (event) => {
       const insert = event.data.color.getAuthoredText() ?? event.data.color.asString();
       view.dispatch({ changes: { from: this.#from, to: this.#from + this.#text.length, insert } });
       this.#text = insert;
-      this.#color = swatch.getColor();
+      this.#color = swatch.color;
     });
     swatch.addEventListener(InlineEditor.ColorSwatch.ClickEvent.eventName, (event) => {
       event.consume(true);
@@ -3979,7 +3979,7 @@ import * as Tooltips2 from "./../../ui/components/tooltips/tooltips.js";
 import * as ObjectUI2 from "./../../ui/legacy/components/object_ui/object_ui.js";
 import * as SourceFrame11 from "./../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI19 from "./../../ui/legacy/legacy.js";
-import { render as render3 } from "./../../ui/lit/lit.js";
+import { render as render4 } from "./../../ui/lit/lit.js";
 import * as VisualLogging12 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/sources/SourcesPanel.js
@@ -8786,8 +8786,8 @@ __export(ThreadsSidebarPane_exports, {
 });
 import * as i18n33 from "./../../core/i18n/i18n.js";
 import * as SDK10 from "./../../core/sdk/sdk.js";
-import { Icon as Icon5 } from "./../../ui/kit/kit.js";
 import * as UI17 from "./../../ui/legacy/legacy.js";
+import * as Lit2 from "./../../ui/lit/lit.js";
 import * as VisualLogging10 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/sources/threadsSidebarPane.css.js
@@ -8804,6 +8804,9 @@ var threadsSidebarPane_css_default = `/*
   line-height: 15px;
   display: flex;
   flex-wrap: wrap;
+  appearance: none;
+  border-width: 0;
+  background-color: var(--sys-color-cdt-base-container);
 }
 
 .thread-item + .thread-item {
@@ -8832,14 +8835,11 @@ var threadsSidebarPane_css_default = `/*
 }
 
 .selected-thread-icon {
-  display: none;
   position: absolute;
   top: 3px;
   left: 4px;
-}
-
-.thread-item.selected .selected-thread-icon {
-  display: block;
+  width: 16px;
+  height: 16px;
 }
 
 @media (forced-colors: active) {
@@ -8858,6 +8858,7 @@ var threadsSidebarPane_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./threadsSidebarPane.css")} */`;
 
 // gen/front_end/panels/sources/ThreadsSidebarPane.js
+var { html: html4, render: render3, nothing: nothing2 } = Lit2;
 var UIStrings16 = {
   /**
    * @description Text in Threads Sidebar Pane of the Sources panel
@@ -8866,113 +8867,92 @@ var UIStrings16 = {
 };
 var str_16 = i18n33.i18n.registerUIStrings("panels/sources/ThreadsSidebarPane.ts", UIStrings16);
 var i18nString15 = i18n33.i18n.getLocalizedString.bind(void 0, str_16);
+var DEFAULT_VIEW3 = (input, _output, target) => {
+  render3(html4`
+    <style>${threadsSidebarPane_css_default}</style>
+    <div role="listbox">
+    ${input.threads.map((thread) => html4`
+      <button
+        class="thread-item"
+        @click=${thread.onSelect}
+        tabindex="0"
+        aria-selected=${thread.selected}
+        role="option"
+      >
+        <div class="thread-item-title">${thread.name}</div>
+        <div class="thread-item-paused-state">${thread.paused ? i18nString15(UIStrings16.paused) : ""}</div>
+        ${thread.selected ? html4`<devtools-icon name="large-arrow-right-filled" class="selected-thread-icon"></devtools-icon>` : nothing2}
+      </button>
+    `)}
+    </div>
+  `, target);
+};
 var ThreadsSidebarPane = class extends UI17.Widget.VBox {
-  items;
-  list;
-  selectedModel;
-  constructor() {
-    super({
-      jslog: `${VisualLogging10.section("sources.threads")}`,
-      useShadowDom: true
+  #debuggerModels = /* @__PURE__ */ new Set();
+  #selectedModel;
+  #view;
+  constructor(element, view = DEFAULT_VIEW3) {
+    super(element, {
+      jslog: `${VisualLogging10.section("sources.threads")}`
     });
-    this.registerRequiredCSS(threadsSidebarPane_css_default);
-    this.items = new UI17.ListModel.ListModel();
-    this.list = new UI17.ListControl.ListControl(this.items, this, UI17.ListControl.ListMode.NonViewport);
+    this.#view = view;
     const currentTarget = UI17.Context.Context.instance().flavor(SDK10.Target.Target);
-    this.selectedModel = currentTarget !== null ? currentTarget.model(SDK10.DebuggerModel.DebuggerModel) : null;
-    this.contentElement.appendChild(this.list.element);
+    this.#selectedModel = currentTarget?.model(SDK10.DebuggerModel.DebuggerModel) ?? null;
     UI17.Context.Context.instance().addFlavorChangeListener(SDK10.Target.Target, this.targetFlavorChanged, this);
     SDK10.TargetManager.TargetManager.instance().observeModels(SDK10.DebuggerModel.DebuggerModel, this);
   }
   static shouldBeShown() {
     return SDK10.TargetManager.TargetManager.instance().models(SDK10.DebuggerModel.DebuggerModel).length >= 2;
   }
-  createElementForItem(debuggerModel) {
-    const element = document.createElement("div");
-    element.classList.add("thread-item");
-    const title = element.createChild("div", "thread-item-title");
-    const pausedState = element.createChild("div", "thread-item-paused-state");
-    const icon = new Icon5();
-    icon.name = "large-arrow-right-filled";
-    icon.classList.add("selected-thread-icon", "small");
-    element.appendChild(icon);
-    element.tabIndex = -1;
-    self.onInvokeElement(element, (event) => {
-      UI17.Context.Context.instance().setFlavor(SDK10.Target.Target, debuggerModel.target());
-      event.consume(true);
-    });
-    const isSelected = UI17.Context.Context.instance().flavor(SDK10.Target.Target) === debuggerModel.target();
-    element.classList.toggle("selected", isSelected);
-    UI17.ARIAUtils.setSelected(element, isSelected);
-    function updateTitle() {
-      const executionContext = debuggerModel.runtimeModel().defaultExecutionContext();
-      title.textContent = executionContext?.label() ? executionContext.label() : debuggerModel.target().name();
-    }
-    function updatePausedState() {
-      pausedState.textContent = debuggerModel.isPaused() ? i18nString15(UIStrings16.paused) : "";
-    }
-    function targetNameChanged(event) {
-      const target = event.data;
-      if (target === debuggerModel.target()) {
-        updateTitle();
-      }
-    }
-    debuggerModel.addEventListener(SDK10.DebuggerModel.Events.DebuggerPaused, updatePausedState);
-    debuggerModel.addEventListener(SDK10.DebuggerModel.Events.DebuggerResumed, updatePausedState);
-    debuggerModel.runtimeModel().addEventListener(SDK10.RuntimeModel.Events.ExecutionContextChanged, updateTitle);
-    SDK10.TargetManager.TargetManager.instance().addEventListener("NameChanged", targetNameChanged);
-    updatePausedState();
-    updateTitle();
-    return element;
+  wasShown() {
+    super.wasShown();
+    this.requestUpdate();
   }
-  heightForItem(_debuggerModel) {
-    console.assert(false);
-    return 0;
+  #getThreadName(debuggerModel) {
+    const executionContext = debuggerModel.runtimeModel().defaultExecutionContext();
+    return executionContext?.label() || debuggerModel.target().name();
   }
-  isItemSelectable(_debuggerModel) {
-    return true;
+  #handleThreadSelect(debuggerModel) {
+    UI17.Context.Context.instance().setFlavor(SDK10.Target.Target, debuggerModel.target());
   }
-  selectedItemChanged(_from, _to, fromElement, toElement) {
-    const fromEle = fromElement;
-    if (fromEle) {
-      fromEle.tabIndex = -1;
+  #updatePausedState = () => {
+    this.requestUpdate();
+  };
+  #targetNameChanged = (event) => {
+    const target = event.data;
+    const debuggerModel = target.model(SDK10.DebuggerModel.DebuggerModel);
+    if (debuggerModel && this.#debuggerModels.has(debuggerModel)) {
+      this.requestUpdate();
     }
-    const toEle = toElement;
-    if (toEle) {
-      this.setDefaultFocusedElement(toEle);
-      toEle.tabIndex = 0;
-      if (this.hasFocus()) {
-        toEle.focus();
-      }
-    }
-  }
-  updateSelectedItemARIA(_fromElement, _toElement) {
-    return false;
+  };
+  performUpdate() {
+    const threads = Array.from(this.#debuggerModels).map((debuggerModel) => ({
+      name: this.#getThreadName(debuggerModel),
+      paused: debuggerModel.isPaused(),
+      selected: this.#selectedModel === debuggerModel,
+      onSelect: () => this.#handleThreadSelect(debuggerModel)
+    }));
+    this.#view({ threads }, void 0, this.contentElement);
   }
   modelAdded(debuggerModel) {
-    this.items.insert(this.items.length, debuggerModel);
-    const currentTarget = UI17.Context.Context.instance().flavor(SDK10.Target.Target);
-    if (currentTarget === debuggerModel.target()) {
-      this.list.selectItem(debuggerModel);
-    }
+    this.#debuggerModels.add(debuggerModel);
+    debuggerModel.addEventListener(SDK10.DebuggerModel.Events.DebuggerPaused, this.#updatePausedState);
+    debuggerModel.addEventListener(SDK10.DebuggerModel.Events.DebuggerResumed, this.#updatePausedState);
+    debuggerModel.runtimeModel().addEventListener(SDK10.RuntimeModel.Events.ExecutionContextChanged, this.requestUpdate, this);
+    SDK10.TargetManager.TargetManager.instance().addEventListener("NameChanged", this.#targetNameChanged);
+    this.requestUpdate();
   }
   modelRemoved(debuggerModel) {
-    this.items.remove(this.items.indexOf(debuggerModel));
+    this.#debuggerModels.delete(debuggerModel);
+    debuggerModel.removeEventListener(SDK10.DebuggerModel.Events.DebuggerPaused, this.#updatePausedState);
+    debuggerModel.removeEventListener(SDK10.DebuggerModel.Events.DebuggerResumed, this.#updatePausedState);
+    debuggerModel.runtimeModel().removeEventListener(SDK10.RuntimeModel.Events.ExecutionContextChanged, this.requestUpdate, this);
+    SDK10.TargetManager.TargetManager.instance().removeEventListener("NameChanged", this.#targetNameChanged);
+    this.requestUpdate();
   }
   targetFlavorChanged({ data: target }) {
-    const hadFocus = this.hasFocus();
-    const debuggerModel = target.model(SDK10.DebuggerModel.DebuggerModel);
-    this.list.selectItem(debuggerModel);
-    if (debuggerModel) {
-      this.list.refreshItem(debuggerModel);
-    }
-    if (this.selectedModel !== null) {
-      this.list.refreshItem(this.selectedModel);
-    }
-    this.selectedModel = debuggerModel;
-    if (hadFocus) {
-      this.focus();
-    }
+    this.#selectedModel = target.model(SDK10.DebuggerModel.DebuggerModel);
+    this.requestUpdate();
   }
 };
 
@@ -11774,7 +11754,7 @@ var ValueDecoration = class extends CodeMirror6.WidgetType {
       const propertyCount = value2.preview ? value2.preview.properties.length : 0;
       const entryCount = value2.preview?.entries ? value2.preview.entries.length : 0;
       if (value2.preview && propertyCount + entryCount < 10) {
-        render3(formatter.renderObjectPreview(value2.preview), nameValuePair.createChild("span"));
+        render4(formatter.renderObjectPreview(value2.preview), nameValuePair.createChild("span"));
       } else {
         const propertyValue = ObjectUI2.ObjectPropertiesSection.ObjectPropertiesSection.createPropertyValue(
           value2,
@@ -12339,7 +12319,7 @@ import * as Root4 from "./../../core/root/root.js";
 import * as Persistence12 from "./../../models/persistence/persistence.js";
 import * as Workspace25 from "./../../models/workspace/workspace.js";
 import * as QuickOpen3 from "./../../ui/legacy/components/quick_open/quick_open.js";
-import { Directives, html as html4 } from "./../../ui/lit/lit.js";
+import { Directives, html as html5 } from "./../../ui/lit/lit.js";
 
 // gen/front_end/panels/sources/filteredUISourceCodeListProvider.css.js
 var filteredUISourceCodeListProvider_css_default = `/*
@@ -12517,7 +12497,7 @@ var FilteredUISourceCodeListProvider = class extends QuickOpen3.FilteredListWidg
         subtitleRanges.push({ offset: indexes[i], length: 1 });
       }
     }
-    return html4`
+    return html5`
       <style>${filteredUISourceCodeListProvider_css_default}</style>
       <div class="filtered-ui-source-code-list-item
                   ${classMap2({ "is-ignore-listed": isIgnoreListed })}">
@@ -12541,7 +12521,7 @@ var FilteredUISourceCodeListProvider = class extends QuickOpen3.FilteredListWidg
     if (text.length > maxTextLength) {
       splitPosition = text.length - maxTextLength;
     }
-    return html4`
+    return html5`
       <div class="first-part">${text.substring(0, splitPosition)}</div>
       <div class="second-part">${text.substring(splitPosition)}</div>`;
   }
@@ -12604,7 +12584,7 @@ import "./../../ui/kit/kit.js";
 import * as i18n41 from "./../../core/i18n/i18n.js";
 import * as QuickOpen4 from "./../../ui/legacy/components/quick_open/quick_open.js";
 import * as UI20 from "./../../ui/legacy/legacy.js";
-import { html as html5 } from "./../../ui/lit/lit.js";
+import { html as html6 } from "./../../ui/lit/lit.js";
 var UIStrings20 = {
   /**
    * @description Text in Go To Line Quick Open of the Sources panel
@@ -12668,7 +12648,7 @@ var GoToLineQuickOpen = class extends QuickOpen4.FilteredListWidget.Provider {
     return this.#goToLineStrings.length;
   }
   renderItem(itemIndex, _query) {
-    return html5`
+    return html6`
       <devtools-icon name="colon"></devtools-icon>
       <div>
         <div>${this.#goToLineStrings[itemIndex]}</div>
@@ -12871,7 +12851,7 @@ import "./../../ui/kit/kit.js";
 import * as Common15 from "./../../core/common/common.js";
 import * as Host10 from "./../../core/host/host.js";
 import { PanelUtils as PanelUtils2 } from "./../utils/utils.js";
-import { Directives as Directives2, html as html6 } from "./../../ui/lit/lit.js";
+import { Directives as Directives2, html as html7 } from "./../../ui/lit/lit.js";
 var { styleMap } = Directives2;
 var OpenFileQuickOpen = class extends FilteredUISourceCodeListProvider {
   constructor() {
@@ -12897,7 +12877,7 @@ var OpenFileQuickOpen = class extends FilteredUISourceCodeListProvider {
   }
   renderItem(itemIndex, query) {
     const { iconName, color } = PanelUtils2.iconDataForResourceType(this.itemContentTypeAt(itemIndex));
-    return html6`
+    return html7`
       <devtools-icon class="large" name=${iconName} style=${styleMap({ color })}></devtools-icon>
       ${super.renderItem(itemIndex, query)}`;
   }
@@ -12915,7 +12895,7 @@ import * as i18n45 from "./../../core/i18n/i18n.js";
 import * as CodeMirror7 from "./../../third_party/codemirror.next/codemirror.next.js";
 import * as QuickOpen5 from "./../../ui/legacy/components/quick_open/quick_open.js";
 import * as UI22 from "./../../ui/legacy/legacy.js";
-import { html as html7, nothing as nothing2 } from "./../../ui/lit/lit.js";
+import { html as html8, nothing as nothing3 } from "./../../ui/lit/lit.js";
 var UIStrings22 = {
   /**
    * @description Text in Go To Line Quick Open of the Sources panel
@@ -13216,10 +13196,10 @@ var OutlineQuickOpen = class extends QuickOpen5.FilteredListWidget.Provider {
     }
     const title = item.title + (item.subtitle ? item.subtitle : "");
     const highlightRanges = QuickOpen5.FilteredListWidget.FilteredListWidget.getHighlightRanges(title, query, true);
-    return html7`
+    return html8`
       <devtools-icon name="deployed"></devtools-icon>
       <div><devtools-highlight type="markup" ranges=${highlightRanges}>${title}</devtools-highlight></div>
-      ${location ? html7`<span class="tag">${location}</span>` : nothing2}`;
+      ${location ? html8`<span class="tag">${location}</span>` : nothing3}`;
   }
   selectItem(itemIndex, _promptValue) {
     if (itemIndex === null) {

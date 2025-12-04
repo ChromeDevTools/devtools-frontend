@@ -6,7 +6,6 @@ import { type AddressInputChangedEvent, type HistoryNavigationEvent, Mode, type 
 import type { EndiannessChangedEvent, ValueTypeToggledEvent } from './LinearMemoryValueInterpreter.js';
 import type { ByteSelectedEvent, ResizeEvent } from './LinearMemoryViewer.js';
 import type { HighlightInfo } from './LinearMemoryViewerUtils.js';
-import type { JumpToPointerAddressEvent, ValueTypeModeChangedEvent } from './ValueInterpreterDisplay.js';
 import { Endianness, type ValueType, type ValueTypeMode } from './ValueInterpreterDisplayUtils.js';
 /**
  * If the LinearMemoryInspector only receives a portion
@@ -64,14 +63,12 @@ export interface ViewInput {
     onAddressChange: (e: AddressInputChangedEvent) => void;
     onNavigatePage: (e: PageNavigationEvent) => void;
     onNavigateHistory: (e: HistoryNavigationEvent) => boolean;
-    onJumpToAddress: (e: JumpToPointerAddressEvent | {
-        data: number;
-    }) => void;
+    onJumpToAddress: (address: number) => void;
     onDeleteMemoryHighlight: (info: HighlightInfo) => void;
     onByteSelected: (e: ByteSelectedEvent) => void;
     onResize: (e: ResizeEvent) => void;
     onValueTypeToggled: (e: ValueTypeToggledEvent) => void;
-    onValueTypeModeChanged: (e: ValueTypeModeChangedEvent) => void;
+    onValueTypeModeChanged: (type: ValueType, mode: ValueTypeMode) => void;
     onEndiannessChanged: (e: EndiannessChangedEvent) => void;
     memorySlice: Uint8Array<ArrayBuffer>;
     viewerStart: number;

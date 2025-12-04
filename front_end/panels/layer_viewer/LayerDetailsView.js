@@ -1,14 +1,15 @@
 // Copyright 2013 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import layerDetailsViewStyles from './layerDetailsView.css.js';
 import { ScrollRectSelection, } from './LayerViewHost.js';
+const { html, nothing } = Lit;
 const UIStrings = {
     /**
      * @description Text in Layer Details View of the Layers panel
@@ -128,32 +129,127 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/layer_viewer/LayerDetailsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
+export const DEFAULT_VIEW = (input, _output, target) => {
+    const { layer, snapshotSelection, compositingReasons, onScrollRectClick, onPaintProfilerRequested } = input;
+    if (!layer) {
+        // clang-format off
+        Lit.render(html `<div class="layer-details-container">
+      <devtools-widget class="learn-more" .widgetConfig=${UI.Widget.widgetConfig(UI.EmptyWidget.EmptyWidget, {
+            header: i18nString(UIStrings.noLayerSelected),
+            text: i18nString(UIStrings.selectALayerToSeeItsDetails)
+        })}>
+      </devtools-widget>
+    </div>`, target);
+        // clang-format on
+        return;
+    }
+    const slowScrollRects = layer.scrollRects();
+    const stickyPositionConstraint = layer.stickyPositionConstraint();
+    const formatStickyAncestorLayer = (title, layer) => {
+        if (!layer) {
+            return '';
+        }
+        const node = layer.nodeForSelfOrAncestor();
+        const name = node ? node.simpleSelector() : i18nString(UIStrings.unnamed);
+        return i18nString(UIStrings.stickyAncestorLayersS, { PH1: title, PH2: name, PH3: layer.id() });
+    };
+    const renderStickyPositionConstraint = (constraint) => {
+        if (!constraint) {
+            return nothing;
+        }
+        const stickyBoxRect = constraint.stickyBoxRect();
+        const containingBlockRect = constraint.containingBlockRect();
+        const nearestLayerShiftingStickyBox = constraint.nearestLayerShiftingStickyBox();
+        const nearestLayerShiftingContainingBlock = constraint.nearestLayerShiftingContainingBlock();
+        // clang-format off
+        return html `
+      <span>${i18nString(UIStrings.stickyBoxRectangleDimensions, { PH1: stickyBoxRect.width, PH2: stickyBoxRect.height, PH3: stickyBoxRect.x, PH4: stickyBoxRect.y })}</span>
+      <span>, </span>
+      <span>${i18nString(UIStrings.containingBlocRectangleDimensions, {
+            PH1: containingBlockRect.width,
+            PH2: containingBlockRect.height,
+            PH3: containingBlockRect.x,
+            PH4: containingBlockRect.y,
+        })}</span>
+      ${nearestLayerShiftingStickyBox ? html `, <span>${formatStickyAncestorLayer(i18nString(UIStrings.nearestLayerShiftingStickyBox), nearestLayerShiftingStickyBox)}</span>` :
+            nothing}
+      ${nearestLayerShiftingContainingBlock ? html `, <span>${formatStickyAncestorLayer(i18nString(UIStrings.nearestLayerShiftingContaining), nearestLayerShiftingContainingBlock)}</span>` :
+            nothing}
+    `;
+        // clang-format on
+    };
+    // clang-format off
+    Lit.render(html `
+    <div class="layer-details-container">
+      <table>
+        <tbody>
+          <tr>
+            <td>${i18nString(UIStrings.size)}</td>
+            <td>${i18nString(UIStrings.updateRectangleDimensions, { PH1: layer.width(), PH2: layer.height(), PH3: layer.offsetX(), PH4: layer.offsetY() })}</td>
+          </tr>
+          <tr>
+            <td>${i18nString(UIStrings.compositingReasons)}</td>
+            <td>
+              ${!compositingReasons.length ? 'n/a' :
+        html `<ul>${compositingReasons.map(reason => html `<li>${reason}</li>`)}</ul>`}
+            </td>
+          </tr>
+          <tr>
+            <td>${i18nString(UIStrings.memoryEstimate)}</td>
+            <td>${i18n.ByteUtilities.bytesToString(layer.gpuMemoryUsage())}</td>
+          </tr>
+          <tr>
+            <td>${i18nString(UIStrings.paintCount)}</td>
+            <td>${layer.paintCount()}</td>
+          </tr>
+          <tr>
+            <td>${i18nString(UIStrings.slowScrollRegions)}</td>
+            <td>
+              ${slowScrollRects.map((scrollRect, index) => html `
+                ${index > 0 ? ', ' : ''}
+                <span class="scroll-rect" @click=${(e) => onScrollRectClick(index, e)}
+                      jslog=${VisualLogging.action('layers.select-object').track({ click: true })}>
+                  ${i18nString(UIStrings.scrollRectangleDimensions, {
+        PH1: String(slowScrollRectNames.get(scrollRect.type)?.()),
+        PH2: scrollRect.rect.width,
+        PH3: scrollRect.rect.height,
+        PH4: scrollRect.rect.x,
+        PH5: scrollRect.rect.y,
+    })}
+                </span>`)}
+            </td>
+          </tr>
+          <tr>
+            <td>${i18nString(UIStrings.stickyPositionConstraint)}</td>
+            <td>${renderStickyPositionConstraint(stickyPositionConstraint)}</td>
+          </tr>
+        </tbody>
+      </table>
+      ${snapshotSelection ? html `
+      <button class="devtools-link link-margin text-button link-style"
+              @click=${onPaintProfilerRequested}
+              jslog=${VisualLogging.action('layers.paint-profiler').track({ click: true, keydown: 'Enter' })}>
+        ${i18nString(UIStrings.paintProfiler)}
+      </button>` : nothing}
+    </div>`, target);
+    // clang-format on
+};
 export class LayerDetailsView extends Common.ObjectWrapper.eventMixin(UI.Widget.Widget) {
     layerViewHost;
-    emptyWidget;
     layerSnapshotMap;
-    tableElement;
-    tbodyElement;
-    sizeCell;
-    compositingReasonsCell;
-    memoryEstimateCell;
-    paintCountCell;
-    scrollRectsCell;
-    stickyPositionConstraintCell;
-    paintProfilerLink;
     selection;
-    constructor(layerViewHost) {
+    compositingReasons = [];
+    view;
+    constructor(layerViewHost, view = DEFAULT_VIEW) {
         super({
             jslog: `${VisualLogging.pane('layers-details')}`,
             useShadowDom: true,
         });
+        this.view = view;
         this.registerRequiredCSS(layerDetailsViewStyles);
-        this.contentElement.classList.add('layer-details-container');
         this.layerViewHost = layerViewHost;
         this.layerViewHost.registerView(this);
-        this.emptyWidget = new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.noLayerSelected), i18nString(UIStrings.selectALayerToSeeItsDetails));
         this.layerSnapshotMap = this.layerViewHost.getLayerSnapshotMap();
-        this.buildContent();
         this.selection = null;
     }
     hoverObject(_selection) {
@@ -188,122 +284,33 @@ export class LayerDetailsView extends Common.ObjectWrapper.eventMixin(UI.Widget.
             this.dispatchEventToListeners("PaintProfilerRequested" /* Events.PAINT_PROFILER_REQUESTED */, snapshotSelection);
         }
     }
-    createScrollRectElement(scrollRect, index) {
-        if (index) {
-            UI.UIUtils.createTextChild(this.scrollRectsCell, ', ');
-        }
-        const element = this.scrollRectsCell.createChild('span', 'scroll-rect');
-        if (this.selection && this.selection.scrollRectIndex === index) {
-            element.classList.add('active');
-        }
-        element.textContent = i18nString(UIStrings.scrollRectangleDimensions, {
-            PH1: String(slowScrollRectNames.get(scrollRect.type)?.()),
-            PH2: scrollRect.rect.width,
-            PH3: scrollRect.rect.height,
-            PH4: scrollRect.rect.x,
-            PH5: scrollRect.rect.y,
-        });
-        element.addEventListener('click', this.onScrollRectClicked.bind(this, index), false);
-        element.setAttribute('jslog', `${VisualLogging.action('layers.select-object').track({ click: true })}`);
-    }
-    formatStickyAncestorLayer(title, layer) {
-        if (!layer) {
-            return '';
-        }
-        const node = layer.nodeForSelfOrAncestor();
-        const name = node ? node.simpleSelector() : i18nString(UIStrings.unnamed);
-        return i18nString(UIStrings.stickyAncestorLayersS, { PH1: title, PH2: name, PH3: layer.id() });
-    }
-    createStickyAncestorChild(title, layer) {
-        if (!layer) {
-            return;
-        }
-        UI.UIUtils.createTextChild(this.stickyPositionConstraintCell, ', ');
-        const child = this.stickyPositionConstraintCell.createChild('span');
-        child.textContent = this.formatStickyAncestorLayer(title, layer);
-    }
-    populateStickyPositionConstraintCell(constraint) {
-        this.stickyPositionConstraintCell.removeChildren();
-        if (!constraint) {
-            return;
-        }
-        const stickyBoxRect = constraint.stickyBoxRect();
-        const stickyBoxRectElement = this.stickyPositionConstraintCell.createChild('span');
-        stickyBoxRectElement.textContent = i18nString(UIStrings.stickyBoxRectangleDimensions, { PH1: stickyBoxRect.width, PH2: stickyBoxRect.height, PH3: stickyBoxRect.x, PH4: stickyBoxRect.y });
-        UI.UIUtils.createTextChild(this.stickyPositionConstraintCell, ', ');
-        const containingBlockRect = constraint.containingBlockRect();
-        const containingBlockRectElement = this.stickyPositionConstraintCell.createChild('span');
-        containingBlockRectElement.textContent = i18nString(UIStrings.containingBlocRectangleDimensions, {
-            PH1: containingBlockRect.width,
-            PH2: containingBlockRect.height,
-            PH3: containingBlockRect.x,
-            PH4: containingBlockRect.y,
-        });
-        this.createStickyAncestorChild(i18nString(UIStrings.nearestLayerShiftingStickyBox), constraint.nearestLayerShiftingStickyBox());
-        this.createStickyAncestorChild(i18nString(UIStrings.nearestLayerShiftingContaining), constraint.nearestLayerShiftingContainingBlock());
-    }
     update() {
         const layer = this.selection?.layer();
-        if (!layer) {
-            this.tableElement.remove();
-            this.paintProfilerLink.remove();
-            this.emptyWidget.show(this.contentElement);
-            return;
+        if (layer) {
+            void layer.requestCompositingReasons().then(this.updateCompositingReasons.bind(this));
         }
-        this.emptyWidget.detach();
-        this.contentElement.appendChild(this.tableElement);
-        this.contentElement.appendChild(this.paintProfilerLink);
-        this.sizeCell.textContent = i18nString(UIStrings.updateRectangleDimensions, { PH1: layer.width(), PH2: layer.height(), PH3: layer.offsetX(), PH4: layer.offsetY() });
-        if (this.paintCountCell.parentElement) {
-            this.paintCountCell.parentElement.classList.toggle('hidden', !layer.paintCount());
+        else {
+            this.compositingReasons = [];
         }
-        this.paintCountCell.textContent = String(layer.paintCount());
-        this.memoryEstimateCell.textContent = i18n.ByteUtilities.bytesToString(layer.gpuMemoryUsage());
-        void layer.requestCompositingReasons().then(this.updateCompositingReasons.bind(this));
-        this.scrollRectsCell.removeChildren();
-        layer.scrollRects().forEach(this.createScrollRectElement.bind(this));
-        this.populateStickyPositionConstraintCell(layer.stickyPositionConstraint());
-        const snapshot = this.selection && this.selection.type() === "Snapshot" /* Type.SNAPSHOT */ ?
-            this.selection.snapshot() :
-            null;
-        this.paintProfilerLink.classList.toggle('hidden', !(this.layerSnapshotMap.has(layer) || snapshot));
-    }
-    buildContent() {
-        this.tableElement = this.contentElement.createChild('table');
-        this.tbodyElement = this.tableElement.createChild('tbody');
-        this.sizeCell = this.createRow(i18nString(UIStrings.size));
-        this.compositingReasonsCell = this.createRow(i18nString(UIStrings.compositingReasons));
-        this.memoryEstimateCell = this.createRow(i18nString(UIStrings.memoryEstimate));
-        this.paintCountCell = this.createRow(i18nString(UIStrings.paintCount));
-        this.scrollRectsCell = this.createRow(i18nString(UIStrings.slowScrollRegions));
-        this.stickyPositionConstraintCell = this.createRow(i18nString(UIStrings.stickyPositionConstraint));
-        this.paintProfilerLink =
-            this.contentElement.createChild('button', 'hidden devtools-link link-margin text-button link-style');
-        UI.ARIAUtils.markAsLink(this.paintProfilerLink);
-        this.paintProfilerLink.textContent = i18nString(UIStrings.paintProfiler);
-        this.paintProfilerLink.tabIndex = 0;
-        this.paintProfilerLink.addEventListener('click', e => {
-            e.consume(true);
-            this.invokeProfilerLink();
-        });
-        this.paintProfilerLink.setAttribute('jslog', `${VisualLogging.action('layers.paint-profiler').track({ click: true, keydown: 'Enter' })}`);
-    }
-    createRow(title) {
-        const tr = this.tbodyElement.createChild('tr');
-        const titleCell = tr.createChild('td');
-        titleCell.textContent = title;
-        return tr.createChild('td');
+        this.requestUpdate();
     }
     updateCompositingReasons(compositingReasons) {
-        if (!compositingReasons?.length) {
-            this.compositingReasonsCell.textContent = 'n/a';
-            return;
-        }
-        this.compositingReasonsCell.removeChildren();
-        const list = this.compositingReasonsCell.createChild('ul');
-        for (const compositingReason of compositingReasons) {
-            list.createChild('li').textContent = compositingReason;
-        }
+        this.compositingReasons = compositingReasons;
+        this.requestUpdate();
+    }
+    performUpdate() {
+        const layer = this.selection?.layer() || null;
+        const snapshotSelection = (this.selection && this.selection.type() === "Snapshot" /* Type.SNAPSHOT */ ?
+            this.selection :
+            (layer ? this.layerSnapshotMap.get(layer) : null)) ||
+            null;
+        this.view({
+            layer,
+            snapshotSelection,
+            compositingReasons: this.compositingReasons,
+            onScrollRectClick: this.onScrollRectClicked.bind(this),
+            onPaintProfilerRequested: this.invokeProfilerLink.bind(this),
+        }, undefined, this.contentElement);
     }
 }
 export const slowScrollRectNames = new Map([

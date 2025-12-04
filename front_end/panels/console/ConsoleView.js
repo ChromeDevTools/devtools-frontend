@@ -37,6 +37,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as AiCodeCompletion from '../../models/ai_code_completion/ai_code_completion.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as Logs from '../../models/logs/logs.js';
@@ -314,9 +315,10 @@ export class ConsoleView extends UI.Widget.VBox {
     issueResolver = new IssuesManager.IssueResolver.IssueResolver();
     #isDetached = false;
     #onIssuesCountUpdateBound = this.#onIssuesCountUpdate.bind(this);
-    aiCodeCompletionSetting = Common.Settings.Settings.instance().createSetting('ai-code-completion-enabled', false);
+    aiCodeCompletionConfig;
     aiCodeCompletionSummaryToolbarContainer;
     aiCodeCompletionSummaryToolbar;
+    aiCodeCompletionCitations = [];
     constructor(viewportThrottlerTimeout) {
         super();
         this.setMinimumSize(0, 35);
@@ -471,18 +473,34 @@ export class ConsoleView extends UI.Widget.VBox {
         this.linkifier.addEventListener("liveLocationUpdated" /* Components.Linkifier.Events.LIVE_LOCATION_UPDATED */, refilterMessages);
         this.consoleMessages = [];
         this.consoleGroupStarts = [];
-        this.prompt = new ConsolePrompt();
+        const devtoolsLocale = i18n.DevToolsLocale.DevToolsLocale.instance();
+        this.aiCodeCompletionConfig =
+            AiCodeCompletion.AiCodeCompletion.AiCodeCompletion.isAiCodeCompletionEnabled(devtoolsLocale.locale) ? {
+                completionContext: {
+                    getPrefix: this.getConsoleMessageHistory.bind(this),
+                    additionalFiles: [{
+                            path: 'devtools-console-context.js',
+                            content: AiCodeCompletion.AiCodeCompletion.consoleAdditionalContextFileContent,
+                            included_reason: Host.AidaClient.Reason.RELATED_FILE,
+                        }],
+                    stopSequences: ['\n\n'],
+                },
+                onFeatureEnabled: () => {
+                    this.setupAiCodeCompletion();
+                },
+                onFeatureDisabled: () => {
+                    this.cleanupAiCodeCompletion();
+                },
+                onSuggestionAccepted: this.#onAiCodeCompletionSuggestionAccepted.bind(this),
+                onRequestTriggered: this.#onAiCodeCompletionRequestTriggered.bind(this),
+                onResponseReceived: this.#onAiCodeCompletionResponseReceived.bind(this),
+                panel: "console" /* AiCodeCompletion.AiCodeCompletion.ContextFlavor.CONSOLE */,
+            } :
+                undefined;
+        this.prompt = new ConsolePrompt(this.aiCodeCompletionConfig);
         this.prompt.show(this.promptElement);
         this.prompt.element.addEventListener('keydown', this.promptKeyDown.bind(this), true);
         this.prompt.addEventListener("TextChanged" /* ConsolePromptEvents.TEXT_CHANGED */, this.promptTextChanged, this);
-        if (this.isAiCodeCompletionEnabled()) {
-            this.aiCodeCompletionSetting.addChangeListener(this.onAiCodeCompletionSettingChanged.bind(this));
-            this.onAiCodeCompletionSettingChanged();
-            this.prompt.addEventListener("AiCodeCompletionSuggestionAccepted" /* ConsolePromptEvents.AI_CODE_COMPLETION_SUGGESTION_ACCEPTED */, this.#onAiCodeCompletionSuggestionAccepted, this);
-            this.prompt.addEventListener("AiCodeCompletionRequestTriggered" /* ConsolePromptEvents.AI_CODE_COMPLETION_REQUEST_TRIGGERED */, this.#onAiCodeCompletionRequestTriggered, this);
-            this.prompt.addEventListener("AiCodeCompletionResponseReceived" /* ConsolePromptEvents.AI_CODE_COMPLETION_RESPONSE_RECEIVED */, this.#onAiCodeCompletionResponseReceived, this);
-            this.element.addEventListener('keydown', this.keyDown.bind(this));
-        }
         this.messagesElement.addEventListener('keydown', this.messagesKeyDown.bind(this), false);
         this.prompt.element.addEventListener('focusin', () => {
             if (this.isScrolledToBottom()) {
@@ -518,31 +536,30 @@ export class ConsoleView extends UI.Widget.VBox {
         return consoleViewInstance;
     }
     createAiCodeCompletionSummaryToolbar() {
+        if (this.aiCodeCompletionSummaryToolbar) {
+            return;
+        }
         this.aiCodeCompletionSummaryToolbar = new AiCodeCompletionSummaryToolbar({
             citationsTooltipId: CITATIONS_TOOLTIP_ID,
             disclaimerTooltipId: DISCLAIMER_TOOLTIP_ID,
             spinnerTooltipId: SPINNER_TOOLTIP_ID
         });
-        this.aiCodeCompletionSummaryToolbarContainer = this.element.createChild('div');
+        this.aiCodeCompletionSummaryToolbarContainer =
+            this.element.createChild('div', 'ai-code-completion-summary-toolbar-container');
         this.aiCodeCompletionSummaryToolbar.show(this.aiCodeCompletionSummaryToolbarContainer, undefined, true);
     }
-    #onAiCodeCompletionSuggestionAccepted(event) {
-        if (!this.aiCodeCompletionSummaryToolbar || !event.data.citations || event.data.citations.length === 0) {
+    #onAiCodeCompletionSuggestionAccepted() {
+        if (!this.aiCodeCompletionSummaryToolbar || this.aiCodeCompletionCitations.length === 0) {
             return;
         }
-        const citations = [];
-        event.data.citations.forEach(citation => {
-            const uri = citation.uri;
-            if (uri) {
-                citations.push(uri);
-            }
-        });
+        const citations = this.aiCodeCompletionCitations.map(citation => citation.uri).filter((uri) => Boolean(uri));
         this.aiCodeCompletionSummaryToolbar.updateCitations(citations);
     }
     #onAiCodeCompletionRequestTriggered() {
         this.aiCodeCompletionSummaryToolbar?.setLoading(true);
     }
-    #onAiCodeCompletionResponseReceived() {
+    #onAiCodeCompletionResponseReceived(citations) {
+        this.aiCodeCompletionCitations = citations;
         this.aiCodeCompletionSummaryToolbar?.setLoading(false);
     }
     clearConsole() {
@@ -956,6 +973,24 @@ export class ConsoleView extends UI.Widget.VBox {
         }
         this.pendingBatchResize = false;
     }
+    getConsoleMessageHistory() {
+        const currentExecutionContext = UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
+        let consoleMessages = '';
+        if (currentExecutionContext) {
+            const consoleModel = currentExecutionContext.target().model(SDK.ConsoleModel.ConsoleModel);
+            if (consoleModel) {
+                let lastMessage = '';
+                for (const message of consoleModel.messages()) {
+                    if (message.type !== SDK.ConsoleModel.FrontendMessageType.Command || message.messageText === lastMessage) {
+                        continue;
+                    }
+                    lastMessage = message.messageText;
+                    consoleMessages = consoleMessages + message.messageText + '\n\n';
+                }
+            }
+        }
+        return consoleMessages;
+    }
     consoleCleared() {
         const hadFocus = this.viewport.element.hasFocus();
         this.cancelBuildHiddenCache();
@@ -1218,22 +1253,6 @@ export class ConsoleView extends UI.Widget.VBox {
             keyboardEvent.preventDefault();
         }
     }
-    async keyDown(event) {
-        if (!this.prompt.teaser?.isShowing()) {
-            return;
-        }
-        const keyboardEvent = event;
-        if (UI.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(keyboardEvent)) {
-            if (keyboardEvent.key === 'i') {
-                keyboardEvent.consume(true);
-                await this.prompt.onAiCodeCompletionTeaserActionKeyDown(event);
-            }
-            else if (keyboardEvent.key === 'x') {
-                keyboardEvent.consume(true);
-                this.prompt.onAiCodeCompletionTeaserDismissKeyDown(event);
-            }
-        }
-    }
     printResult(result, originatingConsoleMessage, exceptionDetails) {
         if (!result) {
             return;
@@ -1418,29 +1437,13 @@ export class ConsoleView extends UI.Widget.VBox {
             this.messagesElement.clientHeight - this.prompt.belowEditorElement().offsetHeight;
         return distanceToPromptEditorBottom <= 2;
     }
-    onAiCodeCompletionSettingChanged() {
-        if (this.aiCodeCompletionSetting.get() && this.isAiCodeCompletionEnabled()) {
-            this.createAiCodeCompletionSummaryToolbar();
-        }
-        else if (this.aiCodeCompletionSummaryToolbarContainer) {
-            this.aiCodeCompletionSummaryToolbarContainer.remove();
-            this.aiCodeCompletionSummaryToolbarContainer = undefined;
-            this.aiCodeCompletionSummaryToolbar = undefined;
-        }
+    setupAiCodeCompletion() {
+        this.createAiCodeCompletionSummaryToolbar();
     }
-    isAiCodeCompletionEnabled() {
-        const devtoolsLocale = i18n.DevToolsLocale.DevToolsLocale.instance();
-        const aidaAvailability = Root.Runtime.hostConfig.aidaAvailability;
-        if (!devtoolsLocale.locale.startsWith('en-')) {
-            return false;
-        }
-        if (aidaAvailability?.blockedByGeo) {
-            return false;
-        }
-        if (aidaAvailability?.blockedByAge) {
-            return false;
-        }
-        return Boolean(Root.Runtime.hostConfig.devToolsAiCodeCompletion?.enabled);
+    cleanupAiCodeCompletion() {
+        this.aiCodeCompletionSummaryToolbarContainer?.remove();
+        this.aiCodeCompletionSummaryToolbarContainer = undefined;
+        this.aiCodeCompletionSummaryToolbar = undefined;
     }
 }
 // @ts-expect-error exported for Tests.js

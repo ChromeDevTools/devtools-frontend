@@ -2,26 +2,39 @@ import '../../../../ui/components/markdown_view/markdown_view.js';
 import * as AIAssistance from '../../../../models/ai_assistance/ai_assistance.js';
 import type { InsightModel } from '../../../../models/trace/insights/types.js';
 import type * as Trace from '../../../../models/trace/trace.js';
+import * as UI from '../../../../ui/legacy/legacy.js';
 import * as Lit from '../../../../ui/lit/lit.js';
 import type * as Overlays from '../../overlays/overlays.js';
 import type { TableState } from './Table.js';
+interface ViewInput {
+    internalName: string;
+    model: InsightModel;
+    selected: boolean;
+    isAIAssistanceContext: boolean;
+    canShowAskAI: boolean;
+    estimatedSavingsString: string | null;
+    estimatedSavingsAriaLabel: string | null;
+    renderContent: () => Lit.LitTemplate;
+    dispatchInsightToggle: () => void;
+    onHeaderKeyDown: () => void;
+    onAskAIButtonClick: () => void;
+}
+type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 export interface BaseInsightData {
     /** The trace bounds for the insight set that contains this insight. */
     bounds: Trace.Types.Timing.TraceWindowMicro | null;
     /** The key into `insights` that contains this particular insight. */
     insightSetKey: string | null;
 }
-export declare abstract class BaseInsightComponent<T extends InsightModel> extends HTMLElement {
+export declare abstract class BaseInsightComponent<T extends InsightModel> extends UI.Widget.Widget {
     #private;
     abstract internalName: string;
-    static readonly litTagName: Lit.StaticHtml.StaticValue;
-    protected readonly shadow: ShadowRoot;
+    constructor(element?: HTMLElement, view?: View);
     get model(): T | null;
     protected data: BaseInsightData;
     readonly sharedTableState: TableState;
-    protected scheduleRender(): void;
     protected hasAskAiSupport(): boolean;
-    connectedCallback(): void;
+    wasShown(): void;
     set isAIAssistanceContext(isAIAssistanceContext: boolean);
     set selected(selected: boolean);
     get selected(): boolean;
@@ -47,6 +60,9 @@ export declare abstract class BaseInsightComponent<T extends InsightModel> exten
     getInitialOverlays(): Trace.Types.Overlays.Overlay[];
     protected createOverlays(): Trace.Types.Overlays.Overlay[];
     protected abstract renderContent(): Lit.LitTemplate;
+    performUpdate(): void;
     getEstimatedSavingsTime(): Trace.Types.Timing.Milli | null;
     getEstimatedSavingsBytes(): number | null;
+    getEstimatedSavingsString(): string | null;
 }
+export {};

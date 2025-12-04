@@ -1,6 +1,4 @@
 import '../../../ui/kit/kit.js';
-import './ValueInterpreterDisplay.js';
-import './ValueInterpreterSettings.js';
 import { Endianness, type ValueType, type ValueTypeMode } from './ValueInterpreterDisplayUtils.js';
 export declare class EndiannessChangedEvent extends Event {
     static readonly eventName = "endiannesschanged";
@@ -21,6 +19,8 @@ export interface LinearMemoryValueInterpreterData {
     endianness: Endianness;
     valueTypeModes?: Map<ValueType, ValueTypeMode>;
     memoryLength: number;
+    onValueTypeModeChange: (type: ValueType, mode: ValueTypeMode) => void;
+    onJumpToAddressClicked: (address: number) => void;
 }
 export declare class LinearMemoryValueInterpreter extends HTMLElement {
     #private;

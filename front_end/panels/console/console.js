@@ -5998,7 +5998,6 @@ import * as Host4 from "./../../core/host/host.js";
 import * as i18n13 from "./../../core/i18n/i18n.js";
 import * as Root5 from "./../../core/root/root.js";
 import * as SDK8 from "./../../core/sdk/sdk.js";
-import * as AiCodeCompletion from "./../../models/ai_code_completion/ai_code_completion.js";
 import * as Badges from "./../../models/badges/badges.js";
 import * as Formatter2 from "./../../models/formatter/formatter.js";
 import * as SourceMapScopes from "./../../models/source_map_scopes/source_map_scopes.js";
@@ -6008,7 +6007,6 @@ import { Icon as Icon2 } from "./../../ui/kit/kit.js";
 import * as ObjectUI3 from "./../../ui/legacy/components/object_ui/object_ui.js";
 import * as UI9 from "./../../ui/legacy/legacy.js";
 import * as VisualLogging7 from "./../../ui/visual_logging/visual_logging.js";
-import * as PanelCommon2 from "./../common/common.js";
 
 // gen/front_end/panels/console/ConsolePanel.js
 var ConsolePanel_exports = {};
@@ -6034,6 +6032,7 @@ import * as i18n11 from "./../../core/i18n/i18n.js";
 import * as Platform5 from "./../../core/platform/platform.js";
 import * as Root4 from "./../../core/root/root.js";
 import * as SDK7 from "./../../core/sdk/sdk.js";
+import * as AiCodeCompletion from "./../../models/ai_code_completion/ai_code_completion.js";
 import * as Bindings3 from "./../../models/bindings/bindings.js";
 import * as IssuesManager from "./../../models/issues_manager/issues_manager.js";
 import * as Logs3 from "./../../models/logs/logs.js";
@@ -6301,9 +6300,10 @@ var ConsoleView = class _ConsoleView extends UI7.Widget.VBox {
   issueResolver = new IssuesManager.IssueResolver.IssueResolver();
   #isDetached = false;
   #onIssuesCountUpdateBound = this.#onIssuesCountUpdate.bind(this);
-  aiCodeCompletionSetting = Common8.Settings.Settings.instance().createSetting("ai-code-completion-enabled", false);
+  aiCodeCompletionConfig;
   aiCodeCompletionSummaryToolbarContainer;
   aiCodeCompletionSummaryToolbar;
+  aiCodeCompletionCitations = [];
   constructor(viewportThrottlerTimeout) {
     super();
     this.setMinimumSize(0, 35);
@@ -6453,18 +6453,32 @@ var ConsoleView = class _ConsoleView extends UI7.Widget.VBox {
     this.linkifier.addEventListener("liveLocationUpdated", refilterMessages);
     this.consoleMessages = [];
     this.consoleGroupStarts = [];
-    this.prompt = new ConsolePrompt();
+    const devtoolsLocale = i18n11.DevToolsLocale.DevToolsLocale.instance();
+    this.aiCodeCompletionConfig = AiCodeCompletion.AiCodeCompletion.AiCodeCompletion.isAiCodeCompletionEnabled(devtoolsLocale.locale) ? {
+      completionContext: {
+        getPrefix: this.getConsoleMessageHistory.bind(this),
+        additionalFiles: [{
+          path: "devtools-console-context.js",
+          content: AiCodeCompletion.AiCodeCompletion.consoleAdditionalContextFileContent,
+          included_reason: Host3.AidaClient.Reason.RELATED_FILE
+        }],
+        stopSequences: ["\n\n"]
+      },
+      onFeatureEnabled: () => {
+        this.setupAiCodeCompletion();
+      },
+      onFeatureDisabled: () => {
+        this.cleanupAiCodeCompletion();
+      },
+      onSuggestionAccepted: this.#onAiCodeCompletionSuggestionAccepted.bind(this),
+      onRequestTriggered: this.#onAiCodeCompletionRequestTriggered.bind(this),
+      onResponseReceived: this.#onAiCodeCompletionResponseReceived.bind(this),
+      panel: "console"
+    } : void 0;
+    this.prompt = new ConsolePrompt(this.aiCodeCompletionConfig);
     this.prompt.show(this.promptElement);
     this.prompt.element.addEventListener("keydown", this.promptKeyDown.bind(this), true);
     this.prompt.addEventListener("TextChanged", this.promptTextChanged, this);
-    if (this.isAiCodeCompletionEnabled()) {
-      this.aiCodeCompletionSetting.addChangeListener(this.onAiCodeCompletionSettingChanged.bind(this));
-      this.onAiCodeCompletionSettingChanged();
-      this.prompt.addEventListener("AiCodeCompletionSuggestionAccepted", this.#onAiCodeCompletionSuggestionAccepted, this);
-      this.prompt.addEventListener("AiCodeCompletionRequestTriggered", this.#onAiCodeCompletionRequestTriggered, this);
-      this.prompt.addEventListener("AiCodeCompletionResponseReceived", this.#onAiCodeCompletionResponseReceived, this);
-      this.element.addEventListener("keydown", this.keyDown.bind(this));
-    }
     this.messagesElement.addEventListener("keydown", this.messagesKeyDown.bind(this), false);
     this.prompt.element.addEventListener("focusin", () => {
       if (this.isScrolledToBottom()) {
@@ -6500,31 +6514,29 @@ var ConsoleView = class _ConsoleView extends UI7.Widget.VBox {
     return consoleViewInstance;
   }
   createAiCodeCompletionSummaryToolbar() {
+    if (this.aiCodeCompletionSummaryToolbar) {
+      return;
+    }
     this.aiCodeCompletionSummaryToolbar = new AiCodeCompletionSummaryToolbar({
       citationsTooltipId: CITATIONS_TOOLTIP_ID,
       disclaimerTooltipId: DISCLAIMER_TOOLTIP_ID,
       spinnerTooltipId: SPINNER_TOOLTIP_ID
     });
-    this.aiCodeCompletionSummaryToolbarContainer = this.element.createChild("div");
+    this.aiCodeCompletionSummaryToolbarContainer = this.element.createChild("div", "ai-code-completion-summary-toolbar-container");
     this.aiCodeCompletionSummaryToolbar.show(this.aiCodeCompletionSummaryToolbarContainer, void 0, true);
   }
-  #onAiCodeCompletionSuggestionAccepted(event) {
-    if (!this.aiCodeCompletionSummaryToolbar || !event.data.citations || event.data.citations.length === 0) {
+  #onAiCodeCompletionSuggestionAccepted() {
+    if (!this.aiCodeCompletionSummaryToolbar || this.aiCodeCompletionCitations.length === 0) {
       return;
     }
-    const citations = [];
-    event.data.citations.forEach((citation) => {
-      const uri = citation.uri;
-      if (uri) {
-        citations.push(uri);
-      }
-    });
+    const citations = this.aiCodeCompletionCitations.map((citation) => citation.uri).filter((uri) => Boolean(uri));
     this.aiCodeCompletionSummaryToolbar.updateCitations(citations);
   }
   #onAiCodeCompletionRequestTriggered() {
     this.aiCodeCompletionSummaryToolbar?.setLoading(true);
   }
-  #onAiCodeCompletionResponseReceived() {
+  #onAiCodeCompletionResponseReceived(citations) {
+    this.aiCodeCompletionCitations = citations;
     this.aiCodeCompletionSummaryToolbar?.setLoading(false);
   }
   clearConsole() {
@@ -6908,6 +6920,24 @@ var ConsoleView = class _ConsoleView extends UI7.Widget.VBox {
     }
     this.pendingBatchResize = false;
   }
+  getConsoleMessageHistory() {
+    const currentExecutionContext = UI7.Context.Context.instance().flavor(SDK7.RuntimeModel.ExecutionContext);
+    let consoleMessages = "";
+    if (currentExecutionContext) {
+      const consoleModel = currentExecutionContext.target().model(SDK7.ConsoleModel.ConsoleModel);
+      if (consoleModel) {
+        let lastMessage = "";
+        for (const message of consoleModel.messages()) {
+          if (message.type !== SDK7.ConsoleModel.FrontendMessageType.Command || message.messageText === lastMessage) {
+            continue;
+          }
+          lastMessage = message.messageText;
+          consoleMessages = consoleMessages + message.messageText + "\n\n";
+        }
+      }
+    }
+    return consoleMessages;
+  }
   consoleCleared() {
     const hadFocus = this.viewport.element.hasFocus();
     this.cancelBuildHiddenCache();
@@ -7172,21 +7202,6 @@ var ConsoleView = class _ConsoleView extends UI7.Widget.VBox {
       keyboardEvent.preventDefault();
     }
   }
-  async keyDown(event) {
-    if (!this.prompt.teaser?.isShowing()) {
-      return;
-    }
-    const keyboardEvent = event;
-    if (UI7.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(keyboardEvent)) {
-      if (keyboardEvent.key === "i") {
-        keyboardEvent.consume(true);
-        await this.prompt.onAiCodeCompletionTeaserActionKeyDown(event);
-      } else if (keyboardEvent.key === "x") {
-        keyboardEvent.consume(true);
-        this.prompt.onAiCodeCompletionTeaserDismissKeyDown(event);
-      }
-    }
-  }
   printResult(result, originatingConsoleMessage, exceptionDetails) {
     if (!result) {
       return;
@@ -7362,28 +7377,13 @@ var ConsoleView = class _ConsoleView extends UI7.Widget.VBox {
     const distanceToPromptEditorBottom = this.messagesElement.scrollHeight - this.messagesElement.scrollTop - this.messagesElement.clientHeight - this.prompt.belowEditorElement().offsetHeight;
     return distanceToPromptEditorBottom <= 2;
   }
-  onAiCodeCompletionSettingChanged() {
-    if (this.aiCodeCompletionSetting.get() && this.isAiCodeCompletionEnabled()) {
-      this.createAiCodeCompletionSummaryToolbar();
-    } else if (this.aiCodeCompletionSummaryToolbarContainer) {
-      this.aiCodeCompletionSummaryToolbarContainer.remove();
-      this.aiCodeCompletionSummaryToolbarContainer = void 0;
-      this.aiCodeCompletionSummaryToolbar = void 0;
-    }
+  setupAiCodeCompletion() {
+    this.createAiCodeCompletionSummaryToolbar();
   }
-  isAiCodeCompletionEnabled() {
-    const devtoolsLocale = i18n11.DevToolsLocale.DevToolsLocale.instance();
-    const aidaAvailability = Root4.Runtime.hostConfig.aidaAvailability;
-    if (!devtoolsLocale.locale.startsWith("en-")) {
-      return false;
-    }
-    if (aidaAvailability?.blockedByGeo) {
-      return false;
-    }
-    if (aidaAvailability?.blockedByAge) {
-      return false;
-    }
-    return Boolean(Root4.Runtime.hostConfig.devToolsAiCodeCompletion?.enabled);
+  cleanupAiCodeCompletion() {
+    this.aiCodeCompletionSummaryToolbarContainer?.remove();
+    this.aiCodeCompletionSummaryToolbarContainer = void 0;
+    this.aiCodeCompletionSummaryToolbar = void 0;
   }
 };
 globalThis.Console = globalThis.Console || {};
@@ -7747,7 +7747,6 @@ var UIStrings6 = {
 };
 var str_6 = i18n13.i18n.registerUIStrings("panels/console/ConsolePrompt.ts", UIStrings6);
 var i18nString6 = i18n13.i18n.getLocalizedString.bind(void 0, str_6);
-var AI_CODE_COMPLETION_CHARACTER_LIMIT = 2e4;
 var ConsolePrompt = class extends Common9.ObjectWrapper.eventMixin(UI9.Widget.Widget) {
   addCompletionsFromHistory;
   #history;
@@ -7770,14 +7769,8 @@ var ConsolePrompt = class extends Common9.ObjectWrapper.eventMixin(UI9.Widget.Wi
   #editorHistory;
   #selfXssWarningShown = false;
   #javaScriptCompletionCompartment = new CodeMirror2.Compartment();
-  aidaClient;
-  aidaAvailability;
-  boundOnAidaAvailabilityChange;
-  aiCodeCompletion;
-  teaser;
-  placeholderCompartment = new CodeMirror2.Compartment();
-  aiCodeCompletionSetting = Common9.Settings.Settings.instance().createSetting("ai-code-completion-enabled", false);
-  aiCodeCompletionCitations = [];
+  aiCodeCompletionConfig;
+  aiCodeCompletionProvider;
   #getJavaScriptCompletionExtensions() {
     if (this.#selfXssWarningShown) {
       return [];
@@ -7795,7 +7788,7 @@ var ConsolePrompt = class extends Common9.ObjectWrapper.eventMixin(UI9.Widget.Wi
     const effects = this.#javaScriptCompletionCompartment.reconfigure(extensions);
     this.editor.dispatch({ effects });
   }
-  constructor() {
+  constructor(aiCodeCompletionConfig) {
     super({
       jslog: `${VisualLogging7.textField("console-prompt").track({
         change: true,
@@ -7848,17 +7841,20 @@ var ConsolePrompt = class extends Common9.ObjectWrapper.eventMixin(UI9.Widget.Wi
       CodeMirror2.autocompletion({ aboveCursor: true }),
       this.#javaScriptCompletionCompartment.of(this.#getJavaScriptCompletionExtensions())
     ];
-    if (this.isAiCodeCompletionEnabled()) {
-      const aiCodeCompletionTeaserDismissedSetting = Common9.Settings.Settings.instance().createSetting("ai-code-completion-teaser-dismissed", false);
-      if (!this.aiCodeCompletionSetting.get() && !aiCodeCompletionTeaserDismissedSetting.get()) {
-        this.teaser = new PanelCommon2.AiCodeCompletionTeaser({ onDetach: this.detachAiCodeCompletionTeaser.bind(this) });
-        extensions.push(this.placeholderCompartment.of([]));
-      }
-      extensions.push(TextEditor2.Config.aiAutoCompleteSuggestion);
+    this.aiCodeCompletionConfig = aiCodeCompletionConfig;
+    if (this.aiCodeCompletionConfig) {
+      this.aiCodeCompletionProvider = TextEditor2.AiCodeCompletionProvider.AiCodeCompletionProvider.createInstance(this.aiCodeCompletionConfig);
+      extensions.push(...this.aiCodeCompletionProvider.extension());
     }
     const doc = this.initialText;
     const editorState = CodeMirror2.EditorState.create({ doc, extensions });
     this.editor = new TextEditor2.TextEditor.TextEditor(editorState);
+    if (this.aiCodeCompletionProvider) {
+      this.aiCodeCompletionProvider.editorInitialized(this.editor);
+      this.editor.editor.dispatch({
+        effects: TextEditor2.AiCodeCompletionProvider.setAiCodeCompletionTeaserMode.of(TextEditor2.AiCodeCompletionProvider.AiCodeCompletionTeaserMode.ONLY_SHOW_ON_EMPTY)
+      });
+    }
     this.editor.addEventListener("keydown", (event) => {
       if (event.defaultPrevented) {
         event.stopPropagation();
@@ -7872,13 +7868,6 @@ var ConsolePrompt = class extends Common9.ObjectWrapper.eventMixin(UI9.Widget.Wi
     this.element.removeAttribute("tabindex");
     this.editorSetForTest();
     Host4.userMetrics.panelLoaded("console", "DevTools.Launch.Console");
-    if (this.isAiCodeCompletionEnabled()) {
-      this.aiCodeCompletionSetting.addChangeListener(this.onAiCodeCompletionSettingChanged.bind(this));
-      this.onAiCodeCompletionSettingChanged();
-      this.boundOnAidaAvailabilityChange = this.onAidaAvailabilityChange.bind(this);
-      Host4.AidaClient.HostConfigTracker.instance().addEventListener("aidaAvailabilityChanged", this.boundOnAidaAvailabilityChange);
-      void this.onAidaAvailabilityChange();
-    }
   }
   eagerSettingChanged() {
     const enabled = this.eagerEvalSetting.get();
@@ -7890,7 +7879,7 @@ var ConsolePrompt = class extends Common9.ObjectWrapper.eventMixin(UI9.Widget.Wi
   belowEditorElement() {
     return this.eagerPreviewElement;
   }
-  onTextChanged(docContentChanged) {
+  onTextChanged() {
     if (this.eagerEvalSetting.get()) {
       const asSoonAsPossible = !TextEditor2.Config.contentIncludingHint(this.editor.editor);
       this.previewRequestForTest = this.textChangeThrottler.schedule(
@@ -7899,47 +7888,11 @@ var ConsolePrompt = class extends Common9.ObjectWrapper.eventMixin(UI9.Widget.Wi
         /* Common.Throttler.Scheduling.DEFAULT */
       );
     }
-    if (docContentChanged && this.aiCodeCompletion && this.isAiCodeCompletionEnabled()) {
-      this.triggerAiCodeCompletion();
-    }
     this.updatePromptIcon();
     this.dispatchEventToListeners(
       "TextChanged"
       /* Events.TEXT_CHANGED */
     );
-  }
-  triggerAiCodeCompletion() {
-    const { doc, selection } = this.editor.state;
-    const query = doc.toString();
-    const cursor = selection.main.head;
-    const currentExecutionContext = UI9.Context.Context.instance().flavor(SDK8.RuntimeModel.ExecutionContext);
-    let prefix = query.substring(0, cursor);
-    if (prefix.trim().length === 0) {
-      return;
-    }
-    if (currentExecutionContext) {
-      const consoleModel = currentExecutionContext.target().model(SDK8.ConsoleModel.ConsoleModel);
-      if (consoleModel) {
-        let lastMessage = "";
-        let consoleMessages = "";
-        for (const message of consoleModel.messages()) {
-          if (message.type !== SDK8.ConsoleModel.FrontendMessageType.Command || message.messageText === lastMessage) {
-            continue;
-          }
-          lastMessage = message.messageText;
-          consoleMessages = consoleMessages + message.messageText + "\n\n";
-        }
-        prefix = consoleMessages + prefix;
-      }
-    }
-    let suffix = query.substring(cursor);
-    if (prefix.length > AI_CODE_COMPLETION_CHARACTER_LIMIT) {
-      prefix = prefix.substring(prefix.length - AI_CODE_COMPLETION_CHARACTER_LIMIT);
-    }
-    if (suffix.length > AI_CODE_COMPLETION_CHARACTER_LIMIT) {
-      suffix = suffix.substring(0, AI_CODE_COMPLETION_CHARACTER_LIMIT);
-    }
-    this.aiCodeCompletion?.onTextChanged(prefix, suffix, cursor);
   }
   async requestPreview() {
     const id = ++this.requestPreviewCurrent;
@@ -7976,9 +7929,6 @@ var ConsolePrompt = class extends Common9.ObjectWrapper.eventMixin(UI9.Widget.Wi
       this.highlightingNode = false;
       SDK8.OverlayModel.OverlayModel.hideDOMNodeHighlight();
     }
-    if (this.boundOnAidaAvailabilityChange) {
-      Host4.AidaClient.HostConfigTracker.instance().removeEventListener("aidaAvailabilityChanged", this.boundOnAidaAvailabilityChange);
-    }
   }
   history() {
     return this.#history;
@@ -7987,7 +7937,7 @@ var ConsolePrompt = class extends Common9.ObjectWrapper.eventMixin(UI9.Widget.Wi
     CodeMirror2.closeCompletion(this.editor.editor);
   }
   clearAiCodeCompletionCache() {
-    this.aiCodeCompletion?.clearCachedRequest();
+    this.aiCodeCompletionProvider?.clearCache();
   }
   moveCaretToEndOfPrompt() {
     this.editor.dispatch({
@@ -8006,7 +7956,7 @@ var ConsolePrompt = class extends Common9.ObjectWrapper.eventMixin(UI9.Widget.Wi
     this.addCompletionsFromHistory = value;
   }
   editorKeymap() {
-    const keymap3 = [
+    return [
       {
         // Handle the KeyboardEvent manually.
         any: (_view, event) => {
@@ -8032,7 +7982,9 @@ var ConsolePrompt = class extends Common9.ObjectWrapper.eventMixin(UI9.Widget.Wi
       { mac: "Ctrl-n", run: () => this.#editorHistory.moveHistory(1, true) },
       {
         key: "Escape",
-        run: () => this.runOnEscape()
+        run: () => {
+          return TextEditor2.JavaScript.closeArgumentsHintsTooltip(this.editor.editor, this.#argumentHintsState);
+        }
       },
       {
         key: "Ctrl-Enter",
@@ -8053,34 +8005,6 @@ var ConsolePrompt = class extends Common9.ObjectWrapper.eventMixin(UI9.Widget.Wi
         shift: CodeMirror2.insertNewlineAndIndent
       }
     ];
-    if (this.isAiCodeCompletionEnabled()) {
-      keymap3.push({
-        key: "Tab",
-        run: () => {
-          const { accepted, suggestion } = TextEditor2.Config.acceptAiAutoCompleteSuggestion(this.editor.editor);
-          if (accepted) {
-            this.dispatchEventToListeners("AiCodeCompletionSuggestionAccepted", { citations: this.aiCodeCompletionCitations });
-            if (suggestion?.rpcGlobalId) {
-              this.aiCodeCompletion?.registerUserAcceptance(suggestion.rpcGlobalId, suggestion.sampleId);
-            }
-          }
-          return accepted;
-        }
-      });
-    }
-    return keymap3;
-  }
-  runOnEscape() {
-    if (TextEditor2.JavaScript.closeArgumentsHintsTooltip(this.editor.editor, this.#argumentHintsState)) {
-      return true;
-    }
-    if (this.aiCodeCompletion && TextEditor2.Config.hasActiveAiSuggestion(this.editor.state)) {
-      this.editor.dispatch({
-        effects: TextEditor2.Config.setAiAutoCompleteSuggestion.of(null)
-      });
-      return true;
-    }
-    return false;
   }
   async enterWillEvaluate(forceEvaluate) {
     const { doc, selection } = this.editor.state;
@@ -8128,9 +8052,13 @@ var ConsolePrompt = class extends Common9.ObjectWrapper.eventMixin(UI9.Widget.Wi
         changes: { from: 0, to: this.editor.state.doc.length },
         scrollIntoView: true
       });
-      if (this.teaser) {
-        this.detachAiCodeCompletionTeaser();
-        this.teaser = void 0;
+      if (this.aiCodeCompletionProvider) {
+        const teaserMode = this.editor.editor.state.field(TextEditor2.AiCodeCompletionProvider.aiCodeCompletionTeaserModeState);
+        if (teaserMode !== TextEditor2.AiCodeCompletionProvider.AiCodeCompletionTeaserMode.OFF) {
+          this.editor.editor.dispatch({
+            effects: TextEditor2.AiCodeCompletionProvider.setAiCodeCompletionTeaserMode.of(TextEditor2.AiCodeCompletionProvider.AiCodeCompletionTeaserMode.OFF)
+          });
+        }
       }
     } else if (this.editor.state.doc.length) {
       CodeMirror2.insertNewlineAndIndent(this.editor.editor);
@@ -8176,8 +8104,7 @@ var ConsolePrompt = class extends Common9.ObjectWrapper.eventMixin(UI9.Widget.Wi
   }
   editorUpdate(update) {
     if (update.docChanged || CodeMirror2.selectedCompletion(update.state) !== CodeMirror2.selectedCompletion(update.startState)) {
-      const docContentChanged = update.state.doc !== update.startState.doc;
-      this.onTextChanged(docContentChanged);
+      this.onTextChanged();
     } else if (update.selectionSet) {
       this.updatePromptIcon();
     }
@@ -8185,97 +8112,7 @@ var ConsolePrompt = class extends Common9.ObjectWrapper.eventMixin(UI9.Widget.Wi
   focus() {
     this.editor.focus();
   }
-  // TODO(b/435654172): Refactor and move aiCodeCompletion model one level up to avoid
-  // defining additional listeners and events.
-  setAiCodeCompletion() {
-    if (this.aiCodeCompletion) {
-      return;
-    }
-    if (!this.aidaClient) {
-      this.aidaClient = new Host4.AidaClient.AidaClient();
-    }
-    if (this.teaser) {
-      this.detachAiCodeCompletionTeaser();
-      this.teaser = void 0;
-    }
-    this.aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion({ aidaClient: this.aidaClient }, "console", {
-      getSelectionHead: () => this.editor.editor.state.selection.main.head,
-      getCompletionHint: () => this.editor.editor.plugin(TextEditor2.Config.showCompletionHint)?.currentHint,
-      setAiAutoCompletion: (suggestion) => {
-        this.editor.dispatch({ effects: TextEditor2.Config.setAiAutoCompleteSuggestion.of(suggestion) });
-      }
-    }, ["\n\n"]);
-    this.aiCodeCompletion.addEventListener("ResponseReceived", (event) => {
-      this.aiCodeCompletionCitations = event.data.citations;
-      this.dispatchEventToListeners("AiCodeCompletionResponseReceived", event.data);
-    });
-    this.aiCodeCompletion.addEventListener("RequestTriggered", (event) => {
-      this.dispatchEventToListeners("AiCodeCompletionRequestTriggered", event.data);
-    });
-  }
-  onAiCodeCompletionSettingChanged() {
-    if (this.aiCodeCompletionSetting.get() && this.isAiCodeCompletionEnabled()) {
-      this.setAiCodeCompletion();
-    } else if (this.aiCodeCompletion) {
-      this.aiCodeCompletion.remove();
-      this.aiCodeCompletion = void 0;
-    }
-  }
-  async onAidaAvailabilityChange() {
-    const currentAidaAvailability = await Host4.AidaClient.AidaClient.checkAccessPreconditions();
-    if (currentAidaAvailability !== this.aidaAvailability) {
-      this.aidaAvailability = currentAidaAvailability;
-      if (this.aidaAvailability === "available") {
-        this.onAiCodeCompletionSettingChanged();
-        if (this.teaser) {
-          this.editor.dispatch({
-            effects: this.placeholderCompartment.reconfigure([TextEditor2.AiCodeCompletionTeaserPlaceholder.aiCodeCompletionTeaserPlaceholder(this.teaser)])
-          });
-        }
-      } else if (this.aiCodeCompletion) {
-        this.aiCodeCompletion.remove();
-        this.aiCodeCompletion = void 0;
-        if (this.teaser) {
-          this.detachAiCodeCompletionTeaser();
-        }
-      }
-    }
-  }
-  async onAiCodeCompletionTeaserActionKeyDown(event) {
-    if (this.teaser?.isShowing()) {
-      await this.teaser?.onAction(event);
-      void VisualLogging7.logKeyDown(event.currentTarget, event, "ai-code-completion-teaser.fre");
-    }
-  }
-  onAiCodeCompletionTeaserDismissKeyDown(event) {
-    if (this.teaser?.isShowing()) {
-      this.teaser?.onDismiss(event);
-      void VisualLogging7.logKeyDown(event.currentTarget, event, "ai-code-completion-teaser.dismiss");
-    }
-  }
-  detachAiCodeCompletionTeaser() {
-    this.editor.dispatch({
-      effects: this.placeholderCompartment.reconfigure([])
-    });
-  }
-  isAiCodeCompletionEnabled() {
-    const devtoolsLocale = i18n13.DevToolsLocale.DevToolsLocale.instance();
-    const aidaAvailability = Root5.Runtime.hostConfig.aidaAvailability;
-    if (!devtoolsLocale.locale.startsWith("en-")) {
-      return false;
-    }
-    if (aidaAvailability?.blockedByGeo) {
-      return false;
-    }
-    if (aidaAvailability?.blockedByAge) {
-      return false;
-    }
-    return Boolean(aidaAvailability?.enabled && Root5.Runtime.hostConfig.devToolsAiCodeCompletion?.enabled);
-  }
   editorSetForTest() {
-  }
-  setAidaClientForTest(aidaClient) {
-    this.aidaClient = aidaClient;
   }
 };
 export {

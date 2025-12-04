@@ -690,13 +690,13 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin(UI.Widget.V
         const themeColor = Common.Color.parse(this.stringProperty(parsedManifest, 'theme_color') || 'white') ||
             Common.Color.parse('white');
         if (themeColor) {
-            this.themeColorSwatch.renderColor(themeColor);
+            this.themeColorSwatch.color = themeColor;
         }
         this.backgroundColorSwatch.classList.toggle('hidden', !this.stringProperty(parsedManifest, 'background_color'));
         const backgroundColor = Common.Color.parse(this.stringProperty(parsedManifest, 'background_color') || 'white') ||
             Common.Color.parse('white');
         if (backgroundColor) {
-            this.backgroundColorSwatch.renderColor(backgroundColor);
+            this.backgroundColorSwatch.color = backgroundColor;
         }
         this.orientationField.textContent = this.stringProperty(parsedManifest, 'orientation');
         const displayType = this.stringProperty(parsedManifest, 'display');
@@ -736,10 +736,21 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin(UI.Widget.V
             </devtools-link>`,
         }), this.iconsSection.appendRow());
         let squareSizedIconAvailable = false;
+        const fields = new Map();
         for (const icon of icons) {
-            const result = await this.appendImageResourceToSection(url, icon, this.iconsSection, /** isScreenshot= */ false);
+            const result = await this.processImageResource(url, icon, /** isScreenshot= */ false);
+            if (result.title && result.content) {
+                const fieldContent = fields.get(result.title) || [];
+                if (!fields.has(result.title)) {
+                    fields.set(result.title, fieldContent);
+                }
+                fieldContent.push(result.content);
+            }
             imageErrors.push(...result.imageResourceErrors);
             squareSizedIconAvailable = result.squareSizedIconAvailable || squareSizedIconAvailable;
+        }
+        for (const [title, content] of fields) {
+            render(content, this.iconsSection.appendFlexedField(title));
         }
         if (!squareSizedIconAvailable) {
             imageErrors.push(i18nString(UIStrings.sSShouldHaveSquareIcon));
@@ -774,8 +785,16 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin(UI.Widget.V
             urlField.appendChild(link);
             const shortcutIcons = shortcut.icons || [];
             let hasShortcutIconLargeEnough = false;
+            const fields = new Map();
             for (const shortcutIcon of shortcutIcons) {
-                const { imageResourceErrors: shortcutIconErrors } = await this.appendImageResourceToSection(url, shortcutIcon, shortcutSection, /** isScreenshot= */ false);
+                const { imageResourceErrors: shortcutIconErrors, title, content } = await this.processImageResource(url, shortcutIcon, /** isScreenshot= */ false);
+                if (title && content) {
+                    const fieldContent = fields.get(title) || [];
+                    if (!fields.has(title)) {
+                        fields.set(title, fieldContent);
+                    }
+                    fieldContent.push(content);
+                }
                 imageErrors.push(...shortcutIconErrors);
                 if (!hasShortcutIconLargeEnough && shortcutIcon.sizes) {
                     const shortcutIconSize = shortcutIcon.sizes.match(/^(\d+)x(\d+)$/);
@@ -783,6 +802,9 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin(UI.Widget.V
                         hasShortcutIconLargeEnough = true;
                     }
                 }
+            }
+            for (const [title, content] of fields) {
+                render(content, shortcutSection.appendFlexedField(title));
             }
             if (!hasShortcutIconLargeEnough) {
                 imageErrors.push(i18nString(UIStrings.shortcutSShouldIncludeAXPixel, { PH1: shortcutIndex }));
@@ -813,7 +835,10 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin(UI.Widget.V
             if (screenshot.platform) {
                 screenshotSection.appendFlexedField(i18nString(UIStrings.platform), screenshot.platform);
             }
-            const { imageResourceErrors: screenshotErrors, naturalWidth: width, naturalHeight: height } = await this.appendImageResourceToSection(url, screenshot, screenshotSection, /** isScreenshot= */ true);
+            const { imageResourceErrors: screenshotErrors, naturalWidth: width, naturalHeight: height, title, content } = await this.processImageResource(url, screenshot, /** isScreenshot= */ true);
+            if (title) {
+                render(content, screenshotSection.appendFlexedField(title));
+            }
             imageErrors.push(...screenshotErrors);
             if (screenshot.form_factor && width && height) {
                 formFactorScreenshotDimensions.has(screenshot.form_factor) ||
@@ -1016,8 +1041,6 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin(UI.Widget.V
             initiatorUrl: this.target.inspectedURL(),
         }, 
         /* isBinary=*/ true);
-        const wrapper = document.createElement('div');
-        wrapper.classList.add('image-wrapper');
         const image = document.createElement('img');
         const result = new Promise((resolve, reject) => {
             image.onload = resolve;
@@ -1027,11 +1050,9 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin(UI.Widget.V
         // does not work, we can parse mimeType out of the response headers
         // using front_end/core/platform/MimeType.ts.
         image.src = 'data:application/octet-stream;base64,' + await Common.Base64.encode(content);
-        image.alt = i18nString(UIStrings.imageFromS, { PH1: url });
-        wrapper.appendChild(image);
         try {
             await result;
-            return { wrapper, image };
+            return { naturalWidth: image.naturalWidth, naturalHeight: image.naturalHeight, src: image.src };
         }
         catch {
         }
@@ -1060,16 +1081,16 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin(UI.Widget.V
         }
         return parsedSizes;
     }
-    checkSizeProblem(size, image, resourceName, imageUrl) {
+    checkSizeProblem(size, naturalWidth, naturalHeight, resourceName, imageUrl) {
         if ('any' in size) {
-            return { hasSquareSize: image.naturalWidth === image.naturalHeight };
+            return { hasSquareSize: naturalWidth === naturalHeight };
         }
         const hasSquareSize = size.width === size.height;
-        if (image.naturalWidth !== size.width && image.naturalHeight !== size.height) {
+        if (naturalWidth !== size.width && naturalHeight !== size.height) {
             return {
                 error: i18nString(UIStrings.actualSizeSspxOfSSDoesNotMatch, {
-                    PH1: image.naturalWidth,
-                    PH2: image.naturalHeight,
+                    PH1: naturalWidth,
+                    PH2: naturalHeight,
                     PH3: resourceName,
                     PH4: imageUrl,
                     PH5: size.width,
@@ -1078,24 +1099,24 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin(UI.Widget.V
                 hasSquareSize,
             };
         }
-        if (image.naturalWidth !== size.width) {
+        if (naturalWidth !== size.width) {
             return {
-                error: i18nString(UIStrings.actualWidthSpxOfSSDoesNotMatch, { PH1: image.naturalWidth, PH2: resourceName, PH3: imageUrl, PH4: size.width }),
+                error: i18nString(UIStrings.actualWidthSpxOfSSDoesNotMatch, { PH1: naturalWidth, PH2: resourceName, PH3: imageUrl, PH4: size.width }),
                 hasSquareSize,
             };
         }
-        if (image.naturalHeight !== size.height) {
+        if (naturalHeight !== size.height) {
             return {
-                error: i18nString(UIStrings.actualHeightSpxOfSSDoesNotMatch, { PH1: image.naturalHeight, PH2: resourceName, PH3: imageUrl, PH4: size.height }),
+                error: i18nString(UIStrings.actualHeightSpxOfSSDoesNotMatch, { PH1: naturalHeight, PH2: resourceName, PH3: imageUrl, PH4: size.height }),
                 hasSquareSize,
             };
         }
         return { hasSquareSize };
     }
-    async appendImageResourceToSection(
+    async processImageResource(
     // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    baseUrl, imageResource, section, isScreenshot) {
+    baseUrl, imageResource, isScreenshot) {
         const imageResourceErrors = [];
         const resourceName = isScreenshot ? i18nString(UIStrings.screenshot) : i18nString(UIStrings.icon);
         if (!imageResource.src) {
@@ -1112,11 +1133,9 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin(UI.Widget.V
             imageResourceErrors.push(i18nString(UIStrings.sSFailedToLoad, { PH1: resourceName, PH2: imageUrl }));
             return { imageResourceErrors };
         }
-        const { wrapper, image } = result;
-        const { naturalWidth, naturalHeight } = image;
+        const { src, naturalWidth, naturalHeight } = result;
         const sizes = this.parseSizes(imageResource['sizes'], resourceName, imageUrl, imageResourceErrors);
         const title = sizes.map(x => x.formatted).join(' ') + '\n' + (imageResource['type'] || '');
-        const field = section.appendFlexedField(title);
         let squareSizedIconAvailable = false;
         if (!imageResource.sizes) {
             imageResourceErrors.push(i18nString(UIStrings.sSDoesNotSpecifyItsSizeInThe, { PH1: resourceName, PH2: imageUrl }));
@@ -1126,14 +1145,14 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin(UI.Widget.V
                 imageResourceErrors.push(i18nString(UIStrings.screenshotPixelSize, { url: imageUrl }));
             }
             for (const size of sizes) {
-                const { error, hasSquareSize } = this.checkSizeProblem(size, image, resourceName, imageUrl);
+                const { error, hasSquareSize } = this.checkSizeProblem(size, naturalWidth, naturalHeight, resourceName, imageUrl);
                 squareSizedIconAvailable = squareSizedIconAvailable || hasSquareSize;
                 if (error) {
                     imageResourceErrors.push(error);
                 }
                 else if (isScreenshot) {
-                    const width = 'any' in size ? image.naturalWidth : size.width;
-                    const height = 'any' in size ? image.naturalHeight : size.height;
+                    const width = 'any' in size ? naturalWidth : size.width;
+                    const height = 'any' in size ? naturalHeight : size.height;
                     if (width < 320 || height < 320) {
                         imageResourceErrors.push(i18nString(UIStrings.sSSizeShouldBeAtLeast320, { PH1: resourceName, PH2: imageUrl }));
                     }
@@ -1149,13 +1168,18 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin(UI.Widget.V
                 }
             }
         }
-        image.width = image.naturalWidth;
         const purpose = typeof imageResource['purpose'] === 'string' ? imageResource['purpose'].toLowerCase() : '';
         if (purpose.includes('any') && purpose.includes('maskable')) {
             imageResourceErrors.push(i18nString(UIStrings.avoidPurposeAnyAndMaskable));
         }
-        field.appendChild(wrapper);
-        return { imageResourceErrors, squareSizedIconAvailable, naturalWidth, naturalHeight };
+        // clang-format off
+        const content = html `
+      <div class="image-wrapper">
+        <img src=${src} alt=${i18nString(UIStrings.imageFromS, { PH1: imageUrl })}
+            width=${naturalWidth}>
+      </div>`;
+        // clang-format on
+        return { imageResourceErrors, squareSizedIconAvailable, naturalWidth, naturalHeight, title, content };
     }
     async appendWindowControlsToSection(overlayModel, url, themeColor) {
         const wcoStyleSheetText = await overlayModel.hasStyleSheetText(url);

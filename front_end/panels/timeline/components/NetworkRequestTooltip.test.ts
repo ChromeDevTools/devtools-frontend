@@ -20,22 +20,20 @@ describeWithMockConnection('NetworkRequestTooltip', () => {
             SDK.NetworkManager.Slow3GConditions, '', 'https://example.com'));
     const tooltip = new TimelineComponents.NetworkRequestTooltip.NetworkRequestTooltip();
     renderElementIntoDOM(tooltip, {includeCommonStyles: true});
-    const data: TimelineComponents.NetworkRequestTooltip.NetworkTooltipData = {
-      networkRequest: {
-        ts: 0,
-        dur: 120,
-        args: {
-          data: {
-            syntheticData: {sendStartTime: 100},
-            url: 'https://example.com',
-            mimeType: Protocol.Network.ResourceType.Document,
-            redirects: []
-          }
+    tooltip.networkRequest = {
+      ts: 0,
+      dur: 120,
+      args: {
+        data: {
+          syntheticData: {sendStartTime: 100},
+          url: 'https://example.com',
+          mimeType: Protocol.Network.ResourceType.Document,
+          redirects: []
         }
-      } as unknown as Trace.Types.Events.SyntheticNetworkRequest,
-      entityMapper: sinon.createStubInstance(Trace.EntityMapper.EntityMapper),
-    };
-    tooltip.data = data;
+      }
+    } as unknown as Trace.Types.Events.SyntheticNetworkRequest;
+    tooltip.entityMapper = sinon.createStubInstance(Trace.EntityMapper.EntityMapper);
+    await tooltip.updateComplete;
 
     await assertScreenshot('timeline/network-request-tooltip-throttling.png');
   });

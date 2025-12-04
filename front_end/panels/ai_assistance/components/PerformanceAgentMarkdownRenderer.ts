@@ -20,6 +20,7 @@ import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as PanelsCommon from '../../common/common.js';
 import * as Network from '../../network/network.js';
+import * as TimelineComponents from '../../timeline/components/components.js';
 import * as Insights from '../../timeline/components/insights/insights.js';
 
 import {MarkdownRendererWithCodeBlock} from './MarkdownRendererWithCodeBlock.js';
@@ -27,6 +28,7 @@ import type * as PerformanceAgentFlameChart from './PerformanceAgentFlameChart.j
 
 const {html} = Lit.StaticHtml;
 const {ref, createRef} = Lit.Directives;
+const {widgetConfig} = UI.Widget;
 
 export class PerformanceAgentMarkdownRenderer extends MarkdownRendererWithCodeBlock {
   #insightRenderer = new Insights.InsightRenderer.InsightRenderer();
@@ -131,12 +133,11 @@ export class PerformanceAgentMarkdownRenderer extends MarkdownRendererWithCodeBl
 
         let networkTooltip = null;
         if (syntheticRequest && Trace.Types.Events.isSyntheticNetworkRequest(syntheticRequest)) {
-          networkTooltip = html`<devtools-performance-network-request-tooltip
-              .data=${{
-            networkRequest: syntheticRequest, entityMapper: null
-          }
-          }
-            ></devtools-performance-network-request-tooltip>`;
+          // clang-format off
+          networkTooltip = html`<devtools-widget .widgetConfig=${widgetConfig(TimelineComponents.NetworkRequestTooltip.NetworkRequestTooltip, {
+            networkRequest: syntheticRequest,
+          })}></devtools-widget>`;
+          // clang-format on
         }
 
         return html`<devtools-collapsible-assistance-content-widget

@@ -6,8 +6,7 @@ import {performance} from 'node:perf_hooks';
 
 import {measurements} from '../report/report.js';
 
-// Constantly flakes on Linux and Windows bots.
-describe('[crbug.com/451846268]: Boot performance', () => {
+describe('Boot performance', () => {
   const RUNS = 10;
 
   for (let run = 1; run <= RUNS; run++) {

@@ -3,7 +3,11 @@
   "compilerOptions": {
     "baseUrl": "."
   },
+  "include": [".", "../e2e/types.d.ts"],
   "references": [
+    {
+      "path": "../e2e/tsconfig.json"
+    },
     {
       "path": "../shared/tsconfig.json"
     }

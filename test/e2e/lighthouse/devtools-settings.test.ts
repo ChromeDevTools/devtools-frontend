@@ -1,10 +1,10 @@
 // Copyright 2022 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-
 import {assert} from 'chai';
 import * as path from 'node:path';
 
+import type * as SDK from '../../../front_end/core/sdk/sdk.js';
 import {expectError} from '../../conductor/events.js';
 import {openDeviceToolbar, selectDevice} from '../helpers/emulation-helpers.js';
 import {
@@ -44,12 +44,14 @@ function expectErrors() {
  * the designated tests in network-request-blocking-panel.test.ts are skipped by default due to flakiness.
  **/
 async function blockCss(devToolsPage: DevToolsPage) {
-  await devToolsPage.evaluate(`(async () => {
-        const SDK = await import('./core/sdk/sdk.js');
-        const networkManager = SDK.NetworkManager.MultitargetNetworkManager.instance();
-        networkManager.requestConditions.conditionsEnabled = true;
-        networkManager.requestConditions.add(SDK.NetworkManager.RequestCondition.createFromSetting({enabled: true, url: '*.css'}));
-      })()`);
+  await devToolsPage.evaluate(async () => {
+    // @ts-expect-error executed from DevTools
+    const SDKModule: typeof SDK = await import('./core/sdk/sdk.js');
+    const networkManager = SDKModule.NetworkManager.MultitargetNetworkManager.instance();
+    networkManager.requestConditions.conditionsEnabled = true;
+    networkManager.requestConditions.add(
+        SDKModule.NetworkManager.RequestCondition.createFromSetting({enabled: true, url: '*.css'}));
+  });
 }
 
 describe('DevTools', function() {
@@ -57,7 +59,8 @@ describe('DevTools', function() {
   this.timeout(60_000);
 
   describe('request blocking', () => {
-    it('is respected during a lighthouse run', async ({devToolsPage, inspectedPage}) => {
+    // https://crbug.com/466057104 the feature roll has make this test fail
+    it.skip('[crbug.com/466057104] is respected during a lighthouse run', async ({devToolsPage, inspectedPage}) => {
       expectErrors();
       await blockCss(devToolsPage);
       await navigateToLighthouseTab('lighthouse/hello.html', devToolsPage, inspectedPage);

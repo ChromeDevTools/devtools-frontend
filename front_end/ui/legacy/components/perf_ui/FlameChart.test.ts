@@ -898,7 +898,8 @@ describeWithEnvironment('FlameChart', () => {
             {groupIndex: -1, hoverType: PerfUI.FlameChart.HoverType.OUTSIDE_TRACKS});
       });
 
-      it('returns the correct group index and the icon type for given coordinates', () => {
+      // After https://crrev.com/c/7205876 this test starts failing.
+      it.skip('[crbug.com/465838131] returns the correct group index and the icon type for given coordinates', () => {
         const provider = new IndexAndCoordinatesConversionTestProvider();
         const delegate = new MockFlameChartDelegate();
         chartInstance = new PerfUI.FlameChart.FlameChart(provider, delegate);

@@ -4,6 +4,7 @@
 
 import {getValuesOfAllBodyRows} from '../../../testing/DataGridHelpers.js';
 import {
+  assertScreenshot,
   dispatchClickEvent,
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
@@ -51,6 +52,8 @@ describeWithMockConnection('BounceTrackingMitigationsView', () => {
     const nullGridElement = component.shadowRoot!.querySelector('devtools-data-grid');
     assert.isNull(nullGridElement);
 
+    await assertScreenshot('application/bounce-tracking-mitigations-view-initial.png');
+
     const sections = component.shadowRoot!.querySelectorAll('devtools-report-section');
     const sectionsText = Array.from(sections).map(section => section.textContent?.trim());
     const expected = [
@@ -71,6 +74,8 @@ describeWithMockConnection('BounceTrackingMitigationsView', () => {
 
     const nullGridElement = component.shadowRoot!.querySelector('devtools-data-grid');
     assert.isNull(nullGridElement);
+
+    await assertScreenshot('application/bounce-tracking-mitigations-view-disabled.png');
 
     const sections = component.shadowRoot!.querySelectorAll('devtools-report-section');
     const sectionsText = Array.from(sections).map(section => section.textContent?.trim());
@@ -103,6 +108,8 @@ describeWithMockConnection('BounceTrackingMitigationsView', () => {
     await RenderCoordinator.done();
     await component.wrapper?.updateComplete;
 
+    await assertScreenshot('application/bounce-tracking-mitigations-view-empty.png');
+
     const nullGridElement = component.shadowRoot!.querySelector('devtools-data-grid');
     assert.isNull(nullGridElement);
 
@@ -133,6 +140,8 @@ describeWithMockConnection('BounceTrackingMitigationsView', () => {
 
     await RenderCoordinator.done({waitForWork: true});
     await component.wrapper?.updateComplete;
+
+    await assertScreenshot('application/bounce-tracking-mitigations-view-populated.png');
 
     const dataGridShadowRoot = getInternalDataGridShadowRoot(component);
     const rowValues = getValuesOfAllBodyRows(dataGridShadowRoot);

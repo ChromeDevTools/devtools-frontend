@@ -6204,6 +6204,10 @@ export const NativeFunctions = [
     signatures: [["...args"]]
   },
   {
+    name: "CSSMathRandom",
+    signatures: [["baseValue","min","max","?step"]]
+  },
+  {
     name: "CSSMathSum",
     signatures: [["...args"]]
   },

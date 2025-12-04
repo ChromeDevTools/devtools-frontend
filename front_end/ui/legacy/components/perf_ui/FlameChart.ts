@@ -3883,7 +3883,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
    * Update position of an Element. By default, the element is treated as a full entry and it's dimensions are set to the full entry width/length/height.
    * If isDecoration parameter is set to true, the element will be positioned on the right side of the entry and have a square shape where width == height of the entry.
    */
-  private updateElementPosition(element: Element|null, entryIndex: number, isDecoration?: boolean): void {
+  private updateElementPosition(element: HTMLElement|null, entryIndex: number, isDecoration?: boolean): void {
     if (!element) {
       return;
     }
@@ -3929,7 +3929,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     const entryLevel = timelineData.entryLevels[entryIndex];
     const barY = this.levelToOffset(entryLevel) - this.chartViewport.scrollOffset();
     const barHeight = this.levelHeight(entryLevel);
-    const style = (element as HTMLElement).style;
+    const style = element.style;
 
     // TODO(paulirish): make these changes within a RenderCoordinator.write callback.
     // Currently these (plus the scrollOffset() right above) trigger layout thrashing.

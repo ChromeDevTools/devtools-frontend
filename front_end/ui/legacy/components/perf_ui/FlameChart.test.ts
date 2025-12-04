@@ -911,7 +911,7 @@ describeWithEnvironment('FlameChart', () => {
         if (!timelineData) {
           throw new Error('Could not find timeline data');
         }
-        const context = (chartInstance.getCanvas().getContext('2d') as CanvasRenderingContext2D);
+        const context = chartInstance.getCanvas().getContext('2d')!;
         const labelWidth = chartInstance.labelWidthForGroup(context, provider.timelineData()?.groups[0]!);
 
         // Start of the view

@@ -4,28 +4,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 /**
- * Device in a request prompt.
- *
- * @public
- */
-export class DeviceRequestPromptDevice {
-    /**
-     * Device id during a prompt.
-     */
-    id;
-    /**
-     * Device name as it appears in a prompt.
-     */
-    name;
-    /**
-     * @internal
-     */
-    constructor(id, name) {
-        this.id = id;
-        this.name = name;
-    }
-}
-/**
  * Device request prompts let you respond to the page requesting for a device
  * through an API like WebBluetooth.
  *
@@ -48,5 +26,9 @@ export class DeviceRequestPromptDevice {
  * @public
  */
 export class DeviceRequestPrompt {
+    /**
+     * Current list of selectable devices.
+     */
+    devices = [];
 }
 //# sourceMappingURL=DeviceRequestPrompt.js.map

@@ -21,6 +21,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./Accessibility.js"), exports);
 __exportStar(require("./Binding.js"), exports);
+__exportStar(require("./BluetoothEmulation.js"), exports);
 __exportStar(require("./Browser.js"), exports);
 __exportStar(require("./BrowserContext.js"), exports);
 __exportStar(require("./BrowserConnector.js"), exports);

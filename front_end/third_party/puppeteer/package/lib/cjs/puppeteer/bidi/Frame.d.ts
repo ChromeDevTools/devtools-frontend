@@ -5,7 +5,9 @@
  */
 import * as Bidi from 'webdriver-bidi-protocol';
 import type { CDPSession } from '../api/CDPSession.js';
+import type { DeviceRequestPrompt } from '../api/DeviceRequestPrompt.js';
 import { Frame, type GoToOptions, type WaitForOptions } from '../api/Frame.js';
+import { type WaitTimeoutOptions } from '../api/Page.js';
 import { Accessibility } from '../cdp/Accessibility.js';
 import type { TimeoutSettings } from '../common/TimeoutSettings.js';
 import type { Awaitable } from '../common/types.js';
@@ -39,7 +41,7 @@ export declare class BidiFrame extends Frame {
     goto(url: string, options?: GoToOptions): Promise<BidiHTTPResponse | null>;
     setContent(html: string, options?: WaitForOptions): Promise<void>;
     waitForNavigation(options?: WaitForOptions): Promise<BidiHTTPResponse | null>;
-    waitForDevicePrompt(): never;
+    waitForDevicePrompt(options?: WaitTimeoutOptions): Promise<DeviceRequestPrompt>;
     get detached(): boolean;
     exposeFunction<Args extends unknown[], Ret>(name: string, apply: (...args: Args) => Awaitable<Ret>): Promise<void>;
     removeExposedFunction(name: string): Promise<void>;

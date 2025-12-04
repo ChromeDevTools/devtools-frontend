@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import type { Protocol } from 'devtools-protocol';
+import type { BluetoothEmulation } from '../api/BluetoothEmulation.js';
 import type { Browser } from '../api/Browser.js';
 import type { BrowserContext } from '../api/BrowserContext.js';
 import { type CDPSession } from '../api/CDPSession.js';
@@ -131,6 +132,7 @@ export declare class CdpPage extends Page {
      * ```
      */
     waitForDevicePrompt(options?: WaitTimeoutOptions): Promise<DeviceRequestPrompt>;
+    get bluetooth(): BluetoothEmulation;
 }
 /**
  * @internal

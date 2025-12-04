@@ -272,7 +272,7 @@ class FrameManager extends EventEmitter_js_1.EventEmitter {
     _deviceRequestPromptManager(client) {
         let manager = this.#deviceRequestPromptManagerMap.get(client);
         if (manager === undefined) {
-            manager = new DeviceRequestPrompt_js_1.DeviceRequestPromptManager(client, this.#timeoutSettings);
+            manager = new DeviceRequestPrompt_js_1.CdpDeviceRequestPromptManager(client, this.#timeoutSettings);
             this.#deviceRequestPromptManagerMap.set(client, manager);
         }
         return manager;

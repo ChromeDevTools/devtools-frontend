@@ -11,7 +11,7 @@ import type {WaitTimeoutOptions} from './Page.js';
  *
  * @public
  */
-export class DeviceRequestPromptDevice {
+export interface DeviceRequestPromptDevice {
   /**
    * Device id during a prompt.
    */
@@ -21,14 +21,6 @@ export class DeviceRequestPromptDevice {
    * Device name as it appears in a prompt.
    */
   name: string;
-
-  /**
-   * @internal
-   */
-  constructor(id: string, name: string) {
-    this.id = id;
-    this.name = name;
-  }
 }
 
 /**
@@ -57,7 +49,7 @@ export abstract class DeviceRequestPrompt {
   /**
    * Current list of selectable devices.
    */
-  abstract get devices(): DeviceRequestPromptDevice[];
+  readonly devices: DeviceRequestPromptDevice[] = [];
 
   /**
    * Resolve to the first device in the prompt matching a filter.

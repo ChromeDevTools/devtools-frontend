@@ -43,6 +43,7 @@ var __setFunctionName = (this && this.__setFunctionName) || function (f, name, p
 };
 import { Browser, } from '../api/Browser.js';
 import { ProtocolError } from '../common/Errors.js';
+import { UnsupportedOperation } from '../common/Errors.js';
 import { EventEmitter } from '../common/EventEmitter.js';
 import { debugError } from '../common/util.js';
 import { bubble } from '../util/decorators.js';
@@ -256,6 +257,15 @@ let BidiBrowser = (() => {
         }
         async uninstallExtension(id) {
             await this.#browserCore.uninstallExtension(id);
+        }
+        screens() {
+            throw new UnsupportedOperation();
+        }
+        addScreen(_params) {
+            throw new UnsupportedOperation();
+        }
+        removeScreen(_screenId) {
+            throw new UnsupportedOperation();
         }
         targets() {
             return [

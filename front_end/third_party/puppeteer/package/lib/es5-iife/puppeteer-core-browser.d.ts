@@ -92,6 +92,33 @@ export declare interface ActionOptions {
 export declare type ActionResult = 'continue' | 'abort' | 'respond';
 
 /**
+ * @license
+ * Copyright 2025 Google Inc.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+/**
+ * @public
+ * Emulated bluetooth adapter state.
+ */
+export declare type AdapterState = 'absent' | 'powered-off' | 'powered-on';
+
+/**
+ * @public
+ */
+export declare interface AddScreenParams {
+    left: number;
+    top: number;
+    width: number;
+    height: number;
+    workAreaInsets?: WorkAreaInsets;
+    devicePixelRatio?: number;
+    rotation?: number;
+    colorDepth?: number;
+    label?: string;
+    isInternal?: boolean;
+}
+
+/**
  * @public
  */
 export declare interface AutofillData {
@@ -126,6 +153,83 @@ export declare type AwaitablePredicate<T> = (value: T) => Awaitable<boolean>;
  * @public
  */
 export declare type AwaitedLocator<T> = T extends Locator<infer S> ? S : never;
+
+/**
+ * Exposes the bluetooth emulation abilities.
+ *
+ * @remarks {@link https://webbluetoothcg.github.io/web-bluetooth/#simulated-bluetooth-adapter|Web Bluetooth specification}
+ * requires the emulated adapters should be isolated per top-level navigable. However,
+ * at the moment Chromium's bluetooth emulation implementation is tight to the browser
+ * context, not the page. This means the bluetooth emulation exposed from different pages
+ * of the same browser context would interfere their states.
+ *
+ * @example
+ *
+ * ```ts
+ * await page.bluetooth.emulateAdapter('powered-on');
+ * await page.bluetooth.simulatePreconnectedPeripheral({
+ *   address: '09:09:09:09:09:09',
+ *   name: 'SOME_NAME',
+ *   manufacturerData: [
+ *     {
+ *       key: 17,
+ *       data: 'AP8BAX8=',
+ *     },
+ *   ],
+ *   knownServiceUuids: ['12345678-1234-5678-9abc-def123456789'],
+ * });
+ * await page.bluetooth.disableEmulation();
+ * ```
+ *
+ * @experimental
+ * @public
+ */
+export declare interface BluetoothEmulation {
+    /**
+     * Emulate Bluetooth adapter. Required for bluetooth simulations
+     * See {@link https://webbluetoothcg.github.io/web-bluetooth/#bluetooth-simulateAdapter-command|bluetooth.simulateAdapter}.
+     *
+     * @param state - The desired bluetooth adapter state.
+     * @param leSupported - Mark if the adapter supports low-energy bluetooth.
+     *
+     * @experimental
+     * @public
+     */
+    emulateAdapter(state: AdapterState, leSupported?: boolean): Promise<void>;
+    /**
+     * Disable emulated bluetooth adapter.
+     * See {@link https://webbluetoothcg.github.io/web-bluetooth/#bluetooth-disableSimulation-command|bluetooth.disableSimulation}.
+     *
+     * @experimental
+     * @public
+     */
+    disableEmulation(): Promise<void>;
+    /**
+     * Simulated preconnected Bluetooth Peripheral.
+     * See {@link https://webbluetoothcg.github.io/web-bluetooth/#bluetooth-simulateconnectedperipheral-command|bluetooth.simulatePreconnectedPeripheral}.
+     *
+     * @param preconnectedPeripheral - The peripheral to simulate.
+     *
+     * @experimental
+     * @public
+     */
+    simulatePreconnectedPeripheral(preconnectedPeripheral: PreconnectedPeripheral): Promise<void>;
+}
+
+/**
+ * @public
+ * Represents the simulated bluetooth peripheral's manufacturer data.
+ */
+export declare interface BluetoothManufacturerData {
+    /**
+     * The company identifier, as defined by the {@link https://www.bluetooth.com/specifications/assigned-numbers/company-identifiers/|Bluetooth SIG}.
+     */
+    key: number;
+    /**
+     * The manufacturer-specific data as a base64-encoded string.
+     */
+    data: string;
+}
 
 /**
  * @public
@@ -377,6 +481,26 @@ export declare abstract class Browser extends EventEmitter<BrowserEvents> {
      * `--enable-unsafe-extension-debugging` flag is set.
      */
     abstract uninstallExtension(id: string): Promise<void>;
+    /**
+     * Gets a list of {@link ScreenInfo | screen information objects}.
+     */
+    abstract screens(): Promise<ScreenInfo[]>;
+    /**
+     * Adds a new screen, returns the added {@link ScreenInfo | screen information object}.
+     *
+     * @remarks
+     *
+     * Only supported in headless mode.
+     */
+    abstract addScreen(params: AddScreenParams): Promise<ScreenInfo>;
+    /**
+     * Removes a screen.
+     *
+     * @remarks
+     *
+     * Only supported in headless mode. Fails if the primary screen id is specified.
+     */
+    abstract removeScreen(screenId: string): Promise<void>;
     /**
      * Whether Puppeteer is connected to this {@link Browser | browser}.
      *
@@ -1052,6 +1176,17 @@ export declare interface ConnectOptions {
      */
     acceptInsecureCerts?: boolean;
     /**
+     * If specified, puppeteer looks for an open WebSocket at the well-known
+     * default user data directory for the specified channel and attempts to
+     * connect to it using ws://localhost:$ActivePort/devtools/browser. Only works
+     * for Chrome and when run in Node.js.
+     *
+     * This option is experimental when used with puppeteer.connect().
+     *
+     * @experimental
+     */
+    channel?: ChromeReleaseChannel;
+    /**
      * Experimental setting to disable monitoring network events by default. When
      * set to `false`, parts of Puppeteer that depend on network events would not
      * work such as HTTPRequest and HTTPResponse.
@@ -1511,6 +1646,7 @@ export declare type CreatePageOptions = {
     type: 'tab';
 } | {
     type: 'window';
+    windowBounds?: WindowBounds;
 };
 
 /**
@@ -1676,7 +1812,7 @@ export declare abstract class DeviceRequestPrompt {
     /**
      * Current list of selectable devices.
      */
-    abstract get devices(): DeviceRequestPromptDevice[];
+    readonly devices: DeviceRequestPromptDevice[];
     /**
      * Resolve to the first device in the prompt matching a filter.
      */
@@ -1696,7 +1832,7 @@ export declare abstract class DeviceRequestPrompt {
  *
  * @public
  */
-export declare class DeviceRequestPromptDevice {
+export declare interface DeviceRequestPromptDevice {
     /**
      * Device id during a prompt.
      */
@@ -1705,7 +1841,6 @@ export declare class DeviceRequestPromptDevice {
      * Device name as it appears in a prompt.
      */
     name: string;
-
 }
 
 /**
@@ -6388,6 +6523,10 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      * method is only available in Chrome.
      */
     abstract openDevTools(): Promise<Page>;
+    /**
+     * {@inheritDoc BluetoothEmulation}
+     */
+    abstract get bluetooth(): BluetoothEmulation;
 }
 
 /**
@@ -6765,6 +6904,17 @@ declare namespace PQuerySelector {
 }
 
 /**
+ * @public
+ * A bluetooth peripheral to be simulated.
+ */
+export declare interface PreconnectedPeripheral {
+    address: string;
+    name: string;
+    manufacturerData: BluetoothManufacturerData[];
+    knownServiceUuids: string[];
+}
+
+/**
  * A list of pre-defined network conditions to be used with
  * {@link Page.emulateNetworkConditions}.
  *
@@ -6907,6 +7057,10 @@ declare namespace Puppeteer_2 {
     export {
         Protocol,
         Session,
+        AdapterState,
+        BluetoothManufacturerData,
+        PreconnectedPeripheral,
+        BluetoothEmulation,
         BrowserContextOptions,
         TargetFilterCallback,
         Permission,
@@ -6914,7 +7068,13 @@ declare namespace Puppeteer_2 {
         BrowserEvent,
         BrowserEvents,
         DebugInfo,
+        WindowState,
+        WindowBounds,
         CreatePageOptions,
+        ScreenOrientation_2 as ScreenOrientation,
+        ScreenInfo,
+        WorkAreaInsets,
+        AddScreenParams,
         Browser,
         BrowserContextEvent,
         BrowserContextEvents,
@@ -7026,6 +7186,7 @@ declare namespace Puppeteer_2 {
         ProtocolType,
         SupportedWebDriverCapability,
         SupportedWebDriverCapabilities,
+        ChromeReleaseChannel,
         ConnectOptions,
         ConsoleMessageLocation,
         ConsoleMessageType,
@@ -7076,7 +7237,6 @@ declare namespace Puppeteer_2 {
         Viewport,
         DownloadPolicy,
         DownloadBehavior,
-        ChromeReleaseChannel,
         LaunchOptions,
         BrowserLauncher,
         PuppeteerNode,
@@ -7418,6 +7578,37 @@ export declare interface ScreencastOptions {
      */
     ffmpegPath?: string;
 }
+
+/**
+ * @public
+ */
+export declare interface ScreenInfo {
+    left: number;
+    top: number;
+    width: number;
+    height: number;
+    availLeft: number;
+    availTop: number;
+    availWidth: number;
+    availHeight: number;
+    devicePixelRatio: number;
+    colorDepth: number;
+    orientation: ScreenOrientation_2;
+    isExtended: boolean;
+    isInternal: boolean;
+    isPrimary: boolean;
+    label: string;
+    id: string;
+}
+
+/**
+ * @public
+ */
+declare interface ScreenOrientation_2 {
+    angle: number;
+    type: string;
+}
+export { ScreenOrientation_2 as ScreenOrientation }
 
 /**
  * @public
@@ -8139,6 +8330,32 @@ export declare abstract class WebWorker extends EventEmitter<Record<EventType, u
      */
     evaluateHandle<Params extends unknown[], Func extends EvaluateFunc<Params> = EvaluateFunc<Params>>(func: Func | string, ...args: Params): Promise<HandleFor<Awaited<ReturnType<Func>>>>;
     close(): Promise<void>;
+}
+
+/**
+ * @public
+ */
+export declare interface WindowBounds {
+    left?: number;
+    top?: number;
+    width?: number;
+    height?: number;
+    windowState?: WindowState;
+}
+
+/**
+ * @public
+ */
+export declare type WindowState = 'normal' | 'minimized' | 'maximized' | 'fullscreen';
+
+/**
+ * @public
+ */
+export declare interface WorkAreaInsets {
+    top?: number;
+    left?: number;
+    bottom?: number;
+    right?: number;
 }
 
 export { }

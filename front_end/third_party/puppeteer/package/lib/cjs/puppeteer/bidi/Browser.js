@@ -46,6 +46,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.BidiBrowser = void 0;
 const Browser_js_1 = require("../api/Browser.js");
 const Errors_js_1 = require("../common/Errors.js");
+const Errors_js_2 = require("../common/Errors.js");
 const EventEmitter_js_1 = require("../common/EventEmitter.js");
 const util_js_1 = require("../common/util.js");
 const decorators_js_1 = require("../util/decorators.js");
@@ -259,6 +260,15 @@ let BidiBrowser = (() => {
         }
         async uninstallExtension(id) {
             await this.#browserCore.uninstallExtension(id);
+        }
+        screens() {
+            throw new Errors_js_2.UnsupportedOperation();
+        }
+        addScreen(_params) {
+            throw new Errors_js_2.UnsupportedOperation();
+        }
+        removeScreen(_screenId) {
+            throw new Errors_js_2.UnsupportedOperation();
         }
         targets() {
             return [

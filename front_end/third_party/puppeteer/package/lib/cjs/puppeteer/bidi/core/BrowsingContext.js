@@ -43,6 +43,8 @@ exports.BrowsingContext = void 0;
 const EventEmitter_js_1 = require("../../common/EventEmitter.js");
 const decorators_js_1 = require("../../util/decorators.js");
 const disposable_js_1 = require("../../util/disposable.js");
+const BluetoothEmulation_js_1 = require("../BluetoothEmulation.js");
+const DeviceRequestPrompt_js_1 = require("../DeviceRequestPrompt.js");
 const Navigation_js_1 = require("./Navigation.js");
 const Realm_js_1 = require("./Realm.js");
 const Request_js_1 = require("./Request.js");
@@ -139,14 +141,18 @@ let BrowsingContext = (() => {
         userContext;
         originalOpener;
         #emulationState = { javaScriptEnabled: true };
-        constructor(context, parent, id, url, originalOpener) {
+        #bluetoothEmulation;
+        #deviceRequestPromptManager;
+        constructor(userContext, parent, id, url, originalOpener) {
             super();
             this.#url = url;
             this.id = id;
             this.parent = parent;
-            this.userContext = context;
+            this.userContext = userContext;
             this.originalOpener = originalOpener;
             this.defaultRealm = this.#createWindowRealm();
+            this.#bluetoothEmulation = new BluetoothEmulation_js_1.BidiBluetoothEmulation(this.id, this.#session);
+            this.#deviceRequestPromptManager = new DeviceRequestPrompt_js_1.BidiDeviceRequestPromptManager(this.id, this.#session);
         }
         #initialize() {
             const userContextEmitter = this.#disposables.use(new EventEmitter_js_1.EventEmitter(this.userContext));
@@ -576,6 +582,12 @@ let BrowsingContext = (() => {
                     : null,
                 contexts: [this.id],
             });
+        }
+        get bluetooth() {
+            return this.#bluetoothEmulation;
+        }
+        async waitForDevicePrompt(timeout, signal) {
+            return await this.#deviceRequestPromptManager.waitForDevicePrompt(timeout, signal);
         }
     };
 })();

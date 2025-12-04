@@ -796,8 +796,11 @@ let BidiPage = (() => {
                 throw error;
             }
         }
-        waitForDevicePrompt() {
-            throw new UnsupportedOperation();
+        async waitForDevicePrompt(options = {}) {
+            return await this.mainFrame().waitForDevicePrompt(options);
+        }
+        get bluetooth() {
+            return this.mainFrame().browsingContext.bluetooth;
         }
     };
 })();

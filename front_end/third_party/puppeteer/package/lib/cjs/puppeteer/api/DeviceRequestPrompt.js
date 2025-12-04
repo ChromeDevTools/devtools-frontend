@@ -5,30 +5,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DeviceRequestPrompt = exports.DeviceRequestPromptDevice = void 0;
-/**
- * Device in a request prompt.
- *
- * @public
- */
-class DeviceRequestPromptDevice {
-    /**
-     * Device id during a prompt.
-     */
-    id;
-    /**
-     * Device name as it appears in a prompt.
-     */
-    name;
-    /**
-     * @internal
-     */
-    constructor(id, name) {
-        this.id = id;
-        this.name = name;
-    }
-}
-exports.DeviceRequestPromptDevice = DeviceRequestPromptDevice;
+exports.DeviceRequestPrompt = void 0;
 /**
  * Device request prompts let you respond to the page requesting for a device
  * through an API like WebBluetooth.
@@ -52,6 +29,10 @@ exports.DeviceRequestPromptDevice = DeviceRequestPromptDevice;
  * @public
  */
 class DeviceRequestPrompt {
+    /**
+     * Current list of selectable devices.
+     */
+    devices = [];
 }
 exports.DeviceRequestPrompt = DeviceRequestPrompt;
 //# sourceMappingURL=DeviceRequestPrompt.js.map

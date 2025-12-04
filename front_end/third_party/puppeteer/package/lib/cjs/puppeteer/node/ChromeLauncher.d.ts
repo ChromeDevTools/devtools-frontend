@@ -5,7 +5,7 @@
  */
 import type { Browser } from '../api/Browser.js';
 import { BrowserLauncher, type ResolvedLaunchArgs } from './BrowserLauncher.js';
-import type { ChromeReleaseChannel, LaunchOptions } from './LaunchOptions.js';
+import { type ChromeReleaseChannel, type LaunchOptions } from './LaunchOptions.js';
 import type { PuppeteerNode } from './PuppeteerNode.js';
 /**
  * @internal

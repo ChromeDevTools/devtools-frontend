@@ -18,6 +18,7 @@ const browsers_1 = require("@puppeteer/browsers");
 const util_js_1 = require("../common/util.js");
 const assert_js_1 = require("../util/assert.js");
 const BrowserLauncher_js_1 = require("./BrowserLauncher.js");
+const LaunchOptions_js_1 = require("./LaunchOptions.js");
 const fs_js_1 = require("./util/fs.js");
 /**
  * @internal
@@ -209,7 +210,7 @@ class ChromeLauncher extends BrowserLauncher_js_1.BrowserLauncher {
         if (channel) {
             return (0, browsers_1.computeSystemExecutablePath)({
                 browser: browsers_1.Browser.CHROME,
-                channel: convertPuppeteerChannelToBrowsersChannel(channel),
+                channel: (0, LaunchOptions_js_1.convertPuppeteerChannelToBrowsersChannel)(channel),
             });
         }
         else {
@@ -218,18 +219,6 @@ class ChromeLauncher extends BrowserLauncher_js_1.BrowserLauncher {
     }
 }
 exports.ChromeLauncher = ChromeLauncher;
-function convertPuppeteerChannelToBrowsersChannel(channel) {
-    switch (channel) {
-        case 'chrome':
-            return browsers_1.ChromeReleaseChannel.STABLE;
-        case 'chrome-dev':
-            return browsers_1.ChromeReleaseChannel.DEV;
-        case 'chrome-beta':
-            return browsers_1.ChromeReleaseChannel.BETA;
-        case 'chrome-canary':
-            return browsers_1.ChromeReleaseChannel.CANARY;
-    }
-}
 /**
  * Extracts all features from the given command-line flag
  * (e.g. `--enable-features`, `--enable-features=`).

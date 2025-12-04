@@ -5,9 +5,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DeviceRequestPromptManager = exports.CdpDeviceRequestPrompt = void 0;
+exports.CdpDeviceRequestPromptManager = exports.CdpDeviceRequestPrompt = void 0;
 const DeviceRequestPrompt_js_1 = require("../api/DeviceRequestPrompt.js");
-const DeviceRequestPrompt_js_2 = require("../api/DeviceRequestPrompt.js");
 const assert_js_1 = require("../util/assert.js");
 const Deferred_js_1 = require("../util/Deferred.js");
 /**
@@ -20,7 +19,6 @@ class CdpDeviceRequestPrompt extends DeviceRequestPrompt_js_1.DeviceRequestPromp
     #handled = false;
     #updateDevicesHandle = this.#updateDevices.bind(this);
     #waitForDevicePromises = new Set();
-    devices = [];
     constructor(client, timeoutSettings, firstEvent) {
         super();
         this.#client = client;
@@ -42,7 +40,7 @@ class CdpDeviceRequestPrompt extends DeviceRequestPrompt_js_1.DeviceRequestPromp
             })) {
                 continue;
             }
-            const newDevice = new DeviceRequestPrompt_js_2.DeviceRequestPromptDevice(rawDevice.id, rawDevice.name);
+            const newDevice = { id: rawDevice.id, name: rawDevice.name };
             this.devices.push(newDevice);
             for (const waitForDevicePromise of this.#waitForDevicePromises) {
                 if (waitForDevicePromise.filter(newDevice)) {
@@ -99,7 +97,7 @@ exports.CdpDeviceRequestPrompt = CdpDeviceRequestPrompt;
 /**
  * @internal
  */
-class DeviceRequestPromptManager {
+class CdpDeviceRequestPromptManager {
     #client;
     #timeoutSettings;
     #deviceRequestPromptDeferreds = new Set();
@@ -154,5 +152,5 @@ class DeviceRequestPromptManager {
         this.#deviceRequestPromptDeferreds.clear();
     }
 }
-exports.DeviceRequestPromptManager = DeviceRequestPromptManager;
+exports.CdpDeviceRequestPromptManager = CdpDeviceRequestPromptManager;
 //# sourceMappingURL=DeviceRequestPrompt.js.map

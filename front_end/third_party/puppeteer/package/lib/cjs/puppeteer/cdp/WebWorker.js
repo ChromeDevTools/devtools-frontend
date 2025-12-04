@@ -52,15 +52,20 @@ class CdpWebWorker extends WebWorker_js_1.WebWorker {
     }
     async close() {
         switch (this.#targetType) {
-            case Target_js_1.TargetType.SERVICE_WORKER:
-            case Target_js_1.TargetType.SHARED_WORKER: {
-                // For service and shared workers we need to close the target and detach to allow
+            case Target_js_1.TargetType.SERVICE_WORKER: {
+                // For service workers we need to close the target and detach to allow
                 // the worker to stop.
                 await this.client.connection()?.send('Target.closeTarget', {
                     targetId: this.#id,
                 });
                 await this.client.connection()?.send('Target.detachFromTarget', {
                     sessionId: this.client.id(),
+                });
+                break;
+            }
+            case Target_js_1.TargetType.SHARED_WORKER: {
+                await this.client.connection()?.send('Target.closeTarget', {
+                    targetId: this.#id,
                 });
                 break;
             }

@@ -8,7 +8,7 @@ import type Protocol from 'devtools-protocol';
 
 import type {CDPSession} from '../api/CDPSession.js';
 import {DeviceRequestPrompt} from '../api/DeviceRequestPrompt.js';
-import {DeviceRequestPromptDevice} from '../api/DeviceRequestPrompt.js';
+import type {DeviceRequestPromptDevice} from '../api/DeviceRequestPrompt.js';
 import type {WaitTimeoutOptions} from '../api/Page.js';
 import type {TimeoutSettings} from '../common/TimeoutSettings.js';
 import {assert} from '../util/assert.js';
@@ -27,8 +27,6 @@ export class CdpDeviceRequestPrompt extends DeviceRequestPrompt {
     filter: (device: DeviceRequestPromptDevice) => boolean;
     promise: Deferred<DeviceRequestPromptDevice>;
   }>();
-
-  devices: DeviceRequestPromptDevice[] = [];
 
   constructor(
     client: CDPSession,
@@ -65,10 +63,7 @@ export class CdpDeviceRequestPrompt extends DeviceRequestPrompt {
         continue;
       }
 
-      const newDevice = new DeviceRequestPromptDevice(
-        rawDevice.id,
-        rawDevice.name,
-      );
+      const newDevice = {id: rawDevice.id, name: rawDevice.name};
       this.devices.push(newDevice);
 
       for (const waitForDevicePromise of this.#waitForDevicePromises) {
@@ -156,7 +151,7 @@ export class CdpDeviceRequestPrompt extends DeviceRequestPrompt {
 /**
  * @internal
  */
-export class DeviceRequestPromptManager {
+export class CdpDeviceRequestPromptManager {
   #client: CDPSession | null;
   #timeoutSettings: TimeoutSettings;
   #deviceRequestPromptDeferreds = new Set<Deferred<DeviceRequestPrompt>>();

@@ -3,12 +3,14 @@
  * Copyright 2020 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
-import type { ConnectOptions } from '../common/ConnectOptions.js';
+import { ChromeReleaseChannel as BrowsersChromeReleaseChannel } from '@puppeteer/browsers';
+import type { ChromeReleaseChannel, ConnectOptions } from '../common/ConnectOptions.js';
 import type { SupportedBrowser } from '../common/SupportedBrowser.js';
+export type { ChromeReleaseChannel };
 /**
- * @public
+ * @internal
  */
-export type ChromeReleaseChannel = 'chrome' | 'chrome-beta' | 'chrome-canary' | 'chrome-dev';
+export declare function convertPuppeteerChannelToBrowsersChannel(channel: ChromeReleaseChannel): BrowsersChromeReleaseChannel;
 /**
  * Generic launch options that can be passed when launching any browser.
  * @public

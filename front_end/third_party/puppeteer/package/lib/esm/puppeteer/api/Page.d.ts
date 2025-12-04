@@ -22,6 +22,7 @@ import type { Awaitable, AwaitablePredicate, EvaluateFunc, EvaluateFuncWith, Han
 import type { Viewport } from '../common/Viewport.js';
 import type { ScreenRecorder } from '../node/ScreenRecorder.js';
 import { asyncDisposeSymbol, disposeSymbol } from '../util/disposable.js';
+import type { BluetoothEmulation } from './BluetoothEmulation.js';
 import type { Browser } from './Browser.js';
 import type { BrowserContext } from './BrowserContext.js';
 import type { CDPSession } from './CDPSession.js';
@@ -2375,6 +2376,10 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      * method is only available in Chrome.
      */
     abstract openDevTools(): Promise<Page>;
+    /**
+     * {@inheritDoc BluetoothEmulation}
+     */
+    abstract get bluetooth(): BluetoothEmulation;
 }
 /**
  * @internal

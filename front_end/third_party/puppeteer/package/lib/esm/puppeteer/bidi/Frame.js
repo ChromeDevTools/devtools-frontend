@@ -420,8 +420,9 @@ let BidiFrame = (() => {
                 throw new TargetCloseError('Frame detached.');
             })))));
         }
-        waitForDevicePrompt() {
-            throw new UnsupportedOperation();
+        waitForDevicePrompt(options = {}) {
+            const { timeout = this.timeoutSettings.timeout(), signal } = options;
+            return this.browsingContext.waitForDevicePrompt(timeout, signal);
         }
         get detached() {
             return this.browsingContext.closed;

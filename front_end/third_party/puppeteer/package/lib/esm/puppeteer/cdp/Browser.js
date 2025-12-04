@@ -90,7 +90,9 @@ export class CdpBrowser extends BrowserBase {
                         target.type() === 'webview' ||
                         (this.#handleDevToolsAsPage &&
                             target.type() === 'other' &&
-                            target.url().startsWith('devtools://')));
+                            target
+                                .url()
+                                .startsWith('devtools://devtools/bundled/devtools_app.html')));
                 });
     }
     _getIsPageTargetCallback() {
@@ -176,16 +178,22 @@ export class CdpBrowser extends BrowserBase {
     wsEndpoint() {
         return this.#connection.url();
     }
-    async newPage() {
-        return await this.#defaultContext.newPage();
+    async newPage(options) {
+        return await this.#defaultContext.newPage(options);
     }
     async _createPageInContext(contextId, options) {
         const hasTargets = this.targets().filter(t => {
             return t.browserContext().id === contextId;
         }).length > 0;
+        const windowBounds = options?.type === 'window' ? options.windowBounds : undefined;
         const { targetId } = await this.#connection.send('Target.createTarget', {
             url: 'about:blank',
             browserContextId: contextId || undefined,
+            left: windowBounds?.left,
+            top: windowBounds?.top,
+            width: windowBounds?.width,
+            height: windowBounds?.height,
+            windowState: windowBounds?.windowState,
             // Works around crbug.com/454825274.
             newWindow: hasTargets && options?.type === 'window' ? true : undefined,
         });
@@ -233,6 +241,17 @@ export class CdpBrowser extends BrowserBase {
     }
     uninstallExtension(id) {
         return this.#connection.send('Extensions.uninstall', { id });
+    }
+    async screens() {
+        const { screenInfos } = await this.#connection.send('Emulation.getScreenInfos');
+        return screenInfos;
+    }
+    async addScreen(params) {
+        const { screenInfo } = await this.#connection.send('Emulation.addScreen', params);
+        return screenInfo;
+    }
+    async removeScreen(screenId) {
+        return await this.#connection.send('Emulation.removeScreen', { screenId });
     }
     targets() {
         return Array.from(this.#targetManager.getAvailableTargets().values()).filter(target => {

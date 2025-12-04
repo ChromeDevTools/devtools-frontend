@@ -6,7 +6,7 @@
 import type Protocol from 'devtools-protocol';
 import type { CDPSession } from '../api/CDPSession.js';
 import { DeviceRequestPrompt } from '../api/DeviceRequestPrompt.js';
-import { DeviceRequestPromptDevice } from '../api/DeviceRequestPrompt.js';
+import type { DeviceRequestPromptDevice } from '../api/DeviceRequestPrompt.js';
 import type { WaitTimeoutOptions } from '../api/Page.js';
 import type { TimeoutSettings } from '../common/TimeoutSettings.js';
 /**
@@ -14,7 +14,6 @@ import type { TimeoutSettings } from '../common/TimeoutSettings.js';
  */
 export declare class CdpDeviceRequestPrompt extends DeviceRequestPrompt {
     #private;
-    devices: DeviceRequestPromptDevice[];
     constructor(client: CDPSession, timeoutSettings: TimeoutSettings, firstEvent: Protocol.DeviceAccess.DeviceRequestPromptedEvent);
     waitForDevice(filter: (device: DeviceRequestPromptDevice) => boolean, options?: WaitTimeoutOptions): Promise<DeviceRequestPromptDevice>;
     select(device: DeviceRequestPromptDevice): Promise<void>;
@@ -23,7 +22,7 @@ export declare class CdpDeviceRequestPrompt extends DeviceRequestPrompt {
 /**
  * @internal
  */
-export declare class DeviceRequestPromptManager {
+export declare class CdpDeviceRequestPromptManager {
     #private;
     constructor(client: CDPSession, timeoutSettings: TimeoutSettings);
     waitForDevicePrompt(options?: WaitTimeoutOptions): Promise<DeviceRequestPrompt>;

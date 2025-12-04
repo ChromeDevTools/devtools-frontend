@@ -69,6 +69,7 @@ import { Deferred } from '../util/Deferred.js';
 import { AsyncDisposableStack } from '../util/disposable.js';
 import { isErrorLike } from '../util/ErrorLike.js';
 import { Binding } from './Binding.js';
+import { CdpBluetoothEmulation } from './BluetoothEmulation.js';
 import { CdpCDPSession } from './CdpSession.js';
 import { isTargetClosedError } from './Connection.js';
 import { Coverage } from './Coverage.js';
@@ -114,6 +115,7 @@ export class CdpPage extends Page {
     }
     #closed = false;
     #targetManager;
+    #cdpBluetoothEmulation;
     #primaryTargetClient;
     #primaryTarget;
     #tabTargetClient;
@@ -150,6 +152,9 @@ export class CdpPage extends Page {
         this.#tracing = new Tracing(client);
         this.#coverage = new Coverage(client);
         this.#viewport = null;
+        // Use browser context's connection, as current Bluetooth emulation in Chromium is
+        // implemented on the browser context level, and not tight to the specific tab.
+        this.#cdpBluetoothEmulation = new CdpBluetoothEmulation(this.#primaryTargetClient.connection());
         const frameManagerEmitter = new EventEmitter(this.#frameManager);
         frameManagerEmitter.on(FrameManagerEvent.FrameAttached, frame => {
             this.emit("frameattached" /* PageEvent.FrameAttached */, frame);
@@ -902,6 +907,9 @@ export class CdpPage extends Page {
      */
     async waitForDevicePrompt(options = {}) {
         return await this.mainFrame().waitForDevicePrompt(options);
+    }
+    get bluetooth() {
+        return this.#cdpBluetoothEmulation;
     }
 }
 const supportedMetrics = new Set([

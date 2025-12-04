@@ -9,7 +9,7 @@ import { EventEmitter } from '../common/EventEmitter.js';
 import type { TimeoutSettings } from '../common/TimeoutSettings.js';
 import type { Binding } from './Binding.js';
 import type { CdpCDPSession } from './CdpSession.js';
-import { DeviceRequestPromptManager } from './DeviceRequestPrompt.js';
+import { CdpDeviceRequestPromptManager } from './DeviceRequestPrompt.js';
 import { CdpFrame } from './Frame.js';
 import type { FrameManagerEvents } from './FrameManagerEvents.js';
 import { FrameTree } from './FrameTree.js';
@@ -46,6 +46,6 @@ export declare class FrameManager extends EventEmitter<FrameManagerEvents> {
     evaluateOnNewDocument(source: string): Promise<NewDocumentScriptEvaluation>;
     removeScriptToEvaluateOnNewDocument(identifier: string): Promise<void>;
     onAttachedToTarget(target: CdpTarget): void;
-    _deviceRequestPromptManager(client: CDPSession): DeviceRequestPromptManager;
+    _deviceRequestPromptManager(client: CDPSession): CdpDeviceRequestPromptManager;
 }
 //# sourceMappingURL=FrameManager.d.ts.map

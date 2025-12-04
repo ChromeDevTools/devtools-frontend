@@ -10,6 +10,13 @@ import { BidiDeserializer } from './Deserializer.js';
  * @internal
  */
 export function createEvaluationError(details) {
+    if (details.exception.type === 'object' && !('value' in details.exception)) {
+        // Heuristic detecting a platform object was thrown. WebDriver BiDi serializes
+        // platform objects without value. If so, throw a generic error with the actual
+        // exception's message, as there is no way to restore the original exception's
+        // constructor.
+        return new Error(details.text);
+    }
     if (details.exception.type !== 'error') {
         return BidiDeserializer.deserialize(details.exception);
     }

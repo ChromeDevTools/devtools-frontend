@@ -40,6 +40,8 @@ var __esDecorate = (this && this.__esDecorate) || function (ctor, descriptorIn, 
 import { EventEmitter } from '../../common/EventEmitter.js';
 import { inertIfDisposed, throwIfDisposed } from '../../util/decorators.js';
 import { DisposableStack, disposeSymbol } from '../../util/disposable.js';
+import { BidiBluetoothEmulation } from '../BluetoothEmulation.js';
+import { BidiDeviceRequestPromptManager } from '../DeviceRequestPrompt.js';
 import { Navigation } from './Navigation.js';
 import { WindowRealm } from './Realm.js';
 import { Request } from './Request.js';
@@ -136,14 +138,18 @@ let BrowsingContext = (() => {
         userContext;
         originalOpener;
         #emulationState = { javaScriptEnabled: true };
-        constructor(context, parent, id, url, originalOpener) {
+        #bluetoothEmulation;
+        #deviceRequestPromptManager;
+        constructor(userContext, parent, id, url, originalOpener) {
             super();
             this.#url = url;
             this.id = id;
             this.parent = parent;
-            this.userContext = context;
+            this.userContext = userContext;
             this.originalOpener = originalOpener;
             this.defaultRealm = this.#createWindowRealm();
+            this.#bluetoothEmulation = new BidiBluetoothEmulation(this.id, this.#session);
+            this.#deviceRequestPromptManager = new BidiDeviceRequestPromptManager(this.id, this.#session);
         }
         #initialize() {
             const userContextEmitter = this.#disposables.use(new EventEmitter(this.userContext));
@@ -573,6 +579,12 @@ let BrowsingContext = (() => {
                     : null,
                 contexts: [this.id],
             });
+        }
+        get bluetooth() {
+            return this.#bluetoothEmulation;
+        }
+        async waitForDevicePrompt(timeout, signal) {
+            return await this.#deviceRequestPromptManager.waitForDevicePrompt(timeout, signal);
         }
     };
 })();

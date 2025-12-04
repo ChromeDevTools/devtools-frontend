@@ -4,6 +4,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import type * as Bidi from 'webdriver-bidi-protocol';
+import type { BluetoothEmulation } from '../../api/BluetoothEmulation.js';
+import type { DeviceRequestPrompt } from '../../api/DeviceRequestPrompt.js';
 import { EventEmitter } from '../../common/EventEmitter.js';
 import { disposeSymbol } from '../../util/disposable.js';
 import type { AddPreloadScriptOptions } from './Browser.js';
@@ -139,5 +141,7 @@ export declare class BrowsingContext extends EventEmitter<{
     isJavaScriptEnabled(): boolean;
     setUserAgent(userAgent: string | null): Promise<void>;
     setOfflineMode(enabled: boolean): Promise<void>;
+    get bluetooth(): BluetoothEmulation;
+    waitForDevicePrompt(timeout: number, signal?: AbortSignal): Promise<DeviceRequestPrompt>;
 }
 //# sourceMappingURL=BrowsingContext.d.ts.map

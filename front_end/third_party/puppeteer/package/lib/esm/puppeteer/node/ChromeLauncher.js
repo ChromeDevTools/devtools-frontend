@@ -6,10 +6,11 @@
 import { mkdtemp } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
-import { computeSystemExecutablePath, Browser as SupportedBrowsers, ChromeReleaseChannel as BrowsersChromeReleaseChannel, } from '@puppeteer/browsers';
+import { computeSystemExecutablePath, Browser as SupportedBrowsers, } from '@puppeteer/browsers';
 import { debugError } from '../common/util.js';
 import { assert } from '../util/assert.js';
 import { BrowserLauncher } from './BrowserLauncher.js';
+import { convertPuppeteerChannelToBrowsersChannel, } from './LaunchOptions.js';
 import { rm } from './util/fs.js';
 /**
  * @internal
@@ -207,18 +208,6 @@ export class ChromeLauncher extends BrowserLauncher {
         else {
             return this.resolveExecutablePath(undefined, validatePath);
         }
-    }
-}
-function convertPuppeteerChannelToBrowsersChannel(channel) {
-    switch (channel) {
-        case 'chrome':
-            return BrowsersChromeReleaseChannel.STABLE;
-        case 'chrome-dev':
-            return BrowsersChromeReleaseChannel.DEV;
-        case 'chrome-beta':
-            return BrowsersChromeReleaseChannel.BETA;
-        case 'chrome-canary':
-            return BrowsersChromeReleaseChannel.CANARY;
     }
 }
 /**

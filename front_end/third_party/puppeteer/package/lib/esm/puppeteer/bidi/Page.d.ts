@@ -5,7 +5,9 @@
  */
 import type Protocol from 'devtools-protocol';
 import * as Bidi from 'webdriver-bidi-protocol';
+import type { BluetoothEmulation } from '../api/BluetoothEmulation.js';
 import type { CDPSession } from '../api/CDPSession.js';
+import type { DeviceRequestPrompt } from '../api/DeviceRequestPrompt.js';
 import type { WaitForOptions } from '../api/Frame.js';
 import type { HTTPResponse } from '../api/HTTPResponse.js';
 import type { Credentials, GeolocationOptions, MediaFeature, PageEvents, ReloadOptions, WaitTimeoutOptions } from '../api/Page.js';
@@ -123,7 +125,8 @@ export declare class BidiPage extends Page {
     metrics(): never;
     goBack(options?: WaitForOptions): Promise<HTTPResponse | null>;
     goForward(options?: WaitForOptions): Promise<HTTPResponse | null>;
-    waitForDevicePrompt(): never;
+    waitForDevicePrompt(options?: WaitTimeoutOptions): Promise<DeviceRequestPrompt>;
+    get bluetooth(): BluetoothEmulation;
 }
 export declare function bidiToPuppeteerCookie(bidiCookie: Bidi.Network.Cookie, returnCompositePartitionKey?: boolean): Cookie;
 /**

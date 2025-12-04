@@ -6,6 +6,7 @@ import '../../../ui/components/chrome_link/chrome_link.js';
 import '../../../ui/components/expandable_list/expandable_list.js';
 import '../../../ui/components/report_view/report_view.js';
 import '../../../ui/legacy/legacy.js';
+import '../../../ui/kit/kit.js';
 
 import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
@@ -341,7 +342,7 @@ function maybeRenderReasonContext(explanation: Protocol.Page.BackForwardCacheNot
     const link = 'chrome://extensions/?id=' + explanation.context as Platform.DevToolsPath.UrlString;
     // clang-format off
     return html`${i18nString(UIStrings.blockingExtensionId)}
-      <devtools-chrome-link .href=${link}>${explanation.context}</devtools-chrome-link>`;
+      <devtools-link .href=${link}>${explanation.context}</devtools-link>`;
     // clang-format on
   }
   return nothing;

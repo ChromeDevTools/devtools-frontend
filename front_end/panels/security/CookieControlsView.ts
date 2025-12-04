@@ -102,19 +102,13 @@ const UIStrings = {
    * @example {#tpcd-heuristics-grants} PH1
    */
   enableFlag: 'To use this, set {PH1} to Default',
-  /**
-   * @description Text used for link within the enableFlag to show users where they can enable the Third-party Cookie Metadata Grants flag.
-   */
-  tpcdMetadataGrants: '#tpcd-metadata-grants',
-  /**
-   * @description Text used for link within the enableFlag to show users where they can enable the Third-party Cookie Heuristics Grants flag.
-   */
-  tpcdHeuristicsGrants: '#tpcd-heuristics-grants',
 } as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/security/CookieControlsView.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export const i18nFormatString = uiI18n.getFormatLocalizedString.bind(undefined, str_);
+
+export const i18nFormatStringTemplate = uiI18n.getFormatLocalizedStringTemplate.bind(undefined, str_);
 
 export interface ViewInput {
   thirdPartyControlsDict: Root.Runtime.HostConfig['thirdPartyCookieControls'];
@@ -127,9 +121,9 @@ export type View = (input: ViewInput, output: object, target: HTMLElement) => vo
 
 function getChromeFlagsLink(flag: string): TemplateResult {
   return html`
-    <devtools-chrome-link href="chrome://flags/#${flag}" tabindex="0">
-     ${flag}
-    </devtools-chrome-link>`;
+    <devtools-link href="chrome://flags/${flag}">
+      ${flag}
+    </devtools-link>`;
 }
 const DEFAULT_VIEW: View = (input: ViewInput, _output: object, target: HTMLElement): void => {
   // createSetting() allows us to initialize the settings with the UI binding values the first
@@ -213,8 +207,8 @@ const DEFAULT_VIEW: View = (input: ViewInput, _output: object, target: HTMLEleme
                     PH1: i18nString(UIStrings.gracePeriod),
                   }) :
                 (input.thirdPartyControlsDict ? !input.thirdPartyControlsDict?.thirdPartyCookieMetadataEnabled: false) ?
-                  i18nFormatString(UIStrings.enableFlag, {
-                    PH1: getChromeFlagsLink(UIStrings.tpcdMetadataGrants),
+                  i18nFormatStringTemplate(UIStrings.enableFlag, {
+                    PH1: getChromeFlagsLink('#tpcd-metadata-grants'),
                   }) :
                 i18nFormatString(input.isGracePeriodActive ? UIStrings.gracePeriodExplanation : UIStrings.enrollGracePeriod, {
                   PH1: UI.Fragment.html`<x-link class="devtools-link" href="https://developers.google.com/privacy-sandbox/cookies/temporary-exceptions/grace-period" jslog=${VisualLogging.link('grace-period-link').track({click: true})}>${i18nString(UIStrings.gracePeriod)}</x-link>`,
@@ -246,8 +240,8 @@ const DEFAULT_VIEW: View = (input: ViewInput, _output: object, target: HTMLEleme
                   PH1: i18nString(UIStrings.scenarios),
                 }) :
                 (input.thirdPartyControlsDict ? !input.thirdPartyControlsDict.thirdPartyCookieHeuristicsEnabled: false) ?
-                  i18nFormatString(UIStrings.enableFlag, {
-                    PH1: getChromeFlagsLink(UIStrings.tpcdHeuristicsGrants),
+                  i18nFormatStringTemplate(UIStrings.enableFlag, {
+                    PH1: getChromeFlagsLink('#tpcd-heuristics-grants'),
                   }) :
                 i18nFormatString(UIStrings.heuristicExplanation, {
                   PH1: UI.Fragment.html`<x-link class="devtools-link" href="https://developers.google.com/privacy-sandbox/cookies/temporary-exceptions/heuristics-based-exceptions" jslog=${VisualLogging.link('heuristic-link').track({click: true})}>${i18nString(UIStrings.scenarios)}</x-link>`,

@@ -73,7 +73,6 @@ devtools_ui_module("unittests") {
     "LinearMemoryHighlightChipList.test.ts",
     "LinearMemoryInspector.test.ts",
     "LinearMemoryNavigator.test.ts",
-    "LinearMemoryValueInterpreter.test.ts",
     "LinearMemoryViewer.test.ts",
     "ValueInterpreterDisplay.test.ts",
     "ValueInterpreterSettings.test.ts",

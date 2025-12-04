@@ -4,6 +4,7 @@
 
 import {assert} from 'chai';
 
+import {selectOption} from '../../shared/helper.js';
 import {checkIfTabExistsInDrawer, DRAWER_PANEL_SELECTOR} from '../helpers/cross-tool-helper.js';
 import {
   addBreakpointForLine,
@@ -123,6 +124,57 @@ describe('Scope View', () => {
       const tabs = await devToolsPage.$$(LINEAR_MEMORY_INSPECTOR_TABBED_PANE_TAB_SELECTOR, lmiTabbedPane);
       return tabs.length === 3;
     });
+  });
+
+  it('formats values correctly when value type mode is changed', async ({devToolsPage, inspectedPage}) => {
+    await openLMI(devToolsPage, inspectedPage);
+    const lmiTabbedPane = await devToolsPage.waitFor(LINEAR_MEMORY_INSPECTOR_TABBED_PANE_SELECTOR);
+    const interpreter = await lmiTabbedPane.waitForSelector(VALUE_INTERPRETER_SELECTOR);
+    assert.isNotNull(interpreter);
+
+    const oldValueElement = await devToolsPage.$('div + .value-type-cell', interpreter);
+    const oldValue = await oldValueElement.evaluate(e => (e as HTMLElement).innerText);
+    const select = await devToolsPage.$('.value-types select', interpreter);
+    assert.isNotNull(select);
+
+    const currentMode = await select.evaluate(node => node.value);
+    assert.strictEqual('dec', currentMode);
+
+    await selectOption(select, 'hex');
+
+    const newValueElement = await devToolsPage.$('div + .value-type-cell', interpreter);
+    const newValue = await newValueElement.evaluate(e => (e as HTMLElement).innerText);
+
+    // The standard format is decimal.
+    // We expect the value to start with 0x... in hex mode.
+    assert.match(oldValue, /^[0-9]+$/);
+    assert.match(newValue, /^0x/);
+
+    assert.strictEqual(parseInt(oldValue, 10), parseInt(newValue, 16));
+  });
+
+  it('switches between value display and value settings', async ({devToolsPage, inspectedPage}) => {
+    await openLMI(devToolsPage, inspectedPage);
+    const lmiTabbedPane = await devToolsPage.waitFor(LINEAR_MEMORY_INSPECTOR_TABBED_PANE_SELECTOR);
+    const interpreter = await lmiTabbedPane.waitForSelector(VALUE_INTERPRETER_SELECTOR);
+    assert.isNotNull(interpreter);
+
+    const settingsButton = await devToolsPage.waitFor('[data-settings="true"]', interpreter);
+    // Display view should be visible initially
+    await devToolsPage.waitFor('.value-types', interpreter);
+
+    await settingsButton.click();
+    // Settings view should be visible
+    const settings = await devToolsPage.waitFor('.settings', interpreter);
+
+    const settingsText = await settings.evaluate(el => (el as HTMLElement).innerText);
+    assert.include(settingsText, 'Integer');
+    assert.include(settingsText, 'Floating point');
+    assert.include(settingsText, 'Other');
+
+    await settingsButton.click();
+    // Display view should be visible again
+    await devToolsPage.waitFor('.value-types', interpreter);
   });
 });
 

@@ -103,12 +103,12 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
   private readonly items: UI.ListModel.ListModel<Item>;
   private list: UI.ListControl.ListControl<Item>;
   private readonly showMoreMessageElement: Element;
-  private showIgnoreListed: boolean;
-  private readonly locationPool: Bindings.LiveLocation.LiveLocationPool;
-  private readonly updateThrottler: Common.Throttler.Throttler;
-  private maxAsyncStackChainDepth: number;
-  private readonly updateItemThrottler: Common.Throttler.Throttler;
-  private readonly scheduledForUpdateItems: Set<Item>;
+  private showIgnoreListed = false;
+  private readonly locationPool = new Bindings.LiveLocation.LiveLocationPool();
+  private readonly updateThrottler = new Common.Throttler.Throttler(100);
+  private maxAsyncStackChainDepth = defaultMaxAsyncStackChainDepth;
+  private readonly updateItemThrottler = new Common.Throttler.Throttler(100);
+  private readonly scheduledForUpdateItems = new Set<Item>();
   private muteActivateItem?: boolean;
   private lastDebuggerModel: SDK.DebuggerModel.DebuggerModel|null = null;
 
@@ -120,9 +120,10 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
       useShadowDom: true,
     });
 
-    const [ignoreListMessageRef, ignoreListCheckboxRef, notPausedRef, warningRef] = [
+    const [ignoreListMessageRef, ignoreListCheckboxRef, notPausedRef, warningRef, showMoreRef] = [
       createRef<HTMLElement>(),
       createRef<HTMLInputElement>(),
+      createRef<HTMLElement>(),
       createRef<HTMLElement>(),
       createRef<HTMLElement>(),
     ];
@@ -144,6 +145,11 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
       }
     });
 
+    const onShowMoreClicked = (): void => {
+      this.maxAsyncStackChainDepth += defaultMaxAsyncStackChainDepth;
+      this.update();
+    };
+
     // clang-format off
     render(html`
       <style>${callStackSidebarPaneStyles}</style>
@@ -162,6 +168,9 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
         ${i18nString(UIStrings.callFrameWarnings)}
       </div>
       ${this.list.element}
+      <div class='show-more-message hidden' ${ref(showMoreRef)}>
+        <span class='link' @click=${onShowMoreClicked}>${i18nString(UIStrings.showMore)}</span>
+      </div>
     `, this.contentElement);
     // clang-format on
 
@@ -169,20 +178,9 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
     this.ignoreListCheckboxElement = ignoreListCheckboxRef.value as HTMLInputElement;
     this.notPausedMessageElement = notPausedRef.value as HTMLElement;
     this.callFrameWarningsElement = warningRef.value as HTMLElement;
+    this.showMoreMessageElement = showMoreRef.value as HTMLElement;
 
-    this.showMoreMessageElement = this.createShowMoreMessageElement();
-    this.showMoreMessageElement.classList.add('hidden');
-    this.contentElement.appendChild(this.showMoreMessageElement);
-
-    this.showIgnoreListed = false;
-    this.locationPool = new Bindings.LiveLocation.LiveLocationPool();
-
-    this.updateThrottler = new Common.Throttler.Throttler(100);
-    this.maxAsyncStackChainDepth = defaultMaxAsyncStackChainDepth;
     this.update();
-
-    this.updateItemThrottler = new Common.Throttler.Throttler(100);
-    this.scheduledForUpdateItems = new Set();
 
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebugInfoAttached, this.debugInfoAttached, this);
@@ -398,19 +396,6 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
 
   updateSelectedItemARIA(_fromElement: Element|null, _toElement: Element|null): boolean {
     return true;
-  }
-
-  private createShowMoreMessageElement(): Element {
-    const element = document.createElement('div');
-    element.classList.add('show-more-message');
-    element.createChild('span');
-    const showAllLink = element.createChild('span', 'link');
-    showAllLink.textContent = i18nString(UIStrings.showMore);
-    showAllLink.addEventListener('click', () => {
-      this.maxAsyncStackChainDepth += defaultMaxAsyncStackChainDepth;
-      this.update();
-    }, false);
-    return element;
   }
 
   private onContextMenu(event: Event): void {

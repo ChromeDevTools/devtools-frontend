@@ -107,9 +107,11 @@ describeWithEnvironment('TimelineFlameChartView', function() {
       const parsedTrace = await TraceLoader.traceEngine(this, 'slow-interaction-keydown.json.gz');
       const mockViewDelegate = new MockViewDelegate();
       const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
-      flameChartView.updateCountersGraphToggle(false);
       renderWidgetInVbox(flameChartView);
       flameChartView.setModel(parsedTrace, new Map());
+      await raf();
+      flameChartView.updateCountersGraphToggle(false);
+      await raf();
       await assertScreenshot('timeline/flamechart_view_no_network_events.png');
     });
 

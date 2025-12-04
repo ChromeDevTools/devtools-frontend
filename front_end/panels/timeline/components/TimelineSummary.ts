@@ -1,10 +1,9 @@
 // Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 import * as i18n from '../../../core/i18n/i18n.js';
-import type * as Trace from '../../../models/trace/trace.js';
+import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 
@@ -33,74 +32,96 @@ export interface CategoryData {
   title: string;
 }
 
-export interface SummaryTableData {
-  total: number;
+interface ViewInput {
   rangeStart: number;
   rangeEnd: number;
+  total: number;
   categories: CategoryData[];
-  selectedEvents: Trace.Types.Events.Event[];
 }
 
-export class CategorySummary extends HTMLElement {
-  readonly #shadow =
-      UI.UIUtils.createShadowRootWithCoreStyles(this, {cssFile: timelineSummaryStyles, delegatesFocus: undefined});
+type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+
+export const CATEGORY_SUMMARY_DEFAULT_VIEW: View = (input, _output, target): void => {
+  // clang-format off
+  render(html`
+        <style>${timelineSummaryStyles}</style>
+        <style>@scope to (devtools-widget > *) { ${UI.inspectorCommonStyles} }</style>
+        <style>@scope to (devtools-widget > *) { ${Buttons.textButtonStyles} }</style>
+        <div class="timeline-summary">
+            <div class="summary-range">${i18nString(UIStrings.rangeSS, {PH1: i18n.TimeUtilities.millisToString(input.rangeStart), PH2: i18n.TimeUtilities.millisToString(input.rangeEnd)})}</div>
+            <div class="category-summary">
+                ${input.categories.map(category => {
+                    return html`
+                        <div class="category-row">
+                        <div class="category-swatch" style="background-color: ${category.color};"></div>
+                        <div class="category-name">${category.title}</div>
+                        <div class="category-value">
+                            ${i18n.TimeUtilities.preciseMillisToString(category.value)}
+                            <div class="background-bar-container">
+                                <div class="background-bar" style='width: ${(category.value * 100 / input.total).toFixed(1)}%;'></div>
+                            </div>
+                        </div>
+                        </div>`;
+                })}
+                <div class="category-row">
+                    <div class="category-swatch"></div>
+                    <div class="category-name">${i18nString(UIStrings.total)}</div>
+                    <div class="category-value">
+                        ${i18n.TimeUtilities.preciseMillisToString(input.total)}
+                        <div class="background-bar-container">
+                            <div class="background-bar"></div>
+                        </div>
+                    </div>
+                </div>
+              </div>
+        </div>
+        </div>
+
+      </div>`, target);
+  // clang-format on
+};
+
+export class CategorySummary extends UI.Widget.Widget {
+  #view: View;
 
   #rangeStart = 0;
   #rangeEnd = 0;
   #total = 0;
   #categories: CategoryData[] = [];
 
-  set data(data: SummaryTableData) {
-    this.#total = data.total;
-    this.#categories = data.categories;
-    this.#rangeStart = data.rangeStart;
-    this.#rangeEnd = data.rangeEnd;
-    this.#render();
+  constructor(view?: View) {
+    super();
+    this.#view = view ?? CATEGORY_SUMMARY_DEFAULT_VIEW;
+    this.requestUpdate();
   }
 
-  #render(): void {
-    // clang-format off
-    const output = html`
-          <div class="timeline-summary">
-              <div class="summary-range">${i18nString(UIStrings.rangeSS, {PH1: i18n.TimeUtilities.millisToString(this.#rangeStart), PH2: i18n.TimeUtilities.millisToString(this.#rangeEnd)})}</div>
-              <div class="category-summary">
-                  ${this.#categories.map(category => {
-                      return html`
-                          <div class="category-row">
-                          <div class="category-swatch" style="background-color: ${category.color};"></div>
-                          <div class="category-name">${category.title}</div>
-                          <div class="category-value">
-                              ${i18n.TimeUtilities.preciseMillisToString(category.value)}
-                              <div class="background-bar-container">
-                                  <div class="background-bar" style='width: ${(category.value * 100 / this.#total).toFixed(1)}%;'></div>
-                              </div>
-                          </div>
-                          </div>`;
-                  })}
-                  <div class="category-row">
-                      <div class="category-swatch"></div>
-                      <div class="category-name">${i18nString(UIStrings.total)}</div>
-                      <div class="category-value">
-                          ${i18n.TimeUtilities.preciseMillisToString(this.#total)}
-                          <div class="background-bar-container">
-                              <div class="background-bar"></div>
-                          </div>
-                      </div>
-                  </div>
-                </div>
-          </div>
-          </div>
-
-        </div>`;
-    // clang-format on
-    render(output, this.#shadow, {host: this});
+  set total(total: number) {
+    this.#total = total;
+    this.requestUpdate();
   }
-}
 
-customElements.define('devtools-performance-timeline-summary', CategorySummary);
+  set rangeStart(rangeStart: number) {
+    this.#rangeStart = rangeStart;
+    this.requestUpdate();
+  }
 
-declare global {
-  interface HTMLElementTagNameMap {
-    'devtools-performance-timeline-summary': CategorySummary;
+  set rangeEnd(rangeEnd: number) {
+    this.#rangeEnd = rangeEnd;
+    this.requestUpdate();
+  }
+
+  set categories(categories: CategoryData[]) {
+    this.#categories = categories;
+    this.requestUpdate();
+  }
+
+  override performUpdate(): void {
+    const viewInput: ViewInput = {
+      rangeStart: this.#rangeStart,
+      rangeEnd: this.#rangeEnd,
+      total: this.#total,
+      categories: this.#categories,
+    };
+    this.#view(viewInput, undefined, this.contentElement);
   }
 }

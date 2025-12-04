@@ -88,7 +88,7 @@ export async function openCaptureSettings(
 
 export async function searchForComponent(
     searchEntry: string, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
-  await devToolsPage.waitFor('devtools-performance-timeline-summary');
+  await devToolsPage.waitFor('div.timeline-summary');
   await devToolsPage.summonSearchBox();
 
   const inputEl = await devToolsPage.waitFor('input#search-input-field');
@@ -249,7 +249,7 @@ export async function reloadAndRecord(devToolsPage: DevToolsPage = getBrowserAnd
   // Make sure the timeline details panel appears. It's a sure way to assert
   // that a recording is actually displayed as some of the other elements in
   // the timeline remain in the DOM even after the recording has been cleared.
-  await devToolsPage.waitFor('devtools-performance-timeline-summary');
+  await devToolsPage.waitFor('div.timeline-summary');
   await expectVeEvents(
       [veClick('Toolbar > Action: timeline.record-reload'), veImpressionForStatusDialog()], 'Panel: timeline',
       devToolsPage);
@@ -261,7 +261,7 @@ export async function stopRecording(devToolsPage: DevToolsPage = getBrowserAndPa
   // Make sure the timeline details panel appears. It's a sure way to assert
   // that a recording is actually displayed as some of the other elements in
   // the timeline remain in the DOM even after the recording has been cleared.
-  await devToolsPage.waitFor('devtools-performance-timeline-summary');
+  await devToolsPage.waitFor('div.timeline-summary');
   await expectVeEvents(
       [
         veClick('Toolbar > Toggle: timeline.toggle-recording'),

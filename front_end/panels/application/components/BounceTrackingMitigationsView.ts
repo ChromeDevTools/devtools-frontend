@@ -59,6 +59,7 @@ const str_ = i18n.i18n.registerUIStrings('panels/application/components/BounceTr
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 const enum ScreenStatusType {
+  INITIALIZING = 'Initializing',
   RUNNING = 'Running',
   RESULT = 'Result',
   DISABLED = 'Disabled',
@@ -71,30 +72,45 @@ export interface BounceTrackingMitigationsViewData {
 export class BounceTrackingMitigationsView extends LegacyWrapper.LegacyWrapper.WrappableComponent {
   readonly #shadow = this.attachShadow({mode: 'open'});
   #trackingSites: string[] = [];
-  #screenStatus = ScreenStatusType.RESULT;
-  #checkedFeature = false;
+  #screenStatus = ScreenStatusType.INITIALIZING;
   #seenButtonClick = false;
+
+  constructor() {
+    super();
+
+    const mainTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+    if (!mainTarget) {
+      this.#screenStatus = ScreenStatusType.RESULT;
+    } else {
+      void mainTarget.systemInfo().invoke_getFeatureState({featureState: 'DIPS'}).then(state => {
+        this.#screenStatus = state.featureEnabled ? ScreenStatusType.RESULT : ScreenStatusType.DISABLED;
+        if (this.isConnected) {
+          this.#render();
+        }
+      });
+    }
+  }
 
   connectedCallback(): void {
     void this.#render();
     this.parentElement?.classList.add('overflow-auto');
   }
 
-  async #render(): Promise<void> {
+  #render(): void {
     // clang-format off
     Lit.render(html`
       <style>${bounceTrackingMitigationsViewStyles}</style>
       <devtools-report .data=${{reportTitle: i18nString(UIStrings.bounceTrackingMitigationsTitle)}}
                        jslog=${VisualLogging.pane('bounce-tracking-mitigations')}>
-        ${await this.#renderMainFrameInformation()}
+        ${this.#renderMainFrameInformation()}
       </devtools-report>
     `, this.#shadow, {host: this});
     // clang-format on
   }
 
-  async #renderMainFrameInformation(): Promise<Lit.TemplateResult> {
-    if (!this.#checkedFeature) {
-      await this.#checkFeatureState();
+  #renderMainFrameInformation(): Lit.LitTemplate {
+    if (this.#screenStatus === ScreenStatusType.INITIALIZING) {
+      return Lit.nothing;
     }
 
     if (this.#screenStatus === ScreenStatusType.DISABLED) {
@@ -206,19 +222,6 @@ export class BounceTrackingMitigationsView extends LegacyWrapper.LegacyWrapper.W
   #renderMitigationsResult(): void {
     this.#screenStatus = ScreenStatusType.RESULT;
     void this.#render();
-  }
-
-  async #checkFeatureState(): Promise<void> {
-    this.#checkedFeature = true;
-
-    const mainTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
-    if (!mainTarget) {
-      return;
-    }
-
-    if (!(await mainTarget.systemInfo().invoke_getFeatureState({featureState: 'DIPS'})).featureEnabled) {
-      this.#screenStatus = ScreenStatusType.DISABLED;
-    }
   }
 }
 

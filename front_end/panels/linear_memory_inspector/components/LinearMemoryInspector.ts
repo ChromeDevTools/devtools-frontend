@@ -20,7 +20,6 @@ import {
   Navigation,
   type PageNavigationEvent,
 } from './LinearMemoryNavigator.js';
-import type {EndiannessChangedEvent, ValueTypeToggledEvent} from './LinearMemoryValueInterpreter.js';
 import type {ByteSelectedEvent, ResizeEvent} from './LinearMemoryViewer.js';
 import type {HighlightInfo} from './LinearMemoryViewerUtils.js';
 import {
@@ -125,9 +124,9 @@ export interface ViewInput {
   onDeleteMemoryHighlight: (info: HighlightInfo) => void;
   onByteSelected: (e: ByteSelectedEvent) => void;
   onResize: (e: ResizeEvent) => void;
-  onValueTypeToggled: (e: ValueTypeToggledEvent) => void;
+  onValueTypeToggled: (type: ValueType, checked: boolean) => void;
   onValueTypeModeChanged: (type: ValueType, mode: ValueTypeMode) => void;
-  onEndiannessChanged: (e: EndiannessChangedEvent) => void;
+  onEndiannessChanged: (endianness: Endianness) => void;
   memorySlice: Uint8Array<ArrayBuffer>;
   viewerStart: number;
 }
@@ -201,10 +200,10 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: Record<string, unknown>,
             endianness: input.endianness,
             memoryLength: input.outerMemoryLength,
             onValueTypeModeChange: input.onValueTypeModeChanged,
-            onJumpToAddressClicked: input.onJumpToAddress
-          }}
-        @valuetypetoggled=${input.onValueTypeToggled}
-        @endiannesschanged=${input.onEndiannessChanged}
+            onJumpToAddressClicked: input.onJumpToAddress,
+            onValueTypeToggled: input.onValueTypeToggled,
+            onEndiannessChanged: input.onEndiannessChanged,
+  }}
         >
       </devtools-linear-memory-inspector-interpreter>
     </div>`}
@@ -403,8 +402,8 @@ export class LinearMemoryInspector extends Common.ObjectWrapper.eventMixin<Event
     return {valueTypes: this.#valueTypes, modes: this.#valueTypeModes, endianness: this.#endianness};
   }
 
-  #onEndiannessChanged(e: EndiannessChangedEvent): void {
-    this.#endianness = e.data;
+  #onEndiannessChanged(endianness: Endianness): void {
+    this.#endianness = endianness;
     this.dispatchEventToListeners(Events.SETTINGS_CHANGED, this.#createSettings());
     void this.requestUpdate();
   }
@@ -430,8 +429,7 @@ export class LinearMemoryInspector extends Common.ObjectWrapper.eventMixin<Event
     void this.requestUpdate();
   }
 
-  #onValueTypeToggled(e: ValueTypeToggledEvent): void {
-    const {type, checked} = e.data;
+  #onValueTypeToggled(type: ValueType, checked: boolean): void {
     if (checked) {
       this.#valueTypes.add(type);
     } else {

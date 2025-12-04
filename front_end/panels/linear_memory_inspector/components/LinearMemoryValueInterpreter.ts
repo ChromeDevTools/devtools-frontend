@@ -35,26 +35,6 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const {render, html} = Lit;
 const {widgetConfig} = UI.Widget;
 
-export class EndiannessChangedEvent extends Event {
-  static readonly eventName = 'endiannesschanged';
-  data: Endianness;
-
-  constructor(endianness: Endianness) {
-    super(EndiannessChangedEvent.eventName);
-    this.data = endianness;
-  }
-}
-
-export class ValueTypeToggledEvent extends Event {
-  static readonly eventName = 'valuetypetoggled';
-  data: {type: ValueType, checked: boolean};
-
-  constructor(type: ValueType, checked: boolean) {
-    super(ValueTypeToggledEvent.eventName);
-    this.data = {type, checked};
-  }
-}
-
 export interface LinearMemoryValueInterpreterData {
   value: ArrayBuffer;
   valueTypes: Set<ValueType>;
@@ -63,12 +43,16 @@ export interface LinearMemoryValueInterpreterData {
   memoryLength: number;
   onValueTypeModeChange: (type: ValueType, mode: ValueTypeMode) => void;
   onJumpToAddressClicked: (address: number) => void;
+  onEndiannessChanged: (endianness: Endianness) => void;
+  onValueTypeToggled: (type: ValueType, checked: boolean) => void;
 }
 
 export class LinearMemoryValueInterpreter extends HTMLElement {
+  readonly #shadow = this.attachShadow({mode: 'open'});
   #onValueTypeModeChange: (type: ValueType, mode: ValueTypeMode) => void = () => {};
   #onJumpToAddressClicked: (address: number) => void = () => {};
-  readonly #shadow = this.attachShadow({mode: 'open'});
+  #onEndiannessChanged: (endianness: Endianness) => void = () => {};
+  #onValueTypeToggled: (type: ValueType, checked: boolean) => void = () => {};
   #endianness = Endianness.LITTLE;
   #buffer = new ArrayBuffer(0);
   #valueTypes = new Set<ValueType>();
@@ -84,6 +68,44 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
     this.#memoryLength = data.memoryLength;
     this.#onValueTypeModeChange = data.onValueTypeModeChange;
     this.#onJumpToAddressClicked = data.onJumpToAddressClicked;
+    this.#onEndiannessChanged = data.onEndiannessChanged;
+    this.#onValueTypeToggled = data.onValueTypeToggled;
+    this.#render();
+  }
+
+  get onValueTypeModeChange(): (type: ValueType, mode: ValueTypeMode) => void {
+    return this.#onValueTypeModeChange;
+  }
+
+  set onValueTypeModeChange(value: (type: ValueType, mode: ValueTypeMode) => void) {
+    this.#onValueTypeModeChange = value;
+    this.#render();
+  }
+
+  get onJumpToAddressClicked(): (address: number) => void {
+    return this.#onJumpToAddressClicked;
+  }
+
+  set onJumpToAddressClicked(value: (address: number) => void) {
+    this.#onJumpToAddressClicked = value;
+    this.#render();
+  }
+
+  get onEndiannessChanged(): (endianness: Endianness) => void {
+    return this.#onEndiannessChanged;
+  }
+
+  set onEndiannessChanged(value: (endianness: Endianness) => void) {
+    this.#onEndiannessChanged = value;
+    this.#render();
+  }
+
+  get onValueTypeToggled(): (type: ValueType, checked: boolean) => void {
+    return this.#onValueTypeToggled;
+  }
+
+  set onValueTypeToggled(value: (type: ValueType, checked: boolean) => void) {
+    this.#onValueTypeToggled = value;
     this.#render();
   }
 
@@ -110,7 +132,7 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
           ${this.#showSettings ?
             html`
               <devtools-widget .widgetConfig=${widgetConfig(ValueInterpreterSettings, {
-                valueTypes: this.#valueTypes, onToggle: this.#onSettingTypeToggle })}>
+                valueTypes: this.#valueTypes, onToggle: this.#onValueTypeToggled })}>
               </devtools-widget>` :
             html`
               <devtools-widget .widgetConfig=${widgetConfig(ValueInterpreterDisplay, {
@@ -131,15 +153,7 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
     // clang-format on
   }
 
-  #onEndiannessChange(event: Event): void {
-    event.preventDefault();
-    const select = event.target as HTMLInputElement;
-    const endianness = select.value as Endianness;
-    this.dispatchEvent(new EndiannessChangedEvent(endianness));
-  }
-
   #renderEndiannessSetting(): Lit.TemplateResult {
-    const onEnumSettingChange = this.#onEndiannessChange.bind(this);
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     return html`
@@ -147,7 +161,7 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
       <select
         jslog=${VisualLogging.dropDown('linear-memory-inspector.endianess').track({change: true})}
         style="border: none;"
-        data-endianness="true" @change=${onEnumSettingChange}>
+        data-endianness="true" @change=${(e: Event) => this.#onEndiannessChanged((e.target as HTMLSelectElement).value as Endianness)}>
         ${[Endianness.LITTLE, Endianness.BIG].map(endianness => {
             return html`<option value=${endianness} .selected=${this.#endianness === endianness}
             jslog=${VisualLogging.item(Platform.StringUtilities.toKebabCase(endianness)).track({click: true})}>${
@@ -163,10 +177,6 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
     this.#showSettings = !this.#showSettings;
     this.#render();
   }
-
-  #onSettingTypeToggle = (type: ValueType, checked: boolean): void => {
-    this.dispatchEvent(new ValueTypeToggledEvent(type, checked));
-  };
 }
 
 customElements.define('devtools-linear-memory-inspector-interpreter', LinearMemoryValueInterpreter);

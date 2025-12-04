@@ -182,12 +182,10 @@ describe('LinearMemoryInspector', () => {
         view.input.endianness, LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.Endianness.LITTLE);
 
     const endianSetting = LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.Endianness.BIG;
-    const event =
-        new LinearMemoryInspectorComponents.LinearMemoryValueInterpreter.EndiannessChangedEvent(endianSetting);
-    view.input.onEndiannessChanged(event);
+    view.input.onEndiannessChanged(endianSetting);
 
     const newViewInput = await view.nextInput;
-    assert.deepEqual(newViewInput.endianness, event.data);
+    assert.deepEqual(newViewInput.endianness, endianSetting);
   });
 
   it('updates current address if user triggers a jumptopointeraddress event', async () => {
@@ -272,8 +270,7 @@ describe('LinearMemoryInspector', () => {
         component.once(LinearMemoryInspectorComponents.LinearMemoryInspector.Events.SETTINGS_CHANGED);
 
     const valueType = LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.INT16;
-    view.input.onValueTypeToggled(
-        new LinearMemoryInspectorComponents.LinearMemoryValueInterpreter.ValueTypeToggledEvent(valueType, false));
+    view.input.onValueTypeToggled(valueType, false);
     const {valueTypes} = await settingsPromise;
     assert.isTrue(valueTypes.size > 1);
     assert.isFalse(valueTypes.has(valueType));
@@ -294,10 +291,9 @@ describe('LinearMemoryInspector', () => {
     const settingsPromise =
         component.once(LinearMemoryInspectorComponents.LinearMemoryInspector.Events.SETTINGS_CHANGED);
     const endianness = LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.Endianness.BIG;
-    view.input.onEndiannessChanged(
-        new LinearMemoryInspectorComponents.LinearMemoryValueInterpreter.EndiannessChangedEvent(endianness));
-    const event = await settingsPromise;
-    assert.strictEqual(event.endianness, endianness);
+    view.input.onEndiannessChanged(endianness);
+    const {endianness: newEndianness} = await settingsPromise;
+    assert.strictEqual(newEndianness, endianness);
   });
 
   it('formats a hexadecimal number', () => {

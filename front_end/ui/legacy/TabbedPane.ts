@@ -1203,11 +1203,21 @@ export class TabbedPaneTab {
     if (!this.#tabElement) {
       return;
     }
-    const iconElement = this.#tabElement.querySelector('.ai-icon');
+    const iconElement = this.#tabElement.querySelector('.spark');
     if (iconVisible) {
       if (!iconElement) {
-        const closeButton = this.#tabElement.querySelector('.close-button');
-        this.#tabElement.insertBefore(this.createTabAnnotationIcon(), closeButton);
+        const spark = this.createTabAnnotationIcon();
+        this.#tabElement.appendChild(spark);
+
+        const parentRect = this.#tabElement.parentElement?.getBoundingClientRect();
+        if (!parentRect) {
+          return;
+        }
+        const containerRect = this.tabElement.getBoundingClientRect();
+        const iconWidth = spark.getBoundingClientRect().width;
+        // Position the icon so that its right edge is at the container's right edge.
+        const x = containerRect.x - parentRect.x + containerRect.width - iconWidth;
+        (spark as HTMLElement).style.left = `${x}px`;
       }
     } else {
       iconElement?.remove();
@@ -1393,17 +1403,14 @@ export class TabbedPaneTab {
     return tabElement as HTMLElement;
   }
 
-  private createTabAnnotationIcon(): HTMLDivElement {
-    // TODO(finnur): Replace the ai-icon with the squiggly svg once it becomes available.
-    const iconContainer = document.createElement('div');
-    iconContainer.classList.add('ai-icon');
+  private createTabAnnotationIcon(): Icon {
     const tabAnnotationIcon = new Icon();
-    tabAnnotationIcon.name = 'smart-assistant';
+    tabAnnotationIcon.name = 'spark';
     tabAnnotationIcon.classList.add('small');
-    iconContainer.appendChild(tabAnnotationIcon);
-    iconContainer.setAttribute('title', i18nString(UIStrings.panelContainsAnnotation));
-    iconContainer.setAttribute('aria-label', i18nString(UIStrings.panelContainsAnnotation));
-    return iconContainer;
+    tabAnnotationIcon.classList.add('spark');
+    tabAnnotationIcon.setAttribute('title', i18nString(UIStrings.panelContainsAnnotation));
+    tabAnnotationIcon.setAttribute('aria-label', i18nString(UIStrings.panelContainsAnnotation));
+    return tabAnnotationIcon;
   }
 
   private createCloseIconButton(): Buttons.Button.Button {

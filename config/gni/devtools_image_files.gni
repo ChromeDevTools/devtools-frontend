@@ -274,6 +274,7 @@ devtools_svg_sources = [
   "smart-assistant.svg",
   "snippet.svg",
   "spark-info.svg",
+  "spark.svg",
   "speculative-loads.svg",
   "speedster-badge.svg",
   "star.svg",

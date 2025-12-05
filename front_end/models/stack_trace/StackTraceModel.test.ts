@@ -3,10 +3,10 @@
 // found in the LICENSE file.
 
 import * as SDK from '../../core/sdk/sdk.js';
-import type * as Protocol from '../../generated/protocol.js';
+import * as Protocol from '../../generated/protocol.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection, setMockConnectionResponseHandler} from '../../testing/MockConnection.js';
-import {protocolCallFrame, stringifyStackTrace} from '../../testing/StackTraceHelpers.js';
+import {debuggerCallFrame, protocolCallFrame, stringifyStackTrace} from '../../testing/StackTraceHelpers.js';
 
 import * as StackTrace from './stack_trace.js';
 // TODO(crbug.com/444191656): Expose a `testing` bundle.
@@ -27,6 +27,7 @@ describeWithMockConnection('StackTraceModel', () => {
     return {
       model: target.model(StackTraceImpl.StackTraceModel.StackTraceModel)!,
       translateSpy: sinon.spy(identityTranslateFn),
+      debuggerModel: target.model(SDK.DebuggerModel.DebuggerModel)!,
     };
   }
 
@@ -365,6 +366,45 @@ describeWithMockConnection('StackTraceModel', () => {
 
       const frame = stackTrace.syncFragment.frames[0];
       assert.strictEqual(frame.missingDebugInfo?.type, StackTrace.StackTrace.MissingDebugInfoType.NO_INFO);
+    });
+  });
+
+  describe('createFromDebuggerPaused', () => {
+    it('assigns the right DebuggerModel.CallFrame to the right StackTrace.Frame', async () => {
+      const {model, debuggerModel} = setup();
+      sinon.stub(debuggerModel, 'scriptForId').returns({} as SDK.Script.Script);
+
+      const details = new SDK.DebuggerModel.DebuggerPausedDetails(
+          debuggerModel,
+          [
+            'foo.js:id1:foo:1:10',
+            'bar.js:id2:bar:2:20',
+          ].map(debuggerCallFrame),
+          Protocol.Debugger.PausedEventReason.Other, undefined, []);
+
+      const stackTrace = await model.createFromDebuggerPaused(details, identityTranslateFn);
+
+      assert.strictEqual(stackTrace.syncFragment.frames[0].sdkFrame, details.callFrames[0]);
+      assert.strictEqual(stackTrace.syncFragment.frames[1].sdkFrame, details.callFrames[1]);
+    });
+
+    it('assigns the same DebuggerModel.CallFrame to inlined StackTrace.Frame', async () => {
+      const {model, debuggerModel} = setup();
+      sinon.stub(debuggerModel, 'scriptForId').returns({} as SDK.Script.Script);
+
+      const details = new SDK.DebuggerModel.DebuggerPausedDetails(
+          debuggerModel, [debuggerCallFrame('foo.js:id1:foo:1:10')], Protocol.Debugger.PausedEventReason.Other,
+          undefined, []);
+
+      const stackTrace = await model.createFromDebuggerPaused(details, () => Promise.resolve([[
+        {url: 'foo.ts', name: 'foo', line: 10, column: 20},
+        {url: 'bar.ts', name: 'bar', line: 20, column: 30},
+        {url: 'baz.ts', name: 'baz', line: 40, column: 50},
+      ]]));
+
+      assert.strictEqual(stackTrace.syncFragment.frames[0].sdkFrame, details.callFrames[0]);
+      assert.strictEqual(stackTrace.syncFragment.frames[1].sdkFrame, details.callFrames[0]);
+      assert.strictEqual(stackTrace.syncFragment.frames[2].sdkFrame, details.callFrames[0]);
     });
   });
 });

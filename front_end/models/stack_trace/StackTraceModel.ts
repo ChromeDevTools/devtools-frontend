@@ -7,7 +7,14 @@ import type * as Protocol from '../../generated/protocol.js';
 
 // eslint-disable-next-line @devtools/es-modules-import
 import * as StackTrace from './stack_trace.js';
-import {AsyncFragmentImpl, FragmentImpl, FrameImpl, StackTraceImpl} from './StackTraceImpl.js';
+import {
+  type AnyStackTraceImpl,
+  AsyncFragmentImpl,
+  DebuggableFragmentImpl,
+  FragmentImpl,
+  FrameImpl,
+  StackTraceImpl
+} from './StackTraceImpl.js';
 import {type FrameNode, type RawFrame, Trie} from './Trie.js';
 
 /**
@@ -45,10 +52,21 @@ export class StackTraceModel extends SDK.SDKModel.SDKModel<unknown> {
     return new StackTraceImpl(syncFragment, asyncFragments);
   }
 
+  async createFromDebuggerPaused(
+      pausedDetails: SDK.DebuggerModel.DebuggerPausedDetails,
+      rawFramesToUIFrames: TranslateRawFrames): Promise<StackTrace.StackTrace.DebuggableStackTrace> {
+    const [syncFragment, asyncFragments] = await Promise.all([
+      this.#createDebuggableFragment(pausedDetails, rawFramesToUIFrames),
+      this.#createAsyncFragments(pausedDetails, rawFramesToUIFrames),
+    ]);
+
+    return new StackTraceImpl(syncFragment, asyncFragments);
+  }
+
   /** Trigger re-translation of all fragments with the provide script in their call stack */
   async scriptInfoChanged(script: SDK.Script.Script, translateRawFrames: TranslateRawFrames): Promise<void> {
     const translatePromises: Array<Promise<unknown>> = [];
-    let stackTracesToUpdate = new Set<StackTraceImpl>();
+    let stackTracesToUpdate = new Set<AnyStackTraceImpl>();
 
     for (const fragment of this.#affectedFragments(script)) {
       // We trigger re-translation only for fragments of leaf-nodes. Any fragment along the ancestor-chain
@@ -75,8 +93,22 @@ export class StackTraceModel extends SDK.SDKModel.SDKModel<unknown> {
     return fragment;
   }
 
+  async #createDebuggableFragment(
+      pausedDetails: SDK.DebuggerModel.DebuggerPausedDetails,
+      rawFramesToUIFrames: TranslateRawFrames): Promise<DebuggableFragmentImpl> {
+    const fragment = this.#createFragment(pausedDetails.callFrames.map(frame => ({
+                                                                         scriptId: frame.script.scriptId,
+                                                                         url: frame.script.sourceURL,
+                                                                         functionName: frame.functionName,
+                                                                         lineNumber: frame.location().lineNumber,
+                                                                         columnNumber: frame.location().columnNumber,
+                                                                       })));
+    await this.#translateFragment(fragment, rawFramesToUIFrames);
+    return new DebuggableFragmentImpl(fragment, pausedDetails.callFrames);
+  }
+
   async #createAsyncFragments(
-      stackTraceOrPausedEvent: Protocol.Runtime.StackTrace|Protocol.Debugger.PausedEvent,
+      stackTraceOrPausedEvent: Protocol.Runtime.StackTrace|SDK.DebuggerModel.DebuggerPausedDetails,
       rawFramesToUIFrames: TranslateRawFrames): Promise<AsyncFragmentImpl[]> {
     const asyncFragments: AsyncFragmentImpl[] = [];
     const translatePromises: Array<Promise<unknown>> = [];

@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Protocol from '../generated/protocol.js';
+import * as Protocol from '../generated/protocol.js';
 import type * as StackTrace from '../models/stack_trace/stack_trace.js';
 
 /**
@@ -17,6 +17,26 @@ export function protocolCallFrame(descriptor: string): Protocol.Runtime.CallFram
     functionName: parts.at(-3) ?? '',
     lineNumber: parts.at(-2) ? Number.parseInt(parts.at(-2)!, 10) : -1,
     columnNumber: parts.at(-1) ? Number.parseInt(parts.at(-1)!, 10) : -1,
+  };
+}
+
+/**
+ * Easily create `Protocol.Debugger.CallFrame`s by passing a string of the format: `<url>:<scriptId>:<name>:<line>:<column>`
+ */
+export function debuggerCallFrame(descriptor: string): Protocol.Debugger.CallFrame {
+  // Since URLs can contain colons, we count from the end and rejoin the rest again.
+  const parts = descriptor.split(':');
+  return {
+    url: parts.slice(0, -4).join(':'),
+    callFrameId: 'cfid' + parts.at(-4)! as Protocol.Debugger.CallFrameId,
+    this: {type: Protocol.Runtime.RemoteObjectType.Undefined},
+    scopeChain: [],
+    location: {
+      scriptId: parts.at(-4) as Protocol.Runtime.ScriptId,
+      lineNumber: parts.at(-2) ? Number.parseInt(parts.at(-2)!, 10) : -1,
+      columnNumber: parts.at(-1) ? Number.parseInt(parts.at(-1)!, 10) : -1,
+    },
+    functionName: parts.at(-3) ?? '',
   };
 }
 

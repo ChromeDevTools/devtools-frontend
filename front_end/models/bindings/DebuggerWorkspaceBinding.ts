@@ -191,6 +191,14 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
     return await model.createFromProtocolRuntime(stackTrace, this.#translateRawFrames.bind(this));
   }
 
+  async createStackTraceFromDebuggerPaused(
+      pausedDetails: SDK.DebuggerModel.DebuggerPausedDetails,
+      target: SDK.Target.Target): Promise<StackTrace.StackTrace.DebuggableStackTrace> {
+    const model =
+        target.model(StackTraceImpl.StackTraceModel.StackTraceModel) as StackTraceImpl.StackTraceModel.StackTraceModel;
+    return await model.createFromDebuggerPaused(pausedDetails, this.#translateRawFrames.bind(this));
+  }
+
   async createLiveLocation(
       rawLocation: SDK.DebuggerModel.Location, updateDelegate: (arg0: LiveLocation) => Promise<void>,
       locationPool: LiveLocationPool): Promise<Location|null> {

@@ -25,6 +25,7 @@ const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLElement)
   render(html`<iframe
     ${ref(element => {output.iframe = element as HTMLIFrameElement; })}
     src=${input.src}
+    allow="language-model; summarizer; translator; language-detector; writer; rewriter; proofreader; clipboard-write; autoplay"
     class=${input.className}
     @load=${input.onLoad}></iframe>`, target);
   // clang-format on

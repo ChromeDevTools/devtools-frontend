@@ -5,7 +5,7 @@
 
 import '../tooltips/tooltips.js';
 import './SettingDeprecationWarning.js';
-import '../../legacy/legacy.js';
+import '../../kit/kit.js';
 
 import type * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
@@ -90,13 +90,11 @@ export class SettingCheckbox extends HTMLElement {
           <devtools-tooltip id=${id} variant="rich">
             <span>${learnMore.tooltip()}</span><br />
             ${url
-              ? html`<x-link
+              ? html`<devtools-link
                   href=${url}
                   class="link"
-                  jslog=${VisualLogging.link(jsLogContext).track({
-                    click: true,
-                  })}
-                  >${i18nString(UIStrings.learnMore)}</x-link
+                  .jslogContext=${jsLogContext}
+                  >${i18nString(UIStrings.learnMore)}</devtools-link
                 >`
               : Lit.nothing}
           </devtools-tooltip>

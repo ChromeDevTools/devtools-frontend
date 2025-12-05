@@ -1,7 +1,6 @@
 // Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 
 import '../../../../ui/components/markdown_view/markdown_view.js';
 
@@ -70,7 +69,7 @@ interface ViewInput {
   model: InsightModel;
   selected: boolean;
   isAIAssistanceContext: boolean;
-  canShowAskAI: boolean;
+  showAskAI: boolean;
   estimatedSavingsString: string|null;
   estimatedSavingsAriaLabel: string|null;
   renderContent: () => Lit.LitTemplate;
@@ -89,7 +88,7 @@ const DEFAULT_VIEW: View = (input, output, target) => {
     estimatedSavingsString,
     estimatedSavingsAriaLabel,
     isAIAssistanceContext,
-    canShowAskAI,
+    showAskAI,
     dispatchInsightToggle,
     renderContent,
     onHeaderKeyDown,
@@ -122,7 +121,7 @@ const DEFAULT_VIEW: View = (input, output, target) => {
       <div class="insight-body">
         <div class="insight-description">${md(model.description)}</div>
         <div class="insight-content">${content}</div>
-        ${canShowAskAI ? html`
+        ${showAskAI ? html`
           <div class="ask-ai-btn-wrap">
             <devtools-button class="ask-ai"
               .variant=${Buttons.Button.Variant.OUTLINED}
@@ -206,9 +205,6 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends UI.Wi
   #view: View;
   abstract internalName: string;
 
-  // This flag tracks if the Insights AI feature is enabled within Chrome for
-  // the active user.
-  #askAiEnabled = false;
   // Tracks if this component is rendered withing the AI assistance panel.
   // Currently only relevant to GreenDev.
   #isAIAssistanceContext = false;
@@ -244,16 +240,6 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends UI.Wi
   // requirements to use AI.
   protected hasAskAiSupport(): boolean {
     return false;
-  }
-
-  override wasShown(): void {
-    super.wasShown();
-
-    // Used for unit test purposes when querying the DOM.
-    this.element.dataset.insightName = this.internalName;
-
-    const {devToolsAiAssistancePerformanceAgent} = Root.Runtime.hostConfig;
-    this.#askAiEnabled = Boolean(devToolsAiAssistancePerformanceAgent?.enabled);
   }
 
   set isAIAssistanceContext(isAIAssistanceContext: boolean) {
@@ -300,11 +286,11 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends UI.Wi
     this.requestUpdate();
   }
 
-  set agentFocus(agentFocus: AIAssistance.AIContext.AgentFocus) {
+  set agentFocus(agentFocus: AIAssistance.AIContext.AgentFocus|null) {
     this.#agentFocus = agentFocus;
   }
 
-  set fieldMetrics(fieldMetrics: Trace.Insights.Common.CrUXFieldMetricResults) {
+  set fieldMetrics(fieldMetrics: Trace.Insights.Common.CrUXFieldMetricResults|null) {
     this.#fieldMetrics = fieldMetrics;
   }
 
@@ -422,7 +408,7 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends UI.Wi
       estimatedSavingsString: this.getEstimatedSavingsString(),
       estimatedSavingsAriaLabel: this.#getEstimatedSavingsAriaLabel(),
       isAIAssistanceContext: this.#isAIAssistanceContext,
-      canShowAskAI: this.#canShowAskAI(),
+      showAskAI: this.#canShowAskAI(),
       dispatchInsightToggle: () => this.#dispatchInsightToggle(),
       renderContent: () => this.renderContent(),
       onHeaderKeyDown: () => this.#onHeaderKeyDown,
@@ -527,14 +513,19 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends UI.Wi
   }
 
   #canShowAskAI(): boolean {
-    if (this.#isAIAssistanceContext) {
+    if (this.#isAIAssistanceContext || !this.hasAskAiSupport()) {
       return false;
     }
 
-    const aiAvailable = Root.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue !==
-            Root.Runtime.GenAiEnterprisePolicyValue.DISABLE &&
-        this.#askAiEnabled && Root.Runtime.hostConfig.aidaAvailability?.enabled === true;
+    // Check if the Insights AI feature enabled within Chrome for the active user.
+    const {devToolsAiAssistancePerformanceAgent} = Root.Runtime.hostConfig;
+    const askAiEnabled = Boolean(devToolsAiAssistancePerformanceAgent?.enabled);
+    if (!askAiEnabled) {
+      return false;
+    }
 
-    return aiAvailable && this.hasAskAiSupport();
+    const {aidaAvailability} = Root.Runtime.hostConfig;
+    return aidaAvailability?.enterprisePolicyValue !== Root.Runtime.GenAiEnterprisePolicyValue.DISABLE &&
+        aidaAvailability?.enabled === true;
   }
 }

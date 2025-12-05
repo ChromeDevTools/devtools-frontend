@@ -16,23 +16,34 @@ type BaseInsightComponent =
     InsightComponents.BaseInsightComponent.BaseInsightComponent<Trace.Insights.Types.InsightModel>;
 type BaseInsightWidget = UI.Widget.WidgetElement<BaseInsightComponent>;
 
-function getUserVisibleInsights(component: Components.SidebarSingleInsightSet.SidebarSingleInsightSet): string[] {
-  assert.isOk(component.element.shadowRoot);
+function getInsightComponents(insightSetComponent: Components.SidebarSingleInsightSet.SidebarSingleInsightSet):
+    BaseInsightComponent[] {
+  assert.isOk(insightSetComponent.element.shadowRoot);
   return [
-    ...component.element.shadowRoot.querySelectorAll<BaseInsightWidget>('[data-insight-name]')
-  ].flatMap(component => getCleanTextContentFromElements(component.getWidget()?.element.shadowRoot!, '.insight-title'))
+    ...insightSetComponent.element.shadowRoot.querySelectorAll<BaseInsightWidget>('.insight-component-widget')
+  ].map(widgetElement => {
+    const widget = widgetElement.getWidget();
+    assert.isOk(widget);
+    return widget;
+  });
+}
+
+function getInsightComponentsTitles(insightSetComponent: Components.SidebarSingleInsightSet.SidebarSingleInsightSet):
+    string[] {
+  return getInsightComponents(insightSetComponent)
+      .flatMap(widget => getCleanTextContentFromElements(widget.element.shadowRoot!, '.insight-title'))
       .filter(Boolean);
 }
 
-function getPassedInsights(component: Components.SidebarSingleInsightSet.SidebarSingleInsightSet): string[] {
-  assert.isOk(component.element.shadowRoot);
+function getPassedInsights(insightSetComponent: Components.SidebarSingleInsightSet.SidebarSingleInsightSet): string[] {
+  assert.isOk(insightSetComponent.element.shadowRoot);
   const passedInsightsSection =
-      component.element.shadowRoot.querySelector<HTMLDetailsElement>('.passed-insights-section');
+      insightSetComponent.element.shadowRoot.querySelector<HTMLDetailsElement>('.passed-insights-section');
   assert.isOk(passedInsightsSection);
   passedInsightsSection.open = true;
-  return [
-    ...passedInsightsSection.querySelectorAll<BaseInsightWidget>('.passed-insights-section [data-insight-name]')
-  ].flatMap(component => getCleanTextContentFromElements(component.getWidget()?.element.shadowRoot!, '.insight-title'));
+  return getInsightComponents(insightSetComponent)
+      .filter(widget => widget.element.closest('.passed-insights-section'))
+      .flatMap(widget => getCleanTextContentFromElements(widget.element.shadowRoot!, '.insight-title'));
 }
 
 describeWithEnvironment('SidebarSingleInsightSet', () => {
@@ -54,7 +65,7 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
     };
     await component.updateComplete;
 
-    const userVisibleTitles = getUserVisibleInsights(component);
+    const userVisibleTitles = getInsightComponentsTitles(component);
     assert.deepEqual(userVisibleTitles, [
       'LCP breakdown',
       'LCP request discovery',
@@ -96,8 +107,7 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
       parsedTrace,
     };
     await component.updateComplete;
-    const userVisibleTitles = getUserVisibleInsights(component);
-    // Does not include "font display", which is experimental.
+    const userVisibleTitles = getInsightComponentsTitles(component);
     assert.deepEqual(userVisibleTitles, [
       'LCP breakdown',
       'Layout shift culprits',
@@ -109,7 +119,6 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
     ]);
 
     const passedInsightTitles = getPassedInsights(component);
-    // Does not include "font display", which is experimental.
     assert.deepEqual(passedInsightTitles, [
       'INP breakdown',
       'LCP request discovery',
@@ -151,11 +160,8 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
     };
     await component.updateComplete;
 
-    const expandedInsight =
-        [...component.element.shadowRoot!.querySelectorAll<BaseInsightWidget>('[data-insight-name]')].find(el => {
-          return el.getWidget()?.selected;
-        });
+    const expandedInsight = getInsightComponents(component).find(insightComponent => insightComponent.selected);
     assert.isOk(expandedInsight);
-    assert.strictEqual(expandedInsight.getWidget()?.model?.title, 'LCP breakdown');
+    assert.strictEqual(expandedInsight.model?.title, 'LCP breakdown');
   });
 });

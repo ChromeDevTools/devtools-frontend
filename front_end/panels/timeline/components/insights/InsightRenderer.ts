@@ -61,30 +61,32 @@ export class InsightRenderer {
   renderInsightToWidgetElement(
       parsedTrace: Trace.TraceModel.ParsedTrace, insightSet: Trace.Insights.Types.InsightSet,
       model: Trace.Insights.Types.InsightModel, insightName: string,
-      options: Partial<BaseInsightComponent<Trace.Insights.Types.InsightModel>>): InsightWidgetElement {
+      options: Partial<Pick<
+          BaseInsightComponent<Trace.Insights.Types.InsightModel>,
+          'selected'|'agentFocus'|'fieldMetrics'|'isAIAssistanceContext'>>): InsightWidgetElement {
     let widgetElement = this.#insightWidgetCache.get(model);
     if (!widgetElement) {
       widgetElement = document.createElement('devtools-widget') as InsightWidgetElement;
-
-      const componentClass = INSIGHT_NAME_TO_COMPONENT[insightName as keyof typeof INSIGHT_NAME_TO_COMPONENT];
-      const widget = new componentClass(widgetElement) as BaseInsightComponent<Trace.Insights.Types.InsightModel>;
-      widget.selected = false;
-      widget.parsedTrace = parsedTrace;
-      widget.model = model;
-      widget.bounds = insightSet.bounds;
-      widget.insightSetKey = insightSet.id;
-      Object.assign(widget, options);
-      widgetElement.widgetConfig = widgetConfig(() => {
-        return widget;
-      });
-
+      widgetElement.classList.add('insight-component-widget');
       this.#insightWidgetCache.set(model, widgetElement);
     }
 
-    const widget = widgetElement.getWidget();
-    if (widget) {
-      Object.assign(widget, options);
-    }
+    const componentClass = INSIGHT_NAME_TO_COMPONENT[insightName as keyof typeof INSIGHT_NAME_TO_COMPONENT];
+    widgetElement.widgetConfig = widgetConfig(componentClass, {
+      selected: options.selected ?? false,
+      parsedTrace,
+      // The `model` passed in as a parameter is the base type, but since
+      // `componentClass` is the union of every derived insight component, the
+      // `model` for the widget config is the union of every model. That can't be
+      // satisfied, so disable typescript.
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      model: model as any,
+      bounds: insightSet.bounds,
+      insightSetKey: insightSet.id,
+      agentFocus: options.agentFocus ?? null,
+      fieldMetrics: options.fieldMetrics ?? null,
+      isAIAssistanceContext: options.isAIAssistanceContext ?? false,
+    });
 
     return widgetElement;
   }

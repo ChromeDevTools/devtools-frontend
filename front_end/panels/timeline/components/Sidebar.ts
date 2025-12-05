@@ -4,7 +4,6 @@
 /* eslint-disable @devtools/no-imperative-dom-api */
 
 import type * as Trace from '../../../models/trace/trace.js';
-import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 
 import {InsightActivated, InsightDeactivated} from './insights/SidebarInsight.js';
@@ -156,7 +155,7 @@ export class SidebarWidget extends UI.Widget.VBox {
 }
 
 class InsightsView extends UI.Widget.VBox {
-  #component = new SidebarInsightsTab();
+  #component = SidebarInsightsTab.createWidgetElement();
 
   constructor() {
     super();
@@ -165,21 +164,31 @@ class InsightsView extends UI.Widget.VBox {
   }
 
   setParsedTrace(parsedTrace: Trace.TraceModel.ParsedTrace|null): void {
-    this.#component.parsedTrace = parsedTrace;
+    this.#component.widgetConfig = UI.Widget.widgetConfig(SidebarInsightsTab, {parsedTrace});
   }
 
   getActiveInsight(): ActiveInsight|null {
-    return this.#component.activeInsight;
+    const widget = this.#component.getWidget();
+    if (widget) {
+      return widget.activeInsight;
+    }
+
+    return null;
   }
 
   setActiveInsight(active: ActiveInsight|null, opts: {highlight: boolean}): void {
-    this.#component.activeInsight = active;
+    const widget = this.#component.getWidget();
+    if (!widget) {
+      return;
+    }
+
+    widget.activeInsight = active;
     if (opts.highlight && active) {
       // Wait for the rendering of the component to be done, otherwise we
       // might highlight the wrong insight. The UI needs to be fully
       // re-rendered before we can highlight the newly-expanded insight.
-      void RenderCoordinator.done().then(() => {
-        this.#component.highlightActiveInsight();
+      void widget.updateComplete.then(() => {
+        widget.highlightActiveInsight();
       });
     }
   }

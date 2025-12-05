@@ -5,7 +5,6 @@
 import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
-import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 
 import * as Components from './components.js';
 
@@ -16,11 +15,11 @@ describeWithEnvironment('SidebarInsightsTab', () => {
     const component = new Components.SidebarInsightsTab.SidebarInsightsTab();
     renderElementIntoDOM(component);
     component.parsedTrace = parsedTrace;
-    await RenderCoordinator.done();
-    assert.isOk(component.shadowRoot);
+    await component.updateComplete;
+    assert.isOk(component.element.shadowRoot);
 
-    const navigationURLs =
-        Array.from(component.shadowRoot.querySelectorAll<HTMLElement>('details > summary')).map(elem => elem.title);
+    const navigationURLs = Array.from(component.element.shadowRoot.querySelectorAll<HTMLElement>('details > summary'))
+                               .map(elem => elem.title);
     assert.deepEqual(navigationURLs, [
       'https://www.google.com/',
       'https://www.google.com/',
@@ -29,7 +28,8 @@ describeWithEnvironment('SidebarInsightsTab', () => {
     ]);
 
     const navigationURLLabels =
-        Array.from(component.shadowRoot.querySelectorAll<HTMLElement>('details > summary')).map(elem => elem.innerText);
+        Array.from(component.element.shadowRoot.querySelectorAll<HTMLElement>('details > summary'))
+            .map(elem => elem.innerText);
     assert.deepEqual(navigationURLLabels, [
       '/',
       '/',
@@ -37,7 +37,7 @@ describeWithEnvironment('SidebarInsightsTab', () => {
       '/search?q=dogs&hl=en&tbm=isch&source=hp&biw=738&bih=893&ei=_ER4YPD…&oq=dogs&gs_lcp=CgNpbWc…&sclient=img&ved=0ahUKEw…&uact=5',
     ]);
 
-    const sets = component.shadowRoot.querySelectorAll('[data-insight-set-key]');
+    const sets = component.element.shadowRoot.querySelectorAll('[data-insight-set-key]');
     assert.lengthOf(sets, 4);  // same number of sets as there are navigations
   });
 });

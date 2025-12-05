@@ -510,7 +510,6 @@ export class CompatibilityTracksAppender {
    * @returns the index of the event in all events to be rendered in the flamechart.
    */
   appendEventAtLevel(event: Trace.Types.Events.Event, level: number, appender: TrackAppender): number {
-    // TODO(crbug.com/1442454) Figure out how to avoid the circular calls.
     this.#trackForLevel.set(level, appender);
     const index = this.#entryData.length;
     this.#entryData.push(event);

@@ -8,7 +8,7 @@ import '../../../ui/legacy/components/data_grid/data_grid.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
-import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wrapper.js';
+import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
@@ -166,7 +166,7 @@ const renderMainFrameInformation = (input: ViewInput): Lit.LitTemplate => {
   // clang-format on
 };
 
-export const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLElement|ShadowRoot): void => {
+export const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLElement): void => {
   // clang-format off
   Lit.render(html`
     <style>${bounceTrackingMitigationsViewStyles}</style>
@@ -178,14 +178,18 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLE
   // clang-format on
 };
 
-export class BounceTrackingMitigationsView extends LegacyWrapper.LegacyWrapper.WrappableComponent {
-  readonly #shadow = this.attachShadow({mode: 'open'});
+type ViewFunction = typeof DEFAULT_VIEW;
+
+export class BounceTrackingMitigationsView extends UI.Widget.Widget {
   #trackingSites: string[] = [];
   #screenStatus = ScreenStatusType.INITIALIZING;
   #seenButtonClick = false;
+  #view: ViewFunction;
 
-  constructor() {
-    super();
+  constructor(element?: HTMLElement, view: ViewFunction = DEFAULT_VIEW) {
+    super(element, {useShadowDom: true, classes: ['overflow-auto']});
+
+    this.#view = view;
 
     const mainTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
     if (!mainTarget) {
@@ -193,27 +197,25 @@ export class BounceTrackingMitigationsView extends LegacyWrapper.LegacyWrapper.W
     } else {
       void mainTarget.systemInfo().invoke_getFeatureState({featureState: 'DIPS'}).then(state => {
         this.#screenStatus = state.featureEnabled ? ScreenStatusType.RESULT : ScreenStatusType.DISABLED;
-        if (this.isConnected) {
-          this.#render();
-        }
+        this.requestUpdate();
       });
     }
   }
 
-  connectedCallback(): void {
-    void this.#render();
-    this.parentElement?.classList.add('overflow-auto');
+  override wasShown(): void {
+    super.wasShown();
+    this.requestUpdate();
   }
 
-  #render(): void {
-    DEFAULT_VIEW(
+  override performUpdate(): void {
+    this.#view(
         {
           screenStatus: this.#screenStatus,
           trackingSites: this.#trackingSites,
           seenButtonClick: this.#seenButtonClick,
           runMitigations: this.#runMitigations.bind(this),
         },
-        undefined, this.#shadow);
+        undefined, this.contentElement);
   }
 
   async #runMitigations(): Promise<void> {
@@ -225,7 +227,7 @@ export class BounceTrackingMitigationsView extends LegacyWrapper.LegacyWrapper.W
     this.#seenButtonClick = true;
     this.#screenStatus = ScreenStatusType.RUNNING;
 
-    void this.#render();
+    this.requestUpdate();
 
     const response = await mainTarget.storageAgent().invoke_runBounceTrackingMitigations();
     this.#trackingSites = [];
@@ -238,14 +240,6 @@ export class BounceTrackingMitigationsView extends LegacyWrapper.LegacyWrapper.W
 
   #renderMitigationsResult(): void {
     this.#screenStatus = ScreenStatusType.RESULT;
-    void this.#render();
-  }
-}
-
-customElements.define('devtools-bounce-tracking-mitigations-view', BounceTrackingMitigationsView);
-
-declare global {
-  interface HTMLElementTagNameMap {
-    'devtools-bounce-tracking-mitigations-view': BounceTrackingMitigationsView;
+    this.requestUpdate();
   }
 }

@@ -19,12 +19,14 @@ import * as ApplicationComponents from './components.js';
 
 async function renderBounceTrackingMitigationsView():
     Promise<ApplicationComponents.BounceTrackingMitigationsView.BounceTrackingMitigationsView> {
-  const component = new ApplicationComponents.BounceTrackingMitigationsView.BounceTrackingMitigationsView();
-  component.style.display = 'block';
-  component.style.width = '640px';
-  component.style.height = '480px';
+  const element = document.createElement('div');
+  element.style.display = 'block';
+  element.style.width = '640px';
+  element.style.height = '480px';
+  const component = new ApplicationComponents.BounceTrackingMitigationsView.BounceTrackingMitigationsView(element);
   renderElementIntoDOM(component);
 
+  await component.updateComplete;
   // The data-grid's renderer is scheduled, so we need to wait until the coordinator
   // is done before we can test against it.
   await RenderCoordinator.done();
@@ -34,7 +36,7 @@ async function renderBounceTrackingMitigationsView():
 
 function getInternalDataGridShadowRoot(
     component: ApplicationComponents.BounceTrackingMitigationsView.BounceTrackingMitigationsView): ShadowRoot {
-  const dataGrid = component.shadowRoot!.querySelector('devtools-data-grid')!;
+  const dataGrid = component.element.shadowRoot!.querySelector('devtools-data-grid')!;
   assert.isNotNull(dataGrid.shadowRoot);
   return dataGrid.shadowRoot;
 }
@@ -47,14 +49,14 @@ describeWithMockConnection('BounceTrackingMitigationsView', () => {
 
     const component = await renderBounceTrackingMitigationsView();
     await RenderCoordinator.done();
-    await component.wrapper?.updateComplete;
+    await component.updateComplete;
 
-    const nullGridElement = component.shadowRoot!.querySelector('devtools-data-grid');
+    const nullGridElement = component.element.shadowRoot!.querySelector('devtools-data-grid');
     assert.isNull(nullGridElement);
 
     await assertScreenshot('application/bounce-tracking-mitigations-view-initial.png');
 
-    const sections = component.shadowRoot!.querySelectorAll('devtools-report-section');
+    const sections = component.element.shadowRoot!.querySelectorAll('devtools-report-section');
     const sectionsText = Array.from(sections).map(section => section.textContent?.trim());
     const expected = [
       'Force run',
@@ -70,14 +72,14 @@ describeWithMockConnection('BounceTrackingMitigationsView', () => {
 
     const component = await renderBounceTrackingMitigationsView();
     await RenderCoordinator.done();
-    await component.wrapper?.updateComplete;
+    await component.updateComplete;
 
-    const nullGridElement = component.shadowRoot!.querySelector('devtools-data-grid');
+    const nullGridElement = component.element.shadowRoot!.querySelector('devtools-data-grid');
     assert.isNull(nullGridElement);
 
     await assertScreenshot('application/bounce-tracking-mitigations-view-disabled.png');
 
-    const sections = component.shadowRoot!.querySelectorAll('devtools-report-section');
+    const sections = component.element.shadowRoot!.querySelectorAll('devtools-report-section');
     const sectionsText = Array.from(sections).map(section => section.textContent?.trim());
     const expected = [
       'Bounce tracking mitigations are disabled.',
@@ -98,22 +100,22 @@ describeWithMockConnection('BounceTrackingMitigationsView', () => {
 
     const component = await renderBounceTrackingMitigationsView();
     await RenderCoordinator.done();
-    await component.wrapper?.updateComplete;
+    await component.updateComplete;
 
-    const forceRunButton = component.shadowRoot!.querySelector('[aria-label="Force run"]');
+    const forceRunButton = component.element.shadowRoot!.querySelector('[aria-label="Force run"]');
     assert.instanceOf(forceRunButton, HTMLElement);
     dispatchClickEvent(forceRunButton);
     await runBounceTrackingMitigationsPromise;
 
     await RenderCoordinator.done();
-    await component.wrapper?.updateComplete;
+    await component.updateComplete;
 
     await assertScreenshot('application/bounce-tracking-mitigations-view-empty.png');
 
-    const nullGridElement = component.shadowRoot!.querySelector('devtools-data-grid');
+    const nullGridElement = component.element.shadowRoot!.querySelector('devtools-data-grid');
     assert.isNull(nullGridElement);
 
-    const sections = component.shadowRoot!.querySelectorAll('devtools-report-section');
+    const sections = component.element.shadowRoot!.querySelectorAll('devtools-report-section');
     const sectionsText = Array.from(sections).map(section => section.textContent?.trim());
     const expected = [
       'Force run',
@@ -132,14 +134,14 @@ describeWithMockConnection('BounceTrackingMitigationsView', () => {
 
     const component = await renderBounceTrackingMitigationsView();
     await RenderCoordinator.done();
-    await component.wrapper?.updateComplete;
+    await component.updateComplete;
 
-    const forceRunButton = component.shadowRoot!.querySelector('[aria-label="Force run"]');
+    const forceRunButton = component.element.shadowRoot!.querySelector('[aria-label="Force run"]');
     assert.instanceOf(forceRunButton, HTMLElement);
     dispatchClickEvent(forceRunButton);
 
     await RenderCoordinator.done({waitForWork: true});
-    await component.wrapper?.updateComplete;
+    await component.updateComplete;
 
     await assertScreenshot('application/bounce-tracking-mitigations-view-populated.png');
 

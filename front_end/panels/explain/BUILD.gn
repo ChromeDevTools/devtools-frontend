@@ -41,6 +41,7 @@ devtools_entrypoint("bundle") {
     ":*",
     "../../entrypoints/*",
     "../../legacy_test_runner/*",
+    "../../testing/*",
     "../../ui/components/docs/console_insight/*",
     "./components/*",
   ]

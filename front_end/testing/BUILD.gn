@@ -11,6 +11,7 @@ ts_library("testing") {
   sources = [
     "AiAssistanceHelpers.ts",
     "ConsoleHelpers.ts",
+    "ConsoleInsightHelpers.ts",
     "ContextMenuHelpers.ts",
     "Cookies.ts",
     "DOMHelpers.ts",
@@ -79,7 +80,9 @@ ts_library("testing") {
     "../models/trace_source_maps_resolver:bundle",
     "../models/workspace:bundle",
     "../panels/common:bundle",
+    "../panels/console:bundle",
     "../panels/elements:meta",
+    "../panels/explain:bundle",
     "../panels/sensors:meta",
     "../panels/timeline:bundle",
     "../services/trace_bounds:bundle",

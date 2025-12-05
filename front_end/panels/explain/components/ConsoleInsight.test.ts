@@ -5,16 +5,17 @@
 import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import type * as Platform from '../../../core/platform/platform.js';
+import {createConsoleInsightWidget} from '../../../testing/ConsoleInsightHelpers.js';
 import {
   assertScreenshot,
-  dispatchClickEvent,
   getCleanTextContentFromElements,
-  raf,
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment, updateHostConfig} from '../../../testing/EnvironmentHelpers.js';
 import * as Console from '../../console/console.js';
 import * as Explain from '../explain.js';
+
+type Insight = Extract<Explain.ViewInput['state'], {type: Explain.State.INSIGHT}>;
 
 describeWithEnvironment('ConsoleInsight', () => {
   let component: Explain.ConsoleInsight|undefined;
@@ -77,17 +78,14 @@ describeWithEnvironment('ConsoleInsight', () => {
 
   it('shows opt-in teaser when setting is turned off', async () => {
     Common.Settings.settingForTest('console-insights-enabled').set(false);
-    ({component} = createConsoleInsight(
-         getTestPromptBuilder(), getTestAidaClient(), Host.AidaClient.AidaAccessPreconditions.AVAILABLE));
-    renderElementIntoDOM(component);
-    await component.updateComplete;
-    assert.isNotNull(component.contentElement);
-    assert.deepEqual(
-        getCleanTextContentFromElements(component.contentElement, 'main'),
-        [
-          'Turn on Console insights in Settings to receive AI assistance for understanding and addressing console warnings and errors. Learn more',
-        ],
-    );
+    const {view, component} = await createConsoleInsightWidget();
+
+    assert.strictEqual(view.input.state.type, Explain.State.LOADING);
+
+    component.wasShown();
+    const nextInput = await view.nextInput;
+
+    assert.strictEqual(nextInput.state.type, Explain.State.SETTING_IS_NOT_TRUE);
   });
 
   it('shows opt-in teaser when blocked by age', async () => {
@@ -99,41 +97,33 @@ describeWithEnvironment('ConsoleInsight', () => {
         enabled: true,
       },
     });
-    ({component} = createConsoleInsight(
-         getTestPromptBuilder(), getTestAidaClient(), Host.AidaClient.AidaAccessPreconditions.AVAILABLE));
-    renderElementIntoDOM(component);
-    await component.updateComplete;
-    assert.isNotNull(component.contentElement);
-    assert.deepEqual(
-        getCleanTextContentFromElements(component.contentElement, 'main'),
-        [
-          'Turn on Console insights in Settings to receive AI assistance for understanding and addressing console warnings and errors. Learn more',
-        ],
-    );
+
+    const {view, component} = await createConsoleInsightWidget();
+
+    assert.strictEqual(view.input.state.type, Explain.State.LOADING);
+
+    component.wasShown();
+    const nextInput = await view.nextInput;
+
+    assert.strictEqual(nextInput.state.type, Explain.State.SETTING_IS_NOT_TRUE);
   });
 
   it('generates an explanation when the user logs in', async () => {
-    let checkAccessPreconditionsStub;
-    ({component, checkAccessPreconditionsStub} = createConsoleInsight(
-         getTestPromptBuilder(), getTestAidaClient(), Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL));
-    renderElementIntoDOM(component);
-    await component.updateComplete;
-    assert.isNotNull(component.contentElement);
-    assert.deepEqual(
-        getCleanTextContentFromElements(component.contentElement, 'main'),
-        [
-          'This feature is only available when you sign into Chrome with your Google account.',
-        ],
-    );
+    const {view, component, stubAidaCheckAccessPreconditions} = await createConsoleInsightWidget({
+      aidaAvailability: Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL,
+    });
 
-    checkAccessPreconditionsStub.returns(Promise.resolve(Host.AidaClient.AidaAccessPreconditions.AVAILABLE));
+    assert.strictEqual(view.input.state.type, Explain.State.NOT_LOGGED_IN);
+
+    component.wasShown();
+
+    stubAidaCheckAccessPreconditions(Host.AidaClient.AidaAccessPreconditions.AVAILABLE);
     Host.AidaClient.HostConfigTracker.instance().dispatchEventToListeners(
         Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED);
-    // wait for availability async read
-    await raf();
-    // and for component to render afterwards
-    await component.updateComplete;
-    assert.deepEqual(getCleanTextContentFromElements(component.contentElement, 'h2'), ['Explanation']);
+
+    const nextInput = await view.nextInput;
+
+    assert.strictEqual(nextInput.state.type, Explain.State.INSIGHT);
   });
 
   it('shows opt-in teaser when setting is disabled via disabledCondition', async () => {
@@ -146,17 +136,15 @@ describeWithEnvironment('ConsoleInsight', () => {
         return {disabled: true, reasons: ['disabled for test' as Platform.UIString.LocalizedString]};
       },
     });
-    ({component} = createConsoleInsight(
-         getTestPromptBuilder(), getTestAidaClient(), Host.AidaClient.AidaAccessPreconditions.AVAILABLE));
-    renderElementIntoDOM(component);
-    await component.updateComplete;
-    assert.isNotNull(component.contentElement);
-    assert.deepEqual(
-        getCleanTextContentFromElements(component.contentElement, 'main'),
-        [
-          'Turn on Console insights in Settings to receive AI assistance for understanding and addressing console warnings and errors. Learn more',
-        ],
-    );
+
+    const {view, component} = await createConsoleInsightWidget();
+
+    assert.strictEqual(view.input.state.type, Explain.State.LOADING);
+
+    component.wasShown();
+    const nextInput = await view.nextInput;
+
+    assert.strictEqual(nextInput.state.type, Explain.State.SETTING_IS_NOT_TRUE);
 
     setting.setRegistration({
       settingName: 'console-insights-enabled',
@@ -167,20 +155,19 @@ describeWithEnvironment('ConsoleInsight', () => {
 
   it('shows reminder on first run of console insights', async () => {
     Common.Settings.settingForTest('console-insights-onboarding-finished').set(false);
-    ({component} = createConsoleInsight(
-         getTestPromptBuilder(), getTestAidaClient(), Host.AidaClient.AidaAccessPreconditions.AVAILABLE));
-    renderElementIntoDOM(component);
-    await component.updateComplete;
-    assert.isNotNull(component.contentElement);
-    assert.strictEqual(component.contentElement.querySelector('h2')?.innerText, 'Understand console messages with AI');
+    const {view, component} = await createConsoleInsightWidget();
 
-    dispatchClickEvent(component.contentElement.querySelector('.continue-button')!, {
-      bubbles: true,
-      composed: true,
-    });
-    await component.updateComplete;
-    // Rating buttons are shown.
-    assert(component.contentElement.querySelector('.rating'));
+    assert.strictEqual(view.input.state.type, Explain.State.LOADING);
+
+    component.wasShown();
+    let nextInput = await view.nextInput;
+
+    assert.strictEqual(nextInput.state.type, Explain.State.CONSENT_REMINDER);
+
+    await view.input.callbacks.onConsentReminderConfirmed();
+    nextInput = await view.nextInput;
+
+    assert.strictEqual(nextInput.state.type, Explain.State.INSIGHT);
   });
 
   it('shows an error message on timeout', async () => {
@@ -201,14 +188,18 @@ describeWithEnvironment('ConsoleInsight', () => {
       };
     }
 
-    ({component} = createConsoleInsight(
-         getTestPromptBuilder(), getAidaClientWithTimeout(), Host.AidaClient.AidaAccessPreconditions.AVAILABLE));
-    renderElementIntoDOM(component);
-    await component.updateComplete;
-    assert.isNotNull(component.contentElement);
-    assert.strictEqual(
-        component.contentElement.querySelector('.error-message')?.textContent,
-        'Generating a response took too long. Please try again.');
+    const {view, component} = await createConsoleInsightWidget({
+      aidaClient: getAidaClientWithTimeout(),
+    });
+
+    assert.strictEqual(view.input.state.type, Explain.State.LOADING);
+
+    component.wasShown();
+    const nextInput = await view.nextInput;
+
+    assert.strictEqual(nextInput.state.type, Explain.State.INSIGHT);
+    const insight = nextInput.state as Insight;
+    assert.isTrue(insight.timedOut);
   });
 
   const reportsRating = (positive: boolean, disallowLogging: boolean) => async () => {
@@ -218,18 +209,16 @@ describeWithEnvironment('ConsoleInsight', () => {
       },
     });
     const actionTaken = sinon.stub(Host.userMetrics, 'actionTaken');
-    const aidaClient = getTestAidaClient();
-    ({component} =
-         createConsoleInsight(getTestPromptBuilder(), aidaClient, Host.AidaClient.AidaAccessPreconditions.AVAILABLE));
-    renderElementIntoDOM(component);
-    await component.updateComplete;
-    dispatchClickEvent(component.contentElement!.querySelector(`.rating [data-rating=${positive}]`)!, {
-      bubbles: true,
-      composed: true,
-    });
+    const {view, component, testAidaClient} = await createConsoleInsightWidget();
 
-    sinon.assert.calledOnce(aidaClient.registerClientEvent);
-    sinon.assert.match(aidaClient.registerClientEvent.firstCall.firstArg, sinon.match({
+    component.wasShown();
+    await view.nextInput;
+
+    await view.input.callbacks.onRating(positive);
+    await view.nextInput;
+
+    sinon.assert.calledOnce(testAidaClient.registerClientEvent);
+    sinon.assert.match(testAidaClient.registerClientEvent.firstCall.firstArg, sinon.match({
       corresponding_aida_rpc_global_id: 0,
       disable_user_content_logging: disallowLogging,
       do_conversation_client_event: {
@@ -240,12 +229,9 @@ describeWithEnvironment('ConsoleInsight', () => {
         actionTaken,
         positive ? Host.UserMetrics.Action.InsightRatedPositive : Host.UserMetrics.Action.InsightRatedNegative);
 
-    dispatchClickEvent(component.contentElement!.querySelector(`.rating [data-rating=${positive}]`)!, {
-      bubbles: true,
-      composed: true,
-    });
-    // Can only rate once.
-    sinon.assert.calledOnce(aidaClient.registerClientEvent);
+    await view.input.callbacks.onRating(positive);
+
+    sinon.assert.calledOnce(testAidaClient.registerClientEvent);
   };
 
   describe('without logging', () => {
@@ -278,21 +264,18 @@ describeWithEnvironment('ConsoleInsight', () => {
   });
 
   it('report if the user is not logged in', async () => {
-    ({component} = createConsoleInsight(
-         getTestPromptBuilder(), getTestAidaClient(), Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL));
-    renderElementIntoDOM(component);
-    await component.updateComplete;
-    const content = component.contentElement!.querySelector('main')!.innerText.trim();
-    assert.strictEqual(content, 'This feature is only available when you sign into Chrome with your Google account.');
+    const {view} = await createConsoleInsightWidget({
+      aidaAvailability: Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL,
+    });
+
+    assert.strictEqual(view.input.state.type, Explain.State.NOT_LOGGED_IN);
   });
 
   it('report if the navigator is offline', async () => {
-    ({component} = createConsoleInsight(
-         getTestPromptBuilder(), getTestAidaClient(), Host.AidaClient.AidaAccessPreconditions.NO_INTERNET));
-    renderElementIntoDOM(component);
-    await component.updateComplete;
-    const content = component.contentElement!.querySelector('main')!.innerText.trim();
-    assert.strictEqual(content, 'Check your internet connection and try again.');
+    const {view} = await createConsoleInsightWidget({
+      aidaAvailability: Host.AidaClient.AidaAccessPreconditions.NO_INTERNET,
+    });
+    assert.strictEqual(view.input.state.type, Explain.State.OFFLINE);
   });
 
   it('displays factuality metadata as related content', async () => {
@@ -318,17 +301,17 @@ describeWithEnvironment('ConsoleInsight', () => {
       };
     }
 
-    ({component} = createConsoleInsight(
-         getTestPromptBuilder(), getAidaClientWithMetadata(), Host.AidaClient.AidaAccessPreconditions.AVAILABLE));
-    renderElementIntoDOM(component);
-    await component.updateComplete;
-    const details = component.contentElement!.querySelector('details');
-    assert.strictEqual(details!.querySelector('summary')!.textContent?.trim(), 'Sources and related content');
-    const xLinks = details!.querySelectorAll('x-link');
-    assert.strictEqual(xLinks[0].textContent?.trim(), 'https://www.firstSource.test/someInfo');
-    assert.strictEqual(xLinks[0].getAttribute('href'), 'https://www.firstSource.test/someInfo');
-    assert.strictEqual(xLinks[1].textContent?.trim(), 'https://www.anotherSource.test/page');
-    assert.strictEqual(xLinks[1].getAttribute('href'), 'https://www.anotherSource.test/page');
+    const {view, component} = await createConsoleInsightWidget({
+      aidaClient: getAidaClientWithMetadata(),
+    });
+    component.wasShown();
+    const nextInput = await view.nextInput;
+    assert.strictEqual(nextInput.state.type, Explain.State.INSIGHT);
+    const insight = nextInput.state as Insight;
+    assert.deepEqual(insight.relatedUrls, [
+      'https://www.firstSource.test/someInfo',
+      'https://www.anotherSource.test/page',
+    ]);
   });
 
   it('displays direct citations', async () => {
@@ -514,21 +497,18 @@ after
       };
     }
 
-    ({component} = createConsoleInsight(
-         getTestPromptBuilder(), getAidaClientWithMetadata(), Host.AidaClient.AidaAccessPreconditions.AVAILABLE));
-    renderElementIntoDOM(component);
-    await component.updateComplete;
+    const {view, component} = await createConsoleInsightWidget({
+      aidaClient: getAidaClientWithMetadata(),
+    });
+    component.wasShown();
+    const nextInput = await view.nextInput;
+    assert.strictEqual(nextInput.state.type, Explain.State.INSIGHT);
+    const insight = nextInput.state as Insight;
 
-    const details = component.contentElement!.querySelector('details');
-    assert.strictEqual(details!.querySelector('summary')!.textContent?.trim(), 'Sources and related content');
-    const xLinks = details!.querySelectorAll('x-link');
-    assert.lengthOf(xLinks, 3);
-    assert.strictEqual(xLinks[0].textContent?.trim(), 'https://www.firstSource.test/someInfo');
-    assert.strictEqual(xLinks[0].getAttribute('href'), 'https://www.firstSource.test/someInfo');
-    assert.strictEqual(xLinks[1].textContent?.trim(), 'https://www.training.test/');
-    assert.strictEqual(xLinks[1].getAttribute('href'), 'https://www.training.test/');
-    assert.strictEqual(xLinks[2].textContent?.trim(), 'https://www.github.com/chromedevtools/devtools-frontend');
-    assert.strictEqual(xLinks[2].getAttribute('href'), 'https://www.github.com/chromedevtools/devtools-frontend');
+    assert.lengthOf(insight.relatedUrls, 3);
+    assert.strictEqual(insight.relatedUrls[0], 'https://www.firstSource.test/someInfo');
+    assert.strictEqual(insight.relatedUrls[1], 'https://www.training.test/');
+    assert.strictEqual(insight.relatedUrls[2], 'https://www.github.com/chromedevtools/devtools-frontend');
   });
 
   it('deduplicates citation URLs', async () => {
@@ -585,23 +565,20 @@ after
       };
     }
 
-    ({component} = createConsoleInsight(
-         getTestPromptBuilder(), getAidaClientWithMetadata(), Host.AidaClient.AidaAccessPreconditions.AVAILABLE));
-    renderElementIntoDOM(component);
-    await component.updateComplete;
+    const {view, component} = await createConsoleInsightWidget({
+      aidaClient: getAidaClientWithMetadata(),
+    });
+    component.wasShown();
+    const nextInput = await view.nextInput;
+    assert.strictEqual(nextInput.state.type, Explain.State.INSIGHT);
+    const insight = nextInput.state as Insight;
 
-    const details = component.contentElement!.querySelector('details');
-    assert.strictEqual(details!.querySelector('summary')!.textContent?.trim(), 'Sources and related content');
-    const xLinks = details!.querySelectorAll('x-link');
-    assert.lengthOf(xLinks, 4);
-    assert.strictEqual(xLinks[0].textContent?.trim(), 'https://www.world-fact-and-factuality.test/');
-    assert.strictEqual(xLinks[0].getAttribute('href'), 'https://www.world-fact-and-factuality.test/');
-    assert.strictEqual(xLinks[1].textContent?.trim(), 'https://www.all-three.test/');
-    assert.strictEqual(xLinks[1].getAttribute('href'), 'https://www.all-three.test/');
-    assert.strictEqual(xLinks[2].textContent?.trim(), 'https://www.training-and-factuality.test/');
-    assert.strictEqual(xLinks[2].getAttribute('href'), 'https://www.training-and-factuality.test/');
-    assert.strictEqual(xLinks[3].textContent?.trim(), 'https://www.factuality.test/');
-    assert.strictEqual(xLinks[3].getAttribute('href'), 'https://www.factuality.test/');
+    assert.lengthOf(insight.directCitationUrls, 2);
+    assert.lengthOf(insight.relatedUrls, 2);
+    assert.strictEqual(insight.directCitationUrls[0], 'https://www.world-fact-and-factuality.test/');
+    assert.strictEqual(insight.directCitationUrls[1], 'https://www.all-three.test/');
+    assert.strictEqual(insight.relatedUrls[0], 'https://www.training-and-factuality.test/');
+    assert.strictEqual(insight.relatedUrls[1], 'https://www.factuality.test/');
   });
 
   it('renders the opt-in teaser', async () => {

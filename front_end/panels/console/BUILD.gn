@@ -83,6 +83,7 @@ devtools_entrypoint("bundle") {
     "../../../test/e2e/console/*",
     "../../entrypoints/*",
     "../../panels/explain/*",
+    "../../testing:*",
   ]
 
   visibility += devtools_panels_visibility

@@ -1,7 +1,7 @@
-import '../../../ui/components/chrome_link/chrome_link.js';
 import '../../../ui/components/expandable_list/expandable_list.js';
 import '../../../ui/components/report_view/report_view.js';
 import '../../../ui/legacy/legacy.js';
+import '../../../ui/kit/kit.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Protocol from '../../../generated/protocol.js';
 import * as UI from '../../../ui/legacy/legacy.js';

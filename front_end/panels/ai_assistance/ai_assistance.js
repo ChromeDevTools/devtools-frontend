@@ -4302,9 +4302,11 @@ import * as UI7 from "./../../ui/legacy/legacy.js";
 import * as Lit5 from "./../../ui/lit/lit.js";
 import * as PanelsCommon2 from "./../common/common.js";
 import * as Network from "./../network/network.js";
+import * as TimelineComponents from "./../timeline/components/components.js";
 import * as Insights from "./../timeline/components/insights/insights.js";
 var { html: html9 } = Lit5.StaticHtml;
 var { ref: ref3, createRef } = Lit5.Directives;
+var { widgetConfig } = UI7.Widget;
 var PerformanceAgentMarkdownRenderer = class extends MarkdownRendererWithCodeBlock {
   mainFrameId;
   lookupEvent;
@@ -4378,12 +4380,9 @@ var PerformanceAgentMarkdownRenderer = class extends MarkdownRendererWithCodeBlo
         const syntheticRequest = Helpers2.SyntheticEvents.SyntheticEventsManager.getActiveManager().syntheticEventForRawEventIndex(Number(value));
         let networkTooltip = null;
         if (syntheticRequest && Trace3.Types.Events.isSyntheticNetworkRequest(syntheticRequest)) {
-          networkTooltip = html9`<devtools-performance-network-request-tooltip
-              .data=${{
-            networkRequest: syntheticRequest,
-            entityMapper: null
-          }}
-            ></devtools-performance-network-request-tooltip>`;
+          networkTooltip = html9`<devtools-widget .widgetConfig=${widgetConfig(TimelineComponents.NetworkRequestTooltip.NetworkRequestTooltip, {
+            networkRequest: syntheticRequest
+          })}></devtools-widget>`;
         }
         return html9`<devtools-collapsible-assistance-content-widget
         .data=${{

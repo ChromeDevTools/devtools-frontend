@@ -3,7 +3,6 @@ import './LinearMemoryViewer.js';
 import * as Common from '../../../core/common/common.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import { type AddressInputChangedEvent, type HistoryNavigationEvent, Mode, type PageNavigationEvent } from './LinearMemoryNavigator.js';
-import type { EndiannessChangedEvent, ValueTypeToggledEvent } from './LinearMemoryValueInterpreter.js';
 import type { ByteSelectedEvent, ResizeEvent } from './LinearMemoryViewer.js';
 import type { HighlightInfo } from './LinearMemoryViewerUtils.js';
 import { Endianness, type ValueType, type ValueTypeMode } from './ValueInterpreterDisplayUtils.js';
@@ -67,9 +66,9 @@ export interface ViewInput {
     onDeleteMemoryHighlight: (info: HighlightInfo) => void;
     onByteSelected: (e: ByteSelectedEvent) => void;
     onResize: (e: ResizeEvent) => void;
-    onValueTypeToggled: (e: ValueTypeToggledEvent) => void;
+    onValueTypeToggled: (type: ValueType, checked: boolean) => void;
     onValueTypeModeChanged: (type: ValueType, mode: ValueTypeMode) => void;
-    onEndiannessChanged: (e: EndiannessChangedEvent) => void;
+    onEndiannessChanged: (endianness: Endianness) => void;
     memorySlice: Uint8Array<ArrayBuffer>;
     viewerStart: number;
 }

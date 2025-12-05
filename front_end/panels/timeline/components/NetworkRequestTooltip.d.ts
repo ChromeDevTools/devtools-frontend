@@ -1,20 +1,23 @@
 import '../../../ui/kit/kit.js';
 import * as Trace from '../../../models/trace/trace.js';
+import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
-export interface NetworkTooltipData {
-    networkRequest: Trace.Types.Events.SyntheticNetworkRequest | null;
-    entityMapper: Trace.EntityMapper.EntityMapper | null;
+interface ViewInput {
+    networkRequest: Trace.Types.Events.SyntheticNetworkRequest;
+    entityMapper?: Trace.EntityMapper.EntityMapper;
+    throttlingTitle?: string;
 }
-export declare class NetworkRequestTooltip extends HTMLElement {
+type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+export declare const DEFAULT_VIEW: View;
+export declare class NetworkRequestTooltip extends UI.Widget.Widget {
     #private;
-    connectedCallback(): void;
-    set data(data: NetworkTooltipData);
+    static createWidgetElement(request: Trace.Types.Events.SyntheticNetworkRequest, entityMapper?: Trace.EntityMapper.EntityMapper): UI.Widget.WidgetElement<NetworkRequestTooltip>;
+    constructor(element?: HTMLElement, view?: View);
+    set networkRequest(networkRequest: Trace.Types.Events.SyntheticNetworkRequest);
+    set entityMapper(entityMapper: Trace.EntityMapper.EntityMapper | undefined);
     static renderPriorityValue(networkRequest: Trace.Types.Events.SyntheticNetworkRequest): Lit.TemplateResult;
     static renderTimings(networkRequest: Trace.Types.Events.SyntheticNetworkRequest): Lit.TemplateResult | null;
     static renderRedirects(networkRequest: Trace.Types.Events.SyntheticNetworkRequest): Lit.TemplateResult | null;
+    performUpdate(): void;
 }
-declare global {
-    interface HTMLElementTagNameMap {
-        'devtools-performance-network-request-tooltip': NetworkRequestTooltip;
-    }
-}
+export {};

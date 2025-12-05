@@ -9,21 +9,23 @@ export default `/*
  * found in the LICENSE file.
  */
 
-:host {
-  display: block;
-}
+@scope to (devtools-widget > *) {
+  :host {
+    display: block;
+  }
 
-.breakdown {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  color: var(--sys-color-token-subtle);
-}
+  .breakdown {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    color: var(--sys-color-token-subtle);
+  }
 
-.value {
-  display: inline-block;
-  padding: 0 5px;
-  color: var(--sys-color-on-surface);
+  .value {
+    display: inline-block;
+    padding: 0 5px;
+    color: var(--sys-color-on-surface);
+  }
 }
 
 /*# sourceURL=${import.meta.resolve('./interactionBreakdown.css')} */`;

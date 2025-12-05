@@ -1,13 +1,13 @@
 // Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
 import '../../../ui/kit/kit.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Trace from '../../../models/trace/trace.js';
 import * as PerfUI from '../../../ui/legacy/components/perf_ui/perf_ui.js';
+import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as TimelineUtils from '../utils/utils.js';
 import networkRequestTooltipStyles from './networkRequestTooltip.css.js';
@@ -55,18 +55,69 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/NetworkRequestTooltip.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-export class NetworkRequestTooltip extends HTMLElement {
-    #shadow = this.attachShadow({ mode: 'open' });
-    #data = { networkRequest: null, entityMapper: null };
-    connectedCallback() {
-        this.#render();
+export const DEFAULT_VIEW = (input, output, target) => {
+    const { networkRequest, entityMapper, throttlingTitle, } = input;
+    const chipStyle = {
+        backgroundColor: `${colorForNetworkRequest(networkRequest)}`,
+    };
+    const url = new URL(networkRequest.args.data.url);
+    const entity = entityMapper ? entityMapper.entityForEvent(networkRequest) : null;
+    const originWithEntity = TimelineUtils.Helpers.formatOriginWithEntity(url, entity, true);
+    const redirectsHtml = NetworkRequestTooltip.renderRedirects(networkRequest);
+    // clang-format off
+    Lit.render(html `
+    <style>${networkRequestTooltipStyles}</style>
+    <div class="performance-card">
+      <div class="url">${Platform.StringUtilities.trimMiddle(url.href.replace(url.origin, ''), MAX_URL_LENGTH)}</div>
+      <div class="url url--host">${originWithEntity}</div>
+
+      <div class="divider"></div>
+      <div class="network-category">
+        <span class="network-category-chip" style=${Lit.Directives.styleMap(chipStyle)}>
+        </span>${networkResourceCategory(networkRequest)}
+      </div>
+      <div class="priority-row">${i18nString(UIStrings.priority)}: ${NetworkRequestTooltip.renderPriorityValue(networkRequest)}</div>
+      ${throttlingTitle ? html `
+        <div class="throttled-row">
+          ${i18nString(UIStrings.wasThrottled, { PH1: throttlingTitle })}
+        </div>` : nothing}
+      ${Trace.Helpers.Network.isSyntheticNetworkRequestEventRenderBlocking(networkRequest) ?
+        html `<div class="render-blocking"> ${i18nString(UIStrings.renderBlocking)} </div>` : Lit.nothing}
+      <div class="divider"></div>
+
+      ${NetworkRequestTooltip.renderTimings(networkRequest)}
+
+      ${redirectsHtml ? html `
+        <div class="divider"></div>
+        ${redirectsHtml}
+      ` : Lit.nothing}
+    </div>
+  `, target);
+    // clang-format on
+};
+export class NetworkRequestTooltip extends UI.Widget.Widget {
+    static createWidgetElement(request, entityMapper) {
+        const widgetElement = document.createElement('devtools-widget');
+        widgetElement.widgetConfig = UI.Widget.widgetConfig(NetworkRequestTooltip, {
+            networkRequest: request,
+            entityMapper,
+        });
+        return widgetElement;
     }
-    set data(data) {
-        if (this.#data.networkRequest === data.networkRequest && this.#data.entityMapper === data.entityMapper) {
-            return;
-        }
-        this.#data = { networkRequest: data.networkRequest, entityMapper: data.entityMapper };
-        this.#render();
+    #view;
+    #networkRequest;
+    #entityMapper;
+    constructor(element, view = DEFAULT_VIEW) {
+        super(element, { useShadowDom: true });
+        this.#view = view;
+    }
+    set networkRequest(networkRequest) {
+        this.#networkRequest = networkRequest;
+        this.requestUpdate();
+    }
+    set entityMapper(entityMapper) {
+        this.#entityMapper = entityMapper;
+        this.requestUpdate();
     }
     static renderPriorityValue(networkRequest) {
         if (networkRequest.args.data.priority === networkRequest.args.data.initialPriority) {
@@ -157,55 +208,25 @@ export class NetworkRequestTooltip extends HTMLElement {
         }
         return null;
     }
-    #render() {
-        if (!this.#data.networkRequest) {
+    performUpdate() {
+        if (!this.#networkRequest) {
             return;
         }
-        const chipStyle = {
-            backgroundColor: `${colorForNetworkRequest(this.#data.networkRequest)}`,
-        };
-        const url = new URL(this.#data.networkRequest.args.data.url);
-        const entity = (this.#data.entityMapper) ? this.#data.entityMapper.entityForEvent(this.#data.networkRequest) : null;
-        const originWithEntity = TimelineUtils.Helpers.formatOriginWithEntity(url, entity, true);
-        const redirectsHtml = NetworkRequestTooltip.renderRedirects(this.#data.networkRequest);
-        const sdkNetworkRequest = SDK.TraceObject.RevealableNetworkRequest.create(this.#data.networkRequest);
-        const wasThrottled = sdkNetworkRequest &&
+        // TODO(crbug.com/466124088): Seems broken.
+        const sdkNetworkRequest = SDK.TraceObject.RevealableNetworkRequest.create(this.#networkRequest);
+        const networkConditions = sdkNetworkRequest &&
             SDK.NetworkManager.MultitargetNetworkManager.instance().appliedRequestConditions(sdkNetworkRequest.networkRequest);
-        // clang-format off
-        const output = html `
-      <style>${networkRequestTooltipStyles}</style>
-      <div class="performance-card">
-        <div class="url">${Platform.StringUtilities.trimMiddle(url.href.replace(url.origin, ''), MAX_URL_LENGTH)}</div>
-        <div class="url url--host">${originWithEntity}</div>
-
-        <div class="divider"></div>
-        <div class="network-category">
-          <span class="network-category-chip" style=${Lit.Directives.styleMap(chipStyle)}>
-          </span>${networkResourceCategory(this.#data.networkRequest)}
-        </div>
-        <div class="priority-row">${i18nString(UIStrings.priority)}: ${NetworkRequestTooltip.renderPriorityValue(this.#data.networkRequest)}</div>
-        ${wasThrottled ? html `
-        <div class="throttled-row">
-          ${i18nString(UIStrings.wasThrottled, {
-            PH1: typeof wasThrottled.conditions.title === 'string' ? wasThrottled.conditions.title :
-                wasThrottled.conditions.title()
-        })}
-        </div>` : nothing}
-        ${Trace.Helpers.Network.isSyntheticNetworkRequestEventRenderBlocking(this.#data.networkRequest) ?
-            html `<div class="render-blocking"> ${i18nString(UIStrings.renderBlocking)} </div>` : Lit.nothing}
-        <div class="divider"></div>
-
-        ${NetworkRequestTooltip.renderTimings(this.#data.networkRequest)}
-
-        ${redirectsHtml ? html `
-          <div class="divider"></div>
-          ${redirectsHtml}
-        ` : Lit.nothing}
-      </div>
-    `;
-        // clang-format on
-        Lit.render(output, this.#shadow, { host: this });
+        let throttlingTitle = undefined;
+        if (networkConditions) {
+            throttlingTitle = typeof networkConditions.conditions.title === 'string' ? networkConditions.conditions.title :
+                networkConditions.conditions.title();
+        }
+        const input = {
+            networkRequest: this.#networkRequest,
+            entityMapper: this.#entityMapper,
+            throttlingTitle,
+        };
+        this.#view(input, undefined, this.contentElement);
     }
 }
-customElements.define('devtools-performance-network-request-tooltip', NetworkRequestTooltip);
 //# sourceMappingURL=NetworkRequestTooltip.js.map

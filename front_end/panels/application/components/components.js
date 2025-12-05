@@ -9,10 +9,10 @@ var BackForwardCacheView_exports = {};
 __export(BackForwardCacheView_exports, {
   BackForwardCacheView: () => BackForwardCacheView
 });
-import "./../../../ui/components/chrome_link/chrome_link.js";
 import "./../../../ui/components/expandable_list/expandable_list.js";
 import "./../../../ui/components/report_view/report_view.js";
 import "./../../../ui/legacy/legacy.js";
+import "./../../../ui/kit/kit.js";
 import * as Common from "./../../../core/common/common.js";
 import * as i18n3 from "./../../../core/i18n/i18n.js";
 import * as SDK from "./../../../core/sdk/sdk.js";
@@ -1035,7 +1035,7 @@ function maybeRenderReasonContext(explanation) {
   if (explanation.reason === "EmbedderExtensionSentMessageToCachedFrame" && explanation.context) {
     const link6 = "chrome://extensions/?id=" + explanation.context;
     return html`${i18nString(UIStrings2.blockingExtensionId)}
-      <devtools-chrome-link .href=${link6}>${explanation.context}</devtools-chrome-link>`;
+      <devtools-link .href=${link6}>${explanation.context}</devtools-link>`;
   }
   return nothing;
 }

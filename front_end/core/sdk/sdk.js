@@ -22807,7 +22807,8 @@ var DebuggerModel = class _DebuggerModel extends SDKModel {
    * Important: This iterator will not yield the "synchronous" part of the stack trace, only the async parent chain.
    */
   async *iterateAsyncParents(stackTraceOrPausedDetails) {
-    let stackTrace = stackTraceOrPausedDetails instanceof DebuggerPausedDetails ? {
+    const isPausedDetails = (details) => !("parent" in details) && !("parentId" in details);
+    let stackTrace = isPausedDetails(stackTraceOrPausedDetails) ? {
       callFrames: [],
       parent: stackTraceOrPausedDetails.asyncStackTrace,
       parentId: stackTraceOrPausedDetails.asyncStackTraceId

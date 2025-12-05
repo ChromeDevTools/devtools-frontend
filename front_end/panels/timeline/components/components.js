@@ -1767,6 +1767,7 @@ customElements.define("devtools-field-settings-dialog", FieldSettingsDialog);
 // gen/front_end/panels/timeline/components/IgnoreListSetting.js
 var IgnoreListSetting_exports = {};
 __export(IgnoreListSetting_exports, {
+  DEFAULT_VIEW: () => DEFAULT_VIEW2,
   IgnoreListSetting: () => IgnoreListSetting,
   regexInputIsValid: () => regexInputIsValid
 });
@@ -1777,7 +1778,6 @@ import * as Platform2 from "./../../../core/platform/platform.js";
 import * as Workspace from "./../../../models/workspace/workspace.js";
 import * as Buttons3 from "./../../../ui/components/buttons/buttons.js";
 import * as Dialogs3 from "./../../../ui/components/dialogs/dialogs.js";
-import * as ComponentHelpers4 from "./../../../ui/components/helpers/helpers.js";
 import * as UI7 from "./../../../ui/legacy/legacy.js";
 import * as Lit6 from "./../../../ui/lit/lit.js";
 
@@ -1844,7 +1844,8 @@ var ignoreListSetting_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./ignoreListSetting.css")} */`;
 
 // gen/front_end/panels/timeline/components/IgnoreListSetting.js
-var { html: html6 } = Lit6;
+var { html: html6, Directives: Directives3 } = Lit6;
+var { live } = Directives3;
 var UIStrings7 = {
   /**
    * @description Text title for the button to open the ignore list setting.
@@ -1881,49 +1882,102 @@ var UIStrings7 = {
 };
 var str_7 = i18n13.i18n.registerUIStrings("panels/timeline/components/IgnoreListSetting.ts", UIStrings7);
 var i18nString7 = i18n13.i18n.getLocalizedString.bind(void 0, str_7);
-var IgnoreListSetting = class extends HTMLElement {
-  #shadow = this.attachShadow({ mode: "open" });
+var DEFAULT_VIEW2 = (input, output, target) => {
+  const { ignoreListEnabled, regexes, newRegexValue, newRegexChecked, onExistingRegexEnableToggle, onRemoveRegexByIndex, onNewRegexInputBlur, onNewRegexInputChange, onNewRegexInputFocus, onNewRegexAdd, onNewRegexCancel } = input;
+  function renderItem(regex, index) {
+    const helpText = i18nString7(UIStrings7.ignoreScriptsWhoseNamesMatchS, { regex: regex.pattern });
+    return html6`
+      <div class='regex-row'>
+        <devtools-checkbox title=${helpText} aria-label=${helpText} ?checked=${!regex.disabled}
+          @change=${(event) => onExistingRegexEnableToggle(regex, event.currentTarget.checked)}
+          .jslogContext=${"timeline.ignore-list-pattern"}>${regex.pattern}</devtools-checkbox>
+        <devtools-button
+            @click=${() => onRemoveRegexByIndex(index)}
+            .data=${{
+      variant: "icon",
+      iconName: "bin",
+      title: i18nString7(UIStrings7.removeRegex, { regex: regex.pattern }),
+      jslogContext: "timeline.ignore-list-pattern.remove"
+    }}>
+        </devtools-button>
+      </div>
+    `;
+  }
+  Lit6.render(html6`
+    <style>${ignoreListSetting_css_default}</style>
+    <devtools-button-dialog
+      @contextmenu=${(e) => e.stopPropagation()}
+      .data=${{
+    openOnRender: false,
+    jslogContext: "timeline.ignore-list",
+    variant: "toolbar",
+    iconName: "compress",
+    disabled: !ignoreListEnabled,
+    iconTitle: i18nString7(UIStrings7.showIgnoreListSettingDialog),
+    horizontalAlignment: "auto",
+    closeButton: true,
+    dialogTitle: i18nString7(UIStrings7.ignoreList)
+  }}>
+      <div class='ignore-list-setting-content'>
+        <div class='ignore-list-setting-description'>${i18nString7(UIStrings7.ignoreListDescription)}</div>
+        ${regexes.map(renderItem)}
+
+        <div class='new-regex-row'>
+          <devtools-checkbox
+            title=${i18nString7(UIStrings7.ignoreScriptsWhoseNamesMatchNewRegex)}
+            .jslogContext=${"timeline.ignore-list-new-regex.checkbox"}
+            .checked=${newRegexChecked}
+          >
+          </devtools-checkbox>
+          <input
+            @blur=${(event) => onNewRegexInputBlur(event.currentTarget.value)}
+            @input=${(event) => onNewRegexInputChange(event.currentTarget.value)}
+            @focus=${(event) => onNewRegexInputFocus(event.currentTarget.value)}
+            @keydown=${(event) => {
+    const el = event.currentTarget;
+    if (event.key === Platform2.KeyboardUtilities.ENTER_KEY) {
+      onNewRegexAdd(el.value);
+    } else if (event.key === Platform2.KeyboardUtilities.ESCAPE_KEY) {
+      onNewRegexCancel();
+      el.blur();
+      event.stopImmediatePropagation();
+    }
+  }}
+            class="harmony-input new-regex-text-input"
+            title=${i18nString7(UIStrings7.addNewRegex)}
+            placeholder='/framework\\.js$'
+            .value=${live(newRegexValue)}
+            .jslogContext=${"timeline.ignore-list-new-regex.text"}>
+          </input>
+        </div>
+      </div>
+    </devtools-button-dialog>
+  `, target);
+};
+var IgnoreListSetting = class _IgnoreListSetting extends UI7.Widget.Widget {
+  static createWidgetElement() {
+    const widgetElement = document.createElement("devtools-widget");
+    widgetElement.widgetConfig = UI7.Widget.widgetConfig(_IgnoreListSetting);
+    return widgetElement;
+  }
+  #view;
   #ignoreListEnabled = Common3.Settings.Settings.instance().moduleSetting("enable-ignore-listing");
   #regexPatterns = this.#getSkipStackFramesPatternSetting().getAsArray();
-  #newRegexCheckbox = UI7.UIUtils.CheckboxLabel.create(
-    /* title*/
-    void 0,
-    /* checked*/
-    false,
-    /* subtitle*/
-    void 0,
-    /* jslogContext*/
-    "timeline.ignore-list-new-regex.checkbox"
-  );
-  #newRegexInput = UI7.UIUtils.createInput(
-    /* className*/
-    "new-regex-text-input",
-    /* type*/
-    "text",
-    /* jslogContext*/
-    "timeline.ignore-list-new-regex.text"
-  );
+  #newRegexValue = "";
+  #newRegexChecked = false;
   #editingRegexSetting = null;
-  constructor() {
-    super();
-    this.#initAddNewItem();
-    Common3.Settings.Settings.instance().moduleSetting("skip-stack-frames-pattern").addChangeListener(this.#scheduleRender.bind(this));
-    Common3.Settings.Settings.instance().moduleSetting("enable-ignore-listing").addChangeListener(this.#scheduleRender.bind(this));
-  }
-  connectedCallback() {
-    this.#scheduleRender();
-    this.addEventListener("contextmenu", (e) => {
-      e.stopPropagation();
-    });
-  }
-  #scheduleRender() {
-    void ComponentHelpers4.ScheduledRender.scheduleRender(this, this.#render);
+  constructor(element, view = DEFAULT_VIEW2) {
+    super(element, { useShadowDom: true });
+    this.#view = view;
+    this.element.classList.remove("vbox", "flex-auto");
+    Common3.Settings.Settings.instance().moduleSetting("skip-stack-frames-pattern").addChangeListener(this.requestUpdate.bind(this));
+    Common3.Settings.Settings.instance().moduleSetting("enable-ignore-listing").addChangeListener(this.requestUpdate.bind(this));
   }
   #getSkipStackFramesPatternSetting() {
     return Common3.Settings.Settings.instance().moduleSetting("skip-stack-frames-pattern");
   }
-  #startEditing() {
-    this.#editingRegexSetting = { pattern: this.#newRegexInput.value, disabled: false, disabledForUrl: void 0 };
+  #onNewRegexInputFocus(value) {
+    this.#editingRegexSetting = { pattern: value, disabled: false, disabledForUrl: void 0 };
     this.#regexPatterns.push(this.#editingRegexSetting);
   }
   #finishEditing() {
@@ -1939,11 +1993,12 @@ var IgnoreListSetting = class extends HTMLElement {
     this.#getSkipStackFramesPatternSetting().setAsArray(this.#regexPatterns);
   }
   #resetInput() {
-    this.#newRegexCheckbox.checked = false;
-    this.#newRegexInput.value = "";
+    this.#newRegexValue = "";
+    this.#newRegexChecked = false;
+    this.requestUpdate();
   }
-  #addNewRegexToIgnoreList() {
-    const newRegex = this.#newRegexInput.value.trim();
+  #onNewRegexInputBlur(value) {
+    const newRegex = value.trim();
     this.#finishEditing();
     if (!regexInputIsValid(newRegex)) {
       return;
@@ -1951,18 +2006,13 @@ var IgnoreListSetting = class extends HTMLElement {
     Workspace.IgnoreListManager.IgnoreListManager.instance().addRegexToIgnoreList(newRegex);
     this.#resetInput();
   }
-  #handleKeyDown(event) {
-    if (event.key === Platform2.KeyboardUtilities.ENTER_KEY) {
-      this.#addNewRegexToIgnoreList();
-      this.#startEditing();
-      return;
-    }
-    if (event.key === Platform2.KeyboardUtilities.ESCAPE_KEY) {
-      event.stopImmediatePropagation();
-      this.#finishEditing();
-      this.#resetInput();
-      this.#newRegexInput.blur();
-    }
+  #onNewRegexAdd(value) {
+    this.#onNewRegexInputBlur(value);
+    this.#onNewRegexInputFocus("");
+  }
+  #onNewRegexCancel() {
+    this.#finishEditing();
+    this.#resetInput();
   }
   /**
    * When it is in the 'preview' mode, the last regex in the array is the editing one.
@@ -1977,96 +2027,45 @@ var IgnoreListSetting = class extends HTMLElement {
     }
     return this.#regexPatterns;
   }
-  #handleInputChange() {
-    const newRegex = this.#newRegexInput.value.trim();
+  #onNewRegexInputChange(value) {
+    const newRegex = value.trim();
+    this.#newRegexValue = newRegex;
     if (this.#editingRegexSetting && regexInputIsValid(newRegex)) {
       this.#editingRegexSetting.pattern = newRegex;
       this.#editingRegexSetting.disabled = !Boolean(newRegex);
       this.#getSkipStackFramesPatternSetting().setAsArray(this.#regexPatterns);
     }
   }
-  #initAddNewItem() {
-    this.#newRegexInput.placeholder = "/framework\\.js$";
-    const checkboxHelpText = i18nString7(UIStrings7.ignoreScriptsWhoseNamesMatchNewRegex);
-    const inputHelpText = i18nString7(UIStrings7.addNewRegex);
-    UI7.Tooltip.Tooltip.install(this.#newRegexCheckbox, checkboxHelpText);
-    UI7.Tooltip.Tooltip.install(this.#newRegexInput, inputHelpText);
-    this.#newRegexInput.addEventListener("blur", this.#addNewRegexToIgnoreList.bind(this), false);
-    this.#newRegexInput.addEventListener("keydown", this.#handleKeyDown.bind(this), false);
-    this.#newRegexInput.addEventListener("input", this.#handleInputChange.bind(this), false);
-    this.#newRegexInput.addEventListener("focus", this.#startEditing.bind(this), false);
-  }
-  #renderNewRegexRow() {
-    return html6`
-      <div class='new-regex-row'>${this.#newRegexCheckbox}${this.#newRegexInput}</div>
-    `;
-  }
   /**
    * Deal with an existing regex being toggled. Note that this handler only
    * deals with enabling/disabling regexes already in the ignore list, it does
    * not deal with enabling/disabling the new regex.
    */
-  #onExistingRegexEnableToggle(regex, checkbox) {
-    regex.disabled = !checkbox.checked;
+  #onExistingRegexEnableToggle(regex, checked) {
+    regex.disabled = !checked;
     this.#getSkipStackFramesPatternSetting().setAsArray(this.#regexPatterns);
   }
-  #removeRegexByIndex(index) {
+  #onRemoveRegexByIndex(index) {
     this.#regexPatterns.splice(index, 1);
     this.#getSkipStackFramesPatternSetting().setAsArray(this.#regexPatterns);
   }
-  #renderItem(regex, index) {
-    const checkboxWithLabel = UI7.UIUtils.CheckboxLabel.createWithStringLiteral(
-      regex.pattern,
-      !regex.disabled,
-      /* jslogContext*/
-      "timeline.ignore-list-pattern"
-    );
-    const helpText = i18nString7(UIStrings7.ignoreScriptsWhoseNamesMatchS, { regex: regex.pattern });
-    UI7.Tooltip.Tooltip.install(checkboxWithLabel, helpText);
-    checkboxWithLabel.ariaLabel = helpText;
-    checkboxWithLabel.addEventListener("change", this.#onExistingRegexEnableToggle.bind(this, regex, checkboxWithLabel), false);
-    return html6`
-      <div class='regex-row'>
-        ${checkboxWithLabel}
-        <devtools-button
-            @click=${this.#removeRegexByIndex.bind(this, index)}
-            .data=${{
-      variant: "icon",
-      iconName: "bin",
-      title: i18nString7(UIStrings7.removeRegex, { regex: regex.pattern }),
-      jslogContext: "timeline.ignore-list-pattern.remove"
-    }}></devtools-button>
-      </div>
-    `;
-  }
-  #render() {
-    if (!ComponentHelpers4.ScheduledRender.isScheduledRender(this)) {
-      throw new Error("Ignore List setting dialog render was not scheduled");
-    }
-    const output = html6`
-      <style>${ignoreListSetting_css_default}</style>
-      <devtools-button-dialog .data=${{
-      openOnRender: false,
-      jslogContext: "timeline.ignore-list",
-      variant: "toolbar",
-      iconName: "compress",
-      disabled: !this.#ignoreListEnabled.get(),
-      iconTitle: i18nString7(UIStrings7.showIgnoreListSettingDialog),
-      horizontalAlignment: "auto",
-      closeButton: true,
-      dialogTitle: i18nString7(UIStrings7.ignoreList)
-    }}>
-        <div class='ignore-list-setting-content'>
-          <div class='ignore-list-setting-description'>${i18nString7(UIStrings7.ignoreListDescription)}</div>
-          ${this.#getExistingRegexes().map(this.#renderItem.bind(this))}
-          ${this.#renderNewRegexRow()}
-        </div>
-      </devtools-button-dialog>
-    `;
-    Lit6.render(output, this.#shadow, { host: this });
+  performUpdate() {
+    const input = {
+      ignoreListEnabled: this.#ignoreListEnabled.get(),
+      regexes: this.#getExistingRegexes(),
+      newRegexValue: this.#newRegexValue,
+      newRegexChecked: this.#newRegexChecked,
+      onExistingRegexEnableToggle: this.#onExistingRegexEnableToggle.bind(this),
+      onRemoveRegexByIndex: this.#onRemoveRegexByIndex.bind(this),
+      onNewRegexInputBlur: this.#onNewRegexInputBlur.bind(this),
+      onNewRegexInputChange: this.#onNewRegexInputChange.bind(this),
+      onNewRegexInputFocus: this.#onNewRegexInputFocus.bind(this),
+      onNewRegexAdd: this.#onNewRegexAdd.bind(this),
+      onNewRegexCancel: this.#onNewRegexCancel.bind(this)
+    };
+    this.#view(input, void 0, this.contentElement);
   }
 };
-customElements.define("devtools-perf-ignore-list-setting", IgnoreListSetting);
 function regexInputIsValid(inputValue) {
   const pattern = inputValue.trim();
   if (!pattern.length) {
@@ -2083,10 +2082,11 @@ function regexInputIsValid(inputValue) {
 // gen/front_end/panels/timeline/components/InteractionBreakdown.js
 var InteractionBreakdown_exports = {};
 __export(InteractionBreakdown_exports, {
+  DEFAULT_VIEW: () => DEFAULT_VIEW3,
   InteractionBreakdown: () => InteractionBreakdown
 });
 import * as i18n15 from "./../../../core/i18n/i18n.js";
-import * as ComponentHelpers5 from "./../../../ui/components/helpers/helpers.js";
+import * as UI8 from "./../../../ui/legacy/legacy.js";
 import * as Lit7 from "./../../../ui/lit/lit.js";
 
 // gen/front_end/panels/timeline/components/interactionBreakdown.css.js
@@ -2096,21 +2096,23 @@ var interactionBreakdown_css_default = `/*
  * found in the LICENSE file.
  */
 
-:host {
-  display: block;
-}
+@scope to (devtools-widget > *) {
+  :host {
+    display: block;
+  }
 
-.breakdown {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  color: var(--sys-color-token-subtle);
-}
+  .breakdown {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    color: var(--sys-color-token-subtle);
+  }
 
-.value {
-  display: inline-block;
-  padding: 0 5px;
-  color: var(--sys-color-on-surface);
+  .value {
+    display: inline-block;
+    padding: 0 5px;
+    color: var(--sys-color-on-surface);
+  }
 }
 
 /*# sourceURL=${import.meta.resolve("./interactionBreakdown.css")} */`;
@@ -2133,38 +2135,53 @@ var UIStrings8 = {
 };
 var str_8 = i18n15.i18n.registerUIStrings("panels/timeline/components/InteractionBreakdown.ts", UIStrings8);
 var i18nString8 = i18n15.i18n.getLocalizedString.bind(void 0, str_8);
-var InteractionBreakdown = class extends HTMLElement {
-  #shadow = this.attachShadow({ mode: "open" });
+var DEFAULT_VIEW3 = (input, output, target) => {
+  const { entry } = input;
+  const inputDelay = i18n15.TimeUtilities.formatMicroSecondsAsMillisFixed(entry.inputDelay);
+  const mainThreadTime = i18n15.TimeUtilities.formatMicroSecondsAsMillisFixed(entry.mainThreadHandling);
+  const presentationDelay = i18n15.TimeUtilities.formatMicroSecondsAsMillisFixed(entry.presentationDelay);
+  Lit7.render(html7`<style>${interactionBreakdown_css_default}</style>
+      <ul class="breakdown">
+        <li data-entry="input-delay">${i18nString8(UIStrings8.inputDelay)}<span class="value">${inputDelay}</span></li>
+        <li data-entry="processing-duration">${i18nString8(UIStrings8.processingDuration)}<span class="value">${mainThreadTime}</span></li>
+        <li data-entry="presentation-delay">${i18nString8(UIStrings8.presentationDelay)}<span class="value">${presentationDelay}</span></li>
+      </ul>
+  `, target);
+};
+var InteractionBreakdown = class _InteractionBreakdown extends UI8.Widget.Widget {
+  static createWidgetElement(entry) {
+    const widgetElement = document.createElement("devtools-widget");
+    widgetElement.widgetConfig = UI8.Widget.widgetConfig(_InteractionBreakdown, { entry });
+    return widgetElement;
+  }
+  #view;
   #entry = null;
+  constructor(element, view = DEFAULT_VIEW3) {
+    super(element, { useShadowDom: true });
+    this.#view = view;
+  }
   set entry(entry) {
     if (entry === this.#entry) {
       return;
     }
     this.#entry = entry;
-    void ComponentHelpers5.ScheduledRender.scheduleRender(this, this.#render);
+    this.requestUpdate();
   }
-  #render() {
+  performUpdate() {
     if (!this.#entry) {
       return;
     }
-    const inputDelay = i18n15.TimeUtilities.formatMicroSecondsAsMillisFixed(this.#entry.inputDelay);
-    const mainThreadTime = i18n15.TimeUtilities.formatMicroSecondsAsMillisFixed(this.#entry.mainThreadHandling);
-    const presentationDelay = i18n15.TimeUtilities.formatMicroSecondsAsMillisFixed(this.#entry.presentationDelay);
-    Lit7.render(html7`<style>${interactionBreakdown_css_default}</style>
-             <ul class="breakdown">
-                     <li data-entry="input-delay">${i18nString8(UIStrings8.inputDelay)}<span class="value">${inputDelay}</span></li>
-                     <li data-entry="processing-duration">${i18nString8(UIStrings8.processingDuration)}<span class="value">${mainThreadTime}</span></li>
-                     <li data-entry="presentation-delay">${i18nString8(UIStrings8.presentationDelay)}<span class="value">${presentationDelay}</span></li>
-                   </ul>
-                   `, this.#shadow, { host: this });
+    const input = {
+      entry: this.#entry
+    };
+    this.#view(input, void 0, this.contentElement);
   }
 };
-customElements.define("devtools-interaction-breakdown", InteractionBreakdown);
 
 // gen/front_end/panels/timeline/components/LayoutShiftDetails.js
 var LayoutShiftDetails_exports = {};
 __export(LayoutShiftDetails_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW3,
+  DEFAULT_VIEW: () => DEFAULT_VIEW5,
   LayoutShiftDetails: () => LayoutShiftDetails
 });
 import * as i18n17 from "./../../../core/i18n/i18n.js";
@@ -2173,7 +2190,7 @@ import * as Helpers3 from "./../../../models/trace/helpers/helpers.js";
 import * as Trace3 from "./../../../models/trace/trace.js";
 import * as Buttons5 from "./../../../ui/components/buttons/buttons.js";
 import * as LegacyComponents2 from "./../../../ui/legacy/components/utils/utils.js";
-import * as UI9 from "./../../../ui/legacy/legacy.js";
+import * as UI10 from "./../../../ui/legacy/legacy.js";
 import * as Lit9 from "./../../../ui/lit/lit.js";
 import * as Insights from "./insights/insights.js";
 
@@ -2181,12 +2198,12 @@ import * as Insights from "./insights/insights.js";
 import * as SDK3 from "./../../../core/sdk/sdk.js";
 import * as Buttons4 from "./../../../ui/components/buttons/buttons.js";
 import * as LegacyComponents from "./../../../ui/legacy/components/utils/utils.js";
-import * as UI8 from "./../../../ui/legacy/legacy.js";
+import * as UI9 from "./../../../ui/legacy/legacy.js";
 import * as Lit8 from "./../../../ui/lit/lit.js";
 import * as PanelsCommon from "./../../common/common.js";
 var { html: html8 } = Lit8;
-var { widgetConfig } = UI8.Widget;
-var DEFAULT_VIEW2 = (input, output, target) => {
+var { widgetConfig } = UI9.Widget;
+var DEFAULT_VIEW4 = (input, output, target) => {
   const { relatedNodeEl, fallbackUrl, fallbackHtmlSnippet, fallbackText } = input;
   let template;
   if (relatedNodeEl) {
@@ -2213,7 +2230,7 @@ var DEFAULT_VIEW2 = (input, output, target) => {
   }
   Lit8.render(template, target);
 };
-var NodeLink = class extends UI8.Widget.Widget {
+var NodeLink = class extends UI9.Widget.Widget {
   #view;
   #backendNodeId;
   #frame;
@@ -2226,7 +2243,7 @@ var NodeLink = class extends UI8.Widget.Widget {
    * Also tracks if we fail to resolve a node, to ensure we don't try on each subsequent re-render.
    */
   #linkifiedNodeForBackendId = /* @__PURE__ */ new Map();
-  constructor(element, view = DEFAULT_VIEW2) {
+  constructor(element, view = DEFAULT_VIEW4) {
     super(element, { useShadowDom: true });
     this.#view = view;
   }
@@ -2472,12 +2489,12 @@ var UIStrings9 = {
 };
 var str_9 = i18n17.i18n.registerUIStrings("panels/timeline/components/LayoutShiftDetails.ts", UIStrings9);
 var i18nString9 = i18n17.i18n.getLocalizedString.bind(void 0, str_9);
-var LayoutShiftDetails = class extends UI9.Widget.Widget {
+var LayoutShiftDetails = class extends UI10.Widget.Widget {
   #view;
   #event = null;
   #parsedTrace = null;
   #isFreshRecording = false;
-  constructor(element, view = DEFAULT_VIEW3) {
+  constructor(element, view = DEFAULT_VIEW5) {
     super(element);
     this.#view = view;
   }
@@ -2522,7 +2539,7 @@ var LayoutShiftDetails = class extends UI9.Widget.Widget {
     }, {}, this.contentElement);
   }
 };
-var DEFAULT_VIEW3 = (input, _output, target) => {
+var DEFAULT_VIEW5 = (input, _output, target) => {
   if (!input.event || !input.parsedTrace) {
     render9(Lit9.nothing, target);
     return;
@@ -2754,7 +2771,7 @@ import * as Common4 from "./../../../core/common/common.js";
 import * as i18n19 from "./../../../core/i18n/i18n.js";
 import * as Platform3 from "./../../../core/platform/platform.js";
 import * as SDK5 from "./../../../core/sdk/sdk.js";
-import * as ComponentHelpers6 from "./../../../ui/components/helpers/helpers.js";
+import * as ComponentHelpers4 from "./../../../ui/components/helpers/helpers.js";
 import * as Lit10 from "./../../../ui/lit/lit.js";
 import * as VisualLogging5 from "./../../../ui/visual_logging/visual_logging.js";
 import * as MobileThrottling2 from "./../../mobile_throttling/mobile_throttling.js";
@@ -2843,7 +2860,7 @@ var NetworkThrottlingSelector = class extends HTMLElement {
   }
   set recommendedConditions(recommendedConditions) {
     this.#recommendedConditions = recommendedConditions;
-    void ComponentHelpers6.ScheduledRender.scheduleRender(this, this.#render);
+    void ComponentHelpers4.ScheduledRender.scheduleRender(this, this.#render);
   }
   connectedCallback() {
     SDK5.NetworkManager.MultitargetNetworkManager.instance().addEventListener("ConditionsChanged", this.#onConditionsChanged, this);
@@ -2876,7 +2893,7 @@ var NetworkThrottlingSelector = class extends HTMLElement {
   }
   #onConditionsChanged() {
     this.#currentConditions = SDK5.NetworkManager.MultitargetNetworkManager.instance().networkConditions();
-    void ComponentHelpers6.ScheduledRender.scheduleRender(this, this.#render);
+    void ComponentHelpers4.ScheduledRender.scheduleRender(this, this.#render);
   }
   #onMenuItemSelected(event) {
     const newConditions = this.#groups.flatMap((g) => g.items).find((item5) => {
@@ -2889,7 +2906,7 @@ var NetworkThrottlingSelector = class extends HTMLElement {
   }
   #onSettingChanged() {
     this.#resetPresets();
-    void ComponentHelpers6.ScheduledRender.scheduleRender(this, this.#render);
+    void ComponentHelpers4.ScheduledRender.scheduleRender(this, this.#render);
   }
   #getConditionsTitle(conditions) {
     return conditions.title instanceof Function ? conditions.title() : conditions.title;
@@ -2981,7 +2998,7 @@ import * as i18n25 from "./../../../core/i18n/i18n.js";
 import * as Platform5 from "./../../../core/platform/platform.js";
 import * as CrUXManager5 from "./../../../models/crux-manager/crux-manager.js";
 import * as Buttons6 from "./../../../ui/components/buttons/buttons.js";
-import * as ComponentHelpers7 from "./../../../ui/components/helpers/helpers.js";
+import * as ComponentHelpers5 from "./../../../ui/components/helpers/helpers.js";
 import * as UIHelpers from "./../../../ui/helpers/helpers.js";
 import * as Lit11 from "./../../../ui/lit/lit.js";
 
@@ -3505,6 +3522,7 @@ __export(Utils_exports, {
   colorForNetworkCategory: () => colorForNetworkCategory,
   colorForNetworkRequest: () => colorForNetworkRequest,
   determineCompareRating: () => determineCompareRating,
+  isFieldWorseThanLocal: () => isFieldWorseThanLocal,
   networkResourceCategory: () => networkResourceCategory,
   rateMetric: () => rateMetric,
   renderMetricValue: () => renderMetricValue
@@ -3721,6 +3739,19 @@ function determineCompareRating(metric, localValue, fieldValue) {
   }
   return "similar";
 }
+function isFieldWorseThanLocal(local, field) {
+  if (local.lcp !== void 0 && field.lcp !== void 0) {
+    if (determineCompareRating("LCP", local.lcp, field.lcp) === "better") {
+      return true;
+    }
+  }
+  if (local.inp !== void 0 && field.inp !== void 0) {
+    if (determineCompareRating("LCP", local.inp, field.inp) === "better") {
+      return true;
+    }
+  }
+  return false;
+}
 
 // gen/front_end/panels/timeline/components/MetricCard.js
 var { html: html11, nothing: nothing10 } = Lit11;
@@ -3845,10 +3876,10 @@ var MetricCard = class extends HTMLElement {
   };
   set data(data) {
     this.#data = data;
-    void ComponentHelpers7.ScheduledRender.scheduleRender(this, this.#render);
+    void ComponentHelpers5.ScheduledRender.scheduleRender(this, this.#render);
   }
   connectedCallback() {
-    void ComponentHelpers7.ScheduledRender.scheduleRender(this, this.#render);
+    void ComponentHelpers5.ScheduledRender.scheduleRender(this, this.#render);
   }
   #hideTooltipOnEsc = (event) => {
     if (Platform5.KeyboardUtilities.isEscKey(event)) {
@@ -4272,11 +4303,11 @@ import * as EmulationModel from "./../../../models/emulation/emulation.js";
 import * as LiveMetrics from "./../../../models/live-metrics/live-metrics.js";
 import * as Trace5 from "./../../../models/trace/trace.js";
 import * as Buttons7 from "./../../../ui/components/buttons/buttons.js";
-import * as ComponentHelpers8 from "./../../../ui/components/helpers/helpers.js";
+import * as ComponentHelpers6 from "./../../../ui/components/helpers/helpers.js";
 import * as LegacyWrapper from "./../../../ui/components/legacy_wrapper/legacy_wrapper.js";
 import * as RenderCoordinator2 from "./../../../ui/components/render_coordinator/render_coordinator.js";
 import * as uiI18n4 from "./../../../ui/i18n/i18n.js";
-import * as UI10 from "./../../../ui/legacy/legacy.js";
+import * as UI11 from "./../../../ui/legacy/legacy.js";
 import * as Lit13 from "./../../../ui/lit/lit.js";
 import * as VisualLogging7 from "./../../../ui/visual_logging/visual_logging.js";
 import * as PanelsCommon2 from "./../../common/common.js";
@@ -4715,7 +4746,7 @@ x-link {
 
 // gen/front_end/panels/timeline/components/LiveMetricsView.js
 var { html: html13, nothing: nothing12 } = Lit13;
-var { widgetConfig: widgetConfig2 } = UI10.Widget;
+var { widgetConfig: widgetConfig2 } = UI11.Widget;
 var DEVICE_OPTION_LIST = ["AUTO", ...CrUXManager9.DEVICE_SCOPE_LIST];
 var RTT_MINIMUM = 60;
 var UIStrings14 = {
@@ -4989,8 +5020,8 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
   #deviceModeModel = EmulationModel.DeviceModeModel.DeviceModeModel.tryInstance();
   constructor() {
     super();
-    this.#toggleRecordAction = UI10.ActionRegistry.ActionRegistry.instance().getAction("timeline.toggle-recording");
-    this.#recordReloadAction = UI10.ActionRegistry.ActionRegistry.instance().getAction("timeline.record-reload");
+    this.#toggleRecordAction = UI11.ActionRegistry.ActionRegistry.instance().getAction("timeline.toggle-recording");
+    this.#recordReloadAction = UI11.ActionRegistry.ActionRegistry.instance().getAction("timeline.record-reload");
   }
   #onMetricStatus(event) {
     this.#lcpValue = event.data.lcp;
@@ -5000,7 +5031,7 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
     this.#layoutShifts = [...event.data.layoutShifts];
     const hasNewInteraction = this.#interactions.size < event.data.interactions.size;
     this.#interactions = new Map(event.data.interactions);
-    const renderPromise = ComponentHelpers8.ScheduledRender.scheduleRender(this, this.#render);
+    const renderPromise = ComponentHelpers6.ScheduledRender.scheduleRender(this, this.#render);
     if (hasNewInteraction && this.#interactionsListEl) {
       this.#keepScrolledToBottom(renderPromise, this.#interactionsListEl);
     }
@@ -5027,16 +5058,16 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
     });
   }
   #onFieldDataChanged() {
-    void ComponentHelpers8.ScheduledRender.scheduleRender(this, this.#render);
+    void ComponentHelpers6.ScheduledRender.scheduleRender(this, this.#render);
   }
   #onEmulationChanged() {
-    void ComponentHelpers8.ScheduledRender.scheduleRender(this, this.#render);
+    void ComponentHelpers6.ScheduledRender.scheduleRender(this, this.#render);
   }
   async #refreshFieldDataForCurrentPage() {
     if (!this.isNode) {
       await this.#cruxManager.refresh();
     }
-    void ComponentHelpers8.ScheduledRender.scheduleRender(this, this.#render);
+    void ComponentHelpers6.ScheduledRender.scheduleRender(this, this.#render);
   }
   connectedCallback() {
     const liveMetrics = LiveMetrics.LiveMetrics.instance();
@@ -5052,7 +5083,7 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
     this.#inpValue = liveMetrics.inpValue;
     this.#interactions = liveMetrics.interactions;
     this.#layoutShifts = liveMetrics.layoutShifts;
-    void ComponentHelpers8.ScheduledRender.scheduleRender(this, this.#render);
+    void ComponentHelpers6.ScheduledRender.scheduleRender(this, this.#render);
   }
   disconnectedCallback() {
     LiveMetrics.LiveMetrics.instance().removeEventListener("status", this.#onMetricStatus, this);
@@ -5181,7 +5212,7 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
     }}>
           ${action6.title()}
         </devtools-button>
-        <span class="shortcut-label">${UI10.ShortcutRegistry.ShortcutRegistry.instance().shortcutTitleForAction(action6.id())}</span>
+        <span class="shortcut-label">${UI11.ShortcutRegistry.ShortcutRegistry.instance().shortcutTitleForAction(action6.id())}</span>
       </div>
     `;
   }
@@ -5263,7 +5294,7 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
     } else {
       this.#cruxManager.fieldPageScope = "origin";
     }
-    void ComponentHelpers8.ScheduledRender.scheduleRender(this, this.#render);
+    void ComponentHelpers6.ScheduledRender.scheduleRender(this, this.#render);
   }
   #renderPageScopeSetting() {
     if (!this.#cruxManager.getConfigSetting().get().enabled) {
@@ -5334,7 +5365,7 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
   }
   #onDeviceOptionMenuItemSelected(event) {
     this.#cruxManager.fieldDeviceOption = event.itemValue;
-    void ComponentHelpers8.ScheduledRender.scheduleRender(this, this.#render);
+    void ComponentHelpers6.ScheduledRender.scheduleRender(this, this.#render);
   }
   #renderDeviceScopeSetting() {
     if (!this.#cruxManager.getConfigSetting().get().enabled) {
@@ -5442,7 +5473,7 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
     if (this.#cruxManager.getConfigSetting().get().enabled) {
       return this.#renderCollectionPeriod();
     }
-    const linkEl = UI10.XLink.XLink.create("https://developer.chrome.com/docs/crux", i18n27.i18n.lockedString("Chrome UX Report"));
+    const linkEl = UI11.XLink.XLink.create("https://developer.chrome.com/docs/crux", i18n27.i18n.lockedString("Chrome UX Report"));
     const messageEl = uiI18n4.getFormatLocalizedString(str_14, UIStrings14.seeHowYourLocalMetricsCompare, { PH1: linkEl });
     return html13`
       <div class="field-data-message">${messageEl}</div>
@@ -5481,7 +5512,7 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
         block: "center"
       });
       interactionEl.focus();
-      UI10.UIUtils.runCSSAnimationOnce(interactionEl, "highlight");
+      UI11.UIUtils.runCSSAnimationOnce(interactionEl, "highlight");
     });
   }
   async #logExtraInteractionDetails(interaction) {
@@ -5582,7 +5613,7 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
       });
       layoutShiftEls[0].focus();
       for (const layoutShiftEl of layoutShiftEls) {
-        UI10.UIUtils.runCSSAnimationOnce(layoutShiftEl, "highlight");
+        UI11.UIUtils.runCSSAnimationOnce(layoutShiftEl, "highlight");
       }
     });
   }
@@ -5705,7 +5736,7 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
     Lit13.render(output, this.#shadow, { host: this });
   };
 };
-var LiveMetricsLogs = class extends UI10.Widget.WidgetElement {
+var LiveMetricsLogs = class extends UI11.Widget.WidgetElement {
   #tabbedPane;
   constructor() {
     super();
@@ -5732,18 +5763,18 @@ var LiveMetricsLogs = class extends UI10.Widget.WidgetElement {
     }
   }
   createWidget() {
-    const containerWidget = new UI10.Widget.Widget(this, { useShadowDom: true });
+    const containerWidget = new UI11.Widget.Widget(this, { useShadowDom: true });
     containerWidget.contentElement.style.display = "contents";
-    this.#tabbedPane = new UI10.TabbedPane.TabbedPane();
+    this.#tabbedPane = new UI11.TabbedPane.TabbedPane();
     const interactionsSlot = document.createElement("slot");
     interactionsSlot.name = "interactions-log-content";
-    const interactionsTab = UI10.Widget.Widget.getOrCreateWidget(interactionsSlot);
+    const interactionsTab = UI11.Widget.Widget.getOrCreateWidget(interactionsSlot);
     this.#tabbedPane.appendTab("interactions", i18nString13(UIStrings14.interactions), interactionsTab, void 0, void 0, void 0, void 0, void 0, "timeline.landing.interactions-log");
     const layoutShiftsSlot = document.createElement("slot");
     layoutShiftsSlot.name = "layout-shifts-log-content";
-    const layoutShiftsTab = UI10.Widget.Widget.getOrCreateWidget(layoutShiftsSlot);
+    const layoutShiftsTab = UI11.Widget.Widget.getOrCreateWidget(layoutShiftsSlot);
     this.#tabbedPane.appendTab("layout-shifts", i18nString13(UIStrings14.layoutShifts), layoutShiftsTab, void 0, void 0, void 0, void 0, void 0, "timeline.landing.layout-shifts-log");
-    const clearButton = new UI10.Toolbar.ToolbarButton(i18nString13(UIStrings14.clearCurrentLog), "clear", void 0, "timeline.landing.clear-log");
+    const clearButton = new UI11.Toolbar.ToolbarButton(i18nString13(UIStrings14.clearCurrentLog), "clear", void 0, "timeline.landing.clear-log");
     clearButton.addEventListener("Click", this.#clearCurrentLog, this);
     this.#tabbedPane.rightToolbar().appendToolbarItem(clearButton);
     this.#tabbedPane.show(containerWidget.contentElement);
@@ -5756,7 +5787,7 @@ customElements.define("devtools-live-metrics-logs", LiveMetricsLogs);
 // gen/front_end/panels/timeline/components/NetworkRequestDetails.js
 var NetworkRequestDetails_exports = {};
 __export(NetworkRequestDetails_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW4,
+  DEFAULT_VIEW: () => DEFAULT_VIEW7,
   NetworkRequestDetails: () => NetworkRequestDetails
 });
 import "./../../../ui/components/request_link_icon/request_link_icon.js";
@@ -5765,7 +5796,7 @@ import * as SDK9 from "./../../../core/sdk/sdk.js";
 import * as Helpers6 from "./../../../models/trace/helpers/helpers.js";
 import * as Trace7 from "./../../../models/trace/trace.js";
 import * as LegacyComponents3 from "./../../../ui/legacy/components/utils/utils.js";
-import * as UI11 from "./../../../ui/legacy/legacy.js";
+import * as UI13 from "./../../../ui/legacy/legacy.js";
 import * as Lit15 from "./../../../ui/lit/lit.js";
 
 // gen/front_end/panels/timeline/components/networkRequestDetails.css.js
@@ -6055,6 +6086,7 @@ var networkRequestTooltip_css_default = `/*
 // gen/front_end/panels/timeline/components/NetworkRequestTooltip.js
 var NetworkRequestTooltip_exports = {};
 __export(NetworkRequestTooltip_exports, {
+  DEFAULT_VIEW: () => DEFAULT_VIEW6,
   NetworkRequestTooltip: () => NetworkRequestTooltip
 });
 import "./../../../ui/kit/kit.js";
@@ -6063,6 +6095,7 @@ import * as Platform7 from "./../../../core/platform/platform.js";
 import * as SDK8 from "./../../../core/sdk/sdk.js";
 import * as Trace6 from "./../../../models/trace/trace.js";
 import * as PerfUI from "./../../../ui/legacy/components/perf_ui/perf_ui.js";
+import * as UI12 from "./../../../ui/legacy/legacy.js";
 import * as Lit14 from "./../../../ui/lit/lit.js";
 import * as TimelineUtils from "./../utils/utils.js";
 var { html: html14, nothing: nothing14, Directives: { classMap, ifDefined: ifDefined2 } } = Lit14;
@@ -6108,18 +6141,66 @@ var UIStrings15 = {
 };
 var str_15 = i18n29.i18n.registerUIStrings("panels/timeline/components/NetworkRequestTooltip.ts", UIStrings15);
 var i18nString14 = i18n29.i18n.getLocalizedString.bind(void 0, str_15);
-var NetworkRequestTooltip = class _NetworkRequestTooltip extends HTMLElement {
-  #shadow = this.attachShadow({ mode: "open" });
-  #data = { networkRequest: null, entityMapper: null };
-  connectedCallback() {
-    this.#render();
+var DEFAULT_VIEW6 = (input, output, target) => {
+  const { networkRequest, entityMapper, throttlingTitle } = input;
+  const chipStyle = {
+    backgroundColor: `${colorForNetworkRequest(networkRequest)}`
+  };
+  const url = new URL(networkRequest.args.data.url);
+  const entity = entityMapper ? entityMapper.entityForEvent(networkRequest) : null;
+  const originWithEntity = TimelineUtils.Helpers.formatOriginWithEntity(url, entity, true);
+  const redirectsHtml = NetworkRequestTooltip.renderRedirects(networkRequest);
+  Lit14.render(html14`
+    <style>${networkRequestTooltip_css_default}</style>
+    <div class="performance-card">
+      <div class="url">${Platform7.StringUtilities.trimMiddle(url.href.replace(url.origin, ""), MAX_URL_LENGTH2)}</div>
+      <div class="url url--host">${originWithEntity}</div>
+
+      <div class="divider"></div>
+      <div class="network-category">
+        <span class="network-category-chip" style=${Lit14.Directives.styleMap(chipStyle)}>
+        </span>${networkResourceCategory(networkRequest)}
+      </div>
+      <div class="priority-row">${i18nString14(UIStrings15.priority)}: ${NetworkRequestTooltip.renderPriorityValue(networkRequest)}</div>
+      ${throttlingTitle ? html14`
+        <div class="throttled-row">
+          ${i18nString14(UIStrings15.wasThrottled, { PH1: throttlingTitle })}
+        </div>` : nothing14}
+      ${Trace6.Helpers.Network.isSyntheticNetworkRequestEventRenderBlocking(networkRequest) ? html14`<div class="render-blocking"> ${i18nString14(UIStrings15.renderBlocking)} </div>` : Lit14.nothing}
+      <div class="divider"></div>
+
+      ${NetworkRequestTooltip.renderTimings(networkRequest)}
+
+      ${redirectsHtml ? html14`
+        <div class="divider"></div>
+        ${redirectsHtml}
+      ` : Lit14.nothing}
+    </div>
+  `, target);
+};
+var NetworkRequestTooltip = class _NetworkRequestTooltip extends UI12.Widget.Widget {
+  static createWidgetElement(request, entityMapper) {
+    const widgetElement = document.createElement("devtools-widget");
+    widgetElement.widgetConfig = UI12.Widget.widgetConfig(_NetworkRequestTooltip, {
+      networkRequest: request,
+      entityMapper
+    });
+    return widgetElement;
   }
-  set data(data) {
-    if (this.#data.networkRequest === data.networkRequest && this.#data.entityMapper === data.entityMapper) {
-      return;
-    }
-    this.#data = { networkRequest: data.networkRequest, entityMapper: data.entityMapper };
-    this.#render();
+  #view;
+  #networkRequest;
+  #entityMapper;
+  constructor(element, view = DEFAULT_VIEW6) {
+    super(element, { useShadowDom: true });
+    this.#view = view;
+  }
+  set networkRequest(networkRequest) {
+    this.#networkRequest = networkRequest;
+    this.requestUpdate();
+  }
+  set entityMapper(entityMapper) {
+    this.#entityMapper = entityMapper;
+    this.requestUpdate();
   }
   static renderPriorityValue(networkRequest) {
     if (networkRequest.args.data.priority === networkRequest.args.data.initialPriority) {
@@ -6201,52 +6282,24 @@ var NetworkRequestTooltip = class _NetworkRequestTooltip extends HTMLElement {
     }
     return null;
   }
-  #render() {
-    if (!this.#data.networkRequest) {
+  performUpdate() {
+    if (!this.#networkRequest) {
       return;
     }
-    const chipStyle = {
-      backgroundColor: `${colorForNetworkRequest(this.#data.networkRequest)}`
+    const sdkNetworkRequest = SDK8.TraceObject.RevealableNetworkRequest.create(this.#networkRequest);
+    const networkConditions = sdkNetworkRequest && SDK8.NetworkManager.MultitargetNetworkManager.instance().appliedRequestConditions(sdkNetworkRequest.networkRequest);
+    let throttlingTitle = void 0;
+    if (networkConditions) {
+      throttlingTitle = typeof networkConditions.conditions.title === "string" ? networkConditions.conditions.title : networkConditions.conditions.title();
+    }
+    const input = {
+      networkRequest: this.#networkRequest,
+      entityMapper: this.#entityMapper,
+      throttlingTitle
     };
-    const url = new URL(this.#data.networkRequest.args.data.url);
-    const entity = this.#data.entityMapper ? this.#data.entityMapper.entityForEvent(this.#data.networkRequest) : null;
-    const originWithEntity = TimelineUtils.Helpers.formatOriginWithEntity(url, entity, true);
-    const redirectsHtml = _NetworkRequestTooltip.renderRedirects(this.#data.networkRequest);
-    const sdkNetworkRequest = SDK8.TraceObject.RevealableNetworkRequest.create(this.#data.networkRequest);
-    const wasThrottled = sdkNetworkRequest && SDK8.NetworkManager.MultitargetNetworkManager.instance().appliedRequestConditions(sdkNetworkRequest.networkRequest);
-    const output = html14`
-      <style>${networkRequestTooltip_css_default}</style>
-      <div class="performance-card">
-        <div class="url">${Platform7.StringUtilities.trimMiddle(url.href.replace(url.origin, ""), MAX_URL_LENGTH2)}</div>
-        <div class="url url--host">${originWithEntity}</div>
-
-        <div class="divider"></div>
-        <div class="network-category">
-          <span class="network-category-chip" style=${Lit14.Directives.styleMap(chipStyle)}>
-          </span>${networkResourceCategory(this.#data.networkRequest)}
-        </div>
-        <div class="priority-row">${i18nString14(UIStrings15.priority)}: ${_NetworkRequestTooltip.renderPriorityValue(this.#data.networkRequest)}</div>
-        ${wasThrottled ? html14`
-        <div class="throttled-row">
-          ${i18nString14(UIStrings15.wasThrottled, {
-      PH1: typeof wasThrottled.conditions.title === "string" ? wasThrottled.conditions.title : wasThrottled.conditions.title()
-    })}
-        </div>` : nothing14}
-        ${Trace6.Helpers.Network.isSyntheticNetworkRequestEventRenderBlocking(this.#data.networkRequest) ? html14`<div class="render-blocking"> ${i18nString14(UIStrings15.renderBlocking)} </div>` : Lit14.nothing}
-        <div class="divider"></div>
-
-        ${_NetworkRequestTooltip.renderTimings(this.#data.networkRequest)}
-
-        ${redirectsHtml ? html14`
-          <div class="divider"></div>
-          ${redirectsHtml}
-        ` : Lit14.nothing}
-      </div>
-    `;
-    Lit14.render(output, this.#shadow, { host: this });
+    this.#view(input, void 0, this.contentElement);
   }
 };
-customElements.define("devtools-performance-network-request-tooltip", NetworkRequestTooltip);
 
 // gen/front_end/panels/timeline/components/NetworkRequestDetails.js
 var { html: html15, render: render14 } = Lit15;
@@ -6343,7 +6396,7 @@ var UIStrings16 = {
 };
 var str_16 = i18n31.i18n.registerUIStrings("panels/timeline/components/NetworkRequestDetails.ts", UIStrings16);
 var i18nString15 = i18n31.i18n.getLocalizedString.bind(void 0, str_16);
-var NetworkRequestDetails = class extends UI11.Widget.Widget {
+var NetworkRequestDetails = class extends UI13.Widget.Widget {
   #view;
   #request = null;
   #requestPreviewElements = /* @__PURE__ */ new WeakMap();
@@ -6352,7 +6405,7 @@ var NetworkRequestDetails = class extends UI11.Widget.Widget {
   #linkifier = null;
   #serverTimings = null;
   #parsedTrace = null;
-  constructor(element, view = DEFAULT_VIEW4) {
+  constructor(element, view = DEFAULT_VIEW7) {
     super(element);
     this.#view = view;
     this.requestUpdate();
@@ -6397,7 +6450,7 @@ var NetworkRequestDetails = class extends UI11.Widget.Widget {
     }, {}, this.contentElement);
   }
 };
-var DEFAULT_VIEW4 = (input, _output, target) => {
+var DEFAULT_VIEW7 = (input, _output, target) => {
   if (!input.request) {
     render14(Lit15.nothing, target);
     return;
@@ -6466,7 +6519,7 @@ function renderURL(request) {
   const networkRequest = SDK9.TraceObject.RevealableNetworkRequest.create(request);
   if (networkRequest) {
     linkifiedURL.addEventListener("contextmenu", (event) => {
-      const contextMenu = new UI11.ContextMenu.ContextMenu(event);
+      const contextMenu = new UI13.ContextMenu.ContextMenu(event);
       contextMenu.appendApplicableItems(networkRequest);
       void contextMenu.show();
     });
@@ -6624,11 +6677,11 @@ function renderInitiatedBy(request, parsedTrace, target, linkifier) {
 // gen/front_end/panels/timeline/components/RelatedInsightChips.js
 var RelatedInsightChips_exports = {};
 __export(RelatedInsightChips_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW5,
+  DEFAULT_VIEW: () => DEFAULT_VIEW8,
   RelatedInsightChips: () => RelatedInsightChips
 });
 import * as i18n33 from "./../../../core/i18n/i18n.js";
-import * as UI12 from "./../../../ui/legacy/legacy.js";
+import * as UI14 from "./../../../ui/legacy/legacy.js";
 import * as Lit16 from "./../../../ui/lit/lit.js";
 
 // gen/front_end/panels/timeline/components/relatedInsightChips.css.js
@@ -6728,11 +6781,11 @@ var UIStrings17 = {
 };
 var str_17 = i18n33.i18n.registerUIStrings("panels/timeline/components/RelatedInsightChips.ts", UIStrings17);
 var i18nString16 = i18n33.i18n.getLocalizedString.bind(void 0, str_17);
-var RelatedInsightChips = class extends UI12.Widget.Widget {
+var RelatedInsightChips = class extends UI14.Widget.Widget {
   #view;
   #activeEvent = null;
   #eventToInsightsMap = /* @__PURE__ */ new Map();
-  constructor(element, view = DEFAULT_VIEW5) {
+  constructor(element, view = DEFAULT_VIEW8) {
     super(element);
     this.#view = view;
   }
@@ -6758,7 +6811,7 @@ var RelatedInsightChips = class extends UI12.Widget.Widget {
     this.#view(input, {}, this.contentElement);
   }
 };
-var DEFAULT_VIEW5 = (input, _output, target) => {
+var DEFAULT_VIEW8 = (input, _output, target) => {
   const { activeEvent, eventToInsightsMap } = input;
   const relatedInsights = activeEvent ? eventToInsightsMap.get(activeEvent) ?? [] : [];
   if (!activeEvent || eventToInsightsMap.size === 0 || relatedInsights.length === 0) {
@@ -6810,7 +6863,7 @@ __export(Sidebar_exports, {
   SidebarWidget: () => SidebarWidget
 });
 import * as RenderCoordinator3 from "./../../../ui/components/render_coordinator/render_coordinator.js";
-import * as UI14 from "./../../../ui/legacy/legacy.js";
+import * as UI18 from "./../../../ui/legacy/legacy.js";
 
 // gen/front_end/panels/timeline/components/insights/SidebarInsight.js
 var InsightActivated = class _InsightActivated extends Event {
@@ -6833,7 +6886,7 @@ var InsightDeactivated = class _InsightDeactivated extends Event {
 // gen/front_end/panels/timeline/components/SidebarAnnotationsTab.js
 var SidebarAnnotationsTab_exports = {};
 __export(SidebarAnnotationsTab_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW6,
+  DEFAULT_VIEW: () => DEFAULT_VIEW9,
   SidebarAnnotationsTab: () => SidebarAnnotationsTab
 });
 import "./../../../ui/components/settings/settings.js";
@@ -6842,7 +6895,7 @@ import * as i18n35 from "./../../../core/i18n/i18n.js";
 import * as Platform8 from "./../../../core/platform/platform.js";
 import * as Trace8 from "./../../../models/trace/trace.js";
 import * as TraceBounds3 from "./../../../services/trace_bounds/trace_bounds.js";
-import * as UI13 from "./../../../ui/legacy/legacy.js";
+import * as UI15 from "./../../../ui/legacy/legacy.js";
 import * as ThemeSupport3 from "./../../../ui/legacy/theme_support/theme_support.js";
 import * as Lit17 from "./../../../ui/lit/lit.js";
 import * as VisualLogging8 from "./../../../ui/visual_logging/visual_logging.js";
@@ -7027,14 +7080,14 @@ var UIStrings18 = {
 };
 var str_18 = i18n35.i18n.registerUIStrings("panels/timeline/components/SidebarAnnotationsTab.ts", UIStrings18);
 var i18nString17 = i18n35.i18n.getLocalizedString.bind(void 0, str_18);
-var SidebarAnnotationsTab = class extends UI13.Widget.Widget {
+var SidebarAnnotationsTab = class extends UI15.Widget.Widget {
   #annotations = [];
   // A map with annotated entries and the colours that are used to display them in the FlameChart.
   // We need this map to display the entries in the sidebar with the same colours.
   #annotationEntryToColorMap = /* @__PURE__ */ new Map();
   #annotationsHiddenSetting;
   #view;
-  constructor(view = DEFAULT_VIEW6) {
+  constructor(view = DEFAULT_VIEW9) {
     super();
     this.#view = view;
     this.#annotationsHiddenSetting = Common6.Settings.Settings.instance().moduleSetting("annotations-hidden");
@@ -7259,7 +7312,7 @@ function renderTutorial() {
       </div>
     </div>`;
 }
-var DEFAULT_VIEW6 = (input, _output, target) => {
+var DEFAULT_VIEW9 = (input, _output, target) => {
   render16(html17`
       <style>${sidebarAnnotationsTab_css_default}</style>
       <span class="annotations">
@@ -7302,10 +7355,93 @@ var SidebarInsightsTab_exports = {};
 __export(SidebarInsightsTab_exports, {
   SidebarInsightsTab: () => SidebarInsightsTab
 });
+import * as Trace10 from "./../../../models/trace/trace.js";
+import * as Buttons9 from "./../../../ui/components/buttons/buttons.js";
+import * as ComponentHelpers7 from "./../../../ui/components/helpers/helpers.js";
+import * as UI17 from "./../../../ui/legacy/legacy.js";
+import * as Lit19 from "./../../../ui/lit/lit.js";
+import * as Utils from "./../utils/utils.js";
+import * as Insights6 from "./insights/insights.js";
+
+// gen/front_end/panels/timeline/components/sidebarInsightsTab.css.js
+var sidebarInsightsTab_css_default = `/*
+ * Copyright 2024 The Chromium Authors
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+:host {
+  display: flex;
+  flex-flow: column nowrap;
+  flex-grow: 1;
+}
+
+.insight-sets-wrapper {
+  display: flex;
+  flex-flow: column nowrap;
+  flex-grow: 1; /* so it fills the available vertical height in the sidebar */
+
+  details {
+    flex-grow: 0;
+  }
+
+  details[open] {
+    flex-grow: 1;
+    border-bottom: 1px solid var(--sys-color-divider);
+  }
+
+  summary {
+    background-color: var(--sys-color-surface2);
+    border-bottom: 1px solid var(--sys-color-divider);
+    overflow: hidden;
+    padding: 2px 5px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font: var(--sys-typescale-body4-medium);
+    display: flex;
+    align-items: center;
+
+    &:focus {
+      background-color: var(--sys-color-tonal-container);
+    }
+
+    &::marker {
+      color: var(--sys-color-on-surface-subtle);
+      font-size: 11px;
+      line-height: 1;
+    }
+
+    /* make sure the first summary has a top border */
+    details:first-child & {
+      border-top: 1px solid var(--sys-color-divider);
+    }
+  }
+}
+
+.zoom-button {
+  margin-left: auto;
+}
+
+.zoom-icon {
+  visibility: hidden;
+
+  &.active devtools-button {
+    visibility: visible;
+  }
+}
+
+.dropdown-icon {
+  &.active devtools-button {
+    transform: rotate(90deg);
+  }
+}
+
+/*# sourceURL=${import.meta.resolve("./sidebarInsightsTab.css")} */`;
 
 // gen/front_end/panels/timeline/components/SidebarSingleInsightSet.js
 var SidebarSingleInsightSet_exports = {};
 __export(SidebarSingleInsightSet_exports, {
+  DEFAULT_VIEW: () => DEFAULT_VIEW10,
   SidebarSingleInsightSet: () => SidebarSingleInsightSet
 });
 import * as i18n37 from "./../../../core/i18n/i18n.js";
@@ -7314,9 +7450,8 @@ import * as AIAssistance from "./../../../models/ai_assistance/ai_assistance.js"
 import * as CrUXManager11 from "./../../../models/crux-manager/crux-manager.js";
 import * as Trace9 from "./../../../models/trace/trace.js";
 import * as Buttons8 from "./../../../ui/components/buttons/buttons.js";
-import * as ComponentHelpers9 from "./../../../ui/components/helpers/helpers.js";
+import * as UI16 from "./../../../ui/legacy/legacy.js";
 import * as Lit18 from "./../../../ui/lit/lit.js";
-import { nothing as nothing19 } from "./../../../ui/lit/lit.js";
 import * as VisualLogging9 from "./../../../ui/visual_logging/visual_logging.js";
 import * as Insights4 from "./insights/insights.js";
 
@@ -7493,51 +7628,74 @@ var UIStrings19 = {
 };
 var str_19 = i18n37.i18n.registerUIStrings("panels/timeline/components/SidebarSingleInsightSet.ts", UIStrings19);
 var i18nString18 = i18n37.i18n.getLocalizedString.bind(void 0, str_19);
-var SidebarSingleInsightSet = class _SidebarSingleInsightSet extends HTMLElement {
-  #shadow = this.attachShadow({ mode: "open" });
-  #insightRenderer = new Insights4.InsightRenderer.InsightRenderer();
-  #activeInsightElement = null;
-  #data = {
-    insightSetKey: null,
-    activeCategory: Trace9.Insights.Types.InsightCategory.ALL,
-    activeInsight: null,
-    parsedTrace: null
-  };
-  #dismissedFieldMismatchNotice = false;
-  #activeHighlightTimeout = -1;
-  set data(data) {
-    this.#data = data;
-    void ComponentHelpers9.ScheduledRender.scheduleRender(this, this.#render);
-  }
-  connectedCallback() {
-    this.#render();
-  }
-  disconnectedCallback() {
-    window.clearTimeout(this.#activeHighlightTimeout);
-  }
-  highlightActiveInsight() {
-    if (!this.#activeInsightElement) {
-      return;
+var DEFAULT_VIEW10 = (input, output, target) => {
+  const { shownInsights, passedInsights, local, field, activeCategory, showFieldMismatchNotice, onDismisFieldMismatchNotice, onClickMetric, renderInsightComponent } = input;
+  function renderMetrics() {
+    const lcpEl = renderMetricValue2("LCP", local?.lcp?.value ?? null, local?.lcp?.event ?? null);
+    const inpEl = renderMetricValue2("INP", local?.inp?.value ?? null, local?.inp?.event ?? null);
+    const clsEl = renderMetricValue2("CLS", local?.cls?.value ?? null, local?.cls?.worstClusterEvent ?? null);
+    const localMetricsTemplateResult = html18`
+      <div class="metrics-row">
+        <span>${lcpEl}</span>
+        <span>${inpEl}</span>
+        <span>${clsEl}</span>
+        <span class="row-label">Local</span>
+      </div>
+      <span class="row-border"></span>
+    `;
+    let fieldMetricsTemplateResult;
+    if (field) {
+      const { lcp, inp, cls } = field;
+      const lcpEl2 = renderMetricValue2("LCP", lcp?.value ?? null, null);
+      const inpEl2 = renderMetricValue2("INP", inp?.value ?? null, null);
+      const clsEl2 = renderMetricValue2("CLS", cls?.value ?? null, null);
+      let scope = i18nString18(UIStrings19.originOption);
+      if (lcp?.pageScope === "url" || inp?.pageScope === "url") {
+        scope = i18nString18(UIStrings19.urlOption);
+      }
+      fieldMetricsTemplateResult = html18`
+        <div class="metrics-row">
+          <span>${lcpEl2}</span>
+          <span>${inpEl2}</span>
+          <span>${clsEl2}</span>
+          <span class="row-label">${i18nString18(UIStrings19.fieldScoreLabel, { PH1: scope })}</span>
+        </div>
+        <span class="row-border"></span>
+      `;
     }
-    this.#activeInsightElement.removeAttribute("highlight-insight");
-    window.clearTimeout(this.#activeHighlightTimeout);
-    requestAnimationFrame(() => {
-      this.#activeInsightElement?.setAttribute("highlight-insight", "true");
-      this.#activeHighlightTimeout = window.setTimeout(() => {
-        this.#activeInsightElement?.removeAttribute("highlight-insight");
-      }, 2e3);
-    });
-  }
-  #metricIsVisible(label) {
-    if (this.#data.activeCategory === Trace9.Insights.Types.InsightCategory.ALL) {
-      return true;
+    let fieldIsDifferentEl;
+    if (showFieldMismatchNotice) {
+      fieldIsDifferentEl = html18`
+        <div class="field-mismatch-notice" jslog=${VisualLogging9.section("timeline.insights.field-mismatch")}>
+          <h3>${i18nString18(UIStrings19.fieldMismatchTitle)}</h3>
+          <devtools-button
+            title=${i18nString18(UIStrings19.dismissTitle)}
+            .iconName=${"cross"}
+            .variant=${"icon"}
+            .jslogContext=${"timeline.insights.dismiss-field-mismatch"}
+            @click=${onDismisFieldMismatchNotice}
+          ></devtools-button>
+          <div class="field-mismatch-notice__body">${md(i18nString18(UIStrings19.fieldMismatchNotice))}</div>
+        </div>
+      `;
     }
-    return label === this.#data.activeCategory;
+    const classes = { metrics: true, "metrics--field": Boolean(fieldMetricsTemplateResult) };
+    const metricsTableEl = html18`<div class=${Lit18.Directives.classMap(classes)}>
+      <div class="metrics-row">
+        <span class="metric-label">LCP</span>
+        <span class="metric-label">INP</span>
+        <span class="metric-label">CLS</span>
+        <span class="row-label"></span>
+      </div>
+      ${localMetricsTemplateResult}
+      ${fieldMetricsTemplateResult}
+    </div>`;
+    return html18`
+      ${metricsTableEl}
+      ${fieldIsDifferentEl}
+    `;
   }
-  #onClickMetric(traceEvent) {
-    this.dispatchEvent(new Insights4.EventRef.EventReferenceClick(traceEvent));
-  }
-  #renderMetricValue(metric, value, relevantEvent) {
+  function renderMetricValue2(metric, value, relevantEvent) {
     let valueText;
     let valueDisplay;
     let classification;
@@ -7563,9 +7721,9 @@ var SidebarSingleInsightSet = class _SidebarSingleInsightSet extends HTMLElement
       Platform9.TypeScriptUtilities.assertNever(metric, `Unexpected metric ${metric}`);
     }
     const title = value !== null ? i18nString18(UIStrings19.metricScore, { PH1: metric, PH2: valueText, PH3: classification }) : i18nString18(UIStrings19.metricScoreUnavailable, { PH1: metric });
-    return this.#metricIsVisible(metric) ? html18`
+    return metricIsVisible(activeCategory, metric) ? html18`
       <button class="metric"
-        @click=${relevantEvent ? this.#onClickMetric.bind(this, relevantEvent) : null}
+        @click=${relevantEvent ? onClickMetric.bind(relevantEvent) : null}
         title=${title}
         aria-label=${title}
       >
@@ -7573,14 +7731,82 @@ var SidebarSingleInsightSet = class _SidebarSingleInsightSet extends HTMLElement
       </button>
     ` : Lit18.nothing;
   }
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+  function renderInsights() {
+    const shownInsightTemplates = shownInsights.map(renderInsightComponent);
+    const passedInsightsTemplates = passedInsights.map(renderInsightComponent);
+    return html18`
+      ${shownInsightTemplates}
+      ${passedInsightsTemplates.length ? html18`
+        <details class="passed-insights-section">
+          <summary>${i18nString18(UIStrings19.passedInsights, {
+      PH1: passedInsightsTemplates.length
+    })}</summary>
+          ${passedInsightsTemplates}
+        </details>
+      ` : Lit18.nothing}
+    `;
+  }
+  Lit18.render(html18`
+    <style>${sidebarSingleInsightSet_css_default}</style>
+    <div class="navigation">
+      ${renderMetrics()}
+      ${renderInsights()}
+    </div>
+  `, target);
+};
+function metricIsVisible(activeCategory, label) {
+  if (activeCategory === Trace9.Insights.Types.InsightCategory.ALL) {
+    return true;
+  }
+  return label === activeCategory;
+}
+var SidebarSingleInsightSet = class _SidebarSingleInsightSet extends UI16.Widget.Widget {
+  #view;
+  #insightRenderer = new Insights4.InsightRenderer.InsightRenderer();
+  #activeInsightElement = null;
+  #activeHighlightTimeout = -1;
+  #data = {
+    insightSetKey: null,
+    activeCategory: Trace9.Insights.Types.InsightCategory.ALL,
+    activeInsight: null,
+    parsedTrace: null
+  };
+  #didDismissFieldMismatchNotice = false;
+  constructor(element, view = DEFAULT_VIEW10) {
+    super(element, { useShadowDom: true });
+    this.#view = view;
+  }
+  set data(data) {
+    this.#data = data;
+    this.requestUpdate();
+  }
+  willHide() {
+    super.willHide();
+    window.clearTimeout(this.#activeHighlightTimeout);
+  }
+  highlightActiveInsight() {
+    if (!this.#activeInsightElement) {
+      return;
+    }
+    this.#activeInsightElement.removeAttribute("highlight-insight");
+    window.clearTimeout(this.#activeHighlightTimeout);
+    requestAnimationFrame(() => {
+      this.#activeInsightElement?.setAttribute("highlight-insight", "true");
+      this.#activeHighlightTimeout = window.setTimeout(() => {
+        this.#activeInsightElement?.removeAttribute("highlight-insight");
+      }, 2e3);
+    });
+  }
+  #onClickMetric(traceEvent) {
+    this.element.dispatchEvent(new Insights4.EventRef.EventReferenceClick(traceEvent));
+  }
   #getLocalMetrics(insightSetKey) {
     if (!this.#data.parsedTrace) {
-      return {};
+      return null;
     }
     const insightSet = this.#data.parsedTrace.insights?.get(insightSetKey);
     if (!insightSet) {
-      return {};
+      return null;
     }
     const lcp = Trace9.Insights.Common.getLCP(insightSet);
     const cls = Trace9.Insights.Common.getCLS(insightSet);
@@ -7601,103 +7827,9 @@ var SidebarSingleInsightSet = class _SidebarSingleInsightSet extends HTMLElement
     }
     return fieldMetricsResults;
   }
-  /**
-   * Returns true if LCP or INP are worse in the field than what was observed locally.
-   *
-   * CLS is ignored because the guidance of applying throttling or device emulation doesn't
-   * correlate as much with observing a more average user experience.
-   */
-  #isFieldWorseThanLocal(local, field) {
-    if (local.lcp !== void 0 && field.lcp !== void 0) {
-      if (determineCompareRating("LCP", local.lcp, field.lcp) === "better") {
-        return true;
-      }
-    }
-    if (local.inp !== void 0 && field.inp !== void 0) {
-      if (determineCompareRating("LCP", local.inp, field.inp) === "better") {
-        return true;
-      }
-    }
-    return false;
-  }
-  #dismissFieldMismatchNotice() {
-    this.#dismissedFieldMismatchNotice = true;
-    this.#render();
-  }
-  #renderMetrics(insightSetKey) {
-    const local = this.#getLocalMetrics(insightSetKey);
-    const field = this.#getFieldMetrics(insightSetKey);
-    const lcpEl = this.#renderMetricValue("LCP", local.lcp?.value ?? null, local.lcp?.event ?? null);
-    const inpEl = this.#renderMetricValue("INP", local.inp?.value ?? null, local.inp?.event ?? null);
-    const clsEl = this.#renderMetricValue("CLS", local.cls?.value ?? null, local.cls?.worstClusterEvent ?? null);
-    const localMetricsTemplateResult = html18`
-      <div class="metrics-row">
-        <span>${lcpEl}</span>
-        <span>${inpEl}</span>
-        <span>${clsEl}</span>
-        <span class="row-label">Local</span>
-      </div>
-      <span class="row-border"></span>
-    `;
-    let fieldMetricsTemplateResult;
-    if (field) {
-      const { lcp, inp, cls } = field;
-      const lcpEl2 = this.#renderMetricValue("LCP", lcp?.value ?? null, null);
-      const inpEl2 = this.#renderMetricValue("INP", inp?.value ?? null, null);
-      const clsEl2 = this.#renderMetricValue("CLS", cls?.value ?? null, null);
-      let scope = i18nString18(UIStrings19.originOption);
-      if (lcp?.pageScope === "url" || inp?.pageScope === "url") {
-        scope = i18nString18(UIStrings19.urlOption);
-      }
-      fieldMetricsTemplateResult = html18`
-        <div class="metrics-row">
-          <span>${lcpEl2}</span>
-          <span>${inpEl2}</span>
-          <span>${clsEl2}</span>
-          <span class="row-label">${i18nString18(UIStrings19.fieldScoreLabel, { PH1: scope })}</span>
-        </div>
-        <span class="row-border"></span>
-      `;
-    }
-    const localValues = {
-      lcp: local.lcp?.value !== void 0 ? Trace9.Helpers.Timing.microToMilli(local.lcp.value) : void 0,
-      inp: local.inp?.value !== void 0 ? Trace9.Helpers.Timing.microToMilli(local.inp.value) : void 0
-    };
-    const fieldValues = field && {
-      lcp: field.lcp?.value !== void 0 ? Trace9.Helpers.Timing.microToMilli(field.lcp.value) : void 0,
-      inp: field.inp?.value !== void 0 ? Trace9.Helpers.Timing.microToMilli(field.inp.value) : void 0
-    };
-    let fieldIsDifferentEl;
-    if (!this.#dismissedFieldMismatchNotice && fieldValues && this.#isFieldWorseThanLocal(localValues, fieldValues)) {
-      fieldIsDifferentEl = html18`
-        <div class="field-mismatch-notice" jslog=${VisualLogging9.section("timeline.insights.field-mismatch")}>
-          <h3>${i18nString18(UIStrings19.fieldMismatchTitle)}</h3>
-          <devtools-button
-            title=${i18nString18(UIStrings19.dismissTitle)}
-            .iconName=${"cross"}
-            .variant=${"icon"}
-            .jslogContext=${"timeline.insights.dismiss-field-mismatch"}
-            @click=${this.#dismissFieldMismatchNotice}
-          ></devtools-button>
-          <div class="field-mismatch-notice__body">${md(i18nString18(UIStrings19.fieldMismatchNotice))}</div>
-        </div>
-      `;
-    }
-    const classes = { metrics: true, "metrics--field": Boolean(fieldMetricsTemplateResult) };
-    const metricsTableEl = html18`<div class=${Lit18.Directives.classMap(classes)}>
-      <div class="metrics-row">
-        <span class="metric-label">LCP</span>
-        <span class="metric-label">INP</span>
-        <span class="metric-label">CLS</span>
-        <span class="row-label"></span>
-      </div>
-      ${localMetricsTemplateResult}
-      ${fieldMetricsTemplateResult}
-    </div>`;
-    return html18`
-      ${metricsTableEl}
-      ${fieldIsDifferentEl}
-    `;
+  #onDismisFieldMismatchNotice() {
+    this.#didDismissFieldMismatchNotice = true;
+    this.requestUpdate();
   }
   static categorizeInsights(insightSets, insightSetKey, activeCategory) {
     const insightSet = insightSets?.get(insightSetKey);
@@ -7718,147 +7850,58 @@ var SidebarSingleInsightSet = class _SidebarSingleInsightSet extends HTMLElement
     }
     return { shownInsights, passedInsights };
   }
-  #renderInsights(insights, insightSetKey) {
-    const insightSet = insights?.get(insightSetKey);
-    if (!insightSet) {
+  #renderInsightComponent(insightSet, insightData, fieldMetrics) {
+    if (!this.#data.parsedTrace) {
       return Lit18.nothing;
     }
-    const fieldMetrics = this.#getFieldMetrics(insightSetKey);
-    const { shownInsights: shownInsightsData, passedInsights: passedInsightsData } = _SidebarSingleInsightSet.categorizeInsights(insights, insightSetKey, this.#data.activeCategory);
-    const renderInsightComponent = (insightData) => {
-      if (!this.#data.parsedTrace?.insights) {
-        return nothing19;
-      }
-      const { insightName, model } = insightData;
-      const agentFocus = AIAssistance.AIContext.AgentFocus.fromInsight(this.#data.parsedTrace, model);
-      const widgetElement = this.#insightRenderer.renderInsightToWidgetElement(this.#data.parsedTrace, insightSet, model, insightName, {
-        selected: this.#data.activeInsight?.model === model,
-        agentFocus,
-        fieldMetrics
-      });
-      if (this.#data.activeInsight?.model === model) {
-        this.#activeInsightElement = widgetElement;
-      }
-      return html18`${widgetElement}`;
-    };
-    const shownInsights = shownInsightsData.map(renderInsightComponent);
-    const passedInsights = passedInsightsData.map(renderInsightComponent);
-    return html18`
-      ${shownInsights}
-      ${passedInsights.length ? html18`
-        <details class="passed-insights-section">
-          <summary>${i18nString18(UIStrings19.passedInsights, {
-      PH1: passedInsights.length
-    })}</summary>
-          ${passedInsights}
-        </details>
-      ` : Lit18.nothing}
-    `;
+    const { insightName, model } = insightData;
+    const activeInsight = this.#data.activeInsight;
+    const agentFocus = AIAssistance.AIContext.AgentFocus.fromInsight(this.#data.parsedTrace, model);
+    const widgetElement = this.#insightRenderer.renderInsightToWidgetElement(this.#data.parsedTrace, insightSet, model, insightName, {
+      selected: activeInsight?.model === model,
+      agentFocus,
+      fieldMetrics
+    });
+    if (activeInsight?.model === model) {
+      this.#activeInsightElement = widgetElement;
+    }
+    return html18`${widgetElement}`;
   }
-  #render() {
+  performUpdate() {
     const { parsedTrace, insightSetKey } = this.#data;
     if (!parsedTrace?.insights || !insightSetKey) {
-      Lit18.render(Lit18.nothing, this.#shadow, { host: this });
       return;
     }
     const insightSet = parsedTrace.insights.get(insightSetKey);
     if (!insightSet) {
-      Lit18.render(Lit18.nothing, this.#shadow, { host: this });
       return;
     }
-    Lit18.render(html18`
-      <style>${sidebarSingleInsightSet_css_default}</style>
-      <div class="navigation">
-        ${this.#renderMetrics(insightSetKey)}
-        ${this.#renderInsights(parsedTrace.insights, insightSetKey)}
-      </div>
-    `, this.#shadow, { host: this });
+    const local = this.#getLocalMetrics(insightSetKey);
+    const field = this.#getFieldMetrics(insightSetKey);
+    const { shownInsights, passedInsights } = _SidebarSingleInsightSet.categorizeInsights(parsedTrace.insights, insightSetKey, this.#data.activeCategory);
+    const localValues = {
+      lcp: local?.lcp?.value !== void 0 ? Trace9.Helpers.Timing.microToMilli(local?.lcp.value) : void 0,
+      inp: local?.inp?.value !== void 0 ? Trace9.Helpers.Timing.microToMilli(local?.inp.value) : void 0
+    };
+    const fieldValues = field && {
+      lcp: field.lcp?.value !== void 0 ? Trace9.Helpers.Timing.microToMilli(field.lcp.value) : void 0,
+      inp: field.inp?.value !== void 0 ? Trace9.Helpers.Timing.microToMilli(field.inp.value) : void 0
+    };
+    const showFieldMismatchNotice = !this.#didDismissFieldMismatchNotice && !!fieldValues && isFieldWorseThanLocal(localValues, fieldValues);
+    const input = {
+      shownInsights,
+      passedInsights,
+      local,
+      field,
+      activeCategory: this.#data.activeCategory,
+      showFieldMismatchNotice,
+      onDismisFieldMismatchNotice: this.#onDismisFieldMismatchNotice.bind(this),
+      onClickMetric: this.#onClickMetric.bind(this),
+      renderInsightComponent: (insightData) => this.#renderInsightComponent(insightSet, insightData, field)
+    };
+    this.#view(input, void 0, this.contentElement);
   }
 };
-customElements.define("devtools-performance-sidebar-single-navigation", SidebarSingleInsightSet);
-
-// gen/front_end/panels/timeline/components/SidebarInsightsTab.js
-import * as Trace10 from "./../../../models/trace/trace.js";
-import * as Buttons9 from "./../../../ui/components/buttons/buttons.js";
-import * as ComponentHelpers10 from "./../../../ui/components/helpers/helpers.js";
-import * as Lit19 from "./../../../ui/lit/lit.js";
-import * as Utils from "./../utils/utils.js";
-import * as Insights6 from "./insights/insights.js";
-
-// gen/front_end/panels/timeline/components/sidebarInsightsTab.css.js
-var sidebarInsightsTab_css_default = `/*
- * Copyright 2024 The Chromium Authors
- * Use of this source code is governed by a BSD-style license that can be
- * found in the LICENSE file.
- */
-
-:host {
-  display: flex;
-  flex-flow: column nowrap;
-  flex-grow: 1;
-}
-
-.insight-sets-wrapper {
-  display: flex;
-  flex-flow: column nowrap;
-  flex-grow: 1; /* so it fills the available vertical height in the sidebar */
-
-  details {
-    flex-grow: 0;
-  }
-
-  details[open] {
-    flex-grow: 1;
-    border-bottom: 1px solid var(--sys-color-divider);
-  }
-
-  summary {
-    background-color: var(--sys-color-surface2);
-    border-bottom: 1px solid var(--sys-color-divider);
-    overflow: hidden;
-    padding: 2px 5px;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    font: var(--sys-typescale-body4-medium);
-    display: flex;
-    align-items: center;
-
-    &:focus {
-      background-color: var(--sys-color-tonal-container);
-    }
-
-    &::marker {
-      color: var(--sys-color-on-surface-subtle);
-      font-size: 11px;
-      line-height: 1;
-    }
-
-    /* make sure the first summary has a top border */
-    details:first-child & {
-      border-top: 1px solid var(--sys-color-divider);
-    }
-  }
-}
-
-.zoom-button {
-  margin-left: auto;
-}
-
-.zoom-icon {
-  visibility: hidden;
-
-  &.active devtools-button {
-    visibility: visible;
-  }
-}
-
-.dropdown-icon {
-  &.active devtools-button {
-    transform: rotate(90deg);
-  }
-}
-
-/*# sourceURL=${import.meta.resolve("./sidebarInsightsTab.css")} */`;
 
 // gen/front_end/panels/timeline/components/SidebarInsightsTab.js
 var { html: html19 } = Lit19;
@@ -7884,7 +7927,7 @@ var SidebarInsightsTab = class extends HTMLElement {
     if (this.#parsedTrace?.insights) {
       this.#selectedInsightSetKey = [...this.#parsedTrace.insights.keys()].at(0) ?? null;
     }
-    void ComponentHelpers10.ScheduledRender.scheduleRender(this, this.#render);
+    void ComponentHelpers7.ScheduledRender.scheduleRender(this, this.#render);
   }
   get activeInsight() {
     return this.#activeInsight;
@@ -7897,14 +7940,14 @@ var SidebarInsightsTab = class extends HTMLElement {
     if (this.#activeInsight) {
       this.#selectedInsightSetKey = this.#activeInsight.insightSetKey;
     }
-    void ComponentHelpers10.ScheduledRender.scheduleRender(this, this.#render);
+    void ComponentHelpers7.ScheduledRender.scheduleRender(this, this.#render);
   }
   #insightSetToggled(id) {
     this.#selectedInsightSetKey = this.#selectedInsightSetKey === id ? null : id;
     if (this.#selectedInsightSetKey !== this.#activeInsight?.insightSetKey) {
       this.dispatchEvent(new Insights6.SidebarInsight.InsightDeactivated());
     }
-    void ComponentHelpers10.ScheduledRender.scheduleRender(this, this.#render);
+    void ComponentHelpers7.ScheduledRender.scheduleRender(this, this.#render);
   }
   #insightSetHovered(id) {
     const data = this.#parsedTrace?.insights?.get(id);
@@ -7954,11 +7997,8 @@ var SidebarInsightsTab = class extends HTMLElement {
     if (!this.#activeInsight) {
       return;
     }
-    const set = this.#shadow?.querySelector(`devtools-performance-sidebar-single-navigation[data-insight-set-key="${this.#activeInsight.insightSetKey}"]`);
-    if (!set) {
-      return;
-    }
-    set.highlightActiveInsight();
+    const set = this.#shadow?.querySelector(`[data-insight-set-key="${this.#activeInsight.insightSetKey}"]`);
+    set?.getWidget()?.highlightActiveInsight();
   }
   #render() {
     if (!this.#parsedTrace?.insights) {
@@ -7981,10 +8021,10 @@ var SidebarInsightsTab = class extends HTMLElement {
           parsedTrace: this.#parsedTrace
         };
         const contents2 = html19`
-            <devtools-performance-sidebar-single-navigation
+            <devtools-widget
               data-insight-set-key=${id}
-              .data=${data}>
-            </devtools-performance-sidebar-single-navigation>
+              .widgetConfig=${UI17.Widget.widgetConfig(SidebarSingleInsightSet, { data })}
+            ></devtools-widget>
           `;
         if (hasMultipleInsightSets) {
           return html19`<details
@@ -8047,8 +8087,8 @@ var AnnotationHoverOut = class _AnnotationHoverOut extends Event {
 var DEFAULT_SIDEBAR_TAB = "insights";
 var DEFAULT_SIDEBAR_WIDTH_PX = 240;
 var MIN_SIDEBAR_WIDTH_PX = 170;
-var SidebarWidget = class extends UI14.Widget.VBox {
-  #tabbedPane = new UI14.TabbedPane.TabbedPane();
+var SidebarWidget = class extends UI18.Widget.VBox {
+  #tabbedPane = new UI18.TabbedPane.TabbedPane();
   #insightsView = new InsightsView();
   #annotationsView = new AnnotationsView();
   /**
@@ -8116,7 +8156,7 @@ var SidebarWidget = class extends UI14.Widget.VBox {
     }
   }
 };
-var InsightsView = class extends UI14.Widget.VBox {
+var InsightsView = class extends UI18.Widget.VBox {
   #component = new SidebarInsightsTab();
   constructor() {
     super();
@@ -8138,7 +8178,7 @@ var InsightsView = class extends UI14.Widget.VBox {
     }
   }
 };
-var AnnotationsView = class extends UI14.Widget.VBox {
+var AnnotationsView = class extends UI18.Widget.VBox {
   #component = new SidebarAnnotationsTab();
   constructor() {
     super();
@@ -8165,7 +8205,7 @@ __export(TimelineSummary_exports, {
   CategorySummary: () => CategorySummary
 });
 import * as i18n39 from "./../../../core/i18n/i18n.js";
-import * as UI15 from "./../../../ui/legacy/legacy.js";
+import * as UI19 from "./../../../ui/legacy/legacy.js";
 import * as Lit20 from "./../../../ui/lit/lit.js";
 
 // gen/front_end/panels/timeline/components/timelineSummary.css.js
@@ -8260,7 +8300,7 @@ var UIStrings20 = {
 var str_20 = i18n39.i18n.registerUIStrings("panels/timeline/components/TimelineSummary.ts", UIStrings20);
 var i18nString19 = i18n39.i18n.getLocalizedString.bind(void 0, str_20);
 var CategorySummary = class extends HTMLElement {
-  #shadow = UI15.UIUtils.createShadowRootWithCoreStyles(this, { cssFile: timelineSummary_css_default, delegatesFocus: void 0 });
+  #shadow = UI19.UIUtils.createShadowRootWithCoreStyles(this, { cssFile: timelineSummary_css_default, delegatesFocus: void 0 });
   #rangeStart = 0;
   #rangeEnd = 0;
   #total = 0;

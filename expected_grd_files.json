@@ -794,7 +794,6 @@
   "front_end/ui/components/adorners/adorners.js",
   "front_end/ui/components/annotations/annotations.js",
   "front_end/ui/components/buttons/buttons.js",
-  "front_end/ui/components/chrome_link/chrome_link.js",
   "front_end/ui/components/code_highlighter/code_highlighter.js",
   "front_end/ui/components/dialogs/dialogs.js",
   "front_end/ui/components/diff_view/diff_view.js",

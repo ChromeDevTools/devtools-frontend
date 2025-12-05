@@ -785,7 +785,8 @@ export class DebuggerModel extends SDKModel {
      */
     async *iterateAsyncParents(stackTraceOrPausedDetails) {
         // We make `DebuggerPausedDetails` look like a stack trace. We are only interested in `parent` and `parentId` in any case.
-        let stackTrace = stackTraceOrPausedDetails instanceof DebuggerPausedDetails ?
+        const isPausedDetails = (details) => !('parent' in details) && !('parentId' in details);
+        let stackTrace = isPausedDetails(stackTraceOrPausedDetails) ?
             {
                 callFrames: [],
                 parent: stackTraceOrPausedDetails.asyncStackTrace,

@@ -260,4 +260,23 @@ export function determineCompareRating(metric, localValue, fieldValue) {
     }
     return 'similar';
 }
+/**
+ * Returns true if LCP or INP are worse in the field than what was observed locally.
+ *
+ * CLS is ignored because the guidance of applying throttling or device emulation doesn't
+ * correlate as much with observing a more average user experience.
+ */
+export function isFieldWorseThanLocal(local, field) {
+    if (local.lcp !== undefined && field.lcp !== undefined) {
+        if (determineCompareRating('LCP', local.lcp, field.lcp) === 'better') {
+            return true;
+        }
+    }
+    if (local.inp !== undefined && field.inp !== undefined) {
+        if (determineCompareRating('LCP', local.inp, field.inp) === 'better') {
+            return true;
+        }
+    }
+    return false;
+}
 //# sourceMappingURL=Utils.js.map

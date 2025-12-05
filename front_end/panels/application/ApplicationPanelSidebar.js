@@ -153,18 +153,6 @@ const UIStrings = {
      */
     manifest: 'Manifest',
     /**
-     * @description Text in App Manifest View of the Application panel
-     */
-    noManifestDetected: 'No manifest detected',
-    /**
-     * @description Description text on manifests in App Manifest View of the Application panel which describes the app manifest view tab
-     */
-    manifestDescription: 'A manifest defines how your app appears on phone’s home screens and what the app looks like on launch.',
-    /**
-     * @description Text in App Manifest View of the Application panel
-     */
-    appManifest: 'Manifest',
-    /**
      * @description Text in Application Panel Sidebar of the Application panel
      */
     indexeddb: 'IndexedDB',
@@ -949,9 +937,7 @@ export class AppManifestTreeElement extends ApplicationPanelTreeElement {
         const icon = createIcon('document');
         this.setLeadingIcons([icon]);
         self.onInvokeElement(this.listItemElement, this.onInvoke.bind(this));
-        const emptyView = new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.noManifestDetected), i18nString(UIStrings.manifestDescription));
-        const reportView = new UI.ReportView.ReportView(i18nString(UIStrings.appManifest));
-        this.view = new AppManifestView(emptyView, reportView, new Common.Throttler.Throttler(1000));
+        this.view = new AppManifestView();
         UI.ARIAUtils.setLabel(this.listItemElement, i18nString(UIStrings.onInvokeManifestAlert));
         const handleExpansion = (hasManifest) => {
             this.setExpandable(hasManifest);

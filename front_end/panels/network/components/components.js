@@ -1149,11 +1149,12 @@ customElements.define("devtools-header-section-row", HeaderSectionRow);
 // gen/front_end/panels/network/components/RequestHeaderSection.js
 var RequestHeaderSection_exports = {};
 __export(RequestHeaderSection_exports, {
+  DEFAULT_VIEW: () => DEFAULT_VIEW2,
   RequestHeaderSection: () => RequestHeaderSection
 });
-import "./../../../ui/legacy/legacy.js";
 import * as i18n5 from "./../../../core/i18n/i18n.js";
 import * as Platform2 from "./../../../core/platform/platform.js";
+import * as UI2 from "./../../../ui/legacy/legacy.js";
 import * as Lit3 from "./../../../ui/lit/lit.js";
 import * as VisualLogging4 from "./../../../ui/visual_logging/visual_logging.js";
 import * as NetworkForward from "./../forward/forward.js";
@@ -1164,67 +1165,68 @@ var RequestHeaderSection_css_default = `/*
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file.
  */
+@scope to (devtools-widget > *) {
+  :scope {
+    display: block;
+  }
 
-:host {
-  display: block;
-}
+  devtools-header-section-row:last-of-type {
+    margin-bottom: 10px;
+  }
 
-devtools-header-section-row:last-of-type {
-  margin-bottom: 10px;
-}
+  devtools-header-section-row:first-of-type {
+    margin-top: 2px;
+  }
 
-devtools-header-section-row:first-of-type {
-  margin-top: 2px;
-}
+  .call-to-action {
+    background-color: var(--sys-color-neutral-container);
+    padding: 8px;
+    border-radius: 5px;
+    margin: 4px;
+  }
 
-.call-to-action {
-  background-color: var(--sys-color-neutral-container);
-  padding: 8px;
-  border-radius: 5px;
-  margin: 4px;
-}
+  .call-to-action-body {
+    padding: 6px 0;
+    margin-left: 9.5px;
+    border-left: 2px solid var(--issue-color-yellow);
+    padding-left: 18px;
+    line-height: 20px;
+  }
 
-.call-to-action-body {
-  padding: 6px 0;
-  margin-left: 9.5px;
-  border-left: 2px solid var(--issue-color-yellow);
-  padding-left: 18px;
-  line-height: 20px;
-}
+  .call-to-action .explanation {
+    font-weight: bold;
+  }
 
-.call-to-action .explanation {
-  font-weight: bold;
-}
+  .call-to-action code {
+    font-size: 90%;
+  }
 
-.call-to-action code {
-  font-size: 90%;
-}
+  .call-to-action .example .comment::before {
+    content: " \u2014 ";
+  }
 
-.call-to-action .example .comment::before {
-  content: " \u2014 ";
-}
-
-.link,
-.devtools-link {
-  color: var(--sys-color-primary);
-  text-decoration: underline;
-  cursor: pointer;
-  outline-offset: 2px;
-}
-
-.explanation .link {
-  font-weight: normal;
-}
-
-.inline-icon {
-  vertical-align: middle;
-}
-
-@media (forced-colors: active) {
   .link,
   .devtools-link {
-    color: linktext;
-    text-decoration-color: linktext;
+    color: var(--sys-color-primary);
+    text-decoration: underline;
+    cursor: pointer;
+    outline-offset: 2px;
+  }
+
+  .explanation .link {
+    font-weight: normal;
+  }
+
+  .inline-icon {
+    vertical-align: middle;
+  }
+
+  @media (forced-colors: active) {
+    .link,
+    .devtools-link {
+      color: linktext;
+      text-decoration-color: linktext;
+    }
   }
 }
 
@@ -1252,66 +1254,80 @@ var UIStrings3 = {
 };
 var str_3 = i18n5.i18n.registerUIStrings("panels/network/components/RequestHeaderSection.ts", UIStrings3);
 var i18nString3 = i18n5.i18n.getLocalizedString.bind(void 0, str_3);
-var RequestHeaderSection = class extends HTMLElement {
-  #shadow = this.attachShadow({ mode: "open" });
-  #request;
+var DEFAULT_VIEW2 = (input, output, target) => {
+  const headers = input.headers;
+  render4(html4`
+    <style>${RequestHeaderSection_css_default}</style>
+    ${input.isProvisionalHeaders ? renderProvisionalHeadersWarning(input.isRequestCached) : Lit3.nothing}
+    ${headers.map((header) => html4`
+      <devtools-header-section-row
+        .data=${{ header }}
+        jslog=${VisualLogging4.item("request-header")}
+      ></devtools-header-section-row>
+    `)}
+  `, target);
+};
+function renderProvisionalHeadersWarning(isRequestCached) {
+  let cautionText;
+  let cautionTitle = "";
+  if (isRequestCached) {
+    cautionText = i18nString3(UIStrings3.provisionalHeadersAreShownDisableCache);
+    cautionTitle = i18nString3(UIStrings3.onlyProvisionalHeadersAre);
+  } else {
+    cautionText = i18nString3(UIStrings3.provisionalHeadersAreShown);
+  }
+  return html4`
+    <div class="call-to-action">
+      <div class="call-to-action-body">
+        <div class="explanation" title=${cautionTitle}>
+          <devtools-icon class="inline-icon medium" name='warning-filled'>
+          </devtools-icon>
+          ${cautionText} <x-link href="https://developer.chrome.com/docs/devtools/network/reference/#provisional-headers" class="link">${i18nString3(UIStrings3.learnMore)}</x-link>
+        </div>
+      </div>
+    </div>
+  `;
+}
+var RequestHeaderSection = class extends UI2.Widget.Widget {
+  #request = null;
   #headers = [];
-  set data(data) {
-    this.#request = data.request;
+  #view;
+  constructor(element, view = DEFAULT_VIEW2) {
+    super(element, { useShadowDom: true });
+    this.#view = view;
+  }
+  set toReveal(toReveal) {
+    if (!toReveal) {
+      return;
+    }
+    if (toReveal.section === "Request") {
+      this.#headers.filter((header) => header.name === toReveal.header?.toLowerCase()).forEach((header) => {
+        header.highlight = true;
+      });
+    }
+    this.requestUpdate();
+  }
+  set request(request) {
+    this.#request = request;
     this.#headers = this.#request.requestHeaders().map((header) => ({
       name: Platform2.StringUtilities.toLowerCaseString(header.name),
       value: header.value,
       valueEditable: 2
     }));
     this.#headers.sort((a, b) => Platform2.StringUtilities.compare(a.name, b.name));
-    if (data.toReveal?.section === "Request") {
-      this.#headers.filter((header) => header.name === data.toReveal?.header?.toLowerCase()).forEach((header) => {
-        header.highlight = true;
-      });
-    }
-    this.#render();
+    this.requestUpdate();
   }
-  #render() {
+  performUpdate() {
     if (!this.#request) {
       return;
     }
-    render4(html4`
-      <style>${RequestHeaderSection_css_default}</style>
-      ${this.#maybeRenderProvisionalHeadersWarning()}
-      ${this.#headers.map((header) => html4`
-        <devtools-header-section-row
-          .data=${{ header }}
-          jslog=${VisualLogging4.item("request-header")}
-        ></devtools-header-section-row>
-      `)}
-    `, this.#shadow, { host: this });
-  }
-  #maybeRenderProvisionalHeadersWarning() {
-    if (!this.#request || this.#request.requestHeadersText() !== void 0) {
-      return Lit3.nothing;
-    }
-    let cautionText;
-    let cautionTitle = "";
-    if (this.#request.cachedInMemory() || this.#request.cached()) {
-      cautionText = i18nString3(UIStrings3.provisionalHeadersAreShownDisableCache);
-      cautionTitle = i18nString3(UIStrings3.onlyProvisionalHeadersAre);
-    } else {
-      cautionText = i18nString3(UIStrings3.provisionalHeadersAreShown);
-    }
-    return html4`
-      <div class="call-to-action">
-        <div class="call-to-action-body">
-          <div class="explanation" title=${cautionTitle}>
-            <devtools-icon class="inline-icon medium" name='warning-filled'>
-            </devtools-icon>
-            ${cautionText} <x-link href="https://developer.chrome.com/docs/devtools/network/reference/#provisional-headers" class="link">${i18nString3(UIStrings3.learnMore)}</x-link>
-          </div>
-        </div>
-      </div>
-    `;
+    this.#view({
+      headers: this.#headers,
+      isProvisionalHeaders: this.#request.requestHeadersText() === void 0,
+      isRequestCached: this.#request.cached() || this.#request.cachedInMemory()
+    }, void 0, this.contentElement);
   }
 };
-customElements.define("devtools-request-header-section", RequestHeaderSection);
 
 // gen/front_end/panels/network/components/RequestHeadersView.js
 var RequestHeadersView_exports = {};
@@ -1332,7 +1348,7 @@ import * as Buttons3 from "./../../../ui/components/buttons/buttons.js";
 import * as Input from "./../../../ui/components/input/input.js";
 import * as LegacyWrapper from "./../../../ui/components/legacy_wrapper/legacy_wrapper.js";
 import * as RenderCoordinator from "./../../../ui/components/render_coordinator/render_coordinator.js";
-import * as UI3 from "./../../../ui/legacy/legacy.js";
+import * as UI4 from "./../../../ui/legacy/legacy.js";
 import * as Lit4 from "./../../../ui/lit/lit.js";
 import * as VisualLogging6 from "./../../../ui/visual_logging/visual_logging.js";
 import * as Sources2 from "./../../sources/sources.js";
@@ -1354,7 +1370,7 @@ import * as TextUtils from "./../../../models/text_utils/text_utils.js";
 import * as NetworkForward2 from "./../forward/forward.js";
 import * as Sources from "./../../sources/sources.js";
 import * as Buttons2 from "./../../../ui/components/buttons/buttons.js";
-import * as UI2 from "./../../../ui/legacy/legacy.js";
+import * as UI3 from "./../../../ui/legacy/legacy.js";
 import { html as html5, nothing as nothing4, render as render5 } from "./../../../ui/lit/lit.js";
 import * as VisualLogging5 from "./../../../ui/visual_logging/visual_logging.js";
 
@@ -1804,7 +1820,7 @@ var ResponseHeaderSection = class extends ResponseHeaderSectionBase {
       Common2.Settings.Settings.instance().moduleSetting("persistence-network-overrides-enabled").set(true);
       await networkPersistenceManager.getOrCreateHeadersUISourceCodeFromUrl(requestUrl);
     } else {
-      UI2.InspectorView.InspectorView.instance().displaySelectOverrideFolderInfobar(async () => {
+      UI3.InspectorView.InspectorView.instance().displaySelectOverrideFolderInfobar(async () => {
         await Sources.SourcesNavigator.OverridesNavigatorView.instance().setupNewWorkspace();
         await networkPersistenceManager.getOrCreateHeadersUISourceCodeFromUrl(requestUrl);
       });
@@ -2181,10 +2197,10 @@ var RequestHeadersView = class extends LegacyWrapper.LegacyWrapper.WrappableComp
         aria-label=${i18nString5(UIStrings5.requestHeaders)}
       >
         ${this.#showRequestHeadersText && requestHeadersText ? this.#renderRawHeaders(requestHeadersText, false) : html6`
-          <devtools-request-header-section .data=${{
+          <devtools-widget .widgetConfig=${UI4.Widget.widgetConfig(RequestHeaderSection, {
       request: this.#request,
       toReveal: this.#toReveal
-    }} jslog=${VisualLogging6.section("request-headers")}></devtools-request-header-section>
+    })} jslog=${VisualLogging6.section("request-headers")}></devtools-widget>
         `}
       </devtools-request-headers-category>
     `;
@@ -2204,7 +2220,7 @@ var RequestHeadersView = class extends LegacyWrapper.LegacyWrapper.WrappableComp
     const onContextMenuOpen = (event) => {
       const showFull2 = forResponseHeaders ? this.#showResponseHeadersTextFull : this.#showRequestHeadersTextFull;
       if (!showFull2) {
-        const contextMenu = new UI3.ContextMenu.ContextMenu(event);
+        const contextMenu = new UI4.ContextMenu.ContextMenu(event);
         const section3 = contextMenu.newSection();
         section3.appendItem(i18nString5(UIStrings5.showMore), showMore, { jslogContext: "show-more" });
         void contextMenu.show();
@@ -2395,7 +2411,7 @@ customElements.define("devtools-request-headers-category", Category);
 // gen/front_end/panels/network/components/RequestTrustTokensView.js
 var RequestTrustTokensView_exports = {};
 __export(RequestTrustTokensView_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW2,
+  DEFAULT_VIEW: () => DEFAULT_VIEW3,
   RequestTrustTokensView: () => RequestTrustTokensView,
   statusConsideredSuccess: () => statusConsideredSuccess
 });
@@ -2403,7 +2419,7 @@ import "./../../../ui/components/report_view/report_view.js";
 import "./../../../ui/kit/kit.js";
 import * as i18n11 from "./../../../core/i18n/i18n.js";
 import * as SDK4 from "./../../../core/sdk/sdk.js";
-import * as UI4 from "./../../../ui/legacy/legacy.js";
+import * as UI5 from "./../../../ui/legacy/legacy.js";
 import * as Lit5 from "./../../../ui/lit/lit.js";
 import * as VisualLogging7 from "./../../../ui/visual_logging/visual_logging.js";
 
@@ -2572,7 +2588,7 @@ var renderParameterSection = (params) => {
     <devtools-report-divider></devtools-report-divider>
   `;
 };
-var DEFAULT_VIEW2 = (input, output, target) => {
+var DEFAULT_VIEW3 = (input, output, target) => {
   render7(html7`
     <style>${RequestTrustTokensView_css_default}</style>
     <devtools-report>
@@ -2581,10 +2597,10 @@ var DEFAULT_VIEW2 = (input, output, target) => {
     </devtools-report>
   `, target);
 };
-var RequestTrustTokensView = class extends UI4.Widget.Widget {
+var RequestTrustTokensView = class extends UI5.Widget.Widget {
   #request = null;
   #view;
-  constructor(element, view = DEFAULT_VIEW2) {
+  constructor(element, view = DEFAULT_VIEW3) {
     super(element);
     this.#view = view;
   }

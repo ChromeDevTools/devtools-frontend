@@ -1,21 +1,19 @@
 // Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as AIAssistance from '../../../models/ai_assistance/ai_assistance.js';
 import * as CrUXManager from '../../../models/crux-manager/crux-manager.js';
 import * as Trace from '../../../models/trace/trace.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
-import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
+import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
-import { nothing } from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import { md, shouldRenderForCategory } from './insights/Helpers.js';
 import * as Insights from './insights/insights.js';
 import sidebarSingleInsightSetStyles from './sidebarSingleInsightSet.css.js';
-import { determineCompareRating, NumberWithUnit } from './Utils.js';
+import { isFieldWorseThanLocal, NumberWithUnit } from './Utils.js';
 const { html } = Lit.StaticHtml;
 const UIStrings = {
     /**
@@ -65,52 +63,78 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/SidebarSingleInsightSet.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-export class SidebarSingleInsightSet extends HTMLElement {
-    #shadow = this.attachShadow({ mode: 'open' });
-    #insightRenderer = new Insights.InsightRenderer.InsightRenderer();
-    #activeInsightElement = null;
-    #data = {
-        insightSetKey: null,
-        activeCategory: Trace.Insights.Types.InsightCategory.ALL,
-        activeInsight: null,
-        parsedTrace: null,
-    };
-    #dismissedFieldMismatchNotice = false;
-    #activeHighlightTimeout = -1;
-    set data(data) {
-        this.#data = data;
-        void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
-    }
-    connectedCallback() {
-        this.#render();
-    }
-    disconnectedCallback() {
-        window.clearTimeout(this.#activeHighlightTimeout);
-    }
-    highlightActiveInsight() {
-        if (!this.#activeInsightElement) {
-            return;
+export const DEFAULT_VIEW = (input, output, target) => {
+    const { shownInsights, passedInsights, local, field, activeCategory, showFieldMismatchNotice, onDismisFieldMismatchNotice, onClickMetric, renderInsightComponent, } = input;
+    function renderMetrics() {
+        const lcpEl = renderMetricValue('LCP', local?.lcp?.value ?? null, local?.lcp?.event ?? null);
+        const inpEl = renderMetricValue('INP', local?.inp?.value ?? null, local?.inp?.event ?? null);
+        const clsEl = renderMetricValue('CLS', local?.cls?.value ?? null, local?.cls?.worstClusterEvent ?? null);
+        const localMetricsTemplateResult = html `
+      <div class="metrics-row">
+        <span>${lcpEl}</span>
+        <span>${inpEl}</span>
+        <span>${clsEl}</span>
+        <span class="row-label">Local</span>
+      </div>
+      <span class="row-border"></span>
+    `;
+        let fieldMetricsTemplateResult;
+        if (field) {
+            const { lcp, inp, cls } = field;
+            const lcpEl = renderMetricValue('LCP', lcp?.value ?? null, null);
+            const inpEl = renderMetricValue('INP', inp?.value ?? null, null);
+            const clsEl = renderMetricValue('CLS', cls?.value ?? null, null);
+            let scope = i18nString(UIStrings.originOption);
+            if (lcp?.pageScope === 'url' || inp?.pageScope === 'url') {
+                scope = i18nString(UIStrings.urlOption);
+            }
+            // clang-format off
+            fieldMetricsTemplateResult = html `
+        <div class="metrics-row">
+          <span>${lcpEl}</span>
+          <span>${inpEl}</span>
+          <span>${clsEl}</span>
+          <span class="row-label">${i18nString(UIStrings.fieldScoreLabel, { PH1: scope })}</span>
+        </div>
+        <span class="row-border"></span>
+      `;
+            // clang-format on
         }
-        // First clear any existing highlight that is going on.
-        this.#activeInsightElement.removeAttribute('highlight-insight');
-        window.clearTimeout(this.#activeHighlightTimeout);
-        requestAnimationFrame(() => {
-            this.#activeInsightElement?.setAttribute('highlight-insight', 'true');
-            this.#activeHighlightTimeout = window.setTimeout(() => {
-                this.#activeInsightElement?.removeAttribute('highlight-insight');
-            }, 2_000);
-        });
-    }
-    #metricIsVisible(label) {
-        if (this.#data.activeCategory === Trace.Insights.Types.InsightCategory.ALL) {
-            return true;
+        let fieldIsDifferentEl;
+        if (showFieldMismatchNotice) {
+            // clang-format off
+            fieldIsDifferentEl = html `
+        <div class="field-mismatch-notice" jslog=${VisualLogging.section('timeline.insights.field-mismatch')}>
+          <h3>${i18nString(UIStrings.fieldMismatchTitle)}</h3>
+          <devtools-button
+            title=${i18nString(UIStrings.dismissTitle)}
+            .iconName=${'cross'}
+            .variant=${"icon" /* Buttons.Button.Variant.ICON */}
+            .jslogContext=${'timeline.insights.dismiss-field-mismatch'}
+            @click=${onDismisFieldMismatchNotice}
+          ></devtools-button>
+          <div class="field-mismatch-notice__body">${md(i18nString(UIStrings.fieldMismatchNotice))}</div>
+        </div>
+      `;
+            // clang-format on
         }
-        return label === this.#data.activeCategory;
+        const classes = { metrics: true, 'metrics--field': Boolean(fieldMetricsTemplateResult) };
+        const metricsTableEl = html `<div class=${Lit.Directives.classMap(classes)}>
+      <div class="metrics-row">
+        <span class="metric-label">LCP</span>
+        <span class="metric-label">INP</span>
+        <span class="metric-label">CLS</span>
+        <span class="row-label"></span>
+      </div>
+      ${localMetricsTemplateResult}
+      ${fieldMetricsTemplateResult}
+    </div>`;
+        return html `
+      ${metricsTableEl}
+      ${fieldIsDifferentEl}
+    `;
     }
-    #onClickMetric(traceEvent) {
-        this.dispatchEvent(new Insights.EventRef.EventReferenceClick(traceEvent));
-    }
-    #renderMetricValue(metric, value, relevantEvent) {
+    function renderMetricValue(metric, value, relevantEvent) {
         let valueText;
         let valueDisplay;
         let classification;
@@ -150,9 +174,9 @@ export class SidebarSingleInsightSet extends HTMLElement {
         const title = value !== null ?
             i18nString(UIStrings.metricScore, { PH1: metric, PH2: valueText, PH3: classification }) :
             i18nString(UIStrings.metricScoreUnavailable, { PH1: metric });
-        return this.#metricIsVisible(metric) ? html `
+        return metricIsVisible(activeCategory, metric) ? html `
       <button class="metric"
-        @click=${relevantEvent ? this.#onClickMetric.bind(this, relevantEvent) : null}
+        @click=${relevantEvent ? onClickMetric.bind(relevantEvent) : null}
         title=${title}
         aria-label=${title}
       >
@@ -161,14 +185,87 @@ export class SidebarSingleInsightSet extends HTMLElement {
     ` : Lit.nothing;
         // clang-format on
     }
-    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+    function renderInsights() {
+        const shownInsightTemplates = shownInsights.map(renderInsightComponent);
+        const passedInsightsTemplates = passedInsights.map(renderInsightComponent);
+        // clang-format off
+        return html `
+      ${shownInsightTemplates}
+      ${passedInsightsTemplates.length ? html `
+        <details class="passed-insights-section">
+          <summary>${i18nString(UIStrings.passedInsights, {
+            PH1: passedInsightsTemplates.length,
+        })}</summary>
+          ${passedInsightsTemplates}
+        </details>
+      ` : Lit.nothing}
+    `;
+        // clang-format on
+    }
+    // clang-format off
+    Lit.render(html `
+    <style>${sidebarSingleInsightSetStyles}</style>
+    <div class="navigation">
+      ${renderMetrics()}
+      ${renderInsights()}
+    </div>
+  `, target);
+    // clang-format on
+};
+function metricIsVisible(activeCategory, label) {
+    if (activeCategory === Trace.Insights.Types.InsightCategory.ALL) {
+        return true;
+    }
+    return label === activeCategory;
+}
+export class SidebarSingleInsightSet extends UI.Widget.Widget {
+    #view;
+    #insightRenderer = new Insights.InsightRenderer.InsightRenderer();
+    #activeInsightElement = null;
+    #activeHighlightTimeout = -1;
+    #data = {
+        insightSetKey: null,
+        activeCategory: Trace.Insights.Types.InsightCategory.ALL,
+        activeInsight: null,
+        parsedTrace: null,
+    };
+    #didDismissFieldMismatchNotice = false;
+    constructor(element, view = DEFAULT_VIEW) {
+        super(element, { useShadowDom: true });
+        this.#view = view;
+    }
+    set data(data) {
+        this.#data = data;
+        this.requestUpdate();
+    }
+    willHide() {
+        super.willHide();
+        window.clearTimeout(this.#activeHighlightTimeout);
+    }
+    highlightActiveInsight() {
+        if (!this.#activeInsightElement) {
+            return;
+        }
+        // First clear any existing highlight that is going on.
+        this.#activeInsightElement.removeAttribute('highlight-insight');
+        window.clearTimeout(this.#activeHighlightTimeout);
+        requestAnimationFrame(() => {
+            this.#activeInsightElement?.setAttribute('highlight-insight', 'true');
+            this.#activeHighlightTimeout = window.setTimeout(() => {
+                this.#activeInsightElement?.removeAttribute('highlight-insight');
+            }, 2_000);
+        });
+    }
+    #onClickMetric(traceEvent) {
+        this.element.dispatchEvent(new Insights.EventRef.EventReferenceClick(traceEvent));
+    }
     #getLocalMetrics(insightSetKey) {
         if (!this.#data.parsedTrace) {
-            return {};
+            return null;
         }
         const insightSet = this.#data.parsedTrace.insights?.get(insightSetKey);
         if (!insightSet) {
-            return {};
+            return null;
         }
         const lcp = Trace.Insights.Common.getLCP(insightSet);
         const cls = Trace.Insights.Common.getCLS(insightSet);
@@ -189,107 +286,9 @@ export class SidebarSingleInsightSet extends HTMLElement {
         }
         return fieldMetricsResults;
     }
-    /**
-     * Returns true if LCP or INP are worse in the field than what was observed locally.
-     *
-     * CLS is ignored because the guidance of applying throttling or device emulation doesn't
-     * correlate as much with observing a more average user experience.
-     */
-    #isFieldWorseThanLocal(local, field) {
-        if (local.lcp !== undefined && field.lcp !== undefined) {
-            if (determineCompareRating('LCP', local.lcp, field.lcp) === 'better') {
-                return true;
-            }
-        }
-        if (local.inp !== undefined && field.inp !== undefined) {
-            if (determineCompareRating('LCP', local.inp, field.inp) === 'better') {
-                return true;
-            }
-        }
-        return false;
-    }
-    #dismissFieldMismatchNotice() {
-        this.#dismissedFieldMismatchNotice = true;
-        this.#render();
-    }
-    #renderMetrics(insightSetKey) {
-        const local = this.#getLocalMetrics(insightSetKey);
-        const field = this.#getFieldMetrics(insightSetKey);
-        const lcpEl = this.#renderMetricValue('LCP', local.lcp?.value ?? null, local.lcp?.event ?? null);
-        const inpEl = this.#renderMetricValue('INP', local.inp?.value ?? null, local.inp?.event ?? null);
-        const clsEl = this.#renderMetricValue('CLS', local.cls?.value ?? null, local.cls?.worstClusterEvent ?? null);
-        const localMetricsTemplateResult = html `
-      <div class="metrics-row">
-        <span>${lcpEl}</span>
-        <span>${inpEl}</span>
-        <span>${clsEl}</span>
-        <span class="row-label">Local</span>
-      </div>
-      <span class="row-border"></span>
-    `;
-        let fieldMetricsTemplateResult;
-        if (field) {
-            const { lcp, inp, cls } = field;
-            const lcpEl = this.#renderMetricValue('LCP', lcp?.value ?? null, null);
-            const inpEl = this.#renderMetricValue('INP', inp?.value ?? null, null);
-            const clsEl = this.#renderMetricValue('CLS', cls?.value ?? null, null);
-            let scope = i18nString(UIStrings.originOption);
-            if (lcp?.pageScope === 'url' || inp?.pageScope === 'url') {
-                scope = i18nString(UIStrings.urlOption);
-            }
-            // clang-format off
-            fieldMetricsTemplateResult = html `
-        <div class="metrics-row">
-          <span>${lcpEl}</span>
-          <span>${inpEl}</span>
-          <span>${clsEl}</span>
-          <span class="row-label">${i18nString(UIStrings.fieldScoreLabel, { PH1: scope })}</span>
-        </div>
-        <span class="row-border"></span>
-      `;
-            // clang-format on
-        }
-        const localValues = {
-            lcp: local.lcp?.value !== undefined ? Trace.Helpers.Timing.microToMilli(local.lcp.value) : undefined,
-            inp: local.inp?.value !== undefined ? Trace.Helpers.Timing.microToMilli(local.inp.value) : undefined,
-        };
-        const fieldValues = field && {
-            lcp: field.lcp?.value !== undefined ? Trace.Helpers.Timing.microToMilli(field.lcp.value) : undefined,
-            inp: field.inp?.value !== undefined ? Trace.Helpers.Timing.microToMilli(field.inp.value) : undefined,
-        };
-        let fieldIsDifferentEl;
-        if (!this.#dismissedFieldMismatchNotice && fieldValues && this.#isFieldWorseThanLocal(localValues, fieldValues)) {
-            // clang-format off
-            fieldIsDifferentEl = html `
-        <div class="field-mismatch-notice" jslog=${VisualLogging.section('timeline.insights.field-mismatch')}>
-          <h3>${i18nString(UIStrings.fieldMismatchTitle)}</h3>
-          <devtools-button
-            title=${i18nString(UIStrings.dismissTitle)}
-            .iconName=${'cross'}
-            .variant=${"icon" /* Buttons.Button.Variant.ICON */}
-            .jslogContext=${'timeline.insights.dismiss-field-mismatch'}
-            @click=${this.#dismissFieldMismatchNotice}
-          ></devtools-button>
-          <div class="field-mismatch-notice__body">${md(i18nString(UIStrings.fieldMismatchNotice))}</div>
-        </div>
-      `;
-            // clang-format on
-        }
-        const classes = { metrics: true, 'metrics--field': Boolean(fieldMetricsTemplateResult) };
-        const metricsTableEl = html `<div class=${Lit.Directives.classMap(classes)}>
-      <div class="metrics-row">
-        <span class="metric-label">LCP</span>
-        <span class="metric-label">INP</span>
-        <span class="metric-label">CLS</span>
-        <span class="row-label"></span>
-      </div>
-      ${localMetricsTemplateResult}
-      ${fieldMetricsTemplateResult}
-    </div>`;
-        return html `
-      ${metricsTableEl}
-      ${fieldIsDifferentEl}
-    `;
+    #onDismisFieldMismatchNotice() {
+        this.#didDismissFieldMismatchNotice = true;
+        this.requestUpdate();
     }
     static categorizeInsights(insightSets, insightSetKey, activeCategory) {
         const insightSet = insightSets?.get(insightSetKey);
@@ -311,66 +310,56 @@ export class SidebarSingleInsightSet extends HTMLElement {
         }
         return { shownInsights, passedInsights };
     }
-    #renderInsights(insights, insightSetKey) {
-        const insightSet = insights?.get(insightSetKey);
-        if (!insightSet) {
+    #renderInsightComponent(insightSet, insightData, fieldMetrics) {
+        if (!this.#data.parsedTrace) {
             return Lit.nothing;
         }
-        const fieldMetrics = this.#getFieldMetrics(insightSetKey);
-        const { shownInsights: shownInsightsData, passedInsights: passedInsightsData } = SidebarSingleInsightSet.categorizeInsights(insights, insightSetKey, this.#data.activeCategory);
-        const renderInsightComponent = (insightData) => {
-            if (!this.#data.parsedTrace?.insights) {
-                return nothing;
-            }
-            const { insightName, model } = insightData;
-            const agentFocus = AIAssistance.AIContext.AgentFocus.fromInsight(this.#data.parsedTrace, model);
-            const widgetElement = this.#insightRenderer.renderInsightToWidgetElement(this.#data.parsedTrace, insightSet, model, insightName, {
-                selected: this.#data.activeInsight?.model === model,
-                agentFocus,
-                fieldMetrics,
-            });
-            if (this.#data.activeInsight?.model === model) {
-                this.#activeInsightElement = widgetElement;
-            }
-            return html `${widgetElement}`;
-        };
-        const shownInsights = shownInsightsData.map(renderInsightComponent);
-        const passedInsights = passedInsightsData.map(renderInsightComponent);
-        // clang-format off
-        return html `
-      ${shownInsights}
-      ${passedInsights.length ? html `
-        <details class="passed-insights-section">
-          <summary>${i18nString(UIStrings.passedInsights, {
-            PH1: passedInsights.length,
-        })}</summary>
-          ${passedInsights}
-        </details>
-      ` : Lit.nothing}
-    `;
-        // clang-format on
+        const { insightName, model } = insightData;
+        const activeInsight = this.#data.activeInsight;
+        const agentFocus = AIAssistance.AIContext.AgentFocus.fromInsight(this.#data.parsedTrace, model);
+        const widgetElement = this.#insightRenderer.renderInsightToWidgetElement(this.#data.parsedTrace, insightSet, model, insightName, {
+            selected: activeInsight?.model === model,
+            agentFocus,
+            fieldMetrics,
+        });
+        if (activeInsight?.model === model) {
+            this.#activeInsightElement = widgetElement;
+        }
+        return html `${widgetElement}`;
     }
-    #render() {
+    performUpdate() {
         const { parsedTrace, insightSetKey, } = this.#data;
         if (!parsedTrace?.insights || !insightSetKey) {
-            Lit.render(Lit.nothing, this.#shadow, { host: this });
             return;
         }
         const insightSet = parsedTrace.insights.get(insightSetKey);
         if (!insightSet) {
-            Lit.render(Lit.nothing, this.#shadow, { host: this });
             return;
         }
-        // clang-format off
-        Lit.render(html `
-      <style>${sidebarSingleInsightSetStyles}</style>
-      <div class="navigation">
-        ${this.#renderMetrics(insightSetKey)}
-        ${this.#renderInsights(parsedTrace.insights, insightSetKey)}
-      </div>
-    `, this.#shadow, { host: this });
-        // clang-format on
+        const local = this.#getLocalMetrics(insightSetKey);
+        const field = this.#getFieldMetrics(insightSetKey);
+        const { shownInsights, passedInsights } = SidebarSingleInsightSet.categorizeInsights(parsedTrace.insights, insightSetKey, this.#data.activeCategory);
+        const localValues = {
+            lcp: local?.lcp?.value !== undefined ? Trace.Helpers.Timing.microToMilli(local?.lcp.value) : undefined,
+            inp: local?.inp?.value !== undefined ? Trace.Helpers.Timing.microToMilli(local?.inp.value) : undefined,
+        };
+        const fieldValues = field && {
+            lcp: field.lcp?.value !== undefined ? Trace.Helpers.Timing.microToMilli(field.lcp.value) : undefined,
+            inp: field.inp?.value !== undefined ? Trace.Helpers.Timing.microToMilli(field.inp.value) : undefined,
+        };
+        const showFieldMismatchNotice = !this.#didDismissFieldMismatchNotice && !!fieldValues && isFieldWorseThanLocal(localValues, fieldValues);
+        const input = {
+            shownInsights,
+            passedInsights,
+            local,
+            field,
+            activeCategory: this.#data.activeCategory,
+            showFieldMismatchNotice,
+            onDismisFieldMismatchNotice: this.#onDismisFieldMismatchNotice.bind(this),
+            onClickMetric: this.#onClickMetric.bind(this),
+            renderInsightComponent: insightData => this.#renderInsightComponent(insightSet, insightData, field),
+        };
+        this.#view(input, undefined, this.contentElement);
     }
 }
-customElements.define('devtools-performance-sidebar-single-navigation', SidebarSingleInsightSet);
 //# sourceMappingURL=SidebarSingleInsightSet.js.map

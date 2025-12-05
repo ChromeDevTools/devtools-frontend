@@ -1255,17 +1255,17 @@ customElements.define("devtools-resources-preloading-details-report-view", Prelo
 // gen/front_end/panels/application/preloading/components/PreloadingDisabledInfobar.js
 var PreloadingDisabledInfobar_exports = {};
 __export(PreloadingDisabledInfobar_exports, {
+  DEFAULT_VIEW: () => DEFAULT_VIEW2,
   PreloadingDisabledInfobar: () => PreloadingDisabledInfobar
 });
 import "./../../../../ui/components/report_view/report_view.js";
+import "./../../../../ui/kit/kit.js";
 import * as i18n7 from "./../../../../core/i18n/i18n.js";
+import * as Platform2 from "./../../../../core/platform/platform.js";
 import * as Buttons2 from "./../../../../ui/components/buttons/buttons.js";
-import * as ChromeLink from "./../../../../ui/components/chrome_link/chrome_link.js";
 import * as Dialogs from "./../../../../ui/components/dialogs/dialogs.js";
-import * as LegacyWrapper3 from "./../../../../ui/components/legacy_wrapper/legacy_wrapper.js";
-import * as RenderCoordinator2 from "./../../../../ui/components/render_coordinator/render_coordinator.js";
-import * as uiI18n from "./../../../../ui/i18n/i18n.js";
-import * as Lit3 from "./../../../../ui/lit/lit.js";
+import * as UI3 from "./../../../../ui/legacy/legacy.js";
+import { html as html3, i18nTemplate, nothing as nothing2, render as render3 } from "./../../../../ui/lit/lit.js";
 import * as VisualLogging2 from "./../../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/application/preloading/components/preloadingDisabledInfobar.css.js
@@ -1309,7 +1309,7 @@ x-link {
 /*# sourceURL=${import.meta.resolve("./preloadingDisabledInfobar.css")} */`;
 
 // gen/front_end/panels/application/preloading/components/PreloadingDisabledInfobar.js
-var { html: html3 } = Lit3;
+var { urlString } = Platform2.DevToolsPath;
 var UIStrings4 = {
   /**
    * @description Infobar text for disabled case
@@ -1381,47 +1381,14 @@ var UIStrings4 = {
 var str_4 = i18n7.i18n.registerUIStrings("panels/application/preloading/components/PreloadingDisabledInfobar.ts", UIStrings4);
 var i18nString4 = i18n7.i18n.getLocalizedString.bind(void 0, str_4);
 var LINK = "https://developer.chrome.com/blog/prerender-pages/";
-var PreloadingDisabledInfobar = class extends LegacyWrapper3.LegacyWrapper.WrappableComponent {
-  #shadow = this.attachShadow({ mode: "open" });
-  #data = {
-    disabledByPreference: false,
-    disabledByDataSaver: false,
-    disabledByBatterySaver: false,
-    disabledByHoldbackPrefetchSpeculationRules: false,
-    disabledByHoldbackPrerenderSpeculationRules: false
-  };
-  connectedCallback() {
-    void this.#render();
-  }
-  set data(data) {
-    this.#data = data;
-    void this.#render();
-  }
-  async #render() {
-    await RenderCoordinator2.write("PreloadingDisabledInfobar render", () => {
-      Lit3.render(this.#renderTemplate(), this.#shadow, { host: this });
-    });
-  }
-  #renderTemplate() {
-    const forceEnabled = this.#data.disabledByHoldbackPrefetchSpeculationRules || this.#data.disabledByHoldbackPrerenderSpeculationRules;
-    const disabled = this.#data.disabledByPreference || this.#data.disabledByDataSaver || this.#data.disabledByBatterySaver;
-    let header;
-    if (disabled) {
-      header = i18nString4(UIStrings4.infobarPreloadingIsDisabled);
-    } else if (forceEnabled) {
-      header = i18nString4(UIStrings4.infobarPreloadingIsForceEnabled);
-    } else {
-      return Lit3.nothing;
-    }
-    return html3`
-      <style>${preloadingDisabledInfobar_css_default}</style>
-      <div id='container'>
-        <span id='header'>
-          ${header}
-        </span>
-
-        <devtools-button-dialog
-          .data=${{
+var DEFAULT_VIEW2 = (input, _output, target) => {
+  let template = nothing2;
+  if (input.header !== null) {
+    template = html3`
+        <style>${preloadingDisabledInfobar_css_default}</style>
+        <div id="container">
+          <span id="header">${input.header}</span>
+          <devtools-button-dialog .data=${{
       iconName: "info",
       variant: "icon",
       closeButton: true,
@@ -1431,69 +1398,144 @@ var PreloadingDisabledInfobar = class extends LegacyWrapper3.LegacyWrapper.Wrapp
       closeOnScroll: false,
       dialogTitle: i18nString4(UIStrings4.titleReasonsPreventingPreloading)
     }}
-          jslog=${VisualLogging2.dialog("preloading-disabled").track({ resize: true, keydown: "Escape" })}
-        >
-          ${this.#dialogContents()}
-        </devtools-button-dialog>
-      </div>
-    `;
+                                  jslog=${VisualLogging2.dialog("preloading-disabled").track({ resize: true, keydown: "Escape" })}>
+            <div id="contents">
+              <devtools-report>
+                ${input.warnings.map(({ key, valueId, placeholders = {} }) => {
+      const value = i18nTemplate(str_4, valueId, Object.fromEntries(Object.entries(placeholders).map(([key2, { title, href }]) => [key2, html3`<devtools-link href=${href}>${title}</devtools-link>`])));
+      return html3`
+                      <div class="key">${key}</div>
+                      <div class="value">${value}</div>
+                    `;
+    })}
+              </devtools-report>
+              <div id="footer">
+                <devtools-link href=${LINK} jslogcontext="learn-more">
+                  ${i18nString4(UIStrings4.footerLearnMore)}
+                </devtools-link>
+              </div>
+            </div>
+          </devtools-button-dialog>
+        </div>`;
   }
-  #dialogContents() {
-    return html3`
-      <div id='contents'>
-        <devtools-report>
-          ${this.#maybeDisableByPreference()}
-          ${this.#maybeDisableByDataSaver()}
-          ${this.#maybeDisableByBatterySaver()}
-          ${this.#maybeDisableByHoldbackPrefetchSpeculationRules()}
-          ${this.#maybeDisableByHoldbackPrerenderSpeculationRules()}
-        </devtools-report>
-        <div id='footer'>
-          <x-link class="devtools-link" tabindex="0" href=${LINK} 
-          jslog=${VisualLogging2.link().track({ click: true, keydown: "Enter|Space" }).context("learn-more")}
-          >${i18nString4(UIStrings4.footerLearnMore)}</x-link>
-          <x-link class="icon-link devtools-link" tabindex="0" href=${LINK}></x-link>
-        </div>
-      </div>
-    `;
+  render3(template, target);
+};
+var PreloadingDisabledInfobar = class extends UI3.Widget.VBox {
+  #view;
+  #disabledByPreference = false;
+  #disabledByDataSaver = false;
+  #disabledByBatterySaver = false;
+  #disabledByHoldbackPrefetchSpeculationRules = false;
+  #disabledByHoldbackPrerenderSpeculationRules = false;
+  constructor(view = DEFAULT_VIEW2) {
+    super({ useShadowDom: true });
+    this.#view = view;
   }
-  #maybeKeyValue(shouldShow, header, description) {
-    if (!shouldShow) {
-      return Lit3.nothing;
+  get disabledByPreference() {
+    return this.#disabledByPreference;
+  }
+  set disabledByPreference(value) {
+    if (this.#disabledByPreference !== value) {
+      this.#disabledByPreference = value;
+      this.requestUpdate();
     }
-    return html3`
-      <div class='key'>
-        ${header}
-      </div>
-      <div class='value'>
-        ${description}
-      </div>
-    `;
   }
-  #maybeDisableByPreference() {
-    const preloadingSettingLink = new ChromeLink.ChromeLink.ChromeLink();
-    preloadingSettingLink.href = "chrome://settings/performance";
-    preloadingSettingLink.textContent = i18nString4(UIStrings4.preloadingPagesSettings);
-    const extensionsSettingLink = new ChromeLink.ChromeLink.ChromeLink();
-    extensionsSettingLink.href = "chrome://extensions";
-    extensionsSettingLink.textContent = i18nString4(UIStrings4.extensionsSettings);
-    const description = uiI18n.getFormatLocalizedString(str_4, UIStrings4.descriptionDisabledByPreference, { PH1: preloadingSettingLink, PH2: extensionsSettingLink });
-    return this.#maybeKeyValue(this.#data.disabledByPreference, i18nString4(UIStrings4.headerDisabledByPreference), description);
+  get disabledByDataSaver() {
+    return this.#disabledByDataSaver;
   }
-  #maybeDisableByDataSaver() {
-    return this.#maybeKeyValue(this.#data.disabledByDataSaver, i18nString4(UIStrings4.headerDisabledByDataSaver), i18nString4(UIStrings4.descriptionDisabledByDataSaver));
+  set disabledByDataSaver(value) {
+    if (this.#disabledByDataSaver !== value) {
+      this.#disabledByDataSaver = value;
+      this.requestUpdate();
+    }
   }
-  #maybeDisableByBatterySaver() {
-    return this.#maybeKeyValue(this.#data.disabledByBatterySaver, i18nString4(UIStrings4.headerDisabledByBatterySaver), i18nString4(UIStrings4.descriptionDisabledByBatterySaver));
+  get disabledByBatterySaver() {
+    return this.#disabledByBatterySaver;
   }
-  #maybeDisableByHoldbackPrefetchSpeculationRules() {
-    return this.#maybeKeyValue(this.#data.disabledByHoldbackPrefetchSpeculationRules, i18nString4(UIStrings4.headerDisabledByHoldbackPrefetchSpeculationRules), i18nString4(UIStrings4.descriptionDisabledByHoldbackPrefetchSpeculationRules));
+  set disabledByBatterySaver(value) {
+    if (this.#disabledByBatterySaver !== value) {
+      this.#disabledByBatterySaver = value;
+      this.requestUpdate();
+    }
   }
-  #maybeDisableByHoldbackPrerenderSpeculationRules() {
-    return this.#maybeKeyValue(this.#data.disabledByHoldbackPrerenderSpeculationRules, i18nString4(UIStrings4.headerDisabledByHoldbackPrerenderSpeculationRules), i18nString4(UIStrings4.descriptionDisabledByHoldbackPrerenderSpeculationRules));
+  get disabledByHoldbackPrefetchSpeculationRules() {
+    return this.#disabledByHoldbackPrefetchSpeculationRules;
+  }
+  set disabledByHoldbackPrefetchSpeculationRules(value) {
+    if (this.#disabledByHoldbackPrefetchSpeculationRules !== value) {
+      this.#disabledByHoldbackPrefetchSpeculationRules = value;
+      this.requestUpdate();
+    }
+  }
+  get disabledByHoldbackPrerenderSpeculationRules() {
+    return this.#disabledByHoldbackPrerenderSpeculationRules;
+  }
+  set disabledByHoldbackPrerenderSpeculationRules(value) {
+    if (this.#disabledByHoldbackPrerenderSpeculationRules !== value) {
+      this.#disabledByHoldbackPrerenderSpeculationRules = value;
+      this.requestUpdate();
+    }
+  }
+  wasShown() {
+    super.wasShown();
+    this.requestUpdate();
+  }
+  performUpdate() {
+    let header = null;
+    if (this.#disabledByPreference || this.#disabledByDataSaver || this.#disabledByBatterySaver) {
+      header = i18nString4(UIStrings4.infobarPreloadingIsDisabled);
+    } else if (this.#disabledByHoldbackPrefetchSpeculationRules || this.#disabledByHoldbackPrerenderSpeculationRules) {
+      header = i18nString4(UIStrings4.infobarPreloadingIsForceEnabled);
+    }
+    const warnings = [];
+    if (this.#disabledByPreference) {
+      warnings.push({
+        key: i18nString4(UIStrings4.headerDisabledByPreference),
+        valueId: UIStrings4.descriptionDisabledByPreference,
+        placeholders: {
+          PH1: {
+            title: i18nString4(UIStrings4.preloadingPagesSettings),
+            href: urlString`chrome://settings/performance`
+          },
+          PH2: {
+            title: i18nString4(UIStrings4.extensionsSettings),
+            href: urlString`chrome://extensions`
+          }
+        }
+      });
+    }
+    if (this.#disabledByDataSaver) {
+      warnings.push({
+        key: i18nString4(UIStrings4.headerDisabledByDataSaver),
+        valueId: UIStrings4.descriptionDisabledByDataSaver
+      });
+    }
+    if (this.#disabledByBatterySaver) {
+      warnings.push({
+        key: i18nString4(UIStrings4.headerDisabledByBatterySaver),
+        valueId: UIStrings4.descriptionDisabledByBatterySaver
+      });
+    }
+    if (this.#disabledByHoldbackPrefetchSpeculationRules) {
+      warnings.push({
+        key: i18nString4(UIStrings4.headerDisabledByHoldbackPrefetchSpeculationRules),
+        valueId: UIStrings4.descriptionDisabledByHoldbackPrefetchSpeculationRules
+      });
+    }
+    if (this.#disabledByHoldbackPrerenderSpeculationRules) {
+      warnings.push({
+        key: i18nString4(UIStrings4.headerDisabledByHoldbackPrerenderSpeculationRules),
+        valueId: UIStrings4.descriptionDisabledByHoldbackPrerenderSpeculationRules
+      });
+    }
+    const input = {
+      header,
+      warnings
+    };
+    const output = void 0;
+    this.#view(input, output, this.contentElement);
   }
 };
-customElements.define("devtools-resources-preloading-disabled-infobar", PreloadingDisabledInfobar);
 
 // gen/front_end/panels/application/preloading/components/PreloadingGrid.js
 var PreloadingGrid_exports = {};
@@ -1506,8 +1548,8 @@ import "./../../../../ui/kit/kit.js";
 import * as Common2 from "./../../../../core/common/common.js";
 import * as i18n9 from "./../../../../core/i18n/i18n.js";
 import * as SDK4 from "./../../../../core/sdk/sdk.js";
-import * as LegacyWrapper5 from "./../../../../ui/components/legacy_wrapper/legacy_wrapper.js";
-import * as Lit4 from "./../../../../ui/lit/lit.js";
+import * as LegacyWrapper3 from "./../../../../ui/components/legacy_wrapper/legacy_wrapper.js";
+import * as Lit3 from "./../../../../ui/lit/lit.js";
 
 // gen/front_end/panels/application/preloading/components/preloadingGrid.css.js
 var preloadingGrid_css_default = `/*
@@ -1574,8 +1616,8 @@ var UIStrings5 = {
 };
 var str_5 = i18n9.i18n.registerUIStrings("panels/application/preloading/components/PreloadingGrid.ts", UIStrings5);
 var i18nString5 = i18n9.i18n.getLocalizedString.bind(void 0, str_5);
-var { render: render4, html: html4, Directives: { styleMap: styleMap2 } } = Lit4;
-var PreloadingGrid = class extends LegacyWrapper5.LegacyWrapper.WrappableComponent {
+var { render: render4, html: html4, Directives: { styleMap: styleMap2 } } = Lit3;
+var PreloadingGrid = class extends LegacyWrapper3.LegacyWrapper.WrappableComponent {
   #shadow = this.attachShadow({ mode: "open" });
   #data = null;
   connectedCallback() {
@@ -1643,7 +1685,7 @@ customElements.define("devtools-resources-preloading-grid", PreloadingGrid);
 // gen/front_end/panels/application/preloading/components/RuleSetDetailsView.js
 var RuleSetDetailsView_exports = {};
 __export(RuleSetDetailsView_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW2,
+  DEFAULT_VIEW: () => DEFAULT_VIEW3,
   RuleSetDetailsView: () => RuleSetDetailsView
 });
 import * as i18n11 from "./../../../../core/i18n/i18n.js";
@@ -1652,7 +1694,7 @@ import * as Formatter from "./../../../../models/formatter/formatter.js";
 import * as CodeMirror from "./../../../../third_party/codemirror.next/codemirror.next.js";
 import * as CodeHighlighter from "./../../../../ui/components/code_highlighter/code_highlighter.js";
 import * as TextEditor from "./../../../../ui/components/text_editor/text_editor.js";
-import * as UI3 from "./../../../../ui/legacy/legacy.js";
+import * as UI4 from "./../../../../ui/legacy/legacy.js";
 import { html as html5, nothing as nothing3, render as render5 } from "./../../../../ui/lit/lit.js";
 
 // gen/front_end/panels/application/preloading/components/RuleSetDetailsView.css.js
@@ -1704,10 +1746,10 @@ var UIStrings6 = {
 var str_6 = i18n11.i18n.registerUIStrings("panels/application/preloading/components/RuleSetDetailsView.ts", UIStrings6);
 var i18nString6 = i18n11.i18n.getLocalizedString.bind(void 0, str_6);
 var codeMirrorJsonType = await CodeHighlighter.CodeHighlighter.languageFromMIME("application/json");
-var DEFAULT_VIEW2 = (input, _output, target) => {
+var DEFAULT_VIEW3 = (input, _output, target) => {
   render5(html5`
     <style>${RuleSetDetailsView_css_default}</style>
-    <style>${UI3.inspectorCommonStyles}</style>
+    <style>${UI4.inspectorCommonStyles}</style>
     ${input ? html5`
         <div class="content">
           <div class="ruleset-header" id="ruleset-url">${input.url}</div>
@@ -1730,11 +1772,11 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
           </div>`}
     `, target);
 };
-var RuleSetDetailsView = class extends UI3.Widget.VBox {
+var RuleSetDetailsView = class extends UI4.Widget.VBox {
   #view;
   #ruleSet = null;
   #shouldPrettyPrint = true;
-  constructor(element, view = DEFAULT_VIEW2) {
+  constructor(element, view = DEFAULT_VIEW3) {
     super(element, { useShadowDom: true });
     this.#view = view;
   }
@@ -1785,6 +1827,7 @@ var RuleSetDetailsView = class extends UI3.Widget.VBox {
 // gen/front_end/panels/application/preloading/components/RuleSetGrid.js
 var RuleSetGrid_exports = {};
 __export(RuleSetGrid_exports, {
+  DEFAULT_VIEW: () => DEFAULT_VIEW4,
   RuleSetGrid: () => RuleSetGrid,
   i18nString: () => i18nString7
 });
@@ -1794,8 +1837,8 @@ import * as Common3 from "./../../../../core/common/common.js";
 import * as i18n13 from "./../../../../core/i18n/i18n.js";
 import { assertNotNullOrUndefined as assertNotNullOrUndefined3 } from "./../../../../core/platform/platform.js";
 import * as SDK6 from "./../../../../core/sdk/sdk.js";
-import * as LegacyWrapper7 from "./../../../../ui/components/legacy_wrapper/legacy_wrapper.js";
-import * as Lit5 from "./../../../../ui/lit/lit.js";
+import * as UI5 from "./../../../../ui/legacy/legacy.js";
+import { Directives as Directives2, html as html6, nothing as nothing4, render as render6 } from "./../../../../ui/lit/lit.js";
 import * as VisualLogging3 from "./../../../../ui/visual_logging/visual_logging.js";
 import * as NetworkForward from "./../../../network/forward/forward.js";
 import * as PreloadingHelper2 from "./../helper/helper.js";
@@ -1829,7 +1872,7 @@ devtools-data-grid {
 /*# sourceURL=${import.meta.resolve("./ruleSetGrid.css")} */`;
 
 // gen/front_end/panels/application/preloading/components/RuleSetGrid.js
-var { html: html6, Directives: { styleMap: styleMap3 } } = Lit5;
+var { styleMap: styleMap3 } = Directives2;
 var UIStrings7 = {
   /**
    * @description Column header: Short URL of rule set.
@@ -1858,73 +1901,41 @@ var UIStrings7 = {
 };
 var str_7 = i18n13.i18n.registerUIStrings("panels/application/preloading/components/RuleSetGrid.ts", UIStrings7);
 var i18nString7 = i18n13.i18n.getLocalizedString.bind(void 0, str_7);
-var RuleSetGrid = class extends LegacyWrapper7.LegacyWrapper.WrappableComponent {
-  #shadow = this.attachShadow({ mode: "open" });
-  #data = null;
-  connectedCallback() {
-    this.#render();
-  }
-  update(data) {
-    this.#data = data;
-    this.#render();
-  }
-  async #revealSpeculationRules(ruleSet) {
-    if (ruleSet.backendNodeId !== void 0) {
-      await this.#revealSpeculationRulesInElements(ruleSet);
-    } else if (ruleSet.url !== void 0 && ruleSet.requestId) {
-      await this.#revealSpeculationRulesInNetwork(ruleSet);
-    }
-  }
-  async #revealSpeculationRulesInElements(ruleSet) {
-    assertNotNullOrUndefined3(ruleSet.backendNodeId);
-    const target = SDK6.TargetManager.TargetManager.instance().scopeTarget();
-    if (target === null) {
-      return;
-    }
-    await Common3.Revealer.reveal(new SDK6.DOMModel.DeferredDOMNode(target, ruleSet.backendNodeId));
-  }
-  async #revealSpeculationRulesInNetwork(ruleSet) {
-    assertNotNullOrUndefined3(ruleSet.requestId);
-    const request = SDK6.TargetManager.TargetManager.instance().scopeTarget()?.model(SDK6.NetworkManager.NetworkManager)?.requestForId(ruleSet.requestId) || null;
-    if (request === null) {
-      return;
-    }
-    const requestLocation = NetworkForward.UIRequestLocation.UIRequestLocation.tab(request, "preview", { clearFilter: false });
-    await Common3.Revealer.reveal(requestLocation);
-  }
-  async #revealAttemptViewWithFilter(ruleSet) {
-    await Common3.Revealer.reveal(new PreloadingHelper2.PreloadingForward.AttemptViewWithFilter(ruleSet.id));
-  }
-  #render() {
-    if (this.#data === null) {
-      return;
-    }
-    const { rows, pageURL } = this.#data;
-    Lit5.render(html6`
-        <style>${ruleSetGrid_css_default}</style>
-        <div class="ruleset-container" jslog=${VisualLogging3.pane("preloading-rules")}>
-          <devtools-data-grid striped>
-            <table>
-              <tr>
-                <th id="rule-set" weight="20" sortable>
-                  ${i18nString7(UIStrings7.ruleSet)}
-                </th>
-                <th id="status" weight="80" sortable>
-                  ${i18nString7(UIStrings7.status)}
-                </th>
-              </tr>
-              ${rows.map(({ ruleSet, preloadsStatusSummary }) => {
+var DEFAULT_VIEW4 = (input, _output, target) => {
+  let template = nothing4;
+  if (input.data !== null) {
+    const { rows, pageURL } = input.data;
+    template = html6`
+          <style>${ruleSetGrid_css_default}</style>
+          <div class="ruleset-container" jslog=${VisualLogging3.pane("preloading-rules")}>
+            <devtools-data-grid striped>
+              <table>
+                <tr>
+                  <th id="rule-set" weight="20" sortable>
+                    ${i18nString7(UIStrings7.ruleSet)}
+                  </th>
+                  <th id="status" weight="80" sortable>
+                    ${i18nString7(UIStrings7.status)}
+                  </th>
+                </tr>
+                ${rows.map(({ ruleSet, preloadsStatusSummary }) => {
       const location = ruleSetTagOrLocationShort(ruleSet, pageURL);
       const revealInElements = ruleSet.backendNodeId !== void 0;
       const revealInNetwork = ruleSet.url !== void 0 && ruleSet.requestId;
       return html6`
-                  <tr @select=${() => this.dispatchEvent(new CustomEvent("select", { detail: ruleSet.id }))}>
-                    <td>
-                      ${revealInElements || revealInNetwork ? html6`
-                        <button class="link" role="link"
-                            @click=${() => this.#revealSpeculationRules(ruleSet)}
-                            title=${revealInElements ? i18nString7(UIStrings7.clickToOpenInElementsPanel) : i18nString7(UIStrings7.clickToOpenInNetworkPanel)}
-                            style=${styleMap3({
+                    <tr @select=${() => input.onSelect(ruleSet.id)}>
+                      <td>
+                        ${revealInElements || revealInNetwork ? html6`
+                          <button class="link" role="link"
+                              @click=${() => {
+        if (revealInElements) {
+          input.onRevealInElements(ruleSet);
+        } else {
+          input.onRevealInNetwork(ruleSet);
+        }
+      }}
+                              title=${revealInElements ? i18nString7(UIStrings7.clickToOpenInElementsPanel) : i18nString7(UIStrings7.clickToOpenInNetworkPanel)}
+                              style=${styleMap3({
         border: "none",
         background: "none",
         color: "var(--icon-link)",
@@ -1933,26 +1944,26 @@ var RuleSetGrid = class extends LegacyWrapper7.LegacyWrapper.WrappableComponent 
         "padding-inline-start": "0",
         "padding-inline-end": "0"
       })}
-                            jslog=${VisualLogging3.action(revealInElements ? "reveal-in-elements" : "reveal-in-network").track({ click: true })}
-                          >
-                            <devtools-icon name=${revealInElements ? "code-circle" : "arrow-up-down-circle"} class="medium"
-                              style=${styleMap3({
+                              jslog=${VisualLogging3.action(revealInElements ? "reveal-in-elements" : "reveal-in-network").track({ click: true })}
+                            >
+                              <devtools-icon name=${revealInElements ? "code-circle" : "arrow-up-down-circle"} class="medium"
+                                style=${styleMap3({
         color: "var(--icon-link)",
         "vertical-align": "sub"
       })}
-                            ></devtools-icon>
-                            ${location}
-                          </button>` : location}
-                  </td>
-                  <td>
-                    ${ruleSet.errorType !== void 0 ? html6`
-                      <span style=${styleMap3({ color: "var(--sys-color-error)" })}>
-                        ${i18nString7(UIStrings7.errors, { errorCount: 1 })}
-                      </span>` : ""} ${ruleSet.errorType !== "SourceIsNotJsonObject" && ruleSet.errorType !== "InvalidRulesetLevelTag" ? html6`
-                      <button class="link" role="link"
-                        @click=${() => this.#revealAttemptViewWithFilter(ruleSet)}
-                        title=${i18nString7(UIStrings7.buttonRevealPreloadsAssociatedWithRuleSet)}
-                        style=${styleMap3({
+                              ></devtools-icon>
+                              ${location}
+                            </button>` : location}
+                    </td>
+                    <td>
+                      ${ruleSet.errorType !== void 0 ? html6`
+                        <span style=${styleMap3({ color: "var(--sys-color-error)" })}>
+                          ${i18nString7(UIStrings7.errors, { errorCount: 1 })}
+                        </span>` : ""} ${ruleSet.errorType !== "SourceIsNotJsonObject" && ruleSet.errorType !== "InvalidRulesetLevelTag" ? html6`
+                        <button class="link" role="link"
+                          @click=${() => input.onRevealPreloadsAssociatedWithRuleSet(ruleSet)}
+                          title=${i18nString7(UIStrings7.buttonRevealPreloadsAssociatedWithRuleSet)}
+                          style=${styleMap3({
         color: "var(--sys-color-primary)",
         "text-decoration": "underline",
         cursor: "pointer",
@@ -1961,20 +1972,69 @@ var RuleSetGrid = class extends LegacyWrapper7.LegacyWrapper.WrappableComponent 
         "padding-inline-start": "0",
         "padding-inline-end": "0"
       })}
-                        jslog=${VisualLogging3.action("reveal-preloads").track({ click: true })}>
-                        ${preloadsStatusSummary}
-                      </button>` : ""}
-                  </td>
-                </tr>
-              `;
+                          jslog=${VisualLogging3.action("reveal-preloads").track({ click: true })}>
+                          ${preloadsStatusSummary}
+                        </button>` : ""}
+                    </td>
+                  </tr>
+                `;
     })}
-            </table>
-          </devtools-data-grid>
-        </div>
-      `, this.#shadow, { host: this });
+              </table>
+            </devtools-data-grid>
+          </div>`;
+  }
+  render6(template, target);
+};
+var RuleSetGrid = class extends Common3.ObjectWrapper.eventMixin(UI5.Widget.VBox) {
+  #view;
+  #data = null;
+  constructor(view = DEFAULT_VIEW4) {
+    super({ useShadowDom: true });
+    this.#view = view;
+  }
+  get data() {
+    return this.#data;
+  }
+  set data(data) {
+    this.#data = data;
+    this.requestUpdate();
+  }
+  performUpdate() {
+    const input = {
+      data: this.#data,
+      onSelect: this.dispatchEventToListeners.bind(
+        this,
+        "select"
+        /* Events.SELECT */
+      ),
+      onRevealInElements: this.#revealSpeculationRulesInElements.bind(this),
+      onRevealInNetwork: this.#revealSpeculationRulesInNetwork.bind(this),
+      onRevealPreloadsAssociatedWithRuleSet: this.#revealAttemptViewWithFilter.bind(this)
+    };
+    const output = void 0;
+    this.#view(input, output, this.contentElement);
+  }
+  #revealSpeculationRulesInElements(ruleSet) {
+    assertNotNullOrUndefined3(ruleSet.backendNodeId);
+    const target = SDK6.TargetManager.TargetManager.instance().scopeTarget();
+    if (target === null) {
+      return;
+    }
+    void Common3.Revealer.reveal(new SDK6.DOMModel.DeferredDOMNode(target, ruleSet.backendNodeId));
+  }
+  #revealSpeculationRulesInNetwork(ruleSet) {
+    assertNotNullOrUndefined3(ruleSet.requestId);
+    const request = SDK6.TargetManager.TargetManager.instance().scopeTarget()?.model(SDK6.NetworkManager.NetworkManager)?.requestForId(ruleSet.requestId) || null;
+    if (request === null) {
+      return;
+    }
+    const requestLocation = NetworkForward.UIRequestLocation.UIRequestLocation.tab(request, "preview", { clearFilter: false });
+    void Common3.Revealer.reveal(requestLocation);
+  }
+  #revealAttemptViewWithFilter(ruleSet) {
+    void Common3.Revealer.reveal(new PreloadingHelper2.PreloadingForward.AttemptViewWithFilter(ruleSet.id));
   }
 };
-customElements.define("devtools-resources-ruleset-grid", RuleSetGrid);
 
 // gen/front_end/panels/application/preloading/components/UsedPreloadingView.js
 var UsedPreloadingView_exports = {};
@@ -1987,10 +2047,10 @@ import * as Common4 from "./../../../../core/common/common.js";
 import * as i18n15 from "./../../../../core/i18n/i18n.js";
 import { assertNotNullOrUndefined as assertNotNullOrUndefined4 } from "./../../../../core/platform/platform.js";
 import * as SDK7 from "./../../../../core/sdk/sdk.js";
-import * as LegacyWrapper9 from "./../../../../ui/components/legacy_wrapper/legacy_wrapper.js";
-import * as RenderCoordinator3 from "./../../../../ui/components/render_coordinator/render_coordinator.js";
-import * as UI4 from "./../../../../ui/legacy/legacy.js";
-import * as Lit6 from "./../../../../ui/lit/lit.js";
+import * as LegacyWrapper5 from "./../../../../ui/components/legacy_wrapper/legacy_wrapper.js";
+import * as RenderCoordinator2 from "./../../../../ui/components/render_coordinator/render_coordinator.js";
+import * as UI6 from "./../../../../ui/legacy/legacy.js";
+import * as Lit4 from "./../../../../ui/lit/lit.js";
 import * as VisualLogging4 from "./../../../../ui/visual_logging/visual_logging.js";
 import * as PreloadingHelper3 from "./../helper/helper.js";
 
@@ -2075,7 +2135,7 @@ devtools-report-divider {
 /*# sourceURL=${import.meta.resolve("./usedPreloadingView.css")} */`;
 
 // gen/front_end/panels/application/preloading/components/UsedPreloadingView.js
-var { html: html7 } = Lit6;
+var { html: html7 } = Lit4;
 var UIStrings8 = {
   /**
    * @description Header for preloading status.
@@ -2184,7 +2244,7 @@ var UIStrings8 = {
 };
 var str_8 = i18n15.i18n.registerUIStrings("panels/application/preloading/components/UsedPreloadingView.ts", UIStrings8);
 var i18nString8 = i18n15.i18n.getLocalizedString.bind(void 0, str_8);
-var UsedPreloadingView = class extends LegacyWrapper9.LegacyWrapper.WrappableComponent {
+var UsedPreloadingView = class extends LegacyWrapper5.LegacyWrapper.WrappableComponent {
   #shadow = this.attachShadow({ mode: "open" });
   #data = {
     pageURL: "",
@@ -2196,8 +2256,8 @@ var UsedPreloadingView = class extends LegacyWrapper9.LegacyWrapper.WrappableCom
     void this.#render();
   }
   async #render() {
-    await RenderCoordinator3.write("UsedPreloadingView render", () => {
-      Lit6.render(this.#renderTemplate(), this.#shadow, { host: this });
+    await RenderCoordinator2.write("UsedPreloadingView render", () => {
+      Lit4.render(this.#renderTemplate(), this.#shadow, { host: this });
     });
   }
   #renderTemplate() {
@@ -2290,7 +2350,7 @@ var UsedPreloadingView = class extends LegacyWrapper9.LegacyWrapper.WrappableCom
       assertNotNullOrUndefined4(prerenderLike);
       maybeFailureReasonMessage = prerenderFailureReason(prerenderLike);
     }
-    let maybeFailureReason = Lit6.nothing;
+    let maybeFailureReason = Lit4.nothing;
     if (maybeFailureReasonMessage !== void 0) {
       maybeFailureReason = html7`
       <devtools-report-section-header>${i18nString8(UIStrings8.detailsFailureReason)}</devtools-report-section-header>
@@ -2320,7 +2380,7 @@ var UsedPreloadingView = class extends LegacyWrapper9.LegacyWrapper.WrappableCom
   }
   #maybeMismatchedSections(kind) {
     if (kind !== "NoPreloads" || this.#data.previousAttempts.length === 0) {
-      return Lit6.nothing;
+      return Lit4.nothing;
     }
     const rows = this.#data.previousAttempts.map((attempt) => {
       return {
@@ -2347,7 +2407,7 @@ var UsedPreloadingView = class extends LegacyWrapper9.LegacyWrapper.WrappableCom
       <devtools-report-section
       jslog=${VisualLogging4.section("preloaded-urls")}>
         <devtools-widget
-          .widgetConfig=${UI4.Widget.widgetConfig(MismatchedPreloadingGrid, { data })}
+          .widgetConfig=${UI6.Widget.widgetConfig(MismatchedPreloadingGrid, { data })}
         ></devtools-widget>
       </devtools-report-section>
     `;
@@ -2355,7 +2415,7 @@ var UsedPreloadingView = class extends LegacyWrapper9.LegacyWrapper.WrappableCom
   #maybeMismatchedHTTPHeadersSections() {
     const attempt = this.#data.previousAttempts.find((attempt2) => this.#isPrerenderAttempt(attempt2) && attempt2.mismatchedHeaders !== null);
     if (!attempt?.mismatchedHeaders) {
-      return Lit6.nothing;
+      return Lit4.nothing;
     }
     if (attempt.key.url !== this.#data.pageURL) {
       throw new Error("unreachable");

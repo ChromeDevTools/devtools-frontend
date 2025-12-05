@@ -13,7 +13,6 @@ export declare class CallStackSidebarPane extends UI.View.SimpleView implements 
     private readonly showMoreMessageElement;
     private showIgnoreListed;
     private readonly locationPool;
-    private readonly updateThrottler;
     private maxAsyncStackChainDepth;
     private readonly updateItemThrottler;
     private readonly scheduledForUpdateItems;
@@ -26,8 +25,7 @@ export declare class CallStackSidebarPane extends UI.View.SimpleView implements 
     flavorChanged(_object: Object | null): void;
     private debugInfoAttached;
     private setSourceMapSubscription;
-    update(): void;
-    doUpdate(): Promise<void>;
+    performUpdate(): Promise<void>;
     private updatedForTest;
     private refreshItem;
     createElementForItem(item: Item): Element;
@@ -35,8 +33,6 @@ export declare class CallStackSidebarPane extends UI.View.SimpleView implements 
     isItemSelectable(_item: Item): boolean;
     selectedItemChanged(_from: Item | null, _to: Item | null, fromElement: HTMLElement | null, toElement: HTMLElement | null): void;
     updateSelectedItemARIA(_fromElement: Element | null, _toElement: Element | null): boolean;
-    private createIgnoreListMessageElementAndCheckbox;
-    private createShowMoreMessageElement;
     private onContextMenu;
     private activateItem;
     activeCallFrameItem(): Item | null;

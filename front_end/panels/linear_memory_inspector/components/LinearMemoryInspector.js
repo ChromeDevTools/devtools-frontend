@@ -96,10 +96,10 @@ export const DEFAULT_VIEW = (input, _output, target) => {
         endianness: input.endianness,
         memoryLength: input.outerMemoryLength,
         onValueTypeModeChange: input.onValueTypeModeChanged,
-        onJumpToAddressClicked: input.onJumpToAddress
+        onJumpToAddressClicked: input.onJumpToAddress,
+        onValueTypeToggled: input.onValueTypeToggled,
+        onEndiannessChanged: input.onEndiannessChanged,
     }}
-        @valuetypetoggled=${input.onValueTypeToggled}
-        @endiannesschanged=${input.onEndiannessChanged}
         >
       </devtools-linear-memory-inspector-interpreter>
     </div>`}
@@ -262,8 +262,8 @@ export class LinearMemoryInspector extends Common.ObjectWrapper.eventMixin(UI.Wi
     #createSettings() {
         return { valueTypes: this.#valueTypes, modes: this.#valueTypeModes, endianness: this.#endianness };
     }
-    #onEndiannessChanged(e) {
-        this.#endianness = e.data;
+    #onEndiannessChanged(endianness) {
+        this.#endianness = endianness;
         this.dispatchEventToListeners("SettingsChanged" /* Events.SETTINGS_CHANGED */, this.#createSettings());
         void this.requestUpdate();
     }
@@ -285,8 +285,7 @@ export class LinearMemoryInspector extends Common.ObjectWrapper.eventMixin(UI.Wi
         }
         void this.requestUpdate();
     }
-    #onValueTypeToggled(e) {
-        const { type, checked } = e.data;
+    #onValueTypeToggled(type, checked) {
         if (checked) {
             this.#valueTypes.add(type);
         }

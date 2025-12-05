@@ -1,4 +1,3 @@
-import '../../../ui/components/chrome_link/chrome_link.js';
 import '../../../ui/components/settings/settings.js';
 import '../../../ui/components/tooltips/tooltips.js';
 import * as Common from '../../../core/common/common.js';

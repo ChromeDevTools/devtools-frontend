@@ -20,8 +20,13 @@ function getFormatLocalizedString(registeredStrings, stringId, placeholders) {
 }
 function getFormatLocalizedStringTemplate(registeredStrings, stringId, placeholders) {
   const formatter = registeredStrings.getLocalizedStringSetFor(I18n.DevToolsLocale.DevToolsLocale.instance().locale).getMessageFormatterFor(stringId);
-  return html`<span>${repeat(formatter.getAst(), (icuElement) => icuElement.type === /* argumentElement */
-  1 ? placeholders[icuElement.value] ?? nothing : "value" in icuElement ? String(icuElement.value) : nothing)}</span>`;
+  return html`<span>${repeat(formatter.getAst(), (icuElement) => {
+    if (icuElement.type === /* argumentElement */
+    1) {
+      return placeholders[icuElement.value] ?? nothing;
+    }
+    return "value" in icuElement ? String(icuElement.value) : nothing;
+  })}</span>`;
 }
 export {
   getFormatLocalizedString,

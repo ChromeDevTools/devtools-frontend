@@ -1,3 +1,6 @@
+// Copyright 2023 The Chromium Authors
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
@@ -118,9 +121,7 @@ export class InteractionsTrackAppender {
     }
     setPopoverInfo(event, info) {
         if (Trace.Types.Events.isSyntheticInteraction(event)) {
-            const breakdown = new Components.InteractionBreakdown.InteractionBreakdown();
-            breakdown.entry = event;
-            info.additionalElements.push(breakdown);
+            info.additionalElements.push(Components.InteractionBreakdown.InteractionBreakdown.createWidgetElement(event));
         }
     }
 }

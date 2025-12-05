@@ -7,9 +7,12 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Logs from '../../models/logs/logs.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import requestInitiatorViewStyles from './requestInitiatorView.css.js';
 import requestInitiatorViewTreeStyles from './requestInitiatorViewTree.css.js';
+const { html, render, nothing } = Lit;
+const { widgetConfig } = UI.Widget;
 const UIStrings = {
     /**
      * @description Text in Request Initiator View of the Network panel if the request has no initiator data
@@ -26,19 +29,112 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/network/RequestInitiatorView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+export const DEFAULT_VIEW = (input, _output, target) => {
+    const hasInitiatorData = input.initiatorGraph.initiators.size > 1 || input.initiatorGraph.initiated.size > 1 || input.hasStackTrace;
+    if (!hasInitiatorData) {
+        render(html `
+      <div class="empty-view" style="display: flex; justify-content: center; align-items: center; height: 100%; color: var(--sys-color-token-subtle);">
+        ${i18nString(UIStrings.noInitiator)}
+      </div>
+    `, target);
+        return;
+    }
+    const renderStackTraceSection = () => {
+        return html `
+      <li role="treeitem" class="request-initiator-view-section-title" aria-expanded="true">
+        ${i18nString(UIStrings.requestCallStack)}
+        <ul role="group">
+          <li role="treeitem">
+            <devtools-widget .widgetConfig=${widgetConfig(Components.JSPresentationUtils.StackTracePreviewContent, {
+            target: input.target,
+            linkifier: input.linkifier,
+            options: { runtimeStackTrace: input.request.initiator()?.stack, tabStops: true }
+        })}></devtools-widget>
+          </li>
+        </ul>
+      </li>
+    `;
+    };
+    const renderInitiatorNodes = (initiators, index, initiated, visited) => {
+        if (index >= initiators.length) {
+            return html `${nothing}`;
+        }
+        const request = initiators[index];
+        const isCurrentRequest = (index === initiators.length - 1);
+        return html `
+      <li role="treeitem" ?selected=${isCurrentRequest} aria-expanded="true">
+        <span style=${isCurrentRequest ? 'font-weight: bold' : ''}>${request.url()}</span>
+        <ul role="group">
+          ${renderInitiatorNodes(initiators, index + 1, initiated, visited)}
+          ${isCurrentRequest ? renderInitiatedNodes(initiated, request, visited) : nothing}
+        </ul>
+      </li>
+    `;
+    };
+    const renderInitiatedNodes = (initiated, parentRequest, visited) => {
+        const children = [];
+        for (const [request, initiator] of initiated) {
+            if (initiator === parentRequest) {
+                children.push(request);
+            }
+        }
+        if (children.length === 0) {
+            return html `${nothing}`;
+        }
+        return html `
+      ${children.map(child => {
+            const shouldRecurse = !visited.has(child);
+            if (shouldRecurse) {
+                visited.add(child);
+            }
+            return html `
+        <li role="treeitem" aria-expanded="true">
+          <span>${child.url()}</span>
+          ${shouldRecurse ? html `<ul>${renderInitiatedNodes(initiated, child, visited)}</ul>` : nothing}
+        </li>
+      `;
+        })}
+    `;
+    };
+    const renderInitiatorChain = (initiatorGraph) => {
+        const initiators = Array.from(initiatorGraph.initiators).reverse();
+        const visited = new Set();
+        visited.add(input.request);
+        return html `
+      <li role="treeitem" class="request-initiator-view-section-title" aria-expanded="true">
+        ${i18nString(UIStrings.requestInitiatorChain)}
+        <ul role="group">
+          ${renderInitiatorNodes(initiators, 0, initiatorGraph.initiated, visited)}
+        </ul>
+      </li>
+    `;
+    };
+    render(html `
+    <div class="request-initiator-view-tree" jslog=${VisualLogging.tree('initiator-tree')}>
+      <devtools-tree .template=${html `
+        <style>
+          ${requestInitiatorViewTreeStyles}
+        </style>
+        <ul role="tree">
+           ${input.hasStackTrace ? renderStackTraceSection() : Lit.nothing}
+           ${(input.initiatorGraph.initiators.size > 1 || input.initiatorGraph.initiated.size > 1) ?
+        renderInitiatorChain(input.initiatorGraph) :
+        Lit.nothing}
+        </ul>
+      `}></devtools-tree>
+    </div>
+  `, target);
+};
 export class RequestInitiatorView extends UI.Widget.VBox {
     linkifier;
     request;
-    emptyWidget;
-    hasShown;
-    constructor(request) {
+    #view;
+    constructor(request, view = DEFAULT_VIEW) {
         super({ jslog: `${VisualLogging.pane('initiator').track({ resize: true })}` });
         this.element.classList.add('request-initiator-view');
         this.linkifier = new Components.Linkifier.Linkifier();
         this.request = request;
-        this.emptyWidget = new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.noInitiator), '');
-        this.emptyWidget.show(this.element);
-        this.hasShown = false;
+        this.#view = view;
     }
     static createStackTracePreview(request, linkifier, focusableLink) {
         const initiator = request.initiator();
@@ -49,94 +145,24 @@ export class RequestInitiatorView extends UI.Widget.VBox {
         const target = networkManager ? networkManager.target() : undefined;
         return new Components.JSPresentationUtils.StackTracePreviewContent(undefined, target, linkifier, { runtimeStackTrace: initiator.stack, tabStops: focusableLink });
     }
-    createTree() {
-        const treeOutline = new UI.TreeOutline.TreeOutlineInShadow();
-        treeOutline.registerRequiredCSS(requestInitiatorViewTreeStyles);
-        treeOutline.contentElement.classList.add('request-initiator-view-tree');
-        treeOutline.contentElement.setAttribute('jslog', `${VisualLogging.tree('initiator-tree')}`);
-        return treeOutline;
-    }
-    buildRequestChainTree(initiatorGraph, title, tree) {
-        const root = new UI.TreeOutline.TreeElement(title);
-        tree.appendChild(root);
-        if (root.titleElement instanceof HTMLElement) {
-            root.titleElement.classList.add('request-initiator-view-section-title');
-        }
-        const initiators = initiatorGraph.initiators;
-        let parent = root;
-        for (const request of Array.from(initiators).reverse()) {
-            const treeElement = new UI.TreeOutline.TreeElement(request.url());
-            parent.appendChild(treeElement);
-            parent.expand();
-            parent = treeElement;
-        }
-        root.expand();
-        parent.select();
-        const titleElement = parent.titleElement;
-        if (titleElement instanceof HTMLElement) {
-            titleElement.style.fontWeight = 'bold';
-        }
-        const initiated = initiatorGraph.initiated;
-        this.depthFirstSearchTreeBuilder(initiated, parent, this.request);
-        return root;
-    }
-    depthFirstSearchTreeBuilder(initiated, parentElement, parentRequest) {
-        const visited = new Set();
-        // this.request should be already in the tree when build initiator part
-        visited.add(this.request);
-        for (const request of initiated.keys()) {
-            if (initiated.get(request) === parentRequest) {
-                const treeElement = new UI.TreeOutline.TreeElement(request.url());
-                parentElement.appendChild(treeElement);
-                parentElement.expand();
-                // only do dfs when we haven't done one
-                if (!visited.has(request)) {
-                    visited.add(request);
-                    this.depthFirstSearchTreeBuilder(initiated, treeElement, request);
-                }
-            }
-        }
-    }
-    buildStackTraceSection(stackTracePreview, title, tree) {
-        const root = new UI.TreeOutline.TreeElement(title);
-        tree.appendChild(root);
-        if (root.titleElement instanceof HTMLElement) {
-            root.titleElement.classList.add('request-initiator-view-section-title');
-        }
-        const contentElement = new UI.TreeOutline.TreeElement(undefined, false);
-        contentElement.selectable = false;
-        stackTracePreview.markAsRoot();
-        stackTracePreview.show(contentElement.listItemElement);
-        root.appendChild(contentElement);
-        root.expand();
+    performUpdate() {
+        const initiatorGraph = Logs.NetworkLog.NetworkLog.instance().initiatorGraphForRequest(this.request);
+        const hasStackTrace = !!this.request.initiator()?.stack;
+        const networkManager = SDK.NetworkManager.NetworkManager.forRequest(this.request);
+        const target = networkManager ? networkManager.target() : undefined;
+        const viewInput = {
+            initiatorGraph,
+            hasStackTrace,
+            request: this.request,
+            linkifier: this.linkifier,
+            target: target || undefined,
+        };
+        this.#view(viewInput, undefined, this.contentElement);
     }
     wasShown() {
         super.wasShown();
-        if (this.hasShown) {
-            return;
-        }
         this.registerRequiredCSS(requestInitiatorViewStyles);
-        let initiatorDataPresent = false;
-        const containerTree = this.createTree();
-        const stackTracePreview = RequestInitiatorView.createStackTracePreview(this.request, this.linkifier, true);
-        if (stackTracePreview) {
-            initiatorDataPresent = true;
-            this.buildStackTraceSection(stackTracePreview, i18nString(UIStrings.requestCallStack), containerTree);
-        }
-        const initiatorGraph = Logs.NetworkLog.NetworkLog.instance().initiatorGraphForRequest(this.request);
-        if (initiatorGraph.initiators.size > 1 || initiatorGraph.initiated.size > 1) {
-            initiatorDataPresent = true;
-            this.buildRequestChainTree(initiatorGraph, i18nString(UIStrings.requestInitiatorChain), containerTree);
-        }
-        const firstChild = containerTree.firstChild();
-        if (firstChild) {
-            firstChild.select(true);
-        }
-        if (initiatorDataPresent) {
-            this.element.appendChild(containerTree.element);
-            this.emptyWidget.hideWidget();
-        }
-        this.hasShown = true;
+        this.requestUpdate();
     }
 }
 //# sourceMappingURL=RequestInitiatorView.js.map

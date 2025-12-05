@@ -108,7 +108,7 @@ export declare class DebuggerModel extends SDKModel<EventTypes> {
      *
      * Important: This iterator will not yield the "synchronous" part of the stack trace, only the async parent chain.
      */
-    iterateAsyncParents(stackTraceOrPausedDetails: Protocol.Runtime.StackTrace | DebuggerPausedDetails): AsyncGenerator<{
+    iterateAsyncParents(stackTraceOrPausedDetails: Protocol.Runtime.StackTrace | Pick<DebuggerPausedDetails, 'asyncStackTrace' | 'asyncStackTraceId'>): AsyncGenerator<{
         stackTrace: Protocol.Runtime.StackTrace;
         target: Target;
     }>;
@@ -241,8 +241,8 @@ export declare class DebuggerPausedDetails {
     reason: Protocol.Debugger.PausedEventReason;
     auxData: Record<string, any> | undefined;
     breakpointIds: string[];
-    asyncStackTrace: Protocol.Runtime.StackTrace | undefined;
-    asyncStackTraceId: Protocol.Runtime.StackTraceId | undefined;
+    asyncStackTrace?: Protocol.Runtime.StackTrace;
+    asyncStackTraceId?: Protocol.Runtime.StackTraceId;
     constructor(debuggerModel: DebuggerModel, callFrames: Protocol.Debugger.CallFrame[], reason: Protocol.Debugger.PausedEventReason, auxData: Record<string, any> | undefined, breakpointIds: string[], asyncStackTrace?: Protocol.Runtime.StackTrace, asyncStackTraceId?: Protocol.Runtime.StackTraceId);
     private exception;
     private cleanRedundantFrames;

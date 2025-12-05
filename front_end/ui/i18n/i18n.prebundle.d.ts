@@ -3,5 +3,5 @@ import { type LitTemplate } from '../lit/lit.js';
 /**
  * Returns a span element that may contains other DOM element as placeholders
  */
-export declare function getFormatLocalizedString(registeredStrings: ThirdPartyI18n.LocalizedStringSet.RegisteredFileStrings, stringId: string, placeholders: Record<string, Object>): HTMLSpanElement;
-export declare function getFormatLocalizedStringTemplate(registeredStrings: ThirdPartyI18n.LocalizedStringSet.RegisteredFileStrings, stringId: string, placeholders: Record<string, Object>): LitTemplate;
+export declare function getFormatLocalizedString(registeredStrings: ThirdPartyI18n.LocalizedStringSet.RegisteredFileStrings, stringId: string, placeholders: Record<string, Node | string>): HTMLSpanElement;
+export declare function getFormatLocalizedStringTemplate(registeredStrings: ThirdPartyI18n.LocalizedStringSet.RegisteredFileStrings, stringId: string, placeholders: Record<string, Node | string | LitTemplate>): LitTemplate;

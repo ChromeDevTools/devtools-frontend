@@ -1,6 +1,7 @@
 // Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+var _a;
 import * as SDK from '../../core/sdk/sdk.js';
 // eslint-disable-next-line @devtools/es-modules-import
 import * as StackTrace from './stack_trace.js';
@@ -15,32 +16,18 @@ export class StackTraceModel extends SDK.SDKModel.SDKModel {
     #trie = new Trie();
     /** @returns the {@link StackTraceModel} for the target, or the model for the primaryPageTarget when passing null/undefined */
     static #modelForTarget(target) {
-        const model = (target ?? SDK.TargetManager.TargetManager.instance().primaryPageTarget())?.model(StackTraceModel);
+        const model = (target ?? SDK.TargetManager.TargetManager.instance().primaryPageTarget())?.model(_a);
         if (!model) {
             throw new Error('Unable to find StackTraceModel');
         }
         return model;
     }
     async createFromProtocolRuntime(stackTrace, rawFramesToUIFrames) {
-        const translatePromises = [];
-        const fragment = this.#createFragment(stackTrace.callFrames);
-        translatePromises.push(this.#translateFragment(fragment, rawFramesToUIFrames));
-        const asyncFragments = [];
-        const debuggerModel = this.target().model(SDK.DebuggerModel.DebuggerModel);
-        if (debuggerModel) {
-            for await (const { stackTrace: asyncStackTrace, target } of debuggerModel.iterateAsyncParents(stackTrace)) {
-                if (asyncStackTrace.callFrames.length === 0) {
-                    // Skip empty async fragments, they don't add value.
-                    continue;
-                }
-                const model = StackTraceModel.#modelForTarget(target);
-                const asyncFragment = model.#createFragment(asyncStackTrace.callFrames);
-                translatePromises.push(model.#translateFragment(asyncFragment, rawFramesToUIFrames));
-                asyncFragments.push(new AsyncFragmentImpl(asyncStackTrace.description ?? '', asyncFragment));
-            }
-        }
-        await Promise.all(translatePromises);
-        return new StackTraceImpl(fragment, asyncFragments);
+        const [syncFragment, asyncFragments] = await Promise.all([
+            this.#createSyncFragment(stackTrace, rawFramesToUIFrames),
+            this.#createAsyncFragments(stackTrace, rawFramesToUIFrames),
+        ]);
+        return new StackTraceImpl(syncFragment, asyncFragments);
     }
     /** Trigger re-translation of all fragments with the provide script in their call stack */
     async scriptInfoChanged(script, translateRawFrames) {
@@ -60,6 +47,30 @@ export class StackTraceModel extends SDK.SDKModel.SDKModel {
         for (const stackTrace of stackTracesToUpdate) {
             stackTrace.dispatchEventToListeners("UPDATED" /* StackTrace.StackTrace.Events.UPDATED */);
         }
+    }
+    async #createSyncFragment(stackTrace, rawFramesToUIFrames) {
+        const fragment = this.#createFragment(stackTrace.callFrames);
+        await this.#translateFragment(fragment, rawFramesToUIFrames);
+        return fragment;
+    }
+    async #createAsyncFragments(stackTraceOrPausedEvent, rawFramesToUIFrames) {
+        const asyncFragments = [];
+        const translatePromises = [];
+        const debuggerModel = this.target().model(SDK.DebuggerModel.DebuggerModel);
+        if (debuggerModel) {
+            for await (const { stackTrace: asyncStackTrace, target } of debuggerModel.iterateAsyncParents(stackTraceOrPausedEvent)) {
+                if (asyncStackTrace.callFrames.length === 0) {
+                    // Skip empty async fragments, they don't add value.
+                    continue;
+                }
+                const model = _a.#modelForTarget(target);
+                const fragment = model.#createFragment(asyncStackTrace.callFrames);
+                translatePromises.push(model.#translateFragment(fragment, rawFramesToUIFrames));
+                asyncFragments.push(new AsyncFragmentImpl(asyncStackTrace.description ?? '', fragment));
+            }
+        }
+        await Promise.all(translatePromises);
+        return asyncFragments;
     }
     #createFragment(frames) {
         return FragmentImpl.getOrCreate(this.#trie.insert(frames));
@@ -98,5 +109,6 @@ export class StackTraceModel extends SDK.SDKModel.SDKModel {
         return fragments;
     }
 }
+_a = StackTraceModel;
 SDK.SDKModel.SDKModel.register(StackTraceModel, { capabilities: 0 /* SDK.Target.Capability.NONE */, autostart: false });
 //# sourceMappingURL=StackTraceModel.js.map

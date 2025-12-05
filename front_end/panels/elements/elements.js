@@ -9887,7 +9887,13 @@ var UIStrings9 = {
    * @description Context menu item in Elements panel to navigate to the corresponding CSS style rule
    * for this computed property.
    */
-  navigateToStyle: "Navigate to style"
+  navigateToStyle: "Navigate to styles",
+  /**
+   * @description Text announced to screen readers when a filter is applied to the computed styles list, informing them of the filter term and the number of results.
+   * @example {example} PH1
+   * @example {5} PH2
+   */
+  filterUpdateAriaText: `Filter applied: {PH1}. Total Results: {PH2}`
 };
 var str_9 = i18n17.i18n.registerUIStrings("panels/elements/ComputedStyleWidget.ts", UIStrings9);
 var i18nString9 = i18n17.i18n.getLocalizedString.bind(void 0, str_9);
@@ -10274,8 +10280,11 @@ var ComputedStyleWidget = class _ComputedStyleWidget extends UI13.Widget.VBox {
     }
     return result;
   }
-  onFilterChanged(event) {
-    void this.filterComputedStyles(event.data ? new RegExp(Platform6.StringUtilities.escapeForRegExp(event.data), "i") : null);
+  async onFilterChanged(event) {
+    await this.filterComputedStyles(event.data ? new RegExp(Platform6.StringUtilities.escapeForRegExp(event.data), "i") : null);
+    if (event.data && this.#computedStylesTree.data && this.#computedStylesTree.data.tree) {
+      UI13.ARIAUtils.LiveAnnouncer.alert(i18nString9(UIStrings9.filterUpdateAriaText, { PH1: event.data, PH2: this.#computedStylesTree.data.tree.length }));
+    }
   }
   async filterComputedStyles(regex) {
     this.filterRegex = regex;

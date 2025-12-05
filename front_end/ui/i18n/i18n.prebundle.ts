@@ -14,7 +14,7 @@ const {repeat} = Directives;
  */
 export function getFormatLocalizedString(
     registeredStrings: ThirdPartyI18n.LocalizedStringSet.RegisteredFileStrings, stringId: string,
-    placeholders: Record<string, Object>): HTMLSpanElement {
+    placeholders: Record<string, Node|string>): HTMLSpanElement {
   const formatter = registeredStrings.getLocalizedStringSetFor(I18n.DevToolsLocale.DevToolsLocale.instance().locale)
                         .getMessageFormatterFor(stringId);
 
@@ -23,7 +23,7 @@ export function getFormatLocalizedString(
     if (icuElement.type === /* argumentElement */ 1) {
       const placeholderValue = placeholders[icuElement.value];
       if (placeholderValue) {
-        element.append(placeholderValue as Node | string);
+        element.append(placeholderValue);
       }
     } else if ('value' in icuElement) {
       element.append(String(icuElement.value));
@@ -34,14 +34,14 @@ export function getFormatLocalizedString(
 
 export function getFormatLocalizedStringTemplate(
     registeredStrings: ThirdPartyI18n.LocalizedStringSet.RegisteredFileStrings, stringId: string,
-    placeholders: Record<string, Object>): LitTemplate {
+    placeholders: Record<string, Node|string|LitTemplate>): LitTemplate {
   const formatter = registeredStrings.getLocalizedStringSetFor(I18n.DevToolsLocale.DevToolsLocale.instance().locale)
                         .getMessageFormatterFor(stringId);
 
-  return html`<span>${
-      repeat(
-          formatter.getAst(),
-          icuElement => icuElement.type === /* argumentElement */ 1 ? (placeholders[icuElement.value] ?? nothing) :
-              'value' in icuElement                                 ? String(icuElement.value) :
-                                                                      nothing)}</span>`;
+  return html`<span>${repeat(formatter.getAst(), icuElement => {
+    if (icuElement.type === /* argumentElement */ 1) {
+      return placeholders[icuElement.value] ?? nothing;
+    }
+    return 'value' in icuElement ? String(icuElement.value) : nothing;
+  })}</span>`;
 }

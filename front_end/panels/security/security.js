@@ -9,12 +9,12 @@ var CookieControlsView_exports = {};
 __export(CookieControlsView_exports, {
   CookieControlsView: () => CookieControlsView,
   i18nFormatString: () => i18nFormatString,
+  i18nFormatStringTemplate: () => i18nFormatStringTemplate,
   i18nString: () => i18nString,
   showInfobar: () => showInfobar
 });
 import "./../../ui/components/switch/switch.js";
 import "./../../ui/kit/kit.js";
-import "./../../ui/components/chrome_link/chrome_link.js";
 import * as Common from "./../../core/common/common.js";
 import * as Host from "./../../core/host/host.js";
 import * as i18n from "./../../core/i18n/i18n.js";
@@ -235,24 +235,17 @@ var UIStrings = {
    * @description Text shown when the Third-party Cookie Metadata Grants flag or Third-party Cookie Heuristics Grants flag is disabled with a link to the flag in chrome://flags/.
    * @example {#tpcd-heuristics-grants} PH1
    */
-  enableFlag: "To use this, set {PH1} to Default",
-  /**
-   * @description Text used for link within the enableFlag to show users where they can enable the Third-party Cookie Metadata Grants flag.
-   */
-  tpcdMetadataGrants: "#tpcd-metadata-grants",
-  /**
-   * @description Text used for link within the enableFlag to show users where they can enable the Third-party Cookie Heuristics Grants flag.
-   */
-  tpcdHeuristicsGrants: "#tpcd-heuristics-grants"
+  enableFlag: "To use this, set {PH1} to Default"
 };
 var str_ = i18n.i18n.registerUIStrings("panels/security/CookieControlsView.ts", UIStrings);
 var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);
 var i18nFormatString = uiI18n.getFormatLocalizedString.bind(void 0, str_);
+var i18nFormatStringTemplate = uiI18n.getFormatLocalizedStringTemplate.bind(void 0, str_);
 function getChromeFlagsLink(flag) {
   return html`
-    <devtools-chrome-link href="chrome://flags/#${flag}" tabindex="0">
-     ${flag}
-    </devtools-chrome-link>`;
+    <devtools-link href="chrome://flags/${flag}">
+      ${flag}
+    </devtools-link>`;
 }
 var DEFAULT_VIEW = (input, _output, target) => {
   const enterpriseEnabledSetting = Common.Settings.Settings.instance().createSetting(
@@ -328,8 +321,8 @@ var DEFAULT_VIEW = (input, _output, target) => {
             <div class="body subtext">
               ${Boolean(enterpriseEnabledSetting.get()) ? i18nFormatString(UIStrings.gracePeriodExplanation, {
     PH1: i18nString(UIStrings.gracePeriod)
-  }) : (input.thirdPartyControlsDict ? !input.thirdPartyControlsDict?.thirdPartyCookieMetadataEnabled : false) ? i18nFormatString(UIStrings.enableFlag, {
-    PH1: getChromeFlagsLink(UIStrings.tpcdMetadataGrants)
+  }) : (input.thirdPartyControlsDict ? !input.thirdPartyControlsDict?.thirdPartyCookieMetadataEnabled : false) ? i18nFormatStringTemplate(UIStrings.enableFlag, {
+    PH1: getChromeFlagsLink("#tpcd-metadata-grants")
   }) : i18nFormatString(input.isGracePeriodActive ? UIStrings.gracePeriodExplanation : UIStrings.enrollGracePeriod, {
     PH1: UI.Fragment.html`<x-link class="devtools-link" href="https://developers.google.com/privacy-sandbox/cookies/temporary-exceptions/grace-period" jslog=${VisualLogging.link("grace-period-link").track({ click: true })}>${i18nString(UIStrings.gracePeriod)}</x-link>`
   })}
@@ -355,8 +348,8 @@ var DEFAULT_VIEW = (input, _output, target) => {
             <div class="body subtext">
               ${Boolean(enterpriseEnabledSetting.get()) ? i18nFormatString(UIStrings.heuristicExplanation, {
     PH1: i18nString(UIStrings.scenarios)
-  }) : (input.thirdPartyControlsDict ? !input.thirdPartyControlsDict.thirdPartyCookieHeuristicsEnabled : false) ? i18nFormatString(UIStrings.enableFlag, {
-    PH1: getChromeFlagsLink(UIStrings.tpcdHeuristicsGrants)
+  }) : (input.thirdPartyControlsDict ? !input.thirdPartyControlsDict.thirdPartyCookieHeuristicsEnabled : false) ? i18nFormatStringTemplate(UIStrings.enableFlag, {
+    PH1: getChromeFlagsLink("#tpcd-heuristics-grants")
   }) : i18nFormatString(UIStrings.heuristicExplanation, {
     PH1: UI.Fragment.html`<x-link class="devtools-link" href="https://developers.google.com/privacy-sandbox/cookies/temporary-exceptions/heuristics-based-exceptions" jslog=${VisualLogging.link("heuristic-link").track({ click: true })}>${i18nString(UIStrings.scenarios)}</x-link>`
   })}

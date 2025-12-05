@@ -3227,9 +3227,6 @@
   "panels/application/ApplicationPanelSidebar.ts | applicationSidebarPanel": {
     "message": "Application panel sidebar"
   },
-  "panels/application/ApplicationPanelSidebar.ts | appManifest": {
-    "message": "Manifest"
-  },
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "Background services"
   },
@@ -3293,9 +3290,6 @@
   "panels/application/ApplicationPanelSidebar.ts | manifest": {
     "message": "Manifest"
   },
-  "panels/application/ApplicationPanelSidebar.ts | manifestDescription": {
-    "message": "A manifest defines how your app appears on phone’s home screens and what the app looks like on launch."
-  },
   "panels/application/ApplicationPanelSidebar.ts | noCookies": {
     "message": "No cookies set"
   },
@@ -3307,9 +3301,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | noLocalStorage": {
     "message": "No local storage detected"
-  },
-  "panels/application/ApplicationPanelSidebar.ts | noManifestDetected": {
-    "message": "No manifest detected"
   },
   "panels/application/ApplicationPanelSidebar.ts | noSessionStorage": {
     "message": "No session storage detected"
@@ -3379,6 +3370,9 @@
   },
   "panels/application/AppManifestView.ts | appIdNote": {
     "message": "Note: id is not specified in the manifest, start_url is used instead. To specify an App ID that matches the current identity, set the id field to {PH1} {PH2}."
+  },
+  "panels/application/AppManifestView.ts | appManifest": {
+    "message": "Manifest"
   },
   "panels/application/AppManifestView.ts | aUrlInTheManifestContainsA": {
     "message": "A URL in the manifest contains a username, password, or port"
@@ -3455,6 +3449,9 @@
   "panels/application/AppManifestView.ts | manifestCouldNotBeFetchedIsEmpty": {
     "message": "Manifest could not be fetched, is empty, or could not be parsed"
   },
+  "panels/application/AppManifestView.ts | manifestDescription": {
+    "message": "A manifest defines how your app appears on phone’s home screens and what the app looks like on launch."
+  },
   "panels/application/AppManifestView.ts | manifestDisplayPropertyMustBeOne": {
     "message": "Manifest 'display' property must be one of 'standalone', 'fullscreen', or 'minimal-ui'"
   },
@@ -3478,6 +3475,9 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "New note URL"
+  },
+  "panels/application/AppManifestView.ts | noManifestDetected": {
+    "message": "No manifest detected"
   },
   "panels/application/AppManifestView.ts | noPlayStoreIdProvided": {
     "message": "No Play store ID provided"
@@ -6935,6 +6935,9 @@
   "panels/elements/components/StylePropertyEditor.ts | selectButton": {
     "message": "Add {propertyName}: {propertyValue}"
   },
+  "panels/elements/ComputedStyleWidget.ts | filterUpdateAriaText": {
+    "message": "Filter applied: {PH1}. Total Results: {PH2}"
+  },
   "panels/elements/ComputedStyleWidget.ts | group": {
     "message": "Group"
   },
@@ -6942,7 +6945,7 @@
     "message": "Navigate to selector source"
   },
   "panels/elements/ComputedStyleWidget.ts | navigateToStyle": {
-    "message": "Navigate to style"
+    "message": "Navigate to styles"
   },
   "panels/elements/ComputedStyleWidget.ts | noMatchingProperty": {
     "message": "No matching property"
@@ -12196,12 +12199,6 @@
   },
   "panels/security/CookieControlsView.ts | siteReloadMessage": {
     "message": "To apply your updated controls, reload the page"
-  },
-  "panels/security/CookieControlsView.ts | tpcdHeuristicsGrants": {
-    "message": "#tpcd-heuristics-grants"
-  },
-  "panels/security/CookieControlsView.ts | tpcdMetadataGrants": {
-    "message": "#tpcd-metadata-grants"
   },
   "panels/security/CookieControlsView.ts | viewDetails": {
     "message": "View details"

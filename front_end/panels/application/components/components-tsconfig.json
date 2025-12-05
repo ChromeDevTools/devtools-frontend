@@ -90,9 +90,6 @@
       "path": "../../../ui/components/buttons/bundle-tsconfig.json"
     },
     {
-      "path": "../../../ui/components/chrome_link/bundle-tsconfig.json"
-    },
-    {
       "path": "../../../ui/components/expandable_list/bundle-tsconfig.json"
     },
     {

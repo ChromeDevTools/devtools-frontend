@@ -602,7 +602,6 @@
   "front_end/third_party/marked/marked.js",
   "front_end/models/issues_manager/issues_manager.js",
   "front_end/panels/network/forward/forward.js",
-  "front_end/ui/components/chrome_link/chrome_link.js",
   "front_end/ui/components/input/input.js",
   "front_end/ui/components/switch/switch.js",
   "front_end/ui/i18n/i18n.js",

@@ -346,6 +346,7 @@ panels/application/components/StorageMetadataView.test.js
 panels/application/components/TrustTokensView.test.js
 panels/application/preloading/components/MismatchedPreloadingGrid.test.js
 panels/application/preloading/components/PreloadingDetailsReportView.test.js
+panels/application/preloading/components/PreloadingDisabledInfobar.test.js
 panels/application/preloading/components/PreloadingGrid.test.js
 panels/application/preloading/components/RuleSetDetailsView.test.js
 panels/application/preloading/components/RuleSetGrid.test.js
@@ -438,7 +439,6 @@ panels/linear_memory_inspector/LinearMemoryInspectorPane.test.js
 panels/linear_memory_inspector/components/LinearMemoryHighlightChipList.test.js
 panels/linear_memory_inspector/components/LinearMemoryInspector.test.js
 panels/linear_memory_inspector/components/LinearMemoryNavigator.test.js
-panels/linear_memory_inspector/components/LinearMemoryValueInterpreter.test.js
 panels/linear_memory_inspector/components/LinearMemoryViewer.test.js
 panels/linear_memory_inspector/components/ValueInterpreterDisplay.test.js
 panels/linear_memory_inspector/components/ValueInterpreterSettings.test.js
@@ -458,6 +458,7 @@ panels/network/NetworkSearchScope.test.js
 panels/network/RequestConditionsDrawer.test.js
 panels/network/RequestCookiesView.test.js
 panels/network/RequestHTMLView.test.js
+panels/network/RequestInitiatorView.test.js
 panels/network/RequestPayloadView.test.js
 panels/network/RequestPreviewView.test.js
 panels/network/RequestResponseView.test.js
@@ -617,7 +618,6 @@ third_party/chromium/client-variations/ClientVariations.test.js
 third_party/i18n/i18n.test.js
 ui/components/adorners/Adorner.test.js
 ui/components/buttons/Button.test.js
-ui/components/chrome_link/ChromeLink.test.js
 ui/components/code_highlighter/CodeHighlighter.test.js
 ui/components/dialogs/ButtonDialog.test.js
 ui/components/dialogs/Dialog.test.js

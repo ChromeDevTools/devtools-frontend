@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-lit-render-outside-of-view */
-import './RequestHeaderSection.js';
 import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
@@ -19,6 +18,7 @@ import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as Sources from '../../sources/sources.js';
+import { RequestHeaderSection } from './RequestHeaderSection.js';
 import requestHeadersViewStyles from './RequestHeadersView.css.js';
 import { RESPONSE_HEADER_SECTION_DATA_KEY, } from './ResponseHeaderSection.js';
 const RAW_HEADER_CUTOFF = 3000;
@@ -321,10 +321,10 @@ export class RequestHeadersView extends LegacyWrapper.LegacyWrapper.WrappableCom
       >
         ${(this.#showRequestHeadersText && requestHeadersText) ?
             this.#renderRawHeaders(requestHeadersText, false) : html `
-          <devtools-request-header-section .data=${{
+          <devtools-widget .widgetConfig=${UI.Widget.widgetConfig(RequestHeaderSection, {
             request: this.#request,
             toReveal: this.#toReveal,
-        }} jslog=${VisualLogging.section('request-headers')}></devtools-request-header-section>
+        })} jslog=${VisualLogging.section('request-headers')}></devtools-widget>
         `}
       </devtools-request-headers-category>
     `;

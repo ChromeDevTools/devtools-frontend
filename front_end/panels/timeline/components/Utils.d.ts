@@ -65,3 +65,16 @@ export declare namespace NumberWithUnit {
  * Returns if the local value is better/worse/similar compared to field.
  */
 export declare function determineCompareRating(metric: 'LCP' | 'CLS' | 'INP', localValue: Trace.Types.Timing.Milli | number, fieldValue: Trace.Types.Timing.Milli | number): CompareRating | undefined;
+/**
+ * Returns true if LCP or INP are worse in the field than what was observed locally.
+ *
+ * CLS is ignored because the guidance of applying throttling or device emulation doesn't
+ * correlate as much with observing a more average user experience.
+ */
+export declare function isFieldWorseThanLocal(local: {
+    lcp?: Trace.Types.Timing.Milli;
+    inp?: Trace.Types.Timing.Milli;
+}, field: {
+    lcp?: Trace.Types.Timing.Milli;
+    inp?: Trace.Types.Timing.Milli;
+}): boolean;

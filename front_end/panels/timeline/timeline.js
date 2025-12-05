@@ -704,9 +704,7 @@ var InteractionsTrackAppender = class {
   }
   setPopoverInfo(event, info) {
     if (Trace6.Types.Events.isSyntheticInteraction(event)) {
-      const breakdown = new Components.InteractionBreakdown.InteractionBreakdown();
-      breakdown.entry = event;
-      info.additionalElements.push(breakdown);
+      info.additionalElements.push(Components.InteractionBreakdown.InteractionBreakdown.createWidgetElement(event));
     }
   }
 };
@@ -8729,8 +8727,7 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
       this.panelToolbar.appendToolbarItem(UI10.Toolbar.Toolbar.createActionButton("components.collect-garbage"));
     }
     this.panelToolbar.appendSeparator();
-    const showIgnoreListSetting = new TimelineComponents3.IgnoreListSetting.IgnoreListSetting();
-    this.panelToolbar.appendToolbarItem(new UI10.Toolbar.ToolbarItem(showIgnoreListSetting));
+    this.panelToolbar.appendToolbarItem(new UI10.Toolbar.ToolbarItem(TimelineComponents3.IgnoreListSetting.IgnoreListSetting.createWidgetElement()));
     if (this.#dimThirdPartiesSetting) {
       const dimThirdPartiesCheckbox = this.createSettingCheckbox(this.#dimThirdPartiesSetting, i18nString20(UIStrings20.thirdPartiesByThirdPartyWeb));
       this.#thirdPartyCheckbox = dimThirdPartiesCheckbox;
@@ -14970,8 +14967,7 @@ var TimelineFlameChartNetworkDataProvider = class {
       const element = document.createElement("div");
       const root = UI17.UIUtils.createShadowRootWithCoreStyles(element, { cssFile: timelineFlamechartPopover_css_default });
       const contents = root.createChild("div", "timeline-flamechart-popover");
-      const infoElement = new TimelineComponents6.NetworkRequestTooltip.NetworkRequestTooltip();
-      infoElement.data = { networkRequest: event, entityMapper: this.#entityMapper };
+      const infoElement = TimelineComponents6.NetworkRequestTooltip.NetworkRequestTooltip.createWidgetElement(event, this.#entityMapper || void 0);
       contents.appendChild(infoElement);
       return element;
     }

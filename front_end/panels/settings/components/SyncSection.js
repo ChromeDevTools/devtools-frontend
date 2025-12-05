@@ -1,7 +1,6 @@
 // Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import '../../../ui/components/chrome_link/chrome_link.js';
 import '../../../ui/components/settings/settings.js';
 import '../../../ui/components/tooltips/tooltips.js';
 import * as Common from '../../../core/common/common.js';

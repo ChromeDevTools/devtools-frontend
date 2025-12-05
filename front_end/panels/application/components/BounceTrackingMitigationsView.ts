@@ -1,7 +1,6 @@
 // Copyright 2023 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 import '../../../ui/components/report_view/report_view.js';
 import '../../../ui/legacy/components/data_grid/data_grid.js';
@@ -69,6 +68,116 @@ export interface BounceTrackingMitigationsViewData {
   trackingSites: string[];
 }
 
+export interface ViewInput {
+  screenStatus: ScreenStatusType;
+  trackingSites: string[];
+  seenButtonClick: boolean;
+  runMitigations: () => Promise<void>;
+}
+
+const renderForceRunButton = (input: ViewInput): Lit.TemplateResult => {
+  const isMitigationRunning = (input.screenStatus === ScreenStatusType.RUNNING);
+
+  // clang-format off
+  return html`
+    <devtools-button
+      aria-label=${i18nString(UIStrings.forceRun)}
+      .disabled=${isMitigationRunning}
+      .spinner=${isMitigationRunning}
+      .variant=${Buttons.Button.Variant.PRIMARY}
+      @click=${input.runMitigations}
+      jslog=${VisualLogging.action('force-run').track({click: true})}>
+      ${isMitigationRunning ? html`
+        ${i18nString(UIStrings.runningMitigations)}`:`
+        ${i18nString(UIStrings.forceRun)}
+      `}
+    </devtools-button>
+  `;
+  // clang-format on
+};
+
+const renderDeletedSitesOrNoSitesMessage = (input: ViewInput): Lit.LitTemplate => {
+  if (!input.seenButtonClick) {
+    return Lit.nothing;
+  }
+
+  if (input.trackingSites.length === 0) {
+    // clang-format off
+    return html`
+      <devtools-report-section>
+      ${(input.screenStatus === ScreenStatusType.RUNNING) ? html`
+        ${i18nString(UIStrings.checkingPotentialTrackers)}`:`
+        ${i18nString(UIStrings.noPotentialBounceTrackersIdentified)}
+      `}
+      </devtools-report-section>
+    `;
+    // clang-format on
+  }
+
+  // clang-format off
+  return html`
+    <devtools-report-section>
+      <devtools-data-grid striped inline>
+        <table>
+          <tr>
+            <th id="sites" weight="10" sortable>
+              ${i18nString(UIStrings.stateDeletedFor)}
+            </th>
+          </tr>
+          ${input.trackingSites.map(site => html`
+            <tr><td>${site}</td></tr>`)}
+        </table>
+      </devtools-data-grid>
+    </devtools-report-section>
+  `;
+  // clang-format on
+};
+
+const renderMainFrameInformation = (input: ViewInput): Lit.LitTemplate => {
+  if (input.screenStatus === ScreenStatusType.INITIALIZING) {
+    return Lit.nothing;
+  }
+
+  if (input.screenStatus === ScreenStatusType.DISABLED) {
+    // clang-format off
+    return html`
+      <devtools-report-section>
+        ${i18nString(UIStrings.featureDisabled)}
+      </devtools-report-section>
+    `;
+    // clang-format on
+  }
+
+  // clang-format off
+  return html`
+    <devtools-report-section>
+      ${renderForceRunButton(input)}
+    </devtools-report-section>
+    ${renderDeletedSitesOrNoSitesMessage(input)}
+    <devtools-report-divider>
+    </devtools-report-divider>
+    <devtools-report-section>
+      <x-link href="https://privacycg.github.io/nav-tracking-mitigations/#bounce-tracking-mitigations" class="link"
+      jslog=${VisualLogging.link('learn-more').track({click: true})}>
+        ${i18nString(UIStrings.learnMore)}
+      </x-link>
+    </devtools-report-section>
+  `;
+  // clang-format on
+};
+
+export const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLElement|ShadowRoot): void => {
+  // clang-format off
+  Lit.render(html`
+    <style>${bounceTrackingMitigationsViewStyles}</style>
+    <devtools-report .data=${{reportTitle: i18nString(UIStrings.bounceTrackingMitigationsTitle)}}
+                      jslog=${VisualLogging.pane('bounce-tracking-mitigations')}>
+      ${renderMainFrameInformation(input)}
+    </devtools-report>
+  `, target);
+  // clang-format on
+};
+
 export class BounceTrackingMitigationsView extends LegacyWrapper.LegacyWrapper.WrappableComponent {
   readonly #shadow = this.attachShadow({mode: 'open'});
   #trackingSites: string[] = [];
@@ -97,106 +206,14 @@ export class BounceTrackingMitigationsView extends LegacyWrapper.LegacyWrapper.W
   }
 
   #render(): void {
-    // clang-format off
-    Lit.render(html`
-      <style>${bounceTrackingMitigationsViewStyles}</style>
-      <devtools-report .data=${{reportTitle: i18nString(UIStrings.bounceTrackingMitigationsTitle)}}
-                       jslog=${VisualLogging.pane('bounce-tracking-mitigations')}>
-        ${this.#renderMainFrameInformation()}
-      </devtools-report>
-    `, this.#shadow, {host: this});
-    // clang-format on
-  }
-
-  #renderMainFrameInformation(): Lit.LitTemplate {
-    if (this.#screenStatus === ScreenStatusType.INITIALIZING) {
-      return Lit.nothing;
-    }
-
-    if (this.#screenStatus === ScreenStatusType.DISABLED) {
-      // clang-format off
-      return html`
-        <devtools-report-section>
-          ${i18nString(UIStrings.featureDisabled)}
-        </devtools-report-section>
-      `;
-      // clang-format on
-    }
-
-    // clang-format off
-    return html`
-      <devtools-report-section>
-        ${this.#renderForceRunButton()}
-      </devtools-report-section>
-      ${this.#renderDeletedSitesOrNoSitesMessage()}
-      <devtools-report-divider>
-      </devtools-report-divider>
-      <devtools-report-section>
-        <x-link href="https://privacycg.github.io/nav-tracking-mitigations/#bounce-tracking-mitigations" class="link"
-        jslog=${VisualLogging.link('learn-more').track({click: true})}>
-          ${i18nString(UIStrings.learnMore)}
-        </x-link>
-      </devtools-report-section>
-    `;
-    // clang-format on
-  }
-
-  #renderForceRunButton(): Lit.TemplateResult {
-    const isMitigationRunning = (this.#screenStatus === ScreenStatusType.RUNNING);
-
-    // clang-format off
-    return html`
-      <devtools-button
-        aria-label=${i18nString(UIStrings.forceRun)}
-        .disabled=${isMitigationRunning}
-        .spinner=${isMitigationRunning}
-        .variant=${Buttons.Button.Variant.PRIMARY}
-        @click=${this.#runMitigations}
-        jslog=${VisualLogging.action('force-run').track({click: true})}>
-        ${isMitigationRunning ? html`
-          ${i18nString(UIStrings.runningMitigations)}`:`
-          ${i18nString(UIStrings.forceRun)}
-        `}
-      </devtools-button>
-    `;
-    // clang-format on
-  }
-
-  #renderDeletedSitesOrNoSitesMessage(): Lit.LitTemplate {
-    if (!this.#seenButtonClick) {
-      return Lit.nothing;
-    }
-
-    if (this.#trackingSites.length === 0) {
-      // clang-format off
-      return html`
-        <devtools-report-section>
-        ${(this.#screenStatus === ScreenStatusType.RUNNING) ? html`
-          ${i18nString(UIStrings.checkingPotentialTrackers)}`:`
-          ${i18nString(UIStrings.noPotentialBounceTrackersIdentified)}
-        `}
-        </devtools-report-section>
-      `;
-      // clang-format on
-    }
-
-    // clang-format off
-    return html`
-      <devtools-report-section>
-        <devtools-data-grid striped inline>
-          <table>
-            <tr>
-              <th id="sites" weight="10" sortable>
-                ${i18nString(UIStrings.stateDeletedFor)}
-              </th>
-            </tr>
-            ${this.#trackingSites.map(site => html`
-              <tr><td>${site}</td></tr>`)}
-          </table>
-        </devtools-data-grid>
-      </devtools-report-section>
-    `;
-    // clang-format on
+    DEFAULT_VIEW(
+        {
+          screenStatus: this.#screenStatus,
+          trackingSites: this.#trackingSites,
+          seenButtonClick: this.#seenButtonClick,
+          runMitigations: this.#runMitigations.bind(this),
+        },
+        undefined, this.#shadow);
   }
 
   async #runMitigations(): Promise<void> {

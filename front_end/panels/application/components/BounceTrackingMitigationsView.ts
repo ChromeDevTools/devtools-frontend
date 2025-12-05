@@ -170,6 +170,7 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLE
   // clang-format off
   Lit.render(html`
     <style>${bounceTrackingMitigationsViewStyles}</style>
+    <style>${UI.inspectorCommonStyles}</style>
     <devtools-report .data=${{reportTitle: i18nString(UIStrings.bounceTrackingMitigationsTitle)}}
                       jslog=${VisualLogging.pane('bounce-tracking-mitigations')}>
       ${renderMainFrameInformation(input)}

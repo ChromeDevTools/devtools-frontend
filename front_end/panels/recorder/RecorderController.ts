@@ -30,7 +30,6 @@ import * as Actions from './recorder-actions/recorder-actions.js';
 import recorderControllerStyles from './recorderController.css.js';
 import * as Events from './RecorderEvents.js';
 
-// TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
 const {html, Decorators, Directives: {ref}, LitElement} = Lit;
 const {customElement, state} = Decorators;
 

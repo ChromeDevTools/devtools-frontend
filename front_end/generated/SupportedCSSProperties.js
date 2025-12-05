@@ -1712,6 +1712,7 @@ export const generatedProperties = [
   "inherited": false,
   "keywords": [
    "none",
+   "auto",
    "spanning-item",
    "intersection"
   ],
@@ -3722,6 +3723,7 @@ export const generatedProperties = [
   "inherited": false,
   "keywords": [
    "none",
+   "auto",
    "spanning-item",
    "intersection"
   ],
@@ -5421,6 +5423,7 @@ export const generatedPropertyValues = {
  "column-rule-break": {
   "values": [
    "none",
+   "auto",
    "spanning-item",
    "intersection"
   ]
@@ -6546,6 +6549,7 @@ export const generatedPropertyValues = {
  "row-rule-break": {
   "values": [
    "none",
+   "auto",
    "spanning-item",
    "intersection"
   ]

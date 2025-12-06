@@ -187,9 +187,7 @@ export declare class Widget {
      * assert.isTrue(widget.someDataLoaded);
      * ```
      *
-     * @returns a promise that resolves to a `boolean` when the widget has finished
-     *          updating, the value is `true` if there are no more pending updates,
-     *          and `false` if the update cycle triggered another update.
+     * @returns a promise that resolves when the widget has finished updating.
      */
     get updateComplete(): Promise<void>;
 }

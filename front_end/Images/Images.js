@@ -273,6 +273,7 @@ style.setProperty('--image-file-small-status-dot', 'url(\"' + new URL(new URL('s
 style.setProperty('--image-file-smart-assistant', 'url(\"' + new URL(new URL('smart-assistant.svg', import.meta.url).href).toString() + '\")');
 style.setProperty('--image-file-snippet', 'url(\"' + new URL(new URL('snippet.svg', import.meta.url).href).toString() + '\")');
 style.setProperty('--image-file-spark-info', 'url(\"' + new URL(new URL('spark-info.svg', import.meta.url).href).toString() + '\")');
+style.setProperty('--image-file-spark', 'url(\"' + new URL(new URL('spark.svg', import.meta.url).href).toString() + '\")');
 style.setProperty('--image-file-speculative-loads', 'url(\"' + new URL(new URL('speculative-loads.svg', import.meta.url).href).toString() + '\")');
 style.setProperty('--image-file-speedster-badge', 'url(\"' + new URL(new URL('speedster-badge.svg', import.meta.url).href).toString() + '\")');
 style.setProperty('--image-file-star', 'url(\"' + new URL(new URL('star.svg', import.meta.url).href).toString() + '\")');

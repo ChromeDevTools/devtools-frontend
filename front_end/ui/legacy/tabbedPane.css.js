@@ -526,14 +526,11 @@ export default `/*
   }
 }
 
-.tabbed-pane-header-tab.ai .ai-icon {
-  background-color: var(--sys-color-primary);
-  border-radius: 50%;
-  margin-left: 4px;
-}
+.spark {
+  position: absolute;
+  top: 2px;
 
-.tabbed-pane-header-tab.ai .ai-icon devtools-icon {
-  color: var(--sys-color-on-primary);
+  --icon-default: var(--sys-color-primary);
 }
 
 /*# sourceURL=${import.meta.resolve('./tabbedPane.css')} */`;

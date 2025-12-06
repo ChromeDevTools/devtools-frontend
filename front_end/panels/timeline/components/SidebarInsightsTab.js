@@ -1,10 +1,8 @@
 // Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
 import * as Trace from '../../../models/trace/trace.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
-import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as Utils from '../utils/utils.js';
@@ -12,8 +10,99 @@ import * as Insights from './insights/insights.js';
 import sidebarInsightsTabStyles from './sidebarInsightsTab.css.js';
 import { SidebarSingleInsightSet } from './SidebarSingleInsightSet.js';
 const { html } = Lit;
-export class SidebarInsightsTab extends HTMLElement {
-    #shadow = this.attachShadow({ mode: 'open' });
+const { widgetConfig } = UI.Widget;
+export const DEFAULT_VIEW = (input, output, target) => {
+    const { parsedTrace, labels, activeInsightSet, activeInsight, selectedCategory, onInsightSetToggled, onInsightSetHovered, onInsightSetUnhovered, onZoomClick, } = input;
+    const insights = parsedTrace.insights;
+    if (!insights) {
+        return;
+    }
+    const hasMultipleInsightSets = insights.size > 1;
+    // clang-format off
+    Lit.render(html `
+    <style>${sidebarInsightsTabStyles}</style>
+    <div class="insight-sets-wrapper">
+      ${[...insights.values()].map((insightSet, index) => {
+        const { id, url } = insightSet;
+        const data = {
+            insightSetKey: id,
+            activeCategory: selectedCategory,
+            activeInsight,
+            parsedTrace,
+        };
+        const selected = insightSet === activeInsightSet;
+        const contents = html `
+          <devtools-widget
+            data-insight-set-key=${id}
+            .widgetConfig=${widgetConfig(SidebarSingleInsightSet, { data })}
+          ></devtools-widget>
+        `;
+        if (hasMultipleInsightSets) {
+            return html `<details ?open=${selected}>
+            <summary
+              @click=${() => onInsightSetToggled(insightSet)}
+              @mouseenter=${() => onInsightSetHovered(insightSet)}
+              @mouseleave=${() => onInsightSetUnhovered()}
+              title=${url.href}>
+              ${renderDropdownIcon(selected)}
+              <span>${labels[index]}</span>
+              <span class='zoom-button'
+                @click=${(event) => {
+                event.stopPropagation();
+                onZoomClick(insightSet);
+            }}
+              >
+                ${renderZoomButton(selected)}
+              </span>
+            </summary>
+            ${contents}
+          </details>`;
+        }
+        return contents;
+    })}
+    </div>
+  `, target);
+    // clang-format on
+};
+function renderZoomButton(insightSetToggled) {
+    const classes = Lit.Directives.classMap({
+        'zoom-icon': true,
+        active: insightSetToggled,
+    });
+    // clang-format off
+    return html `
+  <div class=${classes}>
+      <devtools-button .data=${{
+        variant: "icon" /* Buttons.Button.Variant.ICON */,
+        iconName: 'center-focus-weak',
+        size: "SMALL" /* Buttons.Button.Size.SMALL */,
+    }}
+    ></devtools-button></div>`;
+    // clang-format on
+}
+function renderDropdownIcon(insightSetToggled) {
+    const containerClasses = Lit.Directives.classMap({
+        'dropdown-icon': true,
+        active: insightSetToggled,
+    });
+    // clang-format off
+    return html `
+    <div class=${containerClasses}>
+      <devtools-button .data=${{
+        variant: "icon" /* Buttons.Button.Variant.ICON */,
+        iconName: 'chevron-right',
+        size: "SMALL" /* Buttons.Button.Size.SMALL */,
+    }}
+    ></devtools-button></div>
+  `;
+    // clang-format on
+}
+export class SidebarInsightsTab extends UI.Widget.Widget {
+    static createWidgetElement() {
+        const widgetElement = document.createElement('devtools-widget');
+        return widgetElement;
+    }
+    #view;
     #parsedTrace = null;
     #activeInsight = null;
     #selectedCategory = Trace.Insights.Types.InsightCategory.ALL;
@@ -21,21 +110,25 @@ export class SidebarInsightsTab extends HTMLElement {
      * When a trace has sets of insights, we show an accordion with each
      * set within. A set can be specific to a single navigation, or include the
      * beginning of the trace up to the first navigation.
-     * You can only have one of these open at any time, and we track it via this ID.
+     * You can only have one of these open at any time.
      */
-    #selectedInsightSetKey = null;
+    #selectedInsightSet = null;
+    constructor(element, view = DEFAULT_VIEW) {
+        super(element, { useShadowDom: true });
+        this.#view = view;
+    }
     // TODO(paulirish): add back a disconnectedCallback() to avoid memory leaks that doesn't cause b/372943062
     set parsedTrace(data) {
         if (data === this.#parsedTrace) {
             return;
         }
         this.#parsedTrace = data;
-        this.#selectedInsightSetKey = null;
+        this.#selectedInsightSet = null;
         if (this.#parsedTrace?.insights) {
             /** Select the first set. Filtering out trivial sets was done back in {@link Trace.Processor.#computeInsightsForInitialTracePeriod} */
-            this.#selectedInsightSetKey = [...this.#parsedTrace.insights.keys()].at(0) ?? null;
+            this.#selectedInsightSet = [...this.#parsedTrace.insights.values()].at(0) ?? null;
         }
-        void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
+        this.requestUpdate();
     }
     get activeInsight() {
         return this.#activeInsight;
@@ -45,133 +138,58 @@ export class SidebarInsightsTab extends HTMLElement {
             return;
         }
         this.#activeInsight = active;
-        // Only update the insightSetKey if there is an active insight. Otherwise, closing an insight
+        // Only update selectedInsightSet if there is an active insight. Otherwise, closing an insight
         // would also collapse the insight set. Usually the proper insight set is already set because
         // the user has it open already in order for this setter to be called, but insights can also
         // be activated by clicking on a insight chip in the Summary panel, which may require opening
         // a different insight set.
         if (this.#activeInsight) {
-            this.#selectedInsightSetKey = this.#activeInsight.insightSetKey;
+            this.#selectedInsightSet = this.#parsedTrace?.insights?.get(this.#activeInsight.insightSetKey) ?? null;
         }
-        void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
+        this.requestUpdate();
     }
-    #insightSetToggled(id) {
-        this.#selectedInsightSetKey = this.#selectedInsightSetKey === id ? null : id;
+    #onInsightSetToggled(insightSet) {
+        this.#selectedInsightSet = this.#selectedInsightSet === insightSet ? null : insightSet;
         // Update the active insight set.
-        if (this.#selectedInsightSetKey !== this.#activeInsight?.insightSetKey) {
-            this.dispatchEvent(new Insights.SidebarInsight.InsightDeactivated());
+        if (this.#selectedInsightSet?.id !== this.#activeInsight?.insightSetKey) {
+            this.element.dispatchEvent(new Insights.SidebarInsight.InsightDeactivated());
         }
-        void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
+        this.requestUpdate();
     }
-    #insightSetHovered(id) {
-        const data = this.#parsedTrace?.insights?.get(id);
-        data && this.dispatchEvent(new Insights.SidebarInsight.InsightSetHovered(data.bounds));
+    #onInsightSetHovered(insightSet) {
+        this.element.dispatchEvent(new Insights.SidebarInsight.InsightSetHovered(insightSet.bounds));
     }
-    #insightSetUnhovered() {
-        this.dispatchEvent(new Insights.SidebarInsight.InsightSetHovered());
+    #onInsightSetUnhovered() {
+        this.element.dispatchEvent(new Insights.SidebarInsight.InsightSetHovered());
     }
-    #onZoomClick(event, id) {
-        event.stopPropagation();
-        const data = this.#parsedTrace?.insights?.get(id);
-        if (!data) {
-            return;
-        }
-        this.dispatchEvent(new Insights.SidebarInsight.InsightSetZoom(data.bounds));
-    }
-    #renderZoomButton(insightSetToggled) {
-        const classes = Lit.Directives.classMap({
-            'zoom-icon': true,
-            active: insightSetToggled,
-        });
-        // clang-format off
-        return html `
-    <div class=${classes}>
-        <devtools-button .data=${{
-            variant: "icon" /* Buttons.Button.Variant.ICON */,
-            iconName: 'center-focus-weak',
-            size: "SMALL" /* Buttons.Button.Size.SMALL */,
-        }}
-      ></devtools-button></div>`;
-        // clang-format on
-    }
-    #renderDropdownIcon(insightSetToggled) {
-        const containerClasses = Lit.Directives.classMap({
-            'dropdown-icon': true,
-            active: insightSetToggled,
-        });
-        // clang-format off
-        return html `
-      <div class=${containerClasses}>
-        <devtools-button .data=${{
-            variant: "icon" /* Buttons.Button.Variant.ICON */,
-            iconName: 'chevron-right',
-            size: "SMALL" /* Buttons.Button.Size.SMALL */,
-        }}
-      ></devtools-button></div>
-    `;
-        // clang-format on
+    #onZoomClick(insightSet) {
+        this.element.dispatchEvent(new Insights.SidebarInsight.InsightSetZoom(insightSet.bounds));
     }
     highlightActiveInsight() {
         if (!this.#activeInsight) {
             return;
         }
         // Find the right set for this insight via the set key.
-        const set = this.#shadow?.querySelector(`[data-insight-set-key="${this.#activeInsight.insightSetKey}"]`);
+        const set = this.element.shadowRoot?.querySelector(`[data-insight-set-key="${this.#activeInsight.insightSetKey}"]`);
         set?.getWidget()?.highlightActiveInsight();
     }
-    #render() {
+    performUpdate() {
         if (!this.#parsedTrace?.insights) {
-            Lit.render(Lit.nothing, this.#shadow, { host: this });
             return;
         }
-        const insights = this.#parsedTrace.insights;
-        const hasMultipleInsightSets = insights.size > 1;
-        const labels = Utils.Helpers.createUrlLabels([...insights.values()].map(({ url }) => url));
-        const contents = 
-        // clang-format off
-        html `
-      <style>${sidebarInsightsTabStyles}</style>
-      <div class="insight-sets-wrapper">
-        ${[...insights.values()].map(({ id, url }, index) => {
-            const data = {
-                insightSetKey: id,
-                activeCategory: this.#selectedCategory,
-                activeInsight: this.#activeInsight,
-                parsedTrace: this.#parsedTrace,
-            };
-            const contents = html `
-            <devtools-widget
-              data-insight-set-key=${id}
-              .widgetConfig=${UI.Widget.widgetConfig(SidebarSingleInsightSet, { data })}
-            ></devtools-widget>
-          `;
-            if (hasMultipleInsightSets) {
-                return html `<details
-              ?open=${id === this.#selectedInsightSetKey}
-            >
-              <summary
-                @click=${() => this.#insightSetToggled(id)}
-                @mouseenter=${() => this.#insightSetHovered(id)}
-                @mouseleave=${() => this.#insightSetUnhovered()}
-                title=${url.href}>
-                ${this.#renderDropdownIcon(id === this.#selectedInsightSetKey)}
-                <span>${labels[index]}</span>
-                <span class='zoom-button' @click=${(event) => this.#onZoomClick(event, id)}>${this.#renderZoomButton(id === this.#selectedInsightSetKey)}</span>
-              </summary>
-              ${contents}
-            </details>`;
-            }
-            return contents;
-        })}
-      </div>
-    `;
-        // clang-format on
-        // Insight components contain state, so to prevent insights from previous trace loads breaking things we use the parsedTrace
-        // as a render key.
-        // Note: newer Lit has `keyed`, but we don't have that, so we do it manually. https://lit.dev/docs/templates/directives/#keyed
-        const result = Lit.Directives.repeat([contents], () => this.#parsedTrace, template => template);
-        Lit.render(result, this.#shadow, { host: this });
+        const insightSets = [...this.#parsedTrace.insights.values()];
+        const input = {
+            parsedTrace: this.#parsedTrace,
+            labels: Utils.Helpers.createUrlLabels(insightSets.map(({ url }) => url)),
+            activeInsightSet: this.#selectedInsightSet,
+            activeInsight: this.#activeInsight,
+            selectedCategory: this.#selectedCategory,
+            onInsightSetToggled: this.#onInsightSetToggled.bind(this),
+            onInsightSetHovered: this.#onInsightSetHovered.bind(this),
+            onInsightSetUnhovered: this.#onInsightSetUnhovered.bind(this),
+            onZoomClick: this.#onZoomClick.bind(this),
+        };
+        this.#view(input, undefined, this.contentElement);
     }
 }
-customElements.define('devtools-performance-sidebar-insights', SidebarInsightsTab);
 //# sourceMappingURL=SidebarInsightsTab.js.map

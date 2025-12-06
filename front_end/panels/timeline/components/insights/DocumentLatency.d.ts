@@ -1,4 +1,3 @@
-import './Checklist.js';
 import type { DocumentLatencyInsightModel } from '../../../../models/trace/insights/DocumentLatency.js';
 import type * as Trace from '../../../../models/trace/trace.js';
 import * as Lit from '../../../../ui/lit/lit.js';

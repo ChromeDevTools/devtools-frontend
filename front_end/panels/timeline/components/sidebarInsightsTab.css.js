@@ -9,69 +9,71 @@ export default `/*
  * found in the LICENSE file.
  */
 
-:host {
-  display: flex;
-  flex-flow: column nowrap;
-  flex-grow: 1;
-}
-
-.insight-sets-wrapper {
-  display: flex;
-  flex-flow: column nowrap;
-  flex-grow: 1; /* so it fills the available vertical height in the sidebar */
-
-  details {
-    flex-grow: 0;
-  }
-
-  details[open] {
-    flex-grow: 1;
-    border-bottom: 1px solid var(--sys-color-divider);
-  }
-
-  summary {
-    background-color: var(--sys-color-surface2);
-    border-bottom: 1px solid var(--sys-color-divider);
-    overflow: hidden;
-    padding: 2px 5px;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    font: var(--sys-typescale-body4-medium);
+@scope to (devtools-widget > *) {
+  :host {
     display: flex;
-    align-items: center;
+    flex-flow: column nowrap;
+    flex-grow: 1;
+  }
 
-    &:focus {
-      background-color: var(--sys-color-tonal-container);
+  .insight-sets-wrapper {
+    display: flex;
+    flex-flow: column nowrap;
+    flex-grow: 1; /* so it fills the available vertical height in the sidebar */
+
+    details {
+      flex-grow: 0;
     }
 
-    &::marker {
-      color: var(--sys-color-on-surface-subtle);
-      font-size: 11px;
-      line-height: 1;
+    details[open] {
+      flex-grow: 1;
+      border-bottom: 1px solid var(--sys-color-divider);
     }
 
-    /* make sure the first summary has a top border */
-    details:first-child & {
-      border-top: 1px solid var(--sys-color-divider);
+    summary {
+      background-color: var(--sys-color-surface2);
+      border-bottom: 1px solid var(--sys-color-divider);
+      overflow: hidden;
+      padding: 2px 5px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font: var(--sys-typescale-body4-medium);
+      display: flex;
+      align-items: center;
+
+      &:focus {
+        background-color: var(--sys-color-tonal-container);
+      }
+
+      &::marker {
+        color: var(--sys-color-on-surface-subtle);
+        font-size: 11px;
+        line-height: 1;
+      }
+
+      /* make sure the first summary has a top border */
+      details:first-child & {
+        border-top: 1px solid var(--sys-color-divider);
+      }
     }
   }
-}
 
-.zoom-button {
-  margin-left: auto;
-}
-
-.zoom-icon {
-  visibility: hidden;
-
-  &.active devtools-button {
-    visibility: visible;
+  .zoom-button {
+    margin-left: auto;
   }
-}
 
-.dropdown-icon {
-  &.active devtools-button {
-    transform: rotate(90deg);
+  .zoom-icon {
+    visibility: hidden;
+  
+    &.active devtools-button {
+      visibility: visible;
+    }
+  }
+
+  .dropdown-icon {
+    &.active devtools-button {
+      transform: rotate(90deg);
+    }
   }
 }
 

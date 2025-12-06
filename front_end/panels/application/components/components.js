@@ -1262,6 +1262,7 @@ var BackForwardCacheView = class extends UI.Widget.Widget {
 var BounceTrackingMitigationsView_exports = {};
 __export(BounceTrackingMitigationsView_exports, {
   BounceTrackingMitigationsView: () => BounceTrackingMitigationsView,
+  DEFAULT_VIEW: () => DEFAULT_VIEW2,
   i18nString: () => i18nString2
 });
 import "./../../../ui/components/report_view/report_view.js";
@@ -1269,7 +1270,7 @@ import "./../../../ui/legacy/components/data_grid/data_grid.js";
 import * as i18n5 from "./../../../core/i18n/i18n.js";
 import * as SDK2 from "./../../../core/sdk/sdk.js";
 import * as Buttons2 from "./../../../ui/components/buttons/buttons.js";
-import * as LegacyWrapper from "./../../../ui/components/legacy_wrapper/legacy_wrapper.js";
+import * as UI2 from "./../../../ui/legacy/legacy.js";
 import * as Lit from "./../../../ui/lit/lit.js";
 import * as VisualLogging2 from "./../../../ui/visual_logging/visual_logging.js";
 
@@ -1341,97 +1342,118 @@ var UIStrings3 = {
 };
 var str_3 = i18n5.i18n.registerUIStrings("panels/application/components/BounceTrackingMitigationsView.ts", UIStrings3);
 var i18nString2 = i18n5.i18n.getLocalizedString.bind(void 0, str_3);
-var BounceTrackingMitigationsView = class extends LegacyWrapper.LegacyWrapper.WrappableComponent {
-  #shadow = this.attachShadow({ mode: "open" });
+var renderForceRunButton = (input) => {
+  const isMitigationRunning = input.screenStatus === "Running";
+  return html2`
+    <devtools-button
+      aria-label=${i18nString2(UIStrings3.forceRun)}
+      .disabled=${isMitigationRunning}
+      .spinner=${isMitigationRunning}
+      .variant=${"primary"}
+      @click=${input.runMitigations}
+      jslog=${VisualLogging2.action("force-run").track({ click: true })}>
+      ${isMitigationRunning ? html2`
+        ${i18nString2(UIStrings3.runningMitigations)}` : `
+        ${i18nString2(UIStrings3.forceRun)}
+      `}
+    </devtools-button>
+  `;
+};
+var renderDeletedSitesOrNoSitesMessage = (input) => {
+  if (!input.seenButtonClick) {
+    return Lit.nothing;
+  }
+  if (input.trackingSites.length === 0) {
+    return html2`
+      <devtools-report-section>
+      ${input.screenStatus === "Running" ? html2`
+        ${i18nString2(UIStrings3.checkingPotentialTrackers)}` : `
+        ${i18nString2(UIStrings3.noPotentialBounceTrackersIdentified)}
+      `}
+      </devtools-report-section>
+    `;
+  }
+  return html2`
+    <devtools-report-section>
+      <devtools-data-grid striped inline>
+        <table>
+          <tr>
+            <th id="sites" weight="10" sortable>
+              ${i18nString2(UIStrings3.stateDeletedFor)}
+            </th>
+          </tr>
+          ${input.trackingSites.map((site) => html2`
+            <tr><td>${site}</td></tr>`)}
+        </table>
+      </devtools-data-grid>
+    </devtools-report-section>
+  `;
+};
+var renderMainFrameInformation2 = (input) => {
+  if (input.screenStatus === "Initializing") {
+    return Lit.nothing;
+  }
+  if (input.screenStatus === "Disabled") {
+    return html2`
+      <devtools-report-section>
+        ${i18nString2(UIStrings3.featureDisabled)}
+      </devtools-report-section>
+    `;
+  }
+  return html2`
+    <devtools-report-section>
+      ${renderForceRunButton(input)}
+    </devtools-report-section>
+    ${renderDeletedSitesOrNoSitesMessage(input)}
+    <devtools-report-divider>
+    </devtools-report-divider>
+    <devtools-report-section>
+      <x-link href="https://privacycg.github.io/nav-tracking-mitigations/#bounce-tracking-mitigations" class="link"
+      jslog=${VisualLogging2.link("learn-more").track({ click: true })}>
+        ${i18nString2(UIStrings3.learnMore)}
+      </x-link>
+    </devtools-report-section>
+  `;
+};
+var DEFAULT_VIEW2 = (input, _output, target) => {
+  Lit.render(html2`
+    <style>${bounceTrackingMitigationsView_css_default}</style>
+    <style>${UI2.inspectorCommonStyles}</style>
+    <devtools-report .data=${{ reportTitle: i18nString2(UIStrings3.bounceTrackingMitigationsTitle) }}
+                      jslog=${VisualLogging2.pane("bounce-tracking-mitigations")}>
+      ${renderMainFrameInformation2(input)}
+    </devtools-report>
+  `, target);
+};
+var BounceTrackingMitigationsView = class extends UI2.Widget.Widget {
   #trackingSites = [];
-  #screenStatus = "Result";
-  #checkedFeature = false;
+  #screenStatus = "Initializing";
   #seenButtonClick = false;
-  connectedCallback() {
-    void this.#render();
-    this.parentElement?.classList.add("overflow-auto");
-  }
-  async #render() {
-    Lit.render(html2`
-      <style>${bounceTrackingMitigationsView_css_default}</style>
-      <devtools-report .data=${{ reportTitle: i18nString2(UIStrings3.bounceTrackingMitigationsTitle) }}
-                       jslog=${VisualLogging2.pane("bounce-tracking-mitigations")}>
-        ${await this.#renderMainFrameInformation()}
-      </devtools-report>
-    `, this.#shadow, { host: this });
-  }
-  async #renderMainFrameInformation() {
-    if (!this.#checkedFeature) {
-      await this.#checkFeatureState();
+  #view;
+  constructor(element, view = DEFAULT_VIEW2) {
+    super(element, { useShadowDom: true, classes: ["overflow-auto"] });
+    this.#view = view;
+    const mainTarget = SDK2.TargetManager.TargetManager.instance().primaryPageTarget();
+    if (!mainTarget) {
+      this.#screenStatus = "Result";
+    } else {
+      void mainTarget.systemInfo().invoke_getFeatureState({ featureState: "DIPS" }).then((state) => {
+        this.#screenStatus = state.featureEnabled ? "Result" : "Disabled";
+        this.requestUpdate();
+      });
     }
-    if (this.#screenStatus === "Disabled") {
-      return html2`
-        <devtools-report-section>
-          ${i18nString2(UIStrings3.featureDisabled)}
-        </devtools-report-section>
-      `;
-    }
-    return html2`
-      <devtools-report-section>
-        ${this.#renderForceRunButton()}
-      </devtools-report-section>
-      ${this.#renderDeletedSitesOrNoSitesMessage()}
-      <devtools-report-divider>
-      </devtools-report-divider>
-      <devtools-report-section>
-        <x-link href="https://privacycg.github.io/nav-tracking-mitigations/#bounce-tracking-mitigations" class="link"
-        jslog=${VisualLogging2.link("learn-more").track({ click: true })}>
-          ${i18nString2(UIStrings3.learnMore)}
-        </x-link>
-      </devtools-report-section>
-    `;
   }
-  #renderForceRunButton() {
-    const isMitigationRunning = this.#screenStatus === "Running";
-    return html2`
-      <devtools-button
-        aria-label=${i18nString2(UIStrings3.forceRun)}
-        .disabled=${isMitigationRunning}
-        .spinner=${isMitigationRunning}
-        .variant=${"primary"}
-        @click=${this.#runMitigations}
-        jslog=${VisualLogging2.action("force-run").track({ click: true })}>
-        ${isMitigationRunning ? html2`
-          ${i18nString2(UIStrings3.runningMitigations)}` : `
-          ${i18nString2(UIStrings3.forceRun)}
-        `}
-      </devtools-button>
-    `;
+  wasShown() {
+    super.wasShown();
+    this.requestUpdate();
   }
-  #renderDeletedSitesOrNoSitesMessage() {
-    if (!this.#seenButtonClick) {
-      return Lit.nothing;
-    }
-    if (this.#trackingSites.length === 0) {
-      return html2`
-        <devtools-report-section>
-        ${this.#screenStatus === "Running" ? html2`
-          ${i18nString2(UIStrings3.checkingPotentialTrackers)}` : `
-          ${i18nString2(UIStrings3.noPotentialBounceTrackersIdentified)}
-        `}
-        </devtools-report-section>
-      `;
-    }
-    return html2`
-      <devtools-report-section>
-        <devtools-data-grid striped inline>
-          <table>
-            <tr>
-              <th id="sites" weight="10" sortable>
-                ${i18nString2(UIStrings3.stateDeletedFor)}
-              </th>
-            </tr>
-            ${this.#trackingSites.map((site) => html2`
-              <tr><td>${site}</td></tr>`)}
-          </table>
-        </devtools-data-grid>
-      </devtools-report-section>
-    `;
+  performUpdate() {
+    this.#view({
+      screenStatus: this.#screenStatus,
+      trackingSites: this.#trackingSites,
+      seenButtonClick: this.#seenButtonClick,
+      runMitigations: this.#runMitigations.bind(this)
+    }, void 0, this.contentElement);
   }
   async #runMitigations() {
     const mainTarget = SDK2.TargetManager.TargetManager.instance().primaryPageTarget();
@@ -1440,7 +1462,7 @@ var BounceTrackingMitigationsView = class extends LegacyWrapper.LegacyWrapper.Wr
     }
     this.#seenButtonClick = true;
     this.#screenStatus = "Running";
-    void this.#render();
+    this.requestUpdate();
     const response = await mainTarget.storageAgent().invoke_runBounceTrackingMitigations();
     this.#trackingSites = [];
     response.deletedSites.forEach((element) => {
@@ -1450,31 +1472,20 @@ var BounceTrackingMitigationsView = class extends LegacyWrapper.LegacyWrapper.Wr
   }
   #renderMitigationsResult() {
     this.#screenStatus = "Result";
-    void this.#render();
-  }
-  async #checkFeatureState() {
-    this.#checkedFeature = true;
-    const mainTarget = SDK2.TargetManager.TargetManager.instance().primaryPageTarget();
-    if (!mainTarget) {
-      return;
-    }
-    if (!(await mainTarget.systemInfo().invoke_getFeatureState({ featureState: "DIPS" })).featureEnabled) {
-      this.#screenStatus = "Disabled";
-    }
+    this.requestUpdate();
   }
 };
-customElements.define("devtools-bounce-tracking-mitigations-view", BounceTrackingMitigationsView);
 
 // gen/front_end/panels/application/components/EndpointsGrid.js
 var EndpointsGrid_exports = {};
 __export(EndpointsGrid_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW2,
+  DEFAULT_VIEW: () => DEFAULT_VIEW3,
   EndpointsGrid: () => EndpointsGrid,
   i18nString: () => i18nString3
 });
 import "./../../../ui/legacy/components/data_grid/data_grid.js";
 import * as i18n7 from "./../../../core/i18n/i18n.js";
-import * as UI2 from "./../../../ui/legacy/legacy.js";
+import * as UI3 from "./../../../ui/legacy/legacy.js";
 import * as Lit2 from "./../../../ui/lit/lit.js";
 import * as VisualLogging3 from "./../../../ui/visual_logging/visual_logging.js";
 
@@ -1528,10 +1539,10 @@ var UIStrings4 = {
 var str_4 = i18n7.i18n.registerUIStrings("panels/application/components/EndpointsGrid.ts", UIStrings4);
 var i18nString3 = i18n7.i18n.getLocalizedString.bind(void 0, str_4);
 var { render: render3, html: html3 } = Lit2;
-var DEFAULT_VIEW2 = (input, output, target) => {
+var DEFAULT_VIEW3 = (input, output, target) => {
   render3(html3`
     <style>${endpointsGrid_css_default}</style>
-    <style>${UI2.inspectorCommonStyles}</style>
+    <style>${UI3.inspectorCommonStyles}</style>
     <div class="endpoints-container" jslog=${VisualLogging3.section("endpoints")}>
       <div class="endpoints-header">${i18n7.i18n.lockedString("Endpoints")}</div>
       ${input.endpoints.size > 0 ? html3`
@@ -1558,10 +1569,10 @@ var DEFAULT_VIEW2 = (input, output, target) => {
     </div>
   `, target);
 };
-var EndpointsGrid = class extends UI2.Widget.Widget {
+var EndpointsGrid = class extends UI3.Widget.Widget {
   endpoints = /* @__PURE__ */ new Map();
   #view;
-  constructor(element, view = DEFAULT_VIEW2) {
+  constructor(element, view = DEFAULT_VIEW3) {
     super(element);
     this.#view = view;
     this.requestUpdate();
@@ -1581,7 +1592,7 @@ __export(InterestGroupAccessGrid_exports, {
 });
 import "./../../../ui/legacy/components/data_grid/data_grid.js";
 import * as i18n9 from "./../../../core/i18n/i18n.js";
-import * as UI3 from "./../../../ui/legacy/legacy.js";
+import * as UI4 from "./../../../ui/legacy/legacy.js";
 import * as Lit3 from "./../../../ui/lit/lit.js";
 
 // gen/front_end/panels/application/components/interestGroupAccessGrid.css.js
@@ -1680,7 +1691,7 @@ var InterestGroupAccessGrid = class extends HTMLElement {
   #render() {
     Lit3.render(html4`
       <style>${interestGroupAccessGrid_css_default}</style>
-      <style>${UI3.inspectorCommonStyles}</style>
+      <style>${UI4.inspectorCommonStyles}</style>
       ${this.#datastores.length === 0 ? html4`
           <div class="empty-state">
             <span class="empty-state-header">${i18nString4(UIStrings5.noEvents)}</span>
@@ -1732,7 +1743,7 @@ import * as i18n11 from "./../../../core/i18n/i18n.js";
 import * as SDK3 from "./../../../core/sdk/sdk.js";
 import * as NetworkForward from "./../../network/forward/forward.js";
 import * as Buttons3 from "./../../../ui/components/buttons/buttons.js";
-import * as UI4 from "./../../../ui/legacy/legacy.js";
+import * as UI5 from "./../../../ui/legacy/legacy.js";
 import { html as html5, nothing as nothing3, render as render5 } from "./../../../ui/lit/lit.js";
 import * as VisualLogging4 from "./../../../ui/visual_logging/visual_logging.js";
 
@@ -1922,7 +1933,7 @@ function renderDisallowed(data, showDetails, onToggleShowDetails, onRevealDOMNod
       </div>
     </devtools-report-value>`;
 }
-var DEFAULT_VIEW3 = (input, output, target) => {
+var DEFAULT_VIEW4 = (input, output, target) => {
   render5(html5`
     <style>${permissionsPolicySection_css_default}</style>
     <devtools-report-section-header>
@@ -1933,11 +1944,11 @@ var DEFAULT_VIEW3 = (input, output, target) => {
     ${renderDisallowed(input.disallowed, input.showDetails, input.onToggleShowDetails, input.onRevealDOMNode, input.onRevealHeader)}
     <devtools-report-divider></devtools-report-divider>`, target);
 };
-var PermissionsPolicySection = class extends UI4.Widget.Widget {
+var PermissionsPolicySection = class extends UI5.Widget.Widget {
   #policies = [];
   #showDetails = false;
   #view;
-  constructor(element, view = DEFAULT_VIEW3) {
+  constructor(element, view = DEFAULT_VIEW4) {
     super(element, { useShadowDom: true });
     this.#view = view;
   }
@@ -2005,7 +2016,7 @@ import * as Platform from "./../../../core/platform/platform.js";
 import * as Buttons4 from "./../../../ui/components/buttons/buttons.js";
 import * as Input from "./../../../ui/components/input/input.js";
 import * as uiI18n from "./../../../ui/i18n/i18n.js";
-import * as UI5 from "./../../../ui/legacy/legacy.js";
+import * as UI6 from "./../../../ui/legacy/legacy.js";
 import { html as html6, i18nTemplate as unboundI18nTemplate, nothing as nothing4, render as render6 } from "./../../../ui/lit/lit.js";
 import * as VisualLogging5 from "./../../../ui/visual_logging/visual_logging.js";
 
@@ -2117,7 +2128,7 @@ var str_7 = i18n13.i18n.registerUIStrings("panels/application/components/Protoco
 var i18nString6 = i18n13.i18n.getLocalizedString.bind(void 0, str_7);
 var i18nTemplate = unboundI18nTemplate.bind(void 0, str_7);
 function renderStatusMessage(protocolHandlers, manifestLink) {
-  const manifestInTextLink = UI5.XLink.XLink.create(manifestLink, i18nString6(UIStrings7.manifest), void 0, void 0, "manifest");
+  const manifestInTextLink = UI6.XLink.XLink.create(manifestLink, i18nString6(UIStrings7.manifest), void 0, void 0, "manifest");
   const statusString = protocolHandlers.length > 0 ? UIStrings7.protocolDetected : UIStrings7.protocolNotDetected;
   return html6`
     <div class="protocol-handlers-row status">
@@ -2148,10 +2159,10 @@ function renderProtocolTest(protocolHandlers, queryInputState, protocolSelectHan
       </devtools-button>
     </div>`;
 }
-var DEFAULT_VIEW4 = (input, _output, target) => {
+var DEFAULT_VIEW5 = (input, _output, target) => {
   render6(html6`
     <style>${protocolHandlersView_css_default}</style>
-    <style>${UI5.inspectorCommonStyles}</style>
+    <style>${UI6.inspectorCommonStyles}</style>
     <style>${Input.textInputStyles}</style>
     ${renderStatusMessage(input.protocolHandler, input.manifestLink)}
     <div class="protocol-handlers-row">
@@ -2163,13 +2174,13 @@ var DEFAULT_VIEW4 = (input, _output, target) => {
     ${renderProtocolTest(input.protocolHandler, input.queryInputState, input.protocolSelectHandler, input.queryInputChangeHandler, input.testProtocolClickHandler)}
   `, target);
 };
-var ProtocolHandlersView = class extends UI5.Widget.Widget {
+var ProtocolHandlersView = class extends UI6.Widget.Widget {
   #protocolHandlers = [];
   #manifestLink = Platform.DevToolsPath.EmptyUrlString;
   #selectedProtocolState = "";
   #queryInputState = "";
   #view;
-  constructor(element, view = DEFAULT_VIEW4) {
+  constructor(element, view = DEFAULT_VIEW5) {
     super(element, { useShadowDom: false });
     this.#view = view;
   }
@@ -2219,14 +2230,14 @@ var ProtocolHandlersView = class extends UI5.Widget.Widget {
 // gen/front_end/panels/application/components/ReportsGrid.js
 var ReportsGrid_exports = {};
 __export(ReportsGrid_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW5,
+  DEFAULT_VIEW: () => DEFAULT_VIEW6,
   ReportsGrid: () => ReportsGrid,
   i18nString: () => i18nString7
 });
 import "./../../../ui/legacy/components/data_grid/data_grid.js";
 import * as i18n15 from "./../../../core/i18n/i18n.js";
 import * as Root from "./../../../core/root/root.js";
-import * as UI6 from "./../../../ui/legacy/legacy.js";
+import * as UI7 from "./../../../ui/legacy/legacy.js";
 import * as Lit4 from "./../../../ui/lit/lit.js";
 import * as VisualLogging6 from "./../../../ui/visual_logging/visual_logging.js";
 
@@ -2304,10 +2315,10 @@ var str_8 = i18n15.i18n.registerUIStrings("panels/application/components/Reports
 var i18nString7 = i18n15.i18n.getLocalizedString.bind(void 0, str_8);
 var { render: render7, html: html7 } = Lit4;
 var REPORTING_API_EXPLANATION_URL = "https://developer.chrome.com/docs/capabilities/web-apis/reporting-api";
-var DEFAULT_VIEW5 = (input, output, target) => {
+var DEFAULT_VIEW6 = (input, output, target) => {
   render7(html7`
     <style>${reportsGrid_css_default}</style>
-    <style>${UI6.inspectorCommonStyles}</style>
+    <style>${UI7.inspectorCommonStyles}</style>
     <div class="reporting-container" jslog=${VisualLogging6.section("reports")}>
       <div class="reporting-header">${i18n15.i18n.lockedString("Reports")}</div>
       ${input.reports.length > 0 ? html7`
@@ -2361,13 +2372,13 @@ var DEFAULT_VIEW5 = (input, output, target) => {
     </div>
   `, target);
 };
-var ReportsGrid = class extends UI6.Widget.Widget {
+var ReportsGrid = class extends UI7.Widget.Widget {
   reports = [];
   #protocolMonitorExperimentEnabled = false;
   #view;
   onReportSelected = () => {
   };
-  constructor(element, view = DEFAULT_VIEW5) {
+  constructor(element, view = DEFAULT_VIEW6) {
     super(element);
     this.#view = view;
     this.#protocolMonitorExperimentEnabled = Root.Runtime.experiments.isEnabled("protocol-monitor");
@@ -2388,7 +2399,7 @@ var ServiceWorkerRouterView_exports = {};
 __export(ServiceWorkerRouterView_exports, {
   ServiceWorkerRouterView: () => ServiceWorkerRouterView
 });
-import * as UI7 from "./../../../ui/legacy/legacy.js";
+import * as UI8 from "./../../../ui/legacy/legacy.js";
 import { html as html8, render as render8 } from "./../../../ui/lit/lit.js";
 
 // gen/front_end/panels/application/components/serviceWorkerRouterView.css.js
@@ -2467,17 +2478,17 @@ function renderRouterRule(rule) {
       </ul>
     </li>`;
 }
-var DEFAULT_VIEW6 = (input, _output, target) => {
+var DEFAULT_VIEW7 = (input, _output, target) => {
   render8(html8`
     <style>${serviceWorkerRouterView_css_default}</style>
     <ul class="router-rules">
       ${input.rules.map(renderRouterRule)}
     </ul>`, target);
 };
-var ServiceWorkerRouterView = class extends UI7.Widget.Widget {
+var ServiceWorkerRouterView = class extends UI8.Widget.Widget {
   #rules = [];
   #view;
-  constructor(element, view = DEFAULT_VIEW6) {
+  constructor(element, view = DEFAULT_VIEW7) {
     super(element, { useShadowDom: true });
     this.#view = view;
   }
@@ -2498,13 +2509,13 @@ var ServiceWorkerRouterView = class extends UI7.Widget.Widget {
 // gen/front_end/panels/application/components/SharedStorageAccessGrid.js
 var SharedStorageAccessGrid_exports = {};
 __export(SharedStorageAccessGrid_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW7,
+  DEFAULT_VIEW: () => DEFAULT_VIEW8,
   SharedStorageAccessGrid: () => SharedStorageAccessGrid,
   i18nString: () => i18nString8
 });
 import "./../../../ui/legacy/components/data_grid/data_grid.js";
 import * as i18n17 from "./../../../core/i18n/i18n.js";
-import * as UI8 from "./../../../ui/legacy/legacy.js";
+import * as UI9 from "./../../../ui/legacy/legacy.js";
 import * as Lit5 from "./../../../ui/lit/lit.js";
 import * as VisualLogging7 from "./../../../ui/visual_logging/visual_logging.js";
 
@@ -2605,7 +2616,7 @@ var UIStrings9 = {
 };
 var str_9 = i18n17.i18n.registerUIStrings("panels/application/components/SharedStorageAccessGrid.ts", UIStrings9);
 var i18nString8 = i18n17.i18n.getLocalizedString.bind(void 0, str_9);
-var DEFAULT_VIEW7 = (input, _output, target) => {
+var DEFAULT_VIEW8 = (input, _output, target) => {
   render9(html9`
     <style>${sharedStorageAccessGrid_css_default}</style>
     ${input.events.length === 0 ? html9`
@@ -2667,12 +2678,12 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
           </devtools-data-grid>
         </div>`}`, target);
 };
-var SharedStorageAccessGrid = class extends UI8.Widget.Widget {
+var SharedStorageAccessGrid = class extends UI9.Widget.Widget {
   #view;
   #events = [];
   #onSelect = () => {
   };
-  constructor(element, view = DEFAULT_VIEW7) {
+  constructor(element, view = DEFAULT_VIEW8) {
     super(element, { useShadowDom: true });
     this.#view = view;
     this.performUpdate();
@@ -2748,9 +2759,9 @@ import "./../../../ui/components/report_view/report_view.js";
 import * as i18n19 from "./../../../core/i18n/i18n.js";
 import * as SDK4 from "./../../../core/sdk/sdk.js";
 import * as Buttons5 from "./../../../ui/components/buttons/buttons.js";
-import * as LegacyWrapper3 from "./../../../ui/components/legacy_wrapper/legacy_wrapper.js";
+import * as LegacyWrapper from "./../../../ui/components/legacy_wrapper/legacy_wrapper.js";
 import * as RenderCoordinator from "./../../../ui/components/render_coordinator/render_coordinator.js";
-import * as UI9 from "./../../../ui/legacy/legacy.js";
+import * as UI10 from "./../../../ui/legacy/legacy.js";
 import { html as html10, nothing as nothing5, render as render10 } from "./../../../ui/lit/lit.js";
 
 // gen/front_end/panels/application/components/storageMetadataView.css.js
@@ -2862,7 +2873,7 @@ var UIStrings10 = {
 };
 var str_10 = i18n19.i18n.registerUIStrings("panels/application/components/StorageMetadataView.ts", UIStrings10);
 var i18nString9 = i18n19.i18n.getLocalizedString.bind(void 0, str_10);
-var StorageMetadataView = class extends LegacyWrapper3.LegacyWrapper.WrappableComponent {
+var StorageMetadataView = class extends LegacyWrapper.LegacyWrapper.WrappableComponent {
   #shadow = this.attachShadow({ mode: "open" });
   #storageBucketsModel;
   #storageKey = null;
@@ -2998,7 +3009,7 @@ var StorageMetadataView = class extends LegacyWrapper3.LegacyWrapper.WrappableCo
     if (!this.#storageBucketsModel || !this.#storageBucket) {
       throw new Error("Should not call #deleteBucket if #storageBucketsModel or #storageBucket is null.");
     }
-    const ok = await UI9.UIUtils.ConfirmDialog.show(i18nString9(UIStrings10.bucketWillBeRemoved), i18nString9(UIStrings10.confirmBucketDeletion, { PH1: this.#storageBucket.bucket.name || "" }), this, { jslogContext: "delete-bucket-confirmation" });
+    const ok = await UI10.UIUtils.ConfirmDialog.show(i18nString9(UIStrings10.bucketWillBeRemoved), i18nString9(UIStrings10.confirmBucketDeletion, { PH1: this.#storageBucket.bucket.name || "" }), this, { jslogContext: "delete-bucket-confirmation" });
     if (ok) {
       this.#storageBucketsModel.deleteBucket(this.#storageBucket.bucket);
     }
@@ -3112,7 +3123,7 @@ import "./../../../ui/legacy/components/data_grid/data_grid.js";
 import * as i18n23 from "./../../../core/i18n/i18n.js";
 import * as SDK5 from "./../../../core/sdk/sdk.js";
 import * as Buttons7 from "./../../../ui/components/buttons/buttons.js";
-import * as UI10 from "./../../../ui/legacy/legacy.js";
+import * as UI11 from "./../../../ui/legacy/legacy.js";
 import * as Lit7 from "./../../../ui/lit/lit.js";
 import * as VisualLogging8 from "./../../../ui/visual_logging/visual_logging.js";
 
@@ -3244,18 +3255,18 @@ function renderGridOrNoDataMessage(input) {
       </div>
     `;
 }
-var DEFAULT_VIEW8 = (input, output, target) => {
+var DEFAULT_VIEW9 = (input, output, target) => {
   Lit7.render(html12`
     <style>${trustTokensView_css_default}</style>
-    <style>${UI10.inspectorCommonStyles}</style>
+    <style>${UI11.inspectorCommonStyles}</style>
     ${renderGridOrNoDataMessage(input)}
   `, target);
 };
-var TrustTokensView = class extends UI10.Widget.VBox {
+var TrustTokensView = class extends UI11.Widget.VBox {
   #updateInterval = 0;
   #tokens = [];
   #view;
-  constructor(element, view = DEFAULT_VIEW8) {
+  constructor(element, view = DEFAULT_VIEW9) {
     super(element, { useShadowDom: true });
     this.#view = view;
   }

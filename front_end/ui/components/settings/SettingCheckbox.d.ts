@@ -1,6 +1,6 @@
 import '../tooltips/tooltips.js';
 import './SettingDeprecationWarning.js';
-import '../../legacy/legacy.js';
+import '../../kit/kit.js';
 import type * as Common from '../../../core/common/common.js';
 import * as Lit from '../../lit/lit.js';
 export interface SettingCheckboxData {

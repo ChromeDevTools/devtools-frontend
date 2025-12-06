@@ -6862,7 +6862,6 @@ __export(Sidebar_exports, {
   RevealAnnotation: () => RevealAnnotation,
   SidebarWidget: () => SidebarWidget
 });
-import * as RenderCoordinator3 from "./../../../ui/components/render_coordinator/render_coordinator.js";
 import * as UI18 from "./../../../ui/legacy/legacy.js";
 
 // gen/front_end/panels/timeline/components/insights/SidebarInsight.js
@@ -7353,11 +7352,11 @@ var DEFAULT_VIEW9 = (input, _output, target) => {
 // gen/front_end/panels/timeline/components/SidebarInsightsTab.js
 var SidebarInsightsTab_exports = {};
 __export(SidebarInsightsTab_exports, {
+  DEFAULT_VIEW: () => DEFAULT_VIEW11,
   SidebarInsightsTab: () => SidebarInsightsTab
 });
 import * as Trace10 from "./../../../models/trace/trace.js";
 import * as Buttons9 from "./../../../ui/components/buttons/buttons.js";
-import * as ComponentHelpers7 from "./../../../ui/components/helpers/helpers.js";
 import * as UI17 from "./../../../ui/legacy/legacy.js";
 import * as Lit19 from "./../../../ui/lit/lit.js";
 import * as Utils from "./../utils/utils.js";
@@ -7370,69 +7369,71 @@ var sidebarInsightsTab_css_default = `/*
  * found in the LICENSE file.
  */
 
-:host {
-  display: flex;
-  flex-flow: column nowrap;
-  flex-grow: 1;
-}
-
-.insight-sets-wrapper {
-  display: flex;
-  flex-flow: column nowrap;
-  flex-grow: 1; /* so it fills the available vertical height in the sidebar */
-
-  details {
-    flex-grow: 0;
-  }
-
-  details[open] {
-    flex-grow: 1;
-    border-bottom: 1px solid var(--sys-color-divider);
-  }
-
-  summary {
-    background-color: var(--sys-color-surface2);
-    border-bottom: 1px solid var(--sys-color-divider);
-    overflow: hidden;
-    padding: 2px 5px;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    font: var(--sys-typescale-body4-medium);
+@scope to (devtools-widget > *) {
+  :host {
     display: flex;
-    align-items: center;
+    flex-flow: column nowrap;
+    flex-grow: 1;
+  }
 
-    &:focus {
-      background-color: var(--sys-color-tonal-container);
+  .insight-sets-wrapper {
+    display: flex;
+    flex-flow: column nowrap;
+    flex-grow: 1; /* so it fills the available vertical height in the sidebar */
+
+    details {
+      flex-grow: 0;
     }
 
-    &::marker {
-      color: var(--sys-color-on-surface-subtle);
-      font-size: 11px;
-      line-height: 1;
+    details[open] {
+      flex-grow: 1;
+      border-bottom: 1px solid var(--sys-color-divider);
     }
 
-    /* make sure the first summary has a top border */
-    details:first-child & {
-      border-top: 1px solid var(--sys-color-divider);
+    summary {
+      background-color: var(--sys-color-surface2);
+      border-bottom: 1px solid var(--sys-color-divider);
+      overflow: hidden;
+      padding: 2px 5px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font: var(--sys-typescale-body4-medium);
+      display: flex;
+      align-items: center;
+
+      &:focus {
+        background-color: var(--sys-color-tonal-container);
+      }
+
+      &::marker {
+        color: var(--sys-color-on-surface-subtle);
+        font-size: 11px;
+        line-height: 1;
+      }
+
+      /* make sure the first summary has a top border */
+      details:first-child & {
+        border-top: 1px solid var(--sys-color-divider);
+      }
     }
   }
-}
 
-.zoom-button {
-  margin-left: auto;
-}
-
-.zoom-icon {
-  visibility: hidden;
-
-  &.active devtools-button {
-    visibility: visible;
+  .zoom-button {
+    margin-left: auto;
   }
-}
 
-.dropdown-icon {
-  &.active devtools-button {
-    transform: rotate(90deg);
+  .zoom-icon {
+    visibility: hidden;
+  
+    &.active devtools-button {
+      visibility: visible;
+    }
+  }
+
+  .dropdown-icon {
+    &.active devtools-button {
+      transform: rotate(90deg);
+    }
   }
 }
 
@@ -7905,8 +7906,93 @@ var SidebarSingleInsightSet = class _SidebarSingleInsightSet extends UI16.Widget
 
 // gen/front_end/panels/timeline/components/SidebarInsightsTab.js
 var { html: html19 } = Lit19;
-var SidebarInsightsTab = class extends HTMLElement {
-  #shadow = this.attachShadow({ mode: "open" });
+var { widgetConfig: widgetConfig3 } = UI17.Widget;
+var DEFAULT_VIEW11 = (input, output, target) => {
+  const { parsedTrace, labels, activeInsightSet, activeInsight, selectedCategory, onInsightSetToggled, onInsightSetHovered, onInsightSetUnhovered, onZoomClick } = input;
+  const insights = parsedTrace.insights;
+  if (!insights) {
+    return;
+  }
+  const hasMultipleInsightSets = insights.size > 1;
+  Lit19.render(html19`
+    <style>${sidebarInsightsTab_css_default}</style>
+    <div class="insight-sets-wrapper">
+      ${[...insights.values()].map((insightSet, index) => {
+    const { id, url } = insightSet;
+    const data = {
+      insightSetKey: id,
+      activeCategory: selectedCategory,
+      activeInsight,
+      parsedTrace
+    };
+    const selected = insightSet === activeInsightSet;
+    const contents = html19`
+          <devtools-widget
+            data-insight-set-key=${id}
+            .widgetConfig=${widgetConfig3(SidebarSingleInsightSet, { data })}
+          ></devtools-widget>
+        `;
+    if (hasMultipleInsightSets) {
+      return html19`<details ?open=${selected}>
+            <summary
+              @click=${() => onInsightSetToggled(insightSet)}
+              @mouseenter=${() => onInsightSetHovered(insightSet)}
+              @mouseleave=${() => onInsightSetUnhovered()}
+              title=${url.href}>
+              ${renderDropdownIcon(selected)}
+              <span>${labels[index]}</span>
+              <span class='zoom-button'
+                @click=${(event) => {
+        event.stopPropagation();
+        onZoomClick(insightSet);
+      }}
+              >
+                ${renderZoomButton(selected)}
+              </span>
+            </summary>
+            ${contents}
+          </details>`;
+    }
+    return contents;
+  })}
+    </div>
+  `, target);
+};
+function renderZoomButton(insightSetToggled) {
+  const classes = Lit19.Directives.classMap({
+    "zoom-icon": true,
+    active: insightSetToggled
+  });
+  return html19`
+  <div class=${classes}>
+      <devtools-button .data=${{
+    variant: "icon",
+    iconName: "center-focus-weak",
+    size: "SMALL"
+  }}
+    ></devtools-button></div>`;
+}
+function renderDropdownIcon(insightSetToggled) {
+  const containerClasses = Lit19.Directives.classMap({
+    "dropdown-icon": true,
+    active: insightSetToggled
+  });
+  return html19`
+    <div class=${containerClasses}>
+      <devtools-button .data=${{
+    variant: "icon",
+    iconName: "chevron-right",
+    size: "SMALL"
+  }}
+    ></devtools-button></div>
+  `;
+}
+var SidebarInsightsTab = class extends UI17.Widget.Widget {
+  static createWidgetElement() {
+    const widgetElement = document.createElement("devtools-widget");
+    return widgetElement;
+  }
+  #view;
   #parsedTrace = null;
   #activeInsight = null;
   #selectedCategory = Trace10.Insights.Types.InsightCategory.ALL;
@@ -7914,20 +8000,24 @@ var SidebarInsightsTab = class extends HTMLElement {
    * When a trace has sets of insights, we show an accordion with each
    * set within. A set can be specific to a single navigation, or include the
    * beginning of the trace up to the first navigation.
-   * You can only have one of these open at any time, and we track it via this ID.
+   * You can only have one of these open at any time.
    */
-  #selectedInsightSetKey = null;
+  #selectedInsightSet = null;
+  constructor(element, view = DEFAULT_VIEW11) {
+    super(element, { useShadowDom: true });
+    this.#view = view;
+  }
   // TODO(paulirish): add back a disconnectedCallback() to avoid memory leaks that doesn't cause b/372943062
   set parsedTrace(data) {
     if (data === this.#parsedTrace) {
       return;
     }
     this.#parsedTrace = data;
-    this.#selectedInsightSetKey = null;
+    this.#selectedInsightSet = null;
     if (this.#parsedTrace?.insights) {
-      this.#selectedInsightSetKey = [...this.#parsedTrace.insights.keys()].at(0) ?? null;
+      this.#selectedInsightSet = [...this.#parsedTrace.insights.values()].at(0) ?? null;
     }
-    void ComponentHelpers7.ScheduledRender.scheduleRender(this, this.#render);
+    this.requestUpdate();
   }
   get activeInsight() {
     return this.#activeInsight;
@@ -7938,120 +8028,52 @@ var SidebarInsightsTab = class extends HTMLElement {
     }
     this.#activeInsight = active;
     if (this.#activeInsight) {
-      this.#selectedInsightSetKey = this.#activeInsight.insightSetKey;
+      this.#selectedInsightSet = this.#parsedTrace?.insights?.get(this.#activeInsight.insightSetKey) ?? null;
     }
-    void ComponentHelpers7.ScheduledRender.scheduleRender(this, this.#render);
+    this.requestUpdate();
   }
-  #insightSetToggled(id) {
-    this.#selectedInsightSetKey = this.#selectedInsightSetKey === id ? null : id;
-    if (this.#selectedInsightSetKey !== this.#activeInsight?.insightSetKey) {
-      this.dispatchEvent(new Insights6.SidebarInsight.InsightDeactivated());
+  #onInsightSetToggled(insightSet) {
+    this.#selectedInsightSet = this.#selectedInsightSet === insightSet ? null : insightSet;
+    if (this.#selectedInsightSet?.id !== this.#activeInsight?.insightSetKey) {
+      this.element.dispatchEvent(new Insights6.SidebarInsight.InsightDeactivated());
     }
-    void ComponentHelpers7.ScheduledRender.scheduleRender(this, this.#render);
+    this.requestUpdate();
   }
-  #insightSetHovered(id) {
-    const data = this.#parsedTrace?.insights?.get(id);
-    data && this.dispatchEvent(new Insights6.SidebarInsight.InsightSetHovered(data.bounds));
+  #onInsightSetHovered(insightSet) {
+    this.element.dispatchEvent(new Insights6.SidebarInsight.InsightSetHovered(insightSet.bounds));
   }
-  #insightSetUnhovered() {
-    this.dispatchEvent(new Insights6.SidebarInsight.InsightSetHovered());
+  #onInsightSetUnhovered() {
+    this.element.dispatchEvent(new Insights6.SidebarInsight.InsightSetHovered());
   }
-  #onZoomClick(event, id) {
-    event.stopPropagation();
-    const data = this.#parsedTrace?.insights?.get(id);
-    if (!data) {
-      return;
-    }
-    this.dispatchEvent(new Insights6.SidebarInsight.InsightSetZoom(data.bounds));
-  }
-  #renderZoomButton(insightSetToggled) {
-    const classes = Lit19.Directives.classMap({
-      "zoom-icon": true,
-      active: insightSetToggled
-    });
-    return html19`
-    <div class=${classes}>
-        <devtools-button .data=${{
-      variant: "icon",
-      iconName: "center-focus-weak",
-      size: "SMALL"
-    }}
-      ></devtools-button></div>`;
-  }
-  #renderDropdownIcon(insightSetToggled) {
-    const containerClasses = Lit19.Directives.classMap({
-      "dropdown-icon": true,
-      active: insightSetToggled
-    });
-    return html19`
-      <div class=${containerClasses}>
-        <devtools-button .data=${{
-      variant: "icon",
-      iconName: "chevron-right",
-      size: "SMALL"
-    }}
-      ></devtools-button></div>
-    `;
+  #onZoomClick(insightSet) {
+    this.element.dispatchEvent(new Insights6.SidebarInsight.InsightSetZoom(insightSet.bounds));
   }
   highlightActiveInsight() {
     if (!this.#activeInsight) {
       return;
     }
-    const set = this.#shadow?.querySelector(`[data-insight-set-key="${this.#activeInsight.insightSetKey}"]`);
+    const set = this.element.shadowRoot?.querySelector(`[data-insight-set-key="${this.#activeInsight.insightSetKey}"]`);
     set?.getWidget()?.highlightActiveInsight();
   }
-  #render() {
+  performUpdate() {
     if (!this.#parsedTrace?.insights) {
-      Lit19.render(Lit19.nothing, this.#shadow, { host: this });
       return;
     }
-    const insights = this.#parsedTrace.insights;
-    const hasMultipleInsightSets = insights.size > 1;
-    const labels = Utils.Helpers.createUrlLabels([...insights.values()].map(({ url }) => url));
-    const contents = (
-      // clang-format off
-      html19`
-      <style>${sidebarInsightsTab_css_default}</style>
-      <div class="insight-sets-wrapper">
-        ${[...insights.values()].map(({ id, url }, index) => {
-        const data = {
-          insightSetKey: id,
-          activeCategory: this.#selectedCategory,
-          activeInsight: this.#activeInsight,
-          parsedTrace: this.#parsedTrace
-        };
-        const contents2 = html19`
-            <devtools-widget
-              data-insight-set-key=${id}
-              .widgetConfig=${UI17.Widget.widgetConfig(SidebarSingleInsightSet, { data })}
-            ></devtools-widget>
-          `;
-        if (hasMultipleInsightSets) {
-          return html19`<details
-              ?open=${id === this.#selectedInsightSetKey}
-            >
-              <summary
-                @click=${() => this.#insightSetToggled(id)}
-                @mouseenter=${() => this.#insightSetHovered(id)}
-                @mouseleave=${() => this.#insightSetUnhovered()}
-                title=${url.href}>
-                ${this.#renderDropdownIcon(id === this.#selectedInsightSetKey)}
-                <span>${labels[index]}</span>
-                <span class='zoom-button' @click=${(event) => this.#onZoomClick(event, id)}>${this.#renderZoomButton(id === this.#selectedInsightSetKey)}</span>
-              </summary>
-              ${contents2}
-            </details>`;
-        }
-        return contents2;
-      })}
-      </div>
-    `
-    );
-    const result = Lit19.Directives.repeat([contents], () => this.#parsedTrace, (template) => template);
-    Lit19.render(result, this.#shadow, { host: this });
+    const insightSets = [...this.#parsedTrace.insights.values()];
+    const input = {
+      parsedTrace: this.#parsedTrace,
+      labels: Utils.Helpers.createUrlLabels(insightSets.map(({ url }) => url)),
+      activeInsightSet: this.#selectedInsightSet,
+      activeInsight: this.#activeInsight,
+      selectedCategory: this.#selectedCategory,
+      onInsightSetToggled: this.#onInsightSetToggled.bind(this),
+      onInsightSetHovered: this.#onInsightSetHovered.bind(this),
+      onInsightSetUnhovered: this.#onInsightSetUnhovered.bind(this),
+      onZoomClick: this.#onZoomClick.bind(this)
+    };
+    this.#view(input, void 0, this.contentElement);
   }
 };
-customElements.define("devtools-performance-sidebar-insights", SidebarInsightsTab);
 
 // gen/front_end/panels/timeline/components/Sidebar.js
 var RemoveAnnotation = class _RemoveAnnotation extends Event {
@@ -8157,23 +8179,31 @@ var SidebarWidget = class extends UI18.Widget.VBox {
   }
 };
 var InsightsView = class extends UI18.Widget.VBox {
-  #component = new SidebarInsightsTab();
+  #component = SidebarInsightsTab.createWidgetElement();
   constructor() {
     super();
     this.element.classList.add("sidebar-insights");
     this.element.appendChild(this.#component);
   }
   setParsedTrace(parsedTrace) {
-    this.#component.parsedTrace = parsedTrace;
+    this.#component.widgetConfig = UI18.Widget.widgetConfig(SidebarInsightsTab, { parsedTrace });
   }
   getActiveInsight() {
-    return this.#component.activeInsight;
+    const widget = this.#component.getWidget();
+    if (widget) {
+      return widget.activeInsight;
+    }
+    return null;
   }
   setActiveInsight(active, opts) {
-    this.#component.activeInsight = active;
+    const widget = this.#component.getWidget();
+    if (!widget) {
+      return;
+    }
+    widget.activeInsight = active;
     if (opts.highlight && active) {
-      void RenderCoordinator3.done().then(() => {
-        this.#component.highlightActiveInsight();
+      void widget.updateComplete.then(() => {
+        widget.highlightActiveInsight();
       });
     }
   }

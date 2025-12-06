@@ -1097,11 +1097,12 @@ var Cache = class extends BaseInsightComponent {
 // gen/front_end/panels/timeline/components/insights/Checklist.js
 var Checklist_exports = {};
 __export(Checklist_exports, {
-  Checklist: () => Checklist
+  Checklist: () => Checklist,
+  DEFAULT_VIEW: () => DEFAULT_VIEW3
 });
 import "./../../../../ui/kit/kit.js";
 import * as i18n6 from "./../../../../core/i18n/i18n.js";
-import * as ComponentHelpers2 from "./../../../../ui/components/helpers/helpers.js";
+import * as UI3 from "./../../../../ui/legacy/legacy.js";
 import * as Lit6 from "./../../../../ui/lit/lit.js";
 
 // gen/front_end/panels/timeline/components/insights/checklist.css.js
@@ -1142,6 +1143,7 @@ ul {
 /*# sourceURL=${import.meta.resolve("./checklist.css")} */`;
 
 // gen/front_end/panels/timeline/components/insights/Checklist.js
+var { html: html6 } = Lit6;
 var UIStrings4 = {
   /**
    * @description Text for a screen-reader label to tell the user that the icon represents a successful insight check
@@ -1156,18 +1158,9 @@ var UIStrings4 = {
 };
 var str_3 = i18n6.i18n.registerUIStrings("panels/timeline/components/insights/Checklist.ts", UIStrings4);
 var i18nString4 = i18n6.i18n.getLocalizedString.bind(void 0, str_3);
-var { html: html6 } = Lit6;
-var Checklist = class extends HTMLElement {
-  #shadow = this.attachShadow({ mode: "open" });
-  #checklist;
-  set checklist(checklist) {
-    this.#checklist = checklist;
-    void ComponentHelpers2.ScheduledRender.scheduleRender(this, this.#render);
-  }
-  connectedCallback() {
-    void ComponentHelpers2.ScheduledRender.scheduleRender(this, this.#render);
-  }
-  #getIcon(check) {
+var DEFAULT_VIEW3 = (input, output, target) => {
+  const { checklist } = input;
+  function getIcon(check) {
     const icon = check.value ? "check-circle" : "clear";
     const ariaLabel = check.value ? i18nString4(UIStrings4.successAriaLabel, { PH1: check.label }) : i18nString4(UIStrings4.failedAriaLabel, { PH1: check.label });
     return html6`
@@ -1178,21 +1171,37 @@ var Checklist = class extends HTMLElement {
         ></devtools-icon>
       `;
   }
-  async #render() {
+  Lit6.render(html6`
+    <style>${checklist_css_default}</style>
+    <ul>
+      ${Object.values(checklist).map((check) => html6`<li>
+          ${getIcon(check)}
+          <span data-checklist-label>${check.label}</span>
+      </li>`)}
+    </ul>
+  `, target);
+};
+var Checklist = class extends UI3.Widget.Widget {
+  #view;
+  #checklist;
+  constructor(element, view = DEFAULT_VIEW3) {
+    super(element, { useShadowDom: true });
+    this.#view = view;
+  }
+  set checklist(checklist) {
+    this.#checklist = checklist;
+    this.requestUpdate();
+  }
+  performUpdate() {
     if (!this.#checklist) {
       return;
     }
-    Lit6.render(html6`
-          <style>${checklist_css_default}</style>
-          <ul>
-            ${Object.values(this.#checklist).map((check) => html6`<li>
-                ${this.#getIcon(check)}
-                <span data-checklist-label>${check.label}</span>
-            </li>`)}
-          </ul>`, this.#shadow, { host: this });
+    const input = {
+      checklist: this.#checklist
+    };
+    this.#view(input, void 0, this.contentElement);
   }
 };
-customElements.define("devtools-performance-checklist", Checklist);
 
 // gen/front_end/panels/timeline/components/insights/CLSCulprits.js
 var CLSCulprits_exports = {};
@@ -1206,19 +1215,19 @@ import * as Lit8 from "./../../../../ui/lit/lit.js";
 // gen/front_end/panels/timeline/components/insights/NodeLink.js
 var NodeLink_exports = {};
 __export(NodeLink_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW3,
+  DEFAULT_VIEW: () => DEFAULT_VIEW4,
   NodeLink: () => NodeLink,
   nodeLink: () => nodeLink
 });
 import * as SDK from "./../../../../core/sdk/sdk.js";
 import * as Buttons2 from "./../../../../ui/components/buttons/buttons.js";
 import * as LegacyComponents from "./../../../../ui/legacy/components/utils/utils.js";
-import * as UI3 from "./../../../../ui/legacy/legacy.js";
+import * as UI4 from "./../../../../ui/legacy/legacy.js";
 import * as Lit7 from "./../../../../ui/lit/lit.js";
 import * as PanelsCommon from "./../../../common/common.js";
 var { html: html7 } = Lit7;
-var { widgetConfig: widgetConfig2 } = UI3.Widget;
-var DEFAULT_VIEW3 = (input, output, target) => {
+var { widgetConfig: widgetConfig2 } = UI4.Widget;
+var DEFAULT_VIEW4 = (input, output, target) => {
   const { relatedNodeEl, fallbackUrl, fallbackHtmlSnippet, fallbackText } = input;
   let template;
   if (relatedNodeEl) {
@@ -1245,7 +1254,7 @@ var DEFAULT_VIEW3 = (input, output, target) => {
   }
   Lit7.render(template, target);
 };
-var NodeLink = class extends UI3.Widget.Widget {
+var NodeLink = class extends UI4.Widget.Widget {
   #view;
   #backendNodeId;
   #frame;
@@ -1258,7 +1267,7 @@ var NodeLink = class extends UI3.Widget.Widget {
    * Also tracks if we fail to resolve a node, to ensure we don't try on each subsequent re-render.
    */
   #linkifiedNodeForBackendId = /* @__PURE__ */ new Map();
-  constructor(element, view = DEFAULT_VIEW3) {
+  constructor(element, view = DEFAULT_VIEW4) {
     super(element, { useShadowDom: true });
     this.#view = view;
   }
@@ -1384,8 +1393,10 @@ var DocumentLatency_exports = {};
 __export(DocumentLatency_exports, {
   DocumentLatency: () => DocumentLatency
 });
+import * as UI5 from "./../../../../ui/legacy/legacy.js";
 import * as Lit9 from "./../../../../ui/lit/lit.js";
 var { html: html9 } = Lit9;
+var { widgetConfig: widgetConfig3 } = UI5.Widget;
 var DocumentLatency = class extends BaseInsightComponent {
   internalName = "document-latency";
   hasAskAiSupport() {
@@ -1398,7 +1409,9 @@ var DocumentLatency = class extends BaseInsightComponent {
     if (!this.model?.data) {
       return Lit9.nothing;
     }
-    return html9`<devtools-performance-checklist .checklist=${this.model.data.checklist}></devtools-performance-checklist>`;
+    return html9`<devtools-widget .widgetConfig=${widgetConfig3(Checklist, {
+      checklist: this.model.data.checklist
+    })}></devtools-widget>`;
   }
 };
 
@@ -1795,11 +1808,11 @@ import * as Lit15 from "./../../../../ui/lit/lit.js";
 // gen/front_end/panels/timeline/components/insights/ImageRef.js
 import * as i18n13 from "./../../../../core/i18n/i18n.js";
 import * as SDK2 from "./../../../../core/sdk/sdk.js";
-import * as UI4 from "./../../../../ui/legacy/legacy.js";
+import * as UI6 from "./../../../../ui/legacy/legacy.js";
 import * as Lit14 from "./../../../../ui/lit/lit.js";
 var { html: html14 } = Lit14;
-var { widgetConfig: widgetConfig3 } = UI4.Widget;
-var DEFAULT_VIEW4 = (input, output, target) => {
+var { widgetConfig: widgetConfig4 } = UI6.Widget;
+var DEFAULT_VIEW5 = (input, output, target) => {
   const { request, imageDataUrl } = input;
   const img = imageDataUrl ? html14`<img src=${imageDataUrl} class="element-img"/>` : Lit14.nothing;
   Lit14.render(html14`
@@ -1813,11 +1826,11 @@ var DEFAULT_VIEW4 = (input, output, target) => {
     </div>
 `, target);
 };
-var ImageRef = class extends UI4.Widget.Widget {
+var ImageRef = class extends UI6.Widget.Widget {
   #view;
   #request;
   #imageDataUrl;
-  constructor(element, view = DEFAULT_VIEW4) {
+  constructor(element, view = DEFAULT_VIEW5) {
     super(element, { useShadowDom: true });
     this.#view = view;
   }
@@ -1863,7 +1876,7 @@ var ImageRef = class extends UI4.Widget.Widget {
   }
 };
 function imageRef(request) {
-  return html14`<devtools-widget .widgetConfig=${widgetConfig3(ImageRef, {
+  return html14`<devtools-widget .widgetConfig=${widgetConfig4(ImageRef, {
     request
   })}></devtools-widget>`;
 }
@@ -1965,7 +1978,7 @@ var InsightRenderer_exports = {};
 __export(InsightRenderer_exports, {
   InsightRenderer: () => InsightRenderer
 });
-import * as UI5 from "./../../../../ui/legacy/legacy.js";
+import * as UI8 from "./../../../../ui/legacy/legacy.js";
 
 // gen/front_end/panels/timeline/components/insights/LCPBreakdown.js
 var LCPBreakdown_exports = {};
@@ -2078,7 +2091,9 @@ __export(LCPDiscovery_exports, {
 import * as i18n16 from "./../../../../core/i18n/i18n.js";
 import * as Trace12 from "./../../../../models/trace/trace.js";
 import * as uiI18n from "./../../../../ui/i18n/i18n.js";
+import * as UI7 from "./../../../../ui/legacy/legacy.js";
 import * as Lit18 from "./../../../../ui/lit/lit.js";
+var { widgetConfig: widgetConfig5 } = UI7.Widget;
 var { UIStrings: UIStrings13, i18nString: i18nString13, getImageData } = Trace12.Insights.Models.LCPDiscovery;
 var { html: html18 } = Lit18;
 var str_4 = i18n16.i18n.registerUIStrings("models/trace/insights/LCPDiscovery.ts", UIStrings13);
@@ -2134,7 +2149,9 @@ var LCPDiscovery = class extends BaseInsightComponent {
     }
     return html18`
       <div class="insight-section">
-        <devtools-performance-checklist class="insight-section" .checklist=${imageData.checklist}></devtools-performance-checklist>
+        <devtools-widget .widgetConfig=${widgetConfig5(Checklist, {
+      checklist: imageData.checklist
+    })}></devtools-widget>
         <div class="insight-section">${imageRef(imageData.request)}${delayEl}</div>
       </div>`;
   }
@@ -2833,7 +2850,7 @@ var Viewport = class extends BaseInsightComponent {
 };
 
 // gen/front_end/panels/timeline/components/insights/InsightRenderer.js
-var { widgetConfig: widgetConfig4 } = UI5.Widget;
+var { widgetConfig: widgetConfig6 } = UI8.Widget;
 var INSIGHT_NAME_TO_COMPONENT = {
   Cache,
   CLSCulprits,
@@ -2868,7 +2885,7 @@ var InsightRenderer = class {
       widget2.bounds = insightSet.bounds;
       widget2.insightSetKey = insightSet.id;
       Object.assign(widget2, options);
-      widgetElement.widgetConfig = widgetConfig4(() => {
+      widgetElement.widgetConfig = widgetConfig6(() => {
         return widget2;
       });
       this.#insightWidgetCache.set(model, widgetElement);

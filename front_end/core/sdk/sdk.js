@@ -1774,6 +1774,7 @@ var generatedProperties = [
     "inherited": false,
     "keywords": [
       "none",
+      "auto",
       "spanning-item",
       "intersection"
     ],
@@ -3784,6 +3785,7 @@ var generatedProperties = [
     "inherited": false,
     "keywords": [
       "none",
+      "auto",
       "spanning-item",
       "intersection"
     ],
@@ -5483,6 +5485,7 @@ var generatedPropertyValues = {
   "column-rule-break": {
     "values": [
       "none",
+      "auto",
       "spanning-item",
       "intersection"
     ]
@@ -6608,6 +6611,7 @@ var generatedPropertyValues = {
   "row-rule-break": {
     "values": [
       "none",
+      "auto",
       "spanning-item",
       "intersection"
     ]

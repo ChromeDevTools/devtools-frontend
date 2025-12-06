@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-imperative-dom-api */
-import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import { InsightActivated, InsightDeactivated } from './insights/SidebarInsight.js';
 import { SidebarAnnotationsTab } from './SidebarAnnotationsTab.js';
@@ -104,26 +103,34 @@ export class SidebarWidget extends UI.Widget.VBox {
     }
 }
 class InsightsView extends UI.Widget.VBox {
-    #component = new SidebarInsightsTab();
+    #component = SidebarInsightsTab.createWidgetElement();
     constructor() {
         super();
         this.element.classList.add('sidebar-insights');
         this.element.appendChild(this.#component);
     }
     setParsedTrace(parsedTrace) {
-        this.#component.parsedTrace = parsedTrace;
+        this.#component.widgetConfig = UI.Widget.widgetConfig(SidebarInsightsTab, { parsedTrace });
     }
     getActiveInsight() {
-        return this.#component.activeInsight;
+        const widget = this.#component.getWidget();
+        if (widget) {
+            return widget.activeInsight;
+        }
+        return null;
     }
     setActiveInsight(active, opts) {
-        this.#component.activeInsight = active;
+        const widget = this.#component.getWidget();
+        if (!widget) {
+            return;
+        }
+        widget.activeInsight = active;
         if (opts.highlight && active) {
             // Wait for the rendering of the component to be done, otherwise we
             // might highlight the wrong insight. The UI needs to be fully
             // re-rendered before we can highlight the newly-expanded insight.
-            void RenderCoordinator.done().then(() => {
-                this.#component.highlightActiveInsight();
+            void widget.updateComplete.then(() => {
+                widget.highlightActiveInsight();
             });
         }
     }

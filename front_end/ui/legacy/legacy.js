@@ -2696,9 +2696,7 @@ var Widget = class _Widget {
    * assert.isTrue(widget.someDataLoaded);
    * ```
    *
-   * @returns a promise that resolves to a `boolean` when the widget has finished
-   *          updating, the value is `true` if there are no more pending updates,
-   *          and `false` if the update cycle triggered another update.
+   * @returns a promise that resolves when the widget has finished updating.
    */
   get updateComplete() {
     return this.#updateComplete;
@@ -5062,14 +5060,11 @@ var tabbedPane_css_default = `/*
   }
 }
 
-.tabbed-pane-header-tab.ai .ai-icon {
-  background-color: var(--sys-color-primary);
-  border-radius: 50%;
-  margin-left: 4px;
-}
+.spark {
+  position: absolute;
+  top: 2px;
 
-.tabbed-pane-header-tab.ai .ai-icon devtools-icon {
-  color: var(--sys-color-on-primary);
+  --icon-default: var(--sys-color-primary);
 }
 
 /*# sourceURL=${import.meta.resolve("./tabbedPane.css")} */`;
@@ -6093,11 +6088,19 @@ var TabbedPaneTab = class {
     if (!this.#tabElement) {
       return;
     }
-    const iconElement = this.#tabElement.querySelector(".ai-icon");
+    const iconElement = this.#tabElement.querySelector(".spark");
     if (iconVisible) {
       if (!iconElement) {
-        const closeButton = this.#tabElement.querySelector(".close-button");
-        this.#tabElement.insertBefore(this.createTabAnnotationIcon(), closeButton);
+        const spark = this.createTabAnnotationIcon();
+        this.#tabElement.appendChild(spark);
+        const parentRect = this.#tabElement.parentElement?.getBoundingClientRect();
+        if (!parentRect) {
+          return;
+        }
+        const containerRect = this.tabElement.getBoundingClientRect();
+        const iconWidth = spark.getBoundingClientRect().width;
+        const x = containerRect.x - parentRect.x + containerRect.width - iconWidth;
+        spark.style.left = `${x}px`;
       }
     } else {
       iconElement?.remove();
@@ -6252,15 +6255,13 @@ var TabbedPaneTab = class {
     return tabElement;
   }
   createTabAnnotationIcon() {
-    const iconContainer = document.createElement("div");
-    iconContainer.classList.add("ai-icon");
     const tabAnnotationIcon = new Icon();
-    tabAnnotationIcon.name = "smart-assistant";
+    tabAnnotationIcon.name = "spark";
     tabAnnotationIcon.classList.add("small");
-    iconContainer.appendChild(tabAnnotationIcon);
-    iconContainer.setAttribute("title", i18nString4(UIStrings4.panelContainsAnnotation));
-    iconContainer.setAttribute("aria-label", i18nString4(UIStrings4.panelContainsAnnotation));
-    return iconContainer;
+    tabAnnotationIcon.classList.add("spark");
+    tabAnnotationIcon.setAttribute("title", i18nString4(UIStrings4.panelContainsAnnotation));
+    tabAnnotationIcon.setAttribute("aria-label", i18nString4(UIStrings4.panelContainsAnnotation));
+    return tabAnnotationIcon;
   }
   createCloseIconButton() {
     const closeButton = new Buttons3.Button.Button();

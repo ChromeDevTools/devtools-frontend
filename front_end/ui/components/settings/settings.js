@@ -62,7 +62,7 @@ var SettingDeprecationWarning = class extends HTMLElement {
 customElements.define("devtools-setting-deprecation-warning", SettingDeprecationWarning);
 
 // gen/front_end/ui/components/settings/SettingCheckbox.js
-import "./../../legacy/legacy.js";
+import "./../../kit/kit.js";
 import * as Host from "./../../../core/host/host.js";
 import * as i18n from "./../../../core/i18n/i18n.js";
 import * as Lit2 from "./../../lit/lit.js";
@@ -177,13 +177,11 @@ var SettingCheckbox = class extends HTMLElement {
           ></devtools-button>
           <devtools-tooltip id=${id} variant="rich">
             <span>${learnMore.tooltip()}</span><br />
-            ${url ? html2`<x-link
+            ${url ? html2`<devtools-link
                   href=${url}
                   class="link"
-                  jslog=${VisualLogging.link(jsLogContext).track({
-          click: true
-        })}
-                  >${i18nString(UIStrings.learnMore)}</x-link
+                  .jslogContext=${jsLogContext}
+                  >${i18nString(UIStrings.learnMore)}</devtools-link
                 >` : Lit2.nothing}
           </devtools-tooltip>
         `;

@@ -3,9 +3,7 @@
 // found in the LICENSE file.
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import * as LegacyWrapper from '../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import { createIcon } from '../../ui/kit/kit.js';
-import * as UI from '../../ui/legacy/legacy.js';
 import { ApplicationPanelTreeElement } from './ApplicationPanelTreeElement.js';
 import * as ApplicationComponents from './components/components.js';
 const UIStrings = {
@@ -29,7 +27,7 @@ export class BounceTrackingMitigationsTreeElement extends ApplicationPanelTreeEl
     onselect(selectedByUser) {
         super.onselect(selectedByUser);
         if (!this.view) {
-            this.view = LegacyWrapper.LegacyWrapper.legacyWrapper(UI.Widget.Widget, new ApplicationComponents.BounceTrackingMitigationsView.BounceTrackingMitigationsView());
+            this.view = new ApplicationComponents.BounceTrackingMitigationsView.BounceTrackingMitigationsView();
         }
         this.showView(this.view);
         Host.userMetrics.panelShown('bounce-tracking-mitigations');

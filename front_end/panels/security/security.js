@@ -323,8 +323,12 @@ var DEFAULT_VIEW = (input, _output, target) => {
     PH1: i18nString(UIStrings.gracePeriod)
   }) : (input.thirdPartyControlsDict ? !input.thirdPartyControlsDict?.thirdPartyCookieMetadataEnabled : false) ? i18nFormatStringTemplate(UIStrings.enableFlag, {
     PH1: getChromeFlagsLink("#tpcd-metadata-grants")
-  }) : i18nFormatString(input.isGracePeriodActive ? UIStrings.gracePeriodExplanation : UIStrings.enrollGracePeriod, {
-    PH1: UI.Fragment.html`<x-link class="devtools-link" href="https://developers.google.com/privacy-sandbox/cookies/temporary-exceptions/grace-period" jslog=${VisualLogging.link("grace-period-link").track({ click: true })}>${i18nString(UIStrings.gracePeriod)}</x-link>`
+  }) : i18nFormatStringTemplate(input.isGracePeriodActive ? UIStrings.gracePeriodExplanation : UIStrings.enrollGracePeriod, {
+    PH1: html`<devtools-link
+                        href="https://developers.google.com/privacy-sandbox/cookies/temporary-exceptions/grace-period"
+                        .jslogContext=${"grace-period-link"}
+                        >${i18nString(UIStrings.gracePeriod)}</devtools-link
+                      >`
   })}
             </div>
           </div>
@@ -350,8 +354,12 @@ var DEFAULT_VIEW = (input, _output, target) => {
     PH1: i18nString(UIStrings.scenarios)
   }) : (input.thirdPartyControlsDict ? !input.thirdPartyControlsDict.thirdPartyCookieHeuristicsEnabled : false) ? i18nFormatStringTemplate(UIStrings.enableFlag, {
     PH1: getChromeFlagsLink("#tpcd-heuristics-grants")
-  }) : i18nFormatString(UIStrings.heuristicExplanation, {
-    PH1: UI.Fragment.html`<x-link class="devtools-link" href="https://developers.google.com/privacy-sandbox/cookies/temporary-exceptions/heuristics-based-exceptions" jslog=${VisualLogging.link("heuristic-link").track({ click: true })}>${i18nString(UIStrings.scenarios)}</x-link>`
+  }) : i18nFormatStringTemplate(UIStrings.heuristicExplanation, {
+    PH1: html`<devtools-link
+                      href="https://developers.google.com/privacy-sandbox/cookies/temporary-exceptions/heuristics-based-exceptions"
+                      .jslogContext=${"heuristic-link"}
+                      >${i18nString(UIStrings.scenarios)}</devtools-link
+                    >`
   })}
             </div>
           </div>

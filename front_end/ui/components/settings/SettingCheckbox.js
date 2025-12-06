@@ -4,7 +4,7 @@
 /* eslint-disable @devtools/no-lit-render-outside-of-view, @devtools/enforce-custom-element-definitions-location */
 import '../tooltips/tooltips.js';
 import './SettingDeprecationWarning.js';
-import '../../legacy/legacy.js';
+import '../../kit/kit.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Lit from '../../lit/lit.js';
@@ -69,13 +69,11 @@ export class SettingCheckbox extends HTMLElement {
           <devtools-tooltip id=${id} variant="rich">
             <span>${learnMore.tooltip()}</span><br />
             ${url
-                    ? html `<x-link
+                    ? html `<devtools-link
                   href=${url}
                   class="link"
-                  jslog=${VisualLogging.link(jsLogContext).track({
-                        click: true,
-                    })}
-                  >${i18nString(UIStrings.learnMore)}</x-link
+                  .jslogContext=${jsLogContext}
+                  >${i18nString(UIStrings.learnMore)}</devtools-link
                 >`
                     : Lit.nothing}
           </devtools-tooltip>

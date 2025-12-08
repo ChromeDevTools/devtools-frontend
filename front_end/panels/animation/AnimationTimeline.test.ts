@@ -445,8 +445,7 @@ describeWithMockConnection('AnimationTimeline', () => {
     });
 
     describe('animationGroupUpdated', () => {
-      // Flaky test.
-      it.skip('[crbug.com/446903183] should update duration on animationGroupUpdated', async () => {
+      it('should update duration on animationGroupUpdated', async () => {
         const preview = await waitFor('.animation-buffer-preview', view.element.shadowRoot!) as HTMLElement;
         assert.isNotNull(preview);
         preview.click();
@@ -467,8 +466,7 @@ describeWithMockConnection('AnimationTimeline', () => {
         await waitForScrubberOnFinish.wait();
       });
 
-      // Flaky, skip while we're fixing it
-      it.skip('[crbug.com/450229649] should schedule re-draw on animationGroupUpdated', async () => {
+      it('should schedule re-draw on animationGroupUpdated', async () => {
         const preview = await waitFor('.animation-buffer-preview', view.element.shadowRoot!) as HTMLElement;
         assert.isNotNull(preview);
         preview.click();

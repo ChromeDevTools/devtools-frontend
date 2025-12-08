@@ -69,50 +69,42 @@ describe('The Performance panel', function() {
     await searchForWasmCall(devToolsPage);
   }
 
-  // Flaky test (~1/10)
-  it.skipOnPlatforms(
-      ['mac'], '[crbug.com/416404064]: is able to record performance', async ({devToolsPage, inspectedPage}) => {
-        await navigateToPerformanceTab('wasm/profiling', devToolsPage, inspectedPage);
-        await devToolsPage.page.keyboard.press('Escape');
-        await devToolsPage.waitFor('.console-searchable-view');
-        await startRecording(devToolsPage);
-        await inspectedPage.reload();
-        await devToolsPage.waitFor('.console-message-text .source-code');
-        await stopRecording(devToolsPage);
-        await devToolsPage.waitFor(SUMMARY_TAB_SELECTOR);
-        await devToolsPage.waitFor(BOTTOM_UP_SELECTOR);
-        await devToolsPage.waitFor(CALL_TREE_SELECTOR);
-      });
+  it('is able to record performance', async ({devToolsPage, inspectedPage}) => {
+    await navigateToPerformanceTab('wasm/profiling', devToolsPage, inspectedPage);
+    await devToolsPage.page.keyboard.press('Escape');
+    await devToolsPage.waitFor('.console-searchable-view');
+    await startRecording(devToolsPage);
+    await inspectedPage.reload();
+    await devToolsPage.waitFor('.console-message-text .source-code');
+    await stopRecording(devToolsPage);
+    await devToolsPage.waitFor(SUMMARY_TAB_SELECTOR);
+    await devToolsPage.waitFor(BOTTOM_UP_SELECTOR);
+    await devToolsPage.waitFor(CALL_TREE_SELECTOR);
+  });
 
-  // Flaky test
-  it.skipOnPlatforms(
-      ['mac'], '[crbug.com/416404064]: is able to display the execution time for a wasm function',
-      async ({devToolsPage, inspectedPage}) => {
-        await setupPerformancePanel(devToolsPage, inspectedPage);
+  it('is able to display the execution time for a wasm function', async ({devToolsPage, inspectedPage}) => {
+    await setupPerformancePanel(devToolsPage, inspectedPage);
 
-        const totalTime = await getTotalTimeFromPie(devToolsPage);
-        assert.isAbove(totalTime, 0, 'mainWasm function execution time is displayed incorrectly');
-      });
+    const totalTime = await getTotalTimeFromPie(devToolsPage);
+    assert.isAbove(totalTime, 0, 'mainWasm function execution time is displayed incorrectly');
+  });
 
-  // Flaky test
-  it.skipOnPlatforms(
-      ['mac'], '[crbug.com/1510890]: is able to inspect the call stack for a wasm function from the bottom up',
-      async ({devToolsPage, inspectedPage}) => {
-        await setupPerformancePanel(devToolsPage, inspectedPage);
-        const expectedActivities = ['mainWasm', 'js-to-wasm::i', '(anonymous)', 'Run microtasks'];
+  it('is able to inspect the call stack for a wasm function from the bottom up',
+     async ({devToolsPage, inspectedPage}) => {
+       await setupPerformancePanel(devToolsPage, inspectedPage);
+       const expectedActivities = ['mainWasm', 'js-to-wasm::i', '(anonymous)', 'Run microtasks'];
 
-        await navigateToBottomUpTab(devToolsPage, 'url');
+       await navigateToBottomUpTab(devToolsPage, 'url');
 
-        const timelineTree = await devToolsPage.$<HTMLSelectElement>('.timeline-tree-view');
-        const rootActivity = await devToolsPage.waitForElementWithTextContent(expectedActivities[0], timelineTree);
-        assert.isOk(rootActivity, `Could not find ${expectedActivities[0]} in DevTools.`);
-        await rootActivity.click();
-        await expandAndCheckActivityTree(expectedActivities, devToolsPage);
-      });
+       const timelineTree = await devToolsPage.$<HTMLSelectElement>('.timeline-tree-view');
+       const rootActivity = await devToolsPage.waitForElementWithTextContent(expectedActivities[0], timelineTree);
+       assert.isOk(rootActivity, `Could not find ${expectedActivities[0]} in DevTools.`);
+       await rootActivity.click();
+       await expandAndCheckActivityTree(expectedActivities, devToolsPage);
+     });
 
-  // Flaky test
-  it.skip(
-      '[crbug.com/1510890]: is able to inspect the call stack for a wasm function from the call tree',
+  it(
+      'is able to inspect the call stack for a wasm function from the call tree',
       async ({devToolsPage, inspectedPage}) => {
         await setupPerformancePanel(devToolsPage, inspectedPage);
 

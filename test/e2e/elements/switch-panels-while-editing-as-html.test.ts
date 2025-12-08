@@ -10,20 +10,19 @@ import {
 import {openSourcesPanel} from '../helpers/sources-helpers.js';
 
 describe('The Elements tab', function() {
-  // Flaking repeatedly on CI
-  it.skip(
-      '[crbug.com/431949936]: does not break when switching panels while editing as HTML',
-      async ({devToolsPage, inspectedPage}) => {
-        await inspectedPage.goToResource('elements/switch-panels-while-editing-as-html.html');
-        await expandSelectedNodeRecursively(devToolsPage);
-        const elementsContentPanel = await devToolsPage.waitFor('#elements-content');
-        const selectedNode = await devToolsPage.waitForElementWithTextContent('Inspected Node', elementsContentPanel);
-        await selectedNode.click({button: 'right'});
-        const editAsHTMLOption = await findSubMenuEntryItem('Edit as HTML', devToolsPage);
-        await editAsHTMLOption.click();
-        await devToolsPage.waitFor('.elements-disclosure devtools-text-editor');
-        await openSourcesPanel(devToolsPage);
-        await navigateToElementsTab(devToolsPage);
-        await devToolsPage.waitForNone('.elements-disclosure devtools-text-editor');
-      });
+  it('does not break when switching panels while editing as HTML', async ({devToolsPage, inspectedPage}) => {
+    await inspectedPage.goToResource('elements/switch-panels-while-editing-as-html.html');
+    await expandSelectedNodeRecursively(devToolsPage);
+    const elementsContentPanel = await devToolsPage.waitFor('#elements-content');
+    const selectedNode = await devToolsPage.waitForElementWithTextContent('Inspected Node', elementsContentPanel);
+    await selectedNode.click({button: 'right'});
+    const editAsHTMLOption = await findSubMenuEntryItem('Edit as HTML', devToolsPage);
+    await editAsHTMLOption.click();
+    await devToolsPage.waitFor('.elements-disclosure devtools-text-editor');
+    await openSourcesPanel(devToolsPage);
+    await navigateToElementsTab(devToolsPage, {
+      expectExistingPanel: true,
+    });
+    await devToolsPage.waitForNone('.elements-disclosure devtools-text-editor');
+  });
 });

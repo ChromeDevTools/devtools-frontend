@@ -88,7 +88,7 @@ export function veImpressionForMainToolbar(options?: {
   ]);
 }
 
-export function veImpressionForElementsPanel(options?: {dockable?: boolean}) {
+export function veImpressionForElementsPanel(options?: {dockable?: boolean, expectExistingPanel?: boolean}) {
   return veImpression('Panel', 'elements', [
     veImpression('Toolbar', 'sidebar', [
       veImpressionForTabHeader('styles'),
@@ -104,7 +104,7 @@ export function veImpressionForElementsPanel(options?: {dockable?: boolean}) {
       veImpression('TreeItem', undefined, [veImpression('Value', 'tag-name')]),
       veImpression('TreeItem'),
     ]),
-    veImpression('Pane', 'styles', [
+    ...(options?.expectExistingPanel ? [] : [veImpression('Pane', 'styles', [
       veImpression('Section', 'style-properties', [veImpression('CSSRuleHeader', 'selector')]),
       veImpression('Section', 'style-properties', [
         veImpression('CSSRuleHeader', 'selector'),
@@ -117,7 +117,7 @@ export function veImpressionForElementsPanel(options?: {dockable?: boolean}) {
             veImpression('Expand'),
           ]),
         ]),
-      ]),
+      ])]),
       veImpression('ToggleSubpane', 'element-states'),
       veImpression('ToggleSubpane', 'elements-classes'),
       veImpression('Action', 'elements.new-style-rule'),

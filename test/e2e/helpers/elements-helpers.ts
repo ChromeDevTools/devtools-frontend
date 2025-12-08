@@ -968,7 +968,8 @@ export const getSelectedBreadcrumbTextContent = async (devToolsPage = getBrowser
   return await text;
 };
 
-export const navigateToElementsTab = async (devtoolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+export const navigateToElementsTab =
+    async (devtoolsPage = getBrowserAndPagesWrappers().devToolsPage, options?: {expectExistingPanel: boolean}) => {
   if ((await devtoolsPage.$$(ELEMENTS_PANEL_SELECTOR)).length) {
     return;
   }
@@ -976,7 +977,7 @@ export const navigateToElementsTab = async (devtoolsPage = getBrowserAndPagesWra
   await devtoolsPage.click('#tab-elements');
   await devtoolsPage.waitFor(ELEMENTS_PANEL_SELECTOR);
   await devtoolsPage.timeout(100);
-  await expectVeEvents([veImpressionForElementsPanel()], undefined, devtoolsPage);
+  await expectVeEvents([veImpressionForElementsPanel(options)], undefined, devtoolsPage);
 };
 
 export const clickOnFirstLinkInStylesPanel = async (devToolsPage: DevToolsPage) => {

@@ -188,7 +188,6 @@ devtools_ui_module("unittests") {
     "StylePropertyTreeElement.test.ts",
     "StylePropertyUtils.test.ts",
     "StylesSidebarPane.test.ts",
-    "TopLayerContainer.test.ts",
     "WebCustomData.test.ts",
   ]
 

@@ -43,6 +43,207 @@ describeWithMockConnection('DOMModel', () => {
     sinon.assert.notCalled(spy);
   });
 
+  it('updates top layer elements correctly', async () => {
+    const parentTarget = createTarget();
+    const target = createTarget({parentTarget});
+    const domModel = target.model(SDK.DOMModel.DOMModel);
+    assert.exists(domModel);
+
+    const DOCUMENT_NODE_ID = 1 as Protocol.DOM.NodeId;
+    const TOP_LAYER_NODE_ID = 2 as Protocol.DOM.NodeId;
+    const NOT_TOP_LAYER_NODE_ID = 3 as Protocol.DOM.NodeId;
+
+    domModel.setDocumentForTest({
+      nodeId: DOCUMENT_NODE_ID,
+      backendNodeId: 1 as Protocol.DOM.BackendNodeId,
+      nodeType: Node.DOCUMENT_NODE,
+      nodeName: '#document',
+      childNodeCount: 2,
+      children: [
+        {
+          nodeId: TOP_LAYER_NODE_ID,
+          backendNodeId: 2 as Protocol.DOM.BackendNodeId,
+          nodeType: Node.ELEMENT_NODE,
+          nodeName: 'div',
+          localName: 'div',
+          nodeValue: '',
+        },
+        {
+          nodeId: NOT_TOP_LAYER_NODE_ID,
+          backendNodeId: 3 as Protocol.DOM.BackendNodeId,
+          nodeType: Node.ELEMENT_NODE,
+          nodeName: 'div',
+          localName: 'div',
+          nodeValue: '',
+        },
+      ],
+    } as Protocol.DOM.Node);
+
+    const topLayerNode = domModel.nodeForId(TOP_LAYER_NODE_ID);
+    const notTopLayerNode = domModel.nodeForId(NOT_TOP_LAYER_NODE_ID);
+    assert.exists(topLayerNode);
+    assert.exists(notTopLayerNode);
+
+    sinon.stub(domModel.agent, 'invoke_getTopLayerElements').resolves({
+      nodeIds: [TOP_LAYER_NODE_ID],
+      getError: () => undefined,
+    });
+
+    const topLayerChangePromise = domModel.once(SDK.DOMModel.Events.TopLayerElementsChanged);
+    domModel.topLayerElementsUpdated();
+    await topLayerChangePromise;
+
+    assert.notStrictEqual(topLayerNode?.topLayerIndex(), -1);
+    assert.strictEqual(notTopLayerNode?.topLayerIndex(), -1);
+  });
+
+  it('updates top layer elements correctly with backdrop', async () => {
+    const parentTarget = createTarget();
+    const target = createTarget({parentTarget});
+    const domModel = target.model(SDK.DOMModel.DOMModel);
+    assert.exists(domModel);
+
+    const DOCUMENT_NODE_ID = 1 as Protocol.DOM.NodeId;
+    const BACKDROP_NODE_ID = 2 as Protocol.DOM.NodeId;
+    const TOP_LAYER_NODE_ID = 3 as Protocol.DOM.NodeId;
+
+    domModel.setDocumentForTest({
+      nodeId: DOCUMENT_NODE_ID,
+      backendNodeId: 1 as Protocol.DOM.BackendNodeId,
+      nodeType: Node.DOCUMENT_NODE,
+      nodeName: '#document',
+      childNodeCount: 2,
+      children: [
+        {
+          nodeId: BACKDROP_NODE_ID,
+          backendNodeId: 2 as Protocol.DOM.BackendNodeId,
+          nodeType: Node.ELEMENT_NODE,
+          nodeName: '::backdrop',
+          localName: '::backdrop',
+          nodeValue: '',
+        },
+        {
+          nodeId: TOP_LAYER_NODE_ID,
+          backendNodeId: 3 as Protocol.DOM.BackendNodeId,
+          nodeType: Node.ELEMENT_NODE,
+          nodeName: 'div',
+          localName: 'div',
+          nodeValue: '',
+        },
+      ],
+    } as Protocol.DOM.Node);
+
+    const topLayerNode = domModel.nodeForId(TOP_LAYER_NODE_ID);
+    assert.exists(topLayerNode);
+
+    sinon.stub(domModel.agent, 'invoke_getTopLayerElements').resolves({
+      nodeIds: [BACKDROP_NODE_ID, TOP_LAYER_NODE_ID],
+      getError: () => undefined,
+    });
+
+    const topLayerChangePromise = domModel.once(SDK.DOMModel.Events.TopLayerElementsChanged);
+    domModel.topLayerElementsUpdated();
+    const data = await topLayerChangePromise;
+    const topLayerShortcuts = data.documentShortcuts;
+    assert.lengthOf(topLayerShortcuts, 1);
+    assert.strictEqual(topLayerShortcuts[0].deferredNode.backendNodeId(), 3 as Protocol.DOM.BackendNodeId);
+    assert.lengthOf(topLayerShortcuts[0].childShortcuts, 1);
+    assert.strictEqual(
+        topLayerShortcuts[0].childShortcuts[0].deferredNode.backendNodeId(), 2 as Protocol.DOM.BackendNodeId);
+  });
+
+  it('updates top layer elements correctly with multiple documents', async () => {
+    const parentTarget = createTarget();
+    const target = createTarget({parentTarget});
+    const domModel = target.model(SDK.DOMModel.DOMModel);
+    assert.exists(domModel);
+
+    const DOCUMENT_NODE_ID = 1 as Protocol.DOM.NodeId;
+    const IFRAME_NODE_ID = 2 as Protocol.DOM.NodeId;
+    const CONTENT_DOCUMENT_NODE_ID = 3 as Protocol.DOM.NodeId;
+    const TOP_LAYER_NODE_1_ID = 4 as Protocol.DOM.NodeId;
+    const TOP_LAYER_NODE_2_ID = 5 as Protocol.DOM.NodeId;
+
+    domModel.setDocumentForTest({
+      nodeId: DOCUMENT_NODE_ID,
+      backendNodeId: 1 as Protocol.DOM.BackendNodeId,
+      nodeType: Node.DOCUMENT_NODE,
+      nodeName: '#document',
+      childNodeCount: 2,
+      children: [
+        {
+          nodeId: TOP_LAYER_NODE_1_ID,
+          backendNodeId: 4 as Protocol.DOM.BackendNodeId,
+          nodeType: Node.ELEMENT_NODE,
+          nodeName: 'div',
+          localName: 'div',
+          nodeValue: '',
+        },
+        {
+          nodeId: IFRAME_NODE_ID,
+          backendNodeId: 2 as Protocol.DOM.BackendNodeId,
+          nodeType: Node.ELEMENT_NODE,
+          nodeName: 'iframe',
+          localName: 'iframe',
+          nodeValue: '',
+          contentDocument: {
+            nodeId: CONTENT_DOCUMENT_NODE_ID,
+            backendNodeId: 3 as Protocol.DOM.BackendNodeId,
+            nodeType: Node.DOCUMENT_NODE,
+            nodeName: '#document',
+            childNodeCount: 1,
+            children: [
+              {
+                nodeId: TOP_LAYER_NODE_2_ID,
+                backendNodeId: 5 as Protocol.DOM.BackendNodeId,
+                nodeType: Node.ELEMENT_NODE,
+                nodeName: 'div',
+                localName: 'div',
+                nodeValue: '',
+              },
+            ],
+          },
+        },
+      ],
+    } as Protocol.DOM.Node);
+
+    const topLayerNode1 = domModel.nodeForId(TOP_LAYER_NODE_1_ID);
+    const topLayerNode2 = domModel.nodeForId(TOP_LAYER_NODE_2_ID);
+    assert.exists(topLayerNode1);
+    assert.exists(topLayerNode2);
+
+    sinon.stub(domModel.agent, 'invoke_getTopLayerElements').resolves({
+      nodeIds: [TOP_LAYER_NODE_1_ID, TOP_LAYER_NODE_2_ID],
+      getError: () => undefined,
+    });
+
+    const events: Array<{document: SDK.DOMModel.DOMDocument, documentShortcuts: SDK.DOMModel.DOMNodeShortcut[]}> = [];
+    domModel.addEventListener(SDK.DOMModel.Events.TopLayerElementsChanged, event => {
+      events.push(event.data);
+    });
+
+    const topLayerChangePromise = domModel.once(SDK.DOMModel.Events.TopLayerElementsChanged);
+    domModel.topLayerElementsUpdated();
+    await topLayerChangePromise;
+
+    // Wait for the second event if it hasn't arrived yet.
+    if (events.length < 2) {
+      await domModel.once(SDK.DOMModel.Events.TopLayerElementsChanged);
+    }
+
+    assert.lengthOf(events, 2);
+    // Sort events by document ID to ensure deterministic order for assertions
+    events.sort((a, b) => a.document.id - b.document.id);
+
+    assert.strictEqual(events[0].document.id, DOCUMENT_NODE_ID);
+    assert.lengthOf(events[0].documentShortcuts, 1);
+    assert.strictEqual(events[0].documentShortcuts[0].deferredNode.backendNodeId(), 4 as Protocol.DOM.BackendNodeId);
+
+    assert.strictEqual(events[1].document.id, CONTENT_DOCUMENT_NODE_ID);
+    assert.lengthOf(events[1].documentShortcuts, 1);
+    assert.strictEqual(events[1].documentShortcuts[0].deferredNode.backendNodeId(), 5 as Protocol.DOM.BackendNodeId);
+  });
+
   describe('DOMNode', () => {
     describe('simpleSelector', () => {
       let target: SDK.Target.Target;

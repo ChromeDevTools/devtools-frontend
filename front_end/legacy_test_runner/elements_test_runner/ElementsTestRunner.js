@@ -780,6 +780,10 @@ ElementsTestRunner.dumpElementsTree = function(rootNode, depth, resultsArray) {
   }
 
   function print(treeItem, prefix, depth) {
+    // Skip hidden top layer to avoid churn in expectations.
+    if (treeItem instanceof Elements.TopLayerContainer.TopLayerContainer && treeItem.isHidden()) {
+      return;
+    }
     if (!treeItem.root) {
       let expander;
 

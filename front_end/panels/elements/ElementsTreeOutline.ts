@@ -486,7 +486,7 @@ export class ElementsTreeOutline extends
   private treeElementBeingDragged?: ElementsTreeElement;
   private dragOverTreeElement?: ElementsTreeElement;
   private updateModifiedNodesTimeout?: number;
-  #topLayerContainerByParent = new Map<UI.TreeOutline.TreeElement, TopLayerContainer>();
+  #topLayerContainerByDocument = new WeakMap<SDK.DOMModel.DOMDocument, TopLayerContainer>();
   #issuesManager?: IssuesManager.IssuesManager.IssuesManager;
   #popupHelper?: UI.PopoverHelper.PopoverHelper;
   #nodeElementToIssues = new Map<Element, IssuesManager.Issue.Issue[]>();
@@ -1526,7 +1526,6 @@ export class ElementsTreeOutline extends
     domModel.addEventListener(SDK.DOMModel.Events.DocumentUpdated, this.documentUpdated, this);
     domModel.addEventListener(SDK.DOMModel.Events.ChildNodeCountUpdated, this.childNodeCountUpdated, this);
     domModel.addEventListener(SDK.DOMModel.Events.DistributedNodesChanged, this.distributedNodesChanged, this);
-    domModel.addEventListener(SDK.DOMModel.Events.TopLayerElementsChanged, this.topLayerElementsChanged, this);
     domModel.addEventListener(SDK.DOMModel.Events.ScrollableFlagUpdated, this.scrollableFlagUpdated, this);
     domModel.addEventListener(
         SDK.DOMModel.Events.AffectedByStartingStylesFlagUpdated, this.affectedByStartingStylesFlagUpdated, this);
@@ -1543,7 +1542,6 @@ export class ElementsTreeOutline extends
     domModel.removeEventListener(SDK.DOMModel.Events.DocumentUpdated, this.documentUpdated, this);
     domModel.removeEventListener(SDK.DOMModel.Events.ChildNodeCountUpdated, this.childNodeCountUpdated, this);
     domModel.removeEventListener(SDK.DOMModel.Events.DistributedNodesChanged, this.distributedNodesChanged, this);
-    domModel.removeEventListener(SDK.DOMModel.Events.TopLayerElementsChanged, this.topLayerElementsChanged, this);
     domModel.removeEventListener(SDK.DOMModel.Events.ScrollableFlagUpdated, this.scrollableFlagUpdated, this);
     domModel.removeEventListener(
         SDK.DOMModel.Events.AffectedByStartingStylesFlagUpdated, this.affectedByStartingStylesFlagUpdated, this);
@@ -1719,16 +1717,24 @@ export class ElementsTreeOutline extends
     });
   }
 
-  async createTopLayerContainer(parent: UI.TreeOutline.TreeElement, document: SDK.DOMModel.DOMDocument): Promise<void> {
+  createTopLayerContainer(parent: UI.TreeOutline.TreeElement, document: SDK.DOMModel.DOMDocument): void {
     if (!parent.treeOutline || !(parent.treeOutline instanceof ElementsTreeOutline)) {
       return;
     }
     const container = new TopLayerContainer(parent.treeOutline, document);
-    await container.throttledUpdateTopLayerElements();
-    if (container.currentTopLayerDOMNodes.size > 0) {
-      parent.appendChild(container);
+    this.#topLayerContainerByDocument.set(document, container);
+    parent.appendChild(container);
+  }
+
+  revealInTopLayer(node: SDK.DOMModel.DOMNode): void {
+    const document = node.ownerDocument;
+    if (!document) {
+      return;
     }
-    this.#topLayerContainerByParent.set(parent, container);
+    const container = this.#topLayerContainerByDocument.get(document);
+    if (container) {
+      container.revealInTopLayer(node);
+    }
   }
 
   private createElementTreeElement(node: SDK.DOMModel.DOMNode|SDK.DOMModel.AdoptedStyleSheet, isClosingTag?: boolean):
@@ -1898,9 +1904,6 @@ export class ElementsTreeOutline extends
       index: number, isClosingTag?: boolean): UI.TreeOutline.TreeElement {
     const newElement = this.createElementTreeElement(child, isClosingTag);
     treeElement.insertChild(newElement, index);
-    if (child instanceof SDK.DOMModel.DOMDocument) {
-      void this.createTopLayerContainer(newElement, child);
-    }
     return newElement;
   }
 
@@ -1997,6 +2000,15 @@ export class ElementsTreeOutline extends
       this.insertChildElement(treeElement, node, treeElement.childCount(), true);
     }
 
+    if (node instanceof SDK.DOMModel.DOMDocument) {
+      let topLayerContainer = this.#topLayerContainerByDocument.get(node);
+      if (!topLayerContainer) {
+        topLayerContainer = new TopLayerContainer(this, node);
+        this.#topLayerContainerByDocument.set(node, topLayerContainer);
+      }
+      treeElement.appendChild(topLayerContainer);
+    }
+
     this.treeElementsBeingUpdated.delete(treeElement);
   }
 
@@ -2005,16 +2017,6 @@ export class ElementsTreeOutline extends
     const treeElement = this.treeElementByNode.get(node);
     if (treeElement) {
       treeElement.updateDecorations();
-    }
-  }
-
-  private async topLayerElementsChanged(): Promise<void> {
-    for (const [parent, container] of this.#topLayerContainerByParent) {
-      await container.throttledUpdateTopLayerElements();
-      if (container.currentTopLayerDOMNodes.size > 0 && container.parent !== parent) {
-        parent.appendChild(container);
-      }
-      container.hidden = container.currentTopLayerDOMNodes.size === 0;
     }
   }
 

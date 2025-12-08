@@ -43,6 +43,8 @@ copy_to_gen("sources") {
     "infinity-loop.html",
     "inline-css.html",
     "inline-scripts.html",
+    "inline-variable-frames.html",
+    "inline-variable-frames.js",
     "inline-variable.html",
     "inline-variable.js",
     "live-edit-moving-breakpoint.html",

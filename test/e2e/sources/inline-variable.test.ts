@@ -7,6 +7,7 @@ import {assert} from 'chai';
 import {
   openSourceCodeEditorForFile,
   RESUME_BUTTON,
+  STEP_INTO_BUTTON,
   STEP_OVER_BUTTON,
 } from '../helpers/sources-helpers.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
@@ -53,4 +54,30 @@ describe('Sources Tab', function() {
     await devToolsPage.click(RESUME_BUTTON);
     await scriptEvaluation;
   });
+
+  it('shows correct inline variables for same-named variables in different functions',
+     async ({devToolsPage, inspectedPage}) => {
+       await openSourceCodeEditorForFile(
+           'inline-variable-frames.js', 'inline-variable-frames.html', devToolsPage, inspectedPage);
+
+       // For each step, which inline variables we expect CodeMirror to show.
+       const expectedInlineVariables: string[][] = [
+         [],  // The 'debugger;' statement.
+         [],  // The first actual statement.
+         ['sameName = "foo"'],
+         ['sameName = "not-foo"'],
+         ['sameName = "not-foo"'],
+         ['sameName = "foo"'],
+       ];
+
+       const scriptEvaluation = inspectedPage.evaluate('testFunction();');
+
+       for (const expected of expectedInlineVariables) {
+         assert.deepEqual(await waitForInlineVariables(devToolsPage, expected.length), expected);
+         await devToolsPage.click(STEP_INTO_BUTTON);
+       }
+
+       await devToolsPage.click(RESUME_BUTTON);
+       await scriptEvaluation;
+     });
 });

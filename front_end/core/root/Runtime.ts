@@ -389,7 +389,6 @@ export interface HostConfigFreestyler {
   multimodal?: boolean;
   multimodalUploadInput?: boolean;
   functionCalling?: boolean;
-  featureName?: string;
 }
 
 export interface HostConfigAiAssistanceNetworkAgent {
@@ -397,7 +396,6 @@ export interface HostConfigAiAssistanceNetworkAgent {
   temperature: number;
   enabled: boolean;
   userTier: string;
-  featureName?: string;
 }
 
 export interface HostConfigAiAssistancePerformanceAgent {
@@ -405,7 +403,6 @@ export interface HostConfigAiAssistancePerformanceAgent {
   temperature: number;
   enabled: boolean;
   userTier: string;
-  featureName?: string;
 }
 
 export interface HostConfigAiAssistanceFileAgent {
@@ -413,7 +410,6 @@ export interface HostConfigAiAssistanceFileAgent {
   temperature: number;
   enabled: boolean;
   userTier: string;
-  featureName?: string;
 }
 
 export interface HostConfigAiCodeCompletion {

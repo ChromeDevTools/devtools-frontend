@@ -62,7 +62,7 @@ export interface ViewInput {
 type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 
 export const PRELOADING_GRID_DEFAULT_VIEW: View = (input, _output, target): void => {
-  if (!input.rows || !input.pageURL) {
+  if (!input.rows || input.pageURL === undefined) {
     render(nothing, target);
     return;
   }
@@ -116,8 +116,7 @@ export const PRELOADING_GRID_DEFAULT_VIEW: View = (input, _output, target): void
       </devtools-data-grid>
     </div>
   `, target);
-  // clang-format on
-};
+};  // clang-format on
 
 /** Grid component to show prerendering attempts. **/
 export class PreloadingGrid extends UI.Widget.VBox {

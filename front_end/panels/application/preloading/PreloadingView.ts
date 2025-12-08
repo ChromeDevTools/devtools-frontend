@@ -417,7 +417,13 @@ export class PreloadingAttemptView extends UI.Widget.VBox {
     this.ruleSetSelector = new PreloadingRuleSetSelector(() => this.render());
     toolbar.appendToolbarItem(this.ruleSetSelector.item());
 
-    this.preloadingGrid.addEventListener('select', this.onPreloadingGridCellFocused.bind(this));
+    this.preloadingGrid.onSelect = this.onPreloadingGridCellFocused.bind(this);
+
+    const preloadingGridContainer = document.createElement('div');
+    preloadingGridContainer.className = 'preloading-grid-widget-container';
+    preloadingGridContainer.style = 'height: 100%';
+    this.preloadingGrid.show(preloadingGridContainer, null, true);
+
     render(
         html`
         <div class="empty-state">
@@ -433,7 +439,7 @@ export class PreloadingAttemptView extends UI.Widget.VBox {
         </div>
         <devtools-split-view sidebar-position="second">
           <div slot="main" class="overflow-auto" style="height: 100%">
-            ${this.preloadingGrid}
+            ${preloadingGridContainer}
           </div>
           <div slot="sidebar" class="overflow-auto" style="height: 100%">
             ${this.preloadingDetails}
@@ -500,15 +506,15 @@ export class PreloadingAttemptView extends UI.Widget.VBox {
         ruleSets,
       };
     });
-    this.preloadingGrid.update({rows, pageURL: pageURL()});
+    this.preloadingGrid.rows = rows;
+    this.preloadingGrid.pageURL = pageURL();
     this.contentElement.classList.toggle('empty', rows.length === 0);
 
     this.updatePreloadingDetails();
   }
 
-  private onPreloadingGridCellFocused(event: Event): void {
-    const focusedEvent = event as CustomEvent<SDK.PreloadingModel.PreloadingAttemptId>;
-    this.focusedPreloadingAttemptId = focusedEvent.detail;
+  private onPreloadingGridCellFocused({rowId}: {rowId: string}): void {
+    this.focusedPreloadingAttemptId = rowId;
     this.render();
   }
 

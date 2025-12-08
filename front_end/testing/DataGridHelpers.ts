@@ -23,10 +23,12 @@ export const getCellByIndexes = (node: ParentNode, indexes: {column: number, row
   return cell;
 };
 
-export const getHeaderCells = (node: ParentNode, options: {onlyVisible: boolean} = {
+export const getHeaderCells = (node: ParentNode, options: {onlyVisible: boolean, withJslog?: boolean} = {
   onlyVisible: false,
+  withJslog: true,
 }) => {
-  const cells = node.querySelectorAll('th[jslog]');
+  const querySelector = options.withJslog ? 'th[jslog]' : 'th';
+  const cells = node.querySelectorAll(querySelector);
   assertElements(cells, HTMLTableCellElement);
   return Array.from(cells).filter(cell => {
     if (!options.onlyVisible) {
@@ -37,8 +39,11 @@ export const getHeaderCells = (node: ParentNode, options: {onlyVisible: boolean}
   });
 };
 
-export const getAllRows = (node: ParentNode) => {
-  const rows = node.querySelectorAll('tbody tr[jslog]');
+export const getAllRows = (node: ParentNode, options: {withJslog?: boolean} = {
+  withJslog: true
+}) => {
+  const querySelector = options.withJslog ? 'tbody tr[jslog]' : 'tbody tr';
+  const rows = node.querySelectorAll(querySelector);
   assertElements(rows, HTMLTableRowElement);
   return Array.from(rows);
 };
@@ -56,6 +61,22 @@ export const assertGridContents = (gridComponent: HTMLElement, headerExpected: s
   return grid;
 };
 
+export const assertGridWidgetContents =
+    (gridComponent: HTMLElement, headerExpected: string[], rowsExpected: string[][]) => {
+      const grid = gridComponent.querySelector('devtools-data-grid')!;
+
+      const headerActual =
+          getHeaderCells(grid, {onlyVisible: false, withJslog: false}).map(({textContent}) => textContent!.trim());
+      assert.deepEqual(headerActual, headerExpected);
+
+      const rowsActual = getValuesOfAllBodyRows(grid, {onlyVisible: false, withJslog: false})
+                             .filter(row => row.length !== 0)
+                             .map(row => row.map(cell => cell.trim()));
+      assert.deepEqual(rowsActual, rowsExpected);
+
+      return grid;
+    };
+
 export const emulateUserKeyboardNavigation =
     (shadowRoot: ShadowRoot, key: 'ArrowLeft'|'ArrowRight'|'ArrowUp'|'ArrowDown') => {
       const table = shadowRoot.querySelector('table');
@@ -63,16 +84,18 @@ export const emulateUserKeyboardNavigation =
       dispatchKeyDownEvent(table, {key});
     };
 
-export const getValuesOfAllBodyRows = (node: ParentNode, options: {onlyVisible: boolean} = {
+export const getValuesOfAllBodyRows = (node: ParentNode, options: {onlyVisible: boolean, withJslog?: boolean} = {
   onlyVisible: false,
+  withJslog: true,
 }) => {
-  const rows = getAllRows(node);
+  const rows = getAllRows(node, {withJslog: options.withJslog});
   return rows
       .map(row => {
         // now decide if the row should be included or not
         const rowIsHidden = row.classList.contains('hidden');
+        const querySelector = options.withJslog ? 'td[jslog]' : 'td';
         return {
-          rowValues: [...row.querySelectorAll('td[jslog]')]
+          rowValues: [...row.querySelectorAll(querySelector)]
                          .filter(cell => !options.onlyVisible || !cell.classList.contains('hidden'))
                          .map(cell => (cell as HTMLTableCellElement).innerText.trim()),
           hidden: options.onlyVisible && rowIsHidden,

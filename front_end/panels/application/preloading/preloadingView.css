@@ -26,3 +26,9 @@
     margin: var(--sys-size-2) 0;
   }
 }
+
+devtools-split-view {
+  .preloading-grid-widget-container > .vbox {
+    height: 100%;
+  }
+}

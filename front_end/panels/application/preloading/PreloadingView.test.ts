@@ -4,7 +4,7 @@
 
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Protocol from '../../../generated/protocol.js';
-import {assertGridContents} from '../../../testing/DataGridHelpers.js';
+import {assertGridContents, assertGridWidgetContents} from '../../../testing/DataGridHelpers.js';
 import {
   getCleanTextContentFromElements,
   getElementWithinComponent,
@@ -585,12 +585,12 @@ describeWithMockConnection('PreloadingAttemptView', () => {
     await RenderCoordinator.done();
 
     const preloadingGridComponent = view.getPreloadingGridForTest();
-    assert.isNotNull(preloadingGridComponent.shadowRoot);
+
+    assert.isNotNull(preloadingGridComponent.contentElement);
     const preloadingDetailsComponent = view.getPreloadingDetailsForTest();
     assert.isNotNull(preloadingDetailsComponent.shadowRoot);
-
-    assertGridContents(
-        preloadingGridComponent,
+    assertGridWidgetContents(
+        preloadingGridComponent.contentElement,
         ['URL', 'Action', 'Rule set', 'Status'],
         [
           [
@@ -647,12 +647,12 @@ describeWithMockConnection('PreloadingAttemptView', () => {
     await RenderCoordinator.done();
 
     const preloadingGridComponent = view.getPreloadingGridForTest();
-    assert.isNotNull(preloadingGridComponent.shadowRoot);
+    assert.isNotNull(preloadingGridComponent.contentElement);
     const preloadingDetailsComponent = view.getPreloadingDetailsForTest();
     assert.isNotNull(preloadingDetailsComponent.shadowRoot);
 
-    assertGridContents(
-        preloadingGridComponent,
+    assertGridWidgetContents(
+        preloadingGridComponent.contentElement,
         ['URL', 'Action', 'Rule set', 'Status'],
         [
           [
@@ -726,12 +726,12 @@ describeWithMockConnection('PreloadingAttemptView', () => {
 
     const ruleSetSelectorToolbarItem = view.getRuleSetSelectorToolbarItemForTest();
     const preloadingGridComponent = view.getPreloadingGridForTest();
-    assert.isNotNull(preloadingGridComponent.shadowRoot);
+    assert.isNotNull(preloadingGridComponent.contentElement);
 
     assert.strictEqual(ruleSetSelectorToolbarItem.element.querySelector('span')?.textContent, 'All speculative loads');
 
-    assertGridContents(
-        preloadingGridComponent,
+    assertGridWidgetContents(
+        preloadingGridComponent.contentElement,
         ['URL', 'Action', 'Rule set', 'Status'],
         [
           [
@@ -756,8 +756,8 @@ describeWithMockConnection('PreloadingAttemptView', () => {
 
     assert.strictEqual(ruleSetSelectorToolbarItem.element.querySelector('span')?.textContent, 'example.com/');
 
-    assertGridContents(
-        preloadingGridComponent,
+    assertGridWidgetContents(
+        preloadingGridComponent.contentElement,
         ['URL', 'Action', 'Rule set', 'Status'],
         [
           [
@@ -776,8 +776,8 @@ describeWithMockConnection('PreloadingAttemptView', () => {
 
     assert.strictEqual(ruleSetSelectorToolbarItem.element.querySelector('span')?.textContent, 'All speculative loads');
 
-    assertGridContents(
-        preloadingGridComponent,
+    assertGridWidgetContents(
+        preloadingGridComponent.contentElement,
         ['URL', 'Action', 'Rule set', 'Status'],
         [
           [
@@ -816,12 +816,12 @@ describeWithMockConnection('PreloadingAttemptView', () => {
     await RenderCoordinator.done();
 
     const preloadingGridComponent = view.getPreloadingGridForTest();
-    assert.isNotNull(preloadingGridComponent.shadowRoot);
+    assert.isNotNull(preloadingGridComponent.contentElement);
     const preloadingDetailsComponent = view.getPreloadingDetailsForTest();
     assert.isNotNull(preloadingDetailsComponent.shadowRoot);
 
-    assertGridContents(
-        preloadingGridComponent,
+    assertGridWidgetContents(
+        preloadingGridComponent.contentElement,
         ['URL', 'Action', 'Rule set', 'Status'],
         [
           [
@@ -833,8 +833,7 @@ describeWithMockConnection('PreloadingAttemptView', () => {
         ],
     );
 
-    preloadingGridComponent.dispatchEvent(
-        new CustomEvent('select', {detail: 'loaderId:1:Prerender:https://example.com/prerendered.html:undefined'}));
+    preloadingGridComponent.contentElement.querySelectorAll('tr')[1].dispatchEvent(new Event('select'));
 
     await RenderCoordinator.done();
 
@@ -881,14 +880,14 @@ describeWithMockConnection('PreloadingAttemptView', () => {
     } as Protocol.Preload.PrerenderStatusUpdatedEvent);
 
     const preloadingGridComponent = view.getPreloadingGridForTest();
-    assert.isNotNull(preloadingGridComponent.shadowRoot);
+    assert.isNotNull(preloadingGridComponent.contentElement);
     const preloadingDetailsComponent = view.getPreloadingDetailsForTest();
     assert.isNotNull(preloadingDetailsComponent.shadowRoot);
 
     await RenderCoordinator.done();
 
-    assertGridContents(
-        preloadingGridComponent,
+    assertGridWidgetContents(
+        preloadingGridComponent.contentElement,
         ['URL', 'Action', 'Rule set', 'Status'],
         [
           [
@@ -900,8 +899,7 @@ describeWithMockConnection('PreloadingAttemptView', () => {
         ],
     );
 
-    preloadingGridComponent.dispatchEvent(
-        new CustomEvent('select', {detail: 'loaderId:1:Prerender:https://example.com/prerendered.html:undefined'}));
+    preloadingGridComponent.contentElement.querySelectorAll('tr')[1].dispatchEvent(new Event('select'));
 
     await RenderCoordinator.done();
 
@@ -956,14 +954,14 @@ describeWithMockConnection('PreloadingAttemptView', () => {
     prerenderTarget?.dispose('test');
 
     const preloadingGridComponent = view.getPreloadingGridForTest();
-    assert.isNotNull(preloadingGridComponent.shadowRoot);
+    assert.isNotNull(preloadingGridComponent.contentElement);
     const preloadingDetailsComponent = view.getPreloadingDetailsForTest();
     assert.isNotNull(preloadingDetailsComponent.shadowRoot);
 
     await RenderCoordinator.done();
 
-    assertGridContents(
-        preloadingGridComponent,
+    assertGridWidgetContents(
+        preloadingGridComponent.contentElement,
         ['URL', 'Action', 'Rule set', 'Status'],
         [
           [
@@ -975,8 +973,7 @@ describeWithMockConnection('PreloadingAttemptView', () => {
         ],
     );
 
-    preloadingGridComponent.dispatchEvent(
-        new CustomEvent('select', {detail: 'loaderId:1:Prerender:https://example.com/prerendered.html:undefined'}));
+    preloadingGridComponent.contentElement.querySelectorAll('tr')[1].dispatchEvent(new Event('select'));
 
     await RenderCoordinator.done();
 

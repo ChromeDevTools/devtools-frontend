@@ -19,9 +19,11 @@ import {
   getStyleSectionSubtitles,
   goToResourceAndWaitForStyleSection,
   waitForAndClickTreeElementWithPartialText,
+  waitForChildrenOfSelectedElementNode,
   waitForContentOfSelectedElementsNode,
   waitForCSSPropertyValue,
   waitForElementsStyleSection,
+  waitForPartialContentOfSelectedElementsNode,
   waitForPropertyToHighlight,
   waitForStyleRule,
 } from '../helpers/elements-helpers.js';
@@ -1392,6 +1394,143 @@ describe('The Styles pane', () => {
        const innerText = await infobox.evaluate(node => (node as HTMLElement).innerText);
        assert.isTrue(innerText?.toLowerCase().startsWith('specificity'));
      });
+
+  it('can display nested pseudo elements and their styles', async ({devToolsPage, inspectedPage}) => {
+    await inspectedPage.goToHtml(`
+      <style>
+      #inspected::before {
+        content: "BEFORE";
+      }
+      #inspected::after {
+        content: "AFTER";
+      }
+      #inspected::before::marker {
+        content: "before marker";
+      }
+      #inspected::after::marker {
+        content: "after marker";
+      }
+      #inspected::before {
+        display: list-item;
+      }
+      #inspected::after {
+        display: list-item;
+      }
+      </style>
+      <div id="container">
+        <div id="inspected">Text</div>
+      </div>
+    `);
+    await waitForElementsStyleSection(undefined, devToolsPage);
+
+    await waitForAndClickTreeElementWithPartialText('container', devToolsPage);
+    await devToolsPage.pressKey('ArrowRight');
+
+    // Select the node and expand it to show pseudos.
+    await waitForAndClickTreeElementWithPartialText('inspected', devToolsPage);
+    await expandSelectedNodeRecursively(devToolsPage);
+
+    // Expand ::before and ::after to reveal their markers.
+    await waitForAndClickTreeElementWithPartialText('::before', devToolsPage);
+    await devToolsPage.pressKey('ArrowRight');
+    await waitForAndClickTreeElementWithPartialText('::after', devToolsPage);
+    await devToolsPage.pressKey('ArrowRight');
+
+    // --- Assert styles ---
+    // ::before
+    await waitForAndClickTreeElementWithPartialText('::before', devToolsPage);
+    await waitForStyleRule('#inspected::before', devToolsPage);
+    let styleRules = await getDisplayedStyleRules(devToolsPage);
+    assert.sameDeepMembers(styleRules, [
+      {
+        selectorText: '#inspected::before',
+        propertyData: [{propertyName: 'display', isOverLoaded: false, isInherited: false}]
+      },
+      {
+        selectorText: '#inspected::before',
+        propertyData: [{propertyName: 'content', isOverLoaded: false, isInherited: false}]
+      },
+      {
+        selectorText: '#inspected::before::marker',
+        propertyData: [{propertyName: 'content', isOverLoaded: false, isInherited: false}]
+      }
+    ]);
+    await devToolsPage.pressKey('ArrowRight');
+    await waitForPartialContentOfSelectedElementsNode('::marker', devToolsPage);
+
+    // ::after
+    await waitForAndClickTreeElementWithPartialText('::after', devToolsPage);
+    await waitForStyleRule('#inspected::after', devToolsPage);
+    styleRules = await getDisplayedStyleRules(devToolsPage);
+    assert.sameDeepMembers(styleRules, [
+      {
+        selectorText: '#inspected::after',
+        propertyData: [{propertyName: 'display', isOverLoaded: false, isInherited: false}]
+      },
+      {
+        selectorText: '#inspected::after',
+        propertyData: [{propertyName: 'content', isOverLoaded: false, isInherited: false}]
+      },
+      {
+        selectorText: '#inspected::after::marker',
+        propertyData: [{propertyName: 'content', isOverLoaded: false, isInherited: false}]
+      }
+    ]);
+    await devToolsPage.pressKey('ArrowRight');
+    await waitForPartialContentOfSelectedElementsNode('::marker', devToolsPage);
+
+    // --- Dynamically modify styles ---
+
+    const removeLastRule = () => inspectedPage.evaluate(() => {
+      const sheet = document.styleSheets[0] as CSSStyleSheet;
+      sheet.deleteRule(sheet.cssRules.length - 1);
+    });
+
+    // Removing 'display: list-item' from ::after should remove its marker.
+    await removeLastRule();  // Removes #inspected::after { display: list-item; }
+    await waitForPartialContentOfSelectedElementsNode('::after', devToolsPage);
+    await devToolsPage.pressKey('ArrowDown');
+    await waitForPartialContentOfSelectedElementsNode('</div>', devToolsPage);
+
+    // Removing 'display: list-item' from ::before should remove its marker.
+    await removeLastRule();  // Removes #inspected::before { display: list-item; }
+    await waitForAndClickTreeElementWithPartialText('::before', devToolsPage);
+    await devToolsPage.pressKey('ArrowDown');
+    await waitForPartialContentOfSelectedElementsNode('Text', devToolsPage);
+
+    // Add back the rules.
+    await inspectedPage.evaluate(() => {
+      const sheet = document.styleSheets[0] as CSSStyleSheet;
+      sheet.addRule('#inspected::before', 'display: list-item');
+      sheet.addRule('#inspected::after', 'display: list-item');
+    });
+
+    await waitForAndClickTreeElementWithPartialText('::before', devToolsPage);
+    await waitForStyleRule('#inspected::before', devToolsPage);
+    styleRules = await getDisplayedStyleRules(devToolsPage);
+    assert.sameDeepMembers(styleRules, [
+      {
+        selectorText: '#inspected::before',
+        propertyData: [{propertyName: 'display', isOverLoaded: false, isInherited: false}]
+      },
+      {
+        selectorText: '#inspected::before',
+        propertyData: [{propertyName: 'content', isOverLoaded: false, isInherited: false}]
+      },
+      {
+        selectorText: '#inspected::before::marker',
+        propertyData: [{propertyName: 'content', isOverLoaded: false, isInherited: false}]
+      }
+    ]);
+
+    // --- Remove node ---
+    await inspectedPage.evaluate(() => {
+      document.getElementById('inspected')?.remove();
+    });
+
+    await waitForChildrenOfSelectedElementNode(devToolsPage);
+    await waitForContentOfSelectedElementsNode('<div id=\u200B"container">\u200B</div>\u200B', devToolsPage);
+  });
 
   describe('Editing', () => {
     async function assertBodyColor(expected: string, inspectedPage: InspectedPage) {

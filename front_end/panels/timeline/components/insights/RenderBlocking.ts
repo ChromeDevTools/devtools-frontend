@@ -58,13 +58,13 @@ export class RenderBlocking extends BaseInsightComponent<RenderBlockingInsightMo
     // clang-format off
     return html`
       <div class="insight-section">
-        <devtools-performance-table
+        <devtools-widget
           .data=${{
             insight: this,
             headers: [i18nString(UIStrings.renderBlockingRequest), i18nString(UIStrings.duration)],
             rows,
           }}>
-        </devtools-performance-table>
+        </devtools-widget>
       </div>
     `;
     // clang-format on

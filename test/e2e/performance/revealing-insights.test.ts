@@ -24,7 +24,7 @@ describe('Revealing insights in RPP', function() {
     // Ensure that the LCP timespan breakdown is showing.
     await devToolsPage.waitFor('.overlay-type-TIMESPAN_BREAKDOWN');
     // Ensure that the LCP breakdown phases are shown.
-    const perfTable = await devToolsPage.waitFor('devtools-performance-table');
+    const perfTable = await devToolsPage.waitFor('table.interactive');
 
     const tableBody = await devToolsPage.waitFor('tbody', perfTable);
     const rowTitles = await tableBody.evaluate(tbody => {

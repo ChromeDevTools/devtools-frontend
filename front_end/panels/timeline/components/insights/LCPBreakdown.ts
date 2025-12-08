@@ -2,20 +2,20 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import './Table.js';
-
 import * as i18n from '../../../../core/i18n/i18n.js';
 import type {LCPBreakdownInsightModel} from '../../../../models/trace/insights/LCPBreakdown.js';
 import * as Trace from '../../../../models/trace/trace.js';
+import * as UI from '../../../../ui/legacy/legacy.js';
 import * as Lit from '../../../../ui/lit/lit.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
 import {BaseInsightComponent} from './BaseInsightComponent.js';
-import type {TableData} from './Table.js';
+import {Table, type TableDataRow} from './Table.js';
 
 const {UIStrings, i18nString} = Trace.Insights.Models.LCPBreakdown;
 
 const {html} = Lit;
+const {widgetConfig} = UI.Widget;
 
 export class LCPBreakdown extends BaseInsightComponent<LCPBreakdownInsightModel> {
   override internalName = 'lcp-by-phase';
@@ -69,13 +69,13 @@ export class LCPBreakdown extends BaseInsightComponent<LCPBreakdownInsightModel>
     // clang-format off
     return html`
       <div class="insight-section">
-        <devtools-performance-table
-          .data=${{
+        <devtools-widget .widgetConfig=${widgetConfig(Table, {
+           data: {
             insight: this,
             headers: [i18nString(UIStrings.subpart), i18nString(UIStrings.fieldDuration)],
             rows,
-          } as TableData}>
-        </devtools-performance-table>
+          }})}>
+        </devtools-widget>
       </div>
     `;
     // clang-format on
@@ -101,7 +101,7 @@ export class LCPBreakdown extends BaseInsightComponent<LCPBreakdownInsightModel>
       return html`<div class="insight-section">${i18nString(UIStrings.noLcp)}</div>`;
     }
 
-    const rows = Object.values(subparts).map((subpart: Trace.Insights.Models.LCPBreakdown.Subpart) => {
+    const rows: TableDataRow[] = Object.values(subparts).map((subpart: Trace.Insights.Models.LCPBreakdown.Subpart) => {
       const section = this.#overlay?.sections.find(section => subpart.label === section.label);
       const timing = Trace.Helpers.Timing.microToMilli(subpart.range);
       return {
@@ -116,13 +116,13 @@ export class LCPBreakdown extends BaseInsightComponent<LCPBreakdownInsightModel>
     // clang-format off
     const sections: Lit.LitTemplate[] = [html`
       <div class="insight-section">
-        <devtools-performance-table
-          .data=${{
+        <devtools-widget .widgetConfig=${widgetConfig(Table, {
+           data: {
             insight: this,
             headers: [i18nString(UIStrings.subpart), i18nString(UIStrings.duration)],
             rows,
-          } as TableData}>
-        </devtools-performance-table>
+          }})}>
+        </devtools-widget>
       </div>`
     ];
     // clang-format on

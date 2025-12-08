@@ -2,19 +2,20 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import './Table.js';
-
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import type {INPBreakdownInsightModel} from '../../../../models/trace/insights/INPBreakdown.js';
 import * as Trace from '../../../../models/trace/trace.js';
+import * as UI from '../../../../ui/legacy/legacy.js';
 import * as Lit from '../../../../ui/lit/lit.js';
 
 import {BaseInsightComponent} from './BaseInsightComponent.js';
+import {Table} from './Table.js';
 
 const {UIStrings, i18nString, createOverlaysForSubpart} = Trace.Insights.Models.INPBreakdown;
 
 const {html} = Lit;
+const {widgetConfig} = UI.Widget;
 
 export class INPBreakdown extends BaseInsightComponent<INPBreakdownInsightModel> {
   override internalName = 'inp';
@@ -35,8 +36,8 @@ export class INPBreakdown extends BaseInsightComponent<INPBreakdownInsightModel>
     // clang-format off
     return html`
       <div class="insight-section">
-        ${html`<devtools-performance-table
-          .data=${{
+        ${html`<devtools-widget .widgetConfig=${widgetConfig(Table, {
+           data: {
             insight: this,
             headers: [i18nString(UIStrings.subpart), i18nString(UIStrings.duration)],
             rows: [
@@ -53,8 +54,8 @@ export class INPBreakdown extends BaseInsightComponent<INPBreakdownInsightModel>
                 overlays: createOverlaysForSubpart(event, 2),
               },
             ],
-          }}>
-        </devtools-performance-table>`}
+          }})}>
+        </devtools-widget>`}
       </div>`;
     // clang-format on
   }

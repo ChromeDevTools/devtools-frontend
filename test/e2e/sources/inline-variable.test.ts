@@ -5,30 +5,50 @@
 import {assert} from 'chai';
 
 import {
-  addBreakpointForLine,
   openSourceCodeEditorForFile,
   RESUME_BUTTON,
+  STEP_OVER_BUTTON,
 } from '../helpers/sources-helpers.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 
-async function retrieveCodeMirrorEditorContent(devToolsPage: DevToolsPage): Promise<string[]> {
-  const editor = await devToolsPage.waitFor('[aria-label="Code editor"]');
-  return await editor.evaluate(
-      node => [...node.querySelectorAll('.cm-line')].map(node => node.textContent || '') || []);
+async function waitForInlineVariables(devToolsPage: DevToolsPage, count: number): Promise<string[]> {
+  const inlineVariables = await devToolsPage.waitForMany('.cm-variableValues', count);
+  return await Promise.all(inlineVariables.map(e => e.evaluate(e => e.textContent)));
 }
 
 describe('Sources Tab', function() {
   it('shows correct inline variable at definition', async ({devToolsPage, inspectedPage}) => {
     await openSourceCodeEditorForFile('inline-variable.js', 'inline-variable.html', devToolsPage, inspectedPage);
-    await addBreakpointForLine(3, devToolsPage);
 
-    const scriptEvaluation = inspectedPage.evaluate('simple(41);');
+    // For each step, which inline variables we expect CodeMirror to show.
+    const expectedInlineVariables: string[][] = [
+      [],  // The 'debugger;' statement.
+      [],  // The first actual statement.
+      ['a = {k: 1}'],
+      ['a = {k: 1}', 'b = (5) [1, 2, 3, 4, 5]'],
+      ['a = {k: 1}', 'b = (5) [1, 2, 3, 4, 5]'],
+      ['a = {k: 1}', 'b = (5) [1, 2, 3, 4, 5]', 'c = (100) [empty × 10, 1, empty × 89]'],
+      ['a = {k: 2}', 'b = (5) [1, 2, 3, 4, 5]', 'c = (100) [empty × 10, 1, empty × 89]', 'a = {k: 2}'],
+      [
+        'a = {k: 2, l: Window}', 'b = (5) [1, 2, 3, 4, 5]', 'c = (100) [empty × 10, 1, empty × 89]',
+        'a = {k: 2, l: Window}'
+      ],
+      [
+        'a = {k: 2, l: Window}', 'b = (5) [1, 3, 3, 4, 5]', 'c = (100) [empty × 10, 1, empty × 89]',
+        'a = {k: 2, l: Window}', 'b = (5) [1, 3, 3, 4, 5]'
+      ],
+      [
+        'a = {k: 2, l: Window}', 'b = (5) [1, 3, body, 4, 5]', 'c = (100) [empty × 10, 1, empty × 89]',
+        'a = {k: 2, l: Window}', 'b = (5) [1, 3, body, 4, 5]'
+      ],
+    ];
 
-    await devToolsPage.waitFor('.cm-line > .cm-variableValues');
+    const scriptEvaluation = inspectedPage.evaluate('testFunction();');
 
-    const contents = await retrieveCodeMirrorEditorContent(devToolsPage);
-    assert.strictEqual(contents[0], 'function simple(a) {a = 41');
-    assert.strictEqual(contents[1], '  let x = a + 1;x = 42');
+    for (const expected of expectedInlineVariables) {
+      assert.deepEqual(await waitForInlineVariables(devToolsPage, expected.length), expected);
+      await devToolsPage.click(STEP_OVER_BUTTON);
+    }
 
     await devToolsPage.click(RESUME_BUTTON);
     await scriptEvaluation;

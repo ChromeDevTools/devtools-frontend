@@ -171,6 +171,11 @@ export class SecurityPanelSidebar extends UI.Widget.VBox {
     this.showLastSelectedElement();
   }
 
+  // Used in web tests
+  elementsByOrigin(): Map<string, OriginTreeElement> {
+    return this.#elementsByOrigin;
+  }
+
   showLastSelectedElement(): void {
     if (this.#cookieControlsTreeElement &&
         this.#securitySidebarLastItemSetting.get() === this.#cookieControlsTreeElement.elemId) {

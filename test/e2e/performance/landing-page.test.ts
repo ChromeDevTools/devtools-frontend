@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import * as os from 'node:os';
 import type * as puppeteer from 'puppeteer-core';
 
 import {getCurrentConsoleMessages} from '../helpers/console-helpers.js';
@@ -55,21 +54,25 @@ async function setCruxRawResponse(path: string, devToolsPage: DevToolsPage, insp
   })()`);
 }
 
-// TODO: for some reason on windows, "TimelinePanel.ts hasPrimaryTarget" returns
-// false, which removes some controls and fails a VE assert. Ignore for now.
-// Might be OK after moving test to non_hosted.
-const describeSkipForWindows = os.platform() === 'win32' ? describe.skip : describe;
-
-describeSkipForWindows('The Performance panel landing page', function() {
-  setup({dockingMode: 'undocked'});
+describe('The Performance panel landing page', function() {
+  setup({dockingMode: 'undocked', panel: 'timeline'});
   if (this.timeout() > 0) {
     this.timeout(20000);
   }
 
-  // Consistently failing on macOS bots
-  it.skipOnPlatforms(['mac'], '[crbug.com/415271011] displays live metrics', async ({devToolsPage, inspectedPage}) => {
+  async function doubleRaf(inspectedPage: InspectedPage): Promise<void> {
+    await inspectedPage.evaluate(() => new Promise(r => requestAnimationFrame(r)));
+    await inspectedPage.evaluate(() => new Promise(r => requestAnimationFrame(r)));
+  }
+
+  async function prepare(devToolsPage: DevToolsPage, inspectedPage: InspectedPage): Promise<void> {
     await devToolsPage.reloadWithParams({panel: 'timeline'});
     await inspectedPage.bringToFront();
+    await doubleRaf(inspectedPage);  // Without this, even an empty test can fail subsequent tests. Dunno why.
+  }
+
+  it('displays live metrics', async ({devToolsPage, inspectedPage}) => {
+    await prepare(devToolsPage, inspectedPage);
 
     const inspectedPageSession = await inspectedPage.page.createCDPSession();
     try {
@@ -78,8 +81,7 @@ describeSkipForWindows('The Performance panel landing page', function() {
       await waitForLCP();
       await inspectedPage.page.click('#long-interaction');
       await inspectedPage.page.click('#long-interaction');
-      await inspectedPage.evaluate(() => new Promise(r => requestAnimationFrame(r)));
-      await inspectedPage.evaluate(() => new Promise(r => requestAnimationFrame(r)));
+      await doubleRaf(inspectedPage);
       await devToolsPage.bringToFront();
 
       const [lcpValueElem, clsValueElem, inpValueElem] = await devToolsPage.waitForMany(READY_LOCAL_METRIC_SELECTOR, 3);
@@ -112,128 +114,114 @@ describeSkipForWindows('The Performance panel landing page', function() {
     }
   });
 
-  // Flaky, skipped while we deflake it
-  it.skip(
-      '[crbug.com/415271011] displays live metrics after the page already loaded',
-      async ({devToolsPage, inspectedPage}) => {
-        await devToolsPage.reloadWithParams({panel: 'timeline'});
-        await inspectedPage.bringToFront();
+  it('displays live metrics after the page already loaded', async ({devToolsPage, inspectedPage}) => {
+    await prepare(devToolsPage, inspectedPage);
 
-        const inspectedPageSession = await inspectedPage.page.createCDPSession();
-        try {
-          const waitForLCP = await installLCPListener(inspectedPageSession);
-          await inspectedPage.goToResource('performance/fake-website.html');
-          await waitForLCP();
-          await inspectedPage.page.click('#long-interaction');
-          await inspectedPage.page.click('#long-interaction');
-          await inspectedPage.evaluate(() => new Promise(r => requestAnimationFrame(r)));
-          await inspectedPage.evaluate(() => new Promise(r => requestAnimationFrame(r)));
+    const inspectedPageSession = await inspectedPage.page.createCDPSession();
+    try {
+      const waitForLCP = await installLCPListener(inspectedPageSession);
+      await inspectedPage.goToResource('performance/fake-website.html');
+      await waitForLCP();
+      await inspectedPage.page.click('#long-interaction');
+      await inspectedPage.page.click('#long-interaction');
+      await doubleRaf(inspectedPage);
 
-          await inspectedPageSession.send('Runtime.enable');
-          const executionContextPromise =
-              new Promise(r => inspectedPageSession.once('Runtime.executionContextCreated', r));
+      await inspectedPageSession.send('Runtime.enable');
+      const executionContextPromise = new Promise(r => inspectedPageSession.once('Runtime.executionContextCreated', r));
 
-          // Reload DevTools to inject new listeners after content is loaded
-          await devToolsPage.reload();
-          await navigateToPerformanceTab(undefined, devToolsPage, inspectedPage);
+      // Reload DevTools to inject new listeners after content is loaded
+      await devToolsPage.reload();
+      await navigateToPerformanceTab(undefined, devToolsPage, inspectedPage);
 
-          // An execution context will be created once the web vitals library has been injected
-          await executionContextPromise;
+      // An execution context will be created once the web vitals library has been injected
+      await executionContextPromise;
 
-          await devToolsPage.bringToFront();
+      await devToolsPage.bringToFront();
 
-          const [lcpValueElem, clsValueElem, inpValueElem] =
-              await devToolsPage.waitForMany(READY_LOCAL_METRIC_SELECTOR, 3);
-          const interactions = await devToolsPage.$$(INTERACTION_SELECTOR);
-          assert.isAtLeast(interactions.length, 2);
+      const [lcpValueElem, clsValueElem, inpValueElem] = await devToolsPage.waitForMany(READY_LOCAL_METRIC_SELECTOR, 3);
+      const interactions = await devToolsPage.$$(INTERACTION_SELECTOR);
+      assert.isAtLeast(interactions.length, 2);
 
-          const layoutShifts = await devToolsPage.$$(LAYOUT_SHIFT_SELECTOR);
-          assert.lengthOf(layoutShifts, 1);
+      const layoutShifts = await devToolsPage.$$(LAYOUT_SHIFT_SELECTOR);
+      assert.lengthOf(layoutShifts, 1);
 
-          const lcpValue = await lcpValueElem.evaluate(el => el.textContent) || '';
-          assert.match(lcpValue, /[0-9\.]+ (s|ms)/);
+      const lcpValue = await lcpValueElem.evaluate(el => el.textContent) || '';
+      assert.match(lcpValue, /[0-9\.]+ (s|ms)/);
 
-          const clsValue = await clsValueElem.evaluate(el => el.textContent) || '';
-          assert.match(clsValue, /[0-9\.]+/);
+      const clsValue = await clsValueElem.evaluate(el => el.textContent) || '';
+      assert.match(clsValue, /[0-9\.]+/);
 
-          const inpValue = await inpValueElem.evaluate(el => el.textContent) || '';
-          assert.match(inpValue, /[0-9\.]+ (s|ms)/);
-        } finally {
-          await inspectedPageSession.detach();
-        }
-      });
-  // Flaky, skipped while we deflake it
-  it.skip(
-      '[crbug.com/415271011] treats bfcache restoration like a regular navigation',
-      async ({devToolsPage, inspectedPage}) => {
-        await inspectedPage.bringToFront();
+      const inpValue = await inpValueElem.evaluate(el => el.textContent) || '';
+      assert.match(inpValue, /[0-9\.]+ (s|ms)/);
+    } finally {
+      await inspectedPageSession.detach();
+    }
+  });
 
-        const inspectedPageSession = await inspectedPage.page.createCDPSession();
-        try {
-          const waitForLCP1 = await installLCPListener(inspectedPageSession);
-          await inspectedPage.goToResource('performance/fake-website.html');
-          await waitForLCP1();
+  it('treats bfcache restoration like a regular navigation', async ({devToolsPage, inspectedPage}) => {
+    await prepare(devToolsPage, inspectedPage);
 
-          await inspectedPage.page.click('#long-interaction');
-          await inspectedPage.page.click('#long-interaction');
-          await inspectedPage.evaluate(() => new Promise(r => requestAnimationFrame(r)));
-          await inspectedPage.evaluate(() => new Promise(r => requestAnimationFrame(r)));
+    const inspectedPageSession = await inspectedPage.page.createCDPSession();
+    try {
+      const waitForLCP1 = await installLCPListener(inspectedPageSession);
+      await inspectedPage.goToResource('performance/fake-website.html');
+      await waitForLCP1();
 
-          await devToolsPage.bringToFront();
+      await inspectedPage.page.click('#long-interaction');
+      await inspectedPage.page.click('#long-interaction');
+      await doubleRaf(inspectedPage);
 
-          await devToolsPage.waitForMany(READY_LOCAL_METRIC_SELECTOR, 3);
-          const interactions1 = await devToolsPage.$$(INTERACTION_SELECTOR);
-          assert.isAtLeast(interactions1.length, 2);
+      await devToolsPage.bringToFront();
 
-          const layoutShifts1 = await devToolsPage.$$(LAYOUT_SHIFT_SELECTOR);
-          assert.lengthOf(layoutShifts1, 1);
+      await devToolsPage.waitForMany(READY_LOCAL_METRIC_SELECTOR, 3);
+      const interactions1 = await devToolsPage.$$(INTERACTION_SELECTOR);
+      assert.isAtLeast(interactions1.length, 2);
 
-          await inspectedPage.bringToFront();
+      const layoutShifts1 = await devToolsPage.$$(LAYOUT_SHIFT_SELECTOR);
+      assert.lengthOf(layoutShifts1, 1);
 
-          const waitForLCP2 = await installLCPListener(inspectedPageSession);
-          await inspectedPage.goTo('chrome://terms');
-          await waitForLCP2();
-          await inspectedPage.evaluate(() => new Promise(r => requestAnimationFrame(r)));
-          await inspectedPage.evaluate(() => new Promise(r => requestAnimationFrame(r)));
+      await inspectedPage.bringToFront();
 
-          await devToolsPage.bringToFront();
+      const waitForLCP2 = await installLCPListener(inspectedPageSession);
+      await inspectedPage.goTo('chrome://terms');
+      await waitForLCP2();
+      await doubleRaf(inspectedPage);
 
-          await devToolsPage.waitForMany(READY_LOCAL_METRIC_SELECTOR, 3);
-          const interactions2 = await devToolsPage.$$<HTMLElement>(INTERACTION_SELECTOR);
-          assert.lengthOf(interactions2, 0);
+      await devToolsPage.bringToFront();
 
-          const layoutShifts2 = await devToolsPage.$$<HTMLElement>(LAYOUT_SHIFT_SELECTOR);
-          assert.lengthOf(layoutShifts2, 0);
+      await devToolsPage.waitForMany(READY_LOCAL_METRIC_SELECTOR, 2);  // only 2, because no interaction/INP
+      const interactions2 = await devToolsPage.$$<HTMLElement>(INTERACTION_SELECTOR);
+      assert.lengthOf(interactions2, 0);
 
-          await inspectedPage.bringToFront();
+      const layoutShifts2 = await devToolsPage.$$<HTMLElement>(LAYOUT_SHIFT_SELECTOR);
+      assert.lengthOf(layoutShifts2, 0);
 
-          await inspectedPage.page.goBack();
-          await inspectedPage.evaluate(() => new Promise(r => requestAnimationFrame(r)));
-          await inspectedPage.evaluate(() => new Promise(r => requestAnimationFrame(r)));
+      await inspectedPage.bringToFront();
 
-          await devToolsPage.bringToFront();
+      await inspectedPage.page.goBack();
+      await doubleRaf(inspectedPage);
 
-          // New LCP and CLS values should be emitted
-          await devToolsPage.waitForMany(READY_LOCAL_METRIC_SELECTOR, 2);
+      await devToolsPage.bringToFront();
 
-          // INP and interactions should be reset
-          const inpCard = await devToolsPage.waitFor('#inp devtools-metric-card');
-          await devToolsPage.waitFor(WAITING_LOCAL_METRIC_SELECTOR, inpCard);
+      // New LCP and CLS values should be emitted
+      await devToolsPage.waitForMany(READY_LOCAL_METRIC_SELECTOR, 2);
 
-          const interactions3 = await devToolsPage.$$<HTMLElement>(INTERACTION_SELECTOR);
-          assert.lengthOf(interactions3, 0);
+      // INP and interactions should be reset
+      const inpCard = await devToolsPage.waitFor('#inp devtools-metric-card');
+      await devToolsPage.waitFor(WAITING_LOCAL_METRIC_SELECTOR, inpCard);
 
-          const layoutShifts3 = await devToolsPage.$$<HTMLElement>(LAYOUT_SHIFT_SELECTOR);
-          assert.lengthOf(layoutShifts3, 0);
-        } finally {
-          await inspectedPageSession.detach();
-        }
-      });
+      const interactions3 = await devToolsPage.$$<HTMLElement>(INTERACTION_SELECTOR);
+      assert.lengthOf(interactions3, 0);
 
-  // Flaky, skipped while we deflake it
-  it.skip('[crbug.com/415271011]ignores metrics from iframes', async ({devToolsPage, inspectedPage}) => {
-    await devToolsPage.reloadWithParams({panel: 'timeline'});
-    await inspectedPage.bringToFront();
+      const layoutShifts3 = await devToolsPage.$$<HTMLElement>(LAYOUT_SHIFT_SELECTOR);
+      assert.lengthOf(layoutShifts3, 0);
+    } finally {
+      await inspectedPageSession.detach();
+    }
+  });
+
+  it('ignores metrics from iframes', async ({devToolsPage, inspectedPage}) => {
+    await prepare(devToolsPage, inspectedPage);
 
     const inspectedPageSession = await inspectedPage.page.createCDPSession();
 
@@ -267,8 +255,7 @@ describeSkipForWindows('The Performance panel landing page', function() {
 
       // This should be the only interaction that shows up
       await inspectedPage.page.click('h1');
-      await inspectedPage.evaluate(() => new Promise(r => requestAnimationFrame(r)));
-      await inspectedPage.evaluate(() => new Promise(r => requestAnimationFrame(r)));
+      await doubleRaf(inspectedPage);
 
       await devToolsPage.bringToFront();
 
@@ -280,14 +267,15 @@ describeSkipForWindows('The Performance panel landing page', function() {
       // Extra execution contexts can be created sometimes when dealing with iframes.
       // We try to avoid that if possible.
       const liveMetricContexts = executionContexts.filter(e => e.name === 'DevTools Performance Metrics');
-      assert.lengthOf(liveMetricContexts, 2);
+      assert.lengthOf(liveMetricContexts, 4);
     } finally {
       await inspectedPageSession.detach();
     }
   });
 
   it('gets field data automatically', async ({devToolsPage, inspectedPage}) => {
-    await devToolsPage.reloadWithParams({panel: 'timeline'});
+    await prepare(devToolsPage, inspectedPage);
+
     await setCruxRawResponse('performance/crux-none.rawresponse', devToolsPage, inspectedPage);
     await inspectedPage.goToResource('performance/fake-website.html');
 
@@ -343,7 +331,8 @@ describeSkipForWindows('The Performance panel landing page', function() {
   });
 
   it('uses URL override for field data', async ({devToolsPage, inspectedPage}) => {
-    await devToolsPage.reloadWithParams({panel: 'timeline'});
+    await prepare(devToolsPage, inspectedPage);
+
     await setCruxRawResponse('performance/crux-valid.rawresponse', devToolsPage, inspectedPage);
     await inspectedPage.goToResource('performance/fake-website.html');
 
@@ -385,8 +374,7 @@ describeSkipForWindows('The Performance panel landing page', function() {
   });
 
   it('combines interaction entries correctly', async ({devToolsPage, inspectedPage}) => {
-    await devToolsPage.reloadWithParams({panel: 'timeline'});
-    await inspectedPage.bringToFront();
+    await prepare(devToolsPage, inspectedPage);
 
     const inspectedPageSession = await inspectedPage.page.createCDPSession();
     try {
@@ -404,8 +392,7 @@ describeSkipForWindows('The Performance panel landing page', function() {
       // Delay ensures keydown and keyup are in separate frames
       await inspectedPage.page.type('#long-type', 'hi', {delay: 200});
 
-      await inspectedPage.evaluate(() => new Promise(r => requestAnimationFrame(r)));
-      await inspectedPage.evaluate(() => new Promise(r => requestAnimationFrame(r)));
+      await doubleRaf(inspectedPage);
 
       await devToolsPage.bringToFront();
 
@@ -429,9 +416,7 @@ describeSkipForWindows('The Performance panel landing page', function() {
   });
 
   it('logs extra interaction details to console', async ({devToolsPage, inspectedPage}) => {
-    await devToolsPage.reloadWithParams({panel: 'timeline'});
-
-    await inspectedPage.bringToFront();
+    await prepare(devToolsPage, inspectedPage);
 
     const inspectedPageSession = await inspectedPage.page.createCDPSession();
     try {
@@ -462,8 +447,7 @@ describeSkipForWindows('The Performance panel landing page', function() {
   });
 
   it('does not retain interaction nodes in memory', async ({devToolsPage, inspectedPage}) => {
-    await devToolsPage.reloadWithParams({panel: 'timeline'});
-    await inspectedPage.bringToFront();
+    await prepare(devToolsPage, inspectedPage);
 
     const inspectedPageSession = await inspectedPage.page.createCDPSession();
     try {

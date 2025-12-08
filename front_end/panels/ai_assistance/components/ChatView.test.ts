@@ -29,6 +29,7 @@ describeWithEnvironment('ChatView', () => {
       conversationType: AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING,
       messages,
       selectedContext,
+      isArtifactsSidebarOpen: false,
       isLoading: false,
       canShowFeedbackForm: false,
       userInfo: {},

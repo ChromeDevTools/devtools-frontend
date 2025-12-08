@@ -27,6 +27,7 @@ import * as NetworkPanel from '../network/network.js';
 import * as TimelinePanel from '../timeline/timeline.js';
 
 import aiAssistancePanelStyles from './aiAssistancePanel.css.js';
+import {ArtifactsViewer} from './components/ArtifactsViewer.js';
 import {
   type AnswerPart,
   type ChatMessage,
@@ -294,6 +295,8 @@ interface ToolbarViewInput {
   onExportConversationClick: () => void;
   onHelpClick: () => void;
   onSettingsClick: () => void;
+  onArtifactsSidebarToggle: () => void;
+  artifactsSidebarVisible: boolean;
   isLoading: boolean;
   showChatActions: boolean;
   showActiveConversationActions: boolean;
@@ -386,6 +389,13 @@ function toolbarView(input: ToolbarViewInput): Lit.LitTemplate {
           .jslogContext=${'freestyler.settings'}
           .variant=${Buttons.Button.Variant.TOOLBAR}
           @click=${input.onSettingsClick}></devtools-button>
+        <!-- If the green experiment is enabled, render the artifacts sidebar toggle button -->
+        ${Root.Runtime.hostConfig.devToolsGreenDevUi?.enabled ? html`<devtools-button
+          title=${i18nString(UIStrings.settings)}
+          aria-label=${i18nString(UIStrings.settings)}
+          .iconName=${input.artifactsSidebarVisible ? 'left-panel-open' : 'left-panel-close'}
+          .variant=${Buttons.Button.Variant.TOOLBAR}
+          @click=${input.onArtifactsSidebarToggle}></devtools-button>` : Lit.nothing}
       </devtools-toolbar>
     </div>
   `;
@@ -396,8 +406,9 @@ function defaultView(input: ViewInput, output: PanelViewOutput, target: HTMLElem
   // clang-format off
   function renderState(): Lit.TemplateResult {
     switch (input.state) {
-      case ViewState.CHAT_VIEW:
-        return html`<devtools-ai-chat-view
+      case ViewState.CHAT_VIEW: {
+      const aiChatView = html`
+        <devtools-ai-chat-view
           .props=${input.props}
           ${Lit.Directives.ref((el: Element | undefined) => {
             if (!el || !(el instanceof ChatView)) {
@@ -407,6 +418,30 @@ function defaultView(input: ViewInput, output: PanelViewOutput, target: HTMLElem
             output.chatView = el;
           })}
         ></devtools-ai-chat-view>`;
+        // If the green experiment is enabled, render the chat view inside
+        // a split view to also have an artifacts viewer sidebar.
+        if(Root.Runtime.hostConfig.devToolsGreenDevUi?.enabled) {
+            return html`
+            <devtools-split-view
+            direction="column"
+            sidebar-visibility=${input.props.isArtifactsSidebarOpen ? 'visible' : 'hidden'}
+            sidebar-position="second"
+            style="width: 100%;"
+          >
+            <div slot="main">
+              ${aiChatView}
+            </div>
+            <div slot="sidebar">
+              <devtools-widget
+              class="fill-panel"
+              .widgetConfig=${UI.Widget.widgetConfig(ArtifactsViewer)}
+              ></devtools-widget>
+            </div>
+          </devtools-split-view>`;
+        }
+
+        return aiChatView;
+      }
       case ViewState.EXPLORE_VIEW:
         return html`<devtools-widget
           class="fill-panel"
@@ -482,7 +517,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   #selectedElement: AiAssistanceModel.StylingAgent.NodeContext|null = null;
   #selectedPerformanceTrace: AiAssistanceModel.PerformanceAgent.PerformanceTraceContext|null = null;
   #selectedRequest: AiAssistanceModel.NetworkAgent.RequestContext|null = null;
-
+  #isArtifactsSidebarOpen = false;
   // Messages displayed in the `ChatView` component.
   #messages: ChatMessage[] = [];
 
@@ -574,6 +609,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           uploadImageInputEnabled: isAiAssistanceMultimodalUploadInputEnabled() &&
               this.#conversation.type === AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING,
           markdownRenderer,
+          isArtifactsSidebarOpen: this.#isArtifactsSidebarOpen,
           onTextSubmit: async (
               text: string, imageInput?: Host.AidaClient.Part,
               multimodalInputType?: AiAssistanceModel.AiAgent.MultimodalInputType) => {
@@ -927,6 +963,11 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       onSettingsClick: () => {
         void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
       },
+      onArtifactsSidebarToggle: () => {
+        this.#isArtifactsSidebarOpen = !this.#isArtifactsSidebarOpen;
+        this.requestUpdate();
+      },
+      artifactsSidebarVisible: this.#isArtifactsSidebarOpen,
     };
   }
 

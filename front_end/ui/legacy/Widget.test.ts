@@ -93,7 +93,92 @@ describe('Widget', () => {
     });
   });
 
+  describe('parentWidget', () => {
+    it('returns the immediate parent widget', () => {
+      const parentWidget = new Widget();
+      const childWidget = new Widget();
+      childWidget.show(parentWidget.contentElement);
+      assert.strictEqual(childWidget.parentWidget(), parentWidget);
+    });
+
+    it('returns the distant parent widget', () => {
+      const parentWidget = new Widget();
+      const div = document.createElement('div');
+      parentWidget.contentElement.appendChild(div);
+      const childWidget = new Widget();
+      childWidget.show(div);
+      assert.strictEqual(childWidget.parentWidget(), parentWidget);
+    });
+  });
+
+  describe('show', () => {
+    it('calls `wasShown` and `onResize` in order', () => {
+      const parentWidget = new Widget();
+      const parentOnResize = sinon.spy(parentWidget, 'onResize');
+      const parentWasShown = sinon.spy(parentWidget, 'wasShown');
+      const childWidget = new Widget();
+      const childOnResize = sinon.spy(childWidget, 'onResize');
+      const childWasShown = sinon.spy(childWidget, 'wasShown');
+      childWidget.show(parentWidget.contentElement);
+      const div = document.createElement('div');
+      renderElementIntoDOM(div);
+      parentWidget.markAsRoot();
+
+      parentWidget.show(div);
+
+      sinon.assert.callOrder(parentWasShown, childWasShown, parentOnResize, childOnResize);
+      sinon.assert.calledOnce(childWasShown);
+      sinon.assert.calledOnce(parentWasShown);
+      sinon.assert.calledOnce(childOnResize);
+      sinon.assert.calledOnce(parentOnResize);
+    });
+
+    it('automatically detaches from any previous parent', () => {
+      const parentWidget1 = new Widget();
+      const parentWidget2 = new Widget();
+      const childWidget = new Widget();
+      const childWidgetOnDetach = sinon.spy(childWidget, 'onDetach');
+      const div = document.createElement('div');
+      renderElementIntoDOM(div);
+      parentWidget1.markAsRoot();
+      parentWidget1.show(div);
+      parentWidget2.markAsRoot();
+      parentWidget2.show(div);
+      childWidget.show(parentWidget1.contentElement);
+
+      childWidget.show(parentWidget2.contentElement);
+
+      sinon.assert.calledOnce(childWidgetOnDetach);
+    });
+  });
+
   describe('detach', () => {
+    it('calls `willHide`, `onDetach`, and `wasHidden` in order', () => {
+      const parentWidget = new Widget();
+      const parentOnDetach = sinon.spy(parentWidget, 'onDetach');
+      const parentWillHide = sinon.spy(parentWidget, 'willHide');
+      const parentWasHidden = sinon.spy(parentWidget, 'wasHidden');
+      const childWidget = new Widget();
+      const childOnDetach = sinon.spy(childWidget, 'onDetach');
+      const childWillHide = sinon.spy(childWidget, 'willHide');
+      const childWasHidden = sinon.spy(childWidget, 'wasHidden');
+      childWidget.show(parentWidget.contentElement);
+      const div = document.createElement('div');
+      renderElementIntoDOM(div);
+      parentWidget.markAsRoot();
+      parentWidget.show(div);
+
+      parentWidget.detach();
+
+      sinon.assert.callOrder(childWillHide, parentWillHide, parentOnDetach, childWasHidden, parentWasHidden);
+      sinon.assert.notCalled(childOnDetach);
+      sinon.assert.calledOnce(childWasHidden);
+      sinon.assert.calledOnce(childWillHide);
+      sinon.assert.calledOnce(parentOnDetach);
+      sinon.assert.calledOnce(parentWasHidden);
+      sinon.assert.calledOnce(parentWillHide);
+    });
+
     it('cancels pending updates', async () => {
       const widget = new Widget();
       const performUpdate = sinon.spy(widget, 'performUpdate');

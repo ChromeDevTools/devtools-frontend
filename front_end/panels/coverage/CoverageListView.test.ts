@@ -31,8 +31,7 @@ function makeItem(
 }
 
 describeWithEnvironment('CoverageListView', () => {
-  // Consistently failing, skip while we're fixing it
-  it.skip('[crbug.com/450209400] basic rendering', async () => {
+  it('basic rendering', async () => {
     const view = new Coverage.CoverageListView.CoverageListView();
     renderWidgetInVbox(view);
     view.coverageInfo = [
@@ -46,6 +45,7 @@ describeWithEnvironment('CoverageListView', () => {
           50),
     ];
     await view.updateComplete;
+    view.focus();
 
     await assertScreenshot('coverage/basic.png');
   });

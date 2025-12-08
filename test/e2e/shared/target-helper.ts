@@ -16,7 +16,11 @@ export class InspectedPage extends PageWrapper {
     await this.page.goto(url, options);
   }
 
-  async goToHtml(html: string) {
+  async goToHtml(unparsedHtml: string) {
+    let html = unparsedHtml;
+    if (!html.trim().startsWith('<!DOCTYPE html>')) {
+      html = `<!DOCTYPE html>${html}`;
+    }
     return await this.goTo(`data:text/html;charset=utf-8,${encodeURIComponent(html)}`);
   }
 

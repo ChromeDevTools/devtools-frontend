@@ -40,7 +40,7 @@ export interface Message {
   params?: MessageParams|null;
 }
 
-interface EventMessage extends Message {
+export interface EventMessage extends Message {
   method: QualifiedName;
   params?: MessageParams|null;
 }

@@ -33,11 +33,14 @@ devtools_entrypoint("bundle") {
   visibility = [ "*" ]
 }
 
-ts_library("unittests") {
+devtools_foundation_module("unittests") {
   testonly = true
 
-  # TODO(crbug.com/451502260): Add tests for CDPConnection implementation.
-  sources = [ "Dummy.test.ts" ]
+  sources = [ "InspectorBackend.test.ts" ]
 
-  deps = [ ":bundle" ]
+  deps = [
+    ":bundle",
+    "../../generated",
+    "../../testing",
+  ]
 }

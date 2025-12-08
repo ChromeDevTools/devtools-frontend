@@ -4,7 +4,7 @@
 
 import type * as Common from '../../core/common/common.js';
 import type * as SDK from '../../core/sdk/sdk.js';
-import * as Annotations from '../../ui/components/annotations/annotations.js';
+import * as Annotations from '../../models/annotations/annotations.js';
 
 import {Annotation} from './Annotation.js';
 

@@ -68,6 +68,7 @@ devtools_ui_module("network") {
     "../../core/platform:bundle",
     "../../core/root:bundle",
     "../../core/sdk:bundle",
+    "../../models/annotations:bundle",
     "../../models/bindings:bundle",
     "../../models/har:bundle",
     "../../models/issues_manager:bundle",

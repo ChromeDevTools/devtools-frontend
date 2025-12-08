@@ -4054,6 +4054,7 @@ export const knownContextValues = new Set([
     'translate',
     'transport',
     'tree',
+    'trigger-scope',
     'tritanopia',
     'trust-tokens',
     'trusted-type-violation',

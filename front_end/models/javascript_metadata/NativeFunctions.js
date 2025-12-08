@@ -7144,6 +7144,10 @@ export const NativeFunctions = [
         signatures: [["type", "eventInit"]]
     },
     {
+        name: "addHandler",
+        signatures: [["handler"]]
+    },
+    {
         name: "updateCurrentEntry",
         signatures: [["options"]]
     },

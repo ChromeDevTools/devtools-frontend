@@ -932,6 +932,9 @@ export const generatedPropertyValues: {
     "transition-timing-function": {
         values: string[];
     };
+    "trigger-scope": {
+        values: string[];
+    };
     "unicode-bidi": {
         values: string[];
     };

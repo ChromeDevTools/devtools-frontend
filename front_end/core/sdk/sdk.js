@@ -819,6 +819,7 @@ var generatedProperties = [
       "transition-property",
       "transition-timing-function",
       "translate",
+      "trigger-scope",
       "types",
       "unicode-range",
       "user-select",
@@ -4715,6 +4716,13 @@ var generatedProperties = [
     "name": "translate"
   },
   {
+    "keywords": [
+      "none",
+      "all"
+    ],
+    "name": "trigger-scope"
+  },
+  {
     "name": "types"
   },
   {
@@ -7091,6 +7099,12 @@ var generatedPropertyValues = {
       "jump-start",
       "step-start",
       "step-end"
+    ]
+  },
+  "trigger-scope": {
+    "values": [
+      "none",
+      "all"
     ]
   },
   "unicode-bidi": {

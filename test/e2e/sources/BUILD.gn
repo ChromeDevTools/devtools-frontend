@@ -18,6 +18,7 @@ ts_e2e_library("sources") {
     "can-show-multiple-workers.test.ts",
     "can-show-wasm-scopes.test.ts",
     "color-swatch.test.ts",
+    "continue-to-location-markers.test.ts",
     "debug-raw-wasm.test.ts",
     "debugger-sidebar.test.ts",
     "eval.test.ts",

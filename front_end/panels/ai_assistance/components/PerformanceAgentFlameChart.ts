@@ -11,8 +11,8 @@ const {html} = Lit;
 
 export interface PerformanceAgentFlameChartData {
   parsedTrace: Trace.TraceModel.ParsedTrace|null;
-  start: number;
-  end: number;
+  start: Trace.Types.Timing.Micro;
+  end: Trace.Types.Timing.Micro;
 }
 
 export class PerformanceAgentFlameChart extends HTMLElement implements PerfUI.FlameChart.FlameChartDelegate {
@@ -30,6 +30,8 @@ export class PerformanceAgentFlameChart extends HTMLElement implements PerfUI.Fl
     this.#flameChart = new PerfUI.FlameChart.FlameChart(this.#dataProvider, this);
     this.#flameChart.markAsRoot();
     this.#flameChart.show(this.#flameChartContainer);
+    const observer = new ResizeObserver(this.#onResize.bind(this));
+    observer.observe(this.#flameChartContainer);
   }
 
   set data(data: PerformanceAgentFlameChartData) {
@@ -59,13 +61,18 @@ export class PerformanceAgentFlameChart extends HTMLElement implements PerfUI.Fl
     }
 
     const bounds = Trace.Helpers.Timing.traceWindowMicroSecondsToMilliSeconds({
-      min: Trace.Types.Timing.Micro(start),
-      max: Trace.Types.Timing.Micro(end),
+      min: start,
+      max: end,
       range: Trace.Types.Timing.Micro(end - start),
     });
     this.#flameChart.setWindowTimes(bounds.min, bounds.max);
-    this.#flameChart.setSize(600, 200);
+    this.#flameChart.setSize(600, 300);
     this.#render();
+  }
+
+  #onResize(entries: ResizeObserverEntry[]): void {
+    const container = entries[0];
+    this.#flameChart.setSize(container.contentRect.width, 600);
   }
 
   #render(): void {
@@ -80,8 +87,8 @@ export class PerformanceAgentFlameChart extends HTMLElement implements PerfUI.Fl
 
           .container {
             display: flex;
-            width: 600px;
-            height: 200px;
+            width: 100%;
+            height: 300px;
           }
 
           .flex-auto {
@@ -100,7 +107,7 @@ export class PerformanceAgentFlameChart extends HTMLElement implements PerfUI.Fl
     Lit.render(output, this.#shadow, {host: this});
 
     this.#flameChart.update();
-    this.#flameChart.setSize(600, 200);
+    this.#flameChart.setSize(600, 300);
   }
   windowChanged(startTime: number, endTime: number, animate: boolean): void {
     this.#flameChart.setWindowTimes(startTime, endTime, animate);

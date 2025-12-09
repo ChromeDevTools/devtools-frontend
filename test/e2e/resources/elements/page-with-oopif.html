@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<body>
+    <div>
+    </div>
+    <script>
+        const iframe = document.createElement('iframe');
+        iframe.src = `https://devtools.oopif.test:${document.location.port}/test/e2e/resources/empty.html`;
+        document.body.querySelector('div').append(iframe);
+    </script>
+</body>

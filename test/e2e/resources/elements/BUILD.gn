@@ -60,6 +60,7 @@ copy_to_gen("elements") {
     "low-contrast.html",
     "multiple-constructed-stylesheets.html",
     "page-error.html",
+    "page-with-oopif.html",
     "quirks-mode-iframes.html",
     "quirks-mode.html",
     "select-element-with-issues.html",

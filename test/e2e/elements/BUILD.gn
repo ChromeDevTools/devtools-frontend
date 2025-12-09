@@ -26,6 +26,7 @@ ts_e2e_library("elements") {
     "grid-lanes-editor.test.ts",
     "layout-pane.test.ts",
     "oopif-elements.test.ts",
+    "oopif-navigation.test.ts",
     "prerender.test.ts",
     "pseudo-states.test.ts",
     "reveal-correct-node.test.ts",

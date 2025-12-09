@@ -4531,7 +4531,6 @@ export namespace DOM {
     Picker = 'picker',
     PermissionIcon = 'permission-icon',
     OverscrollAreaParent = 'overscroll-area-parent',
-    OverscrollClientArea = 'overscroll-client-area',
   }
 
   /**

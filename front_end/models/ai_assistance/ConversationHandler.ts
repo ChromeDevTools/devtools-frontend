@@ -213,7 +213,7 @@ export class ConversationHandler extends Common.ObjectWrapper.ObjectWrapper<Even
     const conversation = new AiConversation(
         conversationType,
         [],
-        aiAgent.id,
+        aiAgent.sessionId,
         /* isReadOnly */ true,
         this.#aidaClient,
         undefined,

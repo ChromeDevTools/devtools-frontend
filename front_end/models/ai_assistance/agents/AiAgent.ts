@@ -125,6 +125,7 @@ export interface RequestOptions {
 export interface AgentOptions {
   aidaClient: Host.AidaClient.AidaClient;
   serverSideLoggingEnabled?: boolean;
+  sessionId?: string;
   confirmSideEffectForTest?: typeof Promise.withResolvers;
 }
 
@@ -270,7 +271,7 @@ export abstract class AiAgent<T> {
   abstract readonly userTier: string|undefined;
   abstract handleContextDetails(select: ConversationContext<T>|null): AsyncGenerator<ContextResponse, void, void>;
 
-  readonly #sessionId: string = crypto.randomUUID();
+  readonly #sessionId: string;
   readonly #aidaClient: Host.AidaClient.AidaClient;
   readonly #serverSideLoggingEnabled: boolean;
   readonly confirmSideEffect: typeof Promise.withResolvers;
@@ -297,7 +298,6 @@ export abstract class AiAgent<T> {
    */
   protected context?: ConversationContext<T>;
 
-  #id: string = crypto.randomUUID();
   #history: Host.AidaClient.Content[] = [];
 
   #facts: Set<Host.AidaClient.RequestFact> = new Set<Host.AidaClient.RequestFact>();
@@ -305,6 +305,7 @@ export abstract class AiAgent<T> {
   constructor(opts: AgentOptions) {
     this.#aidaClient = opts.aidaClient;
     this.#serverSideLoggingEnabled = opts.serverSideLoggingEnabled ?? false;
+    this.#sessionId = opts.sessionId ?? crypto.randomUUID();
     this.confirmSideEffect = opts.confirmSideEffectForTest ?? (() => Promise.withResolvers());
   }
 
@@ -393,8 +394,8 @@ export abstract class AiAgent<T> {
     return request;
   }
 
-  get id(): string {
-    return this.#id;
+  get sessionId(): string {
+    return this.#sessionId;
   }
 
   get origin(): string|undefined {

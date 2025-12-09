@@ -14,7 +14,7 @@ import {
   takeHeapSnapshot,
   waitForNonEmptyHeapSnapshotData,
 } from '../helpers/memory-helpers.js';
-import {navigateToPerformanceTab} from '../helpers/performance-helpers.js';
+import {increaseTimeoutForPerfPanel, navigateToPerformanceTab} from '../helpers/performance-helpers.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 import type {InspectedPage} from '../shared/target-helper.js';
 
@@ -56,19 +56,25 @@ async function setCruxRawResponse(path: string, devToolsPage: DevToolsPage, insp
 
 describe('The Performance panel landing page', function() {
   setup({dockingMode: 'undocked', panel: 'timeline'});
-  if (this.timeout() > 0) {
-    this.timeout(20000);
-  }
+  increaseTimeoutForPerfPanel(this);
 
   async function doubleRaf(inspectedPage: InspectedPage): Promise<void> {
-    await inspectedPage.evaluate(() => new Promise(r => requestAnimationFrame(r)));
-    await inspectedPage.evaluate(() => new Promise(r => requestAnimationFrame(r)));
+    await inspectedPage.raf();
+    await inspectedPage.raf();
   }
 
   async function prepare(devToolsPage: DevToolsPage, inspectedPage: InspectedPage): Promise<void> {
     await devToolsPage.reloadWithParams({panel: 'timeline'});
     await inspectedPage.bringToFront();
     await doubleRaf(inspectedPage);  // Without this, even an empty test can fail subsequent tests. Dunno why.
+  }
+
+  async function makeTwoLongInteractions(inspectedPage: InspectedPage) {
+    await inspectedPage.page.click('#long-interaction');
+    await doubleRaf(inspectedPage);
+    await doubleRaf(inspectedPage);
+    await inspectedPage.page.click('#long-interaction');
+    await doubleRaf(inspectedPage);
   }
 
   it('displays live metrics', async ({devToolsPage, inspectedPage}) => {
@@ -79,9 +85,7 @@ describe('The Performance panel landing page', function() {
       const waitForLCP = await installLCPListener(inspectedPageSession);
       await inspectedPage.goToResource('performance/fake-website.html');
       await waitForLCP();
-      await inspectedPage.page.click('#long-interaction');
-      await inspectedPage.page.click('#long-interaction');
-      await doubleRaf(inspectedPage);
+      await makeTwoLongInteractions(inspectedPage);
       await devToolsPage.bringToFront();
 
       const [lcpValueElem, clsValueElem, inpValueElem] = await devToolsPage.waitForMany(READY_LOCAL_METRIC_SELECTOR, 3);
@@ -122,9 +126,7 @@ describe('The Performance panel landing page', function() {
       const waitForLCP = await installLCPListener(inspectedPageSession);
       await inspectedPage.goToResource('performance/fake-website.html');
       await waitForLCP();
-      await inspectedPage.page.click('#long-interaction');
-      await inspectedPage.page.click('#long-interaction');
-      await doubleRaf(inspectedPage);
+      await makeTwoLongInteractions(inspectedPage);
 
       await inspectedPageSession.send('Runtime.enable');
       const executionContextPromise = new Promise(r => inspectedPageSession.once('Runtime.executionContextCreated', r));
@@ -167,9 +169,7 @@ describe('The Performance panel landing page', function() {
       await inspectedPage.goToResource('performance/fake-website.html');
       await waitForLCP1();
 
-      await inspectedPage.page.click('#long-interaction');
-      await inspectedPage.page.click('#long-interaction');
-      await doubleRaf(inspectedPage);
+      await makeTwoLongInteractions(inspectedPage);
 
       await devToolsPage.bringToFront();
 
@@ -424,8 +424,7 @@ describe('The Performance panel landing page', function() {
 
       await inspectedPage.page.click('#long-click');
 
-      await inspectedPage.evaluate(() => new Promise(r => requestAnimationFrame(r)));
-      await inspectedPage.evaluate(() => new Promise(r => requestAnimationFrame(r)));
+      await doubleRaf(inspectedPage);
 
       await devToolsPage.bringToFront();
 
@@ -460,8 +459,7 @@ describe('The Performance panel landing page', function() {
       // be detected by the live metrics model in DevTools.
       //
       // If any unnecessary JS references to the node get created they will be created in this time period.
-      await inspectedPage.evaluate(() => new Promise(requestAnimationFrame));
-      await inspectedPage.evaluate(() => new Promise(requestAnimationFrame));
+      await doubleRaf(inspectedPage);
       await devToolsPage.bringToFront();
       await devToolsPage.waitFor(INTERACTION_SELECTOR);
       await inspectedPage.bringToFront();

@@ -2000,7 +2000,7 @@ export class ElementsTreeOutline extends
       this.insertChildElement(treeElement, node, treeElement.childCount(), true);
     }
 
-    if (node instanceof SDK.DOMModel.DOMDocument) {
+    if (node instanceof SDK.DOMModel.DOMDocument && !this.isXMLMimeType) {
       let topLayerContainer = this.#topLayerContainerByDocument.get(node);
       if (!topLayerContainer) {
         topLayerContainer = new TopLayerContainer(this, node);

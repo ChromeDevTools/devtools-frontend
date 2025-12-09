@@ -36,9 +36,12 @@ export async function _connectToBrowser(options) {
  * endpoint url the transport is connected to.
  */
 async function getConnectionTransport(options) {
-    const { browserWSEndpoint, browserURL, transport, headers = {} } = options;
-    assert(Number(!!browserWSEndpoint) + Number(!!browserURL) + Number(!!transport) ===
-        1, 'Exactly one of browserWSEndpoint, browserURL or transport must be passed to puppeteer.connect');
+    const { browserWSEndpoint, browserURL, channel, transport, headers = {}, } = options;
+    assert(Number(!!browserWSEndpoint) +
+        Number(!!browserURL) +
+        Number(!!transport) +
+        Number(!!channel) ===
+        1, 'Exactly one of browserWSEndpoint, browserURL, transport or channel must be passed to puppeteer.connect');
     if (transport) {
         return { connectionTransport: transport, endpointUrl: '' };
     }
@@ -70,12 +73,23 @@ async function getConnectionTransport(options) {
         const userDataDir = resolveDefaultUserDataDir(Browser.CHROME, platform, convertPuppeteerChannelToBrowsersChannel(options.channel));
         const portPath = join(userDataDir, 'DevToolsActivePort');
         try {
-            const portRawValue = await environment.value.fs.promises.readFile(portPath, 'ascii');
-            const port = parseInt(portRawValue, 10);
-            if (isNaN(port) || port <= 0 || port > 65535) {
-                throw new Error(`Invalid port '${portRawValue}' found`);
+            const fileContent = await environment.value.fs.promises.readFile(portPath, 'ascii');
+            const [rawPort, rawPath] = fileContent
+                .split('\n')
+                .map(line => {
+                return line.trim();
+            })
+                .filter(line => {
+                return !!line;
+            });
+            if (!rawPort || !rawPath) {
+                throw new Error(`Invalid DevToolsActivePort '${fileContent}' found`);
             }
-            const browserWSEndpoint = `ws://localhost:${port}`;
+            const port = parseInt(rawPort, 10);
+            if (isNaN(port) || port <= 0 || port > 65535) {
+                throw new Error(`Invalid port '${rawPort}' found`);
+            }
+            const browserWSEndpoint = `ws://localhost:${port}${rawPath}`;
             const WebSocketClass = await getWebSocketTransportClass();
             const connectionTransport = await WebSocketClass.create(browserWSEndpoint, headers);
             return {

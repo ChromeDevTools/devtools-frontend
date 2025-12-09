@@ -52,7 +52,7 @@ export class ArtifactsManager extends EventTarget {
     super();
   }
 
-  get artifacts(): readonly Artifact[] {
+  get artifacts(): Artifact[] {
     return this.#artifacts;
   }
 

@@ -254,7 +254,6 @@ export abstract class AffectedResourcesView extends UI.TreeOutline.TreeElement {
     sourceCodeLocation.classList.add('affected-source-location');
     if (sourceLocation) {
       const maxLengthForDisplayedURLs = 40;  // Same as console messages.
-      // TODO(crbug.com/1108503): Add some mechanism to be able to add telemetry to this element.
       const linkifier = new Components.Linkifier.Linkifier(maxLengthForDisplayedURLs);
       const sourceAnchor = linkifier.linkifyScriptLocation(
           target || null, sourceLocation.scriptId || null, sourceLocation.url as Platform.DevToolsPath.UrlString,

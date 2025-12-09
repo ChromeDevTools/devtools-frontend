@@ -1230,7 +1230,7 @@ var ConsoleInsight = class _ConsoleInsight extends UI.Widget.Widget {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightRatedNegative);
     }
     const disallowLogging = Root.Runtime.hostConfig.aidaAvailability?.disallowLogging ?? true;
-    void this.#aidaClient.registerClientEvent({
+    return this.#aidaClient.registerClientEvent({
       corresponding_aida_rpc_global_id: this.#state.metadata.rpcGlobalId,
       disable_user_content_logging: disallowLogging,
       do_conversation_client_event: {

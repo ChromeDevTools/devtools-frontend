@@ -1,4 +1,3 @@
-import './Table.js';
 import '../../../../ui/components/linkifier/linkifier.js';
 import type { SlowCSSSelectorInsightModel } from '../../../../models/trace/insights/SlowCSSSelector.js';
 import * as Lit from '../../../../ui/lit/lit.js';

@@ -138,6 +138,10 @@ export class SecurityPanelSidebar extends UI.Widget.VBox {
         });
         this.showLastSelectedElement();
     }
+    // Used in web tests
+    elementsByOrigin() {
+        return this.#elementsByOrigin;
+    }
     showLastSelectedElement() {
         if (this.#cookieControlsTreeElement &&
             this.#securitySidebarLastItemSetting.get() === this.#cookieControlsTreeElement.elemId) {

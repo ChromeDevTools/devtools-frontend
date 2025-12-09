@@ -10,6 +10,7 @@ export declare class SecurityPanelSidebar extends UI.Widget.VBox {
     securityOverviewElement: OriginTreeElement;
     readonly cookieReportTreeElement: CookieReportTreeElement | undefined;
     constructor(element?: HTMLElement);
+    elementsByOrigin(): Map<string, OriginTreeElement>;
     showLastSelectedElement(): void;
     toggleOriginsList(hidden: boolean): void;
     addOrigin(origin: Platform.DevToolsPath.UrlString, securityState: Protocol.Security.SecurityState): void;

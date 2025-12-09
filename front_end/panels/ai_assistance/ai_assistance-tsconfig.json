@@ -38,6 +38,7 @@
     "../../../../../../front_end/panels/ai_assistance/AiAssistancePanel.ts",
     "../../../../../../front_end/panels/ai_assistance/PatchWidget.ts",
     "../../../../../../front_end/panels/ai_assistance/SelectWorkspaceDialog.ts",
+    "../../../../../../front_end/panels/ai_assistance/components/ArtifactsViewer.ts",
     "../../../../../../front_end/panels/ai_assistance/components/ChatView.ts",
     "../../../../../../front_end/panels/ai_assistance/components/CollapsibleAssistanceContentWidget.ts",
     "../../../../../../front_end/panels/ai_assistance/components/DisabledWidget.ts",
@@ -68,6 +69,9 @@
     },
     {
       "path": "../../models/ai_assistance/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../models/annotations/bundle-tsconfig.json"
     },
     {
       "path": "../../models/geometry/bundle-tsconfig.json"

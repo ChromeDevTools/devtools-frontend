@@ -32,9 +32,11 @@ export interface ViewInput {
     showGridLanesAdorner: boolean;
     showMediaAdorner: boolean;
     showPopoverAdorner: boolean;
+    showTopLayerAdorner: boolean;
     isSubgrid: boolean;
     adorners?: Set<Adorners.Adorner.Adorner>;
     nodeInfo?: DocumentFragment;
+    topLayerIndex: number;
     onGutterClick: (e: Event) => void;
     onAdornerAdded: (adorner: Adorners.Adorner.Adorner) => void;
     onAdornerRemoved: (adorner: Adorners.Adorner.Adorner) => void;
@@ -43,6 +45,7 @@ export interface ViewInput {
     onGridAdornerClick: (e: Event) => void;
     onMediaAdornerClick: (e: Event) => void;
     onPopoverAdornerClick: (e: Event) => void;
+    onTopLayerAdornerClick: (e: Event) => void;
 }
 export interface ViewOutput {
     gutterContainer?: HTMLElement;

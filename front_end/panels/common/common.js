@@ -595,10 +595,10 @@ var AiCodeGenerationTeaser = class extends UI3.Widget.Widget {
 };
 
 // gen/front_end/panels/common/AnnotationManager.js
-import * as Annotations2 from "./../../ui/components/annotations/annotations.js";
+import * as Annotations2 from "./../../models/annotations/annotations.js";
 
 // gen/front_end/panels/common/Annotation.js
-import * as Annotations from "./../../ui/components/annotations/annotations.js";
+import * as Annotations from "./../../models/annotations/annotations.js";
 import * as UI4 from "./../../ui/legacy/legacy.js";
 import * as ThemeSupport from "./../../ui/legacy/theme_support/theme_support.js";
 import { html as html4, nothing as nothing2, render as render4 } from "./../../ui/lit/lit.js";
@@ -2114,6 +2114,7 @@ var DEFAULT_VIEW6 = (input, output, target) => {
     output.iframe = element;
   })}
     src=${input.src}
+    allow="language-model; summarizer; translator; language-detector; writer; rewriter; proofreader; clipboard-write; autoplay"
     class=${input.className}
     @load=${input.onLoad}></iframe>`, target);
 };

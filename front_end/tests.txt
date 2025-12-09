@@ -38,6 +38,7 @@ core/platform/MimeType.test.js
 core/platform/NumberUtilities.test.js
 core/platform/StringUtilities.test.js
 core/platform/TypedArrayUtilities.test.js
+core/protocol_client/InspectorBackend.test.js
 core/sdk/DebuggerModel.test.js
 core/sdk/PageResourceLoader.test.js
 core/sdk/RuntimeModel.test.js
@@ -78,7 +79,6 @@ core/host/AidaClient.test.js
 core/host/DispatchHttpRequestClient.test.js
 core/host/GdpClient.test.js
 core/i18n/i18nImpl.test.js
-core/protocol_client/Dummy.test.js
 core/root/Runtime.test.js
 core/sdk/AccessibilityModel.test.js
 core/sdk/AnimationModel.test.js
@@ -420,7 +420,6 @@ panels/elements/StylePropertyHighlighter.test.js
 panels/elements/StylePropertyTreeElement.test.js
 panels/elements/StylePropertyUtils.test.js
 panels/elements/StylesSidebarPane.test.js
-panels/elements/TopLayerContainer.test.js
 panels/elements/WebCustomData.test.js
 panels/emulation/AdvancedApp.test.js
 panels/emulation/MediaQueryInspector.test.js

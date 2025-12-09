@@ -225,7 +225,8 @@ export declare class ElementsTreeOutline extends ElementsTreeOutline_base {
     private updateModifiedNode;
     private updateModifiedParentNode;
     populateTreeElement(treeElement: ElementsTreeElement): Promise<void>;
-    createTopLayerContainer(parent: UI.TreeOutline.TreeElement, document: SDK.DOMModel.DOMDocument): Promise<void>;
+    createTopLayerContainer(parent: UI.TreeOutline.TreeElement, document: SDK.DOMModel.DOMDocument): void;
+    revealInTopLayer(node: SDK.DOMModel.DOMNode): void;
     private createElementTreeElement;
     private showChild;
     private visibleChildren;
@@ -236,7 +237,6 @@ export declare class ElementsTreeOutline extends ElementsTreeOutline_base {
     insertChildElement(treeElement: ElementsTreeElement | TopLayerContainer, child: SDK.DOMModel.DOMNode | SDK.DOMModel.AdoptedStyleSheet, index: number, isClosingTag?: boolean): UI.TreeOutline.TreeElement;
     private moveChild;
     private markersChanged;
-    private topLayerElementsChanged;
     private scrollableFlagUpdated;
     private affectedByStartingStylesFlagUpdated;
 }

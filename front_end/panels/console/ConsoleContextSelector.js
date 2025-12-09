@@ -1,13 +1,14 @@
 // Copyright 2015 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as Lit from '../../ui/lit/lit.js';
 import consoleContextSelectorStyles from './consoleContextSelector.css.js';
+const { render, nothing, html } = Lit;
 const UIStrings = {
     /**
      * @description Title of toolbar item in console context selector of the console panel
@@ -166,14 +167,12 @@ export class ConsoleContextSelector {
         }
     }
     createElementForItem(item) {
-        const element = document.createElement('div');
-        const shadowRoot = UI.UIUtils.createShadowRootWithCoreStyles(element, { cssFile: consoleContextSelectorStyles });
-        const title = shadowRoot.createChild('div', 'title');
-        UI.UIUtils.createTextChild(title, Platform.StringUtilities.trimEndWithMaxLength(this.titleFor(item), 100));
-        const subTitle = shadowRoot.createChild('div', 'subtitle');
-        UI.UIUtils.createTextChild(subTitle, this.subtitleFor(item));
-        element.style.paddingLeft = (8 + this.depthFor(item) * 15) + 'px';
-        return element;
+        const consoleContextSelectorElement = new ConsoleContextSelectorElement();
+        consoleContextSelectorElement.title = this.titleFor(item);
+        consoleContextSelectorElement.subtitle = this.subtitleFor(item);
+        consoleContextSelectorElement.itemDepth = this.depthFor(item);
+        consoleContextSelectorElement.markAsRoot();
+        return consoleContextSelectorElement.contentElement;
     }
     subtitleFor(executionContext) {
         const target = executionContext.target();
@@ -239,6 +238,53 @@ export class ConsoleContextSelector {
                 this.dropDown.refreshItem(executionContext);
             }
         }
+    }
+}
+const DEFAULT_VIEW = (input, _output, target) => {
+    if (!input.title || !input.subtitle) {
+        render(nothing, target);
+        return;
+    }
+    const paddingLeft = input.itemDepth ? (8 + input.itemDepth * 15) + 'px' : undefined;
+    // clang-format off
+    render(html `
+      <style>${consoleContextSelectorStyles}</style>
+      <div class="console-context-selector-element" style="padding-left: ${paddingLeft};">
+        <div class="title">${Platform.StringUtilities.trimEndWithMaxLength(input.title, 100)}</div>
+        <div class="subtitle">${input.subtitle}</div>
+      </div>
+    `, target);
+    // clang-format on
+};
+export class ConsoleContextSelectorElement extends UI.Widget.Widget {
+    #view;
+    #title;
+    #subtitle;
+    #itemDepth;
+    constructor(element, view) {
+        super(element, { useShadowDom: true });
+        this.#view = view ?? DEFAULT_VIEW;
+        this.requestUpdate();
+    }
+    set title(title) {
+        this.#title = title;
+        this.requestUpdate();
+    }
+    set subtitle(subtitle) {
+        this.#subtitle = subtitle;
+        this.requestUpdate();
+    }
+    set itemDepth(itemDepth) {
+        this.#itemDepth = itemDepth;
+        this.requestUpdate();
+    }
+    async performUpdate() {
+        const viewInput = {
+            title: this.#title,
+            subtitle: this.#subtitle,
+            itemDepth: this.#itemDepth,
+        };
+        this.#view(viewInput, undefined, this.contentElement);
     }
 }
 //# sourceMappingURL=ConsoleContextSelector.js.map

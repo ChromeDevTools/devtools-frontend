@@ -67,6 +67,9 @@
       "path": "../../core/platform/bundle-tsconfig.json"
     },
     {
+      "path": "../../models/annotations/bundle-tsconfig.json"
+    },
+    {
       "path": "../../models/badges/bundle-tsconfig.json"
     },
     {

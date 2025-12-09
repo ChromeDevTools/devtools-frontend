@@ -9,6 +9,7 @@ const DEFAULT_VIEW = (input, output, target) => {
     render(html `<iframe
     ${ref(element => { output.iframe = element; })}
     src=${input.src}
+    allow="language-model; summarizer; translator; language-detector; writer; rewriter; proofreader; clipboard-write; autoplay"
     class=${input.className}
     @load=${input.onLoad}></iframe>`, target);
     // clang-format on

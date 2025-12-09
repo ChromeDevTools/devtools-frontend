@@ -1850,14 +1850,11 @@ export class TimelineUIUtils {
         const start = Trace.Types.Timing.Milli(rangeStart);
         const end = Trace.Types.Timing.Milli(rangeEnd);
         const categorySummaryTable = new TimelineComponents.TimelineSummary.CategorySummary();
-        categorySummaryTable.data = {
-            rangeStart: start,
-            rangeEnd: end,
-            total,
-            categories,
-            selectedEvents,
-        };
-        element.append(categorySummaryTable);
+        categorySummaryTable.rangeStart = start;
+        categorySummaryTable.rangeEnd = end;
+        categorySummaryTable.total = total;
+        categorySummaryTable.categories = categories;
+        element.append(categorySummaryTable.contentElement);
         // Add the 3p datagrid
         const treeView = new ThirdPartyTreeView.ThirdPartyTreeElement();
         treeView.treeView = thirdPartyTree;

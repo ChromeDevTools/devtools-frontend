@@ -65,10 +65,8 @@ export default `/*
     padding: var(--sys-size-4) 0 0;
     height: 100%;
 
-    & > devtools-performance-timeline-summary {
-      /* The category summary can't be more narrow than this, so we'll force a horizontal scrollbar
-        Also this style can't be applied on the element's :host without !important, thus its here. */
-      min-width: 192px;
+    >.widget:has(.timeline-summary) {
+      flex-grow: 0;
     }
   }
 

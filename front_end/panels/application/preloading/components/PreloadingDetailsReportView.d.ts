@@ -1,10 +1,10 @@
 import '../../../../ui/components/report_view/report_view.js';
 import '../../../../ui/components/request_link_icon/request_link_icon.js';
+import '../../../../ui/legacy/components/utils/utils.js';
 import type * as Platform from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import * as Protocol from '../../../../generated/protocol.js';
 import * as Logs from '../../../../models/logs/logs.js';
-import * as LegacyWrapper from '../../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as UI from '../../../../ui/legacy/legacy.js';
 export type PreloadingDetailsReportViewData = PreloadingDetailsReportViewDataInternal | null;
 interface PreloadingDetailsReportViewDataInternal {
@@ -13,13 +13,16 @@ interface PreloadingDetailsReportViewDataInternal {
     pageURL: Platform.DevToolsPath.UrlString;
     requestResolver?: Logs.RequestResolver.RequestResolver;
 }
-export declare class PreloadingDetailsReportView extends LegacyWrapper.LegacyWrapper.WrappableComponent<UI.Widget.VBox> {
-    #private;
-    set data(data: PreloadingDetailsReportViewData);
+export interface ViewInput {
+    data: PreloadingDetailsReportViewData;
+    onRevealRuleSet: (ruleSet: Protocol.Preload.RuleSet) => void;
 }
-declare global {
-    interface HTMLElementTagNameMap {
-        'devtools-resources-preloading-details-report-view': PreloadingDetailsReportView;
-    }
+export type ViewOutput = unknown;
+export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
+export declare class PreloadingDetailsReportView extends UI.Widget.VBox {
+    #private;
+    constructor(view?: View);
+    set data(data: PreloadingDetailsReportViewData);
+    performUpdate(): void;
 }
 export {};

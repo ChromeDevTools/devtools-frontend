@@ -1,22 +1,24 @@
-import type * as Trace from '../../../models/trace/trace.js';
+import * as UI from '../../../ui/legacy/legacy.js';
 export interface CategoryData {
     value: number;
     color: string;
     title: string;
 }
-export interface SummaryTableData {
-    total: number;
+interface ViewInput {
     rangeStart: number;
     rangeEnd: number;
+    total: number;
     categories: CategoryData[];
-    selectedEvents: Trace.Types.Events.Event[];
 }
-export declare class CategorySummary extends HTMLElement {
+type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+export declare const CATEGORY_SUMMARY_DEFAULT_VIEW: View;
+export declare class CategorySummary extends UI.Widget.Widget {
     #private;
-    set data(data: SummaryTableData);
+    constructor(view?: View);
+    set total(total: number);
+    set rangeStart(rangeStart: number);
+    set rangeEnd(rangeEnd: number);
+    set categories(categories: CategoryData[]);
+    performUpdate(): void;
 }
-declare global {
-    interface HTMLElementTagNameMap {
-        'devtools-performance-timeline-summary': CategorySummary;
-    }
-}
+export {};

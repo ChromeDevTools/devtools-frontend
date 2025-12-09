@@ -5,6 +5,7 @@
     },
     "files": [
         "./aiAssistancePanel.css.js",
+        "./components/artifactsViewer.css.js",
         "./components/chatView.css.js",
         "./components/collapsibleAssistanceContentWidget.css.js",
         "./components/disabledWidget.css.js",

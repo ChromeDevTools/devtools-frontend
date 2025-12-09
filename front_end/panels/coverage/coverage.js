@@ -887,81 +887,83 @@ var coverageListView_css_default = `/*
  * found in the LICENSE file.
  */
 
-.data-grid {
-  border: none;
-}
-
-.data-grid td .url-outer {
-  width: 100%;
-  display: inline-flex;
-  justify-content: flex-start;
-}
-
-.data-grid td .url-outer .filter-highlight {
-  font-weight: bold;
-}
-
-.data-grid td .url-prefix {
-  overflow-x: hidden;
-  text-overflow: ellipsis;
-}
-
-.data-grid td .url-suffix {
-  flex: none;
-}
-
-.data-grid td .bar {
-  display: inline-block;
-  height: 8px;
-  border: 1px solid transparent;
-}
-
-.data-grid td .bar-unused-size {
-  background-color: var(--app-color-coverage-unused);
-}
-
-.data-grid td .bar-used-size {
-  background-color: var(--app-color-coverage-used);
-}
-
-.data-grid td .percent-value {
-  width: 7ex;
-  display: inline-block;
-  color: var(--sys-color-on-surface-subtle);
-}
-
-@media (forced-colors: active) {
-  .data-grid td .bar-container {
-    forced-color-adjust: none;
+ @scope to (devtools-widget > *) {
+  .data-grid {
+    border: none;
   }
 
-  .data-grid td .bar-unused-size {
-    background-color: ButtonText;
+  .data-grid td .url-outer {
+    width: 100%;
+    display: inline-flex;
+    justify-content: flex-start;
   }
 
-  .data-grid td .bar-used-size {
-    background-color: ButtonFace;
+  .data-grid td .url-outer .filter-highlight {
+    font-weight: bold;
+  }
+
+  .data-grid td .url-prefix {
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .data-grid td .url-suffix {
+    flex: none;
   }
 
   .data-grid td .bar {
-    border-color: ButtonText;
+    display: inline-block;
+    height: 8px;
+    border: 1px solid transparent;
   }
 
-  .data-grid .selected td .bar {
-    border-top-color: HighlightText;
-    border-bottom-color: HighlightText;
+  .data-grid td .bar-unused-size {
+    background-color: var(--app-color-coverage-unused);
   }
 
-  .data-grid .selected td .bar:last-child {
-    border-right-color: HighlightText;
+  .data-grid td .bar-used-size {
+    background-color: var(--app-color-coverage-used);
   }
 
-  .data-grid .selected td .bar:first-child {
-    border-left-color: HighlightText;
+  .data-grid td .percent-value {
+    width: 7ex;
+    display: inline-block;
+    color: var(--sys-color-on-surface-subtle);
   }
 
-  .data-grid:focus tr.selected span.percent-value {
-    color: HighlightText;
+  @media (forced-colors: active) {
+    .data-grid td .bar-container {
+      forced-color-adjust: none;
+    }
+
+    .data-grid td .bar-unused-size {
+      background-color: ButtonText;
+    }
+
+    .data-grid td .bar-used-size {
+      background-color: ButtonFace;
+    }
+
+    .data-grid td .bar {
+      border-color: ButtonText;
+    }
+
+    .data-grid .selected td .bar {
+      border-top-color: HighlightText;
+      border-bottom-color: HighlightText;
+    }
+
+    .data-grid .selected td .bar:last-child {
+      border-right-color: HighlightText;
+    }
+
+    .data-grid .selected td .bar:first-child {
+      border-left-color: HighlightText;
+    }
+
+    .data-grid:focus tr.selected span.percent-value {
+      color: HighlightText;
+    }
   }
 }
 

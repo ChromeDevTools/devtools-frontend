@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-imperative-dom-api */
 /* eslint-disable @devtools/no-lit-render-outside-of-view */
-import * as Annotations from '../../ui/components/annotations/annotations.js';
+import * as Annotations from '../../models/annotations/annotations.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 import { html, nothing, render } from '../../ui/lit/lit.js';

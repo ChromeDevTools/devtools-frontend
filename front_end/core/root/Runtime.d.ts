@@ -121,28 +121,24 @@ export interface HostConfigFreestyler {
     multimodal?: boolean;
     multimodalUploadInput?: boolean;
     functionCalling?: boolean;
-    featureName?: string;
 }
 export interface HostConfigAiAssistanceNetworkAgent {
     modelId: string;
     temperature: number;
     enabled: boolean;
     userTier: string;
-    featureName?: string;
 }
 export interface HostConfigAiAssistancePerformanceAgent {
     modelId: string;
     temperature: number;
     enabled: boolean;
     userTier: string;
-    featureName?: string;
 }
 export interface HostConfigAiAssistanceFileAgent {
     modelId: string;
     temperature: number;
     enabled: boolean;
     userTier: string;
-    featureName?: string;
 }
 export interface HostConfigAiCodeCompletion {
     modelId: string;

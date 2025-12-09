@@ -1,7 +1,7 @@
 // Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import * as Annotations from '../../../ui/components/annotations/annotations.js';
+import * as Annotations from '../../annotations/annotations.js';
 import * as CrUXManager from '../../crux-manager/crux-manager.js';
 import * as Trace from '../../trace/trace.js';
 import { AIQueries } from '../performance/AIQueries.js';

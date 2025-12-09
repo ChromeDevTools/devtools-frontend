@@ -1,8 +1,8 @@
 // Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import * as Common from '../../../core/common/common.js';
-import * as Root from '../../../core/root/root.js';
+import * as Common from '../../core/common/common.js';
+import * as Root from '../../core/root/root.js';
 import { AnnotationType } from './AnnotationType.js';
 export class AnnotationRepository {
     static #instance = null;

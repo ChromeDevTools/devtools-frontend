@@ -46,6 +46,7 @@
   "files": [
     "../../../../../front_end/testing/AiAssistanceHelpers.ts",
     "../../../../../front_end/testing/ConsoleHelpers.ts",
+    "../../../../../front_end/testing/ConsoleInsightHelpers.ts",
     "../../../../../front_end/testing/ContextMenuHelpers.ts",
     "../../../../../front_end/testing/Cookies.ts",
     "../../../../../front_end/testing/DOMHelpers.ts",
@@ -157,7 +158,13 @@
       "path": "../panels/common/bundle-tsconfig.json"
     },
     {
+      "path": "../panels/console/bundle-tsconfig.json"
+    },
+    {
       "path": "../panels/elements/meta-tsconfig.json"
+    },
+    {
+      "path": "../panels/explain/bundle-tsconfig.json"
     },
     {
       "path": "../panels/sensors/meta-tsconfig.json"

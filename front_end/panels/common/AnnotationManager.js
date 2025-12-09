@@ -1,7 +1,7 @@
 // Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import * as Annotations from '../../ui/components/annotations/annotations.js';
+import * as Annotations from '../../models/annotations/annotations.js';
 import { Annotation } from './Annotation.js';
 // This class handles general management of Annotations, the data needed to display them and any panel-specific things
 // that the AnnotationRepository must be free from. It is created on-demand the first time a panel, that wants to show

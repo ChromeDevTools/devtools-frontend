@@ -356,7 +356,11 @@ export class PreloadingAttemptView extends UI.Widget.VBox {
         toolbar.setAttribute('jslog', `${VisualLogging.toolbar()}`);
         this.ruleSetSelector = new PreloadingRuleSetSelector(() => this.render());
         toolbar.appendToolbarItem(this.ruleSetSelector.item());
-        this.preloadingGrid.addEventListener('select', this.onPreloadingGridCellFocused.bind(this));
+        this.preloadingGrid.onSelect = this.onPreloadingGridCellFocused.bind(this);
+        const preloadingGridContainer = document.createElement('div');
+        preloadingGridContainer.className = 'preloading-grid-widget-container';
+        preloadingGridContainer.style = 'height: 100%';
+        this.preloadingGrid.show(preloadingGridContainer, null, true);
         render(html `
         <div class="empty-state">
           <span class="empty-state-header">${i18nString(UIStrings.noPrefetchAttempts)}</span>
@@ -371,7 +375,7 @@ export class PreloadingAttemptView extends UI.Widget.VBox {
         </div>
         <devtools-split-view sidebar-position="second">
           <div slot="main" class="overflow-auto" style="height: 100%">
-            ${this.preloadingGrid}
+            ${preloadingGridContainer}
           </div>
           <div slot="sidebar" class="overflow-auto" style="height: 100%">
             ${this.preloadingDetails}
@@ -429,13 +433,13 @@ export class PreloadingAttemptView extends UI.Widget.VBox {
                 ruleSets,
             };
         });
-        this.preloadingGrid.update({ rows, pageURL: pageURL() });
+        this.preloadingGrid.rows = rows;
+        this.preloadingGrid.pageURL = pageURL();
         this.contentElement.classList.toggle('empty', rows.length === 0);
         this.updatePreloadingDetails();
     }
-    onPreloadingGridCellFocused(event) {
-        const focusedEvent = event;
-        this.focusedPreloadingAttemptId = focusedEvent.detail;
+    onPreloadingGridCellFocused({ rowId }) {
+        this.focusedPreloadingAttemptId = rowId;
         this.render();
     }
     getRuleSetSelectorToolbarItemForTest() {

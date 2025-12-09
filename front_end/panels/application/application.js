@@ -6119,6 +6119,12 @@ var preloadingView_css_default = `/*
   }
 }
 
+devtools-split-view {
+  .preloading-grid-widget-container > .vbox {
+    height: 100%;
+  }
+}
+
 /*# sourceURL=${import.meta.resolve("./preloading/preloadingView.css")} */`;
 
 // gen/front_end/panels/application/preloading/preloadingViewDropDown.css.js
@@ -6444,7 +6450,11 @@ var PreloadingAttemptView = class extends UI9.Widget.VBox {
     toolbar6.setAttribute("jslog", `${VisualLogging6.toolbar()}`);
     this.ruleSetSelector = new PreloadingRuleSetSelector(() => this.render());
     toolbar6.appendToolbarItem(this.ruleSetSelector.item());
-    this.preloadingGrid.addEventListener("select", this.onPreloadingGridCellFocused.bind(this));
+    this.preloadingGrid.onSelect = this.onPreloadingGridCellFocused.bind(this);
+    const preloadingGridContainer = document.createElement("div");
+    preloadingGridContainer.className = "preloading-grid-widget-container";
+    preloadingGridContainer.style = "height: 100%";
+    this.preloadingGrid.show(preloadingGridContainer, null, true);
     render4(html5`
         <div class="empty-state">
           <span class="empty-state-header">${i18nString12(UIStrings12.noPrefetchAttempts)}</span>
@@ -6459,7 +6469,7 @@ var PreloadingAttemptView = class extends UI9.Widget.VBox {
         </div>
         <devtools-split-view sidebar-position="second">
           <div slot="main" class="overflow-auto" style="height: 100%">
-            ${this.preloadingGrid}
+            ${preloadingGridContainer}
           </div>
           <div slot="sidebar" class="overflow-auto" style="height: 100%">
             ${this.preloadingDetails}
@@ -6515,13 +6525,13 @@ var PreloadingAttemptView = class extends UI9.Widget.VBox {
         ruleSets
       };
     });
-    this.preloadingGrid.update({ rows, pageURL: pageURL() });
+    this.preloadingGrid.rows = rows;
+    this.preloadingGrid.pageURL = pageURL();
     this.contentElement.classList.toggle("empty", rows.length === 0);
     this.updatePreloadingDetails();
   }
-  onPreloadingGridCellFocused(event) {
-    const focusedEvent = event;
-    this.focusedPreloadingAttemptId = focusedEvent.detail;
+  onPreloadingGridCellFocused({ rowId }) {
+    this.focusedPreloadingAttemptId = rowId;
     this.render();
   }
   getRuleSetSelectorToolbarItemForTest() {

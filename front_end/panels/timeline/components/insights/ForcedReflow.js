@@ -6,11 +6,13 @@ import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import * as LegacyComponents from '../../../../ui/legacy/components/utils/utils.js';
+import * as UI from '../../../../ui/legacy/legacy.js';
 import * as Lit from '../../../../ui/lit/lit.js';
 import { BaseInsightComponent } from './BaseInsightComponent.js';
-import { createLimitedRows, renderOthersLabel } from './Table.js';
+import { createLimitedRows, renderOthersLabel, Table } from './Table.js';
 const { UIStrings, i18nString, createOverlayForEvents } = Trace.Insights.Models.ForcedReflow;
 const { html, nothing } = Lit;
+const { widgetConfig } = UI.Widget;
 export class ForcedReflow extends BaseInsightComponent {
     internalName = 'forced-reflow';
     hasAskAiSupport() {
@@ -64,29 +66,31 @@ export class ForcedReflow extends BaseInsightComponent {
         return html `
       ${topLevelFunctionCallData ? html `
         <div class="insight-section">
-          <devtools-performance-table
-            .data=${{
-            insight: this,
-            headers: [i18nString(UIStrings.topTimeConsumingFunctionCall), i18nString(UIStrings.totalReflowTime)],
-            rows: [{
-                    values: [
-                        this.#linkifyUrl(topLevelFunctionCallData.topLevelFunctionCall),
-                        time(Trace.Types.Timing.Micro(topLevelFunctionCallData.totalReflowTime)),
-                    ],
-                    overlays: createOverlayForEvents(topLevelFunctionCallData.topLevelFunctionCallEvents, 'INFO'),
-                }],
-        }}>
-          </devtools-performance-table>
+          <devtools-widget .widgetConfig=${widgetConfig(Table, {
+            data: {
+                insight: this,
+                headers: [i18nString(UIStrings.topTimeConsumingFunctionCall), i18nString(UIStrings.totalReflowTime)],
+                rows: [{
+                        values: [
+                            this.#linkifyUrl(topLevelFunctionCallData.topLevelFunctionCall),
+                            time(Trace.Types.Timing.Micro(topLevelFunctionCallData.totalReflowTime)),
+                        ],
+                        overlays: createOverlayForEvents(topLevelFunctionCallData.topLevelFunctionCallEvents, 'INFO'),
+                    }],
+            }
+        })}>
+          </devtools-widget>
         </div>
       ` : nothing}
       <div class="insight-section">
-        <devtools-performance-table
-          .data=${{
-            insight: this,
-            headers: [i18nString(UIStrings.reflowCallFrames)],
-            rows,
-        }}>
-        </devtools-performance-table>
+        <devtools-widget .widgetConfig=${widgetConfig(Table, {
+            data: {
+                insight: this,
+                headers: [i18nString(UIStrings.reflowCallFrames)],
+                rows,
+            }
+        })}>
+        </devtools-widget>
       </div>`;
         // clang-format on
     }

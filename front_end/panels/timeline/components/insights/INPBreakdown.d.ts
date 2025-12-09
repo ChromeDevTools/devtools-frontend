@@ -1,4 +1,3 @@
-import './Table.js';
 import type { INPBreakdownInsightModel } from '../../../../models/trace/insights/INPBreakdown.js';
 import * as Lit from '../../../../ui/lit/lit.js';
 import { BaseInsightComponent } from './BaseInsightComponent.js';

@@ -24,25 +24,29 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "outDir": ".",
-    "rootDir": ".",
+    "rootDir": "../../../../../../front_end/models/annotations",
     "skipLibCheck": true,
     "sourceMap": true,
     "strict": true,
     "target": "ES2023",
-    "tsBuildInfoFile": "devtools_entrypoint-bundle-tsconfig-tsconfig.json.tsbuildinfo",
+    "tsBuildInfoFile": "annotations-tsconfig.json.tsbuildinfo",
     "typeRoots": [],
     "types": [],
     "useUnknownInCatchVariables": false
   },
   "files": [
-    "annotations.prebundle.ts",
-    "../../../../../../../front_end/legacy/legacy-defs.d.ts",
-    "../../../../../../../front_end/global_typings/global_defs.d.ts",
-    "../../../../../../../node_modules/@types/filesystem/index.d.ts"
+    "../../../../../../front_end/models/annotations/AnnotationRepository.ts",
+    "../../../../../../front_end/models/annotations/AnnotationType.ts",
+    "../../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../../node_modules/@types/filesystem/index.d.ts"
   ],
   "references": [
     {
-      "path": "./annotations-tsconfig.json"
+      "path": "../../core/common/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../core/sdk/bundle-tsconfig.json"
     }
   ]
 }

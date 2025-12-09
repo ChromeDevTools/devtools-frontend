@@ -1,4 +1,5 @@
 import type * as Trace from '../../../../models/trace/trace.js';
+import * as UI from '../../../../ui/legacy/legacy.js';
 import * as Lit from '../../../../ui/lit/lit.js';
 import type * as BaseInsightComponent from './BaseInsightComponent.js';
 export declare const i18nString: (id: string, values?: import("../../../../core/i18n/i18nTypes.js").Values | undefined) => import("../../../../core/platform/UIString.js").LocalizedString;
@@ -22,7 +23,7 @@ export interface TableState {
     selectedRowEl: HTMLElement | null;
     selectionIsSticky: boolean;
 }
-export interface TableData {
+interface TableData {
     insight: BaseInsightComponent;
     headers: string[];
     rows: TableDataRow[];
@@ -31,6 +32,10 @@ export interface TableDataRow {
     values: Array<number | string | Lit.LitTemplate>;
     overlays?: Trace.Types.Overlays.Overlay[];
     subRows?: TableDataRow[];
+}
+interface FlattenedTableDataRow {
+    row: TableDataRow;
+    depth: number;
 }
 export declare function renderOthersLabel(numOthers: number): string;
 export interface RowLimitAggregator<T> {
@@ -47,14 +52,20 @@ export interface RowLimitAggregator<T> {
  * the 10th `TableDataRow` would be created by using `aggregator.createAggregatedTableRow` on the 6 items that were not sent through `aggregator.mapToRow`.
  */
 export declare function createLimitedRows<T>(arr: T[], aggregator: RowLimitAggregator<T>, limit?: number): TableDataRow[];
-export declare class Table extends HTMLElement {
-    #private;
-    set data(data: TableData);
-    connectedCallback(): void;
+interface ViewInput {
+    interactive: boolean;
+    headers: string[];
+    flattenedRows: FlattenedTableDataRow[];
+    onHoverRow: (row: TableDataRow, rowEl: HTMLElement) => void;
+    onClickRow: (row: TableDataRow, rowEl: HTMLElement) => void;
+    onMouseLeave: () => void;
 }
-declare global {
-    interface HTMLElementTagNameMap {
-        'devtools-performance-table': Table;
-    }
+type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+export declare const DEFAULT_VIEW: View;
+export declare class Table extends UI.Widget.Widget {
+    #private;
+    constructor(element?: HTMLElement, view?: View);
+    set data(data: TableData);
+    performUpdate(): void;
 }
 export {};

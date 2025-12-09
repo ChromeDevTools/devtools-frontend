@@ -7358,6 +7358,9 @@
   "panels/elements/ElementsTreeElement.ts | removeScrollbars": {
     "message": "Remove scrollbars"
   },
+  "panels/elements/ElementsTreeElement.ts | reveal": {
+    "message": "reveal"
+  },
   "panels/elements/ElementsTreeElement.ts | scrollIntoView": {
     "message": "Scroll into view"
   },
@@ -7648,9 +7651,6 @@
   },
   "panels/elements/StylesSidebarPane.ts | visibleSelectors": {
     "message": "{n, plural, =1 {# visible selector listed below} other {# visible selectors listed below}}"
-  },
-  "panels/elements/TopLayerContainer.ts | reveal": {
-    "message": "reveal"
   },
   "panels/emulation/DeviceModeToolbar.ts | addDevicePixelRatio": {
     "message": "Add device pixel ratio"

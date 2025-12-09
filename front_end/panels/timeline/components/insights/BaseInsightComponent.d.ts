@@ -11,7 +11,7 @@ interface ViewInput {
     model: InsightModel;
     selected: boolean;
     isAIAssistanceContext: boolean;
-    canShowAskAI: boolean;
+    showAskAI: boolean;
     estimatedSavingsString: string | null;
     estimatedSavingsAriaLabel: string | null;
     renderContent: () => Lit.LitTemplate;
@@ -34,7 +34,6 @@ export declare abstract class BaseInsightComponent<T extends InsightModel> exten
     protected data: BaseInsightData;
     readonly sharedTableState: TableState;
     protected hasAskAiSupport(): boolean;
-    wasShown(): void;
     set isAIAssistanceContext(isAIAssistanceContext: boolean);
     set selected(selected: boolean);
     get selected(): boolean;
@@ -43,8 +42,8 @@ export declare abstract class BaseInsightComponent<T extends InsightModel> exten
     set insightSetKey(insightSetKey: string | null);
     get bounds(): Trace.Types.Timing.TraceWindowMicro | null;
     set bounds(bounds: Trace.Types.Timing.TraceWindowMicro | null);
-    set agentFocus(agentFocus: AIAssistance.AIContext.AgentFocus);
-    set fieldMetrics(fieldMetrics: Trace.Insights.Common.CrUXFieldMetricResults);
+    set agentFocus(agentFocus: AIAssistance.AIContext.AgentFocus | null);
+    set fieldMetrics(fieldMetrics: Trace.Insights.Common.CrUXFieldMetricResults | null);
     get fieldMetrics(): Trace.Insights.Common.CrUXFieldMetricResults | null;
     getOverlayOptionsForInitialOverlays(): Overlays.Overlays.TimelineOverlaySetOptions;
     /**

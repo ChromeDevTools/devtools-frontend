@@ -743,7 +743,7 @@ var NetworkRequestFormatter_exports = {};
 __export(NetworkRequestFormatter_exports, {
   NetworkRequestFormatter: () => NetworkRequestFormatter
 });
-import * as Annotations from "./../../ui/components/annotations/annotations.js";
+import * as Annotations from "./../annotations/annotations.js";
 import * as Logs from "./../logs/logs.js";
 import * as NetworkTimeCalculator from "./../network_time_calculator/network_time_calculator.js";
 import * as TextUtils3 from "./../text_utils/text_utils.js";
@@ -1747,7 +1747,7 @@ import * as Platform from "./../../core/platform/platform.js";
 import * as Root5 from "./../../core/root/root.js";
 import * as SDK from "./../../core/sdk/sdk.js";
 import * as Tracing from "./../../services/tracing/tracing.js";
-import * as Annotations3 from "./../../ui/components/annotations/annotations.js";
+import * as Annotations3 from "./../annotations/annotations.js";
 import * as SourceMapScopes from "./../source_map_scopes/source_map_scopes.js";
 import * as Trace6 from "./../trace/trace.js";
 
@@ -1764,7 +1764,7 @@ var PerformanceTraceFormatter_exports = {};
 __export(PerformanceTraceFormatter_exports, {
   PerformanceTraceFormatter: () => PerformanceTraceFormatter
 });
-import * as Annotations2 from "./../../ui/components/annotations/annotations.js";
+import * as Annotations2 from "./../annotations/annotations.js";
 import * as CrUXManager from "./../crux-manager/crux-manager.js";
 import * as Trace3 from "./../trace/trace.js";
 
@@ -5231,7 +5231,7 @@ import * as i18n9 from "./../../core/i18n/i18n.js";
 import * as Platform4 from "./../../core/platform/platform.js";
 import * as Root7 from "./../../core/root/root.js";
 import * as SDK5 from "./../../core/sdk/sdk.js";
-import * as Annotations4 from "./../../ui/components/annotations/annotations.js";
+import * as Annotations4 from "./../annotations/annotations.js";
 
 // gen/front_end/models/ai_assistance/ChangeManager.js
 var ChangeManager_exports = {};

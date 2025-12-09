@@ -1,17 +1,19 @@
 // Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import './Table.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import * as Buttons from '../../../../ui/components/buttons/buttons.js';
+import * as UI from '../../../../ui/legacy/legacy.js';
 import * as Lit from '../../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js';
 import * as Utils from '../../utils/utils.js';
 import { BaseInsightComponent } from './BaseInsightComponent.js';
 import { scriptRef } from './ScriptRef.js';
+import { Table } from './Table.js';
 const { UIStrings, i18nString } = Trace.Insights.Models.DuplicatedJavaScript;
 const { html } = Lit;
+const { widgetConfig } = UI.Widget;
 export class DuplicatedJavaScript extends BaseInsightComponent {
     internalName = 'duplicated-javascript';
     #treemapData = null;
@@ -83,13 +85,14 @@ export class DuplicatedJavaScript extends BaseInsightComponent {
         return html `
       ${treemapButton}
       <div class="insight-section">
-        <devtools-performance-table
-          .data=${{
-            insight: this,
-            headers: [i18nString(UIStrings.columnSource), i18nString(UIStrings.columnDuplicatedBytes)],
-            rows,
-        }}>
-        </devtools-performance-table>
+        <devtools-widget .widgetConfig=${widgetConfig(Table, {
+            data: {
+                insight: this,
+                headers: [i18nString(UIStrings.columnSource), i18nString(UIStrings.columnDuplicatedBytes)],
+                rows,
+            }
+        })}>
+        </devtools-widget>
       </div>
     `;
         // clang-format on

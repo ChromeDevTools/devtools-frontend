@@ -91,7 +91,7 @@
       "path": "../../third_party/diff/bundle-tsconfig.json"
     },
     {
-      "path": "../../ui/components/annotations/bundle-tsconfig.json"
+      "path": "../annotations/bundle-tsconfig.json"
     },
     {
       "path": "../bindings/bundle-tsconfig.json"

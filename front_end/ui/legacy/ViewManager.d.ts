@@ -1,6 +1,6 @@
 import './Toolbar.js';
 import * as Common from '../../core/common/common.js';
-import * as Root from '../../core/root/root.js';
+import type * as Root from '../../core/root/root.js';
 import type * as Foundation from '../../foundation/foundation.js';
 import { type ToolbarItem } from './Toolbar.js';
 import type { TabbedViewLocation, View, ViewLocation } from './View.js';

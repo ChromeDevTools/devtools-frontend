@@ -32,4 +32,10 @@ export default `/*
   }
 }
 
+devtools-split-view {
+  .preloading-grid-widget-container > .vbox {
+    height: 100%;
+  }
+}
+
 /*# sourceURL=${import.meta.resolve('./preloading/preloadingView.css')} */`;

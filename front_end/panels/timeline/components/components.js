@@ -8232,9 +8232,11 @@ var AnnotationsView = class extends UI18.Widget.VBox {
 // gen/front_end/panels/timeline/components/TimelineSummary.js
 var TimelineSummary_exports = {};
 __export(TimelineSummary_exports, {
+  CATEGORY_SUMMARY_DEFAULT_VIEW: () => CATEGORY_SUMMARY_DEFAULT_VIEW,
   CategorySummary: () => CategorySummary
 });
 import * as i18n39 from "./../../../core/i18n/i18n.js";
+import * as Buttons10 from "./../../../ui/components/buttons/buttons.js";
 import * as UI19 from "./../../../ui/legacy/legacy.js";
 import * as Lit20 from "./../../../ui/lit/lit.js";
 
@@ -8244,71 +8246,72 @@ var timelineSummary_css_default = `/*
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file.
  */
+@scope to (devtools-widget > *){
+  .timeline-summary {
+    max-height: 100%;
+    overflow: hidden auto;
+    scrollbar-width: thin; /* ~11px wide reserved for gutter */
+    font-size: var(--sys-typescale-body4-size);
+    flex-direction: column;
+    padding: 0 var(--sys-size-6) var(--sys-size-4) var(--sys-size-8) ;
+    /* The category summary can't be more narrow than this, so we'll force a horizontal scrollbar
+    */
+    min-width: 192px;
+  }
 
-:host {
-  max-height: 100%;
-  overflow: hidden auto;
-  scrollbar-width: thin; /* ~11px wide reserved for gutter */
-}
+  .summary-range {
+    font-weight: var(--ref-typeface-weight-medium);
+    height: 24.5px;
+    line-height: 22px;
+  }
 
-.timeline-summary {
-  font-size: var(--sys-typescale-body4-size);
-  flex-direction: column;
-  padding: 0 var(--sys-size-6) var(--sys-size-4) var(--sys-size-8) ;
-}
+  .category-summary {
+    gap: var(--sys-size-4);
+    display: flex;
+    flex-direction: column;
+  }
 
-.summary-range {
-  font-weight: var(--ref-typeface-weight-medium);
-  height: 24.5px;
-  line-height: 22px;
-}
+  .category-row {
+    min-height: 16px;
+    line-height: 16px;
+  }
 
-.category-summary {
-  gap: var(--sys-size-4);
-  display: flex;
-  flex-direction: column;
-}
+  .category-swatch {
+    display: inline-block;
+    width: var(--sys-size-6);
+    height: var(--sys-size-6);
+    margin-right: var(--sys-size-4);
+    top: var(--sys-size-1);
+    position: relative;
+    border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
+  }
 
-.category-row {
-  min-height: 16px;
-  line-height: 16px;
-}
+  .category-name {
+    display: inline;
+    word-break: break-all;
+  }
 
-.category-swatch {
-  display: inline-block;
-  width: var(--sys-size-6);
-  height: var(--sys-size-6);
-  margin-right: var(--sys-size-4);
-  top: var(--sys-size-1);
-  position: relative;
-  border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
-}
+  .category-value {
+    text-align: right;
+    position: relative;
+    float: right;
+    z-index: 0;
+    width: var(--sys-size-19);
+  }
 
-.category-name {
-  display: inline;
-  word-break: break-all;
-}
+  .background-bar-container {
+    position: absolute;
+    inset: 0 0 0 var(--sys-size-3);
+    z-index: -1;
+  }
 
-.category-value {
-  text-align: right;
-  position: relative;
-  float: right;
-  z-index: 0;
-  width: var(--sys-size-19);
-}
-
-.background-bar-container {
-  position: absolute;
-  inset: 0 0 0 var(--sys-size-3);
-  z-index: -1;
-}
-
-.background-bar {
-  width: 100%;
-  float: right;
-  height: var(--sys-size-8);
-  background-color: var(--sys-color-surface-yellow);
-  border-bottom: var(--sys-size-1) solid var(--sys-color-yellow-outline);
+  .background-bar {
+    width: 100%;
+    float: right;
+    height: var(--sys-size-8);
+    background-color: var(--sys-color-surface-yellow);
+    border-bottom: var(--sys-size-1) solid var(--sys-color-yellow-outline);
+  }
 }
 
 /*# sourceURL=${import.meta.resolve("./timelineSummary.css")} */`;
@@ -8329,56 +8332,80 @@ var UIStrings20 = {
 };
 var str_20 = i18n39.i18n.registerUIStrings("panels/timeline/components/TimelineSummary.ts", UIStrings20);
 var i18nString19 = i18n39.i18n.getLocalizedString.bind(void 0, str_20);
-var CategorySummary = class extends HTMLElement {
-  #shadow = UI19.UIUtils.createShadowRootWithCoreStyles(this, { cssFile: timelineSummary_css_default, delegatesFocus: void 0 });
+var CATEGORY_SUMMARY_DEFAULT_VIEW = (input, _output, target) => {
+  render19(html20`
+        <style>${timelineSummary_css_default}</style>
+        <style>@scope to (devtools-widget > *) { ${UI19.inspectorCommonStyles} }</style>
+        <style>@scope to (devtools-widget > *) { ${Buttons10.textButtonStyles} }</style>
+        <div class="timeline-summary">
+            <div class="summary-range">${i18nString19(UIStrings20.rangeSS, { PH1: i18n39.TimeUtilities.millisToString(input.rangeStart), PH2: i18n39.TimeUtilities.millisToString(input.rangeEnd) })}</div>
+            <div class="category-summary">
+                ${input.categories.map((category) => {
+    return html20`
+                        <div class="category-row">
+                        <div class="category-swatch" style="background-color: ${category.color};"></div>
+                        <div class="category-name">${category.title}</div>
+                        <div class="category-value">
+                            ${i18n39.TimeUtilities.preciseMillisToString(category.value)}
+                            <div class="background-bar-container">
+                                <div class="background-bar" style='width: ${(category.value * 100 / input.total).toFixed(1)}%;'></div>
+                            </div>
+                        </div>
+                        </div>`;
+  })}
+                <div class="category-row">
+                    <div class="category-swatch"></div>
+                    <div class="category-name">${i18nString19(UIStrings20.total)}</div>
+                    <div class="category-value">
+                        ${i18n39.TimeUtilities.preciseMillisToString(input.total)}
+                        <div class="background-bar-container">
+                            <div class="background-bar"></div>
+                        </div>
+                    </div>
+                </div>
+              </div>
+        </div>
+        </div>
+
+      </div>`, target);
+};
+var CategorySummary = class extends UI19.Widget.Widget {
+  #view;
   #rangeStart = 0;
   #rangeEnd = 0;
   #total = 0;
   #categories = [];
-  set data(data) {
-    this.#total = data.total;
-    this.#categories = data.categories;
-    this.#rangeStart = data.rangeStart;
-    this.#rangeEnd = data.rangeEnd;
-    this.#render();
+  constructor(view) {
+    super();
+    this.#view = view ?? CATEGORY_SUMMARY_DEFAULT_VIEW;
+    this.requestUpdate();
   }
-  #render() {
-    const output = html20`
-          <div class="timeline-summary">
-              <div class="summary-range">${i18nString19(UIStrings20.rangeSS, { PH1: i18n39.TimeUtilities.millisToString(this.#rangeStart), PH2: i18n39.TimeUtilities.millisToString(this.#rangeEnd) })}</div>
-              <div class="category-summary">
-                  ${this.#categories.map((category) => {
-      return html20`
-                          <div class="category-row">
-                          <div class="category-swatch" style="background-color: ${category.color};"></div>
-                          <div class="category-name">${category.title}</div>
-                          <div class="category-value">
-                              ${i18n39.TimeUtilities.preciseMillisToString(category.value)}
-                              <div class="background-bar-container">
-                                  <div class="background-bar" style='width: ${(category.value * 100 / this.#total).toFixed(1)}%;'></div>
-                              </div>
-                          </div>
-                          </div>`;
-    })}
-                  <div class="category-row">
-                      <div class="category-swatch"></div>
-                      <div class="category-name">${i18nString19(UIStrings20.total)}</div>
-                      <div class="category-value">
-                          ${i18n39.TimeUtilities.preciseMillisToString(this.#total)}
-                          <div class="background-bar-container">
-                              <div class="background-bar"></div>
-                          </div>
-                      </div>
-                  </div>
-                </div>
-          </div>
-          </div>
-
-        </div>`;
-    render19(output, this.#shadow, { host: this });
+  set total(total) {
+    this.#total = total;
+    this.requestUpdate();
+  }
+  set rangeStart(rangeStart) {
+    this.#rangeStart = rangeStart;
+    this.requestUpdate();
+  }
+  set rangeEnd(rangeEnd) {
+    this.#rangeEnd = rangeEnd;
+    this.requestUpdate();
+  }
+  set categories(categories) {
+    this.#categories = categories;
+    this.requestUpdate();
+  }
+  performUpdate() {
+    const viewInput = {
+      rangeStart: this.#rangeStart,
+      rangeEnd: this.#rangeEnd,
+      total: this.#total,
+      categories: this.#categories
+    };
+    this.#view(viewInput, void 0, this.contentElement);
   }
 };
-customElements.define("devtools-performance-timeline-summary", CategorySummary);
 export {
   Breadcrumbs_exports as Breadcrumbs,
   BreadcrumbsUI_exports as BreadcrumbsUI,

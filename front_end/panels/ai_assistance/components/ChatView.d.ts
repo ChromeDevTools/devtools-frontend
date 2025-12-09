@@ -81,6 +81,7 @@ export interface Props {
     inputPlaceholder: Platform.UIString.LocalizedString;
     disclaimerText: Platform.UIString.LocalizedString;
     isTextInputEmpty: boolean;
+    isArtifactsSidebarOpen: boolean;
     uploadImageInputEnabled?: boolean;
     markdownRenderer: MarkdownLitRenderer;
     additionalFloatyContext: UI.Floaty.FloatyContextSelection[];

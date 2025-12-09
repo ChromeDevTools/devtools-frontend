@@ -9,39 +9,41 @@ export default `/*
  * found in the LICENSE file.
  */
 
-:host {
-  padding: 2px 1px 2px 2px;
-  white-space: nowrap;
-  display: flex;
-  flex-direction: column;
-  height: 36px;
-  justify-content: center;
-  overflow-y: auto;
-}
+.widget {
+  .console-context-selector-element{
+    padding: 2px 1px 2px 2px;
+    white-space: nowrap;
+    display: flex;
+    flex-direction: column;
+    height: 36px;
+    justify-content: center;
+    overflow-y: auto;
 
-.title {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  flex-grow: 0;
-}
+    .title {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      flex-grow: 0;
+    }
 
-.badge {
-  pointer-events: none;
-  margin-right: 4px;
-  display: inline-block;
-  height: 15px;
-}
+    .subtitle {
+      color: var(--sys-color-token-subtle);
+      margin-right: 3px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      flex-grow: 0;
+    }
 
-.subtitle {
-  color: var(--sys-color-token-subtle);
-  margin-right: 3px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  flex-grow: 0;
-}
+    .badge {
+      pointer-events: none;
+      margin-right: 4px;
+      display: inline-block;
+      height: 15px;
+    }
+  }
 
-:host(.highlighted) .subtitle {
-  color: inherit;
+  &.highlighted .console-context-selector-element .subtitle {
+    color: inherit;
+  }
 }
 
 /*# sourceURL=${import.meta.resolve('./consoleContextSelector.css')} */`;

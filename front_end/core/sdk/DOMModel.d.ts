@@ -1,5 +1,6 @@
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import * as Protocol from '../../generated/protocol.js';
+import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
 import { CSSModel } from './CSSModel.js';
 import { OverlayModel } from './OverlayModel.js';
@@ -9,7 +10,13 @@ import { SDKModel } from './SDKModel.js';
 import { type Target } from './Target.js';
 /** Keep this list in sync with https://w3c.github.io/aria/#state_prop_def **/
 export declare const ARIA_ATTRIBUTES: Set<string>;
-export declare class DOMNode {
+export declare enum DOMNodeEvents {
+    TOP_LAYER_INDEX_CHANGED = "TopLayerIndexChanged"
+}
+export interface DOMNodeEventTypes {
+    [DOMNodeEvents.TOP_LAYER_INDEX_CHANGED]: void;
+}
+export declare class DOMNode extends Common.ObjectWrapper.ObjectWrapper<DOMNodeEventTypes> {
     #private;
     ownerDocument: DOMDocument | null;
     id: Protocol.DOM.NodeId;
@@ -44,6 +51,8 @@ export declare class DOMNode {
     static create(domModel: DOMModel, doc: DOMDocument | null, isInShadowTree: boolean, payload: Protocol.DOM.Node, retainedNodes?: Set<Protocol.DOM.BackendNodeId>): DOMNode;
     init(doc: DOMDocument | null, isInShadowTree: boolean, payload: Protocol.DOM.Node, retainedNodes?: Set<Protocol.DOM.BackendNodeId>): void;
     private requestChildDocument;
+    setTopLayerIndex(idx: number): void;
+    topLayerIndex(): number;
     isAdFrameNode(): boolean;
     isSVGNode(): boolean;
     isScrollable(): boolean;
@@ -171,7 +180,8 @@ export declare class DOMNodeShortcut {
     nodeType: number;
     nodeName: string;
     deferredNode: DeferredDOMNode;
-    constructor(target: Target, backendNodeId: Protocol.DOM.BackendNodeId, nodeType: number, nodeName: string);
+    childShortcuts: DOMNodeShortcut[];
+    constructor(target: Target, backendNodeId: Protocol.DOM.BackendNodeId, nodeType: number, nodeName: string, childShortcuts?: DOMNodeShortcut[]);
 }
 export declare class DOMDocument extends DOMNode {
     body: DOMNode | null;
@@ -223,7 +233,6 @@ export declare class DOMModel extends SDKModel<EventTypes> {
     adoptedStyleSheetsModified(parentId: Protocol.DOM.NodeId, styleSheets: Protocol.DOM.StyleSheetId[]): void;
     scrollableFlagUpdated(nodeId: Protocol.DOM.NodeId, isScrollable: boolean): void;
     affectedByStartingStylesFlagUpdated(nodeId: Protocol.DOM.NodeId, affectedByStartingStyles: boolean): void;
-    topLayerElementsUpdated(): void;
     pseudoElementRemoved(parentId: Protocol.DOM.NodeId, pseudoElementId: Protocol.DOM.NodeId): void;
     distributedNodesUpdated(insertionPointId: Protocol.DOM.NodeId, distributedNodes: Protocol.DOM.BackendNode[]): void;
     private unbind;
@@ -238,6 +247,7 @@ export declare class DOMModel extends SDKModel<EventTypes> {
     querySelector(nodeId: Protocol.DOM.NodeId, selector: string): Promise<Protocol.DOM.NodeId | null>;
     querySelectorAll(nodeId: Protocol.DOM.NodeId, selector: string): Promise<Protocol.DOM.NodeId[] | null>;
     getTopLayerElements(): Promise<Protocol.DOM.NodeId[] | null>;
+    topLayerElementsUpdated(): void;
     getDetachedDOMNodes(): Promise<Protocol.DOM.DetachedElementInfo[] | null>;
     getElementByRelation(nodeId: Protocol.DOM.NodeId, relation: Protocol.DOM.GetElementByRelationRequestRelation): Promise<Protocol.DOM.NodeId | null>;
     markUndoableState(minorChange?: boolean): void;
@@ -287,7 +297,10 @@ export interface EventTypes {
     [Events.ChildNodeCountUpdated]: DOMNode;
     [Events.DistributedNodesChanged]: DOMNode;
     [Events.MarkersChanged]: DOMNode;
-    [Events.TopLayerElementsChanged]: void;
+    [Events.TopLayerElementsChanged]: {
+        document: DOMDocument;
+        documentShortcuts: DOMNodeShortcut[];
+    };
     [Events.ScrollableFlagUpdated]: {
         node: DOMNode;
     };

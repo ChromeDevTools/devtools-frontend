@@ -38,6 +38,7 @@ core/platform/MimeType.test.js
 core/platform/NumberUtilities.test.js
 core/platform/StringUtilities.test.js
 core/platform/TypedArrayUtilities.test.js
+core/protocol_client/InspectorBackend.test.js
 core/sdk/DebuggerModel.test.js
 core/sdk/PageResourceLoader.test.js
 core/sdk/RuntimeModel.test.js

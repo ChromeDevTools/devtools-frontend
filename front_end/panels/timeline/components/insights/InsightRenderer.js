@@ -52,23 +52,25 @@ export class InsightRenderer {
         let widgetElement = this.#insightWidgetCache.get(model);
         if (!widgetElement) {
             widgetElement = document.createElement('devtools-widget');
-            const componentClass = INSIGHT_NAME_TO_COMPONENT[insightName];
-            const widget = new componentClass(widgetElement);
-            widget.selected = false;
-            widget.parsedTrace = parsedTrace;
-            widget.model = model;
-            widget.bounds = insightSet.bounds;
-            widget.insightSetKey = insightSet.id;
-            Object.assign(widget, options);
-            widgetElement.widgetConfig = widgetConfig(() => {
-                return widget;
-            });
+            widgetElement.classList.add('insight-component-widget');
             this.#insightWidgetCache.set(model, widgetElement);
         }
-        const widget = widgetElement.getWidget();
-        if (widget) {
-            Object.assign(widget, options);
-        }
+        const componentClass = INSIGHT_NAME_TO_COMPONENT[insightName];
+        widgetElement.widgetConfig = widgetConfig(componentClass, {
+            selected: options.selected ?? false,
+            parsedTrace,
+            // The `model` passed in as a parameter is the base type, but since
+            // `componentClass` is the union of every derived insight component, the
+            // `model` for the widget config is the union of every model. That can't be
+            // satisfied, so disable typescript.
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            model: model,
+            bounds: insightSet.bounds,
+            insightSetKey: insightSet.id,
+            agentFocus: options.agentFocus ?? null,
+            fieldMetrics: options.fieldMetrics ?? null,
+            isAIAssistanceContext: options.isAIAssistanceContext ?? false,
+        });
         return widgetElement;
     }
 }

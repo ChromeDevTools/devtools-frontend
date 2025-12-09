@@ -8,71 +8,72 @@ export default `/*
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file.
  */
+@scope to (devtools-widget > *){
+  .timeline-summary {
+    max-height: 100%;
+    overflow: hidden auto;
+    scrollbar-width: thin; /* ~11px wide reserved for gutter */
+    font-size: var(--sys-typescale-body4-size);
+    flex-direction: column;
+    padding: 0 var(--sys-size-6) var(--sys-size-4) var(--sys-size-8) ;
+    /* The category summary can't be more narrow than this, so we'll force a horizontal scrollbar
+    */
+    min-width: 192px;
+  }
 
-:host {
-  max-height: 100%;
-  overflow: hidden auto;
-  scrollbar-width: thin; /* ~11px wide reserved for gutter */
-}
+  .summary-range {
+    font-weight: var(--ref-typeface-weight-medium);
+    height: 24.5px;
+    line-height: 22px;
+  }
 
-.timeline-summary {
-  font-size: var(--sys-typescale-body4-size);
-  flex-direction: column;
-  padding: 0 var(--sys-size-6) var(--sys-size-4) var(--sys-size-8) ;
-}
+  .category-summary {
+    gap: var(--sys-size-4);
+    display: flex;
+    flex-direction: column;
+  }
 
-.summary-range {
-  font-weight: var(--ref-typeface-weight-medium);
-  height: 24.5px;
-  line-height: 22px;
-}
+  .category-row {
+    min-height: 16px;
+    line-height: 16px;
+  }
 
-.category-summary {
-  gap: var(--sys-size-4);
-  display: flex;
-  flex-direction: column;
-}
+  .category-swatch {
+    display: inline-block;
+    width: var(--sys-size-6);
+    height: var(--sys-size-6);
+    margin-right: var(--sys-size-4);
+    top: var(--sys-size-1);
+    position: relative;
+    border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
+  }
 
-.category-row {
-  min-height: 16px;
-  line-height: 16px;
-}
+  .category-name {
+    display: inline;
+    word-break: break-all;
+  }
 
-.category-swatch {
-  display: inline-block;
-  width: var(--sys-size-6);
-  height: var(--sys-size-6);
-  margin-right: var(--sys-size-4);
-  top: var(--sys-size-1);
-  position: relative;
-  border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
-}
+  .category-value {
+    text-align: right;
+    position: relative;
+    float: right;
+    z-index: 0;
+    width: var(--sys-size-19);
+  }
 
-.category-name {
-  display: inline;
-  word-break: break-all;
-}
+  .background-bar-container {
+    position: absolute;
+    inset: 0 0 0 var(--sys-size-3);
+    z-index: -1;
+  }
 
-.category-value {
-  text-align: right;
-  position: relative;
-  float: right;
-  z-index: 0;
-  width: var(--sys-size-19);
-}
-
-.background-bar-container {
-  position: absolute;
-  inset: 0 0 0 var(--sys-size-3);
-  z-index: -1;
-}
-
-.background-bar {
-  width: 100%;
-  float: right;
-  height: var(--sys-size-8);
-  background-color: var(--sys-color-surface-yellow);
-  border-bottom: var(--sys-size-1) solid var(--sys-color-yellow-outline);
+  .background-bar {
+    width: 100%;
+    float: right;
+    height: var(--sys-size-8);
+    background-color: var(--sys-color-surface-yellow);
+    border-bottom: var(--sys-size-1) solid var(--sys-color-yellow-outline);
+  }
 }
 
 /*# sourceURL=${import.meta.resolve('./timelineSummary.css')} */`;

@@ -399,7 +399,7 @@ export class ElementsTreeOutline extends Common.ObjectWrapper.eventMixin(UI.Tree
     treeElementBeingDragged;
     dragOverTreeElement;
     updateModifiedNodesTimeout;
-    #topLayerContainerByParent = new Map();
+    #topLayerContainerByDocument = new WeakMap();
     #issuesManager;
     #popupHelper;
     #nodeElementToIssues = new Map();
@@ -1265,7 +1265,6 @@ export class ElementsTreeOutline extends Common.ObjectWrapper.eventMixin(UI.Tree
         domModel.addEventListener(SDK.DOMModel.Events.DocumentUpdated, this.documentUpdated, this);
         domModel.addEventListener(SDK.DOMModel.Events.ChildNodeCountUpdated, this.childNodeCountUpdated, this);
         domModel.addEventListener(SDK.DOMModel.Events.DistributedNodesChanged, this.distributedNodesChanged, this);
-        domModel.addEventListener(SDK.DOMModel.Events.TopLayerElementsChanged, this.topLayerElementsChanged, this);
         domModel.addEventListener(SDK.DOMModel.Events.ScrollableFlagUpdated, this.scrollableFlagUpdated, this);
         domModel.addEventListener(SDK.DOMModel.Events.AffectedByStartingStylesFlagUpdated, this.affectedByStartingStylesFlagUpdated, this);
         domModel.addEventListener(SDK.DOMModel.Events.AdoptedStyleSheetsModified, this.adoptedStyleSheetsModified, this);
@@ -1280,7 +1279,6 @@ export class ElementsTreeOutline extends Common.ObjectWrapper.eventMixin(UI.Tree
         domModel.removeEventListener(SDK.DOMModel.Events.DocumentUpdated, this.documentUpdated, this);
         domModel.removeEventListener(SDK.DOMModel.Events.ChildNodeCountUpdated, this.childNodeCountUpdated, this);
         domModel.removeEventListener(SDK.DOMModel.Events.DistributedNodesChanged, this.distributedNodesChanged, this);
-        domModel.removeEventListener(SDK.DOMModel.Events.TopLayerElementsChanged, this.topLayerElementsChanged, this);
         domModel.removeEventListener(SDK.DOMModel.Events.ScrollableFlagUpdated, this.scrollableFlagUpdated, this);
         domModel.removeEventListener(SDK.DOMModel.Events.AffectedByStartingStylesFlagUpdated, this.affectedByStartingStylesFlagUpdated, this);
         domModel.removeEventListener(SDK.DOMModel.Events.AdoptedStyleSheetsModified, this.adoptedStyleSheetsModified, this);
@@ -1432,16 +1430,23 @@ export class ElementsTreeOutline extends Common.ObjectWrapper.eventMixin(UI.Tree
             });
         });
     }
-    async createTopLayerContainer(parent, document) {
+    createTopLayerContainer(parent, document) {
         if (!parent.treeOutline || !(parent.treeOutline instanceof ElementsTreeOutline)) {
             return;
         }
         const container = new TopLayerContainer(parent.treeOutline, document);
-        await container.throttledUpdateTopLayerElements();
-        if (container.currentTopLayerDOMNodes.size > 0) {
-            parent.appendChild(container);
+        this.#topLayerContainerByDocument.set(document, container);
+        parent.appendChild(container);
+    }
+    revealInTopLayer(node) {
+        const document = node.ownerDocument;
+        if (!document) {
+            return;
         }
-        this.#topLayerContainerByParent.set(parent, container);
+        const container = this.#topLayerContainerByDocument.get(document);
+        if (container) {
+            container.revealInTopLayer(node);
+        }
     }
     createElementTreeElement(node, isClosingTag) {
         if (node instanceof SDK.DOMModel.AdoptedStyleSheet) {
@@ -1579,9 +1584,6 @@ export class ElementsTreeOutline extends Common.ObjectWrapper.eventMixin(UI.Tree
     insertChildElement(treeElement, child, index, isClosingTag) {
         const newElement = this.createElementTreeElement(child, isClosingTag);
         treeElement.insertChild(newElement, index);
-        if (child instanceof SDK.DOMModel.DOMDocument) {
-            void this.createTopLayerContainer(newElement, child);
-        }
         return newElement;
     }
     moveChild(treeElement, child, targetIndex) {
@@ -1667,6 +1669,14 @@ export class ElementsTreeOutline extends Common.ObjectWrapper.eventMixin(UI.Tree
         if (node.nodeType() === Node.ELEMENT_NODE && !node.pseudoType() && treeElement.isExpandable()) {
             this.insertChildElement(treeElement, node, treeElement.childCount(), true);
         }
+        if (node instanceof SDK.DOMModel.DOMDocument) {
+            let topLayerContainer = this.#topLayerContainerByDocument.get(node);
+            if (!topLayerContainer) {
+                topLayerContainer = new TopLayerContainer(this, node);
+                this.#topLayerContainerByDocument.set(node, topLayerContainer);
+            }
+            treeElement.appendChild(topLayerContainer);
+        }
         this.treeElementsBeingUpdated.delete(treeElement);
     }
     markersChanged(event) {
@@ -1674,15 +1684,6 @@ export class ElementsTreeOutline extends Common.ObjectWrapper.eventMixin(UI.Tree
         const treeElement = this.treeElementByNode.get(node);
         if (treeElement) {
             treeElement.updateDecorations();
-        }
-    }
-    async topLayerElementsChanged() {
-        for (const [parent, container] of this.#topLayerContainerByParent) {
-            await container.throttledUpdateTopLayerElements();
-            if (container.currentTopLayerDOMNodes.size > 0 && container.parent !== parent) {
-                parent.appendChild(container);
-            }
-            container.hidden = container.currentTopLayerDOMNodes.size === 0;
         }
     }
     scrollableFlagUpdated(event) {

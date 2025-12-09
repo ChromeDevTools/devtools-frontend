@@ -9,6 +9,8 @@ interface ToolbarViewInput {
     onExportConversationClick: () => void;
     onHelpClick: () => void;
     onSettingsClick: () => void;
+    onArtifactsSidebarToggle: () => void;
+    artifactsSidebarVisible: boolean;
     isLoading: boolean;
     showChatActions: boolean;
     showActiveConversationActions: boolean;

@@ -1,5 +1,5 @@
-import * as Common from '../../../core/common/common.js';
-import type * as SDK from '../../../core/sdk/sdk.js';
+import * as Common from '../../core/common/common.js';
+import type * as SDK from '../../core/sdk/sdk.js';
 import { AnnotationType } from './AnnotationType.js';
 export interface BaseAnnotationData {
     id: number;

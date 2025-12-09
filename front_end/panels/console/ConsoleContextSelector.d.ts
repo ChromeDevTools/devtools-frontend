@@ -27,3 +27,18 @@ export declare class ConsoleContextSelector implements SDK.TargetManager.SDKMode
     private callFrameSelectedInModel;
     private frameNavigated;
 }
+interface ViewInput {
+    title?: string;
+    subtitle?: string;
+    itemDepth?: number;
+}
+type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+export declare class ConsoleContextSelectorElement extends UI.Widget.Widget {
+    #private;
+    constructor(element?: HTMLElement, view?: View);
+    set title(title: string);
+    set subtitle(subtitle: string);
+    set itemDepth(itemDepth: number);
+    performUpdate(): Promise<void>;
+}
+export {};

@@ -720,7 +720,7 @@ __export(Toolbar_exports, {
 import * as Common13 from "./../../core/common/common.js";
 import * as i18n20 from "./../../core/i18n/i18n.js";
 import * as Platform14 from "./../../core/platform/platform.js";
-import * as Root7 from "./../../core/root/root.js";
+import * as Root6 from "./../../core/root/root.js";
 import * as Buttons6 from "./../components/buttons/buttons.js";
 import * as VisualLogging13 from "./../visual_logging/visual_logging.js";
 import { createIcon as createIcon6 } from "./../kit/kit.js";
@@ -738,7 +738,7 @@ __export(ContextMenu_exports, {
   registerProvider: () => registerProvider
 });
 import * as Host6 from "./../../core/host/host.js";
-import * as Root6 from "./../../core/root/root.js";
+import * as Root5 from "./../../core/root/root.js";
 import * as Buttons5 from "./../components/buttons/buttons.js";
 import { html as html2, render as render3 } from "./../lit/lit.js";
 import * as VisualLogging9 from "./../visual_logging/visual_logging.js";
@@ -1519,7 +1519,7 @@ __export(InspectorView_exports, {
 import * as Common10 from "./../../core/common/common.js";
 import * as Host5 from "./../../core/host/host.js";
 import * as i18n14 from "./../../core/i18n/i18n.js";
-import * as Root5 from "./../../core/root/root.js";
+import * as Root4 from "./../../core/root/root.js";
 import * as SDK2 from "./../../core/sdk/sdk.js";
 import * as Buttons4 from "./../components/buttons/buttons.js";
 import { createIcon as createIcon4 } from "./../kit/kit.js";
@@ -4529,8 +4529,8 @@ __export(TabbedPane_exports, {
 import * as Common8 from "./../../core/common/common.js";
 import * as i18n8 from "./../../core/i18n/i18n.js";
 import * as Platform8 from "./../../core/platform/platform.js";
+import * as Annotations from "./../../models/annotations/annotations.js";
 import * as Geometry3 from "./../../models/geometry/geometry.js";
-import * as Annotations from "./../components/annotations/annotations.js";
 import * as Buttons3 from "./../components/buttons/buttons.js";
 import { render as render2 } from "./../lit/lit.js";
 import * as VisualLogging5 from "./../visual_logging/visual_logging.js";
@@ -6444,7 +6444,6 @@ import * as Common9 from "./../../core/common/common.js";
 import * as Host4 from "./../../core/host/host.js";
 import * as i18n12 from "./../../core/i18n/i18n.js";
 import * as Platform9 from "./../../core/platform/platform.js";
-import * as Root4 from "./../../core/root/root.js";
 import { createIcon as createIcon3 } from "./../kit/kit.js";
 import * as VisualLogging6 from "./../visual_logging/visual_logging.js";
 
@@ -7216,26 +7215,6 @@ var TabbedLocation = class _TabbedLocation extends Location {
   appendTabsToMenu(contextMenu) {
     const views = Array.from(this.views.values());
     views.sort((viewa, viewb) => viewa.title().localeCompare(viewb.title()));
-    const freestylerView = views.find((view) => view.viewId() === "freestyler");
-    if (freestylerView) {
-      const featureName = Root4.Runtime.hostConfig.devToolsFreestyler?.featureName;
-      const promotionId = freestylerView instanceof PreRegisteredView ? freestylerView.featurePromotionId() : void 0;
-      const handler = () => {
-        void this.showView(freestylerView, void 0, true);
-        if (promotionId) {
-          PromotionManager.instance().recordFeatureInteraction(promotionId);
-        }
-      };
-      contextMenu.defaultSection().appendItem(freestylerView.title(), handler, {
-        isPreviewFeature: freestylerView.isPreviewFeature(),
-        jslogContext: freestylerView.viewId(),
-        // Request to show a new badge in the native context menu only if:
-        // 1. The promotion manager agrees that we may show it, or 2. the promotion manager doesn't track this badge.
-        // Note that this is only a request to show the new badge, the back-end will decide whether
-        // or not it will show it depending on the user education service.
-        featureName: !promotionId || PromotionManager.instance().maybeShowPromotion(promotionId) ? featureName : void 0
-      });
-    }
     for (const view of views) {
       const title = view.title();
       if (view.viewId() === "issues-pane") {
@@ -7246,9 +7225,6 @@ var TabbedLocation = class _TabbedLocation extends Location {
           );
           void this.showView(view, void 0, true);
         }, { jslogContext: "issues-pane" });
-        continue;
-      }
-      if (view.viewId() === "freestyler") {
         continue;
       }
       const isPreviewFeature = view.isPreviewFeature();
@@ -7602,7 +7578,7 @@ var InspectorView = class _InspectorView extends VBox {
     setLabel(drawerElement, i18nString7(UIStrings7.drawer));
     this.drawerSplitWidget.installResizer(this.drawerTabbedPane.headerElement());
     this.drawerSplitWidget.setSidebarWidget(this.drawerTabbedPane);
-    if (Root5.Runtime.hostConfig.devToolsFlexibleLayout?.verticalDrawerEnabled) {
+    if (Root4.Runtime.hostConfig.devToolsFlexibleLayout?.verticalDrawerEnabled) {
       this.drawerTabbedPane.rightToolbar().appendToolbarItem(this.#toggleOrientationButton);
     }
     this.drawerTabbedPane.rightToolbar().appendToolbarItem(closeDrawerButton);
@@ -7610,11 +7586,11 @@ var InspectorView = class _InspectorView extends VBox {
       drag: true,
       keydown: "ArrowUp|ArrowLeft|ArrowDown|ArrowRight|Enter|Space"
     })}`);
-    this.tabbedLocation = ViewManager.instance().createTabbedLocation(Host5.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront.bind(Host5.InspectorFrontendHost.InspectorFrontendHostInstance), "panel", true, true, Root5.Runtime.Runtime.queryParam("panel"));
+    this.tabbedLocation = ViewManager.instance().createTabbedLocation(Host5.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront.bind(Host5.InspectorFrontendHost.InspectorFrontendHostInstance), "panel", true, true, Root4.Runtime.Runtime.queryParam("panel"));
     this.tabbedPane = this.tabbedLocation.tabbedPane();
     this.tabbedPane.setMinimumSize(MIN_MAIN_PANEL_WIDTH, 0);
     this.tabbedPane.element.classList.add("main-tabbed-pane");
-    const allocatedSpace = Root5.Runtime.conditions.canDock() ? "69px" : "41px";
+    const allocatedSpace = Root4.Runtime.conditions.canDock() ? "69px" : "41px";
     this.tabbedPane.leftToolbar().style.minWidth = allocatedSpace;
     this.tabbedPane.addEventListener(Events.TabSelected, (event) => this.tabSelected(event.data.tabId), this);
     const selectedTab = this.tabbedPane.selectedTabId;
@@ -7720,7 +7696,7 @@ var InspectorView = class _InspectorView extends VBox {
     this.element.ownerDocument.addEventListener("keydown", this.keyDownBound, false);
     DockController.instance().addEventListener("DockSideChanged", this.#applyDrawerOrientationForDockSide, this);
     this.#applyDrawerOrientationForDockSide();
-    if (Root5.Runtime.hostConfig.devToolsGreenDevUi?.enabled) {
+    if (Root4.Runtime.hostConfig.devToolsGreenDevUi?.enabled) {
       Floaty.instance({
         forceNew: true,
         document: this.element.ownerDocument
@@ -9239,7 +9215,7 @@ var SubMenu = class extends Item {
       return order1 - order2;
     });
     for (const item8 of items) {
-      if (item8.experiment && !Root6.Runtime.experiments.isEnabled(item8.experiment)) {
+      if (item8.experiment && !Root5.Runtime.experiments.isEnabled(item8.experiment)) {
         continue;
       }
       const itemLocation = item8.location;
@@ -9677,7 +9653,7 @@ function registerProvider(registration) {
 async function loadApplicableRegisteredProviders(target) {
   const providers = [];
   for (const providerRegistration of registeredProviders) {
-    if (!Root6.Runtime.Runtime.isDescriptorEnabled({ experiment: providerRegistration.experiment, condition: void 0 })) {
+    if (!Root5.Runtime.Runtime.isDescriptorEnabled({ experiment: providerRegistration.experiment, condition: void 0 })) {
       continue;
     }
     if (providerRegistration.contextTypes) {
@@ -12739,7 +12715,7 @@ function registerToolbarItem(registration) {
   registeredToolbarItems.push(registration);
 }
 function getRegisteredToolbarItems() {
-  return registeredToolbarItems.filter((item8) => Root7.Runtime.Runtime.isDescriptorEnabled({ experiment: item8.experiment, condition: item8.condition }));
+  return registeredToolbarItems.filter((item8) => Root6.Runtime.Runtime.isDescriptorEnabled({ experiment: item8.experiment, condition: item8.condition }));
 }
 
 // gen/front_end/ui/legacy/UIUtils.js

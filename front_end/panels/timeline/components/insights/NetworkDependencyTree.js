@@ -5,15 +5,17 @@ import './Table.js';
 import '../../../../ui/kit/kit.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Trace from '../../../../models/trace/trace.js';
+import * as UI from '../../../../ui/legacy/legacy.js';
 import * as Lit from '../../../../ui/lit/lit.js';
 import { BaseInsightComponent } from './BaseInsightComponent.js';
 import { eventRef } from './EventRef.js';
 import { md } from './Helpers.js';
 import networkDependencyTreeInsightStyles from './networkDependencyTreeInsight.css.js';
 import { nodeLink } from './NodeLink.js';
-import { renderOthersLabel } from './Table.js';
+import { renderOthersLabel, Table } from './Table.js';
 const { UIStrings, i18nString } = Trace.Insights.Models.NetworkDependencyTree;
 const { html } = Lit;
+const { widgetConfig } = UI.Widget;
 export const MAX_CHAINS_TO_SHOW = 5;
 export class NetworkDependencyTree extends BaseInsightComponent {
     internalName = 'long-critical-network-tree';
@@ -92,13 +94,14 @@ export class NetworkDependencyTree extends BaseInsightComponent {
         }
         // clang-format off
         return html `
-      <devtools-performance-table
-          .data=${{
-            insight: this,
-            headers: [i18nString(UIStrings.columnRequest), i18nString(UIStrings.columnTime)],
-            rows,
-        }}>
-      </devtools-performance-table>
+      <devtools-widget .widgetConfig=${widgetConfig(Table, {
+            data: {
+                insight: this,
+                headers: [i18nString(UIStrings.columnRequest), i18nString(UIStrings.columnTime)],
+                rows,
+            }
+        })}>
+      </devtools-widget>
     `;
         // clang-format on
     }
@@ -203,13 +206,14 @@ export class NetworkDependencyTree extends BaseInsightComponent {
       <div class="insight-section">
         ${preconnectOriginsTableTitle}
         ${this.#renderTooManyPreconnectsWarning()}
-        <devtools-performance-table
-          .data=${{
-            insight: this,
-            headers: [i18nString(UIStrings.columnOrigin), i18nString(UIStrings.columnSource)],
-            rows,
-        }}>
-        </devtools-performance-table>
+        <devtools-widget .widgetConfig=${widgetConfig(Table, {
+            data: {
+                insight: this,
+                headers: [i18nString(UIStrings.columnOrigin), i18nString(UIStrings.columnSource)],
+                rows,
+            }
+        })}>
+        </devtools-widget>
       </div>
     `;
         // clang-format on
@@ -240,13 +244,14 @@ export class NetworkDependencyTree extends BaseInsightComponent {
         return html `
       <div class="insight-section">
         ${estSavingTableTitle}
-        <devtools-performance-table
-          .data=${{
-            insight: this,
-            headers: [i18nString(UIStrings.columnOrigin), i18nString(UIStrings.columnWastedMs)],
-            rows,
-        }}>
-        </devtools-performance-table>
+        <devtools-widget .widgetConfig=${widgetConfig(Table, {
+            data: {
+                insight: this,
+                headers: [i18nString(UIStrings.columnOrigin), i18nString(UIStrings.columnWastedMs)],
+                rows,
+            }
+        })}>
+        </devtools-widget>
       </div>
     `;
         // clang-format on

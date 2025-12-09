@@ -104,6 +104,9 @@
       "path": "../../generated/generated-tsconfig.json"
     },
     {
+      "path": "../../models/annotations/bundle-tsconfig.json"
+    },
+    {
       "path": "../../models/badges/bundle-tsconfig.json"
     },
     {
@@ -147,9 +150,6 @@
     },
     {
       "path": "../../ui/components/adorners/bundle-tsconfig.json"
-    },
-    {
-      "path": "../../ui/components/annotations/bundle-tsconfig.json"
     },
     {
       "path": "../../ui/components/buttons/bundle-tsconfig.json"

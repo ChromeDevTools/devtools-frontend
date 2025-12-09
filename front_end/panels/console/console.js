@@ -7,13 +7,15 @@ var __export = (target, all) => {
 // gen/front_end/panels/console/ConsoleContextSelector.js
 var ConsoleContextSelector_exports = {};
 __export(ConsoleContextSelector_exports, {
-  ConsoleContextSelector: () => ConsoleContextSelector
+  ConsoleContextSelector: () => ConsoleContextSelector,
+  ConsoleContextSelectorElement: () => ConsoleContextSelectorElement
 });
 import * as Common from "./../../core/common/common.js";
 import * as i18n from "./../../core/i18n/i18n.js";
 import * as Platform from "./../../core/platform/platform.js";
 import * as SDK from "./../../core/sdk/sdk.js";
 import * as UI from "./../../ui/legacy/legacy.js";
+import * as Lit from "./../../ui/lit/lit.js";
 
 // gen/front_end/panels/console/consoleContextSelector.css.js
 var consoleContextSelector_css_default = `/*
@@ -22,44 +24,47 @@ var consoleContextSelector_css_default = `/*
  * found in the LICENSE file.
  */
 
-:host {
-  padding: 2px 1px 2px 2px;
-  white-space: nowrap;
-  display: flex;
-  flex-direction: column;
-  height: 36px;
-  justify-content: center;
-  overflow-y: auto;
-}
+.widget {
+  .console-context-selector-element{
+    padding: 2px 1px 2px 2px;
+    white-space: nowrap;
+    display: flex;
+    flex-direction: column;
+    height: 36px;
+    justify-content: center;
+    overflow-y: auto;
 
-.title {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  flex-grow: 0;
-}
+    .title {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      flex-grow: 0;
+    }
 
-.badge {
-  pointer-events: none;
-  margin-right: 4px;
-  display: inline-block;
-  height: 15px;
-}
+    .subtitle {
+      color: var(--sys-color-token-subtle);
+      margin-right: 3px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      flex-grow: 0;
+    }
 
-.subtitle {
-  color: var(--sys-color-token-subtle);
-  margin-right: 3px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  flex-grow: 0;
-}
+    .badge {
+      pointer-events: none;
+      margin-right: 4px;
+      display: inline-block;
+      height: 15px;
+    }
+  }
 
-:host(.highlighted) .subtitle {
-  color: inherit;
+  &.highlighted .console-context-selector-element .subtitle {
+    color: inherit;
+  }
 }
 
 /*# sourceURL=${import.meta.resolve("./consoleContextSelector.css")} */`;
 
 // gen/front_end/panels/console/ConsoleContextSelector.js
+var { render, nothing, html } = Lit;
 var UIStrings = {
   /**
    * @description Title of toolbar item in console context selector of the console panel
@@ -217,14 +222,12 @@ var ConsoleContextSelector = class {
     }
   }
   createElementForItem(item2) {
-    const element = document.createElement("div");
-    const shadowRoot = UI.UIUtils.createShadowRootWithCoreStyles(element, { cssFile: consoleContextSelector_css_default });
-    const title = shadowRoot.createChild("div", "title");
-    UI.UIUtils.createTextChild(title, Platform.StringUtilities.trimEndWithMaxLength(this.titleFor(item2), 100));
-    const subTitle = shadowRoot.createChild("div", "subtitle");
-    UI.UIUtils.createTextChild(subTitle, this.subtitleFor(item2));
-    element.style.paddingLeft = 8 + this.depthFor(item2) * 15 + "px";
-    return element;
+    const consoleContextSelectorElement = new ConsoleContextSelectorElement();
+    consoleContextSelectorElement.title = this.titleFor(item2);
+    consoleContextSelectorElement.subtitle = this.subtitleFor(item2);
+    consoleContextSelectorElement.itemDepth = this.depthFor(item2);
+    consoleContextSelectorElement.markAsRoot();
+    return consoleContextSelectorElement.contentElement;
   }
   subtitleFor(executionContext) {
     const target = executionContext.target();
@@ -288,6 +291,51 @@ var ConsoleContextSelector = class {
         this.dropDown.refreshItem(executionContext);
       }
     }
+  }
+};
+var DEFAULT_VIEW = (input, _output, target) => {
+  if (!input.title || !input.subtitle) {
+    render(nothing, target);
+    return;
+  }
+  const paddingLeft = input.itemDepth ? 8 + input.itemDepth * 15 + "px" : void 0;
+  render(html`
+      <style>${consoleContextSelector_css_default}</style>
+      <div class="console-context-selector-element" style="padding-left: ${paddingLeft};">
+        <div class="title">${Platform.StringUtilities.trimEndWithMaxLength(input.title, 100)}</div>
+        <div class="subtitle">${input.subtitle}</div>
+      </div>
+    `, target);
+};
+var ConsoleContextSelectorElement = class extends UI.Widget.Widget {
+  #view;
+  #title;
+  #subtitle;
+  #itemDepth;
+  constructor(element, view) {
+    super(element, { useShadowDom: true });
+    this.#view = view ?? DEFAULT_VIEW;
+    this.requestUpdate();
+  }
+  set title(title) {
+    this.#title = title;
+    this.requestUpdate();
+  }
+  set subtitle(subtitle) {
+    this.#subtitle = subtitle;
+    this.requestUpdate();
+  }
+  set itemDepth(itemDepth) {
+    this.#itemDepth = itemDepth;
+    this.requestUpdate();
+  }
+  async performUpdate() {
+    const viewInput = {
+      title: this.#title,
+      subtitle: this.#subtitle,
+      itemDepth: this.#itemDepth
+    };
+    this.#view(viewInput, void 0, this.contentElement);
   }
 };
 
@@ -632,7 +680,7 @@ var updateStyle = (currentStyle, styleToAdd) => {
 var ConsoleInsightTeaser_exports = {};
 __export(ConsoleInsightTeaser_exports, {
   ConsoleInsightTeaser: () => ConsoleInsightTeaser,
-  DEFAULT_VIEW: () => DEFAULT_VIEW
+  DEFAULT_VIEW: () => DEFAULT_VIEW2
 });
 import "./../../ui/components/tooltips/tooltips.js";
 import * as Common5 from "./../../core/common/common.js";
@@ -642,7 +690,7 @@ import * as Root2 from "./../../core/root/root.js";
 import * as AiAssistanceModel3 from "./../../models/ai_assistance/ai_assistance.js";
 import * as Buttons2 from "./../../ui/components/buttons/buttons.js";
 import * as UI3 from "./../../ui/legacy/legacy.js";
-import * as Lit from "./../../ui/lit/lit.js";
+import * as Lit2 from "./../../ui/lit/lit.js";
 import * as VisualLogging2 from "./../../ui/visual_logging/visual_logging.js";
 import * as PanelCommon from "./../common/common.js";
 
@@ -917,7 +965,7 @@ var objectValue_css_default = `/*
 // gen/front_end/panels/console/ConsoleViewMessage.js
 import * as Components from "./../../ui/legacy/components/utils/utils.js";
 import * as UI2 from "./../../ui/legacy/legacy.js";
-import { render } from "./../../ui/lit/lit.js";
+import { render as render2 } from "./../../ui/lit/lit.js";
 import * as VisualLogging from "./../../ui/visual_logging/visual_logging.js";
 import * as Security from "./../security/security.js";
 
@@ -2437,7 +2485,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
     titleElement.classList.add("console-object");
     if (includePreview && obj.preview) {
       titleElement.classList.add("console-object-preview");
-      render(this.previewFormatter.renderObjectPreview(obj.preview), titleElement);
+      render2(this.previewFormatter.renderObjectPreview(obj.preview), titleElement);
       ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection.appendMemoryIcon(titleElement, obj);
     } else if (obj.type === "function") {
       const functionElement = titleElement.createChild("span");
@@ -2573,7 +2621,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
   }
   renderPropertyPreview(type, subtype, className, description) {
     const fragment = document.createDocumentFragment();
-    render(this.previewFormatter.renderPropertyPreview(type, subtype, className, description), fragment);
+    render2(this.previewFormatter.renderPropertyPreview(type, subtype, className, description), fragment);
     return fragment;
   }
   createRemoteObjectAccessorPropertySpan(object, propertyPath, callback) {
@@ -3945,7 +3993,7 @@ function formatStackTrace(message) {
 }
 
 // gen/front_end/panels/console/ConsoleInsightTeaser.js
-var { render: render2, html } = Lit;
+var { render: render3, html: html2 } = Lit2;
 var BUILT_IN_AI_DOCUMENTATION = "https://developer.chrome.com/docs/ai/built-in";
 var UIStringsNotTranslate = {
   /**
@@ -4044,7 +4092,7 @@ var DATA_USAGE_URL = "https://developer.chrome.com/docs/devtools/ai-assistance/g
 var EXPLAIN_TEASER_ACTION_ID = "explain.console-message.teaser";
 var SLOW_GENERATION_CUTOFF_MILLISECONDS = 3500;
 function renderNoModel(input) {
-  return html`
+  return html2`
     <div class="teaser-tooltip-container">
       <div class="response-container">
         <h2>${input.isForWarning ? lockedString(UIStringsNotTranslate.getHelpForWarning) : lockedString(UIStringsNotTranslate.getHelpForError)}
@@ -4080,14 +4128,14 @@ function renderNoModel(input) {
 }
 function renderDownloading(input) {
   const percent = ((input.downloadProgress || 0) * 100).toFixed(0);
-  return html`
+  return html2`
     <div class="teaser-tooltip-container">
       <div class="response-container">
         <h2>${lockedString(UIStringsNotTranslate.downloadingAiModel)}</h2>
         <div class="progress-line">
-          ${input.downloadProgress === null ? html`
+          ${input.downloadProgress === null ? html2`
               <div class="label">${lockedString(UIStringsNotTranslate.progressUnknown)}</div>
-            ` : html`
+            ` : html2`
               <div class="label">${lockedString(UIStringsNotTranslate.progress)}</div>
               <div class="indicator-container">
                 <div
@@ -4116,7 +4164,7 @@ function renderDownloading(input) {
   `;
 }
 function renderGenerating(input) {
-  return html`
+  return html2`
     <div class="teaser-tooltip-container">
       <div class="response-container">
         <h2>${input.isSlowGeneration ? lockedString(UIStringsNotTranslate.summarizingTakesABitLonger) : lockedString(UIStringsNotTranslate.summarizing)}</h2>
@@ -4142,7 +4190,7 @@ function renderGenerating(input) {
   `;
 }
 function renderError(input) {
-  return html`
+  return html2`
     <div class="teaser-tooltip-container">
       <h2>${lockedString(UIStringsNotTranslate.summaryNotAvailable)}</h2>
       ${renderFooter(input)}
@@ -4150,7 +4198,7 @@ function renderError(input) {
   `;
 }
 function renderDontShowCheckbox(input) {
-  return html`
+  return html2`
     <devtools-checkbox
       aria-label=${lockedString(UIStringsNotTranslate.dontShow)}
       @change=${input.dontShowChanged}
@@ -4160,9 +4208,9 @@ function renderDontShowCheckbox(input) {
   `;
 }
 function renderFooter(input) {
-  return html`
+  return html2`
     <div class="tooltip-footer">
-      ${input.hasTellMeMoreButton ? html`
+      ${input.hasTellMeMoreButton ? html2`
         <devtools-button
           title=${lockedString(UIStringsNotTranslate.tellMeMore)}
           .jslogContext=${"insights-teaser-tell-me-more"}
@@ -4172,7 +4220,7 @@ function renderFooter(input) {
           <devtools-icon class="lightbulb-icon" name="lightbulb-spark"></devtools-icon>
           ${lockedString(UIStringsNotTranslate.tellMeMore)}
         </devtools-button>
-      ` : Lit.nothing}
+      ` : Lit2.nothing}
       <devtools-button
         .iconName=${"info"}
         .variant=${"icon"}
@@ -4201,7 +4249,7 @@ function renderFooter(input) {
   `;
 }
 function renderTeaser(input) {
-  return html`
+  return html2`
     <div class="teaser-tooltip-container">
       <div class="response-container">
         <h2>${input.headerText}</h2>
@@ -4211,12 +4259,12 @@ function renderTeaser(input) {
     </div>
   `;
 }
-var DEFAULT_VIEW = (input, _output, target) => {
+var DEFAULT_VIEW2 = (input, _output, target) => {
   if (input.isInactive) {
-    render2(Lit.nothing, target);
+    render3(Lit2.nothing, target);
     return;
   }
-  render2(html`
+  render3(html2`
     <style>${consoleInsightTeaser_css_default}</style>
     <devtools-tooltip
       id=${"teaser-" + input.uuid}
@@ -4267,7 +4315,7 @@ var ConsoleInsightTeaser = class extends UI3.Widget.Widget {
   #isForWarning;
   constructor(uuid, consoleViewMessage, element, view) {
     super(element);
-    this.#view = view ?? DEFAULT_VIEW;
+    this.#view = view ?? DEFAULT_VIEW2;
     this.#uuid = uuid;
     this.#promptBuilder = new PromptBuilder(consoleViewMessage);
     this.#consoleViewMessage = consoleViewMessage;
@@ -4343,7 +4391,7 @@ var ConsoleInsightTeaser = class extends UI3.Widget.Widget {
         {
           iconName: "warning",
           // clang-format off
-          content: html`<x-link
+          content: html2`<x-link
             href=${CODE_SNIPPET_WARNING_URL}
             class="link devtools-link"
             jslog=${VisualLogging2.link("explain.teaser.code-snippets-explainer").track({
@@ -4531,7 +4579,7 @@ __export(ConsolePinPane_exports, {
   ConsolePinPane: () => ConsolePinPane,
   ConsolePinPresenter: () => ConsolePinPresenter,
   DEFAULT_PANE_VIEW: () => DEFAULT_PANE_VIEW,
-  DEFAULT_VIEW: () => DEFAULT_VIEW2
+  DEFAULT_VIEW: () => DEFAULT_VIEW3
 });
 import * as Common6 from "./../../core/common/common.js";
 import * as i18n7 from "./../../core/i18n/i18n.js";
@@ -4539,7 +4587,7 @@ import * as Platform3 from "./../../core/platform/platform.js";
 import * as Root3 from "./../../core/root/root.js";
 import * as SDK5 from "./../../core/sdk/sdk.js";
 import * as CodeMirror from "./../../third_party/codemirror.next/codemirror.next.js";
-import { Directives, html as html2, nothing as nothing2, render as render3 } from "./../../third_party/lit/lit.js";
+import { Directives, html as html3, nothing as nothing3, render as render4 } from "./../../third_party/lit/lit.js";
 import * as Buttons3 from "./../../ui/components/buttons/buttons.js";
 import * as TextEditor from "./../../ui/components/text_editor/text_editor.js";
 import * as ObjectUI2 from "./../../ui/legacy/components/object_ui/object_ui.js";
@@ -4664,10 +4712,10 @@ var UIStrings3 = {
 var str_3 = i18n7.i18n.registerUIStrings("panels/console/ConsolePinPane.ts", UIStrings3);
 var i18nString3 = i18n7.i18n.getLocalizedString.bind(void 0, str_3);
 var DEFAULT_PANE_VIEW = (input, _output, target) => {
-  render3(html2`
+  render4(html3`
     <style>${consolePinPane_css_default}</style>
     <div class='console-pins monospace' jslog=${VisualLogging3.pane("console-pins")} @contextmenu=${input.onContextMenu}>
-    ${input.pins.map((pin) => html2`
+    ${input.pins.map((pin) => html3`
         <devtools-widget .widgetConfig=${UI4.Widget.widgetConfig(ConsolePinPresenter, {
     pin,
     focusOut: input.focusOut,
@@ -4742,12 +4790,12 @@ var ConsolePinPane = class extends UI4.Widget.VBox {
     this.#newPin = void 0;
   }
 };
-var DEFAULT_VIEW2 = (input, output, target) => {
+var DEFAULT_VIEW3 = (input, output, target) => {
   const deleteIconLabel = input.expression ? i18nString3(UIStrings3.removeExpressionS, { PH1: input.expression }) : i18nString3(UIStrings3.removeBlankExpression);
   const deleteRef = createRef();
   const editorRef = createRef();
   const isError = input.result && !("error" in input.result) && input.result?.exceptionDetails && !SDK5.RuntimeModel.RuntimeModel.isSideEffectFailure(input.result);
-  render3(html2`
+  render4(html3`
     <style>${consolePinPane_css_default}</style>
     <style>${objectValue_css_default}</style>
     <div class='console-pin ${isError ? "error-level" : ""}'>
@@ -4798,14 +4846,14 @@ var DEFAULT_VIEW2 = (input, output, target) => {
 var FORMATTER = new ObjectUI2.RemoteObjectPreviewFormatter.RemoteObjectPreviewFormatter();
 function renderResult(result, isEditing) {
   if (!result) {
-    return nothing2;
+    return nothing3;
   }
   if (result && SDK5.RuntimeModel.RuntimeModel.isSideEffectFailure(result)) {
-    return html2`<span class='object-value-calculate-value-button' title=${i18nString3(UIStrings3.evaluateAllowingSideEffects)}>(…)</span>`;
+    return html3`<span class='object-value-calculate-value-button' title=${i18nString3(UIStrings3.evaluateAllowingSideEffects)}>(…)</span>`;
   }
   const renderedPreview = FORMATTER.renderEvaluationResultPreview(result, !isEditing);
-  if (renderedPreview === nothing2 && !isEditing) {
-    return html2`${i18nString3(UIStrings3.notAvailable)}`;
+  if (renderedPreview === nothing3 && !isEditing) {
+    return html3`${i18nString3(UIStrings3.notAvailable)}`;
   }
   return renderedPreview;
 }
@@ -4819,7 +4867,7 @@ var ConsolePinPresenter = class extends UI4.Widget.Widget {
   #hovered = false;
   #lastNode = null;
   #deletePinIcon;
-  constructor(element, view = DEFAULT_VIEW2) {
+  constructor(element, view = DEFAULT_VIEW3) {
     super(element);
     this.#view = view;
     this.#pinEditor = {
@@ -5123,13 +5171,13 @@ var ConsoleSidebar_exports = {};
 __export(ConsoleSidebar_exports, {
   ConsoleFilterGroup: () => ConsoleFilterGroup,
   ConsoleSidebar: () => ConsoleSidebar,
-  DEFAULT_VIEW: () => DEFAULT_VIEW3
+  DEFAULT_VIEW: () => DEFAULT_VIEW4
 });
 import * as Common7 from "./../../core/common/common.js";
 import * as i18n9 from "./../../core/i18n/i18n.js";
 import * as SDK6 from "./../../core/sdk/sdk.js";
 import * as UI5 from "./../../ui/legacy/legacy.js";
-import * as Lit2 from "./../../ui/lit/lit.js";
+import * as Lit3 from "./../../ui/lit/lit.js";
 import * as VisualLogging4 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/console/consoleSidebar.css.js
@@ -5206,7 +5254,7 @@ var UIStrings4 = {
 };
 var str_4 = i18n9.i18n.registerUIStrings("panels/console/ConsoleSidebar.ts", UIStrings4);
 var i18nString4 = i18n9.i18n.getLocalizedString.bind(void 0, str_4);
-var { render: render4, html: html3, nothing: nothing3, Directives: Directives2 } = Lit2;
+var { render: render5, html: html4, nothing: nothing4, Directives: Directives2 } = Lit3;
 var GROUP_ICONS = {
   [
     "message"
@@ -5233,7 +5281,7 @@ var GROUP_ICONS = {
     /* GroupName.VERBOSE */
   ]: { icon: "bug", label: UIStrings4.dVerbose }
 };
-var DEFAULT_VIEW3 = (input, output, target) => {
+var DEFAULT_VIEW4 = (input, output, target) => {
   const nodeFilterMap = /* @__PURE__ */ new WeakMap();
   const onSelectionChanged = (event) => {
     const filter = nodeFilterMap.get(event.detail);
@@ -5241,13 +5289,13 @@ var DEFAULT_VIEW3 = (input, output, target) => {
       input.onSelectionChanged(filter);
     }
   };
-  render4(html3`<devtools-tree
+  render5(html4`<devtools-tree
         navigation-variant
         hide-overflow
         @select=${onSelectionChanged}
-        .template=${html3`
+        .template=${html4`
           <ul role="tree">
-            ${input.groups.map((group) => html3`
+            ${input.groups.map((group) => html4`
               <li
                 role="treeitem"
                 ${Directives2.ref((element) => element && nodeFilterMap.set(element, group.filter))}
@@ -5258,9 +5306,9 @@ var DEFAULT_VIEW3 = (input, output, target) => {
   i18nString4(GROUP_ICONS[group.name].label, {
     n: group.messageCount
   })}
-                  ${group.messageCount === 0 ? nothing3 : html3`
+                  ${group.messageCount === 0 ? nothing4 : html4`
                   <ul role="group" hidden>
-                    ${group.urlGroups.values().map((urlGroup) => html3`
+                    ${group.urlGroups.values().map((urlGroup) => html4`
                       <li
                         ${Directives2.ref((element) => element && nodeFilterMap.set(element, urlGroup.filter))}
                         role="treeitem"
@@ -5345,7 +5393,7 @@ var ConsoleSidebar = class extends Common7.ObjectWrapper.eventMixin(UI5.Widget.V
   ];
   #selectedFilterSetting = Common7.Settings.Settings.instance().createSetting("console.sidebar-selected-filter", null);
   #selectedFilter = this.#groups.find((group) => group.name === this.#selectedFilterSetting.get())?.filter;
-  constructor(element, view = DEFAULT_VIEW3) {
+  constructor(element, view = DEFAULT_VIEW4) {
     super(element, {
       jslog: `${VisualLogging4.pane("sidebar").track({ resize: true })}`,
       useShadowDom: true

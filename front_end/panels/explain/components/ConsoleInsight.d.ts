@@ -29,7 +29,7 @@ export interface ViewInput {
         onAnimationEnd: () => void;
         onCitationAnimationEnd: () => void;
         onSearch: () => void;
-        onRating: (isPositive: boolean) => void;
+        onRating: (isPositive: boolean) => Promise<Host.InspectorFrontendHostAPI.AidaClientResult> | undefined;
         onReport: () => void;
         onGoToSignIn: () => void;
         onConsentReminderConfirmed: () => Promise<void>;

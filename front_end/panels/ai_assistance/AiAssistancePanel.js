@@ -9,10 +9,10 @@ import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
+import * as Annotations from '../../models/annotations/annotations.js';
 import * as Badges from '../../models/badges/badges.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
-import * as Annotations from '../../ui/components/annotations/annotations.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as Snackbars from '../../ui/components/snackbars/snackbars.js';
 import * as UIHelpers from '../../ui/helpers/helpers.js';
@@ -23,6 +23,7 @@ import * as NetworkForward from '../network/forward/forward.js';
 import * as NetworkPanel from '../network/network.js';
 import * as TimelinePanel from '../timeline/timeline.js';
 import aiAssistancePanelStyles from './aiAssistancePanel.css.js';
+import { ArtifactsViewer } from './components/ArtifactsViewer.js';
 import { ChatView } from './components/ChatView.js';
 import { DisabledWidget } from './components/DisabledWidget.js';
 import { ExploreWidget } from './components/ExploreWidget.js';
@@ -310,6 +311,13 @@ function toolbarView(input) {
           .jslogContext=${'freestyler.settings'}
           .variant=${"toolbar" /* Buttons.Button.Variant.TOOLBAR */}
           @click=${input.onSettingsClick}></devtools-button>
+        <!-- If the green experiment is enabled, render the artifacts sidebar toggle button -->
+        ${Root.Runtime.hostConfig.devToolsGreenDevUi?.enabled ? html `<devtools-button
+          title=${i18nString(UIStrings.settings)}
+          aria-label=${i18nString(UIStrings.settings)}
+          .iconName=${input.artifactsSidebarVisible ? 'left-panel-open' : 'left-panel-close'}
+          .variant=${"toolbar" /* Buttons.Button.Variant.TOOLBAR */}
+          @click=${input.onArtifactsSidebarToggle}></devtools-button>` : Lit.nothing}
       </devtools-toolbar>
     </div>
   `;
@@ -319,8 +327,9 @@ function defaultView(input, output, target) {
     // clang-format off
     function renderState() {
         switch (input.state) {
-            case "chat-view" /* ViewState.CHAT_VIEW */:
-                return html `<devtools-ai-chat-view
+            case "chat-view" /* ViewState.CHAT_VIEW */: {
+                const aiChatView = html `
+        <devtools-ai-chat-view
           .props=${input.props}
           ${Lit.Directives.ref((el) => {
                     if (!el || !(el instanceof ChatView)) {
@@ -329,6 +338,29 @@ function defaultView(input, output, target) {
                     output.chatView = el;
                 })}
         ></devtools-ai-chat-view>`;
+                // If the green experiment is enabled, render the chat view inside
+                // a split view to also have an artifacts viewer sidebar.
+                if (Root.Runtime.hostConfig.devToolsGreenDevUi?.enabled) {
+                    return html `
+            <devtools-split-view
+            direction="column"
+            sidebar-visibility=${input.props.isArtifactsSidebarOpen ? 'visible' : 'hidden'}
+            sidebar-position="second"
+            style="width: 100%;"
+          >
+            <div slot="main">
+              ${aiChatView}
+            </div>
+            <div slot="sidebar">
+              <devtools-widget
+              class="fill-panel"
+              .widgetConfig=${UI.Widget.widgetConfig(ArtifactsViewer)}
+              ></devtools-widget>
+            </div>
+          </devtools-split-view>`;
+                }
+                return aiChatView;
+            }
             case "explore-view" /* ViewState.EXPLORE_VIEW */:
                 return html `<devtools-widget
           class="fill-panel"
@@ -389,6 +421,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     #selectedElement = null;
     #selectedPerformanceTrace = null;
     #selectedRequest = null;
+    #isArtifactsSidebarOpen = false;
     // Messages displayed in the `ChatView` component.
     #messages = [];
     // Whether the UI should show loading or not.
@@ -466,6 +499,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                     uploadImageInputEnabled: isAiAssistanceMultimodalUploadInputEnabled() &&
                         this.#conversation.type === "freestyler" /* AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING */,
                     markdownRenderer,
+                    isArtifactsSidebarOpen: this.#isArtifactsSidebarOpen,
                     onTextSubmit: async (text, imageInput, multimodalInputType) => {
                         this.#imageInput = undefined;
                         this.#isTextInputEmpty = true;
@@ -733,6 +767,11 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             onSettingsClick: () => {
                 void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
             },
+            onArtifactsSidebarToggle: () => {
+                this.#isArtifactsSidebarOpen = !this.#isArtifactsSidebarOpen;
+                this.requestUpdate();
+            },
+            artifactsSidebarVisible: this.#isArtifactsSidebarOpen,
         };
     }
     async performUpdate() {

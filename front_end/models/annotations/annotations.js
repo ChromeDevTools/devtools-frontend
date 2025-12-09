@@ -1,8 +1,8 @@
-// gen/front_end/ui/components/annotations/AnnotationRepository.js
-import * as Common from "./../../../core/common/common.js";
-import * as Root from "./../../../core/root/root.js";
+// gen/front_end/models/annotations/AnnotationRepository.js
+import * as Common from "./../../core/common/common.js";
+import * as Root from "./../../core/root/root.js";
 
-// gen/front_end/ui/components/annotations/AnnotationType.js
+// gen/front_end/models/annotations/AnnotationType.js
 var AnnotationType;
 (function(AnnotationType2) {
   AnnotationType2[AnnotationType2["ELEMENT_NODE"] = 0] = "ELEMENT_NODE";
@@ -11,7 +11,7 @@ var AnnotationType;
   AnnotationType2[AnnotationType2["NETWORK_REQUEST_SUBPANEL_HEADERS"] = 3] = "NETWORK_REQUEST_SUBPANEL_HEADERS";
 })(AnnotationType || (AnnotationType = {}));
 
-// gen/front_end/ui/components/annotations/AnnotationRepository.js
+// gen/front_end/models/annotations/AnnotationRepository.js
 var AnnotationRepository = class _AnnotationRepository {
   static #instance = null;
   static #hasRepliedGreenDevDisabled = false;

@@ -69,7 +69,11 @@ export const ARIA_ATTRIBUTES = new Set([
     'aria-valuenow',
     'aria-valuetext',
 ]);
-export class DOMNode {
+export var DOMNodeEvents;
+(function (DOMNodeEvents) {
+    DOMNodeEvents["TOP_LAYER_INDEX_CHANGED"] = "TopLayerIndexChanged";
+})(DOMNodeEvents || (DOMNodeEvents = {}));
+export class DOMNode extends Common.ObjectWrapper.ObjectWrapper {
     #domModel;
     #agent;
     ownerDocument;
@@ -123,7 +127,13 @@ export class DOMNode {
     detached = false;
     #retainedNodes;
     #adoptedStyleSheets = [];
+    /**
+     * 1-based index of the node in the top layer. Only set
+     * for non-backdrop nodes.
+     */
+    #topLayerIndex = -1;
     constructor(domModel) {
+        super();
         this.#domModel = domModel;
         this.#agent = this.#domModel.getAgent();
     }
@@ -226,6 +236,16 @@ export class DOMNode {
         const frame = await FrameManager.instance().getOrWaitForFrame(frameId, notInTarget);
         const childModel = frame.resourceTreeModel()?.target().model(DOMModel);
         return await (childModel?.requestDocument() || null);
+    }
+    setTopLayerIndex(idx) {
+        const oldIndex = this.#topLayerIndex;
+        this.#topLayerIndex = idx;
+        if (oldIndex !== idx) {
+            this.dispatchEventToListeners(DOMNodeEvents.TOP_LAYER_INDEX_CHANGED);
+        }
+    }
+    topLayerIndex() {
+        return this.#topLayerIndex;
     }
     isAdFrameNode() {
         if (this.isIframe() && this.#frameOwnerFrameId) {
@@ -1001,10 +1021,14 @@ export class DOMNodeShortcut {
     nodeType;
     nodeName;
     deferredNode;
-    constructor(target, backendNodeId, nodeType, nodeName) {
+    // Shortctus to elements that children of the element this shortcut is for.
+    // Currently, use for backdrop elements in the top layer.«
+    childShortcuts = [];
+    constructor(target, backendNodeId, nodeType, nodeName, childShortcuts = []) {
         this.nodeType = nodeType;
         this.nodeName = nodeName;
         this.deferredNode = new DeferredDOMNode(target, backendNodeId);
+        this.childShortcuts = childShortcuts;
     }
 }
 export class DOMDocument extends DOMNode {
@@ -1040,6 +1064,8 @@ export class DOMModel extends SDKModel {
     #frameOwnerNode;
     #loadNodeAttributesTimeout;
     #searchId;
+    #topLayerThrottler = new Common.Throttler.Throttler(100);
+    #topLayerNodes = [];
     constructor(target) {
         super(target);
         this.agent = target.domAgent();
@@ -1376,9 +1402,6 @@ export class DOMModel extends SDKModel {
         node.setAffectedByStartingStyles(affectedByStartingStyles);
         this.dispatchEventToListeners(Events.AffectedByStartingStylesFlagUpdated, { node });
     }
-    topLayerElementsUpdated() {
-        this.dispatchEventToListeners(Events.TopLayerElementsChanged);
-    }
     pseudoElementRemoved(parentId, pseudoElementId) {
         const parent = this.idToDOMNode.get(parentId);
         if (!parent) {
@@ -1465,6 +1488,66 @@ export class DOMModel extends SDKModel {
     }
     getTopLayerElements() {
         return this.agent.invoke_getTopLayerElements().then(({ nodeIds }) => nodeIds);
+    }
+    topLayerElementsUpdated() {
+        void this.#topLayerThrottler.schedule(async () => {
+            // This returns top layer nodes for all local frames.
+            const result = await this.agent.invoke_getTopLayerElements();
+            if (result.getError()) {
+                return;
+            }
+            // Re-set indexes as we re-create top layer nodes list.
+            const previousDocs = new Set();
+            for (const node of this.#topLayerNodes) {
+                node.setTopLayerIndex(-1);
+                if (node.ownerDocument) {
+                    previousDocs.add(node.ownerDocument);
+                }
+            }
+            this.#topLayerNodes.splice(0);
+            const nodes = result.nodeIds.map(id => this.idToDOMNode.get(id)).filter((node) => Boolean(node));
+            const nodesByDocument = new Map();
+            for (const node of nodes) {
+                const document = node.ownerDocument;
+                if (!document) {
+                    continue;
+                }
+                if (!nodesByDocument.has(document)) {
+                    nodesByDocument.set(document, []);
+                }
+                nodesByDocument.get(document)?.push(node);
+            }
+            for (const [document, nodes] of nodesByDocument) {
+                let topLayerIdx = 1;
+                const documentShortcuts = [];
+                for (const [idx, node] of nodes.entries()) {
+                    if (node.nodeName() === '::backdrop') {
+                        continue;
+                    }
+                    const childShortcuts = [];
+                    const previousNode = result.nodeIds[idx - 1] ? this.idToDOMNode.get(result.nodeIds[idx - 1]) : null;
+                    if (previousNode && previousNode.nodeName() === '::backdrop') {
+                        childShortcuts.push(new DOMNodeShortcut(this.target(), previousNode.backendNodeId(), 0, previousNode.nodeName()));
+                    }
+                    const shortcut = new DOMNodeShortcut(this.target(), node.backendNodeId(), 0, node.nodeName(), childShortcuts);
+                    node.setTopLayerIndex(topLayerIdx++);
+                    this.#topLayerNodes.push(node);
+                    documentShortcuts.push(shortcut);
+                    previousDocs.delete(document);
+                }
+                this.dispatchEventToListeners(Events.TopLayerElementsChanged, {
+                    document,
+                    documentShortcuts,
+                });
+            }
+            // Emit empty events for documents that are no longer in the top layer.
+            for (const document of previousDocs) {
+                this.dispatchEventToListeners(Events.TopLayerElementsChanged, {
+                    document,
+                    documentShortcuts: [],
+                });
+            }
+        });
     }
     getDetachedDOMNodes() {
         return this.agent.invoke_getDetachedDomNodes().then(({ detachedNodes }) => detachedNodes);

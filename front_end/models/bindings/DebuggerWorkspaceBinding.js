@@ -141,6 +141,10 @@ export class DebuggerWorkspaceBinding {
         const model = target.model(StackTraceImpl.StackTraceModel.StackTraceModel);
         return await model.createFromProtocolRuntime(stackTrace, this.#translateRawFrames.bind(this));
     }
+    async createStackTraceFromDebuggerPaused(pausedDetails, target) {
+        const model = target.model(StackTraceImpl.StackTraceModel.StackTraceModel);
+        return await model.createFromDebuggerPaused(pausedDetails, this.#translateRawFrames.bind(this));
+    }
     async createLiveLocation(rawLocation, updateDelegate, locationPool) {
         const modelData = this.#debuggerModelToData.get(rawLocation.debuggerModel);
         if (!modelData) {

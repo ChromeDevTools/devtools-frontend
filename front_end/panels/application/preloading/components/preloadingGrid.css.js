@@ -8,39 +8,36 @@ export default `/*
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file.
  */
+@scope to (devtools-widget > *){
+  .preloading-container {
+    overflow: auto;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
 
-:host {
-  overflow: auto;
-  height: 100%;
-}
+    devtools-data-grid {
+      flex: auto;
+    }
 
-.preloading-container {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
+    .inline-icon {
+      vertical-align: text-bottom;
+    }
+  }
 
-.preloading-header {
-  font-size: 15px;
-  background-color: var(--sys-color-cdt-base-container);
-  padding: 1px 4px;
-}
+  .preloading-header {
+    font-size: 15px;
+    background-color: var(--sys-color-cdt-base-container);
+    padding: 1px 4px;
+  }
 
-.preloading-placeholder {
-  flex-grow: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 13px;
-  color: var(--sys-color-token-subtle);
-}
-
-devtools-data-grid {
-  flex: auto;
-}
-
-.inline-icon {
-  vertical-align: text-bottom;
+  .preloading-placeholder {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    color: var(--sys-color-token-subtle);
+  }
 }
 
 /*# sourceURL=${import.meta.resolve('./preloadingGrid.css')} */`;

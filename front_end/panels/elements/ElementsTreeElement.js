@@ -333,6 +333,10 @@ const UIStrings = {
      * @description Context menu item in Elements panel to explain container context via AI.
      */
     explainContainerContext: 'Explain container context',
+    /**
+     * @description Link text content in Elements Tree Outline of the Elements panel. When clicked, it "reveals" the true location of an element.
+     */
+    reveal: 'reveal',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/elements/ElementsTreeElement.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -366,9 +370,10 @@ export const DEFAULT_VIEW = (input, output, target) => {
     const gridLanesAdornerConfig = ElementsComponents.AdornerManager.getRegisteredAdorner(ElementsComponents.AdornerManager.RegisteredAdorners.GRID_LANES);
     const mediaAdornerConfig = ElementsComponents.AdornerManager.getRegisteredAdorner(ElementsComponents.AdornerManager.RegisteredAdorners.MEDIA);
     const popoverAdornerConfig = ElementsComponents.AdornerManager.getRegisteredAdorner(ElementsComponents.AdornerManager.RegisteredAdorners.POPOVER);
+    const topLayerAdornerConfig = ElementsComponents.AdornerManager.getRegisteredAdorner(ElementsComponents.AdornerManager.RegisteredAdorners.TOP_LAYER);
     const hasAdorners = input.adorners?.size || input.showAdAdorner || input.showContainerAdorner ||
         input.showFlexAdorner || input.showGridAdorner || input.showGridLanesAdorner || input.showMediaAdorner ||
-        input.showPopoverAdorner;
+        input.showPopoverAdorner || input.showTopLayerAdorner;
     // clang-format off
     render(html `
     <div ${ref(el => { output.contentElement = el; })}>
@@ -500,6 +505,25 @@ export const DEFAULT_VIEW = (input, output, target) => {
     }}
           ${adornerRef(input)}>
           <span>${popoverAdornerConfig.name}</span>
+        </devtools-adorner>` : nothing}
+        ${input.showTopLayerAdorner ? html `<devtools-adorner
+          class=clickable
+          role=button
+          tabindex=0
+          .data=${{ name: topLayerAdornerConfig.name, jslogContext: topLayerAdornerConfig.name }}
+          jslog=${VisualLogging.adorner(topLayerAdornerConfig.name).track({ click: true })}
+          aria-label=${i18nString(UIStrings.reveal)}
+          @click=${input.onTopLayerAdornerClick}
+          @keydown=${(event) => {
+        if (event.code === 'Enter' || event.code === 'Space') {
+            input.onTopLayerAdornerClick(event);
+            event.stopPropagation();
+        }
+    }}
+          ${adornerRef(input)}>
+          <span class="adorner-with-icon">
+            ${`top-layer (${input.topLayerIndex})`}<devtools-icon name="select-element"></devtools-icon>
+          </span>
         </devtools-adorner>` : nothing}
         ${repeat(Array.from((input.adorners ?? new Set()).values()).sort(adornerComparator), adorner => {
         return adorner;
@@ -668,10 +692,12 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
             showMediaAdorner: this.node().isMediaNode() && !this.isClosingTag(),
             showPopoverAdorner: Boolean(Root.Runtime.hostConfig.devToolsAllowPopoverForcing?.enabled) &&
                 Boolean(this.node().attributes().find(attr => attr.name === 'popover')) && !this.isClosingTag(),
+            showTopLayerAdorner: this.node().topLayerIndex() !== -1 && !this.isClosingTag(),
             gridAdornerActive: this.#gridAdornerActive,
             popoverAdornerActive: this.#popoverAdornerActive,
             isSubgrid: Boolean(this.#layout?.isSubgrid),
             nodeInfo: this.#nodeInfo,
+            topLayerIndex: this.node().topLayerIndex(),
             onGutterClick: this.showContextMenu.bind(this),
             onAdornerAdded: adorner => {
                 ElementsPanel.instance().registerAdorner(adorner);
@@ -684,6 +710,12 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
             onGridAdornerClick: (event) => this.#onGridAdornerClick(event),
             onMediaAdornerClick: (event) => this.#onMediaAdornerClick(event),
             onPopoverAdornerClick: (event) => this.#onPopoverAdornerClick(event),
+            onTopLayerAdornerClick: () => {
+                if (!this.treeOutline) {
+                    return;
+                }
+                this.treeOutline.revealInTopLayer(this.node());
+            },
         }, this, this.listItemElement);
     }
     #onContainerAdornerClick(event) {
@@ -938,6 +970,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     onbind() {
         if (this.treeOutline && !this.isClosingTag()) {
             this.treeOutline.treeElementByNode.set(this.nodeInternal, this);
+            this.nodeInternal.addEventListener(SDK.DOMModel.DOMNodeEvents.TOP_LAYER_INDEX_CHANGED, this.performUpdate, this);
         }
     }
     onunbind() {
@@ -947,6 +980,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         if (this.treeOutline && this.treeOutline.treeElementByNode.get(this.nodeInternal) === this) {
             this.treeOutline.treeElementByNode.delete(this.nodeInternal);
         }
+        this.nodeInternal.removeEventListener(SDK.DOMModel.DOMNodeEvents.TOP_LAYER_INDEX_CHANGED, this.performUpdate, this);
     }
     onattach() {
         if (this.#hovered) {

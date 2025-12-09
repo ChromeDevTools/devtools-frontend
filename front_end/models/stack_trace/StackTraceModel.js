@@ -5,7 +5,7 @@ var _a;
 import * as SDK from '../../core/sdk/sdk.js';
 // eslint-disable-next-line @devtools/es-modules-import
 import * as StackTrace from './stack_trace.js';
-import { AsyncFragmentImpl, FragmentImpl, FrameImpl, StackTraceImpl } from './StackTraceImpl.js';
+import { AsyncFragmentImpl, DebuggableFragmentImpl, FragmentImpl, FrameImpl, StackTraceImpl } from './StackTraceImpl.js';
 import { Trie } from './Trie.js';
 /**
  * The {@link StackTraceModel} is a thin wrapper around a fragment trie.
@@ -26,6 +26,13 @@ export class StackTraceModel extends SDK.SDKModel.SDKModel {
         const [syncFragment, asyncFragments] = await Promise.all([
             this.#createSyncFragment(stackTrace, rawFramesToUIFrames),
             this.#createAsyncFragments(stackTrace, rawFramesToUIFrames),
+        ]);
+        return new StackTraceImpl(syncFragment, asyncFragments);
+    }
+    async createFromDebuggerPaused(pausedDetails, rawFramesToUIFrames) {
+        const [syncFragment, asyncFragments] = await Promise.all([
+            this.#createDebuggableFragment(pausedDetails, rawFramesToUIFrames),
+            this.#createAsyncFragments(pausedDetails, rawFramesToUIFrames),
         ]);
         return new StackTraceImpl(syncFragment, asyncFragments);
     }
@@ -52,6 +59,17 @@ export class StackTraceModel extends SDK.SDKModel.SDKModel {
         const fragment = this.#createFragment(stackTrace.callFrames);
         await this.#translateFragment(fragment, rawFramesToUIFrames);
         return fragment;
+    }
+    async #createDebuggableFragment(pausedDetails, rawFramesToUIFrames) {
+        const fragment = this.#createFragment(pausedDetails.callFrames.map(frame => ({
+            scriptId: frame.script.scriptId,
+            url: frame.script.sourceURL,
+            functionName: frame.functionName,
+            lineNumber: frame.location().lineNumber,
+            columnNumber: frame.location().columnNumber,
+        })));
+        await this.#translateFragment(fragment, rawFramesToUIFrames);
+        return new DebuggableFragmentImpl(fragment, pausedDetails.callFrames);
     }
     async #createAsyncFragments(stackTraceOrPausedEvent, rawFramesToUIFrames) {
         const asyncFragments = [];

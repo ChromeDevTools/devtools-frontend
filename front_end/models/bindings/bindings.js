@@ -25,6 +25,8 @@ var __export2 = (target, all) => {
 var StackTraceImpl_exports = {};
 __export2(StackTraceImpl_exports, {
   AsyncFragmentImpl: () => AsyncFragmentImpl,
+  DebuggableFragmentImpl: () => DebuggableFragmentImpl,
+  DebuggableFrameImpl: () => DebuggableFrameImpl,
   FragmentImpl: () => FragmentImpl,
   FrameImpl: () => FrameImpl,
   StackTraceImpl: () => StackTraceImpl
@@ -36,7 +38,8 @@ var StackTraceImpl = class extends Common.ObjectWrapper.ObjectWrapper {
     super();
     this.syncFragment = syncFragment;
     this.asyncFragments = asyncFragments;
-    syncFragment.stackTraces.add(this);
+    const fragment = syncFragment instanceof DebuggableFragmentImpl ? syncFragment.fragment : syncFragment;
+    fragment.stackTraces.add(this);
     this.asyncFragments.forEach((asyncFragment) => asyncFragment.fragment.stackTraces.add(this));
   }
 };
@@ -90,6 +93,54 @@ var FrameImpl = class {
     this.line = line;
     this.column = column;
     this.missingDebugInfo = missingDebugInfo;
+  }
+};
+var DebuggableFragmentImpl = class {
+  fragment;
+  callFrames;
+  constructor(fragment, callFrames) {
+    this.fragment = fragment;
+    this.callFrames = callFrames;
+  }
+  get frames() {
+    const frames = [];
+    let index = 0;
+    for (const node of this.fragment.node.getCallStack()) {
+      for (const frame of node.frames) {
+        frames.push(new DebuggableFrameImpl(frame, this.callFrames[index]));
+      }
+      index++;
+    }
+    return frames;
+  }
+};
+var DebuggableFrameImpl = class {
+  #frame;
+  #sdkFrame;
+  constructor(frame, sdkFrame) {
+    this.#frame = frame;
+    this.#sdkFrame = sdkFrame;
+  }
+  get url() {
+    return this.#frame.url;
+  }
+  get uiSourceCode() {
+    return this.#frame.uiSourceCode;
+  }
+  get name() {
+    return this.#frame.name;
+  }
+  get line() {
+    return this.#frame.line;
+  }
+  get column() {
+    return this.#frame.column;
+  }
+  get missingDebugInfo() {
+    return this.#frame.missingDebugInfo;
+  }
+  get sdkFrame() {
+    return this.#sdkFrame;
   }
 };
 var StackTraceModel_exports = {};
@@ -225,6 +276,13 @@ var StackTraceModel = class extends SDK.SDKModel.SDKModel {
     ]);
     return new StackTraceImpl(syncFragment, asyncFragments);
   }
+  async createFromDebuggerPaused(pausedDetails, rawFramesToUIFrames) {
+    const [syncFragment, asyncFragments] = await Promise.all([
+      this.#createDebuggableFragment(pausedDetails, rawFramesToUIFrames),
+      this.#createAsyncFragments(pausedDetails, rawFramesToUIFrames)
+    ]);
+    return new StackTraceImpl(syncFragment, asyncFragments);
+  }
   /** Trigger re-translation of all fragments with the provide script in their call stack */
   async scriptInfoChanged(script, translateRawFrames) {
     const translatePromises = [];
@@ -247,6 +305,17 @@ var StackTraceModel = class extends SDK.SDKModel.SDKModel {
     const fragment = this.#createFragment(stackTrace.callFrames);
     await this.#translateFragment(fragment, rawFramesToUIFrames);
     return fragment;
+  }
+  async #createDebuggableFragment(pausedDetails, rawFramesToUIFrames) {
+    const fragment = this.#createFragment(pausedDetails.callFrames.map((frame) => ({
+      scriptId: frame.script.scriptId,
+      url: frame.script.sourceURL,
+      functionName: frame.functionName,
+      lineNumber: frame.location().lineNumber,
+      columnNumber: frame.location().columnNumber
+    })));
+    await this.#translateFragment(fragment, rawFramesToUIFrames);
+    return new DebuggableFragmentImpl(fragment, pausedDetails.callFrames);
   }
   async #createAsyncFragments(stackTraceOrPausedEvent, rawFramesToUIFrames) {
     const asyncFragments = [];
@@ -3490,6 +3559,10 @@ var DebuggerWorkspaceBinding = class _DebuggerWorkspaceBinding {
   async createStackTraceFromProtocolRuntime(stackTrace, target) {
     const model = target.model(StackTraceModel_exports.StackTraceModel);
     return await model.createFromProtocolRuntime(stackTrace, this.#translateRawFrames.bind(this));
+  }
+  async createStackTraceFromDebuggerPaused(pausedDetails, target) {
+    const model = target.model(StackTraceModel_exports.StackTraceModel);
+    return await model.createFromDebuggerPaused(pausedDetails, this.#translateRawFrames.bind(this));
   }
   async createLiveLocation(rawLocation, updateDelegate, locationPool) {
     const modelData = this.#debuggerModelToData.get(rawLocation.debuggerModel);

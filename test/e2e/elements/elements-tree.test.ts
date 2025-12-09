@@ -10,6 +10,8 @@ import {
   getContentOfSelectedNode,
   waitForChildrenOfSelectedElementNode,
   waitForContentOfSelectedElementsNode,
+  waitForElementsStyleSection,
+  waitForElementWithPartialText,
   waitForPartialContentOfSelectedElementsNode,
   waitForSelectedNodeChange,
 } from '../helpers/elements-helpers.js';
@@ -83,4 +85,19 @@ describe('The Elements tab', function() {
        await inspectedPage.reload();
        await waitForContentOfSelectedElementsNode('<input type=​"text">​', devToolsPage);
      });
+
+  it('nodes can be copied in ElementsTreeOutline', async ({devToolsPage, inspectedPage}) => {
+    await inspectedPage.goToHtml(
+        `<span id="node-to-copy">This should be <b>copied</b>.</span><div id="paste-here"></div>`);
+    await waitForElementsStyleSection(undefined, devToolsPage);
+    const nodeToCopyElement = await waitForElementWithPartialText('node-to-copy', devToolsPage);
+    await nodeToCopyElement.click();
+    await devToolsPage.pressKey('c', {control: true});
+
+    const nodeToPasteIn = await waitForElementWithPartialText('paste-here', devToolsPage);
+    await nodeToPasteIn.click();
+    await devToolsPage.pressKey('v', {control: true});
+
+    await nodeToPasteIn.$('span#node-to-copy');
+  });
 });

@@ -98,7 +98,7 @@ export async function searchForComponent(
     el.blur();
     el.dispatchEvent(new Event('input'));
   }, searchEntry);
-  await devToolsPage.evaluate(async () => await new Promise(requestAnimationFrame));
+  await devToolsPage.raf();
   await devToolsPage.timeout(300);
 }
 
@@ -244,24 +244,37 @@ export function increaseTimeoutForPerfPanel(context: Mocha.Suite): void {
   }
 }
 
+export async function loadTraceAndWaitToFullyRender(
+    devToolsPage: DevToolsPage, initiateTraceLoadCb: () => Promise<unknown>) {
+  const panelElement = await devToolsPage.waitFor('.widget.panel.timeline');
+  await Promise.all([
+    initiateTraceLoadCb(), panelElement.evaluate(el => {
+      return new Promise<void>(res => {
+        el.addEventListener('traceload', () => {
+          res();
+        }, {once: true});
+      });
+    })
+  ]);
+
+  // There's a lot of scheduling/waiting in the Timeline panel's rendering stack
+  // currently. Some events are fired, some things are debounced, some things wait
+  // for the RenderCoordinator to update. So let's give all that plenty of time to
+  // happen.
+  await devToolsPage.timeout(200);
+  await devToolsPage.raf();
+  await devToolsPage.raf();
+}
+
 export async function reloadAndRecord(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
-  await devToolsPage.click(RELOAD_AND_RECORD_BUTTON_SELECTOR);
-  // Make sure the timeline details panel appears. It's a sure way to assert
-  // that a recording is actually displayed as some of the other elements in
-  // the timeline remain in the DOM even after the recording has been cleared.
-  await devToolsPage.waitFor('div.timeline-summary');
+  await loadTraceAndWaitToFullyRender(devToolsPage, () => devToolsPage.click(RELOAD_AND_RECORD_BUTTON_SELECTOR));
   await expectVeEvents(
       [veClick('Toolbar > Action: timeline.record-reload'), veImpressionForStatusDialog()], 'Panel: timeline',
       devToolsPage);
 }
 
 export async function stopRecording(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
-  await devToolsPage.click(STOP_BUTTON_SELECTOR);
-
-  // Make sure the timeline details panel appears. It's a sure way to assert
-  // that a recording is actually displayed as some of the other elements in
-  // the timeline remain in the DOM even after the recording has been cleared.
-  await devToolsPage.waitFor('div.timeline-summary');
+  await loadTraceAndWaitToFullyRender(devToolsPage, () => devToolsPage.click(STOP_BUTTON_SELECTOR));
   await expectVeEvents(
       [
         veClick('Toolbar > Toggle: timeline.toggle-recording'),
@@ -385,16 +398,6 @@ export async function uploadTraceFile(devToolsPage: DevToolsPage, tracePath: str
   if (!fs.existsSync(testTrace)) {
     throw new Error(`Test trace file not found: ${testTrace}`);
   }
-  const panelElement = await devToolsPage.waitFor('.widget.panel.timeline');
 
-  await Promise.all([
-    panelElement.evaluate(el => {
-      return new Promise<void>(res => {
-        el.addEventListener('traceload', () => {
-          res();
-        }, {once: true});
-      });
-    }),
-    uploadProfileHandle.uploadFile(testTrace),
-  ]);
+  await loadTraceAndWaitToFullyRender(devToolsPage, () => uploadProfileHandle.uploadFile(testTrace));
 }

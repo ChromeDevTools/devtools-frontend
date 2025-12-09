@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 
 import {expectError} from '../../conductor/events.js';
-import {searchForComponent} from '../helpers/performance-helpers.js';
+import {loadTraceAndWaitToFullyRender, searchForComponent} from '../helpers/performance-helpers.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 import type {InspectedPage} from '../shared/target-helper.js';
 
@@ -28,7 +28,7 @@ async function loadTrace(devToolsPage: DevToolsPage, inspectedPage: InspectedPag
   await devToolsPage.page.goto(url.href);
 
   // Wait for Performance panel to open.
-  await devToolsPage.waitFor('.panel.timeline');
+  await loadTraceAndWaitToFullyRender(devToolsPage, async () => {});
 
   // Performance and Sources.
   assert.lengthOf(await devToolsPage.$$('.tabbed-pane-header[aria-label="Main toolbar"] .tabbed-pane-header-tab'), 2);

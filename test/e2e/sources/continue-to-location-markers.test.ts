@@ -140,4 +140,43 @@ async function foo3() {
            continueToLocationAsync,
            ['(xxx, yyy)', '(xxx, yyy)', '(xxx, /*zzz*/ yyy /* xyz    */)', 'bar2', 'function']);
      });
+
+  it('highlights locations to continue to when holding Ctrl/Cmd while paused in top-level code',
+     async ({devToolsPage, inspectedPage}) => {
+       await inspectedPage.goToHtml(`
+<!DOCTYPE html>
+<script>
+function testFunction() {
+  eval(\`
+    debugger;
+    foo1();
+    Promise.resolve().then(foo2);
+    Promise.resolve().then(() => 42);
+    setTimeout(foo2);
+    function foo1() {}
+    function foo2() {}
+  \`);
+}
+</script>`);
+
+       inspectedPage.evaluate('testFunction()');
+       await Promise.all([
+         devToolsPage.waitFor(PAUSE_INDICATOR_SELECTOR),
+         executionLineHighlighted(devToolsPage),
+       ]);
+
+       // Focus the editor by clicking the execution line
+       await devToolsPage.click('.cm-executionLine');
+       await devToolsPage.page.keyboard.down(platform === 'mac' ? 'Meta' : 'Control');
+
+       const [continueToLocation, continueToLocationAsync] = await Promise.all([
+         waitForMarkers(devToolsPage, '.cm-continueToLocation', 9),
+         waitForMarkers(devToolsPage, '.cm-continueToLocation-async', 3),
+       ]);
+
+       assert.deepEqual(
+           continueToLocation, ['foo1', 'resolve', 'then', 'foo2', 'resolve', 'then', '()', 'setTimeout', 'foo2']);
+
+       assert.deepEqual(continueToLocationAsync, ['foo2', '()', 'foo2']);
+     });
 });

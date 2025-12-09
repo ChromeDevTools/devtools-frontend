@@ -2716,13 +2716,6 @@ export interface Conditions {
   packetLoss?: number;
   packetQueueLength?: number;
   packetReordering?: boolean;
-  // TODO(crbug.com/1219425): In the future, it might be worthwhile to
-  // consider avoiding mixing up presentation state (e.g.: displayed
-  // titles) with behavioral state (e.g.: the throttling amounts). In
-  // this particular case, the title (along with other properties)
-  // doubles as both part of group of fields which (loosely) uniquely
-  // identify instances, as well as the literal string displayed in the
-  // UI, which leads to complications around persistance.
   // TODO(crbug.com/422682525): make this just a function because we use lazy string everywhere.
   title: string|(() => string);
   // Instances may be serialized to local storage, so localized titles

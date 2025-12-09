@@ -40,6 +40,7 @@ devtools_ui_module("settings") {
     "../../models/ai_assistance:bundle",
     "../../models/bindings:bundle",
     "../../models/breakpoints:bundle",
+    "../../models/greendev:bundle",
     "../../models/persistence:bundle",
     "../../models/project_settings:bundle",
     "../../models/text_utils:bundle",

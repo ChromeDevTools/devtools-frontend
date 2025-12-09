@@ -1,0 +1,23 @@
+# Copyright 2025 The Chromium Authors
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../scripts/build/ninja/devtools_module.gni")
+import("../visibility.gni")
+
+devtools_module("greendev") {
+  sources = [ "Prototypes.ts" ]
+
+  deps = [ "../../core/common:bundle" ]
+}
+
+devtools_entrypoint("bundle") {
+  entrypoint = "greendev.ts"
+
+  deps = [ ":greendev" ]
+
+  visibility = [ "../../panels/settings/*" ]
+
+  visibility += devtools_models_visibility
+}

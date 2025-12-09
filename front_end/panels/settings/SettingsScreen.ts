@@ -11,13 +11,14 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
+import * as GreenDev from '../../models/greendev/greendev.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UIHelpers from '../../ui/helpers/helpers.js';
 import {type Card, createIcon} from '../../ui/kit/kit.js';
 import * as SettingsUI from '../../ui/legacy/components/settings_ui/settings_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {html, render} from '../../ui/lit/lit.js';
+import {html, render, type TemplateResult} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import {PanelUtils} from '../utils/utils.js';
 
@@ -51,6 +52,11 @@ const UIStrings = {
    * @description Message shown in the experiments panel to warn users about any possible unstable features.
    */
   theseExperimentsCouldBeUnstable: 'Warning: These experiments could be unstable or unreliable.',
+  /**
+   * @description Message shown in the GreenDev prototypes panel to warn users about any possible unstable features.
+   */
+  greenDevUnstable:
+      'Warning: All these features are prototype and very unstable. They exist for user testing and are not designed to be relied on.',
   /**
    * @description Message text content in Settings Screen of the Settings
    */
@@ -602,4 +608,75 @@ export class Revealer implements Common.Revealer.Revealer<Root.Runtime.Experimen
 export interface ShowSettingsScreenOptions {
   name?: string;
   focusTabHeader?: boolean;
+}
+
+export class GreenDevSettingsTab extends UI.Widget.VBox implements SettingsTab {
+  #view: View;
+
+  constructor(view = GREENDEV_VIEW) {
+    super({jslog: `${VisualLogging.pane('greendev-prototypes')}`});
+    this.element.id = 'greendev-prototypes-tab-content';
+
+    this.#view = view;
+
+    this.requestUpdate();
+  }
+
+  highlightObject(_object: Object): void {
+  }
+
+  override performUpdate(): Promise<void>|void {
+    const settings = GreenDev.Prototypes.instance().settings();
+    this.#view({settings}, {}, this.element);
+  }
+}
+
+interface GreenDevViewInput {
+  settings: GreenDev.GreenDevSettings;
+}
+
+type View = (input: GreenDevViewInput, output: object, target: HTMLElement) => void;
+const GREENDEV_VIEW: View = (input, _output, target) => {
+  // clang-format off
+  render(html`
+         <div class="settings-card-container">
+           <devtools-card .heading=${'GreenDev Prototypes'}>
+             <div class="experiments-warning-subsection">
+              <devtools-icon .name=${'warning'}></devtools-icon>
+              <span>${i18nString(UIStrings.greenDevUnstable)}</span>
+             </div>
+             <div class="settings-experiments-block">
+               ${renderPrototypeCheckboxes(input.settings)}
+             </div>
+           </devtools-card>
+         </div>
+       `, target);
+  // clang-format on
+};
+
+const GREENDEV_PROTOTYPE_NAMES: Record<keyof GreenDev.GreenDevSettings, string> = {
+  inDevToolsFloaty: 'In DevTools context picker',
+  aiAnnotations: 'AI auto-annotations',
+  inlineWidgets: 'Inline widgets in AI Assistance'
+};
+
+function renderPrototypeCheckboxes(
+    settings: GreenDev.GreenDevSettings,
+    ): TemplateResult {
+  const {bindToSetting} = UI.UIUtils;
+
+  function showChangeWarning(): void {
+    UI.InspectorView.InspectorView.instance().displayReloadRequiredWarning(
+        i18nString(UIStrings.oneOrMoreSettingsHaveChanged));
+  }
+  // clang-format off
+  const checkboxes = Object.keys(settings).map(settingName => {
+    const setting = settings[settingName as keyof GreenDev.GreenDevSettings];
+    const title = GREENDEV_PROTOTYPE_NAMES[settingName as keyof GreenDev.GreenDevSettings];
+    return html`<p class="settings-experiment">
+      <devtools-checkbox @change=${showChangeWarning} title=${title} ${bindToSetting(setting)}>${title}</devtools-checkbox>
+    </p>`;
+  });
+  return html`${checkboxes}`;
+  // clang-format on
 }

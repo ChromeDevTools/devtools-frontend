@@ -1513,7 +1513,6 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   }
 
   #handleFlameChartTransformEvent(event: KeyboardEvent): void {
-    // TODO(crbug.com/1469887): Indicate Shortcuts to the user when the designs are complete.
     if (this.selectedEntryIndex === -1) {
       return;
     }

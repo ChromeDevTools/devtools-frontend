@@ -129,8 +129,6 @@ export function generateInsight(
   }
 
   const initiatorUrl = lcpRequest.args.data.initiator?.url;
-  // TODO(b/372319476): Explore using trace event HTMLDocumentParser::FetchQueuedPreloads to determine if the request
-  // is discovered by the preload scanner.
   const initiatedByMainDoc =
       lcpRequest?.args.data.initiator?.type === 'parser' && docRequest.args.data.url === initiatorUrl;
   const imgPreloadedOrFoundInHTML = lcpRequest?.args.data.isLinkPreload || initiatedByMainDoc;

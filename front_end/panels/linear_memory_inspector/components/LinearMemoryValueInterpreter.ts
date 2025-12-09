@@ -47,6 +47,27 @@ export interface LinearMemoryValueInterpreterData {
   onValueTypeToggled: (type: ValueType, checked: boolean) => void;
 }
 
+function renderEndiannessSetting(
+    onEndiannessChanged: (endianness: Endianness) => void, currentEndiannes: Endianness): Lit.TemplateResult {
+  // Disabled until https://crbug.com/1079231 is fixed.
+  // clang-format off
+    return html`
+    <label data-endianness-setting="true" title=${i18nString(UIStrings.changeEndianness)}>
+      <select
+        jslog=${VisualLogging.dropDown('linear-memory-inspector.endianess').track({change: true})}
+        style="border: none;"
+        data-endianness="true" @change=${(e: Event) => onEndiannessChanged((e.target as HTMLSelectElement).value as Endianness)}>
+        ${[Endianness.LITTLE, Endianness.BIG].map(endianness => {
+            return html`<option value=${endianness} .selected=${currentEndiannes === endianness}
+            jslog=${VisualLogging.item(Platform.StringUtilities.toKebabCase(endianness)).track({click: true})}>${
+                i18n.i18n.lockedString(endianness)}</option>`;
+        })}
+      </select>
+    </label>
+    `;
+  // clang-format on
+}
+
 export class LinearMemoryValueInterpreter extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
   #onValueTypeModeChange: (type: ValueType, mode: ValueTypeMode) => void = () => {};
@@ -71,6 +92,46 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
     this.#onEndiannessChanged = data.onEndiannessChanged;
     this.#onValueTypeToggled = data.onValueTypeToggled;
     this.#render();
+  }
+
+  set value(value: ArrayBuffer) {
+    this.#buffer = value;
+  }
+
+  get value(): ArrayBuffer {
+    return this.#buffer;
+  }
+
+  set valueTypes(value: Set<ValueType>) {
+    this.#valueTypes = value;
+  }
+
+  get valueTypes(): Set<ValueType> {
+    return this.#valueTypes;
+  }
+
+  set valueTypeModes(value: Map<ValueType, ValueTypeMode>) {
+    this.#valueTypeModeConfig = value;
+  }
+
+  get valueTypeModes(): Map<ValueType, ValueTypeMode> {
+    return this.#valueTypeModeConfig;
+  }
+
+  set endianness(value: Endianness) {
+    this.#endianness = value;
+  }
+
+  get endianness(): Endianness {
+    return this.#endianness;
+  }
+
+  set memoryLength(value: number) {
+    this.#memoryLength = value;
+  }
+
+  get memoryLength(): number {
+    return this.#memoryLength;
   }
 
   get onValueTypeModeChange(): (type: ValueType, mode: ValueTypeMode) => void {
@@ -117,7 +178,7 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
       <style>${linearMemoryValueInterpreterStyles}</style>
       <div class="value-interpreter">
         <div class="settings-toolbar">
-          ${this.#renderEndiannessSetting()}
+          ${renderEndiannessSetting(this.#onEndiannessChanged, this.#endianness)}
           <devtools-button data-settings="true" class="toolbar-button ${this.#showSettings ? '' : 'disabled'}"
               title=${i18nString(UIStrings.toggleValueTypeSettings)} @click=${this.#onSettingsToggle}
               jslog=${VisualLogging.toggleSubpane('linear-memory-inspector.toggle-value-settings').track({click: true})}
@@ -150,26 +211,6 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
     `,
       this.#shadow, { host: this },
     );
-    // clang-format on
-  }
-
-  #renderEndiannessSetting(): Lit.TemplateResult {
-    // Disabled until https://crbug.com/1079231 is fixed.
-    // clang-format off
-    return html`
-    <label data-endianness-setting="true" title=${i18nString(UIStrings.changeEndianness)}>
-      <select
-        jslog=${VisualLogging.dropDown('linear-memory-inspector.endianess').track({change: true})}
-        style="border: none;"
-        data-endianness="true" @change=${(e: Event) => this.#onEndiannessChanged((e.target as HTMLSelectElement).value as Endianness)}>
-        ${[Endianness.LITTLE, Endianness.BIG].map(endianness => {
-            return html`<option value=${endianness} .selected=${this.#endianness === endianness}
-            jslog=${VisualLogging.item(Platform.StringUtilities.toKebabCase(endianness)).track({click: true})}>${
-                i18n.i18n.lockedString(endianness)}</option>`;
-        })}
-      </select>
-    </label>
-    `;
     // clang-format on
   }
 

@@ -1078,7 +1078,6 @@ export interface ResourceSendRequest extends Instant {
       resourceType?: Protocol.Network.ResourceType,
       /** Added Feb 2024. https://crrev.com/c/5297615 */
       fetchPriorityHint?: FetchPriorityHint,
-      // TODO(crbug.com/1457985): change requestMethod to enum when confirm in the backend code.
       requestMethod?: string,
       renderBlocking?: RenderBlocking,
       initiator?: Initiator,

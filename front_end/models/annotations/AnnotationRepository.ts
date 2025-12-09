@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
-import * as Root from '../../core/root/root.js';
 import type * as SDK from '../../core/sdk/sdk.js';
+import * as GreenDev from '../greendev/greendev.js';
 
 import {AnnotationType} from './AnnotationType.js';
 
@@ -63,7 +63,7 @@ export class AnnotationRepository {
   }
 
   static annotationsEnabled(): boolean {
-    const enabled = Boolean(Root.Runtime.hostConfig.devToolsGreenDevUi?.enabled);
+    const enabled = GreenDev.Prototypes.instance().isEnabled('aiAnnotations');
     // TODO(finnur): Fix race when Repository is created before feature flags have been set properly.
     if (!enabled) {
       this.#hasRepliedGreenDevDisabled = true;

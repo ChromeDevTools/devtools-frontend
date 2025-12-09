@@ -3,12 +3,14 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
+import * as Root from '../../core/root/root.js';
 
 let instance: Prototypes|null = null;
 
 export interface GreenDevSettings {
   inDevToolsFloaty: Common.Settings.Setting<boolean>;
   inlineWidgets: Common.Settings.Setting<boolean>;
+  artifactViewer: Common.Settings.Setting<boolean>;
   aiAnnotations: Common.Settings.Setting<boolean>;
 }
 
@@ -24,8 +26,13 @@ export class Prototypes {
     return instance;
   }
 
-  isEnabled(setting: 'inDevToolsFloaty'|'inlineWidgets'|'aiAnnotations'): boolean {
-    return this.settings()[setting].get();
+  /**
+   * Returns true if the specific setting is turned on AND the GreenDev flag is enabled
+   */
+  isEnabled(setting: keyof GreenDevSettings): boolean {
+    const greendevFlagEnabled = Boolean(Root.Runtime.hostConfig.devToolsGreenDevUi?.enabled);
+
+    return greendevFlagEnabled && this.settings()[setting].get();
   }
 
   settings(): Readonly<GreenDevSettings> {
@@ -41,6 +48,9 @@ export class Prototypes {
         false,
         Common.Settings.SettingStorageType.LOCAL,
     );
-    return {inDevToolsFloaty, inlineWidgets, aiAnnotations};
+
+    const artifactViewer =
+        settings.createSetting('greendev-artifact-viewer-enabled', false, Common.Settings.SettingStorageType.LOCAL);
+    return {inDevToolsFloaty, inlineWidgets, aiAnnotations, artifactViewer};
   }
 }

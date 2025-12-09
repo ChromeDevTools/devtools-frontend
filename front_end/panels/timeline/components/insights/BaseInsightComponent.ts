@@ -8,6 +8,7 @@ import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Root from '../../../../core/root/root.js';
 import * as AIAssistance from '../../../../models/ai_assistance/ai_assistance.js';
 import * as Badges from '../../../../models/badges/badges.js';
+import * as GreenDev from '../../../../models/greendev/greendev.js';
 import type {InsightModel} from '../../../../models/trace/insights/types.js';
 import type * as Trace from '../../../../models/trace/trace.js';
 import * as Buttons from '../../../../ui/components/buttons/buttons.js';
@@ -308,7 +309,7 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends UI.Wi
       return;
     }
 
-    if (this.#parsedTrace && UI.Floaty.enabled()) {
+    if (this.#parsedTrace && GreenDev.Prototypes.instance().isEnabled('inDevToolsFloaty')) {
       const floatyHandled = UI.Floaty.onFloatyClick({
         type: UI.Floaty.FloatyContextTypes.PERFORMANCE_INSIGHT,
         data: {

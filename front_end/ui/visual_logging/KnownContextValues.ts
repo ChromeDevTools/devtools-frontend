@@ -1743,6 +1743,7 @@ export const knownContextValues = new Set([
   'grace-period-link',
   'grace-period-mitigation-disabled',
   'greendev-ai-annotations-enabled',
+  'greendev-artifact-viewer-enabled',
   'greendev-in-devtools-floaty-enabled',
   'greendev-inline-widgets-enabled',
   'greendev-prototypes',

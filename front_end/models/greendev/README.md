@@ -1,3 +1,5 @@
 # GreenDev Model
 
-This model is part of the GreenDev project and provides settings and other infrastructure to support GreenDev-related features.
+As part of GreenDev we are building a bunch of prototypes into DevTools to user test. This model holds which prototypes are enabled for a given user.
+
+The settings is only stored in local storage, and not synced across devices or persisted in anyway beyond that.

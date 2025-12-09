@@ -17,7 +17,11 @@ devtools_entrypoint("bundle") {
 
   deps = [ ":greendev" ]
 
-  visibility = [ "../../panels/settings/*" ]
+  visibility = [
+    "../*",
+    "../../panels/settings/*",
+    "../../ui/*",
+  ]
 
   visibility += devtools_models_visibility
 }

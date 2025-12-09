@@ -657,7 +657,8 @@ const GREENDEV_VIEW: View = (input, _output, target) => {
 const GREENDEV_PROTOTYPE_NAMES: Record<keyof GreenDev.GreenDevSettings, string> = {
   inDevToolsFloaty: 'In DevTools context picker',
   aiAnnotations: 'AI auto-annotations',
-  inlineWidgets: 'Inline widgets in AI Assistance'
+  inlineWidgets: 'Inline widgets in AI Assistance',
+  artifactViewer: 'Widgets in the Artifact viewer'
 };
 
 function renderPrototypeCheckboxes(

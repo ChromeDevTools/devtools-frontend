@@ -14,6 +14,7 @@ devtools_module("annotations") {
   deps = [
     "../../core/common:bundle",
     "../../core/sdk:bundle",
+    "../greendev:bundle",
   ]
 }
 

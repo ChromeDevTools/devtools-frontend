@@ -14,6 +14,7 @@ import * as Protocol from '../../generated/protocol.js';
 import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
 import * as Annotations from '../../models/annotations/annotations.js';
 import * as Badges from '../../models/badges/badges.js';
+import * as GreenDev from '../../models/greendev/greendev.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
@@ -390,7 +391,7 @@ function toolbarView(input: ToolbarViewInput): Lit.LitTemplate {
           .variant=${Buttons.Button.Variant.TOOLBAR}
           @click=${input.onSettingsClick}></devtools-button>
         <!-- If the green experiment is enabled, render the artifacts sidebar toggle button -->
-        ${Root.Runtime.hostConfig.devToolsGreenDevUi?.enabled ? html`<devtools-button
+        ${GreenDev.Prototypes.instance().isEnabled('artifactViewer') ? html`<devtools-button
           title=${i18nString(UIStrings.settings)}
           aria-label=${i18nString(UIStrings.settings)}
           .iconName=${input.artifactsSidebarVisible ? 'left-panel-open' : 'left-panel-close'}
@@ -420,7 +421,7 @@ function defaultView(input: ViewInput, output: PanelViewOutput, target: HTMLElem
         ></devtools-ai-chat-view>`;
         // If the green experiment is enabled, render the chat view inside
         // a split view to also have an artifacts viewer sidebar.
-        if(Root.Runtime.hostConfig.devToolsGreenDevUi?.enabled) {
+        if(GreenDev.Prototypes.instance().isEnabled('artifactViewer')) {
             return html`
             <devtools-split-view
             direction="column"
@@ -814,7 +815,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
 
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistancePanelOpened);
 
-    if (Root.Runtime.hostConfig.devToolsGreenDevUi?.enabled) {
+    if (GreenDev.Prototypes.instance().isEnabled('inDevToolsFloaty')) {
       UI.Context.Context.instance().addFlavorChangeListener(UI.Floaty.FloatyFlavor, this.#bindFloatyListener, this);
       this.#bindFloatyListener();
     }

@@ -4,9 +4,9 @@
 
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
-import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
+import * as GreenDev from '../../models/greendev/greendev.js';
 import * as Logs from '../../models/logs/logs.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as Buttons from '../components/buttons/buttons.js';
@@ -89,7 +89,7 @@ export class Floaty {
   }
 
   #insertIntoDOM(): void {
-    if (Root.Runtime.hostConfig.devToolsGreenDevUi?.enabled) {
+    if (GreenDev.Prototypes.instance().isEnabled('inDevToolsFloaty')) {
       this.#floaty.show(this.#container);
       document.body.appendChild(this.#container);
       document.body.addEventListener('keydown', this.#boundKeyDown);
@@ -169,19 +169,15 @@ type FloatyClickInput = {
   },
 };
 
-export function enabled(): boolean {
-  return Root.Runtime.hostConfig.devToolsGreenDevUi?.enabled === true;
-}
-
 export function onFloatyOpen(): void {
-  if (!enabled()) {
+  if (!GreenDev.Prototypes.instance().isEnabled('inDevToolsFloaty')) {
     return;
   }
   Floaty.instance().open();
 }
 
 export function onFloatyContextDelete(context: FloatyContextSelection): void {
-  if (!enabled()) {
+  if (!GreenDev.Prototypes.instance().isEnabled('inDevToolsFloaty')) {
     return;
   }
   Floaty.instance().deleteContext(context);
@@ -194,7 +190,7 @@ export function onFloatyContextDelete(context: FloatyContextSelection): void {
  * click behaviour.
  */
 export function onFloatyClick(input: FloatyClickInput): boolean {
-  if (!enabled()) {
+  if (!GreenDev.Prototypes.instance().isEnabled('inDevToolsFloaty')) {
     return false;
   }
   const floaty = Floaty.instance();

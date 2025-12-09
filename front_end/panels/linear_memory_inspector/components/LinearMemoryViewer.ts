@@ -47,7 +47,7 @@ const BYTE_GROUP_SIZE = 4;
 export class LinearMemoryViewer extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
 
-  readonly #resizeObserver = new ResizeObserver(() => this.#resize());
+  readonly #resizeObserver = new ResizeObserver(() => requestAnimationFrame(this.#resize.bind(this)));
   #isObservingResize = false;
 
   #memory = new Uint8Array();

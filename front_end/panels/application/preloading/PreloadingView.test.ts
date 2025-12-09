@@ -420,9 +420,6 @@ describeWithMockConnection('PreloadingRuleSetView', () => {
         ruleSetDetailsComponent.contentElement.querySelector('#error-message-text')?.textContent, 'fake error message');
   });
 
-  // TODO(https://crbug.com/1384419): Check that preloading attempts for
-  // the previous page vanish once loaderId is added to events
-  // prefetch/prerenderAttemptUpdated.
   it('clears SpeculationRules for previous pages', async () => {
     const emulator = new NavigationEmulator();
     await emulator.openDevTools();

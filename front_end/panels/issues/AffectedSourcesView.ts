@@ -44,7 +44,6 @@ export class AffectedSourcesView extends AffectedResourcesView {
     // 'click' neither 'keydown' if that key is the 'Enter' key.
     // Also, this element has a context menu, so we should be able to
     // track when the user use the context menu too.
-    // TODO(crbug.com/1108503): Add some mechanism to be able to add telemetry to this element.
     const anchorElement =
         Components.Linkifier.Linkifier.linkifyURL(url as Platform.DevToolsPath.UrlString, linkifierURLOptions);
     anchorElement.setAttribute('jslog', `${VisualLogging.link('source-location').track({click: true})}`);

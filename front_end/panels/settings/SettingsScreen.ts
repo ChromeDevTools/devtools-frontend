@@ -18,7 +18,7 @@ import {type Card, createIcon} from '../../ui/kit/kit.js';
 import * as SettingsUI from '../../ui/legacy/components/settings_ui/settings_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {html, render, type TemplateResult} from '../../ui/lit/lit.js';
+import {html, nothing, render, type TemplateResult} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import {PanelUtils} from '../utils/utils.js';
 
@@ -640,13 +640,23 @@ const GREENDEV_VIEW: View = (input, _output, target) => {
   // clang-format off
   render(html`
          <div class="settings-card-container">
-           <devtools-card .heading=${'GreenDev Prototypes'}>
+           <devtools-card .heading=${'GreenDev prototypes'}>
              <div class="experiments-warning-subsection">
               <devtools-icon .name=${'warning'}></devtools-icon>
               <span>${i18nString(UIStrings.greenDevUnstable)}</span>
              </div>
              <div class="settings-experiments-block">
-               ${renderPrototypeCheckboxes(input.settings)}
+               ${renderPrototypeCheckboxes(input.settings, ['aiAnnotations', 'inDevToolsFloaty'])}
+             </div>
+           </devtools-card>
+
+           <devtools-card .heading=${'GreenDev widgets'}>
+             <div class="experiments-warning-subsection">
+              <devtools-icon .name=${'warning'}></devtools-icon>
+              <span>${i18nString(UIStrings.greenDevUnstable)}</span>
+             </div>
+             <div class="settings-experiments-block greendev-widgets">
+               ${renderWidgetOptions(input.settings)}
              </div>
            </devtools-card>
          </div>
@@ -661,8 +671,48 @@ const GREENDEV_PROTOTYPE_NAMES: Record<keyof GreenDev.GreenDevSettings, string> 
   artifactViewer: 'Widgets in the Artifact viewer'
 };
 
+function renderWidgetOptions(settings: GreenDev.GreenDevSettings): TemplateResult {
+  function onChange(nowActiveRadio: 'inlineWidgets'|'artifactViewer'|'none') {
+    return () => {
+      switch (nowActiveRadio) {
+        case 'inlineWidgets': {
+          settings.artifactViewer.set(false);
+          settings.inlineWidgets.set(true);
+          break;
+        }
+        case 'artifactViewer': {
+          settings.artifactViewer.set(true);
+          settings.inlineWidgets.set(false);
+          break;
+        }
+        case 'none': {
+          settings.artifactViewer.set(false);
+          settings.inlineWidgets.set(false);
+        }
+      }
+
+      UI.InspectorView.InspectorView.instance().displayReloadRequiredWarning(
+          i18nString(UIStrings.oneOrMoreSettingsHaveChanged));
+    };
+  }
+  // clang-format off
+  return html`
+    <p class="settings-experiment">
+      <label><input type="radio" name="widgets-choice" @change=${onChange('inlineWidgets')}>${GREENDEV_PROTOTYPE_NAMES['inlineWidgets']}</label>
+    </p>
+    <p class="settings-experiment">
+      <label><input type="radio" name="widgets-choice" @change=${onChange('artifactViewer')}>${GREENDEV_PROTOTYPE_NAMES['artifactViewer']}</label>
+    </p>
+    <p class="settings-experiment">
+      <label><input type="radio" name="widgets-choice" @change=${onChange('none')}>None</label>
+    </p>
+  `;
+  // clang-format on
+}
+
 function renderPrototypeCheckboxes(
     settings: GreenDev.GreenDevSettings,
+    keys: Array<keyof GreenDev.GreenDevSettings>,
     ): TemplateResult {
   const {bindToSetting} = UI.UIUtils;
 
@@ -671,9 +721,13 @@ function renderPrototypeCheckboxes(
         i18nString(UIStrings.oneOrMoreSettingsHaveChanged));
   }
   // clang-format off
-  const checkboxes = Object.keys(settings).map(settingName => {
-    const setting = settings[settingName as keyof GreenDev.GreenDevSettings];
-    const title = GREENDEV_PROTOTYPE_NAMES[settingName as keyof GreenDev.GreenDevSettings];
+  const checkboxes = Object.keys(settings).map(name => {
+    const settingName = name as keyof GreenDev.GreenDevSettings;
+    if(!keys.includes(settingName)) {
+      return nothing;
+    }
+    const setting = settings[settingName];
+    const title = GREENDEV_PROTOTYPE_NAMES[settingName];
     return html`<p class="settings-experiment">
       <devtools-checkbox @change=${showChangeWarning} title=${title} ${bindToSetting(setting)}>${title}</devtools-checkbox>
     </p>`;

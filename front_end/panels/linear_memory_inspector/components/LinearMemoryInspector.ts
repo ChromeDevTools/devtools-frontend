@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import './LinearMemoryValueInterpreter.js';
 import './LinearMemoryViewer.js';
 
 import * as Common from '../../../core/common/common.js';
@@ -20,6 +19,7 @@ import {
   Navigation,
   type PageNavigationEvent,
 } from './LinearMemoryNavigator.js';
+import {LinearMemoryValueInterpreter} from './LinearMemoryValueInterpreter.js';
 import type {ByteSelectedEvent, ResizeEvent} from './LinearMemoryViewer.js';
 import type {HighlightInfo} from './LinearMemoryViewerUtils.js';
 import {
@@ -186,10 +186,8 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: Record<string, unknown>,
     ${
       input.hideValueInspector ? nothing : html`
     <div class="value-interpreter">
-      <devtools-linear-memory-inspector-interpreter
-        .data=${
-          {
-            value: input.memory
+      <devtools-widget .widgetConfig=${widgetConfig(LinearMemoryValueInterpreter, {
+            buffer: input.memory
                        .slice(
                            input.address - input.memoryOffset,
                            input.address + VALUE_INTEPRETER_MAX_NUM_BYTES,
@@ -203,9 +201,7 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: Record<string, unknown>,
             onJumpToAddressClicked: input.onJumpToAddress,
             onValueTypeToggled: input.onValueTypeToggled,
             onEndiannessChanged: input.onEndiannessChanged,
-  }}
-        >
-      </devtools-linear-memory-inspector-interpreter>
+      })}></devtools-widget>
     </div>`}
     `,
          target);

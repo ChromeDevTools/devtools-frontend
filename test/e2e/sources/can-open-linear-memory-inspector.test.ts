@@ -22,7 +22,7 @@ const LINEAR_MEMORY_INSPECTOR_TAB_SELECTOR = '#tab-linear-memory-inspector';
 const LINEAR_MEMORY_INSPECTOR_TABBED_PANE_SELECTOR = DRAWER_PANEL_SELECTOR + ' .tabbed-pane';
 const LINEAR_MEMORY_INSPECTOR_TABBED_PANE_TAB_SELECTOR = '.tabbed-pane-header-tab';
 const LINEAR_MEMORY_INSPECTOR_TAB_TITLE_SELECTOR = '.tabbed-pane-header-tab-title';
-const VALUE_INTERPRETER_SELECTOR = 'devtools-linear-memory-inspector-interpreter';
+const VALUE_INTERPRETER_SELECTOR = '.value-interpreter';
 
 describe('Linear Memory Inspector', () => {
   it('renders selectable values', async ({devToolsPage, inspectedPage}) => {

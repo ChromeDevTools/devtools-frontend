@@ -20,6 +20,18 @@ describe('ScopeParser', () => {
       assert.deepEqual(innerScope?.variables?.get('a')?.uses.map(u => u.offset), [13]);
     });
 
+    it('parses function expression', () => {
+      const scopes = parseScopes('const foo = function(a) {}; const bar = function b() {}');
+
+      const scopeFoo = scopes?.children[0];
+      assert.strictEqual(scopeFoo?.kind, FormatterAction.ScopeKind.FUNCTION);
+      assert.deepEqual(scopeFoo?.nameMappingLocations, [20]);
+
+      const scopeBar = scopes?.children[1];
+      assert.strictEqual(scopeBar?.kind, FormatterAction.ScopeKind.FUNCTION);
+      assert.deepEqual(scopeBar?.nameMappingLocations, [49, 50]);
+    });
+
     it('parses arrow function', () => {
       const scopes = parseScopes('let f = (a) => {}');
 

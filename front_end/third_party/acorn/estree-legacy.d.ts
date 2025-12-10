@@ -20,6 +20,7 @@ export type CatchClause = estree.CatchClause;
 export type Class = estree.Class;
 export type Expression = estree.Expression;
 export type FunctionDeclaration = estree.FunctionDeclaration;
+export type FunctionExpression = estree.FunctionExpression;
 export type ForStatement = estree.ForStatement;
 export type ForOfStatement = estree.ForOfStatement;
 export type ForInStatement = estree.ForInStatement;

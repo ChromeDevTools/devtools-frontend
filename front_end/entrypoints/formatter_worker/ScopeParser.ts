@@ -269,7 +269,9 @@ export class ScopeVariableAnalysis {
         this.#popScope(true);
         break;
       case 'FunctionExpression':
-        this.#pushScope(node.id?.end ?? node.start, node.end, ScopeKind.FUNCTION);
+        this.#pushScope(
+            node.id?.end ?? node.start, node.end, ScopeKind.FUNCTION,
+            mappingLocationsForFunctionExpression(node, this.#sourceText));
         this.#addVariable('this', node.start, DefinitionKind.FIXED);
         this.#addVariable('arguments', node.start, DefinitionKind.FIXED);
         node.params.forEach(this.#processNodeAsDefinition.bind(this, DefinitionKind.LET, false));
@@ -503,6 +505,25 @@ function mappingLocationsForFunctionDeclaration(node: Acorn.ESTree.FunctionDecla
 
   const searchParenEndPos = node.params.length ? node.params[0].start : node.body.start;
   const parenPos = indexOfCharInBounds(sourceText, '(', node.id.end, searchParenEndPos);
+  if (parenPos >= 0) {
+    // Note that this is not 100% accurate as there might be a comment containing a open parenthesis between
+    // the identifier the and the argument list (unlikely though).
+    result.push(parenPos);
+  }
+
+  return result;
+}
+
+function mappingLocationsForFunctionExpression(node: Acorn.ESTree.FunctionExpression, sourceText: string): number[] {
+  // For function expressions we prefer the position of the identifier or '(' if none is present, as per spec.
+  const result = [];
+  if (node.id) {
+    result.push(node.id.start);
+  }
+
+  const searchParenStartPos = node.id ? node.id.end : node.start;
+  const searchParenEndPos = node.params.length ? node.params[0].start : node.body.start;
+  const parenPos = indexOfCharInBounds(sourceText, '(', searchParenStartPos, searchParenEndPos);
   if (parenPos >= 0) {
     // Note that this is not 100% accurate as there might be a comment containing a open parenthesis between
     // the identifier the and the argument list (unlikely though).

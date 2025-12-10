@@ -35,7 +35,7 @@ function computeSubstitution(expression: string, nameMap: Map<string, string|nul
     checkPrivateFields: false,
     ranges: false,
   } as acorn.Options) as Acorn.ESTree.Node;
-  const scopeVariables = new ScopeVariableAnalysis(root);
+  const scopeVariables = new ScopeVariableAnalysis(root, expression);
   scopeVariables.run();
   const freeVariables = scopeVariables.getFreeVariables();
   const result: Replacement[] = [];

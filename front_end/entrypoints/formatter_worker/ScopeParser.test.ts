@@ -16,6 +16,7 @@ describe('ScopeParser', () => {
       assert.strictEqual(innerScope?.start, 12);
       assert.strictEqual(innerScope?.end, 17);
       assert.strictEqual(innerScope?.kind, FormatterAction.ScopeKind.FUNCTION);
+      assert.deepEqual(innerScope?.nameMappingLocations, [9, 12]);
       assert.deepEqual(innerScope?.variables?.get('a')?.uses.map(u => u.offset), [13]);
     });
 

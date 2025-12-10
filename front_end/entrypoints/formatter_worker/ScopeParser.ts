@@ -141,6 +141,7 @@ export class ScopeVariableAnalysis {
   #currentScope: Scope;
   readonly #rootNode: Acorn.ESTree.Node;
   readonly #sourceText: string;
+  #additionalMappingLocations: number[] = [];
 
   constructor(node: Acorn.ESTree.Node, sourceText: string) {
     this.#rootNode = node;
@@ -271,7 +272,7 @@ export class ScopeVariableAnalysis {
       case 'FunctionExpression':
         this.#pushScope(
             node.id?.end ?? node.start, node.end, ScopeKind.FUNCTION,
-            mappingLocationsForFunctionExpression(node, this.#sourceText));
+            [...this.#additionalMappingLocations, ...mappingLocationsForFunctionExpression(node, this.#sourceText)]);
         this.#addVariable('this', node.start, DefinitionKind.FIXED);
         this.#addVariable('arguments', node.start, DefinitionKind.FIXED);
         node.params.forEach(this.#processNodeAsDefinition.bind(this, DefinitionKind.LET, false));
@@ -295,8 +296,11 @@ export class ScopeVariableAnalysis {
       case 'MethodDefinition':
         if (node.computed) {
           this.#processNode(node.key);
+        } else {
+          this.#additionalMappingLocations = mappingLocationsForMethodDefinition(node);
         }
         this.#processNode(node.value);
+        this.#additionalMappingLocations = [];
         break;
       case 'NewExpression':
         this.#processNode(node.callee);
@@ -531,6 +535,17 @@ function mappingLocationsForFunctionExpression(node: Acorn.ESTree.FunctionExpres
   }
 
   return result;
+}
+
+function mappingLocationsForMethodDefinition(node: Acorn.ESTree.MethodDefinition): number[] {
+  // Method definitions use a FunctionExpression as their "value" child. So we only
+  // record the start of the "key" here and let 'mappingLocationsForFunctionExpression' handle
+  // the parenthesis.
+  if (node.key.type === 'Identifier' || node.key.type === 'PrivateIdentifier') {
+    const id = node.key as Acorn.ESTree.Identifier | Acorn.ESTree.PrivateIdentifier;
+    return [id.start];
+  }
+  return [];
 }
 
 function indexOfCharInBounds(str: string, needle: string, start: number, end: number): number {

@@ -133,5 +133,33 @@ describe('ScopeParser', () => {
       const firstOccurence = source.indexOf('Foo');
       assert.strictEqual(uses[0].offset, source.indexOf('Foo', firstOccurence + 1));
     });
+
+    it('parses methods', () => {
+      const scopes = parseScopes(`class C { someMethod() {} }`);
+
+      const scopeMethod = scopes?.children[0];
+      assert.strictEqual(scopeMethod?.kind, FormatterAction.ScopeKind.FUNCTION);
+      assert.deepEqual(scopeMethod?.nameMappingLocations, [10, 20]);
+    });
+
+    it('parses private methods', () => {
+      const scopes = parseScopes(`class C { #someMethod() {} }`);
+
+      const scopeMethod = scopes?.children[0];
+      assert.strictEqual(scopeMethod?.kind, FormatterAction.ScopeKind.FUNCTION);
+      assert.deepEqual(scopeMethod?.nameMappingLocations, [10, 21]);
+    });
+
+    it('parses getters and setters', () => {
+      const scopes = parseScopes(`class C { get foo() {} set foo(value) {} }`);
+
+      const scopeGet = scopes?.children[0];
+      assert.strictEqual(scopeGet?.kind, FormatterAction.ScopeKind.FUNCTION);
+      assert.deepEqual(scopeGet?.nameMappingLocations, [14, 17]);
+
+      const scopeSet = scopes?.children[1];
+      assert.strictEqual(scopeSet?.kind, FormatterAction.ScopeKind.FUNCTION);
+      assert.deepEqual(scopeSet?.nameMappingLocations, [27, 30]);
+    });
   });
 });

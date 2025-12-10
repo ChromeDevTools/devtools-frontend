@@ -230,8 +230,4 @@ export class Section extends VBox {
     ARIAUtils.markAsGroup(this.fieldList);
     ARIAUtils.setLabel(this.fieldList, this.title());
   }
-
-  setIconMasked(masked: boolean): void {
-    this.element.classList.toggle('show-mask', masked);
-  }
 }

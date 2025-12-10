@@ -5,7 +5,7 @@
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
-import {getCleanTextContentFromElements, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import {createViewFunctionStub, type ViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
@@ -33,7 +33,9 @@ describeWithMockConnection('AppManifestView', () => {
   });
 
   afterEach(() => {
-    view.detach();
+    if (view) {
+      view.detach();
+    }
   });
 
   it('shows report view once manifest available', async () => {
@@ -290,6 +292,8 @@ describeWithMockConnection('AppManifestView', () => {
   it('displays "form-factor", "platform" and "label" properties for screenshots', async () => {
     const emptyView = new UI.EmptyWidget.EmptyWidget('', '');
     const reportView = new UI.ReportView.ReportView('');
+    const container = document.createElement('div');
+    renderElementIntoDOM(container);
     const viewInput = {
       reportView,
       emptyView,
@@ -310,7 +314,8 @@ describeWithMockConnection('AppManifestView', () => {
             naturalWidth: 320,
             naturalHeight: 320,
             title: '320×320px\nimage/png',
-            imageSrc: '',
+            imageSrc:
+                'data:application/octet-stream;base64,iVBORw0KGgoAAAANSUhEUgAAAUAAAAFABAMAAAA/vriZAAAAG1BMVEUAAAD///+fn59fX19/f3/f39+/v78/Pz8fHx82YA2fAAAACXBIWXMAAA7EAAAOxAGVKw4bAAADR0lEQVR4nO3Yy1PaUBTHcQSRLHvABJbio3YJ04fbMsW2S9OnS2JH6hJqHV3GqpU/u3lCwJuQEByczvezgOTknvCbQJIbCgUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJbv0l51gmQVebvqCMkImNckYLOh2KwsqqQemNWTD6i9HCR9xOoDzvkIAmZAwLyeVMCRnfIjZoujuL3kCLjdChbWd5yX0q5z7dsT+RRcXbTt9JcZ7b2Ivh+uvTGdtd3E7nRkK1goG87Lhl7QLHEYtlcMLtTdbtfa7LoinTNFren2yU9/42tvRfRWXPfiAduyM7rvyHEkoCYhfdI4W7yQL1fajSXeQVuX6oE9Ot9z25XdiwcsecdAs6qRgIV+v28azkv/JNI5XSzJZ6/BrLtvbd32xty04roXDjj0k5XFjgQszP8NDoNId95hMo9jB+YMKKa/XvKTpQ9o1QtBY8tta8UOzBvQCOu9TAEr4/2YPfcnaD9awHBP1lGmgEUJryidxuMGDAN1GpkClsdn6HXN/Z4HcQNzBwz33M4W8Lo6jlqNfuHLDxjW2/VMAdu1cGnD3Y9Vixu4qoCderhUdL/sobx47IDDbAEjp4sbsGLKD/tpBdS/BkxvF3+cG9uOrRi4soAy4RVunTmH0Xo4cGUBa5djQem3Jfryp1uLBuwoNmuHUnswcGUB64rNhU54WV1GwLVcAds1xWbnjtLLHdBcTsDJnWSK1cgfsBcmyhWwbCg2Tw5sjoD+rMXdR66Axdn5S7CX/AGbz/z3iiQHVJ2mkeKD6cF0QGV3OuGXcDcnYFt1mkaKlvo0rid0p3Pt/3g0cy854HBT0Rwphs8kUzTzKKE7naIf4UKfcx1cUz0zRorr8j0I5QStfPSX/4bPJsrudDQxnIvpLzmbE7AoZ87r1XRztNjxn9lvmt5DkzeXuTWrSd0pXYh+cirVeXcSzZRvz2d/aNGiM8MyTrZPxT1oTl367vJWUndK3l8W1YE/E44P6E6gRGY/Ilosef+Z+P/OVA69ec2+cmBm590Pdoph993uQXLxPLJy/6r7bhA3EAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACA/9E/taiqMl6Q6aMAAAAASUVORK5CYII=',
             imageUrl: FIXTURES_320X320_URL,
           }
         }],
@@ -318,14 +323,8 @@ describeWithMockConnection('AppManifestView', () => {
         warnings: [],
       }
     };
-    Application.AppManifestView.DEFAULT_VIEW(viewInput, undefined, viewInput.reportView.element);
-    const screenshotSection = reportView.element.shadowRoot?.querySelector<HTMLDivElement>('.report-section') || null;
-    assert.instanceOf(screenshotSection, HTMLDivElement);
-    assert.deepEqual(
-        getCleanTextContentFromElements(screenshotSection, '.report-field-name').slice(0, 3),
-        ['Form factor', 'Label', 'Platform']);
-    assert.deepEqual(
-        getCleanTextContentFromElements(screenshotSection, '.report-field-value').slice(0, 3),
-        ['wide', 'Dummy Screenshot', 'windows']);
+    const viewOutput = {scrollToSection: new Map(), focusOnSection: new Map()};
+    Application.AppManifestView.DEFAULT_VIEW(viewInput, viewOutput, container);
+    await assertScreenshot('application/app_manifest_view_screenshots.png');
   });
 });

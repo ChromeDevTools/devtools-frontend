@@ -1395,11 +1395,7 @@ describe('The Styles pane', () => {
        assert.isTrue(innerText?.toLowerCase().startsWith('specificity'));
      });
 
-  // crbug.com/419705502 Flaky after migration
-  it.skip('[crbug.com/419705502] can display nested pseudo elements and their styles', async ({
-                                                                                         devToolsPage,
-                                                                                         inspectedPage,
-                                                                                       }) => {
+  it('can display nested pseudo elements and their styles', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToHtml(`
       <style>
       #inspected::before {
@@ -1433,12 +1429,7 @@ describe('The Styles pane', () => {
     // Select the node and expand it to show pseudos.
     await waitForAndClickTreeElementWithPartialText('inspected', devToolsPage);
     await expandSelectedNodeRecursively(devToolsPage);
-
-    // Expand ::before and ::after to reveal their markers.
-    await waitForAndClickTreeElementWithPartialText('::before', devToolsPage);
-    await devToolsPage.pressKey('ArrowRight');
-    await waitForAndClickTreeElementWithPartialText('::after', devToolsPage);
-    await devToolsPage.pressKey('ArrowRight');
+    await waitForChildrenOfSelectedElementNode(devToolsPage, ['::before', '::marker', 'Text', '::after', '::marker']);
 
     // --- Assert styles ---
     // ::before
@@ -1504,15 +1495,13 @@ describe('The Styles pane', () => {
 
     // Removing 'display: list-item' from ::after should remove its marker.
     await removeLastRule();  // Removes #inspected::after { display: list-item; }
-    await waitForPartialContentOfSelectedElementsNode('::after', devToolsPage);
-    await devToolsPage.pressKey('ArrowDown');
-    await waitForPartialContentOfSelectedElementsNode('</div>', devToolsPage);
+    await waitForAndClickTreeElementWithPartialText('inspected', devToolsPage);
+    await expandSelectedNodeRecursively(devToolsPage);
+    await waitForChildrenOfSelectedElementNode(devToolsPage, ['::before', '::marker', 'Text', '::after']);
 
     // Removing 'display: list-item' from ::before should remove its marker.
     await removeLastRule();  // Removes #inspected::before { display: list-item; }
-    await waitForAndClickTreeElementWithPartialText('::before', devToolsPage);
-    await devToolsPage.pressKey('ArrowDown');
-    await waitForPartialContentOfSelectedElementsNode('Text', devToolsPage);
+    await waitForChildrenOfSelectedElementNode(devToolsPage, ['::before', 'Text', '::after']);
 
     // Add back the rules.
     await inspectedPage.evaluate(() => {
@@ -1550,11 +1539,7 @@ describe('The Styles pane', () => {
       document.getElementById('inspected')?.remove();
     });
 
-    await waitForChildrenOfSelectedElementNode(devToolsPage);
-    await waitForContentOfSelectedElementsNode(
-        '<div id=\u200B"container">\u200B</div>\u200B',
-        devToolsPage,
-    );
+    await waitForChildrenOfSelectedElementNode(devToolsPage, []);
   });
 
   describe('Editing', () => {

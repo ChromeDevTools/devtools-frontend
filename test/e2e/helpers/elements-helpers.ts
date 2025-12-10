@@ -249,9 +249,28 @@ export const waitForSelectedTreeElementSelectorWhichIncludesText =
   });
 };
 
-export const waitForChildrenOfSelectedElementNode =
-    async (devToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
-  await devToolsPage.waitFor(`${SELECTED_TREE_ELEMENT_SELECTOR} + ol > li`);
+export const waitForChildrenOfSelectedElementNode = async (devToolsPage: DevToolsPage, partialTexts?: string[]) => {
+  return await devToolsPage.waitForFunction(async () => {
+    const childrenContainer = await devToolsPage.waitFor(SELECTED_TREE_ELEMENT_SELECTOR + ' + ol');
+    const children = await devToolsPage.$$('[role="treeitem"]', childrenContainer, 'aria');
+    if (!partialTexts) {
+      return children.length > 0;
+    }
+    if (children.length) {
+      // Remove the close tag
+      --children.length;
+    }
+    if (children.length !== partialTexts.length) {
+      return false;
+    }
+    for (let i = 0; i < children.length; i++) {
+      const match = await children[i].evaluate((element, text) => element.textContent?.includes(text), partialTexts[i]);
+      if (!match) {
+        return false;
+      }
+    }
+    return true;
+  });
 };
 
 export const waitForAndClickTreeElementWithPartialText = async (text: string, devToolsPage?: DevToolsPage) => {

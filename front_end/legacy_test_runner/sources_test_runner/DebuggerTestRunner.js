@@ -402,7 +402,14 @@ export const showUISourceCode = function(uiSourceCode, callback) {
   if (sourceFrame.loaded) {
     callback(sourceFrame);
   } else {
-    TestRunner.addSniffer(sourceFrame, 'setContent', callback && callback.bind(null, sourceFrame));
+    const originalSetContent = sourceFrame.setContent;
+    sourceFrame.setContent = async (...args) => {
+      sourceFrame.setContent = originalSetContent;
+      await originalSetContent.apply(sourceFrame, args);
+      if (callback) {
+        callback(sourceFrame);
+      }
+    };
   }
 };
 

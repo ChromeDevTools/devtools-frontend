@@ -10,6 +10,11 @@ TRY_ACCOUNT = "devtools-frontend-try-builder@chops-service-accounts.iam.gservice
 
 TRY_BUCKET_NAME = "try"
 
+# Define the last branch that needs to use an old recipe and the cipd version
+# of that recipe that the branch will use.
+# Select the desired recipe version from https://chrome-infra-packages.appspot.com/p/infra/recipe_bundles/chromium.googlesource.com/chromium/tools/build .
+LEGACY_RECIPE = struct(branch = "7444", old_cipd_version = "git_revision:7e910d1f8e870191d963d5150710e844131e6ed6")
+
 defaults = struct(
     cipd_package = "infra/recipe_bundles/chromium.googlesource.com/chromium/tools/build",
     cipd_version = "refs/heads/main",

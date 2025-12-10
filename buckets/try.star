@@ -4,6 +4,7 @@
 
 load(
     "//lib/builders.star",
+    "LEGACY_RECIPE",
     "TRY_ACCOUNT",
     "acls",
     "bucket",
@@ -17,7 +18,7 @@ load(
     "recipe",
     "try_builder_base",
 )
-load("//definitions.star", "legacy_recipe", "versions")
+load("//definitions.star", "VERSIONS")
 load("//lib/siso.star", "SISO")
 
 BUCKET_NAME = "try"
@@ -46,10 +47,10 @@ def try_builder(properties = None, legacy_variant = False, **kwargs):
     try_builders.append(kwargs["name"])
 
     if legacy_variant:
-        kwargs["name"] = "%s_legacy_%s" % (kwargs["name"], legacy_recipe.branch)
-        kwargs["recipe_cipd_version"] = legacy_recipe.old_cipd_version
+        kwargs["name"] = "%s_legacy_%s" % (kwargs["name"], LEGACY_RECIPE.branch)
+        kwargs["recipe_cipd_version"] = LEGACY_RECIPE.old_cipd_version
         if properties and "compilator_name" in properties:
-            properties["compilator_name"] = "%s_legacy_%s" % (properties["compilator_name"], legacy_recipe.branch)
+            properties["compilator_name"] = "%s_legacy_%s" % (properties["compilator_name"], LEGACY_RECIPE.branch)
         try_builder_base(properties = properties, **kwargs)
         try_builders.append(kwargs["name"])
 
@@ -243,12 +244,12 @@ def includable_only_builder(builder):
 def branch_verifiers(with_chromium = True, branch = None):
     def use_variant(builder):
         return (branch and
-                (int(versions[branch]) <= int(legacy_recipe.branch)) and
+                (int(VERSIONS[branch]) <= int(LEGACY_RECIPE.branch)) and
                 (builder in cq_builders.has_legacy_variant))
 
     return [
         luci.cq_tryjob_verifier(
-            builder = builder if not use_variant(builder) else "%s_legacy_%s" % (builder, legacy_recipe.branch),
+            builder = builder if not use_variant(builder) else "%s_legacy_%s" % (builder, LEGACY_RECIPE.branch),
             disable_reuse = ("presubmit" in builder),
             experiment_percentage = experiment_builder(builder),
             includable_only = includable_only_builder(builder),
@@ -323,20 +324,20 @@ def branch_cq():
         )
 
     def any_branch_needs_legacy():
-        for branch in versions.keys():
-            if int(versions[branch]) <= int(legacy_recipe.branch):
+        for branch in VERSIONS.keys():
+            if int(VERSIONS[branch]) <= int(LEGACY_RECIPE.branch):
                 return True
         return False
 
     # If none of the branches need a legacy recipe, create a single CQ group.
     if any_branch_needs_legacy():
         version_groups = set()
-        for branch in versions.keys():
-            if versions[branch] in version_groups:
+        for branch in VERSIONS.keys():
+            if VERSIONS[branch] in version_groups:
                 # Avoid creating a second CQ group for the version number.
                 continue
-            version_groups.add(versions[branch])
-            cq_group(branch, versions[branch])
+            version_groups.add(VERSIONS[branch])
+            cq_group(branch, VERSIONS[branch])
     else:
         cq_group()
 

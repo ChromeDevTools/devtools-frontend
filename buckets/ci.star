@@ -3,6 +3,7 @@
 # found in the LICENSE file.
 load(
     "//lib/builders.star",
+    "LEGACY_RECIPE",
     "builder",
     "builder_descriptor",
     "config_section",
@@ -12,7 +13,7 @@ load(
     "generate_ci_configs",
 )
 load("//lib/siso.star", "SISO")
-load("//definitions.star", "legacy_recipe", "versions")
+load("//definitions.star", "VERSIONS")
 
 DEFAULT_PRIORITY = 30
 
@@ -21,12 +22,12 @@ defaults.build_numbers.set(True)
 def branch_section(name):
     return config_section(
         name = name,
-        branch = "refs/heads/chromium/%s" % versions[name],
-        branch_number = versions[name],
+        branch = "refs/heads/chromium/%s" % VERSIONS[name],
+        branch_number = VERSIONS[name],
         notifiers = ["devtools notifier"],
         priority = 50,
         recipe_cipd_version = (
-            defaults.cipd_version if int(versions[name]) > int(legacy_recipe.branch) else legacy_recipe.old_cipd_version
+            defaults.cipd_version if int(VERSIONS[name]) > int(LEGACY_RECIPE.branch) else LEGACY_RECIPE.old_cipd_version
         ),  # Use old cipd version for branches that need a legacy recipe
     )
 

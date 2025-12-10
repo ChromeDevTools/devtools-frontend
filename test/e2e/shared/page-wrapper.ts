@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {assert} from 'chai';
 import type * as puppeteer from 'puppeteer-core';
 
 import {AsyncScope} from '../../conductor/async-scope.js';
@@ -208,5 +209,288 @@ export class PageWrapper {
         await root.keyboard.up(CONTROL_OR_META);
       }
     });
+  }
+
+  async typeText(text: string, opts?: {delay: number}) {
+    await this.page.keyboard.type(text, opts);
+    await this.drainTaskQueue();
+  }
+
+  async hover(selector: string, options?: {root?: puppeteer.ElementHandle}) {
+    return await this.performActionOnSelector(
+        selector,
+        {root: options?.root},
+        element => element.hover(),
+    );
+  }
+
+  waitForAria<ElementType extends Element = Element>(
+      selector: string, root?: puppeteer.ElementHandle, asyncScope = new AsyncScope()) {
+    return this.waitFor<ElementType>(selector, root, asyncScope, 'aria');
+  }
+
+  async waitForNone(selector: string, root?: puppeteer.ElementHandle, asyncScope = new AsyncScope(), handler?: string) {
+    return await asyncScope.exec(() => this.waitForFunction(async () => {
+      const elements = await this.$$(selector, root, handler);
+      if (elements.length === 0) {
+        return true;
+      }
+      return false;
+    }, asyncScope), `Waiting for no elements to match selector '${handler ? `${handler}/` : ''}${selector}'`);
+  }
+
+  /**
+   * @deprecated This method is not able to recover from unstable DOM. Use click(selector) instead.
+   */
+  async clickElement(element: puppeteer.ElementHandle, options?: ClickOptions): Promise<void> {
+    // Retries here just in case the element gets connected to DOM / becomes visible.
+    await this.waitForFunction(async () => {
+      try {
+        await element.click(options?.clickOptions);
+        await this.drainTaskQueue();
+        return true;
+      } catch {
+        return false;
+      }
+    });
+  }
+
+  waitForElementWithTextContent(textContent: string, root?: puppeteer.ElementHandle, asyncScope = new AsyncScope()) {
+    return this.waitFor(textContent, root, asyncScope, 'pierceShadowText');
+  }
+
+  async scrollElementIntoView(selector: string, root?: puppeteer.ElementHandle) {
+    const element = await this.$(selector, root);
+
+    if (!element) {
+      throw new Error(`Unable to find element with selector "${selector}"`);
+    }
+
+    await element.evaluate(el => {
+      el.scrollIntoView({
+        behavior: 'instant',
+        block: 'center',
+        inline: 'center',
+      });
+    });
+  }
+
+  /**
+   * Search for all elements based on their textContent
+   *
+   * @param textContent The text content to search for.
+   * @param root The root of the search.
+   */
+  async $$textContent(textContent: string, root?: puppeteer.ElementHandle) {
+    return await this.$$(textContent, root, 'pierceShadowText');
+  }
+
+  waitForNoElementsWithTextContent(textContent: string, root?: puppeteer.ElementHandle, asyncScope = new AsyncScope()) {
+    return asyncScope.exec(() => this.waitForFunction(async () => {
+      const elements = await this.$$textContent(textContent, root);
+      if (elements?.length === 0) {
+        return true;
+      }
+
+      return false;
+    }, asyncScope), `Waiting for no elements with textContent '${textContent}'`);
+  }
+
+  async doubleClick(
+      selector: string, options?: {root?: puppeteer.ElementHandle, clickOptions?: puppeteer.ClickOptions}) {
+    const passedClickOptions = (options?.clickOptions) || {};
+    const clickOptionsWithDoubleClick: puppeteer.ClickOptions = {
+      ...passedClickOptions,
+      clickCount: 2,
+    };
+    return await this.click(selector, {
+      ...options,
+      clickOptions: clickOptionsWithDoubleClick,
+    });
+  }
+
+  async pasteText(text: string) {
+    await this.page.keyboard.sendCharacter(text);
+    await this.drainTaskQueue();
+  }
+
+  /**
+   * Search for an element based on its textContent.
+   *
+   * @param textContent The text content to search for.
+   * @param root The root of the search.
+   */
+  async $textContent(textContent: string, root?: puppeteer.ElementHandle) {
+    return await this.$(textContent, root, 'pierceShadowText');
+  }
+
+  async getTextContent<ElementType extends Element = Element>(selector: string, root?: puppeteer.ElementHandle) {
+    const text = await (await this.$<ElementType, typeof selector>(selector, root))?.evaluate(node => node.textContent);
+    return text ?? undefined;
+  }
+
+  async getAllTextContents(selector: string, root?: puppeteer.JSHandle, handler = 'pierce'):
+      Promise<Array<string|null>> {
+    const allElements = await this.$$(selector, root, handler);
+    return await Promise.all(allElements.map(e => e.evaluate(e => e.textContent)));
+  }
+
+  /**
+   * Match multiple elements based on a selector and return their textContents, but only for those
+   * elements that are visible.
+   *
+   * @param selector jquery selector to match
+   * @returns array containing text contents from visible elements
+   */
+  async getVisibleTextContents(selector: string) {
+    const allElements = await this.$$(selector);
+    const texts = await Promise.all(
+        allElements.map(el => el.evaluate(node => node.checkVisibility() ? node.textContent?.trim() : undefined)));
+    return texts.filter(content => typeof (content) === 'string');
+  }
+
+  async waitForVisible<ElementType extends Element|null = null, Selector extends string = string>(
+      selector: Selector, root?: puppeteer.ElementHandle, asyncScope = new AsyncScope(), handler?: string) {
+    return await asyncScope.exec(() => this.waitForFunction(async () => {
+      const element = await this.$<ElementType, typeof selector>(selector, root, handler);
+      const visible = await element.evaluate(node => node.checkVisibility());
+      return visible ? element : undefined;
+    }, asyncScope), `Waiting for element matching selector '${handler ? `${handler}/` : ''}${selector}' to be visible`);
+  }
+
+  async waitForMany<ElementType extends Element|null = null, Selector extends string = string>(
+      selector: Selector, count: number, root?: puppeteer.ElementHandle, asyncScope = new AsyncScope(),
+      handler?: string) {
+    return await asyncScope.exec(
+        () => this.waitForFunction(
+            async () => {
+              const elements = await this.$$<ElementType, typeof selector>(selector, root, handler);
+              return elements.length >= count ? elements : undefined;
+            },
+            asyncScope, undefined),
+        `Waiting for ${count} elements to match selector '${handler ? `${handler}/` : ''}${selector}'`);
+  }
+
+  async waitForManyWithTries<ElementType extends Element|null = null, Selector extends string = string>(
+      selector: Selector, count: number, tries: number, root?: puppeteer.ElementHandle, asyncScope = new AsyncScope(),
+      handler?: string) {
+    return await asyncScope.exec(
+        () => this.waitForFunctionWithTries(
+            async () => {
+              const elements = await this.$$<ElementType, typeof selector>(selector, root, handler);
+              return elements.length >= count ? elements : undefined;
+            },
+            {tries}, asyncScope),
+        `Waiting for ${count} elements to match selector '${handler ? `${handler}/` : ''}${selector}'`);
+  }
+
+  waitForAriaNone = (selector: string, root?: puppeteer.ElementHandle, asyncScope = new AsyncScope()) => {
+    return this.waitForNone(selector, root, asyncScope, 'aria');
+  };
+
+  waitForElementsWithTextContent(textContent: string, root?: puppeteer.ElementHandle, asyncScope = new AsyncScope()) {
+    return asyncScope.exec(() => this.waitForFunction(async () => {
+      const elements = await this.$$textContent(textContent, root);
+      if (elements?.length) {
+        return elements;
+      }
+
+      return;
+    }, asyncScope), `Waiting for elements with textContent '${textContent}'`);
+  }
+
+  async waitForFunctionWithTries<T>(
+      fn: () => Promise<T|undefined>, options: {tries: number} = {
+        tries: Number.MAX_SAFE_INTEGER,
+      },
+      asyncScope = new AsyncScope()) {
+    return await asyncScope.exec(async () => {
+      let tries = 0;
+      while (tries++ < options.tries) {
+        const result = await fn();
+        if (result) {
+          return result as Exclude<NonNullable<T>, false>;
+        }
+        await this.timeout(100);
+      }
+      return;
+    });
+  }
+
+  async waitForWithTries(
+      selector: string, root?: puppeteer.ElementHandle, options: {tries: number} = {
+        tries: Number.MAX_SAFE_INTEGER,
+      },
+      asyncScope = new AsyncScope(), handler?: string) {
+    return await asyncScope.exec(() => this.waitForFunctionWithTries(async () => {
+      const element = await this.$(selector, root, handler);
+      return (element || undefined);
+    }, options, asyncScope));
+  }
+
+  async activeElement() {
+    await this.raf();
+
+    return await this.page.evaluateHandle(() => {
+      let activeElement = document.activeElement;
+
+      while (activeElement?.shadowRoot) {
+        activeElement = activeElement.shadowRoot.activeElement;
+      }
+
+      if (!activeElement) {
+        throw new Error('No active element found');
+      }
+
+      return activeElement;
+    });
+  }
+
+  async activeElementTextContent() {
+    const element = await this.activeElement();
+    return await element.evaluate(node => node.textContent);
+  }
+
+  async activeElementAccessibleName() {
+    const element = await this.activeElement();
+    return await element.evaluate(node => node.getAttribute('aria-label') || node.getAttribute('title'));
+  }
+
+  async tabForward() {
+    await this.page.keyboard.press('Tab');
+  }
+
+  async tabBackward() {
+    await this.pressKey('Tab', {shift: true});
+  }
+
+  async hasClass(element: puppeteer.ElementHandle<Element>, classname: string) {
+    return await element.evaluate((el, classname) => el.classList.contains(classname), classname);
+  }
+
+  async waitForClass(element: puppeteer.ElementHandle<Element>, classname: string) {
+    await this.waitForFunction(async () => {
+      return await this.hasClass(element, classname);
+    });
+  }
+
+  waitForTextNotMatching(element: puppeteer.ElementHandle<Element>, regex: RegExp): Promise<string> {
+    return this.waitForFunction(async () => {
+      const text = await element.evaluate(e => e.textContent);
+      if (text.match(regex)) {
+        return;
+      }
+      return text;
+    });
+  }
+
+  async setCheckBox(selector: string, wantChecked: boolean) {
+    const checkbox = await this.waitFor<HTMLInputElement>(selector);
+    const checked = await checkbox.evaluate(box => box.checked);
+    if (checked !== wantChecked) {
+      await this.click(`${selector} + label`);
+    }
+    assert.strictEqual(
+        await checkbox.evaluate(box => box.checked), wantChecked, `Expected checkbox to be ${wantChecked}`);
   }
 }

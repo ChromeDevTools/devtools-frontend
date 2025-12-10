@@ -161,7 +161,7 @@ describe('Recorder', function() {
         async function expandStep(devToolsPage: DevToolsPage, index: number) {
           await devToolsPage.bringToFront();
           // TODO(crbug.com/1411283): figure out why misclicks happen here.
-          await devToolsPage.waitForAnimationFrame();
+          await devToolsPage.raf();
           await devToolsPage.click(`.step[data-step-index="${index}"] .action`);
           await devToolsPage.waitFor('.expanded');
         }
@@ -321,7 +321,7 @@ describe('Recorder', function() {
         await stopRecording(devToolsPage);
 
         await devToolsPage.click('aria/Edit replay settings');
-        await devToolsPage.waitForAnimationFrame();
+        await devToolsPage.raf();
 
         const selectMenu = await devToolsPage.waitFor(
             '.editable-setting select',

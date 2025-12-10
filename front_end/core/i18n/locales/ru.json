@@ -107,6 +107,9 @@
   "core/common/Revealer.ts | networkPanel": {
     "message": "Панель \"Сеть\""
   },
+  "core/common/Revealer.ts | requestConditionsDrawer": {
+    "message": "Панель условий запроса"
+  },
   "core/common/Revealer.ts | securityPanel": {
     "message": "Панель безопасности"
   },
@@ -173,7 +176,7 @@
   "core/common/SettingRegistration.ts | sources": {
     "message": "Источники"
   },
-  "core/host/InspectorFrontendHost.ts | devtoolsS": {
+  "core/host/InspectorFrontendHostStub.ts | devtoolsS": {
     "message": "Инструменты разработчика – {PH1}"
   },
   "core/host/ResourceLoader.ts | cacheError": {
@@ -575,6 +578,9 @@
   "core/sdk/sdk-meta.ts | captureAsyncStackTraces": {
     "message": "Записать асинхронные трассировки стека"
   },
+  "core/sdk/sdk-meta.ts | cssSourceMaps": {
+    "message": "Карты исходного кода CSS"
+  },
   "core/sdk/sdk-meta.ts | customFormatters": {
     "message": "Пользовательские форматировщики"
   },
@@ -589,6 +595,12 @@
   },
   "core/sdk/sdk-meta.ts | disableCache": {
     "message": "Отключить кеш, пока открыты инструменты разработчика"
+  },
+  "core/sdk/sdk-meta.ts | disableCssSourceMaps": {
+    "message": "Отключить карты исходного кода CSS"
+  },
+  "core/sdk/sdk-meta.ts | disableJavaScriptSourceMaps": {
+    "message": "Отключить карты исходного кода JavaScript"
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "Отключить JavaScript"
@@ -692,6 +704,12 @@
   "core/sdk/sdk-meta.ts | enableCache": {
     "message": "Включить кеширование"
   },
+  "core/sdk/sdk-meta.ts | enableCssSourceMaps": {
+    "message": "Включить карты исходного кода CSS"
+  },
+  "core/sdk/sdk-meta.ts | enableJavaScriptSourceMaps": {
+    "message": "Включить карты исходного кода JavaScript"
+  },
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "Включить JavaScript"
   },
@@ -702,7 +720,7 @@
     "message": "Включить блокировку сетевых запросов"
   },
   "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
-    "message": "Разрешить DevTools загружать ресурсы, например карты исходного кода, из удаленных (не локальных) источников. По умолчанию этот параметр отключен из соображений безопасности."
+    "message": "Разрешить загрузку ресурсов из удаленных источников в инструментах разработчика"
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Включить формат WebP"
@@ -729,7 +747,13 @@
     "message": "Скрыть узкие места производительности прокрутки"
   },
   "core/sdk/sdk-meta.ts | highlightAdFrames": {
-    "message": "Выделять фреймы объявлений"
+    "message": "Выделить фреймы объявлений"
+  },
+  "core/sdk/sdk-meta.ts | javaScriptSourceMaps": {
+    "message": "Карты исходного кода JavaScript"
+  },
+  "core/sdk/sdk-meta.ts | logXmlhttprequests": {
+    "message": "Регистрировать запросы XMLHttpRequests"
   },
   "core/sdk/sdk-meta.ts | networkCacheExplanation": {
     "message": "Отключение сетевого кеша имитирует сетевое взаимодействие, аналогичное первому посещению"
@@ -781,6 +805,9 @@
   },
   "core/sdk/sdk-meta.ts | reducedContrast": {
     "message": "Пониженная контрастность"
+  },
+  "core/sdk/sdk-meta.ts | remoteFileLoadingInfo": {
+    "message": "Примером ресурса являются карты исходного кода. В целях безопасности этот параметр по умолчанию отключен."
   },
   "core/sdk/sdk-meta.ts | screen": {
     "message": "экран"
@@ -902,8 +929,8 @@
   "entrypoints/inspector_main/RenderingOptions.ts | frameRenderingStats": {
     "message": "Статистика отрисовки фрейма"
   },
-  "entrypoints/inspector_main/RenderingOptions.ts | highlightAdFrames": {
-    "message": "Выделять фреймы объявлений"
+  "entrypoints/inspector_main/RenderingOptions.ts | highlightAds": {
+    "message": "Выделить объявления"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | highlightsAreasOfThePageBlueThat": {
     "message": "Смещенные области страницы отмечаются голубым цветом. Не рекомендуется людям со светочувствительной эпилепсией."
@@ -911,11 +938,11 @@
   "entrypoints/inspector_main/RenderingOptions.ts | highlightsAreasOfThePageGreen": {
     "message": "Области страницы, требующие нового отображения, выделяются зеленым. Не рекомендуется людям со светочувствительной эпилепсией."
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | highlightsElementsRedDetectedToBe": {
+    "message": "Выделять красным элементы, распознанные как объявления."
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | highlightsElementsTealThatCan": {
     "message": "Элементы, которые могут замедлять прокручивание, включая обработчики событий прикосновения и колеса мыши, а также другие ситуации прокручивания в основном потоке, выделяются бирюзовым."
-  },
-  "entrypoints/inspector_main/RenderingOptions.ts | highlightsFramesRedDetectedToBe": {
-    "message": "Обнаруженные фреймы объявлений выделяются красным."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | layerBorders": {
     "message": "Границы слоя"
@@ -1003,6 +1030,9 @@
   },
   "entrypoints/main/GlobalAiButton.ts | aiAssistance": {
     "message": "Помощь от ИИ"
+  },
+  "entrypoints/main/MainImpl.ts | aiModelDownloaded": {
+    "message": "ИИ-модель скачана."
   },
   "entrypoints/main/MainImpl.ts | customizeAndControlDevtools": {
     "message": "Настройка инструментов разработчика и управление ими"
@@ -1202,28 +1232,28 @@
   "entrypoints/main/main-meta.ts | zoomOut": {
     "message": "Уменьшить масштаб"
   },
-  "entrypoints/node_app/NodeConnectionsPanel.ts | addConnection": {
+  "entrypoints/node_app/app/NodeConnectionsPanel.ts | addConnection": {
     "message": "Добавить подключение"
   },
-  "entrypoints/node_app/NodeConnectionsPanel.ts | networkAddressEgLocalhost": {
+  "entrypoints/node_app/app/NodeConnectionsPanel.ts | networkAddressEgLocalhost": {
     "message": "Сетевой адрес (например, localhost:9229)"
   },
-  "entrypoints/node_app/NodeConnectionsPanel.ts | noConnectionsSpecified": {
+  "entrypoints/node_app/app/NodeConnectionsPanel.ts | noConnectionsSpecified": {
     "message": "Связи не указаны"
   },
-  "entrypoints/node_app/NodeConnectionsPanel.ts | nodejsDebuggingGuide": {
+  "entrypoints/node_app/app/NodeConnectionsPanel.ts | nodejsDebuggingGuide": {
     "message": "Руководство по отладке Node.js"
   },
-  "entrypoints/node_app/NodeConnectionsPanel.ts | specifyNetworkEndpointAnd": {
+  "entrypoints/node_app/app/NodeConnectionsPanel.ts | specifyNetworkEndpointAnd": {
     "message": "Укажите конечную точку сети, и инструменты разработчика подключатся к ней автоматически. Чтобы узнать больше, прочитайте это: {PH1}."
   },
-  "entrypoints/node_app/NodeMain.ts | NodejsTitleS": {
+  "entrypoints/node_app/app/NodeMain.ts | NodejsTitleS": {
     "message": "Инструменты разработчика – Node.js: {PH1}"
   },
-  "entrypoints/node_app/NodeMain.ts | main": {
+  "entrypoints/node_app/app/NodeMain.ts | main": {
     "message": "Основная"
   },
-  "entrypoints/node_app/NodeMain.ts | nodejsS": {
+  "entrypoints/node_app/app/NodeMain.ts | nodejsS": {
     "message": "Node.js: {PH1}"
   },
   "entrypoints/node_app/node_app.ts | connection": {
@@ -1243,6 +1273,9 @@
   },
   "entrypoints/worker_app/WorkerMain.ts | main": {
     "message": "Основная"
+  },
+  "generated/Deprecation.ts | AttributionReporting": {
+    "message": "Отчеты об атрибуции больше не поддерживаются и будут удалены. Подробнее: https://goo.gle/ps-status."
   },
   "generated/Deprecation.ts | AuthorizationCoveredByWildcard": {
     "message": "Авторизация не будет выполняться, если в заголовке CORS Access-Control-Allow-Headers вместо необходимых данных указан подстановочный знак (*)."
@@ -1280,6 +1313,12 @@
   "generated/Deprecation.ts | DataUrlInSvgUse": {
     "message": "URL из SVGUseElement больше не поддерживаются и в дальнейшем будут удалены."
   },
+  "generated/Deprecation.ts | ExampleBrowserProcessDeprecation": {
+    "message": "Пример кода, необходимого для функции прекращения поддержки, о которой сообщил процесс браузера."
+  },
+  "generated/Deprecation.ts | Fledge": {
+    "message": "Protected Audience API больше не поддерживается и будет удален."
+  },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
     "message": "getCurrentPosition() и watchPosition() больше не работают с небезопасными источниками. Чтобы применять эти методы, задайте для приложения безопасный источник, например использующий протокол HTTPS. Подробнее: https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/."
   },
@@ -1306,12 +1345,6 @@
   },
   "generated/Deprecation.ts | LocalCSSFileExtensionRejected": {
     "message": "Загрузить CSS с помощью URL в формате file: можно, только если у имени файла расширение .css."
-  },
-  "generated/Deprecation.ts | MediaSourceAbortRemove": {
-    "message": "Использовать метод SourceBuffer.abort() для отмены асинхронного удаления диапазона, выполняемого в remove(), не рекомендуется из-за изменений в стандарте. В будущем поддержка этого метода будет прекращена. Руководствуйтесь событием updateend. Метод abort() предназначен только для отмены асинхронного добавления медиаданных или сброса состояния синтаксического анализатора."
-  },
-  "generated/Deprecation.ts | MediaSourceDurationTruncatingBuffered": {
-    "message": "Устанавливать для MediaSource.duration значение меньше максимальной временной метки в воспроизводимых медиаданных для любых закодированных фреймов в буфере не рекомендуется из-за изменений стандарта. В будущем поддержка неявного удаления обрезанных медиаданных в буфере будет прекращена. Вместо этого придется явно выполнять метод remove(newDuration, oldDuration) для всех объектов sourceBuffers, для которых newDuration < oldDuration."
   },
   "generated/Deprecation.ts | NoSysexWebMIDIWithoutPermission": {
     "message": "Web MIDI запрашивает разрешение на использование, даже если в объекте MIDIOptions не указан параметр sysex."
@@ -1370,9 +1403,6 @@
   "generated/Deprecation.ts | PrefixedVideoSupportsFullscreen": {
     "message": "Метод HTMLVideoElement.webkitSupportsFullscreen больше не поддерживается. Используйте Document.fullscreenEnabled вместо него."
   },
-  "generated/Deprecation.ts | PrivacySandboxExtensionsAPI": {
-    "message": "Мы прекращаем поддержку chrome.privacy.websites.privacySandboxEnabled API. Он будет работать в рамках обратной совместимости до выпуска M113. Вместо этого API используйте chrome.privacy.websites.topicsEnabled, chrome.privacy.websites.fledgeEnabled и chrome.privacy.websites.adMeasurementEnabled. Подробнее: https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled."
-  },
   "generated/Deprecation.ts | RTCConstraintEnableDtlsSrtpFalse": {
     "message": "Ограничение DtlsSrtpKeyAgreement удалено. Вы указали для него значение false, которое интерпретируется как попытка использовать неподдерживаемый метод SDES key negotiation. Эта возможность удалена. Вместо нее используйте сервис, поддерживающий DTLS key negotiation."
   },
@@ -1385,6 +1415,9 @@
   "generated/Deprecation.ts | RangeExpand": {
     "message": "Метод Range.expand() больше не поддерживается. Используйте Selection.modify() вместо него."
   },
+  "generated/Deprecation.ts | RelatedWebsiteSets": {
+    "message": "Метод Related Website Sets больше не поддерживается и будет удален. Подробнее: https://privacysandbox.com/news/update-on-plans-for-privacy-sandbox-technologies/."
+  },
   "generated/Deprecation.ts | RequestedSubresourceWithEmbeddedCredentials": {
     "message": "Запросы подресурсов, в URL которых содержатся встроенные учетные данные (например, https://user:pass@host/), блокируются."
   },
@@ -1394,8 +1427,17 @@
   "generated/Deprecation.ts | SharedArrayBufferConstructedWithoutIsolation": {
     "message": "Для SharedArrayBuffer требуется изоляция от междоменных источников. Подробнее: https://developer.chrome.com/blog/enabling-shared-array-buffer/."
   },
+  "generated/Deprecation.ts | SharedStorage": {
+    "message": "Shared Storage API больше не поддерживается и в будущих релизах будет удален."
+  },
+  "generated/Deprecation.ts | StorageAccessAPI_requestStorageAccessFor_Method": {
+    "message": "Метод document.requestStorageAccessFor больше не поддерживается и будет удален. Подробнее: https://privacysandbox.com/news/update-on-plans-for-privacy-sandbox-technologies/."
+  },
   "generated/Deprecation.ts | TextToSpeech_DisallowedByAutoplay": {
     "message": "Вызов метода speechSynthesis.speak() без активации пользователем не поддерживается. В дальнейшем эта возможность будет удалена."
+  },
+  "generated/Deprecation.ts | Topics": {
+    "message": "Topics API больше не поддерживается и будет удален."
   },
   "generated/Deprecation.ts | UnloadHandler": {
     "message": "Прослушиватели событий выгрузки устарели и будут удалены."
@@ -1411,6 +1453,12 @@
   },
   "generated/Deprecation.ts | XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
     "message": "Синхронные вызовы метода XMLHttpRequest в основном потоке больше не поддерживаются, так как они отрицательно влияют на удобство работы пользователей. Подробнее: https://xhr.spec.whatwg.org/."
+  },
+  "generated/Deprecation.ts | XMLNoExternalEntities": {
+    "message": "Внешние объекты при обработке XML не поддерживаются и скоро будут удалены из этого браузера."
+  },
+  "generated/Deprecation.ts | XSLT": {
+    "message": "XSLTProcessor и инструкции обработки XSLT больше не поддерживаются никакими браузерами. Эти функции будут скоро удалены."
   },
   "models/ai_assistance/AiUtils.ts | ageRestricted": {
     "message": "Эта функция доступна только пользователям, которым уже исполнилось 18 лет."
@@ -1582,6 +1630,9 @@
   },
   "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
     "message": "Описание CORB"
+  },
+  "models/issues_manager/GenericIssue.ts | historyManipulationInterventionPageTitle": {
+    "message": "Механизм защиты от манипуляций с историей браузера: пояснительная записка"
   },
   "models/issues_manager/GenericIssue.ts | howDoesAutofillWorkPageTitle": {
     "message": "Как работает автозаполнение?"
@@ -1818,7 +1869,7 @@
     "message": "Время консоли"
   },
   "models/trace/Styles.ts | cppGc": {
-    "message": "Сборка мусора в C++"
+    "message": "C++ GC"
   },
   "models/trace/Styles.ts | createWebsocket": {
     "message": "Создать объект WebSocket"
@@ -3065,6 +3116,30 @@
   "panels/ai_assistance/components/ChatView.ts | revealContextDescription": {
     "message": "Показать выбранный контекстный объект в инструментах разработчика"
   },
+  "panels/ai_assistance/components/DisabledWidget.ts | notAvailableInIncognitoMode": {
+    "message": "Помощь от ИИ недоступна в режиме инкогнито и гостевом режиме"
+  },
+  "panels/ai_assistance/components/DisabledWidget.ts | notLoggedIn": {
+    "message": "Эта функция доступна, только когда вы вошли в Chrome с аккаунтом Google."
+  },
+  "panels/ai_assistance/components/DisabledWidget.ts | offline": {
+    "message": "Проверьте подключение к интернету и повторите попытку."
+  },
+  "panels/ai_assistance/components/DisabledWidget.ts | settingsLink": {
+    "message": "помощь от ИИ в настройках"
+  },
+  "panels/ai_assistance/components/DisabledWidget.ts | turnOnForStyles": {
+    "message": "Если вам нужна помощь с CSS-стилями, включите {PH1}"
+  },
+  "panels/ai_assistance/components/DisabledWidget.ts | turnOnForStylesAndRequests": {
+    "message": "Если вам нужна помощь со стилями и сетевыми запросами, включите {PH1}"
+  },
+  "panels/ai_assistance/components/DisabledWidget.ts | turnOnForStylesRequestsAndFiles": {
+    "message": "Если вам нужна помощь со стилями, сетевыми запросами или файлами, включите {PH1}."
+  },
+  "panels/ai_assistance/components/DisabledWidget.ts | turnOnForStylesRequestsPerformanceAndFiles": {
+    "message": "Если вам нужна помощь со стилями, сетевыми запросами, производительностью или файлами, включите {PH1}."
+  },
   "panels/animation/AnimationTimeline.ts | animationDescription": {
     "message": "На этой странице можно посмотреть или изменить анимации."
   },
@@ -3653,6 +3728,156 @@
   "panels/application/ExtensionStorageItemsView.ts | extensionStorageItemsCleared": {
     "message": "Хранилище расширения очищено."
   },
+  "panels/application/FrameDetailsView.ts | aFrameAncestorIsAnInsecure": {
+    "message": "Родительский фрейм небезопасен"
+  },
+  "panels/application/FrameDetailsView.ts | adStatus": {
+    "message": "Статус объявления"
+  },
+  "panels/application/FrameDetailsView.ts | additionalInformation": {
+    "message": "Дополнительная информация"
+  },
+  "panels/application/FrameDetailsView.ts | apiAvailability": {
+    "message": "Доступность API"
+  },
+  "panels/application/FrameDetailsView.ts | availabilityOfCertainApisDepends": {
+    "message": "Доступность определенных API зависит от документа, который был изолирован от разных источников."
+  },
+  "panels/application/FrameDetailsView.ts | available": {
+    "message": "доступно"
+  },
+  "panels/application/FrameDetailsView.ts | availableNotTransferable": {
+    "message": "доступно, не может быть передано"
+  },
+  "panels/application/FrameDetailsView.ts | availableTransferable": {
+    "message": "доступно, готово для переноса"
+  },
+  "panels/application/FrameDetailsView.ts | child": {
+    "message": "дочерний элемент"
+  },
+  "panels/application/FrameDetailsView.ts | childDescription": {
+    "message": "Это дочерний фрейм одного из рекламных объявлений."
+  },
+  "panels/application/FrameDetailsView.ts | clickToOpenInNetworkPanel": {
+    "message": "Нажмите, чтобы открыть на панели \"Сеть\""
+  },
+  "panels/application/FrameDetailsView.ts | clickToOpenInNetworkPanelMight": {
+    "message": "Нажмите, чтобы открыть на панели \"Сеть\" (может потребоваться перезагрузка страницы)"
+  },
+  "panels/application/FrameDetailsView.ts | clickToOpenInSourcesPanel": {
+    "message": "Нажмите, чтобы открыть на панели \"Источники\""
+  },
+  "panels/application/FrameDetailsView.ts | contentSecurityPolicy": {
+    "message": "Content Security Policy (CSP)"
+  },
+  "panels/application/FrameDetailsView.ts | createdByAdScriptExplanation": {
+    "message": "При создании этого фрейма в (async) stack находился скрипт объявления. Чтобы узнать больше, изучите stack trace при создании фрейма."
+  },
+  "panels/application/FrameDetailsView.ts | creationStackTrace": {
+    "message": "Stack Trace при создании фрейма"
+  },
+  "panels/application/FrameDetailsView.ts | creationStackTraceExplanation": {
+    "message": "Фрейм создан с помощью программных средств. stack trace показывает, где это произошло."
+  },
+  "panels/application/FrameDetailsView.ts | creatorAdScriptAncestry": {
+    "message": "Ссылки скрипта рекламы, использованные для создания"
+  },
+  "panels/application/FrameDetailsView.ts | crossoriginIsolated": {
+    "message": "Изолирован от разных источников"
+  },
+  "panels/application/FrameDetailsView.ts | document": {
+    "message": "Документ"
+  },
+  "panels/application/FrameDetailsView.ts | frameId": {
+    "message": "Идентификатор фрейма"
+  },
+  "panels/application/FrameDetailsView.ts | learnMore": {
+    "message": "Подробнее…"
+  },
+  "panels/application/FrameDetailsView.ts | localhostIsAlwaysASecureContext": {
+    "message": "Сервер Localhost всегда безопасен."
+  },
+  "panels/application/FrameDetailsView.ts | matchedBlockingRuleExplanation": {
+    "message": "Считается, что это фрейм объявлений, так как его текущий (или предыдущий) основной документ – ресурс объявлений."
+  },
+  "panels/application/FrameDetailsView.ts | measureMemory": {
+    "message": "Измерение памяти"
+  },
+  "panels/application/FrameDetailsView.ts | no": {
+    "message": "Нет"
+  },
+  "panels/application/FrameDetailsView.ts | none": {
+    "message": "Нет"
+  },
+  "panels/application/FrameDetailsView.ts | origin": {
+    "message": "Источник"
+  },
+  "panels/application/FrameDetailsView.ts | originTrialsExplanation": {
+    "message": "Эксперименты с источником дают доступ к новой или экспериментальной функции."
+  },
+  "panels/application/FrameDetailsView.ts | ownerElement": {
+    "message": "Элемент owner"
+  },
+  "panels/application/FrameDetailsView.ts | parentIsAdExplanation": {
+    "message": "Считается, что это фрейм объявлений, так как его родительский фрейм относится к такому типу."
+  },
+  "panels/application/FrameDetailsView.ts | reportingTo": {
+    "message": "отправляет отчеты"
+  },
+  "panels/application/FrameDetailsView.ts | requiresCrossoriginIsolated": {
+    "message": "требуется контекст, изолированный от других источников"
+  },
+  "panels/application/FrameDetailsView.ts | root": {
+    "message": "корневой уровень"
+  },
+  "panels/application/FrameDetailsView.ts | rootDescription": {
+    "message": "Это корневой фрейм одного из рекламных объявлений."
+  },
+  "panels/application/FrameDetailsView.ts | rootScriptFilterlistRule": {
+    "message": "Правило фильтрации списка с корневым скриптом"
+  },
+  "panels/application/FrameDetailsView.ts | secureContext": {
+    "message": "Безопасный контекст"
+  },
+  "panels/application/FrameDetailsView.ts | securityIsolation": {
+    "message": "Безопасность и изоляция"
+  },
+  "panels/application/FrameDetailsView.ts | sharedarraybufferConstructorIs": {
+    "message": "Конструктор SharedArrayBuffer доступен, и объекты SABs могут быть переданы через postMessage"
+  },
+  "panels/application/FrameDetailsView.ts | sharedarraybufferConstructorIsAvailable": {
+    "message": "Конструктор SharedArrayBuffer доступен, но объекты SABs нельзя передать через postMessage"
+  },
+  "panels/application/FrameDetailsView.ts | theFramesSchemeIsInsecure": {
+    "message": "Схема фрейма небезопасна"
+  },
+  "panels/application/FrameDetailsView.ts | thePerformanceAPI": {
+    "message": "Есть доступ к performance.measureUserAgentSpecificMemory() API"
+  },
+  "panels/application/FrameDetailsView.ts | thePerformancemeasureuseragentspecificmemory": {
+    "message": "Нет доступа к API performance.measureUserAgentSpecificMemory()"
+  },
+  "panels/application/FrameDetailsView.ts | thisAdditionalDebugging": {
+    "message": "Это дополнительная информация (сведения об отладке) показаны, потому что запущен эксперимент Protocol Monitor."
+  },
+  "panels/application/FrameDetailsView.ts | transferRequiresCrossoriginIsolatedPermission": {
+    "message": "Для переноса SharedArrayBuffer требуется настроить разрешение:"
+  },
+  "panels/application/FrameDetailsView.ts | unavailable": {
+    "message": "недоступен"
+  },
+  "panels/application/FrameDetailsView.ts | unreachableUrl": {
+    "message": "Недоступный URL"
+  },
+  "panels/application/FrameDetailsView.ts | url": {
+    "message": "URL"
+  },
+  "panels/application/FrameDetailsView.ts | willRequireCrossoriginIsolated": {
+    "message": "⚠️ в будущем потребуется контекст, изолированный от междоменных источников"
+  },
+  "panels/application/FrameDetailsView.ts | yes": {
+    "message": "Да"
+  },
   "panels/application/IndexedDBViews.ts | clearObjectStore": {
     "message": "Очистить хранилище объектов"
   },
@@ -3814,6 +4039,39 @@
   },
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "Да"
+  },
+  "panels/application/OriginTrialTreeView.ts | expiryTime": {
+    "message": "Срок действия"
+  },
+  "panels/application/OriginTrialTreeView.ts | isThirdParty": {
+    "message": "Третьей стороны"
+  },
+  "panels/application/OriginTrialTreeView.ts | matchSubDomains": {
+    "message": "Применение к субдоменам"
+  },
+  "panels/application/OriginTrialTreeView.ts | noTrialTokens": {
+    "message": "Нет токенов для эксперимента с источником."
+  },
+  "panels/application/OriginTrialTreeView.ts | origin": {
+    "message": "Источник"
+  },
+  "panels/application/OriginTrialTreeView.ts | rawTokenText": {
+    "message": "Необработанный токен"
+  },
+  "panels/application/OriginTrialTreeView.ts | status": {
+    "message": "Статус токена"
+  },
+  "panels/application/OriginTrialTreeView.ts | token": {
+    "message": "Токен"
+  },
+  "panels/application/OriginTrialTreeView.ts | tokens": {
+    "message": "Токены: {PH1}"
+  },
+  "panels/application/OriginTrialTreeView.ts | trialName": {
+    "message": "Название пробной версии"
+  },
+  "panels/application/OriginTrialTreeView.ts | usageRestriction": {
+    "message": "Ограничение на использование"
   },
   "panels/application/PreloadingTreeElement.ts | rules": {
     "message": "Правила"
@@ -4595,6 +4853,9 @@
   "panels/application/components/BackForwardCacheView.ts | supportPendingExplanation": {
     "message": "Это временные причины, поэтому в будущих версиях Chrome они не будут препятствовать добавлению страниц в возвратный кеш."
   },
+  "panels/application/components/BackForwardCacheView.ts | testCompleted": {
+    "message": "Проверка возвратного кеша завершена."
+  },
   "panels/application/components/BackForwardCacheView.ts | unavailable": {
     "message": "недоступно"
   },
@@ -4634,159 +4895,6 @@
   "panels/application/components/EndpointsGrid.ts | noEndpointsToDisplay": {
     "message": "Нет конечных точек."
   },
-  "panels/application/components/FrameDetailsView.ts | aFrameAncestorIsAnInsecure": {
-    "message": "Родительский фрейм небезопасен"
-  },
-  "panels/application/components/FrameDetailsView.ts | adStatus": {
-    "message": "Статус объявления"
-  },
-  "panels/application/components/FrameDetailsView.ts | additionalInformation": {
-    "message": "Дополнительная информация"
-  },
-  "panels/application/components/FrameDetailsView.ts | apiAvailability": {
-    "message": "Доступность API"
-  },
-  "panels/application/components/FrameDetailsView.ts | availabilityOfCertainApisDepends": {
-    "message": "Доступность определенных API зависит от документа, который был изолирован от разных источников."
-  },
-  "panels/application/components/FrameDetailsView.ts | available": {
-    "message": "доступно"
-  },
-  "panels/application/components/FrameDetailsView.ts | availableNotTransferable": {
-    "message": "доступно, не может быть передано"
-  },
-  "panels/application/components/FrameDetailsView.ts | availableTransferable": {
-    "message": "доступно, готово для переноса"
-  },
-  "panels/application/components/FrameDetailsView.ts | child": {
-    "message": "дочерний элемент"
-  },
-  "panels/application/components/FrameDetailsView.ts | childDescription": {
-    "message": "Это дочерний фрейм одного из рекламных объявлений."
-  },
-  "panels/application/components/FrameDetailsView.ts | clickToOpenInElementsPanel": {
-    "message": "Нажмите, чтобы открыть на панели \"Элементы\""
-  },
-  "panels/application/components/FrameDetailsView.ts | clickToOpenInNetworkPanel": {
-    "message": "Нажмите, чтобы открыть на панели \"Сеть\""
-  },
-  "panels/application/components/FrameDetailsView.ts | clickToOpenInNetworkPanelMight": {
-    "message": "Нажмите, чтобы открыть на панели \"Сеть\" (может потребоваться перезагрузка страницы)"
-  },
-  "panels/application/components/FrameDetailsView.ts | clickToOpenInSourcesPanel": {
-    "message": "Нажмите, чтобы открыть на панели \"Источники\""
-  },
-  "panels/application/components/FrameDetailsView.ts | contentSecurityPolicy": {
-    "message": "Content Security Policy (CSP)"
-  },
-  "panels/application/components/FrameDetailsView.ts | createdByAdScriptExplanation": {
-    "message": "При создании этого фрейма в (async) stack находился скрипт объявления. Чтобы узнать больше, изучите stack trace при создании фрейма."
-  },
-  "panels/application/components/FrameDetailsView.ts | creationStackTrace": {
-    "message": "Stack Trace при создании фрейма"
-  },
-  "panels/application/components/FrameDetailsView.ts | creationStackTraceExplanation": {
-    "message": "Фрейм создан с помощью программных средств. stack trace показывает, где это произошло."
-  },
-  "panels/application/components/FrameDetailsView.ts | creatorAdScriptAncestry": {
-    "message": "Ссылки скрипта рекламы, использованные для создания"
-  },
-  "panels/application/components/FrameDetailsView.ts | crossoriginIsolated": {
-    "message": "Изолирован от разных источников"
-  },
-  "panels/application/components/FrameDetailsView.ts | document": {
-    "message": "Документ"
-  },
-  "panels/application/components/FrameDetailsView.ts | frameId": {
-    "message": "Идентификатор фрейма"
-  },
-  "panels/application/components/FrameDetailsView.ts | learnMore": {
-    "message": "Подробнее…"
-  },
-  "panels/application/components/FrameDetailsView.ts | localhostIsAlwaysASecureContext": {
-    "message": "Сервер Localhost всегда безопасен."
-  },
-  "panels/application/components/FrameDetailsView.ts | matchedBlockingRuleExplanation": {
-    "message": "Считается, что это фрейм объявлений, так как его текущий (или предыдущий) основной документ – ресурс объявлений."
-  },
-  "panels/application/components/FrameDetailsView.ts | measureMemory": {
-    "message": "Измерение памяти"
-  },
-  "panels/application/components/FrameDetailsView.ts | no": {
-    "message": "Нет"
-  },
-  "panels/application/components/FrameDetailsView.ts | none": {
-    "message": "Нет"
-  },
-  "panels/application/components/FrameDetailsView.ts | origin": {
-    "message": "Источник"
-  },
-  "panels/application/components/FrameDetailsView.ts | originTrialsExplanation": {
-    "message": "Эксперименты с источником дают доступ к новой или экспериментальной функции."
-  },
-  "panels/application/components/FrameDetailsView.ts | ownerElement": {
-    "message": "Элемент owner"
-  },
-  "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
-    "message": "Считается, что это фрейм объявлений, так как его родительский фрейм относится к такому типу."
-  },
-  "panels/application/components/FrameDetailsView.ts | reportingTo": {
-    "message": "отправляет отчеты"
-  },
-  "panels/application/components/FrameDetailsView.ts | requiresCrossoriginIsolated": {
-    "message": "требуется контекст, изолированный от других источников"
-  },
-  "panels/application/components/FrameDetailsView.ts | root": {
-    "message": "корневой уровень"
-  },
-  "panels/application/components/FrameDetailsView.ts | rootDescription": {
-    "message": "Это корневой фрейм одного из рекламных объявлений."
-  },
-  "panels/application/components/FrameDetailsView.ts | rootScriptFilterlistRule": {
-    "message": "Правило фильтрации списка с корневым скриптом"
-  },
-  "panels/application/components/FrameDetailsView.ts | secureContext": {
-    "message": "Безопасный контекст"
-  },
-  "panels/application/components/FrameDetailsView.ts | securityIsolation": {
-    "message": "Безопасность и изоляция"
-  },
-  "panels/application/components/FrameDetailsView.ts | sharedarraybufferConstructorIs": {
-    "message": "Конструктор SharedArrayBuffer доступен, и объекты SABs могут быть переданы через postMessage"
-  },
-  "panels/application/components/FrameDetailsView.ts | sharedarraybufferConstructorIsAvailable": {
-    "message": "Конструктор SharedArrayBuffer доступен, но объекты SABs нельзя передать через postMessage"
-  },
-  "panels/application/components/FrameDetailsView.ts | theFramesSchemeIsInsecure": {
-    "message": "Схема фрейма небезопасна"
-  },
-  "panels/application/components/FrameDetailsView.ts | thePerformanceAPI": {
-    "message": "Есть доступ к performance.measureUserAgentSpecificMemory() API"
-  },
-  "panels/application/components/FrameDetailsView.ts | thePerformancemeasureuseragentspecificmemory": {
-    "message": "Нет доступа к API performance.measureUserAgentSpecificMemory()"
-  },
-  "panels/application/components/FrameDetailsView.ts | thisAdditionalDebugging": {
-    "message": "Это дополнительная информация (сведения об отладке) показаны, потому что запущен эксперимент Protocol Monitor."
-  },
-  "panels/application/components/FrameDetailsView.ts | transferRequiresCrossoriginIsolatedPermission": {
-    "message": "Для переноса SharedArrayBuffer требуется настроить разрешение:"
-  },
-  "panels/application/components/FrameDetailsView.ts | unavailable": {
-    "message": "недоступен"
-  },
-  "panels/application/components/FrameDetailsView.ts | unreachableUrl": {
-    "message": "Недоступный URL"
-  },
-  "panels/application/components/FrameDetailsView.ts | url": {
-    "message": "URL"
-  },
-  "panels/application/components/FrameDetailsView.ts | willRequireCrossoriginIsolated": {
-    "message": "⚠️ в будущем потребуется контекст, изолированный от междоменных источников"
-  },
-  "panels/application/components/FrameDetailsView.ts | yes": {
-    "message": "Да"
-  },
   "panels/application/components/InterestGroupAccessGrid.ts | allInterestGroupStorageEvents": {
     "message": "Все события хранения данных для группы по интересам"
   },
@@ -4807,39 +4915,6 @@
   },
   "panels/application/components/InterestGroupAccessGrid.ts | noEvents": {
     "message": "События для групп по интересам не найдены."
-  },
-  "panels/application/components/OriginTrialTreeView.ts | expiryTime": {
-    "message": "Срок действия"
-  },
-  "panels/application/components/OriginTrialTreeView.ts | isThirdParty": {
-    "message": "Третьей стороны"
-  },
-  "panels/application/components/OriginTrialTreeView.ts | matchSubDomains": {
-    "message": "Применение к субдоменам"
-  },
-  "panels/application/components/OriginTrialTreeView.ts | noTrialTokens": {
-    "message": "Нет токенов для эксперимента с источником."
-  },
-  "panels/application/components/OriginTrialTreeView.ts | origin": {
-    "message": "Источник"
-  },
-  "panels/application/components/OriginTrialTreeView.ts | rawTokenText": {
-    "message": "Необработанный токен"
-  },
-  "panels/application/components/OriginTrialTreeView.ts | status": {
-    "message": "Статус токена"
-  },
-  "panels/application/components/OriginTrialTreeView.ts | token": {
-    "message": "Токен"
-  },
-  "panels/application/components/OriginTrialTreeView.ts | tokens": {
-    "message": "Токены: {PH1}"
-  },
-  "panels/application/components/OriginTrialTreeView.ts | trialName": {
-    "message": "Название пробной версии"
-  },
-  "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
-    "message": "Ограничение на использование"
   },
   "panels/application/components/PermissionsPolicySection.ts | allowedFeatures": {
     "message": "Доступные функции"
@@ -4969,18 +5044,6 @@
   },
   "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "Общее хранилище"
-  },
-  "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
-    "message": "Не удается показать трассировку стека."
-  },
-  "panels/application/components/StackTrace.ts | creationStackTrace": {
-    "message": "Stack Trace при создании фрейма"
-  },
-  "panels/application/components/StackTrace.ts | showLess": {
-    "message": "Свернуть"
-  },
-  "panels/application/components/StackTrace.ts | showSMoreFrames": {
-    "message": "{n,plural, =1{Показать ещё # фрейм}one{Показать ещё # фрейм}few{Показать ещё # фрейма}many{Показать ещё # фреймов}other{Показать ещё # фрейма}}"
   },
   "panels/application/components/StorageMetadataView.ts | bucketName": {
     "message": "Название сегмента"
@@ -5945,6 +6008,9 @@
   "panels/common/BadgeNotification.ts | viewProfile": {
     "message": "Открыть профиль"
   },
+  "panels/common/DOMLinkifier.ts | node": {
+    "message": "<узел>"
+  },
   "panels/common/FreDialog.ts | cancel": {
     "message": "Отмена"
   },
@@ -6242,6 +6308,9 @@
   "panels/console/ConsoleViewMessage.ts | deprecationS": {
     "message": "[Deprecation] {PH1}"
   },
+  "panels/console/ConsoleViewMessage.ts | dots": {
+    "message": "(…)"
+  },
   "panels/console/ConsoleViewMessage.ts | error": {
     "message": "Ошибка"
   },
@@ -6277,6 +6346,9 @@
   },
   "panels/console/ConsoleViewMessage.ts | interventionS": {
     "message": "[Intervention] {PH1}"
+  },
+  "panels/console/ConsoleViewMessage.ts | invokePropertyGetter": {
+    "message": "Вызвать геттер свойства"
   },
   "panels/console/ConsoleViewMessage.ts | logpoint": {
     "message": "Точка записи"
@@ -6376,9 +6448,6 @@
   },
   "panels/console/console-meta.ts | hideTimestamps": {
     "message": "Скрыть временные метки"
-  },
-  "panels/console/console-meta.ts | logXmlhttprequests": {
-    "message": "Регистрировать запросы XMLHttpRequests"
   },
   "panels/console/console-meta.ts | onlyShowMessagesFromTheCurrent": {
     "message": "Показывать только сообщения из текущего контекста (top, iframe, worker, расширение)"
@@ -6851,9 +6920,6 @@
   "panels/elements/ComputedStyleWidget.ts | showAll": {
     "message": "Показать все"
   },
-  "panels/elements/DOMLinkifier.ts | node": {
-    "message": "<узел>"
-  },
   "panels/elements/ElementIssueUtils.ts | disallowedOptGroupChild": {
     "message": "Недопустимый элемент или текстовый узел внутри тегов <optgroup>"
   },
@@ -7034,14 +7100,17 @@
   "panels/elements/ElementsTreeElement.ts | deleteElement": {
     "message": "Удалить элемент"
   },
+  "panels/elements/ElementsTreeElement.ts | disableContainer": {
+    "message": "Отключить оверлей с контейнером"
+  },
   "panels/elements/ElementsTreeElement.ts | disableFlexMode": {
     "message": "Отключить flex-режим"
   },
+  "panels/elements/ElementsTreeElement.ts | disableGridLanesMode": {
+    "message": "Отключить режим grid-lanes"
+  },
   "panels/elements/ElementsTreeElement.ts | disableGridMode": {
     "message": "Отключить режим сетки"
-  },
-  "panels/elements/ElementsTreeElement.ts | disableMasonryMode": {
-    "message": "Отключить режим мозаики"
   },
   "panels/elements/ElementsTreeElement.ts | disableScrollSnap": {
     "message": "Отключить оверлей с прокруткой и привязкой"
@@ -7067,14 +7136,17 @@
   "panels/elements/ElementsTreeElement.ts | elementHasScrollableOverflow": {
     "message": "У этого элемента есть переполнение с прокруткой"
   },
+  "panels/elements/ElementsTreeElement.ts | enableContainer": {
+    "message": "Включить оверлей с контейнером"
+  },
   "panels/elements/ElementsTreeElement.ts | enableFlexMode": {
     "message": "Включить flex-режим"
   },
+  "panels/elements/ElementsTreeElement.ts | enableGridLanesMode": {
+    "message": "Включить режим grid-lanes"
+  },
   "panels/elements/ElementsTreeElement.ts | enableGridMode": {
     "message": "Включить режим сетки"
-  },
-  "panels/elements/ElementsTreeElement.ts | enableMasonryMode": {
-    "message": "Включить режим мозаики"
   },
   "panels/elements/ElementsTreeElement.ts | enableScrollSnap": {
     "message": "Включить оверлей с прокруткой и привязкой"
@@ -7220,17 +7292,17 @@
   "panels/elements/LayoutPane.ts | flexboxOverlays": {
     "message": "Оверлеи Flexbox"
   },
-  "panels/elements/LayoutPane.ts | gridOrMasonry": {
-    "message": "Сетка/мозаика"
+  "panels/elements/LayoutPane.ts | gridOrGridLanes": {
+    "message": "Grid/grid-lanes"
   },
-  "panels/elements/LayoutPane.ts | gridOrMasonryOverlays": {
-    "message": "Макеты сетки/мозаики"
+  "panels/elements/LayoutPane.ts | gridOrGridLanesOverlays": {
+    "message": "Оверлеи c макетом grid/grid-lanes"
   },
   "panels/elements/LayoutPane.ts | noFlexboxLayoutsFoundOnThisPage": {
     "message": "Макеты Flexbox на странице не найдены."
   },
-  "panels/elements/LayoutPane.ts | noGridOrMasonryLayoutsFoundOnThisPage": {
-    "message": "Макеты сетки и мозаики на странице не найдены."
+  "panels/elements/LayoutPane.ts | noGridOrGridLanesLayoutsFoundOnThisPage": {
+    "message": "На странице нет макетов grid/grid-lanes."
   },
   "panels/elements/LayoutPane.ts | overlayDisplaySettings": {
     "message": "Настройки отображения оверлеев"
@@ -7352,6 +7424,9 @@
   "panels/elements/StylePropertyTreeElement.ts | gridEditorButton": {
     "message": "Открыть редактор grid"
   },
+  "panels/elements/StylePropertyTreeElement.ts | gridLanesEditorButton": {
+    "message": "Открыть редактор grid-lanes"
+  },
   "panels/elements/StylePropertyTreeElement.ts | invalidPropertyValue": {
     "message": "Недопустимое значение свойства"
   },
@@ -7363,9 +7438,6 @@
   },
   "panels/elements/StylePropertyTreeElement.ts | jumpToAnimationsPanel": {
     "message": "Перейти на панель \"Анимация\""
-  },
-  "panels/elements/StylePropertyTreeElement.ts | masonryEditorButton": {
-    "message": "Открыть редактор для работы с masonry"
   },
   "panels/elements/StylePropertyTreeElement.ts | openColorPickerS": {
     "message": "Открыть палитру. {PH1}"
@@ -7994,6 +8066,9 @@
   "panels/issues/AffectedPartitioningBlobURLView.ts | noBlobURLAvailable": {
     "message": "Для этой проблемы нет BLOB URL."
   },
+  "panels/issues/AffectedPermissionElementsView.ts | nElements": {
+    "message": "{n,plural, =1{# элемент}one{# элемент}few{# элемента}many{# элементов}other{# элемента}}"
+  },
   "panels/issues/AffectedResourcesView.ts | clickToRevealTheFramesDomNodeIn": {
     "message": "Нажмите, чтобы открыть DOM-узел фрейма на панели \"Элементы\""
   },
@@ -8245,6 +8320,9 @@
   },
   "panels/issues/IssuesPane.ts | other": {
     "message": "Другое"
+  },
+  "panels/issues/IssuesPane.ts | permissionElement": {
+    "message": "Элемент PEPC"
   },
   "panels/issues/IssuesPane.ts | quirksMode": {
     "message": "Режим совместимости"
@@ -9467,9 +9545,6 @@
   "panels/network/NetworkDataGridNode.ts | redirect": {
     "message": "Переадресация"
   },
-  "panels/network/NetworkDataGridNode.ts | responseIsIpProtectedToolTip": {
-    "message": "Этот запрос отправлен через прокси с защитой IP-адреса"
-  },
   "panels/network/NetworkDataGridNode.ts | sPreflight": {
     "message": "{PH1} + подготовка"
   },
@@ -9746,9 +9821,6 @@
   "panels/network/NetworkLogView.ts | invertsFilter": {
     "message": "Инвертировать фильтр поиска"
   },
-  "panels/network/NetworkLogView.ts | ippRequests": {
-    "message": "Запросы с защитой IP-адреса"
-  },
   "panels/network/NetworkLogView.ts | loadS": {
     "message": "Загрузить: {PH1}"
   },
@@ -9763,9 +9835,6 @@
   },
   "panels/network/NetworkLogView.ts | onlyShowBlockedRequests": {
     "message": "Показывать только заблокированные запросы"
-  },
-  "panels/network/NetworkLogView.ts | onlyShowIPProtectedRequests": {
-    "message": "Показывать только запросы, отправленные на прокси с защитой IP-адреса. Не влияет на обычный режим просмотра в браузере."
   },
   "panels/network/NetworkLogView.ts | onlyShowRequestsWithBlockedCookies": {
     "message": "Показывать только запросы с заблокированными файлами cookie ответов"
@@ -10055,6 +10124,9 @@
   "panels/network/RequestConditionsDrawer.ts | addPatternToBlock": {
     "message": "Добавьте шаблон, нажав кнопку \"{PH1}\"."
   },
+  "panels/network/RequestConditionsDrawer.ts | addRule": {
+    "message": "Добавить правило"
+  },
   "panels/network/RequestConditionsDrawer.ts | dAffected": {
     "message": "Затронуто: {PH1}"
   },
@@ -10062,7 +10134,10 @@
     "message": "Заблокировано: {PH1}"
   },
   "panels/network/RequestConditionsDrawer.ts | decreasePriority": {
-    "message": "Понизить приоритет"
+    "message": "Переместить {PH1} вниз"
+  },
+  "panels/network/RequestConditionsDrawer.ts | editPattern": {
+    "message": "Изменить {PH1}"
   },
   "panels/network/RequestConditionsDrawer.ts | enableBlockingAndThrottling": {
     "message": "Включить блокировку и ограничение"
@@ -10070,8 +10145,11 @@
   "panels/network/RequestConditionsDrawer.ts | enableNetworkRequestBlocking": {
     "message": "Включить блокировку сетевых запросов"
   },
+  "panels/network/RequestConditionsDrawer.ts | enableThrottlingToggleLabel": {
+    "message": "Ограничить или заблокировать {PH1}"
+  },
   "panels/network/RequestConditionsDrawer.ts | increasePriority": {
-    "message": "Повысить приоритет"
+    "message": "Переместить {PH1} вверх"
   },
   "panels/network/RequestConditionsDrawer.ts | itemDeleted": {
     "message": "Пункт списка успешно удален"
@@ -10079,11 +10157,17 @@
   "panels/network/RequestConditionsDrawer.ts | learnMore": {
     "message": "Подробнее…"
   },
+  "panels/network/RequestConditionsDrawer.ts | learnMoreLabel": {
+    "message": "Подробнее о синтаксисе шаблонов URL…"
+  },
   "panels/network/RequestConditionsDrawer.ts | noNetworkRequestsBlocked": {
     "message": "Заблокированных сетевых запросов нет."
   },
   "panels/network/RequestConditionsDrawer.ts | noPattern": {
-    "message": "Нет шаблонов ограничения или блокировки запросов"
+    "message": "Ограниченных или заблокированных запросов нет"
+  },
+  "panels/network/RequestConditionsDrawer.ts | noThrottlingOrBlockingPattern": {
+    "message": "Чтобы ограничить или заблокировать сетевой запрос, добавьте правило вручную или через контекстное меню на панели \"Сеть\". {PH1}"
   },
   "panels/network/RequestConditionsDrawer.ts | patternAlreadyExists": {
     "message": "Шаблон уже используется."
@@ -10097,11 +10181,23 @@
   "panels/network/RequestConditionsDrawer.ts | patternInputCannotBeEmpty": {
     "message": "Шаблон не может быть пустым."
   },
+  "panels/network/RequestConditionsDrawer.ts | patternMovedDown": {
+    "message": "Шаблон URL перемещен вниз"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternMovedUp": {
+    "message": "Шаблон URL перемещен вверх"
+  },
   "panels/network/RequestConditionsDrawer.ts | patternWasUpgraded": {
     "message": "Этот шаблон был преобразован из шаблона для {PH1}"
   },
+  "panels/network/RequestConditionsDrawer.ts | removePattern": {
+    "message": "Удалить {PH1}"
+  },
+  "panels/network/RequestConditionsDrawer.ts | requestConditionsLabel": {
+    "message": "Условия запроса"
+  },
   "panels/network/RequestConditionsDrawer.ts | textEditPattern": {
-    "message": "Текстовый шаблон для блокировки или ограничения совпадающих запросов. Используйте синтаксис URLPattern."
+    "message": "Текстовый шаблон для блокировки или ограничения совпадающих запросов. Используйте синтаксис шаблонов URL."
   },
   "panels/network/RequestConditionsDrawer.ts | textPatternToBlockMatching": {
     "message": "Текстовый шаблон для блокировки совпадающих запросов; в качестве подстановочного знака используйте \"*\""
@@ -10262,6 +10358,9 @@
   "panels/network/RequestTimingView.ts | receivingPush": {
     "message": "Получение Push"
   },
+  "panels/network/RequestTimingView.ts | requestResponse": {
+    "message": "Запрос/ответ"
+  },
   "panels/network/RequestTimingView.ts | requestSent": {
     "message": "Запрос отправлен"
   },
@@ -10330,6 +10429,9 @@
   },
   "panels/network/RequestTimingView.ts | waitingTtfb": {
     "message": "Ожидание ответа сервера"
+  },
+  "panels/network/RequestTimingView.ts | wasThrottled": {
+    "message": "Запрос был ограничен ({PH1})"
   },
   "panels/network/RequestTimingView.ts | waterfall": {
     "message": "Каскад загрузки"
@@ -10516,6 +10618,9 @@
   },
   "panels/network/components/DirectSocketConnectionView.ts | general": {
     "message": "Общие"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | joinedMulticastGroups": {
+    "message": "joinedMulticastGroups"
   },
   "panels/network/components/DirectSocketConnectionView.ts | openInfo": {
     "message": "Дополнительные сведения"
@@ -11819,6 +11924,9 @@
   "panels/recorder/components/ReplaySection.ts | speedGroup": {
     "message": "Скорость"
   },
+  "panels/recorder/components/SelectorPicker.ts | selectorPicker": {
+    "message": "Выбрать на странице элемент, для которого нужно обновить селекторы"
+  },
   "panels/recorder/components/StepEditor.ts | addAttribute": {
     "message": "Добавить атрибут {attributeName}"
   },
@@ -11845,9 +11953,6 @@
   },
   "panels/recorder/components/StepEditor.ts | removeSelectorPart": {
     "message": "Удалить часть селектора"
-  },
-  "panels/recorder/components/StepEditor.ts | selectorPicker": {
-    "message": "Выбрать на странице элемент, для которого нужно обновить селекторы"
   },
   "panels/recorder/components/StepEditor.ts | unknownActionType": {
     "message": "Неизвестный тип действия."
@@ -12218,66 +12323,6 @@
   "panels/security/CookieReportView.ts | videoCookieTypeString": {
     "message": "Видео"
   },
-  "panels/security/IPProtectionView.ts | AuthTokensUnavailable": {
-    "message": "Достигнут лимит токенов аутентификации. Защита IP-адреса будет приостановлена."
-  },
-  "panels/security/IPProtectionView.ts | Available": {
-    "message": "Защита IP-адреса включена."
-  },
-  "panels/security/IPProtectionView.ts | BypassedByDevTools": {
-    "message": "Инструменты разработчика обходят защиту IP-адреса."
-  },
-  "panels/security/IPProtectionView.ts | FeatureNotEnabled": {
-    "message": "Функция защиты IP-адреса отключена."
-  },
-  "panels/security/IPProtectionView.ts | MaskedDomainListNotEnabled": {
-    "message": "Функция \"Список деидентифицированных доменов\" отключена."
-  },
-  "panels/security/IPProtectionView.ts | MaskedDomainListNotPopulated": {
-    "message": "Список деидентифицированных доменов не заполнен."
-  },
-  "panels/security/IPProtectionView.ts | Unavailable": {
-    "message": "Защита IP-адреса недоступна."
-  },
-  "panels/security/IPProtectionView.ts | bypassDescription": {
-    "message": "Временно обходить защиту IP-адреса для проверки"
-  },
-  "panels/security/IPProtectionView.ts | bypassTitle": {
-    "message": "Обход защиты IP-адреса"
-  },
-  "panels/security/IPProtectionView.ts | cardTitle": {
-    "message": "Статус прокси-сервера для защиты IP-адреса"
-  },
-  "panels/security/IPProtectionView.ts | idColumn": {
-    "message": "ID"
-  },
-  "panels/security/IPProtectionView.ts | methodColumn": {
-    "message": "Метод"
-  },
-  "panels/security/IPProtectionView.ts | notInIncognito": {
-    "message": "Прокси-сервер IP недоступен."
-  },
-  "panels/security/IPProtectionView.ts | openIncognito": {
-    "message": "Прокси-сервер IP доступен только в режиме инкогнито. Откройте сайт в этом режиме."
-  },
-  "panels/security/IPProtectionView.ts | proxyRequests": {
-    "message": "Запросы прокси-сервера"
-  },
-  "panels/security/IPProtectionView.ts | statusColumn": {
-    "message": "Статус"
-  },
-  "panels/security/IPProtectionView.ts | statusUnknown": {
-    "message": "Статус неизвестен"
-  },
-  "panels/security/IPProtectionView.ts | urlColumn": {
-    "message": "URL"
-  },
-  "panels/security/IPProtectionView.ts | viewExplanation": {
-    "message": "Вы можете проверить, как будет работать сайт при включенном прокси-сервере IP."
-  },
-  "panels/security/IPProtectionView.ts | viewTitle": {
-    "message": "Настройки прокси-сервера для защиты IP-адреса"
-  },
   "panels/security/SecurityModel.ts | cipherWithMAC": {
     "message": "{PH1} и {PH2}"
   },
@@ -12583,9 +12628,6 @@
   },
   "panels/security/SecurityPanelSidebar.ts | flagControls": {
     "message": "Параметры"
-  },
-  "panels/security/SecurityPanelSidebar.ts | ipProtection": {
-    "message": "Защита IP-адреса"
   },
   "panels/security/SecurityPanelSidebar.ts | mainOrigin": {
     "message": "Главный источник"
@@ -13087,6 +13129,9 @@
   },
   "panels/settings/KeybindsSettingsTab.ts | noShortcutForAction": {
     "message": "Нет сочетания клавиш для этого действия"
+  },
+  "panels/settings/KeybindsSettingsTab.ts | recordingKeys": {
+    "message": "Переназначение клавиш"
   },
   "panels/settings/KeybindsSettingsTab.ts | removeShortcut": {
     "message": "Удалить сочетание клавиш"
@@ -14225,9 +14270,6 @@
   "panels/sources/sources-meta.ts | createNewSnippet": {
     "message": "Создать фрагмент"
   },
-  "panels/sources/sources-meta.ts | cssSourceMaps": {
-    "message": "Карты исходного кода CSS"
-  },
   "panels/sources/sources-meta.ts | deactivateBreakpoints": {
     "message": "Отключить точки останова"
   },
@@ -14251,12 +14293,6 @@
   },
   "panels/sources/sources-meta.ts | disableCodeFolding": {
     "message": "Отключить свертывание кода"
-  },
-  "panels/sources/sources-meta.ts | disableCssSourceMaps": {
-    "message": "Отключить карты исходного кода CSS"
-  },
-  "panels/sources/sources-meta.ts | disableJavaScriptSourceMaps": {
-    "message": "Отключить карты исходного кода JavaScript"
   },
   "panels/sources/sources-meta.ts | disableTabMovesFocus": {
     "message": "Отключить перемещение фокуса вкладками"
@@ -14303,12 +14339,6 @@
   "panels/sources/sources-meta.ts | enableCodeFolding": {
     "message": "Включить свертывание кода"
   },
-  "panels/sources/sources-meta.ts | enableCssSourceMaps": {
-    "message": "Включить карты исходного кода CSS"
-  },
-  "panels/sources/sources-meta.ts | enableJavaScriptSourceMaps": {
-    "message": "Включить карты исходного кода JavaScript"
-  },
   "panels/sources/sources-meta.ts | enableTabMovesFocus": {
     "message": "Включить перемещение фокуса вкладками"
   },
@@ -14335,9 +14365,6 @@
   },
   "panels/sources/sources-meta.ts | incrementCssUnitBy": {
     "message": "Увеличить значение свойства CSS на {PH1}"
-  },
-  "panels/sources/sources-meta.ts | javaScriptSourceMaps": {
-    "message": "Карты исходного кода JavaScript"
   },
   "panels/sources/sources-meta.ts | jumpToNextEditingLocation": {
     "message": "Перейти к следующему месту редактирования"
@@ -14490,7 +14517,10 @@
     "message": "Завершающие символы"
   },
   "panels/sources/sources-meta.ts | wasmAutoStepping": {
-    "message": "По возможности не останавливаться на байт-коде Wasm при отладке Wasm со сведениями для нее"
+    "message": "Автоматическое пошаговое выполнение байт-кода Wasm"
+  },
+  "panels/sources/sources-meta.ts | wasmAutoSteppingInfo": {
+    "message": "Пропускать байт-код Wasm при отладке Wasm"
   },
   "panels/sources/sources-meta.ts | watch": {
     "message": "Часы"
@@ -15530,6 +15560,9 @@
   "panels/timeline/components/DetailsView.ts | websocketProtocol": {
     "message": "Протокол WebSocket"
   },
+  "panels/timeline/components/ExportTraceOptions.ts | explanation": {
+    "message": "Описание"
+  },
   "panels/timeline/components/ExportTraceOptions.ts | exportTraceOptionsDialogTitle": {
     "message": "Сохранить трассировку производительности "
   },
@@ -15712,6 +15745,12 @@
   },
   "panels/timeline/components/LiveMetricsView.ts | eventLogs": {
     "message": "Раздел журналов взаимодействия и смещения макета"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | fieldDataHistoryLink": {
+    "message": "Показать историю"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | fieldDataHistoryTooltip": {
+    "message": "Посмотреть историю данных в поле с помощью CrUX Vis"
   },
   "panels/timeline/components/LiveMetricsView.ts | fieldMetricsTitle": {
     "message": "Наблюдаемые показатели"
@@ -16070,6 +16109,9 @@
   "panels/timeline/components/NetworkRequestTooltip.ts | waitingOnMainThread": {
     "message": "Ожидание основного потока"
   },
+  "panels/timeline/components/NetworkRequestTooltip.ts | wasThrottled": {
+    "message": "Запрос был ограничен ({PH1})"
+  },
   "panels/timeline/components/NetworkThrottlingSelector.ts | add": {
     "message": "Добавить…"
   },
@@ -16307,11 +16349,17 @@
   "panels/timeline/utils/IgnoreList.ts | unknown": {
     "message": "Неизвестно"
   },
+  "panels/utils/utils.ts | prefetchFailed": {
+    "message": "{PH1}: не удалось выполнить запрос на предзагрузку"
+  },
   "panels/utils/utils.ts | requestContentHeadersOverridden": {
     "message": "Содержимое и заголовки запроса переопределены"
   },
   "panels/utils/utils.ts | requestContentOverridden": {
     "message": "Запрошенный контент переопределен"
+  },
+  "panels/utils/utils.ts | requestFailed": {
+    "message": "{PH1}: не удалось выполнить запрос"
   },
   "panels/utils/utils.ts | requestHeadersOverridden": {
     "message": "Заголовки запроса переопределены"
@@ -16525,6 +16573,12 @@
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "Сведения о проблеме сейчас недоступны"
+  },
+  "ui/components/list/List.ts | edit": {
+    "message": "Изменить"
+  },
+  "ui/components/list/List.ts | remove": {
+    "message": "Удалить"
   },
   "ui/components/markdown_view/CodeBlock.ts | code": {
     "message": "Код"
@@ -16864,6 +16918,9 @@
   },
   "ui/legacy/TabbedPane.ts | moveTabRight": {
     "message": "Переместить вправо"
+  },
+  "ui/legacy/TabbedPane.ts | panelContainsAnnotation": {
+    "message": "На этой панели есть одна или несколько аннотаций."
   },
   "ui/legacy/TabbedPane.ts | previewFeature": {
     "message": "Функция просмотра"
@@ -17434,6 +17491,12 @@
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | runCommand": {
     "message": "Выполнить команду"
+  },
+  "ui/legacy/components/settings_ui/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
+    "message": "Чтобы изменения настроек вступили в силу, перезапустите инструменты разработчика"
+  },
+  "ui/legacy/components/settings_ui/SettingsUI.ts | srequiresReload": {
+    "message": "*Требуется перезагрузка"
   },
   "ui/legacy/components/source_frame/FontView.ts | font": {
     "message": "Шрифт"

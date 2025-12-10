@@ -107,6 +107,9 @@
   "core/common/Revealer.ts | networkPanel": {
     "message": "Nettverkspanel"
   },
+  "core/common/Revealer.ts | requestConditionsDrawer": {
+    "message": "Uttrekksmeny for forespørselsbetingelser"
+  },
   "core/common/Revealer.ts | securityPanel": {
     "message": "Sikkerhetspanel"
   },
@@ -173,7 +176,7 @@
   "core/common/SettingRegistration.ts | sources": {
     "message": "Kilder"
   },
-  "core/host/InspectorFrontendHost.ts | devtoolsS": {
+  "core/host/InspectorFrontendHostStub.ts | devtoolsS": {
     "message": "Utviklerverktøy - {PH1}"
   },
   "core/host/ResourceLoader.ts | cacheError": {
@@ -575,6 +578,9 @@
   "core/sdk/sdk-meta.ts | captureAsyncStackTraces": {
     "message": "Ta opp asynkroniserte stabelsporinger"
   },
+  "core/sdk/sdk-meta.ts | cssSourceMaps": {
+    "message": "CSS-kildekart"
+  },
   "core/sdk/sdk-meta.ts | customFormatters": {
     "message": "Tilpassede formaterere"
   },
@@ -589,6 +595,12 @@
   },
   "core/sdk/sdk-meta.ts | disableCache": {
     "message": "Slå av bufferen mens utviklerverktøyene er åpne"
+  },
+  "core/sdk/sdk-meta.ts | disableCssSourceMaps": {
+    "message": "Deaktiver CSS-kildekart"
+  },
+  "core/sdk/sdk-meta.ts | disableJavaScriptSourceMaps": {
+    "message": "Deaktiver JavaScript-kildekart"
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "Deaktiver JavaScript"
@@ -692,6 +704,12 @@
   "core/sdk/sdk-meta.ts | enableCache": {
     "message": "Aktiver buffer"
   },
+  "core/sdk/sdk-meta.ts | enableCssSourceMaps": {
+    "message": "Aktiver CSS-kildekart"
+  },
+  "core/sdk/sdk-meta.ts | enableJavaScriptSourceMaps": {
+    "message": "Aktiver kildekart for JavaScript"
+  },
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "Slå på JavaScript"
   },
@@ -702,7 +720,7 @@
     "message": "Slå på blokkering av nettverksforespørsler"
   },
   "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
-    "message": "Tillat DevTools å laste inn ressurser, for eksempel kildekart, fra eksterne filbaner. Deaktivert som standard av sikkerhetshensyn."
+    "message": "Tillat innlasting av ressurser fra eksterne filbaner i utviklerverktøy"
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Aktivér WebP-formatet"
@@ -730,6 +748,12 @@
   },
   "core/sdk/sdk-meta.ts | highlightAdFrames": {
     "message": "Uthev annonserammer"
+  },
+  "core/sdk/sdk-meta.ts | javaScriptSourceMaps": {
+    "message": "JavaScript-kildekart"
+  },
+  "core/sdk/sdk-meta.ts | logXmlhttprequests": {
+    "message": "Loggfør XMLHttpRequests"
   },
   "core/sdk/sdk-meta.ts | networkCacheExplanation": {
     "message": "Du kan slå av nettverksbufferen for å simulere en nettverksopplevelse som ligner på opplevelsen til en førstegangsbesøkende."
@@ -781,6 +805,9 @@
   },
   "core/sdk/sdk-meta.ts | reducedContrast": {
     "message": "Redusert kontrast"
+  },
+  "core/sdk/sdk-meta.ts | remoteFileLoadingInfo": {
+    "message": "Kildekart er et eksempel på en ressurs. Deaktivert som standard av sikkerhetshensyn."
   },
   "core/sdk/sdk-meta.ts | screen": {
     "message": "filtrere"
@@ -902,8 +929,8 @@
   "entrypoints/inspector_main/RenderingOptions.ts | frameRenderingStats": {
     "message": "Tilstander for rammegjengivelse"
   },
-  "entrypoints/inspector_main/RenderingOptions.ts | highlightAdFrames": {
-    "message": "Uthev annonserammer"
+  "entrypoints/inspector_main/RenderingOptions.ts | highlightAds": {
+    "message": "Fremhev annonser"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | highlightsAreasOfThePageBlueThat": {
     "message": "Fremhev områder i siden (blå) som ble endret. Er kanskje ikke egnet for personer som er utsatt for lysfølsom epilepsi."
@@ -911,11 +938,11 @@
   "entrypoints/inspector_main/RenderingOptions.ts | highlightsAreasOfThePageGreen": {
     "message": "Fremhever områder på siden (grønt) som må tegnes opp på nytt. Er kanskje ikke egnet for personer som er utsatt for lysfølsom epilepsi."
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | highlightsElementsRedDetectedToBe": {
+    "message": "Uthevingsrammer (rød) oppdaget å være annonser."
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | highlightsElementsTealThatCan": {
     "message": "Fremhever elementer (blågrønn) som kan redusere rullingen, inkludert hendelsesbehandlere for berøring og hjul og andre rullesituasjoner for hovedtråden."
-  },
-  "entrypoints/inspector_main/RenderingOptions.ts | highlightsFramesRedDetectedToBe": {
-    "message": "Uthevingsrammer (rød) oppdaget å være annonser."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | layerBorders": {
     "message": "Kantlinjer for lag"
@@ -1003,6 +1030,9 @@
   },
   "entrypoints/main/GlobalAiButton.ts | aiAssistance": {
     "message": "AI-hjelp"
+  },
+  "entrypoints/main/MainImpl.ts | aiModelDownloaded": {
+    "message": "AI-modellen er lastet ned"
   },
   "entrypoints/main/MainImpl.ts | customizeAndControlDevtools": {
     "message": "Tilpasning og kontroll av utviklerverktøy."
@@ -1202,28 +1232,28 @@
   "entrypoints/main/main-meta.ts | zoomOut": {
     "message": "Zoom ut"
   },
-  "entrypoints/node_app/NodeConnectionsPanel.ts | addConnection": {
+  "entrypoints/node_app/app/NodeConnectionsPanel.ts | addConnection": {
     "message": "Legg til tilkobling"
   },
-  "entrypoints/node_app/NodeConnectionsPanel.ts | networkAddressEgLocalhost": {
+  "entrypoints/node_app/app/NodeConnectionsPanel.ts | networkAddressEgLocalhost": {
     "message": "Nettverksadresse (f.eks. localhost:9229)"
   },
-  "entrypoints/node_app/NodeConnectionsPanel.ts | noConnectionsSpecified": {
+  "entrypoints/node_app/app/NodeConnectionsPanel.ts | noConnectionsSpecified": {
     "message": "Ingen tilkoblinger er spesifisert"
   },
-  "entrypoints/node_app/NodeConnectionsPanel.ts | nodejsDebuggingGuide": {
+  "entrypoints/node_app/app/NodeConnectionsPanel.ts | nodejsDebuggingGuide": {
     "message": "Feilsøkingsveiledning for Node.js"
   },
-  "entrypoints/node_app/NodeConnectionsPanel.ts | specifyNetworkEndpointAnd": {
+  "entrypoints/node_app/app/NodeConnectionsPanel.ts | specifyNetworkEndpointAnd": {
     "message": "Angi nettverksendepunktet, så kobler Utviklerverktøy til det automatisk. Les {PH1} for å finne ut mer."
   },
-  "entrypoints/node_app/NodeMain.ts | NodejsTitleS": {
+  "entrypoints/node_app/app/NodeMain.ts | NodejsTitleS": {
     "message": "Utviklerverktøy – Node.js: {PH1}"
   },
-  "entrypoints/node_app/NodeMain.ts | main": {
+  "entrypoints/node_app/app/NodeMain.ts | main": {
     "message": "Primært"
   },
-  "entrypoints/node_app/NodeMain.ts | nodejsS": {
+  "entrypoints/node_app/app/NodeMain.ts | nodejsS": {
     "message": "Node.js: {PH1}"
   },
   "entrypoints/node_app/node_app.ts | connection": {
@@ -1243,6 +1273,9 @@
   },
   "entrypoints/worker_app/WorkerMain.ts | main": {
     "message": "Primært"
+  },
+  "generated/Deprecation.ts | AttributionReporting": {
+    "message": "Attribusjonsrapportering er avviklet og skal fjernes. Gå til https://goo.gle/ps-status for å få mer informasjon."
   },
   "generated/Deprecation.ts | AuthorizationCoveredByWildcard": {
     "message": "Autorisasjon kommer ikke til å bli dekket av jokertegnet (*) ved håndtering av CORS-hodet Access-Control-Allow-Headers."
@@ -1280,6 +1313,12 @@
   "generated/Deprecation.ts | DataUrlInSvgUse": {
     "message": "Støtte for data:-nettadresser i SVGUseElement er avviklet og blir fjernet i fremtiden."
   },
+  "generated/Deprecation.ts | ExampleBrowserProcessDeprecation": {
+    "message": "Dette er et eksempel på hvordan du viser koden som kreves for en avvikling som er rapportert for en nettleserprosess."
+  },
+  "generated/Deprecation.ts | Fledge": {
+    "message": "Protected Audience API er avviklet og fjernes i en fremtidig utgave."
+  },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
     "message": "getCurrentPosition() og watchPosition() fungerer ikke på usikre opphav lenger. For å bruke denne funksjonen bør du vurdere å flytte programmet ditt til et sikkert opphav, for eksempel HTTPS. Se https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ for mer informasjon."
   },
@@ -1306,12 +1345,6 @@
   },
   "generated/Deprecation.ts | LocalCSSFileExtensionRejected": {
     "message": "CSS-filer kan ikke lastes inn fra file:-nettadresser med mindre de har filetternavnet .css."
-  },
-  "generated/Deprecation.ts | MediaSourceAbortRemove": {
-    "message": "Bruk av SourceBuffer.abort() for å avbryte den asynkrone områdefjerningen som utføres av remove(), er avviklet på grunn av endringer i spesifikasjonen. Støtten kommer til å bli fjernet i fremtiden. Du bør lytte etter updateend-hendelsen i stedet. abort() er kun ment å avbryte asynkrone medietilføyninger eller tilbakestille parsertilstanden."
-  },
-  "generated/Deprecation.ts | MediaSourceDurationTruncatingBuffered": {
-    "message": "Å angi en verdi for MediaSource.duration som er lavere enn det høyeste presentasjonstidsstempelet for noen bufret, kodet ramme, er avviklet på grunn av endringer i spesifikasjonen. Støtte for implisitt fjerning av avkortede, bufrede medier kommer til å bli fjernet i fremtiden. Du bør i stedet utføre eksplisitte remove(newDuration, oldDuration)-kall på alle sourceBuffers, hvor newDuration < oldDuration."
   },
   "generated/Deprecation.ts | NoSysexWebMIDIWithoutPermission": {
     "message": "Web MIDI kommer til å be om brukstillatelse selv om sysex ikke er angitt i MIDIOptions."
@@ -1370,9 +1403,6 @@
   "generated/Deprecation.ts | PrefixedVideoSupportsFullscreen": {
     "message": "HTMLVideoElement.webkitSupportsFullscreen er avviklet. Bruk Document.fullscreenEnabled i stedet."
   },
-  "generated/Deprecation.ts | PrivacySandboxExtensionsAPI": {
-    "message": "Vi avvikler API-et chrome.privacy.websites.privacySandboxEnabled, men av hensyn til bakoverkompatibilitet forblir det aktivt frem til versjon M113. Bruk chrome.privacy.websites.topicsEnabled, chrome.privacy.websites.fledgeEnabled og chrome.privacy.websites.adMeasurementEnabled i stedet. Se https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled."
-  },
   "generated/Deprecation.ts | RTCConstraintEnableDtlsSrtpFalse": {
     "message": "Begrensningen DtlsSrtpKeyAgreement er fjernet. Du har angitt verdien false for denne begrensningen, noe som tolkes som et forsøk på å bruke den fjernede SDES key negotiation-metoden. Denne funksjonaliteten er fjernet. Bruk en tjeneste som støtter DTLS key negotiation i stedet."
   },
@@ -1385,6 +1415,9 @@
   "generated/Deprecation.ts | RangeExpand": {
     "message": "Range.expand() er avviklet. Bruk Selection.modify() i stedet."
   },
+  "generated/Deprecation.ts | RelatedWebsiteSets": {
+    "message": "Related Website Sets er avviklet og kommer til å bli fjernet. Se https://privacysandbox.com/news/update-on-plans-for-privacy-sandbox-technologies/ for å få mer informasjon."
+  },
   "generated/Deprecation.ts | RequestedSubresourceWithEmbeddedCredentials": {
     "message": "Underressursforespørsler med nettadresser som inneholder innebygd legitimasjon (f.eks. https://user:pass@host/), er blokkert."
   },
@@ -1394,8 +1427,17 @@
   "generated/Deprecation.ts | SharedArrayBufferConstructedWithoutIsolation": {
     "message": "SharedArrayBuffer kommer til å kreve isolering fra andre opphav. Se https://developer.chrome.com/blog/enabling-shared-array-buffer/ for mer informasjon."
   },
+  "generated/Deprecation.ts | SharedStorage": {
+    "message": "API for delt lagring er avviklet og fjernes i en fremtidig utgave."
+  },
+  "generated/Deprecation.ts | StorageAccessAPI_requestStorageAccessFor_Method": {
+    "message": "document.requestStorageAccessFor er avviklet og kommer til å bli fjernet. Se https://privacysandbox.com/news/update-on-plans-for-privacy-sandbox-technologies/ for å få mer informasjon."
+  },
   "generated/Deprecation.ts | TextToSpeech_DisallowedByAutoplay": {
     "message": "speechSynthesis.speak() uten brukeraktivering er avviklet og kommer til å bli fjernet."
+  },
+  "generated/Deprecation.ts | Topics": {
+    "message": "Topics API er avviklet og fjernes i en fremtidig utgave."
   },
   "generated/Deprecation.ts | UnloadHandler": {
     "message": "«unload»-hendelseslyttere er avviklet og kommer til å bli fjernet."
@@ -1411,6 +1453,12 @@
   },
   "generated/Deprecation.ts | XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
     "message": "Synkrone XMLHttpRequest-forespørsler på hovedtråden er avviklet på grunn av de negative virkningene på sluttbrukerens opplevelse. For å få mer hjelp, se https://xhr.spec.whatwg.org/."
+  },
+  "generated/Deprecation.ts | XMLNoExternalEntities": {
+    "message": "Eksternt innlastede enheter i XML-parsing er avviklet og fjernes snart fra denne nettleseren."
+  },
+  "generated/Deprecation.ts | XSLT": {
+    "message": "XSLTProcessor og XSLT-behandlingsinstruksjoner er avviklet av alle nettlesere. Disse funksjonene fjernes snart fra denne nettleseren."
   },
   "models/ai_assistance/AiUtils.ts | ageRestricted": {
     "message": "Denne funksjonen er bare tilgjengelig for brukere som er 18 år eller eldre."
@@ -1582,6 +1630,9 @@
   },
   "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
     "message": "CORB-forklaringsmelding"
+  },
+  "models/issues_manager/GenericIssue.ts | historyManipulationInterventionPageTitle": {
+    "message": "Forklaring av tiltak mot manipulering av loggen"
   },
   "models/issues_manager/GenericIssue.ts | howDoesAutofillWorkPageTitle": {
     "message": "Hvordan fungerer autofyll?"
@@ -1818,7 +1869,7 @@
     "message": "Konsolltid"
   },
   "models/trace/Styles.ts | cppGc": {
-    "message": "CPP-GC"
+    "message": "C++ GC"
   },
   "models/trace/Styles.ts | createWebsocket": {
     "message": "Opprett WebSocket"
@@ -3065,6 +3116,30 @@
   "panels/ai_assistance/components/ChatView.ts | revealContextDescription": {
     "message": "Vis det valgte kontekstelementet i utviklerverktøyene"
   },
+  "panels/ai_assistance/components/DisabledWidget.ts | notAvailableInIncognitoMode": {
+    "message": "AI-hjelp er ikke tilgjengelig i inkognitomodus eller gjestemodus"
+  },
+  "panels/ai_assistance/components/DisabledWidget.ts | notLoggedIn": {
+    "message": "Denne funksjonen er bare tilgjengelig når du er logget på Chrome med Google-kontoen din"
+  },
+  "panels/ai_assistance/components/DisabledWidget.ts | offline": {
+    "message": "Sjekk internettilkoblingen, og prøv på nytt"
+  },
+  "panels/ai_assistance/components/DisabledWidget.ts | settingsLink": {
+    "message": "AI-assistanse i innstillingene"
+  },
+  "panels/ai_assistance/components/DisabledWidget.ts | turnOnForStyles": {
+    "message": "Slå på {PH1} for å få hjelp med å forstå CSS-stiler"
+  },
+  "panels/ai_assistance/components/DisabledWidget.ts | turnOnForStylesAndRequests": {
+    "message": "Slå på {PH1} for å få hjelp med stiler og nettverksforespørsler"
+  },
+  "panels/ai_assistance/components/DisabledWidget.ts | turnOnForStylesRequestsAndFiles": {
+    "message": "Slå på {PH1} for å få hjelp med stiler, nettverksforespørsler og filer"
+  },
+  "panels/ai_assistance/components/DisabledWidget.ts | turnOnForStylesRequestsPerformanceAndFiles": {
+    "message": "Slå på {PH1} for å få hjelp med stiler, nettverksforespørsler, ytelse og filer"
+  },
   "panels/animation/AnimationTimeline.ts | animationDescription": {
     "message": "På denne siden kan du inspisere og endre animasjoner."
   },
@@ -3653,6 +3728,156 @@
   "panels/application/ExtensionStorageItemsView.ts | extensionStorageItemsCleared": {
     "message": "Elementer i utvidelseslagring er fjernet"
   },
+  "panels/application/FrameDetailsView.ts | aFrameAncestorIsAnInsecure": {
+    "message": "En rammeforgjenger er en usikker kontekst"
+  },
+  "panels/application/FrameDetailsView.ts | adStatus": {
+    "message": "Annonsestatus"
+  },
+  "panels/application/FrameDetailsView.ts | additionalInformation": {
+    "message": "Tilleggsinformasjon"
+  },
+  "panels/application/FrameDetailsView.ts | apiAvailability": {
+    "message": "API-tilgjengelighet"
+  },
+  "panels/application/FrameDetailsView.ts | availabilityOfCertainApisDepends": {
+    "message": "Tilgjengeligheten av visse API-er avhenger av at dokumentet er opphavsuavhengig isolert."
+  },
+  "panels/application/FrameDetailsView.ts | available": {
+    "message": "tilgjengelig"
+  },
+  "panels/application/FrameDetailsView.ts | availableNotTransferable": {
+    "message": "tilgjengelig, kan ikke overføres"
+  },
+  "panels/application/FrameDetailsView.ts | availableTransferable": {
+    "message": "tilgjengelig, kan overføres"
+  },
+  "panels/application/FrameDetailsView.ts | child": {
+    "message": "underordnet"
+  },
+  "panels/application/FrameDetailsView.ts | childDescription": {
+    "message": "Denne rammen er identifisert som en underordnet ramme for en annonse"
+  },
+  "panels/application/FrameDetailsView.ts | clickToOpenInNetworkPanel": {
+    "message": "Klikk for å åpne i Nettverkspanel"
+  },
+  "panels/application/FrameDetailsView.ts | clickToOpenInNetworkPanelMight": {
+    "message": "Klikk for å åpne i Nettverkspanel (kan kreve at siden lastes inn på nytt)"
+  },
+  "panels/application/FrameDetailsView.ts | clickToOpenInSourcesPanel": {
+    "message": "Klikk for å åpne i Kilder-panelet"
+  },
+  "panels/application/FrameDetailsView.ts | contentSecurityPolicy": {
+    "message": "Content Security Policy (CSP)"
+  },
+  "panels/application/FrameDetailsView.ts | createdByAdScriptExplanation": {
+    "message": "Det var et annonseskript i (async) stack da denne rammen ble opprettet. Å undersøke stack trace for denne rammen kan gi mer innsikt."
+  },
+  "panels/application/FrameDetailsView.ts | creationStackTrace": {
+    "message": "Rammeopprettelse Stack Trace"
+  },
+  "panels/application/FrameDetailsView.ts | creationStackTraceExplanation": {
+    "message": "Denne rammen ble opprettet programmatisk. stack trace viser hvor dette skjedde."
+  },
+  "panels/application/FrameDetailsView.ts | creatorAdScriptAncestry": {
+    "message": "Opphavsperson for annonseskript"
+  },
+  "panels/application/FrameDetailsView.ts | crossoriginIsolated": {
+    "message": "Opphavsuavhengig isolert"
+  },
+  "panels/application/FrameDetailsView.ts | document": {
+    "message": "Dokument"
+  },
+  "panels/application/FrameDetailsView.ts | frameId": {
+    "message": "Ramme-ID"
+  },
+  "panels/application/FrameDetailsView.ts | learnMore": {
+    "message": "Finn ut mer"
+  },
+  "panels/application/FrameDetailsView.ts | localhostIsAlwaysASecureContext": {
+    "message": "Localhost er alltid en sikker kontekst"
+  },
+  "panels/application/FrameDetailsView.ts | matchedBlockingRuleExplanation": {
+    "message": "Denne rammen betraktes som en annonseramme fordi det gjeldende (eller tidligere) hoveddokumentet er en annonseressurs."
+  },
+  "panels/application/FrameDetailsView.ts | measureMemory": {
+    "message": "Mål minne"
+  },
+  "panels/application/FrameDetailsView.ts | no": {
+    "message": "Nei"
+  },
+  "panels/application/FrameDetailsView.ts | none": {
+    "message": "Ingen"
+  },
+  "panels/application/FrameDetailsView.ts | origin": {
+    "message": "Opphav"
+  },
+  "panels/application/FrameDetailsView.ts | originTrialsExplanation": {
+    "message": "Med prøvefunksjoner for opphav får du tilgang til nye og eksperimentelle funksjoner."
+  },
+  "panels/application/FrameDetailsView.ts | ownerElement": {
+    "message": "Eierelement"
+  },
+  "panels/application/FrameDetailsView.ts | parentIsAdExplanation": {
+    "message": "Denne rammen betraktes som en annonseramme fordi den overordnede rammen er en annonseramme."
+  },
+  "panels/application/FrameDetailsView.ts | reportingTo": {
+    "message": "rapporterer til"
+  },
+  "panels/application/FrameDetailsView.ts | requiresCrossoriginIsolated": {
+    "message": "krever opphavsuavhengig isolert kontekst"
+  },
+  "panels/application/FrameDetailsView.ts | root": {
+    "message": "rotnivå"
+  },
+  "panels/application/FrameDetailsView.ts | rootDescription": {
+    "message": "Denne rammen er identifisert som rotrammen til en annonse"
+  },
+  "panels/application/FrameDetailsView.ts | rootScriptFilterlistRule": {
+    "message": "Filterlisteregel for rotskript"
+  },
+  "panels/application/FrameDetailsView.ts | secureContext": {
+    "message": "Sikker kontekst"
+  },
+  "panels/application/FrameDetailsView.ts | securityIsolation": {
+    "message": "Sikkerhet og isolering"
+  },
+  "panels/application/FrameDetailsView.ts | sharedarraybufferConstructorIs": {
+    "message": "SharedArrayBuffer konstruktøren er tilgjengelig og SABs kan overføres via postMessage"
+  },
+  "panels/application/FrameDetailsView.ts | sharedarraybufferConstructorIsAvailable": {
+    "message": "SharedArrayBuffer konstruktør er tilgjengelig men SABs kan ikke overføres via postMessage"
+  },
+  "panels/application/FrameDetailsView.ts | theFramesSchemeIsInsecure": {
+    "message": "Skjemaet for rammen er usikkert"
+  },
+  "panels/application/FrameDetailsView.ts | thePerformanceAPI": {
+    "message": "performance.measureUserAgentSpecificMemory() API-en er tilgjengelig"
+  },
+  "panels/application/FrameDetailsView.ts | thePerformancemeasureuseragentspecificmemory": {
+    "message": "performance.measureUserAgentSpecificMemory() API-en er ikke tilgjengelig"
+  },
+  "panels/application/FrameDetailsView.ts | thisAdditionalDebugging": {
+    "message": "Denne tilleggsinformasjonen (om feilsøking) vises fordi «Protokollmonitor»-eksperimentet er slått på."
+  },
+  "panels/application/FrameDetailsView.ts | transferRequiresCrossoriginIsolatedPermission": {
+    "message": "SharedArrayBuffer-overføring krever at følgende tillatelsesregel slås på:"
+  },
+  "panels/application/FrameDetailsView.ts | unavailable": {
+    "message": "utilgjengelig"
+  },
+  "panels/application/FrameDetailsView.ts | unreachableUrl": {
+    "message": "Nettadressen kan ikke nås"
+  },
+  "panels/application/FrameDetailsView.ts | url": {
+    "message": "Nettadresse"
+  },
+  "panels/application/FrameDetailsView.ts | willRequireCrossoriginIsolated": {
+    "message": "⚠️ kommer til å kreve opphavsuavhengig isolert kontekst i fremtiden"
+  },
+  "panels/application/FrameDetailsView.ts | yes": {
+    "message": "Ja"
+  },
   "panels/application/IndexedDBViews.ts | clearObjectStore": {
     "message": "Tøm objektlager"
   },
@@ -3814,6 +4039,39 @@
   },
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "Ja"
+  },
+  "panels/application/OriginTrialTreeView.ts | expiryTime": {
+    "message": "Utløpstid"
+  },
+  "panels/application/OriginTrialTreeView.ts | isThirdParty": {
+    "message": "Tredjepart"
+  },
+  "panels/application/OriginTrialTreeView.ts | matchSubDomains": {
+    "message": "Samsvarende underdomene"
+  },
+  "panels/application/OriginTrialTreeView.ts | noTrialTokens": {
+    "message": "Ingen tokener for prøvefunksjoner"
+  },
+  "panels/application/OriginTrialTreeView.ts | origin": {
+    "message": "Opprinnelse"
+  },
+  "panels/application/OriginTrialTreeView.ts | rawTokenText": {
+    "message": "Raw token"
+  },
+  "panels/application/OriginTrialTreeView.ts | status": {
+    "message": "Tokenstatus"
+  },
+  "panels/application/OriginTrialTreeView.ts | token": {
+    "message": "Token"
+  },
+  "panels/application/OriginTrialTreeView.ts | tokens": {
+    "message": "{PH1} tokener"
+  },
+  "panels/application/OriginTrialTreeView.ts | trialName": {
+    "message": "Navn på prøveprosjekt"
+  },
+  "panels/application/OriginTrialTreeView.ts | usageRestriction": {
+    "message": "Bruksbegrensning"
   },
   "panels/application/PreloadingTreeElement.ts | rules": {
     "message": "Regler"
@@ -4595,6 +4853,9 @@
   "panels/application/components/BackForwardCacheView.ts | supportPendingExplanation": {
     "message": "Chrome støtter ikke disse blokkeringsårsakene ennå. Det betyr at i en fremtidig versjon av Chrome kommer de ikke til å forhindre siden fra å lagres i frem-/tilbake-bufferen."
   },
+  "panels/application/components/BackForwardCacheView.ts | testCompleted": {
+    "message": "Testen av frem-og-tilbake-bufferen er fullført."
+  },
   "panels/application/components/BackForwardCacheView.ts | unavailable": {
     "message": "utilgjengelig"
   },
@@ -4634,159 +4895,6 @@
   "panels/application/components/EndpointsGrid.ts | noEndpointsToDisplay": {
     "message": "Ingen endepunkter å vise"
   },
-  "panels/application/components/FrameDetailsView.ts | aFrameAncestorIsAnInsecure": {
-    "message": "En rammeforgjenger er en usikker kontekst"
-  },
-  "panels/application/components/FrameDetailsView.ts | adStatus": {
-    "message": "Annonsestatus"
-  },
-  "panels/application/components/FrameDetailsView.ts | additionalInformation": {
-    "message": "Tilleggsinformasjon"
-  },
-  "panels/application/components/FrameDetailsView.ts | apiAvailability": {
-    "message": "API-tilgjengelighet"
-  },
-  "panels/application/components/FrameDetailsView.ts | availabilityOfCertainApisDepends": {
-    "message": "Tilgjengeligheten av visse API-er avhenger av at dokumentet er opphavsuavhengig isolert."
-  },
-  "panels/application/components/FrameDetailsView.ts | available": {
-    "message": "tilgjengelig"
-  },
-  "panels/application/components/FrameDetailsView.ts | availableNotTransferable": {
-    "message": "tilgjengelig, kan ikke overføres"
-  },
-  "panels/application/components/FrameDetailsView.ts | availableTransferable": {
-    "message": "tilgjengelig, kan overføres"
-  },
-  "panels/application/components/FrameDetailsView.ts | child": {
-    "message": "underordnet"
-  },
-  "panels/application/components/FrameDetailsView.ts | childDescription": {
-    "message": "Denne rammen er identifisert som en underordnet ramme for en annonse"
-  },
-  "panels/application/components/FrameDetailsView.ts | clickToOpenInElementsPanel": {
-    "message": "Klikk for å åpne i Elementer-panelet"
-  },
-  "panels/application/components/FrameDetailsView.ts | clickToOpenInNetworkPanel": {
-    "message": "Klikk for å åpne i Nettverkspanel"
-  },
-  "panels/application/components/FrameDetailsView.ts | clickToOpenInNetworkPanelMight": {
-    "message": "Klikk for å åpne i Nettverkspanel (kan kreve at siden lastes inn på nytt)"
-  },
-  "panels/application/components/FrameDetailsView.ts | clickToOpenInSourcesPanel": {
-    "message": "Klikk for å åpne i Kilder-panelet"
-  },
-  "panels/application/components/FrameDetailsView.ts | contentSecurityPolicy": {
-    "message": "Content Security Policy (CSP)"
-  },
-  "panels/application/components/FrameDetailsView.ts | createdByAdScriptExplanation": {
-    "message": "Det var et annonseskript i (async) stack da denne rammen ble opprettet. Å undersøke stack trace for denne rammen kan gi mer innsikt."
-  },
-  "panels/application/components/FrameDetailsView.ts | creationStackTrace": {
-    "message": "Rammeopprettelse Stack Trace"
-  },
-  "panels/application/components/FrameDetailsView.ts | creationStackTraceExplanation": {
-    "message": "Denne rammen ble opprettet programmatisk. stack trace viser hvor dette skjedde."
-  },
-  "panels/application/components/FrameDetailsView.ts | creatorAdScriptAncestry": {
-    "message": "Opphavsperson for annonseskript"
-  },
-  "panels/application/components/FrameDetailsView.ts | crossoriginIsolated": {
-    "message": "Opphavsuavhengig isolert"
-  },
-  "panels/application/components/FrameDetailsView.ts | document": {
-    "message": "Dokument"
-  },
-  "panels/application/components/FrameDetailsView.ts | frameId": {
-    "message": "Ramme-ID"
-  },
-  "panels/application/components/FrameDetailsView.ts | learnMore": {
-    "message": "Finn ut mer"
-  },
-  "panels/application/components/FrameDetailsView.ts | localhostIsAlwaysASecureContext": {
-    "message": "Localhost er alltid en sikker kontekst"
-  },
-  "panels/application/components/FrameDetailsView.ts | matchedBlockingRuleExplanation": {
-    "message": "Denne rammen betraktes som en annonseramme fordi det gjeldende (eller tidligere) hoveddokumentet er en annonseressurs."
-  },
-  "panels/application/components/FrameDetailsView.ts | measureMemory": {
-    "message": "Mål minne"
-  },
-  "panels/application/components/FrameDetailsView.ts | no": {
-    "message": "Nei"
-  },
-  "panels/application/components/FrameDetailsView.ts | none": {
-    "message": "Ingen"
-  },
-  "panels/application/components/FrameDetailsView.ts | origin": {
-    "message": "Opphav"
-  },
-  "panels/application/components/FrameDetailsView.ts | originTrialsExplanation": {
-    "message": "Med prøvefunksjoner for opphav får du tilgang til nye og eksperimentelle funksjoner."
-  },
-  "panels/application/components/FrameDetailsView.ts | ownerElement": {
-    "message": "Eierelement"
-  },
-  "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
-    "message": "Denne rammen betraktes som en annonseramme fordi den overordnede rammen er en annonseramme."
-  },
-  "panels/application/components/FrameDetailsView.ts | reportingTo": {
-    "message": "rapporterer til"
-  },
-  "panels/application/components/FrameDetailsView.ts | requiresCrossoriginIsolated": {
-    "message": "krever opphavsuavhengig isolert kontekst"
-  },
-  "panels/application/components/FrameDetailsView.ts | root": {
-    "message": "rotnivå"
-  },
-  "panels/application/components/FrameDetailsView.ts | rootDescription": {
-    "message": "Denne rammen er identifisert som rotrammen til en annonse"
-  },
-  "panels/application/components/FrameDetailsView.ts | rootScriptFilterlistRule": {
-    "message": "Filterlisteregel for rotskript"
-  },
-  "panels/application/components/FrameDetailsView.ts | secureContext": {
-    "message": "Sikker kontekst"
-  },
-  "panels/application/components/FrameDetailsView.ts | securityIsolation": {
-    "message": "Sikkerhet og isolering"
-  },
-  "panels/application/components/FrameDetailsView.ts | sharedarraybufferConstructorIs": {
-    "message": "SharedArrayBuffer konstruktøren er tilgjengelig og SABs kan overføres via postMessage"
-  },
-  "panels/application/components/FrameDetailsView.ts | sharedarraybufferConstructorIsAvailable": {
-    "message": "SharedArrayBuffer konstruktør er tilgjengelig men SABs kan ikke overføres via postMessage"
-  },
-  "panels/application/components/FrameDetailsView.ts | theFramesSchemeIsInsecure": {
-    "message": "Skjemaet for rammen er usikkert"
-  },
-  "panels/application/components/FrameDetailsView.ts | thePerformanceAPI": {
-    "message": "performance.measureUserAgentSpecificMemory() API-en er tilgjengelig"
-  },
-  "panels/application/components/FrameDetailsView.ts | thePerformancemeasureuseragentspecificmemory": {
-    "message": "performance.measureUserAgentSpecificMemory() API-en er ikke tilgjengelig"
-  },
-  "panels/application/components/FrameDetailsView.ts | thisAdditionalDebugging": {
-    "message": "Denne tilleggsinformasjonen (om feilsøking) vises fordi «Protokollmonitor»-eksperimentet er slått på."
-  },
-  "panels/application/components/FrameDetailsView.ts | transferRequiresCrossoriginIsolatedPermission": {
-    "message": "SharedArrayBuffer-overføring krever at følgende tillatelsesregel slås på:"
-  },
-  "panels/application/components/FrameDetailsView.ts | unavailable": {
-    "message": "utilgjengelig"
-  },
-  "panels/application/components/FrameDetailsView.ts | unreachableUrl": {
-    "message": "Nettadressen kan ikke nås"
-  },
-  "panels/application/components/FrameDetailsView.ts | url": {
-    "message": "Nettadresse"
-  },
-  "panels/application/components/FrameDetailsView.ts | willRequireCrossoriginIsolated": {
-    "message": "⚠️ kommer til å kreve opphavsuavhengig isolert kontekst i fremtiden"
-  },
-  "panels/application/components/FrameDetailsView.ts | yes": {
-    "message": "Ja"
-  },
   "panels/application/components/InterestGroupAccessGrid.ts | allInterestGroupStorageEvents": {
     "message": "Alle lagringshendelser for interessegrupper."
   },
@@ -4807,39 +4915,6 @@
   },
   "panels/application/components/InterestGroupAccessGrid.ts | noEvents": {
     "message": "Registrerte ingen hendelser for interessegrupper"
-  },
-  "panels/application/components/OriginTrialTreeView.ts | expiryTime": {
-    "message": "Utløpstid"
-  },
-  "panels/application/components/OriginTrialTreeView.ts | isThirdParty": {
-    "message": "Tredjepart"
-  },
-  "panels/application/components/OriginTrialTreeView.ts | matchSubDomains": {
-    "message": "Samsvarende underdomene"
-  },
-  "panels/application/components/OriginTrialTreeView.ts | noTrialTokens": {
-    "message": "Ingen tokener for prøvefunksjoner"
-  },
-  "panels/application/components/OriginTrialTreeView.ts | origin": {
-    "message": "Opprinnelse"
-  },
-  "panels/application/components/OriginTrialTreeView.ts | rawTokenText": {
-    "message": "Raw token"
-  },
-  "panels/application/components/OriginTrialTreeView.ts | status": {
-    "message": "Tokenstatus"
-  },
-  "panels/application/components/OriginTrialTreeView.ts | token": {
-    "message": "Token"
-  },
-  "panels/application/components/OriginTrialTreeView.ts | tokens": {
-    "message": "{PH1} tokener"
-  },
-  "panels/application/components/OriginTrialTreeView.ts | trialName": {
-    "message": "Navn på prøveprosjekt"
-  },
-  "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
-    "message": "Bruksbegrensning"
   },
   "panels/application/components/PermissionsPolicySection.ts | allowedFeatures": {
     "message": "Tillatte funksjoner"
@@ -4969,18 +5044,6 @@
   },
   "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "Delt lagring"
-  },
-  "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
-    "message": "Kan ikke gjengi stabelspor"
-  },
-  "panels/application/components/StackTrace.ts | creationStackTrace": {
-    "message": "Rammeopprettelse Stack Trace"
-  },
-  "panels/application/components/StackTrace.ts | showLess": {
-    "message": "Vis færre"
-  },
-  "panels/application/components/StackTrace.ts | showSMoreFrames": {
-    "message": "{n,plural, =1{Vis # ramme til}other{Vis # flere rammer}}"
   },
   "panels/application/components/StorageMetadataView.ts | bucketName": {
     "message": "Navn på toppmappe"
@@ -5945,6 +6008,9 @@
   "panels/common/BadgeNotification.ts | viewProfile": {
     "message": "Se profilen"
   },
+  "panels/common/DOMLinkifier.ts | node": {
+    "message": "<node>"
+  },
   "panels/common/FreDialog.ts | cancel": {
     "message": "Avbryt"
   },
@@ -6242,6 +6308,9 @@
   "panels/console/ConsoleViewMessage.ts | deprecationS": {
     "message": "[Deprecation] {PH1}"
   },
+  "panels/console/ConsoleViewMessage.ts | dots": {
+    "message": "(…)"
+  },
   "panels/console/ConsoleViewMessage.ts | error": {
     "message": "Feil"
   },
@@ -6277,6 +6346,9 @@
   },
   "panels/console/ConsoleViewMessage.ts | interventionS": {
     "message": "[Intervention] {PH1}"
+  },
+  "panels/console/ConsoleViewMessage.ts | invokePropertyGetter": {
+    "message": "Bruk egenskapsgetter"
   },
   "panels/console/ConsoleViewMessage.ts | logpoint": {
     "message": "Loggpunkt"
@@ -6376,9 +6448,6 @@
   },
   "panels/console/console-meta.ts | hideTimestamps": {
     "message": "Skjul tidsstempler"
-  },
-  "panels/console/console-meta.ts | logXmlhttprequests": {
-    "message": "Loggfør XMLHttpRequests"
   },
   "panels/console/console-meta.ts | onlyShowMessagesFromTheCurrent": {
     "message": "Vis kun meldinger fra den nåværende konteksten (top, iframe, worker, utvidelse)"
@@ -6851,9 +6920,6 @@
   "panels/elements/ComputedStyleWidget.ts | showAll": {
     "message": "Vis alle"
   },
-  "panels/elements/DOMLinkifier.ts | node": {
-    "message": "<node>"
-  },
   "panels/elements/ElementIssueUtils.ts | disallowedOptGroupChild": {
     "message": "Ugyldig element eller tekstnode i <optgroup>"
   },
@@ -7034,14 +7100,17 @@
   "panels/elements/ElementsTreeElement.ts | deleteElement": {
     "message": "Slett element"
   },
+  "panels/elements/ElementsTreeElement.ts | disableContainer": {
+    "message": "Slå av beholderoverlegg"
+  },
   "panels/elements/ElementsTreeElement.ts | disableFlexMode": {
     "message": "Deaktiver fleksibel modus"
   },
+  "panels/elements/ElementsTreeElement.ts | disableGridLanesMode": {
+    "message": "Slå av modus for rutenettbaner"
+  },
   "panels/elements/ElementsTreeElement.ts | disableGridMode": {
     "message": "Deaktiver rutenettmodus"
-  },
-  "panels/elements/ElementsTreeElement.ts | disableMasonryMode": {
-    "message": "Slå av murmodus"
   },
   "panels/elements/ElementsTreeElement.ts | disableScrollSnap": {
     "message": "Deaktiver «scroll-snap»-overlegg"
@@ -7067,14 +7136,17 @@
   "panels/elements/ElementsTreeElement.ts | elementHasScrollableOverflow": {
     "message": "Dette elementet har et rullbart overflytområde"
   },
+  "panels/elements/ElementsTreeElement.ts | enableContainer": {
+    "message": "Slå på beholderoverlegg"
+  },
   "panels/elements/ElementsTreeElement.ts | enableFlexMode": {
     "message": "Slå på fleksibel modus"
   },
+  "panels/elements/ElementsTreeElement.ts | enableGridLanesMode": {
+    "message": "Slå på modus for rutenettbaner"
+  },
   "panels/elements/ElementsTreeElement.ts | enableGridMode": {
     "message": "Aktiver rutenettmodus"
-  },
-  "panels/elements/ElementsTreeElement.ts | enableMasonryMode": {
-    "message": "Slå på murmodus"
   },
   "panels/elements/ElementsTreeElement.ts | enableScrollSnap": {
     "message": "Aktivér «scroll-snap»-overlegg"
@@ -7220,17 +7292,17 @@
   "panels/elements/LayoutPane.ts | flexboxOverlays": {
     "message": "Flexbox-overlegg"
   },
-  "panels/elements/LayoutPane.ts | gridOrMasonry": {
-    "message": "Rutenett/mur"
+  "panels/elements/LayoutPane.ts | gridOrGridLanes": {
+    "message": "Rutenett/rutenettbaner"
   },
-  "panels/elements/LayoutPane.ts | gridOrMasonryOverlays": {
-    "message": "Rutenett-/muroverlegg"
+  "panels/elements/LayoutPane.ts | gridOrGridLanesOverlays": {
+    "message": "Rutenett-/rutenettfelt-overlegg"
   },
   "panels/elements/LayoutPane.ts | noFlexboxLayoutsFoundOnThisPage": {
     "message": "Ingen flexbox-layouter ble funnet på denne siden"
   },
-  "panels/elements/LayoutPane.ts | noGridOrMasonryLayoutsFoundOnThisPage": {
-    "message": "Ingen rutenett- eller murlayout ble funnet på denne siden"
+  "panels/elements/LayoutPane.ts | noGridOrGridLanesLayoutsFoundOnThisPage": {
+    "message": "Ingen rutenett- eller rutenettkolonnelayout ble funnet på denne siden"
   },
   "panels/elements/LayoutPane.ts | overlayDisplaySettings": {
     "message": "Overliggende skjerminnstillinger"
@@ -7352,6 +7424,9 @@
   "panels/elements/StylePropertyTreeElement.ts | gridEditorButton": {
     "message": "Åpne grid-redigeringsprogrammet"
   },
+  "panels/elements/StylePropertyTreeElement.ts | gridLanesEditorButton": {
+    "message": "Åpne grid-lanes-redigeringsprogrammet"
+  },
   "panels/elements/StylePropertyTreeElement.ts | invalidPropertyValue": {
     "message": "Ugyldig egenskapsverdi"
   },
@@ -7363,9 +7438,6 @@
   },
   "panels/elements/StylePropertyTreeElement.ts | jumpToAnimationsPanel": {
     "message": "Gå til Animasjoner-panelet"
-  },
-  "panels/elements/StylePropertyTreeElement.ts | masonryEditorButton": {
-    "message": "Åpne masonry-redigeringsprogrammet"
   },
   "panels/elements/StylePropertyTreeElement.ts | openColorPickerS": {
     "message": "Åpne fargevelger. {PH1}"
@@ -7932,7 +8004,7 @@
     "message": "Nettadresse"
   },
   "panels/issues/AffectedElementsView.ts | nElements": {
-    "message": "{n,plural, =1{# element}other{# elementer}}"
+    "message": "{n,plural, =1{# element}other{# elementer}}"
   },
   "panels/issues/AffectedElementsWithLowContrastView.ts | contrastRatio": {
     "message": "Kontrastforhold"
@@ -7993,6 +8065,9 @@
   },
   "panels/issues/AffectedPartitioningBlobURLView.ts | noBlobURLAvailable": {
     "message": "Ingen blob-nettadresse er tilgjengelig for dette problemet."
+  },
+  "panels/issues/AffectedPermissionElementsView.ts | nElements": {
+    "message": "{n,plural, =1{# element}other{# elementer}}"
   },
   "panels/issues/AffectedResourcesView.ts | clickToRevealTheFramesDomNodeIn": {
     "message": "Klikk for å vise DOM-noden for rammen i Elementer-panelet"
@@ -8245,6 +8320,9 @@
   },
   "panels/issues/IssuesPane.ts | other": {
     "message": "Annet"
+  },
+  "panels/issues/IssuesPane.ts | permissionElement": {
+    "message": "PEPC-element"
   },
   "panels/issues/IssuesPane.ts | quirksMode": {
     "message": "Modus for bred kompatibilitet"
@@ -9467,9 +9545,6 @@
   "panels/network/NetworkDataGridNode.ts | redirect": {
     "message": "Viderekoble"
   },
-  "panels/network/NetworkDataGridNode.ts | responseIsIpProtectedToolTip": {
-    "message": "Denne forespørselen ble sendt via proxy-tjenere for IP-beskyttelse."
-  },
   "panels/network/NetworkDataGridNode.ts | sPreflight": {
     "message": "{PH1} + forhåndskontroll"
   },
@@ -9746,9 +9821,6 @@
   "panels/network/NetworkLogView.ts | invertsFilter": {
     "message": "Inverterer søkefilteret"
   },
-  "panels/network/NetworkLogView.ts | ippRequests": {
-    "message": "Forespørsler for IP-beskyttelse"
-  },
   "panels/network/NetworkLogView.ts | loadS": {
     "message": "Innlastning: {PH1}"
   },
@@ -9763,9 +9835,6 @@
   },
   "panels/network/NetworkLogView.ts | onlyShowBlockedRequests": {
     "message": "Vis bare blokkerte forespørsler"
-  },
-  "panels/network/NetworkLogView.ts | onlyShowIPProtectedRequests": {
-    "message": "Vis bare forespørsler som er sendt til proxy-tjenere for IP-beskyttelse. Har ingen effekt ved vanlig surfing."
   },
   "panels/network/NetworkLogView.ts | onlyShowRequestsWithBlockedCookies": {
     "message": "Vis bare forespørsler med svar som inneholder blokkerte informasjonskapsler"
@@ -10055,6 +10124,9 @@
   "panels/network/RequestConditionsDrawer.ts | addPatternToBlock": {
     "message": "Legg til et mønster ved å klikke på «{PH1}»-knappen."
   },
+  "panels/network/RequestConditionsDrawer.ts | addRule": {
+    "message": "Legg til regel"
+  },
   "panels/network/RequestConditionsDrawer.ts | dAffected": {
     "message": "{PH1} berørt"
   },
@@ -10062,7 +10134,10 @@
     "message": "{PH1} er blokkert"
   },
   "panels/network/RequestConditionsDrawer.ts | decreasePriority": {
-    "message": "Reduser prioriteten"
+    "message": "Flytt ned {PH1}"
+  },
+  "panels/network/RequestConditionsDrawer.ts | editPattern": {
+    "message": "Endre {PH1}"
   },
   "panels/network/RequestConditionsDrawer.ts | enableBlockingAndThrottling": {
     "message": "Slå på blokkering og struping"
@@ -10070,8 +10145,11 @@
   "panels/network/RequestConditionsDrawer.ts | enableNetworkRequestBlocking": {
     "message": "Slå på blokkering av nettverksforespørsler"
   },
+  "panels/network/RequestConditionsDrawer.ts | enableThrottlingToggleLabel": {
+    "message": "Strup eller blokker {PH1}"
+  },
   "panels/network/RequestConditionsDrawer.ts | increasePriority": {
-    "message": "Øk prioriteten"
+    "message": "Flytt opp {PH1}"
   },
   "panels/network/RequestConditionsDrawer.ts | itemDeleted": {
     "message": "Elementet er slettet"
@@ -10079,11 +10157,17 @@
   "panels/network/RequestConditionsDrawer.ts | learnMore": {
     "message": "Finn ut mer"
   },
+  "panels/network/RequestConditionsDrawer.ts | learnMoreLabel": {
+    "message": "Finn ut mer om syntaks for nettadressemønstre"
+  },
   "panels/network/RequestConditionsDrawer.ts | noNetworkRequestsBlocked": {
     "message": "Ingen blokkerte nettverksforespørsler"
   },
   "panels/network/RequestConditionsDrawer.ts | noPattern": {
-    "message": "Ingen mønstre for forespørselsbegrensning eller -blokkering"
+    "message": "Ingenting er strupt eller blokkert"
+  },
+  "panels/network/RequestConditionsDrawer.ts | noThrottlingOrBlockingPattern": {
+    "message": "For å strupe eller blokkere en nettverksforespørsel, legg til en regel her manuelt eller via kontekstuell meny i nettverkspanelet. {PH1}"
   },
   "panels/network/RequestConditionsDrawer.ts | patternAlreadyExists": {
     "message": "Mønsteret finnes allerede."
@@ -10097,11 +10181,23 @@
   "panels/network/RequestConditionsDrawer.ts | patternInputCannotBeEmpty": {
     "message": "Mønsterverdien kan ikke være tom."
   },
+  "panels/network/RequestConditionsDrawer.ts | patternMovedDown": {
+    "message": "Nettadressemønsteret ble flyttet ned"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternMovedUp": {
+    "message": "Nettadressemønsteret ble flyttet opp"
+  },
   "panels/network/RequestConditionsDrawer.ts | patternWasUpgraded": {
     "message": "Dette mønsteret er oppgradert fra «{PH1}»"
   },
+  "panels/network/RequestConditionsDrawer.ts | removePattern": {
+    "message": "Fjern {PH1}"
+  },
+  "panels/network/RequestConditionsDrawer.ts | requestConditionsLabel": {
+    "message": "Forespørselsbetingelser"
+  },
   "panels/network/RequestConditionsDrawer.ts | textEditPattern": {
-    "message": "Tekstmønster for å blokkere eller begrense samsvarende forespørsler – bruk URLPattern-syntaks."
+    "message": "Tekstmønster for å blokkere eller begrense samsvarende forespørsler. Bruk syntaks for nettadressemønster."
   },
   "panels/network/RequestConditionsDrawer.ts | textPatternToBlockMatching": {
     "message": "Tekstmønster for å blokkere samsvarende forespørsler – bruk * som jokertegn"
@@ -10262,6 +10358,9 @@
   "panels/network/RequestTimingView.ts | receivingPush": {
     "message": "Mottar Push"
   },
+  "panels/network/RequestTimingView.ts | requestResponse": {
+    "message": "Forespørsel/respons"
+  },
   "panels/network/RequestTimingView.ts | requestSent": {
     "message": "Forespørsel sendt"
   },
@@ -10330,6 +10429,9 @@
   },
   "panels/network/RequestTimingView.ts | waitingTtfb": {
     "message": "Venter på svar fra tjeneren"
+  },
+  "panels/network/RequestTimingView.ts | wasThrottled": {
+    "message": "Forespørselen ble begrenset ({PH1})"
   },
   "panels/network/RequestTimingView.ts | waterfall": {
     "message": "Foss"
@@ -10516,6 +10618,9 @@
   },
   "panels/network/components/DirectSocketConnectionView.ts | general": {
     "message": "Generelt"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | joinedMulticastGroups": {
+    "message": "joinedMulticastGroups"
   },
   "panels/network/components/DirectSocketConnectionView.ts | openInfo": {
     "message": "Åpne info"
@@ -11819,6 +11924,9 @@
   "panels/recorder/components/ReplaySection.ts | speedGroup": {
     "message": "Hastighet"
   },
+  "panels/recorder/components/SelectorPicker.ts | selectorPicker": {
+    "message": "Velg et element på siden for å oppdatere velgerne"
+  },
   "panels/recorder/components/StepEditor.ts | addAttribute": {
     "message": "Legg til {attributeName}"
   },
@@ -11845,9 +11953,6 @@
   },
   "panels/recorder/components/StepEditor.ts | removeSelectorPart": {
     "message": "Fjern en velger-del"
-  },
-  "panels/recorder/components/StepEditor.ts | selectorPicker": {
-    "message": "Velg et element på siden for å oppdatere velgerne"
   },
   "panels/recorder/components/StepEditor.ts | unknownActionType": {
     "message": "Ukjent handlingstype."
@@ -12218,66 +12323,6 @@
   "panels/security/CookieReportView.ts | videoCookieTypeString": {
     "message": "Video"
   },
-  "panels/security/IPProtectionView.ts | AuthTokensUnavailable": {
-    "message": "Grensen for autentiseringstokener er nådd. IP-beskyttelse settes på pause."
-  },
-  "panels/security/IPProtectionView.ts | Available": {
-    "message": "IP-beskyttelse er slått på og aktiv."
-  },
-  "panels/security/IPProtectionView.ts | BypassedByDevTools": {
-    "message": "IP-beskyttelse omgås av utviklerverktøy."
-  },
-  "panels/security/IPProtectionView.ts | FeatureNotEnabled": {
-    "message": "IP-beskyttelse er ikke slått på."
-  },
-  "panels/security/IPProtectionView.ts | MaskedDomainListNotEnabled": {
-    "message": "Funksjonen for maskert domeneliste er ikke aktivert."
-  },
-  "panels/security/IPProtectionView.ts | MaskedDomainListNotPopulated": {
-    "message": "Listen over maskerte domener er ikke fylt ut."
-  },
-  "panels/security/IPProtectionView.ts | Unavailable": {
-    "message": "IP-beskyttelse er ikke tilgjengelig."
-  },
-  "panels/security/IPProtectionView.ts | bypassDescription": {
-    "message": "Omgå IP-beskyttelse midlertidig for testing"
-  },
-  "panels/security/IPProtectionView.ts | bypassTitle": {
-    "message": "Omgå IP-beskyttelse"
-  },
-  "panels/security/IPProtectionView.ts | cardTitle": {
-    "message": "Proxy-tjenerstatus for IP-beskyttelse"
-  },
-  "panels/security/IPProtectionView.ts | idColumn": {
-    "message": "ID"
-  },
-  "panels/security/IPProtectionView.ts | methodColumn": {
-    "message": "Metode"
-  },
-  "panels/security/IPProtectionView.ts | notInIncognito": {
-    "message": "IP-proxy-tjener er ikke tilgjengelig"
-  },
-  "panels/security/IPProtectionView.ts | openIncognito": {
-    "message": "IP-proxy-tjener er bare tilgjengelig i inkognitomodus. Åpne nettstedet i inkognitomodus."
-  },
-  "panels/security/IPProtectionView.ts | proxyRequests": {
-    "message": "Proxy-tjenerforespørsler"
-  },
-  "panels/security/IPProtectionView.ts | statusColumn": {
-    "message": "Status"
-  },
-  "panels/security/IPProtectionView.ts | statusUnknown": {
-    "message": "Ukjent status"
-  },
-  "panels/security/IPProtectionView.ts | urlColumn": {
-    "message": "Nettadresse"
-  },
-  "panels/security/IPProtectionView.ts | viewExplanation": {
-    "message": "Test hvordan dette nettstedet fungerer hvis IP-proxy-tjener er slått på i Chrome"
-  },
-  "panels/security/IPProtectionView.ts | viewTitle": {
-    "message": "Proxy-kontroller for IP-beskyttelse"
-  },
   "panels/security/SecurityModel.ts | cipherWithMAC": {
     "message": "{PH1} med {PH2}"
   },
@@ -12583,9 +12628,6 @@
   },
   "panels/security/SecurityPanelSidebar.ts | flagControls": {
     "message": "Kontroller"
-  },
-  "panels/security/SecurityPanelSidebar.ts | ipProtection": {
-    "message": "IP-beskyttelse"
   },
   "panels/security/SecurityPanelSidebar.ts | mainOrigin": {
     "message": "Hovedopphav"
@@ -13087,6 +13129,9 @@
   },
   "panels/settings/KeybindsSettingsTab.ts | noShortcutForAction": {
     "message": "Ingen hurtigtast for handlingen"
+  },
+  "panels/settings/KeybindsSettingsTab.ts | recordingKeys": {
+    "message": "Omkoder taster"
   },
   "panels/settings/KeybindsSettingsTab.ts | removeShortcut": {
     "message": "Fjern hurtigtasten"
@@ -14225,9 +14270,6 @@
   "panels/sources/sources-meta.ts | createNewSnippet": {
     "message": "Opprett nytt tekstutdrag"
   },
-  "panels/sources/sources-meta.ts | cssSourceMaps": {
-    "message": "CSS-kildekart"
-  },
   "panels/sources/sources-meta.ts | deactivateBreakpoints": {
     "message": "Deaktiver stoppunkter"
   },
@@ -14251,12 +14293,6 @@
   },
   "panels/sources/sources-meta.ts | disableCodeFolding": {
     "message": "Deaktiver kodefolding"
-  },
-  "panels/sources/sources-meta.ts | disableCssSourceMaps": {
-    "message": "Deaktiver CSS-kildekart"
-  },
-  "panels/sources/sources-meta.ts | disableJavaScriptSourceMaps": {
-    "message": "Deaktiver JavaScript-kildekart"
   },
   "panels/sources/sources-meta.ts | disableTabMovesFocus": {
     "message": "Deaktiver fane, flytter fokus"
@@ -14303,12 +14339,6 @@
   "panels/sources/sources-meta.ts | enableCodeFolding": {
     "message": "Skjul kodemapping"
   },
-  "panels/sources/sources-meta.ts | enableCssSourceMaps": {
-    "message": "Aktiver CSS-kildekart"
-  },
-  "panels/sources/sources-meta.ts | enableJavaScriptSourceMaps": {
-    "message": "Aktiver kildekart for JavaScript"
-  },
   "panels/sources/sources-meta.ts | enableTabMovesFocus": {
     "message": "Aktiver fane, flytter fokus"
   },
@@ -14335,9 +14365,6 @@
   },
   "panels/sources/sources-meta.ts | incrementCssUnitBy": {
     "message": "Økning CSS-enhet med {PH1}"
-  },
-  "panels/sources/sources-meta.ts | javaScriptSourceMaps": {
-    "message": "JavaScript-kildekart"
   },
   "panels/sources/sources-meta.ts | jumpToNextEditingLocation": {
     "message": "Hopp til neste utgavelokasjon"
@@ -14490,7 +14517,10 @@
     "message": "Sporer"
   },
   "panels/sources/sources-meta.ts | wasmAutoStepping": {
-    "message": "Ikke stopp opp på Wasm-bytekode under feilsøking av Wasm med feilsøkingsinformasjon, hvis mulig"
+    "message": "Wasm-bytekode for automatisk trinnvis kjøring"
+  },
+  "panels/sources/sources-meta.ts | wasmAutoSteppingInfo": {
+    "message": "Når du feilsøker Wasm med feilsøkingsinformasjon, kan du prøve å hoppe over Wasm-bytekode"
   },
   "panels/sources/sources-meta.ts | watch": {
     "message": "Se"
@@ -15530,6 +15560,9 @@
   "panels/timeline/components/DetailsView.ts | websocketProtocol": {
     "message": "WebSocket-protokoll"
   },
+  "panels/timeline/components/ExportTraceOptions.ts | explanation": {
+    "message": "Forklaring"
+  },
   "panels/timeline/components/ExportTraceOptions.ts | exportTraceOptionsDialogTitle": {
     "message": "Lagre ytelsesspor "
   },
@@ -15712,6 +15745,12 @@
   },
   "panels/timeline/components/LiveMetricsView.ts | eventLogs": {
     "message": "Loggdel for interaksjoner og utseendeforskyvninger"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | fieldDataHistoryLink": {
+    "message": "Se loggen"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | fieldDataHistoryTooltip": {
+    "message": "Se loggen for feltdata i CrUX Vis"
   },
   "panels/timeline/components/LiveMetricsView.ts | fieldMetricsTitle": {
     "message": "Feltverdier"
@@ -16070,6 +16109,9 @@
   "panels/timeline/components/NetworkRequestTooltip.ts | waitingOnMainThread": {
     "message": "Venter på hovedtråden"
   },
+  "panels/timeline/components/NetworkRequestTooltip.ts | wasThrottled": {
+    "message": "Forespørselen ble begrenset ({PH1})"
+  },
   "panels/timeline/components/NetworkThrottlingSelector.ts | add": {
     "message": "Legg til…"
   },
@@ -16307,11 +16349,17 @@
   "panels/timeline/utils/IgnoreList.ts | unknown": {
     "message": "Ukjent"
   },
+  "panels/utils/utils.ts | prefetchFailed": {
+    "message": "{PH1} forespørsel om å hente på forhånd mislyktes"
+  },
   "panels/utils/utils.ts | requestContentHeadersOverridden": {
     "message": "Både forespørselsinnhold og -hoder overstyres"
   },
   "panels/utils/utils.ts | requestContentOverridden": {
     "message": "Forespørselsinnholdet overstyres"
+  },
+  "panels/utils/utils.ts | requestFailed": {
+    "message": "{PH1}-forespørsel mislyktes"
   },
   "panels/utils/utils.ts | requestHeadersOverridden": {
     "message": "Forespørselshoder overstyres"
@@ -16525,6 +16573,12 @@
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "Problemet er ikke tilgjengelig nå"
+  },
+  "ui/components/list/List.ts | edit": {
+    "message": "Endre"
+  },
+  "ui/components/list/List.ts | remove": {
+    "message": "Fjern"
   },
   "ui/components/markdown_view/CodeBlock.ts | code": {
     "message": "Kode"
@@ -16864,6 +16918,9 @@
   },
   "ui/legacy/TabbedPane.ts | moveTabRight": {
     "message": "Flytt til høyre"
+  },
+  "ui/legacy/TabbedPane.ts | panelContainsAnnotation": {
+    "message": "Dette panelet har én eller flere annoteringer"
   },
   "ui/legacy/TabbedPane.ts | previewFeature": {
     "message": "Førlanseringsfunksjon"
@@ -17434,6 +17491,12 @@
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | runCommand": {
     "message": "Kjør kommando"
+  },
+  "ui/legacy/components/settings_ui/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
+    "message": "En eller flere innstillinger er endret, men trer ikke i kraft før Utviklerverktøy startes på nytt"
+  },
+  "ui/legacy/components/settings_ui/SettingsUI.ts | srequiresReload": {
+    "message": "*Krever at Utviklerverktøy lastes inn på nytt"
   },
   "ui/legacy/components/source_frame/FontView.ts | font": {
     "message": "Skrifttype"

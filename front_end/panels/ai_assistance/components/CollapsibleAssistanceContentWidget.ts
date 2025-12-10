@@ -16,7 +16,7 @@ export interface CollapsibleAssistanceContentWidgetData {
 
 export class CollapsibleAssistanceContentWidget extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
-  #isCollapsed = true;
+  #isCollapsed = false;
   #headerText = 'Details';
 
   set data(data: CollapsibleAssistanceContentWidgetData) {
@@ -42,16 +42,15 @@ export class CollapsibleAssistanceContentWidget extends HTMLElement {
           event.preventDefault();
           this.#toggleCollapse();
         }}>
+          ${this.#headerText}
           <devtools-button .data=${{
             variant: Buttons.Button.Variant.ICON,
-              iconName: this.#isCollapsed ? 'triangle-right' : 'triangle-down',
-              color: 'var(--sys-color-on-surface)',
-              width: '14px',
-              height: '14px',
+            iconName: this.#isCollapsed ? 'triangle-right' : 'triangle-down',
+            color: 'var(--sys-color-on-surface)',
+            width: '14px',
+            height: '14px',
             } as Buttons.Button.ButtonData}
-          >
-          </devtools-button>
-          ${this.#headerText}
+          ></devtools-button>
         </summary>
         <div class="content">
           <slot></slot>

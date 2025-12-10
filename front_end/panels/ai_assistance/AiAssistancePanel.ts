@@ -409,7 +409,7 @@ function defaultView(input: ViewInput, output: PanelViewOutput, target: HTMLElem
   function renderState(): Lit.TemplateResult {
     switch (input.state) {
       case ViewState.CHAT_VIEW: {
-      const aiChatView = html`
+      return html`
         <devtools-ai-chat-view
           .props=${input.props}
           ${Lit.Directives.ref((el: Element | undefined) => {
@@ -420,29 +420,6 @@ function defaultView(input: ViewInput, output: PanelViewOutput, target: HTMLElem
             output.chatView = el;
           })}
         ></devtools-ai-chat-view>`;
-        // If the green experiment is enabled, render the chat view inside
-        // a split view to also have an artifacts viewer sidebar.
-        if(GreenDev.Prototypes.instance().isEnabled('artifactViewer')) {
-            return html`
-            <devtools-split-view
-            direction="column"
-            sidebar-visibility=${input.props.isArtifactsSidebarOpen ? 'visible' : 'hidden'}
-            sidebar-position="second"
-            style="width: 100%;"
-          >
-            <div slot="main">
-              ${aiChatView}
-            </div>
-            <div slot="sidebar">
-              <devtools-widget
-              class="fill-panel"
-              .widgetConfig=${UI.Widget.widgetConfig(ArtifactsViewer)}
-              ></devtools-widget>
-            </div>
-          </devtools-split-view>`;
-        }
-
-        return aiChatView;
       }
       case ViewState.EXPLORE_VIEW:
         return html`<devtools-widget
@@ -458,13 +435,40 @@ function defaultView(input: ViewInput, output: PanelViewOutput, target: HTMLElem
     }
   }
 
-  Lit.render(
-    html`
-      ${toolbarView(input)}
-      <div class="ai-assistance-view-container">${renderState()}</div>
-    `,
-    target
-  );
+  const panelWithToolbar = html`
+    ${toolbarView(input)}
+    <div class="ai-assistance-view-container">${renderState()}</div>`;
+
+  // If the green experiment is enabled, render the chat view inside
+  // a split view to also have an artifacts viewer sidebar.
+  if(GreenDev.Prototypes.instance().isEnabled('artifactViewer')) {
+    Lit.render(
+      html`
+        <devtools-split-view
+          direction="column"
+          sidebar-visibility=${input.artifactsSidebarVisible ? 'visible' : 'hidden'}
+          sidebar-position="second"
+          sidebar-initial-size="520"
+          style="width: 100%;">
+          <div slot="main" class="assistance-view-wrapper-with-sidebar">
+            ${panelWithToolbar}
+          </div>
+          <div slot="sidebar">
+            <div class="artifacts-toolbar-container" role="toolbar">
+              <div>Artifacts Viewer</div>
+            </div>
+            <devtools-widget
+              class="fill-panel"
+              .widgetConfig=${UI.Widget.widgetConfig(ArtifactsViewer)}
+            ></devtools-widget>
+          </div>
+        </devtools-split-view>
+      `,
+      target
+    );
+  } else {
+    Lit.render(panelWithToolbar, target);
+  }
   // clang-format on
 }
 
@@ -561,6 +565,10 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     }
     AiAssistanceModel.AiHistoryStorage.AiHistoryStorage.instance().addEventListener(
         AiAssistanceModel.AiHistoryStorage.Events.HISTORY_DELETED, this.#onHistoryDeleted, this);
+    if (GreenDev.Prototypes.instance().isEnabled('artifactViewer')) {
+      AiAssistanceModel.ArtifactsManager.ArtifactsManager.instance().addEventListener(
+          AiAssistanceModel.ArtifactsManager.ArtifactAddedEvent.eventName, this.#onArtifactAdded.bind(this));
+    }
   }
 
   async #getPanelViewInput(): Promise<PanelViewInput> {
@@ -815,6 +823,13 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     if (GreenDev.Prototypes.instance().isEnabled('inDevToolsFloaty')) {
       UI.Context.Context.instance().addFlavorChangeListener(UI.Floaty.FloatyFlavor, this.#bindFloatyListener, this);
       this.#bindFloatyListener();
+    }
+  }
+
+  #onArtifactAdded(): void {
+    if (AiAssistanceModel.ArtifactsManager.ArtifactsManager.instance().artifacts.length > 0) {
+      this.#isArtifactsSidebarOpen = true;
+      this.requestUpdate();
     }
   }
 

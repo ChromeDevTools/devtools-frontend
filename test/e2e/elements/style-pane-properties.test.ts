@@ -1690,4 +1690,58 @@ describe('The Styles pane', () => {
     inspectedRules = await getDisplayedCSSDeclarations(devToolsPage);
     assert.includeDeepMembers(inspectedRules, ['background-color: red;', 'display: block;', 'unicode-bidi: isolate;']);
   });
+
+  it('correctly removes property after it is disabled', async ({devToolsPage, inspectedPage}) => {
+    await inspectedPage.goToHtml(`
+      <style>
+        #container {
+          font-weight:bold;
+        }
+      </style>
+      <div id="container">
+      </div>
+      <div id="other">
+      </div>`);
+    await waitForElementsStyleSection(undefined, devToolsPage);
+    await waitForAndClickTreeElementWithPartialText('container', devToolsPage);
+
+    let propertiesSection = await getStyleRule('#container', devToolsPage);
+    let displayedNames = await getDisplayedCSSPropertyNames(propertiesSection, devToolsPage);
+    assert.deepEqual(
+        displayedNames,
+        [
+          'font-weight',
+        ],
+        'incorrectly displayed style after initialization');
+    let inspectedRules = await getDisplayedStyleRules(devToolsPage);
+    let inspectedRulesContainer = inspectedRules.filter(rule => rule.selectorText === '#container');
+    assert.deepEqual(inspectedRulesContainer, [{
+                       selectorText: '#container',
+                       propertyData: [{propertyName: 'font-weight', isOverLoaded: false, isInherited: false}]
+                     }]);
+
+    // Disable the style rule
+    await devToolsPage.click('.tree-outline li:nth-of-type(1) input', {root: propertiesSection});
+    await devToolsPage.waitFor('.tree-outline li:nth-of-type(1).overloaded.disabled.inactive', propertiesSection);
+    displayedNames = await getDisplayedCSSPropertyNames(propertiesSection, devToolsPage);
+    inspectedRules = await getDisplayedStyleRules(devToolsPage);
+    inspectedRulesContainer = inspectedRules.filter(rule => rule.selectorText === '#container');
+    assert.deepEqual(inspectedRulesContainer, [{
+                       selectorText: '#container',
+                       propertyData: [{propertyName: 'font-weight', isOverLoaded: true, isInherited: false}]
+                     }]);
+
+    // Delete the style rule
+    await deletePropertyByBackspace(
+        devToolsPage, '.webkit-css-property[aria-label="CSS property name: font-weight"]', propertiesSection);
+
+    // Select another node (#other)
+    await waitForAndClickTreeElementWithPartialText('other', devToolsPage);
+
+    // Selected #inspected again
+    await waitForAndClickTreeElementWithPartialText('container', devToolsPage);
+    propertiesSection = await getStyleRule('#container', devToolsPage);
+    displayedNames = await getDisplayedCSSPropertyNames(propertiesSection, devToolsPage);
+    assert.isEmpty(displayedNames);
+  });
 });

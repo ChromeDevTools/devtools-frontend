@@ -15,7 +15,8 @@ import {
 } from '../cxx-debugging-extension-helpers.js';
 
 describe('LinearMemoryInspector', () => {
-  it('can show variables', async () => {
+  // Started failing 2025.12.09, probably related to crrev.com/c/7241006
+  it.skip('[crbug.com/407941051] can show variables', async () => {
     const {inspectedPage, devToolsPage} = getBrowserAndPagesWrappers();
     const test =
         'extensions/cxx_debugging/e2e/resources/scope-view-primitives__Scope_view_formats_primitive_types_correctly_0.html';

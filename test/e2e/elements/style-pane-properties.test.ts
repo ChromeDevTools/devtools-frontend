@@ -1654,4 +1654,40 @@ describe('The Styles pane', () => {
          });
        }
      });
+
+  it('changing selected node while editing style does update styles sidebar', async ({devToolsPage, inspectedPage}) => {
+    await inspectedPage.goToHtml(`
+      <style>
+        #inspected {
+          color: red;
+        }
+        #other {
+          color: blue;
+        }
+      </style>
+      <div id="inspected">Text</div>
+      <div id="other"></div>`);
+    await waitForElementsStyleSection(undefined, devToolsPage);
+    await waitForAndClickTreeElementWithPartialText('inspected', devToolsPage);
+
+    let propertiesSection = await getStyleRule('#inspected', devToolsPage);
+    let inspectedRules = await getDisplayedCSSDeclarations(devToolsPage);
+    assert.sameDeepMembers(inspectedRules, ['color: red;', 'display: block;', 'unicode-bidi: isolate;']);
+
+    // Start editing style rule for #inspected
+    await devToolsPage.click('.webkit-css-property[aria-label="CSS property name: color"]', {root: propertiesSection});
+    await devToolsPage.typeText('background-color');
+
+    // Select another node (#other)
+    await waitForAndClickTreeElementWithPartialText('other', devToolsPage);
+    propertiesSection = await getStyleRule('#other', devToolsPage);
+    inspectedRules = await getDisplayedCSSDeclarations(devToolsPage);
+    assert.sameDeepMembers(inspectedRules, ['color: blue;', 'display: block;', 'unicode-bidi: isolate;']);
+
+    // Selected #inspected again
+    await waitForAndClickTreeElementWithPartialText('inspected', devToolsPage);
+    propertiesSection = await getStyleRule('#inspected', devToolsPage);
+    inspectedRules = await getDisplayedCSSDeclarations(devToolsPage);
+    assert.includeDeepMembers(inspectedRules, ['background-color: red;', 'display: block;', 'unicode-bidi: isolate;']);
+  });
 });

@@ -23,6 +23,7 @@ import * as ApplicationComponents from './components/components.js';
 
 const {classMap, ref} = Directives;
 const {linkifyURL} = Components.Linkifier.Linkifier;
+const {widgetConfig} = UI.Widget;
 
 const UIStrings = {
   /**
@@ -724,11 +725,18 @@ function renderPresentation(
   setSectionContents(fields, presentationSection);
 }
 
-function renderProtocolHandlers(
-    protocolHandlersView: ApplicationComponents.ProtocolHandlersView.ProtocolHandlersView,
-    data: ProtocolHandlersSectionData): void {
-  protocolHandlersView.protocolHandlers = data.protocolHandlers;
-  protocolHandlersView.manifestLink = data.manifestLink;
+function renderProtocolHandlers(data: ProtocolHandlersSectionData, output: ViewOutput): LitTemplate {
+  // clang-format off
+  return html`${renderSectionHeader(i18nString(UIStrings.protocolHandlers), output)}
+    <div class="report-row">
+      <devtools-widget .widgetConfig=${widgetConfig(
+        ApplicationComponents.ProtocolHandlersView.ProtocolHandlersView,
+        {protocolHandlers: data.protocolHandlers, manifestLink: data.manifestLink})}
+        ${ref(setFocusOnSection(i18nString(UIStrings.protocolHandlers), output))}>
+      </devtools-widget>
+    </div>
+    <devtools-report-divider></devtools-report-divider>`;
+  // clang-format on
 }
 
 function renderImage(imageSrc: string, imageUrl: string, naturalWidth: number): LitTemplate {
@@ -1053,7 +1061,6 @@ interface ViewInput {
   installabilitySection?: UI.ReportView.Section;
   identitySection?: UI.ReportView.Section;
   presentationSection?: UI.ReportView.Section;
-  protocolHandlersView?: ApplicationComponents.ProtocolHandlersView.ProtocolHandlersView;
   iconsSection?: UI.ReportView.Section;
   maskedIcons?: boolean;
   windowControlsSection?: UI.ReportView.Section;
@@ -1091,7 +1098,6 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
     installabilitySection,
     identitySection,
     presentationSection,
-    protocolHandlersView,
     identityData,
     presentationData,
     protocolHandlersData,
@@ -1115,9 +1121,6 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
   if (presentationSection && presentationData) {
     renderPresentation(presentationSection, presentationData);
   }
-  if (protocolHandlersView && protocolHandlersData) {
-    renderProtocolHandlers(protocolHandlersView, protocolHandlersData);
-  }
   if (installabilitySection && installabilityErrors) {
     renderInstallability(installabilitySection, installabilityErrors);
   }
@@ -1128,6 +1131,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
   render(html`
     <style>${appManifestViewStyles}</style>
     <devtools-report>
+      ${protocolHandlersData ? renderProtocolHandlers(protocolHandlersData, output) : nothing}
       ${iconsData && onToggleIconMasked && maskedIcons ?
           renderIcons(iconsData, maskedIcons, onToggleIconMasked, output) : nothing}
       ${windowControlsData && output ? renderWindowControlsSection(
@@ -1146,13 +1150,11 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
   private readonly installabilitySection: UI.ReportView.Section;
   private readonly identitySection: UI.ReportView.Section;
   private readonly presentationSection: UI.ReportView.Section;
-  private readonly protocolHandlersSection: UI.ReportView.Section;
   private registeredListeners: Common.EventTarget.EventDescriptor[];
   private target?: SDK.Target.Target;
   private resourceTreeModel?: SDK.ResourceTreeModel.ResourceTreeModel|null;
   private serviceWorkerManager?: SDK.ServiceWorkerManager.ServiceWorkerManager|null;
   private overlayModel?: SDK.OverlayModel.OverlayModel|null;
-  private protocolHandlersView: ApplicationComponents.ProtocolHandlersView.ProtocolHandlersView;
   private manifestUrl: Platform.DevToolsPath.UrlString;
   private manifestData: string|null;
   private manifestErrors: Protocol.Page.AppManifestError[];
@@ -1192,10 +1194,6 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
     this.identitySection = this.reportView.appendSection(i18nString(UIStrings.identity), 'undefined,identity');
     this.presentationSection =
         this.reportView.appendSection(i18nString(UIStrings.presentation), 'undefined,presentation');
-    this.protocolHandlersSection =
-        this.reportView.appendSection(i18nString(UIStrings.protocolHandlers), 'undefined,protocol-handlers');
-    this.protocolHandlersView = new ApplicationComponents.ProtocolHandlersView.ProtocolHandlersView();
-    this.protocolHandlersView.show(this.protocolHandlersSection.getFieldElement());
 
     SDK.TargetManager.TargetManager.instance().observeTargets(this);
     this.registeredListeners = [];
@@ -1239,11 +1237,6 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
     let focusableElement: HTMLElement|null = sectionFieldElement.querySelector('[tabindex="0"]');
     if (checkBoxElement?.shadowRoot) {
       focusableElement = checkBoxElement.shadowRoot.querySelector('input') || null;
-    } else if (!focusableElement) {
-      // special case for protocol handler section since it is a custom Element and has different structure than the others
-      focusableElement = sectionFieldElement.querySelector('devtools-protocol-handlers-view')
-                             ?.shadowRoot?.querySelector<HTMLElement>('[tabindex="0"]') ||
-          null;
     }
     if (focusableElement) {
       focusableElement.focus();
@@ -1256,7 +1249,6 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
     return [
       this.identitySection,
       this.presentationSection,
-      this.protocolHandlersSection,
     ];
   }
   getStaticSections(): Array<{title: string, jslogContext: string|undefined}> {
@@ -1413,7 +1405,6 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
           installabilitySection: this.installabilitySection,
           identitySection: this.identitySection,
           presentationSection: this.presentationSection,
-          protocolHandlersView: this.protocolHandlersView,
           maskedIcons: this.maskedIcons,
           parsedManifest,
           url,

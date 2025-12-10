@@ -247,6 +247,13 @@ export class WidgetElement<WidgetT extends Widget> extends HTMLElement {
     };
     return clone;
   }
+
+  override focus(): void {
+    const widget = Widget.get(this);
+    if (widget) {
+      widget.focus();
+    }
+  }
 }
 
 customElements.define('devtools-widget', WidgetElement);

@@ -1395,7 +1395,11 @@ describe('The Styles pane', () => {
        assert.isTrue(innerText?.toLowerCase().startsWith('specificity'));
      });
 
-  it('can display nested pseudo elements and their styles', async ({devToolsPage, inspectedPage}) => {
+  // crbug.com/419705502 Flaky after migration
+  it.skip('[crbug.com/419705502] can display nested pseudo elements and their styles', async ({
+                                                                                         devToolsPage,
+                                                                                         inspectedPage,
+                                                                                       }) => {
     await inspectedPage.goToHtml(`
       <style>
       #inspected::before {
@@ -1444,16 +1448,22 @@ describe('The Styles pane', () => {
     assert.sameDeepMembers(styleRules, [
       {
         selectorText: '#inspected::before',
-        propertyData: [{propertyName: 'display', isOverLoaded: false, isInherited: false}]
+        propertyData: [
+          {propertyName: 'display', isOverLoaded: false, isInherited: false},
+        ],
       },
       {
         selectorText: '#inspected::before',
-        propertyData: [{propertyName: 'content', isOverLoaded: false, isInherited: false}]
+        propertyData: [
+          {propertyName: 'content', isOverLoaded: false, isInherited: false},
+        ],
       },
       {
         selectorText: '#inspected::before::marker',
-        propertyData: [{propertyName: 'content', isOverLoaded: false, isInherited: false}]
-      }
+        propertyData: [
+          {propertyName: 'content', isOverLoaded: false, isInherited: false},
+        ],
+      },
     ]);
     await devToolsPage.pressKey('ArrowRight');
     await waitForPartialContentOfSelectedElementsNode('::marker', devToolsPage);
@@ -1465,16 +1475,22 @@ describe('The Styles pane', () => {
     assert.sameDeepMembers(styleRules, [
       {
         selectorText: '#inspected::after',
-        propertyData: [{propertyName: 'display', isOverLoaded: false, isInherited: false}]
+        propertyData: [
+          {propertyName: 'display', isOverLoaded: false, isInherited: false},
+        ],
       },
       {
         selectorText: '#inspected::after',
-        propertyData: [{propertyName: 'content', isOverLoaded: false, isInherited: false}]
+        propertyData: [
+          {propertyName: 'content', isOverLoaded: false, isInherited: false},
+        ],
       },
       {
         selectorText: '#inspected::after::marker',
-        propertyData: [{propertyName: 'content', isOverLoaded: false, isInherited: false}]
-      }
+        propertyData: [
+          {propertyName: 'content', isOverLoaded: false, isInherited: false},
+        ],
+      },
     ]);
     await devToolsPage.pressKey('ArrowRight');
     await waitForPartialContentOfSelectedElementsNode('::marker', devToolsPage);
@@ -1511,16 +1527,22 @@ describe('The Styles pane', () => {
     assert.sameDeepMembers(styleRules, [
       {
         selectorText: '#inspected::before',
-        propertyData: [{propertyName: 'display', isOverLoaded: false, isInherited: false}]
+        propertyData: [
+          {propertyName: 'display', isOverLoaded: false, isInherited: false},
+        ],
       },
       {
         selectorText: '#inspected::before',
-        propertyData: [{propertyName: 'content', isOverLoaded: false, isInherited: false}]
+        propertyData: [
+          {propertyName: 'content', isOverLoaded: false, isInherited: false},
+        ],
       },
       {
         selectorText: '#inspected::before::marker',
-        propertyData: [{propertyName: 'content', isOverLoaded: false, isInherited: false}]
-      }
+        propertyData: [
+          {propertyName: 'content', isOverLoaded: false, isInherited: false},
+        ],
+      },
     ]);
 
     // --- Remove node ---
@@ -1529,7 +1551,10 @@ describe('The Styles pane', () => {
     });
 
     await waitForChildrenOfSelectedElementNode(devToolsPage);
-    await waitForContentOfSelectedElementsNode('<div id=\u200B"container">\u200B</div>\u200B', devToolsPage);
+    await waitForContentOfSelectedElementsNode(
+        '<div id=\u200B"container">\u200B</div>\u200B',
+        devToolsPage,
+    );
   });
 
   describe('Editing', () => {

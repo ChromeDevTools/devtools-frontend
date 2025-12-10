@@ -135,6 +135,7 @@ copy_to_gen("sources") {
     "sourcemap-stepping.map",
     "sourcemap-without-mappings.map",
     "sourceurl.html",
+    "stylesheet-source-url-comment.html",
     "wasm/add.wasm",
     "wasm/call-to-add-wasm.html",
     "wasm/callstack-wasm-to-js.html",

@@ -16,6 +16,7 @@ ts_e2e_library("sources") {
     "can-open-linear-memory-inspector.test.ts",
     "can-pretty-print-sourcecode.test.ts",
     "can-show-multiple-workers.test.ts",
+    "can-show-stylesheets-with-source-url-comment.test.ts",
     "can-show-wasm-scopes.test.ts",
     "color-swatch.test.ts",
     "continue-to-location-markers.test.ts",

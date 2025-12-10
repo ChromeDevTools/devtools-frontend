@@ -956,62 +956,32 @@ export class AppManifestTreeElement extends ApplicationPanelTreeElement {
     generateChildren() {
         const staticSections = this.view.getStaticSections();
         for (const section of staticSections) {
-            const sectionElement = section.getTitleElement();
-            const childTitle = section.title();
-            const sectionFieldElement = section.getFieldElement();
-            const child = new ManifestChildTreeElement(this.resourcesPanel, sectionElement, childTitle, sectionFieldElement, section.jslogContext || '');
+            const childTitle = section.title;
+            const child = new ApplicationPanelTreeElement(this.resourcesPanel, childTitle, false, section.jslogContext || '');
+            child.onselect = (selectedByUser) => {
+                if (selectedByUser) {
+                    this.showView(this.view);
+                    this.view.scrollToSection(childTitle);
+                }
+                return true;
+            };
+            const icon = createIcon('document');
+            child.setLeadingIcons([icon]);
+            child.listItemElement.addEventListener('keydown', (event) => {
+                if (event.key !== 'Tab' || event.shiftKey) {
+                    return;
+                }
+                if (this.view.focusOnSection(childTitle)) {
+                    event.consume(true);
+                }
+            });
+            UI.ARIAUtils.setLabel(child.listItemElement, i18nString(UIStrings.beforeInvokeAlert, { PH1: child.listItemElement.title }));
             this.appendChild(child);
         }
     }
     onInvoke() {
         this.view.getManifestElement().scrollIntoView();
         UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.onInvokeAlert, { PH1: this.listItemElement.title }));
-    }
-    showManifestView() {
-        this.showView(this.view);
-    }
-}
-export class ManifestChildTreeElement extends ApplicationPanelTreeElement {
-    #sectionElement;
-    #sectionFieldElement;
-    constructor(storagePanel, element, childTitle, fieldElement, jslogContext) {
-        super(storagePanel, childTitle, false, jslogContext);
-        const icon = createIcon('document');
-        this.setLeadingIcons([icon]);
-        this.#sectionElement = element;
-        this.#sectionFieldElement = fieldElement;
-        self.onInvokeElement(this.listItemElement, this.onInvoke.bind(this));
-        this.listItemElement.addEventListener('keydown', this.onInvokeElementKeydown.bind(this));
-        UI.ARIAUtils.setLabel(this.listItemElement, i18nString(UIStrings.beforeInvokeAlert, { PH1: this.listItemElement.title }));
-    }
-    get itemURL() {
-        return 'manifest://' + this.title;
-    }
-    onInvoke() {
-        this.parent?.showManifestView();
-        this.#sectionElement.scrollIntoView();
-        UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.onInvokeAlert, { PH1: this.listItemElement.title }));
-    }
-    // direct focus to the corresponding element
-    onInvokeElementKeydown(event) {
-        if (event.key !== 'Tab' || event.shiftKey) {
-            return;
-        }
-        const checkBoxElement = this.#sectionFieldElement.querySelector('.mask-checkbox');
-        let focusableElement = this.#sectionFieldElement.querySelector('[tabindex="0"]');
-        if (checkBoxElement?.shadowRoot) {
-            focusableElement = checkBoxElement.shadowRoot.querySelector('input') || null;
-        }
-        else if (!focusableElement) {
-            // special case for protocol handler section since it is a custom Element and has different structure than the others
-            focusableElement = this.#sectionFieldElement.querySelector('devtools-protocol-handlers-view')
-                ?.shadowRoot?.querySelector('[tabindex="0"]') ||
-                null;
-        }
-        if (focusableElement) {
-            focusableElement?.focus();
-            event.consume(true);
-        }
     }
 }
 export class ClearStorageTreeElement extends ApplicationPanelTreeElement {

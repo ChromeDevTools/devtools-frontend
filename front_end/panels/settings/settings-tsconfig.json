@@ -77,6 +77,9 @@
       "path": "../../models/breakpoints/bundle-tsconfig.json"
     },
     {
+      "path": "../../models/greendev/bundle-tsconfig.json"
+    },
+    {
       "path": "../../models/persistence/bundle-tsconfig.json"
     },
     {

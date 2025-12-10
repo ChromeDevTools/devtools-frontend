@@ -9,46 +9,48 @@ export default `/*
  * found in the LICENSE file.
  */
 
-:host {
-  flex: auto;
-  display: flex;
-}
+@scope to (devtools-widget > *) {
+  :scope {
+    flex: auto;
+    display: flex;
+  }
 
-.value-interpreter {
-  border: 1px solid var(--sys-color-divider);
-  background-color: var(--sys-color-cdt-base-container);
-  overflow: hidden;
-  width: 400px;
-}
+  .value-interpreter {
+    border: 1px solid var(--sys-color-divider);
+    background-color: var(--sys-color-cdt-base-container);
+    overflow: hidden;
+    width: 400px;
+  }
 
-.settings-toolbar {
-  min-height: 26px;
-  display: flex;
-  flex-wrap: nowrap;
-  justify-content: space-between;
-  padding-left: var(--sys-size-3);
-  padding-right: var(--sys-size-3);
-  align-items: center;
-}
+  .settings-toolbar {
+    min-height: 26px;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    padding-left: var(--sys-size-3);
+    padding-right: var(--sys-size-3);
+    align-items: center;
+  }
 
-.settings-toolbar-button {
-  padding: 0;
-  width: 20px;
-  height: 20px;
-  border: none;
-  outline: none;
-  background-color: transparent;
-}
+  .settings-toolbar-button {
+    padding: 0;
+    width: 20px;
+    height: 20px;
+    border: none;
+    outline: none;
+    background-color: transparent;
+  }
 
-.settings-toolbar-button.active devtools-icon {
-  color: var(--icon-toggled);
-}
+  .settings-toolbar-button.active devtools-icon {
+    color: var(--icon-toggled);
+  }
 
-.divider {
-  display: block;
-  height: 1px;
-  margin-bottom: 12px;
-  background-color: var(--sys-color-divider);
+  .divider {
+    display: block;
+    height: 1px;
+    margin-bottom: 12px;
+    background-color: var(--sys-color-divider);
+  }
 }
 
 /*# sourceURL=${import.meta.resolve('./linearMemoryValueInterpreter.css')} */`;

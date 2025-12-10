@@ -38,7 +38,7 @@ export class ConversationContext {
  * more than MAX_STEPS iterations.
  */
 export class AiAgent {
-    #sessionId = crypto.randomUUID();
+    #sessionId;
     #aidaClient;
     #serverSideLoggingEnabled;
     confirmSideEffect;
@@ -58,12 +58,12 @@ export class AiAgent {
      * change the `context` during an `AiAgent.run()`.
      */
     context;
-    #id = crypto.randomUUID();
     #history = [];
     #facts = new Set();
     constructor(opts) {
         this.#aidaClient = opts.aidaClient;
         this.#serverSideLoggingEnabled = opts.serverSideLoggingEnabled ?? false;
+        this.#sessionId = opts.sessionId ?? crypto.randomUUID();
         this.confirmSideEffect = opts.confirmSideEffectForTest ?? (() => Promise.withResolvers());
     }
     async enhanceQuery(query) {
@@ -135,8 +135,8 @@ export class AiAgent {
         };
         return request;
     }
-    get id() {
-        return this.#id;
+    get sessionId() {
+        return this.#sessionId;
     }
     get origin() {
         return this.#origin;

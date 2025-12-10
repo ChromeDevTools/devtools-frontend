@@ -3491,6 +3491,9 @@
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
     "message": "No supplied icon is at least {PH1} pixels square in PNG, SVG, or WebP format, with the purpose attribute unset or set to 'any'."
   },
+  "panels/application/AppManifestView.ts | onInvokeAlert": {
+    "message": "Scrolled to {PH1}"
+  },
   "panels/application/AppManifestView.ts | orientation": {
     "message": "Orientation"
   },
@@ -13361,6 +13364,9 @@
   "panels/settings/settings-meta.ts | experiments": {
     "message": "Experiments"
   },
+  "panels/settings/settings-meta.ts | greenDevProtoTypes": {
+    "message": "GreenDev"
+  },
   "panels/settings/settings-meta.ts | ignoreList": {
     "message": "Ignore list"
   },
@@ -13379,6 +13385,9 @@
   "panels/settings/settings-meta.ts | showExperiments": {
     "message": "Show Experiments"
   },
+  "panels/settings/settings-meta.ts | showGreenDev": {
+    "message": "Show GreenDev"
+  },
   "panels/settings/settings-meta.ts | showIgnoreList": {
     "message": "Show Ignore list"
   },
@@ -13396,6 +13405,9 @@
   },
   "panels/settings/SettingsScreen.ts | experiments": {
     "message": "Experiments"
+  },
+  "panels/settings/SettingsScreen.ts | greenDevUnstable": {
+    "message": "Warning: All these features are prototype and very unstable. They exist for user testing and are not designed to be relied on."
   },
   "panels/settings/SettingsScreen.ts | learnMore": {
     "message": "Learn more"

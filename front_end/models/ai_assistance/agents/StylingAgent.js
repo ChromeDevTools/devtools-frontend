@@ -210,7 +210,7 @@ export class StylingAgent extends AiAgent {
         this.#changes = opts.changeManager || new ChangeManager();
         this.#execJs = opts.execJs ?? executeJsCode;
         this.#createExtensionScope = opts.createExtensionScope ?? ((changes) => {
-            return new ExtensionScope(changes, this.id, this.context?.getItem() ?? null);
+            return new ExtensionScope(changes, this.sessionId, this.context?.getItem() ?? null);
         });
         this.declareFunction('getStyles', {
             description: `Get computed and source styles for one or multiple elements on the inspected page for multiple elements at once by uid.

@@ -5,8 +5,8 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import * as Root from '../../core/root/root.js';
 import * as FormatterActions from '../../entrypoints/formatter_worker/FormatterActions.js'; // eslint-disable-line @devtools/es-modules-import
+import * as AiCodeCompletion from '../../models/ai_code_completion/ai_code_completion.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
@@ -274,7 +274,8 @@ export class UISourceCodeFrame extends Common.ObjectWrapper
             PerformanceProfilePlugin,
             AiWarningInfobarPlugin,
         ];
-        if (this.#isAiCodeCompletionEnabled()) {
+        const devtoolsLocale = i18n.DevToolsLocale.DevToolsLocale.instance();
+        if (AiCodeCompletion.AiCodeCompletion.AiCodeCompletion.isAiCodeCompletionEnabled(devtoolsLocale.locale)) {
             sourceFramePluginsList.push(AiCodeCompletionPlugin);
         }
         return sourceFramePluginsList;
@@ -435,20 +436,6 @@ export class UISourceCodeFrame extends Common.ObjectWrapper
         const mimeType = Common.ResourceType.ResourceType.mimeFromURL(this.#uiSourceCode.url());
         const mediaType = Common.ResourceType.ResourceType.mediaTypeForMetrics(mimeType ?? '', this.#uiSourceCode.contentType().isFromSourceMap(), TextUtils.TextUtils.isMinified(this.#uiSourceCode.content()), this.#uiSourceCode.url().startsWith('snippet://'), this.#uiSourceCode.url().startsWith('debugger://'));
         Host.userMetrics.sourcesPanelFileOpened(mediaType);
-    }
-    static #isAiCodeCompletionEnabled() {
-        const devtoolsLocale = i18n.DevToolsLocale.DevToolsLocale.instance();
-        const aidaAvailability = Root.Runtime.hostConfig.aidaAvailability;
-        if (!devtoolsLocale.locale.startsWith('en-')) {
-            return false;
-        }
-        if (aidaAvailability?.blockedByGeo) {
-            return false;
-        }
-        if (aidaAvailability?.blockedByAge) {
-            return false;
-        }
-        return Boolean(aidaAvailability?.enabled && Root.Runtime.hostConfig.devToolsAiCodeCompletion?.enabled);
     }
 }
 function getIconDataForLevel(level) {

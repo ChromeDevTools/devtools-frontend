@@ -1317,7 +1317,7 @@ var BottomUpRootNode = class extends Node {
         node.totalTime += totalTimeById.get(id) || 0;
         totalTimeById.delete(id);
       }
-      if (firstNodeStack.length) {
+      if (idStack.length > 0) {
         node.setHasChildren(true);
       }
     }

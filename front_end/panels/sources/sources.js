@@ -3989,7 +3989,7 @@ import * as Common12 from "./../../core/common/common.js";
 import * as Host8 from "./../../core/host/host.js";
 import * as i18n35 from "./../../core/i18n/i18n.js";
 import * as Platform12 from "./../../core/platform/platform.js";
-import * as Root3 from "./../../core/root/root.js";
+import * as Root2 from "./../../core/root/root.js";
 import * as SDK11 from "./../../core/sdk/sdk.js";
 import * as Badges from "./../../models/badges/badges.js";
 import * as Bindings8 from "./../../models/bindings/bindings.js";
@@ -6499,7 +6499,6 @@ __export(UISourceCodeFrame_exports, {
 import * as Common9 from "./../../core/common/common.js";
 import * as Host6 from "./../../core/host/host.js";
 import * as i18n28 from "./../../core/i18n/i18n.js";
-import * as Root2 from "./../../core/root/root.js";
 
 // gen/front_end/entrypoints/formatter_worker/FormatterActions.js
 var FORMATTABLE_MEDIA_TYPES = [
@@ -6512,6 +6511,7 @@ var FORMATTABLE_MEDIA_TYPES = [
 ];
 
 // gen/front_end/panels/sources/UISourceCodeFrame.js
+import * as AiCodeCompletion3 from "./../../models/ai_code_completion/ai_code_completion.js";
 import * as IssuesManager from "./../../models/issues_manager/issues_manager.js";
 import * as Persistence7 from "./../../models/persistence/persistence.js";
 import * as TextUtils6 from "./../../models/text_utils/text_utils.js";
@@ -7046,7 +7046,8 @@ var UISourceCodeFrame = class _UISourceCodeFrame extends Common9.ObjectWrapper.e
       PerformanceProfilePlugin,
       AiWarningInfobarPlugin
     ];
-    if (this.#isAiCodeCompletionEnabled()) {
+    const devtoolsLocale = i18n28.DevToolsLocale.DevToolsLocale.instance();
+    if (AiCodeCompletion3.AiCodeCompletion.AiCodeCompletion.isAiCodeCompletionEnabled(devtoolsLocale.locale)) {
       sourceFramePluginsList.push(AiCodeCompletionPlugin);
     }
     return sourceFramePluginsList;
@@ -7208,20 +7209,6 @@ var UISourceCodeFrame = class _UISourceCodeFrame extends Common9.ObjectWrapper.e
     const mimeType = Common9.ResourceType.ResourceType.mimeFromURL(this.#uiSourceCode.url());
     const mediaType = Common9.ResourceType.ResourceType.mediaTypeForMetrics(mimeType ?? "", this.#uiSourceCode.contentType().isFromSourceMap(), TextUtils6.TextUtils.isMinified(this.#uiSourceCode.content()), this.#uiSourceCode.url().startsWith("snippet://"), this.#uiSourceCode.url().startsWith("debugger://"));
     Host6.userMetrics.sourcesPanelFileOpened(mediaType);
-  }
-  static #isAiCodeCompletionEnabled() {
-    const devtoolsLocale = i18n28.DevToolsLocale.DevToolsLocale.instance();
-    const aidaAvailability = Root2.Runtime.hostConfig.aidaAvailability;
-    if (!devtoolsLocale.locale.startsWith("en-")) {
-      return false;
-    }
-    if (aidaAvailability?.blockedByGeo) {
-      return false;
-    }
-    if (aidaAvailability?.blockedByAge) {
-      return false;
-    }
-    return Boolean(aidaAvailability?.enabled && Root2.Runtime.hostConfig.devToolsAiCodeCompletion?.enabled);
   }
 };
 function getIconDataForLevel(level) {
@@ -9126,7 +9113,7 @@ var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
     const initialDebugSidebarWidth = 225;
     this.splitWidget = new UI18.SplitWidget.SplitWidget(true, true, "sources-panel-split-view-state", initialDebugSidebarWidth);
     this.splitWidget.show(this.element);
-    if (Root3.Runtime.Runtime.isTraceApp()) {
+    if (Root2.Runtime.Runtime.isTraceApp()) {
       this.splitWidget.hideSidebar();
     } else {
       this.splitWidget.enableShowModeSaving();
@@ -9200,7 +9187,7 @@ var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
     }
     if (!isInWrapper) {
       panel2.#sourcesView.leftToolbar().appendToolbarItem(panel2.toggleNavigatorSidebarButton);
-      if (!Root3.Runtime.Runtime.isTraceApp()) {
+      if (!Root2.Runtime.Runtime.isTraceApp()) {
         if (panel2.splitWidget.isVertical()) {
           panel2.#sourcesView.rightToolbar().appendToolbarItem(panel2.toggleDebuggerSidebarButton);
         } else {
@@ -9417,14 +9404,14 @@ var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
   }
   addExperimentMenuItem(menuSection, experiment, menuItem) {
     function toggleExperiment() {
-      const checked = Root3.Runtime.experiments.isEnabled(experiment);
-      Root3.Runtime.experiments.setEnabled(experiment, !checked);
+      const checked = Root2.Runtime.experiments.isEnabled(experiment);
+      Root2.Runtime.experiments.setEnabled(experiment, !checked);
       Host8.userMetrics.experimentChanged(experiment, checked);
       const groupByFolderSetting = Common12.Settings.Settings.instance().moduleSetting("navigator-group-by-folder");
       groupByFolderSetting.set(groupByFolderSetting.get());
     }
     menuSection.appendCheckboxItem(menuItem, toggleExperiment, {
-      checked: Root3.Runtime.experiments.isEnabled(experiment),
+      checked: Root2.Runtime.experiments.isEnabled(experiment),
       experimental: true,
       jslogContext: Platform12.StringUtilities.toKebabCase(experiment)
     });
@@ -9666,7 +9653,7 @@ var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
       return;
     }
     const eventTarget = event.target;
-    if (!uiSourceCode.project().isServiceProject() && !eventTarget.isSelfOrDescendant(this.navigatorTabbedLocation.widget().element) && !(Root3.Runtime.experiments.isEnabled(
+    if (!uiSourceCode.project().isServiceProject() && !eventTarget.isSelfOrDescendant(this.navigatorTabbedLocation.widget().element) && !(Root2.Runtime.experiments.isEnabled(
       "just-my-code"
       /* Root.Runtime.ExperimentName.JUST_MY_CODE */
     ) && Workspace21.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(uiSourceCode))) {
@@ -9845,7 +9832,7 @@ var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
     this.splitWidget.setVertical(!vertically);
     this.splitWidget.element.classList.toggle("sources-split-view-vertical", vertically);
     _SourcesPanel.updateResizerAndSidebarButtons(this);
-    if (Root3.Runtime.Runtime.isTraceApp()) {
+    if (Root2.Runtime.Runtime.isTraceApp()) {
       return;
     }
     const vbox = new UI18.Widget.VBox();
@@ -12303,7 +12290,7 @@ __export(FilteredUISourceCodeListProvider_exports, {
 });
 import "./../../ui/components/highlighting/highlighting.js";
 import * as i18n39 from "./../../core/i18n/i18n.js";
-import * as Root4 from "./../../core/root/root.js";
+import * as Root3 from "./../../core/root/root.js";
 import * as Persistence12 from "./../../models/persistence/persistence.js";
 import * as Workspace25 from "./../../models/workspace/workspace.js";
 import * as QuickOpen3 from "./../../ui/legacy/components/quick_open/quick_open.js";
@@ -12407,7 +12394,7 @@ var FilteredUISourceCodeListProvider = class extends QuickOpen3.FilteredListWidg
     if (this.uiSourceCodeIds.has(uiSourceCode.canonicalScriptId())) {
       return false;
     }
-    if (Root4.Runtime.experiments.isEnabled(
+    if (Root3.Runtime.experiments.isEnabled(
       "just-my-code"
       /* Root.Runtime.ExperimentName.JUST_MY_CODE */
     ) && Workspace25.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(uiSourceCode)) {

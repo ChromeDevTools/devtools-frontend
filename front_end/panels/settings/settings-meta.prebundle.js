@@ -20,6 +20,14 @@ const UIStrings = {
      */
     experiments: 'Experiments',
     /**
+     * @description Text in Settings Screen of the Settings
+     */
+    greenDevProtoTypes: 'GreenDev',
+    /**
+     * @description Command for showing the GreenDev tab in the Settings Screen
+     */
+    showGreenDev: 'Show GreenDev',
+    /**
      * @description Title of Ignore list settings
      */
     ignoreList: 'Ignore list',
@@ -139,6 +147,21 @@ UI.ViewManager.registerViewExtension({
         return new Settings.FrameworkIgnoreListSettingsTab.FrameworkIgnoreListSettingsTab();
     },
     iconName: 'clear-list',
+});
+UI.ViewManager.registerViewExtension({
+    location: "settings-view" /* UI.ViewManager.ViewLocationValues.SETTINGS_VIEW */,
+    id: 'greendev-prototypes',
+    title: i18nLazyString(UIStrings.greenDevProtoTypes),
+    commandPrompt: i18nLazyString(UIStrings.showGreenDev),
+    order: 101,
+    async loadView() {
+        const Settings = await loadSettingsModule();
+        return new Settings.SettingsScreen.GreenDevSettingsTab();
+    },
+    iconName: 'experiment',
+    condition: config => {
+        return Boolean(config?.devToolsGreenDevUi?.enabled);
+    },
 });
 UI.ViewManager.registerViewExtension({
     location: "settings-view" /* UI.ViewManager.ViewLocationValues.SETTINGS_VIEW */,

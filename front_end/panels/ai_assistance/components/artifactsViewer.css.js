@@ -9,9 +9,14 @@ export default `/*
  * found in the LICENSE file.
  */
 
-:host {
+.artifacts-viewer {
   display: flex;
+  flex-direction: column;
+  width: 100%;
   height: 100%;
+  overflow: auto;
+  padding: 20px;
+  gap: 10px;
 }
 
 /*# sourceURL=${import.meta.resolve('././components/artifactsViewer.css')} */`;

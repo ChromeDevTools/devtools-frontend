@@ -11,6 +11,8 @@ export default `/*
 
 :host {
   display: block;
+  flex-shrink: 0;
+  width: 100%;
   border: 1px solid var(--sys-color-outline);
   border-radius: 8px;
   margin-bottom: 12px;

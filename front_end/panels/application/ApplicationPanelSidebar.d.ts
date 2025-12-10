@@ -135,14 +135,6 @@ export declare class AppManifestTreeElement extends ApplicationPanelTreeElement 
     onselect(selectedByUser?: boolean): boolean;
     generateChildren(): void;
     onInvoke(): void;
-    showManifestView(): void;
-}
-export declare class ManifestChildTreeElement extends ApplicationPanelTreeElement {
-    #private;
-    constructor(storagePanel: ResourcesPanel, element: Element, childTitle: string, fieldElement: HTMLElement, jslogContext: string);
-    get itemURL(): Platform.DevToolsPath.UrlString;
-    onInvoke(): void;
-    onInvokeElementKeydown(event: KeyboardEvent): void;
 }
 export declare class ClearStorageTreeElement extends ApplicationPanelTreeElement {
     private view?;

@@ -279,7 +279,7 @@ var ConversationContext = class {
   }
 };
 var AiAgent = class {
-  #sessionId = crypto.randomUUID();
+  #sessionId;
   #aidaClient;
   #serverSideLoggingEnabled;
   confirmSideEffect;
@@ -299,12 +299,12 @@ var AiAgent = class {
    * change the `context` during an `AiAgent.run()`.
    */
   context;
-  #id = crypto.randomUUID();
   #history = [];
   #facts = /* @__PURE__ */ new Set();
   constructor(opts) {
     this.#aidaClient = opts.aidaClient;
     this.#serverSideLoggingEnabled = opts.serverSideLoggingEnabled ?? false;
+    this.#sessionId = opts.sessionId ?? crypto.randomUUID();
     this.confirmSideEffect = opts.confirmSideEffectForTest ?? (() => Promise.withResolvers());
   }
   async enhanceQuery(query) {
@@ -375,8 +375,8 @@ var AiAgent = class {
     };
     return request;
   }
-  get id() {
-    return this.#id;
+  get sessionId() {
+    return this.#sessionId;
   }
   get origin() {
     return this.#origin;
@@ -1748,8 +1748,50 @@ import * as Root5 from "./../../core/root/root.js";
 import * as SDK from "./../../core/sdk/sdk.js";
 import * as Tracing from "./../../services/tracing/tracing.js";
 import * as Annotations3 from "./../annotations/annotations.js";
+import * as Logs2 from "./../logs/logs.js";
 import * as SourceMapScopes from "./../source_map_scopes/source_map_scopes.js";
 import * as Trace6 from "./../trace/trace.js";
+
+// gen/front_end/models/ai_assistance/ArtifactsManager.js
+var ArtifactsManager_exports = {};
+__export(ArtifactsManager_exports, {
+  ArtifactAddedEvent: () => ArtifactAddedEvent,
+  ArtifactsManager: () => ArtifactsManager
+});
+var ArtifactAddedEvent = class _ArtifactAddedEvent extends Event {
+  artifact;
+  static eventName = "artifactadded";
+  constructor(artifact) {
+    super(_ArtifactAddedEvent.eventName);
+    this.artifact = artifact;
+  }
+};
+var instance = null;
+var ArtifactsManager = class _ArtifactsManager extends EventTarget {
+  #artifacts = [];
+  static instance() {
+    if (!instance) {
+      instance = new _ArtifactsManager();
+    }
+    return instance;
+  }
+  static removeInstance() {
+    instance = null;
+  }
+  constructor() {
+    super();
+  }
+  get artifacts() {
+    return this.#artifacts;
+  }
+  addArtifact(artifact) {
+    this.#artifacts.push(artifact);
+    this.dispatchEvent(new ArtifactAddedEvent(artifact));
+  }
+  clear() {
+    this.#artifacts = [];
+  }
+};
 
 // gen/front_end/models/ai_assistance/data_formatters/PerformanceInsightFormatter.js
 var PerformanceInsightFormatter_exports = {};
@@ -1840,8 +1882,8 @@ var AICallTree = class _AICallTree {
       doNotAggregate: true,
       includeInstantEvents: true
     });
-    const instance2 = new _AICallTree(null, rootNode, parsedTrace);
-    return instance2;
+    const instance3 = new _AICallTree(null, rootNode, parsedTrace);
+    return instance3;
   }
   /**
    * Attempts to build an AICallTree from a given selected event. It also
@@ -1902,8 +1944,8 @@ var AICallTree = class _AICallTree {
       console.warn(`Selected event ${selectedEvent} not found within its own tree.`);
       return null;
     }
-    const instance2 = new _AICallTree(selectedNode, rootNode, parsedTrace);
-    return instance2;
+    const instance3 = new _AICallTree(selectedNode, rootNode, parsedTrace);
+    return instance3;
   }
   /**
    * Iterates through nodes level by level using a Breadth-First Search (BFS) algorithm.
@@ -4104,7 +4146,44 @@ var greenDevAdditionalAnnotationsGuidelines = `
 - In addition to this, the addElementAnnotation function should always be called for the LCP element, if known.
 - The annotationMessage should be descriptive and relevant to why the element or network request is being highlighted.
 `;
-var greenDevAdditionalWidgetGuidelines = `
+var getGreenDevAdditionalWidgetGuidelines = () => {
+  const widgetsFromFunctionCalls = true;
+  if (widgetsFromFunctionCalls) {
+    return `
+- CRITICAL: You have access to three functions for adding rich, interactive widgets to your response:
+  \`addInsightWidget\`, \`addNetworkRequestWidget\`, and \`addFlameChartWidget\`.
+  You MUST use these functions whenever you refer to a corresponding entity.
+
+- **\`addInsightWidget({insightType: '...'})\`**:
+  - **When to use**: Call this function every time you mention a specific performance insight (e.g., LCP, INP,
+    CLS culprits).
+  - **Purpose**: It embeds an interactive widget that provides a detailed breakdown and visualization of the
+    insight.
+  - **Example**: If you are explaining the causes of a poor LCP score, you MUST also call
+    \`addInsightWidget({insightType: 'LCPBreakdown'})\`. This provides the user with the data to explore
+    alongside your explanation.
+- **\`addNetworkRequestWidget({eventKey: '...'})\`**:
+  - **When to use**: Call this function whenever you discuss a specific network request.
+  - **Purpose**: It adds a widget displaying the full details of the network request, such as its timing,
+    headers, and priority.
+  - **Critical**: The eventKey should be the trace event key (only the number, no letters prefix or -) of that
+    script's network request.
+  - **Example**: If you identify a render-blocking script, you MUST also call
+    \`addNetworkRequestWidget({eventKey: '...'})\` with the trace event key (only the number, no letters prefix
+    or -) of that script's network request.
+- **\`addFlameChartWidget({start: ..., end: ...})\`**:
+  - **When to use**: Call this function to highlight a specific time range within the trace, especially when
+    discussing long tasks, specific events, or periods of high activity.
+    - **Purpose**: It embeds a focused flame chart visualization for the given time range (in microseconds).
+    - **Example**: If you find a long task that is blocking the main thread, you MUST also call
+      \`addFlameChartWidget({start: 123456, end: 789012})\`. This provides the user with the data to explore
+      alongside your explanation.
+- **General Rules**:
+  - You MUST call these functions as soon as you identify the entity you are discussing.
+  - Do NOT add more than one widget for the same insight, network request, or time range to avoid redundancy.
+`;
+  }
+  return `
 - **Visualizing Insights**: When discussing the breakdown of specific metrics or a performance problem,
 you must render the appropriate Insight Overview component. Use these tags on a new line within your response:
   - For LCP breakdown: <ai-insight value="LCPBreakdown">
@@ -4139,6 +4218,7 @@ you must render the appropriate Insight Overview component. Use these tags on a 
   - For example, for LCP, the phases like Time to First Byte will be part of the insight widget, so you must not state them in the text. This applies to other insights and network request timings.
 - Do not display any of the same widgets more than once. For example, if you have already displayed a network request widget for a specific event, do not display it again in the same response.
 `;
+};
 var buildPreamble = () => {
   const greenDevEnabled = Root5.Runtime.hostConfig.devToolsGreenDevUi?.enabled;
   const annotationsEnabled = Annotations3.AnnotationRepository.annotationsEnabled();
@@ -4195,7 +4275,7 @@ Note: if the user asks a specific question about the trace (such as "What is my 
 - Be direct and to the point. Avoid unnecessary introductory phrases or filler content. Focus on delivering actionable advice efficiently.
 
 ${annotationsEnabled ? greenDevAdditionalAnnotationsGuidelines : ""}
-${greenDevEnabled ? greenDevAdditionalWidgetGuidelines : ""}
+${greenDevEnabled ? getGreenDevAdditionalWidgetGuidelines() : ""}
 
 ## Strict Constraints
 
@@ -5027,6 +5107,91 @@ ${result}`,
           }
           const revealable = new SDK.TraceObject.RevealableEvent(event);
           await Common2.Revealer.reveal(revealable);
+          return { result: { success: true } };
+        }
+      });
+    }
+    if (Root5.Runtime.hostConfig.devToolsGreenDevUi?.enabled) {
+      this.declareFunction("addInsightWidget", {
+        description: "Adds an insight widget to the response. When mentioning an insight, call this function to also display an appropriate widget.",
+        parameters: {
+          type: 6,
+          description: "",
+          nullable: false,
+          properties: {
+            insightType: {
+              type: 1,
+              description: 'The name of the insight. Only use the insight names given in the "Available insights" list.',
+              nullable: false
+            }
+          }
+        },
+        handler: async (_params) => {
+          ArtifactsManager.instance().addArtifact({ type: "insight", insightType: _params.insightType });
+          return { result: { success: true } };
+        }
+      });
+      this.declareFunction("addNetworkRequestWidget", {
+        description: "Adds a network request widget to the response. When mentioning a network request, call this function with its trace event key.",
+        parameters: {
+          type: 6,
+          description: "",
+          nullable: false,
+          properties: {
+            eventKey: {
+              type: 1,
+              description: "The trace event key for the network request.",
+              nullable: false
+            }
+          }
+        },
+        handler: async (_params) => {
+          const rawTraceEvent = Trace6.Helpers.SyntheticEvents.SyntheticEventsManager.getActiveManager().getRawTraceEvents().at(Number(_params.eventKey));
+          if (rawTraceEvent && Trace6.Types.Events.isSyntheticNetworkRequest(rawTraceEvent)) {
+            const rawTraceEventId = rawTraceEvent?.args?.data?.requestId;
+            const rawTraceEventUrl = rawTraceEvent?.args?.data?.url;
+            const networkRequest = rawTraceEvent ? Logs2.NetworkLog.NetworkLog.instance().requestsForId(rawTraceEventId).find((r) => r.url() === rawTraceEventUrl) : null;
+            if (networkRequest) {
+              ArtifactsManager.instance().addArtifact({ type: "network-request", request: networkRequest });
+              return { result: { success: true } };
+            }
+          }
+          const syntheticRequest = Trace6.Helpers.SyntheticEvents.SyntheticEventsManager.getActiveManager().syntheticEventForRawEventIndex(Number(_params.eventKey));
+          if (syntheticRequest && Trace6.Types.Events.isSyntheticNetworkRequest(syntheticRequest)) {
+            ArtifactsManager.instance().addArtifact({
+              type: "network-request",
+              request: syntheticRequest
+            });
+            return { result: { success: true } };
+          }
+          return { result: { error: "Could not find network request" } };
+        }
+      });
+      this.declareFunction("addFlameChartWidget", {
+        description: "Adds a flame chart widget to the response.",
+        parameters: {
+          type: 6,
+          description: "",
+          nullable: false,
+          properties: {
+            start: {
+              type: 3,
+              description: "The start time of the flame chart in microseconds.",
+              nullable: false
+            },
+            end: {
+              type: 3,
+              description: "The end time of the flame chart in microseconds.",
+              nullable: false
+            }
+          }
+        },
+        handler: async (_params) => {
+          ArtifactsManager.instance().addArtifact({
+            type: "flamechart",
+            start: Trace6.Types.Timing.Micro(_params.start),
+            end: Trace6.Types.Timing.Micro(_params.end)
+          });
           return { result: { success: true } };
         }
       });
@@ -6130,7 +6295,7 @@ var StylingAgent = class _StylingAgent extends AiAgent {
     this.#changes = opts.changeManager || new ChangeManager();
     this.#execJs = opts.execJs ?? executeJsCode;
     this.#createExtensionScope = opts.createExtensionScope ?? ((changes) => {
-      return new ExtensionScope(changes, this.id, this.context?.getItem() ?? null);
+      return new ExtensionScope(changes, this.sessionId, this.context?.getItem() ?? null);
     });
     this.declareFunction("getStyles", {
       description: `Get computed and source styles for one or multiple elements on the inspected page for multiple elements at once by uid.
@@ -6574,7 +6739,7 @@ __export(AiHistoryStorage_exports, {
   AiHistoryStorage: () => AiHistoryStorage
 });
 import * as Common5 from "./../../core/common/common.js";
-var instance = null;
+var instance2 = null;
 var DEFAULT_MAX_STORAGE_SIZE = 50 * 1024 * 1024;
 var AiHistoryStorage = class _AiHistoryStorage extends Common5.ObjectWrapper.ObjectWrapper {
   #historySetting;
@@ -6671,10 +6836,10 @@ var AiHistoryStorage = class _AiHistoryStorage extends Common5.ObjectWrapper.Obj
   }
   static instance(opts = { forceNew: false, maxStorageSize: DEFAULT_MAX_STORAGE_SIZE }) {
     const { forceNew, maxStorageSize } = opts;
-    if (!instance || forceNew) {
-      instance = new _AiHistoryStorage(maxStorageSize);
+    if (!instance2 || forceNew) {
+      instance2 = new _AiHistoryStorage(maxStorageSize);
     }
-    return instance;
+    return instance2;
   }
 };
 
@@ -6715,11 +6880,11 @@ var AiConversation = class _AiConversation {
     this.#changeManager = changeManager;
     this.#aidaClient = aidaClient;
     this.type = type;
-    this.#agent = this.#createAgent();
     this.id = id;
     this.#isReadOnly = isReadOnly;
     this.#isExternal = isExternal;
     this.history = this.#reconstructHistory(data);
+    this.#agent = this.#createAgent();
   }
   get isReadOnly() {
     return this.#isReadOnly;
@@ -6856,6 +7021,7 @@ ${item.text.trim()}`);
     const options = {
       aidaClient: this.#aidaClient,
       serverSideLoggingEnabled: isAiAssistanceServerSideLoggingEnabled(),
+      sessionId: this.id,
       changeManager: this.#changeManager
     };
     let agent;
@@ -7405,7 +7571,7 @@ var ConversationHandler = class _ConversationHandler extends Common8.ObjectWrapp
     const conversation = new AiConversation(
       conversationType,
       [],
-      aiAgent.id,
+      aiAgent.sessionId,
       /* isReadOnly */
       true,
       this.#aidaClient,
@@ -7497,6 +7663,7 @@ export {
   AiConversation_exports as AiConversation,
   AiHistoryStorage_exports as AiHistoryStorage,
   AiUtils_exports as AiUtils,
+  ArtifactsManager_exports as ArtifactsManager,
   BuiltInAi_exports as BuiltInAi,
   ChangeManager_exports as ChangeManager,
   ConversationHandler_exports as ConversationHandler,

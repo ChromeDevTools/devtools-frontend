@@ -10,6 +10,7 @@ __export(SettingsScreen_exports, {
   ActionDelegate: () => ActionDelegate,
   ExperimentsSettingsTab: () => ExperimentsSettingsTab,
   GenericSettingsTab: () => GenericSettingsTab,
+  GreenDevSettingsTab: () => GreenDevSettingsTab,
   Revealer: () => Revealer,
   SettingsScreen: () => SettingsScreen
 });
@@ -18,6 +19,7 @@ import * as Common from "./../../core/common/common.js";
 import * as Host from "./../../core/host/host.js";
 import * as i18n from "./../../core/i18n/i18n.js";
 import * as Root from "./../../core/root/root.js";
+import * as GreenDev from "./../../models/greendev/greendev.js";
 import * as Buttons from "./../../ui/components/buttons/buttons.js";
 import * as UIHelpers from "./../../ui/helpers/helpers.js";
 import { createIcon } from "./../../ui/kit/kit.js";
@@ -256,6 +258,10 @@ var UIStrings = {
    * @description Message shown in the experiments panel to warn users about any possible unstable features.
    */
   theseExperimentsCouldBeUnstable: "Warning: These experiments could be unstable or unreliable.",
+  /**
+   * @description Message shown in the GreenDev prototypes panel to warn users about any possible unstable features.
+   */
+  greenDevUnstable: "Warning: All these features are prototype and very unstable. They exist for user testing and are not designed to be relied on.",
   /**
    * @description Message text content in Settings Screen of the Settings
    */
@@ -724,6 +730,55 @@ var Revealer = class {
     }
   }
 };
+var GreenDevSettingsTab = class extends UI.Widget.VBox {
+  #view;
+  constructor(view = GREENDEV_VIEW) {
+    super({ jslog: `${VisualLogging.pane("greendev-prototypes")}` });
+    this.element.id = "greendev-prototypes-tab-content";
+    this.#view = view;
+    this.requestUpdate();
+  }
+  highlightObject(_object) {
+  }
+  performUpdate() {
+    const settings = GreenDev.Prototypes.instance().settings();
+    this.#view({ settings }, {}, this.element);
+  }
+};
+var GREENDEV_VIEW = (input, _output, target) => {
+  render(html`
+         <div class="settings-card-container">
+           <devtools-card .heading=${"GreenDev Prototypes"}>
+             <div class="experiments-warning-subsection">
+              <devtools-icon .name=${"warning"}></devtools-icon>
+              <span>${i18nString(UIStrings.greenDevUnstable)}</span>
+             </div>
+             <div class="settings-experiments-block">
+               ${renderPrototypeCheckboxes(input.settings)}
+             </div>
+           </devtools-card>
+         </div>
+       `, target);
+};
+var GREENDEV_PROTOTYPE_NAMES = {
+  inDevToolsFloaty: "In DevTools context picker",
+  aiAnnotations: "AI auto-annotations",
+  inlineWidgets: "Inline widgets in AI Assistance"
+};
+function renderPrototypeCheckboxes(settings) {
+  const { bindToSetting } = UI.UIUtils;
+  function showChangeWarning() {
+    UI.InspectorView.InspectorView.instance().displayReloadRequiredWarning(i18nString(UIStrings.oneOrMoreSettingsHaveChanged));
+  }
+  const checkboxes = Object.keys(settings).map((settingName) => {
+    const setting = settings[settingName];
+    const title = GREENDEV_PROTOTYPE_NAMES[settingName];
+    return html`<p class="settings-experiment">
+      <devtools-checkbox @change=${showChangeWarning} title=${title} ${bindToSetting(setting)}>${title}</devtools-checkbox>
+    </p>`;
+  });
+  return html`${checkboxes}`;
+}
 
 // gen/front_end/panels/settings/AISettingsTab.js
 var AISettingsTab_exports = {};

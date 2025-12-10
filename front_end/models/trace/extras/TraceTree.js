@@ -413,8 +413,9 @@ export class BottomUpRootNode extends Node {
                 node.totalTime += totalTimeById.get(id) || 0;
                 totalTimeById.delete(id);
             }
-            // TODO: this may be wrong. See the skipped test in TraceTree.test.ts.
-            if (firstNodeStack.length) {
+            // An item on this stack means that this current node has a caller. Therefore,
+            // in a bottom-up view it has children.
+            if (idStack.length > 0) {
                 node.setHasChildren(true);
             }
         }

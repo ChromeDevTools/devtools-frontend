@@ -1,4 +1,3 @@
-import './LinearMemoryValueInterpreter.js';
 import './LinearMemoryViewer.js';
 import * as Common from '../../../core/common/common.js';
 import * as UI from '../../../ui/legacy/legacy.js';

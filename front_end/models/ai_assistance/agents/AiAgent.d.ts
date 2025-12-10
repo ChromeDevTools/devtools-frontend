@@ -96,6 +96,7 @@ export interface RequestOptions {
 export interface AgentOptions {
     aidaClient: Host.AidaClient.AidaClient;
     serverSideLoggingEnabled?: boolean;
+    sessionId?: string;
     confirmSideEffectForTest?: typeof Promise.withResolvers;
 }
 export interface ParsedAnswer {
@@ -225,7 +226,7 @@ export declare abstract class AiAgent<T> {
     clearFacts(): void;
     preambleFeatures(): string[];
     buildRequest(part: Host.AidaClient.Part | Host.AidaClient.Part[], role: Host.AidaClient.Role.USER | Host.AidaClient.Role.ROLE_UNSPECIFIED): Host.AidaClient.DoConversationRequest;
-    get id(): string;
+    get sessionId(): string;
     get origin(): string | undefined;
     /**
      * The AI has instructions to emit structured suggestions in their response. This

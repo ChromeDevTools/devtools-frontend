@@ -404,6 +404,7 @@
   "front_end/models/extensions/extensions.js",
   "front_end/models/formatter/formatter.js",
   "front_end/models/geometry/geometry.js",
+  "front_end/models/greendev/greendev.js",
   "front_end/models/har/har.js",
   "front_end/models/heap_snapshot_model/heap_snapshot_model.js",
   "front_end/models/issues_manager/descriptions/CoepCoopSandboxedIframeCannotNavigateToCoopPage.md",

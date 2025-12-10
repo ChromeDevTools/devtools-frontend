@@ -66,6 +66,7 @@ elements/grid-editor.test.js
 elements/grid-lanes-editor.test.js
 elements/layout-pane.test.js
 elements/oopif-elements.test.js
+elements/oopif-navigation.test.js
 elements/prerender.test.js
 elements/pseudo-states.test.js
 elements/reveal-correct-node.test.js
@@ -178,6 +179,7 @@ sources/can-pretty-print-sourcecode.test.js
 sources/can-show-multiple-workers.test.js
 sources/can-show-wasm-scopes.test.js
 sources/color-swatch.test.js
+sources/continue-to-location-markers.test.js
 sources/debug-raw-wasm.test.js
 sources/debugger-sidebar.test.js
 sources/eval.test.js

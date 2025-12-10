@@ -21,7 +21,6 @@ __export(ApplicationPanelSidebar_exports, {
   IDBIndexTreeElement: () => IDBIndexTreeElement,
   IDBObjectStoreTreeElement: () => IDBObjectStoreTreeElement,
   IndexedDBTreeElement: () => IndexedDBTreeElement,
-  ManifestChildTreeElement: () => ManifestChildTreeElement,
   ResourcesSection: () => ResourcesSection,
   ServiceWorkersTreeElement: () => ServiceWorkersTreeElement,
   StorageCategoryView: () => StorageCategoryView
@@ -137,7 +136,6 @@ __export(AppManifestView_exports, {
   AppManifestView: () => AppManifestView,
   DEFAULT_VIEW: () => DEFAULT_VIEW
 });
-import "./../../ui/kit/kit.js";
 import "./../../ui/legacy/components/inline_editor/inline_editor.js";
 import * as Common2 from "./../../core/common/common.js";
 import * as Host from "./../../core/host/host.js";
@@ -602,7 +600,12 @@ var UIStrings = {
   /**
    * @description Text for emulation OS selection dropdown
    */
-  selectWindowControlsOverlayEmulationOs: "Emulate the Window Controls Overlay on"
+  selectWindowControlsOverlayEmulationOs: "Emulate the Window Controls Overlay on",
+  /**
+   * @description Alert message for screen reader to announce which subsection is being scrolled to
+   * @example {"Identity"} PH1
+   */
+  onInvokeAlert: "Scrolled to {PH1}"
 };
 var str_ = i18n.i18n.registerUIStrings("panels/application/AppManifestView.ts", UIStrings);
 var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);
@@ -1066,7 +1069,36 @@ var AppManifestView = class extends Common2.ObjectWrapper.eventMixin(UI2.Widget.
     this.installabilityErrors = [];
     this.appIdResponse = null;
   }
-  getStaticSections() {
+  scrollToSection(sectionTitle) {
+    const section9 = this.getManifestSections().find((s) => s.title() === sectionTitle);
+    if (section9) {
+      section9.getTitleElement().scrollIntoView();
+      UI2.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.onInvokeAlert, { PH1: sectionTitle }));
+    }
+  }
+  getFieldElementForSection(sectionTitle) {
+    const section9 = this.getManifestSections().find((s) => s.title() === sectionTitle);
+    return section9 ? section9.getFieldElement() : null;
+  }
+  focusOnSection(sectionTitle) {
+    const sectionFieldElement = this.getFieldElementForSection(sectionTitle);
+    if (!sectionFieldElement) {
+      return false;
+    }
+    const checkBoxElement = sectionFieldElement.querySelector(".mask-checkbox");
+    let focusableElement = sectionFieldElement.querySelector('[tabindex="0"]');
+    if (checkBoxElement?.shadowRoot) {
+      focusableElement = checkBoxElement.shadowRoot.querySelector("input") || null;
+    } else if (!focusableElement) {
+      focusableElement = sectionFieldElement.querySelector("devtools-protocol-handlers-view")?.shadowRoot?.querySelector('[tabindex="0"]') || null;
+    }
+    if (focusableElement) {
+      focusableElement.focus();
+      return true;
+    }
+    return false;
+  }
+  getManifestSections() {
     return [
       this.identitySection,
       this.presentationSection,
@@ -1074,6 +1106,9 @@ var AppManifestView = class extends Common2.ObjectWrapper.eventMixin(UI2.Widget.
       this.iconsSection,
       this.windowControlsSection
     ];
+  }
+  getStaticSections() {
+    return this.getManifestSections().map((section9) => ({ title: section9.title(), jslogContext: section9.jslogContext }));
   }
   getManifestElement() {
     return this.reportView.getHeaderElement();
@@ -11875,58 +11910,32 @@ var AppManifestTreeElement = class extends ApplicationPanelTreeElement {
   generateChildren() {
     const staticSections = this.view.getStaticSections();
     for (const section9 of staticSections) {
-      const sectionElement = section9.getTitleElement();
-      const childTitle = section9.title();
-      const sectionFieldElement = section9.getFieldElement();
-      const child = new ManifestChildTreeElement(this.resourcesPanel, sectionElement, childTitle, sectionFieldElement, section9.jslogContext || "");
+      const childTitle = section9.title;
+      const child = new ApplicationPanelTreeElement(this.resourcesPanel, childTitle, false, section9.jslogContext || "");
+      child.onselect = (selectedByUser) => {
+        if (selectedByUser) {
+          this.showView(this.view);
+          this.view.scrollToSection(childTitle);
+        }
+        return true;
+      };
+      const icon = createIcon11("document");
+      child.setLeadingIcons([icon]);
+      child.listItemElement.addEventListener("keydown", (event) => {
+        if (event.key !== "Tab" || event.shiftKey) {
+          return;
+        }
+        if (this.view.focusOnSection(childTitle)) {
+          event.consume(true);
+        }
+      });
+      UI21.ARIAUtils.setLabel(child.listItemElement, i18nString28(UIStrings28.beforeInvokeAlert, { PH1: child.listItemElement.title }));
       this.appendChild(child);
     }
   }
   onInvoke() {
     this.view.getManifestElement().scrollIntoView();
     UI21.ARIAUtils.LiveAnnouncer.alert(i18nString28(UIStrings28.onInvokeAlert, { PH1: this.listItemElement.title }));
-  }
-  showManifestView() {
-    this.showView(this.view);
-  }
-};
-var ManifestChildTreeElement = class extends ApplicationPanelTreeElement {
-  #sectionElement;
-  #sectionFieldElement;
-  constructor(storagePanel, element, childTitle, fieldElement, jslogContext) {
-    super(storagePanel, childTitle, false, jslogContext);
-    const icon = createIcon11("document");
-    this.setLeadingIcons([icon]);
-    this.#sectionElement = element;
-    this.#sectionFieldElement = fieldElement;
-    self.onInvokeElement(this.listItemElement, this.onInvoke.bind(this));
-    this.listItemElement.addEventListener("keydown", this.onInvokeElementKeydown.bind(this));
-    UI21.ARIAUtils.setLabel(this.listItemElement, i18nString28(UIStrings28.beforeInvokeAlert, { PH1: this.listItemElement.title }));
-  }
-  get itemURL() {
-    return "manifest://" + this.title;
-  }
-  onInvoke() {
-    this.parent?.showManifestView();
-    this.#sectionElement.scrollIntoView();
-    UI21.ARIAUtils.LiveAnnouncer.alert(i18nString28(UIStrings28.onInvokeAlert, { PH1: this.listItemElement.title }));
-  }
-  // direct focus to the corresponding element
-  onInvokeElementKeydown(event) {
-    if (event.key !== "Tab" || event.shiftKey) {
-      return;
-    }
-    const checkBoxElement = this.#sectionFieldElement.querySelector(".mask-checkbox");
-    let focusableElement = this.#sectionFieldElement.querySelector('[tabindex="0"]');
-    if (checkBoxElement?.shadowRoot) {
-      focusableElement = checkBoxElement.shadowRoot.querySelector("input") || null;
-    } else if (!focusableElement) {
-      focusableElement = this.#sectionFieldElement.querySelector("devtools-protocol-handlers-view")?.shadowRoot?.querySelector('[tabindex="0"]') || null;
-    }
-    if (focusableElement) {
-      focusableElement?.focus();
-      event.consume(true);
-    }
   }
 };
 var ClearStorageTreeElement = class extends ApplicationPanelTreeElement {

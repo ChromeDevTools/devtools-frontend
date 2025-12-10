@@ -4185,8 +4185,7 @@ export declare namespace DOM {
         DetailsContent = "details-content",
         Picker = "picker",
         PermissionIcon = "permission-icon",
-        OverscrollAreaParent = "overscroll-area-parent",
-        OverscrollClientArea = "overscroll-client-area"
+        OverscrollAreaParent = "overscroll-area-parent"
     }
     /**
      * Shadow root type.

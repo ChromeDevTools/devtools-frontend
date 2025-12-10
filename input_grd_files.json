@@ -778,6 +778,7 @@
   "front_end/models/trace_source_maps_resolver/trace_source_maps_resolver.js",
   "front_end/models/heap_snapshot_model/heap_snapshot_model.js",
   "front_end/models/ai_assistance/ai_assistance.js",
+  "front_end/models/greendev/greendev.js",
   "front_end/panels/settings/components/components.js",
   "front_end/panels/settings/settings.js",
   "front_end/panels/profiler/profiler.js",

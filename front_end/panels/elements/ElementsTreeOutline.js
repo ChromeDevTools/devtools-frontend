@@ -1669,7 +1669,7 @@ export class ElementsTreeOutline extends Common.ObjectWrapper.eventMixin(UI.Tree
         if (node.nodeType() === Node.ELEMENT_NODE && !node.pseudoType() && treeElement.isExpandable()) {
             this.insertChildElement(treeElement, node, treeElement.childCount(), true);
         }
-        if (node instanceof SDK.DOMModel.DOMDocument) {
+        if (node instanceof SDK.DOMModel.DOMDocument && !this.isXMLMimeType) {
             let topLayerContainer = this.#topLayerContainerByDocument.get(node);
             if (!topLayerContainer) {
                 topLayerContainer = new TopLayerContainer(this, node);

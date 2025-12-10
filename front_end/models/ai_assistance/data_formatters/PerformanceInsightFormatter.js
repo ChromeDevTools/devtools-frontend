@@ -222,8 +222,6 @@ export class PerformanceInsightFormatter {
                 potentialRootCauses.push(animationInfoOutput.map(l => ' '.repeat(4) + l).join('\n'));
             });
             rootCauses.unsizedImages.forEach(img => {
-                // TODO(b/413284569): if we store a nice human readable name for this
-                // image in the trace metadata, we can do something much nicer here.
                 const url = img.paintImageEvent.args.data.url;
                 const nodeName = img.paintImageEvent.args.data.nodeName;
                 const extraText = url ? `url: ${this.#formatUrl(url)}` : `id: ${img.backendNodeId}`;

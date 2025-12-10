@@ -47,11 +47,11 @@ export class AiConversation {
         this.#changeManager = changeManager;
         this.#aidaClient = aidaClient;
         this.type = type;
-        this.#agent = this.#createAgent();
         this.id = id;
         this.#isReadOnly = isReadOnly;
         this.#isExternal = isExternal;
         this.history = this.#reconstructHistory(data);
+        this.#agent = this.#createAgent();
     }
     get isReadOnly() {
         return this.#isReadOnly;
@@ -177,6 +177,7 @@ export class AiConversation {
         const options = {
             aidaClient: this.#aidaClient,
             serverSideLoggingEnabled: isAiAssistanceServerSideLoggingEnabled(),
+            sessionId: this.id,
             changeManager: this.#changeManager,
         };
         let agent;

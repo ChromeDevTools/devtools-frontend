@@ -228,7 +228,7 @@ var SettingCheckbox = class extends HTMLElement {
             .checked=${this.checked}
             ?disabled=${this.#setting.disabled()}
             @change=${this.#checkboxChanged}
-            jslog=${VisualLogging.toggle().track({ click: true }).context(this.#setting.name)}
+            jslog=${VisualLogging.toggle().track({ change: true }).context(this.#setting.name)}
             aria-label=${this.#setting.title()}
           />
           ${this.#textOverride || this.#setting.title()}${reason}

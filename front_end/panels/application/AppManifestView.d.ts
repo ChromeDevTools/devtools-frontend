@@ -1,4 +1,3 @@
-import '../../ui/kit/kit.js';
 import '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
@@ -191,7 +190,14 @@ export declare class AppManifestView extends AppManifestView_base implements SDK
     private wcoToolbarEnabled;
     private readonly view;
     constructor(view?: View);
-    getStaticSections(): UI.ReportView.Section[];
+    scrollToSection(sectionTitle: string): void;
+    getFieldElementForSection(sectionTitle: string): HTMLElement | null;
+    focusOnSection(sectionTitle: string): boolean;
+    private getManifestSections;
+    getStaticSections(): Array<{
+        title: string;
+        jslogContext: string | undefined;
+    }>;
     getManifestElement(): Element;
     targetAdded(target: SDK.Target.Target): void;
     targetRemoved(target: SDK.Target.Target): void;

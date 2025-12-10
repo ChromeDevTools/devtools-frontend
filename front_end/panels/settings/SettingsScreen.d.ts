@@ -1,6 +1,7 @@
 import '../../ui/kit/kit.js';
 import * as Common from '../../core/common/common.js';
 import * as Root from '../../core/root/root.js';
+import * as GreenDev from '../../models/greendev/greendev.js';
 import * as UI from '../../ui/legacy/legacy.js';
 export declare class SettingsScreen extends UI.Widget.VBox implements UI.View.ViewLocationResolver {
     private readonly tabbedLocation;
@@ -58,4 +59,14 @@ export interface ShowSettingsScreenOptions {
     name?: string;
     focusTabHeader?: boolean;
 }
+export declare class GreenDevSettingsTab extends UI.Widget.VBox implements SettingsTab {
+    #private;
+    constructor(view?: View);
+    highlightObject(_object: Object): void;
+    performUpdate(): Promise<void> | void;
+}
+interface GreenDevViewInput {
+    settings: GreenDev.GreenDevSettings;
+}
+type View = (input: GreenDevViewInput, output: object, target: HTMLElement) => void;
 export {};

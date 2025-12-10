@@ -15770,7 +15770,7 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common11.ObjectWrap
     if (node.nodeType() === Node.ELEMENT_NODE && !node.pseudoType() && treeElement.isExpandable()) {
       this.insertChildElement(treeElement, node, treeElement.childCount(), true);
     }
-    if (node instanceof SDK16.DOMModel.DOMDocument) {
+    if (node instanceof SDK16.DOMModel.DOMDocument && !this.isXMLMimeType) {
       let topLayerContainer = this.#topLayerContainerByDocument.get(node);
       if (!topLayerContainer) {
         topLayerContainer = new TopLayerContainer(this, node);

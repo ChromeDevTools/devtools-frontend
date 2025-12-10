@@ -251,25 +251,53 @@ var LinearMemoryHighlightChipList = class extends UI.Widget.Widget {
 // gen/front_end/panels/linear_memory_inspector/components/LinearMemoryInspector.js
 var LinearMemoryInspector_exports = {};
 __export(LinearMemoryInspector_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW4,
+  DEFAULT_VIEW: () => DEFAULT_VIEW5,
   LinearMemoryInspector: () => LinearMemoryInspector
 });
 
-// gen/front_end/panels/linear_memory_inspector/components/LinearMemoryValueInterpreter.js
-var LinearMemoryValueInterpreter_exports = {};
-__export(LinearMemoryValueInterpreter_exports, {
-  LinearMemoryValueInterpreter: () => LinearMemoryValueInterpreter
+// gen/front_end/panels/linear_memory_inspector/components/LinearMemoryViewer.js
+var LinearMemoryViewer_exports = {};
+__export(LinearMemoryViewer_exports, {
+  ByteSelectedEvent: () => ByteSelectedEvent,
+  LinearMemoryViewer: () => LinearMemoryViewer,
+  ResizeEvent: () => ResizeEvent
 });
-import "./../../../ui/kit/kit.js";
-import * as i18n9 from "./../../../core/i18n/i18n.js";
-import * as Platform3 from "./../../../core/platform/platform.js";
-import * as Buttons2 from "./../../../ui/components/buttons/buttons.js";
-import * as UI4 from "./../../../ui/legacy/legacy.js";
-import * as Lit3 from "./../../../ui/lit/lit.js";
-import * as VisualLogging4 from "./../../../ui/visual_logging/visual_logging.js";
+import * as Lit from "./../../../ui/lit/lit.js";
+import * as VisualLogging2 from "./../../../ui/visual_logging/visual_logging.js";
 
-// gen/front_end/panels/linear_memory_inspector/components/linearMemoryValueInterpreter.css.js
-var linearMemoryValueInterpreter_css_default = `/*
+// gen/front_end/panels/linear_memory_inspector/components/LinearMemoryInspectorUtils.js
+var LinearMemoryInspectorUtils_exports = {};
+__export(LinearMemoryInspectorUtils_exports, {
+  DECIMAL_REGEXP: () => DECIMAL_REGEXP,
+  HEXADECIMAL_REGEXP: () => HEXADECIMAL_REGEXP,
+  formatAddress: () => formatAddress,
+  parseAddress: () => parseAddress,
+  toHexString: () => toHexString
+});
+var HEXADECIMAL_REGEXP = /^0x[a-fA-F0-9]+$/;
+var DECIMAL_REGEXP = /^0$|[1-9]\d*$/;
+function toHexString(data) {
+  const hex = data.number.toString(16).padStart(data.pad, "0");
+  const upperHex = hex.toUpperCase();
+  return data.prefix ? "0x" + upperHex : upperHex;
+}
+function formatAddress(address) {
+  return toHexString({ number: address, pad: 8, prefix: true });
+}
+function parseAddress(address) {
+  const hexMatch = address.match(HEXADECIMAL_REGEXP);
+  const decMatch = address.match(DECIMAL_REGEXP);
+  let newAddress = void 0;
+  if (hexMatch && hexMatch[0].length === address.length) {
+    newAddress = parseInt(address, 16);
+  } else if (decMatch && decMatch[0].length === address.length) {
+    newAddress = parseInt(address, 10);
+  }
+  return newAddress;
+}
+
+// gen/front_end/panels/linear_memory_inspector/components/linearMemoryViewer.css.js
+var linearMemoryViewer_css_default = `/*
  * Copyright 2021 The Chromium Authors
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file.
@@ -278,43 +306,421 @@ var linearMemoryValueInterpreter_css_default = `/*
 :host {
   flex: auto;
   display: flex;
+  min-height: 20px;
 }
 
-.value-interpreter {
-  border: 1px solid var(--sys-color-divider);
-  background-color: var(--sys-color-cdt-base-container);
+.view {
   overflow: hidden;
-  width: 400px;
+  text-overflow: ellipsis;
+  box-sizing: border-box;
+  background: var(--sys-color-cdt-base-container);
+  outline: none;
 }
 
-.settings-toolbar {
-  min-height: 26px;
+.row {
   display: flex;
-  flex-wrap: nowrap;
-  justify-content: space-between;
-  padding-left: var(--sys-size-3);
-  padding-right: var(--sys-size-3);
+  height: 20px;
   align-items: center;
 }
 
-.settings-toolbar-button {
-  padding: 0;
-  width: 20px;
-  height: 20px;
-  border: none;
-  outline: none;
-  background-color: transparent;
+.cell {
+  text-align: center;
+  border: 1px solid transparent;
+  border-radius: 2px;
+
+  &.focused-area {
+    background-color: var(--sys-color-tonal-container);
+    color: var(--sys-color-on-tonal-container);
+  }
+
+  &.selected {
+    border-color: var(--sys-color-state-focus-ring);
+    color: var(--sys-color-on-tonal-container);
+    background-color: var(--sys-color-state-focus-select);
+  }
 }
 
-.settings-toolbar-button.active devtools-icon {
-  color: var(--icon-toggled);
+.byte-cell {
+  min-width: 21px;
+  color: var(--sys-color-on-surface);
+}
+
+.byte-group-margin {
+  margin-left: var(--byte-group-margin);
+}
+
+.text-cell {
+  min-width: 14px;
+  color: var(--sys-color-on-surface-subtle);
+}
+
+.address {
+  color: var(--sys-color-state-disabled);
+}
+
+.address.selected {
+  font-weight: bold;
+  color: var(--sys-color-on-surface);
 }
 
 .divider {
-  display: block;
-  height: 1px;
-  margin-bottom: 12px;
+  width: 1px;
+  height: inherit;
   background-color: var(--sys-color-divider);
+  margin: 0 4px;
+}
+
+.highlight-area {
+  background-color: var(--sys-color-surface-variant);
+}
+
+/*# sourceURL=${import.meta.resolve("./linearMemoryViewer.css")} */`;
+
+// gen/front_end/panels/linear_memory_inspector/components/LinearMemoryViewer.js
+var { render: render2, html: html2 } = Lit;
+var ByteSelectedEvent = class _ByteSelectedEvent extends Event {
+  static eventName = "byteselected";
+  data;
+  constructor(address) {
+    super(_ByteSelectedEvent.eventName);
+    this.data = address;
+  }
+};
+var ResizeEvent = class _ResizeEvent extends Event {
+  static eventName = "resize";
+  data;
+  constructor(numBytesPerPage) {
+    super(_ResizeEvent.eventName);
+    this.data = numBytesPerPage;
+  }
+};
+var BYTE_GROUP_MARGIN = 8;
+var BYTE_GROUP_SIZE = 4;
+var LinearMemoryViewer = class extends HTMLElement {
+  #shadow = this.attachShadow({ mode: "open" });
+  #resizeObserver = new ResizeObserver(() => requestAnimationFrame(this.#resize.bind(this)));
+  #isObservingResize = false;
+  #memory = new Uint8Array();
+  #address = 0;
+  #memoryOffset = 0;
+  #highlightInfo;
+  #focusedMemoryHighlight;
+  #numRows = 1;
+  #numBytesInRow = BYTE_GROUP_SIZE;
+  #focusOnByte = true;
+  #lastKeyUpdateSent = void 0;
+  set data(data) {
+    if (data.address < data.memoryOffset || data.address > data.memoryOffset + data.memory.length || data.address < 0) {
+      throw new Error("Address is out of bounds.");
+    }
+    if (data.memoryOffset < 0) {
+      throw new Error("Memory offset has to be greater or equal to zero.");
+    }
+    this.#memory = data.memory;
+    this.#address = data.address;
+    this.#highlightInfo = data.highlightInfo;
+    this.#focusedMemoryHighlight = data.focusedMemoryHighlight;
+    this.#memoryOffset = data.memoryOffset;
+    this.#focusOnByte = data.focus;
+    this.#update();
+  }
+  connectedCallback() {
+    this.style.setProperty("--byte-group-margin", `${BYTE_GROUP_MARGIN}px`);
+  }
+  disconnectedCallback() {
+    this.#isObservingResize = false;
+    this.#resizeObserver.disconnect();
+  }
+  #update() {
+    this.#updateDimensions();
+    this.#render();
+    this.#focusOnView();
+    this.#engageResizeObserver();
+  }
+  #focusOnView() {
+    if (this.#focusOnByte) {
+      const view = this.#shadow.querySelector(".view");
+      if (view) {
+        view.focus();
+      }
+    }
+  }
+  #resize() {
+    this.#update();
+    this.dispatchEvent(new ResizeEvent(this.#numBytesInRow * this.#numRows));
+  }
+  /** Recomputes the number of rows and (byte) columns that fit into the current view. */
+  #updateDimensions() {
+    if (this.clientWidth === 0 || this.clientHeight === 0 || !this.shadowRoot) {
+      this.#numBytesInRow = BYTE_GROUP_SIZE;
+      this.#numRows = 1;
+      return;
+    }
+    const firstByteCell = this.shadowRoot.querySelector(".byte-cell");
+    const textCell = this.shadowRoot.querySelector(".text-cell");
+    const divider = this.shadowRoot.querySelector(".divider");
+    const rowElement = this.shadowRoot.querySelector(".row");
+    const addressText = this.shadowRoot.querySelector(".address");
+    if (!firstByteCell || !textCell || !divider || !rowElement || !addressText) {
+      this.#numBytesInRow = BYTE_GROUP_SIZE;
+      this.#numRows = 1;
+      return;
+    }
+    const byteCellWidth = firstByteCell.getBoundingClientRect().width;
+    const textCellWidth = textCell.getBoundingClientRect().width;
+    const groupWidth = BYTE_GROUP_SIZE * (byteCellWidth + textCellWidth) + BYTE_GROUP_MARGIN;
+    const dividerWidth = divider.getBoundingClientRect().width;
+    const addressTextAndDividerWidth = firstByteCell.getBoundingClientRect().left - addressText.getBoundingClientRect().left;
+    const widthToFill = this.clientWidth - 1 - addressTextAndDividerWidth - dividerWidth;
+    if (widthToFill < groupWidth) {
+      this.#numBytesInRow = BYTE_GROUP_SIZE;
+      this.#numRows = 1;
+      return;
+    }
+    this.#numBytesInRow = Math.floor(widthToFill / groupWidth) * BYTE_GROUP_SIZE;
+    this.#numRows = Math.floor(this.clientHeight / rowElement.clientHeight);
+  }
+  #engageResizeObserver() {
+    if (!this.#resizeObserver || this.#isObservingResize) {
+      return;
+    }
+    this.#resizeObserver.observe(this);
+    this.#isObservingResize = true;
+  }
+  #render() {
+    const jslog = VisualLogging2.section().track({ keydown: "ArrowUp|ArrowDown|ArrowLeft|ArrowRight|PageUp|PageDown" }).context("linear-memory-inspector.viewer");
+    render2(html2`
+      <style>${linearMemoryViewer_css_default}</style>
+      <div class="view" tabindex="0" @keydown=${this.#onKeyDown} jslog=${jslog}>
+        ${this.#renderView()}
+      </div>
+      `, this.#shadow, { host: this });
+  }
+  #onKeyDown(event) {
+    const keyboardEvent = event;
+    let newAddress = void 0;
+    if (keyboardEvent.code === "ArrowUp") {
+      newAddress = this.#address - this.#numBytesInRow;
+    } else if (keyboardEvent.code === "ArrowDown") {
+      newAddress = this.#address + this.#numBytesInRow;
+    } else if (keyboardEvent.code === "ArrowLeft") {
+      newAddress = this.#address - 1;
+    } else if (keyboardEvent.code === "ArrowRight") {
+      newAddress = this.#address + 1;
+    } else if (keyboardEvent.code === "PageUp") {
+      newAddress = this.#address - this.#numBytesInRow * this.#numRows;
+    } else if (keyboardEvent.code === "PageDown") {
+      newAddress = this.#address + this.#numBytesInRow * this.#numRows;
+    }
+    if (newAddress !== void 0 && newAddress !== this.#lastKeyUpdateSent) {
+      this.#lastKeyUpdateSent = newAddress;
+      this.dispatchEvent(new ByteSelectedEvent(newAddress));
+    }
+  }
+  #renderView() {
+    const itemTemplates = [];
+    for (let i = 0; i < this.#numRows; ++i) {
+      itemTemplates.push(this.#renderRow(i));
+    }
+    return html2`${itemTemplates}`;
+  }
+  #renderRow(row) {
+    const { startIndex, endIndex } = { startIndex: row * this.#numBytesInRow, endIndex: (row + 1) * this.#numBytesInRow };
+    const classMap2 = {
+      address: true,
+      selected: Math.floor((this.#address - this.#memoryOffset) / this.#numBytesInRow) === row
+    };
+    return html2`
+    <div class="row">
+      <span class=${Lit.Directives.classMap(classMap2)}>${toHexString({ number: startIndex + this.#memoryOffset, pad: 8, prefix: false })}</span>
+      <span class="divider"></span>
+      ${this.#renderByteValues(startIndex, endIndex)}
+      <span class="divider"></span>
+      ${this.#renderCharacterValues(startIndex, endIndex)}
+    </div>
+    `;
+  }
+  #renderByteValues(startIndex, endIndex) {
+    const cells = [];
+    for (let i = startIndex; i < endIndex; ++i) {
+      const actualIndex = i + this.#memoryOffset;
+      const addMargin = i !== startIndex && (i - startIndex) % BYTE_GROUP_SIZE === 0;
+      const selected = i === this.#address - this.#memoryOffset;
+      const shouldBeHighlighted = this.#shouldBeHighlighted(actualIndex);
+      const focusedMemoryArea = this.#isFocusedArea(actualIndex);
+      const classMap2 = {
+        cell: true,
+        "byte-cell": true,
+        "byte-group-margin": addMargin,
+        selected,
+        "highlight-area": shouldBeHighlighted,
+        "focused-area": focusedMemoryArea
+      };
+      const isSelectableCell = i < this.#memory.length;
+      const byteValue = isSelectableCell ? html2`${toHexString({ number: this.#memory[i], pad: 2, prefix: false })}` : "";
+      const onSelectedByte = isSelectableCell ? this.#onSelectedByte.bind(this, actualIndex) : "";
+      const jslog = VisualLogging2.tableCell("linear-memory-inspector.byte-cell").track({ click: true });
+      cells.push(html2`<span class=${Lit.Directives.classMap(classMap2)} @click=${onSelectedByte} jslog=${jslog}>${byteValue}</span>`);
+    }
+    return html2`${cells}`;
+  }
+  #renderCharacterValues(startIndex, endIndex) {
+    const cells = [];
+    for (let i = startIndex; i < endIndex; ++i) {
+      const actualIndex = i + this.#memoryOffset;
+      const shouldBeHighlighted = this.#shouldBeHighlighted(actualIndex);
+      const focusedMemoryArea = this.#isFocusedArea(actualIndex);
+      const classMap2 = {
+        cell: true,
+        "text-cell": true,
+        selected: this.#address - this.#memoryOffset === i,
+        "highlight-area": shouldBeHighlighted,
+        "focused-area": focusedMemoryArea
+      };
+      const isSelectableCell = i < this.#memory.length;
+      const value = isSelectableCell ? html2`${this.#toAscii(this.#memory[i])}` : "";
+      const onSelectedByte = isSelectableCell ? this.#onSelectedByte.bind(this, i + this.#memoryOffset) : "";
+      const jslog = VisualLogging2.tableCell("linear-memory-inspector.text-cell").track({ click: true });
+      cells.push(html2`<span class=${Lit.Directives.classMap(classMap2)} @click=${onSelectedByte} jslog=${jslog}>${value}</span>`);
+    }
+    return html2`${cells}`;
+  }
+  #toAscii(byte) {
+    if (byte >= 20 && byte <= 127) {
+      return String.fromCharCode(byte);
+    }
+    return ".";
+  }
+  #onSelectedByte(index) {
+    this.dispatchEvent(new ByteSelectedEvent(index));
+  }
+  #shouldBeHighlighted(index) {
+    if (this.#highlightInfo === void 0) {
+      return false;
+    }
+    return this.#highlightInfo.startAddress <= index && index < this.#highlightInfo.startAddress + this.#highlightInfo.size;
+  }
+  #isFocusedArea(index) {
+    if (!this.#focusedMemoryHighlight) {
+      return false;
+    }
+    return this.#focusedMemoryHighlight.startAddress <= index && index < this.#focusedMemoryHighlight.startAddress + this.#focusedMemoryHighlight.size;
+  }
+};
+customElements.define("devtools-linear-memory-inspector-viewer", LinearMemoryViewer);
+
+// gen/front_end/panels/linear_memory_inspector/components/LinearMemoryInspector.js
+import * as Common from "./../../../core/common/common.js";
+import * as i18n11 from "./../../../core/i18n/i18n.js";
+import * as UI5 from "./../../../ui/legacy/legacy.js";
+import { html as html6, nothing as nothing2, render as render6 } from "./../../../ui/lit/lit.js";
+
+// gen/front_end/panels/linear_memory_inspector/components/linearMemoryInspector.css.js
+var linearMemoryInspector_css_default = `/*
+ * Copyright 2021 The Chromium Authors
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+@scope to (devtools-widget > *) {
+  :scope {
+    flex: auto;
+    display: flex;
+  }
+
+  * {
+      min-width: unset;
+      box-sizing: content-box;
+  }
+
+  .view {
+    width: 100%;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    font-family: var(--monospace-font-family);
+    font-size: var(--monospace-font-size);
+    padding: 9px 12px 9px 7px;
+  }
+
+  devtools-linear-memory-inspector-viewer {
+    justify-content: center;
+  }
+
+  devtools-linear-memory-inspector-navigator + devtools-linear-memory-inspector-viewer {
+    margin-top: 12px;
+  }
+
+  .value-interpreter {
+    display: flex;
+}
+}
+
+/*# sourceURL=${import.meta.resolve("./linearMemoryInspector.css")} */`;
+
+// gen/front_end/panels/linear_memory_inspector/components/LinearMemoryValueInterpreter.js
+var LinearMemoryValueInterpreter_exports = {};
+__export(LinearMemoryValueInterpreter_exports, {
+  DEFAULT_VIEW: () => DEFAULT_VIEW4,
+  LinearMemoryValueInterpreter: () => LinearMemoryValueInterpreter
+});
+import "./../../../ui/kit/kit.js";
+import * as i18n9 from "./../../../core/i18n/i18n.js";
+import * as Platform3 from "./../../../core/platform/platform.js";
+import * as Buttons2 from "./../../../ui/components/buttons/buttons.js";
+import * as UI4 from "./../../../ui/legacy/legacy.js";
+import * as Lit4 from "./../../../ui/lit/lit.js";
+import * as VisualLogging5 from "./../../../ui/visual_logging/visual_logging.js";
+
+// gen/front_end/panels/linear_memory_inspector/components/linearMemoryValueInterpreter.css.js
+var linearMemoryValueInterpreter_css_default = `/*
+ * Copyright 2021 The Chromium Authors
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+@scope to (devtools-widget > *) {
+  :scope {
+    flex: auto;
+    display: flex;
+  }
+
+  .value-interpreter {
+    border: 1px solid var(--sys-color-divider);
+    background-color: var(--sys-color-cdt-base-container);
+    overflow: hidden;
+    width: 400px;
+  }
+
+  .settings-toolbar {
+    min-height: 26px;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    padding-left: var(--sys-size-3);
+    padding-right: var(--sys-size-3);
+    align-items: center;
+  }
+
+  .settings-toolbar-button {
+    padding: 0;
+    width: 20px;
+    height: 20px;
+    border: none;
+    outline: none;
+    background-color: transparent;
+  }
+
+  .settings-toolbar-button.active devtools-icon {
+    color: var(--icon-toggled);
+  }
+
+  .divider {
+    display: block;
+    height: 1px;
+    margin-bottom: 12px;
+    background-color: var(--sys-color-divider);
+  }
 }
 
 /*# sourceURL=${import.meta.resolve("./linearMemoryValueInterpreter.css")} */`;
@@ -329,8 +735,8 @@ import "./../../../ui/kit/kit.js";
 import * as i18n5 from "./../../../core/i18n/i18n.js";
 import * as Buttons from "./../../../ui/components/buttons/buttons.js";
 import * as UI2 from "./../../../ui/legacy/legacy.js";
-import * as Lit from "./../../../ui/lit/lit.js";
-import * as VisualLogging2 from "./../../../ui/visual_logging/visual_logging.js";
+import * as Lit2 from "./../../../ui/lit/lit.js";
+import * as VisualLogging3 from "./../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/linear_memory_inspector/components/valueInterpreterDisplay.css.js
 var valueInterpreterDisplay_css_default = `/*
@@ -626,7 +1032,7 @@ var UIStrings3 = {
 };
 var str_3 = i18n5.i18n.registerUIStrings("panels/linear_memory_inspector/components/ValueInterpreterDisplay.ts", UIStrings3);
 var i18nString3 = i18n5.i18n.getLocalizedString.bind(void 0, str_3);
-var { render: render2, nothing, html: html2 } = Lit;
+var { render: render3, nothing, html: html3 } = Lit2;
 var SORTED_VALUE_TYPES = Array.from(getDefaultValueTypeMapping().keys());
 var DEFAULT_VIEW2 = (input, _output, target) => {
   function parse(signed, type) {
@@ -634,7 +1040,7 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
   }
   const parseSigned = parse.bind(void 0, true);
   const parseUnsigned = parse.bind(void 0, false);
-  render2(html2`
+  render3(html3`
       <style>${UI2.inspectorCommonStyles}</style>
       <style>${valueInterpreterDisplay_css_default}</style>
       <div class="value-types">
@@ -643,22 +1049,22 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
     const jumpDisabled = Number.isNaN(address) || BigInt(address) >= BigInt(input.memoryLength);
     const signed = parseSigned(type);
     const unsigned = parseUnsigned(type);
-    return isNumber(type) ? html2`
+    return isNumber(type) ? html3`
             <span class="value-type-cell selectable-text">${i18n5.i18n.lockedString(type)}</span>
               <div>
                 <select title=${i18nString3(UIStrings3.changeValueTypeMode)}
                   data-mode-settings="true"
-                  jslog=${VisualLogging2.dropDown("linear-memory-inspector.value-type-mode").track({ change: true })}
+                  jslog=${VisualLogging3.dropDown("linear-memory-inspector.value-type-mode").track({ change: true })}
                   @change=${(e) => input.onValueTypeModeChange(type, e.target.value)}>
                     ${VALUE_TYPE_MODE_LIST.filter((x) => isValidMode(type, x)).map((mode) => {
-      return html2`
+      return html3`
                         <option value=${mode} .selected=${input.valueTypeModes.get(type) === mode}
-                                jslog=${VisualLogging2.item(mode).track({ click: true })}>${i18n5.i18n.lockedString(mode)}
+                                jslog=${VisualLogging3.item(mode).track({ click: true })}>${i18n5.i18n.lockedString(mode)}
                         </option>`;
     })}
                 </select>
               </div>
-            ${renderSignedAndUnsigned(signed, unsigned, type, input.valueTypeModes.get(type))}` : isPointer(type) ? html2`
+            ${renderSignedAndUnsigned(signed, unsigned, type, input.valueTypeModes.get(type))}` : isPointer(type) ? html3`
             <span class="value-type-cell-no-mode value-type-cell selectable-text">${i18n5.i18n.lockedString(type)}</span>
             <div class="value-type-cell">
               <div class="value-type-value-with-link" data-value="true">
@@ -667,7 +1073,7 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
                   data-jump="true"
                   title=${jumpDisabled ? i18nString3(UIStrings3.addressOutOfRange) : i18nString3(UIStrings3.jumpToPointer)}
                   .disabled=${jumpDisabled}
-                  jslog=${VisualLogging2.action("linear-memory-inspector.jump-to-address").track({ click: true })}
+                  jslog=${VisualLogging3.action("linear-memory-inspector.jump-to-address").track({ click: true })}
                   @click=${() => input.onJumpToAddressClicked(Number(address))}
                   .variant=${"icon_toggle"}
                   .iconName=${"open-externally"}
@@ -681,21 +1087,21 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
 };
 function renderSignedAndUnsigned(signedValue, unsignedValue, type, mode) {
   const showSignedAndUnsigned = signedValue !== unsignedValue && mode !== "hex" && mode !== "oct";
-  const unsignedRendered = html2`<span class="value-type-cell selectable-text"  title=${i18nString3(UIStrings3.unsignedValue)} data-value="true">${unsignedValue}</span>`;
+  const unsignedRendered = html3`<span class="value-type-cell selectable-text"  title=${i18nString3(UIStrings3.unsignedValue)} data-value="true">${unsignedValue}</span>`;
   if (!showSignedAndUnsigned) {
     return unsignedRendered;
   }
   const showInMultipleLines = type === "Integer 32-bit" || type === "Integer 64-bit";
-  const signedRendered = html2`<span class="selectable-text" data-value="true" title=${i18nString3(UIStrings3.signedValue)}>${signedValue}</span>`;
+  const signedRendered = html3`<span class="selectable-text" data-value="true" title=${i18nString3(UIStrings3.signedValue)}>${signedValue}</span>`;
   if (showInMultipleLines) {
-    return html2`
+    return html3`
         <div class="value-type-cell">
           ${unsignedRendered}
           ${signedRendered}
         </div>
         `;
   }
-  return html2`
+  return html3`
       <div class="value-type-cell" style="flex-direction: row;">
         ${unsignedRendered}
         <span class="signed-divider"></span>
@@ -796,8 +1202,8 @@ __export(ValueInterpreterSettings_exports, {
 import * as i18n7 from "./../../../core/i18n/i18n.js";
 import * as Platform2 from "./../../../core/platform/platform.js";
 import * as UI3 from "./../../../ui/legacy/legacy.js";
-import * as Lit2 from "./../../../ui/lit/lit.js";
-import * as VisualLogging3 from "./../../../ui/visual_logging/visual_logging.js";
+import * as Lit3 from "./../../../ui/lit/lit.js";
+import * as VisualLogging4 from "./../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/linear_memory_inspector/components/valueInterpreterSettings.css.js
 var valueInterpreterSettings_css_default = `/*
@@ -834,7 +1240,7 @@ var valueInterpreterSettings_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./valueInterpreterSettings.css")} */`;
 
 // gen/front_end/panels/linear_memory_inspector/components/ValueInterpreterSettings.js
-var { render: render3, html: html3 } = Lit2;
+var { render: render4, html: html4 } = Lit3;
 var UIStrings4 = {
   /**
    * @description Name of a group of selectable value types that do not fall under integer and floating point value types, e.g. Pointer32. The group appears name appears under the Value Interpreter Settings.
@@ -869,23 +1275,23 @@ function valueTypeGroupToLocalizedString(group) {
   return group;
 }
 var DEFAULT_VIEW3 = (input, _output, target) => {
-  render3(html3`
+  render4(html4`
       <style>${valueInterpreterSettings_css_default}</style>
-      <div class="settings" jslog=${VisualLogging3.pane("settings")}>
+      <div class="settings" jslog=${VisualLogging4.pane("settings")}>
        ${[...GROUP_TO_TYPES.keys()].map((group) => {
     const types = GROUP_TO_TYPES.get(group) ?? [];
-    return html3`
+    return html4`
           <div class="value-types-selection">
             <span class="group">${valueTypeGroupToLocalizedString(group)}</span>
             ${types.map((type) => {
-      return html3`
+      return html4`
                 <devtools-checkbox
                   title=${valueTypeToLocalizedString(type)}
                   ?checked=${input.valueTypes.has(type)}
                   @change=${(e) => {
         const checkbox = e.target;
         input.onToggle(type, checkbox.checked);
-      }} jslog=${VisualLogging3.toggle().track({ change: true }).context(Platform2.StringUtilities.toKebabCase(type))}
+      }} jslog=${VisualLogging4.toggle().track({ change: true }).context(Platform2.StringUtilities.toKebabCase(type))}
                   }>${valueTypeToLocalizedString(type)}</devtools-checkbox>
          `;
     })}
@@ -941,10 +1347,73 @@ var UIStrings5 = {
 };
 var str_5 = i18n9.i18n.registerUIStrings("panels/linear_memory_inspector/components/LinearMemoryValueInterpreter.ts", UIStrings5);
 var i18nString5 = i18n9.i18n.getLocalizedString.bind(void 0, str_5);
-var { render: render4, html: html4 } = Lit3;
+var { render: render5, html: html5 } = Lit4;
 var { widgetConfig } = UI4.Widget;
-var LinearMemoryValueInterpreter = class extends HTMLElement {
-  #shadow = this.attachShadow({ mode: "open" });
+function renderEndiannessSetting(onEndiannessChanged, currentEndiannes) {
+  return html5`
+    <label data-endianness-setting="true" title=${i18nString5(UIStrings5.changeEndianness)}>
+      <select
+        jslog=${VisualLogging5.dropDown("linear-memory-inspector.endianess").track({ change: true })}
+        style="border: none;"
+        data-endianness="true" @change=${(e) => onEndiannessChanged(e.target.value)}>
+        ${[
+    "Little Endian",
+    "Big Endian"
+    /* Endianness.BIG */
+  ].map((endianness) => {
+    return html5`<option value=${endianness} .selected=${currentEndiannes === endianness}
+            jslog=${VisualLogging5.item(Platform3.StringUtilities.toKebabCase(endianness)).track({ click: true })}>${i18n9.i18n.lockedString(endianness)}</option>`;
+  })}
+      </select>
+    </label>
+    `;
+}
+var DEFAULT_VIEW4 = (input, _output, target) => {
+  render5(html5`
+    <style>${UI4.inspectorCommonStyles}</style>
+    <style>${linearMemoryValueInterpreter_css_default}</style>
+    <div class="value-interpreter">
+      <div class="settings-toolbar">
+        ${renderEndiannessSetting(input.onEndiannessChanged, input.endianness)}
+        <devtools-button data-settings="true" class="toolbar-button ${input.showSettings ? "" : "disabled"}"
+            title=${i18nString5(UIStrings5.toggleValueTypeSettings)} @click=${input.onSettingsToggle}
+            jslog=${VisualLogging5.toggleSubpane("linear-memory-inspector.toggle-value-settings").track({ click: true })}
+            .iconName=${"gear"}
+            .toggledIconName=${"gear-filled"}
+            .toggleType=${"primary-toggle"}
+            .variant=${"icon_toggle"}
+        ></devtools-button>
+      </div>
+      <span class="divider"></span>
+      <div>
+        ${input.showSettings ? html5`
+            <devtools-widget .widgetConfig=${widgetConfig(ValueInterpreterSettings, {
+    valueTypes: input.valueTypes,
+    onToggle: input.onValueTypeToggled
+  })}>
+            </devtools-widget>` : html5`
+            <devtools-widget .widgetConfig=${widgetConfig(ValueInterpreterDisplay, {
+    buffer: input.buffer,
+    valueTypes: input.valueTypes,
+    endianness: input.endianness,
+    valueTypeModes: input.valueTypeModes,
+    memoryLength: input.memoryLength,
+    onValueTypeModeChange: input.onValueTypeModeChange,
+    onJumpToAddressClicked: input.onJumpToAddressClicked
+  })}>
+            </devtools-widget>`}
+      </div>
+    </div>
+  `, target);
+};
+var LinearMemoryValueInterpreter = class extends UI4.Widget.Widget {
+  #view;
+  #endianness = "Little Endian";
+  #buffer = new ArrayBuffer(0);
+  #valueTypes = /* @__PURE__ */ new Set();
+  #valueTypeModeConfig = /* @__PURE__ */ new Map();
+  #memoryLength = 0;
+  #showSettings = false;
   #onValueTypeModeChange = () => {
   };
   #onJumpToAddressClicked = () => {
@@ -953,518 +1422,94 @@ var LinearMemoryValueInterpreter = class extends HTMLElement {
   };
   #onValueTypeToggled = () => {
   };
-  #endianness = "Little Endian";
-  #buffer = new ArrayBuffer(0);
-  #valueTypes = /* @__PURE__ */ new Set();
-  #valueTypeModeConfig = /* @__PURE__ */ new Map();
-  #memoryLength = 0;
-  #showSettings = false;
-  set data(data) {
-    this.#endianness = data.endianness;
-    this.#buffer = data.value;
-    this.#valueTypes = data.valueTypes;
-    this.#valueTypeModeConfig = data.valueTypeModes || /* @__PURE__ */ new Map();
-    this.#memoryLength = data.memoryLength;
-    this.#onValueTypeModeChange = data.onValueTypeModeChange;
-    this.#onJumpToAddressClicked = data.onJumpToAddressClicked;
-    this.#onEndiannessChanged = data.onEndiannessChanged;
-    this.#onValueTypeToggled = data.onValueTypeToggled;
-    this.#render();
+  constructor(element, view = DEFAULT_VIEW4) {
+    super(element);
+    this.#view = view;
+  }
+  set buffer(value) {
+    this.#buffer = value;
+    this.requestUpdate();
+  }
+  get buffer() {
+    return this.#buffer;
+  }
+  set valueTypes(value) {
+    this.#valueTypes = value;
+    this.requestUpdate();
+  }
+  get valueTypes() {
+    return this.#valueTypes;
+  }
+  set valueTypeModes(value) {
+    this.#valueTypeModeConfig = value;
+    this.requestUpdate();
+  }
+  get valueTypeModes() {
+    return this.#valueTypeModeConfig;
+  }
+  set endianness(value) {
+    this.#endianness = value;
+    this.requestUpdate();
+  }
+  get endianness() {
+    return this.#endianness;
+  }
+  set memoryLength(value) {
+    this.#memoryLength = value;
+    this.requestUpdate();
+  }
+  get memoryLength() {
+    return this.#memoryLength;
   }
   get onValueTypeModeChange() {
     return this.#onValueTypeModeChange;
   }
   set onValueTypeModeChange(value) {
     this.#onValueTypeModeChange = value;
-    this.#render();
+    this.requestUpdate();
   }
   get onJumpToAddressClicked() {
     return this.#onJumpToAddressClicked;
   }
   set onJumpToAddressClicked(value) {
     this.#onJumpToAddressClicked = value;
-    this.#render();
+    this.requestUpdate();
   }
   get onEndiannessChanged() {
     return this.#onEndiannessChanged;
   }
   set onEndiannessChanged(value) {
     this.#onEndiannessChanged = value;
-    this.#render();
+    this.performUpdate();
   }
   get onValueTypeToggled() {
     return this.#onValueTypeToggled;
   }
   set onValueTypeToggled(value) {
     this.#onValueTypeToggled = value;
-    this.#render();
+    this.performUpdate();
   }
-  #render() {
-    render4(html4`
-      <style>${UI4.inspectorCommonStyles}</style>
-      <style>${linearMemoryValueInterpreter_css_default}</style>
-      <div class="value-interpreter">
-        <div class="settings-toolbar">
-          ${this.#renderEndiannessSetting()}
-          <devtools-button data-settings="true" class="toolbar-button ${this.#showSettings ? "" : "disabled"}"
-              title=${i18nString5(UIStrings5.toggleValueTypeSettings)} @click=${this.#onSettingsToggle}
-              jslog=${VisualLogging4.toggleSubpane("linear-memory-inspector.toggle-value-settings").track({ click: true })}
-              .iconName=${"gear"}
-              .toggledIconName=${"gear-filled"}
-              .toggleType=${"primary-toggle"}
-              .variant=${"icon_toggle"}
-          ></devtools-button>
-        </div>
-        <span class="divider"></span>
-        <div>
-          ${this.#showSettings ? html4`
-              <devtools-widget .widgetConfig=${widgetConfig(ValueInterpreterSettings, {
-      valueTypes: this.#valueTypes,
-      onToggle: this.#onValueTypeToggled
-    })}>
-              </devtools-widget>` : html4`
-              <devtools-widget .widgetConfig=${widgetConfig(ValueInterpreterDisplay, {
+  performUpdate() {
+    const viewInput = {
+      endianness: this.#endianness,
       buffer: this.#buffer,
       valueTypes: this.#valueTypes,
-      endianness: this.#endianness,
       valueTypeModes: this.#valueTypeModeConfig,
       memoryLength: this.#memoryLength,
+      showSettings: this.#showSettings,
       onValueTypeModeChange: this.#onValueTypeModeChange,
-      onJumpToAddressClicked: this.#onJumpToAddressClicked
-    })}>
-              </devtools-widget>`}
-        </div>
-      </div>
-    `, this.#shadow, { host: this });
-  }
-  #renderEndiannessSetting() {
-    return html4`
-    <label data-endianness-setting="true" title=${i18nString5(UIStrings5.changeEndianness)}>
-      <select
-        jslog=${VisualLogging4.dropDown("linear-memory-inspector.endianess").track({ change: true })}
-        style="border: none;"
-        data-endianness="true" @change=${(e) => this.#onEndiannessChanged(e.target.value)}>
-        ${[
-      "Little Endian",
-      "Big Endian"
-      /* Endianness.BIG */
-    ].map((endianness) => {
-      return html4`<option value=${endianness} .selected=${this.#endianness === endianness}
-            jslog=${VisualLogging4.item(Platform3.StringUtilities.toKebabCase(endianness)).track({ click: true })}>${i18n9.i18n.lockedString(endianness)}</option>`;
-    })}
-      </select>
-    </label>
-    `;
+      onJumpToAddressClicked: this.#onJumpToAddressClicked,
+      onEndiannessChanged: this.#onEndiannessChanged,
+      onValueTypeToggled: this.#onValueTypeToggled,
+      onSettingsToggle: this.#onSettingsToggle.bind(this)
+    };
+    this.#view(viewInput, void 0, this.contentElement);
   }
   #onSettingsToggle() {
     this.#showSettings = !this.#showSettings;
-    this.#render();
+    this.requestUpdate();
   }
 };
-customElements.define("devtools-linear-memory-inspector-interpreter", LinearMemoryValueInterpreter);
-
-// gen/front_end/panels/linear_memory_inspector/components/LinearMemoryViewer.js
-var LinearMemoryViewer_exports = {};
-__export(LinearMemoryViewer_exports, {
-  ByteSelectedEvent: () => ByteSelectedEvent,
-  LinearMemoryViewer: () => LinearMemoryViewer,
-  ResizeEvent: () => ResizeEvent
-});
-import * as Lit4 from "./../../../ui/lit/lit.js";
-import * as VisualLogging5 from "./../../../ui/visual_logging/visual_logging.js";
-
-// gen/front_end/panels/linear_memory_inspector/components/LinearMemoryInspectorUtils.js
-var LinearMemoryInspectorUtils_exports = {};
-__export(LinearMemoryInspectorUtils_exports, {
-  DECIMAL_REGEXP: () => DECIMAL_REGEXP,
-  HEXADECIMAL_REGEXP: () => HEXADECIMAL_REGEXP,
-  formatAddress: () => formatAddress,
-  parseAddress: () => parseAddress,
-  toHexString: () => toHexString
-});
-var HEXADECIMAL_REGEXP = /^0x[a-fA-F0-9]+$/;
-var DECIMAL_REGEXP = /^0$|[1-9]\d*$/;
-function toHexString(data) {
-  const hex = data.number.toString(16).padStart(data.pad, "0");
-  const upperHex = hex.toUpperCase();
-  return data.prefix ? "0x" + upperHex : upperHex;
-}
-function formatAddress(address) {
-  return toHexString({ number: address, pad: 8, prefix: true });
-}
-function parseAddress(address) {
-  const hexMatch = address.match(HEXADECIMAL_REGEXP);
-  const decMatch = address.match(DECIMAL_REGEXP);
-  let newAddress = void 0;
-  if (hexMatch && hexMatch[0].length === address.length) {
-    newAddress = parseInt(address, 16);
-  } else if (decMatch && decMatch[0].length === address.length) {
-    newAddress = parseInt(address, 10);
-  }
-  return newAddress;
-}
-
-// gen/front_end/panels/linear_memory_inspector/components/linearMemoryViewer.css.js
-var linearMemoryViewer_css_default = `/*
- * Copyright 2021 The Chromium Authors
- * Use of this source code is governed by a BSD-style license that can be
- * found in the LICENSE file.
- */
-
-:host {
-  flex: auto;
-  display: flex;
-  min-height: 20px;
-}
-
-.view {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  box-sizing: border-box;
-  background: var(--sys-color-cdt-base-container);
-  outline: none;
-}
-
-.row {
-  display: flex;
-  height: 20px;
-  align-items: center;
-}
-
-.cell {
-  text-align: center;
-  border: 1px solid transparent;
-  border-radius: 2px;
-
-  &.focused-area {
-    background-color: var(--sys-color-tonal-container);
-    color: var(--sys-color-on-tonal-container);
-  }
-
-  &.selected {
-    border-color: var(--sys-color-state-focus-ring);
-    color: var(--sys-color-on-tonal-container);
-    background-color: var(--sys-color-state-focus-select);
-  }
-}
-
-.byte-cell {
-  min-width: 21px;
-  color: var(--sys-color-on-surface);
-}
-
-.byte-group-margin {
-  margin-left: var(--byte-group-margin);
-}
-
-.text-cell {
-  min-width: 14px;
-  color: var(--sys-color-on-surface-subtle);
-}
-
-.address {
-  color: var(--sys-color-state-disabled);
-}
-
-.address.selected {
-  font-weight: bold;
-  color: var(--sys-color-on-surface);
-}
-
-.divider {
-  width: 1px;
-  height: inherit;
-  background-color: var(--sys-color-divider);
-  margin: 0 4px;
-}
-
-.highlight-area {
-  background-color: var(--sys-color-surface-variant);
-}
-
-/*# sourceURL=${import.meta.resolve("./linearMemoryViewer.css")} */`;
-
-// gen/front_end/panels/linear_memory_inspector/components/LinearMemoryViewer.js
-var { render: render5, html: html5 } = Lit4;
-var ByteSelectedEvent = class _ByteSelectedEvent extends Event {
-  static eventName = "byteselected";
-  data;
-  constructor(address) {
-    super(_ByteSelectedEvent.eventName);
-    this.data = address;
-  }
-};
-var ResizeEvent = class _ResizeEvent extends Event {
-  static eventName = "resize";
-  data;
-  constructor(numBytesPerPage) {
-    super(_ResizeEvent.eventName);
-    this.data = numBytesPerPage;
-  }
-};
-var BYTE_GROUP_MARGIN = 8;
-var BYTE_GROUP_SIZE = 4;
-var LinearMemoryViewer = class extends HTMLElement {
-  #shadow = this.attachShadow({ mode: "open" });
-  #resizeObserver = new ResizeObserver(() => this.#resize());
-  #isObservingResize = false;
-  #memory = new Uint8Array();
-  #address = 0;
-  #memoryOffset = 0;
-  #highlightInfo;
-  #focusedMemoryHighlight;
-  #numRows = 1;
-  #numBytesInRow = BYTE_GROUP_SIZE;
-  #focusOnByte = true;
-  #lastKeyUpdateSent = void 0;
-  set data(data) {
-    if (data.address < data.memoryOffset || data.address > data.memoryOffset + data.memory.length || data.address < 0) {
-      throw new Error("Address is out of bounds.");
-    }
-    if (data.memoryOffset < 0) {
-      throw new Error("Memory offset has to be greater or equal to zero.");
-    }
-    this.#memory = data.memory;
-    this.#address = data.address;
-    this.#highlightInfo = data.highlightInfo;
-    this.#focusedMemoryHighlight = data.focusedMemoryHighlight;
-    this.#memoryOffset = data.memoryOffset;
-    this.#focusOnByte = data.focus;
-    this.#update();
-  }
-  connectedCallback() {
-    this.style.setProperty("--byte-group-margin", `${BYTE_GROUP_MARGIN}px`);
-  }
-  disconnectedCallback() {
-    this.#isObservingResize = false;
-    this.#resizeObserver.disconnect();
-  }
-  #update() {
-    this.#updateDimensions();
-    this.#render();
-    this.#focusOnView();
-    this.#engageResizeObserver();
-  }
-  #focusOnView() {
-    if (this.#focusOnByte) {
-      const view = this.#shadow.querySelector(".view");
-      if (view) {
-        view.focus();
-      }
-    }
-  }
-  #resize() {
-    this.#update();
-    this.dispatchEvent(new ResizeEvent(this.#numBytesInRow * this.#numRows));
-  }
-  /** Recomputes the number of rows and (byte) columns that fit into the current view. */
-  #updateDimensions() {
-    if (this.clientWidth === 0 || this.clientHeight === 0 || !this.shadowRoot) {
-      this.#numBytesInRow = BYTE_GROUP_SIZE;
-      this.#numRows = 1;
-      return;
-    }
-    const firstByteCell = this.shadowRoot.querySelector(".byte-cell");
-    const textCell = this.shadowRoot.querySelector(".text-cell");
-    const divider = this.shadowRoot.querySelector(".divider");
-    const rowElement = this.shadowRoot.querySelector(".row");
-    const addressText = this.shadowRoot.querySelector(".address");
-    if (!firstByteCell || !textCell || !divider || !rowElement || !addressText) {
-      this.#numBytesInRow = BYTE_GROUP_SIZE;
-      this.#numRows = 1;
-      return;
-    }
-    const byteCellWidth = firstByteCell.getBoundingClientRect().width;
-    const textCellWidth = textCell.getBoundingClientRect().width;
-    const groupWidth = BYTE_GROUP_SIZE * (byteCellWidth + textCellWidth) + BYTE_GROUP_MARGIN;
-    const dividerWidth = divider.getBoundingClientRect().width;
-    const addressTextAndDividerWidth = firstByteCell.getBoundingClientRect().left - addressText.getBoundingClientRect().left;
-    const widthToFill = this.clientWidth - 1 - addressTextAndDividerWidth - dividerWidth;
-    if (widthToFill < groupWidth) {
-      this.#numBytesInRow = BYTE_GROUP_SIZE;
-      this.#numRows = 1;
-      return;
-    }
-    this.#numBytesInRow = Math.floor(widthToFill / groupWidth) * BYTE_GROUP_SIZE;
-    this.#numRows = Math.floor(this.clientHeight / rowElement.clientHeight);
-  }
-  #engageResizeObserver() {
-    if (!this.#resizeObserver || this.#isObservingResize) {
-      return;
-    }
-    this.#resizeObserver.observe(this);
-    this.#isObservingResize = true;
-  }
-  #render() {
-    const jslog = VisualLogging5.section().track({ keydown: "ArrowUp|ArrowDown|ArrowLeft|ArrowRight|PageUp|PageDown" }).context("linear-memory-inspector.viewer");
-    render5(html5`
-      <style>${linearMemoryViewer_css_default}</style>
-      <div class="view" tabindex="0" @keydown=${this.#onKeyDown} jslog=${jslog}>
-        ${this.#renderView()}
-      </div>
-      `, this.#shadow, { host: this });
-  }
-  #onKeyDown(event) {
-    const keyboardEvent = event;
-    let newAddress = void 0;
-    if (keyboardEvent.code === "ArrowUp") {
-      newAddress = this.#address - this.#numBytesInRow;
-    } else if (keyboardEvent.code === "ArrowDown") {
-      newAddress = this.#address + this.#numBytesInRow;
-    } else if (keyboardEvent.code === "ArrowLeft") {
-      newAddress = this.#address - 1;
-    } else if (keyboardEvent.code === "ArrowRight") {
-      newAddress = this.#address + 1;
-    } else if (keyboardEvent.code === "PageUp") {
-      newAddress = this.#address - this.#numBytesInRow * this.#numRows;
-    } else if (keyboardEvent.code === "PageDown") {
-      newAddress = this.#address + this.#numBytesInRow * this.#numRows;
-    }
-    if (newAddress !== void 0 && newAddress !== this.#lastKeyUpdateSent) {
-      this.#lastKeyUpdateSent = newAddress;
-      this.dispatchEvent(new ByteSelectedEvent(newAddress));
-    }
-  }
-  #renderView() {
-    const itemTemplates = [];
-    for (let i = 0; i < this.#numRows; ++i) {
-      itemTemplates.push(this.#renderRow(i));
-    }
-    return html5`${itemTemplates}`;
-  }
-  #renderRow(row) {
-    const { startIndex, endIndex } = { startIndex: row * this.#numBytesInRow, endIndex: (row + 1) * this.#numBytesInRow };
-    const classMap2 = {
-      address: true,
-      selected: Math.floor((this.#address - this.#memoryOffset) / this.#numBytesInRow) === row
-    };
-    return html5`
-    <div class="row">
-      <span class=${Lit4.Directives.classMap(classMap2)}>${toHexString({ number: startIndex + this.#memoryOffset, pad: 8, prefix: false })}</span>
-      <span class="divider"></span>
-      ${this.#renderByteValues(startIndex, endIndex)}
-      <span class="divider"></span>
-      ${this.#renderCharacterValues(startIndex, endIndex)}
-    </div>
-    `;
-  }
-  #renderByteValues(startIndex, endIndex) {
-    const cells = [];
-    for (let i = startIndex; i < endIndex; ++i) {
-      const actualIndex = i + this.#memoryOffset;
-      const addMargin = i !== startIndex && (i - startIndex) % BYTE_GROUP_SIZE === 0;
-      const selected = i === this.#address - this.#memoryOffset;
-      const shouldBeHighlighted = this.#shouldBeHighlighted(actualIndex);
-      const focusedMemoryArea = this.#isFocusedArea(actualIndex);
-      const classMap2 = {
-        cell: true,
-        "byte-cell": true,
-        "byte-group-margin": addMargin,
-        selected,
-        "highlight-area": shouldBeHighlighted,
-        "focused-area": focusedMemoryArea
-      };
-      const isSelectableCell = i < this.#memory.length;
-      const byteValue = isSelectableCell ? html5`${toHexString({ number: this.#memory[i], pad: 2, prefix: false })}` : "";
-      const onSelectedByte = isSelectableCell ? this.#onSelectedByte.bind(this, actualIndex) : "";
-      const jslog = VisualLogging5.tableCell("linear-memory-inspector.byte-cell").track({ click: true });
-      cells.push(html5`<span class=${Lit4.Directives.classMap(classMap2)} @click=${onSelectedByte} jslog=${jslog}>${byteValue}</span>`);
-    }
-    return html5`${cells}`;
-  }
-  #renderCharacterValues(startIndex, endIndex) {
-    const cells = [];
-    for (let i = startIndex; i < endIndex; ++i) {
-      const actualIndex = i + this.#memoryOffset;
-      const shouldBeHighlighted = this.#shouldBeHighlighted(actualIndex);
-      const focusedMemoryArea = this.#isFocusedArea(actualIndex);
-      const classMap2 = {
-        cell: true,
-        "text-cell": true,
-        selected: this.#address - this.#memoryOffset === i,
-        "highlight-area": shouldBeHighlighted,
-        "focused-area": focusedMemoryArea
-      };
-      const isSelectableCell = i < this.#memory.length;
-      const value = isSelectableCell ? html5`${this.#toAscii(this.#memory[i])}` : "";
-      const onSelectedByte = isSelectableCell ? this.#onSelectedByte.bind(this, i + this.#memoryOffset) : "";
-      const jslog = VisualLogging5.tableCell("linear-memory-inspector.text-cell").track({ click: true });
-      cells.push(html5`<span class=${Lit4.Directives.classMap(classMap2)} @click=${onSelectedByte} jslog=${jslog}>${value}</span>`);
-    }
-    return html5`${cells}`;
-  }
-  #toAscii(byte) {
-    if (byte >= 20 && byte <= 127) {
-      return String.fromCharCode(byte);
-    }
-    return ".";
-  }
-  #onSelectedByte(index) {
-    this.dispatchEvent(new ByteSelectedEvent(index));
-  }
-  #shouldBeHighlighted(index) {
-    if (this.#highlightInfo === void 0) {
-      return false;
-    }
-    return this.#highlightInfo.startAddress <= index && index < this.#highlightInfo.startAddress + this.#highlightInfo.size;
-  }
-  #isFocusedArea(index) {
-    if (!this.#focusedMemoryHighlight) {
-      return false;
-    }
-    return this.#focusedMemoryHighlight.startAddress <= index && index < this.#focusedMemoryHighlight.startAddress + this.#focusedMemoryHighlight.size;
-  }
-};
-customElements.define("devtools-linear-memory-inspector-viewer", LinearMemoryViewer);
-
-// gen/front_end/panels/linear_memory_inspector/components/LinearMemoryInspector.js
-import * as Common from "./../../../core/common/common.js";
-import * as i18n11 from "./../../../core/i18n/i18n.js";
-import * as UI5 from "./../../../ui/legacy/legacy.js";
-import { html as html6, nothing as nothing2, render as render6 } from "./../../../ui/lit/lit.js";
-
-// gen/front_end/panels/linear_memory_inspector/components/linearMemoryInspector.css.js
-var linearMemoryInspector_css_default = `/*
- * Copyright 2021 The Chromium Authors
- * Use of this source code is governed by a BSD-style license that can be
- * found in the LICENSE file.
- */
-
-@scope to (devtools-widget > *) {
-  :scope {
-    flex: auto;
-    display: flex;
-  }
-
-  * {
-      min-width: unset;
-      box-sizing: content-box;
-  }
-
-  .view {
-    width: 100%;
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    font-family: var(--monospace-font-family);
-    font-size: var(--monospace-font-size);
-    padding: 9px 12px 9px 7px;
-  }
-
-  devtools-linear-memory-inspector-viewer {
-    justify-content: center;
-  }
-
-  devtools-linear-memory-inspector-navigator + devtools-linear-memory-inspector-viewer {
-    margin-top: 12px;
-  }
-
-  .value-interpreter {
-    display: flex;
-}
-}
-
-/*# sourceURL=${import.meta.resolve("./linearMemoryInspector.css")} */`;
 
 // gen/front_end/panels/linear_memory_inspector/components/LinearMemoryInspector.js
 var UIStrings6 = {
@@ -1495,7 +1540,7 @@ var AddressHistoryEntry = class {
     this.#callback(this.#address);
   }
 };
-var DEFAULT_VIEW4 = (input, _output, target) => {
+var DEFAULT_VIEW5 = (input, _output, target) => {
   const navigatorAddressToShow = input.currentNavigatorMode === "Submitted" ? formatAddress(input.address) : input.currentNavigatorAddressLine;
   const navigatorAddressIsValid = isValidAddress(navigatorAddressToShow, input.outerMemoryLength);
   const invalidAddressMsg = i18nString6(UIStrings6.addressHasToBeANumberBetweenSAnd, { PH1: formatAddress(0), PH2: formatAddress(input.outerMemoryLength) });
@@ -1540,9 +1585,8 @@ var DEFAULT_VIEW4 = (input, _output, target) => {
     </div>
     ${input.hideValueInspector ? nothing2 : html6`
     <div class="value-interpreter">
-      <devtools-linear-memory-inspector-interpreter
-        .data=${{
-    value: input.memory.slice(input.address - input.memoryOffset, input.address + VALUE_INTEPRETER_MAX_NUM_BYTES).buffer,
+      <devtools-widget .widgetConfig=${widgetConfig2(LinearMemoryValueInterpreter, {
+    buffer: input.memory.slice(input.address - input.memoryOffset, input.address + VALUE_INTEPRETER_MAX_NUM_BYTES).buffer,
     valueTypes: input.valueTypes,
     valueTypeModes: input.valueTypeModes,
     endianness: input.endianness,
@@ -1551,9 +1595,7 @@ var DEFAULT_VIEW4 = (input, _output, target) => {
     onJumpToAddressClicked: input.onJumpToAddress,
     onValueTypeToggled: input.onValueTypeToggled,
     onEndiannessChanged: input.onEndiannessChanged
-  }}
-        >
-      </devtools-linear-memory-inspector-interpreter>
+  })}></devtools-widget>
     </div>`}
     `, target);
 };
@@ -1597,7 +1639,7 @@ var LinearMemoryInspector = class extends Common.ObjectWrapper.eventMixin(UI5.Wi
   #view;
   constructor(element, view) {
     super(element);
-    this.#view = view ?? DEFAULT_VIEW4;
+    this.#view = view ?? DEFAULT_VIEW5;
   }
   set memory(value) {
     this.#memory = value;

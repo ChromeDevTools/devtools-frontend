@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-imperative-dom-api, @devtools/no-lit-render-outside-of-view */
-import '../../ui/kit/kit.js';
 import '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
@@ -422,6 +421,11 @@ const UIStrings = {
      * @description Text for emulation OS selection dropdown
      */
     selectWindowControlsOverlayEmulationOs: 'Emulate the Window Controls Overlay on',
+    /**
+     * @description Alert message for screen reader to announce which subsection is being scrolled to
+     * @example {"Identity"} PH1
+     */
+    onInvokeAlert: 'Scrolled to {PH1}',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/AppManifestView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -909,7 +913,40 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin(UI.Widget.V
         this.installabilityErrors = [];
         this.appIdResponse = null;
     }
-    getStaticSections() {
+    scrollToSection(sectionTitle) {
+        const section = this.getManifestSections().find(s => s.title() === sectionTitle);
+        if (section) {
+            section.getTitleElement().scrollIntoView();
+            UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.onInvokeAlert, { PH1: sectionTitle }));
+        }
+    }
+    getFieldElementForSection(sectionTitle) {
+        const section = this.getManifestSections().find(s => s.title() === sectionTitle);
+        return section ? section.getFieldElement() : null;
+    }
+    focusOnSection(sectionTitle) {
+        const sectionFieldElement = this.getFieldElementForSection(sectionTitle);
+        if (!sectionFieldElement) {
+            return false;
+        }
+        const checkBoxElement = sectionFieldElement.querySelector('.mask-checkbox');
+        let focusableElement = sectionFieldElement.querySelector('[tabindex="0"]');
+        if (checkBoxElement?.shadowRoot) {
+            focusableElement = checkBoxElement.shadowRoot.querySelector('input') || null;
+        }
+        else if (!focusableElement) {
+            // special case for protocol handler section since it is a custom Element and has different structure than the others
+            focusableElement = sectionFieldElement.querySelector('devtools-protocol-handlers-view')
+                ?.shadowRoot?.querySelector('[tabindex="0"]') ||
+                null;
+        }
+        if (focusableElement) {
+            focusableElement.focus();
+            return true;
+        }
+        return false;
+    }
+    getManifestSections() {
         return [
             this.identitySection,
             this.presentationSection,
@@ -917,6 +954,9 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin(UI.Widget.V
             this.iconsSection,
             this.windowControlsSection,
         ];
+    }
+    getStaticSections() {
+        return this.getManifestSections().map(section => ({ title: section.title(), jslogContext: section.jslogContext }));
     }
     getManifestElement() {
         return this.reportView.getHeaderElement();

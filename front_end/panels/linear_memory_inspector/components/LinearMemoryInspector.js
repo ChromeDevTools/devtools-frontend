@@ -1,7 +1,6 @@
 // Copyright 2020 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import './LinearMemoryValueInterpreter.js';
 import './LinearMemoryViewer.js';
 import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
@@ -10,6 +9,7 @@ import { html, nothing, render } from '../../../ui/lit/lit.js';
 import { LinearMemoryHighlightChipList } from './LinearMemoryHighlightChipList.js';
 import linearMemoryInspectorStyles from './linearMemoryInspector.css.js';
 import { formatAddress, parseAddress } from './LinearMemoryInspectorUtils.js';
+import { LinearMemoryValueInterpreter } from './LinearMemoryValueInterpreter.js';
 import { getDefaultValueTypeMapping, VALUE_INTEPRETER_MAX_NUM_BYTES, } from './ValueInterpreterDisplayUtils.js';
 const UIStrings = {
     /**
@@ -86,9 +86,8 @@ export const DEFAULT_VIEW = (input, _output, target) => {
     </div>
     ${input.hideValueInspector ? nothing : html `
     <div class="value-interpreter">
-      <devtools-linear-memory-inspector-interpreter
-        .data=${{
-        value: input.memory
+      <devtools-widget .widgetConfig=${widgetConfig(LinearMemoryValueInterpreter, {
+        buffer: input.memory
             .slice(input.address - input.memoryOffset, input.address + VALUE_INTEPRETER_MAX_NUM_BYTES)
             .buffer,
         valueTypes: input.valueTypes,
@@ -99,9 +98,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
         onJumpToAddressClicked: input.onJumpToAddress,
         onValueTypeToggled: input.onValueTypeToggled,
         onEndiannessChanged: input.onEndiannessChanged,
-    }}
-        >
-      </devtools-linear-memory-inspector-interpreter>
+    })}></devtools-widget>
     </div>`}
     `, target);
     // clang-format on

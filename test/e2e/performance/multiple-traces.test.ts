@@ -13,7 +13,7 @@ describe('RPP supporting multiple traces', () => {
   setup({dockingMode: 'undocked'});
 
   it('updates the UI when a new trace is imported', async ({devToolsPage, inspectedPage}) => {
-    await navigateToPerformanceTab('fake-image-lcp', devToolsPage, inspectedPage);
+    await navigateToPerformanceTab(undefined, devToolsPage, inspectedPage);
     await uploadTraceFile(devToolsPage, 'test/e2e/resources/performance/timeline/web.dev-trace.json.gz');
     const firstTimings = await devToolsPage.waitFor<HTMLElement>('.summary-range');
     const firstTimingsText = await firstTimings.evaluate(t => t.innerText.replace(/\s/g, ''));

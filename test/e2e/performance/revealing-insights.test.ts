@@ -7,7 +7,7 @@ import {assert} from 'chai';
 import {
   increaseTimeoutForPerfPanel,
   navigateToPerformanceTab,
-  reloadAndRecord,
+  uploadTraceFile,
 } from '../helpers/performance-helpers.js';
 
 describe('Revealing insights in RPP', function() {
@@ -15,8 +15,8 @@ describe('Revealing insights in RPP', function() {
   increaseTimeoutForPerfPanel(this);
 
   it('can import a trace and show a list of insights', async ({devToolsPage, inspectedPage}) => {
-    await navigateToPerformanceTab('fake-image-lcp', devToolsPage, inspectedPage);
-    await reloadAndRecord(devToolsPage);
+    await navigateToPerformanceTab(undefined, devToolsPage, inspectedPage);
+    await uploadTraceFile(devToolsPage, 'test/e2e/resources/performance/timeline/web.dev-trace.json.gz');
 
     await devToolsPage.click('aria/Show sidebar');
     await devToolsPage.click('aria/View details for LCP breakdown insight.');
@@ -31,7 +31,6 @@ describe('Revealing insights in RPP', function() {
       const headers = tbody.querySelectorAll<HTMLElement>('tr th');
       return [...headers].map(header => header.innerText);
     });
-    assert.deepEqual(
-        rowTitles, ['Time to first byte', 'Resource load delay', 'Resource load duration', 'Element render delay']);
+    assert.deepEqual(rowTitles, ['Time to first byte', 'Element render delay']);
   });
 });

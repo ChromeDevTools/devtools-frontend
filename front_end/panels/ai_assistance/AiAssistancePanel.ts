@@ -226,10 +226,10 @@ function selectedElementFilter(maybeNode: SDK.DOMModel.DOMNode|null): SDK.DOMMod
   return null;
 }
 
-async function getEmptyStateSuggestions(
-    context: AiAssistanceModel.AiAgent.ConversationContext<unknown>|null,
-    conversation?: AiAssistanceModel.AiConversation.AiConversation):
+async function getEmptyStateSuggestions(conversation?: AiAssistanceModel.AiConversation.AiConversation):
     Promise<AiAssistanceModel.AiAgent.ConversationSuggestion[]> {
+  const context = conversation?.selectedContext;
+
   if (context) {
     const specialSuggestions = await context.getSuggestions();
 
@@ -272,9 +272,10 @@ async function getEmptyStateSuggestions(
   }
 }
 
-function getMarkdownRenderer(
-    context: AiAssistanceModel.AiAgent.ConversationContext<unknown>|null,
-    conversation?: AiAssistanceModel.AiConversation.AiConversation): MarkdownRendererWithCodeBlock {
+function getMarkdownRenderer(conversation?: AiAssistanceModel.AiConversation.AiConversation):
+    MarkdownRendererWithCodeBlock {
+  const context = conversation?.selectedContext;
+
   if (context instanceof AiAssistanceModel.PerformanceAgent.PerformanceTraceContext) {
     if (!context.external) {
       const focus = context.getItem();
@@ -524,12 +525,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
 
   // Whether the UI should show loading or not.
   #isLoading = false;
-  // Selected conversation context. The reason we keep this as a
-  // state field rather than using `#getConversationContext` is that,
-  // there is a case where the context differs from the selectedElement (or other selected context type).
-  // Specifically, it allows restoring the previous context when a new selection is cross-origin.
-  // See `#onContextSelectionChanged` for details.
-  #selectedContext: AiAssistanceModel.AiAgent.ConversationContext<unknown>|null = null;
   // Stores the availability status of the `AidaClient` and the reason for unavailability, if any.
   #aidaAvailability: Host.AidaClient.AidaAccessPreconditions;
   // Info of the currently logged in user.
@@ -582,16 +577,16 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     }
 
     if (this.#conversation) {
-      const emptyStateSuggestions = await getEmptyStateSuggestions(this.#selectedContext, this.#conversation);
-      const markdownRenderer = getMarkdownRenderer(this.#selectedContext, this.#conversation);
+      const emptyStateSuggestions = await getEmptyStateSuggestions(this.#conversation);
+      const markdownRenderer = getMarkdownRenderer(this.#conversation);
       return {
         state: ViewState.CHAT_VIEW,
         props: {
           additionalFloatyContext: this.#additionalContextItemsFromFloaty,
-          blockedByCrossOrigin: this.#blockedByCrossOrigin,
+          blockedByCrossOrigin: this.#conversation.isBlockedByOrigin,
           isLoading: this.#isLoading,
           messages: this.#messages,
-          selectedContext: this.#selectedContext,
+          selectedContext: this.#conversation.selectedContext ?? null,
           conversationType: this.#conversation.type,
           isReadOnly: this.#conversation.isReadOnly ?? false,
           changeSummary: this.#getChangeSummary(),
@@ -762,6 +757,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
 
       this.#conversation = conversation;
     }
+
+    this.#conversation?.setContext(this.#getConversationContext(this.#conversation));
 
     this.requestUpdate();
   }
@@ -1000,13 +997,15 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   #isTextInputDisabled(): boolean {
     // If sending a new message is blocked by cross origin context
     // the text input is disabled.
-    if (this.#blockedByCrossOrigin) {
+    if (this.#conversation && this.#conversation.isBlockedByOrigin) {
       return true;
     }
 
-    // If there is no current agent if there is no selected context
-    // the text input is disabled.
-    if (!this.#conversation || !this.#selectedContext) {
+    if (!this.#conversation) {
+      return true;
+    }
+
+    if (!this.#conversation.selectedContext) {
       return true;
     }
 
@@ -1031,24 +1030,27 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       return i18nString(UIStrings.followTheSteps);
     }
 
-    if (this.#blockedByCrossOrigin) {
+    if (this.#conversation && this.#conversation.isBlockedByOrigin) {
       return lockedString(UIStringsNotTranslate.crossOriginError);
     }
 
     switch (this.#conversation.type) {
       case AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING:
-        return this.#selectedContext ? lockedString(UIStringsNotTranslate.inputPlaceholderForStyling) :
-                                       lockedString(UIStringsNotTranslate.inputPlaceholderForStylingNoContext);
+        return this.#conversation.selectedContext ?
+            lockedString(UIStringsNotTranslate.inputPlaceholderForStyling) :
+            lockedString(UIStringsNotTranslate.inputPlaceholderForStylingNoContext);
       case AiAssistanceModel.AiHistoryStorage.ConversationType.FILE:
-        return this.#selectedContext ? lockedString(UIStringsNotTranslate.inputPlaceholderForFile) :
-                                       lockedString(UIStringsNotTranslate.inputPlaceholderForFileNoContext);
+        return this.#conversation.selectedContext ?
+            lockedString(UIStringsNotTranslate.inputPlaceholderForFile) :
+            lockedString(UIStringsNotTranslate.inputPlaceholderForFileNoContext);
       case AiAssistanceModel.AiHistoryStorage.ConversationType.NETWORK:
-        return this.#selectedContext ? lockedString(UIStringsNotTranslate.inputPlaceholderForNetwork) :
-                                       lockedString(UIStringsNotTranslate.inputPlaceholderForNetworkNoContext);
+        return this.#conversation.selectedContext ?
+            lockedString(UIStringsNotTranslate.inputPlaceholderForNetwork) :
+            lockedString(UIStringsNotTranslate.inputPlaceholderForNetworkNoContext);
       case AiAssistanceModel.AiHistoryStorage.ConversationType.PERFORMANCE: {
         const perfPanel = UI.Context.Context.instance().flavor(TimelinePanel.TimelinePanel.TimelinePanel);
         if (perfPanel?.hasActiveTrace()) {
-          return this.#selectedContext ?
+          return this.#conversation.selectedContext ?
               lockedString(UIStringsNotTranslate.inputPlaceholderForPerformanceTrace) :
               lockedString(UIStringsNotTranslate.inputPlaceholderForPerformanceTraceNoContext);
         }
@@ -1108,7 +1110,11 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   }
 
   #handleContextClick(): void|Promise<void> {
-    const context = this.#selectedContext;
+    if (!this.#conversation) {
+      return;
+    }
+
+    const context = this.#conversation.selectedContext;
     if (context instanceof AiAssistanceModel.NetworkAgent.RequestContext) {
       const requestLocation = NetworkForward.UIRequestLocation.UIRequestLocation.tab(
           context.getItem(), NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT);
@@ -1206,7 +1212,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       this.#imageInput = undefined;
       this.#isTextInputEmpty = true;
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceQuerySubmitted);
-      if (this.#blockedByCrossOrigin) {
+      if (this.#conversation && this.#conversation.isBlockedByOrigin) {
         this.#handleNewChatRequest();
       }
       await this.#startConversation(predefinedPrompt);
@@ -1400,41 +1406,21 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     this.#runAbortController = new AbortController();
   }
 
-  // Indicates whether the new conversation context is blocked due to cross-origin restrictions.
-  // This happens when the conversation's context has a different
-  // origin than the selected context.
-  get #blockedByCrossOrigin(): boolean {
-    if (!this.#conversation) {
-      return false;
-    }
-    this.#selectedContext = this.#getConversationContext(this.#conversation);
-    if (!this.#selectedContext) {
-      return false;
-    }
-    return !this.#selectedContext.isOriginAllowed(this.#conversation.origin);
-  }
-
   #getConversationContext(conversation?: AiAssistanceModel.AiConversation.AiConversation):
       AiAssistanceModel.AiAgent.ConversationContext<unknown>|null {
     if (!conversation) {
       return null;
     }
-    let context: AiAssistanceModel.AiAgent.ConversationContext<unknown>|null;
     switch (conversation.type) {
       case AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING:
-        context = this.#selectedElement;
-        break;
+        return this.#selectedElement;
       case AiAssistanceModel.AiHistoryStorage.ConversationType.FILE:
-        context = this.#selectedFile;
-        break;
+        return this.#selectedFile;
       case AiAssistanceModel.AiHistoryStorage.ConversationType.NETWORK:
-        context = this.#selectedRequest;
-        break;
+        return this.#selectedRequest;
       case AiAssistanceModel.AiHistoryStorage.ConversationType.PERFORMANCE:
-        context = this.#selectedPerformanceTrace;
-        break;
+        return this.#selectedPerformanceTrace;
     }
-    return context;
   }
 
   async #startConversation(
@@ -1449,8 +1435,10 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     this.#cancel();
     const signal = this.#runAbortController.signal;
     const context = this.#getConversationContext(this.#conversation);
+    this.#conversation.setContext(context);
+
     // If a different context is provided, it must be from the same origin.
-    if (context && !context.isOriginAllowed(this.#conversation.origin)) {
+    if (this.#conversation.isBlockedByOrigin) {
       // This error should not be reached. If it happens, some
       // invariants do not hold anymore.
       throw new Error('cross-origin context data should not be included');
@@ -1469,12 +1457,13 @@ export class AiAssistancePanel extends UI.Panel.Panel {
 
     await this.#doConversation(
         this.#conversation.run(
-            text, {
+            text,
+            {
               signal,
-              selected: context,
               extraContext: this.#additionalContextItemsFromFloaty,
+              multimodalInput,
             },
-            multimodalInput),
+            ),
     );
   }
 

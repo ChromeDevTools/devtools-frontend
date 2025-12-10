@@ -58,7 +58,7 @@ export class AiConversation {
   }
 
   readonly id: string;
-  type: ConversationType;
+  #type: ConversationType;
   #isReadOnly: boolean;
   readonly history: ResponseData[];
   #isExternal: boolean;
@@ -66,6 +66,9 @@ export class AiConversation {
   #aidaClient: Host.AidaClient.AidaClient;
   #changeManager: ChangeManager|undefined;
   #agent: AiAgent<unknown>;
+  #origin?: string;
+
+  #contexts: Array<ConversationContext<unknown>> = [];
 
   constructor(
       type: ConversationType,
@@ -78,7 +81,7 @@ export class AiConversation {
   ) {
     this.#changeManager = changeManager;
     this.#aidaClient = aidaClient;
-    this.type = type;
+    this.#type = type;
 
     this.id = id;
     this.#isReadOnly = isReadOnly;
@@ -107,6 +110,25 @@ export class AiConversation {
 
   get isEmpty(): boolean {
     return this.history.length === 0;
+  }
+
+  #setOriginIfEmpty(newOrigin: string|undefined): void {
+    if (!this.#origin) {
+      this.#origin = newOrigin;
+    }
+  }
+
+  setContext(updateContext: ConversationContext<unknown>|null): void {
+    if (!updateContext) {
+      this.#contexts = [];
+      return;
+    }
+
+    this.#contexts = [updateContext];
+  }
+
+  get selectedContext(): ConversationContext<unknown>|undefined {
+    return this.#contexts.at(0);
   }
 
   #reconstructHistory(historyWithoutImages: ResponseData[]): ResponseData[] {
@@ -214,7 +236,7 @@ export class AiConversation {
         }
         return item;
       }),
-      type: this.type,
+      type: this.#type,
       isExternal: this.#isExternal,
     };
   }
@@ -227,7 +249,7 @@ export class AiConversation {
       changeManager: this.#changeManager,
     };
     let agent: AiAgent<unknown>;
-    switch (this.type) {
+    switch (this.#type) {
       case ConversationType.STYLING: {
         agent = new StylingAgent(options);
         break;
@@ -327,24 +349,62 @@ Time: ${micros(time)}`;
   async *
       run(
           initialQuery: string,
-          options: {selected: ConversationContext<unknown>|null, signal?: AbortSignal, extraContext?: ExtraContext[]},
-          multimodalInput?: MultimodalInput,
+          options: {
+
+            signal?: AbortSignal,
+            extraContext?: ExtraContext[],
+            multimodalInput?: MultimodalInput,
+          } = {},
           ): AsyncGenerator<ResponseData, void, void> {
     if (options.extraContext) {
       await this.#createFactsForExtraContext(options.extraContext);
     }
-    for await (const data of this.#agent.run(initialQuery, options, multimodalInput)) {
+    this.#setOriginIfEmpty(this.selectedContext?.getOrigin());
+
+    if (this.isBlockedByOrigin) {
+      throw new Error('Cross-origin context data should not be included');
+    }
+
+    function shouldAddToHistory(data: ResponseData): boolean {
       // We don't want to save partial responses to the conversation history.
       // TODO(crbug.com/463325400): We should save interleaved answers to the history as well.
-      if (data.type !== ResponseType.ANSWER || data.complete) {
+      if (data.type === ResponseType.ANSWER && !data.complete) {
+        return false;
+      }
+
+      return true;
+    }
+
+    for await (const data of this.#agent.run(
+        initialQuery,
+        {
+          signal: options.signal,
+          selected: this.selectedContext ?? null,
+        },
+        options.multimodalInput,
+        )) {
+      if (shouldAddToHistory(data)) {
         void this.addHistoryItem(data);
       }
       yield data;
     }
   }
 
+  /**
+   * Indicates whether the new conversation context is blocked due to cross-origin restrictions.
+   * This happens when the conversation's context has a different
+   * origin than the selected context.
+   */
+  get isBlockedByOrigin(): boolean {
+    return !this.#contexts.every(context => context.isOriginAllowed(this.#origin));
+  }
+
   get origin(): string|undefined {
-    return this.#agent.origin;
+    return this.#origin;
+  }
+
+  get type(): ConversationType {
+    return this.#type;
   }
 }
 

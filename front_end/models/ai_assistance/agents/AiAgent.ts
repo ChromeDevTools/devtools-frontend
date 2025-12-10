@@ -286,12 +286,6 @@ export abstract class AiAgent<T> {
   }> = [];
 
   /**
-   * Might need to be part of history in case we allow chatting in
-   * historical conversations.
-   */
-  #origin?: string;
-
-  /**
    * `context` does not change during `AiAgent.run()`, ensuring that calls to JS
    * have the correct `context`. We don't want element selection by the user to
    * change the `context` during an `AiAgent.run()`.
@@ -398,10 +392,6 @@ export abstract class AiAgent<T> {
     return this.#sessionId;
   }
 
-  get origin(): string|undefined {
-    return this.#origin;
-  }
-
   /**
    * The AI has instructions to emit structured suggestions in their response. This
    * function parses for that.
@@ -497,15 +487,8 @@ export abstract class AiAgent<T> {
           multimodalInput?: MultimodalInput,
           ): AsyncGenerator<ResponseData, void, void> {
     await options.selected?.refresh();
-
     if (options.selected) {
-      // First context set on the agent determines its origin from now on.
-      if (this.#origin === undefined) {
-        this.#origin = options.selected.getOrigin();
-      }
-      if (options.selected.isOriginAllowed(this.#origin)) {
-        this.context = options.selected;
-      }
+      this.context = options.selected;
     }
 
     const enhancedQuery = await this.enhanceQuery(initialQuery, options.selected, multimodalInput?.type);
@@ -597,10 +580,16 @@ export abstract class AiAgent<T> {
 
       if (functionCall) {
         try {
-          const result = yield* this.#callFunction(functionCall.name, functionCall.args, {
-            ...options,
-            explanation: textResponse,
-          });
+          const result = yield*
+              this.#callFunction(
+                  functionCall.name,
+                  functionCall.args,
+                  {
+                    ...options,
+                    explanation: textResponse,
+                  },
+              );
+
           if (options.signal?.aborted) {
             yield this.#createErrorResponse(ErrorType.ABORT);
             break;
@@ -721,7 +710,7 @@ export abstract class AiAgent<T> {
 
       result = await call.handler(args, {
         ...options,
-        approved: approvedRun,
+        approved: true,
       });
     }
 

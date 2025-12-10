@@ -74,8 +74,13 @@ describeWithMockConnection('AI Assistance Panel', () => {
     viewManagerIsViewVisibleStub = sinon.stub(UI.ViewManager.ViewManager.instance(), 'isViewVisible');
     AiAssistanceModel.ConversationHandler.ConversationHandler.removeInstance();
     registerNoopActions([
-      'elements.toggle-element-search', 'timeline.record-reload', 'timeline.toggle-recording', 'timeline.show-history',
-      'components.collect-garbage'
+      'elements.toggle-element-search',
+      'timeline.record-reload',
+      'timeline.toggle-recording',
+      'timeline.show-history',
+      'components.collect-garbage',
+      'network.toggle-recording',
+      'network.clear',
     ]);
 
     UI.Context.Context.instance().setFlavor(Timeline.TimelinePanel.TimelinePanel, null);

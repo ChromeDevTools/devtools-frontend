@@ -1396,6 +1396,154 @@ describe('The Styles pane', () => {
        assert.isTrue(innerText?.toLowerCase().startsWith('specificity'));
      });
 
+  it('can display pseudo elements and their styles', async ({devToolsPage, inspectedPage}) => {
+    await inspectedPage.goToHtml(`
+      <style>
+      #inspected::target-text { color: green; }
+      #inspected::spelling-error { color: orange; }
+      #inspected::grammar-error { color: teal; }
+      #inspected::highlight(foo) { color: fuchsia; }
+      #inspected::highlight(bar) { color: cyan; }
+      #inspected { display: list-item; }
+      #inspected::marker { content: "MARKER"; }
+      #inspected:before, .some-other-selector { content: "BEFORE"; }
+      #inspected:after { content: "AFTER"; }
+      </style>
+      <div id="container">
+          <div id="inspected">Text</div>
+      </div>
+    `);
+    await waitForElementsStyleSection(undefined, devToolsPage);
+
+    // Select the node and expand it to show pseudos.
+    await waitForAndClickTreeElementWithPartialText('container', devToolsPage);
+    await expandSelectedNodeRecursively(devToolsPage);
+
+    // --- Assert styles ---
+    // #inspected
+    await waitForAndClickTreeElementWithPartialText('inspected', devToolsPage);
+    await waitForStyleRule('#inspected', devToolsPage);
+
+    const inspectedStyles = await getDisplayedStyleRules(devToolsPage);
+
+    assert.sameDeepMembers(inspectedStyles, [
+      {selectorText: 'element.style', propertyData: []},  //
+      {
+        selectorText: '#inspected',
+        propertyData: [{propertyName: 'display', isOverLoaded: false, isInherited: false}],
+      },
+      {
+        selectorText: 'div',
+        propertyData: [
+          {propertyName: 'display', isOverLoaded: true, isInherited: false},
+          {propertyName: 'unicode-bidi', isOverLoaded: false, isInherited: false},
+        ],
+      },
+      {
+        selectorText: '#inspected:before, .some-other-selector',
+        propertyData: [{propertyName: 'content', isOverLoaded: false, isInherited: false}],
+      },
+      {
+        selectorText: '#inspected:after',
+        propertyData: [{propertyName: 'content', isOverLoaded: false, isInherited: false}],
+      },
+      {
+        selectorText: '#inspected::grammar-error',
+        propertyData: [{propertyName: 'color', isOverLoaded: false, isInherited: false}],
+      },
+      {
+        selectorText: '#inspected::highlight(bar)',
+        propertyData: [{propertyName: 'color', isOverLoaded: false, isInherited: false}],
+      },
+      {
+        selectorText: '#inspected::highlight(foo)',
+        propertyData: [{propertyName: 'color', isOverLoaded: false, isInherited: false}],
+      },
+      {
+        selectorText: '#inspected::marker',
+        propertyData: [{propertyName: 'content', isOverLoaded: false, isInherited: false}],
+      },
+      {
+        selectorText: '::marker, ::before::marker, ::after::marker',
+        propertyData: [
+          {propertyName: 'unicode-bidi', isOverLoaded: false, isInherited: false},
+          {propertyName: 'font-variant-numeric', isOverLoaded: false, isInherited: false},
+          {propertyName: 'text-transform', isOverLoaded: false, isInherited: false},
+          {propertyName: 'text-indent', isOverLoaded: false, isInherited: false},
+          {propertyName: 'text-align', isOverLoaded: false, isInherited: false},
+          {propertyName: 'text-align-last', isOverLoaded: false, isInherited: false},
+        ],
+      },
+      {
+        selectorText: '#inspected::spelling-error',
+        propertyData: [{propertyName: 'color', isOverLoaded: false, isInherited: false}],
+      },
+      {
+        selectorText: '#inspected::target-text',
+        propertyData: [{propertyName: 'color', isOverLoaded: false, isInherited: false}],
+      }
+    ]);
+
+    // --- Dynamically modify styles ---
+    const removeLastRule = () => inspectedPage.evaluate(() => {
+      const sheet = document.styleSheets[0] as CSSStyleSheet;
+      sheet.deleteRule(sheet.cssRules.length - 1);
+    });
+
+    // Removing 'content' from ::after should remove the pseudo element.
+    await removeLastRule();
+    await waitForAndClickTreeElementWithPartialText('inspected', devToolsPage);
+    await expandSelectedNodeRecursively(devToolsPage);
+    await waitForChildrenOfSelectedElementNode(devToolsPage, ['::marker', '::before', 'Text']);
+
+    // Removing 'content' from ::before should remove the pseudo element.
+    await removeLastRule();
+    await waitForAndClickTreeElementWithPartialText('inspected', devToolsPage);
+    await expandSelectedNodeRecursively(devToolsPage);
+    await waitForChildrenOfSelectedElementNode(devToolsPage, ['::marker', 'Text']);
+
+    // Removing 'content' from ::marker should remove the pseudo element.
+    await removeLastRule();
+    await removeLastRule();
+    await waitForAndClickTreeElementWithPartialText('inspected', devToolsPage);
+    await waitForPartialContentOfSelectedElementsNode('<div id=\u200B"inspected">\u200BText\u200B</div>', devToolsPage);
+
+    // Add back the rules.
+    await inspectedPage.evaluate(() => {
+      const sheet = document.styleSheets[0] as CSSStyleSheet;
+      sheet.addRule('#inspected', 'display: list-item');
+      sheet.addRule('#inspected::marker', 'content: "MARKER"');
+      sheet.addRule('#inspected:before', 'content: "BEFORE"');
+      sheet.addRule('#inspected:after', 'content: "AFTER"');
+    });
+
+    await waitForAndClickTreeElementWithPartialText('inspected', devToolsPage);
+    await expandSelectedNodeRecursively(devToolsPage);
+    await waitForChildrenOfSelectedElementNode(devToolsPage, ['::marker', '::before', 'Text', '::after']);
+
+    // --- Modify text content ---
+    await inspectedPage.evaluate(() => {
+      (document.getElementById('inspected') as HTMLElement).textContent = 'bar';
+    });
+    await waitForAndClickTreeElementWithPartialText('inspected', devToolsPage);
+    await expandSelectedNodeRecursively(devToolsPage);
+    await waitForChildrenOfSelectedElementNode(devToolsPage, ['::marker', '::before', 'bar', '::after']);
+
+    // --- Remove text content ---
+    await inspectedPage.evaluate(() => {
+      (document.getElementById('inspected') as HTMLElement).textContent = '';
+    });
+    await waitForAndClickTreeElementWithPartialText('inspected', devToolsPage);
+    await expandSelectedNodeRecursively(devToolsPage);
+    await waitForChildrenOfSelectedElementNode(devToolsPage, ['::marker', '::before', '::after']);
+
+    // --- Remove node ---
+    await inspectedPage.evaluate(() => document.getElementById('inspected')?.remove());
+    await waitForAndClickTreeElementWithPartialText('container', devToolsPage);
+    await expandSelectedNodeRecursively(devToolsPage);
+    await waitForChildrenOfSelectedElementNode(devToolsPage, []);
+  });
+
   it('can display nested pseudo elements and their styles', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToHtml(`
       <style>

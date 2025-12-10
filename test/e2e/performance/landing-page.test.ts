@@ -5,6 +5,7 @@
 import {assert} from 'chai';
 import type * as puppeteer from 'puppeteer-core';
 
+import * as RenderCoordinator from '../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 import {getCurrentConsoleMessages} from '../helpers/console-helpers.js';
 import {tabExistsInDrawer} from '../helpers/cross-tool-helper.js';
 import {
@@ -87,6 +88,7 @@ describe('The Performance panel landing page', function() {
       await waitForLCP();
       await makeTwoLongInteractions(inspectedPage);
       await devToolsPage.bringToFront();
+      await RenderCoordinator.done();
 
       const [lcpValueElem, clsValueElem, inpValueElem] = await devToolsPage.waitForMany(READY_LOCAL_METRIC_SELECTOR, 3);
       const interactions = await devToolsPage.$$<HTMLElement>(INTERACTION_SELECTOR);
@@ -139,6 +141,7 @@ describe('The Performance panel landing page', function() {
       await executionContextPromise;
 
       await devToolsPage.bringToFront();
+      await RenderCoordinator.done();
 
       const [lcpValueElem, clsValueElem, inpValueElem] = await devToolsPage.waitForMany(READY_LOCAL_METRIC_SELECTOR, 3);
       const interactions = await devToolsPage.$$(INTERACTION_SELECTOR);
@@ -172,6 +175,7 @@ describe('The Performance panel landing page', function() {
       await makeTwoLongInteractions(inspectedPage);
 
       await devToolsPage.bringToFront();
+      await RenderCoordinator.done();
 
       await devToolsPage.waitForMany(READY_LOCAL_METRIC_SELECTOR, 3);
       const interactions1 = await devToolsPage.$$(INTERACTION_SELECTOR);
@@ -188,6 +192,7 @@ describe('The Performance panel landing page', function() {
       await doubleRaf(inspectedPage);
 
       await devToolsPage.bringToFront();
+      await RenderCoordinator.done();
 
       await devToolsPage.waitForMany(READY_LOCAL_METRIC_SELECTOR, 2);  // only 2, because no interaction/INP
       const interactions2 = await devToolsPage.$$<HTMLElement>(INTERACTION_SELECTOR);
@@ -202,6 +207,7 @@ describe('The Performance panel landing page', function() {
       await doubleRaf(inspectedPage);
 
       await devToolsPage.bringToFront();
+      await RenderCoordinator.done();
 
       // New LCP and CLS values should be emitted
       await devToolsPage.waitForMany(READY_LOCAL_METRIC_SELECTOR, 2);
@@ -258,6 +264,7 @@ describe('The Performance panel landing page', function() {
       await doubleRaf(inspectedPage);
 
       await devToolsPage.bringToFront();
+      await RenderCoordinator.done();
 
       await devToolsPage.waitForMany(READY_LOCAL_METRIC_SELECTOR, 3);
       const interactions = await devToolsPage.$$<HTMLElement>(INTERACTION_SELECTOR);
@@ -395,6 +402,7 @@ describe('The Performance panel landing page', function() {
       await doubleRaf(inspectedPage);
 
       await devToolsPage.bringToFront();
+      await RenderCoordinator.done();
 
       {
         const interactions = await devToolsPage.waitForMany(INTERACTION_SELECTOR, 7);
@@ -427,6 +435,7 @@ describe('The Performance panel landing page', function() {
       await doubleRaf(inspectedPage);
 
       await devToolsPage.bringToFront();
+      await RenderCoordinator.done();
 
       const interaction = await devToolsPage.waitFor(INTERACTION_SELECTOR);
       await devToolsPage.click('summary', {root: interaction});
@@ -461,6 +470,7 @@ describe('The Performance panel landing page', function() {
       // If any unnecessary JS references to the node get created they will be created in this time period.
       await doubleRaf(inspectedPage);
       await devToolsPage.bringToFront();
+      await RenderCoordinator.done();
       await devToolsPage.waitFor(INTERACTION_SELECTOR);
       await inspectedPage.bringToFront();
 
@@ -479,6 +489,7 @@ describe('The Performance panel landing page', function() {
       assert.isTrue(hasNoDetachedNodes, 'detached nodes were found after retries');
 
       await devToolsPage.bringToFront();
+      await RenderCoordinator.done();
 
       // For redundancy, ensure the button node is removed from the memory heap
       await navigateToMemoryTab(devToolsPage);

@@ -7,28 +7,14 @@ import type * as puppeteer from 'puppeteer-core';
 
 import {AsyncScope} from '../../conductor/async-scope.js';
 import {installPageErrorHandlers} from '../../conductor/events.js';
-import {platform} from '../../conductor/platform.js';
 import {TestConfig} from '../../conductor/test_config.js';
 
-import {PageWrapper} from './page-wrapper.js';
+import {type ClickOptions, PageWrapper} from './page-wrapper.js';
 import type {InspectedPage} from './target-helper.js';
-
-export type Action = (element: puppeteer.ElementHandle) => Promise<void>;
-
-export interface ClickOptions {
-  root?: puppeteer.ElementHandle;
-  clickOptions?: puppeteer.ClickOptions;
-  maxPixelsFromLeft?: number;
-}
 
 const envLatePromises = process.env['LATE_PROMISES'] !== undefined ?
     ['true', ''].includes(process.env['LATE_PROMISES'].toLowerCase()) ? 10 : Number(process.env['LATE_PROMISES']) :
     0;
-
-type DeducedElementType<ElementType extends Element|null, Selector extends string> =
-    ElementType extends null ? puppeteer.NodeFor<Selector>: ElementType;
-
-const CONTROL_OR_META = platform === 'mac' ? 'Meta' : 'Control';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const globalThis: any = global;
@@ -150,14 +136,9 @@ export class DevToolsPage extends PageWrapper {
     });
   }
 
-  /**
-   * Get a single element handle. Uses `pierce` handler per default for piercing Shadow DOM.
-   */
-  async $<ElementType extends Element|null = null, Selector extends string = string>(
+  override async $<ElementType extends Element|null = null, Selector extends string = string>(
       selector: Selector, root?: puppeteer.ElementHandle, handler = 'pierce') {
-    const rootElement = root ? root : this.page;
-    const element = await rootElement.$(`${handler}/${selector}`) as
-        puppeteer.ElementHandle<DeducedElementType<ElementType, Selector>>;
+    const element = await super.$<ElementType, Selector>(selector, root, handler);
     await this.#maybeHighlight(element);
     return element;
   }
@@ -176,67 +157,9 @@ export class DevToolsPage extends PageWrapper {
     await this.#currentHighlightedElement.highlight();
   }
 
-  async performActionOnSelector(selector: string, options: {root?: puppeteer.ElementHandle}, action: Action):
-      Promise<puppeteer.ElementHandle> {
-    // TODO(crbug.com/1410168): we should refactor waitFor to be compatible with
-    // Puppeteer's syntax for selectors.
-    const queryHandlers = new Set([
-      'pierceShadowText',
-      'pierce',
-      'aria',
-      'xpath',
-      'text',
-    ]);
-    let queryHandler = 'pierce';
-    for (const handler of queryHandlers) {
-      const prefix = handler + '/';
-      if (selector.startsWith(prefix)) {
-        queryHandler = handler;
-        selector = selector.substring(prefix.length);
-        break;
-      }
-    }
-    return await this.waitForFunction(async () => {
-      const element = await this.waitFor(selector, options?.root, undefined, queryHandler);
-      try {
-        await action(element);
-        await this.drainTaskQueue();
-        return element;
-      } catch {
-        return undefined;
-      }
-    });
-  }
-
-  async waitFor<ElementType extends Element|null = null, Selector extends string = string>(
-      selector: Selector, root?: puppeteer.ElementHandle, asyncScope = new AsyncScope(), handler?: string) {
-    return await asyncScope.exec(() => this.waitForFunction(async () => {
-      const element = await this.$<ElementType, typeof selector>(selector, root, handler);
-      return (element || undefined);
-    }, asyncScope), `Waiting for element matching selector '${handler ? `${handler}/` : ''}${selector}'`);
-  }
-
-  /**
-   * Schedules a task in the frontend page that ensures that previously
-   * handled tasks have been handled.
-   */
-  async drainTaskQueue(): Promise<void> {
-    await this.evaluate(async () => {
-      await new Promise(resolve => setTimeout(resolve, 0));
-    });
-  }
-
   async typeText(text: string, opts?: {delay: number}) {
     await this.page.keyboard.type(text, opts);
     await this.drainTaskQueue();
-  }
-
-  async click(selector: string, options?: ClickOptions) {
-    return await this.performActionOnSelector(
-        selector,
-        {root: options?.root},
-        element => element.click(options?.clickOptions),
-    );
   }
 
   async hover(selector: string, options?: {root?: puppeteer.ElementHandle}) {
@@ -260,17 +183,6 @@ export class DevToolsPage extends PageWrapper {
       }
       return false;
     }, asyncScope), `Waiting for no elements to match selector '${handler ? `${handler}/` : ''}${selector}'`);
-  }
-
-  /**
-   * Get multiple element handles. Uses `pierce` handler per default for piercing Shadow DOM.
-   */
-  async $$<ElementType extends Element|null = null, Selector extends string = string>(
-      selector: Selector, root?: puppeteer.JSHandle, handler = 'pierce') {
-    const rootElement = root ? root.asElement() || this.page : this.page;
-    const elements = await rootElement.$$(`${handler}/${selector}`) as
-        Array<puppeteer.ElementHandle<DeducedElementType<ElementType, Selector>>>;
-    return elements;
   }
 
   /**
@@ -321,25 +233,13 @@ export class DevToolsPage extends PageWrapper {
 
   waitForNoElementsWithTextContent(textContent: string, root?: puppeteer.ElementHandle, asyncScope = new AsyncScope()) {
     return asyncScope.exec(() => this.waitForFunction(async () => {
-      const elems = await this.$$textContent(textContent, root);
-      if (elems?.length === 0) {
+      const elements = await this.$$textContent(textContent, root);
+      if (elements?.length === 0) {
         return true;
       }
 
       return false;
     }, asyncScope), `Waiting for no elements with textContent '${textContent}'`);
-  }
-
-  async withControlOrMetaKey(action: () => Promise<void>, root = this.page) {
-    await this.waitForFunction(async () => {
-      await root.keyboard.down(CONTROL_OR_META);
-      try {
-        await action();
-        return true;
-      } finally {
-        await root.keyboard.up(CONTROL_OR_META);
-      }
-    });
   }
 
   /**
@@ -452,9 +352,9 @@ export class DevToolsPage extends PageWrapper {
 
   waitForElementsWithTextContent(textContent: string, root?: puppeteer.ElementHandle, asyncScope = new AsyncScope()) {
     return asyncScope.exec(() => this.waitForFunction(async () => {
-      const elems = await this.$$textContent(textContent, root);
-      if (elems?.length) {
-        return elems;
+      const elements = await this.$$textContent(textContent, root);
+      if (elements?.length) {
+        return elements;
       }
 
       return undefined;

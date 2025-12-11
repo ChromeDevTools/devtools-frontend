@@ -45,7 +45,7 @@ export class StackTraceModel extends SDK.SDKModel.SDKModel<unknown> {
   async createFromProtocolRuntime(stackTrace: Protocol.Runtime.StackTrace, rawFramesToUIFrames: TranslateRawFrames):
       Promise<StackTrace.StackTrace.StackTrace> {
     const [syncFragment, asyncFragments] = await Promise.all([
-      this.#createSyncFragment(stackTrace, rawFramesToUIFrames),
+      this.#createFragment(stackTrace.callFrames, rawFramesToUIFrames),
       this.#createAsyncFragments(stackTrace, rawFramesToUIFrames),
     ]);
 
@@ -86,32 +86,25 @@ export class StackTraceModel extends SDK.SDKModel.SDKModel<unknown> {
     }
   }
 
-  async #createSyncFragment(stackTrace: Protocol.Runtime.StackTrace, rawFramesToUIFrames: TranslateRawFrames):
-      Promise<FragmentImpl> {
-    const fragment = this.#createFragment(stackTrace.callFrames);
-    await this.#translateFragment(fragment, rawFramesToUIFrames);
-    return fragment;
-  }
-
   async #createDebuggableFragment(
       pausedDetails: SDK.DebuggerModel.DebuggerPausedDetails,
       rawFramesToUIFrames: TranslateRawFrames): Promise<DebuggableFragmentImpl> {
-    const fragment = this.#createFragment(pausedDetails.callFrames.map(frame => ({
-                                                                         scriptId: frame.script.scriptId,
-                                                                         url: frame.script.sourceURL,
-                                                                         functionName: frame.functionName,
-                                                                         lineNumber: frame.location().lineNumber,
-                                                                         columnNumber: frame.location().columnNumber,
-                                                                       })));
-    await this.#translateFragment(fragment, rawFramesToUIFrames);
+    const fragment = await this.#createFragment(
+        pausedDetails.callFrames.map(frame => ({
+                                       scriptId: frame.script.scriptId,
+                                       url: frame.script.sourceURL,
+                                       functionName: frame.functionName,
+                                       lineNumber: frame.location().lineNumber,
+                                       columnNumber: frame.location().columnNumber,
+                                     })),
+        rawFramesToUIFrames);
     return new DebuggableFragmentImpl(fragment, pausedDetails.callFrames);
   }
 
   async #createAsyncFragments(
       stackTraceOrPausedEvent: Protocol.Runtime.StackTrace|SDK.DebuggerModel.DebuggerPausedDetails,
       rawFramesToUIFrames: TranslateRawFrames): Promise<AsyncFragmentImpl[]> {
-    const asyncFragments: AsyncFragmentImpl[] = [];
-    const translatePromises: Array<Promise<unknown>> = [];
+    const asyncFragments: Array<Promise<AsyncFragmentImpl>> = [];
 
     const debuggerModel = this.target().model(SDK.DebuggerModel.DebuggerModel);
     if (debuggerModel) {
@@ -122,18 +115,26 @@ export class StackTraceModel extends SDK.SDKModel.SDKModel<unknown> {
           continue;
         }
         const model = StackTraceModel.#modelForTarget(target);
-        const fragment = model.#createFragment(asyncStackTrace.callFrames);
-        translatePromises.push(model.#translateFragment(fragment, rawFramesToUIFrames));
-        asyncFragments.push(new AsyncFragmentImpl(asyncStackTrace.description ?? '', fragment));
+        const asyncFragmentPromise =
+            model.#createFragment(asyncStackTrace.callFrames, rawFramesToUIFrames)
+                .then(fragment => new AsyncFragmentImpl(asyncStackTrace.description ?? '', fragment));
+        asyncFragments.push(asyncFragmentPromise);
       }
     }
 
-    await Promise.all(translatePromises);
-    return asyncFragments;
+    return await Promise.all(asyncFragments);
   }
 
-  #createFragment(frames: RawFrame[]): FragmentImpl {
-    return FragmentImpl.getOrCreate(this.#trie.insert(frames));
+  async #createFragment(frames: RawFrame[], rawFramesToUIFrames: TranslateRawFrames): Promise<FragmentImpl> {
+    const node = this.#trie.insert(frames);
+    const requiresTranslation = !Boolean(node.fragment);
+    const fragment = FragmentImpl.getOrCreate(node);
+
+    if (requiresTranslation) {
+      await this.#translateFragment(fragment, rawFramesToUIFrames);
+    }
+
+    return fragment;
   }
 
   async #translateFragment(fragment: FragmentImpl, rawFramesToUIFrames: TranslateRawFrames): Promise<void> {

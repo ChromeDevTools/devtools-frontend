@@ -190,6 +190,20 @@ describeWithMockConnection('StackTraceModel', () => {
       sinon.assert.calledOnceWithMatch(translateSpy, callFrames, model.target());
     });
 
+    it('translates identical stack traces only once', async () => {
+      const {model, translateSpy} = setup();
+      const callFrames = [
+        'foo.js:1:foo:1:10',
+        'bar.js:2:bar:2:20',
+        'baz.js:3:baz:3:30',
+      ].map(protocolCallFrame);
+
+      await model.createFromProtocolRuntime({callFrames}, translateSpy);
+      await model.createFromProtocolRuntime({callFrames}, translateSpy);
+
+      sinon.assert.calledOnce(translateSpy);
+    });
+
     it('throws if the translation function returns the wrong number of frames', async () => {
       const {model} = setup();
 

@@ -111,6 +111,8 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
   private muteActivateItem?: boolean;
   private lastDebuggerModel: SDK.DebuggerModel.DebuggerModel|null = null;
 
+  #details: SDK.DebuggerModel.DebuggerPausedDetails|null = null;
+
   private constructor() {
     super({
       jslog: `${VisualLogging.section('sources.callstack')}`,
@@ -196,10 +198,13 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
     return callstackSidebarPaneInstance;
   }
 
-  flavorChanged(_object: Object|null): void {
+  flavorChanged(details: SDK.DebuggerModel.DebuggerPausedDetails|null): void {
     this.showIgnoreListed = false;
     this.ignoreListCheckboxElement.checked = false;
     this.maxAsyncStackChainDepth = defaultMaxAsyncStackChainDepth;
+    this.#details = details;
+    this.setSourceMapSubscription(details?.debuggerModel ?? null);
+
     this.requestUpdate();
   }
 
@@ -230,8 +235,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
 
     this.callFrameWarningsElement.classList.add('hidden');
 
-    const details = UI.Context.Context.instance().flavor(SDK.DebuggerModel.DebuggerPausedDetails);
-    this.setSourceMapSubscription(details?.debuggerModel ?? null);
+    const details = this.#details;
     if (!details) {
       this.notPausedMessageElement.classList.remove('hidden');
       this.ignoreListMessageElement.classList.add('hidden');

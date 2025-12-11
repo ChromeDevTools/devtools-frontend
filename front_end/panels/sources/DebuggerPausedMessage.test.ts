@@ -38,11 +38,11 @@ describeWithEnvironment('DebuggerPausedMessage', () => {
   });
 
   function getPausedMessageFromDOM(): {main: string, sub?: string} {
-    const mainElement = pausedMessage.element().shadowRoot?.querySelector('.status-main') ?? null;
+    const mainElement = pausedMessage.element.shadowRoot?.querySelector('.status-main') ?? null;
     assert.instanceOf(mainElement, HTMLDivElement);
     const main = mainElement.textContent;
     assert.exists(main);
-    const sub = pausedMessage.element().shadowRoot?.querySelector('.status-sub')?.textContent ?? undefined;
+    const sub = pausedMessage.element.shadowRoot?.querySelector('.status-sub')?.textContent ?? undefined;
     return {main, sub};
   }
 
@@ -129,7 +129,7 @@ describeWithEnvironment('DebuggerPausedMessage', () => {
             sinon.createStubInstance(SDK.DebuggerModel.DebuggerModel),
             /* callFrames */[], Protocol.Debugger.PausedEventReason.EventListener, auxData, /* breakpointIds */[]);
         await pausedMessage.render(details, debuggerWorkspaceBinding, breakpointManager);
-
+        await pausedMessage.updateComplete;
         const {main, sub} = getPausedMessageFromDOM();
         assert.strictEqual(main, 'Paused on event listener');
         assert.strictEqual(sub, expectedSub);

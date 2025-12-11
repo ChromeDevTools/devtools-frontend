@@ -735,6 +735,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
         details, Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance(),
         Breakpoints.BreakpointManager.BreakpointManager.instance());
     if (details) {
+      await this.debuggerPausedMessage.updateComplete;
       this.updateDebuggerButtonsAndStatusForTest();
     }
   }
@@ -1228,7 +1229,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
         this.revealDebuggerSidebar.bind(this), undefined, 'debug');
     this.sidebarPaneStack.widget().element.classList.add('y-overflow-only');
     this.sidebarPaneStack.widget().show(vbox.element);
-    this.sidebarPaneStack.widget().element.appendChild(this.debuggerPausedMessage.element());
+    this.debuggerPausedMessage.show(this.sidebarPaneStack.widget().element);
     this.sidebarPaneStack.appendApplicableItems('sources.sidebar-top');
 
     if (this.threadsSidebarPane) {

@@ -5,6 +5,7 @@
 import {assert} from 'chai';
 import type * as puppeteer from 'puppeteer-core';
 
+import {expectError} from '../../conductor/events.js';
 import {
   editQueryRuleText,
   expandSelectedNodeRecursively,
@@ -1743,5 +1744,77 @@ describe('The Styles pane', () => {
     propertiesSection = await getStyleRule('#container', devToolsPage);
     displayedNames = await getDisplayedCSSPropertyNames(propertiesSection, devToolsPage);
     assert.isEmpty(displayedNames);
+  });
+
+  it('splits properties when pasting', async ({devToolsPage, inspectedPage}) => {
+    expectError('Unknown VE context: \'moo\'');
+    await inspectedPage.goToHtml(`
+      <style>
+        #inspected {
+          font-size: 12px;
+        }
+      </style>
+      <div id="inspected">Text</div>
+      <div id="other"></div>`);
+    await waitForElementsStyleSection(undefined, devToolsPage);
+    await waitForAndClickTreeElementWithPartialText('inspected', devToolsPage);
+
+    const propertiesSection = await getStyleRule('#inspected', devToolsPage);
+    let inspectedRules = await getDisplayedCSSDeclarations(devToolsPage);
+    assert.sameDeepMembers(inspectedRules, ['font-size: 12px;', 'display: block;', 'unicode-bidi: isolate;']);
+    let displayedNames = await getDisplayedCSSPropertyNames(propertiesSection, devToolsPage);
+    assert.deepEqual(
+        displayedNames,
+        [
+          'font-size',
+        ],
+        'incorrectly displayed style after initialization');
+
+    await propertiesSection.click();
+    await devToolsPage.pasteText('margin-left: 1px');
+    await propertiesSection.click();
+    displayedNames = await getDisplayedCSSPropertyNames(propertiesSection, devToolsPage);
+    assert.sameDeepMembers(
+        displayedNames,
+        [
+          'font-size',
+          'margin-left',
+        ],
+        'incorrectly displayed style after pasting');
+
+    await propertiesSection.click();
+    await devToolsPage.pasteText('margin-top: 1px; color: red;');
+    await propertiesSection.click();
+    displayedNames = await getDisplayedCSSPropertyNames(propertiesSection, devToolsPage);
+    assert.sameDeepMembers(
+        displayedNames,
+        [
+          'font-size',
+          'margin-top',
+          'color',
+          'margin-left',
+        ],
+        'incorrectly displayed style after pasting');
+
+    await devToolsPage.click(
+        '.webkit-css-property[aria-label="CSS property name: margin-top"]', {root: propertiesSection});
+    await devToolsPage.pasteText('foo: bar; moo: zoo;');
+    await propertiesSection.click();
+    displayedNames = await getDisplayedCSSPropertyNames(propertiesSection, devToolsPage);
+    assert.sameDeepMembers(
+        displayedNames,
+        [
+          'font-size',
+          'foo',
+          'moo',
+          'color',
+          'margin-left',
+        ],
+        'incorrectly displayed style after pasting new styles over \'margin-top\'');
+    inspectedRules = await getDisplayedCSSDeclarations(devToolsPage);
+    assert.sameDeepMembers(inspectedRules, [
+      'font-size: 12px;', 'foo: bar;', 'moo: zoo;', 'color: red;', 'margin-left: 1px;', 'display: block;',
+      'unicode-bidi: isolate;'
+    ]);
   });
 });

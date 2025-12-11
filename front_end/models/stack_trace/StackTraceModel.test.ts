@@ -235,6 +235,37 @@ describeWithMockConnection('StackTraceModel', () => {
       assert.strictEqual(
           stackTrace.syncFragment.frames[0].missingDebugInfo?.type, StackTrace.StackTrace.MissingDebugInfoType.NO_INFO);
     });
+
+    it('translates different stack traces sequentially', async () => {
+      const {model} = setup();
+      const callFrames1 = ['foo.js:1:foo:1:10', 'bar.js:2:bar:2:20', 'baz.js:3:baz:3:30'].map(protocolCallFrame);
+      const callFrames2 = ['foo.js:1:foo:1:10', 'bar.js:2:bar:2:20', 'baz.js:4:baz:4:40'].map(protocolCallFrame);
+
+      let resolveTranslate: () => void = () => {};
+      const translatePromise = new Promise<void>(resolve => {
+        resolveTranslate = resolve;
+      });
+      const delayedTranslateFn: StackTraceImpl.StackTraceModel.TranslateRawFrames = async (frames, target) => {
+        await translatePromise;
+        return await identityTranslateFn(frames, target);
+      };
+      const translateSpy = sinon.spy(delayedTranslateFn);
+      const stackTracePromise1 = model.createFromProtocolRuntime({callFrames: callFrames1}, translateSpy);
+      const stackTracePromise2 = model.createFromProtocolRuntime({callFrames: callFrames2}, translateSpy);
+
+      await new Promise(r => setTimeout(r, 0));  // Run microtask queue as far as possible.
+      sinon.assert.calledOnceWithExactly(translateSpy, callFrames1, model.target());
+
+      resolveTranslate();
+      await stackTracePromise1;
+
+      // Now the second call should have happened.
+      await new Promise(r => setTimeout(r, 0));  // Run microtask queue as far as possible.
+      sinon.assert.calledTwice(translateSpy);
+      sinon.assert.calledWith(translateSpy, callFrames2, model.target());
+
+      await stackTracePromise2;
+    });
   });
 
   describe('scriptInfoChanged', () => {

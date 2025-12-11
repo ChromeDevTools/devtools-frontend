@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 
@@ -32,6 +33,7 @@ export type TranslateRawFrames = (frames: readonly RawFrame[], target: SDK.Targe
  */
 export class StackTraceModel extends SDK.SDKModel.SDKModel<unknown> {
   readonly #trie = new Trie();
+  readonly #mutex = new Common.Mutex.Mutex();
 
   /** @returns the {@link StackTraceModel} for the target, or the model for the primaryPageTarget when passing null/undefined */
   static #modelForTarget(target: SDK.Target.Target|null|undefined): StackTraceModel {
@@ -65,24 +67,29 @@ export class StackTraceModel extends SDK.SDKModel.SDKModel<unknown> {
 
   /** Trigger re-translation of all fragments with the provide script in their call stack */
   async scriptInfoChanged(script: SDK.Script.Script, translateRawFrames: TranslateRawFrames): Promise<void> {
-    const translatePromises: Array<Promise<unknown>> = [];
-    let stackTracesToUpdate = new Set<AnyStackTraceImpl>();
+    const release = await this.#mutex.acquire();
+    try {
+      const translatePromises: Array<Promise<unknown>> = [];
+      let stackTracesToUpdate = new Set<AnyStackTraceImpl>();
 
-    for (const fragment of this.#affectedFragments(script)) {
-      // We trigger re-translation only for fragments of leaf-nodes. Any fragment along the ancestor-chain
-      // is re-translated as a side-effect.
-      // We just need to remember the stack traces of the skipped over fragments, so we can send the
-      // UPDATED event also to them.
-      if (fragment.node.children.length === 0) {
-        translatePromises.push(this.#translateFragment(fragment, translateRawFrames));
+      for (const fragment of this.#affectedFragments(script)) {
+        // We trigger re-translation only for fragments of leaf-nodes. Any fragment along the ancestor-chain
+        // is re-translated as a side-effect.
+        // We just need to remember the stack traces of the skipped over fragments, so we can send the
+        // UPDATED event also to them.
+        if (fragment.node.children.length === 0) {
+          translatePromises.push(this.#translateFragment(fragment, translateRawFrames));
+        }
+        stackTracesToUpdate = stackTracesToUpdate.union(fragment.stackTraces);
       }
-      stackTracesToUpdate = stackTracesToUpdate.union(fragment.stackTraces);
-    }
 
-    await Promise.all(translatePromises);
+      await Promise.all(translatePromises);
 
-    for (const stackTrace of stackTracesToUpdate) {
-      stackTrace.dispatchEventToListeners(StackTrace.StackTrace.Events.UPDATED);
+      for (const stackTrace of stackTracesToUpdate) {
+        stackTrace.dispatchEventToListeners(StackTrace.StackTrace.Events.UPDATED);
+      }
+    } finally {
+      release();
     }
   }
 
@@ -126,15 +133,20 @@ export class StackTraceModel extends SDK.SDKModel.SDKModel<unknown> {
   }
 
   async #createFragment(frames: RawFrame[], rawFramesToUIFrames: TranslateRawFrames): Promise<FragmentImpl> {
-    const node = this.#trie.insert(frames);
-    const requiresTranslation = !Boolean(node.fragment);
-    const fragment = FragmentImpl.getOrCreate(node);
+    const release = await this.#mutex.acquire();
+    try {
+      const node = this.#trie.insert(frames);
+      const requiresTranslation = !Boolean(node.fragment);
+      const fragment = FragmentImpl.getOrCreate(node);
 
-    if (requiresTranslation) {
-      await this.#translateFragment(fragment, rawFramesToUIFrames);
+      if (requiresTranslation) {
+        await this.#translateFragment(fragment, rawFramesToUIFrames);
+      }
+
+      return fragment;
+    } finally {
+      release();
     }
-
-    return fragment;
   }
 
   async #translateFragment(fragment: FragmentImpl, rawFramesToUIFrames: TranslateRawFrames): Promise<void> {

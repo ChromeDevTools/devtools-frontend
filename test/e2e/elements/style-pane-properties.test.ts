@@ -1396,11 +1396,7 @@ describe('The Styles pane', () => {
        assert.isTrue(innerText?.toLowerCase().startsWith('specificity'));
      });
 
-  // Failing and closing the tree after recent refactors
-  it.skip('[crbug.com/467333876] can display nested pseudo elements and their styles', async ({
-                                                                                         devToolsPage,
-                                                                                         inspectedPage
-                                                                                       }) => {
+  it('can display nested pseudo elements and their styles', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToHtml(`
       <style>
       #inspected::before {
@@ -1515,29 +1511,9 @@ describe('The Styles pane', () => {
       sheet.addRule('#inspected::after', 'display: list-item');
     });
 
-    await waitForAndClickTreeElementWithPartialText('::before', devToolsPage);
-    await waitForStyleRule('#inspected::before', devToolsPage);
-    styleRules = await getDisplayedStyleRules(devToolsPage);
-    assert.sameDeepMembers(styleRules, [
-      {
-        selectorText: '#inspected::before',
-        propertyData: [
-          {propertyName: 'display', isOverLoaded: false, isInherited: false},
-        ],
-      },
-      {
-        selectorText: '#inspected::before',
-        propertyData: [
-          {propertyName: 'content', isOverLoaded: false, isInherited: false},
-        ],
-      },
-      {
-        selectorText: '#inspected::before::marker',
-        propertyData: [
-          {propertyName: 'content', isOverLoaded: false, isInherited: false},
-        ],
-      },
-    ]);
+    await waitForAndClickTreeElementWithPartialText('inspected', devToolsPage);
+    await expandSelectedNodeRecursively(devToolsPage);
+    await waitForChildrenOfSelectedElementNode(devToolsPage, ['::before', '::marker', 'Text', '::after', '::marker']);
 
     // --- Remove node ---
     await inspectedPage.evaluate(() => {

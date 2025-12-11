@@ -23,7 +23,9 @@ generate_css("css_files") {
 devtools_ui_module("report_view") {
   sources = [ "ReportView.ts" ]
   deps = [
-    "../../components/helpers:bundle",
+    "../../../core/platform:bundle",
+    "../../kit:bundle",
+    "../../legacy/components/utils:bundle",
     "../../lit:bundle",
   ]
 }

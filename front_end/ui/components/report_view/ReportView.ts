@@ -3,6 +3,8 @@
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-lit-render-outside-of-view, @devtools/enforce-custom-element-definitions-location */
 
+import * as Platform from '../../../core/platform/platform.js';
+import * as Components from '../../legacy/components/utils/utils.js';
 import {html, nothing, render} from '../../lit/lit.js';
 
 import reportStyles from './report.css.js';
@@ -33,13 +35,16 @@ import reportValueStyles from './reportValue.css.js';
  */
 export interface ReportData {
   reportTitle: string;
+  reportUrl?: Platform.DevToolsPath.UrlString;
 }
 export class Report extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
   #reportTitle = '';
+  #reportUrl = Platform.DevToolsPath.EmptyUrlString;
 
-  set data({reportTitle}: ReportData) {
+  set data({reportTitle, reportUrl}: ReportData) {
     this.#reportTitle = reportTitle;
+    this.#reportUrl = reportUrl ?? Platform.DevToolsPath.EmptyUrlString;
     this.#render();
   }
 
@@ -52,7 +57,11 @@ export class Report extends HTMLElement {
     // clang-format off
     render(html`
       <style>${reportStyles}</style>
-      ${this.#reportTitle ? html`<div class="report-title">${this.#reportTitle}</div>` : nothing}
+      ${this.#reportTitle ? html`<div class="report-title">
+        ${this.#reportTitle}
+        ${this.#reportUrl ? Components.Linkifier.Linkifier.linkifyURL(this.#reportUrl, {
+          tabStop: true, jslogContext: 'source-location', className: 'report-url'}) : nothing}
+      </div>` : nothing}
       <div class="content">
         <slot></slot>
       </div>

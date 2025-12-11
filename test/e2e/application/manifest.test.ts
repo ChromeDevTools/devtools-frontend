@@ -8,8 +8,8 @@ import {getTrimmedTextContent, navigateToApplicationTab} from '../helpers/applic
 
 const MANIFEST_SELECTOR = '[aria-label="Manifest: Invoke to scroll to the top of manifest"]';
 const APP_ID_SELECTOR = '[aria-label="App Id"]';
-const FIELD_NAMES_SELECTOR = '.report-field-name';
-const FIELD_VALUES_SELECTOR = '.report-field-value';
+const FIELD_NAMES_SELECTOR = 'devtools-report-key';
+const FIELD_VALUES_SELECTOR = 'devtools-report-value';
 
 describe('The Manifest Page', () => {
   // TODO (b/416264654): Update navigateToApplicationTab helper to work in docked mode

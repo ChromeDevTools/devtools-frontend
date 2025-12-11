@@ -58,6 +58,7 @@ devtools_entrypoint("bundle") {
     "../../../../panels/*",
     "../../../../panels/search/*",
     "../../../components/linear_memory_inspector/*",
+    "../../../components/report_view/*",
     "../inline_editor/*",
     "../object_ui/*",
   ]

@@ -9,7 +9,6 @@ import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.j
 import {createTarget, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import {createViewFunctionStub, type ViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
-import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Application from './application.js';
 
@@ -54,18 +53,15 @@ describeWithMockConnection('AppManifestView', () => {
     renderElementIntoDOM(view);
 
     await viewFunction.nextInput;
-    assert.isTrue(viewFunction.input.emptyView.isShowing());
-    assert.isFalse(viewFunction.input.reportView.isShowing());
+    assert.isTrue(viewFunction.input.isEmpty);
 
     resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.DOMContentLoaded, 42);
     await viewFunction.nextInput;
-    assert.isTrue(viewFunction.input.emptyView.isShowing());
-    assert.isFalse(viewFunction.input.reportView.isShowing());
+    assert.isTrue(viewFunction.input.isEmpty);
 
     resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.DOMContentLoaded, 42);
     await viewFunction.nextInput;
-    assert.isFalse(viewFunction.input.emptyView.isShowing());
-    assert.isTrue(viewFunction.input.reportView.isShowing());
+    assert.isNotOk(viewFunction.input.isEmpty);
   });
 
   it('shows pwa wco if available', async () => {
@@ -290,13 +286,9 @@ describeWithMockConnection('AppManifestView', () => {
   });
 
   it('displays "form-factor", "platform" and "label" properties for screenshots', async () => {
-    const emptyView = new UI.EmptyWidget.EmptyWidget('', '');
-    const reportView = new UI.ReportView.ReportView('');
     const container = document.createElement('div');
     renderElementIntoDOM(container);
     const viewInput = {
-      reportView,
-      emptyView,
       screenshotsSections: [],
       screenshotsData: {
         screenshots: [{

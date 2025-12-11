@@ -18,6 +18,22 @@ export default `/*
   justify-content: space-between;
 }
 
+.artifacts-toolbar-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  height: 27px;
+  padding: 5px;
+  border-bottom: 1px solid var(--sys-color-divider);
+}
+
+.assistance-view-wrapper-with-sidebar {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
 .ai-assistance-view-container {
   display: flex;
   flex-direction: column;

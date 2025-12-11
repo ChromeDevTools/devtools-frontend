@@ -6,8 +6,8 @@ import '../../../models/trace/insights/insights.js';
 import '../../../panels/timeline/components/components.js';
 import './PerformanceAgentFlameChart.js';
 import * as Common from '../../../core/common/common.js';
-import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
+import * as GreenDev from '../../../models/greendev/greendev.js';
 import * as Logs from '../../../models/logs/logs.js';
 import * as NetworkTimeCalculator from '../../../models/network_time_calculator/network_time_calculator.js';
 import * as Helpers from '../../../models/trace/helpers/helpers.js';
@@ -40,7 +40,7 @@ export class PerformanceAgentMarkdownRenderer extends MarkdownRendererWithCodeBl
         // NOTE: The custom tag handling below (e.g., <ai-insight>, <network-request-widget>)
         // is part of a prototype for the GreenDev project and is only rendered when the GreenDev
         // feature is enabled.
-        if (token.type === 'html' && Boolean(Root.Runtime.hostConfig.devToolsGreenDevUi?.enabled)) {
+        if (token.type === 'html' && GreenDev.Prototypes.instance().isEnabled('inlineWidgets')) {
             if (token.text.includes('<flame-chart-widget')) {
                 const startMatch = token.text.match(/start="?(\d+)"?/);
                 const endMatch = token.text.match(/end="?(\d+)"?/);

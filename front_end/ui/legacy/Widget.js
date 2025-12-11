@@ -216,6 +216,12 @@ export class WidgetElement extends HTMLElement {
         };
         return clone;
     }
+    focus() {
+        const widget = Widget.get(this);
+        if (widget) {
+            widget.focus();
+        }
+    }
 }
 customElements.define('devtools-widget', WidgetElement);
 export function widgetRef(type, callback) {

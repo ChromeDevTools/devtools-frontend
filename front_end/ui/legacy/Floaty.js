@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
-import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as GreenDev from '../../models/greendev/greendev.js';
 import * as Logs from '../../models/logs/logs.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as Buttons from '../components/buttons/buttons.js';
@@ -56,7 +56,7 @@ export class Floaty {
         }
     }
     #insertIntoDOM() {
-        if (Root.Runtime.hostConfig.devToolsGreenDevUi?.enabled) {
+        if (GreenDev.Prototypes.instance().isEnabled('inDevToolsFloaty')) {
             this.#floaty.show(this.#container);
             document.body.appendChild(this.#container);
             document.body.addEventListener('keydown', this.#boundKeyDown);
@@ -112,17 +112,14 @@ export class Floaty {
         this.#floaty.removeSelectedContext(context);
     }
 }
-export function enabled() {
-    return Root.Runtime.hostConfig.devToolsGreenDevUi?.enabled === true;
-}
 export function onFloatyOpen() {
-    if (!enabled()) {
+    if (!GreenDev.Prototypes.instance().isEnabled('inDevToolsFloaty')) {
         return;
     }
     Floaty.instance().open();
 }
 export function onFloatyContextDelete(context) {
-    if (!enabled()) {
+    if (!GreenDev.Prototypes.instance().isEnabled('inDevToolsFloaty')) {
         return;
     }
     Floaty.instance().deleteContext(context);
@@ -134,7 +131,7 @@ export function onFloatyContextDelete(context) {
  * click behaviour.
  */
 export function onFloatyClick(input) {
-    if (!enabled()) {
+    if (!GreenDev.Prototypes.instance().isEnabled('inDevToolsFloaty')) {
         return false;
     }
     const floaty = Floaty.instance();

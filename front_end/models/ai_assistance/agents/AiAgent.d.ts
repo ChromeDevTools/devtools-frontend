@@ -227,7 +227,6 @@ export declare abstract class AiAgent<T> {
     preambleFeatures(): string[];
     buildRequest(part: Host.AidaClient.Part | Host.AidaClient.Part[], role: Host.AidaClient.Role.USER | Host.AidaClient.Role.ROLE_UNSPECIFIED): Host.AidaClient.DoConversationRequest;
     get sessionId(): string;
-    get origin(): string | undefined;
     /**
      * The AI has instructions to emit structured suggestions in their response. This
      * function parses for that.

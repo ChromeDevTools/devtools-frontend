@@ -7,6 +7,7 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as GreenDev from '../../models/greendev/greendev.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import { createIcon } from '../kit/kit.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
@@ -312,7 +313,7 @@ export class InspectorView extends VBox {
         this.element.ownerDocument.addEventListener('keydown', this.keyDownBound, false);
         DockController.instance().addEventListener("DockSideChanged" /* DockControllerEvents.DOCK_SIDE_CHANGED */, this.#applyDrawerOrientationForDockSide, this);
         this.#applyDrawerOrientationForDockSide();
-        if (Root.Runtime.hostConfig.devToolsGreenDevUi?.enabled) {
+        if (GreenDev.Prototypes.instance().isEnabled('inDevToolsFloaty')) {
             Floaty.instance({
                 forceNew: true,
                 document: this.element.ownerDocument,

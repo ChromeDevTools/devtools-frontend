@@ -289,11 +289,6 @@ var AiAgent = class {
    */
   #structuredLog = [];
   /**
-   * Might need to be part of history in case we allow chatting in
-   * historical conversations.
-   */
-  #origin;
-  /**
    * `context` does not change during `AiAgent.run()`, ensuring that calls to JS
    * have the correct `context`. We don't want element selection by the user to
    * change the `context` during an `AiAgent.run()`.
@@ -378,9 +373,6 @@ var AiAgent = class {
   get sessionId() {
     return this.#sessionId;
   }
-  get origin() {
-    return this.#origin;
-  }
   /**
    * The AI has instructions to emit structured suggestions in their response. This
    * function parses for that.
@@ -454,12 +446,7 @@ var AiAgent = class {
   async *run(initialQuery, options, multimodalInput) {
     await options.selected?.refresh();
     if (options.selected) {
-      if (this.#origin === void 0) {
-        this.#origin = options.selected.getOrigin();
-      }
-      if (options.selected.isOriginAllowed(this.#origin)) {
-        this.context = options.selected;
-      }
+      this.context = options.selected;
     }
     const enhancedQuery = await this.enhanceQuery(initialQuery, options.selected, multimodalInput?.type);
     Host.userMetrics.freestylerQueryLength(enhancedQuery.length);
@@ -649,7 +636,7 @@ var AiAgent = class {
       }
       result = await call.handler(args, {
         ...options,
-        approved: approvedRun
+        approved: true
       });
     }
     if ("result" in result) {
@@ -4220,7 +4207,7 @@ you must render the appropriate Insight Overview component. Use these tags on a 
 `;
 };
 var buildPreamble = () => {
-  const greenDevEnabled = Root5.Runtime.hostConfig.devToolsGreenDevUi?.enabled;
+  const greenDevEnabled = Boolean(Root5.Runtime.hostConfig.devToolsGreenDevUi?.enabled);
   const annotationsEnabled = Annotations3.AnnotationRepository.annotationsEnabled();
   return `You are an assistant, expert in web performance and highly skilled with Chrome DevTools.
 
@@ -6869,17 +6856,19 @@ var AiConversation = class _AiConversation {
     return new _AiConversation(serializedConversation.type, history, serializedConversation.id, true, void 0, void 0, serializedConversation.isExternal);
   }
   id;
-  type;
+  #type;
   #isReadOnly;
   history;
   #isExternal;
   #aidaClient;
   #changeManager;
   #agent;
+  #origin;
+  #contexts = [];
   constructor(type, data = [], id = crypto.randomUUID(), isReadOnly = true, aidaClient = new Host8.AidaClient.AidaClient(), changeManager, isExternal = false) {
     this.#changeManager = changeManager;
     this.#aidaClient = aidaClient;
-    this.type = type;
+    this.#type = type;
     this.id = id;
     this.#isReadOnly = isReadOnly;
     this.#isExternal = isExternal;
@@ -6904,6 +6893,21 @@ var AiConversation = class _AiConversation {
   }
   get isEmpty() {
     return this.history.length === 0;
+  }
+  #setOriginIfEmpty(newOrigin) {
+    if (!this.#origin) {
+      this.#origin = newOrigin;
+    }
+  }
+  setContext(updateContext) {
+    if (!updateContext) {
+      this.#contexts = [];
+      return;
+    }
+    this.#contexts = [updateContext];
+  }
+  get selectedContext() {
+    return this.#contexts.at(0);
   }
   #reconstructHistory(historyWithoutImages) {
     const imageHistory = AiHistoryStorage.instance().getImageHistory();
@@ -7013,7 +7017,7 @@ ${item.text.trim()}`);
         }
         return item;
       }),
-      type: this.type,
+      type: this.#type,
       isExternal: this.#isExternal
     };
   }
@@ -7025,7 +7029,7 @@ ${item.text.trim()}`);
       changeManager: this.#changeManager
     };
     let agent;
-    switch (this.type) {
+    switch (this.#type) {
       case "freestyler": {
         agent = new StylingAgent(options);
         break;
@@ -7111,19 +7115,43 @@ ${desc}`,
       }
     }
   }
-  async *run(initialQuery, options, multimodalInput) {
+  async *run(initialQuery, options = {}) {
     if (options.extraContext) {
       await this.#createFactsForExtraContext(options.extraContext);
     }
-    for await (const data of this.#agent.run(initialQuery, options, multimodalInput)) {
-      if (data.type !== "answer" || data.complete) {
+    this.#setOriginIfEmpty(this.selectedContext?.getOrigin());
+    if (this.isBlockedByOrigin) {
+      throw new Error("Cross-origin context data should not be included");
+    }
+    function shouldAddToHistory(data) {
+      if (data.type === "answer" && !data.complete) {
+        return false;
+      }
+      return true;
+    }
+    for await (const data of this.#agent.run(initialQuery, {
+      signal: options.signal,
+      selected: this.selectedContext ?? null
+    }, options.multimodalInput)) {
+      if (shouldAddToHistory(data)) {
         void this.addHistoryItem(data);
       }
       yield data;
     }
   }
+  /**
+   * Indicates whether the new conversation context is blocked due to cross-origin restrictions.
+   * This happens when the conversation's context has a different
+   * origin than the selected context.
+   */
+  get isBlockedByOrigin() {
+    return !this.#contexts.every((context) => context.isOriginAllowed(this.#origin));
+  }
   get origin() {
-    return this.#agent.origin;
+    return this.#origin;
+  }
+  get type() {
+    return this.#type;
   }
 };
 function isAiAssistanceServerSideLoggingEnabled() {
@@ -7583,7 +7611,8 @@ var ConversationHandler = class _ConversationHandler extends Common8.ObjectWrapp
   }
   async *#doExternalConversation(opts) {
     const { conversation, prompt, selected } = opts;
-    const generator = conversation.run(prompt, { selected });
+    conversation.setContext(selected);
+    const generator = conversation.run(prompt);
     const devToolsLogs = [];
     for await (const data of generator) {
       if (data.type !== "answer" || data.complete) {

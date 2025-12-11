@@ -122,6 +122,9 @@
       "path": "../../models/geometry/bundle-tsconfig.json"
     },
     {
+      "path": "../../models/greendev/bundle-tsconfig.json"
+    },
+    {
       "path": "../../models/logs/bundle-tsconfig.json"
     },
     {

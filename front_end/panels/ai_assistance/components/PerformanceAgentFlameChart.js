@@ -19,6 +19,8 @@ export class PerformanceAgentFlameChart extends HTMLElement {
         this.#flameChart = new PerfUI.FlameChart.FlameChart(this.#dataProvider, this);
         this.#flameChart.markAsRoot();
         this.#flameChart.show(this.#flameChartContainer);
+        const observer = new ResizeObserver(this.#onResize.bind(this));
+        observer.observe(this.#flameChartContainer);
     }
     set data(data) {
         if (!data.parsedTrace) {
@@ -43,13 +45,17 @@ export class PerformanceAgentFlameChart extends HTMLElement {
             console.log('[GreenDev] Flamechart widget bounds reset to the whole trace duration.');
         }
         const bounds = Trace.Helpers.Timing.traceWindowMicroSecondsToMilliSeconds({
-            min: Trace.Types.Timing.Micro(start),
-            max: Trace.Types.Timing.Micro(end),
+            min: start,
+            max: end,
             range: Trace.Types.Timing.Micro(end - start),
         });
         this.#flameChart.setWindowTimes(bounds.min, bounds.max);
-        this.#flameChart.setSize(600, 200);
+        this.#flameChart.setSize(600, 300);
         this.#render();
+    }
+    #onResize(entries) {
+        const container = entries[0];
+        this.#flameChart.setSize(container.contentRect.width, 600);
     }
     #render() {
         if (!this.#parsedTrace) {
@@ -63,8 +69,8 @@ export class PerformanceAgentFlameChart extends HTMLElement {
 
           .container {
             display: flex;
-            width: 600px;
-            height: 200px;
+            width: 100%;
+            height: 300px;
           }
 
           .flex-auto {
@@ -82,7 +88,7 @@ export class PerformanceAgentFlameChart extends HTMLElement {
         // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
         Lit.render(output, this.#shadow, { host: this });
         this.#flameChart.update();
-        this.#flameChart.setSize(600, 200);
+        this.#flameChart.setSize(600, 300);
     }
     windowChanged(startTime, endTime, animate) {
         this.#flameChart.setWindowTimes(startTime, endTime, animate);

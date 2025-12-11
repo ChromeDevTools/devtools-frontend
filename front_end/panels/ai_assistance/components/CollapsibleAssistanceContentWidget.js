@@ -8,7 +8,7 @@ import styles from './collapsibleAssistanceContentWidget.css.js';
 const { render, html } = Lit;
 export class CollapsibleAssistanceContentWidget extends HTMLElement {
     #shadow = this.attachShadow({ mode: 'open' });
-    #isCollapsed = true;
+    #isCollapsed = false;
     #headerText = 'Details';
     set data(data) {
         this.#headerText = data.headerText;
@@ -30,6 +30,7 @@ export class CollapsibleAssistanceContentWidget extends HTMLElement {
             event.preventDefault();
             this.#toggleCollapse();
         }}>
+          ${this.#headerText}
           <devtools-button .data=${{
             variant: "icon" /* Buttons.Button.Variant.ICON */,
             iconName: this.#isCollapsed ? 'triangle-right' : 'triangle-down',
@@ -37,9 +38,7 @@ export class CollapsibleAssistanceContentWidget extends HTMLElement {
             width: '14px',
             height: '14px',
         }}
-          >
-          </devtools-button>
-          ${this.#headerText}
+          ></devtools-button>
         </summary>
         <div class="content">
           <slot></slot>

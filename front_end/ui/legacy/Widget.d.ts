@@ -24,6 +24,7 @@ export declare class WidgetElement<WidgetT extends Widget> extends HTMLElement {
     removeChild<T extends Node>(child: T): T;
     removeChildren(): void;
     cloneNode(deep: boolean): Node;
+    focus(): void;
 }
 export declare function widgetRef<T extends Widget, Args extends unknown[]>(type: Platform.Constructor.Constructor<T, Args>, callback: (_: T) => void): ReturnType<typeof Lit.Directives.ref>;
 /**

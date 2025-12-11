@@ -64,6 +64,7 @@ elements/filter-matched-styles.test.js
 elements/flexbox-editor.test.js
 elements/grid-editor.test.js
 elements/grid-lanes-editor.test.js
+elements/inspect-element.test.js
 elements/layout-pane.test.js
 elements/oopif-elements.test.js
 elements/oopif-navigation.test.js
@@ -177,6 +178,7 @@ sources/can-handle-special-characters.test.js
 sources/can-open-linear-memory-inspector.test.js
 sources/can-pretty-print-sourcecode.test.js
 sources/can-show-multiple-workers.test.js
+sources/can-show-stylesheets-with-source-url-comment.test.js
 sources/can-show-wasm-scopes.test.js
 sources/color-swatch.test.js
 sources/continue-to-location-markers.test.js

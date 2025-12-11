@@ -1,5 +1,6 @@
 // gen/front_end/models/greendev/Prototypes.js
 import * as Common from "./../../core/common/common.js";
+import * as Root from "./../../core/root/root.js";
 var instance = null;
 var Prototypes = class _Prototypes {
   constructor() {
@@ -11,8 +12,12 @@ var Prototypes = class _Prototypes {
     instance = new _Prototypes();
     return instance;
   }
+  /**
+   * Returns true if the specific setting is turned on AND the GreenDev flag is enabled
+   */
   isEnabled(setting) {
-    return this.settings()[setting].get();
+    const greendevFlagEnabled = Boolean(Root.Runtime.hostConfig.devToolsGreenDevUi?.enabled);
+    return greendevFlagEnabled && this.settings()[setting].get();
   }
   settings() {
     const settings = Common.Settings.Settings.instance();
@@ -34,7 +39,13 @@ var Prototypes = class _Prototypes {
       "Local"
       /* Common.Settings.SettingStorageType.LOCAL */
     );
-    return { inDevToolsFloaty, inlineWidgets, aiAnnotations };
+    const artifactViewer = settings.createSetting(
+      "greendev-artifact-viewer-enabled",
+      false,
+      "Local"
+      /* Common.Settings.SettingStorageType.LOCAL */
+    );
+    return { inDevToolsFloaty, inlineWidgets, aiAnnotations, artifactViewer };
   }
 };
 export {

@@ -2167,7 +2167,7 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
     ${renderStatusMessage(input.protocolHandler, input.manifestLink)}
     <div class="protocol-handlers-row">
       ${i18nTemplate(UIStrings7.needHelpReadOur, { PH1: html6`
-        <x-link href=${PROTOCOL_DOCUMENT_URL} tabindex=0 class="devtools-link" jslog=${VisualLogging5.link("learn-more").track({ click: true, keydown: "Enter|Space" })}>
+        <x-link href=${PROTOCOL_DOCUMENT_URL} tabindex=0 class="devtools-link" autofocus jslog=${VisualLogging5.link("learn-more").track({ click: true, keydown: "Enter|Space" })}>
           ${i18nString6(UIStrings7.protocolHandlerRegistrations)}
         </x-link>` })}
     </div>
@@ -2181,7 +2181,7 @@ var ProtocolHandlersView = class extends UI6.Widget.Widget {
   #queryInputState = "";
   #view;
   constructor(element, view = DEFAULT_VIEW5) {
-    super(element, { useShadowDom: false });
+    super(element, { useShadowDom: false, classes: ["vbox"] });
     this.#view = view;
   }
   set protocolHandlers(protocolHandlers) {

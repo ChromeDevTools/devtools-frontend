@@ -23,7 +23,7 @@ function computeSubstitution(expression, nameMap) {
         checkPrivateFields: false,
         ranges: false,
     });
-    const scopeVariables = new ScopeVariableAnalysis(root);
+    const scopeVariables = new ScopeVariableAnalysis(root, expression);
     scopeVariables.run();
     const freeVariables = scopeVariables.getFreeVariables();
     const result = [];

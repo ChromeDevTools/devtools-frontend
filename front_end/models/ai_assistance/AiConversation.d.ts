@@ -10,22 +10,30 @@ export declare class AiConversation {
     #private;
     static fromSerializedConversation(serializedConversation: SerializedConversation): AiConversation;
     readonly id: string;
-    type: ConversationType;
     readonly history: ResponseData[];
     constructor(type: ConversationType, data?: ResponseData[], id?: string, isReadOnly?: boolean, aidaClient?: Host.AidaClient.AidaClient, changeManager?: ChangeManager, isExternal?: boolean);
     get isReadOnly(): boolean;
     get title(): string | undefined;
     get isEmpty(): boolean;
+    setContext(updateContext: ConversationContext<unknown> | null): void;
+    get selectedContext(): ConversationContext<unknown> | undefined;
     getConversationMarkdown(): string;
     archiveConversation(): void;
     addHistoryItem(item: ResponseData): Promise<void>;
     serialize(): SerializedConversation;
-    run(initialQuery: string, options: {
-        selected: ConversationContext<unknown> | null;
+    run(initialQuery: string, options?: {
         signal?: AbortSignal;
         extraContext?: ExtraContext[];
-    }, multimodalInput?: MultimodalInput): AsyncGenerator<ResponseData, void, void>;
+        multimodalInput?: MultimodalInput;
+    }): AsyncGenerator<ResponseData, void, void>;
+    /**
+     * Indicates whether the new conversation context is blocked due to cross-origin restrictions.
+     * This happens when the conversation's context has a different
+     * origin than the selected context.
+     */
+    get isBlockedByOrigin(): boolean;
     get origin(): string | undefined;
+    get type(): ConversationType;
 }
 type ExtraContext = SDK.DOMModel.DOMNode | SDK.NetworkRequest.NetworkRequest | {
     event: Trace.Types.Events.Event;

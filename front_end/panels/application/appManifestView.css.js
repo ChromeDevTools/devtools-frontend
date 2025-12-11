@@ -45,4 +45,52 @@ select {
   vertical-align: sub;
 }
 
+devtools-report .report-row {
+  margin: var(--sys-size-3) 0 var(--sys-size-3) var(--sys-size-9);
+  grid-column: 1 / 3;
+
+  > devtools-checkbox:first-child {
+    margin-left: calc(var(--sys-size-4) * -1);
+  }
+
+  > devtools-icon:first-child {
+    /* We have inline icons that would otherwise be mis-aligned */
+    margin-inline-start: 0;
+  }
+}
+
+devtools-report .report-section {
+  display: grid;
+  grid-column: 1 / 3;
+  grid-template-columns: subgrid;
+  padding-bottom: var(--sys-size-5);
+  border-bottom: 1px solid var(--sys-color-divider);
+  margin-bottom: var(--sys-size-5);
+}
+
+.image-wrapper,
+.image-wrapper img {
+  max-width: 200px;
+  max-height: 200px;
+  display: block;
+  object-fit: contain;
+}
+
+.image-wrapper {
+  display: inline-block;
+  height: fit-content;
+  margin-right: 8px;
+}
+
+.show-mask img {
+  /* The safe zone is a centrally positioned circle, with radius 2/5
+  * (40%) of the minimum of the icon's width and height.
+  * https://w3c.github.io/manifest/#icon-masks */
+  clip-path: circle(40% at 50% 50%);
+}
+
+.show-mask .image-wrapper {
+  background: var(--image-file-checker);
+}
+
 /*# sourceURL=${import.meta.resolve('./appManifestView.css')} */`;

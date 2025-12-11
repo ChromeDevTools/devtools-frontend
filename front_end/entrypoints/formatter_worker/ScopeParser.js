@@ -12,7 +12,7 @@ export function parseScopes(expression, sourceType = 'script') {
     catch {
         return null;
     }
-    return new ScopeVariableAnalysis(root).run();
+    return new ScopeVariableAnalysis(root, expression).run();
 }
 export class Scope {
     variables = new Map();
@@ -20,12 +20,14 @@ export class Scope {
     start;
     end;
     kind;
+    nameMappingLocations;
     children = [];
-    constructor(start, end, parent, kind) {
+    constructor(start, end, parent, kind, nameMappingLocations) {
         this.start = start;
         this.end = end;
         this.parent = parent;
         this.kind = kind;
+        this.nameMappingLocations = nameMappingLocations;
         if (parent) {
             parent.children.push(this);
         }
@@ -45,6 +47,7 @@ export class Scope {
             end: this.end,
             variables,
             kind: this.kind,
+            nameMappingLocations: this.nameMappingLocations,
             children,
         };
     }
@@ -112,8 +115,11 @@ export class ScopeVariableAnalysis {
     #allNames = new Set();
     #currentScope;
     #rootNode;
-    constructor(node) {
+    #sourceText;
+    #additionalMappingLocations = [];
+    constructor(node, sourceText) {
         this.#rootNode = node;
+        this.#sourceText = sourceText;
         this.#rootScope = new Scope(node.start, node.end, null, 3 /* ScopeKind.GLOBAL */);
         this.#currentScope = this.#rootScope;
     }
@@ -226,7 +232,7 @@ export class ScopeVariableAnalysis {
                 break;
             case 'FunctionDeclaration':
                 this.#processNodeAsDefinition(2 /* DefinitionKind.VAR */, false, node.id);
-                this.#pushScope(node.id?.end ?? node.start, node.end, 2 /* ScopeKind.FUNCTION */);
+                this.#pushScope(node.id?.end ?? node.start, node.end, 2 /* ScopeKind.FUNCTION */, mappingLocationsForFunctionDeclaration(node, this.#sourceText));
                 this.#addVariable('this', node.start, 3 /* DefinitionKind.FIXED */);
                 this.#addVariable('arguments', node.start, 3 /* DefinitionKind.FIXED */);
                 node.params.forEach(this.#processNodeAsDefinition.bind(this, 1 /* DefinitionKind.LET */, false));
@@ -235,7 +241,7 @@ export class ScopeVariableAnalysis {
                 this.#popScope(true);
                 break;
             case 'FunctionExpression':
-                this.#pushScope(node.id?.end ?? node.start, node.end, 2 /* ScopeKind.FUNCTION */);
+                this.#pushScope(node.id?.end ?? node.start, node.end, 2 /* ScopeKind.FUNCTION */, [...this.#additionalMappingLocations, ...mappingLocationsForFunctionExpression(node, this.#sourceText)]);
                 this.#addVariable('this', node.start, 3 /* DefinitionKind.FIXED */);
                 this.#addVariable('arguments', node.start, 3 /* DefinitionKind.FIXED */);
                 node.params.forEach(this.#processNodeAsDefinition.bind(this, 1 /* DefinitionKind.LET */, false));
@@ -260,7 +266,11 @@ export class ScopeVariableAnalysis {
                 if (node.computed) {
                     this.#processNode(node.key);
                 }
+                else {
+                    this.#additionalMappingLocations = mappingLocationsForMethodDefinition(node);
+                }
                 this.#processNode(node.value);
+                this.#additionalMappingLocations = [];
                 break;
             case 'NewExpression':
                 this.#processNode(node.callee);
@@ -393,8 +403,8 @@ export class ScopeVariableAnalysis {
     getAllNames() {
         return this.#allNames;
     }
-    #pushScope(start, end, kind) {
-        this.#currentScope = new Scope(start, end, this.#currentScope, kind);
+    #pushScope(start, end, kind, nameMappingLocations) {
+        this.#currentScope = new Scope(start, end, this.#currentScope, kind, nameMappingLocations);
     }
     #popScope(isFunctionContext) {
         if (this.#currentScope.parent === null) {
@@ -447,5 +457,52 @@ export class ScopeVariableAnalysis {
         this.#processNodeAsDefinition(definitionKind, false, decl.id);
         this.#processNode(decl.init ?? null);
     }
+}
+function mappingLocationsForFunctionDeclaration(node, sourceText) {
+    // For function declarations we prefer the position of the identifier as per spec, but we'll also return
+    // the beginning of the opening parenthesis '('.
+    const result = [node.id.start];
+    const searchParenEndPos = node.params.length ? node.params[0].start : node.body.start;
+    const parenPos = indexOfCharInBounds(sourceText, '(', node.id.end, searchParenEndPos);
+    if (parenPos >= 0) {
+        // Note that this is not 100% accurate as there might be a comment containing a open parenthesis between
+        // the identifier the and the argument list (unlikely though).
+        result.push(parenPos);
+    }
+    return result;
+}
+function mappingLocationsForFunctionExpression(node, sourceText) {
+    // For function expressions we prefer the position of the identifier or '(' if none is present, as per spec.
+    const result = [];
+    if (node.id) {
+        result.push(node.id.start);
+    }
+    const searchParenStartPos = node.id ? node.id.end : node.start;
+    const searchParenEndPos = node.params.length ? node.params[0].start : node.body.start;
+    const parenPos = indexOfCharInBounds(sourceText, '(', searchParenStartPos, searchParenEndPos);
+    if (parenPos >= 0) {
+        // Note that this is not 100% accurate as there might be a comment containing a open parenthesis between
+        // the identifier the and the argument list (unlikely though).
+        result.push(parenPos);
+    }
+    return result;
+}
+function mappingLocationsForMethodDefinition(node) {
+    // Method definitions use a FunctionExpression as their "value" child. So we only
+    // record the start of the "key" here and let 'mappingLocationsForFunctionExpression' handle
+    // the parenthesis.
+    if (node.key.type === 'Identifier' || node.key.type === 'PrivateIdentifier') {
+        const id = node.key;
+        return [id.start];
+    }
+    return [];
+}
+function indexOfCharInBounds(str, needle, start, end) {
+    for (let i = start; i < end; ++i) {
+        if (str[i] === needle) {
+            return i;
+        }
+    }
+    return -1;
 }
 //# sourceMappingURL=ScopeParser.js.map

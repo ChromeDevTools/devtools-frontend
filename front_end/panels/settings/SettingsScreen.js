@@ -15,7 +15,7 @@ import { createIcon } from '../../ui/kit/kit.js';
 import * as SettingsUI from '../../ui/legacy/components/settings_ui/settings_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import { html, render } from '../../ui/lit/lit.js';
+import { html, nothing, render } from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import { PanelUtils } from '../utils/utils.js';
 import * as PanelComponents from './components/components.js';
@@ -534,13 +534,23 @@ const GREENDEV_VIEW = (input, _output, target) => {
     // clang-format off
     render(html `
          <div class="settings-card-container">
-           <devtools-card .heading=${'GreenDev Prototypes'}>
+           <devtools-card .heading=${'GreenDev prototypes'}>
              <div class="experiments-warning-subsection">
               <devtools-icon .name=${'warning'}></devtools-icon>
               <span>${i18nString(UIStrings.greenDevUnstable)}</span>
              </div>
              <div class="settings-experiments-block">
-               ${renderPrototypeCheckboxes(input.settings)}
+               ${renderPrototypeCheckboxes(input.settings, ['aiAnnotations', 'inDevToolsFloaty'])}
+             </div>
+           </devtools-card>
+
+           <devtools-card .heading=${'GreenDev widgets'}>
+             <div class="experiments-warning-subsection">
+              <devtools-icon .name=${'warning'}></devtools-icon>
+              <span>${i18nString(UIStrings.greenDevUnstable)}</span>
+             </div>
+             <div class="settings-experiments-block greendev-widgets">
+               ${renderWidgetOptions(input.settings)}
              </div>
            </devtools-card>
          </div>
@@ -550,15 +560,56 @@ const GREENDEV_VIEW = (input, _output, target) => {
 const GREENDEV_PROTOTYPE_NAMES = {
     inDevToolsFloaty: 'In DevTools context picker',
     aiAnnotations: 'AI auto-annotations',
-    inlineWidgets: 'Inline widgets in AI Assistance'
+    inlineWidgets: 'Inline widgets in AI Assistance',
+    artifactViewer: 'Widgets in the Artifact viewer'
 };
-function renderPrototypeCheckboxes(settings) {
+function renderWidgetOptions(settings) {
+    function onChange(nowActiveRadio) {
+        return () => {
+            switch (nowActiveRadio) {
+                case 'inlineWidgets': {
+                    settings.artifactViewer.set(false);
+                    settings.inlineWidgets.set(true);
+                    break;
+                }
+                case 'artifactViewer': {
+                    settings.artifactViewer.set(true);
+                    settings.inlineWidgets.set(false);
+                    break;
+                }
+                case 'none': {
+                    settings.artifactViewer.set(false);
+                    settings.inlineWidgets.set(false);
+                }
+            }
+            UI.InspectorView.InspectorView.instance().displayReloadRequiredWarning(i18nString(UIStrings.oneOrMoreSettingsHaveChanged));
+        };
+    }
+    // clang-format off
+    return html `
+    <p class="settings-experiment">
+      <label><input type="radio" name="widgets-choice" @change=${onChange('inlineWidgets')}>${GREENDEV_PROTOTYPE_NAMES['inlineWidgets']}</label>
+    </p>
+    <p class="settings-experiment">
+      <label><input type="radio" name="widgets-choice" @change=${onChange('artifactViewer')}>${GREENDEV_PROTOTYPE_NAMES['artifactViewer']}</label>
+    </p>
+    <p class="settings-experiment">
+      <label><input type="radio" name="widgets-choice" @change=${onChange('none')}>None</label>
+    </p>
+  `;
+    // clang-format on
+}
+function renderPrototypeCheckboxes(settings, keys) {
     const { bindToSetting } = UI.UIUtils;
     function showChangeWarning() {
         UI.InspectorView.InspectorView.instance().displayReloadRequiredWarning(i18nString(UIStrings.oneOrMoreSettingsHaveChanged));
     }
     // clang-format off
-    const checkboxes = Object.keys(settings).map(settingName => {
+    const checkboxes = Object.keys(settings).map(name => {
+        const settingName = name;
+        if (!keys.includes(settingName)) {
+            return nothing;
+        }
         const setting = settings[settingName];
         const title = GREENDEV_PROTOTYPE_NAMES[settingName];
         return html `<p class="settings-experiment">

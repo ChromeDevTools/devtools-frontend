@@ -13,8 +13,8 @@ export default `/*
   display: block;
   flex-shrink: 0;
   width: 100%;
-  border: 1px solid var(--sys-color-outline);
-  border-radius: 8px;
+  border: 2px solid var(--sys-color-neutral-container);
+  border-radius: 12px;
   margin-bottom: 12px;
   overflow: hidden;
   background-color: var(--sys-color-cdt-base-container);
@@ -26,12 +26,9 @@ export default `/*
   user-select: none;
   display: flex;
   align-items: center;
+  background-color: var(--sys-color-surface3);
   justify-content: space-between;
   transition: background-color 0.2s ease-in-out;
-}
-
-:host([open]) .header {
-  border-bottom: 1px solid var(--sys-color-outline);
 }
 
 .content {

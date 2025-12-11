@@ -134,7 +134,7 @@ you must render the appropriate Insight Overview component. Use these tags on a 
  * Check token length in https://aistudio.google.com/
  */
 const buildPreamble = () => {
-    const greenDevEnabled = Root.Runtime.hostConfig.devToolsGreenDevUi?.enabled;
+    const greenDevEnabled = Boolean(Root.Runtime.hostConfig.devToolsGreenDevUi?.enabled);
     const annotationsEnabled = Annotations.AnnotationRepository.annotationsEnabled();
     return `You are an assistant, expert in web performance and highly skilled with Chrome DevTools.
 

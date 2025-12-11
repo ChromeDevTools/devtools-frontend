@@ -6,6 +6,7 @@ import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Root from '../../../../core/root/root.js';
 import * as AIAssistance from '../../../../models/ai_assistance/ai_assistance.js';
 import * as Badges from '../../../../models/badges/badges.js';
+import * as GreenDev from '../../../../models/greendev/greendev.js';
 import * as Buttons from '../../../../ui/components/buttons/buttons.js';
 import * as UI from '../../../../ui/legacy/legacy.js';
 import * as Lit from '../../../../ui/lit/lit.js';
@@ -229,7 +230,7 @@ export class BaseInsightComponent extends UI.Widget.Widget {
             // Shouldn't happen, but needed to satisfy TS.
             return;
         }
-        if (this.#parsedTrace && UI.Floaty.enabled()) {
+        if (this.#parsedTrace && GreenDev.Prototypes.instance().isEnabled('inDevToolsFloaty')) {
             const floatyHandled = UI.Floaty.onFloatyClick({
                 type: "PERFORMANCE_INSIGHT" /* UI.Floaty.FloatyContextTypes.PERFORMANCE_INSIGHT */,
                 data: {

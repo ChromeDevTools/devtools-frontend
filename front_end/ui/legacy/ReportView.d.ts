@@ -2,6 +2,10 @@ import './Toolbar.js';
 import type * as Buttons from '../components/buttons/buttons.js';
 import type { Toolbar } from './Toolbar.js';
 import { VBox } from './Widget.js';
+/**
+ * @deprecated Please consider using the web component version of this widget
+ *             (`ui/components/report_view/ReportView.ts`) for new code.
+ */
 export declare class ReportView extends VBox {
     private readonly contentBox;
     private headerElement;
@@ -48,5 +52,4 @@ export declare class Section extends VBox {
     appendSelectableRow(): HTMLElement;
     clearContent(): void;
     markFieldListAsGroup(): void;
-    setIconMasked(masked: boolean): void;
 }

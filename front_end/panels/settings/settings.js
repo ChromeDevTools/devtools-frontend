@@ -26,7 +26,7 @@ import { createIcon } from "./../../ui/kit/kit.js";
 import * as SettingsUI from "./../../ui/legacy/components/settings_ui/settings_ui.js";
 import * as Components from "./../../ui/legacy/components/utils/utils.js";
 import * as UI from "./../../ui/legacy/legacy.js";
-import { html, render } from "./../../ui/lit/lit.js";
+import { html, nothing, render } from "./../../ui/lit/lit.js";
 import * as VisualLogging from "./../../ui/visual_logging/visual_logging.js";
 import { PanelUtils } from "./../utils/utils.js";
 import * as PanelComponents from "./components/components.js";
@@ -228,6 +228,10 @@ devtools-button.link-icon {
   .tabbed-pane-header-tab.selected .tabbed-pane-header-tab-title {
     color: HighlightText;
   }
+}
+
+.greendev-widgets input[type="radio"] {
+  margin: 6px;
 }
 
 /*# sourceURL=${import.meta.resolve("./settingsScreen.css")} */`;
@@ -748,13 +752,23 @@ var GreenDevSettingsTab = class extends UI.Widget.VBox {
 var GREENDEV_VIEW = (input, _output, target) => {
   render(html`
          <div class="settings-card-container">
-           <devtools-card .heading=${"GreenDev Prototypes"}>
+           <devtools-card .heading=${"GreenDev prototypes"}>
              <div class="experiments-warning-subsection">
               <devtools-icon .name=${"warning"}></devtools-icon>
               <span>${i18nString(UIStrings.greenDevUnstable)}</span>
              </div>
              <div class="settings-experiments-block">
-               ${renderPrototypeCheckboxes(input.settings)}
+               ${renderPrototypeCheckboxes(input.settings, ["aiAnnotations", "inDevToolsFloaty"])}
+             </div>
+           </devtools-card>
+
+           <devtools-card .heading=${"GreenDev widgets"}>
+             <div class="experiments-warning-subsection">
+              <devtools-icon .name=${"warning"}></devtools-icon>
+              <span>${i18nString(UIStrings.greenDevUnstable)}</span>
+             </div>
+             <div class="settings-experiments-block greendev-widgets">
+               ${renderWidgetOptions(input.settings)}
              </div>
            </devtools-card>
          </div>
@@ -763,14 +777,53 @@ var GREENDEV_VIEW = (input, _output, target) => {
 var GREENDEV_PROTOTYPE_NAMES = {
   inDevToolsFloaty: "In DevTools context picker",
   aiAnnotations: "AI auto-annotations",
-  inlineWidgets: "Inline widgets in AI Assistance"
+  inlineWidgets: "Inline widgets in AI Assistance",
+  artifactViewer: "Widgets in the Artifact viewer"
 };
-function renderPrototypeCheckboxes(settings) {
+function renderWidgetOptions(settings) {
+  function onChange(nowActiveRadio) {
+    return () => {
+      switch (nowActiveRadio) {
+        case "inlineWidgets": {
+          settings.artifactViewer.set(false);
+          settings.inlineWidgets.set(true);
+          break;
+        }
+        case "artifactViewer": {
+          settings.artifactViewer.set(true);
+          settings.inlineWidgets.set(false);
+          break;
+        }
+        case "none": {
+          settings.artifactViewer.set(false);
+          settings.inlineWidgets.set(false);
+        }
+      }
+      UI.InspectorView.InspectorView.instance().displayReloadRequiredWarning(i18nString(UIStrings.oneOrMoreSettingsHaveChanged));
+    };
+  }
+  return html`
+    <p class="settings-experiment">
+      <label><input type="radio" name="widgets-choice" @change=${onChange("inlineWidgets")}>${GREENDEV_PROTOTYPE_NAMES["inlineWidgets"]}</label>
+    </p>
+    <p class="settings-experiment">
+      <label><input type="radio" name="widgets-choice" @change=${onChange("artifactViewer")}>${GREENDEV_PROTOTYPE_NAMES["artifactViewer"]}</label>
+    </p>
+    <p class="settings-experiment">
+      <label><input type="radio" name="widgets-choice" @change=${onChange("none")}>None</label>
+    </p>
+  `;
+}
+function renderPrototypeCheckboxes(settings, keys) {
   const { bindToSetting } = UI.UIUtils;
   function showChangeWarning() {
     UI.InspectorView.InspectorView.instance().displayReloadRequiredWarning(i18nString(UIStrings.oneOrMoreSettingsHaveChanged));
   }
-  const checkboxes = Object.keys(settings).map((settingName) => {
+  const checkboxes = Object.keys(settings).map((name) => {
+    const settingName = name;
+    if (!keys.includes(settingName)) {
+      return nothing;
+    }
     const setting = settings[settingName];
     const title = GREENDEV_PROTOTYPE_NAMES[settingName];
     return html`<p class="settings-experiment">
@@ -995,7 +1048,7 @@ var aiSettingsTab_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./aiSettingsTab.css")} */`;
 
 // gen/front_end/panels/settings/AISettingsTab.js
-var { html: html2, nothing, render: render2, Directives: { ifDefined, classMap } } = Lit;
+var { html: html2, nothing: nothing2, render: render2, Directives: { ifDefined, classMap } } = Lit;
 var UIStrings2 = {
   /**
    * @description Header text for for a list of things to consider in the context of generative AI features
@@ -1181,7 +1234,7 @@ var AI_SETTINGS_TAB_DEFAULT_VIEW = (input, _output, target) => {
         </div>
       `)}
     </div>
-  ` : nothing;
+  ` : nothing2;
   const sharedDisclaimer = html2`
     <div class="shared-disclaimer">
       <h2>${i18nString2(UIStrings2.boostYourProductivity)}</h2>
@@ -1206,7 +1259,7 @@ var AI_SETTINGS_TAB_DEFAULT_VIEW = (input, _output, target) => {
   const settings = Array.from(input.settingToParams.keys()).map((setting) => {
     const settingData = input.settingToParams.get(setting);
     if (!settingData) {
-      return nothing;
+      return nothing2;
     }
     const detailsClasses = {
       "whole-row": true,
@@ -1281,7 +1334,7 @@ var AI_SETTINGS_TAB_DEFAULT_VIEW = (input, _output, target) => {
         <div class="settings-container">
           ${settings}
         </div>
-      ` : nothing}
+      ` : nothing2}
     </div></div>
   `, target);
 };

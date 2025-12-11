@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "allowJs": true,
+    "allowUmdGlobalAccess": true,
     "checkJs": true,
     "composite": true,
     "declaration": true,
@@ -24,32 +25,36 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "outDir": ".",
-    "rootDir": "../../../../../../front_end/models/annotations",
+    "rootDir": "../../../../../../../front_end/ui/components/report_view",
     "skipLibCheck": true,
     "sourceMap": true,
     "strict": true,
     "target": "ES2023",
-    "tsBuildInfoFile": "annotations-tsconfig.json.tsbuildinfo",
-    "typeRoots": [],
-    "types": [],
+    "tsBuildInfoFile": "docs_ts-tsconfig.json.tsbuildinfo",
+    "typeRoots": [
+      "../../../../../../../node_modules/@types",
+      "../../../../../../../node_modules"
+    ],
+    "types": [
+      "mocha",
+      "chai",
+      "sinon",
+      "karma-chai-sinon"
+    ],
     "useUnknownInCatchVariables": false
   },
   "files": [
-    "../../../../../../front_end/models/annotations/AnnotationRepository.ts",
-    "../../../../../../front_end/models/annotations/AnnotationType.ts",
-    "../../../../../../front_end/legacy/legacy-defs.d.ts",
-    "../../../../../../front_end/global_typings/global_defs.d.ts",
-    "../../../../../../node_modules/@types/filesystem/index.d.ts"
+    "../../../../../../../front_end/ui/components/report_view/ReportView.docs.ts",
+    "../../../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../../../node_modules/@types/filesystem/index.d.ts"
   ],
   "references": [
     {
-      "path": "../../core/common/bundle-tsconfig.json"
+      "path": "./bundle-tsconfig.json"
     },
     {
-      "path": "../../core/sdk/bundle-tsconfig.json"
-    },
-    {
-      "path": "../greendev/bundle-tsconfig.json"
+      "path": "../../lit/bundle-tsconfig.json"
     }
   ]
 }

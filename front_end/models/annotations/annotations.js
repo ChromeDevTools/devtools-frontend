@@ -1,6 +1,6 @@
 // gen/front_end/models/annotations/AnnotationRepository.js
 import * as Common from "./../../core/common/common.js";
-import * as Root from "./../../core/root/root.js";
+import * as GreenDev from "./../greendev/greendev.js";
 
 // gen/front_end/models/annotations/AnnotationType.js
 var AnnotationType;
@@ -26,7 +26,7 @@ var AnnotationRepository = class _AnnotationRepository {
     return _AnnotationRepository.#instance;
   }
   static annotationsEnabled() {
-    const enabled = Boolean(Root.Runtime.hostConfig.devToolsGreenDevUi?.enabled);
+    const enabled = GreenDev.Prototypes.instance().isEnabled("aiAnnotations");
     if (!enabled) {
       this.#hasRepliedGreenDevDisabled = true;
     } else if (this.#hasRepliedGreenDevDisabled && !this.#hasShownFlagWarning) {

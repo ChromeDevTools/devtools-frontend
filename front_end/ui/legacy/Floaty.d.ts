@@ -61,7 +61,6 @@ type FloatyClickInput = {
         trace: Trace.TraceModel.ParsedTrace;
     };
 };
-export declare function enabled(): boolean;
 export declare function onFloatyOpen(): void;
 export declare function onFloatyContextDelete(context: FloatyContextSelection): void;
 /**

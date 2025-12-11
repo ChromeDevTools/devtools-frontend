@@ -128,30 +128,6 @@ export default `/*
   user-select: text;
 }
 
-.image-wrapper,
-.image-wrapper img {
-  max-width: 200px;
-  max-height: 200px;
-  display: block;
-  object-fit: contain;
-}
-
-.image-wrapper {
-  height: fit-content;
-  margin-right: 8px;
-}
-
-.show-mask img {
-  /* The safe zone is a centrally positioned circle, with radius 2/5
-  * (40%) of the minimum of the icon's width and height.
-  * https://w3c.github.io/manifest/#icon-masks */
-  clip-path: circle(40% at 50% 50%);
-}
-
-.show-mask .image-wrapper {
-  background: var(--image-file-checker);
-}
-
 @media (forced-colors: active) {
   .report-field-value .inline-icon {
     color: ButtonText;

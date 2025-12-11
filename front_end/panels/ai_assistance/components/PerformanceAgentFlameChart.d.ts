@@ -2,8 +2,8 @@ import * as Trace from '../../../models/trace/trace.js';
 import * as PerfUI from '../../../ui/legacy/components/perf_ui/perf_ui.js';
 export interface PerformanceAgentFlameChartData {
     parsedTrace: Trace.TraceModel.ParsedTrace | null;
-    start: number;
-    end: number;
+    start: Trace.Types.Timing.Micro;
+    end: Trace.Types.Timing.Micro;
 }
 export declare class PerformanceAgentFlameChart extends HTMLElement implements PerfUI.FlameChart.FlameChartDelegate {
     #private;

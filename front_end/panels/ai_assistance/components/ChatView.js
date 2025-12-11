@@ -6,9 +6,9 @@ import '../../../ui/components/spinners/spinners.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
-import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
+import * as GreenDev from '../../../models/greendev/greendev.js';
 import * as Trace from '../../../models/trace/trace.js';
 import * as Workspace from '../../../models/workspace/workspace.js';
 import * as PanelsCommon from '../../../panels/common/common.js';
@@ -1071,7 +1071,7 @@ function renderChatInput({ isLoading, blockedByCrossOrigin, isTextInputDisabled,
     // clang-format on
 }
 function renderFloatyExtraContext(contexts) {
-    if (!Root.Runtime.hostConfig.devToolsGreenDevUi?.enabled) {
+    if (!GreenDev.Prototypes.instance().isEnabled('inDevToolsFloaty')) {
         return Lit.nothing;
     }
     // clang-format off

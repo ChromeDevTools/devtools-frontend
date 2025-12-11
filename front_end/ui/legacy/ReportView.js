@@ -8,6 +8,10 @@ import * as ARIAUtils from './ARIAUtils.js';
 import reportViewStyles from './reportView.css.js';
 import { Tooltip } from './Tooltip.js';
 import { VBox } from './Widget.js';
+/**
+ * @deprecated Please consider using the web component version of this widget
+ *             (`ui/components/report_view/ReportView.ts`) for new code.
+ */
 export class ReportView extends VBox {
     contentBox;
     headerElement;
@@ -193,9 +197,6 @@ export class Section extends VBox {
     markFieldListAsGroup() {
         ARIAUtils.markAsGroup(this.fieldList);
         ARIAUtils.setLabel(this.fieldList, this.title());
-    }
-    setIconMasked(masked) {
-        this.element.classList.toggle('show-mask', masked);
     }
 }
 //# sourceMappingURL=ReportView.js.map

@@ -1,4 +1,5 @@
 import './CollapsibleAssistanceContentWidget.js';
+import './PerformanceAgentFlameChart.js';
 import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
 import * as Trace from '../../../models/trace/trace.js';
 import * as UI from '../../../ui/legacy/legacy.js';

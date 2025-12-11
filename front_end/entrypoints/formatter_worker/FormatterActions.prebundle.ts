@@ -55,6 +55,8 @@ export interface ScopeTreeNode {
   variables: Array<{name: string, kind: DefinitionKind, offsets: number[]}>;
   start: number;
   end: number;
+  // If present, apply source map mappings to these locations to figure out the original function name.
+  nameMappingLocations?: number[];
   kind: ScopeKind;
   children: ScopeTreeNode[];
 }

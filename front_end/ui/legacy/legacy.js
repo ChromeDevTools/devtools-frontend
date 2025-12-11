@@ -219,12 +219,12 @@ var Action = class extends Common2.ObjectWrapper.ObjectWrapper {
   toggleWithRedColor() {
     return Boolean(this.actionRegistration.toggleWithRedColor);
   }
-  setEnabled(enabled2) {
-    if (this.#enabled === enabled2) {
+  setEnabled(enabled) {
+    if (this.#enabled === enabled) {
       return;
     }
-    this.#enabled = enabled2;
-    this.dispatchEventToListeners("Enabled", enabled2);
+    this.#enabled = enabled;
+    this.dispatchEventToListeners("Enabled", enabled);
   }
   enabled() {
     return this.#enabled;
@@ -720,7 +720,7 @@ __export(Toolbar_exports, {
 import * as Common13 from "./../../core/common/common.js";
 import * as i18n20 from "./../../core/i18n/i18n.js";
 import * as Platform14 from "./../../core/platform/platform.js";
-import * as Root6 from "./../../core/root/root.js";
+import * as Root5 from "./../../core/root/root.js";
 import * as Buttons6 from "./../components/buttons/buttons.js";
 import * as VisualLogging13 from "./../visual_logging/visual_logging.js";
 import { createIcon as createIcon6 } from "./../kit/kit.js";
@@ -738,7 +738,7 @@ __export(ContextMenu_exports, {
   registerProvider: () => registerProvider
 });
 import * as Host6 from "./../../core/host/host.js";
-import * as Root5 from "./../../core/root/root.js";
+import * as Root4 from "./../../core/root/root.js";
 import * as Buttons5 from "./../components/buttons/buttons.js";
 import { html as html2, render as render3 } from "./../lit/lit.js";
 import * as VisualLogging9 from "./../visual_logging/visual_logging.js";
@@ -1519,8 +1519,9 @@ __export(InspectorView_exports, {
 import * as Common10 from "./../../core/common/common.js";
 import * as Host5 from "./../../core/host/host.js";
 import * as i18n14 from "./../../core/i18n/i18n.js";
-import * as Root4 from "./../../core/root/root.js";
+import * as Root3 from "./../../core/root/root.js";
 import * as SDK2 from "./../../core/sdk/sdk.js";
+import * as GreenDev2 from "./../../models/greendev/greendev.js";
 import * as Buttons4 from "./../components/buttons/buttons.js";
 import { createIcon as createIcon4 } from "./../kit/kit.js";
 import * as VisualLogging7 from "./../visual_logging/visual_logging.js";
@@ -1701,15 +1702,14 @@ __export(Floaty_exports, {
   Floaty: () => Floaty,
   FloatyFlavor: () => FloatyFlavor,
   FloatyUI: () => FloatyUI,
-  enabled: () => enabled,
   onFloatyClick: () => onFloatyClick,
   onFloatyContextDelete: () => onFloatyContextDelete,
   onFloatyOpen: () => onFloatyOpen
 });
 import * as i18n5 from "./../../core/i18n/i18n.js";
 import * as Platform6 from "./../../core/platform/platform.js";
-import * as Root2 from "./../../core/root/root.js";
 import * as SDK from "./../../core/sdk/sdk.js";
+import * as GreenDev from "./../../models/greendev/greendev.js";
 import * as Logs from "./../../models/logs/logs.js";
 import * as Trace from "./../../models/trace/trace.js";
 import * as Buttons from "./../components/buttons/buttons.js";
@@ -2112,6 +2112,12 @@ var WidgetElement = class extends HTMLElement {
       widgetParams: this.#widgetParams
     };
     return clone;
+  }
+  focus() {
+    const widget = Widget.get(this);
+    if (widget) {
+      widget.focus();
+    }
   }
 };
 customElements.define("devtools-widget", WidgetElement);
@@ -2835,7 +2841,7 @@ var Floaty = class _Floaty {
     }
   }
   #insertIntoDOM() {
-    if (Root2.Runtime.hostConfig.devToolsGreenDevUi?.enabled) {
+    if (GreenDev.Prototypes.instance().isEnabled("inDevToolsFloaty")) {
       this.#floaty.show(this.#container);
       document.body.appendChild(this.#container);
       document.body.addEventListener("keydown", this.#boundKeyDown);
@@ -2891,23 +2897,20 @@ var Floaty = class _Floaty {
     this.#floaty.removeSelectedContext(context);
   }
 };
-function enabled() {
-  return Root2.Runtime.hostConfig.devToolsGreenDevUi?.enabled === true;
-}
 function onFloatyOpen() {
-  if (!enabled()) {
+  if (!GreenDev.Prototypes.instance().isEnabled("inDevToolsFloaty")) {
     return;
   }
   Floaty.instance().open();
 }
 function onFloatyContextDelete(context) {
-  if (!enabled()) {
+  if (!GreenDev.Prototypes.instance().isEnabled("inDevToolsFloaty")) {
     return;
   }
   Floaty.instance().deleteContext(context);
 }
 function onFloatyClick(input) {
-  if (!enabled()) {
+  if (!GreenDev.Prototypes.instance().isEnabled("inDevToolsFloaty")) {
     return false;
   }
   const floaty = Floaty.instance();
@@ -3503,8 +3506,8 @@ var ResizerWidget = class extends Common5.ObjectWrapper.ObjectWrapper {
   isEnabled() {
     return this.#isEnabled;
   }
-  setEnabled(enabled2) {
-    this.#isEnabled = enabled2;
+  setEnabled(enabled) {
+    this.#isEnabled = enabled;
     this.updateElementCursors();
   }
   elements() {
@@ -5446,10 +5449,10 @@ var TabbedPane = class extends Common8.ObjectWrapper.eventMixin(VBox) {
     badge2.classList.add("badge");
     this.setSuffixElement(id2, content ? badge2 : null);
   }
-  setTabEnabled(id2, enabled2) {
+  setTabEnabled(id2, enabled) {
     const tab = this.tabsById.get(id2);
     if (tab) {
-      tab.tabElement.classList.toggle("disabled", !enabled2);
+      tab.tabElement.classList.toggle("disabled", !enabled);
     }
   }
   tabIsDisabled(id2) {
@@ -6542,7 +6545,7 @@ found in the LICENSE file. */
 
 // gen/front_end/ui/legacy/ViewRegistration.js
 import * as i18n10 from "./../../core/i18n/i18n.js";
-import * as Root3 from "./../../core/root/root.js";
+import * as Root2 from "./../../core/root/root.js";
 var UIStrings5 = {
   /**
    * @description Badge label for an entry in the Quick Open menu. Selecting the entry opens the 'Elements' panel.
@@ -6584,7 +6587,7 @@ function registerViewExtension(registration) {
   registeredViewExtensions.set(viewId, registration);
 }
 function getRegisteredViewExtensions() {
-  return registeredViewExtensions.values().filter((view) => Root3.Runtime.Runtime.isDescriptorEnabled({ experiment: view.experiment, condition: view.condition })).toArray();
+  return registeredViewExtensions.values().filter((view) => Root2.Runtime.Runtime.isDescriptorEnabled({ experiment: view.experiment, condition: view.condition })).toArray();
 }
 function maybeRemoveViewExtension(viewId) {
   return registeredViewExtensions.delete(viewId);
@@ -7578,7 +7581,7 @@ var InspectorView = class _InspectorView extends VBox {
     setLabel(drawerElement, i18nString7(UIStrings7.drawer));
     this.drawerSplitWidget.installResizer(this.drawerTabbedPane.headerElement());
     this.drawerSplitWidget.setSidebarWidget(this.drawerTabbedPane);
-    if (Root4.Runtime.hostConfig.devToolsFlexibleLayout?.verticalDrawerEnabled) {
+    if (Root3.Runtime.hostConfig.devToolsFlexibleLayout?.verticalDrawerEnabled) {
       this.drawerTabbedPane.rightToolbar().appendToolbarItem(this.#toggleOrientationButton);
     }
     this.drawerTabbedPane.rightToolbar().appendToolbarItem(closeDrawerButton);
@@ -7586,11 +7589,11 @@ var InspectorView = class _InspectorView extends VBox {
       drag: true,
       keydown: "ArrowUp|ArrowLeft|ArrowDown|ArrowRight|Enter|Space"
     })}`);
-    this.tabbedLocation = ViewManager.instance().createTabbedLocation(Host5.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront.bind(Host5.InspectorFrontendHost.InspectorFrontendHostInstance), "panel", true, true, Root4.Runtime.Runtime.queryParam("panel"));
+    this.tabbedLocation = ViewManager.instance().createTabbedLocation(Host5.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront.bind(Host5.InspectorFrontendHost.InspectorFrontendHostInstance), "panel", true, true, Root3.Runtime.Runtime.queryParam("panel"));
     this.tabbedPane = this.tabbedLocation.tabbedPane();
     this.tabbedPane.setMinimumSize(MIN_MAIN_PANEL_WIDTH, 0);
     this.tabbedPane.element.classList.add("main-tabbed-pane");
-    const allocatedSpace = Root4.Runtime.conditions.canDock() ? "69px" : "41px";
+    const allocatedSpace = Root3.Runtime.conditions.canDock() ? "69px" : "41px";
     this.tabbedPane.leftToolbar().style.minWidth = allocatedSpace;
     this.tabbedPane.addEventListener(Events.TabSelected, (event) => this.tabSelected(event.data.tabId), this);
     const selectedTab = this.tabbedPane.selectedTabId;
@@ -7696,7 +7699,7 @@ var InspectorView = class _InspectorView extends VBox {
     this.element.ownerDocument.addEventListener("keydown", this.keyDownBound, false);
     DockController.instance().addEventListener("DockSideChanged", this.#applyDrawerOrientationForDockSide, this);
     this.#applyDrawerOrientationForDockSide();
-    if (Root4.Runtime.hostConfig.devToolsGreenDevUi?.enabled) {
+    if (GreenDev2.Prototypes.instance().isEnabled("inDevToolsFloaty")) {
       Floaty.instance({
         forceNew: true,
         document: this.element.ownerDocument
@@ -8834,8 +8837,8 @@ var Item = class {
    * Sets the enabled state of this item.
    * @param enabled True to enable the item, false to disable it.
    */
-  setEnabled(enabled2) {
-    this.disabled = !enabled2;
+  setEnabled(enabled) {
+    this.disabled = !enabled;
   }
   /**
    * Builds a descriptor object for this item.
@@ -9215,7 +9218,7 @@ var SubMenu = class extends Item {
       return order1 - order2;
     });
     for (const item8 of items) {
-      if (item8.experiment && !Root5.Runtime.experiments.isEnabled(item8.experiment)) {
+      if (item8.experiment && !Root4.Runtime.experiments.isEnabled(item8.experiment)) {
         continue;
       }
       const itemLocation = item8.location;
@@ -9653,7 +9656,7 @@ function registerProvider(registration) {
 async function loadApplicableRegisteredProviders(target) {
   const providers = [];
   for (const providerRegistration of registeredProviders) {
-    if (!Root5.Runtime.Runtime.isDescriptorEnabled({ experiment: providerRegistration.experiment, condition: void 0 })) {
+    if (!Root4.Runtime.Runtime.isDescriptorEnabled({ experiment: providerRegistration.experiment, condition: void 0 })) {
       continue;
     }
     if (providerRegistration.contextTypes) {
@@ -11136,13 +11139,13 @@ var TextPrompt = class extends Common12.ObjectWrapper.ObjectWrapper {
       setPlaceholder(this.element(), null);
     }
   }
-  setEnabled(enabled2) {
-    if (enabled2) {
+  setEnabled(enabled) {
+    if (enabled) {
       this.element().setAttribute("contenteditable", "plaintext-only");
     } else {
       this.element().removeAttribute("contenteditable");
     }
-    this.element().classList.toggle("disabled", !enabled2);
+    this.element().classList.toggle("disabled", !enabled);
   }
   removeFromElement() {
     this.clearAutocomplete();
@@ -11864,8 +11867,8 @@ var Toolbar = class _Toolbar extends HTMLElement {
   empty() {
     return !this.items.length;
   }
-  setEnabled(enabled2) {
-    this.enabled = enabled2;
+  setEnabled(enabled) {
+    this.enabled = enabled;
     for (const item8 of this.items) {
       item8.applyEnabledState(this.enabled && item8.enabled);
     }
@@ -12008,8 +12011,8 @@ var ToolbarItem = class extends Common13.ObjectWrapper.ObjectWrapper {
     this.enabled = value;
     this.applyEnabledState(this.enabled && (!this.toolbar || this.toolbar.enabled));
   }
-  applyEnabledState(enabled2) {
-    this.element.disabled = !enabled2;
+  applyEnabledState(enabled) {
+    this.element.disabled = !enabled;
   }
   visible() {
     return this.#visible;
@@ -12201,13 +12204,13 @@ var ToolbarInput = class extends ToolbarItem {
     this.element.appendChild(clearButton);
     this.updateEmptyStyles();
   }
-  applyEnabledState(enabled2) {
-    if (enabled2) {
+  applyEnabledState(enabled) {
+    if (enabled) {
       this.element.classList.remove("disabled");
     } else {
       this.element.classList.add("disabled");
     }
-    this.prompt.setEnabled(enabled2);
+    this.prompt.setEnabled(enabled);
   }
   setValue(value, notify) {
     this.prompt.setText(value);
@@ -12572,9 +12575,9 @@ var ToolbarComboBox = class extends ToolbarItem {
     option.setAttribute("jslog", `${VisualLogging13.item(jslogContext).track({ click: true })}`);
     return option;
   }
-  applyEnabledState(enabled2) {
-    super.applyEnabledState(enabled2);
-    this.element.disabled = !enabled2;
+  applyEnabledState(enabled) {
+    super.applyEnabledState(enabled);
+    this.element.disabled = !enabled;
   }
   removeOption(option) {
     this.element.removeChild(option);
@@ -12689,9 +12692,9 @@ var ToolbarCheckbox = class extends ToolbarItem {
   setChecked(value) {
     this.element.checked = value;
   }
-  applyEnabledState(enabled2) {
-    super.applyEnabledState(enabled2);
-    this.element.disabled = !enabled2;
+  applyEnabledState(enabled) {
+    super.applyEnabledState(enabled);
+    this.element.disabled = !enabled;
   }
   setIndeterminate(indeterminate) {
     this.element.indeterminate = indeterminate;
@@ -12715,7 +12718,7 @@ function registerToolbarItem(registration) {
   registeredToolbarItems.push(registration);
 }
 function getRegisteredToolbarItems() {
-  return registeredToolbarItems.filter((item8) => Root6.Runtime.Runtime.isDescriptorEnabled({ experiment: item8.experiment, condition: item8.condition }));
+  return registeredToolbarItems.filter((item8) => Root5.Runtime.Runtime.isDescriptorEnabled({ experiment: item8.experiment, condition: item8.condition }));
 }
 
 // gen/front_end/ui/legacy/UIUtils.js
@@ -15692,8 +15695,8 @@ function bindToAction(actionName) {
       action6.removeEventListener("Toggled", toggled);
       return;
     }
-    setEnabled = (enabled2) => {
-      e.disabled = !enabled2;
+    setEnabled = (enabled) => {
+      e.disabled = !enabled;
     };
     action6.addEventListener("Enabled", actionEnabledChanged);
     const toggleable = action6.toggleable();
@@ -16820,8 +16823,8 @@ var DropTarget = class {
     this.enabled = true;
     this.dragMaskElement = null;
   }
-  setEnabled(enabled2) {
-    this.enabled = enabled2;
+  setEnabled(enabled) {
+    this.enabled = enabled;
   }
   onDragEnter(event) {
     if (this.enabled && this.hasMatchingType(event)) {
@@ -17616,9 +17619,9 @@ var FilterBar = class extends Common16.ObjectWrapper.eventMixin(HBox) {
     filter.addEventListener("FilterChanged", this.filterChanged, this);
     this.updateFilterButton();
   }
-  setEnabled(enabled2) {
-    this.enabled = enabled2;
-    this.#filterButton.setEnabled(enabled2);
+  setEnabled(enabled) {
+    this.enabled = enabled;
+    this.#filterButton.setEnabled(enabled);
     this.updateFilterBar();
   }
   filterChanged() {
@@ -19510,30 +19513,6 @@ var reportView_css_default = `/*
   user-select: text;
 }
 
-.image-wrapper,
-.image-wrapper img {
-  max-width: 200px;
-  max-height: 200px;
-  display: block;
-  object-fit: contain;
-}
-
-.image-wrapper {
-  height: fit-content;
-  margin-right: 8px;
-}
-
-.show-mask img {
-  /* The safe zone is a centrally positioned circle, with radius 2/5
-  * (40%) of the minimum of the icon's width and height.
-  * https://w3c.github.io/manifest/#icon-masks */
-  clip-path: circle(40% at 50% 50%);
-}
-
-.show-mask .image-wrapper {
-  background: var(--image-file-checker);
-}
-
 @media (forced-colors: active) {
   .report-field-value .inline-icon {
     color: ButtonText;
@@ -19731,9 +19710,6 @@ var Section2 = class extends VBox {
   markFieldListAsGroup() {
     markAsGroup(this.fieldList);
     setLabel(this.fieldList, this.title());
-  }
-  setIconMasked(masked) {
-    this.element.classList.toggle("show-mask", masked);
   }
 };
 
@@ -20355,11 +20331,11 @@ var SearchableView = class extends VBox {
     this.closeSearch();
     return true;
   }
-  updateSearchNavigationButtonState(enabled2) {
-    this.replaceButtonElement.disabled = !enabled2;
-    this.replaceAllButtonElement.disabled = !enabled2;
-    this.searchNavigationPrevElement.setEnabled(enabled2);
-    this.searchNavigationNextElement.setEnabled(enabled2);
+  updateSearchNavigationButtonState(enabled) {
+    this.replaceButtonElement.disabled = !enabled;
+    this.replaceAllButtonElement.disabled = !enabled;
+    this.searchNavigationPrevElement.setEnabled(enabled);
+    this.searchNavigationNextElement.setEnabled(enabled);
   }
   updateSearchMatchesCountAndCurrentMatchIndex(matches, currentMatchIndex) {
     if (!this.currentQuery) {

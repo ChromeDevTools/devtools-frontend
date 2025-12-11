@@ -41,6 +41,7 @@ export interface ScopeTreeNode {
     }>;
     start: number;
     end: number;
+    nameMappingLocations?: number[];
     kind: ScopeKind;
     children: ScopeTreeNode[];
 }

@@ -201,4 +201,8 @@ devtools-button.link-icon {
   }
 }
 
+.greendev-widgets input[type="radio"] {
+  margin: 6px;
+}
+
 /*# sourceURL=${import.meta.resolve('./settingsScreen.css')} */`;

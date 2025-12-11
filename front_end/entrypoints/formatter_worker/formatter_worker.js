@@ -4920,7 +4920,7 @@ function parseScopes(expression, sourceType = "script") {
   } catch {
     return null;
   }
-  return new ScopeVariableAnalysis(root).run();
+  return new ScopeVariableAnalysis(root, expression).run();
 }
 var Scope = class {
   variables = /* @__PURE__ */ new Map();
@@ -4928,12 +4928,14 @@ var Scope = class {
   start;
   end;
   kind;
+  nameMappingLocations;
   children = [];
-  constructor(start, end, parent, kind) {
+  constructor(start, end, parent, kind, nameMappingLocations) {
     this.start = start;
     this.end = end;
     this.parent = parent;
     this.kind = kind;
+    this.nameMappingLocations = nameMappingLocations;
     if (parent) {
       parent.children.push(this);
     }
@@ -4953,6 +4955,7 @@ var Scope = class {
       end: this.end,
       variables,
       kind: this.kind,
+      nameMappingLocations: this.nameMappingLocations,
       children
     };
   }
@@ -5022,8 +5025,11 @@ var ScopeVariableAnalysis = class {
   #allNames = /* @__PURE__ */ new Set();
   #currentScope;
   #rootNode;
-  constructor(node) {
+  #sourceText;
+  #additionalMappingLocations = [];
+  constructor(node, sourceText) {
     this.#rootNode = node;
+    this.#sourceText = sourceText;
     this.#rootScope = new Scope(
       node.start,
       node.end,
@@ -5164,12 +5170,7 @@ var ScopeVariableAnalysis = class {
         break;
       case "FunctionDeclaration":
         this.#processNodeAsDefinition(2, false, node.id);
-        this.#pushScope(
-          node.id?.end ?? node.start,
-          node.end,
-          2
-          /* ScopeKind.FUNCTION */
-        );
+        this.#pushScope(node.id?.end ?? node.start, node.end, 2, mappingLocationsForFunctionDeclaration(node, this.#sourceText));
         this.#addVariable(
           "this",
           node.start,
@@ -5187,12 +5188,7 @@ var ScopeVariableAnalysis = class {
         this.#popScope(true);
         break;
       case "FunctionExpression":
-        this.#pushScope(
-          node.id?.end ?? node.start,
-          node.end,
-          2
-          /* ScopeKind.FUNCTION */
-        );
+        this.#pushScope(node.id?.end ?? node.start, node.end, 2, [...this.#additionalMappingLocations, ...mappingLocationsForFunctionExpression(node, this.#sourceText)]);
         this.#addVariable(
           "this",
           node.start,
@@ -5225,8 +5221,11 @@ var ScopeVariableAnalysis = class {
       case "MethodDefinition":
         if (node.computed) {
           this.#processNode(node.key);
+        } else {
+          this.#additionalMappingLocations = mappingLocationsForMethodDefinition(node);
         }
         this.#processNode(node.value);
+        this.#additionalMappingLocations = [];
         break;
       case "NewExpression":
         this.#processNode(node.callee);
@@ -5356,8 +5355,8 @@ var ScopeVariableAnalysis = class {
   getAllNames() {
     return this.#allNames;
   }
-  #pushScope(start, end, kind) {
-    this.#currentScope = new Scope(start, end, this.#currentScope, kind);
+  #pushScope(start, end, kind, nameMappingLocations) {
+    this.#currentScope = new Scope(start, end, this.#currentScope, kind, nameMappingLocations);
   }
   #popScope(isFunctionContext) {
     if (this.#currentScope.parent === null) {
@@ -5411,6 +5410,43 @@ var ScopeVariableAnalysis = class {
     this.#processNode(decl.init ?? null);
   }
 };
+function mappingLocationsForFunctionDeclaration(node, sourceText) {
+  const result = [node.id.start];
+  const searchParenEndPos = node.params.length ? node.params[0].start : node.body.start;
+  const parenPos = indexOfCharInBounds(sourceText, "(", node.id.end, searchParenEndPos);
+  if (parenPos >= 0) {
+    result.push(parenPos);
+  }
+  return result;
+}
+function mappingLocationsForFunctionExpression(node, sourceText) {
+  const result = [];
+  if (node.id) {
+    result.push(node.id.start);
+  }
+  const searchParenStartPos = node.id ? node.id.end : node.start;
+  const searchParenEndPos = node.params.length ? node.params[0].start : node.body.start;
+  const parenPos = indexOfCharInBounds(sourceText, "(", searchParenStartPos, searchParenEndPos);
+  if (parenPos >= 0) {
+    result.push(parenPos);
+  }
+  return result;
+}
+function mappingLocationsForMethodDefinition(node) {
+  if (node.key.type === "Identifier" || node.key.type === "PrivateIdentifier") {
+    const id = node.key;
+    return [id.start];
+  }
+  return [];
+}
+function indexOfCharInBounds(str, needle, start, end) {
+  for (let i = start; i < end; ++i) {
+    if (str[i] === needle) {
+      return i;
+    }
+  }
+  return -1;
+}
 
 // gen/front_end/entrypoints/formatter_worker/Substitute.js
 function substituteExpression(expression, nameMap) {
@@ -5425,7 +5461,7 @@ function computeSubstitution(expression, nameMap) {
     checkPrivateFields: false,
     ranges: false
   });
-  const scopeVariables = new ScopeVariableAnalysis(root);
+  const scopeVariables = new ScopeVariableAnalysis(root, expression);
   scopeVariables.run();
   const freeVariables = scopeVariables.getFreeVariables();
   const result = [];

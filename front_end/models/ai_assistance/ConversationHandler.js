@@ -146,7 +146,8 @@ export class ConversationHandler extends Common.ObjectWrapper.ObjectWrapper {
     }
     async *#doExternalConversation(opts) {
         const { conversation, prompt, selected } = opts;
-        const generator = conversation.run(prompt, { selected });
+        conversation.setContext(selected);
+        const generator = conversation.run(prompt);
         const devToolsLogs = [];
         for await (const data of generator) {
             if (data.type !== "answer" /* ResponseType.ANSWER */ || data.complete) {

@@ -15,13 +15,11 @@
  *     <devtools-report-divider></devtools-report-divider>
  *   </devtools-report>
  * ```
+ * The component is intended to replace UI.ReportView in an idiomatic way.
  */
 export interface ReportData {
     reportTitle: string;
 }
-/**
- * @deprecated Use UI.ReportView.ReportView instead.
- */
 export declare class Report extends HTMLElement {
     #private;
     set data({ reportTitle }: ReportData);

@@ -490,7 +490,7 @@ export interface ActiveSuggestion {
   rpcGlobalId?: Host.AidaClient.RpcGlobalId;
   startTime: number;
   onImpression: (rpcGlobalId: Host.AidaClient.RpcGlobalId, latency: number, sampleId?: number) => void;
-  clearCachedRequest: () => void;
+  clearCachedRequest?: () => void;
 }
 
 export const aiAutoCompleteSuggestionState = CM.StateField.define<ActiveSuggestion|null>({
@@ -501,7 +501,7 @@ export const aiAutoCompleteSuggestionState = CM.StateField.define<ActiveSuggesti
         if (effect.value) {
           return effect.value;
         }
-        value?.clearCachedRequest();
+        value?.clearCachedRequest?.();
         return null;
       }
     }
@@ -514,14 +514,14 @@ export const aiAutoCompleteSuggestionState = CM.StateField.define<ActiveSuggesti
     // between when the request was sent and the response was received.
     // We check if the position is still valid before trying to map it.
     if (value.from > tr.state.doc.length) {
-      value.clearCachedRequest();
+      value.clearCachedRequest?.();
       return null;
     }
 
     // If deletion occurs, set to null. Otherwise, the mapping might fail if
     // the position is inside the deleted range.
     if (tr.docChanged && tr.state.doc.length < tr.startState.doc.length) {
-      value.clearCachedRequest();
+      value.clearCachedRequest?.();
       return null;
     }
 
@@ -530,7 +530,7 @@ export const aiAutoCompleteSuggestionState = CM.StateField.define<ActiveSuggesti
 
     // If a change happened before the position from which suggestion was generated, set to null.
     if (tr.docChanged && head < from) {
-      value.clearCachedRequest();
+      value.clearCachedRequest?.();
       return null;
     }
 
@@ -571,7 +571,7 @@ export function acceptAiAutoCompleteSuggestion(view: CM.EditorView):
     userEvent: 'input.complete',
   });
 
-  suggestion.clearCachedRequest();
+  suggestion.clearCachedRequest?.();
   return {accepted: true, suggestion};
 }
 

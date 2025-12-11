@@ -4,16 +4,21 @@
 
 import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
+import * as AiCodeGeneration from '../../../models/ai_code_generation/ai_code_generation.js';
 import * as PanelCommon from '../../../panels/common/common.js';
 import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment, updateHostConfig} from '../../../testing/EnvironmentHelpers.js';
 import * as CodeMirror from '../../../third_party/codemirror.next/codemirror.next.js';
 
-import {AiCodeGenerationProvider, TextEditor} from './text_editor.js';
+import {AiCodeGenerationProvider, Config, TextEditor} from './text_editor.js';
 
-function createEditorWithProvider(doc: string):
-    {editor: TextEditor.TextEditor, provider: AiCodeGenerationProvider.AiCodeGenerationProvider} {
-  const provider = AiCodeGenerationProvider.AiCodeGenerationProvider.createInstance();
+function createEditorWithProvider(doc: string, config: AiCodeGenerationProvider.AiCodeGenerationConfig = {
+  generationContext: {},
+  onSuggestionAccepted: () => {},
+  onRequestTriggered: () => {},
+  onResponseReceived: () => {},
+}): {editor: TextEditor.TextEditor, provider: AiCodeGenerationProvider.AiCodeGenerationProvider} {
+  const provider = AiCodeGenerationProvider.AiCodeGenerationProvider.createInstance(config);
   const editor = new TextEditor.TextEditor(
       CodeMirror.EditorState.create({
         doc,
@@ -29,6 +34,7 @@ function createEditorWithProvider(doc: string):
 
 describeWithEnvironment('AiCodeGenerationProvider', () => {
   let clock: sinon.SinonFakeTimers;
+  let checkAccessPreconditionsStub: sinon.SinonStub;
 
   beforeEach(() => {
     clock = sinon.useFakeTimers();
@@ -42,8 +48,8 @@ describeWithEnvironment('AiCodeGenerationProvider', () => {
         blockedByGeo: false,
       }
     });
-    sinon.stub(Host.AidaClient.AidaClient, 'checkAccessPreconditions')
-        .resolves(Host.AidaClient.AidaAccessPreconditions.AVAILABLE);
+    checkAccessPreconditionsStub = sinon.stub(Host.AidaClient.AidaClient, 'checkAccessPreconditions');
+    checkAccessPreconditionsStub.resolves(Host.AidaClient.AidaAccessPreconditions.AVAILABLE);
     sinon.stub(Host.AidaClient.HostConfigTracker, 'instance').returns({
       addEventListener: () => {},
       removeEventListener: () => {},
@@ -126,6 +132,49 @@ describeWithEnvironment('AiCodeGenerationProvider', () => {
   });
 
   describe('Editor keymap', () => {
+    it('accepts suggestion on Tab', async () => {
+      const {editor, provider} = createEditorWithProvider('');
+      await clock.tickAsync(0);  // for the initial onAidaAvailabilityChange call
+
+      editor.dispatch({
+        effects: Config.setAiAutoCompleteSuggestion.of({
+          text: 'code suggestion',
+          from: 0,
+          rpcGlobalId: 1,
+          sampleId: 1,
+          startTime: performance.now(),
+          onImpression: () => {},
+        }),
+      });
+      editor.editor.contentDOM.dispatchEvent(new KeyboardEvent('keydown', {key: 'Tab'}));
+
+      assert.strictEqual(editor.state.doc.toString(), 'code suggestion');
+      provider.dispose();
+    });
+
+    it('dismisses suggestion on Escape', async () => {
+      const {editor, provider} = createEditorWithProvider('');
+      await clock.tickAsync(0);  // for the initial onAidaAvailabilityChange call
+
+      editor.dispatch({
+        effects: Config.setAiAutoCompleteSuggestion.of({
+          text: 'code suggestion',
+          from: 0,
+          rpcGlobalId: 1,
+          sampleId: 1,
+          startTime: performance.now(),
+          onImpression: () => {},
+        }),
+      });
+
+      assert.isNotNull(editor.editor.state.field(Config.aiAutoCompleteSuggestionState));
+
+      editor.editor.contentDOM.dispatchEvent(new KeyboardEvent('keydown', {key: 'Escape'}));
+
+      assert.isNull(editor.editor.state.field(Config.aiAutoCompleteSuggestionState));
+      provider.dispose();
+    });
+
     it('dismisses teaser on Escape when loading', async () => {
       const {editor, provider} = createEditorWithProvider('// Hello');
       sinon.stub(PanelCommon.AiCodeGenerationTeaser.prototype, 'loading').value(true);
@@ -141,6 +190,25 @@ describeWithEnvironment('AiCodeGenerationProvider', () => {
         effects: AiCodeGenerationProvider.setAiCodeGenerationTeaserMode.of(
             AiCodeGenerationProvider.AiCodeGenerationTeaserMode.DISMISSED)
       });
+      provider.dispose();
+    });
+
+    it('triggers code generation on Ctrl+I', async () => {
+      const generateCodeStub = sinon.stub(AiCodeGeneration.AiCodeGeneration.AiCodeGeneration.prototype, 'generateCode');
+      Common.Settings.Settings.instance().settingForTest('ai-code-completion-enabled').set(true);
+      const {editor, provider} = createEditorWithProvider('// Hello');
+      editor.dispatch({selection: {anchor: 8}});
+      await clock.tickAsync(0);
+
+      const event = new KeyboardEvent('keydown', {
+        key: 'i',
+        ctrlKey: Host.Platform.isMac() ? false : true,
+        metaKey: Host.Platform.isMac() ? true : false,
+      });
+      editor.editor.contentDOM.dispatchEvent(event);
+
+      sinon.assert.calledOnce(generateCodeStub);
+      assert.deepEqual(generateCodeStub.firstCall.args[0], '// Hello');
       provider.dispose();
     });
 
@@ -162,5 +230,131 @@ describeWithEnvironment('AiCodeGenerationProvider', () => {
       sinon.assert.calledWith(generationTeaser.set, true);
       provider.dispose();
     });
+
+    it('aborts code generation request when Escape is pressed while loading', async () => {
+      const generateCodeStub = sinon.stub(AiCodeGeneration.AiCodeGeneration.AiCodeGeneration.prototype, 'generateCode');
+      generateCodeStub.returns(new Promise(() => {}));
+      const {editor, provider} = createEditorWithProvider('// Hello');
+      sinon.stub(PanelCommon.AiCodeGenerationTeaser.prototype, 'loading').value(true);
+      sinon.stub(PanelCommon.AiCodeGenerationTeaser.prototype, 'isShowing').returns(true);
+      editor.dispatch({selection: {anchor: 8}});
+      await clock.tickAsync(0);
+
+      const triggerEvent = new KeyboardEvent('keydown', {
+        key: 'i',
+        ctrlKey: Host.Platform.isMac() ? false : true,
+        metaKey: Host.Platform.isMac() ? true : false,
+      });
+      editor.editor.contentDOM.dispatchEvent(triggerEvent);
+      await clock.tickAsync(0);
+
+      sinon.assert.calledOnce(generateCodeStub);
+
+      const escapeEvent = new KeyboardEvent('keydown', {key: 'Escape'});
+      editor.editor.contentDOM.dispatchEvent(escapeEvent);
+      await clock.tickAsync(0);
+
+      const suggestion = editor.editor.state.field(Config.aiAutoCompleteSuggestionState);
+      assert.notExists(suggestion);
+      provider.dispose();
+    });
+  });
+
+  describe('Dispatches', () => {
+    it('dispatches a suggestion to the editor when AIDA returns one', async () => {
+      const generateCodeStub = sinon.stub(AiCodeGeneration.AiCodeGeneration.AiCodeGeneration.prototype, 'generateCode')
+                                   .returns(Promise.resolve({
+                                     samples: [{
+                                       generationString: 'suggestion',
+                                       sampleId: 1,
+                                       score: 1,
+                                     }],
+                                     metadata: {rpcGlobalId: 1},
+                                   }));
+      const {editor, provider} = createEditorWithProvider('// Hello');
+      editor.dispatch({selection: {anchor: 8}});
+      await clock.tickAsync(0);
+
+      const event = new KeyboardEvent('keydown', {
+        key: 'i',
+        ctrlKey: Host.Platform.isMac() ? false : true,
+        metaKey: Host.Platform.isMac() ? true : false,
+      });
+      editor.editor.contentDOM.dispatchEvent(event);
+      await clock.tickAsync(0);
+
+      sinon.assert.calledOnce(generateCodeStub);
+      const suggestion = editor.editor.state.field(Config.aiAutoCompleteSuggestionState);
+      assert.exists(suggestion);
+      assert.strictEqual(suggestion.text, '\nsuggestion');
+      assert.strictEqual(suggestion.from, 8);
+      assert.strictEqual(suggestion.sampleId, 1);
+      assert.strictEqual(suggestion.rpcGlobalId, 1);
+      provider.dispose();
+    });
+
+    it('does not dispatch suggestion or citation if recitation action is BLOCK', async () => {
+      const generateCodeStub = sinon.stub(AiCodeGeneration.AiCodeGeneration.AiCodeGeneration.prototype, 'generateCode')
+                                   .returns(Promise.resolve({
+                                     samples: [{
+                                       generationString: 'suggestion',
+                                       sampleId: 1,
+                                       score: 1,
+                                       attributionMetadata: {
+                                         attributionAction: Host.AidaClient.RecitationAction.BLOCK,
+                                         citations: [{uri: 'https://www.example.com'}],
+                                       }
+                                     }],
+                                     metadata: {},
+                                   }));
+      const {editor, provider} = createEditorWithProvider('// Hello');
+      editor.dispatch({selection: {anchor: 8}});
+      await clock.tickAsync(0);
+
+      const event = new KeyboardEvent('keydown', {
+        key: 'i',
+        ctrlKey: Host.Platform.isMac() ? false : true,
+        metaKey: Host.Platform.isMac() ? true : false,
+      });
+      editor.editor.contentDOM.dispatchEvent(event);
+      await clock.tickAsync(0);
+
+      sinon.assert.calledOnce(generateCodeStub);
+      const suggestion = editor.editor.state.field(Config.aiAutoCompleteSuggestionState);
+      assert.notExists(suggestion);
+      provider.dispose();
+    });
+  });
+
+  it('logs error and dismisses teaser when generateCode rejects', async () => {
+    const generateCodeStub = sinon.stub(AiCodeGeneration.AiCodeGeneration.AiCodeGeneration.prototype, 'generateCode')
+                                 .rejects(new Error('AIDA Error'));
+    const actionTakenStub = sinon.stub(Host.userMetrics, 'actionTaken');
+    const {editor, provider} = createEditorWithProvider('// Hello');
+    const generationTeaser = PanelCommon.AiCodeGenerationTeaser.prototype;
+    sinon.stub(generationTeaser, 'isShowing').returns(true);
+    const loadingSetter = sinon.spy(generationTeaser, 'loading', ['set']);
+    editor.dispatch({selection: {anchor: 8}});
+    await clock.tickAsync(0);
+
+    const event = new KeyboardEvent('keydown', {
+      key: 'i',
+      ctrlKey: Host.Platform.isMac() ? false : true,
+      metaKey: Host.Platform.isMac() ? true : false,
+    });
+    const dispatchSpy = sinon.spy(editor, 'dispatch');
+    editor.editor.contentDOM.dispatchEvent(event);
+    await clock.tickAsync(0);
+
+    sinon.assert.calledOnce(generateCodeStub);
+    sinon.assert.calledWith(actionTakenStub, Host.UserMetrics.Action.AiCodeGenerationError);
+    const suggestion = editor.editor.state.field(Config.aiAutoCompleteSuggestionState);
+    assert.notExists(suggestion);
+    sinon.assert.calledWith(loadingSetter.set, false);
+    sinon.assert.calledWith(dispatchSpy, {
+      effects: AiCodeGenerationProvider.setAiCodeGenerationTeaserMode.of(
+          AiCodeGenerationProvider.AiCodeGenerationTeaserMode.DISMISSED)
+    });
+    provider.dispose();
   });
 });

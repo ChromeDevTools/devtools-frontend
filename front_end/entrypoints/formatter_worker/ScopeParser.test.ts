@@ -161,5 +161,13 @@ describe('ScopeParser', () => {
       assert.strictEqual(scopeSet?.kind, FormatterAction.ScopeKind.FUNCTION);
       assert.deepEqual(scopeSet?.nameMappingLocations, [27, 30]);
     });
+
+    it('parses method syntax in object literals', () => {
+      const scopes = parseScopes('const obj = { someMethod() {} };');
+
+      const scopeMethod = scopes?.children[0];
+      assert.strictEqual(scopeMethod?.kind, FormatterAction.ScopeKind.FUNCTION);
+      assert.deepEqual(scopeMethod?.nameMappingLocations, [14, 24]);
+    });
   });
 });

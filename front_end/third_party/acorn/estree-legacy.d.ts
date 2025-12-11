@@ -33,6 +33,7 @@ export type Node = estree.Node;
 export type ObjectPattern = estree.ObjectPattern;
 export type Pattern = estree.Pattern;
 export type PrivateIdentifier = estree.PrivateIdentifier;
+export type Property = estree.Property;
 export type SimpleLiteral = estree.SimpleLiteral;
 export type TemplateLiteral = estree.TemplateLiteral;
 export type TemplateLiteralNode = estree.TemplateLiteral;

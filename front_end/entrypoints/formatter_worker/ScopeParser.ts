@@ -273,6 +273,7 @@ export class ScopeVariableAnalysis {
         this.#pushScope(
             node.id?.end ?? node.start, node.end, ScopeKind.FUNCTION,
             [...this.#additionalMappingLocations, ...mappingLocationsForFunctionExpression(node, this.#sourceText)]);
+        this.#additionalMappingLocations = [];
         this.#addVariable('this', node.start, DefinitionKind.FIXED);
         this.#addVariable('arguments', node.start, DefinitionKind.FIXED);
         node.params.forEach(this.#processNodeAsDefinition.bind(this, DefinitionKind.LET, false));
@@ -300,7 +301,6 @@ export class ScopeVariableAnalysis {
           this.#additionalMappingLocations = mappingLocationsForMethodDefinition(node);
         }
         this.#processNode(node.value);
-        this.#additionalMappingLocations = [];
         break;
       case 'NewExpression':
         this.#processNode(node.callee);
@@ -335,6 +335,8 @@ export class ScopeVariableAnalysis {
         } else {
           if (node.computed) {
             this.#processNode(node.key);
+          } else if (node.value.type === 'FunctionExpression') {
+            this.#additionalMappingLocations = mappingLocationsForMethodDefinition(node);
           }
           this.#processNode(node.value);
         }
@@ -537,7 +539,7 @@ function mappingLocationsForFunctionExpression(node: Acorn.ESTree.FunctionExpres
   return result;
 }
 
-function mappingLocationsForMethodDefinition(node: Acorn.ESTree.MethodDefinition): number[] {
+function mappingLocationsForMethodDefinition(node: Acorn.ESTree.MethodDefinition|Acorn.ESTree.Property): number[] {
   // Method definitions use a FunctionExpression as their "value" child. So we only
   // record the start of the "key" here and let 'mappingLocationsForFunctionExpression' handle
   // the parenthesis.

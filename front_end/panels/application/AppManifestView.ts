@@ -1,7 +1,6 @@
 // Copyright 2016 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 
 import '../../ui/legacy/components/inline_editor/inline_editor.js';
 import '../../ui/components/report_view/report_view.js';
@@ -1142,8 +1141,6 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
     });
     this.view = view;
 
-    this.contentElement.classList.add('manifest-container');
-
     SDK.TargetManager.TargetManager.instance().observeTargets(this);
     this.registeredListeners = [];
 
@@ -1365,6 +1362,8 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
           initiatorUrl: this.target.inspectedURL(),
         },
         /* isBinary=*/ true);
+    // Just loading the image, not building UI.
+    /* eslint-disable @devtools/no-imperative-dom-api */
     const image = document.createElement('img');
     const result = new Promise((resolve, reject) => {
       image.onload = resolve;
@@ -1374,6 +1373,7 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
     // does not work, we can parse mimeType out of the response headers
     // using front_end/core/platform/MimeType.ts.
     image.src = 'data:application/octet-stream;base64,' + await Common.Base64.encode(content);
+    /* eslint-enable @devtools/no-imperative-dom-api */
     try {
       await result;
       return {naturalWidth: image.naturalWidth, naturalHeight: image.naturalHeight, src: image.src};

@@ -1,3 +1,4 @@
+
 // Copyright 2020 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -10,16 +11,21 @@ import {
   openSourcesPanel,
   waitForStackTopMatch,
 } from '../helpers/sources-helpers.js';
+import type {DevToolsPage} from '../shared/frontend-helper.js';
+
+async function addWatchExpression(expression: string, devToolsPage: DevToolsPage) {
+  await devToolsPage.click('[aria-label="Watch"]');
+  await devToolsPage.click('[aria-label="Add watch expression"]');
+  await devToolsPage.typeText(expression);
+  await devToolsPage.pressKey('Enter');
+}
 
 describe('Watch Expression Pane', () => {
   it('collapses children when editing', async ({devToolsPage}) => {
     await openSourcesPanel(devToolsPage);
 
     // Create watch expression "Text"
-    await devToolsPage.click('[aria-label="Watch"]');
-    await devToolsPage.click('[aria-label="Add watch expression"]');
-    await devToolsPage.typeText('Text');
-    await devToolsPage.pressKey('Enter');
+    await addWatchExpression('Text', devToolsPage);
 
     // Expand watch element
     const element = await devToolsPage.waitFor('.object-properties-section-root-element');
@@ -54,14 +60,32 @@ describe('Watch Expression Pane', () => {
     const scriptLocation = await waitForStackTopMatch(breakLocationOuterRegExp, devToolsPage);
     assert.match(scriptLocation, breakLocationOuterRegExp);
 
-    await devToolsPage.click('[aria-label="Watch"]');
-    await devToolsPage.click('[aria-label="Add watch expression"]');
-    await devToolsPage.typeText(watchText);
-    await devToolsPage.pressKey('Enter');
+    await addWatchExpression(watchText, devToolsPage);
 
     const element = await devToolsPage.waitFor('.watch-expression-title');
     const nameAndValue = await element.evaluate(e => e.textContent);
 
     assert.strictEqual(nameAndValue, `${watchText}: ${watchValue}`);
+  });
+
+  it('preserves expansion', async ({devToolsPage, inspectedPage}) => {
+    await openSourcesPanel(devToolsPage);
+
+    await inspectedPage.goToHtml(`
+      <script>
+        var globalObject = {foo: {bar: {baz: 2012}}};
+      </script>
+    `);
+
+    await addWatchExpression('globalObject', devToolsPage);
+
+    await devToolsPage.click('.watch-expression-title');
+    const fooProp = await devToolsPage.waitFor('foo', undefined, undefined, 'pierceShadowText');
+    await devToolsPage.clickElement(fooProp);
+
+    await inspectedPage.reload();
+
+    await devToolsPage.waitFor('.watch-expression-title');
+    await devToolsPage.$textContent('{bar: 2012}');
   });
 });

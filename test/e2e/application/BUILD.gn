@@ -10,6 +10,7 @@ ts_e2e_library("application") {
     "frame-tree.test.ts",
     "manifest.test.ts",
     "reporting-api.test.ts",
+    "resource-tree.test.ts",
     "service-worker-network.test.ts",
     "service-worker-update.test.ts",
     "session-storage.test.ts",

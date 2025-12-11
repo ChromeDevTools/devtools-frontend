@@ -19,11 +19,13 @@ copy_to_gen("application") {
     "manifest-no-id.json",
     "reporting-api.html",
     "reporting-api.rawresponse",
+    "resource-tree-non-unique-url-iframe.html",
     "service-worker-network.html",
     "service-worker.js",
     "session-storage.html",
     "shared-storage.html",
     "storage-quota.html",
+    "styles-non-unique-url.css",
     "window-controls-manifest.webmanifest",
     "window-controls.html",
   ]

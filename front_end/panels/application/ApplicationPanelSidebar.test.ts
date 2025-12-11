@@ -475,3 +475,125 @@ describeWithMockConnection('ResourcesSection', () => {
   describe('in scope', tests(true));
   describe('out of scope', tests(false));
 });
+
+describeWithMockConnection('IndexedDBTreeElement live update', () => {
+  let target: SDK.Target.Target;
+  let model: Application.IndexedDBModel.IndexedDBModel;
+  let sidebar: Application.ApplicationPanelSidebar.ApplicationPanelSidebar;
+  let indexedDBTreeElement: Application.ApplicationPanelSidebar.IndexedDBTreeElement;
+
+  beforeEach(async () => {
+    stubNoopSettings();
+    target = createTarget();
+    model = target.model(Application.IndexedDBModel.IndexedDBModel) as Application.IndexedDBModel.IndexedDBModel;
+    sinon.stub(model, 'refreshDatabase');
+    sinon.stub(UI.ViewManager.ViewManager.instance(), 'showView').resolves();  // Silence console error
+    SDK.ChildTargetManager.ChildTargetManager.install();
+    Application.ResourcesPanel.ResourcesPanel.instance({forceNew: true});
+    sidebar = await Application.ResourcesPanel.ResourcesPanel.showAndGetSidebar();
+    indexedDBTreeElement = sidebar.indexedDBListTreeElement;
+  });
+
+  it('updates tree on database, object store, and index changes', async () => {
+    const MAIN_FRAME_ID = 'main' as Protocol.Page.FrameId;
+    const storageKey = `test-storage-key|${MAIN_FRAME_ID}|http://www.example.com`;
+    assert.strictEqual(indexedDBTreeElement.childCount(), 0);
+
+    // 1. Create database "database1"
+    const db1Id = new Application.IndexedDBModel.DatabaseId({storageKey}, 'database1');
+    model.dispatchEventToListeners(Application.IndexedDBModel.Events.DatabaseAdded, {databaseId: db1Id, model});
+    const db1 = new Application.IndexedDBModel.Database(db1Id, 1);
+    model.dispatchEventToListeners(
+        Application.IndexedDBModel.Events.DatabaseLoaded, {database: db1, model, entriesUpdated: false});
+    await new Promise(resolve => setTimeout(resolve, 0));
+
+    assert.strictEqual(indexedDBTreeElement.childCount(), 1);
+    const db1TreeElement = indexedDBTreeElement.children()[0];
+    assert.strictEqual(db1TreeElement.titleAsText(), 'database1');
+    assert.strictEqual(db1TreeElement.childCount(), 0);
+
+    // 2. Create database "database2"
+    const db2Id = new Application.IndexedDBModel.DatabaseId({storageKey}, 'database2');
+    model.dispatchEventToListeners(Application.IndexedDBModel.Events.DatabaseAdded, {databaseId: db2Id, model});
+    const db2 = new Application.IndexedDBModel.Database(db2Id, 1);
+    model.dispatchEventToListeners(
+        Application.IndexedDBModel.Events.DatabaseLoaded, {database: db2, model, entriesUpdated: false});
+    await new Promise(resolve => setTimeout(resolve, 0));
+    assert.strictEqual(indexedDBTreeElement.childCount(), 2);
+    assert.strictEqual(indexedDBTreeElement.children()[0].titleAsText(), 'database1');
+    assert.strictEqual(indexedDBTreeElement.children()[0].childCount(), 0);
+    const db2TreeElement = indexedDBTreeElement.children()[1];
+    assert.strictEqual(db2TreeElement.titleAsText(), 'database2');
+    assert.strictEqual(db2TreeElement.childCount(), 0);
+
+    // 3. Create object store "objectStore1" with index "index1" in "database1"
+    const os1 = new Application.IndexedDBModel.ObjectStore('objectStore1', 'test', false);
+    os1.indexes.set('index1', new Application.IndexedDBModel.Index('index1', 'test', false, false));
+    db1.objectStores.set('objectStore1', os1);
+    model.dispatchEventToListeners(
+        Application.IndexedDBModel.Events.DatabaseLoaded, {database: db1, model, entriesUpdated: true});
+    await new Promise(resolve => setTimeout(resolve, 0));
+    assert.strictEqual(db1TreeElement.childCount(), 1);
+    const os1TreeElement = db1TreeElement.children()[0];
+    assert.strictEqual(os1TreeElement.titleAsText(), 'objectStore1');
+    assert.strictEqual(os1TreeElement.childCount(), 1);
+    const index1TreeElement = os1TreeElement.children()[0];
+    assert.strictEqual(index1TreeElement.titleAsText(), 'index1');
+    assert.strictEqual(db2TreeElement.childCount(), 0);
+
+    // 4. Create object store "objectStore2" with index "index2" in "database1"
+    const os2 = new Application.IndexedDBModel.ObjectStore('objectStore2', 'test', false);
+    os2.indexes.set('index2', new Application.IndexedDBModel.Index('index2', 'test', false, false));
+    db1.objectStores.set('objectStore2', os2);
+    model.dispatchEventToListeners(
+        Application.IndexedDBModel.Events.DatabaseLoaded, {database: db1, model, entriesUpdated: true});
+    await new Promise(resolve => setTimeout(resolve, 0));
+    assert.strictEqual(db1TreeElement.childCount(), 2);
+    assert.strictEqual(os1TreeElement.childCount(), 1);
+    assert.strictEqual(os1TreeElement.children()[0].titleAsText(), 'index1');
+    const os2TreeElement = db1TreeElement.children()[1];
+    assert.strictEqual(os2TreeElement.titleAsText(), 'objectStore2');
+    assert.strictEqual(os2TreeElement.childCount(), 1);
+    const index2TreeElement = os2TreeElement.children()[0];
+    assert.strictEqual(index2TreeElement.titleAsText(), 'index2');
+    assert.strictEqual(db2TreeElement.childCount(), 0);
+
+    // 5. Create index "index3" in "objectStore1" in "database1"
+    os1.indexes.set('index3', new Application.IndexedDBModel.Index('index3', 'test', false, false));
+    model.dispatchEventToListeners(
+        Application.IndexedDBModel.Events.DatabaseLoaded, {database: db1, model, entriesUpdated: true});
+    await new Promise(resolve => setTimeout(resolve, 0));
+    assert.strictEqual(os1TreeElement.childCount(), 2);
+    assert.strictEqual(os1TreeElement.children()[0].titleAsText(), 'index1');
+    assert.strictEqual(os1TreeElement.children()[1].titleAsText(), 'index3');
+    assert.strictEqual(os2TreeElement.childCount(), 1);
+
+    // 6. Delete index "index3" from "objectStore1" in "database1"
+    os1.indexes.delete('index3');
+    model.dispatchEventToListeners(
+        Application.IndexedDBModel.Events.DatabaseLoaded, {database: db1, model, entriesUpdated: true});
+    await new Promise(resolve => setTimeout(resolve, 0));
+    assert.strictEqual(os1TreeElement.childCount(), 1);
+    assert.strictEqual(os1TreeElement.children()[0].titleAsText(), 'index1');
+
+    // 7. Delete object store "objectStore2" from "database1"
+    db1.objectStores.delete('objectStore2');
+    model.dispatchEventToListeners(
+        Application.IndexedDBModel.Events.DatabaseLoaded, {database: db1, model, entriesUpdated: true});
+    await new Promise(resolve => setTimeout(resolve, 0));
+    assert.strictEqual(db1TreeElement.childCount(), 1);
+    assert.strictEqual(os1TreeElement.titleAsText(), 'objectStore1');
+
+    // 8. Delete database "database1"
+    model.dispatchEventToListeners(Application.IndexedDBModel.Events.DatabaseRemoved, {databaseId: db1Id, model});
+    await new Promise(resolve => setTimeout(resolve, 0));
+    assert.strictEqual(indexedDBTreeElement.childCount(), 1);
+    assert.strictEqual(indexedDBTreeElement.children()[0].titleAsText(), 'database2');
+    assert.strictEqual(indexedDBTreeElement.children()[0].childCount(), 0);
+
+    // 9. Delete database "database2"
+    model.dispatchEventToListeners(Application.IndexedDBModel.Events.DatabaseRemoved, {databaseId: db2Id, model});
+    await new Promise(resolve => setTimeout(resolve, 0));
+    assert.strictEqual(indexedDBTreeElement.childCount(), 0);
+  });
+});

@@ -181,3 +181,72 @@ describe('TextPromptElement', () => {
     assert.deepEqual(suggestions, [{text: 'modified and removed'}]);
   });
 });
+
+describe('TextPrompt', () => {
+  setupLocaleHooks();
+  const suggestions = ['heyoo', 'hey it\'s a suggestion', 'hey another suggestion'].map(s => ({text: s}));
+
+  let prompt: UI.TextPrompt.TextPrompt;
+  let div: HTMLDivElement;
+
+  beforeEach(() => {
+    prompt = new UI.TextPrompt.TextPrompt();
+    div = document.createElement('div');
+    renderElementIntoDOM(div);
+    UI.GlassPane.GlassPane.setContainer(div.ownerDocument.body);
+  });
+
+  it('provides autocomplete suggestions', async () => {
+    prompt.initialize(async () => suggestions);
+    prompt.attachAndStartEditing(div);
+
+    prompt.setText('hey');
+    await prompt.complete();
+    assert.strictEqual(prompt.textWithCurrentSuggestion(), 'heyoo');
+  });
+
+  it('uses a default suggestion for inexact matches', async () => {
+    prompt.initialize(async () => suggestions);
+    prompt.attachAndStartEditing(div);
+
+    prompt.clearAutocomplete();
+    prompt.setText('inexactmatch');
+    await prompt.complete();
+    assert.strictEqual(prompt.textWithCurrentSuggestion(), 'heyoo');
+  });
+
+  it('uses a default suggestion for a blank prompt', async () => {
+    prompt.initialize(async () => suggestions);
+    prompt.attachAndStartEditing(div);
+
+    prompt.setText('');
+    await prompt.complete();
+    assert.strictEqual(prompt.textWithCurrentSuggestion(), 'heyoo');
+  });
+
+  it('does not suggest for a blank prompt when disabled', async () => {
+    prompt.initialize(async () => suggestions);
+    prompt.attachAndStartEditing(div);
+
+    prompt.disableDefaultSuggestionForEmptyInput();
+    prompt.setText('');
+    await prompt.complete();
+    assert.strictEqual(prompt.textWithCurrentSuggestion(), '');
+  });
+
+  it('passes expression and query to the suggestion provider', async () => {
+    let expression, query;
+    prompt.initialize(async (e, q) => {
+      expression = e;
+      query = q;
+      return suggestions;
+    });
+    prompt.attachAndStartEditing(div);
+
+    prompt.setText('the expression and query');
+    await prompt.complete();
+    assert.strictEqual(prompt.text(), 'the expression and query');
+    assert.strictEqual(expression, 'the expression and ');
+    assert.strictEqual(query, 'query');
+  });
+});

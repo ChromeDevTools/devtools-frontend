@@ -184,6 +184,7 @@ export class CookieItemsView extends UI.Widget.VBox {
     this.#toolbar.show(this.element);
 
     this.cookiesTable = new CookieTable.CookiesTable.CookiesTable(
+        undefined,
         /* renderInline */ false, this.saveCookie.bind(this), this.refreshItems.bind(this),
         this.handleCookieSelected.bind(this), this.deleteCookie.bind(this));
 

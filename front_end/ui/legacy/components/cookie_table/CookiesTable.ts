@@ -176,6 +176,12 @@ const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined
 
 const expiresSessionValue = i18nLazyString(UIStrings.session);
 
+export interface CookiesTableData {
+  cookies: SDK.Cookie.Cookie[];
+  cookieToBlockedReasons?: ReadonlyMap<SDK.Cookie.Cookie, SDK.CookieModel.BlockedReason[]>;
+  cookieToExemptionReason?: ReadonlyMap<SDK.Cookie.Cookie, SDK.CookieModel.ExemptionReason>;
+}
+
 export class CookiesTable extends UI.Widget.VBox {
   private saveCallback?: ((arg0: SDK.Cookie.Cookie, arg1: SDK.Cookie.Cookie|null) => Promise<boolean>);
   private readonly refreshCallback?: (() => void);
@@ -190,15 +196,15 @@ export class CookiesTable extends UI.Widget.VBox {
   private readonly view: ViewFunction;
   private selectedKey?: string;
   private readonly editable: boolean;
-  private readonly renderInline: boolean;
+  private renderInline: boolean;
   private readonly schemeBindingEnabled: boolean;
   private readonly portBindingEnabled: boolean;
   constructor(
-      renderInline?: boolean,
+      element?: HTMLElement, renderInline?: boolean,
       saveCallback?: ((arg0: SDK.Cookie.Cookie, arg1: SDK.Cookie.Cookie|null) => Promise<boolean>),
       refreshCallback?: (() => void), selectedCallback?: (() => void),
       deleteCallback?: ((arg0: SDK.Cookie.Cookie, arg1: () => void) => void), view?: ViewFunction) {
-    super();
+    super(element);
     if (!view) {
       view = (input, _, target) => {
         // clang-format off
@@ -322,6 +328,15 @@ export class CookiesTable extends UI.Widget.VBox {
 
     this.cookieToExemptionReason = null;
 
+    this.requestUpdate();
+  }
+
+  set cookiesData(data: CookiesTableData) {
+    this.setCookies(data.cookies, data.cookieToBlockedReasons, data.cookieToExemptionReason);
+  }
+
+  set inline(value: boolean) {
+    this.renderInline = value;
     this.requestUpdate();
   }
 

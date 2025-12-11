@@ -1941,4 +1941,38 @@ describe('The Styles pane', () => {
       'unicode-bidi: isolate;'
     ]);
   });
+
+  it('adding an invalid property retains syntax', async ({devToolsPage, inspectedPage}) => {
+    await inspectedPage.goToHtml(`
+      <style>
+        #inspected {
+          font-size: 12px;
+        }
+      </style>
+      <div id="inspected">Text</div>
+      <div id="other"></div>`);
+    await waitForElementsStyleSection(undefined, devToolsPage);
+    await waitForAndClickTreeElementWithPartialText('inspected', devToolsPage);
+
+    let propertiesSection = await getStyleRule('#inspected', devToolsPage);
+    let inspectedRules = await getDisplayedCSSDeclarations(devToolsPage);
+    assert.sameDeepMembers(inspectedRules, ['font-size: 12px;', 'display: block;', 'unicode-bidi: isolate;']);
+
+    await propertiesSection.focus();
+    await devToolsPage.typeText('color');
+    await devToolsPage.pressKey('Enter');
+    await devToolsPage.typeText('rgb(');
+    await devToolsPage.typeText('1');
+    await devToolsPage.pressKey('Enter');
+
+    // Select another node (#other)
+    await waitForAndClickTreeElementWithPartialText('other', devToolsPage);
+
+    // Selected #inspected again
+    await waitForAndClickTreeElementWithPartialText('inspected', devToolsPage);
+    propertiesSection = await getStyleRule('#inspected', devToolsPage);
+    inspectedRules = await getDisplayedCSSDeclarations(devToolsPage);
+    assert.sameDeepMembers(
+        inspectedRules, ['font-size: 12px;', 'color: rgb();', 'display: block;', 'unicode-bidi: isolate;']);
+  });
 });

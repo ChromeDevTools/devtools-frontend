@@ -112,11 +112,20 @@ export class DevToolsPage extends PageWrapper {
     const devToolsVeLogging = {enabled: true, testing: true};
     await this.evaluateOnNewDocument(`globalThis.hostConfigForTesting = ${JSON.stringify({devToolsVeLogging})};`);
     await this.waitForFunction(async () => {
-      const result = await this.page.evaluate(`(async function() {
-        const Main = await import('./entrypoints/main/main.js');
-        return Main.MainImpl.MainImpl.instanceForTest !== null;
-      })()`);
-      return result;
+      try {
+        const result = await this.page.evaluate(`(async function() {
+          const Main = await import('./entrypoints/main/main.js');
+          return Main.MainImpl.MainImpl.instanceForTest !== null;
+        })()`);
+        return result;
+      } catch (err) {
+        // We might be navigating, so we retry execution context destroyed
+        // errors.
+        if (err.message.startsWith('Execution context was destroyed')) {
+          return false;
+        }
+        throw err;
+      }
     });
 
     await this.evaluate(`

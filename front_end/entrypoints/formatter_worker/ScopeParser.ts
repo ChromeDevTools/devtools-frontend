@@ -178,7 +178,8 @@ export class ScopeVariableAnalysis {
         node.elements.forEach(item => this.#processNode(item));
         break;
       case 'ArrowFunctionExpression': {
-        this.#pushScope(node.start, node.end, ScopeKind.ARROW_FUNCTION);
+        this.#pushScope(
+            node.start, node.end, ScopeKind.ARROW_FUNCTION, mappingLocationsForArrowFunctions(node, this.#sourceText));
         node.params.forEach(this.#processNodeAsDefinition.bind(this, DefinitionKind.VAR, false));
         if (node.body.type === 'BlockStatement') {
           // Include the body of the arrow function in the same scope as the arguments.
@@ -548,6 +549,27 @@ function mappingLocationsForMethodDefinition(node: Acorn.ESTree.MethodDefinition
     return [id.start];
   }
   return [];
+}
+
+function mappingLocationsForArrowFunctions(node: Acorn.ESTree.ArrowFunctionExpression, sourceText: string): number[] {
+  // For arrow functions we use the `(' parenthesis if present, and the `=>` arrow as per spec.
+  // Both are not 100% accurate as acorn doesn't tell us their location so we have to search, which is brittle.
+  const result = [];
+
+  const searchParenStartPos = node.async ? node.start + 5 : node.start;
+  const searchParenEndPos = node.params.length ? node.params[0].start : node.body.start;
+  const parenPos = indexOfCharInBounds(sourceText, '(', searchParenStartPos, searchParenEndPos);
+  if (parenPos >= 0) {
+    result.push(parenPos);
+  }
+
+  const searchArrowStartPos = node.params.length ? node.params[node.params.length - 1].end : node.start;
+  const arrowPos = indexOfCharInBounds(sourceText, '=', searchArrowStartPos, node.body.start);
+  if (arrowPos >= 0 && sourceText[arrowPos + 1] === '>') {
+    result.push(arrowPos);
+  }
+
+  return result;
 }
 
 function indexOfCharInBounds(str: string, needle: string, start: number, end: number): number {

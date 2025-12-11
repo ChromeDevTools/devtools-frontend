@@ -42,6 +42,7 @@ describe('ScopeParser', () => {
       assert.strictEqual(innerScope?.kind, FormatterAction.ScopeKind.ARROW_FUNCTION);
       assert.deepEqual(innerScope?.variables?.size, 1);
       assert.deepEqual(innerScope?.variables?.get('a')?.uses.map(u => u.offset), [9]);
+      assert.deepEqual(innerScope?.nameMappingLocations, [8, 12]);
     });
 
     it('parses for loop', () => {
@@ -168,6 +169,22 @@ describe('ScopeParser', () => {
       const scopeMethod = scopes?.children[0];
       assert.strictEqual(scopeMethod?.kind, FormatterAction.ScopeKind.FUNCTION);
       assert.deepEqual(scopeMethod?.nameMappingLocations, [14, 24]);
+    });
+
+    it('parses async arrow functions', () => {
+      const scopes = parseScopes('const x = async y => await y;');
+
+      const scopeFn = scopes?.children[0];
+      assert.strictEqual(scopeFn?.kind, FormatterAction.ScopeKind.ARROW_FUNCTION);
+      assert.deepEqual(scopeFn?.nameMappingLocations, [18]);
+    });
+
+    it('doesn\'t get confused by default values in arrow functions', () => {
+      const scopes = parseScopes('const x = (a = 42) => console.log(a);');
+
+      const scopeFn = scopes?.children[0];
+      assert.strictEqual(scopeFn?.kind, FormatterAction.ScopeKind.ARROW_FUNCTION);
+      assert.deepEqual(scopeFn?.nameMappingLocations, [10, 19]);
     });
   });
 });

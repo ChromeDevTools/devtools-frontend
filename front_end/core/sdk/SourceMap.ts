@@ -252,6 +252,15 @@ export class SourceMap {
     return index ? mappings[index - 1] : null;
   }
 
+  /** Returns the entry at the given position but only if an entry exists for that exact position */
+  findEntryExact(lineNumber: number, columnNumber: number): SourceMapEntry|null {
+    const entry = this.findEntry(lineNumber, columnNumber);
+    if (entry?.lineNumber === lineNumber && entry.columnNumber === columnNumber) {
+      return entry;
+    }
+    return null;
+  }
+
   findEntryRanges(lineNumber: number, columnNumber: number): {
     range: TextUtils.TextRange.TextRange,
     sourceRange: TextUtils.TextRange.TextRange,

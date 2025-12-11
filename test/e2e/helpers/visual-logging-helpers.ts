@@ -170,7 +170,9 @@ function collapseConsecutiveImpressions(events: TestLogEntry[]) {
   let group: {impressions: string[]}|null = null;
   for (let i = 0; i < events.length; ++i) {
     const event = events[i];
-    if ('interaction' in event) {
+    // We skip resetting the impression group for Resize interactions that could
+    // be initiated by the rendering and not an actual test action.
+    if ('interaction' in event && event.interaction !== 'Resize') {
       group = null;
     }
 

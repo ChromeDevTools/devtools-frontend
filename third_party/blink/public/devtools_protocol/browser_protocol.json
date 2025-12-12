@@ -1755,7 +1755,10 @@
                         "FormLabelForMatchesNonExistingIdError",
                         "FormInputHasWrongButWellIntendedAutocompleteValueError",
                         "ResponseWasBlockedByORB",
-                        "NavigationEntryMarkedSkippable"
+                        "NavigationEntryMarkedSkippable",
+                        "AutofillAndManualTextPolicyControlledFeaturesInfo",
+                        "AutofillPolicyControlledFeatureInfo",
+                        "ManualTextPolicyControlledFeatureInfo"
                     ]
                 },
                 {

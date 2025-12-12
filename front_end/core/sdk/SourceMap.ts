@@ -138,7 +138,7 @@ export class SourceMap {
 
   readonly #debugId?: DebugId;
 
-  scopesFallbackPromiseForTest?: Promise<unknown>;
+  #scopesFallbackPromise?: Promise<void>;
 
   /**
    * Implements Source Map V3 model. See https://github.com/google/closure-compiler/wiki/Source-Maps
@@ -223,6 +223,11 @@ export class SourceMap {
   hasScopeInfo(): boolean {
     this.#ensureSourceMapProcessed();
     return this.#scopesInfo !== null && !this.#scopesInfo.isEmpty();
+  }
+
+  waitForScopeInfo(): Promise<void> {
+    this.#ensureSourceMapProcessed();
+    return this.#scopesFallbackPromise ?? Promise.resolve();
   }
 
   findEntry(lineNumber: number, columnNumber: number, inlineFrameIndex?: number): SourceMapEntry|null {
@@ -420,7 +425,7 @@ export class SourceMap {
       try {
         this.eachSection(this.parseMap.bind(this));
         if (!this.hasScopeInfo()) {
-          this.scopesFallbackPromiseForTest = this.#buildScopesFallback().then(info => {
+          this.#scopesFallbackPromise = this.#buildScopesFallback().then(info => {
             this.#scopesInfo = info;
           });
         }

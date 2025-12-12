@@ -182,7 +182,7 @@ export class SourceMapManager<T extends FrameAssociated> extends Common.ObjectWr
   }
 
   waitForSourceMapsProcessedForTest(): Promise<unknown> {
-    return Promise.all(this.#sourceMaps.keys().map(sourceMap => sourceMap.scopesFallbackPromiseForTest));
+    return Promise.all(this.#sourceMaps.keys().map(sourceMap => sourceMap.waitForScopeInfo()));
   }
 }
 

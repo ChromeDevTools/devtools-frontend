@@ -496,7 +496,7 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
     const modelData =
         this.#debuggerModelToData.get(target.model(SDK.DebuggerModel.DebuggerModel) as SDK.DebuggerModel.DebuggerModel);
     if (modelData) {
-      modelData.translateRawFramesStep(rawFrames, translatedFrames);
+      await modelData.translateRawFramesStep(rawFrames, translatedFrames);
       return;
     }
 
@@ -609,10 +609,10 @@ class ModelData {
     return scope;
   }
 
-  translateRawFramesStep(
+  async translateRawFramesStep(
       rawFrames: StackTraceImpl.Trie.RawFrame[],
-      translatedFrames: Awaited<ReturnType<StackTraceImpl.StackTraceModel.TranslateRawFrames>>): void {
-    if (!this.compilerMapping.translateRawFramesStep(rawFrames, translatedFrames)) {
+      translatedFrames: Awaited<ReturnType<StackTraceImpl.StackTraceModel.TranslateRawFrames>>): Promise<void> {
+    if (!await this.compilerMapping.translateRawFramesStep(rawFrames, translatedFrames)) {
       this.#defaultTranslateRawFramesStep(rawFrames, translatedFrames);
     }
   }

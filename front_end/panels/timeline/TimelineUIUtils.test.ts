@@ -239,10 +239,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
       error: ['Error: No LanguageSelector instance exists yet.'],
     });
     it('maps to the authored name and script of a profile call', async function() {
-      const {sourceMap, script} = await loadBasicSourceMapExample(target);
-
-      sourceMap.hasScopeInfo();  // Trigger source map processing.
-      await sourceMap.scopesFallbackPromiseForTest;
+      const {script} = await loadBasicSourceMapExample(target);
 
       // Ideally we would get a column number we can use from the source
       // map however the current status of the source map helpers makes
@@ -281,11 +278,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
       assert.strictEqual(stackTraceData[0], 'someFunction @ main.js:6:10');
     });
     it('maps to the authored name and script of a function call', async function() {
-      const {sourceMap, script} = await loadBasicSourceMapExample(target);
-
-      sourceMap.hasScopeInfo();  // Trigger source map processing.
-      await sourceMap.scopesFallbackPromiseForTest;
-
+      const {script} = await loadBasicSourceMapExample(target);
       const [lineNumber, columnNumber, ts, dur, pid, tid] =
           [0, 51, 10, 100, Trace.Types.Events.ProcessID(1), Trace.Types.Events.ThreadID(1)];
       const profileCall = makeProfileCall('function', ts, dur, pid, tid);

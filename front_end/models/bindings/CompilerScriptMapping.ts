@@ -281,6 +281,7 @@ export class CompilerScriptMapping implements DebuggerSourceMapping {
     if (!sourceMap) {
       return null;
     }
+    await sourceMap.waitForScopeInfo();
 
     const {lineNumber, columnNumber} = script.rawLocationToRelativeLocation(rawLocation);
     const {url, scope} = sourceMap.findOriginalFunctionScope({line: lineNumber, column: columnNumber}) ?? {};
@@ -313,17 +314,16 @@ export class CompilerScriptMapping implements DebuggerSourceMapping {
     return new Workspace.UISourceCode.UIFunctionBounds(uiSourceCode, range, name);
   }
 
-  translateRawFramesStep(
+  async translateRawFramesStep(
       rawFrames: StackTraceImpl.Trie.RawFrame[],
-      translatedFrames: Awaited<ReturnType<StackTraceImpl.StackTraceModel.TranslateRawFrames>>): boolean {
+      translatedFrames: Awaited<ReturnType<StackTraceImpl.StackTraceModel.TranslateRawFrames>>): Promise<boolean> {
     const frame = rawFrames[0];
     if (StackTraceImpl.Trie.isBuiltinFrame(frame)) {
       return false;
     }
 
-    const sourceMapWithScopeInfoForFrame =
-        (rawFrame: StackTraceImpl.Trie.RawFrame): {sourceMap: SDK.SourceMap.SourceMap, script: SDK.Script.Script}|
-        null => {
+    const sourceMapWithScopeInfoForFrame = async(rawFrame: StackTraceImpl.Trie.RawFrame):
+        Promise<{sourceMap: SDK.SourceMap.SourceMap, script: SDK.Script.Script}|null> => {
           const script = this.#debuggerModel.scriptForId(rawFrame.scriptId ?? '');
           if (!script || this.#stubUISourceCodes.has(script)) {
             // Use fallback while source map is being loaded.
@@ -331,10 +331,11 @@ export class CompilerScriptMapping implements DebuggerSourceMapping {
           }
 
           const sourceMap = script.sourceMap();
+          await sourceMap?.waitForScopeInfo();
           return sourceMap?.hasScopeInfo() ? {sourceMap, script} : null;
         };
 
-    const sourceMapAndScript = sourceMapWithScopeInfoForFrame(frame);
+    const sourceMapAndScript = await sourceMapWithScopeInfoForFrame(frame);
     if (!sourceMapAndScript) {
       return false;
     }

@@ -54,13 +54,6 @@ class BidiHTTPRequest extends HTTPRequest_js_1.HTTPRequest {
         });
         this.#request.on('authenticate', this.#handleAuthentication);
         this.#frame.page().trustedEmitter.emit("request" /* PageEvent.Request */, this);
-        if (this.#hasInternalHeaderOverwrite) {
-            this.interception.handlers.push(async () => {
-                await this.continue({
-                    headers: this.headers(),
-                }, 0);
-            });
-        }
     }
     canBeIntercepted() {
         return this.#request.isBlocked;
@@ -95,12 +88,6 @@ class BidiHTTPRequest extends HTTPRequest_js_1.HTTPRequest {
     async fetchPostData() {
         return await this.#request.fetchPostData();
     }
-    get #hasInternalHeaderOverwrite() {
-        return Boolean(Object.keys(this.#extraHTTPHeaders).length);
-    }
-    get #extraHTTPHeaders() {
-        return this.#frame?.page()._extraHTTPHeaders ?? {};
-    }
     headers() {
         // Callers should not be allowed to mutate internal structure.
         const headers = {};
@@ -109,7 +96,6 @@ class BidiHTTPRequest extends HTTPRequest_js_1.HTTPRequest {
         }
         return {
             ...headers,
-            ...this.#extraHTTPHeaders,
         };
     }
     response() {
@@ -135,12 +121,6 @@ class BidiHTTPRequest extends HTTPRequest_js_1.HTTPRequest {
     }
     frame() {
         return this.#frame;
-    }
-    async continue(overrides, priority) {
-        return await super.continue({
-            headers: this.#hasInternalHeaderOverwrite ? this.headers() : undefined,
-            ...overrides,
-        }, priority);
     }
     async _continue(overrides = {}) {
         const headers = getBidiHeaders(overrides.headers);

@@ -5,7 +5,7 @@
  */
 import type { ChildProcess } from 'node:child_process';
 import type { CreatePageOptions, DebugInfo } from '../api/Browser.js';
-import { Browser as BrowserBase, type BrowserCloseCallback, type BrowserContextOptions, type IsPageTargetCallback, type TargetFilterCallback, type ScreenInfo, type AddScreenParams } from '../api/Browser.js';
+import { Browser as BrowserBase, type BrowserCloseCallback, type BrowserContextOptions, type IsPageTargetCallback, type TargetFilterCallback, type ScreenInfo, type AddScreenParams, type WindowBounds, type WindowId } from '../api/Browser.js';
 import type { Page } from '../api/Page.js';
 import type { DownloadBehavior } from '../common/DownloadBehavior.js';
 import type { Viewport } from '../common/Viewport.js';
@@ -39,6 +39,8 @@ export declare class CdpBrowser extends BrowserBase {
     screens(): Promise<ScreenInfo[]>;
     addScreen(params: AddScreenParams): Promise<ScreenInfo>;
     removeScreen(screenId: string): Promise<void>;
+    getWindowBounds(windowId: WindowId): Promise<WindowBounds>;
+    setWindowBounds(windowId: WindowId, windowBounds: WindowBounds): Promise<void>;
     targets(): CdpTarget[];
     target(): CdpTarget;
     version(): Promise<string>;

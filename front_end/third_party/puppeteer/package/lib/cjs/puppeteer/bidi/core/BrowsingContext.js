@@ -41,6 +41,8 @@ var __esDecorate = (this && this.__esDecorate) || function (ctor, descriptorIn, 
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BrowsingContext = void 0;
 const EventEmitter_js_1 = require("../../common/EventEmitter.js");
+const util_js_1 = require("../../common/util.js");
+const assert_js_1 = require("../../util/assert.js");
 const decorators_js_1 = require("../../util/decorators.js");
 const disposable_js_1 = require("../../util/disposable.js");
 const BluetoothEmulation_js_1 = require("../BluetoothEmulation.js");
@@ -588,6 +590,18 @@ let BrowsingContext = (() => {
         }
         async waitForDevicePrompt(timeout, signal) {
             return await this.#deviceRequestPromptManager.waitForDevicePrompt(timeout, signal);
+        }
+        async setExtraHTTPHeaders(headers) {
+            await this.#session.send('network.setExtraHeaders', {
+                headers: Object.entries(headers).map(([key, value]) => {
+                    (0, assert_js_1.assert)((0, util_js_1.isString)(value), `Expected value of header "${key}" to be String, but "${typeof value}" is found.`);
+                    return {
+                        name: key.toLowerCase(),
+                        value: { type: 'string', value: value },
+                    };
+                }),
+                contexts: [this.id],
+            });
         }
     };
 })();

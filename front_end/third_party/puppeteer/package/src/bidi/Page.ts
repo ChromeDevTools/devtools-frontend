@@ -9,6 +9,7 @@ import * as Bidi from 'webdriver-bidi-protocol';
 
 import {firstValueFrom, from, raceWith} from '../../third_party/rxjs/rxjs.js';
 import type {BluetoothEmulation} from '../api/BluetoothEmulation.js';
+import type {WindowId} from '../api/Browser.js';
 import type {CDPSession} from '../api/CDPSession.js';
 import type {DeviceRequestPrompt} from '../api/DeviceRequestPrompt.js';
 import type {BoundingBox} from '../api/ElementHandle.js';
@@ -47,12 +48,7 @@ import {EventEmitter} from '../common/EventEmitter.js';
 import {FileChooser} from '../common/FileChooser.js';
 import type {PDFOptions} from '../common/PDFOptions.js';
 import type {Awaitable} from '../common/types.js';
-import {
-  evaluationString,
-  isString,
-  parsePDFOptions,
-  timeout,
-} from '../common/util.js';
+import {evaluationString, parsePDFOptions, timeout} from '../common/util.js';
 import type {Viewport} from '../common/Viewport.js';
 import {assert} from '../util/assert.js';
 import {bubble} from '../util/decorators.js';
@@ -260,15 +256,23 @@ export class BidiPage extends Page {
     return this.#frame;
   }
 
+  override async emulateFocusedPage(enabled: boolean): Promise<void> {
+    return await this.#cdpEmulationManager.emulateFocus(enabled);
+  }
+
   override resize(_params: {
     contentWidth: number;
     contentHeight: number;
   }): Promise<void> {
-    throw new Error('Method not implemented for WebDriver BiDi yet.');
+    throw new UnsupportedOperation();
+  }
+
+  override windowId(): Promise<WindowId> {
+    throw new UnsupportedOperation();
   }
 
   override openDevTools(): Promise<Page> {
-    throw new Error('Method not implemented for WebDriver BiDi yet.');
+    throw new UnsupportedOperation();
   }
 
   async focusedFrame(): Promise<BidiFrame> {
@@ -725,9 +729,7 @@ export class BidiPage extends Page {
 
   get isNetworkInterceptionEnabled(): boolean {
     return (
-      Boolean(this.#requestInterception) ||
-      Boolean(this.#extraHeadersInterception) ||
-      Boolean(this.#authInterception)
+      Boolean(this.#requestInterception) || Boolean(this.#authInterception)
     );
   }
 
@@ -743,26 +745,10 @@ export class BidiPage extends Page {
   /**
    * @internal
    */
-  _extraHTTPHeaders: Record<string, string> = {};
-  #extraHeadersInterception?: string;
   override async setExtraHTTPHeaders(
     headers: Record<string, string>,
   ): Promise<void> {
-    const extraHTTPHeaders: Record<string, string> = {};
-    for (const [key, value] of Object.entries(headers)) {
-      assert(
-        isString(value),
-        `Expected value of header "${key}" to be String, but "${typeof value}" is found.`,
-      );
-      extraHTTPHeaders[key.toLowerCase()] = value;
-    }
-    this._extraHTTPHeaders = extraHTTPHeaders;
-
-    this.#extraHeadersInterception = await this.#toggleInterception(
-      [Bidi.Network.InterceptPhase.BeforeRequestSent],
-      this.#extraHeadersInterception,
-      Boolean(Object.keys(this._extraHTTPHeaders).length),
-    );
+    await this.#frame.browsingContext.setExtraHTTPHeaders(headers);
   }
 
   /**

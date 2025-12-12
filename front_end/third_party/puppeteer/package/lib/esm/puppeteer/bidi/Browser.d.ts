@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import type { ChildProcess } from 'node:child_process';
-import { Browser, type BrowserCloseCallback, type BrowserContextOptions, type ScreenInfo, type AddScreenParams, type DebugInfo } from '../api/Browser.js';
+import { Browser, type BrowserCloseCallback, type BrowserContextOptions, type ScreenInfo, type AddScreenParams, type WindowBounds, type WindowId, type DebugInfo } from '../api/Browser.js';
 import type { Page } from '../api/Page.js';
 import type { Target } from '../api/Target.js';
 import type { Connection as CdpConnection } from '../cdp/Connection.js';
@@ -54,6 +54,8 @@ export declare class BidiBrowser extends Browser {
     screens(): Promise<ScreenInfo[]>;
     addScreen(_params: AddScreenParams): Promise<ScreenInfo>;
     removeScreen(_screenId: string): Promise<void>;
+    getWindowBounds(_windowId: WindowId): Promise<WindowBounds>;
+    setWindowBounds(_windowId: WindowId, _windowBounds: WindowBounds): Promise<void>;
     targets(): Target[];
     target(): BidiBrowserTarget;
     disconnect(): Promise<void>;

@@ -38,6 +38,8 @@ var __esDecorate = (this && this.__esDecorate) || function (ctor, descriptorIn, 
     done = true;
 };
 import { EventEmitter } from '../../common/EventEmitter.js';
+import { isString } from '../../common/util.js';
+import { assert } from '../../util/assert.js';
 import { inertIfDisposed, throwIfDisposed } from '../../util/decorators.js';
 import { DisposableStack, disposeSymbol } from '../../util/disposable.js';
 import { BidiBluetoothEmulation } from '../BluetoothEmulation.js';
@@ -585,6 +587,18 @@ let BrowsingContext = (() => {
         }
         async waitForDevicePrompt(timeout, signal) {
             return await this.#deviceRequestPromptManager.waitForDevicePrompt(timeout, signal);
+        }
+        async setExtraHTTPHeaders(headers) {
+            await this.#session.send('network.setExtraHeaders', {
+                headers: Object.entries(headers).map(([key, value]) => {
+                    assert(isString(value), `Expected value of header "${key}" to be String, but "${typeof value}" is found.`);
+                    return {
+                        name: key.toLowerCase(),
+                        value: { type: 'string', value: value },
+                    };
+                }),
+                contexts: [this.id],
+            });
         }
     };
 })();

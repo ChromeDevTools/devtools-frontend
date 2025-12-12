@@ -153,6 +153,10 @@ export interface WindowBounds {
 /**
  * @public
  */
+export type WindowId = string;
+/**
+ * @public
+ */
 export type CreatePageOptions = {
     type: 'tab';
 } | {
@@ -316,6 +320,14 @@ export declare abstract class Browser extends EventEmitter<BrowserEvents> {
      * {@link Browser.defaultBrowserContext | default browser context}.
      */
     abstract newPage(options?: CreatePageOptions): Promise<Page>;
+    /**
+     * Gets the specified window {@link WindowBounds | bounds}.
+     */
+    abstract getWindowBounds(windowId: WindowId): Promise<WindowBounds>;
+    /**
+     * Sets the specified window {@link WindowBounds | bounds}.
+     */
+    abstract setWindowBounds(windowId: WindowId, windowBounds: WindowBounds): Promise<void>;
     /**
      * Gets all active {@link Target | targets}.
      *

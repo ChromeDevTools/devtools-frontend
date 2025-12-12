@@ -57,5 +57,6 @@ export declare class EmulationManager implements ClientProvider {
      */
     setTransparentBackgroundColor(): Promise<void>;
     setJavaScriptEnabled(enabled: boolean): Promise<void>;
+    emulateFocus(enabled: boolean): Promise<void>;
 }
 //# sourceMappingURL=EmulationManager.d.ts.map

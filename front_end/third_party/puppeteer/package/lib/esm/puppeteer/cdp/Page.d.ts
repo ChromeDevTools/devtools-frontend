@@ -5,7 +5,7 @@
  */
 import type { Protocol } from 'devtools-protocol';
 import type { BluetoothEmulation } from '../api/BluetoothEmulation.js';
-import type { Browser } from '../api/Browser.js';
+import type { Browser, WindowId } from '../api/Browser.js';
 import type { BrowserContext } from '../api/BrowserContext.js';
 import { type CDPSession } from '../api/CDPSession.js';
 import type { DeviceRequestPrompt } from '../api/DeviceRequestPrompt.js';
@@ -37,6 +37,7 @@ export declare class CdpPage extends Page {
         contentWidth: number;
         contentHeight: number;
     }): Promise<void>;
+    windowId(): Promise<WindowId>;
     _client(): CDPSession;
     isServiceWorkerBypassed(): boolean;
     isDragInterceptionEnabled(): boolean;
@@ -59,6 +60,7 @@ export declare class CdpPage extends Page {
     setDragInterception(enabled: boolean): Promise<void>;
     setOfflineMode(enabled: boolean): Promise<void>;
     emulateNetworkConditions(networkConditions: NetworkConditions | null): Promise<void>;
+    emulateFocusedPage(enabled: boolean): Promise<void>;
     setDefaultNavigationTimeout(timeout: number): void;
     setDefaultTimeout(timeout: number): void;
     getDefaultTimeout(): number;

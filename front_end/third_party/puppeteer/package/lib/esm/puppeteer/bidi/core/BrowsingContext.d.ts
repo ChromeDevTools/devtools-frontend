@@ -143,5 +143,6 @@ export declare class BrowsingContext extends EventEmitter<{
     setOfflineMode(enabled: boolean): Promise<void>;
     get bluetooth(): BluetoothEmulation;
     waitForDevicePrompt(timeout: number, signal?: AbortSignal): Promise<DeviceRequestPrompt>;
+    setExtraHTTPHeaders(headers: Record<string, string>): Promise<void>;
 }
 //# sourceMappingURL=BrowsingContext.d.ts.map

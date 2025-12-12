@@ -92,6 +92,8 @@ let EmulationManager = (() => {
     let _private_setDefaultBackgroundColor_descriptor;
     let _private_setJavaScriptEnabled_decorators;
     let _private_setJavaScriptEnabled_descriptor;
+    let _private_emulateFocus_decorators;
+    let _private_emulateFocus_descriptor;
     return class EmulationManager {
         static {
             const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create(null) : void 0;
@@ -105,6 +107,7 @@ let EmulationManager = (() => {
             _private_setGeolocation_decorators = [invokeAtMostOnceForArguments];
             _private_setDefaultBackgroundColor_decorators = [invokeAtMostOnceForArguments];
             _private_setJavaScriptEnabled_decorators = [invokeAtMostOnceForArguments];
+            _private_emulateFocus_decorators = [invokeAtMostOnceForArguments];
             __esDecorate(this, _private_applyViewport_descriptor = { value: __setFunctionName(async function (client, viewportState) {
                     if (!viewportState.viewport) {
                         await Promise.all([
@@ -235,6 +238,14 @@ let EmulationManager = (() => {
                         value: !state.javaScriptEnabled,
                     });
                 }, "#setJavaScriptEnabled") }, _private_setJavaScriptEnabled_decorators, { kind: "method", name: "#setJavaScriptEnabled", static: false, private: true, access: { has: obj => #setJavaScriptEnabled in obj, get: obj => obj.#setJavaScriptEnabled }, metadata: _metadata }, null, _instanceExtraInitializers);
+            __esDecorate(this, _private_emulateFocus_descriptor = { value: __setFunctionName(async function (client, state) {
+                    if (!state.active) {
+                        return;
+                    }
+                    await client.send('Emulation.setFocusEmulationEnabled', {
+                        enabled: state.enabled,
+                    });
+                }, "#emulateFocus") }, _private_emulateFocus_decorators, { kind: "method", name: "#emulateFocus", static: false, private: true, access: { has: obj => #emulateFocus in obj, get: obj => obj.#emulateFocus }, metadata: _metadata }, null, _instanceExtraInitializers);
             if (_metadata) Object.defineProperty(this, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
         }
         #client = __runInitializers(this, _instanceExtraInitializers);
@@ -272,6 +283,10 @@ let EmulationManager = (() => {
             javaScriptEnabled: true,
             active: false,
         }, this, this.#setJavaScriptEnabled);
+        #focusState = new EmulatedState({
+            enabled: true,
+            active: false,
+        }, this, this.#emulateFocus);
         #secondaryClients = new Set();
         constructor(client) {
             this.#client = client;
@@ -428,6 +443,13 @@ let EmulationManager = (() => {
             await this.#javascriptEnabledState.setState({
                 active: true,
                 javaScriptEnabled: enabled,
+            });
+        }
+        get #emulateFocus() { return _private_emulateFocus_descriptor.value; }
+        async emulateFocus(enabled) {
+            await this.#focusState.setState({
+                active: true,
+                enabled,
             });
         }
     };

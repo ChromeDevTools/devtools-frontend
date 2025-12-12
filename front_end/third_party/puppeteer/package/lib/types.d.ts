@@ -360,6 +360,14 @@ export declare abstract class Browser extends EventEmitter<BrowserEvents> {
      */
     abstract newPage(options?: CreatePageOptions): Promise<Page>;
     /**
+     * Gets the specified window {@link WindowBounds | bounds}.
+     */
+    abstract getWindowBounds(windowId: WindowId): Promise<WindowBounds>;
+    /**
+     * Sets the specified window {@link WindowBounds | bounds}.
+     */
+    abstract setWindowBounds(windowId: WindowId, windowBounds: WindowBounds): Promise<void>;
+    /**
      * Gets all active {@link Target | targets}.
      *
      * In case of multiple {@link BrowserContext | browser contexts}, this returns
@@ -6125,6 +6133,12 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
         encoding: 'base64';
     }): Promise<string>;
     screenshot(options?: Readonly<ScreenshotOptions>): Promise<Uint8Array>;
+    /**
+     * Emulates focus state of the page.
+     *
+     * @param enabled - Whether to emulate focus.
+     */
+    abstract emulateFocusedPage(enabled: boolean): Promise<void>;
 
     /**
      * Generates a PDF of the page with the `print` CSS media type.
@@ -6516,6 +6530,12 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      */
     abstract waitForDevicePrompt(options?: WaitTimeoutOptions): Promise<DeviceRequestPrompt>;
 
+    /**
+     * Returns the page's window id.
+     *
+     * @experimental
+     */
+    abstract windowId(): Promise<WindowId>;
 
 
     /**
@@ -7070,6 +7090,7 @@ declare namespace Puppeteer_2 {
         DebugInfo,
         WindowState,
         WindowBounds,
+        WindowId,
         CreatePageOptions,
         ScreenOrientation_2 as ScreenOrientation,
         ScreenInfo,
@@ -8342,6 +8363,11 @@ export declare interface WindowBounds {
     height?: number;
     windowState?: WindowState;
 }
+
+/**
+ * @public
+ */
+export declare type WindowId = string;
 
 /**
  * @public

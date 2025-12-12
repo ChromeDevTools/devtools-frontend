@@ -38,7 +38,6 @@ export declare class BidiHTTPRequest extends HTTPRequest {
     initiator(): Protocol.Network.Initiator | undefined;
     redirectChain(): BidiHTTPRequest[];
     frame(): BidiFrame;
-    continue(overrides?: ContinueRequestOverrides, priority?: number | undefined): Promise<void>;
     _continue(overrides?: ContinueRequestOverrides): Promise<void>;
     _abort(): Promise<void>;
     _respond(response: Partial<ResponseForRequest>, _priority?: number): Promise<void>;

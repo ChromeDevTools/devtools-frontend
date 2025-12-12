@@ -3048,7 +3048,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    */
   // If moved update release-please config
   // x-release-please-start-version
-  const packageVersion = '24.32.1';
+  const packageVersion = '24.33.0';
   // x-release-please-end
 
   /**
@@ -14489,7 +14489,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   /**
    * @internal
    */
-  let EmulationManager = ((_EmulationManager, _client5, _emulatingMobile, _hasTouch, _states, _viewportState, _idleOverridesState, _timezoneState, _visionDeficiencyState, _cpuThrottlingState, _mediaFeaturesState, _mediaTypeState, _geoLocationState, _defaultBackgroundColorState, _javascriptEnabledState, _secondaryClients, _EmulationManager_brand) => {
+  let EmulationManager = ((_EmulationManager, _client5, _emulatingMobile, _hasTouch, _states, _viewportState, _idleOverridesState, _timezoneState, _visionDeficiencyState, _cpuThrottlingState, _mediaFeaturesState, _mediaTypeState, _geoLocationState, _defaultBackgroundColorState, _javascriptEnabledState, _focusState, _secondaryClients, _EmulationManager_brand) => {
     let _instanceExtraInitializers = [];
     let _private_applyViewport_decorators;
     let _private_applyViewport_descriptor;
@@ -14511,7 +14511,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     let _private_setDefaultBackgroundColor_descriptor;
     let _private_setJavaScriptEnabled_decorators;
     let _private_setJavaScriptEnabled_descriptor;
-    return _client5 = /*#__PURE__*/new WeakMap(), _emulatingMobile = /*#__PURE__*/new WeakMap(), _hasTouch = /*#__PURE__*/new WeakMap(), _states = /*#__PURE__*/new WeakMap(), _viewportState = /*#__PURE__*/new WeakMap(), _idleOverridesState = /*#__PURE__*/new WeakMap(), _timezoneState = /*#__PURE__*/new WeakMap(), _visionDeficiencyState = /*#__PURE__*/new WeakMap(), _cpuThrottlingState = /*#__PURE__*/new WeakMap(), _mediaFeaturesState = /*#__PURE__*/new WeakMap(), _mediaTypeState = /*#__PURE__*/new WeakMap(), _geoLocationState = /*#__PURE__*/new WeakMap(), _defaultBackgroundColorState = /*#__PURE__*/new WeakMap(), _javascriptEnabledState = /*#__PURE__*/new WeakMap(), _secondaryClients = /*#__PURE__*/new WeakMap(), _EmulationManager_brand = /*#__PURE__*/new WeakSet(), _EmulationManager = class EmulationManager {
+    let _private_emulateFocus_decorators;
+    let _private_emulateFocus_descriptor;
+    return _client5 = /*#__PURE__*/new WeakMap(), _emulatingMobile = /*#__PURE__*/new WeakMap(), _hasTouch = /*#__PURE__*/new WeakMap(), _states = /*#__PURE__*/new WeakMap(), _viewportState = /*#__PURE__*/new WeakMap(), _idleOverridesState = /*#__PURE__*/new WeakMap(), _timezoneState = /*#__PURE__*/new WeakMap(), _visionDeficiencyState = /*#__PURE__*/new WeakMap(), _cpuThrottlingState = /*#__PURE__*/new WeakMap(), _mediaFeaturesState = /*#__PURE__*/new WeakMap(), _mediaTypeState = /*#__PURE__*/new WeakMap(), _geoLocationState = /*#__PURE__*/new WeakMap(), _defaultBackgroundColorState = /*#__PURE__*/new WeakMap(), _javascriptEnabledState = /*#__PURE__*/new WeakMap(), _focusState = /*#__PURE__*/new WeakMap(), _secondaryClients = /*#__PURE__*/new WeakMap(), _EmulationManager_brand = /*#__PURE__*/new WeakSet(), _EmulationManager = class EmulationManager {
       constructor(client) {
         _classPrivateMethodInitSpec(this, _EmulationManager_brand);
         _classPrivateFieldInitSpec(this, _client5, __runInitializers$2(this, _instanceExtraInitializers));
@@ -14549,6 +14551,10 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
           javaScriptEnabled: true,
           active: false
         }, this, _classPrivateGetter(_EmulationManager_brand, this, _get_setJavaScriptEnabled)));
+        _classPrivateFieldInitSpec(this, _focusState, new EmulatedState({
+          enabled: true,
+          active: false
+        }, this, _classPrivateGetter(_EmulationManager_brand, this, _get_emulateFocus)));
         _classPrivateFieldInitSpec(this, _secondaryClients, new Set());
         _classPrivateFieldSet(_client5, this, client);
       }
@@ -14693,6 +14699,12 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
           javaScriptEnabled: enabled
         });
       }
+      async emulateFocus(enabled) {
+        await _classPrivateFieldGet(_focusState, this).setState({
+          active: true,
+          enabled
+        });
+      }
     }, (() => {
       const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create(null) : void 0;
       _private_applyViewport_decorators = [invokeAtMostOnceForArguments];
@@ -14705,6 +14717,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       _private_setGeolocation_decorators = [invokeAtMostOnceForArguments];
       _private_setDefaultBackgroundColor_decorators = [invokeAtMostOnceForArguments];
       _private_setJavaScriptEnabled_decorators = [invokeAtMostOnceForArguments];
+      _private_emulateFocus_decorators = [invokeAtMostOnceForArguments];
       __esDecorate$2(_EmulationManager, _private_applyViewport_descriptor = {
         value: __setFunctionName(async function (client, viewportState) {
           if (!viewportState.viewport) {
@@ -14949,6 +14962,26 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
+      __esDecorate$2(_EmulationManager, _private_emulateFocus_descriptor = {
+        value: __setFunctionName(async function (client, state) {
+          if (!state.active) {
+            return;
+          }
+          await client.send('Emulation.setFocusEmulationEnabled', {
+            enabled: state.enabled
+          });
+        }, "#emulateFocus")
+      }, _private_emulateFocus_decorators, {
+        kind: "method",
+        name: "#emulateFocus",
+        static: false,
+        private: true,
+        access: {
+          has: obj => _EmulationManager_brand.has(_checkInRHS(obj)),
+          get: obj => _classPrivateGetter(_EmulationManager_brand, obj, _get_emulateFocus)
+        },
+        metadata: _metadata
+      }, null, _instanceExtraInitializers);
       if (_metadata) Object.defineProperty(_EmulationManager, Symbol.metadata, {
         enumerable: true,
         configurable: true,
@@ -14985,6 +15018,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     }
     function _get_setJavaScriptEnabled(_this12) {
       return _private_setJavaScriptEnabled_descriptor.value;
+    }
+    function _get_emulateFocus(_this13) {
+      return _private_emulateFocus_descriptor.value;
     }
   })();
 
@@ -15738,8 +15774,8 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         value: _metadata
       });
     })(), _CdpElementHandle;
-    function _get_frameManager(_this13) {
-      return _this13.frame._frameManager;
+    function _get_frameManager(_this14) {
+      return _this14.frame._frameManager;
     }
   })();
 
@@ -20471,10 +20507,10 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   /**
    * @internal
    */
-  function _get_state(_this14) {
+  function _get_state(_this15) {
     return Object.assign({
-      ..._classPrivateFieldGet(_state2, _this14)
-    }, ..._classPrivateFieldGet(_transactions, _this14));
+      ..._classPrivateFieldGet(_state2, _this15)
+    }, ..._classPrivateFieldGet(_transactions, _this15));
   }
   function _createTransaction() {
     const transaction = {};
@@ -20998,14 +21034,18 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       _assertClassBrand(_CdpPage_brand, this, _attachExistingTargets).call(this);
     }
     async resize(params) {
-      const {
-        windowId
-      } = await _classPrivateFieldGet(_primaryTargetClient, this).send('Browser.getWindowForTarget');
+      const windowId = await this.windowId();
       await _classPrivateFieldGet(_primaryTargetClient, this).send('Browser.setContentsSize', {
-        windowId,
+        windowId: Number(windowId),
         width: params.contentWidth,
         height: params.contentHeight
       });
+    }
+    async windowId() {
+      const {
+        windowId
+      } = await _classPrivateFieldGet(_primaryTargetClient, this).send('Browser.getWindowForTarget');
+      return windowId.toString();
     }
     _client() {
       return _classPrivateFieldGet(_primaryTargetClient, this);
@@ -21109,6 +21149,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     }
     async emulateNetworkConditions(networkConditions) {
       return await _classPrivateFieldGet(_frameManager2, this).networkManager.emulateNetworkConditions(networkConditions);
+    }
+    async emulateFocusedPage(enabled) {
+      return await _classPrivateFieldGet(_emulationManager, this).emulateFocus(enabled);
     }
     setDefaultNavigationTimeout(timeout) {
       this._timeoutSettings.setDefaultNavigationTimeout(timeout);
@@ -22768,6 +22811,20 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     async removeScreen(screenId) {
       return await _classPrivateFieldGet(_connection5, this).send('Emulation.removeScreen', {
         screenId
+      });
+    }
+    async getWindowBounds(windowId) {
+      const {
+        bounds
+      } = await _classPrivateFieldGet(_connection5, this).send('Browser.getWindowBounds', {
+        windowId: Number(windowId)
+      });
+      return bounds;
+    }
+    async setWindowBounds(windowId, windowBounds) {
+      await _classPrivateFieldGet(_connection5, this).send('Browser.setWindowBounds', {
+        windowId: Number(windowId),
+        bounds: windowBounds
       });
     }
     targets() {
@@ -24975,9 +25032,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * @internal
    */
   const PUPPETEER_REVISIONS = Object.freeze({
-    chrome: '143.0.7499.40',
-    'chrome-headless-shell': '143.0.7499.40',
-    firefox: 'stable_145.0.2'
+    chrome: '143.0.7499.42',
+    'chrome-headless-shell': '143.0.7499.42',
+    firefox: 'stable_146.0'
   });
 
   /**

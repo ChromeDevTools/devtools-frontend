@@ -304,12 +304,16 @@ export class CdpPage extends Page {
         }
     }
     async resize(params) {
-        const { windowId } = await this.#primaryTargetClient.send('Browser.getWindowForTarget');
+        const windowId = await this.windowId();
         await this.#primaryTargetClient.send('Browser.setContentsSize', {
-            windowId,
+            windowId: Number(windowId),
             width: params.contentWidth,
             height: params.contentHeight,
         });
+    }
+    async windowId() {
+        const { windowId } = await this.#primaryTargetClient.send('Browser.getWindowForTarget');
+        return windowId.toString();
     }
     async #onFileChooser(event) {
         const env_1 = { stack: [], error: void 0, hasError: false };
@@ -449,6 +453,9 @@ export class CdpPage extends Page {
     }
     async emulateNetworkConditions(networkConditions) {
         return await this.#frameManager.networkManager.emulateNetworkConditions(networkConditions);
+    }
+    async emulateFocusedPage(enabled) {
+        return await this.#emulationManager.emulateFocus(enabled);
     }
     setDefaultNavigationTimeout(timeout) {
         this._timeoutSettings.setDefaultNavigationTimeout(timeout);

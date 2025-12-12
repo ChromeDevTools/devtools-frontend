@@ -253,6 +253,18 @@ export class CdpBrowser extends BrowserBase {
     async removeScreen(screenId) {
         return await this.#connection.send('Emulation.removeScreen', { screenId });
     }
+    async getWindowBounds(windowId) {
+        const { bounds } = await this.#connection.send('Browser.getWindowBounds', {
+            windowId: Number(windowId),
+        });
+        return bounds;
+    }
+    async setWindowBounds(windowId, windowBounds) {
+        await this.#connection.send('Browser.setWindowBounds', {
+            windowId: Number(windowId),
+            bounds: windowBounds,
+        });
+    }
     targets() {
         return Array.from(this.#targetManager.getAvailableTargets().values()).filter(target => {
             return (target._isTargetExposed() &&

@@ -262,11 +262,17 @@ let BidiPage = (() => {
         mainFrame() {
             return this.#frame;
         }
+        async emulateFocusedPage(enabled) {
+            return await this.#cdpEmulationManager.emulateFocus(enabled);
+        }
         resize(_params) {
-            throw new Error('Method not implemented for WebDriver BiDi yet.');
+            throw new Errors_js_1.UnsupportedOperation();
+        }
+        windowId() {
+            throw new Errors_js_1.UnsupportedOperation();
         }
         openDevTools() {
-            throw new Error('Method not implemented for WebDriver BiDi yet.');
+            throw new Errors_js_1.UnsupportedOperation();
         }
         async focusedFrame() {
             const env_1 = { stack: [], error: void 0, hasError: false };
@@ -607,9 +613,7 @@ let BidiPage = (() => {
             return [...this.#workers];
         }
         get isNetworkInterceptionEnabled() {
-            return (Boolean(this.#requestInterception) ||
-                Boolean(this.#extraHeadersInterception) ||
-                Boolean(this.#authInterception));
+            return (Boolean(this.#requestInterception) || Boolean(this.#authInterception));
         }
         #requestInterception;
         async setRequestInterception(enable) {
@@ -618,16 +622,8 @@ let BidiPage = (() => {
         /**
          * @internal
          */
-        _extraHTTPHeaders = {};
-        #extraHeadersInterception;
         async setExtraHTTPHeaders(headers) {
-            const extraHTTPHeaders = {};
-            for (const [key, value] of Object.entries(headers)) {
-                (0, assert_js_1.assert)((0, util_js_1.isString)(value), `Expected value of header "${key}" to be String, but "${typeof value}" is found.`);
-                extraHTTPHeaders[key.toLowerCase()] = value;
-            }
-            this._extraHTTPHeaders = extraHTTPHeaders;
-            this.#extraHeadersInterception = await this.#toggleInterception(["beforeRequestSent" /* Bidi.Network.InterceptPhase.BeforeRequestSent */], this.#extraHeadersInterception, Boolean(Object.keys(this._extraHTTPHeaders).length));
+            await this.#frame.browsingContext.setExtraHTTPHeaders(headers);
         }
         /**
          * @internal

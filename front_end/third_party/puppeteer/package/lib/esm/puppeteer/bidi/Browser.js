@@ -267,6 +267,12 @@ let BidiBrowser = (() => {
         removeScreen(_screenId) {
             throw new UnsupportedOperation();
         }
+        getWindowBounds(_windowId) {
+            throw new UnsupportedOperation();
+        }
+        setWindowBounds(_windowId, _windowBounds) {
+            throw new UnsupportedOperation();
+        }
         targets() {
             return [
                 this.#target,

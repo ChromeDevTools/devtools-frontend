@@ -160,6 +160,14 @@ export class SourceMap {
         const index = Platform.ArrayUtilities.upperBound(mappings, undefined, (_, entry) => lineNumber - entry.lineNumber || columnNumber - entry.columnNumber);
         return index ? mappings[index - 1] : null;
     }
+    /** Returns the entry at the given position but only if an entry exists for that exact position */
+    findEntryExact(lineNumber, columnNumber) {
+        const entry = this.findEntry(lineNumber, columnNumber);
+        if (entry?.lineNumber === lineNumber && entry.columnNumber === columnNumber) {
+            return entry;
+        }
+        return null;
+    }
     findEntryRanges(lineNumber, columnNumber) {
         const mappings = this.mappings();
         const endIndex = Platform.ArrayUtilities.upperBound(mappings, undefined, (_, entry) => lineNumber - entry.lineNumber || columnNumber - entry.columnNumber);

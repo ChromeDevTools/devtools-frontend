@@ -4,6 +4,7 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as UI from '../../ui/legacy/legacy.js';
 export declare class CallStackSidebarPane extends UI.View.SimpleView implements UI.ContextFlavorListener.ContextFlavorListener, UI.ListControl.ListDelegate<Item> {
+    #private;
     private readonly ignoreListMessageElement;
     private readonly ignoreListCheckboxElement;
     private readonly notPausedMessageElement;
@@ -22,7 +23,7 @@ export declare class CallStackSidebarPane extends UI.View.SimpleView implements 
     static instance(opts?: {
         forceNew: boolean | null;
     }): CallStackSidebarPane;
-    flavorChanged(_object: Object | null): void;
+    flavorChanged(details: SDK.DebuggerModel.DebuggerPausedDetails | null): void;
     private debugInfoAttached;
     private setSourceMapSubscription;
     performUpdate(): Promise<void>;

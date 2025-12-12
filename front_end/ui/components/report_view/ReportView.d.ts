@@ -1,3 +1,4 @@
+import * as Platform from '../../../core/platform/platform.js';
 /**
  * The `Report` component can be used to display static information. A report
  * usually consists of multiple sections where each section has rows of name/value
@@ -19,10 +20,11 @@
  */
 export interface ReportData {
     reportTitle: string;
+    reportUrl?: Platform.DevToolsPath.UrlString;
 }
 export declare class Report extends HTMLElement {
     #private;
-    set data({ reportTitle }: ReportData);
+    set data({ reportTitle, reportUrl }: ReportData);
     connectedCallback(): void;
 }
 export interface ReportSectionData {

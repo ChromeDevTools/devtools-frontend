@@ -634,6 +634,7 @@ export class SourcesPanel extends UI.Panel.Panel {
         const details = currentDebuggerModel ? currentDebuggerModel.debuggerPausedDetails() : null;
         await this.debuggerPausedMessage.render(details, Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance(), Breakpoints.BreakpointManager.BreakpointManager.instance());
         if (details) {
+            await this.debuggerPausedMessage.updateComplete;
             this.updateDebuggerButtonsAndStatusForTest();
         }
     }
@@ -1028,7 +1029,7 @@ export class SourcesPanel extends UI.Panel.Panel {
         this.sidebarPaneStack = UI.ViewManager.ViewManager.instance().createStackLocation(this.revealDebuggerSidebar.bind(this), undefined, 'debug');
         this.sidebarPaneStack.widget().element.classList.add('y-overflow-only');
         this.sidebarPaneStack.widget().show(vbox.element);
-        this.sidebarPaneStack.widget().element.appendChild(this.debuggerPausedMessage.element());
+        this.debuggerPausedMessage.show(this.sidebarPaneStack.widget().element);
         this.sidebarPaneStack.appendApplicableItems('sources.sidebar-top');
         if (this.threadsSidebarPane) {
             this.sidebarPaneStack.appendView(this.threadsSidebarPane);

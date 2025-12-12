@@ -101,6 +101,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView {
     scheduledForUpdateItems = new Set();
     muteActivateItem;
     lastDebuggerModel = null;
+    #details = null;
     constructor() {
         super({
             jslog: `${VisualLogging.section('sources.callstack')}`,
@@ -173,10 +174,12 @@ export class CallStackSidebarPane extends UI.View.SimpleView {
         }
         return callstackSidebarPaneInstance;
     }
-    flavorChanged(_object) {
+    flavorChanged(details) {
         this.showIgnoreListed = false;
         this.ignoreListCheckboxElement.checked = false;
         this.maxAsyncStackChainDepth = defaultMaxAsyncStackChainDepth;
+        this.#details = details;
+        this.setSourceMapSubscription(details?.debuggerModel ?? null);
         this.requestUpdate();
     }
     debugInfoAttached() {
@@ -198,8 +201,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView {
     async performUpdate() {
         this.locationPool.disposeAll();
         this.callFrameWarningsElement.classList.add('hidden');
-        const details = UI.Context.Context.instance().flavor(SDK.DebuggerModel.DebuggerPausedDetails);
-        this.setSourceMapSubscription(details?.debuggerModel ?? null);
+        const details = this.#details;
         if (!details) {
             this.notPausedMessageElement.classList.remove('hidden');
             this.ignoreListMessageElement.classList.add('hidden');

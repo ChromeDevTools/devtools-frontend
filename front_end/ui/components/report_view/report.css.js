@@ -32,4 +32,20 @@ export default `/*
   background-color: var(--sys-color-cdt-base-container);
 }
 
+.report-url {
+  background: none;
+  border-radius: 2px;
+  border: none;
+  color: var(--text-link);
+  cursor: pointer;
+  display: block;
+  font: var(--sys-typescale-body4-regular);
+  height: unset;
+  margin: 0;
+  outline-offset: 2px;
+  outline: none;
+  padding: 0 !important; /* stylelint-disable-line declaration-no-important */
+  text-decoration: underline;
+}
+
 /*# sourceURL=${import.meta.resolve('./report.css')} */`;

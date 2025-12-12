@@ -9,29 +9,31 @@ export default `/*
  * found in the LICENSE file.
  */
 
-.request-cookies-view {
-  overflow: auto;
-  padding: 12px;
-  height: 100%;
-  background-color: var(--sys-color-cdt-base-container);
-}
+@scope to (devtools-widget > *) {
+  .request-cookies-view {
+    overflow: auto;
+    padding: 12px;
+    height: 100%;
+    background-color: var(--sys-color-cdt-base-container);
+  }
 
-.request-cookies-view .request-cookies-title {
-  font-size: 12px;
-  font-weight: bold;
-  margin-right: 30px;
-  color: var(--sys-color-on-surface);
-}
+  .request-cookies-view .request-cookies-title {
+    font-size: 12px;
+    font-weight: bold;
+    margin-right: 30px;
+    color: var(--sys-color-on-surface);
+  }
 
-.request-cookies-view .cookie-line {
-  margin-top: 6px;
-  display: flex;
-}
+  .request-cookies-view .cookie-line {
+    margin-top: 6px;
+    display: flex;
+  }
 
-.request-cookies-view .cookies-panel-item {
-  margin-top: 6px;
-  margin-bottom: 16px;
-  flex: none;
+  .request-cookies-view .cookies-panel-item {
+    margin-top: 6px;
+    margin-bottom: 16px;
+    flex: none;
+  }
 }
 
 /*# sourceURL=${import.meta.resolve('./requestCookiesView.css')} */`;

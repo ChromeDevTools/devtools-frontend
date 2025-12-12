@@ -47,4 +47,12 @@ devtools-icon {
   top: -1px;
 }
 
+devtools-icon[name="info"] {
+  color: var(--sys-color-on-yellow-container);
+}
+
+devtools-icon[name="cross-circle-filled"] {
+  color: var(--icon-error);
+}
+
 /*# sourceURL=${import.meta.resolve('./debuggerPausedMessage.css')} */`;

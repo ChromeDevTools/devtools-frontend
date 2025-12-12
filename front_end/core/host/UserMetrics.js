@@ -438,7 +438,9 @@ export var Action;
     Action[Action["AiCodeGenerationSuggestionAccepted"] = 196] = "AiCodeGenerationSuggestionAccepted";
     Action[Action["InsightTeaserModelDownloadStarted"] = 197] = "InsightTeaserModelDownloadStarted";
     Action[Action["InsightTeaserModelDownloadCompleted"] = 198] = "InsightTeaserModelDownloadCompleted";
-    Action[Action["MAX_VALUE"] = 199] = "MAX_VALUE";
+    Action[Action["AiCodeGenerationError"] = 199] = "AiCodeGenerationError";
+    Action[Action["AiCodeGenerationRequestTriggered"] = 200] = "AiCodeGenerationRequestTriggered";
+    Action[Action["MAX_VALUE"] = 201] = "MAX_VALUE";
     /* eslint-enable @typescript-eslint/naming-convention */
 })(Action || (Action = {}));
 export var PanelCodes;

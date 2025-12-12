@@ -3346,7 +3346,7 @@ import * as Annotations from "./../../models/annotations/annotations.js";
 import * as PanelCommon from "./../common/common.js";
 import * as NetworkForward2 from "./forward/forward.js";
 import * as LegacyWrapper from "./../../ui/components/legacy_wrapper/legacy_wrapper.js";
-import { Icon as Icon3 } from "./../../ui/kit/kit.js";
+import { Icon as Icon2 } from "./../../ui/kit/kit.js";
 import * as UI17 from "./../../ui/legacy/legacy.js";
 import * as VisualLogging11 from "./../../ui/visual_logging/visual_logging.js";
 import * as NetworkComponents from "./components/components.js";
@@ -3354,16 +3354,16 @@ import * as NetworkComponents from "./components/components.js";
 // gen/front_end/panels/network/RequestCookiesView.js
 var RequestCookiesView_exports = {};
 __export(RequestCookiesView_exports, {
+  DEFAULT_VIEW: () => DEFAULT_VIEW2,
   RequestCookiesView: () => RequestCookiesView
 });
 import * as Common5 from "./../../core/common/common.js";
 import * as i18n11 from "./../../core/i18n/i18n.js";
 import * as SDK5 from "./../../core/sdk/sdk.js";
 import * as uiI18n2 from "./../../ui/i18n/i18n.js";
-import { Icon } from "./../../ui/kit/kit.js";
 import * as CookieTable from "./../../ui/legacy/components/cookie_table/cookie_table.js";
-import * as SettingsUI3 from "./../../ui/legacy/components/settings_ui/settings_ui.js";
 import * as UI6 from "./../../ui/legacy/legacy.js";
+import * as Lit from "./../../ui/lit/lit.js";
 import * as VisualLogging4 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/network/requestCookiesView.css.js
@@ -3373,34 +3373,37 @@ var requestCookiesView_css_default = `/*
  * found in the LICENSE file.
  */
 
-.request-cookies-view {
-  overflow: auto;
-  padding: 12px;
-  height: 100%;
-  background-color: var(--sys-color-cdt-base-container);
-}
+@scope to (devtools-widget > *) {
+  .request-cookies-view {
+    overflow: auto;
+    padding: 12px;
+    height: 100%;
+    background-color: var(--sys-color-cdt-base-container);
+  }
 
-.request-cookies-view .request-cookies-title {
-  font-size: 12px;
-  font-weight: bold;
-  margin-right: 30px;
-  color: var(--sys-color-on-surface);
-}
+  .request-cookies-view .request-cookies-title {
+    font-size: 12px;
+    font-weight: bold;
+    margin-right: 30px;
+    color: var(--sys-color-on-surface);
+  }
 
-.request-cookies-view .cookie-line {
-  margin-top: 6px;
-  display: flex;
-}
+  .request-cookies-view .cookie-line {
+    margin-top: 6px;
+    display: flex;
+  }
 
-.request-cookies-view .cookies-panel-item {
-  margin-top: 6px;
-  margin-bottom: 16px;
-  flex: none;
+  .request-cookies-view .cookies-panel-item {
+    margin-top: 6px;
+    margin-bottom: 16px;
+    flex: none;
+  }
 }
 
 /*# sourceURL=${import.meta.resolve("./requestCookiesView.css")} */`;
 
 // gen/front_end/panels/network/RequestCookiesView.js
+var { render: render3, html: html2 } = Lit;
 var UIStrings6 = {
   /**
    * @description Text in Request Cookies View of the Network panel
@@ -3454,64 +3457,100 @@ var UIStrings6 = {
 };
 var str_6 = i18n11.i18n.registerUIStrings("panels/network/RequestCookiesView.ts", UIStrings6);
 var i18nString6 = i18n11.i18n.getLocalizedString.bind(void 0, str_6);
+var DEFAULT_VIEW2 = (input, _output, target) => {
+  render3(html2`
+    <style>${requestCookiesView_css_default}</style>
+    <style>${UI6.inspectorCommonStyles}</style>
+    <div class="request-cookies-view">
+      ${input.gotCookies ? Lit.nothing : html2`
+        <devtools-widget .widgetConfig=${UI6.Widget.widgetConfig(UI6.EmptyWidget.EmptyWidget, {
+    header: i18nString6(UIStrings6.thisRequestHasNoCookies)
+  })}></devtools-widget>
+      `}
+
+      <div class=${input.requestCookies.cookies.length || input.hasBlockedCookies ? "" : "hidden"}>
+        <span class="request-cookies-title" title=${i18nString6(UIStrings6.cookiesThatWereSentToTheServerIn)}>
+          ${i18nString6(UIStrings6.requestCookies)}
+        </span>
+        <devtools-checkbox
+          @change=${(e) => input.onShowFilteredOutCookiesChange(e.target.checked)}
+          .checked=${input.showFilteredOutCookies}>
+          ${i18nString6(UIStrings6.showFilteredOutRequestCookies)}
+        </devtools-checkbox>
+      </div>
+
+      <div class="cookies-panel-item ${!input.requestCookies.cookies.length && input.hasBlockedCookies ? "" : "hidden"}">
+        ${i18nString6(UIStrings6.noRequestCookiesWereSent)}
+      </div>
+
+      ${input.requestCookies.cookies.length > 0 ? html2`
+        <devtools-widget .widgetConfig=${UI6.Widget.widgetConfig(CookieTable.CookiesTable.CookiesTable, {
+    cookiesData: input.requestCookies,
+    inline: true
+  })} class="cookie-table cookies-panel-item"></devtools-widget>
+      ` : Lit.nothing}
+
+      <div class="cookies-panel-item site-has-cookies-in-other-partition ${input.siteHasCookieInOtherPartition ? "" : "hidden"}">
+        ${uiI18n2.getFormatLocalizedString(str_6, UIStrings6.siteHasCookieInOtherPartition, {
+    PH1: UI6.XLink.XLink.create("https://developer.chrome.com/en/docs/privacy-sandbox/chips/", i18nString6(UIStrings6.learnMore), void 0, void 0, "learn-more")
+  })}
+      </div>
+
+      <div class="request-cookies-title ${input.responseCookies.cookies.length ? "" : "hidden"}"
+        title=${i18nString6(UIStrings6.cookiesThatWereReceivedFromThe)}>
+          ${i18nString6(UIStrings6.responseCookies)}
+      </div>
+
+      ${input.responseCookies.cookies.length ? html2`
+        <devtools-widget .widgetConfig=${UI6.Widget.widgetConfig(CookieTable.CookiesTable.CookiesTable, {
+    cookiesData: input.responseCookies,
+    inline: true
+  })} class="cookie-table cookies-panel-item"></devtools-widget>
+      ` : Lit.nothing}
+
+      <div class="request-cookies-title ${input.malformedResponseCookies.length ? "" : "hidden"}" title=${i18nString6(UIStrings6.cookiesThatWereReceivedFromTheServer)}>
+        ${i18nString6(UIStrings6.malformedResponseCookies)}
+      </div>
+
+      <div class=${input.malformedResponseCookies.length ? "" : "hidden"}>
+        ${input.malformedResponseCookies.map((malformedCookie) => html2`
+          <span class="cookie-line source-code" title=${getMalformedCookieTooltip(malformedCookie)}>
+            <devtools-icon class="cookie-warning-icon small" .name=${"cross-circle-filled"}></devtools-icon>
+            ${malformedCookie.cookieLine}
+          </span>
+        `)}
+      </div>
+    </div>
+  `, target);
+};
+function getMalformedCookieTooltip(malformedCookie) {
+  if (malformedCookie.blockedReasons.includes(
+    "NameValuePairExceedsMaxSize"
+    /* Protocol.Network.SetCookieBlockedReason.NameValuePairExceedsMaxSize */
+  )) {
+    return SDK5.NetworkRequest.setCookieBlockedReasonToUiString(
+      "NameValuePairExceedsMaxSize"
+      /* Protocol.Network.SetCookieBlockedReason.NameValuePairExceedsMaxSize */
+    );
+  }
+  return SDK5.NetworkRequest.setCookieBlockedReasonToUiString(
+    "SyntaxError"
+    /* Protocol.Network.SetCookieBlockedReason.SyntaxError */
+  );
+}
 var RequestCookiesView = class extends UI6.Widget.Widget {
   request;
   showFilteredOutCookiesSetting;
-  emptyWidget;
-  requestCookiesTitle;
-  requestCookiesEmpty;
-  requestCookiesTable;
-  responseCookiesTitle;
-  responseCookiesTable;
-  siteHasCookieInOtherPartition;
-  malformedResponseCookiesTitle;
-  malformedResponseCookiesList;
-  constructor(request) {
+  view;
+  constructor(request, view = DEFAULT_VIEW2) {
     super({ jslog: `${VisualLogging4.pane("cookies").track({ resize: true })}` });
-    this.registerRequiredCSS(requestCookiesView_css_default);
-    this.element.classList.add("request-cookies-view");
     this.request = request;
     this.showFilteredOutCookiesSetting = Common5.Settings.Settings.instance().createSetting(
       "show-filtered-out-request-cookies",
       /* defaultValue */
       false
     );
-    this.emptyWidget = new UI6.EmptyWidget.EmptyWidget(i18nString6(UIStrings6.thisRequestHasNoCookies), "");
-    this.emptyWidget.show(this.element);
-    this.requestCookiesTitle = this.element.createChild("div");
-    const titleText = this.requestCookiesTitle.createChild("span", "request-cookies-title");
-    titleText.textContent = i18nString6(UIStrings6.requestCookies);
-    UI6.Tooltip.Tooltip.install(titleText, i18nString6(UIStrings6.cookiesThatWereSentToTheServerIn));
-    const requestCookiesCheckbox = SettingsUI3.SettingsUI.createSettingCheckbox(i18nString6(UIStrings6.showFilteredOutRequestCookies), this.showFilteredOutCookiesSetting);
-    requestCookiesCheckbox.addEventListener("change", () => {
-      this.refreshRequestCookiesView();
-    });
-    this.requestCookiesTitle.appendChild(requestCookiesCheckbox);
-    this.requestCookiesEmpty = this.element.createChild("div", "cookies-panel-item");
-    this.requestCookiesEmpty.textContent = i18nString6(UIStrings6.noRequestCookiesWereSent);
-    this.requestCookiesTable = new CookieTable.CookiesTable.CookiesTable(
-      /* renderInline */
-      true
-    );
-    this.requestCookiesTable.contentElement.classList.add("cookie-table", "cookies-panel-item");
-    this.requestCookiesTable.show(this.element);
-    this.siteHasCookieInOtherPartition = this.element.createChild("div", "cookies-panel-item site-has-cookies-in-other-partition");
-    this.siteHasCookieInOtherPartition.appendChild(uiI18n2.getFormatLocalizedString(str_6, UIStrings6.siteHasCookieInOtherPartition, {
-      PH1: UI6.XLink.XLink.create("https://developer.chrome.com/en/docs/privacy-sandbox/chips/", i18nString6(UIStrings6.learnMore), void 0, void 0, "learn-more")
-    }));
-    this.responseCookiesTitle = this.element.createChild("div", "request-cookies-title");
-    this.responseCookiesTitle.textContent = i18nString6(UIStrings6.responseCookies);
-    this.responseCookiesTitle.title = i18nString6(UIStrings6.cookiesThatWereReceivedFromThe);
-    this.responseCookiesTable = new CookieTable.CookiesTable.CookiesTable(
-      /* renderInline */
-      true
-    );
-    this.responseCookiesTable.contentElement.classList.add("cookie-table", "cookies-panel-item");
-    this.responseCookiesTable.show(this.element);
-    this.malformedResponseCookiesTitle = this.element.createChild("div", "request-cookies-title");
-    this.malformedResponseCookiesTitle.textContent = i18nString6(UIStrings6.malformedResponseCookies);
-    UI6.Tooltip.Tooltip.install(this.malformedResponseCookiesTitle, i18nString6(UIStrings6.cookiesThatWereReceivedFromTheServer));
-    this.malformedResponseCookiesList = this.element.createChild("div");
+    this.view = view;
   }
   getRequestCookies() {
     const requestCookieToBlockedReasons = /* @__PURE__ */ new Map();
@@ -3581,93 +3620,52 @@ var RequestCookiesView = class extends UI6.Widget.Widget {
     }
     return { responseCookies, responseCookieToBlockedReasons, responseCookieToExemptionReason, malformedResponseCookies };
   }
-  refreshRequestCookiesView() {
+  performUpdate() {
     if (!this.isShowing()) {
       return;
     }
-    const gotCookies = this.request.hasRequestCookies() || this.request.responseCookies.length;
-    if (gotCookies) {
-      this.emptyWidget.hideWidget();
-    } else {
-      this.emptyWidget.showWidget();
-    }
     const { requestCookies, requestCookieToBlockedReasons, requestCookieToExemptionReason } = this.getRequestCookies();
     const { responseCookies, responseCookieToBlockedReasons, responseCookieToExemptionReason, malformedResponseCookies } = this.getResponseCookies();
-    if (requestCookies.length) {
-      this.requestCookiesTitle.classList.remove("hidden");
-      this.requestCookiesEmpty.classList.add("hidden");
-      this.requestCookiesTable.showWidget();
-      this.requestCookiesTable.setCookies(requestCookies, requestCookieToBlockedReasons, requestCookieToExemptionReason);
-    } else if (this.request.blockedRequestCookies().length) {
-      this.requestCookiesTitle.classList.remove("hidden");
-      this.requestCookiesEmpty.classList.remove("hidden");
-      this.requestCookiesTable.hideWidget();
-    } else {
-      this.requestCookiesTitle.classList.add("hidden");
-      this.requestCookiesEmpty.classList.add("hidden");
-      this.requestCookiesTable.hideWidget();
-    }
-    if (responseCookies.length) {
-      this.responseCookiesTitle.classList.remove("hidden");
-      this.responseCookiesTable.showWidget();
-      this.responseCookiesTable.setCookies(responseCookies, responseCookieToBlockedReasons, responseCookieToExemptionReason);
-    } else {
-      this.responseCookiesTitle.classList.add("hidden");
-      this.responseCookiesTable.hideWidget();
-    }
-    if (malformedResponseCookies.length) {
-      this.malformedResponseCookiesTitle.classList.remove("hidden");
-      this.malformedResponseCookiesList.classList.remove("hidden");
-      this.malformedResponseCookiesList.removeChildren();
-      for (const malformedCookie of malformedResponseCookies) {
-        const listItem = this.malformedResponseCookiesList.createChild("span", "cookie-line source-code");
-        const icon = new Icon();
-        icon.name = "cross-circle-filled";
-        icon.classList.add("cookie-warning-icon", "small");
-        listItem.appendChild(icon);
-        UI6.UIUtils.createTextChild(listItem, malformedCookie.cookieLine);
-        if (malformedCookie.blockedReasons.includes(
-          "NameValuePairExceedsMaxSize"
-          /* Protocol.Network.SetCookieBlockedReason.NameValuePairExceedsMaxSize */
-        )) {
-          listItem.title = SDK5.NetworkRequest.setCookieBlockedReasonToUiString(
-            "NameValuePairExceedsMaxSize"
-            /* Protocol.Network.SetCookieBlockedReason.NameValuePairExceedsMaxSize */
-          );
-        } else {
-          listItem.title = SDK5.NetworkRequest.setCookieBlockedReasonToUiString(
-            "SyntaxError"
-            /* Protocol.Network.SetCookieBlockedReason.SyntaxError */
-          );
-        }
-      }
-    } else {
-      this.malformedResponseCookiesTitle.classList.add("hidden");
-      this.malformedResponseCookiesList.classList.add("hidden");
-    }
-    if (this.request.siteHasCookieInOtherPartition()) {
-      this.siteHasCookieInOtherPartition.classList.remove("hidden");
-    } else {
-      this.siteHasCookieInOtherPartition.classList.add("hidden");
-    }
+    const input = {
+      gotCookies: this.request.hasRequestCookies() || this.request.responseCookies.length > 0,
+      requestCookies: {
+        cookies: requestCookies,
+        cookieToBlockedReasons: requestCookieToBlockedReasons,
+        cookieToExemptionReason: requestCookieToExemptionReason
+      },
+      responseCookies: {
+        cookies: responseCookies,
+        cookieToBlockedReasons: responseCookieToBlockedReasons,
+        cookieToExemptionReason: responseCookieToExemptionReason
+      },
+      malformedResponseCookies,
+      showFilteredOutCookies: this.showFilteredOutCookiesSetting.get(),
+      onShowFilteredOutCookiesChange: (checked) => {
+        this.showFilteredOutCookiesSetting.set(checked);
+        this.requestUpdate();
+      },
+      siteHasCookieInOtherPartition: this.request.siteHasCookieInOtherPartition(),
+      hasBlockedCookies: this.request.blockedRequestCookies().length > 0
+    };
+    this.view(input, void 0, this.contentElement);
   }
   wasShown() {
     super.wasShown();
-    this.request.addEventListener(SDK5.NetworkRequest.Events.REQUEST_HEADERS_CHANGED, this.refreshRequestCookiesView, this);
-    this.request.addEventListener(SDK5.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED, this.refreshRequestCookiesView, this);
-    this.refreshRequestCookiesView();
+    this.request.addEventListener(SDK5.NetworkRequest.Events.REQUEST_HEADERS_CHANGED, this.requestUpdate, this);
+    this.request.addEventListener(SDK5.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED, this.requestUpdate, this);
+    this.requestUpdate();
   }
   willHide() {
     super.willHide();
-    this.request.removeEventListener(SDK5.NetworkRequest.Events.REQUEST_HEADERS_CHANGED, this.refreshRequestCookiesView, this);
-    this.request.removeEventListener(SDK5.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED, this.refreshRequestCookiesView, this);
+    this.request.removeEventListener(SDK5.NetworkRequest.Events.REQUEST_HEADERS_CHANGED, this.requestUpdate, this);
+    this.request.removeEventListener(SDK5.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED, this.requestUpdate, this);
   }
 };
 
 // gen/front_end/panels/network/RequestInitiatorView.js
 var RequestInitiatorView_exports = {};
 __export(RequestInitiatorView_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW2,
+  DEFAULT_VIEW: () => DEFAULT_VIEW3,
   RequestInitiatorView: () => RequestInitiatorView
 });
 import * as i18n13 from "./../../core/i18n/i18n.js";
@@ -3675,7 +3673,7 @@ import * as SDK6 from "./../../core/sdk/sdk.js";
 import * as Logs3 from "./../../models/logs/logs.js";
 import * as Components2 from "./../../ui/legacy/components/utils/utils.js";
 import * as UI7 from "./../../ui/legacy/legacy.js";
-import * as Lit from "./../../ui/lit/lit.js";
+import * as Lit2 from "./../../ui/lit/lit.js";
 import * as VisualLogging5 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/network/requestInitiatorView.css.js
@@ -3727,7 +3725,7 @@ var requestInitiatorViewTree_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./requestInitiatorViewTree.css")} */`;
 
 // gen/front_end/panels/network/RequestInitiatorView.js
-var { html: html2, render: render3, nothing: nothing3 } = Lit;
+var { html: html3, render: render4, nothing: nothing4 } = Lit2;
 var { widgetConfig: widgetConfig2 } = UI7.Widget;
 var UIStrings7 = {
   /**
@@ -3745,10 +3743,10 @@ var UIStrings7 = {
 };
 var str_7 = i18n13.i18n.registerUIStrings("panels/network/RequestInitiatorView.ts", UIStrings7);
 var i18nString7 = i18n13.i18n.getLocalizedString.bind(void 0, str_7);
-var DEFAULT_VIEW2 = (input, _output, target) => {
+var DEFAULT_VIEW3 = (input, _output, target) => {
   const hasInitiatorData = input.initiatorGraph.initiators.size > 1 || input.initiatorGraph.initiated.size > 1 || input.hasStackTrace;
   if (!hasInitiatorData) {
-    render3(html2`
+    render4(html3`
       <div class="empty-view" style="display: flex; justify-content: center; align-items: center; height: 100%; color: var(--sys-color-token-subtle);">
         ${i18nString7(UIStrings7.noInitiator)}
       </div>
@@ -3756,7 +3754,7 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
     return;
   }
   const renderStackTraceSection = () => {
-    return html2`
+    return html3`
       <li role="treeitem" class="request-initiator-view-section-title" aria-expanded="true">
         ${i18nString7(UIStrings7.requestCallStack)}
         <ul role="group">
@@ -3773,16 +3771,16 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
   };
   const renderInitiatorNodes = (initiators, index, initiated, visited) => {
     if (index >= initiators.length) {
-      return html2`${nothing3}`;
+      return html3`${nothing4}`;
     }
     const request = initiators[index];
     const isCurrentRequest = index === initiators.length - 1;
-    return html2`
+    return html3`
       <li role="treeitem" ?selected=${isCurrentRequest} aria-expanded="true">
         <span style=${isCurrentRequest ? "font-weight: bold" : ""}>${request.url()}</span>
         <ul role="group">
           ${renderInitiatorNodes(initiators, index + 1, initiated, visited)}
-          ${isCurrentRequest ? renderInitiatedNodes(initiated, request, visited) : nothing3}
+          ${isCurrentRequest ? renderInitiatedNodes(initiated, request, visited) : nothing4}
         </ul>
       </li>
     `;
@@ -3795,18 +3793,18 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
       }
     }
     if (children.length === 0) {
-      return html2`${nothing3}`;
+      return html3`${nothing4}`;
     }
-    return html2`
+    return html3`
       ${children.map((child) => {
       const shouldRecurse = !visited.has(child);
       if (shouldRecurse) {
         visited.add(child);
       }
-      return html2`
+      return html3`
         <li role="treeitem" aria-expanded="true">
           <span>${child.url()}</span>
-          ${shouldRecurse ? html2`<ul>${renderInitiatedNodes(initiated, child, visited)}</ul>` : nothing3}
+          ${shouldRecurse ? html3`<ul>${renderInitiatedNodes(initiated, child, visited)}</ul>` : nothing4}
         </li>
       `;
     })}
@@ -3816,7 +3814,7 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
     const initiators = Array.from(initiatorGraph.initiators).reverse();
     const visited = /* @__PURE__ */ new Set();
     visited.add(input.request);
-    return html2`
+    return html3`
       <li role="treeitem" class="request-initiator-view-section-title" aria-expanded="true">
         ${i18nString7(UIStrings7.requestInitiatorChain)}
         <ul role="group">
@@ -3825,15 +3823,15 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
       </li>
     `;
   };
-  render3(html2`
+  render4(html3`
     <div class="request-initiator-view-tree" jslog=${VisualLogging5.tree("initiator-tree")}>
-      <devtools-tree .template=${html2`
+      <devtools-tree .template=${html3`
         <style>
           ${requestInitiatorViewTree_css_default}
         </style>
         <ul role="tree">
-           ${input.hasStackTrace ? renderStackTraceSection() : Lit.nothing}
-           ${input.initiatorGraph.initiators.size > 1 || input.initiatorGraph.initiated.size > 1 ? renderInitiatorChain(input.initiatorGraph) : Lit.nothing}
+           ${input.hasStackTrace ? renderStackTraceSection() : Lit2.nothing}
+           ${input.initiatorGraph.initiators.size > 1 || input.initiatorGraph.initiated.size > 1 ? renderInitiatorChain(input.initiatorGraph) : Lit2.nothing}
         </ul>
       `}></devtools-tree>
     </div>
@@ -3843,7 +3841,7 @@ var RequestInitiatorView = class extends UI7.Widget.VBox {
   linkifier;
   request;
   #view;
-  constructor(request, view = DEFAULT_VIEW2) {
+  constructor(request, view = DEFAULT_VIEW3) {
     super({ jslog: `${VisualLogging5.pane("initiator").track({ resize: true })}` });
     this.element.classList.add("request-initiator-view");
     this.linkifier = new Components2.Linkifier.Linkifier();
@@ -4687,11 +4685,11 @@ import * as VisualLogging7 from "./../../ui/visual_logging/visual_logging.js";
 // gen/front_end/panels/network/RequestHTMLView.js
 var RequestHTMLView_exports = {};
 __export(RequestHTMLView_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW3,
+  DEFAULT_VIEW: () => DEFAULT_VIEW4,
   RequestHTMLView: () => RequestHTMLView
 });
 import * as UI9 from "./../../ui/legacy/legacy.js";
-import { html as html3, nothing as nothing4, render as render4 } from "./../../ui/lit/lit.js";
+import { html as html4, nothing as nothing5, render as render5 } from "./../../ui/lit/lit.js";
 
 // gen/front_end/panels/network/requestHTMLView.css.js
 var requestHTMLView_css_default = `/*
@@ -4713,21 +4711,21 @@ var requestHTMLView_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./requestHTMLView.css")} */`;
 
 // gen/front_end/panels/network/RequestHTMLView.js
-var DEFAULT_VIEW3 = (input, _output, target) => {
-  render4(html3`
+var DEFAULT_VIEW4 = (input, _output, target) => {
+  render5(html4`
     <style>${requestHTMLView_css_default}</style>
     <div class="html request-view widget vbox">
-      ${input.dataURL ? html3`
+      ${input.dataURL ? html4`
         <!-- @ts-ignore -->
         <iframe class="html-preview-frame" sandbox
           csp="default-src 'none';img-src data:;style-src 'unsafe-inline'" src=${input.dataURL}
-          tabindex="-1" role="presentation"></iframe>` : nothing4}
+          tabindex="-1" role="presentation"></iframe>` : nothing5}
     </div>`, target);
 };
 var RequestHTMLView = class _RequestHTMLView extends UI9.Widget.VBox {
   #dataURL;
   #view;
-  constructor(dataURL, view = DEFAULT_VIEW3) {
+  constructor(dataURL, view = DEFAULT_VIEW4) {
     super({ useShadowDom: true });
     this.#dataURL = dataURL;
     this.#view = view;
@@ -4757,7 +4755,7 @@ __export(SignedExchangeInfoView_exports, {
 });
 import * as Host5 from "./../../core/host/host.js";
 import * as i18n17 from "./../../core/i18n/i18n.js";
-import { Icon as Icon2 } from "./../../ui/kit/kit.js";
+import { Icon } from "./../../ui/kit/kit.js";
 import * as Components3 from "./../../ui/legacy/components/utils/utils.js";
 import * as UI10 from "./../../ui/legacy/legacy.js";
 
@@ -4989,7 +4987,7 @@ var SignedExchangeInfoView = class extends UI10.Widget.VBox {
       const errorMessagesCategory = new Category2(root, i18nString9(UIStrings9.errors));
       for (const error of signedExchangeInfo.errors) {
         const fragment = document.createDocumentFragment();
-        const icon = new Icon2();
+        const icon = new Icon();
         icon.name = "cross-circle-filled";
         icon.classList.add("prompt-icon", "small");
         fragment.appendChild(icon);
@@ -5208,17 +5206,17 @@ var RequestPreviewView = class extends UI11.Widget.VBox {
 // gen/front_end/panels/network/RequestResponseView.js
 var RequestResponseView_exports = {};
 __export(RequestResponseView_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW4,
+  DEFAULT_VIEW: () => DEFAULT_VIEW5,
   RequestResponseView: () => RequestResponseView
 });
 import * as Common7 from "./../../core/common/common.js";
 import * as Host6 from "./../../core/host/host.js";
 import * as i18n21 from "./../../core/i18n/i18n.js";
 import * as TextUtils2 from "./../../models/text_utils/text_utils.js";
-import * as Lit2 from "./../../third_party/lit/lit.js";
+import * as Lit3 from "./../../third_party/lit/lit.js";
 import * as SourceFrame3 from "./../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI12 from "./../../ui/legacy/legacy.js";
-var { html: html4, render: render5 } = Lit2;
+var { html: html5, render: render6 } = Lit3;
 var UIStrings11 = {
   /**
    * @description Text in Request Response View of the Network panel if no preview can be shown
@@ -5237,31 +5235,31 @@ var str_11 = i18n21.i18n.registerUIStrings("panels/network/RequestResponseView.t
 var i18nString11 = i18n21.i18n.getLocalizedString.bind(void 0, str_11);
 var widgetConfig3 = UI12.Widget.widgetConfig;
 var widgetRef = UI12.Widget.widgetRef;
-var DEFAULT_VIEW4 = (input, output, target) => {
+var DEFAULT_VIEW5 = (input, output, target) => {
   let widget;
   if (TextUtils2.StreamingContentData.isError(input.contentData)) {
-    widget = html4`<devtools-widget
+    widget = html5`<devtools-widget
                     .widgetConfig=${widgetConfig3((element) => new UI12.EmptyWidget.EmptyWidget(i18nString11(UIStrings11.failedToLoadResponseData), input.contentData.error, element))}></devtools-widget>`;
   } else if (input.request.statusCode === 204 || input.request.failed) {
-    widget = html4`<devtools-widget
+    widget = html5`<devtools-widget
                      .widgetConfig=${widgetConfig3((element) => new UI12.EmptyWidget.EmptyWidget(i18nString11(UIStrings11.noPreview), i18nString11(UIStrings11.thisRequestHasNoResponseData), element))}></devtools-widget>`;
   } else if (input.renderAsText) {
-    widget = html4`<devtools-widget
+    widget = html5`<devtools-widget
                     .widgetConfig=${widgetConfig3((element) => new SourceFrame3.ResourceSourceFrame.SearchableContainer(input.request, input.mimeType, element))}
                     ${widgetRef(SourceFrame3.ResourceSourceFrame.SearchableContainer, (widget2) => {
       output.revealPosition = widget2.revealPosition.bind(widget2);
     })}></devtools-widget>`;
   } else {
-    widget = html4`<devtools-widget
+    widget = html5`<devtools-widget
                     .widgetConfig=${widgetConfig3((element) => new BinaryResourceView(input.contentData, input.request.url(), input.request.resourceType(), element))}></devtools-widget>`;
   }
-  render5(widget, target);
+  render6(widget, target);
 };
 var RequestResponseView = class extends UI12.Widget.VBox {
   request;
   #view;
   #revealPosition;
-  constructor(request, view = DEFAULT_VIEW4) {
+  constructor(request, view = DEFAULT_VIEW5) {
     super();
     this.request = request;
     this.#view = view;
@@ -5306,7 +5304,7 @@ var RequestResponseView = class extends UI12.Widget.VBox {
 // gen/front_end/panels/network/RequestTimingView.js
 var RequestTimingView_exports = {};
 __export(RequestTimingView_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW5,
+  DEFAULT_VIEW: () => DEFAULT_VIEW6,
   RequestTimingView: () => RequestTimingView
 });
 import * as Common8 from "./../../core/common/common.js";
@@ -5319,7 +5317,7 @@ import * as NetworkTimeCalculator from "./../../models/network_time_calculator/n
 import * as uiI18n3 from "./../../ui/i18n/i18n.js";
 import * as ObjectUI2 from "./../../ui/legacy/components/object_ui/object_ui.js";
 import * as UI13 from "./../../ui/legacy/legacy.js";
-import { Directives as Directives2, html as html5, nothing as nothing5, render as render6 } from "./../../ui/lit/lit.js";
+import { Directives as Directives2, html as html6, nothing as nothing6, render as render7 } from "./../../ui/lit/lit.js";
 import * as VisualLogging8 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/network/networkTimingTable.css.js
@@ -5865,7 +5863,7 @@ function getLocalizedResponseSourceForCode(swResponseSource) {
       return i18nString12(UIStrings12.fallbackCode);
   }
 }
-var DEFAULT_VIEW5 = (input, output, target) => {
+var DEFAULT_VIEW6 = (input, output, target) => {
   const revealThrottled = () => {
     if (input.wasThrottled) {
       void Common8.Revealer.reveal(input.wasThrottled);
@@ -5889,15 +5887,15 @@ var DEFAULT_VIEW5 = (input, output, target) => {
       // Mark entries from a bespoke format
       ["synthetic"]: serverTiming.metric.startsWith("(c")
     });
-    return html5`
+    return html6`
       <tr class=${classes2}>
         <td title=${metricDesc} class=network-timing-metric>
           ${metricDesc}
         </td>
-        ${serverTiming.value === null ? nothing5 : html5`
+        ${serverTiming.value === null ? nothing6 : html6`
           <td class=server-timing-cell--value-bar>
             <div class=network-timing-row>
-              ${left < 0 ? nothing5 : html5`<span
+              ${left < 0 ? nothing6 : html6`<span
                     class="network-timing-bar server-timing"
                     data-background=${ifDefined(isTotal ? void 0 : colorGenerator.colorForID(serverTiming.metric))}
                     data-left=${left}
@@ -5946,9 +5944,9 @@ var DEFAULT_VIEW5 = (input, output, target) => {
       tail.ranges.push(range);
     }
   }
-  render6(
+  render7(
     // clang-format off
-    html5`<style>${networkTimingTable_css_default}</style>
+    html6`<style>${networkTimingTable_css_default}</style>
     <table
       class=${classes}
       jslog=${VisualLogging8.pane("timing").track({
@@ -5982,7 +5980,7 @@ var DEFAULT_VIEW5 = (input, output, target) => {
             </td>
           </tr>
         </thead>
-        ${timeRangeGroups.map((group) => html5`
+        ${timeRangeGroups.map((group) => html6`
           <tr class=network-timing-table-header>
             <td role=heading aria-level=2>
               ${group.name}
@@ -5990,9 +5988,9 @@ var DEFAULT_VIEW5 = (input, output, target) => {
             <td></td>
             <td>${i18nString12(UIStrings12.durationC)}</td>
           </tr>
-          ${repeat(group.ranges, (range) => html5`
+          ${repeat(group.ranges, (range) => html6`
             <tr>
-              ${isClickable(range) ? html5`<td
+              ${isClickable(range) ? html6`<td
                   tabindex=0
                   role=switch
                   aria-checked=false
@@ -6000,7 +5998,7 @@ var DEFAULT_VIEW5 = (input, output, target) => {
                   @keydown=${onActivate}
                   class=network-fetch-timing-bar-clickable>
                     ${timeRangeTitle(range.name)}
-                </td>` : html5`<td>
+                </td>` : html6`<td>
                     ${timeRangeTitle(range.name)}
                 </td>`}
               <td>
@@ -6019,22 +6017,22 @@ var DEFAULT_VIEW5 = (input, output, target) => {
                 </div>
               </td>
             </tr>
-            ${range.name === "serviceworker-respondwith" && input.fetchDetails ? html5`
+            ${range.name === "serviceworker-respondwith" && input.fetchDetails ? html6`
               <tr class="network-fetch-timing-bar-details network-fetch-timing-bar-details-collapsed">
                 ${input.fetchDetails.element}
-              </tr>` : nothing5}
-            ${range.name === "serviceworker-routerevaluation" && input.routerDetails ? html5`
+              </tr>` : nothing6}
+            ${range.name === "serviceworker-routerevaluation" && input.routerDetails ? html6`
               <tr class="router-evaluation-timing-bar-details network-fetch-timing-bar-details-collapsed">
                 ${input.routerDetails.element}
-              </tr>` : nothing5}
+              </tr>` : nothing6}
           `)}
         `)}
-        ${input.requestUnfinished ? html5`
+        ${input.requestUnfinished ? html6`
           <tr>
             <td class=caution colspan=3>
               ${i18nString12(UIStrings12.cautionRequestIsNotFinishedYet)}
             </td>
-          </tr>` : nothing5}
+          </tr>` : nothing6}
        <tr class=network-timing-footer>
          <td colspan=1>
            <x-link
@@ -6045,7 +6043,7 @@ var DEFAULT_VIEW5 = (input, output, target) => {
            </x-link>
          <td></td>
          <td class=${input.wasThrottled ? "throttled" : ""} title=${ifDefined(throttledRequestTitle)}>
-           ${input.wasThrottled ? html5` <devtools-icon name=watch @click=${revealThrottled}></devtools-icon>` : nothing5}
+           ${input.wasThrottled ? html6` <devtools-icon name=watch @click=${revealThrottled}></devtools-icon>` : nothing6}
            ${i18n23.TimeUtilities.secondsToString(input.totalDuration, true)}
          </td>
        </tr>
@@ -6061,12 +6059,12 @@ var DEFAULT_VIEW5 = (input, output, target) => {
        </tr>
        ${repeat(input.serverTimings.filter((item) => item.metric.toLowerCase() !== "total"), addServerTiming)}
        ${repeat(input.serverTimings.filter((item) => item.metric.toLowerCase() === "total"), addServerTiming)}
-       ${input.serverTimings.length === 0 ? html5`
+       ${input.serverTimings.length === 0 ? html6`
          <tr>
            <td colspan=3>
              ${uiI18n3.getFormatLocalizedString(str_12, UIStrings12.duringDevelopmentYouCanUseSToAdd, { PH1: UI13.XLink.XLink.create("https://web.dev/custom-metrics/#server-timing-api", i18nString12(UIStrings12.theServerTimingApi), void 0, void 0, "server-timing-api") })}
            </td>
-         </tr>` : nothing5}
+         </tr>` : nothing6}
    </table>`,
     // clang-format on
     target
@@ -6077,7 +6075,7 @@ var RequestTimingView = class _RequestTimingView extends UI13.Widget.VBox {
   #calculator;
   #lastMinimumBoundary = -1;
   #view;
-  constructor(target, view = DEFAULT_VIEW5) {
+  constructor(target, view = DEFAULT_VIEW6) {
     super(target, { classes: ["resource-timing-view"] });
     this.#view = view;
   }
@@ -7056,7 +7054,7 @@ var NetworkItemView = class extends UI17.TabbedPane.TabbedPane {
       this.appendTab("preview", i18nString16(UIStrings16.preview), previewView, i18nString16(UIStrings16.responsePreview));
       const signedExchangeInfo = request.signedExchangeInfo();
       if (signedExchangeInfo?.errors?.length) {
-        const icon = new Icon3();
+        const icon = new Icon2();
         icon.name = "cross-circle-filled";
         icon.classList.add("small");
         UI17.Tooltip.Tooltip.install(icon, i18nString16(UIStrings16.signedexchangeError));
@@ -7114,7 +7112,7 @@ var NetworkItemView = class extends UI17.TabbedPane.TabbedPane {
       this.appendTab("cookies", i18nString16(UIStrings16.cookies), this.#cookiesView, i18nString16(UIStrings16.requestAndResponseCookies));
     }
     if (this.#request.hasThirdPartyCookiePhaseoutIssue()) {
-      const icon = new Icon3();
+      const icon = new Icon2();
       icon.name = "warning-filled";
       icon.classList.add("small");
       icon.title = i18nString16(UIStrings16.thirdPartyPhaseout);
@@ -7146,7 +7144,7 @@ var NetworkItemView = class extends UI17.TabbedPane.TabbedPane {
   maybeShowErrorIconInTrustTokenTabHeader() {
     const trustTokenResult = this.#request.trustTokenOperationDoneEvent();
     if (trustTokenResult && !NetworkComponents.RequestTrustTokensView.statusConsideredSuccess(trustTokenResult.status)) {
-      const icon = new Icon3();
+      const icon = new Icon2();
       icon.name = "cross-circle-filled";
       icon.classList.add("small");
       this.setTabIcon("trust-tokens", icon);
@@ -7796,7 +7794,7 @@ __export(NetworkLogViewColumns_exports, {
 });
 import * as Common15 from "./../../core/common/common.js";
 import * as i18n35 from "./../../core/i18n/i18n.js";
-import { Icon as Icon4 } from "./../../ui/kit/kit.js";
+import { Icon as Icon3 } from "./../../ui/kit/kit.js";
 import * as DataGrid7 from "./../../ui/legacy/components/data_grid/data_grid.js";
 import * as Components4 from "./../../ui/legacy/components/utils/utils.js";
 import * as UI21 from "./../../ui/legacy/legacy.js";
@@ -9276,7 +9274,7 @@ var NetworkLogViewColumns = class _NetworkLogViewColumns {
     this.waterfallHeaderElement.createChild("div", "hover-layer");
     const innerElement = this.waterfallHeaderElement.createChild("div");
     innerElement.textContent = i18nString18(UIStrings18.waterfall);
-    this.waterfallColumnSortIcon = new Icon4();
+    this.waterfallColumnSortIcon = new Icon3();
     this.waterfallColumnSortIcon.className = "sort-order-icon";
     this.waterfallHeaderElement.createChild("div", "sort-order-icon-container").appendChild(this.waterfallColumnSortIcon);
     function waterfallHeaderClicked() {
@@ -12376,7 +12374,7 @@ import * as PanelCommon2 from "./../common/common.js";
 import * as NetworkForward5 from "./forward/forward.js";
 import * as Tracing from "./../../services/tracing/tracing.js";
 import * as PerfUI5 from "./../../ui/legacy/components/perf_ui/perf_ui.js";
-import * as SettingsUI5 from "./../../ui/legacy/components/settings_ui/settings_ui.js";
+import * as SettingsUI3 from "./../../ui/legacy/components/settings_ui/settings_ui.js";
 import * as UI23 from "./../../ui/legacy/legacy.js";
 import * as VisualLogging14 from "./../../ui/visual_logging/visual_logging.js";
 import * as MobileThrottling3 from "./../mobile_throttling/mobile_throttling.js";
@@ -12750,7 +12748,7 @@ var NetworkPanel = class _NetworkPanel extends UI23.Panel.Panel {
     this.filterBar.show(panel3.contentElement);
     this.filterBar.addEventListener("Changed", this.handleFilterChanged.bind(this));
     const settingsPane = panel3.contentElement.createChild("div", "network-settings-pane");
-    settingsPane.append(SettingsUI5.SettingsUI.createSettingCheckbox(i18nString21(UIStrings21.useLargeRequestRows), this.networkLogLargeRowsSetting, i18nString21(UIStrings21.showMoreInformationInRequestRows)), SettingsUI5.SettingsUI.createSettingCheckbox(i18nString21(UIStrings21.groupByFrame), Common17.Settings.Settings.instance().moduleSetting("network.group-by-frame"), i18nString21(UIStrings21.groupRequestsByTopLevelRequest)), SettingsUI5.SettingsUI.createSettingCheckbox(i18nString21(UIStrings21.showOverview), this.networkLogShowOverviewSetting, i18nString21(UIStrings21.showOverviewOfNetworkRequests)), SettingsUI5.SettingsUI.createSettingCheckbox(i18nString21(UIStrings21.captureScreenshots), this.networkRecordFilmStripSetting, i18nString21(UIStrings21.captureScreenshotsWhenLoadingA)));
+    settingsPane.append(SettingsUI3.SettingsUI.createSettingCheckbox(i18nString21(UIStrings21.useLargeRequestRows), this.networkLogLargeRowsSetting, i18nString21(UIStrings21.showMoreInformationInRequestRows)), SettingsUI3.SettingsUI.createSettingCheckbox(i18nString21(UIStrings21.groupByFrame), Common17.Settings.Settings.instance().moduleSetting("network.group-by-frame"), i18nString21(UIStrings21.groupRequestsByTopLevelRequest)), SettingsUI3.SettingsUI.createSettingCheckbox(i18nString21(UIStrings21.showOverview), this.networkLogShowOverviewSetting, i18nString21(UIStrings21.showOverviewOfNetworkRequests)), SettingsUI3.SettingsUI.createSettingCheckbox(i18nString21(UIStrings21.captureScreenshots), this.networkRecordFilmStripSetting, i18nString21(UIStrings21.captureScreenshotsWhenLoadingA)));
     this.showSettingsPaneSetting = Common17.Settings.Settings.instance().createSetting("network-show-settings-toolbar", false);
     settingsPane.classList.toggle("hidden", !this.showSettingsPaneSetting.get());
     this.showSettingsPaneSetting.addChangeListener(() => settingsPane.classList.toggle("hidden", !this.showSettingsPaneSetting.get()));

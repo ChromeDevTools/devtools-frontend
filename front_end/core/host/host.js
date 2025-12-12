@@ -2003,7 +2003,9 @@ var Action;
   Action2[Action2["AiCodeGenerationSuggestionAccepted"] = 196] = "AiCodeGenerationSuggestionAccepted";
   Action2[Action2["InsightTeaserModelDownloadStarted"] = 197] = "InsightTeaserModelDownloadStarted";
   Action2[Action2["InsightTeaserModelDownloadCompleted"] = 198] = "InsightTeaserModelDownloadCompleted";
-  Action2[Action2["MAX_VALUE"] = 199] = "MAX_VALUE";
+  Action2[Action2["AiCodeGenerationError"] = 199] = "AiCodeGenerationError";
+  Action2[Action2["AiCodeGenerationRequestTriggered"] = 200] = "AiCodeGenerationRequestTriggered";
+  Action2[Action2["MAX_VALUE"] = 201] = "MAX_VALUE";
 })(Action || (Action = {}));
 var PanelCodes;
 (function(PanelCodes2) {

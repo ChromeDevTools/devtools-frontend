@@ -424,7 +424,7 @@ export const aiAutoCompleteSuggestionState = CM.StateField.define({
                 if (effect.value) {
                     return effect.value;
                 }
-                value?.clearCachedRequest();
+                value?.clearCachedRequest?.();
                 return null;
             }
         }
@@ -435,20 +435,20 @@ export const aiAutoCompleteSuggestionState = CM.StateField.define({
         // between when the request was sent and the response was received.
         // We check if the position is still valid before trying to map it.
         if (value.from > tr.state.doc.length) {
-            value.clearCachedRequest();
+            value.clearCachedRequest?.();
             return null;
         }
         // If deletion occurs, set to null. Otherwise, the mapping might fail if
         // the position is inside the deleted range.
         if (tr.docChanged && tr.state.doc.length < tr.startState.doc.length) {
-            value.clearCachedRequest();
+            value.clearCachedRequest?.();
             return null;
         }
         const from = tr.changes.mapPos(value.from);
         const { head } = tr.state.selection.main;
         // If a change happened before the position from which suggestion was generated, set to null.
         if (tr.docChanged && head < from) {
-            value.clearCachedRequest();
+            value.clearCachedRequest?.();
             return null;
         }
         // Check if what's typed after the AI suggestion is a prefix of the AI suggestion.
@@ -481,7 +481,7 @@ export function acceptAiAutoCompleteSuggestion(view) {
         effects: setAiAutoCompleteSuggestion.of(null),
         userEvent: 'input.complete',
     });
-    suggestion.clearCachedRequest();
+    suggestion.clearCachedRequest?.();
     return { accepted: true, suggestion };
 }
 export const aiAutoCompleteSuggestion = [

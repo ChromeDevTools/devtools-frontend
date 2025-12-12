@@ -9,12 +9,13 @@ var CompilerScriptMapping_exports = {};
 __export(CompilerScriptMapping_exports, {
   CompilerScriptMapping: () => CompilerScriptMapping
 });
-import * as Common3 from "./../../core/common/common.js";
+import * as Common4 from "./../../core/common/common.js";
 import * as Platform2 from "./../../core/platform/platform.js";
 import * as SDK3 from "./../../core/sdk/sdk.js";
 
 // gen/front_end/models/stack_trace/stack_trace_impl.js
 import * as Common from "./../../core/common/common.js";
+import * as Common2 from "./../../core/common/common.js";
 import * as SDK from "./../../core/sdk/sdk.js";
 import * as StackTrace from "./../stack_trace/stack_trace.js";
 var __defProp2 = Object.defineProperty;
@@ -261,6 +262,7 @@ function compareRawFrames(a, b) {
 var _a;
 var StackTraceModel = class extends SDK.SDKModel.SDKModel {
   #trie = new Trie();
+  #mutex = new Common2.Mutex.Mutex();
   /** @returns the {@link StackTraceModel} for the target, or the model for the primaryPageTarget when passing null/undefined */
   static #modelForTarget(target) {
     const model = (target ?? SDK.TargetManager.TargetManager.instance().primaryPageTarget())?.model(_a);
@@ -271,7 +273,7 @@ var StackTraceModel = class extends SDK.SDKModel.SDKModel {
   }
   async createFromProtocolRuntime(stackTrace, rawFramesToUIFrames) {
     const [syncFragment, asyncFragments] = await Promise.all([
-      this.#createSyncFragment(stackTrace, rawFramesToUIFrames),
+      this.#createFragment(stackTrace.callFrames, rawFramesToUIFrames),
       this.#createAsyncFragments(stackTrace, rawFramesToUIFrames)
     ]);
     return new StackTraceImpl(syncFragment, asyncFragments);
@@ -285,41 +287,39 @@ var StackTraceModel = class extends SDK.SDKModel.SDKModel {
   }
   /** Trigger re-translation of all fragments with the provide script in their call stack */
   async scriptInfoChanged(script, translateRawFrames) {
-    const translatePromises = [];
-    let stackTracesToUpdate = /* @__PURE__ */ new Set();
-    for (const fragment of this.#affectedFragments(script)) {
-      if (fragment.node.children.length === 0) {
-        translatePromises.push(this.#translateFragment(fragment, translateRawFrames));
+    const release = await this.#mutex.acquire();
+    try {
+      const translatePromises = [];
+      let stackTracesToUpdate = /* @__PURE__ */ new Set();
+      for (const fragment of this.#affectedFragments(script)) {
+        if (fragment.node.children.length === 0) {
+          translatePromises.push(this.#translateFragment(fragment, translateRawFrames));
+        }
+        stackTracesToUpdate = stackTracesToUpdate.union(fragment.stackTraces);
       }
-      stackTracesToUpdate = stackTracesToUpdate.union(fragment.stackTraces);
+      await Promise.all(translatePromises);
+      for (const stackTrace of stackTracesToUpdate) {
+        stackTrace.dispatchEventToListeners(
+          "UPDATED"
+          /* StackTrace.StackTrace.Events.UPDATED */
+        );
+      }
+    } finally {
+      release();
     }
-    await Promise.all(translatePromises);
-    for (const stackTrace of stackTracesToUpdate) {
-      stackTrace.dispatchEventToListeners(
-        "UPDATED"
-        /* StackTrace.StackTrace.Events.UPDATED */
-      );
-    }
-  }
-  async #createSyncFragment(stackTrace, rawFramesToUIFrames) {
-    const fragment = this.#createFragment(stackTrace.callFrames);
-    await this.#translateFragment(fragment, rawFramesToUIFrames);
-    return fragment;
   }
   async #createDebuggableFragment(pausedDetails, rawFramesToUIFrames) {
-    const fragment = this.#createFragment(pausedDetails.callFrames.map((frame) => ({
+    const fragment = await this.#createFragment(pausedDetails.callFrames.map((frame) => ({
       scriptId: frame.script.scriptId,
       url: frame.script.sourceURL,
       functionName: frame.functionName,
       lineNumber: frame.location().lineNumber,
       columnNumber: frame.location().columnNumber
-    })));
-    await this.#translateFragment(fragment, rawFramesToUIFrames);
+    })), rawFramesToUIFrames);
     return new DebuggableFragmentImpl(fragment, pausedDetails.callFrames);
   }
   async #createAsyncFragments(stackTraceOrPausedEvent, rawFramesToUIFrames) {
     const asyncFragments = [];
-    const translatePromises = [];
     const debuggerModel = this.target().model(SDK.DebuggerModel.DebuggerModel);
     if (debuggerModel) {
       for await (const { stackTrace: asyncStackTrace, target } of debuggerModel.iterateAsyncParents(stackTraceOrPausedEvent)) {
@@ -327,16 +327,25 @@ var StackTraceModel = class extends SDK.SDKModel.SDKModel {
           continue;
         }
         const model = _a.#modelForTarget(target);
-        const fragment = model.#createFragment(asyncStackTrace.callFrames);
-        translatePromises.push(model.#translateFragment(fragment, rawFramesToUIFrames));
-        asyncFragments.push(new AsyncFragmentImpl(asyncStackTrace.description ?? "", fragment));
+        const asyncFragmentPromise = model.#createFragment(asyncStackTrace.callFrames, rawFramesToUIFrames).then((fragment) => new AsyncFragmentImpl(asyncStackTrace.description ?? "", fragment));
+        asyncFragments.push(asyncFragmentPromise);
       }
     }
-    await Promise.all(translatePromises);
-    return asyncFragments;
+    return await Promise.all(asyncFragments);
   }
-  #createFragment(frames) {
-    return FragmentImpl.getOrCreate(this.#trie.insert(frames));
+  async #createFragment(frames, rawFramesToUIFrames) {
+    const release = await this.#mutex.acquire();
+    try {
+      const node = this.#trie.insert(frames);
+      const requiresTranslation = !Boolean(node.fragment);
+      const fragment = FragmentImpl.getOrCreate(node);
+      if (requiresTranslation) {
+        await this.#translateFragment(fragment, rawFramesToUIFrames);
+      }
+      return fragment;
+    } finally {
+      release();
+    }
   }
   async #translateFragment(fragment, rawFramesToUIFrames) {
     const rawFrames = fragment.node.getCallStack().map((node) => node.rawFrame).toArray();
@@ -511,12 +520,12 @@ __export(NetworkProject_exports, {
   NetworkProject: () => NetworkProject,
   NetworkProjectManager: () => NetworkProjectManager
 });
-import * as Common2 from "./../../core/common/common.js";
+import * as Common3 from "./../../core/common/common.js";
 import * as SDK2 from "./../../core/sdk/sdk.js";
 var uiSourceCodeToAttributionMap = /* @__PURE__ */ new WeakMap();
 var projectToTargetMap = /* @__PURE__ */ new WeakMap();
 var networkProjectManagerInstance;
-var NetworkProjectManager = class _NetworkProjectManager extends Common2.ObjectWrapper.ObjectWrapper {
+var NetworkProjectManager = class _NetworkProjectManager extends Common3.ObjectWrapper.ObjectWrapper {
   constructor() {
     super();
   }
@@ -654,7 +663,7 @@ var CompilerScriptMapping = class {
     }
   }
   addStubUISourceCode(script) {
-    const stubUISourceCode = this.#stubProject.addContentProvider(Common3.ParsedURL.ParsedURL.concatenate(script.sourceURL, ":sourcemap"), TextUtils2.StaticContentProvider.StaticContentProvider.fromString(script.sourceURL, Common3.ResourceType.resourceTypes.Script, "\n\n\n\n\n// Please wait a bit.\n// Compiled script is not shown while source map is being loaded!"), "text/javascript");
+    const stubUISourceCode = this.#stubProject.addContentProvider(Common4.ParsedURL.ParsedURL.concatenate(script.sourceURL, ":sourcemap"), TextUtils2.StaticContentProvider.StaticContentProvider.fromString(script.sourceURL, Common4.ResourceType.resourceTypes.Script, "\n\n\n\n\n// Please wait a bit.\n// Compiled script is not shown while source map is being loaded!"), "text/javascript");
     this.#stubUISourceCodes.set(script, stubUISourceCode);
   }
   removeStubUISourceCode(script) {
@@ -968,7 +977,7 @@ var CompilerScriptMapping = class {
     }
     this.#sourceMapToProject.set(sourceMap, project);
     for (const url of sourceMap.sourceURLs()) {
-      const contentType = Common3.ResourceType.resourceTypes.SourceMapScript;
+      const contentType = Common4.ResourceType.resourceTypes.SourceMapScript;
       const uiSourceCode = project.createUISourceCode(url, contentType);
       if (sourceMap.hasIgnoreListHint(url)) {
         uiSourceCode.markKnownThirdParty();
@@ -980,7 +989,7 @@ var CompilerScriptMapping = class {
         const encoder = new TextEncoder();
         metadata = new Workspace3.UISourceCode.UISourceCodeMetadata(null, encoder.encode(content).length);
       }
-      const mimeType = Common3.ResourceType.ResourceType.mimeFromURL(url) ?? contentType.canonicalMimeType();
+      const mimeType = Common4.ResourceType.ResourceType.mimeFromURL(url) ?? contentType.canonicalMimeType();
       this.#uiSourceCodeToSourceMaps.set(uiSourceCode, sourceMap);
       NetworkProject.setInitialFrameAttribution(uiSourceCode, script.frameId);
       const otherUISourceCode = project.uiSourceCodeForURL(url);
@@ -1043,7 +1052,7 @@ var CompilerScriptMapping = class {
   sourceMapAttachedForTest(_sourceMap) {
   }
   dispose() {
-    Common3.EventTarget.removeEventListeners(this.#eventListeners);
+    Common4.EventTarget.removeEventListeners(this.#eventListeners);
     for (const project of this.#projects.values()) {
       project.dispose();
     }
@@ -1058,7 +1067,7 @@ __export(CSSWorkspaceBinding_exports, {
   LiveLocation: () => LiveLocation,
   ModelInfo: () => ModelInfo
 });
-import * as Common7 from "./../../core/common/common.js";
+import * as Common8 from "./../../core/common/common.js";
 import * as Platform4 from "./../../core/platform/platform.js";
 import * as Root from "./../../core/root/root.js";
 import * as SDK7 from "./../../core/sdk/sdk.js";
@@ -1128,7 +1137,7 @@ var SASSSourceMapping_exports = {};
 __export(SASSSourceMapping_exports, {
   SASSSourceMapping: () => SASSSourceMapping
 });
-import * as Common4 from "./../../core/common/common.js";
+import * as Common5 from "./../../core/common/common.js";
 import * as SDK4 from "./../../core/sdk/sdk.js";
 import * as TextUtils3 from "./../text_utils/text_utils.js";
 import * as Workspace5 from "./../workspace/workspace.js";
@@ -1239,7 +1248,7 @@ var SASSSourceMapping = class {
     return [];
   }
   dispose() {
-    Common4.EventTarget.removeEventListeners(this.#eventListeners);
+    Common5.EventTarget.removeEventListeners(this.#eventListeners);
     this.#project.dispose();
   }
 };
@@ -1259,12 +1268,12 @@ var Binding = class {
   }
   recreateUISourceCodeIfNeeded(frameId) {
     const sourceMap = this.referringSourceMaps[this.referringSourceMaps.length - 1];
-    const contentType = Common4.ResourceType.resourceTypes.SourceMapStyleSheet;
+    const contentType = Common5.ResourceType.resourceTypes.SourceMapStyleSheet;
     const embeddedContent = sourceMap.embeddedContentByURL(this.#url);
     const contentProvider = embeddedContent !== null ? TextUtils3.StaticContentProvider.StaticContentProvider.fromString(this.#url, contentType, embeddedContent) : new SDK4.CompilerSourceMappingContentProvider.CompilerSourceMappingContentProvider(this.#url, contentType, this.#initiator);
     const newUISourceCode = this.#project.createUISourceCode(this.#url, contentType);
     uiSourceCodeToBinding.set(newUISourceCode, this);
-    const mimeType = Common4.ResourceType.ResourceType.mimeFromURL(this.#url) || contentType.canonicalMimeType();
+    const mimeType = Common5.ResourceType.ResourceType.mimeFromURL(this.#url) || contentType.canonicalMimeType();
     const metadata = typeof embeddedContent === "string" ? new Workspace5.UISourceCode.UISourceCodeMetadata(null, embeddedContent.length) : null;
     if (this.uiSourceCode) {
       NetworkProject.cloneInitialFrameAttribution(this.uiSourceCode, newUISourceCode);
@@ -1310,7 +1319,7 @@ __export(StylesSourceMapping_exports, {
   StyleFile: () => StyleFile,
   StylesSourceMapping: () => StylesSourceMapping
 });
-import * as Common6 from "./../../core/common/common.js";
+import * as Common7 from "./../../core/common/common.js";
 import * as SDK6 from "./../../core/sdk/sdk.js";
 import * as TextUtils4 from "./../text_utils/text_utils.js";
 import * as Workspace9 from "./../workspace/workspace.js";
@@ -1323,7 +1332,7 @@ __export(ResourceUtils_exports, {
   resourceForURL: () => resourceForURL,
   resourceMetadata: () => resourceMetadata
 });
-import * as Common5 from "./../../core/common/common.js";
+import * as Common6 from "./../../core/common/common.js";
 import * as Platform3 from "./../../core/platform/platform.js";
 import * as SDK5 from "./../../core/sdk/sdk.js";
 import * as Workspace7 from "./../workspace/workspace.js";
@@ -1346,7 +1355,7 @@ function displayNameForURL(url) {
   if (!inspectedURL) {
     return Platform3.StringUtilities.trimURL(url, "");
   }
-  const parsedURL = Common5.ParsedURL.ParsedURL.fromString(inspectedURL);
+  const parsedURL = Common6.ParsedURL.ParsedURL.fromString(inspectedURL);
   if (!parsedURL) {
     return url;
   }
@@ -1503,7 +1512,7 @@ var StylesSourceMapping = class {
       styleFile.dispose();
     }
     this.#styleFiles.clear();
-    Common6.EventTarget.removeEventListeners(this.#eventListeners);
+    Common7.EventTarget.removeEventListeners(this.#eventListeners);
     this.#project.removeProject();
   }
 };
@@ -1513,7 +1522,7 @@ var StyleFile = class {
   headers;
   uiSourceCode;
   #eventListeners;
-  #throttler = new Common6.Throttler.Throttler(200);
+  #throttler = new Common7.Throttler.Throttler(200);
   #terminated = false;
   #isAddingRevision;
   #isUpdatingHeaders;
@@ -1630,7 +1639,7 @@ var StyleFile = class {
     }
     this.#terminated = true;
     this.#project.removeUISourceCode(this.uiSourceCode.url());
-    Common6.EventTarget.removeEventListeners(this.#eventListeners);
+    Common7.EventTarget.removeEventListeners(this.#eventListeners);
   }
   contentURL() {
     console.assert(this.headers.size > 0);
@@ -1863,7 +1872,7 @@ var ModelInfo = class {
     return this.#resourceMapping.uiLocationToCSSLocations(uiLocation);
   }
   dispose() {
-    Common7.EventTarget.removeEventListeners(this.#eventListeners);
+    Common8.EventTarget.removeEventListeners(this.#eventListeners);
     this.#stylesSourceMapping.dispose();
     this.#sassSourceMapping.dispose();
   }
@@ -1908,7 +1917,7 @@ __export(DebuggerLanguagePlugins_exports, {
   ExtensionRemoteObject: () => ExtensionRemoteObject,
   SourceScope: () => SourceScope
 });
-import * as Common8 from "./../../core/common/common.js";
+import * as Common9 from "./../../core/common/common.js";
 import * as i18n3 from "./../../core/i18n/i18n.js";
 import { assertNotNullOrUndefined } from "./../../core/platform/platform.js";
 import * as SDK8 from "./../../core/sdk/sdk.js";
@@ -2356,7 +2365,7 @@ var DebuggerLanguagePluginManager = class {
       const scripts = rawModuleHandle.scripts.filter((script) => script.debuggerModel !== debuggerModel);
       if (scripts.length === 0) {
         rawModuleHandle.plugin.removeRawModule(rawModuleId).catch((error) => {
-          Common8.Console.Console.instance().error(
+          Common9.Console.Console.instance().error(
             i18nString2(UIStrings2.errorInDebuggerLanguagePlugin, { PH1: error.message }),
             /* show=*/
             false
@@ -2457,7 +2466,7 @@ var DebuggerLanguagePluginManager = class {
         return uiSourceCode.uiLocation(sourceLocation.lineNumber, sourceLocation.columnNumber >= 0 ? sourceLocation.columnNumber : void 0);
       }
     } catch (error) {
-      Common8.Console.Console.instance().error(
+      Common9.Console.Console.instance().error(
         i18nString2(UIStrings2.errorInDebuggerLanguagePlugin, { PH1: error.message }),
         /* show=*/
         false
@@ -2480,7 +2489,7 @@ var DebuggerLanguagePluginManager = class {
       return Promise.resolve(null);
     }
     return Promise.all(locationPromises).then((locations) => locations.flat()).catch((error) => {
-      Common8.Console.Console.instance().error(
+      Common9.Console.Console.instance().error(
         i18nString2(UIStrings2.errorInDebuggerLanguagePlugin, { PH1: error.message }),
         /* show=*/
         false
@@ -2612,7 +2621,7 @@ var DebuggerLanguagePluginManager = class {
       let rawModuleHandle = this.#rawModuleHandles.get(rawModuleId);
       if (!rawModuleHandle) {
         const sourceFileURLsPromise = (async () => {
-          const console2 = Common8.Console.Console.instance();
+          const console2 = Common9.Console.Console.instance();
           const url = script.sourceURL;
           const symbolsUrl = script.debugSymbols?.externalURL || "";
           if (symbolsUrl) {
@@ -2621,7 +2630,7 @@ var DebuggerLanguagePluginManager = class {
             console2.log(i18nString2(UIStrings2.loadingDebugSymbolsFor, { PH1: plugin.name, PH2: url }));
           }
           try {
-            const code = !symbolsUrl && Common8.ParsedURL.schemeIs(url, "wasm:") ? await script.getWasmBytecode() : void 0;
+            const code = !symbolsUrl && Common9.ParsedURL.schemeIs(url, "wasm:") ? await script.getWasmBytecode() : void 0;
             const addModuleResult = await plugin.addRawModule(rawModuleId, symbolsUrl, { url, code });
             if (rawModuleHandle !== this.#rawModuleHandles.get(rawModuleId)) {
               return [];
@@ -2717,7 +2726,7 @@ var DebuggerLanguagePluginManager = class {
       }
       return Array.from(scopes.values());
     } catch (error) {
-      Common8.Console.Console.instance().error(
+      Common9.Console.Console.instance().error(
         i18nString2(UIStrings2.errorInDebuggerLanguagePlugin, { PH1: error.message }),
         /* show=*/
         false
@@ -2747,7 +2756,7 @@ var DebuggerLanguagePluginManager = class {
       }
       return functionInfo;
     } catch (error) {
-      Common8.Console.Console.instance().warn(i18nString2(UIStrings2.errorInDebuggerLanguagePlugin, { PH1: error.message }));
+      Common9.Console.Console.instance().warn(i18nString2(UIStrings2.errorInDebuggerLanguagePlugin, { PH1: error.message }));
       return { frames: [] };
     }
   }
@@ -2773,7 +2782,7 @@ var DebuggerLanguagePluginManager = class {
         end: new SDK8.DebuggerModel.Location(script.debuggerModel, script.scriptId, 0, Number(m.endOffset) + (script.codeOffset() || 0))
       }));
     } catch (error) {
-      Common8.Console.Console.instance().warn(i18nString2(UIStrings2.errorInDebuggerLanguagePlugin, { PH1: error.message }));
+      Common9.Console.Console.instance().warn(i18nString2(UIStrings2.errorInDebuggerLanguagePlugin, { PH1: error.message }));
       return [];
     }
   }
@@ -2799,7 +2808,7 @@ var DebuggerLanguagePluginManager = class {
         end: new SDK8.DebuggerModel.Location(script.debuggerModel, script.scriptId, 0, Number(m.endOffset) + (script.codeOffset() || 0))
       }));
     } catch (error) {
-      Common8.Console.Console.instance().warn(i18nString2(UIStrings2.errorInDebuggerLanguagePlugin, { PH1: error.message }));
+      Common9.Console.Console.instance().warn(i18nString2(UIStrings2.errorInDebuggerLanguagePlugin, { PH1: error.message }));
       return [];
     }
   }
@@ -2843,11 +2852,11 @@ var ModelData = class {
     for (const url of urls) {
       let uiSourceCode = this.project.uiSourceCodeForURL(url);
       if (!uiSourceCode) {
-        uiSourceCode = this.project.createUISourceCode(url, Common8.ResourceType.resourceTypes.SourceMapScript);
+        uiSourceCode = this.project.createUISourceCode(url, Common9.ResourceType.resourceTypes.SourceMapScript);
         NetworkProject.setInitialFrameAttribution(uiSourceCode, script.frameId);
         this.uiSourceCodeToScripts.set(uiSourceCode, [script]);
-        const contentProvider = new SDK8.CompilerSourceMappingContentProvider.CompilerSourceMappingContentProvider(url, Common8.ResourceType.resourceTypes.SourceMapScript, initiator);
-        const mimeType = Common8.ResourceType.ResourceType.mimeFromURL(url) || "text/javascript";
+        const contentProvider = new SDK8.CompilerSourceMappingContentProvider.CompilerSourceMappingContentProvider(url, Common9.ResourceType.resourceTypes.SourceMapScript, initiator);
+        const mimeType = Common9.ResourceType.ResourceType.mimeFromURL(url) || "text/javascript";
         this.project.addUISourceCodeWithProvider(uiSourceCode, contentProvider, null, mimeType);
       } else {
         const scripts = this.uiSourceCodeToScripts.get(uiSourceCode);
@@ -2882,7 +2891,7 @@ __export(DebuggerWorkspaceBinding_exports, {
   DebuggerWorkspaceBinding: () => DebuggerWorkspaceBinding,
   Location: () => Location
 });
-import * as Common11 from "./../../core/common/common.js";
+import * as Common12 from "./../../core/common/common.js";
 import * as Platform6 from "./../../core/platform/platform.js";
 import * as Root3 from "./../../core/root/root.js";
 import * as SDK11 from "./../../core/sdk/sdk.js";
@@ -2893,7 +2902,7 @@ var DefaultScriptMapping_exports = {};
 __export(DefaultScriptMapping_exports, {
   DefaultScriptMapping: () => DefaultScriptMapping
 });
-import * as Common9 from "./../../core/common/common.js";
+import * as Common10 from "./../../core/common/common.js";
 import * as SDK9 from "./../../core/sdk/sdk.js";
 import * as Workspace13 from "./../workspace/workspace.js";
 var DefaultScriptMapping = class _DefaultScriptMapping {
@@ -2922,7 +2931,7 @@ var DefaultScriptMapping = class _DefaultScriptMapping {
     this.#scriptToUISourceCode = /* @__PURE__ */ new Map();
   }
   static createV8ScriptURL(script) {
-    const name = Common9.ParsedURL.ParsedURL.extractName(script.sourceURL);
+    const name = Common10.ParsedURL.ParsedURL.extractName(script.sourceURL);
     const url = "debugger:///VM" + script.scriptId + (name ? " " + name : "");
     return url;
   }
@@ -2972,7 +2981,7 @@ var DefaultScriptMapping = class _DefaultScriptMapping {
   parsedScriptSource(event) {
     const script = event.data;
     const url = _DefaultScriptMapping.createV8ScriptURL(script);
-    const uiSourceCode = this.#project.createUISourceCode(url, Common9.ResourceType.resourceTypes.Script);
+    const uiSourceCode = this.#project.createUISourceCode(url, Common10.ResourceType.resourceTypes.Script);
     if (script.isBreakpointCondition) {
       uiSourceCode.markAsUnconditionallyIgnoreListed();
     }
@@ -2998,7 +3007,7 @@ var DefaultScriptMapping = class _DefaultScriptMapping {
   }
   dispose() {
     defaultScriptMappings.delete(this);
-    Common9.EventTarget.removeEventListeners(this.#eventListeners);
+    Common10.EventTarget.removeEventListeners(this.#eventListeners);
     this.globalObjectCleared();
     this.#project.dispose();
   }
@@ -3011,7 +3020,7 @@ __export(ResourceScriptMapping_exports, {
   ResourceScriptFile: () => ResourceScriptFile,
   ResourceScriptMapping: () => ResourceScriptMapping
 });
-import * as Common10 from "./../../core/common/common.js";
+import * as Common11 from "./../../core/common/common.js";
 import * as i18n5 from "./../../core/i18n/i18n.js";
 import * as Platform5 from "./../../core/platform/platform.js";
 import * as Root2 from "./../../core/root/root.js";
@@ -3189,7 +3198,7 @@ var ResourceScriptMapping = class {
         return;
       }
       if (script.isContentScript()) {
-        const parsedURL = new Common10.ParsedURL.ParsedURL(url);
+        const parsedURL = new Common11.ParsedURL.ParsedURL(url);
         if (!parsedURL.isValid) {
           return;
         }
@@ -3262,11 +3271,11 @@ var ResourceScriptMapping = class {
     this.globalObjectCleared();
   }
   dispose() {
-    Common10.EventTarget.removeEventListeners(this.#eventListeners);
+    Common11.EventTarget.removeEventListeners(this.#eventListeners);
     this.globalObjectCleared();
   }
 };
-var ResourceScriptFile = class extends Common10.ObjectWrapper.ObjectWrapper {
+var ResourceScriptFile = class extends Common11.ObjectWrapper.ObjectWrapper {
   #resourceScriptMapping;
   uiSourceCode;
   script;
@@ -3274,7 +3283,7 @@ var ResourceScriptFile = class extends Common10.ObjectWrapper.ObjectWrapper {
   #isDivergingFromVM;
   #hasDivergedFromVM;
   #isMergingToVM;
-  #updateMutex = new Common10.Mutex.Mutex();
+  #updateMutex = new Common11.Mutex.Mutex();
   constructor(resourceScriptMapping, uiSourceCode, script) {
     super();
     this.#resourceScriptMapping = resourceScriptMapping;
@@ -3330,7 +3339,7 @@ var ResourceScriptFile = class extends Common10.ObjectWrapper.ObjectWrapper {
       return;
     }
     if (!exceptionDetails) {
-      Common10.Console.Console.instance().addMessage(
+      Common11.Console.Console.instance().addMessage(
         i18nString3(UIStrings3.liveEditFailed, { PH1: getErrorText(status) }),
         "warning"
         /* Common.Console.MessageLevel.WARNING */
@@ -3776,7 +3785,7 @@ var DebuggerWorkspaceBinding = class _DebuggerWorkspaceBinding {
       return false;
     }
     const functionLocation = frame.functionLocation();
-    if (!autoSteppingContext || debuggerPausedDetails.reason !== "step" || !functionLocation || !frame.script.isWasm() || !Common11.Settings.moduleSetting("wasm-auto-stepping").get() || !this.pluginManager.hasPluginForScript(frame.script)) {
+    if (!autoSteppingContext || debuggerPausedDetails.reason !== "step" || !functionLocation || !frame.script.isWasm() || !Common12.Settings.moduleSetting("wasm-auto-stepping").get() || !this.pluginManager.hasPluginForScript(frame.script)) {
       return true;
     }
     const uiLocation = await this.pluginManager.rawLocationToUILocation(frame.location());
@@ -3999,7 +4008,7 @@ __export(FileUtils_exports, {
   ChunkedFileReader: () => ChunkedFileReader,
   FileOutputStream: () => FileOutputStream
 });
-import * as Common12 from "./../../core/common/common.js";
+import * as Common13 from "./../../core/common/common.js";
 import * as TextUtils7 from "./../text_utils/text_utils.js";
 import * as Workspace19 from "./../workspace/workspace.js";
 var ChunkedFileReader = class {
@@ -4032,7 +4041,7 @@ var ChunkedFileReader = class {
     }
     if (this.#file?.type.endsWith("gzip")) {
       const fileStream = this.#file.stream();
-      const stream = Common12.Gzip.decompressStream(fileStream);
+      const stream = Common13.Gzip.decompressStream(fileStream);
       this.#streamReader = stream.getReader();
     } else {
       this.#reader = new FileReader();
@@ -4430,7 +4439,7 @@ var ResourceMapping_exports = {};
 __export(ResourceMapping_exports, {
   ResourceMapping: () => ResourceMapping
 });
-import * as Common13 from "./../../core/common/common.js";
+import * as Common14 from "./../../core/common/common.js";
 import * as SDK13 from "./../../core/sdk/sdk.js";
 import * as Formatter2 from "./../formatter/formatter.js";
 import * as TextUtils9 from "./../text_utils/text_utils.js";
@@ -4773,16 +4782,16 @@ var ModelInfo2 = class {
   }
   acceptsResource(resource) {
     const resourceType = resource.resourceType();
-    if (resourceType !== Common13.ResourceType.resourceTypes.Image && resourceType !== Common13.ResourceType.resourceTypes.Font && resourceType !== Common13.ResourceType.resourceTypes.Document && resourceType !== Common13.ResourceType.resourceTypes.Manifest && resourceType !== Common13.ResourceType.resourceTypes.Fetch && resourceType !== Common13.ResourceType.resourceTypes.XHR) {
+    if (resourceType !== Common14.ResourceType.resourceTypes.Image && resourceType !== Common14.ResourceType.resourceTypes.Font && resourceType !== Common14.ResourceType.resourceTypes.Document && resourceType !== Common14.ResourceType.resourceTypes.Manifest && resourceType !== Common14.ResourceType.resourceTypes.Fetch && resourceType !== Common14.ResourceType.resourceTypes.XHR) {
       return false;
     }
-    if (resourceType === Common13.ResourceType.resourceTypes.Image && resource.mimeType && !resource.mimeType.startsWith("image")) {
+    if (resourceType === Common14.ResourceType.resourceTypes.Image && resource.mimeType && !resource.mimeType.startsWith("image")) {
       return false;
     }
-    if (resourceType === Common13.ResourceType.resourceTypes.Font && resource.mimeType && !resource.mimeType.includes("font")) {
+    if (resourceType === Common14.ResourceType.resourceTypes.Font && resource.mimeType && !resource.mimeType.includes("font")) {
       return false;
     }
-    if ((resourceType === Common13.ResourceType.resourceTypes.Image || resourceType === Common13.ResourceType.resourceTypes.Font) && Common13.ParsedURL.schemeIs(resource.contentURL(), "data:")) {
+    if ((resourceType === Common14.ResourceType.resourceTypes.Image || resourceType === Common14.ResourceType.resourceTypes.Font) && Common14.ParsedURL.schemeIs(resource.contentURL(), "data:")) {
       return false;
     }
     return true;
@@ -4832,7 +4841,7 @@ var ModelInfo2 = class {
     this.#bindings.clear();
   }
   dispose() {
-    Common13.EventTarget.removeEventListeners(this.#eventListeners);
+    Common14.EventTarget.removeEventListeners(this.#eventListeners);
     for (const binding of this.#bindings.values()) {
       binding.dispose();
     }
@@ -4982,7 +4991,7 @@ var TempFile_exports = {};
 __export(TempFile_exports, {
   TempFile: () => TempFile
 });
-import * as Common14 from "./../../core/common/common.js";
+import * as Common15 from "./../../core/common/common.js";
 var TempFile = class {
   #lastBlob;
   constructor() {
@@ -5002,7 +5011,7 @@ var TempFile = class {
   }
   async readRange(startOffset, endOffset) {
     if (!this.#lastBlob) {
-      Common14.Console.Console.instance().error("Attempt to read a temp file that was never written");
+      Common15.Console.Console.instance().error("Attempt to read a temp file that was never written");
       return "";
     }
     const blob = typeof startOffset === "number" || typeof endOffset === "number" ? this.#lastBlob.slice(startOffset, endOffset) : this.#lastBlob;
@@ -5014,7 +5023,7 @@ var TempFile = class {
         reader.readAsText(blob);
       });
     } catch (error) {
-      Common14.Console.Console.instance().error("Failed to read from temp file: " + error.message);
+      Common15.Console.Console.instance().error("Failed to read from temp file: " + error.message);
     }
     return reader.result;
   }

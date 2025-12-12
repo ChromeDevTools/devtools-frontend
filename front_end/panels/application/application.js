@@ -165,7 +165,7 @@ var appManifestView_css_default = `/*
   flex-grow: 0;
 }
 
-.manifest-container {
+:host {
   overflow: auto;
 }
 
@@ -244,7 +244,7 @@ devtools-report .report-section {
 
 // gen/front_end/panels/application/AppManifestView.js
 import * as ApplicationComponents from "./components/components.js";
-var { classMap, ref } = Directives;
+var { styleMap, classMap, ref } = Directives;
 var { linkifyURL } = Components.Linkifier.Linkifier;
 var { widgetConfig } = UI2.Widget;
 var UIStrings = {
@@ -674,90 +674,88 @@ function renderSectionHeader(text, output) {
       ${text}
     </devtools-report-section-header>`;
 }
-function renderErrors(errorsSection, warnings, manifestErrors, imageErrors) {
-  errorsSection.clearContent();
-  errorsSection.element.classList.toggle("hidden", !manifestErrors?.length && !warnings?.length && !imageErrors?.length);
-  for (const error of manifestErrors ?? []) {
-    const icon = UI2.UIUtils.createIconLabel({
-      title: error.message,
-      iconName: error.critical ? "cross-circle-filled" : "warning-filled",
-      color: error.critical ? "var(--icon-error)" : "var(--icon-warning)"
-    });
-    errorsSection.appendRow().appendChild(icon);
-  }
-  for (const warning of warnings ?? []) {
-    const msgElement = document.createTextNode(warning);
-    errorsSection.appendRow().appendChild(msgElement);
-  }
-  for (const error of imageErrors ?? []) {
-    const msgElement = document.createTextNode(error);
-    errorsSection.appendRow().appendChild(msgElement);
-  }
+function renderErrors(warnings, manifestErrors, imageErrors, output) {
+  return html`
+    ${renderSectionHeader(i18nString(UIStrings.errorsAndWarnings), output)}
+    <div class="report-section" jslog=${VisualLogging.section("errors-and-warnings")}>
+      ${manifestErrors?.map((error) => html`<div class="report-row">
+          <devtools-icon
+          name=${error.critical ? "cross-circle-filled" : "warning-filled"}
+          style=${styleMap({ color: error.critical ? "var(--icon-error)" : "var(--icon-warning)" })}>
+        </devtools-icon>
+        ${error.message}</div>
+      `)}
+      ${warnings?.map((warning) => html`<div class="report-row">${warning}</div>`)}
+      ${imageErrors?.map((error) => html`<div class="report-row">${error}</div>`)}
+    </div>`;
 }
-function renderIdentity(identitySection, identityData) {
+function renderIdentity(identityData, onCopy, output) {
   const { name, shortName, description, appId, recommendedId, hasId } = identityData;
-  const fields = [];
-  fields.push({ title: i18nString(UIStrings.name), content: name });
-  fields.push({ title: i18nString(UIStrings.shortName), content: shortName });
-  fields.push({ title: i18nString(UIStrings.description), content: description });
-  if (appId && recommendedId) {
-    const onCopy = () => {
-      UI2.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.copiedToClipboard, { PH1: recommendedId }));
-      Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(recommendedId);
-    };
-    fields.push({ title: i18nString(UIStrings.computedAppId), label: "App Id", content: html`
-      ${appId}
-      <devtools-icon class="inline-icon" name="help" title=${i18nString(UIStrings.appIdExplainer)}
-          jslog=${VisualLogging.action("help").track({ hover: true })}>
-      </devtools-icon>
-      <devtools-link href="https://developer.chrome.com/blog/pwa-manifest-id/"
-                    .jslogContext=${"learn-more"}>
-        ${i18nString(UIStrings.learnMore)}
-      </devtools-link>
-      ${!hasId ? html`
-        <div class="multiline-value">
-          ${i18nTemplate(str_, UIStrings.appIdNote, {
-      PH1: html`<code>${recommendedId}</code>`,
-      PH2: html`<devtools-button class="inline-button" @click=${onCopy}
-                        .iconName=${"copy"}
-                        .variant=${"icon"}
-                        .size=${"SMALL"}
-                        .jslogContext=${"manifest.copy-id"}
-                        .title=${i18nString(UIStrings.copyToClipboard)}>
-                      </devtools-button>`
-    })}
-      </div>` : nothing}` });
-  } else {
-    identitySection.removeField(i18nString(UIStrings.computedAppId));
-  }
-  setSectionContents(fields, identitySection);
+  return html`${renderSectionHeader(i18nString(UIStrings.identity), output)}
+  <div class="report-section" jslog=${VisualLogging.section("identity")}>
+    <devtools-report-key>${i18nString(UIStrings.name)}</devtools-report-key>
+    <devtools-report-value>${name}</devtools-report-value>
+    <devtools-report-key>${i18nString(UIStrings.shortName)}</devtools-report-key>
+    <devtools-report-value>${shortName}</devtools-report-value>
+    <devtools-report-key>${i18nString(UIStrings.description)}</devtools-report-key>
+    <devtools-report-value>${description}</devtools-report-value>
+    ${appId && recommendedId ? html`
+      <devtools-report-key aria-label="App Id">${i18nString(UIStrings.computedAppId)}</devtools-report-key>
+      <devtools-report-value jslog=${VisualLogging.section("identity")}>
+        ${appId}
+        <devtools-icon class="inline-icon" name="help" title=${i18nString(UIStrings.appIdExplainer)}
+            jslog=${VisualLogging.action("help").track({ hover: true })}>
+        </devtools-icon>
+        <devtools-link href="https://developer.chrome.com/blog/pwa-manifest-id/"
+                      .jslogContext=${"learn-more"}
+                      ${ref(setFocusOnSection(i18nString(UIStrings.identity), output))}>
+          ${i18nString(UIStrings.learnMore)}
+        </devtools-link>
+        ${!hasId ? html`
+          <div class="multiline-value">
+            ${i18nTemplate(str_, UIStrings.appIdNote, {
+    PH1: html`<code>${recommendedId}</code>`,
+    PH2: html`<devtools-button class="inline-button" @click=${onCopy}
+                          .iconName=${"copy"}
+                          .variant=${"icon"}
+                          .size=${"SMALL"}
+                          .jslogContext=${"manifest.copy-id"}
+                          .title=${i18nString(UIStrings.copyToClipboard)}>
+                        </devtools-button>`
+  })}
+        </div>` : nothing}
+      </devtools-report-value>` : nothing}
+    </div>`;
 }
-function renderPresentation(presentationSection, presentationData) {
+function renderPresentation(presentationData, output) {
   const { startUrl, completeStartUrl, themeColor, backgroundColor, orientation, display, newNoteUrl, hasNewNoteUrl, completeNewNoteUrl } = presentationData;
-  const fields = [
-    {
-      title: i18nString(UIStrings.startUrl),
-      label: i18nString(UIStrings.startUrl),
-      content: completeStartUrl ? Components.Linkifier.Linkifier.linkifyURL(completeStartUrl, { text: startUrl, tabStop: true, jslogContext: "start-url" }) : nothing
-    },
-    {
-      title: i18nString(UIStrings.themeColor),
-      content: themeColor ? html`<devtools-color-swatch .color=${themeColor}></devtools-color-swatch>` : nothing
-    },
-    {
-      title: i18nString(UIStrings.backgroundColor),
-      content: backgroundColor ? html`<devtools-color-swatch .color=${backgroundColor}></devtools-color-swatch>` : nothing
-    },
-    { title: i18nString(UIStrings.orientation), content: orientation },
-    { title: i18nString(UIStrings.display), content: display }
-  ];
-  if (completeNewNoteUrl) {
-    fields.push({
-      title: i18nString(UIStrings.newNoteUrl),
-      content: hasNewNoteUrl ? Components.Linkifier.Linkifier.linkifyURL(completeNewNoteUrl, { text: newNoteUrl, tabStop: true }) : nothing
-    });
-  }
-  setSectionContents(fields, presentationSection);
+  return html`${renderSectionHeader(i18nString(UIStrings.presentation), output)}
+    <div class="report-section" jslog=${VisualLogging.section("presentation")}>
+      <devtools-report-key>${i18nString(UIStrings.startUrl)}</devtools-report-key>
+      <devtools-report-value>
+      ${completeStartUrl ? (() => {
+    const link4 = linkifyURL(completeStartUrl, { text: startUrl, tabStop: true, jslogContext: "start-url" });
+    output.focusOnSection.set(i18nString(UIStrings.presentation), () => link4.focus());
+    return link4;
+  })() : nothing}
+      </devtools-report-value>
+      <devtools-report-key>${i18nString(UIStrings.themeColor)}</devtools-report-key>
+      <devtools-report-value>${themeColor ? html`<devtools-color-swatch .color=${themeColor}></devtools-color-swatch>` : nothing}
+      </devtools-report-value>
+      <devtools-report-key>${i18nString(UIStrings.backgroundColor)}</devtools-report-key>
+      <devtools-report-value>${backgroundColor ? html`<devtools-color-swatch .color=${backgroundColor}></devtools-color-swatch>` : nothing}
+      </devtools-report-value>
+      <devtools-report-key>${i18nString(UIStrings.orientation)}</devtools-report-key>
+      <devtools-report-value>${orientation}</devtools-report-value>
+      <devtools-report-key>${i18nString(UIStrings.display)}</devtools-report-key>
+      <devtools-report-value>${display}</devtools-report-value>
+      ${completeNewNoteUrl ? html`
+        <devtools-report-key>${i18nString(UIStrings.newNoteUrl)}</devtools-report-key>
+        <devtools-report-value>${hasNewNoteUrl ? linkifyURL(completeNewNoteUrl, { text: newNoteUrl, tabStop: true }) : nothing}
+        </devtools-report-value>
+      ` : nothing}
+    </div>
+  `;
 }
 function renderProtocolHandlers(data, output) {
   return html`${renderSectionHeader(i18nString(UIStrings.protocolHandlers), output)}
@@ -855,11 +853,13 @@ function renderScreenshots(data) {
     </div>
   `)}`;
 }
-function renderInstallability(installabilitySection, installabilityErrors) {
-  installabilitySection.clearContent();
-  installabilitySection.element.classList.toggle("hidden", !installabilityErrors.length);
-  const errorMessages = getInstallabilityErrorMessages(installabilityErrors);
-  setSectionContents(errorMessages.map((content) => ({ content })), installabilitySection);
+function renderInstallability(installabilityErrors) {
+  return html`${renderSectionHeader(i18nString(UIStrings.installability))}
+    ${getInstallabilityErrorMessages(installabilityErrors).map((content) => html`
+      <div class="report-row">
+        ${content}
+      </div>
+    `)}`;
 }
 function renderWindowControlsSection(data, selectedPlatform, onSelectOs, onToggleWcoToolbar, output) {
   return html`
@@ -1022,50 +1022,30 @@ function renderWindowControls(selectedPlatform, onSelectOs, onToggleWcoToolbar) 
       </select>
     </div>`;
 }
-function setSectionContents(items, section9) {
-  for (const item2 of items) {
-    if (!item2.title) {
-      render(item2.content, section9.appendRow());
-      continue;
-    }
-    const element = item2.flexed ? section9.appendFlexedField(item2.title) : section9.appendField(item2.title);
-    if (item2.label) {
-      UI2.ARIAUtils.setLabel(element, item2.label);
-    }
-    render(item2.content, element);
-  }
-}
 var DEFAULT_VIEW = (input, output, target) => {
-  const { errorsSection, installabilitySection, identitySection, presentationSection, identityData, presentationData, protocolHandlersData, iconsData, shortcutsData, screenshotsData, installabilityErrors, warnings, errors, imageErrors, maskedIcons, windowControlsData, selectedPlatform, onSelectOs, onToggleWcoToolbar, onToggleIconMasked } = input;
-  if (identitySection && identityData) {
-    renderIdentity(identitySection, identityData);
-  }
-  if (presentationSection && presentationData) {
-    renderPresentation(presentationSection, presentationData);
-  }
-  if (installabilitySection && installabilityErrors) {
-    renderInstallability(installabilitySection, installabilityErrors);
-  }
-  if (errorsSection) {
-    renderErrors(errorsSection, warnings, errors, imageErrors);
-  }
+  const { isEmpty, identityData, presentationData, protocolHandlersData, iconsData, shortcutsData, screenshotsData, installabilityErrors, warnings, errors, imageErrors, maskedIcons, windowControlsData, selectedPlatform, onSelectOs, onToggleWcoToolbar, onToggleIconMasked, onCopyId, url } = input;
   render(html`
     <style>${appManifestView_css_default}</style>
-    <devtools-report>
+    <style>${UI2.inspectorCommonStyles}</style>
+    ${isEmpty ? html`
+    <devtools-widget .widgetConfig=${widgetConfig(UI2.EmptyWidget.EmptyWidget, {
+    header: i18nString(UIStrings.noManifestDetected),
+    text: i18nString(UIStrings.manifestDescription),
+    link: "https://web.dev/add-manifest/"
+  })}></devtools-widget>` : html`
+    <devtools-report .data=${{ reportTitle: i18nString(UIStrings.appManifest), reportUrl: url }}>
+      ${renderErrors(warnings, errors, imageErrors, output)}
+      ${installabilityErrors?.length ? renderInstallability(installabilityErrors) : nothing}
+      ${identityData && onCopyId ? renderIdentity(identityData, onCopyId, output) : nothing}
+      ${presentationData ? renderPresentation(presentationData, output) : nothing}
       ${protocolHandlersData ? renderProtocolHandlers(protocolHandlersData, output) : nothing}
       ${iconsData && onToggleIconMasked && maskedIcons ? renderIcons(iconsData, maskedIcons, onToggleIconMasked, output) : nothing}
       ${windowControlsData && output ? renderWindowControlsSection(windowControlsData, selectedPlatform, onSelectOs, onToggleWcoToolbar, output) : nothing}
       ${shortcutsData ? renderShortcuts(shortcutsData) : nothing}
       ${screenshotsData ? renderScreenshots(screenshotsData) : nothing}
-    </devtools-report>`, target);
+    </devtools-report>`}`, target);
 };
 var AppManifestView = class extends Common2.ObjectWrapper.eventMixin(UI2.Widget.VBox) {
-  emptyView;
-  reportView;
-  errorsSection;
-  installabilitySection;
-  identitySection;
-  presentationSection;
   registeredListeners;
   target;
   resourceTreeModel;
@@ -1086,20 +1066,6 @@ var AppManifestView = class extends Common2.ObjectWrapper.eventMixin(UI2.Widget.
       useShadowDom: true
     });
     this.view = view;
-    this.contentElement.classList.add("manifest-container");
-    this.emptyView = new UI2.EmptyWidget.EmptyWidget(i18nString(UIStrings.noManifestDetected), i18nString(UIStrings.manifestDescription));
-    this.emptyView.link = "https://web.dev/add-manifest/";
-    this.emptyView.show(this.contentElement);
-    this.emptyView.hideWidget();
-    this.reportView = new UI2.ReportView.ReportView(i18nString(UIStrings.appManifest));
-    this.reportView.registerRequiredCSS(appManifestView_css_default);
-    this.reportView.element.classList.add("manifest-view-header");
-    this.reportView.show(this.contentElement);
-    this.reportView.hideWidget();
-    this.errorsSection = this.reportView.appendSection(i18nString(UIStrings.errorsAndWarnings), void 0, "errors-and-warnings");
-    this.installabilitySection = this.reportView.appendSection(i18nString(UIStrings.installability), void 0, "installability");
-    this.identitySection = this.reportView.appendSection(i18nString(UIStrings.identity), "undefined,identity");
-    this.presentationSection = this.reportView.appendSection(i18nString(UIStrings.presentation), "undefined,presentation");
     SDK.TargetManager.TargetManager.instance().observeTargets(this);
     this.registeredListeners = [];
     this.manifestUrl = Platform.DevToolsPath.EmptyUrlString;
@@ -1110,46 +1076,19 @@ var AppManifestView = class extends Common2.ObjectWrapper.eventMixin(UI2.Widget.
   }
   scrollToSection(sectionTitle) {
     const handler = this.output.scrollToSection.get(sectionTitle);
-    if (handler) {
-      handler();
-    } else {
-      const section9 = this.getManifestSections().find((s) => s.title() === sectionTitle);
-      if (section9) {
-        section9.getTitleElement().scrollIntoView();
-      }
+    if (!handler) {
+      return;
     }
+    handler();
     UI2.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.onInvokeAlert, { PH1: sectionTitle }));
-  }
-  getFieldElementForSection(sectionTitle) {
-    const section9 = this.getManifestSections().find((s) => s.title() === sectionTitle);
-    return section9 ? section9.getFieldElement() : null;
   }
   focusOnSection(sectionTitle) {
     const handler = this.output.focusOnSection.get(sectionTitle);
-    if (handler) {
-      handler();
-      return true;
-    }
-    const sectionFieldElement = this.getFieldElementForSection(sectionTitle);
-    if (!sectionFieldElement) {
+    if (!handler) {
       return false;
     }
-    const checkBoxElement = sectionFieldElement.querySelector(".mask-checkbox");
-    let focusableElement = sectionFieldElement.querySelector('[tabindex="0"]');
-    if (checkBoxElement?.shadowRoot) {
-      focusableElement = checkBoxElement.shadowRoot.querySelector("input") || null;
-    }
-    if (focusableElement) {
-      focusableElement.focus();
-      return true;
-    }
-    return false;
-  }
-  getManifestSections() {
-    return [
-      this.identitySection,
-      this.presentationSection
-    ];
+    handler();
+    return true;
   }
   getStaticSections() {
     return [
@@ -1161,7 +1100,7 @@ var AppManifestView = class extends Common2.ObjectWrapper.eventMixin(UI2.Widget.
     ];
   }
   getManifestElement() {
-    return this.reportView.getHeaderElement();
+    return this.contentElement;
   }
   targetAdded(target) {
     if (target !== SDK.TargetManager.TargetManager.instance().primaryPageTarget()) {
@@ -1225,19 +1164,13 @@ var AppManifestView = class extends Common2.ObjectWrapper.eventMixin(UI2.Widget.
     const appId = appIdResponse?.appId || null;
     const recommendedId = appIdResponse?.recommendedId || null;
     if ((!data || data === "{}") && !errors.length) {
-      this.emptyView.showWidget();
-      this.reportView.hideWidget();
-      this.view({ emptyView: this.emptyView, reportView: this.reportView }, this.output, this.contentElement);
+      this.view({ isEmpty: true }, this.output, this.contentElement);
       this.dispatchEventToListeners("ManifestDetected", false);
       return;
     }
-    this.emptyView.hideWidget();
-    this.reportView.showWidget();
     this.dispatchEventToListeners("ManifestDetected", true);
-    const link4 = Components.Linkifier.Linkifier.linkifyURL(url, { tabStop: true });
-    this.reportView.setURL(link4);
     if (!data) {
-      this.view({ emptyView: this.emptyView, reportView: this.reportView, errorsSection: this.errorsSection, errors }, this.output, this.contentElement);
+      this.view({ url, errors }, this.output, this.contentElement);
       return;
     }
     if (data.charCodeAt(0) === 65279) {
@@ -1264,17 +1197,15 @@ var AppManifestView = class extends Common2.ObjectWrapper.eventMixin(UI2.Widget.
     const selectedPlatform = this.overlayModel?.getWindowControlsConfig().selectedPlatform;
     const onSelectOs = this.overlayModel ? (selectedOS) => this.onSelectOs(selectedOS, windowControlsData.themeColor) : void 0;
     const onToggleWcoToolbar = this.overlayModel ? (enabled) => this.onToggleWcoToolbar(enabled) : void 0;
+    const onCopyId = recommendedId ? () => {
+      UI2.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.copiedToClipboard, { PH1: recommendedId }));
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(recommendedId);
+    } : void 0;
     const onToggleIconMasked = (masked) => {
       this.maskedIcons = masked;
       this.requestUpdate();
     };
     this.view({
-      emptyView: this.emptyView,
-      reportView: this.reportView,
-      errorsSection: this.errorsSection,
-      installabilitySection: this.installabilitySection,
-      identitySection: this.identitySection,
-      presentationSection: this.presentationSection,
       maskedIcons: this.maskedIcons,
       parsedManifest,
       url,
@@ -1292,6 +1223,7 @@ var AppManifestView = class extends Common2.ObjectWrapper.eventMixin(UI2.Widget.
       selectedPlatform,
       onSelectOs,
       onToggleWcoToolbar,
+      onCopyId,
       onToggleIconMasked
     }, this.output, this.contentElement);
   }
@@ -13210,6 +13142,7 @@ var CookieItemsView = class extends UI22.Widget.VBox {
     this.#toolbar.element.classList.add("flex-none");
     this.#toolbar.show(this.element);
     this.cookiesTable = new CookieTable.CookiesTable.CookiesTable(
+      void 0,
       /* renderInline */
       false,
       this.saveCookie.bind(this),

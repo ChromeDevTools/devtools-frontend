@@ -126,8 +126,7 @@ type ProcessedImageResource = {
     imageSrc: string;
 };
 interface ViewInput {
-    emptyView: UI.EmptyWidget.EmptyWidget;
-    reportView: UI.ReportView.ReportView;
+    isEmpty?: boolean;
     errorsSection?: UI.ReportView.Section;
     installabilitySection?: UI.ReportView.Section;
     identitySection?: UI.ReportView.Section;
@@ -153,6 +152,7 @@ interface ViewInput {
     selectedPlatform?: string;
     onSelectOs?: (selectedOS: SDK.OverlayModel.EmulatedOSType) => Promise<void>;
     onToggleWcoToolbar?: (enabled: boolean) => Promise<void>;
+    onCopyId?: () => void;
     onToggleIconMasked?: (masked: boolean) => void;
 }
 interface ViewOutput {
@@ -170,12 +170,6 @@ declare const AppManifestView_base: (new (...args: any[]) => {
     dispatchEventToListeners<T extends Events.MANIFEST_DETECTED>(eventType: Platform.TypeScriptUtilities.NoUnion<T>, ...eventData: Common.EventTarget.EventPayloadToRestParameters<EventTypes, T>): void;
 }) & typeof UI.Widget.VBox;
 export declare class AppManifestView extends AppManifestView_base implements SDK.TargetManager.Observer {
-    private readonly emptyView;
-    private readonly reportView;
-    private readonly errorsSection;
-    private readonly installabilitySection;
-    private readonly identitySection;
-    private readonly presentationSection;
     private registeredListeners;
     private target?;
     private resourceTreeModel?;
@@ -192,9 +186,7 @@ export declare class AppManifestView extends AppManifestView_base implements SDK
     private readonly output;
     constructor(view?: View);
     scrollToSection(sectionTitle: string): void;
-    getFieldElementForSection(sectionTitle: string): HTMLElement | null;
     focusOnSection(sectionTitle: string): boolean;
-    private getManifestSections;
     getStaticSections(): Array<{
         title: string;
         jslogContext: string | undefined;

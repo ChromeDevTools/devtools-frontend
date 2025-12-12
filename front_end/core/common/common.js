@@ -3512,7 +3512,11 @@ var ObjectWrapper = class {
     const event = { data: eventData, source: this };
     for (const listener of [...listeners]) {
       if (!listener.disposed) {
-        listener.listener.call(listener.thisObject, event);
+        try {
+          listener.listener.call(listener.thisObject, event);
+        } catch (err) {
+          console.error(`Event listener for ${String(eventType)} throw an error:`, err);
+        }
       }
     }
   }

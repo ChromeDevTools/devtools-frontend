@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 var _a;
+import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 // eslint-disable-next-line @devtools/es-modules-import
 import * as StackTrace from './stack_trace.js';
@@ -14,6 +15,7 @@ import { Trie } from './Trie.js';
  */
 export class StackTraceModel extends SDK.SDKModel.SDKModel {
     #trie = new Trie();
+    #mutex = new Common.Mutex.Mutex();
     /** @returns the {@link StackTraceModel} for the target, or the model for the primaryPageTarget when passing null/undefined */
     static #modelForTarget(target) {
         const model = (target ?? SDK.TargetManager.TargetManager.instance().primaryPageTarget())?.model(_a);
@@ -24,7 +26,7 @@ export class StackTraceModel extends SDK.SDKModel.SDKModel {
     }
     async createFromProtocolRuntime(stackTrace, rawFramesToUIFrames) {
         const [syncFragment, asyncFragments] = await Promise.all([
-            this.#createSyncFragment(stackTrace, rawFramesToUIFrames),
+            this.#createFragment(stackTrace.callFrames, rawFramesToUIFrames),
             this.#createAsyncFragments(stackTrace, rawFramesToUIFrames),
         ]);
         return new StackTraceImpl(syncFragment, asyncFragments);
@@ -38,42 +40,41 @@ export class StackTraceModel extends SDK.SDKModel.SDKModel {
     }
     /** Trigger re-translation of all fragments with the provide script in their call stack */
     async scriptInfoChanged(script, translateRawFrames) {
-        const translatePromises = [];
-        let stackTracesToUpdate = new Set();
-        for (const fragment of this.#affectedFragments(script)) {
-            // We trigger re-translation only for fragments of leaf-nodes. Any fragment along the ancestor-chain
-            // is re-translated as a side-effect.
-            // We just need to remember the stack traces of the skipped over fragments, so we can send the
-            // UPDATED event also to them.
-            if (fragment.node.children.length === 0) {
-                translatePromises.push(this.#translateFragment(fragment, translateRawFrames));
+        const release = await this.#mutex.acquire();
+        try {
+            const translatePromises = [];
+            let stackTracesToUpdate = new Set();
+            for (const fragment of this.#affectedFragments(script)) {
+                // We trigger re-translation only for fragments of leaf-nodes. Any fragment along the ancestor-chain
+                // is re-translated as a side-effect.
+                // We just need to remember the stack traces of the skipped over fragments, so we can send the
+                // UPDATED event also to them.
+                if (fragment.node.children.length === 0) {
+                    translatePromises.push(this.#translateFragment(fragment, translateRawFrames));
+                }
+                stackTracesToUpdate = stackTracesToUpdate.union(fragment.stackTraces);
             }
-            stackTracesToUpdate = stackTracesToUpdate.union(fragment.stackTraces);
+            await Promise.all(translatePromises);
+            for (const stackTrace of stackTracesToUpdate) {
+                stackTrace.dispatchEventToListeners("UPDATED" /* StackTrace.StackTrace.Events.UPDATED */);
+            }
         }
-        await Promise.all(translatePromises);
-        for (const stackTrace of stackTracesToUpdate) {
-            stackTrace.dispatchEventToListeners("UPDATED" /* StackTrace.StackTrace.Events.UPDATED */);
+        finally {
+            release();
         }
-    }
-    async #createSyncFragment(stackTrace, rawFramesToUIFrames) {
-        const fragment = this.#createFragment(stackTrace.callFrames);
-        await this.#translateFragment(fragment, rawFramesToUIFrames);
-        return fragment;
     }
     async #createDebuggableFragment(pausedDetails, rawFramesToUIFrames) {
-        const fragment = this.#createFragment(pausedDetails.callFrames.map(frame => ({
+        const fragment = await this.#createFragment(pausedDetails.callFrames.map(frame => ({
             scriptId: frame.script.scriptId,
             url: frame.script.sourceURL,
             functionName: frame.functionName,
             lineNumber: frame.location().lineNumber,
             columnNumber: frame.location().columnNumber,
-        })));
-        await this.#translateFragment(fragment, rawFramesToUIFrames);
+        })), rawFramesToUIFrames);
         return new DebuggableFragmentImpl(fragment, pausedDetails.callFrames);
     }
     async #createAsyncFragments(stackTraceOrPausedEvent, rawFramesToUIFrames) {
         const asyncFragments = [];
-        const translatePromises = [];
         const debuggerModel = this.target().model(SDK.DebuggerModel.DebuggerModel);
         if (debuggerModel) {
             for await (const { stackTrace: asyncStackTrace, target } of debuggerModel.iterateAsyncParents(stackTraceOrPausedEvent)) {
@@ -82,16 +83,27 @@ export class StackTraceModel extends SDK.SDKModel.SDKModel {
                     continue;
                 }
                 const model = _a.#modelForTarget(target);
-                const fragment = model.#createFragment(asyncStackTrace.callFrames);
-                translatePromises.push(model.#translateFragment(fragment, rawFramesToUIFrames));
-                asyncFragments.push(new AsyncFragmentImpl(asyncStackTrace.description ?? '', fragment));
+                const asyncFragmentPromise = model.#createFragment(asyncStackTrace.callFrames, rawFramesToUIFrames)
+                    .then(fragment => new AsyncFragmentImpl(asyncStackTrace.description ?? '', fragment));
+                asyncFragments.push(asyncFragmentPromise);
             }
         }
-        await Promise.all(translatePromises);
-        return asyncFragments;
+        return await Promise.all(asyncFragments);
     }
-    #createFragment(frames) {
-        return FragmentImpl.getOrCreate(this.#trie.insert(frames));
+    async #createFragment(frames, rawFramesToUIFrames) {
+        const release = await this.#mutex.acquire();
+        try {
+            const node = this.#trie.insert(frames);
+            const requiresTranslation = !Boolean(node.fragment);
+            const fragment = FragmentImpl.getOrCreate(node);
+            if (requiresTranslation) {
+                await this.#translateFragment(fragment, rawFramesToUIFrames);
+            }
+            return fragment;
+        }
+        finally {
+            release();
+        }
     }
     async #translateFragment(fragment, rawFramesToUIFrames) {
         const rawFrames = fragment.node.getCallStack().map(node => node.rawFrame).toArray();

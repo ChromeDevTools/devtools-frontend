@@ -18,7 +18,7 @@ export default `/*
   flex-grow: 0;
 }
 
-.manifest-container {
+:host {
   overflow: auto;
 }
 

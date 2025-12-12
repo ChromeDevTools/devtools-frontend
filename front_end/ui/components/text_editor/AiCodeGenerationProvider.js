@@ -10,6 +10,7 @@ import * as CodeMirror from '../../../third_party/codemirror.next/codemirror.nex
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../visual_logging/visual_logging.js';
 import { AiCodeCompletionTeaserPlaceholder } from './AiCodeCompletionTeaserPlaceholder.js';
+import { acceptAiAutoCompleteSuggestion, aiAutoCompleteSuggestion, aiAutoCompleteSuggestionState, hasActiveAiSuggestion, setAiAutoCompleteSuggestion, } from './config.js';
 export var AiCodeGenerationTeaserMode;
 (function (AiCodeGenerationTeaserMode) {
     AiCodeGenerationTeaserMode["ACTIVE"] = "active";
@@ -28,26 +29,34 @@ export class AiCodeGenerationProvider {
     #generationTeaserCompartment = new CodeMirror.Compartment();
     #generationTeaser;
     #editor;
+    #aiCodeGenerationConfig;
+    #aiCodeGeneration;
+    #aidaClient = new Host.AidaClient.AidaClient();
     #boundOnUpdateAiCodeGenerationState = this.#updateAiCodeGenerationState.bind(this);
-    constructor() {
+    #controller = new AbortController();
+    constructor(aiCodeGenerationConfig) {
         this.#devtoolsLocale = i18n.DevToolsLocale.DevToolsLocale.instance().locale;
         if (!AiCodeGeneration.AiCodeGeneration.AiCodeGeneration.isAiCodeGenerationEnabled(this.#devtoolsLocale)) {
             throw new Error('AI code generation feature is not enabled.');
         }
         this.#generationTeaser = new PanelCommon.AiCodeGenerationTeaser();
+        this.#aiCodeGenerationConfig = aiCodeGenerationConfig;
     }
-    static createInstance() {
-        return new AiCodeGenerationProvider();
+    static createInstance(aiCodeGenerationConfig) {
+        return new AiCodeGenerationProvider(aiCodeGenerationConfig);
     }
     extension() {
         return [
             CodeMirror.EditorView.updateListener.of(update => this.activateTeaser(update)),
+            aiAutoCompleteSuggestion,
+            aiAutoCompleteSuggestionState,
             aiCodeGenerationTeaserModeState,
             this.#generationTeaserCompartment.of([]),
             CodeMirror.Prec.highest(CodeMirror.keymap.of(this.#editorKeymap())),
         ];
     }
     dispose() {
+        this.#controller.abort();
         this.#cleanupAiCodeGeneration();
     }
     editorInitialized(editor) {
@@ -57,11 +66,19 @@ export class AiCodeGenerationProvider {
         void this.#updateAiCodeGenerationState();
     }
     #setupAiCodeGeneration() {
+        if (this.#aiCodeGeneration) {
+            return;
+        }
+        this.#aiCodeGeneration = new AiCodeGeneration.AiCodeGeneration.AiCodeGeneration({ aidaClient: this.#aidaClient });
         this.#editor?.dispatch({
             effects: [this.#generationTeaserCompartment.reconfigure([aiCodeGenerationTeaserExtension(this.#generationTeaser)])],
         });
     }
     #cleanupAiCodeGeneration() {
+        if (!this.#aiCodeGeneration) {
+            return;
+        }
+        this.#aiCodeGeneration = undefined;
         this.#editor?.dispatch({
             effects: [this.#generationTeaserCompartment.reconfigure([])],
         });
@@ -82,23 +99,51 @@ export class AiCodeGenerationProvider {
             {
                 key: 'Escape',
                 run: () => {
-                    if (!this.#editor || !this.#generationTeaser.isShowing() || !this.#generationTeaser.loading) {
+                    if (!this.#editor || !this.#aiCodeGeneration) {
                         return false;
                     }
-                    this.#editor.dispatch({ effects: setAiCodeGenerationTeaserMode.of(AiCodeGenerationTeaserMode.DISMISSED) });
+                    if (hasActiveAiSuggestion(this.#editor.state)) {
+                        this.#editor.dispatch({
+                            effects: setAiAutoCompleteSuggestion.of(null),
+                        });
+                        return true;
+                    }
+                    if (this.#generationTeaser.isShowing() && this.#generationTeaser.loading) {
+                        this.#controller.abort();
+                        this.#controller = new AbortController();
+                        this.#dismissTeaser();
+                        return true;
+                    }
+                    return false;
+                },
+            },
+            {
+                key: 'Tab',
+                run: () => {
+                    if (!this.#aiCodeGeneration || !this.#editor || !hasActiveAiSuggestion(this.#editor.state)) {
+                        return false;
+                    }
+                    const { accepted, suggestion } = acceptAiAutoCompleteSuggestion(this.#editor.editor);
+                    if (!accepted) {
+                        return false;
+                    }
+                    if (suggestion?.rpcGlobalId) {
+                        this.#aiCodeGeneration.registerUserAcceptance(suggestion.rpcGlobalId, suggestion.sampleId);
+                    }
+                    this.#aiCodeGenerationConfig?.onSuggestionAccepted();
                     return true;
                 },
             },
             {
                 any: (_view, event) => {
-                    if (!this.#editor || !this.#generationTeaser.isShowing()) {
+                    if (!this.#editor || !this.#aiCodeGeneration || !this.#generationTeaser.isShowing()) {
                         return false;
                     }
                     if (UI.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(event)) {
                         if (event.key === 'i') {
                             event.consume(true);
                             void VisualLogging.logKeyDown(event.currentTarget, event, 'ai-code-generation.triggered');
-                            this.#generationTeaser.loading = true;
+                            void this.#triggerAiCodeGeneration({ signal: this.#controller.signal });
                             return true;
                         }
                     }
@@ -106,6 +151,10 @@ export class AiCodeGenerationProvider {
                 }
             }
         ];
+    }
+    #dismissTeaser() {
+        this.#generationTeaser.loading = false;
+        this.#editor?.dispatch({ effects: setAiCodeGenerationTeaserMode.of(AiCodeGenerationTeaserMode.DISMISSED) });
     }
     async activateTeaser(update) {
         const currentTeaserMode = update.state.field(aiCodeGenerationTeaserModeState);
@@ -116,6 +165,57 @@ export class AiCodeGenerationProvider {
             return;
         }
         update.view.dispatch({ effects: setAiCodeGenerationTeaserMode.of(AiCodeGenerationTeaserMode.ACTIVE) });
+    }
+    async #triggerAiCodeGeneration(options) {
+        if (!this.#editor || !this.#aiCodeGeneration) {
+            return;
+        }
+        this.#generationTeaser.loading = true;
+        const cursor = this.#editor.state.selection.main.head;
+        // TODO(b/445899453): Detect all types of comments
+        const query = this.#editor.state.doc.lineAt(cursor).text;
+        if (query.trim().length === 0) {
+            return;
+        }
+        try {
+            const startTime = performance.now();
+            this.#aiCodeGenerationConfig?.onRequestTriggered();
+            Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiCodeGenerationRequestTriggered);
+            const generationResponse = await this.#aiCodeGeneration.generateCode(query, AiCodeGeneration.AiCodeGeneration.basePreamble, this.#aiCodeGenerationConfig?.generationContext.inferenceLanguage, options);
+            if (this.#generationTeaser) {
+                this.#dismissTeaser();
+            }
+            if (!generationResponse || generationResponse.samples.length === 0) {
+                this.#aiCodeGenerationConfig?.onResponseReceived([]);
+                return;
+            }
+            const topSample = generationResponse.samples[0];
+            const shouldBlock = topSample.attributionMetadata?.attributionAction === Host.AidaClient.RecitationAction.BLOCK;
+            if (shouldBlock) {
+                return;
+            }
+            this.#editor.dispatch({
+                effects: setAiAutoCompleteSuggestion.of({
+                    text: '\n' + topSample.generationString,
+                    from: cursor,
+                    rpcGlobalId: generationResponse.metadata.rpcGlobalId,
+                    sampleId: topSample.sampleId,
+                    startTime,
+                    onImpression: this.#aiCodeGeneration?.registerUserImpression.bind(this.#aiCodeGeneration),
+                })
+            });
+            AiCodeGeneration.debugLog('Suggestion dispatched to the editor', topSample.generationString);
+            const citations = topSample.attributionMetadata?.citations ?? [];
+            this.#aiCodeGenerationConfig?.onResponseReceived(citations);
+        }
+        catch (e) {
+            AiCodeGeneration.debugLog('Error while fetching code generation suggestions from AIDA', e);
+            this.#aiCodeGenerationConfig?.onResponseReceived([]);
+            Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiCodeGenerationError);
+        }
+        if (this.#generationTeaser) {
+            this.#dismissTeaser();
+        }
     }
 }
 // TODO(b/445899453): Handle teaser's discovery mode

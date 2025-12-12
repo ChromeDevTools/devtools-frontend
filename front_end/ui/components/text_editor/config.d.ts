@@ -48,7 +48,7 @@ export interface ActiveSuggestion {
     rpcGlobalId?: Host.AidaClient.RpcGlobalId;
     startTime: number;
     onImpression: (rpcGlobalId: Host.AidaClient.RpcGlobalId, latency: number, sampleId?: number) => void;
-    clearCachedRequest: () => void;
+    clearCachedRequest?: () => void;
 }
 export declare const aiAutoCompleteSuggestionState: CM.StateField<ActiveSuggestion | null>;
 export declare function hasActiveAiSuggestion(state: CM.EditorState): boolean;

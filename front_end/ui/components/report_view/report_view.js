@@ -14,6 +14,8 @@ __export(ReportView_exports, {
   ReportSectionHeader: () => ReportSectionHeader,
   ReportValue: () => ReportValue
 });
+import * as Platform from "./../../../core/platform/platform.js";
+import * as Components from "./../../legacy/components/utils/utils.js";
 import { html, nothing, render } from "./../../lit/lit.js";
 
 // gen/front_end/ui/components/report_view/report.css.js
@@ -44,6 +46,22 @@ var report_css_default = `/*
   border-bottom: 1px solid var(--sys-color-divider);
   color: var(--sys-color-on-surface);
   background-color: var(--sys-color-cdt-base-container);
+}
+
+.report-url {
+  background: none;
+  border-radius: 2px;
+  border: none;
+  color: var(--text-link);
+  cursor: pointer;
+  display: block;
+  font: var(--sys-typescale-body4-regular);
+  height: unset;
+  margin: 0;
+  outline-offset: 2px;
+  outline: none;
+  padding: 0 !important; /* stylelint-disable-line declaration-no-important */
+  text-decoration: underline;
 }
 
 /*# sourceURL=${import.meta.resolve("./report.css")} */`;
@@ -171,8 +189,10 @@ var reportValue_css_default = `/*
 var Report = class extends HTMLElement {
   #shadow = this.attachShadow({ mode: "open" });
   #reportTitle = "";
-  set data({ reportTitle }) {
+  #reportUrl = Platform.DevToolsPath.EmptyUrlString;
+  set data({ reportTitle, reportUrl }) {
     this.#reportTitle = reportTitle;
+    this.#reportUrl = reportUrl ?? Platform.DevToolsPath.EmptyUrlString;
     this.#render();
   }
   connectedCallback() {
@@ -181,7 +201,14 @@ var Report = class extends HTMLElement {
   #render() {
     render(html`
       <style>${report_css_default}</style>
-      ${this.#reportTitle ? html`<div class="report-title">${this.#reportTitle}</div>` : nothing}
+      ${this.#reportTitle ? html`<div class="report-title">
+        ${this.#reportTitle}
+        ${this.#reportUrl ? Components.Linkifier.Linkifier.linkifyURL(this.#reportUrl, {
+      tabStop: true,
+      jslogContext: "source-location",
+      className: "report-url"
+    }) : nothing}
+      </div>` : nothing}
       <div class="content">
         <slot></slot>
       </div>

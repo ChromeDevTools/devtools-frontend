@@ -1106,8 +1106,6 @@ export class DevToolsIconLabel extends HTMLElement {
     }
     set data(data) {
         this.#icon.data = data;
-        // TODO(crbug.com/1427397): Clean this up. This was necessary so `DevToolsIconLabel` can use Lit icon
-        //    while being backwards-compatible with the legacy Icon while working for both small and large icons.
         if (data.height === '14px') {
             this.#icon.style.setProperty('margin-bottom', '-2px');
         }

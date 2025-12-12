@@ -18763,7 +18763,15 @@ var SourceMapScopesInfo = class _SourceMapScopesInfo {
       const sourceIndex = startEntry?.sourceIndex;
       const canMapOriginalPosition = startEntry && endEntry && sourceIndex !== void 0 && startEntry.sourceIndex === endEntry.sourceIndex && startEntry.sourceIndex !== void 0 && sourceIndex >= 0 && sourceIndex < numSourceUrls;
       const isStackFrame = node.kind === 2 || node.kind === 4;
-      const name = node.kind === 2 ? startEntry?.name : void 0;
+      let name = void 0;
+      for (const offset of node.nameMappingLocations ?? []) {
+        const position = positionFromOffset(offset);
+        const entry = sourceMap.findEntryExact(position.line, position.column);
+        if (entry?.name !== void 0) {
+          name = entry.name;
+          break;
+        }
+      }
       let scope;
       if (canMapOriginalPosition) {
         scope = {
@@ -19269,6 +19277,14 @@ var SourceMap = class {
     const mappings = this.mappings();
     const index = Platform8.ArrayUtilities.upperBound(mappings, void 0, (_, entry) => lineNumber - entry.lineNumber || columnNumber - entry.columnNumber);
     return index ? mappings[index - 1] : null;
+  }
+  /** Returns the entry at the given position but only if an entry exists for that exact position */
+  findEntryExact(lineNumber, columnNumber) {
+    const entry = this.findEntry(lineNumber, columnNumber);
+    if (entry?.lineNumber === lineNumber && entry.columnNumber === columnNumber) {
+      return entry;
+    }
+    return null;
   }
   findEntryRanges(lineNumber, columnNumber) {
     const mappings = this.mappings();

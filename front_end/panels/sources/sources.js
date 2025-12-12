@@ -2330,6 +2330,7 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI6.View.SimpleVi
   scheduledForUpdateItems = /* @__PURE__ */ new Set();
   muteActivateItem;
   lastDebuggerModel = null;
+  #details = null;
   constructor() {
     super({
       jslog: `${VisualLogging4.section("sources.callstack")}`,
@@ -2400,10 +2401,12 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI6.View.SimpleVi
     }
     return callstackSidebarPaneInstance;
   }
-  flavorChanged(_object) {
+  flavorChanged(details) {
     this.showIgnoreListed = false;
     this.ignoreListCheckboxElement.checked = false;
     this.maxAsyncStackChainDepth = defaultMaxAsyncStackChainDepth;
+    this.#details = details;
+    this.setSourceMapSubscription(details?.debuggerModel ?? null);
     this.requestUpdate();
   }
   debugInfoAttached() {
@@ -2424,8 +2427,7 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI6.View.SimpleVi
   async performUpdate() {
     this.locationPool.disposeAll();
     this.callFrameWarningsElement.classList.add("hidden");
-    const details = UI6.Context.Context.instance().flavor(SDK3.DebuggerModel.DebuggerPausedDetails);
-    this.setSourceMapSubscription(details?.debuggerModel ?? null);
+    const details = this.#details;
     if (!details) {
       this.notPausedMessageElement.classList.remove("hidden");
       this.ignoreListMessageElement.classList.add("hidden");
@@ -3631,8 +3633,8 @@ __export(DebuggerPausedMessage_exports, {
 import * as i18n18 from "./../../core/i18n/i18n.js";
 import * as SDK7 from "./../../core/sdk/sdk.js";
 import * as uiI18n from "./../../ui/i18n/i18n.js";
-import { Icon as Icon2 } from "./../../ui/kit/kit.js";
 import * as UI9 from "./../../ui/legacy/legacy.js";
+import * as Lit2 from "./../../ui/lit/lit.js";
 import * as VisualLogging6 from "./../../ui/visual_logging/visual_logging.js";
 import * as PanelsCommon from "./../common/common.js";
 
@@ -3681,9 +3683,18 @@ devtools-icon {
   top: -1px;
 }
 
+devtools-icon[name="info"] {
+  color: var(--sys-color-on-yellow-container);
+}
+
+devtools-icon[name="cross-circle-filled"] {
+  color: var(--icon-error);
+}
+
 /*# sourceURL=${import.meta.resolve("./debuggerPausedMessage.css")} */`;
 
 // gen/front_end/panels/sources/DebuggerPausedMessage.js
+var { html: html4, render: render4, nothing: nothing2, Directives: { ifDefined: ifDefined2 } } = Lit2;
 var UIStrings9 = {
   /**
    * @description Text in the JavaScript Debugging pane of the Sources pane when a DOM breakpoint is hit
@@ -3782,62 +3793,73 @@ var UIStrings9 = {
 var str_9 = i18n18.i18n.registerUIStrings("panels/sources/DebuggerPausedMessage.ts", UIStrings9);
 var i18nString8 = i18n18.i18n.getLocalizedString.bind(void 0, str_9);
 var i18nLazyString2 = i18n18.i18n.getLazilyComputedLocalizedString.bind(void 0, str_9);
-var DebuggerPausedMessage = class _DebuggerPausedMessage {
-  #element;
-  contentElement;
-  constructor() {
-    this.#element = document.createElement("div");
-    this.#element.classList.add("paused-message");
-    this.#element.classList.add("flex-none");
-    this.#element.setAttribute("jslog", `${VisualLogging6.dialog("debugger-paused")}`);
-    const root = UI9.UIUtils.createShadowRootWithCoreStyles(this.#element, { cssFile: debuggerPausedMessage_css_default });
-    this.contentElement = root.createChild("div");
-    UI9.ARIAUtils.markAsPoliteLiveRegion(this.#element, false);
+function domBreakpointSubtext(data) {
+  let messageElement;
+  if (data.targetNode) {
+    const targetNodeLink = PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(data.targetNode);
+    if (data.insertion) {
+      if (data.targetNode === data.node) {
+        messageElement = uiI18n.getFormatLocalizedString(str_9, UIStrings9.childSAdded, { PH1: targetNodeLink });
+      } else {
+        messageElement = uiI18n.getFormatLocalizedString(str_9, UIStrings9.descendantSAdded, { PH1: targetNodeLink });
+      }
+    } else {
+      messageElement = uiI18n.getFormatLocalizedString(str_9, UIStrings9.descendantSRemoved, { PH1: targetNodeLink });
+    }
   }
-  element() {
-    return this.#element;
+  return html4`
+      ${PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(data.node)}
+      ${data.targetNode ? html4`<br/>${messageElement}` : nothing2}
+  `;
+}
+var DEFAULT_VIEW3 = (input, _output, target) => {
+  render4(html4`
+    <style>${debuggerPausedMessage_css_default}</style>
+    <div aria-live="polite" ?hidden=${!input}>${input ? html4`
+      <div class="paused-status ${input.errorLike ? "error-reason" : ""}">
+        <span>
+          <div class="status-main">
+            <devtools-icon name=${input.errorLike ? "cross-circle-filled" : "info"} class="medium"></devtools-icon>
+            ${input.mainText}
+          </div>
+          ${input.subText || input.domBreakpointData ? html4`
+            <div class="status-sub monospace" title=${ifDefined2(input.title ?? input.subText)}>${input.domBreakpointData ? domBreakpointSubtext(input.domBreakpointData) : input.subText}</div>
+          ` : nothing2}
+        </span>
+      </div>` : nothing2}
+    </div>
+  `, target);
+};
+var DebuggerPausedMessage = class _DebuggerPausedMessage extends UI9.Widget.Widget {
+  view;
+  #viewInput = null;
+  constructor(element, view = DEFAULT_VIEW3) {
+    super(element, {
+      jslog: `${VisualLogging6.dialog("debugger-paused")}`,
+      classes: ["paused-message", "flex-none"],
+      useShadowDom: true
+    });
+    this.view = view;
   }
   static descriptionWithoutStack(description) {
     const firstCallFrame = /^\s+at\s/m.exec(description);
     return firstCallFrame ? description.substring(0, firstCallFrame.index - 1) : description.substring(0, description.lastIndexOf("\n"));
   }
-  static async createDOMBreakpointHitMessage(details) {
-    const messageWrapper = document.createElement("span");
+  static async createDOMBreakpointHitMessageDetails(details) {
     const domDebuggerModel = details.debuggerModel.target().model(SDK7.DOMDebuggerModel.DOMDebuggerModel);
     if (!details.auxData || !domDebuggerModel) {
-      return messageWrapper;
+      return null;
     }
-    const data = domDebuggerModel.resolveDOMBreakpointData(details.auxData);
-    if (!data) {
-      return messageWrapper;
+    const domBreakpointData = domDebuggerModel.resolveDOMBreakpointData(details.auxData);
+    if (!domBreakpointData) {
+      return null;
     }
-    const mainElement = messageWrapper.createChild("div", "status-main");
-    const mainIcon = new Icon2();
-    mainIcon.name = "info";
-    mainIcon.style.color = "var(--sys-color-on-yellow-container)";
-    mainIcon.classList.add("medium");
-    mainElement.appendChild(mainIcon);
-    const breakpointType = BreakpointTypeNouns.get(data.type);
-    mainElement.appendChild(document.createTextNode(i18nString8(UIStrings9.pausedOnS, { PH1: breakpointType ? breakpointType() : String(null) })));
-    const subElement = messageWrapper.createChild("div", "status-sub monospace");
-    const linkifiedNode = PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(data.node);
-    subElement.appendChild(linkifiedNode);
-    if (data.targetNode) {
-      const targetNodeLink = PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(data.targetNode);
-      let messageElement;
-      if (data.insertion) {
-        if (data.targetNode === data.node) {
-          messageElement = uiI18n.getFormatLocalizedString(str_9, UIStrings9.childSAdded, { PH1: targetNodeLink });
-        } else {
-          messageElement = uiI18n.getFormatLocalizedString(str_9, UIStrings9.descendantSAdded, { PH1: targetNodeLink });
-        }
-      } else {
-        messageElement = uiI18n.getFormatLocalizedString(str_9, UIStrings9.descendantSRemoved, { PH1: targetNodeLink });
-      }
-      subElement.appendChild(document.createElement("br"));
-      subElement.appendChild(messageElement);
-    }
-    return messageWrapper;
+    const breakpointType = BreakpointTypeNouns.get(domBreakpointData.type);
+    return {
+      mainText: i18nString8(UIStrings9.pausedOnS, { PH1: breakpointType ? breakpointType() : String(null) }),
+      domBreakpointData,
+      errorLike: false
+    };
   }
   static #findEventNameForUi(detailsAuxData) {
     if (!detailsAuxData) {
@@ -3862,73 +3884,74 @@ var DebuggerPausedMessage = class _DebuggerPausedMessage {
     return breakpoint?.name ?? "";
   }
   async render(details, debuggerWorkspaceBinding, breakpointManager) {
-    this.contentElement.removeChildren();
-    this.contentElement.hidden = !details;
     if (!details) {
+      this.#viewInput = null;
+      this.requestUpdate();
       return;
     }
-    const status = this.contentElement.createChild("div", "paused-status");
     const errorLike = details.reason === "exception" || details.reason === "promiseRejection" || details.reason === "assert" || details.reason === "OOM";
-    let messageWrapper;
     if (details.reason === "DOM") {
-      messageWrapper = await _DebuggerPausedMessage.createDOMBreakpointHitMessage(details);
+      this.#viewInput = await _DebuggerPausedMessage.createDOMBreakpointHitMessageDetails(details);
     } else if (details.reason === "EventListener") {
       const eventNameForUI = _DebuggerPausedMessage.#findEventNameForUi(details.auxData);
-      messageWrapper = buildWrapper(i18nString8(UIStrings9.pausedOnEventListener), eventNameForUI);
+      this.#viewInput = { mainText: i18nString8(UIStrings9.pausedOnEventListener), subText: eventNameForUI, errorLike };
     } else if (details.reason === "XHR") {
       const auxData = details.auxData;
-      messageWrapper = buildWrapper(i18nString8(UIStrings9.pausedOnXhrOrFetch), auxData.url || "");
+      this.#viewInput = { mainText: i18nString8(UIStrings9.pausedOnXhrOrFetch), subText: auxData.url || "", errorLike };
     } else if (details.reason === "exception") {
       const auxData = details.auxData;
       const description = auxData.description || auxData.value || "";
       const descriptionWithoutStack = _DebuggerPausedMessage.descriptionWithoutStack(description);
-      messageWrapper = buildWrapper(i18nString8(UIStrings9.pausedOnException), descriptionWithoutStack, description);
+      this.#viewInput = {
+        mainText: i18nString8(UIStrings9.pausedOnException),
+        subText: descriptionWithoutStack,
+        title: description,
+        errorLike
+      };
     } else if (details.reason === "promiseRejection") {
       const auxData = details.auxData;
       const description = auxData.description || auxData.value || "";
       const descriptionWithoutStack = _DebuggerPausedMessage.descriptionWithoutStack(description);
-      messageWrapper = buildWrapper(i18nString8(UIStrings9.pausedOnPromiseRejection), descriptionWithoutStack, description);
+      this.#viewInput = {
+        mainText: i18nString8(UIStrings9.pausedOnPromiseRejection),
+        subText: descriptionWithoutStack,
+        title: description,
+        errorLike
+      };
     } else if (details.reason === "assert") {
-      messageWrapper = buildWrapper(i18nString8(UIStrings9.pausedOnAssertion));
+      this.#viewInput = { mainText: i18nString8(UIStrings9.pausedOnAssertion), errorLike };
     } else if (details.reason === "debugCommand") {
-      messageWrapper = buildWrapper(i18nString8(UIStrings9.pausedOnDebuggedFunction));
+      this.#viewInput = { mainText: i18nString8(UIStrings9.pausedOnDebuggedFunction), errorLike };
     } else if (details.reason === "OOM") {
-      messageWrapper = buildWrapper(i18nString8(UIStrings9.pausedBeforePotentialOutofmemory));
+      this.#viewInput = { mainText: i18nString8(UIStrings9.pausedBeforePotentialOutofmemory), errorLike };
     } else if (details.reason === "CSPViolation" && details.auxData?.["violationType"]) {
       const text = details.auxData["violationType"];
       if (text === "trustedtype-sink-violation") {
-        messageWrapper = buildWrapper(i18nString8(UIStrings9.pausedOnCspViolation), i18nString8(UIStrings9.trustedTypeSinkViolation));
+        this.#viewInput = {
+          mainText: i18nString8(UIStrings9.pausedOnCspViolation),
+          subText: i18nString8(UIStrings9.trustedTypeSinkViolation),
+          errorLike
+        };
       } else if (text === "trustedtype-policy-violation") {
-        messageWrapper = buildWrapper(i18nString8(UIStrings9.pausedOnCspViolation), i18nString8(UIStrings9.trustedTypePolicyViolation));
+        this.#viewInput = {
+          mainText: i18nString8(UIStrings9.pausedOnCspViolation),
+          subText: i18nString8(UIStrings9.trustedTypePolicyViolation),
+          errorLike
+        };
       }
     } else if (details.callFrames.length) {
       const uiLocation = await debuggerWorkspaceBinding.rawLocationToUILocation(details.callFrames[0].location());
       const breakpoint = uiLocation ? breakpointManager.findBreakpoint(uiLocation) : null;
       const defaultText = breakpoint ? i18nString8(UIStrings9.pausedOnBreakpoint) : i18nString8(UIStrings9.debuggerPaused);
-      messageWrapper = buildWrapper(defaultText);
+      this.#viewInput = { mainText: defaultText, errorLike };
     } else {
+      this.#viewInput = null;
       console.warn("ScriptsPanel paused, but callFrames.length is zero.");
     }
-    status.classList.toggle("error-reason", errorLike);
-    if (messageWrapper) {
-      status.appendChild(messageWrapper);
-    }
-    function buildWrapper(mainText, subText, title) {
-      const messageWrapper2 = document.createElement("span");
-      const mainElement = messageWrapper2.createChild("div", "status-main");
-      const mainIcon = new Icon2();
-      mainIcon.name = errorLike ? "cross-circle-filled" : "info";
-      mainIcon.style.color = errorLike ? "var(--icon-error)" : "var(--sys-color-on-yellow-container)";
-      mainIcon.classList.add("medium");
-      mainElement.appendChild(mainIcon);
-      mainElement.appendChild(document.createTextNode(mainText));
-      if (subText) {
-        const subElement = messageWrapper2.createChild("div", "status-sub monospace");
-        subElement.textContent = subText;
-        UI9.Tooltip.Tooltip.install(subElement, title || subText);
-      }
-      return messageWrapper2;
-    }
+    this.requestUpdate();
+  }
+  performUpdate() {
+    this.view(this.#viewInput, void 0, this.contentElement);
   }
 };
 var BreakpointTypeNouns = /* @__PURE__ */ new Map([
@@ -3966,7 +3989,7 @@ import * as Tooltips2 from "./../../ui/components/tooltips/tooltips.js";
 import * as ObjectUI2 from "./../../ui/legacy/components/object_ui/object_ui.js";
 import * as SourceFrame11 from "./../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI19 from "./../../ui/legacy/legacy.js";
-import { render as render5 } from "./../../ui/lit/lit.js";
+import { render as render6 } from "./../../ui/lit/lit.js";
 import * as VisualLogging12 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/sources/SourcesPanel.js
@@ -6483,10 +6506,10 @@ import * as TextUtils8 from "./../../models/text_utils/text_utils.js";
 import * as Workspace17 from "./../../models/workspace/workspace.js";
 import * as Tooltips from "./../../ui/components/tooltips/tooltips.js";
 import * as uiI18n3 from "./../../ui/i18n/i18n.js";
-import { Icon as Icon4 } from "./../../ui/kit/kit.js";
+import { Icon as Icon3 } from "./../../ui/kit/kit.js";
 import * as SourceFrame8 from "./../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI15 from "./../../ui/legacy/legacy.js";
-import { html as html4 } from "./../../ui/lit/lit.js";
+import { html as html5 } from "./../../ui/lit/lit.js";
 import * as VisualLogging8 from "./../../ui/visual_logging/visual_logging.js";
 import * as PanelCommon2 from "./../common/common.js";
 import * as Snippets3 from "./../snippets/snippets.js";
@@ -6519,7 +6542,7 @@ import * as Workspace15 from "./../../models/workspace/workspace.js";
 import * as CodeMirror5 from "./../../third_party/codemirror.next/codemirror.next.js";
 import * as IssueCounter from "./../../ui/components/issue_counter/issue_counter.js";
 import * as TextEditor5 from "./../../ui/components/text_editor/text_editor.js";
-import { Icon as Icon3 } from "./../../ui/kit/kit.js";
+import { Icon as Icon2 } from "./../../ui/kit/kit.js";
 import * as SourceFrame6 from "./../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI14 from "./../../ui/legacy/legacy.js";
 
@@ -7407,7 +7430,7 @@ var RowMessageDecorations = class _RowMessageDecorations {
   }
 };
 function createIconFromIconData(data) {
-  const icon = new Icon3();
+  const icon = new Icon2();
   icon.name = data.iconName;
   if (data.width) {
     icon.style.width = data.width;
@@ -7897,7 +7920,7 @@ var TabbedEditorContainer = class extends Common10.ObjectWrapper.ObjectWrapper {
     return tabId2;
   }
   addLoadErrorIcon(tabId2) {
-    const icon = html4`<devtools-icon class="small" name="cross-circle-filled"
+    const icon = html5`<devtools-icon class="small" name="cross-circle-filled"
                                      title=${i18nString13(UIStrings14.unableToLoadThisContent)}>
                       </devtools-icon>`;
     if (this.tabbedPane.tabView(tabId2)) {
@@ -7960,13 +7983,13 @@ var TabbedEditorContainer = class extends Common10.ObjectWrapper.ObjectWrapper {
       const tooltip = this.tooltipForFile(uiSourceCode);
       this.tabbedPane.changeTabTitle(tabId2, title, tooltip);
       if (uiSourceCode.loadError()) {
-        const icon = html4`<devtools-icon class="small" name="cross-circle-filled"
+        const icon = html5`<devtools-icon class="small" name="cross-circle-filled"
                                          title=${i18nString13(UIStrings14.unableToLoadThisContent)}>
                           </devtools-icon>`;
         this.tabbedPane.setTrailingTabIcon(tabId2, icon);
       } else if (Persistence9.Persistence.PersistenceImpl.instance().hasUnsavedCommittedChanges(uiSourceCode)) {
         const suffixElement = document.createElement("div");
-        const icon = new Icon4();
+        const icon = new Icon3();
         icon.name = "warning-filled";
         icon.classList.add("small");
         const id = `tab-tooltip-${nextTooltipId++}`;
@@ -8761,7 +8784,7 @@ __export(ThreadsSidebarPane_exports, {
 import * as i18n33 from "./../../core/i18n/i18n.js";
 import * as SDK10 from "./../../core/sdk/sdk.js";
 import * as UI17 from "./../../ui/legacy/legacy.js";
-import * as Lit2 from "./../../ui/lit/lit.js";
+import * as Lit3 from "./../../ui/lit/lit.js";
 import * as VisualLogging10 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/sources/threadsSidebarPane.css.js
@@ -8833,7 +8856,7 @@ var threadsSidebarPane_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./threadsSidebarPane.css")} */`;
 
 // gen/front_end/panels/sources/ThreadsSidebarPane.js
-var { html: html5, render: render4, nothing: nothing2 } = Lit2;
+var { html: html6, render: render5, nothing: nothing3 } = Lit3;
 var UIStrings16 = {
   /**
    * @description Text in Threads Sidebar Pane of the Sources panel
@@ -8842,11 +8865,11 @@ var UIStrings16 = {
 };
 var str_16 = i18n33.i18n.registerUIStrings("panels/sources/ThreadsSidebarPane.ts", UIStrings16);
 var i18nString15 = i18n33.i18n.getLocalizedString.bind(void 0, str_16);
-var DEFAULT_VIEW3 = (input, _output, target) => {
-  render4(html5`
+var DEFAULT_VIEW4 = (input, _output, target) => {
+  render5(html6`
     <style>${threadsSidebarPane_css_default}</style>
     <div role="listbox">
-    ${input.threads.map((thread) => html5`
+    ${input.threads.map((thread) => html6`
       <button
         class="thread-item"
         @click=${thread.onSelect}
@@ -8856,7 +8879,7 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
       >
         <div class="thread-item-title">${thread.name}</div>
         <div class="thread-item-paused-state">${thread.paused ? i18nString15(UIStrings16.paused) : ""}</div>
-        ${thread.selected ? html5`<devtools-icon name="large-arrow-right-filled" class="selected-thread-icon"></devtools-icon>` : nothing2}
+        ${thread.selected ? html6`<devtools-icon name="large-arrow-right-filled" class="selected-thread-icon"></devtools-icon>` : nothing3}
       </button>
     `)}
     </div>
@@ -8866,7 +8889,7 @@ var ThreadsSidebarPane = class extends UI17.Widget.VBox {
   #debuggerModels = /* @__PURE__ */ new Set();
   #selectedModel;
   #view;
-  constructor(element, view = DEFAULT_VIEW3) {
+  constructor(element, view = DEFAULT_VIEW4) {
     super(element, {
       jslog: `${VisualLogging10.section("sources.threads")}`
     });
@@ -9476,6 +9499,7 @@ var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
     const details = currentDebuggerModel ? currentDebuggerModel.debuggerPausedDetails() : null;
     await this.debuggerPausedMessage.render(details, Bindings8.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance(), Breakpoints2.BreakpointManager.BreakpointManager.instance());
     if (details) {
+      await this.debuggerPausedMessage.updateComplete;
       this.updateDebuggerButtonsAndStatusForTest();
     }
   }
@@ -9842,7 +9866,7 @@ var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
     this.sidebarPaneStack = UI18.ViewManager.ViewManager.instance().createStackLocation(this.revealDebuggerSidebar.bind(this), void 0, "debug");
     this.sidebarPaneStack.widget().element.classList.add("y-overflow-only");
     this.sidebarPaneStack.widget().show(vbox.element);
-    this.sidebarPaneStack.widget().element.appendChild(this.debuggerPausedMessage.element());
+    this.debuggerPausedMessage.show(this.sidebarPaneStack.widget().element);
     this.sidebarPaneStack.appendApplicableItems("sources.sidebar-top");
     if (this.threadsSidebarPane) {
       this.sidebarPaneStack.appendView(this.threadsSidebarPane);
@@ -11729,7 +11753,7 @@ var ValueDecoration = class extends CodeMirror6.WidgetType {
       const propertyCount = value2.preview ? value2.preview.properties.length : 0;
       const entryCount = value2.preview?.entries ? value2.preview.entries.length : 0;
       if (value2.preview && propertyCount + entryCount < 10) {
-        render5(formatter.renderObjectPreview(value2.preview), nameValuePair.createChild("span"));
+        render6(formatter.renderObjectPreview(value2.preview), nameValuePair.createChild("span"));
       } else {
         const propertyValue = ObjectUI2.ObjectPropertiesSection.ObjectPropertiesSection.createPropertyValue(
           value2,
@@ -12294,7 +12318,7 @@ import * as Root3 from "./../../core/root/root.js";
 import * as Persistence12 from "./../../models/persistence/persistence.js";
 import * as Workspace25 from "./../../models/workspace/workspace.js";
 import * as QuickOpen3 from "./../../ui/legacy/components/quick_open/quick_open.js";
-import { Directives as Directives2, html as html6 } from "./../../ui/lit/lit.js";
+import { Directives as Directives2, html as html7 } from "./../../ui/lit/lit.js";
 
 // gen/front_end/panels/sources/filteredUISourceCodeListProvider.css.js
 var filteredUISourceCodeListProvider_css_default = `/*
@@ -12472,7 +12496,7 @@ var FilteredUISourceCodeListProvider = class extends QuickOpen3.FilteredListWidg
         subtitleRanges.push({ offset: indexes[i], length: 1 });
       }
     }
-    return html6`
+    return html7`
       <style>${filteredUISourceCodeListProvider_css_default}</style>
       <div class="filtered-ui-source-code-list-item
                   ${classMap2({ "is-ignore-listed": isIgnoreListed })}">
@@ -12496,7 +12520,7 @@ var FilteredUISourceCodeListProvider = class extends QuickOpen3.FilteredListWidg
     if (text.length > maxTextLength) {
       splitPosition = text.length - maxTextLength;
     }
-    return html6`
+    return html7`
       <div class="first-part">${text.substring(0, splitPosition)}</div>
       <div class="second-part">${text.substring(splitPosition)}</div>`;
   }
@@ -12559,7 +12583,7 @@ import "./../../ui/kit/kit.js";
 import * as i18n41 from "./../../core/i18n/i18n.js";
 import * as QuickOpen4 from "./../../ui/legacy/components/quick_open/quick_open.js";
 import * as UI20 from "./../../ui/legacy/legacy.js";
-import { html as html7 } from "./../../ui/lit/lit.js";
+import { html as html8 } from "./../../ui/lit/lit.js";
 var UIStrings20 = {
   /**
    * @description Text in Go To Line Quick Open of the Sources panel
@@ -12623,7 +12647,7 @@ var GoToLineQuickOpen = class extends QuickOpen4.FilteredListWidget.Provider {
     return this.#goToLineStrings.length;
   }
   renderItem(itemIndex, _query) {
-    return html7`
+    return html8`
       <devtools-icon name="colon"></devtools-icon>
       <div>
         <div>${this.#goToLineStrings[itemIndex]}</div>
@@ -12826,7 +12850,7 @@ import "./../../ui/kit/kit.js";
 import * as Common15 from "./../../core/common/common.js";
 import * as Host10 from "./../../core/host/host.js";
 import { PanelUtils as PanelUtils2 } from "./../utils/utils.js";
-import { Directives as Directives3, html as html8 } from "./../../ui/lit/lit.js";
+import { Directives as Directives3, html as html9 } from "./../../ui/lit/lit.js";
 var { styleMap } = Directives3;
 var OpenFileQuickOpen = class extends FilteredUISourceCodeListProvider {
   constructor() {
@@ -12852,7 +12876,7 @@ var OpenFileQuickOpen = class extends FilteredUISourceCodeListProvider {
   }
   renderItem(itemIndex, query) {
     const { iconName, color } = PanelUtils2.iconDataForResourceType(this.itemContentTypeAt(itemIndex));
-    return html8`
+    return html9`
       <devtools-icon class="large" name=${iconName} style=${styleMap({ color })}></devtools-icon>
       ${super.renderItem(itemIndex, query)}`;
   }
@@ -12870,7 +12894,7 @@ import * as i18n45 from "./../../core/i18n/i18n.js";
 import * as CodeMirror7 from "./../../third_party/codemirror.next/codemirror.next.js";
 import * as QuickOpen5 from "./../../ui/legacy/components/quick_open/quick_open.js";
 import * as UI22 from "./../../ui/legacy/legacy.js";
-import { html as html9, nothing as nothing3 } from "./../../ui/lit/lit.js";
+import { html as html10, nothing as nothing4 } from "./../../ui/lit/lit.js";
 var UIStrings22 = {
   /**
    * @description Text in Go To Line Quick Open of the Sources panel
@@ -13171,10 +13195,10 @@ var OutlineQuickOpen = class extends QuickOpen5.FilteredListWidget.Provider {
     }
     const title = item.title + (item.subtitle ? item.subtitle : "");
     const highlightRanges = QuickOpen5.FilteredListWidget.FilteredListWidget.getHighlightRanges(title, query, true);
-    return html9`
+    return html10`
       <devtools-icon name="deployed"></devtools-icon>
       <div><devtools-highlight type="markup" ranges=${highlightRanges}>${title}</devtools-highlight></div>
-      ${location ? html9`<span class="tag">${location}</span>` : nothing3}`;
+      ${location ? html10`<span class="tag">${location}</span>` : nothing4}`;
   }
   selectItem(itemIndex, _promptValue) {
     if (itemIndex === null) {

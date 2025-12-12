@@ -30,6 +30,11 @@ type CookieData = Partial<Record<SDK.Cookie.Attribute, string>> & {
     dirty?: boolean;
     inactive?: boolean;
 };
+export interface CookiesTableData {
+    cookies: SDK.Cookie.Cookie[];
+    cookieToBlockedReasons?: ReadonlyMap<SDK.Cookie.Cookie, SDK.CookieModel.BlockedReason[]>;
+    cookieToExemptionReason?: ReadonlyMap<SDK.Cookie.Cookie, SDK.CookieModel.ExemptionReason>;
+}
 export declare class CookiesTable extends UI.Widget.VBox {
     private saveCallback?;
     private readonly refreshCallback?;
@@ -44,10 +49,12 @@ export declare class CookiesTable extends UI.Widget.VBox {
     private readonly view;
     private selectedKey?;
     private readonly editable;
-    private readonly renderInline;
+    private renderInline;
     private readonly schemeBindingEnabled;
     private readonly portBindingEnabled;
-    constructor(renderInline?: boolean, saveCallback?: ((arg0: SDK.Cookie.Cookie, arg1: SDK.Cookie.Cookie | null) => Promise<boolean>), refreshCallback?: (() => void), selectedCallback?: (() => void), deleteCallback?: ((arg0: SDK.Cookie.Cookie, arg1: () => void) => void), view?: ViewFunction);
+    constructor(element?: HTMLElement, renderInline?: boolean, saveCallback?: ((arg0: SDK.Cookie.Cookie, arg1: SDK.Cookie.Cookie | null) => Promise<boolean>), refreshCallback?: (() => void), selectedCallback?: (() => void), deleteCallback?: ((arg0: SDK.Cookie.Cookie, arg1: () => void) => void), view?: ViewFunction);
+    set cookiesData(data: CookiesTableData);
+    set inline(value: boolean);
     setCookies(cookies: SDK.Cookie.Cookie[], cookieToBlockedReasons?: ReadonlyMap<SDK.Cookie.Cookie, SDK.CookieModel.BlockedReason[]>, cookieToExemptionReason?: ReadonlyMap<SDK.Cookie.Cookie, SDK.CookieModel.ExemptionReason>): void;
     setCookieDomain(cookieDomain: string): void;
     selectedCookie(): SDK.Cookie.Cookie | null;

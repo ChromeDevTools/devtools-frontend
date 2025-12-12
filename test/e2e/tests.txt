@@ -4,6 +4,7 @@ application/cookies.test.js
 application/frame-tree.test.js
 application/manifest.test.js
 application/reporting-api.test.js
+application/resource-tree.test.js
 application/service-worker-network.test.js
 application/service-worker-update.test.js
 application/session-storage.test.js

@@ -5066,12 +5066,7 @@ var ScopeVariableAnalysis = class {
         node.elements.forEach((item) => this.#processNode(item));
         break;
       case "ArrowFunctionExpression": {
-        this.#pushScope(
-          node.start,
-          node.end,
-          4
-          /* ScopeKind.ARROW_FUNCTION */
-        );
+        this.#pushScope(node.start, node.end, 4, mappingLocationsForArrowFunctions(node, this.#sourceText));
         node.params.forEach(this.#processNodeAsDefinition.bind(this, 2, false));
         if (node.body.type === "BlockStatement") {
           node.body.body.forEach(this.#processNode.bind(this));
@@ -5189,6 +5184,7 @@ var ScopeVariableAnalysis = class {
         break;
       case "FunctionExpression":
         this.#pushScope(node.id?.end ?? node.start, node.end, 2, [...this.#additionalMappingLocations, ...mappingLocationsForFunctionExpression(node, this.#sourceText)]);
+        this.#additionalMappingLocations = [];
         this.#addVariable(
           "this",
           node.start,
@@ -5225,7 +5221,6 @@ var ScopeVariableAnalysis = class {
           this.#additionalMappingLocations = mappingLocationsForMethodDefinition(node);
         }
         this.#processNode(node.value);
-        this.#additionalMappingLocations = [];
         break;
       case "NewExpression":
         this.#processNode(node.callee);
@@ -5260,6 +5255,8 @@ var ScopeVariableAnalysis = class {
         } else {
           if (node.computed) {
             this.#processNode(node.key);
+          } else if (node.value.type === "FunctionExpression") {
+            this.#additionalMappingLocations = mappingLocationsForMethodDefinition(node);
           }
           this.#processNode(node.value);
         }
@@ -5438,6 +5435,21 @@ function mappingLocationsForMethodDefinition(node) {
     return [id.start];
   }
   return [];
+}
+function mappingLocationsForArrowFunctions(node, sourceText) {
+  const result = [];
+  const searchParenStartPos = node.async ? node.start + 5 : node.start;
+  const searchParenEndPos = node.params.length ? node.params[0].start : node.body.start;
+  const parenPos = indexOfCharInBounds(sourceText, "(", searchParenStartPos, searchParenEndPos);
+  if (parenPos >= 0) {
+    result.push(parenPos);
+  }
+  const searchArrowStartPos = node.params.length ? node.params[node.params.length - 1].end : node.start;
+  const arrowPos = indexOfCharInBounds(sourceText, "=", searchArrowStartPos, node.body.start);
+  if (arrowPos >= 0 && sourceText[arrowPos + 1] === ">") {
+    result.push(arrowPos);
+  }
+  return result;
 }
 function indexOfCharInBounds(str, needle, start, end) {
   for (let i = start; i < end; ++i) {

@@ -165,7 +165,7 @@ export class CookieItemsView extends UI.Widget.VBox {
         this.#toolbar = new StorageItemsToolbar();
         this.#toolbar.element.classList.add('flex-none');
         this.#toolbar.show(this.element);
-        this.cookiesTable = new CookieTable.CookiesTable.CookiesTable(
+        this.cookiesTable = new CookieTable.CookiesTable.CookiesTable(undefined, 
         /* renderInline */ false, this.saveCookie.bind(this), this.refreshItems.bind(this), this.handleCookieSelected.bind(this), this.deleteCookie.bind(this));
         this.cookiesTable.setMinimumSize(0, 50);
         this.splitWidget = new UI.SplitWidget.SplitWidget(

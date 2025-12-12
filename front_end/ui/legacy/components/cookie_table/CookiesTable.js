@@ -152,8 +152,8 @@ export class CookiesTable extends UI.Widget.VBox {
     renderInline;
     schemeBindingEnabled;
     portBindingEnabled;
-    constructor(renderInline, saveCallback, refreshCallback, selectedCallback, deleteCallback, view) {
-        super();
+    constructor(element, renderInline, saveCallback, refreshCallback, selectedCallback, deleteCallback, view) {
+        super(element);
         if (!view) {
             view = (input, _, target) => {
                 // clang-format off
@@ -263,6 +263,13 @@ export class CookiesTable extends UI.Widget.VBox {
         this.cookieDomain = '';
         this.cookieToBlockedReasons = null;
         this.cookieToExemptionReason = null;
+        this.requestUpdate();
+    }
+    set cookiesData(data) {
+        this.setCookies(data.cookies, data.cookieToBlockedReasons, data.cookieToExemptionReason);
+    }
+    set inline(value) {
+        this.renderInline = value;
         this.requestUpdate();
     }
     setCookies(cookies, cookieToBlockedReasons, cookieToExemptionReason) {

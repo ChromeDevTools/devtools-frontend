@@ -10,7 +10,6 @@ import {
   CONSOLE_TAB_SELECTOR,
   focusConsolePrompt,
 } from '../helpers/console-helpers.js';
-import {triggerLocalFindDialog} from '../helpers/memory-helpers.js';
 import {
   clickInfobarButton,
   getAllRequestNames,
@@ -628,7 +627,7 @@ describe('The Network Request view', () => {
     const SEARCH_QUERY = '[aria-label="Find"]';
     const SEARCH_RESULT = '.search-result';
 
-    await triggerLocalFindDialog(devToolsPage);
+    await devToolsPage.pressKey('f', {control: true});
     await devToolsPage.waitFor(SEARCH_QUERY);
     const inputElement = await devToolsPage.$(SEARCH_QUERY);
     assert.isOk(inputElement, 'Unable to find search input field');

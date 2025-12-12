@@ -5,9 +5,6 @@
 import {assert} from 'chai';
 import type * as puppeteer from 'puppeteer-core';
 
-import {
-  platform,
-} from '../../shared/helper.js';
 import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
 
 const NEW_HEAP_SNAPSHOT_BUTTON = 'devtools-button[aria-label="Take heap snapshot"]';
@@ -15,7 +12,7 @@ const MEMORY_PANEL_CONTENT = 'div[aria-label="Memory panel"]';
 const PROFILE_TREE_SIDEBAR = 'div.profiles-tree-sidebar';
 export const MEMORY_TAB_ID = '#tab-heap-profiler';
 const CLASS_FILTER_INPUT = 'div[aria-placeholder="Filter by class"]';
-const SELECTED_RESULT = '#profile-views table.data tr.data-grid-data-grid-node.revealed.parent.selected';
+export const SELECTED_RESULT = '#profile-views table.data tr.data-grid-data-grid-node.revealed.parent.selected';
 
 export async function navigateToMemoryTab(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   await devToolsPage.click(MEMORY_TAB_ID);
@@ -95,32 +92,11 @@ export async function setClassFilter(text: string, devToolsPage = getBrowserAndP
   void devToolsPage.pasteText(text);
 }
 
-export async function triggerLocalFindDialog(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
-  switch (platform) {
-    case 'mac':
-      await devToolsPage.page.keyboard.down('Meta');
-      break;
-
-    default:
-      await devToolsPage.page.keyboard.down('Control');
-  }
-
-  await devToolsPage.page.keyboard.press('f');
-
-  switch (platform) {
-    case 'mac':
-      await devToolsPage.page.keyboard.up('Meta');
-      break;
-
-    default:
-      await devToolsPage.page.keyboard.up('Control');
-  }
-}
-
 export async function setSearchFilter(text: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   const grid = await devToolsPage.waitFor('#profile-views table.data');
   await grid.focus();
-  await triggerLocalFindDialog(devToolsPage);
+
+  await devToolsPage.pressKey('f', {control: true});
   const SEARCH_QUERY = '[aria-label="Find"]';
   const inputElement = await devToolsPage.waitFor(SEARCH_QUERY);
   assert.isOk(inputElement, 'Unable to find search input field');
@@ -141,37 +117,40 @@ export async function waitForSearchResultNumber(
   return await devToolsPage.waitForFunction(findMatch);
 }
 
+/**
+ *
+ * @param searchResult
+ * @param searchMatch Leave undefined if you want to go over all instances
+ * @param devToolsPage
+ */
 export async function findSearchResult(
-    searchResult: string, pollIntrerval = 500, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
-  const match = await devToolsPage.waitFor('#profile-views table.data');
-  const matches = await devToolsPage.waitFor(' .search-results-matches');
-  const matchesText = await matches.evaluate(async element => {
-    return element.textContent;
-  });
-  if (matchesText === '1 of 1') {
-    await devToolsPage.waitForElementWithTextContent(searchResult, match);
-  } else {
-    await devToolsPage.waitForFunction(async () => {
-      const selectedBefore = await devToolsPage.waitFor(SELECTED_RESULT);
-      await devToolsPage.click('[aria-label="Show next result"]');
-      // Wait until the click has taken effect by checking that the selected
-      // result has changed. This is done to prevent the assertion afterwards
-      // from happening before the next result is fully loaded.
-      await devToolsPage.waitForFunction(async () => {
-        const selectedAfter = await devToolsPage.waitFor(SELECTED_RESULT);
-        return await devToolsPage.page.evaluate((b, a) => {
-          return b !== a;
-        }, selectedBefore, selectedAfter);
+    searchResult: string, searchMatch?: string|RegExp, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await devToolsPage.waitForFunction(async () => {
+    if (!searchMatch) {
+      const match = await devToolsPage.waitFor('#profile-views table.data');
+      const result = await devToolsPage.$textContent(searchResult, match);
+      if (result) {
+        return true;
+      }
+    } else {
+      const matches = await devToolsPage.waitFor('.search-results-matches');
+      const matchesText = await matches.evaluate(element => {
+        return element.textContent;
       });
-      const result = Promise.race([
-        devToolsPage.waitForElementWithTextContent(searchResult, match),
-        new Promise(resolve => {
-          setTimeout(resolve, pollIntrerval, false);
-        }),
-      ]);
-      return await result;
-    });
-  }
+      if (typeof searchMatch === 'string' && matchesText === searchMatch) {
+        return true;
+      }
+      if (typeof searchMatch !== 'string' && searchMatch.test(matchesText)) {
+        return true;
+      }
+    }
+
+    await devToolsPage.click('[aria-label="Show next result"]');
+    return;
+  });
+
+  const match = await devToolsPage.waitFor('#profile-views table.data');
+  await devToolsPage.waitForElementWithTextContent(searchResult, match);
 }
 
 const normalizRetainerName = (retainerName: string) => {
@@ -300,7 +279,7 @@ export async function focusTableRow(
 }
 
 export async function expandFocusedRow(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
-  await devToolsPage.page.keyboard.press('ArrowRight');
+  await devToolsPage.pressKey('ArrowRight');
   await devToolsPage.waitFor('.selected.data-grid-data-grid-node.expanded');
 }
 

@@ -93,7 +93,7 @@ describe('The Memory Panel', function() {
     await waitForNonEmptyHeapSnapshotData(devToolsPage);
     await setSearchFilter('leaking', devToolsPage);
     await waitForSearchResultNumber(4, devToolsPage);
-    await findSearchResult('leaking()', undefined, devToolsPage);
+    await findSearchResult('leaking()', '3 of 4', devToolsPage);
     await waitForRetainerChain(
         [
           'Detached V8EventListener', 'Detached EventListener', 'Detached InternalNode', 'Detached InternalNode',
@@ -117,7 +117,7 @@ describe('The Memory Panel', function() {
     });
 
     await step('selecting the search result that we need', async () => {
-      await findSearchResult('myEventListener()', undefined, devToolsPage);
+      await findSearchResult('myEventListener()', '3 of 4', devToolsPage);
     });
 
     await step('waiting for retainer chain', async () => {
@@ -203,88 +203,80 @@ describe('The Memory Panel', function() {
         devToolsPage);
   });
 
-  // Flaky on win and linux
-  it.skip(
-      '[crbug.com/40238574] Correctly shows multiple retainer paths for an object',
-      async ({devToolsPage, inspectedPage}) => {
-        await inspectedPage.goToResource('memory/multiple-retainers.html');
-        await navigateToMemoryTab(devToolsPage);
-        await takeHeapSnapshot(undefined, devToolsPage);
-        await waitForNonEmptyHeapSnapshotData(devToolsPage);
-        await setSearchFilter('leaking', devToolsPage);
-        await waitForSearchResultNumber(4, devToolsPage);
-        await findSearchResult('\"leaking\"', undefined, devToolsPage);
+  it('Correctly shows multiple retainer paths for an object', async ({devToolsPage, inspectedPage}) => {
+    await inspectedPage.goToResource('memory/multiple-retainers.html');
+    await navigateToMemoryTab(devToolsPage);
+    await takeHeapSnapshot(undefined, devToolsPage);
+    await waitForNonEmptyHeapSnapshotData(devToolsPage);
+    await setSearchFilter('leaking', devToolsPage);
+    await waitForSearchResultNumber(4, devToolsPage);
+    await findSearchResult('\"leaking\"', '2 of 4', devToolsPage);
 
-        await devToolsPage.waitForFunction(async () => {
-          // Wait for all the rows of the data-grid to load.
-          const retainerGridElements = await getDataGridRows('.retaining-paths-view table.data', devToolsPage);
-          return retainerGridElements.length === 9;
-        });
+    await devToolsPage.waitForFunction(async () => {
+      // Wait for all the rows of the data-grid to load.
+      const retainerGridElements = await getDataGridRows('.retaining-paths-view table.data', devToolsPage);
+      return retainerGridElements.length === 13;
+    });
 
-        const sharedInLeakingElementRow = await devToolsPage.waitForFunction(async () => {
-          const results = await getDataGridRows('.retaining-paths-view table.data', devToolsPage);
-          const findPromises = await Promise.all(results.map(async e => {
-            const textContent = await e.evaluate(el => el.textContent);
-            // Can't search for "shared in leaking()" because the different parts are spaced with CSS.
-            return textContent?.startsWith('sharedinleaking()') ? e : null;
-          }));
-          return findPromises.find(result => result !== null);
-        });
+    const sharedInLeakingElementRow = await devToolsPage.waitForFunction(async () => {
+      const results = await getDataGridRows('.retaining-paths-view table.data', devToolsPage);
+      const findPromises = await Promise.all(results.map(async e => {
+        const textContent = await e.evaluate(el => el.textContent);
+        // Can't search for "shared in leaking()" because the different parts are spaced with CSS.
+        return textContent?.startsWith('sharedinleaking()') ? e : null;
+      }));
+      return findPromises.find(result => result !== null);
+    });
 
-        assert.isOk(sharedInLeakingElementRow, 'Could not find data-grid row with "shared in leaking()" text.');
+    assert.isOk(sharedInLeakingElementRow, 'Could not find data-grid row with "shared in leaking()" text.');
 
-        const textOfEl = await sharedInLeakingElementRow.evaluate(e => e.textContent || '');
-        // Double check we got the right element to avoid a confusing text failure
-        // later down the line.
-        assert.isTrue(textOfEl.startsWith('sharedinleaking()'));
+    const textOfEl = await sharedInLeakingElementRow.evaluate(e => e.textContent || '');
+    // Double check we got the right element to avoid a confusing text failure
+    // later down the line.
+    assert.isTrue(textOfEl.startsWith('sharedinleaking()'));
 
-        // Have to click it not in the middle as the middle can hold the link to the
-        // file in the sources pane and we want to avoid clicking that.
-        await devToolsPage.clickElement(
-            sharedInLeakingElementRow /* TODO(crbug.com/1363150): {maxPixelsFromLeft: 10} */);
-        // Expand the data-grid for the shared list
-        await devToolsPage.page.keyboard.press('ArrowRight');
+    // Have to click it not in the middle as the middle can hold the link to the
+    // file in the sources pane and we want to avoid clicking that.
+    await devToolsPage.clickElement(sharedInLeakingElementRow /* TODO(crbug.com/1363150): {maxPixelsFromLeft: 10} */);
+    // Expand the data-grid for the shared list
+    await devToolsPage.page.keyboard.press('ArrowRight');
 
-        // check that we found two V8EventListener objects
-        await devToolsPage.waitForFunction(async () => {
-          const pendingActivitiesChildren = await devToolsPage.waitForElementsWithTextContent('V8EventListener');
-          return pendingActivitiesChildren.length === 2;
-        });
+    // check that we found two V8EventListener objects
+    await devToolsPage.waitForFunction(async () => {
+      const pendingActivitiesChildren = await devToolsPage.waitForElementsWithTextContent('V8EventListener');
+      return pendingActivitiesChildren.length === 2;
+    });
 
-        // Now we want to get the two rows below the "shared in leaking()" row and assert on them.
-        // Unfortunately they are not structured in the data-grid as children, despite being children in the UI
-        // So the best way to get at them is to grab the two subsequent siblings of the "shared in leaking()" row.
-        const nextRow = (await sharedInLeakingElementRow.evaluateHandle(e => e.nextSibling)).asElement() as
-            puppeteer.ElementHandle<HTMLElement>;
-        assert.isOk(nextRow, 'Could not find row below "shared in leaking()" row');
-        const nextNextRow =
-            (await nextRow.evaluateHandle(e => e.nextSibling)).asElement() as puppeteer.ElementHandle<HTMLElement>;
-        assert.isOk(nextNextRow, 'Could not find 2nd row below "shared in leaking()" row');
+    // Now we want to get the two rows below the "shared in leaking()" row and assert on them.
+    // Unfortunately they are not structured in the data-grid as children, despite being children in the UI
+    // So the best way to get at them is to grab the two subsequent siblings of the "shared in leaking()" row.
+    const nextRow = (await sharedInLeakingElementRow.evaluateHandle(e => e.nextSibling)).asElement() as
+        puppeteer.ElementHandle<HTMLElement>;
+    assert.isOk(nextRow, 'Could not find row below "shared in leaking()" row');
+    const nextNextRow =
+        (await nextRow.evaluateHandle(e => e.nextSibling)).asElement() as puppeteer.ElementHandle<HTMLElement>;
+    assert.isOk(nextNextRow, 'Could not find 2nd row below "shared in leaking()" row');
 
-        const childText =
-            await Promise.all([nextRow, nextNextRow].map(async row => await row.evaluate(r => r.innerText)));
+    const childText = await Promise.all([nextRow, nextNextRow].map(async row => await row.evaluate(r => r.innerText)));
 
-        assert.isTrue(childText[0].includes('inV8EventListener'));
-        assert.isTrue(childText[1].includes('inEventListener'));
-      });
+    assert.isTrue(childText[0].includes('inV8EventListener'));
+    assert.isTrue(childText[1].includes('inEventListener'));
+  });
 
-  // Flaky test causing build failures
-  it.skip(
-      '[crbug.com/40193901] Shows the correct output for a detached iframe', async ({devToolsPage, inspectedPage}) => {
-        await inspectedPage.goToResource('memory/detached-iframe.html');
-        await navigateToMemoryTab(devToolsPage);
-        await takeHeapSnapshot(undefined, devToolsPage);
-        await waitForNonEmptyHeapSnapshotData(devToolsPage);
-        await setSearchFilter('Leak', devToolsPage);
-        await waitForSearchResultNumber(8, devToolsPage);
-        await waitUntilRetainerChainSatisfies(
-            retainerChain => retainerChain.some(({retainerClassName}) => retainerClassName === 'Detached Window'),
-            devToolsPage,
-        );
-      });
+  it('Shows the correct output for a detached iframe', async ({devToolsPage, inspectedPage}) => {
+    await inspectedPage.goToResource('memory/detached-iframe.html');
+    await navigateToMemoryTab(devToolsPage);
+    await takeHeapSnapshot(undefined, devToolsPage);
+    await waitForNonEmptyHeapSnapshotData(devToolsPage);
+    await setSearchFilter('Leak', devToolsPage);
+    await waitForSearchResultNumber(9, devToolsPage);
+    await waitUntilRetainerChainSatisfies(
+        retainerChain => retainerChain.some(({retainerClassName}) => retainerClassName === 'Detached Window'),
+        devToolsPage,
+    );
+  });
 
-  // Started failing and blocking CfT rolls since 143.0.7466.0
-  it.skip('[crbug.com/451518943] Shows a tooltip', async ({devToolsPage, inspectedPage}) => {
+  it('Shows a tooltip', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToResource('memory/detached-dom-tree.html');
     await navigateToMemoryTab(devToolsPage);
     await takeHeapSnapshot(undefined, devToolsPage);
@@ -301,9 +293,9 @@ describe('The Memory Panel', function() {
     await devToolsPage.waitFor('.source-code', el);
 
     await setSearchFilter('system / descriptorarray', devToolsPage);
-    await findSearchResult('system / DescriptorArray', undefined, devToolsPage);
-    const searchResultElement = await devToolsPage.waitFor('.selected.data-grid-data-grid-node span.object-value-null');
-    await searchResultElement!.hover();
+    // Find the first one as these are system
+    await findSearchResult('system / DescriptorArray', /1 of/, devToolsPage);
+    await devToolsPage.hover('.selected.data-grid-data-grid-node span.object-value-null');
     await devToolsPage.waitFor('.widget .object-popover-footer');
   });
 
@@ -476,7 +468,7 @@ describe('The Memory Panel', function() {
     await waitForNonEmptyHeapSnapshotData(devToolsPage);
     await setSearchFilter('searchable_string', devToolsPage);
     await waitForSearchResultNumber(2, devToolsPage);
-    await findSearchResult('"searchable_string"', undefined, devToolsPage);
+    await findSearchResult('"searchable_string"', '2 of 2', devToolsPage);
     await waitForRetainerChain(
         [
           '{y}', 'KeyType', `Window (global*) / localhost:${inspectedPage.serverPort}`,
@@ -617,30 +609,26 @@ describe('The Memory Panel', function() {
   });
 });
 
-// Started failing and blocking CfT rolls since 143.0.7466.0
-describe.skip(
-    '[crbug.com/451518943] The Memory Panel with show-option-tp-expose-internals-in-heap-snapshot experiment', () => {
-      setup(
-          {dockingMode: 'undocked', enabledDevToolsExperiments: ['show-option-tp-expose-internals-in-heap-snapshot']});
+describe(' The Memory Panel with show-option-tp-expose-internals-in-heap-snapshot experiment', () => {
+  setup({dockingMode: 'undocked', enabledDevToolsExperiments: ['show-option-tp-expose-internals-in-heap-snapshot']});
 
-      it('Does not include backing store size in the shallow size of a JS Set',
-         async ({devToolsPage, inspectedPage}) => {
-           await inspectedPage.goToResource('memory/set.html');
-           await navigateToMemoryTab(devToolsPage);
-           await checkExposeInternals(devToolsPage);
-           const sizes = await runJSSetTest(devToolsPage);
+  it('Does not include backing store size in the shallow size of a JS Set', async ({devToolsPage, inspectedPage}) => {
+    await inspectedPage.goToResource('memory/set.html');
+    await navigateToMemoryTab(devToolsPage);
+    await checkExposeInternals(devToolsPage);
+    const sizes = await runJSSetTest(devToolsPage);
 
-           // The Set object is small, regardless of the contained content.
-           assert.isTrue(sizes.sizesForSet.shallowSize <= 100);
-           // The Set retains its backing storage.
-           // Note: 16 bytes is added to retainedSize to account for rounding present in the UI layer.
-           assert.isTrue(
-               sizes.sizesForSet.retainedSize + 16 >=
-               sizes.sizesForSet.shallowSize + sizes.sizesForBackingStorage.retainedSize);
-           // The backing storage contains 100 items, which occupy at least one pointer per item.
-           assert.isTrue(sizes.sizesForBackingStorage.shallowSize >= 400);
-           // TODO: the backing storage seems to be the same as the shallow size
-           // going from Chrome 142.0.7421.0 to 142.0.7427.0.
-           assert.isTrue(sizes.sizesForBackingStorage.retainedSize >= sizes.sizesForBackingStorage.shallowSize);
-         });
-    });
+    // The Set object is small, regardless of the contained content.
+    assert.isTrue(sizes.sizesForSet.shallowSize <= 100);
+    // The Set retains its backing storage.
+    // Note: 16 bytes is added to retainedSize to account for rounding present in the UI layer.
+    assert.isTrue(
+        sizes.sizesForSet.retainedSize + 16 >=
+        sizes.sizesForSet.shallowSize + sizes.sizesForBackingStorage.retainedSize);
+    // The backing storage contains 100 items, which occupy at least one pointer per item.
+    assert.isTrue(sizes.sizesForBackingStorage.shallowSize >= 400);
+    // TODO: the backing storage seems to be the same as the shallow size
+    // going from Chrome 142.0.7421.0 to 142.0.7427.0.
+    assert.isTrue(sizes.sizesForBackingStorage.retainedSize >= sizes.sizesForBackingStorage.shallowSize);
+  });
+});

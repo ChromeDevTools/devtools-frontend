@@ -72,7 +72,18 @@ export async function getSelectedRequestName(devToolsPage = getBrowserAndPagesWr
 export async function selectRequestByName(
     name: string, clickOptions?: puppeteer.ClickOptions&{devToolsPage?: DevToolsPage}) {
   const devToolsPage = clickOptions?.devToolsPage ?? getBrowserAndPagesWrappers().devToolsPage;
+
+  await devToolsPage.waitForFunction(async () => {
+    const requests = await getAllRequestNames(devToolsPage);
+    return requests.some(request => request.trim() === name);
+  });
+
   const selector = REQUEST_LIST_SELECTOR + ' .name-column';
+
+  // FIXME: this needs to be fixed to return a stable selector like
+  // .network-log-grid `tbody tr:nth-child(x) .name-column` where x is extracted
+  // based on the request name match. Then this selector should be given to the
+  // click helper. Or even better if an ARIA selector is used.
 
   // Finding he click position is done in a single frontend.evaluate call
   // to make sure the element still exists after finding the element.
@@ -90,11 +101,12 @@ export async function selectRequestByName(
     return null;
   }, name, selector);
 
-  if (rect) {
-    const x = rect.left + rect.width * 0.5;
-    const y = rect.top + rect.height * 0.5;
-    await devToolsPage.page.mouse.click(x, y, clickOptions);
+  if (!rect) {
+    throw new Error('Could not locate the network request');
   }
+  const x = rect.left + rect.width * 0.5;
+  const y = rect.top + rect.height * 0.5;
+  await devToolsPage.page.mouse.click(x, y, clickOptions);
 }
 
 export async function waitForSelectedRequestChange(

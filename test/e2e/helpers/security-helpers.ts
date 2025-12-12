@@ -50,7 +50,7 @@ export async function openSecurityPanelFromCommandMenu(
     devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   await openCommandMenu(devToolsPage);
   await devToolsPage.typeText('Show Security');
-  await devToolsPage.page.keyboard.press('Enter');
+  await devToolsPage.pressKey('Enter');
   await securityTabExists(devToolsPage);
   await securityPanelContentIsLoaded(true, devToolsPage);
 }

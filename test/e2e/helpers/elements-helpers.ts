@@ -771,9 +771,9 @@ export const shiftClickColorSwatch = async (
     parent: puppeteer.ElementHandle<Element>, index: number, parentVe: string,
     devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
   const swatch = await getColorSwatch(parent, index, devToolsPage);
-  await devToolsPage.page.keyboard.down('Shift');
-  await devToolsPage.clickElement(swatch);
-  await devToolsPage.page.keyboard.up('Shift');
+
+  await devToolsPage.clickElement(swatch, {modifiers: {shift: true}});
+
   await expectVeEvents(
       [
         veClick(`${parentVe} > ShowStyleEditor: color`),
@@ -1032,7 +1032,7 @@ export const typeInClassesPaneInput = async (
 
   if (commitWith) {
     await step(`Committing the changes with ${commitWith}`, async () => {
-      await devToolsPage.page.keyboard.press(commitWith);
+      await devToolsPage.pressKey(commitWith);
     });
   }
 

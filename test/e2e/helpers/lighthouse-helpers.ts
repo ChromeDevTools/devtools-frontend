@@ -15,7 +15,7 @@ export async function navigateToLighthouseTab(
     path: string|undefined, devToolsPage: DevToolsPage, inspectedPage: InspectedPage): Promise<ElementHandle<Element>> {
   await openCommandMenu(devToolsPage);
   await devToolsPage.typeText('Lighthouse');
-  await devToolsPage.page.keyboard.press('Enter');
+  await devToolsPage.pressKey('Enter');
   await devToolsPage.waitFor('.view-container > .lighthouse');
 
   if (path) {

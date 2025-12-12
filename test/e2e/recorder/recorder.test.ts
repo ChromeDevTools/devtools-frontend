@@ -813,10 +813,8 @@ describe('Recorder', function() {
     await startRecording('recorder/input.html', undefined, devToolsPage, inspectedPage);
 
     await inspectedPage.bringToFront();
-    await inspectedPage.page.keyboard.press('Tab');
-    await inspectedPage.page.keyboard.down('Shift');
-    await inspectedPage.page.keyboard.press('Tab');
-    await inspectedPage.page.keyboard.up('Shift');
+    await inspectedPage.pressKey('Tab');
+    await inspectedPage.pressKey('Tab', {shift: true});
 
     const recording = await stopRecording(devToolsPage);
     assert.deepEqual(

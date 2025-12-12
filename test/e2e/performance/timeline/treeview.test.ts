@@ -18,12 +18,14 @@ import {
 import type {DevToolsPage} from '../../shared/frontend-helper.js';
 import type {InspectedPage} from '../../shared/target-helper.js';
 
-async function expandNodeRecursively(rootActivity: puppeteer.ElementHandle, devtoolsPage: DevToolsPage) {
+async function expandNodeRecursively(rootActivity: puppeteer.ElementHandle, devToolsPage: DevToolsPage) {
   // Trigger an alt-click on the disclosure triangle. Requires getting the event.pageX correctly placed.
-  await devtoolsPage.page.keyboard.down('Alt');
   const DISTANCE_BETWEEN_DISCLOSURE_TRIANGLE_AND_ACTIVITY_NAME_PX = 35;
-  await rootActivity.click({offset: {x: -DISTANCE_BETWEEN_DISCLOSURE_TRIANGLE_AND_ACTIVITY_NAME_PX, y: 0}});
-  await devtoolsPage.page.keyboard.up('Alt');
+
+  await devToolsPage.clickElement(rootActivity, {
+    clickOptions: {offset: {x: -DISTANCE_BETWEEN_DISCLOSURE_TRIANGLE_AND_ACTIVITY_NAME_PX, y: 0}},
+    modifiers: {alt: true}
+  });
 }
 
 async function enumerateTreeItems(devtoolsPage: DevToolsPage) {

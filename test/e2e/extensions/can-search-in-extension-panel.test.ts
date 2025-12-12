@@ -6,7 +6,6 @@ import {assert} from 'chai';
 
 import type {Chrome} from '../../../extension-api/ExtensionAPI.js';
 import {expectError} from '../../conductor/events.js';
-import {platform} from '../../conductor/platform.js';
 import {loadExtension} from '../helpers/extension-helpers.js';
 
 declare global {
@@ -34,10 +33,7 @@ describe('Extension panels', () => {
     await devToolsPage.clickMoreTabsButton();
     await devToolsPage.click(`[aria-label=${PAGE_TITLE}]`);
 
-    const accelerator = platform === 'mac' ? 'Meta' : 'Control';
-    await devToolsPage.page.keyboard.down(accelerator);
-    await devToolsPage.page.keyboard.press('F');
-    await devToolsPage.page.keyboard.up(accelerator);
+    await devToolsPage.pressKey('F', {control: true});
 
     const search = await devToolsPage.waitFor('#search-input-field');
     await search.type('abc');

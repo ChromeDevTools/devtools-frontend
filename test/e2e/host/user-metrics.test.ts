@@ -5,9 +5,6 @@
 import {assert} from 'chai';
 import type * as puppeteer from 'puppeteer-core';
 
-import {
-  platform,
-} from '../../shared/helper.js';
 import {CONSOLE_MESSAGES_SELECTOR, navigateToConsoleTab} from '../helpers/console-helpers.js';
 import {navigateToCssOverviewTab, startCaptureCSSOverview} from '../helpers/css-overview-helpers.js';
 import {
@@ -268,29 +265,7 @@ describe('User Metrics', () => {
     await devToolsPage.click('#tab-sources');
     await devToolsPage.waitFor('#sources-panel-sources-view');
 
-    switch (platform) {
-      case 'mac':
-        await devToolsPage.page.keyboard.down('Meta');
-        break;
-
-      case 'linux':
-      case 'win32':
-        await devToolsPage.page.keyboard.down('Control');
-        break;
-    }
-
-    await devToolsPage.page.keyboard.press('F8');
-
-    switch (platform) {
-      case 'mac':
-        await devToolsPage.page.keyboard.up('Meta');
-        break;
-
-      case 'linux':
-      case 'win32':
-        await devToolsPage.page.keyboard.up('Control');
-        break;
-    }
+    await devToolsPage.pressKey('F8', {control: true});
 
     await devToolsPage.waitFor('[aria-label="Activate breakpoints"]');
 
@@ -470,8 +445,8 @@ describe('User Metric with experiment', () => {
 
   it('dispatches a metric event during drawer orientation toggle', async ({devToolsPage}) => {
     await setupInspectorFrontendHostStub(devToolsPage);
-    await devToolsPage.page.keyboard.down('Shift');
-    await devToolsPage.page.keyboard.press('Escape');
+
+    await devToolsPage.pressKey('Escape', {shift: true});
 
     await assertHistogramEventsInclude(
         [{
@@ -479,8 +454,6 @@ describe('User Metric with experiment', () => {
           actionCode: 119,  // main.toggle-drawer-orientation
         }],
         devToolsPage);
-
-    await devToolsPage.page.keyboard.up('Shift');
   });
 });
 

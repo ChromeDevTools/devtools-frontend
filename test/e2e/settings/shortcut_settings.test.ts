@@ -83,15 +83,11 @@ describe('Shortcuts Settings tab', () => {
     await openSettingsTab('Shortcuts', devToolsPage);
     await editShortcutListItem('Toggle Console', devToolsPage);
 
-    await devToolsPage.page.keyboard.down('Control');
-    await devToolsPage.page.keyboard.press('1');
-    await devToolsPage.page.keyboard.up('Control');
+    await devToolsPage.pressKey('1', {control: true});
 
     await clickAddShortcutLink(devToolsPage);
     await waitForEmptyShortcutInput(devToolsPage);
-    await devToolsPage.page.keyboard.down('Control');
-    await devToolsPage.page.keyboard.press('2');
-    await devToolsPage.page.keyboard.up('Control');
+    await devToolsPage.pressKey('2', {control: true});
 
     const shortcutInputsText = await shortcutInputValues(devToolsPage);
     assert.deepEqual(shortcutInputsText, CONTROL_1_CONTROL_2_SHORTCUT_INPUTS_TEXT);
@@ -108,15 +104,11 @@ describe('Shortcuts Settings tab', () => {
 
     await editShortcutListItem('Start recording events', devToolsPage);
 
-    await devToolsPage.page.keyboard.down('Control');
-    await devToolsPage.page.keyboard.press('1');
-    await devToolsPage.page.keyboard.up('Control');
+    await devToolsPage.pressKey('1', {control: true});
 
     await clickAddShortcutLink(devToolsPage);
     await waitForEmptyShortcutInput(devToolsPage);
-    await devToolsPage.page.keyboard.down('Control');
-    await devToolsPage.page.keyboard.press('2');
-    await devToolsPage.page.keyboard.up('Control');
+    await devToolsPage.pressKey('2', {control: true});
 
     await clickShortcutConfirmButton(devToolsPage);
     await devToolsPage.waitForNoElementsWithTextContent(ADD_SHORTCUT_LINK_TEXT);
@@ -138,15 +130,11 @@ describe('Shortcuts Settings tab', () => {
     await openSettingsTab('Shortcuts', devToolsPage);
     await editShortcutListItem('Toggle Console', devToolsPage);
 
-    await devToolsPage.page.keyboard.down('Control');
-    await devToolsPage.page.keyboard.press('1');
-    await devToolsPage.page.keyboard.up('Control');
+    await devToolsPage.pressKey('1', {control: true});
 
     await clickAddShortcutLink(devToolsPage);
     await waitForEmptyShortcutInput(devToolsPage);
-    await devToolsPage.page.keyboard.down('Control');
-    await devToolsPage.page.keyboard.press('2');
-    await devToolsPage.page.keyboard.up('Control');
+    await devToolsPage.pressKey('2', {control: true});
 
     const shortcutInputsText = await shortcutInputValues(devToolsPage);
     assert.deepEqual(shortcutInputsText, CONTROL_1_CONTROL_2_SHORTCUT_INPUTS_TEXT);
@@ -174,15 +162,11 @@ describe('Shortcuts Settings tab', () => {
     await openSettingsTab('Shortcuts', devToolsPage);
     await editShortcutListItem('Toggle Console', devToolsPage);
 
-    await devToolsPage.page.keyboard.down('Control');
-    await devToolsPage.page.keyboard.press('1');
-    await devToolsPage.page.keyboard.up('Control');
+    await devToolsPage.pressKey('1', {control: true});
 
     await clickAddShortcutLink(devToolsPage);
     await waitForEmptyShortcutInput(devToolsPage);
-    await devToolsPage.page.keyboard.down('Control');
-    await devToolsPage.page.keyboard.press('2');
-    await devToolsPage.page.keyboard.up('Control');
+    await devToolsPage.pressKey('2', {control: true});
 
     const shortcutInputsText = await shortcutInputValues(devToolsPage);
     assert.deepEqual(shortcutInputsText, CONTROL_1_CONTROL_2_SHORTCUT_INPUTS_TEXT);
@@ -197,12 +181,8 @@ describe('Shortcuts Settings tab', () => {
     await openSettingsTab('Shortcuts', devToolsPage);
     await editShortcutListItem('Toggle Console', devToolsPage);
 
-    await devToolsPage.page.keyboard.down('Control');
-    await devToolsPage.page.keyboard.press('1');
-    await devToolsPage.page.keyboard.up('Control');
-    await devToolsPage.page.keyboard.down('Control');
-    await devToolsPage.page.keyboard.press('2');
-    await devToolsPage.page.keyboard.up('Control');
+    await devToolsPage.pressKey('1', {control: true});
+    await devToolsPage.pressKey('2', {control: true});
 
     const shortcutInputsText = await shortcutInputValues(devToolsPage);
     assert.deepEqual(shortcutInputsText, CONTROL_1_CONTROL_2_CHORD_INPUT_TEXT);
@@ -217,11 +197,7 @@ describe('Shortcuts Settings tab', () => {
     await openSettingsTab('Shortcuts', devToolsPage);
     await editShortcutListItem('Toggle Console', devToolsPage);
 
-    await devToolsPage.page.keyboard.down('Control');
-    await devToolsPage.page.keyboard.down('Alt');
-    await devToolsPage.page.keyboard.press('c');
-    await devToolsPage.page.keyboard.up('Alt');
-    await devToolsPage.page.keyboard.up('Control');
+    await devToolsPage.pressKey('c', {control: true, alt: true});
 
     const shortcutInputsText = await shortcutInputValues(devToolsPage);
     assert.deepEqual(shortcutInputsText, CONTROL_ALT_C_SHORTCUT_INPUT_TEXT);
@@ -231,13 +207,9 @@ describe('Shortcuts Settings tab', () => {
     await openSettingsTab('Shortcuts', devToolsPage);
     await editShortcutListItem('Toggle Console', devToolsPage);
 
-    await devToolsPage.page.keyboard.down('Control');
-    await devToolsPage.page.keyboard.press('1');
-    await devToolsPage.page.keyboard.up('Control');
+    await devToolsPage.pressKey('1', {control: true});
     await devToolsPage.timeout(SHORTCUT_CHORD_TIMEOUT * 1.2);
-    await devToolsPage.page.keyboard.down('Control');
-    await devToolsPage.page.keyboard.press('2');
-    await devToolsPage.page.keyboard.up('Control');
+    await devToolsPage.pressKey('2', {control: true});
 
     const shortcutInputsText = await shortcutInputValues(devToolsPage);
     assert.deepEqual(shortcutInputsText, CONTROL_2_SHORTCUT_INPUT_TEXT);

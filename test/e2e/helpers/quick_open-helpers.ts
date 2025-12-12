@@ -4,7 +4,6 @@
 
 import {assert} from 'chai';
 
-import {platform} from '../../shared/helper.js';
 import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
 
 import {SourceFileEvents, waitForSourceFiles} from './sources-helpers.js';
@@ -17,43 +16,13 @@ const QUICK_OPEN_SELECTED_ITEM_SELECTOR = `${QUICK_OPEN_ITEMS_SELECTOR}.selected
 export const openCommandMenu = async (
     devToolsPage = getBrowserAndPagesWrappers().devToolsPage,
     ) => {
-  const frontend = devToolsPage.page;
-  switch (platform) {
-    case 'mac':
-      await frontend.keyboard.down('Meta');
-      await frontend.keyboard.down('Shift');
-      break;
-
-    case 'linux':
-    case 'win32':
-      await frontend.keyboard.down('Control');
-      await frontend.keyboard.down('Shift');
-      break;
-  }
-
-  await frontend.keyboard.press('P');
-
-  switch (platform) {
-    case 'mac':
-      await frontend.keyboard.up('Meta');
-      await frontend.keyboard.up('Shift');
-      break;
-
-    case 'linux':
-    case 'win32':
-      await frontend.keyboard.up('Control');
-      await frontend.keyboard.up('Shift');
-      break;
-  }
+  await devToolsPage.pressKey('P', {control: true, shift: true});
 
   await devToolsPage.waitFor(QUICK_OPEN_SELECTOR);
 };
 
 export const openFileQuickOpen = async (devtoolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
-  const modifierKey = platform === 'mac' ? 'Meta' : 'Control';
-  await devtoolsPage.page.keyboard.down(modifierKey);
-  await devtoolsPage.page.keyboard.press('P');
-  await devtoolsPage.page.keyboard.up(modifierKey);
+  await devtoolsPage.pressKey('P', {control: true});
   await devtoolsPage.waitFor(QUICK_OPEN_SELECTOR);
 };
 
@@ -82,13 +51,15 @@ export const openFileWithQuickOpen =
 export async function runCommandWithQuickOpen(
     command: string, devtoolsPage = getBrowserAndPagesWrappers().devToolsPage): Promise<void> {
   await openCommandMenu(devtoolsPage);
-  await devtoolsPage.page.keyboard.type(command);
+  await devtoolsPage.typeText(command);
   // TODO: it should actually wait for rendering to finish.
   await devtoolsPage.drainTaskQueue();
-  await devtoolsPage.page.keyboard.press('Enter');
+  await devtoolsPage.pressKey('Enter');
 }
 
 export const openGoToLineQuickOpen = async (devtoolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+  // This shortcut explicitly uses Control rather then meta on Mac
+  // So we can't use our Helper.
   await devtoolsPage.page.keyboard.down('Control');
   await devtoolsPage.pressKey('G');
   await devtoolsPage.page.keyboard.up('Control');

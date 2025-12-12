@@ -8,7 +8,6 @@ import * as path from 'node:path';
 import type * as puppeteer from 'puppeteer-core';
 
 import {GEN_DIR} from '../../conductor/paths.js';
-import {platform} from '../../conductor/platform.js';
 import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 import type {InspectedPage} from '../shared/target-helper.js';
@@ -37,24 +36,6 @@ export const ENABLE_OVERRIDES_SELECTOR = '[aria-label="Select folder for overrid
 const CLEAR_CONFIGURATION_SELECTOR = '[aria-label="Clear configuration"]';
 export const PAUSE_ON_UNCAUGHT_EXCEPTION_SELECTOR = '.pause-on-uncaught-exceptions';
 export const BREAKPOINT_ITEM_SELECTOR = '.breakpoint-item';
-
-export async function toggleNavigatorSidebar(frontend: puppeteer.Page) {
-  const modifierKey = platform === 'mac' ? 'Meta' : 'Control';
-  await frontend.keyboard.down(modifierKey);
-  await frontend.keyboard.down('Shift');
-  await frontend.keyboard.press('y');
-  await frontend.keyboard.up('Shift');
-  await frontend.keyboard.up(modifierKey);
-}
-
-export async function toggleDebuggerSidebar(frontend: puppeteer.Page) {
-  const modifierKey = platform === 'mac' ? 'Meta' : 'Control';
-  await frontend.keyboard.down(modifierKey);
-  await frontend.keyboard.down('Shift');
-  await frontend.keyboard.press('h');
-  await frontend.keyboard.up('Shift');
-  await frontend.keyboard.up(modifierKey);
-}
 
 export async function getLineNumberElement(
     lineNumber: number|string, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
@@ -572,32 +553,29 @@ async function hasPausedEvents(devToolsPage: DevToolsPage = getBrowserAndPagesWr
 
 export async function stepThroughTheCode(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   await devToolsPage.getPendingEvents(DEBUGGER_PAUSED_EVENT);
-  await devToolsPage.page.keyboard.press('F9');
+  await devToolsPage.pressKey('F9');
   await devToolsPage.waitForFunction(() => hasPausedEvents(devToolsPage));
   await devToolsPage.waitFor(PAUSE_INDICATOR_SELECTOR);
 }
 
 export async function stepIn(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   await devToolsPage.getPendingEvents(DEBUGGER_PAUSED_EVENT);
-  await devToolsPage.page.keyboard.press('F11');
+  await devToolsPage.pressKey('F11');
   await devToolsPage.waitForFunction(() => hasPausedEvents(devToolsPage));
   await devToolsPage.waitFor(PAUSE_INDICATOR_SELECTOR);
 }
 
 export async function stepOver(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   await devToolsPage.getPendingEvents(DEBUGGER_PAUSED_EVENT);
-  await devToolsPage.page.keyboard.press('F10');
+  await devToolsPage.pressKey('F10');
   await devToolsPage.waitForFunction(() => hasPausedEvents(devToolsPage));
   await devToolsPage.waitFor(PAUSE_INDICATOR_SELECTOR);
 }
 
 export async function stepOut(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   await devToolsPage.getPendingEvents(DEBUGGER_PAUSED_EVENT);
-  await devToolsPage.page.keyboard.down('Shift');
-  await devToolsPage.page.keyboard.press('F11');
-  await devToolsPage.page.keyboard.up('Shift');
+  await devToolsPage.pressKey('F11', {shift: true});
   await devToolsPage.waitForFunction(() => hasPausedEvents(devToolsPage));
-
   await devToolsPage.waitFor(PAUSE_INDICATOR_SELECTOR);
 }
 

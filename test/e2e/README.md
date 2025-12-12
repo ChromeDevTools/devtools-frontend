@@ -199,36 +199,8 @@ The separation of the two concepts allows us to change the underlying implementa
 For example, this is the implementation of `openCommandMenu()`:
 
 ```ts
-export const openCommandMenu = async () => {
-  const { frontend } = getBrowserAndPages();
-
-  switch (platform) {
-    case 'mac':
-      await frontend.keyboard.down('Meta');
-      await frontend.keyboard.down('Shift');
-      break;
-
-    case 'linux':
-    case 'win32':
-      await frontend.keyboard.down('Control');
-      await frontend.keyboard.down('Shift');
-      break;
-  }
-
-  await frontend.keyboard.press('P');
-
-  switch (platform) {
-    case 'mac':
-      await frontend.keyboard.up('Meta');
-      await frontend.keyboard.up('Shift');
-      break;
-
-    case 'linux':
-    case 'win32':
-      await frontend.keyboard.up('Control');
-      await frontend.keyboard.up('Shift');
-      break;
-  }
+export const openCommandMenu = async devToolsPage => {
+  await devToolsPage.pressKey('P', { control: true, shift: true });
 
   await waitFor(QUICK_OPEN_SELECTOR);
 };

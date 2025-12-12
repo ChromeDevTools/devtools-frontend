@@ -215,10 +215,14 @@ describe('The Sources Tab', function() {
     it('shows up on Ctrl/Meta + click if no breakpoint was set', async ({devToolsPage, inspectedPage}) => {
       await openSourceCodeEditorForFile(CLICK_BREAKPOINT_SCRIPT, CLICK_BREAKPOINT_HTML, devToolsPage, inspectedPage);
       const lineNumberColumn = await devToolsPage.waitFor(CODE_LINE_COLUMN_SELECTOR);
-      const modifier = process.platform === 'darwin' ? 'Meta' : 'Control';
-      await devToolsPage.page.keyboard.down(modifier);
-      await devToolsPage.click('text/4', {root: lineNumberColumn});
-      await devToolsPage.page.keyboard.up(modifier);
+
+      await devToolsPage.click('text/4', {
+        root: lineNumberColumn,
+        modifiers: {
+          control: true,
+        }
+      });
+
       await devToolsPage.waitFor('.sources-edit-breakpoint-dialog');
     });
 
@@ -227,10 +231,13 @@ describe('The Sources Tab', function() {
       await addBreakpointForLine(4, devToolsPage);
 
       const lineNumberColumn = await devToolsPage.waitFor(CODE_LINE_COLUMN_SELECTOR);
-      const modifier = process.platform === 'darwin' ? 'Meta' : 'Control';
-      await devToolsPage.page.keyboard.down(modifier);
-      await devToolsPage.click('text/4', {root: lineNumberColumn});
-      await devToolsPage.page.keyboard.up(modifier);
+
+      await devToolsPage.click('text/4', {
+        root: lineNumberColumn,
+        modifiers: {
+          control: true,
+        }
+      });
       await devToolsPage.waitFor('.sources-edit-breakpoint-dialog');
     });
   });

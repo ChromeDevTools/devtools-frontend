@@ -75,7 +75,7 @@ export async function filterConsoleMessages(filter: string, devToolsPage = getBr
   }, main);
   await devToolsPage.pasteText(filter);
   await devToolsPage.drainTaskQueue();
-  await devToolsPage.page.keyboard.press('Tab');
+  await devToolsPage.pressKey('Tab');
   if (filter.length) {
     await expectVeEvents([veChange('Toolbar > TextField: filter')], await veRoot(devToolsPage), devToolsPage);
   }

@@ -625,8 +625,14 @@ describe('The Elements Tab', () => {
       selector: string, name: string, value: string, location: string, devToolsPage: DevToolsPage) {
     const element = await waitForCSSPropertyValue(selector, name, value, location, devToolsPage);
     // Click with offset to skip swatches.
-    await devToolsPage.withControlOrMetaKey(
-        () => devToolsPage.clickElement(element, {clickOptions: {offset: {x: 20, y: 5}}}));
+
+    await devToolsPage.clickElement(
+        element,
+        {
+          clickOptions: {offset: {x: 20, y: 5}},
+          modifiers: {control: true},
+        },
+    );
   }
 
   it('links to the right SASS source for inline CSS with relative sourcemap (crbug.com/787792)',

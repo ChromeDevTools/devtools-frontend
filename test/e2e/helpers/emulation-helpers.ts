@@ -52,8 +52,8 @@ export const showMediaQueryInspector =
     return;
   }
   await devToolsPage.click(DEVICE_TOOLBAR_OPTIONS_SELECTOR);
-  await devToolsPage.page.keyboard.press('ArrowDown');
-  await devToolsPage.page.keyboard.press('Enter');
+  await devToolsPage.pressKey('ArrowDown');
+  await devToolsPage.pressKey('Enter');
   await devToolsPage.waitFor(MEDIA_QUERY_INSPECTOR_SELECTOR);
 };
 

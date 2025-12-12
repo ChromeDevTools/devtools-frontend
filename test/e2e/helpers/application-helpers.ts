@@ -19,7 +19,7 @@ export async function navigateToApplicationTab(
   await devToolsPage.bringToFront();
   await openCommandMenu(devToolsPage);
   await devToolsPage.typeText('Application');
-  await devToolsPage.page.keyboard.press('Enter');
+  await devToolsPage.pressKey('Enter');
   await devToolsPage.waitFor('#tab-resources');
   // Make sure the application navigation list is shown
   await devToolsPage.waitFor('.storage-group-list-item');

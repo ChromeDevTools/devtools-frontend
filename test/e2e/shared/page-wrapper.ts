@@ -8,12 +8,18 @@ import type * as puppeteer from 'puppeteer-core';
 import {AsyncScope} from '../../conductor/async-scope.js';
 import {platform} from '../../conductor/platform.js';
 
-const CONTROL_OR_META = platform === 'mac' ? 'Meta' : 'Control';
-
 export type Action = (element: puppeteer.ElementHandle) => Promise<void>;
-
+export interface KeyModifiers {
+  /**
+   * On Mac this presses the Meta key
+   */
+  control?: boolean;
+  alt?: boolean;
+  shift?: boolean;
+}
 export interface ClickOptions {
   root?: puppeteer.ElementHandle;
+  modifiers?: KeyModifiers;
   clickOptions?: puppeteer.ClickOptions;
   maxPixelsFromLeft?: number;
 }
@@ -93,40 +99,10 @@ export class PageWrapper {
     });
   }
 
-  async pressKey(key: puppeteer.KeyInput, modifiers?: {control?: boolean, alt?: boolean, shift?: boolean}) {
-    if (modifiers) {
-      if (modifiers.control) {
-        if (platform === 'mac') {
-          // Use command key on mac
-          await this.page.keyboard.down('Meta');
-        } else {
-          await this.page.keyboard.down('Control');
-        }
-      }
-      if (modifiers.alt) {
-        await this.page.keyboard.down('Alt');
-      }
-      if (modifiers.shift) {
-        await this.page.keyboard.down('Shift');
-      }
-    }
-    await this.page.keyboard.press(key);
-    if (modifiers) {
-      if (modifiers.shift) {
-        await this.page.keyboard.up('Shift');
-      }
-      if (modifiers.alt) {
-        await this.page.keyboard.up('Alt');
-      }
-      if (modifiers.control) {
-        if (platform === 'mac') {
-          // Use command key on mac
-          await this.page.keyboard.up('Meta');
-        } else {
-          await this.page.keyboard.up('Control');
-        }
-      }
-    }
+  async pressKey(key: puppeteer.KeyInput, modifiers?: KeyModifiers) {
+    await this.#withKeyModifiers(async () => {
+      await this.page.keyboard.press(key);
+    }, modifiers ?? {});
   }
 
   /**
@@ -145,7 +121,7 @@ export class PageWrapper {
    */
   async $$<ElementType extends Element|null = null, Selector extends string = string>(
       selector: Selector, root?: puppeteer.JSHandle, handler = 'pierce') {
-    const rootElement = root ? root.asElement() || this.page : this.page;
+    const rootElement = root?.asElement() ?? this.page;
     const elements = await rootElement.$$(`${handler}/${selector}`) as
         Array<puppeteer.ElementHandle<DeducedElementType<ElementType, Selector>>>;
     return elements;
@@ -192,23 +168,53 @@ export class PageWrapper {
   }
 
   async click(selector: string, options?: ClickOptions) {
-    return await this.performActionOnSelector(
-        selector,
-        {root: options?.root},
-        element => element.click(options?.clickOptions),
-    );
+    return await this.#withKeyModifiers(async () => {
+      return await this.performActionOnSelector(
+          selector,
+          {root: options?.root},
+          element => element.click(options?.clickOptions),
+      );
+    }, options?.modifiers ?? {});
   }
 
-  async withControlOrMetaKey(action: () => Promise<void>, root = this.page) {
-    await this.waitForFunction(async () => {
-      await root.keyboard.down(CONTROL_OR_META);
-      try {
-        await action();
-        return true;
-      } finally {
-        await root.keyboard.up(CONTROL_OR_META);
+  async #withKeyModifiers<T>(action: () => Promise<T>, modifiers: KeyModifiers):
+      Promise<Exclude<NonNullable<T>, false>> {
+    return (await this.waitForFunction(async () => {
+      if (modifiers.control) {
+        if (platform === 'mac') {
+          // Use command key on mac
+          await this.page.keyboard.down('Meta');
+        } else {
+          await this.page.keyboard.down('Control');
+        }
       }
-    });
+      if (modifiers.alt) {
+        await this.page.keyboard.down('Alt');
+      }
+      if (modifiers.shift) {
+        await this.page.keyboard.down('Shift');
+      }
+
+      try {
+        const result = await action();
+        return result ?? true;
+      } finally {
+        if (modifiers.shift) {
+          await this.page.keyboard.up('Shift');
+        }
+        if (modifiers.alt) {
+          await this.page.keyboard.up('Alt');
+        }
+        if (modifiers.control) {
+          if (platform === 'mac') {
+            // Use command key on mac
+            await this.page.keyboard.up('Meta');
+          } else {
+            await this.page.keyboard.up('Control');
+          }
+        }
+      }
+    }) as Exclude<NonNullable<T>, false>);
   }
 
   async typeText(text: string, opts?: {delay: number}) {
@@ -242,17 +248,19 @@ export class PageWrapper {
   /**
    * @deprecated This method is not able to recover from unstable DOM. Use click(selector) instead.
    */
-  async clickElement(element: puppeteer.ElementHandle, options?: ClickOptions): Promise<void> {
-    // Retries here just in case the element gets connected to DOM / becomes visible.
-    await this.waitForFunction(async () => {
-      try {
-        await element.click(options?.clickOptions);
-        await this.drainTaskQueue();
-        return true;
-      } catch {
-        return false;
-      }
-    });
+  async clickElement(element: puppeteer.ElementHandle, options?: ClickOptions):
+      Promise<void> {  // Retries here just in case the element gets connected to DOM / becomes visible.
+    await this.#withKeyModifiers(async () => {
+      await this.waitForFunction(async () => {
+        try {
+          await element.click(options?.clickOptions);
+          await this.drainTaskQueue();
+          return true;
+        } catch {
+          return false;
+        }
+      });
+    }, options?.modifiers ?? {});
   }
 
   waitForElementWithTextContent(textContent: string, root?: puppeteer.ElementHandle, asyncScope = new AsyncScope()) {

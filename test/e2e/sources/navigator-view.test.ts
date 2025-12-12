@@ -14,7 +14,6 @@ import {
   openSnippetsSubPane,
   openSourceCodeEditorForFile,
   openSourcesPanel,
-  toggleNavigatorSidebar,
 } from '../helpers/sources-helpers.js';
 
 describe('The Sources panel', () => {
@@ -124,7 +123,7 @@ describe('The Sources panel', () => {
     it('which does not automatically reveal when opening a file', async ({devToolsPage, inspectedPage}) => {
       // Navigate without opening a file, close the navigator view.
       await openFileInSourcesPanel('navigation/index.html', devToolsPage, inspectedPage);
-      await toggleNavigatorSidebar(devToolsPage.page);
+      await devToolsPage.pressKey('y', {control: true, shift: true});
 
       // Open file via the command menu.
       await openFileWithQuickOpen('index.html', 0, devToolsPage);
@@ -139,11 +138,11 @@ describe('The Sources panel', () => {
       await devToolsPage.waitFor('.navigator-tabbed-pane');
 
       // Collapse navigator view.
-      await toggleNavigatorSidebar(devToolsPage.page);
+      await devToolsPage.pressKey('y', {control: true, shift: true});
       await devToolsPage.waitForNone('.navigator-tabbed-pane');
 
       // Expand navigator view.
-      await toggleNavigatorSidebar(devToolsPage.page);
+      await devToolsPage.pressKey('y', {control: true, shift: true});
       await devToolsPage.waitFor('.navigator-tabbed-pane');
     });
   });

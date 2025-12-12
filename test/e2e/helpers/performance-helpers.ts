@@ -58,7 +58,7 @@ export async function navigateToPerformanceTab(
   // Open the tab.
   await openCommandMenu(devToolsPage);
   await devToolsPage.typeText('Performance');
-  await devToolsPage.page.keyboard.press('Enter');
+  await devToolsPage.pressKey('Enter');
 
   // Make sure the landing page is shown.
   await devToolsPage.waitFor('.timeline-landing-page');

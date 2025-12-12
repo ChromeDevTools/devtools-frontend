@@ -37,14 +37,17 @@ export class Scope {
   readonly start: number;
   readonly end: number;
   readonly kind: ScopeKind;
+  readonly name?: string;
   readonly nameMappingLocations?: number[];
   readonly children: Scope[] = [];
 
-  constructor(start: number, end: number, parent: Scope|null, kind: ScopeKind, nameMappingLocations?: number[]) {
+  constructor(
+      start: number, end: number, parent: Scope|null, kind: ScopeKind, name?: string, nameMappingLocations?: number[]) {
     this.start = start;
     this.end = end;
     this.parent = parent;
     this.kind = kind;
+    this.name = name;
     this.nameMappingLocations = nameMappingLocations;
     if (parent) {
       parent.children.push(this);
@@ -66,6 +69,7 @@ export class Scope {
       end: this.end,
       variables,
       kind: this.kind,
+      name: this.name,
       nameMappingLocations: this.nameMappingLocations,
       children,
     };
@@ -141,6 +145,7 @@ export class ScopeVariableAnalysis {
   #currentScope: Scope;
   readonly #rootNode: Acorn.ESTree.Node;
   readonly #sourceText: string;
+  #methodName: string|undefined;
   #additionalMappingLocations: number[] = [];
 
   constructor(node: Acorn.ESTree.Node, sourceText: string) {
@@ -179,7 +184,8 @@ export class ScopeVariableAnalysis {
         break;
       case 'ArrowFunctionExpression': {
         this.#pushScope(
-            node.start, node.end, ScopeKind.ARROW_FUNCTION, mappingLocationsForArrowFunctions(node, this.#sourceText));
+            node.start, node.end, ScopeKind.ARROW_FUNCTION, undefined,
+            mappingLocationsForArrowFunctions(node, this.#sourceText));
         node.params.forEach(this.#processNodeAsDefinition.bind(this, DefinitionKind.VAR, false));
         if (node.body.type === 'BlockStatement') {
           // Include the body of the arrow function in the same scope as the arguments.
@@ -261,7 +267,7 @@ export class ScopeVariableAnalysis {
       case 'FunctionDeclaration':
         this.#processNodeAsDefinition(DefinitionKind.VAR, false, node.id);
         this.#pushScope(
-            node.id?.end ?? node.start, node.end, ScopeKind.FUNCTION,
+            node.id?.end ?? node.start, node.end, ScopeKind.FUNCTION, node.id.name,
             mappingLocationsForFunctionDeclaration(node, this.#sourceText));
         this.#addVariable('this', node.start, DefinitionKind.FIXED);
         this.#addVariable('arguments', node.start, DefinitionKind.FIXED);
@@ -272,9 +278,10 @@ export class ScopeVariableAnalysis {
         break;
       case 'FunctionExpression':
         this.#pushScope(
-            node.id?.end ?? node.start, node.end, ScopeKind.FUNCTION,
+            node.id?.end ?? node.start, node.end, ScopeKind.FUNCTION, this.#methodName ?? node.id?.name,
             [...this.#additionalMappingLocations, ...mappingLocationsForFunctionExpression(node, this.#sourceText)]);
         this.#additionalMappingLocations = [];
+        this.#methodName = undefined;
         this.#addVariable('this', node.start, DefinitionKind.FIXED);
         this.#addVariable('arguments', node.start, DefinitionKind.FIXED);
         node.params.forEach(this.#processNodeAsDefinition.bind(this, DefinitionKind.LET, false));
@@ -300,6 +307,7 @@ export class ScopeVariableAnalysis {
           this.#processNode(node.key);
         } else {
           this.#additionalMappingLocations = mappingLocationsForMethodDefinition(node);
+          this.#methodName = nameForMethodDefinition(node);
         }
         this.#processNode(node.value);
         break;
@@ -338,6 +346,7 @@ export class ScopeVariableAnalysis {
             this.#processNode(node.key);
           } else if (node.value.type === 'FunctionExpression') {
             this.#additionalMappingLocations = mappingLocationsForMethodDefinition(node);
+            this.#methodName = nameForMethodDefinition(node);
           }
           this.#processNode(node.value);
         }
@@ -440,8 +449,8 @@ export class ScopeVariableAnalysis {
     return this.#allNames;
   }
 
-  #pushScope(start: number, end: number, kind: ScopeKind, nameMappingLocations?: number[]): void {
-    this.#currentScope = new Scope(start, end, this.#currentScope, kind, nameMappingLocations);
+  #pushScope(start: number, end: number, kind: ScopeKind, name?: string, nameMappingLocations?: number[]): void {
+    this.#currentScope = new Scope(start, end, this.#currentScope, kind, name, nameMappingLocations);
   }
 
   #popScope(isFunctionContext: boolean): void {
@@ -549,6 +558,16 @@ function mappingLocationsForMethodDefinition(node: Acorn.ESTree.MethodDefinition
     return [id.start];
   }
   return [];
+}
+
+function nameForMethodDefinition(node: Acorn.ESTree.MethodDefinition|Acorn.ESTree.Property): string|undefined {
+  if (node.key.type === 'Identifier') {
+    return node.key.name;
+  }
+  if (node.key.type === 'PrivateIdentifier') {
+    return '#' + node.key.name;
+  }
+  return undefined;
 }
 
 function mappingLocationsForArrowFunctions(node: Acorn.ESTree.ArrowFunctionExpression, sourceText: string): number[] {

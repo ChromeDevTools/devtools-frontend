@@ -16,6 +16,7 @@ describe('ScopeParser', () => {
       assert.strictEqual(innerScope?.start, 12);
       assert.strictEqual(innerScope?.end, 17);
       assert.strictEqual(innerScope?.kind, FormatterAction.ScopeKind.FUNCTION);
+      assert.strictEqual(innerScope?.name, 'foo');
       assert.deepEqual(innerScope?.nameMappingLocations, [9, 12]);
       assert.deepEqual(innerScope?.variables?.get('a')?.uses.map(u => u.offset), [13]);
     });
@@ -25,10 +26,12 @@ describe('ScopeParser', () => {
 
       const scopeFoo = scopes?.children[0];
       assert.strictEqual(scopeFoo?.kind, FormatterAction.ScopeKind.FUNCTION);
+      assert.isUndefined(scopeFoo?.name);
       assert.deepEqual(scopeFoo?.nameMappingLocations, [20]);
 
       const scopeBar = scopes?.children[1];
       assert.strictEqual(scopeBar?.kind, FormatterAction.ScopeKind.FUNCTION);
+      assert.strictEqual(scopeBar?.name, 'b');
       assert.deepEqual(scopeBar?.nameMappingLocations, [49, 50]);
     });
 
@@ -140,6 +143,7 @@ describe('ScopeParser', () => {
 
       const scopeMethod = scopes?.children[0];
       assert.strictEqual(scopeMethod?.kind, FormatterAction.ScopeKind.FUNCTION);
+      assert.strictEqual(scopeMethod?.name, 'someMethod');
       assert.deepEqual(scopeMethod?.nameMappingLocations, [10, 20]);
     });
 
@@ -148,6 +152,7 @@ describe('ScopeParser', () => {
 
       const scopeMethod = scopes?.children[0];
       assert.strictEqual(scopeMethod?.kind, FormatterAction.ScopeKind.FUNCTION);
+      assert.strictEqual(scopeMethod?.name, '#someMethod');
       assert.deepEqual(scopeMethod?.nameMappingLocations, [10, 21]);
     });
 
@@ -156,10 +161,12 @@ describe('ScopeParser', () => {
 
       const scopeGet = scopes?.children[0];
       assert.strictEqual(scopeGet?.kind, FormatterAction.ScopeKind.FUNCTION);
+      assert.strictEqual(scopeGet?.name, 'foo');
       assert.deepEqual(scopeGet?.nameMappingLocations, [14, 17]);
 
       const scopeSet = scopes?.children[1];
       assert.strictEqual(scopeSet?.kind, FormatterAction.ScopeKind.FUNCTION);
+      assert.strictEqual(scopeGet?.name, 'foo');
       assert.deepEqual(scopeSet?.nameMappingLocations, [27, 30]);
     });
 
@@ -168,6 +175,7 @@ describe('ScopeParser', () => {
 
       const scopeMethod = scopes?.children[0];
       assert.strictEqual(scopeMethod?.kind, FormatterAction.ScopeKind.FUNCTION);
+      assert.strictEqual(scopeMethod?.name, 'someMethod');
       assert.deepEqual(scopeMethod?.nameMappingLocations, [14, 24]);
     });
 

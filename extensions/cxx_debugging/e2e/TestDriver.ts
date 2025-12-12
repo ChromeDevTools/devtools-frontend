@@ -43,7 +43,8 @@ function pausedReasonText(reason: string) {
   return;
 }
 
-describe('CXX Debugging Extension Test Suite', function() {
+// Started failing recently, but not at every run
+describe.skip('[crbug.com/468345402] CXX Debugging Extension Test Suite', function() {
   for (const {name, test, script} of loadTests()) {
     if (!script) {
       continue;

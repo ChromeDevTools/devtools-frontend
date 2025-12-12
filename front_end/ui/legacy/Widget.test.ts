@@ -3,13 +3,20 @@
 // found in the LICENSE file.
 
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import * as RenderCoordinator from '../components/render_coordinator/render_coordinator.js';
 
 import * as UI from './legacy.js';
 
 const {Widget} = UI.Widget;
 
-describe('Widget', () => {
+function checkFocus(id: string) {
+  const focused = UI.DOMUtilities.deepActiveElement(document);
+  const focusedId = focused ? focused.id : '';
+  assert.strictEqual(focusedId, id);
+}
+
+describeWithEnvironment('Widget', () => {
   it('monkey-patches `Element#appendChild()` to sanity-check that widgets are properly attached', () => {
     const div = document.createElement('div');
     renderElementIntoDOM(div);
@@ -437,6 +444,83 @@ describe('Widget', () => {
       // is not its own. Then it should focus the first child (child1).
       // child1 will then focus its default element.
       assert.strictEqual(document.activeElement, child1Input);
+    });
+
+    it('should remember focus correctly on widgets.', () => {
+      const container = document.createElement('div');
+      renderElementIntoDOM(container);
+
+      const outerInput = document.createElement('input');
+      outerInput.id = 'Outer';
+      const input1 = document.createElement('input');
+      input1.id = 'Input1';
+      const input2 = document.createElement('input');
+      input2.id = 'Input2';
+      const input3 = document.createElement('input');
+      input3.id = 'Input3';
+      const input4 = document.createElement('input');
+      input4.id = 'Input4';
+
+      container.appendChild(outerInput);
+
+      const mainWidget = new Widget();
+      mainWidget.markAsRoot();
+      mainWidget.show(container);
+
+      const widget1 = new Widget();
+      widget1.show(mainWidget.element);
+      widget1.element.appendChild(input1);
+      widget1.setDefaultFocusedElement(input1);
+
+      const widget2 = new Widget();
+      widget2.show(mainWidget.element);
+      widget2.element.appendChild(input2);
+      widget2.setDefaultFocusedElement(input2);
+
+      outerInput.focus();
+      checkFocus(outerInput.id);
+
+      widget1.focus();
+      checkFocus(input1.id);
+
+      input2.focus();
+      checkFocus(input2.id);
+
+      outerInput.focus();
+      checkFocus(outerInput.id);
+
+      mainWidget.focus();
+      checkFocus(input2.id);
+
+      outerInput.focus();
+      checkFocus(outerInput.id);
+
+      widget2.hideWidget();
+      mainWidget.focus();
+      checkFocus(input1.id);
+
+      const splitWidget = new UI.SplitWidget.SplitWidget(false, false);
+      splitWidget.show(mainWidget.element);
+
+      const widget3 = new Widget();
+      widget3.element.appendChild(input3);
+      widget3.setDefaultFocusedElement(input3);
+      splitWidget.setSidebarWidget(widget3);
+
+      const widget4 = new Widget();
+      widget4.element.appendChild(input4);
+      widget4.setDefaultFocusedElement(input4);
+      splitWidget.setMainWidget(widget4);
+      splitWidget.setDefaultFocusedChild(widget4);
+
+      splitWidget.focus();
+      checkFocus(input4.id);
+
+      widget3.focus();
+      checkFocus(input3.id);
+
+      mainWidget.focus();
+      checkFocus(input3.id);
     });
 
     it('gives focus an autofocus element of a child widget', () => {

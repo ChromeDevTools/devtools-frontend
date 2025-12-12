@@ -196,6 +196,7 @@ devtools_ui_module("unittests") {
     "ListWidget.test.ts",
     "SearchableView.test.ts",
     "ShortcutRegistry.test.ts",
+    "SoftContextMenu.test.ts",
     "SoftDropDown.test.ts",
     "SplitWidget.test.ts",
     "SuggestBox.test.ts",

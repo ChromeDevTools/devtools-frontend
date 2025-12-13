@@ -682,6 +682,7 @@ ui/legacy/ListModel.test.js
 ui/legacy/ListWidget.test.js
 ui/legacy/SearchableView.test.js
 ui/legacy/ShortcutRegistry.test.js
+ui/legacy/SoftDropDown.test.js
 ui/legacy/SplitWidget.test.js
 ui/legacy/SuggestBox.test.js
 ui/legacy/TabbedPane.test.js

@@ -18777,7 +18777,7 @@ var SourceMapScopesInfo = class _SourceMapScopesInfo {
         scope = {
           start: { line: startEntry.sourceLineNumber, column: startEntry.sourceColumnNumber },
           end: { line: endEntry.sourceLineNumber, column: endEntry.sourceColumnNumber },
-          name,
+          name: name ?? node.name,
           isStackFrame,
           variables: [],
           children: []
@@ -19186,7 +19186,7 @@ var SourceMap = class {
   #script;
   #scopesInfo = null;
   #debugId;
-  scopesFallbackPromiseForTest;
+  #scopesFallbackPromise;
   /**
    * Implements Source Map V3 model. See https://github.com/google/closure-compiler/wiki/Source-Maps
    * for format description.
@@ -19254,6 +19254,10 @@ var SourceMap = class {
   hasScopeInfo() {
     this.#ensureSourceMapProcessed();
     return this.#scopesInfo !== null && !this.#scopesInfo.isEmpty();
+  }
+  waitForScopeInfo() {
+    this.#ensureSourceMapProcessed();
+    return this.#scopesFallbackPromise ?? Promise.resolve();
   }
   findEntry(lineNumber, columnNumber, inlineFrameIndex) {
     this.#ensureSourceMapProcessed();
@@ -19390,7 +19394,7 @@ var SourceMap = class {
       try {
         this.eachSection(this.parseMap.bind(this));
         if (!this.hasScopeInfo()) {
-          this.scopesFallbackPromiseForTest = this.#buildScopesFallback().then((info) => {
+          this.#scopesFallbackPromise = this.#buildScopesFallback().then((info) => {
             this.#scopesInfo = info;
           });
         }
@@ -19950,7 +19954,7 @@ var SourceMapManager = class _SourceMapManager extends Common12.ObjectWrapper.Ob
     }
   }
   waitForSourceMapsProcessedForTest() {
-    return Promise.all(this.#sourceMaps.keys().map((sourceMap) => sourceMap.scopesFallbackPromiseForTest));
+    return Promise.all(this.#sourceMaps.keys().map((sourceMap) => sourceMap.waitForScopeInfo()));
   }
 };
 async function loadSourceMap(resourceLoader, url, debugId, initiator) {

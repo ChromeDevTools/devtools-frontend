@@ -115,7 +115,7 @@ export class SourceMapScopesInfo {
                 scope = {
                     start: { line: startEntry.sourceLineNumber, column: startEntry.sourceColumnNumber },
                     end: { line: endEntry.sourceLineNumber, column: endEntry.sourceColumnNumber },
-                    name,
+                    name: name ?? node.name,
                     isStackFrame,
                     variables: [],
                     children: [],

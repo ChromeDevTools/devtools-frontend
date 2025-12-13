@@ -77,7 +77,6 @@ export declare class SourceMapEntry {
 export declare class SourceMap {
     #private;
     static retainRawSourceMaps: boolean;
-    scopesFallbackPromiseForTest?: Promise<unknown>;
     /**
      * Implements Source Map V3 model. See https://github.com/google/closure-compiler/wiki/Source-Maps
      * for format description.
@@ -92,6 +91,7 @@ export declare class SourceMap {
     sourceURLs(): Platform.DevToolsPath.UrlString[];
     embeddedContentByURL(sourceURL: Platform.DevToolsPath.UrlString): string | null;
     hasScopeInfo(): boolean;
+    waitForScopeInfo(): Promise<void>;
     findEntry(lineNumber: number, columnNumber: number, inlineFrameIndex?: number): SourceMapEntry | null;
     /** Returns the entry at the given position but only if an entry exists for that exact position */
     findEntryExact(lineNumber: number, columnNumber: number): SourceMapEntry | null;

@@ -826,6 +826,7 @@ var CompilerScriptMapping = class {
     if (!sourceMap) {
       return null;
     }
+    await sourceMap.waitForScopeInfo();
     const { lineNumber, columnNumber } = script.rawLocationToRelativeLocation(rawLocation);
     const { url, scope } = sourceMap.findOriginalFunctionScope({ line: lineNumber, column: columnNumber }) ?? {};
     if (!scope || !url) {
@@ -847,20 +848,21 @@ var CompilerScriptMapping = class {
     const range = new TextUtils2.TextRange.TextRange(scope.start.line, scope.start.column, scope.end.line, scope.end.column);
     return new Workspace3.UISourceCode.UIFunctionBounds(uiSourceCode, range, name);
   }
-  translateRawFramesStep(rawFrames, translatedFrames) {
+  async translateRawFramesStep(rawFrames, translatedFrames) {
     const frame = rawFrames[0];
     if (Trie_exports.isBuiltinFrame(frame)) {
       return false;
     }
-    const sourceMapWithScopeInfoForFrame = (rawFrame) => {
+    const sourceMapWithScopeInfoForFrame = async (rawFrame) => {
       const script2 = this.#debuggerModel.scriptForId(rawFrame.scriptId ?? "");
       if (!script2 || this.#stubUISourceCodes.has(script2)) {
         return null;
       }
       const sourceMap2 = script2.sourceMap();
+      await sourceMap2?.waitForScopeInfo();
       return sourceMap2?.hasScopeInfo() ? { sourceMap: sourceMap2, script: script2 } : null;
     };
-    const sourceMapAndScript = sourceMapWithScopeInfoForFrame(frame);
+    const sourceMapAndScript = await sourceMapWithScopeInfoForFrame(frame);
     if (!sourceMapAndScript) {
       return false;
     }
@@ -3808,7 +3810,7 @@ var DebuggerWorkspaceBinding = class _DebuggerWorkspaceBinding {
     }
     const modelData = this.#debuggerModelToData.get(target.model(SDK11.DebuggerModel.DebuggerModel));
     if (modelData) {
-      modelData.translateRawFramesStep(rawFrames, translatedFrames);
+      await modelData.translateRawFramesStep(rawFrames, translatedFrames);
       return;
     }
     const frame = rawFrames.shift();
@@ -3889,8 +3891,8 @@ var ModelData2 = class {
     scope = scope || await this.#resourceMapping.functionBoundsAtRawLocation(rawLocation);
     return scope;
   }
-  translateRawFramesStep(rawFrames, translatedFrames) {
-    if (!this.compilerMapping.translateRawFramesStep(rawFrames, translatedFrames)) {
+  async translateRawFramesStep(rawFrames, translatedFrames) {
+    if (!await this.compilerMapping.translateRawFramesStep(rawFrames, translatedFrames)) {
       this.#defaultTranslateRawFramesStep(rawFrames, translatedFrames);
     }
   }

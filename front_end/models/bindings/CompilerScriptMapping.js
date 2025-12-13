@@ -229,6 +229,7 @@ export class CompilerScriptMapping {
         if (!sourceMap) {
             return null;
         }
+        await sourceMap.waitForScopeInfo();
         const { lineNumber, columnNumber } = script.rawLocationToRelativeLocation(rawLocation);
         const { url, scope } = sourceMap.findOriginalFunctionScope({ line: lineNumber, column: columnNumber }) ?? {};
         if (!scope || !url) {
@@ -254,21 +255,22 @@ export class CompilerScriptMapping {
         const range = new TextUtils.TextRange.TextRange(scope.start.line, scope.start.column, scope.end.line, scope.end.column);
         return new Workspace.UISourceCode.UIFunctionBounds(uiSourceCode, range, name);
     }
-    translateRawFramesStep(rawFrames, translatedFrames) {
+    async translateRawFramesStep(rawFrames, translatedFrames) {
         const frame = rawFrames[0];
         if (StackTraceImpl.Trie.isBuiltinFrame(frame)) {
             return false;
         }
-        const sourceMapWithScopeInfoForFrame = (rawFrame) => {
+        const sourceMapWithScopeInfoForFrame = async (rawFrame) => {
             const script = this.#debuggerModel.scriptForId(rawFrame.scriptId ?? '');
             if (!script || this.#stubUISourceCodes.has(script)) {
                 // Use fallback while source map is being loaded.
                 return null;
             }
             const sourceMap = script.sourceMap();
+            await sourceMap?.waitForScopeInfo();
             return sourceMap?.hasScopeInfo() ? { sourceMap, script } : null;
         };
-        const sourceMapAndScript = sourceMapWithScopeInfoForFrame(frame);
+        const sourceMapAndScript = await sourceMapWithScopeInfoForFrame(frame);
         if (!sourceMapAndScript) {
             return false;
         }

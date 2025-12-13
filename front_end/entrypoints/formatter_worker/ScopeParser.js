@@ -20,13 +20,15 @@ export class Scope {
     start;
     end;
     kind;
+    name;
     nameMappingLocations;
     children = [];
-    constructor(start, end, parent, kind, nameMappingLocations) {
+    constructor(start, end, parent, kind, name, nameMappingLocations) {
         this.start = start;
         this.end = end;
         this.parent = parent;
         this.kind = kind;
+        this.name = name;
         this.nameMappingLocations = nameMappingLocations;
         if (parent) {
             parent.children.push(this);
@@ -47,6 +49,7 @@ export class Scope {
             end: this.end,
             variables,
             kind: this.kind,
+            name: this.name,
             nameMappingLocations: this.nameMappingLocations,
             children,
         };
@@ -116,6 +119,7 @@ export class ScopeVariableAnalysis {
     #currentScope;
     #rootNode;
     #sourceText;
+    #methodName;
     #additionalMappingLocations = [];
     constructor(node, sourceText) {
         this.#rootNode = node;
@@ -150,7 +154,7 @@ export class ScopeVariableAnalysis {
                 node.elements.forEach(item => this.#processNode(item));
                 break;
             case 'ArrowFunctionExpression': {
-                this.#pushScope(node.start, node.end, 4 /* ScopeKind.ARROW_FUNCTION */, mappingLocationsForArrowFunctions(node, this.#sourceText));
+                this.#pushScope(node.start, node.end, 4 /* ScopeKind.ARROW_FUNCTION */, undefined, mappingLocationsForArrowFunctions(node, this.#sourceText));
                 node.params.forEach(this.#processNodeAsDefinition.bind(this, 2 /* DefinitionKind.VAR */, false));
                 if (node.body.type === 'BlockStatement') {
                     // Include the body of the arrow function in the same scope as the arguments.
@@ -232,7 +236,7 @@ export class ScopeVariableAnalysis {
                 break;
             case 'FunctionDeclaration':
                 this.#processNodeAsDefinition(2 /* DefinitionKind.VAR */, false, node.id);
-                this.#pushScope(node.id?.end ?? node.start, node.end, 2 /* ScopeKind.FUNCTION */, mappingLocationsForFunctionDeclaration(node, this.#sourceText));
+                this.#pushScope(node.id?.end ?? node.start, node.end, 2 /* ScopeKind.FUNCTION */, node.id.name, mappingLocationsForFunctionDeclaration(node, this.#sourceText));
                 this.#addVariable('this', node.start, 3 /* DefinitionKind.FIXED */);
                 this.#addVariable('arguments', node.start, 3 /* DefinitionKind.FIXED */);
                 node.params.forEach(this.#processNodeAsDefinition.bind(this, 1 /* DefinitionKind.LET */, false));
@@ -241,8 +245,9 @@ export class ScopeVariableAnalysis {
                 this.#popScope(true);
                 break;
             case 'FunctionExpression':
-                this.#pushScope(node.id?.end ?? node.start, node.end, 2 /* ScopeKind.FUNCTION */, [...this.#additionalMappingLocations, ...mappingLocationsForFunctionExpression(node, this.#sourceText)]);
+                this.#pushScope(node.id?.end ?? node.start, node.end, 2 /* ScopeKind.FUNCTION */, this.#methodName ?? node.id?.name, [...this.#additionalMappingLocations, ...mappingLocationsForFunctionExpression(node, this.#sourceText)]);
                 this.#additionalMappingLocations = [];
+                this.#methodName = undefined;
                 this.#addVariable('this', node.start, 3 /* DefinitionKind.FIXED */);
                 this.#addVariable('arguments', node.start, 3 /* DefinitionKind.FIXED */);
                 node.params.forEach(this.#processNodeAsDefinition.bind(this, 1 /* DefinitionKind.LET */, false));
@@ -269,6 +274,7 @@ export class ScopeVariableAnalysis {
                 }
                 else {
                     this.#additionalMappingLocations = mappingLocationsForMethodDefinition(node);
+                    this.#methodName = nameForMethodDefinition(node);
                 }
                 this.#processNode(node.value);
                 break;
@@ -309,6 +315,7 @@ export class ScopeVariableAnalysis {
                     }
                     else if (node.value.type === 'FunctionExpression') {
                         this.#additionalMappingLocations = mappingLocationsForMethodDefinition(node);
+                        this.#methodName = nameForMethodDefinition(node);
                     }
                     this.#processNode(node.value);
                 }
@@ -406,8 +413,8 @@ export class ScopeVariableAnalysis {
     getAllNames() {
         return this.#allNames;
     }
-    #pushScope(start, end, kind, nameMappingLocations) {
-        this.#currentScope = new Scope(start, end, this.#currentScope, kind, nameMappingLocations);
+    #pushScope(start, end, kind, name, nameMappingLocations) {
+        this.#currentScope = new Scope(start, end, this.#currentScope, kind, name, nameMappingLocations);
     }
     #popScope(isFunctionContext) {
         if (this.#currentScope.parent === null) {
@@ -499,6 +506,15 @@ function mappingLocationsForMethodDefinition(node) {
         return [id.start];
     }
     return [];
+}
+function nameForMethodDefinition(node) {
+    if (node.key.type === 'Identifier') {
+        return node.key.name;
+    }
+    if (node.key.type === 'PrivateIdentifier') {
+        return '#' + node.key.name;
+    }
+    return undefined;
 }
 function mappingLocationsForArrowFunctions(node, sourceText) {
     // For arrow functions we use the `(' parenthesis if present, and the `=>` arrow as per spec.

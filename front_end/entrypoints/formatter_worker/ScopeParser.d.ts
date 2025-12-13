@@ -17,9 +17,10 @@ export declare class Scope {
     readonly start: number;
     readonly end: number;
     readonly kind: ScopeKind;
+    readonly name?: string;
     readonly nameMappingLocations?: number[];
     readonly children: Scope[];
-    constructor(start: number, end: number, parent: Scope | null, kind: ScopeKind, nameMappingLocations?: number[]);
+    constructor(start: number, end: number, parent: Scope | null, kind: ScopeKind, name?: string, nameMappingLocations?: number[]);
     export(): ScopeTreeNode;
     addVariable(name: string, offset: number, definitionKind: DefinitionKind, isShorthandAssignmentProperty: boolean): void;
     findBinders(name: string): VariableUses[];

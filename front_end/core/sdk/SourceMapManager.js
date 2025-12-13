@@ -158,7 +158,7 @@ export class SourceMapManager extends Common.ObjectWrapper.ObjectWrapper {
         }
     }
     waitForSourceMapsProcessedForTest() {
-        return Promise.all(this.#sourceMaps.keys().map(sourceMap => sourceMap.scopesFallbackPromiseForTest));
+        return Promise.all(this.#sourceMaps.keys().map(sourceMap => sourceMap.waitForScopeInfo()));
     }
 }
 async function loadSourceMap(resourceLoader, url, debugId, initiator) {

@@ -386,7 +386,7 @@ export class DebuggerWorkspaceBinding {
         }
         const modelData = this.#debuggerModelToData.get(target.model(SDK.DebuggerModel.DebuggerModel));
         if (modelData) {
-            modelData.translateRawFramesStep(rawFrames, translatedFrames);
+            await modelData.translateRawFramesStep(rawFrames, translatedFrames);
             return;
         }
         const frame = rawFrames.shift();
@@ -477,8 +477,8 @@ class ModelData {
         scope = scope || await this.#resourceMapping.functionBoundsAtRawLocation(rawLocation);
         return scope;
     }
-    translateRawFramesStep(rawFrames, translatedFrames) {
-        if (!this.compilerMapping.translateRawFramesStep(rawFrames, translatedFrames)) {
+    async translateRawFramesStep(rawFrames, translatedFrames) {
+        if (!await this.compilerMapping.translateRawFramesStep(rawFrames, translatedFrames)) {
             this.#defaultTranslateRawFramesStep(rawFrames, translatedFrames);
         }
     }

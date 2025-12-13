@@ -4928,13 +4928,15 @@ var Scope = class {
   start;
   end;
   kind;
+  name;
   nameMappingLocations;
   children = [];
-  constructor(start, end, parent, kind, nameMappingLocations) {
+  constructor(start, end, parent, kind, name, nameMappingLocations) {
     this.start = start;
     this.end = end;
     this.parent = parent;
     this.kind = kind;
+    this.name = name;
     this.nameMappingLocations = nameMappingLocations;
     if (parent) {
       parent.children.push(this);
@@ -4955,6 +4957,7 @@ var Scope = class {
       end: this.end,
       variables,
       kind: this.kind,
+      name: this.name,
       nameMappingLocations: this.nameMappingLocations,
       children
     };
@@ -5026,6 +5029,7 @@ var ScopeVariableAnalysis = class {
   #currentScope;
   #rootNode;
   #sourceText;
+  #methodName;
   #additionalMappingLocations = [];
   constructor(node, sourceText) {
     this.#rootNode = node;
@@ -5066,7 +5070,7 @@ var ScopeVariableAnalysis = class {
         node.elements.forEach((item) => this.#processNode(item));
         break;
       case "ArrowFunctionExpression": {
-        this.#pushScope(node.start, node.end, 4, mappingLocationsForArrowFunctions(node, this.#sourceText));
+        this.#pushScope(node.start, node.end, 4, void 0, mappingLocationsForArrowFunctions(node, this.#sourceText));
         node.params.forEach(this.#processNodeAsDefinition.bind(this, 2, false));
         if (node.body.type === "BlockStatement") {
           node.body.body.forEach(this.#processNode.bind(this));
@@ -5165,7 +5169,7 @@ var ScopeVariableAnalysis = class {
         break;
       case "FunctionDeclaration":
         this.#processNodeAsDefinition(2, false, node.id);
-        this.#pushScope(node.id?.end ?? node.start, node.end, 2, mappingLocationsForFunctionDeclaration(node, this.#sourceText));
+        this.#pushScope(node.id?.end ?? node.start, node.end, 2, node.id.name, mappingLocationsForFunctionDeclaration(node, this.#sourceText));
         this.#addVariable(
           "this",
           node.start,
@@ -5183,8 +5187,9 @@ var ScopeVariableAnalysis = class {
         this.#popScope(true);
         break;
       case "FunctionExpression":
-        this.#pushScope(node.id?.end ?? node.start, node.end, 2, [...this.#additionalMappingLocations, ...mappingLocationsForFunctionExpression(node, this.#sourceText)]);
+        this.#pushScope(node.id?.end ?? node.start, node.end, 2, this.#methodName ?? node.id?.name, [...this.#additionalMappingLocations, ...mappingLocationsForFunctionExpression(node, this.#sourceText)]);
         this.#additionalMappingLocations = [];
+        this.#methodName = void 0;
         this.#addVariable(
           "this",
           node.start,
@@ -5219,6 +5224,7 @@ var ScopeVariableAnalysis = class {
           this.#processNode(node.key);
         } else {
           this.#additionalMappingLocations = mappingLocationsForMethodDefinition(node);
+          this.#methodName = nameForMethodDefinition(node);
         }
         this.#processNode(node.value);
         break;
@@ -5257,6 +5263,7 @@ var ScopeVariableAnalysis = class {
             this.#processNode(node.key);
           } else if (node.value.type === "FunctionExpression") {
             this.#additionalMappingLocations = mappingLocationsForMethodDefinition(node);
+            this.#methodName = nameForMethodDefinition(node);
           }
           this.#processNode(node.value);
         }
@@ -5352,8 +5359,8 @@ var ScopeVariableAnalysis = class {
   getAllNames() {
     return this.#allNames;
   }
-  #pushScope(start, end, kind, nameMappingLocations) {
-    this.#currentScope = new Scope(start, end, this.#currentScope, kind, nameMappingLocations);
+  #pushScope(start, end, kind, name, nameMappingLocations) {
+    this.#currentScope = new Scope(start, end, this.#currentScope, kind, name, nameMappingLocations);
   }
   #popScope(isFunctionContext) {
     if (this.#currentScope.parent === null) {
@@ -5435,6 +5442,15 @@ function mappingLocationsForMethodDefinition(node) {
     return [id.start];
   }
   return [];
+}
+function nameForMethodDefinition(node) {
+  if (node.key.type === "Identifier") {
+    return node.key.name;
+  }
+  if (node.key.type === "PrivateIdentifier") {
+    return "#" + node.key.name;
+  }
+  return void 0;
 }
 function mappingLocationsForArrowFunctions(node, sourceText) {
   const result = [];

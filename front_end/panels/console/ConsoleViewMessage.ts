@@ -1186,7 +1186,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   }
 
   matchesFilterText(filter: string): boolean {
-    const text = this.contentElement().deepTextContent();
+    const text = this.contentElement().deepTextContent() + this.message.messageText;
     return text.toLowerCase().includes(filter.toLowerCase());
   }
 

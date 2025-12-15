@@ -3469,7 +3469,9 @@
                         "idleDetection",
                         "keyboardLock",
                         "localFonts",
+                        "localNetwork",
                         "localNetworkAccess",
+                        "loopbackNetwork",
                         "midi",
                         "midiSysex",
                         "nfc",
@@ -28040,6 +28042,13 @@
                             "items": {
                                 "$ref": "Browser.BrowserContextID"
                             }
+                        },
+                        {
+                            "name": "defaultBrowserContextId",
+                            "description": "The id of the default browser context if available.",
+                            "experimental": true,
+                            "optional": true,
+                            "$ref": "Browser.BrowserContextID"
                         }
                     ]
                 },

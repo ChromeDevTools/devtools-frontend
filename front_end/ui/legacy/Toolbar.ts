@@ -1166,6 +1166,10 @@ export class ToolbarComboBox extends ToolbarItem<void, HTMLSelectElement> {
     }
   }
 
+  turnShrinkable(): void {
+    this.element.classList.add('toolbar-has-dropdown-shrinkable');
+  }
+
   size(): number {
     return this.element.childElementCount;
   }

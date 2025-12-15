@@ -638,4 +638,93 @@ describe('The Network Request view', () => {
 
     await devToolsPage.waitFor(SEARCH_RESULT);
   });
+
+  describe('preview', () => {
+    async function searchInPreview(devToolsPage: DevToolsPage, query: string, totalMatches: number) {
+      const SEARCH_QUERY = '.search-replace.search';
+
+      await devToolsPage.summonSearchBox();
+      const inputElement = await devToolsPage.waitFor(SEARCH_QUERY);
+      assert.isOk(inputElement, 'Unable to find search input field');
+
+      await inputElement.focus();
+      await inputElement.click({clickCount: 3});  // Select all text.
+      await inputElement.type(query);
+
+      await devToolsPage.waitForFunction(async () => {
+        const searchStatusText = await devToolsPage.getTextContent('.search-results-matches');
+        if (totalMatches > 0) {
+          return searchStatusText.endsWith(`of ${totalMatches}`);
+        }
+        return !searchStatusText;
+      });
+    }
+
+    async function setupPreviewTest(
+        devToolsPage: DevToolsPage, inspectedPage: InspectedPage, url: string, resourceName?: string) {
+      await navigateToNetworkTab('hello.html', devToolsPage, inspectedPage);
+      await inspectedPage.evaluate(url => fetch(url), url);
+      await waitForSomeRequestsToAppear(3, devToolsPage);
+
+      if (!resourceName) {
+        resourceName = url.length > 20 ? url.substring(0, 19) + '…' : url;
+      }
+
+      await selectRequestByName(resourceName, {devToolsPage});
+
+      const networkView = await devToolsPage.waitFor('.network-item-view');
+      await devToolsPage.click('[aria-label=Preview][role="tab"]', {
+        root: networkView,
+      });
+      await devToolsPage.waitFor('[aria-label=Preview][role=tab][aria-selected=true]', networkView);
+      // Wait for the preview to load.
+      await devToolsPage.click(
+          '.json-view, .shadow-xml-view, devtools-text-editor, .html-preview-frame',
+          {clickOptions: {offset: {x: 10, y: 10}}});
+    }
+
+    it('can be searched for JSON content', async ({devToolsPage, inspectedPage}) => {
+      const url = 'data:application/json,%5B533%2C3223%5D';
+      await setupPreviewTest(devToolsPage, inspectedPage, url);
+
+      await searchInPreview(devToolsPage, '533', 1);
+      await searchInPreview(devToolsPage, '322', 1);
+    });
+
+    it('can be searched for JSON content with special mime type', async ({devToolsPage, inspectedPage}) => {
+      const url = 'data:application/vnd.document+json,%7B%22foo0foo%22%3A%20123%7D';
+      await setupPreviewTest(devToolsPage, inspectedPage, url);
+      await searchInPreview(devToolsPage, 'foo', 1);
+    });
+
+    it('can be searched for XML content', async ({devToolsPage, inspectedPage}) => {
+      const url = 'data:text/xml,%3Cbar%3E%3Cfoo%2F%3Etest%3C%2Fbar%3E';
+      await setupPreviewTest(devToolsPage, inspectedPage, url);
+      await searchInPreview(devToolsPage, 'bar', 2);
+      await searchInPreview(devToolsPage, 'foo', 1);
+      await searchInPreview(devToolsPage, 'test', 1);
+    });
+
+    it('can be searched for XML content with comments', async ({devToolsPage, inspectedPage}) => {
+      const url = 'data:text/xml,%3Cbar%3E%3C!--%20FOO%20--%3E%3C%2Fbar%3E';
+      await setupPreviewTest(devToolsPage, inspectedPage, url);
+      await searchInPreview(devToolsPage, 'FOO', 1);
+      await searchInPreview(devToolsPage, 'bar', 2);
+    });
+
+    it('can be searched for XML content with CDATA', async ({devToolsPage, inspectedPage}) => {
+      const url = 'data:text/xml,%3Ca%3E%3C!%5BCDATA%5BGGG%5D%5D%3E%3Cg%20tee%3D%22gee%22%3Etee%3C%2Fg%3E%3C%2Fa%3E';
+      await setupPreviewTest(devToolsPage, inspectedPage, url);
+      await searchInPreview(devToolsPage, 'GGG', 1);
+      await searchInPreview(devToolsPage, 'tee', 2);
+      await searchInPreview(devToolsPage, 'CDATA', 1);
+    });
+
+    it('can be searched for JSON content with XML mime type', async ({devToolsPage, inspectedPage}) => {
+      const url = 'data:text/xml,%7B%22foo0%22%3A%20%22barr%22%2C%20%22barr%22%3A%20%22fooo%22%7D';
+      await setupPreviewTest(devToolsPage, inspectedPage, url);
+      await searchInPreview(devToolsPage, 'fooo', 1);
+      await searchInPreview(devToolsPage, 'bar', 2);
+    });
+  });
 });

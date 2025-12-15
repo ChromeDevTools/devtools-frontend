@@ -33,7 +33,7 @@
  */
 
 import * as SDK from '../../core/sdk/sdk.js';
-import type * as UI from '../../ui/legacy/legacy.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 import {ElementsTreeOutline} from './ElementsTreeOutline.js';
 
@@ -75,6 +75,12 @@ export class Renderer implements UI.UIUtils.Renderer {
     if (options?.expand) {
       treeOutline.firstChild()?.expand();
     }
+    const dispatchDimensionChange = (): void => {
+      treeOutline.element.dispatchEvent(new CustomEvent('dimensionschanged'));
+    };
+    treeOutline.addEventListener(UI.TreeOutline.Events.ElementAttached, dispatchDimensionChange);
+    treeOutline.addEventListener(UI.TreeOutline.Events.ElementExpanded, dispatchDimensionChange);
+    treeOutline.addEventListener(UI.TreeOutline.Events.ElementCollapsed, dispatchDimensionChange);
     return {
       element: treeOutline.element,
       forceSelect: treeOutline.forceSelect.bind(treeOutline),

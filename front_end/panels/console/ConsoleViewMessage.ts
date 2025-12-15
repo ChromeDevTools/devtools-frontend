@@ -982,10 +982,11 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       const renderResult = await UI.UIUtils.Renderer.render(node);
       if (renderResult) {
         this.selectableChildren.push(renderResult);
-        const resizeObserver = new ResizeObserver(() => {
+        // FIXME: this should not be needed once ConsoleViewMessage is rendering
+        // declaratively and the tree outline auto-resizes itself.
+        renderResult.element.addEventListener('dimensionschanged', () => {
           this.messageResized({data: renderResult.element});
         });
-        resizeObserver.observe(renderResult.element);
         result.appendChild(renderResult.element);
       } else {
         result.appendChild(this.formatParameterAsObject(remoteObject, false));

@@ -168,7 +168,7 @@ describeWithMockConnection('RequestHeadersView', () => {
     component = await renderHeadersComponent(defaultRequest);
     assert.isNotNull(component.shadowRoot);
 
-    const responseHeadersCategory = component.shadowRoot.querySelector('[aria-label="Response Headers"]');
+    const responseHeadersCategory = component.shadowRoot.querySelector('[aria-label="Response headers"]');
     assert.instanceOf(responseHeadersCategory, HTMLElement);
     assert.deepEqual(
         getRowsTextFromCategory(responseHeadersCategory),
@@ -185,7 +185,7 @@ describeWithMockConnection('RequestHeadersView', () => {
     component = await renderHeadersComponent(defaultRequest);
     assert.isNotNull(component.shadowRoot);
 
-    const earlyHintsCategory = component.shadowRoot.querySelector('[aria-label="Early Hints Headers"]');
+    const earlyHintsCategory = component.shadowRoot.querySelector('[aria-label="Early hints headers"]');
     assert.instanceOf(earlyHintsCategory, HTMLElement);
     assert.deepEqual(getRowsTextFromCategory(earlyHintsCategory), [['link', '<src="/script.js" as="script">']]);
   });
@@ -210,7 +210,7 @@ describeWithMockConnection('RequestHeadersView', () => {
     component = await renderHeadersComponent(defaultRequest);
     assert.isNotNull(component.shadowRoot);
 
-    const responseHeadersCategory = component.shadowRoot.querySelector('[aria-label="Response Headers"]');
+    const responseHeadersCategory = component.shadowRoot.querySelector('[aria-label="Response headers"]');
     assert.instanceOf(responseHeadersCategory, HTMLElement);
 
     // Switch to viewing source view
@@ -246,7 +246,7 @@ describeWithMockConnection('RequestHeadersView', () => {
     } as unknown as SDK.NetworkRequest.NetworkRequest);
     assert.isNotNull(component.shadowRoot);
 
-    const responseHeadersCategory = component.shadowRoot.querySelector('[aria-label="Response Headers"]');
+    const responseHeadersCategory = component.shadowRoot.querySelector('[aria-label="Response headers"]');
     assert.instanceOf(responseHeadersCategory, HTMLElement);
 
     // Switch to viewing source view
@@ -279,7 +279,7 @@ describeWithMockConnection('RequestHeadersView', () => {
 
     component = await renderHeadersComponent(request);
     assert.isNotNull(component.shadowRoot);
-    const responseHeadersCategory = component.shadowRoot.querySelector('[aria-label="Response Headers"]');
+    const responseHeadersCategory = component.shadowRoot.querySelector('[aria-label="Response headers"]');
     assert.instanceOf(responseHeadersCategory, HTMLElement);
 
     const spy = sinon.spy(component, 'render');
@@ -305,7 +305,7 @@ describeWithMockConnection('RequestHeadersView', () => {
     component = await renderHeadersComponent(request);
     assert.isNotNull(component.shadowRoot);
 
-    const responseHeadersCategory = component.shadowRoot.querySelector('[aria-label="Response Headers"]');
+    const responseHeadersCategory = component.shadowRoot.querySelector('[aria-label="Response headers"]');
     assert.instanceOf(responseHeadersCategory, HTMLElement);
     assert.deepEqual(
         getRowsTextFromCategory(responseHeadersCategory),
@@ -354,7 +354,7 @@ describeWithMockConnection('RequestHeadersView', () => {
     component = await renderHeadersComponent(defaultRequest);
     assert.isNotNull(component.shadowRoot);
 
-    const responseHeadersCategory = component.shadowRoot.querySelector('[aria-label="Response Headers"]');
+    const responseHeadersCategory = component.shadowRoot.querySelector('[aria-label="Response headers"]');
     assert.instanceOf(responseHeadersCategory, HTMLElement);
     assert.isNotNull(responseHeadersCategory.shadowRoot);
 
@@ -380,7 +380,7 @@ describeWithMockConnection('RequestHeadersView', () => {
     component = await renderHeadersComponent(defaultRequest);
     assert.isNotNull(component.shadowRoot);
 
-    const responseHeadersCategory = component.shadowRoot.querySelector('[aria-label="Response Headers"]');
+    const responseHeadersCategory = component.shadowRoot.querySelector('[aria-label="Response headers"]');
     assert.instanceOf(responseHeadersCategory, HTMLElement);
     assert.isNotNull(responseHeadersCategory.shadowRoot);
 

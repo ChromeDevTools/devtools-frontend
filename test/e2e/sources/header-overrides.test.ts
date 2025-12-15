@@ -25,7 +25,7 @@ const FILE_TREE_HEADERS_FILE_SELECTOR = '[aria-label=".headers, file"] .tree-ele
 const NETWORK_VIEW_SELECTOR = '.network-item-view';
 const HEADERS_TAB_SELECTOR = '[aria-label=Headers][role="tab"]';
 const ACTIVE_HEADERS_TAB_SELECTOR = '[aria-label=Headers][role=tab][aria-selected=true]';
-const RESPONSE_HEADERS_SELECTOR = '[aria-label="Response Headers"]';
+const RESPONSE_HEADERS_SELECTOR = '[aria-label="Response headers"]';
 const HEADER_ROW_SELECTOR = '.row';
 
 async function createHeaderOverride(devToolsPage: DevToolsPage) {

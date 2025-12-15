@@ -77,7 +77,7 @@ describe('The Network Tab', function() {
 
     await devToolsPage.click('.name-column', {clickOptions: {button: 'right'}});
 
-    await devToolsPage.click('aria/Response Headers');
+    await devToolsPage.click('aria/Response headers');
 
     await devToolsPage.click('aria/Last-Modified, unchecked');
 
@@ -217,9 +217,9 @@ describe('The Network Tab', function() {
 
     await devToolsPage.click('.name-column', {clickOptions: {button: 'right'}});
 
-    await devToolsPage.click('aria/Initiator Address Space, unchecked');
+    await devToolsPage.click('aria/Initiator address space, unchecked');
 
-    const expectedValues = JSON.stringify(['Initiator Address Space', '', 'Loopback']);
+    const expectedValues = JSON.stringify(['Initiator address space', '', 'Loopback']);
     await devToolsPage.waitForFunction(async () => {
       const initiatorAddressSpaceValues = await devToolsPage.page.$$eval(
           'pierce/.initiator-address-space-column',
@@ -241,9 +241,9 @@ describe('The Network Tab', function() {
 
     await devToolsPage.click('.name-column', {clickOptions: {button: 'right'}});
 
-    await devToolsPage.click('aria/Remote Address Space, unchecked');
+    await devToolsPage.click('aria/Remote address space, unchecked');
 
-    const expectedValues = JSON.stringify(['Remote Address Space', 'Loopback', 'Loopback']);
+    const expectedValues = JSON.stringify(['Remote address space', 'Loopback', 'Loopback']);
     await devToolsPage.waitForFunction(async () => {
       const remoteAddressSpaceValues = await devToolsPage.page.$$eval(
           'pierce/.remote-address-space-column',

@@ -31,7 +31,7 @@ const configureAndCheckHeaderOverrides = async (devToolsPage: DevToolsPage, insp
     root: networkView,
   });
   await devToolsPage.waitFor('#tab-headers-component[role=tab][aria-selected=true]', networkView);
-  let responseHeaderSection = await devToolsPage.waitFor('[aria-label="Response Headers"]', networkView);
+  let responseHeaderSection = await devToolsPage.waitFor('[aria-label="Response headers"]', networkView);
 
   let row = await devToolsPage.waitFor('.row', responseHeaderSection);
   assert.deepEqual(await getTextFromHeadersRow(row, devToolsPage), [
@@ -62,7 +62,7 @@ const configureAndCheckHeaderOverrides = async (devToolsPage: DevToolsPage, insp
     root: networkView,
   });
 
-  responseHeaderSection = await devToolsPage.waitFor('[aria-label="Response Headers"]');
+  responseHeaderSection = await devToolsPage.waitFor('[aria-label="Response headers"]');
   row = await devToolsPage.waitFor('.row.header-overridden', responseHeaderSection);
   assert.deepEqual(await getTextFromHeadersRow(row, devToolsPage), ['cache-control', 'Foo']);
 };
@@ -368,7 +368,7 @@ describe('The Network Request view', () => {
         ],
       },
       {
-        aria: 'Response Headers',
+        aria: 'Response headers',
         rows: [
           'cache-control',
           'max-age=%',
@@ -479,7 +479,7 @@ describe('The Network Request view', () => {
       root: networkView,
     });
     await devToolsPage.waitFor('[aria-label=Headers][role=tab][aria-selected=true]', networkView);
-    const section = await devToolsPage.waitFor('[aria-label="Response Headers"]');
+    const section = await devToolsPage.waitFor('[aria-label="Response headers"]');
     await devToolsPage.click('input', {
       root: section,
     });

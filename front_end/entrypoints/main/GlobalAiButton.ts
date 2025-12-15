@@ -18,6 +18,10 @@ const UIStrings = {
    * @description Button's string in promotion state.
    */
   aiAssistance: 'AI assistance',
+  /**
+   * @description Button's tooltip text.
+   */
+  openAiAssistance: 'Open AI assistance panel',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('entrypoints/main/GlobalAiButton.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -55,7 +59,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: undefined, target: HTMLEl
   render(html`
     <style>${globalAiButtonStyles}</style>
     <div class="global-ai-button-container">
-      <button class=${classes} @click=${input.onClick} jslog=${VisualLogging.action().track({click: true}).context('global-ai-button')}>
+      <button class=${classes} @click=${input.onClick} title=${i18nString(UIStrings.openAiAssistance)} jslog=${VisualLogging.action().track({click: true}).context('global-ai-button')}>
         <devtools-icon name="smart-assistant"></devtools-icon>
         <span class="button-text">${` ${i18nString(UIStrings.aiAssistance)}`}</span>
       </button>

@@ -50,7 +50,7 @@ async function blockCss(devToolsPage: DevToolsPage) {
     const networkManager = SDKModule.NetworkManager.MultitargetNetworkManager.instance();
     networkManager.requestConditions.conditionsEnabled = true;
     networkManager.requestConditions.add(
-        SDKModule.NetworkManager.RequestCondition.createFromSetting({enabled: true, url: '*.css'}));
+        SDKModule.NetworkManager.RequestCondition.createFromSetting({enabled: true, url: '*://*:*/*.css'}));
   });
 }
 
@@ -59,8 +59,7 @@ describe('DevTools', function() {
   this.timeout(60_000);
 
   describe('request blocking', () => {
-    // https://crbug.com/466057104 the feature roll has make this test fail
-    it.skip('[crbug.com/466057104] is respected during a lighthouse run', async ({devToolsPage, inspectedPage}) => {
+    it('is respected during a lighthouse run', async ({devToolsPage, inspectedPage}) => {
       expectErrors();
       await blockCss(devToolsPage);
       await navigateToLighthouseTab('lighthouse/hello.html', devToolsPage, inspectedPage);

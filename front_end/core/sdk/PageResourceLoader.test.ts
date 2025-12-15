@@ -204,6 +204,20 @@ describe('PageResourceLoader', () => {
     assert.include(message, 'remote file');
   });
 
+  it('blocks UNC file paths with path traversal on Windows with the default setting', async () => {
+    if (!Host.Platform.isWin()) {
+      return;
+    }
+
+    const {loader} = setup({maxConcurrentLoads: 1});
+
+    const message =
+        await loader.loadResource(urlString`file:///abc\\..//smb-server/share/source-map.js.map'`, initiator)
+            .catch(e => e.message);
+
+    assert.include(message, 'remote file');
+  });
+
   it('allows remote file paths with the setting enabled', async () => {
     const {loader, settings} = setup({maxConcurrentLoads: 1});
     sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'loadNetworkResource')

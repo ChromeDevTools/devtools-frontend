@@ -206,7 +206,7 @@ async function fetchToString(url: string): Promise<string> {
 
 function canBeRemoteFilePath(url: string): boolean {
   try {
-    const urlObject = new URL(url);
+    const urlObject = new URL(new URL(url).toString());  // Normalize first.
     return urlObject.protocol === 'file:' && urlObject.host !== '';
   } catch {
     return false;

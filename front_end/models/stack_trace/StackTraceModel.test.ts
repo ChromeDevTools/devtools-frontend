@@ -448,8 +448,12 @@ describeWithMockConnection('StackTraceModel', () => {
       ]]));
 
       assert.strictEqual(stackTrace.syncFragment.frames[0].sdkFrame, details.callFrames[0]);
-      assert.strictEqual(stackTrace.syncFragment.frames[1].sdkFrame, details.callFrames[0]);
-      assert.strictEqual(stackTrace.syncFragment.frames[2].sdkFrame, details.callFrames[0]);
+
+      assert.strictEqual(stackTrace.syncFragment.frames[1].sdkFrame.inlineFrameIndex, 1);
+      assert.strictEqual(stackTrace.syncFragment.frames[1].sdkFrame.functionName, 'bar');
+
+      assert.strictEqual(stackTrace.syncFragment.frames[2].sdkFrame.inlineFrameIndex, 2);
+      assert.strictEqual(stackTrace.syncFragment.frames[2].sdkFrame.functionName, 'baz');
     });
   });
 });

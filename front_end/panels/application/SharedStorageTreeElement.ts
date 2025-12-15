@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import type * as Platform from '../../core/platform/platform.js';
+import {createIcon} from '../../ui/kit/kit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {ApplicationPanelTreeElement} from './ApplicationPanelTreeElement.js';
@@ -22,6 +23,8 @@ export class SharedStorageTreeElement extends ApplicationPanelTreeElement {
     const treeElement = new SharedStorageTreeElement(resourcesPanel, sharedStorage);
     treeElement.view = await SharedStorageItemsView.createView(sharedStorage);
     treeElement.view.element.setAttribute('jslog', `${VisualLogging.pane('shared-storage-data')}`);
+    const sharedStorageIcon = createIcon('database');
+    treeElement.setLeadingIcons([sharedStorageIcon]);
     return treeElement;
   }
 

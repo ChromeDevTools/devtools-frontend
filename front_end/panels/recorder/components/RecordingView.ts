@@ -1090,7 +1090,7 @@ export class RecordingView extends UI.Widget.Widget {
   }
 
   #onWrapperClick(): void {
-    if (this.#selectedStep) {
+    if (!this.#selectedStep) {
       return;
     }
     this.#selectedStep = null;

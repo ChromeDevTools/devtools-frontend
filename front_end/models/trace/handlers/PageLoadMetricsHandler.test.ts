@@ -241,12 +241,14 @@ describeWithEnvironment('PageLoadMetricsHandler', function() {
   describe('Marker events', () => {
     let mainFrameId: string;
     let allMarkerEvents: Trace.Types.Events.PageLoadEvent[];
+
     beforeEach(async function() {
       const {data} = await TraceLoader.traceEngine(this, 'multiple-navigations-with-iframes.json.gz');
       const {PageLoadMetrics, Meta} = data;
       mainFrameId = Meta.mainFrameId;
       allMarkerEvents = PageLoadMetrics.allMarkerEvents;
     });
+
     it('extracts all marker events from a trace correctly', () => {
       for (const metricName of Trace.Types.Events.MarkerName) {
         const markerEventsOfThisType = allMarkerEvents.filter(event => event.name === metricName);
@@ -256,6 +258,7 @@ describeWithEnvironment('PageLoadMetricsHandler', function() {
             marker => Trace.Handlers.ModelHandlers.PageLoadMetrics.getFrameIdForPageLoadEvent(marker) === mainFrameId));
       }
     });
+
     it('only marker events are exported in allMarkerEvents', () => {
       for (const marker of allMarkerEvents) {
         assert.isTrue(Trace.Types.Events.isMarkerEvent(marker));
@@ -269,6 +272,18 @@ describeWithEnvironment('PageLoadMetricsHandler', function() {
       const largestContentfulPaints = pageLoadMarkers.filter(Trace.Types.Events.isLargestContentfulPaintCandidate);
       assert.lengthOf(largestContentfulPaints, 1);
       assert.strictEqual(largestContentfulPaints[0].args.data?.candidateIndex, 2);
+    });
+  });
+
+  describe('soft navs', () => {
+    it('detects SoftNavigationStart', async function() {
+      const {data} = await TraceLoader.traceEngine(this, 'soft-navs.json.gz');
+      const {PageLoadMetrics} = data;
+      assert.deepEqual(PageLoadMetrics.allMarkerEvents.map(e => e.name), [
+        'SoftNavigationStart',
+        'SoftNavigationStart',
+        'SoftNavigationStart',
+      ]);
     });
   });
 });

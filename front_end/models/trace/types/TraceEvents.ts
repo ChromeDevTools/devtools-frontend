@@ -702,6 +702,29 @@ export interface NavigationStart extends Mark {
   };
 }
 
+export interface SoftNavigationStart extends Event {
+  name: Name.SOFT_NAVIGATION_START;
+  ph: Phase.ASYNC_NESTABLE_INSTANT;
+  args: Args&{
+    frame: string,
+    context: {
+      softNavContextId: number,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      URL: string,
+      timeOrigin: number,
+      domModifications: number,
+      firstContentfulPaint: number,
+      paintedArea: number,
+      performanceTimelineNavigationId: number,
+      repaintedArea: number,
+    },
+  };
+}
+
+export function isSoftNavigationStart(event: Event): event is SoftNavigationStart {
+  return event.name === Name.SOFT_NAVIGATION_START;
+}
+
 export interface FirstContentfulPaint extends Mark {
   name: Name.MARK_FCP;
   args: Args&{
@@ -723,7 +746,7 @@ export interface FirstPaint extends Mark {
 }
 
 export type PageLoadEvent = FirstContentfulPaint|MarkDOMContent|InteractiveTime|LargestContentfulPaintCandidate|
-    LayoutShift|FirstPaint|MarkLoad|NavigationStart;
+    LayoutShift|FirstPaint|MarkLoad|NavigationStart|SoftNavigationStart;
 
 const markerTypeGuards = [
   isMarkDOMContent,
@@ -732,6 +755,7 @@ const markerTypeGuards = [
   isFirstContentfulPaint,
   isLargestContentfulPaintCandidate,
   isNavigationStart,
+  isSoftNavigationStart,
 ];
 
 export const MarkerName =
@@ -742,7 +766,7 @@ export interface MarkerEvent extends Event {
 }
 
 export function isMarkerEvent(event: Event): event is MarkerEvent {
-  if (event.ph === Phase.INSTANT || event.ph === Phase.MARK) {
+  if (event.ph === Phase.INSTANT || Phase.ASYNC_NESTABLE_INSTANT || event.ph === Phase.MARK) {
     return markerTypeGuards.some(fn => fn(event));
   }
   return false;
@@ -754,7 +778,7 @@ const pageLoadEventTypeGuards = [
 ];
 
 export function eventIsPageLoadEvent(event: Event): event is PageLoadEvent {
-  if (event.ph === Phase.INSTANT || event.ph === Phase.MARK) {
+  if (event.ph === Phase.INSTANT || Phase.ASYNC_NESTABLE_INSTANT || event.ph === Phase.MARK) {
     return pageLoadEventTypeGuards.some(fn => fn(event));
   }
   return false;
@@ -2336,7 +2360,7 @@ export function isPrePaint(
 
 /** A VALID navigation start (as it has a populated documentLoaderURL) */
 export function isNavigationStart(event: Event): event is NavigationStart {
-  return event.name === 'navigationStart' && (event as NavigationStart).args?.data?.documentLoaderURL !== '';
+  return event.name === Name.NAVIGATION_START && (event as NavigationStart).args?.data?.documentLoaderURL !== '';
 }
 
 export interface DidCommitSameDocumentNavigation extends Complete {
@@ -3091,6 +3115,7 @@ export const enum Name {
   MARK_LCP_CANDIDATE = 'largestContentfulPaint::Candidate',
   MARK_LCP_INVALIDATE = 'largestContentfulPaint::Invalidate',
   NAVIGATION_START = 'navigationStart',
+  SOFT_NAVIGATION_START = 'SoftNavigationStart',
   CONSOLE_TIME = 'ConsoleTime',
   USER_TIMING = 'UserTiming',
   INTERACTIVE_TIME = 'InteractiveTime',

@@ -66,10 +66,11 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
  */
 export const SORT_ORDER_PAGE_LOAD_MARKERS: Readonly<Record<string, number>> = {
   [Trace.Types.Events.Name.NAVIGATION_START]: 0,
-  [Trace.Types.Events.Name.MARK_LOAD]: 1,
-  [Trace.Types.Events.Name.MARK_FCP]: 2,
-  [Trace.Types.Events.Name.MARK_DOM_CONTENT]: 3,
-  [Trace.Types.Events.Name.MARK_LCP_CANDIDATE]: 4,
+  [Trace.Types.Events.Name.SOFT_NAVIGATION_START]: 1,
+  [Trace.Types.Events.Name.MARK_LOAD]: 2,
+  [Trace.Types.Events.Name.MARK_FCP]: 3,
+  [Trace.Types.Events.Name.MARK_DOM_CONTENT]: 4,
+  [Trace.Types.Events.Name.MARK_LCP_CANDIDATE]: 5,
 };
 
 // Threshold to match up overlay markers that are off by a tiny amount so they aren't rendered
@@ -669,6 +670,7 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
     // Set markers for Navigations, LCP, FCP, DCL, L.
     const markers = markerEvents.filter(
         event => event.name === Trace.Types.Events.Name.NAVIGATION_START ||
+            event.name === Trace.Types.Events.Name.SOFT_NAVIGATION_START ||
             event.name === Trace.Types.Events.Name.MARK_LCP_CANDIDATE ||
             event.name === Trace.Types.Events.Name.MARK_FCP ||
             event.name === Trace.Types.Events.Name.MARK_DOM_CONTENT ||

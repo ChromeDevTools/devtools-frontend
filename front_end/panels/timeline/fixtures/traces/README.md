@@ -369,3 +369,7 @@ A trace of https://astro-news-1026410574114.us-central1.run.app/ used to test CL
 ### render-blocking-preload
 
 A trace of https://andydavies.github.io/agent-tests/render-blocking/css-preload.html that highlighted a bug where we do not update render blocking status based on PreloadRenderBlockingStatus events (crbug.com/457323832).
+
+### soft-navs
+
+A trace of https://developer.chrome.com/docs/web-platform/soft-navigations-experiment, navigating to many other pages on the same domain. All are soft navigations.

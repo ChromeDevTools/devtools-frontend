@@ -23,6 +23,7 @@ import type {HandlerName} from './types.js';
 // Small helpers to make the below type easier to read.
 type FrameId = string;
 type NavigationId = string;
+type AnyNavigationStart = Types.Events.NavigationStart|Types.Events.SoftNavigationStart;
 /**
  * This represents the metric scores for all navigations, for all frames in a trace.
  * Given a frame id, the map points to another map from navigation id to metric scores.
@@ -64,8 +65,10 @@ export function handleEvent(event: Types.Events.Event): void {
 }
 
 function storePageLoadMetricAgainstNavigationId(
-    navigation: Types.Events.NavigationStart, event: Types.Events.PageLoadEvent): void {
-  const navigationId = navigation.args.data?.navigationId;
+    navigation: AnyNavigationStart, event: Types.Events.PageLoadEvent): void {
+  const navigationId = Types.Events.isSoftNavigationStart(navigation) ?
+      `softnav-${navigation.args.context.performanceTimelineNavigationId}` :
+      navigation.args.data?.navigationId;
   if (!navigationId) {
     throw new Error('Navigation event unexpectedly had no navigation ID.');
   }
@@ -199,6 +202,9 @@ function storePageLoadMetricAgainstNavigationId(
   if (Types.Events.isLayoutShift(event)) {
     return;
   }
+  if (Types.Events.isSoftNavigationStart(event)) {
+    return;
+  }
   return Platform.assertNever(event, `Unexpected event type: ${event}`);
 }
 
@@ -215,7 +221,8 @@ function storeMetricScore(frameId: string, navigationId: string, metricScore: Me
 export function getFrameIdForPageLoadEvent(event: Types.Events.PageLoadEvent): string {
   if (Types.Events.isFirstContentfulPaint(event) || Types.Events.isInteractiveTime(event) ||
       Types.Events.isLargestContentfulPaintCandidate(event) || Types.Events.isNavigationStart(event) ||
-      Types.Events.isLayoutShift(event) || Types.Events.isFirstPaint(event)) {
+      Types.Events.isSoftNavigationStart(event) || Types.Events.isLayoutShift(event) ||
+      Types.Events.isFirstPaint(event)) {
     return event.args.frame;
   }
   if (Types.Events.isMarkDOMContent(event) || Types.Events.isMarkLoad(event)) {
@@ -228,7 +235,7 @@ export function getFrameIdForPageLoadEvent(event: Types.Events.PageLoadEvent): s
   Platform.assertNever(event, `Unexpected event type: ${event}`);
 }
 
-function getNavigationForPageLoadEvent(event: Types.Events.PageLoadEvent): Types.Events.NavigationStart|null {
+function getNavigationForPageLoadEvent(event: Types.Events.PageLoadEvent): AnyNavigationStart|null {
   if (Types.Events.isFirstContentfulPaint(event) || Types.Events.isLargestContentfulPaintCandidate(event) ||
       Types.Events.isFirstPaint(event)) {
     const navigationId = event.args.data?.navigationId;
@@ -243,6 +250,11 @@ function getNavigationForPageLoadEvent(event: Types.Events.PageLoadEvent): Types
       return null;
     }
     return navigation;
+  }
+
+  if (Types.Events.isSoftNavigationStart(event)) {
+    const {softNavigationsById} = metaHandlerData();
+    return softNavigationsById.get(event.args.context.performanceTimelineNavigationId) ?? null;
   }
 
   if (Types.Events.isMarkDOMContent(event) || Types.Events.isInteractiveTime(event) ||
@@ -437,6 +449,8 @@ export const enum MetricName {
   CLS = 'CLS',
   // Navigation
   NAV = 'Nav',
+  // Soft Navigation (just "Nav" b/c space is limited in flame chart)
+  SOFT_NAV = 'Nav',
   // Note: INP is handled in UserInteractionsHandler
 }
 
@@ -445,7 +459,7 @@ export interface MetricScore {
   classification: ScoreClassification;
   event?: Types.Events.PageLoadEvent;
   // The last navigation that occurred before this metric score.
-  navigation?: Types.Events.NavigationStart;
+  navigation?: AnyNavigationStart;
   estimated?: boolean;
   timing: Types.Timing.Micro;
 }

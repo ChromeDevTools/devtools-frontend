@@ -1126,6 +1126,10 @@ export function markerDetailsForEvent(event: Types.Events.Event): {
     color = 'var(--color-text-primary)';
     title = Handlers.ModelHandlers.PageLoadMetrics.MetricName.NAV;
   }
+  if (Types.Events.isSoftNavigationStart(event)) {
+    color = 'var(--sys-color-blue)';
+    title = Handlers.ModelHandlers.PageLoadMetrics.MetricName.SOFT_NAV;
+  }
   if (Types.Events.isMarkDOMContent(event)) {
     color = 'var(--color-text-disabled)';
     title = Handlers.ModelHandlers.PageLoadMetrics.MetricName.DCL;

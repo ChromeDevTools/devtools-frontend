@@ -59,6 +59,7 @@ let traceBounds: Types.Timing.TraceWindowMicro = makeNewTraceBounds();
  */
 let navigationsByFrameId = new Map<string, Types.Events.NavigationStart[]>();
 let navigationsByNavigationId = new Map<string, Types.Events.NavigationStart>();
+let softNavigationsById = new Map<number, Types.Events.SoftNavigationStart>();
 let finalDisplayUrlByNavigationId = new Map<string, string>();
 let mainFrameNavigations: Types.Events.NavigationStart[] = [];
 
@@ -92,6 +93,7 @@ const CHROME_WEB_TRACE_EVENTS = new Set([
 export function reset(): void {
   navigationsByFrameId = new Map();
   navigationsByNavigationId = new Map();
+  softNavigationsById = new Map();
   finalDisplayUrlByNavigationId = new Map();
   processNames = new Map();
   mainFrameNavigations = [];
@@ -324,6 +326,10 @@ export function handleEvent(event: Types.Events.Event): void {
     return;
   }
 
+  if (Types.Events.isSoftNavigationStart(event)) {
+    softNavigationsById.set(event.args.context.performanceTimelineNavigationId, event);
+  }
+
   // Update `finalDisplayUrlByNavigationId` to reflect the latest redirect for each navigation.
   if (Types.Events.isResourceSendRequest(event)) {
     if (event.args.data.resourceType !== 'Document') {
@@ -445,7 +451,14 @@ export interface MetaHandlerData {
   browserThreadId: Types.Events.ThreadID;
   gpuProcessId: Types.Events.ProcessID;
   navigationsByFrameId: Map<string, Types.Events.NavigationStart[]>;
+  /**
+   * This does not include soft navigations.
+   *
+   * TODO(crbug.com/414468047): include soft navs here, so that
+   * PageLoadMetricsHandler and insights can use this map for all navigation types.
+   */
   navigationsByNavigationId: Map<string, Types.Events.NavigationStart>;
+  softNavigationsById: Map<number, Types.Events.SoftNavigationStart>;
   /**
    * The user-visible URL displayed to users in the address bar.
    * This captures:
@@ -514,6 +527,7 @@ export function data(): MetaHandlerData {
     mainFrameURL,
     navigationsByFrameId,
     navigationsByNavigationId,
+    softNavigationsById,
     finalDisplayUrlByNavigationId,
     threadsInProcess,
     rendererProcessesByFrame: rendererProcessesByFrameId,

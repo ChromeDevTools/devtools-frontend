@@ -1616,6 +1616,10 @@ export class Overlays extends EventTarget {
   #mouseMoveOverlay(
       e: MouseEvent, event: Trace.Types.Events.PageLoadEvent, name: string, overlay: Trace.Types.Overlays.TimingsMarker,
       markers: HTMLElement, marker: HTMLElement): void {
+    if (Trace.Types.Events.isSoftNavigationStart(event)) {
+      name = 'Soft Nav';
+    }
+
     const fieldResult = overlay.entryToFieldResult.get(event);
     const popoverElement = this.#createOverlayPopover(overlay.adjustedTimestamp, name, fieldResult);
     this.#lastMouseOffsetX = e.offsetX + (markers.offsetLeft || 0) + (marker.offsetLeft || 0);

@@ -1001,6 +1001,20 @@ export class TimelineUIUtils {
       return contentHelper.fragment;
     }
 
+    if (Trace.Types.Events.isNavigationStart(event)) {
+      url = (event.args.data?.documentLoaderURL ?? event.args.data?.url) as Platform.DevToolsPath.UrlString;
+      if (url) {
+        contentHelper.appendElementRow(i18nString(UIStrings.url), LegacyComponents.Linkifier.Linkifier.linkifyURL(url));
+      }
+    }
+
+    if (Trace.Types.Events.isSoftNavigationStart(event)) {
+      url = event.args.context.URL as Platform.DevToolsPath.UrlString;
+      if (url) {
+        contentHelper.appendElementRow(i18nString(UIStrings.url), LegacyComponents.Linkifier.Linkifier.linkifyURL(url));
+      }
+    }
+
     if (Trace.Types.Events.isV8Compile(event)) {
       url = event.args.data?.url as Platform.DevToolsPath.UrlString;
       if (url) {
@@ -2244,6 +2258,10 @@ export class TimelineUIUtils {
         color = 'var(--color-text-primary)';
         tall = true;
         break;
+      case Trace.Types.Events.Name.SOFT_NAVIGATION_START:
+        color = 'var(--sys-color-blue)';
+        tall = true;
+        break;
       case Trace.Types.Events.Name.FRAME_STARTED_LOADING:
         color = 'green';
         tall = true;
@@ -2523,7 +2541,8 @@ export function timeStampForEventAdjustedForClosestNavigationIfPossible(
 export function isMarkerEvent(parsedTrace: Trace.TraceModel.ParsedTrace, event: Trace.Types.Events.Event): boolean {
   const {Name} = Trace.Types.Events;
 
-  if (event.name === Name.TIME_STAMP || event.name === Name.NAVIGATION_START) {
+  if (event.name === Name.TIME_STAMP || event.name === Name.NAVIGATION_START ||
+      event.name === Name.SOFT_NAVIGATION_START) {
     return true;
   }
 

@@ -534,7 +534,7 @@ Metrics (lab / observed):
     - Load delay: 90 ms, bounds: {min: 157423704371, max: 157423794709}
     - Load duration: 64 ms, bounds: {min: 157423794709, max: 157423858674}
     - Render delay: 94 ms, bounds: {min: 157423858674, max: 157423953162}
-  - CLS: 0.04, event: (eventKey: s--1, ts: 157425604232)
+  - CLS: 0.04, event: (eventKey: s-166266, ts: 157425604232)
 Metrics (field / real users): n/a – no data for this page in CrUX
 Available insights:
   - insight name: LCPBreakdown
@@ -665,7 +665,7 @@ Metrics (lab / observed):
     - Load delay: 46 ms, bounds: {min: 59728656735, max: 59728702313}
     - Load duration: 506 ms, bounds: {min: 59728702313, max: 59729208600}
     - Render delay: 104 ms, bounds: {min: 59729208600, max: 59729312744}
-  - CLS: 0.31, event: (eventKey: s--1, ts: 59729100192)
+  - CLS: 0.31, event: (eventKey: s-14787, ts: 59729100192)
 Metrics (field / real users): n/a – no data for this page in CrUX
 Available insights:
   - insight name: Cache
@@ -738,7 +738,7 @@ Metrics (lab / observed):
     - Load delay: 46 ms, bounds: {min: 59728656735, max: 59728702313}
     - Load duration: 506 ms, bounds: {min: 59728702313, max: 59729208600}
     - Render delay: 104 ms, bounds: {min: 59729208600, max: 59729312744}
-  - CLS: 0.31, event: (eventKey: s--1, ts: 59729100192)
+  - CLS: 0.31, event: (eventKey: s-14787, ts: 59729100192)
 Metrics (field / real users):
   - LCP: 1740 ms (scope: url)
   - INP: 185 ms (scope: url)

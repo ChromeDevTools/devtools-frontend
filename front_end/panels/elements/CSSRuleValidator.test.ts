@@ -465,6 +465,30 @@ describeWithEnvironment('CSSRuleValidator', () => {
       validator: () => new Elements.CSSRuleValidator.FontVariationSettingsValidator(),
       hintExpected: false,
     },
+    {
+      description: 'Does not report a hint for valid anchor positioning',
+      computedStyles: new Map<string, string>([['position', 'fixed']]),
+      validator: () => new Elements.CSSRuleValidator.PositionAnchorValidator(),
+      hintExpected: false,
+    },
+    {
+      description: 'Does not report a hint for valid anchor positioning',
+      computedStyles: new Map<string, string>([['position', 'absolute']]),
+      validator: () => new Elements.CSSRuleValidator.PositionAnchorValidator(),
+      hintExpected: false,
+    },
+    {
+      description: 'Reports a hint for invalid anchor positioning',
+      computedStyles: new Map<string, string>([['position', 'static']]),
+      validator: () => new Elements.CSSRuleValidator.PositionAnchorValidator(),
+      hintExpected: true,
+    },
+    {
+      description: 'Reports a hint for invalid anchor positioning',
+      computedStyles: new Map<string, string>([['display', 'none']]),
+      validator: () => new Elements.CSSRuleValidator.PositionAnchorValidator(),
+      hintExpected: true,
+    }
   ];
 
   for (const test of tests) {

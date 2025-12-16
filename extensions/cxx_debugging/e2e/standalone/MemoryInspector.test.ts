@@ -15,8 +15,7 @@ import {
 } from '../cxx-debugging-extension-helpers.js';
 
 describe('LinearMemoryInspector', () => {
-  // Started failing 2025.12.09, probably related to crrev.com/c/7241006
-  it.skip('[crbug.com/407941051] can show variables', async () => {
+  it('can show variables', async () => {
     const {inspectedPage, devToolsPage} = getBrowserAndPagesWrappers();
     const test =
         'extensions/cxx_debugging/e2e/resources/scope-view-primitives__Scope_view_formats_primitive_types_correctly_0.html';
@@ -43,8 +42,14 @@ describe('LinearMemoryInspector', () => {
       root: localVariable,
     });
 
-    const byteHighlights = await devToolsPage.waitForMany('.byte-cell.highlight-area', 8);
-    const byteHighlightText = await Promise.all(byteHighlights.map(cell => cell.evaluate(cell => cell.textContent)));
+    const byteHighlightText = await devToolsPage.waitForFunction(async () => {
+      const byteHighlights = await devToolsPage.waitForMany('.byte-cell.highlight-area', 8);
+      const byteHighlightText = await Promise.all(byteHighlights.map(cell => cell.evaluate(cell => cell.textContent)));
+      if (byteHighlightText[0] === '33' && byteHighlightText[7] === '3F') {
+        return byteHighlightText;
+      }
+      return false;
+    });
     assert.deepEqual(byteHighlightText, ['33', '33', '33', '33', '33', '33', 'F3', '3F']);
 
     const valueHighlights = await devToolsPage.waitForMany('.text-cell.highlight-area', 8);

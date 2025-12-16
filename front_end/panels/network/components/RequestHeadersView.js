@@ -79,11 +79,11 @@ const UIStrings = {
     /**
      * @description A context menu item in the Network Log View Columns of the Network panel
      */
-    responseHeaders: 'Response Headers',
+    responseHeaders: 'Response headers',
     /**
      * @description A context menu item in the Network Log View Columns of the Network panel
      */
-    earlyHintsHeaders: 'Early Hints Headers',
+    earlyHintsHeaders: 'Early hints headers',
     /**
      * @description Title text for a link to the Sources panel to the file containing the header override definitions
      */

@@ -1409,6 +1409,12 @@ export class Renderer {
         if (options?.expand) {
             section.firstChild()?.expand();
         }
+        const dispatchDimensionChange = () => {
+            section.element.dispatchEvent(new CustomEvent('dimensionschanged'));
+        };
+        section.addEventListener(UI.TreeOutline.Events.ElementAttached, dispatchDimensionChange);
+        section.addEventListener(UI.TreeOutline.Events.ElementExpanded, dispatchDimensionChange);
+        section.addEventListener(UI.TreeOutline.Events.ElementCollapsed, dispatchDimensionChange);
         return {
             element: section.element,
             forceSelect: section.forceSelect.bind(section),

@@ -82,9 +82,11 @@ export class DebuggableFragmentImpl {
         const frames = [];
         let index = 0;
         for (const node of this.fragment.node.getCallStack()) {
-            for (const frame of node.frames) {
-                // Each inlined frame gets the same DebugerModel.CallFrame for debugging.
-                frames.push(new DebuggableFrameImpl(frame, this.callFrames[index]));
+            for (const [inlineIdx, frame] of node.frames.entries()) {
+                // Create virtual frames for inlined frames.
+                const sdkFrame = inlineIdx === 0 ? this.callFrames[index] :
+                    this.callFrames[index].createVirtualCallFrame(inlineIdx, frame.name ?? '');
+                frames.push(new DebuggableFrameImpl(frame, sdkFrame));
             }
             index++;
         }

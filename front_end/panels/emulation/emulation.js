@@ -344,7 +344,9 @@ var DeviceModeToolbar = class {
     this.throttlingConditionsItem = MobileThrottling.ThrottlingManager.throttlingManager().createMobileThrottlingButton();
     this.throttlingConditionsItem.turnShrinkable();
     toolbar2.appendToolbarItem(this.throttlingConditionsItem);
-    toolbar2.appendToolbarItem(MobileThrottling.ThrottlingManager.throttlingManager().createSaveDataOverrideSelector());
+    const saveDataItem = MobileThrottling.ThrottlingManager.throttlingManager().createSaveDataOverrideSelector();
+    saveDataItem.turnShrinkable();
+    toolbar2.appendToolbarItem(saveDataItem);
   }
   appendDevicePositionItems(toolbar2) {
     toolbar2.appendToolbarItem(new UI.Toolbar.ToolbarItem(this.createEmptyToolbarElement()));

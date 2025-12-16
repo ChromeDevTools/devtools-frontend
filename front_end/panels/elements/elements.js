@@ -19553,6 +19553,7 @@ __export(ElementsTreeOutlineRenderer_exports, {
   Renderer: () => Renderer2
 });
 import * as SDK26 from "./../../core/sdk/sdk.js";
+import * as UI29 from "./../../ui/legacy/legacy.js";
 var rendererInstance;
 var Renderer2 = class _Renderer {
   static instance(opts = { forceNew: null }) {
@@ -19593,6 +19594,12 @@ var Renderer2 = class _Renderer {
     if (options?.expand) {
       treeOutline.firstChild()?.expand();
     }
+    const dispatchDimensionChange = () => {
+      treeOutline.element.dispatchEvent(new CustomEvent("dimensionschanged"));
+    };
+    treeOutline.addEventListener(UI29.TreeOutline.Events.ElementAttached, dispatchDimensionChange);
+    treeOutline.addEventListener(UI29.TreeOutline.Events.ElementExpanded, dispatchDimensionChange);
+    treeOutline.addEventListener(UI29.TreeOutline.Events.ElementCollapsed, dispatchDimensionChange);
     return {
       element: treeOutline.element,
       forceSelect: treeOutline.forceSelect.bind(treeOutline)

@@ -2055,7 +2055,9 @@ export declare namespace Browser {
         IdleDetection = "idleDetection",
         KeyboardLock = "keyboardLock",
         LocalFonts = "localFonts",
+        LocalNetwork = "localNetwork",
         LocalNetworkAccess = "localNetworkAccess",
+        LoopbackNetwork = "loopbackNetwork",
         Midi = "midi",
         MidiSysex = "midiSysex",
         Nfc = "nfc",
@@ -17027,6 +17029,10 @@ export declare namespace Target {
          * An array of browser context ids.
          */
         browserContextIds: Browser.BrowserContextID[];
+        /**
+         * The id of the default browser context if available.
+         */
+        defaultBrowserContextId?: Browser.BrowserContextID;
     }
     interface CreateTargetRequest {
         /**

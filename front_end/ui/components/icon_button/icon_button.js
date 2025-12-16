@@ -129,6 +129,8 @@ var iconButton_css_default = `/*
 :host {
   white-space: normal;
   display: inline-block;
+  margin-right: var(--sys-size-1);
+  margin-left: var(--sys-size-1);
 }
 
 .icon-button {
@@ -155,7 +157,7 @@ var iconButton_css_default = `/*
 }
 
 .icon-button:focus-visible {
-  background-color: var(--sys-color-state-hover-on-subtle);
+  outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
 }
 
 .compact .icon-button-title {

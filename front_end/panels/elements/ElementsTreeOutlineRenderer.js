@@ -31,6 +31,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 import * as SDK from '../../core/sdk/sdk.js';
+import * as UI from '../../ui/legacy/legacy.js';
 import { ElementsTreeOutline } from './ElementsTreeOutline.js';
 let rendererInstance;
 export class Renderer {
@@ -64,6 +65,12 @@ export class Renderer {
         if (options?.expand) {
             treeOutline.firstChild()?.expand();
         }
+        const dispatchDimensionChange = () => {
+            treeOutline.element.dispatchEvent(new CustomEvent('dimensionschanged'));
+        };
+        treeOutline.addEventListener(UI.TreeOutline.Events.ElementAttached, dispatchDimensionChange);
+        treeOutline.addEventListener(UI.TreeOutline.Events.ElementExpanded, dispatchDimensionChange);
+        treeOutline.addEventListener(UI.TreeOutline.Events.ElementCollapsed, dispatchDimensionChange);
         return {
             element: treeOutline.element,
             forceSelect: treeOutline.forceSelect.bind(treeOutline),

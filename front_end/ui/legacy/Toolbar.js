@@ -963,6 +963,9 @@ export class ToolbarComboBox extends ToolbarItem {
             this.element.setAttribute('jslog', `${VisualLogging.dropDown().track({ change: true }).context(jslogContext)}`);
         }
     }
+    turnShrinkable() {
+        this.element.classList.add('toolbar-has-dropdown-shrinkable');
+    }
     size() {
         return this.element.childElementCount;
     }

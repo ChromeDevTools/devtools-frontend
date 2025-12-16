@@ -9390,7 +9390,11 @@ var ContextMenu = class _ContextMenu extends SubMenu {
     }
     const menuObject = this.buildMenuDescriptors();
     const ownerDocument = this.eventTarget.ownerDocument;
-    if (this.useSoftMenu || _ContextMenu.useSoftMenu || Host6.InspectorFrontendHost.InspectorFrontendHostInstance.isHostedMode()) {
+    let useSoftMenu = this.useSoftMenu || _ContextMenu.useSoftMenu || Host6.InspectorFrontendHost.InspectorFrontendHostInstance.isHostedMode();
+    if (!this.useSoftMenu && _ContextMenu.useSoftMenu && this.event.altKey) {
+      useSoftMenu = false;
+    }
+    if (useSoftMenu) {
       this.softMenu = new SoftContextMenu(menuObject, this.itemSelected.bind(this), this.keepOpen, void 0, this.onSoftMenuClosed, this.loggableParent);
       const isMouseEvent = this.event.pointerType === "mouse" && this.event.button >= 0;
       this.softMenu.setFocusOnTheFirstItem(!isMouseEvent);
@@ -12553,6 +12557,9 @@ var ToolbarComboBox = class extends ToolbarItem {
     if (jslogContext) {
       this.element.setAttribute("jslog", `${VisualLogging13.dropDown().track({ change: true }).context(jslogContext)}`);
     }
+  }
+  turnShrinkable() {
+    this.element.classList.add("toolbar-has-dropdown-shrinkable");
   }
   size() {
     return this.element.childElementCount;

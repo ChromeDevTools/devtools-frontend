@@ -859,10 +859,11 @@ export class ConsoleViewMessage {
             const renderResult = await UI.UIUtils.Renderer.render(node);
             if (renderResult) {
                 this.selectableChildren.push(renderResult);
-                const resizeObserver = new ResizeObserver(() => {
+                // FIXME: this should not be needed once ConsoleViewMessage is rendering
+                // declaratively and the tree outline auto-resizes itself.
+                renderResult.element.addEventListener('dimensionschanged', () => {
                     this.messageResized({ data: renderResult.element });
                 });
-                resizeObserver.observe(renderResult.element);
                 result.appendChild(renderResult.element);
             }
             else {
@@ -1039,7 +1040,7 @@ export class ConsoleViewMessage {
             regexObject.test(contentElement.deepTextContent().slice(anchorText.length));
     }
     matchesFilterText(filter) {
-        const text = this.contentElement().deepTextContent();
+        const text = this.contentElement().deepTextContent() + this.message.messageText;
         return text.toLowerCase().includes(filter.toLowerCase());
     }
     updateTimestamp() {

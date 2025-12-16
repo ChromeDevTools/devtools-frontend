@@ -221,6 +221,7 @@ export interface ItemsProvider {
 }
 export declare class ToolbarComboBox extends ToolbarItem<void, HTMLSelectElement> {
     constructor(changeHandler: ((arg0: Event) => void) | null, title: string, className?: string, jslogContext?: string, element?: HTMLSelectElement);
+    turnShrinkable(): void;
     size(): number;
     options(): HTMLOptionElement[];
     addOption(option: Element): void;

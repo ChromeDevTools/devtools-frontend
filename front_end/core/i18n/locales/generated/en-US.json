@@ -1031,6 +1031,9 @@
   "entrypoints/main/GlobalAiButton.ts | aiAssistance": {
     "message": "AI assistance"
   },
+  "entrypoints/main/GlobalAiButton.ts | openAiAssistance": {
+    "message": "Open AI assistance panel"
+  },
   "entrypoints/main/main-meta.ts | auto": {
     "message": "auto"
   },
@@ -9450,7 +9453,7 @@
     "message": "Provisional headers are shown. Disable cache to see full headers."
   },
   "panels/network/components/RequestHeadersView.ts | earlyHintsHeaders": {
-    "message": "Early Hints Headers"
+    "message": "Early hints headers"
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(from disk cache)"
@@ -9492,7 +9495,7 @@
     "message": "Request URL"
   },
   "panels/network/components/RequestHeadersView.ts | responseHeaders": {
-    "message": "Response Headers"
+    "message": "Response headers"
   },
   "panels/network/components/RequestHeadersView.ts | revealHeaderOverrides": {
     "message": "Reveal header override definitions"
@@ -10254,7 +10257,7 @@
     "message": "Domain"
   },
   "panels/network/NetworkLogViewColumns.ts | endTime": {
-    "message": "End Time"
+    "message": "End time"
   },
   "panels/network/NetworkLogViewColumns.ts | hasOverrides": {
     "message": "Has overrides"
@@ -10263,7 +10266,7 @@
     "message": "Initiator"
   },
   "panels/network/NetworkLogViewColumns.ts | initiatorAddressSpace": {
-    "message": "Initiator Address Space"
+    "message": "Initiator address space"
   },
   "panels/network/NetworkLogViewColumns.ts | isAdRelated": {
     "message": "Is Ad-Related"
@@ -10293,19 +10296,19 @@
     "message": "Protocol"
   },
   "panels/network/NetworkLogViewColumns.ts | remoteAddress": {
-    "message": "Remote Address"
+    "message": "Remote address"
   },
   "panels/network/NetworkLogViewColumns.ts | remoteAddressSpace": {
-    "message": "Remote Address Space"
+    "message": "Remote address space"
   },
   "panels/network/NetworkLogViewColumns.ts | requestHeaders": {
-    "message": "Request Headers"
+    "message": "Request headers"
   },
   "panels/network/NetworkLogViewColumns.ts | responseHeaders": {
-    "message": "Response Headers"
+    "message": "Response headers"
   },
   "panels/network/NetworkLogViewColumns.ts | responseTime": {
-    "message": "Response Time"
+    "message": "Response time"
   },
   "panels/network/NetworkLogViewColumns.ts | scheme": {
     "message": "Scheme"
@@ -10317,7 +10320,7 @@
     "message": "Size"
   },
   "panels/network/NetworkLogViewColumns.ts | startTime": {
-    "message": "Start Time"
+    "message": "Start time"
   },
   "panels/network/NetworkLogViewColumns.ts | status": {
     "message": "Status"
@@ -10329,7 +10332,7 @@
     "message": "Time"
   },
   "panels/network/NetworkLogViewColumns.ts | totalDuration": {
-    "message": "Total Duration"
+    "message": "Total duration"
   },
   "panels/network/NetworkLogViewColumns.ts | type": {
     "message": "Type"
@@ -16884,7 +16887,7 @@
     "message": "expanded"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | headerOptions": {
-    "message": "Header Options"
+    "message": "Header options"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | levelS": {
     "message": "level {PH1}"
@@ -16893,7 +16896,7 @@
     "message": "Refresh"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | resetColumns": {
-    "message": "Reset Columns"
+    "message": "Reset columns"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | rowsS": {
     "message": "Rows: {PH1}"
@@ -16902,7 +16905,7 @@
     "message": "Sortable column. Press enter to apply sorting filter"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | sortByString": {
-    "message": "Sort By"
+    "message": "Sort by"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | sRowS": {
     "message": "{PH1} Row {PH2}"

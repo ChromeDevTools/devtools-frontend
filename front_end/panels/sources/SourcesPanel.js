@@ -608,6 +608,10 @@ export class SourcesPanel extends UI.Panel.Panel {
     async updateDebuggerButtonsAndStatus() {
         const currentTarget = UI.Context.Context.instance().flavor(SDK.Target.Target);
         const currentDebuggerModel = currentTarget ? currentTarget.model(SDK.DebuggerModel.DebuggerModel) : null;
+        const paused = this.#paused;
+        const details = currentDebuggerModel ? currentDebuggerModel.debuggerPausedDetails() : null;
+        await this.debuggerPausedMessage.render(details, Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance(), Breakpoints.BreakpointManager.BreakpointManager.instance());
+        await this.debuggerPausedMessage.updateComplete;
         if (!currentDebuggerModel) {
             this.togglePauseAction.setEnabled(false);
             this.stepOverAction.setEnabled(false);
@@ -615,7 +619,7 @@ export class SourcesPanel extends UI.Panel.Panel {
             this.stepOutAction.setEnabled(false);
             this.stepAction.setEnabled(false);
         }
-        else if (this.#paused) {
+        else if (paused) {
             this.togglePauseAction.setToggled(true);
             this.togglePauseAction.setEnabled(true);
             this.stepOverAction.setEnabled(true);
@@ -631,10 +635,7 @@ export class SourcesPanel extends UI.Panel.Panel {
             this.stepOutAction.setEnabled(false);
             this.stepAction.setEnabled(false);
         }
-        const details = currentDebuggerModel ? currentDebuggerModel.debuggerPausedDetails() : null;
-        await this.debuggerPausedMessage.render(details, Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance(), Breakpoints.BreakpointManager.BreakpointManager.instance());
         if (details) {
-            await this.debuggerPausedMessage.updateComplete;
             this.updateDebuggerButtonsAndStatusForTest();
         }
     }

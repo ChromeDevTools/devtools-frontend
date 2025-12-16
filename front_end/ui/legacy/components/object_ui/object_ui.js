@@ -1923,6 +1923,12 @@ var Renderer = class _Renderer {
     if (options?.expand) {
       section.firstChild()?.expand();
     }
+    const dispatchDimensionChange = () => {
+      section.element.dispatchEvent(new CustomEvent("dimensionschanged"));
+    };
+    section.addEventListener(UI2.TreeOutline.Events.ElementAttached, dispatchDimensionChange);
+    section.addEventListener(UI2.TreeOutline.Events.ElementExpanded, dispatchDimensionChange);
+    section.addEventListener(UI2.TreeOutline.Events.ElementCollapsed, dispatchDimensionChange);
     return {
       element: section.element,
       forceSelect: section.forceSelect.bind(section)

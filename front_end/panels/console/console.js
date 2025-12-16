@@ -2558,10 +2558,9 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
       const renderResult2 = await UI2.UIUtils.Renderer.render(node);
       if (renderResult2) {
         this.selectableChildren.push(renderResult2);
-        const resizeObserver = new ResizeObserver(() => {
+        renderResult2.element.addEventListener("dimensionschanged", () => {
           this.messageResized({ data: renderResult2.element });
         });
-        resizeObserver.observe(renderResult2.element);
         result.appendChild(renderResult2.element);
       } else {
         result.appendChild(this.formatParameterAsObject(remoteObject, false));
@@ -2741,7 +2740,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
     return Boolean(anchorText) && regexObject.test(anchorText.trim()) || regexObject.test(contentElement.deepTextContent().slice(anchorText.length));
   }
   matchesFilterText(filter) {
-    const text = this.contentElement().deepTextContent();
+    const text = this.contentElement().deepTextContent() + this.message.messageText;
     return text.toLowerCase().includes(filter.toLowerCase());
   }
   updateTimestamp() {

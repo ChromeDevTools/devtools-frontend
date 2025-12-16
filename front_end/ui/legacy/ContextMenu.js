@@ -664,8 +664,14 @@ export class ContextMenu extends SubMenu {
         }
         const menuObject = this.buildMenuDescriptors();
         const ownerDocument = this.eventTarget.ownerDocument;
-        if (this.useSoftMenu || ContextMenu.useSoftMenu ||
-            Host.InspectorFrontendHost.InspectorFrontendHostInstance.isHostedMode()) {
+        let useSoftMenu = this.useSoftMenu || ContextMenu.useSoftMenu ||
+            Host.InspectorFrontendHost.InspectorFrontendHostInstance.isHostedMode();
+        // Allow force opening a Native menu when DevTools is under test.
+        // This allows opening DevTools on DevTools
+        if (!this.useSoftMenu && ContextMenu.useSoftMenu && this.event.altKey) {
+            useSoftMenu = false;
+        }
+        if (useSoftMenu) {
             this.softMenu = new SoftContextMenu(menuObject, this.itemSelected.bind(this), this.keepOpen, undefined, this.onSoftMenuClosed, this.loggableParent);
             // let soft context menu focus on the first item when the event is triggered by a non-mouse event
             // add another check of button value to differentiate mouse event with 'shift + f10' keyboard event

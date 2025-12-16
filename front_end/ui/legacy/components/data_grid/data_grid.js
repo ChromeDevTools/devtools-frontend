@@ -458,15 +458,15 @@ var UIStrings = {
   /**
    * @description A context menu item in the Data Grid of a data grid
    */
-  sortByString: "Sort By",
+  sortByString: "Sort by",
   /**
    * @description A context menu item in data grids to reset the columns to their default weight
    */
-  resetColumns: "Reset Columns",
+  resetColumns: "Reset columns",
   /**
    * @description A context menu item in data grids to list header options.
    */
-  headerOptions: "Header Options",
+  headerOptions: "Header options",
   /**
    * @description Text to refresh the page
    */

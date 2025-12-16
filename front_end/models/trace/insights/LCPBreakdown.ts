@@ -95,7 +95,7 @@ export function isLCPBreakdownInsight(model: InsightModel): model is LCPBreakdow
 export type LCPBreakdownInsightModel = InsightModel<typeof UIStrings, {
   lcpMs?: Types.Timing.Milli,
   lcpTs?: Types.Timing.Milli,
-  lcpEvent?: Types.Events.LargestContentfulPaintCandidate,
+  lcpEvent?: Types.Events.AnyLargestContentfulPaintCandidate,
   /** The network request for the LCP image, if there was one. */
   lcpRequest?: Types.Events.SyntheticNetworkRequest,
   subparts?: LCPSubparts,
@@ -112,7 +112,7 @@ function anyValuesNaN(...values: number[]): boolean {
  */
 function determineSubparts(
     nav: Types.Events.NavigationStart, docRequest: Types.Events.SyntheticNetworkRequest,
-    lcpEvent: Types.Events.LargestContentfulPaintCandidate,
+    lcpEvent: Types.Events.AnyLargestContentfulPaintCandidate,
     lcpRequest: Types.Events.SyntheticNetworkRequest|undefined): LCPSubparts|null {
   const firstDocByteTs = calculateDocFirstByteTs(docRequest);
   if (firstDocByteTs === null) {
@@ -224,7 +224,7 @@ export function generateInsight(
   }
   const metricScore = navMetrics.get(Handlers.ModelHandlers.PageLoadMetrics.MetricName.LCP);
   const lcpEvent = metricScore?.event;
-  if (!lcpEvent || !Types.Events.isLargestContentfulPaintCandidate(lcpEvent)) {
+  if (!lcpEvent || !Types.Events.isAnyLargestContentfulPaintCandidate(lcpEvent)) {
     return finalize({warnings: [InsightWarning.NO_LCP]});
   }
 

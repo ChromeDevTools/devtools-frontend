@@ -879,6 +879,11 @@ export function maybeInitSylesMap(): EventStylesMap {
         defaultCategoryStyles.rendering,
         true,
         ),
+    [Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION]: new TimelineRecordStyle(
+        i18nString(UIStrings.largestContentfulPaint),
+        defaultCategoryStyles.rendering,
+        true,
+        ),
 
     [Types.Events.Name.TIME_STAMP]:
         new TimelineRecordStyle(i18nString(UIStrings.timestamp), defaultCategoryStyles.scripting),
@@ -1118,7 +1123,7 @@ export function markerDetailsForEvent(event: Types.Events.Event): {
     color = 'var(--sys-color-green-bright)';
     title = Handlers.ModelHandlers.PageLoadMetrics.MetricName.FCP;
   }
-  if (Types.Events.isLargestContentfulPaintCandidate(event)) {
+  if (Types.Events.isAnyLargestContentfulPaintCandidate(event)) {
     color = 'var(--sys-color-green)';
     title = Handlers.ModelHandlers.PageLoadMetrics.MetricName.LCP;
   }

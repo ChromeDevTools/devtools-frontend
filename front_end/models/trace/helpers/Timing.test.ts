@@ -80,6 +80,7 @@ describeWithEnvironment('Timing helpers', () => {
           lcpEvent,
           data.Meta.traceBounds,
           data.Meta.navigationsByNavigationId,
+          data.Meta.softNavigationsById,
           data.Meta.navigationsByFrameId,
       );
 
@@ -112,6 +113,7 @@ describeWithEnvironment('Timing helpers', () => {
           dclEvent,
           data.Meta.traceBounds,
           data.Meta.navigationsByNavigationId,
+          data.Meta.softNavigationsById,
           data.Meta.navigationsByFrameId,
       );
 

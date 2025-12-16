@@ -42,6 +42,7 @@ export const SORT_ORDER_PAGE_LOAD_MARKERS: Readonly<Record<string, number>> = {
   [Trace.Types.Events.Name.MARK_FIRST_PAINT]: 2,
   [Trace.Types.Events.Name.MARK_DOM_CONTENT]: 3,
   [Trace.Types.Events.Name.MARK_LCP_CANDIDATE]: 4,
+  [Trace.Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION]: 5,
 };
 
 export class TimingsTrackAppender implements TrackAppender {
@@ -182,7 +183,7 @@ export class TimingsTrackAppender implements TrackAppender {
       color = '#1A6937';
       title = Trace.Handlers.ModelHandlers.PageLoadMetrics.MetricName.FCP;
     }
-    if (Trace.Types.Events.isLargestContentfulPaintCandidate(markerEvent)) {
+    if (Trace.Types.Events.isAnyLargestContentfulPaintCandidate(markerEvent)) {
       color = '#1A3422';
       title = Trace.Handlers.ModelHandlers.PageLoadMetrics.MetricName.LCP;
     }
@@ -282,6 +283,7 @@ export class TimingsTrackAppender implements TrackAppender {
           event,
           this.#parsedTrace.data.Meta.traceBounds,
           this.#parsedTrace.data.Meta.navigationsByNavigationId,
+          this.#parsedTrace.data.Meta.softNavigationsById,
           this.#parsedTrace.data.Meta.navigationsByFrameId,
       );
       info.formattedTime = getDurationString(timeOfEvent);

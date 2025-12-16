@@ -28,7 +28,7 @@ function getLCPData(parsedTrace: Trace.TraceModel.ParsedTrace, frameId: string, 
     return null;
   }
   const lcpEvent = metric?.event;
-  if (!lcpEvent || !Trace.Types.Events.isLargestContentfulPaintCandidate(lcpEvent)) {
+  if (!lcpEvent || !Trace.Types.Events.isAnyLargestContentfulPaintCandidate(lcpEvent)) {
     return null;
   }
 

@@ -22,10 +22,17 @@ export function timeStampForEventAdjustedByClosestNavigation(
     event: Types.Events.Event,
     traceBounds: Types.Timing.TraceWindowMicro,
     navigationsByNavigationId: Map<string, Types.Events.NavigationStart>,
+    softNavigationsById: Map<number, Types.Events.SoftNavigationStart>,
     navigationsByFrameId: Map<string, Types.Events.NavigationStart[]>,
     ): Types.Timing.Micro {
   let eventTimeStamp = event.ts - traceBounds.min;
-  if (event.args?.data?.navigationId) {
+  if (event.name === Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION &&
+      event.args?.data?.performanceTimelineNavigationId) {
+    const navigationForEvent = softNavigationsById.get(event.args.data.performanceTimelineNavigationId);
+    if (navigationForEvent) {
+      eventTimeStamp = event.ts - navigationForEvent.ts;
+    }
+  } else if (event.args?.data?.navigationId) {
     const navigationForEvent = navigationsByNavigationId.get(event.args.data.navigationId);
     if (navigationForEvent) {
       eventTimeStamp = event.ts - navigationForEvent.ts;

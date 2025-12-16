@@ -824,6 +824,10 @@ export class TimelineUIUtils {
         link = 'https://web.dev/lcp/';
         name = 'largest contentful paint';
         break;
+      case Trace.Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION:
+        link = 'https://developer.chrome.com/docs/web-platform/soft-navigations-experiment';
+        name = 'largest contentful paint (soft navigation)';
+        break;
       case Trace.Types.Events.Name.MARK_FCP:
         link = 'https://web.dev/first-contentful-paint/';
         name = 'first contentful paint';
@@ -1442,6 +1446,7 @@ export class TimelineUIUtils {
         break;
       }
 
+      case Trace.Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION:
       // @ts-expect-error Fall-through intended.
       case Trace.Types.Events.Name.MARK_LCP_CANDIDATE: {
         contentHelper.appendTextRow(i18nString(UIStrings.type), String(unsafeEventData['type']));
@@ -2282,6 +2287,7 @@ export class TimelineUIUtils {
         color = 'var(--sys-color-green-bright)';
         tall = true;
         break;
+      case Trace.Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION:
       case Trace.Types.Events.Name.MARK_LCP_CANDIDATE:
         color = 'var(--sys-color-green)';
         tall = true;
@@ -2527,6 +2533,7 @@ export function timeStampForEventAdjustedForClosestNavigationIfPossible(
       event,
       parsedTrace.data.Meta.traceBounds,
       parsedTrace.data.Meta.navigationsByNavigationId,
+      parsedTrace.data.Meta.softNavigationsById,
       parsedTrace.data.Meta.navigationsByFrameId,
   );
   return Trace.Helpers.Timing.microToMilli(time);
@@ -2551,7 +2558,7 @@ export function isMarkerEvent(parsedTrace: Trace.TraceModel.ParsedTrace, event: 
   }
 
   if (Trace.Types.Events.isMarkDOMContent(event) || Trace.Types.Events.isMarkLoad(event) ||
-      Trace.Types.Events.isLargestContentfulPaintCandidate(event)) {
+      Trace.Types.Events.isAnyLargestContentfulPaintCandidate(event)) {
     // isOutermostMainFrame was added in 2022, so we fallback to isMainFrame
     // for older traces.
     if (!event.args.data) {

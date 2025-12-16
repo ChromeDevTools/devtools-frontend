@@ -100,6 +100,8 @@ export interface ArgsData {
   sampleTraceId?: number;
   url?: string;
   navigationId?: string;
+  /** For soft navs. */
+  performanceTimelineNavigationId?: number;
   frame?: string;
 }
 
@@ -745,7 +747,7 @@ export interface FirstPaint extends Mark {
   };
 }
 
-export type PageLoadEvent = FirstContentfulPaint|MarkDOMContent|InteractiveTime|LargestContentfulPaintCandidate|
+export type PageLoadEvent = FirstContentfulPaint|MarkDOMContent|InteractiveTime|AnyLargestContentfulPaintCandidate|
     LayoutShift|FirstPaint|MarkLoad|NavigationStart|SoftNavigationStart;
 
 const markerTypeGuards = [
@@ -753,13 +755,15 @@ const markerTypeGuards = [
   isMarkLoad,
   isFirstPaint,
   isFirstContentfulPaint,
-  isLargestContentfulPaintCandidate,
+  isAnyLargestContentfulPaintCandidate,
   isNavigationStart,
   isSoftNavigationStart,
 ];
 
-export const MarkerName =
-    ['MarkDOMContent', 'MarkLoad', 'firstPaint', 'firstContentfulPaint', 'largestContentfulPaint::Candidate'] as const;
+export const MarkerName = [
+  'MarkDOMContent', 'MarkLoad', 'firstPaint', 'firstContentfulPaint', 'largestContentfulPaint::Candidate',
+  'largestContentfulPaint::CandidateForSoftNavigation'
+] as const;
 
 export interface MarkerEvent extends Event {
   name: typeof MarkerName[number];
@@ -801,6 +805,28 @@ export interface LargestContentfulPaintCandidate extends Mark {
     },
   };
 }
+
+export interface LargestContentfulPaintCandidateForSoftNavigation extends Mark {
+  name: Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION;
+  args: Args&{
+    frame: string,
+    data?: ArgsData&{
+      candidateIndex: number,
+      isOutermostMainFrame: boolean,
+      isMainFrame: boolean,
+      nodeId: Protocol.DOM.BackendNodeId,
+      loadingAttr: string,
+      performanceTimelineNavigationId: number,
+      type?: string,
+      // Landed in Chrome M140: crrev.com/c/6702010
+      nodeName?: string,
+    },
+  };
+}
+
+export type AnyLargestContentfulPaintCandidate =
+    LargestContentfulPaintCandidate|LargestContentfulPaintCandidateForSoftNavigation;
+
 export interface LargestImagePaintCandidate extends Mark {
   name: 'LargestImagePaint::Candidate';
   args: Args&{
@@ -2233,8 +2259,8 @@ export function isFirstContentfulPaint(event: Event): event is FirstContentfulPa
   return event.name === 'firstContentfulPaint';
 }
 
-export function isLargestContentfulPaintCandidate(event: Event): event is LargestContentfulPaintCandidate {
-  return event.name === Name.MARK_LCP_CANDIDATE;
+export function isAnyLargestContentfulPaintCandidate(event: Event): event is AnyLargestContentfulPaintCandidate {
+  return event.name === Name.MARK_LCP_CANDIDATE || event.name === Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION;
 }
 export function isLargestImagePaintCandidate(event: Event): event is LargestImagePaintCandidate {
   return event.name === 'LargestImagePaint::Candidate';
@@ -3113,6 +3139,7 @@ export const enum Name {
   MARK_FIRST_PAINT = 'firstPaint',
   MARK_FCP = 'firstContentfulPaint',
   MARK_LCP_CANDIDATE = 'largestContentfulPaint::Candidate',
+  MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION = 'largestContentfulPaint::CandidateForSoftNavigation',
   MARK_LCP_INVALIDATE = 'largestContentfulPaint::Invalidate',
   NAVIGATION_START = 'navigationStart',
   SOFT_NAVIGATION_START = 'SoftNavigationStart',

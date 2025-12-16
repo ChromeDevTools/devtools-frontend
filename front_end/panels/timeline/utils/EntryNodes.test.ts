@@ -88,8 +88,8 @@ describeWithMockConnection('EntryNodes', function() {
 
     it('identifies node ids for a MarkLCP event', async function() {
       const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
-      const lcpCandidateEvent =
-          parsedTrace.data.PageLoadMetrics.allMarkerEvents.find(Trace.Types.Events.isLargestContentfulPaintCandidate);
+      const lcpCandidateEvent = parsedTrace.data.PageLoadMetrics.allMarkerEvents.find(
+          Trace.Types.Events.isAnyLargestContentfulPaintCandidate);
       assert.isOk(lcpCandidateEvent);
       const nodeIds = Utils.EntryNodes.nodeIdsForEvent(parsedTrace, lcpCandidateEvent);
       assert.deepEqual(Array.from(nodeIds), [209]);

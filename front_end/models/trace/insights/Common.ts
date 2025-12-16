@@ -27,7 +27,7 @@ export function getInsight<InsightName extends keyof InsightModels>(
 }
 
 export function getLCP(insightSet: InsightSet):
-    {value: Types.Timing.Micro, event: Types.Events.LargestContentfulPaintCandidate}|null {
+    {value: Types.Timing.Micro, event: Types.Events.AnyLargestContentfulPaintCandidate}|null {
   const insight = getInsight(InsightKeys.LCP_BREAKDOWN, insightSet);
   if (!insight || !insight.lcpMs || !insight.lcpEvent) {
     return null;

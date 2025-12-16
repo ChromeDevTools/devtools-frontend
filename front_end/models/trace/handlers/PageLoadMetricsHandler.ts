@@ -7,6 +7,9 @@
  * and exports them in the shape of a map with the following shape:
  * Map(FrameId -> Map(navigationID -> metrics) )
  *
+ * It also includes soft navigations as separate "navigations", though since soft
+ * navs use different events, the "navigationID" for them is created in this handler.
+ *
  * It also exports all markers in a trace in an array.
  *
  * Some metrics are taken directly from a page load events (AKA markers) like DCL.
@@ -22,8 +25,9 @@ import type {HandlerName} from './types.js';
 
 // Small helpers to make the below type easier to read.
 type FrameId = string;
-type NavigationId = string;
+type NavigationId = string|`softnav-${string}`;
 type AnyNavigationStart = Types.Events.NavigationStart|Types.Events.SoftNavigationStart;
+
 /**
  * This represents the metric scores for all navigations, for all frames in a trace.
  * Given a frame id, the map points to another map from navigation id to metric scores.
@@ -55,7 +59,7 @@ let pageLoadEventsArray: Types.Events.PageLoadEvent[] = [];
 // trace, we store that and delete the prior event. When we've parsed the
 // entire trace this set will contain all the LCP events that were used - e.g.
 // the candidates that were the actual LCP events.
-let selectedLCPCandidateEvents = new Set<Types.Events.LargestContentfulPaintCandidate>();
+let selectedLCPCandidateEvents = new Set<Types.Events.AnyLargestContentfulPaintCandidate>();
 
 export function handleEvent(event: Types.Events.Event): void {
   if (!Types.Events.eventIsPageLoadEvent(event)) {
@@ -159,7 +163,7 @@ function storePageLoadMetricAgainstNavigationId(
     return;
   }
 
-  if (Types.Events.isLargestContentfulPaintCandidate(event)) {
+  if (Types.Events.isAnyLargestContentfulPaintCandidate(event)) {
     const candidateIndex = event.args.data?.candidateIndex;
     if (!candidateIndex) {
       throw new Error('Largest Contentful Paint unexpectedly had no candidateIndex.');
@@ -182,7 +186,7 @@ function storePageLoadMetricAgainstNavigationId(
     }
     const lastLCPCandidateEvent = lastLCPCandidate.event;
 
-    if (!Types.Events.isLargestContentfulPaintCandidate(lastLCPCandidateEvent)) {
+    if (!Types.Events.isAnyLargestContentfulPaintCandidate(lastLCPCandidateEvent)) {
       return;
     }
     const lastCandidateIndex = lastLCPCandidateEvent.args.data?.candidateIndex;
@@ -220,7 +224,7 @@ function storeMetricScore(frameId: string, navigationId: string, metricScore: Me
 
 export function getFrameIdForPageLoadEvent(event: Types.Events.PageLoadEvent): string {
   if (Types.Events.isFirstContentfulPaint(event) || Types.Events.isInteractiveTime(event) ||
-      Types.Events.isLargestContentfulPaintCandidate(event) || Types.Events.isNavigationStart(event) ||
+      Types.Events.isAnyLargestContentfulPaintCandidate(event) || Types.Events.isNavigationStart(event) ||
       Types.Events.isSoftNavigationStart(event) || Types.Events.isLayoutShift(event) ||
       Types.Events.isFirstPaint(event)) {
     return event.args.frame;
@@ -236,15 +240,22 @@ export function getFrameIdForPageLoadEvent(event: Types.Events.PageLoadEvent): s
 }
 
 function getNavigationForPageLoadEvent(event: Types.Events.PageLoadEvent): AnyNavigationStart|null {
-  if (Types.Events.isFirstContentfulPaint(event) || Types.Events.isLargestContentfulPaintCandidate(event) ||
+  if (Types.Events.isFirstContentfulPaint(event) || Types.Events.isAnyLargestContentfulPaintCandidate(event) ||
       Types.Events.isFirstPaint(event)) {
-    const navigationId = event.args.data?.navigationId;
-    if (!navigationId) {
-      throw new Error('Trace event unexpectedly had no navigation ID.');
+    const {navigationsByNavigationId, softNavigationsById} = metaHandlerData();
+    let navigation;
+    if (event.name === Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION &&
+        event.args.data?.performanceTimelineNavigationId) {
+      navigation = softNavigationsById.get(event.args.data.performanceTimelineNavigationId);
     }
-    const {navigationsByNavigationId} = metaHandlerData();
-    const navigation = navigationsByNavigationId.get(navigationId);
+    if (!navigation) {
+      const navigationId = event.args.data?.navigationId;
+      if (!navigationId) {
+        throw new Error('Trace event unexpectedly had no navigation ID.');
+      }
 
+      navigation = navigationsByNavigationId.get(navigationId);
+    }
     if (!navigation) {
       // This event's navigation has been filtered out by the meta handler as a noise event.
       return null;
@@ -390,7 +401,8 @@ export async function finalize(): Promise<void> {
   const allFinalLCPEvents = gatherFinalLCPEvents();
   const mainFrame = metaHandlerData().mainFrameId;
   // Filter out LCP candidates to use only definitive LCP values
-  const allEventsButLCP = pageLoadEventsArray.filter(event => !Types.Events.isLargestContentfulPaintCandidate(event));
+  const allEventsButLCP =
+      pageLoadEventsArray.filter(event => !Types.Events.isAnyLargestContentfulPaintCandidate(event));
   const markerEvents = [...allFinalLCPEvents, ...allEventsButLCP].filter(Types.Events.isMarkerEvent);
   // Filter by main frame and sort.
   allMarkerEvents =
@@ -403,8 +415,10 @@ export interface PageLoadMetricsData {
    * Given a frame id, the map points to another map from navigation id to metric scores.
    * The metric scores include the event related to the metric as well as the data regarding
    * the score itself.
+   *
+   * Soft navigations have a faked NavigationId that starts with `softnav-`.
    */
-  metricScoresByFrameId: Map<string, Map<string, Map<MetricName, MetricScore>>>;
+  metricScoresByFrameId: Map<string, Map<NavigationId, Map<MetricName, MetricScore>>>;
   /**
    * Page load events with no associated duration that happened in the
    * main frame.

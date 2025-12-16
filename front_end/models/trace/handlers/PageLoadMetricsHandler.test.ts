@@ -251,11 +251,18 @@ describeWithEnvironment('PageLoadMetricsHandler', function() {
 
     it('extracts all marker events from a trace correctly', () => {
       for (const metricName of Trace.Types.Events.MarkerName) {
+        if (metricName === 'largestContentfulPaint::CandidateForSoftNavigation') {
+          continue;
+        }
+
         const markerEventsOfThisType = allMarkerEvents.filter(event => event.name === metricName);
         // There should be 2 events for each marker and all of them should correspond to the main frame
-        assert.lengthOf(markerEventsOfThisType, 2);
-        assert.isTrue(markerEventsOfThisType.every(
-            marker => Trace.Handlers.ModelHandlers.PageLoadMetrics.getFrameIdForPageLoadEvent(marker) === mainFrameId));
+        assert.lengthOf(markerEventsOfThisType, 2, `failed for ${metricName}`);
+        assert.isTrue(
+            markerEventsOfThisType.every(
+                marker =>
+                    Trace.Handlers.ModelHandlers.PageLoadMetrics.getFrameIdForPageLoadEvent(marker) === mainFrameId),
+            `failed for ${metricName}`);
       }
     });
 
@@ -269,20 +276,20 @@ describeWithEnvironment('PageLoadMetricsHandler', function() {
       const {data} = await TraceLoader.traceEngine(this, 'multiple-lcp-main-frame.json.gz');
       const {PageLoadMetrics} = data;
       const pageLoadMarkers = PageLoadMetrics.allMarkerEvents;
-      const largestContentfulPaints = pageLoadMarkers.filter(Trace.Types.Events.isLargestContentfulPaintCandidate);
+      const largestContentfulPaints = pageLoadMarkers.filter(Trace.Types.Events.isAnyLargestContentfulPaintCandidate);
       assert.lengthOf(largestContentfulPaints, 1);
       assert.strictEqual(largestContentfulPaints[0].args.data?.candidateIndex, 2);
     });
   });
 
   describe('soft navs', () => {
-    it('detects SoftNavigationStart', async function() {
+    it('detects SoftNavigationStart and LCP for soft-nav', async function() {
       const {data} = await TraceLoader.traceEngine(this, 'soft-navs.json.gz');
       const {PageLoadMetrics} = data;
       assert.deepEqual(PageLoadMetrics.allMarkerEvents.map(e => e.name), [
-        'SoftNavigationStart',
-        'SoftNavigationStart',
-        'SoftNavigationStart',
+        'SoftNavigationStart', 'largestContentfulPaint::CandidateForSoftNavigation', 'SoftNavigationStart',
+        'largestContentfulPaint::CandidateForSoftNavigation', 'SoftNavigationStart',
+        'largestContentfulPaint::CandidateForSoftNavigation'
       ]);
     });
   });

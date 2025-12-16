@@ -71,6 +71,7 @@ export const SORT_ORDER_PAGE_LOAD_MARKERS: Readonly<Record<string, number>> = {
   [Trace.Types.Events.Name.MARK_FCP]: 3,
   [Trace.Types.Events.Name.MARK_DOM_CONTENT]: 4,
   [Trace.Types.Events.Name.MARK_LCP_CANDIDATE]: 5,
+  [Trace.Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION]: 6,
 };
 
 // Threshold to match up overlay markers that are off by a tiny amount so they aren't rendered
@@ -649,6 +650,7 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
           fieldMetricResult = fieldMetricResults.fcp;
         } else if (event.name === Trace.Types.Events.Name.MARK_LCP_CANDIDATE) {
           fieldMetricResult = fieldMetricResults.lcp;
+          // Ignoring soft-nav LCP on purpose.
         }
 
         if (!fieldMetricResult) {
@@ -672,6 +674,7 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
         event => event.name === Trace.Types.Events.Name.NAVIGATION_START ||
             event.name === Trace.Types.Events.Name.SOFT_NAVIGATION_START ||
             event.name === Trace.Types.Events.Name.MARK_LCP_CANDIDATE ||
+            event.name === Trace.Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION ||
             event.name === Trace.Types.Events.Name.MARK_FCP ||
             event.name === Trace.Types.Events.Name.MARK_DOM_CONTENT ||
             event.name === Trace.Types.Events.Name.MARK_LOAD);
@@ -683,6 +686,7 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
           marker,
           parsedTrace.data.Meta.traceBounds,
           parsedTrace.data.Meta.navigationsByNavigationId,
+          parsedTrace.data.Meta.softNavigationsById,
           parsedTrace.data.Meta.navigationsByFrameId,
       );
       // If any of the markers overlap in timing, lets put them on the same marker.

@@ -124,15 +124,15 @@ describeWithEnvironment('Trace helpers', function() {
     it('returns the correct navigation for a page load event', async function() {
       const parsedTrace = await TraceLoader.traceEngine(this, 'multiple-navigations.json.gz');
       const {Meta, PageLoadMetrics} = parsedTrace.data;
-      const firstNavigationId = Meta.navigationsByNavigationId.keys().next().value!;
+      const firstNavigation = Meta.navigationsByNavigationId.values().next().value!;
 
       const fcp = PageLoadMetrics.metricScoresByFrameId.get(Meta.mainFrameId)
-                      ?.get(firstNavigationId)
+                      ?.get(firstNavigation)
                       ?.get(Trace.Handlers.ModelHandlers.PageLoadMetrics.MetricName.FCP);
       assert.isOk(fcp?.event, 'FCP not found');
       const navigationForFirstRequest =
           Trace.Helpers.Trace.getNavigationForTraceEvent(fcp.event, Meta.mainFrameId, Meta.navigationsByFrameId);
-      assert.strictEqual(navigationForFirstRequest?.args.data?.navigationId, firstNavigationId);
+      assert.strictEqual(navigationForFirstRequest, firstNavigation);
     });
   });
 

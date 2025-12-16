@@ -43,15 +43,15 @@ async function getComputationDataFromFixture(context: Mocha.Suite|Mocha.Context,
   }
 
   const frameId = data.Meta.mainFrameId;
-  const navigationId = data.Meta.mainFrameNavigations[0].args.data?.navigationId;
-  if (!navigationId) {
-    throw new Error('no navigation id found');
+  const navigation = data.Meta.mainFrameNavigations[0];
+  if (!navigation) {
+    throw new Error('no navigation found');
   }
 
   return {
     simulator: Lantern.Simulation.Simulator.createSimulator({...settings, networkAnalysis}),
     graph: Trace.LanternComputationData.createGraph(requests, trace, data, url),
-    processedNavigation: Trace.LanternComputationData.createProcessedNavigation(data, frameId, navigationId),
+    processedNavigation: Trace.LanternComputationData.createProcessedNavigation(data, frameId, navigation),
   };
 }
 

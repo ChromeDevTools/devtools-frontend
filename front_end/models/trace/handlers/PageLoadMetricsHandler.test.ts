@@ -72,9 +72,8 @@ describeWithEnvironment('PageLoadMetricsHandler', function() {
       const {Meta, PageLoadMetrics} = data;
       const {mainFrameId, navigationsByFrameId} = Meta;
       const navigationBeforeMetrics = navigationsByFrameId.get(mainFrameId)?.[0];
-      const navigationId = navigationBeforeMetrics?.args.data?.navigationId;
-      if (!navigationBeforeMetrics || !navigationId) {
-        assert.fail('Could not find expected navigation event or its navigation ID');
+      if (!navigationBeforeMetrics) {
+        assert.fail('Could not find expected navigation event');
       }
       const pageLoadMetricsData = PageLoadMetrics.metricScoresByFrameId;
       // Only one frame to deal with
@@ -84,7 +83,7 @@ describeWithEnvironment('PageLoadMetricsHandler', function() {
       assert.isOk(pageLoadEventsForMainFrame, 'Page load events for main frame were unexpectedly null.');
       // Single FCP event that occurred after the refresh.
       assert.strictEqual(pageLoadEventsForMainFrame.size, 1);
-      const events = pageLoadEventsForMainFrame.get(navigationId);
+      const events = pageLoadEventsForMainFrame.get(navigationBeforeMetrics);
       const allFoundMetricScoresForMainFrame = events ? Array.from(events.values()) : [];
       for (const score of allFoundMetricScoresForMainFrame) {
         assert.strictEqual(score.navigation, navigationBeforeMetrics);

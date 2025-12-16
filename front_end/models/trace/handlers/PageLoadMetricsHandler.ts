@@ -5,10 +5,9 @@
 /**
  * This handler stores page load metrics, including web vitals,
  * and exports them in the shape of a map with the following shape:
- * Map(FrameId -> Map(navigationID -> metrics) )
+ * Map(FrameId -> Map(navigation -> metrics) )
  *
- * It also includes soft navigations as separate "navigations", though since soft
- * navs use different events, the "navigationID" for them is created in this handler.
+ * Includes soft navigations.
  *
  * It also exports all markers in a trace in an array.
  *
@@ -25,7 +24,6 @@ import type {HandlerName} from './types.js';
 
 // Small helpers to make the below type easier to read.
 type FrameId = string;
-type NavigationId = string|`softnav-${string}`;
 type AnyNavigationStart = Types.Events.NavigationStart|Types.Events.SoftNavigationStart;
 
 /**
@@ -34,7 +32,7 @@ type AnyNavigationStart = Types.Events.NavigationStart|Types.Events.SoftNavigati
  * The metric scores include the event related to the metric as well as the data regarding
  * the score itself.
  */
-let metricScoresByFrameId = new Map<FrameId, Map<NavigationId, Map<MetricName, MetricScore>>>();
+let metricScoresByFrameId = new Map<FrameId, Map<AnyNavigationStart, Map<MetricName, MetricScore>>>();
 
 /**
  * Page load events with no associated duration that happened in the
@@ -70,12 +68,6 @@ export function handleEvent(event: Types.Events.Event): void {
 
 function storePageLoadMetricAgainstNavigationId(
     navigation: AnyNavigationStart, event: Types.Events.PageLoadEvent): void {
-  const navigationId = Types.Events.isSoftNavigationStart(navigation) ?
-      `softnav-${navigation.args.context.performanceTimelineNavigationId}` :
-      navigation.args.data?.navigationId;
-  if (!navigationId) {
-    throw new Error('Navigation event unexpectedly had no navigation ID.');
-  }
   const frameId = getFrameIdForPageLoadEvent(event);
   const {rendererProcessesByFrame} = metaHandlerData();
 
@@ -102,7 +94,7 @@ function storePageLoadMetricAgainstNavigationId(
     const fcpTime = Types.Timing.Micro(event.ts - navigation.ts);
     const classification = scoreClassificationForFirstContentfulPaint(fcpTime);
     const metricScore = {event, metricName: MetricName.FCP, classification, navigation, timing: fcpTime};
-    storeMetricScore(frameId, navigationId, metricScore);
+    storeMetricScore(frameId, navigation, metricScore);
     return;
   }
 
@@ -110,7 +102,7 @@ function storePageLoadMetricAgainstNavigationId(
     const paintTime = Types.Timing.Micro(event.ts - navigation.ts);
     const classification = ScoreClassification.UNCLASSIFIED;
     const metricScore = {event, metricName: MetricName.FP, classification, navigation, timing: paintTime};
-    storeMetricScore(frameId, navigationId, metricScore);
+    storeMetricScore(frameId, navigation, metricScore);
     return;
   }
 
@@ -123,7 +115,7 @@ function storePageLoadMetricAgainstNavigationId(
       navigation,
       timing: dclTime,
     };
-    storeMetricScore(frameId, navigationId, metricScore);
+    storeMetricScore(frameId, navigation, metricScore);
     return;
   }
 
@@ -136,7 +128,7 @@ function storePageLoadMetricAgainstNavigationId(
       navigation,
       timing: ttiValue,
     };
-    storeMetricScore(frameId, navigationId, tti);
+    storeMetricScore(frameId, navigation, tti);
 
     const tbtValue = Helpers.Timing.milliToMicro(Types.Timing.Milli(event.args.args.total_blocking_time_ms));
     const tbt = {
@@ -146,7 +138,7 @@ function storePageLoadMetricAgainstNavigationId(
       navigation,
       timing: tbtValue,
     };
-    storeMetricScore(frameId, navigationId, tbt);
+    storeMetricScore(frameId, navigation, tbt);
     return;
   }
 
@@ -159,7 +151,7 @@ function storePageLoadMetricAgainstNavigationId(
       navigation,
       timing: loadTime,
     };
-    storeMetricScore(frameId, navigationId, metricScore);
+    storeMetricScore(frameId, navigation, metricScore);
     return;
   }
 
@@ -177,11 +169,11 @@ function storePageLoadMetricAgainstNavigationId(
       timing: lcpTime,
     };
     const metricsByNavigation = Platform.MapUtilities.getWithDefault(metricScoresByFrameId, frameId, () => new Map());
-    const metrics = Platform.MapUtilities.getWithDefault(metricsByNavigation, navigationId, () => new Map());
+    const metrics = Platform.MapUtilities.getWithDefault(metricsByNavigation, navigation, () => new Map());
     const lastLCPCandidate = metrics.get(MetricName.LCP);
     if (lastLCPCandidate === undefined) {
       selectedLCPCandidateEvents.add(lcp.event);
-      storeMetricScore(frameId, navigationId, lcp);
+      storeMetricScore(frameId, navigation, lcp);
       return;
     }
     const lastLCPCandidateEvent = lastLCPCandidate.event;
@@ -199,7 +191,7 @@ function storePageLoadMetricAgainstNavigationId(
     if (lastCandidateIndex < candidateIndex) {
       selectedLCPCandidateEvents.delete(lastLCPCandidateEvent);
       selectedLCPCandidateEvents.add(lcp.event);
-      storeMetricScore(frameId, navigationId, lcp);
+      storeMetricScore(frameId, navigation, lcp);
     }
     return;
   }
@@ -212,9 +204,9 @@ function storePageLoadMetricAgainstNavigationId(
   return Platform.assertNever(event, `Unexpected event type: ${event}`);
 }
 
-function storeMetricScore(frameId: string, navigationId: string, metricScore: MetricScore): void {
+function storeMetricScore(frameId: string, navigation: AnyNavigationStart, metricScore: MetricScore): void {
   const metricsByNavigation = Platform.MapUtilities.getWithDefault(metricScoresByFrameId, frameId, () => new Map());
-  const metrics = Platform.MapUtilities.getWithDefault(metricsByNavigation, navigationId, () => new Map());
+  const metrics = Platform.MapUtilities.getWithDefault(metricsByNavigation, navigation, () => new Map());
   // If an entry with that metric name is present, delete it so that the new entry that
   // will replace it is added at the end of the map. This way we guarantee the map entries
   // are ordered in ASC manner by timestamp.
@@ -416,9 +408,9 @@ export interface PageLoadMetricsData {
    * The metric scores include the event related to the metric as well as the data regarding
    * the score itself.
    *
-   * Soft navigations have a faked NavigationId that starts with `softnav-`.
+   * Includes soft navigations.
    */
-  metricScoresByFrameId: Map<string, Map<NavigationId, Map<MetricName, MetricScore>>>;
+  metricScoresByFrameId: Map<string, Map<AnyNavigationStart, Map<MetricName, MetricScore>>>;
   /**
    * Page load events with no associated duration that happened in the
    * main frame.

@@ -55,7 +55,7 @@ export async function finalize(): Promise<void> {
   const metricScoresByFrameId = pageLoadMetricsData().metricScoresByFrameId;
 
   for (const [navigationId, navigation] of navigationsByNavigationId) {
-    const lcpMetric = metricScoresByFrameId.get(navigation.args.frame)?.get(navigationId)?.get(MetricName.LCP);
+    const lcpMetric = metricScoresByFrameId.get(navigation.args.frame)?.get(navigation)?.get(MetricName.LCP);
     const lcpEvent = lcpMetric?.event;
     if (!lcpEvent || !Types.Events.isAnyLargestContentfulPaintCandidate(lcpEvent)) {
       continue;

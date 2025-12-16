@@ -268,7 +268,8 @@ export class TraceProcessor extends EventTarget {
 
   #createLanternContext(
       data: Handlers.Types.HandlerData, traceEvents: readonly Types.Events.Event[], frameId: string,
-      navigationId: string, options: Types.Configuration.ParseOptions): Insights.Types.LanternContext|undefined {
+      navigation: Types.Events.NavigationStart,
+      options: Types.Configuration.ParseOptions): Insights.Types.LanternContext|undefined {
     // Check for required handlers.
     if (!data.NetworkRequests || !data.Workers || !data.PageLoadMetrics) {
       return;
@@ -278,7 +279,7 @@ export class TraceProcessor extends EventTarget {
     }
 
     const navStarts = data.Meta.navigationsByFrameId.get(frameId);
-    const navStartIndex = navStarts?.findIndex(n => n.args.data?.navigationId === navigationId);
+    const navStartIndex = navStarts?.findIndex(n => n === navigation);
     if (!navStarts || navStartIndex === undefined || navStartIndex === -1) {
       throw new Lantern.Core.LanternError('Could not find navigation start');
     }
@@ -295,7 +296,7 @@ export class TraceProcessor extends EventTarget {
 
     const requests = LanternComputationData.createNetworkRequests(trace, data, startTime, endTime);
     const graph = LanternComputationData.createGraph(requests, trace, data);
-    const processedNavigation = LanternComputationData.createProcessedNavigation(data, frameId, navigationId);
+    const processedNavigation = LanternComputationData.createProcessedNavigation(data, frameId, navigation);
 
     const networkAnalysis = Lantern.Core.NetworkAnalyzer.analyze(requests);
     if (!networkAnalysis) {
@@ -455,7 +456,7 @@ export class TraceProcessor extends EventTarget {
         model.frameId = context.frameId;
         const navId = context.navigation?.args.data?.navigationId;
         if (navId) {
-          model.navigationId = navId;
+          model.navigation = context.navigation;
         }
         model.createOverlays = () => {
           // @ts-expect-error: model is a union of all possible insight model types.
@@ -571,7 +572,7 @@ export class TraceProcessor extends EventTarget {
     let lantern: Insights.Types.LanternContext|undefined;
     try {
       options.logger?.start('insights:createLanternContext');
-      lantern = this.#createLanternContext(data, traceEvents, frameId, navigationId, options);
+      lantern = this.#createLanternContext(data, traceEvents, frameId, navigation, options);
     } catch (e) {
       // Handle Lantern errors gracefully
       // Don't allow an error in constructing the Lantern graphs to break the rest of the trace processor.

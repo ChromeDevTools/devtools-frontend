@@ -10,14 +10,15 @@ import type * as Types from './types/types.js';
 
 type NetworkRequest = Lantern.Types.NetworkRequest<Types.Events.SyntheticNetworkRequest>;
 
-function createProcessedNavigation(data: Handlers.Types.HandlerData, frameId: string, navigationId: string):
-    Lantern.Types.Simulation.ProcessedNavigation {
+function createProcessedNavigation(
+    data: Handlers.Types.HandlerData, frameId: string,
+    navigation: Types.Events.NavigationStart): Lantern.Types.Simulation.ProcessedNavigation {
   const scoresByNav = data.PageLoadMetrics.metricScoresByFrameId.get(frameId);
   if (!scoresByNav) {
     throw new Lantern.Core.LanternError('missing metric scores for frame');
   }
 
-  const scores = scoresByNav.get(navigationId);
+  const scores = scoresByNav.get(navigation);
   if (!scores) {
     throw new Lantern.Core.LanternError('missing metric scores for specified navigation');
   }

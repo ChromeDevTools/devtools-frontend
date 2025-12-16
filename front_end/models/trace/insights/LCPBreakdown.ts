@@ -218,7 +218,7 @@ export function generateInsight(
     throw new Error('no frame metrics');
   }
 
-  const navMetrics = frameMetrics.get(context.navigationId);
+  const navMetrics = frameMetrics.get(context.navigation);
   if (!navMetrics) {
     throw new Error('no navigation metrics');
   }

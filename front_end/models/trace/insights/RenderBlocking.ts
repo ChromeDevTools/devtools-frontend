@@ -185,7 +185,7 @@ export function generateInsight(
   }
 
   const firstPaintTs = data.PageLoadMetrics.metricScoresByFrameId.get(context.frameId)
-                           ?.get(context.navigationId)
+                           ?.get(context.navigation)
                            ?.get(Handlers.ModelHandlers.PageLoadMetrics.MetricName.FP)
                            ?.event?.ts;
   if (!firstPaintTs) {

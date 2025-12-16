@@ -910,7 +910,7 @@ export class RecordingView extends UI.Widget.Widget {
   }
 
   #isTitleInvalid = false;
-  #selectedStep?: Models.Schema.Step|null;
+  #selectedStep: Models.Schema.Step|null = null;
   #replaySettingsExpanded = false;
   #showCodeView = false;
   #code = '';
@@ -1090,10 +1090,10 @@ export class RecordingView extends UI.Widget.Widget {
   }
 
   #onWrapperClick(): void {
-    if (this.#selectedStep === undefined) {
+    if (this.#selectedStep) {
       return;
     }
-    this.#selectedStep = undefined;
+    this.#selectedStep = null;
     this.performUpdate();
   }
 

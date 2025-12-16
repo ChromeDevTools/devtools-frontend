@@ -19,9 +19,6 @@ button.view-trace {
   margin: 10px;
 }
 
-.lighthouse-results-container {
-  position: relative;
-}
 /** `window.opener` is null for windows opened from DevTools. This breaks
     the LH viewer app, so disable this feature. */
 
@@ -62,4 +59,50 @@ select.lighthouse-report {
 
 .lh-devtools .lh-element-screenshot__overlay {
   position: absolute;
+}
+
+.lighthouse-results-container {
+  position: relative;
+
+  :focus-visible {
+    outline: -webkit-focus-ring-color auto 1px;
+  }
+
+  .lh-tools__button {
+    height: var(--sys-size-9);
+    width: var(--sys-size-9);
+    min-width: var(--sys-size-9);
+
+    &:focus-visible {
+      border-radius: var(--sys-shape-corner-full);
+      outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
+    }
+
+    &.lh-active + .lh-tools__dropdown {
+      clip: rect(-8px, 204px, 270px, -10px);  /* stylelint-disable-line property-no-deprecated */
+    }
+  }
+
+  .lh-tools__dropdown {
+    padding: var(--sys-size-5) 0;
+    border-radius: var(--sys-shape-corner-small);
+    box-shadow: var(--sys-elevation-level3);
+    top: 24px;
+
+    &:hover a:focus {
+      background-color: transparent;
+    }
+
+    a {
+      height: var(--sys-size-11);
+      padding: 0 var(--sys-size-8);
+      white-space: nowrap;
+      align-items: center;
+
+      &::before {
+        content: none;
+      }
+    }
+  }
+
 }

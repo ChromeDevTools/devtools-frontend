@@ -104,6 +104,7 @@ export class LighthousePanel extends UI.Panel.Panel {
 
     this.renderToolbar();
     this.auditResultsElement = this.contentElement.createChild('div', 'lighthouse-results-container');
+    this.auditResultsElement.addEventListener('keydown', this.onKeyDown.bind(this));
     this.renderStartView();
 
     this.controller.recomputePageAuditability();
@@ -364,5 +365,14 @@ export class LighthousePanel extends UI.Panel.Panel {
       els.push(lhContainerEl);
     }
     return els;
+  }
+
+  private onKeyDown(event: KeyboardEvent): void {
+    // The LHR's tool button is a toggle. When the user hits escape, the default behavior
+    // is to close the tool drawer. We want to prevent this behavior and instead let the
+    // LHR's tool button handle the event and close the tool's dropdown.
+    if (event.key === 'Escape' && this.auditResultsElement.querySelector('.lh-tools__button.lh-active')) {
+      event.handled = true;
+    }
   }
 }

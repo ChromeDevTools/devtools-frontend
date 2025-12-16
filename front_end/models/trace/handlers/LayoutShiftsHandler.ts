@@ -443,7 +443,7 @@ async function buildLayoutShiftsClusters(): Promise<void> {
     }
 
     let largestScore = 0;
-    let worstShiftEvent: Types.Events.Event|null = null;
+    let worstShiftEvent: Types.Events.SyntheticLayoutShift|null = null;
 
     for (const shift of cluster.events) {
       weightedScore += shift.args.data ? shift.args.data.weighted_score_delta : 0;
@@ -504,7 +504,7 @@ async function buildLayoutShiftsClusters(): Promise<void> {
     // Update the cluster's worst layout shift.
     if (worstShiftEvent) {
       cluster.worstShiftEvent = worstShiftEvent;
-      cluster.rawSourceEvent = worstShiftEvent;
+      cluster.rawSourceEvent = worstShiftEvent.rawSourceEvent;
     }
 
     // layout shifts are already sorted by time ascending.

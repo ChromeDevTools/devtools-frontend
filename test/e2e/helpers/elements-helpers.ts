@@ -155,6 +155,15 @@ export const waitForAdornerOnSelectedNode =
       undefined, devToolsPage);
 };
 
+export const waitForSpecificAdornerOnSelectedNode =
+    async (selector: string, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+  await devToolsPage.waitForFunction(async () => {
+    const selectedNode = await devToolsPage.waitFor(SELECTED_TREE_ELEMENT_SELECTOR);
+    const adorner = await devToolsPage.waitFor(selector, selectedNode);
+    return !!adorner;
+  });
+};
+
 export const waitForNoAdornersOnSelectedNode =
     async (devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
   const selectedNode = await devToolsPage.waitFor(SELECTED_TREE_ELEMENT_SELECTOR);

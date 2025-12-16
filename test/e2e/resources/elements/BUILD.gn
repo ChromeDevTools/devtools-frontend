@@ -19,6 +19,7 @@ copy_to_gen("elements") {
     "adornment-scroll.html",
     "adornment-shadow.html",
     "adornment-starting-style.html",
+    "adornment-view-source.html",
     "adornment.html",
     "at-function.html",
     "at-property.html",

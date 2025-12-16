@@ -19,6 +19,7 @@ import {
   waitForElementsStyleSection,
   waitForNoAdornersOnSelectedNode,
   waitForPartialContentOfSelectedElementsNode,
+  waitForSpecificAdornerOnSelectedNode,
 } from '../helpers/elements-helpers.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 
@@ -41,6 +42,7 @@ describe('Adornment in the Elements Tab', function() {
 
     await waitForAdorners(
         [
+          {textContent: 'view-source', isActive: false},
           {textContent: 'starting-style', isActive: false},
           {textContent: 'starting-style', isActive: false},
         ],
@@ -70,6 +72,7 @@ describe('Adornment in the Elements Tab', function() {
 
     await waitForAdorners(
         [
+          {textContent: 'view-source', isActive: false},
           {textContent: 'starting-style', isActive: true},
           {textContent: 'starting-style', isActive: false},
         ],
@@ -86,6 +89,7 @@ describe('Adornment in the Elements Tab', function() {
 
     await waitForAdorners(
         [
+          {textContent: 'view-source', isActive: false},
           {textContent: 'grid', isActive: false},
           {textContent: 'subgrid', isActive: false},
           {textContent: 'subgrid', isActive: false},
@@ -103,6 +107,7 @@ describe('Adornment in the Elements Tab', function() {
 
     await waitForAdorners(
         [
+          {textContent: 'view-source', isActive: false},
           {textContent: 'grid-lanes', isActive: false},
           {textContent: 'grid-lanes', isActive: false},
         ],
@@ -115,6 +120,7 @@ describe('Adornment in the Elements Tab', function() {
 
     await waitForAdorners(
         [
+          {textContent: 'view-source', isActive: false},
           {textContent: 'scroll-snap', isActive: false},
           {textContent: 'scroll', isActive: false},
         ],
@@ -131,6 +137,7 @@ describe('Adornment in the Elements Tab', function() {
 
     await waitForAdorners(
         [
+          {textContent: 'view-source', isActive: false},
           {textContent: 'media', isActive: false},
           {textContent: 'media', isActive: false},
         ],
@@ -145,12 +152,31 @@ describe('Adornment in the Elements Tab', function() {
     await waitForAdornerOnSelectedNode('media', devToolsPage);
   });
 
+  it('opens sources panel with main document when view-source adorner is clicked',
+     async ({devToolsPage, inspectedPage}) => {
+       await inspectedPage.goToResource('elements/adornment-view-source.html');
+       await prepareElementsTab(devToolsPage);
+
+       await waitForAdorners(
+           [
+             {textContent: 'view-source', isActive: false},
+           ],
+           devToolsPage);
+
+       await devToolsPage.click('devtools-adorner');
+
+       await devToolsPage.waitFor('div[aria-label="Sources panel"]');
+
+       await devToolsPage.waitFor('[aria-label="adornment-view-source.html"][aria-selected="true"]');
+     });
+
   it('displays container query adorners', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToResource('elements/adornment-container-query.html');
     await prepareElementsTab(devToolsPage);
 
     await waitForAdorners(
         [
+          {textContent: 'view-source', isActive: false},
           {textContent: 'container', isActive: false},
         ],
         devToolsPage);
@@ -162,6 +188,7 @@ describe('Adornment in the Elements Tab', function() {
 
     await waitForAdorners(
         [
+          {textContent: 'view-source', isActive: false},
           {textContent: 'grid', isActive: false},
           {textContent: 'subgrid', isActive: false},
           {textContent: 'subgrid', isActive: false},
@@ -178,6 +205,7 @@ describe('Adornment in the Elements Tab', function() {
 
     await waitForAdorners(
         [
+          {textContent: 'view-source', isActive: false},
           {textContent: 'grid', isActive: true},
           {textContent: 'subgrid', isActive: true},
           {textContent: 'subgrid', isActive: false},
@@ -196,6 +224,7 @@ describe('Adornment in the Elements Tab', function() {
 
        await waitForAdorners(
            [
+             {textContent: 'view-source', isActive: false},
              {textContent: 'grid', isActive: false},
              {textContent: 'flex', isActive: false},
            ],
@@ -288,7 +317,7 @@ describe('Adornment in the Elements Tab', function() {
 
     await devToolsPage.pressKey('ArrowDown');
     await waitForPartialContentOfSelectedElementsNode('<html>', devToolsPage);
-    await waitForAdornerOnSelectedNode('scroll', devToolsPage);
+    await waitForSpecificAdornerOnSelectedNode('devtools-adorner.scroll', devToolsPage);
 
     await devToolsPage.pressKey('ArrowDown');
     await devToolsPage.pressKey('ArrowLeft');
@@ -315,7 +344,7 @@ describe('Adornment in the Elements Tab', function() {
 
     await devToolsPage.pressKey('ArrowDown');
     await waitForPartialContentOfSelectedElementsNode('<html>', devToolsPage);
-    await waitForNoAdornersOnSelectedNode(devToolsPage);
+    await waitForAdornerOnSelectedNode('view-source', devToolsPage);
 
     await devToolsPage.pressKey('ArrowDown');
     await devToolsPage.pressKey('ArrowLeft');
@@ -338,7 +367,7 @@ describe('Adornment in the Elements Tab', function() {
 
     await devToolsPage.pressKey('ArrowDown');
     await waitForPartialContentOfSelectedElementsNode('body-shrinking', devToolsPage);
-    await waitForAdornerOnSelectedNode('scroll', devToolsPage);
+    await waitForSpecificAdornerOnSelectedNode('devtools-adorner.scroll', devToolsPage);
 
     await inspectedPage.evaluate(() => {
       const frame = document.getElementById('iframe-with-shrinking-body') as HTMLIFrameElement;
@@ -348,7 +377,7 @@ describe('Adornment in the Elements Tab', function() {
       }
     });
 
-    await waitForNoAdornersOnSelectedNode(devToolsPage);
+    await waitForAdornerOnSelectedNode('view-source', devToolsPage);
   });
 
   it('displays popover adorners', async ({devToolsPage, inspectedPage}) => {
@@ -357,6 +386,7 @@ describe('Adornment in the Elements Tab', function() {
 
     await waitForAdorners(
         [
+          {textContent: 'view-source', isActive: false},
           {textContent: 'popover', isActive: false},
           {textContent: 'popover', isActive: false},
         ],
@@ -370,6 +400,7 @@ describe('Adornment in the Elements Tab', function() {
     const activePopoverSelector = '[aria-label="Stop keeping this popover open"]';
     await waitForAdorners(
         [
+          {textContent: 'view-source', isActive: false},
           {textContent: 'popover', isActive: false},
           {textContent: 'popover', isActive: false},
         ],
@@ -379,9 +410,9 @@ describe('Adornment in the Elements Tab', function() {
     await adorners[0].click();
     await waitForAdorners(
         [
-          {textContent: 'popover', isActive: true}, {textContent: 'top-layer (1)', isActive: false},
-          {textContent: 'popover', isActive: false}, {textContent: 'reveal', isActive: false},
-          {textContent: 'reveal', isActive: false}
+          {textContent: 'view-source', isActive: false}, {textContent: 'popover', isActive: true},
+          {textContent: 'top-layer (1)', isActive: false}, {textContent: 'popover', isActive: false},
+          {textContent: 'reveal', isActive: false}, {textContent: 'reveal', isActive: false}
         ],
         devToolsPage, activePopoverSelector);
 
@@ -389,6 +420,7 @@ describe('Adornment in the Elements Tab', function() {
     await adorners[0].click();
     await waitForAdorners(
         [
+          {textContent: 'view-source', isActive: false},
           {textContent: 'popover', isActive: false},
           {textContent: 'popover', isActive: false},
         ],
@@ -403,6 +435,7 @@ describe('Adornment in the Elements Tab', function() {
        const activePopoverSelector = '[aria-label="Stop keeping this popover open"]';
        await waitForAdorners(
            [
+             {textContent: 'view-source', isActive: false},
              {textContent: 'popover', isActive: false},
              {textContent: 'popover', isActive: false},
            ],
@@ -412,6 +445,7 @@ describe('Adornment in the Elements Tab', function() {
        await adorners[0].click();
        await waitForAdorners(
            [
+             {textContent: 'view-source', isActive: false},
              {textContent: 'popover', isActive: true},
              {textContent: 'top-layer (1)', isActive: false},
              {textContent: 'popover', isActive: false},
@@ -424,6 +458,7 @@ describe('Adornment in the Elements Tab', function() {
        await adorners[0].click();
        await waitForAdorners(
            [
+             {textContent: 'view-source', isActive: false},
              {textContent: 'popover', isActive: true},
              {textContent: 'top-layer (1)', isActive: false},
              {textContent: 'popover', isActive: true},

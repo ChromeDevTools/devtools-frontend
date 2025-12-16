@@ -33,6 +33,7 @@ export enum RegisteredAdorners {
   SCROLL = 'scroll',
   SCROLL_SNAP = 'scroll-snap',
   SLOT = 'slot',
+  VIEW_SOURCE = 'view-source',
   STARTING_STYLE = 'starting-style',
   SUBGRID = 'subgrid',
   TOP_LAYER = 'top-layer',
@@ -126,6 +127,13 @@ export function getRegisteredAdorner(which: RegisteredAdorners): RegisteredAdorn
       return {
         name: 'popover',
         category: AdornerCategories.LAYOUT,
+        enabledByDefault: true,
+      };
+    }
+    case RegisteredAdorners.VIEW_SOURCE: {
+      return {
+        name: 'view-source',
+        category: AdornerCategories.DEFAULT,
         enabledByDefault: true,
       };
     }

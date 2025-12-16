@@ -60,6 +60,7 @@ describe('The Elements panel', () => {
     await expandSelectedNodeRecursively(devToolsPage);
     await waitForAdorners(
         ([
+          {textContent: 'view-source', isActive: false},
           {textContent: 'reveal', isActive: false},
           {textContent: 'slot', isActive: false},
         ]),

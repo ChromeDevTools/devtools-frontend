@@ -57,7 +57,7 @@ describe('IssueView cache', () => {
           await getResourcesElement('requests', issueElement, '.cors-issue-affected-resource-label', devToolsPage);
       await ensureResourceSectionIsExpanded(section, devToolsPage);
       await waitForTableFromResourceSectionContents(section.content, expectedTableRows, devToolsPage);
-      const adorner = await devToolsPage.waitFor('devtools-adorner');
+      const adorner = await devToolsPage.waitFor('.aggregated-issues-count');
       const count = await adorner.evaluate(el => el.textContent);
       assert.strictEqual(count, `${numberOfAggregatedIssues}`);
     }

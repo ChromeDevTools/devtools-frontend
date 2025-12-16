@@ -25,6 +25,7 @@ describe('Layout Pane in the Elements Tab', function() {
     await expandSelectedNodeRecursively(devToolsPage);
     await waitForAdorners(
         [
+          {textContent: 'view-source', isActive: false},
           {textContent: 'grid', isActive: false},
         ],
         devToolsPage);
@@ -32,6 +33,7 @@ describe('Layout Pane in the Elements Tab', function() {
     await toggleElementCheckboxInLayoutPane(devToolsPage);
     await waitForAdorners(
         [
+          {textContent: 'view-source', isActive: false},
           {textContent: 'grid', isActive: true},
         ],
         devToolsPage);

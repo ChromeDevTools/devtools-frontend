@@ -322,6 +322,13 @@ export class DOMNode extends Common.ObjectWrapper.ObjectWrapper<DOMNodeEventType
     return false;
   }
 
+  isRootNode(): boolean {
+    if (this.nodeType() === Node.ELEMENT_NODE && this.nodeName() === 'HTML') {
+      return true;
+    }
+    return false;
+  }
+
   isSVGNode(): boolean {
     return this.#isSVGNode;
   }

@@ -44,6 +44,7 @@ import * as Badges from '../../models/badges/badges.js';
 import type * as Elements from '../../models/elements/elements.js';
 import type * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
+import * as Workspace from '../../models/workspace/workspace.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import type {DirectiveResult} from '../../third_party/lit/lib/directive.js';
 import * as Adorners from '../../ui/components/adorners/adorners.js';
@@ -275,6 +276,10 @@ const UIStrings = {
    */
   startAChat: 'Start a chat',
   /**
+   * @description Label of an adorner next to the html node in the Elements panel.
+   */
+  viewSourceCode: 'View source code',
+  /**
    * @description Context menu item in Elements panel to assess visibility of an element via AI.
    */
   assessVisibility: 'Assess visibility',
@@ -386,6 +391,7 @@ export interface ViewInput {
   showTopLayerAdorner: boolean;
   isSubgrid: boolean;
 
+  showViewSourceAdorner: boolean;
   adorners?: Set<Adorners.Adorner.Adorner>;
   nodeInfo?: DocumentFragment;
   topLayerIndex: number;
@@ -399,6 +405,7 @@ export interface ViewInput {
   onMediaAdornerClick: (e: Event) => void;
   onPopoverAdornerClick: (e: Event) => void;
   onTopLayerAdornerClick: (e: Event) => void;
+  onViewSourceAdornerClick: () => void;
 }
 
 export interface ViewOutput {
@@ -429,6 +436,8 @@ function adornerRef(input: ViewInput): DirectiveResult<typeof Lit.Directives.Ref
 export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLElement): void => {
   const adAdornerConfig =
       ElementsComponents.AdornerManager.getRegisteredAdorner(ElementsComponents.AdornerManager.RegisteredAdorners.AD);
+  const viewSourceAdornerConfig = ElementsComponents.AdornerManager.getRegisteredAdorner(
+      ElementsComponents.AdornerManager.RegisteredAdorners.VIEW_SOURCE);
   const containerAdornerConfig = ElementsComponents.AdornerManager.getRegisteredAdorner(
       ElementsComponents.AdornerManager.RegisteredAdorners.CONTAINER);
   const flexAdornerConfig =
@@ -447,7 +456,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
       ElementsComponents.AdornerManager.RegisteredAdorners.TOP_LAYER);
   const hasAdorners = input.adorners?.size || input.showAdAdorner || input.showContainerAdorner ||
       input.showFlexAdorner || input.showGridAdorner || input.showGridLanesAdorner || input.showMediaAdorner ||
-      input.showPopoverAdorner || input.showTopLayerAdorner;
+      input.showPopoverAdorner || input.showTopLayerAdorner || input.showViewSourceAdorner;
   // clang-format off
   render(html`
     <div ${ref(el => { output.contentElement = el as HTMLElement; })}>
@@ -462,6 +471,13 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
           .data=${{name: adAdornerConfig.name, jslogContext: adAdornerConfig.name}}
           ${adornerRef(input)}>
           <span>${adAdornerConfig.name}</span>
+        </devtools-adorner>` : nothing}
+        ${input.showViewSourceAdorner ? html`<devtools-adorner
+          .data=${{name: viewSourceAdornerConfig.name, jslogContext: viewSourceAdornerConfig.name}}
+          aria-label=${i18nString(UIStrings.viewSourceCode)}
+          @click=${input.onViewSourceAdornerClick}
+          ${adornerRef(input)}>
+          <span>${viewSourceAdornerConfig.name}</span>
         </devtools-adorner>` : nothing}
         ${input.showContainerAdorner ? html`<devtools-adorner
           class=clickable
@@ -800,8 +816,10 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
           gridAdornerActive: this.#gridAdornerActive,
           popoverAdornerActive: this.#popoverAdornerActive,
           isSubgrid: Boolean(this.#layout?.isSubgrid),
+          showViewSourceAdorner: this.nodeInternal.isRootNode() && isOpeningTag(this.tagTypeContext),
           nodeInfo: this.#nodeInfo,
           topLayerIndex: this.node().topLayerIndex(),
+          onViewSourceAdornerClick: this.revealHTMLInSources.bind(this),
           onGutterClick: this.showContextMenu.bind(this),
           onAdornerAdded: adorner => {
             ElementsPanel.instance().registerAdorner(adorner);
@@ -1289,6 +1307,17 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
 
   private showContextMenu(event: Event): void {
     this.treeOutline && void this.treeOutline.showContextMenu(this, event);
+  }
+
+  private revealHTMLInSources(): void {
+    const frameOwnerId = this.nodeInternal.frameOwnerFrameId();
+    if (frameOwnerId) {
+      const frame = SDK.FrameManager.FrameManager.instance().getFrame(frameOwnerId);
+      if (frame) {
+        const sourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(frame.url);
+        void Common.Revealer.reveal(sourceCode);
+      }
+    }
   }
 
   async populateTagContextMenu(contextMenu: UI.ContextMenu.ContextMenu, event: Event): Promise<void> {

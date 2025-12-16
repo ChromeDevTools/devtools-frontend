@@ -1965,7 +1965,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
         {
           description: error,
           buttonText: i18nString(UIStrings.close),
-          hideStopButton: true,
+          hideStopButton: false,
           showProgress: undefined,
           showTimer: undefined,
         },

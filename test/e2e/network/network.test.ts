@@ -122,24 +122,27 @@ describe('The Network Tab', function() {
   describe('with durable messages', function() {
     setup({enabledFeatures: ['DevToolsEnableDurableMessages']});
 
-    it('can persist requests across cross-origin navigation', async ({devToolsPage, inspectedPage}) => {
-      await navigateToNetworkTabEmptyPage(devToolsPage, inspectedPage);
-      await setPersistLog(true, devToolsPage);
+    // Blocks the CfT roll since https://crrev.com/c/7264906
+    it.skip(
+        '[crbug.com/469405354]can persist requests across cross-origin navigation',
+        async ({devToolsPage, inspectedPage}) => {
+          await navigateToNetworkTabEmptyPage(devToolsPage, inspectedPage);
+          await setPersistLog(true, devToolsPage);
 
-      await navigateToNetworkTab('headers-and-payload.html', devToolsPage, inspectedPage);
-      await waitForSomeRequestsToAppear(3, devToolsPage);
+          await navigateToNetworkTab('headers-and-payload.html', devToolsPage, inspectedPage);
+          await waitForSomeRequestsToAppear(3, devToolsPage);
 
-      // Navigate to a different origin's page
-      await inspectedPage.goToResourceWithCustomHost('devtools.test', 'host/page-with-oopif.html');
+          // Navigate to a different origin's page
+          await inspectedPage.goToResourceWithCustomHost('devtools.test', 'host/page-with-oopif.html');
 
-      // Introspect a request from the first navigation
-      await selectRequestByName('headers-and-payload.html', {devToolsPage});
-      const networkView = await devToolsPage.waitFor('.network-item-view');
-      await devToolsPage.click('[aria-label=Response][role="tab"]', {
-        root: networkView,
-      });
-      await devToolsPage.waitFor('[aria-label=Response][role=tab][aria-selected=true]', networkView);
-      await devToolsPage.waitFor('devtools-text-editor');
-    });
+          // Introspect a request from the first navigation
+          await selectRequestByName('headers-and-payload.html', {devToolsPage});
+          const networkView = await devToolsPage.waitFor('.network-item-view');
+          await devToolsPage.click('[aria-label=Response][role="tab"]', {
+            root: networkView,
+          });
+          await devToolsPage.waitFor('[aria-label=Response][role=tab][aria-selected=true]', networkView);
+          await devToolsPage.waitFor('devtools-text-editor');
+        });
   });
 });

@@ -19,5 +19,8 @@ node_ts_library("karma") {
 }
 
 copy_to_gen("context") {
-  sources = [ "context.html" ]
+  sources = [
+    "context.html",
+    "debug.html",
+  ]
 }

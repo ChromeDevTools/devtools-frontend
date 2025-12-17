@@ -184,6 +184,7 @@ module.exports = function(config: any) {
     autoWatchBatchDelay: 1000,
 
     customContextFile: path.join(GEN_DIR, 'test/unit/context.html'),
+    customDebugFile: path.join(GEN_DIR, 'test/unit/debug.html'),
 
     files: [
       // Global hooks in test_setup must go first

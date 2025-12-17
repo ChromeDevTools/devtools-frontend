@@ -8,7 +8,7 @@ import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 
 import * as PanelCommon from './common.js';
 
-const {AiCodeGenerationTeaser} = PanelCommon;
+const {AiCodeGenerationTeaser, AiCodeGenerationTeaserDisplayState} = PanelCommon.AiCodeGenerationTeaser;
 
 describeWithEnvironment('AiCodeGenerationTeaser', () => {
   async function createTeaser() {
@@ -20,14 +20,19 @@ describeWithEnvironment('AiCodeGenerationTeaser', () => {
     return {view, widget};
   }
 
-  it('loading state is updated', async () => {
+  it('displayState state is updated', async () => {
     const {view, widget} = await createTeaser();
-    assert.isFalse(view.input.loading);
+    assert.deepEqual(view.input.displayState, AiCodeGenerationTeaserDisplayState.TRIGGER);
 
-    widget.loading = true;
+    widget.displayState = AiCodeGenerationTeaserDisplayState.DISCOVERY;
     await view.nextInput;
 
-    assert.isTrue(view.input.loading);
+    assert.deepEqual(view.input.displayState, AiCodeGenerationTeaserDisplayState.DISCOVERY);
+
+    widget.displayState = AiCodeGenerationTeaserDisplayState.LOADING;
+    await view.nextInput;
+
+    assert.deepEqual(view.input.displayState, AiCodeGenerationTeaserDisplayState.LOADING);
     widget.detach();
   });
 });

@@ -49,7 +49,7 @@ export class AiCodeGenerationProvider {
   #devtoolsLocale: string;
   #aiCodeCompletionSetting = Common.Settings.Settings.instance().createSetting('ai-code-completion-enabled', false);
   #generationTeaserCompartment = new CodeMirror.Compartment();
-  #generationTeaser: PanelCommon.AiCodeGenerationTeaser;
+  #generationTeaser: PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaser;
   #editor?: TextEditor;
   #aiCodeGenerationConfig: AiCodeGenerationConfig;
   #aiCodeGeneration?: AiCodeGeneration.AiCodeGeneration.AiCodeGeneration;
@@ -63,7 +63,7 @@ export class AiCodeGenerationProvider {
     if (!AiCodeGeneration.AiCodeGeneration.AiCodeGeneration.isAiCodeGenerationEnabled(this.#devtoolsLocale)) {
       throw new Error('AI code generation feature is not enabled.');
     }
-    this.#generationTeaser = new PanelCommon.AiCodeGenerationTeaser();
+    this.#generationTeaser = new PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaser();
     this.#aiCodeGenerationConfig = aiCodeGenerationConfig;
   }
 
@@ -73,7 +73,8 @@ export class AiCodeGenerationProvider {
 
   extension(): CodeMirror.Extension[] {
     return [
-      CodeMirror.EditorView.updateListener.of(update => this.activateTeaser(update)),
+      CodeMirror.EditorView.updateListener.of(update => this.#activateTeaser(update)),
+      CodeMirror.EditorView.updateListener.of(update => this.#abortGenerationDuringUpdate(update)),
       aiAutoCompleteSuggestion,
       aiAutoCompleteSuggestionState,
       aiCodeGenerationTeaserModeState,
@@ -141,7 +142,9 @@ export class AiCodeGenerationProvider {
             });
             return true;
           }
-          if (this.#generationTeaser.isShowing() && this.#generationTeaser.loading) {
+          const generationTeaserIsLoading = this.#generationTeaser.displayState ===
+              PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.LOADING;
+          if (this.#generationTeaser.isShowing() && generationTeaserIsLoading) {
             this.#controller.abort();
             this.#controller = new AbortController();
             this.#dismissTeaser();
@@ -187,11 +190,11 @@ export class AiCodeGenerationProvider {
   }
 
   #dismissTeaser(): void {
-    this.#generationTeaser.loading = false;
+    this.#generationTeaser.displayState = PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.TRIGGER;
     this.#editor?.dispatch({effects: setAiCodeGenerationTeaserMode.of(AiCodeGenerationTeaserMode.DISMISSED)});
   }
 
-  async activateTeaser(update: CodeMirror.ViewUpdate): Promise<void> {
+  #activateTeaser(update: CodeMirror.ViewUpdate): void {
     const currentTeaserMode = update.state.field(aiCodeGenerationTeaserModeState);
     if (currentTeaserMode === AiCodeGenerationTeaserMode.ACTIVE) {
       return;
@@ -202,12 +205,35 @@ export class AiCodeGenerationProvider {
     update.view.dispatch({effects: setAiCodeGenerationTeaserMode.of(AiCodeGenerationTeaserMode.ACTIVE)});
   }
 
+  /**
+   * Monitors editor changes to cancel an ongoing AI generation.
+   * We abort the request and dismiss the teaser if the user modifies the
+   * document or moves their cursor/selection. These actions indicate the user
+   * is no longer focused on the current generation point or has manually
+   * resumed editing, making the pending suggestion irrelevant.
+   */
+  #abortGenerationDuringUpdate(update: CodeMirror.ViewUpdate): void {
+    if (!update.docChanged && update.state.selection.main.head === update.startState.selection.main.head) {
+      return;
+    }
+    const currentTeaserMode = update.state.field(aiCodeGenerationTeaserModeState);
+    const generationTeaserIsLoading = this.#generationTeaser.displayState ===
+        PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.LOADING;
+    // Generation should be in progress
+    if (currentTeaserMode === AiCodeGenerationTeaserMode.DISMISSED || !generationTeaserIsLoading) {
+      return;
+    }
+    this.#controller.abort();
+    this.#controller = new AbortController();
+    this.#dismissTeaser();
+  }
+
   async #triggerAiCodeGeneration(options?: {signal?: AbortSignal}): Promise<void> {
     if (!this.#editor || !this.#aiCodeGeneration) {
       return;
     }
 
-    this.#generationTeaser.loading = true;
+    this.#generationTeaser.displayState = PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.LOADING;
     const cursor = this.#editor.state.selection.main.head;
     // TODO(b/445899453): Detect all types of comments
     const query = this.#editor.state.doc.lineAt(cursor).text;
@@ -265,44 +291,60 @@ export class AiCodeGenerationProvider {
   }
 }
 
-// TODO(b/445899453): Handle teaser's discovery mode
-function aiCodeGenerationTeaserExtension(teaser: PanelCommon.AiCodeGenerationTeaser): CodeMirror.Extension {
+function aiCodeGenerationTeaserExtension(teaser: PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaser):
+    CodeMirror.Extension {
   return CodeMirror.ViewPlugin.fromClass(class {
-    #teaserMode: AiCodeGenerationTeaserMode;
+    #view: CodeMirror.EditorView;
 
-    constructor(readonly view: CodeMirror.EditorView) {
-      this.#teaserMode = view.state.field(aiCodeGenerationTeaserModeState);
+    constructor(view: CodeMirror.EditorView) {
+      this.#view = view;
+      this.#updateTeaserState(view.state);
     }
 
     update(update: CodeMirror.ViewUpdate): void {
-      const currentTeaserMode = update.state.field(aiCodeGenerationTeaserModeState);
-      if (currentTeaserMode !== this.#teaserMode) {
-        this.#teaserMode = currentTeaserMode;
-      }
       if (!update.docChanged && update.state.selection.main.head === update.startState.selection.main.head) {
         return;
       }
-      if (teaser.loading) {
-        teaser.loading = false;
-      }
+      this.#updateTeaserState(update.state);
     }
 
     get decorations(): CodeMirror.DecorationSet {
-      if (this.#teaserMode === AiCodeGenerationTeaserMode.DISMISSED) {
+      const teaserMode = this.#view.state.field(aiCodeGenerationTeaserModeState);
+      if (teaserMode === AiCodeGenerationTeaserMode.DISMISSED) {
         return CodeMirror.Decoration.none;
       }
-      const cursorPosition = this.view.state.selection.main.head;
-      const line = this.view.state.doc.lineAt(cursorPosition);
+
+      const cursorPosition = this.#view.state.selection.main.head;
+      const line = this.#view.state.doc.lineAt(cursorPosition);
+
+      const isEmptyLine = line.length === 0;
       // TODO(b/445899453): Detect all types of comments
       const isComment = line.text.startsWith('//');
       const isCursorAtEndOfLine = cursorPosition >= line.to;
-      if (!isComment || !isCursorAtEndOfLine) {
-        return CodeMirror.Decoration.none;
+
+      if ((isEmptyLine) || (isComment && isCursorAtEndOfLine)) {
+        return CodeMirror.Decoration.set([
+          CodeMirror.Decoration.widget({widget: new AiCodeCompletionTeaserPlaceholder(teaser), side: 1})
+              .range(cursorPosition),
+        ]);
       }
-      return CodeMirror.Decoration.set([
-        CodeMirror.Decoration.widget({widget: new AiCodeCompletionTeaserPlaceholder(teaser), side: 1})
-            .range(cursorPosition),
-      ]);
+      return CodeMirror.Decoration.none;
+    }
+
+    #updateTeaserState(state: CodeMirror.EditorState): void {
+      // Only handle non loading states, as updates during generation are handled by
+      // #abortGenerationDuringUpdate in AiCodeGenerationProvider
+      if (teaser.displayState === PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.LOADING) {
+        return;
+      }
+      const cursorPosition = state.selection.main.head;
+      const line = state.doc.lineAt(cursorPosition);
+      const isEmptyLine = line.length === 0;
+      if (isEmptyLine) {
+        teaser.displayState = PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.DISCOVERY;
+      } else {
+        teaser.displayState = PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.TRIGGER;
+      }
     }
   }, {
     decorations: v => v.decorations,

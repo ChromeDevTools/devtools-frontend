@@ -72,6 +72,13 @@ describeWithEnvironment('AiCodeGenerationProvider', () => {
   });
 
   describe('Teaser decoration', () => {
+    it('shows teaser when cursor is in empty line', async () => {
+      const {editor, provider} = createEditorWithProvider('');
+      await clock.tickAsync(0);
+      assert.isNotNull(editor.editor.dom.querySelector('.cm-placeholder'));
+      provider.dispose();
+    });
+
     it('shows teaser when cursor is at the end of a comment line', async () => {
       const {editor, provider} = createEditorWithProvider('// Hello');
       editor.dispatch({selection: {anchor: 8}});
@@ -176,20 +183,39 @@ describeWithEnvironment('AiCodeGenerationProvider', () => {
     });
 
     it('dismisses teaser on Escape when loading', async () => {
+      const generateCodeStub = sinon.stub(AiCodeGeneration.AiCodeGeneration.AiCodeGeneration.prototype, 'generateCode');
+      generateCodeStub.returns(new Promise(() => {}));
+      const generationTeaser =
+          sinon.spy(PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaser.prototype, 'displayState', ['set']);
       const {editor, provider} = createEditorWithProvider('// Hello');
-      sinon.stub(PanelCommon.AiCodeGenerationTeaser.prototype, 'loading').value(true);
-      sinon.stub(PanelCommon.AiCodeGenerationTeaser.prototype, 'isShowing').returns(true);
       editor.dispatch({selection: {anchor: 8}});
       await clock.tickAsync(0);
 
+      const triggerEvent = new KeyboardEvent('keydown', {
+        key: 'i',
+        ctrlKey: Host.Platform.isMac() ? false : true,
+        metaKey: Host.Platform.isMac() ? true : false,
+      });
+      editor.editor.contentDOM.dispatchEvent(triggerEvent);
+      await clock.tickAsync(0);
+
+      assert.deepEqual(
+          generationTeaser.set.lastCall.args[0],
+          PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.LOADING);
+      sinon.assert.calledOnce(generateCodeStub);
+
       const dispatchSpy = sinon.spy(editor, 'dispatch');
       editor.editor.contentDOM.dispatchEvent(new KeyboardEvent('keydown', {key: 'Escape'}));
+      await clock.tickAsync(0);
 
       sinon.assert.calledOnce(dispatchSpy);
       sinon.assert.calledWith(dispatchSpy, {
         effects: AiCodeGenerationProvider.setAiCodeGenerationTeaserMode.of(
             AiCodeGenerationProvider.AiCodeGenerationTeaserMode.DISMISSED)
       });
+      assert.deepEqual(
+          generationTeaser.set.lastCall.args[0],
+          PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.TRIGGER);
       provider.dispose();
     });
 
@@ -214,8 +240,9 @@ describeWithEnvironment('AiCodeGenerationProvider', () => {
 
     it('triggers loading state on Ctrl+I', async () => {
       const {editor, provider} = createEditorWithProvider('// Hello');
-      const generationTeaser = sinon.spy(PanelCommon.AiCodeGenerationTeaser.prototype, 'loading', ['set']);
-      sinon.stub(PanelCommon.AiCodeGenerationTeaser.prototype, 'isShowing').returns(true);
+      const generationTeaser =
+          sinon.spy(PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaser.prototype, 'displayState', ['set']);
+      sinon.stub(PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaser.prototype, 'isShowing').returns(true);
       editor.dispatch({selection: {anchor: 8}});
       await clock.tickAsync(0);
 
@@ -226,8 +253,9 @@ describeWithEnvironment('AiCodeGenerationProvider', () => {
       });
       editor.editor.contentDOM.dispatchEvent(event);
 
-      sinon.assert.calledOnce(generationTeaser.set);
-      sinon.assert.calledWith(generationTeaser.set, true);
+      assert.deepEqual(
+          generationTeaser.set.lastCall.args[0],
+          PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.LOADING);
       provider.dispose();
     });
 
@@ -235,8 +263,6 @@ describeWithEnvironment('AiCodeGenerationProvider', () => {
       const generateCodeStub = sinon.stub(AiCodeGeneration.AiCodeGeneration.AiCodeGeneration.prototype, 'generateCode');
       generateCodeStub.returns(new Promise(() => {}));
       const {editor, provider} = createEditorWithProvider('// Hello');
-      sinon.stub(PanelCommon.AiCodeGenerationTeaser.prototype, 'loading').value(true);
-      sinon.stub(PanelCommon.AiCodeGenerationTeaser.prototype, 'isShowing').returns(true);
       editor.dispatch({selection: {anchor: 8}});
       await clock.tickAsync(0);
 
@@ -250,14 +276,38 @@ describeWithEnvironment('AiCodeGenerationProvider', () => {
 
       sinon.assert.calledOnce(generateCodeStub);
 
-      const escapeEvent = new KeyboardEvent('keydown', {key: 'Escape'});
-      editor.editor.contentDOM.dispatchEvent(escapeEvent);
+      editor.editor.contentDOM.dispatchEvent(new KeyboardEvent('keydown', {key: 'Escape'}));
       await clock.tickAsync(0);
 
       const suggestion = editor.editor.state.field(Config.aiAutoCompleteSuggestionState);
       assert.notExists(suggestion);
       provider.dispose();
     });
+  });
+
+  it('aborts code generation request when user starts typing again', async () => {
+    const generateCodeStub = sinon.stub(AiCodeGeneration.AiCodeGeneration.AiCodeGeneration.prototype, 'generateCode');
+    generateCodeStub.returns(new Promise(() => {}));
+    const {editor, provider} = createEditorWithProvider('// Hello');
+    editor.dispatch({selection: {anchor: 8}});
+    await clock.tickAsync(0);
+
+    const triggerEvent = new KeyboardEvent('keydown', {
+      key: 'i',
+      ctrlKey: Host.Platform.isMac() ? false : true,
+      metaKey: Host.Platform.isMac() ? true : false,
+    });
+    editor.editor.contentDOM.dispatchEvent(triggerEvent);
+    await clock.tickAsync(0);
+
+    sinon.assert.calledOnce(generateCodeStub);
+
+    editor.dispatch({changes: {from: 8, insert: '!'}});
+    await clock.tickAsync(0);
+
+    const suggestion = editor.editor.state.field(Config.aiAutoCompleteSuggestionState);
+    assert.notExists(suggestion);
+    provider.dispose();
   });
 
   describe('Dispatches', () => {
@@ -331,9 +381,9 @@ describeWithEnvironment('AiCodeGenerationProvider', () => {
                                  .rejects(new Error('AIDA Error'));
     const actionTakenStub = sinon.stub(Host.userMetrics, 'actionTaken');
     const {editor, provider} = createEditorWithProvider('// Hello');
-    const generationTeaser = PanelCommon.AiCodeGenerationTeaser.prototype;
+    const generationTeaser = PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaser.prototype;
     sinon.stub(generationTeaser, 'isShowing').returns(true);
-    const loadingSetter = sinon.spy(generationTeaser, 'loading', ['set']);
+    const loadingSetter = sinon.spy(generationTeaser, 'displayState', ['set']);
     editor.dispatch({selection: {anchor: 8}});
     await clock.tickAsync(0);
 
@@ -350,7 +400,8 @@ describeWithEnvironment('AiCodeGenerationProvider', () => {
     sinon.assert.calledWith(actionTakenStub, Host.UserMetrics.Action.AiCodeGenerationError);
     const suggestion = editor.editor.state.field(Config.aiAutoCompleteSuggestionState);
     assert.notExists(suggestion);
-    sinon.assert.calledWith(loadingSetter.set, false);
+    sinon.assert.calledWith(
+        loadingSetter.set, PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.TRIGGER);
     sinon.assert.calledWith(dispatchSpy, {
       effects: AiCodeGenerationProvider.setAiCodeGenerationTeaserMode.of(
           AiCodeGenerationProvider.AiCodeGenerationTeaserMode.DISMISSED)

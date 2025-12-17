@@ -5,7 +5,9 @@
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {html, render} from '../../ui/lit/lit.js';
+import {html, nothing, render} from '../../ui/lit/lit.js';
+
+import styles from './aiCodeGenerationTeaser.css.js';
 
 const UIStringsNotTranslate = {
   /**
@@ -20,23 +22,56 @@ const UIStringsNotTranslate = {
    * Text for teaser when generating suggestion.
    */
   generating: 'Generating... (esc to cancel)',
+  /**
+   * Text for teaser for discoverability.
+   */
+  writeACommentToGenerateCode: 'Write a comment to generate code',
 } as const;
 
 const lockedString = i18n.i18n.lockedString;
+const PROMOTION_ID = 'ai-code-generation';
+
+export enum AiCodeGenerationTeaserDisplayState {
+  TRIGGER = 'trigger',
+  DISCOVERY = 'discovery',
+  LOADING = 'loading',
+}
 
 export interface ViewInput {
-  loading: boolean;
+  displayState: AiCodeGenerationTeaserDisplayState;
 }
 
 export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
 
 export const DEFAULT_VIEW: View = (input, _output, target) => {
-  const toGenerateCode = Host.Platform.isMac() ? lockedString(UIStringsNotTranslate.cmdItoGenerateCode) :
-                                                 lockedString(UIStringsNotTranslate.ctrlItoGenerateCode);
-  const teaserLabel = input.loading ? lockedString(UIStringsNotTranslate.generating) : toGenerateCode;
+  let teaserLabel;
+  switch (input.displayState) {
+    case AiCodeGenerationTeaserDisplayState.DISCOVERY: {
+      const newBadge = UI.UIUtils.maybeCreateNewBadge(PROMOTION_ID);
+      teaserLabel = newBadge ?
+          html`${lockedString(UIStringsNotTranslate.writeACommentToGenerateCode)}&nbsp;${newBadge}` :
+          nothing;
+      break;
+    }
+
+    case AiCodeGenerationTeaserDisplayState.LOADING: {
+      teaserLabel = html`${lockedString(UIStringsNotTranslate.generating)}`;
+      break;
+    }
+
+    case AiCodeGenerationTeaserDisplayState.TRIGGER: {
+      const toGenerateCode = Host.Platform.isMac() ? lockedString(UIStringsNotTranslate.cmdItoGenerateCode) :
+                                                     lockedString(UIStringsNotTranslate.ctrlItoGenerateCode);
+      teaserLabel = html`${toGenerateCode}`;
+      break;
+    }
+  }
+
   // clang-format off
   render(
         html`
+          <style>${styles}</style>
+          <style>@scope to (devtools-widget > *) { ${UI.inspectorCommonStyles} }</style>
           <div class="ai-code-generation-teaser">
             &nbsp;${teaserLabel}
           </div>
@@ -45,10 +80,11 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
   // clang-format on
 };
 
+// TODO(b/448063927): Add "Dont show again" for discovery teaser.
 export class AiCodeGenerationTeaser extends UI.Widget.Widget {
   readonly #view: View;
 
-  #loading = false;
+  #displayState = AiCodeGenerationTeaserDisplayState.TRIGGER;
 
   constructor(view?: View) {
     super();
@@ -61,20 +97,20 @@ export class AiCodeGenerationTeaser extends UI.Widget.Widget {
     const output = {};
     this.#view(
         {
-          loading: this.#loading,
+          displayState: this.#displayState,
         },
         output, this.contentElement);
   }
 
-  get loading(): boolean {
-    return this.#loading;
+  get displayState(): AiCodeGenerationTeaserDisplayState {
+    return this.#displayState;
   }
 
-  set loading(loading: boolean) {
-    if (loading === this.#loading) {
+  set displayState(displayState: AiCodeGenerationTeaserDisplayState) {
+    if (displayState === this.#displayState) {
       return;
     }
-    this.#loading = loading;
+    this.#displayState = displayState;
     this.requestUpdate();
   }
 }

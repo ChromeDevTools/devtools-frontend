@@ -452,7 +452,6 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
       content: adornerContent,
     };
     this.#traceEngineModel = traceModel || this.#instantiateNewModel();
-    this.#listenForProcessingProgress();
 
     this.element.addEventListener('contextmenu', this.contextMenu.bind(this), false);
     this.dropTarget = new UI.DropTarget.DropTarget(
@@ -732,7 +731,25 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     config.includeRuntimeCallStats = Root.Runtime.experiments.isEnabled('timeline-v8-runtime-call-stats');
     config.debugMode = Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_DEBUG_MODE);
 
-    return Trace.TraceModel.Model.createWithAllHandlers(config);
+    const traceEngineModel = Trace.TraceModel.Model.createWithAllHandlers(config);
+
+    traceEngineModel.addEventListener(Trace.TraceModel.ModelUpdateEvent.eventName, e => {
+      const updateEvent = e as Trace.TraceModel.ModelUpdateEvent;
+      const str = i18nString(UIStrings.processed);
+
+      // Trace Engine will report progress from [0...1] but we still have more work to do. So, scale them down a bit.
+      const traceParseMaxProgress = 0.7;
+
+      if (updateEvent.data.type === Trace.TraceModel.ModelUpdateType.COMPLETE) {
+        this.statusDialog?.updateProgressBar(str, 100 * traceParseMaxProgress);
+      } else if (updateEvent.data.type === Trace.TraceModel.ModelUpdateType.PROGRESS_UPDATE) {
+        const data = updateEvent.data.data;
+        this.statusDialog?.updateProgressBar(str, data.percent * 100 * traceParseMaxProgress);
+      }
+    });
+
+    this.#traceEngineModel = traceEngineModel;
+    return this.#traceEngineModel;
   }
 
   static extensionDataVisibilitySetting(): Common.Settings.Setting<boolean> {
@@ -2055,7 +2072,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
 
   private onClearButton(): void {
     this.#historyManager.clear();
-    this.#traceEngineModel = this.#instantiateNewModel();
+    this.#instantiateNewModel();
     ModificationsManager.reset();
     this.#uninstallSourceMapsResolver();
     this.flameChart.getMainDataProvider().reset();
@@ -2465,23 +2482,6 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
 
   async processingStarted(): Promise<void> {
     this.statusDialog?.updateStatus(i18nString(UIStrings.processingTrace));
-  }
-
-  #listenForProcessingProgress(): void {
-    this.#traceEngineModel.addEventListener(Trace.TraceModel.ModelUpdateEvent.eventName, e => {
-      const updateEvent = e as Trace.TraceModel.ModelUpdateEvent;
-      const str = i18nString(UIStrings.processed);
-
-      // Trace Engine will report progress from [0...1] but we still have more work to do. So, scale them down a bit.
-      const traceParseMaxProgress = 0.7;
-
-      if (updateEvent.data.type === Trace.TraceModel.ModelUpdateType.COMPLETE) {
-        this.statusDialog?.updateProgressBar(str, 100 * traceParseMaxProgress);
-      } else if (updateEvent.data.type === Trace.TraceModel.ModelUpdateType.PROGRESS_UPDATE) {
-        const data = updateEvent.data.data;
-        this.statusDialog?.updateProgressBar(str, data.percent * 100 * traceParseMaxProgress);
-      }
-    });
   }
 
   #onSourceMapsNodeNamesResolved(): void {

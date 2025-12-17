@@ -110,10 +110,12 @@ export const ARIA_ATTRIBUTES = new Set<string>([
 
 export enum DOMNodeEvents {
   TOP_LAYER_INDEX_CHANGED = 'TopLayerIndexChanged',
+  SCROLLABLE_FLAG_UPDATED = 'ScrollableFlagUpdated',
 }
 
 export interface DOMNodeEventTypes {
   [DOMNodeEvents.TOP_LAYER_INDEX_CHANGED]: void;
+  [DOMNodeEvents.SCROLLABLE_FLAG_UPDATED]: void;
 }
 
 export class DOMNode extends Common.ObjectWrapper.ObjectWrapper<DOMNodeEventTypes> {
@@ -392,6 +394,11 @@ export class DOMNode extends Common.ObjectWrapper.ObjectWrapper<DOMNodeEventType
 
   setIsScrollable(isScrollable: boolean): void {
     this.#isScrollable = isScrollable;
+    this.dispatchEventToListeners(DOMNodeEvents.SCROLLABLE_FLAG_UPDATED);
+    if (this.nodeName() === '#document') {
+      // We show the scroll badge of the document on the <html> element.
+      this.ownerDocument?.documentElement?.setIsScrollable(isScrollable);
+    }
   }
 
   setAffectedByStartingStyles(affectedByStartingStyles: boolean): void {
@@ -1651,7 +1658,6 @@ export class DOMModel extends SDKModel<EventTypes> {
       return;
     }
     node.setIsScrollable(isScrollable);
-    this.dispatchEventToListeners(Events.ScrollableFlagUpdated, {node});
   }
 
   affectedByStartingStylesFlagUpdated(nodeId: Protocol.DOM.NodeId, affectedByStartingStyles: boolean): void {
@@ -1907,7 +1913,6 @@ export enum Events {
   DistributedNodesChanged = 'DistributedNodesChanged',
   MarkersChanged = 'MarkersChanged',
   TopLayerElementsChanged = 'TopLayerElementsChanged',
-  ScrollableFlagUpdated = 'ScrollableFlagUpdated',
   AffectedByStartingStylesFlagUpdated = 'AffectedByStartingStylesFlagUpdated',
   AdoptedStyleSheetsModified = 'AdoptedStyleSheetsModified',
   /* eslint-enable @typescript-eslint/naming-convention */
@@ -1925,7 +1930,6 @@ export interface EventTypes {
   [Events.DistributedNodesChanged]: DOMNode;
   [Events.MarkersChanged]: DOMNode;
   [Events.TopLayerElementsChanged]: {document: DOMDocument, documentShortcuts: DOMNodeShortcut[]};
-  [Events.ScrollableFlagUpdated]: {node: DOMNode};
   [Events.AffectedByStartingStylesFlagUpdated]: {node: DOMNode};
   [Events.AdoptedStyleSheetsModified]: DOMNode;
 }

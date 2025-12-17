@@ -482,6 +482,10 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
 
   private onFilterChanged(event: Common.EventTarget.EventTargetEvent<string>): void {
     const regex = event.data ? new RegExp(Platform.StringUtilities.escapeForRegExp(event.data), 'i') : null;
+    this.setFilter(regex);
+  }
+
+  setFilter(regex: RegExp|null): void {
     this.lastFilterChange = Date.now();
     this.#filterRegex = regex;
     this.updateFilter();
@@ -1036,6 +1040,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     let sectionIdx = 0;
     let lastParentNode: SDK.DOMModel.DOMNode|null = null;
 
+    let lastLayerParent: SectionBlock|undefined;
     let lastLayers: SDK.CSSLayer.CSSLayer[]|null = null;
     let sawLayers = false;
 
@@ -1046,6 +1051,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
         if ((layers.length || lastLayers) && lastLayers !== layers) {
           const block = SectionBlock.createLayerBlock(parentRule);
           blocks.push(block);
+          lastLayerParent?.childBlocks.push(block);
           sawLayers = true;
           lastLayers = layers;
         }
@@ -1055,12 +1061,12 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     // We disable the layer widget initially. If we see a layer in
     // the matched styles we reenable the button.
     LayersWidget.ButtonProvider.instance().item().setVisible(false);
-
     for (const style of matchedStyles.nodeStyles()) {
       const parentNode = matchedStyles.isInherited(style) ? matchedStyles.nodeForStyle(style) : null;
       if (parentNode && parentNode !== lastParentNode) {
         lastParentNode = parentNode;
         const block = await SectionBlock.createInheritedNodeBlock(lastParentNode);
+        lastLayerParent = block;
         blocks.push(block);
       }
 
@@ -1078,6 +1084,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
         });
       }
     }
+    lastLayerParent = undefined;
 
     const customHighlightPseudoRulesets: Array<{
       highlightName: string | null,
@@ -1130,9 +1137,11 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
           if (parentNode) {
             const block =
                 await SectionBlock.createInheritedPseudoTypeBlock(pseudo.pseudoType, pseudo.highlightName, parentNode);
+            lastLayerParent = block;
             blocks.push(block);
           } else {
             const block = SectionBlock.createPseudoTypeBlock(pseudo.pseudoType, pseudo.highlightName);
+            lastLayerParent = block;
             blocks.push(block);
           }
         }
@@ -1503,6 +1512,7 @@ const MAX_LINK_LENGTH = 23;
 export class SectionBlock {
   readonly #titleElement: Element|null;
   sections: StylePropertiesSection[];
+  childBlocks: SectionBlock[] = [];
   #expanded = false;
   #icon: Icon|undefined;
   constructor(titleElement: Element|null, expandable?: boolean, expandedByDefault?: boolean) {
@@ -1634,14 +1644,15 @@ export class SectionBlock {
   }
 
   updateFilter(): number {
-    let hasAnyVisibleSection = false;
     let numVisibleSections = 0;
+    for (const childBlock of this.childBlocks) {
+      numVisibleSections += childBlock.updateFilter();
+    }
     for (const section of this.sections) {
       numVisibleSections += section.updateFilter() ? 1 : 0;
-      hasAnyVisibleSection = section.updateFilter() || hasAnyVisibleSection;
     }
     if (this.#titleElement) {
-      this.#titleElement.classList.toggle('hidden', !hasAnyVisibleSection);
+      this.#titleElement.classList.toggle('hidden', numVisibleSections === 0);
     }
     return numVisibleSections;
   }

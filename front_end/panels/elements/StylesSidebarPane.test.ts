@@ -92,6 +92,88 @@ describe('StylesSidebarPane', () => {
         assert.lengthOf(sectionBlocks[1].sections, 1);
         assert.instanceOf(sectionBlocks[1].sections[0], Elements.StylePropertiesSection.PositionTryRuleSection);
       });
+
+      it('correctly hides and shows nested section blocks when filtering', async () => {
+        const stylesSidebarPane =
+            new Elements.StylesSidebarPane.StylesSidebarPane(new Elements.ComputedStyleModel.ComputedStyleModel());
+
+        const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+        node.nodeName.returns('div');
+        node.id = 1 as Protocol.DOM.NodeId;
+        const parentNode = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+        node.parentNode = parentNode;
+        parentNode.nodeName.returns('body');
+
+        const matchedStyles = await getMatchedStyles({
+          cssModel: stylesSidebarPane.cssModel() as SDK.CSSModel.CSSModel,
+          node,
+          matchedPayload: [{
+            rule: {
+              selectorList: {selectors: [{text: 'div'}], text: 'div'},
+              origin: Protocol.CSS.StyleSheetOrigin.Regular,
+              style: {
+                cssProperties: [{name: 'background', value: 'red'}],
+                shorthandEntries: [],
+              },
+            },
+            matchingSelectors: [0],
+          }],
+          inheritedPayload: [{
+            matchedCSSRules: [{
+              rule: {
+                selectorList: {selectors: [{text: 'body'}], text: 'body'},
+                origin: Protocol.CSS.StyleSheetOrigin.Regular,
+                style: {
+                  cssProperties: [{name: 'color', value: 'blue'}],
+                  shorthandEntries: [],
+                },
+                layers: [{text: 'mylayer'}],
+              },
+              matchingSelectors: [0],
+            }],
+          }],
+        });
+
+        const sectionBlocks =
+            await stylesSidebarPane.rebuildSectionsForMatchedStyleRulesForTest(matchedStyles, new Map(), new Map());
+
+        assert.lengthOf(sectionBlocks, 3);
+        const inheritedBlock = sectionBlocks[1];
+        assert.strictEqual(inheritedBlock.titleElement()?.textContent, 'Inherited from ');
+        assert.lengthOf(inheritedBlock.childBlocks, 1);
+        const layerBlock = inheritedBlock.childBlocks[0];
+        assert.strictEqual(layerBlock.titleElement()?.textContent, 'Layermylayer');
+
+        const elementStyleSections = sectionBlocks[0].sections;
+        const inheritedStyleSections = layerBlock.sections;
+
+        // Filter to something that only matches the inherited style.
+        stylesSidebarPane.setFilter(/color/i);
+        sectionBlocks.forEach(block => block.updateFilter());
+
+        assert.isTrue(elementStyleSections[0].element.classList.contains('hidden'));
+        assert.isFalse(inheritedStyleSections[0].element.classList.contains('hidden'));
+        assert.isFalse(inheritedBlock.titleElement()?.classList.contains('hidden'));
+        assert.isFalse(layerBlock.titleElement()?.classList.contains('hidden'));
+
+        // Filter to something that matches nothing.
+        stylesSidebarPane.setFilter(/display/i);
+        sectionBlocks.forEach(block => block.updateFilter());
+
+        assert.isTrue(elementStyleSections[0].element.classList.contains('hidden'));
+        assert.isTrue(inheritedStyleSections[0].element.classList.contains('hidden'));
+        assert.isTrue(inheritedBlock.titleElement()?.classList.contains('hidden'));
+        assert.isTrue(layerBlock.titleElement()?.classList.contains('hidden'));
+
+        // Clear filter.
+        stylesSidebarPane.setFilter(null);
+        sectionBlocks.forEach(block => block.updateFilter());
+
+        assert.isFalse(elementStyleSections[0].element.classList.contains('hidden'));
+        assert.isFalse(inheritedStyleSections[0].element.classList.contains('hidden'));
+        assert.isFalse(inheritedBlock.titleElement()?.classList.contains('hidden'));
+        assert.isFalse(layerBlock.titleElement()?.classList.contains('hidden'));
+      });
     });
 
     it('should add @font-* section to the end', async () => {

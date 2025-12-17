@@ -243,15 +243,6 @@ deps = {
           },
       ],
   },
-  'third_party/rollup_libs': {
-      'packages': [
-          {
-              'package': 'infra/3pp/tools/rollup_libs/${{platform}}',
-              'version': 'version:3@4.53.5',
-          },
-      ],
-      'dep_type': 'cipd',
-  },
 }
 
 hooks = [
@@ -359,15 +350,6 @@ hooks = [
                '--rbe_instance',
                'projects/rbe-chrome-untrusted/instances/default_instance',
                ],
-  },
-{
-    'name': 'sync_rollup_libs',
-    'pattern': '.',
-    'condition': 'build_with_chromium == False',
-    'action': [
-      'vpython3',
-      'scripts/deps/sync_rollup_libs.py',
-    ],
   },
 ]
 

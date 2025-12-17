@@ -150,6 +150,7 @@ export class SearchableView extends VBox {
   private replaceToggleButton: ToolbarToggle;
   private searchInputElement: HTMLInputElement;
   private matchesElement: HTMLElement;
+  private matchesElementValue: HTMLElement;
   private searchNavigationPrevElement: ToolbarButton;
   private searchNavigationNextElement: ToolbarButton;
   private readonly replaceInputElement: HTMLInputElement;
@@ -314,6 +315,9 @@ export class SearchableView extends VBox {
     this.matchesElement.style.color = 'var(--sys-color-on-surface-subtle)';
     this.matchesElement.style.padding = '0 var(--sys-size-3)';
     this.matchesElement.classList.add('search-results-matches');
+    ARIAUtils.markAsPoliteLiveRegion(this.matchesElement, false);
+    this.matchesElementValue = this.matchesElement.createChild('span');
+    ARIAUtils.setHidden(this.matchesElementValue, true);
     toolbar.appendToolbarItem(matchesText);
 
     const cancelButtonElement = new Buttons.Button.Button();
@@ -455,7 +459,7 @@ export class SearchableView extends VBox {
   resetSearch(): void {
     this.clearSearch();
     this.updateReplaceVisibility();
-    this.matchesElement.textContent = '';
+    this.matchesElementValue.textContent = '';
   }
 
   refreshSearch(): void {
@@ -504,15 +508,17 @@ export class SearchableView extends VBox {
 
   private updateSearchMatchesCountAndCurrentMatchIndex(matches: number, currentMatchIndex: number): void {
     if (!this.currentQuery) {
-      this.matchesElement.textContent = '';
+      this.matchesElementValue.textContent = '';
     } else if (matches === 0 || currentMatchIndex >= 0) {
-      this.matchesElement.textContent = i18nString(UIStrings.dOfD, {PH1: currentMatchIndex + 1, PH2: matches});
+      this.matchesElementValue.textContent = i18nString(UIStrings.dOfD, {PH1: currentMatchIndex + 1, PH2: matches});
       ARIAUtils.setLabel(
           this.matchesElement, i18nString(UIStrings.accessibledOfD, {PH1: currentMatchIndex + 1, PH2: matches}));
     } else if (matches === 1) {
-      this.matchesElement.textContent = i18nString(UIStrings.matchString);
+      this.matchesElementValue.textContent = i18nString(UIStrings.matchString);
+      ARIAUtils.setLabel(this.matchesElement, i18nString(UIStrings.matchString));
     } else {
-      this.matchesElement.textContent = i18nString(UIStrings.dMatches, {PH1: matches});
+      this.matchesElementValue.textContent = i18nString(UIStrings.dMatches, {PH1: matches});
+      ARIAUtils.setLabel(this.matchesElement, i18nString(UIStrings.dMatches, {PH1: matches}));
     }
     this.updateSearchNavigationButtonState(matches > 0);
   }

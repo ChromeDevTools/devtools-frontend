@@ -11571,9 +11571,22 @@ export namespace Network {
     /**
      * Enable storing response bodies outside of renderer, so that these survive
      * a cross-process navigation. Requires maxTotalBufferSize to be set.
-     * Currently defaults to false.
+     * Currently defaults to false. This field is being deprecated in favor of the dedicated
+     * configureDurableMessages command, due to the possibility of deadlocks when awaiting
+     * Network.enable before issuing Runtime.runIfWaitingForDebugger.
      */
     enableDurableMessages?: boolean;
+  }
+
+  export interface ConfigureDurableMessagesRequest {
+    /**
+     * Buffer size in bytes to use when preserving network payloads (XHRs, etc).
+     */
+    maxTotalBufferSize?: integer;
+    /**
+     * Per-resource buffer size in bytes to use when preserving network payloads (XHRs, etc).
+     */
+    maxResourceBufferSize?: integer;
   }
 
   export interface GetAllCookiesResponse extends ProtocolResponseWithError {

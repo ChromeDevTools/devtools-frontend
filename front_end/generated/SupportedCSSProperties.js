@@ -349,6 +349,7 @@ export const generatedProperties = [
    "background-repeat",
    "background-size",
    "base-palette",
+   "base-url",
    "baseline-shift",
    "baseline-source",
    "block-ellipsis",
@@ -419,10 +420,10 @@ export const generatedProperties = [
    "column-height",
    "column-rule-break",
    "column-rule-color",
-   "column-rule-edge-end-inset",
-   "column-rule-edge-start-inset",
-   "column-rule-interior-end-inset",
-   "column-rule-interior-start-inset",
+   "column-rule-edge-inset-end",
+   "column-rule-edge-inset-start",
+   "column-rule-interior-inset-end",
+   "column-rule-interior-inset-start",
    "column-rule-style",
    "column-rule-visibility-items",
    "column-rule-width",
@@ -510,7 +511,9 @@ export const generatedProperties = [
    "grid-template-areas",
    "grid-template-columns",
    "grid-template-rows",
+   "hash",
    "height",
+   "hostname",
    "hyphenate-character",
    "hyphenate-limit-chars",
    "hyphens",
@@ -619,9 +622,12 @@ export const generatedProperties = [
    "page",
    "page-orientation",
    "paint-order",
+   "pathname",
+   "pattern",
    "perspective",
    "perspective-origin",
    "pointer-events",
+   "port",
    "position",
    "position-anchor",
    "position-area",
@@ -630,6 +636,7 @@ export const generatedProperties = [
    "position-visibility",
    "prefix",
    "print-color-adjust",
+   "protocol",
    "quotes",
    "r",
    "range",
@@ -642,10 +649,10 @@ export const generatedProperties = [
    "row-gap",
    "row-rule-break",
    "row-rule-color",
-   "row-rule-edge-end-inset",
-   "row-rule-edge-start-inset",
-   "row-rule-interior-end-inset",
-   "row-rule-interior-start-inset",
+   "row-rule-edge-inset-end",
+   "row-rule-edge-inset-start",
+   "row-rule-interior-inset-end",
+   "row-rule-interior-inset-start",
    "row-rule-style",
    "row-rule-visibility-items",
    "row-rule-width",
@@ -683,6 +690,7 @@ export const generatedProperties = [
    "scrollbar-color",
    "scrollbar-gutter",
    "scrollbar-width",
+   "search",
    "shape-image-threshold",
    "shape-margin",
    "shape-outside",
@@ -1038,6 +1046,9 @@ export const generatedProperties = [
  },
  {
   "name": "base-palette"
+ },
+ {
+  "name": "base-url"
  },
  {
   "keywords": [
@@ -1727,28 +1738,28 @@ export const generatedProperties = [
  },
  {
   "inherited": false,
-  "name": "column-rule-edge-end-inset"
+  "name": "column-rule-edge-inset-end"
  },
  {
   "inherited": false,
-  "name": "column-rule-edge-start-inset"
+  "name": "column-rule-edge-inset-start"
  },
  {
   "longhands": [
-   "column-rule-edge-start-inset",
-   "column-rule-edge-end-inset",
-   "column-rule-interior-start-inset",
-   "column-rule-interior-end-inset"
+   "column-rule-edge-inset-start",
+   "column-rule-edge-inset-end",
+   "column-rule-interior-inset-start",
+   "column-rule-interior-inset-end"
   ],
   "name": "column-rule-inset"
  },
  {
   "inherited": false,
-  "name": "column-rule-interior-end-inset"
+  "name": "column-rule-interior-inset-end"
  },
  {
   "inherited": false,
-  "name": "column-rule-interior-start-inset"
+  "name": "column-rule-interior-inset-start"
  },
  {
   "keywords": [
@@ -2723,6 +2734,9 @@ export const generatedProperties = [
   "name": "grid-template-rows"
  },
  {
+  "name": "hash"
+ },
+ {
   "keywords": [
    "auto",
    "fit-content",
@@ -2730,6 +2744,9 @@ export const generatedProperties = [
    "max-content"
   ],
   "name": "height"
+ },
+ {
+  "name": "hostname"
  },
  {
   "inherited": true,
@@ -3526,6 +3543,12 @@ export const generatedProperties = [
   "name": "paint-order"
  },
  {
+  "name": "pathname"
+ },
+ {
+  "name": "pattern"
+ },
+ {
   "keywords": [
    "none"
   ],
@@ -3571,6 +3594,9 @@ export const generatedProperties = [
    "all"
   ],
   "name": "pointer-events"
+ },
+ {
+  "name": "port"
  },
  {
   "keywords": [
@@ -3653,6 +3679,9 @@ export const generatedProperties = [
    "exact"
   ],
   "name": "print-color-adjust"
+ },
+ {
+  "name": "protocol"
  },
  {
   "inherited": true,
@@ -3738,28 +3767,28 @@ export const generatedProperties = [
  },
  {
   "inherited": false,
-  "name": "row-rule-edge-end-inset"
+  "name": "row-rule-edge-inset-end"
  },
  {
   "inherited": false,
-  "name": "row-rule-edge-start-inset"
+  "name": "row-rule-edge-inset-start"
  },
  {
   "longhands": [
-   "row-rule-edge-start-inset",
-   "row-rule-edge-end-inset",
-   "row-rule-interior-start-inset",
-   "row-rule-interior-end-inset"
+   "row-rule-edge-inset-start",
+   "row-rule-edge-inset-end",
+   "row-rule-interior-inset-start",
+   "row-rule-interior-inset-end"
   ],
   "name": "row-rule-inset"
  },
  {
   "inherited": false,
-  "name": "row-rule-interior-end-inset"
+  "name": "row-rule-interior-inset-end"
  },
  {
   "inherited": false,
-  "name": "row-rule-interior-start-inset"
+  "name": "row-rule-interior-inset-start"
  },
  {
   "keywords": [
@@ -3847,14 +3876,14 @@ export const generatedProperties = [
  },
  {
   "longhands": [
-   "row-rule-edge-start-inset",
-   "row-rule-edge-end-inset",
-   "row-rule-interior-start-inset",
-   "row-rule-interior-end-inset",
-   "column-rule-edge-start-inset",
-   "column-rule-edge-end-inset",
-   "column-rule-interior-start-inset",
-   "column-rule-interior-end-inset"
+   "row-rule-edge-inset-start",
+   "row-rule-edge-inset-end",
+   "row-rule-interior-inset-start",
+   "row-rule-interior-inset-end",
+   "column-rule-edge-inset-start",
+   "column-rule-edge-inset-end",
+   "column-rule-interior-inset-start",
+   "column-rule-interior-inset-end"
   ],
   "name": "rule-inset"
  },
@@ -4095,6 +4124,9 @@ export const generatedProperties = [
    "none"
   ],
   "name": "scrollbar-width"
+ },
+ {
+  "name": "search"
  },
  {
   "name": "shape-image-threshold"

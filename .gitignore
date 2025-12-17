@@ -64,3 +64,6 @@ test/perf/.generated
 
 # e2e test runner copies dumps into the source tree.
 *.dmp
+
+# cipd rollup binaries synced from third_party/
+node_modules/@rollup/rollup.*/

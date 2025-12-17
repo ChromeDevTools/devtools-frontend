@@ -68,7 +68,22 @@ export function decompressStream(stream: ReadableStream): ReadableStream {
   const ds = new DecompressionStream('gzip');
   return stream.pipeThrough(ds);
 }
+
 export function compressStream(stream: ReadableStream): ReadableStream {
   const cs = new CompressionStream('gzip');
   return stream.pipeThrough(cs);
+}
+
+export function createMonitoredStream(stream: ReadableStream, onProgress: (bytesRead: number) => void): ReadableStream {
+  let bytesRead = 0;
+
+  const progressTransformer = new TransformStream({
+    transform(chunk, controller) {
+      bytesRead += chunk.byteLength;
+      onProgress(bytesRead);
+      controller.enqueue(chunk);
+    }
+  });
+
+  return stream.pipeThrough(progressTransformer);
 }

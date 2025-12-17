@@ -145,14 +145,15 @@ export class StatusDialog extends UI.Widget.VBox {
   }
 
   remove(): void {
-    (this.element.parentNode as HTMLElement)?.classList.remove('tinted');
+    (this.element.parentNode as HTMLElement)?.classList.remove('opaque', 'tinted');
     this.stopTimer();
     this.element.remove();
   }
 
-  showPane(parent: Element): void {
+  showPane(parent: Element, mode: 'tinted'|'opaque' = 'opaque'): void {
     this.show(parent);
-    parent.classList.add('tinted');
+    parent.classList.toggle('tinted', mode === 'tinted');
+    parent.classList.toggle('opaque', mode === 'opaque');
   }
 
   enableAndFocusButton(): void {

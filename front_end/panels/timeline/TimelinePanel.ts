@@ -233,6 +233,18 @@ const UIStrings = {
    */
   initializingTracing: 'Initializing tracing…',
   /**
+   * @description Text in Timeline Panel of the Performance panel. Shown to the user after they request to download the trace.
+   */
+  preparingTraceForDownload: 'Preparing…',
+  /**
+   * @description Text in Timeline Panel of the Performance panel. Shown to the user after they request to download the trace.
+   */
+  compressingTraceForDownload: 'Compressing…',
+  /**
+   * @description Text in Timeline Panel of the Performance panel. Shown to the user after they request to download the trace.
+   */
+  encodingTraceForDownload: 'Encoding…',
+  /**
    * @description Tooltip description for a checkbox that toggles the visibility of data added by extensions of this panel (Performance).
    */
   showDataAddedByExtensions: 'Show data added by extensions of the Performance panel',
@@ -1455,6 +1467,9 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
       }
 
       this.#showExportTraceErrorDialog(error);
+    } finally {
+      this.statusDialog?.remove();
+      this.statusDialog = null;
     }
   }
 
@@ -1464,6 +1479,24 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     addModifications: boolean,
     shouldCompress: boolean,
   }): Promise<void> {
+    this.statusDialog = new StatusDialog(
+        {
+          hideStopButton: true,
+          showProgress: true,
+        },
+        async () => {
+          this.statusDialog?.remove();
+          this.statusDialog = null;
+        });
+    this.statusDialog.showPane(this.statusPaneContainer, 'tinted');
+    this.statusDialog.updateStatus(i18nString(UIStrings.preparingTraceForDownload));
+    this.statusDialog.updateProgressBar(i18nString(UIStrings.preparingTraceForDownload), 0);
+    this.statusDialog.requestUpdate();
+    await this.statusDialog.updateComplete;
+    // Not sure why the above isn't sufficient.
+    await new Promise(resolve => requestAnimationFrame(resolve));
+    await new Promise(resolve => requestAnimationFrame(resolve));
+
     // Base the filename on the trace's time of recording
     const isoDate =
         Platform.DateUtilities.toISO8601Compact(metadata.startTime ? new Date(metadata.startTime) : new Date());
@@ -1499,8 +1532,16 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     let blob = new Blob(blobParts, {type: 'application/json'});
 
     if (config.shouldCompress) {
+      this.statusDialog.updateStatus(i18nString(UIStrings.compressingTraceForDownload));
+      this.statusDialog.updateProgressBar(i18nString(UIStrings.compressingTraceForDownload), 0);
+
       fileName = `${fileName}.gz` as Platform.DevToolsPath.RawPathString;
-      const gzStream = Common.Gzip.compressStream(blob.stream());
+      const inputSize = blob.size;
+      const monitoredStream = Common.Gzip.createMonitoredStream(blob.stream(), bytesRead => {
+        this.statusDialog?.updateProgressBar(
+            i18nString(UIStrings.compressingTraceForDownload), bytesRead / inputSize * 100);
+      });
+      const gzStream = Common.Gzip.compressStream(monitoredStream);
       blob = await new Response(gzStream, {
                headers: {'Content-Type': 'application/gzip'},
              }).blob();
@@ -1515,9 +1556,12 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     try {
       // The maximum string length in v8 is `2 ** 29 - 23`, aka 538 MB.
       // If the gzipped&base64-encoded trace is larger than that, this'll throw a RangeError.
+      this.statusDialog.updateStatus(i18nString(UIStrings.encodingTraceForDownload));
+      this.statusDialog.updateProgressBar(i18nString(UIStrings.encodingTraceForDownload), 100);
       bytesAsB64 = await Common.Base64.encode(blob);
     } catch {
     }
+
     if (bytesAsB64?.length) {
       const contentData = new TextUtils.ContentData.ContentData(bytesAsB64, /* isBase64=*/ true, blob.type);
       await Workspace.FileManager.FileManager.instance().save(fileName, contentData, /* forceSaveAs=*/ true);
@@ -1531,6 +1575,9 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
       a.click();
       URL.revokeObjectURL(url);
     }
+
+    this.statusDialog.remove();
+    this.statusDialog = null;
   }
 
   async handleSaveToFileAction(): Promise<void> {

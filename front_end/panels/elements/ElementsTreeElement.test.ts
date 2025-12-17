@@ -54,7 +54,7 @@ describeWithMockConnection('ElementsTreeElement', () => {
     isGrid: false,
     isSubgrid: false,
     isGridLanes: false,
-    isContainer: false,
+    containerType: undefined,
     hasScroll: false,
   };
 
@@ -136,8 +136,8 @@ describeWithMockConnection('ElementsTreeElement', () => {
   });
 
   it('shows container submenu items', async () => {
-    const contextMenu =
-        await getContextMenuForElementWithLayoutProperties({...DEFAULT_LAYOUT_PROPERTIES, isContainer: true});
+    const contextMenu = await getContextMenuForElementWithLayoutProperties(
+        {...DEFAULT_LAYOUT_PROPERTIES, containerType: 'inline-size'});
     const debugWithAiItem = contextMenu.buildDescriptor().subItems?.find(item => item.label === 'Debug with AI');
     assert.exists(debugWithAiItem);
     assert.deepEqual(

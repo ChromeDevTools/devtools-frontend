@@ -177,9 +177,17 @@ describe('Adornment in the Elements Tab', function() {
     await waitForAdorners(
         [
           {textContent: 'view-source', isActive: false},
-          {textContent: 'container', isActive: false},
+          {textContent: 'inline-size', isActive: false},
         ],
         devToolsPage);
+  });
+
+  it('does not display container adorner for normal container type', async ({devToolsPage, inspectedPage}) => {
+    await inspectedPage.goToResource('elements/adornment-container-query.html');
+    await prepareElementsTab(devToolsPage);
+
+    await waitForAndClickTreeElementWithPartialText('container-normal', devToolsPage);
+    await waitForNoAdornersOnSelectedNode(devToolsPage);
   });
 
   it('can toggle adorners', async ({devToolsPage, inspectedPage}) => {

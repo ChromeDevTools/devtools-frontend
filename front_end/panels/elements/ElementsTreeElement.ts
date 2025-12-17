@@ -383,6 +383,7 @@ export interface ViewInput {
 
   showAdAdorner: boolean;
   showContainerAdorner: boolean;
+  containerType?: string;
   showFlexAdorner: boolean;
   showGridAdorner: boolean;
   showGridLanesAdorner: boolean;
@@ -499,7 +500,10 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
             }
           }}
           ${adornerRef(input)}>
-          <span>${containerAdornerConfig.name}</span>
+          <span class="adorner-with-icon">
+            <devtools-icon name="container"></devtools-icon>
+            <span>${input.containerType}</span>
+          </span>
         </devtools-adorner>`: nothing}
         ${input.showFlexAdorner ? html`<devtools-adorner
           class=clickable
@@ -784,7 +788,8 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
           containerAdornerActive: this.#containerAdornerActive,
           adorners: !this.isClosingTag() ? this.#adorners : undefined,
           showAdAdorner: this.nodeInternal.isAdFrameNode(),
-          showContainerAdorner: Boolean(this.#layout?.isContainer) && !this.isClosingTag(),
+          showContainerAdorner: Boolean(this.#layout?.containerType) && !this.isClosingTag(),
+          containerType: this.#layout?.containerType,
           showFlexAdorner: Boolean(this.#layout?.isFlex) && !this.isClosingTag(),
           flexAdornerActive: this.#flexAdornerActive,
           showGridAdorner: Boolean(this.#layout?.isGrid) && !this.isClosingTag(),
@@ -1532,7 +1537,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
           ],
         },
         {
-          condition: (props: SDK.CSSModel.LayoutProperties|null): boolean => Boolean(props?.isContainer),
+          condition: (props: SDK.CSSModel.LayoutProperties|null): boolean => Boolean(props?.containerType),
           items: [
             {
               label: i18nString(UIStrings.explainContainerQueries),

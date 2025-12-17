@@ -38,7 +38,7 @@ export interface LayoutProperties {
   isGrid: boolean;
   isSubgrid: boolean;
   isGridLanes: boolean;
-  isContainer: boolean;
+  containerType?: string;
   hasScroll: boolean;
 }
 
@@ -402,7 +402,7 @@ export class CSSModel extends SDKModel<EventTypes> {
       isGrid,
       isSubgrid,
       isGridLanes,
-      isContainer,
+      containerType: isContainer ? containerType : undefined,
       hasScroll,
     };
   }

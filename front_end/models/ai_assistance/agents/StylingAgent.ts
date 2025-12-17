@@ -219,7 +219,7 @@ export class NodeContext extends ConversationContext<SDK.DOMModel.DOMNode> {
         {title: 'Why does this element scroll?', jslogContext: 'scroll-why'},
       ];
     }
-    if (layoutProps.isContainer) {
+    if (layoutProps.containerType) {
       return [
         {title: 'What are container queries?', jslogContext: 'container-what'},
         {title: 'How do I use container-type?', jslogContext: 'container-how'},

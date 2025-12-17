@@ -236,7 +236,7 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     this.#restoreAndApplyShowModeFromSettings();
   }
 
-  showMode(): string {
+  showMode(): ShowMode {
     return this.#showMode;
   }
 

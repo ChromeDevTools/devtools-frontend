@@ -732,24 +732,11 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
       entries.push(...Overlays.Overlays.entriesForOverlay(overlay));
     }
 
-    // The insight's `relatedEvents` property likely already includes the events associated with
-    // an overlay, but just in case not, include both arrays. Duplicates are fine.
-    let relatedEventsList = this.#activeInsight?.model.relatedEvents;
-    if (!relatedEventsList) {
-      relatedEventsList = [];
-    } else if (relatedEventsList instanceof Map) {
-      relatedEventsList = Array.from(relatedEventsList.keys());
-    }
-    this.#dimInsightRelatedEvents([...entries, ...relatedEventsList]);
-
     if (options.updateTraceWindow) {
-      // We should only expand the entry track when we are updating the trace window
-      // (eg. when insight cards are initially opened).
+      // We should only expand the entry track when we are updating the trace window (eg. when insight cards are initially opened).
       // Otherwise the track will open when not intending to.
-      for (const entry of entries) {
-        // Ensure that the track for the entries are open.
-        this.#expandEntryTrack(entry);
-      }
+      this.#bulkExpandGroupsForEntries(entries);
+
       const overlaysBounds = Overlays.Overlays.traceWindowContainingOverlays(this.#currentInsightOverlays);
       if (overlaysBounds) {
         // Trace window covering all overlays expanded by 50% so that the overlays cover 2/3 (100/150) of the visible window. (Or use provided override)
@@ -767,11 +754,26 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
       }
     }
 
+    // The insight's `relatedEvents` property likely already includes the events associated with
+    // an overlay, but just in case not, include both arrays. Duplicates are fine.
+    let relatedEventsList = this.#activeInsight?.model.relatedEvents;
+    if (!relatedEventsList) {
+      relatedEventsList = [];
+    } else if (relatedEventsList instanceof Map) {
+      relatedEventsList = Array.from(relatedEventsList.keys());
+    }
+    this.#dimInsightRelatedEvents([...entries, ...relatedEventsList]);
+
     // Reveal entry if we have one.
+    // This is wrapped in a rAF to make sure the FlameChart draw from the
+    // expansion of any groups is complete - we need all the update() handlers
+    // to have run so the FlameChart has been drawn correctly at the right height.
     if (entries.length !== 0) {
       const earliestEntry =
           entries.reduce((earliest, current) => (earliest.ts < current.ts ? earliest : current), entries[0]);
-      this.revealEventVertically(earliestEntry);
+      requestAnimationFrame(() => {
+        this.revealEventVertically(earliestEntry);
+      });
     }
   }
 
@@ -821,6 +823,41 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
     if (!this.#activeInsight) {
       this.#updateFlameChartDimmerWithEvents(this.#activeInsightDimmer, null);
     }
+  }
+
+  /**
+   * Bulk expands the tracks (e.g. groups) that the given entries belong to.
+   * Will update them all at once and then do a redraw.
+   */
+  #bulkExpandGroupsForEntries(entries: Trace.Types.Events.Event[]): void {
+    const networkGroupIndexes = new Set<number>();
+    const mainGroupIndexes = new Set<number>();
+
+    for (const entry of entries) {
+      const chartName = Overlays.Overlays.chartForEntry(entry);
+      const provider = chartName === 'main' ? this.mainDataProvider : this.networkDataProvider;
+      const entryIndex = provider.indexForEvent?.(entry) ?? null;
+      if (entryIndex === null) {
+        continue;
+      }
+
+      const group = provider.groupForEvent?.(entryIndex) ?? null;
+      if (!group) {
+        continue;
+      }
+      if (group.expanded) {
+        continue;
+      }
+      const groupIndex = provider.timelineData().groups.indexOf(group);
+      if (chartName === 'main') {
+        mainGroupIndexes.add(groupIndex);
+      } else {
+        networkGroupIndexes.add(groupIndex);
+      }
+    }
+
+    this.mainFlameChart.bulkExpandGroups([...mainGroupIndexes]);
+    this.networkFlameChart.bulkExpandGroups([...networkGroupIndexes]);
   }
 
   /**

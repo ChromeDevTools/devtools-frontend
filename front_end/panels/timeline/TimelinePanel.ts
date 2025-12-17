@@ -675,7 +675,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
   #setActiveInsight(insight: TimelineComponents.Sidebar.ActiveInsight|null, opts: {
     highlightInsight: boolean,
   } = {highlightInsight: false}): void {
-    if (insight) {
+    if (insight && this.#splitWidget.showMode() !== UI.SplitWidget.ShowMode.BOTH) {
       this.#splitWidget.showBoth();
     }
     this.#sideBar.setActiveInsight(insight, {highlight: opts.highlightInsight});

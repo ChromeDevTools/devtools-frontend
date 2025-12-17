@@ -34,6 +34,7 @@ export interface ViewInput {
     showPopoverAdorner: boolean;
     showTopLayerAdorner: boolean;
     isSubgrid: boolean;
+    showViewSourceAdorner: boolean;
     adorners?: Set<Adorners.Adorner.Adorner>;
     nodeInfo?: DocumentFragment;
     topLayerIndex: number;
@@ -46,6 +47,7 @@ export interface ViewInput {
     onMediaAdornerClick: (e: Event) => void;
     onPopoverAdornerClick: (e: Event) => void;
     onTopLayerAdornerClick: (e: Event) => void;
+    onViewSourceAdornerClick: () => void;
 }
 export interface ViewOutput {
     gutterContainer?: HTMLElement;
@@ -111,6 +113,7 @@ export declare class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     private insertInLastAttributePosition;
     private startEditingTarget;
     private showContextMenu;
+    private revealHTMLInSources;
     populateTagContextMenu(contextMenu: UI.ContextMenu.ContextMenu, event: Event): Promise<void>;
     populatePseudoElementContextMenu(contextMenu: UI.ContextMenu.ContextMenu): void;
     private populateExpandRecursively;

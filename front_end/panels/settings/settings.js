@@ -2323,6 +2323,10 @@ button.text-button {
   grid-column: 3 / -1;
 }
 
+.keybinds-delete-button {
+  flex-shrink: 0;
+}
+
 .docs-link.devtools-link {
   align-self: flex-start;
   min-height: 2em;

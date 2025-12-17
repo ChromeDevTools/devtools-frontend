@@ -1295,9 +1295,6 @@
   "generated/Deprecation.ts | ChromeLoadTimesWasAlternateProtocolAvailable": {
     "message": "chrome.loadTimes() is deprecated, instead use standardized API: nextHopProtocol in Navigation Timing 2."
   },
-  "generated/Deprecation.ts | CookieWithTruncatingChar": {
-    "message": "Cookies containing a \\(0|r|n) character will be rejected instead of truncated."
-  },
   "generated/Deprecation.ts | CrossOriginAccessBasedOnDocumentDomain": {
     "message": "Relaxing the same-origin policy by setting document.domain is deprecated, and will be disabled by default. This deprecation warning is for a cross-origin access that was enabled by setting document.domain."
   },
@@ -7399,6 +7396,9 @@
   },
   "panels/elements/ElementsTreeElement.ts | valueIsTooLargeToEdit": {
     "message": "<value is too large to edit>"
+  },
+  "panels/elements/ElementsTreeElement.ts | viewSourceCode": {
+    "message": "View source code"
   },
   "panels/elements/ElementsTreeElement.ts | wrapTheseItems": {
     "message": "Wrap these items"

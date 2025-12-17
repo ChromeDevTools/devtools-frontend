@@ -3916,7 +3916,7 @@ async function buildLayoutShiftsClusters() {
     }
     if (worstShiftEvent) {
       cluster.worstShiftEvent = worstShiftEvent;
-      cluster.rawSourceEvent = worstShiftEvent;
+      cluster.rawSourceEvent = worstShiftEvent.rawSourceEvent;
     }
     cluster.ts = cluster.events[0].ts;
     const lastShiftTimings = Helpers16.Timing.eventTimingsMicroSeconds(cluster.events[cluster.events.length - 1]);

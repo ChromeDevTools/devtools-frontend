@@ -14,6 +14,7 @@ export var RegisteredAdorners;
     RegisteredAdorners["SCROLL"] = "scroll";
     RegisteredAdorners["SCROLL_SNAP"] = "scroll-snap";
     RegisteredAdorners["SLOT"] = "slot";
+    RegisteredAdorners["VIEW_SOURCE"] = "view-source";
     RegisteredAdorners["STARTING_STYLE"] = "starting-style";
     RegisteredAdorners["SUBGRID"] = "subgrid";
     RegisteredAdorners["TOP_LAYER"] = "top-layer";
@@ -106,6 +107,13 @@ export function getRegisteredAdorner(which) {
             return {
                 name: 'popover',
                 category: "Layout" /* AdornerCategories.LAYOUT */,
+                enabledByDefault: true,
+            };
+        }
+        case RegisteredAdorners.VIEW_SOURCE: {
+            return {
+                name: 'view-source',
+                category: "Default" /* AdornerCategories.DEFAULT */,
                 enabledByDefault: true,
             };
         }

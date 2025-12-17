@@ -257,6 +257,12 @@ export class DOMNode extends Common.ObjectWrapper.ObjectWrapper {
         }
         return false;
     }
+    isRootNode() {
+        if (this.nodeType() === Node.ELEMENT_NODE && this.nodeName() === 'HTML') {
+            return true;
+        }
+        return false;
+    }
     isSVGNode() {
         return this.#isSVGNode;
     }

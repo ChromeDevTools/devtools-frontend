@@ -25,6 +25,7 @@ export declare enum RegisteredAdorners {
     SCROLL = "scroll",
     SCROLL_SNAP = "scroll-snap",
     SLOT = "slot",
+    VIEW_SOURCE = "view-source",
     STARTING_STYLE = "starting-style",
     SUBGRID = "subgrid",
     TOP_LAYER = "top-layer"

@@ -128,6 +128,7 @@ var RegisteredAdorners;
   RegisteredAdorners2["SCROLL"] = "scroll";
   RegisteredAdorners2["SCROLL_SNAP"] = "scroll-snap";
   RegisteredAdorners2["SLOT"] = "slot";
+  RegisteredAdorners2["VIEW_SOURCE"] = "view-source";
   RegisteredAdorners2["STARTING_STYLE"] = "starting-style";
   RegisteredAdorners2["SUBGRID"] = "subgrid";
   RegisteredAdorners2["TOP_LAYER"] = "top-layer";
@@ -216,6 +217,13 @@ function getRegisteredAdorner(which) {
       return {
         name: "popover",
         category: "Layout",
+        enabledByDefault: true
+      };
+    }
+    case RegisteredAdorners.VIEW_SOURCE: {
+      return {
+        name: "view-source",
+        category: "Default",
         enabledByDefault: true
       };
     }

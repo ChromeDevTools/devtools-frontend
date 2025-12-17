@@ -54,6 +54,7 @@ export declare class DOMNode extends Common.ObjectWrapper.ObjectWrapper<DOMNodeE
     setTopLayerIndex(idx: number): void;
     topLayerIndex(): number;
     isAdFrameNode(): boolean;
+    isRootNode(): boolean;
     isSVGNode(): boolean;
     isScrollable(): boolean;
     affectedByStartingStyles(): boolean;

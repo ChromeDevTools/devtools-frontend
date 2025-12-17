@@ -1714,10 +1714,6 @@ var UIStrings8 = {
    */
   ChromeLoadTimesWasAlternateProtocolAvailable: "`chrome.loadTimes()` is deprecated, instead use standardized API: `nextHopProtocol` in Navigation Timing 2.",
   /**
-   * @description This warning occurs when the browser attempts to store a cookie containing a banned character. Rather than the cookie string being truncated at the banned character, the entire cookie will be rejected now.
-   */
-  CookieWithTruncatingChar: "Cookies containing a `\\(0|r|n)` character will be rejected instead of truncated.",
-  /**
    * @description This warning occurs when a frame accesses another frame's data after having set `document.domain` without having set the `Origin-Agent-Cluster` http header. This is a companion warning to `documentDomainSettingWithoutOriginAgentClusterHeader`, where that warning occurs when `document.domain` is set, and this warning occurs when an access has been made, based on that previous `document.domain` setting.
    */
   CrossOriginAccessBasedOnDocumentDomain: "Relaxing the same-origin policy by setting `document.domain` is deprecated, and will be disabled by default. This deprecation warning is for a cross-origin access that was enabled by setting `document.domain`.",
@@ -1962,9 +1958,6 @@ var DEPRECATIONS_METADATA = {
   },
   "ChromeLoadTimesWasAlternateProtocolAvailable": {
     "chromeStatusFeature": 5637885046816768
-  },
-  "CookieWithTruncatingChar": {
-    "milestone": 103
   },
   "CrossOriginAccessBasedOnDocumentDomain": {
     "milestone": 115

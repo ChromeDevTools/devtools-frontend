@@ -24722,6 +24722,12 @@ var DOMNode = class _DOMNode extends Common21.ObjectWrapper.ObjectWrapper {
     }
     return false;
   }
+  isRootNode() {
+    if (this.nodeType() === Node.ELEMENT_NODE && this.nodeName() === "HTML") {
+      return true;
+    }
+    return false;
+  }
   isSVGNode() {
     return this.#isSVGNode;
   }

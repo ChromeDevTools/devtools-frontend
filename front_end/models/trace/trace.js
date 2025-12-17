@@ -134,7 +134,12 @@ var EventsSerializer = class _EventsSerializer {
       return `${"l"}-${event.index}`;
     }
     const rawEvents = Helpers3.SyntheticEvents.SyntheticEventsManager.getActiveManager().getRawTraceEvents();
-    const key = Types.Events.isSyntheticBased(event) ? `${"s"}-${rawEvents.indexOf(event.rawSourceEvent)}` : `${"r"}-${rawEvents.indexOf(event)}`;
+    const isSynthetic = Types.Events.isSyntheticBased(event);
+    const index = rawEvents.indexOf(isSynthetic ? event.rawSourceEvent : event);
+    if (index === -1) {
+      throw new Error(`Unknown trace event: ${event.name}`);
+    }
+    const key = Types.Events.isSyntheticBased(event) ? `${"s"}-${index}` : `${"r"}-${index}`;
     if (key.length < 3) {
       return null;
     }

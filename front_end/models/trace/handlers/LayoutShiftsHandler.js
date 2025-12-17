@@ -395,7 +395,7 @@ async function buildLayoutShiftsClusters() {
         // Update the cluster's worst layout shift.
         if (worstShiftEvent) {
             cluster.worstShiftEvent = worstShiftEvent;
-            cluster.rawSourceEvent = worstShiftEvent;
+            cluster.rawSourceEvent = worstShiftEvent.rawSourceEvent;
         }
         // layout shifts are already sorted by time ascending.
         // Capture the time range of the cluster.

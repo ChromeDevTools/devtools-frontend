@@ -71,6 +71,8 @@ export default `/*
   }
 
   .dropdown-icon {
+    flex: none;
+
     &.active devtools-button {
       transform: rotate(90deg);
     }

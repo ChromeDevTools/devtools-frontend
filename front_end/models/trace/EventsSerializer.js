@@ -13,9 +13,14 @@ export class EventsSerializer {
             return `${"l" /* Types.File.EventKeyType.LEGACY_TIMELINE_FRAME */}-${event.index}`;
         }
         const rawEvents = Helpers.SyntheticEvents.SyntheticEventsManager.getActiveManager().getRawTraceEvents();
+        const isSynthetic = Types.Events.isSyntheticBased(event);
+        const index = rawEvents.indexOf(isSynthetic ? event.rawSourceEvent : event);
+        if (index === -1) {
+            throw new Error(`Unknown trace event: ${event.name}`);
+        }
         const key = Types.Events.isSyntheticBased(event) ?
-            `${"s" /* Types.File.EventKeyType.SYNTHETIC_EVENT */}-${rawEvents.indexOf(event.rawSourceEvent)}` :
-            `${"r" /* Types.File.EventKeyType.RAW_EVENT */}-${rawEvents.indexOf(event)}`;
+            `${"s" /* Types.File.EventKeyType.SYNTHETIC_EVENT */}-${index}` :
+            `${"r" /* Types.File.EventKeyType.RAW_EVENT */}-${index}`;
         if (key.length < 3) {
             return null;
         }

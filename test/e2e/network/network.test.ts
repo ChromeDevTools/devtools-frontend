@@ -122,10 +122,8 @@ describe('The Network Tab', function() {
   describe('with durable messages', function() {
     setup({enabledFeatures: ['DevToolsEnableDurableMessages']});
 
-    // Blocks the CfT roll since https://crrev.com/c/7264906
-    it.skip(
-        '[crbug.com/469405354]can persist requests across cross-origin navigation',
-        async ({devToolsPage, inspectedPage}) => {
+    it(
+        'can persist requests across cross-origin navigation', async ({devToolsPage, inspectedPage}) => {
           await navigateToNetworkTabEmptyPage(devToolsPage, inspectedPage);
           await setPersistLog(true, devToolsPage);
 

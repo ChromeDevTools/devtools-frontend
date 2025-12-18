@@ -4,7 +4,6 @@
 
 import * as UI from '../../../front_end/ui/legacy/legacy.js';
 import type * as Platform from '../../core/platform/platform.js';
-import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
@@ -247,7 +246,6 @@ describeWithMockConnection('ElementsTreeElement', () => {
     const treeOutline = new Elements.ElementsTreeOutline.ElementsTreeOutline();
 
     sinon.stub(node, 'affectedByStartingStyles').returns(true);
-    Root.Runtime.hostConfig.devToolsStartingStyleDebugging = {enabled: true};
 
     const treeElement = new Elements.ElementsTreeElement.ElementsTreeElement(node);
     treeElement.treeOutline = treeOutline;

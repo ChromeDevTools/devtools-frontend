@@ -29,8 +29,6 @@ const prepareElementsTab = async (devToolsPage: DevToolsPage) => {
 };
 
 describe('Adornment in the Elements Tab', function() {
-  setup({enabledFeatures: ['DevToolsStartingStyleDebugging']});
-
   // This test relies on the context menu which takes a while to appear, so we bump the timeout a bit.
   if (this.timeout() > 0) {
     this.timeout(20000);

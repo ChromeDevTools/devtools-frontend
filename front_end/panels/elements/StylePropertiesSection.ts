@@ -810,9 +810,7 @@ export class StylePropertiesSection {
           ancestorRuleElement = this.createNestingElement(rule.nestingSelectors?.[nestingIndex++]);
           break;
         case Protocol.CSS.CSSRuleType.StartingStyleRule:
-          if (Root.Runtime.hostConfig.devToolsStartingStyleDebugging?.enabled) {
-            ancestorRuleElement = this.createStartingStyleElement();
-          }
+          ancestorRuleElement = this.createStartingStyleElement();
           break;
       }
       if (ancestorRuleElement) {

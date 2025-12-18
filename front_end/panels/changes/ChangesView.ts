@@ -6,11 +6,13 @@ import '../../ui/legacy/legacy.js';
 
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
+import * as GreenDev from '../../models/greendev/greendev.js';
 import type * as Workspace from '../../models/workspace/workspace.js';
 import * as WorkspaceDiff from '../../models/workspace_diff/workspace_diff.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
+import * as PanelsCommon from '../common/common.js';
 
 import {ChangesSidebar, Events} from './ChangesSidebar.js';
 import changesViewStyles from './changesView.css.js';
@@ -27,6 +29,7 @@ const UIStrings = {
    * @description Text in Changes View of the Changes tab to explain the Changes panel.
    */
   changesViewDescription: 'On this page you can track code changes made within DevTools.',
+
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/changes/ChangesView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -37,11 +40,14 @@ interface ViewInput {
   workspaceDiff: WorkspaceDiff.WorkspaceDiff.WorkspaceDiffImpl;
 }
 type View = (input: ViewInput, output: object, target: HTMLElement) => void;
-export const DEFAULT_VIEW: View = (input, output, target) => {
+export const DEFAULT_VIEW: View = (input, _output, target) => {
   const onSidebar = (sidebar: ChangesSidebar): void => {
     sidebar.addEventListener(
         Events.SELECTED_UI_SOURCE_CODE_CHANGED, () => input.onSelect(sidebar.selectedUISourceCode()));
   };
+
+  const hasCopyToPrompt = GreenDev.Prototypes.instance().isEnabled('copyToGemini');
+
   render(
       // clang-format off
       html`
@@ -62,6 +68,14 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
                                               workspaceDiff: input.workspaceDiff
                                             })}></devtools-widget>
           </div>
+          ${hasCopyToPrompt ? html`
+            <devtools-widget class="copy-to-prompt"
+              .widgetConfig=${UI.Widget.widgetConfig(PanelsCommon.CopyChangesToPrompt, {
+                workspaceDiff: input.workspaceDiff,
+                patchAgentCSSChange: null,
+              })}
+            ></devtools-widget>
+          ` : Lit.nothing}
         </div>
         <devtools-widget
           slot="sidebar"

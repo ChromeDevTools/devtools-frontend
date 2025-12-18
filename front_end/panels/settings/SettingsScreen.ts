@@ -646,7 +646,7 @@ const GREENDEV_VIEW: View = (input, _output, target) => {
               <span>${i18nString(UIStrings.greenDevUnstable)}</span>
              </div>
              <div class="settings-experiments-block">
-               ${renderPrototypeCheckboxes(input.settings, ['aiAnnotations', 'inDevToolsFloaty'])}
+               ${renderPrototypeCheckboxes(input.settings, ['aiAnnotations', 'inDevToolsFloaty', 'copyToGemini'])}
              </div>
            </devtools-card>
 
@@ -668,7 +668,8 @@ const GREENDEV_PROTOTYPE_NAMES: Record<keyof GreenDev.GreenDevSettings, string> 
   inDevToolsFloaty: 'In DevTools context picker',
   aiAnnotations: 'AI auto-annotations',
   inlineWidgets: 'Inline widgets in AI Assistance',
-  artifactViewer: 'Widgets in the Artifact viewer'
+  artifactViewer: 'Widgets in the Artifact viewer',
+  copyToGemini: 'Copy changes to AI Prompt'
 };
 
 function renderWidgetOptions(settings: GreenDev.GreenDevSettings): TemplateResult {

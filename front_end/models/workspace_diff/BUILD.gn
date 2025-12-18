@@ -30,6 +30,7 @@ devtools_entrypoint("bundle") {
     ":*",
     "../../panels/ai_assistance/*",
     "../../panels/changes/*",
+    "../../panels/common/*",
     "../../panels/elements/*",
     "../../panels/sources/*",
   ]

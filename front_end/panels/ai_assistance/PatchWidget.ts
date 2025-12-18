@@ -12,6 +12,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
+import * as GreenDev from '../../models/greendev/greendev.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as WorkspaceDiff from '../../models/workspace_diff/workspace_diff.js';
@@ -186,41 +187,42 @@ export interface ViewOutput {
 }
 
 type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
-const DEFAULT_VIEW: View =
-    (input, output, target) => {
-      if (!input.changeSummary && input.patchSuggestionState === PatchSuggestionState.INITIAL) {
-        return;
-      }
+const DEFAULT_VIEW: View = (input, output, target) => {
+  if (!input.changeSummary && input.patchSuggestionState === PatchSuggestionState.INITIAL) {
+    return;
+  }
 
-      output.changeRef = output.changeRef ?? Directives.createRef<HTMLElement>();
-      output.summaryRef = output.summaryRef ?? Directives.createRef<HTMLElement>();
+  output.changeRef = output.changeRef ?? Directives.createRef<HTMLElement>();
+  output.summaryRef = output.summaryRef ?? Directives.createRef<HTMLElement>();
 
-      function renderSourcesLink(): LitTemplate {
-        if (!input.sources) {
-          return nothing;
-        }
+  function renderSourcesLink(): LitTemplate {
+    if (!input.sources) {
+      return nothing;
+    }
 
-        return html`<x-link
+    return html`<x-link
           class="link"
           title="${UIStringsNotTranslate.viewUploadedFiles} ${UIStringsNotTranslate.opensInNewTab}"
           href="data:text/plain;charset=utf-8,${encodeURIComponent(input.sources)}"
-          jslog=${VisualLogging.link('files-used-in-patching').track({click: true})}>
+          jslog=${VisualLogging.link('files-used-in-patching').track({
+      click: true
+    })}>
           ${UIStringsNotTranslate.viewUploadedFiles}
         </x-link>`;
-      }
+  }
 
-      function renderHeader(): LitTemplate {
-        if (input.savedToDisk) {
-          return html`
+  function renderHeader(): LitTemplate {
+    if (input.savedToDisk) {
+      return html`
             <devtools-icon class="green-bright-icon summary-badge" name="check-circle"></devtools-icon>
             <span class="header-text">
               ${lockedString(UIStringsNotTranslate.savedToDisk)}
             </span>
           `;
-        }
+    }
 
-        if (input.patchSuggestionState === PatchSuggestionState.SUCCESS) {
-          return html`
+    if (input.patchSuggestionState === PatchSuggestionState.SUCCESS) {
+      return html`
             <devtools-icon class="on-tonal-icon summary-badge" name="difference"></devtools-icon>
             <span class="header-text">
               ${lockedString(`File changes in ${input.projectName}`)}
@@ -230,9 +232,9 @@ const DEFAULT_VIEW: View =
               name="chevron-down"
             ></devtools-icon>
           `;
-        }
+    }
 
-        return html`
+    return html`
           <devtools-icon class="on-tonal-icon summary-badge" name="pen-spark"></devtools-icon>
           <span class="header-text">
             ${lockedString(UIStringsNotTranslate.unsavedChanges)}
@@ -242,49 +244,63 @@ const DEFAULT_VIEW: View =
             name="chevron-down"
           ></devtools-icon>
         `;
-      }
+  }
 
-      function renderContent(): LitTemplate {
-        if ((!input.changeSummary && input.patchSuggestionState === PatchSuggestionState.INITIAL) || input.savedToDisk) {
-          return nothing;
-        }
+  function renderContent(): LitTemplate {
+    if ((!input.changeSummary && input.patchSuggestionState === PatchSuggestionState.INITIAL) || input.savedToDisk) {
+      return nothing;
+    }
 
-        if (input.patchSuggestionState === PatchSuggestionState.SUCCESS) {
-          return html`<devtools-widget .widgetConfig=${UI.Widget.widgetConfig(ChangesPanel.CombinedDiffView.CombinedDiffView, {
+    if (input.patchSuggestionState === PatchSuggestionState.SUCCESS) {
+      return html`<devtools-widget .widgetConfig=${
+          UI.Widget.widgetConfig(ChangesPanel.CombinedDiffView.CombinedDiffView, {
             workspaceDiff: input.workspaceDiff,
             // Ignore user creates inspector-stylesheets
             ignoredUrls: ['inspector://']
           })}></devtools-widget>`;
-        }
+    }
 
-        return html`<devtools-code-block
+    return html`<devtools-code-block
           .code=${input.changeSummary ?? ''}
           .codeLang=${'css'}
           .displayNotice=${true}
         ></devtools-code-block>
-        ${input.patchSuggestionState === PatchSuggestionState.ERROR
-          ? html`<div class="error-container">
+        ${
+        input.patchSuggestionState === PatchSuggestionState.ERROR ?
+            html`<div class="error-container">
               <devtools-icon name="cross-circle-filled"></devtools-icon>${
-              lockedString(UIStringsNotTranslate.genericErrorMessage)
-              } ${renderSourcesLink()}
-            </div>`
-          : nothing
-        }`;
-      }
+                lockedString(UIStringsNotTranslate.genericErrorMessage)} ${renderSourcesLink()}
+            </div>` :
+            nothing}`;
+  }
 
-      function renderFooter(): LitTemplate {
-        if (input.savedToDisk) {
-          return nothing;
-        }
+  function renderCopyPrompt(changedCode?: string): LitTemplate {
+    if (!GreenDev.Prototypes.instance().isEnabled('copyToGemini') || !changedCode) {
+      return nothing;
+    }
 
-        if (input.patchSuggestionState === PatchSuggestionState.SUCCESS) {
-          return html`
+    // clang-format off
+    return html`<devtools-widget class="copy-to-prompt"
+      .widgetConfig=${UI.Widget.widgetConfig(PanelCommon.CopyChangesToPrompt, {
+        workspaceDiff: input.workspaceDiff,
+        patchAgentCSSChange: changedCode,
+      })}></devtools-widget>`;
+    // clang-format on
+  }
+
+  function renderFooter(): LitTemplate {
+    if (input.savedToDisk) {
+      return nothing;
+    }
+
+    if (input.patchSuggestionState === PatchSuggestionState.SUCCESS) {
+      return html`
           <div class="footer">
             <div class="left-side">
               <x-link class="link disclaimer-link" href="https://support.google.com/legal/answer/13505487" jslog=${
-                VisualLogging.link('code-disclaimer').track({
-                  click: true,
-                })}>
+          VisualLogging.link('code-disclaimer').track({
+            click: true,
+          })}>
                 ${lockedString(UIStringsNotTranslate.codeDisclaimer)}
               </x-link>
               ${renderSourcesLink()}
@@ -305,18 +321,20 @@ const DEFAULT_VIEW: View =
             </div>
           </div>
           `;
-        }
+    }
 
-        const iconName = input.projectType === SelectedProjectType.AUTOMATIC_DISCONNECTED ? 'folder-off' : input.projectType === SelectedProjectType.AUTOMATIC_CONNECTED ? 'folder-asterisk' : 'folder';
-        return html`
+    const iconName = input.projectType === SelectedProjectType.AUTOMATIC_DISCONNECTED ? 'folder-off' :
+        input.projectType === SelectedProjectType.AUTOMATIC_CONNECTED                 ? 'folder-asterisk' :
+                                                                                        'folder';
+    return html`
         <div class="footer">
           ${
-            input.projectName ? html`
+        input.projectName ? html`
             <div class="change-workspace" jslog=${VisualLogging.section('patch-widget.workspace')}>
                 <devtools-icon .name=${iconName}></devtools-icon>
                 <span class="folder-name" title=${input.projectPath}>${input.projectName}</span>
               ${
-                                    input.onChangeWorkspaceClick ? html`
+                                input.onChangeWorkspaceClick ? html`
                 <devtools-button
                   @click=${input.onChangeWorkspaceClick}
                   .jslogContext=${'change-workspace'}
@@ -326,23 +344,24 @@ const DEFAULT_VIEW: View =
                   ${Directives.ref(output.changeRef)}
                 >${lockedString(UIStringsNotTranslate.change)}</devtools-button>
               ` :
-                                                                   nothing}
+                                                               nothing}
             </div>
           ` :
-                                nothing}
+                            nothing}
           <div class="apply-to-workspace-container" aria-live="polite">
             ${
-            input.patchSuggestionState === PatchSuggestionState.LOADING ?
-                html`
+        input.patchSuggestionState === PatchSuggestionState.LOADING ?
+            html`
               <div class="loading-text-container" jslog=${
-                    VisualLogging.section('patch-widget.apply-to-workspace-loading')}>
+                VisualLogging.section('patch-widget.apply-to-workspace-loading')}>
                 <devtools-spinner></devtools-spinner>
                 <span>
                   ${lockedString(UIStringsNotTranslate.applyingToWorkspace)}
                 </span>
               </div>
             ` :
-                html`
+            html`
+               ${renderCopyPrompt(input.changeSummary)}
                 <devtools-button
                 @click=${input.onApplyToWorkspace}
                 .jslogContext=${'patch-widget.apply-to-workspace'}
@@ -351,13 +370,13 @@ const DEFAULT_VIEW: View =
               </devtools-button>
             `}
             ${
-            input.patchSuggestionState === PatchSuggestionState.LOADING ? html`<devtools-button
+        input.patchSuggestionState === PatchSuggestionState.LOADING ? html`<devtools-button
               @click=${input.onCancel}
               .jslogContext=${'cancel'}
               .variant=${Buttons.Button.Variant.OUTLINED}>
               ${lockedString(UIStringsNotTranslate.cancel)}
             </devtools-button>` :
-                                                                          nothing}
+                                                                      nothing}
             <devtools-button
               aria-details="info-tooltip"
               .jslogContext=${'patch-widget.info-tooltip-trigger'}
@@ -374,26 +393,25 @@ const DEFAULT_VIEW: View =
                  class="link tooltip-link"
                  role="link"
                  jslog=${VisualLogging.link('open-ai-settings').track({
-          click: true,
-        })}
+      click: true,
+    })}
                  @click=${input.onLearnMoreTooltipClick}
                >${lockedString(UIStringsNotTranslate.learnMore)}</button>
              </div>
             </devtools-tooltip>
           </div>
         </div>`;
-      }
+  }
 
-      // Use a simple div for the "Saved to disk" state as it's not expandable,
-      // otherwise use the interactive <details> element.
-      const template = input.savedToDisk
-        ? html`
+  // Use a simple div for the "Saved to disk" state as it's not expandable,
+  // otherwise use the interactive <details> element.
+  const template = input.savedToDisk ? html`
           <div class="change-summary saved-to-disk" role="status" aria-live="polite">
             <div class="header-container">
              ${renderHeader()}
              </div>
-          </div>`
-        : html`
+          </div>` :
+                                       html`
           <details class="change-summary" jslog=${VisualLogging.section('patch-widget')}>
             <summary class="header-container" ${Directives.ref(output.summaryRef)}>
               ${renderHeader()}
@@ -403,8 +421,8 @@ const DEFAULT_VIEW: View =
           </details>
         `;
 
-      render(template, target);
-    };
+  render(template, target);
+};
 
 export class PatchWidget extends UI.Widget.Widget {
   changeSummary = '';

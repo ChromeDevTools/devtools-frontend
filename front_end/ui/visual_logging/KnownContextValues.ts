@@ -1749,6 +1749,7 @@ export const knownContextValues = new Set([
   'grace-period-mitigation-disabled',
   'greendev-ai-annotations-enabled',
   'greendev-artifact-viewer-enabled',
+  'greendev-copy-to-gemini-enabled',
   'greendev-in-devtools-floaty-enabled',
   'greendev-inline-widgets-enabled',
   'greendev-prototypes',

@@ -12,6 +12,7 @@ export interface GreenDevSettings {
   inlineWidgets: Common.Settings.Setting<boolean>;
   artifactViewer: Common.Settings.Setting<boolean>;
   aiAnnotations: Common.Settings.Setting<boolean>;
+  copyToGemini: Common.Settings.Setting<boolean>;
 }
 
 export class Prototypes {
@@ -51,6 +52,10 @@ export class Prototypes {
 
     const artifactViewer =
         settings.createSetting('greendev-artifact-viewer-enabled', false, Common.Settings.SettingStorageType.LOCAL);
-    return {inDevToolsFloaty, inlineWidgets, aiAnnotations, artifactViewer};
+
+    const copyToGemini =
+        settings.createSetting('greendev-copy-to-gemini-enabled', false, Common.Settings.SettingStorageType.LOCAL);
+
+    return {inDevToolsFloaty, inlineWidgets, aiAnnotations, artifactViewer, copyToGemini};
   }
 }

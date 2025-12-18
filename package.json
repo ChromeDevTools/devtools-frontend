@@ -81,7 +81,7 @@
     "ora": "9.0.0",
     "postcss": "8.5.6",
     "puppeteer-core": "24.30.0",
-    "rollup": "4.21.0",
+    "rollup": "4.22.4",
     "rollup-plugin-sourcemaps2": "0.5.4",
     "sinon": "21.0.0",
     "source-map-support": "0.5.21",

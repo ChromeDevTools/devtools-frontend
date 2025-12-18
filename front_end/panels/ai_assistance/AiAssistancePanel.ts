@@ -504,6 +504,9 @@ function createPerformanceTraceContext(focus: AiAssistanceModel.AIContext.AgentF
   return new AiAssistanceModel.PerformanceAgent.PerformanceTraceContext(focus);
 }
 
+export const NOOP: () => Promise<void> = () => Promise.resolve();
+export const NOOP_VOID: () => void = () => {};
+
 let panelInstance: AiAssistancePanel;
 export class AiAssistancePanel extends UI.Panel.Panel {
   static panelName = 'freestyler';
@@ -627,12 +630,12 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           onCancelClick: this.#cancel.bind(this),
           onContextClick: this.#handleContextClick.bind(this),
           onNewConversation: this.#handleNewChatRequest.bind(this),
-          onTakeScreenshot: isAiAssistanceMultimodalInputEnabled() ? this.#handleTakeScreenshot.bind(this) : undefined,
+          onTakeScreenshot: isAiAssistanceMultimodalInputEnabled() ? this.#handleTakeScreenshot.bind(this) : NOOP_VOID,
           onRemoveImageInput: isAiAssistanceMultimodalInputEnabled() ? this.#handleRemoveImageInput.bind(this) :
-                                                                       undefined,
+                                                                       NOOP_VOID,
           onCopyResponseClick: this.#onCopyResponseClick.bind(this),
           onTextInputChange: this.#handleTextInputChange.bind(this),
-          onLoadImage: isAiAssistanceMultimodalUploadInputEnabled() ? this.#handleLoadImage.bind(this) : undefined,
+          onLoadImage: isAiAssistanceMultimodalUploadInputEnabled() ? this.#handleLoadImage.bind(this) : NOOP,
         }
       };
     }

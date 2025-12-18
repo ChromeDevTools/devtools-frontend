@@ -1848,9 +1848,9 @@ describeWithMockConnection('AI Assistance Panel', () => {
 
       assert.isFalse(view.input.props.multimodalInputEnabled);
       assert.isFalse(view.input.props.uploadImageInputEnabled);
-      assert.notExists(view.input.props.onTakeScreenshot);
-      assert.notExists(view.input.props.onRemoveImageInput);
-      assert.notExists(view.input.props.onLoadImage);
+      assert.strictEqual(view.input.props.onLoadImage, AiAssistancePanel.NOOP);
+      assert.strictEqual(view.input.props.onTakeScreenshot, AiAssistancePanel.NOOP_VOID);
+      assert.strictEqual(view.input.props.onRemoveImageInput, AiAssistancePanel.NOOP_VOID);
       assert.notExists(view.input.props.imageInput);
     });
 
@@ -1871,7 +1871,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
       assert.isFalse(view.input.props.uploadImageInputEnabled);
       assert.exists(view.input.props.onTakeScreenshot);
       assert.exists(view.input.props.onRemoveImageInput);
-      assert.notExists(view.input.props.onLoadImage);
+      assert.strictEqual(view.input.props.onLoadImage, AiAssistancePanel.NOOP);
     });
 
     it('adds screenshot as an image input and then removes it', async () => {

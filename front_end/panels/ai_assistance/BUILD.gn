@@ -12,6 +12,7 @@ generate_css("css_files") {
   sources = [
     "./aiAssistancePanel.css",
     "./components/artifactsViewer.css",
+    "./components/chatInput.css",
     "./components/chatView.css",
     "./components/collapsibleAssistanceContentWidget.css",
     "./components/disabledWidget.css",
@@ -27,6 +28,7 @@ devtools_ui_module("ai_assistance") {
     "PatchWidget.ts",
     "SelectWorkspaceDialog.ts",
     "components/ArtifactsViewer.ts",
+    "components/ChatInput.ts",
     "components/ChatView.ts",
     "components/CollapsibleAssistanceContentWidget.ts",
     "components/DisabledWidget.ts",

@@ -235,19 +235,24 @@ function getNavigationForPageLoadEvent(event: Types.Events.PageLoadEvent): AnyNa
   if (Types.Events.isFirstContentfulPaint(event) || Types.Events.isAnyLargestContentfulPaintCandidate(event) ||
       Types.Events.isFirstPaint(event)) {
     const {navigationsByNavigationId, softNavigationsById} = metaHandlerData();
+
     let navigation;
     if (event.name === Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION &&
         event.args.data?.performanceTimelineNavigationId) {
       navigation = softNavigationsById.get(event.args.data.performanceTimelineNavigationId);
-    }
-    if (!navigation) {
+      if (!navigation) {
+        // The most recent soft navigation must have been before the trace started.
+        return null;
+      }
+    } else {
       const navigationId = event.args.data?.navigationId;
       if (!navigationId) {
-        throw new Error('Trace event unexpectedly had no navigation ID.');
+        throw new Error(`Trace event unexpectedly had no navigation ID: ${JSON.stringify(event, null, 2)}`);
       }
 
       navigation = navigationsByNavigationId.get(navigationId);
     }
+
     if (!navigation) {
       // This event's navigation has been filtered out by the meta handler as a noise event.
       return null;

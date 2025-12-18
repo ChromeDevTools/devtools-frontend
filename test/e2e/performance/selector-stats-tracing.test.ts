@@ -115,27 +115,25 @@ describe('The Performance panel', function() {
     assert.isAtLeast(rows.length, 1, 'Selector stats table should contain at least one row');
   });
 
-  // Fails after https://chromium-review.googlesource.com/c/devtools/devtools-frontend/+/7214929
-  it.skip(
-      '[crbug.com/469948184]: CSS style invalidation results verification', async ({devToolsPage, inspectedPage}) => {
-        await navigateToPerformanceTab('selectorStats/css-style-invalidation', devToolsPage, inspectedPage);
-        await enableCSSSelectorStats(devToolsPage);
-        await startRecording(devToolsPage);
+  it('CSS style invalidation results verification', async ({devToolsPage, inspectedPage}) => {
+    await navigateToPerformanceTab('selectorStats/css-style-invalidation', devToolsPage, inspectedPage);
+    await enableCSSSelectorStats(devToolsPage);
+    await startRecording(devToolsPage);
 
-        // click the 'add/remove article' button and 'toggle emphasis' button to trigger CSS style invalidation
-        await inspectedPage.bringToFront();
-        await inspectedPage.click('#addRemoveArticle');
-        await inspectedPage.click('#toggleEmphasis');
+    // click the 'add/remove article' button and 'toggle emphasis' button to trigger CSS style invalidation
+    await inspectedPage.bringToFront();
+    await inspectedPage.click('#addRemoveArticle');
+    await inspectedPage.click('#toggleEmphasis');
 
-        await devToolsPage.bringToFront();
-        await stopRecording(devToolsPage);
+    await devToolsPage.bringToFront();
+    await stopRecording(devToolsPage);
 
-        await navigateToSelectorStatsTab(devToolsPage);
-        const dataGrid = await getDataGrid(undefined /* root*/, devToolsPage);
-        const dataGridText = await getInnerTextOfDataGridCells(
-            dataGrid, 1 /* expectedNumberOfRows */, false /* matchExactNumberOfRows */, devToolsPage);
+    await navigateToSelectorStatsTab(devToolsPage);
+    const dataGrid = await getDataGrid(undefined /* root*/, devToolsPage);
+    const dataGridText = await getInnerTextOfDataGridCells(
+        dataGrid, 1 /* expectedNumberOfRows */, false /* matchExactNumberOfRows */, devToolsPage);
 
-        // the total number of CSS style invalidations
-        assert.strictEqual(dataGridText[0][1], '75');
-      });
+    // the total number of CSS style invalidations
+    assert.strictEqual(dataGridText[0][1], '75');
+  });
 });

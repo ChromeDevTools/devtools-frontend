@@ -247,7 +247,7 @@ deps = {
       'packages': [
           {
               'package': 'infra/3pp/tools/rollup_libs/${{platform}}',
-              'version': 'version:3@4.53.5',
+              'version': 'version:3@4.22.4',
           },
       ],
       'dep_type': 'cipd',

@@ -394,9 +394,11 @@ export interface ViewInput {
 
   showViewSourceAdorner: boolean;
   showScrollAdorner: boolean;
+  showScrollSnapAdorner: boolean;
   adorners?: Set<Adorners.Adorner.Adorner>;
   nodeInfo?: DocumentFragment;
   topLayerIndex: number;
+  scrollSnapAdornerActive: boolean;
 
   onGutterClick: (e: Event) => void;
   onAdornerAdded: (adorner: Adorners.Adorner.Adorner) => void;
@@ -406,6 +408,7 @@ export interface ViewInput {
   onGridAdornerClick: (e: Event) => void;
   onMediaAdornerClick: (e: Event) => void;
   onPopoverAdornerClick: (e: Event) => void;
+  onScrollSnapAdornerClick: (e: Event) => void;
   onTopLayerAdornerClick: (e: Event) => void;
   onViewSourceAdornerClick: () => void;
 }
@@ -458,9 +461,12 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
       ElementsComponents.AdornerManager.RegisteredAdorners.TOP_LAYER);
   const scrollAdornerConfig = ElementsComponents.AdornerManager.getRegisteredAdorner(
       ElementsComponents.AdornerManager.RegisteredAdorners.SCROLL);
+  const scrollSnapAdornerConfig = ElementsComponents.AdornerManager.getRegisteredAdorner(
+      ElementsComponents.AdornerManager.RegisteredAdorners.SCROLL_SNAP);
   const hasAdorners = input.adorners?.size || input.showAdAdorner || input.showContainerAdorner ||
       input.showFlexAdorner || input.showGridAdorner || input.showGridLanesAdorner || input.showMediaAdorner ||
-      input.showPopoverAdorner || input.showTopLayerAdorner || input.showViewSourceAdorner || input.showScrollAdorner;
+      input.showPopoverAdorner || input.showTopLayerAdorner || input.showViewSourceAdorner || input.showScrollAdorner ||
+      input.showScrollSnapAdorner;
   // clang-format off
   render(html`
     <div ${ref(el => { output.contentElement = el as HTMLElement; })}>
@@ -632,6 +638,22 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
           ${adornerRef(input)}>
           <span>${scrollAdornerConfig.name}</span>
         </devtools-adorner>` : nothing}
+        ${input.showScrollSnapAdorner ? html`<devtools-adorner
+          class="scroll-snap"
+          .data=${{name: scrollSnapAdornerConfig.name, jslogContext: scrollSnapAdornerConfig.name}}
+          active=${input.scrollSnapAdornerActive}
+          toggleable=true
+          aria-label=${input.scrollSnapAdornerActive ? i18nString(UIStrings.disableScrollSnap) : i18nString(UIStrings.enableScrollSnap)}
+          @click=${input.onScrollSnapAdornerClick}
+          @keydown=${(event: KeyboardEvent) => {
+            if (event.code === 'Enter' || event.code === 'Space') {
+              input.onScrollSnapAdornerClick(event);
+              event.stopPropagation();
+            }
+          }}
+          ${adornerRef(input)}>
+          <span>${scrollSnapAdornerConfig.name}</span>
+        </devtools-adorner>` : nothing}
       </div>`: nothing}
     </div>
   `, target);
@@ -671,6 +693,8 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
   #flexAdornerActive = false;
   #gridAdornerActive = false;
   #popoverAdornerActive = false;
+
+  #scrollSnapAdornerActive = false;
   #layout: SDK.CSSModel.LayoutProperties|null = null;
 
   constructor(node: SDK.DOMModel.DOMNode, isClosingTag?: boolean) {
@@ -805,6 +829,8 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
           showScrollAdorner: ((this.node().nodeName() === 'HTML' && this.node().ownerDocument?.isScrollable()) ||
                               (this.node().nodeName() !== '#document' && this.node().isScrollable())) &&
               !this.isClosingTag(),
+          showScrollSnapAdorner: Boolean(this.#layout?.hasScroll) && !this.isClosingTag(),
+          scrollSnapAdornerActive: this.#scrollSnapAdornerActive,
           nodeInfo: this.#nodeInfo,
           topLayerIndex: this.node().topLayerIndex(),
           onViewSourceAdornerClick: this.revealHTMLInSources.bind(this),
@@ -820,6 +846,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
           onGridAdornerClick: (event: Event) => this.#onGridAdornerClick(event),
           onMediaAdornerClick: (event: Event) => this.#onMediaAdornerClick(event),
           onPopoverAdornerClick: (event: Event) => this.#onPopoverAdornerClick(event),
+          onScrollSnapAdornerClick: (event: Event) => this.#onScrollSnapAdornerClick(event),
           onTopLayerAdornerClick: () => {
             if (!this.treeOutline) {
               return;
@@ -1124,6 +1151,9 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       overlayModel.addEventListener(
           SDK.OverlayModel.Events.PERSISTENT_GRID_OVERLAY_STATE_CHANGED, this.#onPersistentGridOverlayStateChanged,
           this);
+      overlayModel.addEventListener(
+          SDK.OverlayModel.Events.PERSISTENT_SCROLL_SNAP_OVERLAY_STATE_CHANGED,
+          this.#onPersistentScrollSnapOverlayStateChanged, this);
     }
   }
 
@@ -1146,6 +1176,9 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         this.#onPersistentFlexContainerOverlayStateChanged, this);
     overlayModel.removeEventListener(
         SDK.OverlayModel.Events.PERSISTENT_GRID_OVERLAY_STATE_CHANGED, this.#onPersistentGridOverlayStateChanged, this);
+    overlayModel.removeEventListener(
+        SDK.OverlayModel.Events.PERSISTENT_SCROLL_SNAP_OVERLAY_STATE_CHANGED,
+        this.#onPersistentScrollSnapOverlayStateChanged, this);
   }
 
   #onScrollableFlagUpdated(): void {
@@ -1180,6 +1213,31 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     }
     this.#gridAdornerActive = enabled;
     this.performUpdate();
+  }
+
+  #onPersistentScrollSnapOverlayStateChanged(
+      event: Common.EventTarget.EventTargetEvent<SDK.OverlayModel.ChangedNodeId>): void {
+    const {nodeId: eventNodeId, enabled} = event.data;
+    if (eventNodeId !== this.nodeInternal.id) {
+      return;
+    }
+    this.#scrollSnapAdornerActive = enabled;
+    this.performUpdate();
+  }
+
+  #onScrollSnapAdornerClick(event: Event): void {
+    event.stopPropagation();
+    const node = this.node();
+    const nodeId = node.id;
+    if (!nodeId) {
+      return;
+    }
+    const model = node.domModel().overlayModel();
+    if (this.#scrollSnapAdornerActive) {
+      model.hideScrollSnapInPersistentOverlay(nodeId);
+    } else {
+      model.highlightScrollSnapInPersistentOverlay(nodeId);
+    }
   }
 
   override onattach(): void {
@@ -2992,20 +3050,13 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         node.nodeType() === Node.TEXT_NODE || nodeId === undefined) {
       return;
     }
-    const layout = await node.domModel().cssModel().getLayoutPropertiesFromComputedStyle(nodeId);
     // TODO: move this to the template.
     this.removeAdornersByType(ElementsComponents.AdornerManager.RegisteredAdorners.SUBGRID);
     this.removeAdornersByType(ElementsComponents.AdornerManager.RegisteredAdorners.GRID);
     this.removeAdornersByType(ElementsComponents.AdornerManager.RegisteredAdorners.GRID_LANES);
     this.removeAdornersByType(ElementsComponents.AdornerManager.RegisteredAdorners.FLEX);
-    this.removeAdornersByType(ElementsComponents.AdornerManager.RegisteredAdorners.SCROLL_SNAP);
     this.removeAdornersByType(ElementsComponents.AdornerManager.RegisteredAdorners.MEDIA);
     this.removeAdornersByType(ElementsComponents.AdornerManager.RegisteredAdorners.STARTING_STYLE);
-    if (layout) {
-      if (layout.hasScroll) {
-        this.pushScrollSnapAdorner();
-      }
-    }
 
     if (Root.Runtime.hostConfig.devToolsStartingStyleDebugging?.enabled) {
       const affectedByStartingStyles = node.affectedByStartingStyles();
@@ -3028,49 +3079,6 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       Badges.UserBadges.instance().recordAction(Badges.BadgeAction.MODERN_DOM_BADGE_CLICKED);
     }
     this.performUpdate();
-  }
-
-  pushScrollSnapAdorner(): void {
-    const node = this.node();
-    const nodeId = node.id;
-    if (!nodeId) {
-      return;
-    }
-    const config = ElementsComponents.AdornerManager.getRegisteredAdorner(
-        ElementsComponents.AdornerManager.RegisteredAdorners.SCROLL_SNAP);
-    const adorner = this.adorn(config);
-    adorner.classList.add('scroll-snap');
-
-    const onClick = ((() => {
-                       const model = node.domModel().overlayModel();
-                       if (adorner.isActive()) {
-                         model.highlightScrollSnapInPersistentOverlay(nodeId);
-                       } else {
-                         model.hideScrollSnapInPersistentOverlay(nodeId);
-                       }
-                     }) as EventListener);
-
-    adorner.addInteraction(onClick, {
-      isToggle: true,
-      shouldPropagateOnKeydown: false,
-      ariaLabelDefault: i18nString(UIStrings.enableScrollSnap),
-      ariaLabelActive: i18nString(UIStrings.disableScrollSnap),
-    });
-
-    node.domModel().overlayModel().addEventListener(
-        SDK.OverlayModel.Events.PERSISTENT_SCROLL_SNAP_OVERLAY_STATE_CHANGED, event => {
-          const {nodeId: eventNodeId, enabled} = event.data;
-          if (eventNodeId !== nodeId) {
-            return;
-          }
-          adorner.toggle(enabled);
-        });
-
-    this.#adorners.add(adorner);
-
-    if (node.domModel().overlayModel().isHighlightedScrollSnapInPersistentOverlay(nodeId)) {
-      adorner.toggle(true);
-    }
   }
 
   pushStartingStyleAdorner(): void {

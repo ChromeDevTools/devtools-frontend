@@ -175,6 +175,38 @@ describeWithMockConnection('ElementsTreeElement', () => {
 
     sinon.assert.notCalled(performUpdateSpy);
   });
+
+  it('updates when persistent scroll snap overlay state changes', async () => {
+    const target = createTarget();
+    const domModel = target.model(SDK.DOMModel.DOMModel);
+    assert.exists(domModel);
+    const node = new SDK.DOMModel.DOMNode(domModel);
+    const treeOutline = new Elements.ElementsTreeOutline.ElementsTreeOutline();
+    const treeElement = new Elements.ElementsTreeElement.ElementsTreeElement(node);
+    treeElement.treeOutline = treeOutline;
+
+    // Simulate binding to the tree
+    treeElement.onbind();
+
+    const performUpdateSpy = sinon.spy(treeElement, 'performUpdate');
+    const overlayModel = domModel.overlayModel();
+
+    // Trigger event
+    overlayModel.dispatchEventToListeners(
+        SDK.OverlayModel.Events.PERSISTENT_SCROLL_SNAP_OVERLAY_STATE_CHANGED, {nodeId: node.id, enabled: true});
+
+    sinon.assert.calledOnce(performUpdateSpy);
+
+    // Simulate unbinding
+    treeElement.onunbind();
+    performUpdateSpy.resetHistory();
+
+    // Trigger event again
+    overlayModel.dispatchEventToListeners(
+        SDK.OverlayModel.Events.PERSISTENT_SCROLL_SNAP_OVERLAY_STATE_CHANGED, {nodeId: node.id, enabled: false});
+
+    sinon.assert.notCalled(performUpdateSpy);
+  });
 });
 
 describeWithMockConnection('ElementsTreeElement highlighting', () => {

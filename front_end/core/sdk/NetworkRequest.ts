@@ -225,6 +225,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   #startTime = -1;
   #endTime = -1;
   #blockedReason: Protocol.Network.BlockedReason|undefined = undefined;
+  #renderBlockingBehavior?: Protocol.Network.RenderBlockingBehavior;
   #corsErrorStatus: Protocol.Network.CorsErrorStatus|undefined = undefined;
   statusCode = 0;
   statusText = '';
@@ -659,6 +660,14 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
 
   setBlockedReason(reason: Protocol.Network.BlockedReason): void {
     this.#blockedReason = reason;
+  }
+
+  setRenderBlockingBehavior(renderBlocking: Protocol.Network.RenderBlockingBehavior): void {
+    this.#renderBlockingBehavior = renderBlocking;
+  }
+
+  renderBlockingBehavior(): Protocol.Network.RenderBlockingBehavior|undefined {
+    return this.#renderBlockingBehavior;
   }
 
   corsErrorStatus(): Protocol.Network.CorsErrorStatus|undefined {

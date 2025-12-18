@@ -3105,6 +3105,7 @@ export const knownContextValues = new Set([
   'removed-count',
   'removed-size',
   'rename',
+  'render-blocking',
   'rendering',
   'rendering-emulations',
   'rendering.toggle-prefers-color-scheme',

@@ -761,6 +761,7 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
     type,
     frameId,
     hasUserGesture,
+    renderBlockingBehavior,
   }: Protocol.Network.RequestWillBeSentEvent): void {
     let networkRequest = this.#requestsById.get(requestId);
     if (networkRequest) {
@@ -789,6 +790,9 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
       networkRequest = NetworkRequest.create(
           requestId, request.url as Platform.DevToolsPath.UrlString, documentURL as Platform.DevToolsPath.UrlString,
           frameId ?? null, loaderId, initiator, hasUserGesture);
+      if (renderBlockingBehavior) {
+        networkRequest.setRenderBlockingBehavior(renderBlockingBehavior);
+      }
       requestToManagerMap.set(networkRequest, this.#manager);
     }
     networkRequest.hasNetworkData = true;

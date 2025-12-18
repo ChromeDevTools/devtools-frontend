@@ -9,6 +9,7 @@ import * as SDK from '../../../core/sdk/sdk.js';
 import * as Protocol from '../../../generated/protocol.js';
 import * as Persistence from '../../../models/persistence/persistence.js';
 import {
+  assertScreenshot,
   dispatchClickEvent,
   dispatchCopyEvent,
   dispatchKeyDownEvent,
@@ -149,6 +150,8 @@ describeWithMockConnection('RequestHeadersView', () => {
       '199.36.158.100:443',
       'strict-origin-when-cross-origin',
     ]);
+
+    await assertScreenshot('network/request-headers-view-general.png');
   });
 
   it('status text of a request from cache memory corresponds to the status code', async () => {
@@ -179,6 +182,7 @@ describeWithMockConnection('RequestHeadersView', () => {
     assert.deepEqual(
         getRowsTextFromCategory(requestHeadersCategory),
         [[':method', 'GET'], ['accept-encoding', 'gzip, deflate, br'], ['cache-control', 'no-cache']]);
+    await assertScreenshot('network/request-headers-view-response.png');
   });
 
   it('renders early hints headers', async () => {
@@ -188,6 +192,7 @@ describeWithMockConnection('RequestHeadersView', () => {
     const earlyHintsCategory = component.shadowRoot.querySelector('[aria-label="Early hints headers"]');
     assert.instanceOf(earlyHintsCategory, HTMLElement);
     assert.deepEqual(getRowsTextFromCategory(earlyHintsCategory), [['link', '<src="/script.js" as="script">']]);
+    await assertScreenshot('network/request-headers-view-early-hints.png');
   });
 
   it('emits UMA event when a header value is being copied', async () => {
@@ -315,6 +320,7 @@ describeWithMockConnection('RequestHeadersView', () => {
     component.revealHeader(NetworkForward.UIRequestLocation.UIHeaderSection.RESPONSE, 'HiGhLiGhTmE');
     await RenderCoordinator.done();
     assert.deepEqual(getRowHighlightStatus(responseHeadersCategory), [false, false, true]);
+    await assertScreenshot('network/request-headers-view-early-highlight.png');
   });
 
   it('can highlight individual request headers', async () => {

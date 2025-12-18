@@ -101,6 +101,7 @@ devtools_ui_module("unittests") {
     "AiAssistancePanel.test.ts",
     "PatchWidget.test.ts",
     "SelectWorkspaceDialog.test.ts",
+    "components/ChatInput.test.ts",
     "components/ChatView.test.ts",
     "components/DisabledWidget.test.ts",
     "components/ExploreWidget.test.ts",

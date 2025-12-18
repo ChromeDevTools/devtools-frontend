@@ -540,8 +540,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     accountFullName?: string,
   };
   #imageInput?: ImageInputData;
-  // Used to disable send button when there is not text input.
-  #isTextInputEmpty = true;
   #timelinePanelInstance: TimelinePanel.TimelinePanel.TimelinePanel|null = null;
   #runAbortController = new AbortController();
   #additionalContextItemsFromFloaty: UI.Floaty.FloatyContextSelection[] = [];
@@ -611,7 +609,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           emptyStateSuggestions,
           inputPlaceholder: this.#getChatInputPlaceholder(),
           disclaimerText: this.#getDisclaimerText(),
-          isTextInputEmpty: this.#isTextInputEmpty,
           changeManager: this.#changeManager,
           uploadImageInputEnabled: isAiAssistanceMultimodalUploadInputEnabled() &&
               this.#conversation.type === AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING,
@@ -621,7 +618,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
               text: string, imageInput?: Host.AidaClient.Part,
               multimodalInputType?: AiAssistanceModel.AiAgent.MultimodalInputType) => {
             this.#imageInput = undefined;
-            this.#isTextInputEmpty = true;
             Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceQuerySubmitted);
             await this.#startConversation(text, imageInput, multimodalInputType);
           },
@@ -634,7 +630,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           onRemoveImageInput: isAiAssistanceMultimodalInputEnabled() ? this.#handleRemoveImageInput.bind(this) :
                                                                        NOOP_VOID,
           onCopyResponseClick: this.#onCopyResponseClick.bind(this),
-          onTextInputChange: this.#handleTextInputChange.bind(this),
           onLoadImage: isAiAssistanceMultimodalUploadInputEnabled() ? this.#handleLoadImage.bind(this) : NOOP,
         }
       };
@@ -1228,7 +1223,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       }
 
       this.#imageInput = undefined;
-      this.#isTextInputEmpty = true;
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceQuerySubmitted);
       if (this.#conversation && this.#conversation.isBlockedByOrigin) {
         this.#handleNewChatRequest();
@@ -1370,14 +1364,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     void this.updateComplete.then(() => {
       this.#viewOutput.chatView?.focusTextInput();
     });
-  }
-
-  #handleTextInputChange(value: string): void {
-    const disableSubmit = !value;
-    if (disableSubmit !== this.#isTextInputEmpty) {
-      this.#isTextInputEmpty = disableSubmit;
-      void this.requestUpdate();
-    }
   }
 
   async #handleLoadImage(file: File): Promise<void> {

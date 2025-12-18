@@ -1777,45 +1777,6 @@ describeWithMockConnection('AI Assistance Panel', () => {
          });
     });
 
-    it('should disable the send button when the input is empty', async () => {
-      Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
-      updateHostConfig({
-        devToolsFreestyler: {
-          enabled: true,
-        },
-      });
-
-      viewManagerIsViewVisibleStub.callsFake(viewName => viewName === 'elements');
-      const {panel, view} =
-          await createAiAssistancePanel({aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE});
-
-      void panel.handleAction('freestyler.elements-floating-button');
-      let nextInput = await view.nextInput;
-      assert(nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
-      assert.isTrue(nextInput.props.isTextInputEmpty);
-
-      assert(view.input.state === AiAssistancePanel.ViewState.CHAT_VIEW);
-
-      view.input.props.onTextInputChange('test');
-      nextInput = await view.nextInput;
-      assert(nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
-      assert.isFalse(nextInput.props.isTextInputEmpty);
-
-      view.input.props.onTextInputChange('');
-      nextInput = await view.nextInput;
-      assert(nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
-      assert.isTrue(nextInput.props.isTextInputEmpty);
-
-      view.input.props.onTextInputChange('test');
-      nextInput = await view.nextInput;
-      assert(nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
-      assert.isFalse(nextInput.props.isTextInputEmpty);
-
-      view.input.props.onTextSubmit('test');
-      nextInput = await view.nextInput;
-      assert(nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
-      assert.isTrue(nextInput.props.isTextInputEmpty);
-    });
   });
 
   describe('multimodal input', () => {

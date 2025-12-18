@@ -195,7 +195,6 @@ export interface Props {
   onCopyResponseClick: (message: ModelChatMessage) => void;
   onTakeScreenshot: () => void;
   onRemoveImageInput: () => void;
-  onTextInputChange: (input: string) => void;
   onLoadImage: (file: File) => Promise<void>;
   changeManager: AiAssistanceModel.ChangeManager.ChangeManager;
   inspectElementToggled: boolean;
@@ -214,7 +213,6 @@ export interface Props {
   emptyStateSuggestions: AiAssistanceModel.AiAgent.ConversationSuggestion[];
   inputPlaceholder: Platform.UIString.LocalizedString;
   disclaimerText: Platform.UIString.LocalizedString;
-  isTextInputEmpty: boolean;
   isArtifactsSidebarOpen: boolean;
   uploadImageInputEnabled?: boolean;
   markdownRenderer: MarkdownLitRenderer;
@@ -353,7 +351,6 @@ export class ChatView extends HTMLElement {
 
   #handleSuggestionClick = (suggestion: string): void => {
     this.#inputRef.value?.getWidget()?.setInputValue(suggestion);
-    this.#props.onTextInputChange(suggestion);
     this.#render();
     this.focusTextInput();
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceDynamicSuggestionClicked);
@@ -417,7 +414,6 @@ export class ChatView extends HTMLElement {
             multimodalInputEnabled: this.#props.multimodalInputEnabled,
             conversationType: this.#props.conversationType,
             imageInput: this.#props.imageInput,
-            isTextInputEmpty: this.#props.isTextInputEmpty,
             uploadImageInputEnabled: this.#props.uploadImageInputEnabled,
             isReadOnly: this.#props.isReadOnly,
             additionalFloatyContext: this.#props.additionalFloatyContext,
@@ -432,7 +428,6 @@ export class ChatView extends HTMLElement {
             onNewConversation: this.#props.onNewConversation,
             onTakeScreenshot: this.#props.onTakeScreenshot,
             onRemoveImageInput: this.#props.onRemoveImageInput,
-            onTextInputChange: this.#props.onTextInputChange,
             onLoadImage: this.#props.onLoadImage,
           })} ${ref(this.#inputRef)}></devtools-widget>
         </main>

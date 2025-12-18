@@ -92,12 +92,12 @@ export type ImageInputData = {
 
 export interface ViewInput {
   isLoading: boolean;
+  isTextInputEmpty: boolean;
   blockedByCrossOrigin: boolean;
   isTextInputDisabled: boolean;
   inputPlaceholder: Platform.UIString.LocalizedString;
   selectedContext: AiAssistanceModel.AiAgent.ConversationContext<unknown>|null;
   inspectElementToggled: boolean;
-  isTextInputEmpty: boolean;
   additionalFloatyContext: UI.Floaty.FloatyContextSelection[];
   disclaimerText: string;
   conversationType: AiAssistanceModel.AiHistoryStorage.ConversationType;
@@ -645,7 +645,6 @@ export class ChatInput extends UI.Widget.Widget {
   inputPlaceholder = '' as Platform.UIString.LocalizedString;
   selectedContext = null as AiAssistanceModel.AiAgent.ConversationContext<unknown>| null;
   inspectElementToggled = false;
-  isTextInputEmpty = false;
   additionalFloatyContext = [] as UI.Floaty.FloatyContextSelection[];
   disclaimerText = '';
   conversationType = AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING;
@@ -661,6 +660,11 @@ export class ChatInput extends UI.Widget.Widget {
     }
     this.performUpdate();
   }
+
+  #isTextInputEmpty(): boolean {
+    return !this.#textAreaRef.value?.value?.trim();
+  }
+
   onTextSubmit:
       (text: string, imageInput?: Host.AidaClient.Part,
        multimodalInputType?: AiAssistanceModel.AiAgent.MultimodalInputType) => void = () => {};
@@ -668,7 +672,6 @@ export class ChatInput extends UI.Widget.Widget {
   onInspectElementClick = (): void => {};
   onCancelClick = (): void => {};
   onNewConversation = (): void => {};
-  onTextInputChange = (_input: string): void => {};
   onTakeScreenshot: () => void = () => {};
   onRemoveImageInput: () => void = () => {};
   onLoadImage: (_file: File) => Promise<void> = () => Promise.resolve();
@@ -689,7 +692,7 @@ export class ChatInput extends UI.Widget.Widget {
           isTextInputDisabled: this.isTextInputDisabled,
           selectedContext: this.selectedContext,
           inspectElementToggled: this.inspectElementToggled,
-          isTextInputEmpty: this.isTextInputEmpty,
+          isTextInputEmpty: this.#isTextInputEmpty(),
           additionalFloatyContext: this.additionalFloatyContext,
           disclaimerText: this.disclaimerText,
           conversationType: this.conversationType,
@@ -701,7 +704,9 @@ export class ChatInput extends UI.Widget.Widget {
           onContextClick: this.onContextClick,
           onInspectElementClick: this.onInspectElementClick,
           onNewConversation: this.onNewConversation,
-          onTextInputChange: this.onTextInputChange,
+          onTextInputChange: () => {
+            this.requestUpdate();
+          },
           onTakeScreenshot: this.onTakeScreenshot,
           onRemoveImageInput: this.onRemoveImageInput,
           onSubmit: this.onSubmit,

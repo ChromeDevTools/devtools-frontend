@@ -33,7 +33,7 @@ describeWithEnvironment('Sidebar', () => {
     const sidebar = await renderSidebar(parsedTrace);
     const tabbedPane = sidebar.element.querySelector('.tabbed-pane')?.shadowRoot;
     assert.isOk(tabbedPane);
-    const tabs = Array.from(tabbedPane.querySelectorAll('[role="tab"]'));
+    const tabs = Array.from(tabbedPane.querySelectorAll('.tabbed-pane-header-tab'));
     assert.lengthOf(tabs, 2);
     const labels = tabs.map(elem => elem.getAttribute('aria-label'));
     assert.deepEqual(labels, ['Insights', 'Annotations']);
@@ -46,7 +46,7 @@ describeWithEnvironment('Sidebar', () => {
     const tabbedPane = sidebar.element.querySelector('.tabbed-pane')?.shadowRoot;
     assert.isOk(tabbedPane);
 
-    const tabs = Array.from(tabbedPane.querySelectorAll('[role="tab"]'));
+    const tabs = Array.from(tabbedPane.querySelectorAll('.tabbed-pane-header-tab'));
     const selectedTabLabels =
         tabs.filter(tab => tab.classList.contains('selected')).map(elem => elem.getAttribute('aria-label'));
     assert.deepEqual(selectedTabLabels, ['Insights']);
@@ -93,7 +93,7 @@ describeWithEnvironment('Sidebar', () => {
     const sidebar = await renderSidebar({...parsedTrace, insights: null});
     const tabbedPane = sidebar.element.querySelector('.tabbed-pane')?.shadowRoot;
     assert.isOk(tabbedPane);
-    const tabs = Array.from(tabbedPane.querySelectorAll('[role="tab"]'));
+    const tabs = Array.from(tabbedPane.querySelectorAll('.tabbed-pane-header-tab'));
 
     const disabledTabLabels =
         tabs.filter(tab => tab.classList.contains('disabled')).map(elem => elem.getAttribute('aria-label'));

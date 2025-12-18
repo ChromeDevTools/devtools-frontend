@@ -28,10 +28,10 @@ describe('The Network Tab', function() {
       root: networkView,
     });
 
-    await devToolsPage.click('[aria-label=Response][role="tab"]', {
+    await devToolsPage.click('[aria-label=Response].tabbed-pane-header-tab', {
       root: networkView,
     });
-    await devToolsPage.waitFor('[aria-label=Response][role=tab][aria-selected=true]', networkView);
+    await devToolsPage.waitFor('[aria-label=Response].tabbed-pane-header-tab[aria-selected=true]', networkView);
 
     const editor = await devToolsPage.waitFor('[aria-label="Code editor"]');
 
@@ -85,10 +85,10 @@ describe('The Network Tab', function() {
       root: networkView,
     });
 
-    await devToolsPage.click('[aria-label=Response][role="tab"]', {
+    await devToolsPage.click('[aria-label=Response].tabbed-pane-header-tab', {
       root: networkView,
     });
-    await devToolsPage.waitFor('[aria-label=Response][role=tab][aria-selected=true]', networkView);
+    await devToolsPage.waitFor('[aria-label=Response].tabbed-pane-header-tab[aria-selected=true]', networkView);
 
     const editor = await devToolsPage.waitFor('[aria-label="Code editor"]');
 

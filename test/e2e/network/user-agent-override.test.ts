@@ -14,8 +14,8 @@ import {
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 
 const NETWORK_VIEW_SELECTOR = '.network-item-view';
-const HEADERS_TAB_SELECTOR = '[aria-label=Headers][role="tab"]';
-const ACTIVE_HEADERS_TAB_SELECTOR = '[aria-label=Headers][role=tab][aria-selected=true]';
+const HEADERS_TAB_SELECTOR = '[aria-label=Headers].tabbed-pane-header-tab';
+const ACTIVE_HEADERS_TAB_SELECTOR = '[aria-label=Headers].tabbed-pane-header-tab[aria-selected=true]';
 const RESPONSE_HEADERS_SELECTOR = '[aria-label="Request Headers"]';
 const HEADER_ROW_SELECTOR = '.row';
 

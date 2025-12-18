@@ -23,8 +23,8 @@ const ENABLE_OVERRIDES_SELECTOR = '[aria-label="Select folder for overrides"]';
 const OVERRIDES_FILESYSTEM_SELECTOR = '[aria-label="overrides, fs"]';
 const FILE_TREE_HEADERS_FILE_SELECTOR = '[aria-label=".headers, file"] .tree-element-title';
 const NETWORK_VIEW_SELECTOR = '.network-item-view';
-const HEADERS_TAB_SELECTOR = '[aria-label=Headers][role="tab"]';
-const ACTIVE_HEADERS_TAB_SELECTOR = '[aria-label=Headers][role=tab][aria-selected=true]';
+const HEADERS_TAB_SELECTOR = '[aria-label=Headers].tabbed-pane-header-tab';
+const ACTIVE_HEADERS_TAB_SELECTOR = '[aria-label=Headers].tabbed-pane-header-tab[aria-selected=true]';
 const RESPONSE_HEADERS_SELECTOR = '[aria-label="Response headers"]';
 const HEADER_ROW_SELECTOR = '.row';
 

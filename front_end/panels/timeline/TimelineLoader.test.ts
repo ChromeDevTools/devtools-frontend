@@ -50,6 +50,7 @@ describeWithEnvironment('TimelineLoader', () => {
     recordingProgress: function(usage: number): void {
       recordingProgressSpy(usage);
     },
+    recordingStatus: function(): void {},
     loadingCompleteForTest: function(): void {
       loadingCompleteForTestSpy();
     },

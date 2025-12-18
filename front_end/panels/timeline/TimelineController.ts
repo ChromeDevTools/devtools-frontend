@@ -2,7 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import type * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
@@ -16,14 +18,81 @@ import * as RecordingMetadata from './RecordingMetadata.js';
 
 const UIStrings = {
   /**
+   * @description Text in Timeline Panel of the Performance panel
+   */
+  initializingTracing: 'Initializing tracing…',
+  /**
    * @description Text in Timeline Controller of the Performance panel indicating that the Performance Panel cannot
    * record a performance trace because the type of target (where possible types are page, service worker and shared
    * worker) doesn't support it.
    */
   tracingNotSupported: 'Performance trace recording not supported for this type of target',
+  /**
+   * @description Text in a status dialog shown during a performance trace of a web page. It indicates to the user what the tracing is currently waiting on.
+   */
+  waitingForLoadEvent: 'Waiting for load event…',
+  /**
+   * @description Text in a status dialog shown during a performance trace of a web page. It indicates to the user what the tracing is currently waiting on.
+   */
+  waitingForLoadEventPlus5Seconds: 'Waiting for load event (+5s)…',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineController.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
+type StatusUpdate = string|null;
+type Listener = (status: StatusUpdate) => void;
+
+/**
+ * Accepts promises with a text label, and reports to a listener as promises resolve.
+ * Only returns the label of the first incomplete promise. When no more promises
+ * remain, the updated status is null.
+ */
+class StatusChecker {
+  #checkers: Array<{title: string, complete: boolean}> = [];
+  #listener: Listener|null = null;
+  #currentStatus: StatusUpdate = null;
+
+  add(title: string, promise: Promise<unknown>): void {
+    const item = {title, complete: false};
+    this.#checkers.push(item);
+
+    void promise.finally(() => {
+      item.complete = true;
+      this.#evaluate();
+    });
+  }
+
+  setListener(listener: Listener): void {
+    this.#listener = null;
+    this.#evaluate();
+    this.#listener = listener;
+    listener(this.#currentStatus);
+  }
+
+  removeListener(): void {
+    this.#listener = null;
+  }
+
+  #evaluate(): void {
+    let nextStatus: StatusUpdate = null;
+
+    // Only report the status of the first incomplete checker.
+    for (const checker of this.#checkers) {
+      if (!checker.complete) {
+        nextStatus = checker.title;
+        break;
+      }
+    }
+
+    if (nextStatus !== this.#currentStatus) {
+      this.#currentStatus = nextStatus;
+      if (this.#listener) {
+        this.#listener(nextStatus);
+      }
+    }
+  }
+}
+
 export class TimelineController implements Tracing.TracingManager.TracingManagerClient {
   readonly primaryPageTarget: SDK.Target.Target;
   readonly rootTarget: SDK.Target.Target;
@@ -34,6 +103,10 @@ export class TimelineController implements Tracing.TracingManager.TracingManager
   #recordingStartTime: number|null = null;
   private readonly client: Client;
   private tracingCompletePromise: PromiseWithResolvers<void>|null = null;
+
+  // These properties are only used for "Reload and record".
+  #statusChecker: StatusChecker|null = null;
+  #loadEventFiredCb: (() => void)|null = null;
 
   /**
    * We always need to profile against the DevTools root target, which is
@@ -76,9 +149,70 @@ export class TimelineController implements Tracing.TracingManager.TracingManager
     }
   }
 
-  async startRecording(options: RecordingOptions): Promise<Protocol.ProtocolResponseWithError> {
+  async #navigateToAboutBlank(): Promise<void> {
+    const aboutBlankNavigationComplete = new Promise<void>(async (resolve, reject) => {
+      const target = this.primaryPageTarget;
+      const resourceModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
+      if (!resourceModel) {
+        reject('Could not load resourceModel');
+        return;
+      }
+
+      /**
+       * To clear out the page and any state from prior test runs, we
+       * navigate to about:blank before initiating the trace recording.
+       * Once we have navigated to about:blank, we start recording and
+       * then navigate to the original page URL, to ensure we profile the
+       * page load.
+       **/
+      function waitForAboutBlank(event: Common.EventTarget.EventTargetEvent<SDK.ResourceTreeModel.ResourceTreeFrame>):
+          void {
+        if (event.data.url === 'about:blank') {
+          resolve();
+        } else {
+          reject(`Unexpected navigation to ${event.data.url}`);
+        }
+        resourceModel?.removeEventListener(SDK.ResourceTreeModel.Events.FrameNavigated, waitForAboutBlank);
+      }
+      resourceModel.addEventListener(SDK.ResourceTreeModel.Events.FrameNavigated, waitForAboutBlank);
+      await resourceModel.navigate('about:blank' as Platform.DevToolsPath.UrlString);
+    });
+
+    await aboutBlankNavigationComplete;
+  }
+
+  async #navigateWithSDK(url: Platform.DevToolsPath.UrlString): Promise<void> {
+    const resourceModel = this.primaryPageTarget.model(SDK.ResourceTreeModel.ResourceTreeModel);
+    if (!resourceModel) {
+      throw new Error('expected to find ResourceTreeModel');
+    }
+
+    const loadPromiseWithResolvers = Promise.withResolvers<void>();
+    this.#loadEventFiredCb = loadPromiseWithResolvers.resolve;
+    SDK.TargetManager.TargetManager.instance().addModelListener(
+        SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.Load, this.#onLoadEventFired, this);
+
+    // We don't need to await this because we are purposefully showing UI
+    // progress as the page loads & tracing is underway.
+    void resourceModel.navigate(url);
+
+    await loadPromiseWithResolvers.promise;
+  }
+
+  async startRecording(options: RecordingOptions): Promise<void> {
     function disabledByDefault(category: string): string {
       return 'disabled-by-default-' + category;
+    }
+
+    this.client.recordingStatus(i18nString(UIStrings.initializingTracing));
+
+    // If we are doing "Reload & record", we first navigate the page to
+    // about:blank. This is to ensure any data on the timeline from any
+    // previous performance recording is lost, avoiding the problem where a
+    // timeline will show data & screenshots from a previous page load that
+    // was not relevant.
+    if (options.navigateToUrl) {
+      await this.#navigateToAboutBlank();
     }
 
     // The following categories are also used in other tools, but this panel
@@ -144,11 +278,40 @@ export class TimelineController implements Tracing.TracingManager.TracingManager
     this.#navigationUrls = [];
     this.#fieldData = null;
     this.#recordingStartTime = Date.now();
+
     const response = await this.startRecordingWithCategories(categoriesArray.join(','));
     if (response.getError()) {
       await SDK.TargetManager.TargetManager.instance().resumeAllTargets();
+      throw new Error(response.getError());
     }
-    return response;
+
+    if (!options.navigateToUrl) {
+      return;
+    }
+
+    // If the user hit "Reload & record", by this point we have:
+    // 1. Navigated to about:blank
+    // 2. Initiated tracing.
+    // We therefore now should navigate back to the original URL that the user wants to profile.
+
+    // Setup a status checker so we can wait long enough for the page to settle,
+    // and to let users know what is going on.
+    this.#statusChecker?.removeListener();
+    this.#statusChecker = new StatusChecker();
+
+    const loadEvent = this.#navigateWithSDK(options.navigateToUrl);
+    this.#statusChecker.add(i18nString(UIStrings.waitingForLoadEvent), loadEvent);
+    this.#statusChecker.add(
+        i18nString(UIStrings.waitingForLoadEventPlus5Seconds),
+        loadEvent.then(() => new Promise(resolve => setTimeout(resolve, 5000))));
+
+    this.#statusChecker.setListener(status => {
+      if (status === null) {
+        void this.stopRecording();
+      } else {
+        this.client.recordingStatus(status);
+      }
+    });
   }
 
   async #onFrameNavigated(event: {data: SDK.ResourceTreeModel.ResourceTreeFrame}): Promise<void> {
@@ -159,7 +322,22 @@ export class TimelineController implements Tracing.TracingManager.TracingManager
     this.#navigationUrls.push(event.data.url);
   }
 
+  async #onLoadEventFired(
+      event: Common.EventTarget
+          .EventTargetEvent<{resourceTreeModel: SDK.ResourceTreeModel.ResourceTreeModel, loadTime: number}>):
+      Promise<void> {
+    if (!event.data.resourceTreeModel.mainFrame?.isPrimaryFrame()) {
+      return;
+    }
+
+    this.#loadEventFiredCb?.();
+  }
+
   async stopRecording(): Promise<void> {
+    this.#statusChecker?.removeListener();
+    this.#statusChecker = null;
+    this.#loadEventFiredCb = null;
+
     if (this.tracingManager) {
       this.tracingManager.stop();
     }
@@ -167,6 +345,8 @@ export class TimelineController implements Tracing.TracingManager.TracingManager
     SDK.TargetManager.TargetManager.instance().removeModelListener(
         SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.FrameNavigated, this.#onFrameNavigated,
         this);
+    SDK.TargetManager.TargetManager.instance().removeModelListener(
+        SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.Load, this.#onLoadEventFired, this);
 
     // When throttling is applied to the main renderer, it can slow down the
     // collection of trace events once tracing has completed. Therefore we
@@ -286,7 +466,8 @@ export class TimelineController implements Tracing.TracingManager.TracingManager
 }
 
 export interface Client {
-  recordingProgress(usage: number): void;
+  recordingProgress(bufferUsage: number): void;
+  recordingStatus(status: string): void;
   loadingStarted(): void;
   processingStarted(): void;
   loadingProgress(progress?: number): void;
@@ -300,4 +481,5 @@ export interface RecordingOptions {
   capturePictures?: boolean;
   captureFilmStrip?: boolean;
   captureSelectorStats?: boolean;
+  navigateToUrl?: Platform.DevToolsPath.UrlString;
 }

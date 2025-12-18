@@ -1,7 +1,6 @@
 // Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 
 /*
  * Copyright (C) 2007, 2008 Apple Inc.  All rights reserved.
@@ -36,14 +35,14 @@
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as SDK from '../../core/sdk/sdk.js';
-import * as Adorners from '../../ui/components/adorners/adorners.js';
-import {createIcon} from '../../ui/kit/kit.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as Lit from '../../ui/lit/lit.js';
 
 import * as ElementsComponents from './components/components.js';
-import {ElementsPanel} from './ElementsPanel.js';
-import {ElementsTreeElement} from './ElementsTreeElement.js';
+import {adornerRef, ElementsTreeElement} from './ElementsTreeElement.js';
 import {ElementsTreeOutline} from './ElementsTreeOutline.js';
+
+const {html, render} = Lit;
 
 const UIStrings = {
   /**
@@ -54,56 +53,44 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/elements/ShortcutTreeElement.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
+interface ViewInput {
+  title: string;
+  onRevealAdornerClick: (e: Event) => void;
+}
+
+export const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLElement): void => {
+  const revealAdornerConfig = ElementsComponents.AdornerManager.getRegisteredAdorner(
+      ElementsComponents.AdornerManager.RegisteredAdorners.REVEAL);
+  // clang-format off
+  render(html`
+    <div class="selection fill"></div>
+    <span class="elements-tree-shortcut-title">\u21AA ${input.title}</span>
+    <devtools-adorner
+      class="adorner-reveal"
+      .data=${{name: revealAdornerConfig.name, jslogContext: 'reveal'}}
+      aria-label=${i18nString(UIStrings.reveal)}
+      @click=${input.onRevealAdornerClick}
+      @mousedown=${(e: Event) => e.consume()}
+      ${adornerRef()}>
+      <span class="adorner-with-icon">
+        <devtools-icon name="select-element"></devtools-icon>
+        <span>${revealAdornerConfig.name}</span>
+      </span>
+    </devtools-adorner>
+  `, target);
+  // clang-format on
+};
+
 export class ShortcutTreeElement extends UI.TreeOutline.TreeElement {
   private readonly nodeShortcut: SDK.DOMModel.DOMNodeShortcut;
   #hovered?: boolean;
-  constructor(nodeShortcut: SDK.DOMModel.DOMNodeShortcut) {
-    super('');
-    this.listItemElement.createChild('div', 'selection fill');
-    const title = this.listItemElement.createChild('span', 'elements-tree-shortcut-title');
-    let text = nodeShortcut.nodeName.toLowerCase();
-    if (nodeShortcut.nodeType === Node.ELEMENT_NODE) {
-      text = '<' + text + '>';
-    }
-    title.textContent = '\u21AA ' + text;
-    this.nodeShortcut = nodeShortcut;
-    this.addRevealAdorner();
-  }
+  #view: typeof DEFAULT_VIEW;
 
-  addRevealAdorner(): void {
-    const adorner = new Adorners.Adorner.Adorner();
-    adorner.classList.add('adorner-reveal');
-    const config = ElementsComponents.AdornerManager.getRegisteredAdorner(
-        ElementsComponents.AdornerManager.RegisteredAdorners.REVEAL);
-    const name = config.name;
-    const adornerContent = document.createElement('span');
-    const linkIcon = createIcon('select-element');
-    const slotText = document.createElement('span');
-    slotText.textContent = name;
-    adornerContent.append(linkIcon);
-    adornerContent.append(slotText);
-    adornerContent.classList.add('adorner-with-icon');
-    adorner.data = {
-      name,
-      content: adornerContent,
-      jslogContext: 'reveal',
-    };
-    this.listItemElement.appendChild(adorner);
-    const onClick = ((() => {
-                       this.nodeShortcut.deferredNode.resolve(
-                           node => {
-                             void Common.Revealer.reveal(node);
-                           },
-                       );
-                     }) as EventListener);
-    adorner.addInteraction(onClick, {
-      isToggle: false,
-      shouldPropagateOnKeydown: false,
-      ariaLabelDefault: i18nString(UIStrings.reveal),
-      ariaLabelActive: i18nString(UIStrings.reveal),
-    });
-    adorner.addEventListener('mousedown', e => e.consume(), false);
-    ElementsPanel.instance().registerAdorner(adorner);
+  constructor(nodeShortcut: SDK.DOMModel.DOMNodeShortcut, view = DEFAULT_VIEW) {
+    super('');
+    this.nodeShortcut = nodeShortcut;
+    this.#view = view;
+    this.performUpdate();
   }
 
   get hovered(): boolean {
@@ -153,5 +140,25 @@ export class ShortcutTreeElement extends UI.TreeOutline.TreeElement {
       }
     }
     return true;
+  }
+
+  private onRevealAdornerClick(event: Event): void {
+    event.stopPropagation();
+    this.nodeShortcut.deferredNode.resolve(node => {
+      void Common.Revealer.reveal(node);
+    });
+  }
+
+  private performUpdate(): void {
+    let text = this.nodeShortcut.nodeName.toLowerCase();
+    if (this.nodeShortcut.nodeType === Node.ELEMENT_NODE) {
+      text = '<' + text + '>';
+    }
+    this.#view(
+        {
+          title: text,
+          onRevealAdornerClick: this.onRevealAdornerClick.bind(this),
+        },
+        undefined, this.listItemElement);
   }
 }

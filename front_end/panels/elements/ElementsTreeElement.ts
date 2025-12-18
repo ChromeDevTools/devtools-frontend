@@ -401,8 +401,6 @@ export interface ViewInput {
   scrollSnapAdornerActive: boolean;
 
   onGutterClick: (e: Event) => void;
-  onAdornerAdded: (adorner: Adorners.Adorner.Adorner) => void;
-  onAdornerRemoved: (adorner: Adorners.Adorner.Adorner) => void;
   onContainerAdornerClick: (e: Event) => void;
   onFlexAdornerClick: (e: Event) => void;
   onGridAdornerClick: (e: Event) => void;
@@ -422,21 +420,20 @@ export interface ViewOutput {
   contentElement?: HTMLElement;
 }
 
-function adornerRef(input: ViewInput): DirectiveResult<typeof Lit.Directives.RefDirective> {
+export function adornerRef(): DirectiveResult<typeof Lit.Directives.RefDirective> {
   let adorner: Adorners.Adorner.Adorner|undefined;
   return ref((el?: Element) => {
     if (adorner) {
-      input.onAdornerRemoved(adorner);
+      ElementsPanel.instance().deregisterAdorner(adorner);
     }
     adorner = el as Adorners.Adorner.Adorner;
-
     if (adorner) {
       if (ElementsPanel.instance().isAdornerEnabled(adorner.name)) {
         adorner.show();
       } else {
         adorner.hide();
       }
-      input.onAdornerAdded(adorner);
+      ElementsPanel.instance().registerAdorner(adorner);
     }
   });
 }
@@ -484,14 +481,14 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
         ${input.showAdAdorner ? html`<devtools-adorner
           aria-label=${i18nString(UIStrings.thisFrameWasIdentifiedAsAnAd)}
           .data=${{name: adAdornerConfig.name, jslogContext: adAdornerConfig.name}}
-          ${adornerRef(input)}>
+          ${adornerRef()}>
           <span>${adAdornerConfig.name}</span>
         </devtools-adorner>` : nothing}
         ${input.showViewSourceAdorner ? html`<devtools-adorner
           .data=${{name: viewSourceAdornerConfig.name, jslogContext: viewSourceAdornerConfig.name}}
           aria-label=${i18nString(UIStrings.viewSourceCode)}
           @click=${input.onViewSourceAdornerClick}
-          ${adornerRef(input)}>
+          ${adornerRef()}>
           <span>${viewSourceAdornerConfig.name}</span>
         </devtools-adorner>` : nothing}
         ${input.showContainerAdorner ? html`<devtools-adorner
@@ -510,7 +507,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
               event.stopPropagation();
             }
           }}
-          ${adornerRef(input)}>
+          ${adornerRef()}>
           <span class="adorner-with-icon">
             <devtools-icon name="container"></devtools-icon>
             <span>${input.containerType}</span>
@@ -532,7 +529,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
               event.stopPropagation();
             }
           }}
-          ${adornerRef(input)}>
+          ${adornerRef()}>
           <span>${flexAdornerConfig.name}</span>
         </devtools-adorner>`: nothing}
         ${input.showGridAdorner ? html`<devtools-adorner
@@ -554,7 +551,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
               event.stopPropagation();
             }
           }}
-          ${adornerRef(input)}>
+          ${adornerRef()}>
           <span>${input.isSubgrid ? subgridAdornerConfig.name : gridAdornerConfig.name}</span>
         </devtools-adorner>`: nothing}
         ${input.showGridLanesAdorner ? html`<devtools-adorner
@@ -573,7 +570,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
               event.stopPropagation();
             }
           }}
-          ${adornerRef(input)}>
+          ${adornerRef()}>
           <span>${gridLanesAdornerConfig.name}</span>
         </devtools-adorner>`: nothing}
         ${input.showMediaAdorner ? html`<devtools-adorner
@@ -590,7 +587,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
               event.stopPropagation();
             }
           }}
-          ${adornerRef(input)}>
+          ${adornerRef()}>
           <span class="adorner-with-icon">
             ${mediaAdornerConfig.name}<devtools-icon name="select-element"></devtools-icon>
           </span>
@@ -611,7 +608,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
               event.stopPropagation();
             }
           }}
-          ${adornerRef(input)}>
+          ${adornerRef()}>
           <span>${popoverAdornerConfig.name}</span>
         </devtools-adorner>`: nothing}
         ${input.showTopLayerAdorner ? html`<devtools-adorner
@@ -628,7 +625,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
               event.stopPropagation();
             }
           }}
-          ${adornerRef(input)}>
+          ${adornerRef()}>
           <span class="adorner-with-icon">
             ${`top-layer (${input.topLayerIndex})`}<devtools-icon name="select-element"></devtools-icon>
           </span>
@@ -640,7 +637,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
           class="scroll"
           .data=${{name: scrollAdornerConfig.name, jslogContext: scrollAdornerConfig.name}}
           aria-label=${i18nString(UIStrings.elementHasScrollableOverflow)}
-          ${adornerRef(input)}>
+          ${adornerRef()}>
           <span>${scrollAdornerConfig.name}</span>
         </devtools-adorner>` : nothing}
         ${input.showSlotAdorner ? html`<devtools-adorner
@@ -651,7 +648,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
           jslog=${VisualLogging.adorner(slotAdornerConfig.name).track({click: true})}
           @click=${input.onSlotAdornerClick}
           @mousedown=${(e: Event) => e.stopPropagation()}
-          ${adornerRef(input)}>
+          ${adornerRef()}>
           <span class="adorner-with-icon">
             <devtools-icon name="select-element"></devtools-icon>
             <span>${slotAdornerConfig.name}</span>
@@ -670,7 +667,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
               event.stopPropagation();
             }
           }}
-          ${adornerRef(input)}>
+          ${adornerRef()}>
           <span>${scrollSnapAdornerConfig.name}</span>
         </devtools-adorner>` : nothing}
       </div>`: nothing}
@@ -862,12 +859,6 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
           topLayerIndex: this.node().topLayerIndex(),
           onViewSourceAdornerClick: this.revealHTMLInSources.bind(this),
           onGutterClick: this.showContextMenu.bind(this),
-          onAdornerAdded: adorner => {
-            ElementsPanel.instance().registerAdorner(adorner);
-          },
-          onAdornerRemoved: adorner => {
-            ElementsPanel.instance().deregisterAdorner(adorner);
-          },
           onContainerAdornerClick: (event: Event) => this.#onContainerAdornerClick(event),
           onFlexAdornerClick: (event: Event) => this.#onFlexAdornerClick(event),
           onGridAdornerClick: (event: Event) => this.#onGridAdornerClick(event),

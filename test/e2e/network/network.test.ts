@@ -136,10 +136,10 @@ describe('The Network Tab', function() {
           // Introspect a request from the first navigation
           await selectRequestByName('headers-and-payload.html', {devToolsPage});
           const networkView = await devToolsPage.waitFor('.network-item-view');
-          await devToolsPage.click('[aria-label=Response][role="tab"]', {
+          await devToolsPage.click('[aria-label=Response].tabbed-pane-header-tab', {
             root: networkView,
           });
-          await devToolsPage.waitFor('[aria-label=Response][role=tab][aria-selected=true]', networkView);
+          await devToolsPage.waitFor('[aria-label=Response].tabbed-pane-header-tab[aria-selected=true]', networkView);
           await devToolsPage.waitFor('devtools-text-editor');
         });
   });

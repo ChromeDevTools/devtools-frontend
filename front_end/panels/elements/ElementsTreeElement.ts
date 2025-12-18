@@ -52,7 +52,7 @@ import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as CodeHighlighter from '../../ui/components/code_highlighter/code_highlighter.js';
 import * as Highlighting from '../../ui/components/highlighting/highlighting.js';
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
-import {createIcon, Icon} from '../../ui/kit/kit.js';
+import {Icon} from '../../ui/kit/kit.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
@@ -411,6 +411,9 @@ export interface ViewInput {
   onScrollSnapAdornerClick: (e: Event) => void;
   onTopLayerAdornerClick: (e: Event) => void;
   onViewSourceAdornerClick: () => void;
+  onSlotAdornerClick: (e: Event) => void;
+  showSlotAdorner: boolean;
+  slotName?: string;
 }
 
 export interface ViewOutput {
@@ -441,6 +444,8 @@ function adornerRef(input: ViewInput): DirectiveResult<typeof Lit.Directives.Ref
 export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLElement): void => {
   const adAdornerConfig =
       ElementsComponents.AdornerManager.getRegisteredAdorner(ElementsComponents.AdornerManager.RegisteredAdorners.AD);
+  const slotAdornerConfig =
+      ElementsComponents.AdornerManager.getRegisteredAdorner(ElementsComponents.AdornerManager.RegisteredAdorners.SLOT);
   const viewSourceAdornerConfig = ElementsComponents.AdornerManager.getRegisteredAdorner(
       ElementsComponents.AdornerManager.RegisteredAdorners.VIEW_SOURCE);
   const containerAdornerConfig = ElementsComponents.AdornerManager.getRegisteredAdorner(
@@ -466,7 +471,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
   const hasAdorners = input.adorners?.size || input.showAdAdorner || input.showContainerAdorner ||
       input.showFlexAdorner || input.showGridAdorner || input.showGridLanesAdorner || input.showMediaAdorner ||
       input.showPopoverAdorner || input.showTopLayerAdorner || input.showViewSourceAdorner || input.showScrollAdorner ||
-      input.showScrollSnapAdorner;
+      input.showScrollSnapAdorner || input.showSlotAdorner;
   // clang-format off
   render(html`
     <div ${ref(el => { output.contentElement = el as HTMLElement; })}>
@@ -638,6 +643,20 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
           ${adornerRef(input)}>
           <span>${scrollAdornerConfig.name}</span>
         </devtools-adorner>` : nothing}
+        ${input.showSlotAdorner ? html`<devtools-adorner
+          class=clickable
+          role=button
+          tabindex=0
+          .data=${{name: slotAdornerConfig.name, jslogContext: slotAdornerConfig.name}}
+          jslog=${VisualLogging.adorner(slotAdornerConfig.name).track({click: true})}
+          @click=${input.onSlotAdornerClick}
+          @mousedown=${(e: Event) => e.stopPropagation()}
+          ${adornerRef(input)}>
+          <span class="adorner-with-icon">
+            <devtools-icon name="select-element"></devtools-icon>
+            <span>${slotAdornerConfig.name}</span>
+          </span>
+        </devtools-adorner>`: nothing}
         ${input.showScrollSnapAdorner ? html`<devtools-adorner
           class="scroll-snap"
           .data=${{name: scrollSnapAdornerConfig.name, jslogContext: scrollSnapAdornerConfig.name}}
@@ -726,7 +745,6 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         canAddAttributes: this.nodeInternal.nodeType() === Node.ELEMENT_NODE,
       };
       void this.updateStyleAdorners();
-
       void this.#updateAdorners();
     }
     this.expandAllButtonElement = null;
@@ -831,7 +849,16 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
               !this.isClosingTag(),
           showScrollSnapAdorner: Boolean(this.#layout?.hasScroll) && !this.isClosingTag(),
           scrollSnapAdornerActive: this.#scrollSnapAdornerActive,
+          showSlotAdorner: Boolean(this.nodeInternal.assignedSlot) && !this.isClosingTag(),
           nodeInfo: this.#nodeInfo,
+          onSlotAdornerClick: () => {
+            if (this.nodeInternal.assignedSlot) {
+              const deferredNode = this.nodeInternal.assignedSlot.deferredNode;
+              deferredNode.resolve(node => {
+                void Common.Revealer.reveal(node);
+              });
+            }
+          },
           topLayerIndex: this.node().topLayerIndex(),
           onViewSourceAdornerClick: this.revealHTMLInSources.bind(this),
           onGutterClick: this.showContextMenu.bind(this),
@@ -1067,25 +1094,6 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
 
   setExpandedChildrenLimit(expandedChildrenLimit: number): void {
     this.#expandedChildrenLimit = expandedChildrenLimit;
-  }
-
-  createSlotLink(nodeShortcut: SDK.DOMModel.DOMNodeShortcut|null): void {
-    if (!isOpeningTag(this.tagTypeContext)) {
-      return;
-    }
-    if (nodeShortcut) {
-      const config = ElementsComponents.AdornerManager.getRegisteredAdorner(
-          ElementsComponents.AdornerManager.RegisteredAdorners.SLOT);
-      const adorner = this.adornSlot(config);
-      this.#adorners.add(adorner);
-      const deferredNode = nodeShortcut.deferredNode;
-      adorner.addEventListener('click', () => {
-        deferredNode.resolve(node => {
-          void Common.Revealer.reveal(node);
-        });
-      });
-      adorner.addEventListener('mousedown', e => e.consume(), false);
-    }
   }
 
   private createSelection(): void {
@@ -2972,26 +2980,6 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       ElementsPanel.instance().registerAdorner(adorner);
       this.updateAdorners();
     }
-    return adorner;
-  }
-
-  adornSlot({name}: {name: string}): Adorners.Adorner.Adorner {
-    const linkIcon = createIcon('select-element');
-    const slotText = document.createElement('span');
-    slotText.textContent = name;
-    const adornerContent = document.createElement('span');
-    adornerContent.append(linkIcon);
-    adornerContent.append(slotText);
-    adornerContent.classList.add('adorner-with-icon');
-    const adorner = new Adorners.Adorner.Adorner();
-    adorner.data = {
-      name,
-      content: adornerContent,
-      jslogContext: 'slot',
-    };
-    this.#adorners.add(adorner);
-    ElementsPanel.instance().registerAdorner(adorner);
-    this.updateAdorners();
     return adorner;
   }
 

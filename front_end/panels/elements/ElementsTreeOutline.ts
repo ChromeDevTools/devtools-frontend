@@ -1747,10 +1747,6 @@ export class ElementsTreeOutline extends
       treeElement.setCollapsible(false);
     }
 
-    if (node.hasAssignedSlot()) {
-      treeElement.createSlotLink(node.assignedSlot);
-    }
-
     treeElement.selectable = Boolean(this.selectEnabled);
     return treeElement;
   }

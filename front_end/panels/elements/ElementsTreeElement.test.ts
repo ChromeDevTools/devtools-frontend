@@ -207,6 +207,38 @@ describeWithMockConnection('ElementsTreeElement', () => {
 
     sinon.assert.notCalled(performUpdateSpy);
   });
+
+  it('initializes the slot adorner if the node has an assigned slot', async () => {
+    const target = createTarget();
+    const domModel = target.model(SDK.DOMModel.DOMModel);
+    assert.exists(domModel);
+    const node = new SDK.DOMModel.DOMNode(domModel);
+    const shortcut = {
+      deferredNode: {
+        resolve: (callback: (node: SDK.DOMModel.DOMNode) => void) => {
+          callback(node);
+        },
+        resolvePromise: () => Promise.resolve(node),
+        backendNodeId: () => 1,
+        highlight: () => {},
+      },
+    } as unknown as SDK.DOMModel.DOMNodeShortcut;
+    const treeOutline = new Elements.ElementsTreeOutline.ElementsTreeOutline();
+
+    sinon.stub(node, 'hasAssignedSlot').returns(true);
+    sinon.stub(node, 'assignedSlot').value(shortcut);
+
+    const treeElement = new Elements.ElementsTreeElement.ElementsTreeElement(node);
+    treeElement.treeOutline = treeOutline;
+    // Simulate binding to the tree
+    treeElement.onbind();
+
+    treeElement.performUpdate();
+
+    const adorner = treeElement.listItemElement.querySelector('devtools-adorner');
+    assert.exists(adorner);
+    assert.strictEqual(adorner.name, 'slot');
+  });
 });
 
 describeWithMockConnection('ElementsTreeElement highlighting', () => {

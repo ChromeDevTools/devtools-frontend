@@ -33,6 +33,8 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import '../../ui/components/adorners/adorners.js';
+
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -47,7 +49,7 @@ import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import type {DirectiveResult} from '../../third_party/lit/lib/directive.js';
-import * as Adorners from '../../ui/components/adorners/adorners.js';
+import type * as Adorners from '../../ui/components/adorners/adorners.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as CodeHighlighter from '../../ui/components/code_highlighter/code_highlighter.js';
 import * as Highlighting from '../../ui/components/highlighting/highlighting.js';
@@ -69,7 +71,7 @@ import {type ElementsTreeOutline, MappedCharToEntity} from './ElementsTreeOutlin
 import {ImagePreviewPopover} from './ImagePreviewPopover.js';
 import {getRegisteredDecorators, type MarkerDecorator, type MarkerDecoratorRegistration} from './MarkerDecorator.js';
 
-const {html, nothing, render, Directives: {ref, repeat}} = Lit;
+const {html, nothing, render, Directives: {ref}} = Lit;
 
 const UIStrings = {
   /**
@@ -395,7 +397,6 @@ export interface ViewInput {
   showViewSourceAdorner: boolean;
   showScrollAdorner: boolean;
   showScrollSnapAdorner: boolean;
-  adorners?: Set<Adorners.Adorner.Adorner>;
   nodeInfo?: DocumentFragment;
   topLayerIndex: number;
   scrollSnapAdornerActive: boolean;
@@ -441,6 +442,16 @@ export function adornerRef(): DirectiveResult<typeof Lit.Directives.RefDirective
   });
 }
 
+function handleAdornerKeydown(cb: (event: Event) => void): (event: KeyboardEvent) => void {
+  return (event: KeyboardEvent) => {
+    if (event.code === 'Enter' || event.code === 'Space') {
+      cb(event);
+      event.preventDefault();
+      event.stopPropagation();
+    }
+  };
+}
+
 export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLElement): void => {
   const adAdornerConfig =
       ElementsComponents.AdornerManager.getRegisteredAdorner(ElementsComponents.AdornerManager.RegisteredAdorners.AD);
@@ -470,9 +481,9 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
       ElementsComponents.AdornerManager.RegisteredAdorners.SCROLL_SNAP);
   const startingStyleAdornerConfig = ElementsComponents.AdornerManager.getRegisteredAdorner(
       ElementsComponents.AdornerManager.RegisteredAdorners.STARTING_STYLE);
-  const hasAdorners = input.adorners?.size || input.showAdAdorner || input.showContainerAdorner ||
-      input.showFlexAdorner || input.showGridAdorner || input.showGridLanesAdorner || input.showMediaAdorner ||
-      input.showPopoverAdorner || input.showTopLayerAdorner || input.showViewSourceAdorner || input.showScrollAdorner ||
+  const hasAdorners = input.showAdAdorner || input.showContainerAdorner || input.showFlexAdorner ||
+      input.showGridAdorner || input.showGridLanesAdorner || input.showMediaAdorner || input.showPopoverAdorner ||
+      input.showTopLayerAdorner || input.showViewSourceAdorner || input.showScrollAdorner ||
       input.showScrollSnapAdorner || input.showSlotAdorner || input.showStartingStyleAdorner;
   // clang-format off
   render(html`
@@ -506,12 +517,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
           active=${input.containerAdornerActive}
           aria-label=${input.containerAdornerActive ? i18nString(UIStrings.enableContainer) : i18nString(UIStrings.disableContainer)}
           @click=${input.onContainerAdornerClick}
-          @keydown=${(event: KeyboardEvent) => {
-            if (event.code === 'Enter' || event.code === 'Space') {
-              input.onContainerAdornerClick(event);
-              event.stopPropagation();
-            }
-          }}
+          @keydown=${handleAdornerKeydown(input.onContainerAdornerClick)}
           ${adornerRef()}>
           <span class="adorner-with-icon">
             <devtools-icon name="container"></devtools-icon>
@@ -528,12 +534,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
           active=${input.flexAdornerActive}
           aria-label=${input.flexAdornerActive ? i18nString(UIStrings.disableFlexMode) : i18nString(UIStrings.enableFlexMode)}
           @click=${input.onFlexAdornerClick}
-          @keydown=${(event: KeyboardEvent) => {
-            if (event.code === 'Enter' || event.code === 'Space') {
-              input.onFlexAdornerClick(event);
-              event.stopPropagation();
-            }
-          }}
+          @keydown=${handleAdornerKeydown(input.onFlexAdornerClick)}
           ${adornerRef()}>
           <span>${flexAdornerConfig.name}</span>
         </devtools-adorner>`: nothing}
@@ -550,12 +551,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
           active=${input.gridAdornerActive}
           aria-label=${input.gridAdornerActive ? i18nString(UIStrings.disableGridMode) : i18nString(UIStrings.enableGridMode)}
           @click=${input.onGridAdornerClick}
-          @keydown=${(event: KeyboardEvent) => {
-            if (event.code === 'Enter' || event.code === 'Space') {
-              input.onGridAdornerClick(event);
-              event.stopPropagation();
-            }
-          }}
+          @keydown=${handleAdornerKeydown(input.onGridAdornerClick)}
           ${adornerRef()}>
           <span>${input.isSubgrid ? subgridAdornerConfig.name : gridAdornerConfig.name}</span>
         </devtools-adorner>`: nothing}
@@ -569,12 +565,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
           active=${input.gridAdornerActive}
           aria-label=${input.gridAdornerActive ? i18nString(UIStrings.disableGridLanesMode) : i18nString(UIStrings.enableGridLanesMode)}
           @click=${input.onGridAdornerClick}
-          @keydown=${(event: KeyboardEvent) => {
-            if (event.code === 'Enter' || event.code === 'Space') {
-              input.onGridAdornerClick(event);
-              event.stopPropagation();
-            }
-          }}
+          @keydown=${handleAdornerKeydown(input.onGridAdornerClick)}
           ${adornerRef()}>
           <span>${gridLanesAdornerConfig.name}</span>
         </devtools-adorner>`: nothing}
@@ -586,12 +577,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
           jslog=${VisualLogging.adorner(mediaAdornerConfig.name).track({click: true})}
           aria-label=${i18nString(UIStrings.openMediaPanel)}
           @click=${input.onMediaAdornerClick}
-          @keydown=${(event: KeyboardEvent) => {
-            if (event.code === 'Enter' || event.code === 'Space') {
-              input.onMediaAdornerClick(event);
-              event.stopPropagation();
-            }
-          }}
+          @keydown=${handleAdornerKeydown(input.onMediaAdornerClick)}
           ${adornerRef()}>
           <span class="adorner-with-icon">
             ${mediaAdornerConfig.name}<devtools-icon name="select-element"></devtools-icon>
@@ -607,12 +593,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
           active=${input.popoverAdornerActive}
           aria-label=${input.popoverAdornerActive ? i18nString(UIStrings.stopForceOpenPopover) : i18nString(UIStrings.forceOpenPopover)}
           @click=${input.onPopoverAdornerClick}
-          @keydown=${(event: KeyboardEvent) => {
-            if (event.code === 'Enter' || event.code === 'Space') {
-              input.onPopoverAdornerClick(event);
-              event.stopPropagation();
-            }
-          }}
+          @keydown=${handleAdornerKeydown(input.onPopoverAdornerClick)}
           ${adornerRef()}>
           <span>${popoverAdornerConfig.name}</span>
         </devtools-adorner>`: nothing}
@@ -624,20 +605,12 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
           jslog=${VisualLogging.adorner(topLayerAdornerConfig.name).track({click: true})}
           aria-label=${i18nString(UIStrings.reveal)}
           @click=${input.onTopLayerAdornerClick}
-          @keydown=${(event: KeyboardEvent) => {
-            if (event.code === 'Enter' || event.code === 'Space') {
-              input.onTopLayerAdornerClick(event);
-              event.stopPropagation();
-            }
-          }}
+          @keydown=${handleAdornerKeydown(input.onTopLayerAdornerClick)}
           ${adornerRef()}>
           <span class="adorner-with-icon">
             ${`top-layer (${input.topLayerIndex})`}<devtools-icon name="select-element"></devtools-icon>
           </span>
         </devtools-adorner>`: nothing}
-        ${repeat(Array.from((input.adorners ?? new Set()).values()).sort(adornerComparator), adorner => {
-          return adorner;
-        })}
         ${input.showStartingStyleAdorner ? html`<devtools-adorner
           class="starting-style"
           .data=${{name: startingStyleAdornerConfig.name, jslogContext: startingStyleAdornerConfig.name}}
@@ -645,12 +618,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
           toggleable=true
           aria-label=${input.startingStyleAdornerActive ? i18nString(UIStrings.disableStartingStyle) : i18nString(UIStrings.enableStartingStyle)}
           @click=${input.onStartingStyleAdornerClick}
-          @keydown=${(event: KeyboardEvent) => {
-            if (event.code === 'Enter' || event.code === 'Space') {
-              input.onStartingStyleAdornerClick(event);
-              event.stopPropagation();
-            }
-          }}
+          @keydown=${handleAdornerKeydown(input.onStartingStyleAdornerClick)}
           ${adornerRef()}>
           <span>${startingStyleAdornerConfig.name}</span>
         </devtools-adorner>` : nothing}
@@ -682,12 +650,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
           toggleable=true
           aria-label=${input.scrollSnapAdornerActive ? i18nString(UIStrings.disableScrollSnap) : i18nString(UIStrings.enableScrollSnap)}
           @click=${input.onScrollSnapAdornerClick}
-          @keydown=${(event: KeyboardEvent) => {
-            if (event.code === 'Enter' || event.code === 'Space') {
-              input.onScrollSnapAdornerClick(event);
-              event.stopPropagation();
-            }
-          }}
+          @keydown=${handleAdornerKeydown(input.onScrollSnapAdornerClick)}
           ${adornerRef()}>
           <span>${scrollSnapAdornerConfig.name}</span>
         </devtools-adorner>` : nothing}
@@ -724,7 +687,6 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
   readonly tagTypeContext: TagTypeContext;
 
   #adornersThrottler = new Common.Throttler.Throttler(100);
-  #adorners = new Set<Adorners.Adorner.Adorner>();
   #nodeInfo?: DocumentFragment;
   #containerAdornerActive = false;
   #flexAdornerActive = false;
@@ -763,7 +725,6 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         tagType: TagType.OPENING,
         canAddAttributes: this.nodeInternal.nodeType() === Node.ELEMENT_NODE,
       };
-      void this.updateStyleAdorners();
       void this.#updateAdorners();
     }
     this.expandAllButtonElement = null;
@@ -839,15 +800,10 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     }
   }
 
-  get adorners(): Adorners.Adorner.Adorner[] {
-    return Array.from(this.#adorners);
-  }
-
   performUpdate(): void {
     DEFAULT_VIEW(
         {
           containerAdornerActive: this.#containerAdornerActive,
-          adorners: !this.isClosingTag() ? this.#adorners : undefined,
           showAdAdorner: this.nodeInternal.isAdFrameNode(),
           showContainerAdorner: Boolean(this.#layout?.containerType) && !this.isClosingTag(),
           containerType: this.#layout?.containerType,
@@ -2956,49 +2912,6 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     });
   }
 
-  // TODO: add unit tests for adorner-related methods after component and TypeScript works are done
-  adorn({name}: {name: string}, content?: HTMLElement): Adorners.Adorner.Adorner {
-    let adornerContent = content;
-    if (!adornerContent) {
-      adornerContent = document.createElement('span');
-      adornerContent.textContent = name;
-    }
-    const adorner = new Adorners.Adorner.Adorner();
-    adorner.data = {
-      name,
-      content: adornerContent,
-      jslogContext: name,
-    };
-    if (isOpeningTag(this.tagTypeContext)) {
-      this.#adorners.add(adorner);
-      ElementsPanel.instance().registerAdorner(adorner);
-      this.updateAdorners();
-    }
-    return adorner;
-  }
-
-  removeAdorner(adornerToRemove: Adorners.Adorner.Adorner): void {
-    ElementsPanel.instance().deregisterAdorner(adornerToRemove);
-    adornerToRemove.remove();
-    this.#adorners.delete(adornerToRemove);
-    this.updateAdorners();
-  }
-
-  /**
-   * @param adornerType optional type of adorner to remove. If not provided, remove all adorners.
-   */
-  removeAdornersByType(adornerType?: ElementsComponents.AdornerManager.RegisteredAdorners): void {
-    if (!isOpeningTag(this.tagTypeContext)) {
-      return;
-    }
-
-    for (const adorner of this.#adorners) {
-      if (adorner.name === adornerType || !adornerType) {
-        this.removeAdorner(adorner);
-      }
-    }
-  }
-
   updateAdorners(): void {
     // TODO: remove adornersThrottler in favour of throttled updated (requestUpdate/performUpdate).
     void this.#adornersThrottler.schedule(this.#updateAdorners.bind(this));
@@ -3006,7 +2919,6 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
 
   async #updateAdorners(): Promise<void> {
     if (this.isClosingTag()) {
-      this.performUpdate();
       return;
     }
     const node = this.node();
@@ -3017,28 +2929,6 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     } else {
       this.#layout = null;
     }
-    this.performUpdate();
-  }
-
-  // TODO: remove in favour of updateAdorners.
-  async updateStyleAdorners(): Promise<void> {
-    if (!isOpeningTag(this.tagTypeContext)) {
-      return;
-    }
-
-    const node = this.node();
-    const nodeId = node.id;
-    if (node.nodeType() === Node.COMMENT_NODE || node.nodeType() === Node.DOCUMENT_FRAGMENT_NODE ||
-        node.nodeType() === Node.TEXT_NODE || nodeId === undefined) {
-      return;
-    }
-    // TODO: move this to the template.
-    this.removeAdornersByType(ElementsComponents.AdornerManager.RegisteredAdorners.SUBGRID);
-    this.removeAdornersByType(ElementsComponents.AdornerManager.RegisteredAdorners.GRID);
-    this.removeAdornersByType(ElementsComponents.AdornerManager.RegisteredAdorners.GRID_LANES);
-    this.removeAdornersByType(ElementsComponents.AdornerManager.RegisteredAdorners.FLEX);
-    this.removeAdornersByType(ElementsComponents.AdornerManager.RegisteredAdorners.MEDIA);
-
     this.performUpdate();
   }
 

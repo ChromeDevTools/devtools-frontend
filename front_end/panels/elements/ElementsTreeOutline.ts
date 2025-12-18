@@ -372,7 +372,6 @@ export class DOMTreeWidget extends UI.Widget.Widget {
    */
   updateNodeAdorners(node: SDK.DOMModel.DOMNode): void {
     const element = this.#viewOutput.elementsTreeOutline?.findTreeElement(node);
-    void element?.updateStyleAdorners();
     void element?.updateAdorners();
   }
 
@@ -2019,7 +2018,6 @@ export class ElementsTreeOutline extends
     const {node} = event.data;
     const treeElement = this.treeElementByNode.get(node);
     if (treeElement && isOpeningTag(treeElement.tagTypeContext)) {
-      void treeElement.updateStyleAdorners();
       void treeElement.updateAdorners();
     }
   }

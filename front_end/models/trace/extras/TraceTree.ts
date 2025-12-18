@@ -687,7 +687,7 @@ export function generateEventID(event: Types.Events.Event): string {
         SamplesIntegrator.nativeGroup(event.callFrame.functionName) :
         event.callFrame.functionName;
     const location = event.callFrame.scriptId || event.callFrame.url || '';
-    return `f:${name}@${location}`;
+    return `f:${name}@${location}:${event.callFrame.lineNumber}:${event.callFrame.columnNumber}`;
   }
 
   if (Types.Events.isConsoleTimeStamp(event) && event.args.data) {

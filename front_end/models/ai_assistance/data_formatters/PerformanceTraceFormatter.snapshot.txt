@@ -374,17 +374,17 @@ This is the bottom-up summary for the entire trace. Only the top 20 activities (
 - self: 29 ms, total: 32 ms, source: clearTimeout
 - self: 27 ms, total: 50 ms, source: Parse HTML
 - self: 18 ms, total: 19 ms, source: aC (url: https://s.yimg.com/aaq/f10d509c/d1irmdsmbztlvx.js, line: 0, column: 19068)
-- self: 18 ms, total: 186 ms, source: (anonymous) (url: https://s.yimg.com/aaq/prebid/prebid-2.0.js, line: 5, column: 1)
 - self: 16 ms, total: 226 ms, source: Function call
-- self: 12 ms, total: 163 ms, source: (anonymous) (url: https://s.yimg.com/aaq/f10d509c/d1irmdsmbztlvx.js, line: 0, column: 0)
-- self: 12 ms, total: 83 ms, source: (anonymous) (url: https://cdn.taboola.com/libtrc/yahooweb-network/loader.js, line: 0, column: 9)
 - self: 11 ms, total: 12 ms, source: fetch
 - self: 11 ms, total: 12 ms, source: evaluate
 - self: 10 ms, total: 212 ms, source: Run microtasks
-- self: 9 ms, total: 19 ms, source: (anonymous) (url: https://s.yimg.com/du/ay/wnsrvbjmeprtfrnfx.js, line: 0, column: 0)
 - self: 9 ms, total: 10 ms, source: Minor GC
 - self: 8 ms, total: 226 ms, source: Evaluate script
-- self: 7 ms, total: 109 ms, source: n (url: https://s.yimg.com/aaq/prebid/prebid-2.0.js, line: 11, column: 4263)
+- self: 7 ms, total: 7 ms, source: (anonymous) (url: https://s.yimg.com/du/ay/wnsrvbjmeprtfrnfx.js, line: 111, column: 4705)
+- self: 7 ms, total: 9 ms, source: appendChild
+- self: 6 ms, total: 8 ms, source: Ei (url: https://s.yimg.com/aaq/benji/benji-2.2.99.js, line: 0, column: 24493)
+- self: 6 ms, total: 6 ms, source: Il (url: https://securepubads.g.doubleclick.net/pagead/managed/js/gpt/m202503250101/pubads_impl.js, line: 32, column: 58003)
+- self: 5 ms, total: 7 ms, source: n (url: https://s.yimg.com/aaq/prebid/prebid-2.0.js, line: 11, column: 3881)
 
 # Third parties
 
@@ -970,28 +970,29 @@ Content:
 4;p-73704-775-2074-419;(anonymous);7.2;0.1;0;5;0;9
 5;p-73704-775-2075-420;(anonymous);7.1;;0;6;0;200
 6;p-73704-775-2075-421;(anonymous);7.1;2.6;0;7;0;231
-7;p-73704-775-2095-422;(anonymous);4.5;1.3;0;8-19;0;292
-8;p-73704-775-2095-423;(anonymous);0.5;0.1;0;19-21;0;756
+7;p-73704-775-2095-422;(anonymous);4.5;1.3;0;8-20;0;292
+8;p-73704-775-2095-423;(anonymous);0.1;0.1;0;;0;756
 9;p-73704-775-2097-424;Et;0.1;0.1;0;;0;10766
-10;p-73704-775-2098-425;St;0.4;0.2;0;21;0;10904
+10;p-73704-775-2098-425;St;0.4;0.2;0;20;0;10904
 11;p-73704-775-2105-427;k;0.4;0.4;0;;0;5125
-12;p-73704-775-2108-428;Go;0.1;;0;22;0;68523
-13;p-73704-775-2109-430;Oi;0.4;0.2;0;23;0;38264
+12;p-73704-775-2108-428;Go;0.1;;0;21;0;68523
+13;p-73704-775-2109-430;Oi;0.4;0.2;0;22;0;38264
 14;p-73704-775-2115-432;tl;0.3;0.3;0;;0;154217
-15;p-73704-775-2118-433;ul;0.6;0.5;0;24;0;155034
+15;p-73704-775-2118-433;ul;0.6;0.5;0;23;0;155034
 16;p-73704-775-2121-435;cl;0.1;0.1;0;;0;155107
-17;p-73704-775-2123-436;hl;0.1;;0;25;0;155309
+17;p-73704-775-2123-436;hl;0.1;;0;24;0;155309
 18;p-73704-775-2124-439;sl;0.1;0.1;0;;0;154927
-19;p-73704-775-2127-441;hl;0.1;0.1;0;;0;155309
-20;p-73704-775-2128-442;registerService;0.2;;1;26-28;0;9441
-21;p-73704-775-2099-426;vt;0.2;0.2;0;;0;10155
-22;p-73704-775-2108-429;Mo;0.1;0.1;0;;0;66493
-23;p-73704-775-2111-431;vi;0.1;0.1;0;;0;37138
-24;p-73704-775-2118-434;ll;0.1;0.1;0;;0;155345
-25;p-73704-775-2123-437;ll;0.1;;0;28;0;155345
-26;p-73704-775-2128-443;u;0.1;0.1;1;;0;10091
-27;p-73704-775-2129-444;d;0.1;0.1;1;;0;595
-28;p-73704-775-2123-438;get prototype;0.1;0.1;;;;
+19;p-73704-775-2127-440;(anonymous);0.3;;0;25-27;0;161805
+20;p-73704-775-2099-426;vt;0.2;0.2;0;;0;10155
+21;p-73704-775-2108-429;Mo;0.1;0.1;0;;0;66493
+22;p-73704-775-2111-431;vi;0.1;0.1;0;;0;37138
+23;p-73704-775-2118-434;ll;0.1;0.1;0;;0;155345
+24;p-73704-775-2123-437;ll;0.1;;0;27;0;155345
+25;p-73704-775-2127-441;hl;0.1;0.1;0;;0;155309
+26;p-73704-775-2128-442;registerService;0.2;;1;28-30;0;9441
+27;p-73704-775-2123-438;get prototype;0.1;0.1;;;;
+28;p-73704-775-2128-443;u;0.1;0.1;1;;0;10091
+29;p-73704-775-2129-444;d;0.1;0.1;1;;0;595
 
 IMPORTANT: Never show eventKey to the user.
 

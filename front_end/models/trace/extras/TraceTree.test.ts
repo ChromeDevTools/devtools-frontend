@@ -406,7 +406,7 @@ describeWithEnvironment('TraceTree', () => {
         throw new Error('Could not find a profile call');
       }
       const eventId = Trace.Extras.TraceTree.generateEventID(profileCallEntry);
-      assert.strictEqual(eventId, 'f:performConcurrentWorkOnRoot@7');
+      assert.strictEqual(eventId, 'f:performConcurrentWorkOnRoot@7:25701:38');
     });
 
     it('generates the right ID for new engine native profile call events', async function() {
@@ -423,8 +423,30 @@ describeWithEnvironment('TraceTree', () => {
         throw new Error('Could not find a profile call');
       }
       const eventId = Trace.Extras.TraceTree.generateEventID(profileCallEntry);
-      assert.strictEqual(eventId, 'f:Compile@0');
+      assert.strictEqual(eventId, 'f:Compile@0:-1:-1');
     });
+
+    it('differentiates between anonymous functions based on their location', () => {
+      const event1 = makeProfileCall('(anonymous)', 0, 1000);
+      event1.callFrame.url = 'https://example.com/script.js';
+      event1.callFrame.scriptId = '1' as Protocol.Runtime.ScriptId;
+      event1.callFrame.lineNumber = 10;
+      event1.callFrame.columnNumber = 5;
+
+      const event2 = makeProfileCall('(anonymous)', 0, 1000);
+      event2.callFrame.url = 'https://example.com/script.js';
+      event2.callFrame.scriptId = '1' as Protocol.Runtime.ScriptId;
+      event2.callFrame.lineNumber = 15;
+      event2.callFrame.columnNumber = 10;
+
+      const eventId1 = Trace.Extras.TraceTree.generateEventID(event1);
+      const eventId2 = Trace.Extras.TraceTree.generateEventID(event2);
+
+      assert.strictEqual(eventId1, 'f:(anonymous)@1:10:5');
+      assert.strictEqual(eventId2, 'f:(anonymous)@1:15:10');
+      assert.notStrictEqual(eventId1, eventId2);
+    });
+
     it('correctly groups events with eventGroupIdCallback when using forceGroupIdCallback', () => {
       // This builds the following tree:
       // |------------ROOT-----------|

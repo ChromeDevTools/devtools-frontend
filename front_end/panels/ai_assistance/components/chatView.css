@@ -46,28 +46,6 @@
   padding-right: var(--sys-size-3);
 }
 
-footer.chat-view-footer {
-  display: flex;
-  justify-content: center;
-  padding-block: var(--sys-size-3);
-  font: var(--sys-typescale-body5-regular);
-  border-top: 1px solid var(--sys-color-divider);
-  text-wrap: balance;
-  text-align: center;
-
-  /*
-    The footer (for active conversations) is hidden by default on wider screens
-    because the disclaimer is shown inline within the chat input actions. Show it only on narrow widths (< 400px).
-  */
-  &:not(.is-read-only) {
-    display: none;
-    border: none;
-
-    @container --chat-ui-container (width < 400px) {
-      display: flex;
-    }
-  }
-}
 
 .messages-container {
   flex-grow: 1;
@@ -163,8 +141,6 @@ footer.chat-view-footer {
     }
   }
 }
-
-
 
 .indicator {
   color: var(--sys-color-green-bright);

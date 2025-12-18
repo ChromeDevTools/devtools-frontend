@@ -31,6 +31,10 @@ const UIStrings = {
    * @description Label added to the button that reveals the selected context item in DevTools
    */
   revealContextDescription: 'Reveal the selected context item in DevTools',
+  /**
+   * @description The footer disclaimer that links to more information about the AI feature.
+   */
+  learnAbout: 'Learn about AI in DevTools',
 } as const;
 
 /*
@@ -80,6 +84,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const lockedString = i18n.i18n.lockedString;
 
 const RELEVANT_DATA_LINK_CHAT_ID = 'relevant-data-link-chat';
+const RELEVANT_DATA_LINK_FOOTER_ID = 'relevant-data-link-footer';
 
 export type ImageInputData = {
   isLoading: true,
@@ -151,32 +156,48 @@ function renderRelevantDataDisclaimer({isLoading, blockedByCrossOrigin, tooltipI
   // clang-format on
 }
 
+function renderFooter(
+    disclaimerText: string, isLoading: boolean, blockedByCrossOrigin: boolean, isReadOnly: boolean): Lit.LitTemplate {
+  const classes = Lit.Directives.classMap({
+    'chat-input-footer': true,
+    'is-read-only': isReadOnly,
+  });
+
+  // clang-format off
+  return html`
+    <footer class=${classes} jslog=${VisualLogging.section('footer')}>
+      ${renderRelevantDataDisclaimer({
+        isLoading,
+        blockedByCrossOrigin,
+        tooltipId: RELEVANT_DATA_LINK_FOOTER_ID,
+        disclaimerText
+      })}
+    </footer>
+  `;
+  // clang-format on
+}
+
 function renderDisclaimerTooltip(id: string, disclaimerText: string): Lit.TemplateResult {
   // clang-format off
   return html`
     <devtools-tooltip
       id=${id}
       variant="rich"
-      placement="top"
     >
+      <div class="info-tooltip-container">
         ${disclaimerText}
-        <br /><br />
-        <x-link
-          href="https://support.google.com/legal/answer/13533059"
-          class="link"
-          jslog=${VisualLogging.link('terms-of-service').track({
+        <button
+          class="link tooltip-link"
+          role="link"
+          jslog=${VisualLogging.link('open-ai-settings').track({
             click: true,
           })}
-        >${lockedString('Terms of Service')}</x-link>
-        <x-link
-          href="https://policies.google.com/privacy"
-          class="link"
-          jslog=${VisualLogging.link('privacy-policy').track({
-            click: true,
-          })}
-        >${lockedString('Privacy Policy')}</x-link>
-    </devtools-tooltip>
-  `;
+          @click=${() => {
+            void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
+          }}>${i18nString(UIStrings.learnAbout)}
+        </button>
+      </div>
+    </devtools-tooltip>`;
   // clang-format on
 }
 
@@ -555,7 +576,11 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
 
   if (input.isReadOnly) {
     Lit.render(
-        html`<style>${chatInputStyles}</style>${renderReadOnlySection({onNewConversation: input.onNewConversation})}`,
+        html`<style>${chatInputStyles}</style>
+        ${renderReadOnlySection({
+          onNewConversation: input.onNewConversation
+        })}
+        ${renderFooter(input.disclaimerText, input.isLoading, input.blockedByCrossOrigin, input.isReadOnly)}`,
         target);
     return;
   }
@@ -631,7 +656,10 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
         </div>
       </div>
     </div>
-  </form>`, target);
+    </div>
+  </form>
+  ${renderFooter(input.disclaimerText, input.isLoading, input.blockedByCrossOrigin, input.isReadOnly)}
+  `, target);
   // clang-format on
 };
 

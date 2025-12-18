@@ -25,14 +25,6 @@ import {UserActionRow} from './UserActionRow.js';
 
 const {html, Directives: {ifDefined, ref, createRef}} = Lit;
 
-const UIStrings = {
-  /**
-   * @description The footer disclaimer that links to more information about the AI feature.
-   */
-  learnAbout: 'Learn about AI in DevTools',
-
-} as const;
-
 /*
 * Strings that don't need to be translated at this time.
 */
@@ -120,12 +112,9 @@ const UIStringsNotTranslate = {
   imageUnavailable: 'Image unavailable',
 } as const;
 
-const str_ = i18n.i18n.registerUIStrings('panels/ai_assistance/components/ChatView.ts', UIStrings);
-const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const lockedString = i18n.i18n.lockedString;
 
 const SCROLL_ROUNDING_OFFSET = 1;
-const RELEVANT_DATA_LINK_FOOTER_ID = 'relevant-data-link-footer';
 
 export interface Step {
   isLoading: boolean;
@@ -357,25 +346,6 @@ export class ChatView extends HTMLElement {
   };
 
   #render(): void {
-    const renderFooter = (): Lit.LitTemplate => {
-      const classes = Lit.Directives.classMap({
-        'chat-view-footer': true,
-        'is-read-only': this.#props.isReadOnly,
-      });
-
-      // clang-format off
-      return html`
-        <footer class=${classes} jslog=${VisualLogging.section('footer')}>
-          ${renderRelevantDataDisclaimer({
-            isLoading: this.#props.isLoading,
-            blockedByCrossOrigin: this.#props.blockedByCrossOrigin,
-            tooltipId: RELEVANT_DATA_LINK_FOOTER_ID,
-            disclaimerText: this.#props.disclaimerText
-          })}
-        </footer>
-      `;
-      // clang-format on
-    };
 
     const inputWidgetClasses = Lit.Directives.classMap({
       'chat-input-widget': true,
@@ -431,7 +401,6 @@ export class ChatView extends HTMLElement {
             onLoadImage: this.#props.onLoadImage,
           })} ${ref(this.#inputRef)}></devtools-widget>
         </main>
-       ${renderFooter()}
       </div>
     `, this.#shadow, {host: this});
     // clang-format on
@@ -942,60 +911,6 @@ function renderEmptyState({isTextInputDisabled, suggestions, onSuggestionClick}:
       })}
     </div>
   </div>`;
-  // clang-format on
-}
-
-function renderRelevantDataDisclaimer({isLoading, blockedByCrossOrigin, tooltipId, disclaimerText}: {
-  isLoading: boolean,
-  blockedByCrossOrigin: boolean,
-  tooltipId: string,
-  disclaimerText: string,
-}): Lit.LitTemplate {
-  const classes = Lit.Directives.classMap({
-    'chat-input-disclaimer': true,
-    'hide-divider': !isLoading && blockedByCrossOrigin,
-  });
-  // clang-format off
-  return html`
-    <p class=${classes}>
-      <button
-        class="link"
-        role="link"
-        aria-details=${tooltipId}
-        jslog=${VisualLogging.link('open-ai-settings').track({
-          click: true,
-        })}
-        @click=${() => {
-          void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
-        }}
-      >${lockedString('Relevant data')}</button>&nbsp;${lockedString('is sent to Google')}
-      ${renderDisclaimerTooltip(tooltipId, disclaimerText)}
-    </p>
-  `;
-  // clang-format on
-}
-
-function renderDisclaimerTooltip(id: string, disclaimerText: string): Lit.TemplateResult {
-  // clang-format off
-  return html`
-    <devtools-tooltip
-      id=${id}
-      variant="rich"
-    >
-      <div class="info-tooltip-container">
-        ${disclaimerText}
-        <button
-          class="link tooltip-link"
-          role="link"
-          jslog=${VisualLogging.link('open-ai-settings').track({
-            click: true,
-          })}
-          @click=${() => {
-            void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
-          }}>${i18nString(UIStrings.learnAbout)}
-        </button>
-      </div>
-    </devtools-tooltip>`;
   // clang-format on
 }
 

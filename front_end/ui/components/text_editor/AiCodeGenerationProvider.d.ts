@@ -21,5 +21,4 @@ export declare class AiCodeGenerationProvider {
     extension(): CodeMirror.Extension[];
     dispose(): void;
     editorInitialized(editor: TextEditor): void;
-    activateTeaser(update: CodeMirror.ViewUpdate): Promise<void>;
 }

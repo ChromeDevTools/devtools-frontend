@@ -26,7 +26,7 @@ export declare class SplitWidget extends SplitWidget_base {
     childWasDetached(widget: Widget): void;
     isSidebarSecond(): boolean;
     enableShowModeSaving(): void;
-    showMode(): string;
+    showMode(): ShowMode;
     sidebarIsShowing(): boolean;
     setSecondIsSidebar(secondIsSidebar: boolean): void;
     resizerElement(): Element;

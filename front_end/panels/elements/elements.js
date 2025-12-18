@@ -1660,6 +1660,7 @@ __export(CSSRuleValidator_exports, {
   Hint: () => Hint,
   MulticolFlexGridValidator: () => MulticolFlexGridValidator,
   PaddingValidator: () => PaddingValidator,
+  PositionAnchorValidator: () => PositionAnchorValidator,
   PositionValidator: () => PositionValidator,
   SizingValidator: () => SizingValidator,
   ZIndexValidator: () => ZIndexValidator,
@@ -1819,7 +1820,20 @@ var UIStrings4 = {
    * @example {align-contents} PROPERTY_NAME
    * @example {align-self} ALTERNATIVE_PROPERTY_NAME
    */
-  flexGridContainerPropertyRuleFix: "Try setting the {PROPERTY_NAME} on the container element or use {ALTERNATIVE_PROPERTY_NAME} instead."
+  flexGridContainerPropertyRuleFix: "Try setting the {PROPERTY_NAME} on the container element or use {ALTERNATIVE_PROPERTY_NAME} instead.",
+  /**
+   * @description The messages shown in the Style pane when the user hovers over a position-anchor declaration that has no affect on a non-anchor-positioned element.
+   * @example {relative} POSITION
+   */
+  invalidAnchorPositioning: 'An anchor was defined but the element was not anchor-positioned but positioned "{POSITION}".',
+  /**
+   * @description The messages shown in the Style pane when the user hovers over a position-anchor declaration that has no affect on a non-anchor-positioned element.
+   */
+  invalidAnchorPositioningFix: 'Set position to either "fixed" or "absolute".',
+  /**
+   * @description The messages shown in the Style pane when the user hovers over a position-anchor declaration that has no affect on hidden element.
+   */
+  unusedAnchorPositioning: "An anchor was defined but the element is hidden."
 };
 var str_4 = i18n7.i18n.registerUIStrings("panels/elements/CSSRuleValidator.ts", UIStrings4);
 var i18nString4 = i18n7.i18n.getLocalizedString.bind(void 0, str_4);
@@ -2170,6 +2184,22 @@ var ZIndexValidator = class extends CSSRuleValidator {
     }));
   }
 };
+var PositionAnchorValidator = class extends CSSRuleValidator {
+  constructor() {
+    super(["position-anchor"]);
+  }
+  getHint(propertyName, computedStyles) {
+    const position = computedStyles?.get("position") ?? "static";
+    const display = computedStyles?.get("display");
+    if (position !== "absolute" && position !== "fixed") {
+      return new Hint(i18nString4(UIStrings4.invalidAnchorPositioning, { POSITION: position }), i18nString4(UIStrings4.invalidAnchorPositioningFix));
+    }
+    if (display === "none") {
+      return new Hint(i18nString4(UIStrings4.unusedAnchorPositioning, { POSITION: position }), null);
+    }
+    return void 0;
+  }
+};
 var SizingValidator = class extends CSSRuleValidator {
   constructor() {
     super([
@@ -2255,6 +2285,7 @@ var CSS_RULE_VALIDATORS = [
   MulticolFlexGridValidator,
   PaddingValidator,
   PositionValidator,
+  PositionAnchorValidator,
   SizingValidator,
   ZIndexValidator
 ];
@@ -8107,6 +8138,9 @@ ${allDeclarationText}
   }
   onFilterChanged(event) {
     const regex = event.data ? new RegExp(Platform5.StringUtilities.escapeForRegExp(event.data), "i") : null;
+    this.setFilter(regex);
+  }
+  setFilter(regex) {
     this.lastFilterChange = Date.now();
     this.#filterRegex = regex;
     this.updateFilter();
@@ -8522,6 +8556,7 @@ ${allDeclarationText}
     const blocks = [new SectionBlock(null)];
     let sectionIdx = 0;
     let lastParentNode = null;
+    let lastLayerParent;
     let lastLayers = null;
     let sawLayers = false;
     const addLayerSeparator = (style) => {
@@ -8531,6 +8566,7 @@ ${allDeclarationText}
         if ((layers.length || lastLayers) && lastLayers !== layers) {
           const block = SectionBlock.createLayerBlock(parentRule);
           blocks.push(block);
+          lastLayerParent?.childBlocks.push(block);
           sawLayers = true;
           lastLayers = layers;
         }
@@ -8542,6 +8578,7 @@ ${allDeclarationText}
       if (parentNode && parentNode !== lastParentNode) {
         lastParentNode = parentNode;
         const block = await SectionBlock.createInheritedNodeBlock(lastParentNode);
+        lastLayerParent = block;
         blocks.push(block);
       }
       addLayerSeparator(style);
@@ -8555,6 +8592,7 @@ ${allDeclarationText}
         });
       }
     }
+    lastLayerParent = void 0;
     const customHighlightPseudoRulesets = Array.from(matchedStyles.customHighlightPseudoNames()).map((highlightName) => {
       return {
         highlightName,
@@ -8589,9 +8627,11 @@ ${allDeclarationText}
           lastLayers = null;
           if (parentNode) {
             const block = await SectionBlock.createInheritedPseudoTypeBlock(pseudo.pseudoType, pseudo.highlightName, parentNode);
+            lastLayerParent = block;
             blocks.push(block);
           } else {
             const block = SectionBlock.createPseudoTypeBlock(pseudo.pseudoType, pseudo.highlightName);
+            lastLayerParent = block;
             blocks.push(block);
           }
         }
@@ -8876,6 +8916,7 @@ var MAX_LINK_LENGTH = 23;
 var SectionBlock = class _SectionBlock {
   #titleElement;
   sections;
+  childBlocks = [];
   #expanded = false;
   #icon;
   constructor(titleElement, expandable, expandedByDefault) {
@@ -8991,14 +9032,15 @@ var SectionBlock = class _SectionBlock {
     return new _SectionBlock(separatorElement);
   }
   updateFilter() {
-    let hasAnyVisibleSection = false;
     let numVisibleSections = 0;
+    for (const childBlock of this.childBlocks) {
+      numVisibleSections += childBlock.updateFilter();
+    }
     for (const section3 of this.sections) {
       numVisibleSections += section3.updateFilter() ? 1 : 0;
-      hasAnyVisibleSection = section3.updateFilter() || hasAnyVisibleSection;
     }
     if (this.#titleElement) {
-      this.#titleElement.classList.toggle("hidden", !hasAnyVisibleSection);
+      this.#titleElement.classList.toggle("hidden", numVisibleSections === 0);
     }
     return numVisibleSections;
   }
@@ -11500,7 +11542,8 @@ var DEFAULT_VIEW3 = (input, output, target) => {
   const mediaAdornerConfig = ElementsComponents5.AdornerManager.getRegisteredAdorner(ElementsComponents5.AdornerManager.RegisteredAdorners.MEDIA);
   const popoverAdornerConfig = ElementsComponents5.AdornerManager.getRegisteredAdorner(ElementsComponents5.AdornerManager.RegisteredAdorners.POPOVER);
   const topLayerAdornerConfig = ElementsComponents5.AdornerManager.getRegisteredAdorner(ElementsComponents5.AdornerManager.RegisteredAdorners.TOP_LAYER);
-  const hasAdorners = input.adorners?.size || input.showAdAdorner || input.showContainerAdorner || input.showFlexAdorner || input.showGridAdorner || input.showGridLanesAdorner || input.showMediaAdorner || input.showPopoverAdorner || input.showTopLayerAdorner || input.showViewSourceAdorner;
+  const scrollAdornerConfig = ElementsComponents5.AdornerManager.getRegisteredAdorner(ElementsComponents5.AdornerManager.RegisteredAdorners.SCROLL);
+  const hasAdorners = input.adorners?.size || input.showAdAdorner || input.showContainerAdorner || input.showFlexAdorner || input.showGridAdorner || input.showGridLanesAdorner || input.showMediaAdorner || input.showPopoverAdorner || input.showTopLayerAdorner || input.showViewSourceAdorner || input.showScrollAdorner;
   render5(html8`
     <div ${ref2((el) => {
     output.contentElement = el;
@@ -11545,7 +11588,10 @@ var DEFAULT_VIEW3 = (input, output, target) => {
     }
   }}
           ${adornerRef(input)}>
-          <span>${containerAdornerConfig.name}</span>
+          <span class="adorner-with-icon">
+            <devtools-icon name="container"></devtools-icon>
+            <span>${input.containerType}</span>
+          </span>
         </devtools-adorner>` : nothing2}
         ${input.showFlexAdorner ? html8`<devtools-adorner
           class=clickable
@@ -11667,6 +11713,13 @@ var DEFAULT_VIEW3 = (input, output, target) => {
         ${repeat(Array.from((input.adorners ?? /* @__PURE__ */ new Set()).values()).sort(adornerComparator), (adorner2) => {
     return adorner2;
   })}
+        ${input.showScrollAdorner ? html8`<devtools-adorner
+          class="scroll"
+          .data=${{ name: scrollAdornerConfig.name, jslogContext: scrollAdornerConfig.name }}
+          aria-label=${i18nString11(UIStrings12.elementHasScrollableOverflow)}
+          ${adornerRef(input)}>
+          <span>${scrollAdornerConfig.name}</span>
+        </devtools-adorner>` : nothing2}
       </div>` : nothing2}
     </div>
   `, target);
@@ -11727,7 +11780,6 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI16.TreeOutline.Tr
         canAddAttributes: this.nodeInternal.nodeType() === Node.ELEMENT_NODE
       };
       void this.updateStyleAdorners();
-      void this.updateScrollAdorner();
       void this.#updateAdorners();
     }
     this.expandAllButtonElement = null;
@@ -11746,30 +11798,6 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI16.TreeOutline.Tr
     if (this.nodeInternal.detached && !this.isClosingTag()) {
       this.listItemNode.setAttribute("title", "Detached Tree Node");
     }
-    node.domModel().overlayModel().addEventListener("PersistentContainerQueryOverlayStateChanged", (event) => {
-      const { nodeId: eventNodeId, enabled } = event.data;
-      if (eventNodeId !== node.id) {
-        return;
-      }
-      this.#containerAdornerActive = enabled;
-      this.performUpdate();
-    });
-    node.domModel().overlayModel().addEventListener("PersistentFlexContainerOverlayStateChanged", (event) => {
-      const { nodeId: eventNodeId, enabled } = event.data;
-      if (eventNodeId !== node.id) {
-        return;
-      }
-      this.#flexAdornerActive = enabled;
-      this.performUpdate();
-    });
-    node.domModel().overlayModel().addEventListener("PersistentGridOverlayStateChanged", (event) => {
-      const { nodeId: eventNodeId, enabled } = event.data;
-      if (eventNodeId !== node.id) {
-        return;
-      }
-      this.#gridAdornerActive = enabled;
-      this.performUpdate();
-    });
   }
   static animateOnDOMUpdate(treeElement) {
     const tagName = treeElement.listItemElement.querySelector(".webkit-html-tag-name");
@@ -11822,7 +11850,8 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI16.TreeOutline.Tr
       containerAdornerActive: this.#containerAdornerActive,
       adorners: !this.isClosingTag() ? this.#adorners : void 0,
       showAdAdorner: this.nodeInternal.isAdFrameNode(),
-      showContainerAdorner: Boolean(this.#layout?.isContainer) && !this.isClosingTag(),
+      showContainerAdorner: Boolean(this.#layout?.containerType) && !this.isClosingTag(),
+      containerType: this.#layout?.containerType,
       showFlexAdorner: Boolean(this.#layout?.isFlex) && !this.isClosingTag(),
       flexAdornerActive: this.#flexAdornerActive,
       showGridAdorner: Boolean(this.#layout?.isGrid) && !this.isClosingTag(),
@@ -11834,6 +11863,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI16.TreeOutline.Tr
       popoverAdornerActive: this.#popoverAdornerActive,
       isSubgrid: Boolean(this.#layout?.isSubgrid),
       showViewSourceAdorner: this.nodeInternal.isRootNode() && isOpeningTag(this.tagTypeContext),
+      showScrollAdorner: (this.node().nodeName() === "HTML" && this.node().ownerDocument?.isScrollable() || this.node().nodeName() !== "#document" && this.node().isScrollable()) && !this.isClosingTag(),
       nodeInfo: this.#nodeInfo,
       topLayerIndex: this.node().topLayerIndex(),
       onViewSourceAdornerClick: this.revealHTMLInSources.bind(this),
@@ -12102,6 +12132,11 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI16.TreeOutline.Tr
     if (this.treeOutline && !this.isClosingTag()) {
       this.treeOutline.treeElementByNode.set(this.nodeInternal, this);
       this.nodeInternal.addEventListener(SDK14.DOMModel.DOMNodeEvents.TOP_LAYER_INDEX_CHANGED, this.performUpdate, this);
+      this.nodeInternal.addEventListener(SDK14.DOMModel.DOMNodeEvents.SCROLLABLE_FLAG_UPDATED, this.#onScrollableFlagUpdated, this);
+      const overlayModel = this.nodeInternal.domModel().overlayModel();
+      overlayModel.addEventListener("PersistentContainerQueryOverlayStateChanged", this.#onPersistentContainerQueryOverlayStateChanged, this);
+      overlayModel.addEventListener("PersistentFlexContainerOverlayStateChanged", this.#onPersistentFlexContainerOverlayStateChanged, this);
+      overlayModel.addEventListener("PersistentGridOverlayStateChanged", this.#onPersistentGridOverlayStateChanged, this);
     }
   }
   onunbind() {
@@ -12112,6 +12147,38 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI16.TreeOutline.Tr
       this.treeOutline.treeElementByNode.delete(this.nodeInternal);
     }
     this.nodeInternal.removeEventListener(SDK14.DOMModel.DOMNodeEvents.TOP_LAYER_INDEX_CHANGED, this.performUpdate, this);
+    this.nodeInternal.removeEventListener(SDK14.DOMModel.DOMNodeEvents.SCROLLABLE_FLAG_UPDATED, this.#onScrollableFlagUpdated, this);
+    const overlayModel = this.nodeInternal.domModel().overlayModel();
+    overlayModel.removeEventListener("PersistentContainerQueryOverlayStateChanged", this.#onPersistentContainerQueryOverlayStateChanged, this);
+    overlayModel.removeEventListener("PersistentFlexContainerOverlayStateChanged", this.#onPersistentFlexContainerOverlayStateChanged, this);
+    overlayModel.removeEventListener("PersistentGridOverlayStateChanged", this.#onPersistentGridOverlayStateChanged, this);
+  }
+  #onScrollableFlagUpdated() {
+    void this.#updateAdorners();
+  }
+  #onPersistentContainerQueryOverlayStateChanged(event) {
+    const { nodeId: eventNodeId, enabled } = event.data;
+    if (eventNodeId !== this.nodeInternal.id) {
+      return;
+    }
+    this.#containerAdornerActive = enabled;
+    this.performUpdate();
+  }
+  #onPersistentFlexContainerOverlayStateChanged(event) {
+    const { nodeId: eventNodeId, enabled } = event.data;
+    if (eventNodeId !== this.nodeInternal.id) {
+      return;
+    }
+    this.#flexAdornerActive = enabled;
+    this.performUpdate();
+  }
+  #onPersistentGridOverlayStateChanged(event) {
+    const { nodeId: eventNodeId, enabled } = event.data;
+    if (eventNodeId !== this.nodeInternal.id) {
+      return;
+    }
+    this.#gridAdornerActive = enabled;
+    this.performUpdate();
   }
   onattach() {
     if (this.#hovered) {
@@ -12406,7 +12473,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI16.TreeOutline.Tr
           ]
         },
         {
-          condition: (props) => Boolean(props?.isContainer),
+          condition: (props) => Boolean(props?.containerType),
           items: [
             {
               label: i18nString11(UIStrings12.explainContainerQueries),
@@ -13636,24 +13703,6 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI16.TreeOutline.Tr
       ariaLabelActive: i18nString11(UIStrings12.disableStartingStyle)
     });
     this.#adorners.add(adorner2);
-  }
-  updateScrollAdorner() {
-    if (!isOpeningTag(this.tagTypeContext)) {
-      return;
-    }
-    const scrollAdorner = this.#adorners.values().find((x) => x.name === ElementsComponents5.AdornerManager.RegisteredAdorners.SCROLL);
-    const needsAScrollAdorner = this.node().nodeName() === "HTML" && this.node().ownerDocument?.isScrollable() || this.node().nodeName() !== "#document" && this.node().isScrollable();
-    if (needsAScrollAdorner && !scrollAdorner) {
-      this.pushScrollAdorner();
-    } else if (!needsAScrollAdorner && scrollAdorner) {
-      this.removeAdorner(scrollAdorner);
-    }
-  }
-  pushScrollAdorner() {
-    const config = ElementsComponents5.AdornerManager.getRegisteredAdorner(ElementsComponents5.AdornerManager.RegisteredAdorners.SCROLL);
-    const adorner2 = this.adorn(config);
-    UI16.Tooltip.Tooltip.install(adorner2, i18nString11(UIStrings12.elementHasScrollableOverflow));
-    adorner2.classList.add("scroll");
   }
 };
 var InitialChildrenLimit = 500;
@@ -15410,7 +15459,6 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common11.ObjectWrap
     domModel.addEventListener(SDK16.DOMModel.Events.DocumentUpdated, this.documentUpdated, this);
     domModel.addEventListener(SDK16.DOMModel.Events.ChildNodeCountUpdated, this.childNodeCountUpdated, this);
     domModel.addEventListener(SDK16.DOMModel.Events.DistributedNodesChanged, this.distributedNodesChanged, this);
-    domModel.addEventListener(SDK16.DOMModel.Events.ScrollableFlagUpdated, this.scrollableFlagUpdated, this);
     domModel.addEventListener(SDK16.DOMModel.Events.AffectedByStartingStylesFlagUpdated, this.affectedByStartingStylesFlagUpdated, this);
     domModel.addEventListener(SDK16.DOMModel.Events.AdoptedStyleSheetsModified, this.adoptedStyleSheetsModified, this);
   }
@@ -15424,7 +15472,6 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common11.ObjectWrap
     domModel.removeEventListener(SDK16.DOMModel.Events.DocumentUpdated, this.documentUpdated, this);
     domModel.removeEventListener(SDK16.DOMModel.Events.ChildNodeCountUpdated, this.childNodeCountUpdated, this);
     domModel.removeEventListener(SDK16.DOMModel.Events.DistributedNodesChanged, this.distributedNodesChanged, this);
-    domModel.removeEventListener(SDK16.DOMModel.Events.ScrollableFlagUpdated, this.scrollableFlagUpdated, this);
     domModel.removeEventListener(SDK16.DOMModel.Events.AffectedByStartingStylesFlagUpdated, this.affectedByStartingStylesFlagUpdated, this);
     domModel.removeEventListener(SDK16.DOMModel.Events.AdoptedStyleSheetsModified, this.adoptedStyleSheetsModified, this);
     elementsTreeOutlineByDOMModel.delete(domModel);
@@ -15810,19 +15857,6 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common11.ObjectWrap
     const treeElement = this.treeElementByNode.get(node);
     if (treeElement) {
       treeElement.updateDecorations();
-    }
-  }
-  scrollableFlagUpdated(event) {
-    let { node } = event.data;
-    if (node.nodeName() === "#document") {
-      if (!node.ownerDocument?.documentElement) {
-        return;
-      }
-      node = node.ownerDocument.documentElement;
-    }
-    const treeElement = this.treeElementByNode.get(node);
-    if (treeElement && isOpeningTag(treeElement.tagTypeContext)) {
-      void treeElement.updateScrollAdorner();
     }
   }
   affectedByStartingStylesFlagUpdated(event) {

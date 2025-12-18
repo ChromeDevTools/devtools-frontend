@@ -2986,8 +2986,8 @@ The order of headers corresponds to an internal fixed list. If a header is not p
 };
 
 // gen/front_end/models/ai_assistance/data_formatters/PerformanceInsightFormatter.js
-function getLCPData(parsedTrace, frameId, navigationId) {
-  const navMetrics = parsedTrace.data.PageLoadMetrics.metricScoresByFrameId.get(frameId)?.get(navigationId);
+function getLCPData(parsedTrace, frameId, navigation) {
+  const navMetrics = parsedTrace.data.PageLoadMetrics.metricScoresByFrameId.get(frameId)?.get(navigation);
   if (!navMetrics) {
     return null;
   }
@@ -2999,12 +2999,13 @@ function getLCPData(parsedTrace, frameId, navigationId) {
     return null;
   }
   const lcpEvent = metric?.event;
-  if (!lcpEvent || !Trace4.Types.Events.isLargestContentfulPaintCandidate(lcpEvent)) {
+  if (!lcpEvent || !Trace4.Types.Events.isAnyLargestContentfulPaintCandidate(lcpEvent)) {
     return null;
   }
+  const navigationId = navigation.args.data?.navigationId;
   return {
     lcpEvent,
-    lcpRequest: parsedTrace.data.LargestImagePaint.lcpRequestByNavigationId.get(navigationId),
+    lcpRequest: navigationId ? parsedTrace.data.LargestImagePaint.lcpRequestByNavigationId.get(navigationId) : void 0,
     metricScore: metric
   };
 }
@@ -3049,13 +3050,13 @@ var PerformanceInsightFormatter = class {
    * Information about LCP which we pass to the LLM for all insights that relate to LCP.
    */
   #lcpMetricSharedContext() {
-    if (!this.#insight.navigationId) {
+    if (!this.#insight.navigation) {
       return "";
     }
-    if (!this.#insight.frameId || !this.#insight.navigationId) {
+    if (!this.#insight.frameId || !this.#insight.navigation) {
       return "";
     }
-    const data = getLCPData(this.#parsedTrace, this.#insight.frameId, this.#insight.navigationId);
+    const data = getLCPData(this.#parsedTrace, this.#insight.frameId, this.#insight.navigation);
     if (!data) {
       return "";
     }
@@ -6241,7 +6242,7 @@ var NodeContext = class extends ConversationContext {
         { title: "Why does this element scroll?", jslogContext: "scroll-why" }
       ];
     }
-    if (layoutProps.isContainer) {
+    if (layoutProps.containerType) {
       return [
         { title: "What are container queries?", jslogContext: "container-what" },
         { title: "How do I use container-type?", jslogContext: "container-how" },

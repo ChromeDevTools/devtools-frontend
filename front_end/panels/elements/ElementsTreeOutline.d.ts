@@ -237,7 +237,6 @@ export declare class ElementsTreeOutline extends ElementsTreeOutline_base {
     insertChildElement(treeElement: ElementsTreeElement | TopLayerContainer, child: SDK.DOMModel.DOMNode | SDK.DOMModel.AdoptedStyleSheet, index: number, isClosingTag?: boolean): UI.TreeOutline.TreeElement;
     private moveChild;
     private markersChanged;
-    private scrollableFlagUpdated;
     private affectedByStartingStylesFlagUpdated;
 }
 export declare namespace ElementsTreeOutline {

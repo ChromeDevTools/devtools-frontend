@@ -26,6 +26,7 @@ export const SORT_ORDER_PAGE_LOAD_MARKERS = {
     ["firstPaint" /* Trace.Types.Events.Name.MARK_FIRST_PAINT */]: 2,
     ["MarkDOMContent" /* Trace.Types.Events.Name.MARK_DOM_CONTENT */]: 3,
     ["largestContentfulPaint::Candidate" /* Trace.Types.Events.Name.MARK_LCP_CANDIDATE */]: 4,
+    ["largestContentfulPaint::CandidateForSoftNavigation" /* Trace.Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION */]: 5,
 };
 export class TimingsTrackAppender {
     appenderName = 'Timings';
@@ -147,7 +148,7 @@ export class TimingsTrackAppender {
             color = '#1A6937';
             title = "FCP" /* Trace.Handlers.ModelHandlers.PageLoadMetrics.MetricName.FCP */;
         }
-        if (Trace.Types.Events.isLargestContentfulPaintCandidate(markerEvent)) {
+        if (Trace.Types.Events.isAnyLargestContentfulPaintCandidate(markerEvent)) {
             color = '#1A3422';
             title = "LCP" /* Trace.Handlers.ModelHandlers.PageLoadMetrics.MetricName.LCP */;
         }
@@ -236,7 +237,7 @@ export class TimingsTrackAppender {
         }
         if (Trace.Types.Events.isMarkerEvent(event) || Trace.Types.Events.isPerformanceMark(event) ||
             Trace.Types.Events.isConsoleTimeStamp(event) || isExtensibilityMarker) {
-            const timeOfEvent = Trace.Helpers.Timing.timeStampForEventAdjustedByClosestNavigation(event, this.#parsedTrace.data.Meta.traceBounds, this.#parsedTrace.data.Meta.navigationsByNavigationId, this.#parsedTrace.data.Meta.navigationsByFrameId);
+            const timeOfEvent = Trace.Helpers.Timing.timeStampForEventAdjustedByClosestNavigation(event, this.#parsedTrace.data.Meta.traceBounds, this.#parsedTrace.data.Meta.navigationsByNavigationId, this.#parsedTrace.data.Meta.softNavigationsById, this.#parsedTrace.data.Meta.navigationsByFrameId);
             info.formattedTime = getDurationString(timeOfEvent);
         }
     }

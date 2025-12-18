@@ -13,3 +13,4 @@ export declare function decompress(gzippedBuffer: ArrayBufferLike): Promise<stri
 export declare function compress(str: string): Promise<ArrayBuffer>;
 export declare function decompressStream(stream: ReadableStream): ReadableStream;
 export declare function compressStream(stream: ReadableStream): ReadableStream;
+export declare function createMonitoredStream(stream: ReadableStream, onProgress: (bytesRead: number) => void): ReadableStream;

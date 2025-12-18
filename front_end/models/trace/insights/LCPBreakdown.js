@@ -155,13 +155,13 @@ export function generateInsight(data, context) {
     if (!frameMetrics) {
         throw new Error('no frame metrics');
     }
-    const navMetrics = frameMetrics.get(context.navigationId);
+    const navMetrics = frameMetrics.get(context.navigation);
     if (!navMetrics) {
         throw new Error('no navigation metrics');
     }
     const metricScore = navMetrics.get("LCP" /* Handlers.ModelHandlers.PageLoadMetrics.MetricName.LCP */);
     const lcpEvent = metricScore?.event;
-    if (!lcpEvent || !Types.Events.isLargestContentfulPaintCandidate(lcpEvent)) {
+    if (!lcpEvent || !Types.Events.isAnyLargestContentfulPaintCandidate(lcpEvent)) {
         return finalize({ warnings: [InsightWarning.NO_LCP] });
     }
     // This helps calculate the subparts.

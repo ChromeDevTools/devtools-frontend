@@ -3,12 +3,12 @@
 // found in the LICENSE file.
 import * as Handlers from './handlers/handlers.js';
 import * as Lantern from './lantern/lantern.js';
-function createProcessedNavigation(data, frameId, navigationId) {
+function createProcessedNavigation(data, frameId, navigation) {
     const scoresByNav = data.PageLoadMetrics.metricScoresByFrameId.get(frameId);
     if (!scoresByNav) {
         throw new Lantern.Core.LanternError('missing metric scores for frame');
     }
-    const scores = scoresByNav.get(navigationId);
+    const scores = scoresByNav.get(navigation);
     if (!scores) {
         throw new Lantern.Core.LanternError('missing metric scores for specified navigation');
     }

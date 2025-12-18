@@ -352,27 +352,15 @@ export class TimelineFlameChartNetworkDataProvider {
     }
     /**
      * When users zoom in the flamechart, we only want to show them the network
-     * requests between startTime and endTime. This function will call the
-     * trackAppender to update the timeline data, and then force to create a new
-     * PerfUI.FlameChart.FlameChartTimelineData instance to force the flamechart
-     * to re-render.
+     * requests between startTime and endTime.
      */
     #updateTimelineData(startTime, endTime) {
         if (!this.#networkTrackAppender || !this.#timelineData) {
             return;
         }
+        // This also has the side-effect of updating this.#timelineData with new
+        // information.
         this.#maxLevel = this.#networkTrackAppender.relayoutEntriesWithinBounds(this.#events, startTime, endTime);
-        // TODO(crbug.com/1459225): Remove this recreating code.
-        // Force to create a new PerfUI.FlameChart.FlameChartTimelineData instance
-        // to force the flamechart to re-render. This also causes crbug.com/1459225.
-        this.#timelineData = PerfUI.FlameChart.FlameChartTimelineData.create({
-            entryLevels: this.#timelineData?.entryLevels,
-            entryTotalTimes: this.#timelineData?.entryTotalTimes,
-            entryStartTimes: this.#timelineData?.entryStartTimes,
-            groups: this.#timelineData?.groups,
-            initiatorsData: this.#timelineData.initiatorsData,
-            entryDecorations: this.#timelineData.entryDecorations,
-        });
     }
     /**
      * Note that although we use the same mechanism to track configuration

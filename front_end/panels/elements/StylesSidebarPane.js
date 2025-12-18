@@ -394,6 +394,9 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
     }
     onFilterChanged(event) {
         const regex = event.data ? new RegExp(Platform.StringUtilities.escapeForRegExp(event.data), 'i') : null;
+        this.setFilter(regex);
+    }
+    setFilter(regex) {
         this.lastFilterChange = Date.now();
         this.#filterRegex = regex;
         this.updateFilter();
@@ -838,6 +841,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
         const blocks = [new SectionBlock(null)];
         let sectionIdx = 0;
         let lastParentNode = null;
+        let lastLayerParent;
         let lastLayers = null;
         let sawLayers = false;
         const addLayerSeparator = (style) => {
@@ -847,6 +851,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
                 if ((layers.length || lastLayers) && lastLayers !== layers) {
                     const block = SectionBlock.createLayerBlock(parentRule);
                     blocks.push(block);
+                    lastLayerParent?.childBlocks.push(block);
                     sawLayers = true;
                     lastLayers = layers;
                 }
@@ -860,6 +865,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
             if (parentNode && parentNode !== lastParentNode) {
                 lastParentNode = parentNode;
                 const block = await SectionBlock.createInheritedNodeBlock(lastParentNode);
+                lastLayerParent = block;
                 blocks.push(block);
             }
             addLayerSeparator(style);
@@ -874,6 +880,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
                 });
             }
         }
+        lastLayerParent = undefined;
         const customHighlightPseudoRulesets = Array.from(matchedStyles.customHighlightPseudoNames()).map(highlightName => {
             return {
                 highlightName,
@@ -912,10 +919,12 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
                     lastLayers = null;
                     if (parentNode) {
                         const block = await SectionBlock.createInheritedPseudoTypeBlock(pseudo.pseudoType, pseudo.highlightName, parentNode);
+                        lastLayerParent = block;
                         blocks.push(block);
                     }
                     else {
                         const block = SectionBlock.createPseudoTypeBlock(pseudo.pseudoType, pseudo.highlightName);
+                        lastLayerParent = block;
                         blocks.push(block);
                     }
                 }
@@ -1207,6 +1216,7 @@ const MAX_LINK_LENGTH = 23;
 export class SectionBlock {
     #titleElement;
     sections;
+    childBlocks = [];
     #expanded = false;
     #icon;
     constructor(titleElement, expandable, expandedByDefault) {
@@ -1324,14 +1334,15 @@ export class SectionBlock {
         return new SectionBlock(separatorElement);
     }
     updateFilter() {
-        let hasAnyVisibleSection = false;
         let numVisibleSections = 0;
+        for (const childBlock of this.childBlocks) {
+            numVisibleSections += childBlock.updateFilter();
+        }
         for (const section of this.sections) {
             numVisibleSections += section.updateFilter() ? 1 : 0;
-            hasAnyVisibleSection = section.updateFilter() || hasAnyVisibleSection;
         }
         if (this.#titleElement) {
-            this.#titleElement.classList.toggle('hidden', !hasAnyVisibleSection);
+            this.#titleElement.classList.toggle('hidden', numVisibleSections === 0);
         }
         return numVisibleSections;
     }

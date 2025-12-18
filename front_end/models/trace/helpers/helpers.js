@@ -154,9 +154,14 @@ var secondsToMilli = (value) => Types.Timing.Milli(value * 1e3);
 var secondsToMicro = (value) => milliToMicro(secondsToMilli(value));
 var microToMilli = (value) => Types.Timing.Milli(value / 1e3);
 var microToSeconds = (value) => Types.Timing.Seconds(value / 1e3 / 1e3);
-function timeStampForEventAdjustedByClosestNavigation(event, traceBounds, navigationsByNavigationId, navigationsByFrameId) {
+function timeStampForEventAdjustedByClosestNavigation(event, traceBounds, navigationsByNavigationId, softNavigationsById, navigationsByFrameId) {
   let eventTimeStamp = event.ts - traceBounds.min;
-  if (event.args?.data?.navigationId) {
+  if (event.name === "largestContentfulPaint::CandidateForSoftNavigation" && event.args?.data?.performanceTimelineNavigationId) {
+    const navigationForEvent = softNavigationsById.get(event.args.data.performanceTimelineNavigationId);
+    if (navigationForEvent) {
+      eventTimeStamp = event.ts - navigationForEvent.ts;
+    }
+  } else if (event.args?.data?.navigationId) {
     const navigationForEvent = navigationsByNavigationId.get(event.args.data.navigationId);
     if (navigationForEvent) {
       eventTimeStamp = event.ts - navigationForEvent.ts;

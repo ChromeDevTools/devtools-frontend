@@ -9,9 +9,16 @@ export const secondsToMilli = (value) => Types.Timing.Milli(value * 1000);
 export const secondsToMicro = (value) => milliToMicro(secondsToMilli(value));
 export const microToMilli = (value) => Types.Timing.Milli(value / 1000);
 export const microToSeconds = (value) => Types.Timing.Seconds(value / 1000 / 1000);
-export function timeStampForEventAdjustedByClosestNavigation(event, traceBounds, navigationsByNavigationId, navigationsByFrameId) {
+export function timeStampForEventAdjustedByClosestNavigation(event, traceBounds, navigationsByNavigationId, softNavigationsById, navigationsByFrameId) {
     let eventTimeStamp = event.ts - traceBounds.min;
-    if (event.args?.data?.navigationId) {
+    if (event.name === "largestContentfulPaint::CandidateForSoftNavigation" /* Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION */ &&
+        event.args?.data?.performanceTimelineNavigationId) {
+        const navigationForEvent = softNavigationsById.get(event.args.data.performanceTimelineNavigationId);
+        if (navigationForEvent) {
+            eventTimeStamp = event.ts - navigationForEvent.ts;
+        }
+    }
+    else if (event.args?.data?.navigationId) {
         const navigationForEvent = navigationsByNavigationId.get(event.args.data.navigationId);
         if (navigationForEvent) {
             eventTimeStamp = event.ts - navigationForEvent.ts;

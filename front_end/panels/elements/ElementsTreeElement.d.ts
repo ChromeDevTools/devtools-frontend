@@ -27,6 +27,7 @@ export interface ViewInput {
     popoverAdornerActive: boolean;
     showAdAdorner: boolean;
     showContainerAdorner: boolean;
+    containerType?: string;
     showFlexAdorner: boolean;
     showGridAdorner: boolean;
     showGridLanesAdorner: boolean;
@@ -35,6 +36,7 @@ export interface ViewInput {
     showTopLayerAdorner: boolean;
     isSubgrid: boolean;
     showViewSourceAdorner: boolean;
+    showScrollAdorner: boolean;
     adorners?: Set<Adorners.Adorner.Adorner>;
     nodeInfo?: DocumentFragment;
     topLayerIndex: number;
@@ -164,8 +166,6 @@ export declare class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     updateStyleAdorners(): Promise<void>;
     pushScrollSnapAdorner(): void;
     pushStartingStyleAdorner(): void;
-    updateScrollAdorner(): void;
-    pushScrollAdorner(): void;
 }
 export declare const InitialChildrenLimit = 500;
 /**

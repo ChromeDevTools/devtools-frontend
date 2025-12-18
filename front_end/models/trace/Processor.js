@@ -212,7 +212,7 @@ export class TraceProcessor extends EventTarget {
         }
         return this.#insights;
     }
-    #createLanternContext(data, traceEvents, frameId, navigationId, options) {
+    #createLanternContext(data, traceEvents, frameId, navigation, options) {
         // Check for required handlers.
         if (!data.NetworkRequests || !data.Workers || !data.PageLoadMetrics) {
             return;
@@ -221,7 +221,7 @@ export class TraceProcessor extends EventTarget {
             throw new Lantern.Core.LanternError('No network requests found in trace');
         }
         const navStarts = data.Meta.navigationsByFrameId.get(frameId);
-        const navStartIndex = navStarts?.findIndex(n => n.args.data?.navigationId === navigationId);
+        const navStartIndex = navStarts?.findIndex(n => n === navigation);
         if (!navStarts || navStartIndex === undefined || navStartIndex === -1) {
             throw new Lantern.Core.LanternError('Could not find navigation start');
         }
@@ -235,7 +235,7 @@ export class TraceProcessor extends EventTarget {
         };
         const requests = LanternComputationData.createNetworkRequests(trace, data, startTime, endTime);
         const graph = LanternComputationData.createGraph(requests, trace, data);
-        const processedNavigation = LanternComputationData.createProcessedNavigation(data, frameId, navigationId);
+        const processedNavigation = LanternComputationData.createProcessedNavigation(data, frameId, navigation);
         const networkAnalysis = Lantern.Core.NetworkAnalyzer.analyze(requests);
         if (!networkAnalysis) {
             return;
@@ -373,7 +373,7 @@ export class TraceProcessor extends EventTarget {
                 model.frameId = context.frameId;
                 const navId = context.navigation?.args.data?.navigationId;
                 if (navId) {
-                    model.navigationId = navId;
+                    model.navigation = context.navigation;
                 }
                 model.createOverlays = () => {
                     // @ts-expect-error: model is a union of all possible insight model types.
@@ -473,7 +473,7 @@ export class TraceProcessor extends EventTarget {
         let lantern;
         try {
             options.logger?.start('insights:createLanternContext');
-            lantern = this.#createLanternContext(data, traceEvents, frameId, navigationId, options);
+            lantern = this.#createLanternContext(data, traceEvents, frameId, navigation, options);
         }
         catch (e) {
             // Handle Lantern errors gracefully

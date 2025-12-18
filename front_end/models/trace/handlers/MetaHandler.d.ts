@@ -14,7 +14,14 @@ export interface MetaHandlerData {
     browserThreadId: Types.Events.ThreadID;
     gpuProcessId: Types.Events.ProcessID;
     navigationsByFrameId: Map<string, Types.Events.NavigationStart[]>;
+    /**
+     * This does not include soft navigations.
+     *
+     * TODO(crbug.com/414468047): include soft navs here, so that
+     * PageLoadMetricsHandler and insights can use this map for all navigation types.
+     */
     navigationsByNavigationId: Map<string, Types.Events.NavigationStart>;
+    softNavigationsById: Map<number, Types.Events.SoftNavigationStart>;
     /**
      * The user-visible URL displayed to users in the address bar.
      * This captures:

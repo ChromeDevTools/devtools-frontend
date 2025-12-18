@@ -130,7 +130,7 @@ export function generateInsight(data, context) {
         });
     }
     const firstPaintTs = data.PageLoadMetrics.metricScoresByFrameId.get(context.frameId)
-        ?.get(context.navigationId)
+        ?.get(context.navigation)
         ?.get("FP" /* Handlers.ModelHandlers.PageLoadMetrics.MetricName.FP */)
         ?.event?.ts;
     if (!firstPaintTs) {

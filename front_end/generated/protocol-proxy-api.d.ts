@@ -2539,6 +2539,13 @@ declare namespace ProtocolProxyApi {
     invoke_enable(params: Protocol.Network.EnableRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
+     * Configures storing response bodies outside of renderer, so that these survive
+     * a cross-process navigation.
+     * If maxTotalBufferSize is not set, durable messages are disabled.
+     */
+    invoke_configureDurableMessages(params: Protocol.Network.ConfigureDurableMessagesRequest): Promise<Protocol.ProtocolResponseWithError>;
+
+    /**
      * Returns all browser cookies. Depending on the backend support, will return detailed cookie
      * information in the `cookies` field.
      * Deprecated. Use Storage.getCookies instead.

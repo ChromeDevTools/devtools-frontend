@@ -377,9 +377,10 @@ export const DEFAULT_VIEW = (input, output, target) => {
     const mediaAdornerConfig = ElementsComponents.AdornerManager.getRegisteredAdorner(ElementsComponents.AdornerManager.RegisteredAdorners.MEDIA);
     const popoverAdornerConfig = ElementsComponents.AdornerManager.getRegisteredAdorner(ElementsComponents.AdornerManager.RegisteredAdorners.POPOVER);
     const topLayerAdornerConfig = ElementsComponents.AdornerManager.getRegisteredAdorner(ElementsComponents.AdornerManager.RegisteredAdorners.TOP_LAYER);
+    const scrollAdornerConfig = ElementsComponents.AdornerManager.getRegisteredAdorner(ElementsComponents.AdornerManager.RegisteredAdorners.SCROLL);
     const hasAdorners = input.adorners?.size || input.showAdAdorner || input.showContainerAdorner ||
         input.showFlexAdorner || input.showGridAdorner || input.showGridLanesAdorner || input.showMediaAdorner ||
-        input.showPopoverAdorner || input.showTopLayerAdorner || input.showViewSourceAdorner;
+        input.showPopoverAdorner || input.showTopLayerAdorner || input.showViewSourceAdorner || input.showScrollAdorner;
     // clang-format off
     render(html `
     <div ${ref(el => { output.contentElement = el; })}>
@@ -419,7 +420,10 @@ export const DEFAULT_VIEW = (input, output, target) => {
         }
     }}
           ${adornerRef(input)}>
-          <span>${containerAdornerConfig.name}</span>
+          <span class="adorner-with-icon">
+            <devtools-icon name="container"></devtools-icon>
+            <span>${input.containerType}</span>
+          </span>
         </devtools-adorner>` : nothing}
         ${input.showFlexAdorner ? html `<devtools-adorner
           class=clickable
@@ -541,6 +545,13 @@ export const DEFAULT_VIEW = (input, output, target) => {
         ${repeat(Array.from((input.adorners ?? new Set()).values()).sort(adornerComparator), adorner => {
         return adorner;
     })}
+        ${input.showScrollAdorner ? html `<devtools-adorner
+          class="scroll"
+          .data=${{ name: scrollAdornerConfig.name, jslogContext: scrollAdornerConfig.name }}
+          aria-label=${i18nString(UIStrings.elementHasScrollableOverflow)}
+          ${adornerRef(input)}>
+          <span>${scrollAdornerConfig.name}</span>
+        </devtools-adorner>` : nothing}
       </div>` : nothing}
     </div>
   `, target);
@@ -601,7 +612,6 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
                 canAddAttributes: this.nodeInternal.nodeType() === Node.ELEMENT_NODE,
             };
             void this.updateStyleAdorners();
-            void this.updateScrollAdorner();
             void this.#updateAdorners();
         }
         this.expandAllButtonElement = null;
@@ -620,30 +630,6 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         if (this.nodeInternal.detached && !this.isClosingTag()) {
             this.listItemNode.setAttribute('title', 'Detached Tree Node');
         }
-        node.domModel().overlayModel().addEventListener("PersistentContainerQueryOverlayStateChanged" /* SDK.OverlayModel.Events.PERSISTENT_CONTAINER_QUERY_OVERLAY_STATE_CHANGED */, event => {
-            const { nodeId: eventNodeId, enabled } = event.data;
-            if (eventNodeId !== node.id) {
-                return;
-            }
-            this.#containerAdornerActive = enabled;
-            this.performUpdate();
-        });
-        node.domModel().overlayModel().addEventListener("PersistentFlexContainerOverlayStateChanged" /* SDK.OverlayModel.Events.PERSISTENT_FLEX_CONTAINER_OVERLAY_STATE_CHANGED */, event => {
-            const { nodeId: eventNodeId, enabled } = event.data;
-            if (eventNodeId !== node.id) {
-                return;
-            }
-            this.#flexAdornerActive = enabled;
-            this.performUpdate();
-        });
-        node.domModel().overlayModel().addEventListener("PersistentGridOverlayStateChanged" /* SDK.OverlayModel.Events.PERSISTENT_GRID_OVERLAY_STATE_CHANGED */, event => {
-            const { nodeId: eventNodeId, enabled } = event.data;
-            if (eventNodeId !== node.id) {
-                return;
-            }
-            this.#gridAdornerActive = enabled;
-            this.performUpdate();
-        });
     }
     static animateOnDOMUpdate(treeElement) {
         const tagName = treeElement.listItemElement.querySelector('.webkit-html-tag-name');
@@ -697,7 +683,8 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
             containerAdornerActive: this.#containerAdornerActive,
             adorners: !this.isClosingTag() ? this.#adorners : undefined,
             showAdAdorner: this.nodeInternal.isAdFrameNode(),
-            showContainerAdorner: Boolean(this.#layout?.isContainer) && !this.isClosingTag(),
+            showContainerAdorner: Boolean(this.#layout?.containerType) && !this.isClosingTag(),
+            containerType: this.#layout?.containerType,
             showFlexAdorner: Boolean(this.#layout?.isFlex) && !this.isClosingTag(),
             flexAdornerActive: this.#flexAdornerActive,
             showGridAdorner: Boolean(this.#layout?.isGrid) && !this.isClosingTag(),
@@ -710,6 +697,9 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
             popoverAdornerActive: this.#popoverAdornerActive,
             isSubgrid: Boolean(this.#layout?.isSubgrid),
             showViewSourceAdorner: this.nodeInternal.isRootNode() && isOpeningTag(this.tagTypeContext),
+            showScrollAdorner: ((this.node().nodeName() === 'HTML' && this.node().ownerDocument?.isScrollable()) ||
+                (this.node().nodeName() !== '#document' && this.node().isScrollable())) &&
+                !this.isClosingTag(),
             nodeInfo: this.#nodeInfo,
             topLayerIndex: this.node().topLayerIndex(),
             onViewSourceAdornerClick: this.revealHTMLInSources.bind(this),
@@ -986,6 +976,11 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         if (this.treeOutline && !this.isClosingTag()) {
             this.treeOutline.treeElementByNode.set(this.nodeInternal, this);
             this.nodeInternal.addEventListener(SDK.DOMModel.DOMNodeEvents.TOP_LAYER_INDEX_CHANGED, this.performUpdate, this);
+            this.nodeInternal.addEventListener(SDK.DOMModel.DOMNodeEvents.SCROLLABLE_FLAG_UPDATED, this.#onScrollableFlagUpdated, this);
+            const overlayModel = this.nodeInternal.domModel().overlayModel();
+            overlayModel.addEventListener("PersistentContainerQueryOverlayStateChanged" /* SDK.OverlayModel.Events.PERSISTENT_CONTAINER_QUERY_OVERLAY_STATE_CHANGED */, this.#onPersistentContainerQueryOverlayStateChanged, this);
+            overlayModel.addEventListener("PersistentFlexContainerOverlayStateChanged" /* SDK.OverlayModel.Events.PERSISTENT_FLEX_CONTAINER_OVERLAY_STATE_CHANGED */, this.#onPersistentFlexContainerOverlayStateChanged, this);
+            overlayModel.addEventListener("PersistentGridOverlayStateChanged" /* SDK.OverlayModel.Events.PERSISTENT_GRID_OVERLAY_STATE_CHANGED */, this.#onPersistentGridOverlayStateChanged, this);
         }
     }
     onunbind() {
@@ -996,6 +991,38 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
             this.treeOutline.treeElementByNode.delete(this.nodeInternal);
         }
         this.nodeInternal.removeEventListener(SDK.DOMModel.DOMNodeEvents.TOP_LAYER_INDEX_CHANGED, this.performUpdate, this);
+        this.nodeInternal.removeEventListener(SDK.DOMModel.DOMNodeEvents.SCROLLABLE_FLAG_UPDATED, this.#onScrollableFlagUpdated, this);
+        const overlayModel = this.nodeInternal.domModel().overlayModel();
+        overlayModel.removeEventListener("PersistentContainerQueryOverlayStateChanged" /* SDK.OverlayModel.Events.PERSISTENT_CONTAINER_QUERY_OVERLAY_STATE_CHANGED */, this.#onPersistentContainerQueryOverlayStateChanged, this);
+        overlayModel.removeEventListener("PersistentFlexContainerOverlayStateChanged" /* SDK.OverlayModel.Events.PERSISTENT_FLEX_CONTAINER_OVERLAY_STATE_CHANGED */, this.#onPersistentFlexContainerOverlayStateChanged, this);
+        overlayModel.removeEventListener("PersistentGridOverlayStateChanged" /* SDK.OverlayModel.Events.PERSISTENT_GRID_OVERLAY_STATE_CHANGED */, this.#onPersistentGridOverlayStateChanged, this);
+    }
+    #onScrollableFlagUpdated() {
+        void this.#updateAdorners();
+    }
+    #onPersistentContainerQueryOverlayStateChanged(event) {
+        const { nodeId: eventNodeId, enabled } = event.data;
+        if (eventNodeId !== this.nodeInternal.id) {
+            return;
+        }
+        this.#containerAdornerActive = enabled;
+        this.performUpdate();
+    }
+    #onPersistentFlexContainerOverlayStateChanged(event) {
+        const { nodeId: eventNodeId, enabled } = event.data;
+        if (eventNodeId !== this.nodeInternal.id) {
+            return;
+        }
+        this.#flexAdornerActive = enabled;
+        this.performUpdate();
+    }
+    #onPersistentGridOverlayStateChanged(event) {
+        const { nodeId: eventNodeId, enabled } = event.data;
+        if (eventNodeId !== this.nodeInternal.id) {
+            return;
+        }
+        this.#gridAdornerActive = enabled;
+        this.performUpdate();
     }
     onattach() {
         if (this.#hovered) {
@@ -1299,7 +1326,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
                     ],
                 },
                 {
-                    condition: (props) => Boolean(props?.isContainer),
+                    condition: (props) => Boolean(props?.containerType),
                     items: [
                         {
                             label: i18nString(UIStrings.explainContainerQueries),
@@ -2609,28 +2636,6 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
             ariaLabelActive: i18nString(UIStrings.disableStartingStyle),
         });
         this.#adorners.add(adorner);
-    }
-    updateScrollAdorner() {
-        if (!isOpeningTag(this.tagTypeContext)) {
-            return;
-        }
-        const scrollAdorner = this.#adorners.values().find(x => x.name === ElementsComponents.AdornerManager.RegisteredAdorners.SCROLL);
-        // Check if the node is scrollable, or if it's the <html> element and the document is scrollable
-        // because the top-level document (#document) doesn't have a corresponding tree element.
-        const needsAScrollAdorner = (this.node().nodeName() === 'HTML' && this.node().ownerDocument?.isScrollable()) ||
-            (this.node().nodeName() !== '#document' && this.node().isScrollable());
-        if (needsAScrollAdorner && !scrollAdorner) {
-            this.pushScrollAdorner();
-        }
-        else if (!needsAScrollAdorner && scrollAdorner) {
-            this.removeAdorner(scrollAdorner);
-        }
-    }
-    pushScrollAdorner() {
-        const config = ElementsComponents.AdornerManager.getRegisteredAdorner(ElementsComponents.AdornerManager.RegisteredAdorners.SCROLL);
-        const adorner = this.adorn(config);
-        UI.Tooltip.Tooltip.install(adorner, i18nString(UIStrings.elementHasScrollableOverflow));
-        adorner.classList.add('scroll');
     }
 }
 export const InitialChildrenLimit = 500;

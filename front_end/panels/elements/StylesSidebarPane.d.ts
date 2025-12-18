@@ -82,6 +82,7 @@ export declare class StylesSidebarPane extends StylesSidebarPane_base {
     resetFocus(): void;
     onAddButtonLongClick(event: Event): void;
     private onFilterChanged;
+    setFilter(regex: RegExp | null): void;
     refreshUpdate(editedSection: StylePropertiesSection, editedTreeElement?: StylePropertyTreeElement): void;
     doUpdate(): Promise<void>;
     getVariableParserError(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, variableName: string): ElementsComponents.CSSVariableValueView.CSSVariableParserError | null;
@@ -135,6 +136,7 @@ export interface EventTypes {
 export declare class SectionBlock {
     #private;
     sections: StylePropertiesSection[];
+    childBlocks: SectionBlock[];
     constructor(titleElement: Element | null, expandable?: boolean, expandedByDefault?: boolean);
     expand(expand: boolean): void;
     static createPseudoTypeBlock(pseudoType: Protocol.DOM.PseudoType, pseudoArgument: string | null): SectionBlock;

@@ -43,9 +43,9 @@ export async function finalize() {
     const { traceBounds, navigationsByNavigationId } = metaData();
     const metricScoresByFrameId = pageLoadMetricsData().metricScoresByFrameId;
     for (const [navigationId, navigation] of navigationsByNavigationId) {
-        const lcpMetric = metricScoresByFrameId.get(navigation.args.frame)?.get(navigationId)?.get("LCP" /* MetricName.LCP */);
+        const lcpMetric = metricScoresByFrameId.get(navigation.args.frame)?.get(navigation)?.get("LCP" /* MetricName.LCP */);
         const lcpEvent = lcpMetric?.event;
-        if (!lcpEvent || !Types.Events.isLargestContentfulPaintCandidate(lcpEvent)) {
+        if (!lcpEvent || !Types.Events.isAnyLargestContentfulPaintCandidate(lcpEvent)) {
             continue;
         }
         const nodeId = lcpEvent.args.data?.nodeId;

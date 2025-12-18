@@ -6965,6 +6965,12 @@
   "panels/elements/CSSRuleValidator.ts | fontVariationSettingsWarning": {
     "message": "Value for setting “{PH1}” {PH2} is outside the supported range [{PH3}, {PH4}] for font-family “{PH5}”."
   },
+  "panels/elements/CSSRuleValidator.ts | invalidAnchorPositioning": {
+    "message": "An anchor was defined but the element was not anchor-positioned but positioned \"{POSITION}\"."
+  },
+  "panels/elements/CSSRuleValidator.ts | invalidAnchorPositioningFix": {
+    "message": "Set position to either \"fixed\" or \"absolute\"."
+  },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
     "message": "Try setting the {EXISTING_PARENT_ELEMENT_RULE} property on the parent to {TARGET_PARENT_ELEMENT_RULE}."
   },
@@ -6982,6 +6988,9 @@
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
     "message": "The {REASON_PROPERTY_DECLARATION_CODE} property prevents {AFFECTED_PROPERTY_DECLARATION_CODE} from having an effect."
+  },
+  "panels/elements/CSSRuleValidator.ts | unusedAnchorPositioning": {
+    "message": "An anchor was defined but the element is hidden."
   },
   "panels/elements/ElementIssueUtils.ts | disallowedOptGroupChild": {
     "message": "Invalid element or text node within <optgroup>"
@@ -15689,6 +15698,9 @@
   "panels/timeline/TimelinePanel.ts | close": {
     "message": "Close"
   },
+  "panels/timeline/TimelinePanel.ts | compressingTraceForDownload": {
+    "message": "Compressing…"
+  },
   "panels/timeline/TimelinePanel.ts | cpu": {
     "message": "CPU:"
   },
@@ -15712,6 +15724,9 @@
   },
   "panels/timeline/TimelinePanel.ts | enableSelectorStats": {
     "message": "Enable CSS selector stats (slow)"
+  },
+  "panels/timeline/TimelinePanel.ts | encodingTraceForDownload": {
+    "message": "Encoding…"
   },
   "panels/timeline/TimelinePanel.ts | eventSelected": {
     "message": "Event {PH1} selected"
@@ -15757,6 +15772,9 @@
   },
   "panels/timeline/TimelinePanel.ts | NetworkThrottlingIsEnabled": {
     "message": "- Network throttling is enabled"
+  },
+  "panels/timeline/TimelinePanel.ts | preparingTraceForDownload": {
+    "message": "Preparing…"
   },
   "panels/timeline/TimelinePanel.ts | processed": {
     "message": "Processed"

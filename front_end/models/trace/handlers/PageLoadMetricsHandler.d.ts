@@ -1,5 +1,6 @@
 import * as Types from '../types/types.js';
 import type { HandlerName } from './types.js';
+type AnyNavigationStart = Types.Events.NavigationStart | Types.Events.SoftNavigationStart;
 export declare function reset(): void;
 export declare function handleEvent(event: Types.Events.Event): void;
 export declare function getFrameIdForPageLoadEvent(event: Types.Events.PageLoadEvent): string;
@@ -34,8 +35,10 @@ export interface PageLoadMetricsData {
      * Given a frame id, the map points to another map from navigation id to metric scores.
      * The metric scores include the event related to the metric as well as the data regarding
      * the score itself.
+     *
+     * Includes soft navigations.
      */
-    metricScoresByFrameId: Map<string, Map<string, Map<MetricName, MetricScore>>>;
+    metricScoresByFrameId: Map<string, Map<AnyNavigationStart, Map<MetricName, MetricScore>>>;
     /**
      * Page load events with no associated duration that happened in the
      * main frame.
@@ -59,13 +62,14 @@ export declare const enum MetricName {
     TTI = "TTI",
     TBT = "TBT",
     CLS = "CLS",
-    NAV = "Nav"
+    NAV = "Nav",
+    SOFT_NAV = "Nav"
 }
 export interface MetricScore {
     metricName: MetricName;
     classification: ScoreClassification;
     event?: Types.Events.PageLoadEvent;
-    navigation?: Types.Events.NavigationStart;
+    navigation?: AnyNavigationStart;
     estimated?: boolean;
     timing: Types.Timing.Micro;
 }
@@ -74,3 +78,4 @@ export type LCPMetricScore = MetricScore & {
     metricName: MetricName.LCP;
 };
 export declare function metricIsLCP(metric: MetricScore): metric is LCPMetricScore;
+export {};

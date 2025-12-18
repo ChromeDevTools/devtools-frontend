@@ -75,7 +75,7 @@ export declare function isLCPBreakdownInsight(model: InsightModel): model is LCP
 export type LCPBreakdownInsightModel = InsightModel<typeof UIStrings, {
     lcpMs?: Types.Timing.Milli;
     lcpTs?: Types.Timing.Milli;
-    lcpEvent?: Types.Events.LargestContentfulPaintCandidate;
+    lcpEvent?: Types.Events.AnyLargestContentfulPaintCandidate;
     /** The network request for the LCP image, if there was one. */
     lcpRequest?: Types.Events.SyntheticNetworkRequest;
     subparts?: LCPSubparts;

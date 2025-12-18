@@ -6,7 +6,7 @@ import { type InsightModel, type InsightModels, type InsightSet, type InsightSet
 export declare function getInsight<InsightName extends keyof InsightModels>(insightName: InsightName, insightSet: InsightSet): InsightModels[InsightName];
 export declare function getLCP(insightSet: InsightSet): {
     value: Types.Timing.Micro;
-    event: Types.Events.LargestContentfulPaintCandidate;
+    event: Types.Events.AnyLargestContentfulPaintCandidate;
 } | null;
 export declare function getINP(insightSet: InsightSet): {
     value: Types.Timing.Micro;

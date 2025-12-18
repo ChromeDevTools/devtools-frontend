@@ -228,6 +228,7 @@ export declare class FlameChart extends FlameChart_base implements NetworkTimeCa
      * group.
      */
     toggleGroupExpand(groupIndex: number): void;
+    bulkExpandGroups(indexes: number[]): void;
     private expandGroup;
     moveGroupUp(groupIndex: number): void;
     moveGroupDown(groupIndex: number): void;

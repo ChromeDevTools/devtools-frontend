@@ -41,17 +41,24 @@ export function isLegacySyntheticScreenshot(event) {
 export function isScreenshot(event) {
     return event.name === "Screenshot" /* Name.SCREENSHOT */ && 'source_id' in (event.args ?? {});
 }
+export function isSoftNavigationStart(event) {
+    return event.name === "SoftNavigationStart" /* Name.SOFT_NAVIGATION_START */;
+}
 const markerTypeGuards = [
     isMarkDOMContent,
     isMarkLoad,
     isFirstPaint,
     isFirstContentfulPaint,
-    isLargestContentfulPaintCandidate,
+    isAnyLargestContentfulPaintCandidate,
     isNavigationStart,
+    isSoftNavigationStart,
 ];
-export const MarkerName = ['MarkDOMContent', 'MarkLoad', 'firstPaint', 'firstContentfulPaint', 'largestContentfulPaint::Candidate'];
+export const MarkerName = [
+    'MarkDOMContent', 'MarkLoad', 'firstPaint', 'firstContentfulPaint', 'largestContentfulPaint::Candidate',
+    'largestContentfulPaint::CandidateForSoftNavigation'
+];
 export function isMarkerEvent(event) {
-    if (event.ph === "I" /* Phase.INSTANT */ || event.ph === "R" /* Phase.MARK */) {
+    if (event.ph === "I" /* Phase.INSTANT */ || "n" /* Phase.ASYNC_NESTABLE_INSTANT */ || event.ph === "R" /* Phase.MARK */) {
         return markerTypeGuards.some(fn => fn(event));
     }
     return false;
@@ -61,7 +68,7 @@ const pageLoadEventTypeGuards = [
     isInteractiveTime,
 ];
 export function eventIsPageLoadEvent(event) {
-    if (event.ph === "I" /* Phase.INSTANT */ || event.ph === "R" /* Phase.MARK */) {
+    if (event.ph === "I" /* Phase.INSTANT */ || "n" /* Phase.ASYNC_NESTABLE_INSTANT */ || event.ph === "R" /* Phase.MARK */) {
         return pageLoadEventTypeGuards.some(fn => fn(event));
     }
     return false;
@@ -290,8 +297,8 @@ export function isLayoutInvalidationTracking(event) {
 export function isFirstContentfulPaint(event) {
     return event.name === 'firstContentfulPaint';
 }
-export function isLargestContentfulPaintCandidate(event) {
-    return event.name === "largestContentfulPaint::Candidate" /* Name.MARK_LCP_CANDIDATE */;
+export function isAnyLargestContentfulPaintCandidate(event) {
+    return event.name === "largestContentfulPaint::Candidate" /* Name.MARK_LCP_CANDIDATE */ || event.name === "largestContentfulPaint::CandidateForSoftNavigation" /* Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION */;
 }
 export function isLargestImagePaintCandidate(event) {
     return event.name === 'LargestImagePaint::Candidate';
@@ -372,7 +379,7 @@ export function isPrePaint(event) {
 }
 /** A VALID navigation start (as it has a populated documentLoaderURL) */
 export function isNavigationStart(event) {
-    return event.name === 'navigationStart' && event.args?.data?.documentLoaderURL !== '';
+    return event.name === "navigationStart" /* Name.NAVIGATION_START */ && event.args?.data?.documentLoaderURL !== '';
 }
 export function isDidCommitSameDocumentNavigation(event) {
     return event.name === 'RenderFrameHostImpl::DidCommitSameDocumentNavigation' && event.ph === "X" /* Phase.COMPLETE */;

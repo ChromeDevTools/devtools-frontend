@@ -15,7 +15,7 @@ interface InsightData {
 interface LocalMetrics {
     lcp: {
         value: Trace.Types.Timing.Micro;
-        event: Trace.Types.Events.LargestContentfulPaintCandidate;
+        event: Trace.Types.Events.AnyLargestContentfulPaintCandidate;
     } | null;
     cls: {
         value: number;

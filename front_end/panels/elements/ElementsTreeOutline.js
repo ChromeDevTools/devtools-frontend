@@ -1265,7 +1265,6 @@ export class ElementsTreeOutline extends Common.ObjectWrapper.eventMixin(UI.Tree
         domModel.addEventListener(SDK.DOMModel.Events.DocumentUpdated, this.documentUpdated, this);
         domModel.addEventListener(SDK.DOMModel.Events.ChildNodeCountUpdated, this.childNodeCountUpdated, this);
         domModel.addEventListener(SDK.DOMModel.Events.DistributedNodesChanged, this.distributedNodesChanged, this);
-        domModel.addEventListener(SDK.DOMModel.Events.ScrollableFlagUpdated, this.scrollableFlagUpdated, this);
         domModel.addEventListener(SDK.DOMModel.Events.AffectedByStartingStylesFlagUpdated, this.affectedByStartingStylesFlagUpdated, this);
         domModel.addEventListener(SDK.DOMModel.Events.AdoptedStyleSheetsModified, this.adoptedStyleSheetsModified, this);
     }
@@ -1279,7 +1278,6 @@ export class ElementsTreeOutline extends Common.ObjectWrapper.eventMixin(UI.Tree
         domModel.removeEventListener(SDK.DOMModel.Events.DocumentUpdated, this.documentUpdated, this);
         domModel.removeEventListener(SDK.DOMModel.Events.ChildNodeCountUpdated, this.childNodeCountUpdated, this);
         domModel.removeEventListener(SDK.DOMModel.Events.DistributedNodesChanged, this.distributedNodesChanged, this);
-        domModel.removeEventListener(SDK.DOMModel.Events.ScrollableFlagUpdated, this.scrollableFlagUpdated, this);
         domModel.removeEventListener(SDK.DOMModel.Events.AffectedByStartingStylesFlagUpdated, this.affectedByStartingStylesFlagUpdated, this);
         domModel.removeEventListener(SDK.DOMModel.Events.AdoptedStyleSheetsModified, this.adoptedStyleSheetsModified, this);
         elementsTreeOutlineByDOMModel.delete(domModel);
@@ -1684,20 +1682,6 @@ export class ElementsTreeOutline extends Common.ObjectWrapper.eventMixin(UI.Tree
         const treeElement = this.treeElementByNode.get(node);
         if (treeElement) {
             treeElement.updateDecorations();
-        }
-    }
-    scrollableFlagUpdated(event) {
-        let { node } = event.data;
-        if (node.nodeName() === '#document') {
-            // We show the scroll badge of the document on the <html> element.
-            if (!node.ownerDocument?.documentElement) {
-                return;
-            }
-            node = node.ownerDocument.documentElement;
-        }
-        const treeElement = this.treeElementByNode.get(node);
-        if (treeElement && isOpeningTag(treeElement.tagTypeContext)) {
-            void treeElement.updateScrollAdorner();
         }
     }
     affectedByStartingStylesFlagUpdated(event) {

@@ -48,10 +48,12 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
  */
 export const SORT_ORDER_PAGE_LOAD_MARKERS = {
     ["navigationStart" /* Trace.Types.Events.Name.NAVIGATION_START */]: 0,
-    ["MarkLoad" /* Trace.Types.Events.Name.MARK_LOAD */]: 1,
-    ["firstContentfulPaint" /* Trace.Types.Events.Name.MARK_FCP */]: 2,
-    ["MarkDOMContent" /* Trace.Types.Events.Name.MARK_DOM_CONTENT */]: 3,
-    ["largestContentfulPaint::Candidate" /* Trace.Types.Events.Name.MARK_LCP_CANDIDATE */]: 4,
+    ["SoftNavigationStart" /* Trace.Types.Events.Name.SOFT_NAVIGATION_START */]: 1,
+    ["MarkLoad" /* Trace.Types.Events.Name.MARK_LOAD */]: 2,
+    ["firstContentfulPaint" /* Trace.Types.Events.Name.MARK_FCP */]: 3,
+    ["MarkDOMContent" /* Trace.Types.Events.Name.MARK_DOM_CONTENT */]: 4,
+    ["largestContentfulPaint::Candidate" /* Trace.Types.Events.Name.MARK_LCP_CANDIDATE */]: 5,
+    ["largestContentfulPaint::CandidateForSoftNavigation" /* Trace.Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION */]: 6,
 };
 // Threshold to match up overlay markers that are off by a tiny amount so they aren't rendered
 // on top of each other.
@@ -524,6 +526,7 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin(UI.W
                 }
                 else if (event.name === "largestContentfulPaint::Candidate" /* Trace.Types.Events.Name.MARK_LCP_CANDIDATE */) {
                     fieldMetricResult = fieldMetricResults.lcp;
+                    // Ignoring soft-nav LCP on purpose.
                 }
                 if (!fieldMetricResult) {
                     continue;
@@ -541,14 +544,16 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin(UI.W
         const markerEvents = parsedTrace.data.PageLoadMetrics.allMarkerEvents;
         // Set markers for Navigations, LCP, FCP, DCL, L.
         const markers = markerEvents.filter(event => event.name === "navigationStart" /* Trace.Types.Events.Name.NAVIGATION_START */ ||
+            event.name === "SoftNavigationStart" /* Trace.Types.Events.Name.SOFT_NAVIGATION_START */ ||
             event.name === "largestContentfulPaint::Candidate" /* Trace.Types.Events.Name.MARK_LCP_CANDIDATE */ ||
+            event.name === "largestContentfulPaint::CandidateForSoftNavigation" /* Trace.Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION */ ||
             event.name === "firstContentfulPaint" /* Trace.Types.Events.Name.MARK_FCP */ ||
             event.name === "MarkDOMContent" /* Trace.Types.Events.Name.MARK_DOM_CONTENT */ ||
             event.name === "MarkLoad" /* Trace.Types.Events.Name.MARK_LOAD */);
         this.#sortMarkersForPreferredVisualOrder(markers);
         const overlayByTs = new Map();
         markers.forEach(marker => {
-            const adjustedTimestamp = Trace.Helpers.Timing.timeStampForEventAdjustedByClosestNavigation(marker, parsedTrace.data.Meta.traceBounds, parsedTrace.data.Meta.navigationsByNavigationId, parsedTrace.data.Meta.navigationsByFrameId);
+            const adjustedTimestamp = Trace.Helpers.Timing.timeStampForEventAdjustedByClosestNavigation(marker, parsedTrace.data.Meta.traceBounds, parsedTrace.data.Meta.navigationsByNavigationId, parsedTrace.data.Meta.softNavigationsById, parsedTrace.data.Meta.navigationsByFrameId);
             // If any of the markers overlap in timing, lets put them on the same marker.
             let matchingOverlay = false;
             for (const [ts, overlay] of overlayByTs.entries()) {
@@ -591,24 +596,10 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin(UI.W
         for (const overlay of this.#currentInsightOverlays) {
             entries.push(...Overlays.Overlays.entriesForOverlay(overlay));
         }
-        // The insight's `relatedEvents` property likely already includes the events associated with
-        // an overlay, but just in case not, include both arrays. Duplicates are fine.
-        let relatedEventsList = this.#activeInsight?.model.relatedEvents;
-        if (!relatedEventsList) {
-            relatedEventsList = [];
-        }
-        else if (relatedEventsList instanceof Map) {
-            relatedEventsList = Array.from(relatedEventsList.keys());
-        }
-        this.#dimInsightRelatedEvents([...entries, ...relatedEventsList]);
         if (options.updateTraceWindow) {
-            // We should only expand the entry track when we are updating the trace window
-            // (eg. when insight cards are initially opened).
+            // We should only expand the entry track when we are updating the trace window (eg. when insight cards are initially opened).
             // Otherwise the track will open when not intending to.
-            for (const entry of entries) {
-                // Ensure that the track for the entries are open.
-                this.#expandEntryTrack(entry);
-            }
+            this.#bulkExpandGroupsForEntries(entries);
             const overlaysBounds = Overlays.Overlays.traceWindowContainingOverlays(this.#currentInsightOverlays);
             if (overlaysBounds) {
                 // Trace window covering all overlays expanded by 50% so that the overlays cover 2/3 (100/150) of the visible window. (Or use provided override)
@@ -622,10 +613,25 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin(UI.W
                 TraceBounds.TraceBounds.BoundsManager.instance().setTimelineVisibleWindow(expandedBounds, { ignoreMiniMapBounds: true, shouldAnimate: true });
             }
         }
+        // The insight's `relatedEvents` property likely already includes the events associated with
+        // an overlay, but just in case not, include both arrays. Duplicates are fine.
+        let relatedEventsList = this.#activeInsight?.model.relatedEvents;
+        if (!relatedEventsList) {
+            relatedEventsList = [];
+        }
+        else if (relatedEventsList instanceof Map) {
+            relatedEventsList = Array.from(relatedEventsList.keys());
+        }
+        this.#dimInsightRelatedEvents([...entries, ...relatedEventsList]);
         // Reveal entry if we have one.
+        // This is wrapped in a rAF to make sure the FlameChart draw from the
+        // expansion of any groups is complete - we need all the update() handlers
+        // to have run so the FlameChart has been drawn correctly at the right height.
         if (entries.length !== 0) {
             const earliestEntry = entries.reduce((earliest, current) => (earliest.ts < current.ts ? earliest : current), entries[0]);
-            this.revealEventVertically(earliestEntry);
+            requestAnimationFrame(() => {
+                this.revealEventVertically(earliestEntry);
+            });
         }
     }
     hoverAnnotationInSidebar(annotation) {
@@ -664,6 +670,38 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin(UI.W
         if (!this.#activeInsight) {
             this.#updateFlameChartDimmerWithEvents(this.#activeInsightDimmer, null);
         }
+    }
+    /**
+     * Bulk expands the tracks (e.g. groups) that the given entries belong to.
+     * Will update them all at once and then do a redraw.
+     */
+    #bulkExpandGroupsForEntries(entries) {
+        const networkGroupIndexes = new Set();
+        const mainGroupIndexes = new Set();
+        for (const entry of entries) {
+            const chartName = Overlays.Overlays.chartForEntry(entry);
+            const provider = chartName === 'main' ? this.mainDataProvider : this.networkDataProvider;
+            const entryIndex = provider.indexForEvent?.(entry) ?? null;
+            if (entryIndex === null) {
+                continue;
+            }
+            const group = provider.groupForEvent?.(entryIndex) ?? null;
+            if (!group) {
+                continue;
+            }
+            if (group.expanded) {
+                continue;
+            }
+            const groupIndex = provider.timelineData().groups.indexOf(group);
+            if (chartName === 'main') {
+                mainGroupIndexes.add(groupIndex);
+            }
+            else {
+                networkGroupIndexes.add(groupIndex);
+            }
+        }
+        this.mainFlameChart.bulkExpandGroups([...mainGroupIndexes]);
+        this.networkFlameChart.bulkExpandGroups([...networkGroupIndexes]);
     }
     /**
      * Expands the track / group that the given entry is in.

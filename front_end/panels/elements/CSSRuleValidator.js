@@ -62,6 +62,19 @@ const UIStrings = {
      * @example {align-self} ALTERNATIVE_PROPERTY_NAME
      */
     flexGridContainerPropertyRuleFix: 'Try setting the {PROPERTY_NAME} on the container element or use {ALTERNATIVE_PROPERTY_NAME} instead.',
+    /**
+     * @description The messages shown in the Style pane when the user hovers over a position-anchor declaration that has no affect on a non-anchor-positioned element.
+     * @example {relative} POSITION
+     */
+    invalidAnchorPositioning: 'An anchor was defined but the element was not anchor-positioned but positioned "{POSITION}".',
+    /**
+     * @description The messages shown in the Style pane when the user hovers over a position-anchor declaration that has no affect on a non-anchor-positioned element.
+     */
+    invalidAnchorPositioningFix: 'Set position to either "fixed" or "absolute".',
+    /**
+     * @description The messages shown in the Style pane when the user hovers over a position-anchor declaration that has no affect on hidden element.
+     */
+    unusedAnchorPositioning: 'An anchor was defined but the element is hidden.',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/elements/CSSRuleValidator.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -418,6 +431,22 @@ export class ZIndexValidator extends CSSRuleValidator {
         }));
     }
 }
+export class PositionAnchorValidator extends CSSRuleValidator {
+    constructor() {
+        super(['position-anchor']);
+    }
+    getHint(propertyName, computedStyles) {
+        const position = computedStyles?.get('position') ?? 'static';
+        const display = computedStyles?.get('display');
+        if (position !== 'absolute' && position !== 'fixed') {
+            return new Hint(i18nString(UIStrings.invalidAnchorPositioning, { POSITION: position }), i18nString(UIStrings.invalidAnchorPositioningFix));
+        }
+        if (display === 'none') {
+            return new Hint(i18nString(UIStrings.unusedAnchorPositioning, { POSITION: position }), null);
+        }
+        return undefined;
+    }
+}
 /**
  * Validates if CSS width/height are having an effect on an element.
  * See "Applies to" in https://www.w3.org/TR/css-sizing-3/#propdef-width.
@@ -512,6 +541,7 @@ const CSS_RULE_VALIDATORS = [
     MulticolFlexGridValidator,
     PaddingValidator,
     PositionValidator,
+    PositionAnchorValidator,
     SizingValidator,
     ZIndexValidator,
 ];

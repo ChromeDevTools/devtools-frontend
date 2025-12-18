@@ -95,8 +95,15 @@ export default `/*
   pointer-events: none;
 }
 
-.timeline.panel .status-pane-container.tinted {
+.timeline.panel .status-pane-container.opaque {
   background-color: var(--sys-color-cdt-base-container);
+  pointer-events: auto;
+}
+
+.timeline.panel .status-pane-container.tinted {
+  /* stylelint-disable-next-line plugin/use_theme_colors */
+  background-color: #0005;
+  background-blend-mode: multiply;
   pointer-events: auto;
 }
 

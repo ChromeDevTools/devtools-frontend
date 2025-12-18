@@ -1821,6 +1821,35 @@ var FlameChart = class extends Common.ObjectWrapper.eventMixin(UI3.Widget.VBox) 
       /* setExpanded */
     );
   }
+  bulkExpandGroups(indexes) {
+    if (indexes.length === 0) {
+      return;
+    }
+    if (!this.rawTimelineData) {
+      return;
+    }
+    const groups = this.rawTimelineData.groups;
+    if (!groups) {
+      return;
+    }
+    let didUpdate = false;
+    for (const index of indexes) {
+      if (!this.isGroupCollapsible(index) || groups[index].expanded) {
+        continue;
+      }
+      didUpdate = true;
+      groups[index].expanded = true;
+    }
+    if (didUpdate) {
+      this.#updateAfterGroupExpansionChange();
+    }
+  }
+  #updateAfterGroupExpansionChange() {
+    this.updateLevelPositions();
+    this.updateHeight();
+    this.draw();
+    this.#notifyProviderOfConfigurationChange();
+  }
   expandGroup(groupIndex, setExpanded = true, propagatedExpand = false) {
     if (groupIndex < 0 || !this.isGroupCollapsible(groupIndex)) {
       return;
@@ -1833,10 +1862,7 @@ var FlameChart = class extends Common.ObjectWrapper.eventMixin(UI3.Widget.VBox) 
       return;
     }
     const group = groups[groupIndex];
-    group.expanded = setExpanded;
-    this.updateLevelPositions();
-    this.updateHighlight();
-    if (!group.expanded) {
+    if (!setExpanded) {
       const timelineData = this.timelineData();
       if (timelineData) {
         const level = timelineData.entryLevels[this.selectedEntryIndex];
@@ -1846,9 +1872,11 @@ var FlameChart = class extends Common.ObjectWrapper.eventMixin(UI3.Widget.VBox) 
         }
       }
     }
-    this.updateHeight();
-    this.draw();
-    this.#notifyProviderOfConfigurationChange();
+    if (group.expanded === setExpanded) {
+      return;
+    }
+    group.expanded = setExpanded;
+    this.#updateAfterGroupExpansionChange();
     this.scrollGroupIntoView(groupIndex);
     if (!propagatedExpand) {
       const groupName = groups[groupIndex].name;

@@ -47,6 +47,7 @@ let traceBounds = makeNewTraceBounds();
  */
 let navigationsByFrameId = new Map();
 let navigationsByNavigationId = new Map();
+let softNavigationsById = new Map();
 let finalDisplayUrlByNavigationId = new Map();
 let mainFrameNavigations = [];
 // Represents all the threads in the trace, organized by process. This is mostly for internal
@@ -76,6 +77,7 @@ const CHROME_WEB_TRACE_EVENTS = new Set([
 export function reset() {
     navigationsByFrameId = new Map();
     navigationsByNavigationId = new Map();
+    softNavigationsById = new Map();
     finalDisplayUrlByNavigationId = new Map();
     processNames = new Map();
     mainFrameNavigations = [];
@@ -276,6 +278,9 @@ export function handleEvent(event) {
         }
         return;
     }
+    if (Types.Events.isSoftNavigationStart(event)) {
+        softNavigationsById.set(event.args.context.performanceTimelineNavigationId, event);
+    }
     // Update `finalDisplayUrlByNavigationId` to reflect the latest redirect for each navigation.
     if (Types.Events.isResourceSendRequest(event)) {
         if (event.args.data.resourceType !== 'Document') {
@@ -393,6 +398,7 @@ export function data() {
         mainFrameURL,
         navigationsByFrameId,
         navigationsByNavigationId,
+        softNavigationsById,
         finalDisplayUrlByNavigationId,
         threadsInProcess,
         rendererProcessesByFrame: rendererProcessesByFrameId,

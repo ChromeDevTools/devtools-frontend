@@ -946,6 +946,35 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin(UI.Widget.VBox) 
         }
         this.expandGroup(groupIndex, !this.rawTimelineData.groups[groupIndex].expanded /* setExpanded */);
     }
+    bulkExpandGroups(indexes) {
+        if (indexes.length === 0) {
+            return;
+        }
+        if (!this.rawTimelineData) {
+            return;
+        }
+        const groups = this.rawTimelineData.groups;
+        if (!groups) {
+            return;
+        }
+        let didUpdate = false;
+        for (const index of indexes) {
+            if (!this.isGroupCollapsible(index) || groups[index].expanded) {
+                continue;
+            }
+            didUpdate = true;
+            groups[index].expanded = true;
+        }
+        if (didUpdate) {
+            this.#updateAfterGroupExpansionChange();
+        }
+    }
+    #updateAfterGroupExpansionChange() {
+        this.updateLevelPositions();
+        this.updateHeight();
+        this.draw();
+        this.#notifyProviderOfConfigurationChange();
+    }
     expandGroup(groupIndex, setExpanded = true, propagatedExpand = false) {
         if (groupIndex < 0 || !this.isGroupCollapsible(groupIndex)) {
             return;
@@ -958,10 +987,9 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin(UI.Widget.VBox) 
             return;
         }
         const group = groups[groupIndex];
-        group.expanded = setExpanded;
-        this.updateLevelPositions();
-        this.updateHighlight();
-        if (!group.expanded) {
+        // If a group was expanded and is now being collapsed, and the selected
+        // entry is within that group, then we have to deselect it.
+        if (!setExpanded) {
             const timelineData = this.timelineData();
             if (timelineData) {
                 const level = timelineData.entryLevels[this.selectedEntryIndex];
@@ -973,9 +1001,13 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin(UI.Widget.VBox) 
                 }
             }
         }
-        this.updateHeight();
-        this.draw();
-        this.#notifyProviderOfConfigurationChange();
+        if (group.expanded === setExpanded) {
+            // If the state isn't changing, early exit so we don't waste cycles
+            // redrawing.
+            return;
+        }
+        group.expanded = setExpanded;
+        this.#updateAfterGroupExpansionChange();
         this.scrollGroupIntoView(groupIndex);
         // We only want to read expanded/collapsed state on user inputted expand/collapse
         if (!propagatedExpand) {

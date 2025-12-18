@@ -25,7 +25,7 @@ export declare class StatusDialog extends UI.Widget.VBox {
     finish(): void;
     enableDownloadOfEvents(rawEvents: Trace.Types.Events.Event[]): void;
     remove(): void;
-    showPane(parent: Element): void;
+    showPane(parent: Element, mode?: 'tinted' | 'opaque'): void;
     enableAndFocusButton(): void;
     updateStatus(text: string): void;
     updateProgressBar(activity: string, percent: number): void;

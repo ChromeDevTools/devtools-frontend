@@ -2008,7 +2008,7 @@ var InsightRenderer_exports = {};
 __export(InsightRenderer_exports, {
   InsightRenderer: () => InsightRenderer
 });
-import * as UI22 from "./../../../../ui/legacy/legacy.js";
+import * as UI23 from "./../../../../ui/legacy/legacy.js";
 
 // gen/front_end/panels/timeline/components/insights/LCPBreakdown.js
 var LCPBreakdown_exports = {};
@@ -2595,9 +2595,11 @@ __export(RenderBlocking_exports, {
 });
 import * as i18n20 from "./../../../../core/i18n/i18n.js";
 import * as Trace16 from "./../../../../models/trace/trace.js";
+import * as UI20 from "./../../../../ui/legacy/legacy.js";
 import * as Lit22 from "./../../../../ui/lit/lit.js";
 var { UIStrings: UIStrings17, i18nString: i18nString17, createOverlayForRequest: createOverlayForRequest4 } = Trace16.Insights.Models.RenderBlocking;
 var { html: html22 } = Lit22;
+var { widgetConfig: widgetConfig17 } = UI20.Widget;
 var RenderBlocking = class extends BaseInsightComponent {
   internalName = "render-blocking-requests";
   mapToRow(request) {
@@ -2632,12 +2634,13 @@ var RenderBlocking = class extends BaseInsightComponent {
     const rows = createLimitedRows(requests, this);
     return html22`
       <div class="insight-section">
-        <devtools-widget
-          .data=${{
-      insight: this,
-      headers: [i18nString17(UIStrings17.renderBlockingRequest), i18nString17(UIStrings17.duration)],
-      rows
-    }}>
+        <devtools-widget .widgetConfig=${widgetConfig17(Table, {
+      data: {
+        insight: this,
+        headers: [i18nString17(UIStrings17.renderBlockingRequest), i18nString17(UIStrings17.duration)],
+        rows
+      }
+    })}>
         </devtools-widget>
       </div>
     `;
@@ -2654,11 +2657,11 @@ import * as i18n21 from "./../../../../core/i18n/i18n.js";
 import * as Platform4 from "./../../../../core/platform/platform.js";
 import * as SDK4 from "./../../../../core/sdk/sdk.js";
 import * as Trace17 from "./../../../../models/trace/trace.js";
-import * as UI20 from "./../../../../ui/legacy/legacy.js";
+import * as UI21 from "./../../../../ui/legacy/legacy.js";
 import * as Lit23 from "./../../../../ui/lit/lit.js";
 var { UIStrings: UIStrings18, i18nString: i18nString18 } = Trace17.Insights.Models.SlowCSSSelector;
 var { html: html23 } = Lit23;
-var { widgetConfig: widgetConfig17 } = UI20.Widget;
+var { widgetConfig: widgetConfig18 } = UI21.Widget;
 var SlowCSSSelector = class extends BaseInsightComponent {
   internalName = "slow-css-selector";
   #selectorLocations = /* @__PURE__ */ new Map();
@@ -2724,7 +2727,7 @@ var SlowCSSSelector = class extends BaseInsightComponent {
     }
     const sections = [html23`
       <div class="insight-section">
-        <devtools-widget .widgetConfig=${widgetConfig17(Table, {
+        <devtools-widget .widgetConfig=${widgetConfig18(Table, {
       data: {
         insight: this,
         headers: [i18nString18(UIStrings18.total), ""],
@@ -2742,7 +2745,7 @@ var SlowCSSSelector = class extends BaseInsightComponent {
       const selector = this.model.topSelectorElapsedMs;
       sections.push(html23`
         <div class="insight-section">
-          <devtools-widget .widgetConfig=${widgetConfig17(Table, {
+          <devtools-widget .widgetConfig=${widgetConfig18(Table, {
         data: {
           insight: this,
           headers: [`${i18nString18(UIStrings18.topSelectorElapsedTime)}: ${time(Trace17.Types.Timing.Micro(selector["elapsed (us)"]))}`],
@@ -2759,7 +2762,7 @@ var SlowCSSSelector = class extends BaseInsightComponent {
       const selector = this.model.topSelectorMatchAttempts;
       sections.push(html23`
         <div class="insight-section">
-          <devtools-widget .widgetConfig=${widgetConfig17(Table, {
+          <devtools-widget .widgetConfig=${widgetConfig18(Table, {
         data: {
           insight: this,
           headers: [`${i18nString18(UIStrings18.topSelectorMatchAttempt)}: ${selector["match_attempts"]}`],
@@ -2783,11 +2786,11 @@ __export(ThirdParties_exports, {
 });
 import * as i18n22 from "./../../../../core/i18n/i18n.js";
 import * as Trace18 from "./../../../../models/trace/trace.js";
-import * as UI21 from "./../../../../ui/legacy/legacy.js";
+import * as UI22 from "./../../../../ui/legacy/legacy.js";
 import * as Lit24 from "./../../../../ui/lit/lit.js";
 var { UIStrings: UIStrings19, i18nString: i18nString19, createOverlaysForSummary } = Trace18.Insights.Models.ThirdParties;
 var { html: html24 } = Lit24;
-var { widgetConfig: widgetConfig18 } = UI21.Widget;
+var { widgetConfig: widgetConfig19 } = UI22.Widget;
 var MAX_TO_SHOW = 5;
 var ThirdParties = class extends BaseInsightComponent {
   internalName = "third-parties";
@@ -2838,7 +2841,7 @@ var ThirdParties = class extends BaseInsightComponent {
       const rows = createLimitedRows(topTransferSizeEntries, this.#transferSizeAggregator, MAX_TO_SHOW);
       sections.push(html24`
         <div class="insight-section">
-          <devtools-widget .widgetConfig=${widgetConfig18(Table, {
+          <devtools-widget .widgetConfig=${widgetConfig19(Table, {
         data: {
           insight: this,
           headers: [i18nString19(UIStrings19.columnThirdParty), i18nString19(UIStrings19.columnTransferSize)],
@@ -2853,7 +2856,7 @@ var ThirdParties = class extends BaseInsightComponent {
       const rows = createLimitedRows(topMainThreadTimeEntries, this.#mainThreadTimeAggregator, MAX_TO_SHOW);
       sections.push(html24`
         <div class="insight-section">
-          <devtools-widget .widgetConfig=${widgetConfig18(Table, {
+          <devtools-widget .widgetConfig=${widgetConfig19(Table, {
         data: {
           insight: this,
           headers: [i18nString19(UIStrings19.columnThirdParty), i18nString19(UIStrings19.columnMainThreadTime)],
@@ -2904,7 +2907,7 @@ var Viewport = class extends BaseInsightComponent {
 };
 
 // gen/front_end/panels/timeline/components/insights/InsightRenderer.js
-var { widgetConfig: widgetConfig19 } = UI22.Widget;
+var { widgetConfig: widgetConfig20 } = UI23.Widget;
 var INSIGHT_NAME_TO_COMPONENT = {
   Cache,
   CLSCulprits,
@@ -2935,7 +2938,7 @@ var InsightRenderer = class {
       this.#insightWidgetCache.set(model, widgetElement);
     }
     const componentClass = INSIGHT_NAME_TO_COMPONENT[insightName];
-    widgetElement.widgetConfig = widgetConfig19(componentClass, {
+    widgetElement.widgetConfig = widgetConfig20(componentClass, {
       selected: options.selected ?? false,
       parsedTrace,
       // The `model` passed in as a parameter is the base type, but since

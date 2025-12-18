@@ -25,7 +25,7 @@ function nodeIdsForEvent(parsedTrace, event) {
     event.args.endData?.layoutRoots.forEach((root) => foundIds.add(root.nodeId));
   } else if (Trace.Types.Events.isSyntheticLayoutShift(event) && event.args.data?.impacted_nodes) {
     event.args.data.impacted_nodes.forEach((node) => foundIds.add(node.node_id));
-  } else if (Trace.Types.Events.isLargestContentfulPaintCandidate(event) && typeof event.args.data?.nodeId !== "undefined") {
+  } else if (Trace.Types.Events.isAnyLargestContentfulPaintCandidate(event) && typeof event.args.data?.nodeId !== "undefined") {
     foundIds.add(event.args.data.nodeId);
   } else if (Trace.Types.Events.isPaint(event) && typeof event.args.data.nodeId !== "undefined") {
     foundIds.add(event.args.data.nodeId);

@@ -113,13 +113,14 @@ export class StatusDialog extends UI.Widget.VBox {
         this.downloadTraceButton.classList.remove('hidden');
     }
     remove() {
-        this.element.parentNode?.classList.remove('tinted');
+        this.element.parentNode?.classList.remove('opaque', 'tinted');
         this.stopTimer();
         this.element.remove();
     }
-    showPane(parent) {
+    showPane(parent, mode = 'opaque') {
         this.show(parent);
-        parent.classList.add('tinted');
+        parent.classList.toggle('tinted', mode === 'tinted');
+        parent.classList.toggle('opaque', mode === 'opaque');
     }
     enableAndFocusButton() {
         this.button.classList.remove('hidden');

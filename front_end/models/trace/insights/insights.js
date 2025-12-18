@@ -2261,7 +2261,7 @@ function generateInsight10(data, context) {
   if (!frameMetrics) {
     throw new Error("no frame metrics");
   }
-  const navMetrics = frameMetrics.get(context.navigationId);
+  const navMetrics = frameMetrics.get(context.navigation);
   if (!navMetrics) {
     throw new Error("no navigation metrics");
   }
@@ -2270,7 +2270,7 @@ function generateInsight10(data, context) {
     /* Handlers.ModelHandlers.PageLoadMetrics.MetricName.LCP */
   );
   const lcpEvent = metricScore?.event;
-  if (!lcpEvent || !Types7.Events.isLargestContentfulPaintCandidate(lcpEvent)) {
+  if (!lcpEvent || !Types7.Events.isAnyLargestContentfulPaintCandidate(lcpEvent)) {
     return finalize10({ warnings: [InsightWarning.NO_LCP] });
   }
   const lcpMs = Helpers11.Timing.microToMilli(metricScore.timing);
@@ -2388,7 +2388,7 @@ function generateInsight11(data, context) {
   if (!frameMetrics) {
     throw new Error("no frame metrics");
   }
-  const navMetrics = frameMetrics.get(context.navigationId);
+  const navMetrics = frameMetrics.get(context.navigation);
   if (!navMetrics) {
     throw new Error("no navigation metrics");
   }
@@ -2397,7 +2397,7 @@ function generateInsight11(data, context) {
     /* Handlers.ModelHandlers.PageLoadMetrics.MetricName.LCP */
   );
   const lcpEvent = metricScore?.event;
-  if (!lcpEvent || !Types8.Events.isLargestContentfulPaintCandidate(lcpEvent)) {
+  if (!lcpEvent || !Types8.Events.isAnyLargestContentfulPaintCandidate(lcpEvent)) {
     return finalize11({ warnings: [InsightWarning.NO_LCP] });
   }
   const docRequest = networkRequests.byId.get(context.navigationId);
@@ -3362,7 +3362,7 @@ function generateInsight15(data, context) {
       renderBlockingRequests: []
     });
   }
-  const firstPaintTs = data.PageLoadMetrics.metricScoresByFrameId.get(context.frameId)?.get(context.navigationId)?.get(
+  const firstPaintTs = data.PageLoadMetrics.metricScoresByFrameId.get(context.frameId)?.get(context.navigation)?.get(
     "FP"
     /* Handlers.ModelHandlers.PageLoadMetrics.MetricName.FP */
   )?.event?.ts;
@@ -3430,13 +3430,17 @@ import * as i18n31 from "./../../../core/i18n/i18n.js";
 import * as Helpers18 from "./../helpers/helpers.js";
 
 // gen/front_end/models/trace/types/TraceEvents.js
+function isSoftNavigationStart(event) {
+  return event.name === "SoftNavigationStart";
+}
 var markerTypeGuards = [
   isMarkDOMContent,
   isMarkLoad,
   isFirstPaint,
   isFirstContentfulPaint,
-  isLargestContentfulPaintCandidate,
-  isNavigationStart
+  isAnyLargestContentfulPaintCandidate,
+  isNavigationStart,
+  isSoftNavigationStart
 ];
 var pageLoadEventTypeGuards = [
   ...markerTypeGuards,
@@ -3456,8 +3460,8 @@ var SelectorTimingsKey;
 function isFirstContentfulPaint(event) {
   return event.name === "firstContentfulPaint";
 }
-function isLargestContentfulPaintCandidate(event) {
-  return event.name === "largestContentfulPaint::Candidate";
+function isAnyLargestContentfulPaintCandidate(event) {
+  return event.name === "largestContentfulPaint::Candidate" || event.name === "largestContentfulPaint::CandidateForSoftNavigation";
 }
 function isMarkLoad(event) {
   return event.name === "MarkLoad";

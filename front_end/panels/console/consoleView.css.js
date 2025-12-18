@@ -226,7 +226,7 @@ export default `/* Copyright 2021 The Chromium Authors
   --console-color-white: #fff;
 
   &:focus {
-    background-color: var(--sys-color-state-focus-highlight);
+    background-image: linear-gradient(to bottom, var(--sys-color-state-focus-highlight), var(--sys-color-state-focus-highlight));
   }
 }
 

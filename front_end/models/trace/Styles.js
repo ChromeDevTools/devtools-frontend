@@ -684,6 +684,7 @@ export function maybeInitSylesMap() {
         ["firstPaint" /* Types.Events.Name.MARK_FIRST_PAINT */]: new TimelineRecordStyle(i18nString(UIStrings.firstPaint), defaultCategoryStyles.painting, true),
         ["firstContentfulPaint" /* Types.Events.Name.MARK_FCP */]: new TimelineRecordStyle(i18nString(UIStrings.firstContentfulPaint), defaultCategoryStyles.rendering, true),
         ["largestContentfulPaint::Candidate" /* Types.Events.Name.MARK_LCP_CANDIDATE */]: new TimelineRecordStyle(i18nString(UIStrings.largestContentfulPaint), defaultCategoryStyles.rendering, true),
+        ["largestContentfulPaint::CandidateForSoftNavigation" /* Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION */]: new TimelineRecordStyle(i18nString(UIStrings.largestContentfulPaint), defaultCategoryStyles.rendering, true),
         ["TimeStamp" /* Types.Events.Name.TIME_STAMP */]: new TimelineRecordStyle(i18nString(UIStrings.timestamp), defaultCategoryStyles.scripting),
         ["ConsoleTime" /* Types.Events.Name.CONSOLE_TIME */]: new TimelineRecordStyle(i18nString(UIStrings.consoleTime), defaultCategoryStyles.scripting),
         ["UserTiming" /* Types.Events.Name.USER_TIMING */]: new TimelineRecordStyle(i18nString(UIStrings.userTiming), defaultCategoryStyles.scripting),
@@ -795,13 +796,17 @@ export function markerDetailsForEvent(event) {
         color = 'var(--sys-color-green-bright)';
         title = "FCP" /* Handlers.ModelHandlers.PageLoadMetrics.MetricName.FCP */;
     }
-    if (Types.Events.isLargestContentfulPaintCandidate(event)) {
+    if (Types.Events.isAnyLargestContentfulPaintCandidate(event)) {
         color = 'var(--sys-color-green)';
         title = "LCP" /* Handlers.ModelHandlers.PageLoadMetrics.MetricName.LCP */;
     }
     if (Types.Events.isNavigationStart(event)) {
         color = 'var(--color-text-primary)';
         title = "Nav" /* Handlers.ModelHandlers.PageLoadMetrics.MetricName.NAV */;
+    }
+    if (Types.Events.isSoftNavigationStart(event)) {
+        color = 'var(--sys-color-blue)';
+        title = "Nav" /* Handlers.ModelHandlers.PageLoadMetrics.MetricName.SOFT_NAV */;
     }
     if (Types.Events.isMarkDOMContent(event)) {
         color = 'var(--color-text-disabled)';

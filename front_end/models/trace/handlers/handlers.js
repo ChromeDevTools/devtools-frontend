@@ -601,6 +601,7 @@ function makeNewTraceBounds() {
 var traceBounds = makeNewTraceBounds();
 var navigationsByFrameId = /* @__PURE__ */ new Map();
 var navigationsByNavigationId = /* @__PURE__ */ new Map();
+var softNavigationsById = /* @__PURE__ */ new Map();
 var finalDisplayUrlByNavigationId = /* @__PURE__ */ new Map();
 var mainFrameNavigations = [];
 var threadsInProcess = /* @__PURE__ */ new Map();
@@ -621,6 +622,7 @@ var CHROME_WEB_TRACE_EVENTS = /* @__PURE__ */ new Set([
 function reset5() {
   navigationsByFrameId = /* @__PURE__ */ new Map();
   navigationsByNavigationId = /* @__PURE__ */ new Map();
+  softNavigationsById = /* @__PURE__ */ new Map();
   finalDisplayUrlByNavigationId = /* @__PURE__ */ new Map();
   processNames = /* @__PURE__ */ new Map();
   mainFrameNavigations = [];
@@ -764,6 +766,9 @@ function handleEvent5(event) {
     }
     return;
   }
+  if (Types6.Events.isSoftNavigationStart(event)) {
+    softNavigationsById.set(event.args.context.performanceTimelineNavigationId, event);
+  }
   if (Types6.Events.isResourceSendRequest(event)) {
     if (event.args.data.resourceType !== "Document") {
       return;
@@ -844,6 +849,7 @@ function data5() {
     mainFrameURL,
     navigationsByFrameId,
     navigationsByNavigationId,
+    softNavigationsById,
     finalDisplayUrlByNavigationId,
     threadsInProcess,
     rendererProcessesByFrame: rendererProcessesByFrameId,
@@ -3179,10 +3185,6 @@ function handleEvent19(event) {
   pageLoadEventsArray.push(event);
 }
 function storePageLoadMetricAgainstNavigationId(navigation, event) {
-  const navigationId = navigation.args.data?.navigationId;
-  if (!navigationId) {
-    throw new Error("Navigation event unexpectedly had no navigation ID.");
-  }
   const frameId = getFrameIdForPageLoadEvent(event);
   const { rendererProcessesByFrame } = data5();
   const rendererProcessesInFrame = rendererProcessesByFrame.get(frameId);
@@ -3200,14 +3202,14 @@ function storePageLoadMetricAgainstNavigationId(navigation, event) {
     const fcpTime = Types20.Timing.Micro(event.ts - navigation.ts);
     const classification = scoreClassificationForFirstContentfulPaint(fcpTime);
     const metricScore = { event, metricName: "FCP", classification, navigation, timing: fcpTime };
-    storeMetricScore(frameId, navigationId, metricScore);
+    storeMetricScore(frameId, navigation, metricScore);
     return;
   }
   if (Types20.Events.isFirstPaint(event)) {
     const paintTime = Types20.Timing.Micro(event.ts - navigation.ts);
     const classification = "unclassified";
     const metricScore = { event, metricName: "FP", classification, navigation, timing: paintTime };
-    storeMetricScore(frameId, navigationId, metricScore);
+    storeMetricScore(frameId, navigation, metricScore);
     return;
   }
   if (Types20.Events.isMarkDOMContent(event)) {
@@ -3219,7 +3221,7 @@ function storePageLoadMetricAgainstNavigationId(navigation, event) {
       navigation,
       timing: dclTime
     };
-    storeMetricScore(frameId, navigationId, metricScore);
+    storeMetricScore(frameId, navigation, metricScore);
     return;
   }
   if (Types20.Events.isInteractiveTime(event)) {
@@ -3231,7 +3233,7 @@ function storePageLoadMetricAgainstNavigationId(navigation, event) {
       navigation,
       timing: ttiValue
     };
-    storeMetricScore(frameId, navigationId, tti);
+    storeMetricScore(frameId, navigation, tti);
     const tbtValue = Helpers14.Timing.milliToMicro(Types20.Timing.Milli(event.args.args.total_blocking_time_ms));
     const tbt = {
       event,
@@ -3240,7 +3242,7 @@ function storePageLoadMetricAgainstNavigationId(navigation, event) {
       navigation,
       timing: tbtValue
     };
-    storeMetricScore(frameId, navigationId, tbt);
+    storeMetricScore(frameId, navigation, tbt);
     return;
   }
   if (Types20.Events.isMarkLoad(event)) {
@@ -3252,10 +3254,10 @@ function storePageLoadMetricAgainstNavigationId(navigation, event) {
       navigation,
       timing: loadTime
     };
-    storeMetricScore(frameId, navigationId, metricScore);
+    storeMetricScore(frameId, navigation, metricScore);
     return;
   }
-  if (Types20.Events.isLargestContentfulPaintCandidate(event)) {
+  if (Types20.Events.isAnyLargestContentfulPaintCandidate(event)) {
     const candidateIndex = event.args.data?.candidateIndex;
     if (!candidateIndex) {
       throw new Error("Largest Contentful Paint unexpectedly had no candidateIndex.");
@@ -3269,18 +3271,18 @@ function storePageLoadMetricAgainstNavigationId(navigation, event) {
       timing: lcpTime
     };
     const metricsByNavigation = Platform10.MapUtilities.getWithDefault(metricScoresByFrameId, frameId, () => /* @__PURE__ */ new Map());
-    const metrics = Platform10.MapUtilities.getWithDefault(metricsByNavigation, navigationId, () => /* @__PURE__ */ new Map());
+    const metrics = Platform10.MapUtilities.getWithDefault(metricsByNavigation, navigation, () => /* @__PURE__ */ new Map());
     const lastLCPCandidate = metrics.get(
       "LCP"
       /* MetricName.LCP */
     );
     if (lastLCPCandidate === void 0) {
       selectedLCPCandidateEvents.add(lcp.event);
-      storeMetricScore(frameId, navigationId, lcp);
+      storeMetricScore(frameId, navigation, lcp);
       return;
     }
     const lastLCPCandidateEvent = lastLCPCandidate.event;
-    if (!Types20.Events.isLargestContentfulPaintCandidate(lastLCPCandidateEvent)) {
+    if (!Types20.Events.isAnyLargestContentfulPaintCandidate(lastLCPCandidateEvent)) {
       return;
     }
     const lastCandidateIndex = lastLCPCandidateEvent.args.data?.candidateIndex;
@@ -3290,23 +3292,26 @@ function storePageLoadMetricAgainstNavigationId(navigation, event) {
     if (lastCandidateIndex < candidateIndex) {
       selectedLCPCandidateEvents.delete(lastLCPCandidateEvent);
       selectedLCPCandidateEvents.add(lcp.event);
-      storeMetricScore(frameId, navigationId, lcp);
+      storeMetricScore(frameId, navigation, lcp);
     }
     return;
   }
   if (Types20.Events.isLayoutShift(event)) {
     return;
   }
+  if (Types20.Events.isSoftNavigationStart(event)) {
+    return;
+  }
   return Platform10.assertNever(event, `Unexpected event type: ${event}`);
 }
-function storeMetricScore(frameId, navigationId, metricScore) {
+function storeMetricScore(frameId, navigation, metricScore) {
   const metricsByNavigation = Platform10.MapUtilities.getWithDefault(metricScoresByFrameId, frameId, () => /* @__PURE__ */ new Map());
-  const metrics = Platform10.MapUtilities.getWithDefault(metricsByNavigation, navigationId, () => /* @__PURE__ */ new Map());
+  const metrics = Platform10.MapUtilities.getWithDefault(metricsByNavigation, navigation, () => /* @__PURE__ */ new Map());
   metrics.delete(metricScore.metricName);
   metrics.set(metricScore.metricName, metricScore);
 }
 function getFrameIdForPageLoadEvent(event) {
-  if (Types20.Events.isFirstContentfulPaint(event) || Types20.Events.isInteractiveTime(event) || Types20.Events.isLargestContentfulPaintCandidate(event) || Types20.Events.isNavigationStart(event) || Types20.Events.isLayoutShift(event) || Types20.Events.isFirstPaint(event)) {
+  if (Types20.Events.isFirstContentfulPaint(event) || Types20.Events.isInteractiveTime(event) || Types20.Events.isAnyLargestContentfulPaintCandidate(event) || Types20.Events.isNavigationStart(event) || Types20.Events.isSoftNavigationStart(event) || Types20.Events.isLayoutShift(event) || Types20.Events.isFirstPaint(event)) {
     return event.args.frame;
   }
   if (Types20.Events.isMarkDOMContent(event) || Types20.Events.isMarkLoad(event)) {
@@ -3319,17 +3324,27 @@ function getFrameIdForPageLoadEvent(event) {
   Platform10.assertNever(event, `Unexpected event type: ${event}`);
 }
 function getNavigationForPageLoadEvent(event) {
-  if (Types20.Events.isFirstContentfulPaint(event) || Types20.Events.isLargestContentfulPaintCandidate(event) || Types20.Events.isFirstPaint(event)) {
-    const navigationId = event.args.data?.navigationId;
-    if (!navigationId) {
-      throw new Error("Trace event unexpectedly had no navigation ID.");
+  if (Types20.Events.isFirstContentfulPaint(event) || Types20.Events.isAnyLargestContentfulPaintCandidate(event) || Types20.Events.isFirstPaint(event)) {
+    const { navigationsByNavigationId: navigationsByNavigationId2, softNavigationsById: softNavigationsById2 } = data5();
+    let navigation;
+    if (event.name === "largestContentfulPaint::CandidateForSoftNavigation" && event.args.data?.performanceTimelineNavigationId) {
+      navigation = softNavigationsById2.get(event.args.data.performanceTimelineNavigationId);
     }
-    const { navigationsByNavigationId: navigationsByNavigationId2 } = data5();
-    const navigation = navigationsByNavigationId2.get(navigationId);
+    if (!navigation) {
+      const navigationId = event.args.data?.navigationId;
+      if (!navigationId) {
+        throw new Error("Trace event unexpectedly had no navigation ID.");
+      }
+      navigation = navigationsByNavigationId2.get(navigationId);
+    }
     if (!navigation) {
       return null;
     }
     return navigation;
+  }
+  if (Types20.Events.isSoftNavigationStart(event)) {
+    const { softNavigationsById: softNavigationsById2 } = data5();
+    return softNavigationsById2.get(event.args.context.performanceTimelineNavigationId) ?? null;
   }
   if (Types20.Events.isMarkDOMContent(event) || Types20.Events.isInteractiveTime(event) || Types20.Events.isLayoutShift(event) || Types20.Events.isMarkLoad(event)) {
     const frameId = getFrameIdForPageLoadEvent(event);
@@ -3419,7 +3434,7 @@ async function finalize19() {
   }
   const allFinalLCPEvents = gatherFinalLCPEvents();
   const mainFrame = data5().mainFrameId;
-  const allEventsButLCP = pageLoadEventsArray.filter((event) => !Types20.Events.isLargestContentfulPaintCandidate(event));
+  const allEventsButLCP = pageLoadEventsArray.filter((event) => !Types20.Events.isAnyLargestContentfulPaintCandidate(event));
   const markerEvents = [...allFinalLCPEvents, ...allEventsButLCP].filter(Types20.Events.isMarkerEvent);
   allMarkerEvents = markerEvents.filter((event) => getFrameIdForPageLoadEvent(event) === mainFrame).sort((a, b) => a.ts - b.ts);
 }
@@ -3455,12 +3470,12 @@ async function finalize20() {
   const { traceBounds: traceBounds2, navigationsByNavigationId: navigationsByNavigationId2 } = data5();
   const metricScoresByFrameId2 = data19().metricScoresByFrameId;
   for (const [navigationId, navigation] of navigationsByNavigationId2) {
-    const lcpMetric = metricScoresByFrameId2.get(navigation.args.frame)?.get(navigationId)?.get(
+    const lcpMetric = metricScoresByFrameId2.get(navigation.args.frame)?.get(navigation)?.get(
       "LCP"
       /* MetricName.LCP */
     );
     const lcpEvent = lcpMetric?.event;
-    if (!lcpEvent || !Types21.Events.isLargestContentfulPaintCandidate(lcpEvent)) {
+    if (!lcpEvent || !Types21.Events.isAnyLargestContentfulPaintCandidate(lcpEvent)) {
       continue;
     }
     const nodeId = lcpEvent.args.data?.nodeId;

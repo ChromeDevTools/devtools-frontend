@@ -60,6 +60,10 @@ export declare class ZIndexValidator extends CSSRuleValidator {
     constructor();
     getHint(propertyName: string, computedStyles?: Map<string, string>, parentComputedStyles?: Map<string, string>): Hint | undefined;
 }
+export declare class PositionAnchorValidator extends CSSRuleValidator {
+    constructor();
+    getHint(propertyName: string, computedStyles?: Map<string, string>): Hint | undefined;
+}
 /**
  * Validates if CSS width/height are having an effect on an element.
  * See "Applies to" in https://www.w3.org/TR/css-sizing-3/#propdef-width.

@@ -3811,6 +3811,7 @@ __export(Gzip_exports, {
   arrayBufferToString: () => arrayBufferToString,
   compress: () => compress,
   compressStream: () => compressStream,
+  createMonitoredStream: () => createMonitoredStream,
   decompress: () => decompress,
   decompressStream: () => decompressStream,
   fileToString: () => fileToString,
@@ -3866,6 +3867,17 @@ function decompressStream(stream) {
 function compressStream(stream) {
   const cs = new CompressionStream("gzip");
   return stream.pipeThrough(cs);
+}
+function createMonitoredStream(stream, onProgress) {
+  let bytesRead = 0;
+  const progressTransformer = new TransformStream({
+    transform(chunk, controller) {
+      bytesRead += chunk.byteLength;
+      onProgress(bytesRead);
+      controller.enqueue(chunk);
+    }
+  });
+  return stream.pipeThrough(progressTransformer);
 }
 
 // gen/front_end/core/common/JavaScriptMetaData.js

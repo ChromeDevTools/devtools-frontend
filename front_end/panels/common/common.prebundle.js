@@ -68,7 +68,7 @@ export class TypeToAllowDialog {
     }
 }
 export { AiCodeCompletionTeaser } from './AiCodeCompletionTeaser.js';
-export { AiCodeGenerationTeaser } from './AiCodeGenerationTeaser.js';
+export * as AiCodeGenerationTeaser from './AiCodeGenerationTeaser.js';
 export { AnnotationManager } from './AnnotationManager.js';
 export { FreDialog } from './FreDialog.js';
 export { GdpSignUpDialog } from './GdpSignUpDialog.js';

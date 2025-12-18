@@ -1261,7 +1261,7 @@ var AiCodeGenerationProvider = class _AiCodeGenerationProvider {
     if (!AiCodeGeneration.AiCodeGeneration.AiCodeGeneration.isAiCodeGenerationEnabled(this.#devtoolsLocale)) {
       throw new Error("AI code generation feature is not enabled.");
     }
-    this.#generationTeaser = new PanelCommon2.AiCodeGenerationTeaser();
+    this.#generationTeaser = new PanelCommon2.AiCodeGenerationTeaser.AiCodeGenerationTeaser();
     this.#aiCodeGenerationConfig = aiCodeGenerationConfig;
   }
   static createInstance(aiCodeGenerationConfig) {
@@ -1269,7 +1269,8 @@ var AiCodeGenerationProvider = class _AiCodeGenerationProvider {
   }
   extension() {
     return [
-      CodeMirror2.EditorView.updateListener.of((update) => this.activateTeaser(update)),
+      CodeMirror2.EditorView.updateListener.of((update) => this.#activateTeaser(update)),
+      CodeMirror2.EditorView.updateListener.of((update) => this.#abortGenerationDuringUpdate(update)),
       aiAutoCompleteSuggestion,
       aiAutoCompleteSuggestionState,
       aiCodeGenerationTeaserModeState,
@@ -1329,7 +1330,8 @@ var AiCodeGenerationProvider = class _AiCodeGenerationProvider {
             });
             return true;
           }
-          if (this.#generationTeaser.isShowing() && this.#generationTeaser.loading) {
+          const generationTeaserIsLoading = this.#generationTeaser.displayState === PanelCommon2.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.LOADING;
+          if (this.#generationTeaser.isShowing() && generationTeaserIsLoading) {
             this.#controller.abort();
             this.#controller = new AbortController();
             this.#dismissTeaser();
@@ -1374,10 +1376,10 @@ var AiCodeGenerationProvider = class _AiCodeGenerationProvider {
     ];
   }
   #dismissTeaser() {
-    this.#generationTeaser.loading = false;
+    this.#generationTeaser.displayState = PanelCommon2.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.TRIGGER;
     this.#editor?.dispatch({ effects: setAiCodeGenerationTeaserMode.of(AiCodeGenerationTeaserMode.DISMISSED) });
   }
-  async activateTeaser(update) {
+  #activateTeaser(update) {
     const currentTeaserMode = update.state.field(aiCodeGenerationTeaserModeState);
     if (currentTeaserMode === AiCodeGenerationTeaserMode.ACTIVE) {
       return;
@@ -1387,11 +1389,31 @@ var AiCodeGenerationProvider = class _AiCodeGenerationProvider {
     }
     update.view.dispatch({ effects: setAiCodeGenerationTeaserMode.of(AiCodeGenerationTeaserMode.ACTIVE) });
   }
+  /**
+   * Monitors editor changes to cancel an ongoing AI generation.
+   * We abort the request and dismiss the teaser if the user modifies the
+   * document or moves their cursor/selection. These actions indicate the user
+   * is no longer focused on the current generation point or has manually
+   * resumed editing, making the pending suggestion irrelevant.
+   */
+  #abortGenerationDuringUpdate(update) {
+    if (!update.docChanged && update.state.selection.main.head === update.startState.selection.main.head) {
+      return;
+    }
+    const currentTeaserMode = update.state.field(aiCodeGenerationTeaserModeState);
+    const generationTeaserIsLoading = this.#generationTeaser.displayState === PanelCommon2.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.LOADING;
+    if (currentTeaserMode === AiCodeGenerationTeaserMode.DISMISSED || !generationTeaserIsLoading) {
+      return;
+    }
+    this.#controller.abort();
+    this.#controller = new AbortController();
+    this.#dismissTeaser();
+  }
   async #triggerAiCodeGeneration(options) {
     if (!this.#editor || !this.#aiCodeGeneration) {
       return;
     }
-    this.#generationTeaser.loading = true;
+    this.#generationTeaser.displayState = PanelCommon2.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.LOADING;
     const cursor = this.#editor.state.selection.main.head;
     const query = this.#editor.state.doc.lineAt(cursor).text;
     if (query.trim().length === 0) {
@@ -1439,38 +1461,46 @@ var AiCodeGenerationProvider = class _AiCodeGenerationProvider {
 };
 function aiCodeGenerationTeaserExtension(teaser) {
   return CodeMirror2.ViewPlugin.fromClass(class {
-    view;
-    #teaserMode;
+    #view;
     constructor(view) {
-      this.view = view;
-      this.#teaserMode = view.state.field(aiCodeGenerationTeaserModeState);
+      this.#view = view;
+      this.#updateTeaserState(view.state);
     }
     update(update) {
-      const currentTeaserMode = update.state.field(aiCodeGenerationTeaserModeState);
-      if (currentTeaserMode !== this.#teaserMode) {
-        this.#teaserMode = currentTeaserMode;
-      }
       if (!update.docChanged && update.state.selection.main.head === update.startState.selection.main.head) {
         return;
       }
-      if (teaser.loading) {
-        teaser.loading = false;
-      }
+      this.#updateTeaserState(update.state);
     }
     get decorations() {
-      if (this.#teaserMode === AiCodeGenerationTeaserMode.DISMISSED) {
+      const teaserMode = this.#view.state.field(aiCodeGenerationTeaserModeState);
+      if (teaserMode === AiCodeGenerationTeaserMode.DISMISSED) {
         return CodeMirror2.Decoration.none;
       }
-      const cursorPosition = this.view.state.selection.main.head;
-      const line = this.view.state.doc.lineAt(cursorPosition);
+      const cursorPosition = this.#view.state.selection.main.head;
+      const line = this.#view.state.doc.lineAt(cursorPosition);
+      const isEmptyLine = line.length === 0;
       const isComment = line.text.startsWith("//");
       const isCursorAtEndOfLine = cursorPosition >= line.to;
-      if (!isComment || !isCursorAtEndOfLine) {
-        return CodeMirror2.Decoration.none;
+      if (isEmptyLine || isComment && isCursorAtEndOfLine) {
+        return CodeMirror2.Decoration.set([
+          CodeMirror2.Decoration.widget({ widget: new AiCodeCompletionTeaserPlaceholder(teaser), side: 1 }).range(cursorPosition)
+        ]);
       }
-      return CodeMirror2.Decoration.set([
-        CodeMirror2.Decoration.widget({ widget: new AiCodeCompletionTeaserPlaceholder(teaser), side: 1 }).range(cursorPosition)
-      ]);
+      return CodeMirror2.Decoration.none;
+    }
+    #updateTeaserState(state) {
+      if (teaser.displayState === PanelCommon2.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.LOADING) {
+        return;
+      }
+      const cursorPosition = state.selection.main.head;
+      const line = state.doc.lineAt(cursorPosition);
+      const isEmptyLine = line.length === 0;
+      if (isEmptyLine) {
+        teaser.displayState = PanelCommon2.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.DISCOVERY;
+      } else {
+        teaser.displayState = PanelCommon2.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.TRIGGER;
+      }
     }
   }, {
     decorations: (v) => v.decorations

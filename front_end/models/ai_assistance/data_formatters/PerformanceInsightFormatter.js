@@ -8,8 +8,8 @@ import { bytes, millis } from './UnitFormatters.js';
 /**
  * For a given frame ID and navigation ID, returns the LCP Event and the LCP Request, if the resource was an image.
  */
-function getLCPData(parsedTrace, frameId, navigationId) {
-    const navMetrics = parsedTrace.data.PageLoadMetrics.metricScoresByFrameId.get(frameId)?.get(navigationId);
+function getLCPData(parsedTrace, frameId, navigation) {
+    const navMetrics = parsedTrace.data.PageLoadMetrics.metricScoresByFrameId.get(frameId)?.get(navigation);
     if (!navMetrics) {
         return null;
     }
@@ -18,12 +18,14 @@ function getLCPData(parsedTrace, frameId, navigationId) {
         return null;
     }
     const lcpEvent = metric?.event;
-    if (!lcpEvent || !Trace.Types.Events.isLargestContentfulPaintCandidate(lcpEvent)) {
+    if (!lcpEvent || !Trace.Types.Events.isAnyLargestContentfulPaintCandidate(lcpEvent)) {
         return null;
     }
+    const navigationId = navigation.args.data?.navigationId;
     return {
         lcpEvent,
-        lcpRequest: parsedTrace.data.LargestImagePaint.lcpRequestByNavigationId.get(navigationId),
+        lcpRequest: navigationId ? parsedTrace.data.LargestImagePaint.lcpRequestByNavigationId.get(navigationId) :
+            undefined,
         metricScore: metric,
     };
 }
@@ -68,14 +70,14 @@ export class PerformanceInsightFormatter {
      * Information about LCP which we pass to the LLM for all insights that relate to LCP.
      */
     #lcpMetricSharedContext() {
-        if (!this.#insight.navigationId) {
+        if (!this.#insight.navigation) {
             // No navigation ID = no LCP.
             return '';
         }
-        if (!this.#insight.frameId || !this.#insight.navigationId) {
+        if (!this.#insight.frameId || !this.#insight.navigation) {
             return '';
         }
-        const data = getLCPData(this.#parsedTrace, this.#insight.frameId, this.#insight.navigationId);
+        const data = getLCPData(this.#parsedTrace, this.#insight.frameId, this.#insight.navigation);
         if (!data) {
             return '';
         }

@@ -11,10 +11,12 @@ import { type Target } from './Target.js';
 /** Keep this list in sync with https://w3c.github.io/aria/#state_prop_def **/
 export declare const ARIA_ATTRIBUTES: Set<string>;
 export declare enum DOMNodeEvents {
-    TOP_LAYER_INDEX_CHANGED = "TopLayerIndexChanged"
+    TOP_LAYER_INDEX_CHANGED = "TopLayerIndexChanged",
+    SCROLLABLE_FLAG_UPDATED = "ScrollableFlagUpdated"
 }
 export interface DOMNodeEventTypes {
     [DOMNodeEvents.TOP_LAYER_INDEX_CHANGED]: void;
+    [DOMNodeEvents.SCROLLABLE_FLAG_UPDATED]: void;
 }
 export declare class DOMNode extends Common.ObjectWrapper.ObjectWrapper<DOMNodeEventTypes> {
     #private;
@@ -274,7 +276,6 @@ export declare enum Events {
     DistributedNodesChanged = "DistributedNodesChanged",
     MarkersChanged = "MarkersChanged",
     TopLayerElementsChanged = "TopLayerElementsChanged",
-    ScrollableFlagUpdated = "ScrollableFlagUpdated",
     AffectedByStartingStylesFlagUpdated = "AffectedByStartingStylesFlagUpdated",
     AdoptedStyleSheetsModified = "AdoptedStyleSheetsModified"
 }
@@ -301,9 +302,6 @@ export interface EventTypes {
     [Events.TopLayerElementsChanged]: {
         document: DOMDocument;
         documentShortcuts: DOMNodeShortcut[];
-    };
-    [Events.ScrollableFlagUpdated]: {
-        node: DOMNode;
     };
     [Events.AffectedByStartingStylesFlagUpdated]: {
         node: DOMNode;

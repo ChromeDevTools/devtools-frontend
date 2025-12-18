@@ -78,7 +78,7 @@ export type InsightModel<UIStrings extends Record<string, string> = Record<strin
     /**
      * If this insight is attached to a navigation, this stores its ID.
      */
-    navigationId?: string;
+    navigation?: Types.Events.NavigationStart;
     /** This is lazily-generated because some insights may create many overlays. */
     createOverlays?: () => Types.Overlays.Overlay[];
 };

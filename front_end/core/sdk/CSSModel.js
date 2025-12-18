@@ -317,7 +317,7 @@ export class CSSModel extends SDKModel {
             isGrid,
             isSubgrid,
             isGridLanes,
-            isContainer,
+            containerType: isContainer ? containerType : undefined,
             hasScroll,
         };
     }

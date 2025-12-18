@@ -5223,13 +5223,14 @@ var StatusDialog = class extends UI5.Widget.VBox {
     this.downloadTraceButton.classList.remove("hidden");
   }
   remove() {
-    this.element.parentNode?.classList.remove("tinted");
+    this.element.parentNode?.classList.remove("opaque", "tinted");
     this.stopTimer();
     this.element.remove();
   }
-  showPane(parent) {
+  showPane(parent, mode = "opaque") {
     this.show(parent);
-    parent.classList.add("tinted");
+    parent.classList.toggle("tinted", mode === "tinted");
+    parent.classList.toggle("opaque", mode === "opaque");
   }
   enableAndFocusButton() {
     this.button.classList.remove("hidden");
@@ -7316,8 +7317,15 @@ var timelinePanel_css_default = `/*
   pointer-events: none;
 }
 
-.timeline.panel .status-pane-container.tinted {
+.timeline.panel .status-pane-container.opaque {
   background-color: var(--sys-color-cdt-base-container);
+  pointer-events: auto;
+}
+
+.timeline.panel .status-pane-container.tinted {
+  /* stylelint-disable-next-line plugin/use_theme_colors */
+  background-color: #0005;
+  background-blend-mode: multiply;
   pointer-events: auto;
 }
 
@@ -7987,6 +7995,18 @@ var UIStrings20 = {
    */
   initializingTracing: "Initializing tracing\u2026",
   /**
+   * @description Text in Timeline Panel of the Performance panel. Shown to the user after they request to download the trace.
+   */
+  preparingTraceForDownload: "Preparing\u2026",
+  /**
+   * @description Text in Timeline Panel of the Performance panel. Shown to the user after they request to download the trace.
+   */
+  compressingTraceForDownload: "Compressing\u2026",
+  /**
+   * @description Text in Timeline Panel of the Performance panel. Shown to the user after they request to download the trace.
+   */
+  encodingTraceForDownload: "Encoding\u2026",
+  /**
    * @description Tooltip description for a checkbox that toggles the visibility of data added by extensions of this panel (Performance).
    */
   showDataAddedByExtensions: "Show data added by extensions of the Performance panel",
@@ -8176,7 +8196,6 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
       content: adornerContent
     };
     this.#traceEngineModel = traceModel || this.#instantiateNewModel();
-    this.#listenForProcessingProgress();
     this.element.addEventListener("contextmenu", this.contextMenu.bind(this), false);
     this.dropTarget = new UI10.DropTarget.DropTarget(this.element, [UI10.DropTarget.Type.File, UI10.DropTarget.Type.URI], i18nString20(UIStrings20.dropTimelineFileOrUrlHere), this.handleDrop.bind(this));
     this.recordingOptionUIControls = [];
@@ -8375,7 +8394,7 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
    * Pass `highlightInsight: true` to flash the insight with the background highlight colour.
    */
   #setActiveInsight(insight, opts = { highlightInsight: false }) {
-    if (insight) {
+    if (insight && this.#splitWidget.showMode() !== "Both") {
       this.#splitWidget.showBoth();
     }
     this.#sideBar.setActiveInsight(insight, { highlight: opts.highlightInsight });
@@ -8422,7 +8441,20 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
       "timeline-debug-mode"
       /* Root.Runtime.ExperimentName.TIMELINE_DEBUG_MODE */
     );
-    return Trace23.TraceModel.Model.createWithAllHandlers(config);
+    const traceEngineModel = Trace23.TraceModel.Model.createWithAllHandlers(config);
+    traceEngineModel.addEventListener(Trace23.TraceModel.ModelUpdateEvent.eventName, (e) => {
+      const updateEvent = e;
+      const str = i18nString20(UIStrings20.processed);
+      const traceParseMaxProgress = 0.7;
+      if (updateEvent.data.type === "COMPLETE") {
+        this.statusDialog?.updateProgressBar(str, 100 * traceParseMaxProgress);
+      } else if (updateEvent.data.type === "PROGRESS_UPDATE") {
+        const data = updateEvent.data.data;
+        this.statusDialog?.updateProgressBar(str, data.percent * 100 * traceParseMaxProgress);
+      }
+    });
+    this.#traceEngineModel = traceEngineModel;
+    return this.#traceEngineModel;
   }
   static extensionDataVisibilitySetting() {
     return Common10.Settings.Settings.instance().createSetting("timeline-show-extension-data", true);
@@ -8978,9 +9010,26 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
         return;
       }
       this.#showExportTraceErrorDialog(error);
+    } finally {
+      this.statusDialog?.remove();
+      this.statusDialog = null;
     }
   }
   async innerSaveToFile(traceEvents, metadata, config) {
+    this.statusDialog = new StatusDialog({
+      hideStopButton: true,
+      showProgress: true
+    }, async () => {
+      this.statusDialog?.remove();
+      this.statusDialog = null;
+    });
+    this.statusDialog.showPane(this.statusPaneContainer, "tinted");
+    this.statusDialog.updateStatus(i18nString20(UIStrings20.preparingTraceForDownload));
+    this.statusDialog.updateProgressBar(i18nString20(UIStrings20.preparingTraceForDownload), 0);
+    this.statusDialog.requestUpdate();
+    await this.statusDialog.updateComplete;
+    await new Promise((resolve) => requestAnimationFrame(resolve));
+    await new Promise((resolve) => requestAnimationFrame(resolve));
     const isoDate = Platform11.DateUtilities.toISO8601Compact(metadata.startTime ? new Date(metadata.startTime) : /* @__PURE__ */ new Date());
     const isCpuProfile = metadata.dataOrigin === "CPUProfile";
     const { includeResourceContent, includeSourceMaps } = config;
@@ -9005,14 +9054,22 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
     }
     let blob = new Blob(blobParts, { type: "application/json" });
     if (config.shouldCompress) {
+      this.statusDialog.updateStatus(i18nString20(UIStrings20.compressingTraceForDownload));
+      this.statusDialog.updateProgressBar(i18nString20(UIStrings20.compressingTraceForDownload), 0);
       fileName = `${fileName}.gz`;
-      const gzStream = Common10.Gzip.compressStream(blob.stream());
+      const inputSize = blob.size;
+      const monitoredStream = Common10.Gzip.createMonitoredStream(blob.stream(), (bytesRead) => {
+        this.statusDialog?.updateProgressBar(i18nString20(UIStrings20.compressingTraceForDownload), bytesRead / inputSize * 100);
+      });
+      const gzStream = Common10.Gzip.compressStream(monitoredStream);
       blob = await new Response(gzStream, {
         headers: { "Content-Type": "application/gzip" }
       }).blob();
     }
     let bytesAsB64 = null;
     try {
+      this.statusDialog.updateStatus(i18nString20(UIStrings20.encodingTraceForDownload));
+      this.statusDialog.updateProgressBar(i18nString20(UIStrings20.encodingTraceForDownload), 100);
       bytesAsB64 = await Common10.Base64.encode(blob);
     } catch {
     }
@@ -9038,6 +9095,8 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
       a.click();
       URL.revokeObjectURL(url);
     }
+    this.statusDialog.remove();
+    this.statusDialog = null;
   }
   async handleSaveToFileAction() {
     const exportTraceOptionsElement = this.saveButton.element;
@@ -9407,7 +9466,7 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
       {
         description: error,
         buttonText: i18nString20(UIStrings20.close),
-        hideStopButton: true,
+        hideStopButton: false,
         showProgress: void 0,
         showTimer: void 0
       },
@@ -9518,7 +9577,7 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
   }
   onClearButton() {
     this.#historyManager.clear();
-    this.#traceEngineModel = this.#instantiateNewModel();
+    this.#instantiateNewModel();
     ModificationsManager.reset();
     this.#uninstallSourceMapsResolver();
     this.flameChart.getMainDataProvider().reset();
@@ -9838,19 +9897,6 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
   }
   async processingStarted() {
     this.statusDialog?.updateStatus(i18nString20(UIStrings20.processingTrace));
-  }
-  #listenForProcessingProgress() {
-    this.#traceEngineModel.addEventListener(Trace23.TraceModel.ModelUpdateEvent.eventName, (e) => {
-      const updateEvent = e;
-      const str = i18nString20(UIStrings20.processed);
-      const traceParseMaxProgress = 0.7;
-      if (updateEvent.data.type === "COMPLETE") {
-        this.statusDialog?.updateProgressBar(str, 100 * traceParseMaxProgress);
-      } else if (updateEvent.data.type === "PROGRESS_UPDATE") {
-        const data = updateEvent.data.data;
-        this.statusDialog?.updateProgressBar(str, data.percent * 100 * traceParseMaxProgress);
-      }
-    });
   }
   #onSourceMapsNodeNamesResolved() {
     this.flameChart.getMainDataProvider().timelineData(true);
@@ -10278,7 +10324,7 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
    * 3. Flash the Insight with the highlight colour we use in other panels.
    */
   revealInsight(insightModel) {
-    const insightSetKey = insightModel.navigationId ?? Trace23.Types.Events.NO_NAVIGATION;
+    const insightSetKey = insightModel.navigation?.args.data?.navigationId ?? Trace23.Types.Events.NO_NAVIGATION;
     this.#setActiveInsight({ model: insightModel, insightSetKey }, { highlightInsight: true });
   }
   static async *handleExternalRecordRequest() {
@@ -11120,6 +11166,10 @@ var TimelineUIUtils = class _TimelineUIUtils {
         link = "https://web.dev/lcp/";
         name = "largest contentful paint";
         break;
+      case "largestContentfulPaint::CandidateForSoftNavigation":
+        link = "https://developer.chrome.com/docs/web-platform/soft-navigations-experiment";
+        name = "largest contentful paint (soft navigation)";
+        break;
       case "firstContentfulPaint":
         link = "https://web.dev/first-contentful-paint/";
         name = "first contentful paint";
@@ -11238,6 +11288,18 @@ var TimelineUIUtils = class _TimelineUIUtils {
     if (parsedTrace.data.Meta.traceIsGeneric) {
       _TimelineUIUtils.renderEventJson(event, contentHelper);
       return contentHelper.fragment;
+    }
+    if (Trace24.Types.Events.isNavigationStart(event)) {
+      url = event.args.data?.documentLoaderURL ?? event.args.data?.url;
+      if (url) {
+        contentHelper.appendElementRow(i18nString21(UIStrings21.url), LegacyComponents.Linkifier.Linkifier.linkifyURL(url));
+      }
+    }
+    if (Trace24.Types.Events.isSoftNavigationStart(event)) {
+      url = event.args.context.URL;
+      if (url) {
+        contentHelper.appendElementRow(i18nString21(UIStrings21.url), LegacyComponents.Linkifier.Linkifier.linkifyURL(url));
+      }
     }
     if (Trace24.Types.Events.isV8Compile(event)) {
       url = event.args.data?.url;
@@ -11588,6 +11650,7 @@ var TimelineUIUtils = class _TimelineUIUtils {
         contentHelper.appendTextRow(i18nString21(UIStrings21.type), unsafeEventData["type"]);
         break;
       }
+      case "largestContentfulPaint::CandidateForSoftNavigation":
       // @ts-expect-error Fall-through intended.
       case "largestContentfulPaint::Candidate": {
         contentHelper.appendTextRow(i18nString21(UIStrings21.type), String(unsafeEventData["type"]));
@@ -12196,6 +12259,10 @@ var TimelineUIUtils = class _TimelineUIUtils {
         color = "var(--color-text-primary)";
         tall = true;
         break;
+      case "SoftNavigationStart":
+        color = "var(--sys-color-blue)";
+        tall = true;
+        break;
       case "FrameStartedLoading":
         color = "green";
         tall = true;
@@ -12216,6 +12283,7 @@ var TimelineUIUtils = class _TimelineUIUtils {
         color = "var(--sys-color-green-bright)";
         tall = true;
         break;
+      case "largestContentfulPaint::CandidateForSoftNavigation":
       case "largestContentfulPaint::Candidate":
         color = "var(--sys-color-green)";
         tall = true;
@@ -12394,18 +12462,18 @@ function timeStampForEventAdjustedForClosestNavigationIfPossible(event, parsedTr
     const { startTime } = Trace24.Helpers.Timing.eventTimingsMilliSeconds(event);
     return startTime;
   }
-  const time = Trace24.Helpers.Timing.timeStampForEventAdjustedByClosestNavigation(event, parsedTrace.data.Meta.traceBounds, parsedTrace.data.Meta.navigationsByNavigationId, parsedTrace.data.Meta.navigationsByFrameId);
+  const time = Trace24.Helpers.Timing.timeStampForEventAdjustedByClosestNavigation(event, parsedTrace.data.Meta.traceBounds, parsedTrace.data.Meta.navigationsByNavigationId, parsedTrace.data.Meta.softNavigationsById, parsedTrace.data.Meta.navigationsByFrameId);
   return Trace24.Helpers.Timing.microToMilli(time);
 }
 function isMarkerEvent(parsedTrace, event) {
   const { Name: Name8 } = Trace24.Types.Events;
-  if (event.name === "TimeStamp" || event.name === "navigationStart") {
+  if (event.name === "TimeStamp" || event.name === "navigationStart" || event.name === "SoftNavigationStart") {
     return true;
   }
   if (Trace24.Types.Events.isFirstContentfulPaint(event) || Trace24.Types.Events.isFirstPaint(event)) {
     return event.args.frame === parsedTrace.data.Meta.mainFrameId;
   }
-  if (Trace24.Types.Events.isMarkDOMContent(event) || Trace24.Types.Events.isMarkLoad(event) || Trace24.Types.Events.isLargestContentfulPaintCandidate(event)) {
+  if (Trace24.Types.Events.isMarkDOMContent(event) || Trace24.Types.Events.isMarkLoad(event) || Trace24.Types.Events.isAnyLargestContentfulPaintCandidate(event)) {
     if (!event.args.data) {
       return false;
     }
@@ -14980,24 +15048,13 @@ var TimelineFlameChartNetworkDataProvider = class {
   }
   /**
    * When users zoom in the flamechart, we only want to show them the network
-   * requests between startTime and endTime. This function will call the
-   * trackAppender to update the timeline data, and then force to create a new
-   * PerfUI.FlameChart.FlameChartTimelineData instance to force the flamechart
-   * to re-render.
+   * requests between startTime and endTime.
    */
   #updateTimelineData(startTime, endTime) {
     if (!this.#networkTrackAppender || !this.#timelineData) {
       return;
     }
     this.#maxLevel = this.#networkTrackAppender.relayoutEntriesWithinBounds(this.#events, startTime, endTime);
-    this.#timelineData = PerfUI15.FlameChart.FlameChartTimelineData.create({
-      entryLevels: this.#timelineData?.entryLevels,
-      entryTotalTimes: this.#timelineData?.entryTotalTimes,
-      entryStartTimes: this.#timelineData?.entryStartTimes,
-      groups: this.#timelineData?.groups,
-      initiatorsData: this.#timelineData.initiatorsData,
-      entryDecorations: this.#timelineData.entryDecorations
-    });
   }
   /**
    * Note that although we use the same mechanism to track configuration
@@ -15364,21 +15421,29 @@ var SORT_ORDER_PAGE_LOAD_MARKERS = {
     /* Trace.Types.Events.Name.NAVIGATION_START */
   ]: 0,
   [
+    "SoftNavigationStart"
+    /* Trace.Types.Events.Name.SOFT_NAVIGATION_START */
+  ]: 1,
+  [
     "MarkLoad"
     /* Trace.Types.Events.Name.MARK_LOAD */
-  ]: 1,
+  ]: 2,
   [
     "firstContentfulPaint"
     /* Trace.Types.Events.Name.MARK_FCP */
-  ]: 2,
+  ]: 3,
   [
     "MarkDOMContent"
     /* Trace.Types.Events.Name.MARK_DOM_CONTENT */
-  ]: 3,
+  ]: 4,
   [
     "largestContentfulPaint::Candidate"
     /* Trace.Types.Events.Name.MARK_LCP_CANDIDATE */
-  ]: 4
+  ]: 5,
+  [
+    "largestContentfulPaint::CandidateForSoftNavigation"
+    /* Trace.Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION */
+  ]: 6
 };
 var TIMESTAMP_THRESHOLD_MS = Trace32.Types.Timing.Micro(10);
 var TimelineFlameChartView = class extends Common15.ObjectWrapper.eventMixin(UI18.Widget.VBox) {
@@ -15810,13 +15875,13 @@ var TimelineFlameChartView = class extends Common15.ObjectWrapper.eventMixin(UI1
     this.bulkRemoveOverlays(this.#markers);
     const markerEvents = parsedTrace.data.PageLoadMetrics.allMarkerEvents;
     const markers = markerEvents.filter(
-      (event) => event.name === "navigationStart" || event.name === "largestContentfulPaint::Candidate" || event.name === "firstContentfulPaint" || event.name === "MarkDOMContent" || event.name === "MarkLoad"
+      (event) => event.name === "navigationStart" || event.name === "SoftNavigationStart" || event.name === "largestContentfulPaint::Candidate" || event.name === "largestContentfulPaint::CandidateForSoftNavigation" || event.name === "firstContentfulPaint" || event.name === "MarkDOMContent" || event.name === "MarkLoad"
       /* Trace.Types.Events.Name.MARK_LOAD */
     );
     this.#sortMarkersForPreferredVisualOrder(markers);
     const overlayByTs = /* @__PURE__ */ new Map();
     markers.forEach((marker) => {
-      const adjustedTimestamp = Trace32.Helpers.Timing.timeStampForEventAdjustedByClosestNavigation(marker, parsedTrace.data.Meta.traceBounds, parsedTrace.data.Meta.navigationsByNavigationId, parsedTrace.data.Meta.navigationsByFrameId);
+      const adjustedTimestamp = Trace32.Helpers.Timing.timeStampForEventAdjustedByClosestNavigation(marker, parsedTrace.data.Meta.traceBounds, parsedTrace.data.Meta.navigationsByNavigationId, parsedTrace.data.Meta.softNavigationsById, parsedTrace.data.Meta.navigationsByFrameId);
       let matchingOverlay = false;
       for (const [ts, overlay] of overlayByTs.entries()) {
         if (Math.abs(marker.ts - ts) <= TIMESTAMP_THRESHOLD_MS) {
@@ -15858,17 +15923,8 @@ var TimelineFlameChartView = class extends Common15.ObjectWrapper.eventMixin(UI1
     for (const overlay of this.#currentInsightOverlays) {
       entries.push(...Overlays3.Overlays.entriesForOverlay(overlay));
     }
-    let relatedEventsList = this.#activeInsight?.model.relatedEvents;
-    if (!relatedEventsList) {
-      relatedEventsList = [];
-    } else if (relatedEventsList instanceof Map) {
-      relatedEventsList = Array.from(relatedEventsList.keys());
-    }
-    this.#dimInsightRelatedEvents([...entries, ...relatedEventsList]);
     if (options.updateTraceWindow) {
-      for (const entry of entries) {
-        this.#expandEntryTrack(entry);
-      }
+      this.#bulkExpandGroupsForEntries(entries);
       const overlaysBounds = Overlays3.Overlays.traceWindowContainingOverlays(this.#currentInsightOverlays);
       if (overlaysBounds) {
         const percentage = options.updateTraceWindowPercentage ?? 50;
@@ -15876,9 +15932,18 @@ var TimelineFlameChartView = class extends Common15.ObjectWrapper.eventMixin(UI1
         TraceBounds15.TraceBounds.BoundsManager.instance().setTimelineVisibleWindow(expandedBounds, { ignoreMiniMapBounds: true, shouldAnimate: true });
       }
     }
+    let relatedEventsList = this.#activeInsight?.model.relatedEvents;
+    if (!relatedEventsList) {
+      relatedEventsList = [];
+    } else if (relatedEventsList instanceof Map) {
+      relatedEventsList = Array.from(relatedEventsList.keys());
+    }
+    this.#dimInsightRelatedEvents([...entries, ...relatedEventsList]);
     if (entries.length !== 0) {
       const earliestEntry = entries.reduce((earliest, current) => earliest.ts < current.ts ? earliest : current, entries[0]);
-      this.revealEventVertically(earliestEntry);
+      requestAnimationFrame(() => {
+        this.revealEventVertically(earliestEntry);
+      });
     }
   }
   hoverAnnotationInSidebar(annotation) {
@@ -15916,6 +15981,37 @@ var TimelineFlameChartView = class extends Common15.ObjectWrapper.eventMixin(UI1
     if (!this.#activeInsight) {
       this.#updateFlameChartDimmerWithEvents(this.#activeInsightDimmer, null);
     }
+  }
+  /**
+   * Bulk expands the tracks (e.g. groups) that the given entries belong to.
+   * Will update them all at once and then do a redraw.
+   */
+  #bulkExpandGroupsForEntries(entries) {
+    const networkGroupIndexes = /* @__PURE__ */ new Set();
+    const mainGroupIndexes = /* @__PURE__ */ new Set();
+    for (const entry of entries) {
+      const chartName = Overlays3.Overlays.chartForEntry(entry);
+      const provider = chartName === "main" ? this.mainDataProvider : this.networkDataProvider;
+      const entryIndex = provider.indexForEvent?.(entry) ?? null;
+      if (entryIndex === null) {
+        continue;
+      }
+      const group = provider.groupForEvent?.(entryIndex) ?? null;
+      if (!group) {
+        continue;
+      }
+      if (group.expanded) {
+        continue;
+      }
+      const groupIndex = provider.timelineData().groups.indexOf(group);
+      if (chartName === "main") {
+        mainGroupIndexes.add(groupIndex);
+      } else {
+        networkGroupIndexes.add(groupIndex);
+      }
+    }
+    this.mainFlameChart.bulkExpandGroups([...mainGroupIndexes]);
+    this.networkFlameChart.bulkExpandGroups([...networkGroupIndexes]);
   }
   /**
    * Expands the track / group that the given entry is in.
@@ -17909,7 +18005,11 @@ var SORT_ORDER_PAGE_LOAD_MARKERS2 = {
   [
     "largestContentfulPaint::Candidate"
     /* Trace.Types.Events.Name.MARK_LCP_CANDIDATE */
-  ]: 4
+  ]: 4,
+  [
+    "largestContentfulPaint::CandidateForSoftNavigation"
+    /* Trace.Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION */
+  ]: 5
 };
 var TimingsTrackAppender = class {
   appenderName = "Timings";
@@ -18027,7 +18127,7 @@ var TimingsTrackAppender = class {
       color = "#1A6937";
       title = "FCP";
     }
-    if (Trace34.Types.Events.isLargestContentfulPaintCandidate(markerEvent)) {
+    if (Trace34.Types.Events.isAnyLargestContentfulPaintCandidate(markerEvent)) {
       color = "#1A3422";
       title = "LCP";
     }
@@ -18106,7 +18206,7 @@ var TimingsTrackAppender = class {
       info.title = event.devtoolsObj.tooltipText || event.name;
     }
     if (Trace34.Types.Events.isMarkerEvent(event) || Trace34.Types.Events.isPerformanceMark(event) || Trace34.Types.Events.isConsoleTimeStamp(event) || isExtensibilityMarker) {
-      const timeOfEvent = Trace34.Helpers.Timing.timeStampForEventAdjustedByClosestNavigation(event, this.#parsedTrace.data.Meta.traceBounds, this.#parsedTrace.data.Meta.navigationsByNavigationId, this.#parsedTrace.data.Meta.navigationsByFrameId);
+      const timeOfEvent = Trace34.Helpers.Timing.timeStampForEventAdjustedByClosestNavigation(event, this.#parsedTrace.data.Meta.traceBounds, this.#parsedTrace.data.Meta.navigationsByNavigationId, this.#parsedTrace.data.Meta.softNavigationsById, this.#parsedTrace.data.Meta.navigationsByFrameId);
       info.formattedTime = getDurationString(timeOfEvent);
     }
   }

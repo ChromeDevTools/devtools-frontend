@@ -60,6 +60,8 @@ export interface ArgsData {
     sampleTraceId?: number;
     url?: string;
     navigationId?: string;
+    /** For soft navs. */
+    performanceTimelineNavigationId?: number;
     frame?: string;
 }
 export interface CallFrame {
@@ -552,6 +554,24 @@ export interface NavigationStart extends Mark {
         };
     };
 }
+export interface SoftNavigationStart extends Event {
+    name: Name.SOFT_NAVIGATION_START;
+    ph: Phase.ASYNC_NESTABLE_INSTANT;
+    args: Args & {
+        frame: string;
+        context: {
+            softNavContextId: number;
+            URL: string;
+            timeOrigin: number;
+            domModifications: number;
+            firstContentfulPaint: number;
+            paintedArea: number;
+            performanceTimelineNavigationId: number;
+            repaintedArea: number;
+        };
+    };
+}
+export declare function isSoftNavigationStart(event: Event): event is SoftNavigationStart;
 export interface FirstContentfulPaint extends Mark {
     name: Name.MARK_FCP;
     args: Args & {
@@ -570,8 +590,8 @@ export interface FirstPaint extends Mark {
         };
     };
 }
-export type PageLoadEvent = FirstContentfulPaint | MarkDOMContent | InteractiveTime | LargestContentfulPaintCandidate | LayoutShift | FirstPaint | MarkLoad | NavigationStart;
-export declare const MarkerName: readonly ["MarkDOMContent", "MarkLoad", "firstPaint", "firstContentfulPaint", "largestContentfulPaint::Candidate"];
+export type PageLoadEvent = FirstContentfulPaint | MarkDOMContent | InteractiveTime | AnyLargestContentfulPaintCandidate | LayoutShift | FirstPaint | MarkLoad | NavigationStart | SoftNavigationStart;
+export declare const MarkerName: readonly ["MarkDOMContent", "MarkLoad", "firstPaint", "firstContentfulPaint", "largestContentfulPaint::Candidate", "largestContentfulPaint::CandidateForSoftNavigation"];
 export interface MarkerEvent extends Event {
     name: typeof MarkerName[number];
 }
@@ -593,6 +613,23 @@ export interface LargestContentfulPaintCandidate extends Mark {
         };
     };
 }
+export interface LargestContentfulPaintCandidateForSoftNavigation extends Mark {
+    name: Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION;
+    args: Args & {
+        frame: string;
+        data?: ArgsData & {
+            candidateIndex: number;
+            isOutermostMainFrame: boolean;
+            isMainFrame: boolean;
+            nodeId: Protocol.DOM.BackendNodeId;
+            loadingAttr: string;
+            performanceTimelineNavigationId: number;
+            type?: string;
+            nodeName?: string;
+        };
+    };
+}
+export type AnyLargestContentfulPaintCandidate = LargestContentfulPaintCandidate | LargestContentfulPaintCandidateForSoftNavigation;
 export interface LargestImagePaintCandidate extends Mark {
     name: 'LargestImagePaint::Candidate';
     args: Args & {
@@ -1665,7 +1702,7 @@ export declare function isSyntheticAnimation(event: Event): event is SyntheticAn
 export declare function isLayoutShift(event: Event): event is LayoutShift;
 export declare function isLayoutInvalidationTracking(event: Event): event is LayoutInvalidationTracking;
 export declare function isFirstContentfulPaint(event: Event): event is FirstContentfulPaint;
-export declare function isLargestContentfulPaintCandidate(event: Event): event is LargestContentfulPaintCandidate;
+export declare function isAnyLargestContentfulPaintCandidate(event: Event): event is AnyLargestContentfulPaintCandidate;
 export declare function isLargestImagePaintCandidate(event: Event): event is LargestImagePaintCandidate;
 export declare function isLargestTextPaintCandidate(event: Event): event is LargestTextPaintCandidate;
 export declare function isMarkLoad(event: Event): event is MarkLoad;
@@ -2224,8 +2261,10 @@ export declare const enum Name {
     MARK_FIRST_PAINT = "firstPaint",
     MARK_FCP = "firstContentfulPaint",
     MARK_LCP_CANDIDATE = "largestContentfulPaint::Candidate",
+    MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION = "largestContentfulPaint::CandidateForSoftNavigation",
     MARK_LCP_INVALIDATE = "largestContentfulPaint::Invalidate",
     NAVIGATION_START = "navigationStart",
+    SOFT_NAVIGATION_START = "SoftNavigationStart",
     CONSOLE_TIME = "ConsoleTime",
     USER_TIMING = "UserTiming",
     INTERACTIVE_TIME = "InteractiveTime",

@@ -165,6 +165,7 @@ __export(TraceEvents_exports, {
   isAnimationFrameAsyncEnd: () => isAnimationFrameAsyncEnd,
   isAnimationFrameAsyncStart: () => isAnimationFrameAsyncStart,
   isAnimationFramePresentation: () => isAnimationFramePresentation,
+  isAnyLargestContentfulPaintCandidate: () => isAnyLargestContentfulPaintCandidate,
   isAnyScriptSourceEvent: () => isAnyScriptSourceEvent,
   isAuctionWorkletDoneWithProcess: () => isAuctionWorkletDoneWithProcess,
   isAuctionWorkletRunningInProcess: () => isAuctionWorkletRunningInProcess,
@@ -211,7 +212,6 @@ __export(TraceEvents_exports, {
   isInvalidateLayout: () => isInvalidateLayout,
   isInvalidationTracking: () => isInvalidationTracking,
   isJSInvocationEvent: () => isJSInvocationEvent,
-  isLargestContentfulPaintCandidate: () => isLargestContentfulPaintCandidate,
   isLargestImagePaintCandidate: () => isLargestImagePaintCandidate,
   isLargestTextPaintCandidate: () => isLargestTextPaintCandidate,
   isLayerTreeHostImplSnapshot: () => isLayerTreeHostImplSnapshot,
@@ -279,6 +279,7 @@ __export(TraceEvents_exports, {
   isScrollLayer: () => isScrollLayer,
   isSelectorStats: () => isSelectorStats,
   isSetLayerId: () => isSetLayerId,
+  isSoftNavigationStart: () => isSoftNavigationStart,
   isStyleInvalidatorInvalidationTracking: () => isStyleInvalidatorInvalidationTracking,
   isStyleRecalcInvalidationTracking: () => isStyleRecalcInvalidationTracking,
   isSyntheticAnimation: () => isSyntheticAnimation,
@@ -346,17 +347,28 @@ function isLegacySyntheticScreenshot(event) {
 function isScreenshot(event) {
   return event.name === "Screenshot" && "source_id" in (event.args ?? {});
 }
+function isSoftNavigationStart(event) {
+  return event.name === "SoftNavigationStart";
+}
 var markerTypeGuards = [
   isMarkDOMContent,
   isMarkLoad,
   isFirstPaint,
   isFirstContentfulPaint,
-  isLargestContentfulPaintCandidate,
-  isNavigationStart
+  isAnyLargestContentfulPaintCandidate,
+  isNavigationStart,
+  isSoftNavigationStart
 ];
-var MarkerName = ["MarkDOMContent", "MarkLoad", "firstPaint", "firstContentfulPaint", "largestContentfulPaint::Candidate"];
+var MarkerName = [
+  "MarkDOMContent",
+  "MarkLoad",
+  "firstPaint",
+  "firstContentfulPaint",
+  "largestContentfulPaint::Candidate",
+  "largestContentfulPaint::CandidateForSoftNavigation"
+];
 function isMarkerEvent(event) {
-  if (event.ph === "I" || event.ph === "R") {
+  if (event.ph === "I" || "n") {
     return markerTypeGuards.some((fn) => fn(event));
   }
   return false;
@@ -366,7 +378,7 @@ var pageLoadEventTypeGuards = [
   isInteractiveTime
 ];
 function eventIsPageLoadEvent(event) {
-  if (event.ph === "I" || event.ph === "R") {
+  if (event.ph === "I" || "n") {
     return pageLoadEventTypeGuards.some((fn) => fn(event));
   }
   return false;
@@ -588,8 +600,8 @@ function isLayoutInvalidationTracking(event) {
 function isFirstContentfulPaint(event) {
   return event.name === "firstContentfulPaint";
 }
-function isLargestContentfulPaintCandidate(event) {
-  return event.name === "largestContentfulPaint::Candidate";
+function isAnyLargestContentfulPaintCandidate(event) {
+  return event.name === "largestContentfulPaint::Candidate" || event.name === "largestContentfulPaint::CandidateForSoftNavigation";
 }
 function isLargestImagePaintCandidate(event) {
   return event.name === "LargestImagePaint::Candidate";

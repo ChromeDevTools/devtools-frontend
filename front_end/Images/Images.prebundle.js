@@ -103,6 +103,7 @@ style.setProperty('--image-file-color-picker', 'url(\"' + new URL('./src/color-p
 style.setProperty('--image-file-compress', 'url(\"' + new URL('./src/compress.svg', import.meta.url).toString() + '\")');
 style.setProperty('--image-file-console-conditional-breakpoint', 'url(\"' + new URL('./src/console-conditional-breakpoint.svg', import.meta.url).toString() + '\")');
 style.setProperty('--image-file-console-logpoint', 'url(\"' + new URL('./src/console-logpoint.svg', import.meta.url).toString() + '\")');
+style.setProperty('--image-file-container', 'url(\"' + new URL('./src/container.svg', import.meta.url).toString() + '\")');
 style.setProperty('--image-file-cookie', 'url(\"' + new URL('./src/cookie.svg', import.meta.url).toString() + '\")');
 style.setProperty('--image-file-cookie_off', 'url(\"' + new URL('./src/cookie_off.svg', import.meta.url).toString() + '\")');
 style.setProperty('--image-file-copy', 'url(\"' + new URL('./src/copy.svg', import.meta.url).toString() + '\")');

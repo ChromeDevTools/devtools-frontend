@@ -20052,6 +20052,7 @@ var SearchableView = class extends VBox {
   replaceToggleButton;
   searchInputElement;
   matchesElement;
+  matchesElementValue;
   searchNavigationPrevElement;
   searchNavigationNextElement;
   replaceInputElement;
@@ -20186,6 +20187,9 @@ var SearchableView = class extends VBox {
     this.matchesElement.style.color = "var(--sys-color-on-surface-subtle)";
     this.matchesElement.style.padding = "0 var(--sys-size-3)";
     this.matchesElement.classList.add("search-results-matches");
+    markAsPoliteLiveRegion(this.matchesElement, false);
+    this.matchesElementValue = this.matchesElement.createChild("span");
+    setHidden(this.matchesElementValue, true);
     toolbar4.appendToolbarItem(matchesText);
     const cancelButtonElement = new Buttons10.Button.Button();
     cancelButtonElement.data = {
@@ -20304,7 +20308,7 @@ var SearchableView = class extends VBox {
   resetSearch() {
     this.clearSearch();
     this.updateReplaceVisibility();
-    this.matchesElement.textContent = "";
+    this.matchesElementValue.textContent = "";
   }
   refreshSearch() {
     if (!this.searchIsVisible) {
@@ -20346,14 +20350,16 @@ var SearchableView = class extends VBox {
   }
   updateSearchMatchesCountAndCurrentMatchIndex(matches, currentMatchIndex) {
     if (!this.currentQuery) {
-      this.matchesElement.textContent = "";
+      this.matchesElementValue.textContent = "";
     } else if (matches === 0 || currentMatchIndex >= 0) {
-      this.matchesElement.textContent = i18nString16(UIStrings16.dOfD, { PH1: currentMatchIndex + 1, PH2: matches });
+      this.matchesElementValue.textContent = i18nString16(UIStrings16.dOfD, { PH1: currentMatchIndex + 1, PH2: matches });
       setLabel(this.matchesElement, i18nString16(UIStrings16.accessibledOfD, { PH1: currentMatchIndex + 1, PH2: matches }));
     } else if (matches === 1) {
-      this.matchesElement.textContent = i18nString16(UIStrings16.matchString);
+      this.matchesElementValue.textContent = i18nString16(UIStrings16.matchString);
+      setLabel(this.matchesElement, i18nString16(UIStrings16.matchString));
     } else {
-      this.matchesElement.textContent = i18nString16(UIStrings16.dMatches, { PH1: matches });
+      this.matchesElementValue.textContent = i18nString16(UIStrings16.dMatches, { PH1: matches });
+      setLabel(this.matchesElement, i18nString16(UIStrings16.dMatches, { PH1: matches }));
     }
     this.updateSearchNavigationButtonState(matches > 0);
   }

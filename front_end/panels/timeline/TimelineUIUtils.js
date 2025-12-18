@@ -772,6 +772,10 @@ export class TimelineUIUtils {
                 link = 'https://web.dev/lcp/';
                 name = 'largest contentful paint';
                 break;
+            case "largestContentfulPaint::CandidateForSoftNavigation" /* Trace.Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION */:
+                link = 'https://developer.chrome.com/docs/web-platform/soft-navigations-experiment';
+                name = 'largest contentful paint (soft navigation)';
+                break;
             case "firstContentfulPaint" /* Trace.Types.Events.Name.MARK_FCP */:
                 link = 'https://web.dev/first-contentful-paint/';
                 name = 'first contentful paint';
@@ -904,6 +908,18 @@ export class TimelineUIUtils {
         if (parsedTrace.data.Meta.traceIsGeneric) {
             TimelineUIUtils.renderEventJson(event, contentHelper);
             return contentHelper.fragment;
+        }
+        if (Trace.Types.Events.isNavigationStart(event)) {
+            url = (event.args.data?.documentLoaderURL ?? event.args.data?.url);
+            if (url) {
+                contentHelper.appendElementRow(i18nString(UIStrings.url), LegacyComponents.Linkifier.Linkifier.linkifyURL(url));
+            }
+        }
+        if (Trace.Types.Events.isSoftNavigationStart(event)) {
+            url = event.args.context.URL;
+            if (url) {
+                contentHelper.appendElementRow(i18nString(UIStrings.url), LegacyComponents.Linkifier.Linkifier.linkifyURL(url));
+            }
         }
         if (Trace.Types.Events.isV8Compile(event)) {
             url = event.args.data?.url;
@@ -1271,6 +1287,7 @@ export class TimelineUIUtils {
                 contentHelper.appendTextRow(i18nString(UIStrings.type), unsafeEventData['type']);
                 break;
             }
+            case "largestContentfulPaint::CandidateForSoftNavigation" /* Trace.Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION */:
             // @ts-expect-error Fall-through intended.
             case "largestContentfulPaint::Candidate" /* Trace.Types.Events.Name.MARK_LCP_CANDIDATE */: {
                 contentHelper.appendTextRow(i18nString(UIStrings.type), String(unsafeEventData['type']));
@@ -1938,6 +1955,10 @@ export class TimelineUIUtils {
                 color = 'var(--color-text-primary)';
                 tall = true;
                 break;
+            case "SoftNavigationStart" /* Trace.Types.Events.Name.SOFT_NAVIGATION_START */:
+                color = 'var(--sys-color-blue)';
+                tall = true;
+                break;
             case "FrameStartedLoading" /* Trace.Types.Events.Name.FRAME_STARTED_LOADING */:
                 color = 'green';
                 tall = true;
@@ -1958,6 +1979,7 @@ export class TimelineUIUtils {
                 color = 'var(--sys-color-green-bright)';
                 tall = true;
                 break;
+            case "largestContentfulPaint::CandidateForSoftNavigation" /* Trace.Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION */:
             case "largestContentfulPaint::Candidate" /* Trace.Types.Events.Name.MARK_LCP_CANDIDATE */:
                 color = 'var(--sys-color-green)';
                 tall = true;
@@ -2153,7 +2175,7 @@ export function timeStampForEventAdjustedForClosestNavigationIfPossible(event, p
         const { startTime } = Trace.Helpers.Timing.eventTimingsMilliSeconds(event);
         return startTime;
     }
-    const time = Trace.Helpers.Timing.timeStampForEventAdjustedByClosestNavigation(event, parsedTrace.data.Meta.traceBounds, parsedTrace.data.Meta.navigationsByNavigationId, parsedTrace.data.Meta.navigationsByFrameId);
+    const time = Trace.Helpers.Timing.timeStampForEventAdjustedByClosestNavigation(event, parsedTrace.data.Meta.traceBounds, parsedTrace.data.Meta.navigationsByNavigationId, parsedTrace.data.Meta.softNavigationsById, parsedTrace.data.Meta.navigationsByFrameId);
     return Trace.Helpers.Timing.microToMilli(time);
 }
 /**
@@ -2164,14 +2186,15 @@ export function timeStampForEventAdjustedForClosestNavigationIfPossible(event, p
  **/
 export function isMarkerEvent(parsedTrace, event) {
     const { Name } = Trace.Types.Events;
-    if (event.name === "TimeStamp" /* Name.TIME_STAMP */ || event.name === "navigationStart" /* Name.NAVIGATION_START */) {
+    if (event.name === "TimeStamp" /* Name.TIME_STAMP */ || event.name === "navigationStart" /* Name.NAVIGATION_START */ ||
+        event.name === "SoftNavigationStart" /* Name.SOFT_NAVIGATION_START */) {
         return true;
     }
     if (Trace.Types.Events.isFirstContentfulPaint(event) || Trace.Types.Events.isFirstPaint(event)) {
         return event.args.frame === parsedTrace.data.Meta.mainFrameId;
     }
     if (Trace.Types.Events.isMarkDOMContent(event) || Trace.Types.Events.isMarkLoad(event) ||
-        Trace.Types.Events.isLargestContentfulPaintCandidate(event)) {
+        Trace.Types.Events.isAnyLargestContentfulPaintCandidate(event)) {
         // isOutermostMainFrame was added in 2022, so we fallback to isMainFrame
         // for older traces.
         if (!event.args.data) {

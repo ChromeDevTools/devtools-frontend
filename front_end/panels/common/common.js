@@ -539,10 +539,36 @@ var AiCodeCompletionTeaser = class extends UI2.Widget.Widget {
 };
 
 // gen/front_end/panels/common/AiCodeGenerationTeaser.js
+var AiCodeGenerationTeaser_exports = {};
+__export(AiCodeGenerationTeaser_exports, {
+  AiCodeGenerationTeaser: () => AiCodeGenerationTeaser,
+  AiCodeGenerationTeaserDisplayState: () => AiCodeGenerationTeaserDisplayState,
+  DEFAULT_VIEW: () => DEFAULT_VIEW2
+});
 import * as Host2 from "./../../core/host/host.js";
 import * as i18n5 from "./../../core/i18n/i18n.js";
 import * as UI3 from "./../../ui/legacy/legacy.js";
-import { html as html3, render as render3 } from "./../../ui/lit/lit.js";
+import { html as html3, nothing as nothing2, render as render3 } from "./../../ui/lit/lit.js";
+
+// gen/front_end/panels/common/aiCodeGenerationTeaser.css.js
+var aiCodeGenerationTeaser_css_default = `/*
+ * Copyright 2025 The Chromium Authors
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+@scope to (devtools-widget > *) {
+    .ai-code-generation-teaser {
+        .new-badge {
+            font-style: normal;
+            display: inline-block;
+        }
+    }
+}
+
+/*# sourceURL=${import.meta.resolve("./aiCodeGenerationTeaser.css")} */`;
+
+// gen/front_end/panels/common/AiCodeGenerationTeaser.js
 var UIStringsNotTranslate2 = {
   /**
    * @description Text for teaser to generate code.
@@ -555,13 +581,41 @@ var UIStringsNotTranslate2 = {
   /**
    * Text for teaser when generating suggestion.
    */
-  generating: "Generating... (esc to cancel)"
+  generating: "Generating... (esc to cancel)",
+  /**
+   * Text for teaser for discoverability.
+   */
+  writeACommentToGenerateCode: "Write a comment to generate code"
 };
 var lockedString2 = i18n5.i18n.lockedString;
+var PROMOTION_ID2 = "ai-code-generation";
+var AiCodeGenerationTeaserDisplayState;
+(function(AiCodeGenerationTeaserDisplayState2) {
+  AiCodeGenerationTeaserDisplayState2["TRIGGER"] = "trigger";
+  AiCodeGenerationTeaserDisplayState2["DISCOVERY"] = "discovery";
+  AiCodeGenerationTeaserDisplayState2["LOADING"] = "loading";
+})(AiCodeGenerationTeaserDisplayState || (AiCodeGenerationTeaserDisplayState = {}));
 var DEFAULT_VIEW2 = (input, _output, target) => {
-  const toGenerateCode = Host2.Platform.isMac() ? lockedString2(UIStringsNotTranslate2.cmdItoGenerateCode) : lockedString2(UIStringsNotTranslate2.ctrlItoGenerateCode);
-  const teaserLabel = input.loading ? lockedString2(UIStringsNotTranslate2.generating) : toGenerateCode;
+  let teaserLabel;
+  switch (input.displayState) {
+    case AiCodeGenerationTeaserDisplayState.DISCOVERY: {
+      const newBadge = UI3.UIUtils.maybeCreateNewBadge(PROMOTION_ID2);
+      teaserLabel = newBadge ? html3`${lockedString2(UIStringsNotTranslate2.writeACommentToGenerateCode)}&nbsp;${newBadge}` : nothing2;
+      break;
+    }
+    case AiCodeGenerationTeaserDisplayState.LOADING: {
+      teaserLabel = html3`${lockedString2(UIStringsNotTranslate2.generating)}`;
+      break;
+    }
+    case AiCodeGenerationTeaserDisplayState.TRIGGER: {
+      const toGenerateCode = Host2.Platform.isMac() ? lockedString2(UIStringsNotTranslate2.cmdItoGenerateCode) : lockedString2(UIStringsNotTranslate2.ctrlItoGenerateCode);
+      teaserLabel = html3`${toGenerateCode}`;
+      break;
+    }
+  }
   render3(html3`
+          <style>${aiCodeGenerationTeaser_css_default}</style>
+          <style>@scope to (devtools-widget > *) { ${UI3.inspectorCommonStyles} }</style>
           <div class="ai-code-generation-teaser">
             &nbsp;${teaserLabel}
           </div>
@@ -569,7 +623,7 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
 };
 var AiCodeGenerationTeaser = class extends UI3.Widget.Widget {
   #view;
-  #loading = false;
+  #displayState = AiCodeGenerationTeaserDisplayState.TRIGGER;
   constructor(view) {
     super();
     this.markAsExternallyManaged();
@@ -579,17 +633,17 @@ var AiCodeGenerationTeaser = class extends UI3.Widget.Widget {
   performUpdate() {
     const output = {};
     this.#view({
-      loading: this.#loading
+      displayState: this.#displayState
     }, output, this.contentElement);
   }
-  get loading() {
-    return this.#loading;
+  get displayState() {
+    return this.#displayState;
   }
-  set loading(loading) {
-    if (loading === this.#loading) {
+  set displayState(displayState) {
+    if (displayState === this.#displayState) {
       return;
     }
-    this.#loading = loading;
+    this.#displayState = displayState;
     this.requestUpdate();
   }
 };
@@ -601,7 +655,7 @@ import * as Annotations2 from "./../../models/annotations/annotations.js";
 import * as Annotations from "./../../models/annotations/annotations.js";
 import * as UI4 from "./../../ui/legacy/legacy.js";
 import * as ThemeSupport from "./../../ui/legacy/theme_support/theme_support.js";
-import { html as html4, nothing as nothing2, render as render4 } from "./../../ui/lit/lit.js";
+import { html as html4, nothing as nothing3, render as render4 } from "./../../ui/lit/lit.js";
 import * as VisualLogging2 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/common/annotation.css.js
@@ -679,14 +733,14 @@ var DEFAULT_VIEW3 = (input, _, target) => {
           fill=${connectorColor}
         />
       </svg>
-    ` : nothing2}
+    ` : nothing3}
     <div class='overlay' style=${overlayStyles} @click=${expandable ? clickHandler : null}>
       ${isExpanded ? label : "!"}
     </div>
     ${showCloseButton ? html4`<svg @click=${closeHandler} class="close-button" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
           <circle cx="8" cy="8" r="7.5" fill="#EEE" stroke="#888"/>
           <path d="M5 5L11 11M5 11L11 5" stroke="#888" stroke-width="2"/>
-        </svg>` : nothing2}
+        </svg>` : nothing3}
     `, target);
 };
 var Annotation = class extends UI4.Widget.Widget {
@@ -1242,7 +1296,7 @@ import * as Host4 from "./../../core/host/host.js";
 import * as i18n9 from "./../../core/i18n/i18n.js";
 import * as Root2 from "./../../core/root/root.js";
 import * as UI6 from "./../../ui/legacy/legacy.js";
-import { Directives, html as html6, nothing as nothing3, render as render6 } from "./../../ui/lit/lit.js";
+import { Directives, html as html6, nothing as nothing4, render as render6 } from "./../../ui/lit/lit.js";
 import * as VisualLogging3 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/common/aiCodeCompletionDisclaimer.css.js
@@ -1340,7 +1394,7 @@ var UIStringsNotTranslate3 = {
 var lockedString3 = i18n9.i18n.lockedString;
 var DEFAULT_SUMMARY_TOOLBAR_VIEW = (input, output, target) => {
   if (input.aidaAvailability !== "available" || !input.disclaimerTooltipId || !input.spinnerTooltipId) {
-    render6(nothing3, target);
+    render6(nothing4, target);
     return;
   }
   render6(html6`
@@ -1492,7 +1546,7 @@ import "./../../ui/components/tooltips/tooltips.js";
 import * as Host5 from "./../../core/host/host.js";
 import * as i18n11 from "./../../core/i18n/i18n.js";
 import * as UI7 from "./../../ui/legacy/legacy.js";
-import { Directives as Directives2, html as html7, nothing as nothing4, render as render7 } from "./../../ui/lit/lit.js";
+import { Directives as Directives2, html as html7, nothing as nothing5, render as render7 } from "./../../ui/lit/lit.js";
 import * as VisualLogging4 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/common/aiCodeCompletionSummaryToolbar.css.js
@@ -1614,7 +1668,7 @@ var UIStringsNotTranslate4 = {
 var lockedString4 = i18n11.i18n.lockedString;
 var DEFAULT_SUMMARY_TOOLBAR_VIEW2 = (input, _output, target) => {
   if (input.aidaAvailability !== "available") {
-    render7(nothing4, target);
+    render7(nothing5, target);
     return;
   }
   const toolbarClasses = Directives2.classMap({
@@ -1628,7 +1682,7 @@ var DEFAULT_SUMMARY_TOOLBAR_VIEW2 = (input, _output, target) => {
     disclaimerTooltipId: input.disclaimerTooltipId,
     spinnerTooltipId: input.spinnerTooltipId,
     loading: input.loading
-  })} class="disclaimer-widget"></devtools-widget>` : nothing4;
+  })} class="disclaimer-widget"></devtools-widget>` : nothing5;
   const recitationNotice = input.citations && input.citations.size > 0 ? html7`<div class="ai-code-completion-recitation-notice">
                 ${lockedString4(UIStringsNotTranslate4.generatedCodeMayBeSubjectToALicense)}
                 <span class="link"
@@ -1649,7 +1703,7 @@ var DEFAULT_SUMMARY_TOOLBAR_VIEW2 = (input, _output, target) => {
                         jslog=${VisualLogging4.link("ai-code-completion-citations.citation-link").track({
     click: true
   })}>${citation}</x-link>`)}</div></devtools-tooltip>
-            </div>` : nothing4;
+            </div>` : nothing5;
   render7(html7`
         <style>${aiCodeCompletionSummaryToolbar_css_default}</style>
         <div class=${toolbarClasses}>
@@ -3812,7 +3866,7 @@ import * as Common6 from "./../../core/common/common.js";
 import * as i18n19 from "./../../core/i18n/i18n.js";
 import * as SDK3 from "./../../core/sdk/sdk.js";
 import * as UI12 from "./../../ui/legacy/legacy.js";
-import { Directives as Directives3, html as html11, nothing as nothing5, render as render10 } from "./../../ui/lit/lit.js";
+import { Directives as Directives3, html as html11, nothing as nothing6, render as render10 } from "./../../ui/lit/lit.js";
 import * as VisualLogging6 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/common/domLinkifier.css.js
@@ -3904,10 +3958,10 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
     ...input.classes.map((c) => `.${c}`),
     input.pseudo ? `::${input.pseudo}` : ""
   ].join(" ")}>${[
-    input.tagName ? html11`<span class="node-label-name">${input.tagName}</span>` : nothing5,
-    input.id ? html11`<span class="node-label-id">#${input.id}</span>` : nothing5,
+    input.tagName ? html11`<span class="node-label-name">${input.tagName}</span>` : nothing6,
+    input.id ? html11`<span class="node-label-id">#${input.id}</span>` : nothing6,
     ...input.classes.map((className) => html11`<span class="extra node-label-class">.${className}</span>`),
-    input.pseudo ? html11`<span class="extra node-label-pseudo">${input.pseudo}</span>` : nothing5
+    input.pseudo ? html11`<span class="extra node-label-pseudo">${input.pseudo}</span>` : nothing6
   ]}</button>
     </span>` : i18nString5(UIStrings5.node)}`, target);
 };
@@ -4139,7 +4193,7 @@ export {
   AiCodeCompletionDisclaimer,
   AiCodeCompletionSummaryToolbar,
   AiCodeCompletionTeaser,
-  AiCodeGenerationTeaser,
+  AiCodeGenerationTeaser_exports as AiCodeGenerationTeaser,
   AnnotationManager,
   BadgeNotification,
   DOMLinkifier_exports as DOMLinkifier,

@@ -10,6 +10,7 @@ export declare class SearchableView extends VBox {
     private replaceToggleButton;
     private searchInputElement;
     private matchesElement;
+    private matchesElementValue;
     private searchNavigationPrevElement;
     private searchNavigationNextElement;
     private readonly replaceInputElement;

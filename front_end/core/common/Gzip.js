@@ -64,4 +64,15 @@ export function compressStream(stream) {
     const cs = new CompressionStream('gzip');
     return stream.pipeThrough(cs);
 }
+export function createMonitoredStream(stream, onProgress) {
+    let bytesRead = 0;
+    const progressTransformer = new TransformStream({
+        transform(chunk, controller) {
+            bytesRead += chunk.byteLength;
+            onProgress(bytesRead);
+            controller.enqueue(chunk);
+        }
+    });
+    return stream.pipeThrough(progressTransformer);
+}
 //# sourceMappingURL=Gzip.js.map

@@ -4,6 +4,7 @@
 
 import * as UI from '../../../front_end/ui/legacy/legacy.js';
 import type * as Platform from '../../core/platform/platform.js';
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
@@ -232,6 +233,36 @@ describeWithMockConnection('ElementsTreeElement', () => {
     const adorner = treeElement.listItemElement.querySelector('devtools-adorner');
     assert.exists(adorner);
     assert.strictEqual(adorner.name, 'slot');
+  });
+
+  it('renders STARTING_STYLE adorner when enabled', async () => {
+    const target = createTarget();
+    const domModel = target.model(SDK.DOMModel.DOMModel);
+    assert.exists(domModel);
+    const cssModel = target.model(SDK.CSSModel.CSSModel);
+    assert.exists(cssModel);
+    const node = new SDK.DOMModel.DOMNode(domModel);
+    node.id = 1 as Protocol.DOM.NodeId;
+
+    const treeOutline = new Elements.ElementsTreeOutline.ElementsTreeOutline();
+
+    sinon.stub(node, 'affectedByStartingStyles').returns(true);
+    Root.Runtime.hostConfig.devToolsStartingStyleDebugging = {enabled: true};
+
+    const treeElement = new Elements.ElementsTreeElement.ElementsTreeElement(node);
+    treeElement.treeOutline = treeOutline;
+    treeElement.onbind();
+    treeElement.performUpdate();
+
+    const adorner = treeElement.listItemElement.querySelector('.starting-style');
+    assert.exists(adorner);
+
+    const forceSpy = sinon.spy(cssModel, 'forceStartingStyle');
+    (adorner as HTMLElement).click();
+    sinon.assert.calledWith(forceSpy, node, true);
+
+    (adorner as HTMLElement).click();
+    sinon.assert.calledWith(forceSpy, node, false);
   });
 });
 

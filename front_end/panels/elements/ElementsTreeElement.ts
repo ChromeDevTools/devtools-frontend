@@ -412,6 +412,9 @@ export interface ViewInput {
   onSlotAdornerClick: (e: Event) => void;
   showSlotAdorner: boolean;
   slotName?: string;
+  showStartingStyleAdorner: boolean;
+  startingStyleAdornerActive: boolean;
+  onStartingStyleAdornerClick: (e: Event) => void;
 }
 
 export interface ViewOutput {
@@ -465,10 +468,12 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
       ElementsComponents.AdornerManager.RegisteredAdorners.SCROLL);
   const scrollSnapAdornerConfig = ElementsComponents.AdornerManager.getRegisteredAdorner(
       ElementsComponents.AdornerManager.RegisteredAdorners.SCROLL_SNAP);
+  const startingStyleAdornerConfig = ElementsComponents.AdornerManager.getRegisteredAdorner(
+      ElementsComponents.AdornerManager.RegisteredAdorners.STARTING_STYLE);
   const hasAdorners = input.adorners?.size || input.showAdAdorner || input.showContainerAdorner ||
       input.showFlexAdorner || input.showGridAdorner || input.showGridLanesAdorner || input.showMediaAdorner ||
       input.showPopoverAdorner || input.showTopLayerAdorner || input.showViewSourceAdorner || input.showScrollAdorner ||
-      input.showScrollSnapAdorner || input.showSlotAdorner;
+      input.showScrollSnapAdorner || input.showSlotAdorner || input.showStartingStyleAdorner;
   // clang-format off
   render(html`
     <div ${ref(el => { output.contentElement = el as HTMLElement; })}>
@@ -633,6 +638,22 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
         ${repeat(Array.from((input.adorners ?? new Set()).values()).sort(adornerComparator), adorner => {
           return adorner;
         })}
+        ${input.showStartingStyleAdorner ? html`<devtools-adorner
+          class="starting-style"
+          .data=${{name: startingStyleAdornerConfig.name, jslogContext: startingStyleAdornerConfig.name}}
+          active=${input.startingStyleAdornerActive}
+          toggleable=true
+          aria-label=${input.startingStyleAdornerActive ? i18nString(UIStrings.disableStartingStyle) : i18nString(UIStrings.enableStartingStyle)}
+          @click=${input.onStartingStyleAdornerClick}
+          @keydown=${(event: KeyboardEvent) => {
+            if (event.code === 'Enter' || event.code === 'Space') {
+              input.onStartingStyleAdornerClick(event);
+              event.stopPropagation();
+            }
+          }}
+          ${adornerRef()}>
+          <span>${startingStyleAdornerConfig.name}</span>
+        </devtools-adorner>` : nothing}
         ${input.showScrollAdorner ? html`<devtools-adorner
           class="scroll"
           .data=${{name: scrollAdornerConfig.name, jslogContext: scrollAdornerConfig.name}}
@@ -711,6 +732,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
   #popoverAdornerActive = false;
 
   #scrollSnapAdornerActive = false;
+  #startingStyleAdornerActive = false;
   #layout: SDK.CSSModel.LayoutProperties|null = null;
 
   constructor(node: SDK.DOMModel.DOMNode, isClosingTag?: boolean) {
@@ -847,7 +869,11 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
           showScrollSnapAdorner: Boolean(this.#layout?.hasScroll) && !this.isClosingTag(),
           scrollSnapAdornerActive: this.#scrollSnapAdornerActive,
           showSlotAdorner: Boolean(this.nodeInternal.assignedSlot) && !this.isClosingTag(),
+          showStartingStyleAdorner: Boolean(Root.Runtime.hostConfig.devToolsStartingStyleDebugging?.enabled) &&
+              this.nodeInternal.affectedByStartingStyles() && !this.isClosingTag(),
+          startingStyleAdornerActive: this.#startingStyleAdornerActive,
           nodeInfo: this.#nodeInfo,
+          onStartingStyleAdornerClick: (event: Event) => this.#onStartingStyleAdornerClick(event),
           onSlotAdornerClick: () => {
             if (this.nodeInternal.assignedSlot) {
               const deferredNode = this.nodeInternal.assignedSlot.deferredNode;
@@ -3012,14 +3038,8 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     this.removeAdornersByType(ElementsComponents.AdornerManager.RegisteredAdorners.GRID_LANES);
     this.removeAdornersByType(ElementsComponents.AdornerManager.RegisteredAdorners.FLEX);
     this.removeAdornersByType(ElementsComponents.AdornerManager.RegisteredAdorners.MEDIA);
-    this.removeAdornersByType(ElementsComponents.AdornerManager.RegisteredAdorners.STARTING_STYLE);
 
-    if (Root.Runtime.hostConfig.devToolsStartingStyleDebugging?.enabled) {
-      const affectedByStartingStyles = node.affectedByStartingStyles();
-      if (affectedByStartingStyles) {
-        this.pushStartingStyleAdorner();
-      }
-    }
+    this.performUpdate();
   }
 
   async #onPopoverAdornerClick(event: Event): Promise<void> {
@@ -3037,36 +3057,22 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     this.performUpdate();
   }
 
-  pushStartingStyleAdorner(): void {
+  #onStartingStyleAdornerClick(event: Event): void {
+    event.stopPropagation();
     const node = this.node();
     const nodeId = node.id;
     if (!nodeId) {
       return;
     }
-    const config = ElementsComponents.AdornerManager.getRegisteredAdorner(
-        ElementsComponents.AdornerManager.RegisteredAdorners.STARTING_STYLE);
-    const adorner = this.adorn(config);
-    adorner.classList.add('starting-style');
-
-    const onClick = ((() => {
-                       const model = node.domModel().cssModel();
-                       if (adorner.isActive()) {
-                         model.forceStartingStyle(node, true);
-                       } else {
-                         model.forceStartingStyle(node, false);
-                       }
-                     }) as EventListener);
-
-    adorner.addInteraction(onClick, {
-      isToggle: true,
-      shouldPropagateOnKeydown: false,
-      ariaLabelDefault: i18nString(UIStrings.enableStartingStyle),
-      ariaLabelActive: i18nString(UIStrings.disableStartingStyle),
-    });
-
-    this.#adorners.add(adorner);
+    const model = node.domModel().cssModel();
+    if (this.#startingStyleAdornerActive) {
+      model.forceStartingStyle(node, false);
+    } else {
+      model.forceStartingStyle(node, true);
+    }
+    this.#startingStyleAdornerActive = !this.#startingStyleAdornerActive;
+    this.performUpdate();
   }
-
 }
 
 export const InitialChildrenLimit = 500;

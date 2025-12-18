@@ -198,11 +198,11 @@ const DEFAULT_VIEW: View = (input: ViewInput, _output: ViewOutput, target: HTMLE
                   <td>
                       ${field.autofillType}
                       ${field.fillingStrategy === FillingStrategy.AutocompleteAttribute ?
-                            html`<devtools-adorner title=${i18nString(UIStrings.autocompleteAttribute)} .data=${{name: field.fillingStrategy}}>
+                            html`<devtools-adorner .name=${field.fillingStrategy} title=${i18nString(UIStrings.autocompleteAttribute)}>
                               <span>${i18nString(UIStrings.attr)}</span>
                             </devtools-adorner>` :
                         field.fillingStrategy === FillingStrategy.AutofillInferred ?
-                            html`<devtools-adorner title=${i18nString(UIStrings.inferredByHeuristics)} .data=${{name: field.fillingStrategy}}>
+                            html`<devtools-adorner .name=${field.fillingStrategy} title=${i18nString(UIStrings.inferredByHeuristics)}>
                               <span>${i18nString(UIStrings.heur)}</span>
                             </devtools-adorner>` :
                             Lit.nothing}

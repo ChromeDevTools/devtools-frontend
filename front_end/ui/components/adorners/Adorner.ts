@@ -5,7 +5,6 @@
 
 import {html, render} from '../../../ui/lit/lit.js';
 import * as UI from '../../legacy/legacy.js';
-import * as VisualElements from '../../visual_logging/visual_logging.js';
 
 import adornerStyles from './adorner.css.js';
 
@@ -20,28 +19,16 @@ export interface AdornerData {
  * embedded into the corresponding views.
  */
 export class Adorner extends HTMLElement {
-  static readonly observedAttributes = ['active', 'toggleable'];
   name = '';
 
   readonly #shadow = this.attachShadow({mode: 'open'});
-  #isToggle = false;
-  #content?: HTMLElement;
-  #jslogContext?: string;
 
-  set data(data: AdornerData) {
-    this.name = data.name;
-    this.#jslogContext = data.jslogContext;
-    if (data.content) {
-      this.#content?.remove();
-      this.append(data.content);
-      this.#content = data.content;
-    }
-    this.#render();
-  }
+  #isToggle = false;
 
   override cloneNode(deep?: boolean): Node {
     const node = UI.UIUtils.cloneCustomElement(this, deep);
-    node.data = {name: this.name, content: this.#content, jslogContext: this.#jslogContext};
+    node.name = this.name;
+    node.#isToggle = this.#isToggle;
     return node;
   }
 
@@ -49,12 +36,10 @@ export class Adorner extends HTMLElement {
     if (!this.getAttribute('aria-label')) {
       this.setAttribute('aria-label', this.name);
     }
-    if (this.#jslogContext && !this.getAttribute('jslog')) {
-      this.setAttribute('jslog', `${VisualElements.adorner(this.#jslogContext)}`);
-    }
     this.#render();
   }
 
+  static readonly observedAttributes = ['active', 'toggleable'];
   attributeChangedCallback(name: string, oldValue: string, newValue: string): void {
     if (oldValue === newValue) {
       return;
@@ -66,7 +51,7 @@ export class Adorner extends HTMLElement {
         break;
       case 'toggleable':
         this.#isToggle = newValue === 'true';
-        this.#toggle(false /* initialize inactive state */);
+        this.#toggle(this.getAttribute('active') === 'true');
         break;
     }
   }

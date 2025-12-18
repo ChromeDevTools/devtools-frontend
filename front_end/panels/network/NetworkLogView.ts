@@ -2754,11 +2754,9 @@ export class MoreFiltersDropDownUI extends Common.ObjectWrapper.ObjectWrapper<UI
     this.filterElement.setAttribute('jslog', `${VisualLogging.dropDown('more-filters').track({click: true})}`);
 
     this.activeFiltersCountAdorner = new Adorners.Adorner.Adorner();
+    this.activeFiltersCountAdorner.name = 'countWrapper';
     this.activeFiltersCount = document.createElement('span');
-    this.activeFiltersCountAdorner.data = {
-      name: 'countWrapper',
-      content: this.activeFiltersCount,
-    };
+    this.activeFiltersCountAdorner.append(this.activeFiltersCount);
     this.activeFiltersCountAdorner.classList.add('active-filters-count');
     this.updateActiveFiltersCount();
 

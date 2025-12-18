@@ -496,12 +496,14 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
       ${hasAdorners ? html`<div class="adorner-container ${!hasAdorners ? 'hidden' : ''}">
         ${input.showAdAdorner ? html`<devtools-adorner
           aria-label=${i18nString(UIStrings.thisFrameWasIdentifiedAsAnAd)}
-          .data=${{name: adAdornerConfig.name, jslogContext: adAdornerConfig.name}}
+          .name=${adAdornerConfig.name}
+          jslog=${VisualLogging.adorner(adAdornerConfig.name)}
           ${adornerRef()}>
           <span>${adAdornerConfig.name}</span>
         </devtools-adorner>` : nothing}
         ${input.showViewSourceAdorner ? html`<devtools-adorner
-          .data=${{name: viewSourceAdornerConfig.name, jslogContext: viewSourceAdornerConfig.name}}
+          .name=${viewSourceAdornerConfig.name}
+          jslog=${VisualLogging.adorner(viewSourceAdornerConfig.name)}
           aria-label=${i18nString(UIStrings.viewSourceCode)}
           @click=${input.onViewSourceAdornerClick}
           ${adornerRef()}>
@@ -512,7 +514,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
           role=button
           toggleable=true
           tabindex=0
-          .data=${{name: containerAdornerConfig.name, jslogContext: containerAdornerConfig.name}}
+          .name=${containerAdornerConfig.name}
           jslog=${VisualLogging.adorner(containerAdornerConfig.name).track({click: true})}
           active=${input.containerAdornerActive}
           aria-label=${input.containerAdornerActive ? i18nString(UIStrings.enableContainer) : i18nString(UIStrings.disableContainer)}
@@ -529,7 +531,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
           role=button
           toggleable=true
           tabindex=0
-          .data=${{name: flexAdornerConfig.name, jslogContext: flexAdornerConfig.name}}
+          .name=${flexAdornerConfig.name}
           jslog=${VisualLogging.adorner(flexAdornerConfig.name).track({click: true})}
           active=${input.flexAdornerActive}
           aria-label=${input.flexAdornerActive ? i18nString(UIStrings.disableFlexMode) : i18nString(UIStrings.enableFlexMode)}
@@ -543,10 +545,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
           role=button
           toggleable=true
           tabindex=0
-          .data=${{
-            name: input.isSubgrid ? subgridAdornerConfig.name : gridAdornerConfig.name,
-            jslogContext: input.isSubgrid ? subgridAdornerConfig.name : gridAdornerConfig.name,
-          }}
+          .name=${input.isSubgrid ? subgridAdornerConfig.name : gridAdornerConfig.name}
           jslog=${VisualLogging.adorner(input.isSubgrid ? subgridAdornerConfig.name : gridAdornerConfig.name).track({click: true})}
           active=${input.gridAdornerActive}
           aria-label=${input.gridAdornerActive ? i18nString(UIStrings.disableGridMode) : i18nString(UIStrings.enableGridMode)}
@@ -560,7 +559,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
           role=button
           toggleable=true
           tabindex=0
-          .data=${{name: gridLanesAdornerConfig.name, jslogContext: gridLanesAdornerConfig.name}}
+          .name=${gridLanesAdornerConfig.name}
           jslog=${VisualLogging.adorner(gridLanesAdornerConfig.name).track({click: true})}
           active=${input.gridAdornerActive}
           aria-label=${input.gridAdornerActive ? i18nString(UIStrings.disableGridLanesMode) : i18nString(UIStrings.enableGridLanesMode)}
@@ -573,7 +572,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
           class=clickable
           role=button
           tabindex=0
-          .data=${{name: mediaAdornerConfig.name, jslogContext: mediaAdornerConfig.name}}
+          .name=${mediaAdornerConfig.name}
           jslog=${VisualLogging.adorner(mediaAdornerConfig.name).track({click: true})}
           aria-label=${i18nString(UIStrings.openMediaPanel)}
           @click=${input.onMediaAdornerClick}
@@ -588,7 +587,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
           role=button
           toggleable=true
           tabindex=0
-          .data=${{name: popoverAdornerConfig.name, jslogContext: popoverAdornerConfig.name}}
+          .name=${popoverAdornerConfig.name}
           jslog=${VisualLogging.adorner(popoverAdornerConfig.name).track({click: true})}
           active=${input.popoverAdornerActive}
           aria-label=${input.popoverAdornerActive ? i18nString(UIStrings.stopForceOpenPopover) : i18nString(UIStrings.forceOpenPopover)}
@@ -601,7 +600,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
           class=clickable
           role=button
           tabindex=0
-          .data=${{name: topLayerAdornerConfig.name, jslogContext: topLayerAdornerConfig.name}}
+          .name=${topLayerAdornerConfig.name}
           jslog=${VisualLogging.adorner(topLayerAdornerConfig.name).track({click: true})}
           aria-label=${i18nString(UIStrings.reveal)}
           @click=${input.onTopLayerAdornerClick}
@@ -613,7 +612,8 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
         </devtools-adorner>`: nothing}
         ${input.showStartingStyleAdorner ? html`<devtools-adorner
           class="starting-style"
-          .data=${{name: startingStyleAdornerConfig.name, jslogContext: startingStyleAdornerConfig.name}}
+          .name=${startingStyleAdornerConfig.name}
+          jslog=${VisualLogging.adorner(startingStyleAdornerConfig.name).track({click: true})}
           active=${input.startingStyleAdornerActive}
           toggleable=true
           aria-label=${input.startingStyleAdornerActive ? i18nString(UIStrings.disableStartingStyle) : i18nString(UIStrings.enableStartingStyle)}
@@ -624,7 +624,8 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
         </devtools-adorner>` : nothing}
         ${input.showScrollAdorner ? html`<devtools-adorner
           class="scroll"
-          .data=${{name: scrollAdornerConfig.name, jslogContext: scrollAdornerConfig.name}}
+          .name=${scrollAdornerConfig.name}
+          jslog=${VisualLogging.adorner(scrollAdornerConfig.name).track({click: true})}
           aria-label=${i18nString(UIStrings.elementHasScrollableOverflow)}
           ${adornerRef()}>
           <span>${scrollAdornerConfig.name}</span>
@@ -633,7 +634,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
           class=clickable
           role=button
           tabindex=0
-          .data=${{name: slotAdornerConfig.name, jslogContext: slotAdornerConfig.name}}
+          .name=${slotAdornerConfig.name}
           jslog=${VisualLogging.adorner(slotAdornerConfig.name).track({click: true})}
           @click=${input.onSlotAdornerClick}
           @mousedown=${(e: Event) => e.stopPropagation()}
@@ -645,7 +646,8 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
         </devtools-adorner>`: nothing}
         ${input.showScrollSnapAdorner ? html`<devtools-adorner
           class="scroll-snap"
-          .data=${{name: scrollSnapAdornerConfig.name, jslogContext: scrollSnapAdornerConfig.name}}
+          .name=${scrollSnapAdornerConfig.name}
+          jslog=${VisualLogging.adorner(scrollSnapAdornerConfig.name).track({click: true})}
           active=${input.scrollSnapAdornerActive}
           toggleable=true
           aria-label=${input.scrollSnapAdornerActive ? i18nString(UIStrings.disableScrollSnap) : i18nString(UIStrings.enableScrollSnap)}

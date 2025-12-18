@@ -459,10 +459,8 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
       ">💫</div>`;
     const adorner = new Adorners.Adorner.Adorner();
     adorner.classList.add('fix-perf-icon');
-    adorner.data = {
-      name: i18nString(UIStrings.fixMe),
-      content: adornerContent,
-    };
+    adorner.name = i18nString(UIStrings.fixMe);
+    adorner.append(adornerContent);
     this.#traceEngineModel = traceModel || this.#instantiateNewModel();
 
     this.element.addEventListener('contextmenu', this.contextMenu.bind(this), false);

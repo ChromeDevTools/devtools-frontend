@@ -37,6 +37,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
+import * as VisualElements from '../../ui/visual_logging/visual_logging.js';
 
 import * as ElementsComponents from './components/components.js';
 import {adornerRef, ElementsTreeElement} from './ElementsTreeElement.js';
@@ -66,8 +67,9 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLE
     <div class="selection fill"></div>
     <span class="elements-tree-shortcut-title">\u21AA ${input.title}</span>
     <devtools-adorner
+      .name=${revealAdornerConfig.name}
       class="adorner-reveal"
-      .data=${{name: revealAdornerConfig.name, jslogContext: 'reveal'}}
+      jslog=${VisualElements.adorner('reveal')}
       aria-label=${i18nString(UIStrings.reveal)}
       @click=${input.onRevealAdornerClick}
       @mousedown=${(e: Event) => e.consume()}

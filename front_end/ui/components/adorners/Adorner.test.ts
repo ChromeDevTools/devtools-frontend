@@ -86,34 +86,4 @@ describe('Adorner', () => {
     assert.strictEqual(
         adorner.getAttribute('aria-pressed'), 'true', 'toggle adorner didn\'t have correct active aria-pressed value');
   });
-
-  it('only contains the most recently slotted content after multiple data setting calls', () => {
-    const content1 = document.createElement('span');
-    content1.textContent = 'content 1';
-
-    const content2 = document.createElement('div');
-    content2.textContent = 'content 2';
-
-    const content3 = document.createElement('span');
-    content3.textContent = 'content 3';
-
-    const adorner = new Adorners.Adorner.Adorner();
-    adorner.data = {
-      content: content1,
-      name: 'foo',
-    };
-    adorner.data = {
-      content: content2,
-      name: 'foo',
-    };
-    adorner.data = {
-      content: content3,
-      name: 'foo',
-    };
-
-    const slottedChildren = adorner.children;
-    assert.lengthOf(slottedChildren, 1, 'adorner light dom should only have one child with [slot="content"]');
-    assert.strictEqual(
-        slottedChildren[0].textContent, 'content 3', 'adorner content slot should have the most recent content');
-  });
 });

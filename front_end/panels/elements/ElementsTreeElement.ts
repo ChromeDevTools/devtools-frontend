@@ -1140,19 +1140,17 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       this.nodeInternal.addEventListener(SDK.DOMModel.DOMNodeEvents.TOP_LAYER_INDEX_CHANGED, this.performUpdate, this);
       this.nodeInternal.addEventListener(
           SDK.DOMModel.DOMNodeEvents.SCROLLABLE_FLAG_UPDATED, this.#onScrollableFlagUpdated, this);
-      const overlayModel = this.nodeInternal.domModel().overlayModel();
-      overlayModel.addEventListener(
-          SDK.OverlayModel.Events.PERSISTENT_CONTAINER_QUERY_OVERLAY_STATE_CHANGED,
+      this.nodeInternal.addEventListener(
+          SDK.DOMModel.DOMNodeEvents.CONTAINER_QUERY_OVERLAY_STATE_CHANGED,
           this.#onPersistentContainerQueryOverlayStateChanged, this);
-      overlayModel.addEventListener(
-          SDK.OverlayModel.Events.PERSISTENT_FLEX_CONTAINER_OVERLAY_STATE_CHANGED,
+      this.nodeInternal.addEventListener(
+          SDK.DOMModel.DOMNodeEvents.FLEX_CONTAINER_OVERLAY_STATE_CHANGED,
           this.#onPersistentFlexContainerOverlayStateChanged, this);
-      overlayModel.addEventListener(
-          SDK.OverlayModel.Events.PERSISTENT_GRID_OVERLAY_STATE_CHANGED, this.#onPersistentGridOverlayStateChanged,
+      this.nodeInternal.addEventListener(
+          SDK.DOMModel.DOMNodeEvents.GRID_OVERLAY_STATE_CHANGED, this.#onPersistentGridOverlayStateChanged, this);
+      this.nodeInternal.addEventListener(
+          SDK.DOMModel.DOMNodeEvents.SCROLL_SNAP_OVERLAY_STATE_CHANGED, this.#onPersistentScrollSnapOverlayStateChanged,
           this);
-      overlayModel.addEventListener(
-          SDK.OverlayModel.Events.PERSISTENT_SCROLL_SNAP_OVERLAY_STATE_CHANGED,
-          this.#onPersistentScrollSnapOverlayStateChanged, this);
     }
   }
 
@@ -1166,61 +1164,40 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     this.nodeInternal.removeEventListener(SDK.DOMModel.DOMNodeEvents.TOP_LAYER_INDEX_CHANGED, this.performUpdate, this);
     this.nodeInternal.removeEventListener(
         SDK.DOMModel.DOMNodeEvents.SCROLLABLE_FLAG_UPDATED, this.#onScrollableFlagUpdated, this);
-    const overlayModel = this.nodeInternal.domModel().overlayModel();
-    overlayModel.removeEventListener(
-        SDK.OverlayModel.Events.PERSISTENT_CONTAINER_QUERY_OVERLAY_STATE_CHANGED,
+    this.nodeInternal.removeEventListener(
+        SDK.DOMModel.DOMNodeEvents.CONTAINER_QUERY_OVERLAY_STATE_CHANGED,
         this.#onPersistentContainerQueryOverlayStateChanged, this);
-    overlayModel.removeEventListener(
-        SDK.OverlayModel.Events.PERSISTENT_FLEX_CONTAINER_OVERLAY_STATE_CHANGED,
+    this.nodeInternal.removeEventListener(
+        SDK.DOMModel.DOMNodeEvents.FLEX_CONTAINER_OVERLAY_STATE_CHANGED,
         this.#onPersistentFlexContainerOverlayStateChanged, this);
-    overlayModel.removeEventListener(
-        SDK.OverlayModel.Events.PERSISTENT_GRID_OVERLAY_STATE_CHANGED, this.#onPersistentGridOverlayStateChanged, this);
-    overlayModel.removeEventListener(
-        SDK.OverlayModel.Events.PERSISTENT_SCROLL_SNAP_OVERLAY_STATE_CHANGED,
-        this.#onPersistentScrollSnapOverlayStateChanged, this);
+    this.nodeInternal.removeEventListener(
+        SDK.DOMModel.DOMNodeEvents.GRID_OVERLAY_STATE_CHANGED, this.#onPersistentGridOverlayStateChanged, this);
+    this.nodeInternal.removeEventListener(
+        SDK.DOMModel.DOMNodeEvents.SCROLL_SNAP_OVERLAY_STATE_CHANGED, this.#onPersistentScrollSnapOverlayStateChanged,
+        this);
   }
 
   #onScrollableFlagUpdated(): void {
     void this.#updateAdorners();
   }
 
-  #onPersistentContainerQueryOverlayStateChanged(
-      event: Common.EventTarget.EventTargetEvent<SDK.OverlayModel.ChangedNodeId>): void {
-    const {nodeId: eventNodeId, enabled} = event.data;
-    if (eventNodeId !== this.nodeInternal.id) {
-      return;
-    }
-    this.#containerAdornerActive = enabled;
+  #onPersistentContainerQueryOverlayStateChanged(event: Common.EventTarget.EventTargetEvent<{enabled: boolean}>): void {
+    this.#containerAdornerActive = event.data.enabled;
     this.performUpdate();
   }
 
-  #onPersistentFlexContainerOverlayStateChanged(
-      event: Common.EventTarget.EventTargetEvent<SDK.OverlayModel.ChangedNodeId>): void {
-    const {nodeId: eventNodeId, enabled} = event.data;
-    if (eventNodeId !== this.nodeInternal.id) {
-      return;
-    }
-    this.#flexAdornerActive = enabled;
+  #onPersistentFlexContainerOverlayStateChanged(event: Common.EventTarget.EventTargetEvent<{enabled: boolean}>): void {
+    this.#flexAdornerActive = event.data.enabled;
     this.performUpdate();
   }
 
-  #onPersistentGridOverlayStateChanged(event: Common.EventTarget.EventTargetEvent<SDK.OverlayModel.ChangedNodeId>):
-      void {
-    const {nodeId: eventNodeId, enabled} = event.data;
-    if (eventNodeId !== this.nodeInternal.id) {
-      return;
-    }
-    this.#gridAdornerActive = enabled;
+  #onPersistentGridOverlayStateChanged(event: Common.EventTarget.EventTargetEvent<{enabled: boolean}>): void {
+    this.#gridAdornerActive = event.data.enabled;
     this.performUpdate();
   }
 
-  #onPersistentScrollSnapOverlayStateChanged(
-      event: Common.EventTarget.EventTargetEvent<SDK.OverlayModel.ChangedNodeId>): void {
-    const {nodeId: eventNodeId, enabled} = event.data;
-    if (eventNodeId !== this.nodeInternal.id) {
-      return;
-    }
-    this.#scrollSnapAdornerActive = enabled;
+  #onPersistentScrollSnapOverlayStateChanged(event: Common.EventTarget.EventTargetEvent<{enabled: boolean}>): void {
+    this.#scrollSnapAdornerActive = event.data.enabled;
     this.performUpdate();
   }
 

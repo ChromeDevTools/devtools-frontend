@@ -11,7 +11,7 @@ import * as Root from '../root/root.js';
 
 import type {CSSModel} from './CSSModel.js';
 import {DebuggerModel, Events as DebuggerModelEvents} from './DebuggerModel.js';
-import {DeferredDOMNode, DOMModel, type DOMNode, Events as DOMModelEvents} from './DOMModel.js';
+import {DeferredDOMNode, DOMModel, type DOMNode, DOMNodeEvents, Events as DOMModelEvents} from './DOMModel.js';
 import {OverlayPersistentHighlighter} from './OverlayPersistentHighlighter.js';
 import type {RemoteObject} from './RemoteObject.js';
 import {SDKModel} from './SDKModel.js';
@@ -129,14 +129,25 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
     }
 
     this.#persistentHighlighter = new OverlayPersistentHighlighter(this, {
-      onGridOverlayStateChanged: ({nodeId, enabled}) =>
-          this.dispatchEventToListeners(Events.PERSISTENT_GRID_OVERLAY_STATE_CHANGED, {nodeId, enabled}),
-      onFlexOverlayStateChanged: ({nodeId, enabled}) =>
-          this.dispatchEventToListeners(Events.PERSISTENT_FLEX_CONTAINER_OVERLAY_STATE_CHANGED, {nodeId, enabled}),
-      onContainerQueryOverlayStateChanged: ({nodeId, enabled}) =>
-          this.dispatchEventToListeners(Events.PERSISTENT_CONTAINER_QUERY_OVERLAY_STATE_CHANGED, {nodeId, enabled}),
-      onScrollSnapOverlayStateChanged: ({nodeId, enabled}) =>
-          this.dispatchEventToListeners(Events.PERSISTENT_SCROLL_SNAP_OVERLAY_STATE_CHANGED, {nodeId, enabled}),
+      onGridOverlayStateChanged: ({nodeId, enabled}) => {
+        this.#domModel.nodeForId(nodeId)?.dispatchEventToListeners(DOMNodeEvents.GRID_OVERLAY_STATE_CHANGED, {enabled});
+        this.dispatchEventToListeners(Events.PERSISTENT_GRID_OVERLAY_STATE_CHANGED, {nodeId, enabled});
+      },
+      onFlexOverlayStateChanged: ({nodeId, enabled}) => {
+        this.#domModel.nodeForId(nodeId)?.dispatchEventToListeners(
+            DOMNodeEvents.FLEX_CONTAINER_OVERLAY_STATE_CHANGED, {enabled});
+        this.dispatchEventToListeners(Events.PERSISTENT_FLEX_CONTAINER_OVERLAY_STATE_CHANGED, {nodeId, enabled});
+      },
+      onContainerQueryOverlayStateChanged: ({nodeId, enabled}) => {
+        this.#domModel.nodeForId(nodeId)?.dispatchEventToListeners(
+            DOMNodeEvents.CONTAINER_QUERY_OVERLAY_STATE_CHANGED, {enabled});
+        this.dispatchEventToListeners(Events.PERSISTENT_CONTAINER_QUERY_OVERLAY_STATE_CHANGED, {nodeId, enabled});
+      },
+      onScrollSnapOverlayStateChanged: ({nodeId, enabled}) => {
+        this.#domModel.nodeForId(nodeId)?.dispatchEventToListeners(
+            DOMNodeEvents.SCROLL_SNAP_OVERLAY_STATE_CHANGED, {enabled});
+        this.dispatchEventToListeners(Events.PERSISTENT_SCROLL_SNAP_OVERLAY_STATE_CHANGED, {nodeId, enabled});
+      },
     });
     this.#domModel.addEventListener(DOMModelEvents.NodeRemoved, () => {
       if (!this.#persistentHighlighter) {

@@ -157,11 +157,9 @@ describeWithMockConnection('ElementsTreeElement', () => {
     treeElement.onbind();
 
     const performUpdateSpy = sinon.spy(treeElement, 'performUpdate');
-    const overlayModel = domModel.overlayModel();
 
     // Trigger event
-    overlayModel.dispatchEventToListeners(
-        SDK.OverlayModel.Events.PERSISTENT_GRID_OVERLAY_STATE_CHANGED, {nodeId: node.id, enabled: true});
+    node.dispatchEventToListeners(SDK.DOMModel.DOMNodeEvents.GRID_OVERLAY_STATE_CHANGED, {enabled: true});
 
     sinon.assert.calledOnce(performUpdateSpy);
 
@@ -170,8 +168,7 @@ describeWithMockConnection('ElementsTreeElement', () => {
     performUpdateSpy.resetHistory();
 
     // Trigger event again
-    overlayModel.dispatchEventToListeners(
-        SDK.OverlayModel.Events.PERSISTENT_GRID_OVERLAY_STATE_CHANGED, {nodeId: node.id, enabled: false});
+    node.dispatchEventToListeners(SDK.DOMModel.DOMNodeEvents.GRID_OVERLAY_STATE_CHANGED, {enabled: false});
 
     sinon.assert.notCalled(performUpdateSpy);
   });
@@ -189,11 +186,9 @@ describeWithMockConnection('ElementsTreeElement', () => {
     treeElement.onbind();
 
     const performUpdateSpy = sinon.spy(treeElement, 'performUpdate');
-    const overlayModel = domModel.overlayModel();
 
     // Trigger event
-    overlayModel.dispatchEventToListeners(
-        SDK.OverlayModel.Events.PERSISTENT_SCROLL_SNAP_OVERLAY_STATE_CHANGED, {nodeId: node.id, enabled: true});
+    node.dispatchEventToListeners(SDK.DOMModel.DOMNodeEvents.SCROLL_SNAP_OVERLAY_STATE_CHANGED, {enabled: true});
 
     sinon.assert.calledOnce(performUpdateSpy);
 
@@ -202,8 +197,7 @@ describeWithMockConnection('ElementsTreeElement', () => {
     performUpdateSpy.resetHistory();
 
     // Trigger event again
-    overlayModel.dispatchEventToListeners(
-        SDK.OverlayModel.Events.PERSISTENT_SCROLL_SNAP_OVERLAY_STATE_CHANGED, {nodeId: node.id, enabled: false});
+    node.dispatchEventToListeners(SDK.DOMModel.DOMNodeEvents.SCROLL_SNAP_OVERLAY_STATE_CHANGED, {enabled: false});
 
     sinon.assert.notCalled(performUpdateSpy);
   });

@@ -90,6 +90,7 @@ describeWithMockConnection('LayoutPane', () => {
       scrollIntoView: () => {},
       highlight: () => {},
       domModel: () => domModel,
+      dispatchEventToListeners: () => {},
     } as unknown as SDK.DOMModel.DOMNode;
   }
 

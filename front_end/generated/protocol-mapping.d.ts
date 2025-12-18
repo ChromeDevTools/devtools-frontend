@@ -4890,6 +4890,13 @@ export namespace ProtocolMapping {
       returnType: Protocol.Tracing.GetCategoriesResponse;
     };
     /**
+     * Return a descriptor for all available tracing categories.
+     */
+    'Tracing.getTrackEventDescriptor': {
+      paramsType: [];
+      returnType: Protocol.Tracing.GetTrackEventDescriptorResponse;
+    };
+    /**
      * Record a clock sync marker in the trace.
      */
     'Tracing.recordClockSyncMarker': {

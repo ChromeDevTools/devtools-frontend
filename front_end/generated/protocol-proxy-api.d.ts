@@ -4301,6 +4301,11 @@ declare namespace ProtocolProxyApi {
     invoke_getCategories(): Promise<Protocol.Tracing.GetCategoriesResponse>;
 
     /**
+     * Return a descriptor for all available tracing categories.
+     */
+    invoke_getTrackEventDescriptor(): Promise<Protocol.Tracing.GetTrackEventDescriptorResponse>;
+
+    /**
      * Record a clock sync marker in the trace.
      */
     invoke_recordClockSyncMarker(params: Protocol.Tracing.RecordClockSyncMarkerRequest): Promise<Protocol.ProtocolResponseWithError>;

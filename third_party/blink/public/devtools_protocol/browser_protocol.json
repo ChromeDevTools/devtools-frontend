@@ -15274,6 +15274,19 @@
                     ]
                 },
                 {
+                    "id": "RenderBlockingBehavior",
+                    "description": "The render blocking behavior of a resource request.",
+                    "experimental": true,
+                    "type": "string",
+                    "enum": [
+                        "Blocking",
+                        "InBodyParserBlocking",
+                        "NonBlocking",
+                        "NonBlockingDynamic",
+                        "PotentiallyBlocking"
+                    ]
+                },
+                {
                     "id": "PostDataEntry",
                     "description": "Post data entry for HTTP request",
                     "type": "object",
@@ -18348,6 +18361,13 @@
                             "description": "Whether the request is initiated by a user gesture. Defaults to false.",
                             "optional": true,
                             "type": "boolean"
+                        },
+                        {
+                            "name": "renderBlockingBehavior",
+                            "description": "The render blocking behavior of the request.",
+                            "experimental": true,
+                            "optional": true,
+                            "$ref": "RenderBlockingBehavior"
                         }
                     ]
                 },
@@ -28702,6 +28722,18 @@
                             "items": {
                                 "type": "string"
                             }
+                        }
+                    ]
+                },
+                {
+                    "name": "getTrackEventDescriptor",
+                    "description": "Return a descriptor for all available tracing categories.",
+                    "experimental": true,
+                    "returns": [
+                        {
+                            "name": "descriptor",
+                            "description": "Base64-encoded serialized perfetto.protos.TrackEventDescriptor protobuf message.",
+                            "type": "binary"
                         }
                     ]
                 },

@@ -1,11 +1,11 @@
+### [Request conditions](request-conditions)
+
+Block and throttle individual network requests with the new Request conditions panel.
+
 ### [MCP server](mcp-server)
 
-Let your favourite coding agent debug your pages at runtime, using the Chrome DevTools MCP server.
+Use auto connect to continue a debugging session in an already running Chrome instance.
 
-### [Improved trace sharing](trace-sharing)
+### [Adopted stylesheets](adopted-stylesheets)
 
-Optionally include resource content and script source maps in exported performance traces.
-
-### [Support for @starting-style](starting-style)
-
-Debug and identify CSS entry animations using the new adorner in the Elements panel.
+Adopted stylesheets are now visible under shadow roots in the Elements panel.

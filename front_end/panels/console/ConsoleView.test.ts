@@ -50,10 +50,13 @@ describeWithMockConnection('ConsoleView', () => {
   });
 
   function createConsoleMessage(
-      target: SDK.Target.Target, message: string,
-      type: SDK.ConsoleModel.MessageType = Protocol.Runtime.ConsoleAPICalledEventType.Log) {
+      target: SDK.Target.Target,
+      message: string,
+      type: SDK.ConsoleModel.MessageType = Protocol.Runtime.ConsoleAPICalledEventType.Log,
+      level: Protocol.Log.LogEntryLevel|null = null,
+  ) {
     return new SDK.ConsoleModel.ConsoleMessage(
-        target.model(SDK.RuntimeModel.RuntimeModel), Protocol.Log.LogEntrySource.Javascript, null, message, {type});
+        target.model(SDK.RuntimeModel.RuntimeModel), Protocol.Log.LogEntrySource.Javascript, level, message, {type});
   }
 
   it('can save to file', async () => {
@@ -404,6 +407,82 @@ describeWithMockConnection('ConsoleView', () => {
       providerConfig.onSuggestionAccepted();
 
       sinon.assert.notCalled(updateCitationsSpy);
+    });
+  });
+
+  describe('group visibility', () => {
+    let target: ReturnType<typeof createTarget>;
+    let consoleModel: SDK.ConsoleModel.ConsoleModel|null;
+
+    beforeEach(() => {
+      target = createTarget();
+      SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
+      consoleModel = target.model(SDK.ConsoleModel.ConsoleModel);
+      assert.exists(consoleModel);
+    });
+
+    function addMessage(
+        message: string, type: Protocol.Runtime.ConsoleAPICalledEventType, level: Protocol.Log.LogEntryLevel) {
+      consoleModel!.addMessage(createConsoleMessage(target, message, type, level));
+    }
+
+    for (const level
+             of [Protocol.Log.LogEntryLevel.Error,
+                 Protocol.Log.LogEntryLevel.Warning,
+                 Protocol.Log.LogEntryLevel.Info,
+                 Protocol.Log.LogEntryLevel.Verbose,
+    ]) {
+      it(`shows collapsed group but not message when filtering for ${level}`, async () => {
+        const levels = Console.ConsoleFilter.ConsoleFilter.singleLevelMask(level);
+        // Setting might exist, .set() is crucial
+        Common.Settings.Settings.instance().createSetting('message-level-filters', levels).set(levels);
+
+        consoleView.markAsRoot();
+        renderElementIntoDOM(consoleView);
+
+        addMessage(
+            'group', Protocol.Runtime.ConsoleAPICalledEventType.StartGroupCollapsed, Protocol.Log.LogEntryLevel.Info);
+        addMessage('message', Protocol.Runtime.ConsoleAPICalledEventType.Log, level);
+        addMessage('', Protocol.Runtime.ConsoleAPICalledEventType.EndGroup, Protocol.Log.LogEntryLevel.Info);
+
+        const messages = await getConsoleMessages();
+        assert.include(messages, 'group');
+        assert.notInclude(messages, 'message');
+      });
+
+      it(`shows expanded group and message when filtering for ${level}`, async () => {
+        const levels = Console.ConsoleFilter.ConsoleFilter.singleLevelMask(level);
+        // Setting might exist, .set() is crucial
+        Common.Settings.Settings.instance().createSetting('message-level-filters', levels).set(levels);
+
+        consoleView.markAsRoot();
+        renderElementIntoDOM(consoleView);
+
+        addMessage('group', Protocol.Runtime.ConsoleAPICalledEventType.StartGroup, Protocol.Log.LogEntryLevel.Info);
+        addMessage('message', Protocol.Runtime.ConsoleAPICalledEventType.Log, level);
+        addMessage('', Protocol.Runtime.ConsoleAPICalledEventType.EndGroup, Protocol.Log.LogEntryLevel.Info);
+
+        const messages = await getConsoleMessages();
+        assert.include(messages, 'group');
+        assert.include(messages, 'message');
+      });
+    }
+
+    it(`does not show group when filtering for level it does not contain`, async () => {
+      const levels = Console.ConsoleFilter.ConsoleFilter.singleLevelMask(Protocol.Log.LogEntryLevel.Warning);
+      // Setting might exist, .set() is crucial
+      Common.Settings.Settings.instance().createSetting('message-level-filters', levels).set(levels);
+
+      consoleView.markAsRoot();
+      renderElementIntoDOM(consoleView);
+
+      addMessage('group', Protocol.Runtime.ConsoleAPICalledEventType.StartGroup, Protocol.Log.LogEntryLevel.Info);
+      addMessage('message', Protocol.Runtime.ConsoleAPICalledEventType.Log, Protocol.Log.LogEntryLevel.Error);
+      addMessage('', Protocol.Runtime.ConsoleAPICalledEventType.EndGroup, Protocol.Log.LogEntryLevel.Info);
+
+      const messages = await getConsoleMessages();
+      assert.notInclude(messages, 'group');
+      assert.notInclude(messages, 'message');
     });
   });
 });

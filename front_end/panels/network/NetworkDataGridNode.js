@@ -307,8 +307,25 @@ const UIStrings = {
      */
     initialPriorityToolTip: '{PH1}, Initial priority: {PH2}',
     /**
-     * @description Tooltip to explain why the request has an IPP icon
+     * @description Text in Network Data Grid Node of the Network panel. Noun. Refers to a render blocking resource.
      */
+    blocking: 'Blocking',
+    /**
+     * @description Text in Network Data Grid Node of the Network panel. Noun. Refers to a resource that blocks the parser from starting to parse the document.
+     */
+    inBodyParserBlocking: 'In-body parser blocking',
+    /**
+     * @description Text in Network Data Grid Node of the Network panel. Noun. Refers to a non-blocking resource.
+     */
+    nonBlocking: 'Non-blocking',
+    /**
+     * @description Text in Network Data Grid Node of the Network panel. Noun. Refers to a non-blocking resource.
+     */
+    nonBlockingDynamic: 'Non-blocking dynamic',
+    /**
+     * @description Text in Network Data Grid Node of the Network panel. Noun. Refers to a potentially blocking resource.
+     */
+    potentiallyBlocking: 'Potentially blocking',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/network/NetworkDataGridNode.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -657,6 +674,24 @@ export class NetworkRequestNode extends NetworkNode {
         }
         return aRequest.identityCompare(bRequest);
     }
+    static RenderBlockingComparator(a, b) {
+        const aRequest = a.requestOrFirstKnownChildRequest();
+        const bRequest = b.requestOrFirstKnownChildRequest();
+        if (!aRequest || !bRequest) {
+            return !aRequest ? -1 : 1;
+        }
+        const order = [
+            "InBodyParserBlocking" /* Protocol.Network.RenderBlockingBehavior.InBodyParserBlocking */,
+            "Blocking" /* Protocol.Network.RenderBlockingBehavior.Blocking */,
+            "PotentiallyBlocking" /* Protocol.Network.RenderBlockingBehavior.PotentiallyBlocking */,
+            "NonBlocking" /* Protocol.Network.RenderBlockingBehavior.NonBlocking */,
+            "NonBlockingDynamic" /* Protocol.Network.RenderBlockingBehavior.NonBlockingDynamic */,
+            undefined,
+        ];
+        const aOrder = order.indexOf(aRequest.renderBlockingBehavior());
+        const bOrder = order.indexOf(bRequest.renderBlockingBehavior());
+        return aOrder - bOrder;
+    }
     static RequestPropertyComparator(propertyName, a, b) {
         // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -890,6 +925,10 @@ export class NetworkRequestNode extends NetworkNode {
             }
             case 'is-ad-related': {
                 this.setTextAndTitle(cell, this.requestInternal.isAdRelated().toLocaleString());
+                break;
+            }
+            case 'render-blocking': {
+                this.renderRenderBlockingCell(cell);
                 break;
             }
             case 'cookies': {
@@ -1178,6 +1217,28 @@ export class NetworkRequestNode extends NetworkNode {
                 UI.Tooltip.Tooltip.install(cell, this.requestInternal.protocol);
                 break;
             }
+        }
+    }
+    renderRenderBlockingCell(cell) {
+        switch (this.requestInternal.renderBlockingBehavior()) {
+            case "Blocking" /* Protocol.Network.RenderBlockingBehavior.Blocking */:
+                UI.UIUtils.createTextChild(cell, i18nString(UIStrings.blocking));
+                break;
+            case "InBodyParserBlocking" /* Protocol.Network.RenderBlockingBehavior.InBodyParserBlocking */:
+                UI.UIUtils.createTextChild(cell, i18nString(UIStrings.inBodyParserBlocking));
+                break;
+            case "NonBlocking" /* Protocol.Network.RenderBlockingBehavior.NonBlocking */:
+                UI.UIUtils.createTextChild(cell, i18nString(UIStrings.nonBlocking));
+                break;
+            case "NonBlockingDynamic" /* Protocol.Network.RenderBlockingBehavior.NonBlockingDynamic */:
+                UI.UIUtils.createTextChild(cell, i18nString(UIStrings.nonBlockingDynamic));
+                break;
+            case "PotentiallyBlocking" /* Protocol.Network.RenderBlockingBehavior.PotentiallyBlocking */:
+                UI.UIUtils.createTextChild(cell, i18nString(UIStrings.potentiallyBlocking));
+                break;
+            default:
+                UI.UIUtils.createTextChild(cell, '');
+                break;
         }
     }
     #getLinkifierMetric() {

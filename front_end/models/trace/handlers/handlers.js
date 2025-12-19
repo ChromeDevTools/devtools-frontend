@@ -3329,11 +3329,13 @@ function getNavigationForPageLoadEvent(event) {
     let navigation;
     if (event.name === "largestContentfulPaint::CandidateForSoftNavigation" && event.args.data?.performanceTimelineNavigationId) {
       navigation = softNavigationsById2.get(event.args.data.performanceTimelineNavigationId);
-    }
-    if (!navigation) {
+      if (!navigation) {
+        return null;
+      }
+    } else {
       const navigationId = event.args.data?.navigationId;
       if (!navigationId) {
-        throw new Error("Trace event unexpectedly had no navigation ID.");
+        throw new Error(`Trace event unexpectedly had no navigation ID: ${JSON.stringify(event, null, 2)}`);
       }
       navigation = navigationsByNavigationId2.get(navigationId);
     }

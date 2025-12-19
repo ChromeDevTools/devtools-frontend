@@ -53,8 +53,7 @@ var DEFAULT_VIEW = (input, _output, target) => {
   };
   render(html`
   <div class="header">
-    <devtools-adorner class="aggregated-issues-count"
-                      .data=${{ name: "countWrapper" }}>
+    <devtools-adorner class="aggregated-issues-count" .name=${"countWrapper"}>
       <span>${input.count}</span>
     </devtools-adorner>
     <div class="title">${i18nString(UIStrings.hiddenIssues)}</div>
@@ -169,10 +168,8 @@ var IssueKindView = class extends UI2.TreeOutline.TreeElement {
     issueKindIcon.name = IssueCounter.IssueCounter.getIssueKindIconName(this.#kind);
     issueKindIcon.classList.add("leading-issue-icon", "extra-large");
     const countAdorner = new Adorners.Adorner.Adorner();
-    countAdorner.data = {
-      name: "countWrapper",
-      content: this.#issueCount
-    };
+    countAdorner.name = "countWrapper";
+    countAdorner.append(this.#issueCount);
     countAdorner.classList.add("aggregated-issues-count");
     this.#issueCount.textContent = "0";
     const title = document.createElement("div");
@@ -2974,10 +2971,8 @@ var IssueView = class _IssueView extends UI6.TreeOutline.TreeElement {
     this.#issueKindIcon.classList.add("leading-issue-icon", "extra-large");
     this.#aggregatedIssuesCount = document.createElement("span");
     const countAdorner = new Adorners2.Adorner.Adorner();
-    countAdorner.data = {
-      name: "countWrapper",
-      content: this.#aggregatedIssuesCount
-    };
+    countAdorner.name = "countWrapper";
+    countAdorner.append(this.#aggregatedIssuesCount);
     countAdorner.classList.add("aggregated-issues-count");
     header.appendChild(this.#issueKindIcon);
     header.appendChild(countAdorner);

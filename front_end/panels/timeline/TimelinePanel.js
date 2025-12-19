@@ -216,10 +216,6 @@ const UIStrings = {
      */
     processingTrace: 'Processing trace…',
     /**
-     * @description Text in Timeline Panel of the Performance panel
-     */
-    initializingTracing: 'Initializing tracing…',
-    /**
      * @description Text in Timeline Panel of the Performance panel. Shown to the user after they request to download the trace.
      */
     preparingTraceForDownload: 'Preparing…',
@@ -309,7 +305,6 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
     recordingOptionUIControls;
     state;
     recordingPageReload;
-    millisecondsToRecordAfterLoadEvent;
     toggleRecordAction;
     recordReloadAction;
     #historyManager;
@@ -406,17 +401,14 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
       ">💫</div>`;
         const adorner = new Adorners.Adorner.Adorner();
         adorner.classList.add('fix-perf-icon');
-        adorner.data = {
-            name: i18nString(UIStrings.fixMe),
-            content: adornerContent,
-        };
+        adorner.name = i18nString(UIStrings.fixMe);
+        adorner.append(adornerContent);
         this.#traceEngineModel = traceModel || this.#instantiateNewModel();
         this.element.addEventListener('contextmenu', this.contextMenu.bind(this), false);
         this.dropTarget = new UI.DropTarget.DropTarget(this.element, [UI.DropTarget.Type.File, UI.DropTarget.Type.URI], i18nString(UIStrings.dropTimelineFileOrUrlHere), this.handleDrop.bind(this));
         this.recordingOptionUIControls = [];
         this.state = "Idle" /* State.IDLE */;
         this.recordingPageReload = false;
-        this.millisecondsToRecordAfterLoadEvent = 5000;
         this.toggleRecordAction = UI.ActionRegistry.ActionRegistry.instance().getAction('timeline.toggle-recording');
         this.recordReloadAction = UI.ActionRegistry.ActionRegistry.instance().getAction('timeline.record-reload');
         this.#historyManager = new TimelineHistoryManager(this.#minimapComponent, this.#isNode);
@@ -464,7 +456,6 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
         });
         this.statusPaneContainer = this.timelinePane.element.createChild('div', 'status-pane-container fill');
         this.createFileSelector();
-        SDK.TargetManager.TargetManager.instance().addModelListener(SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.Load, this.loadEventFired, this);
         this.flameChart = new TimelineFlameChartView(this);
         this.element.addEventListener('toggle-popover', event => this.flameChart.togglePopover(event.detail));
         this.#onMainEntryHovered = this.#onEntryHovered.bind(this, this.flameChart.getMainDataProvider());
@@ -1550,39 +1541,6 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
         const navigationEntry = entries[currentIndex];
         return navigationEntry.url;
     }
-    async #navigateToAboutBlank() {
-        const aboutBlankNavigationComplete = new Promise(async (resolve, reject) => {
-            if (!this.controller) {
-                reject('Could not find TimelineController');
-                return;
-            }
-            const target = this.controller.primaryPageTarget;
-            const resourceModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
-            if (!resourceModel) {
-                reject('Could not load resourceModel');
-                return;
-            }
-            /**
-             * To clear out the page and any state from prior test runs, we
-             * navigate to about:blank before initiating the trace recording.
-             * Once we have navigated to about:blank, we start recording and
-             * then navigate to the original page URL, to ensure we profile the
-             * page load.
-             **/
-            function waitForAboutBlank(event) {
-                if (event.data.url === 'about:blank') {
-                    resolve();
-                }
-                else {
-                    reject(`Unexpected navigation to ${event.data.url}`);
-                }
-                resourceModel?.removeEventListener(SDK.ResourceTreeModel.Events.FrameNavigated, waitForAboutBlank);
-            }
-            resourceModel.addEventListener(SDK.ResourceTreeModel.Events.FrameNavigated, waitForAboutBlank);
-            await resourceModel.navigate('about:blank');
-        });
-        await aboutBlankNavigationComplete;
-    }
     async #startCPUProfilingRecording() {
         try {
             this.cpuProfiler = UI.Context.Context.instance().flavor(SDK.CPUProfilerModel.CPUProfilerModel);
@@ -1638,30 +1596,16 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
                 throw new Error('Could not create Timeline controller');
             }
             const urlToTrace = await this.#evaluateInspectedURL();
-            // If we are doing "Reload & record", we first navigate the page to
-            // about:blank. This is to ensure any data on the timeline from any
-            // previous performance recording is lost, avoiding the problem where a
-            // timeline will show data & screenshots from a previous page load that
-            // was not relevant.
-            if (this.recordingPageReload) {
-                await this.#navigateToAboutBlank();
-            }
-            const recordingOptions = {
+            // Order is important here: we tell the controller to start recording, which enables tracing.
+            await this.controller.startRecording({
                 enableJSSampling: !this.disableCaptureJSProfileSetting.get(),
                 capturePictures: this.captureLayersAndPicturesSetting.get(),
                 captureFilmStrip: this.showScreenshotsSetting.get(),
                 captureSelectorStats: this.captureSelectorStatsSetting.get(),
-            };
-            // Order is important here: we tell the controller to start recording, which enables tracing.
-            const response = await this.controller.startRecording(recordingOptions);
-            if (response.getError()) {
-                throw new Error(response.getError());
-            }
+                navigateToUrl: this.recordingPageReload ? urlToTrace : undefined,
+            });
             // Once we get here, we know tracing is active.
-            // This is when, if the user has hit "Reload & Record" that we now need to navigate to the original URL.
-            // If the user has just hit "record", we don't do any navigating.
-            const recordingConfig = this.recordingPageReload ? { navigateToUrl: urlToTrace } : undefined;
-            this.recordingStarted(recordingConfig);
+            this.recordingStarted();
         }
         catch (e) {
             await this.recordingFailed(e.message);
@@ -2051,27 +1995,11 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
         console.warn('Could not get entry color for ', entry);
         return ThemeSupport.ThemeSupport.instance().getComputedValue('--app-color-system');
     }
-    recordingStarted(config) {
-        if (config && this.recordingPageReload && this.controller) {
-            // If the user hit "Reload & record", by this point we have:
-            // 1. Navigated to about:blank
-            // 2. Initiated tracing.
-            // We therefore now should navigate back to the original URL that the user wants to profile.
-            const resourceModel = this.controller?.primaryPageTarget.model(SDK.ResourceTreeModel.ResourceTreeModel);
-            if (!resourceModel) {
-                void this.recordingFailed('Could not navigate to original URL');
-                return;
-            }
-            // We don't need to await this because we are purposefully showing UI
-            // progress as the page loads & tracing is underway.
-            void resourceModel.navigate(config.navigateToUrl);
-        }
+    recordingStarted() {
         this.#changeView({ mode: 'STATUS_PANE_OVERLAY' });
         this.setState("Recording" /* State.RECORDING */);
-        this.showRecordingStarted();
         if (this.statusDialog) {
             this.statusDialog.enableAndFocusButton();
-            this.statusDialog.updateStatus(i18nString(UIStrings.tracing));
             this.statusDialog.updateProgressBar(i18nString(UIStrings.bufferUsage), 0);
             this.statusDialog.startTimer();
         }
@@ -2079,6 +2007,11 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
     recordingProgress(usage) {
         if (this.statusDialog) {
             this.statusDialog.updateProgressBar(i18nString(UIStrings.bufferUsage), usage * 100);
+        }
+    }
+    recordingStatus(status) {
+        if (this.statusDialog) {
+            this.statusDialog.updateStatus(status);
         }
     }
     /**
@@ -2452,26 +2385,13 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
             buttonText: undefined,
         }, () => this.stopRecording());
         this.statusDialog.showPane(this.statusPaneContainer);
-        this.statusDialog.updateStatus(i18nString(UIStrings.initializingTracing));
+        this.statusDialog.updateStatus(i18nString(UIStrings.tracing));
         this.statusDialog.updateProgressBar(i18nString(UIStrings.bufferUsage), 0);
     }
     cancelLoading() {
         if (this.loader) {
             void this.loader.cancel();
         }
-    }
-    async loadEventFired(event) {
-        if (this.state !== "Recording" /* State.RECORDING */ || !this.recordingPageReload ||
-            this.controller?.primaryPageTarget !== event.data.resourceTreeModel.target()) {
-            return;
-        }
-        const controller = this.controller;
-        await new Promise(r => window.setTimeout(r, this.millisecondsToRecordAfterLoadEvent));
-        // Check if we're still in the same recording session.
-        if (controller !== this.controller || this.state !== "Recording" /* State.RECORDING */) {
-            return;
-        }
-        void this.stopRecording();
     }
     frameForSelection(selection) {
         if (this.#viewMode.mode !== 'VIEWING_TRACE') {

@@ -2296,11 +2296,9 @@ export class MoreFiltersDropDownUI extends Common.ObjectWrapper.ObjectWrapper {
         this.filterElement.setAttribute('aria-label', 'Show only/hide requests dropdown');
         this.filterElement.setAttribute('jslog', `${VisualLogging.dropDown('more-filters').track({ click: true })}`);
         this.activeFiltersCountAdorner = new Adorners.Adorner.Adorner();
+        this.activeFiltersCountAdorner.name = 'countWrapper';
         this.activeFiltersCount = document.createElement('span');
-        this.activeFiltersCountAdorner.data = {
-            name: 'countWrapper',
-            content: this.activeFiltersCount,
-        };
+        this.activeFiltersCountAdorner.append(this.activeFiltersCount);
         this.activeFiltersCountAdorner.classList.add('active-filters-count');
         this.updateActiveFiltersCount();
         this.dropDownButton = new UI.Toolbar.ToolbarMenuButton(this.showMoreFiltersContextMenu.bind(this), /* isIconDropdown=*/ false, /* useSoftMenu=*/ true, 

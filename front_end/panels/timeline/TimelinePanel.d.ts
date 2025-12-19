@@ -24,7 +24,6 @@ export declare class TimelinePanel extends TimelinePanel_base implements Client,
     private readonly recordingOptionUIControls;
     private state;
     private recordingPageReload;
-    private readonly millisecondsToRecordAfterLoadEvent;
     private readonly toggleRecordAction;
     private readonly recordReloadAction;
     private disableCaptureJSProfileSetting;
@@ -156,6 +155,7 @@ export declare class TimelinePanel extends TimelinePanel_base implements Client,
     private getEntryColorByEntry;
     private recordingStarted;
     recordingProgress(usage: number): void;
+    recordingStatus(status: string): void;
     loadingStarted(): Promise<void>;
     loadingProgress(progress?: number): Promise<void>;
     processingStarted(): Promise<void>;
@@ -173,7 +173,6 @@ export declare class TimelinePanel extends TimelinePanel_base implements Client,
     loadingCompleteForTest(): void;
     private showRecordingStarted;
     private cancelLoading;
-    private loadEventFired;
     private frameForSelection;
     jumpToFrame(offset: number): true | undefined;
     select(selection: TimelineSelection | null): void;

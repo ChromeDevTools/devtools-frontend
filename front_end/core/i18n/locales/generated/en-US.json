@@ -3104,13 +3104,13 @@
   "panels/ai_assistance/AiAssistancePanel.ts | settings": {
     "message": "Settings"
   },
-  "panels/ai_assistance/components/ChatView.ts | inputTextAriaDescription": {
+  "panels/ai_assistance/components/ChatInput.ts | inputTextAriaDescription": {
     "message": "You can also use one of the suggested prompts above to start your conversation"
   },
-  "panels/ai_assistance/components/ChatView.ts | learnAbout": {
+  "panels/ai_assistance/components/ChatInput.ts | learnAbout": {
     "message": "Learn about AI in DevTools"
   },
-  "panels/ai_assistance/components/ChatView.ts | revealContextDescription": {
+  "panels/ai_assistance/components/ChatInput.ts | revealContextDescription": {
     "message": "Reveal the selected context item in DevTools"
   },
   "panels/ai_assistance/components/DisabledWidget.ts | notAvailableInIncognitoMode": {
@@ -9767,6 +9767,9 @@
   "panels/network/NetworkDataGridNode.ts | blockedTooltip": {
     "message": "This request was blocked due to misconfigured response headers, click to view the headers"
   },
+  "panels/network/NetworkDataGridNode.ts | blocking": {
+    "message": "Blocking"
+  },
   "panels/network/NetworkDataGridNode.ts | broken": {
     "message": "Chrome did not try to establish a HTTP/3 connection because it was marked as broken."
   },
@@ -9821,6 +9824,9 @@
   "panels/network/NetworkDataGridNode.ts | finished": {
     "message": "Finished"
   },
+  "panels/network/NetworkDataGridNode.ts | inBodyParserBlocking": {
+    "message": "In-body parser blocking"
+  },
   "panels/network/NetworkDataGridNode.ts | initialPriorityToolTip": {
     "message": "{PH1}, Initial priority: {PH2}"
   },
@@ -9845,6 +9851,12 @@
   "panels/network/NetworkDataGridNode.ts | memoryCache": {
     "message": "(memory cache)"
   },
+  "panels/network/NetworkDataGridNode.ts | nonBlocking": {
+    "message": "Non-blocking"
+  },
+  "panels/network/NetworkDataGridNode.ts | nonBlockingDynamic": {
+    "message": "Non-blocking dynamic"
+  },
   "panels/network/NetworkDataGridNode.ts | origin": {
     "message": "origin"
   },
@@ -9862,6 +9874,9 @@
   },
   "panels/network/NetworkDataGridNode.ts | pendingq": {
     "message": "(pending)"
+  },
+  "panels/network/NetworkDataGridNode.ts | potentiallyBlocking": {
+    "message": "Potentially blocking"
   },
   "panels/network/NetworkDataGridNode.ts | prefetchCache": {
     "message": "(prefetch cache)"
@@ -10309,6 +10324,9 @@
   },
   "panels/network/NetworkLogViewColumns.ts | remoteAddressSpace": {
     "message": "Remote address space"
+  },
+  "panels/network/NetworkLogViewColumns.ts | renderBlocking": {
+    "message": "Render Blocking"
   },
   "panels/network/NetworkLogViewColumns.ts | requestHeaders": {
     "message": "Request headers"
@@ -15560,8 +15578,17 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "Stop"
   },
+  "panels/timeline/TimelineController.ts | initializingTracing": {
+    "message": "Initializing tracing…"
+  },
   "panels/timeline/TimelineController.ts | tracingNotSupported": {
     "message": "Performance trace recording not supported for this type of target"
+  },
+  "panels/timeline/TimelineController.ts | waitingForLoadEvent": {
+    "message": "Waiting for load event…"
+  },
+  "panels/timeline/TimelineController.ts | waitingForLoadEventPlus5Seconds": {
+    "message": "Waiting for load event (+5s)…"
   },
   "panels/timeline/TimelineDetailsView.ts | bottomup": {
     "message": "Bottom-up"
@@ -15745,9 +15772,6 @@
   },
   "panels/timeline/TimelinePanel.ts | hideSidebar": {
     "message": "Hide sidebar"
-  },
-  "panels/timeline/TimelinePanel.ts | initializingTracing": {
-    "message": "Initializing tracing…"
   },
   "panels/timeline/TimelinePanel.ts | JavascriptSamplingIsDisabled": {
     "message": "- JavaScript sampling is disabled"

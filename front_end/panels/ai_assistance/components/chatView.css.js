@@ -34,66 +34,6 @@ export default `/*
   container-name: --chat-ui-container;
 }
 
-.input-form {
-  display: flex;
-  flex-direction: column;
-  padding: 0 var(--sys-size-5) 0 var(--sys-size-5);
-  max-width: var(--sys-size-36);
-  background-color: var(--sys-color-cdt-base-container);
-  width: 100%;
-  position: sticky;
-  z-index: 9999;
-  bottom: 0;
-  padding-bottom: var(--sys-size-5);
-  /*
-  The \\'box-shadow\\' is a workaround to hide the content appearing between the \\'.input-form\\'
-  and the footer in some resolutions even though the \\'.input-form\\' has \\'bottom: 0\\'.
-  */
-  box-shadow: 0 1px var(--sys-color-cdt-base-container);
-
-  /* Prevents the input form from jumping when the scrollbar is shown */
-  /* 688px is the max width of the input form + left and right paddings: var(--sys-size-36) + 2 * var(--sys-size-5)  */
-  @container (width > 688px) {
-    --half-scrollbar-width: calc((100cqw - 100%) / 2);
-
-    margin-left: var(--half-scrollbar-width);
-    margin-right: calc(-1 * var(--half-scrollbar-width));
-  }
-
-  /* when there isn't enough space to view the messages,
-  do not overlay the input form on top of the messages */
-  /* height < var(--sys-size-27) */
-  @container (height < 224px) {
-    margin-top: var(--sys-size-4);
-    margin-bottom: var(--sys-size-4);
-    position: static;
-  }
-
-  @container --chat-ui-container (width < 400px) {
-    /*
-      The footer already adds necessary paddings for this state.
-      However, without the \\'padding-bottom\\' here, the outline in the bottom
-      is rendered behind the footer. So, we add 1px space here to make sure
-      that the outline is rendered fully.
-    */
-    padding-bottom: var(--sys-size-1);
-  }
-}
-
-.chat-readonly-container {
-  display: flex;
-  width: 100%;
-  max-width: var(--sys-size-36);
-  justify-content: center;
-  align-items: center;
-  background-color: var(--sys-color-surface3);
-  font: var(--sys-typescale-body4-regular);
-  padding: var(--sys-size-5) 0;
-  border-radius: var(--sys-shape-corner-medium-small);
-  margin-bottom: var(--sys-size-5);
-  color: var(--sys-color-on-surface-subtle);
-}
-
 .info-tooltip-container {
   max-width: var(--sys-size-28);
   padding: var(--sys-size-4) var(--sys-size-5);
@@ -106,208 +46,11 @@ export default `/*
   padding-left: 0;
 }
 
-.chat-input-container {
-  width: 100%;
-  display: flex;
-  position: relative;
-  flex-direction: column;
-  border: 1px solid var(--sys-color-neutral-outline);
-  border-radius: var(--sys-shape-corner-small);
-
-  &:focus-within {
-    outline: 1px solid var(--sys-color-primary);
-    border-color: var(--sys-color-primary);
-  }
-
-  &.disabled {
-    background-color: var(--sys-color-state-disabled-container);
-    border-color: transparent;
-
-    & .chat-input-disclaimer {
-      border-color: var(--sys-color-state-disabled);
-    }
-  }
-
-  &.single-line-layout {
-    flex-direction: row;
-    justify-content: space-between;
-
-    .chat-input {
-      flex-shrink: 1;
-      padding: var(--sys-size-4);
-    }
-
-    .chat-input-actions {
-      flex-shrink: 0;
-      padding-block: 0;
-      align-items: flex-end;
-      padding-bottom: var(--sys-size-1);
-    }
-  }
-
-  & .image-input-container {
-    margin: var(--sys-size-3) var(--sys-size-4) 0;
-    max-width: 100%;
-    width: fit-content;
-    position: relative;
-
-    devtools-button {
-      position: absolute;
-      top: calc(-1 * var(--sys-size-2));
-      right: calc(-1 * var(--sys-size-3));
-      border-radius: var(--sys-shape-corner-full);
-      border: 1px solid var(--sys-color-neutral-outline);
-      background-color: var(--sys-color-cdt-base-container);
-    }
-
-    img {
-      max-height: var(--sys-size-18);
-      max-width: 100%;
-      border: 1px solid var(--sys-color-neutral-outline);
-      border-radius: var(--sys-shape-corner-small);
-    }
-
-    .loading {
-      margin: var(--sys-size-4) 0;
-      display: inline-flex;
-      justify-content: center;
-      align-items: center;
-      height: var(--sys-size-18);
-      width: var(--sys-size-19);
-      background-color: var(--sys-color-surface3);
-      border-radius: var(--sys-shape-corner-small);
-      border: 1px solid var(--sys-color-neutral-outline);
-
-      devtools-spinner {
-        color: var(--sys-color-state-disabled);
-      }
-    }
-  }
-
-  & .chat-input-disclaimer-container {
-    display: flex;
-    align-items: center;
-    padding-right: var(--sys-size-3);
-    flex-shrink: 0;
-  }
-
-  & .chat-input-disclaimer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font: var(--sys-typescale-body5-regular);
-    border-right: 1px solid var(--sys-color-divider);
-    padding-right: 8px;
-
-    &.hide-divider {
-      border-right: none;
-    }
-  }
-
-  /*
-    Hide the inline disclaimer on narrow widths (< 400px) because space is limited
-    and the disclaimer is shown in the footer instead for this case.
-  */
-  @container --chat-ui-container (width < 400px) {
-    & .chat-input-disclaimer-container {
-      display: none;
-    }
-  }
-}
-
-.chat-input {
-  scrollbar-width: none;
-  field-sizing: content;
-  resize: none;
-  width: 100%;
-  max-height: 84px; /* 4 rows */
-  border: 0;
-  border-radius: var(--sys-shape-corner-small);
-  font: var(--sys-typescale-body4-regular);
-  line-height: 18px;
-  min-height: var(--sys-size-11);
-  color: var(--sys-color-on-surface);
-  background-color: var(--sys-color-cdt-base-container);
-  padding: var(--sys-size-4) var(--sys-size-4) var(--sys-size-3)
-    var(--sys-size-4);
-
-  &::placeholder {
-    opacity: 60%;
-  }
-
-  &:focus-visible {
-    outline: 0;
-  }
-
-  &:disabled {
-    color: var(--sys-color-state-disabled);
-    background-color: transparent;
-    border-color: transparent;
-
-    &::placeholder {
-      color: var(--sys-color-on-surface-subtle);
-      opacity: 100%;
-    }
-  }
-}
-
-.chat-input-actions {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  padding-left: var(--sys-size-4);
-  padding-right: var(--sys-size-2);
-  gap: var(--sys-size-6);
-  padding-bottom: var(--sys-size-2);
-
-  & .chat-input-actions-left {
-    flex: 1 1 0;
-    min-width: 0;
-  }
-
-  & .chat-input-actions-right {
-    flex-shrink: 0;
-    display: flex;
-
-    & .start-new-chat-button {
-      padding-bottom: var(--sys-size-2);
-      padding-right: var(--sys-size-3);
-    }
-  }
-}
-
-.chat-inline-button {
-  padding-left: 3px;
-}
-
 .chat-cancel-context-button {
   padding-bottom: 3px;
   padding-right: var(--sys-size-3);
 }
 
-footer.chat-view-footer {
-  display: flex;
-  justify-content: center;
-  padding-block: var(--sys-size-3);
-  font: var(--sys-typescale-body5-regular);
-  border-top: 1px solid var(--sys-color-divider);
-  text-wrap: balance;
-  text-align: center;
-
-  /*
-    The footer (for active conversations) is hidden by default on wider screens
-    because the disclaimer is shown inline within the chat input actions. Show it only on narrow widths (< 400px).
-  */
-  &:not(.is-read-only) {
-    display: none;
-    border: none;
-
-    @container --chat-ui-container (width < 400px) {
-      display: flex;
-    }
-  }
-}
 
 .messages-container {
   flex-grow: 1;
@@ -401,101 +144,6 @@ footer.chat-view-footer {
     devtools-icon {
       color: var(--sys-color-state-disabled);
     }
-  }
-}
-
-.select-element {
-  display: flex;
-  gap: var(--sys-size-3);
-  align-items: center;
-
-  .resource-link,
-  .resource-task {
-    cursor: pointer;
-    padding: var(--sys-size-2) var(--sys-size-3);
-    font: var(--sys-typescale-body5-regular);
-    border: var(--sys-size-1) solid var(--sys-color-divider);
-    border-radius: var(--sys-shape-corner-extra-small);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    /*
-      Allow the link/task item to shrink below its intrinsic minimum width in the flex container,
-      enabling text-overflow ellipsis to work correctly.
-    */
-    min-width: 0;
-    line-height: 1;
-
-    & .title {
-      vertical-align: middle;
-      font: var(--sys-typescale-body5-regular);
-    }
-
-    &.has-picker-behavior {
-      overflow: visible;
-    }
-
-    &:focus-visible {
-      outline: 2px solid var(--sys-color-state-focus-ring);
-    }
-
-    devtools-icon,
-    devtools-file-source-icon {
-      display: inline-flex;
-      vertical-align: middle;
-      width: var(--sys-size-7);
-      height: var(--sys-size-7);
-    }
-
-    /*
-      CSS styling for \\'network-override-marker\\' is similar to
-      https://source.chromium.org/chromium/chromium/src/+/main:third_party/devtools-frontend/src/front_end/panels/network/networkLogView.css;l=379.
-      There is a difference in \\'left\\' and \\'top\\' values to make sure
-      it is placed correctly for the network icon in assistance panel.
-    */
-    .network-override-marker {
-      position: relative;
-      float: left;
-    }
-
-    .network-override-marker::before {
-      content: var(--image-file-empty);
-      width: var(--sys-size-4);
-      height: var(--sys-size-4);
-      border-radius: 50%;
-      outline: var(--sys-size-1) solid var(--icon-gap-focus-selected);
-      left: 11px;
-      position: absolute;
-      top: 13px;
-      z-index: 1;
-      background-color: var(--sys-color-purple-bright);
-    }
-
-    .image.icon {
-      display: inline-flex;
-      justify-content: center;
-      align-items: center;
-      vertical-align: middle;
-      margin-right: var(--sys-size-3);
-
-      img {
-        max-width: var(--sys-size-7);
-        max-height: var(--sys-size-7);
-      }
-    }
-  }
-
-  .resource-link.disabled,
-  .resource-task.disabled,
-  .resource-link.not-selected,
-  .resource-task.not-selected {
-    color: var(--sys-color-state-disabled);
-    border-color: var(--sys-color-neutral-outline);
-  }
-
-  .resource-link.disabled,
-  .resource-task.disabled {
-    pointer-events: none;
   }
 }
 
@@ -920,31 +568,48 @@ main {
   }
 }
 
-.floaty {
-  margin: var(--sys-size-3) 0;
-  padding: 0;
-  list-style: none;
-  display: flex;
-  gap: var(--sys-size-4);
+.sticky {
+  position: sticky;
+  bottom: 0;
+  z-index: 9999;
+}
 
-  li {
-    border: var(--sys-size-1) solid var(--sys-color-divider);
-    padding: var(--sys-size-2) var(--sys-size-3);
-    max-width: 150px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
+.chat-input-widget {
+  width: 100%;
+  max-width: var(--sys-size-36);
+  background-color: var(--sys-color-cdt-base-container);
+  /*
+  The \\'box-shadow\\' is a workaround to hide the content appearing between the \\'.input-form\\'
+  and the footer in some resolutions even though the \\'.input-form\\' has \\'bottom: 0\\'.
+  */
+  box-shadow: 0 1px var(--sys-color-cdt-base-container);
 
-    .context-item {
-      max-width: 130px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      flex-grow: 0;
-    }
+  /* Prevents the input form from jumping when the scrollbar is shown */
+  /* 688px is the max width of the input form + left and right paddings: var(--sys-size-36) + 2 * var(--sys-size-5)  */
+  @container (width > 688px) {
+    --half-scrollbar-width: calc((100cqw - 100%) / 2);
+
+    margin-left: var(--half-scrollbar-width);
+    margin-right: calc(-1 * var(--half-scrollbar-width));
   }
 
-  .open-floaty {
-    margin-left: auto;
+  /* when there isn't enough space to view the messages,
+  do not overlay the input form on top of the messages */
+  /* height < var(--sys-size-27) */
+  @container (height < 224px) {
+    margin-top: var(--sys-size-4);
+    margin-bottom: var(--sys-size-4);
+    position: static;
+  }
+
+  @container --chat-ui-container (width < 400px) {
+    /*
+      The footer already adds necessary paddings for this state.
+      However, without the \\'padding-bottom\\' here, the outline in the bottom
+      is rendered behind the footer. So, we add 1px space here to make sure
+      that the outline is rendered fully.
+    */
+    padding-bottom: var(--sys-size-1);
   }
 }
 

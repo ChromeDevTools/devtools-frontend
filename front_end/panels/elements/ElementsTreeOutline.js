@@ -298,7 +298,6 @@ export class DOMTreeWidget extends UI.Widget.Widget {
      */
     updateNodeAdorners(node) {
         const element = this.#viewOutput.elementsTreeOutline?.findTreeElement(node);
-        void element?.updateStyleAdorners();
         void element?.updateAdorners();
     }
     highlightMatch(node, query) {
@@ -1456,9 +1455,6 @@ export class ElementsTreeOutline extends Common.ObjectWrapper.eventMixin(UI.Tree
             !node.parentNode.parentNode) {
             treeElement.setCollapsible(false);
         }
-        if (node.hasAssignedSlot()) {
-            treeElement.createSlotLink(node.assignedSlot);
-        }
         treeElement.selectable = Boolean(this.selectEnabled);
         return treeElement;
     }
@@ -1688,7 +1684,6 @@ export class ElementsTreeOutline extends Common.ObjectWrapper.eventMixin(UI.Tree
         const { node } = event.data;
         const treeElement = this.treeElementByNode.get(node);
         if (treeElement && isOpeningTag(treeElement.tagTypeContext)) {
-            void treeElement.updateStyleAdorners();
             void treeElement.updateAdorners();
         }
     }

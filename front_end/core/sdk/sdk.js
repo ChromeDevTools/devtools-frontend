@@ -10803,7 +10803,7 @@ var NetworkDispatcher = class {
     this.getExtraInfoBuilder(requestId).addHasExtraInfo(info.hasExtraInfo);
     this.#manager.dispatchEventToListeners(Events2.ResponseReceived, { request: networkRequest, response: info.outerResponse });
   }
-  requestWillBeSent({ requestId, loaderId, documentURL, request, timestamp, wallTime, initiator, redirectHasExtraInfo, redirectResponse, type, frameId, hasUserGesture }) {
+  requestWillBeSent({ requestId, loaderId, documentURL, request, timestamp, wallTime, initiator, redirectHasExtraInfo, redirectResponse, type, frameId, hasUserGesture, renderBlockingBehavior }) {
     let networkRequest = this.#requestsById.get(requestId);
     if (networkRequest) {
       if (!redirectResponse) {
@@ -10824,6 +10824,9 @@ var NetworkDispatcher = class {
       this.#manager.dispatchEventToListeners(Events2.RequestRedirected, networkRequest);
     } else {
       networkRequest = NetworkRequest.create(requestId, request.url, documentURL, frameId ?? null, loaderId, initiator, hasUserGesture);
+      if (renderBlockingBehavior) {
+        networkRequest.setRenderBlockingBehavior(renderBlockingBehavior);
+      }
       requestToManagerMap.set(networkRequest, this.#manager);
     }
     networkRequest.hasNetworkData = true;
@@ -23824,10 +23827,22 @@ var OverlayModel = class _OverlayModel extends SDKModel {
       void this.wireAgentToSettings();
     }
     this.#persistentHighlighter = new OverlayPersistentHighlighter(this, {
-      onGridOverlayStateChanged: ({ nodeId, enabled }) => this.dispatchEventToListeners("PersistentGridOverlayStateChanged", { nodeId, enabled }),
-      onFlexOverlayStateChanged: ({ nodeId, enabled }) => this.dispatchEventToListeners("PersistentFlexContainerOverlayStateChanged", { nodeId, enabled }),
-      onContainerQueryOverlayStateChanged: ({ nodeId, enabled }) => this.dispatchEventToListeners("PersistentContainerQueryOverlayStateChanged", { nodeId, enabled }),
-      onScrollSnapOverlayStateChanged: ({ nodeId, enabled }) => this.dispatchEventToListeners("PersistentScrollSnapOverlayStateChanged", { nodeId, enabled })
+      onGridOverlayStateChanged: ({ nodeId, enabled }) => {
+        this.#domModel.nodeForId(nodeId)?.dispatchEventToListeners(DOMNodeEvents.GRID_OVERLAY_STATE_CHANGED, { enabled });
+        this.dispatchEventToListeners("PersistentGridOverlayStateChanged", { nodeId, enabled });
+      },
+      onFlexOverlayStateChanged: ({ nodeId, enabled }) => {
+        this.#domModel.nodeForId(nodeId)?.dispatchEventToListeners(DOMNodeEvents.FLEX_CONTAINER_OVERLAY_STATE_CHANGED, { enabled });
+        this.dispatchEventToListeners("PersistentFlexContainerOverlayStateChanged", { nodeId, enabled });
+      },
+      onContainerQueryOverlayStateChanged: ({ nodeId, enabled }) => {
+        this.#domModel.nodeForId(nodeId)?.dispatchEventToListeners(DOMNodeEvents.CONTAINER_QUERY_OVERLAY_STATE_CHANGED, { enabled });
+        this.dispatchEventToListeners("PersistentContainerQueryOverlayStateChanged", { nodeId, enabled });
+      },
+      onScrollSnapOverlayStateChanged: ({ nodeId, enabled }) => {
+        this.#domModel.nodeForId(nodeId)?.dispatchEventToListeners(DOMNodeEvents.SCROLL_SNAP_OVERLAY_STATE_CHANGED, { enabled });
+        this.dispatchEventToListeners("PersistentScrollSnapOverlayStateChanged", { nodeId, enabled });
+      }
     });
     this.#domModel.addEventListener(Events8.NodeRemoved, () => {
       if (!this.#persistentHighlighter) {
@@ -24577,6 +24592,10 @@ var DOMNodeEvents;
 (function(DOMNodeEvents2) {
   DOMNodeEvents2["TOP_LAYER_INDEX_CHANGED"] = "TopLayerIndexChanged";
   DOMNodeEvents2["SCROLLABLE_FLAG_UPDATED"] = "ScrollableFlagUpdated";
+  DOMNodeEvents2["GRID_OVERLAY_STATE_CHANGED"] = "GridOverlayStateChanged";
+  DOMNodeEvents2["FLEX_CONTAINER_OVERLAY_STATE_CHANGED"] = "FlexContainerOverlayStateChanged";
+  DOMNodeEvents2["SCROLL_SNAP_OVERLAY_STATE_CHANGED"] = "ScrollSnapOverlayStateChanged";
+  DOMNodeEvents2["CONTAINER_QUERY_OVERLAY_STATE_CHANGED"] = "ContainerQueryOverlayStateChanged";
 })(DOMNodeEvents || (DOMNodeEvents = {}));
 var DOMNode = class _DOMNode extends Common21.ObjectWrapper.ObjectWrapper {
   #domModel;
@@ -28379,6 +28398,7 @@ var NetworkRequest = class _NetworkRequest extends Common27.ObjectWrapper.Object
   #startTime = -1;
   #endTime = -1;
   #blockedReason = void 0;
+  #renderBlockingBehavior;
   #corsErrorStatus = void 0;
   statusCode = 0;
   statusText = "";
@@ -28694,6 +28714,12 @@ var NetworkRequest = class _NetworkRequest extends Common27.ObjectWrapper.Object
   }
   setBlockedReason(reason) {
     this.#blockedReason = reason;
+  }
+  setRenderBlockingBehavior(renderBlocking) {
+    this.#renderBlockingBehavior = renderBlocking;
+  }
+  renderBlockingBehavior() {
+    return this.#renderBlockingBehavior;
   }
   corsErrorStatus() {
     return this.#corsErrorStatus;

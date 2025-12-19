@@ -34,8 +34,7 @@ const DEFAULT_VIEW = (input, _output, target) => {
     // clang-format off
     render(html `
   <div class="header">
-    <devtools-adorner class="aggregated-issues-count"
-                      .data=${{ name: 'countWrapper' }}>
+    <devtools-adorner class="aggregated-issues-count" .name=${'countWrapper'}>
       <span>${input.count}</span>
     </devtools-adorner>
     <div class="title">${i18nString(UIStrings.hiddenIssues)}</div>

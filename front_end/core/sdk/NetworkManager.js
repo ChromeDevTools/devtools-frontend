@@ -612,7 +612,7 @@ export class NetworkDispatcher {
         this.getExtraInfoBuilder(requestId).addHasExtraInfo(info.hasExtraInfo);
         this.#manager.dispatchEventToListeners(Events.ResponseReceived, { request: networkRequest, response: info.outerResponse });
     }
-    requestWillBeSent({ requestId, loaderId, documentURL, request, timestamp, wallTime, initiator, redirectHasExtraInfo, redirectResponse, type, frameId, hasUserGesture, }) {
+    requestWillBeSent({ requestId, loaderId, documentURL, request, timestamp, wallTime, initiator, redirectHasExtraInfo, redirectResponse, type, frameId, hasUserGesture, renderBlockingBehavior, }) {
         let networkRequest = this.#requestsById.get(requestId);
         if (networkRequest) {
             // FIXME: move this check to the backend.
@@ -639,6 +639,9 @@ export class NetworkDispatcher {
         }
         else {
             networkRequest = NetworkRequest.create(requestId, request.url, documentURL, frameId ?? null, loaderId, initiator, hasUserGesture);
+            if (renderBlockingBehavior) {
+                networkRequest.setRenderBlockingBehavior(renderBlockingBehavior);
+            }
             requestToManagerMap.set(networkRequest, this.#manager);
         }
         networkRequest.hasNetworkData = true;

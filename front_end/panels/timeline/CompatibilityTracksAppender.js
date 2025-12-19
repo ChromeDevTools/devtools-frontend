@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-imperative-dom-api */
 import * as Common from '../../core/common/common.js';
+import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as Trace from '../../models/trace/trace.js';
@@ -264,7 +265,12 @@ export class CompatibilityTracksAppender {
                 events.push(this.#entryData[i]);
             }
         }
-        events.sort((a, b) => a.ts - b.ts); // TODO(paulirish): Remove as I'm 90% it's already sorted.
+        // TODO(crbug.com/457866795): callers expect this to be sorted, but #entryData
+        // currently isn't guaranteed to be sorted because of appendEventsAtLevel and
+        // appendEventAtLevel. Also, see
+        // TimelineFlameChartDataProvider#insertEventToEntryData. This method is cached
+        // in eventsForTreeView, so it doesn't impact performance much.
+        events.sort((a, b) => a.ts - b.ts);
         this.#eventsForTrack.set(trackAppender, events);
         return events;
     }
@@ -376,6 +382,10 @@ export class CompatibilityTracksAppender {
      * trace events (the first available level to append next track).
      */
     appendEventsAtLevel(events, trackStartLevel, appender, eventAppendedCallback) {
+        // Usage of getEventLevel below requires `events` to be sorted.
+        if (Host.InspectorFrontendHost.isUnderTest()) {
+            Platform.ArrayUtilities.assertArrayIsSorted(events, (a, b) => a.ts - b.ts);
+        }
         const lastTimestampByLevel = [];
         for (let i = 0; i < events.length; ++i) {
             const event = events[i];

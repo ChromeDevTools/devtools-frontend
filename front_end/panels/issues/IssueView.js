@@ -303,10 +303,8 @@ export class IssueView extends UI.TreeOutline.TreeElement {
         this.#issueKindIcon.classList.add('leading-issue-icon', 'extra-large');
         this.#aggregatedIssuesCount = document.createElement('span');
         const countAdorner = new Adorners.Adorner.Adorner();
-        countAdorner.data = {
-            name: 'countWrapper',
-            content: this.#aggregatedIssuesCount,
-        };
+        countAdorner.name = 'countWrapper';
+        countAdorner.append(this.#aggregatedIssuesCount);
         countAdorner.classList.add('aggregated-issues-count');
         header.appendChild(this.#issueKindIcon);
         header.appendChild(countAdorner);

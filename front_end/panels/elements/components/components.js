@@ -108,12 +108,8 @@ customElements.define("devtools-accessibility-tree-node", AccessibilityTreeNode)
 // gen/front_end/panels/elements/components/AdornerManager.js
 var AdornerManager_exports = {};
 __export(AdornerManager_exports, {
-  AdornerCategoryOrder: () => AdornerCategoryOrder,
   AdornerManager: () => AdornerManager,
-  DefaultAdornerSettings: () => DefaultAdornerSettings,
-  RegisteredAdorners: () => RegisteredAdorners,
-  compareAdornerNamesByCategory: () => compareAdornerNamesByCategory,
-  getRegisteredAdorner: () => getRegisteredAdorner
+  RegisteredAdorners: () => RegisteredAdorners
 });
 var RegisteredAdorners;
 (function(RegisteredAdorners2) {
@@ -133,116 +129,6 @@ var RegisteredAdorners;
   RegisteredAdorners2["SUBGRID"] = "subgrid";
   RegisteredAdorners2["TOP_LAYER"] = "top-layer";
 })(RegisteredAdorners || (RegisteredAdorners = {}));
-function getRegisteredAdorner(which) {
-  switch (which) {
-    case RegisteredAdorners.GRID:
-      return {
-        name: "grid",
-        category: "Layout",
-        enabledByDefault: true
-      };
-    case RegisteredAdorners.SUBGRID:
-      return {
-        name: "subgrid",
-        category: "Layout",
-        enabledByDefault: true
-      };
-    case RegisteredAdorners.GRID_LANES:
-      return {
-        name: "grid-lanes",
-        category: "Layout",
-        enabledByDefault: true
-      };
-    case RegisteredAdorners.FLEX:
-      return {
-        name: "flex",
-        category: "Layout",
-        enabledByDefault: true
-      };
-    case RegisteredAdorners.AD:
-      return {
-        name: "ad",
-        category: "Security",
-        enabledByDefault: true
-      };
-    case RegisteredAdorners.SCROLL_SNAP:
-      return {
-        name: "scroll-snap",
-        category: "Layout",
-        enabledByDefault: true
-      };
-    case RegisteredAdorners.STARTING_STYLE:
-      return {
-        name: "starting-style",
-        category: "Layout",
-        enabledByDefault: true
-      };
-    case RegisteredAdorners.CONTAINER:
-      return {
-        name: "container",
-        category: "Layout",
-        enabledByDefault: true
-      };
-    case RegisteredAdorners.SLOT:
-      return {
-        name: "slot",
-        category: "Layout",
-        enabledByDefault: true
-      };
-    case RegisteredAdorners.TOP_LAYER:
-      return {
-        name: "top-layer",
-        category: "Layout",
-        enabledByDefault: true
-      };
-    case RegisteredAdorners.REVEAL:
-      return {
-        name: "reveal",
-        category: "Default",
-        enabledByDefault: true
-      };
-    case RegisteredAdorners.MEDIA:
-      return {
-        name: "media",
-        category: "Default",
-        enabledByDefault: false
-      };
-    case RegisteredAdorners.SCROLL:
-      return {
-        name: "scroll",
-        category: "Layout",
-        enabledByDefault: true
-      };
-    case RegisteredAdorners.POPOVER: {
-      return {
-        name: "popover",
-        category: "Layout",
-        enabledByDefault: true
-      };
-    }
-    case RegisteredAdorners.VIEW_SOURCE: {
-      return {
-        name: "view-source",
-        category: "Default",
-        enabledByDefault: true
-      };
-    }
-  }
-}
-var adornerNameToCategoryMap = void 0;
-function getCategoryFromAdornerName(name) {
-  if (!adornerNameToCategoryMap) {
-    adornerNameToCategoryMap = /* @__PURE__ */ new Map();
-    for (const { name: name2, category } of Object.values(RegisteredAdorners).map(getRegisteredAdorner)) {
-      adornerNameToCategoryMap.set(name2, category);
-    }
-  }
-  return adornerNameToCategoryMap.get(name) || "Default";
-}
-var DefaultAdornerSettings = Object.values(RegisteredAdorners).map(getRegisteredAdorner).map(({ name, enabledByDefault }) => ({
-  adorner: name,
-  isEnabled: enabledByDefault
-}));
 var AdornerManager = class {
   #adornerSettings = /* @__PURE__ */ new Map();
   #settingStore;
@@ -276,9 +162,10 @@ var AdornerManager = class {
   #syncSettings() {
     this.#loadSettings();
     const outdatedAdorners = new Set(this.#adornerSettings.keys());
-    for (const { adorner, isEnabled } of DefaultAdornerSettings) {
+    for (const adorner of Object.values(RegisteredAdorners)) {
       outdatedAdorners.delete(adorner);
       if (!this.#adornerSettings.has(adorner)) {
+        const isEnabled = adorner !== RegisteredAdorners.MEDIA;
         this.#adornerSettings.set(adorner, isEnabled);
       }
     }
@@ -288,17 +175,6 @@ var AdornerManager = class {
     this.#persistCurrentSettings();
   }
 };
-var OrderedAdornerCategories = [
-  "Security",
-  "Layout",
-  "Default"
-];
-var AdornerCategoryOrder = new Map(OrderedAdornerCategories.map((category, idx) => [category, idx + 1]));
-function compareAdornerNamesByCategory(nameA, nameB) {
-  const orderA = AdornerCategoryOrder.get(getCategoryFromAdornerName(nameA)) || Number.POSITIVE_INFINITY;
-  const orderB = AdornerCategoryOrder.get(getCategoryFromAdornerName(nameB)) || Number.POSITIVE_INFINITY;
-  return orderA - orderB;
-}
 
 // gen/front_end/panels/elements/components/ComputedStyleProperty.js
 var ComputedStyleProperty_exports = {};

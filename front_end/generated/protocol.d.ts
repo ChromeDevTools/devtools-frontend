@@ -9231,6 +9231,16 @@ export declare namespace Network {
         VeryHigh = "VeryHigh"
     }
     /**
+     * The render blocking behavior of a resource request.
+     */
+    const enum RenderBlockingBehavior {
+        Blocking = "Blocking",
+        InBodyParserBlocking = "InBodyParserBlocking",
+        NonBlocking = "NonBlocking",
+        NonBlockingDynamic = "NonBlockingDynamic",
+        PotentiallyBlocking = "PotentiallyBlocking"
+    }
+    /**
      * Post data entry for HTTP request
      */
     interface PostDataEntry {
@@ -11266,6 +11276,10 @@ export declare namespace Network {
          * Whether the request is initiated by a user gesture. Defaults to false.
          */
         hasUserGesture?: boolean;
+        /**
+         * The render blocking behavior of the request.
+         */
+        renderBlockingBehavior?: RenderBlockingBehavior;
     }
     /**
      * Fired when resource loading priority is changed
@@ -17433,6 +17447,12 @@ export declare namespace Tracing {
          * A list of supported tracing categories.
          */
         categories: string[];
+    }
+    interface GetTrackEventDescriptorResponse extends ProtocolResponseWithError {
+        /**
+         * Base64-encoded serialized perfetto.protos.TrackEventDescriptor protobuf message.
+         */
+        descriptor: binary;
     }
     interface RecordClockSyncMarkerRequest {
         /**

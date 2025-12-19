@@ -385,6 +385,17 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
         }
         return this.compatibilityTracksAppender;
     }
+    #insertEventToEntryData(event) {
+        // TODO(crbug.com/457866795): We don't actually need to keep this sorted yet, because we sort
+        // in CompatibilityTracksAppender.eventsInTrack. But if we ever wanted to remove that sort,
+        // the following code will be needed.
+        // const index = Platform.ArrayUtilities.lowerBound(this.entryData, event, (a, b) => a.ts - b.ts);
+        // this.entryData.splice(index, 0, event);
+        // return index;
+        // For now, just keep it simple and slightly faster.
+        this.entryData.push(event);
+        return this.entryData.length - 1;
+    }
     /**
      * Returns the instance of the timeline flame chart data, without
      * adding data to it. In case the timeline data hasn't been instanced
@@ -460,7 +471,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
         this.entryData = [];
         this.entryTypeByLevel = [];
         this.entryIndexToTitle = [];
-        this.#eventIndexByEvent = new Map();
+        this.#eventIndexByEvent = new WeakMap();
         if (this.#timelineData) {
             this.compatibilityTracksAppender?.setFlameChartDataAndEntryData(this.#timelineData, this.entryData, this.entryTypeByLevel);
             this.compatibilityTracksAppender?.threadAppenders().forEach(threadAppender => threadAppender.setHeaderAppended(false));
@@ -478,7 +489,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
         this.entryData = [];
         this.entryTypeByLevel = [];
         this.entryIndexToTitle = [];
-        this.#eventIndexByEvent = new Map();
+        this.#eventIndexByEvent = new WeakMap();
         this.#minimumBoundary = 0;
         this.timeSpan = 0;
         this.compatibilityTracksAppender?.reset();
@@ -635,6 +646,9 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
      * because then when it comes to drawing we can decorate them differently.
      **/
     #appendFramesAndScreenshotsTrack() {
+        if (this.entryData.length) {
+            throw new Error('expected this.entryData to be empty');
+        }
         if (!this.parsedTrace) {
             return;
         }
@@ -664,21 +678,19 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
         }
         this.appendHeader('', this.screenshotsGroupStyle, false /* selectable */);
         this.entryTypeByLevel[this.currentLevel] = "Screenshot" /* EntryType.SCREENSHOT */;
-        let prevTimestamp = undefined;
-        for (const filmStripFrame of filmStrip.frames) {
-            const screenshotTimeInMilliSeconds = Trace.Helpers.Timing.microToMilli(filmStripFrame.screenshotEvent.ts);
-            this.entryData.push(filmStripFrame.screenshotEvent);
-            this.#timelineData.entryLevels.push(this.currentLevel);
-            this.#timelineData.entryStartTimes.push(screenshotTimeInMilliSeconds);
-            if (prevTimestamp) {
-                this.#timelineData.entryTotalTimes.push(screenshotTimeInMilliSeconds - prevTimestamp);
-            }
-            prevTimestamp = screenshotTimeInMilliSeconds;
-        }
-        if (filmStrip.frames.length && prevTimestamp !== undefined) {
-            const maxRecordTimeMillis = Trace.Helpers.Timing.traceWindowMilliSeconds(this.parsedTrace.data.Meta.traceBounds).max;
-            // Set the total time of the final screenshot so it takes up the remainder of the trace.
-            this.#timelineData.entryTotalTimes.push(maxRecordTimeMillis - prevTimestamp);
+        const traceEnd = Trace.Helpers.Timing.traceWindowMilliSeconds(this.parsedTrace.data.Meta.traceBounds).max;
+        for (let i = 0; i < filmStrip.frames.length; ++i) {
+            const currentFrame = filmStrip.frames[i];
+            const nextFrame = filmStrip.frames[i + 1];
+            const startTimeMillis = Trace.Helpers.Timing.microToMilli(currentFrame.screenshotEvent.ts);
+            // If there is no next frame, use the end of the trace.
+            const endTimeMillis = nextFrame ? Trace.Helpers.Timing.microToMilli(nextFrame.screenshotEvent.ts) : traceEnd;
+            const durationMillis = endTimeMillis - startTimeMillis;
+            const index = this.#insertEventToEntryData(currentFrame.screenshotEvent);
+            this.#timelineData.entryLevels.splice(index, 0, this.currentLevel);
+            this.#timelineData.entryStartTimes.splice(index, 0, startTimeMillis);
+            this.#timelineData.entryTotalTimes.splice(index, 0, durationMillis);
+            this.entryIndexToTitle.splice(index, 0, '');
         }
         ++this.currentLevel;
     }
@@ -998,16 +1010,23 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
         return group;
     }
     #appendFrame(frame) {
-        const index = this.entryData.length;
-        this.entryData.push(frame);
+        const index = this.#insertEventToEntryData(frame);
         const durationMilliseconds = Trace.Helpers.Timing.microToMilli(frame.duration);
-        this.entryIndexToTitle[index] = i18n.TimeUtilities.millisToString(durationMilliseconds, true);
+        this.entryIndexToTitle.splice(index, 0, i18n.TimeUtilities.millisToString(durationMilliseconds, true));
         if (!this.#timelineData) {
             return;
         }
-        this.#timelineData.entryLevels[index] = this.currentLevel;
-        this.#timelineData.entryTotalTimes[index] = durationMilliseconds;
-        this.#timelineData.entryStartTimes[index] = Trace.Helpers.Timing.microToMilli(frame.startTime);
+        if (Array.isArray(this.#timelineData.entryLevels) && Array.isArray(this.#timelineData.entryTotalTimes) &&
+            Array.isArray(this.#timelineData.entryStartTimes)) {
+            this.#timelineData.entryLevels.splice(index, 0, this.currentLevel);
+            this.#timelineData.entryTotalTimes.splice(index, 0, durationMilliseconds);
+            this.#timelineData.entryStartTimes.splice(index, 0, Trace.Helpers.Timing.microToMilli(frame.startTime));
+        }
+        else {
+            this.#timelineData.entryLevels[index] = this.currentLevel;
+            this.#timelineData.entryTotalTimes[index] = durationMilliseconds;
+            this.#timelineData.entryStartTimes[index] = Trace.Helpers.Timing.microToMilli(frame.startTime);
+        }
     }
     createSelection(entryIndex) {
         const entry = this.entryData[entryIndex];

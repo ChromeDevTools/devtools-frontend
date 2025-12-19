@@ -412,6 +412,8 @@ function createPerformanceTraceContext(focus) {
     }
     return new AiAssistanceModel.PerformanceAgent.PerformanceTraceContext(focus);
 }
+export const NOOP = () => Promise.resolve();
+export const NOOP_VOID = () => { };
 let panelInstance;
 export class AiAssistancePanel extends UI.Panel.Panel {
     view;
@@ -439,8 +441,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     // Info of the currently logged in user.
     #userInfo;
     #imageInput;
-    // Used to disable send button when there is not text input.
-    #isTextInputEmpty = true;
     #timelinePanelInstance = null;
     #runAbortController = new AbortController();
     #additionalContextItemsFromFloaty = [];
@@ -499,7 +499,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                     emptyStateSuggestions,
                     inputPlaceholder: this.#getChatInputPlaceholder(),
                     disclaimerText: this.#getDisclaimerText(),
-                    isTextInputEmpty: this.#isTextInputEmpty,
                     changeManager: this.#changeManager,
                     uploadImageInputEnabled: isAiAssistanceMultimodalUploadInputEnabled() &&
                         this.#conversation.type === "freestyler" /* AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING */,
@@ -507,7 +506,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                     isArtifactsSidebarOpen: this.#isArtifactsSidebarOpen,
                     onTextSubmit: async (text, imageInput, multimodalInputType) => {
                         this.#imageInput = undefined;
-                        this.#isTextInputEmpty = true;
                         Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceQuerySubmitted);
                         await this.#startConversation(text, imageInput, multimodalInputType);
                     },
@@ -516,12 +514,11 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                     onCancelClick: this.#cancel.bind(this),
                     onContextClick: this.#handleContextClick.bind(this),
                     onNewConversation: this.#handleNewChatRequest.bind(this),
-                    onTakeScreenshot: isAiAssistanceMultimodalInputEnabled() ? this.#handleTakeScreenshot.bind(this) : undefined,
+                    onTakeScreenshot: isAiAssistanceMultimodalInputEnabled() ? this.#handleTakeScreenshot.bind(this) : NOOP_VOID,
                     onRemoveImageInput: isAiAssistanceMultimodalInputEnabled() ? this.#handleRemoveImageInput.bind(this) :
-                        undefined,
+                        NOOP_VOID,
                     onCopyResponseClick: this.#onCopyResponseClick.bind(this),
-                    onTextInputChange: this.#handleTextInputChange.bind(this),
-                    onLoadImage: isAiAssistanceMultimodalUploadInputEnabled() ? this.#handleLoadImage.bind(this) : undefined,
+                    onLoadImage: isAiAssistanceMultimodalUploadInputEnabled() ? this.#handleLoadImage.bind(this) : NOOP,
                 }
             };
         }
@@ -998,7 +995,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                 return;
             }
             this.#imageInput = undefined;
-            this.#isTextInputEmpty = true;
             Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceQuerySubmitted);
             if (this.#conversation && this.#conversation.isBlockedByOrigin) {
                 this.#handleNewChatRequest();
@@ -1115,13 +1111,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         void this.updateComplete.then(() => {
             this.#viewOutput.chatView?.focusTextInput();
         });
-    }
-    #handleTextInputChange(value) {
-        const disableSubmit = !value;
-        if (disableSubmit !== this.#isTextInputEmpty) {
-            this.#isTextInputEmpty = disableSubmit;
-            void this.requestUpdate();
-        }
     }
     async #handleLoadImage(file) {
         const showLoadingTimeout = setTimeout(() => {

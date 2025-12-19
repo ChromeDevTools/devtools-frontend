@@ -36,6 +36,8 @@ export interface PanelViewOutput {
     chatView?: ChatView;
 }
 type View = (input: ViewInput, output: PanelViewOutput, target: HTMLElement) => void;
+export declare const NOOP: () => Promise<void>;
+export declare const NOOP_VOID: () => void;
 export declare class AiAssistancePanel extends UI.Panel.Panel {
     #private;
     private view;

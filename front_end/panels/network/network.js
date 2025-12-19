@@ -2289,10 +2289,27 @@ var UIStrings5 = {
    * @example {High} PH1
    * @example {Low} PH2
    */
-  initialPriorityToolTip: "{PH1}, Initial priority: {PH2}"
+  initialPriorityToolTip: "{PH1}, Initial priority: {PH2}",
   /**
-   * @description Tooltip to explain why the request has an IPP icon
+   * @description Text in Network Data Grid Node of the Network panel. Noun. Refers to a render blocking resource.
    */
+  blocking: "Blocking",
+  /**
+   * @description Text in Network Data Grid Node of the Network panel. Noun. Refers to a resource that blocks the parser from starting to parse the document.
+   */
+  inBodyParserBlocking: "In-body parser blocking",
+  /**
+   * @description Text in Network Data Grid Node of the Network panel. Noun. Refers to a non-blocking resource.
+   */
+  nonBlocking: "Non-blocking",
+  /**
+   * @description Text in Network Data Grid Node of the Network panel. Noun. Refers to a non-blocking resource.
+   */
+  nonBlockingDynamic: "Non-blocking dynamic",
+  /**
+   * @description Text in Network Data Grid Node of the Network panel. Noun. Refers to a potentially blocking resource.
+   */
+  potentiallyBlocking: "Potentially blocking"
 };
 var str_5 = i18n9.i18n.registerUIStrings("panels/network/NetworkDataGridNode.ts", UIStrings5);
 var i18nString5 = i18n9.i18n.getLocalizedString.bind(void 0, str_5);
@@ -2633,6 +2650,24 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
     }
     return aRequest.identityCompare(bRequest);
   }
+  static RenderBlockingComparator(a, b) {
+    const aRequest = a.requestOrFirstKnownChildRequest();
+    const bRequest = b.requestOrFirstKnownChildRequest();
+    if (!aRequest || !bRequest) {
+      return !aRequest ? -1 : 1;
+    }
+    const order = [
+      "InBodyParserBlocking",
+      "Blocking",
+      "PotentiallyBlocking",
+      "NonBlocking",
+      "NonBlockingDynamic",
+      void 0
+    ];
+    const aOrder = order.indexOf(aRequest.renderBlockingBehavior());
+    const bOrder = order.indexOf(bRequest.renderBlockingBehavior());
+    return aOrder - bOrder;
+  }
   static RequestPropertyComparator(propertyName, a, b) {
     const aRequest = a.requestOrFirstKnownChildRequest();
     const bRequest = b.requestOrFirstKnownChildRequest();
@@ -2857,6 +2892,10 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
       }
       case "is-ad-related": {
         this.setTextAndTitle(cell, this.requestInternal.isAdRelated().toLocaleString());
+        break;
+      }
+      case "render-blocking": {
+        this.renderRenderBlockingCell(cell);
         break;
       }
       case "cookies": {
@@ -3124,6 +3163,28 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
         UI5.Tooltip.Tooltip.install(cell, this.requestInternal.protocol);
         break;
       }
+    }
+  }
+  renderRenderBlockingCell(cell) {
+    switch (this.requestInternal.renderBlockingBehavior()) {
+      case "Blocking":
+        UI5.UIUtils.createTextChild(cell, i18nString5(UIStrings5.blocking));
+        break;
+      case "InBodyParserBlocking":
+        UI5.UIUtils.createTextChild(cell, i18nString5(UIStrings5.inBodyParserBlocking));
+        break;
+      case "NonBlocking":
+        UI5.UIUtils.createTextChild(cell, i18nString5(UIStrings5.nonBlocking));
+        break;
+      case "NonBlockingDynamic":
+        UI5.UIUtils.createTextChild(cell, i18nString5(UIStrings5.nonBlockingDynamic));
+        break;
+      case "PotentiallyBlocking":
+        UI5.UIUtils.createTextChild(cell, i18nString5(UIStrings5.potentiallyBlocking));
+        break;
+      default:
+        UI5.UIUtils.createTextChild(cell, "");
+        break;
     }
   }
   #getLinkifierMetric() {
@@ -9061,7 +9122,11 @@ var UIStrings18 = {
   /**
    * @description Text to show whether a request is ad-related
    */
-  isAdRelated: "Is Ad-Related"
+  isAdRelated: "Is Ad-Related",
+  /**
+   * @description Text in Network Log View Columns of the Network panel
+   */
+  renderBlocking: "Render Blocking"
 };
 var str_18 = i18n35.i18n.registerUIStrings("panels/network/NetworkLogViewColumns.ts", UIStrings18);
 var i18nString18 = i18n35.i18n.getLocalizedString.bind(void 0, str_18);
@@ -9929,6 +9994,11 @@ var DEFAULT_COLUMNS = [
     id: "is-ad-related",
     title: i18nLazyString3(UIStrings18.isAdRelated),
     sortingFunction: NetworkRequestNode.IsAdRelatedComparator
+  },
+  {
+    id: "render-blocking",
+    title: i18nLazyString3(UIStrings18.renderBlocking),
+    sortingFunction: NetworkRequestNode.RenderBlockingComparator
   },
   // This header is a placeholder to let datagrid know that it can be sorted by this column, but never shown.
   {
@@ -12088,11 +12158,9 @@ var MoreFiltersDropDownUI = class extends Common16.ObjectWrapper.ObjectWrapper {
     this.filterElement.setAttribute("aria-label", "Show only/hide requests dropdown");
     this.filterElement.setAttribute("jslog", `${VisualLogging13.dropDown("more-filters").track({ click: true })}`);
     this.activeFiltersCountAdorner = new Adorners.Adorner.Adorner();
+    this.activeFiltersCountAdorner.name = "countWrapper";
     this.activeFiltersCount = document.createElement("span");
-    this.activeFiltersCountAdorner.data = {
-      name: "countWrapper",
-      content: this.activeFiltersCount
-    };
+    this.activeFiltersCountAdorner.append(this.activeFiltersCount);
     this.activeFiltersCountAdorner.classList.add("active-filters-count");
     this.updateActiveFiltersCount();
     this.dropDownButton = new UI22.Toolbar.ToolbarMenuButton(

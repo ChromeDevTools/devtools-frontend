@@ -73,6 +73,10 @@ export var DOMNodeEvents;
 (function (DOMNodeEvents) {
     DOMNodeEvents["TOP_LAYER_INDEX_CHANGED"] = "TopLayerIndexChanged";
     DOMNodeEvents["SCROLLABLE_FLAG_UPDATED"] = "ScrollableFlagUpdated";
+    DOMNodeEvents["GRID_OVERLAY_STATE_CHANGED"] = "GridOverlayStateChanged";
+    DOMNodeEvents["FLEX_CONTAINER_OVERLAY_STATE_CHANGED"] = "FlexContainerOverlayStateChanged";
+    DOMNodeEvents["SCROLL_SNAP_OVERLAY_STATE_CHANGED"] = "ScrollSnapOverlayStateChanged";
+    DOMNodeEvents["CONTAINER_QUERY_OVERLAY_STATE_CHANGED"] = "ContainerQueryOverlayStateChanged";
 })(DOMNodeEvents || (DOMNodeEvents = {}));
 export class DOMNode extends Common.ObjectWrapper.ObjectWrapper {
     #domModel;

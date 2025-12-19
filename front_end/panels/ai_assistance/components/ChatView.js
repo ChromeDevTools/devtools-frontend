@@ -5,61 +5,21 @@
 import '../../../ui/components/spinners/spinners.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
-import * as Platform from '../../../core/platform/platform.js';
-import * as SDK from '../../../core/sdk/sdk.js';
 import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
-import * as GreenDev from '../../../models/greendev/greendev.js';
-import * as Trace from '../../../models/trace/trace.js';
-import * as Workspace from '../../../models/workspace/workspace.js';
-import * as PanelsCommon from '../../../panels/common/common.js';
-import * as PanelUtils from '../../../panels/utils/utils.js';
 import * as Marked from '../../../third_party/marked/marked.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import { PatchWidget } from '../PatchWidget.js';
+import { ChatInput } from './ChatInput.js';
 import chatViewStyles from './chatView.css.js';
 import { UserActionRow } from './UserActionRow.js';
-const { html, Directives: { ifDefined, ref } } = Lit;
-const UIStrings = {
-    /**
-     * @description The footer disclaimer that links to more information about the AI feature.
-     */
-    learnAbout: 'Learn about AI in DevTools',
-    /**
-     * @description Label added to the text input to describe the context for screen readers. Not shown visibly on screen.
-     */
-    inputTextAriaDescription: 'You can also use one of the suggested prompts above to start your conversation',
-    /**
-     * @description Label added to the button that reveals the selected context item in DevTools
-     */
-    revealContextDescription: 'Reveal the selected context item in DevTools',
-};
+const { html, Directives: { ifDefined, ref, createRef } } = Lit;
 /*
 * Strings that don't need to be translated at this time.
 */
 const UIStringsNotTranslate = {
-    /**
-     * @description Title for the send icon button.
-     */
-    sendButtonTitle: 'Send',
-    /**
-     * @description Title for the start new chat
-     */
-    startNewChat: 'Start new chat',
-    /**
-     * @description Title for the cancel icon button.
-     */
-    cancelButtonTitle: 'Cancel',
-    /**
-     * @description Label for the "select an element" button.
-     */
-    selectAnElement: 'Select an element',
-    /**
-     * @description Label for the "select an element" button.
-     */
-    noElementSelected: 'No element selected',
     /**
      * @description Text for the empty state of the AI assistance panel.
      */
@@ -125,18 +85,6 @@ const UIStringsNotTranslate = {
      */
     canceled: 'Canceled',
     /**
-     * @description Text displayed when the chat input is disabled due to reading past conversation.
-     */
-    pastConversation: 'You\'re viewing a past conversation.',
-    /**
-     * @description Title for the take screenshot button.
-     */
-    takeScreenshotButtonTitle: 'Take screenshot',
-    /**
-     * @description Title for the remove image input button.
-     */
-    removeImageInputButtonTitle: 'Remove image input',
-    /**
      * @description Alt text for the image input (displayed in the chat messages) that has been sent to the model.
      */
     imageInputSentToTheModel: 'Image input sent to the model',
@@ -152,23 +100,15 @@ const UIStringsNotTranslate = {
      * @description Alt text for image when it is not available.
      */
     imageUnavailable: 'Image unavailable',
-    /**
-     * @description Title for the add image button.
-     */
-    addImageButtonTitle: 'Add image',
 };
-const str_ = i18n.i18n.registerUIStrings('panels/ai_assistance/components/ChatView.ts', UIStrings);
-const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const lockedString = i18n.i18n.lockedString;
 const SCROLL_ROUNDING_OFFSET = 1;
-const RELEVANT_DATA_LINK_FOOTER_ID = 'relevant-data-link-footer';
-const RELEVANT_DATA_LINK_CHAT_ID = 'relevant-data-link-chat';
 export class ChatView extends HTMLElement {
     #shadow = this.attachShadow({ mode: 'open' });
     #scrollTop;
     #props;
     #messagesContainerElement;
-    #mainElementRef = Lit.Directives.createRef();
+    #mainElementRef = createRef();
     #messagesContainerResizeObserver = new ResizeObserver(() => this.#handleMessagesContainerResize());
     /**
      * Indicates whether the chat scroll position should be pinned to the bottom.
@@ -187,6 +127,7 @@ export class ChatView extends HTMLElement {
      * whether to pin the content to the bottom.
      */
     #isProgrammaticScroll = false;
+    #inputRef = createRef();
     constructor(props) {
         super();
         this.#props = props;
@@ -245,14 +186,6 @@ export class ChatView extends HTMLElement {
         this.#isProgrammaticScroll = true;
         this.#mainElementRef.value.scrollTop = scrollTop;
     }
-    #setInputText(text) {
-        const textArea = this.#shadow.querySelector('.chat-input');
-        if (!textArea) {
-            return;
-        }
-        textArea.value = text;
-        this.#props.onTextInputChange(text);
-    }
     #handleMessageContainerRef(el) {
         this.#messagesContainerElement = el;
         if (el) {
@@ -278,109 +211,17 @@ export class ChatView extends HTMLElement {
         this.#pinScrollToBottom =
             ev.target.scrollTop + ev.target.clientHeight + SCROLL_ROUNDING_OFFSET > ev.target.scrollHeight;
     };
-    #handleSubmit = (ev) => {
-        ev.preventDefault();
-        if (this.#props.imageInput?.isLoading) {
-            return;
-        }
-        const textArea = this.#shadow.querySelector('.chat-input');
-        if (!textArea?.value) {
-            return;
-        }
-        const imageInput = !this.#props.imageInput?.isLoading && this.#props.imageInput?.data ?
-            { inlineData: { data: this.#props.imageInput.data, mimeType: this.#props.imageInput.mimeType } } :
-            undefined;
-        void this.#props.onTextSubmit(textArea.value, imageInput, this.#props.imageInput?.inputType);
-        textArea.value = '';
-    };
-    #handleTextAreaKeyDown = (ev) => {
-        if (!ev.target || !(ev.target instanceof HTMLTextAreaElement)) {
-            return;
-        }
-        // Go to a new line on Shift+Enter. On Enter, submit unless the
-        // user is in IME composition.
-        if (ev.key === 'Enter' && !ev.shiftKey && !ev.isComposing) {
-            ev.preventDefault();
-            if (!ev.target?.value || this.#props.imageInput?.isLoading) {
-                return;
-            }
-            const imageInput = !this.#props.imageInput?.isLoading && this.#props.imageInput?.data ?
-                { inlineData: { data: this.#props.imageInput.data, mimeType: this.#props.imageInput.mimeType } } :
-                undefined;
-            void this.#props.onTextSubmit(ev.target.value, imageInput, this.#props.imageInput?.inputType);
-            ev.target.value = '';
-        }
-    };
-    #handleCancel = (ev) => {
-        ev.preventDefault();
-        if (!this.#props.isLoading) {
-            return;
-        }
-        this.#props.onCancelClick();
-    };
-    #handleImageUpload = (ev) => {
-        ev.stopPropagation();
-        if (this.#props.onLoadImage) {
-            const fileSelector = UI.UIUtils.createFileSelectorElement(this.#props.onLoadImage.bind(this), '.jpeg,.jpg,.png');
-            fileSelector.click();
-        }
-    };
     #handleSuggestionClick = (suggestion) => {
-        this.#setInputText(suggestion);
+        this.#inputRef.value?.getWidget()?.setInputValue(suggestion);
+        this.#render();
         this.focusTextInput();
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceDynamicSuggestionClicked);
     };
     #render() {
-        const renderFooter = () => {
-            const classes = Lit.Directives.classMap({
-                'chat-view-footer': true,
-                'is-read-only': this.#props.isReadOnly,
-            });
-            // clang-format off
-            return html `
-        <footer class=${classes} jslog=${VisualLogging.section('footer')}>
-          ${renderRelevantDataDisclaimer({
-                isLoading: this.#props.isLoading,
-                blockedByCrossOrigin: this.#props.blockedByCrossOrigin,
-                tooltipId: RELEVANT_DATA_LINK_FOOTER_ID,
-                disclaimerText: this.#props.disclaimerText
-            })}
-        </footer>
-      `;
-            // clang-format on
-        };
-        const renderInputOrReadOnlySection = () => {
-            if (this.#props.isReadOnly) {
-                return renderReadOnlySection({
-                    onNewConversation: this.#props.onNewConversation,
-                });
-            }
-            return renderChatInput({
-                isLoading: this.#props.isLoading,
-                blockedByCrossOrigin: this.#props.blockedByCrossOrigin,
-                isTextInputDisabled: this.#props.isTextInputDisabled,
-                inputPlaceholder: this.#props.inputPlaceholder,
-                disclaimerText: this.#props.disclaimerText,
-                selectedContext: this.#props.selectedContext,
-                inspectElementToggled: this.#props.inspectElementToggled,
-                multimodalInputEnabled: this.#props.multimodalInputEnabled,
-                conversationType: this.#props.conversationType,
-                imageInput: this.#props.imageInput,
-                isTextInputEmpty: this.#props.isTextInputEmpty,
-                uploadImageInputEnabled: this.#props.uploadImageInputEnabled,
-                onContextClick: this.#props.onContextClick,
-                onInspectElementClick: this.#props.onInspectElementClick,
-                onSubmit: this.#handleSubmit,
-                onTextAreaKeyDown: this.#handleTextAreaKeyDown,
-                onCancel: this.#handleCancel,
-                onNewConversation: this.#props.onNewConversation,
-                onTakeScreenshot: this.#props.onTakeScreenshot,
-                onRemoveImageInput: this.#props.onRemoveImageInput,
-                onTextInputChange: this.#props.onTextInputChange,
-                onImageUpload: this.#handleImageUpload,
-                additionalFloatyContext: this.#props.additionalFloatyContext,
-            });
-        };
+        const inputWidgetClasses = Lit.Directives.classMap({
+            'chat-input-widget': true,
+            sticky: !this.#props.isReadOnly,
+        });
         // clang-format off
         Lit.render(html `
       <style>${chatViewStyles}</style>
@@ -402,9 +243,33 @@ export class ChatView extends HTMLElement {
             onMessageContainerRef: this.#handleMessageContainerRef,
             onCopyResponseClick: this.#props.onCopyResponseClick,
         })}
-          ${renderInputOrReadOnlySection()}
+          <devtools-widget class=${inputWidgetClasses} .widgetConfig=${UI.Widget.widgetConfig(ChatInput, {
+            isLoading: this.#props.isLoading,
+            blockedByCrossOrigin: this.#props.blockedByCrossOrigin,
+            isTextInputDisabled: this.#props.isTextInputDisabled,
+            inputPlaceholder: this.#props.inputPlaceholder,
+            disclaimerText: this.#props.disclaimerText,
+            selectedContext: this.#props.selectedContext,
+            inspectElementToggled: this.#props.inspectElementToggled,
+            multimodalInputEnabled: this.#props.multimodalInputEnabled,
+            conversationType: this.#props.conversationType,
+            imageInput: this.#props.imageInput,
+            uploadImageInputEnabled: this.#props.uploadImageInputEnabled,
+            isReadOnly: this.#props.isReadOnly,
+            additionalFloatyContext: this.#props.additionalFloatyContext,
+            onContextClick: this.#props.onContextClick,
+            onInspectElementClick: this.#props.onInspectElementClick,
+            onTextSubmit: (text, imageInput, multimodalInputType) => {
+                this.#props.onTextSubmit(text, imageInput, multimodalInputType);
+                this.#render();
+            },
+            onCancelClick: this.#props.onCancelClick,
+            onNewConversation: this.#props.onNewConversation,
+            onTakeScreenshot: this.#props.onTakeScreenshot,
+            onRemoveImageInput: this.#props.onRemoveImageInput,
+            onLoadImage: this.#props.onLoadImage,
+        })} ${ref(this.#inputRef)}></devtools-widget>
         </main>
-       ${renderFooter()}
       </div>
     `, this.#shadow, { host: this });
         // clang-format on
@@ -666,6 +531,25 @@ function renderChatMessage({ message, isLoading, isReadOnly, canShowFeedbackForm
   `;
     // clang-format on
 }
+function renderMainContents({ messages, isLoading, isReadOnly, canShowFeedbackForm, isTextInputDisabled, suggestions, userInfo, markdownRenderer, changeSummary, changeManager, onSuggestionClick, onFeedbackSubmit, onCopyResponseClick, onMessageContainerRef, }) {
+    if (messages.length > 0) {
+        return renderMessages({
+            messages,
+            isLoading,
+            isReadOnly,
+            canShowFeedbackForm,
+            userInfo,
+            markdownRenderer,
+            changeSummary,
+            changeManager,
+            onSuggestionClick,
+            onFeedbackSubmit,
+            onMessageContainerRef,
+            onCopyResponseClick
+        });
+    }
+    return renderEmptyState({ isTextInputDisabled, suggestions, onSuggestionClick });
+}
 function renderImageChatMessage(inlineData) {
     if (inlineData.data === AiAssistanceModel.AiConversation.NOT_FOUND_IMAGE_DATA) {
         // clang-format off
@@ -682,88 +566,6 @@ function renderImageChatMessage(inlineData) {
     >
       <img src=${imageUrl} alt=${UIStringsNotTranslate.imageInputSentToTheModel} />
     </x-link>`;
-    // clang-format on
-}
-function renderContextIcon(context) {
-    if (!context) {
-        return Lit.nothing;
-    }
-    const item = context.getItem();
-    // FIXME: move this to presenter once PanelUtils are declarative. The instance
-    // checking should be in the presenter and the rendering in the view function.
-    if (item instanceof SDK.NetworkRequest.NetworkRequest) {
-        return PanelUtils.PanelUtils.getIconForNetworkRequest(item);
-    }
-    if (item instanceof Workspace.UISourceCode.UISourceCode) {
-        return PanelUtils.PanelUtils.getIconForSourceFile(item);
-    }
-    if (item instanceof AiAssistanceModel.AIContext.AgentFocus) {
-        return html `<devtools-icon name="performance" title="Performance"></devtools-icon>`;
-    }
-    if (item instanceof SDK.DOMModel.DOMNode) {
-        return Lit.nothing;
-    }
-    return Lit.nothing;
-}
-function renderContextTitle(context, disabled) {
-    const item = context.getItem();
-    if (item instanceof SDK.DOMModel.DOMNode) {
-        // FIXME: move this to the model code.
-        const hiddenClassList = item.classNames().filter(className => className.startsWith(AiAssistanceModel.Injected.AI_ASSISTANCE_CSS_CLASS_NAME));
-        return html `<devtools-widget .widgetConfig=${UI.Widget.widgetConfig(PanelsCommon.DOMLinkifier.DOMNodeLink, {
-            node: item,
-            options: { hiddenClassList, disabled }
-        })}></devtools-widget>`;
-    }
-    return context.getTitle();
-}
-function renderSelection({ selectedContext, inspectElementToggled, conversationType, isTextInputDisabled, onContextClick, onInspectElementClick, }) {
-    if (!selectedContext) {
-        return Lit.nothing;
-    }
-    // TODO: currently the picker behavior is SDKNode specific.
-    const hasPickerBehavior = conversationType === "freestyler" /* AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING */;
-    const resourceClass = Lit.Directives.classMap({
-        'not-selected': !selectedContext,
-        'resource-link': true,
-        'has-picker-behavior': hasPickerBehavior,
-        disabled: isTextInputDisabled,
-    });
-    const handleKeyDown = (ev) => {
-        if (ev.key === 'Enter' || ev.key === ' ') {
-            void onContextClick();
-        }
-    };
-    // clang-format off
-    return html `<div class="select-element">
-    ${hasPickerBehavior ? html `
-        <devtools-button
-          .data=${{
-        variant: "icon_toggle" /* Buttons.Button.Variant.ICON_TOGGLE */,
-        size: "SMALL" /* Buttons.Button.Size.SMALL */,
-        iconName: 'select-element',
-        toggledIconName: 'select-element',
-        toggleType: "primary-toggle" /* Buttons.Button.ToggleType.PRIMARY */,
-        toggled: inspectElementToggled,
-        title: lockedString(UIStringsNotTranslate.selectAnElement),
-        jslogContext: 'select-element',
-        disabled: isTextInputDisabled,
-    }}
-          @click=${onInspectElementClick}
-        ></devtools-button>
-      ` : Lit.nothing}
-    <div
-      role=button
-      class=${resourceClass}
-      tabindex=${(hasPickerBehavior || isTextInputDisabled) ? '-1' : '0'}
-      @click=${onContextClick}
-      @keydown=${handleKeyDown}
-      aria-description=${i18nString(UIStrings.revealContextDescription)}
-    >
-      ${renderContextIcon(selectedContext)}
-      <span class="title">${selectedContext ? renderContextTitle(selectedContext, isTextInputDisabled) : lockedString(UIStringsNotTranslate.noElementSelected)}</span>
-    </div>
-  </div>`;
     // clang-format on
 }
 function renderMessages({ messages, isLoading, isReadOnly, canShowFeedbackForm, userInfo, markdownRenderer, changeSummary, changeManager, onSuggestionClick, onFeedbackSubmit, onCopyResponseClick, onMessageContainerRef, }) {
@@ -827,349 +629,6 @@ function renderEmptyState({ isTextInputDisabled, suggestions, onSuggestionClick 
     })}
     </div>
   </div>`;
-    // clang-format on
-}
-function renderReadOnlySection({ onNewConversation }) {
-    // clang-format off
-    return html `<div
-    class="chat-readonly-container"
-    jslog=${VisualLogging.section('read-only')}
-  >
-    <span>${lockedString(UIStringsNotTranslate.pastConversation)}</span>
-    <devtools-button
-      aria-label=${lockedString(UIStringsNotTranslate.startNewChat)}
-      class="chat-inline-button"
-      @click=${onNewConversation}
-      .data=${{
-        variant: "text" /* Buttons.Button.Variant.TEXT */,
-        title: lockedString(UIStringsNotTranslate.startNewChat),
-        jslogContext: 'start-new-chat',
-    }}
-    >${lockedString(UIStringsNotTranslate.startNewChat)}</devtools-button>
-  </div>`;
-    // clang-format on
-}
-function renderChatInputButtons({ isLoading, blockedByCrossOrigin, isTextInputDisabled, isTextInputEmpty, imageInput, onCancel, onNewConversation }) {
-    if (isLoading) {
-        // clang-format off
-        return html `<devtools-button
-      class="chat-input-button"
-      aria-label=${lockedString(UIStringsNotTranslate.cancelButtonTitle)}
-      @click=${onCancel}
-      .data=${{
-            variant: "icon" /* Buttons.Button.Variant.ICON */,
-            size: "REGULAR" /* Buttons.Button.Size.REGULAR */,
-            iconName: 'record-stop',
-            title: lockedString(UIStringsNotTranslate.cancelButtonTitle),
-            jslogContext: 'stop',
-        }}
-    ></devtools-button>`;
-        // clang-format on
-    }
-    if (blockedByCrossOrigin) {
-        // clang-format off
-        return html `
-      <devtools-button
-        class="start-new-chat-button"
-        aria-label=${lockedString(UIStringsNotTranslate.startNewChat)}
-        @click=${onNewConversation}
-        .data=${{
-            variant: "outlined" /* Buttons.Button.Variant.OUTLINED */,
-            size: "SMALL" /* Buttons.Button.Size.SMALL */,
-            title: lockedString(UIStringsNotTranslate.startNewChat),
-            jslogContext: 'start-new-chat',
-        }}
-      >${lockedString(UIStringsNotTranslate.startNewChat)}</devtools-button>
-    `;
-        // clang-format on
-    }
-    // clang-format off
-    return html `<devtools-button
-    class="chat-input-button"
-    aria-label=${lockedString(UIStringsNotTranslate.sendButtonTitle)}
-    .data=${{
-        type: 'submit',
-        variant: "icon" /* Buttons.Button.Variant.ICON */,
-        size: "REGULAR" /* Buttons.Button.Size.REGULAR */,
-        disabled: isTextInputDisabled || isTextInputEmpty || imageInput?.isLoading,
-        iconName: 'send',
-        title: lockedString(UIStringsNotTranslate.sendButtonTitle),
-        jslogContext: 'send',
-    }}
-  ></devtools-button>`;
-}
-function renderMultimodalInputButtons({ multimodalInputEnabled, blockedByCrossOrigin, isTextInputDisabled, imageInput, uploadImageInputEnabled, onTakeScreenshot, onImageUpload, }) {
-    if (!multimodalInputEnabled || blockedByCrossOrigin) {
-        return Lit.nothing;
-    }
-    // clang-format off
-    const addImageButton = uploadImageInputEnabled ? html `<devtools-button
-    class="chat-input-button"
-    aria-label=${lockedString(UIStringsNotTranslate.addImageButtonTitle)}
-    @click=${onImageUpload}
-    .data=${{
-        variant: "icon" /* Buttons.Button.Variant.ICON */,
-        size: "REGULAR" /* Buttons.Button.Size.REGULAR */,
-        disabled: isTextInputDisabled || imageInput?.isLoading,
-        iconName: 'add-photo',
-        title: lockedString(UIStringsNotTranslate.addImageButtonTitle),
-        jslogContext: 'upload-image',
-    }}
-  ></devtools-button>` : Lit.nothing;
-    return html `${addImageButton}<devtools-button
-    class="chat-input-button"
-    aria-label=${lockedString(UIStringsNotTranslate.takeScreenshotButtonTitle)}
-    @click=${onTakeScreenshot}
-    .data=${{
-        variant: "icon" /* Buttons.Button.Variant.ICON */,
-        size: "REGULAR" /* Buttons.Button.Size.REGULAR */,
-        disabled: isTextInputDisabled || imageInput?.isLoading,
-        iconName: 'photo-camera',
-        title: lockedString(UIStringsNotTranslate.takeScreenshotButtonTitle),
-        jslogContext: 'take-screenshot',
-    }}
-  ></devtools-button>`;
-    // clang-format on
-}
-function renderImageInput({ multimodalInputEnabled, imageInput, isTextInputDisabled, onRemoveImageInput, }) {
-    if (!multimodalInputEnabled || !imageInput || isTextInputDisabled) {
-        return Lit.nothing;
-    }
-    // clang-format off
-    const crossButton = html `<devtools-button
-      aria-label=${lockedString(UIStringsNotTranslate.removeImageInputButtonTitle)}
-      @click=${onRemoveImageInput}
-      .data=${{
-        variant: "icon" /* Buttons.Button.Variant.ICON */,
-        size: "MICRO" /* Buttons.Button.Size.MICRO */,
-        iconName: 'cross',
-        title: lockedString(UIStringsNotTranslate.removeImageInputButtonTitle),
-    }}
-    ></devtools-button>`;
-    // clang-format on
-    if (imageInput.isLoading) {
-        // clang-format off
-        return html `<div class="image-input-container">
-        ${crossButton}
-        <div class="loading">
-          <devtools-spinner></devtools-spinner>
-        </div>
-      </div>`;
-        // clang-format on
-    }
-    // clang-format off
-    return html `
-    <div class="image-input-container">
-      ${crossButton}
-      <img src="data:${imageInput.mimeType};base64, ${imageInput.data}" alt="Image input" />
-    </div>`;
-    // clang-format on
-}
-function renderRelevantDataDisclaimer({ isLoading, blockedByCrossOrigin, tooltipId, disclaimerText }) {
-    const classes = Lit.Directives.classMap({
-        'chat-input-disclaimer': true,
-        'hide-divider': !isLoading && blockedByCrossOrigin,
-    });
-    // clang-format off
-    return html `
-    <p class=${classes}>
-      <button
-        class="link"
-        role="link"
-        aria-details=${tooltipId}
-        jslog=${VisualLogging.link('open-ai-settings').track({
-        click: true,
-    })}
-        @click=${() => {
-        void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
-    }}
-      >${lockedString('Relevant data')}</button>&nbsp;${lockedString('is sent to Google')}
-      ${renderDisclaimerTooltip(tooltipId, disclaimerText)}
-    </p>
-  `;
-    // clang-format on
-}
-function renderChatInput({ isLoading, blockedByCrossOrigin, isTextInputDisabled, inputPlaceholder, selectedContext, inspectElementToggled, multimodalInputEnabled, conversationType, imageInput, isTextInputEmpty, uploadImageInputEnabled, disclaimerText, additionalFloatyContext, onContextClick, onInspectElementClick, onSubmit, onTextAreaKeyDown, onCancel, onNewConversation, onTakeScreenshot, onRemoveImageInput, onTextInputChange, onImageUpload, }) {
-    const chatInputContainerCls = Lit.Directives.classMap({
-        'chat-input-container': true,
-        'single-line-layout': !selectedContext,
-        disabled: isTextInputDisabled,
-    });
-    // clang-format off
-    return html ` <form class="input-form" @submit=${onSubmit}>
-  ${renderFloatyExtraContext(additionalFloatyContext)}
-    <div class=${chatInputContainerCls}>
-      ${renderImageInput({
-        multimodalInputEnabled,
-        imageInput,
-        isTextInputDisabled,
-        onRemoveImageInput,
-    })}
-      <textarea
-        class="chat-input"
-        .disabled=${isTextInputDisabled}
-        wrap="hard"
-        maxlength="10000"
-        @keydown=${onTextAreaKeyDown}
-        @input=${(event) => onTextInputChange(event.target.value)}
-        placeholder=${inputPlaceholder}
-        jslog=${VisualLogging.textField('query').track({
-        change: true,
-        keydown: 'Enter',
-    })}
-        aria-description=${i18nString(UIStrings.inputTextAriaDescription)}
-        ${ref(el => {
-        // If the elements is disabled reset the text to show
-        // the place holder
-        if (el && isTextInputDisabled) {
-            el.value = '';
-        }
-    })}
-      ></textarea>
-      <div class="chat-input-actions">
-        <div class="chat-input-actions-left">
-          ${renderSelection({
-        selectedContext,
-        inspectElementToggled,
-        conversationType,
-        isTextInputDisabled,
-        onContextClick,
-        onInspectElementClick,
-    })}
-        </div>
-        <div class="chat-input-actions-right">
-          <div class="chat-input-disclaimer-container">
-            ${renderRelevantDataDisclaimer({
-        isLoading,
-        blockedByCrossOrigin,
-        tooltipId: RELEVANT_DATA_LINK_CHAT_ID,
-        disclaimerText,
-    })}
-          </div>
-          ${renderMultimodalInputButtons({
-        multimodalInputEnabled,
-        blockedByCrossOrigin,
-        isTextInputDisabled,
-        imageInput,
-        uploadImageInputEnabled,
-        onTakeScreenshot,
-        onImageUpload,
-    })}
-          ${renderChatInputButtons({
-        isLoading,
-        blockedByCrossOrigin,
-        isTextInputDisabled,
-        isTextInputEmpty,
-        imageInput,
-        onCancel,
-        onNewConversation,
-    })}
-        </div>
-      </div>
-    </div>
-  </form>`;
-    // clang-format on
-}
-function renderFloatyExtraContext(contexts) {
-    if (!GreenDev.Prototypes.instance().isEnabled('inDevToolsFloaty')) {
-        return Lit.nothing;
-    }
-    // clang-format off
-    return html `
-  <ul class="floaty">
-    ${contexts.map(c => {
-        function onDelete(e) {
-            e.preventDefault();
-            UI.Floaty.onFloatyContextDelete(c);
-        }
-        return html `<li>
-        <span class="context-item">
-          ${renderFloatyContext(c)}
-        </span>
-        <devtools-button
-          class="floaty-delete-button"
-          @click=${onDelete}
-          .data=${{
-            variant: "icon" /* Buttons.Button.Variant.ICON */,
-            iconName: 'cross',
-            title: 'Delete',
-            size: "SMALL" /* Buttons.Button.Size.SMALL */,
-        }}
-        ></devtools-button>
-      </li>`;
-    })}
-    <li class="open-floaty">
-      <devtools-button
-        class="floaty-add-button"
-        @click=${UI.Floaty.onFloatyOpen}
-        .data=${{
-        variant: "icon" /* Buttons.Button.Variant.ICON */,
-        iconName: 'select-element',
-        title: 'Open context picker',
-        size: "SMALL" /* Buttons.Button.Size.SMALL */,
-    }}
-      ></devtools-button>
-    </li>
-  </ul>
-  `;
-    // clang-format on
-}
-function renderFloatyContext(context) {
-    if (context instanceof SDK.NetworkRequest.NetworkRequest) {
-        return html `${context.url()}`;
-    }
-    if (context instanceof SDK.DOMModel.DOMNode) {
-        return html `<devtools-widget .widgetConfig=${UI.Widget.widgetConfig(PanelsCommon.DOMLinkifier.DOMNodeLink, { node: context })}>`;
-    }
-    if ('insight' in context) {
-        return html `${context.insight.title}`;
-    }
-    if ('event' in context && 'traceStartTime' in context) {
-        const time = Trace.Types.Timing.Micro(context.event.ts - context.traceStartTime);
-        return html `${context.event.name} @ ${i18n.TimeUtilities.formatMicroSecondsAsMillisFixed(time)}`;
-    }
-    Platform.assertNever(context, 'Unsupported context');
-}
-function renderMainContents({ messages, isLoading, isReadOnly, canShowFeedbackForm, isTextInputDisabled, suggestions, userInfo, markdownRenderer, changeSummary, changeManager, onSuggestionClick, onFeedbackSubmit, onCopyResponseClick, onMessageContainerRef, }) {
-    if (messages.length > 0) {
-        return renderMessages({
-            messages,
-            isLoading,
-            isReadOnly,
-            canShowFeedbackForm,
-            userInfo,
-            markdownRenderer,
-            changeSummary,
-            changeManager,
-            onSuggestionClick,
-            onFeedbackSubmit,
-            onMessageContainerRef,
-            onCopyResponseClick
-        });
-    }
-    return renderEmptyState({ isTextInputDisabled, suggestions, onSuggestionClick });
-}
-function renderDisclaimerTooltip(id, disclaimerText) {
-    // clang-format off
-    return html `
-    <devtools-tooltip
-      id=${id}
-      variant="rich"
-    >
-      <div class="info-tooltip-container">
-        ${disclaimerText}
-        <button
-          class="link tooltip-link"
-          role="link"
-          jslog=${VisualLogging.link('open-ai-settings').track({
-        click: true,
-    })}
-          @click=${() => {
-        void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
-    }}>${i18nString(UIStrings.learnAbout)}
-        </button>
-      </div>
-    </devtools-tooltip>`;
     // clang-format on
 }
 customElements.define('devtools-ai-chat-view', ChatView);

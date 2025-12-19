@@ -1159,10 +1159,10 @@ export class TabbedPaneTab {
         const tabElement = document.createElement('div');
         tabElement.classList.add('tabbed-pane-header-tab');
         tabElement.id = 'tab-' + this.#id;
-        ARIAUtils.markAsTab(tabElement);
         ARIAUtils.setSelected(tabElement, false);
         ARIAUtils.setLabel(tabElement, this.title);
         const titleElement = tabElement.createChild('span', 'tabbed-pane-header-tab-title');
+        ARIAUtils.markAsTab(titleElement);
         titleElement.textContent = this.title;
         Tooltip.install(titleElement, this.tooltip || '');
         this.createIconElement(tabElement, titleElement, measuring);

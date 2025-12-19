@@ -84,6 +84,8 @@ export declare class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<E
     set preserved(x: boolean);
     blockedReason(): Protocol.Network.BlockedReason | undefined;
     setBlockedReason(reason: Protocol.Network.BlockedReason): void;
+    setRenderBlockingBehavior(renderBlocking: Protocol.Network.RenderBlockingBehavior): void;
+    renderBlockingBehavior(): Protocol.Network.RenderBlockingBehavior | undefined;
     corsErrorStatus(): Protocol.Network.CorsErrorStatus | undefined;
     setCorsErrorStatus(corsErrorStatus: Protocol.Network.CorsErrorStatus): void;
     wasBlocked(): boolean;

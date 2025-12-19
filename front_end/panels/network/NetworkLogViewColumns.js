@@ -147,6 +147,10 @@ const UIStrings = {
      * @description Text to show whether a request is ad-related
      */
     isAdRelated: 'Is Ad-Related',
+    /**
+     * @description Text in Network Log View Columns of the Network panel
+     */
+    renderBlocking: 'Render Blocking',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/network/NetworkLogViewColumns.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -1027,6 +1031,11 @@ const DEFAULT_COLUMNS = [
         id: 'is-ad-related',
         title: i18nLazyString(UIStrings.isAdRelated),
         sortingFunction: NetworkRequestNode.IsAdRelatedComparator,
+    },
+    {
+        id: 'render-blocking',
+        title: i18nLazyString(UIStrings.renderBlocking),
+        sortingFunction: NetworkRequestNode.RenderBlockingComparator,
     },
     // This header is a placeholder to let datagrid know that it can be sorted by this column, but never shown.
     {

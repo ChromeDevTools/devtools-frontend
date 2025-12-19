@@ -86,6 +86,7 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin(UI.W
     onMainEntrySelected;
     onNetworkEntrySelected;
     #boundRefreshAfterIgnoreList;
+    /** This is sorted by ts. */
     #selectedEvents;
     // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

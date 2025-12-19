@@ -1,11 +1,12 @@
+import '../../ui/components/adorners/adorners.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Elements from '../../models/elements/elements.js';
 import type * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
-import * as Adorners from '../../ui/components/adorners/adorners.js';
+import type { DirectiveResult } from '../../third_party/lit/lib/directive.js';
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as ElementsComponents from './components/components.js';
+import * as Lit from '../../ui/lit/lit.js';
 import { type ElementsTreeOutline } from './ElementsTreeOutline.js';
 declare const enum TagType {
     OPENING = "OPENING_TAG",
@@ -37,25 +38,32 @@ export interface ViewInput {
     isSubgrid: boolean;
     showViewSourceAdorner: boolean;
     showScrollAdorner: boolean;
-    adorners?: Set<Adorners.Adorner.Adorner>;
+    showScrollSnapAdorner: boolean;
     nodeInfo?: DocumentFragment;
     topLayerIndex: number;
+    scrollSnapAdornerActive: boolean;
     onGutterClick: (e: Event) => void;
-    onAdornerAdded: (adorner: Adorners.Adorner.Adorner) => void;
-    onAdornerRemoved: (adorner: Adorners.Adorner.Adorner) => void;
     onContainerAdornerClick: (e: Event) => void;
     onFlexAdornerClick: (e: Event) => void;
     onGridAdornerClick: (e: Event) => void;
     onMediaAdornerClick: (e: Event) => void;
     onPopoverAdornerClick: (e: Event) => void;
+    onScrollSnapAdornerClick: (e: Event) => void;
     onTopLayerAdornerClick: (e: Event) => void;
     onViewSourceAdornerClick: () => void;
+    onSlotAdornerClick: (e: Event) => void;
+    showSlotAdorner: boolean;
+    slotName?: string;
+    showStartingStyleAdorner: boolean;
+    startingStyleAdornerActive: boolean;
+    onStartingStyleAdornerClick: (e: Event) => void;
 }
 export interface ViewOutput {
     gutterContainer?: HTMLElement;
     decorationsElement?: HTMLElement;
     contentElement?: HTMLElement;
 }
+export declare function adornerRef(): DirectiveResult<typeof Lit.Directives.RefDirective>;
 export declare const DEFAULT_VIEW: (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
 export declare class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     #private;
@@ -79,7 +87,6 @@ export declare class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     static visibleShadowRoots(node: SDK.DOMModel.DOMNode): SDK.DOMModel.DOMNode[];
     static canShowInlineText(node: SDK.DOMModel.DOMNode): boolean;
     static populateForcedPseudoStateItems(contextMenu: UI.ContextMenu.ContextMenu, node: SDK.DOMModel.DOMNode): void;
-    get adorners(): Adorners.Adorner.Adorner[];
     performUpdate(): void;
     highlightAttribute(attributeName: string): void;
     isClosingTag(): boolean;
@@ -94,7 +101,6 @@ export declare class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     get issuesByNodeElement(): Map<Element, IssuesManager.Issue.Issue[]>;
     expandedChildrenLimit(): number;
     setExpandedChildrenLimit(expandedChildrenLimit: number): void;
-    createSlotLink(nodeShortcut: SDK.DOMModel.DOMNodeShortcut | null): void;
     private createSelection;
     private createHint;
     private createAiButton;
@@ -151,21 +157,7 @@ export declare class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     private copyFullXPath;
     copyStyles(): Promise<void>;
     private editAsHTML;
-    adorn({ name }: {
-        name: string;
-    }, content?: HTMLElement): Adorners.Adorner.Adorner;
-    adornSlot({ name }: {
-        name: string;
-    }): Adorners.Adorner.Adorner;
-    removeAdorner(adornerToRemove: Adorners.Adorner.Adorner): void;
-    /**
-     * @param adornerType optional type of adorner to remove. If not provided, remove all adorners.
-     */
-    removeAdornersByType(adornerType?: ElementsComponents.AdornerManager.RegisteredAdorners): void;
     updateAdorners(): void;
-    updateStyleAdorners(): Promise<void>;
-    pushScrollSnapAdorner(): void;
-    pushStartingStyleAdorner(): void;
 }
 export declare const InitialChildrenLimit = 500;
 /**
@@ -175,7 +167,6 @@ export declare const InitialChildrenLimit = 500;
 export declare const ForbiddenClosingTagElements: Set<string>;
 /** These tags we do not allow editing their tag name. **/
 export declare const EditTagBlocklist: Set<string>;
-export declare function adornerComparator(adornerA: Adorners.Adorner.Adorner, adornerB: Adorners.Adorner.Adorner): number;
 export declare function convertUnicodeCharsToHTMLEntities(text: string): {
     text: string;
     entityRanges: TextUtils.TextRange.SourceRange[];

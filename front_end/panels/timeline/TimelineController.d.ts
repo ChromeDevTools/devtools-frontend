@@ -1,5 +1,5 @@
+import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import type * as Protocol from '../../generated/protocol.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as Tracing from '../../services/tracing/tracing.js';
 export declare class TimelineController implements Tracing.TracingManager.TracingManagerClient {
@@ -37,7 +37,7 @@ export declare class TimelineController implements Tracing.TracingManager.Tracin
      **/
     constructor(rootTarget: SDK.Target.Target, primaryPageTarget: SDK.Target.Target, client: Client);
     dispose(): Promise<void>;
-    startRecording(options: RecordingOptions): Promise<Protocol.ProtocolResponseWithError>;
+    startRecording(options: RecordingOptions): Promise<void>;
     stopRecording(): Promise<void>;
     private fetchFieldData;
     private waitForTracingToStop;
@@ -50,7 +50,8 @@ export declare class TimelineController implements Tracing.TracingManager.Tracin
     eventsRetrievalProgress(progress: number): void;
 }
 export interface Client {
-    recordingProgress(usage: number): void;
+    recordingProgress(bufferUsage: number): void;
+    recordingStatus(status: string): void;
     loadingStarted(): void;
     processingStarted(): void;
     loadingProgress(progress?: number): void;
@@ -62,4 +63,5 @@ export interface RecordingOptions {
     capturePictures?: boolean;
     captureFilmStrip?: boolean;
     captureSelectorStats?: boolean;
+    navigateToUrl?: Platform.DevToolsPath.UrlString;
 }

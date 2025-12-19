@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 export * from './AiAssistancePanel.js';
 export * from './components/ChatView.js';
+export * as ChatInput from './components/ChatInput.js';
 export * from './components/MarkdownRendererWithCodeBlock.js';
 export * from './components/PerformanceAgentFlameChart.js';
 export * from './SelectWorkspaceDialog.js';

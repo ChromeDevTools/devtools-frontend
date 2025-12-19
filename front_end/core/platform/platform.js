@@ -9,6 +9,7 @@ var ArrayUtilities_exports = {};
 __export(ArrayUtilities_exports, {
   DEFAULT_COMPARATOR: () => DEFAULT_COMPARATOR,
   arrayDoesNotContainNullOrUndefined: () => arrayDoesNotContainNullOrUndefined,
+  assertArrayIsSorted: () => assertArrayIsSorted,
   binaryIndexOf: () => binaryIndexOf,
   intersectOrdered: () => intersectOrdered,
   lowerBound: () => lowerBound,
@@ -186,6 +187,16 @@ function nearestIndexFromEnd(arr, predicate) {
 }
 function arrayDoesNotContainNullOrUndefined(arr) {
   return !arr.includes(null) && !arr.includes(void 0);
+}
+function assertArrayIsSorted(arr, compareFn) {
+  const comparator = compareFn || DEFAULT_COMPARATOR;
+  for (let i = 0; i < arr.length - 1; i++) {
+    const current = arr[i];
+    const next = arr[i + 1];
+    if (comparator(current, next) > 0) {
+      throw new Error(`Array is not sorted at index ${i}: ${JSON.stringify(current)} > ${JSON.stringify(next)}`);
+    }
+  }
 }
 
 // gen/front_end/core/platform/Brand.js

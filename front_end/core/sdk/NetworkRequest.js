@@ -214,6 +214,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
     #startTime = -1;
     #endTime = -1;
     #blockedReason = undefined;
+    #renderBlockingBehavior;
     #corsErrorStatus = undefined;
     statusCode = 0;
     statusText = '';
@@ -532,6 +533,12 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
     }
     setBlockedReason(reason) {
         this.#blockedReason = reason;
+    }
+    setRenderBlockingBehavior(renderBlocking) {
+        this.#renderBlockingBehavior = renderBlocking;
+    }
+    renderBlockingBehavior() {
+        return this.#renderBlockingBehavior;
     }
     corsErrorStatus() {
         return this.#corsErrorStatus;

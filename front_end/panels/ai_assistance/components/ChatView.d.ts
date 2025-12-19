@@ -1,6 +1,6 @@
 import '../../../ui/components/spinners/spinners.js';
 import * as Host from '../../../core/host/host.js';
-import * as Platform from '../../../core/platform/platform.js';
+import type * as Platform from '../../../core/platform/platform.js';
 import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
 import type { MarkdownLitRenderer } from '../../../ui/components/markdown_view/MarkdownView.js';
 import * as UI from '../../../ui/legacy/legacy.js';
@@ -59,10 +59,9 @@ export interface Props {
     onContextClick: () => void;
     onNewConversation: () => void;
     onCopyResponseClick: (message: ModelChatMessage) => void;
-    onTakeScreenshot?: () => void;
-    onRemoveImageInput?: () => void;
-    onTextInputChange: (input: string) => void;
-    onLoadImage?: (file: File) => Promise<void>;
+    onTakeScreenshot: () => void;
+    onRemoveImageInput: () => void;
+    onLoadImage: (file: File) => Promise<void>;
     changeManager: AiAssistanceModel.ChangeManager.ChangeManager;
     inspectElementToggled: boolean;
     messages: ChatMessage[];
@@ -80,7 +79,6 @@ export interface Props {
     emptyStateSuggestions: AiAssistanceModel.AiAgent.ConversationSuggestion[];
     inputPlaceholder: Platform.UIString.LocalizedString;
     disclaimerText: Platform.UIString.LocalizedString;
-    isTextInputEmpty: boolean;
     isArtifactsSidebarOpen: boolean;
     uploadImageInputEnabled?: boolean;
     markdownRenderer: MarkdownLitRenderer;

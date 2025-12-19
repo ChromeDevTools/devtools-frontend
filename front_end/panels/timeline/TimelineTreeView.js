@@ -164,6 +164,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
  * For an overview, read: https://chromium.googlesource.com/devtools/devtools-frontend/+/refs/heads/main/front_end/panels/timeline/README.md#timeline-tree-views
  */
 export class TimelineTreeView extends Common.ObjectWrapper.eventMixin(UI.Widget.VBox) {
+    /** This is sorted by ts. */
     #selectedEvents;
     searchResults;
     linkifier;

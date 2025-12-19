@@ -39,6 +39,7 @@
     "../../../../../../front_end/panels/ai_assistance/PatchWidget.ts",
     "../../../../../../front_end/panels/ai_assistance/SelectWorkspaceDialog.ts",
     "../../../../../../front_end/panels/ai_assistance/components/ArtifactsViewer.ts",
+    "../../../../../../front_end/panels/ai_assistance/components/ChatInput.ts",
     "../../../../../../front_end/panels/ai_assistance/components/ChatView.ts",
     "../../../../../../front_end/panels/ai_assistance/components/CollapsibleAssistanceContentWidget.ts",
     "../../../../../../front_end/panels/ai_assistance/components/DisabledWidget.ts",

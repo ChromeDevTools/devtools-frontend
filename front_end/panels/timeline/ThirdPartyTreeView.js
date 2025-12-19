@@ -67,14 +67,12 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
                 eventGroupIdCallback: this.groupingFunction.bind(this),
             });
         }
-        // const events = this.#thirdPartySummaries.entityByEvent.keys();
-        const relatedEvents = this.selectedEvents().sort(Trace.Helpers.Trace.eventTimeComparator);
         // The filters for this view are slightly different; we want to use the set
         // of visible event types, but also include network events, which by
         // default are not in the set of visible entries (as they are not shown on
         // the main flame chart).
         const filter = new Trace.Extras.TraceFilter.VisibleEventsFilter(Trace.Styles.visibleTypes().concat(["SyntheticNetworkRequest" /* Trace.Types.Events.Name.SYNTHETIC_NETWORK_REQUEST */]));
-        const node = new Trace.Extras.TraceTree.BottomUpRootNode(relatedEvents, {
+        const node = new Trace.Extras.TraceTree.BottomUpRootNode(this.selectedEvents(), {
             textFilter: this.textFilter(),
             filters: [filter],
             startTime: this.startTime,

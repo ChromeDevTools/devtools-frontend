@@ -210,11 +210,15 @@ function getNavigationForPageLoadEvent(event) {
         if (event.name === "largestContentfulPaint::CandidateForSoftNavigation" /* Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION */ &&
             event.args.data?.performanceTimelineNavigationId) {
             navigation = softNavigationsById.get(event.args.data.performanceTimelineNavigationId);
+            if (!navigation) {
+                // The most recent soft navigation must have been before the trace started.
+                return null;
+            }
         }
-        if (!navigation) {
+        else {
             const navigationId = event.args.data?.navigationId;
             if (!navigationId) {
-                throw new Error('Trace event unexpectedly had no navigation ID.');
+                throw new Error(`Trace event unexpectedly had no navigation ID: ${JSON.stringify(event, null, 2)}`);
             }
             navigation = navigationsByNavigationId.get(navigationId);
         }

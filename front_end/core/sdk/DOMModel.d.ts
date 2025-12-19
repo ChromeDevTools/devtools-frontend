@@ -12,11 +12,27 @@ import { type Target } from './Target.js';
 export declare const ARIA_ATTRIBUTES: Set<string>;
 export declare enum DOMNodeEvents {
     TOP_LAYER_INDEX_CHANGED = "TopLayerIndexChanged",
-    SCROLLABLE_FLAG_UPDATED = "ScrollableFlagUpdated"
+    SCROLLABLE_FLAG_UPDATED = "ScrollableFlagUpdated",
+    GRID_OVERLAY_STATE_CHANGED = "GridOverlayStateChanged",
+    FLEX_CONTAINER_OVERLAY_STATE_CHANGED = "FlexContainerOverlayStateChanged",
+    SCROLL_SNAP_OVERLAY_STATE_CHANGED = "ScrollSnapOverlayStateChanged",
+    CONTAINER_QUERY_OVERLAY_STATE_CHANGED = "ContainerQueryOverlayStateChanged"
 }
 export interface DOMNodeEventTypes {
     [DOMNodeEvents.TOP_LAYER_INDEX_CHANGED]: void;
     [DOMNodeEvents.SCROLLABLE_FLAG_UPDATED]: void;
+    [DOMNodeEvents.GRID_OVERLAY_STATE_CHANGED]: {
+        enabled: boolean;
+    };
+    [DOMNodeEvents.FLEX_CONTAINER_OVERLAY_STATE_CHANGED]: {
+        enabled: boolean;
+    };
+    [DOMNodeEvents.SCROLL_SNAP_OVERLAY_STATE_CHANGED]: {
+        enabled: boolean;
+    };
+    [DOMNodeEvents.CONTAINER_QUERY_OVERLAY_STATE_CHANGED]: {
+        enabled: boolean;
+    };
 }
 export declare class DOMNode extends Common.ObjectWrapper.ObjectWrapper<DOMNodeEventTypes> {
     #private;

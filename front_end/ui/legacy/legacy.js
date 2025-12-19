@@ -6216,10 +6216,10 @@ var TabbedPaneTab = class {
     const tabElement = document.createElement("div");
     tabElement.classList.add("tabbed-pane-header-tab");
     tabElement.id = "tab-" + this.#id;
-    markAsTab(tabElement);
     setSelected(tabElement, false);
     setLabel(tabElement, this.title);
     const titleElement = tabElement.createChild("span", "tabbed-pane-header-tab-title");
+    markAsTab(titleElement);
     titleElement.textContent = this.title;
     Tooltip.install(titleElement, this.tooltip || "");
     this.createIconElement(tabElement, titleElement, measuring);

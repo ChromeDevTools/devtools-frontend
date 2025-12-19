@@ -269,3 +269,16 @@ export function nearestIndexFromEnd<T>(arr: readonly T[], predicate: (arrayItem:
 export function arrayDoesNotContainNullOrUndefined<T>(arr: Array<T|null|undefined>): arr is T[] {
   return !arr.includes(null) && !arr.includes(undefined);
 }
+
+export function assertArrayIsSorted<T>(arr: readonly T[], compareFn?: (a: T, b: T) => number): void {
+  const comparator = compareFn || (DEFAULT_COMPARATOR as unknown as (a: T, b: T) => number);
+
+  for (let i = 0; i < arr.length - 1; i++) {
+    const current = arr[i];
+    const next = arr[i + 1];
+
+    if (comparator(current, next) > 0) {
+      throw new Error(`Array is not sorted at index ${i}: ${JSON.stringify(current)} > ${JSON.stringify(next)}`);
+    }
+  }
+}

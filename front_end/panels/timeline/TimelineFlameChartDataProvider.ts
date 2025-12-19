@@ -453,6 +453,20 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     return this.compatibilityTracksAppender;
   }
 
+  #insertEventToEntryData(event: Trace.Types.Events.Event): number {
+    // TODO(crbug.com/457866795): We don't actually need to keep this sorted yet, because we sort
+    // in CompatibilityTracksAppender.eventsInTrack. But if we ever wanted to remove that sort,
+    // the following code will be needed.
+
+    // const index = Platform.ArrayUtilities.lowerBound(this.entryData, event, (a, b) => a.ts - b.ts);
+    // this.entryData.splice(index, 0, event);
+    // return index;
+
+    // For now, just keep it simple and slightly faster.
+    this.entryData.push(event);
+    return this.entryData.length - 1;
+  }
+
   /**
    * Returns the instance of the timeline flame chart data, without
    * adding data to it. In case the timeline data hasn't been instanced
@@ -801,10 +815,11 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       const endTimeMillis = nextFrame ? Trace.Helpers.Timing.microToMilli(nextFrame.screenshotEvent.ts) : traceEnd;
       const durationMillis = endTimeMillis - startTimeMillis;
 
-      this.entryData.push(currentFrame.screenshotEvent);
-      (this.#timelineData.entryLevels as number[]).push(this.currentLevel);
-      (this.#timelineData.entryStartTimes as number[]).push(startTimeMillis);
-      (this.#timelineData.entryTotalTimes as number[]).push(durationMillis);
+      const index = this.#insertEventToEntryData(currentFrame.screenshotEvent);
+      (this.#timelineData.entryLevels as number[]).splice(index, 0, this.currentLevel);
+      (this.#timelineData.entryStartTimes as number[]).splice(index, 0, startTimeMillis);
+      (this.#timelineData.entryTotalTimes as number[]).splice(index, 0, durationMillis);
+      this.entryIndexToTitle.splice(index, 0, '');
     }
 
     ++this.currentLevel;
@@ -1179,16 +1194,24 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   }
 
   #appendFrame(frame: Trace.Types.Events.LegacyTimelineFrame): void {
-    const index = this.entryData.length;
-    this.entryData.push(frame);
+    const index = this.#insertEventToEntryData(frame);
     const durationMilliseconds = Trace.Helpers.Timing.microToMilli(frame.duration);
-    this.entryIndexToTitle[index] = i18n.TimeUtilities.millisToString(durationMilliseconds, true);
+    this.entryIndexToTitle.splice(index, 0, i18n.TimeUtilities.millisToString(durationMilliseconds, true));
+
     if (!this.#timelineData) {
       return;
     }
-    this.#timelineData.entryLevels[index] = this.currentLevel;
-    this.#timelineData.entryTotalTimes[index] = durationMilliseconds;
-    this.#timelineData.entryStartTimes[index] = Trace.Helpers.Timing.microToMilli(frame.startTime);
+
+    if (Array.isArray(this.#timelineData.entryLevels) && Array.isArray(this.#timelineData.entryTotalTimes) &&
+        Array.isArray(this.#timelineData.entryStartTimes)) {
+      this.#timelineData.entryLevels.splice(index, 0, this.currentLevel);
+      this.#timelineData.entryTotalTimes.splice(index, 0, durationMilliseconds);
+      this.#timelineData.entryStartTimes.splice(index, 0, Trace.Helpers.Timing.microToMilli(frame.startTime));
+    } else {
+      this.#timelineData.entryLevels[index] = this.currentLevel;
+      this.#timelineData.entryTotalTimes[index] = durationMilliseconds;
+      this.#timelineData.entryStartTimes[index] = Trace.Helpers.Timing.microToMilli(frame.startTime);
+    }
   }
 
   createSelection(entryIndex: number): TimelineSelection|null {

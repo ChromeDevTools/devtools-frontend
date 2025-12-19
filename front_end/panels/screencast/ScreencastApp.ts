@@ -46,6 +46,7 @@ export class ScreencastApp implements Common.App.App,
 
   presentUI(document: Document): void {
     this.rootView = new UI.RootView.RootView();
+    this.rootView.registerRequiredCSS(UI.inspectorCommonStyles);
 
     this.rootSplitWidget =
         new UI.SplitWidget.SplitWidget(false, true, 'inspector-view.screencast-split-view-state', 300, 300);

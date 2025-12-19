@@ -15,8 +15,7 @@ describeWithMockConnection('ScreencastApp', () => {
   afterEach(() => {
     screencastApp?.rootView?.detach();
   });
-  // Blocks the CfT roll since https://crrev.com/c/7253957
-  it.skip('[crbug.com/469344861]can start casting', async () => {
+  it('can start casting', async () => {
     screencastApp = new Screencast.ScreencastApp.ScreencastApp();
     screencastApp.presentUI(document);
     const tabTarget = createTarget({type: SDK.Target.Type.TAB});

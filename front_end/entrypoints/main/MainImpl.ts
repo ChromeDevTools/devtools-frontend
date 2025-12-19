@@ -550,7 +550,8 @@ export class MainImpl {
       Badges.UserBadges.instance().addEventListener(Badges.Events.BADGE_TRIGGERED, async ev => {
         loadedPanelCommonModule ??= await import('../../panels/common/common.js') as typeof PanelCommon;
         const badgeNotification = new loadedPanelCommonModule.BadgeNotification();
-        void badgeNotification.present(ev.data);
+        const {badge, reason} = ev.data;
+        void badgeNotification.present(badge, reason);
       });
     }
 

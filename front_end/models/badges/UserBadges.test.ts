@@ -188,9 +188,10 @@ describeWithEnvironment('UserBadges', () => {
 
         Badges.UserBadges.instance().recordAction(Badges.BadgeAction.PERFORMANCE_INSIGHT_CLICKED);
         await clock.tickAsync(DELAY_BEFORE_TRIGGER);
-        const badge = await badgeTriggeredPromise;
+        const {badge, reason} = await badgeTriggeredPromise;
 
         assert.strictEqual(badge.name, 'badges/test-badge');
+        assert.strictEqual(reason, Badges.BadgeTriggerReason.AWARD);
         sinon.assert.calledWith(createAwardStub, {name: 'badges/test-badge'});
       });
 
@@ -218,9 +219,10 @@ describeWithEnvironment('UserBadges', () => {
 
         Badges.UserBadges.instance().recordAction(Badges.BadgeAction.CSS_RULE_MODIFIED);
         await clock.tickAsync(DELAY_BEFORE_TRIGGER);
-        const badge = await badgeTriggeredPromise;
+        const {badge, reason} = await badgeTriggeredPromise;
 
         assert.strictEqual(badge.name, 'badges/starter-test-badge');
+        assert.strictEqual(reason, Badges.BadgeTriggerReason.AWARD);
         sinon.assert.calledWith(createAwardStub, {name: 'badges/starter-test-badge'});
       });
 
@@ -232,15 +234,15 @@ describeWithEnvironment('UserBadges', () => {
           isEligible: true,
         });
         const createAwardStub = stubGdpClientCreateAward(null);
-        const badgeTriggeredSpy = sinon.spy();
+        const badgeTriggeredPromise = Badges.UserBadges.instance().once(Badges.Events.BADGE_TRIGGERED);
         await Badges.UserBadges.instance().initialize();
-        Badges.UserBadges.instance().addEventListener(Badges.Events.BADGE_TRIGGERED, badgeTriggeredSpy);
 
         Badges.UserBadges.instance().recordAction(Badges.BadgeAction.CSS_RULE_MODIFIED);
         await clock.tickAsync(DELAY_BEFORE_TRIGGER);
+        const {reason} = await badgeTriggeredPromise;
 
         sinon.assert.notCalled(createAwardStub);
-        sinon.assert.calledOnce(badgeTriggeredSpy);
+        assert.strictEqual(reason, Badges.BadgeTriggerReason.STARTER_BADGE_PROFILE_NUDGE);
       });
 
       it('should not award a starter badge if the "receive badges" setting is disabled but trigger the badge',
@@ -253,16 +255,37 @@ describeWithEnvironment('UserBadges', () => {
            });
            mockGetAwardedBadgeNames([]);
            const createAwardStub = stubGdpClientCreateAward(null);
-           const badgeTriggeredSpy = sinon.spy();
+           const badgeTriggeredPromise = Badges.UserBadges.instance().once(Badges.Events.BADGE_TRIGGERED);
            await Badges.UserBadges.instance().initialize();
-           Badges.UserBadges.instance().addEventListener(Badges.Events.BADGE_TRIGGERED, badgeTriggeredSpy);
 
            Badges.UserBadges.instance().recordAction(Badges.BadgeAction.CSS_RULE_MODIFIED);
            await clock.tickAsync(DELAY_BEFORE_TRIGGER);
+           const {reason} = await badgeTriggeredPromise;
 
            sinon.assert.notCalled(createAwardStub);
-           sinon.assert.calledOnce(badgeTriggeredSpy);
+           assert.strictEqual(reason, Badges.BadgeTriggerReason.STARTER_BADGE_SETTINGS_NUDGE);
          });
+      it('does not trigger event if getProfile returns null (failed response)', async () => {
+        setStarterBadgeSnoozeCount(0);
+        setStarterBadgeLastSnoozedTimestamp(NOW - TWO_DAYS);
+        setStarterBadgeDismissed(false);
+        setReceiveBadgesSetting(true);
+        mockGetSyncInformation({accountEmail: 'test@test.com', isSyncActive: false});
+        mockGdpClientGetProfile(null);
+        mockGetAwardedBadgeNames([]);
+
+        const badgeTriggeredSpy = sinon.spy();
+        const createAwardStub = stubGdpClientCreateAward(null);
+
+        await Badges.UserBadges.instance().initialize();
+        Badges.UserBadges.instance().addEventListener(Badges.Events.BADGE_TRIGGERED, badgeTriggeredSpy);
+
+        Badges.UserBadges.instance().recordAction(Badges.BadgeAction.CSS_RULE_MODIFIED);
+        await clock.tickAsync(DELAY_BEFORE_TRIGGER);
+
+        sinon.assert.notCalled(createAwardStub);
+        sinon.assert.notCalled(badgeTriggeredSpy);
+      });
     });
   });
 

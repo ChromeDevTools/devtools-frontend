@@ -157,11 +157,17 @@ export class BadgeNotification extends UI.Widget.Widget {
     this.markAsRoot();
   }
 
-  async present(badge: Badges.Badge): Promise<void> {
-    if (badge.isStarterBadge) {
-      await this.#presentStarterBadge(badge);
-    } else {
-      this.#presentActivityBasedBadge(badge);
+  async present(badge: Badges.Badge, reason: Badges.BadgeTriggerReason): Promise<void> {
+    switch (reason) {
+      case Badges.BadgeTriggerReason.AWARD:
+        this.#presentActivityBasedBadge(badge);
+        return;
+      case Badges.BadgeTriggerReason.STARTER_BADGE_SETTINGS_NUDGE:
+        this.#presentStarterBadgeSettingsNudge(badge);
+        return;
+      case Badges.BadgeTriggerReason.STARTER_BADGE_PROFILE_NUDGE:
+        this.#presentStarterBadgeProfileNudge(badge);
+        return;
     }
   }
 
@@ -191,59 +197,41 @@ export class BadgeNotification extends UI.Widget.Widget {
     this.#autoCloseTimeout = window.setTimeout(this.#onAutoClose, AUTO_CLOSE_TIME_IN_MS);
   }
 
-  async #presentStarterBadge(badge: Badges.Badge): Promise<void> {
-    const getProfileResponse = await Host.GdpClient.GdpClient.instance().getProfile();
-    // The `getProfile` call failed and returned a `null`.
-    // For that case, we don't show anything.
-    if (!getProfileResponse) {
-      return;
-    }
-
-    const hasGdpProfile = Boolean(getProfileResponse.profile);
-    const receiveBadgesSettingEnabled = Badges.UserBadges.instance().isReceiveBadgesSettingEnabled();
+  #presentStarterBadgeSettingsNudge(badge: Badges.Badge): void {
     const googleDeveloperProgramLink = UI.XLink.XLink.create(
         'https://developers.google.com/program', lockedString('Google Developer Program'), 'badge-link', undefined,
         'program-link');
-
-    // If the user already has a GDP profile and the receive badges setting enabled,
-    // starter badge behaves as if it's an activity based badge.
-    if (hasGdpProfile && receiveBadgesSettingEnabled) {
-      this.#presentActivityBasedBadge(badge);
-      return;
-    }
-
-    // If the user already has a GDP profile and the receive badges setting disabled,
-    // starter badge behaves as a nudge for opting into receiving badges.
-    if (hasGdpProfile && !receiveBadgesSettingEnabled) {
-      this.#show({
-        message: i18nFormatString(
-            UIStrings.starterBadgeAwardMessageSettingDisabled, {PH1: badge.title, PH2: googleDeveloperProgramLink}),
-        jslogContext: badge.jslogContext,
-        actions: [
-          {
-            label: i18nString(UIStrings.remindMeLater),
-            jslogContext: 'remind-me-later',
-            onClick: () => {
-              this.detach();
-              Badges.UserBadges.instance().snoozeStarterBadge();
-            },
+    this.#show({
+      message: i18nFormatString(
+          UIStrings.starterBadgeAwardMessageSettingDisabled, {PH1: badge.title, PH2: googleDeveloperProgramLink}),
+      jslogContext: badge.jslogContext,
+      actions: [
+        {
+          label: i18nString(UIStrings.remindMeLater),
+          jslogContext: 'remind-me-later',
+          onClick: () => {
+            this.detach();
+            Badges.UserBadges.instance().snoozeStarterBadge();
           },
-          {
-            label: i18nString(UIStrings.receiveBadges),
-            jslogContext: 'receive-badges',
-            onClick: () => {
-              this.detach();
-              revealBadgeSettings();
-            }
+        },
+        {
+          label: i18nString(UIStrings.receiveBadges),
+          jslogContext: 'receive-badges',
+          onClick: () => {
+            this.detach();
+            revealBadgeSettings();
           }
-        ],
-        imageUri: badge.imageUri,
-        isStarterBadge: true,
-      });
-      return;
-    }
+        }
+      ],
+      imageUri: badge.imageUri,
+      isStarterBadge: true,
+    });
+  }
 
-    // The user does not have a GDP profile, starter badge acts as a nudge for creating a GDP profile.
+  #presentStarterBadgeProfileNudge(badge: Badges.Badge): void {
+    const googleDeveloperProgramLink = UI.XLink.XLink.create(
+        'https://developers.google.com/program', lockedString('Google Developer Program'), 'badge-link', undefined,
+        'program-link');
     this.#show({
       message: i18nFormatString(
           UIStrings.starterBadgeAwardMessageNoGdpProfile, {PH1: badge.title, PH2: googleDeveloperProgramLink}),

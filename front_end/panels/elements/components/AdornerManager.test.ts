@@ -4,23 +4,37 @@
 
 import * as ElementsComponents from './components.js';
 
-class FakeSettingStore {
-  #store: ElementsComponents.AdornerManager.AdornerSetting[];
+interface AdornerSetting {
+  adorner: string;
+  isEnabled: boolean;
+}
 
-  constructor(store: ElementsComponents.AdornerManager.AdornerSetting[]) {
+class FakeSettingStore {
+  #store: AdornerSetting[];
+
+  constructor(store: AdornerSetting[]) {
     this.#store = store;
   }
 
-  get(): ElementsComponents.AdornerManager.AdornerSetting[] {
+  get(): AdornerSetting[] {
     return this.#store;
   }
 
-  set(settings: ElementsComponents.AdornerManager.AdornerSetting[]) {
+  set(settings: AdornerSetting[]) {
     this.#store = settings;
   }
 }
 
 describe('AdornerManager', () => {
+  const defaultAdornerSettings: AdornerSetting[] = [];
+  for (const adorner of Object.values(ElementsComponents.AdornerManager.RegisteredAdorners)) {
+    defaultAdornerSettings.push({
+      adorner,
+      // Only the MEDIA adorner is disabled by default.
+      isEnabled: adorner !== ElementsComponents.AdornerManager.RegisteredAdorners.MEDIA,
+    });
+  }
+
   it('can sync badge settings with the settings store correctly', () => {
     const nonexistentAdorner = '__SHOULD_NEVER_EXIST__';
     const settingStore = new FakeSettingStore([
@@ -35,19 +49,18 @@ describe('AdornerManager', () => {
         syncedSettings.has(nonexistentAdorner),
         'setting-syncing should remove nonexistent adorners from setting store');
 
-    for (const {adorner, isEnabled} of ElementsComponents.AdornerManager.DefaultAdornerSettings) {
+    for (const {adorner, isEnabled} of defaultAdornerSettings) {
       assert.isTrue(syncedSettings.has(adorner), 'synced settings should contain default adorners');
       assert.strictEqual(
           syncedSettings.get(adorner), isEnabled, 'synced default setting should store the correct value');
     }
 
     assert.sameDeepMembers(
-        settingStore.get(), ElementsComponents.AdornerManager.DefaultAdornerSettings,
-        'the setting store should be persisted with the updated settings');
+        settingStore.get(), defaultAdornerSettings, 'the setting store should be persisted with the updated settings');
   });
 
   it('can preserve persisted setting after syncing', () => {
-    const {adorner, isEnabled} = ElementsComponents.AdornerManager.DefaultAdornerSettings[0];
+    const {adorner, isEnabled} = defaultAdornerSettings[0];
     const updatedSetting = !isEnabled;
     const adornerManager = new ElementsComponents.AdornerManager.AdornerManager(new FakeSettingStore([
       {
@@ -62,7 +75,7 @@ describe('AdornerManager', () => {
   });
 
   it('can update settings to be persisted', () => {
-    const {adorner, isEnabled} = ElementsComponents.AdornerManager.DefaultAdornerSettings[0];
+    const {adorner, isEnabled} = defaultAdornerSettings[0];
     const updatedSetting = !isEnabled;
     const settingStore = new FakeSettingStore([]);
     const adornerManager = new ElementsComponents.AdornerManager.AdornerManager(settingStore);

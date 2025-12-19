@@ -171,6 +171,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class TimelineTreeView extends
     Common.ObjectWrapper.eventMixin<TimelineTreeView.EventTypes, typeof UI.Widget.VBox>(UI.Widget.VBox)
         implements UI.SearchableView.Searchable {
+  /** This is sorted by ts. */
   #selectedEvents: Trace.Types.Events.Event[]|null;
   private searchResults: Trace.Extras.TraceTree.Node[];
   linkifier!: Components.Linkifier.Linkifier;

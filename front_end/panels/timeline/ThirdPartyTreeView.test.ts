@@ -15,7 +15,7 @@ describeWithEnvironment('Third party tree', function() {
     const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     const treeView = new Timeline.ThirdPartyTreeView.ThirdPartyTreeViewWidget();
     const mapper = new Trace.EntityMapper.EntityMapper(parsedTrace);
-    const events = [...mapper.mappings().eventsByEntity.values()].flat();
+    const events = [...mapper.mappings().eventsByEntity.values()].flat().sort((a, b) => a.ts - b.ts);
     treeView.setModelWithEvents(events, parsedTrace, mapper);
     const sel: Timeline.TimelineSelection.TimeRangeSelection = {
       bounds: parsedTrace.data.Meta.traceBounds,
@@ -34,7 +34,7 @@ describeWithEnvironment('Third party tree', function() {
     treeView.setModelWithEvents(null, parsedTrace, mapper);
     assert.isTrue(treeView.element.classList.contains('empty-table'));
 
-    const events = [...mapper.mappings().eventsByEntity.values()].flat();
+    const events = [...mapper.mappings().eventsByEntity.values()].flat().sort((a, b) => a.ts - b.ts);
     treeView.setModelWithEvents(events, parsedTrace, mapper);
     assert.isFalse(treeView.element.classList.contains('empty-table'));
 
@@ -48,7 +48,7 @@ describeWithEnvironment('Third party tree', function() {
     const parsedTrace = await TraceLoader.traceEngine(this, 'extension-tracks-and-marks.json.gz');
     const treeView = new Timeline.ThirdPartyTreeView.ThirdPartyTreeViewWidget();
     const mapper = new Trace.EntityMapper.EntityMapper(parsedTrace);
-    const events = [...mapper.mappings().eventsByEntity.values()].flat();
+    const events = [...mapper.mappings().eventsByEntity.values()].flat().sort((a, b) => a.ts - b.ts);
 
     treeView.setModelWithEvents(events, parsedTrace, mapper);
     const sel: Timeline.TimelineSelection.TimeRangeSelection = {

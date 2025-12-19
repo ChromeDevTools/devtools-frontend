@@ -80,11 +80,6 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
       });
     }
 
-    // BottomUpRootNode requires events to be sorted by ts.
-    // TODO(crbug.com/457866795): Make the selected events sorted by construction,
-    // instead of doing it here.
-    const relatedEvents = this.selectedEvents().sort((a, b) => a.ts - b.ts);
-
     // The filters for this view are slightly different; we want to use the set
     // of visible event types, but also include network events, which by
     // default are not in the set of visible entries (as they are not shown on
@@ -92,7 +87,7 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
     const filter = new Trace.Extras.TraceFilter.VisibleEventsFilter(
         Trace.Styles.visibleTypes().concat([Trace.Types.Events.Name.SYNTHETIC_NETWORK_REQUEST]));
 
-    const node = new Trace.Extras.TraceTree.BottomUpRootNode(relatedEvents, {
+    const node = new Trace.Extras.TraceTree.BottomUpRootNode(this.selectedEvents(), {
       textFilter: this.textFilter(),
       filters: [filter],
       startTime: this.startTime,

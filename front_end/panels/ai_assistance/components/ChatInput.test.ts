@@ -42,4 +42,13 @@ describeWithEnvironment('ChatInput', () => {
     sinon.assert.callCount(view, 4);
     assert.isFalse(view.input.isTextInputEmpty);
   });
+
+  it('should render read-only state correctly', async () => {
+    const [view, component] = createComponent();
+    component.isReadOnly = true;
+    component.performUpdate();
+
+    sinon.assert.callCount(view, 2);
+    assert.isTrue(view.input.isReadOnly);
+  });
 });

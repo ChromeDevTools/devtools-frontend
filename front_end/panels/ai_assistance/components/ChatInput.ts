@@ -2,9 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../../ui/components/tooltips/tooltips.js';
+
 import type * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
-import * as Platform from '../../../core/platform/platform.js';
+import type * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
 import * as GreenDev from '../../../models/greendev/greendev.js';
@@ -57,10 +59,6 @@ const UIStringsNotTranslate = {
    * @description Label for the "select an element" button.
    */
   selectAnElement: 'Select an element',
-  /**
-   * @description Label for the "select an element" button.
-   */
-  noElementSelected: 'No element selected',
   /**
    * @description Title for the take screenshot button.
    */
@@ -126,447 +124,6 @@ export interface ViewInput {
 
 export type ViewOutput = undefined;
 
-function renderRelevantDataDisclaimer({isLoading, blockedByCrossOrigin, tooltipId, disclaimerText}: {
-  isLoading: boolean,
-  blockedByCrossOrigin: boolean,
-  tooltipId: string,
-  disclaimerText: string,
-}): Lit.LitTemplate {
-  const classes = Lit.Directives.classMap({
-    'chat-input-disclaimer': true,
-    'hide-divider': !isLoading && blockedByCrossOrigin,
-  });
-  // clang-format off
-  return html`
-    <p class=${classes}>
-      <button
-        class="link"
-        role="link"
-        aria-details=${tooltipId}
-        jslog=${VisualLogging.link('open-ai-settings').track({
-          click: true,
-        })}
-        @click=${() => {
-          void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
-        }}
-      >${lockedString('Relevant data')}</button>&nbsp;${lockedString('is sent to Google')}
-      ${renderDisclaimerTooltip(tooltipId, disclaimerText)}
-    </p>
-  `;
-  // clang-format on
-}
-
-function renderFooter(
-    disclaimerText: string, isLoading: boolean, blockedByCrossOrigin: boolean, isReadOnly: boolean): Lit.LitTemplate {
-  const classes = Lit.Directives.classMap({
-    'chat-input-footer': true,
-    'is-read-only': isReadOnly,
-  });
-
-  // clang-format off
-  return html`
-    <footer class=${classes} jslog=${VisualLogging.section('footer')}>
-      ${renderRelevantDataDisclaimer({
-        isLoading,
-        blockedByCrossOrigin,
-        tooltipId: RELEVANT_DATA_LINK_FOOTER_ID,
-        disclaimerText
-      })}
-    </footer>
-  `;
-  // clang-format on
-}
-
-function renderDisclaimerTooltip(id: string, disclaimerText: string): Lit.TemplateResult {
-  // clang-format off
-  return html`
-    <devtools-tooltip
-      id=${id}
-      variant="rich"
-    >
-      <div class="info-tooltip-container">
-        ${disclaimerText}
-        <button
-          class="link tooltip-link"
-          role="link"
-          jslog=${VisualLogging.link('open-ai-settings').track({
-            click: true,
-          })}
-          @click=${() => {
-            void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
-          }}>${i18nString(UIStrings.learnAbout)}
-        </button>
-      </div>
-    </devtools-tooltip>`;
-  // clang-format on
-}
-
-function renderFloatyContext(context: UI.Floaty.FloatyContextSelection): Lit.TemplateResult {
-  if (context instanceof SDK.NetworkRequest.NetworkRequest) {
-    return html`${context.url()}`;
-  }
-
-  if (context instanceof SDK.DOMModel.DOMNode) {
-    return html`<devtools-widget .widgetConfig=${
-        UI.Widget.widgetConfig(PanelsCommon.DOMLinkifier.DOMNodeLink, {node: context})}>`;
-  }
-
-  if ('insight' in context) {
-    return html`${context.insight.title}`;
-  }
-
-  if ('event' in context && 'traceStartTime' in context) {
-    const time = Trace.Types.Timing.Micro(context.event.ts - context.traceStartTime);
-    return html`${context.event.name} @ ${i18n.TimeUtilities.formatMicroSecondsAsMillisFixed(time)}`;
-  }
-
-  Platform.assertNever(context, 'Unsupported context');
-}
-
-function renderFloatyExtraContext(contexts: UI.Floaty.FloatyContextSelection[]): Lit.LitTemplate {
-  if (!GreenDev.Prototypes.instance().isEnabled('inDevToolsFloaty')) {
-    return Lit.nothing;
-  }
-
-  // clang-format off
-  return html`
-  <ul class="floaty">
-    ${contexts.map(c => {
-      function onDelete(e: MouseEvent): void {
-        e.preventDefault();
-        UI.Floaty.onFloatyContextDelete(c);
-      }
-
-      return html`<li>
-        <span class="context-item">
-          ${renderFloatyContext(c)}
-        </span>
-        <devtools-button
-          class="floaty-delete-button"
-          @click=${onDelete}
-          .data=${{
-            variant: Buttons.Button.Variant.ICON,
-            iconName: 'cross',
-            title: 'Delete',
-            size: Buttons.Button.Size.SMALL,
-          } as Buttons.Button.ButtonData}
-        ></devtools-button>
-      </li>`;
-    })}
-    <li class="open-floaty">
-      <devtools-button
-        class="floaty-add-button"
-        @click=${UI.Floaty.onFloatyOpen}
-        .data=${{
-          variant: Buttons.Button.Variant.ICON,
-          iconName: 'select-element',
-          title: 'Open context picker',
-          size: Buttons.Button.Size.SMALL,
-        } as Buttons.Button.ButtonData}
-      ></devtools-button>
-    </li>
-  </ul>
-  `;
-  // clang-format on
-}
-
-function renderImageInput({
-  multimodalInputEnabled,
-  imageInput,
-  isTextInputDisabled,
-  onRemoveImageInput,
-}: {
-  multimodalInputEnabled?: boolean,
-  imageInput?: ImageInputData,
-  isTextInputDisabled?: boolean,
-  onRemoveImageInput?: () => void,
-}): Lit.LitTemplate {
-  if (!multimodalInputEnabled || !imageInput || isTextInputDisabled) {
-    return Lit.nothing;
-  }
-  // clang-format off
-  const crossButton = html`<devtools-button
-    aria-label=${lockedString(UIStringsNotTranslate.removeImageInputButtonTitle)}
-    @click=${onRemoveImageInput}
-    .data=${
-      {
-        variant: Buttons.Button.Variant.ICON,
-        size: Buttons.Button.Size.MICRO,
-        iconName: 'cross',
-        title: lockedString(UIStringsNotTranslate.removeImageInputButtonTitle),
-      } as Buttons.Button.ButtonData
-    }
-  ></devtools-button>`;
-  // clang-format on
-
-  if (imageInput.isLoading) {
-    // clang-format off
-      return html`<div class="image-input-container">
-        ${crossButton}
-        <div class="loading">
-          <devtools-spinner></devtools-spinner>
-        </div>
-      </div>`;
-    // clang-format on
-  }
-  // clang-format off
-    return  html`
-    <div class="image-input-container">
-      ${crossButton}
-      <img src="data:${imageInput.mimeType};base64, ${imageInput.data}" alt="Image input" />
-    </div>`;
-  // clang-format on
-}
-
-function renderContextIcon(context: AiAssistanceModel.AiAgent.ConversationContext<unknown>|null): Lit.LitTemplate {
-  if (!context) {
-    return Lit.nothing;
-  }
-  const item = context.getItem();
-  // FIXME: move this to presenter once PanelUtils are declarative. The instance
-  // checking should be in the presenter and the rendering in the view function.
-  if (item instanceof SDK.NetworkRequest.NetworkRequest) {
-    return PanelUtils.PanelUtils.getIconForNetworkRequest(item);
-  }
-  if (item instanceof Workspace.UISourceCode.UISourceCode) {
-    return PanelUtils.PanelUtils.getIconForSourceFile(item);
-  }
-  if (item instanceof AiAssistanceModel.AIContext.AgentFocus) {
-    return html`<devtools-icon name="performance" title="Performance"></devtools-icon>`;
-  }
-  if (item instanceof SDK.DOMModel.DOMNode) {
-    return Lit.nothing;
-  }
-  return Lit.nothing;
-}
-
-function renderContextTitle(
-    context: AiAssistanceModel.AiAgent.ConversationContext<unknown>, disabled: boolean): Lit.TemplateResult|string {
-  const item = context.getItem();
-  if (item instanceof SDK.DOMModel.DOMNode) {
-    // FIXME: move this to the model code.
-    const hiddenClassList = item.classNames().filter(
-        className => className.startsWith(AiAssistanceModel.Injected.AI_ASSISTANCE_CSS_CLASS_NAME));
-    return html`<devtools-widget .widgetConfig=${UI.Widget.widgetConfig(PanelsCommon.DOMLinkifier.DOMNodeLink, {
-      node: item,
-      options: {hiddenClassList, disabled}
-    })}></devtools-widget>`;
-  }
-  return context.getTitle();
-}
-
-function renderSelection({
-  selectedContext,
-  inspectElementToggled,
-  conversationType,
-  isTextInputDisabled,
-  onContextClick,
-  onInspectElementClick,
-}: {
-  selectedContext: AiAssistanceModel.AiAgent.ConversationContext<unknown>|null,
-  inspectElementToggled: boolean,
-  isTextInputDisabled: boolean,
-  onContextClick: () => void | Promise<void>,
-  onInspectElementClick: () => void,
-  conversationType: AiAssistanceModel.AiHistoryStorage.ConversationType,
-}): Lit.LitTemplate {
-  if (!selectedContext) {
-    return Lit.nothing;
-  }
-  // TODO: currently the picker behavior is SDKNode specific.
-  const hasPickerBehavior = conversationType === AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING;
-
-  const resourceClass = Lit.Directives.classMap({
-    'not-selected': !selectedContext,
-    'resource-link': true,
-    'has-picker-behavior': hasPickerBehavior,
-    disabled: isTextInputDisabled,
-  });
-
-  const handleKeyDown = (ev: KeyboardEvent): void => {
-    if (ev.key === 'Enter' || ev.key === ' ') {
-      void onContextClick();
-    }
-  };
-
-  // clang-format off
-  return html`<div class="select-element">
-    ${
-      hasPickerBehavior ? html`
-        <devtools-button
-          .data=${{
-              variant: Buttons.Button.Variant.ICON_TOGGLE,
-              size: Buttons.Button.Size.SMALL,
-              iconName: 'select-element',
-              toggledIconName: 'select-element',
-              toggleType: Buttons.Button.ToggleType.PRIMARY,
-              toggled: inspectElementToggled,
-              title: lockedString(UIStringsNotTranslate.selectAnElement),
-              jslogContext: 'select-element',
-              disabled: isTextInputDisabled,
-          } as Buttons.Button.ButtonData}
-          @click=${onInspectElementClick}
-        ></devtools-button>
-      ` : Lit.nothing
-    }
-    <div
-      role=button
-      class=${resourceClass}
-      tabindex=${(hasPickerBehavior || isTextInputDisabled) ? '-1' : '0'}
-      @click=${onContextClick}
-      @keydown=${handleKeyDown}
-      aria-description=${i18nString(UIStrings.revealContextDescription)}
-    >
-      ${renderContextIcon(selectedContext)}
-      <span class="title">${selectedContext ? renderContextTitle(selectedContext, isTextInputDisabled) : lockedString(UIStringsNotTranslate.noElementSelected)}</span>
-    </div>
-  </div>`;
-  // clang-format on
-}
-
-function renderMultimodalInputButtons({
-  multimodalInputEnabled,
-  blockedByCrossOrigin,
-  isTextInputDisabled,
-  imageInput,
-  uploadImageInputEnabled,
-  onTakeScreenshot,
-  onImageUpload,
-}: {
-  isTextInputDisabled: boolean,
-  blockedByCrossOrigin: boolean,
-  multimodalInputEnabled?: boolean,
-  imageInput?: ImageInputData,
-  uploadImageInputEnabled?: boolean,
-  onTakeScreenshot?: () => void,
-  onImageUpload?: (ev: Event) => void,
-}): Lit.LitTemplate {
-  if (!multimodalInputEnabled || blockedByCrossOrigin) {
-    return Lit.nothing;
-  }
-  // clang-format off
-  const addImageButton = uploadImageInputEnabled ? html`<devtools-button
-    class="chat-input-button"
-    aria-label=${lockedString(UIStringsNotTranslate.addImageButtonTitle)}
-    @click=${onImageUpload}
-    .data=${
-      {
-        variant: Buttons.Button.Variant.ICON,
-        size: Buttons.Button.Size.REGULAR,
-        disabled: isTextInputDisabled || imageInput?.isLoading,
-        iconName: 'add-photo',
-        title: lockedString(UIStringsNotTranslate.addImageButtonTitle),
-        jslogContext: 'upload-image',
-      } as Buttons.Button.ButtonData
-    }
-  ></devtools-button>` : Lit.nothing;
-
-  return html`${addImageButton}<devtools-button
-    class="chat-input-button"
-    aria-label=${lockedString(UIStringsNotTranslate.takeScreenshotButtonTitle)}
-    @click=${onTakeScreenshot}
-    .data=${
-      {
-        variant: Buttons.Button.Variant.ICON,
-        size: Buttons.Button.Size.REGULAR,
-        disabled: isTextInputDisabled || imageInput?.isLoading,
-        iconName: 'photo-camera',
-        title: lockedString(UIStringsNotTranslate.takeScreenshotButtonTitle),
-        jslogContext: 'take-screenshot',
-      } as Buttons.Button.ButtonData
-    }
-  ></devtools-button>`;
-  // clang-format on
-}
-
-function renderChatInputButtons(
-    {isLoading, blockedByCrossOrigin, isTextInputDisabled, isTextInputEmpty, imageInput, onCancel, onNewConversation}: {
-      isLoading: boolean,
-      blockedByCrossOrigin: boolean,
-      isTextInputDisabled: boolean,
-      isTextInputEmpty: boolean,
-      onCancel: (ev: SubmitEvent) => void,
-      onNewConversation: () => void,
-      imageInput?: ImageInputData,
-    }): Lit.TemplateResult {
-  if (isLoading) {
-    // clang-format off
-    return html`<devtools-button
-      class="chat-input-button"
-      aria-label=${lockedString(UIStringsNotTranslate.cancelButtonTitle)}
-      @click=${onCancel}
-      .data=${
-        {
-          variant: Buttons.Button.Variant.ICON,
-          size: Buttons.Button.Size.REGULAR,
-          iconName: 'record-stop',
-          title: lockedString(UIStringsNotTranslate.cancelButtonTitle),
-          jslogContext: 'stop',
-        } as Buttons.Button.ButtonData
-      }
-    ></devtools-button>`;
-    // clang-format on
-  }
-  if (blockedByCrossOrigin) {
-    // clang-format off
-    return html`
-      <devtools-button
-        class="start-new-chat-button"
-        aria-label=${lockedString(UIStringsNotTranslate.startNewChat)}
-        @click=${onNewConversation}
-        .data=${
-          {
-            variant: Buttons.Button.Variant.OUTLINED,
-            size: Buttons.Button.Size.SMALL,
-            title: lockedString(UIStringsNotTranslate.startNewChat),
-            jslogContext: 'start-new-chat',
-          } as Buttons.Button.ButtonData
-        }
-      >${lockedString(UIStringsNotTranslate.startNewChat)}</devtools-button>
-    `;
-    // clang-format on
-  }
-  // clang-format off
-  return html`<devtools-button
-    class="chat-input-button"
-    aria-label=${lockedString(UIStringsNotTranslate.sendButtonTitle)}
-    .data=${
-      {
-        type: 'submit',
-        variant: Buttons.Button.Variant.ICON,
-        size: Buttons.Button.Size.REGULAR,
-        disabled: isTextInputDisabled || isTextInputEmpty || imageInput?.isLoading,
-        iconName: 'send',
-        title: lockedString(UIStringsNotTranslate.sendButtonTitle),
-        jslogContext: 'send',
-      } as Buttons.Button.ButtonData
-    }
-  ></devtools-button>`;
-}
-
-function renderReadOnlySection({onNewConversation}: {
-  onNewConversation: () => void,
-}): Lit.LitTemplate {
-  // clang-format off
-  return html`<div
-    class="chat-readonly-container"
-    jslog=${VisualLogging.section('read-only')}
-  >
-    <span>${lockedString(UIStringsNotTranslate.pastConversation)}</span>
-    <devtools-button
-      aria-label=${lockedString(UIStringsNotTranslate.startNewChat)}
-      class="chat-inline-button"
-      @click=${onNewConversation}
-      .data=${{
-        variant: Buttons.Button.Variant.TEXT,
-        title: lockedString(UIStringsNotTranslate.startNewChat),
-        jslogContext: 'start-new-chat',
-      } as Buttons.Button.ButtonData}
-    >${lockedString(UIStringsNotTranslate.startNewChat)}</devtools-button>
-  </div>`;
-  // clang-format on
-}
-
 export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLElement): void => {
   const chatInputContainerCls = Lit.Directives.classMap({
     'chat-input-container': true,
@@ -574,91 +131,316 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
     disabled: input.isTextInputDisabled,
   });
 
-  if (input.isReadOnly) {
-    Lit.render(
-        html`<style>${chatInputStyles}</style>
-        ${renderReadOnlySection({
-          onNewConversation: input.onNewConversation
-        })}
-        ${renderFooter(input.disclaimerText, input.isLoading, input.blockedByCrossOrigin, input.isReadOnly)}`,
-        target);
-    return;
-  }
+  const renderRelevantDataDisclaimer = (tooltipId: string): Lit.LitTemplate => {
+    const classes = Lit.Directives.classMap({
+      'chat-input-disclaimer': true,
+      'hide-divider': !input.isLoading && input.blockedByCrossOrigin,
+    });
+    // clang-format off
+    return html`
+      <div class=${classes}>
+        <button
+          class="link"
+          role="link"
+          aria-details=${tooltipId}
+          jslog=${VisualLogging.link('open-ai-settings').track({
+            click: true,
+          })}
+          @click=${() => {
+            void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
+          }}
+        >${lockedString('Relevant data')}</button>&nbsp;${lockedString('is sent to Google')}
+        <devtools-tooltip
+          id=${tooltipId}
+          variant="rich"
+        ><div class="info-tooltip-container">
+          ${input.disclaimerText}
+          <button
+            class="link tooltip-link"
+            role="link"
+            jslog=${VisualLogging.link('open-ai-settings').track({
+              click: true,
+            })}
+            @click=${() => {
+              void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
+            }}>${i18nString(UIStrings.learnAbout)}
+          </button>
+        </div></devtools-tooltip>
+      </div>
+    `;
+    // clang-format on
+  };
 
   // clang-format off
   Lit.render(html`
-  <style>${Input.textInputStyles}</style>
-  <style>${chatInputStyles}</style>
-  <form class="input-form" @submit=${input.onSubmit}>
-  ${renderFloatyExtraContext(input.additionalFloatyContext)}
-    <div class=${chatInputContainerCls}>
-      ${renderImageInput({
-        multimodalInputEnabled: input.multimodalInputEnabled,
-        imageInput: input.imageInput,
-        isTextInputDisabled: input.isTextInputDisabled,
-        onRemoveImageInput: input.onRemoveImageInput,
-      })}
-      <textarea
-        class="chat-input"
-        .disabled=${input.isTextInputDisabled}
-        wrap="hard"
-        maxlength="10000"
-        @keydown=${input.onTextAreaKeyDown}
-        @input=${(event: KeyboardEvent) => {
-          input.onTextInputChange((event.target as HTMLInputElement).value);
-        }}
-        placeholder=${input.inputPlaceholder}
-        jslog=${VisualLogging.textField('query').track({
-          change: true,
-          keydown: 'Enter',
-        })}
-        aria-description=${i18nString(UIStrings.inputTextAriaDescription)}
-        ${ref(input.textAreaRef)}
-      ></textarea>
-      <div class="chat-input-actions">
-        <div class="chat-input-actions-left">
-          ${renderSelection({
-            selectedContext: input.selectedContext,
-            inspectElementToggled: input.inspectElementToggled,
-            conversationType: input.conversationType,
-            isTextInputDisabled: input.isTextInputDisabled,
-            onContextClick: input.onContextClick,
-            onInspectElementClick: input.onInspectElementClick,
-          })}
-        </div>
-        <div class="chat-input-actions-right">
-          <div class="chat-input-disclaimer-container">
-            ${renderRelevantDataDisclaimer({
-              isLoading: input.isLoading,
-              blockedByCrossOrigin: input.blockedByCrossOrigin,
-              tooltipId: RELEVANT_DATA_LINK_CHAT_ID,
-              disclaimerText: input.disclaimerText,
-            })}
+    <style>${Input.textInputStyles}</style>
+    <style>${chatInputStyles}</style>
+    ${input.isReadOnly ?
+      html`
+        <div
+          class="chat-readonly-container"
+          jslog=${VisualLogging.section('read-only')}
+        >
+          <span>${lockedString(UIStringsNotTranslate.pastConversation)}</span>
+          <devtools-button
+            aria-label=${lockedString(UIStringsNotTranslate.startNewChat)}
+            class="chat-inline-button"
+            @click=${input.onNewConversation}
+            .data=${{
+              variant: Buttons.Button.Variant.TEXT,
+              title: lockedString(UIStringsNotTranslate.startNewChat),
+              jslogContext: 'start-new-chat',
+            } as Buttons.Button.ButtonData}
+          >${lockedString(UIStringsNotTranslate.startNewChat)}</devtools-button>
+        </div>`
+      :
+      html`
+        <form class="input-form" @submit=${input.onSubmit}>
+          ${GreenDev.Prototypes.instance().isEnabled('inDevToolsFloaty') ?
+            html`
+              <ul class="floaty">
+                ${input.additionalFloatyContext.map(c => {
+                  return html`
+                    <li>
+                      <span class="context-item">
+                        ${c instanceof SDK.NetworkRequest.NetworkRequest ? html`${c.url()}` :
+                          c instanceof SDK.DOMModel.DOMNode ? html`
+                            <devtools-widget .widgetConfig=${
+                              UI.Widget.widgetConfig(PanelsCommon.DOMLinkifier.DOMNodeLink, {node: c})}
+                            ></devtools-widget>` :
+                          'insight' in c ? html`${c.insight.title}` :
+                          'event' in c && 'traceStartTime' in c ? html`
+                            ${c.event.name} @ ${i18n.TimeUtilities.formatMicroSecondsAsMillisFixed(Trace.Types.Timing.Micro(c.event.ts - c.traceStartTime))}` :
+                          Lit.nothing}
+                      </span>
+                      <devtools-button
+                        class="floaty-delete-button"
+                        @click=${(e: MouseEvent) => {
+                          e.preventDefault();
+                          UI.Floaty.onFloatyContextDelete(c);
+                        }}
+                        .data=${{
+                          variant: Buttons.Button.Variant.ICON,
+                          iconName: 'cross',
+                          title: 'Delete',
+                          size: Buttons.Button.Size.SMALL,
+                        } as Buttons.Button.ButtonData}
+                      ></devtools-button>
+                    </li>`;
+                })}
+                <li class="open-floaty">
+                  <devtools-button
+                    class="floaty-add-button"
+                    @click=${UI.Floaty.onFloatyOpen}
+                    .data=${{
+                      variant: Buttons.Button.Variant.ICON,
+                      iconName: 'select-element',
+                      title: 'Open context picker',
+                      size: Buttons.Button.Size.SMALL,
+                    } as Buttons.Button.ButtonData}
+                  ></devtools-button>
+                </li>
+              </ul>`
+            : Lit.nothing}
+          <div class=${chatInputContainerCls}>
+            ${(input.multimodalInputEnabled && input.imageInput && !input.isTextInputDisabled) ?
+              html`
+                <div class="image-input-container">
+                  <devtools-button
+                    aria-label=${lockedString(UIStringsNotTranslate.removeImageInputButtonTitle)}
+                    @click=${input.onRemoveImageInput}
+                    .data=${{
+                      variant: Buttons.Button.Variant.ICON,
+                      size: Buttons.Button.Size.MICRO,
+                      iconName: 'cross',
+                      title: lockedString(UIStringsNotTranslate.removeImageInputButtonTitle),
+                    } as Buttons.Button.ButtonData}
+                  ></devtools-button>
+                  ${input.imageInput.isLoading ?
+                    html`
+                      <div class="loading">
+                        <devtools-spinner></devtools-spinner>
+                      </div>`
+                    :
+                    html`
+                      <img src="data:${input.imageInput.mimeType};base64, ${input.imageInput.data}" alt="Image input" />`
+                  }
+                </div>`
+              : Lit.nothing}
+            <textarea
+              class="chat-input"
+              .disabled=${input.isTextInputDisabled}
+              wrap="hard"
+              maxlength="10000"
+              @keydown=${input.onTextAreaKeyDown}
+              @input=${(event: KeyboardEvent) => {
+                input.onTextInputChange((event.target as HTMLInputElement).value);
+              }}
+              placeholder=${input.inputPlaceholder}
+              jslog=${VisualLogging.textField('query').track({
+                change: true,
+                keydown: 'Enter',
+              })}
+              aria-description=${i18nString(UIStrings.inputTextAriaDescription)}
+              ${ref(input.textAreaRef)}
+            ></textarea>
+            <div class="chat-input-actions">
+              <div class="chat-input-actions-left">
+                ${input.selectedContext ?
+                  html`
+                    <div class="select-element">
+                      ${input.conversationType === AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING ?
+                        html`
+                          <devtools-button
+                            .data=${{
+                              variant: Buttons.Button.Variant.ICON_TOGGLE,
+                              size: Buttons.Button.Size.SMALL,
+                              iconName: 'select-element',
+                              toggledIconName: 'select-element',
+                              toggleType: Buttons.Button.ToggleType.PRIMARY,
+                              toggled: input.inspectElementToggled,
+                              title: lockedString(UIStringsNotTranslate.selectAnElement),
+                              jslogContext: 'select-element',
+                              disabled: input.isTextInputDisabled,
+                            } as Buttons.Button.ButtonData}
+                            @click=${input.onInspectElementClick}
+                          ></devtools-button>`
+                        : Lit.nothing}
+                      <div
+                        role=button
+                        class=${Lit.Directives.classMap({
+                          'resource-link': true,
+                          'has-picker-behavior': input.conversationType === AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING,
+                          disabled: input.isTextInputDisabled,
+                        })}
+                        tabindex=${(input.conversationType === AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING || input.isTextInputDisabled) ? '-1' : '0'}
+                        @click=${input.onContextClick}
+                        @keydown=${(ev: KeyboardEvent) => {
+                          if (ev.key === 'Enter' || ev.key === ' ') {
+                            void input.onContextClick();
+                          }
+                        }}
+                        aria-description=${i18nString(UIStrings.revealContextDescription)}
+                      >
+                        ${input.selectedContext.getItem() instanceof SDK.NetworkRequest.NetworkRequest ?
+                          PanelUtils.PanelUtils.getIconForNetworkRequest(input.selectedContext.getItem() as SDK.NetworkRequest.NetworkRequest) :
+                          input.selectedContext.getItem() instanceof Workspace.UISourceCode.UISourceCode ?
+                          PanelUtils.PanelUtils.getIconForSourceFile(input.selectedContext.getItem() as Workspace.UISourceCode.UISourceCode) :
+                          input.selectedContext.getItem() instanceof AiAssistanceModel.AIContext.AgentFocus ?
+                          html`<devtools-icon name="performance" title="Performance"></devtools-icon>` :
+                          Lit.nothing}
+                        <span class="title">
+                          ${input.selectedContext.getItem() instanceof SDK.DOMModel.DOMNode ?
+                            html`
+                              <devtools-widget .widgetConfig=${UI.Widget.widgetConfig(PanelsCommon.DOMLinkifier.DOMNodeLink, {
+                                node: input.selectedContext.getItem() as SDK.DOMModel.DOMNode,
+                                options: {
+                                  hiddenClassList: (input.selectedContext.getItem() as SDK.DOMModel.DOMNode).classNames().filter(
+                                    className => className.startsWith(AiAssistanceModel.Injected.AI_ASSISTANCE_CSS_CLASS_NAME)),
+                                  disabled: input.isTextInputDisabled,
+                                },
+                              })}></devtools-widget>`
+                            :
+                            input.selectedContext.getTitle()}
+                        </span>
+                      </div>
+                    </div>`
+                  : Lit.nothing}
+              </div>
+              <div class="chat-input-actions-right">
+                <div class="chat-input-disclaimer-container">
+                  ${renderRelevantDataDisclaimer(RELEVANT_DATA_LINK_CHAT_ID)}
+                </div>
+                ${(input.multimodalInputEnabled && !input.blockedByCrossOrigin) ?
+                  html`
+                    ${input.uploadImageInputEnabled ?
+                      html`
+                        <devtools-button
+                          class="chat-input-button"
+                          aria-label=${lockedString(UIStringsNotTranslate.addImageButtonTitle)}
+                          @click=${input.onImageUpload}
+                          .data=${{
+                            variant: Buttons.Button.Variant.ICON,
+                            size: Buttons.Button.Size.REGULAR,
+                            disabled: input.isTextInputDisabled || input.imageInput?.isLoading,
+                            iconName: 'add-photo',
+                            title: lockedString(UIStringsNotTranslate.addImageButtonTitle),
+                            jslogContext: 'upload-image',
+                          } as Buttons.Button.ButtonData}
+                        ></devtools-button>`
+                      : Lit.nothing}
+                    <devtools-button
+                      class="chat-input-button"
+                      aria-label=${lockedString(UIStringsNotTranslate.takeScreenshotButtonTitle)}
+                      @click=${input.onTakeScreenshot}
+                      .data=${{
+                        variant: Buttons.Button.Variant.ICON,
+                        size: Buttons.Button.Size.REGULAR,
+                        disabled: input.isTextInputDisabled || input.imageInput?.isLoading,
+                        iconName: 'photo-camera',
+                        title: lockedString(UIStringsNotTranslate.takeScreenshotButtonTitle),
+                        jslogContext: 'take-screenshot',
+                      } as Buttons.Button.ButtonData}
+                    ></devtools-button>`
+                  : Lit.nothing}
+                ${input.isLoading ?
+                  html`
+                    <devtools-button
+                      class="chat-input-button"
+                      aria-label=${lockedString(UIStringsNotTranslate.cancelButtonTitle)}
+                      @click=${input.onCancel}
+                      .data=${{
+                        variant: Buttons.Button.Variant.ICON,
+                        size: Buttons.Button.Size.REGULAR,
+                        iconName: 'record-stop',
+                        title: lockedString(UIStringsNotTranslate.cancelButtonTitle),
+                        jslogContext: 'stop',
+                      } as Buttons.Button.ButtonData}
+                    ></devtools-button>`
+                  :
+                  input.blockedByCrossOrigin ?
+                    html`
+                      <devtools-button
+                        class="start-new-chat-button"
+                        aria-label=${lockedString(UIStringsNotTranslate.startNewChat)}
+                        @click=${input.onNewConversation}
+                        .data=${{
+                          variant: Buttons.Button.Variant.OUTLINED,
+                          size: Buttons.Button.Size.SMALL,
+                          title: lockedString(UIStringsNotTranslate.startNewChat),
+                          jslogContext: 'start-new-chat',
+                        } as Buttons.Button.ButtonData}
+                      >${lockedString(UIStringsNotTranslate.startNewChat)}</devtools-button>`
+                    :
+                    html`
+                      <devtools-button
+                        class="chat-input-button"
+                        aria-label=${lockedString(UIStringsNotTranslate.sendButtonTitle)}
+                        .data=${{
+                          type: 'submit',
+                          variant: Buttons.Button.Variant.ICON,
+                          size: Buttons.Button.Size.REGULAR,
+                          disabled: input.isTextInputDisabled || input.isTextInputEmpty || input.imageInput?.isLoading,
+                          iconName: 'send',
+                          title: lockedString(UIStringsNotTranslate.sendButtonTitle),
+                          jslogContext: 'send',
+                        } as Buttons.Button.ButtonData}
+                      ></devtools-button>`
+                }
+              </div>
+            </div>
           </div>
-          ${renderMultimodalInputButtons({
-            multimodalInputEnabled: input.multimodalInputEnabled,
-            blockedByCrossOrigin: input.blockedByCrossOrigin,
-            isTextInputDisabled: input.isTextInputDisabled,
-            imageInput: input.imageInput,
-            uploadImageInputEnabled: input.uploadImageInputEnabled,
-            onTakeScreenshot: input.onTakeScreenshot,
-            onImageUpload: input.onImageUpload,
-          })}
-          ${renderChatInputButtons({
-            isLoading: input.isLoading,
-            blockedByCrossOrigin: input.blockedByCrossOrigin,
-            isTextInputDisabled: input.isTextInputDisabled,
-            isTextInputEmpty: input.isTextInputEmpty,
-            imageInput: input.imageInput,
-            onCancel: input.onCancel,
-            onNewConversation: input.onNewConversation,
-          })}
-        </div>
-      </div>
-    </div>
-    </div>
-  </form>
-  ${renderFooter(input.disclaimerText, input.isLoading, input.blockedByCrossOrigin, input.isReadOnly)}
+        </form>`
+    }
+    <footer
+      class=${Lit.Directives.classMap({
+        'chat-input-footer': true,
+        'is-read-only': input.isReadOnly,
+      })}
+      jslog=${VisualLogging.section('footer')}
+    >
+      ${renderRelevantDataDisclaimer(RELEVANT_DATA_LINK_FOOTER_ID)}
+    </footer>
   `, target);
   // clang-format on
 };

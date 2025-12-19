@@ -8,6 +8,7 @@ import type * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
+import * as Protocol from '../../../generated/protocol.js';
 import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
 import * as GreenDev from '../../../models/greendev/greendev.js';
 import * as Trace from '../../../models/trace/trace.js';
@@ -16,6 +17,7 @@ import * as PanelsCommon from '../../../panels/common/common.js';
 import * as PanelUtils from '../../../panels/utils/utils.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as Input from '../../../ui/components/input/input.js';
+import * as Snackbars from '../../../ui/components/snackbars/snackbars.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
@@ -75,11 +77,23 @@ const UIStringsNotTranslate = {
    * @description Text displayed when the chat input is disabled due to reading past conversation.
    */
   pastConversation: 'You\'re viewing a past conversation.',
+  /**
+   * @description Message displayed in toast in case of any failures while taking a screenshot of the page.
+   */
+  screenshotFailureMessage: 'Failed to take a screenshot. Please try again.',
+  /**
+   * @description Message displayed in toast in case of any failures while uploading an image file as input.
+   */
+  uploadImageFailureMessage: 'Failed to upload image. Please try again.',
 } as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/ai_assistance/components/ChatInput.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const lockedString = i18n.i18n.lockedString;
+
+const SCREENSHOT_QUALITY = 80;
+const JPEG_MIME_TYPE = 'image/jpeg';
+const SHOW_LOADING_STATE_TIMEOUT = 100;
 
 const RELEVANT_DATA_LINK_CHAT_ID = 'relevant-data-link-chat';
 const RELEVANT_DATA_LINK_FOOTER_ID = 'relevant-data-link-footer';
@@ -104,9 +118,9 @@ export interface ViewInput {
   additionalFloatyContext: UI.Floaty.FloatyContextSelection[];
   disclaimerText: string;
   conversationType: AiAssistanceModel.AiHistoryStorage.ConversationType;
-  multimodalInputEnabled?: boolean;
+  multimodalInputEnabled: boolean;
   imageInput?: ImageInputData;
-  uploadImageInputEnabled?: boolean;
+  uploadImageInputEnabled: boolean;
   isReadOnly: boolean;
   textAreaRef: Lit.Directives.Ref<HTMLTextAreaElement>;
 
@@ -448,7 +462,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
 /**
  * ChatInput is a presenter for the input area in the AI Assistance panel.
  */
-export class ChatInput extends UI.Widget.Widget {
+export class ChatInput extends UI.Widget.Widget implements SDK.TargetManager.Observer {
   isLoading = false;
   blockedByCrossOrigin = false;
   isTextInputDisabled = false;
@@ -458,11 +472,12 @@ export class ChatInput extends UI.Widget.Widget {
   additionalFloatyContext = [] as UI.Floaty.FloatyContextSelection[];
   disclaimerText = '';
   conversationType = AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING;
-  multimodalInputEnabled?: boolean = false;
-  imageInput = undefined as ImageInputData | undefined;
-  uploadImageInputEnabled?: boolean = false;
+  multimodalInputEnabled = false;
+  uploadImageInputEnabled = false;
   isReadOnly = false;
+
   #textAreaRef = createRef<HTMLTextAreaElement>();
+  #imageInput?: ImageInputData;
 
   setInputValue(text: string): void {
     if (this.#textAreaRef.value) {
@@ -482,15 +497,118 @@ export class ChatInput extends UI.Widget.Widget {
   onInspectElementClick = (): void => {};
   onCancelClick = (): void => {};
   onNewConversation = (): void => {};
-  onTakeScreenshot: () => void = () => {};
-  onRemoveImageInput: () => void = () => {};
-  onLoadImage: (_file: File) => Promise<void> = () => Promise.resolve();
+
+  async #handleTakeScreenshot(): Promise<void> {
+    const mainTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+    if (!mainTarget) {
+      throw new Error('Could not find main target');
+    }
+    const model = mainTarget.model(SDK.ScreenCaptureModel.ScreenCaptureModel);
+    if (!model) {
+      throw new Error('Could not find model');
+    }
+    const showLoadingTimeout = setTimeout(() => {
+      this.#imageInput = {isLoading: true};
+      this.performUpdate();
+    }, SHOW_LOADING_STATE_TIMEOUT);
+    const bytes = await model.captureScreenshot(
+        Protocol.Page.CaptureScreenshotRequestFormat.Jpeg,
+        SCREENSHOT_QUALITY,
+        SDK.ScreenCaptureModel.ScreenshotMode.FROM_VIEWPORT,
+    );
+    clearTimeout(showLoadingTimeout);
+    if (bytes) {
+      this.#imageInput = {
+        isLoading: false,
+        data: bytes,
+        mimeType: JPEG_MIME_TYPE,
+        inputType: AiAssistanceModel.AiAgent.MultimodalInputType.SCREENSHOT
+      };
+      this.performUpdate();
+      void this.updateComplete.then(() => {
+        this.focusTextInput();
+      });
+    } else {
+      this.#imageInput = undefined;
+      this.performUpdate();
+      Snackbars.Snackbar.Snackbar.show({message: lockedString(UIStringsNotTranslate.screenshotFailureMessage)});
+    }
+  }
+
+  targetAdded(_target: SDK.Target.Target): void {
+  }
+  targetRemoved(_target: SDK.Target.Target): void {
+  }
+
+  #handleRemoveImageInput(): void {
+    this.#imageInput = undefined;
+    this.performUpdate();
+    void this.updateComplete.then(() => {
+      this.focusTextInput();
+    });
+  }
+
+  async #handleLoadImage(file: File): Promise<void> {
+    const showLoadingTimeout = setTimeout(() => {
+      this.#imageInput = {isLoading: true};
+      this.performUpdate();
+    }, SHOW_LOADING_STATE_TIMEOUT);
+    try {
+      const reader = new FileReader();
+      const dataUrl = await new Promise<string>((resolve, reject) => {
+        reader.onload = () => {
+          if (typeof reader.result === 'string') {
+            resolve(reader.result);
+          } else {
+            reject(new Error('FileReader result was not a string.'));
+          }
+        };
+        reader.readAsDataURL(file);
+      });
+      const commaIndex = dataUrl.indexOf(',');
+      const bytes = dataUrl.substring(commaIndex + 1);
+      this.#imageInput = {
+        isLoading: false,
+        data: bytes,
+        mimeType: file.type,
+        inputType: AiAssistanceModel.AiAgent.MultimodalInputType.UPLOADED_IMAGE
+      };
+    } catch {
+      this.#imageInput = undefined;
+      Snackbars.Snackbar.Snackbar.show({message: lockedString(UIStringsNotTranslate.uploadImageFailureMessage)});
+    }
+
+    clearTimeout(showLoadingTimeout);
+    this.performUpdate();
+    void this.updateComplete.then(() => {
+      this.focusTextInput();
+    });
+  }
 
   #view: typeof DEFAULT_VIEW;
 
   constructor(element?: HTMLElement, view?: typeof DEFAULT_VIEW) {
     super(element);
     this.#view = view ?? DEFAULT_VIEW;
+  }
+
+  override wasShown(): void {
+    super.wasShown();
+    SDK.TargetManager.TargetManager.instance().addModelListener(
+        SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged,
+        this.#onPrimaryPageChanged, this);
+  }
+
+  override willHide(): void {
+    super.willHide();
+    SDK.TargetManager.TargetManager.instance().removeModelListener(
+        SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged,
+        this.#onPrimaryPageChanged, this);
+  }
+
+  #onPrimaryPageChanged(): void {
+    this.#imageInput = undefined;
+    this.performUpdate();
   }
 
   override performUpdate(): void {
@@ -507,7 +625,7 @@ export class ChatInput extends UI.Widget.Widget {
           disclaimerText: this.disclaimerText,
           conversationType: this.conversationType,
           multimodalInputEnabled: this.multimodalInputEnabled,
-          imageInput: this.imageInput,
+          imageInput: this.#imageInput,
           uploadImageInputEnabled: this.uploadImageInputEnabled,
           isReadOnly: this.isReadOnly,
           textAreaRef: this.#textAreaRef,
@@ -517,8 +635,8 @@ export class ChatInput extends UI.Widget.Widget {
           onTextInputChange: () => {
             this.requestUpdate();
           },
-          onTakeScreenshot: this.onTakeScreenshot,
-          onRemoveImageInput: this.onRemoveImageInput,
+          onTakeScreenshot: this.#handleTakeScreenshot.bind(this),
+          onRemoveImageInput: this.#handleRemoveImageInput.bind(this),
           onSubmit: this.onSubmit,
           onTextAreaKeyDown: this.onTextAreaKeyDown,
           onCancel: this.onCancel,
@@ -533,13 +651,14 @@ export class ChatInput extends UI.Widget.Widget {
 
   onSubmit = (event: SubmitEvent): void => {
     event.preventDefault();
-    if (this.imageInput?.isLoading) {
+    if (this.#imageInput?.isLoading) {
       return;
     }
-    const imageInput = !this.imageInput?.isLoading && this.imageInput?.data ?
-        {inlineData: {data: this.imageInput.data, mimeType: this.imageInput.mimeType}} :
+    const imageInput = !this.#imageInput?.isLoading && this.#imageInput?.data ?
+        {inlineData: {data: this.#imageInput.data, mimeType: this.#imageInput.mimeType}} :
         undefined;
-    this.onTextSubmit(this.#textAreaRef.value?.value ?? '', imageInput, this.imageInput?.inputType);
+    this.onTextSubmit(this.#textAreaRef.value?.value ?? '', imageInput, this.#imageInput?.inputType);
+    this.#imageInput = undefined;
     this.setInputValue('');
   };
 
@@ -552,13 +671,14 @@ export class ChatInput extends UI.Widget.Widget {
     // user is in IME composition.
     if (event.key === 'Enter' && !event.shiftKey && !event.isComposing) {
       event.preventDefault();
-      if (!event.target?.value || this.imageInput?.isLoading) {
+      if (!event.target?.value || this.#imageInput?.isLoading) {
         return;
       }
-      const imageInput = !this.imageInput?.isLoading && this.imageInput?.data ?
-          {inlineData: {data: this.imageInput.data, mimeType: this.imageInput.mimeType}} :
+      const imageInput = !this.#imageInput?.isLoading && this.#imageInput?.data ?
+          {inlineData: {data: this.#imageInput.data, mimeType: this.#imageInput.mimeType}} :
           undefined;
-      this.onTextSubmit(event.target.value, imageInput, this.imageInput?.inputType);
+      this.onTextSubmit(event.target.value, imageInput, this.#imageInput?.inputType);
+      this.#imageInput = undefined;
       this.setInputValue('');
     }
   };
@@ -575,9 +695,7 @@ export class ChatInput extends UI.Widget.Widget {
 
   onImageUpload = (ev: Event): void => {
     ev.stopPropagation();
-    if (this.onLoadImage) {
-      const fileSelector = UI.UIUtils.createFileSelectorElement(this.onLoadImage.bind(this), '.jpeg,.jpg,.png');
-      fileSelector.click();
-    }
+    const fileSelector = UI.UIUtils.createFileSelectorElement(this.#handleLoadImage.bind(this), '.jpeg,.jpg,.png');
+    fileSelector.click();
   };
 }

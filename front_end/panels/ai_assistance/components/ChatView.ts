@@ -182,9 +182,6 @@ export interface Props {
   onContextClick: () => void;
   onNewConversation: () => void;
   onCopyResponseClick: (message: ModelChatMessage) => void;
-  onTakeScreenshot: () => void;
-  onRemoveImageInput: () => void;
-  onLoadImage: (file: File) => Promise<void>;
   changeManager: AiAssistanceModel.ChangeManager.ChangeManager;
   inspectElementToggled: boolean;
   messages: ChatMessage[];
@@ -197,7 +194,6 @@ export interface Props {
   blockedByCrossOrigin: boolean;
   changeSummary?: string;
   multimodalInputEnabled?: boolean;
-  imageInput?: ImageInputData;
   isTextInputDisabled: boolean;
   emptyStateSuggestions: AiAssistanceModel.AiAgent.ConversationSuggestion[];
   inputPlaceholder: Platform.UIString.LocalizedString;
@@ -381,24 +377,21 @@ export class ChatView extends HTMLElement {
             disclaimerText: this.#props.disclaimerText,
             selectedContext: this.#props.selectedContext,
             inspectElementToggled: this.#props.inspectElementToggled,
-            multimodalInputEnabled: this.#props.multimodalInputEnabled,
+            multimodalInputEnabled: this.#props.multimodalInputEnabled ?? false,
             conversationType: this.#props.conversationType,
-            imageInput: this.#props.imageInput,
-            uploadImageInputEnabled: this.#props.uploadImageInputEnabled,
+            uploadImageInputEnabled: this.#props.uploadImageInputEnabled ?? false,
             isReadOnly: this.#props.isReadOnly,
             additionalFloatyContext: this.#props.additionalFloatyContext,
             onContextClick: this.#props.onContextClick,
             onInspectElementClick: this.#props.onInspectElementClick,
-            onTextSubmit:(text: string, imageInput?: Host.AidaClient.Part,
-                   multimodalInputType?: AiAssistanceModel.AiAgent.MultimodalInputType) =>  {
+            onTextSubmit: (
+                text: string, imageInput?: Host.AidaClient.Part,
+                multimodalInputType?: AiAssistanceModel.AiAgent.MultimodalInputType) => {
               this.#props.onTextSubmit(text, imageInput, multimodalInputType);
               this.#render();
             },
             onCancelClick: this.#props.onCancelClick,
             onNewConversation: this.#props.onNewConversation,
-            onTakeScreenshot: this.#props.onTakeScreenshot,
-            onRemoveImageInput: this.#props.onRemoveImageInput,
-            onLoadImage: this.#props.onLoadImage,
           })} ${ref(this.#inputRef)}></devtools-widget>
         </main>
       </div>

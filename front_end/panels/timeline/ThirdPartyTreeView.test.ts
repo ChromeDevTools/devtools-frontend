@@ -56,28 +56,36 @@ describeWithEnvironment('Third party tree', function() {
     };
     treeView.updateContents(sel);
     const tree = treeView.buildTree() as Trace.Extras.TraceTree.BottomUpRootNode;
-    const topNodesIterator = [...tree.children().values()].flat();
-
-    // Node with ext
-    const firstNode = topNodesIterator[0];
-    assert.strictEqual(firstNode.id.toString(), 'ienfalfjdbdpebioblfackkekamfmbnh');
-
-    const extensionNode = new Timeline.TimelineTreeView.TreeGridNode(
-        firstNode, firstNode.totalTime, firstNode.selfTime, firstNode.totalTime, treeView);
-    const extEntity = extensionNode?.createCell('site');
-
-    let gotBadgeName = extEntity.querySelector<HTMLTableRowElement>('.entity-badge')?.textContent || '';
-    assert.strictEqual(gotBadgeName, 'Extension');
+    const topNodesIterator = [...tree.children().values()].flat().sort((a, b) => b.selfTime - a.selfTime);
 
     // Node with first party
-    const secondNode = topNodesIterator[1];
-    assert.strictEqual(secondNode.id.toString(), 'localhost');
-
-    const firstPartyNode = new Timeline.TimelineTreeView.TreeGridNode(
-        secondNode, secondNode.totalTime, secondNode.selfTime, secondNode.totalTime, treeView);
-    const firstPartyEntity = firstPartyNode?.createCell('site');
-
-    gotBadgeName = firstPartyEntity.querySelector<HTMLTableRowElement>('.entity-badge')?.textContent || '';
+    let node = topNodesIterator[0];
+    assert.strictEqual(node.id.toString(), 'localhost');
+    assert.strictEqual(node.selfTime, 1008.3260016441345);
+    let gridNode =
+        new Timeline.TimelineTreeView.TreeGridNode(node, node.totalTime, node.selfTime, node.totalTime, treeView);
+    let entity = gridNode?.createCell('site');
+    let gotBadgeName = entity.querySelector<HTMLTableRowElement>('.entity-badge')?.textContent || '';
     assert.strictEqual(gotBadgeName, '1st party');
+
+    // Node for third party origin
+    node = topNodesIterator[1];
+    assert.strictEqual(node.id.toString(), 'wikimedia.org');
+    assert.strictEqual(node.selfTime, 148.06499981880188);
+    gridNode =
+        new Timeline.TimelineTreeView.TreeGridNode(node, node.totalTime, node.selfTime, node.totalTime, treeView);
+    entity = gridNode?.createCell('site');
+    gotBadgeName = entity.querySelector<HTMLTableRowElement>('.entity-badge')?.textContent || '';
+    assert.strictEqual(gotBadgeName, '');  // no badge
+
+    // Node with ext
+    node = topNodesIterator[2];
+    assert.strictEqual(node.id.toString(), 'ienfalfjdbdpebioblfackkekamfmbnh');
+    assert.strictEqual(node.selfTime, 2.5320003032684326);
+    gridNode =
+        new Timeline.TimelineTreeView.TreeGridNode(node, node.totalTime, node.selfTime, node.totalTime, treeView);
+    entity = gridNode?.createCell('site');
+    gotBadgeName = entity.querySelector<HTMLTableRowElement>('.entity-badge')?.textContent || '';
+    assert.strictEqual(gotBadgeName, 'Extension');
   });
 });

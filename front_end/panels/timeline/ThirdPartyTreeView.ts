@@ -80,8 +80,10 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
       });
     }
 
-    // const events = this.#thirdPartySummaries.entityByEvent.keys();
-    const relatedEvents = this.selectedEvents().sort(Trace.Helpers.Trace.eventTimeComparator);
+    // BottomUpRootNode requires events to be sorted by ts.
+    // TODO(crbug.com/457866795): Make the selected events sorted by construction,
+    // instead of doing it here.
+    const relatedEvents = this.selectedEvents().sort((a, b) => a.ts - b.ts);
 
     // The filters for this view are slightly different; we want to use the set
     // of visible event types, but also include network events, which by

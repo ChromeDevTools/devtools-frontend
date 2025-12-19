@@ -110,6 +110,20 @@ const UIStrings = {
    * @description Text used for link within the enableFlag to show users where they can enable the Third-party Cookie Heuristics Grants flag.
    */
   tpcdHeuristicsGrants: '#tpcd-heuristics-grants',
+  /**
+   * @description First part of the deprecation warning message.
+   * @example {maintaining its current approach to user choice for third-party cookies} PH1
+   */
+  upperDeprecationWarning: 'Chrome is {PH1} and third-party cookie exceptions are being phased out.',
+  /**
+   * @description Text for the blog post link inside the deprecation warning.
+   */
+  blogPostLink: 'maintaining its current approach to user choice for third-party cookies',
+  /**
+   * @description Second part of the deprecation warning message.
+   */
+  lowerDeprecationWarning:
+      'The Controls and Third-Party cookie sections will be removed and the Privacy and Security panel will revert to its former name, the Security panel. As always, third-party cookies can be inspected from the Cookies pane in the Application panel.',
 } as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/security/CookieControlsView.ts', UIStrings);
@@ -275,6 +289,25 @@ const DEFAULT_VIEW: View = (input: ViewInput, _output: object, target: HTMLEleme
           </devtools-button>
         </div>
       </div>
+      <div class="deprecation-divider"></div>
+    `;
+
+    const deprecationMessage = html`
+      <div class="deprecation-warning">
+        <div class="body">
+          <devtools-icon
+            name="warning"
+            class="medium"
+            style="color: var(--icon-warning); margin-right: var(--sys-size-2);">
+          </devtools-icon>
+          ${i18nFormatString(UIStrings.upperDeprecationWarning, {
+            PH1: UI.Fragment.html`<x-link class="devtools-link" href="https://privacysandbox.com/news/privacy-sandbox-update/" jslog=${VisualLogging.link('privacy-sandbox-update').track({click: true})}>${i18nString(UIStrings.blogPostLink)}</x-link>`,
+          })}
+        </div>
+        <div class="body">
+          ${i18nString(UIStrings.lowerDeprecationWarning)}
+        </div>
+      </div>
     `;
 
     render(html `
@@ -298,10 +331,11 @@ const DEFAULT_VIEW: View = (input: ViewInput, _output: object, target: HTMLEleme
             </div>
           </devtools-card>
           ${Boolean(enterpriseEnabledSetting.get()) ? enterpriseDisclaimer : nothing}
+          ${deprecationMessage}
         </div>
       </div>
     `, target);
-  // clang-format on
+    // clang-format on
 };
 
 export function showInfobar(): void {

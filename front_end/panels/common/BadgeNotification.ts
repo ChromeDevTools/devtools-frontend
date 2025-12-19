@@ -50,9 +50,9 @@ const UIStrings = {
   starterBadgeAwardMessageNoGdpProfile:
       'You earned the {PH1} badge for the {PH2}! Create a profile to claim your badge.',
   /**
-   * @description Action title for snoozing the starter badge.
+   * @description Action title for dismissing the badge notification.
    */
-  remindMeLater: 'Remind me later',
+  noThanks: 'No thanks',
   /**
    * @description Action title for enabling the "Receive badges" setting
    */
@@ -207,11 +207,10 @@ export class BadgeNotification extends UI.Widget.Widget {
       jslogContext: badge.jslogContext,
       actions: [
         {
-          label: i18nString(UIStrings.remindMeLater),
-          jslogContext: 'remind-me-later',
+          label: i18nString(UIStrings.noThanks),
+          jslogContext: 'no-thanks',
           onClick: () => {
-            this.detach();
-            Badges.UserBadges.instance().snoozeStarterBadge();
+            this.#onDismissClick();
           },
         },
         {
@@ -238,11 +237,10 @@ export class BadgeNotification extends UI.Widget.Widget {
       jslogContext: badge.jslogContext,
       actions: [
         {
-          label: i18nString(UIStrings.remindMeLater),
-          jslogContext: 'remind-me-later',
+          label: i18nString(UIStrings.noThanks),
+          jslogContext: 'no-thanks',
           onClick: () => {
-            this.detach();
-            Badges.UserBadges.instance().snoozeStarterBadge();
+            this.#onDismissClick();
           },
         },
         {

@@ -2709,6 +2709,7 @@ export const knownContextValues = new Set([
   'no-override',
   'no-profile-and-eligible',
   'no-profile-and-not-eligible',
+  'no-thanks',
   'no-throttling',
   'node',
   'node-connection',

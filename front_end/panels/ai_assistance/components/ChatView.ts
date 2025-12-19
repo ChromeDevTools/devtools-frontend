@@ -9,21 +9,20 @@ import '../../../ui/components/spinners/spinners.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Platform from '../../../core/platform/platform.js';
-import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
-import * as Marked from '../../../third_party/marked/marked.js';
+import type * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
-import type * as MarkdownView from '../../../ui/components/markdown_view/markdown_view.js';
 import type {MarkdownLitRenderer} from '../../../ui/components/markdown_view/MarkdownView.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
-import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import {PatchWidget} from '../PatchWidget.js';
 
 import {ChatInput} from './ChatInput.js';
 import chatViewStyles from './chatView.css.js';
-import {UserActionRow} from './UserActionRow.js';
+import {type ChatMessage, type ModelChatMessage, UserActionRow} from './UserActionRow.js';
 
-const {html, Directives: {ifDefined, ref, createRef}} = Lit;
+export {ChatInput, type ImageInputData} from './ChatInput.js';
+
+const {html, Directives: {ref, repeat, createRef}} = Lit;
 
 /*
 * Strings that don't need to be translated at this time.
@@ -33,144 +32,11 @@ const UIStringsNotTranslate = {
    * @description Text for the empty state of the AI assistance panel.
    */
   emptyStateText: 'How can I help you?',
-  /**
-   * @description The error message when the request to the LLM failed for some reason.
-   */
-  systemError:
-      'Something unforeseen happened and I can no longer continue. Try your request again and see if that resolves the issue. If this keeps happening, update Chrome to the latest version.',
-  /**
-   * @description The error message when the LLM gets stuck in a loop (max steps reached).
-   */
-  maxStepsError: 'Seems like I am stuck with the investigation. It would be better if you start over.',
-  /**
-   * @description Displayed when the user stop the response
-   */
-  stoppedResponse: 'You stopped this response',
-  /**
-   * @description Prompt for user to confirm code execution that may affect the page.
-   */
-  sideEffectConfirmationDescription: 'This code may modify page content. Continue?',
-  /**
-   * @description Button text that confirm code execution that may affect the page.
-   */
-  positiveSideEffectConfirmation: 'Continue',
-  /**
-   * @description Button text that cancels code execution that may affect the page.
-   */
-  negativeSideEffectConfirmation: 'Cancel',
-  /**
-   * @description The generic name of the AI agent (do not translate)
-   */
-  ai: 'AI',
-  /**
-   * @description The fallback text when we can't find the user full name
-   */
-  you: 'You',
-  /**
-   * @description The fallback text when a step has no title yet
-   */
-  investigating: 'Investigating',
-  /**
-   * @description Prefix to the title of each thinking step of a user action is required to continue
-   */
-  paused: 'Paused',
-  /**
-   * @description Heading text for the code block that shows the executed code.
-   */
-  codeExecuted: 'Code executed',
-  /**
-   * @description Heading text for the code block that shows the code to be executed after side effect confirmation.
-   */
-  codeToExecute: 'Code to execute',
-  /**
-   * @description Heading text for the code block that shows the returned data.
-   */
-  dataReturned: 'Data returned',
-  /**
-   * @description Aria label for the check mark icon to be read by screen reader
-   */
-  completed: 'Completed',
-  /**
-   * @description Aria label for the cancel icon to be read by screen reader
-   */
-  canceled: 'Canceled',
-  /**
-   * @description Alt text for the image input (displayed in the chat messages) that has been sent to the model.
-   */
-  imageInputSentToTheModel: 'Image input sent to the model',
-  /**
-   * @description Alt text for the account avatar.
-   */
-  accountAvatar: 'Account avatar',
-  /**
-   * @description Title for the x-link which wraps the image input rendered in chat messages.
-   */
-  openImageInNewTab: 'Open image in a new tab',
-  /**
-   * @description Alt text for image when it is not available.
-   */
-  imageUnavailable: 'Image unavailable',
 } as const;
 
 const lockedString = i18n.i18n.lockedString;
 
 const SCROLL_ROUNDING_OFFSET = 1;
-
-export interface Step {
-  isLoading: boolean;
-  thought?: string;
-  title?: string;
-  code?: string;
-  output?: string;
-  canceled?: boolean;
-  sideEffect?: ConfirmSideEffectDialog;
-  contextDetails?: [AiAssistanceModel.AiAgent.ContextDetail, ...AiAssistanceModel.AiAgent.ContextDetail[]];
-}
-
-interface ConfirmSideEffectDialog {
-  onAnswer: (result: boolean) => void;
-}
-
-export const enum ChatMessageEntity {
-  MODEL = 'model',
-  USER = 'user',
-}
-
-export type ImageInputData = {
-  isLoading: true,
-}|{
-  isLoading: false,
-  data: string,
-  mimeType: string,
-  inputType: AiAssistanceModel.AiAgent.MultimodalInputType,
-};
-
-export interface AnswerPart {
-  type: 'answer';
-  text: string;
-  suggestions?: [string, ...string[]];
-}
-
-export interface StepPart {
-  type: 'step';
-  step: Step;
-}
-
-export type ModelMessagePart = AnswerPart|StepPart;
-
-export interface UserChatMessage {
-  entity: ChatMessageEntity.USER;
-  text: string;
-  imageInput?: Host.AidaClient.Part;
-}
-export interface ModelChatMessage {
-  entity: ChatMessageEntity.MODEL;
-  parts: ModelMessagePart[];
-  error?: AiAssistanceModel.AiAgent.ErrorType;
-  rpcId?: Host.AidaClient.RpcGlobalId;
-}
-
-export type ChatMessage = UserChatMessage|ModelChatMessage;
 
 export interface Props {
   onTextSubmit:
@@ -400,342 +266,6 @@ export class ChatView extends HTMLElement {
   }
 }
 
-function renderTextAsMarkdown(text: string, markdownRenderer: MarkdownLitRenderer, {animate, ref: refFn}: {
-  animate?: boolean,
-  ref?: (element?: Element) => void,
-} = {}): Lit.TemplateResult {
-  let tokens = [];
-  try {
-    tokens = Marked.Marked.lexer(text);
-    for (const token of tokens) {
-      // Try to render all the tokens to make sure that
-      // they all have a template defined for them. If there
-      // isn't any template defined for a token, we'll fallback
-      // to rendering the text as plain text instead of markdown.
-      markdownRenderer.renderToken(token);
-    }
-  } catch {
-    // The tokens were not parsed correctly or
-    // one of the tokens are not supported, so we
-    // continue to render this as text.
-    return html`${text}`;
-  }
-
-  // clang-format off
-  return html`<devtools-markdown-view
-    .data=${{tokens, renderer: markdownRenderer, animationEnabled: animate} as MarkdownView.MarkdownView.MarkdownViewData}
-    ${refFn ? ref(refFn) : Lit.nothing}>
-  </devtools-markdown-view>`;
-  // clang-format on
-}
-
-function renderTitle(step: Step): Lit.LitTemplate {
-  const paused =
-      step.sideEffect ? html`<span class="paused">${lockedString(UIStringsNotTranslate.paused)}: </span>` : Lit.nothing;
-  const actionTitle = step.title ?? `${lockedString(UIStringsNotTranslate.investigating)}…`;
-
-  return html`<span class="title">${paused}${actionTitle}</span>`;
-}
-
-function renderStepCode(step: Step): Lit.LitTemplate {
-  if (!step.code && !step.output) {
-    return Lit.nothing;
-  }
-
-  // If there is no "output" yet, it means we didn't execute the code yet (e.g. maybe it is still waiting for confirmation from the user)
-  // thus we show "Code to execute" text rather than "Code executed" text on the heading of the code block.
-  const codeHeadingText = (step.output && !step.canceled) ? lockedString(UIStringsNotTranslate.codeExecuted) :
-                                                            lockedString(UIStringsNotTranslate.codeToExecute);
-
-  // If there is output, we don't show notice on this code block and instead show
-  // it in the data returned code block.
-  // clang-format off
-  const code = step.code ? html`<div class="action-result">
-      <devtools-code-block
-        .code=${step.code.trim()}
-        .codeLang=${'js'}
-        .displayNotice=${!Boolean(step.output)}
-        .header=${codeHeadingText}
-        .showCopyButton=${true}
-      ></devtools-code-block>
-  </div>` :
-                           Lit.nothing;
-  const output = step.output ? html`<div class="js-code-output">
-    <devtools-code-block
-      .code=${step.output}
-      .codeLang=${'js'}
-      .displayNotice=${true}
-      .header=${lockedString(UIStringsNotTranslate.dataReturned)}
-      .showCopyButton=${false}
-    ></devtools-code-block>
-  </div>` :
-                               Lit.nothing;
-
-  return html`<div class="step-code">${code}${output}</div>`;
-  // clang-format on
-}
-
-function renderStepDetails({
-  step,
-  markdownRenderer,
-  isLast,
-}: {
-  step: Step,
-  markdownRenderer: MarkdownLitRenderer,
-  isLast: boolean,
-}): Lit.LitTemplate {
-  const sideEffects = isLast && step.sideEffect ? renderSideEffectConfirmationUi(step) : Lit.nothing;
-  const thought = step.thought ? html`<p>${renderTextAsMarkdown(step.thought, markdownRenderer)}</p>` : Lit.nothing;
-
-  // clang-format off
-  const contextDetails = step.contextDetails ?
-  html`${Lit.Directives.repeat(
-    step.contextDetails,
-      contextDetail => {
-        return html`<div class="context-details">
-      <devtools-code-block
-        .code=${contextDetail.text}
-        .codeLang=${contextDetail.codeLang || ''}
-        .displayNotice=${false}
-        .header=${contextDetail.title}
-        .showCopyButton=${true}
-      ></devtools-code-block>
-    </div>`;
-      },
-    )}` : Lit.nothing;
-
-  return html`<div class="step-details">
-    ${thought}
-    ${renderStepCode(step)}
-    ${sideEffects}
-    ${contextDetails}
-  </div>`;
-  // clang-format on
-}
-
-function renderStepBadge({step, isLoading, isLast}: {
-  step: Step,
-  isLoading: boolean,
-  isLast: boolean,
-}): Lit.LitTemplate {
-  if (isLoading && isLast && !step.sideEffect) {
-    return html`<devtools-spinner></devtools-spinner>`;
-  }
-
-  let iconName = 'checkmark';
-  let ariaLabel: string|undefined = lockedString(UIStringsNotTranslate.completed);
-  let role: 'button'|undefined = 'button';
-  if (isLast && step.sideEffect) {
-    role = undefined;
-    ariaLabel = undefined;
-    iconName = 'pause-circle';
-  } else if (step.canceled) {
-    ariaLabel = lockedString(UIStringsNotTranslate.canceled);
-    iconName = 'cross';
-  }
-
-  return html`<devtools-icon
-      class="indicator"
-      role=${ifDefined(role)}
-      aria-label=${ifDefined(ariaLabel)}
-      .name=${iconName}
-    ></devtools-icon>`;
-}
-
-function renderStep({step, isLoading, markdownRenderer, isLast}: {
-  step: Step,
-  isLoading: boolean,
-  markdownRenderer: MarkdownLitRenderer,
-  isLast: boolean,
-}): Lit.LitTemplate {
-  const stepClasses = Lit.Directives.classMap({
-    step: true,
-    empty: !step.thought && !step.code && !step.contextDetails && !step.sideEffect,
-    paused: Boolean(step.sideEffect),
-    canceled: Boolean(step.canceled),
-  });
-  // clang-format off
-  return html`
-    <details class=${stepClasses}
-      jslog=${VisualLogging.section('step')}
-      .open=${Boolean(step.sideEffect)}>
-      <summary>
-        <div class="summary">
-          ${renderStepBadge({ step, isLoading, isLast })}
-          ${renderTitle(step)}
-          <devtools-icon
-            class="arrow"
-            name="chevron-down"
-          ></devtools-icon>
-        </div>
-      </summary>
-      ${renderStepDetails({step, markdownRenderer, isLast})}
-    </details>`;
-  // clang-format on
-}
-
-function renderSideEffectConfirmationUi(step: Step): Lit.LitTemplate {
-  if (!step.sideEffect) {
-    return Lit.nothing;
-  }
-
-  // clang-format off
-  return html`<div
-    class="side-effect-confirmation"
-    jslog=${VisualLogging.section('side-effect-confirmation')}
-  >
-    <p>${lockedString(UIStringsNotTranslate.sideEffectConfirmationDescription)}</p>
-    <div class="side-effect-buttons-container">
-      <devtools-button
-        .data=${
-          {
-            variant: Buttons.Button.Variant.OUTLINED,
-            jslogContext: 'decline-execute-code',
-          } as Buttons.Button.ButtonData
-        }
-        @click=${() => step.sideEffect?.onAnswer(false)}
-      >${lockedString(
-        UIStringsNotTranslate.negativeSideEffectConfirmation,
-      )}</devtools-button>
-      <devtools-button
-        .data=${
-          {
-            variant: Buttons.Button.Variant.PRIMARY,
-            jslogContext: 'accept-execute-code',
-            iconName: 'play',
-          } as Buttons.Button.ButtonData
-        }
-        @click=${() => step.sideEffect?.onAnswer(true)}
-      >${
-          lockedString(UIStringsNotTranslate.positiveSideEffectConfirmation)
-      }</devtools-button>
-    </div>
-  </div>`;
-  // clang-format on
-}
-
-function renderError(message: ModelChatMessage): Lit.LitTemplate {
-  if (message.error) {
-    let errorMessage;
-    switch (message.error) {
-      case AiAssistanceModel.AiAgent.ErrorType.UNKNOWN:
-      case AiAssistanceModel.AiAgent.ErrorType.BLOCK:
-        errorMessage = UIStringsNotTranslate.systemError;
-        break;
-      case AiAssistanceModel.AiAgent.ErrorType.MAX_STEPS:
-        errorMessage = UIStringsNotTranslate.maxStepsError;
-        break;
-      case AiAssistanceModel.AiAgent.ErrorType.ABORT:
-        return html`<p class="aborted" jslog=${VisualLogging.section('aborted')}>${
-            lockedString(UIStringsNotTranslate.stoppedResponse)}</p>`;
-    }
-
-    return html`<p class="error" jslog=${VisualLogging.section('error')}>${lockedString(errorMessage)}</p>`;
-  }
-
-  return Lit.nothing;
-}
-
-function renderChatMessage({
-  message,
-  isLoading,
-  isReadOnly,
-  canShowFeedbackForm,
-  isLast,
-  userInfo,
-  markdownRenderer,
-  onSuggestionClick,
-  onFeedbackSubmit,
-  onCopyResponseClick,
-}: {
-  message: ChatMessage,
-  isLoading: boolean,
-  isReadOnly: boolean,
-  canShowFeedbackForm: boolean,
-  isLast: boolean,
-  userInfo: Pick<Host.InspectorFrontendHostAPI.SyncInformation, 'accountImage'|'accountFullName'>,
-  markdownRenderer: MarkdownLitRenderer,
-  onSuggestionClick: (suggestion: string) => void,
-  onFeedbackSubmit: (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void,
-  onCopyResponseClick: (message: ModelChatMessage) => void,
-}): Lit.TemplateResult {
-  if (message.entity === ChatMessageEntity.USER) {
-    const name = userInfo.accountFullName || lockedString(UIStringsNotTranslate.you);
-    const image = userInfo.accountImage ?
-        html`<img src="data:image/png;base64, ${userInfo.accountImage}" alt=${UIStringsNotTranslate.accountAvatar} />` :
-        html`<devtools-icon
-          name="profile"
-        ></devtools-icon>`;
-    const imageInput = message.imageInput && 'inlineData' in message.imageInput ?
-        renderImageChatMessage(message.imageInput.inlineData) :
-        Lit.nothing;
-    // clang-format off
-    return html`<section
-      class="chat-message query"
-      jslog=${VisualLogging.section('question')}
-    >
-      <div class="message-info">
-        ${image}
-        <div class="message-name">
-          <h2>${name}</h2>
-        </div>
-      </div>
-      ${imageInput}
-      <div class="message-content">${renderTextAsMarkdown(message.text, markdownRenderer)}</div>
-    </section>`;
-    // clang-format on
-  }
-
-  // clang-format off
-  return html`
-    <section
-      class="chat-message answer"
-      jslog=${VisualLogging.section('answer')}
-    >
-      <div class="message-info">
-        <devtools-icon name="smart-assistant"></devtools-icon>
-        <div class="message-name">
-          <h2>${lockedString(UIStringsNotTranslate.ai)}</h2>
-        </div>
-      </div>
-      ${Lit.Directives.repeat(
-        message.parts,
-        (_, index) => index,
-        (part, index) => {
-          const isLastPart = index === message.parts.length - 1;
-          if (part.type === 'answer') {
-            return html`<p>${renderTextAsMarkdown(part.text, markdownRenderer, { animate: !isReadOnly && isLoading && isLast && isLastPart })}</p>`;
-          }
-          return renderStep({
-            step: part.step,
-            isLoading,
-            markdownRenderer,
-            isLast: isLastPart && isLast,
-          });
-        },
-      )}
-      ${renderError(message)}
-      ${isLast && isLoading
-        ? Lit.nothing
-        : html`<devtools-widget class="actions" .widgetConfig=${UI.Widget.widgetConfig(UserActionRow, {
-            showRateButtons: message.rpcId !== undefined,
-            onFeedbackSubmit: (rating: Host.AidaClient.Rating, feedback?: string) => {
-              if (!message.rpcId) {
-                return;
-              }
-              onFeedbackSubmit(message.rpcId, rating, feedback);
-            },
-            suggestions: (isLast && !isReadOnly && message.parts.at(-1)?.type === 'answer') ? (message.parts.at(-1) as AnswerPart).suggestions : undefined,
-            onSuggestionClick,
-            onCopyResponseClick: () => onCopyResponseClick(message),
-            canShowFeedbackForm,
-          })}></devtools-widget>`
-      }
-    </section>
-  `;
-  // clang-format on
-}
-
 function renderMainContents({
   messages,
   isLoading,
@@ -787,25 +317,6 @@ function renderMainContents({
   return renderEmptyState({isTextInputDisabled, suggestions, onSuggestionClick});
 }
 
-function renderImageChatMessage(inlineData: Host.AidaClient.MediaBlob): Lit.LitTemplate {
-  if (inlineData.data === AiAssistanceModel.AiConversation.NOT_FOUND_IMAGE_DATA) {
-    // clang-format off
-    return html`<div class="unavailable-image" title=${UIStringsNotTranslate.imageUnavailable}>
-      <devtools-icon name='file-image'></devtools-icon>
-    </div>`;
-    // clang-format on
-  }
-  const imageUrl = `data:${inlineData.mimeType};base64,${inlineData.data}`;
-  // clang-format off
-    return html`<x-link
-      class="image-link" title=${UIStringsNotTranslate.openImageInNewTab}
-      href=${imageUrl}
-    >
-      <img src=${imageUrl} alt=${UIStringsNotTranslate.imageInputSentToTheModel} />
-    </x-link>`;
-  // clang-format on
-}
-
 function renderMessages({
   messages,
   isLoading,
@@ -851,19 +362,19 @@ function renderMessages({
   // clang-format off
   return html`
     <div class="messages-container" ${ref(onMessageContainerRef)}>
-      ${messages.map((message, _, array) =>
-        renderChatMessage({
+      ${repeat(messages, message =>
+        html`<devtools-widget .widgetConfig=${UI.Widget.widgetConfig(UserActionRow, {
           message,
           isLoading,
           isReadOnly,
           canShowFeedbackForm,
-          isLast: array.at(-1) === message,
           userInfo,
           markdownRenderer,
+          isLastMessage: messages.at(-1) === message,
           onSuggestionClick,
           onFeedbackSubmit,
           onCopyResponseClick,
-        }),
+        })}></devtools-widget>`
       )}
       ${renderPatchWidget()}
     </div>

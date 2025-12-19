@@ -29,19 +29,25 @@ import * as TimelinePanel from '../timeline/timeline.js';
 import aiAssistancePanelStyles from './aiAssistancePanel.css.js';
 import {ArtifactsViewer} from './components/ArtifactsViewer.js';
 import {
-  type AnswerPart,
-  type ChatMessage,
-  ChatMessageEntity,
   ChatView,
-  type ModelChatMessage,
   type Props as ChatViewProps,
-  type Step
 } from './components/ChatView.js';
 import {DisabledWidget} from './components/DisabledWidget.js';
 import {ExploreWidget} from './components/ExploreWidget.js';
 import {MarkdownRendererWithCodeBlock} from './components/MarkdownRendererWithCodeBlock.js';
 import {PerformanceAgentMarkdownRenderer} from './components/PerformanceAgentMarkdownRenderer.js';
+import {
+  type AnswerPart,
+  type ChatMessage,
+  ChatMessageEntity,
+  type ModelChatMessage,
+  type Step,
+} from './components/UserActionRow.js';
 import {isAiAssistancePatchingEnabled} from './PatchWidget.js';
+
+// FIXME: this export is temporary to avoid rewriting tests.
+export {ChatMessageEntity} from './components/UserActionRow.js';
+export type {AnswerPart, ModelChatMessage, StepPart} from './components/UserActionRow.js';
 
 const {html} = Lit;
 

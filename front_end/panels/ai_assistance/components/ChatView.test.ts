@@ -12,7 +12,7 @@ import * as AiAssistancePanel from '../ai_assistance.js';
 describeWithEnvironment('ChatView', () => {
   function getProp(options: Partial<AiAssistancePanel.Props>): AiAssistancePanel.Props {
     const noop = () => {};
-    const messages: AiAssistancePanel.ChatMessage[] = options.messages ?? [];
+    const messages = options.messages ?? [];
     const selectedContext = sinon.createStubInstance(AiAssistanceModel.StylingAgent.NodeContext);
     selectedContext.getTitle.returns('');
     return {
@@ -52,7 +52,7 @@ describeWithEnvironment('ChatView', () => {
       const props = getProp({
         messages: [
           {
-            entity: AiAssistancePanel.ChatMessageEntity.MODEL,
+            entity: AiAssistancePanel.UserActionRow.ChatMessageEntity.MODEL,
             parts: [
               {
                 type: 'step',

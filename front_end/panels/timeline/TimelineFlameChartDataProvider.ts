@@ -546,7 +546,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     this.entryData = [];
     this.entryTypeByLevel = [];
     this.entryIndexToTitle = [];
-    this.#eventIndexByEvent = new Map();
+    this.#eventIndexByEvent = new WeakMap();
 
     if (this.#timelineData) {
       this.compatibilityTracksAppender?.setFlameChartDataAndEntryData(
@@ -568,7 +568,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     this.entryData = [];
     this.entryTypeByLevel = [];
     this.entryIndexToTitle = [];
-    this.#eventIndexByEvent = new Map();
+    this.#eventIndexByEvent = new WeakMap();
     this.#minimumBoundary = 0;
     this.timeSpan = 0;
 
@@ -750,9 +750,14 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
    * because then when it comes to drawing we can decorate them differently.
    **/
   #appendFramesAndScreenshotsTrack(): void {
+    if (this.entryData.length) {
+      throw new Error('expected this.entryData to be empty');
+    }
+
     if (!this.parsedTrace) {
       return;
     }
+
     const filmStrip = Trace.Extras.FilmStrip.fromHandlerData(this.parsedTrace.data);
     const hasScreenshots = filmStrip.frames.length > 0;
     const hasFrames = this.parsedTrace.data.Frames.frames.length > 0;
@@ -782,27 +787,26 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     if (!this.#timelineData || !this.parsedTrace) {
       return;
     }
+
     this.appendHeader('', this.screenshotsGroupStyle, false /* selectable */);
     this.entryTypeByLevel[this.currentLevel] = EntryType.SCREENSHOT;
-    let prevTimestamp: Trace.Types.Timing.Milli|undefined = undefined;
 
-    for (const filmStripFrame of filmStrip.frames) {
-      const screenshotTimeInMilliSeconds = Trace.Helpers.Timing.microToMilli(filmStripFrame.screenshotEvent.ts);
-      this.entryData.push(filmStripFrame.screenshotEvent);
+    const traceEnd = Trace.Helpers.Timing.traceWindowMilliSeconds(this.parsedTrace.data.Meta.traceBounds).max;
+
+    for (let i = 0; i < filmStrip.frames.length; ++i) {
+      const currentFrame = filmStrip.frames[i];
+      const nextFrame = filmStrip.frames[i + 1];
+      const startTimeMillis = Trace.Helpers.Timing.microToMilli(currentFrame.screenshotEvent.ts);
+      // If there is no next frame, use the end of the trace.
+      const endTimeMillis = nextFrame ? Trace.Helpers.Timing.microToMilli(nextFrame.screenshotEvent.ts) : traceEnd;
+      const durationMillis = endTimeMillis - startTimeMillis;
+
+      this.entryData.push(currentFrame.screenshotEvent);
       (this.#timelineData.entryLevels as number[]).push(this.currentLevel);
-      (this.#timelineData.entryStartTimes as number[]).push(screenshotTimeInMilliSeconds);
-      if (prevTimestamp) {
-        (this.#timelineData.entryTotalTimes as number[]).push(screenshotTimeInMilliSeconds - prevTimestamp);
-      }
-      prevTimestamp = screenshotTimeInMilliSeconds;
+      (this.#timelineData.entryStartTimes as number[]).push(startTimeMillis);
+      (this.#timelineData.entryTotalTimes as number[]).push(durationMillis);
     }
-    if (filmStrip.frames.length && prevTimestamp !== undefined) {
-      const maxRecordTimeMillis =
-          Trace.Helpers.Timing.traceWindowMilliSeconds(this.parsedTrace.data.Meta.traceBounds).max;
 
-      // Set the total time of the final screenshot so it takes up the remainder of the trace.
-      (this.#timelineData.entryTotalTimes as number[]).push(maxRecordTimeMillis - prevTimestamp);
-    }
     ++this.currentLevel;
   }
 

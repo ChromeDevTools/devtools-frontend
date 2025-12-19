@@ -49,7 +49,16 @@ class BidiHTTPRequest extends HTTPRequest_js_1.HTTPRequest {
             });
             void httpRequest.finalizeInterceptions();
         });
+        this.#request.once('response', data => {
+            // Create new response with the initial data. Note: the data can be updated later
+            // on, when the `success` event is received.
+            this.#response = HTTPResponse_js_1.BidiHTTPResponse.from(data, this, this.#frame.page().browser().cdpSupported);
+        });
         this.#request.once('success', data => {
+            // The `network.responseCompleted` event (mapped to `success` here)
+            // contains the most up-to-date and complete response data, including
+            // headers that might be missing from `network.responseStarted`
+            // (e.g., `Set-Cookie` for navigation requests in Chrome).
             this.#response = HTTPResponse_js_1.BidiHTTPResponse.from(data, this, this.#frame.page().browser().cdpSupported);
         });
         this.#request.on('authenticate', this.#handleAuthentication);

@@ -17,6 +17,9 @@ export declare class Request extends EventEmitter<{
     authenticate: void;
     /** Emitted when the request succeeds. */
     success: Bidi.Network.ResponseData;
+    /** Analog of WebDriver BiDi event `network.responseStarted`. Emitted when a
+     * response is received. */
+    response: Bidi.Network.ResponseData;
     /** Emitted when the request fails. */
     error: string;
 }> {

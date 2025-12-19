@@ -123,6 +123,16 @@ let Request = (() => {
                 this.emit('error', this.#error);
                 this.dispose();
             });
+            sessionEmitter.on('network.responseStarted', event => {
+                if (event.context !== this.#browsingContext.id ||
+                    event.request.request !== this.id ||
+                    this.#event.redirectCount !== event.redirectCount) {
+                    return;
+                }
+                this.#response = event.response;
+                this.#event.request.timings = event.request.timings;
+                this.emit('response', this.#response);
+            });
             sessionEmitter.on('network.responseCompleted', event => {
                 if (event.context !== this.#browsingContext.id ||
                     event.request.request !== this.id ||

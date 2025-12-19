@@ -14,6 +14,12 @@ const TargetManager_js_1 = require("./TargetManager.js");
 /**
  * @internal
  */
+function isDevToolsPageTarget(url) {
+    return url.startsWith('devtools://devtools/bundled/devtools_app.html');
+}
+/**
+ * @internal
+ */
 class CdpBrowser extends Browser_js_1.Browser {
     protocol = 'cdp';
     static async _create(connection, contextIds, acceptInsecureCerts, defaultViewport, downloadBehavior, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets = true, networkEnabled = true, handleDevToolsAsPage = false) {
@@ -93,9 +99,7 @@ class CdpBrowser extends Browser_js_1.Browser {
                         target.type() === 'webview' ||
                         (this.#handleDevToolsAsPage &&
                             target.type() === 'other' &&
-                            target
-                                .url()
-                                .startsWith('devtools://devtools/bundled/devtools_app.html')));
+                            isDevToolsPageTarget(target.url())));
                 });
     }
     _getIsPageTargetCallback() {
@@ -141,7 +145,7 @@ class CdpBrowser extends Browser_js_1.Browser {
             return this.#connection._createSession(targetInfo, isAutoAttachEmulated);
         };
         const otherTarget = new Target_js_1.OtherTarget(targetInfo, session, context, this.#targetManager, createSession);
-        if (targetInfo.url?.startsWith('devtools://')) {
+        if (targetInfo.url && isDevToolsPageTarget(targetInfo.url)) {
             return new Target_js_1.DevToolsTarget(targetInfo, session, context, this.#targetManager, createSession, this.#defaultViewport ?? null);
         }
         if (this.#isPageTargetCallback(otherTarget)) {

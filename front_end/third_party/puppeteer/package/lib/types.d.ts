@@ -6529,7 +6529,16 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      * ```
      */
     abstract waitForDevicePrompt(options?: WaitTimeoutOptions): Promise<DeviceRequestPrompt>;
-
+    /**
+     * Resizes the browser window of this page so that the content area (excluding
+     * browser UI) has the specified width and height.
+     *
+     * @experimental
+     */
+    abstract resize(params: {
+        contentWidth: number;
+        contentHeight: number;
+    }): Promise<void>;
     /**
      * Returns the page's window id.
      *

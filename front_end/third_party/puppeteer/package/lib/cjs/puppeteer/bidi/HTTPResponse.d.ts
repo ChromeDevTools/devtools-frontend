@@ -14,6 +14,9 @@ import type { BidiHTTPRequest } from './HTTPRequest.js';
  */
 export declare class BidiHTTPResponse extends HTTPResponse {
     #private;
+    /**
+     * Returns a new BidiHTTPResponse or updates the existing one if it already exists.
+     */
     static from(data: Bidi.Network.ResponseData, request: BidiHTTPRequest, cdpSupported: boolean): BidiHTTPResponse;
     private constructor();
     remoteAddress(): RemoteAddress;

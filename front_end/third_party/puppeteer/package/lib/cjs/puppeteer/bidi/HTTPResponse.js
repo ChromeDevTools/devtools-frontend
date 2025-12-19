@@ -53,7 +53,16 @@ let BidiHTTPResponse = (() => {
             __esDecorate(this, null, _remoteAddress_decorators, { kind: "method", name: "remoteAddress", static: false, private: false, access: { has: obj => "remoteAddress" in obj, get: obj => obj.remoteAddress }, metadata: _metadata }, null, _instanceExtraInitializers);
             if (_metadata) Object.defineProperty(this, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
         }
+        /**
+         * Returns a new BidiHTTPResponse or updates the existing one if it already exists.
+         */
         static from(data, request, cdpSupported) {
+            const existingResponse = request.response();
+            if (existingResponse) {
+                // Update existing response data with up-to-date data.
+                existingResponse.#data = data;
+                return existingResponse;
+            }
             const response = new BidiHTTPResponse(data, request, cdpSupported);
             response.#initialize();
             return response;

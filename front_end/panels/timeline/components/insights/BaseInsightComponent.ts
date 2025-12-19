@@ -75,7 +75,7 @@ interface ViewInput {
   estimatedSavingsAriaLabel: string|null;
   renderContent: () => Lit.LitTemplate;
   dispatchInsightToggle: () => void;
-  onHeaderKeyDown: () => void;
+  onHeaderKeyDown: (event: KeyboardEvent) => void;
   onAskAIButtonClick: () => void;
 }
 
@@ -412,7 +412,7 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends UI.Wi
       showAskAI: this.#canShowAskAI(),
       dispatchInsightToggle: () => this.#dispatchInsightToggle(),
       renderContent: () => this.renderContent(),
-      onHeaderKeyDown: () => this.#onHeaderKeyDown,
+      onHeaderKeyDown: this.#onHeaderKeyDown.bind(this),
       onAskAIButtonClick: () => this.#onAskAIButtonClick(),
     };
     this.#view(input, undefined, this.contentElement);

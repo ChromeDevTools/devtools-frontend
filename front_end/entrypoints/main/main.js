@@ -812,7 +812,8 @@ var MainImpl = class {
       Badges.UserBadges.instance().addEventListener("BadgeTriggered", async (ev) => {
         loadedPanelCommonModule ??= await import("./../../panels/common/common.js");
         const badgeNotification = new loadedPanelCommonModule.BadgeNotification();
-        void badgeNotification.present(ev.data);
+        const { badge, reason } = ev.data;
+        void badgeNotification.present(badge, reason);
       });
     }
     const conversationHandler = AiAssistanceModel.ConversationHandler.ConversationHandler.instance();

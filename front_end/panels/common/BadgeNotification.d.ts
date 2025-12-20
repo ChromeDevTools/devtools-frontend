@@ -26,7 +26,7 @@ export declare class BadgeNotification extends UI.Widget.Widget {
     actions: BadgeNotificationAction[];
     isStarterBadge: boolean;
     constructor(element?: HTMLElement, view?: View);
-    present(badge: Badges.Badge): Promise<void>;
+    present(badge: Badges.Badge, reason: Badges.BadgeTriggerReason): Promise<void>;
     onDetach(): void;
     wasShown(): void;
     performUpdate(): void;

@@ -45,7 +45,13 @@ var Prototypes = class _Prototypes {
       "Local"
       /* Common.Settings.SettingStorageType.LOCAL */
     );
-    return { inDevToolsFloaty, inlineWidgets, aiAnnotations, artifactViewer };
+    const copyToGemini = settings.createSetting(
+      "greendev-copy-to-gemini-enabled",
+      false,
+      "Local"
+      /* Common.Settings.SettingStorageType.LOCAL */
+    );
+    return { inDevToolsFloaty, inlineWidgets, aiAnnotations, artifactViewer, copyToGemini };
   }
 };
 export {

@@ -1,11 +1,19 @@
 import * as Common from '../../core/common/common.js';
 import type { Badge, BadgeAction, BadgeContext } from './Badge.js';
 type BadgeClass = new (badgeContext: BadgeContext) => Badge;
+export declare const enum BadgeTriggerReason {
+    AWARD = "Award",
+    STARTER_BADGE_SETTINGS_NUDGE = "StarterBadgeSettingsNudge",
+    STARTER_BADGE_PROFILE_NUDGE = "StarterBadgeProfileNudge"
+}
 export declare const enum Events {
     BADGE_TRIGGERED = "BadgeTriggered"
 }
 export interface EventTypes {
-    [Events.BADGE_TRIGGERED]: Badge;
+    [Events.BADGE_TRIGGERED]: {
+        badge: Badge;
+        reason: BadgeTriggerReason;
+    };
 }
 export declare class UserBadges extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     #private;

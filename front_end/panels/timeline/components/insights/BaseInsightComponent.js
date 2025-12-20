@@ -314,7 +314,7 @@ export class BaseInsightComponent extends UI.Widget.Widget {
             showAskAI: this.#canShowAskAI(),
             dispatchInsightToggle: () => this.#dispatchInsightToggle(),
             renderContent: () => this.renderContent(),
-            onHeaderKeyDown: () => this.#onHeaderKeyDown,
+            onHeaderKeyDown: this.#onHeaderKeyDown.bind(this),
             onAskAIButtonClick: () => this.#onAskAIButtonClick(),
         };
         this.#view(input, undefined, this.contentElement);

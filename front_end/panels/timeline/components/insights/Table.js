@@ -147,17 +147,17 @@ export class Table extends UI.Widget.Widget {
         return flattenedRows;
     }
     #onHoverRow(row, rowEl) {
-        if (row === this.#currentHoverRow) {
+        if (row === this.#currentHoverRow || !this.element.shadowRoot) {
             return;
         }
-        for (const el of this.element.querySelectorAll('.hover')) {
+        for (const el of this.element.shadowRoot.querySelectorAll('.hover')) {
             el.classList.remove('hover');
         }
         // Add 'hover' class to all parent rows.
         let curRow = this.#rowToParentRow.get(row);
         while (curRow) {
             rowEl.classList.add('hover');
-            curRow = this.#rowToParentRow.get(row);
+            curRow = this.#rowToParentRow.get(curRow);
         }
         this.#currentHoverRow = row;
         // Temporarily selects the row, but only if there is not already a sticky selection.

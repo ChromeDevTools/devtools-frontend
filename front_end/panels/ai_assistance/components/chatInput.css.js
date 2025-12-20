@@ -301,15 +301,9 @@ export default `/*
   }
 
   .resource-link.disabled,
-  .resource-task.disabled,
-  .resource-link.not-selected,
-  .resource-task.not-selected {
+  .resource-task.disabled {
     color: var(--sys-color-state-disabled);
     border-color: var(--sys-color-neutral-outline);
-  }
-
-  .resource-link.disabled,
-  .resource-task.disabled {
     pointer-events: none;
   }
 }

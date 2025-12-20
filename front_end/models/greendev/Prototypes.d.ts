@@ -4,6 +4,7 @@ export interface GreenDevSettings {
     inlineWidgets: Common.Settings.Setting<boolean>;
     artifactViewer: Common.Settings.Setting<boolean>;
     aiAnnotations: Common.Settings.Setting<boolean>;
+    copyToGemini: Common.Settings.Setting<boolean>;
 }
 export declare class Prototypes {
     private constructor();

@@ -593,7 +593,7 @@ var BaseInsightComponent = class extends UI.Widget.Widget {
       showAskAI: this.#canShowAskAI(),
       dispatchInsightToggle: () => this.#dispatchInsightToggle(),
       renderContent: () => this.renderContent(),
-      onHeaderKeyDown: () => this.#onHeaderKeyDown,
+      onHeaderKeyDown: this.#onHeaderKeyDown.bind(this),
       onAskAIButtonClick: () => this.#onAskAIButtonClick()
     };
     this.#view(input, void 0, this.contentElement);
@@ -983,16 +983,16 @@ var Table = class extends UI3.Widget.Widget {
     return flattenedRows;
   }
   #onHoverRow(row, rowEl) {
-    if (row === this.#currentHoverRow) {
+    if (row === this.#currentHoverRow || !this.element.shadowRoot) {
       return;
     }
-    for (const el of this.element.querySelectorAll(".hover")) {
+    for (const el of this.element.shadowRoot.querySelectorAll(".hover")) {
       el.classList.remove("hover");
     }
     let curRow = this.#rowToParentRow.get(row);
     while (curRow) {
       rowEl.classList.add("hover");
-      curRow = this.#rowToParentRow.get(row);
+      curRow = this.#rowToParentRow.get(curRow);
     }
     this.#currentHoverRow = row;
     this.#onSelectedRowChanged(row, rowEl, { isHover: true });

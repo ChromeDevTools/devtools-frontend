@@ -46,4 +46,10 @@ export default `/*
   display: none !important; /* stylelint-disable-line declaration-no-important */
 }
 
+.copy-to-prompt {
+  margin: var(--sys-size-4);
+  /* Got to override the default flex properties for widgets */
+  flex-grow: 0 !important; /* stylelint-disable-line declaration-no-important */
+}
+
 /*# sourceURL=${import.meta.resolve('./changesView.css')} */`;

@@ -5,11 +5,11 @@ var __export = (target, all) => {
 };
 
 // gen/front_end/panels/common/common.prebundle.js
-import * as Host8 from "./../../core/host/host.js";
-import * as i18n21 from "./../../core/i18n/i18n.js";
+import * as Host9 from "./../../core/host/host.js";
+import * as i18n23 from "./../../core/i18n/i18n.js";
 import * as Geometry2 from "./../../models/geometry/geometry.js";
-import * as Buttons4 from "./../../ui/components/buttons/buttons.js";
-import * as UI13 from "./../../ui/legacy/legacy.js";
+import * as Buttons5 from "./../../ui/components/buttons/buttons.js";
+import * as UI14 from "./../../ui/legacy/legacy.js";
 
 // gen/front_end/panels/common/common.css.js
 var common_css_default = `/*
@@ -1915,9 +1915,9 @@ var UIStrings3 = {
    */
   starterBadgeAwardMessageNoGdpProfile: "You earned the {PH1} badge for the {PH2}! Create a profile to claim your badge.",
   /**
-   * @description Action title for snoozing the starter badge.
+   * @description Action title for dismissing the badge notification.
    */
-  remindMeLater: "Remind me later",
+  noThanks: "No thanks",
   /**
    * @description Action title for enabling the "Receive badges" setting
    */
@@ -1988,11 +1988,17 @@ var BadgeNotification = class extends UI8.Widget.Widget {
     this.contentElement.role = "alert";
     this.markAsRoot();
   }
-  async present(badge) {
-    if (badge.isStarterBadge) {
-      await this.#presentStarterBadge(badge);
-    } else {
-      this.#presentActivityBasedBadge(badge);
+  async present(badge, reason) {
+    switch (reason) {
+      case "Award":
+        this.#presentActivityBasedBadge(badge);
+        return;
+      case "StarterBadgeSettingsNudge":
+        this.#presentStarterBadgeSettingsNudge(badge);
+        return;
+      case "StarterBadgeProfileNudge":
+        this.#presentStarterBadgeProfileNudge(badge);
+        return;
     }
   }
   #positionNotification() {
@@ -2016,55 +2022,43 @@ var BadgeNotification = class extends UI8.Widget.Widget {
     }
     this.#autoCloseTimeout = window.setTimeout(this.#onAutoClose, AUTO_CLOSE_TIME_IN_MS);
   }
-  async #presentStarterBadge(badge) {
-    const getProfileResponse = await Host6.GdpClient.GdpClient.instance().getProfile();
-    if (!getProfileResponse) {
-      return;
-    }
-    const hasGdpProfile = Boolean(getProfileResponse.profile);
-    const receiveBadgesSettingEnabled = Badges2.UserBadges.instance().isReceiveBadgesSettingEnabled();
+  #presentStarterBadgeSettingsNudge(badge) {
     const googleDeveloperProgramLink = UI8.XLink.XLink.create("https://developers.google.com/program", lockedString5("Google Developer Program"), "badge-link", void 0, "program-link");
-    if (hasGdpProfile && receiveBadgesSettingEnabled) {
-      this.#presentActivityBasedBadge(badge);
-      return;
-    }
-    if (hasGdpProfile && !receiveBadgesSettingEnabled) {
-      this.#show({
-        message: i18nFormatString(UIStrings3.starterBadgeAwardMessageSettingDisabled, { PH1: badge.title, PH2: googleDeveloperProgramLink }),
-        jslogContext: badge.jslogContext,
-        actions: [
-          {
-            label: i18nString3(UIStrings3.remindMeLater),
-            jslogContext: "remind-me-later",
-            onClick: () => {
-              this.detach();
-              Badges2.UserBadges.instance().snoozeStarterBadge();
-            }
-          },
-          {
-            label: i18nString3(UIStrings3.receiveBadges),
-            jslogContext: "receive-badges",
-            onClick: () => {
-              this.detach();
-              revealBadgeSettings();
-            }
+    this.#show({
+      message: i18nFormatString(UIStrings3.starterBadgeAwardMessageSettingDisabled, { PH1: badge.title, PH2: googleDeveloperProgramLink }),
+      jslogContext: badge.jslogContext,
+      actions: [
+        {
+          label: i18nString3(UIStrings3.noThanks),
+          jslogContext: "no-thanks",
+          onClick: () => {
+            this.#onDismissClick();
           }
-        ],
-        imageUri: badge.imageUri,
-        isStarterBadge: true
-      });
-      return;
-    }
+        },
+        {
+          label: i18nString3(UIStrings3.receiveBadges),
+          jslogContext: "receive-badges",
+          onClick: () => {
+            this.detach();
+            revealBadgeSettings();
+          }
+        }
+      ],
+      imageUri: badge.imageUri,
+      isStarterBadge: true
+    });
+  }
+  #presentStarterBadgeProfileNudge(badge) {
+    const googleDeveloperProgramLink = UI8.XLink.XLink.create("https://developers.google.com/program", lockedString5("Google Developer Program"), "badge-link", void 0, "program-link");
     this.#show({
       message: i18nFormatString(UIStrings3.starterBadgeAwardMessageNoGdpProfile, { PH1: badge.title, PH2: googleDeveloperProgramLink }),
       jslogContext: badge.jslogContext,
       actions: [
         {
-          label: i18nString3(UIStrings3.remindMeLater),
-          jslogContext: "remind-me-later",
+          label: i18nString3(UIStrings3.noThanks),
+          jslogContext: "no-thanks",
           onClick: () => {
-            this.detach();
-            Badges2.UserBadges.instance().snoozeStarterBadge();
+            this.#onDismissClick();
           }
         },
         {
@@ -4119,8 +4113,184 @@ var Linkifier2 = class _Linkifier {
   }
 };
 
-// gen/front_end/panels/common/common.prebundle.js
+// gen/front_end/panels/common/CopyChangesToPrompt.js
+import * as Host8 from "./../../core/host/host.js";
+import * as i18n21 from "./../../core/i18n/i18n.js";
+import * as GreenDev from "./../../models/greendev/greendev.js";
+import * as WorkspaceDiff from "./../../models/workspace_diff/workspace_diff.js";
+import * as Diff from "./../../third_party/diff/diff.js";
+import * as Buttons4 from "./../../ui/components/buttons/buttons.js";
+import * as Snackbars3 from "./../../ui/components/snackbars/snackbars.js";
+import * as UI13 from "./../../ui/legacy/legacy.js";
+import * as Lit4 from "./../../ui/lit/lit.js";
+var { render: render11, html: html12 } = Lit4;
 var UIStrings6 = {
+  /**
+   * @description The message shown in a toast when the response is copied to the clipboard.
+   */
+  responseCopiedToClipboard: "Response copied to clipboard"
+};
+var str_6 = i18n21.i18n.registerUIStrings("panels/common/CopyChangesToPrompt.ts", UIStrings6);
+var i18nString6 = i18n21.i18n.getLocalizedString.bind(void 0, str_6);
+var CopyChangesToPrompt = class extends UI13.Widget.Widget {
+  #workspaceDiff;
+  #view;
+  #patchAgentCSSChange = null;
+  constructor(target, view = GEMINI_CHANGES_VIEW) {
+    super(target);
+    this.#view = view;
+    this.#workspaceDiff = WorkspaceDiff.WorkspaceDiff.workspaceDiff();
+  }
+  get patchAgentCSSChange() {
+    return this.#patchAgentCSSChange;
+  }
+  set patchAgentCSSChange(code) {
+    this.#patchAgentCSSChange = code;
+    this.requestUpdate();
+  }
+  wasShown() {
+    super.wasShown();
+    this.#workspaceDiff.addEventListener("ModifiedStatusChanged", this.#onDiffChange, this);
+  }
+  willHide() {
+    super.willHide();
+    this.#workspaceDiff.removeEventListener("ModifiedStatusChanged", this.#onDiffChange, this);
+  }
+  #getModifiledFiles() {
+    return this.#workspaceDiff.modifiedUISourceCodes().filter((modified) => {
+      return !modified.url().startsWith("inspector://");
+    });
+  }
+  #onDiffChange() {
+    for (const file of this.#getModifiledFiles()) {
+      this.#workspaceDiff.subscribeToDiffChange(file, this.requestUpdate, this);
+    }
+    this.requestUpdate();
+  }
+  set workspaceDiff(diff) {
+    this.#workspaceDiff = diff;
+    this.requestUpdate();
+  }
+  async performUpdate() {
+    if (!GreenDev.Prototypes.instance().isEnabled("copyToGemini")) {
+      return;
+    }
+    const diffs = await Promise.all(this.#getModifiledFiles().map(async (modifiedUISourceCode) => {
+      const diffResponse = await this.#workspaceDiff?.requestDiff(modifiedUISourceCode);
+      return { diff: diffResponse?.diff ?? [], uiSourceCode: modifiedUISourceCode };
+    }));
+    this.#view({
+      diffs,
+      patchAgentCSSChange: this.#patchAgentCSSChange,
+      onCopyToClipboard: (text) => {
+        Host8.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(text);
+        Snackbars3.Snackbar.Snackbar.show({
+          message: i18nString6(UIStrings6.responseCopiedToClipboard)
+        });
+      }
+    }, {}, this.contentElement);
+  }
+};
+var GEMINI_CHANGES_VIEW = (input, _output, target) => {
+  const hasDiffs = input.diffs.some((d) => {
+    return d.diff !== void 0 && d.diff.length > 0;
+  });
+  if (!hasDiffs && !input.patchAgentCSSChange) {
+    render11(Lit4.nothing, target);
+    return;
+  }
+  const promptForChangesPanel = hasDiffs ? buildGeminiCommand(input.diffs) : "";
+  const promptForPatchAgentCSS = input.patchAgentCSSChange ? buildPatchAgentCSSPrompt(input.patchAgentCSSChange) : "";
+  const finalPrompt = [PREAMBLE, promptForChangesPanel, promptForPatchAgentCSS].filter((x) => x.length > 0).join(`
+`);
+  function copyClick() {
+    input.onCopyToClipboard(finalPrompt);
+  }
+  render11(html12`<devtools-button
+      .iconName=${"copy"}
+      .variant=${"outlined"}
+      @click=${copyClick}>Copy prompt to clipboard</devtools-button>
+    `, target);
+};
+function buildPatchAgentCSSPrompt(code) {
+  return `The DevTools CSS Patching Agent has also made some CSS changes on behalf of the user. These changes are listed below. Think carefully about how best to apply these changes.
+
+**DevTools Patch Agent changes**
+\`\`\`
+${code}
+\`\`\``;
+}
+function buildGeminiCommand(diffs) {
+  const output = `Below this line are a list of files and the diff for each of them. Consider this diff and apply it to the codebase but remembering that the changes in DevTools may not be the most accurate fixes and you should not necessarily apply them directly as DevTools works with the deployed code and not the source code.
+
+Within the diffs you will often see lines of code commented out. If the diff contains a new line that was some code being wrapped in comments, treat that as if the intent is to delete the code.
+
+How to read a diff:
+* If a line starts with \`-\` , DevTools removed it.
+* If a line starts with \`+\` , DevTools added it.
+* If a line starts with neither a \`+\` or \`-\` , DevTools did not change the line and you can safely ignore it.
+
+${diffs.map((diff) => {
+    if (!diff.diff || diff.diff.length === 0) {
+      return "";
+    }
+    return `Filename: ${diff.uiSourceCode.fullDisplayName()}
+
+Diff:
+${formatDiffForLLM(diff.diff)}`;
+  }).filter((x) => x.length).join("\n")}`;
+  return output;
+}
+function formatDiffForLLM(diffArray) {
+  let formattedDiff = "";
+  for (const diffItem of diffArray) {
+    const operation = diffItem[0];
+    const lines = diffItem[1];
+    for (const line of lines) {
+      if (operation === Diff.Diff.Operation.Equal) {
+        formattedDiff += "  " + line + "\n";
+      } else if (operation === Diff.Diff.Operation.Insert) {
+        formattedDiff += "+ " + line + "\n";
+      } else if (operation === Diff.Diff.Operation.Delete) {
+        formattedDiff += "- " + line + "\n";
+      }
+    }
+  }
+  return formattedDiff;
+}
+var PREAMBLE = `You are receiving a set of runtime changes (CSS, HTML, and JS) captured via Browser DevTools. Your goal is to persist these changes into the local source code by identifying the original source-of-truth.
+
+Because DevTools reflects the "Flattened Result" of complex build logic, you must follow this "Source-Aware" strategy:
+
+1. **Structural Mapping (HTML/DOM):**
+    - If a DOM element was added/removed, identify the source template (JSX, Vue, Svelte, HTML) responsible.
+    - **Logic Check:** Determine if the change should be a static element or if it requires a new conditional (\`if/else\`) or loop (\`map\`) based on existing component patterns.
+
+2. **Style Mapping (CSS/Attributes):**
+    - Map raw styles to the project's specific styling architecture (Tailwind, SCSS, Styled-Components).
+    - Replace hard-coded values with existing Design Tokens or Theme Variables (\`var(--color-primary)\`, etc.) found in the codebase.
+    - CSS changes may not be applied to CSS files directly. Consider that CSS could be applied via JavaScript, especially if the codebase is using a component based frontend framework or web components.
+
+
+3. **Behavioral Mapping (JS/Event Listeners):**
+    - If logic or event handlers were modified, locate the corresponding functions or hooks in the source.
+    - Ensure new logic follows the project's state management patterns (e.g., React \`useState\`, Redux, or standard ES6+ modules).
+
+4. **Safety & Ambiguity Protocol:**
+    - **Third-Party Code:** If a change targets a DOM element or style generated by an external library (e.g., a UI kit's internal wrapper), do not modify the library's source. Instead, find the appropriate override mechanism in the codebase.
+    - **Uncertainty:** If a DevTools change cannot be mapped to the source with 100% confidence (e.g., minified selectors or ambiguous origin), stop and report the conflict rather than guessing.
+
+5. **Agentic Execution Workflow:**
+    - **Discovery:** Use your tools (\`grep\`, \`find\`, etc.) to locate unique strings or class names from the DevTools log.
+    - **Analysis:** Determine if the target is a reusable component or a specific page instance.
+    - **Implementation:** Execute file edits using the project's idiomatic syntax and formatting standards.
+
+**INSTRUCTION:**
+Begin by searching for the relevant source files. Explain your mapping logic before performing the edits.
+`;
+
+// gen/front_end/panels/common/common.prebundle.js
+var UIStrings7 = {
   /**
    * @description Text for the cancel button in the dialog.
    */
@@ -4130,18 +4300,18 @@ var UIStrings6 = {
    */
   allow: "Allow"
 };
-var str_6 = i18n21.i18n.registerUIStrings("panels/common/common.ts", UIStrings6);
-var i18nString6 = i18n21.i18n.getLocalizedString.bind(void 0, str_6);
+var str_7 = i18n23.i18n.registerUIStrings("panels/common/common.ts", UIStrings7);
+var i18nString7 = i18n23.i18n.getLocalizedString.bind(void 0, str_7);
 var TypeToAllowDialog = class {
   static async show(options) {
-    const dialog2 = new UI13.Dialog.Dialog(options.jslogContext.dialog);
+    const dialog2 = new UI14.Dialog.Dialog(options.jslogContext.dialog);
     dialog2.setMaxContentSize(new Geometry2.Size(504, 340));
     dialog2.setSizeBehavior(
       "SetExactWidthMaxHeight"
       /* UI.GlassPane.SizeBehavior.SET_EXACT_WIDTH_MAX_HEIGHT */
     );
     dialog2.setDimmed(true);
-    const shadowRoot = UI13.UIUtils.createShadowRootWithCoreStyles(dialog2.contentElement, { cssFile: common_css_default });
+    const shadowRoot = UI14.UIUtils.createShadowRootWithCoreStyles(dialog2.contentElement, { cssFile: common_css_default });
     const content = shadowRoot.createChild("div", "type-to-allow-dialog");
     const result = await new Promise((resolve) => {
       const header = content.createChild("div", "header");
@@ -4158,12 +4328,12 @@ var TypeToAllowDialog = class {
         /* Buttons.Button.Size.SMALL */
       );
       content.createChild("div", "message").textContent = options.message;
-      const input = UI13.UIUtils.createInput("text-input", "text", options.jslogContext.input);
+      const input = UI14.UIUtils.createInput("text-input", "text", options.jslogContext.input);
       input.placeholder = options.inputPlaceholder;
       content.appendChild(input);
       const buttonsBar = content.createChild("div", "button");
-      const cancelButton = UI13.UIUtils.createTextButton(i18nString6(UIStrings6.cancel), () => resolve(false), { jslogContext: "cancel" });
-      const allowButton = UI13.UIUtils.createTextButton(i18nString6(UIStrings6.allow), () => {
+      const cancelButton = UI14.UIUtils.createTextButton(i18nString7(UIStrings7.cancel), () => resolve(false), { jslogContext: "cancel" });
+      const allowButton = UI14.UIUtils.createTextButton(i18nString7(UIStrings7.allow), () => {
         resolve(input.value === options.typePhrase || input.value === `'${options.typePhrase}'`);
       }, {
         jslogContext: "confirm",
@@ -4183,7 +4353,7 @@ var TypeToAllowDialog = class {
         resolve(false);
       });
       dialog2.show();
-      Host8.userMetrics.actionTaken(Host8.UserMetrics.Action.SelfXssWarningDialogShown);
+      Host9.userMetrics.actionTaken(Host9.UserMetrics.Action.SelfXssWarningDialogShown);
     });
     dialog2.hide();
     return result;
@@ -4196,6 +4366,7 @@ export {
   AiCodeGenerationTeaser_exports as AiCodeGenerationTeaser,
   AnnotationManager,
   BadgeNotification,
+  CopyChangesToPrompt,
   DOMLinkifier_exports as DOMLinkifier,
   ExtensionView_exports as ExtensionIframe,
   ExtensionPanel_exports as ExtensionPanel,

@@ -698,8 +698,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
             showScrollSnapAdorner: Boolean(this.#layout?.hasScroll) && !this.isClosingTag(),
             scrollSnapAdornerActive: this.#scrollSnapAdornerActive,
             showSlotAdorner: Boolean(this.nodeInternal.assignedSlot) && !this.isClosingTag(),
-            showStartingStyleAdorner: Boolean(Root.Runtime.hostConfig.devToolsStartingStyleDebugging?.enabled) &&
-                this.nodeInternal.affectedByStartingStyles() && !this.isClosingTag(),
+            showStartingStyleAdorner: this.nodeInternal.affectedByStartingStyles() && !this.isClosingTag(),
             startingStyleAdornerActive: this.#startingStyleAdornerActive,
             nodeInfo: this.#nodeInfo,
             onStartingStyleAdornerClick: (event) => this.#onStartingStyleAdornerClick(event),

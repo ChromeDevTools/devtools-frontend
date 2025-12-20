@@ -42,6 +42,7 @@
     "../../../../../../front_end/panels/common/Annotation.ts",
     "../../../../../../front_end/panels/common/AnnotationManager.ts",
     "../../../../../../front_end/panels/common/BadgeNotification.ts",
+    "../../../../../../front_end/panels/common/CopyChangesToPrompt.ts",
     "../../../../../../front_end/panels/common/DOMLinkifier.ts",
     "../../../../../../front_end/panels/common/ExtensionPanel.ts",
     "../../../../../../front_end/panels/common/ExtensionServer.ts",
@@ -80,6 +81,12 @@
     },
     {
       "path": "../../models/persistence/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../models/workspace_diff/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../third_party/diff/bundle-tsconfig.json"
     },
     {
       "path": "../../ui/components/buttons/bundle-tsconfig.json"

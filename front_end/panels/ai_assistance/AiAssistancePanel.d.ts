@@ -1,7 +1,10 @@
 import '../../ui/kit/kit.js';
 import * as Host from '../../core/host/host.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import { ChatView, type ModelChatMessage, type Props as ChatViewProps } from './components/ChatView.js';
+import { ChatView, type Props as ChatViewProps } from './components/ChatView.js';
+import { type ModelChatMessage } from './components/UserActionRow.js';
+export { ChatMessageEntity } from './components/UserActionRow.js';
+export type { AnswerPart, ModelChatMessage, StepPart } from './components/UserActionRow.js';
 interface ToolbarViewInput {
     onNewChatClick: () => void;
     populateHistoryMenu: (contextMenu: UI.ContextMenu.ContextMenu) => void;
@@ -36,8 +39,6 @@ export interface PanelViewOutput {
     chatView?: ChatView;
 }
 type View = (input: ViewInput, output: PanelViewOutput, target: HTMLElement) => void;
-export declare const NOOP: () => Promise<void>;
-export declare const NOOP_VOID: () => void;
 export declare class AiAssistancePanel extends UI.Panel.Panel {
     #private;
     private view;
@@ -59,4 +60,3 @@ export declare function getResponseMarkdown(message: ModelChatMessage): string;
 export declare class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
     handleAction(_context: UI.Context.Context, actionId: string, opts?: Record<string, unknown>): boolean;
 }
-export {};

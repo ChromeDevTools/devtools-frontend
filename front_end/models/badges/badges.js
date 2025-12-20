@@ -225,19 +225,34 @@ var UserBadges = class _UserBadges extends Common3.ObjectWrapper.ObjectWrapper {
   recordAction(action) {
     this.#badgeActionEventTarget.dispatchEventToListeners(action);
   }
+  async #resolveBadgeTriggerReason(badge) {
+    if (!badge.isStarterBadge) {
+      return "Award";
+    }
+    const getProfileResponse = await Host.GdpClient.GdpClient.instance().getProfile();
+    if (!getProfileResponse) {
+      return;
+    }
+    const hasGdpProfile = Boolean(getProfileResponse.profile);
+    const receiveBadgesSettingEnabled = Boolean(this.#receiveBadgesSetting.get());
+    if (hasGdpProfile && receiveBadgesSettingEnabled) {
+      return "Award";
+    }
+    if (this.#isStarterBadgeDismissed() || this.#isStarterBadgeSnoozed()) {
+      return;
+    }
+    if (hasGdpProfile && !receiveBadgesSettingEnabled) {
+      return "StarterBadgeSettingsNudge";
+    }
+    return "StarterBadgeProfileNudge";
+  }
   async #onTriggerBadge(badge, opts) {
     const triggerTime = Date.now();
-    let shouldAwardBadge = false;
-    if (!badge.isStarterBadge) {
-      shouldAwardBadge = true;
-    } else {
-      const getProfileResponse = await Host.GdpClient.GdpClient.instance().getProfile();
-      const receiveBadgesSettingEnabled = Boolean(this.#receiveBadgesSetting.get());
-      if (getProfileResponse?.profile && receiveBadgesSettingEnabled && !this.#isStarterBadgeDismissed() && !this.#isStarterBadgeSnoozed()) {
-        shouldAwardBadge = true;
-      }
+    const reason = await this.#resolveBadgeTriggerReason(badge);
+    if (!reason) {
+      return;
     }
-    if (shouldAwardBadge) {
+    if (reason === "Award") {
       const result = await Host.GdpClient.GdpClient.instance().createAward({ name: badge.name });
       if (!result) {
         return;
@@ -246,7 +261,7 @@ var UserBadges = class _UserBadges extends Common3.ObjectWrapper.ObjectWrapper {
     const timeElapsedAfterTriggerCall = Date.now() - triggerTime;
     const delay = opts?.immediate ? 0 : Math.max(DELAY_BEFORE_TRIGGER - timeElapsedAfterTriggerCall, 0);
     setTimeout(() => {
-      this.dispatchEventToListeners("BadgeTriggered", badge);
+      this.dispatchEventToListeners("BadgeTriggered", { badge, reason });
     }, delay);
   }
   #deactivateAllBadges() {

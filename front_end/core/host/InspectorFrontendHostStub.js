@@ -297,9 +297,6 @@ export class InspectorFrontendHostStub {
             devToolsFlexibleLayout: {
                 verticalDrawerEnabled: true,
             },
-            devToolsStartingStyleDebugging: {
-                enabled: false,
-            },
         };
         if ('hostConfigForTesting' in globalThis) {
             const { hostConfigForTesting } = globalThis;

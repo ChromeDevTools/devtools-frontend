@@ -758,7 +758,7 @@ var GREENDEV_VIEW = (input, _output, target) => {
               <span>${i18nString(UIStrings.greenDevUnstable)}</span>
              </div>
              <div class="settings-experiments-block">
-               ${renderPrototypeCheckboxes(input.settings, ["aiAnnotations", "inDevToolsFloaty"])}
+               ${renderPrototypeCheckboxes(input.settings, ["aiAnnotations", "inDevToolsFloaty", "copyToGemini"])}
              </div>
            </devtools-card>
 
@@ -778,7 +778,8 @@ var GREENDEV_PROTOTYPE_NAMES = {
   inDevToolsFloaty: "In DevTools context picker",
   aiAnnotations: "AI auto-annotations",
   inlineWidgets: "Inline widgets in AI Assistance",
-  artifactViewer: "Widgets in the Artifact viewer"
+  artifactViewer: "Widgets in the Artifact viewer",
+  copyToGemini: "Copy changes to AI Prompt"
 };
 function renderWidgetOptions(settings) {
   function onChange(nowActiveRadio) {

@@ -6436,9 +6436,7 @@ var StylePropertiesSection = class _StylePropertiesSection {
           ancestorRuleElement = this.createNestingElement(rule.nestingSelectors?.[nestingIndex++]);
           break;
         case "StartingStyleRule":
-          if (Root2.Runtime.hostConfig.devToolsStartingStyleDebugging?.enabled) {
-            ancestorRuleElement = this.createStartingStyleElement();
-          }
+          ancestorRuleElement = this.createStartingStyleElement();
           break;
       }
       if (ancestorRuleElement) {
@@ -11861,7 +11859,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI16.TreeOutline.Tr
       showScrollSnapAdorner: Boolean(this.#layout?.hasScroll) && !this.isClosingTag(),
       scrollSnapAdornerActive: this.#scrollSnapAdornerActive,
       showSlotAdorner: Boolean(this.nodeInternal.assignedSlot) && !this.isClosingTag(),
-      showStartingStyleAdorner: Boolean(Root6.Runtime.hostConfig.devToolsStartingStyleDebugging?.enabled) && this.nodeInternal.affectedByStartingStyles() && !this.isClosingTag(),
+      showStartingStyleAdorner: this.nodeInternal.affectedByStartingStyles() && !this.isClosingTag(),
       startingStyleAdornerActive: this.#startingStyleAdornerActive,
       nodeInfo: this.#nodeInfo,
       onStartingStyleAdornerClick: (event) => this.#onStartingStyleAdornerClick(event),

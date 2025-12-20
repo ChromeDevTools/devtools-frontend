@@ -1,5 +1,47 @@
+import '../../../ui/components/markdown_view/markdown_view.js';
 import * as Host from '../../../core/host/host.js';
+import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
+import type { MarkdownLitRenderer } from '../../../ui/components/markdown_view/MarkdownView.js';
 import * as UI from '../../../ui/legacy/legacy.js';
+export interface Step {
+    isLoading: boolean;
+    thought?: string;
+    title?: string;
+    code?: string;
+    output?: string;
+    canceled?: boolean;
+    sideEffect?: ConfirmSideEffectDialog;
+    contextDetails?: [AiAssistanceModel.AiAgent.ContextDetail, ...AiAssistanceModel.AiAgent.ContextDetail[]];
+}
+export interface ConfirmSideEffectDialog {
+    onAnswer: (result: boolean) => void;
+}
+export declare const enum ChatMessageEntity {
+    MODEL = "model",
+    USER = "user"
+}
+export interface AnswerPart {
+    type: 'answer';
+    text: string;
+    suggestions?: [string, ...string[]];
+}
+export interface StepPart {
+    type: 'step';
+    step: Step;
+}
+export type ModelMessagePart = AnswerPart | StepPart;
+export interface UserChatMessage {
+    entity: ChatMessageEntity.USER;
+    text: string;
+    imageInput?: Host.AidaClient.Part;
+}
+export interface ModelChatMessage {
+    entity: ChatMessageEntity.MODEL;
+    parts: ModelMessagePart[];
+    error?: AiAssistanceModel.AiAgent.ErrorType;
+    rpcId?: Host.AidaClient.RpcGlobalId;
+}
+export type ChatMessage = UserChatMessage | ModelChatMessage;
 export interface RatingViewInput {
     currentRating?: Host.AidaClient.Rating;
     onRatingClick: (rating: Host.AidaClient.Rating) => void;
@@ -22,34 +64,39 @@ export interface FeedbackFormViewInput {
     onInputChange: (input: string) => void;
     isSubmitButtonDisabled: boolean;
 }
-export type UserActionRowViewInput = RatingViewInput & ActionViewInput & SuggestionViewInput & FeedbackFormViewInput;
+export type UserActionRowViewInput = MessageInput & RatingViewInput & ActionViewInput & SuggestionViewInput & FeedbackFormViewInput;
 export interface ViewOutput {
     suggestionsLeftScrollButtonContainer?: Element;
     suggestionsScrollContainer?: Element;
     suggestionsRightScrollButtonContainer?: Element;
 }
-export interface UserActionRowWidgetParams {
-    showRateButtons: boolean;
-    onFeedbackSubmit: (rate: Host.AidaClient.Rating, feedback?: string) => void;
+export interface MessageInput {
     suggestions?: [string, ...string[]];
-    onCopyResponseClick: () => void;
-    onSuggestionClick: (suggestion: string) => void;
+    message: ChatMessage;
+    isLoading: boolean;
+    isReadOnly: boolean;
+    isLastMessage: boolean;
     canShowFeedbackForm: boolean;
+    userInfo: Pick<Host.InspectorFrontendHostAPI.SyncInformation, 'accountImage' | 'accountFullName'>;
+    markdownRenderer: MarkdownLitRenderer;
+    onSuggestionClick: (suggestion: string) => void;
+    onFeedbackSubmit: (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void;
+    onCopyResponseClick: (message: ModelChatMessage) => void;
 }
 export declare const DEFAULT_VIEW: (input: UserActionRowViewInput, output: ViewOutput, target: HTMLElement) => void;
 export type View = typeof DEFAULT_VIEW;
-/**
- * This presenter has too many responsibilities (rating buttons, feedback
- * form, suggestions).
- */
-export declare class UserActionRow extends UI.Widget.Widget implements UserActionRowWidgetParams {
+export declare class UserActionRow extends UI.Widget.Widget {
     #private;
-    showRateButtons: boolean;
-    onFeedbackSubmit: (rate: Host.AidaClient.Rating, feedback?: string) => void;
-    suggestions: [string, ...string[]] | undefined;
-    onCopyResponseClick: () => void;
-    onSuggestionClick: (suggestion: string) => void;
+    message: ChatMessage;
+    isLoading: boolean;
+    isReadOnly: boolean;
     canShowFeedbackForm: boolean;
+    isLastMessage: boolean;
+    userInfo: Pick<Host.InspectorFrontendHostAPI.SyncInformation, 'accountImage' | 'accountFullName'>;
+    markdownRenderer: MarkdownLitRenderer;
+    onSuggestionClick: (suggestion: string) => void;
+    onFeedbackSubmit: (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void;
+    onCopyResponseClick: (message: ModelChatMessage) => void;
     constructor(element?: HTMLElement, view?: View);
     wasShown(): void;
     performUpdate(): Promise<void> | void;

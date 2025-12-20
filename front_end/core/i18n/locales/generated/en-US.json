@@ -5993,11 +5993,11 @@
   "panels/common/BadgeNotification.ts | manageSettings": {
     "message": "Manage settings"
   },
+  "panels/common/BadgeNotification.ts | noThanks": {
+    "message": "No thanks"
+  },
   "panels/common/BadgeNotification.ts | receiveBadges": {
     "message": "Turn on badges"
-  },
-  "panels/common/BadgeNotification.ts | remindMeLater": {
-    "message": "Remind me later"
   },
   "panels/common/BadgeNotification.ts | starterBadgeAwardMessageNoGdpProfile": {
     "message": "You earned the {PH1} badge for the {PH2}! Create a profile to claim your badge."
@@ -6013,6 +6013,9 @@
   },
   "panels/common/common.ts | cancel": {
     "message": "Cancel"
+  },
+  "panels/common/CopyChangesToPrompt.ts | responseCopiedToClipboard": {
+    "message": "Response copied to clipboard"
   },
   "panels/common/DOMLinkifier.ts | node": {
     "message": "<node>"

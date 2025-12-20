@@ -611,9 +611,6 @@ var InspectorFrontendHostStub = class {
       },
       devToolsFlexibleLayout: {
         verticalDrawerEnabled: true
-      },
-      devToolsStartingStyleDebugging: {
-        enabled: false
       }
     };
     if ("hostConfigForTesting" in globalThis) {

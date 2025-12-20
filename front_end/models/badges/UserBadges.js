@@ -66,24 +66,41 @@ export class UserBadges extends Common.ObjectWrapper.ObjectWrapper {
         // @ts-expect-error
         this.#badgeActionEventTarget.dispatchEventToListeners(action);
     }
+    async #resolveBadgeTriggerReason(badge) {
+        if (!badge.isStarterBadge) {
+            return "Award" /* BadgeTriggerReason.AWARD */;
+        }
+        const getProfileResponse = await Host.GdpClient.GdpClient.instance().getProfile();
+        // The `getProfile` call failed and returned a `null`.
+        // For that case, we don't show anything.
+        if (!getProfileResponse) {
+            return;
+        }
+        const hasGdpProfile = Boolean(getProfileResponse.profile);
+        const receiveBadgesSettingEnabled = Boolean(this.#receiveBadgesSetting.get());
+        // If the user already has a GDP profile and the receive badges setting enabled,
+        // starter badge behaves as if it's an activity based badge.
+        if (hasGdpProfile && receiveBadgesSettingEnabled) {
+            return "Award" /* BadgeTriggerReason.AWARD */;
+        }
+        if (this.#isStarterBadgeDismissed() || this.#isStarterBadgeSnoozed()) {
+            return;
+        }
+        // If the user already has a GDP profile and the receive badges setting disabled,
+        // starter badge behaves as a nudge for opting into receiving badges.
+        if (hasGdpProfile && !receiveBadgesSettingEnabled) {
+            return "StarterBadgeSettingsNudge" /* BadgeTriggerReason.STARTER_BADGE_SETTINGS_NUDGE */;
+        }
+        // The user does not have a GDP profile, starter badge acts as a nudge for creating a GDP profile.
+        return "StarterBadgeProfileNudge" /* BadgeTriggerReason.STARTER_BADGE_PROFILE_NUDGE */;
+    }
     async #onTriggerBadge(badge, opts) {
         const triggerTime = Date.now();
-        let shouldAwardBadge = false;
-        // By default, we award non-starter badges directly when they are triggered.
-        if (!badge.isStarterBadge) {
-            shouldAwardBadge = true;
+        const reason = await this.#resolveBadgeTriggerReason(badge);
+        if (!reason) {
+            return;
         }
-        else {
-            const getProfileResponse = await Host.GdpClient.GdpClient.instance().getProfile();
-            const receiveBadgesSettingEnabled = Boolean(this.#receiveBadgesSetting.get());
-            // If there is a GDP profile and the user has enabled receiving badges, we award the starter badge as well.
-            if (getProfileResponse?.profile && receiveBadgesSettingEnabled && !this.#isStarterBadgeDismissed() &&
-                !this.#isStarterBadgeSnoozed()) {
-                shouldAwardBadge = true;
-            }
-        }
-        // Awarding was needed and not successful, we don't show the notification
-        if (shouldAwardBadge) {
+        if (reason === "Award" /* BadgeTriggerReason.AWARD */) {
             const result = await Host.GdpClient.GdpClient.instance().createAward({ name: badge.name });
             if (!result) {
                 return;
@@ -93,7 +110,7 @@ export class UserBadges extends Common.ObjectWrapper.ObjectWrapper {
         // We want to add exactly 1.5 second delay between the trigger action & the notification.
         const delay = opts?.immediate ? 0 : Math.max(DELAY_BEFORE_TRIGGER - timeElapsedAfterTriggerCall, 0);
         setTimeout(() => {
-            this.dispatchEventToListeners("BadgeTriggered" /* Events.BADGE_TRIGGERED */, badge);
+            this.dispatchEventToListeners("BadgeTriggered" /* Events.BADGE_TRIGGERED */, { badge, reason });
         }, delay);
     }
     #deactivateAllBadges() {

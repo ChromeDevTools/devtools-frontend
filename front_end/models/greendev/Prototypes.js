@@ -27,7 +27,8 @@ export class Prototypes {
         const inlineWidgets = settings.createSetting('greendev-inline-widgets-enabled', false, "Local" /* Common.Settings.SettingStorageType.LOCAL */);
         const aiAnnotations = settings.createSetting('greendev-ai-annotations-enabled', false, "Local" /* Common.Settings.SettingStorageType.LOCAL */);
         const artifactViewer = settings.createSetting('greendev-artifact-viewer-enabled', false, "Local" /* Common.Settings.SettingStorageType.LOCAL */);
-        return { inDevToolsFloaty, inlineWidgets, aiAnnotations, artifactViewer };
+        const copyToGemini = settings.createSetting('greendev-copy-to-gemini-enabled', false, "Local" /* Common.Settings.SettingStorageType.LOCAL */);
+        return { inDevToolsFloaty, inlineWidgets, aiAnnotations, artifactViewer, copyToGemini };
     }
 }
 //# sourceMappingURL=Prototypes.js.map

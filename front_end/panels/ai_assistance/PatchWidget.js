@@ -10,6 +10,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
+import * as GreenDev from '../../models/greendev/greendev.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as WorkspaceDiff from '../../models/workspace_diff/workspace_diff.js';
@@ -166,7 +167,9 @@ const DEFAULT_VIEW = (input, output, target) => {
           class="link"
           title="${UIStringsNotTranslate.viewUploadedFiles} ${UIStringsNotTranslate.opensInNewTab}"
           href="data:text/plain;charset=utf-8,${encodeURIComponent(input.sources)}"
-          jslog=${VisualLogging.link('files-used-in-patching').track({ click: true })}>
+          jslog=${VisualLogging.link('files-used-in-patching').track({
+            click: true
+        })}>
           ${UIStringsNotTranslate.viewUploadedFiles}
         </x-link>`;
     }
@@ -218,11 +221,23 @@ const DEFAULT_VIEW = (input, output, target) => {
           .codeLang=${'css'}
           .displayNotice=${true}
         ></devtools-code-block>
-        ${input.patchSuggestionState === PatchSuggestionState.ERROR
-            ? html `<div class="error-container">
+        ${input.patchSuggestionState === PatchSuggestionState.ERROR ?
+            html `<div class="error-container">
               <devtools-icon name="cross-circle-filled"></devtools-icon>${lockedString(UIStringsNotTranslate.genericErrorMessage)} ${renderSourcesLink()}
-            </div>`
-            : nothing}`;
+            </div>` :
+            nothing}`;
+    }
+    function renderCopyPrompt(changedCode) {
+        if (!GreenDev.Prototypes.instance().isEnabled('copyToGemini') || !changedCode) {
+            return nothing;
+        }
+        // clang-format off
+        return html `<devtools-widget class="copy-to-prompt"
+      .widgetConfig=${UI.Widget.widgetConfig(PanelCommon.CopyChangesToPrompt, {
+            workspaceDiff: input.workspaceDiff,
+            patchAgentCSSChange: changedCode,
+        })}></devtools-widget>`;
+        // clang-format on
     }
     function renderFooter() {
         if (input.savedToDisk) {
@@ -256,7 +271,9 @@ const DEFAULT_VIEW = (input, output, target) => {
           </div>
           `;
         }
-        const iconName = input.projectType === SelectedProjectType.AUTOMATIC_DISCONNECTED ? 'folder-off' : input.projectType === SelectedProjectType.AUTOMATIC_CONNECTED ? 'folder-asterisk' : 'folder';
+        const iconName = input.projectType === SelectedProjectType.AUTOMATIC_DISCONNECTED ? 'folder-off' :
+            input.projectType === SelectedProjectType.AUTOMATIC_CONNECTED ? 'folder-asterisk' :
+                'folder';
         return html `
         <div class="footer">
           ${input.projectName ? html `
@@ -288,6 +305,7 @@ const DEFAULT_VIEW = (input, output, target) => {
               </div>
             ` :
             html `
+               ${renderCopyPrompt(input.changeSummary)}
                 <devtools-button
                 @click=${input.onApplyToWorkspace}
                 .jslogContext=${'patch-widget.apply-to-workspace'}
@@ -329,14 +347,13 @@ const DEFAULT_VIEW = (input, output, target) => {
     }
     // Use a simple div for the "Saved to disk" state as it's not expandable,
     // otherwise use the interactive <details> element.
-    const template = input.savedToDisk
-        ? html `
+    const template = input.savedToDisk ? html `
           <div class="change-summary saved-to-disk" role="status" aria-live="polite">
             <div class="header-container">
              ${renderHeader()}
              </div>
-          </div>`
-        : html `
+          </div>` :
+        html `
           <details class="change-summary" jslog=${VisualLogging.section('patch-widget')}>
             <summary class="header-container" ${Directives.ref(output.summaryRef)}>
               ${renderHeader()}

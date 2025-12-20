@@ -1,5 +1,7 @@
+import '../../../ui/components/tooltips/tooltips.js';
 import type * as Host from '../../../core/host/host.js';
-import * as Platform from '../../../core/platform/platform.js';
+import type * as Platform from '../../../core/platform/platform.js';
+import * as SDK from '../../../core/sdk/sdk.js';
 import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
@@ -22,9 +24,9 @@ export interface ViewInput {
     additionalFloatyContext: UI.Floaty.FloatyContextSelection[];
     disclaimerText: string;
     conversationType: AiAssistanceModel.AiHistoryStorage.ConversationType;
-    multimodalInputEnabled?: boolean;
+    multimodalInputEnabled: boolean;
     imageInput?: ImageInputData;
-    uploadImageInputEnabled?: boolean;
+    uploadImageInputEnabled: boolean;
     isReadOnly: boolean;
     textAreaRef: Lit.Directives.Ref<HTMLTextAreaElement>;
     onContextClick: () => void;
@@ -43,7 +45,7 @@ export declare const DEFAULT_VIEW: (input: ViewInput, output: ViewOutput, target
 /**
  * ChatInput is a presenter for the input area in the AI Assistance panel.
  */
-export declare class ChatInput extends UI.Widget.Widget {
+export declare class ChatInput extends UI.Widget.Widget implements SDK.TargetManager.Observer {
     #private;
     isLoading: boolean;
     blockedByCrossOrigin: boolean;
@@ -54,9 +56,8 @@ export declare class ChatInput extends UI.Widget.Widget {
     additionalFloatyContext: UI.Floaty.FloatyContextSelection[];
     disclaimerText: string;
     conversationType: AiAssistanceModel.AiHistoryStorage.ConversationType;
-    multimodalInputEnabled?: boolean;
-    imageInput: ImageInputData | undefined;
-    uploadImageInputEnabled?: boolean;
+    multimodalInputEnabled: boolean;
+    uploadImageInputEnabled: boolean;
     isReadOnly: boolean;
     setInputValue(text: string): void;
     onTextSubmit: (text: string, imageInput?: Host.AidaClient.Part, multimodalInputType?: AiAssistanceModel.AiAgent.MultimodalInputType) => void;
@@ -64,10 +65,11 @@ export declare class ChatInput extends UI.Widget.Widget {
     onInspectElementClick: () => void;
     onCancelClick: () => void;
     onNewConversation: () => void;
-    onTakeScreenshot: () => void;
-    onRemoveImageInput: () => void;
-    onLoadImage: (_file: File) => Promise<void>;
+    targetAdded(_target: SDK.Target.Target): void;
+    targetRemoved(_target: SDK.Target.Target): void;
     constructor(element?: HTMLElement, view?: typeof DEFAULT_VIEW);
+    wasShown(): void;
+    willHide(): void;
     performUpdate(): void;
     focusTextInput(): void;
     onSubmit: (event: SubmitEvent) => void;

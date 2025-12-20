@@ -16,7 +16,7 @@ interface ViewInput {
     estimatedSavingsAriaLabel: string | null;
     renderContent: () => Lit.LitTemplate;
     dispatchInsightToggle: () => void;
-    onHeaderKeyDown: () => void;
+    onHeaderKeyDown: (event: KeyboardEvent) => void;
     onAskAIButtonClick: () => void;
 }
 type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;

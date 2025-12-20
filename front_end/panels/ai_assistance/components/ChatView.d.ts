@@ -1,56 +1,11 @@
 import '../../../ui/components/spinners/spinners.js';
 import * as Host from '../../../core/host/host.js';
 import type * as Platform from '../../../core/platform/platform.js';
-import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
+import type * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
 import type { MarkdownLitRenderer } from '../../../ui/components/markdown_view/MarkdownView.js';
 import * as UI from '../../../ui/legacy/legacy.js';
-export interface Step {
-    isLoading: boolean;
-    thought?: string;
-    title?: string;
-    code?: string;
-    output?: string;
-    canceled?: boolean;
-    sideEffect?: ConfirmSideEffectDialog;
-    contextDetails?: [AiAssistanceModel.AiAgent.ContextDetail, ...AiAssistanceModel.AiAgent.ContextDetail[]];
-}
-interface ConfirmSideEffectDialog {
-    onAnswer: (result: boolean) => void;
-}
-export declare const enum ChatMessageEntity {
-    MODEL = "model",
-    USER = "user"
-}
-export type ImageInputData = {
-    isLoading: true;
-} | {
-    isLoading: false;
-    data: string;
-    mimeType: string;
-    inputType: AiAssistanceModel.AiAgent.MultimodalInputType;
-};
-export interface AnswerPart {
-    type: 'answer';
-    text: string;
-    suggestions?: [string, ...string[]];
-}
-export interface StepPart {
-    type: 'step';
-    step: Step;
-}
-export type ModelMessagePart = AnswerPart | StepPart;
-export interface UserChatMessage {
-    entity: ChatMessageEntity.USER;
-    text: string;
-    imageInput?: Host.AidaClient.Part;
-}
-export interface ModelChatMessage {
-    entity: ChatMessageEntity.MODEL;
-    parts: ModelMessagePart[];
-    error?: AiAssistanceModel.AiAgent.ErrorType;
-    rpcId?: Host.AidaClient.RpcGlobalId;
-}
-export type ChatMessage = UserChatMessage | ModelChatMessage;
+import { type ChatMessage, type ModelChatMessage } from './UserActionRow.js';
+export { ChatInput, type ImageInputData } from './ChatInput.js';
 export interface Props {
     onTextSubmit: (text: string, imageInput?: Host.AidaClient.Part, multimodalInputType?: AiAssistanceModel.AiAgent.MultimodalInputType) => void;
     onInspectElementClick: () => void;
@@ -59,9 +14,6 @@ export interface Props {
     onContextClick: () => void;
     onNewConversation: () => void;
     onCopyResponseClick: (message: ModelChatMessage) => void;
-    onTakeScreenshot: () => void;
-    onRemoveImageInput: () => void;
-    onLoadImage: (file: File) => Promise<void>;
     changeManager: AiAssistanceModel.ChangeManager.ChangeManager;
     inspectElementToggled: boolean;
     messages: ChatMessage[];
@@ -74,7 +26,6 @@ export interface Props {
     blockedByCrossOrigin: boolean;
     changeSummary?: string;
     multimodalInputEnabled?: boolean;
-    imageInput?: ImageInputData;
     isTextInputDisabled: boolean;
     emptyStateSuggestions: AiAssistanceModel.AiAgent.ConversationSuggestion[];
     inputPlaceholder: Platform.UIString.LocalizedString;
@@ -99,4 +50,3 @@ declare global {
         'devtools-ai-chat-view': ChatView;
     }
 }
-export {};

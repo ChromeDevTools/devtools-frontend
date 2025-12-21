@@ -1869,6 +1869,13 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
       Promise<UI.SuggestBox.Suggestions> {
     const lowerQuery = query.toLowerCase();
     const editingVariable = !this.isEditingName && expression.trim().endsWith('var(');
+    if (this.isEditingName && expression) {
+      const invalidCharsRegex = /["':;,\s()]/;
+      if (invalidCharsRegex.test(expression)) {
+        return await Promise.resolve([]);
+      }
+    }
+
     if (!query && !force && !editingVariable && (this.isEditingName || expression)) {
       return await Promise.resolve([]);
     }

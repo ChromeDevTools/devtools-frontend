@@ -823,6 +823,37 @@ describe('StylesSidebarPane', () => {
         assert.strictEqual(completions?.[1].text, 'overflow-wrap');
         assert.strictEqual(completions?.[1].subtitle, '= word-wrap');
       });
+
+      it('returns no completions when property name contains invalid characters', async () => {
+        const attachedElement = document.createElement('div');
+        renderElementIntoDOM(attachedElement);
+        const cssPropertyPrompt = new CSSPropertyPrompt(mockTreeItem, true);
+
+        cssPropertyPrompt.attachAndStartEditing(attachedElement, noop);
+        const suggestBox = cssPropertyPrompt.suggestBoxForTest();
+        assert.exists(suggestBox);
+        const spyObj = sinon.spy(suggestBox);
+
+        cssPropertyPrompt.setText('height"');
+        await cssPropertyPrompt.complete(true);
+
+        sinon.assert.notCalled(spyObj.updateSuggestions);
+      });
+
+      it('allows completions for valid property names', async () => {
+        const attachedElement = document.createElement('div');
+        renderElementIntoDOM(attachedElement);
+        const cssPropertyPrompt = new CSSPropertyPrompt(mockTreeItem, true);
+
+        cssPropertyPrompt.attachAndStartEditing(attachedElement, noop);
+        const spyObj = sinon.spy(cssPropertyPrompt.suggestBoxForTest());
+        cssPropertyPrompt.setText('backgrou');
+        await cssPropertyPrompt.complete(true);
+
+        assert.isTrue(spyObj?.updateSuggestions.called);
+        const completions = spyObj?.updateSuggestions.firstCall.args[1];
+        assert.isAbove(completions.length, 0);
+      });
     });
   });
 });

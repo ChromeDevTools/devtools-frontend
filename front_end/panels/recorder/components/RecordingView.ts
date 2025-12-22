@@ -362,6 +362,7 @@ function renderSettings({
           class=${Lit.Directives.classMap(replaySettingsButtonClassMap)}
           @keydown=${isEditable && onReplaySettingsKeydown}
           @click=${isEditable && onToggleReplaySettings}
+          aria-expanded=${replaySettingsButtonClassMap.expanded ?? false}
           tabindex="0"
           role="button"
           jslog=${VisualLogging.action('replay-settings').track({click: true})}

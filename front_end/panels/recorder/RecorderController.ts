@@ -43,9 +43,17 @@ const UIStrings = {
    */
   importRecording: 'Import recording',
   /**
+   * @description The announcement text for screen readers when a recording is imported.
+   */
+  recordingImported: 'Recording imported',
+  /**
    * @description The title of the button that deletes the recording
    */
   deleteRecording: 'Delete recording',
+  /**
+   * @description The announcement text for screen readers when a recording is deleted.
+   */
+  recordingDeleted: 'Recording deleted',
   /**
    * @description The title of the select if user has no saved recordings
    */
@@ -88,6 +96,10 @@ const UIStrings = {
    * panel that is followed by the list of built-in export formats.
    */
   export: 'Export',
+  /**
+   * @description The announcement text for screen readers when a recording is exported successfully.
+   */
+  recordingExported: 'Recording exported',
   /**
    * @description The title of the menu group in the export menu of the Recorder
    * panel that is followed by the list of export formats available via browser
@@ -333,6 +345,7 @@ export class RecorderController extends LitElement {
     this.#setCurrentRecording(await this.#storage.saveRecording(flow));
     this.#setCurrentPage(Pages.RECORDING_PAGE);
     this.#clearError();
+    UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.recordingImported));
   }
 
   setCurrentRecordingForTesting(recording: StoredRecording|undefined): void {
@@ -787,6 +800,7 @@ export class RecorderController extends LitElement {
       await this.#storage.deleteRecording(this.currentRecording.storageName);
       this.#screenshotStorage.deleteScreenshotsForRecording(this.currentRecording.storageName);
     }
+    UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.recordingDeleted));
     if ((await this.#storage.getRecordings()).length) {
       this.#setCurrentPage(Pages.ALL_RECORDINGS_PAGE);
     } else {
@@ -944,8 +958,10 @@ export class RecorderController extends LitElement {
     const builtInMetric = CONVERTER_ID_TO_METRIC[converter.getId()];
     if (builtInMetric) {
       Host.userMetrics.recordingExported(builtInMetric);
+      UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.recordingExported));
     } else if (converter.getId().startsWith(Converters.ExtensionConverter.EXTENSION_PREFIX)) {
       Host.userMetrics.recordingExported(Host.UserMetrics.RecordingExported.TO_EXTENSION);
+      UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.recordingExported));
     } else {
       throw new Error('Could not find a metric for the export option with id = ' + id);
     }

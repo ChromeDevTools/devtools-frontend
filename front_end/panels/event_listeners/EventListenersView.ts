@@ -347,7 +347,8 @@ export class ObjectEventListenerBar extends UI.TreeOutline.TreeElement {
     }
 
     const subtitle = title.createChild('span', 'event-listener-tree-subtitle');
-    const linkElement = linkifier.linkifyRawLocation(this.#eventListener.location(), this.#eventListener.sourceURL());
+    const linkElement = linkifier.linkifyRawLocation(
+        this.#eventListener.location(), this.#eventListener.sourceURL(), undefined, {tabStop: true});
     subtitle.appendChild(linkElement);
 
     this.listItemElement.addEventListener('contextmenu', event => {

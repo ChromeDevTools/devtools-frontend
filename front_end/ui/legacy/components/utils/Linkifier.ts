@@ -320,13 +320,14 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
   }
 
   linkifyRawLocation(
-      rawLocation: SDK.DebuggerModel.Location, fallbackUrl: Platform.DevToolsPath.UrlString,
-      className?: string): HTMLElement {
+      rawLocation: SDK.DebuggerModel.Location, fallbackUrl: Platform.DevToolsPath.UrlString, className?: string,
+      options?: LinkifyOptions): HTMLElement {
     return this.linkifyScriptLocation(
         rawLocation.debuggerModel.target(), rawLocation.scriptId, fallbackUrl, rawLocation.lineNumber, {
           columnNumber: rawLocation.columnNumber,
           className,
           inlineFrameIndex: rawLocation.inlineFrameIndex,
+          tabStop: options?.tabStop,
         });
   }
 

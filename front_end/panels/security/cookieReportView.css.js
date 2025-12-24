@@ -78,4 +78,20 @@ devtools-data-grid {
   height: var(--sys-size-11);
 }
 
+.deprecation-divider {
+  border-bottom: 1px solid var(--sys-color-divider);
+  margin-left: calc(var(--sys-size-5) * -1);
+  margin-right: calc(var(--sys-size-3) * -1);
+  margin-top: var(--sys-size-2);
+}
+
+.deprecation-warning {
+  padding: 0 var(--sys-size-5);
+  margin-bottom: var(--sys-size-6);
+}
+
+.deprecation-warning > .body:first-child {
+  margin-bottom: var(--sys-size-4);
+}
+
 /*# sourceURL=${import.meta.resolve('./cookieReportView.css')} */`;

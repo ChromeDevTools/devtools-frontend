@@ -12191,6 +12191,9 @@
   "panels/search/SearchView.ts | typeAndPressSToSearch": {
     "message": "Type and press {PH1} to search"
   },
+  "panels/security/CookieControlsView.ts | blogPostLink": {
+    "message": "maintaining its current approach to user choice for third-party cookies"
+  },
   "panels/security/CookieControlsView.ts | cardDisclaimer": {
     "message": "Only when DevTools is open"
   },
@@ -12230,11 +12233,17 @@
   "panels/security/CookieControlsView.ts | heuristicTitle": {
     "message": "Heuristics based exception"
   },
+  "panels/security/CookieControlsView.ts | lowerDeprecationWarning": {
+    "message": "The Controls and Third-Party cookie sections will be removed and the Privacy and Security panel will revert to its former name, the Security panel. As always, third-party cookies can be inspected from the Cookies pane in the Application panel."
+  },
   "panels/security/CookieControlsView.ts | scenarios": {
     "message": "predefined scenarios"
   },
   "panels/security/CookieControlsView.ts | siteReloadMessage": {
     "message": "To apply your updated controls, reload the page"
+  },
+  "panels/security/CookieControlsView.ts | upperDeprecationWarning": {
+    "message": "Chrome is {PH1} and third-party cookie exceptions are being phased out."
   },
   "panels/security/CookieControlsView.ts | viewDetails": {
     "message": "View details"
@@ -12259,6 +12268,9 @@
   },
   "panels/security/CookieReportView.ts | blocked": {
     "message": "Blocked"
+  },
+  "panels/security/CookieReportView.ts | blogPostLink": {
+    "message": "maintaining its current approach to user choice for third-party cookies"
   },
   "panels/security/CookieReportView.ts | body": {
     "message": "This site might not work if third-party cookies and other cookies are limited in Chrome."
@@ -12301,6 +12313,9 @@
   },
   "panels/security/CookieReportView.ts | learnMoreLink": {
     "message": "Learn more about how third-party cookies are used"
+  },
+  "panels/security/CookieReportView.ts | lowerDeprecationWarning": {
+    "message": "The Controls and Third-Party cookie sections will be removed and the Privacy and Security panel will revert to its former name, the Security panel. As always, third-party cookies can be inspected from the Cookies pane in the Application panel."
   },
   "panels/security/CookieReportView.ts | marketingCookieTypeString": {
     "message": "Marketing"
@@ -12346,6 +12361,9 @@
   },
   "panels/security/CookieReportView.ts | unknown": {
     "message": "Unknown"
+  },
+  "panels/security/CookieReportView.ts | upperDeprecationWarning": {
+    "message": "Chrome is {PH1} and third-party cookie exceptions are being phased out."
   },
   "panels/security/CookieReportView.ts | utilityCookieTypeString": {
     "message": "Utility"

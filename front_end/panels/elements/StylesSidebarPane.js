@@ -1533,6 +1533,12 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
     async buildPropertyCompletions(expression, query, force) {
         const lowerQuery = query.toLowerCase();
         const editingVariable = !this.isEditingName && expression.trim().endsWith('var(');
+        if (this.isEditingName && expression) {
+            const invalidCharsRegex = /["':;,\s()]/;
+            if (invalidCharsRegex.test(expression)) {
+                return await Promise.resolve([]);
+            }
+        }
         if (!query && !force && !editingVariable && (this.isEditingName || expression)) {
             return await Promise.resolve([]);
         }

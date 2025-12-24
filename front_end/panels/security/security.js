@@ -155,6 +155,19 @@ input[type="checkbox"] {
   color: var(--sys-color-on-surface-subtle);
 }
 
+.deprecation-divider {
+  border-bottom: 1px solid var(--sys-color-divider);
+  margin: var(--sys-size-2) calc(var(--sys-size-3) * -1) var(--sys-size-6) calc(var(--sys-size-5) * -1);
+}
+
+.deprecation-warning {
+  padding: 0 var(--sys-size-5);
+}
+
+.deprecation-warning > .body:first-child {
+  margin-bottom: var(--sys-size-4);
+}
+
 /*# sourceURL=${import.meta.resolve("./cookieControlsView.css")} */`;
 
 // gen/front_end/panels/security/CookieControlsView.js
@@ -235,7 +248,20 @@ var UIStrings = {
    * @description Text shown when the Third-party Cookie Metadata Grants flag or Third-party Cookie Heuristics Grants flag is disabled with a link to the flag in chrome://flags/.
    * @example {#tpcd-heuristics-grants} PH1
    */
-  enableFlag: "To use this, set {PH1} to Default"
+  enableFlag: "To use this, set {PH1} to Default",
+  /**
+   * @description First part of the deprecation warning message.
+   * @example {maintaining its current approach to user choice for third-party cookies} PH1
+   */
+  upperDeprecationWarning: "Chrome is {PH1} and third-party cookie exceptions are being phased out.",
+  /**
+   * @description Text for the blog post link inside the deprecation warning.
+   */
+  blogPostLink: "maintaining its current approach to user choice for third-party cookies",
+  /**
+   * @description Second part of the deprecation warning message.
+   */
+  lowerDeprecationWarning: "The Controls and Third-Party cookie sections will be removed and the Privacy and Security panel will revert to its former name, the Security panel. As always, third-party cookies can be inspected from the Cookies pane in the Application panel."
 };
 var str_ = i18n.i18n.registerUIStrings("panels/security/CookieControlsView.ts", UIStrings);
 var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);
@@ -382,6 +408,24 @@ var DEFAULT_VIEW = (input, _output, target) => {
           </devtools-button>
         </div>
       </div>
+      <div class="deprecation-divider"></div>
+    `;
+  const deprecationMessage = html`
+      <div class="deprecation-warning">
+        <div class="body">
+          <devtools-icon
+            name="warning"
+            class="medium"
+            style="color: var(--icon-warning); margin-right: var(--sys-size-2);">
+          </devtools-icon>
+          ${i18nFormatString(UIStrings.upperDeprecationWarning, {
+    PH1: UI.Fragment.html`<x-link class="devtools-link" href="https://privacysandbox.com/news/privacy-sandbox-update/" jslog=${VisualLogging.link("privacy-sandbox-update").track({ click: true })}>${i18nString(UIStrings.blogPostLink)}</x-link>`
+  })}
+        </div>
+        <div class="body">
+          ${i18nString(UIStrings.lowerDeprecationWarning)}
+        </div>
+      </div>
     `;
   render(html`
       <div class="overflow-auto">
@@ -404,6 +448,7 @@ var DEFAULT_VIEW = (input, _output, target) => {
             </div>
           </devtools-card>
           ${Boolean(enterpriseEnabledSetting.get()) ? enterpriseDisclaimer : nothing}
+          ${deprecationMessage}
         </div>
       </div>
     `, target);
@@ -493,6 +538,7 @@ var CookieControlsView = class extends UI.Widget.VBox {
 var CookieReportView_exports = {};
 __export(CookieReportView_exports, {
   CookieReportView: () => CookieReportView,
+  i18nFormatString: () => i18nFormatString2,
   i18nString: () => i18nString2
 });
 import "./../../ui/legacy/components/data_grid/data_grid.js";
@@ -581,6 +627,22 @@ devtools-data-grid {
 .cookie-off {
   width: var(--sys-size-11);
   height: var(--sys-size-11);
+}
+
+.deprecation-divider {
+  border-bottom: 1px solid var(--sys-color-divider);
+  margin-left: calc(var(--sys-size-5) * -1);
+  margin-right: calc(var(--sys-size-3) * -1);
+  margin-top: var(--sys-size-2);
+}
+
+.deprecation-warning {
+  padding: 0 var(--sys-size-5);
+  margin-bottom: var(--sys-size-6);
+}
+
+.deprecation-warning > .body:first-child {
+  margin-bottom: var(--sys-size-4);
 }
 
 /*# sourceURL=${import.meta.resolve("./cookieReportView.css")} */`;
@@ -733,11 +795,42 @@ var UIStrings2 = {
   /**
    * @description String that shows up in the context menu when right clicking one of the entries in the cookie report.
    */
-  showRequestsWithThisCookie: "Show requests with this cookie"
+  showRequestsWithThisCookie: "Show requests with this cookie",
+  /**
+   * @description First part of the deprecation warning message.
+   * @example {maintaining its current approach to user choice for third-party cookies} PH1
+   */
+  upperDeprecationWarning: "Chrome is {PH1} and third-party cookie exceptions are being phased out.",
+  /**
+   * @description Text for the blog post link inside the deprecation warning.
+   */
+  blogPostLink: "maintaining its current approach to user choice for third-party cookies",
+  /**
+   * @description Second part of the deprecation warning message.
+   */
+  lowerDeprecationWarning: "The Controls and Third-Party cookie sections will be removed and the Privacy and Security panel will revert to its former name, the Security panel. As always, third-party cookies can be inspected from the Cookies pane in the Application panel."
 };
 var str_2 = i18n3.i18n.registerUIStrings("panels/security/CookieReportView.ts", UIStrings2);
 var i18nString2 = i18n3.i18n.getLocalizedString.bind(void 0, str_2);
+var i18nFormatString2 = uiI18n2.getFormatLocalizedString.bind(void 0, str_2);
 var DEFAULT_VIEW2 = (input, output, target) => {
+  const deprecationMessage = html2`
+    <div class="deprecation-warning">
+      <div class="body">
+        <devtools-icon
+          name="warning"
+          class="medium"
+          style="color: var(--icon-warning); margin-right: var(--sys-size-2);">
+        </devtools-icon>
+        ${i18nFormatString2(UIStrings2.upperDeprecationWarning, {
+    PH1: UI2.Fragment.html`<x-link class="devtools-link" href="https://privacysandbox.com/news/privacy-sandbox-update/" jslog=${VisualLogging2.link("privacy-sandbox-update").track({ click: true })}>${i18nString2(UIStrings2.blogPostLink)}</x-link>`
+  })}
+      </div>
+      <div class="body">
+        ${i18nString2(UIStrings2.lowerDeprecationWarning)}
+      </div>
+    </div>
+  `;
   render2(html2`
         <div class="report overflow-auto">
             <div class="header">
@@ -808,7 +901,10 @@ var DEFAULT_VIEW2 = (input, output, target) => {
                     ${i18nString2(UIStrings2.emptyReportExplanation)}
                   </div>
                 </div>
+                <div class="deprecation-divider"></div>
               `}
+
+            ${deprecationMessage}
 
         </div>
     `, target);

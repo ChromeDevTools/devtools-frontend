@@ -2973,6 +2973,7 @@ var knownContextValues = /* @__PURE__ */ new Set([
   "privacy-notice",
   "privacy-policy",
   "privacy-policy.console-insights",
+  "privacy-sandbox-update",
   "private-state-tokens",
   "production-origin",
   "profile-loading-failed",

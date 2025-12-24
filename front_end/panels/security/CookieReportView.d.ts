@@ -6,6 +6,7 @@ import type * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 export declare const i18nString: (id: string, values?: import("../../core/i18n/i18nTypes.js").Values | undefined) => Common.UIString.LocalizedString;
+export declare const i18nFormatString: (stringId: string, placeholders: Record<string, string | Node>) => HTMLSpanElement;
 export interface ViewInput {
     cookieRows: IssuesManager.CookieIssue.CookieReportInfo[];
     filterItems: UI.FilterBar.Item[];

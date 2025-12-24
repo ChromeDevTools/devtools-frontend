@@ -130,4 +130,17 @@ input[type="checkbox"] {
   color: var(--sys-color-on-surface-subtle);
 }
 
+.deprecation-divider {
+  border-bottom: 1px solid var(--sys-color-divider);
+  margin: var(--sys-size-2) calc(var(--sys-size-3) * -1) var(--sys-size-6) calc(var(--sys-size-5) * -1);
+}
+
+.deprecation-warning {
+  padding: 0 var(--sys-size-5);
+}
+
+.deprecation-warning > .body:first-child {
+  margin-bottom: var(--sys-size-4);
+}
+
 /*# sourceURL=${import.meta.resolve('./cookieControlsView.css')} */`;

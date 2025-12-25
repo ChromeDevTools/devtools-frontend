@@ -939,6 +939,7 @@ var HeaderSectionRow = class extends HTMLElement {
       ${showEditHeaderButton ? html3`
         <devtools-button
           title=${i18nString2(UIStrings2.editHeader)}
+          .accessibleLabel=${i18nString2(UIStrings2.editHeader)}
           .size=${"SMALL"}
           .iconName=${"edit"}
           .variant=${"icon"}

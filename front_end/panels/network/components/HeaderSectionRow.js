@@ -194,6 +194,7 @@ export class HeaderSectionRow extends HTMLElement {
       ${showEditHeaderButton ? html `
         <devtools-button
           title=${i18nString(UIStrings.editHeader)}
+          .accessibleLabel=${i18nString(UIStrings.editHeader)}
           .size=${"SMALL" /* Buttons.Button.Size.SMALL */}
           .iconName=${'edit'}
           .variant=${"icon" /* Buttons.Button.Variant.ICON */}

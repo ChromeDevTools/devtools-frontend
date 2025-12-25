@@ -3677,6 +3677,7 @@ function renderSingleCSP(cspInfo, divider) {
           <devtools-button
             .iconName=${"help"}
             class='help-button'
+            .accessibleLabel=${i18nString6(UIStrings6.learnMore)}
             .variant=${"icon"}
             .size=${"SMALL"}
             @click=${() => {

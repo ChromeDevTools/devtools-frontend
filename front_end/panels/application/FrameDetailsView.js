@@ -581,6 +581,7 @@ function renderSingleCSP(cspInfo, divider) {
           <devtools-button
             .iconName=${'help'}
             class='help-button'
+            .accessibleLabel=${i18nString(UIStrings.learnMore)}
             .variant=${"icon" /* Buttons.Button.Variant.ICON */}
             .size=${"SMALL" /* Buttons.Button.Size.SMALL */}
             @click=${() => { window.location.href = 'https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy-Report-Only'; }}

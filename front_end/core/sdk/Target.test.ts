@@ -40,7 +40,9 @@ describe('Target', () => {
     assert.isFalse(subframeTarget.hasAllCapabilities(SDK.Target.Capability.DEVICE_EMULATION));
   });
 
-  it('should grant STORAGE capability to top-level workers', () => {
+  // Temporarily disabled until the root cause for the crashers in https://crbug.com/466134219 is
+  // found and resolved.
+  it.skip('[crbug.com/406991275] should grant STORAGE capability to top-level workers', () => {
     const serviceWorker = createTarget({type: SDK.Target.Type.ServiceWorker, parentTarget: browserTarget});
     const sharedWorker = createTarget({type: SDK.Target.Type.SHARED_WORKER, parentTarget: browserTarget});
     const dedicatedWorker = createTarget({type: SDK.Target.Type.Worker, parentTarget: browserTarget});

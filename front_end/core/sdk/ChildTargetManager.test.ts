@@ -260,38 +260,43 @@ describeWithMockConnection('ChildTargetManager', () => {
   });
 
   describe('Storage initialization', () => {
-    it('should initialize storage for a top-level worker with STORAGE capability', async () => {
-      const parentTarget = createTarget({type: SDK.Target.Type.BROWSER});
+    // Temporarily disabled until the root cause for the crashers in https://crbug.com/466134219 is
+    // found and resolved.
+    it.skip(
+        '[crbug.com/406991275] should initialize storage for a top-level worker with STORAGE capability', async () => {
+          const parentTarget = createTarget({type: SDK.Target.Type.BROWSER});
 
-      const getStorageKeyStub = sinon.stub().resolves({
-        storageKey: 'https://example.com/' as Protocol.Storage.SerializedStorageKey,
-        getError: () => undefined,
-      });
+          const getStorageKeyStub = sinon.stub().resolves({
+            storageKey: 'https://example.com/' as Protocol.Storage.SerializedStorageKey,
+            getError: () => undefined,
+          });
 
-      sinon.stub(SDK.Target.Target.prototype, 'storageAgent').returns({
-        invoke_getStorageKey: getStorageKeyStub,
-      } as sinon.SinonStubbedInstance<ProtocolProxyApi.StorageApi>);
+          sinon.stub(SDK.Target.Target.prototype, 'storageAgent').returns({
+            invoke_getStorageKey: getStorageKeyStub,
+          } as sinon.SinonStubbedInstance<ProtocolProxyApi.StorageApi>);
 
-      const setMainStorageKeySpy = sinon.spy(SDK.StorageKeyManager.StorageKeyManager.prototype, 'setMainStorageKey');
-      const updateStorageKeysSpy = sinon.spy(SDK.StorageKeyManager.StorageKeyManager.prototype, 'updateStorageKeys');
-      const setMainSecurityOriginSpy =
-          sinon.spy(SDK.SecurityOriginManager.SecurityOriginManager.prototype, 'setMainSecurityOrigin');
-      const updateSecurityOriginsSpy =
-          sinon.spy(SDK.SecurityOriginManager.SecurityOriginManager.prototype, 'updateSecurityOrigins');
+          const setMainStorageKeySpy =
+              sinon.spy(SDK.StorageKeyManager.StorageKeyManager.prototype, 'setMainStorageKey');
+          const updateStorageKeysSpy =
+              sinon.spy(SDK.StorageKeyManager.StorageKeyManager.prototype, 'updateStorageKeys');
+          const setMainSecurityOriginSpy =
+              sinon.spy(SDK.SecurityOriginManager.SecurityOriginManager.prototype, 'setMainSecurityOrigin');
+          const updateSecurityOriginsSpy =
+              sinon.spy(SDK.SecurityOriginManager.SecurityOriginManager.prototype, 'updateSecurityOrigins');
 
-      const childTargetManager = new SDK.ChildTargetManager.ChildTargetManager(parentTarget);
-      await childTargetManager.attachedToTarget({
-        sessionId: createSessionId(),
-        targetInfo: createTargetInfo(undefined, 'service_worker'),
-        waitingForDebugger: false,
-      });
+          const childTargetManager = new SDK.ChildTargetManager.ChildTargetManager(parentTarget);
+          await childTargetManager.attachedToTarget({
+            sessionId: createSessionId(),
+            targetInfo: createTargetInfo(undefined, 'service_worker'),
+            waitingForDebugger: false,
+          });
 
-      assert.isTrue(getStorageKeyStub.calledOnceWith({}));
-      assert.isTrue(setMainStorageKeySpy.calledOnceWith('https://example.com/'));
-      assert.isTrue(updateStorageKeysSpy.calledOnceWith(new Set(['https://example.com/'])));
-      assert.isTrue(setMainSecurityOriginSpy.calledOnceWith('https://example.com', ''));
-      assert.isTrue(updateSecurityOriginsSpy.calledOnceWith(new Set(['https://example.com'])));
-    });
+          assert.isTrue(getStorageKeyStub.calledOnceWith({}));
+          assert.isTrue(setMainStorageKeySpy.calledOnceWith('https://example.com/'));
+          assert.isTrue(updateStorageKeysSpy.calledOnceWith(new Set(['https://example.com/'])));
+          assert.isTrue(setMainSecurityOriginSpy.calledOnceWith('https://example.com', ''));
+          assert.isTrue(updateSecurityOriginsSpy.calledOnceWith(new Set(['https://example.com'])));
+        });
 
     it('should NOT initialize storage for a frame target', async () => {
       const parentTarget = createTarget();

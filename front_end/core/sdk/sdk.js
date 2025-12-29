@@ -9646,7 +9646,7 @@ var Target = class extends ProtocolClient.InspectorBackend.TargetBase {
       case Type.ServiceWorker:
         this.#capabilitiesMask = 4 | 8 | 16 | 32 | 2048 | 131072 | 524288;
         if (parentTarget?.type() !== Type.FRAME) {
-          this.#capabilitiesMask |= 1 | 8192;
+          this.#capabilitiesMask |= 1;
         }
         break;
       case Type.SHARED_WORKER:

@@ -56,7 +56,9 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
                 this.#capabilitiesMask = 4 /* Capability.JS */ | 8 /* Capability.LOG */ | 16 /* Capability.NETWORK */ | 32 /* Capability.TARGET */ |
                     2048 /* Capability.INSPECTOR */ | 131072 /* Capability.IO */ | 524288 /* Capability.EVENT_BREAKPOINTS */;
                 if (parentTarget?.type() !== Type.FRAME) {
-                    this.#capabilitiesMask |= 1 /* Capability.BROWSER */ | 8192 /* Capability.STORAGE */;
+                    // TODO(crbug.com/406991275): This should also grant the `STORAGE` capability, but first the
+                    // crashers in https://crbug.com/466134219 have to be resolved.
+                    this.#capabilitiesMask |= 1 /* Capability.BROWSER */;
                 }
                 break;
             case Type.SHARED_WORKER:

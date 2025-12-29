@@ -134,6 +134,7 @@ export interface ViewInput {
   onTakeScreenshot: () => void;
   onRemoveImageInput: () => void;
   onImageUpload: (ev: Event) => void;
+  onImagePaste: (event: ClipboardEvent) => void;
 }
 
 export type ViewOutput = undefined;
@@ -287,6 +288,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
               wrap="hard"
               maxlength="10000"
               @keydown=${input.onTextAreaKeyDown}
+              @paste=${input.onImagePaste}
               @input=${(event: KeyboardEvent) => {
                 input.onTextInputChange((event.target as HTMLInputElement).value);
               }}
@@ -548,6 +550,25 @@ export class ChatInput extends UI.Widget.Widget implements SDK.TargetManager.Obs
     });
   }
 
+  #handleImagePaste = (event: ClipboardEvent): void => {
+    if (this.conversationType !== AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING) {
+      return;
+    }
+
+    const files = event.clipboardData?.files;
+    if (!files || files.length === 0) {
+      return;
+    }
+
+    const imageFile = Array.from(files).find(file => file.type.startsWith('image/'));
+    if (!imageFile) {
+      return;
+    }
+
+    event.preventDefault();
+    void this.#handleLoadImage(imageFile);
+  };
+
   async #handleLoadImage(file: File): Promise<void> {
     const showLoadingTimeout = setTimeout(() => {
       this.#imageInput = {isLoading: true};
@@ -631,6 +652,7 @@ export class ChatInput extends UI.Widget.Widget implements SDK.TargetManager.Obs
           textAreaRef: this.#textAreaRef,
           onContextClick: this.onContextClick,
           onInspectElementClick: this.onInspectElementClick,
+          onImagePaste: this.#handleImagePaste,
           onNewConversation: this.onNewConversation,
           onTextInputChange: () => {
             this.requestUpdate();

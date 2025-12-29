@@ -44,5 +44,23 @@
                 }
             }
         }
+
+        .ai-code-generation-spinner::before {
+            content: "⠋";
+            animation: teaser-spinner-animation 1s linear infinite;
+        }
+    }
+
+    @keyframes teaser-spinner-animation {
+        0% { content: "⠋"; }
+        10% { content: "⠙"; }
+        20% { content: "⠹"; }
+        30% { content: "⠸"; }
+        40% { content: "⠼"; }
+        50% { content: "⠴"; }
+        60% { content: "⠦"; }
+        70% { content: "⠧"; }
+        80% { content: "⠇"; }
+        90% { content: "⠏"; }
     }
 }

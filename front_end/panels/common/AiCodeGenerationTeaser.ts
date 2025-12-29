@@ -94,6 +94,7 @@ export interface ViewInput {
 
 export interface ViewOutput {
   hideTooltip?: () => void;
+  setTimerText?: (text: string) => void;
 }
 
 export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
@@ -165,7 +166,17 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
     }
 
     case AiCodeGenerationTeaserDisplayState.LOADING: {
-      teaserLabel = html`${lockedString(UIStringsNotTranslate.generating)}`;
+      // clang-format off
+      teaserLabel = html`
+        <span class="ai-code-generation-spinner"></span>&nbsp;${lockedString(UIStringsNotTranslate.generating)}&nbsp;
+        <span class="ai-code-generation-timer" ${Directives.ref(el => {
+          if (el) {
+            output.setTimerText = (text: string) => {
+              el.textContent = text;
+            };
+          }
+        })}></span>`;
+      // clang-format on
       break;
     }
   }
@@ -192,6 +203,8 @@ export class AiCodeGenerationTeaser extends UI.Widget.Widget {
   #disclaimerTooltipId?: string;
   #noLogging: boolean;  // Whether the enterprise setting is `ALLOW_WITHOUT_LOGGING` or not.
   #panel?: AiCodeCompletion.AiCodeCompletion.ContextFlavor;
+  #timerIntervalId?: number;
+  #loadStartTime?: number;
 
   constructor(view?: View) {
     super();
@@ -214,6 +227,11 @@ export class AiCodeGenerationTeaser extends UI.Widget.Widget {
         this.#viewOutput, this.contentElement);
   }
 
+  override willHide(): void {
+    super.willHide();
+    this.#stopLoadingAnimation();
+  }
+
   get displayState(): AiCodeGenerationTeaserDisplayState {
     return this.#displayState;
   }
@@ -224,6 +242,36 @@ export class AiCodeGenerationTeaser extends UI.Widget.Widget {
     }
     this.#displayState = displayState;
     this.requestUpdate();
+    if (this.#displayState === AiCodeGenerationTeaserDisplayState.LOADING) {
+      // wait update to complete so that setTimerText has been set properly
+      void this.updateComplete.then(() => {
+        void this.#startLoadingAnimation();
+      });
+    } else if (this.#loadStartTime) {
+      this.#stopLoadingAnimation();
+    }
+  }
+
+  #startLoadingAnimation(): void {
+    this.#stopLoadingAnimation();
+    this.#loadStartTime = performance.now();
+
+    this.#viewOutput.setTimerText?.('(0s)');
+
+    this.#timerIntervalId = window.setInterval(() => {
+      if (this.#loadStartTime) {
+        const elapsedSeconds = Math.floor((performance.now() - this.#loadStartTime) / 1000);
+        this.#viewOutput.setTimerText?.(`(${elapsedSeconds}s)`);
+      }
+    }, 1000);
+  }
+
+  #stopLoadingAnimation(): void {
+    if (this.#timerIntervalId) {
+      clearInterval(this.#timerIntervalId);
+      this.#timerIntervalId = undefined;
+    }
+    this.#loadStartTime = undefined;
   }
 
   set disclaimerTooltipId(disclaimerTooltipId: string) {

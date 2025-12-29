@@ -15,12 +15,13 @@ const {AiCodeGenerationTeaser, AiCodeGenerationTeaserDisplayState} = PanelCommon
 
 describeWithEnvironment('AiCodeGenerationTeaser', () => {
   async function createTeaser() {
-    const view = createViewFunctionStub(AiCodeGenerationTeaser);
+    const setTimerText = sinon.spy();
+    const view = createViewFunctionStub(AiCodeGenerationTeaser, {setTimerText});
     const widget = new AiCodeGenerationTeaser(view);
     widget.markAsRoot();
     renderElementIntoDOM(widget);
     await view.nextInput;
-    return {view, widget};
+    return {view, widget, setTimerText};
   }
 
   it('displayState state is updated', async () => {
@@ -32,11 +33,42 @@ describeWithEnvironment('AiCodeGenerationTeaser', () => {
 
     assert.deepEqual(view.input.displayState, AiCodeGenerationTeaserDisplayState.DISCOVERY);
 
-    widget.displayState = AiCodeGenerationTeaserDisplayState.LOADING;
+    widget.displayState = AiCodeGenerationTeaserDisplayState.TRIGGER;
     await view.nextInput;
 
-    assert.deepEqual(view.input.displayState, AiCodeGenerationTeaserDisplayState.LOADING);
+    assert.deepEqual(view.input.displayState, AiCodeGenerationTeaserDisplayState.TRIGGER);
     widget.detach();
+  });
+
+  it('updates spinner and timer when loading', async () => {
+    const clock =
+        sinon.useFakeTimers({toFake: ['performance', 'setInterval', 'clearInterval'], shouldAdvanceTime: true});
+    clock.tick(1);  // initial time increment
+    const {view, widget, setTimerText} = await createTeaser();
+
+    widget.displayState = AiCodeGenerationTeaserDisplayState.LOADING;
+    await view.nextInput;
+    await widget.updateComplete;
+
+    sinon.assert.calledOnce(setTimerText);
+    assert.deepEqual(setTimerText.firstCall.args[0], '(0s)');
+
+    clock.tick(1100);
+
+    sinon.assert.calledTwice(setTimerText);
+    assert.deepEqual(setTimerText.secondCall.args[0], '(1s)');
+
+    widget.displayState = AiCodeGenerationTeaserDisplayState.TRIGGER;
+    await view.nextInput;
+
+    const timerCallCount = setTimerText.callCount;
+
+    // Wait to ensure no more updates happen after loading is false.
+    clock.tick(1100);
+
+    assert.strictEqual(timerCallCount, setTimerText.callCount);
+    widget.detach();
+    clock.restore();
   });
 
   it('panel is updated', async () => {

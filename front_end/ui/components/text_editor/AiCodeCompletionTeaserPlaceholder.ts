@@ -71,6 +71,10 @@ export class AiCodeCompletionTeaserPlaceholder extends CM.WidgetType {
     super.destroy(dom);
     this.teaser?.hideWidget();
   }
+
+  override eq(other: AiCodeCompletionTeaserPlaceholder): boolean {
+    return this.teaser === other.teaser;
+  }
 }
 
 export function aiCodeCompletionTeaserPlaceholder(teaser: UI.Widget.Widget): CM.Extension {

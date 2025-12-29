@@ -4,6 +4,7 @@
 
 import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
+import * as AiCodeCompletion from '../../../models/ai_code_completion/ai_code_completion.js';
 import * as AiCodeGeneration from '../../../models/ai_code_generation/ai_code_generation.js';
 import * as PanelCommon from '../../../panels/common/common.js';
 import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
@@ -13,6 +14,7 @@ import * as CodeMirror from '../../../third_party/codemirror.next/codemirror.nex
 import {AiCodeGenerationProvider, Config, TextEditor} from './text_editor.js';
 
 function createEditorWithProvider(doc: string, config: AiCodeGenerationProvider.AiCodeGenerationConfig = {
+  panel: AiCodeCompletion.AiCodeCompletion.ContextFlavor.CONSOLE,
   generationContext: {},
   onSuggestionAccepted: () => {},
   onRequestTriggered: () => {},

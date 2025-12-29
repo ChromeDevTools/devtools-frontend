@@ -5,6 +5,7 @@
 import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
+import type * as AiCodeCompletion from '../../../models/ai_code_completion/ai_code_completion.js';
 import * as AiCodeGeneration from '../../../models/ai_code_generation/ai_code_generation.js';
 import * as PanelCommon from '../../../panels/common/common.js';
 import * as CodeMirror from '../../../third_party/codemirror.next/codemirror.next.js';
@@ -43,6 +44,7 @@ export interface AiCodeGenerationConfig {
   onRequestTriggered: () => void;
   // TODO(b/445394511): Move exposing citations to onSuggestionAccepted
   onResponseReceived: (citations: Host.AidaClient.Citation[]) => void;
+  panel: AiCodeCompletion.AiCodeCompletion.ContextFlavor;
 }
 
 export class AiCodeGenerationProvider {
@@ -64,6 +66,9 @@ export class AiCodeGenerationProvider {
       throw new Error('AI code generation feature is not enabled.');
     }
     this.#generationTeaser = new PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaser();
+    this.#generationTeaser.disclaimerTooltipId =
+        aiCodeGenerationConfig.panel + '-ai-code-generation-disclaimer-tooltip';
+    this.#generationTeaser.panel = aiCodeGenerationConfig.panel;
     this.#aiCodeGenerationConfig = aiCodeGenerationConfig;
   }
 
@@ -352,5 +357,15 @@ function aiCodeGenerationTeaserExtension(teaser: PanelCommon.AiCodeGenerationTea
     }
   }, {
     decorations: v => v.decorations,
+    eventHandlers: {
+      mousemove(event: MouseEvent): boolean {
+        // Required for mouse hover to propagate to the info button in teaser.
+        return (event.target instanceof Node && teaser.contentElement.contains(event.target));
+      },
+      mousedown(event: MouseEvent): boolean {
+        // Required for mouse click to propagate to the info tooltip in teaser.
+        return (event.target instanceof Node && teaser.contentElement.contains(event.target));
+      },
+    },
   });
 }

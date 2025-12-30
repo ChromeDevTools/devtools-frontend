@@ -7,6 +7,7 @@ import '../../ui/components/tooltips/tooltips.js';
 
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import type * as AiCodeCompletion from '../../models/ai_code_completion/ai_code_completion.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {Directives, html, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -32,6 +33,7 @@ export interface AiCodeCompletionSummaryToolbarProps {
   disclaimerTooltipId?: string;
   spinnerTooltipId?: string;
   hasTopBorder?: boolean;
+  panel: AiCodeCompletion.AiCodeCompletion.ContextFlavor;
 }
 
 export interface ViewInput {
@@ -42,6 +44,7 @@ export interface ViewInput {
   loading: boolean;
   hasTopBorder: boolean;
   aidaAvailability?: Host.AidaClient.AidaAccessPreconditions;
+  panel: AiCodeCompletion.AiCodeCompletion.ContextFlavor;
 }
 
 export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
@@ -65,6 +68,7 @@ export const DEFAULT_SUMMARY_TOOLBAR_VIEW: View = (input, _output, target) => {
       disclaimerTooltipId: input.disclaimerTooltipId,
       spinnerTooltipId: input.spinnerTooltipId,
       loading: input.loading,
+      panel: input.panel,
     })} class="disclaimer-widget"></devtools-widget>` : nothing;
 
   const recitationNotice = input.citations && input.citations.size > 0 ?
@@ -110,6 +114,7 @@ export class AiCodeCompletionSummaryToolbar extends UI.Widget.Widget {
   #citations = new Set<string>();
   #loading = false;
   #hasTopBorder = false;
+  #panel: AiCodeCompletion.AiCodeCompletion.ContextFlavor;
 
   #aidaAvailability?: Host.AidaClient.AidaAccessPreconditions;
   #boundOnAidaAvailabilityChange: () => Promise<void>;
@@ -120,6 +125,7 @@ export class AiCodeCompletionSummaryToolbar extends UI.Widget.Widget {
     this.#spinnerTooltipId = props.spinnerTooltipId;
     this.#citationsTooltipId = props.citationsTooltipId;
     this.#hasTopBorder = props.hasTopBorder ?? false;
+    this.#panel = props.panel;
     this.#boundOnAidaAvailabilityChange = this.#onAidaAvailabilityChange.bind(this);
     this.#view = view ?? DEFAULT_SUMMARY_TOOLBAR_VIEW;
     this.requestUpdate();
@@ -158,6 +164,7 @@ export class AiCodeCompletionSummaryToolbar extends UI.Widget.Widget {
           loading: this.#loading,
           hasTopBorder: this.#hasTopBorder,
           aidaAvailability: this.#aidaAvailability,
+          panel: this.#panel,
         },
         undefined, this.contentElement);
   }

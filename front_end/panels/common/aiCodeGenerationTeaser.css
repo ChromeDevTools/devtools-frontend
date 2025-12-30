@@ -16,6 +16,18 @@
             align-items: center;
         }
 
+        .ai-code-generation-teaser-generated {
+            display: inline-flex;
+            gap: var(--sys-size-2);
+            color: var(--sys-color-primary);
+
+            span {
+                border: var(--sys-size-1) solid var(--sys-color-primary);
+                border-radius: var(--sys-shape-corner-extra-small);
+                padding: 0 var(--sys-size-3);
+            }
+        }
+
         .new-badge {
             font-style: normal;
             display: inline-block;

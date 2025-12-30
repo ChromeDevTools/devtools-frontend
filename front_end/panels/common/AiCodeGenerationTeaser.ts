@@ -24,13 +24,21 @@ const UIStringsNotTranslate = {
    */
   cmdItoGenerateCode: 'Cmd+I to generate code',
   /**
-   * Text for teaser when generating suggestion.
+   * @description Text for teaser when generating suggestion.
    */
   generating: 'Generating... (esc to cancel)',
   /**
-   * Text for teaser for discoverability.
+   * @description Text for teaser for discoverability.
    */
   writeACommentToGenerateCode: 'Write a comment to generate code',
+  /**
+   * @description Text for teaser when suggestion has been generated.
+   */
+  tab: 'tab',
+  /**
+   * @description Text for teaser when suggestion has been generated.
+   */
+  toAccept: 'to accept',
   /**
    * @description Text for tooltip shown on hovering over "Relevant Data" in the disclaimer text for AI code generation in Console panel.
    */
@@ -68,6 +76,7 @@ export enum AiCodeGenerationTeaserDisplayState {
   TRIGGER = 'trigger',
   DISCOVERY = 'discovery',
   LOADING = 'loading',
+  GENERATED = 'generated',
 }
 
 function getTooltipDisclaimerText(noLogging: boolean, panel: AiCodeCompletion.AiCodeCompletion.ContextFlavor): string {
@@ -176,6 +185,16 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
             };
           }
         })}></span>`;
+      // clang-format on
+      break;
+    }
+
+    case AiCodeGenerationTeaserDisplayState.GENERATED: {
+      // clang-format off
+      teaserLabel = html`<div class="ai-code-generation-teaser-generated">
+          <span>${lockedString(UIStringsNotTranslate.tab)}</span>
+          &nbsp;${lockedString(UIStringsNotTranslate.toAccept)}
+        </div>`;
       // clang-format on
       break;
     }

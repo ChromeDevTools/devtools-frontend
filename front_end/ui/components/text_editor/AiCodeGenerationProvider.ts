@@ -79,11 +79,11 @@ export class AiCodeGenerationProvider {
   extension(): CodeMirror.Extension[] {
     return [
       CodeMirror.EditorView.updateListener.of(update => this.#activateTeaser(update)),
-      CodeMirror.EditorView.updateListener.of(update => this.#abortGenerationDuringUpdate(update)),
+      CodeMirror.EditorView.updateListener.of(update => this.#abortOrDismissGenerationDuringUpdate(update)),
       aiAutoCompleteSuggestion,
       aiAutoCompleteSuggestionState,
       aiCodeGenerationTeaserModeState,
-      this.#generationTeaserCompartment.of([]),
+      CodeMirror.Prec.highest(this.#generationTeaserCompartment.of([])),
       CodeMirror.Prec.highest(CodeMirror.keymap.of(this.#editorKeymap())),
     ];
   }
@@ -142,9 +142,7 @@ export class AiCodeGenerationProvider {
             return false;
           }
           if (hasActiveAiSuggestion(this.#editor.state)) {
-            this.#editor.dispatch({
-              effects: setAiAutoCompleteSuggestion.of(null),
-            });
+            this.#dismissTeaserAndSuggestion();
             return true;
           }
           const generationTeaserIsLoading = this.#generationTeaser.displayState ===
@@ -152,7 +150,7 @@ export class AiCodeGenerationProvider {
           if (this.#generationTeaser.isShowing() && generationTeaserIsLoading) {
             this.#controller.abort();
             this.#controller = new AbortController();
-            this.#dismissTeaser();
+            this.#dismissTeaserAndSuggestion();
             return true;
           }
           return false;
@@ -194,9 +192,14 @@ export class AiCodeGenerationProvider {
     ];
   }
 
-  #dismissTeaser(): void {
+  #dismissTeaserAndSuggestion(): void {
     this.#generationTeaser.displayState = PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.TRIGGER;
-    this.#editor?.dispatch({effects: setAiCodeGenerationTeaserMode.of(AiCodeGenerationTeaserMode.DISMISSED)});
+    this.#editor?.dispatch({
+      effects: [
+        setAiCodeGenerationTeaserMode.of(AiCodeGenerationTeaserMode.DISMISSED),
+        setAiAutoCompleteSuggestion.of(null),
+      ]
+    });
   }
 
   #activateTeaser(update: CodeMirror.ViewUpdate): void {
@@ -211,26 +214,35 @@ export class AiCodeGenerationProvider {
   }
 
   /**
-   * Monitors editor changes to cancel an ongoing AI generation.
-   * We abort the request and dismiss the teaser if the user modifies the
-   * document or moves their cursor/selection. These actions indicate the user
-   * is no longer focused on the current generation point or has manually
-   * resumed editing, making the pending suggestion irrelevant.
+   * Monitors editor changes to cancel an ongoing AI generation or dismiss one
+   * if it already exists.
+   * We abort the request (or dismiss suggestion) and dismiss the teaser if the
+   * user modifies the document or moves their cursor/selection. These actions
+   * indicate the user is no longer focused on the current generation point or
+   * has manually resumed editing, making the suggestion irrelevant.
    */
-  #abortGenerationDuringUpdate(update: CodeMirror.ViewUpdate): void {
+  #abortOrDismissGenerationDuringUpdate(update: CodeMirror.ViewUpdate): void {
     if (!update.docChanged && update.state.selection.main.head === update.startState.selection.main.head) {
       return;
     }
     const currentTeaserMode = update.state.field(aiCodeGenerationTeaserModeState);
-    const generationTeaserIsLoading = this.#generationTeaser.displayState ===
-        PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.LOADING;
-    // Generation should be in progress
-    if (currentTeaserMode === AiCodeGenerationTeaserMode.DISMISSED || !generationTeaserIsLoading) {
+    if (currentTeaserMode === AiCodeGenerationTeaserMode.DISMISSED) {
       return;
     }
-    this.#controller.abort();
-    this.#controller = new AbortController();
-    this.#dismissTeaser();
+    if (this.#generationTeaser.displayState ===
+        PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.LOADING) {
+      this.#controller.abort();
+      this.#controller = new AbortController();
+      this.#dismissTeaserAndSuggestion();
+      return;
+    }
+    if (this.#generationTeaser.displayState ===
+        PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.GENERATED) {
+      update.view.dispatch({effects: setAiAutoCompleteSuggestion.of(null)});
+      this.#generationTeaser.displayState =
+          PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.TRIGGER;
+      return;
+    }
   }
 
   async #triggerAiCodeGeneration(options?: {signal?: AbortSignal}): Promise<void> {
@@ -256,7 +268,7 @@ export class AiCodeGenerationProvider {
           this.#aiCodeGenerationConfig?.generationContext.inferenceLanguage, options);
 
       if (this.#generationTeaser) {
-        this.#dismissTeaser();
+        this.#dismissTeaserAndSuggestion();
       }
 
       if (!generationResponse || generationResponse.samples.length === 0) {
@@ -275,19 +287,25 @@ export class AiCodeGenerationProvider {
       const suggestionText = matchArray ? matchArray[1].trim() : topSample.generationString;
 
       this.#editor.dispatch({
-        effects: setAiAutoCompleteSuggestion.of({
-          text: '\n' + suggestionText,
-          from: cursor,
-          rpcGlobalId: generationResponse.metadata.rpcGlobalId,
-          sampleId: topSample.sampleId,
-          startTime,
-          onImpression: this.#aiCodeGeneration?.registerUserImpression.bind(this.#aiCodeGeneration),
-        })
+        effects: [
+          setAiAutoCompleteSuggestion.of({
+            text: '\n' + suggestionText,
+            from: cursor,
+            rpcGlobalId: generationResponse.metadata.rpcGlobalId,
+            sampleId: topSample.sampleId,
+            startTime,
+            onImpression: this.#aiCodeGeneration?.registerUserImpression.bind(this.#aiCodeGeneration),
+          }),
+          setAiCodeGenerationTeaserMode.of(AiCodeGenerationTeaserMode.ACTIVE)
+        ]
       });
+      this.#generationTeaser.displayState =
+          PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.GENERATED;
 
       AiCodeGeneration.debugLog('Suggestion dispatched to the editor', suggestionText);
       const citations = topSample.attributionMetadata?.citations ?? [];
       this.#aiCodeGenerationConfig?.onResponseReceived(citations);
+      return;
     } catch (e) {
       AiCodeGeneration.debugLog('Error while fetching code generation suggestions from AIDA', e);
       this.#aiCodeGenerationConfig?.onResponseReceived([]);
@@ -295,7 +313,7 @@ export class AiCodeGenerationProvider {
     }
 
     if (this.#generationTeaser) {
-      this.#dismissTeaser();
+      this.#dismissTeaserAndSuggestion();
     }
   }
 }
@@ -341,9 +359,10 @@ function aiCodeGenerationTeaserExtension(teaser: PanelCommon.AiCodeGenerationTea
     }
 
     #updateTeaserState(state: CodeMirror.EditorState): void {
-      // Only handle non loading states, as updates during generation are handled by
-      // #abortGenerationDuringUpdate in AiCodeGenerationProvider
-      if (teaser.displayState === PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.LOADING) {
+      // Only handle non loading and non generated states, as updates during and after generation are handled by
+      // #abortOrDismissGenerationDuringUpdate in AiCodeGenerationProvider
+      if (teaser.displayState === PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.LOADING ||
+          teaser.displayState === PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.GENERATED) {
         return;
       }
       const cursorPosition = state.selection.main.head;

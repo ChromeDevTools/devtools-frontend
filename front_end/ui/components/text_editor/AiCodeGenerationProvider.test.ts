@@ -216,8 +216,11 @@ describeWithEnvironment('AiCodeGenerationProvider', () => {
 
       sinon.assert.calledOnce(dispatchSpy);
       sinon.assert.calledWith(dispatchSpy, {
-        effects: AiCodeGenerationProvider.setAiCodeGenerationTeaserMode.of(
-            AiCodeGenerationProvider.AiCodeGenerationTeaserMode.DISMISSED)
+        effects: [
+          AiCodeGenerationProvider.setAiCodeGenerationTeaserMode.of(
+              AiCodeGenerationProvider.AiCodeGenerationTeaserMode.DISMISSED),
+          Config.setAiAutoCompleteSuggestion.of(null),
+        ]
       });
       assert.deepEqual(
           loadingSetter.set.lastCall.args[0],
@@ -334,12 +337,10 @@ describeWithEnvironment('AiCodeGenerationProvider', () => {
   });
 
   describe('Dispatches', () => {
-    beforeEach(() => {
+    it('dispatches a suggestion to the editor and updates teaser state when AIDA returns suggestion', async () => {
       const generationTeaser = PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaser.prototype;
       sinon.stub(generationTeaser, 'displayState').set(_ => {});
-    });
-
-    it('dispatches a suggestion to the editor when AIDA returns one', async () => {
+      const loadingSetter = sinon.spy(generationTeaser, 'displayState', ['set']);
       const generateCodeStub = sinon.stub(AiCodeGeneration.AiCodeGeneration.AiCodeGeneration.prototype, 'generateCode')
                                    .returns(Promise.resolve({
                                      samples: [{
@@ -368,10 +369,14 @@ describeWithEnvironment('AiCodeGenerationProvider', () => {
       assert.strictEqual(suggestion.from, 8);
       assert.strictEqual(suggestion.sampleId, 1);
       assert.strictEqual(suggestion.rpcGlobalId, 1);
+      sinon.assert.calledWith(
+          loadingSetter.set, PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.GENERATED);
       provider.dispose();
     });
 
     it('does not dispatch suggestion or citation if recitation action is BLOCK', async () => {
+      const generationTeaser = PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaser.prototype;
+      sinon.stub(generationTeaser, 'displayState').set(_ => {});
       const generateCodeStub = sinon.stub(AiCodeGeneration.AiCodeGeneration.AiCodeGeneration.prototype, 'generateCode')
                                    .returns(Promise.resolve({
                                      samples: [{
@@ -432,8 +437,11 @@ describeWithEnvironment('AiCodeGenerationProvider', () => {
     sinon.assert.calledWith(
         loadingSetter.set, PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.TRIGGER);
     sinon.assert.calledWith(dispatchSpy, {
-      effects: AiCodeGenerationProvider.setAiCodeGenerationTeaserMode.of(
-          AiCodeGenerationProvider.AiCodeGenerationTeaserMode.DISMISSED)
+      effects: [
+        AiCodeGenerationProvider.setAiCodeGenerationTeaserMode.of(
+            AiCodeGenerationProvider.AiCodeGenerationTeaserMode.DISMISSED),
+        Config.setAiAutoCompleteSuggestion.of(null),
+      ]
     });
     provider.dispose();
   });

@@ -649,12 +649,13 @@ export class CSSMatchedStyles {
     // DOMInheritanceCascades.
     for (const [pseudoType, nodeCascade] of pseudoCascades.entries()) {
       pseudoInheritanceCascades.set(
-          pseudoType, new DOMInheritanceCascade(this, nodeCascade, this.#registeredProperties));
+          pseudoType, new DOMInheritanceCascade(this, nodeCascade, this.#registeredProperties, this.#mainDOMCascade));
     }
 
     for (const [highlightName, nodeCascade] of customHighlightPseudoCascades.entries()) {
       customHighlightPseudoInheritanceCascades.set(
-          highlightName, new DOMInheritanceCascade(this, nodeCascade, this.#registeredProperties));
+          highlightName,
+          new DOMInheritanceCascade(this, nodeCascade, this.#registeredProperties, this.#mainDOMCascade));
     }
 
     return [pseudoInheritanceCascades, customHighlightPseudoInheritanceCascades];
@@ -959,17 +960,15 @@ class NodeCascade {
   #matchedStyles: CSSMatchedStyles;
   readonly styles: CSSStyleDeclaration[];
   readonly #isInherited: boolean;
-  readonly #isHighlightPseudoCascade: boolean;
   readonly propertiesState = new Map<CSSProperty, PropertyState>();
   readonly activeProperties = new Map<string, CSSProperty>();
   readonly #node: DOMNode;
   constructor(
       matchedStyles: CSSMatchedStyles, styles: CSSStyleDeclaration[], node: DOMNode, isInherited: boolean,
-      isHighlightPseudoCascade = false) {
+      readonly isHighlightPseudoCascade = false) {
     this.#matchedStyles = matchedStyles;
     this.styles = styles;
     this.#isInherited = isInherited;
-    this.#isHighlightPseudoCascade = isHighlightPseudoCascade;
     this.#node = node;
   }
 
@@ -992,9 +991,16 @@ class NodeCascade {
         // Do not pick non-inherited properties from inherited styles.
         const metadata = cssMetadata();
 
-        // All properties are inherited for highlight pseudos.
-        if (this.#isInherited && !this.#isHighlightPseudoCascade && !metadata.isPropertyInherited(property.name)) {
-          continue;
+        if (this.#isInherited) {
+          if (this.isHighlightPseudoCascade) {
+            // All properties are inherited for highlight pseudos, but custom
+            // variables do not come from the inherited pseudo elements.
+            if (property.name.startsWith('--')) {
+              continue;
+            }
+          } else if (!metadata.isPropertyInherited(property.name)) {
+            continue;
+          }
         }
 
         // When a property does not have a range in an otherwise ranged CSSStyleDeclaration,
@@ -1085,6 +1091,7 @@ class NodeCascade {
 function isRegular(declaration: CSSProperty|CSSRegisteredProperty): declaration is CSSProperty {
   return 'ownerStyle' in declaration;
 }
+
 export class CSSValueSource {
   readonly declaration: CSSProperty|CSSRegisteredProperty;
   constructor(declaration: CSSProperty|CSSRegisteredProperty) {
@@ -1176,15 +1183,27 @@ class DOMInheritanceCascade {
   readonly #nodeCascades: NodeCascade[];
   #registeredProperties: CSSRegisteredProperty[];
   readonly #matchedStyles: CSSMatchedStyles;
+  readonly #fallbackCascade: DOMInheritanceCascade|null = null;
+  readonly #styles: CSSStyleDeclaration[] = [];
   constructor(
-      matchedStyles: CSSMatchedStyles, nodeCascades: NodeCascade[], registeredProperties: CSSRegisteredProperty[]) {
+      matchedStyles: CSSMatchedStyles, nodeCascades: NodeCascade[], registeredProperties: CSSRegisteredProperty[],
+      fallbackCascade: DOMInheritanceCascade|null = null) {
     this.#nodeCascades = nodeCascades;
     this.#matchedStyles = matchedStyles;
     this.#registeredProperties = registeredProperties;
+    this.#fallbackCascade = fallbackCascade;
 
     for (const nodeCascade of nodeCascades) {
       for (const style of nodeCascade.styles) {
         this.#styleToNodeCascade.set(style, nodeCascade);
+        this.#styles.push(style);
+      }
+    }
+    if (fallbackCascade) {
+      for (const [style, nodeCascade] of fallbackCascade.#styleToNodeCascade) {
+        if (!this.#styles.includes(style)) {
+          this.#styleToNodeCascade.set(style, nodeCascade);
+        }
       }
     }
   }
@@ -1247,6 +1266,9 @@ class DOMInheritanceCascade {
           return inheritedProperty;
         }
       }
+    }
+    if (this.#fallbackCascade && (!nodeCascade.isHighlightPseudoCascade || property.name.startsWith('--'))) {
+      return this.#fallbackCascade.resolveProperty(property.name, property.ownerStyle);
     }
     return null;
   }
@@ -1538,7 +1560,7 @@ class DOMInheritanceCascade {
   }
 
   styles(): CSSStyleDeclaration[] {
-    return Array.from(this.#styleToNodeCascade.keys());
+    return this.#styles;
   }
 
   propertyState(property: CSSProperty): PropertyState|null {
@@ -1609,6 +1631,20 @@ class DOMInheritanceCascade {
       accumulatedCSSVariables.set(
           rule.propertyName(),
           initialValue !== null ? {value: initialValue, declaration: new CSSValueSource(rule)} : null);
+    }
+    if (this.#fallbackCascade) {
+      this.#fallbackCascade.ensureInitialized();
+      for (const [cascade, available] of this.#fallbackCascade.#availableCSSVariables) {
+        this.#availableCSSVariables.set(cascade, available);
+      }
+      for (const [cascade, computed] of this.#fallbackCascade.#computedCSSVariables) {
+        this.#computedCSSVariables.set(cascade, computed);
+      }
+      for (const [key, value] of this.#fallbackCascade.#availableCSSVariables.get(
+               this.#fallbackCascade.#nodeCascades[0]) ??
+           []) {
+        accumulatedCSSVariables.set(key, value);
+      }
     }
     for (let i = this.#nodeCascades.length - 1; i >= 0; --i) {
       const nodeCascade = this.#nodeCascades[i];

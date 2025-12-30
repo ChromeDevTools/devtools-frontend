@@ -25,6 +25,7 @@ function createEditorWithProvider(doc: string, config: AiCodeGenerationProvider.
       CodeMirror.EditorState.create({
         doc,
         extensions: [
+          CodeMirror.javascript.javascriptLanguage,
           provider.extension(),
         ],
       }),
@@ -81,11 +82,40 @@ describeWithEnvironment('AiCodeGenerationProvider', () => {
       provider.dispose();
     });
 
-    it('shows teaser when cursor is at the end of a comment line', async () => {
+    it('shows teaser when cursor is at the end of an inline comment', async () => {
       const {editor, provider} = createEditorWithProvider('// Hello');
       editor.dispatch({selection: {anchor: 8}});
       await clock.tickAsync(0);
       assert.isNotNull(editor.editor.dom.querySelector('.cm-placeholder'));
+      provider.dispose();
+    });
+
+    it('shows teaser when cursor is at the end of a block comment', async () => {
+      const {editor, provider} = createEditorWithProvider(`/**
+  * Hello
+  */`);
+      editor.dispatch({selection: {anchor: 18}});
+      await clock.tickAsync(0);
+      assert.isNotNull(editor.editor.dom.querySelector('.cm-placeholder'));
+      provider.dispose();
+    });
+
+    it('hides teaser when cursor is not at the end of a block comment', async () => {
+      const {editor, provider} = createEditorWithProvider(`/**
+  * Hello
+  */`);
+      editor.dispatch({selection: {anchor: 13}});
+      await clock.tickAsync(0);
+      assert.isNull(editor.editor.dom.querySelector('.cm-placeholder'));
+      provider.dispose();
+    });
+
+    it('hides teaser when block comment syntax is incomplete', async () => {
+      const {editor, provider} = createEditorWithProvider(`/**
+  * Hello`);
+      editor.dispatch({selection: {anchor: 13}});
+      await clock.tickAsync(0);
+      assert.isNull(editor.editor.dom.querySelector('.cm-placeholder'));
       provider.dispose();
     });
 
@@ -228,25 +258,49 @@ describeWithEnvironment('AiCodeGenerationProvider', () => {
       provider.dispose();
     });
 
-    it('triggers code generation on Ctrl+I', async () => {
-      const generateCodeStub = sinon.stub(AiCodeGeneration.AiCodeGeneration.AiCodeGeneration.prototype, 'generateCode');
-      const generationTeaser = PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaser.prototype;
-      sinon.stub(generationTeaser, 'displayState').set(_ => {});
-      Common.Settings.Settings.instance().settingForTest('ai-code-completion-enabled').set(true);
-      const {editor, provider} = createEditorWithProvider('// Hello');
-      editor.dispatch({selection: {anchor: 8}});
-      await clock.tickAsync(0);
-
-      const event = new KeyboardEvent('keydown', {
-        key: 'i',
-        ctrlKey: Host.Platform.isMac() ? false : true,
-        metaKey: Host.Platform.isMac() ? true : false,
+    describe('Triggers code generation on Ctrl+I', () => {
+      let generateCodeStub: sinon.SinonStub;
+      beforeEach(() => {
+        generateCodeStub = sinon.stub(AiCodeGeneration.AiCodeGeneration.AiCodeGeneration.prototype, 'generateCode');
+        const generationTeaser = PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaser.prototype;
+        sinon.stub(generationTeaser, 'displayState').set(_ => {});
       });
-      editor.editor.contentDOM.dispatchEvent(event);
 
-      sinon.assert.calledOnce(generateCodeStub);
-      assert.deepEqual(generateCodeStub.firstCall.args[0], '// Hello');
-      provider.dispose();
+      function dispatchCtrlI(editor: TextEditor.TextEditor) {
+        const event = new KeyboardEvent('keydown', {
+          key: 'i',
+          ctrlKey: Host.Platform.isMac() ? false : true,
+          metaKey: Host.Platform.isMac() ? true : false,
+        });
+        editor.editor.contentDOM.dispatchEvent(event);
+      }
+
+      it('for inline comments', async () => {
+        const {editor, provider} = createEditorWithProvider('// Hello');
+        editor.dispatch({selection: {anchor: 8}});
+        await clock.tickAsync(0);
+
+        dispatchCtrlI(editor);
+
+        sinon.assert.calledOnce(generateCodeStub);
+        assert.deepEqual(generateCodeStub.firstCall.args[0], 'Hello');
+        provider.dispose();
+      });
+
+      it('for block comments', async () => {
+        const {editor, provider} = createEditorWithProvider(`/**
+  * Create a helper function
+  * that adds two numbers
+  */`);
+        editor.dispatch({selection: {anchor: 63}});
+        await clock.tickAsync(0);
+
+        dispatchCtrlI(editor);
+
+        sinon.assert.calledOnce(generateCodeStub);
+        assert.deepEqual(generateCodeStub.firstCall.args[0], 'Create a helper function\nthat adds two numbers');
+        provider.dispose();
+      });
     });
 
     it('triggers loading state on Ctrl+I', async () => {

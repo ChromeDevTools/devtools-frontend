@@ -2503,6 +2503,7 @@ grd_files_unbundled_sources = [
   "front_end/ui/components/switch/switch.css.js",
   "front_end/ui/components/text_editor/AiCodeCompletionProvider.js",
   "front_end/ui/components/text_editor/AiCodeCompletionTeaserPlaceholder.js",
+  "front_end/ui/components/text_editor/AiCodeGenerationParser.js",
   "front_end/ui/components/text_editor/AiCodeGenerationProvider.js",
   "front_end/ui/components/text_editor/AutocompleteHistory.js",
   "front_end/ui/components/text_editor/ExecutionPositionHighlighter.js",

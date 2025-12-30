@@ -13,6 +13,7 @@ import * as UI from '../../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../visual_logging/visual_logging.js';
 
 import {AiCodeCompletionTeaserPlaceholder} from './AiCodeCompletionTeaserPlaceholder.js';
+import {AiCodeGenerationParser} from './AiCodeGenerationParser.js';
 import {
   acceptAiAutoCompleteSuggestion,
   aiAutoCompleteSuggestion,
@@ -252,9 +253,8 @@ export class AiCodeGenerationProvider {
 
     this.#generationTeaser.displayState = PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.LOADING;
     const cursor = this.#editor.state.selection.main.head;
-    // TODO(b/445899453): Detect all types of comments
-    const query = this.#editor.state.doc.lineAt(cursor).text;
-    if (query.trim().length === 0) {
+    const query = AiCodeGenerationParser.extractCommentText(this.#editor.state, cursor);
+    if (!query || query.trim().length === 0) {
       return;
     }
 
@@ -345,8 +345,7 @@ function aiCodeGenerationTeaserExtension(teaser: PanelCommon.AiCodeGenerationTea
       const line = this.#view.state.doc.lineAt(cursorPosition);
 
       const isEmptyLine = line.length === 0;
-      // TODO(b/445899453): Detect all types of comments
-      const isComment = line.text.startsWith('//');
+      const isComment = Boolean(AiCodeGenerationParser.extractCommentText(this.#view.state, cursorPosition));
       const isCursorAtEndOfLine = cursorPosition >= line.to;
 
       if ((isEmptyLine) || (isComment && isCursorAtEndOfLine)) {

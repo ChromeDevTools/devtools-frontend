@@ -55,6 +55,9 @@ export class AiCodeCompletionTeaserPlaceholder extends CM.WidgetType {
         super.destroy(dom);
         this.teaser?.hideWidget();
     }
+    eq(other) {
+        return this.teaser === other.teaser;
+    }
 }
 export function aiCodeCompletionTeaserPlaceholder(teaser) {
     const plugin = CM.ViewPlugin.fromClass(class {

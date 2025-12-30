@@ -270,11 +270,12 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper {
         };
         return scriptLink || Linkifier.linkifyURL(sourceURL, linkifyURLOptions);
     }
-    linkifyRawLocation(rawLocation, fallbackUrl, className) {
+    linkifyRawLocation(rawLocation, fallbackUrl, className, options) {
         return this.linkifyScriptLocation(rawLocation.debuggerModel.target(), rawLocation.scriptId, fallbackUrl, rawLocation.lineNumber, {
             columnNumber: rawLocation.columnNumber,
             className,
             inlineFrameIndex: rawLocation.inlineFrameIndex,
+            tabStop: options?.tabStop,
         });
     }
     maybeLinkifyConsoleCallFrame(target, callFrame, options) {

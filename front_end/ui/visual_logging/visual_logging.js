@@ -356,6 +356,7 @@ var knownContextValues = /* @__PURE__ */ new Set([
   "ai-code-completion-teaser-dismissed",
   "ai-code-completion-teaser.dismiss",
   "ai-code-completion-teaser.fre",
+  "ai-code-generation-teaser.info-button",
   "ai-explorer",
   "ai_assistance",
   "align-content",

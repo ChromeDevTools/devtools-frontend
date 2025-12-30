@@ -31,5 +31,6 @@ export declare class AiCodeCompletionTeaserPlaceholder extends CM.WidgetType {
     } | null;
     ignoreEvent(_: Event): boolean;
     destroy(dom: HTMLElement): void;
+    eq(other: AiCodeCompletionTeaserPlaceholder): boolean;
 }
 export declare function aiCodeCompletionTeaserPlaceholder(teaser: UI.Widget.Widget): CM.Extension;

@@ -893,7 +893,7 @@ var ObjectEventListenerBar = class extends UI.TreeOutline.TreeElement {
       title.appendChild(passiveButton);
     }
     const subtitle = title.createChild("span", "event-listener-tree-subtitle");
-    const linkElement = linkifier.linkifyRawLocation(this.#eventListener.location(), this.#eventListener.sourceURL());
+    const linkElement = linkifier.linkifyRawLocation(this.#eventListener.location(), this.#eventListener.sourceURL(), void 0, { tabStop: true });
     subtitle.appendChild(linkElement);
     this.listItemElement.addEventListener("contextmenu", (event) => {
       const menu = new UI.ContextMenu.ContextMenu(event);

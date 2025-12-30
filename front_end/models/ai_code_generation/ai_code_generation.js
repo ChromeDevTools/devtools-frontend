@@ -37,9 +37,15 @@ Your role is to act as an expert pair programmer within the Chrome DevTools envi
 
 **Core Directives (Adhere to these strictly):**
 
-1.  **Language and Quality:**
-    *   Generate code that is modern, efficient, and idiomatic for the inferred language (e.g., modern JavaScript/ES6+, semantic HTML5, efficient CSS).
-    *   Where appropriate, include basic error handling (e.g., for API calls).
+1. **Language and Quality:**
+    * Generate code that is modern, efficient, and idiomatic for the inferred language (e.g., modern JavaScript/ES6+, semantic HTML5, efficient CSS).
+    * Where appropriate, include basic error handling (e.g., for API calls).
+    * Determine the programming language from the user's prompt.
+
+2.  **Output Format (Strict):**
+    * **Return ONLY code blocks.** * Do NOT include any introductory text, explanations, or concluding remarks.
+    * Do NOT provide step-by-step guides or descriptions of how the code works.
+    * Inline comments within the code are permitted and encouraged for clarity.
 `;
 var additionalContextForConsole = `
 You are operating within the execution environment of the Chrome DevTools Console.
@@ -60,6 +66,7 @@ var AiCodeGeneration = class {
     function validTemperature(temperature) {
       return typeof temperature === "number" && temperature >= 0 ? temperature : void 0;
     }
+    prompt = preamble + prompt + "\n**Target Language:** " + inferenceLanguage;
     return {
       client: Host.AidaClient.CLIENT_NAME,
       preamble,
@@ -71,10 +78,8 @@ var AiCodeGeneration = class {
       },
       use_case: Host.AidaClient.UseCase.CODE_GENERATION,
       options: {
-        inference_language: inferenceLanguage,
         temperature: validTemperature(this.#options.temperature),
-        model_id: this.#options.modelId || void 0,
-        expect_code_output: true
+        model_id: this.#options.modelId || void 0
       },
       metadata: {
         disable_user_content_logging: !(this.#serverSideLoggingEnabled ?? false),

@@ -1,4 +1,5 @@
 import * as Host from '../../../core/host/host.js';
+import type * as AiCodeCompletion from '../../../models/ai_code_completion/ai_code_completion.js';
 import * as CodeMirror from '../../../third_party/codemirror.next/codemirror.next.js';
 import type { TextEditor } from './TextEditor.js';
 export declare enum AiCodeGenerationTeaserMode {
@@ -13,6 +14,7 @@ export interface AiCodeGenerationConfig {
     onSuggestionAccepted: () => void;
     onRequestTriggered: () => void;
     onResponseReceived: (citations: Host.AidaClient.Citation[]) => void;
+    panel: AiCodeCompletion.AiCodeCompletion.ContextFlavor;
 }
 export declare class AiCodeGenerationProvider {
     #private;

@@ -40,6 +40,9 @@ export class AiCodeGenerationProvider {
             throw new Error('AI code generation feature is not enabled.');
         }
         this.#generationTeaser = new PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaser();
+        this.#generationTeaser.disclaimerTooltipId =
+            aiCodeGenerationConfig.panel + '-ai-code-generation-disclaimer-tooltip';
+        this.#generationTeaser.panel = aiCodeGenerationConfig.panel;
         this.#aiCodeGenerationConfig = aiCodeGenerationConfig;
     }
     static createInstance(aiCodeGenerationConfig) {
@@ -219,9 +222,12 @@ export class AiCodeGenerationProvider {
             if (shouldBlock) {
                 return;
             }
+            const backtickRegex = /^```(?:\w+)?\n([\s\S]*?)\n```$/;
+            const matchArray = topSample.generationString.match(backtickRegex);
+            const suggestionText = matchArray ? matchArray[1].trim() : topSample.generationString;
             this.#editor.dispatch({
                 effects: setAiAutoCompleteSuggestion.of({
-                    text: '\n' + topSample.generationString,
+                    text: '\n' + suggestionText,
                     from: cursor,
                     rpcGlobalId: generationResponse.metadata.rpcGlobalId,
                     sampleId: topSample.sampleId,
@@ -229,7 +235,7 @@ export class AiCodeGenerationProvider {
                     onImpression: this.#aiCodeGeneration?.registerUserImpression.bind(this.#aiCodeGeneration),
                 })
             });
-            AiCodeGeneration.debugLog('Suggestion dispatched to the editor', topSample.generationString);
+            AiCodeGeneration.debugLog('Suggestion dispatched to the editor', suggestionText);
             const citations = topSample.attributionMetadata?.citations ?? [];
             this.#aiCodeGenerationConfig?.onResponseReceived(citations);
         }
@@ -293,6 +299,16 @@ function aiCodeGenerationTeaserExtension(teaser) {
         }
     }, {
         decorations: v => v.decorations,
+        eventHandlers: {
+            mousemove(event) {
+                // Required for mouse hover to propagate to the info button in teaser.
+                return (event.target instanceof Node && teaser.contentElement.contains(event.target));
+            },
+            mousedown(event) {
+                // Required for mouse click to propagate to the info tooltip in teaser.
+                return (event.target instanceof Node && teaser.contentElement.contains(event.target));
+            },
+        },
     });
 }
 //# sourceMappingURL=AiCodeGenerationProvider.js.map

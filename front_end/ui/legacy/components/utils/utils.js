@@ -669,11 +669,12 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
     };
     return scriptLink || _Linkifier.linkifyURL(sourceURL, linkifyURLOptions);
   }
-  linkifyRawLocation(rawLocation, fallbackUrl, className) {
+  linkifyRawLocation(rawLocation, fallbackUrl, className, options) {
     return this.linkifyScriptLocation(rawLocation.debuggerModel.target(), rawLocation.scriptId, fallbackUrl, rawLocation.lineNumber, {
       columnNumber: rawLocation.columnNumber,
       className,
-      inlineFrameIndex: rawLocation.inlineFrameIndex
+      inlineFrameIndex: rawLocation.inlineFrameIndex,
+      tabStop: options?.tabStop
     });
   }
   maybeLinkifyConsoleCallFrame(target, callFrame, options) {

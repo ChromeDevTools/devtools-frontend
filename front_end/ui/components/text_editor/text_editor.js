@@ -74,6 +74,9 @@ var AiCodeCompletionTeaserPlaceholder = class extends CM.WidgetType {
     super.destroy(dom);
     this.teaser?.hideWidget();
   }
+  eq(other) {
+    return this.teaser === other.teaser;
+  }
 };
 function aiCodeCompletionTeaserPlaceholder(teaser) {
   const plugin = CM.ViewPlugin.fromClass(class {
@@ -1262,6 +1265,8 @@ var AiCodeGenerationProvider = class _AiCodeGenerationProvider {
       throw new Error("AI code generation feature is not enabled.");
     }
     this.#generationTeaser = new PanelCommon2.AiCodeGenerationTeaser.AiCodeGenerationTeaser();
+    this.#generationTeaser.disclaimerTooltipId = aiCodeGenerationConfig.panel + "-ai-code-generation-disclaimer-tooltip";
+    this.#generationTeaser.panel = aiCodeGenerationConfig.panel;
     this.#aiCodeGenerationConfig = aiCodeGenerationConfig;
   }
   static createInstance(aiCodeGenerationConfig) {
@@ -1436,9 +1441,12 @@ var AiCodeGenerationProvider = class _AiCodeGenerationProvider {
       if (shouldBlock) {
         return;
       }
+      const backtickRegex = /^```(?:\w+)?\n([\s\S]*?)\n```$/;
+      const matchArray = topSample.generationString.match(backtickRegex);
+      const suggestionText = matchArray ? matchArray[1].trim() : topSample.generationString;
       this.#editor.dispatch({
         effects: setAiAutoCompleteSuggestion.of({
-          text: "\n" + topSample.generationString,
+          text: "\n" + suggestionText,
           from: cursor,
           rpcGlobalId: generationResponse.metadata.rpcGlobalId,
           sampleId: topSample.sampleId,
@@ -1446,7 +1454,7 @@ var AiCodeGenerationProvider = class _AiCodeGenerationProvider {
           onImpression: this.#aiCodeGeneration?.registerUserImpression.bind(this.#aiCodeGeneration)
         })
       });
-      AiCodeGeneration.debugLog("Suggestion dispatched to the editor", topSample.generationString);
+      AiCodeGeneration.debugLog("Suggestion dispatched to the editor", suggestionText);
       const citations = topSample.attributionMetadata?.citations ?? [];
       this.#aiCodeGenerationConfig?.onResponseReceived(citations);
     } catch (e) {
@@ -1503,7 +1511,15 @@ function aiCodeGenerationTeaserExtension(teaser) {
       }
     }
   }, {
-    decorations: (v) => v.decorations
+    decorations: (v) => v.decorations,
+    eventHandlers: {
+      mousemove(event) {
+        return event.target instanceof Node && teaser.contentElement.contains(event.target);
+      },
+      mousedown(event) {
+        return event.target instanceof Node && teaser.contentElement.contains(event.target);
+      }
+    }
   });
 }
 

@@ -11,9 +11,43 @@ export default `/*
 
 @scope to (devtools-widget > *) {
     .ai-code-generation-teaser {
+        pointer-events: all;
+        font-style: italic;
+        padding-left: var(--sys-size-3);
+        line-height: var(--sys-size-7);
+
+        .ai-code-generation-teaser-trigger {
+            display: inline-flex;
+            align-items: center;
+        }
+
         .new-badge {
             font-style: normal;
             display: inline-block;
+        }
+
+        devtools-tooltip:popover-open {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            .disclaimer-tooltip-container {
+                padding: var(--sys-size-4) 0;
+                max-width: var(--sys-size-30);
+                white-space: normal;
+
+                .tooltip-text {
+                    color: var(--sys-color-on-surface-subtle);
+                    padding: 0 var(--sys-size-5);
+                    align-items: flex-start;
+                    gap: 10px;
+                }
+
+                .link {
+                    margin: var(--sys-size-5) var(--sys-size-8) 0 var(--sys-size-5);
+                    display: inline-block;
+                }
+            }
         }
     }
 }

@@ -6668,18 +6668,6 @@ var NativeFunctions = [
     signatures: [["node", "child"]]
   },
   {
-    name: "patchBetween",
-    signatures: [["prev_child", "next_child"]]
-  },
-  {
-    name: "patchAfter",
-    signatures: [["ref"]]
-  },
-  {
-    name: "patchBefore",
-    signatures: [["ref"]]
-  },
-  {
     name: "QuotaExceededError",
     signatures: [["?message", "?options"]]
   },
@@ -7196,10 +7184,6 @@ var NativeFunctions = [
   {
     name: "setMenuListOptionsBoundsInAXTree",
     signatures: [["options_bounds", "children_updated"]]
-  },
-  {
-    name: "PatchEvent",
-    signatures: [["type", "init"]]
   },
   {
     name: "allowsFeature",
@@ -9092,7 +9076,7 @@ var NativeFunctions = [
   },
   {
     name: "copyElementImageToTexture",
-    signatures: [["source", "destination"], ["source", "width", "height", "destination"]]
+    signatures: [["source", "destination"], ["source", "width", "height", "destination"], ["source", "sx", "sy", "swidth", "sheight", "destination"]]
   },
   {
     name: "setIndexBuffer",

@@ -12,15 +12,18 @@ const {render, html} = Lit;
 
 export interface CollapsibleAssistanceContentWidgetData {
   headerText: string;
+  onReveal?: () => void;
 }
 
 export class CollapsibleAssistanceContentWidget extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
   #isCollapsed = false;
   #headerText = 'Details';
+  #onReveal?: () => void;
 
   set data(data: CollapsibleAssistanceContentWidgetData) {
     this.#headerText = data.headerText;
+    this.#onReveal = data.onReveal;
     this.#render();
   }
 
@@ -43,14 +46,30 @@ export class CollapsibleAssistanceContentWidget extends HTMLElement {
           this.#toggleCollapse();
         }}>
           ${this.#headerText}
-          <devtools-button .data=${{
-            variant: Buttons.Button.Variant.ICON,
-            iconName: this.#isCollapsed ? 'triangle-right' : 'triangle-down',
-            color: 'var(--sys-color-on-surface)',
-            width: '14px',
-            height: '14px',
-            } as Buttons.Button.ButtonData}
-          ></devtools-button>
+          <div>
+            <devtools-button .data=${{
+              variant: Buttons.Button.Variant.ICON,
+              iconName: 'select-element',
+              color: 'var(--sys-color-on-surface)',
+              width: '14px',
+              height: '14px',
+              title: 'reveal',
+              } as Buttons.Button.ButtonData}
+              @click=${(event: Event) => {
+                event.stopPropagation();
+                this.#onReveal?.();
+              }}
+            ></devtools-button>
+            <devtools-button .data=${{
+              variant: Buttons.Button.Variant.ICON,
+              iconName: this.#isCollapsed ? 'triangle-right' : 'triangle-down',
+              color: 'var(--sys-color-on-surface)',
+              width: '14px',
+              height: '14px',
+              title: 'expand',
+              } as Buttons.Button.ButtonData}
+            ></devtools-button>
+          </div>
         </summary>
         <div class="content">
           <slot></slot>

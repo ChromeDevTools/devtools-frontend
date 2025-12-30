@@ -2,10 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import './CollapsibleAssistanceContentWidget.js';
 import '../../../models/trace/insights/insights.js';
 import '../../../panels/timeline/components/components.js';
 import './PerformanceAgentFlameChart.js';
+import './CollapsibleAssistanceContentWidget.js';
 
 import * as Common from '../../../core/common/common.js';
 import * as SDK from '../../../core/sdk/sdk.js';
@@ -19,9 +19,11 @@ import type * as Marked from '../../../third_party/marked/marked.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as PanelsCommon from '../../common/common.js';
+import * as NetworkForward from '../../network/forward/forward.js';
 import * as Network from '../../network/network.js';
 import * as TimelineComponents from '../../timeline/components/components.js';
 import * as Insights from '../../timeline/components/insights/insights.js';
+import * as Timeline from '../../timeline/timeline.js';
 
 import {MarkdownRendererWithCodeBlock} from './MarkdownRendererWithCodeBlock.js';
 import type * as PerformanceAgentFlameChart from './PerformanceAgentFlameChart.js';
@@ -86,7 +88,11 @@ export class PerformanceAgentMarkdownRenderer extends MarkdownRendererWithCodeBl
         }
 
         return html`<devtools-collapsible-assistance-content-widget  .data=${{
-          headerText: `Insight - ${componentName}`
+          headerText: `Insight - ${componentName}`, onReveal: () => {
+            void UI.InspectorView.InspectorView.instance().showPanel('timeline').then(() => {
+              Timeline.TimelinePanel.TimelinePanel.instance().revealInsight(insightM);
+            });
+          },
         }
         }>
         ${this.#insightRenderer.renderInsightToWidgetElement(this.parsedTrace, insightSet, insightM, componentName, {
@@ -115,7 +121,13 @@ export class PerformanceAgentMarkdownRenderer extends MarkdownRendererWithCodeBl
             return html`<devtools-collapsible-assistance-content-widget
             .data=${{
               headerText: `Network Request: ${
-                  networkRequest.url().length > 80 ? networkRequest.url().slice(0, 80) + '...' : networkRequest.url()}`
+                  networkRequest.url().length > 80 ? networkRequest.url().slice(0, 80) + '...' : networkRequest.url()}`,
+                  onReveal: () => {
+                    void UI.InspectorView.InspectorView.instance().showPanel('network').then(() => {
+                      void Common.Revealer.reveal(NetworkForward.UIRequestLocation.UIRequestLocation.tab(
+                          networkRequest, NetworkForward.UIRequestLocation.UIRequestTabs.TIMING));
+                    });
+                  },
             }
             }>
             <devtools-widget class="actions" .widgetConfig=${
@@ -142,7 +154,10 @@ export class PerformanceAgentMarkdownRenderer extends MarkdownRendererWithCodeBl
 
         return html`<devtools-collapsible-assistance-content-widget
         .data=${{
-          headerText: 'Network Request'
+          headerText: 'Network Request', onReveal: () => {
+            // eslint-disable-next-line no-console
+            console.log('Reveal network request', value);
+          },
         }
         }>
           ${networkTooltip}

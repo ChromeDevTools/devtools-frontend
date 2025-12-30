@@ -122,21 +122,25 @@ export class AiCodeCompletionProvider {
     this.#aiCodeCompletion?.clearCachedRequest();
   }
 
-  // TODO(b/445394511): Update setup and cleanup method so that config callbacks are not
-  // called twice.
   #setupAiCodeCompletion(): void {
     if (!this.#editor || !this.#aiCodeCompletionConfig) {
       return;
     }
-    if (!this.#aiCodeCompletion) {
-      this.#aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion(
-          {aidaClient: this.#aidaClient}, this.#aiCodeCompletionConfig.panel, undefined,
-          this.#aiCodeCompletionConfig.completionContext.stopSequences);
+    if (this.#aiCodeCompletion) {
+      // early return as this means that code completion was previously setup
+      return;
     }
+    this.#aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion(
+        {aidaClient: this.#aidaClient}, this.#aiCodeCompletionConfig.panel, undefined,
+        this.#aiCodeCompletionConfig.completionContext.stopSequences);
     this.#aiCodeCompletionConfig.onFeatureEnabled();
   }
 
   #cleanupAiCodeCompletion(): void {
+    if (!this.#aiCodeCompletion) {
+      // early return as this means there is no code completion to clean up
+      return;
+    }
     if (this.#suggestionRenderingTimeout) {
       clearTimeout(this.#suggestionRenderingTimeout);
       this.#suggestionRenderingTimeout = undefined;

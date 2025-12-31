@@ -653,6 +653,7 @@ ui/components/survey_link/SurveyLink.test.js
 ui/components/switch/SwitchImpl.test.js
 ui/components/text_editor/AiCodeCompletionProvider.test.js
 ui/components/text_editor/AiCodeCompletionTeaserPlaceholder.test.js
+ui/components/text_editor/AiCodeGenerationParser.test.js
 ui/components/text_editor/AiCodeGenerationProvider.test.js
 ui/components/text_editor/AutocompleteHistory.test.js
 ui/components/text_editor/ExecutionPositionHighlighter.test.js

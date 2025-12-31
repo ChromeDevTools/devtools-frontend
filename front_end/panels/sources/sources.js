@@ -253,13 +253,19 @@ var AiCodeCompletionPlugin = class extends Plugin {
     this.#aiCodeCompletionDisclaimer = new PanelCommon.AiCodeCompletionDisclaimer();
     this.#aiCodeCompletionDisclaimer.disclaimerTooltipId = DISCLAIMER_TOOLTIP_ID;
     this.#aiCodeCompletionDisclaimer.spinnerTooltipId = SPINNER_TOOLTIP_ID;
+    this.#aiCodeCompletionDisclaimer.panel = "sources";
     this.#aiCodeCompletionDisclaimer.show(this.#aiCodeCompletionDisclaimerContainer, void 0, true);
   }
   #createAiCodeCompletionCitationsToolbar() {
     if (this.#aiCodeCompletionCitationsToolbar) {
       return;
     }
-    this.#aiCodeCompletionCitationsToolbar = new PanelCommon.AiCodeCompletionSummaryToolbar({ citationsTooltipId: CITATIONS_TOOLTIP_ID, hasTopBorder: true });
+    this.#aiCodeCompletionCitationsToolbar = new PanelCommon.AiCodeCompletionSummaryToolbar({
+      citationsTooltipId: CITATIONS_TOOLTIP_ID,
+      hasTopBorder: true,
+      panel: "sources"
+      /* AiCodeCompletion.AiCodeCompletion.ContextFlavor.SOURCES */
+    });
     this.#aiCodeCompletionCitationsToolbar.show(this.#aiCodeCompletionCitationsToolbarContainer, void 0, true);
   }
   #attachAiCodeCompletionCitationsToolbar() {

@@ -16089,10 +16089,10 @@ var CSSMatchedStyles = class _CSSMatchedStyles {
       }
     }
     for (const [pseudoType, nodeCascade] of pseudoCascades.entries()) {
-      pseudoInheritanceCascades.set(pseudoType, new DOMInheritanceCascade(this, nodeCascade, this.#registeredProperties));
+      pseudoInheritanceCascades.set(pseudoType, new DOMInheritanceCascade(this, nodeCascade, this.#registeredProperties, this.#mainDOMCascade));
     }
     for (const [highlightName, nodeCascade] of customHighlightPseudoCascades.entries()) {
-      customHighlightPseudoInheritanceCascades.set(highlightName, new DOMInheritanceCascade(this, nodeCascade, this.#registeredProperties));
+      customHighlightPseudoInheritanceCascades.set(highlightName, new DOMInheritanceCascade(this, nodeCascade, this.#registeredProperties, this.#mainDOMCascade));
     }
     return [pseudoInheritanceCascades, customHighlightPseudoInheritanceCascades];
   }
@@ -16339,18 +16339,18 @@ var CSSMatchedStyles = class _CSSMatchedStyles {
   }
 };
 var NodeCascade = class {
+  isHighlightPseudoCascade;
   #matchedStyles;
   styles;
   #isInherited;
-  #isHighlightPseudoCascade;
   propertiesState = /* @__PURE__ */ new Map();
   activeProperties = /* @__PURE__ */ new Map();
   #node;
   constructor(matchedStyles, styles, node, isInherited, isHighlightPseudoCascade = false) {
+    this.isHighlightPseudoCascade = isHighlightPseudoCascade;
     this.#matchedStyles = matchedStyles;
     this.styles = styles;
     this.#isInherited = isInherited;
-    this.#isHighlightPseudoCascade = isHighlightPseudoCascade;
     this.#node = node;
   }
   computeActiveProperties() {
@@ -16367,8 +16367,14 @@ var NodeCascade = class {
       }
       for (const property of style.allProperties()) {
         const metadata = cssMetadata();
-        if (this.#isInherited && !this.#isHighlightPseudoCascade && !metadata.isPropertyInherited(property.name)) {
-          continue;
+        if (this.#isInherited) {
+          if (this.isHighlightPseudoCascade) {
+            if (property.name.startsWith("--")) {
+              continue;
+            }
+          } else if (!metadata.isPropertyInherited(property.name)) {
+            continue;
+          }
         }
         if (style.range && !property.range) {
           continue;
@@ -16537,13 +16543,24 @@ var DOMInheritanceCascade = class {
   #nodeCascades;
   #registeredProperties;
   #matchedStyles;
-  constructor(matchedStyles, nodeCascades, registeredProperties) {
+  #fallbackCascade = null;
+  #styles = [];
+  constructor(matchedStyles, nodeCascades, registeredProperties, fallbackCascade = null) {
     this.#nodeCascades = nodeCascades;
     this.#matchedStyles = matchedStyles;
     this.#registeredProperties = registeredProperties;
+    this.#fallbackCascade = fallbackCascade;
     for (const nodeCascade of nodeCascades) {
       for (const style of nodeCascade.styles) {
         this.#styleToNodeCascade.set(style, nodeCascade);
+        this.#styles.push(style);
+      }
+    }
+    if (fallbackCascade) {
+      for (const [style, nodeCascade] of fallbackCascade.#styleToNodeCascade) {
+        if (!this.#styles.includes(style)) {
+          this.#styleToNodeCascade.set(style, nodeCascade);
+        }
       }
     }
   }
@@ -16597,6 +16614,9 @@ var DOMInheritanceCascade = class {
           return inheritedProperty;
         }
       }
+    }
+    if (this.#fallbackCascade && (!nodeCascade.isHighlightPseudoCascade || property.name.startsWith("--"))) {
+      return this.#fallbackCascade.resolveProperty(property.name, property.ownerStyle);
     }
     return null;
   }
@@ -16818,7 +16838,7 @@ var DOMInheritanceCascade = class {
     }
   }
   styles() {
-    return Array.from(this.#styleToNodeCascade.keys());
+    return this.#styles;
   }
   propertyState(property) {
     this.ensureInitialized();
@@ -16896,6 +16916,18 @@ var DOMInheritanceCascade = class {
     for (const rule of this.#registeredProperties) {
       const initialValue = rule.initialValue();
       accumulatedCSSVariables.set(rule.propertyName(), initialValue !== null ? { value: initialValue, declaration: new CSSValueSource(rule) } : null);
+    }
+    if (this.#fallbackCascade) {
+      this.#fallbackCascade.ensureInitialized();
+      for (const [cascade, available] of this.#fallbackCascade.#availableCSSVariables) {
+        this.#availableCSSVariables.set(cascade, available);
+      }
+      for (const [cascade, computed] of this.#fallbackCascade.#computedCSSVariables) {
+        this.#computedCSSVariables.set(cascade, computed);
+      }
+      for (const [key, value] of this.#fallbackCascade.#availableCSSVariables.get(this.#fallbackCascade.#nodeCascades[0]) ?? []) {
+        accumulatedCSSVariables.set(key, value);
+      }
     }
     for (let i = this.#nodeCascades.length - 1; i >= 0; --i) {
       const nodeCascade = this.#nodeCascades[i];

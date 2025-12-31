@@ -1,6 +1,7 @@
 import '../../ui/components/spinners/spinners.js';
 import '../../ui/components/tooltips/tooltips.js';
 import * as Host from '../../core/host/host.js';
+import * as AiCodeCompletion from '../../models/ai_code_completion/ai_code_completion.js';
 import * as UI from '../../ui/legacy/legacy.js';
 export interface ViewInput {
     disclaimerTooltipId?: string;
@@ -8,6 +9,7 @@ export interface ViewInput {
     noLogging: boolean;
     aidaAvailability?: Host.AidaClient.AidaAccessPreconditions;
     onManageInSettingsTooltipClick: () => void;
+    panel?: AiCodeCompletion.AiCodeCompletion.ContextFlavor;
 }
 export interface ViewOutput {
     hideTooltip?: () => void;
@@ -21,6 +23,7 @@ export declare class AiCodeCompletionDisclaimer extends UI.Widget.Widget {
     set disclaimerTooltipId(disclaimerTooltipId: string);
     set spinnerTooltipId(spinnerTooltipId: string);
     set loading(loading: boolean);
+    set panel(panel: AiCodeCompletion.AiCodeCompletion.ContextFlavor);
     performUpdate(): void;
     wasShown(): void;
     willHide(): void;

@@ -4,7 +4,8 @@ import * as UI from '../../ui/legacy/legacy.js';
 export declare enum AiCodeGenerationTeaserDisplayState {
     TRIGGER = "trigger",
     DISCOVERY = "discovery",
-    LOADING = "loading"
+    LOADING = "loading",
+    GENERATED = "generated"
 }
 export interface ViewInput {
     displayState: AiCodeGenerationTeaserDisplayState;
@@ -15,6 +16,7 @@ export interface ViewInput {
 }
 export interface ViewOutput {
     hideTooltip?: () => void;
+    setTimerText?: (text: string) => void;
 }
 export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
 export declare const DEFAULT_VIEW: View;
@@ -22,6 +24,7 @@ export declare class AiCodeGenerationTeaser extends UI.Widget.Widget {
     #private;
     constructor(view?: View);
     performUpdate(): void;
+    willHide(): void;
     get displayState(): AiCodeGenerationTeaserDisplayState;
     set displayState(displayState: AiCodeGenerationTeaserDisplayState);
     set disclaimerTooltipId(disclaimerTooltipId: string);

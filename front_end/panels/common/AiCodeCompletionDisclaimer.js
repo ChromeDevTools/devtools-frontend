@@ -6,6 +6,7 @@ import '../../ui/components/tooltips/tooltips.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
+import * as AiCodeCompletion from '../../models/ai_code_completion/ai_code_completion.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { Directives, html, nothing, render } from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -22,11 +23,19 @@ const UIStringsNotTranslate = {
     /**
      * @description Text for tooltip shown on hovering over "Relevant Data" in the disclaimer text for AI code completion.
      */
-    tooltipDisclaimerTextForAiCodeCompletion: 'To generate code suggestions, your console input and the history of your current console session are shared with Google. This data may be seen by human reviewers to improve this feature.',
+    tooltipDisclaimerTextForAiCodeCompletionInConsole: 'To generate code suggestions, your console input and the history of your current console session are shared with Google. This data may be seen by human reviewers to improve this feature.',
     /**
      * @description Text for tooltip shown on hovering over "Relevant Data" in the disclaimer text for AI code completion.
      */
-    tooltipDisclaimerTextForAiCodeCompletionNoLogging: 'To generate code suggestions, your console input and the history of your current console session are shared with Google. This data will not be used to improve Google’s AI models.',
+    tooltipDisclaimerTextForAiCodeCompletionNoLoggingInConsole: 'To generate code suggestions, your console input and the history of your current console session are shared with Google. This data will not be used to improve Google’s AI models. Your organization may change these settings at any time.',
+    /**
+     * @description Text for tooltip shown on hovering over "Relevant Data" in the disclaimer text for AI code generation in Sources panel.
+     */
+    tooltipDisclaimerTextForAiCodeCompletionInSources: 'To generate code suggestions, the contents of the currently open file are shared with Google. This data may be seen by human reviewers to improve this feature.',
+    /**
+     * @description Text for tooltip shown on hovering over "Relevant Data" in the disclaimer text for AI code generation in Sources panel.
+     */
+    tooltipDisclaimerTextForAiCodeCompletionNoLoggingInSources: 'To generate code suggestions, the contents of the currently open file are shared with Google. This data will not be used to improve Google’s AI models. Your organization may change these settings at any time.',
     /**
      * Text for tooltip shown on hovering over spinner.
      */
@@ -41,12 +50,25 @@ const UIStringsNotTranslate = {
     dataIsBeingSentToGoogle: 'Data is being sent to Google',
 };
 const lockedString = i18n.i18n.lockedString;
+function getTooltipDisclaimerText(noLogging, panel) {
+    switch (panel) {
+        case "console" /* AiCodeCompletion.AiCodeCompletion.ContextFlavor.CONSOLE */:
+            return noLogging ?
+                lockedString(UIStringsNotTranslate.tooltipDisclaimerTextForAiCodeCompletionNoLoggingInConsole) :
+                lockedString(UIStringsNotTranslate.tooltipDisclaimerTextForAiCodeCompletionInConsole);
+        case "sources" /* AiCodeCompletion.AiCodeCompletion.ContextFlavor.SOURCES */:
+            return noLogging ?
+                lockedString(UIStringsNotTranslate.tooltipDisclaimerTextForAiCodeCompletionNoLoggingInSources) :
+                lockedString(UIStringsNotTranslate.tooltipDisclaimerTextForAiCodeCompletionInSources);
+    }
+}
 export const DEFAULT_SUMMARY_TOOLBAR_VIEW = (input, output, target) => {
     if (input.aidaAvailability !== "available" /* Host.AidaClient.AidaAccessPreconditions.AVAILABLE */ || !input.disclaimerTooltipId ||
-        !input.spinnerTooltipId) {
+        !input.spinnerTooltipId || !input.panel) {
         render(nothing, target);
         return;
     }
+    const tooltipDisclaimerText = getTooltipDisclaimerText(input.noLogging, input.panel);
     // clang-format off
     render(html `
         <style>${styles}</style>
@@ -93,7 +115,7 @@ export const DEFAULT_SUMMARY_TOOLBAR_VIEW = (input, output, target) => {
         }
     })}>
             <div class="disclaimer-tooltip-container"><div class="tooltip-text">
-                ${input.noLogging ? lockedString(UIStringsNotTranslate.tooltipDisclaimerTextForAiCodeCompletionNoLogging) : lockedString(UIStringsNotTranslate.tooltipDisclaimerTextForAiCodeCompletion)}
+                ${tooltipDisclaimerText}
                 </div>
                 <span
                     tabIndex="0"
@@ -118,6 +140,7 @@ export class AiCodeCompletionDisclaimer extends UI.Widget.Widget {
     #loading = false;
     #loadingStartTime = 0;
     #spinnerLoadingTimeout;
+    #panel;
     #aidaAvailability;
     #boundOnAidaAvailabilityChange;
     constructor(element, view = DEFAULT_SUMMARY_TOOLBAR_VIEW) {
@@ -162,6 +185,10 @@ export class AiCodeCompletionDisclaimer extends UI.Widget.Widget {
             }, remainingTime);
         }
     }
+    set panel(panel) {
+        this.#panel = panel;
+        this.requestUpdate();
+    }
     async #onAidaAvailabilityChange() {
         const currentAidaAvailability = await Host.AidaClient.AidaClient.checkAccessPreconditions();
         if (currentAidaAvailability !== this.#aidaAvailability) {
@@ -180,6 +207,7 @@ export class AiCodeCompletionDisclaimer extends UI.Widget.Widget {
             noLogging: this.#noLogging,
             aidaAvailability: this.#aidaAvailability,
             onManageInSettingsTooltipClick: this.#onManageInSettingsTooltipClick.bind(this),
+            panel: this.#panel,
         }, this.#viewOutput, this.contentElement);
     }
     wasShown() {

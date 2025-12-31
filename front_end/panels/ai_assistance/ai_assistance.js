@@ -2099,6 +2099,7 @@ var DEFAULT_VIEW3 = (input, output, target) => {
               wrap="hard"
               maxlength="10000"
               @keydown=${input.onTextAreaKeyDown}
+              @paste=${input.onImagePaste}
               @input=${(event) => {
     input.onTextInputChange(event.target.value);
   }}
@@ -2326,6 +2327,21 @@ var ChatInput = class extends UI4.Widget.Widget {
       this.focusTextInput();
     });
   }
+  #handleImagePaste = (event) => {
+    if (this.conversationType !== "freestyler") {
+      return;
+    }
+    const files = event.clipboardData?.files;
+    if (!files || files.length === 0) {
+      return;
+    }
+    const imageFile = Array.from(files).find((file) => file.type.startsWith("image/"));
+    if (!imageFile) {
+      return;
+    }
+    event.preventDefault();
+    void this.#handleLoadImage(imageFile);
+  };
   async #handleLoadImage(file) {
     const showLoadingTimeout = setTimeout(() => {
       this.#imageInput = { isLoading: true };
@@ -2398,6 +2414,7 @@ var ChatInput = class extends UI4.Widget.Widget {
       textAreaRef: this.#textAreaRef,
       onContextClick: this.onContextClick,
       onInspectElementClick: this.onInspectElementClick,
+      onImagePaste: this.#handleImagePaste,
       onNewConversation: this.onNewConversation,
       onTextInputChange: () => {
         this.requestUpdate();

@@ -37,6 +37,7 @@
   "files": [
     "../../../../../../../front_end/ui/components/text_editor/AiCodeCompletionProvider.ts",
     "../../../../../../../front_end/ui/components/text_editor/AiCodeCompletionTeaserPlaceholder.ts",
+    "../../../../../../../front_end/ui/components/text_editor/AiCodeGenerationParser.ts",
     "../../../../../../../front_end/ui/components/text_editor/AiCodeGenerationProvider.ts",
     "../../../../../../../front_end/ui/components/text_editor/AutocompleteHistory.ts",
     "../../../../../../../front_end/ui/components/text_editor/ExecutionPositionHighlighter.ts",

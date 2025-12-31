@@ -6567,7 +6567,8 @@ var ConsoleView = class _ConsoleView extends UI7.Widget.VBox {
     this.aiCodeCompletionSummaryToolbar = new AiCodeCompletionSummaryToolbar({
       citationsTooltipId: CITATIONS_TOOLTIP_ID,
       disclaimerTooltipId: DISCLAIMER_TOOLTIP_ID,
-      spinnerTooltipId: SPINNER_TOOLTIP_ID
+      spinnerTooltipId: SPINNER_TOOLTIP_ID,
+      panel: "console"
     });
     this.aiCodeCompletionSummaryToolbarContainer = this.element.createChild("div", "ai-code-completion-summary-toolbar-container");
     this.aiCodeCompletionSummaryToolbar.show(this.aiCodeCompletionSummaryToolbarContainer, void 0, true);

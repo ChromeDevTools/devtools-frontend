@@ -21,13 +21,21 @@ const UIStringsNotTranslate = {
      */
     cmdItoGenerateCode: 'Cmd+I to generate code',
     /**
-     * Text for teaser when generating suggestion.
+     * @description Text for teaser when generating suggestion.
      */
     generating: 'Generating... (esc to cancel)',
     /**
-     * Text for teaser for discoverability.
+     * @description Text for teaser for discoverability.
      */
     writeACommentToGenerateCode: 'Write a comment to generate code',
+    /**
+     * @description Text for teaser when suggestion has been generated.
+     */
+    tab: 'tab',
+    /**
+     * @description Text for teaser when suggestion has been generated.
+     */
+    toAccept: 'to accept',
     /**
      * @description Text for tooltip shown on hovering over "Relevant Data" in the disclaimer text for AI code generation in Console panel.
      */
@@ -60,6 +68,7 @@ export var AiCodeGenerationTeaserDisplayState;
     AiCodeGenerationTeaserDisplayState["TRIGGER"] = "trigger";
     AiCodeGenerationTeaserDisplayState["DISCOVERY"] = "discovery";
     AiCodeGenerationTeaserDisplayState["LOADING"] = "loading";
+    AiCodeGenerationTeaserDisplayState["GENERATED"] = "generated";
 })(AiCodeGenerationTeaserDisplayState || (AiCodeGenerationTeaserDisplayState = {}));
 function getTooltipDisclaimerText(noLogging, panel) {
     switch (panel) {
@@ -137,7 +146,26 @@ export const DEFAULT_VIEW = (input, output, target) => {
             break;
         }
         case AiCodeGenerationTeaserDisplayState.LOADING: {
-            teaserLabel = html `${lockedString(UIStringsNotTranslate.generating)}`;
+            // clang-format off
+            teaserLabel = html `
+        <span class="ai-code-generation-spinner"></span>&nbsp;${lockedString(UIStringsNotTranslate.generating)}&nbsp;
+        <span class="ai-code-generation-timer" ${Directives.ref(el => {
+                if (el) {
+                    output.setTimerText = (text) => {
+                        el.textContent = text;
+                    };
+                }
+            })}></span>`;
+            // clang-format on
+            break;
+        }
+        case AiCodeGenerationTeaserDisplayState.GENERATED: {
+            // clang-format off
+            teaserLabel = html `<div class="ai-code-generation-teaser-generated">
+          <span>${lockedString(UIStringsNotTranslate.tab)}</span>
+          &nbsp;${lockedString(UIStringsNotTranslate.toAccept)}
+        </div>`;
+            // clang-format on
             break;
         }
     }
@@ -159,6 +187,8 @@ export class AiCodeGenerationTeaser extends UI.Widget.Widget {
     #disclaimerTooltipId;
     #noLogging; // Whether the enterprise setting is `ALLOW_WITHOUT_LOGGING` or not.
     #panel;
+    #timerIntervalId;
+    #loadStartTime;
     constructor(view) {
         super();
         this.markAsExternallyManaged();
@@ -176,6 +206,10 @@ export class AiCodeGenerationTeaser extends UI.Widget.Widget {
             panel: this.#panel,
         }, this.#viewOutput, this.contentElement);
     }
+    willHide() {
+        super.willHide();
+        this.#stopLoadingAnimation();
+    }
     get displayState() {
         return this.#displayState;
     }
@@ -185,6 +219,33 @@ export class AiCodeGenerationTeaser extends UI.Widget.Widget {
         }
         this.#displayState = displayState;
         this.requestUpdate();
+        if (this.#displayState === AiCodeGenerationTeaserDisplayState.LOADING) {
+            // wait update to complete so that setTimerText has been set properly
+            void this.updateComplete.then(() => {
+                void this.#startLoadingAnimation();
+            });
+        }
+        else if (this.#loadStartTime) {
+            this.#stopLoadingAnimation();
+        }
+    }
+    #startLoadingAnimation() {
+        this.#stopLoadingAnimation();
+        this.#loadStartTime = performance.now();
+        this.#viewOutput.setTimerText?.('(0s)');
+        this.#timerIntervalId = window.setInterval(() => {
+            if (this.#loadStartTime) {
+                const elapsedSeconds = Math.floor((performance.now() - this.#loadStartTime) / 1000);
+                this.#viewOutput.setTimerText?.(`(${elapsedSeconds}s)`);
+            }
+        }, 1000);
+    }
+    #stopLoadingAnimation() {
+        if (this.#timerIntervalId) {
+            clearInterval(this.#timerIntervalId);
+            this.#timerIntervalId = undefined;
+        }
+        this.#loadStartTime = undefined;
     }
     set disclaimerTooltipId(disclaimerTooltipId) {
         this.#disclaimerTooltipId = disclaimerTooltipId;

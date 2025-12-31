@@ -80,18 +80,22 @@ export class AiCodeCompletionProvider {
     clearCache() {
         this.#aiCodeCompletion?.clearCachedRequest();
     }
-    // TODO(b/445394511): Update setup and cleanup method so that config callbacks are not
-    // called twice.
     #setupAiCodeCompletion() {
         if (!this.#editor || !this.#aiCodeCompletionConfig) {
             return;
         }
-        if (!this.#aiCodeCompletion) {
-            this.#aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion({ aidaClient: this.#aidaClient }, this.#aiCodeCompletionConfig.panel, undefined, this.#aiCodeCompletionConfig.completionContext.stopSequences);
+        if (this.#aiCodeCompletion) {
+            // early return as this means that code completion was previously setup
+            return;
         }
+        this.#aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion({ aidaClient: this.#aidaClient }, this.#aiCodeCompletionConfig.panel, undefined, this.#aiCodeCompletionConfig.completionContext.stopSequences);
         this.#aiCodeCompletionConfig.onFeatureEnabled();
     }
     #cleanupAiCodeCompletion() {
+        if (!this.#aiCodeCompletion) {
+            // early return as this means there is no code completion to clean up
+            return;
+        }
         if (this.#suggestionRenderingTimeout) {
             clearTimeout(this.#suggestionRenderingTimeout);
             this.#suggestionRenderingTimeout = undefined;
@@ -160,6 +164,21 @@ export class AiCodeCompletionProvider {
         }
         this.#editor?.editor.dispatch({ effects: this.#teaserCompartment.reconfigure([]) });
     }
+    /**
+     * This method is responsible for fetching code completion suggestions and
+     * displaying them in the text editor.
+     *
+     * 1. **Debouncing requests:** As the user types, we don't want to send a request
+     *    for every keystroke. Instead, we use debouncing to schedule a request
+     *    only after the user has paused typing for a short period
+     *    (AIDA_REQUEST_THROTTLER_TIMEOUT_MS). This prevents spamming the backend with
+     *    requests for intermediate typing states.
+     *
+     * 2. **Delaying suggestions:** When a suggestion is received from the AIDA
+     *    backend, we don't show it immediately. There is a minimum delay
+     *    (DELAY_BEFORE_SHOWING_RESPONSE_MS) from when the request was sent to when
+     *    the suggestion is displayed.
+     */
     #triggerAiCodeCompletion(update) {
         if (!update.docChanged || !this.#editor || !this.#aiCodeCompletion) {
             return;
@@ -212,7 +231,7 @@ export class AiCodeCompletionProvider {
                 return;
             }
             const { suggestionText, sampleId, citations, rpcGlobalId, } = sampleResponse;
-            const remainingDelay = Math.max(AiCodeCompletion.AiCodeCompletion.DELAY_BEFORE_SHOWING_RESPONSE_MS - (performance.now() - startTime), 0);
+            const remainingDelay = Math.max(DELAY_BEFORE_SHOWING_RESPONSE_MS - (performance.now() - startTime), 0);
             this.#suggestionRenderingTimeout = window.setTimeout(() => {
                 const currentCursorPosition = this.#editor?.editor.state.selection.main.head;
                 if (currentCursorPosition !== cursorPositionAtRequest) {

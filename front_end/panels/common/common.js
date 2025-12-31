@@ -574,6 +574,18 @@ var aiCodeGenerationTeaser_css_default = `/*
             align-items: center;
         }
 
+        .ai-code-generation-teaser-generated {
+            display: inline-flex;
+            gap: var(--sys-size-2);
+            color: var(--sys-color-primary);
+
+            span {
+                border: var(--sys-size-1) solid var(--sys-color-primary);
+                border-radius: var(--sys-shape-corner-extra-small);
+                padding: 0 var(--sys-size-3);
+            }
+        }
+
         .new-badge {
             font-style: normal;
             display: inline-block;
@@ -602,6 +614,24 @@ var aiCodeGenerationTeaser_css_default = `/*
                 }
             }
         }
+
+        .ai-code-generation-spinner::before {
+            content: "\u280B";
+            animation: teaser-spinner-animation 1s linear infinite;
+        }
+    }
+
+    @keyframes teaser-spinner-animation {
+        0% { content: "\u280B"; }
+        10% { content: "\u2819"; }
+        20% { content: "\u2839"; }
+        30% { content: "\u2838"; }
+        40% { content: "\u283C"; }
+        50% { content: "\u2834"; }
+        60% { content: "\u2826"; }
+        70% { content: "\u2827"; }
+        80% { content: "\u2807"; }
+        90% { content: "\u280F"; }
     }
 }
 
@@ -618,13 +648,21 @@ var UIStringsNotTranslate2 = {
    */
   cmdItoGenerateCode: "Cmd+I to generate code",
   /**
-   * Text for teaser when generating suggestion.
+   * @description Text for teaser when generating suggestion.
    */
   generating: "Generating... (esc to cancel)",
   /**
-   * Text for teaser for discoverability.
+   * @description Text for teaser for discoverability.
    */
   writeACommentToGenerateCode: "Write a comment to generate code",
+  /**
+   * @description Text for teaser when suggestion has been generated.
+   */
+  tab: "tab",
+  /**
+   * @description Text for teaser when suggestion has been generated.
+   */
+  toAccept: "to accept",
   /**
    * @description Text for tooltip shown on hovering over "Relevant Data" in the disclaimer text for AI code generation in Console panel.
    */
@@ -657,6 +695,7 @@ var AiCodeGenerationTeaserDisplayState;
   AiCodeGenerationTeaserDisplayState2["TRIGGER"] = "trigger";
   AiCodeGenerationTeaserDisplayState2["DISCOVERY"] = "discovery";
   AiCodeGenerationTeaserDisplayState2["LOADING"] = "loading";
+  AiCodeGenerationTeaserDisplayState2["GENERATED"] = "generated";
 })(AiCodeGenerationTeaserDisplayState || (AiCodeGenerationTeaserDisplayState = {}));
 function getTooltipDisclaimerText(noLogging, panel2) {
   switch (panel2) {
@@ -724,7 +763,22 @@ var DEFAULT_VIEW2 = (input, output, target) => {
       break;
     }
     case AiCodeGenerationTeaserDisplayState.LOADING: {
-      teaserLabel = html3`${lockedString2(UIStringsNotTranslate2.generating)}`;
+      teaserLabel = html3`
+        <span class="ai-code-generation-spinner"></span>&nbsp;${lockedString2(UIStringsNotTranslate2.generating)}&nbsp;
+        <span class="ai-code-generation-timer" ${Directives.ref((el) => {
+        if (el) {
+          output.setTimerText = (text) => {
+            el.textContent = text;
+          };
+        }
+      })}></span>`;
+      break;
+    }
+    case AiCodeGenerationTeaserDisplayState.GENERATED: {
+      teaserLabel = html3`<div class="ai-code-generation-teaser-generated">
+          <span>${lockedString2(UIStringsNotTranslate2.tab)}</span>
+          &nbsp;${lockedString2(UIStringsNotTranslate2.toAccept)}
+        </div>`;
       break;
     }
   }
@@ -744,6 +798,8 @@ var AiCodeGenerationTeaser = class extends UI3.Widget.Widget {
   #noLogging;
   // Whether the enterprise setting is `ALLOW_WITHOUT_LOGGING` or not.
   #panel;
+  #timerIntervalId;
+  #loadStartTime;
   constructor(view) {
     super();
     this.markAsExternallyManaged();
@@ -760,6 +816,10 @@ var AiCodeGenerationTeaser = class extends UI3.Widget.Widget {
       panel: this.#panel
     }, this.#viewOutput, this.contentElement);
   }
+  willHide() {
+    super.willHide();
+    this.#stopLoadingAnimation();
+  }
   get displayState() {
     return this.#displayState;
   }
@@ -769,6 +829,31 @@ var AiCodeGenerationTeaser = class extends UI3.Widget.Widget {
     }
     this.#displayState = displayState;
     this.requestUpdate();
+    if (this.#displayState === AiCodeGenerationTeaserDisplayState.LOADING) {
+      void this.updateComplete.then(() => {
+        void this.#startLoadingAnimation();
+      });
+    } else if (this.#loadStartTime) {
+      this.#stopLoadingAnimation();
+    }
+  }
+  #startLoadingAnimation() {
+    this.#stopLoadingAnimation();
+    this.#loadStartTime = performance.now();
+    this.#viewOutput.setTimerText?.("(0s)");
+    this.#timerIntervalId = window.setInterval(() => {
+      if (this.#loadStartTime) {
+        const elapsedSeconds = Math.floor((performance.now() - this.#loadStartTime) / 1e3);
+        this.#viewOutput.setTimerText?.(`(${elapsedSeconds}s)`);
+      }
+    }, 1e3);
+  }
+  #stopLoadingAnimation() {
+    if (this.#timerIntervalId) {
+      clearInterval(this.#timerIntervalId);
+      this.#timerIntervalId = void 0;
+    }
+    this.#loadStartTime = void 0;
   }
   set disclaimerTooltipId(disclaimerTooltipId) {
     this.#disclaimerTooltipId = disclaimerTooltipId;
@@ -1433,6 +1518,7 @@ import "./../../ui/components/tooltips/tooltips.js";
 import * as Host4 from "./../../core/host/host.js";
 import * as i18n9 from "./../../core/i18n/i18n.js";
 import * as Root3 from "./../../core/root/root.js";
+import * as AiCodeCompletion2 from "./../../models/ai_code_completion/ai_code_completion.js";
 import * as UI6 from "./../../ui/legacy/legacy.js";
 import { Directives as Directives2, html as html6, nothing as nothing4, render as render6 } from "./../../ui/lit/lit.js";
 import * as VisualLogging4 from "./../../ui/visual_logging/visual_logging.js";
@@ -1511,11 +1597,19 @@ var UIStringsNotTranslate3 = {
   /**
    * @description Text for tooltip shown on hovering over "Relevant Data" in the disclaimer text for AI code completion.
    */
-  tooltipDisclaimerTextForAiCodeCompletion: "To generate code suggestions, your console input and the history of your current console session are shared with Google. This data may be seen by human reviewers to improve this feature.",
+  tooltipDisclaimerTextForAiCodeCompletionInConsole: "To generate code suggestions, your console input and the history of your current console session are shared with Google. This data may be seen by human reviewers to improve this feature.",
   /**
    * @description Text for tooltip shown on hovering over "Relevant Data" in the disclaimer text for AI code completion.
    */
-  tooltipDisclaimerTextForAiCodeCompletionNoLogging: "To generate code suggestions, your console input and the history of your current console session are shared with Google. This data will not be used to improve Google\u2019s AI models.",
+  tooltipDisclaimerTextForAiCodeCompletionNoLoggingInConsole: "To generate code suggestions, your console input and the history of your current console session are shared with Google. This data will not be used to improve Google\u2019s AI models. Your organization may change these settings at any time.",
+  /**
+   * @description Text for tooltip shown on hovering over "Relevant Data" in the disclaimer text for AI code generation in Sources panel.
+   */
+  tooltipDisclaimerTextForAiCodeCompletionInSources: "To generate code suggestions, the contents of the currently open file are shared with Google. This data may be seen by human reviewers to improve this feature.",
+  /**
+   * @description Text for tooltip shown on hovering over "Relevant Data" in the disclaimer text for AI code generation in Sources panel.
+   */
+  tooltipDisclaimerTextForAiCodeCompletionNoLoggingInSources: "To generate code suggestions, the contents of the currently open file are shared with Google. This data will not be used to improve Google\u2019s AI models. Your organization may change these settings at any time.",
   /**
    * Text for tooltip shown on hovering over spinner.
    */
@@ -1530,11 +1624,20 @@ var UIStringsNotTranslate3 = {
   dataIsBeingSentToGoogle: "Data is being sent to Google"
 };
 var lockedString3 = i18n9.i18n.lockedString;
+function getTooltipDisclaimerText2(noLogging, panel2) {
+  switch (panel2) {
+    case "console":
+      return noLogging ? lockedString3(UIStringsNotTranslate3.tooltipDisclaimerTextForAiCodeCompletionNoLoggingInConsole) : lockedString3(UIStringsNotTranslate3.tooltipDisclaimerTextForAiCodeCompletionInConsole);
+    case "sources":
+      return noLogging ? lockedString3(UIStringsNotTranslate3.tooltipDisclaimerTextForAiCodeCompletionNoLoggingInSources) : lockedString3(UIStringsNotTranslate3.tooltipDisclaimerTextForAiCodeCompletionInSources);
+  }
+}
 var DEFAULT_SUMMARY_TOOLBAR_VIEW = (input, output, target) => {
-  if (input.aidaAvailability !== "available" || !input.disclaimerTooltipId || !input.spinnerTooltipId) {
+  if (input.aidaAvailability !== "available" || !input.disclaimerTooltipId || !input.spinnerTooltipId || !input.panel) {
     render6(nothing4, target);
     return;
   }
+  const tooltipDisclaimerText = getTooltipDisclaimerText2(input.noLogging, input.panel);
   render6(html6`
         <style>${aiCodeCompletionDisclaimer_css_default}</style>
         <div class="ai-code-completion-disclaimer"><devtools-spinner
@@ -1580,7 +1683,7 @@ var DEFAULT_SUMMARY_TOOLBAR_VIEW = (input, output, target) => {
     }
   })}>
             <div class="disclaimer-tooltip-container"><div class="tooltip-text">
-                ${input.noLogging ? lockedString3(UIStringsNotTranslate3.tooltipDisclaimerTextForAiCodeCompletionNoLogging) : lockedString3(UIStringsNotTranslate3.tooltipDisclaimerTextForAiCodeCompletion)}
+                ${tooltipDisclaimerText}
                 </div>
                 <span
                     tabIndex="0"
@@ -1605,6 +1708,7 @@ var AiCodeCompletionDisclaimer = class extends UI6.Widget.Widget {
   #loading = false;
   #loadingStartTime = 0;
   #spinnerLoadingTimeout;
+  #panel;
   #aidaAvailability;
   #boundOnAidaAvailabilityChange;
   constructor(element, view = DEFAULT_SUMMARY_TOOLBAR_VIEW) {
@@ -1647,6 +1751,10 @@ var AiCodeCompletionDisclaimer = class extends UI6.Widget.Widget {
       }, remainingTime);
     }
   }
+  set panel(panel2) {
+    this.#panel = panel2;
+    this.requestUpdate();
+  }
   async #onAidaAvailabilityChange() {
     const currentAidaAvailability = await Host4.AidaClient.AidaClient.checkAccessPreconditions();
     if (currentAidaAvailability !== this.#aidaAvailability) {
@@ -1664,7 +1772,8 @@ var AiCodeCompletionDisclaimer = class extends UI6.Widget.Widget {
       spinnerTooltipId: this.#spinnerTooltipId,
       noLogging: this.#noLogging,
       aidaAvailability: this.#aidaAvailability,
-      onManageInSettingsTooltipClick: this.#onManageInSettingsTooltipClick.bind(this)
+      onManageInSettingsTooltipClick: this.#onManageInSettingsTooltipClick.bind(this),
+      panel: this.#panel
     }, this.#viewOutput, this.contentElement);
   }
   wasShown() {
@@ -1819,7 +1928,8 @@ var DEFAULT_SUMMARY_TOOLBAR_VIEW2 = (input, _output, target) => {
             .widgetConfig=${UI7.Widget.widgetConfig(AiCodeCompletionDisclaimer, {
     disclaimerTooltipId: input.disclaimerTooltipId,
     spinnerTooltipId: input.spinnerTooltipId,
-    loading: input.loading
+    loading: input.loading,
+    panel: input.panel
   })} class="disclaimer-widget"></devtools-widget>` : nothing5;
   const recitationNotice = input.citations && input.citations.size > 0 ? html7`<div class="ai-code-completion-recitation-notice">
                 ${lockedString4(UIStringsNotTranslate4.generatedCodeMayBeSubjectToALicense)}
@@ -1858,6 +1968,7 @@ var AiCodeCompletionSummaryToolbar = class extends UI7.Widget.Widget {
   #citations = /* @__PURE__ */ new Set();
   #loading = false;
   #hasTopBorder = false;
+  #panel;
   #aidaAvailability;
   #boundOnAidaAvailabilityChange;
   constructor(props, view) {
@@ -1866,6 +1977,7 @@ var AiCodeCompletionSummaryToolbar = class extends UI7.Widget.Widget {
     this.#spinnerTooltipId = props.spinnerTooltipId;
     this.#citationsTooltipId = props.citationsTooltipId;
     this.#hasTopBorder = props.hasTopBorder ?? false;
+    this.#panel = props.panel;
     this.#boundOnAidaAvailabilityChange = this.#onAidaAvailabilityChange.bind(this);
     this.#view = view ?? DEFAULT_SUMMARY_TOOLBAR_VIEW2;
     this.requestUpdate();
@@ -1897,7 +2009,8 @@ var AiCodeCompletionSummaryToolbar = class extends UI7.Widget.Widget {
       citationsTooltipId: this.#citationsTooltipId,
       loading: this.#loading,
       hasTopBorder: this.#hasTopBorder,
-      aidaAvailability: this.#aidaAvailability
+      aidaAvailability: this.#aidaAvailability,
+      panel: this.#panel
     }, void 0, this.contentElement);
   }
   wasShown() {

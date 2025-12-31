@@ -21,6 +21,18 @@ export default `/*
             align-items: center;
         }
 
+        .ai-code-generation-teaser-generated {
+            display: inline-flex;
+            gap: var(--sys-size-2);
+            color: var(--sys-color-primary);
+
+            span {
+                border: var(--sys-size-1) solid var(--sys-color-primary);
+                border-radius: var(--sys-shape-corner-extra-small);
+                padding: 0 var(--sys-size-3);
+            }
+        }
+
         .new-badge {
             font-style: normal;
             display: inline-block;
@@ -49,6 +61,24 @@ export default `/*
                 }
             }
         }
+
+        .ai-code-generation-spinner::before {
+            content: "⠋";
+            animation: teaser-spinner-animation 1s linear infinite;
+        }
+    }
+
+    @keyframes teaser-spinner-animation {
+        0% { content: "⠋"; }
+        10% { content: "⠙"; }
+        20% { content: "⠹"; }
+        30% { content: "⠸"; }
+        40% { content: "⠼"; }
+        50% { content: "⠴"; }
+        60% { content: "⠦"; }
+        70% { content: "⠧"; }
+        80% { content: "⠇"; }
+        90% { content: "⠏"; }
     }
 }
 

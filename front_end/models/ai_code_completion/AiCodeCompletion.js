@@ -1,12 +1,9 @@
 // Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as Root from '../../core/root/root.js';
 import { debugLog } from './debug.js';
-export const DELAY_BEFORE_SHOWING_RESPONSE_MS = 500;
-export const AIDA_REQUEST_DEBOUNCE_TIMEOUT_MS = 200;
 /* clang-format off */
 export const consoleAdditionalContextFileContent = `/**
  * This file describes the execution environment of the Chrome DevTools Console.
@@ -101,20 +98,9 @@ const console = {
 /* clang-format on */
 /**
  * The AiCodeCompletion class is responsible for fetching code completion suggestions
- * from the AIDA backend and displaying them in the text editor.
- *
- * 1. **Debouncing requests:** As the user types, we don't want to send a request
- *    for every keystroke. Instead, we use debouncing to schedule a request
- *    only after the user has paused typing for a short period
- *    (AIDA_REQUEST_THROTTLER_TIMEOUT_MS). This prevents spamming the backend with
- *    requests for intermediate typing states.
- *
- * 2. **Delaying suggestions:** When a suggestion is received from the AIDA
- *    backend, we don't show it immediately. There is a minimum delay
- *    (DELAY_BEFORE_SHOWING_RESPONSE_MS) from when the request was sent to when
- *    the suggestion is displayed.
+ * from the AIDA backend.
  */
-export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper {
+export class AiCodeCompletion {
     #stopSequences;
     #renderingTimeout;
     #aidaRequestCache;
@@ -125,16 +111,12 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper {
     #aidaClient;
     #serverSideLoggingEnabled;
     constructor(opts, panel, callbacks, stopSequences) {
-        super();
         this.#aidaClient = opts.aidaClient;
         this.#serverSideLoggingEnabled = opts.serverSideLoggingEnabled ?? false;
         this.#panel = panel;
         this.#stopSequences = stopSequences ?? [];
         this.#callbacks = callbacks;
     }
-    #debouncedRequestAidaSuggestion = Common.Debouncer.debounce((prefix, suffix, cursorPositionAtRequest, inferenceLanguage) => {
-        void this.#requestAidaSuggestion(this.#buildRequest(prefix, suffix, inferenceLanguage), cursorPositionAtRequest);
-    }, AIDA_REQUEST_DEBOUNCE_TIMEOUT_MS);
     #buildRequest(prefix, suffix, inferenceLanguage = "JAVASCRIPT" /* Host.AidaClient.AidaInferenceLanguage.JAVASCRIPT */, additionalFiles) {
         const userTier = Host.AidaClient.convertToUserTierEnum(this.#userTier);
         function validTemperature(temperature) {
@@ -188,98 +170,6 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper {
             fromCache: false,
         };
     }
-    #pickSampleFromResponse(response) {
-        if (!response.generatedSamples.length) {
-            return null;
-        }
-        // `currentHint` is the portion of a standard autocomplete suggestion that the user has not yet typed.
-        // For example, if the user types `document.queryS` and the autocomplete suggests `document.querySelector`,
-        // the `currentHint` is `elector`.
-        const currentHintInMenu = this.#callbacks?.getCompletionHint();
-        // TODO(ergunsh): We should not do this check here. Instead, the AI code suggestions should be provided
-        // as it is to the view plugin. The view plugin should choose which one to use based on the completion hint
-        // and selected completion.
-        if (!currentHintInMenu) {
-            return response.generatedSamples[0];
-        }
-        // TODO(ergunsh): This does not handle looking for `selectedCompletion`. The `currentHint` is `null`
-        // for the Sources panel case.
-        // Even though there is no match, we still return the first suggestion which will be displayed
-        // when the traditional autocomplete menu is closed.
-        return response.generatedSamples.find(sample => sample.generationString.startsWith(currentHintInMenu)) ??
-            response.generatedSamples[0];
-    }
-    async #generateSampleForRequest(request, cursor) {
-        const { response, fromCache } = await this.#completeCodeCached(request);
-        debugLog('At cursor position', cursor, { request, response, fromCache });
-        if (!response) {
-            return null;
-        }
-        const suggestionSample = this.#pickSampleFromResponse(response);
-        if (!suggestionSample) {
-            return null;
-        }
-        const shouldBlock = suggestionSample.attributionMetadata?.attributionAction === Host.AidaClient.RecitationAction.BLOCK;
-        if (shouldBlock) {
-            return null;
-        }
-        const isRepetitive = this.#checkIfSuggestionRepeatsExistingText(suggestionSample.generationString, request);
-        if (isRepetitive) {
-            return null;
-        }
-        const suggestionText = this.#trimSuggestionOverlap(suggestionSample.generationString, request);
-        if (suggestionText.length === 0) {
-            return null;
-        }
-        return {
-            suggestionText,
-            sampleId: suggestionSample.sampleId,
-            fromCache,
-            citations: suggestionSample.attributionMetadata?.citations ?? [],
-            rpcGlobalId: response.metadata.rpcGlobalId,
-        };
-    }
-    async #requestAidaSuggestion(request, cursorPositionAtRequest) {
-        const startTime = performance.now();
-        this.dispatchEventToListeners("RequestTriggered" /* Events.REQUEST_TRIGGERED */, {});
-        // Registering AiCodeCompletionRequestTriggered metric even if the request is served from cache
-        Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiCodeCompletionRequestTriggered);
-        try {
-            const sampleResponse = await this.#generateSampleForRequest(request, cursorPositionAtRequest);
-            if (!sampleResponse) {
-                this.dispatchEventToListeners("ResponseReceived" /* Events.RESPONSE_RECEIVED */, {});
-                return;
-            }
-            const { suggestionText, sampleId, fromCache, citations, rpcGlobalId, } = sampleResponse;
-            const remainingDelay = Math.max(DELAY_BEFORE_SHOWING_RESPONSE_MS - (performance.now() - startTime), 0);
-            this.#renderingTimeout = window.setTimeout(() => {
-                const currentCursorPosition = this.#callbacks?.getSelectionHead();
-                if (currentCursorPosition !== cursorPositionAtRequest) {
-                    this.dispatchEventToListeners("ResponseReceived" /* Events.RESPONSE_RECEIVED */, {});
-                    return;
-                }
-                this.#callbacks?.setAiAutoCompletion({
-                    text: suggestionText,
-                    from: cursorPositionAtRequest,
-                    rpcGlobalId,
-                    sampleId,
-                    startTime,
-                    onImpression: this.registerUserImpression.bind(this),
-                    clearCachedRequest: this.clearCachedRequest.bind(this),
-                });
-                if (fromCache) {
-                    Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiCodeCompletionResponseServedFromCache);
-                }
-                debugLog('Suggestion dispatched to the editor', suggestionText, 'at cursor position', cursorPositionAtRequest);
-                this.dispatchEventToListeners("ResponseReceived" /* Events.RESPONSE_RECEIVED */, { citations });
-            }, remainingDelay);
-        }
-        catch (e) {
-            debugLog('Error while fetching code completion suggestions from AIDA', e);
-            this.dispatchEventToListeners("ResponseReceived" /* Events.RESPONSE_RECEIVED */, {});
-            Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiCodeCompletionError);
-        }
-    }
     get #userTier() {
         return Root.Runtime.hostConfig.devToolsAiCodeCompletion?.userTier;
     }
@@ -290,27 +180,6 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper {
             temperature,
             modelId,
         };
-    }
-    /**
-     * Removes the end of a suggestion if it overlaps with the start of the suffix.
-     */
-    #trimSuggestionOverlap(generationString, request) {
-        const suffix = request.suffix;
-        if (!suffix) {
-            return generationString;
-        }
-        // Iterate from the longest possible overlap down to the shortest
-        for (let i = Math.min(generationString.length, suffix.length); i > 0; i--) {
-            const overlapCandidate = suffix.substring(0, i);
-            if (generationString.endsWith(overlapCandidate)) {
-                return generationString.slice(0, -i);
-            }
-        }
-        return generationString;
-    }
-    #checkIfSuggestionRepeatsExistingText(generationString, request) {
-        const { prefix, suffix } = request;
-        return Boolean(prefix.includes(generationString.trim()) || suffix?.includes(generationString.trim()));
     }
     #checkCachedRequestForResponse(request) {
         if (!this.#aidaRequestCache || this.#aidaRequestCache.request.suffix !== request.suffix ||
@@ -378,9 +247,6 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper {
     }
     clearCachedRequest() {
         this.#aidaRequestCache = undefined;
-    }
-    onTextChanged(prefix, suffix, cursorPositionAtRequest, inferenceLanguage) {
-        this.#debouncedRequestAidaSuggestion(prefix, suffix, cursorPositionAtRequest, inferenceLanguage);
     }
     async completeCode(prefix, suffix, cursorPositionAtRequest, inferenceLanguage, additionalFiles) {
         const request = this.#buildRequest(prefix, suffix, inferenceLanguage, additionalFiles);

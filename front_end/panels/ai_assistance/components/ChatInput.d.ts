@@ -39,6 +39,7 @@ export interface ViewInput {
     onTakeScreenshot: () => void;
     onRemoveImageInput: () => void;
     onImageUpload: (ev: Event) => void;
+    onImagePaste: (event: ClipboardEvent) => void;
 }
 export type ViewOutput = undefined;
 export declare const DEFAULT_VIEW: (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;

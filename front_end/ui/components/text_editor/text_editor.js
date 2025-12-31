@@ -903,18 +903,20 @@ var AiCodeCompletionProvider = class _AiCodeCompletionProvider {
   clearCache() {
     this.#aiCodeCompletion?.clearCachedRequest();
   }
-  // TODO(b/445394511): Update setup and cleanup method so that config callbacks are not
-  // called twice.
   #setupAiCodeCompletion() {
     if (!this.#editor || !this.#aiCodeCompletionConfig) {
       return;
     }
-    if (!this.#aiCodeCompletion) {
-      this.#aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion({ aidaClient: this.#aidaClient }, this.#aiCodeCompletionConfig.panel, void 0, this.#aiCodeCompletionConfig.completionContext.stopSequences);
+    if (this.#aiCodeCompletion) {
+      return;
     }
+    this.#aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion({ aidaClient: this.#aidaClient }, this.#aiCodeCompletionConfig.panel, void 0, this.#aiCodeCompletionConfig.completionContext.stopSequences);
     this.#aiCodeCompletionConfig.onFeatureEnabled();
   }
   #cleanupAiCodeCompletion() {
+    if (!this.#aiCodeCompletion) {
+      return;
+    }
     if (this.#suggestionRenderingTimeout) {
       clearTimeout(this.#suggestionRenderingTimeout);
       this.#suggestionRenderingTimeout = void 0;
@@ -981,6 +983,21 @@ var AiCodeCompletionProvider = class _AiCodeCompletionProvider {
     }
     this.#editor?.editor.dispatch({ effects: this.#teaserCompartment.reconfigure([]) });
   }
+  /**
+   * This method is responsible for fetching code completion suggestions and
+   * displaying them in the text editor.
+   *
+   * 1. **Debouncing requests:** As the user types, we don't want to send a request
+   *    for every keystroke. Instead, we use debouncing to schedule a request
+   *    only after the user has paused typing for a short period
+   *    (AIDA_REQUEST_THROTTLER_TIMEOUT_MS). This prevents spamming the backend with
+   *    requests for intermediate typing states.
+   *
+   * 2. **Delaying suggestions:** When a suggestion is received from the AIDA
+   *    backend, we don't show it immediately. There is a minimum delay
+   *    (DELAY_BEFORE_SHOWING_RESPONSE_MS) from when the request was sent to when
+   *    the suggestion is displayed.
+   */
   #triggerAiCodeCompletion(update) {
     if (!update.docChanged || !this.#editor || !this.#aiCodeCompletion) {
       return;
@@ -1032,7 +1049,7 @@ var AiCodeCompletionProvider = class _AiCodeCompletionProvider {
         return;
       }
       const { suggestionText, sampleId, citations, rpcGlobalId } = sampleResponse;
-      const remainingDelay = Math.max(AiCodeCompletion.AiCodeCompletion.DELAY_BEFORE_SHOWING_RESPONSE_MS - (performance.now() - startTime), 0);
+      const remainingDelay = Math.max(DELAY_BEFORE_SHOWING_RESPONSE_MS - (performance.now() - startTime), 0);
       this.#suggestionRenderingTimeout = window.setTimeout(() => {
         const currentCursorPosition = this.#editor?.editor.state.selection.main.head;
         if (currentCursorPosition !== cursorPositionAtRequest) {
@@ -1221,6 +1238,73 @@ function aiCodeCompletionTeaserExtension(teaser) {
   });
 }
 
+// gen/front_end/ui/components/text_editor/AiCodeGenerationParser.js
+var AiCodeGenerationParser_exports = {};
+__export(AiCodeGenerationParser_exports, {
+  AiCodeGenerationParser: () => AiCodeGenerationParser
+});
+import * as CodeMirror2 from "./../../../third_party/codemirror.next/codemirror.next.js";
+var LINE_COMMENT_PATTERN = /^(?:\/\/|#)\s*/;
+var BLOCK_COMMENT_START_PATTERN = /^\/\*+\s*/;
+var BLOCK_COMMENT_END_PATTERN = /\s*\*+\/$/;
+var BLOCK_COMMENT_LINE_PREFIX_PATTERN = /^\s*\*\s?/;
+function findLastNonWhitespacePos(state, cursorPosition) {
+  const line = state.doc.lineAt(cursorPosition);
+  const textBefore = line.text.substring(0, cursorPosition - line.from);
+  const effectiveEnd = line.from + textBefore.trimEnd().length;
+  return effectiveEnd;
+}
+function resolveCommentNode(state, cursorPosition) {
+  const tree = CodeMirror2.syntaxTree(state);
+  const lookupPos = findLastNonWhitespacePos(state, cursorPosition);
+  const node = tree.resolveInner(lookupPos, -1);
+  const nodeType = node.type.name;
+  if (nodeType.includes("Comment") && cursorPosition >= node.to) {
+    if (!nodeType.includes("BlockComment")) {
+      return node;
+    }
+    let hasInternalError = false;
+    tree.iterate({
+      from: node.from,
+      to: node.to,
+      enter: (n) => {
+        if (n.type.isError) {
+          hasInternalError = true;
+          return false;
+        }
+        return true;
+      }
+    });
+    return hasInternalError ? void 0 : node;
+  }
+  return;
+}
+function extractBlockComment(rawText) {
+  let cleaned = rawText.replace(BLOCK_COMMENT_START_PATTERN, "").replace(BLOCK_COMMENT_END_PATTERN, "");
+  cleaned = cleaned.split("\n").map((line) => line.replace(BLOCK_COMMENT_LINE_PREFIX_PATTERN, "")).join("\n").trim();
+  return cleaned;
+}
+function extractLineComment(rawText) {
+  return rawText.replace(LINE_COMMENT_PATTERN, "").trim();
+}
+var AiCodeGenerationParser = class {
+  static extractCommentText(state, cursorPosition) {
+    const node = resolveCommentNode(state, cursorPosition);
+    if (!node) {
+      return;
+    }
+    const nodeType = node.type.name;
+    const rawText = state.doc.sliceString(node.from, node.to);
+    if (nodeType.includes("LineComment")) {
+      return extractLineComment(rawText);
+    }
+    if (nodeType.includes("BlockComment")) {
+      return extractBlockComment(rawText);
+    }
+    return rawText;
+  }
+};
+
 // gen/front_end/ui/components/text_editor/AiCodeGenerationProvider.js
 var AiCodeGenerationProvider_exports = {};
 __export(AiCodeGenerationProvider_exports, {
@@ -1233,7 +1317,7 @@ import * as Host2 from "./../../../core/host/host.js";
 import * as i18n4 from "./../../../core/i18n/i18n.js";
 import * as AiCodeGeneration from "./../../../models/ai_code_generation/ai_code_generation.js";
 import * as PanelCommon2 from "./../../../panels/common/common.js";
-import * as CodeMirror2 from "./../../../third_party/codemirror.next/codemirror.next.js";
+import * as CodeMirror3 from "./../../../third_party/codemirror.next/codemirror.next.js";
 import * as UI3 from "./../../legacy/legacy.js";
 import * as VisualLogging3 from "./../../visual_logging/visual_logging.js";
 var AiCodeGenerationTeaserMode;
@@ -1241,8 +1325,8 @@ var AiCodeGenerationTeaserMode;
   AiCodeGenerationTeaserMode2["ACTIVE"] = "active";
   AiCodeGenerationTeaserMode2["DISMISSED"] = "dismissed";
 })(AiCodeGenerationTeaserMode || (AiCodeGenerationTeaserMode = {}));
-var setAiCodeGenerationTeaserMode = CodeMirror2.StateEffect.define();
-var aiCodeGenerationTeaserModeState = CodeMirror2.StateField.define({
+var setAiCodeGenerationTeaserMode = CodeMirror3.StateEffect.define();
+var aiCodeGenerationTeaserModeState = CodeMirror3.StateField.define({
   create: () => AiCodeGenerationTeaserMode.ACTIVE,
   update(value, tr) {
     return tr.effects.find((effect) => effect.is(setAiCodeGenerationTeaserMode))?.value ?? value;
@@ -1251,7 +1335,7 @@ var aiCodeGenerationTeaserModeState = CodeMirror2.StateField.define({
 var AiCodeGenerationProvider = class _AiCodeGenerationProvider {
   #devtoolsLocale;
   #aiCodeCompletionSetting = Common3.Settings.Settings.instance().createSetting("ai-code-completion-enabled", false);
-  #generationTeaserCompartment = new CodeMirror2.Compartment();
+  #generationTeaserCompartment = new CodeMirror3.Compartment();
   #generationTeaser;
   #editor;
   #aiCodeGenerationConfig;
@@ -1274,13 +1358,13 @@ var AiCodeGenerationProvider = class _AiCodeGenerationProvider {
   }
   extension() {
     return [
-      CodeMirror2.EditorView.updateListener.of((update) => this.#activateTeaser(update)),
-      CodeMirror2.EditorView.updateListener.of((update) => this.#abortGenerationDuringUpdate(update)),
+      CodeMirror3.EditorView.updateListener.of((update) => this.#activateTeaser(update)),
+      CodeMirror3.EditorView.updateListener.of((update) => this.#abortOrDismissGenerationDuringUpdate(update)),
       aiAutoCompleteSuggestion,
       aiAutoCompleteSuggestionState,
       aiCodeGenerationTeaserModeState,
-      this.#generationTeaserCompartment.of([]),
-      CodeMirror2.Prec.highest(CodeMirror2.keymap.of(this.#editorKeymap()))
+      CodeMirror3.Prec.highest(this.#generationTeaserCompartment.of([])),
+      CodeMirror3.Prec.highest(CodeMirror3.keymap.of(this.#editorKeymap()))
     ];
   }
   dispose() {
@@ -1330,16 +1414,14 @@ var AiCodeGenerationProvider = class _AiCodeGenerationProvider {
             return false;
           }
           if (hasActiveAiSuggestion(this.#editor.state)) {
-            this.#editor.dispatch({
-              effects: setAiAutoCompleteSuggestion.of(null)
-            });
+            this.#dismissTeaserAndSuggestion();
             return true;
           }
           const generationTeaserIsLoading = this.#generationTeaser.displayState === PanelCommon2.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.LOADING;
           if (this.#generationTeaser.isShowing() && generationTeaserIsLoading) {
             this.#controller.abort();
             this.#controller = new AbortController();
-            this.#dismissTeaser();
+            this.#dismissTeaserAndSuggestion();
             return true;
           }
           return false;
@@ -1380,9 +1462,14 @@ var AiCodeGenerationProvider = class _AiCodeGenerationProvider {
       }
     ];
   }
-  #dismissTeaser() {
+  #dismissTeaserAndSuggestion() {
     this.#generationTeaser.displayState = PanelCommon2.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.TRIGGER;
-    this.#editor?.dispatch({ effects: setAiCodeGenerationTeaserMode.of(AiCodeGenerationTeaserMode.DISMISSED) });
+    this.#editor?.dispatch({
+      effects: [
+        setAiCodeGenerationTeaserMode.of(AiCodeGenerationTeaserMode.DISMISSED),
+        setAiAutoCompleteSuggestion.of(null)
+      ]
+    });
   }
   #activateTeaser(update) {
     const currentTeaserMode = update.state.field(aiCodeGenerationTeaserModeState);
@@ -1395,24 +1482,32 @@ var AiCodeGenerationProvider = class _AiCodeGenerationProvider {
     update.view.dispatch({ effects: setAiCodeGenerationTeaserMode.of(AiCodeGenerationTeaserMode.ACTIVE) });
   }
   /**
-   * Monitors editor changes to cancel an ongoing AI generation.
-   * We abort the request and dismiss the teaser if the user modifies the
-   * document or moves their cursor/selection. These actions indicate the user
-   * is no longer focused on the current generation point or has manually
-   * resumed editing, making the pending suggestion irrelevant.
+   * Monitors editor changes to cancel an ongoing AI generation or dismiss one
+   * if it already exists.
+   * We abort the request (or dismiss suggestion) and dismiss the teaser if the
+   * user modifies the document or moves their cursor/selection. These actions
+   * indicate the user is no longer focused on the current generation point or
+   * has manually resumed editing, making the suggestion irrelevant.
    */
-  #abortGenerationDuringUpdate(update) {
+  #abortOrDismissGenerationDuringUpdate(update) {
     if (!update.docChanged && update.state.selection.main.head === update.startState.selection.main.head) {
       return;
     }
     const currentTeaserMode = update.state.field(aiCodeGenerationTeaserModeState);
-    const generationTeaserIsLoading = this.#generationTeaser.displayState === PanelCommon2.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.LOADING;
-    if (currentTeaserMode === AiCodeGenerationTeaserMode.DISMISSED || !generationTeaserIsLoading) {
+    if (currentTeaserMode === AiCodeGenerationTeaserMode.DISMISSED) {
       return;
     }
-    this.#controller.abort();
-    this.#controller = new AbortController();
-    this.#dismissTeaser();
+    if (this.#generationTeaser.displayState === PanelCommon2.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.LOADING) {
+      this.#controller.abort();
+      this.#controller = new AbortController();
+      this.#dismissTeaserAndSuggestion();
+      return;
+    }
+    if (this.#generationTeaser.displayState === PanelCommon2.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.GENERATED) {
+      update.view.dispatch({ effects: setAiAutoCompleteSuggestion.of(null) });
+      this.#generationTeaser.displayState = PanelCommon2.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.TRIGGER;
+      return;
+    }
   }
   async #triggerAiCodeGeneration(options) {
     if (!this.#editor || !this.#aiCodeGeneration) {
@@ -1420,8 +1515,8 @@ var AiCodeGenerationProvider = class _AiCodeGenerationProvider {
     }
     this.#generationTeaser.displayState = PanelCommon2.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.LOADING;
     const cursor = this.#editor.state.selection.main.head;
-    const query = this.#editor.state.doc.lineAt(cursor).text;
-    if (query.trim().length === 0) {
+    const query = AiCodeGenerationParser.extractCommentText(this.#editor.state, cursor);
+    if (!query || query.trim().length === 0) {
       return;
     }
     try {
@@ -1430,7 +1525,7 @@ var AiCodeGenerationProvider = class _AiCodeGenerationProvider {
       Host2.userMetrics.actionTaken(Host2.UserMetrics.Action.AiCodeGenerationRequestTriggered);
       const generationResponse = await this.#aiCodeGeneration.generateCode(query, AiCodeGeneration.AiCodeGeneration.basePreamble, this.#aiCodeGenerationConfig?.generationContext.inferenceLanguage, options);
       if (this.#generationTeaser) {
-        this.#dismissTeaser();
+        this.#dismissTeaserAndSuggestion();
       }
       if (!generationResponse || generationResponse.samples.length === 0) {
         this.#aiCodeGenerationConfig?.onResponseReceived([]);
@@ -1445,30 +1540,35 @@ var AiCodeGenerationProvider = class _AiCodeGenerationProvider {
       const matchArray = topSample.generationString.match(backtickRegex);
       const suggestionText = matchArray ? matchArray[1].trim() : topSample.generationString;
       this.#editor.dispatch({
-        effects: setAiAutoCompleteSuggestion.of({
-          text: "\n" + suggestionText,
-          from: cursor,
-          rpcGlobalId: generationResponse.metadata.rpcGlobalId,
-          sampleId: topSample.sampleId,
-          startTime,
-          onImpression: this.#aiCodeGeneration?.registerUserImpression.bind(this.#aiCodeGeneration)
-        })
+        effects: [
+          setAiAutoCompleteSuggestion.of({
+            text: "\n" + suggestionText,
+            from: cursor,
+            rpcGlobalId: generationResponse.metadata.rpcGlobalId,
+            sampleId: topSample.sampleId,
+            startTime,
+            onImpression: this.#aiCodeGeneration?.registerUserImpression.bind(this.#aiCodeGeneration)
+          }),
+          setAiCodeGenerationTeaserMode.of(AiCodeGenerationTeaserMode.ACTIVE)
+        ]
       });
+      this.#generationTeaser.displayState = PanelCommon2.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.GENERATED;
       AiCodeGeneration.debugLog("Suggestion dispatched to the editor", suggestionText);
       const citations = topSample.attributionMetadata?.citations ?? [];
       this.#aiCodeGenerationConfig?.onResponseReceived(citations);
+      return;
     } catch (e) {
       AiCodeGeneration.debugLog("Error while fetching code generation suggestions from AIDA", e);
       this.#aiCodeGenerationConfig?.onResponseReceived([]);
       Host2.userMetrics.actionTaken(Host2.UserMetrics.Action.AiCodeGenerationError);
     }
     if (this.#generationTeaser) {
-      this.#dismissTeaser();
+      this.#dismissTeaserAndSuggestion();
     }
   }
 };
 function aiCodeGenerationTeaserExtension(teaser) {
-  return CodeMirror2.ViewPlugin.fromClass(class {
+  return CodeMirror3.ViewPlugin.fromClass(class {
     #view;
     constructor(view) {
       this.#view = view;
@@ -1483,22 +1583,22 @@ function aiCodeGenerationTeaserExtension(teaser) {
     get decorations() {
       const teaserMode = this.#view.state.field(aiCodeGenerationTeaserModeState);
       if (teaserMode === AiCodeGenerationTeaserMode.DISMISSED) {
-        return CodeMirror2.Decoration.none;
+        return CodeMirror3.Decoration.none;
       }
       const cursorPosition = this.#view.state.selection.main.head;
       const line = this.#view.state.doc.lineAt(cursorPosition);
       const isEmptyLine = line.length === 0;
-      const isComment = line.text.startsWith("//");
+      const isComment = Boolean(AiCodeGenerationParser.extractCommentText(this.#view.state, cursorPosition));
       const isCursorAtEndOfLine = cursorPosition >= line.to;
       if (isEmptyLine || isComment && isCursorAtEndOfLine) {
-        return CodeMirror2.Decoration.set([
-          CodeMirror2.Decoration.widget({ widget: new AiCodeCompletionTeaserPlaceholder(teaser), side: 1 }).range(cursorPosition)
+        return CodeMirror3.Decoration.set([
+          CodeMirror3.Decoration.widget({ widget: new AiCodeCompletionTeaserPlaceholder(teaser), side: 1 }).range(cursorPosition)
         ]);
       }
-      return CodeMirror2.Decoration.none;
+      return CodeMirror3.Decoration.none;
     }
     #updateTeaserState(state) {
-      if (teaser.displayState === PanelCommon2.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.LOADING) {
+      if (teaser.displayState === PanelCommon2.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.LOADING || teaser.displayState === PanelCommon2.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.GENERATED) {
         return;
       }
       const cursorPosition = state.selection.main.head;
@@ -1623,19 +1723,19 @@ __export(ExecutionPositionHighlighter_exports, {
   positionHighlighter: () => positionHighlighter,
   setHighlightedPosition: () => setHighlightedPosition
 });
-import * as CodeMirror3 from "./../../../third_party/codemirror.next/codemirror.next.js";
-var setHighlightedPosition = CodeMirror3.StateEffect.define();
-var clearHighlightedPosition = CodeMirror3.StateEffect.define();
+import * as CodeMirror4 from "./../../../third_party/codemirror.next/codemirror.next.js";
+var setHighlightedPosition = CodeMirror4.StateEffect.define();
+var clearHighlightedPosition = CodeMirror4.StateEffect.define();
 function positionHighlighter(executionLineClassName, executionTokenClassName) {
-  const executionLine = CodeMirror3.Decoration.line({ attributes: { class: executionLineClassName } });
-  const executionToken = CodeMirror3.Decoration.mark({ attributes: { class: executionTokenClassName } });
-  const positionHighlightedState = CodeMirror3.StateField.define({
+  const executionLine = CodeMirror4.Decoration.line({ attributes: { class: executionLineClassName } });
+  const executionToken = CodeMirror4.Decoration.mark({ attributes: { class: executionTokenClassName } });
+  const positionHighlightedState = CodeMirror4.StateField.define({
     create() {
       return null;
     },
     update(pos, tr) {
       if (pos) {
-        pos = tr.changes.mapPos(pos, -1, CodeMirror3.MapMode.TrackDel);
+        pos = tr.changes.mapPos(pos, -1, CodeMirror4.MapMode.TrackDel);
       }
       for (const effect of tr.effects) {
         if (effect.is(clearHighlightedPosition)) {
@@ -1654,11 +1754,11 @@ function positionHighlighter(executionLineClassName, executionTokenClassName) {
     tree;
     decorations;
     constructor({ state }) {
-      this.tree = CodeMirror3.syntaxTree(state);
+      this.tree = CodeMirror4.syntaxTree(state);
       this.decorations = this.#computeDecorations(state, getHighlightedPosition(state));
     }
     update(update) {
-      const tree = CodeMirror3.syntaxTree(update.state);
+      const tree = CodeMirror4.syntaxTree(update.state);
       const position = getHighlightedPosition(update.state);
       const positionChanged = position !== getHighlightedPosition(update.startState);
       if (tree.length !== this.tree.length || positionChanged) {
@@ -1669,13 +1769,13 @@ function positionHighlighter(executionLineClassName, executionTokenClassName) {
       }
     }
     #computeDecorations(state, position) {
-      const builder = new CodeMirror3.RangeSetBuilder();
+      const builder = new CodeMirror4.RangeSetBuilder();
       if (position !== null) {
         const { doc } = state;
         const line = doc.lineAt(position);
         builder.add(line.from, line.from, executionLine);
-        const syntaxTree3 = CodeMirror3.syntaxTree(state);
-        const syntaxNode = syntaxTree3.resolveInner(position, 1);
+        const syntaxTree4 = CodeMirror4.syntaxTree(state);
+        const syntaxNode = syntaxTree4.resolveInner(position, 1);
         const tokenEnd = Math.min(line.to, syntaxNode.to);
         if (tokenEnd > position) {
           builder.add(position, tokenEnd, executionToken);
@@ -1689,7 +1789,7 @@ function positionHighlighter(executionLineClassName, executionTokenClassName) {
   };
   return [
     positionHighlightedState,
-    CodeMirror3.ViewPlugin.fromClass(PositionHighlighter, positionHighlighterSpec)
+    CodeMirror4.ViewPlugin.fromClass(PositionHighlighter, positionHighlighterSpec)
   ];
 }
 
@@ -1709,15 +1809,15 @@ import * as SDK from "./../../../core/sdk/sdk.js";
 import * as Bindings from "./../../../models/bindings/bindings.js";
 import * as JavaScriptMetaData from "./../../../models/javascript_metadata/javascript_metadata.js";
 import * as SourceMapScopes from "./../../../models/source_map_scopes/source_map_scopes.js";
-import * as CodeMirror5 from "./../../../third_party/codemirror.next/codemirror.next.js";
+import * as CodeMirror6 from "./../../../third_party/codemirror.next/codemirror.next.js";
 import * as UI4 from "./../../legacy/legacy.js";
 
 // gen/front_end/ui/components/text_editor/cursor_tooltip.js
-import * as CodeMirror4 from "./../../../third_party/codemirror.next/codemirror.next.js";
-var closeTooltip = CodeMirror4.StateEffect.define();
+import * as CodeMirror5 from "./../../../third_party/codemirror.next/codemirror.next.js";
+var closeTooltip = CodeMirror5.StateEffect.define();
 function cursorTooltip(source) {
-  const openTooltip = CodeMirror4.StateEffect.define();
-  const state = CodeMirror4.StateField.define({
+  const openTooltip = CodeMirror5.StateEffect.define();
+  const state = CodeMirror5.StateField.define({
     create() {
       return null;
     },
@@ -1726,7 +1826,7 @@ function cursorTooltip(source) {
         val = null;
       }
       if (val && !tr.changes.empty) {
-        const newPos = tr.changes.mapPos(val.pos, -1, CodeMirror4.MapMode.TrackDel);
+        const newPos = tr.changes.mapPos(val.pos, -1, CodeMirror5.MapMode.TrackDel);
         val = newPos === null ? null : { pos: newPos, create: val.create, above: true };
       }
       for (const effect of tr.effects) {
@@ -1738,9 +1838,9 @@ function cursorTooltip(source) {
       }
       return val;
     },
-    provide: (field) => CodeMirror4.showTooltip.from(field)
+    provide: (field) => CodeMirror5.showTooltip.from(field)
   });
-  const plugin = CodeMirror4.ViewPlugin.fromClass(class {
+  const plugin = CodeMirror5.ViewPlugin.fromClass(class {
     pending = -1;
     updateID = 0;
     update(update) {
@@ -1779,17 +1879,17 @@ function cursorTooltip(source) {
 
 // gen/front_end/ui/components/text_editor/javascript.js
 function completion() {
-  return CodeMirror5.javascript.javascriptLanguage.data.of({
+  return CodeMirror6.javascript.javascriptLanguage.data.of({
     autocomplete: javascriptCompletionSource
   });
 }
 async function completeInContext(textBefore, query, force = false) {
-  const state = CodeMirror5.EditorState.create({
+  const state = CodeMirror6.EditorState.create({
     doc: textBefore + query,
     selection: { anchor: textBefore.length },
-    extensions: CodeMirror5.javascript.javascriptLanguage
+    extensions: CodeMirror6.javascript.javascriptLanguage
   });
-  const result = await javascriptCompletionSource(new CodeMirror5.CompletionContext(state, state.doc.length, force));
+  const result = await javascriptCompletionSource(new CodeMirror6.CompletionContext(state, state.doc.length, force));
   return result ? result.options.filter((o) => o.label.startsWith(query)).map((o) => ({
     text: o.label,
     priority: 100 + (o.boost || 0),
@@ -1944,7 +2044,7 @@ function getQueryType(tree, pos, doc) {
   };
 }
 async function javascriptCompletionSource(cx) {
-  const query = getQueryType(CodeMirror5.syntaxTree(cx.state), cx.pos, cx.state.doc);
+  const query = getQueryType(CodeMirror6.syntaxTree(cx.state), cx.pos, cx.state.doc);
   if (!query || query.from === void 0 && !cx.explicit && query.type === 0) {
     return null;
   }
@@ -2203,7 +2303,7 @@ function closeArgumentsHintsTooltip(view, tooltip) {
   return true;
 }
 async function getArgumentHints(state, pos) {
-  const node = CodeMirror5.syntaxTree(state).resolveInner(pos).enterUnfinishedNodesBefore(pos);
+  const node = CodeMirror6.syntaxTree(state).resolveInner(pos).enterUnfinishedNodesBefore(pos);
   if (node.name !== "ArgList") {
     return null;
   }
@@ -2279,14 +2379,14 @@ function argumentsList(input) {
   }
   try {
     try {
-      const { parser } = CodeMirror5.javascript.javascriptLanguage.configure({ strict: true, top: "SingleClassItem" });
+      const { parser } = CodeMirror6.javascript.javascriptLanguage.configure({ strict: true, top: "SingleClassItem" });
       const cursor = parser.parse(input).cursor();
       if (cursor.firstChild() && cursor.name === "MethodDeclaration" && cursor.firstChild()) {
         return parseParamList(cursor);
       }
       throw new Error("SingleClassItem rule is expected to have exactly one MethodDeclaration child");
     } catch {
-      const { parser } = CodeMirror5.javascript.javascriptLanguage.configure({ strict: true, top: "SingleExpression" });
+      const { parser } = CodeMirror6.javascript.javascriptLanguage.configure({ strict: true, top: "SingleExpression" });
       const cursor = parser.parse(input).cursor();
       if (!cursor.firstChild()) {
         throw new Error("SingleExpression rule is expected to have children");
@@ -2475,7 +2575,7 @@ __export(TextEditor_exports, {
   TextEditor: () => TextEditor
 });
 import * as Common4 from "./../../../core/common/common.js";
-import * as CodeMirror6 from "./../../../third_party/codemirror.next/codemirror.next.js";
+import * as CodeMirror7 from "./../../../third_party/codemirror.next/codemirror.next.js";
 import * as UI5 from "./../../legacy/legacy.js";
 import * as ThemeSupport from "./../../legacy/theme_support/theme_support.js";
 import * as CodeHighlighter3 from "./../code_highlighter/code_highlighter.js";
@@ -2492,7 +2592,7 @@ var TextEditor = class extends HTMLElement {
       this.#resizeTimeout = window.setTimeout(() => {
         this.#resizeTimeout = -1;
         if (this.#activeEditor) {
-          CodeMirror6.repositionTooltips(this.#activeEditor);
+          CodeMirror7.repositionTooltips(this.#activeEditor);
         }
       }, 50);
     }
@@ -2504,7 +2604,7 @@ var TextEditor = class extends HTMLElement {
     this.#shadow.createChild("style").textContent = CodeHighlighter3.codeHighlighterStyles;
   }
   #createEditor() {
-    this.#activeEditor = new CodeMirror6.EditorView({
+    this.#activeEditor = new CodeMirror7.EditorView({
       state: this.state,
       parent: this.#shadow,
       root: this.#shadow,
@@ -2545,7 +2645,7 @@ var TextEditor = class extends HTMLElement {
       return this.#activeEditor.state;
     }
     if (!this.#pendingState) {
-      this.#pendingState = CodeMirror6.EditorState.create({ extensions: baseConfiguration("") });
+      this.#pendingState = CodeMirror7.EditorState.create({ extensions: baseConfiguration("") });
     }
     return this.#pendingState;
   }
@@ -2614,7 +2714,7 @@ var TextEditor = class extends HTMLElement {
     window.addEventListener("resize", this.#resizeListener);
   }
   #maybeDispatchInput(transaction) {
-    const userEvent = transaction.annotation(CodeMirror6.Transaction.userEvent);
+    const userEvent = transaction.annotation(CodeMirror7.Transaction.userEvent);
     const inputType = userEvent ? CODE_MIRROR_USER_EVENT_TO_INPUT_EVENT_TYPE.get(userEvent) : null;
     if (inputType) {
       this.dispatchEvent(new InputEvent("input", { inputType }));
@@ -2629,7 +2729,7 @@ var TextEditor = class extends HTMLElement {
     const effects = [];
     if (highlight) {
       if (!view.state.field(highlightedLineState, false)) {
-        view.dispatch({ effects: CodeMirror6.StateEffect.appendConfig.of(highlightedLineState) });
+        view.dispatch({ effects: CodeMirror7.StateEffect.appendConfig.of(highlightedLineState) });
       } else {
         view.dispatch({ effects: clearHighlightedLine.of(null) });
       }
@@ -2638,11 +2738,11 @@ var TextEditor = class extends HTMLElement {
     const editorRect = view.scrollDOM.getBoundingClientRect();
     const targetPos = view.coordsAtPos(selection.main.head);
     if (!selection.main.empty) {
-      effects.push(CodeMirror6.EditorView.scrollIntoView(selection.main));
+      effects.push(CodeMirror7.EditorView.scrollIntoView(selection.main));
     } else if (!targetPos || targetPos.top < editorRect.top || targetPos.bottom > editorRect.bottom) {
-      effects.push(CodeMirror6.EditorView.scrollIntoView(selection.main, { y: "center" }));
+      effects.push(CodeMirror7.EditorView.scrollIntoView(selection.main, { y: "center" }));
     } else if (targetPos.left < editorRect.left || targetPos.right > editorRect.right) {
-      effects.push(CodeMirror6.EditorView.scrollIntoView(selection.main, { x: "center" }));
+      effects.push(CodeMirror7.EditorView.scrollIntoView(selection.main, { x: "center" }));
     }
     view.dispatch({
       selection,
@@ -2653,7 +2753,7 @@ var TextEditor = class extends HTMLElement {
   createSelection(head, anchor) {
     const { doc } = this.state;
     const headPos = toOffset(doc, head);
-    return CodeMirror6.EditorSelection.single(anchor ? toOffset(doc, anchor) : headPos, headPos);
+    return CodeMirror7.EditorSelection.single(anchor ? toOffset(doc, anchor) : headPos, headPos);
   }
   toLineColumn(pos) {
     return toLineColumn(this.state.doc, pos);
@@ -2663,26 +2763,26 @@ var TextEditor = class extends HTMLElement {
   }
 };
 customElements.define("devtools-text-editor", TextEditor);
-var clearHighlightedLine = CodeMirror6.StateEffect.define();
-var setHighlightedLine = CodeMirror6.StateEffect.define();
-var highlightedLineState = CodeMirror6.StateField.define({
-  create: () => CodeMirror6.Decoration.none,
+var clearHighlightedLine = CodeMirror7.StateEffect.define();
+var setHighlightedLine = CodeMirror7.StateEffect.define();
+var highlightedLineState = CodeMirror7.StateField.define({
+  create: () => CodeMirror7.Decoration.none,
   update(value, tr) {
     if (!tr.changes.empty && value.size) {
       value = value.map(tr.changes);
     }
     for (const effect of tr.effects) {
       if (effect.is(clearHighlightedLine)) {
-        value = CodeMirror6.Decoration.none;
+        value = CodeMirror7.Decoration.none;
       } else if (effect.is(setHighlightedLine)) {
-        value = CodeMirror6.Decoration.set([
-          CodeMirror6.Decoration.line({ attributes: { class: "cm-highlightedLine" } }).range(effect.value)
+        value = CodeMirror7.Decoration.set([
+          CodeMirror7.Decoration.line({ attributes: { class: "cm-highlightedLine" } }).range(effect.value)
         ]);
       }
     }
     return value;
   },
-  provide: (field) => CodeMirror6.EditorView.decorations.from(field, (value) => value)
+  provide: (field) => CodeMirror7.EditorView.decorations.from(field, (value) => value)
 });
 var CODE_MIRROR_USER_EVENT_TO_INPUT_EVENT_TYPE = /* @__PURE__ */ new Map([
   ["input.type", "insertText"],
@@ -2704,7 +2804,7 @@ var TextEditorHistory_exports = {};
 __export(TextEditorHistory_exports, {
   TextEditorHistory: () => TextEditorHistory
 });
-import * as CodeMirror7 from "./../../../third_party/codemirror.next/codemirror.next.js";
+import * as CodeMirror8 from "./../../../third_party/codemirror.next/codemirror.next.js";
 var TextEditorHistory = class {
   #editor;
   #history;
@@ -2738,13 +2838,13 @@ var TextEditorHistory = class {
     const cursorPos = newText.length;
     editor.dispatch({
       changes: { from: 0, to: editor.state.doc.length, insert: newText },
-      selection: CodeMirror7.EditorSelection.cursor(cursorPos),
+      selection: CodeMirror8.EditorSelection.cursor(cursorPos),
       scrollIntoView: true
     });
     if (isBackward) {
       const firstLineBreak = newText.search(/\n|$/);
       editor.dispatch({
-        selection: CodeMirror7.EditorSelection.cursor(firstLineBreak)
+        selection: CodeMirror8.EditorSelection.cursor(firstLineBreak)
       });
     }
     return true;
@@ -2767,6 +2867,7 @@ var TextEditorHistory = class {
 export {
   AiCodeCompletionProvider_exports as AiCodeCompletionProvider,
   AiCodeCompletionTeaserPlaceholder_exports as AiCodeCompletionTeaserPlaceholder,
+  AiCodeGenerationParser_exports as AiCodeGenerationParser,
   AiCodeGenerationProvider_exports as AiCodeGenerationProvider,
   AutocompleteHistory_exports as AutocompleteHistory,
   config_exports as Config,

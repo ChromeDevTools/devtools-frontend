@@ -1421,7 +1421,11 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     } else if (!this.extensionEnabled(port)) {
       result = this.status.E_FAILED('Permission denied');
     } else {
-      result = await handler(message, event.target as MessagePort);
+      try {
+        result = await handler(message, event.target as MessagePort);
+      } catch (e) {
+        result = this.status.E_FAILED(e.message);
+      }
     }
 
     if (result && message.requestId) {

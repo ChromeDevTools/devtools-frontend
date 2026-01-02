@@ -212,6 +212,10 @@ const UIStrings = {
    */
   exportingFailed: 'Exporting the trace failed',
   /**
+   * @description Text in Timeline Panel of the Performance panel
+   */
+  initializingTracing: 'Initializing tracing…',
+  /**
    * @description Text to indicate the progress of a trace. Informs the user that we are currently
    * creating a performance trace.
    */
@@ -1874,6 +1878,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
       await SDK.TargetManager.TargetManager.instance().suspendAllTargets('performance-timeline');
       await this.cpuProfiler.startRecording();
 
+      this.statusDialog?.updateStatus(i18nString(UIStrings.tracing));
       this.recordingStarted();
     } catch (e) {
       await this.recordingFailed(e.message);
@@ -1928,7 +1933,6 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     console.assert(!this.statusDialog, 'Status pane is already opened.');
     this.setState(State.START_PENDING);
     this.showRecordingStarted();
-
     if (this.#isNode) {
       await this.#startCPUProfilingRecording();
     } else {
@@ -2833,7 +2837,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
         },
         () => this.stopRecording());
     this.statusDialog.showPane(this.statusPaneContainer);
-    this.statusDialog.updateStatus(i18nString(UIStrings.tracing));
+    this.statusDialog.updateStatus(i18nString(UIStrings.initializingTracing));
     this.statusDialog.updateProgressBar(i18nString(UIStrings.bufferUsage), 0);
   }
 

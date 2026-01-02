@@ -22,6 +22,11 @@ const UIStrings = {
    */
   initializingTracing: 'Initializing tracing…',
   /**
+   * @description Text to indicate the progress of a trace. Informs the user that we are currently
+   * creating a performance trace.
+   */
+  tracing: 'Tracing…',
+  /**
    * @description Text in Timeline Controller of the Performance panel indicating that the Performance Panel cannot
    * record a performance trace because the type of target (where possible types are page, service worker and shared
    * worker) doesn't support it.
@@ -286,6 +291,7 @@ export class TimelineController implements Tracing.TracingManager.TracingManager
     }
 
     if (!options.navigateToUrl) {
+      this.client.recordingStatus(i18nString(UIStrings.tracing));
       return;
     }
 

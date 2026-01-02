@@ -363,6 +363,7 @@ hooks = [
 {
     'name': 'sync_rollup_libs',
     'pattern': '.',
+    'condition': 'build_with_chromium == False',
     'action': [
       'vpython3',
       'scripts/deps/sync_rollup_libs.py',

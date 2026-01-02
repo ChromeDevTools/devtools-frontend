@@ -1175,3 +1175,21 @@ describeWithDevtoolsExtension('validate attachSourceMapURL ', {}, context => {
     assert.deepEqual(currentScript.sourceMapURL, encodedSourceMap);
   });
 });
+
+describeWithDevtoolsExtension('Extension panel with non-ASCII titles', {}, context => {
+  beforeEach(() => {
+    createTarget().setInspectedURL(urlString`http://example.com`);
+  });
+
+  it('creates a panel with a title containing only non-ASCII characters', async () => {
+    const panel = await new Promise<Chrome.DevTools.ExtensionPanel>(
+        resolve => context.chrome.devtools?.panels.create('\u4E2D\u6587', 'test.png', 'test.html', resolve));
+    assert.exists(panel);
+  });
+
+  it('creates a panel with a title containing mixed ASCII and non-ASCII characters', async () => {
+    const panel = await new Promise<Chrome.DevTools.ExtensionPanel>(
+        resolve => context.chrome.devtools?.panels.create('Test\u4E2D\u6587Panel', 'test.png', 'test.html', resolve));
+    assert.exists(panel);
+  });
+});

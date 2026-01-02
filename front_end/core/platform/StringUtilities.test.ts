@@ -298,6 +298,12 @@ describe('StringUtilities', () => {
       '!',
       '\u{1F648}A\u{1F648}L\u{1F648}I\u{1F648}N\u{1F648}A\u{1F648}\u{1F648}',
       'test',
+      // NFD: e + accent
+      'caf\u0065\u0301',
+      // Complex ZWJ sequence
+      'Start👩‍❤️‍💋‍👨End',
+      // Regional indicators
+      '🇺🇸🇨🇦',
     ];
 
     for (let i = 0; i < fixtures.length; i++) {
@@ -305,10 +311,90 @@ describe('StringUtilities', () => {
       it(`trims the middle of strings, fixture ${i}`, () => {
         for (let maxLength = string.length + 1; maxLength > 0; --maxLength) {
           const trimmed = Platform.StringUtilities.trimMiddle(string, maxLength);
-          assert.isTrue(trimmed.length <= maxLength);
+          const numCharacters =
+              [...new Intl.Segmenter(undefined, {granularity: 'grapheme'}).segment(trimmed)[Symbol.iterator]()].length;
+          assert.isTrue(numCharacters <= maxLength);
         }
       });
     }
+
+    it('works on various test cases', () => {
+      const {trimMiddle} = Platform.StringUtilities;
+
+      assert.strictEqual(trimMiddle('aaa', 30), 'aaa');
+      assert.strictEqual(trimMiddle('aaa', 3), 'aaa');
+      assert.strictEqual(trimMiddle('aaa', 2), 'a…');
+      assert.strictEqual(trimMiddle('aaa🥳', 4), 'aaa🥳');
+      assert.strictEqual(trimMiddle('aaa🥳', 3), 'a…🥳');
+      assert.strictEqual(trimMiddle('aaa👨‍👨‍👦‍👦', 4), 'aaa👨‍👨‍👦‍👦');
+      assert.strictEqual(trimMiddle('aaa👨‍👨‍👦‍👦', 3), 'a…👨‍👨‍👦‍👦');
+      assert.strictEqual(trimMiddle('देवनागरी', 5), 'देवनागरी');
+      assert.strictEqual(trimMiddle('देवनागरी', 4), 'देव…री');
+
+      assert.strictEqual(trimMiddle('aaa', 1), '…');
+      assert.strictEqual(trimMiddle('aaa', 0), '…');
+
+      // NFD.
+      assert.strictEqual(trimMiddle('caf\u0065\u0301', 4), 'café');
+      assert.strictEqual(trimMiddle('caf\u0065\u0301', 3), 'c…é');
+    });
+  });
+
+  describe('trimEndWithMaxLength', () => {
+    const {trimEndWithMaxLength} = Platform.StringUtilities;
+
+    it('returns the original string if it fits within maxLength', () => {
+      assert.strictEqual(trimEndWithMaxLength('abc', 3), 'abc');
+      assert.strictEqual(trimEndWithMaxLength('abc', 10), 'abc');
+      assert.strictEqual(trimEndWithMaxLength('', 5), '');
+    });
+
+    it('trims the string and adds an ellipsis if it exceeds maxLength', () => {
+      assert.strictEqual(trimEndWithMaxLength('abc', 2), 'a…');
+      assert.strictEqual(trimEndWithMaxLength('abcdef', 5), 'abcd…');
+    });
+
+    it('returns just the ellipsis if maxLength is small', () => {
+      assert.strictEqual(trimEndWithMaxLength('abc', 1), '…');
+      assert.strictEqual(trimEndWithMaxLength('abc', 0), '…');
+    });
+
+    it('returns the empty string if the input is empty and maxLength is 0', () => {
+      assert.strictEqual(trimEndWithMaxLength('', 0), '');
+    });
+
+    it('handles unicode surrogate pairs and emojis correctly', () => {
+      assert.strictEqual(trimEndWithMaxLength('aaa🥳', 4), 'aaa🥳');
+      assert.strictEqual(trimEndWithMaxLength('aaa🥳', 3), 'aa…');
+      assert.strictEqual(trimEndWithMaxLength('aaa👨‍👨‍👦‍👦', 4), 'aaa👨‍👨‍👦‍👦');
+      assert.strictEqual(trimEndWithMaxLength('aaa👨‍👨‍👦‍👦', 3), 'aa…');
+      assert.strictEqual(trimEndWithMaxLength('🇺🇸🇨🇦', 2), '🇺🇸🇨🇦');
+      assert.strictEqual(trimEndWithMaxLength('🇺🇸🇨🇦', 1), '…');
+    });
+
+    it('handles NFD forms correctly', () => {
+      assert.strictEqual(trimEndWithMaxLength('caf\u0065\u0301', 4), 'café');
+      assert.strictEqual(trimEndWithMaxLength('caf\u0065\u0301', 3), 'ca…');
+    });
+
+    it('handles complex ZWJ sequences', () => {
+      const family = '👨‍👩‍👧‍👦';  // 1 grapheme
+      // "Start" (5) + Family (1) + "End" (3) = 9 graphemes.
+      assert.strictEqual(trimEndWithMaxLength(`Start${family}End`, 9), `Start${family}End`);
+      assert.strictEqual(trimEndWithMaxLength(`Start${family}End`, 8), `Start${family}E…`);
+      // Max 7. Keep 6 (7-1). "Start" (5) + Family (1).
+      assert.strictEqual(trimEndWithMaxLength(`Start${family}End`, 7), `Start${family}…`);
+      // "Start" (5) + Family (1) = 6.
+      // If limit is 6. "Start" + Family.
+      assert.strictEqual(trimEndWithMaxLength(`Start${family}`, 6), `Start${family}`);
+      // If limit is 5. "Star…".
+      assert.strictEqual(trimEndWithMaxLength(`Start${family}`, 5), 'Star…');
+    });
+
+    it('handles devanagari characters', () => {
+      assert.strictEqual(trimEndWithMaxLength('देवनागरी', 5), 'देवनागरी');
+      assert.strictEqual(trimEndWithMaxLength('देवनागरी', 4), 'देवना…');
+    });
   });
 
   describe('escapeForRegExp', () => {

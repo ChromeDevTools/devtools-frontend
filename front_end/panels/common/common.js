@@ -3806,7 +3806,11 @@ var ExtensionServer = class _ExtensionServer extends Common4.ObjectWrapper.Objec
     } else if (!this.extensionEnabled(port)) {
       result = this.status.E_FAILED("Permission denied");
     } else {
-      result = await handler(message, event.target);
+      try {
+        result = await handler(message, event.target);
+      } catch (e) {
+        result = this.status.E_FAILED(e.message);
+      }
     }
     if (result && message.requestId) {
       this.dispatchCallback(message.requestId, event.target, result);

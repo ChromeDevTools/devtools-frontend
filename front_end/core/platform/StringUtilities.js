@@ -325,26 +325,77 @@ export const compare = (a, b) => {
     }
     return 0;
 };
+/** Returns a string that has no more than maxLength characters. Actual graphemes are used, not bytes. */
 export const trimMiddle = (str, maxLength) => {
+    // Early return for the case where there are fewer bytes than the character limit.
     if (str.length <= maxLength) {
-        return String(str);
+        return str;
     }
-    let leftHalf = maxLength >> 1;
-    let rightHalf = maxLength - leftHalf - 1;
-    if (str.codePointAt(str.length - rightHalf - 1) >= 0x10000) {
-        --rightHalf;
-        ++leftHalf;
+    const segmenter = new Intl.Segmenter(undefined, { granularity: 'grapheme' });
+    // If the max length is so small it can't fit the ellipsis, just return the ellipsis.
+    const ellipsis = '…';
+    const ellipsisLength = 1;
+    if (maxLength <= ellipsisLength) {
+        return ellipsis;
     }
-    if (leftHalf > 0 && str.codePointAt(leftHalf - 1) >= 0x10000) {
-        --leftHalf;
+    // Calculate how many graphemes to keep on each side.
+    const freeSpace = maxLength - ellipsisLength;
+    const leftCount = Math.ceil(freeSpace / 2);
+    const rightCount = Math.floor(freeSpace / 2);
+    let currentGraphemeCount = 0;
+    let leftEndIndex = 0;
+    // Sliding Window Buffer
+    // We need to know where the "Right Half" starts. Since we can't iterate backwards,
+    // we keep track of the start index of the last N graphemes we've seen.
+    const rightIndexBuffer = [];
+    // This function would be significantly simpler if we created an array of all the
+    // segments upfront, but could result in poor performance for large input strings.
+    for (const { segment, index } of segmenter.segment(str)) {
+        currentGraphemeCount++;
+        // Mark the byte index where the "Left Half" ends
+        if (currentGraphemeCount === leftCount) {
+            leftEndIndex = index + segment.length;
+        }
+        // Maintain the buffer for the "Right Half"
+        if (rightCount > 0) {
+            rightIndexBuffer.push(index);
+            if (rightIndexBuffer.length > rightCount) {
+                rightIndexBuffer.shift(); // Remove the oldest index to keep buffer size constant.
+            }
+        }
     }
-    return str.substr(0, leftHalf) + '…' + str.substr(str.length - rightHalf, rightHalf);
+    // If the total grapheme count didn't exceed the limit, return the original string.
+    if (currentGraphemeCount <= maxLength) {
+        return str;
+    }
+    // The first item in our buffer is exactly 'rightCount' graphemes away from the end.
+    const rightStartIndex = rightCount > 0 ? rightIndexBuffer[0] : str.length;
+    return str.slice(0, leftEndIndex) + ellipsis + str.slice(rightStartIndex);
 };
+/** Returns a string that has no more than maxLength characters. Actual graphemes are used, not bytes. */
 export const trimEndWithMaxLength = (str, maxLength) => {
+    // Early return for the case where there are fewer bytes than the character limit.
     if (str.length <= maxLength) {
-        return String(str);
+        return str;
     }
-    return str.substr(0, maxLength - 1) + '…';
+    const ellipsis = '…';
+    const ellipsisLength = 1;
+    const segmenter = new Intl.Segmenter(undefined, { granularity: 'grapheme' });
+    const iterator = segmenter.segment(str)[Symbol.iterator]();
+    let lastSegmentIndex = 0;
+    for (let i = 0; i <= maxLength - ellipsisLength; i++) {
+        const result = iterator.next();
+        if (result.done) {
+            return str;
+        }
+        lastSegmentIndex = result.value.index;
+    }
+    for (let i = 0; i < ellipsisLength; i++) {
+        if (iterator.next().done) {
+            return str;
+        }
+    }
+    return str.slice(0, lastSegmentIndex) + ellipsis;
 };
 export const escapeForRegExp = (str) => {
     return escapeCharacters(str, SPECIAL_REGEX_CHARACTERS);

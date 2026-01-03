@@ -861,24 +861,60 @@ var compare = (a, b) => {
 };
 var trimMiddle = (str, maxLength) => {
   if (str.length <= maxLength) {
-    return String(str);
+    return str;
   }
-  let leftHalf = maxLength >> 1;
-  let rightHalf = maxLength - leftHalf - 1;
-  if (str.codePointAt(str.length - rightHalf - 1) >= 65536) {
-    --rightHalf;
-    ++leftHalf;
+  const segmenter = new Intl.Segmenter(void 0, { granularity: "grapheme" });
+  const ellipsis = "\u2026";
+  const ellipsisLength = 1;
+  if (maxLength <= ellipsisLength) {
+    return ellipsis;
   }
-  if (leftHalf > 0 && str.codePointAt(leftHalf - 1) >= 65536) {
-    --leftHalf;
+  const freeSpace = maxLength - ellipsisLength;
+  const leftCount = Math.ceil(freeSpace / 2);
+  const rightCount = Math.floor(freeSpace / 2);
+  let currentGraphemeCount = 0;
+  let leftEndIndex = 0;
+  const rightIndexBuffer = [];
+  for (const { segment, index } of segmenter.segment(str)) {
+    currentGraphemeCount++;
+    if (currentGraphemeCount === leftCount) {
+      leftEndIndex = index + segment.length;
+    }
+    if (rightCount > 0) {
+      rightIndexBuffer.push(index);
+      if (rightIndexBuffer.length > rightCount) {
+        rightIndexBuffer.shift();
+      }
+    }
   }
-  return str.substr(0, leftHalf) + "\u2026" + str.substr(str.length - rightHalf, rightHalf);
+  if (currentGraphemeCount <= maxLength) {
+    return str;
+  }
+  const rightStartIndex = rightCount > 0 ? rightIndexBuffer[0] : str.length;
+  return str.slice(0, leftEndIndex) + ellipsis + str.slice(rightStartIndex);
 };
 var trimEndWithMaxLength = (str, maxLength) => {
   if (str.length <= maxLength) {
-    return String(str);
+    return str;
   }
-  return str.substr(0, maxLength - 1) + "\u2026";
+  const ellipsis = "\u2026";
+  const ellipsisLength = 1;
+  const segmenter = new Intl.Segmenter(void 0, { granularity: "grapheme" });
+  const iterator = segmenter.segment(str)[Symbol.iterator]();
+  let lastSegmentIndex = 0;
+  for (let i = 0; i <= maxLength - ellipsisLength; i++) {
+    const result = iterator.next();
+    if (result.done) {
+      return str;
+    }
+    lastSegmentIndex = result.value.index;
+  }
+  for (let i = 0; i < ellipsisLength; i++) {
+    if (iterator.next().done) {
+      return str;
+    }
+  }
+  return str.slice(0, lastSegmentIndex) + ellipsis;
 };
 var escapeForRegExp = (str) => {
   return escapeCharacters(str, SPECIAL_REGEX_CHARACTERS);

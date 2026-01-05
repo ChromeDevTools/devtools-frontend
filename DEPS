@@ -251,6 +251,7 @@ deps = {
           },
       ],
       'dep_type': 'cipd',
+      'condition': 'non_git_source',
   },
 }
 

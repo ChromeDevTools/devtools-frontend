@@ -9,6 +9,7 @@ devtools_entrypoint("entrypoint") {
   entrypoint = "node_app.ts"
 
   deps = [
+    "../../core/common:bundle",
     "../../core/i18n:bundle",
     "../../core/root:bundle",
     "../../panels/js_timeline:meta",
@@ -16,6 +17,7 @@ devtools_entrypoint("entrypoint") {
     "../../panels/network:meta",
     "../../panels/sources:bundle",
     "../../ui/legacy:bundle",
+    "../main:bundle",
     "../shell",
     "app/:bundle",
   ]

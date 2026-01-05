@@ -53,6 +53,7 @@ devtools_entrypoint("bundle") {
     "../../models/extensions/*",
     "../../models/har/*",
     "../../models/issues_manager/*",
+    "../../models/live-metrics/*",
     "../../models/logs/*",
     "../../models/network_time_calculator/*",
     "../../models/persistence/*",

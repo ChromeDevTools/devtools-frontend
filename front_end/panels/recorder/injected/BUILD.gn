@@ -55,7 +55,7 @@ devtools_entrypoint("bundle") {
 }
 
 node_action("bundled_library") {
-  script = "node_modules/@rollup/wasm-node/dist/bin/rollup"
+  script = "node_modules/rollup/dist/bin/rollup"
 
   _bundled_entrypoint = target_gen_dir + "/injected.js"
   _output_file_location = target_gen_dir + "/injected.generated.js"

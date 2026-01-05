@@ -1961,8 +1961,7 @@ describe('The Styles pane', () => {
     await propertiesSection.focus();
     await devToolsPage.typeText('color');
     await devToolsPage.pressKey('Enter');
-    await devToolsPage.typeText('rgb(');
-    await devToolsPage.typeText('1');
+    await devToolsPage.pasteText('rgb(1');
     await devToolsPage.pressKey('Enter');
 
     // Select another node (#other)
@@ -1973,6 +1972,6 @@ describe('The Styles pane', () => {
     propertiesSection = await getStyleRule('#inspected', devToolsPage);
     inspectedRules = await getDisplayedCSSDeclarations(devToolsPage);
     assert.sameDeepMembers(
-        inspectedRules, ['font-size: 12px;', 'color: rgb();', 'display: block;', 'unicode-bidi: isolate;']);
+        inspectedRules, ['font-size: 12px;', 'color: rgb(1);', 'display: block;', 'unicode-bidi: isolate;']);
   });
 });

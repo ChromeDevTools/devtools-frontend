@@ -123,7 +123,6 @@
   "SameSiteExcludeContextDowngradeRead.md",
   "SameSiteExcludeContextDowngradeSet.md",
   "SameSiteExcludeNavigationContextDowngrade.md",
-  "SameSiteInvalidSameParty.md",
   "SameSiteNoneInsecureErrorRead.md",
   "SameSiteNoneInsecureErrorSet.md",
   "SameSiteNoneInsecureWarnRead.md",

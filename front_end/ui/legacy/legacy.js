@@ -21298,6 +21298,12 @@ ol.tree-outline.tree-variant-navigation:not(.hide-selection-when-blurred) li.sel
   .tree-outline.hide-selection-when-blurred .selected:focus-visible span {
     forced-color-adjust: none;
     color: HighlightText;
+
+    --icon-default: HighlightText;
+
+     &.event-listener-details .text-button {
+      color: HighlightText;
+    }
   }
 
   .tree-outline:not(.hide-selection-when-blurred) li.selected:focus-visible devtools-adorner,

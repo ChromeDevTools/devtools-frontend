@@ -28288,10 +28288,6 @@ var UIStrings9 = {
    */
   schemefulSameSiteUnspecifiedTreatedAsLax: 'This cookie didn\'t specify a "`SameSite`" attribute when it was stored, was defaulted to "`SameSite=Lax"`, and was blocked because the request was cross-site and was not initiated by a top-level navigation. This request is considered cross-site because the URL has a different scheme than the current site.',
   /**
-   * @description Tooltip to explain why a cookie was blocked due to SameParty
-   */
-  samePartyFromCrossPartyContext: "This cookie was blocked because it had the \"`SameParty`\" attribute but the request was cross-party. The request was considered cross-party because the domain of the resource's URL and the domains of the resource's enclosing frames/documents are neither owners nor members in the same First-Party Set.",
-  /**
    * @description Tooltip to explain why a cookie was blocked due to exceeding the maximum size
    */
   nameValuePairExceedsMaxSize: "This cookie was blocked because it was too large. The combined size of the name and value must be less than or equal to 4096 characters.",
@@ -28328,14 +28324,6 @@ var UIStrings9 = {
    * @description Tooltip to explain why a cookie was blocked due to Schemeful Same-Site
    */
   thisSetcookieDidntSpecifyASamesite: 'This `Set-Cookie` header didn\'t specify a "`SameSite`" attribute, was defaulted to "`SameSite=Lax"`, and was blocked because it came from a cross-site response which was not the response to a top-level navigation. This response is considered cross-site because the URL has a different scheme than the current site.',
-  /**
-   * @description Tooltip to explain why a cookie was blocked due to SameParty
-   */
-  thisSetcookieWasBlockedBecauseItHadTheSameparty: "This attempt to set a cookie via a `Set-Cookie` header was blocked because it had the \"`SameParty`\" attribute but the request was cross-party. The request was considered cross-party because the domain of the resource's URL and the domains of the resource's enclosing frames/documents are neither owners nor members in the same First-Party Set.",
-  /**
-   * @description Tooltip to explain why a cookie was blocked due to SameParty
-   */
-  thisSetcookieWasBlockedBecauseItHadTheSamepartyAttribute: 'This attempt to set a cookie via a `Set-Cookie` header was blocked because it had the "`SameParty`" attribute but also had other conflicting attributes. Chrome requires cookies that use the "`SameParty`" attribute to also have the "Secure" attribute, and to not be restricted to "`SameSite=Strict`".',
   /**
    * @description Tooltip to explain why an attempt to set a cookie via a `Set-Cookie` HTTP header on a request's response was blocked.
    */
@@ -29711,8 +29699,6 @@ var cookieBlockedReasonToUiString = function(blockedReason) {
       return i18nString9(UIStrings9.schemefulSameSiteLax);
     case "SchemefulSameSiteUnspecifiedTreatedAsLax":
       return i18nString9(UIStrings9.schemefulSameSiteUnspecifiedTreatedAsLax);
-    case "SamePartyFromCrossPartyContext":
-      return i18nString9(UIStrings9.samePartyFromCrossPartyContext);
     case "NameValuePairExceedsMaxSize":
       return i18nString9(UIStrings9.nameValuePairExceedsMaxSize);
     case "ThirdPartyPhaseout":
@@ -29756,10 +29742,6 @@ var setCookieBlockedReasonToUiString = function(blockedReason) {
       return i18nString9(UIStrings9.thisSetcookieWasBlockedBecauseItHadTheSamesiteStrictLax, { PH1: "SameSite=Lax" });
     case "SchemefulSameSiteUnspecifiedTreatedAsLax":
       return i18nString9(UIStrings9.thisSetcookieDidntSpecifyASamesite);
-    case "SamePartyFromCrossPartyContext":
-      return i18nString9(UIStrings9.thisSetcookieWasBlockedBecauseItHadTheSameparty);
-    case "SamePartyConflictsWithOtherAttributes":
-      return i18nString9(UIStrings9.thisSetcookieWasBlockedBecauseItHadTheSamepartyAttribute);
     case "NameValuePairExceedsMaxSize":
       return i18nString9(UIStrings9.thisSetcookieWasBlockedBecauseTheNameValuePairExceedsMaxSize);
     case "DisallowedCharacter":
@@ -29785,7 +29767,6 @@ var cookieBlockedReasonToAttribute = function(blockedReason) {
     case "SchemefulSameSiteLax":
     case "SchemefulSameSiteUnspecifiedTreatedAsLax":
       return "same-site";
-    case "SamePartyFromCrossPartyContext":
     case "NameValuePairExceedsMaxSize":
     case "UserPreferences":
     case "ThirdPartyPhaseout":
@@ -29811,8 +29792,6 @@ var setCookieBlockedReasonToAttribute = function(blockedReason) {
       return "domain";
     case "InvalidPrefix":
       return "name";
-    case "SamePartyConflictsWithOtherAttributes":
-    case "SamePartyFromCrossPartyContext":
     case "NameValuePairExceedsMaxSize":
     case "UserPreferences":
     case "ThirdPartyPhaseout":

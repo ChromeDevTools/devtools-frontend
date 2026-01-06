@@ -5357,6 +5357,11 @@ var UIStrings14 = {
    */
   initializingTracing: "Initializing tracing\u2026",
   /**
+   * @description Text to indicate the progress of a trace. Informs the user that we are currently
+   * creating a performance trace.
+   */
+  tracing: "Tracing\u2026",
+  /**
    * @description Text in Timeline Controller of the Performance panel indicating that the Performance Panel cannot
    * record a performance trace because the type of target (where possible types are page, service worker and shared
    * worker) doesn't support it.
@@ -5552,6 +5557,7 @@ var TimelineController = class {
       throw new Error(response.getError());
     }
     if (!options.navigateToUrl) {
+      this.client.recordingStatus(i18nString14(UIStrings14.tracing));
       return;
     }
     this.#statusChecker?.removeListener();
@@ -8088,6 +8094,10 @@ var UIStrings20 = {
    */
   exportingFailed: "Exporting the trace failed",
   /**
+   * @description Text in Timeline Panel of the Performance panel
+   */
+  initializingTracing: "Initializing tracing\u2026",
+  /**
    * @description Text to indicate the progress of a trace. Informs the user that we are currently
    * creating a performance trace.
    */
@@ -9450,6 +9460,7 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
       }
       await SDK7.TargetManager.TargetManager.instance().suspendAllTargets("performance-timeline");
       await this.cpuProfiler.startRecording();
+      this.statusDialog?.updateStatus(i18nString20(UIStrings20.tracing));
       this.recordingStarted();
     } catch (e) {
       await this.recordingFailed(e.message);
@@ -10237,7 +10248,7 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
       buttonText: void 0
     }, () => this.stopRecording());
     this.statusDialog.showPane(this.statusPaneContainer);
-    this.statusDialog.updateStatus(i18nString20(UIStrings20.tracing));
+    this.statusDialog.updateStatus(i18nString20(UIStrings20.initializingTracing));
     this.statusDialog.updateProgressBar(i18nString20(UIStrings20.bufferUsage), 0);
   }
   cancelLoading() {

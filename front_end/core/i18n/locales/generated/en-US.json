@@ -410,9 +410,6 @@
   "core/sdk/NetworkRequest.ts | notOnPath": {
     "message": "This cookie was blocked because its path was not an exact match for or a superdirectory of the request url's path."
   },
-  "core/sdk/NetworkRequest.ts | samePartyFromCrossPartyContext": {
-    "message": "This cookie was blocked because it had the \"SameParty\" attribute but the request was cross-party. The request was considered cross-party because the domain of the resource's URL and the domains of the resource's enclosing frames/documents are neither owners nor members in the same First-Party Set."
-  },
   "core/sdk/NetworkRequest.ts | sameSiteLax": {
     "message": "This cookie was blocked because it had the \"SameSite=Lax\" attribute and the request was made from a different site and was not initiated by a top-level navigation."
   },
@@ -454,12 +451,6 @@
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieHadInvalidSyntax": {
     "message": "This Set-Cookie header had invalid syntax."
-  },
-  "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedBecauseItHadTheSameparty": {
-    "message": "This attempt to set a cookie via a Set-Cookie header was blocked because it had the \"SameParty\" attribute but the request was cross-party. The request was considered cross-party because the domain of the resource's URL and the domains of the resource's enclosing frames/documents are neither owners nor members in the same First-Party Set."
-  },
-  "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedBecauseItHadTheSamepartyAttribute": {
-    "message": "This attempt to set a cookie via a Set-Cookie header was blocked because it had the \"SameParty\" attribute but also had other conflicting attributes. Chrome requires cookies that use the \"SameParty\" attribute to also have the \"Secure\" attribute, and to not be restricted to \"SameSite=Strict\"."
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedBecauseItHadTheSamesiteStrictLax": {
     "message": "This attempt to set a cookie via a Set-Cookie header was blocked because it had the \"{PH1}\" attribute but came from a cross-site response which was not the response to a top-level navigation. This response is considered cross-site because the URL has a different scheme than the current site."
@@ -1585,9 +1576,6 @@
   },
   "models/issues_manager/CookieIssue.ts | fileCrosSiteRedirectBug": {
     "message": "File a bug"
-  },
-  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
-    "message": "First-Party Sets and the SameParty attribute"
   },
   "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
     "message": "How Schemeful Same-Site Works"
@@ -15602,6 +15590,9 @@
   "panels/timeline/TimelineController.ts | initializingTracing": {
     "message": "Initializing tracing…"
   },
+  "panels/timeline/TimelineController.ts | tracing": {
+    "message": "Tracing…"
+  },
   "panels/timeline/TimelineController.ts | tracingNotSupported": {
     "message": "Performance trace recording not supported for this type of target"
   },
@@ -15793,6 +15784,9 @@
   },
   "panels/timeline/TimelinePanel.ts | hideSidebar": {
     "message": "Hide sidebar"
+  },
+  "panels/timeline/TimelinePanel.ts | initializingTracing": {
+    "message": "Initializing tracing…"
   },
   "panels/timeline/TimelinePanel.ts | JavascriptSamplingIsDisabled": {
     "message": "- JavaScript sampling is disabled"

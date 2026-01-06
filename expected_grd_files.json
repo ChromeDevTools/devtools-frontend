@@ -419,7 +419,6 @@
   "front_end/models/issues_manager/descriptions/SameSiteExcludeContextDowngradeRead.md",
   "front_end/models/issues_manager/descriptions/SameSiteExcludeContextDowngradeSet.md",
   "front_end/models/issues_manager/descriptions/SameSiteExcludeNavigationContextDowngrade.md",
-  "front_end/models/issues_manager/descriptions/SameSiteInvalidSameParty.md",
   "front_end/models/issues_manager/descriptions/SameSiteNoneInsecureErrorRead.md",
   "front_end/models/issues_manager/descriptions/SameSiteNoneInsecureErrorSet.md",
   "front_end/models/issues_manager/descriptions/SameSiteNoneInsecureWarnRead.md",

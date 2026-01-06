@@ -842,10 +842,6 @@ var UIStrings5 = {
    */
   howSchemefulSamesiteWorks: "How Schemeful Same-Site Works",
   /**
-   * @description Label for a link for SameParty Issues. 'Attribute' refers to a cookie attribute.
-   */
-  firstPartySetsExplained: "`First-Party Sets` and the `SameParty` attribute",
-  /**
    * @description Label for a link for cross-site redirect Issues.
    */
   fileCrosSiteRedirectBug: "File a bug",
@@ -1222,20 +1218,6 @@ function sameSiteExcludeContextDowngradeSet(isSecure) {
     links: schemefulSameSiteArticles
   };
 }
-var sameSiteInvalidSameParty = {
-  file: "SameSiteInvalidSameParty.md",
-  links: [{
-    link: "https://developer.chrome.com/blog/first-party-sets-sameparty/",
-    linkTitle: i18nLazyString3(UIStrings5.firstPartySetsExplained)
-  }]
-};
-var samePartyCrossPartyContextSet = {
-  file: "SameSiteSamePartyCrossPartyContextSet.md",
-  links: [{
-    link: "https://developer.chrome.com/blog/first-party-sets-sameparty/",
-    linkTitle: i18nLazyString3(UIStrings5.firstPartySetsExplained)
-  }]
-};
 var attributeValueExceedsMaxSize = {
   file: "CookieAttributeValueExceedsMaxSize.md",
   links: []
@@ -1296,8 +1278,6 @@ var issueDescriptions3 = /* @__PURE__ */ new Map([
   ["CookieIssue::ExcludeContextDowngrade::ReadCookie::Insecure", sameSiteExcludeContextDowngradeRead(false)],
   ["CookieIssue::ExcludeContextDowngrade::SetCookie::Secure", sameSiteExcludeContextDowngradeSet(true)],
   ["CookieIssue::ExcludeContextDowngrade::SetCookie::Insecure", sameSiteExcludeContextDowngradeSet(false)],
-  ["CookieIssue::ExcludeInvalidSameParty::SetCookie", sameSiteInvalidSameParty],
-  ["CookieIssue::ExcludeSamePartyCrossPartyContext::SetCookie", samePartyCrossPartyContextSet],
   ["CookieIssue::WarnAttributeValueExceedsMaxSize::ReadCookie", attributeValueExceedsMaxSize],
   ["CookieIssue::WarnAttributeValueExceedsMaxSize::SetCookie", attributeValueExceedsMaxSize],
   ["CookieIssue::WarnDomainNonASCII::ReadCookie", warnDomainNonAscii],

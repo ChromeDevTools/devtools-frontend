@@ -122,8 +122,7 @@ function renderNoModel(input) {
         lockedString(UIStringsNotTranslate.getHelpForWarning) :
         lockedString(UIStringsNotTranslate.getHelpForError)}
         </h2>
-        <div>You can get quick answers from
-          <x-link
+        <div>You can get quick answers from <x-link
             .jslog=${VisualLogging.link().track({ click: true, keydown: 'Enter|Space' }).context('insights-teaser-built-in-ai-documentation')}
             class="link"
             href=${BUILT_IN_AI_DOCUMENTATION}

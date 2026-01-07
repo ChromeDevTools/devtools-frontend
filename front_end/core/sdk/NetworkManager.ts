@@ -1554,6 +1554,9 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
     this.#manager.dispatchEventToListeners(Events.ReportingApiEndpointsChangedForOrigin, data);
   }
 
+  deviceBoundSessionsAdded(_params: Protocol.Network.DeviceBoundSessionsAddedEvent): void {
+  }
+
   policyUpdated(): void {
   }
 

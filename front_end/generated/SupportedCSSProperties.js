@@ -1737,6 +1737,13 @@ export const generatedProperties = [
   "name": "column-rule-color"
  },
  {
+  "longhands": [
+   "column-rule-edge-inset-start",
+   "column-rule-edge-inset-end"
+  ],
+  "name": "column-rule-edge-inset"
+ },
+ {
   "inherited": false,
   "name": "column-rule-edge-inset-end"
  },
@@ -1752,6 +1759,13 @@ export const generatedProperties = [
    "column-rule-interior-inset-end"
   ],
   "name": "column-rule-inset"
+ },
+ {
+  "longhands": [
+   "column-rule-interior-inset-start",
+   "column-rule-interior-inset-end"
+  ],
+  "name": "column-rule-interior-inset"
  },
  {
   "inherited": false,
@@ -3766,6 +3780,13 @@ export const generatedProperties = [
   "name": "row-rule-color"
  },
  {
+  "longhands": [
+   "row-rule-edge-inset-start",
+   "row-rule-edge-inset-end"
+  ],
+  "name": "row-rule-edge-inset"
+ },
+ {
   "inherited": false,
   "name": "row-rule-edge-inset-end"
  },
@@ -3781,6 +3802,13 @@ export const generatedProperties = [
    "row-rule-interior-inset-end"
   ],
   "name": "row-rule-inset"
+ },
+ {
+  "longhands": [
+   "row-rule-interior-inset-start",
+   "row-rule-interior-inset-end"
+  ],
+  "name": "row-rule-interior-inset"
  },
  {
   "inherited": false,
@@ -3878,6 +3906,15 @@ export const generatedProperties = [
   "longhands": [
    "row-rule-edge-inset-start",
    "row-rule-edge-inset-end",
+   "column-rule-edge-inset-start",
+   "column-rule-edge-inset-end"
+  ],
+  "name": "rule-edge-inset"
+ },
+ {
+  "longhands": [
+   "row-rule-edge-inset-start",
+   "row-rule-edge-inset-end",
    "row-rule-interior-inset-start",
    "row-rule-interior-inset-end",
    "column-rule-edge-inset-start",
@@ -3886,6 +3923,15 @@ export const generatedProperties = [
    "column-rule-interior-inset-end"
   ],
   "name": "rule-inset"
+ },
+ {
+  "longhands": [
+   "row-rule-interior-inset-start",
+   "row-rule-interior-inset-end",
+   "column-rule-interior-inset-start",
+   "column-rule-interior-inset-end"
+  ],
+  "name": "rule-interior-inset"
  },
  {
   "longhands": [

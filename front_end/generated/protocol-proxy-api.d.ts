@@ -2664,6 +2664,16 @@ declare namespace ProtocolProxyApi {
     invoke_enableReportingApi(params: Protocol.Network.EnableReportingApiRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
+     * Sets up tracking device bound sessions and fetching of initial set of sessions.
+     */
+    invoke_enableDeviceBoundSessions(params: Protocol.Network.EnableDeviceBoundSessionsRequest): Promise<Protocol.ProtocolResponseWithError>;
+
+    /**
+     * Fetches the schemeful site for a specific origin.
+     */
+    invoke_fetchSchemefulSite(params: Protocol.Network.FetchSchemefulSiteRequest): Promise<Protocol.Network.FetchSchemefulSiteResponse>;
+
+    /**
      * Fetches the resource and returns the content.
      */
     invoke_loadNetworkResource(params: Protocol.Network.LoadNetworkResourceRequest): Promise<Protocol.Network.LoadNetworkResourceResponse>;
@@ -2887,6 +2897,11 @@ declare namespace ProtocolProxyApi {
     reportingApiReportUpdated(params: Protocol.Network.ReportingApiReportUpdatedEvent): void;
 
     reportingApiEndpointsChangedForOrigin(params: Protocol.Network.ReportingApiEndpointsChangedForOriginEvent): void;
+
+    /**
+     * Triggered when the initial set of device bound sessions is added.
+     */
+    deviceBoundSessionsAdded(params: Protocol.Network.DeviceBoundSessionsAddedEvent): void;
 
   }
 

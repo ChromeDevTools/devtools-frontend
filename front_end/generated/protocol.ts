@@ -11363,6 +11363,127 @@ export namespace Network {
   }
 
   /**
+   * Unique identifier for a device bound session.
+   */
+  export interface DeviceBoundSessionKey {
+    /**
+     * The site the session is set up for.
+     */
+    site: string;
+    /**
+     * The id of the session.
+     */
+    id: string;
+  }
+
+  /**
+   * A device bound session's cookie craving.
+   */
+  export interface DeviceBoundSessionCookieCraving {
+    /**
+     * The name of the craving.
+     */
+    name: string;
+    /**
+     * The domain of the craving.
+     */
+    domain: string;
+    /**
+     * The path of the craving.
+     */
+    path: string;
+    /**
+     * The `Secure` attribute of the craving attributes.
+     */
+    secure: boolean;
+    /**
+     * The `HttpOnly` attribute of the craving attributes.
+     */
+    httpOnly: boolean;
+    /**
+     * The `SameSite` attribute of the craving attributes.
+     */
+    sameSite?: CookieSameSite;
+  }
+
+  export const enum DeviceBoundSessionUrlRuleRuleType {
+    Exclude = 'Exclude',
+    Include = 'Include',
+  }
+
+  /**
+   * A device bound session's inclusion URL rule.
+   */
+  export interface DeviceBoundSessionUrlRule {
+    /**
+     * See comments on `net::device_bound_sessions::SessionInclusionRules::UrlRule::rule_type`.
+     */
+    ruleType: DeviceBoundSessionUrlRuleRuleType;
+    /**
+     * See comments on `net::device_bound_sessions::SessionInclusionRules::UrlRule::host_pattern`.
+     */
+    hostPattern: string;
+    /**
+     * See comments on `net::device_bound_sessions::SessionInclusionRules::UrlRule::path_prefix`.
+     */
+    pathPrefix: string;
+  }
+
+  /**
+   * A device bound session's inclusion rules.
+   */
+  export interface DeviceBoundSessionInclusionRules {
+    /**
+     * See comments on `net::device_bound_sessions::SessionInclusionRules::origin_`.
+     */
+    origin: string;
+    /**
+     * Whether the whole site is included. See comments on
+     * `net::device_bound_sessions::SessionInclusionRules::include_site_` for more
+     * details; this boolean is true if that value is populated.
+     */
+    includeSite: boolean;
+    /**
+     * See comments on `net::device_bound_sessions::SessionInclusionRules::url_rules_`.
+     */
+    urlRules: DeviceBoundSessionUrlRule[];
+  }
+
+  /**
+   * A device bound session.
+   */
+  export interface DeviceBoundSession {
+    /**
+     * The site and session ID of the session.
+     */
+    key: DeviceBoundSessionKey;
+    /**
+     * See comments on `net::device_bound_sessions::Session::refresh_url_`.
+     */
+    refreshUrl: string;
+    /**
+     * See comments on `net::device_bound_sessions::Session::inclusion_rules_`.
+     */
+    inclusionRules: DeviceBoundSessionInclusionRules;
+    /**
+     * See comments on `net::device_bound_sessions::Session::cookie_cravings_`.
+     */
+    cookieCravings: DeviceBoundSessionCookieCraving[];
+    /**
+     * See comments on `net::device_bound_sessions::Session::expiry_date_`.
+     */
+    expiryDate: Network.TimeSinceEpoch;
+    /**
+     * See comments on `net::device_bound_sessions::Session::cached_challenge__`.
+     */
+    cachedChallenge?: string;
+    /**
+     * See comments on `net::device_bound_sessions::Session::allowed_refresh_initiators_`.
+     */
+    allowedRefreshInitiators: string[];
+  }
+
+  /**
    * An object providing the result of a network resource load.
    */
   export interface LoadNetworkResourcePageResult {
@@ -11900,6 +12021,27 @@ export namespace Network {
      * Whether to enable or disable events for the Reporting API
      */
     enable: boolean;
+  }
+
+  export interface EnableDeviceBoundSessionsRequest {
+    /**
+     * Whether to enable or disable events.
+     */
+    enable: boolean;
+  }
+
+  export interface FetchSchemefulSiteRequest {
+    /**
+     * The URL origin.
+     */
+    origin: string;
+  }
+
+  export interface FetchSchemefulSiteResponse extends ProtocolResponseWithError {
+    /**
+     * The corresponding schemeful site.
+     */
+    schemefulSite: string;
   }
 
   export interface LoadNetworkResourceRequest {
@@ -12734,6 +12876,16 @@ export namespace Network {
      */
     origin: string;
     endpoints: ReportingApiEndpoint[];
+  }
+
+  /**
+   * Triggered when the initial set of device bound sessions is added.
+   */
+  export interface DeviceBoundSessionsAddedEvent {
+    /**
+     * The device bound sessions.
+     */
+    sessions: DeviceBoundSession[];
   }
 }
 

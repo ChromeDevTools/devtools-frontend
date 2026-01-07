@@ -17158,6 +17158,166 @@
                     ]
                 },
                 {
+                    "id": "DeviceBoundSessionKey",
+                    "description": "Unique identifier for a device bound session.",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "site",
+                            "description": "The site the session is set up for.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "id",
+                            "description": "The id of the session.",
+                            "type": "string"
+                        }
+                    ]
+                },
+                {
+                    "id": "DeviceBoundSessionCookieCraving",
+                    "description": "A device bound session's cookie craving.",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "name",
+                            "description": "The name of the craving.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "domain",
+                            "description": "The domain of the craving.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "path",
+                            "description": "The path of the craving.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "secure",
+                            "description": "The `Secure` attribute of the craving attributes.",
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "httpOnly",
+                            "description": "The `HttpOnly` attribute of the craving attributes.",
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "sameSite",
+                            "description": "The `SameSite` attribute of the craving attributes.",
+                            "optional": true,
+                            "$ref": "CookieSameSite"
+                        }
+                    ]
+                },
+                {
+                    "id": "DeviceBoundSessionUrlRule",
+                    "description": "A device bound session's inclusion URL rule.",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "ruleType",
+                            "description": "See comments on `net::device_bound_sessions::SessionInclusionRules::UrlRule::rule_type`.",
+                            "type": "string",
+                            "enum": [
+                                "Exclude",
+                                "Include"
+                            ]
+                        },
+                        {
+                            "name": "hostPattern",
+                            "description": "See comments on `net::device_bound_sessions::SessionInclusionRules::UrlRule::host_pattern`.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "pathPrefix",
+                            "description": "See comments on `net::device_bound_sessions::SessionInclusionRules::UrlRule::path_prefix`.",
+                            "type": "string"
+                        }
+                    ]
+                },
+                {
+                    "id": "DeviceBoundSessionInclusionRules",
+                    "description": "A device bound session's inclusion rules.",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "origin",
+                            "description": "See comments on `net::device_bound_sessions::SessionInclusionRules::origin_`.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "includeSite",
+                            "description": "Whether the whole site is included. See comments on\n`net::device_bound_sessions::SessionInclusionRules::include_site_` for more\ndetails; this boolean is true if that value is populated.",
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "urlRules",
+                            "description": "See comments on `net::device_bound_sessions::SessionInclusionRules::url_rules_`.",
+                            "type": "array",
+                            "items": {
+                                "$ref": "DeviceBoundSessionUrlRule"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "id": "DeviceBoundSession",
+                    "description": "A device bound session.",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "key",
+                            "description": "The site and session ID of the session.",
+                            "$ref": "DeviceBoundSessionKey"
+                        },
+                        {
+                            "name": "refreshUrl",
+                            "description": "See comments on `net::device_bound_sessions::Session::refresh_url_`.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "inclusionRules",
+                            "description": "See comments on `net::device_bound_sessions::Session::inclusion_rules_`.",
+                            "$ref": "DeviceBoundSessionInclusionRules"
+                        },
+                        {
+                            "name": "cookieCravings",
+                            "description": "See comments on `net::device_bound_sessions::Session::cookie_cravings_`.",
+                            "type": "array",
+                            "items": {
+                                "$ref": "DeviceBoundSessionCookieCraving"
+                            }
+                        },
+                        {
+                            "name": "expiryDate",
+                            "description": "See comments on `net::device_bound_sessions::Session::expiry_date_`.",
+                            "$ref": "Network.TimeSinceEpoch"
+                        },
+                        {
+                            "name": "cachedChallenge",
+                            "description": "See comments on `net::device_bound_sessions::Session::cached_challenge__`.",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "allowedRefreshInitiators",
+                            "description": "See comments on `net::device_bound_sessions::Session::allowed_refresh_initiators_`.",
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    ]
+                },
+                {
                     "id": "LoadNetworkResourcePageResult",
                     "description": "An object providing the result of a network resource load.",
                     "experimental": true,
@@ -18023,6 +18183,37 @@
                             "name": "enable",
                             "description": "Whether to enable or disable events for the Reporting API",
                             "type": "boolean"
+                        }
+                    ]
+                },
+                {
+                    "name": "enableDeviceBoundSessions",
+                    "description": "Sets up tracking device bound sessions and fetching of initial set of sessions.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "enable",
+                            "description": "Whether to enable or disable events.",
+                            "type": "boolean"
+                        }
+                    ]
+                },
+                {
+                    "name": "fetchSchemefulSite",
+                    "description": "Fetches the schemeful site for a specific origin.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "origin",
+                            "description": "The URL origin.",
+                            "type": "string"
+                        }
+                    ],
+                    "returns": [
+                        {
+                            "name": "schemefulSite",
+                            "description": "The corresponding schemeful site.",
+                            "type": "string"
                         }
                     ]
                 },
@@ -19181,6 +19372,21 @@
                             "type": "array",
                             "items": {
                                 "$ref": "ReportingApiEndpoint"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "deviceBoundSessionsAdded",
+                    "description": "Triggered when the initial set of device bound sessions is added.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "sessions",
+                            "description": "The device bound sessions.",
+                            "type": "array",
+                            "items": {
+                                "$ref": "DeviceBoundSession"
                             }
                         }
                     ]

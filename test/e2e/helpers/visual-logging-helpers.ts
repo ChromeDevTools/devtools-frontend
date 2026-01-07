@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {getBrowserAndPages} from '../../conductor/puppeteer-state.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 
 /** Corresponds to the type in front_end/ui/visual_logging/Debugging.ts **/
@@ -143,11 +142,10 @@ export function veImpressionForDrawerToolbar(options?: {
  * Prints all VE events that haven't been matched by expectVeEvents calls
  * Useful for writing new assertions.
  **/
-export async function dumpVeEvents(label: string) {
-  const {frontend} = getBrowserAndPages();
+export async function dumpVeEvents(label: string, devToolsPage: DevToolsPage) {
   const events =
       // @ts-expect-error
-      await frontend.evaluate(async () => (await globalThis.getUnmatchedVeEvents()) as unknown as string[]);
+      await devToolsPage.evaluate(async () => (await globalThis.getUnmatchedVeEvents()) as unknown as string[]);
   // eslint-disable-next-line no-console
   console.log(label + '\n', events);
 }

@@ -5,9 +5,6 @@
 import {AssertionError} from 'chai';
 import type * as puppeteer from 'puppeteer-core';
 
-import {reloadDevTools} from '../conductor/hooks.js';
-import {getBrowserAndPages} from '../conductor/puppeteer-state.js';
-
 export {platform} from '../conductor/platform.js';
 
 declare global {
@@ -47,8 +44,6 @@ export const selectOption = async (select: puppeteer.ElementHandle<HTMLSelectEle
     node.dispatchEvent(event);
   }, value);
 };
-
-export {getBrowserAndPages, reloadDevTools};
 
 export function matchString(actual: string, expected: string|RegExp): true|string {
   if (typeof expected === 'string') {

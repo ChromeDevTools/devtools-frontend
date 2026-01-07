@@ -12,7 +12,6 @@ import {
   setupBrowserProcessIO,
 } from './events.js';
 import {
-  type DevToolsFrontendReloadOptions,
   DevToolsFrontendTab,
   loadEmptyPageAndWaitForContent,
 } from './frontend_tab.js';
@@ -207,10 +206,6 @@ async function throttleCPUIfRequired(page: puppeteer.Page): Promise<void> {
     rate: TestConfig.cpuThrottle,
   });
   await client.detach();
-}
-
-export async function reloadDevTools(options?: DevToolsFrontendReloadOptions) {
-  await frontendTab.reload(options);
 }
 
 /** Can be run multiple times in the same process. **/

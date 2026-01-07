@@ -2,25 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type {DevToolsFrontendReloadOptions} from '../../conductor/frontend_tab.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
-import type {InspectedPage} from '../shared/target-helper.js';
-
-import {veImpressionForAnimationsPanel} from './animations-helpers.js';
-import {veImpressionForApplicationPanel} from './application-helpers.js';
-import {veImpressionForChangesPanel} from './changes-helpers.js';
-import {veImpressionForConsolePanel} from './console-helpers.js';
-import {veImpressionForLayersPanel} from './layers-helpers.js';
-import {veImpressionForNetworkPanel} from './network-helpers.js';
-import {veImpressionForPerformancePanel} from './performance-helpers.js';
-import {veImpressionForSecurityPanel} from './security-helpers.js';
-import {veImpressionForSourcesPanel} from './sources-helpers.js';
-import {
-  expectVeEvents,
-  veImpression,
-  veImpressionForElementsPanel,
-  veImpressionForMainToolbar,
-} from './visual-logging-helpers.js';
 
 export async function clickOnContextMenuItemFromTab(
     tabId: string, menuItemSelector: string, devToolsPage: DevToolsPage) {
@@ -53,66 +35,3 @@ export const checkIfTabExistsInDrawer = async (tabId: string, devToolsPage: DevT
   const tab = await devToolsPage.waitFor(tabId, header);
   return Boolean(tab);
 };
-
-export async function reloadDevTools(
-    options: DevToolsFrontendReloadOptions&{
-      expectClosedPanels?: string[],
-      enableExperiments?: string[],
-      disableExperiments?: string[],
-      removeBackendState?: boolean,
-    }|undefined,
-    devToolsPage: DevToolsPage, inspectedPage: InspectedPage) {
-  await devToolsPage.evaluate(() => {
-    // Prevent the Performance panel shortcuts dialog, that is automatically shown the first
-    // time the performance panel is opened, from opening in tests.
-    localStorage.setItem('hide-shortcuts-dialog-for-test', 'true');
-  });
-  const enableExperiments = options?.enableExperiments || [];
-  const disableExperiments = options?.disableExperiments || [];
-  if (enableExperiments.length || disableExperiments.length) {
-    await devToolsPage.evaluate(`(async () => {
-      const Root = await import('./core/root/root.js');
-      for (const experiment of ${JSON.stringify(enableExperiments)}) {
-        Root.Runtime.experiments.setEnabled(experiment, true);
-      }
-      for (const experiment of ${JSON.stringify(disableExperiments)}) {
-        Root.Runtime.experiments.setEnabled(experiment, false);
-      }
-    })()`);
-  }
-  if (options?.removeBackendState) {
-    // Navigate to a different site to make sure that back-end state will be removed.
-    await inspectedPage.page.goto('about:blank');
-  }
-  await devToolsPage.reloadWithParams(options?.queryParams || {});
-  const selectedPanel = options?.selectedPanel?.name || options?.queryParams?.panel || 'elements';
-  await devToolsPage.waitFor(`.panel.${selectedPanel}`);
-  const expectClosedPanels = options?.expectClosedPanels;
-  const dockable = options?.canDock;
-  const panelImpression = selectedPanel === 'elements' ? veImpressionForElementsPanel({dockable}) :
-      selectedPanel === 'animations'                   ? veImpressionForAnimationsPanel() :
-      selectedPanel === 'security'                     ? veImpressionForSecurityPanel() :
-      selectedPanel === 'layers'                       ? veImpressionForLayersPanel() :
-      selectedPanel === 'network'                      ? veImpressionForNetworkPanel() :
-      selectedPanel === 'console'                      ? veImpressionForConsolePanel() :
-      selectedPanel === 'timeline'                     ? veImpressionForPerformancePanel() :
-      selectedPanel === 'sources'                      ? veImpressionForSourcesPanel() :
-      selectedPanel === 'animations'                   ? veImpressionForSourcesPanel() :
-      selectedPanel === 'changes'                      ? veImpressionForChangesPanel() :
-      selectedPanel === 'resources'                    ? veImpressionForApplicationPanel() :
-                                                         veImpression('Panel', selectedPanel);
-  const expectedVeEvents = [veImpressionForMainToolbar({selectedPanel, expectClosedPanels, dockable}), panelImpression];
-  if (options?.drawerShown) {
-    expectedVeEvents.push(veImpression('Drawer', undefined, [
-      veImpression(
-          'Toolbar', 'drawer',
-          [
-            veImpression('DropDown', 'more-tabs'),
-            veImpression('PanelTabHeader', 'console'),
-            veImpression('Close'),
-          ]),
-      veImpressionForConsolePanel(),
-    ]));
-  }
-  await expectVeEvents(expectedVeEvents, undefined, devToolsPage);
-}

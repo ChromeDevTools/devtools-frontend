@@ -233,12 +233,15 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
   documentOpened(framePayload: Protocol.Page.Frame): void {
     this.frameNavigated(framePayload, undefined);
     const frame = this.framesInternal.get(framePayload.id);
-    if (frame && !frame.getResourcesMap().get(framePayload.url)) {
-      const frameResource = this.createResourceFromFramePayload(
-          framePayload, framePayload.url as Platform.DevToolsPath.UrlString, Common.ResourceType.resourceTypes.Document,
-          framePayload.mimeType, null, null);
-      frameResource.isGenerated = true;
-      frame.addResource(frameResource);
+    if (frame) {
+      this.dispatchEventToListeners(Events.DocumentOpened, frame);
+      if (!frame.getResourcesMap().get(framePayload.url)) {
+        const frameResource = this.createResourceFromFramePayload(
+            framePayload, framePayload.url as Platform.DevToolsPath.UrlString,
+            Common.ResourceType.resourceTypes.Document, framePayload.mimeType, null, null);
+        frameResource.isGenerated = true;
+        frame.addResource(frameResource);
+      }
     }
   }
 
@@ -582,6 +585,7 @@ export enum Events {
   FrameDetached = 'FrameDetached',
   FrameResized = 'FrameResized',
   FrameWillNavigate = 'FrameWillNavigate',
+  DocumentOpened = 'DocumentOpened',
   PrimaryPageChanged = 'PrimaryPageChanged',
   ResourceAdded = 'ResourceAdded',
   WillLoadCachedResources = 'WillLoadCachedResources',
@@ -604,6 +608,7 @@ export interface EventTypes {
   [Events.FrameDetached]: {frame: ResourceTreeFrame, isSwap: boolean};
   [Events.FrameResized]: void;
   [Events.FrameWillNavigate]: ResourceTreeFrame;
+  [Events.DocumentOpened]: ResourceTreeFrame;
   [Events.PrimaryPageChanged]: {frame: ResourceTreeFrame, type: PrimaryPageChangeType};
   [Events.ResourceAdded]: Resource;
   [Events.WillLoadCachedResources]: void;

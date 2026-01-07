@@ -1529,6 +1529,7 @@ export class ElementsTreeOutline extends
     domModel.addEventListener(SDK.DOMModel.Events.AttrRemoved, this.attributeRemoved, this);
     domModel.addEventListener(SDK.DOMModel.Events.CharacterDataModified, this.characterDataModified, this);
     domModel.addEventListener(SDK.DOMModel.Events.DocumentUpdated, this.documentUpdated, this);
+    domModel.addEventListener(SDK.DOMModel.Events.DocumentURLChanged, this.documentURLChanged, this);
     domModel.addEventListener(SDK.DOMModel.Events.ChildNodeCountUpdated, this.childNodeCountUpdated, this);
     domModel.addEventListener(SDK.DOMModel.Events.DistributedNodesChanged, this.distributedNodesChanged, this);
     domModel.addEventListener(
@@ -1544,6 +1545,7 @@ export class ElementsTreeOutline extends
     domModel.removeEventListener(SDK.DOMModel.Events.AttrRemoved, this.attributeRemoved, this);
     domModel.removeEventListener(SDK.DOMModel.Events.CharacterDataModified, this.characterDataModified, this);
     domModel.removeEventListener(SDK.DOMModel.Events.DocumentUpdated, this.documentUpdated, this);
+    domModel.removeEventListener(SDK.DOMModel.Events.DocumentURLChanged, this.documentURLChanged, this);
     domModel.removeEventListener(SDK.DOMModel.Events.ChildNodeCountUpdated, this.childNodeCountUpdated, this);
     domModel.removeEventListener(SDK.DOMModel.Events.DistributedNodesChanged, this.distributedNodesChanged, this);
     domModel.removeEventListener(
@@ -1598,6 +1600,11 @@ export class ElementsTreeOutline extends
     if (node.parentNode && node.parentNode.firstChild === node.parentNode.lastChild) {
       this.addUpdateRecord(node.parentNode).childrenModified();
     }
+    this.updateModifiedNodesSoon();
+  }
+
+  private documentURLChanged(event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMDocument>): void {
+    this.addUpdateRecord(event.data).charDataModified();
     this.updateModifiedNodesSoon();
   }
 

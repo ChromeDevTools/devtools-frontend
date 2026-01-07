@@ -44,7 +44,7 @@ import {CSSModel} from './CSSModel.js';
 import {FrameManager} from './FrameManager.js';
 import {OverlayModel} from './OverlayModel.js';
 import {RemoteObject} from './RemoteObject.js';
-import {ResourceTreeModel} from './ResourceTreeModel.js';
+import {Events as ResourceTreeModelEvents, type ResourceTreeFrame, ResourceTreeModel} from './ResourceTreeModel.js';
 import {RuntimeModel} from './RuntimeModel.js';
 import {SDKModel} from './SDKModel.js';
 import {Capability, type Target} from './Target.js';
@@ -209,6 +209,7 @@ export class DOMNode extends Common.ObjectWrapper.ObjectWrapper<DOMNodeEventType
 
     this.id = payload.nodeId;
     this.#backendNodeId = payload.backendNodeId;
+    this.#frameOwnerFrameId = payload.frameId || null;
     this.#domModel.registerNode(this);
     this.#nodeType = payload.nodeType;
     this.#nodeName = payload.nodeName;
@@ -217,7 +218,6 @@ export class DOMNode extends Common.ObjectWrapper.ObjectWrapper<DOMNodeEventType
     this.#pseudoType = payload.pseudoType;
     this.#pseudoIdentifier = payload.pseudoIdentifier;
     this.#shadowRootType = payload.shadowRootType;
-    this.#frameOwnerFrameId = payload.frameId || null;
     this.#xmlVersion = payload.xmlVersion;
     this.#isSVGNode = Boolean(payload.isSVG);
     this.#isScrollable = Boolean(payload.isScrollable);
@@ -1287,6 +1287,7 @@ export class AdoptedStyleSheet {
 export class DOMModel extends SDKModel<EventTypes> {
   agent: ProtocolProxyApi.DOMApi;
   idToDOMNode = new Map<Protocol.DOM.NodeId, DOMNode>();
+  frameIdToOwnerNode = new Map<Protocol.Page.FrameId, DOMNode>();
   #document: DOMDocument|null = null;
   readonly #attributeLoadNodeIds = new Set<Protocol.DOM.NodeId>();
   readonly runtimeModelInternal: RuntimeModel;
@@ -1297,6 +1298,7 @@ export class DOMModel extends SDKModel<EventTypes> {
   #searchId?: string;
   #topLayerThrottler = new Common.Throttler.Throttler(100);
   #topLayerNodes: DOMNode[] = [];
+  #resourceTreeModel: ResourceTreeModel|null = null;
 
   constructor(target: Target) {
     super(target);
@@ -1305,6 +1307,9 @@ export class DOMModel extends SDKModel<EventTypes> {
 
     target.registerDOMDispatcher(new DOMDispatcher(this));
     this.runtimeModelInternal = (target.model(RuntimeModel) as RuntimeModel);
+
+    this.#resourceTreeModel = target.model(ResourceTreeModel);
+    this.#resourceTreeModel?.addEventListener(ResourceTreeModelEvents.DocumentOpened, this.onDocumentOpened, this);
 
     if (!target.suspended()) {
       void this.agent.invoke_enable({});
@@ -1347,6 +1352,19 @@ export class DOMModel extends SDKModel<EventTypes> {
       }
 
       this.dispatchEventToListeners(Events.DOMMutated, node);
+    }
+  }
+
+  private onDocumentOpened(event: Common.EventTarget.EventTargetEvent<ResourceTreeFrame>): void {
+    const frame = event.data;
+    const node = this.frameIdToOwnerNode.get(frame.id);
+    if (node) {
+      const contentDocument = node.contentDocument();
+      if (contentDocument && contentDocument.documentURL !== frame.url) {
+        contentDocument.documentURL = frame.url;
+        contentDocument.baseURL = frame.url;
+        this.dispatchEventToListeners(Events.DocumentURLChanged, contentDocument);
+      }
     }
   }
 
@@ -1526,6 +1544,7 @@ export class DOMModel extends SDKModel<EventTypes> {
 
   private setDocument(payload: Protocol.DOM.Node|null): void {
     this.idToDOMNode = new Map();
+    this.frameIdToOwnerNode = new Map();
     if (payload && 'nodeId' in payload) {
       this.#document = new DOMDocument(this, payload);
     } else {
@@ -1704,6 +1723,10 @@ export class DOMModel extends SDKModel<EventTypes> {
 
   private unbind(node: DOMNode): void {
     this.idToDOMNode.delete(node.id);
+    const frameId = node.frameOwnerFrameId();
+    if (frameId) {
+      this.frameIdToOwnerNode.delete(frameId);
+    }
     const children = node.children();
     for (let i = 0; children && i < children.length; ++i) {
       this.unbind(children[i]);
@@ -1891,6 +1914,7 @@ export class DOMModel extends SDKModel<EventTypes> {
   }
 
   override dispose(): void {
+    this.#resourceTreeModel?.removeEventListener(ResourceTreeModelEvents.DocumentOpened, this.onDocumentOpened, this);
     DOMModelUndoStack.instance().dispose(this);
   }
 
@@ -1905,6 +1929,10 @@ export class DOMModel extends SDKModel<EventTypes> {
 
   registerNode(node: DOMNode): void {
     this.idToDOMNode.set(node.id, node);
+    const frameId = node.frameOwnerFrameId();
+    if (frameId) {
+      this.frameIdToOwnerNode.set(frameId, node);
+    }
   }
 }
 
@@ -1914,6 +1942,7 @@ export enum Events {
   AttrRemoved = 'AttrRemoved',
   CharacterDataModified = 'CharacterDataModified',
   DOMMutated = 'DOMMutated',
+  DocumentURLChanged = 'DocumentURLChanged',
   NodeInserted = 'NodeInserted',
   NodeRemoved = 'NodeRemoved',
   DocumentUpdated = 'DocumentUpdated',
@@ -1931,6 +1960,7 @@ export interface EventTypes {
   [Events.AttrRemoved]: {node: DOMNode, name: string};
   [Events.CharacterDataModified]: DOMNode;
   [Events.DOMMutated]: DOMNode;
+  [Events.DocumentURLChanged]: DOMDocument;
   [Events.NodeInserted]: DOMNode;
   [Events.NodeRemoved]: {node: DOMNode, parent: DOMNode};
   [Events.DocumentUpdated]: DOMModel;

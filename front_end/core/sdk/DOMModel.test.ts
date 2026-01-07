@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as ProtocolModule from '../../generated/protocol.js';
 import type * as Protocol from '../../generated/protocol.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
@@ -367,6 +368,149 @@ describeWithMockConnection('DOMModel', () => {
         });
         assert.strictEqual(domNode.simpleSelector(), '::view-transition-new(root)');
       });
+    });
+  });
+
+  describe('document.open() URL update (crbug.com/370690261)', () => {
+    it('updates iframe contentDocument URL and dispatches DocumentURLChanged event', async () => {
+      const target = createTarget();
+      const domModel = target.model(SDK.DOMModel.DOMModel);
+      assert.exists(domModel);
+
+      const DOCUMENT_NODE_ID = 1 as Protocol.DOM.NodeId;
+      const IFRAME_NODE_ID = 2 as Protocol.DOM.NodeId;
+      const CONTENT_DOCUMENT_NODE_ID = 3 as Protocol.DOM.NodeId;
+      const IFRAME_FRAME_ID = 'iframe-frame-id' as Protocol.Page.FrameId;
+
+      domModel.setDocumentForTest({
+        nodeId: DOCUMENT_NODE_ID,
+        backendNodeId: 1 as Protocol.DOM.BackendNodeId,
+        nodeType: Node.DOCUMENT_NODE,
+        nodeName: '#document',
+        localName: '',
+        nodeValue: '',
+        documentURL: 'https://example.com/',
+        baseURL: 'https://example.com/',
+        childNodeCount: 1,
+        children: [
+          {
+            nodeId: IFRAME_NODE_ID,
+            backendNodeId: 2 as Protocol.DOM.BackendNodeId,
+            nodeType: Node.ELEMENT_NODE,
+            nodeName: 'IFRAME',
+            localName: 'iframe',
+            nodeValue: '',
+            frameId: IFRAME_FRAME_ID,
+            contentDocument: {
+              nodeId: CONTENT_DOCUMENT_NODE_ID,
+              backendNodeId: 3 as Protocol.DOM.BackendNodeId,
+              nodeType: Node.DOCUMENT_NODE,
+              nodeName: '#document',
+              localName: '',
+              nodeValue: '',
+              documentURL: 'about:blank',
+              baseURL: 'about:blank',
+              childNodeCount: 0,
+              children: [],
+            },
+          },
+        ],
+      } as Protocol.DOM.Node);
+
+      const iframeNode = domModel.nodeForId(IFRAME_NODE_ID);
+      assert.exists(iframeNode);
+      const contentDocument = iframeNode.contentDocument();
+      assert.exists(contentDocument);
+
+      assert.strictEqual(contentDocument.documentURL, 'about:blank');
+
+      const documentURLChangedPromise = domModel.once(SDK.DOMModel.Events.DocumentURLChanged);
+      const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
+      assert.exists(resourceTreeModel);
+
+      resourceTreeModel.documentOpened({
+        id: IFRAME_FRAME_ID,
+        loaderId: 'loader-1' as Protocol.Network.LoaderId,
+        url: 'https://example.com/',
+        domainAndRegistry: 'example.com',
+        securityOrigin: 'https://example.com',
+        mimeType: 'text/html',
+        secureContextType: ProtocolModule.Page.SecureContextType.Secure,
+        crossOriginIsolatedContextType: ProtocolModule.Page.CrossOriginIsolatedContextType.Isolated,
+        gatedAPIFeatures: [],
+      });
+
+      const changedDocument = await documentURLChangedPromise;
+      assert.strictEqual(changedDocument, contentDocument);
+      assert.strictEqual(contentDocument.documentURL, 'https://example.com/');
+    });
+
+    it('does not dispatch event when URL has not changed', async () => {
+      const target = createTarget();
+      const domModel = target.model(SDK.DOMModel.DOMModel);
+      assert.exists(domModel);
+
+      const DOCUMENT_NODE_ID = 1 as Protocol.DOM.NodeId;
+      const IFRAME_NODE_ID = 2 as Protocol.DOM.NodeId;
+      const CONTENT_DOCUMENT_NODE_ID = 3 as Protocol.DOM.NodeId;
+      const IFRAME_FRAME_ID = 'iframe-frame-id' as Protocol.Page.FrameId;
+
+      domModel.setDocumentForTest({
+        nodeId: DOCUMENT_NODE_ID,
+        backendNodeId: 1 as Protocol.DOM.BackendNodeId,
+        nodeType: Node.DOCUMENT_NODE,
+        nodeName: '#document',
+        localName: '',
+        nodeValue: '',
+        documentURL: 'https://example.com/',
+        baseURL: 'https://example.com/',
+        childNodeCount: 1,
+        children: [
+          {
+            nodeId: IFRAME_NODE_ID,
+            backendNodeId: 2 as Protocol.DOM.BackendNodeId,
+            nodeType: Node.ELEMENT_NODE,
+            nodeName: 'IFRAME',
+            localName: 'iframe',
+            nodeValue: '',
+            frameId: IFRAME_FRAME_ID,
+            contentDocument: {
+              nodeId: CONTENT_DOCUMENT_NODE_ID,
+              backendNodeId: 3 as Protocol.DOM.BackendNodeId,
+              nodeType: Node.DOCUMENT_NODE,
+              nodeName: '#document',
+              localName: '',
+              nodeValue: '',
+              documentURL: 'https://example.com/',
+              baseURL: 'https://example.com/',
+              childNodeCount: 0,
+              children: [],
+            },
+          },
+        ],
+      } as Protocol.DOM.Node);
+
+      let eventDispatched = false;
+      domModel.addEventListener(SDK.DOMModel.Events.DocumentURLChanged, () => {
+        eventDispatched = true;
+      });
+
+      const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
+      assert.exists(resourceTreeModel);
+
+      resourceTreeModel.documentOpened({
+        id: IFRAME_FRAME_ID,
+        loaderId: 'loader-1' as Protocol.Network.LoaderId,
+        url: 'https://example.com/',
+        domainAndRegistry: 'example.com',
+        securityOrigin: 'https://example.com',
+        mimeType: 'text/html',
+        secureContextType: ProtocolModule.Page.SecureContextType.Secure,
+        crossOriginIsolatedContextType: ProtocolModule.Page.CrossOriginIsolatedContextType.Isolated,
+        gatedAPIFeatures: [],
+      });
+
+      assert.isFalse(eventDispatched);
     });
   });
 });

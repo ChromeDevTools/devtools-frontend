@@ -42,7 +42,7 @@ describe('The Sources Tab Threads Sidebar Pane', function() {
     await devToolsPage.waitForAria('Sources panel');
     await expandThreads(devToolsPage);
 
-    assert.deepEqual(await getThreads(devToolsPage), [
+    assert.sameDeepMembers(await getThreads(devToolsPage), [
       {name: 'Main', paused: false, selected: true},
       {name: 'worker1.js', paused: false, selected: false},
       {name: 'worker2.js', paused: false, selected: false},
@@ -50,7 +50,7 @@ describe('The Sources Tab Threads Sidebar Pane', function() {
 
     await switchToThread(2, devToolsPage);
 
-    assert.deepEqual(await getThreads(devToolsPage), [
+    assert.sameDeepMembers(await getThreads(devToolsPage), [
       {name: 'Main', paused: false, selected: false},
       {name: 'worker1.js', paused: false, selected: false},
       {name: 'worker2.js', paused: false, selected: true},
@@ -69,7 +69,7 @@ describe('The Sources Tab Threads Sidebar Pane', function() {
     await devToolsPage.click('aria/Sources');
     await devToolsPage.waitForAria('Sources panel');
 
-    assert.deepEqual(await getThreads(devToolsPage), [
+    assert.sameDeepMembers(await getThreads(devToolsPage), [
       {name: 'Main', paused: false, selected: false},
       {name: 'worker1.js', paused: false, selected: true},
       {name: 'worker2.js', paused: false, selected: false},

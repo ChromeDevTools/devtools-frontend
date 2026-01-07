@@ -19,7 +19,7 @@ import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
-import userActionRowStyles from './userActionRow.css.js';
+import chatMessageStyles from './chatMessage.css.js';
 
 const {html, Directives: {ref, ifDefined}} = Lit;
 const lockedString = i18n.i18n.lockedString;
@@ -205,7 +205,7 @@ export interface ModelChatMessage {
   rpcId?: Host.AidaClient.RpcGlobalId;
 }
 
-export type ChatMessage = UserChatMessage|ModelChatMessage;
+export type Message = UserChatMessage|ModelChatMessage;
 
 export interface RatingViewInput {
   currentRating?: Host.AidaClient.Rating;
@@ -233,7 +233,7 @@ export interface FeedbackFormViewInput {
   isSubmitButtonDisabled: boolean;
 }
 
-export type UserActionRowViewInput =
+export type ChatMessageViewInput =
     MessageInput&RatingViewInput&ActionViewInput&SuggestionViewInput&FeedbackFormViewInput;
 
 export interface ViewOutput {
@@ -244,7 +244,7 @@ export interface ViewOutput {
 
 export interface MessageInput {
   suggestions?: [string, ...string[]];
-  message: ChatMessage;
+  message: Message;
   isLoading: boolean;
   isReadOnly: boolean;
   isLastMessage: boolean;
@@ -256,7 +256,7 @@ export interface MessageInput {
   onCopyResponseClick: (message: ModelChatMessage) => void;
 }
 
-export const DEFAULT_VIEW = (input: UserActionRowViewInput, output: ViewOutput, target: HTMLElement): void => {
+export const DEFAULT_VIEW = (input: ChatMessageViewInput, output: ViewOutput, target: HTMLElement): void => {
   const message = input.message;
   if (message.entity === ChatMessageEntity.USER) {
     const name = input.userInfo.accountFullName || lockedString(UIStringsNotTranslate.you);
@@ -272,7 +272,7 @@ export const DEFAULT_VIEW = (input: UserActionRowViewInput, output: ViewOutput, 
     // clang-format off
     Lit.render(html`
       <style>${Input.textInputStyles}</style>
-      <style>${userActionRowStyles}</style>
+      <style>${chatMessageStyles}</style>
       <section
         class="chat-message query ${input.isLastMessage ? 'is-last-message' : ''}"
         jslog=${VisualLogging.section('question')}
@@ -294,7 +294,7 @@ export const DEFAULT_VIEW = (input: UserActionRowViewInput, output: ViewOutput, 
   // clang-format off
   Lit.render(html`
     <style>${Input.textInputStyles}</style>
-    <style>${userActionRowStyles}</style>
+    <style>${chatMessageStyles}</style>
     <section
       class="chat-message answer ${input.isLastMessage ? 'is-last-message' : ''}"
       jslog=${VisualLogging.section('answer')}
@@ -585,7 +585,7 @@ function renderImageChatMessage(inlineData: Host.AidaClient.MediaBlob): Lit.LitT
   // clang-format on
 }
 
-function renderActions(input: UserActionRowViewInput, output: ViewOutput): Lit.LitTemplate {
+function renderActions(input: ChatMessageViewInput, output: ViewOutput): Lit.LitTemplate {
   // clang-format off
   return html`
     <div class="ai-assistance-feedback-row">
@@ -739,8 +739,8 @@ function renderActions(input: UserActionRowViewInput, output: ViewOutput): Lit.L
   // clang-format on
 }
 
-export class UserActionRow extends UI.Widget.Widget {
-  message: ChatMessage = {entity: ChatMessageEntity.USER, text: ''};
+export class ChatMessage extends UI.Widget.Widget {
+  message: Message = {entity: ChatMessageEntity.USER, text: ''};
   isLoading = false;
   isReadOnly = false;
   canShowFeedbackForm = false;

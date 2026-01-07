@@ -52,7 +52,7 @@ describeWithEnvironment('ChatView', () => {
       const props = getProp({
         messages: [
           {
-            entity: AiAssistancePanel.UserActionRow.ChatMessageEntity.MODEL,
+            entity: AiAssistancePanel.ChatMessage.ChatMessageEntity.MODEL,
             parts: [
               {
                 type: 'step',

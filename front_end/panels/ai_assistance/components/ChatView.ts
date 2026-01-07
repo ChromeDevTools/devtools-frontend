@@ -17,8 +17,8 @@ import * as Lit from '../../../ui/lit/lit.js';
 import {PatchWidget} from '../PatchWidget.js';
 
 import {ChatInput} from './ChatInput.js';
+import {ChatMessage, type Message, type ModelChatMessage} from './ChatMessage.js';
 import chatViewStyles from './chatView.css.js';
-import {type ChatMessage, type ModelChatMessage, UserActionRow} from './UserActionRow.js';
 
 export {ChatInput, type ImageInputData} from './ChatInput.js';
 
@@ -50,7 +50,7 @@ export interface Props {
   onCopyResponseClick: (message: ModelChatMessage) => void;
   changeManager: AiAssistanceModel.ChangeManager.ChangeManager;
   inspectElementToggled: boolean;
-  messages: ChatMessage[];
+  messages: Message[];
   selectedContext: AiAssistanceModel.AiAgent.ConversationContext<unknown>|null;
   isLoading: boolean;
   canShowFeedbackForm: boolean;
@@ -282,7 +282,7 @@ function renderMainContents({
   onCopyResponseClick,
   onMessageContainerRef,
 }: {
-  messages: ChatMessage[],
+  messages: Message[],
   isLoading: boolean,
   isReadOnly: boolean,
   canShowFeedbackForm: boolean,
@@ -331,7 +331,7 @@ function renderMessages({
   onCopyResponseClick,
   onMessageContainerRef,
 }: {
-  messages: ChatMessage[],
+  messages: Message[],
   isLoading: boolean,
   isReadOnly: boolean,
   canShowFeedbackForm: boolean,
@@ -363,7 +363,7 @@ function renderMessages({
   return html`
     <div class="messages-container" ${ref(onMessageContainerRef)}>
       ${repeat(messages, message =>
-        html`<devtools-widget .widgetConfig=${UI.Widget.widgetConfig(UserActionRow, {
+        html`<devtools-widget .widgetConfig=${UI.Widget.widgetConfig(ChatMessage, {
           message,
           isLoading,
           isReadOnly,

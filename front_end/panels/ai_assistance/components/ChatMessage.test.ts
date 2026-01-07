@@ -10,11 +10,11 @@ import {
 import {createViewFunctionStub, type ViewFunctionStub} from '../../../testing/ViewFunctionHelpers.js';
 import * as AiAssistance from '../ai_assistance.js';
 
-describeWithEnvironment('UserActionRow', () => {
-  function createComponent(props: AiAssistance.UserActionRow.MessageInput):
-      [ViewFunctionStub<typeof AiAssistance.UserActionRow.UserActionRow>, AiAssistance.UserActionRow.UserActionRow] {
-    const view = createViewFunctionStub(AiAssistance.UserActionRow.UserActionRow);
-    const component = new AiAssistance.UserActionRow.UserActionRow(undefined, view);
+describeWithEnvironment('ChatMessage', () => {
+  function createComponent(props: AiAssistance.ChatMessage.MessageInput):
+      [ViewFunctionStub<typeof AiAssistance.ChatMessage.ChatMessage>, AiAssistance.ChatMessage.ChatMessage] {
+    const view = createViewFunctionStub(AiAssistance.ChatMessage.ChatMessage);
+    const component = new AiAssistance.ChatMessage.ChatMessage(undefined, view);
     Object.assign(component, props);
     component.wasShown();
     return [view, component];
@@ -23,7 +23,7 @@ describeWithEnvironment('UserActionRow', () => {
   it('should show the feedback form when canShowFeedbackForm is true', async () => {
     const [view] = createComponent({
       message: {
-        entity: AiAssistance.UserActionRow.ChatMessageEntity.MODEL,
+        entity: AiAssistance.ChatMessage.ChatMessageEntity.MODEL,
         parts: [],
         rpcId: 99,
       },
@@ -55,7 +55,7 @@ describeWithEnvironment('UserActionRow', () => {
   it('should not show the feedback form when canShowFeedbackForm is false', async () => {
     const [view] = createComponent({
       message: {
-        entity: AiAssistance.UserActionRow.ChatMessageEntity.MODEL,
+        entity: AiAssistance.ChatMessage.ChatMessageEntity.MODEL,
         parts: [],
         rpcId: 99,
       },
@@ -86,7 +86,7 @@ describeWithEnvironment('UserActionRow', () => {
   it('should disable the submit button when the input is empty', async () => {
     const [view] = createComponent({
       message: {
-        entity: AiAssistance.UserActionRow.ChatMessageEntity.MODEL,
+        entity: AiAssistance.ChatMessage.ChatMessageEntity.MODEL,
         parts: [],
         rpcId: 99,
       },
@@ -128,7 +128,7 @@ describeWithEnvironment('UserActionRow', () => {
   it('shows no rate buttons when rpcId is not present', async () => {
     const [view] = createComponent({
       message: {
-        entity: AiAssistance.UserActionRow.ChatMessageEntity.MODEL,
+        entity: AiAssistance.ChatMessage.ChatMessageEntity.MODEL,
         parts: [],
       },
       isLoading: false,
@@ -150,7 +150,7 @@ describeWithEnvironment('UserActionRow', () => {
     it('renders a minimal model message', async () => {
       const target = document.createElement('div');
       renderElementIntoDOM(target);
-      AiAssistance.UserActionRow.DEFAULT_VIEW(
+      AiAssistance.ChatMessage.DEFAULT_VIEW(
           {
             onRatingClick: () => {},
             onReportClick: () => {},
@@ -167,7 +167,7 @@ describeWithEnvironment('UserActionRow', () => {
             isShowingFeedbackForm: true,
             isLastMessage: true,
             message: {
-              entity: AiAssistance.UserActionRow.ChatMessageEntity.MODEL,
+              entity: AiAssistance.ChatMessage.ChatMessageEntity.MODEL,
               parts: [],
               rpcId: 99,
             },
@@ -185,7 +185,7 @@ describeWithEnvironment('UserActionRow', () => {
     it('renders a complete model message', async () => {
       const target = document.createElement('div');
       renderElementIntoDOM(target);
-      AiAssistance.UserActionRow.DEFAULT_VIEW(
+      AiAssistance.ChatMessage.DEFAULT_VIEW(
           {
             onRatingClick: () => {},
             onReportClick: () => {},
@@ -202,7 +202,7 @@ describeWithEnvironment('UserActionRow', () => {
             isShowingFeedbackForm: true,
             isLastMessage: true,
             message: {
-              entity: AiAssistance.UserActionRow.ChatMessageEntity.MODEL,
+              entity: AiAssistance.ChatMessage.ChatMessageEntity.MODEL,
               rpcId: 99,
               parts: [
                 {
@@ -237,7 +237,7 @@ describeWithEnvironment('UserActionRow', () => {
     it('renders a complete user message', async () => {
       const target = document.createElement('div');
       renderElementIntoDOM(target);
-      AiAssistance.UserActionRow.DEFAULT_VIEW(
+      AiAssistance.ChatMessage.DEFAULT_VIEW(
           {
             onRatingClick: () => {},
             onReportClick: () => {},
@@ -254,7 +254,7 @@ describeWithEnvironment('UserActionRow', () => {
             isShowingFeedbackForm: false,
             isLastMessage: true,
             message: {
-              entity: AiAssistance.UserActionRow.ChatMessageEntity.USER,
+              entity: AiAssistance.ChatMessage.ChatMessageEntity.USER,
               text: 'Can you help me fix specific CSS rules?',
             },
             isLoading: false,

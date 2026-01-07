@@ -13,11 +13,11 @@ generate_css("css_files") {
     "./aiAssistancePanel.css",
     "./components/artifactsViewer.css",
     "./components/chatInput.css",
+    "./components/chatMessage.css",
     "./components/chatView.css",
     "./components/collapsibleAssistanceContentWidget.css",
     "./components/disabledWidget.css",
     "./components/exploreWidget.css",
-    "./components/userActionRow.css",
     "./selectWorkspaceDialog.css",
   ]
 }
@@ -29,6 +29,7 @@ devtools_ui_module("ai_assistance") {
     "SelectWorkspaceDialog.ts",
     "components/ArtifactsViewer.ts",
     "components/ChatInput.ts",
+    "components/ChatMessage.ts",
     "components/ChatView.ts",
     "components/CollapsibleAssistanceContentWidget.ts",
     "components/DisabledWidget.ts",
@@ -36,7 +37,6 @@ devtools_ui_module("ai_assistance") {
     "components/MarkdownRendererWithCodeBlock.ts",
     "components/PerformanceAgentFlameChart.ts",
     "components/PerformanceAgentMarkdownRenderer.ts",
-    "components/UserActionRow.ts",
   ]
 
   deps = [
@@ -102,11 +102,11 @@ devtools_ui_module("unittests") {
     "PatchWidget.test.ts",
     "SelectWorkspaceDialog.test.ts",
     "components/ChatInput.test.ts",
+    "components/ChatMessage.test.ts",
     "components/ChatView.test.ts",
     "components/DisabledWidget.test.ts",
     "components/ExploreWidget.test.ts",
     "components/MarkdownRendererWithCodeBlock.test.ts",
-    "components/UserActionRow.test.ts",
   ]
 
   deps = [

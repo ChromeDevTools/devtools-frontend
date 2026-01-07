@@ -163,7 +163,7 @@ describe('view', () => {
   it('renders the feedback form', async () => {
     const target = document.createElement('div');
     renderElementIntoDOM(target);
-    AiAssistance.UserActionRow.DEFAULT_VIEW(
+    AiAssistance.ChatMessageWidget.DEFAULT_VIEW(
       {
         onRatingClick: () => {},
         onReportClick: () => {},

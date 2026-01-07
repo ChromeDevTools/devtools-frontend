@@ -29,6 +29,13 @@ import * as TimelinePanel from '../timeline/timeline.js';
 import aiAssistancePanelStyles from './aiAssistancePanel.css.js';
 import {ArtifactsViewer} from './components/ArtifactsViewer.js';
 import {
+  type AnswerPart,
+  ChatMessageEntity,
+  type Message,
+  type ModelChatMessage,
+  type Step,
+} from './components/ChatMessage.js';
+import {
   ChatView,
   type Props as ChatViewProps,
 } from './components/ChatView.js';
@@ -36,18 +43,11 @@ import {DisabledWidget} from './components/DisabledWidget.js';
 import {ExploreWidget} from './components/ExploreWidget.js';
 import {MarkdownRendererWithCodeBlock} from './components/MarkdownRendererWithCodeBlock.js';
 import {PerformanceAgentMarkdownRenderer} from './components/PerformanceAgentMarkdownRenderer.js';
-import {
-  type AnswerPart,
-  type ChatMessage,
-  ChatMessageEntity,
-  type ModelChatMessage,
-  type Step,
-} from './components/UserActionRow.js';
 import {isAiAssistancePatchingEnabled} from './PatchWidget.js';
 
 // FIXME: this export is temporary to avoid rewriting tests.
-export {ChatMessageEntity} from './components/UserActionRow.js';
-export type {AnswerPart, ModelChatMessage, StepPart} from './components/UserActionRow.js';
+export {ChatMessageEntity} from './components/ChatMessage.js';
+export type {AnswerPart, ModelChatMessage, StepPart} from './components/ChatMessage.js';
 
 const {html} = Lit;
 
@@ -518,7 +518,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   #selectedRequest: AiAssistanceModel.NetworkAgent.RequestContext|null = null;
   #isArtifactsSidebarOpen = false;
   // Messages displayed in the `ChatView` component.
-  #messages: ChatMessage[] = [];
+  #messages: Message[] = [];
 
   // Whether the UI should show loading or not.
   #isLoading = false;

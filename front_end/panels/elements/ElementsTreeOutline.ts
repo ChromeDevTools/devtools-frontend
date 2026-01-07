@@ -96,6 +96,8 @@ interface ViewInput {
   deindentSingleNode: boolean;
   currentHighlightedNode: SDK.DOMModel.DOMNode|null;
 
+  selectedNode: SDK.DOMModel.DOMNode|null;
+
   onSelectedNodeChanged:
       (event: Common.EventTarget.EventTargetEvent<{node: SDK.DOMModel.DOMNode | null, focus: boolean}>) => void;
   onElementsTreeUpdated: (event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode[]>) => void;
@@ -171,6 +173,9 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
           (deepestExpandedParent ? treeElementByNode.get(deepestExpandedParent) :
                                    output.elementsTreeOutline.rootElement()) as ElementsTreeElement;
       treeElement = output.elementsTreeOutline.createTreeElementFor(input.currentHighlightedNode);
+    }
+    if (input.selectedNode) {
+      output.elementsTreeOutline.selectDOMNode(input.selectedNode);
     }
 
     output.highlightedTreeElement = treeElement;
@@ -320,6 +325,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
           deindentSingleNode: this.deindentSingleNode,
 
           currentHighlightedNode: this.#currentHighlightedNode,
+          selectedNode: this.selectedDOMNode(),
           onElementsTreeUpdated: this.onElementsTreeUpdated.bind(this),
           onSelectedNodeChanged: event => {
             this.#clearHighlightedNode();

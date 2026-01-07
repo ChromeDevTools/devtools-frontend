@@ -1424,65 +1424,71 @@ describe('The Styles pane', () => {
     await waitForAndClickTreeElementWithPartialText('inspected', devToolsPage);
     await waitForStyleRule('#inspected', devToolsPage);
 
-    const inspectedStyles = await getDisplayedStyleRules(devToolsPage);
-
-    assert.sameDeepMembers(inspectedStyles, [
-      {selectorText: 'element.style', propertyData: []},  //
-      {
-        selectorText: '#inspected',
-        propertyData: [{propertyName: 'display', isOverLoaded: false, isInherited: false}],
-      },
-      {
-        selectorText: 'div',
-        propertyData: [
-          {propertyName: 'display', isOverLoaded: true, isInherited: false},
-          {propertyName: 'unicode-bidi', isOverLoaded: false, isInherited: false},
-        ],
-      },
-      {
-        selectorText: '#inspected:before, .some-other-selector',
-        propertyData: [{propertyName: 'content', isOverLoaded: false, isInherited: false}],
-      },
-      {
-        selectorText: '#inspected:after',
-        propertyData: [{propertyName: 'content', isOverLoaded: false, isInherited: false}],
-      },
-      {
-        selectorText: '#inspected::grammar-error',
-        propertyData: [{propertyName: 'color', isOverLoaded: false, isInherited: false}],
-      },
-      {
-        selectorText: '#inspected::highlight(bar)',
-        propertyData: [{propertyName: 'color', isOverLoaded: false, isInherited: false}],
-      },
-      {
-        selectorText: '#inspected::highlight(foo)',
-        propertyData: [{propertyName: 'color', isOverLoaded: false, isInherited: false}],
-      },
-      {
-        selectorText: '#inspected::marker',
-        propertyData: [{propertyName: 'content', isOverLoaded: false, isInherited: false}],
-      },
-      {
-        selectorText: '::marker, ::before::marker, ::after::marker',
-        propertyData: [
-          {propertyName: 'unicode-bidi', isOverLoaded: false, isInherited: false},
-          {propertyName: 'font-variant-numeric', isOverLoaded: false, isInherited: false},
-          {propertyName: 'text-transform', isOverLoaded: false, isInherited: false},
-          {propertyName: 'text-indent', isOverLoaded: false, isInherited: false},
-          {propertyName: 'text-align', isOverLoaded: false, isInherited: false},
-          {propertyName: 'text-align-last', isOverLoaded: false, isInherited: false},
-        ],
-      },
-      {
-        selectorText: '#inspected::spelling-error',
-        propertyData: [{propertyName: 'color', isOverLoaded: false, isInherited: false}],
-      },
-      {
-        selectorText: '#inspected::target-text',
-        propertyData: [{propertyName: 'color', isOverLoaded: false, isInherited: false}],
+    await devToolsPage.waitForFunction(async () => {
+      const inspectedStyles = await getDisplayedStyleRules(devToolsPage);
+      if (inspectedStyles.length !== 12) {
+        return false;
       }
-    ]);
+
+      assert.sameDeepMembers(inspectedStyles, [
+        {selectorText: 'element.style', propertyData: []},  //
+        {
+          selectorText: '#inspected',
+          propertyData: [{propertyName: 'display', isOverLoaded: false, isInherited: false}],
+        },
+        {
+          selectorText: 'div',
+          propertyData: [
+            {propertyName: 'display', isOverLoaded: true, isInherited: false},
+            {propertyName: 'unicode-bidi', isOverLoaded: false, isInherited: false},
+          ],
+        },
+        {
+          selectorText: '#inspected:before, .some-other-selector',
+          propertyData: [{propertyName: 'content', isOverLoaded: false, isInherited: false}],
+        },
+        {
+          selectorText: '#inspected:after',
+          propertyData: [{propertyName: 'content', isOverLoaded: false, isInherited: false}],
+        },
+        {
+          selectorText: '#inspected::grammar-error',
+          propertyData: [{propertyName: 'color', isOverLoaded: false, isInherited: false}],
+        },
+        {
+          selectorText: '#inspected::highlight(bar)',
+          propertyData: [{propertyName: 'color', isOverLoaded: false, isInherited: false}],
+        },
+        {
+          selectorText: '#inspected::highlight(foo)',
+          propertyData: [{propertyName: 'color', isOverLoaded: false, isInherited: false}],
+        },
+        {
+          selectorText: '#inspected::marker',
+          propertyData: [{propertyName: 'content', isOverLoaded: false, isInherited: false}],
+        },
+        {
+          selectorText: '::marker, ::before::marker, ::after::marker',
+          propertyData: [
+            {propertyName: 'unicode-bidi', isOverLoaded: false, isInherited: false},
+            {propertyName: 'font-variant-numeric', isOverLoaded: false, isInherited: false},
+            {propertyName: 'text-transform', isOverLoaded: false, isInherited: false},
+            {propertyName: 'text-indent', isOverLoaded: false, isInherited: false},
+            {propertyName: 'text-align', isOverLoaded: false, isInherited: false},
+            {propertyName: 'text-align-last', isOverLoaded: false, isInherited: false},
+          ],
+        },
+        {
+          selectorText: '#inspected::spelling-error',
+          propertyData: [{propertyName: 'color', isOverLoaded: false, isInherited: false}],
+        },
+        {
+          selectorText: '#inspected::target-text',
+          propertyData: [{propertyName: 'color', isOverLoaded: false, isInherited: false}],
+        }
+      ]);
+      return true;
+    });
 
     // --- Dynamically modify styles ---
     const removeLastRule = () => inspectedPage.evaluate(() => {
@@ -1584,54 +1590,66 @@ describe('The Styles pane', () => {
     // ::before
     await waitForAndClickTreeElementWithPartialText('::before', devToolsPage);
     await waitForStyleRule('#inspected::before', devToolsPage);
-    let styleRules = await getDisplayedStyleRules(devToolsPage);
-    assert.sameDeepMembers(styleRules, [
-      {
-        selectorText: '#inspected::before',
-        propertyData: [
-          {propertyName: 'display', isOverLoaded: false, isInherited: false},
-        ],
-      },
-      {
-        selectorText: '#inspected::before',
-        propertyData: [
-          {propertyName: 'content', isOverLoaded: false, isInherited: false},
-        ],
-      },
-      {
-        selectorText: '#inspected::before::marker',
-        propertyData: [
-          {propertyName: 'content', isOverLoaded: false, isInherited: false},
-        ],
-      },
-    ]);
+    await devToolsPage.waitForFunction(async () => {
+      const styleRules = await getDisplayedStyleRules(devToolsPage);
+      if (styleRules.length !== 3) {
+        return false;
+      }
+      assert.sameDeepMembers(styleRules, [
+        {
+          selectorText: '#inspected::before',
+          propertyData: [
+            {propertyName: 'display', isOverLoaded: false, isInherited: false},
+          ],
+        },
+        {
+          selectorText: '#inspected::before',
+          propertyData: [
+            {propertyName: 'content', isOverLoaded: false, isInherited: false},
+          ],
+        },
+        {
+          selectorText: '#inspected::before::marker',
+          propertyData: [
+            {propertyName: 'content', isOverLoaded: false, isInherited: false},
+          ],
+        },
+      ]);
+      return true;
+    });
     await devToolsPage.pressKey('ArrowRight');
     await waitForPartialContentOfSelectedElementsNode('::marker', devToolsPage);
 
     // ::after
     await waitForAndClickTreeElementWithPartialText('::after', devToolsPage);
     await waitForStyleRule('#inspected::after', devToolsPage);
-    styleRules = await getDisplayedStyleRules(devToolsPage);
-    assert.sameDeepMembers(styleRules, [
-      {
-        selectorText: '#inspected::after',
-        propertyData: [
-          {propertyName: 'display', isOverLoaded: false, isInherited: false},
-        ],
-      },
-      {
-        selectorText: '#inspected::after',
-        propertyData: [
-          {propertyName: 'content', isOverLoaded: false, isInherited: false},
-        ],
-      },
-      {
-        selectorText: '#inspected::after::marker',
-        propertyData: [
-          {propertyName: 'content', isOverLoaded: false, isInherited: false},
-        ],
-      },
-    ]);
+    await devToolsPage.waitForFunction(async () => {
+      const styleRules = await getDisplayedStyleRules(devToolsPage);
+      if (styleRules.length !== 3) {
+        return false;
+      }
+      assert.sameDeepMembers(styleRules, [
+        {
+          selectorText: '#inspected::after',
+          propertyData: [
+            {propertyName: 'display', isOverLoaded: false, isInherited: false},
+          ],
+        },
+        {
+          selectorText: '#inspected::after',
+          propertyData: [
+            {propertyName: 'content', isOverLoaded: false, isInherited: false},
+          ],
+        },
+        {
+          selectorText: '#inspected::after::marker',
+          propertyData: [
+            {propertyName: 'content', isOverLoaded: false, isInherited: false},
+          ],
+        },
+      ]);
+      return true;
+    });
     await devToolsPage.pressKey('ArrowRight');
     await waitForPartialContentOfSelectedElementsNode('::marker', devToolsPage);
 

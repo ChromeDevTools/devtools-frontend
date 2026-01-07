@@ -57,7 +57,7 @@ describe('Network emulation', () => {
     await setTextFilter('is:service-worker-initiated', devToolsPage);
 
     await waitForSomeRequestsToAppear(2, devToolsPage);
-    await selectRequestByName('⚙ main.css', {devToolsPage});
+    await selectRequestByName('⚙ main.css', {}, devToolsPage);
     await openHeadersTab(devToolsPage);
 
     const responseHeaderSection = await devToolsPage.waitFor(RESPONSE_HEADERS_SELECTOR);

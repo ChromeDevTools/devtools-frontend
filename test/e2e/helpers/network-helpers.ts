@@ -5,7 +5,6 @@
 import {assert} from 'chai';
 import type * as puppeteer from 'puppeteer-core';
 
-import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 import type {InspectedPage} from '../shared/target-helper.js';
 
@@ -65,9 +64,7 @@ export async function getSelectedRequestName(devToolsPage: DevToolsPage) {
 }
 
 export async function selectRequestByName(
-    name: string, clickOptions?: puppeteer.ClickOptions&{devToolsPage: DevToolsPage}) {
-  const devToolsPage = clickOptions?.devToolsPage ?? getBrowserAndPagesWrappers().devToolsPage;
-
+    name: string, clickOptions: puppeteer.ClickOptions = {}, devToolsPage: DevToolsPage) {
   await devToolsPage.waitForFunction(async () => {
     const requests = await getAllRequestNames(devToolsPage);
     return requests.some(request => request.trim() === name);

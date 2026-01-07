@@ -256,7 +256,7 @@ describe('The Network Tab', function() {
   // Flaky test on all platforms
   it.skip('[crbug.com/463663626] shows preserved pending requests as unknown', async ({
                                                                                  devToolsPage,
-                                                                                 inspectedPage
+                                                                                 inspectedPage,
                                                                                }) => {
     await loadNetworkTab(devToolsPage, inspectedPage);
 
@@ -289,7 +289,7 @@ describe('The Network Tab', function() {
     await inspectedPage.page.reload({waitUntil: 'networkidle0'});
     await waitForSomeRequestsToAppear(2, devToolsPage);
 
-    await selectRequestByName('image.svg', {devToolsPage});
+    await selectRequestByName('image.svg', {}, devToolsPage);
     await waitForSelectedRequestChange(null, devToolsPage);
     await devToolsPage.pressKey('r');
     await waitForSomeRequestsToAppear(3, devToolsPage);
@@ -305,7 +305,7 @@ describe('The Network Tab', function() {
        await navigateToNetworkTab('xhr.html', devToolsPage, inspectedPage);
        await inspectedPage.page.reload({waitUntil: 'networkidle0'});
        await waitForSomeRequestsToAppear(2, devToolsPage);
-       await selectRequestByName('xhr.html', {devToolsPage});
+       await selectRequestByName('xhr.html', {}, devToolsPage);
        await devToolsPage.pressKey('ArrowDown');
 
        const getSelectedRequestBgColor = () => devToolsPage.evaluate(() => {
@@ -324,7 +324,7 @@ describe('The Network Tab', function() {
 
        // WebSocket messages get sent every 100 milliseconds, so holding the mouse
        // down for 300 milliseconds should suffice.
-       await selectRequestByName('localhost', {delay: 300, devToolsPage});
+       await selectRequestByName('localhost', {delay: 300}, devToolsPage);
 
        await devToolsPage.waitFor('.network-item-view');
      });

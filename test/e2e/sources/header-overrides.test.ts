@@ -105,7 +105,7 @@ describe('The Overrides Panel', function() {
     await inspectedPage.goToResource('network/hello.html');
 
     await waitForSomeRequestsToAppear(1, devToolsPage);
-    await selectRequestByName('hello.html', {devToolsPage});
+    await selectRequestByName('hello.html', {}, devToolsPage);
     await openHeadersTab(devToolsPage);
 
     const responseHeaderSection = await devToolsPage.waitFor(RESPONSE_HEADERS_SELECTOR);
@@ -124,7 +124,7 @@ describe('The Overrides Panel', function() {
 
     await navigateToNetworkTab('hello.html', devToolsPage, inspectedPage);
     await waitForSomeRequestsToAppear(1, devToolsPage);
-    await selectRequestByName('hello.html', {devToolsPage});
+    await selectRequestByName('hello.html', {}, devToolsPage);
     await openHeadersTab(devToolsPage);
 
     await devToolsPage.click('.enable-editing');
@@ -144,7 +144,7 @@ describe('The Overrides Panel', function() {
 
     await navigateToNetworkTab('hello.html', devToolsPage, inspectedPage);
     await waitForSomeRequestsToAppear(1, devToolsPage);
-    await selectRequestByName('hello.html', {devToolsPage});
+    await selectRequestByName('hello.html', {}, devToolsPage);
     await openHeadersTab(devToolsPage);
 
     const responseHeaderSection = await devToolsPage.waitFor(RESPONSE_HEADERS_SELECTOR);

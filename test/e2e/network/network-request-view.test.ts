@@ -56,7 +56,7 @@ const configureAndCheckHeaderOverrides = async (devToolsPage: DevToolsPage, insp
   ]);
 
   await navigateToNetworkTab('hello.html', devToolsPage, inspectedPage);
-  await selectRequestByName('hello.html', {devToolsPage});
+  await selectRequestByName('hello.html', {}, devToolsPage);
   networkView = await devToolsPage.waitFor('.network-item-view');
   await devToolsPage.click('#tab-headers-component', {
     root: networkView,
@@ -77,7 +77,7 @@ describe('The Network Request view', () => {
 
        await waitForSomeRequestsToAppear(SIMPLE_PAGE_REQUEST_NUMBER + 1, devToolsPage);
 
-       await selectRequestByName('image.svg?id=0', {devToolsPage});
+       await selectRequestByName('image.svg?id=0', {}, devToolsPage);
        let networkView = await devToolsPage.waitFor('.network-item-view');
        await devToolsPage.clickMoreTabsButton(networkView);
        await devToolsPage.click('[aria-label=Timing]');
@@ -119,7 +119,7 @@ describe('The Network Request view', () => {
     const names = await getAllRequestNames(devToolsPage);
     const name = names.find(v => v?.startsWith('data:'));
     assert.isOk(name);
-    await selectRequestByName(name, {devToolsPage});
+    await selectRequestByName(name, {}, devToolsPage);
 
     const styleSrcError = expectError(`Loading the stylesheet '${stylesheet}' violates`);
     const networkView = await devToolsPage.waitFor('.network-item-view');
@@ -154,7 +154,7 @@ describe('The Network Request view', () => {
       const name = names.find(v => v?.startsWith('data:'));
       return name;
     });
-    await selectRequestByName(name, {devToolsPage});
+    await selectRequestByName(name, {}, devToolsPage);
 
     const networkView = await devToolsPage.waitFor('.network-item-view');
     await devToolsPage.click('[aria-label=Preview].tabbed-pane-header-tab', {
@@ -175,7 +175,7 @@ describe('The Network Request view', () => {
     await navigateToNetworkTab('eventstream.html', devToolsPage, inspectedPage);
     await waitForSomeRequestsToAppear(2, devToolsPage);
 
-    await selectRequestByName('event-stream.rawresponse', {devToolsPage});
+    await selectRequestByName('event-stream.rawresponse', {}, devToolsPage);
 
     const networkView = await devToolsPage.waitFor('.network-item-view');
     await devToolsPage.click('[aria-label=EventStream].tabbed-pane-header-tab', {
@@ -289,7 +289,7 @@ describe('The Network Request view', () => {
 
       await waitForSomeRequestsToAppear(2, devToolsPage);
 
-      await selectRequestByName('localhost', {devToolsPage});
+      await selectRequestByName('localhost', {}, devToolsPage);
 
       const networkView = await devToolsPage.waitFor('.network-item-view');
       await devToolsPage.click('[aria-label=Messages].tabbed-pane-header-tab', {
@@ -344,7 +344,7 @@ describe('The Network Request view', () => {
 
     await waitForSomeRequestsToAppear(2, devToolsPage);
 
-    await selectRequestByName('image.svg?id=42&param=a%20b', {devToolsPage});
+    await selectRequestByName('image.svg?id=42&param=a%20b', {}, devToolsPage);
 
     const networkView = await devToolsPage.waitFor('.network-item-view');
     await devToolsPage.click('[aria-label=Headers].tabbed-pane-header-tab', {
@@ -472,7 +472,7 @@ describe('The Network Request view', () => {
 
     await waitForSomeRequestsToAppear(2, devToolsPage);
 
-    await selectRequestByName('image.svg?id=42&param=a%20b', {devToolsPage});
+    await selectRequestByName('image.svg?id=42&param=a%20b', {}, devToolsPage);
 
     const networkView = await devToolsPage.waitFor('.network-item-view');
     await devToolsPage.click('[aria-label=Headers].tabbed-pane-header-tab', {
@@ -569,7 +569,7 @@ describe('The Network Request view', () => {
 
     await waitForSomeRequestsToAppear(3, devToolsPage);
 
-    await selectRequestByName('image.svg?id=42&param=a%20b', {devToolsPage});
+    await selectRequestByName('image.svg?id=42&param=a%20b', {}, devToolsPage);
 
     const networkView = await devToolsPage.waitFor('.network-item-view');
     await devToolsPage.click('[aria-label=Payload].tabbed-pane-header-tab', {
@@ -577,7 +577,7 @@ describe('The Network Request view', () => {
     });
     await devToolsPage.waitFor('[aria-label=Payload].tabbed-pane-header-tab[aria-selected=true]', networkView);
 
-    await selectRequestByName('image.svg', {devToolsPage});
+    await selectRequestByName('image.svg', {}, devToolsPage);
     await devToolsPage.waitForElementWithTextContent('foogamma');
   });
 
@@ -586,7 +586,7 @@ describe('The Network Request view', () => {
     void inspectedPage.evaluate(() => fetch('image.svg?delay'));
     await waitForSomeRequestsToAppear(2, devToolsPage);
 
-    await selectRequestByName('image.svg?delay', {devToolsPage});
+    await selectRequestByName('image.svg?delay', {}, devToolsPage);
     await inspectedPage.evaluate(async () => await fetch('/?send_delayed'));
   });
 
@@ -594,10 +594,7 @@ describe('The Network Request view', () => {
     await devToolsPage.setupOverridesFSMocks();
     await devToolsPage.useSoftMenu();
     await navigateToNetworkTab('hello.html', devToolsPage, inspectedPage);
-    await selectRequestByName(
-        'hello.html',
-        {button: 'right', devToolsPage},
-    );
+    await selectRequestByName('hello.html', {button: 'right'}, devToolsPage);
 
     await devToolsPage.click('aria/Override headers');
 
@@ -607,7 +604,7 @@ describe('The Network Request view', () => {
   it('can create header overrides via header\'s pencil icon', async ({devToolsPage, inspectedPage}) => {
     await devToolsPage.setupOverridesFSMocks();
     await navigateToNetworkTab('hello.html', devToolsPage, inspectedPage);
-    await selectRequestByName('hello.html', {devToolsPage});
+    await selectRequestByName('hello.html', {}, devToolsPage);
 
     const networkView = await devToolsPage.waitFor('.network-item-view');
     await devToolsPage.click('#tab-headers-component', {
@@ -623,7 +620,7 @@ describe('The Network Request view', () => {
 
     await waitForSomeRequestsToAppear(2, devToolsPage);
 
-    await selectRequestByName('image.svg?id=42&param=a%20b', {devToolsPage});
+    await selectRequestByName('image.svg?id=42&param=a%20b', {}, devToolsPage);
     const SEARCH_QUERY = '[aria-label="Find"]';
     const SEARCH_RESULT = '.search-result';
 
@@ -670,7 +667,7 @@ describe('The Network Request view', () => {
         resourceName = url.length > 20 ? url.substring(0, 19) + '…' : url;
       }
 
-      await selectRequestByName(resourceName, {devToolsPage});
+      await selectRequestByName(resourceName, {}, devToolsPage);
 
       const networkView = await devToolsPage.waitFor('.network-item-view');
       await devToolsPage.click('[aria-label=Preview].tabbed-pane-header-tab', {

@@ -26,7 +26,7 @@ const OVERRIDES_FILESYSTEM_SELECTOR = '[aria-label="overrides, fs"]';
 
 async function waitForOverrideContentMenuItemIsEnabled(requestName: string, devToolsPage: DevToolsPage) {
   await devToolsPage.waitForFunction(async () => {
-    await selectRequestByName(requestName, {button: 'right', devToolsPage});
+    await selectRequestByName(requestName, {button: 'right'}, devToolsPage);
     const menuItem = await devToolsPage.waitForAria('Override content');
     const isDisabled = await devToolsPage.hasClass(menuItem, 'soft-context-menu-disabled');
     if (!isDisabled) {
@@ -237,7 +237,7 @@ describe('Overrides panel', function() {
     await openSoftContextMenuAndClickOnItem(OVERRIDES_FILESYSTEM_SELECTOR, 'New file', devToolsPage);
 
     await openNetworkTab(devToolsPage);
-    await selectRequestByName('coffees.json', {button: 'right', devToolsPage});
+    await selectRequestByName('coffees.json', {button: 'right'}, devToolsPage);
     await devToolsPage.click('aria/Show all overrides');
 
     // In the Sources panel
@@ -418,7 +418,7 @@ describe('Network panel', () => {
   it('context menu "override" items are disabled for forbidden URLs', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goTo('chrome://terms');
     await openNetworkTab(devToolsPage);
-    await selectRequestByName('terms', {button: 'right', devToolsPage});
+    await selectRequestByName('terms', {button: 'right'}, devToolsPage);
 
     const menuItem1 = await devToolsPage.waitForAria('Override content');
     const isDisabled1 = await menuItem1.evaluate(el => el.classList.contains('soft-context-menu-disabled'));
@@ -448,7 +448,7 @@ describe('Overrides panel > Delete context menus', () => {
     await devToolsPage.typeText('foo.js\n');
 
     await openNetworkTab(devToolsPage);
-    await selectRequestByName('coffees.json', {button: 'right', devToolsPage});
+    await selectRequestByName('coffees.json', {button: 'right'}, devToolsPage);
     await devToolsPage.click('aria/Override headers');
     await devToolsPage.waitFor('[title="Reveal header override definitions"]');
   }
@@ -457,7 +457,7 @@ describe('Overrides panel > Delete context menus', () => {
     await devToolsPage.setupOverridesFSMocks();
     await devToolsPage.useSoftMenu();
     await prepare(devToolsPage, inspectedPage);
-    await selectRequestByName('coffees.json', {button: 'right', devToolsPage});
+    await selectRequestByName('coffees.json', {button: 'right'}, devToolsPage);
     await devToolsPage.click('aria/Show all overrides');
 
     await devToolsPage.waitFor('[aria-label=".headers, file"]');

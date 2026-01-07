@@ -55,14 +55,14 @@ describe('The Network Tab', function() {
     let selected = await getSelectedRequestName(devToolsPage);
     assert.isNull(selected, 'No request should be selected by default');
 
-    await selectRequestByName(SIMPLE_PAGE_URL, {devToolsPage});
+    await selectRequestByName(SIMPLE_PAGE_URL, {}, devToolsPage);
     await waitForSelectedRequestChange(selected, devToolsPage);
 
     selected = await getSelectedRequestName(devToolsPage);
     assert.strictEqual(selected, SIMPLE_PAGE_URL, 'Selecting the first request should work');
 
     const lastRequestName = `image.svg?id=${SIMPLE_PAGE_REQUEST_NUMBER - 1}`;
-    await selectRequestByName(lastRequestName, {devToolsPage});
+    await selectRequestByName(lastRequestName, {}, devToolsPage);
     await waitForSelectedRequestChange(selected, devToolsPage);
 
     selected = await getSelectedRequestName(devToolsPage);
@@ -122,25 +122,24 @@ describe('The Network Tab', function() {
   describe('with durable messages', function() {
     setup({enabledFeatures: ['DevToolsEnableDurableMessages']});
 
-    it(
-        'can persist requests across cross-origin navigation', async ({devToolsPage, inspectedPage}) => {
-          await navigateToNetworkTabEmptyPage(devToolsPage, inspectedPage);
-          await setPersistLog(true, devToolsPage);
+    it('can persist requests across cross-origin navigation', async ({devToolsPage, inspectedPage}) => {
+      await navigateToNetworkTabEmptyPage(devToolsPage, inspectedPage);
+      await setPersistLog(true, devToolsPage);
 
-          await navigateToNetworkTab('headers-and-payload.html', devToolsPage, inspectedPage);
-          await waitForSomeRequestsToAppear(3, devToolsPage);
+      await navigateToNetworkTab('headers-and-payload.html', devToolsPage, inspectedPage);
+      await waitForSomeRequestsToAppear(3, devToolsPage);
 
-          // Navigate to a different origin's page
-          await inspectedPage.goToResourceWithCustomHost('devtools.test', 'host/page-with-oopif.html');
+      // Navigate to a different origin's page
+      await inspectedPage.goToResourceWithCustomHost('devtools.test', 'host/page-with-oopif.html');
 
-          // Introspect a request from the first navigation
-          await selectRequestByName('headers-and-payload.html', {devToolsPage});
-          const networkView = await devToolsPage.waitFor('.network-item-view');
-          await devToolsPage.click('[aria-label=Response].tabbed-pane-header-tab', {
-            root: networkView,
-          });
-          await devToolsPage.waitFor('[aria-label=Response].tabbed-pane-header-tab[aria-selected=true]', networkView);
-          await devToolsPage.waitFor('devtools-text-editor');
-        });
+      // Introspect a request from the first navigation
+      await selectRequestByName('headers-and-payload.html', {}, devToolsPage);
+      const networkView = await devToolsPage.waitFor('.network-item-view');
+      await devToolsPage.click('[aria-label=Response].tabbed-pane-header-tab', {
+        root: networkView,
+      });
+      await devToolsPage.waitFor('[aria-label=Response].tabbed-pane-header-tab[aria-selected=true]', networkView);
+      await devToolsPage.waitFor('devtools-text-editor');
+    });
   });
 });

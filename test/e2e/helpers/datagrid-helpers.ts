@@ -5,13 +5,11 @@
 import {assert} from 'chai';
 import type {ElementHandle} from 'puppeteer-core';
 
-import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 
 export async function getDataGridRows(
-    expectedNumberOfRows: number, root?: ElementHandle<Node>, matchExactNumberOfRows = true,
-    devToolsPage: DevToolsPage =
-        getBrowserAndPagesWrappers().devToolsPage): Promise<Array<Array<ElementHandle<HTMLTableCellElement>>>> {
+    expectedNumberOfRows: number, root: ElementHandle<Node>|undefined, matchExactNumberOfRows = true,
+    devToolsPage: DevToolsPage): Promise<Array<Array<ElementHandle<HTMLTableCellElement>>>> {
   const dataGrid = !root ? await devToolsPage.waitFor('devtools-data-grid') : root;
   const handlers = await (async () => {
     if (matchExactNumberOfRows) {

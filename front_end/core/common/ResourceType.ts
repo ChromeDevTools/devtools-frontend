@@ -251,6 +251,13 @@ export class ResourceType {
   }
 
   /**
+   * Checks whether the given MIME type represents JavaScript content.
+   */
+  static isJavaScriptMimeType(mimeType: string): boolean {
+    return mimeType === 'application/javascript' || mimeType === 'text/javascript';
+  }
+
+  /**
    * Adds suffixes iff the mimeType is 'text/javascript' to denote whether the JS is minified or from
    * a source map.
    */

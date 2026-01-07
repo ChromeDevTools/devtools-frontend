@@ -285,6 +285,14 @@ export class PersistenceImpl extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return bindings.get(uiSourceCode) || null;
   }
 
+  /**
+   * Returns whether the UISourceCode has editable content - either its project
+   * supports file content changes, or it has a persistence binding to a file system.
+   */
+  hasEditableContent(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {
+    return uiSourceCode.project().canSetFileContent() || this.binding(uiSourceCode) !== null;
+  }
+
   subscribeForBindingEvent(uiSourceCode: Workspace.UISourceCode.UISourceCode, listener: () => void): void {
     this.#subscribedBindingEventListeners.set(uiSourceCode, listener);
   }

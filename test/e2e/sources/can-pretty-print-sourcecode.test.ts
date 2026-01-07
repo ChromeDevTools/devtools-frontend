@@ -74,6 +74,40 @@ describe('The Sources Tab', function() {
     });
   });
 
+  it('can toggle pretty print on a small non-minified JSON file', async ({devToolsPage, inspectedPage}) => {
+    await openSourceCodeEditorForFile(
+        'small-json.rawresponse', '../network/small-json.rawresponse', devToolsPage, inspectedPage);
+
+    // Small files (< 80 chars avg line length) are not auto-formatted
+    await devToolsPage.waitForFunction(async () => !(await isPrettyPrinted(devToolsPage)));
+    const content = await retrieveCodeMirrorEditorContent(devToolsPage);
+    // Should be original compact format on one line
+    assert.strictEqual(content.join(''), '{"a":{"b":{"c":1}}}');
+
+    // Pretty-print small JSON by clicking toggle
+    await devToolsPage.click(PRETTY_PRINT_BUTTON);
+    await devToolsPage.waitFor(PRETTY_PRINTED_TOGGLE);
+
+    const expectedPrettyLines = [
+      '{',
+      '    "a": {',
+      '        "b": {',
+      '            "c": 1',
+      '        }',
+      '    }',
+      '}',
+    ];
+    const actualContent = await retrieveCodeMirrorEditorContent(devToolsPage);
+    assert.deepEqual(actualContent, expectedPrettyLines);
+
+    // Un-pretty-print by clicking toggle again
+    await devToolsPage.click(PRETTY_PRINT_BUTTON);
+    await devToolsPage.waitForNone(PRETTY_PRINTED_TOGGLE);
+
+    const contentAfterUnpretty = await retrieveCodeMirrorEditorContent(devToolsPage);
+    assert.strictEqual(contentAfterUnpretty.join(''), '{"a":{"b":{"c":1}}}');
+  });
+
   it('can pretty print an inline json subtype file', async ({devToolsPage, inspectedPage}) => {
     await openSourceCodeEditorForFile(
         'json-subtype-ld.rawresponse', '../network/json-subtype-ld.rawresponse', devToolsPage, inspectedPage);

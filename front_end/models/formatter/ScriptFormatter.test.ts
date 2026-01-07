@@ -12,6 +12,54 @@ describe('ScriptFormatter', () => {
     Formatter.FormatterWorkerPool.formatterWorkerPool().dispose();
   });
 
+  describe('JSON formatting', () => {
+    it('can format a JSON document via format()', async () => {
+      // Bug fix test: JSON files should be formatted when using the format() function.
+      // Previously, format() only formatted documents/scripts/stylesheets, skipping JSON.
+      const originalContent = '{"a":{"b":{"c":1}}}';
+      const {formattedContent} = await Formatter.ScriptFormatter.format(
+          Common.ResourceType.ResourceType.fromMimeType('application/json'), 'application/json', originalContent,
+          indentString);
+      const expectedContent = `{
+  "a": {
+    "b": {
+      "c": 1
+    }
+  }
+}`;
+      assert.strictEqual(formattedContent, expectedContent);
+    });
+
+    it('can format a JSON document via formatScriptContent()', async () => {
+      const originalContent = '{"a":{"b":{"c":1}}}';
+      const {formattedContent} =
+          await Formatter.ScriptFormatter.formatScriptContent('application/json', originalContent, indentString);
+      const expectedContent = `{
+  "a": {
+    "b": {
+      "c": 1
+    }
+  }
+}`;
+      assert.strictEqual(formattedContent, expectedContent);
+    });
+
+    it('can toggle JSON formatting (format then restore original)', async () => {
+      // Test that demonstrates the reversibility requirement from issue 378870233
+      const originalContent = '{"keys":[{"k1":"v1"},{"k2":"v2"}]}';
+      const {formattedContent, formattedMapping} = await Formatter.ScriptFormatter.format(
+          Common.ResourceType.ResourceType.fromMimeType('application/json'), 'application/json', originalContent,
+          indentString);
+
+      // Should be formatted
+      assert.notStrictEqual(formattedContent, originalContent);
+      assert.include(formattedContent, '\n');
+
+      // Mapping should work correctly
+      assert.deepEqual(formattedMapping.originalToFormatted(0, 0), [0, 0]);
+    });
+  });
+
   it('can format a HTML document', async () => {
     const {formattedContent} = await Formatter.ScriptFormatter.format(
         Common.ResourceType.ResourceType.fromMimeType('text/html'), 'text/html',

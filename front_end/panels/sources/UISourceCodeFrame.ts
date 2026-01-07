@@ -161,9 +161,15 @@ export class UISourceCodeFrame extends Common.ObjectWrapper
         this.#uiSourceCode, this.#boundOnBindingChanged);
     this.installMessageAndDecorationListeners();
     this.updateStyle();
-    const canPrettyPrint = FormatterActions.FORMATTABLE_MEDIA_TYPES.includes(this.contentType) &&
-        !this.#uiSourceCode.project().canSetFileContent() &&
-        Persistence.Persistence.PersistenceImpl.instance().binding(this.#uiSourceCode) === null;
+    // Show pretty-print toggle if file type is formattable.
+    // For editable JavaScript files, the toggle is hidden because live edit fails on
+    // large whitespace changes. For non-JS files (JSON, CSS), the toggle can be shown
+    // because they don't have this issue (fixes issue 378870233).
+    const isFormattable = FormatterActions.FORMATTABLE_MEDIA_TYPES.includes(this.contentType);
+    const isEditable = Persistence.Persistence.PersistenceImpl.instance().hasEditableContent(this.#uiSourceCode);
+    // Check if the MIME type is JavaScript (not the resource type, which can be wrong for file system files)
+    const isJavaScript = Common.ResourceType.ResourceType.isJavaScriptMimeType(this.contentType);
+    const canPrettyPrint = isFormattable && (!isEditable || !isJavaScript);
     const autoPrettyPrint = !this.#uiSourceCode.contentType().isFromSourceMap();
     this.setCanPrettyPrint(canPrettyPrint, autoPrettyPrint);
   }

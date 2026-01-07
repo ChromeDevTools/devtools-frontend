@@ -33,6 +33,7 @@ copy_to_gen("network") {
     "send_beacon_on_unload.html",
     "service-worker.html",
     "service-worker.js",
+    "small-json.rawresponse",
     "style.css",
     "stylesheet-resources.css",
     "stylesheet-resources.html",

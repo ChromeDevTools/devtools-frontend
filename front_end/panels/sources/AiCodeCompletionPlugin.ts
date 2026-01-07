@@ -23,7 +23,6 @@ export class AiCodeCompletionPlugin extends Plugin {
   #aiCodeCompletionDisclaimer?: PanelCommon.AiCodeCompletionDisclaimer;
   #aiCodeCompletionDisclaimerContainer = document.createElement('div');
   #aiCodeCompletionDisclaimerToolbarItem = new UI.Toolbar.ToolbarItem(this.#aiCodeCompletionDisclaimerContainer);
-  #aiCodeCompletionCitations: Host.AidaClient.Citation[] = [];
   #aiCodeCompletionCitationsToolbar?: PanelCommon.AiCodeCompletionSummaryToolbar;
   #aiCodeCompletionCitationsToolbarContainer = document.createElement('div');
   #aiCodeCompletionCitationsToolbarAttached = false;
@@ -151,21 +150,19 @@ export class AiCodeCompletionPlugin extends Plugin {
     }
   };
 
-  #onAiResponseReceived = (citations: Host.AidaClient.Citation[]): void => {
-    this.#aiCodeCompletionCitations = citations;
+  #onAiResponseReceived = (): void => {
     if (this.#aiCodeCompletionDisclaimer) {
       this.#aiCodeCompletionDisclaimer.loading = false;
     }
   };
 
-  #onAiCodeCompletionSuggestionAccepted(): void {
-    if (!this.#aiCodeCompletionCitationsToolbar || this.#aiCodeCompletionCitations.length === 0) {
+  #onAiCodeCompletionSuggestionAccepted(citations: Host.AidaClient.Citation[]): void {
+    if (!this.#aiCodeCompletionCitationsToolbar || citations.length === 0) {
       return;
     }
-    const citations =
-        this.#aiCodeCompletionCitations.map(citation => citation.uri).filter((uri): uri is string => Boolean(uri));
-    this.#aiCodeCompletionCitationsToolbar.updateCitations(citations);
-    if (!this.#aiCodeCompletionCitationsToolbarAttached && citations.length > 0) {
+    const citationsUri = citations.map(citation => citation.uri).filter((uri): uri is string => Boolean(uri));
+    this.#aiCodeCompletionCitationsToolbar.updateCitations(citationsUri);
+    if (!this.#aiCodeCompletionCitationsToolbarAttached && citationsUri.length > 0) {
       this.#attachAiCodeCompletionCitationsToolbar();
     }
   }

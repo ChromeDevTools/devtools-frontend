@@ -144,7 +144,7 @@ describeWithEnvironment('AiCodeCompletionPlugin', () => {
       sinon.assert.calledOnce(fakeLoadingSetter);
       assert.isTrue(fakeLoadingSetter.firstCall.args[0]);
 
-      providerConfig.onResponseReceived([]);
+      providerConfig.onResponseReceived();
 
       sinon.assert.calledTwice(fakeLoadingSetter);
       assert.isFalse(fakeLoadingSetter.secondCall.args[0]);
@@ -160,9 +160,9 @@ describeWithEnvironment('AiCodeCompletionPlugin', () => {
 
       plugin.editorInitialized(editor);
       providerConfig.onFeatureEnabled();
-      providerConfig.onResponseReceived([{uri: 'https://example.com/source'}]);
+      providerConfig.onResponseReceived();
 
-      providerConfig.onSuggestionAccepted();
+      providerConfig.onSuggestionAccepted([{uri: 'https://example.com/source'}]);
 
       sinon.assert.calledOnce(updateCitationsSpy);
       assert.deepEqual(updateCitationsSpy.firstCall.args, [['https://example.com/source']]);
@@ -181,9 +181,9 @@ describeWithEnvironment('AiCodeCompletionPlugin', () => {
 
       plugin.editorInitialized(editor);
       providerConfig.onFeatureEnabled();
-      providerConfig.onResponseReceived([]);
+      providerConfig.onResponseReceived();
 
-      providerConfig.onSuggestionAccepted();
+      providerConfig.onSuggestionAccepted([]);
 
       sinon.assert.notCalled(updateCitationsSpy);
       sinon.assert.notCalled(editorDispatchSpy);

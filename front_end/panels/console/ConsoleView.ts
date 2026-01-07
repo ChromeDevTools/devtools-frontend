@@ -340,7 +340,6 @@ export class ConsoleView extends UI.Widget.VBox implements
   aiCodeCompletionConfig?: TextEditor.AiCodeCompletionProvider.AiCodeCompletionConfig;
   private aiCodeCompletionSummaryToolbarContainer?: HTMLElement;
   private aiCodeCompletionSummaryToolbar?: AiCodeCompletionSummaryToolbar;
-  private aiCodeCompletionCitations: Host.AidaClient.Citation[] = [];
 
   constructor(viewportThrottlerTimeout: number) {
     super();
@@ -657,21 +656,19 @@ export class ConsoleView extends UI.Widget.VBox implements
     this.aiCodeCompletionSummaryToolbar.show(this.aiCodeCompletionSummaryToolbarContainer, undefined, true);
   }
 
-  #onAiCodeCompletionSuggestionAccepted(): void {
-    if (!this.aiCodeCompletionSummaryToolbar || this.aiCodeCompletionCitations.length === 0) {
+  #onAiCodeCompletionSuggestionAccepted(citations: Host.AidaClient.Citation[]): void {
+    if (!this.aiCodeCompletionSummaryToolbar || citations.length === 0) {
       return;
     }
-    const citations =
-        this.aiCodeCompletionCitations.map(citation => citation.uri).filter((uri): uri is string => Boolean(uri));
-    this.aiCodeCompletionSummaryToolbar.updateCitations(citations);
+    const citationsUri = citations.map(citation => citation.uri).filter((uri): uri is string => Boolean(uri));
+    this.aiCodeCompletionSummaryToolbar.updateCitations(citationsUri);
   }
 
   #onAiCodeCompletionRequestTriggered(): void {
     this.aiCodeCompletionSummaryToolbar?.setLoading(true);
   }
 
-  #onAiCodeCompletionResponseReceived(citations: Host.AidaClient.Citation[]): void {
-    this.aiCodeCompletionCitations = citations;
+  #onAiCodeCompletionResponseReceived(): void {
     this.aiCodeCompletionSummaryToolbar?.setLoading(false);
   }
 

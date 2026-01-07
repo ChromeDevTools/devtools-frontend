@@ -376,7 +376,7 @@ describeWithMockConnection('ConsoleView', () => {
       sinon.assert.calledOnce(setLoadingSpy);
       assert.isTrue(setLoadingSpy.firstCall.args[0]);
 
-      providerConfig.onResponseReceived([]);
+      providerConfig.onResponseReceived();
 
       sinon.assert.calledTwice(setLoadingSpy);
       assert.isFalse(setLoadingSpy.secondCall.args[0]);
@@ -388,9 +388,9 @@ describeWithMockConnection('ConsoleView', () => {
       assert.exists(providerConfig);
 
       providerConfig.onFeatureEnabled();
-      providerConfig.onResponseReceived([{uri: 'https://example.com/source'}]);
+      providerConfig.onResponseReceived();
 
-      providerConfig.onSuggestionAccepted();
+      providerConfig.onSuggestionAccepted([{uri: 'https://example.com/source'}]);
 
       sinon.assert.calledOnce(updateCitationsSpy);
       assert.deepEqual(updateCitationsSpy.firstCall.args, [['https://example.com/source']]);
@@ -402,9 +402,9 @@ describeWithMockConnection('ConsoleView', () => {
       assert.exists(providerConfig);
 
       providerConfig.onFeatureEnabled();
-      providerConfig.onResponseReceived([]);
+      providerConfig.onResponseReceived();
 
-      providerConfig.onSuggestionAccepted();
+      providerConfig.onSuggestionAccepted([]);
 
       sinon.assert.notCalled(updateCitationsSpy);
     });

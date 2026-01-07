@@ -41,10 +41,9 @@ export interface AiCodeGenerationConfig {
   generationContext: {
     inferenceLanguage?: Host.AidaClient.AidaInferenceLanguage,
   };
-  onSuggestionAccepted: () => void;
+  onSuggestionAccepted: (citations: Host.AidaClient.Citation[]) => void;
   onRequestTriggered: () => void;
-  // TODO(b/445394511): Move exposing citations to onSuggestionAccepted
-  onResponseReceived: (citations: Host.AidaClient.Citation[]) => void;
+  onResponseReceived: () => void;
   panel: AiCodeCompletion.AiCodeCompletion.ContextFlavor;
 }
 
@@ -56,6 +55,7 @@ export class AiCodeGenerationProvider {
   #editor?: TextEditor;
   #aiCodeGenerationConfig: AiCodeGenerationConfig;
   #aiCodeGeneration?: AiCodeGeneration.AiCodeGeneration.AiCodeGeneration;
+  #aiCodeGenerationCitations: Host.AidaClient.Citation[] = [];
 
   #aidaClient: Host.AidaClient.AidaClient = new Host.AidaClient.AidaClient();
   #boundOnUpdateAiCodeGenerationState = this.#updateAiCodeGenerationState.bind(this);
@@ -170,7 +170,7 @@ export class AiCodeGenerationProvider {
           if (suggestion?.rpcGlobalId) {
             this.#aiCodeGeneration.registerUserAcceptance(suggestion.rpcGlobalId, suggestion.sampleId);
           }
-          this.#aiCodeGenerationConfig?.onSuggestionAccepted();
+          this.#aiCodeGenerationConfig?.onSuggestionAccepted(this.#aiCodeGenerationCitations);
           return true;
         },
       },
@@ -251,6 +251,7 @@ export class AiCodeGenerationProvider {
       return;
     }
 
+    this.#aiCodeGenerationCitations = [];
     this.#generationTeaser.displayState = PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.LOADING;
     const cursor = this.#editor.state.selection.main.head;
     const query = AiCodeGenerationParser.extractCommentText(this.#editor.state, cursor);
@@ -272,7 +273,7 @@ export class AiCodeGenerationProvider {
       }
 
       if (!generationResponse || generationResponse.samples.length === 0) {
-        this.#aiCodeGenerationConfig?.onResponseReceived([]);
+        this.#aiCodeGenerationConfig?.onResponseReceived();
         return;
       }
       const topSample = generationResponse.samples[0];
@@ -304,11 +305,12 @@ export class AiCodeGenerationProvider {
 
       AiCodeGeneration.debugLog('Suggestion dispatched to the editor', suggestionText);
       const citations = topSample.attributionMetadata?.citations ?? [];
-      this.#aiCodeGenerationConfig?.onResponseReceived(citations);
+      this.#aiCodeGenerationCitations = citations;
+      this.#aiCodeGenerationConfig?.onResponseReceived();
       return;
     } catch (e) {
       AiCodeGeneration.debugLog('Error while fetching code generation suggestions from AIDA', e);
-      this.#aiCodeGenerationConfig?.onResponseReceived([]);
+      this.#aiCodeGenerationConfig?.onResponseReceived();
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiCodeGenerationError);
     }
 

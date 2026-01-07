@@ -46,10 +46,9 @@ export interface AiCodeCompletionConfig {
   };
   onFeatureEnabled: () => void;
   onFeatureDisabled: () => void;
-  onSuggestionAccepted: () => void;
+  onSuggestionAccepted: (citations: Host.AidaClient.Citation[]) => void;
   onRequestTriggered: () => void;
-  // TODO(b/445394511): Move exposing citations to onSuggestionAccepted
-  onResponseReceived: (citations: Host.AidaClient.Citation[]) => void;
+  onResponseReceived: () => void;
   panel: AiCodeCompletion.AiCodeCompletion.ContextFlavor;
 }
 
@@ -67,6 +66,7 @@ export class AiCodeCompletionProvider {
   #teaser?: PanelCommon.AiCodeCompletionTeaser;
   #suggestionRenderingTimeout?: number;
   #editor?: TextEditor;
+  #aiCodeCompletionCitations: Host.AidaClient.Citation[] = [];
   #aiCodeCompletionConfig?: AiCodeCompletionConfig;
 
   #boundOnUpdateAiCodeCompletionState = this.#updateAiCodeCompletionState.bind(this);
@@ -198,7 +198,7 @@ export class AiCodeCompletionProvider {
           if (suggestion?.rpcGlobalId) {
             this.#aiCodeCompletion?.registerUserAcceptance(suggestion.rpcGlobalId, suggestion.sampleId);
           }
-          this.#aiCodeCompletionConfig?.onSuggestionAccepted();
+          this.#aiCodeCompletionConfig?.onSuggestionAccepted(this.#aiCodeCompletionCitations);
           return true;
         },
       },
@@ -266,9 +266,11 @@ export class AiCodeCompletionProvider {
       prefix: string, suffix: string, cursorPositionAtRequest: number,
       inferenceLanguage?: Host.AidaClient.AidaInferenceLanguage,
       additionalFiles?: Host.AidaClient.AdditionalFile[]): Promise<void> {
+    this.#aiCodeCompletionCitations = [];
+
     if (!this.#aiCodeCompletion) {
       AiCodeCompletion.debugLog('Ai Code Completion is not initialized');
-      this.#aiCodeCompletionConfig?.onResponseReceived([]);
+      this.#aiCodeCompletionConfig?.onResponseReceived();
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiCodeCompletionError);
       return;
     }
@@ -283,20 +285,20 @@ export class AiCodeCompletionProvider {
           prefix, suffix, cursorPositionAtRequest, inferenceLanguage, additionalFiles);
 
       if (!completionResponse) {
-        this.#aiCodeCompletionConfig?.onResponseReceived([]);
+        this.#aiCodeCompletionConfig?.onResponseReceived();
         return;
       }
 
       const {response, fromCache} = completionResponse;
 
       if (!response) {
-        this.#aiCodeCompletionConfig?.onResponseReceived([]);
+        this.#aiCodeCompletionConfig?.onResponseReceived();
         return;
       }
 
       const sampleResponse = await this.#generateSampleForRequest(response, prefix, suffix);
       if (!sampleResponse) {
-        this.#aiCodeCompletionConfig?.onResponseReceived([]);
+        this.#aiCodeCompletionConfig?.onResponseReceived();
         return;
       }
 
@@ -310,7 +312,7 @@ export class AiCodeCompletionProvider {
       this.#suggestionRenderingTimeout = window.setTimeout(() => {
         const currentCursorPosition = this.#editor?.editor.state.selection.main.head;
         if (currentCursorPosition !== cursorPositionAtRequest) {
-          this.#aiCodeCompletionConfig?.onResponseReceived([]);
+          this.#aiCodeCompletionConfig?.onResponseReceived();
           return;
         }
         if (this.#aiCodeCompletion) {
@@ -332,11 +334,12 @@ export class AiCodeCompletionProvider {
 
         AiCodeCompletion.debugLog(
             'Suggestion dispatched to the editor', suggestionText, 'at cursor position', cursorPositionAtRequest);
-        this.#aiCodeCompletionConfig?.onResponseReceived(citations);
+        this.#aiCodeCompletionCitations = citations;
+        this.#aiCodeCompletionConfig?.onResponseReceived();
       }, remainingDelay);
     } catch (e) {
       AiCodeCompletion.debugLog('Error while fetching code completion suggestions from AIDA', e);
-      this.#aiCodeCompletionConfig?.onResponseReceived([]);
+      this.#aiCodeCompletionConfig?.onResponseReceived();
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiCodeCompletionError);
     }
   }

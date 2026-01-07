@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Trace from '../../models/trace/trace.js';
+import * as Trace from '../../models/trace/trace.js';
 
 export interface InitiatorData {
   event: Trace.Types.Events.Event;
@@ -38,7 +38,7 @@ export function initiatorsDataToDraw(
     hiddenEntries: Trace.Types.Events.Event[],
     expandableEntries: Trace.Types.Events.Event[]): readonly InitiatorData[] {
   const initiatorsData = [
-    ...findInitiatorDataPredecessors(parsedTrace, selectedEvent, parsedTrace.data.Initiators.eventToInitiator),
+    ...findInitiatorDataPredecessors(parsedTrace, selectedEvent),
     ...findInitiatorDataDirectSuccessors(selectedEvent, parsedTrace.data.Initiators.initiatorToEvents),
   ];
 
@@ -54,13 +54,12 @@ export function initiatorsDataToDrawForNetwork(
     parsedTrace: Trace.TraceModel.ParsedTrace,
     selectedEvent: Trace.Types.Events.Event,
     ): readonly InitiatorData[] {
-  return findInitiatorDataPredecessors(parsedTrace, selectedEvent, parsedTrace.data.NetworkRequests.eventToInitiator);
+  return findInitiatorDataPredecessors(parsedTrace, selectedEvent);
 }
 
 function findInitiatorDataPredecessors(
     parsedTrace: Trace.TraceModel.ParsedTrace,
     selectedEvent: Trace.Types.Events.Event,
-    eventToInitiator: Map<Trace.Types.Events.Event, Trace.Types.Events.Event>,
     ): readonly InitiatorData[] {
   const initiatorsData: InitiatorData[] = [];
   let currentEvent: Trace.Types.Events.Event|null = selectedEvent;
@@ -69,7 +68,10 @@ function findInitiatorDataPredecessors(
 
   // Build event initiator data up to the selected one
   while (currentEvent && initiatorsData.length < MAX_PREDECESSOR_INITIATOR_LIMIT) {
-    const currentInitiator = eventToInitiator.get(currentEvent);
+    const currentInitiator: Trace.Types.Events.Event|undefined =
+        Trace.Types.Events.isSyntheticNetworkRequest(currentEvent) ?
+        Trace.Extras.Initiators.getNetworkInitiator(parsedTrace.data, currentEvent) :
+        parsedTrace.data.Initiators.eventToInitiator.get(currentEvent);
 
     if (currentInitiator) {
       if (visited.has(currentInitiator)) {

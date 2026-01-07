@@ -203,7 +203,7 @@ Durations:
 - Download time: 1 ms
 - Main thread processing time: 3 ms
 - Total duration: 7 ms
-Initiator: http://localhost:8787/lcp-discovery-delay/index.html
+Initiator: http://localhost:8787/lcp-discovery-delay/app.js
 Redirects: no redirects
 Status code: 200
 MIME Type: image/jpeg
@@ -212,7 +212,7 @@ Initial priority: Low
 Final priority: High
 Render blocking: No
 From a service worker: No
-Initiators (root request to the request that directly loaded this one): http://localhost:8787/lcp-discovery-delay/index.html
+Initiators (root request to the request that directly loaded this one): http://localhost:8787/lcp-discovery-delay/index.html, http://localhost:8787/lcp-discovery-delay/app.js
 Response headers
 - Cache-Control: public, max-age=0
 - ETag: <redacted>

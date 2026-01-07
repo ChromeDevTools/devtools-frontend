@@ -112,6 +112,7 @@ copy_to_gen("traces") {
     "render-blocking-in-iframe.json.gz",
     "render-blocking-preload.json.gz",
     "render-blocking-requests.json.gz",
+    "resource-initiators.json.gz",
     "scheduler-post-task.json.gz",
     "scripts/coursehero-bundle-1.js.gz",
     "scripts/coursehero-bundle-1.js.map.gz",

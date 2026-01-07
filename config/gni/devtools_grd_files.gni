@@ -1219,6 +1219,7 @@ grd_files_unbundled_sources = [
   "front_end/models/trace/Processor.js",
   "front_end/models/trace/Styles.js",
   "front_end/models/trace/extras/FilmStrip.js",
+  "front_end/models/trace/extras/Initiators.js",
   "front_end/models/trace/extras/MainThreadActivity.js",
   "front_end/models/trace/extras/ScriptDuplication.js",
   "front_end/models/trace/extras/StackTraceForEvent.js",

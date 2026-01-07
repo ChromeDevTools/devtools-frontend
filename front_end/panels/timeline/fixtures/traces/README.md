@@ -373,3 +373,7 @@ A trace of https://andydavies.github.io/agent-tests/render-blocking/css-preload.
 ### soft-navs
 
 A trace of https://developer.chrome.com/docs/web-platform/soft-navigations-experiment, navigating to many other pages on the same domain. All are soft navigations.
+
+### resource-initiators
+
+A trace created from https://github.com/ChromeDevTools/performance-stories/tree/main/resource-initiators which contains a bunch of different resources that get injected in different ways, so we can test our initiator logic.

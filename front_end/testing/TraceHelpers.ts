@@ -746,7 +746,7 @@ export function getBaseTraceHandlerData(overrides: Partial<Trace.Handlers.Types.
     },
     NetworkRequests: {
       byId: new Map(),
-      eventToInitiator: new Map(),
+      incompleteInitiator: new Map(),
       byTime: [],
       webSocket: [],
       entityMappings: {

@@ -10,6 +10,7 @@ import("../../visibility.gni")
 devtools_module("extras") {
   sources = [
     "FilmStrip.ts",
+    "Initiators.ts",
     "MainThreadActivity.ts",
     "ScriptDuplication.ts",
     "StackTraceForEvent.ts",
@@ -43,6 +44,7 @@ ts_library("unittests") {
 
   sources = [
     "FilmStrip.test.ts",
+    "Initiators.test.ts",
     "MainThreadActivity.test.ts",
     "ScriptDuplication.test.ts",
     "StackTraceForEvent.test.ts",

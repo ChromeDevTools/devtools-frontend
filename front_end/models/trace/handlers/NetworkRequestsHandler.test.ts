@@ -177,6 +177,31 @@ describe('NetworkRequestsHandler', function() {
     });
   });
 
+  it('creates a map of URLs to request IDs in time ASC order and deals with multiple requests for the same URL',
+     async function() {
+       const traceEvents = await TraceLoader.rawEvents(this, 'web-dev-screenshot-source-ids.json.gz');
+       for (const event of traceEvents) {
+         Trace.Handlers.ModelHandlers.Meta.handleEvent(event);
+         Trace.Handlers.ModelHandlers.NetworkRequests.handleEvent(event);
+       }
+       await Trace.Handlers.ModelHandlers.Meta.finalize();
+       await Trace.Handlers.ModelHandlers.NetworkRequests.finalize();
+
+       const {requestIdsByURL, byId} = Trace.Handlers.ModelHandlers.NetworkRequests.data();
+
+       const url =
+           'https://www.gstatic.com/devrel-devsite/prod/v0113b933d5c9ba4165415ef34b487d624de9fe7d51074fd538a31c5fc879d909/js/devsite_app_module.js';
+
+       const ids = requestIdsByURL.get(url) ?? [];
+       assert.deepEqual(requestIdsByURL.get(url), ['1753622.177', '1753622.302', '1753839.162', '1753622.309']);
+
+       const requests = ids.map(i => byId.get(i)).filter(x => x !== undefined);
+       // Ensure the request IDs are in time ASC order.
+       const timestamps = requests.map(r => r.ts);
+       const sortedTimestamps = timestamps.toSorted((a, b) => a - b);
+       assert.deepEqual(timestamps, sortedTimestamps);
+     });
+
   describe('parses the change priority request', () => {
     beforeEach(() => {
       Trace.Handlers.ModelHandlers.Meta.reset();
@@ -293,7 +318,7 @@ describe('NetworkRequestsHandler', function() {
       await Trace.Handlers.ModelHandlers.Meta.finalize();
       await Trace.Handlers.ModelHandlers.NetworkRequests.finalize();
 
-      const {eventToInitiator, byTime} = Trace.Handlers.ModelHandlers.NetworkRequests.data();
+      const {incompleteInitiator: eventToInitiator, byTime} = Trace.Handlers.ModelHandlers.NetworkRequests.data();
 
       // Find the network request to test, it is initiated by `youtube.com`.
       const event = byTime.find(event => event.ts === 1491680762420);
@@ -321,7 +346,7 @@ describe('NetworkRequestsHandler', function() {
       await Trace.Handlers.ModelHandlers.Meta.finalize();
       await Trace.Handlers.ModelHandlers.NetworkRequests.finalize();
 
-      const {eventToInitiator, byTime} = Trace.Handlers.ModelHandlers.NetworkRequests.data();
+      const {incompleteInitiator: eventToInitiator, byTime} = Trace.Handlers.ModelHandlers.NetworkRequests.data();
 
       // Find the network request to test, it is initiated by `                `.
       const event = byTime.find(event => event.ts === 1491681999060);

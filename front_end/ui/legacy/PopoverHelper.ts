@@ -27,6 +27,7 @@ export class PopoverHelper {
   private readonly boundMouseDown: (event: MouseEvent) => void;
   private readonly boundMouseMove: (ev: MouseEvent) => void;
   private readonly boundMouseOut: (event: MouseEvent) => void;
+  private readonly boundScrollEnd: (event: Event) => void;
   private readonly boundKeyUp: (ev: KeyboardEvent) => void;
   jslogContext?: string;
   constructor(
@@ -45,6 +46,7 @@ export class PopoverHelper {
     this.boundMouseDown = this.mouseDown.bind(this);
     this.boundMouseMove = this.mouseMove.bind(this);
     this.boundMouseOut = this.mouseOut.bind(this);
+    this.boundScrollEnd = this.scrollEnd.bind(this);
     this.boundKeyUp = this.keyUp.bind(this);
     this.container.addEventListener('mousedown', this.boundMouseDown, false);
     this.container.addEventListener('mousemove', this.boundMouseMove, false);
@@ -64,6 +66,10 @@ export class PopoverHelper {
 
   private eventInScheduledContent(event: MouseEvent): boolean {
     return this.scheduledRequest ? this.scheduledRequest.box.contains(event.clientX, event.clientY) : false;
+  }
+
+  private scrollEnd(_event: Event): void {
+    this.hidePopover();
   }
 
   private mouseDown(event: MouseEvent): void {
@@ -220,12 +226,15 @@ export class PopoverHelper {
       popover.setContentAnchorBox(request.box);
       popover.show(document);
 
+      this.container.addEventListener('scrollend', this.boundScrollEnd, true);
+
       this.hidePopoverCallback = () => {
         if (request.hide) {
           request.hide.call(null);
         }
         popover.hide();
         popoverHelperInstance = null;
+        this.container.removeEventListener('scrollend', this.boundScrollEnd, true);
       };
     });
   }
@@ -246,6 +255,7 @@ export class PopoverHelper {
     this.container.removeEventListener('mousedown', this.boundMouseDown, false);
     this.container.removeEventListener('mousemove', this.boundMouseMove, false);
     this.container.removeEventListener('mouseout', this.boundMouseOut, false);
+    this.container.removeEventListener('keyup', this.boundKeyUp, false);
   }
 }
 

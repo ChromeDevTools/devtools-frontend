@@ -340,6 +340,18 @@ export default createRule<[], MessageIds>({
 
         // We explicitly allow destructuring imports from 'lit/lit.js'.
         if (importPath.endsWith(path.join('lit', 'lit.js'))) {
+          // If we try to import third_party report it as an error
+          // We should import from "../ui/lit/lit.js"
+          if (importPath.includes('third_party') && !filename.includes('ui/lit/')) {
+            context.report({
+              node,
+              messageId: 'crossNamespaceImportThirdParty',
+              data: {
+                importPathForErrorMessage,
+              },
+            });
+            return;
+          }
           return;
         }
 

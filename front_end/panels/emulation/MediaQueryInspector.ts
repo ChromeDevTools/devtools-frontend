@@ -8,9 +8,8 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import type * as Workspace from '../../models/workspace/workspace.js';
-import {Directives, html, nothing, render} from '../../third_party/lit/lit.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import type {LitTemplate} from '../../ui/lit/lit.js';
+import {Directives, html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import mediaQueryInspectorStyles from './mediaQueryInspector.css.js';

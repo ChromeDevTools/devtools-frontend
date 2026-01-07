@@ -74,10 +74,6 @@ new RuleTester().run('es-modules-import', rule, {
       filename: 'front_end/elements/ElementsBreadcrumbs.test.ts',
     },
     {
-      code: 'import * as Lit from \'../third_party/lit/lit.js\';',
-      filename: 'front_end/elements/ElementBreadcrumbs.ts',
-    },
-    {
       code: 'import * as fs from \'fs\';',
       filename: 'front_end/Unit.test.ts',
     },
@@ -162,6 +158,10 @@ new RuleTester().run('es-modules-import', rule, {
     {
       code: 'import { Icon } from \'../ui/kit/kit.js\';',
       filename: 'front_end/common/Importing.js',
+    },
+    {
+      code: 'import * as Lit from \'../third_party/lit/lit.js\';',
+      filename: 'front_end/ui/lit/anyName.ts',
     },
   ],
 
@@ -296,6 +296,15 @@ new RuleTester().run('es-modules-import', rule, {
       errors: [
         {
           messageId: 'incorrectSameNamespaceImportNamed',
+        },
+      ],
+    },
+    {
+      code: 'import * as Lit from \'../third_party/lit/lit.js\';',
+      filename: 'front_end/elements/ElementBreadcrumbs.ts',
+      errors: [
+        {
+          messageId: 'crossNamespaceImportThirdParty',
         },
       ],
     },

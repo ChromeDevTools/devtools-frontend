@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 
 import type * as SDK from '../../core/sdk/sdk.js';
-import * as Lit from '../../third_party/lit/lit.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as Lit from '../../ui/lit/lit.js';
 
 import cssValueTraceViewStyles from './cssValueTraceView.css.js';
 import {

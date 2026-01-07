@@ -5,6 +5,7 @@
 [![Node.js Version][node-version-image]][node-version-url]
 [![Build Status][ci-image]][ci-url]
 [![Test Coverage][coveralls-image]][coveralls-url]
+[![OpenSSF Scorecard Badge][ossf-scorecard-badge]][ossf-scorecard-visualizer]
 
 HTTP status utility for node.
 
@@ -134,3 +135,5 @@ status.retry[503] // => true
 [npm-downloads-image]: https://badgen.net/npm/dm/statuses
 [npm-url]: https://npmjs.org/package/statuses
 [npm-version-image]: https://badgen.net/npm/v/statuses
+[ossf-scorecard-badge]: https://api.securityscorecards.dev/projects/github.com/jshttp/statuses/badge
+[ossf-scorecard-visualizer]: https://kooltheba.github.io/openssf-scorecard-api-visualizer/#/projects/github.com/jshttp/statuses

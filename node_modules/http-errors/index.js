@@ -279,11 +279,12 @@ function populateConstructorExports (exports, codes, HttpError) {
 
 /**
  * Get a class name from a name identifier.
+ *
+ * @param {string} name
+ * @returns {string}
  * @private
  */
 
 function toClassName (name) {
-  return name.substr(-5) !== 'Error'
-    ? name + 'Error'
-    : name
+  return name.slice(-5) === 'Error' ? name : name + 'Error'
 }

@@ -1,7 +1,7 @@
 {
   "name": "raw-body",
   "description": "Get and validate the raw body of a readable stream.",
-  "version": "2.5.2",
+  "version": "2.5.3",
   "author": "Jonathan Ong <me@jongleberry.com> (http://jongleberry.com)",
   "contributors": [
     "Douglas Christopher Wilson <doug@somethingdoug.com>",
@@ -10,10 +10,10 @@
   "license": "MIT",
   "repository": "stream-utils/raw-body",
   "dependencies": {
-    "bytes": "3.1.2",
-    "http-errors": "2.0.0",
-    "iconv-lite": "0.4.24",
-    "unpipe": "1.0.0"
+    "bytes": "~3.1.2",
+    "http-errors": "~2.0.1",
+    "iconv-lite": "~0.4.24",
+    "unpipe": "~1.0.0"
   },
   "devDependencies": {
     "bluebird": "3.7.2",
@@ -33,10 +33,8 @@
     "node": ">= 0.8"
   },
   "files": [
-    "HISTORY.md",
     "LICENSE",
     "README.md",
-    "SECURITY.md",
     "index.d.ts",
     "index.js"
   ],

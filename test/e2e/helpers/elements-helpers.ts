@@ -1035,8 +1035,8 @@ export const toggleClassesPane = async (devToolsPage: DevToolsPage) => {
 export const typeInClassesPaneInput = async (
     text: string, devToolsPage: DevToolsPage, commitWith: puppeteer.KeyInput = 'Enter', waitForNodeChange = true) => {
   await step(`Typing in new class names ${text}`, async () => {
-    const clsInput = await devToolsPage.waitFor(CLS_INPUT_SELECTOR);
-    await clsInput.type(text, {delay: 50});
+    await devToolsPage.click(CLS_INPUT_SELECTOR);
+    await devToolsPage.typeText(text, {delay: 50});
   });
 
   if (commitWith) {

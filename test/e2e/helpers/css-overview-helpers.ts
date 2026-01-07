@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
+import type {DevToolsPage} from '../shared/frontend-helper.js';
 
 import {openPanelViaMoreTools} from './settings-helpers.js';
 import {expectVeEvents, veClick, veImpression, veImpressionsUnder} from './visual-logging-helpers.js';
@@ -13,11 +13,11 @@ const CSS_OVERVIEW_PANEL_TITLE = 'CSS overview';
 const CSS_OVERVIEW_CAPTURE_BUTTON_SELECTOR = '.start-capture';
 const CSS_OVERVIEW_COMPLETED_VIEW_SELECTOR = '.overview-completed-view';
 
-export async function cssOverviewTabDoesNotExist(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+export async function cssOverviewTabDoesNotExist(devToolsPage: DevToolsPage) {
   await devToolsPage.waitForNone(CSS_OVERVIEW_TAB_SELECTOR);
 }
 
-export async function navigateToCssOverviewTab(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+export async function navigateToCssOverviewTab(devToolsPage: DevToolsPage) {
   const cssOverviewTab = await devToolsPage.$(CSS_OVERVIEW_TAB_SELECTOR);
   if (!cssOverviewTab) {
     await openCSSOverviewPanelFromMoreTools(devToolsPage);
@@ -27,17 +27,17 @@ export async function navigateToCssOverviewTab(devToolsPage = getBrowserAndPages
   }
 }
 
-export async function openCSSOverviewPanelFromMoreTools(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+export async function openCSSOverviewPanelFromMoreTools(devToolsPage: DevToolsPage) {
   await openPanelViaMoreTools(CSS_OVERVIEW_PANEL_TITLE, devToolsPage);
   await cssOverviewTabExists(devToolsPage);
   await cssOverviewPanelContentIsLoaded(devToolsPage);
 }
 
-export async function cssOverviewTabExists(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+export async function cssOverviewTabExists(devToolsPage: DevToolsPage) {
   await devToolsPage.waitFor(CSS_OVERVIEW_TAB_SELECTOR);
 }
 
-export async function cssOverviewPanelContentIsLoaded(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+export async function cssOverviewPanelContentIsLoaded(devToolsPage: DevToolsPage) {
   await devToolsPage.waitFor(CSS_OVERVIEW_PANEL_CONTENT);
   await expectVeEvents(
       [veImpressionsUnder(
@@ -51,7 +51,7 @@ export async function cssOverviewPanelContentIsLoaded(devToolsPage = getBrowserA
       undefined, devToolsPage);
 }
 
-export async function startCaptureCSSOverview(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+export async function startCaptureCSSOverview(devToolsPage: DevToolsPage) {
   await devToolsPage.click(CSS_OVERVIEW_CAPTURE_BUTTON_SELECTOR);
   await devToolsPage.waitFor(CSS_OVERVIEW_COMPLETED_VIEW_SELECTOR);
   await devToolsPage.raf();

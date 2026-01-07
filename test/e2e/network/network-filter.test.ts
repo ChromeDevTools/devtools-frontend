@@ -5,7 +5,6 @@
 import {assert, expect} from 'chai';
 import type {ElementHandle} from 'puppeteer-core';
 
-import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
 import {
   clearTextFilter,
   getAllRequestNames,
@@ -114,8 +113,7 @@ describe('The Network Tab', function() {
 
   // Mac doesn't consistently respect force-cache
   // TODO(crbug.com/1412665): This test is flaky.
-  it.skip('[crbug.com/40822085] can filter by cache status in the log view', async () => {
-    const {devToolsPage, inspectedPage} = getBrowserAndPagesWrappers();
+  it.skip('[crbug.com/40822085] can filter by cache status in the log view', async ({devToolsPage, inspectedPage}) => {
     await navigateToNetworkTab(
         `requests.html?num=5&cache=no-store&nocache=${Math.random()}`, devToolsPage, inspectedPage);
     await setPersistLog(true, devToolsPage);

@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import {getBrowserAndPages} from '../../conductor/puppeteer-state.js';
-import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 
 /** Corresponds to the type in front_end/ui/visual_logging/Debugging.ts **/
@@ -158,8 +157,7 @@ export async function dumpVeEvents(label: string) {
  * Unexpected VE events are ignored.
  **/
 export async function expectVeEvents(
-    expectedEvents: TestLogEntry[], root?: string,
-    devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+    expectedEvents: TestLogEntry[], root: string|undefined = undefined, devToolsPage: DevToolsPage) {
   collapseConsecutiveImpressions(expectedEvents);
   prependRoot(expectedEvents, root);
   // @ts-expect-error

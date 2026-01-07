@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 
 import type {DevToolsFrontendReloadOptions} from '../../conductor/frontend_tab.js';
-import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
+import type {InspectedPage} from '../shared/target-helper.js';
 
 import {veImpressionForAnimationsPanel} from './animations-helpers.js';
 import {veImpressionForApplicationPanel} from './application-helpers.js';
@@ -23,7 +23,7 @@ import {
 } from './visual-logging-helpers.js';
 
 export async function clickOnContextMenuItemFromTab(
-    tabId: string, menuItemSelector: string, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+    tabId: string, menuItemSelector: string, devToolsPage: DevToolsPage) {
   // Find the selected node, right click.
   await devToolsPage.click(tabId, {clickOptions: {button: 'right'}});
 
@@ -37,18 +37,17 @@ export const MAIN_PANEL_SELECTOR = 'div[class*="main-tabbed-pane"][slot*="main"]
 export const DRAWER_PANEL_SELECTOR = 'div[class*="drawer-tabbed-pane"][slot*="sidebar"]';
 export const TAB_HEADER_SELECTOR = 'div[class*="tabbed-pane-header"]';
 
-export async function tabExistsInMainPanel(tabId: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+export async function tabExistsInMainPanel(tabId: string, devToolsPage: DevToolsPage) {
   const mainPanel = await devToolsPage.waitFor(MAIN_PANEL_SELECTOR);
   await devToolsPage.waitFor(tabId, mainPanel);
 }
 
-export async function tabExistsInDrawer(tabId: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+export async function tabExistsInDrawer(tabId: string, devToolsPage: DevToolsPage) {
   const drawer = await devToolsPage.waitFor(DRAWER_PANEL_SELECTOR);
   await devToolsPage.waitFor(tabId, drawer);
 }
 
-export const checkIfTabExistsInDrawer =
-    async (tabId: string, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+export const checkIfTabExistsInDrawer = async (tabId: string, devToolsPage: DevToolsPage) => {
   const drawer = await devToolsPage.waitFor(DRAWER_PANEL_SELECTOR);
   const header = await devToolsPage.waitFor(TAB_HEADER_SELECTOR, drawer);
   const tab = await devToolsPage.waitFor(tabId, header);
@@ -56,14 +55,13 @@ export const checkIfTabExistsInDrawer =
 };
 
 export async function reloadDevTools(
-    options?: DevToolsFrontendReloadOptions&{
+    options: DevToolsFrontendReloadOptions&{
       expectClosedPanels?: string[],
       enableExperiments?: string[],
       disableExperiments?: string[],
       removeBackendState?: boolean,
-    },
-    devToolsPage = getBrowserAndPagesWrappers().devToolsPage,
-    inspectedPage = getBrowserAndPagesWrappers().inspectedPage) {
+    }|undefined,
+    devToolsPage: DevToolsPage, inspectedPage: InspectedPage) {
   await devToolsPage.evaluate(() => {
     // Prevent the Performance panel shortcuts dialog, that is automatically shown the first
     // time the performance panel is opened, from opening in tests.

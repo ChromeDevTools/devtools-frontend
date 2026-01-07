@@ -4,7 +4,6 @@
 
 import {assert} from 'chai';
 
-import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
 import {getMenuItemAtPosition, getMenuItemTitleAtPosition, openFileQuickOpen} from '../helpers/quick_open-helpers.js';
 import {
   addBreakpointForLine,
@@ -21,8 +20,7 @@ import {
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 import type {InspectedPage} from '../shared/target-helper.js';
 
-async function assertScriptLocation(
-    expectedLocation: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+async function assertScriptLocation(expectedLocation: string, devToolsPage: DevToolsPage) {
   const scriptLocation = await retrieveTopCallFrameWithoutResuming(devToolsPage);
   assert.isOk(scriptLocation, 'Unable to retrieve script location for call frame');
   assert.isTrue(isEqualOrAbbreviation(scriptLocation, expectedLocation));

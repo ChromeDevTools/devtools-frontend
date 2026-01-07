@@ -2,11 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 
-export async function openPanelViaMoreTools(panelTitle: string, frontend?: DevToolsPage) {
-  frontend = frontend || getBrowserAndPagesWrappers().devToolsPage;
+export async function openPanelViaMoreTools(panelTitle: string, frontend: DevToolsPage) {
   await frontend.bringToFront();
 
   // Head to the triple dot menu.
@@ -32,7 +30,7 @@ export async function openPanelViaMoreTools(panelTitle: string, frontend?: DevTo
   await frontend.waitForAria(`${panelTitle} panel[role="tabpanel"]`);
 }
 
-export const openSettingsTab = async (tabTitle: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+export const openSettingsTab = async (tabTitle: string, devToolsPage: DevToolsPage) => {
   const gearIconSelector = 'devtools-button[aria-label="Settings"]';
   const settingsMenuSelector = `.tabbed-pane-header-tab[aria-label="${tabTitle}"]`;
   const panelSelector = `.view-container[aria-label="${tabTitle} panel"]`;
@@ -45,12 +43,12 @@ export const openSettingsTab = async (tabTitle: string, devToolsPage = getBrowse
   await devToolsPage.waitFor(panelSelector);
 };
 
-export const closeSettings = async (devToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+export const closeSettings = async (devToolsPage: DevToolsPage) => {
   await devToolsPage.click('.dialog-close-button');
 };
 
 export const togglePreferenceInSettingsTab =
-    async (label: string, shouldBeChecked?: boolean, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+    async (label: string, shouldBeChecked: boolean|undefined, devToolsPage: DevToolsPage) => {
   await openSettingsTab('Preferences', devToolsPage);
 
   const selector = `[aria-label="${label}"]`;
@@ -71,8 +69,7 @@ export const togglePreferenceInSettingsTab =
   await closeSettings(devToolsPage);
 };
 
-export const setIgnoreListPattern =
-    async (pattern: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+export const setIgnoreListPattern = async (pattern: string, devToolsPage: DevToolsPage) => {
   await openSettingsTab('Ignore list', devToolsPage);
   await devToolsPage.click('[aria-label="Add a regular expression rule for the script\'s URL"]');
   const textBox = await devToolsPage.waitFor('[aria-label="Add a regular expression rule for the script\'s URL"]');
@@ -83,8 +80,7 @@ export const setIgnoreListPattern =
   await closeSettings(devToolsPage);
 };
 
-export const toggleIgnoreListing =
-    async (enable: boolean, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+export const toggleIgnoreListing = async (enable: boolean, devToolsPage: DevToolsPage) => {
   await openSettingsTab('Ignore list', devToolsPage);
   await devToolsPage.setCheckBox('[title="Enable ignore listing"]', enable);
   await closeSettings(devToolsPage);

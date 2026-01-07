@@ -5,7 +5,8 @@
 import type * as puppeteer from 'puppeteer-core';
 import type {CdpPage} from 'puppeteer-core/internal/cdp/Page.js';
 
-import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
+import type {DevToolsPage} from '../shared/frontend-helper.js';
+import type {InspectedPage} from '../shared/target-helper.js';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const globalThis: any = global;
@@ -13,9 +14,8 @@ const globalThis: any = global;
 let loadExtensionPromise: Promise<unknown> = Promise.resolve();
 
 export async function loadExtension(
-    name: string, startPage?: string, allowFileAccess?: boolean,
-    devToolsPage = getBrowserAndPagesWrappers().devToolsPage,
-    inspectedPage = getBrowserAndPagesWrappers().inspectedPage): Promise<puppeteer.Frame> {
+    name: string, startPage: string|undefined = undefined, allowFileAccess: boolean|undefined = undefined,
+    devToolsPage: DevToolsPage, inspectedPage: InspectedPage): Promise<puppeteer.Frame> {
   startPage = startPage || `${inspectedPage.getResourcesPath()}/extensions/empty_extension.html`;
   const extensionInfo = {startPage, name, allowFileAccess};
 
@@ -25,8 +25,7 @@ export async function loadExtension(
   return await load;
 
   async function doLoad(
-      devToolsPage = getBrowserAndPagesWrappers().devToolsPage,
-      extensionInfo: {startPage: string, name: string}): Promise<puppeteer.Frame> {
+      devToolsPage: DevToolsPage, extensionInfo: {startPage: string, name: string}): Promise<puppeteer.Frame> {
     const session = (devToolsPage.page as unknown as CdpPage)._client();
     // TODO(chromium:1246836) remove once real extension tests are available
     const injectedAPI = await devToolsPage.evaluate(

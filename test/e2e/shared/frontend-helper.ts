@@ -113,10 +113,11 @@ export class DevToolsPage extends PageWrapper {
     await this.evaluateOnNewDocument(`globalThis.hostConfigForTesting = ${JSON.stringify({devToolsVeLogging})};`);
     await this.waitForFunction(async () => {
       try {
-        const result = await this.page.evaluate(`(async function() {
+        const result = await this.page.evaluate(async function() {
+          // @ts-expect-error Executed in DevTools realm
           const Main = await import('./entrypoints/main/main.js');
           return Main.MainImpl.MainImpl.instanceForTest !== null;
-        })()`);
+        });
         return result;
       } catch (err) {
         // We might be navigating, so we retry execution context destroyed
@@ -128,12 +129,11 @@ export class DevToolsPage extends PageWrapper {
       }
     });
 
-    await this.evaluate(`
-      (async function() {
-        const Main = await import('./entrypoints/main/main.js');
-        await Main.MainImpl.MainImpl.instanceForTest.readyForTest();
-      })();
-    `);
+    await this.evaluate(async () => {
+      // @ts-expect-error Executed in DevTools realm
+      const Main = await import('./entrypoints/main/main.js');
+      await Main.MainImpl.MainImpl.instanceForTest.readyForTest();
+    });
   }
 
   async useSoftMenu() {

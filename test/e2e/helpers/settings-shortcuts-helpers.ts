@@ -8,7 +8,7 @@ import {
   platform,
   selectOption,
 } from '../../shared/helper.js';
-import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
+import type {DevToolsPage} from '../shared/frontend-helper.js';
 
 const CANCEL_BUTTON_SELECTOR = '[aria-label="Discard changes"]';
 const CONFIRM_BUTTON_SELECTOR = '[aria-label="Confirm changes"]';
@@ -52,14 +52,12 @@ if (platform === 'mac') {
   CONTROL_ALT_C_SHORTCUT_INPUT_TEXT = ['⌘ ⌥ C'];
 }
 
-export const selectKeyboardShortcutPreset =
-    async (option: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+export const selectKeyboardShortcutPreset = async (option: string, devToolsPage: DevToolsPage) => {
   const presetSelectElement = await devToolsPage.waitForElementWithTextContent(SHORTCUT_SELECT_TEXT);
   await selectOption(await presetSelectElement.toElement('select'), option);
 };
 
-export const getShortcutListItemElement =
-    async (shortcutText: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+export const getShortcutListItemElement = async (shortcutText: string, devToolsPage: DevToolsPage) => {
   const textMatches = await devToolsPage.$$textContent(shortcutText);
   let titleElement;
   for (const matchingElement of textMatches) {
@@ -74,8 +72,7 @@ export const getShortcutListItemElement =
   return listItemElement.asElement();
 };
 
-export const editShortcutListItem =
-    async (shortcutText: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+export const editShortcutListItem = async (shortcutText: string, devToolsPage: DevToolsPage) => {
   const listItemElement = await getShortcutListItemElement(shortcutText, devToolsPage) as ElementHandle;
 
   await devToolsPage.clickElement(listItemElement);
@@ -84,8 +81,7 @@ export const editShortcutListItem =
   await devToolsPage.waitFor(RESET_BUTTON_SELECTOR);
 };
 
-export const shortcutsForAction =
-    async (shortcutText: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+export const shortcutsForAction = async (shortcutText: string, devToolsPage: DevToolsPage) => {
   const listItemElement = await getShortcutListItemElement(shortcutText, devToolsPage);
   assert.isOk(listItemElement, `Could not find shortcut item with text ${shortcutText}`);
   const shortcutElements = await listItemElement.$$(SHORTCUT_DISPLAY_SELECTOR);
@@ -95,14 +91,14 @@ export const shortcutsForAction =
       shortcutElementsTextContent.map(async textContent => textContent ? await textContent.jsonValue() : []));
 };
 
-export const shortcutInputValues = async (devToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+export const shortcutInputValues = async (devToolsPage: DevToolsPage) => {
   const shortcutInputs = await devToolsPage.$$(SHORTCUT_INPUT_SELECTOR);
   assert.isOk(shortcutInputs.length, 'shortcut input not found');
   const shortcutValues = await Promise.all(shortcutInputs.map(async input => await input.getProperty('value')));
   return await Promise.all(shortcutValues.map(async value => value ? await value.jsonValue() : []));
 };
 
-export const clickAddShortcutLink = async (devToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+export const clickAddShortcutLink = async (devToolsPage: DevToolsPage) => {
   const addShortcutLinkTextMatches = await devToolsPage.waitForElementsWithTextContent(ADD_SHORTCUT_LINK_TEXT);
   let addShortcutLinkElement;
   // the link container and the link have the same textContent, but only the latter has a click handler
@@ -117,20 +113,19 @@ export const clickAddShortcutLink = async (devToolsPage = getBrowserAndPagesWrap
   await devToolsPage.clickElement(addShortcutLinkElement);
 };
 
-export const clickShortcutConfirmButton = async (devToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+export const clickShortcutConfirmButton = async (devToolsPage: DevToolsPage) => {
   await devToolsPage.click(CONFIRM_BUTTON_SELECTOR);
 };
 
-export const clickShortcutCancelButton = async (devToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+export const clickShortcutCancelButton = async (devToolsPage: DevToolsPage) => {
   await devToolsPage.click(CANCEL_BUTTON_SELECTOR);
 };
 
-export const clickShortcutResetButton = async (devToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+export const clickShortcutResetButton = async (devToolsPage: DevToolsPage) => {
   await devToolsPage.click(RESET_BUTTON_SELECTOR);
 };
 
-export const clickShortcutDeleteButton =
-    async (index: number, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+export const clickShortcutDeleteButton = async (index: number, devToolsPage: DevToolsPage) => {
   const deleteButtons = await devToolsPage.$$(DELETE_BUTTON_SELECTOR);
   if (deleteButtons.length <= index) {
     assert.fail(`shortcut delete button #${index} not found`);
@@ -138,7 +133,7 @@ export const clickShortcutDeleteButton =
   await devToolsPage.clickElement(deleteButtons[index]);
 };
 
-export const waitForEmptyShortcutInput = async (devToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+export const waitForEmptyShortcutInput = async (devToolsPage: DevToolsPage) => {
   await devToolsPage.waitForFunction(async () => {
     const shortcutInputs = await devToolsPage.$$(SHORTCUT_INPUT_SELECTOR);
     const shortcutInputValues = await Promise.all(shortcutInputs.map(input => input.getProperty('value')));
@@ -148,7 +143,7 @@ export const waitForEmptyShortcutInput = async (devToolsPage = getBrowserAndPage
   });
 };
 
-export const waitForVSCodeShortcutPreset = async (devToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+export const waitForVSCodeShortcutPreset = async (devToolsPage: DevToolsPage) => {
   // wait for a shortcut that vsCode has but the default preset does not
   await devToolsPage.waitForElementWithTextContent(VS_CODE_SHORTCUTS_SHORTCUTS.join(''));
 };

@@ -83,10 +83,7 @@ export async function enableAndOpenRecorderPanel(
   await openRecorderPanel(devToolsPage);
 }
 
-async function createRecording(name: string, selectorAttribute?: string, devToolsPage?: DevToolsPage) {
-  if (!devToolsPage) {
-    throw new Error('DevToolsPage was not provided');
-  }
+async function createRecording(name: string, selectorAttribute: string|undefined, devToolsPage: DevToolsPage) {
   const newRecordingButton = await devToolsPage.waitForAria('Create recording');
   await newRecordingButton.click();
   const input = await devToolsPage.waitForAria('RECORDING NAME');
@@ -99,10 +96,8 @@ async function createRecording(name: string, selectorAttribute?: string, devTool
   }
 }
 
-export async function createAndStartRecording(name?: string, selectorAttribute?: string, devToolsPage?: DevToolsPage) {
-  if (!devToolsPage) {
-    throw new Error('DevToolsPage was not provided');
-  }
+export async function createAndStartRecording(
+    name: string|undefined, selectorAttribute: string|undefined, devToolsPage: DevToolsPage) {
   await createRecording(name ?? TEST_RECORDING_NAME, selectorAttribute, devToolsPage);
   const onRecordingStarted = onRecordingStateChanged(devToolsPage);
   await devToolsPage.click('.control-button');

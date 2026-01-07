@@ -124,7 +124,7 @@ describe('Custom devices', () => {
     // Reload the test page, and verify things working.
     await inspectedPage.reload();
 
-    void waitForDomNodeToBeVisible('#res-dump-done');
+    void waitForDomNodeToBeVisible('#res-dump-done', inspectedPage);
     assert.strictEqual(await targetTextContent('#res-ua', inspectedPage), 'Test device browser 1.0');
     assert.strictEqual(await targetTextContent('#res-mobile', inspectedPage), 'true');
     assert.strictEqual(await targetTextContent('#res-num-brands', inspectedPage), '2');
@@ -176,7 +176,7 @@ describe('Custom devices', () => {
     // Reload the test page, and verify things working.
     await inspectedPage.reload();
 
-    void waitForDomNodeToBeVisible('#res-dump-done');
+    void waitForDomNodeToBeVisible('#res-dump-done', inspectedPage);
     assert.strictEqual(await targetTextContent('#res-ua', inspectedPage), 'Test device browser 1.0');
     assert.strictEqual(await targetTextContent('#res-mobile', inspectedPage), 'true');
     assert.strictEqual(await targetTextContent('#res-num-brands', inspectedPage), '2');

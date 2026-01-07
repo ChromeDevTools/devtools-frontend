@@ -5,11 +5,8 @@
 import {AssertionError} from 'chai';
 import type * as puppeteer from 'puppeteer-core';
 
-import {AsyncScope} from '../conductor/async-scope.js';
 import {reloadDevTools} from '../conductor/hooks.js';
 import {getBrowserAndPages} from '../conductor/puppeteer-state.js';
-
-import {getBrowserAndPagesWrappers} from './non_hosted_wrappers.js';
 
 export {platform} from '../conductor/platform.js';
 
@@ -25,17 +22,6 @@ declare global {
     __getRenderCoordinatorPendingFrames(): number;
   }
 }
-
-export const waitFor = async<ElementType extends Element|null = null, Selector extends string = string>(
-    selector: Selector, root?: puppeteer.ElementHandle, asyncScope = new AsyncScope(), handler?: string,
-    devToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
-  return await devToolsPage.waitFor<ElementType, Selector>(selector, root, asyncScope, handler);
-};
-export const waitForFunction = async<T>(
-    fn: () => Promise<T|undefined>, asyncScope = new AsyncScope(), description?: string,
-    devToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
-  return await devToolsPage.waitForFunction(fn, asyncScope, description);
-};
 
 export const step = async<T = unknown>(description: string, step: () => Promise<T>| T): Promise<Awaited<T>> => {
   try {

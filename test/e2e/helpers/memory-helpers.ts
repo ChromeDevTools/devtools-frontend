@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 import type * as puppeteer from 'puppeteer-core';
 
-import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
+import type {DevToolsPage} from '../shared/frontend-helper.js';
 
 const NEW_HEAP_SNAPSHOT_BUTTON = 'devtools-button[aria-label="Take heap snapshot"]';
 const MEMORY_PANEL_CONTENT = 'div[aria-label="Memory panel"]';
@@ -14,20 +14,20 @@ export const MEMORY_TAB_ID = '#tab-heap-profiler';
 const CLASS_FILTER_INPUT = 'div[aria-placeholder="Filter by class"]';
 export const SELECTED_RESULT = '#profile-views table.data tr.data-grid-data-grid-node.revealed.parent.selected';
 
-export async function navigateToMemoryTab(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+export async function navigateToMemoryTab(devToolsPage: DevToolsPage) {
   await devToolsPage.click(MEMORY_TAB_ID);
   await devToolsPage.waitFor(MEMORY_PANEL_CONTENT);
   await devToolsPage.waitFor(PROFILE_TREE_SIDEBAR);
 }
 
-export async function takeDetachedElementsProfile(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+export async function takeDetachedElementsProfile(devToolsPage: DevToolsPage) {
   await devToolsPage.click('xpath///label[text()="Detached elements"]');
   await devToolsPage.click('devtools-button[aria-label="Obtain detached elements"]');
   await devToolsPage.waitForNone('.heap-snapshot-sidebar-tree-item.wait');
   await devToolsPage.waitFor('.heap-snapshot-sidebar-tree-item.selected');
 }
 
-export async function takeAllocationProfile(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+export async function takeAllocationProfile(devToolsPage: DevToolsPage) {
   await devToolsPage.click('xpath///label[text()="Allocation sampling"]');
   await devToolsPage.click('devtools-button[aria-label="Start heap profiling"]');
   await new Promise(r => setTimeout(r, 200));
@@ -40,7 +40,7 @@ export async function takeAllocationTimelineProfile(
     {recordStacks}: {recordStacks: boolean} = {
       recordStacks: false,
     },
-    devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+    devToolsPage: DevToolsPage) {
   await devToolsPage.click('xpath///label[text()="Allocations on timeline"]');
   if (recordStacks) {
     await devToolsPage.click('[title="Allocation stack traces (more overhead)"]');
@@ -52,7 +52,7 @@ export async function takeAllocationTimelineProfile(
   await devToolsPage.waitFor('.heap-snapshot-sidebar-tree-item.selected');
 }
 
-export async function takeHeapSnapshot(name = 'Snapshot 1', devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+export async function takeHeapSnapshot(name = 'Snapshot 1', devToolsPage: DevToolsPage) {
   await devToolsPage.click(NEW_HEAP_SNAPSHOT_BUTTON);
   await devToolsPage.waitForNone('.heap-snapshot-sidebar-tree-item.wait');
   await devToolsPage.waitForFunction(async () => {
@@ -62,7 +62,7 @@ export async function takeHeapSnapshot(name = 'Snapshot 1', devToolsPage = getBr
   });
 }
 
-export async function waitForHeapSnapshotData(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+export async function waitForHeapSnapshotData(devToolsPage: DevToolsPage) {
   await devToolsPage.waitFor('#profile-views');
   await devToolsPage.waitFor('#profile-views .data-grid');
   const rowCountMatches = async () => {
@@ -75,24 +75,24 @@ export async function waitForHeapSnapshotData(devToolsPage = getBrowserAndPagesW
   return await devToolsPage.waitForFunction(rowCountMatches);
 }
 
-export async function waitForNonEmptyHeapSnapshotData(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+export async function waitForNonEmptyHeapSnapshotData(devToolsPage: DevToolsPage) {
   const rows = await waitForHeapSnapshotData(devToolsPage);
   assert.isTrue(rows.length > 0);
 }
 
-export async function getDataGridRows(selector: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+export async function getDataGridRows(selector: string, devToolsPage: DevToolsPage) {
   // The grid in Memory Tab contains a tree
   const grid = await devToolsPage.waitFor(selector);
   return await devToolsPage.$$('.data-grid-data-grid-node', grid);
 }
 
-export async function setClassFilter(text: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+export async function setClassFilter(text: string, devToolsPage: DevToolsPage) {
   const classFilter = await devToolsPage.waitFor(CLASS_FILTER_INPUT);
   await classFilter.focus();
   void devToolsPage.pasteText(text);
 }
 
-export async function setSearchFilter(text: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+export async function setSearchFilter(text: string, devToolsPage: DevToolsPage) {
   const grid = await devToolsPage.waitFor('#profile-views table.data');
   await grid.focus();
 
@@ -104,8 +104,7 @@ export async function setSearchFilter(text: string, devToolsPage = getBrowserAnd
   await inputElement.type(text);
 }
 
-export async function waitForSearchResultNumber(
-    results: number, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+export async function waitForSearchResultNumber(results: number, devToolsPage: DevToolsPage) {
   const findMatch = async () => {
     const currentMatch = await devToolsPage.waitFor('.search-results-matches');
     const currentTextContent = currentMatch && await currentMatch.evaluate(el => el.textContent);
@@ -124,7 +123,7 @@ export async function waitForSearchResultNumber(
  * @param devToolsPage
  */
 export async function findSearchResult(
-    searchResult: string, searchMatch?: string|RegExp, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+    searchResult: string, searchMatch: string|RegExp|undefined, devToolsPage: DevToolsPage) {
   await devToolsPage.waitForFunction(async () => {
     if (!searchMatch) {
       const match = await devToolsPage.waitFor('#profile-views table.data');
@@ -178,7 +177,7 @@ interface RetainerChainEntry {
 }
 
 export async function assertRetainerChainSatisfies(
-    p: (retainerChain: RetainerChainEntry[]) => boolean, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+    p: (retainerChain: RetainerChainEntry[]) => boolean, devToolsPage: DevToolsPage) {
   // Give some time for the expansion to finish.
   const retainerGridElements = await getDataGridRows('.retaining-paths-view table.data', devToolsPage);
   const retainerChain = [];
@@ -201,7 +200,7 @@ export async function assertRetainerChainSatisfies(
 }
 
 export async function waitUntilRetainerChainSatisfies(
-    p: (retainerChain: RetainerChainEntry[]) => boolean, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+    p: (retainerChain: RetainerChainEntry[]) => boolean, devToolsPage: DevToolsPage) {
   await devToolsPage.waitForFunction(assertRetainerChainSatisfies.bind(null, p, devToolsPage));
 }
 
@@ -230,16 +229,14 @@ export function appearsInOrder(targetArray: string[], inputArray: string[]) {
   return false;
 }
 
-export async function waitForRetainerChain(
-    expectedRetainers: string[], devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+export async function waitForRetainerChain(expectedRetainers: string[], devToolsPage: DevToolsPage) {
   await devToolsPage.waitForFunction(assertRetainerChainSatisfies.bind(null, retainerChain => {
     const actual = retainerChain.map(e => e.retainerClassName);
     return appearsInOrder(actual, expectedRetainers);
   }, devToolsPage));
 }
 
-export async function changeViewViaDropdown(
-    newPerspective: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+export async function changeViewViaDropdown(newPerspective: string, devToolsPage: DevToolsPage) {
   const perspectiveDropdownSelector = 'select[aria-label="Perspective"]';
   const dropdown = await devToolsPage.waitFor(perspectiveDropdownSelector);
 
@@ -251,8 +248,7 @@ export async function changeViewViaDropdown(
   await dropdown.select(optionValue);
 }
 
-export async function changeAllocationSampleViewViaDropdown(
-    newPerspective: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+export async function changeAllocationSampleViewViaDropdown(newPerspective: string, devToolsPage: DevToolsPage) {
   const perspectiveDropdownSelector = 'select[aria-label="Profile view mode"]';
   const dropdown = await devToolsPage.waitFor(
       perspectiveDropdownSelector,
@@ -265,20 +261,19 @@ export async function changeAllocationSampleViewViaDropdown(
   await dropdown.select(optionValue);
 }
 
-export async function focusTableRowWithName(text: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+export async function focusTableRowWithName(text: string, devToolsPage: DevToolsPage) {
   const row = await devToolsPage.waitFor(`//span[text()="${text}"]/ancestor::tr`, undefined, undefined, 'xpath');
   await focusTableRow(row, devToolsPage);
 }
 
-export async function focusTableRow(
-    row: puppeteer.ElementHandle<Element>, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+export async function focusTableRow(row: puppeteer.ElementHandle<Element>, devToolsPage: DevToolsPage) {
   // Click in a numeric cell, to avoid accidentally clicking a link.
   await devToolsPage.click('.numeric-column', {
     root: row,
   });
 }
 
-export async function expandFocusedRow(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+export async function expandFocusedRow(devToolsPage: DevToolsPage) {
   await devToolsPage.pressKey('ArrowRight');
   await devToolsPage.waitFor('.selected.data-grid-data-grid-node.expanded');
 }
@@ -297,8 +292,7 @@ function parseByteString(str: string): number {
   return number;
 }
 
-async function getSizesFromRow(
-    row: puppeteer.ElementHandle<Element>, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+async function getSizesFromRow(row: puppeteer.ElementHandle<Element>, devToolsPage: DevToolsPage) {
   const numericData = await devToolsPage.$$('.numeric-column>.profile-multiple-values>span', row);
   assert.lengthOf(numericData, 4);
   function readNumber(e: Element): string {
@@ -310,64 +304,59 @@ async function getSizesFromRow(
   return {shallowSize, retainedSize};
 }
 
-export async function getSizesFromSelectedRow(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+export async function getSizesFromSelectedRow(devToolsPage: DevToolsPage) {
   const row = await devToolsPage.waitFor('.selected.data-grid-data-grid-node');
   return await getSizesFromRow(row, devToolsPage);
 }
 
-export async function getCategoryRow(
-    text: string, wait = true, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+export async function getCategoryRow(text: string, wait = true, devToolsPage: DevToolsPage) {
   const selector = `//td[text()="${text}"]/ancestor::tr`;
   return await (wait ? devToolsPage.waitFor(selector, undefined, undefined, 'xpath') :
                        devToolsPage.$(selector, undefined, 'xpath'));
 }
 
-export async function getSizesFromCategoryRow(text: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+export async function getSizesFromCategoryRow(text: string, devToolsPage: DevToolsPage) {
   const row = await getCategoryRow(text, undefined, devToolsPage);
   return await getSizesFromRow(row, devToolsPage);
 }
 
-export async function getDistanceFromCategoryRow(
-    text: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+export async function getDistanceFromCategoryRow(text: string, devToolsPage: DevToolsPage) {
   const row = await getCategoryRow(text, undefined, devToolsPage);
   const numericColumns = await devToolsPage.$$('.numeric-column', row);
   return await numericColumns[0].evaluate(e => parseInt(e.textContent as string, 10));
 }
 
-export async function getCountFromCategoryRowWithName(
-    text: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+export async function getCountFromCategoryRowWithName(text: string, devToolsPage: DevToolsPage) {
   const row = await getCategoryRow(text, undefined, devToolsPage);
   return await getCountFromCategoryRow(row, devToolsPage);
 }
 
-export async function getCountFromCategoryRow(
-    row: puppeteer.ElementHandle<Element>, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+export async function getCountFromCategoryRow(row: puppeteer.ElementHandle<Element>, devToolsPage: DevToolsPage) {
   const countSpan = await devToolsPage.waitFor('.objects-count', row);
   return await countSpan.evaluate(e => parseInt((e.textContent ?? '').substring(1), 10));
 }
 
-export async function getAddedCountFromComparisonRowWithName(
-    text: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+export async function getAddedCountFromComparisonRowWithName(text: string, devToolsPage: DevToolsPage) {
   const row = await getCategoryRow(text, undefined, devToolsPage);
   return await getAddedCountFromComparisonRow(row, devToolsPage);
 }
 
 export async function getAddedCountFromComparisonRow(
-    row: puppeteer.ElementHandle<Element>, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+    row: puppeteer.ElementHandle<Element>, devToolsPage: DevToolsPage) {
   const addedCountCell = await devToolsPage.waitFor('.addedCount-column', row);
   const countText = await addedCountCell.evaluate(e => e.textContent ?? '');
   return parseByteString(countText);
 }
 
 export async function getRemovedCountFromComparisonRow(
-    row: puppeteer.ElementHandle<Element>, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+    row: puppeteer.ElementHandle<Element>, devToolsPage: DevToolsPage) {
   const addedCountCell = await devToolsPage.waitFor('.removedCount-column', row);
   const countText = await addedCountCell.evaluate(e => e.textContent ?? '');
   return parseByteString(countText);
 }
 
 export async function clickOnContextMenuForRetainer(
-    retainerName: string, menuItem: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+    retainerName: string, menuItem: string, devToolsPage: DevToolsPage) {
   const retainersPane = await devToolsPage.waitFor('.retaining-paths-view');
   await devToolsPage.click(`xpath///span[text()="${retainerName}"]`, {
     root: retainersPane,
@@ -380,16 +369,16 @@ export async function clickOnContextMenuForRetainer(
   await devToolsPage.click(`aria/${menuItem}`);
 }
 
-export async function restoreIgnoredRetainers(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+export async function restoreIgnoredRetainers(devToolsPage: DevToolsPage) {
   await devToolsPage.click('devtools-button[aria-label="Restore ignored retainers"]');
 }
 
-export async function setFilterDropdown(filter: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+export async function setFilterDropdown(filter: string, devToolsPage: DevToolsPage) {
   const select = await devToolsPage.waitFor('devtools-toolbar select[aria-label="Filter"]');
   await select.select(filter);
 }
 
-export async function checkExposeInternals(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+export async function checkExposeInternals(devToolsPage: DevToolsPage) {
   const element = await devToolsPage.waitForElementWithTextContent('Internals with implementation details');
   await devToolsPage.clickElement(element);
 }

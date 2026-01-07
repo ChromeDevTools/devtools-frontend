@@ -615,7 +615,7 @@ button.link:focus-visible {
 @media (forced-colors: active) {
   .dimmed,
   select:disabled {
-    opacity: 100%;
+    opacity: 70%;
   }
 
   .harmony-input:not([type]),

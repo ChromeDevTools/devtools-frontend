@@ -13445,6 +13445,9 @@
   "panels/settings/SettingsScreen.ts | experiments": {
     "message": "Experiments"
   },
+  "panels/settings/SettingsScreen.ts | experimentsFound": {
+    "message": "{n, plural, =1 {# experiment found} other {# experiments found}}"
+  },
   "panels/settings/SettingsScreen.ts | greenDevUnstable": {
     "message": "Warning: All these features are prototype and very unstable. They exist for user testing and are not designed to be relied on."
   },

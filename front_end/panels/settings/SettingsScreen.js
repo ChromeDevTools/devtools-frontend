@@ -42,6 +42,10 @@ const UIStrings = {
      */
     experiments: 'Experiments',
     /**
+     * @description Number of experiments from the filtered list of experiements
+     */
+    experimentsFound: '{n, plural, =1 {# experiment found} other {# experiments found}}',
+    /**
      * @description Message shown in the experiments panel to warn users about any possible unstable features.
      */
     theseExperimentsCouldBeUnstable: 'Warning: These experiments could be unstable or unreliable.',
@@ -386,6 +390,9 @@ export class ExperimentsSettingsTab extends UI.Widget.VBox {
             UI.ARIAUtils.LiveAnnouncer.alert(warning.textContent);
             this.#experimentsSection = createSettingsCard(i18nString(UIStrings.experiments), warning);
             this.containerElement.appendChild(this.#experimentsSection);
+        }
+        else {
+            UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.experimentsFound, { n: stableExperiments.length + unstableExperiments.length }));
         }
     }
     createExperimentsWarningSubsection(warningMessage) {

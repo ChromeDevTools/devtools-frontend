@@ -60,7 +60,7 @@ export default `/*
 }
 
 .trace-selector {
-  --override-trace-selector-color: var(--sys-color-neutral-bright);
+  --override-trace-selector-color: var(--sys-color-token-subtle);
 
   color: var(--override-trace-selector-color);
   padding-left: 2em;

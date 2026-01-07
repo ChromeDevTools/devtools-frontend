@@ -4,7 +4,7 @@
 /* eslint-disable @devtools/no-imperative-dom-api */
 
 import * as CM from '../../../third_party/codemirror.next/codemirror.next.js';
-import type * as UI from '../../../ui/legacy/legacy.js';
+import type * as UI from '../../legacy/legacy.js';
 
 export function flattenRect(rect: DOMRect, left: boolean): {
   left: number,
@@ -16,7 +16,6 @@ export function flattenRect(rect: DOMRect, left: boolean): {
   return {left: x, right: x, top: rect.top, bottom: rect.bottom};
 }
 
-// TODO(b/462393094): Rename this to be a generic accessible placeholder
 /**
  * A CodeMirror WidgetType that displays a UI.Widget.Widget as a placeholder.
  *
@@ -25,7 +24,7 @@ export function flattenRect(rect: DOMRect, left: boolean): {
  * it ensures that screen readers can properly announce the content within
  * the encapsulated widget.
  */
-export class AiCodeCompletionTeaserPlaceholder extends CM.WidgetType {
+export class AccessiblePlaceholder extends CM.WidgetType {
   constructor(readonly teaser: UI.Widget.Widget) {
     super();
   }
@@ -72,25 +71,7 @@ export class AiCodeCompletionTeaserPlaceholder extends CM.WidgetType {
     this.teaser?.hideWidget();
   }
 
-  override eq(other: AiCodeCompletionTeaserPlaceholder): boolean {
+  override eq(other: AccessiblePlaceholder): boolean {
     return this.teaser === other.teaser;
   }
-}
-
-export function aiCodeCompletionTeaserPlaceholder(teaser: UI.Widget.Widget): CM.Extension {
-  const plugin = CM.ViewPlugin.fromClass(class {
-    placeholder: CM.DecorationSet;
-
-    constructor(readonly view: CM.EditorView) {
-      this.placeholder = CM.Decoration.set(
-          [CM.Decoration.widget({widget: new AiCodeCompletionTeaserPlaceholder(teaser), side: 1}).range(0)]);
-    }
-
-    declare update: () => void;
-
-    get decorations(): CM.DecorationSet {
-      return this.view.state.doc.length ? CM.Decoration.none : this.placeholder;
-    }
-  }, {decorations: v => v.decorations});
-  return plugin;
 }

@@ -11,7 +11,7 @@ import * as CodeMirror from '../../../third_party/codemirror.next/codemirror.nex
 import * as UI from '../../legacy/legacy.js';
 import * as VisualLogging from '../../visual_logging/visual_logging.js';
 
-import {AiCodeCompletionTeaserPlaceholder} from './AiCodeCompletionTeaserPlaceholder.js';
+import {AccessiblePlaceholder} from './AccessiblePlaceholder.js';
 import {
   acceptAiAutoCompleteSuggestion,
   aiAutoCompleteSuggestion,
@@ -501,7 +501,7 @@ function aiCodeCompletionTeaserExtension(teaser: PanelCommon.AiCodeCompletionTea
 
     #addTeaserWidget(pos: number): void {
       this.#teaserDecoration = CodeMirror.Decoration.set([
-        CodeMirror.Decoration.widget({widget: new AiCodeCompletionTeaserPlaceholder(this.teaser), side: 1}).range(pos),
+        CodeMirror.Decoration.widget({widget: new AccessiblePlaceholder(this.teaser), side: 1}).range(pos),
       ]);
     }
   }, {

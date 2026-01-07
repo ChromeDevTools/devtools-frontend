@@ -12,7 +12,7 @@ import * as CodeMirror from '../../../third_party/codemirror.next/codemirror.nex
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../visual_logging/visual_logging.js';
 
-import {AiCodeCompletionTeaserPlaceholder} from './AiCodeCompletionTeaserPlaceholder.js';
+import {AccessiblePlaceholder} from './AccessiblePlaceholder.js';
 import {AiCodeGenerationParser} from './AiCodeGenerationParser.js';
 import {
   acceptAiAutoCompleteSuggestion,
@@ -350,8 +350,7 @@ function aiCodeGenerationTeaserExtension(teaser: PanelCommon.AiCodeGenerationTea
 
       if ((isEmptyLine) || (isComment && isCursorAtEndOfLine)) {
         return CodeMirror.Decoration.set([
-          CodeMirror.Decoration.widget({widget: new AiCodeCompletionTeaserPlaceholder(teaser), side: 1})
-              .range(cursorPosition),
+          CodeMirror.Decoration.widget({widget: new AccessiblePlaceholder(teaser), side: 1}).range(cursorPosition),
         ]);
       }
       return CodeMirror.Decoration.none;

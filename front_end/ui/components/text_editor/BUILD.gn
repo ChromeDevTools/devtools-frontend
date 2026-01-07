@@ -9,8 +9,8 @@ import("../visibility.gni")
 
 devtools_ui_module("text_editor") {
   sources = [
+    "AccessiblePlaceholder.ts",
     "AiCodeCompletionProvider.ts",
-    "AiCodeCompletionTeaserPlaceholder.ts",
     "AiCodeGenerationParser.ts",
     "AiCodeGenerationProvider.ts",
     "AutocompleteHistory.ts",
@@ -64,7 +64,6 @@ devtools_ui_module("unittests") {
 
   sources = [
     "AiCodeCompletionProvider.test.ts",
-    "AiCodeCompletionTeaserPlaceholder.test.ts",
     "AiCodeGenerationParser.test.ts",
     "AiCodeGenerationProvider.test.ts",
     "AutocompleteHistory.test.ts",

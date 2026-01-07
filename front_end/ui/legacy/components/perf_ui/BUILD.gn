@@ -44,16 +44,23 @@ devtools_ui_module("perf_ui") {
     "../../../../core/host:bundle",
     "../../../../core/i18n:bundle",
     "../../../../core/platform:bundle",
+    "../../../../core/root:bundle",
     "../../../../core/sdk:bundle",
+    "../../../../generated:protocol",
     "../../../../models/bindings:bundle",
     "../../../../models/cpu_profile:bundle",
     "../../../../models/network_time_calculator:bundle",
+    "../../../../models/trace:bundle",
     "../../../../models/workspace:bundle",
     "../../../../services/trace_bounds:bundle",
     "../../../../ui/legacy:bundle",
     "../../../../ui/legacy/components/source_frame:bundle",
     "../../../../ui/legacy/theme_support:bundle",
     "../../../../ui/lit:bundle",
+    "../../../components/buttons:bundle",
+    "../../../components/render_coordinator:bundle",
+    "../../../kit:bundle",
+    "../../../visual_logging:bundle",
   ]
 
   visibility = [ "../../../../component_docs/perf_piechart" ]
@@ -73,6 +80,7 @@ devtools_entrypoint("bundle") {
     # and the business logic should never depend on the UI modules.
     ":*",
     "../../../../panels/ai_assistance/*",
+    "../../../../panels/application/*",
     "../../../../panels/layer_viewer/*",
     "../../../../panels/media/*",
     "../../../../panels/network/*",

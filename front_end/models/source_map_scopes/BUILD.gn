@@ -17,10 +17,13 @@ devtools_module("source_map_scopes") {
   deps = [
     "../../core/common:bundle",
     "../../core/platform:bundle",
+    "../../core/root:bundle",
     "../../core/sdk:bundle",
+    "../../generated:protocol",
     "../../models/bindings:bundle",
     "../../models/formatter:bundle",
     "../../models/text_utils:bundle",
+    "../workspace:bundle",
   ]
 }
 
@@ -36,6 +39,7 @@ devtools_entrypoint("bundle") {
     "../../panels/timeline/*",
     "../../ui/components/text_editor/*",
     "../../ui/legacy/components/object_ui/*",
+    "../ai_assistance/*",
     "../breakpoints/*",
     "../trace_source_maps_resolver/*",
   ]

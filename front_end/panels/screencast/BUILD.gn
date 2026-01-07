@@ -23,6 +23,7 @@ devtools_ui_module("screencast") {
     "../../core/common:bundle",
     "../../core/host:bundle",
     "../../core/i18n:bundle",
+    "../../core/platform:bundle",
     "../../core/sdk:bundle",
     "../../generated:protocol",
     "../../ui/kit:bundle",

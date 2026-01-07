@@ -46,7 +46,9 @@ devtools_module("handlers") {
   ]
 
   deps = [
+    "../../../core/common:bundle",
     "../../../core/platform:bundle",
+    "../../../core/sdk:bundle",
     "../../../generated",
     "../../../third_party/third-party-web:bundle",
     "../../cpu_profile:bundle",

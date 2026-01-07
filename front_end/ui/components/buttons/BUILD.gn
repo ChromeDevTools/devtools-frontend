@@ -42,7 +42,10 @@ devtools_entrypoint("bundle") {
     ":css_files",
   ]
 
-  visibility = [ "../../../entrypoints/main/*" ]
+  visibility = [
+    "../../../entrypoints/main/*",
+    "../../../entrypoints/node_app/app/*",
+  ]
 
   visibility += default_components_visibility
 }

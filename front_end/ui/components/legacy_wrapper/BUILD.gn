@@ -9,8 +9,10 @@ import("../visibility.gni")
 devtools_ui_module("legacy_wrapper") {
   sources = [ "LegacyWrapper.ts" ]
   deps = [
+    "../../../core/platform:bundle",
     "../../../ui/legacy:bundle",
     "../../../ui/lit:bundle",
+    "../../visual_logging:bundle",
   ]
 }
 

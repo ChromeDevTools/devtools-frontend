@@ -19,6 +19,7 @@ devtools_ui_module("whats_new") {
   ]
 
   deps = [
+    "../../core/common:bundle",
     "../../core/host:bundle",
     "../../core/i18n:bundle",
     "../../core/platform:bundle",

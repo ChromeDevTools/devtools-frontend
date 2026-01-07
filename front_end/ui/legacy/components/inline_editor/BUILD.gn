@@ -53,6 +53,7 @@ devtools_ui_module("inline_editor") {
     "../../../../core/platform:bundle",
     "../../../../core/sdk:bundle",
     "../../../../models/bindings:bundle",
+    "../../../../models/geometry:bundle",
     "../../../../models/text_utils:bundle",
     "../../../../panels/css_overview:bundle",
     "../../../../third_party/codemirror.next:bundle",
@@ -62,6 +63,8 @@ devtools_ui_module("inline_editor") {
     "../../../../ui/legacy/components/utils:bundle",
     "../../../../ui/lit:bundle",
     "../../../../ui/visual_logging:bundle",
+    "../../../kit:bundle",
+    "../color_picker:bundle",
   ]
 
   visibility = [ "../../../../component_docs/*" ]

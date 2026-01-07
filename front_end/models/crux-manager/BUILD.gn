@@ -11,6 +11,7 @@ devtools_module("crux-manager") {
 
   deps = [
     "../../core/common:bundle",
+    "../../core/i18n:bundle",
     "../../core/root:bundle",
     "../../core/sdk:bundle",
     "../emulation:bundle",
@@ -24,6 +25,7 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     ":*",
+    "../../entrypoints/main",
     "../../panels/timeline/*",
     "../trace/*",
   ]

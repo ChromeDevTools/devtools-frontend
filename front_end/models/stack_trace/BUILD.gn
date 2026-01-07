@@ -11,6 +11,7 @@ devtools_module("stack_trace") {
   deps = [
     "../../core/common:bundle",
     "../../core/sdk:bundle",
+    "../../generated:protocol",
     "../workspace:bundle",
   ]
 }

@@ -27,6 +27,8 @@ devtools_ui_module("changes") {
     "../../core/common:bundle",
     "../../core/host:bundle",
     "../../core/i18n:bundle",
+    "../../core/platform:bundle",
+    "../../models/greendev:bundle",
     "../../models/persistence:bundle",
     "../../models/text_utils:bundle",
     "../../models/workspace:bundle",
@@ -34,10 +36,13 @@ devtools_ui_module("changes") {
     "../../panels/snippets:bundle",
     "../../panels/utils:bundle",
     "../../third_party/diff:bundle",
+    "../../ui/components/buttons:bundle",
     "../../ui/components/diff_view:bundle",
     "../../ui/kit:bundle",
     "../../ui/legacy:bundle",
     "../../ui/lit:bundle",
+    "../../ui/visual_logging:bundle",
+    "../common:bundle",
   ]
 }
 

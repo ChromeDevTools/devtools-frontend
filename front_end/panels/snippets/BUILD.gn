@@ -16,13 +16,17 @@ devtools_ui_module("snippets") {
   deps = [
     "../../core/common:bundle",
     "../../core/i18n:bundle",
+    "../../core/platform:bundle",
     "../../core/sdk:bundle",
     "../../generated:protocol",
     "../../models/persistence:bundle",
     "../../models/text_utils:bundle",
     "../../models/workspace:bundle",
+    "../../ui/components/highlighting:bundle",
+    "../../ui/kit:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/quick_open:bundle",
+    "../../ui/lit:bundle",
   ]
 }
 

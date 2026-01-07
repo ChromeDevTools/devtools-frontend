@@ -14,6 +14,7 @@ devtools_ui_module("theme_support") {
     "../../../core/common:bundle",
     "../../../core/host:bundle",
     "../../../core/root:bundle",
+    "../../lit:bundle",
   ]
 }
 

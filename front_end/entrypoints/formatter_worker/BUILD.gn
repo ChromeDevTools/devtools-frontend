@@ -41,7 +41,11 @@ devtools_entrypoint("bundle") {
 
   deps = [ ":formatter_worker" ]
 
-  visibility = [ ":*" ]
+  visibility = [
+    ":*",
+    "../../panels/sources/*",
+    "../../ui/legacy/components/source_frame",
+  ]
 
   visibility += devtools_entrypoints_visibility
 }

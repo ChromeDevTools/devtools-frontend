@@ -46,6 +46,7 @@ devtools_entrypoint("bundle") {
     "../../ui/components/docs/data_grid_controller/*",
     "../../ui/components/highlighting/*",
     "../../ui/components/markdown_view/*",
+    "../../ui/components/text_editor/*",
     "../../ui/legacy/*",
   ]
 

@@ -27,11 +27,14 @@ devtools_ui_module("color_picker") {
     "../../../../core/host:bundle",
     "../../../../core/i18n:bundle",
     "../../../../core/platform:bundle",
+    "../../../../core/root:bundle",
     "../../../../core/sdk:bundle",
+    "../../../../models/text_utils:bundle",
     "../../../../ui/components/srgb_overlay:bundle",
     "../../../../ui/kit:bundle",
     "../../../../ui/legacy:bundle",
     "../../../../ui/visual_logging:bundle",
+    "../../../helpers:bundle",
   ]
 }
 
@@ -51,7 +54,7 @@ devtools_entrypoint("bundle") {
     "../../../../panels/css_overview/*",
     "../../../../panels/elements/*",
     "../../../../panels/sources/*",
-    "../../../components/text_editor/*",
+    "../inline_editor/*",
   ]
 
   visibility += devtools_ui_legacy_visibility

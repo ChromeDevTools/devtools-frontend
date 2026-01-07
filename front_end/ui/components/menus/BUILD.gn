@@ -28,6 +28,8 @@ devtools_ui_module("menus") {
     "../../../../front_end/ui/components/helpers:bundle",
     "../../../../front_end/ui/components/render_coordinator:bundle",
     "../../legacy:bundle",
+    "../../lit:bundle",
+    "../../visual_logging:bundle",
     "../dialogs:bundle",
   ]
 }

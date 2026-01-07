@@ -17,9 +17,11 @@ devtools_ui_module("snackbar") {
   sources = [ "Snackbar.ts" ]
 
   deps = [
+    "../../../core/i18n:bundle",
     "../../../core/platform:bundle",
     "../../legacy:bundle",
     "../../lit:bundle",
+    "../../visual_logging:bundle",
     "../buttons:bundle",
   ]
 }
@@ -32,7 +34,9 @@ devtools_entrypoint("bundle") {
     ":snackbar",
   ]
 
-  visibility = default_components_visibility
+  visibility = [ "../../../entrypoints/main" ]
+
+  visibility += default_components_visibility
 }
 
 devtools_ui_module("unittests") {

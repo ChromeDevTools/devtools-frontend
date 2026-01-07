@@ -10,7 +10,7 @@ devtools_entrypoint("bundle") {
 
   deps = [ "./package:csp_evaluator" ]
 
-  visibility = [ "../../panels/application/components/*" ]
+  visibility = [ "../../panels/application/*" ]
 
   visibility += devtools_third_party_visibility
 }

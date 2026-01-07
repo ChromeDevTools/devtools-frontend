@@ -79,6 +79,7 @@ devtools_entrypoint("bundle") {
   visibility = [
     ":*",
     "..:*",
+    "../../../ai_assistance/*",
   ]
 }
 

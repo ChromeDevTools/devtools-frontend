@@ -28,7 +28,9 @@ devtools_entrypoint("bundle") {
   visibility = [
     ":*",
     "../*",
+    "../../panels/ai_assistance/*",
     "../../panels/network/*",
+    "../../panels/profiler/*",
     "../../ui/legacy/components/perf_ui/*",
   ]
 }

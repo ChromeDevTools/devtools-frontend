@@ -18,6 +18,7 @@ devtools_module("types") {
   ]
 
   deps = [
+    "../../../core/platform:bundle",
     "../../../core/sdk:bundle",
     "../../../generated",
     "../../crux-manager:bundle",

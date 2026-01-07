@@ -18,6 +18,7 @@ devtools_ui_module("linkifier") {
     "LinkifierUtils.ts",
   ]
   deps = [
+    "../../../core/platform:bundle",
     "../../../models/bindings:bundle",
     "../../../ui/components/render_coordinator:bundle",
     "../../../ui/lit:bundle",

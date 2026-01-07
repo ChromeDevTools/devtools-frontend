@@ -24,11 +24,13 @@ devtools_ui_module("panel_feedback") {
   deps = [
     "../../../core/host:bundle",
     "../../../core/i18n:bundle",
+    "../../../core/platform:bundle",
     "../../../core/root:bundle",
     "../../../ui/components/helpers:bundle",
     "../../../ui/components/render_coordinator:bundle",
     "../../../ui/legacy:bundle",
     "../../../ui/lit:bundle",
+    "../../visual_logging:bundle",
     "../buttons:bundle",
     "../input:bundle",
   ]

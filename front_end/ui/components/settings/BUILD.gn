@@ -23,6 +23,9 @@ devtools_ui_module("settings") {
 
   deps = [
     "../../../core/common:bundle",
+    "../../../core/host:bundle",
+    "../../../core/i18n:bundle",
+    "../../kit:bundle",
     "../../legacy:bundle",
     "../../lit:bundle",
     "../../visual_logging:bundle",

@@ -33,11 +33,18 @@ devtools_module("insights") {
   ]
 
   deps = [
+    "../../../core/common:bundle",
+    "../../../core/i18n:bundle",
+    "../../../core/platform:bundle",
+    "../../../generated:protocol",
     "../../../third_party/legacy-javascript:bundle",
     "../../../third_party/third-party-web:bundle",
+    "../../crux-manager:bundle",
     "../extras:bundle",
     "../handlers:bundle",
+    "../helpers:bundle",
     "../lantern:bundle",
+    "../types:bundle",
   ]
 }
 
@@ -47,6 +54,8 @@ devtools_entrypoint("bundle") {
   visibility = [
     ":*",
     "../*",
+    "../../../panels/ai_assistance/*",
+    "../../ai_assistance/*",
   ]
 
   visibility += devtools_models_visibility

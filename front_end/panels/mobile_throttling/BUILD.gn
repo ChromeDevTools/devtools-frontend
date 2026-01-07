@@ -27,10 +27,13 @@ devtools_ui_module("mobile_throttling") {
     "../../core/common:bundle",
     "../../core/host:bundle",
     "../../core/i18n:bundle",
+    "../../core/platform:bundle",
     "../../core/sdk:bundle",
     "../../models/badges:bundle",
+    "../../ui/components/buttons:bundle",
     "../../ui/kit:bundle",
     "../../ui/legacy:bundle",
+    "../../ui/lit:bundle",
     "../../ui/visual_logging:bundle",
   ]
 }

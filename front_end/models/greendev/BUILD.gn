@@ -9,7 +9,10 @@ import("../visibility.gni")
 devtools_module("greendev") {
   sources = [ "Prototypes.ts" ]
 
-  deps = [ "../../core/common:bundle" ]
+  deps = [
+    "../../core/common:bundle",
+    "../../core/root:bundle",
+  ]
 }
 
 devtools_entrypoint("bundle") {
@@ -19,6 +22,9 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     "../*",
+    "../../panels/ai_assistance/*",
+    "../../panels/changes/*",
+    "../../panels/common/*",
     "../../panels/settings/*",
     "../../ui/*",
   ]

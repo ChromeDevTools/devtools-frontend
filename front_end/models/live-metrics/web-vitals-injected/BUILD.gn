@@ -15,6 +15,7 @@ devtools_module("web-vitals-injected") {
 
   deps = [
     "../../../third_party/web-vitals:bundle",
+    "../../trace:bundle",
     "./spec:bundle",
   ]
 

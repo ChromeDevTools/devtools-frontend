@@ -18,6 +18,7 @@ devtools_ui_module("diff_view") {
   deps = [
     ":css_files",
     "../../../core/common:bundle",
+    "../../../core/i18n:bundle",
     "../../../core/sdk:bundle",
     "../../../third_party/diff:bundle",
     "../../lit:bundle",

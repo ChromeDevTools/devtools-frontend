@@ -105,6 +105,7 @@ devtools_entrypoint("bundle") {
   visibility = [
     ":*",
     "..:*",
+    "../../ai_assistance/*",
 
     # only for use in tests
     "../../../models/trace/handlers/*",

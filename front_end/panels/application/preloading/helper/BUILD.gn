@@ -9,7 +9,10 @@ import("../../../visibility.gni")
 devtools_ui_module("helper") {
   sources = [ "PreloadingForward.ts" ]
 
-  deps = [ "../../../../core/sdk:bundle" ]
+  deps = [
+    "../../../../core/sdk:bundle",
+    "../../../../generated:protocol",
+  ]
 }
 
 devtools_entrypoint("bundle") {

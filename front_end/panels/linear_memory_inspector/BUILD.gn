@@ -18,6 +18,8 @@ devtools_ui_module("linear_memory_inspector") {
     "../../core/common:bundle",
     "../../core/i18n:bundle",
     "../../core/platform:bundle",
+    "../../core/sdk:bundle",
+    "../../models/bindings:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/object_ui:bundle",
     "../../ui/visual_logging:bundle",

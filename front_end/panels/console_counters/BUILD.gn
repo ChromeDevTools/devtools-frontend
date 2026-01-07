@@ -21,6 +21,8 @@ devtools_ui_module("console_counters") {
     "../../ui/components/icon_button:bundle",
     "../../ui/components/issue_counter:bundle",
     "../../ui/legacy:bundle",
+    "../../ui/lit:bundle",
+    "../../ui/visual_logging:bundle",
   ]
 }
 

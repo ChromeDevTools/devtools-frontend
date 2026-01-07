@@ -20,6 +20,7 @@ devtools_module("trace") {
 
   deps = [
     "../../core/common:bundle",
+    "../../core/i18n:bundle",
     "../../core/platform:bundle",
     "../../core/root:bundle",
     "../../core/sdk:bundle",

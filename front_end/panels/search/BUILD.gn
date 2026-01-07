@@ -24,12 +24,17 @@ devtools_ui_module("search") {
 
   deps = [
     "../../core/common:bundle",
+    "../../core/host:bundle",
     "../../core/i18n:bundle",
     "../../core/platform:bundle",
     "../../models/text_utils:bundle",
     "../../models/workspace:bundle",
+    "../../ui/components/buttons:bundle",
+    "../../ui/kit:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/utils:bundle",
+    "../../ui/lit:bundle",
+    "../../ui/visual_logging:bundle",
   ]
 }
 

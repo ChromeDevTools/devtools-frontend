@@ -25,10 +25,15 @@ devtools_ui_module("quick_open") {
     "../../../../core/host:bundle",
     "../../../../core/i18n:bundle",
     "../../../../core/platform:bundle",
+    "../../../../models/geometry:bundle",
     "../../../../models/text_utils:bundle",
     "../../../../third_party/diff:bundle",
     "../../../../ui/components/text_prompt:bundle",
     "../../../../ui/legacy:bundle",
+    "../../../components/highlighting:bundle",
+    "../../../kit:bundle",
+    "../../../lit:bundle",
+    "../../../visual_logging:bundle",
   ]
 }
 

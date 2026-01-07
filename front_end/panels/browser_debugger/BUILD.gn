@@ -29,10 +29,15 @@ devtools_ui_module("browser_debugger") {
   deps = [
     "../../core/common:bundle",
     "../../core/i18n:bundle",
+    "../../core/platform:bundle",
+    "../../core/root:bundle",
     "../../core/sdk:bundle",
+    "../../generated:protocol",
     "../../panels/event_listeners:bundle",
     "../../panels/sources:bundle",
+    "../../ui/components/buttons:bundle",
     "../../ui/legacy:bundle",
+    "../../ui/lit:bundle",
     "../../ui/visual_logging:bundle",
     "../common:bundle",
   ]

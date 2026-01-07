@@ -24,6 +24,8 @@ devtools_ui_module("performance_monitor") {
     "../../ui/kit:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/theme_support:bundle",
+    "../../ui/lit:bundle",
+    "../../ui/visual_logging:bundle",
   ]
 }
 

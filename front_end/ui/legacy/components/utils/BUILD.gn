@@ -38,6 +38,9 @@ devtools_ui_module("utils") {
     "../../../../models/trace:bundle",
     "../../../../models/workspace:bundle",
     "../../../../ui/legacy:bundle",
+    "../../../helpers:bundle",
+    "../../../lit:bundle",
+    "../../../visual_logging:bundle",
   ]
 }
 

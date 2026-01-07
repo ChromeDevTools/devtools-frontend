@@ -39,6 +39,8 @@ devtools_ui_module("components") {
     "../../../core/sdk:bundle",
     "../../../generated:protocol",
     "../../../models/issues_manager:bundle",
+    "../../../models/persistence:bundle",
+    "../../../models/text_utils:bundle",
     "../../../models/workspace:bundle",
     "../../../panels/sources:bundle",
     "../../../panels/utils:bundle",
@@ -47,10 +49,12 @@ devtools_ui_module("components") {
     "../../../ui/components/helpers:bundle",
     "../../../ui/components/input:bundle",
     "../../../ui/components/legacy_wrapper:bundle",
+    "../../../ui/components/render_coordinator:bundle",
     "../../../ui/components/report_view:bundle",
     "../../../ui/kit:bundle",
     "../../../ui/legacy:bundle",
     "../../../ui/lit:bundle",
+    "../../../ui/visual_logging:bundle",
     "../forward:bundle",
   ]
 }
@@ -66,6 +70,7 @@ devtools_entrypoint("bundle") {
   visibility = [
     ":*",
     "../:*",
+    "../../application/*",
   ]
 
   visibility += devtools_panels_visibility

@@ -29,6 +29,7 @@ devtools_entrypoint("bundle") {
     # as the Lit module should only be used in UI code, and business logic
     # should never depend on the Lit module.
     ":unittests",
+    "../../entrypoints/inspector_main",
     "../../entrypoints/main/*",
     "../../panels/*",
     "../../testing/*",

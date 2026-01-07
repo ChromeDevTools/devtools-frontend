@@ -44,6 +44,7 @@ devtools_ui_module("emulation") {
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/utils:bundle",
     "../../ui/legacy/theme_support:bundle",
+    "../../ui/lit:bundle",
     "../../ui/visual_logging:bundle",
     "./components:bundle",
   ]

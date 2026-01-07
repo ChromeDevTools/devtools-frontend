@@ -22,6 +22,7 @@ devtools_module("helpers") {
     "../../../core/common:bundle",
     "../../../core/platform:bundle",
     "../../../core/root:bundle",
+    "../../../generated:protocol",
     "../../../models/cpu_profile:bundle",
     "../../../third_party/third-party-web:bundle",
     "../types:bundle",
@@ -34,6 +35,7 @@ devtools_entrypoint("bundle") {
   visibility = [
     ":*",
     "../*",
+    "../../../panels/ai_assistance:*",
   ]
 
   visibility += devtools_models_visibility

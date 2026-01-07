@@ -27,6 +27,7 @@ devtools_ui_module("request_link_icon") {
     "../../../ui/visual_logging:bundle",
     "../../kit:bundle",
     "../helpers:bundle",
+    "../render_coordinator:bundle",
   ]
 }
 

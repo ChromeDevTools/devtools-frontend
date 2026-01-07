@@ -31,6 +31,7 @@ devtools_ui_module("sensors") {
     "../../ui/kit:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/settings_ui:bundle",
+    "../../ui/visual_logging:bundle",
   ]
 }
 

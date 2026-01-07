@@ -12,7 +12,9 @@ devtools_module("autofill_manager") {
 
   deps = [
     "../../core/common:bundle",
+    "../../core/platform:bundle",
     "../../core/sdk:bundle",
+    "../../generated:protocol",
   ]
 }
 

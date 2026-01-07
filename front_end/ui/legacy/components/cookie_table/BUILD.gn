@@ -25,6 +25,8 @@ devtools_ui_module("cookie_table") {
     "../../../../panels/network/forward:bundle",
     "../../../../ui/legacy:bundle",
     "../../../../ui/legacy/components/data_grid:bundle",
+    "../../../kit:bundle",
+    "../../../lit:bundle",
   ]
 }
 

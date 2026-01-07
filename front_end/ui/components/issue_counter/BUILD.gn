@@ -24,12 +24,15 @@ devtools_ui_module("issue_counter") {
   deps = [
     "../../../core/common:bundle",
     "../../../core/i18n:bundle",
+    "../../../core/platform:bundle",
+    "../../../generated:protocol",
     "../../../models/issues_manager:bundle",
     "../../../ui/lit:bundle",
     "../../../ui/visual_logging:bundle",
     "../../kit:bundle",
     "../helpers:bundle",
     "../icon_button:bundle",
+    "../render_coordinator:bundle",
   ]
 }
 

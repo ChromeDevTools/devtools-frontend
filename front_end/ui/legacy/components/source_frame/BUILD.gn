@@ -37,7 +37,9 @@ devtools_ui_module("source_frame") {
     "../../../../core/host:bundle",
     "../../../../core/i18n:bundle",
     "../../../../core/platform:bundle",
+    "../../../../core/root:bundle",
     "../../../../core/sdk:bundle",
+    "../../../../entrypoints/formatter_worker:bundle",
     "../../../../models/formatter:bundle",
     "../../../../models/text_utils:bundle",
     "../../../../models/workspace:bundle",
@@ -48,6 +50,9 @@ devtools_ui_module("source_frame") {
     "../../../../ui/components/text_editor:bundle",
     "../../../../ui/legacy:bundle",
     "../../../../ui/legacy/components/object_ui:bundle",
+    "../../../components/code_highlighter:bundle",
+    "../../../lit:bundle",
+    "../../../visual_logging:bundle",
   ]
 }
 
@@ -67,6 +72,7 @@ devtools_entrypoint("bundle") {
     "../../../../panels/application/*",
     "../../../../panels/coverage/*",
     "../../../../panels/explain/*",
+    "../../../../panels/media/*",
     "../../../../panels/network/*",
     "../../../../panels/protocol_monitor/*",
     "../../../../panels/sources/*",

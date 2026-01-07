@@ -49,6 +49,7 @@ devtools_ui_module("components") {
     "../../../core/platform:bundle",
     "../../../core/root:bundle",
     "../../../core/sdk:bundle",
+    "../../../generated:protocol",
     "../../../models/bindings:bundle",
     "../../../panels/common:bundle",
     "../../../panels/network/forward:bundle",
@@ -58,6 +59,7 @@ devtools_ui_module("components") {
     "../../../ui/components/expandable_list:bundle",
     "../../../ui/components/input:bundle",
     "../../../ui/components/legacy_wrapper:bundle",
+    "../../../ui/components/render_coordinator:bundle",
     "../../../ui/components/report_view:bundle",
     "../../../ui/components/text_prompt:bundle",
     "../../../ui/components/tree_outline:bundle",
@@ -67,6 +69,8 @@ devtools_ui_module("components") {
     "../../../ui/legacy/components/data_grid:bundle",
     "../../../ui/legacy/components/source_frame:bundle",
     "../../../ui/legacy/components/utils:bundle",
+    "../../../ui/lit:bundle",
+    "../../../ui/visual_logging:bundle",
   ]
 }
 

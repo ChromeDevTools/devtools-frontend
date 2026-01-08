@@ -66,7 +66,6 @@ export declare class ConsoleView extends UI.Widget.VBox implements UI.Searchable
     aiCodeCompletionConfig?: TextEditor.AiCodeCompletionProvider.AiCodeCompletionConfig;
     private aiCodeCompletionSummaryToolbarContainer?;
     private aiCodeCompletionSummaryToolbar?;
-    private aiCodeCompletionCitations;
     constructor(viewportThrottlerTimeout: number);
     static instance(opts?: {
         forceNew: boolean;

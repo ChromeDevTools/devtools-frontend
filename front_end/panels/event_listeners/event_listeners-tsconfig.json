@@ -49,7 +49,16 @@
       "path": "../../core/i18n/bundle-tsconfig.json"
     },
     {
+      "path": "../../core/platform/bundle-tsconfig.json"
+    },
+    {
       "path": "../../core/sdk/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../generated/protocol-tsconfig.json"
+    },
+    {
+      "path": "../../ui/components/buttons/bundle-tsconfig.json"
     },
     {
       "path": "../../ui/legacy/bundle-tsconfig.json"
@@ -59,6 +68,9 @@
     },
     {
       "path": "../../ui/legacy/components/utils/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../ui/visual_logging/bundle-tsconfig.json"
     }
   ]
 }

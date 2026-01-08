@@ -4,30 +4,10 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/ui/components/text_editor/AiCodeCompletionProvider.js
-var AiCodeCompletionProvider_exports = {};
-__export(AiCodeCompletionProvider_exports, {
-  AIDA_REQUEST_DEBOUNCE_TIMEOUT_MS: () => AIDA_REQUEST_DEBOUNCE_TIMEOUT_MS,
-  AiCodeCompletionProvider: () => AiCodeCompletionProvider,
-  AiCodeCompletionTeaserMode: () => AiCodeCompletionTeaserMode,
-  DELAY_BEFORE_SHOWING_RESPONSE_MS: () => DELAY_BEFORE_SHOWING_RESPONSE_MS,
-  aiCodeCompletionTeaserModeState: () => aiCodeCompletionTeaserModeState,
-  setAiCodeCompletionTeaserMode: () => setAiCodeCompletionTeaserMode
-});
-import * as Common2 from "./../../../core/common/common.js";
-import * as Host from "./../../../core/host/host.js";
-import * as i18n3 from "./../../../core/i18n/i18n.js";
-import * as AiCodeCompletion from "./../../../models/ai_code_completion/ai_code_completion.js";
-import * as PanelCommon from "./../../../panels/common/common.js";
-import * as CodeMirror from "./../../../third_party/codemirror.next/codemirror.next.js";
-import * as UI2 from "./../../legacy/legacy.js";
-import * as VisualLogging2 from "./../../visual_logging/visual_logging.js";
-
-// gen/front_end/ui/components/text_editor/AiCodeCompletionTeaserPlaceholder.js
-var AiCodeCompletionTeaserPlaceholder_exports = {};
-__export(AiCodeCompletionTeaserPlaceholder_exports, {
-  AiCodeCompletionTeaserPlaceholder: () => AiCodeCompletionTeaserPlaceholder,
-  aiCodeCompletionTeaserPlaceholder: () => aiCodeCompletionTeaserPlaceholder,
+// gen/front_end/ui/components/text_editor/AccessiblePlaceholder.js
+var AccessiblePlaceholder_exports = {};
+__export(AccessiblePlaceholder_exports, {
+  AccessiblePlaceholder: () => AccessiblePlaceholder,
   flattenRect: () => flattenRect
 });
 import * as CM from "./../../../third_party/codemirror.next/codemirror.next.js";
@@ -35,7 +15,7 @@ function flattenRect(rect, left) {
   const x = left ? rect.left : rect.right;
   return { left: x, right: x, top: rect.top, bottom: rect.bottom };
 }
-var AiCodeCompletionTeaserPlaceholder = class extends CM.WidgetType {
+var AccessiblePlaceholder = class extends CM.WidgetType {
   teaser;
   constructor(teaser) {
     super();
@@ -78,20 +58,25 @@ var AiCodeCompletionTeaserPlaceholder = class extends CM.WidgetType {
     return this.teaser === other.teaser;
   }
 };
-function aiCodeCompletionTeaserPlaceholder(teaser) {
-  const plugin = CM.ViewPlugin.fromClass(class {
-    view;
-    placeholder;
-    constructor(view) {
-      this.view = view;
-      this.placeholder = CM.Decoration.set([CM.Decoration.widget({ widget: new AiCodeCompletionTeaserPlaceholder(teaser), side: 1 }).range(0)]);
-    }
-    get decorations() {
-      return this.view.state.doc.length ? CM.Decoration.none : this.placeholder;
-    }
-  }, { decorations: (v) => v.decorations });
-  return plugin;
-}
+
+// gen/front_end/ui/components/text_editor/AiCodeCompletionProvider.js
+var AiCodeCompletionProvider_exports = {};
+__export(AiCodeCompletionProvider_exports, {
+  AIDA_REQUEST_DEBOUNCE_TIMEOUT_MS: () => AIDA_REQUEST_DEBOUNCE_TIMEOUT_MS,
+  AiCodeCompletionProvider: () => AiCodeCompletionProvider,
+  AiCodeCompletionTeaserMode: () => AiCodeCompletionTeaserMode,
+  DELAY_BEFORE_SHOWING_RESPONSE_MS: () => DELAY_BEFORE_SHOWING_RESPONSE_MS,
+  aiCodeCompletionTeaserModeState: () => aiCodeCompletionTeaserModeState,
+  setAiCodeCompletionTeaserMode: () => setAiCodeCompletionTeaserMode
+});
+import * as Common2 from "./../../../core/common/common.js";
+import * as Host from "./../../../core/host/host.js";
+import * as i18n3 from "./../../../core/i18n/i18n.js";
+import * as AiCodeCompletion from "./../../../models/ai_code_completion/ai_code_completion.js";
+import * as PanelCommon from "./../../../panels/common/common.js";
+import * as CodeMirror from "./../../../third_party/codemirror.next/codemirror.next.js";
+import * as UI2 from "./../../legacy/legacy.js";
+import * as VisualLogging2 from "./../../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/components/text_editor/config.js
 var config_exports = {};
@@ -859,6 +844,7 @@ var AiCodeCompletionProvider = class _AiCodeCompletionProvider {
   #teaser;
   #suggestionRenderingTimeout;
   #editor;
+  #aiCodeCompletionCitations = [];
   #aiCodeCompletionConfig;
   #boundOnUpdateAiCodeCompletionState = this.#updateAiCodeCompletionState.bind(this);
   constructor(aiCodeCompletionConfig) {
@@ -971,7 +957,7 @@ var AiCodeCompletionProvider = class _AiCodeCompletionProvider {
           if (suggestion?.rpcGlobalId) {
             this.#aiCodeCompletion?.registerUserAcceptance(suggestion.rpcGlobalId, suggestion.sampleId);
           }
-          this.#aiCodeCompletionConfig?.onSuggestionAccepted();
+          this.#aiCodeCompletionConfig?.onSuggestionAccepted(this.#aiCodeCompletionCitations);
           return true;
         }
       }
@@ -1023,9 +1009,10 @@ var AiCodeCompletionProvider = class _AiCodeCompletionProvider {
     void this.#requestAidaSuggestion(prefix, suffix, cursorPositionAtRequest, inferenceLanguage, additionalFiles);
   }, AIDA_REQUEST_DEBOUNCE_TIMEOUT_MS);
   async #requestAidaSuggestion(prefix, suffix, cursorPositionAtRequest, inferenceLanguage, additionalFiles) {
+    this.#aiCodeCompletionCitations = [];
     if (!this.#aiCodeCompletion) {
       AiCodeCompletion.debugLog("Ai Code Completion is not initialized");
-      this.#aiCodeCompletionConfig?.onResponseReceived([]);
+      this.#aiCodeCompletionConfig?.onResponseReceived();
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiCodeCompletionError);
       return;
     }
@@ -1035,17 +1022,17 @@ var AiCodeCompletionProvider = class _AiCodeCompletionProvider {
     try {
       const completionResponse = await this.#aiCodeCompletion.completeCode(prefix, suffix, cursorPositionAtRequest, inferenceLanguage, additionalFiles);
       if (!completionResponse) {
-        this.#aiCodeCompletionConfig?.onResponseReceived([]);
+        this.#aiCodeCompletionConfig?.onResponseReceived();
         return;
       }
       const { response, fromCache } = completionResponse;
       if (!response) {
-        this.#aiCodeCompletionConfig?.onResponseReceived([]);
+        this.#aiCodeCompletionConfig?.onResponseReceived();
         return;
       }
       const sampleResponse = await this.#generateSampleForRequest(response, prefix, suffix);
       if (!sampleResponse) {
-        this.#aiCodeCompletionConfig?.onResponseReceived([]);
+        this.#aiCodeCompletionConfig?.onResponseReceived();
         return;
       }
       const { suggestionText, sampleId, citations, rpcGlobalId } = sampleResponse;
@@ -1053,7 +1040,7 @@ var AiCodeCompletionProvider = class _AiCodeCompletionProvider {
       this.#suggestionRenderingTimeout = window.setTimeout(() => {
         const currentCursorPosition = this.#editor?.editor.state.selection.main.head;
         if (currentCursorPosition !== cursorPositionAtRequest) {
-          this.#aiCodeCompletionConfig?.onResponseReceived([]);
+          this.#aiCodeCompletionConfig?.onResponseReceived();
           return;
         }
         if (this.#aiCodeCompletion) {
@@ -1073,11 +1060,12 @@ var AiCodeCompletionProvider = class _AiCodeCompletionProvider {
           Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiCodeCompletionResponseServedFromCache);
         }
         AiCodeCompletion.debugLog("Suggestion dispatched to the editor", suggestionText, "at cursor position", cursorPositionAtRequest);
-        this.#aiCodeCompletionConfig?.onResponseReceived(citations);
+        this.#aiCodeCompletionCitations = citations;
+        this.#aiCodeCompletionConfig?.onResponseReceived();
       }, remainingDelay);
     } catch (e) {
       AiCodeCompletion.debugLog("Error while fetching code completion suggestions from AIDA", e);
-      this.#aiCodeCompletionConfig?.onResponseReceived([]);
+      this.#aiCodeCompletionConfig?.onResponseReceived();
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiCodeCompletionError);
     }
   }
@@ -1207,7 +1195,7 @@ function aiCodeCompletionTeaserExtension(teaser) {
     }
     #addTeaserWidget(pos) {
       this.#teaserDecoration = CodeMirror.Decoration.set([
-        CodeMirror.Decoration.widget({ widget: new AiCodeCompletionTeaserPlaceholder(this.teaser), side: 1 }).range(pos)
+        CodeMirror.Decoration.widget({ widget: new AccessiblePlaceholder(this.teaser), side: 1 }).range(pos)
       ]);
     }
   }, {
@@ -1340,6 +1328,7 @@ var AiCodeGenerationProvider = class _AiCodeGenerationProvider {
   #editor;
   #aiCodeGenerationConfig;
   #aiCodeGeneration;
+  #aiCodeGenerationCitations = [];
   #aidaClient = new Host2.AidaClient.AidaClient();
   #boundOnUpdateAiCodeGenerationState = this.#updateAiCodeGenerationState.bind(this);
   #controller = new AbortController();
@@ -1440,7 +1429,7 @@ var AiCodeGenerationProvider = class _AiCodeGenerationProvider {
           if (suggestion?.rpcGlobalId) {
             this.#aiCodeGeneration.registerUserAcceptance(suggestion.rpcGlobalId, suggestion.sampleId);
           }
-          this.#aiCodeGenerationConfig?.onSuggestionAccepted();
+          this.#aiCodeGenerationConfig?.onSuggestionAccepted(this.#aiCodeGenerationCitations);
           return true;
         }
       },
@@ -1513,6 +1502,7 @@ var AiCodeGenerationProvider = class _AiCodeGenerationProvider {
     if (!this.#editor || !this.#aiCodeGeneration) {
       return;
     }
+    this.#aiCodeGenerationCitations = [];
     this.#generationTeaser.displayState = PanelCommon2.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.LOADING;
     const cursor = this.#editor.state.selection.main.head;
     const query = AiCodeGenerationParser.extractCommentText(this.#editor.state, cursor);
@@ -1528,7 +1518,7 @@ var AiCodeGenerationProvider = class _AiCodeGenerationProvider {
         this.#dismissTeaserAndSuggestion();
       }
       if (!generationResponse || generationResponse.samples.length === 0) {
-        this.#aiCodeGenerationConfig?.onResponseReceived([]);
+        this.#aiCodeGenerationConfig?.onResponseReceived();
         return;
       }
       const topSample = generationResponse.samples[0];
@@ -1555,11 +1545,12 @@ var AiCodeGenerationProvider = class _AiCodeGenerationProvider {
       this.#generationTeaser.displayState = PanelCommon2.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.GENERATED;
       AiCodeGeneration.debugLog("Suggestion dispatched to the editor", suggestionText);
       const citations = topSample.attributionMetadata?.citations ?? [];
-      this.#aiCodeGenerationConfig?.onResponseReceived(citations);
+      this.#aiCodeGenerationCitations = citations;
+      this.#aiCodeGenerationConfig?.onResponseReceived();
       return;
     } catch (e) {
       AiCodeGeneration.debugLog("Error while fetching code generation suggestions from AIDA", e);
-      this.#aiCodeGenerationConfig?.onResponseReceived([]);
+      this.#aiCodeGenerationConfig?.onResponseReceived();
       Host2.userMetrics.actionTaken(Host2.UserMetrics.Action.AiCodeGenerationError);
     }
     if (this.#generationTeaser) {
@@ -1592,7 +1583,7 @@ function aiCodeGenerationTeaserExtension(teaser) {
       const isCursorAtEndOfLine = cursorPosition >= line.to;
       if (isEmptyLine || isComment && isCursorAtEndOfLine) {
         return CodeMirror3.Decoration.set([
-          CodeMirror3.Decoration.widget({ widget: new AiCodeCompletionTeaserPlaceholder(teaser), side: 1 }).range(cursorPosition)
+          CodeMirror3.Decoration.widget({ widget: new AccessiblePlaceholder(teaser), side: 1 }).range(cursorPosition)
         ]);
       }
       return CodeMirror3.Decoration.none;
@@ -2624,6 +2615,9 @@ var TextEditor = class extends HTMLElement {
       this.#lastScrollSnapshot = this.#activeEditor.scrollSnapshot();
       this.scrollEventHandledToSaveScrollPositionForTest();
     });
+    this.#activeEditor.scrollDOM.addEventListener("scrollend", () => {
+      this.dispatchEvent(new Event("scrollend"));
+    });
     this.#ensureSettingListeners();
     this.#startObservingResize();
     ThemeSupport.ThemeSupport.instance().addEventListener(ThemeSupport.ThemeChangeEvent.eventName, () => {
@@ -2865,8 +2859,8 @@ var TextEditorHistory = class {
   }
 };
 export {
+  AccessiblePlaceholder_exports as AccessiblePlaceholder,
   AiCodeCompletionProvider_exports as AiCodeCompletionProvider,
-  AiCodeCompletionTeaserPlaceholder_exports as AiCodeCompletionTeaserPlaceholder,
   AiCodeGenerationParser_exports as AiCodeGenerationParser,
   AiCodeGenerationProvider_exports as AiCodeGenerationProvider,
   AutocompleteHistory_exports as AutocompleteHistory,

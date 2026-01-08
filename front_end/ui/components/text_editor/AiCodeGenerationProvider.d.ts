@@ -11,9 +11,9 @@ export interface AiCodeGenerationConfig {
     generationContext: {
         inferenceLanguage?: Host.AidaClient.AidaInferenceLanguage;
     };
-    onSuggestionAccepted: () => void;
+    onSuggestionAccepted: (citations: Host.AidaClient.Citation[]) => void;
     onRequestTriggered: () => void;
-    onResponseReceived: (citations: Host.AidaClient.Citation[]) => void;
+    onResponseReceived: () => void;
     panel: AiCodeCompletion.AiCodeCompletion.ContextFlavor;
 }
 export declare class AiCodeGenerationProvider {

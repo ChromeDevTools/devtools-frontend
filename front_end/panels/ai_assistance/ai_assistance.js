@@ -2469,6 +2469,1037 @@ var ChatInput = class extends UI4.Widget.Widget {
   };
 };
 
+// gen/front_end/panels/ai_assistance/components/ChatMessage.js
+var ChatMessage_exports = {};
+__export(ChatMessage_exports, {
+  ChatMessage: () => ChatMessage,
+  DEFAULT_VIEW: () => DEFAULT_VIEW4
+});
+import "./../../ui/components/markdown_view/markdown_view.js";
+import * as Common3 from "./../../core/common/common.js";
+import * as Host3 from "./../../core/host/host.js";
+import * as i18n7 from "./../../core/i18n/i18n.js";
+import * as AiAssistanceModel4 from "./../../models/ai_assistance/ai_assistance.js";
+import * as Marked from "./../../third_party/marked/marked.js";
+import * as Buttons5 from "./../../ui/components/buttons/buttons.js";
+import * as Input2 from "./../../ui/components/input/input.js";
+import * as UIHelpers from "./../../ui/helpers/helpers.js";
+import * as UI5 from "./../../ui/legacy/legacy.js";
+import * as Lit5 from "./../../ui/lit/lit.js";
+import * as VisualLogging4 from "./../../ui/visual_logging/visual_logging.js";
+
+// gen/front_end/panels/ai_assistance/components/chatMessage.css.js
+var chatMessage_css_default = `/*
+ * Copyright 2024 The Chromium Authors
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+@scope to (devtools-widget > *) {
+  .ai-assistance-feedback-row {
+    font-family: var(--default-font-family);
+    width: 100%;
+    display: flex;
+    gap: var(--sys-size-8);
+    justify-content: space-between;
+    align-items: center;
+    margin-block: calc(-1 * var(--sys-size-3));
+
+    .action-buttons {
+      display: flex;
+      align-items: center;
+      gap: var(--sys-size-2);
+      padding: var(--sys-size-4) 0;
+    }
+
+    .vertical-separator {
+      height: 16px;
+      width: 1px;
+      vertical-align: top;
+      margin: 0 var(--sys-size-2);
+      background: var(--sys-color-divider);
+      display: inline-block;
+    }
+
+    .suggestions-container {
+      overflow: hidden;
+      position: relative;
+      display: flex;
+
+      .suggestions-scroll-container {
+        display: flex;
+        overflow: auto hidden;
+        scrollbar-width: none;
+        gap: var(--sys-size-3);
+        padding: var(--sys-size-3);
+      }
+
+      .scroll-button-container {
+        position: absolute;
+        top: 0;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        width: var(--sys-size-15);
+        z-index: 999;
+      }
+
+      .scroll-button-container.hidden {
+        display: none;
+      }
+
+      .scroll-button-container.left {
+        left: 0;
+        background:
+          linear-gradient(
+            90deg,
+            var(--sys-color-cdt-base-container) 0%,
+            var(--sys-color-cdt-base-container) 50%,
+            transparent
+          );
+      }
+
+      .scroll-button-container.right {
+        right: 0;
+        background:
+          linear-gradient(
+            90deg,
+            transparent,
+            var(--sys-color-cdt-base-container) 50%
+          );
+        justify-content: flex-end;
+      }
+    }
+  }
+
+  .feedback-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sys-size-5);
+    margin-top: var(--sys-size-4);
+    background-color: var(--sys-color-surface3);
+    padding: var(--sys-size-6);
+    border-radius: var(--sys-shape-corner-medium-small);
+    max-width: var(--sys-size-32);
+
+    .feedback-input {
+      height: var(--sys-size-11);
+      padding: 0 var(--sys-size-5);
+      background-color: var(--sys-color-surface3);
+      width: auto;
+    }
+
+    .feedback-input::placeholder {
+      color: var(--sys-color-on-surface-subtle);
+      font: var(--sys-typescale-body4-regular);
+    }
+
+    .feedback-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .feedback-title {
+      margin: 0;
+      font: var(--sys-typescale-body3-medium);
+    }
+
+    .feedback-disclaimer {
+      padding: 0 var(--sys-size-4);
+    }
+  }
+
+  .chat-message {
+    user-select: text;
+    cursor: initial;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sys-size-5);
+    width: 100%;
+    padding: var(--sys-size-7) var(--sys-size-5);
+    font-size: 12px;
+    word-break: normal;
+    overflow-wrap: anywhere;
+    border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
+
+    &.is-last-message {
+      border-bottom: 0;
+    }
+
+    .message-info {
+      display: flex;
+      align-items: center;
+      height: var(--sys-size-11);
+      gap: var(--sys-size-4);
+      font: var(--sys-typescale-body4-bold);
+
+      img {
+        border: 0;
+        border-radius: var(--sys-shape-corner-full);
+        display: block;
+        height: var(--sys-size-9);
+        width: var(--sys-size-9);
+      }
+
+      h2 {
+        font: var(--sys-typescale-body4-bold);
+      }
+    }
+
+    .actions {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sys-size-8);
+      max-width: 100%;
+    }
+
+    .aborted {
+      color: var(--sys-color-on-surface-subtle);
+    }
+
+    .image-link {
+      width: fit-content;
+      border-radius: var(--sys-shape-corner-small);
+      outline-offset: var(--sys-size-2);
+
+      img {
+        max-height: var(--sys-size-20);
+        max-width: 100%;
+        border-radius: var(--sys-shape-corner-small);
+        border: 1px solid var(--sys-color-neutral-outline);
+        width: fit-content;
+        vertical-align: bottom;
+      }
+    }
+
+    .unavailable-image {
+      margin: var(--sys-size-4) 0;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      height: var(--sys-size-17);
+      width: var(--sys-size-18);
+      background-color: var(--sys-color-surface3);
+      border-radius: var(--sys-shape-corner-small);
+      border: 1px solid var(--sys-color-neutral-outline);
+
+      devtools-icon {
+        color: var(--sys-color-state-disabled);
+      }
+    }
+  }
+
+  .indicator {
+    color: var(--sys-color-green-bright);
+  }
+
+  .summary {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    padding: var(--sys-size-3);
+    line-height: var(--sys-size-9);
+    cursor: default;
+    gap: var(--sys-size-3);
+    justify-content: center;
+    align-items: center;
+
+    .title {
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+      font: var(--sys-typescale-body4-regular);
+
+      .paused {
+        font: var(--sys-typescale-body4-bold);
+      }
+    }
+  }
+
+  .step-code {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sys-size-2);
+  }
+
+  .js-code-output {
+    devtools-code-block {
+      --code-block-max-code-height: 50px;
+    }
+  }
+
+  .context-details {
+    devtools-code-block {
+      --code-block-max-code-height: 80px;
+    }
+  }
+
+  .step {
+    width: fit-content;
+    background-color: var(--sys-color-surface3);
+    border-radius: var(--sys-size-6);
+    position: relative;
+
+    &.empty {
+      pointer-events: none;
+
+      .arrow {
+        display: none;
+      }
+    }
+
+    &:not(&[open]):hover::after {
+      content: '';
+      height: 100%;
+      width: 100%;
+      border-radius: inherit;
+      position: absolute;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      background-color: var(--sys-color-state-hover-on-subtle);
+    }
+
+    &.paused {
+      .indicator {
+        color: var(--sys-color-on-surface-subtle);
+      }
+    }
+
+    &.canceled {
+      .summary {
+        color: var(--sys-color-state-disabled);
+        text-decoration: line-through;
+      }
+
+      .indicator {
+        color: var(--sys-color-state-disabled);
+      }
+    }
+
+    devtools-markdown-view {
+      --code-background-color: var(--sys-color-surface1);
+    }
+
+    devtools-icon {
+      vertical-align: bottom;
+    }
+
+    devtools-spinner {
+      width: var(--sys-size-9);
+      height: var(--sys-size-9);
+      padding: var(--sys-size-2);
+    }
+
+    &[open] {
+      width: auto;
+
+      .summary .title {
+        white-space: normal;
+        overflow: unset;
+      }
+
+      .summary .arrow {
+        transform: rotate(180deg);
+      }
+    }
+
+    summary::marker {
+      content: '';
+    }
+
+    summary {
+      border-radius: var(--sys-size-6);
+    }
+
+    .step-details {
+      padding: 0 var(--sys-size-5) var(--sys-size-4) var(--sys-size-12);
+      display: flex;
+      flex-direction: column;
+      gap: var(--sys-size-6);
+
+      devtools-code-block {
+        --code-block-background-color: var(--sys-color-surface1);
+      }
+    }
+  }
+
+  .error-step {
+    color: var(--sys-color-error);
+  }
+
+  .side-effect-confirmation {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sys-size-5);
+    padding-bottom: var(--sys-size-4);
+  }
+
+  .side-effect-buttons-container {
+    display: flex;
+    gap: var(--sys-size-4);
+  }
+}
+
+/*# sourceURL=${import.meta.resolve("././components/chatMessage.css")} */`;
+
+// gen/front_end/panels/ai_assistance/components/ChatMessage.js
+var { html: html7, Directives: { ref: ref2, ifDefined } } = Lit5;
+var lockedString4 = i18n7.i18n.lockedString;
+var REPORT_URL = "https://crbug.com/364805393";
+var SCROLL_ROUNDING_OFFSET = 1;
+var UIStringsNotTranslate4 = {
+  /**
+   * @description The title of the button that allows submitting positive
+   * feedback about the response for AI assistance.
+   */
+  thumbsUp: "Good response",
+  /**
+   * @description The title of the button that allows submitting negative
+   * feedback about the response for AI assistance.
+   */
+  thumbsDown: "Bad response",
+  /**
+   * @description The placeholder text for the feedback input.
+   */
+  provideFeedbackPlaceholder: "Provide additional feedback",
+  /**
+   * @description The disclaimer text that tells the user what will be shared
+   * and what will be stored.
+   */
+  disclaimer: "Submitted feedback will also include your conversation",
+  /**
+   * @description The button text for the action of submitting feedback.
+   */
+  submit: "Submit",
+  /**
+   * @description The header of the feedback form asking.
+   */
+  whyThisRating: "Why did you choose this rating? (optional)",
+  /**
+   * @description The button text for the action that hides the feedback form.
+   */
+  close: "Close",
+  /**
+   * @description The title of the button that opens a page to report a legal
+   * issue with the AI assistance message.
+   */
+  report: "Report legal issue",
+  /**
+   * @description The title of the button for scrolling to see next suggestions
+   */
+  scrollToNext: "Scroll to next suggestions",
+  /**
+   * @description The title of the button for scrolling to see previous suggestions
+   */
+  scrollToPrevious: "Scroll to previous suggestions",
+  /**
+   * @description The title of the button that copies the AI-generated response to the clipboard.
+   */
+  copyResponse: "Copy response",
+  /**
+   * @description The error message when the request to the LLM failed for some reason.
+   */
+  systemError: "Something unforeseen happened and I can no longer continue. Try your request again and see if that resolves the issue. If this keeps happening, update Chrome to the latest version.",
+  /**
+   * @description The error message when the LLM gets stuck in a loop (max steps reached).
+   */
+  maxStepsError: "Seems like I am stuck with the investigation. It would be better if you start over.",
+  /**
+   * @description Displayed when the user stop the response
+   */
+  stoppedResponse: "You stopped this response",
+  /**
+   * @description Prompt for user to confirm code execution that may affect the page.
+   */
+  sideEffectConfirmationDescription: "This code may modify page content. Continue?",
+  /**
+   * @description Button text that confirm code execution that may affect the page.
+   */
+  positiveSideEffectConfirmation: "Continue",
+  /**
+   * @description Button text that cancels code execution that may affect the page.
+   */
+  negativeSideEffectConfirmation: "Cancel",
+  /**
+   * @description The generic name of the AI agent (do not translate)
+   */
+  ai: "AI",
+  /**
+   * @description The fallback text when we can't find the user full name
+   */
+  you: "You",
+  /**
+   * @description The fallback text when a step has no title yet
+   */
+  investigating: "Investigating",
+  /**
+   * @description Prefix to the title of each thinking step of a user action is required to continue
+   */
+  paused: "Paused",
+  /**
+   * @description Heading text for the code block that shows the executed code.
+   */
+  codeExecuted: "Code executed",
+  /**
+   * @description Heading text for the code block that shows the code to be executed after side effect confirmation.
+   */
+  codeToExecute: "Code to execute",
+  /**
+   * @description Heading text for the code block that shows the returned data.
+   */
+  dataReturned: "Data returned",
+  /**
+   * @description Aria label for the check mark icon to be read by screen reader
+   */
+  completed: "Completed",
+  /**
+   * @description Aria label for the cancel icon to be read by screen reader
+   */
+  canceled: "Canceled",
+  /**
+   * @description Alt text for the image input (displayed in the chat messages) that has been sent to the model.
+   */
+  imageInputSentToTheModel: "Image input sent to the model",
+  /**
+   * @description Alt text for the account avatar.
+   */
+  accountAvatar: "Account avatar",
+  /**
+   * @description Title for the x-link which wraps the image input rendered in chat messages.
+   */
+  openImageInNewTab: "Open image in a new tab",
+  /**
+   * @description Alt text for image when it is not available.
+   */
+  imageUnavailable: "Image unavailable"
+};
+var DEFAULT_VIEW4 = (input, output, target) => {
+  const message = input.message;
+  if (message.entity === "user") {
+    const name = input.userInfo.accountFullName || lockedString4(UIStringsNotTranslate4.you);
+    const image = input.userInfo.accountImage ? html7`<img src="data:image/png;base64, ${input.userInfo.accountImage}" alt=${UIStringsNotTranslate4.accountAvatar} />` : html7`<devtools-icon
+          name="profile"
+        ></devtools-icon>`;
+    const imageInput = message.imageInput && "inlineData" in message.imageInput ? renderImageChatMessage(message.imageInput.inlineData) : Lit5.nothing;
+    Lit5.render(html7`
+      <style>${Input2.textInputStyles}</style>
+      <style>${chatMessage_css_default}</style>
+      <section
+        class="chat-message query ${input.isLastMessage ? "is-last-message" : ""}"
+        jslog=${VisualLogging4.section("question")}
+      >
+        <div class="message-info">
+          ${image}
+          <div class="message-name">
+            <h2>${name}</h2>
+          </div>
+        </div>
+        ${imageInput}
+        <div class="message-content">${renderTextAsMarkdown(message.text, input.markdownRenderer)}</div>
+      </section>
+    `, target);
+    return;
+  }
+  Lit5.render(html7`
+    <style>${Input2.textInputStyles}</style>
+    <style>${chatMessage_css_default}</style>
+    <section
+      class="chat-message answer ${input.isLastMessage ? "is-last-message" : ""}"
+      jslog=${VisualLogging4.section("answer")}
+    >
+      <div class="message-info">
+        <devtools-icon name="smart-assistant"></devtools-icon>
+        <div class="message-name">
+          <h2>${lockedString4(UIStringsNotTranslate4.ai)}</h2>
+        </div>
+      </div>
+      ${Lit5.Directives.repeat(message.parts, (_, index) => index, (part, index) => {
+    const isLastPart = index === message.parts.length - 1;
+    if (part.type === "answer") {
+      return html7`<p>${renderTextAsMarkdown(part.text, input.markdownRenderer, { animate: !input.isReadOnly && input.isLoading && isLastPart && input.isLastMessage })}</p>`;
+    }
+    return renderStep({
+      step: part.step,
+      isLoading: input.isLoading,
+      markdownRenderer: input.markdownRenderer,
+      isLast: isLastPart
+    });
+  })}
+      ${renderError(message)}
+      ${input.isLastMessage && !input.isLoading ? renderActions(input, output) : Lit5.nothing}
+    </section>
+  `, target);
+};
+function renderTextAsMarkdown(text, markdownRenderer, { animate, ref: refFn } = {}) {
+  let tokens = [];
+  try {
+    tokens = Marked.Marked.lexer(text);
+    for (const token of tokens) {
+      markdownRenderer.renderToken(token);
+    }
+  } catch {
+    return html7`${text}`;
+  }
+  return html7`<devtools-markdown-view
+    .data=${{ tokens, renderer: markdownRenderer, animationEnabled: animate }}
+    ${refFn ? ref2(refFn) : Lit5.nothing}>
+  </devtools-markdown-view>`;
+}
+function renderTitle(step) {
+  const paused = step.sideEffect ? html7`<span class="paused">${lockedString4(UIStringsNotTranslate4.paused)}: </span>` : Lit5.nothing;
+  const actionTitle = step.title ?? `${lockedString4(UIStringsNotTranslate4.investigating)}\u2026`;
+  return html7`<span class="title">${paused}${actionTitle}</span>`;
+}
+function renderStepCode(step) {
+  if (!step.code && !step.output) {
+    return Lit5.nothing;
+  }
+  const codeHeadingText = step.output && !step.canceled ? lockedString4(UIStringsNotTranslate4.codeExecuted) : lockedString4(UIStringsNotTranslate4.codeToExecute);
+  const code = step.code ? html7`<div class="action-result">
+      <devtools-code-block
+        .code=${step.code.trim()}
+        .codeLang=${"js"}
+        .displayNotice=${!Boolean(step.output)}
+        .header=${codeHeadingText}
+        .showCopyButton=${true}
+      ></devtools-code-block>
+  </div>` : Lit5.nothing;
+  const output = step.output ? html7`<div class="js-code-output">
+    <devtools-code-block
+      .code=${step.output}
+      .codeLang=${"js"}
+      .displayNotice=${true}
+      .header=${lockedString4(UIStringsNotTranslate4.dataReturned)}
+      .showCopyButton=${false}
+    ></devtools-code-block>
+  </div>` : Lit5.nothing;
+  return html7`<div class="step-code">${code}${output}</div>`;
+}
+function renderStepDetails({ step, markdownRenderer, isLast }) {
+  const sideEffects = isLast && step.sideEffect ? renderSideEffectConfirmationUi(step) : Lit5.nothing;
+  const thought = step.thought ? html7`<p>${renderTextAsMarkdown(step.thought, markdownRenderer)}</p>` : Lit5.nothing;
+  const contextDetails = step.contextDetails ? html7`${Lit5.Directives.repeat(step.contextDetails, (contextDetail) => {
+    return html7`<div class="context-details">
+      <devtools-code-block
+        .code=${contextDetail.text}
+        .codeLang=${contextDetail.codeLang || ""}
+        .displayNotice=${false}
+        .header=${contextDetail.title}
+        .showCopyButton=${true}
+      ></devtools-code-block>
+    </div>`;
+  })}` : Lit5.nothing;
+  return html7`<div class="step-details">
+    ${thought}
+    ${renderStepCode(step)}
+    ${sideEffects}
+    ${contextDetails}
+  </div>`;
+}
+function renderStepBadge({ step, isLoading, isLast }) {
+  if (isLoading && isLast && !step.sideEffect) {
+    return html7`<devtools-spinner></devtools-spinner>`;
+  }
+  let iconName = "checkmark";
+  let ariaLabel = lockedString4(UIStringsNotTranslate4.completed);
+  let role = "button";
+  if (isLast && step.sideEffect) {
+    role = void 0;
+    ariaLabel = void 0;
+    iconName = "pause-circle";
+  } else if (step.canceled) {
+    ariaLabel = lockedString4(UIStringsNotTranslate4.canceled);
+    iconName = "cross";
+  }
+  return html7`<devtools-icon
+      class="indicator"
+      role=${ifDefined(role)}
+      aria-label=${ifDefined(ariaLabel)}
+      .name=${iconName}
+    ></devtools-icon>`;
+}
+function renderStep({ step, isLoading, markdownRenderer, isLast }) {
+  const stepClasses = Lit5.Directives.classMap({
+    step: true,
+    empty: !step.thought && !step.code && !step.contextDetails && !step.sideEffect,
+    paused: Boolean(step.sideEffect),
+    canceled: Boolean(step.canceled)
+  });
+  return html7`
+    <details class=${stepClasses}
+      jslog=${VisualLogging4.section("step")}
+      .open=${Boolean(step.sideEffect)}>
+      <summary>
+        <div class="summary">
+          ${renderStepBadge({ step, isLoading, isLast })}
+          ${renderTitle(step)}
+          <devtools-icon
+            class="arrow"
+            name="chevron-down"
+          ></devtools-icon>
+        </div>
+      </summary>
+      ${renderStepDetails({ step, markdownRenderer, isLast })}
+    </details>`;
+}
+function renderSideEffectConfirmationUi(step) {
+  if (!step.sideEffect) {
+    return Lit5.nothing;
+  }
+  return html7`<div
+    class="side-effect-confirmation"
+    jslog=${VisualLogging4.section("side-effect-confirmation")}
+  >
+    <p>${lockedString4(UIStringsNotTranslate4.sideEffectConfirmationDescription)}</p>
+    <div class="side-effect-buttons-container">
+      <devtools-button
+        .data=${{
+    variant: "outlined",
+    jslogContext: "decline-execute-code"
+  }}
+        @click=${() => step.sideEffect?.onAnswer(false)}
+      >${lockedString4(UIStringsNotTranslate4.negativeSideEffectConfirmation)}</devtools-button>
+      <devtools-button
+        .data=${{
+    variant: "primary",
+    jslogContext: "accept-execute-code",
+    iconName: "play"
+  }}
+        @click=${() => step.sideEffect?.onAnswer(true)}
+      >${lockedString4(UIStringsNotTranslate4.positiveSideEffectConfirmation)}</devtools-button>
+    </div>
+  </div>`;
+}
+function renderError(message) {
+  if (message.error) {
+    let errorMessage;
+    switch (message.error) {
+      case "unknown":
+      case "block":
+        errorMessage = UIStringsNotTranslate4.systemError;
+        break;
+      case "max-steps":
+        errorMessage = UIStringsNotTranslate4.maxStepsError;
+        break;
+      case "abort":
+        return html7`<p class="aborted" jslog=${VisualLogging4.section("aborted")}>${lockedString4(UIStringsNotTranslate4.stoppedResponse)}</p>`;
+    }
+    return html7`<p class="error" jslog=${VisualLogging4.section("error")}>${lockedString4(errorMessage)}</p>`;
+  }
+  return Lit5.nothing;
+}
+function renderImageChatMessage(inlineData) {
+  if (inlineData.data === AiAssistanceModel4.AiConversation.NOT_FOUND_IMAGE_DATA) {
+    return html7`<div class="unavailable-image" title=${UIStringsNotTranslate4.imageUnavailable}>
+      <devtools-icon name='file-image'></devtools-icon>
+    </div>`;
+  }
+  const imageUrl = `data:${inlineData.mimeType};base64,${inlineData.data}`;
+  return html7`<x-link
+      class="image-link" title=${UIStringsNotTranslate4.openImageInNewTab}
+      href=${imageUrl}
+    >
+      <img src=${imageUrl} alt=${UIStringsNotTranslate4.imageInputSentToTheModel} />
+    </x-link>`;
+}
+function renderActions(input, output) {
+  return html7`
+    <div class="ai-assistance-feedback-row">
+      <div class="action-buttons">
+        ${input.showRateButtons ? html7`
+          <devtools-button
+            .data=${{
+    variant: "icon",
+    size: "SMALL",
+    iconName: "thumb-up",
+    toggledIconName: "thumb-up-filled",
+    toggled: input.currentRating === "POSITIVE",
+    toggleType: "primary-toggle",
+    title: lockedString4(UIStringsNotTranslate4.thumbsUp),
+    jslogContext: "thumbs-up"
+  }}
+            @click=${() => input.onRatingClick(
+    "POSITIVE"
+    /* Host.AidaClient.Rating.POSITIVE */
+  )}
+          ></devtools-button>
+          <devtools-button
+            .data=${{
+    variant: "icon",
+    size: "SMALL",
+    iconName: "thumb-down",
+    toggledIconName: "thumb-down-filled",
+    toggled: input.currentRating === "NEGATIVE",
+    toggleType: "primary-toggle",
+    title: lockedString4(UIStringsNotTranslate4.thumbsDown),
+    jslogContext: "thumbs-down"
+  }}
+            @click=${() => input.onRatingClick(
+    "NEGATIVE"
+    /* Host.AidaClient.Rating.NEGATIVE */
+  )}
+          ></devtools-button>
+          <div class="vertical-separator"></div>
+        ` : Lit5.nothing}
+        <devtools-button
+          .data=${{
+    variant: "icon",
+    size: "SMALL",
+    title: lockedString4(UIStringsNotTranslate4.report),
+    iconName: "report",
+    jslogContext: "report"
+  }}
+          @click=${input.onReportClick}
+        ></devtools-button>
+        <div class="vertical-separator"></div>
+          <devtools-button
+            .data=${{
+    variant: "icon",
+    size: "SMALL",
+    title: lockedString4(UIStringsNotTranslate4.copyResponse),
+    iconName: "copy",
+    jslogContext: "copy-ai-response"
+  }}
+            aria-label=${lockedString4(UIStringsNotTranslate4.copyResponse)}
+            @click=${input.onCopyResponseClick}></devtools-button>
+      </div>
+      ${input.suggestions ? html7`<div class="suggestions-container">
+        <div class="scroll-button-container left hidden" ${ref2((element) => {
+    output.suggestionsLeftScrollButtonContainer = element;
+  })}>
+          <devtools-button
+            class='scroll-button'
+            .data=${{
+    variant: "icon",
+    size: "SMALL",
+    iconName: "chevron-left",
+    title: lockedString4(UIStringsNotTranslate4.scrollToPrevious),
+    jslogContext: "chevron-left"
+  }}
+            @click=${() => input.scrollSuggestionsScrollContainer("left")}
+          ></devtools-button>
+        </div>
+        <div class="suggestions-scroll-container" @scroll=${input.onSuggestionsScrollOrResize} ${ref2((element) => {
+    output.suggestionsScrollContainer = element;
+  })}>
+          ${input.suggestions.map((suggestion) => html7`<devtools-button
+            class='suggestion'
+            .data=${{
+    variant: "outlined",
+    title: suggestion,
+    jslogContext: "suggestion"
+  }}
+            @click=${() => input.onSuggestionClick(suggestion)}
+          >${suggestion}</devtools-button>`)}
+        </div>
+        <div class="scroll-button-container right hidden" ${ref2((element) => {
+    output.suggestionsRightScrollButtonContainer = element;
+  })}>
+          <devtools-button
+            class='scroll-button'
+            .data=${{
+    variant: "icon",
+    size: "SMALL",
+    iconName: "chevron-right",
+    title: lockedString4(UIStringsNotTranslate4.scrollToNext),
+    jslogContext: "chevron-right"
+  }}
+            @click=${() => input.scrollSuggestionsScrollContainer("right")}
+          ></devtools-button>
+        </div>
+      </div>` : Lit5.nothing}
+    </div>
+    ${input.isShowingFeedbackForm ? html7`
+      <form class="feedback-form" @submit=${input.onSubmit}>
+        <div class="feedback-header">
+          <h4 class="feedback-title">${lockedString4(UIStringsNotTranslate4.whyThisRating)}</h4>
+          <devtools-button
+            aria-label=${lockedString4(UIStringsNotTranslate4.close)}
+            @click=${input.onClose}
+            .data=${{
+    variant: "icon",
+    iconName: "cross",
+    size: "SMALL",
+    title: lockedString4(UIStringsNotTranslate4.close),
+    jslogContext: "close"
+  }}
+          ></devtools-button>
+        </div>
+        <input
+          type="text"
+          class="devtools-text-input feedback-input"
+          @input=${(event) => input.onInputChange(event.target.value)}
+          placeholder=${lockedString4(UIStringsNotTranslate4.provideFeedbackPlaceholder)}
+          jslog=${VisualLogging4.textField("feedback").track({ keydown: "Enter" })}
+        >
+        <span class="feedback-disclaimer">${lockedString4(UIStringsNotTranslate4.disclaimer)}</span>
+        <div>
+          <devtools-button
+          aria-label=${lockedString4(UIStringsNotTranslate4.submit)}
+          .data=${{
+    type: "submit",
+    disabled: input.isSubmitButtonDisabled,
+    variant: "outlined",
+    size: "SMALL",
+    title: lockedString4(UIStringsNotTranslate4.submit),
+    jslogContext: "send"
+  }}
+          >${lockedString4(UIStringsNotTranslate4.submit)}</devtools-button>
+        </div>
+      </div>
+    </form>
+    ` : Lit5.nothing}
+  `;
+}
+var ChatMessage = class extends UI5.Widget.Widget {
+  message = { entity: "user", text: "" };
+  isLoading = false;
+  isReadOnly = false;
+  canShowFeedbackForm = false;
+  isLastMessage = false;
+  userInfo = {};
+  markdownRenderer;
+  onSuggestionClick = () => {
+  };
+  onFeedbackSubmit = () => {
+  };
+  onCopyResponseClick = () => {
+  };
+  #suggestionsResizeObserver = new ResizeObserver(() => this.#handleSuggestionsScrollOrResize());
+  #suggestionsEvaluateLayoutThrottler = new Common3.Throttler.Throttler(50);
+  #feedbackValue = "";
+  #currentRating;
+  #isShowingFeedbackForm = false;
+  #isSubmitButtonDisabled = true;
+  #view;
+  #viewOutput = {};
+  constructor(element, view) {
+    super(element);
+    this.#view = view ?? DEFAULT_VIEW4;
+  }
+  wasShown() {
+    super.wasShown();
+    void this.performUpdate();
+    this.#evaluateSuggestionsLayout();
+    if (this.#viewOutput.suggestionsScrollContainer) {
+      this.#suggestionsResizeObserver.observe(this.#viewOutput.suggestionsScrollContainer);
+    }
+  }
+  performUpdate() {
+    this.#view({
+      message: this.message,
+      isLoading: this.isLoading,
+      isReadOnly: this.isReadOnly,
+      canShowFeedbackForm: this.canShowFeedbackForm,
+      userInfo: this.userInfo,
+      markdownRenderer: this.markdownRenderer,
+      isLastMessage: this.isLastMessage,
+      onSuggestionClick: this.onSuggestionClick,
+      onRatingClick: this.#handleRateClick.bind(this),
+      onReportClick: () => UIHelpers.openInNewTab(REPORT_URL),
+      onCopyResponseClick: () => {
+        if (this.message.entity === "model") {
+          this.onCopyResponseClick(this.message);
+        }
+      },
+      scrollSuggestionsScrollContainer: this.#scrollSuggestionsScrollContainer.bind(this),
+      onSuggestionsScrollOrResize: this.#handleSuggestionsScrollOrResize.bind(this),
+      onSubmit: this.#handleSubmit.bind(this),
+      onClose: this.#handleClose.bind(this),
+      onInputChange: this.#handleInputChange.bind(this),
+      isSubmitButtonDisabled: this.#isSubmitButtonDisabled,
+      // Props for actions logic
+      showRateButtons: this.message.entity === "model" && !!this.message.rpcId,
+      suggestions: this.message.entity === "model" && !this.isReadOnly && this.message.parts.at(-1)?.type === "answer" ? this.message.parts.at(-1).suggestions : void 0,
+      currentRating: this.#currentRating,
+      isShowingFeedbackForm: this.#isShowingFeedbackForm,
+      onFeedbackSubmit: this.onFeedbackSubmit
+    }, this.#viewOutput, this.contentElement);
+  }
+  #handleInputChange(value) {
+    this.#feedbackValue = value;
+    const disableSubmit = !value;
+    if (disableSubmit !== this.#isSubmitButtonDisabled) {
+      this.#isSubmitButtonDisabled = disableSubmit;
+      void this.performUpdate();
+    }
+  }
+  #evaluateSuggestionsLayout = () => {
+    const suggestionsScrollContainer = this.#viewOutput.suggestionsScrollContainer;
+    const leftScrollButtonContainer = this.#viewOutput.suggestionsLeftScrollButtonContainer;
+    const rightScrollButtonContainer = this.#viewOutput.suggestionsRightScrollButtonContainer;
+    if (!suggestionsScrollContainer || !leftScrollButtonContainer || !rightScrollButtonContainer) {
+      return;
+    }
+    const shouldShowLeftButton = suggestionsScrollContainer.scrollLeft > SCROLL_ROUNDING_OFFSET;
+    const shouldShowRightButton = suggestionsScrollContainer.scrollLeft + suggestionsScrollContainer.offsetWidth + SCROLL_ROUNDING_OFFSET < suggestionsScrollContainer.scrollWidth;
+    leftScrollButtonContainer.classList.toggle("hidden", !shouldShowLeftButton);
+    rightScrollButtonContainer.classList.toggle("hidden", !shouldShowRightButton);
+  };
+  willHide() {
+    super.willHide();
+    this.#suggestionsResizeObserver.disconnect();
+  }
+  #handleSuggestionsScrollOrResize() {
+    void this.#suggestionsEvaluateLayoutThrottler.schedule(() => {
+      this.#evaluateSuggestionsLayout();
+      return Promise.resolve();
+    });
+  }
+  #scrollSuggestionsScrollContainer(direction) {
+    const suggestionsScrollContainer = this.#viewOutput.suggestionsScrollContainer;
+    if (!suggestionsScrollContainer) {
+      return;
+    }
+    suggestionsScrollContainer.scroll({
+      top: 0,
+      left: direction === "left" ? suggestionsScrollContainer.scrollLeft - suggestionsScrollContainer.clientWidth : suggestionsScrollContainer.scrollLeft + suggestionsScrollContainer.clientWidth,
+      behavior: "smooth"
+    });
+  }
+  #handleRateClick(rating) {
+    if (this.#currentRating === rating) {
+      this.#currentRating = void 0;
+      this.#isShowingFeedbackForm = false;
+      this.#isSubmitButtonDisabled = true;
+      if (this.message.entity === "model" && this.message.rpcId) {
+        this.onFeedbackSubmit(
+          this.message.rpcId,
+          "SENTIMENT_UNSPECIFIED"
+          /* Host.AidaClient.Rating.SENTIMENT_UNSPECIFIED */
+        );
+      }
+      void this.performUpdate();
+      return;
+    }
+    this.#currentRating = rating;
+    this.#isShowingFeedbackForm = this.canShowFeedbackForm;
+    if (this.message.entity === "model" && this.message.rpcId) {
+      this.onFeedbackSubmit(this.message.rpcId, rating);
+    }
+    void this.performUpdate();
+  }
+  #handleClose() {
+    this.#isShowingFeedbackForm = false;
+    this.#isSubmitButtonDisabled = true;
+    void this.performUpdate();
+  }
+  #handleSubmit(ev) {
+    ev.preventDefault();
+    const input = this.#feedbackValue;
+    if (!this.#currentRating || !input) {
+      return;
+    }
+    if (this.message.entity === "model" && this.message.rpcId) {
+      this.onFeedbackSubmit(this.message.rpcId, this.#currentRating, input);
+    }
+    this.#isShowingFeedbackForm = false;
+    this.#isSubmitButtonDisabled = true;
+    void this.performUpdate();
+  }
+};
+
 // gen/front_end/panels/ai_assistance/components/chatView.css.js
 var chatView_css_default = `/*
  * Copyright 2024 The Chromium Authors
@@ -2856,1037 +3887,6 @@ main {
 
 /*# sourceURL=${import.meta.resolve("././components/chatView.css")} */`;
 
-// gen/front_end/panels/ai_assistance/components/UserActionRow.js
-var UserActionRow_exports = {};
-__export(UserActionRow_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW4,
-  UserActionRow: () => UserActionRow
-});
-import "./../../ui/components/markdown_view/markdown_view.js";
-import * as Common3 from "./../../core/common/common.js";
-import * as Host3 from "./../../core/host/host.js";
-import * as i18n7 from "./../../core/i18n/i18n.js";
-import * as AiAssistanceModel4 from "./../../models/ai_assistance/ai_assistance.js";
-import * as Marked from "./../../third_party/marked/marked.js";
-import * as Buttons5 from "./../../ui/components/buttons/buttons.js";
-import * as Input2 from "./../../ui/components/input/input.js";
-import * as UIHelpers from "./../../ui/helpers/helpers.js";
-import * as UI5 from "./../../ui/legacy/legacy.js";
-import * as Lit5 from "./../../ui/lit/lit.js";
-import * as VisualLogging4 from "./../../ui/visual_logging/visual_logging.js";
-
-// gen/front_end/panels/ai_assistance/components/userActionRow.css.js
-var userActionRow_css_default = `/*
- * Copyright 2024 The Chromium Authors
- * Use of this source code is governed by a BSD-style license that can be
- * found in the LICENSE file.
- */
-
-@scope to (devtools-widget > *) {
-  .ai-assistance-feedback-row {
-    font-family: var(--default-font-family);
-    width: 100%;
-    display: flex;
-    gap: var(--sys-size-8);
-    justify-content: space-between;
-    align-items: center;
-    margin-block: calc(-1 * var(--sys-size-3));
-
-    .action-buttons {
-      display: flex;
-      align-items: center;
-      gap: var(--sys-size-2);
-      padding: var(--sys-size-4) 0;
-    }
-
-    .vertical-separator {
-      height: 16px;
-      width: 1px;
-      vertical-align: top;
-      margin: 0 var(--sys-size-2);
-      background: var(--sys-color-divider);
-      display: inline-block;
-    }
-
-    .suggestions-container {
-      overflow: hidden;
-      position: relative;
-      display: flex;
-
-      .suggestions-scroll-container {
-        display: flex;
-        overflow: auto hidden;
-        scrollbar-width: none;
-        gap: var(--sys-size-3);
-        padding: var(--sys-size-3);
-      }
-
-      .scroll-button-container {
-        position: absolute;
-        top: 0;
-        height: 100%;
-        display: flex;
-        align-items: center;
-        width: var(--sys-size-15);
-        z-index: 999;
-      }
-
-      .scroll-button-container.hidden {
-        display: none;
-      }
-
-      .scroll-button-container.left {
-        left: 0;
-        background:
-          linear-gradient(
-            90deg,
-            var(--sys-color-cdt-base-container) 0%,
-            var(--sys-color-cdt-base-container) 50%,
-            transparent
-          );
-      }
-
-      .scroll-button-container.right {
-        right: 0;
-        background:
-          linear-gradient(
-            90deg,
-            transparent,
-            var(--sys-color-cdt-base-container) 50%
-          );
-        justify-content: flex-end;
-      }
-    }
-  }
-
-  .feedback-form {
-    display: flex;
-    flex-direction: column;
-    gap: var(--sys-size-5);
-    margin-top: var(--sys-size-4);
-    background-color: var(--sys-color-surface3);
-    padding: var(--sys-size-6);
-    border-radius: var(--sys-shape-corner-medium-small);
-    max-width: var(--sys-size-32);
-
-    .feedback-input {
-      height: var(--sys-size-11);
-      padding: 0 var(--sys-size-5);
-      background-color: var(--sys-color-surface3);
-      width: auto;
-    }
-
-    .feedback-input::placeholder {
-      color: var(--sys-color-on-surface-subtle);
-      font: var(--sys-typescale-body4-regular);
-    }
-
-    .feedback-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .feedback-title {
-      margin: 0;
-      font: var(--sys-typescale-body3-medium);
-    }
-
-    .feedback-disclaimer {
-      padding: 0 var(--sys-size-4);
-    }
-  }
-
-  .chat-message {
-    user-select: text;
-    cursor: initial;
-    display: flex;
-    flex-direction: column;
-    gap: var(--sys-size-5);
-    width: 100%;
-    padding: var(--sys-size-7) var(--sys-size-5);
-    font-size: 12px;
-    word-break: normal;
-    overflow-wrap: anywhere;
-    border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
-
-    &.is-last-message {
-      border-bottom: 0;
-    }
-
-    .message-info {
-      display: flex;
-      align-items: center;
-      height: var(--sys-size-11);
-      gap: var(--sys-size-4);
-      font: var(--sys-typescale-body4-bold);
-
-      img {
-        border: 0;
-        border-radius: var(--sys-shape-corner-full);
-        display: block;
-        height: var(--sys-size-9);
-        width: var(--sys-size-9);
-      }
-
-      h2 {
-        font: var(--sys-typescale-body4-bold);
-      }
-    }
-
-    .actions {
-      display: flex;
-      flex-direction: column;
-      gap: var(--sys-size-8);
-      max-width: 100%;
-    }
-
-    .aborted {
-      color: var(--sys-color-on-surface-subtle);
-    }
-
-    .image-link {
-      width: fit-content;
-      border-radius: var(--sys-shape-corner-small);
-      outline-offset: var(--sys-size-2);
-
-      img {
-        max-height: var(--sys-size-20);
-        max-width: 100%;
-        border-radius: var(--sys-shape-corner-small);
-        border: 1px solid var(--sys-color-neutral-outline);
-        width: fit-content;
-        vertical-align: bottom;
-      }
-    }
-
-    .unavailable-image {
-      margin: var(--sys-size-4) 0;
-      display: inline-flex;
-      justify-content: center;
-      align-items: center;
-      height: var(--sys-size-17);
-      width: var(--sys-size-18);
-      background-color: var(--sys-color-surface3);
-      border-radius: var(--sys-shape-corner-small);
-      border: 1px solid var(--sys-color-neutral-outline);
-
-      devtools-icon {
-        color: var(--sys-color-state-disabled);
-      }
-    }
-  }
-
-  .indicator {
-    color: var(--sys-color-green-bright);
-  }
-
-  .summary {
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    padding: var(--sys-size-3);
-    line-height: var(--sys-size-9);
-    cursor: default;
-    gap: var(--sys-size-3);
-    justify-content: center;
-    align-items: center;
-
-    .title {
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      overflow: hidden;
-      font: var(--sys-typescale-body4-regular);
-
-      .paused {
-        font: var(--sys-typescale-body4-bold);
-      }
-    }
-  }
-
-  .step-code {
-    display: flex;
-    flex-direction: column;
-    gap: var(--sys-size-2);
-  }
-
-  .js-code-output {
-    devtools-code-block {
-      --code-block-max-code-height: 50px;
-    }
-  }
-
-  .context-details {
-    devtools-code-block {
-      --code-block-max-code-height: 80px;
-    }
-  }
-
-  .step {
-    width: fit-content;
-    background-color: var(--sys-color-surface3);
-    border-radius: var(--sys-size-6);
-    position: relative;
-
-    &.empty {
-      pointer-events: none;
-
-      .arrow {
-        display: none;
-      }
-    }
-
-    &:not(&[open]):hover::after {
-      content: '';
-      height: 100%;
-      width: 100%;
-      border-radius: inherit;
-      position: absolute;
-      top: 0;
-      left: 0;
-      pointer-events: none;
-      background-color: var(--sys-color-state-hover-on-subtle);
-    }
-
-    &.paused {
-      .indicator {
-        color: var(--sys-color-on-surface-subtle);
-      }
-    }
-
-    &.canceled {
-      .summary {
-        color: var(--sys-color-state-disabled);
-        text-decoration: line-through;
-      }
-
-      .indicator {
-        color: var(--sys-color-state-disabled);
-      }
-    }
-
-    devtools-markdown-view {
-      --code-background-color: var(--sys-color-surface1);
-    }
-
-    devtools-icon {
-      vertical-align: bottom;
-    }
-
-    devtools-spinner {
-      width: var(--sys-size-9);
-      height: var(--sys-size-9);
-      padding: var(--sys-size-2);
-    }
-
-    &[open] {
-      width: auto;
-
-      .summary .title {
-        white-space: normal;
-        overflow: unset;
-      }
-
-      .summary .arrow {
-        transform: rotate(180deg);
-      }
-    }
-
-    summary::marker {
-      content: '';
-    }
-
-    summary {
-      border-radius: var(--sys-size-6);
-    }
-
-    .step-details {
-      padding: 0 var(--sys-size-5) var(--sys-size-4) var(--sys-size-12);
-      display: flex;
-      flex-direction: column;
-      gap: var(--sys-size-6);
-
-      devtools-code-block {
-        --code-block-background-color: var(--sys-color-surface1);
-      }
-    }
-  }
-
-  .error-step {
-    color: var(--sys-color-error);
-  }
-
-  .side-effect-confirmation {
-    display: flex;
-    flex-direction: column;
-    gap: var(--sys-size-5);
-    padding-bottom: var(--sys-size-4);
-  }
-
-  .side-effect-buttons-container {
-    display: flex;
-    gap: var(--sys-size-4);
-  }
-}
-
-/*# sourceURL=${import.meta.resolve("././components/userActionRow.css")} */`;
-
-// gen/front_end/panels/ai_assistance/components/UserActionRow.js
-var { html: html7, Directives: { ref: ref2, ifDefined } } = Lit5;
-var lockedString4 = i18n7.i18n.lockedString;
-var REPORT_URL = "https://crbug.com/364805393";
-var SCROLL_ROUNDING_OFFSET = 1;
-var UIStringsNotTranslate4 = {
-  /**
-   * @description The title of the button that allows submitting positive
-   * feedback about the response for AI assistance.
-   */
-  thumbsUp: "Good response",
-  /**
-   * @description The title of the button that allows submitting negative
-   * feedback about the response for AI assistance.
-   */
-  thumbsDown: "Bad response",
-  /**
-   * @description The placeholder text for the feedback input.
-   */
-  provideFeedbackPlaceholder: "Provide additional feedback",
-  /**
-   * @description The disclaimer text that tells the user what will be shared
-   * and what will be stored.
-   */
-  disclaimer: "Submitted feedback will also include your conversation",
-  /**
-   * @description The button text for the action of submitting feedback.
-   */
-  submit: "Submit",
-  /**
-   * @description The header of the feedback form asking.
-   */
-  whyThisRating: "Why did you choose this rating? (optional)",
-  /**
-   * @description The button text for the action that hides the feedback form.
-   */
-  close: "Close",
-  /**
-   * @description The title of the button that opens a page to report a legal
-   * issue with the AI assistance message.
-   */
-  report: "Report legal issue",
-  /**
-   * @description The title of the button for scrolling to see next suggestions
-   */
-  scrollToNext: "Scroll to next suggestions",
-  /**
-   * @description The title of the button for scrolling to see previous suggestions
-   */
-  scrollToPrevious: "Scroll to previous suggestions",
-  /**
-   * @description The title of the button that copies the AI-generated response to the clipboard.
-   */
-  copyResponse: "Copy response",
-  /**
-   * @description The error message when the request to the LLM failed for some reason.
-   */
-  systemError: "Something unforeseen happened and I can no longer continue. Try your request again and see if that resolves the issue. If this keeps happening, update Chrome to the latest version.",
-  /**
-   * @description The error message when the LLM gets stuck in a loop (max steps reached).
-   */
-  maxStepsError: "Seems like I am stuck with the investigation. It would be better if you start over.",
-  /**
-   * @description Displayed when the user stop the response
-   */
-  stoppedResponse: "You stopped this response",
-  /**
-   * @description Prompt for user to confirm code execution that may affect the page.
-   */
-  sideEffectConfirmationDescription: "This code may modify page content. Continue?",
-  /**
-   * @description Button text that confirm code execution that may affect the page.
-   */
-  positiveSideEffectConfirmation: "Continue",
-  /**
-   * @description Button text that cancels code execution that may affect the page.
-   */
-  negativeSideEffectConfirmation: "Cancel",
-  /**
-   * @description The generic name of the AI agent (do not translate)
-   */
-  ai: "AI",
-  /**
-   * @description The fallback text when we can't find the user full name
-   */
-  you: "You",
-  /**
-   * @description The fallback text when a step has no title yet
-   */
-  investigating: "Investigating",
-  /**
-   * @description Prefix to the title of each thinking step of a user action is required to continue
-   */
-  paused: "Paused",
-  /**
-   * @description Heading text for the code block that shows the executed code.
-   */
-  codeExecuted: "Code executed",
-  /**
-   * @description Heading text for the code block that shows the code to be executed after side effect confirmation.
-   */
-  codeToExecute: "Code to execute",
-  /**
-   * @description Heading text for the code block that shows the returned data.
-   */
-  dataReturned: "Data returned",
-  /**
-   * @description Aria label for the check mark icon to be read by screen reader
-   */
-  completed: "Completed",
-  /**
-   * @description Aria label for the cancel icon to be read by screen reader
-   */
-  canceled: "Canceled",
-  /**
-   * @description Alt text for the image input (displayed in the chat messages) that has been sent to the model.
-   */
-  imageInputSentToTheModel: "Image input sent to the model",
-  /**
-   * @description Alt text for the account avatar.
-   */
-  accountAvatar: "Account avatar",
-  /**
-   * @description Title for the x-link which wraps the image input rendered in chat messages.
-   */
-  openImageInNewTab: "Open image in a new tab",
-  /**
-   * @description Alt text for image when it is not available.
-   */
-  imageUnavailable: "Image unavailable"
-};
-var DEFAULT_VIEW4 = (input, output, target) => {
-  const message = input.message;
-  if (message.entity === "user") {
-    const name = input.userInfo.accountFullName || lockedString4(UIStringsNotTranslate4.you);
-    const image = input.userInfo.accountImage ? html7`<img src="data:image/png;base64, ${input.userInfo.accountImage}" alt=${UIStringsNotTranslate4.accountAvatar} />` : html7`<devtools-icon
-          name="profile"
-        ></devtools-icon>`;
-    const imageInput = message.imageInput && "inlineData" in message.imageInput ? renderImageChatMessage(message.imageInput.inlineData) : Lit5.nothing;
-    Lit5.render(html7`
-      <style>${Input2.textInputStyles}</style>
-      <style>${userActionRow_css_default}</style>
-      <section
-        class="chat-message query ${input.isLastMessage ? "is-last-message" : ""}"
-        jslog=${VisualLogging4.section("question")}
-      >
-        <div class="message-info">
-          ${image}
-          <div class="message-name">
-            <h2>${name}</h2>
-          </div>
-        </div>
-        ${imageInput}
-        <div class="message-content">${renderTextAsMarkdown(message.text, input.markdownRenderer)}</div>
-      </section>
-    `, target);
-    return;
-  }
-  Lit5.render(html7`
-    <style>${Input2.textInputStyles}</style>
-    <style>${userActionRow_css_default}</style>
-    <section
-      class="chat-message answer ${input.isLastMessage ? "is-last-message" : ""}"
-      jslog=${VisualLogging4.section("answer")}
-    >
-      <div class="message-info">
-        <devtools-icon name="smart-assistant"></devtools-icon>
-        <div class="message-name">
-          <h2>${lockedString4(UIStringsNotTranslate4.ai)}</h2>
-        </div>
-      </div>
-      ${Lit5.Directives.repeat(message.parts, (_, index) => index, (part, index) => {
-    const isLastPart = index === message.parts.length - 1;
-    if (part.type === "answer") {
-      return html7`<p>${renderTextAsMarkdown(part.text, input.markdownRenderer, { animate: !input.isReadOnly && input.isLoading && isLastPart && input.isLastMessage })}</p>`;
-    }
-    return renderStep({
-      step: part.step,
-      isLoading: input.isLoading,
-      markdownRenderer: input.markdownRenderer,
-      isLast: isLastPart
-    });
-  })}
-      ${renderError(message)}
-      ${input.isLastMessage && !input.isLoading ? renderActions(input, output) : Lit5.nothing}
-    </section>
-  `, target);
-};
-function renderTextAsMarkdown(text, markdownRenderer, { animate, ref: refFn } = {}) {
-  let tokens = [];
-  try {
-    tokens = Marked.Marked.lexer(text);
-    for (const token of tokens) {
-      markdownRenderer.renderToken(token);
-    }
-  } catch {
-    return html7`${text}`;
-  }
-  return html7`<devtools-markdown-view
-    .data=${{ tokens, renderer: markdownRenderer, animationEnabled: animate }}
-    ${refFn ? ref2(refFn) : Lit5.nothing}>
-  </devtools-markdown-view>`;
-}
-function renderTitle(step) {
-  const paused = step.sideEffect ? html7`<span class="paused">${lockedString4(UIStringsNotTranslate4.paused)}: </span>` : Lit5.nothing;
-  const actionTitle = step.title ?? `${lockedString4(UIStringsNotTranslate4.investigating)}\u2026`;
-  return html7`<span class="title">${paused}${actionTitle}</span>`;
-}
-function renderStepCode(step) {
-  if (!step.code && !step.output) {
-    return Lit5.nothing;
-  }
-  const codeHeadingText = step.output && !step.canceled ? lockedString4(UIStringsNotTranslate4.codeExecuted) : lockedString4(UIStringsNotTranslate4.codeToExecute);
-  const code = step.code ? html7`<div class="action-result">
-      <devtools-code-block
-        .code=${step.code.trim()}
-        .codeLang=${"js"}
-        .displayNotice=${!Boolean(step.output)}
-        .header=${codeHeadingText}
-        .showCopyButton=${true}
-      ></devtools-code-block>
-  </div>` : Lit5.nothing;
-  const output = step.output ? html7`<div class="js-code-output">
-    <devtools-code-block
-      .code=${step.output}
-      .codeLang=${"js"}
-      .displayNotice=${true}
-      .header=${lockedString4(UIStringsNotTranslate4.dataReturned)}
-      .showCopyButton=${false}
-    ></devtools-code-block>
-  </div>` : Lit5.nothing;
-  return html7`<div class="step-code">${code}${output}</div>`;
-}
-function renderStepDetails({ step, markdownRenderer, isLast }) {
-  const sideEffects = isLast && step.sideEffect ? renderSideEffectConfirmationUi(step) : Lit5.nothing;
-  const thought = step.thought ? html7`<p>${renderTextAsMarkdown(step.thought, markdownRenderer)}</p>` : Lit5.nothing;
-  const contextDetails = step.contextDetails ? html7`${Lit5.Directives.repeat(step.contextDetails, (contextDetail) => {
-    return html7`<div class="context-details">
-      <devtools-code-block
-        .code=${contextDetail.text}
-        .codeLang=${contextDetail.codeLang || ""}
-        .displayNotice=${false}
-        .header=${contextDetail.title}
-        .showCopyButton=${true}
-      ></devtools-code-block>
-    </div>`;
-  })}` : Lit5.nothing;
-  return html7`<div class="step-details">
-    ${thought}
-    ${renderStepCode(step)}
-    ${sideEffects}
-    ${contextDetails}
-  </div>`;
-}
-function renderStepBadge({ step, isLoading, isLast }) {
-  if (isLoading && isLast && !step.sideEffect) {
-    return html7`<devtools-spinner></devtools-spinner>`;
-  }
-  let iconName = "checkmark";
-  let ariaLabel = lockedString4(UIStringsNotTranslate4.completed);
-  let role = "button";
-  if (isLast && step.sideEffect) {
-    role = void 0;
-    ariaLabel = void 0;
-    iconName = "pause-circle";
-  } else if (step.canceled) {
-    ariaLabel = lockedString4(UIStringsNotTranslate4.canceled);
-    iconName = "cross";
-  }
-  return html7`<devtools-icon
-      class="indicator"
-      role=${ifDefined(role)}
-      aria-label=${ifDefined(ariaLabel)}
-      .name=${iconName}
-    ></devtools-icon>`;
-}
-function renderStep({ step, isLoading, markdownRenderer, isLast }) {
-  const stepClasses = Lit5.Directives.classMap({
-    step: true,
-    empty: !step.thought && !step.code && !step.contextDetails && !step.sideEffect,
-    paused: Boolean(step.sideEffect),
-    canceled: Boolean(step.canceled)
-  });
-  return html7`
-    <details class=${stepClasses}
-      jslog=${VisualLogging4.section("step")}
-      .open=${Boolean(step.sideEffect)}>
-      <summary>
-        <div class="summary">
-          ${renderStepBadge({ step, isLoading, isLast })}
-          ${renderTitle(step)}
-          <devtools-icon
-            class="arrow"
-            name="chevron-down"
-          ></devtools-icon>
-        </div>
-      </summary>
-      ${renderStepDetails({ step, markdownRenderer, isLast })}
-    </details>`;
-}
-function renderSideEffectConfirmationUi(step) {
-  if (!step.sideEffect) {
-    return Lit5.nothing;
-  }
-  return html7`<div
-    class="side-effect-confirmation"
-    jslog=${VisualLogging4.section("side-effect-confirmation")}
-  >
-    <p>${lockedString4(UIStringsNotTranslate4.sideEffectConfirmationDescription)}</p>
-    <div class="side-effect-buttons-container">
-      <devtools-button
-        .data=${{
-    variant: "outlined",
-    jslogContext: "decline-execute-code"
-  }}
-        @click=${() => step.sideEffect?.onAnswer(false)}
-      >${lockedString4(UIStringsNotTranslate4.negativeSideEffectConfirmation)}</devtools-button>
-      <devtools-button
-        .data=${{
-    variant: "primary",
-    jslogContext: "accept-execute-code",
-    iconName: "play"
-  }}
-        @click=${() => step.sideEffect?.onAnswer(true)}
-      >${lockedString4(UIStringsNotTranslate4.positiveSideEffectConfirmation)}</devtools-button>
-    </div>
-  </div>`;
-}
-function renderError(message) {
-  if (message.error) {
-    let errorMessage;
-    switch (message.error) {
-      case "unknown":
-      case "block":
-        errorMessage = UIStringsNotTranslate4.systemError;
-        break;
-      case "max-steps":
-        errorMessage = UIStringsNotTranslate4.maxStepsError;
-        break;
-      case "abort":
-        return html7`<p class="aborted" jslog=${VisualLogging4.section("aborted")}>${lockedString4(UIStringsNotTranslate4.stoppedResponse)}</p>`;
-    }
-    return html7`<p class="error" jslog=${VisualLogging4.section("error")}>${lockedString4(errorMessage)}</p>`;
-  }
-  return Lit5.nothing;
-}
-function renderImageChatMessage(inlineData) {
-  if (inlineData.data === AiAssistanceModel4.AiConversation.NOT_FOUND_IMAGE_DATA) {
-    return html7`<div class="unavailable-image" title=${UIStringsNotTranslate4.imageUnavailable}>
-      <devtools-icon name='file-image'></devtools-icon>
-    </div>`;
-  }
-  const imageUrl = `data:${inlineData.mimeType};base64,${inlineData.data}`;
-  return html7`<x-link
-      class="image-link" title=${UIStringsNotTranslate4.openImageInNewTab}
-      href=${imageUrl}
-    >
-      <img src=${imageUrl} alt=${UIStringsNotTranslate4.imageInputSentToTheModel} />
-    </x-link>`;
-}
-function renderActions(input, output) {
-  return html7`
-    <div class="ai-assistance-feedback-row">
-      <div class="action-buttons">
-        ${input.showRateButtons ? html7`
-          <devtools-button
-            .data=${{
-    variant: "icon",
-    size: "SMALL",
-    iconName: "thumb-up",
-    toggledIconName: "thumb-up-filled",
-    toggled: input.currentRating === "POSITIVE",
-    toggleType: "primary-toggle",
-    title: lockedString4(UIStringsNotTranslate4.thumbsUp),
-    jslogContext: "thumbs-up"
-  }}
-            @click=${() => input.onRatingClick(
-    "POSITIVE"
-    /* Host.AidaClient.Rating.POSITIVE */
-  )}
-          ></devtools-button>
-          <devtools-button
-            .data=${{
-    variant: "icon",
-    size: "SMALL",
-    iconName: "thumb-down",
-    toggledIconName: "thumb-down-filled",
-    toggled: input.currentRating === "NEGATIVE",
-    toggleType: "primary-toggle",
-    title: lockedString4(UIStringsNotTranslate4.thumbsDown),
-    jslogContext: "thumbs-down"
-  }}
-            @click=${() => input.onRatingClick(
-    "NEGATIVE"
-    /* Host.AidaClient.Rating.NEGATIVE */
-  )}
-          ></devtools-button>
-          <div class="vertical-separator"></div>
-        ` : Lit5.nothing}
-        <devtools-button
-          .data=${{
-    variant: "icon",
-    size: "SMALL",
-    title: lockedString4(UIStringsNotTranslate4.report),
-    iconName: "report",
-    jslogContext: "report"
-  }}
-          @click=${input.onReportClick}
-        ></devtools-button>
-        <div class="vertical-separator"></div>
-          <devtools-button
-            .data=${{
-    variant: "icon",
-    size: "SMALL",
-    title: lockedString4(UIStringsNotTranslate4.copyResponse),
-    iconName: "copy",
-    jslogContext: "copy-ai-response"
-  }}
-            aria-label=${lockedString4(UIStringsNotTranslate4.copyResponse)}
-            @click=${input.onCopyResponseClick}></devtools-button>
-      </div>
-      ${input.suggestions ? html7`<div class="suggestions-container">
-        <div class="scroll-button-container left hidden" ${ref2((element) => {
-    output.suggestionsLeftScrollButtonContainer = element;
-  })}>
-          <devtools-button
-            class='scroll-button'
-            .data=${{
-    variant: "icon",
-    size: "SMALL",
-    iconName: "chevron-left",
-    title: lockedString4(UIStringsNotTranslate4.scrollToPrevious),
-    jslogContext: "chevron-left"
-  }}
-            @click=${() => input.scrollSuggestionsScrollContainer("left")}
-          ></devtools-button>
-        </div>
-        <div class="suggestions-scroll-container" @scroll=${input.onSuggestionsScrollOrResize} ${ref2((element) => {
-    output.suggestionsScrollContainer = element;
-  })}>
-          ${input.suggestions.map((suggestion) => html7`<devtools-button
-            class='suggestion'
-            .data=${{
-    variant: "outlined",
-    title: suggestion,
-    jslogContext: "suggestion"
-  }}
-            @click=${() => input.onSuggestionClick(suggestion)}
-          >${suggestion}</devtools-button>`)}
-        </div>
-        <div class="scroll-button-container right hidden" ${ref2((element) => {
-    output.suggestionsRightScrollButtonContainer = element;
-  })}>
-          <devtools-button
-            class='scroll-button'
-            .data=${{
-    variant: "icon",
-    size: "SMALL",
-    iconName: "chevron-right",
-    title: lockedString4(UIStringsNotTranslate4.scrollToNext),
-    jslogContext: "chevron-right"
-  }}
-            @click=${() => input.scrollSuggestionsScrollContainer("right")}
-          ></devtools-button>
-        </div>
-      </div>` : Lit5.nothing}
-    </div>
-    ${input.isShowingFeedbackForm ? html7`
-      <form class="feedback-form" @submit=${input.onSubmit}>
-        <div class="feedback-header">
-          <h4 class="feedback-title">${lockedString4(UIStringsNotTranslate4.whyThisRating)}</h4>
-          <devtools-button
-            aria-label=${lockedString4(UIStringsNotTranslate4.close)}
-            @click=${input.onClose}
-            .data=${{
-    variant: "icon",
-    iconName: "cross",
-    size: "SMALL",
-    title: lockedString4(UIStringsNotTranslate4.close),
-    jslogContext: "close"
-  }}
-          ></devtools-button>
-        </div>
-        <input
-          type="text"
-          class="devtools-text-input feedback-input"
-          @input=${(event) => input.onInputChange(event.target.value)}
-          placeholder=${lockedString4(UIStringsNotTranslate4.provideFeedbackPlaceholder)}
-          jslog=${VisualLogging4.textField("feedback").track({ keydown: "Enter" })}
-        >
-        <span class="feedback-disclaimer">${lockedString4(UIStringsNotTranslate4.disclaimer)}</span>
-        <div>
-          <devtools-button
-          aria-label=${lockedString4(UIStringsNotTranslate4.submit)}
-          .data=${{
-    type: "submit",
-    disabled: input.isSubmitButtonDisabled,
-    variant: "outlined",
-    size: "SMALL",
-    title: lockedString4(UIStringsNotTranslate4.submit),
-    jslogContext: "send"
-  }}
-          >${lockedString4(UIStringsNotTranslate4.submit)}</devtools-button>
-        </div>
-      </div>
-    </form>
-    ` : Lit5.nothing}
-  `;
-}
-var UserActionRow = class extends UI5.Widget.Widget {
-  message = { entity: "user", text: "" };
-  isLoading = false;
-  isReadOnly = false;
-  canShowFeedbackForm = false;
-  isLastMessage = false;
-  userInfo = {};
-  markdownRenderer;
-  onSuggestionClick = () => {
-  };
-  onFeedbackSubmit = () => {
-  };
-  onCopyResponseClick = () => {
-  };
-  #suggestionsResizeObserver = new ResizeObserver(() => this.#handleSuggestionsScrollOrResize());
-  #suggestionsEvaluateLayoutThrottler = new Common3.Throttler.Throttler(50);
-  #feedbackValue = "";
-  #currentRating;
-  #isShowingFeedbackForm = false;
-  #isSubmitButtonDisabled = true;
-  #view;
-  #viewOutput = {};
-  constructor(element, view) {
-    super(element);
-    this.#view = view ?? DEFAULT_VIEW4;
-  }
-  wasShown() {
-    super.wasShown();
-    void this.performUpdate();
-    this.#evaluateSuggestionsLayout();
-    if (this.#viewOutput.suggestionsScrollContainer) {
-      this.#suggestionsResizeObserver.observe(this.#viewOutput.suggestionsScrollContainer);
-    }
-  }
-  performUpdate() {
-    this.#view({
-      message: this.message,
-      isLoading: this.isLoading,
-      isReadOnly: this.isReadOnly,
-      canShowFeedbackForm: this.canShowFeedbackForm,
-      userInfo: this.userInfo,
-      markdownRenderer: this.markdownRenderer,
-      isLastMessage: this.isLastMessage,
-      onSuggestionClick: this.onSuggestionClick,
-      onRatingClick: this.#handleRateClick.bind(this),
-      onReportClick: () => UIHelpers.openInNewTab(REPORT_URL),
-      onCopyResponseClick: () => {
-        if (this.message.entity === "model") {
-          this.onCopyResponseClick(this.message);
-        }
-      },
-      scrollSuggestionsScrollContainer: this.#scrollSuggestionsScrollContainer.bind(this),
-      onSuggestionsScrollOrResize: this.#handleSuggestionsScrollOrResize.bind(this),
-      onSubmit: this.#handleSubmit.bind(this),
-      onClose: this.#handleClose.bind(this),
-      onInputChange: this.#handleInputChange.bind(this),
-      isSubmitButtonDisabled: this.#isSubmitButtonDisabled,
-      // Props for actions logic
-      showRateButtons: this.message.entity === "model" && !!this.message.rpcId,
-      suggestions: this.message.entity === "model" && !this.isReadOnly && this.message.parts.at(-1)?.type === "answer" ? this.message.parts.at(-1).suggestions : void 0,
-      currentRating: this.#currentRating,
-      isShowingFeedbackForm: this.#isShowingFeedbackForm,
-      onFeedbackSubmit: this.onFeedbackSubmit
-    }, this.#viewOutput, this.contentElement);
-  }
-  #handleInputChange(value) {
-    this.#feedbackValue = value;
-    const disableSubmit = !value;
-    if (disableSubmit !== this.#isSubmitButtonDisabled) {
-      this.#isSubmitButtonDisabled = disableSubmit;
-      void this.performUpdate();
-    }
-  }
-  #evaluateSuggestionsLayout = () => {
-    const suggestionsScrollContainer = this.#viewOutput.suggestionsScrollContainer;
-    const leftScrollButtonContainer = this.#viewOutput.suggestionsLeftScrollButtonContainer;
-    const rightScrollButtonContainer = this.#viewOutput.suggestionsRightScrollButtonContainer;
-    if (!suggestionsScrollContainer || !leftScrollButtonContainer || !rightScrollButtonContainer) {
-      return;
-    }
-    const shouldShowLeftButton = suggestionsScrollContainer.scrollLeft > SCROLL_ROUNDING_OFFSET;
-    const shouldShowRightButton = suggestionsScrollContainer.scrollLeft + suggestionsScrollContainer.offsetWidth + SCROLL_ROUNDING_OFFSET < suggestionsScrollContainer.scrollWidth;
-    leftScrollButtonContainer.classList.toggle("hidden", !shouldShowLeftButton);
-    rightScrollButtonContainer.classList.toggle("hidden", !shouldShowRightButton);
-  };
-  willHide() {
-    super.willHide();
-    this.#suggestionsResizeObserver.disconnect();
-  }
-  #handleSuggestionsScrollOrResize() {
-    void this.#suggestionsEvaluateLayoutThrottler.schedule(() => {
-      this.#evaluateSuggestionsLayout();
-      return Promise.resolve();
-    });
-  }
-  #scrollSuggestionsScrollContainer(direction) {
-    const suggestionsScrollContainer = this.#viewOutput.suggestionsScrollContainer;
-    if (!suggestionsScrollContainer) {
-      return;
-    }
-    suggestionsScrollContainer.scroll({
-      top: 0,
-      left: direction === "left" ? suggestionsScrollContainer.scrollLeft - suggestionsScrollContainer.clientWidth : suggestionsScrollContainer.scrollLeft + suggestionsScrollContainer.clientWidth,
-      behavior: "smooth"
-    });
-  }
-  #handleRateClick(rating) {
-    if (this.#currentRating === rating) {
-      this.#currentRating = void 0;
-      this.#isShowingFeedbackForm = false;
-      this.#isSubmitButtonDisabled = true;
-      if (this.message.entity === "model" && this.message.rpcId) {
-        this.onFeedbackSubmit(
-          this.message.rpcId,
-          "SENTIMENT_UNSPECIFIED"
-          /* Host.AidaClient.Rating.SENTIMENT_UNSPECIFIED */
-        );
-      }
-      void this.performUpdate();
-      return;
-    }
-    this.#currentRating = rating;
-    this.#isShowingFeedbackForm = this.canShowFeedbackForm;
-    if (this.message.entity === "model" && this.message.rpcId) {
-      this.onFeedbackSubmit(this.message.rpcId, rating);
-    }
-    void this.performUpdate();
-  }
-  #handleClose() {
-    this.#isShowingFeedbackForm = false;
-    this.#isSubmitButtonDisabled = true;
-    void this.performUpdate();
-  }
-  #handleSubmit(ev) {
-    ev.preventDefault();
-    const input = this.#feedbackValue;
-    if (!this.#currentRating || !input) {
-      return;
-    }
-    if (this.message.entity === "model" && this.message.rpcId) {
-      this.onFeedbackSubmit(this.message.rpcId, this.#currentRating, input);
-    }
-    this.#isShowingFeedbackForm = false;
-    this.#isSubmitButtonDisabled = true;
-    void this.performUpdate();
-  }
-};
-
 // gen/front_end/panels/ai_assistance/components/ChatView.js
 var { html: html8, Directives: { ref: ref3, repeat, createRef: createRef2 } } = Lit6;
 var UIStringsNotTranslate5 = {
@@ -4091,7 +4091,7 @@ function renderMessages({ messages, isLoading, isReadOnly, canShowFeedbackForm, 
   }
   return html8`
     <div class="messages-container" ${ref3(onMessageContainerRef)}>
-      ${repeat(messages, (message) => html8`<devtools-widget .widgetConfig=${UI6.Widget.widgetConfig(UserActionRow, {
+      ${repeat(messages, (message) => html8`<devtools-widget .widgetConfig=${UI6.Widget.widgetConfig(ChatMessage, {
     message,
     isLoading,
     isReadOnly,
@@ -6027,6 +6027,7 @@ export {
   ActionDelegate,
   AiAssistancePanel,
   ChatInput_exports as ChatInput,
+  ChatMessage_exports as ChatMessage,
   ChatView,
   DisabledWidget_exports as DisabledWidget,
   ExploreWidget_exports as ExploreWidget,
@@ -6035,7 +6036,6 @@ export {
   PerformanceAgentFlameChart,
   SELECT_WORKSPACE_DIALOG_DEFAULT_VIEW,
   SelectWorkspaceDialog,
-  UserActionRow_exports as UserActionRow,
   getResponseMarkdown
 };
 //# sourceMappingURL=ai_assistance.js.map

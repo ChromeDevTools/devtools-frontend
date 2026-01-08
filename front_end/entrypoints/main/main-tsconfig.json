@@ -60,6 +60,9 @@
       "path": "../../core/protocol_client/bundle-tsconfig.json"
     },
     {
+      "path": "../../core/root/bundle-tsconfig.json"
+    },
+    {
       "path": "../../core/sdk/bundle-tsconfig.json"
     },
     {
@@ -75,13 +78,25 @@
       "path": "../../models/autofill_manager/bundle-tsconfig.json"
     },
     {
+      "path": "../../models/badges/bundle-tsconfig.json"
+    },
+    {
       "path": "../../models/bindings/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../models/breakpoints/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../models/crux-manager/bundle-tsconfig.json"
     },
     {
       "path": "../../models/extensions/bundle-tsconfig.json"
     },
     {
       "path": "../../models/issues_manager/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../models/live-metrics/bundle-tsconfig.json"
     },
     {
       "path": "../../models/logs/bundle-tsconfig.json"
@@ -109,6 +124,9 @@
     },
     {
       "path": "../../ui/components/buttons/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../ui/components/snackbars/bundle-tsconfig.json"
     },
     {
       "path": "../../ui/kit/bundle-tsconfig.json"

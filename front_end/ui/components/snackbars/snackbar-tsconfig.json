@@ -42,6 +42,9 @@
   ],
   "references": [
     {
+      "path": "../../../core/i18n/bundle-tsconfig.json"
+    },
+    {
       "path": "../../../core/platform/bundle-tsconfig.json"
     },
     {
@@ -49,6 +52,9 @@
     },
     {
       "path": "../../lit/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../visual_logging/bundle-tsconfig.json"
     },
     {
       "path": "../buttons/bundle-tsconfig.json"

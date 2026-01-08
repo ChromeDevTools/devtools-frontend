@@ -9,7 +9,7 @@ import * as PanelCommon from '../../../panels/common/common.js';
 import * as CodeMirror from '../../../third_party/codemirror.next/codemirror.next.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../visual_logging/visual_logging.js';
-import { AiCodeCompletionTeaserPlaceholder } from './AiCodeCompletionTeaserPlaceholder.js';
+import { AccessiblePlaceholder } from './AccessiblePlaceholder.js';
 import { AiCodeGenerationParser } from './AiCodeGenerationParser.js';
 import { acceptAiAutoCompleteSuggestion, aiAutoCompleteSuggestion, aiAutoCompleteSuggestionState, hasActiveAiSuggestion, setAiAutoCompleteSuggestion, } from './config.js';
 export var AiCodeGenerationTeaserMode;
@@ -32,6 +32,7 @@ export class AiCodeGenerationProvider {
     #editor;
     #aiCodeGenerationConfig;
     #aiCodeGeneration;
+    #aiCodeGenerationCitations = [];
     #aidaClient = new Host.AidaClient.AidaClient();
     #boundOnUpdateAiCodeGenerationState = this.#updateAiCodeGenerationState.bind(this);
     #controller = new AbortController();
@@ -135,7 +136,7 @@ export class AiCodeGenerationProvider {
                     if (suggestion?.rpcGlobalId) {
                         this.#aiCodeGeneration.registerUserAcceptance(suggestion.rpcGlobalId, suggestion.sampleId);
                     }
-                    this.#aiCodeGenerationConfig?.onSuggestionAccepted();
+                    this.#aiCodeGenerationConfig?.onSuggestionAccepted(this.#aiCodeGenerationCitations);
                     return true;
                 },
             },
@@ -211,6 +212,7 @@ export class AiCodeGenerationProvider {
         if (!this.#editor || !this.#aiCodeGeneration) {
             return;
         }
+        this.#aiCodeGenerationCitations = [];
         this.#generationTeaser.displayState = PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.LOADING;
         const cursor = this.#editor.state.selection.main.head;
         const query = AiCodeGenerationParser.extractCommentText(this.#editor.state, cursor);
@@ -226,7 +228,7 @@ export class AiCodeGenerationProvider {
                 this.#dismissTeaserAndSuggestion();
             }
             if (!generationResponse || generationResponse.samples.length === 0) {
-                this.#aiCodeGenerationConfig?.onResponseReceived([]);
+                this.#aiCodeGenerationConfig?.onResponseReceived();
                 return;
             }
             const topSample = generationResponse.samples[0];
@@ -254,12 +256,13 @@ export class AiCodeGenerationProvider {
                 PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.GENERATED;
             AiCodeGeneration.debugLog('Suggestion dispatched to the editor', suggestionText);
             const citations = topSample.attributionMetadata?.citations ?? [];
-            this.#aiCodeGenerationConfig?.onResponseReceived(citations);
+            this.#aiCodeGenerationCitations = citations;
+            this.#aiCodeGenerationConfig?.onResponseReceived();
             return;
         }
         catch (e) {
             AiCodeGeneration.debugLog('Error while fetching code generation suggestions from AIDA', e);
-            this.#aiCodeGenerationConfig?.onResponseReceived([]);
+            this.#aiCodeGenerationConfig?.onResponseReceived();
             Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiCodeGenerationError);
         }
         if (this.#generationTeaser) {
@@ -292,8 +295,7 @@ function aiCodeGenerationTeaserExtension(teaser) {
             const isCursorAtEndOfLine = cursorPosition >= line.to;
             if ((isEmptyLine) || (isComment && isCursorAtEndOfLine)) {
                 return CodeMirror.Decoration.set([
-                    CodeMirror.Decoration.widget({ widget: new AiCodeCompletionTeaserPlaceholder(teaser), side: 1 })
-                        .range(cursorPosition),
+                    CodeMirror.Decoration.widget({ widget: new AccessiblePlaceholder(teaser), side: 1 }).range(cursorPosition),
                 ]);
             }
             return CodeMirror.Decoration.none;

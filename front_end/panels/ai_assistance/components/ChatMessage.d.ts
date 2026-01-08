@@ -41,7 +41,7 @@ export interface ModelChatMessage {
     error?: AiAssistanceModel.AiAgent.ErrorType;
     rpcId?: Host.AidaClient.RpcGlobalId;
 }
-export type ChatMessage = UserChatMessage | ModelChatMessage;
+export type Message = UserChatMessage | ModelChatMessage;
 export interface RatingViewInput {
     currentRating?: Host.AidaClient.Rating;
     onRatingClick: (rating: Host.AidaClient.Rating) => void;
@@ -64,7 +64,7 @@ export interface FeedbackFormViewInput {
     onInputChange: (input: string) => void;
     isSubmitButtonDisabled: boolean;
 }
-export type UserActionRowViewInput = MessageInput & RatingViewInput & ActionViewInput & SuggestionViewInput & FeedbackFormViewInput;
+export type ChatMessageViewInput = MessageInput & RatingViewInput & ActionViewInput & SuggestionViewInput & FeedbackFormViewInput;
 export interface ViewOutput {
     suggestionsLeftScrollButtonContainer?: Element;
     suggestionsScrollContainer?: Element;
@@ -72,7 +72,7 @@ export interface ViewOutput {
 }
 export interface MessageInput {
     suggestions?: [string, ...string[]];
-    message: ChatMessage;
+    message: Message;
     isLoading: boolean;
     isReadOnly: boolean;
     isLastMessage: boolean;
@@ -83,11 +83,11 @@ export interface MessageInput {
     onFeedbackSubmit: (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void;
     onCopyResponseClick: (message: ModelChatMessage) => void;
 }
-export declare const DEFAULT_VIEW: (input: UserActionRowViewInput, output: ViewOutput, target: HTMLElement) => void;
+export declare const DEFAULT_VIEW: (input: ChatMessageViewInput, output: ViewOutput, target: HTMLElement) => void;
 export type View = typeof DEFAULT_VIEW;
-export declare class UserActionRow extends UI.Widget.Widget {
+export declare class ChatMessage extends UI.Widget.Widget {
     #private;
-    message: ChatMessage;
+    message: Message;
     isLoading: boolean;
     isReadOnly: boolean;
     canShowFeedbackForm: boolean;

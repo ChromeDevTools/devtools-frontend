@@ -371,6 +371,12 @@ button {
   }
 }
 
+@media(forced-colors: active) {
+  .toggled devtools-icon {
+    background-color: canvas;
+  }
+}
+
 /*# sourceURL=${import.meta.resolve("./button.css")} */`;
 
 // gen/front_end/ui/components/buttons/Button.js

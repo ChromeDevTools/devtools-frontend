@@ -73,6 +73,9 @@
     },
     {
       "path": "../helpers/bundle-tsconfig.json"
+    },
+    {
+      "path": "../render_coordinator/bundle-tsconfig.json"
     }
   ]
 }

@@ -355,4 +355,4 @@ export default `/*
   }
 }
 
-/*# sourceURL=${import.meta.resolve('././components/userActionRow.css')} */`;
+/*# sourceURL=${import.meta.resolve('././components/chatMessage.css')} */`;

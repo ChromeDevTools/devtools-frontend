@@ -70,6 +70,12 @@
     },
     {
       "path": "../data_grid/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../kit/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../lit/bundle-tsconfig.json"
     }
   ]
 }

@@ -37,7 +37,13 @@ export type WebSocketTraceData = WebSocketTraceDataForFrame | WebSocketTraceData
 interface NetworkRequestData {
     byId: Map<string, Types.Events.SyntheticNetworkRequest>;
     byTime: Types.Events.SyntheticNetworkRequest[];
-    eventToInitiator: Map<Types.Events.SyntheticNetworkRequest, Types.Events.SyntheticNetworkRequest>;
+    requestIdsByURL: Map<string, string[]>;
+    /**
+     * IMPORTANT: you should prefer to use `Trace.Extras.Initiator` to find the initiator.
+     * This is because backend trace events have some bugs which means the initiators are not always accurate.
+     * See crrev.com/c/7032169 for context.
+     */
+    incompleteInitiator: Map<Types.Events.SyntheticNetworkRequest, Types.Events.SyntheticNetworkRequest>;
     webSocket: WebSocketTraceData[];
     entityMappings: HandlerHelpers.EntityMappings;
     linkPreconnectEvents: Types.Events.LinkPreconnect[];

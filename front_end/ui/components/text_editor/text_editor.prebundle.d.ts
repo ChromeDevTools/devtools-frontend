@@ -1,5 +1,5 @@
+export * as AccessiblePlaceholder from './AccessiblePlaceholder.js';
 export * as AiCodeCompletionProvider from './AiCodeCompletionProvider.js';
-export * as AiCodeCompletionTeaserPlaceholder from './AiCodeCompletionTeaserPlaceholder.js';
 export * as AiCodeGenerationParser from './AiCodeGenerationParser.js';
 export * as AiCodeGenerationProvider from './AiCodeGenerationProvider.js';
 export * as AutocompleteHistory from './AutocompleteHistory.js';

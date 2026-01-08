@@ -120,8 +120,14 @@ declare const emulatedDevices: ({
     };
     capabilities: string[];
     'user-agent': string;
+    'user-agent-metadata': {
+        platform: string;
+        platformVersion: string;
+        architecture: string;
+        model: string;
+        mobile: boolean;
+    };
     type: string;
-    'user-agent-metadata'?: undefined;
     'dual-screen'?: undefined;
     modes?: undefined;
     'foldable-screen'?: undefined;
@@ -146,14 +152,8 @@ declare const emulatedDevices: ({
     };
     capabilities: string[];
     'user-agent': string;
-    'user-agent-metadata': {
-        platform: string;
-        platformVersion: string;
-        architecture: string;
-        model: string;
-        mobile: boolean;
-    };
     type: string;
+    'user-agent-metadata'?: undefined;
     'dual-screen'?: undefined;
     modes?: undefined;
     'foldable-screen'?: undefined;
@@ -430,8 +430,14 @@ declare const emulatedDevices: ({
     };
     capabilities: string[];
     'user-agent': string;
+    'user-agent-metadata': {
+        platform: string;
+        platformVersion: string;
+        architecture: string;
+        model: string;
+        mobile: boolean;
+    };
     type: string;
-    'user-agent-metadata'?: undefined;
     'dual-screen'?: undefined;
     modes?: undefined;
     'foldable-screen'?: undefined;

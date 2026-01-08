@@ -2716,7 +2716,7 @@ IMPORTANT: Never show eventKey to the user.
     const initiators = [];
     let cur = request;
     while (cur) {
-      const initiator = parsedTrace.data.NetworkRequests.eventToInitiator.get(cur);
+      const initiator = Trace3.Extras.Initiators.getNetworkInitiator(parsedTrace.data, cur);
       if (initiator) {
         if (initiators.includes(initiator)) {
           return [];
@@ -2750,7 +2750,7 @@ IMPORTANT: Never show eventKey to the user.
     const mainThreadProcessingDuration = startTimesForLifecycle.processingCompletedAt - startTimesForLifecycle.downloadCompletedAt;
     const downloadTime = syntheticData.finishTime - syntheticData.downloadStart;
     const renderBlocking = Trace3.Helpers.Network.isSyntheticNetworkRequestEventRenderBlocking(request);
-    const initiator = parsedTrace.data.NetworkRequests.eventToInitiator.get(request);
+    const initiator = Trace3.Extras.Initiators.getNetworkInitiator(parsedTrace.data, request);
     const priorityLines = [];
     if (initialPriority === priority) {
       priorityLines.push(`Priority: ${priority}`);

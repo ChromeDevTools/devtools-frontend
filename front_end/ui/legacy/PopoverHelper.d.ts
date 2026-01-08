@@ -14,12 +14,14 @@ export declare class PopoverHelper {
     private readonly boundMouseDown;
     private readonly boundMouseMove;
     private readonly boundMouseOut;
+    private readonly boundScrollEnd;
     private readonly boundKeyUp;
     jslogContext?: string;
     constructor(container: HTMLElement, getRequest: (arg0: MouseEvent | KeyboardEvent) => PopoverRequest | null, jslogContext?: string);
     setTimeout(showTimeout: number, hideTimeout?: number): void;
     setDisableOnClick(disableOnClick: boolean): void;
     private eventInScheduledContent;
+    private scrollEnd;
     private mouseDown;
     private keyUp;
     private mouseMove;

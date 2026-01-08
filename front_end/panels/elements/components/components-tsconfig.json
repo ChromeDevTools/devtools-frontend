@@ -71,6 +71,9 @@
       "path": "../../../core/sdk/bundle-tsconfig.json"
     },
     {
+      "path": "../../../generated/protocol-tsconfig.json"
+    },
+    {
       "path": "../../../ui/components/buttons/bundle-tsconfig.json"
     },
     {

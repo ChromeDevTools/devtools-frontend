@@ -72,6 +72,9 @@
       "path": "../../../core/sdk/bundle-tsconfig.json"
     },
     {
+      "path": "../../../generated/protocol-tsconfig.json"
+    },
+    {
       "path": "../../../models/bindings/bundle-tsconfig.json"
     },
     {
@@ -99,6 +102,9 @@
       "path": "../../../ui/components/legacy_wrapper/bundle-tsconfig.json"
     },
     {
+      "path": "../../../ui/components/render_coordinator/bundle-tsconfig.json"
+    },
+    {
       "path": "../../../ui/components/report_view/bundle-tsconfig.json"
     },
     {
@@ -124,6 +130,12 @@
     },
     {
       "path": "../../../ui/legacy/components/utils/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../ui/lit/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../ui/visual_logging/bundle-tsconfig.json"
     }
   ]
 }

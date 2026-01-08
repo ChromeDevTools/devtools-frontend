@@ -27,7 +27,7 @@ declare class TrackDOMNodeToTreeNode extends Lit.Directive.Directive {
     update(part: Lit.Directive.ElementPart, [weakMap, treeNode]: Lit.Directive.DirectiveParameters<this>): void;
     render(_weakmap: WeakMap<HTMLLIElement, TreeNode<any>>, _treeNode: TreeNode<any>): void;
 }
-export declare const trackDOMNodeToTreeNode: (_weakmap: WeakMap<HTMLLIElement, TreeNode<any>>, _treeNode: TreeNode<any>) => Lit.Directive.DirectiveResult<typeof TrackDOMNodeToTreeNode>;
+export declare const trackDOMNodeToTreeNode: (_weakmap: WeakMap<HTMLLIElement, TreeNode<any>>, _treeNode: TreeNode<any>) => Lit.DirectiveResult<typeof TrackDOMNodeToTreeNode>;
 export declare const getNodeChildren: <TreeNodeDataType>(node: TreeNode<TreeNodeDataType>) => Promise<Array<TreeNode<TreeNodeDataType>>>;
 /**
  * Searches the tree and returns a path to the given node.

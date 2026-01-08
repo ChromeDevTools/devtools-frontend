@@ -1271,6 +1271,8 @@ export class NetworkDispatcher {
     reportingApiEndpointsChangedForOrigin(data) {
         this.#manager.dispatchEventToListeners(Events.ReportingApiEndpointsChangedForOrigin, data);
     }
+    deviceBoundSessionsAdded(_params) {
+    }
     policyUpdated() {
     }
     /**

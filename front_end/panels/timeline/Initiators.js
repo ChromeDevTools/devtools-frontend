@@ -1,6 +1,7 @@
 // Copyright 2023 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import * as Trace from '../../models/trace/trace.js';
 // We limit the amount of predecessors to 10; on large traces with large JS
 // stacks there can be a huge number of these. It's not super useful to
 // walk back too far and if we draw too many arrows on the timeline, the view becomes very cluttered and noisy.
@@ -14,7 +15,7 @@ const MAX_PREDECESSOR_INITIATOR_LIMIT = 10;
  */
 export function initiatorsDataToDraw(parsedTrace, selectedEvent, hiddenEntries, expandableEntries) {
     const initiatorsData = [
-        ...findInitiatorDataPredecessors(parsedTrace, selectedEvent, parsedTrace.data.Initiators.eventToInitiator),
+        ...findInitiatorDataPredecessors(parsedTrace, selectedEvent),
         ...findInitiatorDataDirectSuccessors(selectedEvent, parsedTrace.data.Initiators.initiatorToEvents),
     ];
     // For each InitiatorData, call a function that makes sure that neither the initiator or initiated entry is hidden.
@@ -23,16 +24,18 @@ export function initiatorsDataToDraw(parsedTrace, selectedEvent, hiddenEntries, 
     return initiatorsData;
 }
 export function initiatorsDataToDrawForNetwork(parsedTrace, selectedEvent) {
-    return findInitiatorDataPredecessors(parsedTrace, selectedEvent, parsedTrace.data.NetworkRequests.eventToInitiator);
+    return findInitiatorDataPredecessors(parsedTrace, selectedEvent);
 }
-function findInitiatorDataPredecessors(parsedTrace, selectedEvent, eventToInitiator) {
+function findInitiatorDataPredecessors(parsedTrace, selectedEvent) {
     const initiatorsData = [];
     let currentEvent = selectedEvent;
     const visited = new Set();
     visited.add(currentEvent);
     // Build event initiator data up to the selected one
     while (currentEvent && initiatorsData.length < MAX_PREDECESSOR_INITIATOR_LIMIT) {
-        const currentInitiator = eventToInitiator.get(currentEvent);
+        const currentInitiator = Trace.Types.Events.isSyntheticNetworkRequest(currentEvent) ?
+            Trace.Extras.Initiators.getNetworkInitiator(parsedTrace.data, currentEvent) :
+            parsedTrace.data.Initiators.eventToInitiator.get(currentEvent);
         if (currentInitiator) {
             if (visited.has(currentInitiator)) {
                 break;

@@ -8923,6 +8923,10 @@ var NativeFunctions = [
     signatures: [["plane", "pname"]]
   },
   {
+    name: "mapSync",
+    signatures: [["mode", "?offset", "?size"]]
+  },
+  {
     name: "mapAsync",
     signatures: [["mode", "?offset", "?size"]]
   },

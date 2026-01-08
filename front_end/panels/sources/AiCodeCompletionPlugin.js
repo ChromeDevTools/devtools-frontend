@@ -17,7 +17,6 @@ export class AiCodeCompletionPlugin extends Plugin {
     #aiCodeCompletionDisclaimer;
     #aiCodeCompletionDisclaimerContainer = document.createElement('div');
     #aiCodeCompletionDisclaimerToolbarItem = new UI.Toolbar.ToolbarItem(this.#aiCodeCompletionDisclaimerContainer);
-    #aiCodeCompletionCitations = [];
     #aiCodeCompletionCitationsToolbar;
     #aiCodeCompletionCitationsToolbarContainer = document.createElement('div');
     #aiCodeCompletionCitationsToolbarAttached = false;
@@ -127,19 +126,18 @@ export class AiCodeCompletionPlugin extends Plugin {
             this.#aiCodeCompletionDisclaimer.loading = true;
         }
     };
-    #onAiResponseReceived = (citations) => {
-        this.#aiCodeCompletionCitations = citations;
+    #onAiResponseReceived = () => {
         if (this.#aiCodeCompletionDisclaimer) {
             this.#aiCodeCompletionDisclaimer.loading = false;
         }
     };
-    #onAiCodeCompletionSuggestionAccepted() {
-        if (!this.#aiCodeCompletionCitationsToolbar || this.#aiCodeCompletionCitations.length === 0) {
+    #onAiCodeCompletionSuggestionAccepted(citations) {
+        if (!this.#aiCodeCompletionCitationsToolbar || citations.length === 0) {
             return;
         }
-        const citations = this.#aiCodeCompletionCitations.map(citation => citation.uri).filter((uri) => Boolean(uri));
-        this.#aiCodeCompletionCitationsToolbar.updateCitations(citations);
-        if (!this.#aiCodeCompletionCitationsToolbarAttached && citations.length > 0) {
+        const citationsUri = citations.map(citation => citation.uri).filter((uri) => Boolean(uri));
+        this.#aiCodeCompletionCitationsToolbar.updateCitations(citationsUri);
+        if (!this.#aiCodeCompletionCitationsToolbarAttached && citationsUri.length > 0) {
             this.#attachAiCodeCompletionCitationsToolbar();
         }
     }

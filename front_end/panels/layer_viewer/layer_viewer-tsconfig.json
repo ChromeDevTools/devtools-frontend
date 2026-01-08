@@ -59,6 +59,9 @@
       "path": "../../core/sdk/bundle-tsconfig.json"
     },
     {
+      "path": "../../generated/protocol-tsconfig.json"
+    },
+    {
       "path": "../../models/geometry/bundle-tsconfig.json"
     },
     {
@@ -69,6 +72,12 @@
     },
     {
       "path": "../../ui/legacy/components/perf_ui/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../ui/lit/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../ui/visual_logging/bundle-tsconfig.json"
     }
   ]
 }

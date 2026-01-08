@@ -5274,9 +5274,9 @@ import * as Common7 from "./../../core/common/common.js";
 import * as Host6 from "./../../core/host/host.js";
 import * as i18n21 from "./../../core/i18n/i18n.js";
 import * as TextUtils2 from "./../../models/text_utils/text_utils.js";
-import * as Lit3 from "./../../third_party/lit/lit.js";
 import * as SourceFrame3 from "./../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI12 from "./../../ui/legacy/legacy.js";
+import * as Lit3 from "./../../ui/lit/lit.js";
 var { html: html5, render: render6 } = Lit3;
 var UIStrings11 = {
   /**

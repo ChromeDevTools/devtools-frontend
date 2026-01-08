@@ -122,6 +122,12 @@
       "path": "../../models/issues_manager/bundle-tsconfig.json"
     },
     {
+      "path": "../../models/stack_trace/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../models/text_utils/bundle-tsconfig.json"
+    },
+    {
       "path": "../../models/workspace/bundle-tsconfig.json"
     },
     {
@@ -161,6 +167,12 @@
       "path": "../../ui/components/highlighting/bundle-tsconfig.json"
     },
     {
+      "path": "../../ui/components/issue_counter/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../ui/components/node_text/bundle-tsconfig.json"
+    },
+    {
       "path": "../../ui/components/text_editor/bundle-tsconfig.json"
     },
     {
@@ -192,6 +204,9 @@
     },
     {
       "path": "../../ui/lit/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../ui/visual_logging/bundle-tsconfig.json"
     },
     {
       "path": "../common/bundle-tsconfig.json"

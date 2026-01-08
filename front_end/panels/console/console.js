@@ -4585,11 +4585,11 @@ import * as Platform3 from "./../../core/platform/platform.js";
 import * as Root3 from "./../../core/root/root.js";
 import * as SDK5 from "./../../core/sdk/sdk.js";
 import * as CodeMirror from "./../../third_party/codemirror.next/codemirror.next.js";
-import { Directives, html as html3, nothing as nothing3, render as render4 } from "./../../third_party/lit/lit.js";
 import * as Buttons3 from "./../../ui/components/buttons/buttons.js";
 import * as TextEditor from "./../../ui/components/text_editor/text_editor.js";
 import * as ObjectUI2 from "./../../ui/legacy/components/object_ui/object_ui.js";
 import * as UI4 from "./../../ui/legacy/legacy.js";
+import { Directives, html as html3, nothing as nothing3, render as render4 } from "./../../ui/lit/lit.js";
 import * as VisualLogging3 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/console/consolePinPane.css.js
@@ -6349,7 +6349,6 @@ var ConsoleView = class _ConsoleView extends UI7.Widget.VBox {
   aiCodeCompletionConfig;
   aiCodeCompletionSummaryToolbarContainer;
   aiCodeCompletionSummaryToolbar;
-  aiCodeCompletionCitations = [];
   constructor(viewportThrottlerTimeout) {
     super();
     this.setMinimumSize(0, 35);
@@ -6572,18 +6571,17 @@ var ConsoleView = class _ConsoleView extends UI7.Widget.VBox {
     this.aiCodeCompletionSummaryToolbarContainer = this.element.createChild("div", "ai-code-completion-summary-toolbar-container");
     this.aiCodeCompletionSummaryToolbar.show(this.aiCodeCompletionSummaryToolbarContainer, void 0, true);
   }
-  #onAiCodeCompletionSuggestionAccepted() {
-    if (!this.aiCodeCompletionSummaryToolbar || this.aiCodeCompletionCitations.length === 0) {
+  #onAiCodeCompletionSuggestionAccepted(citations) {
+    if (!this.aiCodeCompletionSummaryToolbar || citations.length === 0) {
       return;
     }
-    const citations = this.aiCodeCompletionCitations.map((citation) => citation.uri).filter((uri) => Boolean(uri));
-    this.aiCodeCompletionSummaryToolbar.updateCitations(citations);
+    const citationsUri = citations.map((citation) => citation.uri).filter((uri) => Boolean(uri));
+    this.aiCodeCompletionSummaryToolbar.updateCitations(citationsUri);
   }
   #onAiCodeCompletionRequestTriggered() {
     this.aiCodeCompletionSummaryToolbar?.setLoading(true);
   }
-  #onAiCodeCompletionResponseReceived(citations) {
-    this.aiCodeCompletionCitations = citations;
+  #onAiCodeCompletionResponseReceived() {
     this.aiCodeCompletionSummaryToolbar?.setLoading(false);
   }
   clearConsole() {
@@ -6914,11 +6912,11 @@ var ConsoleView = class _ConsoleView extends UI7.Widget.VBox {
       return;
     }
     const currentGroup = viewMessage.consoleGroup();
+    showGroup(currentGroup, this.visibleViewMessages);
     if (!currentGroup?.messagesHidden()) {
       const originatingMessage = viewMessage.consoleMessage().originatingMessage();
       const adjacent = Boolean(originatingMessage && lastMessage?.consoleMessage() === originatingMessage);
       viewMessage.setAdjacentUserCommandResult(adjacent);
-      showGroup(currentGroup, this.visibleViewMessages);
       this.visibleViewMessages.push(viewMessage);
       this.searchMessage(this.visibleViewMessages.length - 1);
     }

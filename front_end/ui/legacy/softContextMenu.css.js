@@ -130,6 +130,8 @@ export default `/*
     background-color: Highlight;
     color: HighlightText;
     forced-color-adjust: none;
+
+    --icon-default: HighlightText;
   }
 
   .soft-context-menu .soft-context-menu-item devtools-icon,

@@ -68,6 +68,18 @@
       "path": "../../core/platform/bundle-tsconfig.json"
     },
     {
+      "path": "../../core/protocol_client/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../core/root/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../core/sdk/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../generated/protocol-tsconfig.json"
+    },
+    {
       "path": "../../models/ai_code_completion/bundle-tsconfig.json"
     },
     {
@@ -77,13 +89,31 @@
       "path": "../../models/badges/bundle-tsconfig.json"
     },
     {
+      "path": "../../models/bindings/bundle-tsconfig.json"
+    },
+    {
       "path": "../../models/extensions/bundle-tsconfig.json"
     },
     {
       "path": "../../models/geometry/bundle-tsconfig.json"
     },
     {
+      "path": "../../models/greendev/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../models/har/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../models/logs/bundle-tsconfig.json"
+    },
+    {
       "path": "../../models/persistence/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../models/text_utils/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../models/workspace/bundle-tsconfig.json"
     },
     {
       "path": "../../models/workspace_diff/bundle-tsconfig.json"
@@ -120,6 +150,9 @@
     },
     {
       "path": "../../ui/legacy/components/utils/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../ui/legacy/theme_support/bundle-tsconfig.json"
     },
     {
       "path": "../../ui/lit/bundle-tsconfig.json"

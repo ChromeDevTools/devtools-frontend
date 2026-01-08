@@ -54,6 +54,9 @@ export class TextEditor extends HTMLElement {
             this.#lastScrollSnapshot = this.#activeEditor.scrollSnapshot();
             this.scrollEventHandledToSaveScrollPositionForTest();
         });
+        this.#activeEditor.scrollDOM.addEventListener('scrollend', () => {
+            this.dispatchEvent(new Event('scrollend'));
+        });
         this.#ensureSettingListeners();
         this.#startObservingResize();
         ThemeSupport.ThemeSupport.instance().addEventListener(ThemeSupport.ThemeChangeEvent.eventName, () => {

@@ -10,8 +10,8 @@ import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import { PatchWidget } from '../PatchWidget.js';
 import { ChatInput } from './ChatInput.js';
+import { ChatMessage } from './ChatMessage.js';
 import chatViewStyles from './chatView.css.js';
-import { UserActionRow } from './UserActionRow.js';
 export { ChatInput } from './ChatInput.js';
 const { html, Directives: { ref, repeat, createRef } } = Lit;
 /*
@@ -229,7 +229,7 @@ function renderMessages({ messages, isLoading, isReadOnly, canShowFeedbackForm, 
     // clang-format off
     return html `
     <div class="messages-container" ${ref(onMessageContainerRef)}>
-      ${repeat(messages, message => html `<devtools-widget .widgetConfig=${UI.Widget.widgetConfig(UserActionRow, {
+      ${repeat(messages, message => html `<devtools-widget .widgetConfig=${UI.Widget.widgetConfig(ChatMessage, {
         message,
         isLoading,
         isReadOnly,

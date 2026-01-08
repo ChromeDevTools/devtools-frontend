@@ -7,7 +7,6 @@ export function flattenRect(rect, left) {
     const x = left ? rect.left : rect.right;
     return { left: x, right: x, top: rect.top, bottom: rect.bottom };
 }
-// TODO(b/462393094): Rename this to be a generic accessible placeholder
 /**
  * A CodeMirror WidgetType that displays a UI.Widget.Widget as a placeholder.
  *
@@ -16,7 +15,7 @@ export function flattenRect(rect, left) {
  * it ensures that screen readers can properly announce the content within
  * the encapsulated widget.
  */
-export class AiCodeCompletionTeaserPlaceholder extends CM.WidgetType {
+export class AccessiblePlaceholder extends CM.WidgetType {
     teaser;
     constructor(teaser) {
         super();
@@ -59,18 +58,4 @@ export class AiCodeCompletionTeaserPlaceholder extends CM.WidgetType {
         return this.teaser === other.teaser;
     }
 }
-export function aiCodeCompletionTeaserPlaceholder(teaser) {
-    const plugin = CM.ViewPlugin.fromClass(class {
-        view;
-        placeholder;
-        constructor(view) {
-            this.view = view;
-            this.placeholder = CM.Decoration.set([CM.Decoration.widget({ widget: new AiCodeCompletionTeaserPlaceholder(teaser), side: 1 }).range(0)]);
-        }
-        get decorations() {
-            return this.view.state.doc.length ? CM.Decoration.none : this.placeholder;
-        }
-    }, { decorations: v => v.decorations });
-    return plugin;
-}
-//# sourceMappingURL=AiCodeCompletionTeaserPlaceholder.js.map
+//# sourceMappingURL=AccessiblePlaceholder.js.map

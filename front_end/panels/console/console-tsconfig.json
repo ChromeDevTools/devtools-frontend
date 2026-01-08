@@ -75,13 +75,22 @@
       "path": "../../core/sdk/bundle-tsconfig.json"
     },
     {
+      "path": "../../generated/protocol-tsconfig.json"
+    },
+    {
       "path": "../../models/ai_assistance/bundle-tsconfig.json"
     },
     {
       "path": "../../models/ai_code_completion/bundle-tsconfig.json"
     },
     {
+      "path": "../../models/badges/bundle-tsconfig.json"
+    },
+    {
       "path": "../../models/bindings/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../models/formatter/bundle-tsconfig.json"
     },
     {
       "path": "../../models/issues_manager/bundle-tsconfig.json"
@@ -96,7 +105,13 @@
       "path": "../../models/text_utils/bundle-tsconfig.json"
     },
     {
+      "path": "../../models/workspace/bundle-tsconfig.json"
+    },
+    {
       "path": "../../third_party/codemirror.next/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../ui/components/buttons/bundle-tsconfig.json"
     },
     {
       "path": "../../ui/components/code_highlighter/bundle-tsconfig.json"
@@ -105,10 +120,16 @@
       "path": "../../ui/components/highlighting/bundle-tsconfig.json"
     },
     {
+      "path": "../../ui/components/issue_counter/bundle-tsconfig.json"
+    },
+    {
       "path": "../../ui/components/request_link_icon/bundle-tsconfig.json"
     },
     {
       "path": "../../ui/components/text_editor/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../ui/components/tooltips/bundle-tsconfig.json"
     },
     {
       "path": "../../ui/kit/bundle-tsconfig.json"
@@ -130,6 +151,12 @@
     },
     {
       "path": "../../ui/legacy/theme_support/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../ui/lit/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../ui/visual_logging/bundle-tsconfig.json"
     },
     {
       "path": "../common/bundle-tsconfig.json"

@@ -71,6 +71,9 @@
     },
     {
       "path": "../../ui/legacy/components/settings_ui/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../ui/visual_logging/bundle-tsconfig.json"
     }
   ]
 }

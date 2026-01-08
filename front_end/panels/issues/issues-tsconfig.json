@@ -67,6 +67,9 @@
       "path": "../../core/common/bundle-tsconfig.json"
     },
     {
+      "path": "../../core/host/bundle-tsconfig.json"
+    },
+    {
       "path": "../../core/i18n/bundle-tsconfig.json"
     },
     {
@@ -74,6 +77,9 @@
     },
     {
       "path": "../../core/sdk/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../generated/protocol-tsconfig.json"
     },
     {
       "path": "../../models/issues_manager/bundle-tsconfig.json"
@@ -94,6 +100,9 @@
       "path": "../../ui/components/buttons/bundle-tsconfig.json"
     },
     {
+      "path": "../../ui/components/issue_counter/bundle-tsconfig.json"
+    },
+    {
       "path": "../../ui/components/linkifier/bundle-tsconfig.json"
     },
     {
@@ -103,6 +112,9 @@
       "path": "../../ui/components/request_link_icon/bundle-tsconfig.json"
     },
     {
+      "path": "../../ui/kit/bundle-tsconfig.json"
+    },
+    {
       "path": "../../ui/legacy/bundle-tsconfig.json"
     },
     {
@@ -110,6 +122,9 @@
     },
     {
       "path": "../../ui/lit/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../ui/visual_logging/bundle-tsconfig.json"
     },
     {
       "path": "../common/bundle-tsconfig.json"

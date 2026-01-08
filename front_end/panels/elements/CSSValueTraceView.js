@@ -1,8 +1,8 @@
 // Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import * as Lit from '../../third_party/lit/lit.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as Lit from '../../ui/lit/lit.js';
 import cssValueTraceViewStyles from './cssValueTraceView.css.js';
 import { Highlighting, Renderer, RenderingContext, TracingContext, } from './PropertyRenderer.js';
 import stylePropertiesTreeOutlineStyles from './stylePropertiesTreeOutline.css.js';

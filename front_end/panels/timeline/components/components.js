@@ -6652,8 +6652,8 @@ function renderInitiatedBy(request, parsedTrace, target, linkifier) {
       link2 = linkifier.maybeLinkifyConsoleCallFrame(target, topFrame, options);
     }
   }
-  const initiator = parsedTrace?.data.NetworkRequests.eventToInitiator.get(request);
-  if (initiator) {
+  const initiator = parsedTrace ? Trace7.Extras.Initiators.getNetworkInitiator(parsedTrace.data, request) : void 0;
+  if (initiator && Trace7.Types.Events.isSyntheticNetworkRequest(initiator)) {
     link2 = linkifier.maybeLinkifyScriptLocation(
       target,
       null,

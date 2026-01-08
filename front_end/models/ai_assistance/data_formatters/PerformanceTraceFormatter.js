@@ -451,7 +451,7 @@ export class PerformanceTraceFormatter {
         const initiators = [];
         let cur = request;
         while (cur) {
-            const initiator = parsedTrace.data.NetworkRequests.eventToInitiator.get(cur);
+            const initiator = Trace.Extras.Initiators.getNetworkInitiator(parsedTrace.data, cur);
             if (initiator) {
                 // Should never happen, but if it did that would be an infinite loop.
                 if (initiators.includes(initiator)) {
@@ -491,7 +491,7 @@ export class PerformanceTraceFormatter {
         const mainThreadProcessingDuration = startTimesForLifecycle.processingCompletedAt - startTimesForLifecycle.downloadCompletedAt;
         const downloadTime = syntheticData.finishTime - syntheticData.downloadStart;
         const renderBlocking = Trace.Helpers.Network.isSyntheticNetworkRequestEventRenderBlocking(request);
-        const initiator = parsedTrace.data.NetworkRequests.eventToInitiator.get(request);
+        const initiator = Trace.Extras.Initiators.getNetworkInitiator(parsedTrace.data, request);
         const priorityLines = [];
         if (initialPriority === priority) {
             priorityLines.push(`Priority: ${priority}`);

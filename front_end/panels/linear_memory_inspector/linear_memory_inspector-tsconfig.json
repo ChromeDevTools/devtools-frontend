@@ -52,6 +52,12 @@
       "path": "../../core/platform/bundle-tsconfig.json"
     },
     {
+      "path": "../../core/sdk/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../models/bindings/bundle-tsconfig.json"
+    },
+    {
       "path": "../../ui/legacy/bundle-tsconfig.json"
     },
     {

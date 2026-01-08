@@ -1,5 +1,5 @@
 import * as CM from '../../../third_party/codemirror.next/codemirror.next.js';
-import type * as UI from '../../../ui/legacy/legacy.js';
+import type * as UI from '../../legacy/legacy.js';
 export declare function flattenRect(rect: DOMRect, left: boolean): {
     left: number;
     right: number;
@@ -14,7 +14,7 @@ export declare function flattenRect(rect: DOMRect, left: boolean): {
  * it ensures that screen readers can properly announce the content within
  * the encapsulated widget.
  */
-export declare class AiCodeCompletionTeaserPlaceholder extends CM.WidgetType {
+export declare class AccessiblePlaceholder extends CM.WidgetType {
     readonly teaser: UI.Widget.Widget;
     constructor(teaser: UI.Widget.Widget);
     toDOM(): HTMLElement;
@@ -31,6 +31,5 @@ export declare class AiCodeCompletionTeaserPlaceholder extends CM.WidgetType {
     } | null;
     ignoreEvent(_: Event): boolean;
     destroy(dom: HTMLElement): void;
-    eq(other: AiCodeCompletionTeaserPlaceholder): boolean;
+    eq(other: AccessiblePlaceholder): boolean;
 }
-export declare function aiCodeCompletionTeaserPlaceholder(teaser: UI.Widget.Widget): CM.Extension;

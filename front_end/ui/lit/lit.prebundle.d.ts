@@ -1,4 +1,5 @@
 import type * as Lit from '../../third_party/lit/lit.js';
+export type { DirectiveResult } from '../../third_party/lit/lib/directive.js';
 export { Decorators, Directive, Directives, LitElement, noChange, nothing, type PropertyValues, render, StaticHtml, svg, type TemplateResult, } from '../../third_party/lit/lit.js';
 export { i18nTemplate, } from './i18n-template.js';
 export { html, } from './strip-whitespace.js';

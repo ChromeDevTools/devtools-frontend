@@ -107,7 +107,13 @@
       "path": "../../models/bindings/bundle-tsconfig.json"
     },
     {
+      "path": "../../models/geometry/bundle-tsconfig.json"
+    },
+    {
       "path": "../../models/issues_manager/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../models/stack_trace/bundle-tsconfig.json"
     },
     {
       "path": "../../models/text_utils/bundle-tsconfig.json"
@@ -125,7 +131,13 @@
       "path": "../network/forward/bundle-tsconfig.json"
     },
     {
+      "path": "../../third_party/csp_evaluator/bundle-tsconfig.json"
+    },
+    {
       "path": "../../third_party/json5/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../ui/components/adorners/bundle-tsconfig.json"
     },
     {
       "path": "../../ui/components/buttons/bundle-tsconfig.json"
@@ -140,7 +152,13 @@
       "path": "../../ui/components/report_view/bundle-tsconfig.json"
     },
     {
+      "path": "../../ui/components/tree_outline/bundle-tsconfig.json"
+    },
+    {
       "path": "../../ui/i18n/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../ui/kit/bundle-tsconfig.json"
     },
     {
       "path": "../../ui/legacy/bundle-tsconfig.json"
@@ -158,6 +176,9 @@
       "path": "../../ui/legacy/components/object_ui/bundle-tsconfig.json"
     },
     {
+      "path": "../../ui/legacy/components/perf_ui/bundle-tsconfig.json"
+    },
+    {
       "path": "../../ui/legacy/components/settings_ui/bundle-tsconfig.json"
     },
     {
@@ -168,6 +189,15 @@
     },
     {
       "path": "../../ui/lit/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../ui/visual_logging/bundle-tsconfig.json"
+    },
+    {
+      "path": "../common/bundle-tsconfig.json"
+    },
+    {
+      "path": "../network/components/bundle-tsconfig.json"
     },
     {
       "path": "components/bundle-tsconfig.json"

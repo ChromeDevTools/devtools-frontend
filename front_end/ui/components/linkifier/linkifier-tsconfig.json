@@ -43,6 +43,9 @@
   ],
   "references": [
     {
+      "path": "../../../core/platform/bundle-tsconfig.json"
+    },
+    {
       "path": "../../../models/bindings/bundle-tsconfig.json"
     },
     {

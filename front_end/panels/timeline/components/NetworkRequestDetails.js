@@ -383,9 +383,11 @@ function renderInitiatedBy(request, parsedTrace, target, linkifier) {
             link = linkifier.maybeLinkifyConsoleCallFrame(target, topFrame, options);
         }
     }
-    // If we do not, we can see if the network handler found an initiator and try to link by URL
-    const initiator = parsedTrace?.data.NetworkRequests.eventToInitiator.get(request);
-    if (initiator) {
+    // If we do not, we can see if the network handler found an initiator and try
+    // to link by URL
+    const initiator = parsedTrace ? Trace.Extras.Initiators.getNetworkInitiator(parsedTrace.data, request) : undefined;
+    // Initiator will always be a synthetic network request but TS doesn't know that.
+    if (initiator && Trace.Types.Events.isSyntheticNetworkRequest(initiator)) {
         link = linkifier.maybeLinkifyScriptLocation(target, null, // this would be the scriptId, but we don't have one. The linkifier will fallback to using the URL.
         initiator.args.data.url, undefined, // line number
         options);

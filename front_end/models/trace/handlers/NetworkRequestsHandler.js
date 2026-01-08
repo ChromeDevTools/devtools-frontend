@@ -13,6 +13,10 @@ let linkPreconnectEvents = [];
 let requestMap = new Map();
 let requestsById = new Map();
 let requestsByTime = [];
+/**
+ * URL => RequestId[]. There can be multiple requests for a single URL.
+ */
+let requestIdsByURL = new Map();
 let networkRequestEventByInitiatorUrl = new Map();
 let eventToInitiatorMap = new Map();
 /**
@@ -61,6 +65,7 @@ export function reset() {
     networkRequestEventByInitiatorUrl = new Map();
     eventToInitiatorMap = new Map();
     webSocketData = new Map();
+    requestIdsByURL = new Map();
     entityMappings = {
         eventsByEntity: new Map(),
         entityByEvent: new Map(),
@@ -476,6 +481,9 @@ export async function finalize() {
         // the captured requests, so here we store all of them together.
         requestsByTime.push(networkEvent);
         requestsById.set(networkEvent.args.data.requestId, networkEvent);
+        const requestsForUrl = requestIdsByURL.get(networkEvent.args.data.url) ?? [];
+        requestsForUrl.push(networkEvent.args.data.requestId);
+        requestIdsByURL.set(networkEvent.args.data.url, requestsForUrl);
         // Update entity relationships for network events
         HandlerHelpers.addNetworkRequestToEntityMapping(networkEvent, entityMappings, request);
         // Establish initiator relationships
@@ -501,7 +509,8 @@ export function data() {
     return {
         byId: requestsById,
         byTime: requestsByTime,
-        eventToInitiator: eventToInitiatorMap,
+        requestIdsByURL,
+        incompleteInitiator: eventToInitiatorMap,
         webSocket: [...webSocketData.values()],
         entityMappings: {
             entityByEvent: entityMappings.entityByEvent,

@@ -9,7 +9,7 @@ import * as PanelCommon from '../../../panels/common/common.js';
 import * as CodeMirror from '../../../third_party/codemirror.next/codemirror.next.js';
 import * as UI from '../../legacy/legacy.js';
 import * as VisualLogging from '../../visual_logging/visual_logging.js';
-import { AiCodeCompletionTeaserPlaceholder } from './AiCodeCompletionTeaserPlaceholder.js';
+import { AccessiblePlaceholder } from './AccessiblePlaceholder.js';
 import { acceptAiAutoCompleteSuggestion, aiAutoCompleteSuggestion, aiAutoCompleteSuggestionState, hasActiveAiSuggestion, setAiAutoCompleteSuggestion, showCompletionHint, } from './config.js';
 export var AiCodeCompletionTeaserMode;
 (function (AiCodeCompletionTeaserMode) {
@@ -36,6 +36,7 @@ export class AiCodeCompletionProvider {
     #teaser;
     #suggestionRenderingTimeout;
     #editor;
+    #aiCodeCompletionCitations = [];
     #aiCodeCompletionConfig;
     #boundOnUpdateAiCodeCompletionState = this.#updateAiCodeCompletionState.bind(this);
     constructor(aiCodeCompletionConfig) {
@@ -152,7 +153,7 @@ export class AiCodeCompletionProvider {
                     if (suggestion?.rpcGlobalId) {
                         this.#aiCodeCompletion?.registerUserAcceptance(suggestion.rpcGlobalId, suggestion.sampleId);
                     }
-                    this.#aiCodeCompletionConfig?.onSuggestionAccepted();
+                    this.#aiCodeCompletionConfig?.onSuggestionAccepted(this.#aiCodeCompletionCitations);
                     return true;
                 },
             },
@@ -204,9 +205,10 @@ export class AiCodeCompletionProvider {
         void this.#requestAidaSuggestion(prefix, suffix, cursorPositionAtRequest, inferenceLanguage, additionalFiles);
     }, AIDA_REQUEST_DEBOUNCE_TIMEOUT_MS);
     async #requestAidaSuggestion(prefix, suffix, cursorPositionAtRequest, inferenceLanguage, additionalFiles) {
+        this.#aiCodeCompletionCitations = [];
         if (!this.#aiCodeCompletion) {
             AiCodeCompletion.debugLog('Ai Code Completion is not initialized');
-            this.#aiCodeCompletionConfig?.onResponseReceived([]);
+            this.#aiCodeCompletionConfig?.onResponseReceived();
             Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiCodeCompletionError);
             return;
         }
@@ -217,17 +219,17 @@ export class AiCodeCompletionProvider {
         try {
             const completionResponse = await this.#aiCodeCompletion.completeCode(prefix, suffix, cursorPositionAtRequest, inferenceLanguage, additionalFiles);
             if (!completionResponse) {
-                this.#aiCodeCompletionConfig?.onResponseReceived([]);
+                this.#aiCodeCompletionConfig?.onResponseReceived();
                 return;
             }
             const { response, fromCache } = completionResponse;
             if (!response) {
-                this.#aiCodeCompletionConfig?.onResponseReceived([]);
+                this.#aiCodeCompletionConfig?.onResponseReceived();
                 return;
             }
             const sampleResponse = await this.#generateSampleForRequest(response, prefix, suffix);
             if (!sampleResponse) {
-                this.#aiCodeCompletionConfig?.onResponseReceived([]);
+                this.#aiCodeCompletionConfig?.onResponseReceived();
                 return;
             }
             const { suggestionText, sampleId, citations, rpcGlobalId, } = sampleResponse;
@@ -235,7 +237,7 @@ export class AiCodeCompletionProvider {
             this.#suggestionRenderingTimeout = window.setTimeout(() => {
                 const currentCursorPosition = this.#editor?.editor.state.selection.main.head;
                 if (currentCursorPosition !== cursorPositionAtRequest) {
-                    this.#aiCodeCompletionConfig?.onResponseReceived([]);
+                    this.#aiCodeCompletionConfig?.onResponseReceived();
                     return;
                 }
                 if (this.#aiCodeCompletion) {
@@ -255,12 +257,13 @@ export class AiCodeCompletionProvider {
                     Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiCodeCompletionResponseServedFromCache);
                 }
                 AiCodeCompletion.debugLog('Suggestion dispatched to the editor', suggestionText, 'at cursor position', cursorPositionAtRequest);
-                this.#aiCodeCompletionConfig?.onResponseReceived(citations);
+                this.#aiCodeCompletionCitations = citations;
+                this.#aiCodeCompletionConfig?.onResponseReceived();
             }, remainingDelay);
         }
         catch (e) {
             AiCodeCompletion.debugLog('Error while fetching code completion suggestions from AIDA', e);
-            this.#aiCodeCompletionConfig?.onResponseReceived([]);
+            this.#aiCodeCompletionConfig?.onResponseReceived();
             Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiCodeCompletionError);
         }
     }
@@ -402,7 +405,7 @@ function aiCodeCompletionTeaserExtension(teaser) {
         }
         #addTeaserWidget(pos) {
             this.#teaserDecoration = CodeMirror.Decoration.set([
-                CodeMirror.Decoration.widget({ widget: new AiCodeCompletionTeaserPlaceholder(this.teaser), side: 1 }).range(pos),
+                CodeMirror.Decoration.widget({ widget: new AccessiblePlaceholder(this.teaser), side: 1 }).range(pos),
             ]);
         }
     }, {

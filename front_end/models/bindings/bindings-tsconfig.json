@@ -91,6 +91,9 @@
     },
     {
       "path": "../workspace/bundle-tsconfig.json"
+    },
+    {
+      "path": "../formatter/bundle-tsconfig.json"
     }
   ]
 }

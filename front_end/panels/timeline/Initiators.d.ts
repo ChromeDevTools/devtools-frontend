@@ -1,4 +1,4 @@
-import type * as Trace from '../../models/trace/trace.js';
+import * as Trace from '../../models/trace/trace.js';
 export interface InitiatorData {
     event: Trace.Types.Events.Event;
     initiator: Trace.Types.Events.Event;

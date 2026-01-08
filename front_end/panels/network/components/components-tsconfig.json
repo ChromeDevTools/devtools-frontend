@@ -72,6 +72,12 @@
       "path": "../../../models/issues_manager/bundle-tsconfig.json"
     },
     {
+      "path": "../../../models/persistence/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../models/text_utils/bundle-tsconfig.json"
+    },
+    {
       "path": "../../../models/workspace/bundle-tsconfig.json"
     },
     {
@@ -96,6 +102,9 @@
       "path": "../../../ui/components/legacy_wrapper/bundle-tsconfig.json"
     },
     {
+      "path": "../../../ui/components/render_coordinator/bundle-tsconfig.json"
+    },
+    {
       "path": "../../../ui/components/report_view/bundle-tsconfig.json"
     },
     {
@@ -106,6 +115,9 @@
     },
     {
       "path": "../../../ui/lit/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../ui/visual_logging/bundle-tsconfig.json"
     },
     {
       "path": "../forward/bundle-tsconfig.json"

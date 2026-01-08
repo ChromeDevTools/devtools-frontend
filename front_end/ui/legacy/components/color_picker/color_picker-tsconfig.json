@@ -59,7 +59,13 @@
       "path": "../../../../core/platform/bundle-tsconfig.json"
     },
     {
+      "path": "../../../../core/root/bundle-tsconfig.json"
+    },
+    {
       "path": "../../../../core/sdk/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../../models/text_utils/bundle-tsconfig.json"
     },
     {
       "path": "../../../components/srgb_overlay/bundle-tsconfig.json"
@@ -72,6 +78,9 @@
     },
     {
       "path": "../../../visual_logging/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../helpers/bundle-tsconfig.json"
     }
   ]
 }

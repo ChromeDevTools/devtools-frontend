@@ -3116,7 +3116,7 @@ function candidateRequestsByOrigin(data, mainResource, contextRequests, lcpGraph
     if (!hasValidTiming(request)) {
       return;
     }
-    if (data.NetworkRequests.eventToInitiator.get(request) === mainResource) {
+    if (data.NetworkRequests.incompleteInitiator.get(request) === mainResource) {
       return;
     }
     const url = new URL(request.args.data.url);

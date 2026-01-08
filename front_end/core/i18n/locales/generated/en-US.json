@@ -12059,8 +12059,17 @@
   "panels/recorder/RecorderController.ts | numberOfRecordings": {
     "message": "recording(s)"
   },
+  "panels/recorder/RecorderController.ts | recordingDeleted": {
+    "message": "Recording deleted"
+  },
   "panels/recorder/RecorderController.ts | recordingDescription": {
     "message": "Use recordings to create automated end-to-end tests or performance traces."
+  },
+  "panels/recorder/RecorderController.ts | recordingExported": {
+    "message": "Recording exported"
+  },
+  "panels/recorder/RecorderController.ts | recordingImported": {
+    "message": "Recording imported"
   },
   "panels/recorder/RecorderController.ts | replayRecording": {
     "message": "Replay recording"

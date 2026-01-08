@@ -318,7 +318,6 @@ export class ConsoleView extends UI.Widget.VBox {
     aiCodeCompletionConfig;
     aiCodeCompletionSummaryToolbarContainer;
     aiCodeCompletionSummaryToolbar;
-    aiCodeCompletionCitations = [];
     constructor(viewportThrottlerTimeout) {
         super();
         this.setMinimumSize(0, 35);
@@ -549,18 +548,17 @@ export class ConsoleView extends UI.Widget.VBox {
             this.element.createChild('div', 'ai-code-completion-summary-toolbar-container');
         this.aiCodeCompletionSummaryToolbar.show(this.aiCodeCompletionSummaryToolbarContainer, undefined, true);
     }
-    #onAiCodeCompletionSuggestionAccepted() {
-        if (!this.aiCodeCompletionSummaryToolbar || this.aiCodeCompletionCitations.length === 0) {
+    #onAiCodeCompletionSuggestionAccepted(citations) {
+        if (!this.aiCodeCompletionSummaryToolbar || citations.length === 0) {
             return;
         }
-        const citations = this.aiCodeCompletionCitations.map(citation => citation.uri).filter((uri) => Boolean(uri));
-        this.aiCodeCompletionSummaryToolbar.updateCitations(citations);
+        const citationsUri = citations.map(citation => citation.uri).filter((uri) => Boolean(uri));
+        this.aiCodeCompletionSummaryToolbar.updateCitations(citationsUri);
     }
     #onAiCodeCompletionRequestTriggered() {
         this.aiCodeCompletionSummaryToolbar?.setLoading(true);
     }
-    #onAiCodeCompletionResponseReceived(citations) {
-        this.aiCodeCompletionCitations = citations;
+    #onAiCodeCompletionResponseReceived() {
         this.aiCodeCompletionSummaryToolbar?.setLoading(false);
     }
     clearConsole() {
@@ -916,11 +914,11 @@ export class ConsoleView extends UI.Widget.VBox {
             return;
         }
         const currentGroup = viewMessage.consoleGroup();
+        showGroup(currentGroup, this.visibleViewMessages);
         if (!currentGroup?.messagesHidden()) {
             const originatingMessage = viewMessage.consoleMessage().originatingMessage();
             const adjacent = Boolean(originatingMessage && lastMessage?.consoleMessage() === originatingMessage);
             viewMessage.setAdjacentUserCommandResult(adjacent);
-            showGroup(currentGroup, this.visibleViewMessages);
             this.visibleViewMessages.push(viewMessage);
             this.searchMessage(this.visibleViewMessages.length - 1);
         }

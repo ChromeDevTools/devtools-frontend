@@ -57,6 +57,9 @@
       "path": "../../../../core/platform/bundle-tsconfig.json"
     },
     {
+      "path": "../../../../models/geometry/bundle-tsconfig.json"
+    },
+    {
       "path": "../../../../models/text_utils/bundle-tsconfig.json"
     },
     {
@@ -67,6 +70,18 @@
     },
     {
       "path": "../../bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../components/highlighting/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../kit/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../lit/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../visual_logging/bundle-tsconfig.json"
     }
   ]
 }

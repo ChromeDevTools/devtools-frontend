@@ -94,7 +94,16 @@
       "path": "../../core/sdk/bundle-tsconfig.json"
     },
     {
+      "path": "../../entrypoints/formatter_worker/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../generated/protocol-tsconfig.json"
+    },
+    {
       "path": "../../models/ai_code_completion/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../models/badges/bundle-tsconfig.json"
     },
     {
       "path": "../../models/bindings/bundle-tsconfig.json"
@@ -145,6 +154,9 @@
       "path": "../utils/bundle-tsconfig.json"
     },
     {
+      "path": "../../third_party/codemirror.next/bundle-tsconfig.json"
+    },
+    {
       "path": "../../third_party/diff/bundle-tsconfig.json"
     },
     {
@@ -152,6 +164,15 @@
     },
     {
       "path": "../../ui/components/highlighting/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../ui/components/input/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../ui/components/issue_counter/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../ui/components/render_coordinator/bundle-tsconfig.json"
     },
     {
       "path": "../../ui/components/spinners/bundle-tsconfig.json"
@@ -194,6 +215,9 @@
     },
     {
       "path": "../../ui/legacy/components/utils/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../ui/lit/bundle-tsconfig.json"
     },
     {
       "path": "../../ui/visual_logging/bundle-tsconfig.json"

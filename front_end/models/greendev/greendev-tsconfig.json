@@ -43,6 +43,9 @@
   "references": [
     {
       "path": "../../core/common/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../core/root/bundle-tsconfig.json"
     }
   ]
 }

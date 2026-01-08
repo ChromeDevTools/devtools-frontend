@@ -53,6 +53,12 @@
       "path": "../../core/i18n/bundle-tsconfig.json"
     },
     {
+      "path": "../../core/platform/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../models/greendev/bundle-tsconfig.json"
+    },
+    {
       "path": "../../models/persistence/bundle-tsconfig.json"
     },
     {
@@ -74,6 +80,9 @@
       "path": "../../third_party/diff/bundle-tsconfig.json"
     },
     {
+      "path": "../../ui/components/buttons/bundle-tsconfig.json"
+    },
+    {
       "path": "../../ui/components/diff_view/bundle-tsconfig.json"
     },
     {
@@ -84,6 +93,12 @@
     },
     {
       "path": "../../ui/lit/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../ui/visual_logging/bundle-tsconfig.json"
+    },
+    {
+      "path": "../common/bundle-tsconfig.json"
     }
   ]
 }

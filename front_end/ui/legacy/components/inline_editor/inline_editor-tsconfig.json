@@ -75,6 +75,9 @@
       "path": "../../../../models/bindings/bundle-tsconfig.json"
     },
     {
+      "path": "../../../../models/geometry/bundle-tsconfig.json"
+    },
+    {
       "path": "../../../../models/text_utils/bundle-tsconfig.json"
     },
     {
@@ -100,6 +103,12 @@
     },
     {
       "path": "../../../visual_logging/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../kit/bundle-tsconfig.json"
+    },
+    {
+      "path": "../color_picker/bundle-tsconfig.json"
     }
   ]
 }

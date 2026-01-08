@@ -879,6 +879,7 @@ var linkPreconnectEvents = [];
 var requestMap = /* @__PURE__ */ new Map();
 var requestsById = /* @__PURE__ */ new Map();
 var requestsByTime = [];
+var requestIdsByURL = /* @__PURE__ */ new Map();
 var networkRequestEventByInitiatorUrl = /* @__PURE__ */ new Map();
 var eventToInitiatorMap = /* @__PURE__ */ new Map();
 var entityMappings = {
@@ -918,6 +919,7 @@ function reset6() {
   networkRequestEventByInitiatorUrl = /* @__PURE__ */ new Map();
   eventToInitiatorMap = /* @__PURE__ */ new Map();
   webSocketData = /* @__PURE__ */ new Map();
+  requestIdsByURL = /* @__PURE__ */ new Map();
   entityMappings = {
     eventsByEntity: /* @__PURE__ */ new Map(),
     entityByEvent: /* @__PURE__ */ new Map(),
@@ -1186,6 +1188,9 @@ async function finalize6() {
     });
     requestsByTime.push(networkEvent);
     requestsById.set(networkEvent.args.data.requestId, networkEvent);
+    const requestsForUrl = requestIdsByURL.get(networkEvent.args.data.url) ?? [];
+    requestsForUrl.push(networkEvent.args.data.requestId);
+    requestIdsByURL.set(networkEvent.args.data.url, requestsForUrl);
     addNetworkRequestToEntityMapping(networkEvent, entityMappings, request);
     const initiatorUrl = networkEvent.args.data.initiator?.url || Helpers5.Trace.getStackTraceTopCallFrameInEventPayload(networkEvent)?.url;
     if (initiatorUrl) {
@@ -1208,7 +1213,8 @@ function data6() {
   return {
     byId: requestsById,
     byTime: requestsByTime,
-    eventToInitiator: eventToInitiatorMap,
+    requestIdsByURL,
+    incompleteInitiator: eventToInitiatorMap,
     webSocket: [...webSocketData.values()],
     entityMappings: {
       entityByEvent: entityMappings.entityByEvent,

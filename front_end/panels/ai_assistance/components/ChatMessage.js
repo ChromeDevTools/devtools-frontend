@@ -13,7 +13,7 @@ import * as UIHelpers from '../../../ui/helpers/helpers.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
-import userActionRowStyles from './userActionRow.css.js';
+import chatMessageStyles from './chatMessage.css.js';
 const { html, Directives: { ref, ifDefined } } = Lit;
 const lockedString = i18n.i18n.lockedString;
 const REPORT_URL = 'https://crbug.com/364805393';
@@ -162,7 +162,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
         // clang-format off
         Lit.render(html `
       <style>${Input.textInputStyles}</style>
-      <style>${userActionRowStyles}</style>
+      <style>${chatMessageStyles}</style>
       <section
         class="chat-message query ${input.isLastMessage ? 'is-last-message' : ''}"
         jslog=${VisualLogging.section('question')}
@@ -183,7 +183,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
     // clang-format off
     Lit.render(html `
     <style>${Input.textInputStyles}</style>
-    <style>${userActionRowStyles}</style>
+    <style>${chatMessageStyles}</style>
     <section
       class="chat-message answer ${input.isLastMessage ? 'is-last-message' : ''}"
       jslog=${VisualLogging.section('answer')}
@@ -554,7 +554,7 @@ function renderActions(input, output) {
   `;
     // clang-format on
 }
-export class UserActionRow extends UI.Widget.Widget {
+export class ChatMessage extends UI.Widget.Widget {
     message = { entity: "user" /* ChatMessageEntity.USER */, text: '' };
     isLoading = false;
     isReadOnly = false;
@@ -701,4 +701,4 @@ export class UserActionRow extends UI.Widget.Widget {
         void this.performUpdate();
     }
 }
-//# sourceMappingURL=UserActionRow.js.map
+//# sourceMappingURL=ChatMessage.js.map

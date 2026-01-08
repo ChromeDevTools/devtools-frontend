@@ -59,6 +59,9 @@
       "path": "../../core/i18n/bundle-tsconfig.json"
     },
     {
+      "path": "../../core/platform/bundle-tsconfig.json"
+    },
+    {
       "path": "../../core/root/bundle-tsconfig.json"
     },
     {
@@ -69,6 +72,9 @@
     },
     {
       "path": "../../models/issues_manager/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../models/text_utils/bundle-tsconfig.json"
     },
     {
       "path": "../network/forward/bundle-tsconfig.json"
@@ -93,6 +99,12 @@
     },
     {
       "path": "../../ui/legacy/components/data_grid/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../ui/lit/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../ui/visual_logging/bundle-tsconfig.json"
     }
   ]
 }

@@ -1110,8 +1110,8 @@ import * as i18n3 from "./../../core/i18n/i18n.js";
 import * as Platform2 from "./../../core/platform/platform.js";
 import * as SDK from "./../../core/sdk/sdk.js";
 import * as Bindings from "./../../models/bindings/bindings.js";
-import { Directives, html, nothing, render } from "./../../third_party/lit/lit.js";
 import * as UI2 from "./../../ui/legacy/legacy.js";
+import { Directives, html, nothing, render } from "./../../ui/lit/lit.js";
 import * as VisualLogging2 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/emulation/mediaQueryInspector.css.js

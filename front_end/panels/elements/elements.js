@@ -1416,9 +1416,9 @@ __export(LayersWidget_exports, {
 });
 import * as i18n5 from "./../../core/i18n/i18n.js";
 import * as SDK4 from "./../../core/sdk/sdk.js";
-import * as Lit2 from "./../../third_party/lit/lit.js";
 import * as TreeOutline2 from "./../../ui/components/tree_outline/tree_outline.js";
 import * as UI6 from "./../../ui/legacy/legacy.js";
+import * as Lit2 from "./../../ui/lit/lit.js";
 import * as VisualLogging2 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/layersWidget.css.js
@@ -2312,8 +2312,8 @@ var CSSValueTraceView_exports = {};
 __export(CSSValueTraceView_exports, {
   CSSValueTraceView: () => CSSValueTraceView
 });
-import * as Lit3 from "./../../third_party/lit/lit.js";
 import * as UI7 from "./../../ui/legacy/legacy.js";
+import * as Lit3 from "./../../ui/lit/lit.js";
 
 // gen/front_end/panels/elements/cssValueTraceView.css.js
 var cssValueTraceView_css_default = `/*

@@ -1334,7 +1334,11 @@ class ExtensionServerPanelView extends UI.View.SimpleView {
         // used anywhere, since we override the `viewId()` method below.  Ideally we'd pass the
         // `name` as `viewId` to the constructor, but that doesn't work, since the `name` is not
         // necessarily in Kebab case.
-        const viewId = Platform.StringUtilities.toKebabCase(title);
+        //
+        // For non-ASCII titles (e.g., Chinese, Japanese, Arabic), the kebab-cased result may not
+        // pass isExtendedKebabCase validation, so we fall back to 'extension-panel'.
+        const kebabTitle = Platform.StringUtilities.toKebabCase(title);
+        const viewId = Platform.StringUtilities.isExtendedKebabCase(kebabTitle) ? kebabTitle : 'extension-panel';
         super({ title, viewId });
         this.name = name;
         this.panel = panel;

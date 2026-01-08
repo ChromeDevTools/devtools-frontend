@@ -407,7 +407,9 @@ function candidateRequestsByOrigin(data, mainResource, contextRequests, lcpGraph
             return;
         }
         // Filter out all resources that are loaded by the document. Connections are already early.
-        if (data.NetworkRequests.eventToInitiator.get(request) === mainResource) {
+        // TODO(jacktfranklin, b/392090449): swap this over to use the initiator
+        // lookup that fixes bugs with dynamically injected content.
+        if (data.NetworkRequests.incompleteInitiator.get(request) === mainResource) {
             return;
         }
         const url = new URL(request.args.data.url);

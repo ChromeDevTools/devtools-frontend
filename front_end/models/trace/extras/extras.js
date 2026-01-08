@@ -48,13 +48,162 @@ function frameClosestToTimestamp(filmStrip, searchTimestamp) {
   return filmStrip.frames[closestFrameIndexBeforeTimestamp];
 }
 
+// gen/front_end/models/trace/extras/Initiators.js
+var Initiators_exports = {};
+__export(Initiators_exports, {
+  getNetworkInitiator: () => getNetworkInitiator
+});
+
+// gen/front_end/models/trace/extras/StackTraceForEvent.js
+var StackTraceForEvent_exports = {};
+__export(StackTraceForEvent_exports, {
+  clearCacheForTrace: () => clearCacheForTrace,
+  get: () => get,
+  stackTraceForEventInTrace: () => stackTraceForEventInTrace
+});
+import * as Helpers from "./../helpers/helpers.js";
+import * as Types from "./../types/types.js";
+var stackTraceForEventInTrace = /* @__PURE__ */ new Map();
+function clearCacheForTrace(data) {
+  stackTraceForEventInTrace.delete(data);
+}
+function get(event, data) {
+  let cacheForTrace = stackTraceForEventInTrace.get(data);
+  if (!cacheForTrace) {
+    cacheForTrace = /* @__PURE__ */ new Map();
+    stackTraceForEventInTrace.set(data, cacheForTrace);
+  }
+  const resultFromCache = cacheForTrace.get(event);
+  if (resultFromCache) {
+    return resultFromCache;
+  }
+  let result = null;
+  if (Types.Extensions.isSyntheticExtensionEntry(event)) {
+    result = getForExtensionEntry(event, data);
+  } else if (Types.Events.isPerformanceMeasureBegin(event)) {
+    result = getForPerformanceMeasure(event, data);
+  } else {
+    result = getForEvent(event, data);
+    const payloadCallFrames = getTraceEventPayloadStackAsProtocolCallFrame(event).filter((callFrame) => !isNativeJSFunction(callFrame));
+    if (!result.callFrames.length) {
+      result.callFrames = payloadCallFrames;
+    } else {
+      for (let i = 0; i < payloadCallFrames.length && i < result.callFrames.length; i++) {
+        result.callFrames[i] = payloadCallFrames[i];
+      }
+    }
+  }
+  if (result) {
+    cacheForTrace.set(event, result);
+  }
+  return result;
+}
+function getForEvent(event, data) {
+  const entryToNode = data.Renderer.entryToNode.size > 0 ? data.Renderer.entryToNode : data.Samples.entryToNode;
+  const topStackTrace = { callFrames: [] };
+  let stackTrace = topStackTrace;
+  let currentEntry;
+  let node = entryToNode.get(event);
+  const traceCache = stackTraceForEventInTrace.get(data) || /* @__PURE__ */ new Map();
+  stackTraceForEventInTrace.set(data, traceCache);
+  while (node) {
+    if (!Types.Events.isProfileCall(node.entry)) {
+      const maybeAsyncParent = data.AsyncJSCalls.runEntryPointToScheduler.get(node.entry);
+      if (!maybeAsyncParent) {
+        node = node.parent;
+        continue;
+      }
+      const maybeAsyncParentNode2 = maybeAsyncParent && entryToNode.get(maybeAsyncParent.scheduler);
+      if (maybeAsyncParentNode2) {
+        stackTrace = addAsyncParentToStack(stackTrace, maybeAsyncParent.taskName);
+        node = maybeAsyncParentNode2;
+      }
+      continue;
+    }
+    currentEntry = node.entry;
+    const stackTraceFromCache = traceCache.get(node.entry);
+    if (stackTraceFromCache) {
+      stackTrace.callFrames.push(...stackTraceFromCache.callFrames.filter((callFrame) => !isNativeJSFunction(callFrame)));
+      stackTrace.parent = stackTraceFromCache.parent;
+      stackTrace.description = stackTrace.description || stackTraceFromCache.description;
+      break;
+    }
+    if (!isNativeJSFunction(currentEntry.callFrame)) {
+      stackTrace.callFrames.push(currentEntry.callFrame);
+    }
+    const maybeAsyncParentEvent = data.AsyncJSCalls.asyncCallToScheduler.get(currentEntry);
+    const maybeAsyncParentNode = maybeAsyncParentEvent && entryToNode.get(maybeAsyncParentEvent.scheduler);
+    if (maybeAsyncParentNode) {
+      stackTrace = addAsyncParentToStack(stackTrace, maybeAsyncParentEvent.taskName);
+      node = maybeAsyncParentNode;
+      continue;
+    }
+    node = node.parent;
+  }
+  return topStackTrace;
+}
+function addAsyncParentToStack(stackTrace, taskName) {
+  const parent = { callFrames: [] };
+  stackTrace.parent = parent;
+  parent.description = taskName;
+  return parent;
+}
+function getForExtensionEntry(event, data) {
+  const rawEvent = event.rawSourceEvent;
+  if (Types.Events.isPerformanceMeasureBegin(rawEvent)) {
+    return getForPerformanceMeasure(rawEvent, data);
+  }
+  if (!rawEvent) {
+    return null;
+  }
+  return get(rawEvent, data);
+}
+function getForPerformanceMeasure(event, data) {
+  let rawEvent = event;
+  if (event.args.traceId === void 0) {
+    return null;
+  }
+  rawEvent = data.UserTimings.measureTraceByTraceId.get(event.args.traceId);
+  if (!rawEvent) {
+    return null;
+  }
+  return get(rawEvent, data);
+}
+function isNativeJSFunction({ columnNumber, lineNumber, url, scriptId }) {
+  return lineNumber === -1 && columnNumber === -1 && url === "" && scriptId === "0";
+}
+function getTraceEventPayloadStackAsProtocolCallFrame(event) {
+  const payloadCallStack = Helpers.Trace.getZeroIndexedStackTraceInEventPayload(event) || [];
+  const callFrames = [];
+  for (const frame of payloadCallStack) {
+    callFrames.push({ ...frame, scriptId: String(frame.scriptId) });
+  }
+  return callFrames;
+}
+
+// gen/front_end/models/trace/extras/Initiators.js
+function getNetworkInitiator(data, event) {
+  const networkHandlerInitiator = data.NetworkRequests.incompleteInitiator.get(event);
+  if (networkHandlerInitiator?.args.data.mimeType === "text/css") {
+    return networkHandlerInitiator;
+  }
+  const stack = get(event.rawSourceEvent, data);
+  const initiatorCallFrame = stack?.parent?.callFrames.at(0);
+  if (!initiatorCallFrame) {
+    return networkHandlerInitiator;
+  }
+  const matchingRequestIds = data.NetworkRequests.requestIdsByURL.get(initiatorCallFrame.url) ?? [];
+  const matchingRequests = matchingRequestIds.map((id) => data.NetworkRequests.byId.get(id)).filter((req) => req !== void 0).filter((req) => req.ts < event.ts);
+  return matchingRequests.at(-1);
+}
+
 // gen/front_end/models/trace/extras/MainThreadActivity.js
 var MainThreadActivity_exports = {};
 __export(MainThreadActivity_exports, {
   calculateWindow: () => calculateWindow
 });
-import * as Helpers from "./../helpers/helpers.js";
-import * as Types from "./../types/types.js";
+import * as Helpers2 from "./../helpers/helpers.js";
+import * as Types2 from "./../types/types.js";
 var IDLE_FUNCTION_CALL_NAMES = /* @__PURE__ */ new Set([
   "(program)",
   "(idle)",
@@ -65,7 +214,7 @@ function calculateWindow(traceBounds, mainThreadEntries) {
     return traceBounds;
   }
   const entriesWithIdleRemoved = mainThreadEntries.filter((entry) => {
-    if (Types.Events.isProfileCall(entry) && (IDLE_FUNCTION_CALL_NAMES.has(entry.callFrame.functionName) || !entry.callFrame.functionName)) {
+    if (Types2.Events.isProfileCall(entry) && (IDLE_FUNCTION_CALL_NAMES.has(entry.callFrame.functionName) || !entry.callFrame.functionName)) {
       return false;
     }
     return true;
@@ -77,13 +226,13 @@ function calculateWindow(traceBounds, mainThreadEntries) {
     const threshold = 0.1;
     let cutIndex = startIndex;
     const entryAtCut = entriesWithIdleRemoved[cutIndex];
-    const timings = Helpers.Timing.eventTimingsMicroSeconds(entryAtCut);
+    const timings = Helpers2.Timing.eventTimingsMicroSeconds(entryAtCut);
     let cutTime = (timings.startTime + timings.endTime) / 2;
     let usedTime = 0;
     const step = Math.sign(stopIndex - startIndex);
     for (let i = startIndex; i !== stopIndex; i += step) {
       const task = entriesWithIdleRemoved[i];
-      const taskTimings = Helpers.Timing.eventTimingsMicroSeconds(task);
+      const taskTimings = Helpers2.Timing.eventTimingsMicroSeconds(task);
       const taskTime = (taskTimings.startTime + taskTimings.endTime) / 2;
       const interval = Math.abs(cutTime - taskTime);
       if (usedTime < threshold * interval) {
@@ -97,20 +246,20 @@ function calculateWindow(traceBounds, mainThreadEntries) {
   }
   const rightIndex = findLowUtilizationRegion(entriesWithIdleRemoved.length - 1, 0);
   const leftIndex = findLowUtilizationRegion(0, rightIndex);
-  const leftTimings = Helpers.Timing.eventTimingsMicroSeconds(entriesWithIdleRemoved[leftIndex]);
-  const rightTimings = Helpers.Timing.eventTimingsMicroSeconds(entriesWithIdleRemoved[rightIndex]);
+  const leftTimings = Helpers2.Timing.eventTimingsMicroSeconds(entriesWithIdleRemoved[leftIndex]);
+  const rightTimings = Helpers2.Timing.eventTimingsMicroSeconds(entriesWithIdleRemoved[rightIndex]);
   let leftTime = leftTimings.startTime;
   let rightTime = rightTimings.endTime;
   const zoomedInSpan = rightTime - leftTime;
   if (zoomedInSpan < traceBounds.range * 0.1) {
     return traceBounds;
   }
-  leftTime = Types.Timing.Micro(Math.max(leftTime - 0.05 * zoomedInSpan, traceBounds.min));
-  rightTime = Types.Timing.Micro(Math.min(rightTime + 0.05 * zoomedInSpan, traceBounds.max));
+  leftTime = Types2.Timing.Micro(Math.max(leftTime - 0.05 * zoomedInSpan, traceBounds.min));
+  rightTime = Types2.Timing.Micro(Math.min(rightTime + 0.05 * zoomedInSpan, traceBounds.max));
   return {
     min: leftTime,
     max: rightTime,
-    range: Types.Timing.Micro(rightTime - leftTime)
+    range: Types2.Timing.Micro(rightTime - leftTime)
   };
 }
 
@@ -255,133 +404,6 @@ function computeScriptDuplication(scriptsData, compressionRatios) {
     duplication: sorted(duplication),
     duplicationGroupedByNodeModules: sorted(duplicationGroupedByNodeModules)
   };
-}
-
-// gen/front_end/models/trace/extras/StackTraceForEvent.js
-var StackTraceForEvent_exports = {};
-__export(StackTraceForEvent_exports, {
-  clearCacheForTrace: () => clearCacheForTrace,
-  get: () => get,
-  stackTraceForEventInTrace: () => stackTraceForEventInTrace
-});
-import * as Helpers2 from "./../helpers/helpers.js";
-import * as Types2 from "./../types/types.js";
-var stackTraceForEventInTrace = /* @__PURE__ */ new Map();
-function clearCacheForTrace(data) {
-  stackTraceForEventInTrace.delete(data);
-}
-function get(event, data) {
-  let cacheForTrace = stackTraceForEventInTrace.get(data);
-  if (!cacheForTrace) {
-    cacheForTrace = /* @__PURE__ */ new Map();
-    stackTraceForEventInTrace.set(data, cacheForTrace);
-  }
-  const resultFromCache = cacheForTrace.get(event);
-  if (resultFromCache) {
-    return resultFromCache;
-  }
-  let result = null;
-  if (Types2.Extensions.isSyntheticExtensionEntry(event)) {
-    result = getForExtensionEntry(event, data);
-  } else if (Types2.Events.isPerformanceMeasureBegin(event)) {
-    result = getForPerformanceMeasure(event, data);
-  } else {
-    result = getForEvent(event, data);
-    const payloadCallFrames = getTraceEventPayloadStackAsProtocolCallFrame(event).filter((callFrame) => !isNativeJSFunction(callFrame));
-    if (!result.callFrames.length) {
-      result.callFrames = payloadCallFrames;
-    } else {
-      for (let i = 0; i < payloadCallFrames.length && i < result.callFrames.length; i++) {
-        result.callFrames[i] = payloadCallFrames[i];
-      }
-    }
-  }
-  if (result) {
-    cacheForTrace.set(event, result);
-  }
-  return result;
-}
-function getForEvent(event, data) {
-  const entryToNode = data.Renderer.entryToNode.size > 0 ? data.Renderer.entryToNode : data.Samples.entryToNode;
-  const topStackTrace = { callFrames: [] };
-  let stackTrace = topStackTrace;
-  let currentEntry;
-  let node = entryToNode.get(event);
-  const traceCache = stackTraceForEventInTrace.get(data) || /* @__PURE__ */ new Map();
-  stackTraceForEventInTrace.set(data, traceCache);
-  while (node) {
-    if (!Types2.Events.isProfileCall(node.entry)) {
-      const maybeAsyncParent = data.AsyncJSCalls.runEntryPointToScheduler.get(node.entry);
-      if (!maybeAsyncParent) {
-        node = node.parent;
-        continue;
-      }
-      const maybeAsyncParentNode2 = maybeAsyncParent && entryToNode.get(maybeAsyncParent.scheduler);
-      if (maybeAsyncParentNode2) {
-        stackTrace = addAsyncParentToStack(stackTrace, maybeAsyncParent.taskName);
-        node = maybeAsyncParentNode2;
-      }
-      continue;
-    }
-    currentEntry = node.entry;
-    const stackTraceFromCache = traceCache.get(node.entry);
-    if (stackTraceFromCache) {
-      stackTrace.callFrames.push(...stackTraceFromCache.callFrames.filter((callFrame) => !isNativeJSFunction(callFrame)));
-      stackTrace.parent = stackTraceFromCache.parent;
-      stackTrace.description = stackTrace.description || stackTraceFromCache.description;
-      break;
-    }
-    if (!isNativeJSFunction(currentEntry.callFrame)) {
-      stackTrace.callFrames.push(currentEntry.callFrame);
-    }
-    const maybeAsyncParentEvent = data.AsyncJSCalls.asyncCallToScheduler.get(currentEntry);
-    const maybeAsyncParentNode = maybeAsyncParentEvent && entryToNode.get(maybeAsyncParentEvent.scheduler);
-    if (maybeAsyncParentNode) {
-      stackTrace = addAsyncParentToStack(stackTrace, maybeAsyncParentEvent.taskName);
-      node = maybeAsyncParentNode;
-      continue;
-    }
-    node = node.parent;
-  }
-  return topStackTrace;
-}
-function addAsyncParentToStack(stackTrace, taskName) {
-  const parent = { callFrames: [] };
-  stackTrace.parent = parent;
-  parent.description = taskName;
-  return parent;
-}
-function getForExtensionEntry(event, data) {
-  const rawEvent = event.rawSourceEvent;
-  if (Types2.Events.isPerformanceMeasureBegin(rawEvent)) {
-    return getForPerformanceMeasure(rawEvent, data);
-  }
-  if (!rawEvent) {
-    return null;
-  }
-  return get(rawEvent, data);
-}
-function getForPerformanceMeasure(event, data) {
-  let rawEvent = event;
-  if (event.args.traceId === void 0) {
-    return null;
-  }
-  rawEvent = data.UserTimings.measureTraceByTraceId.get(event.args.traceId);
-  if (!rawEvent) {
-    return null;
-  }
-  return get(rawEvent, data);
-}
-function isNativeJSFunction({ columnNumber, lineNumber, url, scriptId }) {
-  return lineNumber === -1 && columnNumber === -1 && url === "" && scriptId === "0";
-}
-function getTraceEventPayloadStackAsProtocolCallFrame(event) {
-  const payloadCallStack = Helpers2.Trace.getZeroIndexedStackTraceInEventPayload(event) || [];
-  const callFrames = [];
-  for (const frame of payloadCallStack) {
-    callFrames.push({ ...frame, scriptId: String(frame.scriptId) });
-  }
-  return callFrames;
 }
 
 // gen/front_end/models/trace/extras/ThirdParties.js
@@ -1592,6 +1614,7 @@ function getBottomUpTree(mainThreadEvents, tracebounds, groupingFunction) {
 }
 export {
   FilmStrip_exports as FilmStrip,
+  Initiators_exports as Initiators,
   MainThreadActivity_exports as MainThreadActivity,
   ScriptDuplication_exports as ScriptDuplication,
   StackTraceForEvent_exports as StackTraceForEvent,

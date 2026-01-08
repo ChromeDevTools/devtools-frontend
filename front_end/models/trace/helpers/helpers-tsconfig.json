@@ -57,6 +57,9 @@
       "path": "../../../core/root/bundle-tsconfig.json"
     },
     {
+      "path": "../../../generated/protocol-tsconfig.json"
+    },
+    {
       "path": "../../cpu_profile/bundle-tsconfig.json"
     },
     {

@@ -67,16 +67,34 @@
       "path": "../../../../core/sdk/bundle-tsconfig.json"
     },
     {
+      "path": "../../../../generated/protocol-tsconfig.json"
+    },
+    {
       "path": "../../../../models/bindings/bundle-tsconfig.json"
     },
     {
+      "path": "../../../../models/formatter/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../../models/logs/bundle-tsconfig.json"
+    },
+    {
       "path": "../../../network/forward/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../../third_party/codemirror.next/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../../third_party/diff/bundle-tsconfig.json"
     },
     {
       "path": "../../../../ui/components/adorners/bundle-tsconfig.json"
     },
     {
       "path": "../../../../ui/components/buttons/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../../ui/components/code_highlighter/bundle-tsconfig.json"
     },
     {
       "path": "../../../../ui/components/dialogs/bundle-tsconfig.json"
@@ -86,6 +104,9 @@
     },
     {
       "path": "../../../../ui/components/legacy_wrapper/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../../ui/components/render_coordinator/bundle-tsconfig.json"
     },
     {
       "path": "../../../../ui/components/report_view/bundle-tsconfig.json"
@@ -119,6 +140,12 @@
     },
     {
       "path": "../../../../ui/legacy/components/utils/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../../ui/lit/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../../ui/visual_logging/bundle-tsconfig.json"
     },
     {
       "path": "../helper/bundle-tsconfig.json"

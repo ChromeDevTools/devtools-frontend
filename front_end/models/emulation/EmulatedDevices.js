@@ -550,6 +550,7 @@ const emulatedDevices = [
         },
         'capabilities': ['touch', 'mobile'],
         'user-agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1',
+        'user-agent-metadata': { 'platform': 'iOS', 'platformVersion': '18.5', 'architecture': '', 'model': 'iPhone', 'mobile': true },
         'type': 'phone',
     },
     {
@@ -569,6 +570,7 @@ const emulatedDevices = [
         },
         'capabilities': ['touch', 'mobile'],
         'user-agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1',
+        'user-agent-metadata': { 'platform': 'iOS', 'platformVersion': '18.5', 'architecture': '', 'model': 'iPhone', 'mobile': true },
         'type': 'phone',
     },
     {
@@ -588,6 +590,7 @@ const emulatedDevices = [
         },
         'capabilities': ['touch', 'mobile'],
         'user-agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1',
+        'user-agent-metadata': { 'platform': 'iOS', 'platformVersion': '18.5', 'architecture': '', 'model': 'iPhone', 'mobile': true },
         'type': 'phone',
     },
     {
@@ -607,6 +610,7 @@ const emulatedDevices = [
         },
         'capabilities': ['touch', 'mobile'],
         'user-agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1',
+        'user-agent-metadata': { 'platform': 'iOS', 'platformVersion': '18.5', 'architecture': '', 'model': 'iPhone', 'mobile': true },
         'type': 'phone',
     },
     {
@@ -706,6 +710,7 @@ const emulatedDevices = [
         },
         'capabilities': ['touch', 'mobile'],
         'user-agent': 'Mozilla/5.0 (iPad; CPU OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1',
+        'user-agent-metadata': { 'platform': 'iOS', 'platformVersion': '18.5', 'architecture': '', 'model': 'iPad', 'mobile': true },
         'type': 'tablet',
     },
     {
@@ -725,6 +730,7 @@ const emulatedDevices = [
         },
         'capabilities': ['touch', 'mobile'],
         'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Safari/605.1.15',
+        'user-agent-metadata': { 'platform': 'iOS', 'platformVersion': '18.5', 'architecture': '', 'model': 'iPad', 'mobile': true },
         'type': 'tablet',
     },
     {
@@ -744,6 +750,7 @@ const emulatedDevices = [
         },
         'capabilities': ['touch', 'mobile'],
         'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Safari/605.1.15',
+        'user-agent-metadata': { 'platform': 'iOS', 'platformVersion': '18.5', 'architecture': '', 'model': 'iPad', 'mobile': true },
         'type': 'tablet',
     },
     {
@@ -982,6 +989,7 @@ const emulatedDevices = [
         },
         'capabilities': ['touch', 'mobile'],
         'user-agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 7_1_2 like Mac OS X) AppleWebKit/537.51.2 (KHTML, like Gecko) Version/7.0 Mobile/11D257 Safari/9537.53',
+        'user-agent-metadata': { 'platform': 'iOS', 'platformVersion': '7.1.2', 'architecture': '', 'model': 'iPhone', 'mobile': true },
         'type': 'phone',
     },
     {
@@ -1009,6 +1017,7 @@ const emulatedDevices = [
         },
         'capabilities': ['touch', 'mobile'],
         'user-agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 10_3_1 like Mac OS X) AppleWebKit/603.1.30 (KHTML, like Gecko) Version/10.0 Mobile/14E304 Safari/602.1',
+        'user-agent-metadata': { 'platform': 'iOS', 'platformVersion': '10.3.1', 'architecture': '', 'model': 'iPhone', 'mobile': true },
         'type': 'phone',
     },
     {
@@ -1036,6 +1045,7 @@ const emulatedDevices = [
         },
         'capabilities': ['touch', 'mobile'],
         'user-agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1',
+        'user-agent-metadata': { 'platform': 'iOS', 'platformVersion': '13.2.3', 'architecture': '', 'model': 'iPhone', 'mobile': true },
         'type': 'phone',
     },
     {
@@ -1063,6 +1073,7 @@ const emulatedDevices = [
         },
         'capabilities': ['touch', 'mobile'],
         'user-agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1',
+        'user-agent-metadata': { 'platform': 'iOS', 'platformVersion': '13.2.3', 'architecture': '', 'model': 'iPhone', 'mobile': true },
         'type': 'phone',
     },
     {
@@ -1076,6 +1087,7 @@ const emulatedDevices = [
         },
         'capabilities': ['touch', 'mobile'],
         'user-agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1',
+        'user-agent-metadata': { 'platform': 'iOS', 'platformVersion': '13.2.3', 'architecture': '', 'model': 'iPhone', 'mobile': true },
         'type': 'phone',
     },
     {
@@ -1499,6 +1511,7 @@ const emulatedDevices = [
         },
         'capabilities': ['touch', 'mobile'],
         'user-agent': 'Mozilla/5.0 (iPad; CPU OS 11_0 like Mac OS X) AppleWebKit/604.1.34 (KHTML, like Gecko) Version/11.0 Mobile/15A5341f Safari/604.1',
+        'user-agent-metadata': { 'platform': 'iOS', 'platformVersion': '11.0', 'architecture': '', 'model': 'iPad', 'mobile': true },
         'type': 'tablet',
     },
     {
@@ -1512,6 +1525,7 @@ const emulatedDevices = [
         },
         'capabilities': ['touch', 'mobile'],
         'user-agent': 'Mozilla/5.0 (iPad; CPU OS 11_0 like Mac OS X) AppleWebKit/604.1.34 (KHTML, like Gecko) Version/11.0 Mobile/15A5341f Safari/604.1',
+        'user-agent-metadata': { 'platform': 'iOS', 'platformVersion': '11.0', 'architecture': '', 'model': 'iPad', 'mobile': true },
         'type': 'tablet',
     },
     {

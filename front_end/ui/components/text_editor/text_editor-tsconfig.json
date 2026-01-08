@@ -35,8 +35,8 @@
     "useUnknownInCatchVariables": false
   },
   "files": [
+    "../../../../../../../front_end/ui/components/text_editor/AccessiblePlaceholder.ts",
     "../../../../../../../front_end/ui/components/text_editor/AiCodeCompletionProvider.ts",
-    "../../../../../../../front_end/ui/components/text_editor/AiCodeCompletionTeaserPlaceholder.ts",
     "../../../../../../../front_end/ui/components/text_editor/AiCodeGenerationParser.ts",
     "../../../../../../../front_end/ui/components/text_editor/AiCodeGenerationProvider.ts",
     "../../../../../../../front_end/ui/components/text_editor/AutocompleteHistory.ts",
@@ -75,6 +75,9 @@
       "path": "../../../models/ai_code_generation/bundle-tsconfig.json"
     },
     {
+      "path": "../../../models/bindings/bundle-tsconfig.json"
+    },
+    {
       "path": "../../../models/formatter/bundle-tsconfig.json"
     },
     {
@@ -84,13 +87,22 @@
       "path": "../../../models/source_map_scopes/bundle-tsconfig.json"
     },
     {
+      "path": "../../../models/text_utils/bundle-tsconfig.json"
+    },
+    {
       "path": "../../../panels/common/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../kit/bundle-tsconfig.json"
     },
     {
       "path": "../../legacy/bundle-tsconfig.json"
     },
     {
       "path": "../../lit/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../visual_logging/bundle-tsconfig.json"
     },
     {
       "path": "../code_highlighter/bundle-tsconfig.json"

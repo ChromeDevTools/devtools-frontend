@@ -1,10 +1,10 @@
 import '../../ui/kit/kit.js';
 import * as Host from '../../core/host/host.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import { type ModelChatMessage } from './components/ChatMessage.js';
 import { ChatView, type Props as ChatViewProps } from './components/ChatView.js';
-import { type ModelChatMessage } from './components/UserActionRow.js';
-export { ChatMessageEntity } from './components/UserActionRow.js';
-export type { AnswerPart, ModelChatMessage, StepPart } from './components/UserActionRow.js';
+export { ChatMessageEntity } from './components/ChatMessage.js';
+export type { AnswerPart, ModelChatMessage, StepPart } from './components/ChatMessage.js';
 interface ToolbarViewInput {
     onNewChatClick: () => void;
     populateHistoryMenu: (contextMenu: UI.ContextMenu.ContextMenu) => void;

@@ -42,10 +42,16 @@
   ],
   "references": [
     {
+      "path": "../../../core/platform/bundle-tsconfig.json"
+    },
+    {
       "path": "../../legacy/bundle-tsconfig.json"
     },
     {
       "path": "../../lit/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../visual_logging/bundle-tsconfig.json"
     }
   ]
 }

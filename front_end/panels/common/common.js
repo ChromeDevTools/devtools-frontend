@@ -3984,7 +3984,8 @@ var ExtensionServerPanelView = class extends UI11.View.SimpleView {
   name;
   panel;
   constructor(name, title, panel2) {
-    const viewId = Platform4.StringUtilities.toKebabCase(title);
+    const kebabTitle = Platform4.StringUtilities.toKebabCase(title);
+    const viewId = Platform4.StringUtilities.isExtendedKebabCase(kebabTitle) ? kebabTitle : "extension-panel";
     super({ title, viewId });
     this.name = name;
     this.panel = panel2;

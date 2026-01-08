@@ -40,6 +40,7 @@
     "../../../../../../front_end/panels/ai_assistance/SelectWorkspaceDialog.ts",
     "../../../../../../front_end/panels/ai_assistance/components/ArtifactsViewer.ts",
     "../../../../../../front_end/panels/ai_assistance/components/ChatInput.ts",
+    "../../../../../../front_end/panels/ai_assistance/components/ChatMessage.ts",
     "../../../../../../front_end/panels/ai_assistance/components/ChatView.ts",
     "../../../../../../front_end/panels/ai_assistance/components/CollapsibleAssistanceContentWidget.ts",
     "../../../../../../front_end/panels/ai_assistance/components/DisabledWidget.ts",
@@ -47,7 +48,6 @@
     "../../../../../../front_end/panels/ai_assistance/components/MarkdownRendererWithCodeBlock.ts",
     "../../../../../../front_end/panels/ai_assistance/components/PerformanceAgentFlameChart.ts",
     "../../../../../../front_end/panels/ai_assistance/components/PerformanceAgentMarkdownRenderer.ts",
-    "../../../../../../front_end/panels/ai_assistance/components/UserActionRow.ts",
     "../../../../../../front_end/legacy/legacy-defs.d.ts",
     "../../../../../../front_end/global_typings/global_defs.d.ts",
     "../../../../../../node_modules/@types/filesystem/index.d.ts"
@@ -66,7 +66,16 @@
       "path": "../../core/i18n/bundle-tsconfig.json"
     },
     {
+      "path": "../../core/platform/bundle-tsconfig.json"
+    },
+    {
       "path": "../../core/root/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../core/sdk/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../generated/protocol-tsconfig.json"
     },
     {
       "path": "../../models/ai_assistance/bundle-tsconfig.json"
@@ -75,13 +84,34 @@
       "path": "../../models/annotations/bundle-tsconfig.json"
     },
     {
+      "path": "../../models/badges/bundle-tsconfig.json"
+    },
+    {
       "path": "../../models/geometry/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../models/greendev/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../models/logs/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../models/network_time_calculator/bundle-tsconfig.json"
     },
     {
       "path": "../../models/persistence/bundle-tsconfig.json"
     },
     {
+      "path": "../../models/text_utils/bundle-tsconfig.json"
+    },
+    {
       "path": "../../models/trace/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../models/trace/helpers/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../models/trace/insights/bundle-tsconfig.json"
     },
     {
       "path": "../../models/workspace/bundle-tsconfig.json"
@@ -111,6 +141,12 @@
       "path": "../../third_party/marked/bundle-tsconfig.json"
     },
     {
+      "path": "../../ui/components/buttons/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../ui/components/input/bundle-tsconfig.json"
+    },
+    {
       "path": "../../ui/components/markdown_view/bundle-tsconfig.json"
     },
     {
@@ -118,6 +154,9 @@
     },
     {
       "path": "../../ui/components/spinners/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../ui/components/tooltips/bundle-tsconfig.json"
     },
     {
       "path": "../../ui/helpers/bundle-tsconfig.json"
@@ -136,6 +175,18 @@
     },
     {
       "path": "../../ui/lit/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../ui/visual_logging/bundle-tsconfig.json"
+    },
+    {
+      "path": "../timeline/components/bundle-tsconfig.json"
+    },
+    {
+      "path": "../timeline/components/insights/bundle-tsconfig.json"
+    },
+    {
+      "path": "../utils/bundle-tsconfig.json"
     }
   ]
 }

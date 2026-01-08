@@ -377,7 +377,7 @@ import * as Common17 from "./../../core/common/common.js";
 import * as Host3 from "./../../core/host/host.js";
 import * as Platform16 from "./../../core/platform/platform.js";
 import * as Root7 from "./../../core/root/root.js";
-import * as Trace35 from "./../../models/trace/trace.js";
+import * as Trace36 from "./../../models/trace/trace.js";
 import * as SourceMapsResolver7 from "./../../models/trace_source_maps_resolver/trace_source_maps_resolver.js";
 import * as ThemeSupport27 from "./../../ui/legacy/theme_support/theme_support.js";
 import * as TimelineComponents7 from "./components/components.js";
@@ -2118,7 +2118,7 @@ import * as Common16 from "./../../core/common/common.js";
 import * as i18n54 from "./../../core/i18n/i18n.js";
 import * as Root6 from "./../../core/root/root.js";
 import * as AIAssistance2 from "./../../models/ai_assistance/ai_assistance.js";
-import * as Trace33 from "./../../models/trace/trace.js";
+import * as Trace34 from "./../../models/trace/trace.js";
 import * as SourceMapsResolver5 from "./../../models/trace_source_maps_resolver/trace_source_maps_resolver.js";
 import * as Workspace4 from "./../../models/workspace/workspace.js";
 import * as PerfUI17 from "./../../ui/legacy/components/perf_ui/perf_ui.js";
@@ -2131,25 +2131,26 @@ __export(Initiators_exports, {
   initiatorsDataToDraw: () => initiatorsDataToDraw,
   initiatorsDataToDrawForNetwork: () => initiatorsDataToDrawForNetwork
 });
+import * as Trace11 from "./../../models/trace/trace.js";
 var MAX_PREDECESSOR_INITIATOR_LIMIT = 10;
 function initiatorsDataToDraw(parsedTrace, selectedEvent, hiddenEntries, expandableEntries) {
   const initiatorsData = [
-    ...findInitiatorDataPredecessors(parsedTrace, selectedEvent, parsedTrace.data.Initiators.eventToInitiator),
+    ...findInitiatorDataPredecessors(parsedTrace, selectedEvent),
     ...findInitiatorDataDirectSuccessors(selectedEvent, parsedTrace.data.Initiators.initiatorToEvents)
   ];
   initiatorsData.forEach((initiatorData) => getClosestVisibleInitiatorEntriesAncestors(initiatorData, expandableEntries, hiddenEntries, parsedTrace));
   return initiatorsData;
 }
 function initiatorsDataToDrawForNetwork(parsedTrace, selectedEvent) {
-  return findInitiatorDataPredecessors(parsedTrace, selectedEvent, parsedTrace.data.NetworkRequests.eventToInitiator);
+  return findInitiatorDataPredecessors(parsedTrace, selectedEvent);
 }
-function findInitiatorDataPredecessors(parsedTrace, selectedEvent, eventToInitiator) {
+function findInitiatorDataPredecessors(parsedTrace, selectedEvent) {
   const initiatorsData = [];
   let currentEvent = selectedEvent;
   const visited = /* @__PURE__ */ new Set();
   visited.add(currentEvent);
   while (currentEvent && initiatorsData.length < MAX_PREDECESSOR_INITIATOR_LIMIT) {
-    const currentInitiator = eventToInitiator.get(currentEvent);
+    const currentInitiator = Trace11.Types.Events.isSyntheticNetworkRequest(currentEvent) ? Trace11.Extras.Initiators.getNetworkInitiator(parsedTrace.data, currentEvent) : parsedTrace.data.Initiators.eventToInitiator.get(currentEvent);
     if (currentInitiator) {
       if (visited.has(currentInitiator)) {
         break;
@@ -2283,7 +2284,7 @@ import * as Platform15 from "./../../core/platform/platform.js";
 import * as SDK14 from "./../../core/sdk/sdk.js";
 import * as AIAssistance from "./../../models/ai_assistance/ai_assistance.js";
 import * as CrUXManager5 from "./../../models/crux-manager/crux-manager.js";
-import * as Trace32 from "./../../models/trace/trace.js";
+import * as Trace33 from "./../../models/trace/trace.js";
 import * as Workspace3 from "./../../models/workspace/workspace.js";
 import * as TraceBounds15 from "./../../services/trace_bounds/trace_bounds.js";
 import * as PerfUI16 from "./../../ui/legacy/components/perf_ui/perf_ui.js";
@@ -2303,7 +2304,7 @@ import "./../../ui/legacy/legacy.js";
 import * as Common4 from "./../../core/common/common.js";
 import * as i18n17 from "./../../core/i18n/i18n.js";
 import * as Platform5 from "./../../core/platform/platform.js";
-import * as Trace11 from "./../../models/trace/trace.js";
+import * as Trace12 from "./../../models/trace/trace.js";
 import * as TraceBounds3 from "./../../services/trace_bounds/trace_bounds.js";
 import * as PerfUI9 from "./../../ui/legacy/components/perf_ui/perf_ui.js";
 import * as UI from "./../../ui/legacy/legacy.js";
@@ -2416,7 +2417,7 @@ var CountersGraph = class extends UI.Widget.VBox {
     if (!events || !parsedTrace) {
       return;
     }
-    const minTime = Trace11.Helpers.Timing.traceWindowMilliSeconds(parsedTrace.data.Meta.traceBounds).min;
+    const minTime = Trace12.Helpers.Timing.traceWindowMilliSeconds(parsedTrace.data.Meta.traceBounds).min;
     this.calculator.setZeroTime(minTime);
     for (let i = 0; i < this.counters.length; ++i) {
       this.counters[i].reset();
@@ -2426,7 +2427,7 @@ var CountersGraph = class extends UI.Widget.VBox {
     let counterEventsFound = 0;
     for (let i = 0; i < events.length; ++i) {
       const event = events[i];
-      if (!Trace11.Types.Events.isUpdateCounters(event)) {
+      if (!Trace12.Types.Events.isUpdateCounters(event)) {
         continue;
       }
       counterEventsFound++;
@@ -2437,7 +2438,7 @@ var CountersGraph = class extends UI.Widget.VBox {
       for (const name in counters) {
         const counter = this.countersByName.get(name);
         if (counter) {
-          const { startTime } = Trace11.Helpers.Timing.eventTimingsMilliSeconds(event);
+          const { startTime } = Trace12.Helpers.Timing.eventTimingsMilliSeconds(event);
           counter.appendSample(startTime, counters[name]);
         }
       }
@@ -2845,7 +2846,7 @@ import * as Common14 from "./../../core/common/common.js";
 import * as i18n47 from "./../../core/i18n/i18n.js";
 import * as Platform13 from "./../../core/platform/platform.js";
 import * as SDK12 from "./../../core/sdk/sdk.js";
-import * as Trace29 from "./../../models/trace/trace.js";
+import * as Trace30 from "./../../models/trace/trace.js";
 import * as TraceBounds13 from "./../../services/trace_bounds/trace_bounds.js";
 import * as Tracing5 from "./../../services/tracing/tracing.js";
 import * as Components3 from "./../../ui/legacy/components/utils/utils.js";
@@ -2862,7 +2863,7 @@ __export(EventsTimelineTreeView_exports, {
 });
 import * as Common12 from "./../../core/common/common.js";
 import * as i18n43 from "./../../core/i18n/i18n.js";
-import * as Trace26 from "./../../models/trace/trace.js";
+import * as Trace27 from "./../../models/trace/trace.js";
 import * as DataGrid5 from "./../../ui/legacy/components/data_grid/data_grid.js";
 import * as UI12 from "./../../ui/legacy/legacy.js";
 import * as VisualLogging7 from "./../../ui/visual_logging/visual_logging.js";
@@ -2874,7 +2875,7 @@ __export(TimelineFilters_exports, {
   IsLong: () => IsLong,
   TimelineRegExp: () => TimelineRegExp
 });
-import * as Trace25 from "./../../models/trace/trace.js";
+import * as Trace26 from "./../../models/trace/trace.js";
 
 // gen/front_end/panels/timeline/TimelineUIUtils.js
 var TimelineUIUtils_exports = {};
@@ -2896,7 +2897,7 @@ import * as Root5 from "./../../core/root/root.js";
 import * as SDK8 from "./../../core/sdk/sdk.js";
 import * as Bindings2 from "./../../models/bindings/bindings.js";
 import * as TextUtils3 from "./../../models/text_utils/text_utils.js";
-import * as Trace24 from "./../../models/trace/trace.js";
+import * as Trace25 from "./../../models/trace/trace.js";
 import * as SourceMapsResolver3 from "./../../models/trace_source_maps_resolver/trace_source_maps_resolver.js";
 import * as TraceBounds11 from "./../../services/trace_bounds/trace_bounds.js";
 import * as Tracing4 from "./../../services/tracing/tracing.js";
@@ -3105,7 +3106,7 @@ __export(ThirdPartyTreeView_exports, {
   ThirdPartyTreeViewWidget: () => ThirdPartyTreeViewWidget
 });
 import * as i18n21 from "./../../core/i18n/i18n.js";
-import * as Trace14 from "./../../models/trace/trace.js";
+import * as Trace15 from "./../../models/trace/trace.js";
 import * as DataGrid3 from "./../../ui/legacy/components/data_grid/data_grid.js";
 import * as UI3 from "./../../ui/legacy/legacy.js";
 import * as VisualLogging2 from "./../../ui/visual_logging/visual_logging.js";
@@ -3247,7 +3248,7 @@ import "./../../ui/legacy/legacy.js";
 import * as Common5 from "./../../core/common/common.js";
 import * as i18n19 from "./../../core/i18n/i18n.js";
 import * as Platform7 from "./../../core/platform/platform.js";
-import * as Trace13 from "./../../models/trace/trace.js";
+import * as Trace14 from "./../../models/trace/trace.js";
 import * as Tracing from "./../../services/tracing/tracing.js";
 import * as Buttons from "./../../ui/components/buttons/buttons.js";
 import * as DataGrid from "./../../ui/legacy/components/data_grid/data_grid.js";
@@ -3296,7 +3297,7 @@ __export(TimelineSelection_exports, {
   selectionsEqual: () => selectionsEqual
 });
 import * as Platform6 from "./../../core/platform/platform.js";
-import * as Trace12 from "./../../models/trace/trace.js";
+import * as Trace13 from "./../../models/trace/trace.js";
 function selectionFromEvent(event) {
   return {
     event
@@ -3304,12 +3305,12 @@ function selectionFromEvent(event) {
 }
 function selectionFromRangeMicroSeconds(min, max) {
   return {
-    bounds: Trace12.Helpers.Timing.traceWindowFromMicroSeconds(min, max)
+    bounds: Trace13.Helpers.Timing.traceWindowFromMicroSeconds(min, max)
   };
 }
 function selectionFromRangeMilliSeconds(min, max) {
   return {
-    bounds: Trace12.Helpers.Timing.traceWindowFromMilliSeconds(min, max)
+    bounds: Trace13.Helpers.Timing.traceWindowFromMilliSeconds(min, max)
   };
 }
 function selectionIsEvent(selection) {
@@ -3323,8 +3324,8 @@ function rangeForSelection(selection) {
     return selection.bounds;
   }
   if (selectionIsEvent(selection)) {
-    const timings = Trace12.Helpers.Timing.eventTimingsMicroSeconds(selection.event);
-    return Trace12.Helpers.Timing.traceWindowFromMicroSeconds(timings.startTime, timings.endTime);
+    const timings = Trace13.Helpers.Timing.eventTimingsMicroSeconds(selection.event);
+    return Trace13.Helpers.Timing.traceWindowFromMicroSeconds(timings.startTime, timings.endTime);
   }
   Platform6.assertNever(selection, "Unknown selection type");
 }
@@ -3333,7 +3334,7 @@ function selectionsEqual(s1, s2) {
     return s1.event === s2.event;
   }
   if (selectionIsRange(s1) && selectionIsRange(s2)) {
-    return Trace12.Helpers.Timing.windowsEqual(s1.bounds, s2.bounds);
+    return Trace13.Helpers.Timing.windowsEqual(s1.bounds, s2.bounds);
   }
   return false;
 }
@@ -3691,7 +3692,7 @@ var TimelineTreeView = class extends Common5.ObjectWrapper.eventMixin(UI2.Widget
     if (!this.#parsedTrace) {
       return name;
     }
-    return name + ":@" + Trace13.Handlers.Helpers.getNonResolvedURL(event, this.#parsedTrace.data);
+    return name + ":@" + Trace14.Handlers.Helpers.getNonResolvedURL(event, this.#parsedTrace.data);
   }
   setSearchableView(searchableView) {
     this.searchableView = searchableView;
@@ -3710,7 +3711,7 @@ var TimelineTreeView = class extends Common5.ObjectWrapper.eventMixin(UI2.Widget
   }
   init() {
     this.linkifier = new Components2.Linkifier.Linkifier();
-    this.taskFilter = new Trace13.Extras.TraceFilter.ExclusiveNameFilter([
+    this.taskFilter = new Trace14.Extras.TraceFilter.ExclusiveNameFilter([
       "RunTask"
     ]);
     this.textFilterInternal = new TimelineRegExp();
@@ -3754,7 +3755,7 @@ var TimelineTreeView = class extends Common5.ObjectWrapper.eventMixin(UI2.Widget
   }
   updateContents(selection) {
     const timings = rangeForSelection(selection);
-    const timingMilli = Trace13.Helpers.Timing.traceWindowMicroSecondsToMilliSeconds(timings);
+    const timingMilli = Trace14.Helpers.Timing.traceWindowMicroSecondsToMilliSeconds(timings);
     this.setRange(timingMilli.min, timingMilli.max);
   }
   setRange(startTime, endTime) {
@@ -3875,7 +3876,7 @@ var TimelineTreeView = class extends Common5.ObjectWrapper.eventMixin(UI2.Widget
     throw new Error("Not Implemented");
   }
   buildTopDownTree(doNotAggregate, eventGroupIdCallback) {
-    return new Trace13.Extras.TraceTree.TopDownRootNode(this.selectedEvents(), {
+    return new Trace14.Extras.TraceTree.TopDownRootNode(this.selectedEvents(), {
       filters: this.filters(),
       startTime: this.startTime,
       endTime: this.endTime,
@@ -4154,7 +4155,7 @@ var GridNode = class extends DataGrid.SortableDataGrid.SortableDataGridNode {
       }
       UI2.ARIAUtils.setLabel(icon, TimelineUIUtils.eventStyle(event).category.title);
       icon.style.backgroundColor = TimelineUIUtils.eventColor(event);
-      if (Trace13.Types.Extensions.isSyntheticExtensionEntry(event)) {
+      if (Trace14.Types.Extensions.isSyntheticExtensionEntry(event)) {
         icon.style.backgroundColor = Extensions2.ExtensionUI.extensionEntryColor(event);
       }
     }
@@ -4179,9 +4180,9 @@ var GridNode = class extends DataGrid.SortableDataGrid.SortableDataGridNode {
           if (!parsedTrace) {
             throw new Error("Unable to load trace data for tree view");
           }
-          const timings = event && Trace13.Helpers.Timing.eventTimingsMilliSeconds(event);
+          const timings = event && Trace14.Helpers.Timing.eventTimingsMilliSeconds(event);
           const startTime = timings?.startTime ?? 0;
-          value = startTime - Trace13.Helpers.Timing.microToMilli(parsedTrace.data.Meta.traceBounds.min);
+          value = startTime - Trace14.Helpers.Timing.microToMilli(parsedTrace.data.Meta.traceBounds.min);
         }
         break;
       case "self":
@@ -4305,15 +4306,15 @@ var AggregatedTimelineTreeView = class _AggregatedTimelineTreeView extends Timel
     return name;
   }
   displayInfoForGroupNode(node) {
-    const categories2 = Trace13.Styles.getCategoryStyles();
+    const categories2 = Trace14.Styles.getCategoryStyles();
     const color = TimelineUIUtils.eventColor(node.event);
     const unattributed = i18nString10(UIStrings10.unattributed);
     const id = typeof node.id === "symbol" ? void 0 : node.id;
     switch (this.groupBySetting.get()) {
       case _AggregatedTimelineTreeView.GroupBy.Category: {
-        const idIsValid = id && Trace13.Styles.stringIsEventCategory(id);
+        const idIsValid = id && Trace14.Styles.stringIsEventCategory(id);
         const category = idIsValid ? categories2[id] || categories2["other"] : { title: unattributed, color: unattributed };
-        const color2 = category instanceof Trace13.Styles.TimelineCategory ? ThemeSupport13.ThemeSupport.instance().getComputedValue(category.cssVariable) : category.color;
+        const color2 = category instanceof Trace14.Styles.TimelineCategory ? ThemeSupport13.ThemeSupport.instance().getComputedValue(category.cssVariable) : category.color;
         return { name: category.title, color: color2, icon: void 0 };
       }
       case _AggregatedTimelineTreeView.GroupBy.Domain:
@@ -4407,11 +4408,11 @@ var AggregatedTimelineTreeView = class _AggregatedTimelineTreeView extends Timel
       case GroupBy.URL:
         return (event) => {
           const parsedTrace = this.parsedTrace();
-          return parsedTrace ? Trace13.Handlers.Helpers.getNonResolvedURL(event, parsedTrace.data) ?? "" : "";
+          return parsedTrace ? Trace14.Handlers.Helpers.getNonResolvedURL(event, parsedTrace.data) ?? "" : "";
         };
       case GroupBy.Frame:
         return (event) => {
-          const frameId = Trace13.Helpers.Trace.frameIDForEvent(event);
+          const frameId = Trace14.Helpers.Trace.frameIDForEvent(event);
           return frameId || this.parsedTrace()?.data.Meta.mainFrameId || "";
         };
       default:
@@ -4427,7 +4428,7 @@ var AggregatedTimelineTreeView = class _AggregatedTimelineTreeView extends Timel
     if (!parsedTrace) {
       return "";
     }
-    const url = Trace13.Handlers.Helpers.getNonResolvedURL(event, parsedTrace.data);
+    const url = Trace14.Handlers.Helpers.getNonResolvedURL(event, parsedTrace.data);
     if (!url) {
       const entity = this.entityMapper()?.entityForEvent(event);
       if (groupBy === _AggregatedTimelineTreeView.GroupBy.ThirdParties && entity) {
@@ -4539,7 +4540,7 @@ var BottomUpTimelineTreeView = class extends AggregatedTimelineTreeView {
     this.dataGrid.markColumnAsSortedBy("self", DataGrid.DataGrid.Order.Descending);
   }
   buildTree() {
-    return new Trace13.Extras.TraceTree.BottomUpRootNode(this.selectedEvents(), {
+    return new Trace14.Extras.TraceTree.BottomUpRootNode(this.selectedEvents(), {
       textFilter: this.textFilter(),
       filters: this.filtersWithoutTextFilter(),
       startTime: this.startTime,
@@ -4663,7 +4664,7 @@ var ThirdPartyTreeViewWidget = class extends TimelineTreeView {
     const parsedTrace = this.parsedTrace();
     const entityMapper = this.entityMapper();
     if (!parsedTrace || !entityMapper) {
-      return new Trace14.Extras.TraceTree.BottomUpRootNode([], {
+      return new Trace15.Extras.TraceTree.BottomUpRootNode([], {
         textFilter: this.textFilter(),
         filters: this.filtersWithoutTextFilter(),
         startTime: this.startTime,
@@ -4671,11 +4672,11 @@ var ThirdPartyTreeViewWidget = class extends TimelineTreeView {
         eventGroupIdCallback: this.groupingFunction.bind(this)
       });
     }
-    const filter = new Trace14.Extras.TraceFilter.VisibleEventsFilter(Trace14.Styles.visibleTypes().concat([
+    const filter = new Trace15.Extras.TraceFilter.VisibleEventsFilter(Trace15.Styles.visibleTypes().concat([
       "SyntheticNetworkRequest"
       /* Trace.Types.Events.Name.SYNTHETIC_NETWORK_REQUEST */
     ]));
-    const node = new Trace14.Extras.TraceTree.BottomUpRootNode(this.selectedEvents(), {
+    const node = new Trace15.Extras.TraceTree.BottomUpRootNode(this.selectedEvents(), {
       textFilter: this.textFilter(),
       filters: [filter],
       startTime: this.startTime,
@@ -4846,7 +4847,7 @@ import * as AiAssistanceModel from "./../../models/ai_assistance/ai_assistance.j
 import * as Badges from "./../../models/badges/badges.js";
 import * as CrUXManager3 from "./../../models/crux-manager/crux-manager.js";
 import * as TextUtils2 from "./../../models/text_utils/text_utils.js";
-import * as Trace23 from "./../../models/trace/trace.js";
+import * as Trace24 from "./../../models/trace/trace.js";
 import * as SourceMapsResolver from "./../../models/trace_source_maps_resolver/trace_source_maps_resolver.js";
 import * as Workspace2 from "./../../models/workspace/workspace.js";
 import * as TraceBounds9 from "./../../services/trace_bounds/trace_bounds.js";
@@ -5286,7 +5287,7 @@ import * as Root2 from "./../../core/root/root.js";
 import * as SDK5 from "./../../core/sdk/sdk.js";
 import * as CrUXManager from "./../../models/crux-manager/crux-manager.js";
 import * as LiveMetrics from "./../../models/live-metrics/live-metrics.js";
-import * as Trace16 from "./../../models/trace/trace.js";
+import * as Trace17 from "./../../models/trace/trace.js";
 import * as PanelCommon from "./../common/common.js";
 import * as Tracing2 from "./../../services/tracing/tracing.js";
 
@@ -5298,7 +5299,7 @@ __export(RecordingMetadata_exports, {
 });
 import * as SDK4 from "./../../core/sdk/sdk.js";
 import * as EmulationModel from "./../../models/emulation/emulation.js";
-import * as Trace15 from "./../../models/trace/trace.js";
+import * as Trace16 from "./../../models/trace/trace.js";
 function forCPUProfile() {
   return {
     dataOrigin: "CPUProfile"
@@ -5507,9 +5508,9 @@ var TimelineController = class {
     }
     const categoriesArray = [
       Root2.Runtime.experiments.isEnabled("timeline-show-all-events") ? "*" : "-*",
-      Trace16.Types.Events.Categories.Console,
-      Trace16.Types.Events.Categories.Loading,
-      Trace16.Types.Events.Categories.UserTiming,
+      Trace17.Types.Events.Categories.Console,
+      Trace17.Types.Events.Categories.Loading,
+      Trace17.Types.Events.Categories.UserTiming,
       "devtools.timeline",
       disabledByDefault("devtools.target-rundown"),
       disabledByDefault("devtools.timeline.frame"),
@@ -5698,7 +5699,7 @@ __export(TimelineHistoryManager_exports, {
 import * as Common7 from "./../../core/common/common.js";
 import * as i18n31 from "./../../core/i18n/i18n.js";
 import * as Platform9 from "./../../core/platform/platform.js";
-import * as Trace18 from "./../../models/trace/trace.js";
+import * as Trace19 from "./../../models/trace/trace.js";
 import { createIcon } from "./../../ui/kit/kit.js";
 import * as UI7 from "./../../ui/legacy/legacy.js";
 import * as VisualLogging5 from "./../../ui/visual_logging/visual_logging.js";
@@ -5715,7 +5716,7 @@ __export(TimelineEventOverview_exports, {
   TimelineFilmStripOverview: () => TimelineFilmStripOverview
 });
 import * as i18n29 from "./../../core/i18n/i18n.js";
-import * as Trace17 from "./../../models/trace/trace.js";
+import * as Trace18 from "./../../models/trace/trace.js";
 import * as TraceBounds5 from "./../../services/trace_bounds/trace_bounds.js";
 import * as PerfUI10 from "./../../ui/legacy/components/perf_ui/perf_ui.js";
 import * as UI6 from "./../../ui/legacy/legacy.js";
@@ -5778,15 +5779,15 @@ var TimelineEventOverviewNetwork = class extends TimelineEventOverview {
       min: start,
       max: end,
       range: end - start
-    } : Trace17.Helpers.Timing.traceWindowMilliSeconds(this.#parsedTrace.data.Meta.traceBounds);
+    } : Trace18.Helpers.Timing.traceWindowMilliSeconds(this.#parsedTrace.data.Meta.traceBounds);
     const pathHeight = this.height() / 2;
     const canvasWidth = this.width();
     const scale = canvasWidth / traceBoundsMilli.range;
     const highPath = new Path2D();
     const lowPath = new Path2D();
     for (const request of this.#parsedTrace.data.NetworkRequests.byTime) {
-      const path = Trace17.Helpers.Network.isSyntheticNetworkRequestHighPriority(request) ? highPath : lowPath;
-      const { startTime, endTime } = Trace17.Helpers.Timing.eventTimingsMilliSeconds(request);
+      const path = Trace18.Helpers.Network.isSyntheticNetworkRequestHighPriority(request) ? highPath : lowPath;
+      const { startTime, endTime } = Trace18.Helpers.Timing.eventTimingsMilliSeconds(request);
       const rectStart = Math.max(Math.floor((startTime - traceBoundsMilli.min) * scale), 0);
       const rectEnd = Math.min(Math.ceil((endTime - traceBoundsMilli.min) * scale + 1), canvasWidth);
       path.rect(rectStart, 0, rectEnd - rectStart, pathHeight - 1);
@@ -5812,17 +5813,17 @@ var TimelineEventOverviewCPUActivity = class extends TimelineEventOverview {
     super("cpu-activity", i18nString15(UIStrings15.cpu));
     this.#parsedTrace = parsedTrace;
     this.backgroundCanvas = this.element.createChild("canvas", "fill background");
-    this.#start = Trace17.Helpers.Timing.traceWindowMilliSeconds(parsedTrace.data.Meta.traceBounds).min;
-    this.#end = Trace17.Helpers.Timing.traceWindowMilliSeconds(parsedTrace.data.Meta.traceBounds).max;
+    this.#start = Trace18.Helpers.Timing.traceWindowMilliSeconds(parsedTrace.data.Meta.traceBounds).min;
+    this.#end = Trace18.Helpers.Timing.traceWindowMilliSeconds(parsedTrace.data.Meta.traceBounds).max;
   }
   #entryCategory(entry) {
-    if (Trace17.Types.Events.isProfileCall(entry) && entry.callFrame.functionName === "(idle)") {
-      return Trace17.Styles.EventCategory.IDLE;
+    if (Trace18.Types.Events.isProfileCall(entry) && entry.callFrame.functionName === "(idle)") {
+      return Trace18.Styles.EventCategory.IDLE;
     }
-    if (Trace17.Types.Events.isProfileCall(entry) && entry.callFrame.functionName === "(program)") {
-      return Trace17.Styles.EventCategory.OTHER;
+    if (Trace18.Types.Events.isProfileCall(entry) && entry.callFrame.functionName === "(program)") {
+      return Trace18.Styles.EventCategory.OTHER;
     }
-    const eventStyle = Trace17.Styles.getEventStyle(entry.name)?.category || Trace17.Styles.getCategoryStyles().other;
+    const eventStyle = Trace18.Styles.getEventStyle(entry.name)?.category || Trace18.Styles.getCategoryStyles().other;
     const categoryName = eventStyle.name;
     return categoryName;
   }
@@ -5840,11 +5841,11 @@ var TimelineEventOverviewCPUActivity = class extends TimelineEventOverview {
     const timeRange = this.#end - this.#start;
     const scale = width / timeRange;
     const quantTime = quantSizePx / scale;
-    const categories2 = Trace17.Styles.getCategoryStyles();
-    const categoryOrder = Trace17.Styles.getTimelineMainEventCategories();
-    const otherIndex = categoryOrder.indexOf(Trace17.Styles.EventCategory.OTHER);
+    const categories2 = Trace18.Styles.getCategoryStyles();
+    const categoryOrder = Trace18.Styles.getTimelineMainEventCategories();
+    const otherIndex = categoryOrder.indexOf(Trace18.Styles.EventCategory.OTHER);
     const idleIndex = 0;
-    console.assert(idleIndex === categoryOrder.indexOf(Trace17.Styles.EventCategory.IDLE));
+    console.assert(idleIndex === categoryOrder.indexOf(Trace18.Styles.EventCategory.IDLE));
     for (let i = 0; i < categoryOrder.length; ++i) {
       categoryToIndex.set(categories2[categoryOrder[i]], i);
     }
@@ -5874,28 +5875,28 @@ var TimelineEventOverviewCPUActivity = class extends TimelineEventOverview {
         if (!category || category === "idle") {
           return;
         }
-        const startTimeMilli = Trace17.Helpers.Timing.microToMilli(entry.ts);
+        const startTimeMilli = Trace18.Helpers.Timing.microToMilli(entry.ts);
         const index = categoryIndexStack.length ? categoryIndexStack[categoryIndexStack.length - 1] : idleIndex;
         quantizer.appendInterval(startTimeMilli, index);
         const categoryIndex = categoryOrder.indexOf(category);
         categoryIndexStack.push(categoryIndex || otherIndex);
       };
       function onEntryEnd(entry) {
-        const endTimeMilli = Trace17.Helpers.Timing.microToMilli(entry.ts) + Trace17.Helpers.Timing.microToMilli(Trace17.Types.Timing.Micro(entry.dur || 0));
+        const endTimeMilli = Trace18.Helpers.Timing.microToMilli(entry.ts) + Trace18.Helpers.Timing.microToMilli(Trace18.Types.Timing.Micro(entry.dur || 0));
         const lastCategoryIndex = categoryIndexStack.pop();
         if (endTimeMilli !== void 0 && lastCategoryIndex) {
           quantizer.appendInterval(endTimeMilli, lastCategoryIndex);
         }
       }
-      const startMicro = Trace17.Helpers.Timing.milliToMicro(this.#start);
-      const endMicro = Trace17.Helpers.Timing.milliToMicro(this.#end);
+      const startMicro = Trace18.Helpers.Timing.milliToMicro(this.#start);
+      const endMicro = Trace18.Helpers.Timing.milliToMicro(this.#end);
       const bounds = {
         min: startMicro,
         max: endMicro,
-        range: Trace17.Types.Timing.Micro(endMicro - startMicro)
+        range: Trace18.Types.Timing.Micro(endMicro - startMicro)
       };
-      const minDuration = Trace17.Types.Timing.Micro(bounds.range > 2e5 ? 16e3 : 0);
-      Trace17.Helpers.TreeHelpers.walkEntireTree(threadData.entryToNode, threadData.tree, onEntryStart, onEntryEnd, bounds, minDuration);
+      const minDuration = Trace18.Types.Timing.Micro(bounds.range > 2e5 ? 16e3 : 0);
+      Trace18.Helpers.TreeHelpers.walkEntireTree(threadData.entryToNode, threadData.tree, onEntryStart, onEntryEnd, bounds, minDuration);
       quantizer.appendInterval(this.#start + timeRange + quantTime, idleIndex);
       for (let i = categoryOrder.length - 1; i > 0; --i) {
         paths[i].lineTo(width, height);
@@ -5911,7 +5912,7 @@ var TimelineEventOverviewCPUActivity = class extends TimelineEventOverview {
     if (!backgroundContext) {
       throw new Error("Could not find 2d canvas");
     }
-    const threads = Trace17.Handlers.Threads.threadsInTrace(parsedTrace.data);
+    const threads = Trace18.Handlers.Threads.threadsInTrace(parsedTrace.data);
     const mainThreadContext = this.context();
     for (const thread of threads) {
       const isMainThread = thread.type === "MAIN_THREAD" || thread.type === "CPU_PROFILE";
@@ -5982,9 +5983,9 @@ var TimelineEventOverviewResponsiveness = class extends TimelineEventOverview {
     this.resetCanvas();
     const height = this.height();
     const visibleTimeWindow = !(start && end) ? this.#parsedTrace.data.Meta.traceBounds : {
-      min: Trace17.Helpers.Timing.milliToMicro(start),
-      max: Trace17.Helpers.Timing.milliToMicro(end),
-      range: Trace17.Helpers.Timing.milliToMicro(Trace17.Types.Timing.Milli(end - start))
+      min: Trace18.Helpers.Timing.milliToMicro(start),
+      max: Trace18.Helpers.Timing.milliToMicro(end),
+      range: Trace18.Helpers.Timing.milliToMicro(Trace18.Types.Timing.Milli(end - start))
     };
     const timeSpan = visibleTimeWindow.range;
     const scale = this.width() / timeSpan;
@@ -6001,7 +6002,7 @@ var TimelineEventOverviewResponsiveness = class extends TimelineEventOverview {
     ctx.fill(fillPath);
     ctx.stroke(markersPath);
     function paintWarningDecoration(event) {
-      const { startTime, duration } = Trace17.Helpers.Timing.eventTimingsMicroSeconds(event);
+      const { startTime, duration } = Trace18.Helpers.Timing.eventTimingsMicroSeconds(event);
       const x = Math.round(scale * (startTime - visibleTimeWindow.min));
       const width = Math.round(scale * duration);
       fillPath.rect(x, 0, width, height);
@@ -6055,7 +6056,7 @@ var TimelineFilmStripOverview = class _TimelineFilmStripOverview extends Timelin
   async imageByFrame(frame) {
     let imagePromise = this.frameToImagePromise.get(frame);
     if (!imagePromise) {
-      const uri = Trace17.Handlers.ModelHandlers.Screenshots.screenshotImageDataUri(frame.screenshotEvent);
+      const uri = Trace18.Handlers.ModelHandlers.Screenshots.screenshotImageDataUri(frame.screenshotEvent);
       imagePromise = UI6.UIUtils.loadImage(uri);
       this.frameToImagePromise.set(frame, imagePromise);
     }
@@ -6070,16 +6071,16 @@ var TimelineFilmStripOverview = class _TimelineFilmStripOverview extends Timelin
     }
     const padding = _TimelineFilmStripOverview.Padding;
     const width = this.width();
-    const zeroTime = customStartTime ?? Trace17.Helpers.Timing.microToMilli(this.#filmStrip.zeroTime);
-    const spanTime = customEndTime ? customEndTime - zeroTime : Trace17.Helpers.Timing.microToMilli(this.#filmStrip.spanTime);
+    const zeroTime = customStartTime ?? Trace18.Helpers.Timing.microToMilli(this.#filmStrip.zeroTime);
+    const spanTime = customEndTime ? customEndTime - zeroTime : Trace18.Helpers.Timing.microToMilli(this.#filmStrip.spanTime);
     const scale = spanTime / width;
     const context = this.context();
     const drawGeneration = this.drawGeneration;
     context.beginPath();
     for (let x = padding; x < width; x += imageWidth + 2 * padding) {
-      const time = Trace17.Types.Timing.Milli(zeroTime + (x + imageWidth / 2) * scale);
-      const timeMicroSeconds = Trace17.Helpers.Timing.milliToMicro(time);
-      const frame = Trace17.Extras.FilmStrip.frameClosestToTimestamp(this.#filmStrip, timeMicroSeconds);
+      const time = Trace18.Types.Timing.Milli(zeroTime + (x + imageWidth / 2) * scale);
+      const timeMicroSeconds = Trace18.Helpers.Timing.milliToMicro(time);
+      const frame = Trace18.Extras.FilmStrip.frameClosestToTimestamp(this.#filmStrip, timeMicroSeconds);
       if (!frame) {
         continue;
       }
@@ -6104,8 +6105,8 @@ var TimelineFilmStripOverview = class _TimelineFilmStripOverview extends Timelin
       return null;
     }
     const timeMilliSeconds = calculator.positionToTime(x);
-    const timeMicroSeconds = Trace17.Helpers.Timing.milliToMicro(timeMilliSeconds);
-    const frame = Trace17.Extras.FilmStrip.frameClosestToTimestamp(this.#filmStrip, timeMicroSeconds);
+    const timeMicroSeconds = Trace18.Helpers.Timing.milliToMicro(timeMilliSeconds);
+    const frame = Trace18.Extras.FilmStrip.frameClosestToTimestamp(this.#filmStrip, timeMicroSeconds);
     if (frame === this.lastFrame) {
       return this.lastElement;
     }
@@ -6156,7 +6157,7 @@ var TimelineEventOverviewMemory = class extends TimelineEventOverview {
       min: start,
       max: end,
       range: end - start
-    } : Trace17.Helpers.Timing.traceWindowMilliSeconds(this.#parsedTrace.data.Meta.traceBounds);
+    } : Trace18.Helpers.Timing.traceWindowMilliSeconds(this.#parsedTrace.data.Meta.traceBounds);
     const minTime = boundsMs.min;
     const maxTime = boundsMs.max;
     function calculateMinMaxSizes(event) {
@@ -6182,7 +6183,7 @@ var TimelineEventOverviewMemory = class extends TimelineEventOverview {
       if (!counters || !counters.jsHeapSizeUsed) {
         return;
       }
-      const { startTime } = Trace17.Helpers.Timing.eventTimingsMilliSeconds(event);
+      const { startTime } = Trace18.Helpers.Timing.eventTimingsMilliSeconds(event);
       const x = Math.round((startTime - minTime) * xFactor);
       const y2 = Math.round((counters.jsHeapSizeUsed - minUsedHeapSize) * yFactor);
       histogram[x] = Math.max(histogram[x] || 0, y2);
@@ -6637,7 +6638,7 @@ var TimelineHistoryManager = class _TimelineHistoryManager {
     if (!lastFrame) {
       return container;
     }
-    const uri = Trace18.Handlers.ModelHandlers.Screenshots.screenshotImageDataUri(lastFrame.screenshotEvent);
+    const uri = Trace19.Handlers.ModelHandlers.Screenshots.screenshotImageDataUri(lastFrame.screenshotEvent);
     void UI7.UIUtils.loadImage(uri).then((img) => {
       if (img) {
         container.appendChild(img);
@@ -6843,7 +6844,7 @@ import * as Common8 from "./../../core/common/common.js";
 import * as Host from "./../../core/host/host.js";
 import * as i18n33 from "./../../core/i18n/i18n.js";
 import * as SDK6 from "./../../core/sdk/sdk.js";
-import * as Trace19 from "./../../models/trace/trace.js";
+import * as Trace20 from "./../../models/trace/trace.js";
 var UIStrings17 = {
   /**
    * @description Text in Timeline Loader of the Performance panel
@@ -6905,7 +6906,7 @@ var TimelineLoader = class _TimelineLoader {
     const loader = new _TimelineLoader(client);
     loader.#traceIsCPUProfile = true;
     try {
-      const contents = Trace19.Helpers.SamplesIntegrator.SamplesIntegrator.createFakeTraceFromCpuProfile(profile, Trace19.Types.Events.ThreadID(1));
+      const contents = Trace20.Helpers.SamplesIntegrator.SamplesIntegrator.createFakeTraceFromCpuProfile(profile, Trace20.Types.Events.ThreadID(1));
       window.setTimeout(async () => {
         void loader.addEvents(contents.traceEvents, null);
       });
@@ -7011,7 +7012,7 @@ var TimelineLoader = class _TimelineLoader {
     return this.#traceFinalizedPromiseForTest;
   }
   #parseCPUProfileFormatFromFile(parsedTrace) {
-    const traceFile = Trace19.Helpers.SamplesIntegrator.SamplesIntegrator.createFakeTraceFromCpuProfile(parsedTrace, Trace19.Types.Events.ThreadID(1));
+    const traceFile = Trace20.Helpers.SamplesIntegrator.SamplesIntegrator.createFakeTraceFromCpuProfile(parsedTrace, Trace20.Types.Events.ThreadID(1));
     this.#collectEvents(traceFile.traceEvents);
   }
   #collectEvents(events) {
@@ -7025,7 +7026,7 @@ __export(TimelineMiniMap_exports, {
   TimelineMiniMap: () => TimelineMiniMap
 });
 import * as Common9 from "./../../core/common/common.js";
-import * as Trace20 from "./../../models/trace/trace.js";
+import * as Trace21 from "./../../models/trace/trace.js";
 import * as TraceBounds7 from "./../../services/trace_bounds/trace_bounds.js";
 import * as PerfUI11 from "./../../ui/legacy/components/perf_ui/perf_ui.js";
 import * as UI8 from "./../../ui/legacy/legacy.js";
@@ -7196,14 +7197,14 @@ var TimelineMiniMap = class extends Common9.ObjectWrapper.eventMixin(UI8.Widget.
     }
     const left = event.data.startTime > 0 ? event.data.startTime : traceBoundsState.milli.entireTraceBounds.min;
     const right = Number.isFinite(event.data.endTime) ? event.data.endTime : traceBoundsState.milli.entireTraceBounds.max;
-    TraceBounds7.TraceBounds.BoundsManager.instance().setTimelineVisibleWindow(Trace20.Helpers.Timing.traceWindowFromMilliSeconds(Trace20.Types.Timing.Milli(left), Trace20.Types.Timing.Milli(right)), {
+    TraceBounds7.TraceBounds.BoundsManager.instance().setTimelineVisibleWindow(Trace21.Helpers.Timing.traceWindowFromMilliSeconds(Trace21.Types.Timing.Milli(left), Trace21.Types.Timing.Milli(right)), {
       shouldAnimate: true
     });
   }
   #onTraceBoundsChange(event) {
     if (event.updateType === "RESET" || event.updateType === "VISIBLE_WINDOW") {
       this.#overviewComponent.setWindowTimes(event.state.milli.timelineTraceWindow.min, event.state.milli.timelineTraceWindow.max);
-      const newWindowFitsBounds = Trace20.Helpers.Timing.windowFitsInsideBounds({
+      const newWindowFitsBounds = Trace21.Helpers.Timing.windowFitsInsideBounds({
         window: event.state.micro.timelineTraceWindow,
         bounds: event.state.micro.minimapTraceBounds
       });
@@ -7222,7 +7223,7 @@ var TimelineMiniMap = class extends Common9.ObjectWrapper.eventMixin(UI8.Widget.
     let currentBreadcrumb = this.breadcrumbs.initialBreadcrumb;
     let lastBreadcrumbThatFits = this.breadcrumbs.initialBreadcrumb;
     while (currentBreadcrumb) {
-      const fits = Trace20.Helpers.Timing.windowFitsInsideBounds({
+      const fits = Trace21.Helpers.Timing.windowFitsInsideBounds({
         window: newWindow,
         bounds: currentBreadcrumb.window
       });
@@ -7246,10 +7247,10 @@ var TimelineMiniMap = class extends Common9.ObjectWrapper.eventMixin(UI8.Widget.
     }
     const bounds = traceBoundsState.milli.minimapTraceBounds;
     const breadcrumbTimes = {
-      startTime: Trace20.Types.Timing.Milli(Math.max(startTime, bounds.min)),
-      endTime: Trace20.Types.Timing.Milli(Math.min(endTime, bounds.max))
+      startTime: Trace21.Types.Timing.Milli(Math.max(startTime, bounds.min)),
+      endTime: Trace21.Types.Timing.Milli(Math.min(endTime, bounds.max))
     };
-    const newVisibleTraceWindow = Trace20.Helpers.Timing.traceWindowFromMilliSeconds(breadcrumbTimes.startTime, breadcrumbTimes.endTime);
+    const newVisibleTraceWindow = Trace21.Helpers.Timing.traceWindowFromMilliSeconds(breadcrumbTimes.startTime, breadcrumbTimes.endTime);
     const addedBreadcrumb = this.breadcrumbs.add(newVisibleTraceWindow);
     this.#breadcrumbsUI.data = {
       initialBreadcrumb: this.breadcrumbs.initialBreadcrumb,
@@ -7285,9 +7286,9 @@ var TimelineMiniMap = class extends Common9.ObjectWrapper.eventMixin(UI8.Widget.
     const markers = /* @__PURE__ */ new Map();
     const { Meta } = parsedTrace.data;
     const navStartEvents = Meta.mainFrameNavigations;
-    const minTimeInMilliseconds = Trace20.Helpers.Timing.microToMilli(Meta.traceBounds.min);
+    const minTimeInMilliseconds = Trace21.Helpers.Timing.microToMilli(Meta.traceBounds.min);
     for (const event of navStartEvents) {
-      const { startTime } = Trace20.Helpers.Timing.eventTimingsMilliSeconds(event);
+      const { startTime } = Trace21.Helpers.Timing.eventTimingsMilliSeconds(event);
       markers.set(startTime, TimelineUIUtils.createEventDivider(event, minTimeInMilliseconds));
     }
     this.#overviewComponent.setMarkers(markers);
@@ -7316,7 +7317,7 @@ var TimelineMiniMap = class extends Common9.ObjectWrapper.eventMixin(UI8.Widget.
     this.#controls.push(new TimelineEventOverviewCPUActivity(data.parsedTrace));
     this.#controls.push(new TimelineEventOverviewNetwork(data.parsedTrace));
     if (data.settings.showScreenshots) {
-      const filmStrip = Trace20.Extras.FilmStrip.fromHandlerData(data.parsedTrace.data);
+      const filmStrip = Trace21.Extras.FilmStrip.fromHandlerData(data.parsedTrace.data);
       if (filmStrip.frames.length) {
         this.#controls.push(new TimelineFilmStripOverview(filmStrip));
       }
@@ -7807,7 +7808,7 @@ var UIDevtoolsController_exports = {};
 __export(UIDevtoolsController_exports, {
   UIDevtoolsController: () => UIDevtoolsController
 });
-import * as Trace22 from "./../../models/trace/trace.js";
+import * as Trace23 from "./../../models/trace/trace.js";
 
 // gen/front_end/panels/timeline/UIDevtoolsUtils.js
 var UIDevtoolsUtils_exports = {};
@@ -7817,7 +7818,7 @@ __export(UIDevtoolsUtils_exports, {
 });
 import * as i18n37 from "./../../core/i18n/i18n.js";
 import * as Root3 from "./../../core/root/root.js";
-import * as Trace21 from "./../../models/trace/trace.js";
+import * as Trace22 from "./../../models/trace/trace.js";
 var UIStrings19 = {
   /**
    * @description Text in Timeline UIUtils of the Performance panel
@@ -7900,7 +7901,7 @@ var UIDevtoolsUtils = class _UIDevtoolsUtils {
     const painting = categories2["painting"];
     const other = categories2["other"];
     const eventStyles = {};
-    const { TimelineRecordStyle } = Trace21.Styles;
+    const { TimelineRecordStyle } = Trace22.Styles;
     eventStyles[type.ViewPaint] = new TimelineRecordStyle("View::Paint", painting);
     eventStyles[type.ViewOnPaint] = new TimelineRecordStyle("View::OnPaint", painting);
     eventStyles[type.ViewPaintChildren] = new TimelineRecordStyle("View::PaintChildren", painting);
@@ -7923,7 +7924,7 @@ var UIDevtoolsUtils = class _UIDevtoolsUtils {
     if (categories) {
       return categories;
     }
-    const { TimelineCategory, EventCategory } = Trace21.Styles;
+    const { TimelineCategory, EventCategory } = Trace22.Styles;
     categories = {
       layout: new TimelineCategory(EventCategory.LAYOUT, i18nString19(UIStrings19.layout), true, "--app-color-loading"),
       rasterizing: new TimelineCategory(EventCategory.RASTERIZING, i18nString19(UIStrings19.rasterizing), true, "--app-color-scripting"),
@@ -7968,9 +7969,9 @@ var RecordType;
 var UIDevtoolsController = class extends TimelineController {
   constructor(rootTarget, primaryPageTarget, client) {
     super(rootTarget, primaryPageTarget, client);
-    Trace22.Styles.setEventStylesMap(UIDevtoolsUtils.categorizeEvents());
-    Trace22.Styles.setCategories(UIDevtoolsUtils.categories());
-    Trace22.Styles.setTimelineMainEventCategories(UIDevtoolsUtils.getMainCategoriesList().filter(Trace22.Styles.stringIsEventCategory));
+    Trace23.Styles.setEventStylesMap(UIDevtoolsUtils.categorizeEvents());
+    Trace23.Styles.setCategories(UIDevtoolsUtils.categories());
+    Trace23.Styles.setTimelineMainEventCategories(UIDevtoolsUtils.getMainCategoriesList().filter(Trace23.Styles.stringIsEventCategory));
   }
 };
 
@@ -8542,22 +8543,22 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
   }
   static removeInstance() {
     SourceMapsResolver.SourceMapsResolver.clearResolvedNodeNames();
-    Trace23.Helpers.SyntheticEvents.SyntheticEventsManager.reset();
+    Trace24.Helpers.SyntheticEvents.SyntheticEventsManager.reset();
     TraceBounds9.TraceBounds.BoundsManager.removeInstance();
     ModificationsManager.reset();
     ActiveFilters.removeInstance();
     timelinePanelInstance = void 0;
   }
   #instantiateNewModel() {
-    const config = Trace23.Types.Configuration.defaults();
+    const config = Trace24.Types.Configuration.defaults();
     config.showAllEvents = Root4.Runtime.experiments.isEnabled("timeline-show-all-events");
     config.includeRuntimeCallStats = Root4.Runtime.experiments.isEnabled("timeline-v8-runtime-call-stats");
     config.debugMode = Root4.Runtime.experiments.isEnabled(
       "timeline-debug-mode"
       /* Root.Runtime.ExperimentName.TIMELINE_DEBUG_MODE */
     );
-    const traceEngineModel = Trace23.TraceModel.Model.createWithAllHandlers(config);
-    traceEngineModel.addEventListener(Trace23.TraceModel.ModelUpdateEvent.eventName, (e) => {
+    const traceEngineModel = Trace24.TraceModel.Model.createWithAllHandlers(config);
+    traceEngineModel.addEventListener(Trace24.TraceModel.ModelUpdateEvent.eventName, (e) => {
       const updateEvent = e;
       const str = i18nString20(UIStrings20.processed);
       const traceParseMaxProgress = 0.7;
@@ -8781,7 +8782,7 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
     if (!traceEvent) {
       return;
     }
-    const bounds = Trace23.Helpers.Timing.traceWindowFromEvent(traceEvent);
+    const bounds = Trace24.Helpers.Timing.traceWindowFromEvent(traceEvent);
     this.#minimapComponent.highlightBounds(
       bounds,
       /* withBracket */
@@ -9084,15 +9085,15 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
     if (!parsedTrace) {
       return;
     }
-    const mappedScriptsWithData = Trace23.Handlers.ModelHandlers.Scripts.data().scripts;
+    const mappedScriptsWithData = Trace24.Handlers.ModelHandlers.Scripts.data().scripts;
     const scriptByIdMap = /* @__PURE__ */ new Map();
     for (const mapScript of mappedScriptsWithData) {
       scriptByIdMap.set(`${mapScript.isolate}.${mapScript.scriptId}`, mapScript);
     }
     const traceEvents = parsedTrace.traceEvents.map((event) => {
-      if (Trace23.Types.Events.isAnyScriptSourceEvent(event) && event.name !== "StubScriptCatchup") {
+      if (Trace24.Types.Events.isAnyScriptSourceEvent(event) && event.name !== "StubScriptCatchup") {
         const mappedScript = scriptByIdMap.get(`${event.args.data.isolate}.${event.args.data.scriptId}`);
-        if (!config.includeResourceContent || mappedScript?.url && Trace23.Helpers.Trace.isExtensionUrl(mappedScript.url)) {
+        if (!config.includeResourceContent || mappedScript?.url && Trace24.Helpers.Trace.isExtensionUrl(mappedScript.url)) {
           return {
             cat: event.cat,
             name: "StubScriptCatchup",
@@ -9152,7 +9153,7 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
     let fileName = isCpuProfile ? `CPU-${isoDate}.cpuprofile` : `Trace-${isoDate}.json`;
     let blobParts = [];
     if (isCpuProfile) {
-      const profile = Trace23.Helpers.SamplesIntegrator.SamplesIntegrator.extractCpuProfileFromFakeTrace(traceEvents);
+      const profile = Trace24.Helpers.SamplesIntegrator.SamplesIntegrator.extractCpuProfileFromFakeTrace(traceEvents);
       blobParts = [JSON.stringify(profile)];
     } else {
       const filteredMetadataSourceMaps = includeResourceContent && includeSourceMaps ? this.#filterMetadataSourceMaps(metadata) : void 0;
@@ -9228,7 +9229,7 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
       return void 0;
     }
     return metadata.sourceMaps.filter((value) => {
-      return !Trace23.Helpers.Trace.isExtensionUrl(value.url);
+      return !Trace24.Helpers.Trace.isExtensionUrl(value.url);
     });
   }
   #filterMetadataResoures(metadata) {
@@ -9705,7 +9706,7 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
       this.#changeView({ mode: "LANDING_PAGE" });
       return;
     }
-    Trace23.Helpers.SyntheticEvents.SyntheticEventsManager.activate(syntheticEventsManager);
+    Trace24.Helpers.SyntheticEvents.SyntheticEventsManager.activate(syntheticEventsManager);
     this.#minimapComponent.reset();
     const data = parsedTrace.data;
     TraceBounds9.TraceBounds.BoundsManager.instance().resetWithNewBounds(data.Meta.traceBounds);
@@ -9727,7 +9728,7 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
     currentManager?.addEventListener(AnnotationModifiedEvent.eventName, this.#onAnnotationModifiedEventBound);
     const topMostMainThreadAppender = this.flameChart.getMainDataProvider().compatibilityTracksAppenderInstance().threadAppenders().at(0);
     if (topMostMainThreadAppender) {
-      const zoomedInBounds = Trace23.Extras.MainThreadActivity.calculateWindow(parsedTrace.data.Meta.traceBounds, topMostMainThreadAppender.getEntries());
+      const zoomedInBounds = Trace24.Extras.MainThreadActivity.calculateWindow(parsedTrace.data.Meta.traceBounds, topMostMainThreadAppender.getEntries());
       TraceBounds9.TraceBounds.BoundsManager.instance().setTimelineVisibleWindow(zoomedInBounds);
     }
     const currModificationManager = ModificationsManager.activeManager();
@@ -9743,11 +9744,11 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
       return profiles;
     });
     PerfUI12.LineLevelProfile.Performance.instance().initialize(cpuProfiles, primaryPageTarget);
-    this.#entityMapper = new Trace23.EntityMapper.EntityMapper(parsedTrace);
+    this.#entityMapper = new Trace24.EntityMapper.EntityMapper(parsedTrace);
     this.#sourceMapsResolver = new SourceMapsResolver.SourceMapsResolver(parsedTrace, this.#entityMapper);
     this.#sourceMapsResolver.addEventListener(SourceMapsResolver.SourceMappingsUpdated.eventName, this.#onSourceMapsNodeNamesResolvedBound);
     void this.#sourceMapsResolver.install();
-    this.#entityMapper = new Trace23.EntityMapper.EntityMapper(parsedTrace);
+    this.#entityMapper = new Trace24.EntityMapper.EntityMapper(parsedTrace);
     this.statusDialog?.updateProgressBar(i18nString20(UIStrings20.processed), 80);
     this.updateMiniMap();
     this.statusDialog?.updateProgressBar(i18nString20(UIStrings20.processed), 90);
@@ -9845,9 +9846,9 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
   buildColorsAnnotationsMap(annotations) {
     const annotationEntryToColorMap = /* @__PURE__ */ new Map();
     for (const annotation of annotations) {
-      if (Trace23.Types.File.isEntryLabelAnnotation(annotation)) {
+      if (Trace24.Types.File.isEntryLabelAnnotation(annotation)) {
         annotationEntryToColorMap.set(annotation.entry, this.getEntryColorByEntry(annotation.entry));
-      } else if (Trace23.Types.File.isEntriesLinkAnnotation(annotation)) {
+      } else if (Trace24.Types.File.isEntriesLinkAnnotation(annotation)) {
         annotationEntryToColorMap.set(annotation.entryFrom, this.getEntryColorByEntry(annotation.entryFrom));
         if (annotation.entryTo) {
           annotationEntryToColorMap.set(annotation.entryTo, this.getEntryColorByEntry(annotation.entryTo));
@@ -9966,7 +9967,7 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
     if (!this.loader) {
       this.statusDialog.finish();
     }
-    this.traceLoadStart = Trace23.Types.Timing.Milli(performance.now());
+    this.traceLoadStart = Trace24.Types.Timing.Milli(performance.now());
     await this.loadingProgress(0);
   }
   async loadingProgress(progress) {
@@ -10034,7 +10035,7 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
           parsedTraceIndex: traceIndex,
           type: "TRACE_INDEX"
         },
-        filmStripForPreview: Trace23.Extras.FilmStrip.fromHandlerData(parsedTrace.data),
+        filmStripForPreview: Trace24.Extras.FilmStrip.fromHandlerData(parsedTrace.data),
         parsedTrace
       });
       this.dispatchEventToListeners("RecordingCompleted", {
@@ -10055,9 +10056,9 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
     const start = this.traceLoadStart;
     requestAnimationFrame(() => {
       setTimeout(() => {
-        const end = Trace23.Types.Timing.Milli(performance.now());
+        const end = Trace24.Types.Timing.Milli(performance.now());
         const measure = performance.measure("TraceLoad", { start, end });
-        const duration = Trace23.Types.Timing.Milli(measure.duration);
+        const duration = Trace24.Types.Timing.Milli(measure.duration);
         this.element.dispatchEvent(new TraceLoadEvent(duration));
         Host2.userMetrics.performanceTraceLoad(measure);
       }, 0);
@@ -10263,7 +10264,7 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
     if (selectionIsRange(selection)) {
       return null;
     }
-    if (Trace23.Types.Events.isSyntheticNetworkRequest(selection.event)) {
+    if (Trace24.Types.Events.isSyntheticNetworkRequest(selection.event)) {
       return null;
     }
     const parsedTrace = this.#traceEngineModel.parsedTrace(this.#viewMode.traceIndex);
@@ -10271,7 +10272,7 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
       return null;
     }
     const endTime = rangeForSelection(selection).max;
-    const lastFrameInSelection = Trace23.Handlers.ModelHandlers.Frames.framesWithinWindow(parsedTrace.data.Frames.frames, endTime, endTime).at(0);
+    const lastFrameInSelection = Trace24.Handlers.ModelHandlers.Frames.framesWithinWindow(parsedTrace.data.Frames.frames, endTime, endTime).at(0);
     return lastFrameInSelection || null;
   }
   jumpToFrame(offset) {
@@ -10290,7 +10291,7 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
     console.assert(index >= 0, "Can't find current frame in the frame list");
     index = Platform11.NumberUtilities.clamp(index + offset, 0, parsedTrace.data.Frames.frames.length - 1);
     const frame = parsedTrace.data.Frames.frames[index];
-    this.#revealTimeRange(Trace23.Helpers.Timing.microToMilli(frame.startTime), Trace23.Helpers.Timing.microToMilli(frame.endTime));
+    this.#revealTimeRange(Trace24.Helpers.Timing.microToMilli(frame.startTime), Trace24.Helpers.Timing.microToMilli(frame.endTime));
     this.select(selectionFromEvent(frame));
     return true;
   }
@@ -10307,11 +10308,11 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
     if (selectionIsRange(newSelection)) {
       return;
     }
-    if (Trace23.Types.Events.isLegacyTimelineFrame(newSelection.event)) {
+    if (Trace24.Types.Events.isLegacyTimelineFrame(newSelection.event)) {
       UI10.ARIAUtils.LiveAnnouncer.alert(i18nString20(UIStrings20.frameSelected));
       return;
     }
-    const name = Trace23.Name.forEntry(newSelection.event);
+    const name = Trace24.Name.forEntry(newSelection.event);
     UI10.ARIAUtils.LiveAnnouncer.alert(i18nString20(UIStrings20.eventSelected, { PH1: name }));
   }
   select(selection) {
@@ -10329,8 +10330,8 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
     }
     for (let index = Platform11.ArrayUtilities.upperBound(events, time, (time2, event) => time2 - event.ts) - 1; index >= 0; --index) {
       const event = events[index];
-      const { endTime } = Trace23.Helpers.Timing.eventTimingsMilliSeconds(event);
-      if (Trace23.Helpers.Trace.isTopLevelEvent(event) && endTime < time) {
+      const { endTime } = Trace24.Helpers.Timing.eventTimingsMilliSeconds(event);
+      if (Trace24.Helpers.Trace.isTopLevelEvent(event) && endTime < time) {
         break;
       }
       if (ActiveFilters.instance().isVisible(event) && endTime >= time) {
@@ -10355,7 +10356,7 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
     } else if (traceWindow.min > startTime) {
       offset = startTime - traceWindow.min;
     }
-    TraceBounds9.TraceBounds.BoundsManager.instance().setTimelineVisibleWindow(Trace23.Helpers.Timing.traceWindowFromMilliSeconds(Trace23.Types.Timing.Milli(traceWindow.min + offset), Trace23.Types.Timing.Milli(traceWindow.max + offset)), {
+    TraceBounds9.TraceBounds.BoundsManager.instance().setTimelineVisibleWindow(Trace24.Helpers.Timing.traceWindowFromMilliSeconds(Trace24.Types.Timing.Milli(traceWindow.min + offset), Trace24.Types.Timing.Milli(traceWindow.max + offset)), {
       shouldAnimate: true
     });
   }
@@ -10392,7 +10393,7 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
    * 3. Flash the Insight with the highlight colour we use in other panels.
    */
   revealInsight(insightModel) {
-    const insightSetKey = insightModel.navigation?.args.data?.navigationId ?? Trace23.Types.Events.NO_NAVIGATION;
+    const insightSetKey = insightModel.navigation?.args.data?.navigationId ?? Trace24.Types.Events.NO_NAVIGATION;
     this.#setActiveInsight({ model: insightModel, insightSetKey }, { highlightInsight: true });
   }
   static async *handleExternalRecordRequest() {
@@ -10971,7 +10972,7 @@ var i18nString21 = i18n41.i18n.getLocalizedString.bind(void 0, str_21);
 var URL_REGEX = /(?:[a-zA-Z][a-zA-Z0-9+.-]{2,}:\/\/)[^\s"]{2,}[^\s"'\)\}\],:;.!?]/u;
 var eventDispatchDesciptors;
 var colorGenerator;
-var { SamplesIntegrator } = Trace24.Helpers.SamplesIntegrator;
+var { SamplesIntegrator } = Trace25.Helpers.SamplesIntegrator;
 var TimelineUIUtils = class _TimelineUIUtils {
   /**
    * use getGetDebugModeEnabled() to query this variable.
@@ -11004,15 +11005,15 @@ var TimelineUIUtils = class _TimelineUIUtils {
   static testContentMatching(traceEvent, regExp, handlerData) {
     const title = _TimelineUIUtils.eventStyle(traceEvent).title;
     const tokens = [title];
-    if (Trace24.Types.Events.isProfileCall(traceEvent)) {
+    if (Trace25.Types.Events.isProfileCall(traceEvent)) {
       if (!handlerData?.Samples) {
         tokens.push(traceEvent.callFrame.functionName);
       } else {
-        tokens.push(Trace24.Handlers.ModelHandlers.Samples.getProfileCallFunctionName(handlerData.Samples, traceEvent));
+        tokens.push(Trace25.Handlers.ModelHandlers.Samples.getProfileCallFunctionName(handlerData.Samples, traceEvent));
       }
     }
     if (handlerData) {
-      const url = Trace24.Handlers.Helpers.getNonResolvedURL(traceEvent, handlerData);
+      const url = Trace25.Handlers.Helpers.getNonResolvedURL(traceEvent, handlerData);
       if (url) {
         tokens.push(url);
       }
@@ -11041,28 +11042,28 @@ var TimelineUIUtils = class _TimelineUIUtils {
     }
   }
   static eventStyle(event) {
-    if (Trace24.Types.Events.isProfileCall(event) && event.callFrame.functionName === "(idle)") {
-      return new Trace24.Styles.TimelineRecordStyle(event.name, Trace24.Styles.getCategoryStyles().idle);
+    if (Trace25.Types.Events.isProfileCall(event) && event.callFrame.functionName === "(idle)") {
+      return new Trace25.Styles.TimelineRecordStyle(event.name, Trace25.Styles.getCategoryStyles().idle);
     }
-    if (event.cat === Trace24.Types.Events.Categories.Console || event.cat === Trace24.Types.Events.Categories.UserTiming) {
-      return new Trace24.Styles.TimelineRecordStyle(event.name, Trace24.Styles.getCategoryStyles()["scripting"]);
+    if (event.cat === Trace25.Types.Events.Categories.Console || event.cat === Trace25.Types.Events.Categories.UserTiming) {
+      return new Trace25.Styles.TimelineRecordStyle(event.name, Trace25.Styles.getCategoryStyles()["scripting"]);
     }
-    return Trace24.Styles.getEventStyle(event.name) ?? new Trace24.Styles.TimelineRecordStyle(event.name, Trace24.Styles.getCategoryStyles().other);
+    return Trace25.Styles.getEventStyle(event.name) ?? new Trace25.Styles.TimelineRecordStyle(event.name, Trace25.Styles.getCategoryStyles().other);
   }
   static eventColor(event) {
-    if (Trace24.Types.Events.isProfileCall(event)) {
+    if (Trace25.Types.Events.isProfileCall(event)) {
       const frame = event.callFrame;
       if (_TimelineUIUtils.isUserFrame(frame)) {
         return _TimelineUIUtils.colorForId(frame.url);
       }
     }
-    if (Trace24.Types.Extensions.isSyntheticExtensionEntry(event)) {
+    if (Trace25.Types.Extensions.isSyntheticExtensionEntry(event)) {
       return Extensions3.ExtensionUI.extensionEntryColor(event);
     }
     const themeSupport = ThemeSupport19.ThemeSupport.instance();
     let parsedColor = themeSupport.getComputedValue(_TimelineUIUtils.eventStyle(event).category.cssVariable);
     if (event.name === "v8.parseOnBackgroundWaiting") {
-      parsedColor = themeSupport.getComputedValue(Trace24.Styles.getCategoryStyles().scripting.cssVariable);
+      parsedColor = themeSupport.getComputedValue(Trace25.Styles.getCategoryStyles().scripting.cssVariable);
       if (!parsedColor) {
         throw new Error("Unable to parse color from getCategoryStyles().scripting.color");
       }
@@ -11070,25 +11071,25 @@ var TimelineUIUtils = class _TimelineUIUtils {
     return parsedColor;
   }
   static eventTitle(event) {
-    if (Trace24.Types.Events.isProfileCall(event)) {
+    if (Trace25.Types.Events.isProfileCall(event)) {
       const maybeResolvedData = SourceMapsResolver3.SourceMapsResolver.resolvedCodeLocationForEntry(event);
       const displayName = maybeResolvedData?.name || _TimelineUIUtils.frameDisplayName(event.callFrame);
       return displayName;
     }
-    if (event.name === "EventTiming" && Trace24.Types.Events.isSyntheticInteraction(event)) {
-      return Trace24.Name.forEntry(event);
+    if (event.name === "EventTiming" && Trace25.Types.Events.isSyntheticInteraction(event)) {
+      return Trace25.Name.forEntry(event);
     }
     const title = _TimelineUIUtils.eventStyle(event).title;
-    if (Trace24.Helpers.Trace.eventHasCategory(event, Trace24.Types.Events.Categories.Console)) {
+    if (Trace25.Helpers.Trace.eventHasCategory(event, Trace25.Types.Events.Categories.Console)) {
       return title;
     }
-    if (Trace24.Types.Events.isConsoleTimeStamp(event) && event.args.data) {
+    if (Trace25.Types.Events.isConsoleTimeStamp(event) && event.args.data) {
       return i18nString21(UIStrings21.sS, { PH1: title, PH2: event.args.data.name ?? event.args.data.message });
     }
-    if (Trace24.Types.Events.isAnimation(event) && event.args.data.name) {
+    if (Trace25.Types.Events.isAnimation(event) && event.args.data.name) {
       return i18nString21(UIStrings21.sS, { PH1: title, PH2: event.args.data.name });
     }
-    if (Trace24.Types.Events.isDispatch(event)) {
+    if (Trace25.Types.Events.isDispatch(event)) {
       return i18nString21(UIStrings21.sS, { PH1: title, PH2: event.args.data.type });
     }
     return title;
@@ -11112,7 +11113,7 @@ var TimelineUIUtils = class _TimelineUIUtils {
       case "ResourceReceivedData":
       case "ResourceReceiveResponse":
       case "ResourceFinish": {
-        const url = Trace24.Handlers.Helpers.getNonResolvedURL(event, parsedTrace.data);
+        const url = Trace25.Handlers.Helpers.getNonResolvedURL(event, parsedTrace.data);
         if (url) {
           const options = {
             tabStop: true,
@@ -11125,8 +11126,8 @@ var TimelineUIUtils = class _TimelineUIUtils {
       }
       case "FunctionCall": {
         details = document.createElement("span");
-        const callFrame = Trace24.Helpers.Trace.getZeroIndexedStackTraceInEventPayload(event)?.at(0);
-        if (Trace24.Types.Events.isFunctionCall(event) && callFrame) {
+        const callFrame = Trace25.Helpers.Trace.getZeroIndexedStackTraceInEventPayload(event)?.at(0);
+        if (Trace25.Types.Events.isFunctionCall(event) && callFrame) {
           UI11.UIUtils.createTextChild(details, _TimelineUIUtils.frameDisplayName({ ...callFrame, scriptId: String(callFrame.scriptId) }));
         }
         const location = this.linkifyLocation({
@@ -11176,7 +11177,7 @@ var TimelineUIUtils = class _TimelineUIUtils {
         break;
       }
       default: {
-        if (Trace24.Helpers.Trace.eventHasCategory(event, Trace24.Types.Events.Categories.Console) || Trace24.Types.Events.isUserTiming(event) || Trace24.Types.Extensions.isSyntheticExtensionEntry(event) || Trace24.Types.Events.isProfileCall(event)) {
+        if (Trace25.Helpers.Trace.eventHasCategory(event, Trace25.Types.Events.Categories.Console) || Trace25.Types.Events.isUserTiming(event) || Trace25.Types.Extensions.isSyntheticExtensionEntry(event) || Trace25.Types.Events.isProfileCall(event)) {
           detailsText = null;
         } else {
           details = this.linkifyTopCallFrame(event, target, linkifier, isFreshOrEnhanced) ?? null;
@@ -11206,8 +11207,8 @@ var TimelineUIUtils = class _TimelineUIUtils {
     return LegacyComponents.Linkifier.Linkifier.linkifyURL(url, options);
   }
   static linkifyTopCallFrame(event, target, linkifier, isFreshOrEnhanced = false) {
-    let frame = Trace24.Helpers.Trace.getZeroIndexedStackTraceInEventPayload(event)?.[0];
-    if (Trace24.Types.Events.isProfileCall(event)) {
+    let frame = Trace25.Helpers.Trace.getZeroIndexedStackTraceInEventPayload(event)?.[0];
+    if (Trace25.Types.Events.isProfileCall(event)) {
       frame = event.callFrame;
     }
     if (!frame) {
@@ -11300,21 +11301,21 @@ var TimelineUIUtils = class _TimelineUIUtils {
   }
   static async buildTraceEventDetails(parsedTrace, event, linkifier, canShowPieChart, entityMapper) {
     const maybeTarget = targetForEvent(parsedTrace, event);
-    const { duration } = Trace24.Helpers.Timing.eventTimingsMicroSeconds(event);
+    const { duration } = Trace25.Helpers.Timing.eventTimingsMicroSeconds(event);
     const selfTime = getEventSelfTime(event, parsedTrace);
     const relatedNodesMap = await Utils4.EntryNodes.relatedDOMNodesForEvent(parsedTrace, event);
     let entityAppended = false;
     if (maybeTarget) {
       if (typeof event[previewElementSymbol] === "undefined") {
         let previewElement = null;
-        const url2 = Trace24.Handlers.Helpers.getNonResolvedURL(event, parsedTrace.data);
+        const url2 = Trace25.Handlers.Helpers.getNonResolvedURL(event, parsedTrace.data);
         if (url2) {
           previewElement = await LegacyComponents.ImagePreview.ImagePreview.build(url2, false, {
             imageAltText: LegacyComponents.ImagePreview.ImagePreview.defaultAltTextForImageURL(url2),
             precomputedFeatures: void 0,
             align: "start"
           });
-        } else if (Trace24.Types.Events.isPaint(event)) {
+        } else if (Trace25.Types.Events.isPaint(event)) {
           previewElement = await _TimelineUIUtils.buildPicturePreviewContent(parsedTrace, event, maybeTarget);
         }
         event[previewElementSymbol] = previewElement;
@@ -11337,7 +11338,7 @@ var TimelineUIUtils = class _TimelineUIUtils {
         contentHelper.appendElementRow(i18nString21(UIStrings21.warning), warning, true);
       }
     }
-    if (Trace24.Helpers.Trace.eventHasCategory(event, Trace24.Types.Events.Categories.UserTiming) || Trace24.Types.Extensions.isSyntheticExtensionEntry(event)) {
+    if (Trace25.Helpers.Trace.eventHasCategory(event, Trace25.Types.Events.Categories.UserTiming) || Trace25.Types.Extensions.isSyntheticExtensionEntry(event)) {
       const adjustedEventTimeStamp = timeStampForEventAdjustedForClosestNavigationIfPossible(event, parsedTrace);
       contentHelper.appendTextRow(i18nString21(UIStrings21.timestamp), i18n41.TimeUtilities.preciseMillisToString(adjustedEventTimeStamp, 1));
     }
@@ -11345,11 +11346,11 @@ var TimelineUIUtils = class _TimelineUIUtils {
       const timeStr = getDurationString(duration, selfTime);
       contentHelper.appendTextRow(i18nString21(UIStrings21.duration), timeStr);
     }
-    if (Trace24.Types.Events.isPerformanceMark(event) && event.args.data?.detail) {
+    if (Trace25.Types.Events.isPerformanceMark(event) && event.args.data?.detail) {
       const detailContainer = _TimelineUIUtils.renderObjectJson(JSON.parse(event.args.data?.detail));
       contentHelper.appendElementRow(i18nString21(UIStrings21.details), detailContainer);
     }
-    if (Trace24.Types.Events.isSyntheticUserTiming(event) && event.args?.data?.beginEvent.args.detail) {
+    if (Trace25.Types.Events.isSyntheticUserTiming(event) && event.args?.data?.beginEvent.args.detail) {
       const detailContainer = _TimelineUIUtils.renderObjectJson(JSON.parse(event.args?.data?.beginEvent.args.detail));
       contentHelper.appendElementRow(i18nString21(UIStrings21.details), detailContainer);
     }
@@ -11357,22 +11358,22 @@ var TimelineUIUtils = class _TimelineUIUtils {
       _TimelineUIUtils.renderEventJson(event, contentHelper);
       return contentHelper.fragment;
     }
-    if (Trace24.Types.Events.isNavigationStart(event)) {
+    if (Trace25.Types.Events.isNavigationStart(event)) {
       url = event.args.data?.documentLoaderURL ?? event.args.data?.url;
       if (url) {
         contentHelper.appendElementRow(i18nString21(UIStrings21.url), LegacyComponents.Linkifier.Linkifier.linkifyURL(url));
       }
     }
-    if (Trace24.Types.Events.isSoftNavigationStart(event)) {
+    if (Trace25.Types.Events.isSoftNavigationStart(event)) {
       url = event.args.context.URL;
       if (url) {
         contentHelper.appendElementRow(i18nString21(UIStrings21.url), LegacyComponents.Linkifier.Linkifier.linkifyURL(url));
       }
     }
-    if (Trace24.Types.Events.isV8Compile(event)) {
+    if (Trace25.Types.Events.isV8Compile(event)) {
       url = event.args.data?.url;
       if (url) {
-        const { lineNumber, columnNumber } = Trace24.Helpers.Trace.getZeroIndexedLineAndColumnForEvent(event);
+        const { lineNumber, columnNumber } = Trace25.Helpers.Trace.getZeroIndexedLineAndColumnForEvent(event);
         contentHelper.appendLocationRow(i18nString21(UIStrings21.script), url, lineNumber || 0, columnNumber, void 0, true);
         const originWithEntity = this.getOriginWithEntity(entityMapper, parsedTrace, event);
         if (originWithEntity) {
@@ -11390,7 +11391,7 @@ var TimelineUIUtils = class _TimelineUIUtils {
         _TimelineUIUtils.buildConsumeCacheDetails(event.args.data, contentHelper);
       }
     }
-    if (Trace24.Types.Extensions.isSyntheticExtensionEntry(event)) {
+    if (Trace25.Types.Extensions.isSyntheticExtensionEntry(event)) {
       const userDetail = structuredClone(event.userDetail);
       if (userDetail && Object.keys(userDetail).length) {
         const hasExclusiveLink = typeof userDetail === "object" && typeof userDetail.url === "string" && typeof userDetail.description === "string";
@@ -11485,7 +11486,7 @@ var TimelineUIUtils = class _TimelineUIUtils {
       case "v8.produceCache": {
         url = unsafeEventData && unsafeEventData["url"];
         if (url) {
-          const { lineNumber, columnNumber } = Trace24.Helpers.Trace.getZeroIndexedLineAndColumnForEvent(event);
+          const { lineNumber, columnNumber } = Trace25.Helpers.Trace.getZeroIndexedLineAndColumnForEvent(event);
           contentHelper.appendLocationRow(i18nString21(UIStrings21.script), url, lineNumber || 0, columnNumber, void 0, true);
           const originWithEntity = this.getOriginWithEntity(entityMapper, parsedTrace, event);
           if (originWithEntity) {
@@ -11499,7 +11500,7 @@ var TimelineUIUtils = class _TimelineUIUtils {
       case "EvaluateScript": {
         url = unsafeEventData && unsafeEventData["url"];
         if (url) {
-          const { lineNumber, columnNumber } = Trace24.Helpers.Trace.getZeroIndexedLineAndColumnForEvent(event);
+          const { lineNumber, columnNumber } = Trace25.Helpers.Trace.getZeroIndexedLineAndColumnForEvent(event);
           contentHelper.appendLocationRow(i18nString21(UIStrings21.script), url, lineNumber || 0, columnNumber, void 0, true);
           const originWithEntity = this.getOriginWithEntity(entityMapper, parsedTrace, event);
           if (originWithEntity) {
@@ -11542,7 +11543,7 @@ var TimelineUIUtils = class _TimelineUIUtils {
       case "Decode Image":
       case "Draw LazyPixelRef": {
         relatedNodeLabel = i18nString21(UIStrings21.ownerElement);
-        url = Trace24.Handlers.Helpers.getNonResolvedURL(event, parsedTrace.data);
+        url = Trace25.Handlers.Helpers.getNonResolvedURL(event, parsedTrace.data);
         if (url) {
           const options = {
             tabStop: true,
@@ -11591,7 +11592,7 @@ var TimelineUIUtils = class _TimelineUIUtils {
       case "WebSocketSend":
       case "WebSocketReceive":
       case "WebSocketDestroy": {
-        if (Trace24.Types.Events.isWebSocketTraceEvent(event)) {
+        if (Trace25.Types.Events.isWebSocketTraceEvent(event)) {
           const rows = TimelineComponents4.DetailsView.buildRowsForWebSocketEvent(event, parsedTrace);
           for (const { key, value } of rows) {
             contentHelper.appendTextRow(key, value);
@@ -11604,7 +11605,7 @@ var TimelineUIUtils = class _TimelineUIUtils {
         break;
       }
       case "Animation": {
-        if (!Trace24.Types.Events.isSyntheticAnimation(event)) {
+        if (!Trace25.Types.Events.isSyntheticAnimation(event)) {
           break;
         }
         const { displayName, nodeName } = event.args.data.beginEvent.args.data;
@@ -11612,7 +11613,7 @@ var TimelineUIUtils = class _TimelineUIUtils {
         if (!relatedNodesMap?.size && nodeName) {
           contentHelper.appendTextRow(i18nString21(UIStrings21.relatedNode), nodeName);
         }
-        const CLSInsight = Trace24.Insights.Models.CLSCulprits;
+        const CLSInsight = Trace25.Insights.Models.CLSCulprits;
         const failures = CLSInsight.getNonCompositedFailure(event);
         if (!failures.length) {
           break;
@@ -11709,7 +11710,7 @@ var TimelineUIUtils = class _TimelineUIUtils {
       case "RequestIdleCallback":
       case "CancelIdleCallback": {
         contentHelper.appendTextRow(i18nString21(UIStrings21.callbackId), unsafeEventData["id"]);
-        if (Trace24.Types.Events.isRequestIdleCallback(event)) {
+        if (Trace25.Types.Events.isRequestIdleCallback(event)) {
           contentHelper.appendTextRow(i18nString21(UIStrings21.requestIdleCallbackTimeout), i18n41.TimeUtilities.preciseMillisToString(event.args.data.timeout));
         }
         break;
@@ -11730,7 +11731,7 @@ var TimelineUIUtils = class _TimelineUIUtils {
       case "MarkDOMContent": {
         const adjustedEventTimeStamp = timeStampForEventAdjustedForClosestNavigationIfPossible(event, parsedTrace);
         contentHelper.appendTextRow(i18nString21(UIStrings21.timestamp), i18n41.TimeUtilities.preciseMillisToString(adjustedEventTimeStamp, 1));
-        if (Trace24.Types.Events.isMarkerEvent(event)) {
+        if (Trace25.Types.Events.isMarkerEvent(event)) {
           contentHelper.appendElementRow(i18nString21(UIStrings21.details), _TimelineUIUtils.buildDetailsNodeForMarkerEvents(event));
         }
         break;
@@ -11740,7 +11741,7 @@ var TimelineUIUtils = class _TimelineUIUtils {
         if (detailsNode) {
           contentHelper.appendElementRow(i18nString21(UIStrings21.details), detailsNode);
         }
-        if (Trace24.Types.Events.isSyntheticInteraction(event)) {
+        if (Trace25.Types.Events.isSyntheticInteraction(event)) {
           const inputDelay = i18n41.TimeUtilities.formatMicroSecondsAsMillisFixed(event.inputDelay);
           const mainThreadTime = i18n41.TimeUtilities.formatMicroSecondsAsMillisFixed(event.mainThreadHandling);
           const presentationDelay = i18n41.TimeUtilities.formatMicroSecondsAsMillisFixed(event.presentationDelay);
@@ -11776,8 +11777,8 @@ var TimelineUIUtils = class _TimelineUIUtils {
         contentHelper.appendElementRow(i18nString21(UIStrings21.origin), originWithEntity);
       }
     }
-    const hasStackTrace = Boolean(Trace24.Helpers.Trace.getStackTraceTopCallFrameInEventPayload(event));
-    if (Trace24.Types.Events.isUserTiming(event) || Trace24.Types.Extensions.isSyntheticExtensionEntry(event) || Trace24.Types.Events.isProfileCall(event) || initiator || initiatorFor || hasStackTrace || parsedTrace?.data.Invalidations.invalidationsForEvent.get(event)) {
+    const hasStackTrace = Boolean(Trace25.Helpers.Trace.getStackTraceTopCallFrameInEventPayload(event));
+    if (Trace25.Types.Events.isUserTiming(event) || Trace25.Types.Extensions.isSyntheticExtensionEntry(event) || Trace25.Types.Events.isProfileCall(event) || initiator || initiatorFor || hasStackTrace || parsedTrace?.data.Invalidations.invalidationsForEvent.get(event)) {
       await _TimelineUIUtils.generateCauses(event, contentHelper, parsedTrace);
     }
     if (Root5.Runtime.experiments.isEnabled(
@@ -11840,7 +11841,7 @@ var TimelineUIUtils = class _TimelineUIUtils {
       const aggregatedStats2 = {};
       const categoryStack = [];
       let lastTime = 0;
-      Trace24.Helpers.Trace.forEachEvent(events2, {
+      Trace25.Helpers.Trace.forEachEvent(events2, {
         onStartEvent,
         onEndEvent
       });
@@ -11867,8 +11868,8 @@ var TimelineUIUtils = class _TimelineUIUtils {
         }
       }
       function onStartEvent(e) {
-        const { startTime: startTime2 } = Trace24.Helpers.Timing.eventTimingsMilliSeconds(e);
-        const category = Trace24.Styles.getEventStyle(e.name)?.category.name || Trace24.Styles.getCategoryStyles().other.name;
+        const { startTime: startTime2 } = Trace25.Helpers.Timing.eventTimingsMilliSeconds(e);
+        const category = Trace25.Styles.getEventStyle(e.name)?.category.name || Trace25.Styles.getCategoryStyles().other.name;
         const parentCategory = categoryStack.length ? categoryStack[categoryStack.length - 1] : null;
         if (category !== parentCategory) {
           categoryChange(parentCategory || null, category, startTime2);
@@ -11876,7 +11877,7 @@ var TimelineUIUtils = class _TimelineUIUtils {
         categoryStack.push(category);
       }
       function onEndEvent(e) {
-        const { endTime: endTime2 } = Trace24.Helpers.Timing.eventTimingsMilliSeconds(e);
+        const { endTime: endTime2 } = Trace25.Helpers.Timing.eventTimingsMilliSeconds(e);
         const category = categoryStack.pop();
         const parentCategory = categoryStack.length ? categoryStack[categoryStack.length - 1] : null;
         if (category !== parentCategory) {
@@ -11889,7 +11890,7 @@ var TimelineUIUtils = class _TimelineUIUtils {
   }
   static renderEventJson(event, contentHelper) {
     contentHelper.addSection(i18nString21(UIStrings21.traceEvent));
-    contentHelper.appendElementRow("eventKey", new Trace24.EventsSerializer.EventsSerializer().keyForEvent(event) ?? "?");
+    contentHelper.appendElementRow("eventKey", new Trace25.EventsSerializer.EventsSerializer().keyForEvent(event) ?? "?");
     const eventWithArgsFirst = {
       ...{ args: event.args },
       ...event
@@ -11924,15 +11925,15 @@ var TimelineUIUtils = class _TimelineUIUtils {
   }
   /** This renders a stack trace... and other cool stuff. */
   static async generateCauses(event, contentHelper, parsedTrace) {
-    const { startTime } = Trace24.Helpers.Timing.eventTimingsMilliSeconds(event);
+    const { startTime } = Trace25.Helpers.Timing.eventTimingsMilliSeconds(event);
     let initiatorStackLabel = i18nString21(UIStrings21.initiatorStackTrace);
     let stackLabel = i18nString21(UIStrings21.functionStack);
-    const stackTraceForEvent = Trace24.Extras.StackTraceForEvent.get(event, parsedTrace.data);
+    const stackTraceForEvent = Trace25.Extras.StackTraceForEvent.get(event, parsedTrace.data);
     if (stackTraceForEvent?.callFrames.length || stackTraceForEvent?.description || stackTraceForEvent?.parent) {
       contentHelper.addSection(i18nString21(UIStrings21.functionStack));
       await contentHelper.createChildStackTraceElement(stackTraceForEvent);
     } else {
-      const stackTrace = Trace24.Helpers.Trace.getZeroIndexedStackTraceInEventPayload(event);
+      const stackTrace = Trace25.Helpers.Trace.getZeroIndexedStackTraceInEventPayload(event);
       if (stackTrace?.length) {
         contentHelper.addSection(stackLabel);
         await contentHelper.createChildStackTraceElement(_TimelineUIUtils.stackTraceFromCallFrames(stackTrace));
@@ -11961,14 +11962,14 @@ var TimelineUIUtils = class _TimelineUIUtils {
     const initiatorFor = parsedTrace.data.Initiators.initiatorToEvents.get(event);
     const invalidations = parsedTrace.data.Invalidations.invalidationsForEvent.get(event);
     if (initiator) {
-      const stackTrace = Trace24.Helpers.Trace.getZeroIndexedStackTraceInEventPayload(initiator);
+      const stackTrace = Trace25.Helpers.Trace.getZeroIndexedStackTraceInEventPayload(initiator);
       if (stackTrace) {
         contentHelper.addSection(initiatorStackLabel);
         await contentHelper.createChildStackTraceElement(_TimelineUIUtils.stackTraceFromCallFrames(stackTrace));
       }
       const link = this.createEntryLink(initiator);
       contentHelper.appendElementRow(i18nString21(UIStrings21.initiatedBy), link);
-      const { startTime: initiatorStartTime } = Trace24.Helpers.Timing.eventTimingsMilliSeconds(initiator);
+      const { startTime: initiatorStartTime } = Trace25.Helpers.Timing.eventTimingsMilliSeconds(initiator);
       const delay = startTime - initiatorStartTime;
       contentHelper.appendTextRow(i18nString21(UIStrings21.pendingFor), i18n41.TimeUtilities.preciseMillisToString(delay, 1));
     }
@@ -12051,7 +12052,7 @@ var TimelineUIUtils = class _TimelineUIUtils {
     }
     const generatedItems = /* @__PURE__ */ new Set();
     for (const invalidation of invalidations) {
-      const stackTrace = Trace24.Helpers.Trace.getZeroIndexedStackTraceInEventPayload(invalidation);
+      const stackTrace = Trace25.Helpers.Trace.getZeroIndexedStackTraceInEventPayload(invalidation);
       let scriptLink = null;
       const callFrame = stackTrace?.at(0);
       if (callFrame) {
@@ -12089,19 +12090,19 @@ var TimelineUIUtils = class _TimelineUIUtils {
       }
       childNodesToVisit.push(...childNode.children);
     }
-    if (Trace24.Types.Events.isPhaseAsync(event.ph)) {
+    if (Trace25.Types.Events.isPhaseAsync(event.ph)) {
       let aggregatedTotal = 0;
       for (const categoryName in total) {
         aggregatedTotal += total[categoryName];
       }
-      const { startTime, endTime } = Trace24.Helpers.Timing.eventTimingsMicroSeconds(event);
+      const { startTime, endTime } = Trace25.Helpers.Timing.eventTimingsMicroSeconds(event);
       const deltaInMicro = endTime - startTime;
       total["idle"] = Math.max(0, deltaInMicro - aggregatedTotal);
       return false;
     }
     for (const categoryName in total) {
       const value = total[categoryName];
-      total[categoryName] = Trace24.Helpers.Timing.microToMilli(value);
+      total[categoryName] = Trace25.Helpers.Timing.microToMilli(value);
     }
     return true;
   }
@@ -12155,7 +12156,7 @@ var TimelineUIUtils = class _TimelineUIUtils {
   static createEventDivider(event, zeroTime) {
     const eventDivider = document.createElement("div");
     eventDivider.classList.add("resources-event-divider");
-    const { startTime: eventStartTime } = Trace24.Helpers.Timing.eventTimingsMilliSeconds(event);
+    const { startTime: eventStartTime } = Trace25.Helpers.Timing.eventTimingsMilliSeconds(event);
     const startTime = i18n41.TimeUtilities.millisToString(eventStartTime - zeroTime);
     UI11.Tooltip.Tooltip.install(eventDivider, i18nString21(UIStrings21.sAtS, { PH1: _TimelineUIUtils.eventTitle(event), PH2: startTime }));
     const style = _TimelineUIUtils.markerStyleForEvent(event);
@@ -12165,12 +12166,12 @@ var TimelineUIUtils = class _TimelineUIUtils {
     return eventDivider;
   }
   static visibleEventsFilter() {
-    return new Trace24.Extras.TraceFilter.VisibleEventsFilter(Trace24.Styles.visibleTypes());
+    return new Trace25.Extras.TraceFilter.VisibleEventsFilter(Trace25.Styles.visibleTypes());
   }
   // Included only for layout tests.
   // TODO(crbug.com/1386091): Fix/port layout tests and remove.
   static categories() {
-    return Trace24.Styles.getCategoryStyles();
+    return Trace25.Styles.getCategoryStyles();
   }
   static generatePieChart(aggregatedStats, selfCategory, selfTime) {
     let total = 0;
@@ -12189,7 +12190,7 @@ var TimelineUIUtils = class _TimelineUIUtils {
       slices.push({ value, color, title });
     }
     if (selfCategory) {
-      const selfTimeMilli = Trace24.Helpers.Timing.microToMilli(selfTime || 0);
+      const selfTimeMilli = Trace25.Helpers.Timing.microToMilli(selfTime || 0);
       if (selfTime) {
         appendLegendRow(i18nString21(UIStrings21.sSelf, { PH1: selfCategory.title }), selfTimeMilli, selfCategory.getCSSValue());
       }
@@ -12199,8 +12200,8 @@ var TimelineUIUtils = class _TimelineUIUtils {
         appendLegendRow(i18nString21(UIStrings21.sChildren, { PH1: selfCategory.title }), value, selfCategory.getCSSValue());
       }
     }
-    for (const categoryName in Trace24.Styles.getCategoryStyles()) {
-      const category = Trace24.Styles.getCategoryStyles()[categoryName];
+    for (const categoryName in Trace25.Styles.getCategoryStyles()) {
+      const category = Trace25.Styles.getCategoryStyles()[categoryName];
       if (categoryName === selfCategory?.name) {
         continue;
       }
@@ -12227,9 +12228,9 @@ var TimelineUIUtils = class _TimelineUIUtils {
     for (const categoryName in aggregatedStats) {
       total += aggregatedStats[categoryName];
     }
-    for (const categoryName in Trace24.Styles.getCategoryStyles()) {
-      const category = Trace24.Styles.getCategoryStyles()[categoryName];
-      if (category.name === Trace24.Styles.EventCategory.IDLE) {
+    for (const categoryName in Trace25.Styles.getCategoryStyles()) {
+      const category = Trace25.Styles.getCategoryStyles()[categoryName];
+      if (category.name === Trace25.Styles.EventCategory.IDLE) {
         continue;
       }
       const value = aggregatedStats[category.name];
@@ -12241,8 +12242,8 @@ var TimelineUIUtils = class _TimelineUIUtils {
       categories2.push({ value, color, title });
     }
     categories2 = categories2.sort((a, b) => b.value - a.value);
-    const start = Trace24.Types.Timing.Milli(rangeStart);
-    const end = Trace24.Types.Timing.Milli(rangeEnd);
+    const start = Trace25.Types.Timing.Milli(rangeStart);
+    const end = Trace25.Types.Timing.Milli(rangeEnd);
     const categorySummaryTable = new TimelineComponents4.TimelineSummary.CategorySummary();
     categorySummaryTable.rangeStart = start;
     categorySummaryTable.rangeEnd = end;
@@ -12263,7 +12264,7 @@ var TimelineUIUtils = class _TimelineUIUtils {
     if (filmStrip && filmStripFrame) {
       const filmStripPreview = document.createElement("div");
       filmStripPreview.classList.add("timeline-filmstrip-preview");
-      const uri = Trace24.Handlers.ModelHandlers.Screenshots.screenshotImageDataUri(filmStripFrame.screenshotEvent);
+      const uri = Trace25.Handlers.ModelHandlers.Screenshots.screenshotImageDataUri(filmStripFrame.screenshotEvent);
       void UI11.UIUtils.loadImage(uri).then((image) => image && filmStripPreview.appendChild(image));
       contentHelper.appendElementRow("", filmStripPreview);
       filmStripPreview.addEventListener("click", frameClicked.bind(null, filmStrip, filmStripFrame), false);
@@ -12274,8 +12275,8 @@ var TimelineUIUtils = class _TimelineUIUtils {
     return contentHelper.fragment;
   }
   static frameDuration(frame) {
-    const offsetMilli = Trace24.Helpers.Timing.microToMilli(frame.startTimeOffset);
-    const durationMilli = Trace24.Helpers.Timing.microToMilli(Trace24.Types.Timing.Micro(frame.endTime - frame.startTime));
+    const offsetMilli = Trace25.Helpers.Timing.microToMilli(frame.startTimeOffset);
+    const durationMilli = Trace25.Helpers.Timing.microToMilli(Trace25.Types.Timing.Micro(frame.endTime - frame.startTime));
     const durationText = i18nString21(UIStrings21.sAtSParentheses, {
       PH1: i18n41.TimeUtilities.millisToString(durationMilli, true),
       PH2: i18n41.TimeUtilities.millisToString(offsetMilli, true)
@@ -12310,12 +12311,12 @@ var TimelineUIUtils = class _TimelineUIUtils {
   static markerStyleForEvent(event) {
     const tallMarkerDashStyle = [6, 4];
     const title = _TimelineUIUtils.eventTitle(event);
-    if (event.name !== "navigationStart" && (Trace24.Helpers.Trace.eventHasCategory(event, Trace24.Types.Events.Categories.Console) || Trace24.Helpers.Trace.eventHasCategory(event, Trace24.Types.Events.Categories.UserTiming))) {
+    if (event.name !== "navigationStart" && (Trace25.Helpers.Trace.eventHasCategory(event, Trace25.Types.Events.Categories.Console) || Trace25.Helpers.Trace.eventHasCategory(event, Trace25.Types.Events.Categories.UserTiming))) {
       return {
         title,
         dashStyle: tallMarkerDashStyle,
         lineWidth: 0.5,
-        color: Trace24.Helpers.Trace.eventHasCategory(event, Trace24.Types.Events.Categories.Console) ? "purple" : "orange",
+        color: Trace25.Helpers.Trace.eventHasCategory(event, Trace25.Types.Events.Categories.Console) ? "purple" : "orange",
         tall: false,
         lowPriority: false
       };
@@ -12527,21 +12528,21 @@ var TimelineDetailsContentHelper = class {
 var categoryBreakdownCacheSymbol = Symbol("categoryBreakdownCache");
 function timeStampForEventAdjustedForClosestNavigationIfPossible(event, parsedTrace) {
   if (!parsedTrace) {
-    const { startTime } = Trace24.Helpers.Timing.eventTimingsMilliSeconds(event);
+    const { startTime } = Trace25.Helpers.Timing.eventTimingsMilliSeconds(event);
     return startTime;
   }
-  const time = Trace24.Helpers.Timing.timeStampForEventAdjustedByClosestNavigation(event, parsedTrace.data.Meta.traceBounds, parsedTrace.data.Meta.navigationsByNavigationId, parsedTrace.data.Meta.softNavigationsById, parsedTrace.data.Meta.navigationsByFrameId);
-  return Trace24.Helpers.Timing.microToMilli(time);
+  const time = Trace25.Helpers.Timing.timeStampForEventAdjustedByClosestNavigation(event, parsedTrace.data.Meta.traceBounds, parsedTrace.data.Meta.navigationsByNavigationId, parsedTrace.data.Meta.softNavigationsById, parsedTrace.data.Meta.navigationsByFrameId);
+  return Trace25.Helpers.Timing.microToMilli(time);
 }
 function isMarkerEvent(parsedTrace, event) {
-  const { Name: Name8 } = Trace24.Types.Events;
+  const { Name: Name8 } = Trace25.Types.Events;
   if (event.name === "TimeStamp" || event.name === "navigationStart" || event.name === "SoftNavigationStart") {
     return true;
   }
-  if (Trace24.Types.Events.isFirstContentfulPaint(event) || Trace24.Types.Events.isFirstPaint(event)) {
+  if (Trace25.Types.Events.isFirstContentfulPaint(event) || Trace25.Types.Events.isFirstPaint(event)) {
     return event.args.frame === parsedTrace.data.Meta.mainFrameId;
   }
-  if (Trace24.Types.Events.isMarkDOMContent(event) || Trace24.Types.Events.isMarkLoad(event) || Trace24.Types.Events.isAnyLargestContentfulPaintCandidate(event)) {
+  if (Trace25.Types.Events.isMarkDOMContent(event) || Trace25.Types.Events.isMarkLoad(event) || Trace25.Types.Events.isAnyLargestContentfulPaintCandidate(event)) {
     if (!event.args.data) {
       return false;
     }
@@ -12554,28 +12555,28 @@ function isMarkerEvent(parsedTrace, event) {
   return false;
 }
 function getEventSelfTime(event, parsedTrace) {
-  const mapToUse = Trace24.Types.Extensions.isSyntheticExtensionEntry(event) ? parsedTrace.data.ExtensionTraceData.entryToNode : parsedTrace.data.Renderer.entryToNode;
+  const mapToUse = Trace25.Types.Extensions.isSyntheticExtensionEntry(event) ? parsedTrace.data.ExtensionTraceData.entryToNode : parsedTrace.data.Renderer.entryToNode;
   const selfTime = mapToUse.get(event)?.selfTime;
-  return selfTime ? selfTime : Trace24.Types.Timing.Micro(0);
+  return selfTime ? selfTime : Trace25.Types.Timing.Micro(0);
 }
 
 // gen/front_end/panels/timeline/TimelineFilters.js
-var IsLong = class extends Trace25.Extras.TraceFilter.TraceFilter {
-  #minimumRecordDurationMilli = Trace25.Types.Timing.Milli(0);
+var IsLong = class extends Trace26.Extras.TraceFilter.TraceFilter {
+  #minimumRecordDurationMilli = Trace26.Types.Timing.Milli(0);
   setMinimumRecordDuration(value) {
     this.#minimumRecordDurationMilli = value;
   }
   accept(event) {
-    const { duration } = Trace25.Helpers.Timing.eventTimingsMilliSeconds(event);
+    const { duration } = Trace26.Helpers.Timing.eventTimingsMilliSeconds(event);
     return duration >= this.#minimumRecordDurationMilli;
   }
 };
-var Category = class extends Trace25.Extras.TraceFilter.TraceFilter {
+var Category = class extends Trace26.Extras.TraceFilter.TraceFilter {
   accept(event) {
     return !TimelineUIUtils.eventStyle(event).category.hidden;
   }
 };
-var TimelineRegExp = class extends Trace25.Extras.TraceFilter.TraceFilter {
+var TimelineRegExp = class extends Trace26.Extras.TraceFilter.TraceFilter {
   #regExp;
   constructor(regExp) {
     super();
@@ -12710,7 +12711,7 @@ var Filters = class _Filters extends Common12.ObjectWrapper.ObjectWrapper {
     }
     toolbar4.appendToolbarItem(durationFilterUI);
     const categoryFiltersUI = /* @__PURE__ */ new Map();
-    const categories2 = Trace26.Styles.getCategoryStyles();
+    const categories2 = Trace27.Styles.getCategoryStyles();
     for (const categoryName in categories2) {
       const category = categories2[categoryName];
       if (!category.visible) {
@@ -12724,11 +12725,11 @@ var Filters = class _Filters extends Common12.ObjectWrapper.ObjectWrapper {
     function durationFilterChanged() {
       const duration = durationFilterUI.selectedOption().value;
       const minimumRecordDuration = parseInt(duration, 10);
-      this.durationFilter.setMinimumRecordDuration(Trace26.Types.Timing.Milli(minimumRecordDuration));
+      this.durationFilter.setMinimumRecordDuration(Trace27.Types.Timing.Milli(minimumRecordDuration));
       this.notifyFiltersChanged();
     }
     function categoriesFilterChanged(name) {
-      const categories3 = Trace26.Styles.getCategoryStyles();
+      const categories3 = Trace27.Styles.getCategoryStyles();
       const checkBox = categoryFiltersUI.get(name);
       categories3[name].hidden = !checkBox?.checked();
       this.notifyFiltersChanged();
@@ -12939,7 +12940,7 @@ __export(TimelinePaintProfilerView_exports, {
 });
 import * as SDK10 from "./../../core/sdk/sdk.js";
 import * as Geometry2 from "./../../models/geometry/geometry.js";
-import * as Trace27 from "./../../models/trace/trace.js";
+import * as Trace28 from "./../../models/trace/trace.js";
 import * as UI14 from "./../../ui/legacy/legacy.js";
 import * as Lit from "./../../ui/lit/lit.js";
 import * as LayerViewer2 from "./../layer_viewer/layer_viewer.js";
@@ -13380,11 +13381,11 @@ var TimelinePaintProfilerView = class extends UI14.SplitWidget.SplitWidget {
     this.pendingSnapshot = null;
     this.event = event;
     this.updateWhenVisible();
-    if (Trace27.Types.Events.isPaint(event)) {
+    if (Trace28.Types.Events.isPaint(event)) {
       const snapshot = this.#parsedTrace.data.LayerTree.paintsToSnapshots.get(event);
       return Boolean(snapshot);
     }
-    if (Trace27.Types.Events.isRasterTask(event)) {
+    if (Trace28.Types.Events.isRasterTask(event)) {
       return this.#rasterEventHasTile(event);
     }
     return false;
@@ -13422,7 +13423,7 @@ var TimelinePaintProfilerView = class extends UI14.SplitWidget.SplitWidget {
     let snapshotPromise;
     if (this.pendingSnapshot) {
       snapshotPromise = Promise.resolve({ rect: null, snapshot: this.pendingSnapshot });
-    } else if (this.event && this.paintProfilerModel && Trace27.Types.Events.isPaint(this.event)) {
+    } else if (this.event && this.paintProfilerModel && Trace28.Types.Events.isPaint(this.event)) {
       const snapshotEvent = this.#parsedTrace.data.LayerTree.paintsToSnapshots.get(this.event);
       if (snapshotEvent) {
         const encodedData = snapshotEvent.args.snapshot.skp64;
@@ -13432,7 +13433,7 @@ var TimelinePaintProfilerView = class extends UI14.SplitWidget.SplitWidget {
       } else {
         snapshotPromise = Promise.resolve(null);
       }
-    } else if (this.event && Trace27.Types.Events.isRasterTask(this.event)) {
+    } else if (this.event && Trace28.Types.Events.isRasterTask(this.event)) {
       snapshotPromise = this.#rasterTilePromise(this.event);
     } else {
       console.assert(false, "Unexpected event type or no snapshot");
@@ -13570,7 +13571,7 @@ import "./../../ui/components/linkifier/linkifier.js";
 import "./../../ui/legacy/components/data_grid/data_grid.js";
 import * as i18n45 from "./../../core/i18n/i18n.js";
 import * as SDK11 from "./../../core/sdk/sdk.js";
-import * as Trace28 from "./../../models/trace/trace.js";
+import * as Trace29 from "./../../models/trace/trace.js";
 import * as UI15 from "./../../ui/legacy/legacy.js";
 import { html as html2, render as render2 } from "./../../ui/lit/lit.js";
 import * as VisualLogging8 from "./../../ui/visual_logging/visual_logging.js";
@@ -13681,7 +13682,7 @@ var UIStrings23 = {
 };
 var str_23 = i18n45.i18n.registerUIStrings("panels/timeline/TimelineSelectorStatsView.ts", UIStrings23);
 var i18nString23 = i18n45.i18n.getLocalizedString.bind(void 0, str_23);
-var SelectorTimingsKey = Trace28.Types.Events.SelectorTimingsKey;
+var SelectorTimingsKey = Trace29.Types.Events.SelectorTimingsKey;
 var DEFAULT_VIEW2 = (input, _output, target) => {
   render2(html2`
       <devtools-data-grid striped name=${i18nString23(UIStrings23.selectorStats)}
@@ -14191,8 +14192,8 @@ var TimelineDetailsPane = class extends Common14.ObjectWrapper.eventMixin(UI16.W
       this.#parsedTrace = data.parsedTrace;
     }
     if (data.parsedTrace) {
-      this.#summaryContent.filmStrip = Trace29.Extras.FilmStrip.fromHandlerData(data.parsedTrace.data);
-      this.#entityMapper = new Trace29.EntityMapper.EntityMapper(data.parsedTrace);
+      this.#summaryContent.filmStrip = Trace30.Extras.FilmStrip.fromHandlerData(data.parsedTrace.data);
+      this.#entityMapper = new Trace30.EntityMapper.EntityMapper(data.parsedTrace);
     }
     this.#selectedEvents = data.selectedEvents;
     this.#eventToRelatedInsightsMap = data.eventToRelatedInsightsMap;
@@ -14323,12 +14324,12 @@ var TimelineDetailsPane = class extends Common14.ObjectWrapper.eventMixin(UI16.W
     }
     if (selectionIsEvent(selection)) {
       this.updateContentsScheduled = false;
-      if (Trace29.Types.Events.isLegacyTimelineFrame(selection.event)) {
+      if (Trace30.Types.Events.isLegacyTimelineFrame(selection.event)) {
         this.#addLayerTreeForSelectedFrame(selection.event);
       }
       await this.#setSelectionForTraceEvent(selection.event);
     } else if (selectionIsRange(selection)) {
-      const timings = Trace29.Helpers.Timing.traceWindowMicroSecondsToMilliSeconds(selection.bounds);
+      const timings = Trace30.Helpers.Timing.traceWindowMicroSecondsToMilliSeconds(selection.bounds);
       this.updateSelectedRangeStats(timings.min, timings.max);
     }
     this.updateContents();
@@ -14384,10 +14385,10 @@ var TimelineDetailsPane = class extends Common14.ObjectWrapper.eventMixin(UI16.W
    * they are available in the trace.
    */
   appendExtraDetailsTabsForTraceEvent(event) {
-    if (Trace29.Types.Events.isPaint(event) || Trace29.Types.Events.isRasterTask(event)) {
+    if (Trace30.Types.Events.isPaint(event) || Trace30.Types.Events.isRasterTask(event)) {
       this.showEventInPaintProfiler(event);
     }
-    if (Trace29.Types.Events.isRecalcStyle(event)) {
+    if (Trace30.Types.Events.isRecalcStyle(event)) {
       this.showSelectorStatsForIndividualEvent(event);
     }
   }
@@ -14425,7 +14426,7 @@ var TimelineDetailsPane = class extends Common14.ObjectWrapper.eventMixin(UI16.W
     });
     const isSelectorStatsEnabled = Common14.Settings.Settings.instance().createSetting("timeline-capture-selector-stats", false).get();
     if (this.#selectedEvents && isSelectorStatsEnabled) {
-      const eventsInRange = Trace29.Helpers.Trace.findRecalcStyleEvents(this.#selectedEvents, Trace29.Helpers.Timing.milliToMicro(startTime), Trace29.Helpers.Timing.milliToMicro(endTime));
+      const eventsInRange = Trace30.Helpers.Trace.findRecalcStyleEvents(this.#selectedEvents, Trace30.Helpers.Timing.milliToMicro(startTime), Trace30.Helpers.Timing.milliToMicro(endTime));
       if (eventsInRange.length > 0) {
         this.showAggregatedSelectorStats(eventsInRange);
       }
@@ -14485,7 +14486,7 @@ function generateRangeSummaryDetails(input) {
   if (!selectedRange || !parsedTrace) {
     return nothing;
   }
-  const minBoundsMilli = Trace29.Helpers.Timing.microToMilli(parsedTrace.data.Meta.traceBounds.min);
+  const minBoundsMilli = Trace30.Helpers.Timing.microToMilli(parsedTrace.data.Meta.traceBounds.min);
   const { events, startTime, endTime, thirdPartyTree } = selectedRange;
   const aggregatedStats = TimelineUIUtils.statsForTimeRange(events, startTime, endTime);
   const startOffset = startTime - minBoundsMilli;
@@ -14499,7 +14500,7 @@ async function renderSelectedEventDetails(input) {
     return nothing;
   }
   const traceRecordingIsFresh = parsedTrace ? Tracing5.FreshRecording.Tracker.instance().recordingIsFresh(parsedTrace) : false;
-  if (Trace29.Types.Events.isSyntheticLayoutShift(selectedEvent) || Trace29.Types.Events.isSyntheticLayoutShiftCluster(selectedEvent)) {
+  if (Trace30.Types.Events.isSyntheticLayoutShift(selectedEvent) || Trace30.Types.Events.isSyntheticLayoutShiftCluster(selectedEvent)) {
     return html3`
       <devtools-widget data-layout-shift-details .widgetConfig=${UI16.Widget.widgetConfig(TimelineComponents5.LayoutShiftDetails.LayoutShiftDetails, {
       event: selectedEvent,
@@ -14508,7 +14509,7 @@ async function renderSelectedEventDetails(input) {
     })}
       ></devtools-widget>`;
   }
-  if (Trace29.Types.Events.isSyntheticNetworkRequest(selectedEvent)) {
+  if (Trace30.Types.Events.isSyntheticNetworkRequest(selectedEvent)) {
     return html3`
       <devtools-widget data-network-request-details .widgetConfig=${UI16.Widget.widgetConfig(TimelineComponents5.NetworkRequestDetails.NetworkRequestDetails, {
       request: selectedEvent,
@@ -14520,7 +14521,7 @@ async function renderSelectedEventDetails(input) {
       ></devtools-widget>
     `;
   }
-  if (Trace29.Types.Events.isLegacyTimelineFrame(selectedEvent) && input.filmStrip) {
+  if (Trace30.Types.Events.isLegacyTimelineFrame(selectedEvent) && input.filmStrip) {
     const matchedFilmStripFrame = getFilmStripFrame(input.filmStrip, selectedEvent);
     const content = TimelineUIUtils.generateDetailsContentForFrame(selectedEvent, input.filmStrip, matchedFilmStripFrame);
     return html3`${content}`;
@@ -14535,13 +14536,13 @@ function getFilmStripFrame(filmStrip, frame) {
     return fromCache;
   }
   const screenshotTime = frame.idle ? frame.startTime : frame.endTime;
-  const filmStripFrame = Trace29.Extras.FilmStrip.frameClosestToTimestamp(filmStrip, screenshotTime);
+  const filmStripFrame = Trace30.Extras.FilmStrip.frameClosestToTimestamp(filmStrip, screenshotTime);
   if (!filmStripFrame) {
     filmStripFrameCache.set(frame, null);
     return null;
   }
-  const frameTimeMilliSeconds = Trace29.Helpers.Timing.microToMilli(filmStripFrame.screenshotEvent.ts);
-  const frameEndTimeMilliSeconds = Trace29.Helpers.Timing.microToMilli(frame.endTime);
+  const frameTimeMilliSeconds = Trace30.Helpers.Timing.microToMilli(filmStripFrame.screenshotEvent.ts);
+  const frameEndTimeMilliSeconds = Trace30.Helpers.Timing.microToMilli(frame.endTime);
   if (frameTimeMilliSeconds - frameEndTimeMilliSeconds < 10) {
     filmStripFrameCache.set(frame, filmStripFrame);
     return filmStripFrame;
@@ -14558,7 +14559,7 @@ __export(TimelineFlameChartNetworkDataProvider_exports, {
 import * as i18n51 from "./../../core/i18n/i18n.js";
 import * as Platform14 from "./../../core/platform/platform.js";
 import * as SDK13 from "./../../core/sdk/sdk.js";
-import * as Trace31 from "./../../models/trace/trace.js";
+import * as Trace32 from "./../../models/trace/trace.js";
 import * as PerfUI15 from "./../../ui/legacy/components/perf_ui/perf_ui.js";
 import * as UI17 from "./../../ui/legacy/legacy.js";
 import * as ThemeSupport23 from "./../../ui/legacy/theme_support/theme_support.js";
@@ -14570,7 +14571,7 @@ __export(NetworkTrackAppender_exports, {
   NetworkTrackAppender: () => NetworkTrackAppender
 });
 import * as i18n49 from "./../../core/i18n/i18n.js";
-import * as Trace30 from "./../../models/trace/trace.js";
+import * as Trace31 from "./../../models/trace/trace.js";
 import * as PerfUI14 from "./../../ui/legacy/components/perf_ui/perf_ui.js";
 import * as ThemeSupport21 from "./../../ui/legacy/theme_support/theme_support.js";
 import * as Components4 from "./components/components.js";
@@ -14666,7 +14667,7 @@ var NetworkTrackAppender = class {
     for (let i = 0; i < events.length; ++i) {
       const event = events[i];
       this.#appendEventAtLevel(event, trackStartLevel);
-      if (Trace30.Types.Events.isSyntheticNetworkRequest(event) && Trace30.Helpers.Network.isSyntheticNetworkRequestEventRenderBlocking(event)) {
+      if (Trace31.Types.Events.isSyntheticNetworkRequest(event) && Trace31.Helpers.Network.isSyntheticNetworkRequestEventRenderBlocking(event)) {
         addDecorationToEvent(this.#flameChartData, i, {
           type: "WARNING_TRIANGLE",
           customStartTime: event.args.data.syntheticData.sendStartTime,
@@ -14674,7 +14675,7 @@ var NetworkTrackAppender = class {
         });
       }
     }
-    return this.relayoutEntriesWithinBounds(events, Trace30.Types.Timing.Milli(-Infinity), Trace30.Types.Timing.Milli(Infinity));
+    return this.relayoutEntriesWithinBounds(events, Trace31.Types.Timing.Milli(-Infinity), Trace31.Types.Timing.Milli(Infinity));
   }
   /**
    * Adds an event to the flame chart data at a defined level.
@@ -14685,9 +14686,9 @@ var NetworkTrackAppender = class {
   #appendEventAtLevel(event, level) {
     const index = this.#flameChartData.entryLevels.length;
     this.#flameChartData.entryLevels[index] = level;
-    this.#flameChartData.entryStartTimes[index] = Trace30.Helpers.Timing.microToMilli(event.ts);
-    const dur = event.dur || Trace30.Helpers.Timing.milliToMicro(InstantEventVisibleDurationMs);
-    this.#flameChartData.entryTotalTimes[index] = Trace30.Helpers.Timing.microToMilli(dur);
+    this.#flameChartData.entryStartTimes[index] = Trace31.Helpers.Timing.microToMilli(event.ts);
+    const dur = event.dur || Trace31.Helpers.Timing.milliToMicro(InstantEventVisibleDurationMs);
+    this.#flameChartData.entryTotalTimes[index] = Trace31.Helpers.Timing.microToMilli(dur);
     return level;
   }
   /**
@@ -14706,8 +14707,8 @@ var NetworkTrackAppender = class {
     let maxLevel = 0;
     for (let i = 0; i < events.length; ++i) {
       const event = events[i];
-      const beginTime = Trace30.Helpers.Timing.microToMilli(event.ts);
-      const dur = event.dur ? Trace30.Helpers.Timing.microToMilli(event.dur) : InstantEventVisibleDurationMs;
+      const beginTime = Trace31.Helpers.Timing.microToMilli(event.ts);
+      const dur = event.dur ? Trace31.Helpers.Timing.microToMilli(event.dur) : InstantEventVisibleDurationMs;
       const endTime = beginTime + dur;
       const isBetweenTimes = beginTime < maxTime && endTime > minTime;
       if (!isBetweenTimes) {
@@ -14715,7 +14716,7 @@ var NetworkTrackAppender = class {
         continue;
       }
       let level;
-      if ("identifier" in event.args.data && Trace30.Types.Events.isWebSocketEvent(event)) {
+      if ("identifier" in event.args.data && Trace31.Types.Events.isWebSocketEvent(event)) {
         level = this.getWebSocketLevel(event, lastTimestampByLevel);
       } else {
         level = getEventLevel(event, lastTimestampByLevel);
@@ -14751,13 +14752,13 @@ var NetworkTrackAppender = class {
    * Gets the color an event added by this appender should be rendered with.
    */
   colorForEvent(event) {
-    if (Trace30.Types.Events.isSyntheticWebSocketConnection(event)) {
+    if (Trace31.Types.Events.isSyntheticWebSocketConnection(event)) {
       return "";
     }
-    if (Trace30.Types.Events.isWebSocketTraceEvent(event)) {
+    if (Trace31.Types.Events.isWebSocketTraceEvent(event)) {
       return Components4.Utils.colorForNetworkCategory(Components4.Utils.NetworkCategory.JS);
     }
-    if (!Trace30.Types.Events.isSyntheticNetworkRequest(event)) {
+    if (!Trace31.Types.Events.isSyntheticNetworkRequest(event)) {
       throw new Error(`Unexpected Network Request: The event's type is '${event.name}'`);
     }
     return Components4.Utils.colorForNetworkRequest(event);
@@ -14884,7 +14885,7 @@ var TimelineFlameChartNetworkDataProvider = class {
   }
   customizedContextMenu(event, eventIndex, _groupIndex) {
     const networkRequest = this.eventByIndex(eventIndex);
-    if (!networkRequest || !Trace31.Types.Events.isSyntheticNetworkRequest(networkRequest)) {
+    if (!networkRequest || !Trace32.Types.Events.isSyntheticNetworkRequest(networkRequest)) {
       return;
     }
     const timelineNetworkRequest = SDK13.TraceObject.RevealableNetworkRequest.create(networkRequest);
@@ -14893,7 +14894,7 @@ var TimelineFlameChartNetworkDataProvider = class {
     return contextMenu;
   }
   indexForEvent(event) {
-    if (!Trace31.Types.Events.isNetworkTrackEntry(event)) {
+    if (!Trace32.Types.Events.isNetworkTrackEntry(event)) {
       return null;
     }
     const fromCache = this.#eventIndexByEvent.get(event);
@@ -14915,7 +14916,7 @@ var TimelineFlameChartNetworkDataProvider = class {
     if (this.#lastSelection && selectionsEqual(this.#lastSelection.timelineSelection, selection)) {
       return this.#lastSelection.entryIndex;
     }
-    if (!Trace31.Types.Events.isNetworkTrackEntry(selection.event)) {
+    if (!Trace32.Types.Events.isNetworkTrackEntry(selection.event)) {
       return -1;
     }
     const index = this.#events.indexOf(selection.event);
@@ -14939,7 +14940,7 @@ var TimelineFlameChartNetworkDataProvider = class {
   }
   entryTitle(index) {
     const event = this.#events[index];
-    return Trace31.Name.forEntry(event);
+    return Trace32.Name.forEntry(event);
   }
   entryFont(_index) {
     return this.#networkTrackAppender?.font() || null;
@@ -14958,15 +14959,15 @@ var TimelineFlameChartNetworkDataProvider = class {
    * @returns the pixels to draw waiting time and left and right whiskers and url text
    */
   getDecorationPixels(event, unclippedBarX, timeToPixelRatio) {
-    const beginTime = Trace31.Helpers.Timing.microToMilli(event.ts);
+    const beginTime = Trace32.Helpers.Timing.microToMilli(event.ts);
     const timeToPixel = (time) => unclippedBarX + (time - beginTime) * timeToPixelRatio;
-    const startTime = Trace31.Helpers.Timing.microToMilli(event.ts);
-    const endTime = Trace31.Helpers.Timing.microToMilli(event.ts + event.dur);
-    const sendStartTime = Trace31.Helpers.Timing.microToMilli(event.args.data.syntheticData.sendStartTime);
-    const headersEndTime = Trace31.Helpers.Timing.microToMilli(event.args.data.syntheticData.downloadStart);
+    const startTime = Trace32.Helpers.Timing.microToMilli(event.ts);
+    const endTime = Trace32.Helpers.Timing.microToMilli(event.ts + event.dur);
+    const sendStartTime = Trace32.Helpers.Timing.microToMilli(event.args.data.syntheticData.sendStartTime);
+    const headersEndTime = Trace32.Helpers.Timing.microToMilli(event.args.data.syntheticData.downloadStart);
     const sendStart = Math.max(timeToPixel(sendStartTime), unclippedBarX);
     const headersEnd = Math.max(timeToPixel(headersEndTime), sendStart);
-    const finish = Math.max(timeToPixel(Trace31.Helpers.Timing.microToMilli(event.args.data.syntheticData.finishTime)), headersEnd);
+    const finish = Math.max(timeToPixel(Trace32.Helpers.Timing.microToMilli(event.args.data.syntheticData.finishTime)), headersEnd);
     const start = timeToPixel(startTime);
     const end = Math.max(timeToPixel(endTime), finish);
     return { sendStart, headersEnd, finish, start, end };
@@ -14985,10 +14986,10 @@ var TimelineFlameChartNetworkDataProvider = class {
    */
   decorateEntry(index, context, _text, barX, barY, barWidth, barHeight, unclippedBarX, timeToPixelRatio) {
     const event = this.#events[index];
-    if (Trace31.Types.Events.isSyntheticWebSocketConnection(event)) {
+    if (Trace32.Types.Events.isSyntheticWebSocketConnection(event)) {
       return this.#decorateSyntheticWebSocketConnection(index, context, barY, barHeight, unclippedBarX, timeToPixelRatio);
     }
-    if (!Trace31.Types.Events.isSyntheticNetworkRequest(event)) {
+    if (!Trace32.Types.Events.isSyntheticNetworkRequest(event)) {
       return false;
     }
     return this.#decorateNetworkRequest(index, context, _text, barX, barY, barWidth, barHeight, unclippedBarX, timeToPixelRatio);
@@ -15008,7 +15009,7 @@ var TimelineFlameChartNetworkDataProvider = class {
    * */
   #decorateNetworkRequest(index, context, _text, barX, barY, barWidth, barHeight, unclippedBarX, timeToPixelRatio) {
     const event = this.#events[index];
-    if (!Trace31.Types.Events.isSyntheticNetworkRequest(event)) {
+    if (!Trace32.Types.Events.isSyntheticNetworkRequest(event)) {
       return false;
     }
     const { sendStart, headersEnd, finish, start, end } = this.getDecorationPixels(event, unclippedBarX, timeToPixelRatio);
@@ -15060,9 +15061,9 @@ var TimelineFlameChartNetworkDataProvider = class {
   #decorateSyntheticWebSocketConnection(index, context, barY, barHeight, unclippedBarX, timeToPixelRatio) {
     context.save();
     const event = this.#events[index];
-    const beginTime = Trace31.Helpers.Timing.microToMilli(event.ts);
+    const beginTime = Trace32.Helpers.Timing.microToMilli(event.ts);
     const timeToPixel = (time) => Math.floor(unclippedBarX + (time - beginTime) * timeToPixelRatio);
-    const endTime = Trace31.Helpers.Timing.microToMilli(event.ts + event.dur);
+    const endTime = Trace32.Helpers.Timing.microToMilli(event.ts + event.dur);
     const start = timeToPixel(beginTime) + 0.5;
     const end = timeToPixel(endTime) - 0.5;
     context.strokeStyle = ThemeSupport23.ThemeSupport.instance().getComputedValue("--app-color-rendering");
@@ -15093,7 +15094,7 @@ var TimelineFlameChartNetworkDataProvider = class {
   }
   preparePopoverElement(index) {
     const event = this.#events[index];
-    if (Trace31.Types.Events.isSyntheticNetworkRequest(event)) {
+    if (Trace32.Types.Events.isSyntheticNetworkRequest(event)) {
       const element = document.createElement("div");
       const root = UI17.UIUtils.createShadowRootWithCoreStyles(element, { cssFile: timelineFlamechartPopover_css_default });
       const contents = root.createChild("div", "timeline-flamechart-popover");
@@ -15109,8 +15110,8 @@ var TimelineFlameChartNetworkDataProvider = class {
    */
   #setTimingBoundsData(newParsedTrace) {
     const { traceBounds } = newParsedTrace.data.Meta;
-    const minTime = Trace31.Helpers.Timing.microToMilli(traceBounds.min);
-    const maxTime = Trace31.Helpers.Timing.microToMilli(traceBounds.max);
+    const minTime = Trace32.Helpers.Timing.microToMilli(traceBounds.min);
+    const maxTime = Trace32.Helpers.Timing.microToMilli(traceBounds.max);
     this.#minimumBoundary = minTime;
     this.#timeSpan = minTime === maxTime ? 1e3 : maxTime - this.#minimumBoundary;
   }
@@ -15173,11 +15174,11 @@ var TimelineFlameChartNetworkDataProvider = class {
       if (!entry) {
         continue;
       }
-      if (!Trace31.Helpers.Timing.eventIsInBounds(entry, visibleWindow)) {
+      if (!Trace32.Helpers.Timing.eventIsInBounds(entry, visibleWindow)) {
         continue;
       }
       if (!filter || filter.accept(entry, this.#parsedTrace?.data ?? void 0)) {
-        const startTimeMilli = Trace31.Helpers.Timing.microToMilli(entry.ts);
+        const startTimeMilli = Trace32.Helpers.Timing.microToMilli(entry.ts);
         results.push({ startTimeMilli, index: i, provider: "network" });
       }
     }
@@ -15513,7 +15514,7 @@ var SORT_ORDER_PAGE_LOAD_MARKERS = {
     /* Trace.Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION */
   ]: 6
 };
-var TIMESTAMP_THRESHOLD_MS = Trace32.Types.Timing.Micro(10);
+var TIMESTAMP_THRESHOLD_MS = Trace33.Types.Timing.Micro(10);
 var TimelineFlameChartView = class extends Common15.ObjectWrapper.eventMixin(UI18.Widget.VBox) {
   delegate;
   /**
@@ -15866,7 +15867,7 @@ var TimelineFlameChartView = class extends Common15.ObjectWrapper.eventMixin(UI1
         const firstSection = overlay.sections.at(0);
         const lastSection = overlay.sections.at(-1);
         if (firstSection && lastSection) {
-          bounds = Trace32.Helpers.Timing.traceWindowFromMicroSeconds(firstSection.bounds.min, lastSection.bounds.max);
+          bounds = Trace33.Helpers.Timing.traceWindowFromMicroSeconds(firstSection.bounds.min, lastSection.bounds.max);
         }
       } else if (overlay.type === "TIME_RANGE") {
         bounds = overlay.bounds;
@@ -15911,7 +15912,7 @@ var TimelineFlameChartView = class extends Common15.ObjectWrapper.eventMixin(UI1
     const fieldMetricResultsByNavigationId = /* @__PURE__ */ new Map();
     for (const insightSet of insights.values()) {
       if (insightSet.navigation?.args.data?.navigationId) {
-        fieldMetricResultsByNavigationId.set(insightSet.navigation.args.data.navigationId, Trace32.Insights.Common.getFieldMetricsForInsightSet(insightSet, metadata, CrUXManager5.CrUXManager.instance().getSelectedScope()));
+        fieldMetricResultsByNavigationId.set(insightSet.navigation.args.data.navigationId, Trace33.Insights.Common.getFieldMetricsForInsightSet(insightSet, metadata, CrUXManager5.CrUXManager.instance().getSelectedScope()));
       }
     }
     for (const marker of this.#markers) {
@@ -15950,7 +15951,7 @@ var TimelineFlameChartView = class extends Common15.ObjectWrapper.eventMixin(UI1
     this.#sortMarkersForPreferredVisualOrder(markers);
     const overlayByTs = /* @__PURE__ */ new Map();
     markers.forEach((marker) => {
-      const adjustedTimestamp = Trace32.Helpers.Timing.timeStampForEventAdjustedByClosestNavigation(marker, parsedTrace.data.Meta.traceBounds, parsedTrace.data.Meta.navigationsByNavigationId, parsedTrace.data.Meta.softNavigationsById, parsedTrace.data.Meta.navigationsByFrameId);
+      const adjustedTimestamp = Trace33.Helpers.Timing.timeStampForEventAdjustedByClosestNavigation(marker, parsedTrace.data.Meta.traceBounds, parsedTrace.data.Meta.navigationsByNavigationId, parsedTrace.data.Meta.softNavigationsById, parsedTrace.data.Meta.navigationsByFrameId);
       let matchingOverlay = false;
       for (const [ts, overlay] of overlayByTs.entries()) {
         if (Math.abs(marker.ts - ts) <= TIMESTAMP_THRESHOLD_MS) {
@@ -15997,7 +15998,7 @@ var TimelineFlameChartView = class extends Common15.ObjectWrapper.eventMixin(UI1
       const overlaysBounds = Overlays3.Overlays.traceWindowContainingOverlays(this.#currentInsightOverlays);
       if (overlaysBounds) {
         const percentage = options.updateTraceWindowPercentage ?? 50;
-        const expandedBounds = Trace32.Helpers.Timing.expandWindowByPercentOrToOneMillisecond(overlaysBounds, traceBounds, percentage);
+        const expandedBounds = Trace33.Helpers.Timing.expandWindowByPercentOrToOneMillisecond(overlaysBounds, traceBounds, percentage);
         TraceBounds15.TraceBounds.BoundsManager.instance().setTimelineVisibleWindow(expandedBounds, { ignoreMiniMapBounds: true, shouldAnimate: true });
       }
     }
@@ -16041,7 +16042,7 @@ var TimelineFlameChartView = class extends Common15.ObjectWrapper.eventMixin(UI1
     if (firstEntry) {
       this.revealEventVertically(firstEntry);
     }
-    const expandedBounds = Trace32.Helpers.Timing.expandWindowByPercentOrToOneMillisecond(annotationWindow, traceBounds, 100);
+    const expandedBounds = Trace33.Helpers.Timing.expandWindowByPercentOrToOneMillisecond(annotationWindow, traceBounds, 100);
     TraceBounds15.TraceBounds.BoundsManager.instance().setTimelineVisibleWindow(expandedBounds, { ignoreMiniMapBounds: true, shouldAnimate: true });
   }
   setActiveInsight(insight) {
@@ -16150,7 +16151,7 @@ var TimelineFlameChartView = class extends Common15.ObjectWrapper.eventMixin(UI1
       return;
     }
     this.#timeRangeSelectionAnnotation = {
-      bounds: Trace32.Helpers.Timing.traceWindowFromMicroSeconds(startTime, endTime),
+      bounds: Trace33.Helpers.Timing.traceWindowFromMicroSeconds(startTime, endTime),
       type: "TIME_RANGE",
       label: ""
     };
@@ -16176,13 +16177,13 @@ var TimelineFlameChartView = class extends Common15.ObjectWrapper.eventMixin(UI1
             if (this.#currentSelection) {
               startTime = rangeForSelection(this.#currentSelection).min;
             }
-            this.#createNewTimeRangeFromKeyboard(startTime, Trace32.Types.Timing.Micro(startTime + timeRangeIncrementValue));
+            this.#createNewTimeRangeFromKeyboard(startTime, Trace33.Types.Timing.Micro(startTime + timeRangeIncrementValue));
             return true;
           }
           return false;
         }
-        this.#timeRangeSelectionAnnotation.bounds.max = Trace32.Types.Timing.Micro(Math.min(this.#timeRangeSelectionAnnotation.bounds.max + timeRangeIncrementValue, visibleWindow.max));
-        this.#timeRangeSelectionAnnotation.bounds.range = Trace32.Types.Timing.Micro(this.#timeRangeSelectionAnnotation.bounds.max - this.#timeRangeSelectionAnnotation.bounds.min);
+        this.#timeRangeSelectionAnnotation.bounds.max = Trace33.Types.Timing.Micro(Math.min(this.#timeRangeSelectionAnnotation.bounds.max + timeRangeIncrementValue, visibleWindow.max));
+        this.#timeRangeSelectionAnnotation.bounds.range = Trace33.Types.Timing.Micro(this.#timeRangeSelectionAnnotation.bounds.max - this.#timeRangeSelectionAnnotation.bounds.min);
         ModificationsManager.activeManager()?.updateAnnotation(this.#timeRangeSelectionAnnotation);
         return true;
       }
@@ -16190,11 +16191,11 @@ var TimelineFlameChartView = class extends Common15.ObjectWrapper.eventMixin(UI1
         if (!this.#timeRangeSelectionAnnotation) {
           return false;
         }
-        this.#timeRangeSelectionAnnotation.bounds.max = Trace32.Types.Timing.Micro(
+        this.#timeRangeSelectionAnnotation.bounds.max = Trace33.Types.Timing.Micro(
           // Shrink the RHS of the range, but make sure it cannot go below the min value.
           Math.max(this.#timeRangeSelectionAnnotation.bounds.max - timeRangeIncrementValue, this.#timeRangeSelectionAnnotation.bounds.min + 1)
         );
-        this.#timeRangeSelectionAnnotation.bounds.range = Trace32.Types.Timing.Micro(this.#timeRangeSelectionAnnotation.bounds.max - this.#timeRangeSelectionAnnotation.bounds.min);
+        this.#timeRangeSelectionAnnotation.bounds.range = Trace33.Types.Timing.Micro(this.#timeRangeSelectionAnnotation.bounds.max - this.#timeRangeSelectionAnnotation.bounds.min);
         ModificationsManager.activeManager()?.updateAnnotation(this.#timeRangeSelectionAnnotation);
         return true;
       }
@@ -16203,11 +16204,11 @@ var TimelineFlameChartView = class extends Common15.ObjectWrapper.eventMixin(UI1
         if (!this.#timeRangeSelectionAnnotation) {
           return false;
         }
-        this.#timeRangeSelectionAnnotation.bounds.min = Trace32.Types.Timing.Micro(
+        this.#timeRangeSelectionAnnotation.bounds.min = Trace33.Types.Timing.Micro(
           // Increase the LHS of the range, but make sure it cannot go above the max value.
           Math.min(this.#timeRangeSelectionAnnotation.bounds.min + timeRangeIncrementValue, this.#timeRangeSelectionAnnotation.bounds.max - 1)
         );
-        this.#timeRangeSelectionAnnotation.bounds.range = Trace32.Types.Timing.Micro(this.#timeRangeSelectionAnnotation.bounds.max - this.#timeRangeSelectionAnnotation.bounds.min);
+        this.#timeRangeSelectionAnnotation.bounds.range = Trace33.Types.Timing.Micro(this.#timeRangeSelectionAnnotation.bounds.max - this.#timeRangeSelectionAnnotation.bounds.min);
         ModificationsManager.activeManager()?.updateAnnotation(this.#timeRangeSelectionAnnotation);
         return true;
       }
@@ -16215,11 +16216,11 @@ var TimelineFlameChartView = class extends Common15.ObjectWrapper.eventMixin(UI1
         if (!this.#timeRangeSelectionAnnotation) {
           return false;
         }
-        this.#timeRangeSelectionAnnotation.bounds.min = Trace32.Types.Timing.Micro(
+        this.#timeRangeSelectionAnnotation.bounds.min = Trace33.Types.Timing.Micro(
           // Decrease the LHS, but make sure it cannot go beyond the minimum visible window.
           Math.max(this.#timeRangeSelectionAnnotation.bounds.min - timeRangeIncrementValue, visibleWindow.min)
         );
-        this.#timeRangeSelectionAnnotation.bounds.range = Trace32.Types.Timing.Micro(this.#timeRangeSelectionAnnotation.bounds.max - this.#timeRangeSelectionAnnotation.bounds.min);
+        this.#timeRangeSelectionAnnotation.bounds.range = Trace33.Types.Timing.Micro(this.#timeRangeSelectionAnnotation.bounds.max - this.#timeRangeSelectionAnnotation.bounds.min);
         ModificationsManager.activeManager()?.updateAnnotation(this.#timeRangeSelectionAnnotation);
         return true;
       }
@@ -16303,7 +16304,7 @@ var TimelineFlameChartView = class extends Common15.ObjectWrapper.eventMixin(UI1
     this.mainFlameChart.update();
   }
   windowChanged(windowStartTime, windowEndTime, animate) {
-    TraceBounds15.TraceBounds.BoundsManager.instance().setTimelineVisibleWindow(Trace32.Helpers.Timing.traceWindowFromMilliSeconds(Trace32.Types.Timing.Milli(windowStartTime), Trace32.Types.Timing.Milli(windowEndTime)), { shouldAnimate: animate });
+    TraceBounds15.TraceBounds.BoundsManager.instance().setTimelineVisibleWindow(Trace33.Helpers.Timing.traceWindowFromMilliSeconds(Trace33.Types.Timing.Milli(windowStartTime), Trace33.Types.Timing.Milli(windowEndTime)), { shouldAnimate: animate });
   }
   /**
    * @param startTime the start time of the selection in MilliSeconds
@@ -16311,8 +16312,8 @@ var TimelineFlameChartView = class extends Common15.ObjectWrapper.eventMixin(UI1
    * TODO(crbug.com/346312365): update the type definitions in ChartViewport.ts
    */
   updateRangeSelection(startTime, endTime) {
-    this.delegate.select(selectionFromRangeMilliSeconds(Trace32.Types.Timing.Milli(startTime), Trace32.Types.Timing.Milli(endTime)));
-    const bounds = Trace32.Helpers.Timing.traceWindowFromMilliSeconds(Trace32.Types.Timing.Milli(startTime), Trace32.Types.Timing.Milli(endTime));
+    this.delegate.select(selectionFromRangeMilliSeconds(Trace33.Types.Timing.Milli(startTime), Trace33.Types.Timing.Milli(endTime)));
+    const bounds = Trace33.Helpers.Timing.traceWindowFromMilliSeconds(Trace33.Types.Timing.Milli(startTime), Trace33.Types.Timing.Milli(endTime));
     if (this.#timeRangeSelectionAnnotation) {
       this.#timeRangeSelectionAnnotation.bounds = bounds;
       ModificationsManager.activeManager()?.updateAnnotation(this.#timeRangeSelectionAnnotation);
@@ -16370,7 +16371,7 @@ var TimelineFlameChartView = class extends Common15.ObjectWrapper.eventMixin(UI1
     this.#selectedGroupName = null;
     Common15.EventTarget.removeEventListeners(this.eventListeners);
     this.#selectedEvents = null;
-    this.#entityMapper = new Trace32.EntityMapper.EntityMapper(this.#parsedTrace);
+    this.#entityMapper = new Trace33.EntityMapper.EntityMapper(this.#parsedTrace);
     this.mainDataProvider.setModel(this.#parsedTrace, this.#entityMapper);
     this.networkDataProvider.setModel(this.#parsedTrace, this.#entityMapper);
     this.reset();
@@ -16494,7 +16495,7 @@ var TimelineFlameChartView = class extends Common15.ObjectWrapper.eventMixin(UI1
     if (!event || !this.#parsedTrace) {
       return;
     }
-    if (Trace32.Types.Events.isLegacyTimelineFrame(event)) {
+    if (Trace33.Types.Events.isLegacyTimelineFrame(event)) {
       return;
     }
     const target = targetForEvent(this.#parsedTrace, event);
@@ -16542,8 +16543,8 @@ var TimelineFlameChartView = class extends Common15.ObjectWrapper.eventMixin(UI1
     }
     this.#expandEntryTrack(event);
     this.revealEventVertically(event);
-    const entryWindow = Trace32.Helpers.Timing.traceWindowFromMicroSeconds(event.ts, Trace32.Types.Timing.Micro(event.ts + (event.dur ?? 0)));
-    const expandedBounds = Trace32.Helpers.Timing.expandWindowByPercentOrToOneMillisecond(entryWindow, traceBounds, 100);
+    const entryWindow = Trace33.Helpers.Timing.traceWindowFromMicroSeconds(event.ts, Trace33.Types.Timing.Micro(event.ts + (event.dur ?? 0)));
+    const expandedBounds = Trace33.Helpers.Timing.expandWindowByPercentOrToOneMillisecond(entryWindow, traceBounds, 100);
     TraceBounds15.TraceBounds.BoundsManager.instance().setTimelineVisibleWindow(expandedBounds, { ignoreMiniMapBounds: true, shouldAnimate: true });
   }
   revealEvent(event) {
@@ -17214,7 +17215,7 @@ var TimelineFlameChartDataProvider = class extends Common16.ObjectWrapper.Object
       ],
       jslogContext: "reset-trace"
     });
-    if (!this.parsedTrace || Trace33.Types.Events.isLegacyTimelineFrame(entry)) {
+    if (!this.parsedTrace || Trace34.Types.Events.isLegacyTimelineFrame(entry)) {
       return contextMenu;
     }
     const url = SourceMapsResolver5.SourceMapsResolver.resolvedURLForEntry(this.parsedTrace, entry);
@@ -17310,8 +17311,8 @@ var TimelineFlameChartDataProvider = class extends Common16.ObjectWrapper.Object
     this.reset();
     this.parsedTrace = parsedTrace;
     const { traceBounds } = parsedTrace.data.Meta;
-    const minTime = Trace33.Helpers.Timing.microToMilli(traceBounds.min);
-    const maxTime = Trace33.Helpers.Timing.microToMilli(traceBounds.max);
+    const minTime = Trace34.Helpers.Timing.microToMilli(traceBounds.min);
+    const maxTime = Trace34.Helpers.Timing.microToMilli(traceBounds.max);
     this.#minimumBoundary = minTime;
     this.timeSpan = minTime === maxTime ? 1e3 : maxTime - this.#minimumBoundary;
     this.#entityMapper = entityMapper;
@@ -17542,17 +17543,17 @@ var TimelineFlameChartDataProvider = class extends Common16.ObjectWrapper.Object
       if (!entry) {
         continue;
       }
-      if (Trace33.Types.Events.isLegacyTimelineFrame(entry)) {
+      if (Trace34.Types.Events.isLegacyTimelineFrame(entry)) {
         continue;
       }
-      if (Trace33.Types.Events.isLegacyScreenshot(entry)) {
+      if (Trace34.Types.Events.isLegacyScreenshot(entry)) {
         continue;
       }
-      if (!Trace33.Helpers.Timing.eventIsInBounds(entry, visibleWindow)) {
+      if (!Trace34.Helpers.Timing.eventIsInBounds(entry, visibleWindow)) {
         continue;
       }
       if (!filter || filter.accept(entry, this.parsedTrace?.data || void 0)) {
-        const startTimeMilli = Trace33.Helpers.Timing.microToMilli(entry.ts);
+        const startTimeMilli = Trace34.Helpers.Timing.microToMilli(entry.ts);
         results.push({ index: i, startTimeMilli, provider: "main" });
       }
     }
@@ -17575,7 +17576,7 @@ var TimelineFlameChartDataProvider = class extends Common16.ObjectWrapper.Object
     if (!this.parsedTrace) {
       return;
     }
-    const filmStrip = Trace33.Extras.FilmStrip.fromHandlerData(this.parsedTrace.data);
+    const filmStrip = Trace34.Extras.FilmStrip.fromHandlerData(this.parsedTrace.data);
     const hasScreenshots = filmStrip.frames.length > 0;
     const hasFrames = this.parsedTrace.data.Frames.frames.length > 0;
     if (!hasFrames && !hasScreenshots) {
@@ -17605,12 +17606,12 @@ var TimelineFlameChartDataProvider = class extends Common16.ObjectWrapper.Object
       /* selectable */
     );
     this.entryTypeByLevel[this.currentLevel] = "Screenshot";
-    const traceEnd = Trace33.Helpers.Timing.traceWindowMilliSeconds(this.parsedTrace.data.Meta.traceBounds).max;
+    const traceEnd = Trace34.Helpers.Timing.traceWindowMilliSeconds(this.parsedTrace.data.Meta.traceBounds).max;
     for (let i = 0; i < filmStrip.frames.length; ++i) {
       const currentFrame = filmStrip.frames[i];
       const nextFrame = filmStrip.frames[i + 1];
-      const startTimeMillis = Trace33.Helpers.Timing.microToMilli(currentFrame.screenshotEvent.ts);
-      const endTimeMillis = nextFrame ? Trace33.Helpers.Timing.microToMilli(nextFrame.screenshotEvent.ts) : traceEnd;
+      const startTimeMillis = Trace34.Helpers.Timing.microToMilli(currentFrame.screenshotEvent.ts);
+      const endTimeMillis = nextFrame ? Trace34.Helpers.Timing.microToMilli(nextFrame.screenshotEvent.ts) : traceEnd;
       const durationMillis = endTimeMillis - startTimeMillis;
       const index = this.#insertEventToEntryData(currentFrame.screenshotEvent);
       this.#timelineData.entryLevels.splice(index, 0, this.currentLevel);
@@ -17648,7 +17649,7 @@ var TimelineFlameChartDataProvider = class extends Common16.ObjectWrapper.Object
       this.dispatchEventToListeners("FlameChartItemHovered", event);
     } else if (entryType === "Frame") {
       const frame = this.entryData[entryIndex];
-      time = i18n54.TimeUtilities.preciseMillisToString(Trace33.Helpers.Timing.microToMilli(frame.duration), 1);
+      time = i18n54.TimeUtilities.preciseMillisToString(Trace34.Helpers.Timing.microToMilli(frame.duration), 1);
       if (frame.idle) {
         title = i18nString27(UIStrings27.idleFrame);
       } else if (frame.dropped) {
@@ -17765,7 +17766,7 @@ var TimelineFlameChartDataProvider = class extends Common16.ObjectWrapper.Object
       }
     }
     context.fillRect(barX, barY, barWidth, barHeight);
-    const frameDurationText = i18n54.TimeUtilities.preciseMillisToString(Trace33.Helpers.Timing.microToMilli(frame.duration), 1);
+    const frameDurationText = i18n54.TimeUtilities.preciseMillisToString(Trace34.Helpers.Timing.microToMilli(frame.duration), 1);
     const textWidth = context.measureText(frameDurationText).width;
     if (textWidth <= barWidth) {
       context.fillStyle = this.textColor(entryIndex);
@@ -17804,7 +17805,7 @@ var TimelineFlameChartDataProvider = class extends Common16.ObjectWrapper.Object
     }
     if (entryType === "TrackAppender") {
       const entry = this.entryData[entryIndex];
-      if (Trace33.Types.Events.isSyntheticInteraction(entry)) {
+      if (Trace34.Types.Events.isSyntheticInteraction(entry)) {
         this.#drawInteractionEventWithWhiskers(context, entryIndex, text, entry, barX, barY, unclippedBarX, barWidth, barHeight, timeToPixelRatio);
         return true;
       }
@@ -17825,10 +17826,10 @@ var TimelineFlameChartDataProvider = class extends Common16.ObjectWrapper.Object
    * @param timeToPixelRatio the ratio required to convert a millisecond time to a pixel value.
    **/
   #drawInteractionEventWithWhiskers(context, entryIndex, entryTitle, entry, barX, barY, unclippedBarXStartPixel, barWidth, barHeight, timeToPixelRatio) {
-    const beginTime = Trace33.Helpers.Timing.microToMilli(entry.ts);
+    const beginTime = Trace34.Helpers.Timing.microToMilli(entry.ts);
     const entireBarEndXPixel = barX + barWidth;
     function timeToPixel(time) {
-      const timeMilli = Trace33.Helpers.Timing.microToMilli(time);
+      const timeMilli = Trace34.Helpers.Timing.microToMilli(time);
       return Math.floor(unclippedBarXStartPixel + (timeMilli - beginTime) * timeToPixelRatio);
     }
     context.save();
@@ -17848,7 +17849,7 @@ var TimelineFlameChartDataProvider = class extends Common16.ObjectWrapper.Object
       context.lineTo(end, y);
     }
     const leftWhiskerX = timeToPixel(entry.ts);
-    const rightWhiskerX = timeToPixel(Trace33.Types.Timing.Micro(entry.ts + entry.dur));
+    const rightWhiskerX = timeToPixel(Trace34.Types.Timing.Micro(entry.ts + entry.dur));
     context.beginPath();
     context.lineWidth = 1;
     context.strokeStyle = "#ccc";
@@ -17880,7 +17881,7 @@ var TimelineFlameChartDataProvider = class extends Common16.ObjectWrapper.Object
       return true;
     }
     const event = this.entryData[entryIndex];
-    if (Trace33.Types.Events.isSyntheticInteraction(event)) {
+    if (Trace34.Types.Events.isSyntheticInteraction(event)) {
       return true;
     }
     return Boolean(this.parsedTrace?.data.Warnings.perEvent.get(event));
@@ -17892,7 +17893,7 @@ var TimelineFlameChartDataProvider = class extends Common16.ObjectWrapper.Object
   }
   #appendFrame(frame) {
     const index = this.#insertEventToEntryData(frame);
-    const durationMilliseconds = Trace33.Helpers.Timing.microToMilli(frame.duration);
+    const durationMilliseconds = Trace34.Helpers.Timing.microToMilli(frame.duration);
     this.entryIndexToTitle.splice(index, 0, i18n54.TimeUtilities.millisToString(durationMilliseconds, true));
     if (!this.#timelineData) {
       return;
@@ -17900,11 +17901,11 @@ var TimelineFlameChartDataProvider = class extends Common16.ObjectWrapper.Object
     if (Array.isArray(this.#timelineData.entryLevels) && Array.isArray(this.#timelineData.entryTotalTimes) && Array.isArray(this.#timelineData.entryStartTimes)) {
       this.#timelineData.entryLevels.splice(index, 0, this.currentLevel);
       this.#timelineData.entryTotalTimes.splice(index, 0, durationMilliseconds);
-      this.#timelineData.entryStartTimes.splice(index, 0, Trace33.Helpers.Timing.microToMilli(frame.startTime));
+      this.#timelineData.entryStartTimes.splice(index, 0, Trace34.Helpers.Timing.microToMilli(frame.startTime));
     } else {
       this.#timelineData.entryLevels[index] = this.currentLevel;
       this.#timelineData.entryTotalTimes[index] = durationMilliseconds;
-      this.#timelineData.entryStartTimes[index] = Trace33.Helpers.Timing.microToMilli(frame.startTime);
+      this.#timelineData.entryStartTimes[index] = Trace34.Helpers.Timing.microToMilli(frame.startTime);
     }
   }
   createSelection(entryIndex) {
@@ -17936,7 +17937,7 @@ var TimelineFlameChartDataProvider = class extends Common16.ObjectWrapper.Object
     return false;
   }
   entryIndexForSelection(selection) {
-    if (!selection || selectionIsRange(selection) || Trace33.Types.Events.isNetworkTrackEntry(selection.event)) {
+    if (!selection || selectionIsRange(selection) || Trace34.Types.Events.isNetworkTrackEntry(selection.event)) {
       return -1;
     }
     if (this.lastSelection && selectionsEqual(this.lastSelection.timelineSelection, selection)) {
@@ -18040,7 +18041,7 @@ var TimelineFlameChartDataProvider = class extends Common16.ObjectWrapper.Object
     return null;
   }
 };
-var InstantEventVisibleDurationMs = Trace33.Types.Timing.Milli(1e-3);
+var InstantEventVisibleDurationMs = Trace34.Types.Timing.Milli(1e-3);
 
 // gen/front_end/panels/timeline/TimingsTrackAppender.js
 var TimingsTrackAppender_exports = {};
@@ -18049,7 +18050,7 @@ __export(TimingsTrackAppender_exports, {
   TimingsTrackAppender: () => TimingsTrackAppender
 });
 import * as i18n56 from "./../../core/i18n/i18n.js";
-import * as Trace34 from "./../../models/trace/trace.js";
+import * as Trace35 from "./../../models/trace/trace.js";
 import * as PerfUI18 from "./../../ui/legacy/components/perf_ui/perf_ui.js";
 import * as Extensions4 from "./extensions/extensions.js";
 var UIStrings28 = {
@@ -18114,9 +18115,9 @@ var TimingsTrackAppender = class {
    */
   appendTrackAtLevel(trackStartLevel, expanded) {
     const extensionMarkersAreEmpty = this.#extensionMarkers.length === 0;
-    const performanceMarks = this.#parsedTrace.data.UserTimings.performanceMarks.filter((m) => !Trace34.Handlers.ModelHandlers.ExtensionTraceData.extensionDataInPerformanceTiming(m).devtoolsObj);
-    const performanceMeasures = this.#parsedTrace.data.UserTimings.performanceMeasures.filter((m) => !Trace34.Handlers.ModelHandlers.ExtensionTraceData.extensionDataInPerformanceTiming(m).devtoolsObj);
-    const timestampEvents = this.#parsedTrace.data.UserTimings.timestampEvents.filter((timeStamp) => !Trace34.Handlers.ModelHandlers.ExtensionTraceData.extensionDataInConsoleTimeStamp(timeStamp).devtoolsObj);
+    const performanceMarks = this.#parsedTrace.data.UserTimings.performanceMarks.filter((m) => !Trace35.Handlers.ModelHandlers.ExtensionTraceData.extensionDataInPerformanceTiming(m).devtoolsObj);
+    const performanceMeasures = this.#parsedTrace.data.UserTimings.performanceMeasures.filter((m) => !Trace35.Handlers.ModelHandlers.ExtensionTraceData.extensionDataInPerformanceTiming(m).devtoolsObj);
+    const timestampEvents = this.#parsedTrace.data.UserTimings.timestampEvents.filter((timeStamp) => !Trace35.Handlers.ModelHandlers.ExtensionTraceData.extensionDataInConsoleTimeStamp(timeStamp).devtoolsObj);
     const consoleTimings = this.#parsedTrace.data.UserTimings.consoleTimings;
     const allTimings = [...performanceMeasures, ...consoleTimings, ...timestampEvents, ...performanceMarks].sort((a, b) => a.ts - b.ts);
     if (extensionMarkersAreEmpty && allTimings.length === 0) {
@@ -18168,9 +18169,9 @@ var TimingsTrackAppender = class {
       const index = this.#compatibilityBuilder.appendEventAtLevel(marker, currentLevel, this);
       this.#compatibilityBuilder.getFlameChartTimelineData().entryTotalTimes[index] = Number.NaN;
     }
-    const minTimeMs = Trace34.Helpers.Timing.microToMilli(this.#parsedTrace.data.Meta.traceBounds.min);
+    const minTimeMs = Trace35.Helpers.Timing.microToMilli(this.#parsedTrace.data.Meta.traceBounds.min);
     const flameChartMarkers = markers.map((marker) => {
-      const startTimeMs = Trace34.Helpers.Timing.microToMilli(marker.ts);
+      const startTimeMs = Trace35.Helpers.Timing.microToMilli(marker.ts);
       const style = this.markerStyleForExtensionMarker(marker);
       return new TimelineFlameChartMarker(startTimeMs, startTimeMs - minTimeMs, style);
     });
@@ -18190,27 +18191,27 @@ var TimingsTrackAppender = class {
     const tallMarkerDashStyle = [6, 4];
     let title = "";
     let color = "grey";
-    if (Trace34.Types.Events.isMarkDOMContent(markerEvent)) {
+    if (Trace35.Types.Events.isMarkDOMContent(markerEvent)) {
       color = "#0867CB";
       title = "DCL";
     }
-    if (Trace34.Types.Events.isMarkLoad(markerEvent)) {
+    if (Trace35.Types.Events.isMarkLoad(markerEvent)) {
       color = "#B31412";
       title = "L";
     }
-    if (Trace34.Types.Events.isFirstPaint(markerEvent)) {
+    if (Trace35.Types.Events.isFirstPaint(markerEvent)) {
       color = "#228847";
       title = "FP";
     }
-    if (Trace34.Types.Events.isFirstContentfulPaint(markerEvent)) {
+    if (Trace35.Types.Events.isFirstContentfulPaint(markerEvent)) {
       color = "#1A6937";
       title = "FCP";
     }
-    if (Trace34.Types.Events.isAnyLargestContentfulPaintCandidate(markerEvent)) {
+    if (Trace35.Types.Events.isAnyLargestContentfulPaintCandidate(markerEvent)) {
       color = "#1A3422";
       title = "LCP";
     }
-    if (Trace34.Types.Events.isNavigationStart(markerEvent)) {
+    if (Trace35.Types.Events.isNavigationStart(markerEvent)) {
       color = "#FF9800";
       title = "";
     }
@@ -18240,10 +18241,10 @@ var TimingsTrackAppender = class {
    * Gets the color an event added by this appender should be rendered with.
    */
   colorForEvent(event) {
-    if (Trace34.Types.Events.eventIsPageLoadEvent(event)) {
+    if (Trace35.Types.Events.eventIsPageLoadEvent(event)) {
       return this.markerStyleForPageLoadEvent(event).color;
     }
-    if (Trace34.Types.Extensions.isSyntheticExtensionEntry(event)) {
+    if (Trace35.Types.Extensions.isSyntheticExtensionEntry(event)) {
       return Extensions4.ExtensionUI.extensionEntryColor(event);
     }
     return this.#colorGenerator.colorForID(event.name);
@@ -18252,8 +18253,8 @@ var TimingsTrackAppender = class {
    * Gets the title an event added by this appender should be rendered with.
    */
   titleForEvent(event) {
-    const metricsHandler = Trace34.Handlers.ModelHandlers.PageLoadMetrics;
-    if (Trace34.Types.Events.eventIsPageLoadEvent(event)) {
+    const metricsHandler = Trace35.Handlers.ModelHandlers.PageLoadMetrics;
+    if (Trace35.Types.Events.eventIsPageLoadEvent(event)) {
       switch (event.name) {
         case "MarkDOMContent":
           return "DCL";
@@ -18271,21 +18272,21 @@ var TimingsTrackAppender = class {
           return event.name;
       }
     }
-    if (Trace34.Types.Events.isConsoleTimeStamp(event)) {
+    if (Trace35.Types.Events.isConsoleTimeStamp(event)) {
       return `TimeStamp: ${event.args.data?.message ?? "(name unknown)"}`;
     }
-    if (Trace34.Types.Events.isPerformanceMark(event)) {
+    if (Trace35.Types.Events.isPerformanceMark(event)) {
       return `[mark]: ${event.name}`;
     }
     return event.name;
   }
   setPopoverInfo(event, info) {
-    const isExtensibilityMarker = Trace34.Types.Extensions.isSyntheticExtensionEntry(event) && Trace34.Types.Extensions.isExtensionPayloadMarker(event.devtoolsObj);
+    const isExtensibilityMarker = Trace35.Types.Extensions.isSyntheticExtensionEntry(event) && Trace35.Types.Extensions.isExtensionPayloadMarker(event.devtoolsObj);
     if (isExtensibilityMarker) {
       info.title = event.devtoolsObj.tooltipText || event.name;
     }
-    if (Trace34.Types.Events.isMarkerEvent(event) || Trace34.Types.Events.isPerformanceMark(event) || Trace34.Types.Events.isConsoleTimeStamp(event) || isExtensibilityMarker) {
-      const timeOfEvent = Trace34.Helpers.Timing.timeStampForEventAdjustedByClosestNavigation(event, this.#parsedTrace.data.Meta.traceBounds, this.#parsedTrace.data.Meta.navigationsByNavigationId, this.#parsedTrace.data.Meta.softNavigationsById, this.#parsedTrace.data.Meta.navigationsByFrameId);
+    if (Trace35.Types.Events.isMarkerEvent(event) || Trace35.Types.Events.isPerformanceMark(event) || Trace35.Types.Events.isConsoleTimeStamp(event) || isExtensibilityMarker) {
+      const timeOfEvent = Trace35.Helpers.Timing.timeStampForEventAdjustedByClosestNavigation(event, this.#parsedTrace.data.Meta.traceBounds, this.#parsedTrace.data.Meta.navigationsByNavigationId, this.#parsedTrace.data.Meta.softNavigationsById, this.#parsedTrace.data.Meta.navigationsByFrameId);
       info.formattedTime = getDurationString(timeOfEvent);
     }
   }
@@ -18307,19 +18308,19 @@ function entryIsVisibleInTimeline(entry, parsedTrace) {
   if (parsedTrace?.data.Meta.traceIsGeneric) {
     return true;
   }
-  if (Trace35.Types.Events.isUpdateCounters(entry)) {
+  if (Trace36.Types.Events.isUpdateCounters(entry)) {
     return true;
   }
   if (isShowPostMessageEventsEnabled()) {
-    if (Trace35.Types.Events.isSchedulePostMessage(entry) || Trace35.Types.Events.isHandlePostMessage(entry)) {
+    if (Trace36.Types.Events.isSchedulePostMessage(entry) || Trace36.Types.Events.isHandlePostMessage(entry)) {
       return true;
     }
   }
-  if (Trace35.Types.Extensions.isSyntheticExtensionEntry(entry)) {
+  if (Trace36.Types.Extensions.isSyntheticExtensionEntry(entry)) {
     return true;
   }
-  const eventStyle = Trace35.Styles.getEventStyle(entry.name);
-  const eventIsTiming = Trace35.Types.Events.isConsoleTime(entry) || Trace35.Types.Events.isPerformanceMeasure(entry) || Trace35.Types.Events.isPerformanceMark(entry) || Trace35.Types.Events.isConsoleTimeStamp(entry);
+  const eventStyle = Trace36.Styles.getEventStyle(entry.name);
+  const eventIsTiming = Trace36.Types.Events.isConsoleTime(entry) || Trace36.Types.Events.isPerformanceMeasure(entry) || Trace36.Types.Events.isPerformanceMark(entry) || Trace36.Types.Events.isConsoleTimeStamp(entry);
   return eventStyle && !eventStyle.hidden || eventIsTiming;
 }
 var HIDDEN_THREAD_NAMES = /* @__PURE__ */ new Set(["Chrome_ChildIOThread", "Compositor", "GpuMemoryThread", "PerfettoTrace"]);
@@ -18452,7 +18453,7 @@ var CompatibilityTracksAppender = class {
           return 8;
       }
     };
-    const threads = Trace35.Handlers.Threads.threadsInTrace(this.#parsedTrace.data);
+    const threads = Trace36.Handlers.Threads.threadsInTrace(this.#parsedTrace.data);
     const showAllEvents = Root7.Runtime.experiments.isEnabled("timeline-show-all-events");
     for (const { pid, tid, name, type, entries, tree } of threads) {
       if (this.#parsedTrace.data.Meta.traceIsGeneric) {
@@ -18534,8 +18535,8 @@ var CompatibilityTracksAppender = class {
       return cachedData;
     }
     let trackEvents = this.eventsInTrack(trackAppender);
-    if (!Trace35.Helpers.TreeHelpers.canBuildTreesFromEvents(trackEvents)) {
-      trackEvents = trackEvents.filter((e) => !Trace35.Types.Events.isPhaseAsync(e.ph));
+    if (!Trace36.Helpers.TreeHelpers.canBuildTreesFromEvents(trackEvents)) {
+      trackEvents = trackEvents.filter((e) => !Trace36.Types.Events.isPhaseAsync(e.ph));
     }
     this.#trackEventsForTreeview.set(trackAppender, trackEvents);
     return trackEvents;
@@ -18601,9 +18602,9 @@ var CompatibilityTracksAppender = class {
     this.#entryData.push(event);
     this.#legacyEntryTypeByLevel[level] = "TrackAppender";
     this.#flameChartData.entryLevels[index] = level;
-    this.#flameChartData.entryStartTimes[index] = Trace35.Helpers.Timing.microToMilli(event.ts);
-    const dur = event.dur || Trace35.Helpers.Timing.milliToMicro(InstantEventVisibleDurationMs);
-    this.#flameChartData.entryTotalTimes[index] = Trace35.Helpers.Timing.microToMilli(dur);
+    this.#flameChartData.entryStartTimes[index] = Trace36.Helpers.Timing.microToMilli(event.ts);
+    const dur = event.dur || Trace36.Helpers.Timing.milliToMicro(InstantEventVisibleDurationMs);
+    this.#flameChartData.entryTotalTimes[index] = Trace36.Helpers.Timing.microToMilli(dur);
     return index;
   }
   /**
@@ -18688,7 +18689,7 @@ var CompatibilityTracksAppender = class {
     if (track.titleForEvent) {
       return track.titleForEvent(event);
     }
-    return Trace35.Name.forEntry(event, this.#parsedTrace);
+    return Trace36.Name.forEntry(event, this.#parsedTrace);
   }
   /**
    * Returns the info shown when an event in the timeline is hovered.

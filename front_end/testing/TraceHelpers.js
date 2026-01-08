@@ -598,7 +598,7 @@ export function getBaseTraceHandlerData(overrides = {}) {
         },
         NetworkRequests: {
             byId: new Map(),
-            eventToInitiator: new Map(),
+            incompleteInitiator: new Map(),
             byTime: [],
             webSocket: [],
             entityMappings: {

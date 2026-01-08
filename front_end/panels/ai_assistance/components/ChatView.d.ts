@@ -4,7 +4,7 @@ import type * as Platform from '../../../core/platform/platform.js';
 import type * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
 import type { MarkdownLitRenderer } from '../../../ui/components/markdown_view/MarkdownView.js';
 import * as UI from '../../../ui/legacy/legacy.js';
-import { type ChatMessage, type ModelChatMessage } from './UserActionRow.js';
+import { type Message, type ModelChatMessage } from './ChatMessage.js';
 export { ChatInput, type ImageInputData } from './ChatInput.js';
 export interface Props {
     onTextSubmit: (text: string, imageInput?: Host.AidaClient.Part, multimodalInputType?: AiAssistanceModel.AiAgent.MultimodalInputType) => void;
@@ -16,7 +16,7 @@ export interface Props {
     onCopyResponseClick: (message: ModelChatMessage) => void;
     changeManager: AiAssistanceModel.ChangeManager.ChangeManager;
     inspectElementToggled: boolean;
-    messages: ChatMessage[];
+    messages: Message[];
     selectedContext: AiAssistanceModel.AiAgent.ConversationContext<unknown> | null;
     isLoading: boolean;
     canShowFeedbackForm: boolean;

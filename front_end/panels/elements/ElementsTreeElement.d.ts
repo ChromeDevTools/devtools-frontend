@@ -3,10 +3,10 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as Elements from '../../models/elements/elements.js';
 import type * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
-import type { DirectiveResult } from '../../third_party/lit/lib/directive.js';
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
+import type { DirectiveResult } from '../../ui/lit/lit.js';
 import { type ElementsTreeOutline } from './ElementsTreeOutline.js';
 declare const enum TagType {
     OPENING = "OPENING_TAG",

@@ -214,6 +214,7 @@ models/trace/ModelImpl.test.js
 models/trace/Name.test.js
 models/trace/Processor.test.js
 models/trace/extras/FilmStrip.test.js
+models/trace/extras/Initiators.test.js
 models/trace/extras/MainThreadActivity.test.js
 models/trace/extras/ScriptDuplication.test.js
 models/trace/extras/StackTraceForEvent.test.js
@@ -303,11 +304,11 @@ panels/ai_assistance/AiAssistancePanel.test.js
 panels/ai_assistance/PatchWidget.test.js
 panels/ai_assistance/SelectWorkspaceDialog.test.js
 panels/ai_assistance/components/ChatInput.test.js
+panels/ai_assistance/components/ChatMessage.test.js
 panels/ai_assistance/components/ChatView.test.js
 panels/ai_assistance/components/DisabledWidget.test.js
 panels/ai_assistance/components/ExploreWidget.test.js
 panels/ai_assistance/components/MarkdownRendererWithCodeBlock.test.js
-panels/ai_assistance/components/UserActionRow.test.js
 panels/animation/AnimationTimeline.test.js
 panels/application/AppManifestView.test.js
 panels/application/ApplicationPanelSidebar.test.js
@@ -652,7 +653,6 @@ ui/components/snackbars/Snackbar.test.js
 ui/components/survey_link/SurveyLink.test.js
 ui/components/switch/SwitchImpl.test.js
 ui/components/text_editor/AiCodeCompletionProvider.test.js
-ui/components/text_editor/AiCodeCompletionTeaserPlaceholder.test.js
 ui/components/text_editor/AiCodeGenerationParser.test.js
 ui/components/text_editor/AiCodeGenerationProvider.test.js
 ui/components/text_editor/AutocompleteHistory.test.js

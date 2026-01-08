@@ -84,7 +84,7 @@ describe.skip('[crbug.com/468345402] CXX Debugging Extension Test Suite', functi
 
           assert.strictEqual(stoppedText, pausedReasonText(reason));
 
-          const pausedLocation = await retrieveTopCallFrameWithoutResuming();
+          const pausedLocation = await retrieveTopCallFrameWithoutResuming(devToolsPage);
           if (pausedLocation?.includes('…')) {
             const pausedLocationSplit = pausedLocation.split('…');
             assert.isTrue(
@@ -123,10 +123,10 @@ describe.skip('[crbug.com/468345402] CXX Debugging Extension Test Suite', functi
             // TODO(jarin) Without waiting here, the FE often misses the click on the console tab.
             await devToolsPage.timeout(500);
             await devToolsPage.click(CONSOLE_TAB_SELECTOR);
-            await focusConsolePrompt();
+            await focusConsolePrompt(devToolsPage);
 
             for (const {expression, value} of evaluations) {
-              await typeIntoConsoleAndWaitForResult(expression);
+              await typeIntoConsoleAndWaitForResult(expression, undefined, undefined, devToolsPage);
               const evaluateResults = await devToolsPage.evaluate(() => {
                 return Array.from(document.querySelectorAll('.console-user-command-result'))
                     .map(node => node.textContent);
@@ -135,7 +135,7 @@ describe.skip('[crbug.com/468345402] CXX Debugging Extension Test Suite', functi
               assert.strictEqual(result, value.toString());
             }
 
-            await openSourcesPanel();
+            await openSourcesPanel(devToolsPage);
           }
 
           if (thread) {
@@ -250,9 +250,9 @@ async function doActions({actions, reason}: {actions?: Action[], reason: string}
           if (!breakpoint) {
             throw new Error('Invalid breakpoint spec: missing `breakpoint`');
           }
-          await openFileInEditor(file);
+          await openFileInEditor(file, devToolsPage);
           await scrollToLine(Number(breakpoint));
-          await addBreakpointForLine(breakpoint);
+          await addBreakpointForLine(breakpoint, devToolsPage);
           break;
         }
         case 'remove_breakpoint': {
@@ -261,7 +261,7 @@ async function doActions({actions, reason}: {actions?: Action[], reason: string}
             throw new Error('Invalid breakpoint spec: missing `breakpoint`');
           }
           await scrollToLine(Number(breakpoint));
-          await removeBreakpointForLine(breakpoint);
+          await removeBreakpointForLine(breakpoint, devToolsPage);
           break;
         }
         case 'step_over':

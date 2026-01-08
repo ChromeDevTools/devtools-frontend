@@ -45,10 +45,10 @@ export interface TestSpec {
 }
 
 export async function openTestSuiteResourceInSourcesPanel(testInput: string) {
-  const {inspectedPage} = getBrowserAndPagesWrappers();
+  const {inspectedPage, devToolsPage} = getBrowserAndPagesWrappers();
   await inspectedPage.goTo(`${getTestsuiteResourcesPath()}/extension_test_suite/${testInput}`);
 
-  await openSourcesPanel();
+  await openSourcesPanel(devToolsPage);
 }
 
 export function getTestsuiteResourcesPath() {

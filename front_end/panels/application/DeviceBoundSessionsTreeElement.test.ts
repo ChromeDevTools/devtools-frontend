@@ -148,4 +148,63 @@ describeWithMockConnection('DeviceBoundSessionsTreeElement', () => {
     sinon.assert.calledOnce(showSessionSpy);
     sinon.assert.calledWith(showSessionSpy, model, 'example.com', 'session-123');
   });
+
+  it('adds a tree element when EVENT_OCCURRED fires for a new session', () => {
+    const root = new Application.DeviceBoundSessionsTreeElement.RootTreeElement(mockPanel, model);
+    root.onbind();
+
+    model.addVisibleSite('example1.com');
+    model.addVisibleSite('example2.com');
+    assert.strictEqual(root.childCount(), 0);
+
+    // An event occurs that adds a new site + session.
+    model.dispatchEventToListeners(
+        Application.DeviceBoundSessionsModel.DeviceBoundSessionModelEvents.EVENT_OCCURRED,
+        {site: 'example1.com', sessionId: 'session_1'});
+    assert.strictEqual(root.childCount(), 1);
+    const siteNode1 = root.children()[0];
+    assert.strictEqual(siteNode1.title, 'example1.com');
+    assert.strictEqual(siteNode1.childCount(), 1);
+    assert.strictEqual(siteNode1.children()[0].title, 'session_1');
+
+    // An event occurs that adds a new session to the existing site.
+    model.dispatchEventToListeners(
+        Application.DeviceBoundSessionsModel.DeviceBoundSessionModelEvents.EVENT_OCCURRED,
+        {site: 'example1.com', sessionId: 'session_2'});
+    assert.strictEqual(root.childCount(), 1);
+    const siteNode2 = root.children()[0];
+    assert.strictEqual(siteNode2.title, 'example1.com');
+    assert.strictEqual(siteNode2.childCount(), 2);
+    assert.strictEqual(siteNode2.children()[0].title, 'session_1');
+    assert.strictEqual(siteNode2.children()[1].title, 'session_2');
+
+    // An event occurs that adds a "no session" to the existing site.
+    model.dispatchEventToListeners(
+        Application.DeviceBoundSessionsModel.DeviceBoundSessionModelEvents.EVENT_OCCURRED, {site: 'example1.com'});
+    assert.strictEqual(root.childCount(), 1);
+    const siteNode3 = root.children()[0];
+    assert.strictEqual(siteNode3.title, 'example1.com');
+    assert.strictEqual(siteNode3.childCount(), 3);
+    assert.strictEqual(siteNode3.children()[0].title, 'No session');
+    assert.strictEqual(siteNode3.children()[1].title, 'session_1');
+    assert.strictEqual(siteNode3.children()[2].title, 'session_2');
+
+    // An event occurs that adds a "no session" to a new site.
+    model.dispatchEventToListeners(
+        Application.DeviceBoundSessionsModel.DeviceBoundSessionModelEvents.EVENT_OCCURRED, {site: 'example2.com'});
+    assert.strictEqual(root.childCount(), 2);
+    assert.strictEqual(root.children()[0].title, 'example1.com');
+    const siteNode4 = root.children()[1];
+    assert.strictEqual(siteNode4.title, 'example2.com');
+    assert.strictEqual(siteNode4.childCount(), 1);
+    assert.strictEqual(siteNode4.children()[0].title, 'No session');
+
+    // An event occurs that adds a new session + site but it is not visible.
+    model.dispatchEventToListeners(
+        Application.DeviceBoundSessionsModel.DeviceBoundSessionModelEvents.EVENT_OCCURRED,
+        {site: 'hidden.com', sessionId: 'hidden_session'});
+    assert.strictEqual(root.childCount(), 2);
+    assert.strictEqual(root.children()[0].title, 'example1.com');
+    assert.strictEqual(root.children()[1].title, 'example2.com');
+  });
 });

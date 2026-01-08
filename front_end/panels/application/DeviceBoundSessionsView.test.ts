@@ -15,6 +15,7 @@ describeWithMockConnection('DeviceBoundSessionsView', () => {
 
   function createMockSession(): Application.DeviceBoundSessionsModel.SessionAndEvents {
     return {
+      eventsById: new Map(),
       session: {
         key: {site: mockSite, id: mockSessionId},
         refreshUrl: 'https://example.com/refresh',
@@ -57,11 +58,46 @@ describeWithMockConnection('DeviceBoundSessionsView', () => {
     const view = new Application.DeviceBoundSessionsView.DeviceBoundSessionsView(viewFunction);
 
     const mockData = createMockSession();
-    const mockModel = {getSession: sinon.stub().returns(mockData)} as unknown as
-        Application.DeviceBoundSessionsModel.DeviceBoundSessionsModel;
+    const mockModel = {
+      getSession: sinon.stub().returns(mockData),
+      addEventListener: sinon.stub(),
+      removeEventListener: sinon.stub(),
+    } as unknown as Application.DeviceBoundSessionsModel.DeviceBoundSessionsModel;
+
     view.showSession(mockModel, mockSite, mockSessionId);
     const {sessionAndEvents} = viewFunction.input;
     assert.deepEqual(sessionAndEvents, mockData);
+  });
+
+  it('updates the view when the model triggers an event', async () => {
+    const viewFunction = createViewFunctionStub(Application.DeviceBoundSessionsView.DeviceBoundSessionsView);
+    const view = new Application.DeviceBoundSessionsView.DeviceBoundSessionsView(viewFunction);
+    const mockData = createMockSession();
+
+    const addEventListenerStub = sinon.stub();
+    const getSessionStub = sinon.stub().returns(mockData);
+    const mockModel = {
+      getSession: getSessionStub,
+      addEventListener: addEventListenerStub,
+      removeEventListener: sinon.stub(),
+    } as unknown as Application.DeviceBoundSessionsModel.DeviceBoundSessionsModel;
+
+    view.showSession(mockModel, mockSite, mockSessionId);
+    assert.deepEqual(viewFunction.input.sessionAndEvents, mockData);
+
+    assert.exists(mockData.session);
+    const newMockData = {
+      ...mockData,
+      session: {
+        ...mockData.session,
+        refreshUrl: 'https://example.com/updatedRefresh',
+      }
+    };
+    getSessionStub.returns(newMockData);
+    const eventHandler = addEventListenerStub.firstCall.args[1];
+    eventHandler.call(view);
+    assert.deepEqual(viewFunction.input.sessionAndEvents, newMockData);
+    sinon.assert.calledTwice(getSessionStub);
   });
 
   it('renders session details correctly', async () => {

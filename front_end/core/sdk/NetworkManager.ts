@@ -419,6 +419,7 @@ export enum Events {
   ReportingApiReportUpdated = 'ReportingApiReportUpdated',
   ReportingApiEndpointsChangedForOrigin = 'ReportingApiEndpointsChangedForOrigin',
   DeviceBoundSessionsAdded = 'DeviceBoundSessionsAdded',
+  DeviceBoundSessionEventOccurred = 'DeviceBoundSessionEventOccurred',
   /* eslint-enable @typescript-eslint/naming-convention */
 }
 
@@ -451,6 +452,7 @@ export interface EventTypes {
   [Events.ReportingApiReportUpdated]: Protocol.Network.ReportingApiReport;
   [Events.ReportingApiEndpointsChangedForOrigin]: Protocol.Network.ReportingApiEndpointsChangedForOriginEvent;
   [Events.DeviceBoundSessionsAdded]: Protocol.Network.DeviceBoundSession[];
+  [Events.DeviceBoundSessionEventOccurred]: Protocol.Network.DeviceBoundSessionEventOccurredEvent;
 }
 
 /**
@@ -1565,6 +1567,7 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
   }
 
   deviceBoundSessionEventOccurred(_params: Protocol.Network.DeviceBoundSessionEventOccurredEvent): void {
+    this.#manager.dispatchEventToListeners(Events.DeviceBoundSessionEventOccurred, _params);
   }
 
   policyUpdated(): void {

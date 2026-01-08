@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as SDK from '../../core/sdk/sdk.js';
-import type * as Protocol from '../../generated/protocol.js';
+import * as Protocol from '../../generated/protocol.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 
@@ -96,5 +96,119 @@ describeWithMockConnection('DeviceBoundSessionsModel', () => {
     model.clearVisibleSites();
     assert.isFalse(model.isSiteVisible('example.com'));
     sinon.assert.calledOnce(listener);
+  });
+
+  it('handles storing events and subsequent EVENT_OCCURRED dispatches', () => {
+    const site = 'example.com';
+    const sessionId1 = 'session_1';
+    const sessionId2 = 'session_2';
+
+    const listener = sinon.spy();
+    model.addEventListener(Application.DeviceBoundSessionsModel.DeviceBoundSessionModelEvents.EVENT_OCCURRED, listener);
+
+    // Trigger event 1.
+    const creationSession = makeSession(site, sessionId1);
+    creationSession.refreshUrl = 'https://example.com/original';
+    const event1: Protocol.Network.DeviceBoundSessionEventOccurredEvent = {
+      eventId: 'event_1' as Protocol.Network.DeviceBoundSessionEventId,
+      site,
+      sessionId: sessionId1,
+      succeeded: true,
+      creationEventDetails:
+          {newSession: creationSession, fetchResult: Protocol.Network.DeviceBoundSessionFetchResult.Success}
+    };
+    networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.DeviceBoundSessionEventOccurred, event1);
+    // Verify event 1 has created the session.
+    let sessionAndEvents1 = model.getSession(site, sessionId1);
+    assert.exists(sessionAndEvents1);
+    assert.exists(sessionAndEvents1.session);
+    assert.strictEqual(sessionAndEvents1.session.refreshUrl, 'https://example.com/original');
+    assert.isTrue(sessionAndEvents1.eventsById.has('event_1'));
+    sinon.assert.calledOnce(listener);
+    assert.deepEqual(listener.lastCall.args[0].data, {site, sessionId: sessionId1});
+
+    // Trigger event 2 for the same site + session with a new refresh URL.
+    const refreshSession = makeSession(site, sessionId1);
+    refreshSession.refreshUrl = 'https://example.com/refreshed';
+    const event2: Protocol.Network.DeviceBoundSessionEventOccurredEvent = {
+      eventId: 'event_2' as Protocol.Network.DeviceBoundSessionEventId,
+      site,
+      sessionId: sessionId1,
+      succeeded: true,
+      refreshEventDetails: {
+        refreshResult: Protocol.Network.RefreshEventDetailsRefreshResult.Refreshed,
+        wasFullyProactiveRefresh: false,
+        newSession: refreshSession
+      }
+    };
+    networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.DeviceBoundSessionEventOccurred, event2);
+    // Verify event 2 has updated the session.
+    sessionAndEvents1 = model.getSession(site, sessionId1);
+    assert.exists(sessionAndEvents1);
+    assert.exists(sessionAndEvents1.session);
+    assert.strictEqual(sessionAndEvents1.session.refreshUrl, 'https://example.com/refreshed');
+    assert.isTrue(sessionAndEvents1.eventsById.has('event_2'));
+    sinon.assert.calledTwice(listener);
+
+    // Trigger event 3 for the same site but a new sessionId.
+    const session2 = makeSession(site, sessionId2);
+    const event3: Protocol.Network.DeviceBoundSessionEventOccurredEvent = {
+      eventId: 'event_3' as Protocol.Network.DeviceBoundSessionEventId,
+      site,
+      sessionId: sessionId2,
+      succeeded: true,
+      creationEventDetails: {fetchResult: Protocol.Network.DeviceBoundSessionFetchResult.Success, newSession: session2}
+    };
+    networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.DeviceBoundSessionEventOccurred, event3);
+    // Verify event 3 has created the new session.
+    const sessionAndEvents2 = model.getSession(site, sessionId2);
+    assert.exists(sessionAndEvents2);
+    assert.exists(sessionAndEvents2.session);
+    assert.strictEqual(sessionAndEvents2.session.key.id, sessionId2);
+    sinon.assert.calledThrice(listener);
+    assert.deepEqual(listener.lastCall.args[0].data, {site, sessionId: sessionId2});
+
+    // Trigger event 4 for the same session which sets the cached challenge.
+    const challengeString = 'custom-challenge-string';
+    const event4: Protocol.Network.DeviceBoundSessionEventOccurredEvent = {
+      eventId: 'event_4' as Protocol.Network.DeviceBoundSessionEventId,
+      site,
+      sessionId: sessionId2,
+      succeeded: true,
+      challengeEventDetails:
+          {challenge: challengeString, challengeResult: Protocol.Network.ChallengeEventDetailsChallengeResult.Success}
+    };
+    networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.DeviceBoundSessionEventOccurred, event4);
+    // Verify event 4 has set the session's cached challenge.
+    assert.strictEqual(sessionAndEvents2.session.cachedChallenge, challengeString);
+    assert.isTrue(sessionAndEvents2.eventsById.has('event_4'));
+    sinon.assert.callCount(listener, 4);
+
+    // Trigger event 5 for the same site + no session. This has no new session.
+    const event5: Protocol.Network.DeviceBoundSessionEventOccurredEvent = {
+      eventId: 'event_5' as Protocol.Network.DeviceBoundSessionEventId,
+      site,
+      succeeded: false,
+      challengeEventDetails:
+          {challenge: challengeString, challengeResult: Protocol.Network.ChallengeEventDetailsChallengeResult.Success}
+    };
+    networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.DeviceBoundSessionEventOccurred, event5);
+    // Verify event 2 has updated the session.
+    const noSession = model.getSession(site, undefined);
+    assert.exists(noSession);
+    assert.notExists(noSession.session);
+    assert.isTrue(noSession.eventsById.has('event_5'));
+    sinon.assert.callCount(listener, 5);
+
+    // Dispatch all events again and confirm there are no changes.
+    networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.DeviceBoundSessionEventOccurred, event1);
+    networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.DeviceBoundSessionEventOccurred, event2);
+    networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.DeviceBoundSessionEventOccurred, event3);
+    networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.DeviceBoundSessionEventOccurred, event4);
+    networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.DeviceBoundSessionEventOccurred, event5);
+    sinon.assert.callCount(listener, 5);
+    assert.strictEqual(sessionAndEvents1.eventsById.size, 2);
+    assert.strictEqual(sessionAndEvents2.eventsById.size, 2);
+    assert.strictEqual(noSession.eventsById.size, 1);
   });
 });

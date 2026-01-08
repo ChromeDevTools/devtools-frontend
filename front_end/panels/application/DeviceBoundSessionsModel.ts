@@ -6,11 +6,15 @@ import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 
-export interface SessionAndEvents {
-  session: Protocol.Network.DeviceBoundSession;
-  // TODO(crbug.com/471017387): store events
+interface EventWithTimestamp {
+  event: Protocol.Network.DeviceBoundSessionEventOccurredEvent;
+  timestamp: Date;
 }
-type SessionIdToSessionMap = Map<string, SessionAndEvents>;
+export interface SessionAndEvents {
+  session?: Protocol.Network.DeviceBoundSession;
+  eventsById: Map<string, EventWithTimestamp>;
+}
+type SessionIdToSessionMap = Map<string|undefined, SessionAndEvents>;
 
 export class DeviceBoundSessionsModel extends Common.ObjectWrapper.ObjectWrapper<DeviceBoundSessionModelEventTypes>
     implements SDK.TargetManager.SDKModelObserver<SDK.NetworkManager.NetworkManager> {
@@ -24,11 +28,15 @@ export class DeviceBoundSessionsModel extends Common.ObjectWrapper.ObjectWrapper
 
   modelAdded(networkManager: SDK.NetworkManager.NetworkManager): void {
     networkManager.addEventListener(SDK.NetworkManager.Events.DeviceBoundSessionsAdded, this.#onSessionsSet, this);
+    networkManager.addEventListener(
+        SDK.NetworkManager.Events.DeviceBoundSessionEventOccurred, this.#onEventOccurred, this);
     void networkManager.enableDeviceBoundSessions();
   }
 
   modelRemoved(networkManager: SDK.NetworkManager.NetworkManager): void {
     networkManager.removeEventListener(SDK.NetworkManager.Events.DeviceBoundSessionsAdded, this.#onSessionsSet, this);
+    networkManager.removeEventListener(
+        SDK.NetworkManager.Events.DeviceBoundSessionEventOccurred, this.#onEventOccurred, this);
   }
 
   addVisibleSite(site: string): void {
@@ -48,31 +56,59 @@ export class DeviceBoundSessionsModel extends Common.ObjectWrapper.ObjectWrapper
     return this.#visibleSites.has(site);
   }
 
-  getSession(site: string, sessionId: string): SessionAndEvents|undefined {
+  getSession(site: string, sessionId?: string): SessionAndEvents|undefined {
     return this.#siteSessions.get(site)?.get(sessionId);
   }
 
   #onSessionsSet({data: sessions}: {data: Protocol.Network.DeviceBoundSession[]}): void {
-    this.#storeSessions(sessions);
+    for (const session of sessions) {
+      const sessionAndEvents = this.#ensureSiteAndSessionInitialized(session.key.site, session.key.id);
+      sessionAndEvents.session = session;
+    }
     this.dispatchEventToListeners(DeviceBoundSessionModelEvents.INITIALIZE_SESSIONS, {sessions});
   }
 
-  #storeSessions(sessions: Protocol.Network.DeviceBoundSession[]): void {
-    for (const session of sessions) {
-      const site = session.key.site;
-      const sessionId = session.key.id;
-
-      let sessionIdToSessionMap = this.#siteSessions.get(site);
-      if (!sessionIdToSessionMap) {
-        sessionIdToSessionMap = new Map();
-        this.#siteSessions.set(site, sessionIdToSessionMap);
-      }
-
-      const sessionAndEvents = sessionIdToSessionMap.get(sessionId);
-      if (!sessionAndEvents) {
-        sessionIdToSessionMap.set(sessionId, {session});
-      }
+  #ensureSiteAndSessionInitialized(site: string, sessionId?: string): SessionAndEvents {
+    let sessionIdToSessionMap = this.#siteSessions.get(site);
+    if (!sessionIdToSessionMap) {
+      sessionIdToSessionMap = new Map();
+      this.#siteSessions.set(site, sessionIdToSessionMap);
     }
+
+    let sessionAndEvent = sessionIdToSessionMap.get(sessionId);
+    if (!sessionAndEvent) {
+      sessionAndEvent = {session: undefined, eventsById: new Map<string, EventWithTimestamp>()};
+      sessionIdToSessionMap.set(sessionId, sessionAndEvent);
+    }
+    return sessionAndEvent;
+  }
+
+  #onEventOccurred({data: event}: {data: Protocol.Network.DeviceBoundSessionEventOccurredEvent}): void {
+    const sessionAndEvent = this.#ensureSiteAndSessionInitialized(event.site, event.sessionId);
+
+    // If this eventId has already been tracked, quit early.
+    if (sessionAndEvent.eventsById.has(event.eventId)) {
+      return;
+    }
+
+    // Add the new event.
+    const eventWithTimestamp = {event, timestamp: new Date()};
+    sessionAndEvent.eventsById.set(event.eventId, eventWithTimestamp);
+
+    // Add the new session if there is one.
+    const newSession = event.creationEventDetails?.newSession || event.refreshEventDetails?.newSession;
+    if (newSession) {
+      sessionAndEvent.session = newSession;
+    }
+
+    // Add the new challenge onto the session if there is one.
+    if (event.succeeded && sessionAndEvent.session && event.challengeEventDetails) {
+      sessionAndEvent.session.cachedChallenge = event.challengeEventDetails.challenge;
+    }
+
+    this.dispatchEventToListeners(
+        DeviceBoundSessionModelEvents.EVENT_OCCURRED,
+        {site: eventWithTimestamp.event.site, sessionId: eventWithTimestamp.event.sessionId});
   }
 }
 
@@ -80,10 +116,12 @@ export const enum DeviceBoundSessionModelEvents {
   INITIALIZE_SESSIONS = 'INITIALIZE_SESSIONS',
   ADD_VISIBLE_SITE = 'ADD_VISIBLE_SITE',
   CLEAR_VISIBLE_SITES = 'CLEAR_VISIBLE_SITES',
+  EVENT_OCCURRED = 'EVENT_OCCURRED',
 }
 
 export interface DeviceBoundSessionModelEventTypes {
   [DeviceBoundSessionModelEvents.INITIALIZE_SESSIONS]: {sessions: Protocol.Network.DeviceBoundSession[]};
   [DeviceBoundSessionModelEvents.ADD_VISIBLE_SITE]: {site: string};
   [DeviceBoundSessionModelEvents.CLEAR_VISIBLE_SITES]: void;
+  [DeviceBoundSessionModelEvents.EVENT_OCCURRED]: {site: string, sessionId?: string};
 }

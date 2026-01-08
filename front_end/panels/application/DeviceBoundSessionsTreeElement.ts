@@ -40,6 +40,12 @@ const UIStrings = {
    * https://w3c.github.io/webappsec-dbsc/.
    */
   deviceBoundSessionsCategoryDescription: 'On this page you can view device bound sessions and associated events',
+  /**
+   *@description Events are sometimes linked to sessions. These are grouped
+   * visually either by session name or by 'No session' if any events are not
+   * linked to a session.
+   */
+  noSession: 'No session',
 } as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/application/DeviceBoundSessionsTreeElement.ts', UIStrings);
@@ -47,7 +53,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class RootTreeElement extends ExpandableApplicationPanelTreeElement {
   #model: DeviceBoundSessionsModel;
-  #sites = new Map<string, {siteTreeElement: ExpandableApplicationPanelTreeElement, sessions: Set<string>}>();
+  #sites = new Map<string, {siteTreeElement: ExpandableApplicationPanelTreeElement, sessions: Set<string|undefined>}>();
 
   constructor(storagePanel: ResourcesPanel, model: DeviceBoundSessionsModel) {
     super(
@@ -66,6 +72,7 @@ export class RootTreeElement extends ExpandableApplicationPanelTreeElement {
     this.#model.addEventListener(DeviceBoundSessionModelEvents.INITIALIZE_SESSIONS, this.#onNewSessions, this);
     this.#model.addEventListener(DeviceBoundSessionModelEvents.ADD_VISIBLE_SITE, this.#onVisibleSiteAdded, this);
     this.#model.addEventListener(DeviceBoundSessionModelEvents.CLEAR_VISIBLE_SITES, this.#onVisibleSitesCleared, this);
+    this.#model.addEventListener(DeviceBoundSessionModelEvents.EVENT_OCCURRED, this.#onEventOccurred, this);
   }
 
   override onunbind(): void {
@@ -74,6 +81,7 @@ export class RootTreeElement extends ExpandableApplicationPanelTreeElement {
     this.#model.removeEventListener(DeviceBoundSessionModelEvents.ADD_VISIBLE_SITE, this.#onVisibleSiteAdded, this);
     this.#model.removeEventListener(
         DeviceBoundSessionModelEvents.CLEAR_VISIBLE_SITES, this.#onVisibleSitesCleared, this);
+    this.#model.removeEventListener(DeviceBoundSessionModelEvents.EVENT_OCCURRED, this.#onEventOccurred, this);
   }
 
   #updateSiteTreeElementVisibility(site: string): void {
@@ -101,40 +109,46 @@ export class RootTreeElement extends ExpandableApplicationPanelTreeElement {
     }
   }
 
+  #addSiteSessionIfMissing(site: string, sessionId: string|undefined): void {
+    let siteMapEntry = this.#sites.get(site);
+    if (!siteMapEntry) {
+      const siteElement = new ExpandableApplicationPanelTreeElement(
+          this.resourcesPanel, site, i18nString(UIStrings.deviceBoundSessions),
+          i18nString(UIStrings.deviceBoundSessionsCategoryDescription), 'device-bound-sessions-site');
+      siteElement.setLeadingIcons([createIcon('cloud')]);
+      siteElement.itemURL = `device-bound-sessions://${site}` as Platform.DevToolsPath.UrlString;
+      siteMapEntry = {siteTreeElement: siteElement, sessions: new Set()};
+      this.#sites.set(site, siteMapEntry);
+    }
+
+    if (!siteMapEntry.sessions.has(sessionId)) {
+      const sessionElement = new ApplicationPanelTreeElement(
+          this.resourcesPanel, sessionId ?? i18nString(UIStrings.noSession), false, 'device-bound-sessions-session');
+      sessionElement.setLeadingIcons([createIcon('database')]);
+      sessionElement.itemURL = `device-bound-sessions://${site}/${sessionId || ''}` as Platform.DevToolsPath.UrlString;
+      const defaultOnSelect = sessionElement.onselect.bind(sessionElement);
+      sessionElement.onselect = (selectedByUser?: boolean): boolean => {
+        defaultOnSelect(selectedByUser);
+        this.resourcesPanel.showDeviceBoundSession(this.#model, site, sessionId);
+        return false;
+      };
+
+      if (sessionId === undefined) {
+        // The "No session" session is always listed at the top.
+        siteMapEntry.siteTreeElement.insertChild(sessionElement, 0);
+      } else {
+        siteMapEntry.siteTreeElement.appendChild(sessionElement);
+      }
+      siteMapEntry.sessions.add(sessionId);
+    }
+
+    this.#updateSiteTreeElementVisibility(site);
+  }
+
   #onNewSessions({data: {sessions}}: Common.EventTarget.EventTargetEvent<
                  DeviceBoundSessionModelEventTypes[DeviceBoundSessionModelEvents.INITIALIZE_SESSIONS]>): void {
     for (const session of sessions) {
-      const siteName = session.key.site;
-      const sessionId = session.key.id;
-
-      let siteMapEntry = this.#sites.get(siteName);
-      if (!siteMapEntry) {
-        const siteElement = new ExpandableApplicationPanelTreeElement(
-            this.resourcesPanel, siteName, i18nString(UIStrings.deviceBoundSessions),
-            i18nString(UIStrings.deviceBoundSessionsCategoryDescription), 'device-bound-sessions-site');
-        siteElement.setLeadingIcons([createIcon('cloud')]);
-        siteElement.itemURL = `device-bound-sessions://${siteName}` as Platform.DevToolsPath.UrlString;
-        siteMapEntry = {siteTreeElement: siteElement, sessions: new Set()};
-        this.#sites.set(siteName, siteMapEntry);
-      }
-
-      if (!siteMapEntry.sessions.has(sessionId)) {
-        const sessionElement =
-            new ApplicationPanelTreeElement(this.resourcesPanel, sessionId, false, 'device-bound-sessions-session');
-        sessionElement.setLeadingIcons([createIcon('database')]);
-        sessionElement.itemURL = `device-bound-sessions://${siteName}/${sessionId}` as Platform.DevToolsPath.UrlString;
-        const defaultOnSelect = sessionElement.onselect.bind(sessionElement);
-        sessionElement.onselect = (selectedByUser?: boolean): boolean => {
-          defaultOnSelect(selectedByUser);
-          this.resourcesPanel.showDeviceBoundSession(this.#model, siteName, sessionId);
-          return false;
-        };
-
-        siteMapEntry.siteTreeElement.appendChild(sessionElement);
-        siteMapEntry.sessions.add(sessionId);
-      }
-
-      this.#updateSiteTreeElementVisibility(siteName);
+      this.#addSiteSessionIfMissing(session.key.site, session.key.id);
     }
   }
 
@@ -146,5 +160,11 @@ export class RootTreeElement extends ExpandableApplicationPanelTreeElement {
 
   #onVisibleSitesCleared(): void {
     this.removeChildren();
+  }
+
+  #onEventOccurred(
+      {data: {site, sessionId}}: Common.EventTarget
+          .EventTargetEvent<DeviceBoundSessionModelEventTypes[DeviceBoundSessionModelEvents.EVENT_OCCURRED]>): void {
+    this.#addSiteSessionIfMissing(site, sessionId);
   }
 }

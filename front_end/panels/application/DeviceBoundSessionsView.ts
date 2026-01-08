@@ -11,7 +11,11 @@ import * as UI from '../../ui/legacy/legacy.js';
 import {html, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import type {DeviceBoundSessionsModel, SessionAndEvents} from './DeviceBoundSessionsModel.js';
+import {
+  DeviceBoundSessionModelEvents,
+  type DeviceBoundSessionsModel,
+  type SessionAndEvents
+} from './DeviceBoundSessionsModel.js';
 import deviceBoundSessionsViewStyles from './deviceBoundSessionsView.css.js';
 
 const UIStrings = {
@@ -115,7 +119,7 @@ function ruleTypeToString(ruleType: Protocol.Network.DeviceBoundSessionUrlRuleRu
 export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTMLElement): void => {
   const {sessionAndEvents} = input;
 
-  if (!sessionAndEvents) {
+  if (!sessionAndEvents?.session) {
     render(nothing, target);
     return;
   }
@@ -227,16 +231,20 @@ export class DeviceBoundSessionsView extends UI.Widget.VBox {
     this.#view = view;
   }
 
-  showSession(model: DeviceBoundSessionsModel, site: string, sessionId: string): void {
-    this.#model = model;
+  showSession(model: DeviceBoundSessionsModel, site: string, sessionId?: string): void {
     this.#site = site;
     this.#sessionId = sessionId;
+    if (this.#model) {
+      this.#model.removeEventListener(DeviceBoundSessionModelEvents.EVENT_OCCURRED, this.performUpdate, this);
+    }
+    this.#model = model;
+    this.#model.addEventListener(DeviceBoundSessionModelEvents.EVENT_OCCURRED, this.performUpdate, this);
     this.performUpdate();
   }
 
   override performUpdate(): void {
     let sessionAndEvents: SessionAndEvents|undefined;
-    if (this.#site && this.#sessionId && this.#model) {
+    if (this.#site && this.#model) {
       sessionAndEvents = this.#model.getSession(this.#site, this.#sessionId);
     }
     this.#view({sessionAndEvents}, {}, this.contentElement);

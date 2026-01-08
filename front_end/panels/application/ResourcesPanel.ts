@@ -211,7 +211,7 @@ export class ResourcesPanel extends UI.Panel.PanelWithSidebar {
     });
   }
 
-  showDeviceBoundSession(model: DeviceBoundSessionsModel, site: string, sessionId: string): void {
+  showDeviceBoundSession(model: DeviceBoundSessionsModel, site: string, sessionId?: string): void {
     if (!this.deviceBoundSessionsView) {
       this.deviceBoundSessionsView = new DeviceBoundSessionsView();
     }

@@ -58,6 +58,7 @@ const SEARCH_RESULTS_MATCHES = '.search-results-matches';
 export const EMULATE_FOCUSED_PAGE = 'Emulate a focused page';
 const DOM_BREAKPOINTS_SECTION_SELECTOR = '[aria-label="DOM Breakpoints"]';
 const DOM_BREAKPOINTS_LIST_SELECTOR = '[aria-label="DOM Breakpoints list"]';
+const TOGGLE_COMMON_RENDERING_EMULATIONS_SELECTOR = '[aria-label="Toggle common rendering emulations"]';
 
 export const openLayoutPane = async (devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
   await devToolsPage.click(LAYOUT_PANE_TAB_SELECTOR);
@@ -1021,6 +1022,9 @@ export const clickOnFirstLinkInStylesPanel = async (devToolsPage: DevToolsPage) 
 export const toggleClassesPane = async (devToolsPage: DevToolsPage) => {
   const stylesPane = await devToolsPage.waitFor('div.styles-pane');
   await devToolsPage.waitFor(CLS_BUTTON_SELECTOR, stylesPane);
+  // Add a wait for TOGGLE_COMMON_RENDERING_EMULATIONS_SELECTOR so that the toolbar is stable before
+  // clicking on CLS_BUTTON_SELECTOR
+  await devToolsPage.waitFor(TOGGLE_COMMON_RENDERING_EMULATIONS_SELECTOR, stylesPane);
   await devToolsPage.click(CLS_BUTTON_SELECTOR, {root: stylesPane});
   await devToolsPage.waitFor('.styles-element-classes-pane .text-prompt', stylesPane);  // wait for the animation
   await expectVeEvents(

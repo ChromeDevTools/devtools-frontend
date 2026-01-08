@@ -41,8 +41,7 @@ describe('The Classes pane', () => {
     await assertSelectedNodeClasses(['off'], devToolsPage);
   });
 
-  // Flaky test.
-  it.skip('[crbug.com/465727841] removes the previewed classes on ESC', async ({devToolsPage, inspectedPage}) => {
+  it('removes the previewed classes on ESC', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToResource('elements/simple-styled-page.html');
     await toggleClassesPane(devToolsPage);
 

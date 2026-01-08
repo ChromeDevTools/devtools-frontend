@@ -10,6 +10,7 @@ import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js'
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
+import * as Tooltips from '../../ui/components/tooltips/tooltips.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as PanelCommon from '../common/common.js';
 
@@ -44,6 +45,23 @@ describeWithEnvironment('ConsoleInsightTeaser', () => {
     assert.isFalse(input.isInactive);
     assert.isEmpty(input.mainText);
     assert.isEmpty(input.headerText);
+  });
+
+  it('shows the tooltip', async () => {
+    const tooltip = new Tooltips.Tooltip.Tooltip();
+    tooltip.setAttribute('popover', 'manual');
+    const showTooltipStub = sinon.stub(tooltip, 'showTooltip');
+
+    const view = createViewFunctionStub(Console.ConsoleInsightTeaser.ConsoleInsightTeaser, {tooltip});
+    const teaser =
+        new Console.ConsoleInsightTeaser.ConsoleInsightTeaser('test-uuid', consoleViewMessage, undefined, view);
+    await view.nextInput;
+    sinon.assert.calledOnce(showTooltipStub);
+
+    showTooltipStub.resetHistory();
+    await teaser.maybeGenerateTeaser();
+    await view.nextInput;
+    sinon.assert.notCalled(showTooltipStub);
   });
 
   const setupBuiltInAi = (generateResponse: () => AsyncGenerator): Console.ConsoleViewMessage.ConsoleViewMessage => {
@@ -228,7 +246,7 @@ describeWithEnvironment('ConsoleInsightTeaser', () => {
     assert.strictEqual(input.state, 'error');
   });
 
-  it('show the "Tell me more" button only when AIDA is available', async () => {
+  it('shows the "Tell me more" button only when AIDA is available', async () => {
     const checkAccessPreconditionsStub = sinon.stub(Host.AidaClient.AidaClient, 'checkAccessPreconditions');
     checkAccessPreconditionsStub.resolves(Host.AidaClient.AidaAccessPreconditions.AVAILABLE);
     sinon.stub(UI.ActionRegistry.ActionRegistry.instance(), 'hasAction').returns(true);

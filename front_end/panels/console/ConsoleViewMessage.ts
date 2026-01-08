@@ -402,9 +402,6 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
 
   wasShown(): void {
     this.isVisibleInternal = true;
-    if (this.elementInternal) {
-      this.#teaser?.show(this.elementInternal, this.consoleRowWrapper);
-    }
   }
 
   onResize(): void {
@@ -413,7 +410,6 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   willHide(): void {
     this.isVisibleInternal = false;
     this.cachedHeight = this.element().offsetHeight;
-    this.#teaser?.detach();
   }
 
   isVisible(): boolean {
@@ -1410,14 +1406,31 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   }
 
   #startTeaserGeneration(): void {
-    if (this.#teaser &&
-        Common.Settings.Settings.instance().moduleSetting('console-insight-teasers-enabled').getIfNotDisabled()) {
+    if (!this.elementInternal) {
+      return;
+    }
+    if (this.shouldShowTeaser()) {
+      if (!this.#teaser) {
+        const uuid = crypto.randomUUID();
+        this.elementInternal.setAttribute('aria-details', `teaser-${uuid}`);
+        this.#teaser = new ConsoleInsightTeaser(uuid, this);
+        this.#teaser.show(this.elementInternal, this.consoleRowWrapper);
+      }
       this.#teaser.maybeGenerateTeaser();
+    } else {  // Removes teaser if preferences have changed
+      this.#teaser?.detach();
+      this.#teaser = undefined;
     }
   }
 
   #abortTeaserGeneration(): void {
-    this.#teaser?.abortTeaserGeneration();
+    if (this.#teaser) {
+      const {okToRemove} = this.#teaser.abortTeaserGeneration();
+      if (okToRemove) {
+        this.#teaser.detach();
+        this.#teaser = undefined;
+      }
+    }
   }
 
   toMessageElement(): HTMLElement {
@@ -1449,12 +1462,6 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     this.elementInternal.removeChildren();
     this.consoleRowWrapper = this.elementInternal.createChild('div');
     this.consoleRowWrapper.classList.add('console-row-wrapper');
-
-    if (this.shouldShowTeaser()) {
-      const uuid = crypto.randomUUID();
-      this.elementInternal.setAttribute('aria-details', `teaser-${uuid}`);
-      this.#teaser = new ConsoleInsightTeaser(uuid, this);
-    }
 
     if (this.message.isGroupStartMessage()) {
       this.elementInternal.classList.add('console-group-title');

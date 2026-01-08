@@ -6,6 +6,7 @@ import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
 import {
   createConsoleViewMessageWithStubDeps,
   createStackTrace,
@@ -124,45 +125,50 @@ describeWithMockConnection('ConsoleViewMessage', () => {
   });
 
   describe('console insights', () => {
+    const createMessage =
+        (source: SDK.ConsoleModel.MessageSource, level: Protocol.Log.LogEntryLevel, messageText: string):
+            HTMLElement => {
+              sinon.stub(UI.ActionRegistry.ActionRegistry.instance(), 'hasAction')
+                  .withArgs('explain.console-message.hover')
+                  .returns(true);
+              const target = createTarget();
+              const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+              const rawMessage = new SDK.ConsoleModel.ConsoleMessage(runtimeModel, source, level, messageText);
+              const {message} = createConsoleViewMessageWithStubDeps(rawMessage);
+              const messageElement = message.toMessageElement();  // Trigger rendering.
+              return messageElement;
+            };
+
     it('shows a hover button', () => {
-      sinon.stub(UI.ActionRegistry.ActionRegistry.instance(), 'hasAction')
-          .withArgs('explain.console-message.hover')
-          .returns(true);
-      const target = createTarget();
-      const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
-      const rawMessage = new SDK.ConsoleModel.ConsoleMessage(
-          runtimeModel, Common.Console.FrontendMessageSource.ConsoleAPI, Protocol.Log.LogEntryLevel.Error, 'got here');
-      const {message} = createConsoleViewMessageWithStubDeps(rawMessage);
-      const messageElement = message.toMessageElement();  // Trigger rendering.
+      const messageElement =
+          createMessage(Common.Console.FrontendMessageSource.ConsoleAPI, Protocol.Log.LogEntryLevel.Error, 'got here');
       const button = messageElement.querySelector('[aria-label=\'Understand this error. Powered by AI.\']');
       assert.strictEqual(button?.textContent, 'Understand this error');
     });
 
+    it('creates teaser on hover', () => {
+      const messageElement =
+          createMessage(Common.Console.FrontendMessageSource.ConsoleAPI, Protocol.Log.LogEntryLevel.Error, 'got here');
+      const showTeaserStub = sinon.stub(Console.ConsoleInsightTeaser.ConsoleInsightTeaser.prototype, 'show');
+      const generateTeaserStub =
+          sinon.stub(Console.ConsoleInsightTeaser.ConsoleInsightTeaser.prototype, 'maybeGenerateTeaser');
+      const builtInAi = AiAssistanceModel.BuiltInAi.BuiltInAi.instance();
+      sinon.stub(builtInAi, 'isEventuallyAvailable').returns(true);
+      messageElement.dispatchEvent(new MouseEvent('mouseenter'));
+      sinon.assert.calledOnce(showTeaserStub);
+      sinon.assert.calledOnce(generateTeaserStub);
+    });
+
     it('does not show a hover button if the console message text is empty', () => {
-      sinon.stub(UI.ActionRegistry.ActionRegistry.instance(), 'hasAction')
-          .withArgs('explain.console-message.hover')
-          .returns(true);
-      const target = createTarget();
-      const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
-      const rawMessage = new SDK.ConsoleModel.ConsoleMessage(
-          runtimeModel, Common.Console.FrontendMessageSource.ConsoleAPI, Protocol.Log.LogEntryLevel.Error, '');
-      const {message} = createConsoleViewMessageWithStubDeps(rawMessage);
-      const messageElement = message.toMessageElement();  // Trigger rendering.
+      const messageElement =
+          createMessage(Common.Console.FrontendMessageSource.ConsoleAPI, Protocol.Log.LogEntryLevel.Error, '');
       const button = messageElement.querySelector('[aria-label=\'Understand this error. Powered by AI.\']');
       assert.isNull(button);
     });
 
     it('does not show a hover button for the self-XSS warning message', () => {
-      sinon.stub(UI.ActionRegistry.ActionRegistry.instance(), 'hasAction')
-          .withArgs('explain.console-message.hover')
-          .returns(true);
-      const target = createTarget();
-      const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
-      const rawMessage = new SDK.ConsoleModel.ConsoleMessage(
-          runtimeModel, Common.Console.FrontendMessageSource.SELF_XSS, Protocol.Log.LogEntryLevel.Warning,
-          'Don’t paste code...');
-      const {message} = createConsoleViewMessageWithStubDeps(rawMessage);
-      const messageElement = message.toMessageElement();  // Trigger rendering.
+      const messageElement = createMessage(
+          Common.Console.FrontendMessageSource.SELF_XSS, Protocol.Log.LogEntryLevel.Warning, 'Don’t paste code...');
       const button = messageElement.querySelector('[aria-label=\'Understand this warning. Powered by AI.\']');
       assert.isNull(button);
     });

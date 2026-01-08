@@ -6,7 +6,7 @@ import type * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
-import {createTarget, expectConsoleLogs, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
+import {createTarget, expectConsoleLogs, stubNoopSettings, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
 import {
   describeWithMockConnection,
   setMockConnectionResponseHandler,
@@ -399,6 +399,40 @@ describeWithMockConnection('ApplicationPanelSidebar', () => {
     assert.strictEqual(
         new Application.ApplicationPanelSidebar.ExtensionStorageTreeParentElement(panel, extensionId, '').title,
         extensionId);
+  });
+
+  it('fetches schemeful site and updates DeviceBoundSessionsModel when cookie is added', async () => {
+    updateHostConfig({deviceBoundSessionsDebugging: {enabled: true}});
+    Application.ResourcesPanel.ResourcesPanel.instance({forceNew: true});
+    const sidebar = await Application.ResourcesPanel.ResourcesPanel.showAndGetSidebar();
+
+    const networkAgent = target.networkAgent();
+    const fetchSchemefulSiteStub = sinon.stub(networkAgent, 'invoke_fetchSchemefulSite').resolves({
+      schemefulSite: 'https://device-bound-sessions.com',
+      getError: () => undefined,
+    });
+
+    const model = sidebar.deviceBoundSessionsModel;
+    assert.exists(model);
+    const addVisibleSiteSpy = sinon.spy(model, 'addVisibleSite');
+
+    const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
+    assert.exists(resourceTreeModel);
+
+    const frame = {
+      url: 'https://example.device-bound-sessions.com/',
+      unreachableUrl: () => null,
+      resourceTreeModel: () => resourceTreeModel,
+      target: () => target,
+    } as unknown as SDK.ResourceTreeModel.ResourceTreeFrame;
+
+    sinon.stub(resourceTreeModel, 'frames').returns([frame]);
+
+    resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.CachedResourcesLoaded, resourceTreeModel);
+    await new Promise(resolve => setTimeout(resolve, 0));
+
+    sinon.assert.calledWith(fetchSchemefulSiteStub, {origin: 'https://example.device-bound-sessions.com'});
+    sinon.assert.calledWith(addVisibleSiteSpy, 'https://device-bound-sessions.com');
   });
 });
 

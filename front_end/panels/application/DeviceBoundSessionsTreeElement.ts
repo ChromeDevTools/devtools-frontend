@@ -64,11 +64,41 @@ export class RootTreeElement extends ExpandableApplicationPanelTreeElement {
   override onbind(): void {
     super.onbind();
     this.#model.addEventListener(DeviceBoundSessionModelEvents.INITIALIZE_SESSIONS, this.#onNewSessions, this);
+    this.#model.addEventListener(DeviceBoundSessionModelEvents.ADD_VISIBLE_SITE, this.#onVisibleSiteAdded, this);
+    this.#model.addEventListener(DeviceBoundSessionModelEvents.CLEAR_VISIBLE_SITES, this.#onVisibleSitesCleared, this);
   }
 
   override onunbind(): void {
     super.onunbind();
     this.#model.removeEventListener(DeviceBoundSessionModelEvents.INITIALIZE_SESSIONS, this.#onNewSessions, this);
+    this.#model.removeEventListener(DeviceBoundSessionModelEvents.ADD_VISIBLE_SITE, this.#onVisibleSiteAdded, this);
+    this.#model.removeEventListener(
+        DeviceBoundSessionModelEvents.CLEAR_VISIBLE_SITES, this.#onVisibleSitesCleared, this);
+  }
+
+  #updateSiteTreeElementVisibility(site: string): void {
+    const siteMapEntry = this.#sites.get(site);
+    if (!siteMapEntry) {
+      return;
+    }
+
+    const siteTreeElement = siteMapEntry.siteTreeElement;
+    const isElementPresent = this.indexOfChild(siteTreeElement) >= 0;
+    const isSiteAllowed = this.#model.isSiteVisible(site);
+
+    if (isSiteAllowed && !isElementPresent) {
+      // Appending a child element that already has children requires a workaround of
+      // detaching and repopulating them so that the selection background color UI works.
+      // TODO(crbug.com/471021582): Can this fix safely be moved to Treeoutline.ts?
+      this.appendChild(siteTreeElement);
+      const children = [...siteTreeElement.children()];
+      siteTreeElement.removeChildren();
+      for (const child of children) {
+        siteTreeElement.appendChild(child);
+      }
+    } else if (!isSiteAllowed && isElementPresent) {
+      this.removeChild(siteTreeElement);
+    }
   }
 
   #onNewSessions({data: {sessions}}: Common.EventTarget.EventTargetEvent<
@@ -86,7 +116,6 @@ export class RootTreeElement extends ExpandableApplicationPanelTreeElement {
         siteElement.itemURL = `device-bound-sessions://${siteName}` as Platform.DevToolsPath.UrlString;
         siteMapEntry = {siteTreeElement: siteElement, sessions: new Set()};
         this.#sites.set(siteName, siteMapEntry);
-        this.appendChild(siteElement);
       }
 
       if (!siteMapEntry.sessions.has(sessionId)) {
@@ -104,6 +133,18 @@ export class RootTreeElement extends ExpandableApplicationPanelTreeElement {
         siteMapEntry.siteTreeElement.appendChild(sessionElement);
         siteMapEntry.sessions.add(sessionId);
       }
+
+      this.#updateSiteTreeElementVisibility(siteName);
     }
+  }
+
+  #onVisibleSiteAdded(
+      {data: {site}}: Common.EventTarget
+          .EventTargetEvent<DeviceBoundSessionModelEventTypes[DeviceBoundSessionModelEvents.ADD_VISIBLE_SITE]>): void {
+    this.#updateSiteTreeElementVisibility(site);
+  }
+
+  #onVisibleSitesCleared(): void {
+    this.removeChildren();
   }
 }

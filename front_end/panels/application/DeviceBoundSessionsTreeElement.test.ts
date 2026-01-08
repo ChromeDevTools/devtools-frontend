@@ -34,14 +34,18 @@ describeWithMockConnection('DeviceBoundSessionsTreeElement', () => {
     mockPanel = {} as unknown as ResourcesPanel;
   });
 
-  it('builds the correct tree hierarchy on INITIALIZE_SESSIONS event', () => {
+  it('builds the correct tree hierarchy on INITIALIZE_SESSIONS event only for visible sites', () => {
     const root = new Application.DeviceBoundSessionsTreeElement.RootTreeElement(mockPanel, model);
     root.onbind();
+
+    model.addVisibleSite('example1.com');
+    model.addVisibleSite('example2.com');
 
     const sessions = [
       makeSession('example1.com', 'session_1'),
       makeSession('example1.com', 'session_2'),
       makeSession('example2.com', 'session_3'),
+      makeSession('hidden.com', 'session_4'),
     ];
 
     model.dispatchEventToListeners(
@@ -58,16 +62,57 @@ describeWithMockConnection('DeviceBoundSessionsTreeElement', () => {
     assert.strictEqual(site1Node.childCount(), 2);
     assert.strictEqual(site1Node.children()[0].title, 'session_1');
     assert.strictEqual(site1Node.children()[1].title, 'session_2');
-
     // Verify session nodes under example2.com.
     assert.strictEqual(site2Node.childCount(), 1);
     assert.strictEqual(site2Node.children()[0].title, 'session_3');
+  });
+
+  it('adds a tree element when a site becomes visible after data is already loaded', () => {
+    const root = new Application.DeviceBoundSessionsTreeElement.RootTreeElement(mockPanel, model);
+    root.onbind();
+
+    const sessions = [
+      makeSession('example1.com', 'session_1'),
+      makeSession('example2.com', 'session_1'),
+      makeSession('example2.com', 'session_2'),
+      makeSession('hidden.com', 'session_3'),
+    ];
+    model.dispatchEventToListeners(
+        Application.DeviceBoundSessionsModel.DeviceBoundSessionModelEvents.INITIALIZE_SESSIONS, {sessions});
+    assert.strictEqual(root.childCount(), 0);
+
+    model.addVisibleSite('example1.com');
+    model.addVisibleSite('example2.com');
+    assert.strictEqual(root.childCount(), 2);
+    const siteNode1 = root.children()[0];
+    assert.strictEqual(siteNode1.title, 'example1.com');
+    assert.strictEqual(siteNode1.childCount(), 1);
+    assert.strictEqual(siteNode1.children()[0].title, 'session_1');
+    const siteNode2 = root.children()[1];
+    assert.strictEqual(siteNode2.title, 'example2.com');
+    assert.strictEqual(siteNode2.childCount(), 2);
+    assert.strictEqual(siteNode2.children()[0].title, 'session_1');
+    assert.strictEqual(siteNode2.children()[1].title, 'session_2');
+  });
+
+  it('removes a tree element if visible sites are cleared', () => {
+    const root = new Application.DeviceBoundSessionsTreeElement.RootTreeElement(mockPanel, model);
+    root.onbind();
+
+    model.addVisibleSite('example.com');
+    const session = makeSession('example.com', 'session_1');
+    model.dispatchEventToListeners(
+        Application.DeviceBoundSessionsModel.DeviceBoundSessionModelEvents.INITIALIZE_SESSIONS, {sessions: [session]});
+    assert.strictEqual(root.childCount(), 1);
+    model.clearVisibleSites();
+    assert.strictEqual(root.childCount(), 0);
   });
 
   it('does not duplicate sites or sessions if data is re-sent', () => {
     const root = new Application.DeviceBoundSessionsTreeElement.RootTreeElement(mockPanel, model);
     root.onbind();
 
+    model.addVisibleSite('example1.com');
     const session = makeSession('example1.com', 'session_1');
 
     // First event.
@@ -89,6 +134,7 @@ describeWithMockConnection('DeviceBoundSessionsTreeElement', () => {
     const root = new Application.DeviceBoundSessionsTreeElement.RootTreeElement(mockPanel, model);
     root.onbind();
 
+    model.addVisibleSite('example.com');
     const session = makeSession('example.com', 'session-123');
     model.dispatchEventToListeners(
         Application.DeviceBoundSessionsModel.DeviceBoundSessionModelEvents.INITIALIZE_SESSIONS, {sessions: [session]});

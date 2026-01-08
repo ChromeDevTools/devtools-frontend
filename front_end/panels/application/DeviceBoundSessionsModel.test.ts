@@ -66,4 +66,35 @@ describeWithMockConnection('DeviceBoundSessionsModel', () => {
     assert.isUndefined(model.getSession('unknown.com', 'session_1'));
     assert.isUndefined(model.getSession('example1.com', 'unknown_session'));
   });
+
+  it('adds visible sites and dispatches ADD_VISIBLE_SITE event', () => {
+    const listener = sinon.spy();
+    model.addEventListener(
+        Application.DeviceBoundSessionsModel.DeviceBoundSessionModelEvents.ADD_VISIBLE_SITE, listener);
+    model.addVisibleSite('example.com');
+    assert.isTrue(model.isSiteVisible('example.com'));
+    assert.isFalse(model.isSiteVisible('other.com'));
+    sinon.assert.calledOnce(listener);
+    assert.deepEqual(listener.firstCall.args[0].data, {site: 'example.com'});
+  });
+
+  it('does not dispatch ADD_VISIBLE_SITE event if site is already visible', () => {
+    model.addVisibleSite('example.com');
+    const listener = sinon.spy();
+    model.addEventListener(
+        Application.DeviceBoundSessionsModel.DeviceBoundSessionModelEvents.ADD_VISIBLE_SITE, listener);
+    model.addVisibleSite('example.com');
+    sinon.assert.notCalled(listener);
+  });
+
+  it('clears visible sites and dispatches CLEAR_VISIBLE_SITES event', () => {
+    model.addVisibleSite('example.com');
+    assert.isTrue(model.isSiteVisible('example.com'));
+    const listener = sinon.spy();
+    model.addEventListener(
+        Application.DeviceBoundSessionsModel.DeviceBoundSessionModelEvents.CLEAR_VISIBLE_SITES, listener);
+    model.clearVisibleSites();
+    assert.isFalse(model.isSiteVisible('example.com'));
+    sinon.assert.calledOnce(listener);
+  });
 });

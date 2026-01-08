@@ -15,6 +15,7 @@ type SessionIdToSessionMap = Map<string, SessionAndEvents>;
 export class DeviceBoundSessionsModel extends Common.ObjectWrapper.ObjectWrapper<DeviceBoundSessionModelEventTypes>
     implements SDK.TargetManager.SDKModelObserver<SDK.NetworkManager.NetworkManager> {
   #siteSessions = new Map<string, SessionIdToSessionMap>();
+  #visibleSites = new Set<string>();
 
   constructor() {
     super();
@@ -28,6 +29,23 @@ export class DeviceBoundSessionsModel extends Common.ObjectWrapper.ObjectWrapper
 
   modelRemoved(networkManager: SDK.NetworkManager.NetworkManager): void {
     networkManager.removeEventListener(SDK.NetworkManager.Events.DeviceBoundSessionsAdded, this.#onSessionsSet, this);
+  }
+
+  addVisibleSite(site: string): void {
+    if (this.#visibleSites.has(site)) {
+      return;
+    }
+    this.#visibleSites.add(site);
+    this.dispatchEventToListeners(DeviceBoundSessionModelEvents.ADD_VISIBLE_SITE, {site});
+  }
+
+  clearVisibleSites(): void {
+    this.#visibleSites.clear();
+    this.dispatchEventToListeners(DeviceBoundSessionModelEvents.CLEAR_VISIBLE_SITES);
+  }
+
+  isSiteVisible(site: string): boolean {
+    return this.#visibleSites.has(site);
   }
 
   getSession(site: string, sessionId: string): SessionAndEvents|undefined {
@@ -60,8 +78,12 @@ export class DeviceBoundSessionsModel extends Common.ObjectWrapper.ObjectWrapper
 
 export const enum DeviceBoundSessionModelEvents {
   INITIALIZE_SESSIONS = 'INITIALIZE_SESSIONS',
+  ADD_VISIBLE_SITE = 'ADD_VISIBLE_SITE',
+  CLEAR_VISIBLE_SITES = 'CLEAR_VISIBLE_SITES',
 }
 
 export interface DeviceBoundSessionModelEventTypes {
   [DeviceBoundSessionModelEvents.INITIALIZE_SESSIONS]: {sessions: Protocol.Network.DeviceBoundSession[]};
+  [DeviceBoundSessionModelEvents.ADD_VISIBLE_SITE]: {site: string};
+  [DeviceBoundSessionModelEvents.CLEAR_VISIBLE_SITES]: void;
 }

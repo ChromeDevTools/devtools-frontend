@@ -772,6 +772,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
     this.domains = {};
     this.cookieListTreeElement.removeChildren();
     this.interestGroupTreeElement.clearEvents();
+    this.deviceBoundSessionsModel?.clearVisibleSites();
   }
 
   private frameNavigated(event: Common.EventTarget.EventTargetEvent<SDK.ResourceTreeModel.ResourceTreeFrame>): void {
@@ -803,6 +804,21 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
       this.domains[domain] = true;
       const cookieDomainTreeElement = new CookieTreeElement(this.panel, frame, parsedURL);
       this.cookieListTreeElement.appendChild(cookieDomainTreeElement);
+
+      // Update device bound session visibility for new cookie domain.
+      if (this.deviceBoundSessionsModel) {
+        const target = frame.resourceTreeModel().target();
+        const networkAgent = target.networkAgent();
+        void networkAgent.invoke_fetchSchemefulSite({origin: domain}).then(response => {
+          if (response.getError() || !this.deviceBoundSessionsModel) {
+            return;
+          }
+          // Confirm the domain is still present first.
+          if (this.domains[domain]) {
+            this.deviceBoundSessionsModel.addVisibleSite(response.schemefulSite);
+          }
+        });
+      }
     }
   }
 

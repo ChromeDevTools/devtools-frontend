@@ -17318,6 +17318,193 @@
                     ]
                 },
                 {
+                    "id": "DeviceBoundSessionEventId",
+                    "description": "A unique identifier for a device bound session event.",
+                    "experimental": true,
+                    "type": "string"
+                },
+                {
+                    "id": "DeviceBoundSessionFetchResult",
+                    "description": "A fetch result for a device bound session creation or refresh.",
+                    "experimental": true,
+                    "type": "string",
+                    "enum": [
+                        "Success",
+                        "KeyError",
+                        "SigningError",
+                        "ServerRequestedTermination",
+                        "InvalidSessionId",
+                        "InvalidChallenge",
+                        "TooManyChallenges",
+                        "InvalidFetcherUrl",
+                        "InvalidRefreshUrl",
+                        "TransientHttpError",
+                        "ScopeOriginSameSiteMismatch",
+                        "RefreshUrlSameSiteMismatch",
+                        "MismatchedSessionId",
+                        "MissingScope",
+                        "NoCredentials",
+                        "SubdomainRegistrationWellKnownUnavailable",
+                        "SubdomainRegistrationUnauthorized",
+                        "SubdomainRegistrationWellKnownMalformed",
+                        "SessionProviderWellKnownUnavailable",
+                        "RelyingPartyWellKnownUnavailable",
+                        "FederatedKeyThumbprintMismatch",
+                        "InvalidFederatedSessionUrl",
+                        "InvalidFederatedKey",
+                        "TooManyRelyingOriginLabels",
+                        "BoundCookieSetForbidden",
+                        "NetError",
+                        "ProxyError",
+                        "EmptySessionConfig",
+                        "InvalidCredentialsConfig",
+                        "InvalidCredentialsType",
+                        "InvalidCredentialsEmptyName",
+                        "InvalidCredentialsCookie",
+                        "PersistentHttpError",
+                        "RegistrationAttemptedChallenge",
+                        "InvalidScopeOrigin",
+                        "ScopeOriginContainsPath",
+                        "RefreshInitiatorNotString",
+                        "RefreshInitiatorInvalidHostPattern",
+                        "InvalidScopeSpecification",
+                        "MissingScopeSpecificationType",
+                        "EmptyScopeSpecificationDomain",
+                        "EmptyScopeSpecificationPath",
+                        "InvalidScopeSpecificationType",
+                        "InvalidScopeIncludeSite",
+                        "MissingScopeIncludeSite",
+                        "FederatedNotAuthorizedByProvider",
+                        "FederatedNotAuthorizedByRelyingParty",
+                        "SessionProviderWellKnownMalformed",
+                        "SessionProviderWellKnownHasProviderOrigin",
+                        "RelyingPartyWellKnownMalformed",
+                        "RelyingPartyWellKnownHasRelyingOrigins",
+                        "InvalidFederatedSessionProviderSessionMissing",
+                        "InvalidFederatedSessionWrongProviderOrigin",
+                        "InvalidCredentialsCookieCreationTime",
+                        "InvalidCredentialsCookieName",
+                        "InvalidCredentialsCookieParsing",
+                        "InvalidCredentialsCookieUnpermittedAttribute",
+                        "InvalidCredentialsCookieInvalidDomain",
+                        "InvalidCredentialsCookiePrefix",
+                        "InvalidScopeRulePath",
+                        "InvalidScopeRuleHostPattern",
+                        "ScopeRuleOriginScopedHostPatternMismatch",
+                        "ScopeRuleSiteScopedHostPatternMismatch",
+                        "SigningQuotaExceeded",
+                        "InvalidConfigJson",
+                        "InvalidFederatedSessionProviderFailedToRestoreKey",
+                        "FailedToUnwrapKey",
+                        "SessionDeletedDuringRefresh"
+                    ]
+                },
+                {
+                    "id": "CreationEventDetails",
+                    "description": "Session event details specific to creation.",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "fetchResult",
+                            "description": "The result of the fetch attempt.",
+                            "$ref": "DeviceBoundSessionFetchResult"
+                        },
+                        {
+                            "name": "newSession",
+                            "description": "The session if there was a newly created session. This is populated for\nall successful creation events.",
+                            "optional": true,
+                            "$ref": "DeviceBoundSession"
+                        }
+                    ]
+                },
+                {
+                    "id": "RefreshEventDetails",
+                    "description": "Session event details specific to refresh.",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "refreshResult",
+                            "description": "The result of a refresh.",
+                            "type": "string",
+                            "enum": [
+                                "Refreshed",
+                                "InitializedService",
+                                "Unreachable",
+                                "ServerError",
+                                "RefreshQuotaExceeded",
+                                "FatalError",
+                                "SigningQuotaExceeded"
+                            ]
+                        },
+                        {
+                            "name": "fetchResult",
+                            "description": "If there was a fetch attempt, the result of that.",
+                            "optional": true,
+                            "$ref": "DeviceBoundSessionFetchResult"
+                        },
+                        {
+                            "name": "newSession",
+                            "description": "The session display if there was a newly created session. This is populated\nfor any refresh event that modifies the session config.",
+                            "optional": true,
+                            "$ref": "DeviceBoundSession"
+                        },
+                        {
+                            "name": "wasFullyProactiveRefresh",
+                            "description": "See comments on `net::device_bound_sessions::RefreshEventResult::was_fully_proactive_refresh`.",
+                            "type": "boolean"
+                        }
+                    ]
+                },
+                {
+                    "id": "TerminationEventDetails",
+                    "description": "Session event details specific to termination.",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "deletionReason",
+                            "description": "The reason for a session being deleted.",
+                            "type": "string",
+                            "enum": [
+                                "Expired",
+                                "FailedToRestoreKey",
+                                "FailedToUnwrapKey",
+                                "StoragePartitionCleared",
+                                "ClearBrowsingData",
+                                "ServerRequested",
+                                "InvalidSessionParams",
+                                "RefreshFatalError"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": "ChallengeEventDetails",
+                    "description": "Session event details specific to challenges.",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "challengeResult",
+                            "description": "The result of a challenge.",
+                            "type": "string",
+                            "enum": [
+                                "Success",
+                                "NoSessionId",
+                                "NoSessionMatch",
+                                "CantSetBoundCookie"
+                            ]
+                        },
+                        {
+                            "name": "challenge",
+                            "description": "The challenge set.",
+                            "type": "string"
+                        }
+                    ]
+                },
+                {
                     "id": "LoadNetworkResourcePageResult",
                     "description": "An object providing the result of a network resource load.",
                     "experimental": true,
@@ -19388,6 +19575,55 @@
                             "items": {
                                 "$ref": "DeviceBoundSession"
                             }
+                        }
+                    ]
+                },
+                {
+                    "name": "deviceBoundSessionEventOccurred",
+                    "description": "Triggered when a device bound session event occurs.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "eventId",
+                            "description": "A unique identifier for this session event.",
+                            "$ref": "DeviceBoundSessionEventId"
+                        },
+                        {
+                            "name": "site",
+                            "description": "The site this session event is associated with.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "succeeded",
+                            "description": "Whether this event was considered successful.",
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "sessionId",
+                            "description": "The session ID this event is associated with. May not be populated for\nfailed events.",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "creationEventDetails",
+                            "description": "The below are the different session event type details. Exactly one is populated.",
+                            "optional": true,
+                            "$ref": "CreationEventDetails"
+                        },
+                        {
+                            "name": "refreshEventDetails",
+                            "optional": true,
+                            "$ref": "RefreshEventDetails"
+                        },
+                        {
+                            "name": "terminationEventDetails",
+                            "optional": true,
+                            "$ref": "TerminationEventDetails"
+                        },
+                        {
+                            "name": "challengeEventDetails",
+                            "optional": true,
+                            "$ref": "ChallengeEventDetails"
                         }
                     ]
                 }

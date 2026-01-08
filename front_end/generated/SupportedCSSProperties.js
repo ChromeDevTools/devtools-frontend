@@ -505,7 +505,6 @@ export const generatedProperties = [
    "grid-column-end",
    "grid-column-start",
    "grid-lanes-direction",
-   "grid-lanes-fill",
    "grid-row-end",
    "grid-row-start",
    "grid-template-areas",
@@ -620,6 +619,7 @@ export const generatedProperties = [
    "padding-right",
    "padding-top",
    "page",
+   "page-margin-safety",
    "page-orientation",
    "paint-order",
    "pathname",
@@ -2674,33 +2674,19 @@ export const generatedProperties = [
   "longhands": [
    "grid-template-areas",
    "grid-template-columns",
-   "grid-lanes-direction",
-   "grid-lanes-fill"
+   "grid-lanes-direction"
   ],
   "name": "grid-lanes"
  },
  {
   "keywords": [
+   "normal",
    "row",
    "row-reverse",
    "column",
    "column-reverse"
   ],
   "name": "grid-lanes-direction"
- },
- {
-  "keywords": [
-   "normal",
-   "reverse"
-  ],
-  "name": "grid-lanes-fill"
- },
- {
-  "longhands": [
-   "grid-lanes-direction",
-   "grid-lanes-fill"
-  ],
-  "name": "grid-lanes-flow"
  },
  {
   "longhands": [
@@ -3542,6 +3528,14 @@ export const generatedProperties = [
    "break-inside"
   ],
   "name": "page-break-inside"
+ },
+ {
+  "keywords": [
+   "none",
+   "clamp",
+   "add"
+  ],
+  "name": "page-margin-safety"
  },
  {
   "name": "page-orientation"
@@ -6071,16 +6065,11 @@ export const generatedPropertyValues = {
  },
  "grid-lanes-direction": {
   "values": [
+   "normal",
    "row",
    "row-reverse",
    "column",
    "column-reverse"
-  ]
- },
- "grid-lanes-fill": {
-  "values": [
-   "normal",
-   "reverse"
   ]
  },
  "grid-row-end": {
@@ -6501,6 +6490,13 @@ export const generatedPropertyValues = {
  "page": {
   "values": [
    "auto"
+  ]
+ },
+ "page-margin-safety": {
+  "values": [
+   "none",
+   "clamp",
+   "add"
   ]
  },
  "paint-order": {

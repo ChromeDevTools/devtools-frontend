@@ -2843,6 +2843,7 @@ export const knownContextValues = new Set([
   'page-break-after',
   'page-break-before',
   'page-break-inside',
+  'page-margin-safety',
   'page-orientation',
   'paint-order',
   'painting',

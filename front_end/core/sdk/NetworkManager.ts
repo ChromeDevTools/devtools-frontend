@@ -1557,6 +1557,9 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
   deviceBoundSessionsAdded(_params: Protocol.Network.DeviceBoundSessionsAddedEvent): void {
   }
 
+  deviceBoundSessionEventOccurred(_params: Protocol.Network.DeviceBoundSessionEventOccurredEvent): void {
+  }
+
   policyUpdated(): void {
   }
 

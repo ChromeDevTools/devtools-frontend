@@ -13,6 +13,17 @@ describeWithMockConnection('DeviceBoundSessionsView', () => {
   const mockSessionId = 'session-id-123';
   const mockSite = 'https://example.com';
 
+  let toLocaleStringStub: sinon.SinonStub;
+  beforeEach(async () => {
+    const original = Date.prototype.toLocaleString;
+    toLocaleStringStub = sinon.stub(Date.prototype, 'toLocaleString').callsFake(function(this: Date) {
+      return original.call(this, 'en-US', {timeZone: 'UTC'});
+    });
+  });
+  afterEach(() => {
+    toLocaleStringStub.restore();
+  });
+
   function createMockSession(): Application.DeviceBoundSessionsModel.SessionAndEvents {
     return {
       eventsById: new Map(),
@@ -42,8 +53,8 @@ describeWithMockConnection('DeviceBoundSessionsView', () => {
             name: 'session_token',
             domain: 'example.com',
             path: '/',
-            secure: true,
-            httpOnly: true,
+            secure: false,
+            httpOnly: false,
             sameSite: Protocol.Network.CookieSameSite.Strict
           },
           {name: 'session_token2', domain: '.example.com', path: '/path', secure: false, httpOnly: false},
@@ -100,11 +111,89 @@ describeWithMockConnection('DeviceBoundSessionsView', () => {
     sinon.assert.calledTwice(getSessionStub);
   });
 
-  it('renders session details correctly', async () => {
+  it('renders session correctly', async () => {
     const viewInput = {sessionAndEvents: createMockSession()};
     const target = document.createElement('div');
     renderElementIntoDOM(target);
     Application.DeviceBoundSessionsView.DEFAULT_VIEW(viewInput, {}, target);
-    await assertScreenshot('application/DeviceBoundSessionsView/session_details.png');
+    await assertScreenshot('application/DeviceBoundSessionsView/session.png');
+  });
+
+  it('renders events correctly', async () => {
+    const sessionAndEvents = {
+      eventsById: new Map(),
+      session: undefined,
+    } as unknown as Application.DeviceBoundSessionsModel.SessionAndEvents;
+    const date = new Date('2026-01-01T10:00:00.000Z');
+    sessionAndEvents.eventsById.set('event-1', {
+      event: {
+        creationEventDetails: {fetchResult: Protocol.Network.DeviceBoundSessionFetchResult.Success},
+        succeeded: false,
+        eventId: 'event-1' as Protocol.Network.DeviceBoundSessionEventId,
+        site: mockSite,
+      },
+      timestamp: date
+    });
+
+    const viewInput = {sessionAndEvents};
+    const target = document.createElement('div');
+    renderElementIntoDOM(target);
+    Application.DeviceBoundSessionsView.DEFAULT_VIEW(viewInput, {}, target);
+    await assertScreenshot('application/DeviceBoundSessionsView/events.png');
+  });
+
+  it('renders session and events correctly', async () => {
+    const sessionAndEvents = createMockSession();
+    const dates = [
+      new Date('2026-01-01T10:00:00.000Z'), new Date('2026-01-02T10:00:00.000Z'), new Date('2026-01-03T10:00:00.000Z'),
+      new Date('2026-01-04T10:00:00.000Z')
+    ];
+
+    sessionAndEvents.eventsById.set('event-0', {
+      event: {
+        succeeded: true,
+        eventId: 'event-0' as Protocol.Network.DeviceBoundSessionEventId,
+        site: mockSite,
+        creationEventDetails: {fetchResult: Protocol.Network.DeviceBoundSessionFetchResult.Success}
+      },
+      timestamp: dates[0]
+    });
+    sessionAndEvents.eventsById.set('event-1', {
+      event: {
+        succeeded: false,
+        eventId: 'event-1' as Protocol.Network.DeviceBoundSessionEventId,
+        site: mockSite,
+        challengeEventDetails:
+            {challenge: 'challenge', challengeResult: Protocol.Network.ChallengeEventDetailsChallengeResult.Success}
+      },
+      timestamp: dates[1]
+    });
+    sessionAndEvents.eventsById.set('event-2', {
+      event: {
+        succeeded: true,
+        eventId: 'event-2' as Protocol.Network.DeviceBoundSessionEventId,
+        site: mockSite,
+        refreshEventDetails: {
+          refreshResult: Protocol.Network.RefreshEventDetailsRefreshResult.Refreshed,
+          wasFullyProactiveRefresh: false
+        }
+      },
+      timestamp: dates[2]
+    });
+    sessionAndEvents.eventsById.set('event-3', {
+      event: {
+        succeeded: false,
+        eventId: 'event-3' as Protocol.Network.DeviceBoundSessionEventId,
+        site: mockSite,
+        terminationEventDetails: {deletionReason: Protocol.Network.TerminationEventDetailsDeletionReason.Expired}
+      },
+      timestamp: dates[3]
+    });
+
+    const viewInput = {sessionAndEvents};
+    const target = document.createElement('div');
+    renderElementIntoDOM(target);
+    Application.DeviceBoundSessionsView.DEFAULT_VIEW(viewInput, {}, target);
+    await assertScreenshot('application/DeviceBoundSessionsView/session_and_events.png');
   });
 });

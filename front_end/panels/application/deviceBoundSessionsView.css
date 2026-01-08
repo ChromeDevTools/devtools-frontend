@@ -16,3 +16,7 @@
   scroll-behavior: smooth;
   padding-bottom: 20px;
 }
+
+.device-bound-session-no-events-wrapper {
+  padding: 0 20px;
+}

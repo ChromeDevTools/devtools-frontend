@@ -59,11 +59,12 @@ export class FormatPickerContextMenu {
     const wideSection = menu.section('wide');
     const colorFunctionSection = menu.section('color-function').appendSubMenuItem('color()', false, 'color').section();
 
-    disclamerSection.appendItem(i18nString(UIStrings.colorShiftWarning), () => {}, {disabled: true});
+    let hasGamutClipped = false;
 
     if (!(this.#color instanceof Common.Color.Nickname)) {
       const nickname = this.#color.asLegacyColor().nickname();
       if (nickname) {
+        hasGamutClipped ||= nickname.isGamutClipped();
         this.addColorToSection(nickname, legacySection, onSelect);
       }
     }
@@ -73,6 +74,7 @@ export class FormatPickerContextMenu {
           this.#color.as((this.#color.alpha ?? 1) === 1 ? Common.Color.Format.HEX : Common.Color.Format.HEXA)
                             .shortHex();
       if (shortHex) {
+        hasGamutClipped ||= shortHex.isGamutClipped();
         this.addColorToSection(shortHex, legacySection, onSelect);
       }
     }
@@ -85,7 +87,12 @@ export class FormatPickerContextMenu {
       const section = legacyFormats.includes(format)     ? legacySection :
           newColor instanceof Common.Color.ColorFunction ? colorFunctionSection :
                                                            wideSection;
+      hasGamutClipped ||= newColor.isGamutClipped();
       this.addColorToSection(newColor, section, onSelect);
+    }
+
+    if (hasGamutClipped) {
+      disclamerSection.appendItem(i18nString(UIStrings.colorShiftWarning), () => {}, {disabled: true});
     }
 
     await menu.show();

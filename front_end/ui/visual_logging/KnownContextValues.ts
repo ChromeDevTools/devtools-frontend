@@ -1253,6 +1253,7 @@ export const knownContextValues = new Set([
   'developer-resources',
   'development-origin',
   'device',
+  'device-bound-sessions',
   'device-fold',
   'device-frame-enable',
   'device-mode',

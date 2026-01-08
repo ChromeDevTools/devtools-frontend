@@ -6,7 +6,7 @@ import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 
-interface SessionAndEvents {
+export interface SessionAndEvents {
   session: Protocol.Network.DeviceBoundSession;
   // TODO(crbug.com/471017387): store events
 }

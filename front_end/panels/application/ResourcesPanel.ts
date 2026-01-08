@@ -13,6 +13,8 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {ApplicationPanelSidebar, StorageCategoryView} from './ApplicationPanelSidebar.js';
 import {CookieItemsView} from './CookieItemsView.js';
+import type {DeviceBoundSessionsModel} from './DeviceBoundSessionsModel.js';
+import {DeviceBoundSessionsView} from './DeviceBoundSessionsView.js';
 import {DOMStorageItemsView} from './DOMStorageItemsView.js';
 import type {DOMStorage} from './DOMStorageModel.js';
 import {ExtensionStorageItemsView} from './ExtensionStorageItemsView.js';
@@ -33,6 +35,7 @@ export class ResourcesPanel extends UI.Panel.PanelWithSidebar {
   private domStorageView: DOMStorageItemsView|null;
   private extensionStorageView: ExtensionStorageItemsView|null;
   private cookieView: CookieItemsView|null;
+  private deviceBoundSessionsView: DeviceBoundSessionsView|null;
   private readonly sidebar: ApplicationPanelSidebar;
 
   private constructor() {
@@ -58,6 +61,7 @@ export class ResourcesPanel extends UI.Panel.PanelWithSidebar {
     this.extensionStorageView = null;
 
     this.cookieView = null;
+    this.deviceBoundSessionsView = null;
 
     this.sidebar = new ApplicationPanelSidebar(this);
     this.sidebar.show(this.panelSidebarElement());
@@ -205,6 +209,14 @@ export class ResourcesPanel extends UI.Panel.PanelWithSidebar {
         this.cookieView.refreshItems();
       }
     });
+  }
+
+  showDeviceBoundSession(model: DeviceBoundSessionsModel, site: string, sessionId: string): void {
+    if (!this.deviceBoundSessionsView) {
+      this.deviceBoundSessionsView = new DeviceBoundSessionsView();
+    }
+    this.deviceBoundSessionsView.showSession(model, site, sessionId);
+    this.showView(this.deviceBoundSessionsView);
   }
 }
 

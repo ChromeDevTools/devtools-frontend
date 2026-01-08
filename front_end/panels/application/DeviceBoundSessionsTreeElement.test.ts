@@ -82,4 +82,24 @@ describeWithMockConnection('DeviceBoundSessionsTreeElement', () => {
     assert.strictEqual(root.childCount(), 1);
     assert.strictEqual(root.children()[0].childCount(), 1);
   });
+
+  it('shows the details view when a session tree element is selected', () => {
+    const showSessionSpy = sinon.spy();
+    mockPanel.showDeviceBoundSession = showSessionSpy;
+    const root = new Application.DeviceBoundSessionsTreeElement.RootTreeElement(mockPanel, model);
+    root.onbind();
+
+    const session = makeSession('example.com', 'session-123');
+    model.dispatchEventToListeners(
+        Application.DeviceBoundSessionsModel.DeviceBoundSessionModelEvents.INITIALIZE_SESSIONS, {sessions: [session]});
+
+    assert.strictEqual(root.childCount(), 1);
+    const siteNode = root.children()[0];
+    assert.strictEqual(siteNode.childCount(), 1);
+    const sessionNode = siteNode.children()[0];
+    sessionNode.onselect(false);
+
+    sinon.assert.calledOnce(showSessionSpy);
+    sinon.assert.calledWith(showSessionSpy, model, 'example.com', 'session-123');
+  });
 });

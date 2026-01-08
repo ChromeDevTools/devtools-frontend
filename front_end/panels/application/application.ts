@@ -10,6 +10,7 @@ import * as BounceTrackingMitigationsTreeElement from './BounceTrackingMitigatio
 import * as CookieItemsView from './CookieItemsView.js';
 import * as DeviceBoundSessionsModel from './DeviceBoundSessionsModel.js';
 import * as DeviceBoundSessionsTreeElement from './DeviceBoundSessionsTreeElement.js';
+import * as DeviceBoundSessionsView from './DeviceBoundSessionsView.js';
 import * as DOMStorageItemsView from './DOMStorageItemsView.js';
 import * as DOMStorageModel from './DOMStorageModel.js';
 import * as ExtensionStorageItemsView from './ExtensionStorageItemsView.js';
@@ -49,6 +50,7 @@ export {
   CookieItemsView,
   DeviceBoundSessionsModel,
   DeviceBoundSessionsTreeElement,
+  DeviceBoundSessionsView,
   DOMStorageItemsView,
   DOMStorageModel,
   ExtensionStorageItemsView,

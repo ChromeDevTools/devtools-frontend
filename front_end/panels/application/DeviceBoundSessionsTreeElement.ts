@@ -94,6 +94,13 @@ export class RootTreeElement extends ExpandableApplicationPanelTreeElement {
             new ApplicationPanelTreeElement(this.resourcesPanel, sessionId, false, 'device-bound-sessions-session');
         sessionElement.setLeadingIcons([createIcon('database')]);
         sessionElement.itemURL = `device-bound-sessions://${siteName}/${sessionId}` as Platform.DevToolsPath.UrlString;
+        const defaultOnSelect = sessionElement.onselect.bind(sessionElement);
+        sessionElement.onselect = (selectedByUser?: boolean): boolean => {
+          defaultOnSelect(selectedByUser);
+          this.resourcesPanel.showDeviceBoundSession(this.#model, siteName, sessionId);
+          return false;
+        };
+
         siteMapEntry.siteTreeElement.appendChild(sessionElement);
         siteMapEntry.sessions.add(sessionId);
       }

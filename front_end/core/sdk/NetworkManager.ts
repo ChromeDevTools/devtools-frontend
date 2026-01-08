@@ -386,6 +386,10 @@ export class NetworkManager extends SDKModel<EventTypes> {
     return await this.#networkAgent.invoke_enableReportingApi({enable});
   }
 
+  async enableDeviceBoundSessions(enable = true): Promise<Promise<Protocol.ProtocolResponseWithError>> {
+    return await this.#networkAgent.invoke_enableDeviceBoundSessions({enable});
+  }
+
   async loadNetworkResource(
       frameId: Protocol.Page.FrameId|null, url: Platform.DevToolsPath.UrlString,
       options: Protocol.Network.LoadNetworkResourceOptions): Promise<Protocol.Network.LoadNetworkResourcePageResult> {
@@ -414,6 +418,7 @@ export enum Events {
   ReportingApiReportAdded = 'ReportingApiReportAdded',
   ReportingApiReportUpdated = 'ReportingApiReportUpdated',
   ReportingApiEndpointsChangedForOrigin = 'ReportingApiEndpointsChangedForOrigin',
+  DeviceBoundSessionsAdded = 'DeviceBoundSessionsAdded',
   /* eslint-enable @typescript-eslint/naming-convention */
 }
 
@@ -445,6 +450,7 @@ export interface EventTypes {
   [Events.ReportingApiReportAdded]: Protocol.Network.ReportingApiReport;
   [Events.ReportingApiReportUpdated]: Protocol.Network.ReportingApiReport;
   [Events.ReportingApiEndpointsChangedForOrigin]: Protocol.Network.ReportingApiEndpointsChangedForOriginEvent;
+  [Events.DeviceBoundSessionsAdded]: Protocol.Network.DeviceBoundSession[];
 }
 
 /**
@@ -1555,6 +1561,7 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
   }
 
   deviceBoundSessionsAdded(_params: Protocol.Network.DeviceBoundSessionsAddedEvent): void {
+    this.#manager.dispatchEventToListeners(Events.DeviceBoundSessionsAdded, _params.sessions);
   }
 
   deviceBoundSessionEventOccurred(_params: Protocol.Network.DeviceBoundSessionEventOccurredEvent): void {

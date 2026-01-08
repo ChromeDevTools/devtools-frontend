@@ -505,6 +505,10 @@ interface DevToolsFlexibleLayout {
   verticalDrawerEnabled: boolean;
 }
 
+interface DeviceBoundSessionsDebugging {
+  enabled: boolean;
+}
+
 interface AiPromptApi {
   enabled: boolean;
   allowWithoutGpu: boolean;
@@ -566,6 +570,7 @@ export type HostConfig = Platform.TypeScriptUtilities.RecursivePartial<{
   devToolsGdpProfilesAvailability: GdpProfilesAvailability,
   devToolsLiveEdit: LiveEdit,
   devToolsFlexibleLayout: DevToolsFlexibleLayout,
+  deviceBoundSessionsDebugging: DeviceBoundSessionsDebugging,
   devToolsAiPromptApi: AiPromptApi,
   devToolsEnableDurableMessages: DevToolsEnableDurableMessages,
   devToolsAiAssistanceContextSelectionAgent: HostConfigAiAssistanceContextSelectionAgent,

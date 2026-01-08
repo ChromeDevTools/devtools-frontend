@@ -219,6 +219,7 @@ devtools_svg_sources = [
   "lighthouse_logo.svg",
   "list.svg",
   "location-on.svg",
+  "lock-person.svg",
   "lock.svg",
   "mark-email-unread.svg",
   "match-case.svg",

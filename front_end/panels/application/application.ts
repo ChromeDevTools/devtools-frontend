@@ -8,6 +8,8 @@ import * as BackgroundServiceModel from './BackgroundServiceModel.js';
 import * as BackgroundServiceView from './BackgroundServiceView.js';
 import * as BounceTrackingMitigationsTreeElement from './BounceTrackingMitigationsTreeElement.js';
 import * as CookieItemsView from './CookieItemsView.js';
+import * as DeviceBoundSessionsModel from './DeviceBoundSessionsModel.js';
+import * as DeviceBoundSessionsTreeElement from './DeviceBoundSessionsTreeElement.js';
 import * as DOMStorageItemsView from './DOMStorageItemsView.js';
 import * as DOMStorageModel from './DOMStorageModel.js';
 import * as ExtensionStorageItemsView from './ExtensionStorageItemsView.js';
@@ -45,6 +47,8 @@ export {
   BackgroundServiceView,
   BounceTrackingMitigationsTreeElement,
   CookieItemsView,
+  DeviceBoundSessionsModel,
+  DeviceBoundSessionsTreeElement,
   DOMStorageItemsView,
   DOMStorageModel,
   ExtensionStorageItemsView,

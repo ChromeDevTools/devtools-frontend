@@ -10,6 +10,7 @@ import type {ResourcesPanel} from './ResourcesPanel.js';
 
 export class ApplicationPanelTreeElement extends UI.TreeOutline.TreeElement {
   protected readonly resourcesPanel: ResourcesPanel;
+  private customItemURL?: Platform.DevToolsPath.UrlString;
 
   constructor(resourcesPanel: ResourcesPanel, title: string, expandable: boolean, jslogContext: string) {
     super(title, expandable, jslogContext);
@@ -24,7 +25,14 @@ export class ApplicationPanelTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   get itemURL(): Platform.DevToolsPath.UrlString {
+    if (this.customItemURL) {
+      return this.customItemURL;
+    }
     throw new Error('Unimplemented Method');
+  }
+
+  set itemURL(value: Platform.DevToolsPath.UrlString) {
+    this.customItemURL = value;
   }
 
   override onselect(selectedByUser: boolean|undefined): boolean {
@@ -74,6 +82,10 @@ export class ExpandableApplicationPanelTreeElement extends ApplicationPanelTreeE
 
   override get itemURL(): Platform.DevToolsPath.UrlString {
     return 'category://' + this.categoryName as Platform.DevToolsPath.UrlString;
+  }
+
+  override set itemURL(value: Platform.DevToolsPath.UrlString) {
+    super.itemURL = value;
   }
 
   setLink(link: Platform.DevToolsPath.UrlString): void {

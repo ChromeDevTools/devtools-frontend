@@ -401,6 +401,12 @@ describeWithEnvironment('generatePreconnectCandidates', () => {
       byId: new Map<string, Trace.Types.Events.SyntheticNetworkRequest>(),
       linkPreconnectEvents: [] as Trace.Types.Events.LinkPreconnect[],
     },
+    Renderer: {
+      entryToNode: new Map(),
+    },
+    Samples: {
+      entryToNode: new Map(),
+    }
   } as Trace.Handlers.Types.HandlerData;
 
   const mockContext = {
@@ -444,6 +450,10 @@ describeWithEnvironment('generatePreconnectCandidates', () => {
       },
     },
     ts: 0,
+    rawSourceEvent: {
+      cat: 'devtools.timeline',
+      name: 'ResourceSendRequest',
+    }
   } as unknown as Trace.Types.Events.SyntheticNetworkRequest;
 
   const validRequest: Trace.Types.Events.SyntheticNetworkRequest = {
@@ -455,6 +465,10 @@ describeWithEnvironment('generatePreconnectCandidates', () => {
       },
     },
     ts: 1500,
+    rawSourceEvent: {
+      cat: 'devtools.timeline',
+      name: 'ResourceSendRequest',
+    }
   } as unknown as Trace.Types.Events.SyntheticNetworkRequest;
 
   beforeEach(() => {

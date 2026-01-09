@@ -6,6 +6,7 @@ import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as Protocol from '../../../generated/protocol.js';
+import * as Extras from '../extras/extras.js';
 import type * as Handlers from '../handlers/handlers.js';
 import * as Helpers from '../helpers/helpers.js';
 import type * as Lantern from '../lantern/lantern.js';
@@ -549,10 +550,8 @@ function candidateRequestsByOrigin(
       return;
     }
 
-    // Filter out all resources that are loaded by the document. Connections are already early.
-    // TODO(jacktfranklin, b/392090449): swap this over to use the initiator
-    // lookup that fixes bugs with dynamically injected content.
-    if (data.NetworkRequests.incompleteInitiator.get(request) === mainResource) {
+    const initiator = Extras.Initiators.getNetworkInitiator(data, request);
+    if (initiator === mainResource) {
       return;
     }
 

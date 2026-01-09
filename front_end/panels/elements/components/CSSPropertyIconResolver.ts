@@ -108,6 +108,41 @@ export function rotateFlexDirectionIcon(direction: PhysicalDirection): IconInfo 
   };
 }
 
+/**
+ * Rotates the grid direction icon in such way that it indicates
+ * the desired `direction` and the arrow in the icon is always at the bottom
+ * or at the right.
+ *
+ * By default, the icon is pointing top-down with the arrow on the right-hand side.
+ */
+export function rotateGridDirectionIcon(direction: PhysicalDirection): IconInfo {
+  // Default to LTR.
+  let flipX = true;
+  let flipY = false;
+  let rotate = -90;
+
+  if (direction === PhysicalDirection.RIGHT_TO_LEFT) {
+    rotate = 90;
+    flipY = false;
+    flipX = false;
+  } else if (direction === PhysicalDirection.TOP_TO_BOTTOM) {
+    rotate = 0;
+    flipX = false;
+    flipY = false;
+  } else if (direction === PhysicalDirection.BOTTOM_TO_TOP) {
+    rotate = 0;
+    flipX = false;
+    flipY = true;
+  }
+
+  return {
+    iconName: 'grid-direction',
+    rotate,
+    scaleX: flipX ? -1 : 1,
+    scaleY: flipY ? -1 : 1,
+  };
+}
+
 export function rotateAlignContentIcon(iconName: string, direction: PhysicalDirection): IconInfo {
   return {
     iconName,
@@ -156,6 +191,14 @@ function flexDirectionIcon(value: string): (styles: ComputedStyles) => IconInfo 
   return getIcon;
 }
 
+function gridDirectionIcon(value: string): (styles: ComputedStyles) => IconInfo {
+  function getIcon(computedStyles: ComputedStyles): IconInfo {
+    const directions = getPhysicalDirections(computedStyles);
+    return rotateGridDirectionIcon(directions[value]);
+  }
+  return getIcon;
+}
+
 function flexAlignContentIcon(iconName: string): (styles: ComputedStyles) => IconInfo {
   function getIcon(computedStyles: ComputedStyles): IconInfo {
     const directions = getPhysicalDirections(computedStyles);
@@ -178,7 +221,9 @@ function flexAlignContentIcon(iconName: string): (styles: ComputedStyles) => Ico
 function gridAlignContentIcon(iconName: string): (styles: ComputedStyles) => IconInfo {
   function getIcon(computedStyles: ComputedStyles): IconInfo {
     const directions = getPhysicalDirections(computedStyles);
-    return rotateAlignContentIcon(iconName, directions.column);
+    const gridAutoFlow = computedStyles.get('grid-auto-flow') || 'row';
+    const direction = gridAutoFlow.includes('column') ? directions.row : directions.column;
+    return rotateAlignContentIcon(iconName, direction);
   }
   return getIcon;
 }
@@ -194,7 +239,9 @@ function flexJustifyContentIcon(iconName: string): (styles: ComputedStyles) => I
 function gridJustifyContentIcon(iconName: string): (styles: ComputedStyles) => IconInfo {
   function getIcon(computedStyles: ComputedStyles): IconInfo {
     const directions = getPhysicalDirections(computedStyles);
-    return rotateJustifyContentIcon(iconName, directions.row);
+    const gridAutoFlow = computedStyles.get('grid-auto-flow') || 'row';
+    const direction = gridAutoFlow.includes('column') ? directions.column : directions.row;
+    return rotateJustifyContentIcon(iconName, direction);
   }
   return getIcon;
 }
@@ -202,7 +249,9 @@ function gridJustifyContentIcon(iconName: string): (styles: ComputedStyles) => I
 function gridJustifyItemsIcon(iconName: string): (styles: ComputedStyles) => IconInfo {
   function getIcon(computedStyles: ComputedStyles): IconInfo {
     const directions = getPhysicalDirections(computedStyles);
-    return rotateJustifyItemsIcon(iconName, directions.row);
+    const gridAutoFlow = computedStyles.get('grid-auto-flow') || 'row';
+    const direction = gridAutoFlow.includes('column') ? directions.column : directions.row;
+    return rotateJustifyItemsIcon(iconName, direction);
   }
   return getIcon;
 }
@@ -229,7 +278,9 @@ function flexAlignItemsIcon(iconName: string): (styles: ComputedStyles) => IconI
 function gridAlignItemsIcon(iconName: string): (styles: ComputedStyles) => IconInfo {
   function getIcon(computedStyles: ComputedStyles): IconInfo {
     const directions = getPhysicalDirections(computedStyles);
-    return rotateAlignItemsIcon(iconName, directions.column);
+    const gridAutoFlow = computedStyles.get('grid-auto-flow') || 'row';
+    const direction = gridAutoFlow.includes('column') ? directions.row : directions.column;
+    return rotateAlignItemsIcon(iconName, direction);
   }
   return getIcon;
 }
@@ -338,6 +389,8 @@ const flexItemIcons = new Map([
 ]);
 
 const gridContainerIcons = new Map([
+  ['grid-auto-flow: row', gridDirectionIcon('row')],
+  ['grid-auto-flow: column', gridDirectionIcon('column')],
   ['align-content: center', gridAlignContentIcon('align-content-center')],
   ['align-content: space-around', gridAlignContentIcon('align-content-space-around')],
   ['align-content: space-between', gridAlignContentIcon('align-content-space-between')],

@@ -113,6 +113,7 @@ describe('StylePropertyEditor', () => {
       renderElementIntoDOM(component);
       component.data = {
         authoredProperties: new Map([
+          ['grid-auto-flow', 'column'],
           ['align-content', 'end'],
           ['justify-content', 'start'],
           ['align-items', 'start'],
@@ -121,6 +122,7 @@ describe('StylePropertyEditor', () => {
         computedProperties: new Map(),
       };
       assertValues(component, [
+        'grid-auto-flow: column',
         'align-content: end',
         'justify-content: start',
         'align-items: start',
@@ -129,6 +131,7 @@ describe('StylePropertyEditor', () => {
       component.data = {
         authoredProperties: new Map(),
         computedProperties: new Map([
+          ['grid-auto-flow', 'row dense'],
           ['align-content', 'end'],
           ['justify-content', 'start'],
           ['align-items', 'start'],
@@ -136,6 +139,7 @@ describe('StylePropertyEditor', () => {
         ]),
       };
       assertValues(component, [
+        'grid-auto-flow: row dense',
         'align-content: end',
         'justify-content: start',
         'align-items: start',
@@ -145,7 +149,70 @@ describe('StylePropertyEditor', () => {
         authoredProperties: new Map(),
         computedProperties: new Map(),
       };
-      assertValues(component, ['align-content:', 'justify-content:', 'align-items:', 'justify-items:']);
+      assertValues(
+          component, ['grid-auto-flow:', 'align-content:', 'justify-content:', 'align-items:', 'justify-items:']);
+    });
+
+    it('allows selecting a grid-auto-flow property value', async () => {
+      const component = new ElementsComponents.StylePropertyEditor.GridEditor();
+      renderElementIntoDOM(component);
+      component.data = {
+        authoredProperties: new Map(),
+        computedProperties: new Map([
+          ['grid-auto-flow', 'row'],
+        ]),
+      };
+      assertValues(component, [
+        'grid-auto-flow: row',
+        'align-content:',
+        'justify-content:',
+        'align-items:',
+        'justify-items:',
+      ]);
+      const eventPromise =
+          getEventPromise<ElementsComponents.StylePropertyEditor.PropertySelectedEvent>(component, 'propertyselected');
+      const gridAutoFlowColumnButton =
+          component.shadowRoot!.querySelector('.row:nth-child(1) .buttons .button:nth-child(2)');
+      assert.instanceOf(gridAutoFlowColumnButton, HTMLButtonElement);
+      gridAutoFlowColumnButton.click();
+      const event = await eventPromise;
+      assert.deepEqual(event.data, {name: 'grid-auto-flow', value: 'column'});
+    });
+
+    it('allows toggling dense checkbox with direction selected', async () => {
+      const component = new ElementsComponents.StylePropertyEditor.GridEditor();
+      renderElementIntoDOM(component);
+      component.data = {
+        authoredProperties: new Map([
+          ['grid-auto-flow', 'row'],
+        ]),
+        computedProperties: new Map(),
+      };
+      const eventPromise =
+          getEventPromise<ElementsComponents.StylePropertyEditor.PropertySelectedEvent>(component, 'propertyselected');
+      const denseCheckbox = component.shadowRoot!.querySelector('.row:nth-child(1) .buttons devtools-checkbox');
+      assert.instanceOf(denseCheckbox, HTMLElement);
+      denseCheckbox.click();
+      const event = await eventPromise;
+      assert.deepEqual(event.data, {name: 'grid-auto-flow', value: 'row dense'});
+    });
+
+    it('allows toggling dense checkbox without direction selected', async () => {
+      const component = new ElementsComponents.StylePropertyEditor.GridEditor();
+      renderElementIntoDOM(component);
+      component.data = {
+        authoredProperties: new Map(),
+        computedProperties: new Map([
+          ['grid-auto-flow', 'row'],
+        ]),
+      };
+      const eventPromise =
+          getEventPromise<ElementsComponents.StylePropertyEditor.PropertySelectedEvent>(component, 'propertyselected');
+      const denseCheckbox = component.shadowRoot!.querySelector('.row:nth-child(1) .buttons devtools-checkbox');
+      assert.instanceOf(denseCheckbox, HTMLElement);
+      denseCheckbox.click();
+      const event = await eventPromise;
+      assert.deepEqual(event.data, {name: 'grid-auto-flow', value: 'dense'});
     });
 
     it('allows selecting a property value', async () => {
@@ -157,10 +224,12 @@ describe('StylePropertyEditor', () => {
           ['justify-items', 'normal'],
         ]),
       };
-      assertValues(component, ['align-content:', 'justify-content:', 'align-items:', 'justify-items: normal']);
+      assertValues(
+          component,
+          ['grid-auto-flow:', 'align-content:', 'justify-content:', 'align-items:', 'justify-items: normal']);
       const eventPromise =
           getEventPromise<ElementsComponents.StylePropertyEditor.PropertySelectedEvent>(component, 'propertyselected');
-      const justifyItemsButton = component.shadowRoot!.querySelector('.row:nth-child(4) .buttons .button:nth-child(1)');
+      const justifyItemsButton = component.shadowRoot!.querySelector('.row:nth-child(5) .buttons .button:nth-child(1)');
       assert.instanceOf(justifyItemsButton, HTMLButtonElement);
       justifyItemsButton.click();
       const event = await eventPromise;
@@ -176,10 +245,12 @@ describe('StylePropertyEditor', () => {
         ]),
         computedProperties: new Map(),
       };
-      assertValues(component, ['align-content:', 'justify-content:', 'align-items:', 'justify-items: center']);
+      assertValues(
+          component,
+          ['grid-auto-flow:', 'align-content:', 'justify-content:', 'align-items:', 'justify-items: center']);
       const eventPromise = getEventPromise<ElementsComponents.StylePropertyEditor.PropertyDeselectedEvent>(
           component, 'propertydeselected');
-      const justifyItemsButton = component.shadowRoot!.querySelector('.row:nth-child(4) .buttons .button:nth-child(1)');
+      const justifyItemsButton = component.shadowRoot!.querySelector('.row:nth-child(5) .buttons .button:nth-child(1)');
       assert.instanceOf(justifyItemsButton, HTMLButtonElement);
       justifyItemsButton.click();
       const event = await eventPromise;

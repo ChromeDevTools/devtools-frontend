@@ -349,6 +349,10 @@ class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMTemplate {
     }
   }
 
+  deselectRow(): void {
+    this.#dataGrid.selectedNode?.deselect();
+  }
+
   #updateCreationNode(): void {
     if (this.#usedCreationNode) {
       DataGridElementNode.remove(this.#usedCreationNode);

@@ -65,6 +65,87 @@ describeWithMockConnection('DeviceBoundSessionsView', () => {
     };
   }
 
+  function createMockSessionAndEvents(): Application.DeviceBoundSessionsModel.SessionAndEvents {
+    const sessionAndEvents = createMockSession();
+
+    const dates = [
+      new Date('2026-01-01T10:00:00.000Z'), new Date('2026-01-02T10:00:00.000Z'), new Date('2026-01-03T10:00:00.000Z'),
+      new Date('2026-01-04T10:00:00.000Z')
+    ];
+
+    sessionAndEvents.eventsById.set('creation-full', {
+      event: {
+        eventId: 'creation-full' as Protocol.Network.DeviceBoundSessionEventId,
+        site: mockSite,
+        sessionId: mockSessionId,
+        succeeded: true,
+        creationEventDetails:
+            {fetchResult: Protocol.Network.DeviceBoundSessionFetchResult.Success, newSession: sessionAndEvents.session}
+      },
+      timestamp: dates[0]
+    });
+    sessionAndEvents.eventsById.set('creation-min', {
+      event: {
+        eventId: 'creation-min' as Protocol.Network.DeviceBoundSessionEventId,
+        site: mockSite,
+        sessionId: mockSessionId,
+        succeeded: false,
+        creationEventDetails: {fetchResult: Protocol.Network.DeviceBoundSessionFetchResult.KeyError}
+      },
+      timestamp: dates[0]
+    });
+    sessionAndEvents.eventsById.set('refresh-full', {
+      event: {
+        eventId: 'event-full' as Protocol.Network.DeviceBoundSessionEventId,
+        site: mockSite,
+        sessionId: mockSessionId,
+        succeeded: true,
+        refreshEventDetails: {
+          refreshResult: Protocol.Network.RefreshEventDetailsRefreshResult.Refreshed,
+          wasFullyProactiveRefresh: false,
+          fetchResult: Protocol.Network.DeviceBoundSessionFetchResult.Success,
+          newSession: sessionAndEvents.session
+        }
+      },
+      timestamp: dates[1]
+    });
+    sessionAndEvents.eventsById.set('refresh-min', {
+      event: {
+        eventId: 'event-min' as Protocol.Network.DeviceBoundSessionEventId,
+        site: mockSite,
+        sessionId: mockSessionId,
+        succeeded: false,
+        refreshEventDetails: {
+          refreshResult: Protocol.Network.RefreshEventDetailsRefreshResult.FatalError,
+          wasFullyProactiveRefresh: true
+        }
+      },
+      timestamp: dates[1]
+    });
+    sessionAndEvents.eventsById.set('challenge', {
+      event: {
+        succeeded: false,
+        eventId: 'challlenge' as Protocol.Network.DeviceBoundSessionEventId,
+        site: mockSite,
+        sessionId: mockSessionId,
+        challengeEventDetails:
+            {challenge: 'challenge', challengeResult: Protocol.Network.ChallengeEventDetailsChallengeResult.Success}
+      },
+      timestamp: dates[2]
+    });
+    sessionAndEvents.eventsById.set('termination', {
+      event: {
+        succeeded: false,
+        eventId: 'termination' as Protocol.Network.DeviceBoundSessionEventId,
+        sessionId: mockSessionId,
+        site: mockSite,
+        terminationEventDetails: {deletionReason: Protocol.Network.TerminationEventDetailsDeletionReason.Expired}
+      },
+      timestamp: dates[3]
+    });
+    return sessionAndEvents;
+  }
+
   function createSetting() {
     return Common.Settings.Settings.instance().createSetting('device-bound-sessions-preserve-log', false);
   }
@@ -118,7 +199,6 @@ describeWithMockConnection('DeviceBoundSessionsView', () => {
     assert.deepEqual(viewFunction.input.sessionAndEvents, newMockData);
     sinon.assert.calledTwice(getSessionStub);
   });
-
   it('shows default view with title and description', async () => {
     const viewFunction = createViewFunctionStub(Application.DeviceBoundSessionsView.DeviceBoundSessionsView);
     const view = new Application.DeviceBoundSessionsView.DeviceBoundSessionsView(viewFunction);
@@ -163,22 +243,89 @@ describeWithMockConnection('DeviceBoundSessionsView', () => {
     assert.isUndefined(viewFunction.input.defaultDescription);
   });
 
+  it('passes the selected event to the view when onEventRowSelected is called', () => {
+    const viewFunction = sinon.stub();
+    const component = new Application.DeviceBoundSessionsView.DeviceBoundSessionsView(viewFunction);
+
+    const mockModel = {
+      getSession: sinon.stub().returns({session: null, eventsById: new Map()}),
+      addEventListener: sinon.stub(),
+      removeEventListener: sinon.stub(),
+      getPreserveLogSetting: sinon.stub().returns(createSetting()),
+    } as unknown as Application.DeviceBoundSessionsModel.DeviceBoundSessionsModel;
+
+    const mockEvent = {creationEventDetails: {fetchResult: Protocol.Network.DeviceBoundSessionFetchResult.Success}} as
+        Protocol.Network.DeviceBoundSessionEventOccurredEvent;
+
+    component.showSession(mockModel, 'example.com');
+
+    sinon.assert.calledOnce(viewFunction);
+    const firstCallInput = viewFunction.lastCall.args[0];
+    assert.isUndefined(firstCallInput.selectedEvent);
+    assert.isFunction(firstCallInput.onEventRowSelected);
+
+    firstCallInput.onEventRowSelected(mockEvent);
+
+    sinon.assert.calledTwice(viewFunction);
+    const secondCallInput = viewFunction.lastCall.args[0];
+    assert.strictEqual(secondCallInput.selectedEvent, mockEvent);
+  });
+
+  it('only deselects the event grid row when selectedEvent is undefined', async () => {
+    const sessionAndEvents = createMockSessionAndEvents();
+    const eventWrapper1 = sessionAndEvents.eventsById.get('creation-full');
+    const eventWrapper2 = sessionAndEvents.eventsById.get('refresh-full');
+    assert.exists(eventWrapper1);
+    assert.exists(eventWrapper2);
+
+    const viewInput = {
+      sessionAndEvents,
+      preserveLogSetting: createSetting(),
+      selectedEvent: undefined,
+      onEventRowSelected: () => {},
+    };
+
+    const target = document.createElement('div');
+    renderElementIntoDOM(target);
+    Application.DeviceBoundSessionsView.DEFAULT_VIEW(viewInput, {}, target);
+
+    const dataGrid = customElements.get('devtools-data-grid');
+    assert.exists(dataGrid);
+    assert.isFunction(dataGrid.prototype.deselectRow);
+    const deselectSpy = sinon.spy(dataGrid.prototype, 'deselectRow');
+
+    Application.DeviceBoundSessionsView.DEFAULT_VIEW({...viewInput, selectedEvent: eventWrapper1.event}, {}, target);
+    sinon.assert.notCalled(deselectSpy);
+    Application.DeviceBoundSessionsView.DEFAULT_VIEW({...viewInput, selectedEvent: eventWrapper2.event}, {}, target);
+    sinon.assert.notCalled(deselectSpy);
+    Application.DeviceBoundSessionsView.DEFAULT_VIEW(viewInput, {}, target);
+    sinon.assert.calledOnce(deselectSpy);
+
+    deselectSpy.restore();
+  });
+
   it('renders session correctly', async () => {
     const viewInput = {
       sessionAndEvents: createMockSession(),
       preserveLogSetting: createSetting(),
+      selectedEvent: undefined,
+      onEventRowSelected: () => {},
     };
     const target = document.createElement('div');
+    target.style.width = '800px';
+    target.style.height = '800px';
+    target.style.display = 'flex';
+    target.style.flexDirection = 'column';
     renderElementIntoDOM(target);
     Application.DeviceBoundSessionsView.DEFAULT_VIEW(viewInput, {}, target);
     await assertScreenshot('application/DeviceBoundSessionsView/session.png');
   });
 
   it('renders events correctly', async () => {
-    const sessionAndEvents = {
+    const sessionAndEvents: Application.DeviceBoundSessionsModel.SessionAndEvents = {
       eventsById: new Map(),
       session: undefined,
-    } as unknown as Application.DeviceBoundSessionsModel.SessionAndEvents;
+    };
     const date = new Date('2026-01-01T10:00:00.000Z');
     sessionAndEvents.eventsById.set('event-1', {
       event: {
@@ -193,66 +340,32 @@ describeWithMockConnection('DeviceBoundSessionsView', () => {
     const viewInput = {
       sessionAndEvents,
       preserveLogSetting: createSetting(),
+      selectedEvent: undefined,
+      onEventRowSelected: () => {},
     };
     const target = document.createElement('div');
+    target.style.width = '800px';
+    target.style.height = '400px';
+    target.style.display = 'flex';
+    target.style.flexDirection = 'column';
     renderElementIntoDOM(target);
     Application.DeviceBoundSessionsView.DEFAULT_VIEW(viewInput, {}, target);
     await assertScreenshot('application/DeviceBoundSessionsView/events.png');
   });
 
   it('renders session and events correctly', async () => {
-    const sessionAndEvents = createMockSession();
-    const dates = [
-      new Date('2026-01-01T10:00:00.000Z'), new Date('2026-01-02T10:00:00.000Z'), new Date('2026-01-03T10:00:00.000Z'),
-      new Date('2026-01-04T10:00:00.000Z')
-    ];
-
-    sessionAndEvents.eventsById.set('event-0', {
-      event: {
-        succeeded: true,
-        eventId: 'event-0' as Protocol.Network.DeviceBoundSessionEventId,
-        site: mockSite,
-        creationEventDetails: {fetchResult: Protocol.Network.DeviceBoundSessionFetchResult.Success}
-      },
-      timestamp: dates[0]
-    });
-    sessionAndEvents.eventsById.set('event-1', {
-      event: {
-        succeeded: false,
-        eventId: 'event-1' as Protocol.Network.DeviceBoundSessionEventId,
-        site: mockSite,
-        challengeEventDetails:
-            {challenge: 'challenge', challengeResult: Protocol.Network.ChallengeEventDetailsChallengeResult.Success}
-      },
-      timestamp: dates[1]
-    });
-    sessionAndEvents.eventsById.set('event-2', {
-      event: {
-        succeeded: true,
-        eventId: 'event-2' as Protocol.Network.DeviceBoundSessionEventId,
-        site: mockSite,
-        refreshEventDetails: {
-          refreshResult: Protocol.Network.RefreshEventDetailsRefreshResult.Refreshed,
-          wasFullyProactiveRefresh: false
-        }
-      },
-      timestamp: dates[2]
-    });
-    sessionAndEvents.eventsById.set('event-3', {
-      event: {
-        succeeded: false,
-        eventId: 'event-3' as Protocol.Network.DeviceBoundSessionEventId,
-        site: mockSite,
-        terminationEventDetails: {deletionReason: Protocol.Network.TerminationEventDetailsDeletionReason.Expired}
-      },
-      timestamp: dates[3]
-    });
-
+    const sessionAndEvents = createMockSessionAndEvents();
     const viewInput = {
       sessionAndEvents,
       preserveLogSetting: createSetting(),
+      selectedEvent: undefined,
+      onEventRowSelected: () => {},
     };
     const target = document.createElement('div');
+    target.style.width = '800px';
+    target.style.height = '850px';
+    target.style.display = 'flex';
+    target.style.flexDirection = 'column';
     renderElementIntoDOM(target);
     Application.DeviceBoundSessionsView.DEFAULT_VIEW(viewInput, {}, target);
     await assertScreenshot('application/DeviceBoundSessionsView/session_and_events.png');
@@ -272,5 +385,64 @@ describeWithMockConnection('DeviceBoundSessionsView', () => {
     renderElementIntoDOM(target);
     Application.DeviceBoundSessionsView.DEFAULT_VIEW(viewInput, {}, target);
     await assertScreenshot('application/DeviceBoundSessionsView/default_view.png');
+  });
+
+  it('renders event details default view correctly', async () => {
+    const sessionAndEvents = createMockSessionAndEvents();
+    const selectedEvent = sessionAndEvents.eventsById.get('creation-min');
+    assert.isDefined(selectedEvent);
+    const viewInput = {
+      sessionAndEvents,
+      preserveLogSetting: createSetting(),
+      selectedEvent: selectedEvent.event,
+      onEventRowSelected: () => {},
+    };
+    const target = document.createElement('div');
+    target.style.width = '800px';
+    target.style.height = '800px';
+    target.style.display = 'flex';
+    target.style.flexDirection = 'column';
+
+    renderElementIntoDOM(target);
+    Application.DeviceBoundSessionsView.DEFAULT_VIEW(viewInput, {}, target);
+    await assertScreenshot(`application/DeviceBoundSessionsView/session_and_events_and_event_details.png`);
+  });
+
+  // These just display the event details portion because otherwise the height
+  // is cropped and not all details are shown.
+  async function runEventDetailsTest(eventId: string, screenshotFileName: string) {
+    const sessionAndEvents = createMockSessionAndEvents();
+    const selectedEvent = sessionAndEvents.eventsById.get(eventId);
+    assert.isDefined(selectedEvent);
+    const viewInput = {
+      sessionAndEvents,
+      preserveLogSetting: createSetting(),
+      selectedEvent: selectedEvent.event,
+      onEventRowSelected: () => {},
+    };
+    const target = document.createElement('div');
+    Application.DeviceBoundSessionsView.DEFAULT_VIEW(viewInput, {}, target);
+    const eventDetailContents = target.querySelector('.device-bound-session-sidebar');
+    assert.isNotNull(eventDetailContents);
+    renderElementIntoDOM(eventDetailContents);
+    await assertScreenshot(screenshotFileName);
+  }
+  it('renders creation full details correctly', async () => {
+    await runEventDetailsTest('creation-full', 'application/DeviceBoundSessionsView/creation_full_event_details.png');
+  });
+  it('renders creation minimal event details correctly', async () => {
+    await runEventDetailsTest('creation-min', 'application/DeviceBoundSessionsView/creation_min_event_details.png');
+  });
+  it('renders refresh full details correctly', async () => {
+    await runEventDetailsTest('refresh-full', 'application/DeviceBoundSessionsView/refresh_full_event_details.png');
+  });
+  it('renders refresh minimal details correctly', async () => {
+    await runEventDetailsTest('refresh-min', 'application/DeviceBoundSessionsView/refresh_min_event_details.png');
+  });
+  it('renders challenge event details correctly', async () => {
+    await runEventDetailsTest('challenge', 'application/DeviceBoundSessionsView/challenge_event_details.png');
+  });
+  it('renders termination event details correctly', async () => {
+    await runEventDetailsTest('termination', 'application/DeviceBoundSessionsView/termination_event_details.png');
   });
 });

@@ -219,6 +219,7 @@ style.setProperty('--image-file-lightbulb', 'url(\"' + new URL('./src/lightbulb.
 style.setProperty('--image-file-lighthouse_logo', 'url(\"' + new URL('./src/lighthouse_logo.svg', import.meta.url).toString() + '\")');
 style.setProperty('--image-file-list', 'url(\"' + new URL('./src/list.svg', import.meta.url).toString() + '\")');
 style.setProperty('--image-file-location-on', 'url(\"' + new URL('./src/location-on.svg', import.meta.url).toString() + '\")');
+style.setProperty('--image-file-lock-person', 'url(\"' + new URL('./src/lock-person.svg', import.meta.url).toString() + '\")');
 style.setProperty('--image-file-lock', 'url(\"' + new URL('./src/lock.svg', import.meta.url).toString() + '\")');
 style.setProperty('--image-file-mark-email-unread', 'url(\"' + new URL('./src/mark-email-unread.svg', import.meta.url).toString() + '\")');
 style.setProperty('--image-file-match-case', 'url(\"' + new URL('./src/match-case.svg', import.meta.url).toString() + '\")');

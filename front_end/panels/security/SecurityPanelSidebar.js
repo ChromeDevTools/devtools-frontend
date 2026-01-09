@@ -175,7 +175,6 @@ export class SecurityPanelSidebar extends UI.Widget.VBox {
     }
     #createOriginGroupElement(originGroupTitle, originGroupIcon) {
         const originGroup = new UI.TreeOutline.TreeElement(originGroupTitle, true);
-        originGroup.selectable = false;
         originGroup.expand();
         originGroup.listItemElement.classList.add('security-sidebar-origins');
         if (originGroupIcon) {

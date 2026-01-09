@@ -15,7 +15,7 @@ import * as PanelCommon from '../common/common.js';
 import consoleInsightTeaserStyles from './consoleInsightTeaser.css.js';
 import { ConsoleViewMessage } from './ConsoleViewMessage.js';
 import { PromptBuilder } from './PromptBuilder.js';
-const { render, html } = Lit;
+const { render, html, Directives: { ref } } = Lit;
 const BUILT_IN_AI_DOCUMENTATION = 'https://developer.chrome.com/docs/ai/built-in';
 const UIStringsNotTranslate = {
     /**
@@ -299,7 +299,7 @@ function renderTeaser(input) {
   `;
     // clang-format on
 }
-export const DEFAULT_VIEW = (input, _output, target) => {
+export const DEFAULT_VIEW = (input, output, target) => {
     if (input.isInactive) {
         render(Lit.nothing, target);
         return;
@@ -308,8 +308,11 @@ export const DEFAULT_VIEW = (input, _output, target) => {
     render(html `
     <style>${consoleInsightTeaserStyles}</style>
     <devtools-tooltip
+      ${ref(element => {
+        output.tooltip = element;
+    })}
       id=${'teaser-' + input.uuid}
-      hover-delay=500
+      hover-delay=1000
       variant="rich"
       vertical-distance-increase=-6
       prefer-span-left
@@ -355,6 +358,7 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
     #state;
     #eventListeners = [];
     #isForWarning;
+    #callShowTooltip = false;
     constructor(uuid, consoleViewMessage, element, view) {
         super(element);
         this.#view = view ?? DEFAULT_VIEW;
@@ -367,6 +371,7 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
         this.#boundOnSessionCreation = this.#onSessionCreation.bind(this);
         this.#builtInAi = AiAssistanceModel.BuiltInAi.BuiltInAi.instance();
         this.#state = this.#builtInAi.hasSession() ? "ready" /* State.READY */ : "no-model" /* State.NO_MODEL */;
+        this.#callShowTooltip = true;
         this.requestUpdate();
     }
     #getConsoleInsightsEnabledSetting() {
@@ -517,6 +522,7 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
             clearTimeout(this.#timeoutId);
         }
         Common.EventTarget.removeEventListeners(this.#eventListeners);
+        return { okToRemove: this.#state !== "teaser" /* State.TEASER */ };
     }
     setInactive(isInactive) {
         if (this.#isInactive === isInactive) {
@@ -596,6 +602,7 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
         return true;
     }
     performUpdate() {
+        const output = {};
         this.#view({
             onTellMeMoreClick: this.#onTellMeMoreClick.bind(this),
             uuid: this.#uuid,
@@ -610,7 +617,14 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
             downloadProgress: this.#downloadProgress,
             state: this.#state,
             isForWarning: this.#isForWarning,
-        }, undefined, this.contentElement);
+        }, output, this.contentElement);
+        if (this.#callShowTooltip && output.tooltip?.hasAttribute('popover')) {
+            // The ConsoleInsightTeaser is created on hover, which means the tooltip's
+            // event listener is created after the hover event is received. We therefore
+            // explicitly call `showTooltip()`, otherwise the tooltip wouldn't show up.
+            output.tooltip.showTooltip();
+        }
+        this.#callShowTooltip = false;
     }
     wasShown() {
         super.wasShown();

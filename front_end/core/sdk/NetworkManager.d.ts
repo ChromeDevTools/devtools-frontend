@@ -45,6 +45,7 @@ export declare class NetworkManager extends SDKModel<EventTypes> {
     private bypassServiceWorkerChanged;
     getSecurityIsolationStatus(frameId: Protocol.Page.FrameId | null): Promise<Protocol.Network.SecurityIsolationStatus | null>;
     enableReportingApi(enable?: boolean): Promise<Promise<Protocol.ProtocolResponseWithError>>;
+    enableDeviceBoundSessions(enable?: boolean): Promise<Promise<Protocol.ProtocolResponseWithError>>;
     loadNetworkResource(frameId: Protocol.Page.FrameId | null, url: Platform.DevToolsPath.UrlString, options: Protocol.Network.LoadNetworkResourceOptions): Promise<Protocol.Network.LoadNetworkResourcePageResult>;
     clearRequests(): void;
 }
@@ -59,7 +60,9 @@ export declare enum Events {
     LoadingFinished = "LoadingFinished",
     ReportingApiReportAdded = "ReportingApiReportAdded",
     ReportingApiReportUpdated = "ReportingApiReportUpdated",
-    ReportingApiEndpointsChangedForOrigin = "ReportingApiEndpointsChangedForOrigin"
+    ReportingApiEndpointsChangedForOrigin = "ReportingApiEndpointsChangedForOrigin",
+    DeviceBoundSessionsAdded = "DeviceBoundSessionsAdded",
+    DeviceBoundSessionEventOccurred = "DeviceBoundSessionEventOccurred"
 }
 export interface RequestStartedEvent {
     request: NetworkRequest;
@@ -86,6 +89,8 @@ export interface EventTypes {
     [Events.ReportingApiReportAdded]: Protocol.Network.ReportingApiReport;
     [Events.ReportingApiReportUpdated]: Protocol.Network.ReportingApiReport;
     [Events.ReportingApiEndpointsChangedForOrigin]: Protocol.Network.ReportingApiEndpointsChangedForOriginEvent;
+    [Events.DeviceBoundSessionsAdded]: Protocol.Network.DeviceBoundSession[];
+    [Events.DeviceBoundSessionEventOccurred]: Protocol.Network.DeviceBoundSessionEventOccurredEvent;
 }
 /**
  * Define some built-in DevTools throttling presets.
@@ -163,6 +168,7 @@ export declare class NetworkDispatcher implements ProtocolProxyApi.NetworkDispat
     reportingApiReportUpdated(data: Protocol.Network.ReportingApiReportUpdatedEvent): void;
     reportingApiEndpointsChangedForOrigin(data: Protocol.Network.ReportingApiEndpointsChangedForOriginEvent): void;
     deviceBoundSessionsAdded(_params: Protocol.Network.DeviceBoundSessionsAddedEvent): void;
+    deviceBoundSessionEventOccurred(_params: Protocol.Network.DeviceBoundSessionEventOccurredEvent): void;
     policyUpdated(): void;
     /**
      * @deprecated

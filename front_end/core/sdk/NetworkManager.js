@@ -330,6 +330,9 @@ export class NetworkManager extends SDKModel {
     async enableReportingApi(enable = true) {
         return await this.#networkAgent.invoke_enableReportingApi({ enable });
     }
+    async enableDeviceBoundSessions(enable = true) {
+        return await this.#networkAgent.invoke_enableDeviceBoundSessions({ enable });
+    }
     async loadNetworkResource(frameId, url, options) {
         const result = await this.#networkAgent.invoke_loadNetworkResource({ frameId: frameId ?? undefined, url, options });
         if (result.getError()) {
@@ -355,6 +358,8 @@ export var Events;
     Events["ReportingApiReportAdded"] = "ReportingApiReportAdded";
     Events["ReportingApiReportUpdated"] = "ReportingApiReportUpdated";
     Events["ReportingApiEndpointsChangedForOrigin"] = "ReportingApiEndpointsChangedForOrigin";
+    Events["DeviceBoundSessionsAdded"] = "DeviceBoundSessionsAdded";
+    Events["DeviceBoundSessionEventOccurred"] = "DeviceBoundSessionEventOccurred";
     /* eslint-enable @typescript-eslint/naming-convention */
 })(Events || (Events = {}));
 /**
@@ -1272,6 +1277,10 @@ export class NetworkDispatcher {
         this.#manager.dispatchEventToListeners(Events.ReportingApiEndpointsChangedForOrigin, data);
     }
     deviceBoundSessionsAdded(_params) {
+        this.#manager.dispatchEventToListeners(Events.DeviceBoundSessionsAdded, _params.sessions);
+    }
+    deviceBoundSessionEventOccurred(_params) {
+        this.#manager.dispatchEventToListeners(Events.DeviceBoundSessionEventOccurred, _params);
     }
     policyUpdated() {
     }

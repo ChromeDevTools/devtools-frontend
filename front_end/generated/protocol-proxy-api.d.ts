@@ -2903,6 +2903,11 @@ declare namespace ProtocolProxyApi {
      */
     deviceBoundSessionsAdded(params: Protocol.Network.DeviceBoundSessionsAddedEvent): void;
 
+    /**
+     * Triggered when a device bound session event occurs.
+     */
+    deviceBoundSessionEventOccurred(params: Protocol.Network.DeviceBoundSessionEventOccurredEvent): void;
+
   }
 
   export interface OverlayApi {

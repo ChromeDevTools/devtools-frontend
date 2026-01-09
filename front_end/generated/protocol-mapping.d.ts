@@ -448,6 +448,10 @@ export namespace ProtocolMapping {
      */
     'Network.deviceBoundSessionsAdded': [Protocol.Network.DeviceBoundSessionsAddedEvent];
     /**
+     * Triggered when a device bound session event occurs.
+     */
+    'Network.deviceBoundSessionEventOccurred': [Protocol.Network.DeviceBoundSessionEventOccurredEvent];
+    /**
      * Fired when the node should be inspected. This happens after call to `setInspectMode` or when
      * user manually inspects an element.
      */

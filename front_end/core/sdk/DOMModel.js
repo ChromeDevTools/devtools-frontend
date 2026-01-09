@@ -8,7 +8,7 @@ import { CSSModel } from './CSSModel.js';
 import { FrameManager } from './FrameManager.js';
 import { OverlayModel } from './OverlayModel.js';
 import { RemoteObject } from './RemoteObject.js';
-import { ResourceTreeModel } from './ResourceTreeModel.js';
+import { Events as ResourceTreeModelEvents, ResourceTreeModel } from './ResourceTreeModel.js';
 import { RuntimeModel } from './RuntimeModel.js';
 import { SDKModel } from './SDKModel.js';
 import { TargetManager } from './TargetManager.js';
@@ -153,6 +153,7 @@ export class DOMNode extends Common.ObjectWrapper.ObjectWrapper {
         this.#isInShadowTree = isInShadowTree;
         this.id = payload.nodeId;
         this.#backendNodeId = payload.backendNodeId;
+        this.#frameOwnerFrameId = payload.frameId || null;
         this.#domModel.registerNode(this);
         this.#nodeType = payload.nodeType;
         this.#nodeName = payload.nodeName;
@@ -161,7 +162,6 @@ export class DOMNode extends Common.ObjectWrapper.ObjectWrapper {
         this.#pseudoType = payload.pseudoType;
         this.#pseudoIdentifier = payload.pseudoIdentifier;
         this.#shadowRootType = payload.shadowRootType;
-        this.#frameOwnerFrameId = payload.frameId || null;
         this.#xmlVersion = payload.xmlVersion;
         this.#isSVGNode = Boolean(payload.isSVG);
         this.#isScrollable = Boolean(payload.isScrollable);
@@ -1072,6 +1072,7 @@ export class AdoptedStyleSheet {
 export class DOMModel extends SDKModel {
     agent;
     idToDOMNode = new Map();
+    frameIdToOwnerNode = new Map();
     #document = null;
     #attributeLoadNodeIds = new Set();
     runtimeModelInternal;
@@ -1082,11 +1083,14 @@ export class DOMModel extends SDKModel {
     #searchId;
     #topLayerThrottler = new Common.Throttler.Throttler(100);
     #topLayerNodes = [];
+    #resourceTreeModel = null;
     constructor(target) {
         super(target);
         this.agent = target.domAgent();
         target.registerDOMDispatcher(new DOMDispatcher(this));
         this.runtimeModelInternal = target.model(RuntimeModel);
+        this.#resourceTreeModel = target.model(ResourceTreeModel);
+        this.#resourceTreeModel?.addEventListener(ResourceTreeModelEvents.DocumentOpened, this.onDocumentOpened, this);
         if (!target.suspended()) {
             void this.agent.invoke_enable({});
         }
@@ -1119,6 +1123,18 @@ export class DOMModel extends SDKModel {
                 return;
             }
             this.dispatchEventToListeners(Events.DOMMutated, node);
+        }
+    }
+    onDocumentOpened(event) {
+        const frame = event.data;
+        const node = this.frameIdToOwnerNode.get(frame.id);
+        if (node) {
+            const contentDocument = node.contentDocument();
+            if (contentDocument && contentDocument.documentURL !== frame.url) {
+                contentDocument.documentURL = frame.url;
+                contentDocument.baseURL = frame.url;
+                this.dispatchEventToListeners(Events.DocumentURLChanged, contentDocument);
+            }
         }
     }
     requestDocument() {
@@ -1279,6 +1295,7 @@ export class DOMModel extends SDKModel {
     }
     setDocument(payload) {
         this.idToDOMNode = new Map();
+        this.frameIdToOwnerNode = new Map();
         if (payload && 'nodeId' in payload) {
             this.#document = new DOMDocument(this, payload);
         }
@@ -1442,6 +1459,10 @@ export class DOMModel extends SDKModel {
     }
     unbind(node) {
         this.idToDOMNode.delete(node.id);
+        const frameId = node.frameOwnerFrameId();
+        if (frameId) {
+            this.frameIdToOwnerNode.delete(frameId);
+        }
         const children = node.children();
         for (let i = 0; children && i < children.length; ++i) {
             this.unbind(children[i]);
@@ -1597,6 +1618,7 @@ export class DOMModel extends SDKModel {
         await this.agent.invoke_enable({});
     }
     dispose() {
+        this.#resourceTreeModel?.removeEventListener(ResourceTreeModelEvents.DocumentOpened, this.onDocumentOpened, this);
         DOMModelUndoStack.instance().dispose(this);
     }
     parentModel() {
@@ -1608,6 +1630,10 @@ export class DOMModel extends SDKModel {
     }
     registerNode(node) {
         this.idToDOMNode.set(node.id, node);
+        const frameId = node.frameOwnerFrameId();
+        if (frameId) {
+            this.frameIdToOwnerNode.set(frameId, node);
+        }
     }
 }
 export var Events;
@@ -1617,6 +1643,7 @@ export var Events;
     Events["AttrRemoved"] = "AttrRemoved";
     Events["CharacterDataModified"] = "CharacterDataModified";
     Events["DOMMutated"] = "DOMMutated";
+    Events["DocumentURLChanged"] = "DocumentURLChanged";
     Events["NodeInserted"] = "NodeInserted";
     Events["NodeRemoved"] = "NodeRemoved";
     Events["DocumentUpdated"] = "DocumentUpdated";

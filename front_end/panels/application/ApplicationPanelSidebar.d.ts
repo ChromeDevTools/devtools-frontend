@@ -6,6 +6,8 @@ import * as UI from '../../ui/legacy/legacy.js';
 import { ApplicationPanelTreeElement, ExpandableApplicationPanelTreeElement } from './ApplicationPanelTreeElement.js';
 import { BackgroundServiceModel } from './BackgroundServiceModel.js';
 import { BounceTrackingMitigationsTreeElement } from './BounceTrackingMitigationsTreeElement.js';
+import { DeviceBoundSessionsModel } from './DeviceBoundSessionsModel.js';
+import { RootTreeElement as DeviceBoundSessionsRootTreeElement } from './DeviceBoundSessionsTreeElement.js';
 import { type DOMStorage } from './DOMStorageModel.js';
 import { type ExtensionStorage } from './ExtensionStorageModel.js';
 import { type Database as IndexedDBModelDatabase, type DatabaseId, type Index, IndexedDBModel, type ObjectStore } from './IndexedDBModel.js';
@@ -53,6 +55,8 @@ export declare class ApplicationPanelSidebar extends UI.Widget.VBox implements S
     periodicBackgroundSyncTreeElement: BackgroundServiceTreeElement;
     pushMessagingTreeElement: BackgroundServiceTreeElement;
     reportingApiTreeElement: ReportingApiTreeElement;
+    deviceBoundSessionsRootTreeElement: DeviceBoundSessionsRootTreeElement | undefined;
+    deviceBoundSessionsModel: DeviceBoundSessionsModel | undefined;
     preloadingSummaryTreeElement: PreloadingSummaryTreeElement | undefined;
     private readonly resourcesSection;
     private domStorageTreeElements;

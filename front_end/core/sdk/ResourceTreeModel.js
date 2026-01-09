@@ -197,10 +197,13 @@ export class ResourceTreeModel extends SDKModel {
     documentOpened(framePayload) {
         this.frameNavigated(framePayload, undefined);
         const frame = this.framesInternal.get(framePayload.id);
-        if (frame && !frame.getResourcesMap().get(framePayload.url)) {
-            const frameResource = this.createResourceFromFramePayload(framePayload, framePayload.url, Common.ResourceType.resourceTypes.Document, framePayload.mimeType, null, null);
-            frameResource.isGenerated = true;
-            frame.addResource(frameResource);
+        if (frame) {
+            this.dispatchEventToListeners(Events.DocumentOpened, frame);
+            if (!frame.getResourcesMap().get(framePayload.url)) {
+                const frameResource = this.createResourceFromFramePayload(framePayload, framePayload.url, Common.ResourceType.resourceTypes.Document, framePayload.mimeType, null, null);
+                frameResource.isGenerated = true;
+                frame.addResource(frameResource);
+            }
         }
     }
     frameDetached(frameId, isSwap) {
@@ -479,6 +482,7 @@ export var Events;
     Events["FrameDetached"] = "FrameDetached";
     Events["FrameResized"] = "FrameResized";
     Events["FrameWillNavigate"] = "FrameWillNavigate";
+    Events["DocumentOpened"] = "DocumentOpened";
     Events["PrimaryPageChanged"] = "PrimaryPageChanged";
     Events["ResourceAdded"] = "ResourceAdded";
     Events["WillLoadCachedResources"] = "WillLoadCachedResources";

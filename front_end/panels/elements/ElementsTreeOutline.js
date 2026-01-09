@@ -130,6 +130,9 @@ export const DEFAULT_VIEW = (input, output, target) => {
                     output.elementsTreeOutline.rootElement());
             treeElement = output.elementsTreeOutline.createTreeElementFor(input.currentHighlightedNode);
         }
+        if (input.selectedNode) {
+            output.elementsTreeOutline.selectDOMNode(input.selectedNode);
+        }
         output.highlightedTreeElement = treeElement;
         output.elementsTreeOutline.setHoverEffect(treeElement);
         treeElement?.reveal(true);
@@ -252,6 +255,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
             preventTabOrder: this.preventTabOrder,
             deindentSingleNode: this.deindentSingleNode,
             currentHighlightedNode: this.#currentHighlightedNode,
+            selectedNode: this.selectedDOMNode(),
             onElementsTreeUpdated: this.onElementsTreeUpdated.bind(this),
             onSelectedNodeChanged: event => {
                 this.#clearHighlightedNode();
@@ -1262,6 +1266,7 @@ export class ElementsTreeOutline extends Common.ObjectWrapper.eventMixin(UI.Tree
         domModel.addEventListener(SDK.DOMModel.Events.AttrRemoved, this.attributeRemoved, this);
         domModel.addEventListener(SDK.DOMModel.Events.CharacterDataModified, this.characterDataModified, this);
         domModel.addEventListener(SDK.DOMModel.Events.DocumentUpdated, this.documentUpdated, this);
+        domModel.addEventListener(SDK.DOMModel.Events.DocumentURLChanged, this.documentURLChanged, this);
         domModel.addEventListener(SDK.DOMModel.Events.ChildNodeCountUpdated, this.childNodeCountUpdated, this);
         domModel.addEventListener(SDK.DOMModel.Events.DistributedNodesChanged, this.distributedNodesChanged, this);
         domModel.addEventListener(SDK.DOMModel.Events.AffectedByStartingStylesFlagUpdated, this.affectedByStartingStylesFlagUpdated, this);
@@ -1275,6 +1280,7 @@ export class ElementsTreeOutline extends Common.ObjectWrapper.eventMixin(UI.Tree
         domModel.removeEventListener(SDK.DOMModel.Events.AttrRemoved, this.attributeRemoved, this);
         domModel.removeEventListener(SDK.DOMModel.Events.CharacterDataModified, this.characterDataModified, this);
         domModel.removeEventListener(SDK.DOMModel.Events.DocumentUpdated, this.documentUpdated, this);
+        domModel.removeEventListener(SDK.DOMModel.Events.DocumentURLChanged, this.documentURLChanged, this);
         domModel.removeEventListener(SDK.DOMModel.Events.ChildNodeCountUpdated, this.childNodeCountUpdated, this);
         domModel.removeEventListener(SDK.DOMModel.Events.DistributedNodesChanged, this.distributedNodesChanged, this);
         domModel.removeEventListener(SDK.DOMModel.Events.AffectedByStartingStylesFlagUpdated, this.affectedByStartingStylesFlagUpdated, this);
@@ -1320,6 +1326,10 @@ export class ElementsTreeOutline extends Common.ObjectWrapper.eventMixin(UI.Tree
         if (node.parentNode && node.parentNode.firstChild === node.parentNode.lastChild) {
             this.addUpdateRecord(node.parentNode).childrenModified();
         }
+        this.updateModifiedNodesSoon();
+    }
+    documentURLChanged(event) {
+        this.addUpdateRecord(event.data).charDataModified();
         this.updateModifiedNodesSoon();
     }
     nodeInserted(event) {

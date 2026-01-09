@@ -10,6 +10,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import { ApplicationPanelSidebar, StorageCategoryView } from './ApplicationPanelSidebar.js';
 import { CookieItemsView } from './CookieItemsView.js';
+import { DeviceBoundSessionsView } from './DeviceBoundSessionsView.js';
 import { DOMStorageItemsView } from './DOMStorageItemsView.js';
 import { ExtensionStorageItemsView } from './ExtensionStorageItemsView.js';
 import resourcesPanelStyles from './resourcesPanel.css.js';
@@ -25,6 +26,7 @@ export class ResourcesPanel extends UI.Panel.PanelWithSidebar {
     domStorageView;
     extensionStorageView;
     cookieView;
+    deviceBoundSessionsView;
     sidebar;
     constructor() {
         super('resources');
@@ -42,6 +44,7 @@ export class ResourcesPanel extends UI.Panel.PanelWithSidebar {
         this.domStorageView = null;
         this.extensionStorageView = null;
         this.cookieView = null;
+        this.deviceBoundSessionsView = null;
         this.sidebar = new ApplicationPanelSidebar(this);
         this.sidebar.show(this.panelSidebarElement());
     }
@@ -166,6 +169,13 @@ export class ResourcesPanel extends UI.Panel.PanelWithSidebar {
                 this.cookieView.refreshItems();
             }
         });
+    }
+    showDeviceBoundSession(model, site, sessionId) {
+        if (!this.deviceBoundSessionsView) {
+            this.deviceBoundSessionsView = new DeviceBoundSessionsView();
+        }
+        this.deviceBoundSessionsView.showSession(model, site, sessionId);
+        this.showView(this.deviceBoundSessionsView);
     }
 }
 export class ResourceRevealer {

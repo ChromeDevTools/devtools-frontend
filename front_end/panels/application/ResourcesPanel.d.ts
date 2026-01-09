@@ -4,6 +4,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { ApplicationPanelSidebar } from './ApplicationPanelSidebar.js';
+import type { DeviceBoundSessionsModel } from './DeviceBoundSessionsModel.js';
 import type { DOMStorage } from './DOMStorageModel.js';
 import type { ExtensionStorage } from './ExtensionStorageModel.js';
 import type * as PreloadingHelper from './preloading/helper/helper.js';
@@ -17,6 +18,7 @@ export declare class ResourcesPanel extends UI.Panel.PanelWithSidebar {
     private domStorageView;
     private extensionStorageView;
     private cookieView;
+    private deviceBoundSessionsView;
     private readonly sidebar;
     private constructor();
     static instance(opts?: {
@@ -35,6 +37,7 @@ export declare class ResourcesPanel extends UI.Panel.PanelWithSidebar {
     showExtensionStorage(extensionStorage: ExtensionStorage): void;
     showCookies(cookieFrameTarget: SDK.Target.Target, cookieDomain: string): void;
     clearCookies(target: SDK.Target.Target, cookieDomain: string): void;
+    showDeviceBoundSession(model: DeviceBoundSessionsModel, site: string, sessionId?: string): void;
 }
 export declare class ResourceRevealer implements Common.Revealer.Revealer<SDK.Resource.Resource> {
     reveal(resource: SDK.Resource.Resource): Promise<void>;

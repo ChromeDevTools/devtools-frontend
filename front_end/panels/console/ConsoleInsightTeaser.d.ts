@@ -1,4 +1,5 @@
 import '../../ui/components/tooltips/tooltips.js';
+import type * as Tooltips from '../../ui/components/tooltips/tooltips.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { ConsoleViewMessage } from './ConsoleViewMessage.js';
 declare const enum State {
@@ -24,13 +25,18 @@ interface ViewInput {
     state: State;
     isForWarning: boolean;
 }
-export declare const DEFAULT_VIEW: (input: ViewInput, _output: undefined, target: HTMLElement) => void;
+interface ViewOutput {
+    tooltip?: Tooltips.Tooltip.Tooltip;
+}
+export declare const DEFAULT_VIEW: (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
 export type View = typeof DEFAULT_VIEW;
 export declare class ConsoleInsightTeaser extends UI.Widget.Widget {
     #private;
     constructor(uuid: string, consoleViewMessage: ConsoleViewMessage, element?: HTMLElement, view?: View);
     maybeGenerateTeaser(): void;
-    abortTeaserGeneration(): void;
+    abortTeaserGeneration(): {
+        okToRemove: boolean;
+    };
     setInactive(isInactive: boolean): void;
     performUpdate(): Promise<void> | void;
     wasShown(): void;

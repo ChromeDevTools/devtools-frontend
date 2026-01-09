@@ -479,9 +479,6 @@ export const generatedPropertyValues: {
     "grid-lanes-direction": {
         values: string[];
     };
-    "grid-lanes-fill": {
-        values: string[];
-    };
     "grid-row-end": {
         values: string[];
     };
@@ -678,6 +675,9 @@ export const generatedPropertyValues: {
         values: string[];
     };
     page: {
+        values: string[];
+    };
+    "page-margin-safety": {
         values: string[];
     };
     "paint-order": {

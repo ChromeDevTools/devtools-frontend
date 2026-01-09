@@ -5,6 +5,7 @@ import * as Common from '../../core/common/common.js';
 import * as UI from '../../ui/legacy/legacy.js';
 export class ApplicationPanelTreeElement extends UI.TreeOutline.TreeElement {
     resourcesPanel;
+    customItemURL;
     constructor(resourcesPanel, title, expandable, jslogContext) {
         super(title, expandable, jslogContext);
         this.resourcesPanel = resourcesPanel;
@@ -16,7 +17,13 @@ export class ApplicationPanelTreeElement extends UI.TreeOutline.TreeElement {
         this.listItemElement.tabIndex = -1;
     }
     get itemURL() {
+        if (this.customItemURL) {
+            return this.customItemURL;
+        }
         throw new Error('Unimplemented Method');
+    }
+    set itemURL(value) {
+        this.customItemURL = value;
     }
     onselect(selectedByUser) {
         if (!selectedByUser) {
@@ -56,6 +63,9 @@ export class ExpandableApplicationPanelTreeElement extends ApplicationPanelTreeE
     }
     get itemURL() {
         return 'category://' + this.categoryName;
+    }
+    set itemURL(value) {
+        super.itemURL = value;
     }
     setLink(link) {
         this.categoryLink = link;

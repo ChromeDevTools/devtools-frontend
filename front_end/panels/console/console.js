@@ -2066,16 +2066,12 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
   }
   wasShown() {
     this.isVisibleInternal = true;
-    if (this.elementInternal) {
-      this.#teaser?.show(this.elementInternal, this.consoleRowWrapper);
-    }
   }
   onResize() {
   }
   willHide() {
     this.isVisibleInternal = false;
     this.cachedHeight = this.element().offsetHeight;
-    this.#teaser?.detach();
   }
   isVisible() {
     return this.isVisibleInternal;
@@ -2933,12 +2929,30 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
     return this.contentElementInternal;
   }
   #startTeaserGeneration() {
-    if (this.#teaser && Common4.Settings.Settings.instance().moduleSetting("console-insight-teasers-enabled").getIfNotDisabled()) {
+    if (!this.elementInternal) {
+      return;
+    }
+    if (this.shouldShowTeaser()) {
+      if (!this.#teaser) {
+        const uuid = crypto.randomUUID();
+        this.elementInternal.setAttribute("aria-details", `teaser-${uuid}`);
+        this.#teaser = new ConsoleInsightTeaser(uuid, this);
+        this.#teaser.show(this.elementInternal, this.consoleRowWrapper);
+      }
       this.#teaser.maybeGenerateTeaser();
+    } else {
+      this.#teaser?.detach();
+      this.#teaser = void 0;
     }
   }
   #abortTeaserGeneration() {
-    this.#teaser?.abortTeaserGeneration();
+    if (this.#teaser) {
+      const { okToRemove } = this.#teaser.abortTeaserGeneration();
+      if (okToRemove) {
+        this.#teaser.detach();
+        this.#teaser = void 0;
+      }
+    }
   }
   toMessageElement() {
     if (this.elementInternal) {
@@ -2967,11 +2981,6 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
     this.elementInternal.removeChildren();
     this.consoleRowWrapper = this.elementInternal.createChild("div");
     this.consoleRowWrapper.classList.add("console-row-wrapper");
-    if (this.shouldShowTeaser()) {
-      const uuid = crypto.randomUUID();
-      this.elementInternal.setAttribute("aria-details", `teaser-${uuid}`);
-      this.#teaser = new ConsoleInsightTeaser(uuid, this);
-    }
     if (this.message.isGroupStartMessage()) {
       this.elementInternal.classList.add("console-group-title");
     }
@@ -3992,7 +4001,7 @@ function formatStackTrace(message) {
 }
 
 // gen/front_end/panels/console/ConsoleInsightTeaser.js
-var { render: render3, html: html2 } = Lit2;
+var { render: render3, html: html2, Directives: { ref } } = Lit2;
 var BUILT_IN_AI_DOCUMENTATION = "https://developer.chrome.com/docs/ai/built-in";
 var UIStringsNotTranslate = {
   /**
@@ -4257,7 +4266,7 @@ function renderTeaser(input) {
     </div>
   `;
 }
-var DEFAULT_VIEW2 = (input, _output, target) => {
+var DEFAULT_VIEW2 = (input, output, target) => {
   if (input.isInactive) {
     render3(Lit2.nothing, target);
     return;
@@ -4265,8 +4274,11 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
   render3(html2`
     <style>${consoleInsightTeaser_css_default}</style>
     <devtools-tooltip
+      ${ref((element) => {
+    output.tooltip = element;
+  })}
       id=${"teaser-" + input.uuid}
-      hover-delay=500
+      hover-delay=1000
       variant="rich"
       vertical-distance-increase=-6
       prefer-span-left
@@ -4311,6 +4323,7 @@ var ConsoleInsightTeaser = class extends UI3.Widget.Widget {
   #state;
   #eventListeners = [];
   #isForWarning;
+  #callShowTooltip = false;
   constructor(uuid, consoleViewMessage, element, view) {
     super(element);
     this.#view = view ?? DEFAULT_VIEW2;
@@ -4323,6 +4336,7 @@ var ConsoleInsightTeaser = class extends UI3.Widget.Widget {
     this.#boundOnSessionCreation = this.#onSessionCreation.bind(this);
     this.#builtInAi = AiAssistanceModel3.BuiltInAi.BuiltInAi.instance();
     this.#state = this.#builtInAi.hasSession() ? "ready" : "no-model";
+    this.#callShowTooltip = true;
     this.requestUpdate();
   }
   #getConsoleInsightsEnabledSetting() {
@@ -4467,6 +4481,10 @@ var ConsoleInsightTeaser = class extends UI3.Widget.Widget {
       clearTimeout(this.#timeoutId);
     }
     Common5.EventTarget.removeEventListeners(this.#eventListeners);
+    return {
+      okToRemove: this.#state !== "teaser"
+      /* State.TEASER */
+    };
   }
   setInactive(isInactive) {
     if (this.#isInactive === isInactive) {
@@ -4543,6 +4561,7 @@ var ConsoleInsightTeaser = class extends UI3.Widget.Widget {
     return true;
   }
   performUpdate() {
+    const output = {};
     this.#view({
       onTellMeMoreClick: this.#onTellMeMoreClick.bind(this),
       uuid: this.#uuid,
@@ -4556,7 +4575,11 @@ var ConsoleInsightTeaser = class extends UI3.Widget.Widget {
       downloadProgress: this.#downloadProgress,
       state: this.#state,
       isForWarning: this.#isForWarning
-    }, void 0, this.contentElement);
+    }, output, this.contentElement);
+    if (this.#callShowTooltip && output.tooltip?.hasAttribute("popover")) {
+      output.tooltip.showTooltip();
+    }
+    this.#callShowTooltip = false;
   }
   wasShown() {
     super.wasShown();
@@ -4671,7 +4694,7 @@ var consolePinPane_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./consolePinPane.css")} */`;
 
 // gen/front_end/panels/console/ConsolePinPane.js
-var { createRef, ref } = Directives;
+var { createRef, ref: ref2 } = Directives;
 var UIStrings3 = {
   /**
    * @description A context menu item in the Console Pin Pane of the Console panel
@@ -4813,7 +4836,7 @@ var DEFAULT_VIEW3 = (input, output, target) => {
       event.consume(true);
     }
   }}
-          ${ref(deleteRef)}
+          ${ref2(deleteRef)}
       ></devtools-button>
       <div class='console-pin-name'
           title=${input.expression}
@@ -4824,7 +4847,7 @@ var DEFAULT_VIEW3 = (input, output, target) => {
     }
   }}
       >
-        <devtools-text-editor .state=${input.editorState} ${ref(editorRef)} tabindex=0
+        <devtools-text-editor .state=${input.editorState} ${ref2(editorRef)} tabindex=0
         ></devtools-text-editor>
       </div>
       <div class='console-pin-preview'

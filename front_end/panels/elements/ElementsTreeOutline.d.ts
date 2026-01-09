@@ -17,6 +17,7 @@ interface ViewInput {
     preventTabOrder: boolean;
     deindentSingleNode: boolean;
     currentHighlightedNode: SDK.DOMModel.DOMNode | null;
+    selectedNode: SDK.DOMModel.DOMNode | null;
     onSelectedNodeChanged: (event: Common.EventTarget.EventTargetEvent<{
         node: SDK.DOMModel.DOMNode | null;
         focus: boolean;
@@ -211,6 +212,7 @@ export declare class ElementsTreeOutline extends ElementsTreeOutline_base {
     private attributeModified;
     private attributeRemoved;
     private characterDataModified;
+    private documentURLChanged;
     private nodeInserted;
     private nodeRemoved;
     private childNodeCountUpdated;

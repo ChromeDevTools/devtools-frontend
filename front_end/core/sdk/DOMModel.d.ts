@@ -218,6 +218,7 @@ export declare class DOMModel extends SDKModel<EventTypes> {
     #private;
     agent: ProtocolProxyApi.DOMApi;
     idToDOMNode: Map<Protocol.DOM.NodeId, DOMNode>;
+    frameIdToOwnerNode: Map<Protocol.Page.FrameId, DOMNode>;
     readonly runtimeModelInternal: RuntimeModel;
     constructor(target: Target);
     runtimeModel(): RuntimeModel;
@@ -225,6 +226,7 @@ export declare class DOMModel extends SDKModel<EventTypes> {
     overlayModel(): OverlayModel;
     static cancelSearch(): void;
     private scheduleMutationEvent;
+    private onDocumentOpened;
     requestDocument(): Promise<DOMDocument | null>;
     getOwnerNodeForFrame(frameId: Protocol.Page.FrameId): Promise<DeferredDOMNode | null>;
     private requestDocumentInternal;
@@ -285,6 +287,7 @@ export declare enum Events {
     AttrRemoved = "AttrRemoved",
     CharacterDataModified = "CharacterDataModified",
     DOMMutated = "DOMMutated",
+    DocumentURLChanged = "DocumentURLChanged",
     NodeInserted = "NodeInserted",
     NodeRemoved = "NodeRemoved",
     DocumentUpdated = "DocumentUpdated",
@@ -306,6 +309,7 @@ export interface EventTypes {
     };
     [Events.CharacterDataModified]: DOMNode;
     [Events.DOMMutated]: DOMNode;
+    [Events.DocumentURLChanged]: DOMDocument;
     [Events.NodeInserted]: DOMNode;
     [Events.NodeRemoved]: {
         node: DOMNode;

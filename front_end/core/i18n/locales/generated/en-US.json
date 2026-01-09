@@ -4430,6 +4430,72 @@
   "panels/application/CookieItemsView.ts | showUrlDecoded": {
     "message": "Show URL-decoded"
   },
+  "panels/application/DeviceBoundSessionsTreeElement.ts | deviceBoundSessions": {
+    "message": "Device bound sessions"
+  },
+  "panels/application/DeviceBoundSessionsTreeElement.ts | deviceBoundSessionsCategoryDescription": {
+    "message": "On this page you can view device bound sessions and associated events"
+  },
+  "panels/application/DeviceBoundSessionsTreeElement.ts | noSession": {
+    "message": "No session"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | allowedRefreshInitiators": {
+    "message": "Allowed refresh initiators"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | cachedChallenge": {
+    "message": "Cached challenge"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | cookieCravings": {
+    "message": "Cookies"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | expiryDate": {
+    "message": "Expiry date"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | includeSite": {
+    "message": "Include site"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | keyId": {
+    "message": "ID"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | keySite": {
+    "message": "Site"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | name": {
+    "message": "Name"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | no": {
+    "message": "No"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | origin": {
+    "message": "Origin"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | refreshUrl": {
+    "message": "Refresh URL"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | ruleHostPattern": {
+    "message": "Host pattern"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | rulePathPrefix": {
+    "message": "Path prefix"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | ruleType": {
+    "message": "Rule type"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | ruleTypeExclude": {
+    "message": "Exclude"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | ruleTypeInclude": {
+    "message": "Include"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | scope": {
+    "message": "Scope"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | sessionConfig": {
+    "message": "Session config"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | yes": {
+    "message": "Yes"
+  },
   "panels/application/DOMStorageItemsView.ts | domStorageItemDeleted": {
     "message": "The storage item was deleted."
   },

@@ -35,6 +35,7 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as LegacyWrapper from '../../ui/components/legacy_wrapper/legacy_wrapper.js';
@@ -47,6 +48,8 @@ import { BackForwardCacheTreeElement } from './BackForwardCacheTreeElement.js';
 import { BackgroundServiceModel } from './BackgroundServiceModel.js';
 import { BackgroundServiceView } from './BackgroundServiceView.js';
 import { BounceTrackingMitigationsTreeElement } from './BounceTrackingMitigationsTreeElement.js';
+import { DeviceBoundSessionsModel } from './DeviceBoundSessionsModel.js';
+import { RootTreeElement as DeviceBoundSessionsRootTreeElement } from './DeviceBoundSessionsTreeElement.js';
 import { DOMStorageModel } from './DOMStorageModel.js';
 import { ExtensionStorageModel, } from './ExtensionStorageModel.js';
 import { FrameDetailsReportView } from './FrameDetailsView.js';
@@ -301,6 +304,8 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox {
     periodicBackgroundSyncTreeElement;
     pushMessagingTreeElement;
     reportingApiTreeElement;
+    deviceBoundSessionsRootTreeElement;
+    deviceBoundSessionsModel;
     preloadingSummaryTreeElement;
     resourcesSection;
     domStorageTreeElements;
@@ -401,6 +406,12 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox {
         backgroundServiceTreeElement.appendChild(this.pushMessagingTreeElement);
         this.reportingApiTreeElement = new ReportingApiTreeElement(panel);
         backgroundServiceTreeElement.appendChild(this.reportingApiTreeElement);
+        if (Root.Runtime.hostConfig.deviceBoundSessionsDebugging?.enabled) {
+            this.deviceBoundSessionsModel = new DeviceBoundSessionsModel();
+            this.deviceBoundSessionsRootTreeElement =
+                new DeviceBoundSessionsRootTreeElement(panel, this.deviceBoundSessionsModel);
+            backgroundServiceTreeElement.appendChild(this.deviceBoundSessionsRootTreeElement);
+        }
         const resourcesSectionTitle = i18nString(UIStrings.frames);
         const resourcesTreeElement = this.addSidebarSection(resourcesSectionTitle, 'frames');
         this.resourcesSection = new ResourcesSection(panel, resourcesTreeElement);
@@ -620,6 +631,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox {
         this.domains = {};
         this.cookieListTreeElement.removeChildren();
         this.interestGroupTreeElement.clearEvents();
+        this.deviceBoundSessionsModel?.clearVisibleSites();
     }
     frameNavigated(event) {
         const frame = event.data;
@@ -645,6 +657,20 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox {
             this.domains[domain] = true;
             const cookieDomainTreeElement = new CookieTreeElement(this.panel, frame, parsedURL);
             this.cookieListTreeElement.appendChild(cookieDomainTreeElement);
+            // Update device bound session visibility for new cookie domain.
+            if (this.deviceBoundSessionsModel) {
+                const target = frame.resourceTreeModel().target();
+                const networkAgent = target.networkAgent();
+                void networkAgent.invoke_fetchSchemefulSite({ origin: domain }).then(response => {
+                    if (response.getError() || !this.deviceBoundSessionsModel) {
+                        return;
+                    }
+                    // Confirm the domain is still present first.
+                    if (this.domains[domain]) {
+                        this.deviceBoundSessionsModel.addVisibleSite(response.schemefulSite);
+                    }
+                });
+            }
         }
     }
     domStorageAdded(event) {

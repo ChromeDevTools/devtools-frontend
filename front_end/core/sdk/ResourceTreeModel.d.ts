@@ -68,6 +68,7 @@ export declare enum Events {
     FrameDetached = "FrameDetached",
     FrameResized = "FrameResized",
     FrameWillNavigate = "FrameWillNavigate",
+    DocumentOpened = "DocumentOpened",
     PrimaryPageChanged = "PrimaryPageChanged",
     ResourceAdded = "ResourceAdded",
     WillLoadCachedResources = "WillLoadCachedResources",
@@ -91,6 +92,7 @@ export interface EventTypes {
     };
     [Events.FrameResized]: void;
     [Events.FrameWillNavigate]: ResourceTreeFrame;
+    [Events.DocumentOpened]: ResourceTreeFrame;
     [Events.PrimaryPageChanged]: {
         frame: ResourceTreeFrame;
         type: PrimaryPageChangeType;

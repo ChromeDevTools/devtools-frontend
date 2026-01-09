@@ -314,6 +314,9 @@ panels/application/AppManifestView.test.js
 panels/application/ApplicationPanelSidebar.test.js
 panels/application/BackgroundServiceView.test.js
 panels/application/DOMStorageModel.test.js
+panels/application/DeviceBoundSessionsModel.test.js
+panels/application/DeviceBoundSessionsTreeElement.test.js
+panels/application/DeviceBoundSessionsView.test.js
 panels/application/ExtensionStorageItemsView.test.js
 panels/application/ExtensionStorageModel.test.js
 panels/application/FrameDetailsView.test.js

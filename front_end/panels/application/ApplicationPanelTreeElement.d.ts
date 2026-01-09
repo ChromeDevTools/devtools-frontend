@@ -4,9 +4,11 @@ import * as UI from '../../ui/legacy/legacy.js';
 import type { ResourcesPanel } from './ResourcesPanel.js';
 export declare class ApplicationPanelTreeElement extends UI.TreeOutline.TreeElement {
     protected readonly resourcesPanel: ResourcesPanel;
+    private customItemURL?;
     constructor(resourcesPanel: ResourcesPanel, title: string, expandable: boolean, jslogContext: string);
     deselect(): void;
     get itemURL(): Platform.DevToolsPath.UrlString;
+    set itemURL(value: Platform.DevToolsPath.UrlString);
     onselect(selectedByUser: boolean | undefined): boolean;
     showView(view: UI.Widget.Widget | null): void;
 }
@@ -18,6 +20,7 @@ export declare class ExpandableApplicationPanelTreeElement extends ApplicationPa
     protected categoryDescription: string;
     constructor(resourcesPanel: ResourcesPanel, categoryName: string, emptyCategoryHeadline: string, categoryDescription: string, settingsKey: string, settingsDefault?: boolean);
     get itemURL(): Platform.DevToolsPath.UrlString;
+    set itemURL(value: Platform.DevToolsPath.UrlString);
     setLink(link: Platform.DevToolsPath.UrlString): void;
     onselect(selectedByUser: boolean | undefined): boolean;
     private updateCategoryView;

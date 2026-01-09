@@ -344,16 +344,12 @@ export class ConsoleViewMessage {
     }
     wasShown() {
         this.isVisibleInternal = true;
-        if (this.elementInternal) {
-            this.#teaser?.show(this.elementInternal, this.consoleRowWrapper);
-        }
     }
     onResize() {
     }
     willHide() {
         this.isVisibleInternal = false;
         this.cachedHeight = this.element().offsetHeight;
-        this.#teaser?.detach();
     }
     isVisible() {
         return this.isVisibleInternal;
@@ -1238,13 +1234,31 @@ export class ConsoleViewMessage {
         return this.contentElementInternal;
     }
     #startTeaserGeneration() {
-        if (this.#teaser &&
-            Common.Settings.Settings.instance().moduleSetting('console-insight-teasers-enabled').getIfNotDisabled()) {
+        if (!this.elementInternal) {
+            return;
+        }
+        if (this.shouldShowTeaser()) {
+            if (!this.#teaser) {
+                const uuid = crypto.randomUUID();
+                this.elementInternal.setAttribute('aria-details', `teaser-${uuid}`);
+                this.#teaser = new ConsoleInsightTeaser(uuid, this);
+                this.#teaser.show(this.elementInternal, this.consoleRowWrapper);
+            }
             this.#teaser.maybeGenerateTeaser();
+        }
+        else { // Removes teaser if preferences have changed
+            this.#teaser?.detach();
+            this.#teaser = undefined;
         }
     }
     #abortTeaserGeneration() {
-        this.#teaser?.abortTeaserGeneration();
+        if (this.#teaser) {
+            const { okToRemove } = this.#teaser.abortTeaserGeneration();
+            if (okToRemove) {
+                this.#teaser.detach();
+                this.#teaser = undefined;
+            }
+        }
     }
     toMessageElement() {
         if (this.elementInternal) {
@@ -1273,11 +1287,6 @@ export class ConsoleViewMessage {
         this.elementInternal.removeChildren();
         this.consoleRowWrapper = this.elementInternal.createChild('div');
         this.consoleRowWrapper.classList.add('console-row-wrapper');
-        if (this.shouldShowTeaser()) {
-            const uuid = crypto.randomUUID();
-            this.elementInternal.setAttribute('aria-details', `teaser-${uuid}`);
-            this.#teaser = new ConsoleInsightTeaser(uuid, this);
-        }
         if (this.message.isGroupStartMessage()) {
             this.elementInternal.classList.add('console-group-title');
         }

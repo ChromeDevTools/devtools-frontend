@@ -50,7 +50,7 @@ add_custom_command(
     python3
     ${DEVTOOLS_SOURCE_DIR}/third_party/node/node.py
     --output
-    ${DEVTOOLS_SOURCE_DIR}/node_modules/.bin/rollup
+    ${DEVTOOLS_SOURCE_DIR}/node_modules/rollup/dist/bin/rollup
     -c --failAfterWarnings
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
   MAIN_DEPENDENCY ${CMAKE_CURRENT_BINARY_DIR}/rollup.config.mjs

@@ -65,8 +65,7 @@ def license_checker_path():
 def rollup_path():
     return path.join(
         node_modules_path(),
-        '@rollup',
-        'wasm-node',
+        'rollup',
         'dist',
         'bin',
         'rollup',

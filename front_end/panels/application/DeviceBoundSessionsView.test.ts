@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../core/common/common.js';
 import * as Protocol from '../../generated/protocol.js';
 import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
@@ -64,6 +65,10 @@ describeWithMockConnection('DeviceBoundSessionsView', () => {
     };
   }
 
+  function createSetting() {
+    return Common.Settings.Settings.instance().createSetting('device-bound-sessions-preserve-log', false);
+  }
+
   it('fetches session details from the model and passes them to the view', async () => {
     const viewFunction = createViewFunctionStub(Application.DeviceBoundSessionsView.DeviceBoundSessionsView);
     const view = new Application.DeviceBoundSessionsView.DeviceBoundSessionsView(viewFunction);
@@ -73,11 +78,13 @@ describeWithMockConnection('DeviceBoundSessionsView', () => {
       getSession: sinon.stub().returns(mockData),
       addEventListener: sinon.stub(),
       removeEventListener: sinon.stub(),
+      getPreserveLogSetting: sinon.stub().returns(createSetting()),
     } as unknown as Application.DeviceBoundSessionsModel.DeviceBoundSessionsModel;
 
     view.showSession(mockModel, mockSite, mockSessionId);
-    const {sessionAndEvents} = viewFunction.input;
+    const {sessionAndEvents, preserveLogSetting} = viewFunction.input;
     assert.deepEqual(sessionAndEvents, mockData);
+    assert.exists(preserveLogSetting);
   });
 
   it('updates the view when the model triggers an event', async () => {
@@ -91,6 +98,7 @@ describeWithMockConnection('DeviceBoundSessionsView', () => {
       getSession: getSessionStub,
       addEventListener: addEventListenerStub,
       removeEventListener: sinon.stub(),
+      getPreserveLogSetting: sinon.stub().returns(createSetting()),
     } as unknown as Application.DeviceBoundSessionsModel.DeviceBoundSessionsModel;
 
     view.showSession(mockModel, mockSite, mockSessionId);
@@ -111,8 +119,55 @@ describeWithMockConnection('DeviceBoundSessionsView', () => {
     sinon.assert.calledTwice(getSessionStub);
   });
 
+  it('shows default view with title and description', async () => {
+    const viewFunction = createViewFunctionStub(Application.DeviceBoundSessionsView.DeviceBoundSessionsView);
+    const view = new Application.DeviceBoundSessionsView.DeviceBoundSessionsView(viewFunction);
+    const mockModel = {
+      addEventListener: sinon.stub(),
+      removeEventListener: sinon.stub(),
+      getPreserveLogSetting: sinon.stub().returns(createSetting()),
+    } as unknown as Application.DeviceBoundSessionsModel.DeviceBoundSessionsModel;
+
+    view.showDefault(mockModel, 'Default Title', 'Default Description');
+
+    const {defaultTitle, defaultDescription, sessionAndEvents} = viewFunction.input;
+    assert.strictEqual(defaultTitle, 'Default Title');
+    assert.strictEqual(defaultDescription, 'Default Description');
+    assert.isUndefined(sessionAndEvents);
+  });
+
+  it('switches between session view and default view correctly', async () => {
+    const viewFunction = createViewFunctionStub(Application.DeviceBoundSessionsView.DeviceBoundSessionsView);
+    const view = new Application.DeviceBoundSessionsView.DeviceBoundSessionsView(viewFunction);
+    const mockData = createMockSession();
+    const mockModel = {
+      getSession: sinon.stub().returns(mockData),
+      addEventListener: sinon.stub(),
+      removeEventListener: sinon.stub(),
+      getPreserveLogSetting: sinon.stub().returns(createSetting()),
+    } as unknown as Application.DeviceBoundSessionsModel.DeviceBoundSessionsModel;
+
+    view.showSession(mockModel, mockSite, mockSessionId);
+    assert.exists(viewFunction.input.sessionAndEvents);
+    assert.isUndefined(viewFunction.input.defaultTitle);
+    assert.isUndefined(viewFunction.input.defaultDescription);
+
+    view.showDefault(mockModel, 'Default Title', 'Default Description');
+    assert.isUndefined(viewFunction.input.sessionAndEvents);
+    assert.strictEqual(viewFunction.input.defaultTitle, 'Default Title');
+    assert.strictEqual(viewFunction.input.defaultDescription, 'Default Description');
+
+    view.showSession(mockModel, mockSite, mockSessionId);
+    assert.exists(viewFunction.input.sessionAndEvents);
+    assert.isUndefined(viewFunction.input.defaultTitle);
+    assert.isUndefined(viewFunction.input.defaultDescription);
+  });
+
   it('renders session correctly', async () => {
-    const viewInput = {sessionAndEvents: createMockSession()};
+    const viewInput = {
+      sessionAndEvents: createMockSession(),
+      preserveLogSetting: createSetting(),
+    };
     const target = document.createElement('div');
     renderElementIntoDOM(target);
     Application.DeviceBoundSessionsView.DEFAULT_VIEW(viewInput, {}, target);
@@ -135,7 +190,10 @@ describeWithMockConnection('DeviceBoundSessionsView', () => {
       timestamp: date
     });
 
-    const viewInput = {sessionAndEvents};
+    const viewInput = {
+      sessionAndEvents,
+      preserveLogSetting: createSetting(),
+    };
     const target = document.createElement('div');
     renderElementIntoDOM(target);
     Application.DeviceBoundSessionsView.DEFAULT_VIEW(viewInput, {}, target);
@@ -190,10 +248,29 @@ describeWithMockConnection('DeviceBoundSessionsView', () => {
       timestamp: dates[3]
     });
 
-    const viewInput = {sessionAndEvents};
+    const viewInput = {
+      sessionAndEvents,
+      preserveLogSetting: createSetting(),
+    };
     const target = document.createElement('div');
     renderElementIntoDOM(target);
     Application.DeviceBoundSessionsView.DEFAULT_VIEW(viewInput, {}, target);
     await assertScreenshot('application/DeviceBoundSessionsView/session_and_events.png');
+  });
+
+  it('renders the default view correctly', async () => {
+    const viewInput = {
+      defaultTitle: 'Default Title',
+      defaultDescription: 'Default Description',
+      preserveLogSetting: createSetting(),
+    };
+    const target = document.createElement('div');
+    target.style.width = '300px';
+    target.style.height = '300px';
+    target.style.display = 'flex';
+    target.style.flexDirection = 'column';
+    renderElementIntoDOM(target);
+    Application.DeviceBoundSessionsView.DEFAULT_VIEW(viewInput, {}, target);
+    await assertScreenshot('application/DeviceBoundSessionsView/default_view.png');
   });
 });

@@ -48,8 +48,43 @@ export class DeviceBoundSessionsModel extends Common.ObjectWrapper.ObjectWrapper
   }
 
   clearVisibleSites(): void {
+    if (this.getPreserveLogSetting().get()) {
+      return;
+    }
     this.#visibleSites.clear();
     this.dispatchEventToListeners(DeviceBoundSessionModelEvents.CLEAR_VISIBLE_SITES);
+  }
+
+  clearEvents(): void {
+    if (this.getPreserveLogSetting().get()) {
+      return;
+    }
+    const emptySessions = new Map<string, Array<string|undefined>>();
+    const emptySites = new Set<string>();
+    for (const [site, sessionIdToSessionMap] of [...this.#siteSessions]) {
+      let emptySessionsSiteEntry = emptySessions.get(site);
+      for (const [sessionId, sessionAndEvents] of sessionIdToSessionMap) {
+        sessionAndEvents.eventsById.clear();
+        if (sessionAndEvents.session) {
+          continue;
+        }
+        // Remove empty sessions.
+        sessionIdToSessionMap.delete(sessionId);
+        if (!emptySessionsSiteEntry) {
+          emptySessionsSiteEntry = [];
+          emptySessions.set(site, emptySessionsSiteEntry);
+        }
+        emptySessionsSiteEntry.push(sessionId);
+      }
+
+      // Remove empty sites.
+      if (sessionIdToSessionMap.size === 0) {
+        this.#siteSessions.delete(site);
+        emptySites.add(site);
+      }
+    }
+
+    this.dispatchEventToListeners(DeviceBoundSessionModelEvents.CLEAR_EVENTS, {emptySessions, emptySites});
   }
 
   isSiteVisible(site: string): boolean {
@@ -58,6 +93,10 @@ export class DeviceBoundSessionsModel extends Common.ObjectWrapper.ObjectWrapper
 
   getSession(site: string, sessionId?: string): SessionAndEvents|undefined {
     return this.#siteSessions.get(site)?.get(sessionId);
+  }
+
+  getPreserveLogSetting(): Common.Settings.Setting<boolean> {
+    return Common.Settings.Settings.instance().createSetting('device-bound-sessions-preserve-log', false);
   }
 
   #onSessionsSet({data: sessions}: {data: Protocol.Network.DeviceBoundSession[]}): void {
@@ -117,6 +156,7 @@ export const enum DeviceBoundSessionModelEvents {
   ADD_VISIBLE_SITE = 'ADD_VISIBLE_SITE',
   CLEAR_VISIBLE_SITES = 'CLEAR_VISIBLE_SITES',
   EVENT_OCCURRED = 'EVENT_OCCURRED',
+  CLEAR_EVENTS = 'CLEAR_EVENTS',
 }
 
 export interface DeviceBoundSessionModelEventTypes {
@@ -124,4 +164,6 @@ export interface DeviceBoundSessionModelEventTypes {
   [DeviceBoundSessionModelEvents.ADD_VISIBLE_SITE]: {site: string};
   [DeviceBoundSessionModelEvents.CLEAR_VISIBLE_SITES]: void;
   [DeviceBoundSessionModelEvents.EVENT_OCCURRED]: {site: string, sessionId?: string};
+  [DeviceBoundSessionModelEvents.CLEAR_EVENTS]:
+      {emptySessions: Map<string, Array<string|undefined>>, emptySites: Set<string>};
 }

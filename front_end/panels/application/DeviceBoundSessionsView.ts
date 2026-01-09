@@ -5,6 +5,7 @@
 import '../../ui/components/report_view/report_view.js';
 import '../../ui/legacy/components/data_grid/data_grid.js';
 
+import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -17,6 +18,7 @@ import {
   type SessionAndEvents
 } from './DeviceBoundSessionsModel.js';
 import deviceBoundSessionsViewStyles from './deviceBoundSessionsView.css.js';
+const {widgetConfig} = UI.Widget;
 
 const UIStrings = {
   /**
@@ -143,23 +145,58 @@ const UIStrings = {
    *@description Default message when no events have appeared yet.
    */
   noEvents: 'No events have been logged yet.',
+  /**
+   *@description Text to preserve the log of events after refreshing.
+   */
+  preserveLog: 'Preserve log',
+  /**
+   *@description Tooltip text that appears on the preserve log setting when hovering over it.
+   */
+  doNotClearLogOnPageReload: 'Do not clear log on page reload/navigation.',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/application/DeviceBoundSessionsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 interface ViewInput {
   sessionAndEvents?: SessionAndEvents;
+  preserveLogSetting?: Common.Settings.Setting<boolean>;
+  defaultTitle?: string;
+  defaultDescription?: string;
 }
 
 type ViewOutput = object;
 
 export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTMLElement): void => {
-  const {sessionAndEvents} = input;
+  const {sessionAndEvents, preserveLogSetting, defaultTitle, defaultDescription} = input;
+
+  const toolbarHtml = preserveLogSetting ?
+      html`
+        <devtools-toolbar class="device-bound-sessions-toolbar">
+        <devtools-checkbox title=${i18nString(UIStrings.doNotClearLogOnPageReload)} ${
+          UI.UIUtils.bindToSetting(preserveLogSetting)}>${i18nString(UIStrings.preserveLog)}</devtools-checkbox>
+        </devtools-toolbar>
+  ` :
+      nothing;
 
   if (!sessionAndEvents) {
-    render(nothing, target);
+    if (!defaultTitle || !defaultDescription) {
+      render(nothing, target);
+      return;
+    }
+    render(
+        html`
+      <style>${UI.inspectorCommonStyles}</style>
+      <style>${deviceBoundSessionsViewStyles}</style>
+      ${toolbarHtml}
+      <devtools-widget .widgetConfig=${widgetConfig(UI.EmptyWidget.EmptyWidget, {
+          header: defaultTitle,
+          text: defaultDescription
+        })} jslog=${VisualLogging.pane('device-bound-sessions-empty')}></devtools-widget>
+    `,
+        target);
     return;
   }
+
   let sessionDetailsHtml: TemplateResult|undefined;
   if (sessionAndEvents.session) {
     const {key, inclusionRules, cookieCravings} = sessionAndEvents.session;
@@ -282,6 +319,7 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTML
         <style>${UI.inspectorCommonStyles}</style>
         <style>${deviceBoundSessionsViewStyles}</style>
         <div class="device-bound-session-view-wrapper">
+          ${toolbarHtml}
           ${sessionDetailsHtml || nothing}
           ${eventsHtml}
         </div>`,
@@ -293,6 +331,8 @@ export class DeviceBoundSessionsView extends UI.Widget.VBox {
   #sessionId?: string;
   #model?: DeviceBoundSessionsModel;
   #view: typeof DEFAULT_VIEW;
+  #defaultTitle?: string;
+  #defaultDescription?: string;
 
   constructor(view: typeof DEFAULT_VIEW = DEFAULT_VIEW) {
     super({jslog: `${VisualLogging.pane('device-bound-sessions')}`});
@@ -300,24 +340,55 @@ export class DeviceBoundSessionsView extends UI.Widget.VBox {
   }
 
   showSession(model: DeviceBoundSessionsModel, site: string, sessionId?: string): void {
+    this.#defaultTitle = undefined;
+    this.#defaultDescription = undefined;
     this.#site = site;
     this.#sessionId = sessionId;
+    this.#attachModel(model);
+    this.performUpdate();
+  }
+
+  showDefault(model: DeviceBoundSessionsModel, defaultTitle: string, defaultDescription: string): void {
+    this.#defaultTitle = defaultTitle;
+    this.#defaultDescription = defaultDescription;
+    this.#site = undefined;
+    this.#sessionId = undefined;
+    this.#attachModel(model);
+    this.performUpdate();
+  }
+
+  #attachModel(model: DeviceBoundSessionsModel): void {
     if (this.#model) {
       this.#model.removeEventListener(DeviceBoundSessionModelEvents.EVENT_OCCURRED, this.performUpdate, this);
+      this.#model.removeEventListener(DeviceBoundSessionModelEvents.CLEAR_EVENTS, this.performUpdate, this);
     }
     this.#model = model;
     this.#model.addEventListener(DeviceBoundSessionModelEvents.EVENT_OCCURRED, this.performUpdate, this);
-    this.performUpdate();
+    this.#model.addEventListener(DeviceBoundSessionModelEvents.CLEAR_EVENTS, this.performUpdate, this);
   }
 
   override performUpdate(): void {
     let sessionAndEvents: SessionAndEvents|undefined;
-    if (this.#site && this.#model) {
-      sessionAndEvents = this.#model.getSession(this.#site, this.#sessionId);
+    let preserveLogSetting: Common.Settings.Setting<boolean>|undefined;
+
+    if (this.#model) {
+      preserveLogSetting = this.#model.getPreserveLogSetting();
+      if (this.#site) {
+        sessionAndEvents = this.#model.getSession(this.#site, this.#sessionId);
+      }
     }
-    this.#view({sessionAndEvents}, {}, this.contentElement);
+
+    this.#view(
+        {
+          sessionAndEvents,
+          preserveLogSetting,
+          defaultTitle: this.#defaultTitle,
+          defaultDescription: this.#defaultDescription,
+        },
+        {}, this.contentElement);
   }
 }
+
 function ruleTypeToString(ruleType: Protocol.Network.DeviceBoundSessionUrlRuleRuleType): string {
   switch (ruleType) {
     case Protocol.Network.DeviceBoundSessionUrlRuleRuleType.Exclude:

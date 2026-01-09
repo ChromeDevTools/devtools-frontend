@@ -773,6 +773,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
     this.cookieListTreeElement.removeChildren();
     this.interestGroupTreeElement.clearEvents();
     this.deviceBoundSessionsModel?.clearVisibleSites();
+    this.deviceBoundSessionsModel?.clearEvents();
   }
 
   private frameNavigated(event: Common.EventTarget.EventTargetEvent<SDK.ResourceTreeModel.ResourceTreeFrame>): void {

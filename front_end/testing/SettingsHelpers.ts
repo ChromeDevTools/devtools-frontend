@@ -243,6 +243,9 @@ export const DEFAULT_SETTING_REGISTRATIONS_FOR_TEST = [
   createSettingValue(
       Common.Settings.SettingCategory.CONSOLE, 'console-insight-teasers-enabled', true,
       Common.Settings.SettingType.BOOLEAN),
+  createSettingValue(
+      Common.Settings.SettingCategory.NETWORK, 'device-bound-sessions-preserve-log', false,
+      Common.Settings.SettingType.BOOLEAN),
 ];
 
 export function setupSettings(reset: boolean) {

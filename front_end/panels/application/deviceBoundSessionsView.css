@@ -20,3 +20,8 @@
 .device-bound-session-no-events-wrapper {
   padding: 0 20px;
 }
+
+.device-bound-sessions-toolbar {
+  background-color: var(--sys-color-cdt-base-container);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
+}

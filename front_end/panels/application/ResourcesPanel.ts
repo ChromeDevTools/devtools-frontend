@@ -218,6 +218,13 @@ export class ResourcesPanel extends UI.Panel.PanelWithSidebar {
     this.deviceBoundSessionsView.showSession(model, site, sessionId);
     this.showView(this.deviceBoundSessionsView);
   }
+  showDeviceBoundSessionDefault(model: DeviceBoundSessionsModel, title: string, description: string): void {
+    if (!this.deviceBoundSessionsView) {
+      this.deviceBoundSessionsView = new DeviceBoundSessionsView();
+    }
+    this.deviceBoundSessionsView.showDefault(model, title, description);
+    this.showView(this.deviceBoundSessionsView);
+  }
 }
 
 export class ResourceRevealer implements Common.Revealer.Revealer<SDK.Resource.Resource> {

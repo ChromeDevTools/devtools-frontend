@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
@@ -87,15 +88,107 @@ describeWithMockConnection('DeviceBoundSessionsModel', () => {
     sinon.assert.notCalled(listener);
   });
 
-  it('clears visible sites and dispatches CLEAR_VISIBLE_SITES event', () => {
+  it('clears visible sites and dispatches CLEAR_VISIBLE_SITES event if preserving log', () => {
+    // Not cleared when preserving the log.
+    Common.Settings.moduleSetting('device-bound-sessions-preserve-log').set(true);
     model.addVisibleSite('example.com');
     assert.isTrue(model.isSiteVisible('example.com'));
     const listener = sinon.spy();
     model.addEventListener(
         Application.DeviceBoundSessionsModel.DeviceBoundSessionModelEvents.CLEAR_VISIBLE_SITES, listener);
     model.clearVisibleSites();
+    assert.isTrue(model.isSiteVisible('example.com'));
+    sinon.assert.notCalled(listener);
+
+    // Cleared when not preserving the log.
+    Common.Settings.moduleSetting('device-bound-sessions-preserve-log').set(false);
+    assert.isTrue(model.isSiteVisible('example.com'));
+    model.clearVisibleSites();
     assert.isFalse(model.isSiteVisible('example.com'));
     sinon.assert.calledOnce(listener);
+  });
+
+  it('clears events and dispatches CLEAR_EVENTS event if preserving log', () => {
+    const site = 'example.com';
+    const event1: Protocol.Network.DeviceBoundSessionEventOccurredEvent = {
+      eventId: 'event_1' as Protocol.Network.DeviceBoundSessionEventId,
+      site,
+      succeeded: false,
+      creationEventDetails: {fetchResult: Protocol.Network.DeviceBoundSessionFetchResult.InvalidConfigJson}
+    };
+    const event2: Protocol.Network.DeviceBoundSessionEventOccurredEvent = {
+      eventId: 'event_2' as Protocol.Network.DeviceBoundSessionEventId,
+      sessionId: 'sessionId',
+      site,
+      succeeded: false,
+      creationEventDetails: {fetchResult: Protocol.Network.DeviceBoundSessionFetchResult.InvalidConfigJson}
+    };
+    const event3: Protocol.Network.DeviceBoundSessionEventOccurredEvent = {
+      eventId: 'event_3' as Protocol.Network.DeviceBoundSessionEventId,
+      sessionId: 'otherSessionId',
+      site,
+      succeeded: true,
+      creationEventDetails: {
+        newSession: makeSession(site, 'otherSessionId'),
+        fetchResult: Protocol.Network.DeviceBoundSessionFetchResult.Success
+      }
+
+    };
+    const event4: Protocol.Network.DeviceBoundSessionEventOccurredEvent = {
+      eventId: 'event_4' as Protocol.Network.DeviceBoundSessionEventId,
+      sessionId: undefined,
+      site: 'otherSite.com',
+      succeeded: false,
+      creationEventDetails: {fetchResult: Protocol.Network.DeviceBoundSessionFetchResult.InvalidConfigJson}
+    };
+    networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.DeviceBoundSessionEventOccurred, event1);
+    networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.DeviceBoundSessionEventOccurred, event2);
+    networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.DeviceBoundSessionEventOccurred, event3);
+    networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.DeviceBoundSessionEventOccurred, event4);
+
+    // Ensure sessions exist.
+    const session1 = model.getSession(site, undefined);
+    assert.exists(session1);
+    const session2 = model.getSession(site, 'sessionId');
+    assert.exists(session2);
+    const session3 = model.getSession(site, 'otherSessionId');
+    assert.exists(session3);
+    const session4 = model.getSession('otherSite.com', undefined);
+    assert.exists(session4);
+
+    const listener = sinon.spy();
+    model.addEventListener(Application.DeviceBoundSessionsModel.DeviceBoundSessionModelEvents.CLEAR_EVENTS, listener);
+
+    // Events are not cleared when preserving the log.
+    Common.Settings.moduleSetting('device-bound-sessions-preserve-log').set(true);
+    model.clearEvents();
+    sinon.assert.notCalled(listener);
+    assert.exists(model.getSession(site, undefined));
+    assert.exists(model.getSession(site, 'sessionId'));
+    assert.exists(model.getSession(site, 'otherSessionId'));
+    assert.exists(model.getSession('otherSite.com', undefined));
+    assert.strictEqual(session1.eventsById.size, 1);
+    assert.strictEqual(session2.eventsById.size, 1);
+    assert.strictEqual(session3.eventsById.size, 1);
+    assert.strictEqual(session4.eventsById.size, 1);
+
+    // Events are cleared when not preserving the log.
+    Common.Settings.moduleSetting('device-bound-sessions-preserve-log').set(false);
+    model.clearEvents();
+    sinon.assert.calledOnce(listener);
+    assert.isUndefined(model.getSession(site, undefined));
+    assert.isUndefined(model.getSession(site, 'sessionId'));
+    const session = model.getSession(site, 'otherSessionId');
+    assert.exists(session);
+    assert.isEmpty(session.eventsById);
+    assert.isUndefined(model.getSession('otherSite.com', undefined));
+    const emptySessions = listener.firstCall.args[0].data.emptySessions;
+    assert.strictEqual(emptySessions.size, 2);
+    assert.deepEqual(emptySessions.get(site), [undefined, 'sessionId']);
+    assert.deepEqual(emptySessions.get('otherSite.com'), [undefined]);
+    const emptySites = listener.firstCall.args[0].data.emptySites;
+    assert.strictEqual(emptySites.size, 1);
+    assert.isTrue(emptySites.has('otherSite.com'));
   });
 
   it('handles storing events and subsequent EVENT_OCCURRED dispatches', () => {

@@ -317,6 +317,26 @@ export class UserMetrics {
     InspectorFrontendHostInstance.recordPerformanceHistogram(
         'DevTools.Insights.TeaserFirstChunkGenerationTime', timeInMilliseconds);
   }
+
+  consoleInsightTeaserAbortedAfterFirstCharacter(timeInMilliseconds: number): void {
+    InspectorFrontendHostInstance.recordPerformanceHistogram(
+        'DevTools.Insights.TeaserAfterFirstCharacterAbortionTime', timeInMilliseconds);
+  }
+
+  consoleInsightTeaserAbortedBeforeFirstCharacter(timeInMilliseconds: number): void {
+    InspectorFrontendHostInstance.recordPerformanceHistogram(
+        'DevTools.Insights.TeaserBeforeFirstCharacterAbortionTime', timeInMilliseconds);
+  }
+
+  consoleInsightLongTeaserGenerated(timeInMilliseconds: number): void {
+    InspectorFrontendHostInstance.recordPerformanceHistogram(
+        'DevTools.Insights.LongTeaserGenerationTime', timeInMilliseconds);
+  }
+
+  consoleInsightShortTeaserGenerated(timeInMilliseconds: number): void {
+    InspectorFrontendHostInstance.recordPerformanceHistogram(
+        'DevTools.Insights.ShortTeaserGenerationTime', timeInMilliseconds);
+  }
 }
 
 /**

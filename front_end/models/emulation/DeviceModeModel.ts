@@ -122,7 +122,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.#preferredSize = new Geometry.Size(1, 1);
     this.#initialized = false;
     this.#appliedDeviceSize = new Geometry.Size(1, 1);
-    this.#appliedDeviceScaleFactor = window.devicePixelRatio;
+    this.#appliedDeviceScaleFactor = globalThis.devicePixelRatio;
     this.#appliedUserAgentType = UA.DESKTOP;
 
     this.#scaleSetting = Common.Settings.Settings.instance().createSetting('emulation.device-scale', 1);

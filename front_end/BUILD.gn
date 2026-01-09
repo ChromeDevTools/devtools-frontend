@@ -132,7 +132,6 @@ group("unittests") {
     "models/bindings:unittests",
     "models/breakpoints:unittests",
     "models/cpu_profile:unittests",
-    "models/crux-manager:unittests",
     "models/emulation:unittests",
     "models/extensions:unittests",
     "models/geometry:unittests",
@@ -282,6 +281,7 @@ group("foundation_unittests") {
     "entrypoints/formatter_worker:unittests",
     "foundation:unittests",
     "models/ai_assistance:foundation_unittests",
+    "models/crux-manager:foundation_unittests",
     "models/formatter:unittests",
     "models/issues_manager:foundation_unittests",
   ]

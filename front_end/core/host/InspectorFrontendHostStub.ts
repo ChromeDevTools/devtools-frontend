@@ -147,6 +147,9 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
   }
 
   inspectedURLChanged(url: Platform.DevToolsPath.UrlString): void {
+    if (!('document' in globalThis)) {
+      return;
+    }
     document.title = i18nString(UIStrings.devtoolsS, {PH1: url.replace(/^https?:\/\//, '')});
   }
 

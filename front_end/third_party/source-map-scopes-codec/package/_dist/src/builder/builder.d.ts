@@ -1,4 +1,4 @@
-import type { Binding, GeneratedRange, OriginalPosition, OriginalScope, ScopeInfo } from "../../../src/scopes.js";
+import type { Binding, GeneratedRange, OriginalPosition, OriginalScope, ScopeInfo } from "../scopes.js";
 /**
  * Small utility class to build scope and range trees.
  *

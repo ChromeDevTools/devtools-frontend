@@ -1,1 +1,1 @@
-{"version":3,"file":"encode.d.ts","sources":["../../../src/encode/encode.ts"],"names":[],"mappings":"AAIA,cAAc,SAAS,EAAE,aAAa,iCAAyB;AAG/D;;;;;CAKC,GACD,OAAO,iBAAS,OACd,YAAY,SAAS,EACrB,iBAAiB,aAAa,GAC7B"}
+{"version":3,"file":"encode.d.ts","sources":["../../../src/encode/encode.ts"],"names":[],"mappings":"AAIA,cAAc,SAAS,EAAE,aAAa,uBAAuB;AAG7D;;;;;CAKC,GACD,OAAO,iBAAS,OACd,YAAY,SAAS,EACrB,iBAAiB,aAAa,GAC7B"}

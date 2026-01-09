@@ -1,4 +1,4 @@
-export type { Binding, GeneratedRange, OriginalPosition, OriginalScope, Position, ScopeInfo, SourceMapJson, SubRangeBinding } from "../../src/scopes.js";
+export type { Binding, GeneratedRange, OriginalPosition, OriginalScope, Position, ScopeInfo, SourceMapJson, SubRangeBinding } from "./scopes.js";
 export { encode } from "./encode/encode.js";
 export { decode, DecodeMode } from "./decode/decode.js";
 export { ScopeInfoBuilder } from "./builder/builder.js";

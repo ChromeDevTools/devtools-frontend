@@ -1,8 +1,8 @@
 Name: source-map-scopes-codec
 Short Name: source-map-scopes-codec
 URL: https://github.com/ChromeDevTools/source-map-scopes-codec
-Version: 0.3.1
-Revision: a171786509be39fab374b8c8b85063b172065fb1
+Version: 0.6.1
+Revision: d37113f9300493afbffea7b960afd8ba2e9d816a
 License: BSD-3-Clause
 License File: LICENSE
 Security Critical: no
@@ -26,6 +26,3 @@ then (use the URL shown by the above command)
 rm -rf package
 wget -qO- https://npm.jsr.io/\~/11/@jsr/chrome-devtools__source-map-scopes-codec/0.3.1.tgz | tar xzf -
 ```
-
-Modifications:
-Added a BUILD.gn file to package/src as esbuild would place output files otherwise in the wrong location.

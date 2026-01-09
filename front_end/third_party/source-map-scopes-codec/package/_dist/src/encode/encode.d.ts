@@ -1,4 +1,4 @@
-import type { ScopeInfo, SourceMapJson } from "../../../src/scopes.js";
+import type { ScopeInfo, SourceMapJson } from "../scopes.js";
 /**
  * Encodes the `ScopeInfo` into a source map JSON object.
  *

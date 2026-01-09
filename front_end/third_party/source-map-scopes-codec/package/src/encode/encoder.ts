@@ -7,7 +7,7 @@ import {
   GeneratedRangeFlags,
   OriginalScopeFlags,
 } from "../codec.js";
-import type { GeneratedRange, OriginalScope, ScopeInfo } from "../scopes.d.ts";
+import type { GeneratedRange, OriginalScope, ScopeInfo } from "../scopes.ts";
 import { encodeSigned, encodeUnsigned } from "../vlq.js";
 import { comparePositions } from "../util.js";
 
@@ -66,7 +66,7 @@ export class Encoder {
 
   #encodeOriginalScope(scope: OriginalScope | null): void {
     if (scope === null) {
-      this.#encodedItems.push("");
+      this.#encodedItems.push(EncodedTag.EMPTY);
       return;
     }
 

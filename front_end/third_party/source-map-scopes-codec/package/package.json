@@ -1,6 +1,6 @@
 {
   "name": "@jsr/chrome-devtools__source-map-scopes-codec",
-  "version": "0.5.0",
+  "version": "0.6.1",
   "homepage": "https://jsr.io/@chrome-devtools/source-map-scopes-codec",
   "type": "module",
   "dependencies": {},

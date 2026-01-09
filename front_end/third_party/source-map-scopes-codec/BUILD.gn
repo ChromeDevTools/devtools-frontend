@@ -3,11 +3,27 @@
 # found in the LICENSE file.
 
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../scripts/build/ninja/devtools_module.gni")
+
+devtools_foundation_module("source-map-scopes-codec") {
+  sources = [
+    "package/src/builder/builder.ts",
+    "package/src/builder/safe_builder.ts",
+    "package/src/codec.ts",
+    "package/src/decode/decode.ts",
+    "package/src/encode/encode.ts",
+    "package/src/encode/encoder.ts",
+    "package/src/mod.ts",
+    "package/src/scopes.ts",
+    "package/src/util.ts",
+    "package/src/vlq.ts",
+  ]
+}
 
 devtools_entrypoint("bundle") {
   entrypoint = "source-map-scopes-codec.ts"
 
-  deps = [ "./package/src:source-map-scopes-codec" ]
+  deps = [ ":source-map-scopes-codec" ]
 
   visibility = [ "*" ]
 }

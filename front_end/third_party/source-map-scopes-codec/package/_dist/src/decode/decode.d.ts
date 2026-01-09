@@ -1,4 +1,4 @@
-import type { Position, ScopeInfo, SourceMap } from "../../../src/scopes.js";
+import type { Position, ScopeInfo, SourceMap } from "../scopes.js";
 /**
  * The mode decides how well-formed the encoded scopes have to be, to be accepted by the decoder.
  *

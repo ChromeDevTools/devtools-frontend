@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type { Position } from "./scopes.d.ts";
+import type { Position } from "./scopes.ts";
 
 /**
  * @returns A negative number iff `a` precedes `b`, 0 iff `a` and `b` are equal and a positive number iff `b` precedes `a`.

@@ -18,7 +18,7 @@ import type {
   SourceMap,
   SourceMapJson,
   SubRangeBinding,
-} from "../scopes.d.ts";
+} from "../scopes.ts";
 import { TokenIterator } from "../vlq.js";
 
 /**
@@ -127,7 +127,10 @@ class Decoder {
   readonly #rangeStack: GeneratedRange[] = [];
 
   #flatOriginalScopes: OriginalScope[] = [];
-  #subRangeBindingsForRange = new Map<number, [number, number, number][]>();
+  #subRangeBindingsForRange = new Map<
+    GeneratedRange,
+    Map<number, [number, number, number][]>
+  >();
 
   constructor(scopes: string, names: string[], options: DecodeOptions) {
     this.#encodedScopes = scopes;
@@ -141,14 +144,12 @@ class Decoder {
     const iter = new TokenIterator(this.#encodedScopes);
 
     while (iter.hasNext()) {
-      if (iter.peek() === ",") {
-        iter.nextChar(); // Consume ",".
-        this.#scopes.push(null); // Add an EmptyItem;
-        continue;
-      }
-
       const tag = iter.nextUnsignedVLQ();
       switch (tag) {
+        case Tag.EMPTY: {
+          this.#scopes.push(null);
+          break;
+        }
         case Tag.ORIGINAL_SCOPE_START: {
           const item: OriginalScopeStartItem = {
             flags: iter.nextUnsignedVLQ(),
@@ -248,16 +249,19 @@ class Decoder {
           );
           break;
         }
+        case Tag.VENDOR_EXTENSION: {
+          const _extensionNameIdx = iter.nextUnsignedVLQ();
+          break;
+        }
+        default: {
+          this.#throwInStrictMode(`Encountered illegal item tag ${tag}`);
+          break;
+        }
       }
 
       // Consume any trailing VLQ and the the ","
       while (iter.hasNext() && iter.peek() !== ",") iter.nextUnsignedVLQ();
       if (iter.hasNext()) iter.nextChar();
-    }
-
-    if (iter.currentChar() === ",") {
-      // Handle trailing EmptyItem.
-      this.#scopes.push(null);
     }
 
     if (this.#scopeStack.length > 0) {
@@ -402,7 +406,6 @@ class Decoder {
     }
 
     this.#rangeStack.push(range);
-    this.#subRangeBindingsForRange.clear();
   }
 
   #handleGeneratedRangeBindingsItem(valueIdxs: number[]) {
@@ -427,13 +430,25 @@ class Decoder {
     variableIndex: number,
     bindings: [number, number, number][],
   ) {
-    if (this.#subRangeBindingsForRange.has(variableIndex)) {
+    const range = this.#rangeStack.at(-1);
+    if (!range) {
+      this.#throwInStrictMode(
+        "Encountered GENERATED_RANGE_SUBRANGE_BINDING without surrounding GENERATED_RANGE_START",
+      );
+      return;
+    }
+    let subRangeBindings = this.#subRangeBindingsForRange.get(range);
+    if (!subRangeBindings) {
+      subRangeBindings = new Map();
+      this.#subRangeBindingsForRange.set(range, subRangeBindings);
+    }
+    if (subRangeBindings.has(variableIndex)) {
       this.#throwInStrictMode(
         "Encountered multiple GENERATED_RANGE_SUBRANGE_BINDING items for the same variable",
       );
       return;
     }
-    this.#subRangeBindingsForRange.set(variableIndex, bindings);
+    subRangeBindings.set(variableIndex, bindings);
   }
 
   #handleGeneratedRangeCallSite(
@@ -489,7 +504,10 @@ class Decoder {
   }
 
   #handleGeneratedRangeSubRangeBindings(range: GeneratedRange) {
-    for (const [variableIndex, bindings] of this.#subRangeBindingsForRange) {
+    const subRangeBindings = this.#subRangeBindingsForRange.get(range);
+    if (!subRangeBindings) return;
+
+    for (const [variableIndex, bindings] of subRangeBindings) {
       const value = range.values[variableIndex];
       const subRanges: SubRangeBinding[] = [];
       range.values[variableIndex] = subRanges;

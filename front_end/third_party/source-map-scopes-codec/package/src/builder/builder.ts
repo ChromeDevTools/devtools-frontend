@@ -8,7 +8,7 @@ import type {
   OriginalPosition,
   OriginalScope,
   ScopeInfo,
-} from "../scopes.d.ts";
+} from "../scopes.ts";
 
 /**
  * Small utility class to build scope and range trees.

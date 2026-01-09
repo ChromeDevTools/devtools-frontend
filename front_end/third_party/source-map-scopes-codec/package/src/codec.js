@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 export var Tag = /*#__PURE__*/ function(Tag) {
+  Tag[Tag["EMPTY"] = 0] = "EMPTY";
   Tag[Tag["ORIGINAL_SCOPE_START"] = 1] = "ORIGINAL_SCOPE_START";
   Tag[Tag["ORIGINAL_SCOPE_END"] = 2] = "ORIGINAL_SCOPE_END";
   Tag[Tag["ORIGINAL_SCOPE_VARIABLES"] = 3] = "ORIGINAL_SCOPE_VARIABLES";
@@ -10,9 +11,11 @@ export var Tag = /*#__PURE__*/ function(Tag) {
   Tag[Tag["GENERATED_RANGE_BINDINGS"] = 6] = "GENERATED_RANGE_BINDINGS";
   Tag[Tag["GENERATED_RANGE_SUBRANGE_BINDING"] = 7] = "GENERATED_RANGE_SUBRANGE_BINDING";
   Tag[Tag["GENERATED_RANGE_CALL_SITE"] = 8] = "GENERATED_RANGE_CALL_SITE";
+  Tag[Tag["VENDOR_EXTENSION"] = 99] = "VENDOR_EXTENSION";
   return Tag;
 }({});
 export var EncodedTag = /*#__PURE__*/ function(EncodedTag) {
+  EncodedTag["EMPTY"] = "A";
   EncodedTag["ORIGINAL_SCOPE_START"] = "B";
   EncodedTag["ORIGINAL_SCOPE_END"] = "C";
   EncodedTag["ORIGINAL_SCOPE_VARIABLES"] = "D";
@@ -21,6 +24,7 @@ export var EncodedTag = /*#__PURE__*/ function(EncodedTag) {
   EncodedTag["GENERATED_RANGE_BINDINGS"] = "G";
   EncodedTag["GENERATED_RANGE_SUBRANGE_BINDING"] = "H";
   EncodedTag["GENERATED_RANGE_CALL_SITE"] = "I";
+  EncodedTag["VENDOR_EXTENSION"] = "/";
   return EncodedTag;
 }({});
 export var OriginalScopeFlags = /*#__PURE__*/ function(OriginalScopeFlags) {

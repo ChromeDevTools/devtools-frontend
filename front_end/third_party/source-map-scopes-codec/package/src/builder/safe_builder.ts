@@ -8,7 +8,7 @@ import type {
   OriginalScope,
   Position,
   ScopeInfo,
-} from "../scopes.d.ts";
+} from "../scopes.ts";
 import { comparePositions } from "../util.js";
 import { ScopeInfoBuilder, type ScopeKey } from "./builder.js";
 

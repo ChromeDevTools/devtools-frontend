@@ -1,6 +1,6 @@
 {
   "name": "@chrome-devtools/source-map-scopes-codec",
-  "version": "0.5.0",
+  "version": "0.6.1",
   "exports": "./src/mod.ts",
   "license": "BSD-3-Clause",
   "fmt": {

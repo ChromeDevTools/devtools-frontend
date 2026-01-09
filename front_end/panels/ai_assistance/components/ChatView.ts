@@ -208,7 +208,6 @@ export class ChatView extends HTMLElement {
   };
 
   #render(): void {
-
     const inputWidgetClasses = Lit.Directives.classMap({
       'chat-input-widget': true,
       sticky: !this.#props.isReadOnly,
@@ -219,22 +218,58 @@ export class ChatView extends HTMLElement {
       <style>${chatViewStyles}</style>
       <div class="chat-ui">
         <main @scroll=${this.#handleScroll} ${ref(this.#mainElementRef)}>
-          ${renderMainContents({
-            messages: this.#props.messages,
-            isLoading: this.#props.isLoading,
-            isReadOnly: this.#props.isReadOnly,
-            canShowFeedbackForm: this.#props.canShowFeedbackForm,
-            isTextInputDisabled: this.#props.isTextInputDisabled,
-            suggestions: this.#props.emptyStateSuggestions,
-            userInfo: this.#props.userInfo,
-            markdownRenderer: this.#props.markdownRenderer,
-            changeSummary: this.#props.changeSummary,
-            changeManager: this.#props.changeManager,
-            onSuggestionClick: this.#handleSuggestionClick,
-            onFeedbackSubmit: this.#props.onFeedbackSubmit,
-            onMessageContainerRef: this.#handleMessageContainerRef,
-            onCopyResponseClick: this.#props.onCopyResponseClick,
-          })}
+          ${this.#props.messages.length > 0 ? html`
+            <div class="messages-container" ${ref(this.#handleMessageContainerRef)}>
+              ${repeat(this.#props.messages, message =>
+                html`<devtools-widget .widgetConfig=${UI.Widget.widgetConfig(ChatMessage, {
+                  message,
+                  isLoading: this.#props.isLoading,
+                  isReadOnly: this.#props.isReadOnly,
+                  canShowFeedbackForm: this.#props.canShowFeedbackForm,
+                  userInfo: this.#props.userInfo,
+                  markdownRenderer: this.#props.markdownRenderer,
+                  isLastMessage: this.#props.messages.at(-1) === message,
+                  onSuggestionClick: this.#handleSuggestionClick,
+                  onFeedbackSubmit: this.#props.onFeedbackSubmit,
+                  onCopyResponseClick: this.#props.onCopyResponseClick,
+                })}></devtools-widget>`
+              )}
+              ${this.#props.isLoading ? Lit.nothing : html`<devtools-widget
+                .widgetConfig=${UI.Widget.widgetConfig(PatchWidget, {
+                  changeSummary: this.#props.changeSummary ?? '',
+                  changeManager: this.#props.changeManager,
+                })}
+              ></devtools-widget>`}
+            </div>
+          ` : html`
+            <div class="empty-state-container">
+              <div class="header">
+                <div class="icon">
+                  <devtools-icon
+                    name="smart-assistant"
+                  ></devtools-icon>
+                </div>
+                <h1>${lockedString(UIStringsNotTranslate.emptyStateText)}</h1>
+              </div>
+              <div class="empty-state-content">
+                ${this.#props.emptyStateSuggestions.map(({title, jslogContext}) => {
+                  return html`<devtools-button
+                    class="suggestion"
+                    @click=${() => this.#handleSuggestionClick(title)}
+                    .data=${
+                      {
+                        variant: Buttons.Button.Variant.OUTLINED,
+                        size: Buttons.Button.Size.REGULAR,
+                        title,
+                        jslogContext: jslogContext ?? 'suggestion',
+                        disabled: this.#props.isTextInputDisabled,
+                      } as Buttons.Button.ButtonData
+                    }
+                  >${title}</devtools-button>`;
+                })}
+              </div>
+            </div>
+          `}
           <devtools-widget class=${inputWidgetClasses} .widgetConfig=${UI.Widget.widgetConfig(ChatInput, {
             isLoading: this.#props.isLoading,
             blockedByCrossOrigin: this.#props.blockedByCrossOrigin,
@@ -264,158 +299,6 @@ export class ChatView extends HTMLElement {
     `, this.#shadow, {host: this});
     // clang-format on
   }
-}
-
-function renderMainContents({
-  messages,
-  isLoading,
-  isReadOnly,
-  canShowFeedbackForm,
-  isTextInputDisabled,
-  suggestions,
-  userInfo,
-  markdownRenderer,
-  changeSummary,
-  changeManager,
-  onSuggestionClick,
-  onFeedbackSubmit,
-  onCopyResponseClick,
-  onMessageContainerRef,
-}: {
-  messages: Message[],
-  isLoading: boolean,
-  isReadOnly: boolean,
-  canShowFeedbackForm: boolean,
-  isTextInputDisabled: boolean,
-  suggestions: AiAssistanceModel.AiAgent.ConversationSuggestion[],
-  userInfo: Pick<Host.InspectorFrontendHostAPI.SyncInformation, 'accountImage'|'accountFullName'>,
-  markdownRenderer: MarkdownLitRenderer,
-  changeManager: AiAssistanceModel.ChangeManager.ChangeManager,
-  onSuggestionClick: (suggestion: string) => void,
-  onFeedbackSubmit: (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void,
-  onCopyResponseClick: (message: ModelChatMessage) => void,
-  onMessageContainerRef: (el: Element|undefined) => void,
-  changeSummary?: string,
-}): Lit.LitTemplate {
-  if (messages.length > 0) {
-    return renderMessages({
-      messages,
-      isLoading,
-      isReadOnly,
-      canShowFeedbackForm,
-      userInfo,
-      markdownRenderer,
-      changeSummary,
-      changeManager,
-      onSuggestionClick,
-      onFeedbackSubmit,
-      onMessageContainerRef,
-      onCopyResponseClick
-    });
-  }
-
-  return renderEmptyState({isTextInputDisabled, suggestions, onSuggestionClick});
-}
-
-function renderMessages({
-  messages,
-  isLoading,
-  isReadOnly,
-  canShowFeedbackForm,
-  userInfo,
-  markdownRenderer,
-  changeSummary,
-  changeManager,
-  onSuggestionClick,
-  onFeedbackSubmit,
-  onCopyResponseClick,
-  onMessageContainerRef,
-}: {
-  messages: Message[],
-  isLoading: boolean,
-  isReadOnly: boolean,
-  canShowFeedbackForm: boolean,
-  userInfo: Pick<Host.InspectorFrontendHostAPI.SyncInformation, 'accountImage'|'accountFullName'>,
-  markdownRenderer: MarkdownLitRenderer,
-  onSuggestionClick: (suggestion: string) => void,
-  onFeedbackSubmit: (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void,
-  onCopyResponseClick: (message: ModelChatMessage) => void,
-  onMessageContainerRef: (el: Element|undefined) => void,
-  changeSummary?: string,
-  changeManager?: AiAssistanceModel.ChangeManager.ChangeManager,
-}): Lit.TemplateResult {
-  function renderPatchWidget(): Lit.LitTemplate {
-    if (isLoading) {
-      return Lit.nothing;
-    }
-
-    // clang-format off
-    return html`<devtools-widget
-      .widgetConfig=${UI.Widget.widgetConfig(PatchWidget, {
-        changeSummary: changeSummary ?? '',
-        changeManager,
-      })}
-    ></devtools-widget>`;
-    // clang-format on
-  }
-
-  // clang-format off
-  return html`
-    <div class="messages-container" ${ref(onMessageContainerRef)}>
-      ${repeat(messages, message =>
-        html`<devtools-widget .widgetConfig=${UI.Widget.widgetConfig(ChatMessage, {
-          message,
-          isLoading,
-          isReadOnly,
-          canShowFeedbackForm,
-          userInfo,
-          markdownRenderer,
-          isLastMessage: messages.at(-1) === message,
-          onSuggestionClick,
-          onFeedbackSubmit,
-          onCopyResponseClick,
-        })}></devtools-widget>`
-      )}
-      ${renderPatchWidget()}
-    </div>
-  `;
-  // clang-format on
-}
-
-function renderEmptyState({isTextInputDisabled, suggestions, onSuggestionClick}: {
-  isTextInputDisabled: boolean,
-  suggestions: AiAssistanceModel.AiAgent.ConversationSuggestion[],
-  onSuggestionClick: (suggestion: string) => void,
-}): Lit.TemplateResult {
-  // clang-format off
-  return html`<div class="empty-state-container">
-    <div class="header">
-      <div class="icon">
-        <devtools-icon
-          name="smart-assistant"
-        ></devtools-icon>
-      </div>
-      <h1>${lockedString(UIStringsNotTranslate.emptyStateText)}</h1>
-    </div>
-    <div class="empty-state-content">
-      ${suggestions.map(({title, jslogContext}) => {
-        return html`<devtools-button
-          class="suggestion"
-          @click=${() => onSuggestionClick(title)}
-          .data=${
-            {
-              variant: Buttons.Button.Variant.OUTLINED,
-              size: Buttons.Button.Size.REGULAR,
-              title,
-              jslogContext: jslogContext ?? 'suggestion',
-              disabled: isTextInputDisabled,
-            } as Buttons.Button.ButtonData
-          }
-        >${title}</devtools-button>`;
-      })}
-    </div>
-  </div>`;
-  // clang-format on
 }
 
 declare global {

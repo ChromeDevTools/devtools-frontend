@@ -129,7 +129,7 @@ describe('Recorder', function() {
         await button.click();
         const input = await devToolsPage.waitFor<HTMLInputElement>('#title-input');
         await devToolsPage.raf();
-        await devToolsPage.typeText(' with Hello world', {delay: 50});
+        await devToolsPage.pasteText(' with Hello world');
         await input.evaluate(input => {
           input.blur();
         });

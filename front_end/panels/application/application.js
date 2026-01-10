@@ -2327,17 +2327,50 @@ var DeviceBoundSessionsModel = class extends Common3.ObjectWrapper.ObjectWrapper
     this.dispatchEventToListeners("ADD_VISIBLE_SITE", { site });
   }
   clearVisibleSites() {
+    if (this.getPreserveLogSetting().get()) {
+      return;
+    }
     this.#visibleSites.clear();
     this.dispatchEventToListeners(
       "CLEAR_VISIBLE_SITES"
       /* DeviceBoundSessionModelEvents.CLEAR_VISIBLE_SITES */
     );
   }
+  clearEvents() {
+    if (this.getPreserveLogSetting().get()) {
+      return;
+    }
+    const emptySessions = /* @__PURE__ */ new Map();
+    const emptySites = /* @__PURE__ */ new Set();
+    for (const [site, sessionIdToSessionMap] of [...this.#siteSessions]) {
+      let emptySessionsSiteEntry = emptySessions.get(site);
+      for (const [sessionId, sessionAndEvents] of sessionIdToSessionMap) {
+        sessionAndEvents.eventsById.clear();
+        if (sessionAndEvents.session) {
+          continue;
+        }
+        sessionIdToSessionMap.delete(sessionId);
+        if (!emptySessionsSiteEntry) {
+          emptySessionsSiteEntry = [];
+          emptySessions.set(site, emptySessionsSiteEntry);
+        }
+        emptySessionsSiteEntry.push(sessionId);
+      }
+      if (sessionIdToSessionMap.size === 0) {
+        this.#siteSessions.delete(site);
+        emptySites.add(site);
+      }
+    }
+    this.dispatchEventToListeners("CLEAR_EVENTS", { emptySessions, emptySites });
+  }
   isSiteVisible(site) {
     return this.#visibleSites.has(site);
   }
   getSession(site, sessionId) {
     return this.#siteSessions.get(site)?.get(sessionId);
+  }
+  getPreserveLogSetting() {
+    return Common3.Settings.Settings.instance().createSetting("device-bound-sessions-preserve-log", false);
   }
   #onSessionsSet({ data: sessions }) {
     for (const session of sessions) {
@@ -2418,16 +2451,27 @@ var UIStrings5 = {
 };
 var str_5 = i18n9.i18n.registerUIStrings("panels/application/DeviceBoundSessionsTreeElement.ts", UIStrings5);
 var i18nString5 = i18n9.i18n.getLocalizedString.bind(void 0, str_5);
-var RootTreeElement = class extends ExpandableApplicationPanelTreeElement {
+var RootTreeElement = class extends ApplicationPanelTreeElement {
   #model;
   #sites = /* @__PURE__ */ new Map();
   constructor(storagePanel, model) {
-    super(storagePanel, i18nString5(UIStrings5.deviceBoundSessions), i18nString5(UIStrings5.deviceBoundSessions), i18nString5(UIStrings5.deviceBoundSessionsCategoryDescription), "device-bound-sessions-root");
+    super(
+      storagePanel,
+      i18nString5(UIStrings5.deviceBoundSessions),
+      /* expandable=*/
+      true,
+      "device-bound-sessions-root"
+    );
     this.setLeadingIcons([createIcon3("lock-person")]);
     this.#model = model;
   }
   get itemURL() {
     return "device-bound-sessions://";
+  }
+  onselect(selectedByUser) {
+    super.onselect(selectedByUser);
+    this.resourcesPanel.showDeviceBoundSessionDefault(this.#model, i18nString5(UIStrings5.deviceBoundSessions), i18nString5(UIStrings5.deviceBoundSessionsCategoryDescription));
+    return false;
   }
   onbind() {
     super.onbind();
@@ -2435,6 +2479,7 @@ var RootTreeElement = class extends ExpandableApplicationPanelTreeElement {
     this.#model.addEventListener("ADD_VISIBLE_SITE", this.#onVisibleSiteAdded, this);
     this.#model.addEventListener("CLEAR_VISIBLE_SITES", this.#onVisibleSitesCleared, this);
     this.#model.addEventListener("EVENT_OCCURRED", this.#onEventOccurred, this);
+    this.#model.addEventListener("CLEAR_EVENTS", this.#onClearEvents, this);
   }
   onunbind() {
     super.onunbind();
@@ -2442,6 +2487,7 @@ var RootTreeElement = class extends ExpandableApplicationPanelTreeElement {
     this.#model.removeEventListener("ADD_VISIBLE_SITE", this.#onVisibleSiteAdded, this);
     this.#model.removeEventListener("CLEAR_VISIBLE_SITES", this.#onVisibleSitesCleared, this);
     this.#model.removeEventListener("EVENT_OCCURRED", this.#onEventOccurred, this);
+    this.#model.removeEventListener("CLEAR_EVENTS", this.#onClearEvents, this);
   }
   #updateSiteTreeElementVisibility(site) {
     const siteMapEntry = this.#sites.get(site);
@@ -2465,10 +2511,22 @@ var RootTreeElement = class extends ExpandableApplicationPanelTreeElement {
   #addSiteSessionIfMissing(site, sessionId) {
     let siteMapEntry = this.#sites.get(site);
     if (!siteMapEntry) {
-      const siteElement = new ExpandableApplicationPanelTreeElement(this.resourcesPanel, site, i18nString5(UIStrings5.deviceBoundSessions), i18nString5(UIStrings5.deviceBoundSessionsCategoryDescription), "device-bound-sessions-site");
+      const siteElement = new ApplicationPanelTreeElement(
+        this.resourcesPanel,
+        site,
+        /* expandable=*/
+        true,
+        "device-bound-sessions-site"
+      );
       siteElement.setLeadingIcons([createIcon3("cloud")]);
       siteElement.itemURL = `device-bound-sessions://${site}`;
-      siteMapEntry = { siteTreeElement: siteElement, sessions: /* @__PURE__ */ new Set() };
+      const defaultOnSelect = siteElement.onselect.bind(siteElement);
+      siteElement.onselect = (selectedByUser) => {
+        defaultOnSelect(selectedByUser);
+        this.resourcesPanel.showDeviceBoundSessionDefault(this.#model, i18nString5(UIStrings5.deviceBoundSessions), i18nString5(UIStrings5.deviceBoundSessionsCategoryDescription));
+        return false;
+      };
+      siteMapEntry = { siteTreeElement: siteElement, sessions: /* @__PURE__ */ new Map() };
       this.#sites.set(site, siteMapEntry);
     }
     if (!siteMapEntry.sessions.has(sessionId)) {
@@ -2486,9 +2544,30 @@ var RootTreeElement = class extends ExpandableApplicationPanelTreeElement {
       } else {
         siteMapEntry.siteTreeElement.appendChild(sessionElement);
       }
-      siteMapEntry.sessions.add(sessionId);
+      siteMapEntry.sessions.set(sessionId, sessionElement);
     }
     this.#updateSiteTreeElementVisibility(site);
+  }
+  #removeEmptyElements(emptySessions, emptySites) {
+    for (const emptySite of emptySites) {
+      const siteData = this.#sites.get(emptySite);
+      if (siteData) {
+        this.removeChild(siteData.siteTreeElement);
+        this.#sites.delete(emptySite);
+      }
+    }
+    for (const [site, emptySessionIds] of emptySessions) {
+      const siteData = this.#sites.get(site);
+      if (siteData) {
+        for (const emptySessionId of emptySessionIds) {
+          const sessionElement = siteData.sessions.get(emptySessionId);
+          if (sessionElement) {
+            siteData.siteTreeElement.removeChild(sessionElement);
+            siteData.sessions.delete(emptySessionId);
+          }
+        }
+      }
+    }
   }
   #onNewSessions({ data: { sessions } }) {
     for (const session of sessions) {
@@ -2503,6 +2582,9 @@ var RootTreeElement = class extends ExpandableApplicationPanelTreeElement {
   }
   #onEventOccurred({ data: { site, sessionId } }) {
     this.#addSiteSessionIfMissing(site, sessionId);
+  }
+  #onClearEvents({ data: { emptySessions, emptySites } }) {
+    this.#removeEmptyElements(emptySessions, emptySites);
   }
 };
 
@@ -11810,6 +11892,7 @@ var ApplicationPanelSidebar = class extends UI21.Widget.VBox {
     this.cookieListTreeElement.removeChildren();
     this.interestGroupTreeElement.clearEvents();
     this.deviceBoundSessionsModel?.clearVisibleSites();
+    this.deviceBoundSessionsModel?.clearEvents();
   }
   frameNavigated(event) {
     const frame = event.data;
@@ -13530,7 +13613,7 @@ import "./../../ui/components/report_view/report_view.js";
 import "./../../ui/legacy/components/data_grid/data_grid.js";
 import * as i18n61 from "./../../core/i18n/i18n.js";
 import * as UI23 from "./../../ui/legacy/legacy.js";
-import { html as html9, nothing as nothing6, render as render8 } from "./../../ui/lit/lit.js";
+import { Directives as Directives4, html as html9, nothing as nothing6, render as render8 } from "./../../ui/lit/lit.js";
 import * as VisualLogging17 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/application/deviceBoundSessionsView.css.js
@@ -13547,15 +13630,25 @@ var deviceBoundSessionsView_css_default = `/*
   display: block;
 }
 
-.device-bound-session-view-wrapper {
+.device-bound-session-view-wrapper, .device-bound-session-sidebar {
   overflow-y: auto;
   scroll-behavior: smooth;
   padding-bottom: 20px;
 }
 
+.device-bound-session-no-events-wrapper, .device-bound-session-no-event-details {
+  padding: 0 20px;
+}
+
+.device-bound-sessions-toolbar {
+  background-color: var(--sys-color-cdt-base-container);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
+}
+
 /*# sourceURL=${import.meta.resolve("./deviceBoundSessionsView.css")} */`;
 
 // gen/front_end/panels/application/DeviceBoundSessionsView.js
+var { widgetConfig: widgetConfig6 } = UI23.Widget;
 var UIStrings31 = {
   /**
    *@description Label for a site, e.g. https://example.com/.
@@ -13632,10 +13725,701 @@ var UIStrings31 = {
   /**
    *@description Text describing that a rule includes something.
    */
-  ruleTypeInclude: "Include"
+  ruleTypeInclude: "Include",
+  /**
+   *@description Label for an event that has created something.
+   */
+  creation: "Creation",
+  /**
+   *@description Label for an event that has refreshed something.
+   */
+  refresh: "Refresh",
+  /**
+   *@description Label for an event that has set a cryptographic string challenge.
+   */
+  challenge: "Challenge",
+  /**
+   *@description Label for an event that has terminated something.
+   */
+  termination: "Termination",
+  /**
+   *@description Label for an event whose type is not known.
+   */
+  unknown: "Unknown",
+  /**
+   *@description Heading for a section that will display events that have occurred.
+   */
+  events: "Events",
+  /**
+   *@description Section header for details about an event.
+   */
+  eventDetails: "Event details",
+  /**
+   *@description Placeholder text when no row is selected in a table of events.
+   */
+  selectEventToViewDetails: "Select an event row to view more details.",
+  /**
+   *@description Column heading for the type of event that has occurred.
+   */
+  type: "Type",
+  /**
+   *@description Column heading for the date + time that an event occurred.
+   */
+  timestamp: "Date",
+  /**
+   *@description Column heading for the result of an event (whether it succeeded or had an error).
+   */
+  result: "Result",
+  /**
+   *@description Notes the result status of an event was that it succeeded.
+   */
+  success: "Success",
+  /**
+   *@description Notes the result status of an event was that it had an error.
+   */
+  error: "Error",
+  /**
+   *@description Default message when no events have appeared yet.
+   */
+  noEvents: "No events have been logged yet.",
+  /**
+   *@description Text to preserve the log of events after refreshing.
+   */
+  preserveLog: "Preserve log",
+  /**
+   *@description Tooltip text that appears on the preserve log setting when hovering over it.
+   */
+  doNotClearLogOnPageReload: "Do not clear log on page reload/navigation.",
+  /**
+   *@description Label for the ID of a session.
+   */
+  sessionId: "Session ID",
+  /**
+   *@description Label for the result of an event (whether it succeeded or had an error).
+   */
+  eventResult: "Event result",
+  /**
+   *@description Label for the result of fetching new session information.
+   */
+  fetchResult: "Fetch result",
+  /**
+   *@description Label for whether a session's basic configuration was updated. The corresponding value is yes or no.
+   */
+  updatedSessionConfig: "Updated session config",
+  /**
+   *@description Label for the result of an attempted refresh.
+   */
+  refreshResult: "Refresh result",
+  /**
+   *@description Label for whether a particular event caused any HTTP request to be deferred (i.e. paused and
+   * later unpaused). The corresponding value is yes or no.
+   */
+  causedAnyRequestDeferrals: "Caused any request deferrals",
+  /**
+   *@description Label for the result of attempting to set a cryptographic string challenge.
+   */
+  challengeResult: "Challenge result",
+  /**
+   *@description Label for the reason why a session was deleted.
+   */
+  deletionReason: "Deletion reason",
+  /**
+   *@description Explanation for an event outcome. Key refers to a cryptographic key.
+   */
+  keyError: "Key error",
+  /**
+   *@description Explanation for an event outcome. Signing refers to cryptographic signing.
+   */
+  signingError: "Signing error",
+  /**
+   *@description Explanation for an event outcome.
+   */
+  serverRequestedTermination: "Server requested termination",
+  /**
+   *@description Explanation for an event outcome.
+   */
+  invalidSessionId: "Invalid session ID",
+  /**
+   *@description Explanation for an event outcome. Challenge refers to a cryptographic string challenge.
+   */
+  invalidChallenge: "Invalid challenge",
+  /**
+   *@description Explanation for an event outcome. Challenge refers to a cryptographic string challenge.
+   */
+  tooManyChallenges: "Too many challenges",
+  /**
+   *@description Explanation for an event outcome.
+   */
+  invalidFetcherUrl: "Invalid fetcher URL",
+  /**
+   *@description Explanation for an event outcome.
+   */
+  invalidRefreshUrl: "Invalid refresh URL",
+  /**
+   *@description Explanation for an event outcome.
+   */
+  transientHttpError: "Transient HTTP error",
+  /**
+   *@description Explanation for an event outcome. This means there is a URL origin written into a session configuration's scope that is causing failures because it's for a different site.
+   */
+  scopeOriginSameSiteMismatch: "Same-site mismatch scope origin",
+  /**
+   *@description Explanation for an event outcome. This means the session configuration's URL for refreshing is causing failures because it's for a different site.
+   */
+  refreshUrlSameSiteMismatch: "Same-site mismatch refresh URL",
+  /**
+   *@description Explanation for an event outcome. This means the session configuration's session ID does not match the relevant session ID.
+   */
+  mismatchedSessionId: "Mismatched session ID",
+  /**
+   *@description Explanation for an event outcome.
+   */
+  missingScope: "Missing scope",
+  /**
+   *@description Explanation for an event outcome. This means the credentials field in the session configuration is missing.
+   */
+  noCredentials: "No credentials",
+  /**
+   *@description Explanation for an event outcome.
+   */
+  subdomainRegistrationWellKnownUnavailable: "Subdomain registration .well-known unavailable",
+  /**
+   *@description Explanation for an event outcome.
+   */
+  subdomainRegistrationUnauthorized: ".well-known did not authorize registration by subdomain",
+  /**
+   *@description Explanation for an event outcome.
+   */
+  subdomainRegistrationWellKnownMalformed: "Subdomain registration .well-known content malformed",
+  /**
+   *@description Explanation for an event outcome.
+   */
+  sessionProviderWellKnownUnavailable: "Session provider .well-known unavailable",
+  /**
+   *@description Explanation for an event outcome.
+   */
+  relyingPartyWellKnownUnavailable: "Relying party .well-known unavailable",
+  /**
+   *@description Explanation for an event outcome. This refers to a JSON Web Key thumbprint (https://www.rfc-editor.org/rfc/rfc7638). Federated sessions are described in https://w3c.github.io/webappsec-dbsc/.
+   */
+  federatedKeyThumbprintMismatch: "Federated key had incorrect thumbprint",
+  /**
+   *@description Explanation for an event outcome. Federated sessions are described in https://w3c.github.io/webappsec-dbsc/.
+   */
+  invalidFederatedSessionUrl: "Federated provider URL not valid",
+  /**
+   *@description Explanation for an event outcome. Federated sessions are described in https://w3c.github.io/webappsec-dbsc/.
+   */
+  invalidFederatedKey: "Federated key invalid",
+  /**
+   *@description Explanation for an event outcome. Origin labels are described in https://w3c.github.io/webappsec-dbsc/.
+   */
+  tooManyRelyingOriginLabels: "Too many relying origin labels in .well-known",
+  /**
+   *@description Explanation for an event outcome.
+   */
+  boundCookieSetForbidden: "Registration in a context that cannot set bound cookies",
+  /**
+   *@description Explanation for an event outcome.
+   */
+  netError: "Network error",
+  /**
+   *@description Explanation for an event outcome.
+   */
+  proxyError: "Proxy error",
+  /**
+   *@description Explanation for an event outcome.
+   */
+  emptySessionConfig: "Empty session configuration for registration",
+  /**
+   *@description Explanation for an event outcome.
+   */
+  invalidCredentialsConfig: "Invalid credentials configuration",
+  /**
+   *@description Explanation for an event outcome.
+   */
+  invalidCredentialsType: "Invalid credentials - empty or non-cookie type",
+  /**
+   *@description Explanation for an event outcome.
+   */
+  invalidCredentialsEmptyName: "Invalid credentials - empty name",
+  /**
+   *@description Explanation for an event outcome.
+   */
+  invalidCredentialsCookie: "Invalid credentials - cookie invalid",
+  /**
+   *@description Explanation for an event outcome.
+   */
+  persistentHttpError: "Persistent HTTP error",
+  /**
+   *@description Explanation for an event outcome. Challenge refers to a cryptographic string challenge.
+   */
+  registrationAttemptedChallenge: "Registration returned challenge error response code",
+  /**
+   *@description Explanation for an event outcome. This refers to a URL's origin.
+   */
+  invalidScopeOrigin: "Invalid scope origin",
+  /**
+   *@description Explanation for an event outcome. This refers to an URL's path / origin.
+   */
+  scopeOriginContainsPath: "Scope origin contains a path",
+  /**
+   *@description Explanation for an event outcome. This refers to an HTTP request's initiator.
+   */
+  refreshInitiatorNotString: "Allowed refresh initiator is not a string",
+  /**
+   *@description Explanation for an event outcome. This refers to an HTTP request's initiator and a URL's host.
+   */
+  refreshInitiatorInvalidHostPattern: "Allowed refresh initiator has invalid host pattern",
+  /**
+   *@description Explanation for an event outcome. Scope specification is defined in https://w3c.github.io/webappsec-dbsc/.
+   */
+  invalidScopeSpecification: "Invalid scope specification",
+  /**
+   *@description Explanation for an event outcome. Scope specification is defined in https://w3c.github.io/webappsec-dbsc/.
+   */
+  missingScopeSpecificationType: "Missing scope specification type",
+  /**
+   *@description Explanation for an event outcome. Scope specification is defined in https://w3c.github.io/webappsec-dbsc/.
+   */
+  emptyScopeSpecificationDomain: "Empty scope specification domain",
+  /**
+   *@description Explanation for an event outcome. Scope specification is defined in https://w3c.github.io/webappsec-dbsc/.
+   */
+  emptyScopeSpecificationPath: "Empty scope specification path",
+  /**
+   *@description Explanation for an event outcome. Scope specification is defined in https://w3c.github.io/webappsec-dbsc/.
+   */
+  invalidScopeSpecificationType: "Scope specification type is neiher include or exclude",
+  /**
+   *@description Explanation for an event outcome. Scope specification is defined in https://w3c.github.io/webappsec-dbsc/.
+   */
+  invalidScopeIncludeSite: "Invalid include_site in scope",
+  /**
+   *@description Explanation for an event outcome. Scope specification is defined in https://w3c.github.io/webappsec-dbsc/.
+   */
+  missingScopeIncludeSite: "Missing include_site in scope",
+  /**
+   *@description Explanation for an event outcome. Federated sessions are defined in https://w3c.github.io/webappsec-dbsc/.
+   */
+  federatedNotAuthorizedByProvider: "Federated session not authorized by provider .well-known",
+  /**
+   *@description Explanation for an event outcome. Federated sessions are defined in https://w3c.github.io/webappsec-dbsc/.
+   */
+  federatedNotAuthorizedByRelyingParty: "Federated session not authorized by relying party .well-known",
+  /**
+   *@description Explanation for an event outcome. Federated sessions are defined in https://w3c.github.io/webappsec-dbsc/.
+   */
+  sessionProviderWellKnownMalformed: "Session provider .well-known content malformed",
+  /**
+   *@description Explanation for an event outcome. Federated sessions are defined in https://w3c.github.io/webappsec-dbsc/.
+   */
+  sessionProviderWellKnownHasProviderOrigin: "Session provider .well-known content has provider_origin",
+  /**
+   *@description Explanation for an event outcome. Federated sessions are defined in https://w3c.github.io/webappsec-dbsc/.
+   */
+  relyingPartyWellKnownMalformed: "Relying party .well-known content malformed",
+  /**
+   *@description Explanation for an event outcome. Federated sessions are defined in https://w3c.github.io/webappsec-dbsc/.
+   */
+  relyingPartyWellKnownHasRelyingOrigins: "Relying party .well-known content has relying_origins",
+  /**
+   *@description Explanation for an event outcome. Federated sessions are defined in https://w3c.github.io/webappsec-dbsc/.
+   */
+  invalidFederatedSessionProviderSessionMissing: "Federated session invalid due to provider session not found",
+  /**
+   *@description Explanation for an event outcome. Federated sessions are defined in https://w3c.github.io/webappsec-dbsc/.
+   */
+  invalidFederatedSessionWrongProviderOrigin: "Federated session invalid due to provider origin mismatch",
+  /**
+   *@description Explanation for an event outcome.
+   */
+  invalidCredentialsCookieCreationTime: "Invalid credentials - cookie creation time invalid",
+  /**
+   *@description Explanation for an event outcome.
+   */
+  invalidCredentialsCookieName: "Invalid credentials - cookie name invalid",
+  /**
+   *@description Explanation for an event outcome.
+   */
+  invalidCredentialsCookieParsing: "Invalid credentials - cookie parsing failed",
+  /**
+   *@description Explanation for an event outcome.
+   */
+  invalidCredentialsCookieUnpermittedAttribute: "Invalid credentials - cookie attribute not permitted",
+  /**
+   *@description Explanation for an event outcome.
+   */
+  invalidCredentialsCookieInvalidDomain: "Invalid credentials - cookie invalid domain",
+  /**
+   *@description Explanation for an event outcome.
+   */
+  invalidCredentialsCookiePrefix: "Invalid credentials - cookie invalid prefix",
+  /**
+   *@description Explanation for an event outcome. Scope specification is defined in https://w3c.github.io/webappsec-dbsc/.
+   */
+  invalidScopeRulePath: "Invalid scope rule path",
+  /**
+   *@description Explanation for an event outcome. Scope specification is defined in https://w3c.github.io/webappsec-dbsc/.
+   */
+  invalidScopeRuleHostPattern: "Invalid scope rule host pattern",
+  /**
+   *@description Explanation for an event outcome. A session can be scoped to just a specific URL origin. This error means that the session's origin does not match the provided URL host pattern.
+   */
+  scopeRuleOriginScopedHostPatternMismatch: "Origin-scoped session has mismatch between host pattern and origin",
+  /**
+   *@description Explanation for an event outcome. A session can be scoped to an entire site. This error means that the session's site does not match the provided URL host pattern.
+   */
+  scopeRuleSiteScopedHostPatternMismatch: "Site-scoped session has mismatch between host pattern and site",
+  /**
+   *@description Explanation for an event outcome. This refers to cryptographic signing.
+   */
+  signingQuotaExceeded: "Signing quota exceeded",
+  /**
+   *@description Explanation for an event outcome.
+   */
+  invalidConfigJson: "Invalid session configuration JSON",
+  /**
+   *@description Explanation for an event outcome. Federated sessions are defined in https://w3c.github.io/webappsec-dbsc/. Key refers to a cryptographic key.
+   */
+  invalidFederatedSessionProviderFailedToRestoreKey: "Federated session invalid due to failure to restore session provider key",
+  /**
+   *@description Explanation for an event outcome. Key refers to a cryptographic key.
+   */
+  failedToUnwrapKey: "Failed to unwrap key",
+  /**
+   *@description Explanation for an event outcome.
+   */
+  sessionDeletedDuringRefresh: "Session deleted during refresh",
+  /**
+   *@description Explanation for an event outcome.
+   */
+  refreshed: "Refreshed",
+  /**
+   *@description Explanation for an event outcome.
+   */
+  initializedService: "Service initialized",
+  /**
+   *@description Explanation for an event outcome.
+   */
+  unreachable: "Endpoint unreachable",
+  /**
+   *@description Explanation for an event outcome.
+   */
+  serverError: "Endpoint transient error",
+  /**
+   *@description Explanation for an event outcome.
+   */
+  refreshQuotaExceeded: "Refresh quota exceeded",
+  /**
+   *@description Explanation for an event outcome.
+   */
+  fatalError: "Fatal error",
+  /**
+   *@description Explanation for an event outcome.
+   */
+  noSessionId: "No session ID",
+  /**
+   *@description Explanation for an event outcome.
+   */
+  noSessionMatch: "No matching session ID",
+  /**
+   *@description Explanation for an event outcome.
+   */
+  cantSetBoundCookie: "Not allowed to set bound cookie",
+  /**
+   *@description Explanation for an event outcome.
+   */
+  expired: "Expired",
+  /**
+   *@description Explanation for an event outcome. Key refers to a cryptographic key. This means there was an attempt to read a key from disk but it failed.
+   */
+  failedToRestoreKey: "Failed to restore key from disk",
+  /**
+   *@description Explanation for an event outcome.
+   */
+  storagePartitionCleared: "Removed from storage partition",
+  /**
+   *@description Explanation for an event outcome.
+   */
+  clearBrowsingData: "User-initiated browser data removal",
+  /**
+   *@description Explanation for an event outcome.
+   */
+  invalidSessionParams: "Invalid session parameters",
+  /**
+   *@description Explanation for an event outcome.
+   */
+  refreshFatalError: "Fatal error during refresh"
 };
 var str_31 = i18n61.i18n.registerUIStrings("panels/application/DeviceBoundSessionsView.ts", UIStrings31);
 var i18nString31 = i18n61.i18n.getLocalizedString.bind(void 0, str_31);
+var DEFAULT_VIEW6 = (input, _output, target) => {
+  const { sessionAndEvents, preserveLogSetting, defaultTitle, defaultDescription, selectedEvent, onEventRowSelected } = input;
+  const toolbarHtml = preserveLogSetting ? html9`
+        <devtools-toolbar class="device-bound-sessions-toolbar">
+        <devtools-checkbox title=${i18nString31(UIStrings31.doNotClearLogOnPageReload)} ${UI23.UIUtils.bindToSetting(preserveLogSetting)}>${i18nString31(UIStrings31.preserveLog)}</devtools-checkbox>
+        </devtools-toolbar>
+  ` : nothing6;
+  if (!sessionAndEvents) {
+    if (!defaultTitle || !defaultDescription) {
+      render8(nothing6, target);
+      return;
+    }
+    render8(html9`
+      <style>${UI23.inspectorCommonStyles}</style>
+      <style>${deviceBoundSessionsView_css_default}</style>
+      ${toolbarHtml}
+      <devtools-widget .widgetConfig=${widgetConfig6(UI23.EmptyWidget.EmptyWidget, {
+      header: defaultTitle,
+      text: defaultDescription
+    })} jslog=${VisualLogging17.pane("device-bound-sessions-empty")}></devtools-widget>
+    `, target);
+    return;
+  }
+  let sessionDetailsHtml;
+  if (sessionAndEvents.session) {
+    const { key, inclusionRules, cookieCravings } = sessionAndEvents.session;
+    sessionDetailsHtml = html9`
+        <devtools-report>
+          <devtools-report-section-header>${i18nString31(UIStrings31.sessionConfig)}</devtools-report-section-header>
+          <devtools-report-key>${i18nString31(UIStrings31.keySite)}</devtools-report-key>
+          <devtools-report-value>${key.site}</devtools-report-value>
+          <devtools-report-key>${i18nString31(UIStrings31.keyId)}</devtools-report-key>
+          <devtools-report-value>${key.id}</devtools-report-value>
+          <devtools-report-key>${i18nString31(UIStrings31.refreshUrl)}</devtools-report-key>
+          <devtools-report-value>${sessionAndEvents.session.refreshUrl}</devtools-report-value>
+          <devtools-report-key>${i18nString31(UIStrings31.expiryDate)}</devtools-report-key>
+          <devtools-report-value>${new Date(sessionAndEvents.session.expiryDate * 1e3).toLocaleString()}</devtools-report-value>
+          <devtools-report-key>${i18nString31(UIStrings31.cachedChallenge)}</devtools-report-key>
+          <devtools-report-value>${sessionAndEvents.session.cachedChallenge || ""}</devtools-report-value>
+          <devtools-report-key>${i18nString31(UIStrings31.allowedRefreshInitiators)}</devtools-report-key>
+          <devtools-report-value>${sessionAndEvents.session.allowedRefreshInitiators.join(", ")}</devtools-report-value>
+          <devtools-report-section-header>${i18nString31(UIStrings31.scope)}</devtools-report-section-header>
+          <devtools-report-key>${i18nString31(UIStrings31.origin)}</devtools-report-key>
+          <devtools-report-value>${inclusionRules.origin}</devtools-report-value>
+          <devtools-report-key>${i18nString31(UIStrings31.includeSite)}</devtools-report-key>
+          <devtools-report-value>${boolToString(inclusionRules.includeSite)}</devtools-report-value>
+        </devtools-report>
+        ${inclusionRules.urlRules.length > 0 ? html9`
+          <div class="device-bound-session-grid-wrapper">
+            <devtools-data-grid class="device-bound-session-url-rules-grid" striped inline>
+              <table>
+                <thead>
+                  <tr>
+                    <th id="should-include" weight="1" sortable>${i18nString31(UIStrings31.ruleType)}</th>
+                    <th id="host-pattern" weight="2" sortable>${i18nString31(UIStrings31.ruleHostPattern)}</th>
+                    <th id="path-prefix" weight="2" sortable>${i18nString31(UIStrings31.rulePathPrefix)}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${inclusionRules.urlRules.map((rule) => html9`
+                    <tr>
+                      <td>${ruleTypeToString(rule.ruleType)}</td>
+                      <td>${rule.hostPattern}</td>
+                      <td>${rule.pathPrefix}</td>
+                    </tr>
+                  `)}
+                </tbody>
+              </table>
+            </devtools-data-grid>
+          </div>
+        ` : nothing6}
+        <devtools-report-section-header>${i18nString31(UIStrings31.cookieCravings)}</devtools-report-section-header>
+        ${cookieCravings.length > 0 ? html9`
+          <div class="device-bound-session-grid-wrapper">
+            <devtools-data-grid class="device-bound-session-cookie-cravings-grid" striped inline>
+              <table>
+                <thead>
+                  <tr>
+                    <th id="name" weight="2" sortable>${i18nString31(UIStrings31.name)}</th>
+                    <th id="domain" weight="2" sortable>${i18n61.i18n.lockedString("Domain")}</th>
+                    <th id="path" weight="2" sortable>${i18n61.i18n.lockedString("Path")}</th>
+                    <th id="secure" type="boolean" align="center" weight="1" sortable>${i18n61.i18n.lockedString("Secure")}</th>
+                    <th id="http-only" type="boolean" align="center" weight="1" sortable>${i18n61.i18n.lockedString("HttpOnly")}</th>
+                    <th id="same-site" weight="1" sortable>${i18n61.i18n.lockedString("SameSite")}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${cookieCravings.map((craving) => html9`
+                    <tr>
+                      <td>${craving.name}</td>
+                      <td>${craving.domain}</td>
+                      <td>${craving.path}</td>
+                      <td>${craving.secure}</td>
+                      <td>${craving.httpOnly}</td>
+                      <td>${craving.sameSite}</td>
+                    </tr>
+                  `)}
+                </tbody>
+              </table>
+            </devtools-data-grid>
+          </div>
+        ` : nothing6}`;
+  }
+  const events = [...sessionAndEvents.eventsById.values()];
+  const eventsHtml = html9`
+      <devtools-report-section-header>${i18nString31(UIStrings31.events)}</devtools-report-section-header>
+          ${events.length > 0 && onEventRowSelected ? html9`
+            <div class="device-bound-session-grid-wrapper">
+                <devtools-data-grid class="device-bound-session-events-grid" striped inline ${Directives4.ref((el) => {
+    if (!el || !(el instanceof HTMLElement)) {
+      return;
+    }
+    const grid = el;
+    if (!selectedEvent) {
+      grid.deselectRow();
+    }
+  })}>
+                <table>
+                  <thead>
+                    <tr>
+                      <th id="type" weight="1" sortable>${i18nString31(UIStrings31.type)}</th>
+                      <th id="timestamp" weight="2" sortable>${i18nString31(UIStrings31.timestamp)}</th>
+                      <th id="details" weight="2" sortable>${i18nString31(UIStrings31.result)}</th>
+                    </tr>
+                  </thead>
+                  <tbody>${events.map(({ event, timestamp }) => html9`
+                      <tr @select=${() => onEventRowSelected(event)}>
+                        <td>${getEventTypeString(event)}</td>
+                        <td>${timestamp.toLocaleString()}</td>
+                        <td>${succeededToString(event.succeeded)}</td>
+                      </tr>
+                    `)}
+                  </tbody>
+                </table>
+              </devtools-data-grid>
+            </div>
+          ` : html9`<div class="device-bound-session-no-events-wrapper">${i18nString31(UIStrings31.noEvents)}</div>`}`;
+  const creationEventDetails = selectedEvent?.creationEventDetails && html9`
+          <devtools-report-key>${i18nString31(UIStrings31.fetchResult)}</devtools-report-key>
+          <devtools-report-value>${fetchResultToString(selectedEvent.creationEventDetails.fetchResult)}</devtools-report-value>
+            ${selectedEvent.creationEventDetails.newSession && html9`
+              <devtools-report-key>${i18nString31(UIStrings31.updatedSessionConfig)}</devtools-report-key>
+              <devtools-report-value>${i18nString31(UIStrings31.yes)}</devtools-report-value>
+            `}
+          `;
+  const refreshEventDetails = selectedEvent?.refreshEventDetails && html9`
+          <devtools-report-key>${i18nString31(UIStrings31.refreshResult)}</devtools-report-key>
+          <devtools-report-value>${refreshResultToString(selectedEvent.refreshEventDetails.refreshResult)}</devtools-report-value>
+          <devtools-report-key>${i18nString31(UIStrings31.causedAnyRequestDeferrals)}</devtools-report-key>
+          <devtools-report-value>${boolToString(!selectedEvent.refreshEventDetails.wasFullyProactiveRefresh)}</devtools-report-value>
+            ${selectedEvent.refreshEventDetails.fetchResult && html9`
+              <devtools-report-key>${i18nString31(UIStrings31.fetchResult)}</devtools-report-key>
+              <devtools-report-value>${fetchResultToString(selectedEvent.refreshEventDetails.fetchResult)}</devtools-report-value>
+            `}
+            ${selectedEvent.refreshEventDetails.newSession && html9`
+              <devtools-report-key>${i18nString31(UIStrings31.updatedSessionConfig)}</devtools-report-key>
+              <devtools-report-value>${i18nString31(UIStrings31.yes)}</devtools-report-value>
+            `}
+          `;
+  const challengeEventDetails = selectedEvent?.challengeEventDetails && html9`
+          <devtools-report-key>${i18nString31(UIStrings31.challengeResult)}</devtools-report-key>
+          <devtools-report-value>${challengeResultToString(selectedEvent.challengeEventDetails.challengeResult)}</devtools-report-value>
+          <devtools-report-key>${i18nString31(UIStrings31.challenge)}</devtools-report-key>
+          <devtools-report-value>${selectedEvent.challengeEventDetails.challenge}</devtools-report-value>
+          `;
+  const terminationEventDetails = selectedEvent?.terminationEventDetails && html9`
+          <devtools-report-key>${i18nString31(UIStrings31.deletionReason)}</devtools-report-key>
+          <devtools-report-value>${deletionReasonToString(selectedEvent.terminationEventDetails.deletionReason)}</devtools-report-value>
+          `;
+  const eventDetailsContentHtml = selectedEvent ? html9`
+        <devtools-report>
+          <devtools-report-key>${i18nString31(UIStrings31.keySite)}</devtools-report-key>
+          <devtools-report-value>${selectedEvent.site}</devtools-report-value>
+          <devtools-report-key>${i18nString31(UIStrings31.sessionId)}</devtools-report-key>
+          <devtools-report-value>${selectedEvent.sessionId}</devtools-report-value>
+          <devtools-report-key>${i18nString31(UIStrings31.type)}</devtools-report-key>
+          <devtools-report-value>${getEventTypeString(selectedEvent)}</devtools-report-value>
+          <devtools-report-key>${i18nString31(UIStrings31.eventResult)}</devtools-report-key>
+          <devtools-report-value>${succeededToString(selectedEvent.succeeded)}</devtools-report-value>
+          ${creationEventDetails}
+          ${refreshEventDetails}
+          ${challengeEventDetails}
+          ${terminationEventDetails}
+        </devtools-report>
+    ` : html9`<div class="device-bound-session-no-event-details">${i18nString31(UIStrings31.selectEventToViewDetails)}</div>`;
+  const eventDetailsHtml = html9`
+      <devtools-report-section-header>${i18nString31(UIStrings31.eventDetails)}</devtools-report-section-header>
+      ${eventDetailsContentHtml}
+  `;
+  render8(html9`
+        <style>${UI23.inspectorCommonStyles}</style>
+        <style>${deviceBoundSessionsView_css_default}</style>
+        ${toolbarHtml}
+        <devtools-split-view sidebar-position="second">
+          <div slot="main" class="device-bound-session-view-wrapper">
+            ${sessionDetailsHtml || nothing6}
+            ${eventsHtml}
+          </div>
+          <div slot="sidebar" class="device-bound-session-sidebar">
+            ${eventDetailsHtml}
+          </div>
+        </devtools-split-view>`, target);
+};
+var DeviceBoundSessionsView = class extends UI23.Widget.VBox {
+  #site;
+  #sessionId;
+  #model;
+  #view;
+  #defaultTitle;
+  #defaultDescription;
+  #selectedEvent;
+  constructor(view = DEFAULT_VIEW6) {
+    super({ jslog: `${VisualLogging17.pane("device-bound-sessions")}` });
+    this.#view = view;
+  }
+  showSession(model, site, sessionId) {
+    this.#defaultTitle = void 0;
+    this.#defaultDescription = void 0;
+    this.#site = site;
+    this.#sessionId = sessionId;
+    this.#attachModel(model);
+    this.performUpdate();
+  }
+  showDefault(model, defaultTitle, defaultDescription) {
+    this.#defaultTitle = defaultTitle;
+    this.#defaultDescription = defaultDescription;
+    this.#site = void 0;
+    this.#sessionId = void 0;
+    this.#attachModel(model);
+    this.performUpdate();
+  }
+  #attachModel(model) {
+    if (this.#model) {
+      this.#model.removeEventListener("EVENT_OCCURRED", this.performUpdate, this);
+      this.#model.removeEventListener("CLEAR_EVENTS", this.performUpdate, this);
+    }
+    this.#model = model;
+    this.#model.addEventListener("EVENT_OCCURRED", this.performUpdate, this);
+    this.#model.addEventListener("CLEAR_EVENTS", this.performUpdate, this);
+    if (this.#selectedEvent) {
+      this.#selectedEvent = void 0;
+    }
+  }
+  performUpdate() {
+    let sessionAndEvents;
+    let preserveLogSetting;
+    if (this.#model) {
+      preserveLogSetting = this.#model.getPreserveLogSetting();
+      if (this.#site) {
+        sessionAndEvents = this.#model.getSession(this.#site, this.#sessionId);
+      }
+    }
+    this.#view({
+      sessionAndEvents,
+      preserveLogSetting,
+      defaultTitle: this.#defaultTitle,
+      defaultDescription: this.#defaultDescription,
+      selectedEvent: this.#selectedEvent,
+      onEventRowSelected: this.#onEventRowSelected.bind(this)
+    }, {}, this.contentElement);
+  }
+  #onEventRowSelected(selectedEvent) {
+    this.#selectedEvent = selectedEvent;
+    this.performUpdate();
+  }
+};
 function ruleTypeToString(ruleType) {
   switch (ruleType) {
     case "Exclude":
@@ -13646,123 +14430,225 @@ function ruleTypeToString(ruleType) {
       return ruleType;
   }
 }
-var DEFAULT_VIEW6 = (input, _output, target) => {
-  const { sessionAndEvents } = input;
-  if (!sessionAndEvents?.session) {
-    render8(nothing6, target);
-    return;
+function getEventTypeString(event) {
+  if (event.creationEventDetails) {
+    return i18nString31(UIStrings31.creation);
   }
-  const { key, inclusionRules, cookieCravings } = sessionAndEvents.session;
-  const sessionDetails = html9`
-      <devtools-report>
-        <devtools-report-section-header>${i18nString31(UIStrings31.sessionConfig)}</devtools-report-section-header>
-        <devtools-report-key>${i18nString31(UIStrings31.keySite)}</devtools-report-key>
-        <devtools-report-value>${key.site}</devtools-report-value>
-        <devtools-report-key>${i18nString31(UIStrings31.keyId)}</devtools-report-key>
-        <devtools-report-value>${key.id}</devtools-report-value>
-        <devtools-report-key>${i18nString31(UIStrings31.refreshUrl)}</devtools-report-key>
-        <devtools-report-value>${sessionAndEvents.session.refreshUrl}</devtools-report-value>
-        <devtools-report-key>${i18nString31(UIStrings31.expiryDate)}</devtools-report-key>
-        <devtools-report-value>${new Date(sessionAndEvents.session.expiryDate * 1e3).toLocaleString()}</devtools-report-value>
-        <devtools-report-key>${i18nString31(UIStrings31.cachedChallenge)}</devtools-report-key>
-        <devtools-report-value>${sessionAndEvents.session.cachedChallenge || ""}</devtools-report-value>
-        <devtools-report-key>${i18nString31(UIStrings31.allowedRefreshInitiators)}</devtools-report-key>
-        <devtools-report-value>${sessionAndEvents.session.allowedRefreshInitiators.join(", ")}</devtools-report-value>
-        <devtools-report-section-header>${i18nString31(UIStrings31.scope)}</devtools-report-section-header>
-        <devtools-report-key>${i18nString31(UIStrings31.origin)}</devtools-report-key>
-        <devtools-report-value>${inclusionRules.origin}</devtools-report-value>
-        <devtools-report-key>${i18nString31(UIStrings31.includeSite)}</devtools-report-key>
-        <devtools-report-value>${inclusionRules.includeSite ? i18nString31(UIStrings31.yes) : i18nString31(UIStrings31.no)}</devtools-report-value>
-      </devtools-report>
-      ${inclusionRules.urlRules.length > 0 ? html9`
-        <div class="device-bound-session-grid-wrapper">
-          <devtools-data-grid class="device-bound-session-url-rules-grid" striped inline>
-            <table>
-              <thead>
-                <tr>
-                  <th id="should-include" weight="1" sortable>${i18nString31(UIStrings31.ruleType)}</th>
-                  <th id="host-pattern" weight="2" sortable>${i18nString31(UIStrings31.ruleHostPattern)}</th>
-                  <th id="path-prefix" weight="2" sortable>${i18nString31(UIStrings31.rulePathPrefix)}</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${inclusionRules.urlRules.map((rule) => html9`
-                  <tr>
-                    <td>${ruleTypeToString(rule.ruleType)}</td>
-                    <td>${rule.hostPattern}</td>
-                    <td>${rule.pathPrefix}</td>
-                  </tr>
-                `)}
-              </tbody>
-            </table>
-          </devtools-data-grid>
-        </div>
-      ` : nothing6}
-      <devtools-report-section-header>${i18nString31(UIStrings31.cookieCravings)}</devtools-report-section-header>
-      ${cookieCravings.length > 0 ? html9`
-        <div class="device-bound-session-grid-wrapper">
-          <devtools-data-grid class="device-bound-session-cookie-cravings-grid" striped inline>
-            <table>
-              <thead>
-                <tr>
-                  <th id="name" weight="2" sortable>${i18nString31(UIStrings31.name)}</th>
-                  <th id="domain" weight="2" sortable>${i18n61.i18n.lockedString("Domain")}</th>
-                  <th id="path" weight="2" sortable>${i18n61.i18n.lockedString("Path")}</th>
-                  <th id="secure" type="boolean" align="center" weight="1" sortable>${i18n61.i18n.lockedString("Secure")}</th>
-                  <th id="http-only" type="boolean" align="center" weight="1" sortable>${i18n61.i18n.lockedString("HttpOnly")}</th>
-                  <th id="same-site" weight="1" sortable>${i18n61.i18n.lockedString("SameSite")}</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${cookieCravings.map((craving) => html9`
-                  <tr>
-                    <td>${craving.name}</td>
-                    <td>${craving.domain}</td>
-                    <td>${craving.path}</td>
-                    <td>${craving.secure}</td>
-                    <td>${craving.httpOnly}</td>
-                    <td>${craving.sameSite}</td>
-                  </tr>
-                `)}
-              </tbody>
-            </table>
-          </devtools-data-grid>
-        </div>
-      ` : nothing6}`;
-  render8(html9`
-        <style>${UI23.inspectorCommonStyles}</style>
-        <style>${deviceBoundSessionsView_css_default}</style>
-        <div class="device-bound-session-view-wrapper">
-          ${sessionDetails}
-        </div>`, target);
-};
-var DeviceBoundSessionsView = class extends UI23.Widget.VBox {
-  #site;
-  #sessionId;
-  #model;
-  #view;
-  constructor(view = DEFAULT_VIEW6) {
-    super({ jslog: `${VisualLogging17.pane("device-bound-sessions")}` });
-    this.#view = view;
+  if (event.refreshEventDetails) {
+    return i18nString31(UIStrings31.refresh);
   }
-  showSession(model, site, sessionId) {
-    this.#site = site;
-    this.#sessionId = sessionId;
-    if (this.#model) {
-      this.#model.removeEventListener("EVENT_OCCURRED", this.performUpdate, this);
-    }
-    this.#model = model;
-    this.#model.addEventListener("EVENT_OCCURRED", this.performUpdate, this);
-    this.performUpdate();
+  if (event.challengeEventDetails) {
+    return i18nString31(UIStrings31.challenge);
   }
-  performUpdate() {
-    let sessionAndEvents;
-    if (this.#site && this.#model) {
-      sessionAndEvents = this.#model.getSession(this.#site, this.#sessionId);
-    }
-    this.#view({ sessionAndEvents }, {}, this.contentElement);
+  if (event.terminationEventDetails) {
+    return i18nString31(UIStrings31.termination);
   }
-};
+  return i18nString31(UIStrings31.unknown);
+}
+function fetchResultToString(fetchResult) {
+  switch (fetchResult) {
+    case "Success":
+      return i18nString31(UIStrings31.success);
+    case "KeyError":
+      return i18nString31(UIStrings31.keyError);
+    case "SigningError":
+      return i18nString31(UIStrings31.signingError);
+    case "ServerRequestedTermination":
+      return i18nString31(UIStrings31.serverRequestedTermination);
+    case "InvalidSessionId":
+      return i18nString31(UIStrings31.invalidSessionId);
+    case "InvalidChallenge":
+      return i18nString31(UIStrings31.invalidChallenge);
+    case "TooManyChallenges":
+      return i18nString31(UIStrings31.tooManyChallenges);
+    case "InvalidFetcherUrl":
+      return i18nString31(UIStrings31.invalidFetcherUrl);
+    case "InvalidRefreshUrl":
+      return i18nString31(UIStrings31.invalidRefreshUrl);
+    case "TransientHttpError":
+      return i18nString31(UIStrings31.transientHttpError);
+    case "ScopeOriginSameSiteMismatch":
+      return i18nString31(UIStrings31.scopeOriginSameSiteMismatch);
+    case "RefreshUrlSameSiteMismatch":
+      return i18nString31(UIStrings31.refreshUrlSameSiteMismatch);
+    case "MismatchedSessionId":
+      return i18nString31(UIStrings31.mismatchedSessionId);
+    case "MissingScope":
+      return i18nString31(UIStrings31.missingScope);
+    case "NoCredentials":
+      return i18nString31(UIStrings31.noCredentials);
+    case "SubdomainRegistrationWellKnownUnavailable":
+      return i18nString31(UIStrings31.subdomainRegistrationWellKnownUnavailable);
+    case "SubdomainRegistrationUnauthorized":
+      return i18nString31(UIStrings31.subdomainRegistrationUnauthorized);
+    case "SubdomainRegistrationWellKnownMalformed":
+      return i18nString31(UIStrings31.subdomainRegistrationWellKnownMalformed);
+    case "SessionProviderWellKnownUnavailable":
+      return i18nString31(UIStrings31.sessionProviderWellKnownUnavailable);
+    case "RelyingPartyWellKnownUnavailable":
+      return i18nString31(UIStrings31.relyingPartyWellKnownUnavailable);
+    case "FederatedKeyThumbprintMismatch":
+      return i18nString31(UIStrings31.federatedKeyThumbprintMismatch);
+    case "InvalidFederatedSessionUrl":
+      return i18nString31(UIStrings31.invalidFederatedSessionUrl);
+    case "InvalidFederatedKey":
+      return i18nString31(UIStrings31.invalidFederatedKey);
+    case "TooManyRelyingOriginLabels":
+      return i18nString31(UIStrings31.tooManyRelyingOriginLabels);
+    case "BoundCookieSetForbidden":
+      return i18nString31(UIStrings31.boundCookieSetForbidden);
+    case "NetError":
+      return i18nString31(UIStrings31.netError);
+    case "ProxyError":
+      return i18nString31(UIStrings31.proxyError);
+    case "EmptySessionConfig":
+      return i18nString31(UIStrings31.emptySessionConfig);
+    case "InvalidCredentialsConfig":
+      return i18nString31(UIStrings31.invalidCredentialsConfig);
+    case "InvalidCredentialsType":
+      return i18nString31(UIStrings31.invalidCredentialsType);
+    case "InvalidCredentialsEmptyName":
+      return i18nString31(UIStrings31.invalidCredentialsEmptyName);
+    case "InvalidCredentialsCookie":
+      return i18nString31(UIStrings31.invalidCredentialsCookie);
+    case "PersistentHttpError":
+      return i18nString31(UIStrings31.persistentHttpError);
+    case "RegistrationAttemptedChallenge":
+      return i18nString31(UIStrings31.registrationAttemptedChallenge);
+    case "InvalidScopeOrigin":
+      return i18nString31(UIStrings31.invalidScopeOrigin);
+    case "ScopeOriginContainsPath":
+      return i18nString31(UIStrings31.scopeOriginContainsPath);
+    case "RefreshInitiatorNotString":
+      return i18nString31(UIStrings31.refreshInitiatorNotString);
+    case "RefreshInitiatorInvalidHostPattern":
+      return i18nString31(UIStrings31.refreshInitiatorInvalidHostPattern);
+    case "InvalidScopeSpecification":
+      return i18nString31(UIStrings31.invalidScopeSpecification);
+    case "MissingScopeSpecificationType":
+      return i18nString31(UIStrings31.missingScopeSpecificationType);
+    case "EmptyScopeSpecificationDomain":
+      return i18nString31(UIStrings31.emptyScopeSpecificationDomain);
+    case "EmptyScopeSpecificationPath":
+      return i18nString31(UIStrings31.emptyScopeSpecificationPath);
+    case "InvalidScopeSpecificationType":
+      return i18nString31(UIStrings31.invalidScopeSpecificationType);
+    case "InvalidScopeIncludeSite":
+      return i18nString31(UIStrings31.invalidScopeIncludeSite);
+    case "MissingScopeIncludeSite":
+      return i18nString31(UIStrings31.missingScopeIncludeSite);
+    case "FederatedNotAuthorizedByProvider":
+      return i18nString31(UIStrings31.federatedNotAuthorizedByProvider);
+    case "FederatedNotAuthorizedByRelyingParty":
+      return i18nString31(UIStrings31.federatedNotAuthorizedByRelyingParty);
+    case "SessionProviderWellKnownMalformed":
+      return i18nString31(UIStrings31.sessionProviderWellKnownMalformed);
+    case "SessionProviderWellKnownHasProviderOrigin":
+      return i18nString31(UIStrings31.sessionProviderWellKnownHasProviderOrigin);
+    case "RelyingPartyWellKnownMalformed":
+      return i18nString31(UIStrings31.relyingPartyWellKnownMalformed);
+    case "RelyingPartyWellKnownHasRelyingOrigins":
+      return i18nString31(UIStrings31.relyingPartyWellKnownHasRelyingOrigins);
+    case "InvalidFederatedSessionProviderSessionMissing":
+      return i18nString31(UIStrings31.invalidFederatedSessionProviderSessionMissing);
+    case "InvalidFederatedSessionWrongProviderOrigin":
+      return i18nString31(UIStrings31.invalidFederatedSessionWrongProviderOrigin);
+    case "InvalidCredentialsCookieCreationTime":
+      return i18nString31(UIStrings31.invalidCredentialsCookieCreationTime);
+    case "InvalidCredentialsCookieName":
+      return i18nString31(UIStrings31.invalidCredentialsCookieName);
+    case "InvalidCredentialsCookieParsing":
+      return i18nString31(UIStrings31.invalidCredentialsCookieParsing);
+    case "InvalidCredentialsCookieUnpermittedAttribute":
+      return i18nString31(UIStrings31.invalidCredentialsCookieUnpermittedAttribute);
+    case "InvalidCredentialsCookieInvalidDomain":
+      return i18nString31(UIStrings31.invalidCredentialsCookieInvalidDomain);
+    case "InvalidCredentialsCookiePrefix":
+      return i18nString31(UIStrings31.invalidCredentialsCookiePrefix);
+    case "InvalidScopeRulePath":
+      return i18nString31(UIStrings31.invalidScopeRulePath);
+    case "InvalidScopeRuleHostPattern":
+      return i18nString31(UIStrings31.invalidScopeRuleHostPattern);
+    case "ScopeRuleOriginScopedHostPatternMismatch":
+      return i18nString31(UIStrings31.scopeRuleOriginScopedHostPatternMismatch);
+    case "ScopeRuleSiteScopedHostPatternMismatch":
+      return i18nString31(UIStrings31.scopeRuleSiteScopedHostPatternMismatch);
+    case "SigningQuotaExceeded":
+      return i18nString31(UIStrings31.signingQuotaExceeded);
+    case "InvalidConfigJson":
+      return i18nString31(UIStrings31.invalidConfigJson);
+    case "InvalidFederatedSessionProviderFailedToRestoreKey":
+      return i18nString31(UIStrings31.invalidFederatedSessionProviderFailedToRestoreKey);
+    case "FailedToUnwrapKey":
+      return i18nString31(UIStrings31.failedToUnwrapKey);
+    case "SessionDeletedDuringRefresh":
+      return i18nString31(UIStrings31.sessionDeletedDuringRefresh);
+    default:
+      return fetchResult;
+  }
+}
+function refreshResultToString(refreshResult) {
+  switch (refreshResult) {
+    case "Refreshed":
+      return i18nString31(UIStrings31.refreshed);
+    case "InitializedService":
+      return i18nString31(UIStrings31.initializedService);
+    case "Unreachable":
+      return i18nString31(UIStrings31.unreachable);
+    case "ServerError":
+      return i18nString31(UIStrings31.serverError);
+    case "RefreshQuotaExceeded":
+      return i18nString31(UIStrings31.refreshQuotaExceeded);
+    case "FatalError":
+      return i18nString31(UIStrings31.fatalError);
+    case "SigningQuotaExceeded":
+      return i18nString31(UIStrings31.signingQuotaExceeded);
+    default:
+      return refreshResult;
+  }
+}
+function challengeResultToString(challengeResult) {
+  switch (challengeResult) {
+    case "Success":
+      return i18nString31(UIStrings31.success);
+    case "NoSessionId":
+      return i18nString31(UIStrings31.noSessionId);
+    case "NoSessionMatch":
+      return i18nString31(UIStrings31.noSessionMatch);
+    case "CantSetBoundCookie":
+      return i18nString31(UIStrings31.cantSetBoundCookie);
+    default:
+      return challengeResult;
+  }
+}
+function deletionReasonToString(deletionReason) {
+  switch (deletionReason) {
+    case "Expired":
+      return i18nString31(UIStrings31.expired);
+    case "FailedToRestoreKey":
+      return i18nString31(UIStrings31.failedToRestoreKey);
+    case "FailedToUnwrapKey":
+      return i18nString31(UIStrings31.failedToUnwrapKey);
+    case "StoragePartitionCleared":
+      return i18nString31(UIStrings31.storagePartitionCleared);
+    case "ClearBrowsingData":
+      return i18nString31(UIStrings31.clearBrowsingData);
+    case "ServerRequested":
+      return i18nString31(UIStrings31.serverRequestedTermination);
+    case "InvalidSessionParams":
+      return i18nString31(UIStrings31.invalidSessionParams);
+    case "RefreshFatalError":
+      return i18nString31(UIStrings31.refreshFatalError);
+    default:
+      return deletionReason;
+  }
+}
+function boolToString(bool) {
+  return bool ? i18nString31(UIStrings31.yes) : i18nString31(UIStrings31.no);
+}
+function succeededToString(succeeded) {
+  return succeeded ? i18nString31(UIStrings31.success) : i18nString31(UIStrings31.error);
+}
 
 // gen/front_end/panels/application/DOMStorageItemsView.js
 var DOMStorageItemsView_exports = {};
@@ -14320,6 +15206,13 @@ var ResourcesPanel = class _ResourcesPanel extends UI26.Panel.PanelWithSidebar {
       this.deviceBoundSessionsView = new DeviceBoundSessionsView();
     }
     this.deviceBoundSessionsView.showSession(model, site, sessionId);
+    this.showView(this.deviceBoundSessionsView);
+  }
+  showDeviceBoundSessionDefault(model, title, description) {
+    if (!this.deviceBoundSessionsView) {
+      this.deviceBoundSessionsView = new DeviceBoundSessionsView();
+    }
+    this.deviceBoundSessionsView.showDefault(model, title, description);
     this.showView(this.deviceBoundSessionsView);
   }
 };

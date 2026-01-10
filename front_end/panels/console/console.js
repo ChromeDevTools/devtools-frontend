@@ -4324,6 +4324,7 @@ var ConsoleInsightTeaser = class extends UI3.Widget.Widget {
   #eventListeners = [];
   #isForWarning;
   #callShowTooltip = false;
+  #startTime = 0;
   constructor(uuid, consoleViewMessage, element, view) {
     super(element);
     this.#view = view ?? DEFAULT_VIEW2;
@@ -4473,6 +4474,13 @@ var ConsoleInsightTeaser = class extends UI3.Widget.Widget {
       this.#abortController.abort();
     }
     if (this.#state === "generating" || this.#state === "partial-teaser") {
+      if (this.#startTime) {
+        if (this.#mainText) {
+          Host2.userMetrics.consoleInsightTeaserAbortedAfterFirstCharacter(performance.now() - this.#startTime);
+        } else {
+          Host2.userMetrics.consoleInsightTeaserAbortedBeforeFirstCharacter(performance.now() - this.#startTime);
+        }
+      }
       this.#mainText = "";
       this.#state = "ready";
       Host2.userMetrics.actionTaken(Host2.UserMetrics.Action.InsightTeaserGenerationAborted);
@@ -4502,7 +4510,7 @@ var ConsoleInsightTeaser = class extends UI3.Widget.Widget {
     this.#state = "generating";
     Host2.userMetrics.actionTaken(Host2.UserMetrics.Action.InsightTeaserGenerationStarted);
     this.#timeoutId = setTimeout(this.#setSlow.bind(this), SLOW_GENERATION_CUTOFF_MILLISECONDS);
-    const startTime = performance.now();
+    this.#startTime = performance.now();
     let teaserText = "";
     let firstChunkReceived = false;
     try {
@@ -4513,7 +4521,7 @@ var ConsoleInsightTeaser = class extends UI3.Widget.Widget {
         this.requestUpdate();
         if (!firstChunkReceived) {
           firstChunkReceived = true;
-          Host2.userMetrics.consoleInsightTeaserFirstChunkGenerated(performance.now() - startTime);
+          Host2.userMetrics.consoleInsightTeaserFirstChunkGenerated(performance.now() - this.#startTime);
         }
       }
     } catch (err) {
@@ -4529,7 +4537,13 @@ var ConsoleInsightTeaser = class extends UI3.Widget.Widget {
       return;
     }
     clearTimeout(this.#timeoutId);
-    Host2.userMetrics.consoleInsightTeaserGenerated(performance.now() - startTime);
+    const duration = performance.now() - this.#startTime;
+    Host2.userMetrics.consoleInsightTeaserGenerated(duration);
+    if (teaserText.length > 300) {
+      Host2.userMetrics.consoleInsightLongTeaserGenerated(duration);
+    } else {
+      Host2.userMetrics.consoleInsightShortTeaserGenerated(duration);
+    }
     this.#state = "teaser";
     this.#mainText = teaserText;
     Host2.userMetrics.actionTaken(Host2.UserMetrics.Action.InsightTeaserGenerationCompleted);

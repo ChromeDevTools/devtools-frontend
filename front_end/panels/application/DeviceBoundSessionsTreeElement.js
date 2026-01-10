@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 import * as i18n from '../../core/i18n/i18n.js';
 import { createIcon } from '../../ui/kit/kit.js';
-import { ApplicationPanelTreeElement, ExpandableApplicationPanelTreeElement } from './ApplicationPanelTreeElement.js';
+import { ApplicationPanelTreeElement } from './ApplicationPanelTreeElement.js';
 const UIStrings = {
     /**
      *@description Text for section title Application panel sidebar. A website
@@ -38,16 +38,21 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/DeviceBoundSessionsTreeElement.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-export class RootTreeElement extends ExpandableApplicationPanelTreeElement {
+export class RootTreeElement extends ApplicationPanelTreeElement {
     #model;
     #sites = new Map();
     constructor(storagePanel, model) {
-        super(storagePanel, i18nString(UIStrings.deviceBoundSessions), i18nString(UIStrings.deviceBoundSessions), i18nString(UIStrings.deviceBoundSessionsCategoryDescription), 'device-bound-sessions-root');
+        super(storagePanel, i18nString(UIStrings.deviceBoundSessions), /* expandable=*/ true, 'device-bound-sessions-root');
         this.setLeadingIcons([createIcon('lock-person')]);
         this.#model = model;
     }
     get itemURL() {
         return 'device-bound-sessions://';
+    }
+    onselect(selectedByUser) {
+        super.onselect(selectedByUser);
+        this.resourcesPanel.showDeviceBoundSessionDefault(this.#model, i18nString(UIStrings.deviceBoundSessions), i18nString(UIStrings.deviceBoundSessionsCategoryDescription));
+        return false;
     }
     onbind() {
         super.onbind();
@@ -55,6 +60,7 @@ export class RootTreeElement extends ExpandableApplicationPanelTreeElement {
         this.#model.addEventListener("ADD_VISIBLE_SITE" /* DeviceBoundSessionModelEvents.ADD_VISIBLE_SITE */, this.#onVisibleSiteAdded, this);
         this.#model.addEventListener("CLEAR_VISIBLE_SITES" /* DeviceBoundSessionModelEvents.CLEAR_VISIBLE_SITES */, this.#onVisibleSitesCleared, this);
         this.#model.addEventListener("EVENT_OCCURRED" /* DeviceBoundSessionModelEvents.EVENT_OCCURRED */, this.#onEventOccurred, this);
+        this.#model.addEventListener("CLEAR_EVENTS" /* DeviceBoundSessionModelEvents.CLEAR_EVENTS */, this.#onClearEvents, this);
     }
     onunbind() {
         super.onunbind();
@@ -62,6 +68,7 @@ export class RootTreeElement extends ExpandableApplicationPanelTreeElement {
         this.#model.removeEventListener("ADD_VISIBLE_SITE" /* DeviceBoundSessionModelEvents.ADD_VISIBLE_SITE */, this.#onVisibleSiteAdded, this);
         this.#model.removeEventListener("CLEAR_VISIBLE_SITES" /* DeviceBoundSessionModelEvents.CLEAR_VISIBLE_SITES */, this.#onVisibleSitesCleared, this);
         this.#model.removeEventListener("EVENT_OCCURRED" /* DeviceBoundSessionModelEvents.EVENT_OCCURRED */, this.#onEventOccurred, this);
+        this.#model.removeEventListener("CLEAR_EVENTS" /* DeviceBoundSessionModelEvents.CLEAR_EVENTS */, this.#onClearEvents, this);
     }
     #updateSiteTreeElementVisibility(site) {
         const siteMapEntry = this.#sites.get(site);
@@ -89,10 +96,16 @@ export class RootTreeElement extends ExpandableApplicationPanelTreeElement {
     #addSiteSessionIfMissing(site, sessionId) {
         let siteMapEntry = this.#sites.get(site);
         if (!siteMapEntry) {
-            const siteElement = new ExpandableApplicationPanelTreeElement(this.resourcesPanel, site, i18nString(UIStrings.deviceBoundSessions), i18nString(UIStrings.deviceBoundSessionsCategoryDescription), 'device-bound-sessions-site');
+            const siteElement = new ApplicationPanelTreeElement(this.resourcesPanel, site, /* expandable=*/ true, 'device-bound-sessions-site');
             siteElement.setLeadingIcons([createIcon('cloud')]);
             siteElement.itemURL = `device-bound-sessions://${site}`;
-            siteMapEntry = { siteTreeElement: siteElement, sessions: new Set() };
+            const defaultOnSelect = siteElement.onselect.bind(siteElement);
+            siteElement.onselect = (selectedByUser) => {
+                defaultOnSelect(selectedByUser);
+                this.resourcesPanel.showDeviceBoundSessionDefault(this.#model, i18nString(UIStrings.deviceBoundSessions), i18nString(UIStrings.deviceBoundSessionsCategoryDescription));
+                return false;
+            };
+            siteMapEntry = { siteTreeElement: siteElement, sessions: new Map() };
             this.#sites.set(site, siteMapEntry);
         }
         if (!siteMapEntry.sessions.has(sessionId)) {
@@ -112,9 +125,30 @@ export class RootTreeElement extends ExpandableApplicationPanelTreeElement {
             else {
                 siteMapEntry.siteTreeElement.appendChild(sessionElement);
             }
-            siteMapEntry.sessions.add(sessionId);
+            siteMapEntry.sessions.set(sessionId, sessionElement);
         }
         this.#updateSiteTreeElementVisibility(site);
+    }
+    #removeEmptyElements(emptySessions, emptySites) {
+        for (const emptySite of emptySites) {
+            const siteData = this.#sites.get(emptySite);
+            if (siteData) {
+                this.removeChild(siteData.siteTreeElement);
+                this.#sites.delete(emptySite);
+            }
+        }
+        for (const [site, emptySessionIds] of emptySessions) {
+            const siteData = this.#sites.get(site);
+            if (siteData) {
+                for (const emptySessionId of emptySessionIds) {
+                    const sessionElement = siteData.sessions.get(emptySessionId);
+                    if (sessionElement) {
+                        siteData.siteTreeElement.removeChild(sessionElement);
+                        siteData.sessions.delete(emptySessionId);
+                    }
+                }
+            }
+        }
     }
     #onNewSessions({ data: { sessions } }) {
         for (const session of sessions) {
@@ -129,6 +163,9 @@ export class RootTreeElement extends ExpandableApplicationPanelTreeElement {
     }
     #onEventOccurred({ data: { site, sessionId } }) {
         this.#addSiteSessionIfMissing(site, sessionId);
+    }
+    #onClearEvents({ data: { emptySessions, emptySites } }) {
+        this.#removeEmptyElements(emptySessions, emptySites);
     }
 }
 //# sourceMappingURL=DeviceBoundSessionsTreeElement.js.map

@@ -1,4 +1,4 @@
-import type { ScopeInfo } from "../scopes.d.ts";
+import type { ScopeInfo } from "../scopes.ts";
 export declare class Encoder {
     #private;
     constructor(info: ScopeInfo, names: string[]);

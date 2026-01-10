@@ -16,14 +16,17 @@ export declare class DeviceBoundSessionsModel extends Common.ObjectWrapper.Objec
     modelRemoved(networkManager: SDK.NetworkManager.NetworkManager): void;
     addVisibleSite(site: string): void;
     clearVisibleSites(): void;
+    clearEvents(): void;
     isSiteVisible(site: string): boolean;
     getSession(site: string, sessionId?: string): SessionAndEvents | undefined;
+    getPreserveLogSetting(): Common.Settings.Setting<boolean>;
 }
 export declare const enum DeviceBoundSessionModelEvents {
     INITIALIZE_SESSIONS = "INITIALIZE_SESSIONS",
     ADD_VISIBLE_SITE = "ADD_VISIBLE_SITE",
     CLEAR_VISIBLE_SITES = "CLEAR_VISIBLE_SITES",
-    EVENT_OCCURRED = "EVENT_OCCURRED"
+    EVENT_OCCURRED = "EVENT_OCCURRED",
+    CLEAR_EVENTS = "CLEAR_EVENTS"
 }
 export interface DeviceBoundSessionModelEventTypes {
     [DeviceBoundSessionModelEvents.INITIALIZE_SESSIONS]: {
@@ -36,6 +39,10 @@ export interface DeviceBoundSessionModelEventTypes {
     [DeviceBoundSessionModelEvents.EVENT_OCCURRED]: {
         site: string;
         sessionId?: string;
+    };
+    [DeviceBoundSessionModelEvents.CLEAR_EVENTS]: {
+        emptySessions: Map<string, Array<string | undefined>>;
+        emptySites: Set<string>;
     };
 }
 export {};

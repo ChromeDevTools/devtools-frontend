@@ -809,11 +809,11 @@ var generatedProperties = [
       "text-wrap-mode",
       "text-wrap-style",
       "timeline-scope",
-      "timeline-trigger-exit-range-end",
-      "timeline-trigger-exit-range-start",
+      "timeline-trigger-active-range-end",
+      "timeline-trigger-active-range-start",
+      "timeline-trigger-entry-range-end",
+      "timeline-trigger-entry-range-start",
       "timeline-trigger-name",
-      "timeline-trigger-range-end",
-      "timeline-trigger-range-start",
       "timeline-trigger-source",
       "top",
       "touch-action",
@@ -4649,41 +4649,41 @@ var generatedProperties = [
     "longhands": [
       "timeline-trigger-name",
       "timeline-trigger-source",
-      "timeline-trigger-range-start",
-      "timeline-trigger-range-end",
-      "timeline-trigger-exit-range-start",
-      "timeline-trigger-exit-range-end"
+      "timeline-trigger-entry-range-start",
+      "timeline-trigger-entry-range-end",
+      "timeline-trigger-active-range-start",
+      "timeline-trigger-active-range-end"
     ],
     "name": "timeline-trigger"
   },
   {
     "longhands": [
-      "timeline-trigger-exit-range-start",
-      "timeline-trigger-exit-range-end"
+      "timeline-trigger-active-range-start",
+      "timeline-trigger-active-range-end"
     ],
-    "name": "timeline-trigger-exit-range"
+    "name": "timeline-trigger-active-range"
   },
   {
-    "name": "timeline-trigger-exit-range-end"
+    "name": "timeline-trigger-active-range-end"
   },
   {
-    "name": "timeline-trigger-exit-range-start"
-  },
-  {
-    "name": "timeline-trigger-name"
+    "name": "timeline-trigger-active-range-start"
   },
   {
     "longhands": [
-      "timeline-trigger-range-start",
-      "timeline-trigger-range-end"
+      "timeline-trigger-entry-range-start",
+      "timeline-trigger-entry-range-end"
     ],
-    "name": "timeline-trigger-range"
+    "name": "timeline-trigger-entry-range"
   },
   {
-    "name": "timeline-trigger-range-end"
+    "name": "timeline-trigger-entry-range-end"
   },
   {
-    "name": "timeline-trigger-range-start"
+    "name": "timeline-trigger-entry-range-start"
+  },
+  {
+    "name": "timeline-trigger-name"
   },
   {
     "keywords": [

@@ -1,4 +1,4 @@
-import type { Binding, OriginalPosition, OriginalScope, ScopeInfo } from "../scopes.d.ts";
+import type { Binding, OriginalPosition, OriginalScope, ScopeInfo } from "../scopes.ts";
 import { ScopeInfoBuilder, type ScopeKey } from "./builder.js";
 /**
  * Similar to `ScopeInfoBuilder`, but with checks that scopes/ranges are well

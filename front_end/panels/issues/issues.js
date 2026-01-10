@@ -3320,7 +3320,6 @@ var IssuesPane = class extends UI7.Widget.VBox {
     const thirdPartySetting = IssuesManager12.Issue.getShowThirdPartyIssuesSetting();
     this.#showThirdPartyCheckbox = new UI7.Toolbar.ToolbarSettingCheckbox(thirdPartySetting, i18nString22(UIStrings22.includeCookieIssuesCausedBy), i18nString22(UIStrings22.includeThirdpartyCookieIssues));
     rightToolbar.appendToolbarItem(this.#showThirdPartyCheckbox);
-    this.setDefaultFocusedElement(this.#showThirdPartyCheckbox.element);
     rightToolbar.appendSeparator();
     const issueCounter = new IssueCounter5.IssueCounter.IssueCounter();
     issueCounter.data = {
@@ -3489,9 +3488,6 @@ var IssuesPane = class extends UI7.Widget.VBox {
       }
     } else {
       this.#issuesTree.element.hidden = true;
-      if (this.#showThirdPartyCheckbox) {
-        this.setDefaultFocusedElement(this.#showThirdPartyCheckbox.element);
-      }
       const hasOnlyThirdPartyIssues = this.#issuesManager.numberOfAllStoredIssues() - this.#issuesManager.numberOfThirdPartyCookiePhaseoutIssues() > 0;
       this.#noIssuesMessageDiv.header = hasOnlyThirdPartyIssues ? i18nString22(UIStrings22.onlyThirdpartyCookieIssues) : i18nString22(UIStrings22.noIssues);
       this.#noIssuesMessageDiv.showWidget();

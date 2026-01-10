@@ -16,10 +16,19 @@ export default `/*
   display: block;
 }
 
-.device-bound-session-view-wrapper {
+.device-bound-session-view-wrapper, .device-bound-session-sidebar {
   overflow-y: auto;
   scroll-behavior: smooth;
   padding-bottom: 20px;
+}
+
+.device-bound-session-no-events-wrapper, .device-bound-session-no-event-details {
+  padding: 0 20px;
+}
+
+.device-bound-sessions-toolbar {
+  background-color: var(--sys-color-cdt-base-container);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 /*# sourceURL=${import.meta.resolve('./deviceBoundSessionsView.css')} */`;

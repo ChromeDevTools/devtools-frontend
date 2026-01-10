@@ -48,7 +48,7 @@ export class Encoder {
     }
     #encodeOriginalScope(scope) {
         if (scope === null) {
-            this.#encodedItems.push("");
+            this.#encodedItems.push("A" /* EncodedTag.EMPTY */);
             return;
         }
         this.#encodeOriginalScopeStart(scope);

@@ -38,6 +38,7 @@ export declare class ResourcesPanel extends UI.Panel.PanelWithSidebar {
     showCookies(cookieFrameTarget: SDK.Target.Target, cookieDomain: string): void;
     clearCookies(target: SDK.Target.Target, cookieDomain: string): void;
     showDeviceBoundSession(model: DeviceBoundSessionsModel, site: string, sessionId?: string): void;
+    showDeviceBoundSessionDefault(model: DeviceBoundSessionsModel, title: string, description: string): void;
 }
 export declare class ResourceRevealer implements Common.Revealer.Revealer<SDK.Resource.Resource> {
     reveal(resource: SDK.Resource.Resource): Promise<void>;

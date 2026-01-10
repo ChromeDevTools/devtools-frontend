@@ -225,6 +225,18 @@ export class UserMetrics {
     consoleInsightTeaserFirstChunkGenerated(timeInMilliseconds) {
         InspectorFrontendHostInstance.recordPerformanceHistogram('DevTools.Insights.TeaserFirstChunkGenerationTime', timeInMilliseconds);
     }
+    consoleInsightTeaserAbortedAfterFirstCharacter(timeInMilliseconds) {
+        InspectorFrontendHostInstance.recordPerformanceHistogram('DevTools.Insights.TeaserAfterFirstCharacterAbortionTime', timeInMilliseconds);
+    }
+    consoleInsightTeaserAbortedBeforeFirstCharacter(timeInMilliseconds) {
+        InspectorFrontendHostInstance.recordPerformanceHistogram('DevTools.Insights.TeaserBeforeFirstCharacterAbortionTime', timeInMilliseconds);
+    }
+    consoleInsightLongTeaserGenerated(timeInMilliseconds) {
+        InspectorFrontendHostInstance.recordPerformanceHistogram('DevTools.Insights.LongTeaserGenerationTime', timeInMilliseconds);
+    }
+    consoleInsightShortTeaserGenerated(timeInMilliseconds) {
+        InspectorFrontendHostInstance.recordPerformanceHistogram('DevTools.Insights.ShortTeaserGenerationTime', timeInMilliseconds);
+    }
 }
 /**
  * The numeric enum values are not necessarily continuous! It is possible that

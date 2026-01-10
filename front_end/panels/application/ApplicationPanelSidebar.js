@@ -632,6 +632,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox {
         this.cookieListTreeElement.removeChildren();
         this.interestGroupTreeElement.clearEvents();
         this.deviceBoundSessionsModel?.clearVisibleSites();
+        this.deviceBoundSessionsModel?.clearEvents();
     }
     frameNavigated(event) {
         const frame = event.data;

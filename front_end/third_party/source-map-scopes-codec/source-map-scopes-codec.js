@@ -119,7 +119,10 @@ var Encoder = class {
   }
   #encodeOriginalScope(scope) {
     if (scope === null) {
-      this.#encodedItems.push("");
+      this.#encodedItems.push(
+        "A"
+        /* EncodedTag.EMPTY */
+      );
       return;
     }
     this.#encodeOriginalScopeStart(scope);
@@ -440,13 +443,12 @@ var Decoder = class {
   decode() {
     const iter = new TokenIterator(this.#encodedScopes);
     while (iter.hasNext()) {
-      if (iter.peek() === ",") {
-        iter.nextChar();
-        this.#scopes.push(null);
-        continue;
-      }
       const tag = iter.nextUnsignedVLQ();
       switch (tag) {
+        case 0: {
+          this.#scopes.push(null);
+          break;
+        }
         case 1: {
           const item = {
             flags: iter.nextUnsignedVLQ(),
@@ -522,14 +524,19 @@ var Decoder = class {
           this.#handleGeneratedRangeCallSite(iter.nextUnsignedVLQ(), iter.nextUnsignedVLQ(), iter.nextUnsignedVLQ());
           break;
         }
+        case 99: {
+          const _extensionNameIdx = iter.nextUnsignedVLQ();
+          break;
+        }
+        default: {
+          this.#throwInStrictMode(`Encountered illegal item tag ${tag}`);
+          break;
+        }
       }
       while (iter.hasNext() && iter.peek() !== ",")
         iter.nextUnsignedVLQ();
       if (iter.hasNext())
         iter.nextChar();
-    }
-    if (iter.currentChar() === ",") {
-      this.#scopes.push(null);
     }
     if (this.#scopeStack.length > 0) {
       this.#throwInStrictMode("Encountered ORIGINAL_SCOPE_START without matching END!");
@@ -649,7 +656,6 @@ var Decoder = class {
       }
     }
     this.#rangeStack.push(range);
-    this.#subRangeBindingsForRange.clear();
   }
   #handleGeneratedRangeBindingsItem(valueIdxs) {
     const range = this.#rangeStack.at(-1);
@@ -666,11 +672,21 @@ var Decoder = class {
     }
   }
   #recordGeneratedSubRangeBindingItem(variableIndex, bindings) {
-    if (this.#subRangeBindingsForRange.has(variableIndex)) {
+    const range = this.#rangeStack.at(-1);
+    if (!range) {
+      this.#throwInStrictMode("Encountered GENERATED_RANGE_SUBRANGE_BINDING without surrounding GENERATED_RANGE_START");
+      return;
+    }
+    let subRangeBindings = this.#subRangeBindingsForRange.get(range);
+    if (!subRangeBindings) {
+      subRangeBindings = /* @__PURE__ */ new Map();
+      this.#subRangeBindingsForRange.set(range, subRangeBindings);
+    }
+    if (subRangeBindings.has(variableIndex)) {
       this.#throwInStrictMode("Encountered multiple GENERATED_RANGE_SUBRANGE_BINDING items for the same variable");
       return;
     }
-    this.#subRangeBindingsForRange.set(variableIndex, bindings);
+    subRangeBindings.set(variableIndex, bindings);
   }
   #handleGeneratedRangeCallSite(sourceIndex, line, column) {
     const range = this.#rangeStack.at(-1);
@@ -710,7 +726,10 @@ var Decoder = class {
     }
   }
   #handleGeneratedRangeSubRangeBindings(range) {
-    for (const [variableIndex, bindings] of this.#subRangeBindingsForRange) {
+    const subRangeBindings = this.#subRangeBindingsForRange.get(range);
+    if (!subRangeBindings)
+      return;
+    for (const [variableIndex, bindings] of subRangeBindings) {
       const value = range.values[variableIndex];
       const subRanges = [];
       range.values[variableIndex] = subRanges;

@@ -3417,6 +3417,9 @@ var DataGridElement = class extends UI3.UIUtils.HTMLElementWithLightDOMTemplate 
       }
     }
   }
+  deselectRow() {
+    this.#dataGrid.selectedNode?.deselect();
+  }
   #updateCreationNode() {
     if (this.#usedCreationNode) {
       DataGridElementNode.remove(this.#usedCreationNode);

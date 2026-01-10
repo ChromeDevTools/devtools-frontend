@@ -4442,17 +4442,176 @@
   "panels/application/DeviceBoundSessionsView.ts | allowedRefreshInitiators": {
     "message": "Allowed refresh initiators"
   },
+  "panels/application/DeviceBoundSessionsView.ts | boundCookieSetForbidden": {
+    "message": "Registration in a context that cannot set bound cookies"
+  },
   "panels/application/DeviceBoundSessionsView.ts | cachedChallenge": {
     "message": "Cached challenge"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | cantSetBoundCookie": {
+    "message": "Not allowed to set bound cookie"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | causedAnyRequestDeferrals": {
+    "message": "Caused any request deferrals"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | challenge": {
+    "message": "Challenge"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | challengeResult": {
+    "message": "Challenge result"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | clearBrowsingData": {
+    "message": "User-initiated browser data removal"
   },
   "panels/application/DeviceBoundSessionsView.ts | cookieCravings": {
     "message": "Cookies"
   },
+  "panels/application/DeviceBoundSessionsView.ts | creation": {
+    "message": "Creation"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | deletionReason": {
+    "message": "Deletion reason"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | doNotClearLogOnPageReload": {
+    "message": "Do not clear log on page reload/navigation."
+  },
+  "panels/application/DeviceBoundSessionsView.ts | emptyScopeSpecificationDomain": {
+    "message": "Empty scope specification domain"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | emptyScopeSpecificationPath": {
+    "message": "Empty scope specification path"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | emptySessionConfig": {
+    "message": "Empty session configuration for registration"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | error": {
+    "message": "Error"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | eventDetails": {
+    "message": "Event details"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | eventResult": {
+    "message": "Event result"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | events": {
+    "message": "Events"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | expired": {
+    "message": "Expired"
+  },
   "panels/application/DeviceBoundSessionsView.ts | expiryDate": {
     "message": "Expiry date"
   },
+  "panels/application/DeviceBoundSessionsView.ts | failedToRestoreKey": {
+    "message": "Failed to restore key from disk"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | failedToUnwrapKey": {
+    "message": "Failed to unwrap key"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | fatalError": {
+    "message": "Fatal error"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | federatedKeyThumbprintMismatch": {
+    "message": "Federated key had incorrect thumbprint"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | federatedNotAuthorizedByProvider": {
+    "message": "Federated session not authorized by provider .well-known"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | federatedNotAuthorizedByRelyingParty": {
+    "message": "Federated session not authorized by relying party .well-known"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | fetchResult": {
+    "message": "Fetch result"
+  },
   "panels/application/DeviceBoundSessionsView.ts | includeSite": {
     "message": "Include site"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | initializedService": {
+    "message": "Service initialized"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidChallenge": {
+    "message": "Invalid challenge"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidConfigJson": {
+    "message": "Invalid session configuration JSON"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidCredentialsConfig": {
+    "message": "Invalid credentials configuration"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidCredentialsCookie": {
+    "message": "Invalid credentials - cookie invalid"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidCredentialsCookieCreationTime": {
+    "message": "Invalid credentials - cookie creation time invalid"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidCredentialsCookieInvalidDomain": {
+    "message": "Invalid credentials - cookie invalid domain"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidCredentialsCookieName": {
+    "message": "Invalid credentials - cookie name invalid"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidCredentialsCookieParsing": {
+    "message": "Invalid credentials - cookie parsing failed"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidCredentialsCookiePrefix": {
+    "message": "Invalid credentials - cookie invalid prefix"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidCredentialsCookieUnpermittedAttribute": {
+    "message": "Invalid credentials - cookie attribute not permitted"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidCredentialsEmptyName": {
+    "message": "Invalid credentials - empty name"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidCredentialsType": {
+    "message": "Invalid credentials - empty or non-cookie type"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidFederatedKey": {
+    "message": "Federated key invalid"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidFederatedSessionProviderFailedToRestoreKey": {
+    "message": "Federated session invalid due to failure to restore session provider key"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidFederatedSessionProviderSessionMissing": {
+    "message": "Federated session invalid due to provider session not found"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidFederatedSessionUrl": {
+    "message": "Federated provider URL not valid"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidFederatedSessionWrongProviderOrigin": {
+    "message": "Federated session invalid due to provider origin mismatch"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidFetcherUrl": {
+    "message": "Invalid fetcher URL"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidRefreshUrl": {
+    "message": "Invalid refresh URL"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidScopeIncludeSite": {
+    "message": "Invalid include_site in scope"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidScopeOrigin": {
+    "message": "Invalid scope origin"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidScopeRuleHostPattern": {
+    "message": "Invalid scope rule host pattern"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidScopeRulePath": {
+    "message": "Invalid scope rule path"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidScopeSpecification": {
+    "message": "Invalid scope specification"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidScopeSpecificationType": {
+    "message": "Scope specification type is neiher include or exclude"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidSessionId": {
+    "message": "Invalid session ID"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidSessionParams": {
+    "message": "Invalid session parameters"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | keyError": {
+    "message": "Key error"
   },
   "panels/application/DeviceBoundSessionsView.ts | keyId": {
     "message": "ID"
@@ -4460,17 +4619,92 @@
   "panels/application/DeviceBoundSessionsView.ts | keySite": {
     "message": "Site"
   },
+  "panels/application/DeviceBoundSessionsView.ts | mismatchedSessionId": {
+    "message": "Mismatched session ID"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | missingScope": {
+    "message": "Missing scope"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | missingScopeIncludeSite": {
+    "message": "Missing include_site in scope"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | missingScopeSpecificationType": {
+    "message": "Missing scope specification type"
+  },
   "panels/application/DeviceBoundSessionsView.ts | name": {
     "message": "Name"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | netError": {
+    "message": "Network error"
   },
   "panels/application/DeviceBoundSessionsView.ts | no": {
     "message": "No"
   },
+  "panels/application/DeviceBoundSessionsView.ts | noCredentials": {
+    "message": "No credentials"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | noEvents": {
+    "message": "No events have been logged yet."
+  },
+  "panels/application/DeviceBoundSessionsView.ts | noSessionId": {
+    "message": "No session ID"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | noSessionMatch": {
+    "message": "No matching session ID"
+  },
   "panels/application/DeviceBoundSessionsView.ts | origin": {
     "message": "Origin"
   },
+  "panels/application/DeviceBoundSessionsView.ts | persistentHttpError": {
+    "message": "Persistent HTTP error"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | preserveLog": {
+    "message": "Preserve log"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | proxyError": {
+    "message": "Proxy error"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | refresh": {
+    "message": "Refresh"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | refreshed": {
+    "message": "Refreshed"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | refreshFatalError": {
+    "message": "Fatal error during refresh"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | refreshInitiatorInvalidHostPattern": {
+    "message": "Allowed refresh initiator has invalid host pattern"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | refreshInitiatorNotString": {
+    "message": "Allowed refresh initiator is not a string"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | refreshQuotaExceeded": {
+    "message": "Refresh quota exceeded"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | refreshResult": {
+    "message": "Refresh result"
+  },
   "panels/application/DeviceBoundSessionsView.ts | refreshUrl": {
     "message": "Refresh URL"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | refreshUrlSameSiteMismatch": {
+    "message": "Same-site mismatch refresh URL"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | registrationAttemptedChallenge": {
+    "message": "Registration returned challenge error response code"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | relyingPartyWellKnownHasRelyingOrigins": {
+    "message": "Relying party .well-known content has relying_origins"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | relyingPartyWellKnownMalformed": {
+    "message": "Relying party .well-known content malformed"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | relyingPartyWellKnownUnavailable": {
+    "message": "Relying party .well-known unavailable"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | result": {
+    "message": "Result"
   },
   "panels/application/DeviceBoundSessionsView.ts | ruleHostPattern": {
     "message": "Host pattern"
@@ -4490,8 +4724,92 @@
   "panels/application/DeviceBoundSessionsView.ts | scope": {
     "message": "Scope"
   },
+  "panels/application/DeviceBoundSessionsView.ts | scopeOriginContainsPath": {
+    "message": "Scope origin contains a path"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | scopeOriginSameSiteMismatch": {
+    "message": "Same-site mismatch scope origin"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | scopeRuleOriginScopedHostPatternMismatch": {
+    "message": "Origin-scoped session has mismatch between host pattern and origin"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | scopeRuleSiteScopedHostPatternMismatch": {
+    "message": "Site-scoped session has mismatch between host pattern and site"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | selectEventToViewDetails": {
+    "message": "Select an event row to view more details."
+  },
+  "panels/application/DeviceBoundSessionsView.ts | serverError": {
+    "message": "Endpoint transient error"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | serverRequestedTermination": {
+    "message": "Server requested termination"
+  },
   "panels/application/DeviceBoundSessionsView.ts | sessionConfig": {
     "message": "Session config"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | sessionDeletedDuringRefresh": {
+    "message": "Session deleted during refresh"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | sessionId": {
+    "message": "Session ID"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | sessionProviderWellKnownHasProviderOrigin": {
+    "message": "Session provider .well-known content has provider_origin"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | sessionProviderWellKnownMalformed": {
+    "message": "Session provider .well-known content malformed"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | sessionProviderWellKnownUnavailable": {
+    "message": "Session provider .well-known unavailable"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | signingError": {
+    "message": "Signing error"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | signingQuotaExceeded": {
+    "message": "Signing quota exceeded"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | storagePartitionCleared": {
+    "message": "Removed from storage partition"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | subdomainRegistrationUnauthorized": {
+    "message": ".well-known did not authorize registration by subdomain"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | subdomainRegistrationWellKnownMalformed": {
+    "message": "Subdomain registration .well-known content malformed"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | subdomainRegistrationWellKnownUnavailable": {
+    "message": "Subdomain registration .well-known unavailable"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | success": {
+    "message": "Success"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | termination": {
+    "message": "Termination"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | timestamp": {
+    "message": "Date"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | tooManyChallenges": {
+    "message": "Too many challenges"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | tooManyRelyingOriginLabels": {
+    "message": "Too many relying origin labels in .well-known"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | transientHttpError": {
+    "message": "Transient HTTP error"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | type": {
+    "message": "Type"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | unknown": {
+    "message": "Unknown"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | unreachable": {
+    "message": "Endpoint unreachable"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | updatedSessionConfig": {
+    "message": "Updated session config"
   },
   "panels/application/DeviceBoundSessionsView.ts | yes": {
     "message": "Yes"

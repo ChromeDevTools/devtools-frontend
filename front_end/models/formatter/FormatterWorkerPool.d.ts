@@ -3,8 +3,12 @@ export { DefinitionKind, ScopeKind, type ScopeTreeNode } from '../../entrypoints
 export declare class FormatterWorkerPool {
     private taskQueue;
     private workerTasks;
-    constructor();
-    static instance(): FormatterWorkerPool;
+    private entrypointURL;
+    constructor(entrypointURL?: string);
+    static instance(opts?: {
+        forceNew: true;
+        entrypointURL: string;
+    }): FormatterWorkerPool;
     dispose(): void;
     static removeInstance(): void;
     private createWorker;

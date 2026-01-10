@@ -42,7 +42,7 @@
   ],
   "references": [
     {
-      "path": "package/src/source-map-scopes-codec-tsconfig.json"
+      "path": "./source-map-scopes-codec-tsconfig.json"
     }
   ]
 }

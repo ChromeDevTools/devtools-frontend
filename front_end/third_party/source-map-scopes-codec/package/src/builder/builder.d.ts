@@ -1,4 +1,4 @@
-import type { Binding, GeneratedRange, OriginalPosition, OriginalScope, ScopeInfo } from "../scopes.d.ts";
+import type { Binding, GeneratedRange, OriginalPosition, OriginalScope, ScopeInfo } from "../scopes.ts";
 /**
  * Small utility class to build scope and range trees.
  *

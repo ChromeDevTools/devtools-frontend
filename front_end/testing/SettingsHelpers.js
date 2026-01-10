@@ -157,6 +157,7 @@ export const DEFAULT_SETTING_REGISTRATIONS_FOR_TEST = [
     createSettingValue("ACCOUNT" /* Common.Settings.SettingCategory.ACCOUNT */, 'receive-gdp-badges', false),
     createSettingValue("GLOBAL" /* Common.Settings.SettingCategory.GLOBAL */, 'currentDockState', 'right'),
     createSettingValue("CONSOLE" /* Common.Settings.SettingCategory.CONSOLE */, 'console-insight-teasers-enabled', true, "boolean" /* Common.Settings.SettingType.BOOLEAN */),
+    createSettingValue("NETWORK" /* Common.Settings.SettingCategory.NETWORK */, 'device-bound-sessions-preserve-log', false, "boolean" /* Common.Settings.SettingType.BOOLEAN */),
 ];
 export function setupSettings(reset) {
     // Create the appropriate settings needed to boot.

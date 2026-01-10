@@ -48,6 +48,7 @@ declare class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMTemplate
     addNodes(nodes: NodeList): void;
     removeNodes(nodes: NodeList): void;
     updateNode(node: Node, attributeName: string | null): void;
+    deselectRow(): void;
     onChange(mutationList: MutationRecord[]): void;
     addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => void, options?: boolean | AddEventListenerOptions | undefined): void;
     addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions | undefined): void;

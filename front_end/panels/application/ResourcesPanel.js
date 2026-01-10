@@ -177,6 +177,13 @@ export class ResourcesPanel extends UI.Panel.PanelWithSidebar {
         this.deviceBoundSessionsView.showSession(model, site, sessionId);
         this.showView(this.deviceBoundSessionsView);
     }
+    showDeviceBoundSessionDefault(model, title, description) {
+        if (!this.deviceBoundSessionsView) {
+            this.deviceBoundSessionsView = new DeviceBoundSessionsView();
+        }
+        this.deviceBoundSessionsView.showDefault(model, title, description);
+        this.showView(this.deviceBoundSessionsView);
+    }
 }
 export class ResourceRevealer {
     async reveal(resource) {

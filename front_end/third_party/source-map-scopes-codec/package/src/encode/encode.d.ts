@@ -1,4 +1,4 @@
-import type { ScopeInfo, SourceMapJson } from "../scopes.d.ts";
+import type { ScopeInfo, SourceMapJson } from "../scopes.ts";
 /**
  * Encodes the `ScopeInfo` into a source map JSON object.
  *

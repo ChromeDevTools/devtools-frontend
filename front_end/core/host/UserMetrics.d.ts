@@ -46,6 +46,10 @@ export declare class UserMetrics {
     builtInAiAvailability(availability: BuiltInAiAvailability): void;
     consoleInsightTeaserGenerated(timeInMilliseconds: number): void;
     consoleInsightTeaserFirstChunkGenerated(timeInMilliseconds: number): void;
+    consoleInsightTeaserAbortedAfterFirstCharacter(timeInMilliseconds: number): void;
+    consoleInsightTeaserAbortedBeforeFirstCharacter(timeInMilliseconds: number): void;
+    consoleInsightLongTeaserGenerated(timeInMilliseconds: number): void;
+    consoleInsightShortTeaserGenerated(timeInMilliseconds: number): void;
 }
 /**
  * The numeric enum values are not necessarily continuous! It is possible that

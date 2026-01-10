@@ -26,6 +26,7 @@ export declare const assertGridContents: (gridComponent: HTMLElement, headerExpe
     addNodes(nodes: NodeList): void;
     removeNodes(nodes: NodeList): void;
     updateNode(node: Node, attributeName: string | null): void;
+    deselectRow(): void;
     onChange(mutationList: MutationRecord[]): void;
     addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => void, options?: boolean | AddEventListenerOptions | undefined): void;
     addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions | undefined): void;
@@ -420,6 +421,7 @@ export declare const assertGridWidgetContents: (gridComponent: HTMLElement, head
     addNodes(nodes: NodeList): void;
     removeNodes(nodes: NodeList): void;
     updateNode(node: Node, attributeName: string | null): void;
+    deselectRow(): void;
     onChange(mutationList: MutationRecord[]): void;
     addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => void, options?: boolean | AddEventListenerOptions | undefined): void;
     addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions | undefined): void;

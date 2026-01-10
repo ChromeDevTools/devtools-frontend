@@ -15,13 +15,15 @@ var formatterWorkerPoolInstance;
 var FormatterWorkerPool = class _FormatterWorkerPool {
   taskQueue;
   workerTasks;
-  constructor() {
+  entrypointURL;
+  constructor(entrypointURL) {
     this.taskQueue = [];
     this.workerTasks = /* @__PURE__ */ new Map();
+    this.entrypointURL = entrypointURL ?? import.meta.resolve("../../entrypoints/formatter_worker/formatter_worker-entrypoint.js");
   }
-  static instance() {
-    if (!formatterWorkerPoolInstance) {
-      formatterWorkerPoolInstance = new _FormatterWorkerPool();
+  static instance(opts) {
+    if (!formatterWorkerPoolInstance || opts?.forceNew) {
+      formatterWorkerPoolInstance = new _FormatterWorkerPool(opts?.entrypointURL);
     }
     return formatterWorkerPoolInstance;
   }
@@ -43,7 +45,7 @@ var FormatterWorkerPool = class _FormatterWorkerPool {
     formatterWorkerPoolInstance = void 0;
   }
   createWorker() {
-    const worker = Platform.HostRuntime.HOST_RUNTIME.createWorker(new URL("../../entrypoints/formatter_worker/formatter_worker-entrypoint.js", import.meta.url).toString());
+    const worker = Platform.HostRuntime.HOST_RUNTIME.createWorker(this.entrypointURL);
     worker.onmessage = this.onWorkerMessage.bind(this, worker);
     worker.onerror = this.onWorkerError.bind(this, worker);
     return worker;

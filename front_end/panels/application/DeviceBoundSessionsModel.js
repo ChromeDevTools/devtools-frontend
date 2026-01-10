@@ -27,14 +27,49 @@ export class DeviceBoundSessionsModel extends Common.ObjectWrapper.ObjectWrapper
         this.dispatchEventToListeners("ADD_VISIBLE_SITE" /* DeviceBoundSessionModelEvents.ADD_VISIBLE_SITE */, { site });
     }
     clearVisibleSites() {
+        if (this.getPreserveLogSetting().get()) {
+            return;
+        }
         this.#visibleSites.clear();
         this.dispatchEventToListeners("CLEAR_VISIBLE_SITES" /* DeviceBoundSessionModelEvents.CLEAR_VISIBLE_SITES */);
+    }
+    clearEvents() {
+        if (this.getPreserveLogSetting().get()) {
+            return;
+        }
+        const emptySessions = new Map();
+        const emptySites = new Set();
+        for (const [site, sessionIdToSessionMap] of [...this.#siteSessions]) {
+            let emptySessionsSiteEntry = emptySessions.get(site);
+            for (const [sessionId, sessionAndEvents] of sessionIdToSessionMap) {
+                sessionAndEvents.eventsById.clear();
+                if (sessionAndEvents.session) {
+                    continue;
+                }
+                // Remove empty sessions.
+                sessionIdToSessionMap.delete(sessionId);
+                if (!emptySessionsSiteEntry) {
+                    emptySessionsSiteEntry = [];
+                    emptySessions.set(site, emptySessionsSiteEntry);
+                }
+                emptySessionsSiteEntry.push(sessionId);
+            }
+            // Remove empty sites.
+            if (sessionIdToSessionMap.size === 0) {
+                this.#siteSessions.delete(site);
+                emptySites.add(site);
+            }
+        }
+        this.dispatchEventToListeners("CLEAR_EVENTS" /* DeviceBoundSessionModelEvents.CLEAR_EVENTS */, { emptySessions, emptySites });
     }
     isSiteVisible(site) {
         return this.#visibleSites.has(site);
     }
     getSession(site, sessionId) {
         return this.#siteSessions.get(site)?.get(sessionId);
+    }
+    getPreserveLogSetting() {
+        return Common.Settings.Settings.instance().createSetting('device-bound-sessions-preserve-log', false);
     }
     #onSessionsSet({ data: sessions }) {
         for (const session of sessions) {

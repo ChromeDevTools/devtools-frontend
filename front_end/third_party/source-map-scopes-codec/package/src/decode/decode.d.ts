@@ -1,4 +1,4 @@
-import type { Position, ScopeInfo, SourceMap } from "../scopes.d.ts";
+import type { Position, ScopeInfo, SourceMap } from "../scopes.ts";
 /**
  * The mode decides how well-formed the encoded scopes have to be, to be accepted by the decoder.
  *

@@ -4015,22 +4015,54 @@ var ChatView = class extends HTMLElement {
       <style>${chatView_css_default}</style>
       <div class="chat-ui">
         <main @scroll=${this.#handleScroll} ${ref3(this.#mainElementRef)}>
-          ${renderMainContents({
-      messages: this.#props.messages,
+          ${this.#props.messages.length > 0 ? html8`
+            <div class="messages-container" ${ref3(this.#handleMessageContainerRef)}>
+              ${repeat(this.#props.messages, (message) => html8`<devtools-widget .widgetConfig=${UI6.Widget.widgetConfig(ChatMessage, {
+      message,
       isLoading: this.#props.isLoading,
       isReadOnly: this.#props.isReadOnly,
       canShowFeedbackForm: this.#props.canShowFeedbackForm,
-      isTextInputDisabled: this.#props.isTextInputDisabled,
-      suggestions: this.#props.emptyStateSuggestions,
       userInfo: this.#props.userInfo,
       markdownRenderer: this.#props.markdownRenderer,
-      changeSummary: this.#props.changeSummary,
-      changeManager: this.#props.changeManager,
+      isLastMessage: this.#props.messages.at(-1) === message,
       onSuggestionClick: this.#handleSuggestionClick,
       onFeedbackSubmit: this.#props.onFeedbackSubmit,
-      onMessageContainerRef: this.#handleMessageContainerRef,
       onCopyResponseClick: this.#props.onCopyResponseClick
+    })}></devtools-widget>`)}
+              ${this.#props.isLoading ? Lit6.nothing : html8`<devtools-widget
+                .widgetConfig=${UI6.Widget.widgetConfig(PatchWidget, {
+      changeSummary: this.#props.changeSummary ?? "",
+      changeManager: this.#props.changeManager
     })}
+              ></devtools-widget>`}
+            </div>
+          ` : html8`
+            <div class="empty-state-container">
+              <div class="header">
+                <div class="icon">
+                  <devtools-icon
+                    name="smart-assistant"
+                  ></devtools-icon>
+                </div>
+                <h1>${lockedString5(UIStringsNotTranslate5.emptyStateText)}</h1>
+              </div>
+              <div class="empty-state-content">
+                ${this.#props.emptyStateSuggestions.map(({ title, jslogContext }) => {
+      return html8`<devtools-button
+                    class="suggestion"
+                    @click=${() => this.#handleSuggestionClick(title)}
+                    .data=${{
+        variant: "outlined",
+        size: "REGULAR",
+        title,
+        jslogContext: jslogContext ?? "suggestion",
+        disabled: this.#props.isTextInputDisabled
+      }}
+                  >${title}</devtools-button>`;
+    })}
+              </div>
+            </div>
+          `}
           <devtools-widget class=${inputWidgetClasses} .widgetConfig=${UI6.Widget.widgetConfig(ChatInput, {
       isLoading: this.#props.isLoading,
       blockedByCrossOrigin: this.#props.blockedByCrossOrigin,
@@ -4058,82 +4090,6 @@ var ChatView = class extends HTMLElement {
     `, this.#shadow, { host: this });
   }
 };
-function renderMainContents({ messages, isLoading, isReadOnly, canShowFeedbackForm, isTextInputDisabled, suggestions, userInfo, markdownRenderer, changeSummary, changeManager, onSuggestionClick, onFeedbackSubmit, onCopyResponseClick, onMessageContainerRef }) {
-  if (messages.length > 0) {
-    return renderMessages({
-      messages,
-      isLoading,
-      isReadOnly,
-      canShowFeedbackForm,
-      userInfo,
-      markdownRenderer,
-      changeSummary,
-      changeManager,
-      onSuggestionClick,
-      onFeedbackSubmit,
-      onMessageContainerRef,
-      onCopyResponseClick
-    });
-  }
-  return renderEmptyState({ isTextInputDisabled, suggestions, onSuggestionClick });
-}
-function renderMessages({ messages, isLoading, isReadOnly, canShowFeedbackForm, userInfo, markdownRenderer, changeSummary, changeManager, onSuggestionClick, onFeedbackSubmit, onCopyResponseClick, onMessageContainerRef }) {
-  function renderPatchWidget() {
-    if (isLoading) {
-      return Lit6.nothing;
-    }
-    return html8`<devtools-widget
-      .widgetConfig=${UI6.Widget.widgetConfig(PatchWidget, {
-      changeSummary: changeSummary ?? "",
-      changeManager
-    })}
-    ></devtools-widget>`;
-  }
-  return html8`
-    <div class="messages-container" ${ref3(onMessageContainerRef)}>
-      ${repeat(messages, (message) => html8`<devtools-widget .widgetConfig=${UI6.Widget.widgetConfig(ChatMessage, {
-    message,
-    isLoading,
-    isReadOnly,
-    canShowFeedbackForm,
-    userInfo,
-    markdownRenderer,
-    isLastMessage: messages.at(-1) === message,
-    onSuggestionClick,
-    onFeedbackSubmit,
-    onCopyResponseClick
-  })}></devtools-widget>`)}
-      ${renderPatchWidget()}
-    </div>
-  `;
-}
-function renderEmptyState({ isTextInputDisabled, suggestions, onSuggestionClick }) {
-  return html8`<div class="empty-state-container">
-    <div class="header">
-      <div class="icon">
-        <devtools-icon
-          name="smart-assistant"
-        ></devtools-icon>
-      </div>
-      <h1>${lockedString5(UIStringsNotTranslate5.emptyStateText)}</h1>
-    </div>
-    <div class="empty-state-content">
-      ${suggestions.map(({ title, jslogContext }) => {
-    return html8`<devtools-button
-          class="suggestion"
-          @click=${() => onSuggestionClick(title)}
-          .data=${{
-      variant: "outlined",
-      size: "REGULAR",
-      title,
-      jslogContext: jslogContext ?? "suggestion",
-      disabled: isTextInputDisabled
-    }}
-        >${title}</devtools-button>`;
-  })}
-    </div>
-  </div>`;
-}
 customElements.define("devtools-ai-chat-view", ChatView);
 
 // gen/front_end/panels/ai_assistance/components/DisabledWidget.js

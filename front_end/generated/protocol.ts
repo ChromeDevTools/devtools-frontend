@@ -11954,6 +11954,10 @@ export namespace Network {
      * Request body string, omitting files from multipart requests
      */
     postData: string;
+    /**
+     * True, if content was sent as base64.
+     */
+    base64Encoded: boolean;
   }
 
   export interface GetResponseBodyForInterceptionRequest {

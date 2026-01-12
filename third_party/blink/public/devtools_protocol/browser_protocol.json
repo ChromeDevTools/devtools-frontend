@@ -17995,6 +17995,11 @@
                             "name": "postData",
                             "description": "Request body string, omitting files from multipart requests",
                             "type": "string"
+                        },
+                        {
+                            "name": "base64Encoded",
+                            "description": "True, if content was sent as base64.",
+                            "type": "boolean"
                         }
                     ]
                 },

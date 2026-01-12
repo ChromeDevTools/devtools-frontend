@@ -1913,10 +1913,10 @@ export class RequestConditions extends Common.ObjectWrapper.ObjectWrapper<Reques
             matchedNetworkConditions.push({ruleIds, urlPattern, conditions});
           }
         }
+      }
 
-        if (globalConditions) {
-          matchedNetworkConditions.push({conditions: globalConditions});
-        }
+      if (globalConditions) {
+        matchedNetworkConditions.push({conditions: globalConditions});
       }
 
       const promises: Array<Promise<unknown>> = [];

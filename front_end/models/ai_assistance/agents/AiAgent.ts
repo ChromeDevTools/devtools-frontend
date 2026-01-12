@@ -601,7 +601,8 @@ export abstract class AiAgent<T> {
             },
           };
           request = this.buildRequest(query, Host.AidaClient.Role.ROLE_UNSPECIFIED);
-        } catch {
+        } catch (err) {
+          debugLog('Error handling function call', err);
           yield this.#createErrorResponse(ErrorType.UNKNOWN);
           break;
         }

@@ -4,6 +4,37 @@
 
 import * as TextUtils from './text_utils.js';
 
+type SplitByRegexExpected = Array<[string, number, number]>;
+
+interface SplitByRegexTestCase {
+  testString: string;
+  testName: string;
+  regexes: RegExp[];
+  expected: SplitByRegexExpected;
+}
+
+function assertResults(
+    results: Array<{
+      value: string,
+      position: number,
+      regexIndex: number,
+      captureGroups: Array<string|undefined>,
+    }>,
+    expected: Array<[string, number, number]>) {
+  if (results.length !== expected.length) {
+    throw new Error('error they should match');
+  }
+
+  for (let i = 0; i < results.length; i++) {
+    const result = results[i];
+    const expect = expected[i];
+
+    assert.strictEqual(result.value, expect[0]);
+    assert.strictEqual(result.position, expect[1]);
+    assert.strictEqual(result.regexIndex, expect[2]);
+  }
+}
+
 describe('TextUtils', () => {
   describe('Utils', () => {
     describe('isSpaceChar', () => {
@@ -95,6 +126,91 @@ describe('TextUtils', () => {
         assert.strictEqual(result[0].regexIndex, 0, 'regex index was wrong');
         assert.deepEqual(result[0].captureGroups, [], 'capture groups was not empty');
       });
+
+      const splitByRegexTestCases: SplitByRegexTestCase[] = [
+        {
+          testName: 'returns splitted strings by regex',
+          testString: 'hello123hello123',
+          regexes: [/hello/g, /[0-9]+/g],
+          expected: [
+            ['hello', 0, 0],
+            ['123', 5, 1],
+            ['hello', 8, 0],
+            ['123', 13, 1],
+          ]
+        },
+        {
+          testName: 'returns splitted string with match at start',
+          testString: 'yes thank you',
+          regexes: [/yes/g],
+          expected: [
+            ['yes', 0, 0],
+            [' thank you', 3, -1],
+          ]
+        },
+        {
+          testName: 'returns splitted string with match at end',
+          testString: 'yes thank you',
+          regexes: [/you/g],
+          expected: [
+            ['yes thank ', 0, -1],
+            ['you', 10, 0],
+          ]
+        },
+        {
+          testName: 'returns splitted string avoiding inner match',
+          testString: 'image: url("red.com")',
+          regexes: [/url\("red\.com"\)/g, /red/g],
+          expected: [
+            ['image: ', 0, -1],
+            ['url("red.com")', 7, 0],
+          ]
+        },
+        {
+          testName: 'returns input for single regex without match',
+          testString: 'nothing',
+          regexes: [/something/g],
+          expected: [
+            ['nothing', 0, -1],
+          ]
+        },
+        {
+          testName: 'returns input for multiple regex without match',
+          testString: 'nothing',
+          regexes: [/something/g, /123/g, /abc/g],
+          expected: [
+            ['nothing', 0, -1],
+          ]
+        },
+        {
+          testName: 'complex case',
+          testString: 'Start. (okay) kit-kat okay (kale) ka( ) okay. End',
+          regexes: [/\(([^)]+)\)/g, /okay/g, /ka/g],
+          expected: [
+            ['Start. ', 0, -1],
+            ['(okay)', 7, 0],
+            [' kit-', 13, -1],
+            ['ka', 18, 2],
+            ['t ', 20, -1],
+            ['okay', 22, 1],
+            [' ', 26, -1],
+            ['(kale)', 27, 0],
+            [' ', 33, -1],
+            ['ka', 34, 2],
+            ['( )', 36, 0],
+            [' ', 39, -1],
+            ['okay', 40, 1],
+            ['. End', 44, -1],
+          ]
+        }
+      ];
+
+      for (const testCase of splitByRegexTestCases) {
+        it(testCase.testName, () => {
+          const results = TextUtils.TextUtils.Utils.splitStringByRegexes(testCase.testString, testCase.regexes);
+          assertResults(results, testCase.expected);
+        });
+      }
     });
   });
 

@@ -1540,6 +1540,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     }
 
     let blob = new Blob(blobParts, {type: 'application/json'});
+    blobParts.length = 0;  // Don't retain this large object for the remaining lifetime of this function.
 
     if (config.shouldCompress) {
       this.statusDialog.updateStatus(i18nString(UIStrings.compressingTraceForDownload));
@@ -1560,6 +1561,8 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
       //  blobParts.join('') === (await gzBlob.arrayBuffer().then(bytes => Common.Gzip.arrayBufferToString(bytes)))
     }
 
+    const blobType = blob.type;  // blob may be reassigned later.
+
     // In some cases Base64.encode() can return undefined; see crbug.com/436482118 for details.
     // TODO(crbug.com/436482118): understand this edge case and fix the Base64.encode method to not just return undefined.
     let bytesAsB64: string|null = null;
@@ -1569,11 +1572,14 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
       this.statusDialog.updateStatus(i18nString(UIStrings.encodingTraceForDownload));
       this.statusDialog.updateProgressBar(i18nString(UIStrings.encodingTraceForDownload), 100);
       bytesAsB64 = await Common.Base64.encode(blob);
+      if (bytesAsB64.length) {
+        blob = new Blob();  // Don't retain this large object for the remaining lifetime of this function.
+      }
     } catch {
     }
 
     if (bytesAsB64?.length) {
-      const contentData = new TextUtils.ContentData.ContentData(bytesAsB64, /* isBase64=*/ true, blob.type);
+      const contentData = new TextUtils.ContentData.ContentData(bytesAsB64, /* isBase64=*/ true, blobType);
       await Workspace.FileManager.FileManager.instance().save(fileName, contentData, /* forceSaveAs=*/ true);
       Workspace.FileManager.FileManager.instance().close(fileName);
     } else {

@@ -37,8 +37,15 @@ export function encode(input: BlobPart): Promise<string> {
     const reader = new FileReader();
     reader.onerror = () => reject(new Error('failed to convert to base64'));
     reader.onload = () => {
+      // This string can be very large, so take care to not double memory. `split`
+      // was used here before, which always results in new strings in V8. By using
+      // slice instead, we leverage the sliced string optimization in V8 and avoid
+      // doubling the memory requirement (even if temporarily: that is a potential
+      // source of OOM crashes given large enough input, such as is common with
+      // Performance traces).
       const blobAsUrl = reader.result as string;
-      const [, base64] = blobAsUrl.split(',', 2);
+      const index = blobAsUrl.indexOf(',');
+      const base64 = blobAsUrl.slice(index + 1);
       resolve(base64);
     };
 

@@ -1,0 +1,79 @@
+/*
+ * Copyright 2026 The Chromium Authors
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+
+.ai-code-generation-upgrade-dialog {
+  width: var(--sys-size-33);
+  padding: var(--sys-size-9);
+
+  header {
+    display: flex;
+    gap: var(--sys-size-8);
+    margin-bottom: var(--sys-size-6);
+    align-items: center;
+
+    h2 {
+      margin: 0;
+      color: var(--sys-color-on-surface);
+      font: var(--sys-typescale-headline5);
+    }
+
+    .header-icon-container {
+      background: linear-gradient(
+        135deg,
+        var(--sys-color-gradient-primary),
+        var(--sys-color-gradient-tertiary)
+      );
+      border-radius: var(--sys-size-4);
+      min-height: var(--sys-size-14);
+      min-width: var(--sys-size-14);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      devtools-icon {
+        width: var(--sys-size-9);
+        height: var(--sys-size-9);
+      }
+    }
+  }
+
+  .reminder-container {
+    border-radius: var(--sys-size-6);
+    background-color: var(--sys-color-surface4);
+    padding: var(--sys-size-9);
+    gap: var(--sys-size-6);
+    display: flex;
+    flex-direction: column;
+
+    .reminder-item {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: var(--sys-size-5);
+      font: var(--sys-typescale-body4-regular);
+
+      devtools-icon.reminder-icon {
+        width: var(--sys-size-8);
+        height: var(--sys-size-8);
+      }
+    }
+  }
+
+  footer {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-end;
+    margin-top: var(--sys-size-8);
+    min-width: var(--sys-size-28);
+
+    .right-buttons {
+      display: flex;
+      gap: var(--sys-size-5);
+    }
+  }
+}

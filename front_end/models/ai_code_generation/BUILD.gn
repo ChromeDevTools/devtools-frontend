@@ -27,6 +27,7 @@ devtools_entrypoint("bundle") {
   visibility = [
     ":*",
     "../../panels/console/*",
+    "../../panels/settings/*",
     "../../panels/sources/*",
     "../../ui/components/text_editor/*",
   ]

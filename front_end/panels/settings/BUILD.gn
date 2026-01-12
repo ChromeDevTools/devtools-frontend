@@ -38,6 +38,7 @@ devtools_ui_module("settings") {
     "../../core/sdk:bundle",
     "../../generated:protocol",
     "../../models/ai_assistance:bundle",
+    "../../models/ai_code_generation:bundle",
     "../../models/bindings:bundle",
     "../../models/breakpoints:bundle",
     "../../models/greendev:bundle",

@@ -8,6 +8,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
+import * as AiCodeGeneration from '../../models/ai_code_generation/ai_code_generation.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as Input from '../../ui/components/input/input.js';
 import * as Switch from '../../ui/components/switch/switch.js';
@@ -121,7 +122,7 @@ const UIStrings = {
   /**
    * @description Text describing the 'Code suggestions' feature
    */
-  helpUnderstandCodeSuggestions: 'Get help completing your code',
+  helpUnderstandCodeSuggestions: 'Write code faster with AI-powered suggestions',
   /**
    * @description Text which is a hyperlink to more documentation
    */
@@ -172,6 +173,21 @@ const UIStrings = {
    */
   asYouTypeCodeSuggestions:
       'As you type in the Console or Sources panel, you’ll get code suggestions. Press Tab to accept one.',
+  /**
+   * @description First item in the description of the 'Code suggestions' feature [updated]
+   */
+  asYouTypeRelevantDataIsBeingSentToGoogle:
+      'As you type, relevant data is being sent to Google to generate code suggestions. Press Tab to accept.',
+  /**
+   * @description Second item in the description of the 'Code suggestions' feature [new]
+   */
+  describeCodeInComment:
+      'In Console or Sources, describe the code you need in a comment, then press Ctrl+I to generate it.',
+  /**
+   * @description Second item in the description of the 'Code suggestions' feature [new]
+   */
+  describeCodeInCommentForMacOs:
+      'In Console or Sources, describe the code you need in a comment, then press Cmd+I to generate it.',
   /**
    * @description Explainer for which data is being sent for the 'Code suggestions' feature
    */
@@ -520,12 +536,25 @@ export class AISettingsTab extends UI.Widget.VBox {
     }
 
     if (this.#aiCodeCompletionSetting) {
+      const devtoolsLocale = i18n.DevToolsLocale.DevToolsLocale.instance();
+      const isAiCodeGenerationEnabled =
+          AiCodeGeneration.AiCodeGeneration.AiCodeGeneration.isAiCodeGenerationEnabled(devtoolsLocale.locale);
+      const settingItems = isAiCodeGenerationEnabled ?
+          [
+            {iconName: 'code', text: i18nString(UIStrings.asYouTypeRelevantDataIsBeingSentToGoogle)}, {
+              iconName: 'text-analysis',
+              text: Host.Platform.isMac() ? i18nString(UIStrings.describeCodeInCommentForMacOs) :
+                                            i18nString(UIStrings.describeCodeInComment)
+            }
+          ] :
+          [{iconName: 'code', text: i18nString(UIStrings.asYouTypeCodeSuggestions)}];
+
       const aiCodeCompletionData: AiSettingParams = {
         settingName: i18n.i18n.lockedString('Code suggestions'),
         iconName: 'text-analysis',
         settingDescription: i18nString(UIStrings.helpUnderstandCodeSuggestions),
         enableSettingText: i18nString(UIStrings.enableAiCodeSuggestions),
-        settingItems: [{iconName: 'code', text: i18nString(UIStrings.asYouTypeCodeSuggestions)}],
+        settingItems,
         toConsiderSettingItems: [{
           iconName: 'google',
           text: noLogging ? i18nString(UIStrings.codeSuggestionsSendDataNoLogging) :

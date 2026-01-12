@@ -971,7 +971,6 @@ export class MainMenuItem implements UI.Toolbar.Provider {
       const persistence = viewExtension.persistence();
       const title = viewExtension.title();
       const id = viewExtension.viewId();
-      const promotionId = viewExtension.featurePromotionId();
 
       if (id === 'issues-pane') {
         moreTools.defaultSection().appendItem(title, () => {
@@ -988,14 +987,9 @@ export class MainMenuItem implements UI.Toolbar.Provider {
         continue;
       }
 
-      let additionalElement = undefined;
-      if (promotionId) {
-        additionalElement = UI.UIUtils.maybeCreateNewBadge(promotionId);
-      }
-
       moreTools.defaultSection().appendItem(title, () => {
         void UI.ViewManager.ViewManager.instance().showView(id, true, false);
-      }, {additionalElement, isPreviewFeature: viewExtension.isPreviewFeature(), jslogContext: id});
+      }, {isPreviewFeature: viewExtension.isPreviewFeature(), jslogContext: id});
     }
 
     const helpSubMenu = contextMenu.footerSection().appendSubMenuItem(i18nString(UIStrings.help), false, 'help');

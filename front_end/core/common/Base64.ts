@@ -32,11 +32,23 @@ export function decode(input: string): Uint8Array<ArrayBuffer> {
   return bytes;
 }
 
+/**
+ * Note: if input can be very large (larger than the max string size), callers should
+ * expect this to throw an error.
+ */
 export function encode(input: BlobPart): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
-    reader.onerror = () => reject(new Error('failed to convert to base64'));
+    reader.onerror = () => reject(new Error('failed to convert to base64: internal error'));
     reader.onload = () => {
+      // The input was too large to encode as a string. The caller should anticipate
+      // this and use a workaround. See TimelinePanel.ts innerSaveToFile for an example.
+      // For more information, see crbug.com/436482118.
+      if (reader.result === '') {
+        reject(new Error('failed to convert to base64: input too large to encode as base64 string'));
+        return;
+      }
+
       // This string can be very large, so take care to not double memory. `split`
       // was used here before, which always results in new strings in V8. By using
       // slice instead, we leverage the sliced string optimization in V8 and avoid

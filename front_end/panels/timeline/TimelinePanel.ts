@@ -1564,7 +1564,6 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     const blobType = blob.type;  // blob may be reassigned later.
 
     // In some cases Base64.encode() can return undefined; see crbug.com/436482118 for details.
-    // TODO(crbug.com/436482118): understand this edge case and fix the Base64.encode method to not just return undefined.
     let bytesAsB64: string|null = null;
     try {
       // The maximum string length in v8 is `2 ** 29 - 23`, aka 538 MB.
@@ -1572,13 +1571,16 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
       this.statusDialog.updateStatus(i18nString(UIStrings.encodingTraceForDownload));
       this.statusDialog.updateProgressBar(i18nString(UIStrings.encodingTraceForDownload), 100);
       bytesAsB64 = await Common.Base64.encode(blob);
-      if (bytesAsB64.length) {
-        blob = new Blob();  // Don't retain this large object for the remaining lifetime of this function.
+      blob = new Blob();  // Don't retain this large object for the remaining lifetime of this function.
+    } catch (err) {
+      if (err instanceof Error && err.message.startsWith('failed to convert to base64')) {
+        // Expected and handled below.
+      } else {
+        throw err;
       }
-    } catch {
     }
 
-    if (bytesAsB64?.length) {
+    if (bytesAsB64) {
       const contentData = new TextUtils.ContentData.ContentData(bytesAsB64, /* isBase64=*/ true, blobType);
       await Workspace.FileManager.FileManager.instance().save(fileName, contentData, /* forceSaveAs=*/ true);
       Workspace.FileManager.FileManager.instance().close(fileName);

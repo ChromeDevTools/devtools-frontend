@@ -1295,6 +1295,7 @@ export declare class ConsoleMessage {
      */
     stackTrace(): ConsoleMessageLocation[];
 
+
 }
 
 /**
@@ -1411,7 +1412,7 @@ export declare interface CookieData {
      */
     priority?: CookiePriority;
     /**
-     * True if cookie is SameParty. Supported only in Chrome.
+     * @deprecated Always set to false. Supported only in Chrome.
      */
     sameParty?: boolean;
     /**
@@ -1476,7 +1477,7 @@ export declare interface CookieParam {
      */
     priority?: CookiePriority;
     /**
-     * True if cookie is SameParty. Supported only in Chrome.
+     * @deprecated Always ignored.
      */
     sameParty?: boolean;
     /**
@@ -1650,11 +1651,18 @@ export declare interface CoverageEntry {
 /**
  * @public
  */
-export declare type CreatePageOptions = {
-    type: 'tab';
+export declare type CreatePageOptions = ({
+    type?: 'tab';
 } | {
     type: 'window';
     windowBounds?: WindowBounds;
+}) & {
+    /**
+     * Whether to create the page in the background.
+     *
+     * @defaultValue `false`
+     */
+    background?: boolean;
 };
 
 /**
@@ -4801,6 +4809,7 @@ export declare interface Offset {
  */
 export declare abstract class Page extends EventEmitter<PageEvents> {
     
+
 
 
 

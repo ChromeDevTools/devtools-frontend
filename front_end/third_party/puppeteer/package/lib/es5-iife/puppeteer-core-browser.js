@@ -3048,7 +3048,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    */
   // If moved update release-please config
   // x-release-please-start-version
-  const packageVersion = '24.34.0';
+  const packageVersion = '24.35.0';
   // x-release-please-end
 
   /**
@@ -10828,6 +10828,14 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
          * @internal
          */
         _defineProperty(this, "_timeoutSettings", new TimeoutSettings());
+        /**
+         * Internal API to get an implementation-specific identifier
+         * for the tab. In Chrome, it is a tab target id. If unknown,
+         * returns an empty string.
+         *
+         * @internal
+         */
+        _defineProperty(this, "_tabId", '');
         _classPrivateFieldInitSpec(this, _requestHandlers, new WeakMap());
         _classPrivateFieldInitSpec(this, _inflight$, new ReplaySubject(1));
         _classPrivateFieldInitSpec(this, _screencastSessionCount, 0);
@@ -13320,23 +13328,26 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   var _stackTraceLocations = /*#__PURE__*/new WeakMap();
   var _frame = /*#__PURE__*/new WeakMap();
   var _rawStackTrace = /*#__PURE__*/new WeakMap();
+  var _targetId = /*#__PURE__*/new WeakMap();
   class ConsoleMessage {
     /**
      * @internal
      */
-    constructor(type, text, args, stackTraceLocations, frame, rawStackTrace) {
+    constructor(type, text, args, stackTraceLocations, frame, rawStackTrace, targetId) {
       _classPrivateFieldInitSpec(this, _type2, void 0);
       _classPrivateFieldInitSpec(this, _text, void 0);
       _classPrivateFieldInitSpec(this, _args2, void 0);
       _classPrivateFieldInitSpec(this, _stackTraceLocations, void 0);
       _classPrivateFieldInitSpec(this, _frame, void 0);
       _classPrivateFieldInitSpec(this, _rawStackTrace, void 0);
+      _classPrivateFieldInitSpec(this, _targetId, void 0);
       _classPrivateFieldSet(_type2, this, type);
       _classPrivateFieldSet(_text, this, text);
       _classPrivateFieldSet(_args2, this, args);
       _classPrivateFieldSet(_stackTraceLocations, this, stackTraceLocations);
       _classPrivateFieldSet(_frame, this, frame);
       _classPrivateFieldSet(_rawStackTrace, this, rawStackTrace);
+      _classPrivateFieldSet(_targetId, this, targetId);
     }
     /**
      * The type of the console message.
@@ -13377,6 +13388,14 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
      */
     _rawStackTrace() {
       return _classPrivateFieldGet(_rawStackTrace, this);
+    }
+    /**
+     * The targetId from which this console message originated.
+     *
+     * @internal
+     */
+    _targetId() {
+      return _classPrivateFieldGet(_targetId, this);
     }
   }
 
@@ -20755,9 +20774,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       });
       _classPrivateFieldGet(_world4, this).emitter.on('consoleapicalled', async event => {
         try {
-          return consoleAPICalled(event.type, event.args.map(object => {
-            return new CdpJSHandle(_classPrivateFieldGet(_world4, this), object);
-          }), event.stackTrace);
+          return consoleAPICalled(_classPrivateFieldGet(_world4, this), event);
         } catch (err) {
           debugError(err);
         }
@@ -20966,7 +20983,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         assert(session instanceof CdpCDPSession);
         _classPrivateFieldGet(_frameManager2, this).onAttachedToTarget(session.target());
         if (session.target()._getTargetInfo().type === 'worker') {
-          const worker = new CdpWebWorker(session, session.target().url(), session.target()._targetId, session.target().type(), _assertClassBrand(_CdpPage_brand, this, _addConsoleMessage).bind(this), _assertClassBrand(_CdpPage_brand, this, _handleException).bind(this), _classPrivateFieldGet(_frameManager2, this).networkManager);
+          const worker = new CdpWebWorker(session, session.target().url(), session.target()._targetId, session.target().type(), _assertClassBrand(_CdpPage_brand, this, _onConsoleAPI2).bind(this), _assertClassBrand(_CdpPage_brand, this, _handleException).bind(this), _classPrivateFieldGet(_frameManager2, this).networkManager);
           _classPrivateFieldGet(_workers, this).set(session.id(), worker);
           this.emit("workercreated" /* PageEvent.WorkerCreated */, worker);
         }
@@ -20977,6 +20994,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       assert(_classPrivateFieldGet(_tabTargetClient, this), 'Tab target session is not defined.');
       _classPrivateFieldSet(_tabTarget, this, _classPrivateFieldGet(_tabTargetClient, this).target());
       assert(_classPrivateFieldGet(_tabTarget, this), 'Tab target is not defined.');
+      this._tabId = _classPrivateFieldGet(_tabTarget, this)._getTargetInfo().targetId;
       _classPrivateFieldSet(_primaryTarget, this, _target2);
       _classPrivateFieldSet(_targetManager, this, _target2._targetManager());
       _classPrivateFieldSet(_keyboard4, this, new CdpKeyboard(client));
@@ -21677,7 +21695,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       this.emit("console" /* PageEvent.Console */, new ConsoleMessage(convertConsoleMessageLevel(level), text, [], [{
         url,
         lineNumber
-      }], undefined, stackTrace));
+      }], undefined, stackTrace, _classPrivateFieldGet(_primaryTarget, this)._targetId));
     }
   }
   function _emitMetrics(event) {
@@ -21702,7 +21720,39 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     const values = event.args.map(arg => {
       return world.createCdpHandle(arg);
     });
-    _assertClassBrand(_CdpPage_brand, this, _addConsoleMessage).call(this, convertConsoleMessageLevel(event.type), values, event.stackTrace);
+    if (!this.listenerCount("console" /* PageEvent.Console */)) {
+      values.forEach(arg => {
+        return arg.dispose();
+      });
+      return;
+    }
+    const textTokens = [];
+    // eslint-disable-next-line max-len -- The comment is long.
+    // eslint-disable-next-line @puppeteer/use-using -- These are not owned by this function.
+    for (const arg of values) {
+      const remoteObject = arg.remoteObject();
+      if (remoteObject.objectId) {
+        textTokens.push(arg.toString());
+      } else {
+        textTokens.push(valueFromRemoteObject(remoteObject));
+      }
+    }
+    const stackTraceLocations = [];
+    if (event.stackTrace) {
+      for (const callFrame of event.stackTrace.callFrames) {
+        stackTraceLocations.push({
+          url: callFrame.url,
+          lineNumber: callFrame.lineNumber,
+          columnNumber: callFrame.columnNumber
+        });
+      }
+    }
+    let targetId;
+    if (world.environment.client instanceof CdpCDPSession) {
+      targetId = world.environment.client.target()._targetId;
+    }
+    const message = new ConsoleMessage(convertConsoleMessageLevel(event.type), textTokens.join(' '), values, stackTraceLocations, undefined, event.stackTrace, targetId);
+    this.emit("console" /* PageEvent.Console */, message);
   }
   async function _onBindingCalled2(world, event) {
     let payload;
@@ -21729,37 +21779,6 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     }
     const binding = _classPrivateFieldGet(_bindings3, this).get(name);
     await binding?.run(context, seq, args, isTrivial);
-  }
-  function _addConsoleMessage(eventType, args, stackTrace) {
-    if (!this.listenerCount("console" /* PageEvent.Console */)) {
-      args.forEach(arg => {
-        return arg.dispose();
-      });
-      return;
-    }
-    const textTokens = [];
-    // eslint-disable-next-line max-len -- The comment is long.
-    // eslint-disable-next-line @puppeteer/use-using -- These are not owned by this function.
-    for (const arg of args) {
-      const remoteObject = arg.remoteObject();
-      if (remoteObject.objectId) {
-        textTokens.push(arg.toString());
-      } else {
-        textTokens.push(valueFromRemoteObject(remoteObject));
-      }
-    }
-    const stackTraceLocations = [];
-    if (stackTrace) {
-      for (const callFrame of stackTrace.callFrames) {
-        stackTraceLocations.push({
-          url: callFrame.url,
-          lineNumber: callFrame.lineNumber,
-          columnNumber: callFrame.columnNumber
-        });
-      }
-    }
-    const message = new ConsoleMessage(convertConsoleMessageLevel(eventType), textTokens.join(' '), args, stackTraceLocations, undefined, stackTrace);
-    this.emit("console" /* PageEvent.Console */, message);
   }
   function _onDialog(event) {
     const type = validateDialogType(event.type);
@@ -22751,7 +22770,8 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         height: windowBounds?.height,
         windowState: windowBounds?.windowState,
         // Works around crbug.com/454825274.
-        newWindow: hasTargets && options?.type === 'window' ? true : undefined
+        newWindow: hasTargets && options?.type === 'window' ? true : undefined,
+        background: options?.background
       });
       const target = await this.waitForTarget(t => {
         return t._targetId === targetId;
@@ -25038,8 +25058,8 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * @internal
    */
   const PUPPETEER_REVISIONS = Object.freeze({
-    chrome: '143.0.7499.169',
-    'chrome-headless-shell': '143.0.7499.169',
+    chrome: '143.0.7499.192',
+    'chrome-headless-shell': '143.0.7499.192',
     firefox: 'stable_146.0.1'
   });
 

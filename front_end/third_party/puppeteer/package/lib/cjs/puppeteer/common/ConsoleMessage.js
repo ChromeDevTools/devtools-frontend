@@ -17,16 +17,18 @@ class ConsoleMessage {
     #stackTraceLocations;
     #frame;
     #rawStackTrace;
+    #targetId;
     /**
      * @internal
      */
-    constructor(type, text, args, stackTraceLocations, frame, rawStackTrace) {
+    constructor(type, text, args, stackTraceLocations, frame, rawStackTrace, targetId) {
         this.#type = type;
         this.#text = text;
         this.#args = args;
         this.#stackTraceLocations = stackTraceLocations;
         this.#frame = frame;
         this.#rawStackTrace = rawStackTrace;
+        this.#targetId = targetId;
     }
     /**
      * The type of the console message.
@@ -66,6 +68,14 @@ class ConsoleMessage {
      */
     _rawStackTrace() {
         return this.#rawStackTrace;
+    }
+    /**
+     * The targetId from which this console message originated.
+     *
+     * @internal
+     */
+    _targetId() {
+        return this.#targetId;
     }
 }
 exports.ConsoleMessage = ConsoleMessage;

@@ -176,6 +176,14 @@ let Page = (() => {
          * @internal
          */
         _timeoutSettings = new TimeoutSettings();
+        /**
+         * Internal API to get an implementation-specific identifier
+         * for the tab. In Chrome, it is a tab target id. If unknown,
+         * returns an empty string.
+         *
+         * @internal
+         */
+        _tabId = '';
         #requestHandlers = new WeakMap();
         #inflight$ = new ReplaySubject(1);
         /**

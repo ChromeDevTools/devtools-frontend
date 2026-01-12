@@ -5,7 +5,6 @@ import { TimeoutSettings } from '../common/TimeoutSettings.js';
 import { debugError } from '../common/util.js';
 import { ExecutionContext } from './ExecutionContext.js';
 import { IsolatedWorld } from './IsolatedWorld.js';
-import { CdpJSHandle } from './JSHandle.js';
 /**
  * @internal
  */
@@ -25,9 +24,7 @@ export class CdpWebWorker extends WebWorker {
         });
         this.#world.emitter.on('consoleapicalled', async (event) => {
             try {
-                return consoleAPICalled(event.type, event.args.map((object) => {
-                    return new CdpJSHandle(this.#world, object);
-                }), event.stackTrace);
+                return consoleAPICalled(this.#world, event);
             }
             catch (err) {
                 debugError(err);

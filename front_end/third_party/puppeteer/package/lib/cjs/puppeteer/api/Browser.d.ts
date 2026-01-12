@@ -157,11 +157,18 @@ export type WindowId = string;
 /**
  * @public
  */
-export type CreatePageOptions = {
-    type: 'tab';
+export type CreatePageOptions = ({
+    type?: 'tab';
 } | {
     type: 'window';
     windowBounds?: WindowBounds;
+}) & {
+    /**
+     * Whether to create the page in the background.
+     *
+     * @defaultValue `false`
+     */
+    background?: boolean;
 };
 /**
  * @public

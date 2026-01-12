@@ -14,6 +14,7 @@ import { BrowsingContext } from './BrowsingContext.js';
  */
 export type CreateBrowsingContextOptions = Omit<Bidi.BrowsingContext.CreateParameters, 'type' | 'referenceContext'> & {
     referenceContext?: BrowsingContext;
+    background?: boolean;
 };
 /**
  * @internal

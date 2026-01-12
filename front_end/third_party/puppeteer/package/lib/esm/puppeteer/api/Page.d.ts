@@ -601,6 +601,14 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      */
     _timeoutSettings: TimeoutSettings;
     /**
+     * Internal API to get an implementation-specific identifier
+     * for the tab. In Chrome, it is a tab target id. If unknown,
+     * returns an empty string.
+     *
+     * @internal
+     */
+    _tabId: string;
+    /**
      * @internal
      */
     constructor();

@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import type { ChildProcess } from 'node:child_process';
+import type { CreatePageOptions } from '../api/Browser.js';
 import { Browser, type BrowserCloseCallback, type BrowserContextOptions, type ScreenInfo, type AddScreenParams, type WindowBounds, type WindowId, type DebugInfo } from '../api/Browser.js';
 import type { Page } from '../api/Page.js';
 import type { Target } from '../api/Target.js';
@@ -48,7 +49,7 @@ export declare class BidiBrowser extends Browser {
     version(): Promise<string>;
     browserContexts(): BidiBrowserContext[];
     defaultBrowserContext(): BidiBrowserContext;
-    newPage(): Promise<Page>;
+    newPage(options?: CreatePageOptions): Promise<Page>;
     installExtension(path: string): Promise<string>;
     uninstallExtension(id: string): Promise<void>;
     screens(): Promise<ScreenInfo[]>;

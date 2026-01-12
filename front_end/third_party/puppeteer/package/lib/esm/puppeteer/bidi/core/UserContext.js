@@ -132,6 +132,7 @@ let UserContext = (() => {
                 type,
                 ...options,
                 referenceContext: options.referenceContext?.id,
+                background: options.background,
                 userContext: this.#id,
             });
             const browsingContext = this.#browsingContexts.get(contextId);

@@ -180,6 +180,14 @@ let Page = (() => {
          * @internal
          */
         _timeoutSettings = new TimeoutSettings_js_1.TimeoutSettings();
+        /**
+         * Internal API to get an implementation-specific identifier
+         * for the tab. In Chrome, it is a tab target id. If unknown,
+         * returns an empty string.
+         *
+         * @internal
+         */
+        _tabId = '';
         #requestHandlers = new WeakMap();
         #inflight$ = new rxjs_js_1.ReplaySubject(1);
         /**

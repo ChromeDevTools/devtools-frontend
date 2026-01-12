@@ -249,8 +249,8 @@ let BidiBrowser = (() => {
         defaultBrowserContext() {
             return this.#browserContexts.get(this.#browserCore.defaultUserContext);
         }
-        newPage() {
-            return this.defaultBrowserContext().newPage();
+        newPage(options) {
+            return this.defaultBrowserContext().newPage(options);
         }
         installExtension(path) {
             return this.#browserCore.installExtension(path);

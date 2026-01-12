@@ -200,6 +200,7 @@ export class CdpBrowser extends BrowserBase {
             windowState: windowBounds?.windowState,
             // Works around crbug.com/454825274.
             newWindow: hasTargets && options?.type === 'window' ? true : undefined,
+            background: options?.background,
         });
         const target = (await this.waitForTarget(t => {
             return t._targetId === targetId;

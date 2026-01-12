@@ -8,7 +8,6 @@ const TimeoutSettings_js_1 = require("../common/TimeoutSettings.js");
 const util_js_1 = require("../common/util.js");
 const ExecutionContext_js_1 = require("./ExecutionContext.js");
 const IsolatedWorld_js_1 = require("./IsolatedWorld.js");
-const JSHandle_js_1 = require("./JSHandle.js");
 /**
  * @internal
  */
@@ -28,9 +27,7 @@ class CdpWebWorker extends WebWorker_js_1.WebWorker {
         });
         this.#world.emitter.on('consoleapicalled', async (event) => {
             try {
-                return consoleAPICalled(event.type, event.args.map((object) => {
-                    return new JSHandle_js_1.CdpJSHandle(this.#world, object);
-                }), event.stackTrace);
+                return consoleAPICalled(this.#world, event);
             }
             catch (err) {
                 (0, util_js_1.debugError)(err);

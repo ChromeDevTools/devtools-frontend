@@ -229,7 +229,9 @@ let BidiBrowserContext = (() => {
                 const type = options?.type === 'window'
                     ? "window" /* Bidi.BrowsingContext.CreateType.Window */
                     : "tab" /* Bidi.BrowsingContext.CreateType.Tab */;
-                const context = await this.userContext.createBrowsingContext(type);
+                const context = await this.userContext.createBrowsingContext(type, {
+                    background: options?.background,
+                });
                 const page = this.#pages.get(context);
                 if (!page) {
                     throw new Error('Page is not found');

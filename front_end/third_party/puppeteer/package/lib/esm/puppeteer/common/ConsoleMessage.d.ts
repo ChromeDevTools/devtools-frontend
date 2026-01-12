@@ -37,7 +37,7 @@ export declare class ConsoleMessage {
     /**
      * @internal
      */
-    constructor(type: ConsoleMessageType, text: string, args: JSHandle[], stackTraceLocations: ConsoleMessageLocation[], frame?: Frame, rawStackTrace?: Protocol.Runtime.StackTrace);
+    constructor(type: ConsoleMessageType, text: string, args: JSHandle[], stackTraceLocations: ConsoleMessageLocation[], frame?: Frame, rawStackTrace?: Protocol.Runtime.StackTrace, targetId?: string);
     /**
      * The type of the console message.
      */
@@ -64,5 +64,11 @@ export declare class ConsoleMessage {
      * @internal
      */
     _rawStackTrace(): Protocol.Runtime.StackTrace | undefined;
+    /**
+     * The targetId from which this console message originated.
+     *
+     * @internal
+     */
+    _targetId(): string | undefined;
 }
 //# sourceMappingURL=ConsoleMessage.d.ts.map

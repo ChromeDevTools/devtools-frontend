@@ -8,12 +8,12 @@ import { type CDPSession } from '../api/CDPSession.js';
 import type { Realm } from '../api/Realm.js';
 import { TargetType } from '../api/Target.js';
 import { WebWorker } from '../api/WebWorker.js';
-import { CdpJSHandle } from './JSHandle.js';
+import { IsolatedWorld } from './IsolatedWorld.js';
 import type { NetworkManager } from './NetworkManager.js';
 /**
  * @internal
  */
-export type ConsoleAPICalledCallback = (eventType: string, handles: CdpJSHandle[], trace?: Protocol.Runtime.StackTrace) => void;
+export type ConsoleAPICalledCallback = (world: IsolatedWorld, event: Protocol.Runtime.ConsoleAPICalledEvent) => void;
 /**
  * @internal
  */

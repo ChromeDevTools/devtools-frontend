@@ -6,9 +6,10 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
+import * as AiCodeGeneration from '../../models/ai_code_generation/ai_code_generation.js';
 import * as Snackbars from '../../ui/components/snackbars/snackbars.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {html, nothing, render} from '../../ui/lit/lit.js';
+import {html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import styles from './aiCodeCompletionTeaser.css.js';
@@ -61,17 +62,32 @@ const UIStringsNotTranslate = {
    */
   freDisclaimerTextAiWontAlwaysGetItRight: 'This feature uses AI and won’t always get it right',
   /**
-   * @description Second disclaimer item text for the fre dialog.
+   * @description Code completion disclaimer item text for the fre dialog.
+   */
+  freDisclaimerTextAsYouType:
+      'As you type, relevant data is being send to Google to generate code suggestions. Press Tab to accept.',
+  /**
+   * @description Code generation disclaimer item text for the fre dialog.
+   */
+  freDisclaimerDescribeCodeInComment:
+      'In Console or Sources, describe the code you need in a comment, then press Ctrl+I to generate it.',
+  /**
+   * @description Code generation disclaimer item text for the fre dialog.
+   */
+  freDisclaimerDescribeCodeInCommentForMacOs:
+      'In Console or Sources, describe the code you need in a comment, then press Cmd+I to generate it.',
+  /**
+   * @description Privacy disclaimer item text for the fre dialog.
    */
   freDisclaimerTextPrivacy:
       'To generate code suggestions, your console input, the history of your current console session, the currently inspected CSS, and the contents of the currently open file are shared with Google. This data may be seen by human reviewers to improve this feature.',
   /**
-   * @description Second disclaimer item text for the fre dialog when enterprise logging is off.
+   * @description Privacy disclaimer item text for the fre dialog when enterprise logging is off.
    */
   freDisclaimerTextPrivacyNoLogging:
       'To generate code suggestions, your console input, the history of your current console session, the currently inspected CSS, and the contents of the currently open file are shared with Google. This data will not be used to improve Google’s AI models. Your organization may change these settings at any time.',
   /**
-   * @description Third disclaimer item text for the fre dialog.
+   * @description Last disclaimer item text for the fre dialog.
    */
   freDisclaimerTextUseWithCaution: 'Use generated code snippets with caution',
   /**
@@ -192,15 +208,34 @@ export class AiCodeCompletionTeaser extends UI.Widget.Widget {
     }
   }
 
-  onAction = async(event: Event): Promise<void> => {
-    event.preventDefault();
-    const result = await FreDialog.show({
-      header: {iconName: 'smart-assistant', text: lockedString(UIStringsNotTranslate.freDisclaimerHeader)},
-      reminderItems: [
-        {
-          iconName: 'psychiatry',
-          content: lockedString(UIStringsNotTranslate.freDisclaimerTextAiWontAlwaysGetItRight),
-        },
+  #createReminderItems(): Array<{
+    iconName: string,
+    content: Common.UIString.LocalizedString|LitTemplate,
+  }> {
+    const reminderItems: Array<{
+      iconName: string,
+      content: Common.UIString.LocalizedString | LitTemplate,
+    }> = [{
+      iconName: 'psychiatry',
+      content: lockedString(UIStringsNotTranslate.freDisclaimerTextAiWontAlwaysGetItRight),
+    }];
+
+    const devtoolsLocale = i18n.DevToolsLocale.DevToolsLocale.instance();
+    if (AiCodeGeneration.AiCodeGeneration.AiCodeGeneration.isAiCodeGenerationEnabled(devtoolsLocale.locale)) {
+      reminderItems.push(
+          {
+            iconName: 'code',
+            content: lockedString(UIStringsNotTranslate.freDisclaimerTextAsYouType),
+          },
+          {
+            iconName: 'text-analysis',
+            content: Host.Platform.isMac() ?
+                lockedString(UIStringsNotTranslate.freDisclaimerDescribeCodeInCommentForMacOs) :
+                lockedString(UIStringsNotTranslate.freDisclaimerDescribeCodeInComment),
+          });
+    }
+
+    reminderItems.push(
         {
           iconName: 'google',
           content: this.#noLogging ? lockedString(UIStringsNotTranslate.freDisclaimerTextPrivacyNoLogging) :
@@ -217,8 +252,16 @@ export class AiCodeCompletionTeaser extends UI.Widget.Widget {
             })}
           >${lockedString(UIStringsNotTranslate.freDisclaimerTextUseWithCaution)}</x-link>`,
           // clang-format on
-        }
-      ],
+        });
+    return reminderItems;
+  }
+
+  onAction = async(event: Event): Promise<void> => {
+    event.preventDefault();
+
+    const result = await FreDialog.show({
+      header: {iconName: 'smart-assistant', text: lockedString(UIStringsNotTranslate.freDisclaimerHeader)},
+      reminderItems: this.#createReminderItems(),
       onLearnMoreClick: () => {
         void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
       },

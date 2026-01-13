@@ -422,7 +422,8 @@ export class MenuItem extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
   connectedCallback(): void {
     this.tabIndex = 0;
-    this.setAttribute('role', 'menuitem');
+    this.setAttribute('role', 'option');
+    this.setAttribute('aria-selected', String(this.#props.selected));
   }
   #props: MenuItemData = {
     value: '',
@@ -455,6 +456,7 @@ export class MenuItem extends HTMLElement {
 
   set selected(selected: boolean) {
     this.#props.selected = selected;
+    this.setAttribute('aria-selected', String(selected));
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 

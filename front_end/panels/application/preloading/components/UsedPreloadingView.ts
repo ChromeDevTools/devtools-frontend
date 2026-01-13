@@ -16,7 +16,7 @@ import * as Protocol from '../../../../generated/protocol.js';
 import * as LegacyWrapper from '../../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as RenderCoordinator from '../../../../ui/components/render_coordinator/render_coordinator.js';
 import * as UI from '../../../../ui/legacy/legacy.js';
-import * as Lit from '../../../../ui/lit/lit.js';
+import {html, type LitTemplate, nothing, render} from '../../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js';
 import * as PreloadingHelper from '../helper/helper.js';
 
@@ -24,8 +24,6 @@ import * as MismatchedPreloadingGrid from './MismatchedPreloadingGrid.js';
 import preloadingGridStyles from './preloadingGrid.css.js';
 import {prefetchFailureReason, prerenderFailureReason} from './PreloadingString.js';
 import usedPreloadingStyles from './usedPreloadingView.css.js';
-
-const {html} = Lit;
 
 const UIStrings = {
   /**
@@ -154,6 +152,55 @@ export const enum UsedKind {
   NO_PRELOADS = 'NoPreloads',
 }
 
+type Badge = {
+  type: 'success',
+  count?: number,
+}|{
+  type: 'failure',
+  count?: number,
+}|{
+  type: 'neutral',
+  message: string,
+};
+
+function renderBadge(config: Badge): LitTemplate {
+  const badge = (klass: string, iconName: string, message: string): LitTemplate => {
+    // Disabled until https://crbug.com/1079231 is fixed.
+    // clang-format off
+    return html`
+      <span class=${klass}>
+        <devtools-icon name=${iconName}></devtools-icon>
+        <span>
+          ${message}
+        </span>
+      </span>
+    `;
+    // clang-format on
+  };
+  switch (config.type) {
+    case 'success': {
+      let message;
+      if (config.count === undefined) {
+        message = i18nString(UIStrings.badgeSuccess);
+      } else {
+        message = i18nString(UIStrings.badgeSuccessWithCount, {n: config.count});
+      }
+      return badge('status-badge status-badge-success', 'check-circle', message);
+    }
+    case 'failure': {
+      let message;
+      if (config.count === undefined) {
+        message = i18nString(UIStrings.badgeFailure);
+      } else {
+        message = i18nString(UIStrings.badgeFailureWithCount, {n: config.count});
+      }
+      return badge('status-badge status-badge-failure', 'cross-circle', message);
+    }
+    case 'neutral':
+      return badge('status-badge status-badge-neutral', 'clear', config.message);
+  }
+}
+
 /**
  * TODO(kenoss): Rename this class and file once https://crrev.com/c/4933567 landed.
  * This also shows summary of speculations initiated by this page.
@@ -173,11 +220,11 @@ export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableCom
 
   async #render(): Promise<void> {
     await RenderCoordinator.write('UsedPreloadingView render', () => {
-      Lit.render(this.#renderTemplate(), this.#shadow, {host: this});
+      render(this.#renderTemplate(), this.#shadow, {host: this});
     });
   }
 
-  #renderTemplate(): Lit.LitTemplate {
+  #renderTemplate(): LitTemplate {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     return html`
@@ -216,7 +263,7 @@ export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableCom
     return this.#isPrerenderLike(attempt.action);
   }
 
-  #speculativeLoadingStatusForThisPageSections(): Lit.LitTemplate {
+  #speculativeLoadingStatusForThisPageSections(): LitTemplate {
     const pageURL = Common.ParsedURL.ParsedURL.urlWithoutHash(this.#data.pageURL);
     const forThisPage = this.#data.previousAttempts.filter(
         attempt => Common.ParsedURL.ParsedURL.urlWithoutHash(attempt.key.url) === pageURL);
@@ -244,31 +291,31 @@ export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableCom
       kind = UsedKind.NO_PRELOADS;
     }
 
-    let badge;
-    let basicMessage;
+    let badge: Badge;
+    let basicMessage: LitTemplate;
     switch (kind) {
       case UsedKind.DOWNGRADED_PRERENDER_TO_PREFETCH_AND_USED:
-        badge = this.#badgeSuccess();
+        badge = {type: 'success'};
         basicMessage = html`${i18nString(UIStrings.downgradedPrefetchUsed)}`;
         break;
       case UsedKind.PREFETCH_USED:
-        badge = this.#badgeSuccess();
+        badge = {type: 'success'};
         basicMessage = html`${i18nString(UIStrings.prefetchUsed)}`;
         break;
       case UsedKind.PRERENDER_USED:
-        badge = this.#badgeSuccess();
+        badge = {type: 'success'};
         basicMessage = html`${i18nString(UIStrings.prerenderUsed)}`;
         break;
       case UsedKind.PREFETCH_FAILED:
-        badge = this.#badgeFailure();
+        badge = {type: 'failure'};
         basicMessage = html`${i18nString(UIStrings.prefetchFailed)}`;
         break;
       case UsedKind.PRERENDER_FAILED:
-        badge = this.#badgeFailure();
+        badge = {type: 'failure'};
         basicMessage = html`${i18nString(UIStrings.prerenderFailed)}`;
         break;
       case UsedKind.NO_PRELOADS:
-        badge = this.#badgeNeutral(i18nString(UIStrings.badgeNoSpeculativeLoads));
+        badge = {type: 'neutral', message: i18nString(UIStrings.badgeNoSpeculativeLoads)};
         basicMessage = html`${i18nString(UIStrings.noPreloads)}`;
         break;
     }
@@ -283,7 +330,7 @@ export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableCom
           prerenderLike as SDK.PreloadingModel.PrerenderAttempt | SDK.PreloadingModel.PrerenderUntilScriptAttempt);
     }
 
-    let maybeFailureReason: Lit.LitTemplate = Lit.nothing;
+    let maybeFailureReason: LitTemplate = nothing;
     if (maybeFailureReasonMessage !== undefined) {
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
@@ -303,7 +350,7 @@ export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableCom
       <devtools-report-section>
         <div>
           <div class="status-badge-container">
-            ${badge}
+            ${renderBadge(badge)}
           </div>
           <div>
             ${basicMessage}
@@ -319,9 +366,9 @@ export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableCom
     // clang-format on
   }
 
-  #maybeMismatchedSections(kind: UsedKind): Lit.LitTemplate {
+  #maybeMismatchedSections(kind: UsedKind): LitTemplate {
     if (kind !== UsedKind.NO_PRELOADS || this.#data.previousAttempts.length === 0) {
-      return Lit.nothing;
+      return nothing;
     }
 
     const rows = this.#data.previousAttempts.map(attempt => {
@@ -361,13 +408,13 @@ export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableCom
     // clang-format on
   }
 
-  #maybeMismatchedHTTPHeadersSections(): Lit.LitTemplate {
+  #maybeMismatchedHTTPHeadersSections(): LitTemplate {
     const attempt = this.#data.previousAttempts.find(
                         attempt => this.#isPrerenderAttempt(attempt) && attempt.mismatchedHeaders !== null) as
             SDK.PreloadingModel.PrerenderAttempt |
         SDK.PreloadingModel.PrerenderUntilScriptAttempt | undefined;
     if (!attempt?.mismatchedHeaders) {
-      return Lit.nothing;
+      return nothing;
     }
 
     if (attempt.key.url !== this.#data.pageURL) {
@@ -412,7 +459,7 @@ export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableCom
     // clang-format on
   }
 
-  #speculationsInitiatedByThisPageSummarySections(): Lit.LitTemplate {
+  #speculationsInitiatedByThisPageSummarySections(): LitTemplate {
     const count = this.#data.currentAttempts.reduce((acc, attempt) => {
       acc.set(attempt.status, (acc.get(attempt.status) ?? 0) + 1);
       return acc;
@@ -422,21 +469,22 @@ export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableCom
     const failureCount = count.get(SDK.PreloadingModel.PreloadingStatus.FAILURE) ?? 0;
     const inProgressCount = (count.get(SDK.PreloadingModel.PreloadingStatus.PENDING) ?? 0) +
         (count.get(SDK.PreloadingModel.PreloadingStatus.RUNNING) ?? 0);
-    const badges = [];
+
+    const badges: Badge[] = [];
     if (this.#data.currentAttempts.length === 0) {
-      badges.push(this.#badgeNeutral(i18nString(UIStrings.badgeNoSpeculativeLoads)));
+      badges.push({type: 'neutral', message: i18nString(UIStrings.badgeNoSpeculativeLoads)});
     }
     if (notTriggeredCount > 0) {
-      badges.push(this.#badgeNeutral(i18nString(UIStrings.badgeNotTriggeredWithCount, {n: notTriggeredCount})));
+      badges.push({type: 'neutral', message: i18nString(UIStrings.badgeNotTriggeredWithCount, {n: notTriggeredCount})});
     }
     if (inProgressCount > 0) {
-      badges.push(this.#badgeNeutral(i18nString(UIStrings.badgeInProgressWithCount, {n: inProgressCount})));
+      badges.push({type: 'neutral', message: i18nString(UIStrings.badgeInProgressWithCount, {n: inProgressCount})});
     }
     if (readyCount > 0) {
-      badges.push(this.#badgeSuccess(readyCount));
+      badges.push({type: 'success', count: readyCount});
     }
     if (failureCount > 0) {
-      badges.push(this.#badgeFailure(failureCount));
+      badges.push({type: 'failure', count: failureCount});
     }
 
     const revealRuleSetView = (): void => {
@@ -453,7 +501,7 @@ export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableCom
       <devtools-report-section>
         <div>
           <div class="status-badge-container">
-            ${badges}
+            ${badges.map(renderBadge)}
           </div>
 
           <div class="reveal-links">
@@ -469,44 +517,6 @@ export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableCom
           </div>
         </div>
       </devtools-report-section>
-    `;
-    // clang-format on
-  }
-
-  #badgeSuccess(count?: number): Lit.LitTemplate {
-    let message;
-    if (count === undefined) {
-      message = i18nString(UIStrings.badgeSuccess);
-    } else {
-      message = i18nString(UIStrings.badgeSuccessWithCount, {n: count});
-    }
-    return this.#badge('status-badge status-badge-success', 'check-circle', message);
-  }
-
-  #badgeFailure(count?: number): Lit.LitTemplate {
-    let message;
-    if (count === undefined) {
-      message = i18nString(UIStrings.badgeFailure);
-    } else {
-      message = i18nString(UIStrings.badgeFailureWithCount, {n: count});
-    }
-    return this.#badge('status-badge status-badge-failure', 'cross-circle', message);
-  }
-
-  #badgeNeutral(message: string): Lit.LitTemplate {
-    return this.#badge('status-badge status-badge-neutral', 'clear', message);
-  }
-
-  #badge(klass: string, iconName: string, message: string): Lit.LitTemplate {
-    // Disabled until https://crbug.com/1079231 is fixed.
-    // clang-format off
-    return html`
-      <span class=${klass}>
-        <devtools-icon name=${iconName}></devtools-icon>
-        <span>
-          ${message}
-        </span>
-      </span>
     `;
     // clang-format on
   }

@@ -5529,13 +5529,13 @@ table.network-timing-table > tr:not(.network-timing-table-header, .network-timin
   left: -12px;
 }
 
-tr:has([aria-checked="false"].network-fetch-timing-bar-clickable) ~ .router-evaluation-timing-bar-details,
-tr:has([aria-checked="false"].network-fetch-timing-bar-clickable) ~ .network-fetch-timing-bar-details {
+tr:has([aria-expanded="false"].network-fetch-timing-bar-clickable) ~ .router-evaluation-timing-bar-details,
+tr:has([aria-expanded="false"].network-fetch-timing-bar-clickable) ~ .network-fetch-timing-bar-details {
   display: none;
 }
 
-tr:has([aria-checked].network-fetch-timing-bar-clickable) ~ .router-evaluation-timing-bar-details,
-tr:has([aria-checked].network-fetch-timing-bar-clickable) ~ .network-fetch-timing-bar-details {
+tr:has([aria-expanded="true"].network-fetch-timing-bar-clickable) ~ .router-evaluation-timing-bar-details,
+tr:has([aria-expanded="true"].network-fetch-timing-bar-clickable) ~ .network-fetch-timing-bar-details {
   display: block;
 }
 
@@ -5543,7 +5543,7 @@ tr:has([aria-checked].network-fetch-timing-bar-clickable) ~ .network-fetch-timin
   background-color: var(--sys-color-state-focus-highlight);
 }
 
-.network-fetch-timing-bar-clickable[aria-checked="true"]::before {
+.network-fetch-timing-bar-clickable[aria-expanded="true"]::before {
   transform: rotate(90deg);
 }
 
@@ -5979,9 +5979,9 @@ var DEFAULT_VIEW6 = (input, output, target) => {
     if (!target2?.classList.contains("network-fetch-timing-bar-clickable")) {
       return;
     }
-    const isChecked = target2.ariaChecked === "false";
-    target2.ariaChecked = isChecked ? "true" : "false";
-    if (!isChecked) {
+    const isExpanded = target2.ariaExpanded === "true";
+    target2.ariaExpanded = isExpanded ? "false" : "true";
+    if (!isExpanded) {
       Host7.userMetrics.actionTaken(Host7.UserMetrics.Action.NetworkPanelServiceWorkerRespondWith);
     }
   };
@@ -6053,8 +6053,8 @@ var DEFAULT_VIEW6 = (input, output, target) => {
             <tr>
               ${isClickable(range) ? html6`<td
                   tabindex=0
-                  role=switch
-                  aria-checked=false
+                  role=button
+                  aria-expanded=false
                   @click=${onActivate}
                   @keydown=${onActivate}
                   class=network-fetch-timing-bar-clickable>
@@ -6175,18 +6175,6 @@ var RequestTimingView = class _RequestTimingView extends UI13.Widget.VBox {
       timeRanges
     };
     this.#view(input, {}, this.contentElement);
-  }
-  onToggleFetchDetails(fetchDetailsElement, event) {
-    if (!event.target) {
-      return;
-    }
-    const target = event.target;
-    if (target.classList.contains("network-fetch-timing-bar-clickable")) {
-      const expanded = target.getAttribute("aria-checked") === "true";
-      target.setAttribute("aria-checked", String(!expanded));
-      fetchDetailsElement.classList.toggle("network-fetch-timing-bar-details-collapsed");
-      fetchDetailsElement.classList.toggle("network-fetch-timing-bar-details-expanded");
-    }
   }
   #fetchDetailsTree() {
     if (!this.#request?.fetchedViaServiceWorker) {

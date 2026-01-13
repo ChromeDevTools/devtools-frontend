@@ -61,10 +61,15 @@ function decode(input) {
 function encode(input) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
-    reader.onerror = () => reject(new Error("failed to convert to base64"));
+    reader.onerror = () => reject(new Error("failed to convert to base64: internal error"));
     reader.onload = () => {
+      if (reader.result === "") {
+        reject(new Error("failed to convert to base64: input too large to encode as base64 string"));
+        return;
+      }
       const blobAsUrl = reader.result;
-      const [, base64] = blobAsUrl.split(",", 2);
+      const index = blobAsUrl.indexOf(",");
+      const base64 = blobAsUrl.slice(index + 1);
       resolve(base64);
     };
     reader.readAsDataURL(new Blob([input]));
@@ -4816,6 +4821,12 @@ var ResourceType = class {
   static simplifyContentType(contentType) {
     const regex = new RegExp("^application(.*json$|/json+.*)");
     return regex.test(contentType) ? "application/json" : contentType;
+  }
+  /**
+   * Checks whether the given MIME type represents JavaScript content.
+   */
+  static isJavaScriptMimeType(mimeType) {
+    return mimeType === "application/javascript" || mimeType === "text/javascript";
   }
   /**
    * Adds suffixes iff the mimeType is 'text/javascript' to denote whether the JS is minified or from

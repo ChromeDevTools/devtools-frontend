@@ -1186,7 +1186,6 @@ var MainMenuItem = class _MainMenuItem {
       const persistence = viewExtension.persistence();
       const title = viewExtension.title();
       const id = viewExtension.viewId();
-      const promotionId = viewExtension.featurePromotionId();
       if (id === "issues-pane") {
         moreTools.defaultSection().appendItem(title, () => {
           Host.userMetrics.issuesPanelOpenedFrom(
@@ -1207,13 +1206,9 @@ var MainMenuItem = class _MainMenuItem {
       if (location !== "drawer-view" && location !== "panel") {
         continue;
       }
-      let additionalElement = void 0;
-      if (promotionId) {
-        additionalElement = UI2.UIUtils.maybeCreateNewBadge(promotionId);
-      }
       moreTools.defaultSection().appendItem(title, () => {
         void UI2.ViewManager.ViewManager.instance().showView(id, true, false);
-      }, { additionalElement, isPreviewFeature: viewExtension.isPreviewFeature(), jslogContext: id });
+      }, { isPreviewFeature: viewExtension.isPreviewFeature(), jslogContext: id });
     }
     const helpSubMenu = contextMenu.footerSection().appendSubMenuItem(i18nString2(UIStrings2.help), false, "help");
     helpSubMenu.appendItemsAtLocation("mainMenuHelp");

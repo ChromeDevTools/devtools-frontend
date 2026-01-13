@@ -567,6 +567,7 @@ var generatedProperties = [
       "grid-column-end",
       "grid-column-start",
       "grid-lanes-direction",
+      "grid-lanes-pack",
       "grid-row-end",
       "grid-row-start",
       "grid-template-areas",
@@ -665,12 +666,10 @@ var generatedProperties = [
       "overflow-y",
       "overlay",
       "override-colors",
-      "overscroll-area",
       "overscroll-behavior-block",
       "overscroll-behavior-inline",
       "overscroll-behavior-x",
       "overscroll-behavior-y",
-      "overscroll-position",
       "pad",
       "padding-block-end",
       "padding-block-start",
@@ -2744,11 +2743,18 @@ var generatedProperties = [
     "keywords": [
       "normal",
       "row",
-      "row-reverse",
       "column",
-      "column-reverse"
+      "fill-reverse",
+      "track-reverse"
     ],
     "name": "grid-lanes-direction"
+  },
+  {
+    "keywords": [
+      "normal",
+      "dense"
+    ],
+    "name": "grid-lanes-pack"
   },
   {
     "longhands": [
@@ -3477,12 +3483,6 @@ var generatedProperties = [
     "name": "override-colors"
   },
   {
-    "keywords": [
-      "none"
-    ],
-    "name": "overscroll-area"
-  },
-  {
     "longhands": [
       "overscroll-behavior-x",
       "overscroll-behavior-y"
@@ -3510,12 +3510,6 @@ var generatedProperties = [
       "none"
     ],
     "name": "overscroll-behavior-y"
-  },
-  {
-    "keywords": [
-      "none"
-    ],
-    "name": "overscroll-position"
   },
   {
     "name": "pad"
@@ -6129,9 +6123,15 @@ var generatedPropertyValues = {
     "values": [
       "normal",
       "row",
-      "row-reverse",
       "column",
-      "column-reverse"
+      "fill-reverse",
+      "track-reverse"
+    ]
+  },
+  "grid-lanes-pack": {
+    "values": [
+      "normal",
+      "dense"
     ]
   },
   "grid-row-end": {
@@ -6525,11 +6525,6 @@ var generatedPropertyValues = {
       "auto"
     ]
   },
-  "overscroll-area": {
-    "values": [
-      "none"
-    ]
-  },
   "overscroll-behavior-x": {
     "values": [
       "auto",
@@ -6541,11 +6536,6 @@ var generatedPropertyValues = {
     "values": [
       "auto",
       "contain",
-      "none"
-    ]
-  },
-  "overscroll-position": {
-    "values": [
       "none"
     ]
   },
@@ -11761,9 +11751,9 @@ var RequestConditions = class extends Common5.ObjectWrapper.ObjectWrapper {
             matchedNetworkConditions.push({ ruleIds, urlPattern, conditions });
           }
         }
-        if (globalConditions) {
-          matchedNetworkConditions.push({ conditions: globalConditions });
-        }
+      }
+      if (globalConditions) {
+        matchedNetworkConditions.push({ conditions: globalConditions });
       }
       const promises = [];
       for (const agent of agents) {

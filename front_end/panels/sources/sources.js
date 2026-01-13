@@ -6944,7 +6944,10 @@ var UISourceCodeFrame = class _UISourceCodeFrame extends Common9.ObjectWrapper.e
     Persistence7.Persistence.PersistenceImpl.instance().subscribeForBindingEvent(this.#uiSourceCode, this.#boundOnBindingChanged);
     this.installMessageAndDecorationListeners();
     this.updateStyle();
-    const canPrettyPrint = FORMATTABLE_MEDIA_TYPES.includes(this.contentType) && !this.#uiSourceCode.project().canSetFileContent() && Persistence7.Persistence.PersistenceImpl.instance().binding(this.#uiSourceCode) === null;
+    const isFormattable = FORMATTABLE_MEDIA_TYPES.includes(this.contentType);
+    const isEditable = Persistence7.Persistence.PersistenceImpl.instance().hasEditableContent(this.#uiSourceCode);
+    const isJavaScript = Common9.ResourceType.ResourceType.isJavaScriptMimeType(this.contentType);
+    const canPrettyPrint = isFormattable && (!isEditable || !isJavaScript);
     const autoPrettyPrint = !this.#uiSourceCode.contentType().isFromSourceMap();
     this.setCanPrettyPrint(canPrettyPrint, autoPrettyPrint);
   }
@@ -12808,13 +12811,11 @@ var InplaceFormatterEditorAction = class _InplaceFormatterEditorAction {
     if (!uiSourceCode) {
       return false;
     }
-    if (uiSourceCode.project().canSetFileContent()) {
-      return true;
+    if (!Persistence14.Persistence.PersistenceImpl.instance().hasEditableContent(uiSourceCode)) {
+      return false;
     }
-    if (Persistence14.Persistence.PersistenceImpl.instance().binding(uiSourceCode) !== null) {
-      return true;
-    }
-    return false;
+    const mimeType = Common14.ResourceType.ResourceType.simplifyContentType(uiSourceCode.mimeType());
+    return Common14.ResourceType.ResourceType.isJavaScriptMimeType(mimeType);
   }
   formatSourceInPlace() {
     const sourceFrame = this.sourcesView.currentSourceFrame();

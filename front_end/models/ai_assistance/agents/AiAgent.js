@@ -311,7 +311,8 @@ export class AiAgent {
                     };
                     request = this.buildRequest(query, Host.AidaClient.Role.ROLE_UNSPECIFIED);
                 }
-                catch {
+                catch (err) {
+                    debugLog('Error handling function call', err);
                     yield this.#createErrorResponse("unknown" /* ErrorType.UNKNOWN */);
                     break;
                 }

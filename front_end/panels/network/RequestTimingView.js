@@ -340,9 +340,9 @@ export const DEFAULT_VIEW = (input, output, target) => {
         if (!target?.classList.contains('network-fetch-timing-bar-clickable')) {
             return;
         }
-        const isChecked = target.ariaChecked === 'false';
-        target.ariaChecked = isChecked ? 'true' : 'false';
-        if (!isChecked) {
+        const isExpanded = target.ariaExpanded === 'true';
+        target.ariaExpanded = isExpanded ? 'false' : 'true';
+        if (!isExpanded) {
             Host.userMetrics.actionTaken(Host.UserMetrics.Action.NetworkPanelServiceWorkerRespondWith);
         }
     };
@@ -417,8 +417,8 @@ export const DEFAULT_VIEW = (input, output, target) => {
             <tr>
               ${isClickable(range) ? html `<td
                   tabindex=0
-                  role=switch
-                  aria-checked=false
+                  role=button
+                  aria-expanded=false
                   @click=${onActivate}
                   @keydown=${onActivate}
                   class=network-fetch-timing-bar-clickable>
@@ -538,18 +538,6 @@ export class RequestTimingView extends UI.Widget.VBox {
             timeRanges,
         };
         this.#view(input, {}, this.contentElement);
-    }
-    onToggleFetchDetails(fetchDetailsElement, event) {
-        if (!event.target) {
-            return;
-        }
-        const target = event.target;
-        if (target.classList.contains('network-fetch-timing-bar-clickable')) {
-            const expanded = target.getAttribute('aria-checked') === 'true';
-            target.setAttribute('aria-checked', String(!expanded));
-            fetchDetailsElement.classList.toggle('network-fetch-timing-bar-details-collapsed');
-            fetchDetailsElement.classList.toggle('network-fetch-timing-bar-details-expanded');
-        }
     }
     #fetchDetailsTree() {
         if (!this.#request?.fetchedViaServiceWorker) {

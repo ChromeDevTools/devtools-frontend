@@ -27,6 +27,11 @@ export declare class PersistenceImpl extends Common.ObjectWrapper.ObjectWrapper<
     private moveBreakpoints;
     hasUnsavedCommittedChanges(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean;
     binding(uiSourceCode: Workspace.UISourceCode.UISourceCode): PersistenceBinding | null;
+    /**
+     * Returns whether the UISourceCode has editable content - either its project
+     * supports file content changes, or it has a persistence binding to a file system.
+     */
+    hasEditableContent(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean;
     subscribeForBindingEvent(uiSourceCode: Workspace.UISourceCode.UISourceCode, listener: () => void): void;
     unsubscribeFromBindingEvent(uiSourceCode: Workspace.UISourceCode.UISourceCode, listener: () => void): void;
     private notifyBindingEvent;

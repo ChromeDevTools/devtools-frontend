@@ -174,7 +174,7 @@ var NativeFunctions = [
   {
     name: "set",
     signatures: [["key", "value"]],
-    receivers: ["Map", "WeakMap", "CrashReportStorage"]
+    receivers: ["Map", "WeakMap", "CrashReportContext"]
   },
   {
     name: "set",
@@ -1497,7 +1497,7 @@ var NativeFunctions = [
   {
     name: "item",
     signatures: [["index"]],
-    receivers: ["CSSRuleList", "CSSStyleDeclaration", "DOMRectList", "DOMStringList", "DOMTokenList", "FileList", "HTMLCollectionBase", "HTMLCollectionOf", "HTMLSelectElement", "MediaList", "MimeTypeArray", "NamedNodeMap", "NodeList", "NodeListOf", "Plugin", "PluginArray", "SpeechRecognitionResult", "SpeechRecognitionResultList", "StyleSheetList", "TouchList", "HTMLCollection", "SpeechGrammarList"]
+    receivers: ["CSSRuleList", "CSSStyleDeclaration", "DOMRectList", "DOMStringList", "DOMTokenList", "FileList", "HTMLCollectionBase", "HTMLCollectionOf", "HTMLSelectElement", "MediaList", "MimeTypeArray", "NamedNodeMap", "NodeList", "NodeListOf", "Plugin", "PluginArray", "SpeechRecognitionResult", "SpeechRecognitionResultList", "StyleSheetList", "TouchList", "TimelineTriggerRangeList", "HTMLCollection", "SpeechGrammarList"]
   },
   {
     name: "item",
@@ -1579,7 +1579,7 @@ var NativeFunctions = [
   {
     name: "delete",
     signatures: [["key"]],
-    receivers: ["Map", "WeakMap"]
+    receivers: ["Map", "WeakMap", "CrashReportContext"]
   },
   {
     name: "delete",
@@ -2001,11 +2001,6 @@ var NativeFunctions = [
     name: "remove",
     signatures: [["start", "end"]],
     receivers: ["SourceBuffer"]
-  },
-  {
-    name: "remove",
-    signatures: [["key"]],
-    receivers: ["CrashReportStorage"]
   },
   {
     name: "remove",
@@ -3867,7 +3862,7 @@ var NativeFunctions = [
   {
     name: "initialize",
     signatures: [["length"]],
-    receivers: ["CrashReportStorage"]
+    receivers: ["CrashReportContext"]
   },
   {
     name: "initialize",

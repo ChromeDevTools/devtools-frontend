@@ -1636,7 +1636,7 @@ var DuplicatedJavaScript = class extends BaseInsightComponent {
         jslog=${VisualLogging2.action(`timeline.treemap.${this.internalName}-insight`).track({
         click: true
       })}
-        @click=${this.#openTreemap}
+        @click=${this.#openTreemap.bind(this)}
       >View Treemap</devtools-button>`;
     }
     return html11`

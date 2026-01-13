@@ -1540,6 +1540,13 @@ var PersistenceImpl = class _PersistenceImpl extends Common5.ObjectWrapper.Objec
   binding(uiSourceCode) {
     return bindings.get(uiSourceCode) || null;
   }
+  /**
+   * Returns whether the UISourceCode has editable content - either its project
+   * supports file content changes, or it has a persistence binding to a file system.
+   */
+  hasEditableContent(uiSourceCode) {
+    return uiSourceCode.project().canSetFileContent() || this.binding(uiSourceCode) !== null;
+  }
   subscribeForBindingEvent(uiSourceCode, listener) {
     this.#subscribedBindingEventListeners.set(uiSourceCode, listener);
   }

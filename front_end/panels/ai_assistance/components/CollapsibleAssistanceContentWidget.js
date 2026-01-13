@@ -10,8 +10,10 @@ export class CollapsibleAssistanceContentWidget extends HTMLElement {
     #shadow = this.attachShadow({ mode: 'open' });
     #isCollapsed = false;
     #headerText = 'Details';
+    #onReveal;
     set data(data) {
         this.#headerText = data.headerText;
+        this.#onReveal = data.onReveal;
         this.#render();
     }
     connectedCallback() {
@@ -31,14 +33,30 @@ export class CollapsibleAssistanceContentWidget extends HTMLElement {
             this.#toggleCollapse();
         }}>
           ${this.#headerText}
-          <devtools-button .data=${{
+          <div>
+            <devtools-button .data=${{
+            variant: "icon" /* Buttons.Button.Variant.ICON */,
+            iconName: 'select-element',
+            color: 'var(--sys-color-on-surface)',
+            width: '14px',
+            height: '14px',
+            title: 'reveal',
+        }}
+              @click=${(event) => {
+            event.stopPropagation();
+            this.#onReveal?.();
+        }}
+            ></devtools-button>
+            <devtools-button .data=${{
             variant: "icon" /* Buttons.Button.Variant.ICON */,
             iconName: this.#isCollapsed ? 'triangle-right' : 'triangle-down',
             color: 'var(--sys-color-on-surface)',
             width: '14px',
             height: '14px',
+            title: 'expand',
         }}
-          ></devtools-button>
+            ></devtools-button>
+          </div>
         </summary>
         <div class="content">
           <slot></slot>

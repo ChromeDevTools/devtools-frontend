@@ -120,7 +120,6 @@ UI.ActionRegistration.registerActionExtension({
   category: "GLOBAL",
   title: i18nLazyString(UIStrings.debugWithAi),
   configurableBindings: false,
-  featurePromotionId: "ai-assistance",
   async loadActionDelegate() {
     const AiAssistance = await loadAiAssistanceModule();
     return new AiAssistance.ActionDelegate();

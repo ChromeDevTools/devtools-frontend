@@ -479,6 +479,9 @@ export const generatedPropertyValues: {
     "grid-lanes-direction": {
         values: string[];
     };
+    "grid-lanes-pack": {
+        values: string[];
+    };
     "grid-row-end": {
         values: string[];
     };
@@ -662,16 +665,10 @@ export const generatedPropertyValues: {
     overlay: {
         values: string[];
     };
-    "overscroll-area": {
-        values: string[];
-    };
     "overscroll-behavior-x": {
         values: string[];
     };
     "overscroll-behavior-y": {
-        values: string[];
-    };
-    "overscroll-position": {
         values: string[];
     };
     page: {

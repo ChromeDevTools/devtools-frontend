@@ -78,7 +78,7 @@ export class DuplicatedJavaScript extends BaseInsightComponent {
         jslog=${VisualLogging.action(`timeline.treemap.${this.internalName}-insight`).track({
                 click: true
             })}
-        @click=${this.#openTreemap}
+        @click=${this.#openTreemap.bind(this)}
       >View Treemap</devtools-button>`;
         }
         // clang-format off

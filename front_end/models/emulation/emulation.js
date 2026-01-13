@@ -1850,7 +1850,7 @@ var DeviceModeModel = class _DeviceModeModel extends Common2.ObjectWrapper.Objec
     this.#preferredSize = new Geometry.Size(1, 1);
     this.#initialized = false;
     this.#appliedDeviceSize = new Geometry.Size(1, 1);
-    this.#appliedDeviceScaleFactor = window.devicePixelRatio;
+    this.#appliedDeviceScaleFactor = globalThis.devicePixelRatio;
     this.#appliedUserAgentType = "Desktop";
     this.#scaleSetting = Common2.Settings.Settings.instance().createSetting("emulation.device-scale", 1);
     if (!this.#scaleSetting.get()) {

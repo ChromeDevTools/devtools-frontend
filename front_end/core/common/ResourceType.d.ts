@@ -10,6 +10,10 @@ export declare class ResourceType {
     static mimeFromExtension(ext: string): string | undefined;
     static simplifyContentType(contentType: string): string;
     /**
+     * Checks whether the given MIME type represents JavaScript content.
+     */
+    static isJavaScriptMimeType(mimeType: string): boolean;
+    /**
      * Adds suffixes iff the mimeType is 'text/javascript' to denote whether the JS is minified or from
      * a source map.
      */

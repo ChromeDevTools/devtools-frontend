@@ -107,7 +107,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
         this.#preferredSize = new Geometry.Size(1, 1);
         this.#initialized = false;
         this.#appliedDeviceSize = new Geometry.Size(1, 1);
-        this.#appliedDeviceScaleFactor = window.devicePixelRatio;
+        this.#appliedDeviceScaleFactor = globalThis.devicePixelRatio;
         this.#appliedUserAgentType = "Desktop" /* UA.DESKTOP */;
         this.#scaleSetting = Common.Settings.Settings.instance().createSetting('emulation.device-scale', 1);
         // We've used to allow zero before.

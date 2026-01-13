@@ -22,7 +22,6 @@ export declare class RequestTimingView extends UI.Widget.VBox {
     constructor(target?: HTMLElement, view?: View);
     static create(request: SDK.NetworkRequest.NetworkRequest, calculator: NetworkTimeCalculator.NetworkTimeCalculator): RequestTimingView;
     performUpdate(): void;
-    private onToggleFetchDetails;
     set request(request: SDK.NetworkRequest.NetworkRequest);
     set calculator(calculator: NetworkTimeCalculator.NetworkTimeCalculator);
     wasShown(): void;

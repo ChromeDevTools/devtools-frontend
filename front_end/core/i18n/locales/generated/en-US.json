@@ -1445,9 +1445,6 @@
   "generated/Deprecation.ts | XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
     "message": "Synchronous XMLHttpRequest on the main thread is deprecated because of its detrimental effects to the end user's experience. For more help, check https://xhr.spec.whatwg.org/."
   },
-  "generated/Deprecation.ts | XMLNoExternalEntities": {
-    "message": "Externally loaded entities in XML parsing have been deprecated and will be removed from this browser soon."
-  },
   "generated/Deprecation.ts | XSLT": {
     "message": "XSLTProcessor and XSLT Processing Instructions have been deprecated by all browsers. These features will be removed from this browser soon."
   },
@@ -13346,6 +13343,9 @@
   "panels/settings/AISettingsTab.ts | asYouTypeCodeSuggestions": {
     "message": "As you type in the Console or Sources panel, you’ll get code suggestions. Press Tab to accept one."
   },
+  "panels/settings/AISettingsTab.ts | asYouTypeRelevantDataIsBeingSentToGoogle": {
+    "message": "As you type, relevant data is being sent to Google to generate code suggestions. Press Tab to accept."
+  },
   "panels/settings/AISettingsTab.ts | boostYourProductivity": {
     "message": "Boost your productivity with AI"
   },
@@ -13366,6 +13366,12 @@
   },
   "panels/settings/AISettingsTab.ts | dataCollectionNoLogging": {
     "message": "Depending on your Google account management and/or region, Google may refrain from data collection"
+  },
+  "panels/settings/AISettingsTab.ts | describeCodeInComment": {
+    "message": "In Console or Sources, describe the code you need in a comment, then press Ctrl+I to generate it."
+  },
+  "panels/settings/AISettingsTab.ts | describeCodeInCommentForMacOs": {
+    "message": "In Console or Sources, describe the code you need in a comment, then press Cmd+I to generate it."
   },
   "panels/settings/AISettingsTab.ts | enableAiAssistance": {
     "message": "Enable AI assistance"
@@ -13413,7 +13419,7 @@
     "message": "Helps you annotate your performance trace with auto-generated labels"
   },
   "panels/settings/AISettingsTab.ts | helpUnderstandCodeSuggestions": {
-    "message": "Get help completing your code"
+    "message": "Write code faster with AI-powered suggestions"
   },
   "panels/settings/AISettingsTab.ts | helpUnderstandConsole": {
     "message": "Helps you understand and fix console warnings and errors"

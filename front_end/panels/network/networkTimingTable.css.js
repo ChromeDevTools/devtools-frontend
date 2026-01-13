@@ -150,13 +150,13 @@ table.network-timing-table > tr:not(.network-timing-table-header, .network-timin
   left: -12px;
 }
 
-tr:has([aria-checked="false"].network-fetch-timing-bar-clickable) ~ .router-evaluation-timing-bar-details,
-tr:has([aria-checked="false"].network-fetch-timing-bar-clickable) ~ .network-fetch-timing-bar-details {
+tr:has([aria-expanded="false"].network-fetch-timing-bar-clickable) ~ .router-evaluation-timing-bar-details,
+tr:has([aria-expanded="false"].network-fetch-timing-bar-clickable) ~ .network-fetch-timing-bar-details {
   display: none;
 }
 
-tr:has([aria-checked].network-fetch-timing-bar-clickable) ~ .router-evaluation-timing-bar-details,
-tr:has([aria-checked].network-fetch-timing-bar-clickable) ~ .network-fetch-timing-bar-details {
+tr:has([aria-expanded="true"].network-fetch-timing-bar-clickable) ~ .router-evaluation-timing-bar-details,
+tr:has([aria-expanded="true"].network-fetch-timing-bar-clickable) ~ .network-fetch-timing-bar-details {
   display: block;
 }
 
@@ -164,7 +164,7 @@ tr:has([aria-checked].network-fetch-timing-bar-clickable) ~ .network-fetch-timin
   background-color: var(--sys-color-state-focus-highlight);
 }
 
-.network-fetch-timing-bar-clickable[aria-checked="true"]::before {
+.network-fetch-timing-bar-clickable[aria-expanded="true"]::before {
   transform: rotate(90deg);
 }
 

@@ -9169,6 +9169,7 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
       throw new Error("Trace content empty");
     }
     let blob = new Blob(blobParts, { type: "application/json" });
+    blobParts.length = 0;
     if (config.shouldCompress) {
       this.statusDialog.updateStatus(i18nString20(UIStrings20.compressingTraceForDownload));
       this.statusDialog.updateProgressBar(i18nString20(UIStrings20.compressingTraceForDownload), 0);
@@ -9182,19 +9183,25 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
         headers: { "Content-Type": "application/gzip" }
       }).blob();
     }
+    const blobType = blob.type;
     let bytesAsB64 = null;
     try {
       this.statusDialog.updateStatus(i18nString20(UIStrings20.encodingTraceForDownload));
       this.statusDialog.updateProgressBar(i18nString20(UIStrings20.encodingTraceForDownload), 100);
       bytesAsB64 = await Common10.Base64.encode(blob);
-    } catch {
+      blob = new Blob();
+    } catch (err) {
+      if (err instanceof Error && err.message.startsWith("failed to convert to base64")) {
+      } else {
+        throw err;
+      }
     }
-    if (bytesAsB64?.length) {
+    if (bytesAsB64) {
       const contentData = new TextUtils2.ContentData.ContentData(
         bytesAsB64,
         /* isBase64=*/
         true,
-        blob.type
+        blobType
       );
       await Workspace2.FileManager.FileManager.instance().save(
         fileName,

@@ -3,14 +3,17 @@
 // found in the LICENSE file.
 import './CollapsibleAssistanceContentWidget.js';
 import './PerformanceAgentFlameChart.js';
+import * as Common from '../../../core/common/common.js';
 import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
 import * as Logs from '../../../models/logs/logs.js';
 import * as NetworkTimeCalculator from '../../../models/network_time_calculator/network_time_calculator.js';
 import * as Trace from '../../../models/trace/trace.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
+import * as NetworkForward from '../../network/forward/forward.js';
 import * as Network from '../../network/network.js';
 import * as Insights from '../../timeline/components/insights/insights.js';
+import * as Timeline from '../../timeline/timeline.js';
 import artifactsViewerStyles from './artifactsViewer.css.js';
 const { html, render } = Lit;
 export function renderArtifact(artifact, parsedTrace) {
@@ -25,7 +28,14 @@ export function renderArtifact(artifact, parsedTrace) {
                 return Lit.nothing;
             }
             return html `
-        <devtools-collapsible-assistance-content-widget .data=${{ headerText: `Insight - ${componentName}` }}>
+        <devtools-collapsible-assistance-content-widget .data=${{
+                headerText: `Insight - ${componentName}`,
+                onReveal: () => {
+                    void UI.InspectorView.InspectorView.instance().showPanel('timeline').then(() => {
+                        Timeline.TimelinePanel.TimelinePanel.instance().revealInsight(insightModel);
+                    });
+                },
+            }}>
           ${insightRenderer.renderInsightToWidgetElement(parsedTrace, insightSet, insightModel, componentName, {
                 selected: true,
                 isAIAssistanceContext: true,
@@ -45,7 +55,14 @@ export function renderArtifact(artifact, parsedTrace) {
                 }
                 return html `
         <devtools-collapsible-assistance-content-widget
-          .data=${{ headerText: `Network Request: ${sdkRequest.url().length > 80 ? sdkRequest.url().slice(0, 80) + '...' : sdkRequest.url()}` }}>
+          .data=${{
+                    headerText: `Network Request: ${sdkRequest.url().length > 80 ? sdkRequest.url().slice(0, 80) + '...' : sdkRequest.url()}`,
+                    onReveal: () => {
+                        void UI.InspectorView.InspectorView.instance().showPanel('network').then(() => {
+                            void Common.Revealer.reveal(NetworkForward.UIRequestLocation.UIRequestLocation.tab(sdkRequest, "timing" /* NetworkForward.UIRequestLocation.UIRequestTabs.TIMING */));
+                        });
+                    },
+                }}>
           <devtools-widget class="actions" .widgetConfig=${UI.Widget.widgetConfig(Network.RequestTimingView.RequestTimingView, {
                     request: sdkRequest,
                     calculator,
@@ -56,7 +73,13 @@ export function renderArtifact(artifact, parsedTrace) {
         }
         case 'flamechart': {
             return html `
-        <devtools-collapsible-assistance-content-widget .data=${{ headerText: `Flamechart` }}>
+        <devtools-collapsible-assistance-content-widget .data=${{
+                headerText: `Flamechart`,
+                onReveal: () => {
+                    // eslint-disable-next-line no-console
+                    console.log('Reveal flamechart', artifact.start, artifact.end);
+                },
+            }}>
           <devtools-performance-agent-flame-chart .data=${{
                 parsedTrace,
                 start: artifact.start,

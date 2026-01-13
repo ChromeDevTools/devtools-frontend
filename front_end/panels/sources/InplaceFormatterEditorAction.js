@@ -74,13 +74,15 @@ export class InplaceFormatterEditorAction {
         if (!uiSourceCode) {
             return false;
         }
-        if (uiSourceCode.project().canSetFileContent()) {
-            return true;
+        // Only show Format button for editable files
+        if (!Persistence.Persistence.PersistenceImpl.instance().hasEditableContent(uiSourceCode)) {
+            return false;
         }
-        if (Persistence.Persistence.PersistenceImpl.instance().binding(uiSourceCode) !== null) {
-            return true;
-        }
-        return false;
+        // Only show Format button for JavaScript files. For other file types (JSON, CSS),
+        // the pretty-print toggle in the status bar should be used instead, which provides
+        // reversible formatting (fixes issue 378870233).
+        const mimeType = Common.ResourceType.ResourceType.simplifyContentType(uiSourceCode.mimeType());
+        return Common.ResourceType.ResourceType.isJavaScriptMimeType(mimeType);
     }
     formatSourceInPlace() {
         const sourceFrame = this.sourcesView.currentSourceFrame();

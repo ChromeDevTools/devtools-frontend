@@ -71,6 +71,9 @@
       "path": "../../models/ai_assistance/bundle-tsconfig.json"
     },
     {
+      "path": "../../models/ai_code_generation/bundle-tsconfig.json"
+    },
+    {
       "path": "../../models/bindings/bundle-tsconfig.json"
     },
     {

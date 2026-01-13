@@ -6,7 +6,7 @@ var __export = (target, all) => {
 
 // gen/front_end/panels/ai_assistance/AiAssistancePanel.js
 import "./../../ui/kit/kit.js";
-import * as Common5 from "./../../core/common/common.js";
+import * as Common6 from "./../../core/common/common.js";
 import * as Host6 from "./../../core/host/host.js";
 import * as i18n15 from "./../../core/i18n/i18n.js";
 import * as Platform4 from "./../../core/platform/platform.js";
@@ -24,9 +24,9 @@ import * as UIHelpers2 from "./../../ui/helpers/helpers.js";
 import * as UI10 from "./../../ui/legacy/legacy.js";
 import * as Lit8 from "./../../ui/lit/lit.js";
 import * as VisualLogging7 from "./../../ui/visual_logging/visual_logging.js";
-import * as NetworkForward from "./../network/forward/forward.js";
+import * as NetworkForward3 from "./../network/forward/forward.js";
 import * as NetworkPanel from "./../network/network.js";
-import * as TimelinePanel from "./../timeline/timeline.js";
+import * as TimelinePanel3 from "./../timeline/timeline.js";
 
 // gen/front_end/panels/ai_assistance/aiAssistancePanel.css.js
 var aiAssistancePanel_css_default = `/*
@@ -133,8 +133,10 @@ var CollapsibleAssistanceContentWidget = class extends HTMLElement {
   #shadow = this.attachShadow({ mode: "open" });
   #isCollapsed = false;
   #headerText = "Details";
+  #onReveal;
   set data(data) {
     this.#headerText = data.headerText;
+    this.#onReveal = data.onReveal;
     this.#render();
   }
   connectedCallback() {
@@ -153,14 +155,30 @@ var CollapsibleAssistanceContentWidget = class extends HTMLElement {
       this.#toggleCollapse();
     }}>
           ${this.#headerText}
-          <devtools-button .data=${{
+          <div>
+            <devtools-button .data=${{
+      variant: "icon",
+      iconName: "select-element",
+      color: "var(--sys-color-on-surface)",
+      width: "14px",
+      height: "14px",
+      title: "reveal"
+    }}
+              @click=${(event) => {
+      event.stopPropagation();
+      this.#onReveal?.();
+    }}
+            ></devtools-button>
+            <devtools-button .data=${{
       variant: "icon",
       iconName: this.#isCollapsed ? "triangle-right" : "triangle-down",
       color: "var(--sys-color-on-surface)",
       width: "14px",
-      height: "14px"
+      height: "14px",
+      title: "expand"
     }}
-          ></devtools-button>
+            ></devtools-button>
+          </div>
         </summary>
         <div class="content">
           <slot></slot>
@@ -273,14 +291,17 @@ var PerformanceAgentFlameChart = class extends HTMLElement {
 customElements.define("devtools-performance-agent-flame-chart", PerformanceAgentFlameChart);
 
 // gen/front_end/panels/ai_assistance/components/ArtifactsViewer.js
+import * as Common from "./../../core/common/common.js";
 import * as AiAssistanceModel from "./../../models/ai_assistance/ai_assistance.js";
 import * as Logs from "./../../models/logs/logs.js";
 import * as NetworkTimeCalculator from "./../../models/network_time_calculator/network_time_calculator.js";
 import * as Trace2 from "./../../models/trace/trace.js";
 import * as UI from "./../../ui/legacy/legacy.js";
 import * as Lit3 from "./../../ui/lit/lit.js";
+import * as NetworkForward from "./../network/forward/forward.js";
 import * as Network from "./../network/network.js";
 import * as Insights from "./../timeline/components/insights/insights.js";
+import * as Timeline2 from "./../timeline/timeline.js";
 
 // gen/front_end/panels/ai_assistance/components/artifactsViewer.css.js
 var artifactsViewer_css_default = `/*
@@ -315,7 +336,14 @@ function renderArtifact(artifact, parsedTrace) {
         return Lit3.nothing;
       }
       return html3`
-        <devtools-collapsible-assistance-content-widget .data=${{ headerText: `Insight - ${componentName}` }}>
+        <devtools-collapsible-assistance-content-widget .data=${{
+        headerText: `Insight - ${componentName}`,
+        onReveal: () => {
+          void UI.InspectorView.InspectorView.instance().showPanel("timeline").then(() => {
+            Timeline2.TimelinePanel.TimelinePanel.instance().revealInsight(insightModel);
+          });
+        }
+      }}>
           ${insightRenderer.renderInsightToWidgetElement(parsedTrace, insightSet, insightModel, componentName, {
         selected: true,
         isAIAssistanceContext: true
@@ -332,7 +360,18 @@ function renderArtifact(artifact, parsedTrace) {
         }
         return html3`
         <devtools-collapsible-assistance-content-widget
-          .data=${{ headerText: `Network Request: ${sdkRequest.url().length > 80 ? sdkRequest.url().slice(0, 80) + "..." : sdkRequest.url()}` }}>
+          .data=${{
+          headerText: `Network Request: ${sdkRequest.url().length > 80 ? sdkRequest.url().slice(0, 80) + "..." : sdkRequest.url()}`,
+          onReveal: () => {
+            void UI.InspectorView.InspectorView.instance().showPanel("network").then(() => {
+              void Common.Revealer.reveal(NetworkForward.UIRequestLocation.UIRequestLocation.tab(
+                sdkRequest,
+                "timing"
+                /* NetworkForward.UIRequestLocation.UIRequestTabs.TIMING */
+              ));
+            });
+          }
+        }}>
           <devtools-widget class="actions" .widgetConfig=${UI.Widget.widgetConfig(Network.RequestTimingView.RequestTimingView, {
           request: sdkRequest,
           calculator
@@ -343,7 +382,12 @@ function renderArtifact(artifact, parsedTrace) {
     }
     case "flamechart": {
       return html3`
-        <devtools-collapsible-assistance-content-widget .data=${{ headerText: `Flamechart` }}>
+        <devtools-collapsible-assistance-content-widget .data=${{
+        headerText: `Flamechart`,
+        onReveal: () => {
+          console.log("Reveal flamechart", artifact.start, artifact.end);
+        }
+      }}>
           <devtools-performance-agent-flame-chart .data=${{
         parsedTrace,
         start: artifact.start,
@@ -420,7 +464,7 @@ __export(PatchWidget_exports, {
 import "./../../ui/legacy/legacy.js";
 import "./../../ui/components/markdown_view/markdown_view.js";
 import "./../../ui/components/spinners/spinners.js";
-import * as Common2 from "./../../core/common/common.js";
+import * as Common3 from "./../../core/common/common.js";
 import * as Host2 from "./../../core/host/host.js";
 import * as i18n3 from "./../../core/i18n/i18n.js";
 import * as Platform3 from "./../../core/platform/platform.js";
@@ -438,7 +482,7 @@ import * as ChangesPanel from "./../changes/changes.js";
 import * as PanelCommon from "./../common/common.js";
 
 // gen/front_end/panels/ai_assistance/SelectWorkspaceDialog.js
-import * as Common from "./../../core/common/common.js";
+import * as Common2 from "./../../core/common/common.js";
 import * as Host from "./../../core/host/host.js";
 import * as i18n from "./../../core/i18n/i18n.js";
 import * as Root from "./../../core/root/root.js";
@@ -753,7 +797,7 @@ var SelectWorkspaceDialog = class _SelectWorkspaceDialog extends UI2.Widget.VBox
     const automaticFileSystem = this.#automaticFileSystemManager.automaticFileSystem;
     if (automaticFileSystem) {
       this.#folders.push({
-        name: Common.ParsedURL.ParsedURL.extractName(automaticFileSystem.root),
+        name: Common2.ParsedURL.ParsedURL.extractName(automaticFileSystem.root),
         path: automaticFileSystem.root,
         automaticFileSystem
       });
@@ -765,8 +809,8 @@ var SelectWorkspaceDialog = class _SelectWorkspaceDialog extends UI2.Widget.VBox
         continue;
       }
       this.#folders.push({
-        name: Common.ParsedURL.ParsedURL.encodedPathToRawPathString(project.displayName()),
-        path: Common.ParsedURL.ParsedURL.urlToRawPathString(project.id(), Host.Platform.isWin()),
+        name: Common2.ParsedURL.ParsedURL.encodedPathToRawPathString(project.displayName()),
+        path: Common2.ParsedURL.ParsedURL.urlToRawPathString(project.id(), Host.Platform.isWin()),
         project
       });
     }
@@ -1121,8 +1165,8 @@ var PatchWidget = class extends UI3.Widget.Widget {
   changeSummary = "";
   changeManager;
   // Whether the user completed first run experience dialog or not.
-  #aiPatchingFreCompletedSetting = Common2.Settings.Settings.instance().createSetting("ai-assistance-patching-fre-completed", false);
-  #projectIdSetting = Common2.Settings.Settings.instance().createSetting("ai-assistance-patching-selected-project-id", "");
+  #aiPatchingFreCompletedSetting = Common3.Settings.Settings.instance().createSetting("ai-assistance-patching-fre-completed", false);
+  #projectIdSetting = Common3.Settings.Settings.instance().createSetting("ai-assistance-patching-selected-project-id", "");
   #view;
   #viewOutput = {};
   #aidaClient;
@@ -1152,13 +1196,13 @@ var PatchWidget = class extends UI3.Widget.Widget {
   #getDisplayedProject() {
     if (this.#project) {
       return {
-        projectName: Common2.ParsedURL.ParsedURL.encodedPathToRawPathString(this.#project.displayName()),
-        projectPath: Common2.ParsedURL.ParsedURL.urlToRawPathString(this.#project.id(), Host2.Platform.isWin())
+        projectName: Common3.ParsedURL.ParsedURL.encodedPathToRawPathString(this.#project.displayName()),
+        projectPath: Common3.ParsedURL.ParsedURL.urlToRawPathString(this.#project.id(), Host2.Platform.isWin())
       };
     }
     if (this.#automaticFileSystem) {
       return {
-        projectName: Common2.ParsedURL.ParsedURL.extractName(this.#automaticFileSystem.root),
+        projectName: Common3.ParsedURL.ParsedURL.extractName(this.#automaticFileSystem.root),
         projectPath: this.#automaticFileSystem.root
       };
     }
@@ -2476,7 +2520,7 @@ __export(ChatMessage_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW4
 });
 import "./../../ui/components/markdown_view/markdown_view.js";
-import * as Common3 from "./../../core/common/common.js";
+import * as Common4 from "./../../core/common/common.js";
 import * as Host3 from "./../../core/host/host.js";
 import * as i18n7 from "./../../core/i18n/i18n.js";
 import * as AiAssistanceModel4 from "./../../models/ai_assistance/ai_assistance.js";
@@ -3367,7 +3411,7 @@ var ChatMessage = class extends UI5.Widget.Widget {
   onCopyResponseClick = () => {
   };
   #suggestionsResizeObserver = new ResizeObserver(() => this.#handleSuggestionsScrollOrResize());
-  #suggestionsEvaluateLayoutThrottler = new Common3.Throttler.Throttler(50);
+  #suggestionsEvaluateLayoutThrottler = new Common4.Throttler.Throttler(50);
   #feedbackValue = "";
   #currentRating;
   #isShowingFeedbackForm = false;
@@ -4567,7 +4611,7 @@ var MarkdownRendererWithCodeBlock = class extends MarkdownView.MarkdownView.Mark
 // gen/front_end/panels/ai_assistance/components/PerformanceAgentMarkdownRenderer.js
 import "./../../models/trace/insights/insights.js";
 import "./../timeline/components/components.js";
-import * as Common4 from "./../../core/common/common.js";
+import * as Common5 from "./../../core/common/common.js";
 import * as SDK2 from "./../../core/sdk/sdk.js";
 import * as GreenDev3 from "./../../models/greendev/greendev.js";
 import * as Logs2 from "./../../models/logs/logs.js";
@@ -4577,9 +4621,11 @@ import * as Trace4 from "./../../models/trace/trace.js";
 import * as UI9 from "./../../ui/legacy/legacy.js";
 import * as Lit7 from "./../../ui/lit/lit.js";
 import * as PanelsCommon2 from "./../common/common.js";
+import * as NetworkForward2 from "./../network/forward/forward.js";
 import * as Network2 from "./../network/network.js";
 import * as TimelineComponents from "./../timeline/components/components.js";
 import * as Insights2 from "./../timeline/components/insights/insights.js";
+import * as Timeline3 from "./../timeline/timeline.js";
 var { html: html11 } = Lit7.StaticHtml;
 var { ref: ref4, createRef: createRef3 } = Lit7.Directives;
 var { widgetConfig } = UI9.Widget;
@@ -4626,7 +4672,12 @@ var PerformanceAgentMarkdownRenderer = class extends MarkdownRendererWithCodeBlo
           return null;
         }
         return html11`<devtools-collapsible-assistance-content-widget  .data=${{
-          headerText: `Insight - ${componentName}`
+          headerText: `Insight - ${componentName}`,
+          onReveal: () => {
+            void UI9.InspectorView.InspectorView.instance().showPanel("timeline").then(() => {
+              Timeline3.TimelinePanel.TimelinePanel.instance().revealInsight(insightM);
+            });
+          }
         }}>
         ${this.#insightRenderer.renderInsightToWidgetElement(this.parsedTrace, insightSet, insightM, componentName, {
           selected: true,
@@ -4644,7 +4695,16 @@ var PerformanceAgentMarkdownRenderer = class extends MarkdownRendererWithCodeBlo
             const calculator = new NetworkTimeCalculator3.NetworkTimeCalculator(true);
             return html11`<devtools-collapsible-assistance-content-widget
             .data=${{
-              headerText: `Network Request: ${networkRequest.url().length > 80 ? networkRequest.url().slice(0, 80) + "..." : networkRequest.url()}`
+              headerText: `Network Request: ${networkRequest.url().length > 80 ? networkRequest.url().slice(0, 80) + "..." : networkRequest.url()}`,
+              onReveal: () => {
+                void UI9.InspectorView.InspectorView.instance().showPanel("network").then(() => {
+                  void Common5.Revealer.reveal(NetworkForward2.UIRequestLocation.UIRequestLocation.tab(
+                    networkRequest,
+                    "timing"
+                    /* NetworkForward.UIRequestLocation.UIRequestTabs.TIMING */
+                  ));
+                });
+              }
             }}>
             <devtools-widget class="actions" .widgetConfig=${UI9.Widget.widgetConfig(Network2.RequestTimingView.RequestTimingView, {
               request: networkRequest,
@@ -4662,7 +4722,10 @@ var PerformanceAgentMarkdownRenderer = class extends MarkdownRendererWithCodeBlo
         }
         return html11`<devtools-collapsible-assistance-content-widget
         .data=${{
-          headerText: "Network Request"
+          headerText: "Network Request",
+          onReveal: () => {
+            console.log("Reveal network request", value);
+          }
         }}>
           ${networkTooltip}
           </devtools-collapsible-assistance-content-widget>`;
@@ -4695,7 +4758,7 @@ var PerformanceAgentMarkdownRenderer = class extends MarkdownRendererWithCodeBlo
       }
       return html11`<a href="#" draggable=false .title=${title} @click=${(e) => {
         e.stopPropagation();
-        void Common4.Revealer.reveal(new SDK2.TraceObject.RevealableEvent(event));
+        void Common5.Revealer.reveal(new SDK2.TraceObject.RevealableEvent(event));
       }}>${label}</a>`;
     }
     return super.templateForToken(token);
@@ -5092,7 +5155,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
   #serverSideLoggingEnabled = isAiAssistanceServerSideLoggingEnabled();
   #aiAssistanceEnabledSetting;
   #changeManager = new AiAssistanceModel5.ChangeManager.ChangeManager();
-  #mutex = new Common5.Mutex.Mutex();
+  #mutex = new Common6.Mutex.Mutex();
   #conversation;
   #selectedFile = null;
   #selectedElement = null;
@@ -5184,7 +5247,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
   }
   #getAiAssistanceEnabledSetting() {
     try {
-      return Common5.Settings.moduleSetting("ai-assistance-enabled");
+      return Common6.Settings.moduleSetting("ai-assistance-enabled");
     } catch {
       return;
     }
@@ -5207,7 +5270,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
    * the performance panel but have no trace imported.
    */
   #bindTimelineTraceListener() {
-    const timelinePanel = UI10.Context.Context.instance().flavor(TimelinePanel.TimelinePanel.TimelinePanel);
+    const timelinePanel = UI10.Context.Context.instance().flavor(TimelinePanel3.TimelinePanel.TimelinePanel);
     if (timelinePanel === this.#timelinePanelInstance) {
       return;
     }
@@ -5294,7 +5357,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
     UI10.ViewManager.ViewManager.instance().addEventListener("ViewVisibilityChanged", this.#selectDefaultAgentIfNeeded, this);
     SDK3.TargetManager.TargetManager.instance().addModelListener(SDK3.DOMModel.DOMModel, SDK3.DOMModel.Events.AttrModified, this.#handleDOMNodeAttrChange, this);
     SDK3.TargetManager.TargetManager.instance().addModelListener(SDK3.DOMModel.DOMModel, SDK3.DOMModel.Events.AttrRemoved, this.#handleDOMNodeAttrChange, this);
-    UI10.Context.Context.instance().addFlavorChangeListener(TimelinePanel.TimelinePanel.TimelinePanel, this.#bindTimelineTraceListener, this);
+    UI10.Context.Context.instance().addFlavorChangeListener(TimelinePanel3.TimelinePanel.TimelinePanel, this.#bindTimelineTraceListener, this);
     this.#bindTimelineTraceListener();
     this.#selectDefaultAgentIfNeeded();
     Host6.userMetrics.actionTaken(Host6.UserMetrics.Action.AiAssistancePanelOpened);
@@ -5319,7 +5382,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
     UI10.Context.Context.instance().removeFlavorChangeListener(AiAssistanceModel5.AIContext.AgentFocus, this.#handlePerformanceTraceFlavorChange);
     UI10.Context.Context.instance().removeFlavorChangeListener(Workspace6.UISourceCode.UISourceCode, this.#handleUISourceCodeFlavorChange);
     UI10.ViewManager.ViewManager.instance().removeEventListener("ViewVisibilityChanged", this.#selectDefaultAgentIfNeeded, this);
-    UI10.Context.Context.instance().removeFlavorChangeListener(TimelinePanel.TimelinePanel.TimelinePanel, this.#bindTimelineTraceListener, this);
+    UI10.Context.Context.instance().removeFlavorChangeListener(TimelinePanel3.TimelinePanel.TimelinePanel, this.#bindTimelineTraceListener, this);
     SDK3.TargetManager.TargetManager.instance().removeModelListener(SDK3.DOMModel.DOMModel, SDK3.DOMModel.Events.AttrModified, this.#handleDOMNodeAttrChange, this);
     SDK3.TargetManager.TargetManager.instance().removeModelListener(SDK3.DOMModel.DOMModel, SDK3.DOMModel.Events.AttrRemoved, this.#handleDOMNodeAttrChange, this);
     if (this.#timelinePanelInstance) {
@@ -5428,7 +5491,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
     }
   }
   #handleSelectElementClick() {
-    UI10.Context.Context.instance().setFlavor(Common5.ReturnToPanel.ReturnToPanelFlavor, new Common5.ReturnToPanel.ReturnToPanelFlavor(this.panelName));
+    UI10.Context.Context.instance().setFlavor(Common6.ReturnToPanel.ReturnToPanelFlavor, new Common6.ReturnToPanel.ReturnToPanelFlavor(this.panelName));
     void this.#toggleSearchElementAction?.execute();
   }
   #isTextInputDisabled() {
@@ -5469,7 +5532,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
       case "drjones-network-request":
         return this.#conversation.selectedContext ? lockedString7(UIStringsNotTranslate7.inputPlaceholderForNetwork) : lockedString7(UIStringsNotTranslate7.inputPlaceholderForNetworkNoContext);
       case "drjones-performance-full": {
-        const perfPanel = UI10.Context.Context.instance().flavor(TimelinePanel.TimelinePanel.TimelinePanel);
+        const perfPanel = UI10.Context.Context.instance().flavor(TimelinePanel3.TimelinePanel.TimelinePanel);
         if (perfPanel?.hasActiveTrace()) {
           return this.#conversation.selectedContext ? lockedString7(UIStringsNotTranslate7.inputPlaceholderForPerformanceTrace) : lockedString7(UIStringsNotTranslate7.inputPlaceholderForPerformanceTraceNoContext);
         }
@@ -5527,25 +5590,25 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
     }
     const context = this.#conversation.selectedContext;
     if (context instanceof AiAssistanceModel5.NetworkAgent.RequestContext) {
-      const requestLocation = NetworkForward.UIRequestLocation.UIRequestLocation.tab(
+      const requestLocation = NetworkForward3.UIRequestLocation.UIRequestLocation.tab(
         context.getItem(),
         "headers-component"
         /* NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT */
       );
-      return Common5.Revealer.reveal(requestLocation);
+      return Common6.Revealer.reveal(requestLocation);
     }
     if (context instanceof AiAssistanceModel5.FileAgent.FileContext) {
-      return Common5.Revealer.reveal(context.getItem().uiLocation(0, 0));
+      return Common6.Revealer.reveal(context.getItem().uiLocation(0, 0));
     }
     if (context instanceof AiAssistanceModel5.PerformanceAgent.PerformanceTraceContext) {
       const focus = context.getItem();
       if (focus.callTree) {
         const event = focus.callTree.selectedNode?.event ?? focus.callTree.rootNode.event;
         const revealable = new SDK3.TraceObject.RevealableEvent(event);
-        return Common5.Revealer.reveal(revealable);
+        return Common6.Revealer.reveal(revealable);
       }
       if (focus.insight) {
-        return Common5.Revealer.reveal(focus.insight);
+        return Common6.Revealer.reveal(focus.insight);
       }
     }
   }

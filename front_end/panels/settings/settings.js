@@ -851,6 +851,7 @@ import * as Host2 from "./../../core/host/host.js";
 import * as i18n3 from "./../../core/i18n/i18n.js";
 import * as Root2 from "./../../core/root/root.js";
 import * as AiAssistanceModel from "./../../models/ai_assistance/ai_assistance.js";
+import * as AiCodeGeneration from "./../../models/ai_code_generation/ai_code_generation.js";
 import * as Buttons2 from "./../../ui/components/buttons/buttons.js";
 import * as Input from "./../../ui/components/input/input.js";
 import * as Switch from "./../../ui/components/switch/switch.js";
@@ -1150,7 +1151,7 @@ var UIStrings2 = {
   /**
    * @description Text describing the 'Code suggestions' feature
    */
-  helpUnderstandCodeSuggestions: "Get help completing your code",
+  helpUnderstandCodeSuggestions: "Write code faster with AI-powered suggestions",
   /**
    * @description Text which is a hyperlink to more documentation
    */
@@ -1195,6 +1196,18 @@ var UIStrings2 = {
    * @description Description of the 'Code suggestions' feature
    */
   asYouTypeCodeSuggestions: "As you type in the Console or Sources panel, you\u2019ll get code suggestions. Press Tab to accept one.",
+  /**
+   * @description First item in the description of the 'Code suggestions' feature [updated]
+   */
+  asYouTypeRelevantDataIsBeingSentToGoogle: "As you type, relevant data is being sent to Google to generate code suggestions. Press Tab to accept.",
+  /**
+   * @description Second item in the description of the 'Code suggestions' feature [new]
+   */
+  describeCodeInComment: "In Console or Sources, describe the code you need in a comment, then press Ctrl+I to generate it.",
+  /**
+   * @description Second item in the description of the 'Code suggestions' feature [new]
+   */
+  describeCodeInCommentForMacOs: "In Console or Sources, describe the code you need in a comment, then press Cmd+I to generate it.",
   /**
    * @description Explainer for which data is being sent for the 'Code suggestions' feature
    */
@@ -1477,12 +1490,21 @@ var AISettingsTab = class extends UI2.Widget.VBox {
       this.#settingToParams.set(this.#aiAnnotationsSetting, aiAnnotationsData);
     }
     if (this.#aiCodeCompletionSetting) {
+      const devtoolsLocale = i18n3.DevToolsLocale.DevToolsLocale.instance();
+      const isAiCodeGenerationEnabled = AiCodeGeneration.AiCodeGeneration.AiCodeGeneration.isAiCodeGenerationEnabled(devtoolsLocale.locale);
+      const settingItems = isAiCodeGenerationEnabled ? [
+        { iconName: "code", text: i18nString2(UIStrings2.asYouTypeRelevantDataIsBeingSentToGoogle) },
+        {
+          iconName: "text-analysis",
+          text: Host2.Platform.isMac() ? i18nString2(UIStrings2.describeCodeInCommentForMacOs) : i18nString2(UIStrings2.describeCodeInComment)
+        }
+      ] : [{ iconName: "code", text: i18nString2(UIStrings2.asYouTypeCodeSuggestions) }];
       const aiCodeCompletionData = {
         settingName: i18n3.i18n.lockedString("Code suggestions"),
         iconName: "text-analysis",
         settingDescription: i18nString2(UIStrings2.helpUnderstandCodeSuggestions),
         enableSettingText: i18nString2(UIStrings2.enableAiCodeSuggestions),
-        settingItems: [{ iconName: "code", text: i18nString2(UIStrings2.asYouTypeCodeSuggestions) }],
+        settingItems,
         toConsiderSettingItems: [{
           iconName: "google",
           text: noLogging ? i18nString2(UIStrings2.codeSuggestionsSendDataNoLogging) : i18nString2(UIStrings2.codeSuggestionsSendData)
@@ -1602,7 +1624,7 @@ __export(EditFileSystemView_exports, {
 });
 import "./../../ui/legacy/components/data_grid/data_grid.js";
 import * as i18n5 from "./../../core/i18n/i18n.js";
-import * as Platform from "./../../core/platform/platform.js";
+import * as Platform2 from "./../../core/platform/platform.js";
 import * as UI3 from "./../../ui/legacy/legacy.js";
 import { Directives, html as html3, render as render3 } from "./../../ui/lit/lit.js";
 
@@ -1732,7 +1754,7 @@ var EditFileSystemView = class _EditFileSystemView extends UI3.Widget.VBox {
   }
   performUpdate() {
     const input = {
-      fileSystemPath: this.#fileSystem?.path() ?? Platform.DevToolsPath.urlString``,
+      fileSystemPath: this.#fileSystem?.path() ?? Platform2.DevToolsPath.urlString``,
       excludedFolderPaths: this.#excludedFolderPaths,
       onCreate: (e) => this.#onCreate(e.detail.url),
       onEdit: (e) => this.#onEdit(e.detail.node.dataset.index ?? "-1", e.detail.valueBeforeEditing, e.detail.newText),
@@ -2173,7 +2195,7 @@ import "./../../ui/kit/kit.js";
 import * as Common4 from "./../../core/common/common.js";
 import * as Host3 from "./../../core/host/host.js";
 import * as i18n9 from "./../../core/i18n/i18n.js";
-import * as Platform3 from "./../../core/platform/platform.js";
+import * as Platform4 from "./../../core/platform/platform.js";
 import * as Buttons4 from "./../../ui/components/buttons/buttons.js";
 import { createIcon as createIcon2 } from "./../../ui/kit/kit.js";
 import * as SettingsUI5 from "./../../ui/legacy/components/settings_ui/settings_ui.js";
@@ -2705,7 +2727,7 @@ var ShortcutListItem = class {
       UI5.ARIAUtils.LiveAnnouncer.alert(i18nString5(UIStrings5.shortcutChangesDiscarded));
     }));
     this.element.addEventListener("keydown", (event) => {
-      if (Platform3.KeyboardUtilities.isEscKey(event)) {
+      if (Platform4.KeyboardUtilities.isEscKey(event)) {
         this.settingsTab.stopEditing(this.item);
         event.consume(true);
       }

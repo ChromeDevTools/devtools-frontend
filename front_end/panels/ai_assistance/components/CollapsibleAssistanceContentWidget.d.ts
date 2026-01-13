@@ -1,5 +1,6 @@
 export interface CollapsibleAssistanceContentWidgetData {
     headerText: string;
+    onReveal?: () => void;
 }
 export declare class CollapsibleAssistanceContentWidget extends HTMLElement {
     #private;

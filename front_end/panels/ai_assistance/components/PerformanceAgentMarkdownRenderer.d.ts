@@ -1,7 +1,7 @@
-import './CollapsibleAssistanceContentWidget.js';
 import '../../../models/trace/insights/insights.js';
 import '../../../panels/timeline/components/components.js';
 import './PerformanceAgentFlameChart.js';
+import './CollapsibleAssistanceContentWidget.js';
 import * as Trace from '../../../models/trace/trace.js';
 import type * as Marked from '../../../third_party/marked/marked.js';
 import * as Lit from '../../../ui/lit/lit.js';

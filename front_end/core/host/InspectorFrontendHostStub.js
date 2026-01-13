@@ -87,6 +87,9 @@ export class InspectorFrontendHostStub {
     setInjectedScriptForOrigin(_origin, _script) {
     }
     inspectedURLChanged(url) {
+        if (!('document' in globalThis)) {
+            return;
+        }
         document.title = i18nString(UIStrings.devtoolsS, { PH1: url.replace(/^https?:\/\//, '') });
     }
     copyText(text) {

@@ -5,11 +5,11 @@ var __export = (target, all) => {
 };
 
 // gen/front_end/panels/common/common.prebundle.js
-import * as Host9 from "./../../core/host/host.js";
-import * as i18n23 from "./../../core/i18n/i18n.js";
+import * as Host10 from "./../../core/host/host.js";
+import * as i18n25 from "./../../core/i18n/i18n.js";
 import * as Geometry2 from "./../../models/geometry/geometry.js";
-import * as Buttons6 from "./../../ui/components/buttons/buttons.js";
-import * as UI14 from "./../../ui/legacy/legacy.js";
+import * as Buttons7 from "./../../ui/components/buttons/buttons.js";
+import * as UI15 from "./../../ui/legacy/legacy.js";
 
 // gen/front_end/panels/common/common.css.js
 var common_css_default = `/*
@@ -871,14 +871,199 @@ var AiCodeGenerationTeaser = class extends UI3.Widget.Widget {
   }
 };
 
+// gen/front_end/panels/common/AiCodeGenerationUpgradeDialog.js
+import * as Host3 from "./../../core/host/host.js";
+import * as i18n7 from "./../../core/i18n/i18n.js";
+import * as Buttons3 from "./../../ui/components/buttons/buttons.js";
+import * as UI4 from "./../../ui/legacy/legacy.js";
+import * as Lit2 from "./../../ui/lit/lit.js";
+
+// gen/front_end/panels/common/aiCodeGenerationUpgradeDialog.css.js
+var aiCodeGenerationUpgradeDialog_css_default = `/*
+ * Copyright 2026 The Chromium Authors
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+
+.ai-code-generation-upgrade-dialog {
+  width: var(--sys-size-33);
+  padding: var(--sys-size-9);
+
+  header {
+    display: flex;
+    gap: var(--sys-size-8);
+    margin-bottom: var(--sys-size-6);
+    align-items: center;
+
+    h2 {
+      margin: 0;
+      color: var(--sys-color-on-surface);
+      font: var(--sys-typescale-headline5);
+    }
+
+    .header-icon-container {
+      background: linear-gradient(
+        135deg,
+        var(--sys-color-gradient-primary),
+        var(--sys-color-gradient-tertiary)
+      );
+      border-radius: var(--sys-size-4);
+      min-height: var(--sys-size-14);
+      min-width: var(--sys-size-14);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      devtools-icon {
+        width: var(--sys-size-9);
+        height: var(--sys-size-9);
+      }
+    }
+  }
+
+  .reminder-container {
+    border-radius: var(--sys-size-6);
+    background-color: var(--sys-color-surface4);
+    padding: var(--sys-size-9);
+    gap: var(--sys-size-6);
+    display: flex;
+    flex-direction: column;
+
+    .reminder-item {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: var(--sys-size-5);
+      font: var(--sys-typescale-body4-regular);
+
+      devtools-icon.reminder-icon {
+        width: var(--sys-size-8);
+        height: var(--sys-size-8);
+      }
+    }
+  }
+
+  footer {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-end;
+    margin-top: var(--sys-size-8);
+    min-width: var(--sys-size-28);
+
+    .right-buttons {
+      display: flex;
+      gap: var(--sys-size-5);
+    }
+  }
+}
+
+/*# sourceURL=${import.meta.resolve("./aiCodeGenerationUpgradeDialog.css")} */`;
+
+// gen/front_end/panels/common/AiCodeGenerationUpgradeDialog.js
+var { html: html4 } = Lit2;
+var UIStringsNotTranslate3 = {
+  /**
+   * @description Header text for the upgrade notice dialog.
+   */
+  codeCompletionJustGotBetter: "Code completion just got better",
+  /**
+   * @description First item in the description
+   */
+  asYouType: "As you type, DevTools generates code suggestions to help you code faster.",
+  /**
+   * @description Second item in the description
+   */
+  describeCodeInComment: "In Console and Sources, you can now describe the code you need in a comment, then press Ctrl+I to generate it.",
+  /**
+   * @description Second item in the description
+   */
+  describeCodeInCommentForMacOs: "In Console and Sources, you can now describe the code you need in a comment, then press Cmd+I to generate it.",
+  /**
+   * @description Text for the manage in settings button in the upgrade notice dialog.
+   */
+  manageInSettings: "Manage in settings",
+  /**
+   * @description Text for the got it button in the upgrade notice dialog.
+   */
+  gotIt: "Got it"
+};
+var lockedString3 = i18n7.i18n.lockedString;
+var AiCodeGenerationUpgradeDialog = class {
+  static show() {
+    const dialog2 = new UI4.Dialog.Dialog();
+    dialog2.setAriaLabel(lockedString3(UIStringsNotTranslate3.codeCompletionJustGotBetter));
+    Lit2.render(html4`
+      <div class="ai-code-generation-upgrade-dialog">
+        <style>
+          ${aiCodeGenerationUpgradeDialog_css_default}
+        </style>
+        <header>
+          <div class="header-icon-container">
+            <devtools-icon name="pen-spark"></devtools-icon>
+          </div>
+          <h2 tabindex="-1">
+            ${lockedString3(UIStringsNotTranslate3.codeCompletionJustGotBetter)}
+          </h2>
+        </header>
+        <main class="reminder-container">
+          <div class="reminder-item">
+            <devtools-icon class="reminder-icon" name="code"></devtools-icon>
+            <span>${lockedString3(UIStringsNotTranslate3.asYouType)}</span>
+          </div>
+          <div class="reminder-item">
+            <devtools-icon class="reminder-icon" name="text-analysis"></devtools-icon>
+            <span>
+              ${Host3.Platform.isMac() ? lockedString3(UIStringsNotTranslate3.describeCodeInCommentForMacOs) : lockedString3(UIStringsNotTranslate3.describeCodeInComment)}
+            </span>
+          </div>
+        </main>
+        <footer>
+          <div class="right-buttons">
+            <devtools-button
+              @click=${() => {
+      void UI4.ViewManager.ViewManager.instance().showView("chrome-ai");
+    }}
+              .jslogContext=${"ai-code-generation-upgrade-dialog.manage-in-settings"}
+              .variant=${"outlined"}
+              aria-label=${lockedString3(UIStringsNotTranslate3.manageInSettings)}>
+              ${lockedString3(UIStringsNotTranslate3.manageInSettings)}
+            </devtools-button>
+            <devtools-button
+              @click=${() => {
+      dialog2.hide();
+    }}
+              .jslogContext=${"ai-code-generation-upgrade-dialog.continue"}
+              .variant=${"primary"}>
+              ${lockedString3(UIStringsNotTranslate3.gotIt)}
+            </devtools-button>
+          </div>
+        </footer>
+      </div>`, dialog2.contentElement);
+    dialog2.setOutsideClickCallback((ev) => {
+      ev.consume(true);
+      dialog2.hide();
+    });
+    dialog2.setSizeBehavior(
+      "MeasureContent"
+      /* UI.GlassPane.SizeBehavior.MEASURE_CONTENT */
+    );
+    dialog2.setDimmed(true);
+    dialog2.show();
+  }
+  constructor() {
+  }
+};
+
 // gen/front_end/panels/common/AnnotationManager.js
 import * as Annotations2 from "./../../models/annotations/annotations.js";
 
 // gen/front_end/panels/common/Annotation.js
 import * as Annotations from "./../../models/annotations/annotations.js";
-import * as UI4 from "./../../ui/legacy/legacy.js";
+import * as UI5 from "./../../ui/legacy/legacy.js";
 import * as ThemeSupport from "./../../ui/legacy/theme_support/theme_support.js";
-import { html as html4, nothing as nothing3, render as render4 } from "./../../ui/lit/lit.js";
+import { html as html5, nothing as nothing3, render as render5 } from "./../../ui/lit/lit.js";
 import * as VisualLogging3 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/common/annotation.css.js
@@ -935,9 +1120,9 @@ var DEFAULT_VIEW3 = (input, _, target) => {
     anchored ? "left: 17px; top: 11px;" : "",
     !expandable ? "pointer-events: none;" : ""
   ].join(" ");
-  render4(html4`
+  render5(html5`
     <style>${annotation_css_default}</style>
-    ${anchored ? html4`
+    ${anchored ? html5`
       <svg class="connectorContainer"
         width=${LABEL_AND_CONNECTOR_SHIFT_LENGTH * 2}
         height=${LABEL_CONNECTOR_HEIGHT}>
@@ -960,13 +1145,13 @@ var DEFAULT_VIEW3 = (input, _, target) => {
     <div class='overlay' style=${overlayStyles} @click=${expandable ? clickHandler : null}>
       ${isExpanded ? label : "!"}
     </div>
-    ${showCloseButton ? html4`<svg @click=${closeHandler} class="close-button" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    ${showCloseButton ? html5`<svg @click=${closeHandler} class="close-button" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
           <circle cx="8" cy="8" r="7.5" fill="#EEE" stroke="#888"/>
           <path d="M5 5L11 11M5 11L11 5" stroke="#888" stroke-width="2"/>
         </svg>` : nothing3}
     `, target);
 };
-var Annotation = class extends UI4.Widget.Widget {
+var Annotation = class extends UI5.Widget.Widget {
   #view;
   #id;
   #inputText;
@@ -1184,16 +1369,16 @@ var AnnotationManager = class _AnnotationManager {
 // gen/front_end/panels/common/GdpSignUpDialog.js
 import "./../../ui/components/switch/switch.js";
 import * as Common2 from "./../../core/common/common.js";
-import * as Host3 from "./../../core/host/host.js";
-import * as i18n7 from "./../../core/i18n/i18n.js";
+import * as Host4 from "./../../core/host/host.js";
+import * as i18n9 from "./../../core/i18n/i18n.js";
 import * as Badges from "./../../models/badges/badges.js";
 import * as Geometry from "./../../models/geometry/geometry.js";
-import * as Buttons3 from "./../../ui/components/buttons/buttons.js";
+import * as Buttons4 from "./../../ui/components/buttons/buttons.js";
 import * as Snackbars2 from "./../../ui/components/snackbars/snackbars.js";
 import * as UIHelpers from "./../../ui/helpers/helpers.js";
 import * as uiI18n from "./../../ui/i18n/i18n.js";
-import * as UI5 from "./../../ui/legacy/legacy.js";
-import { html as html5, render as render5 } from "./../../ui/lit/lit.js";
+import * as UI6 from "./../../ui/legacy/legacy.js";
+import { html as html6, render as render6 } from "./../../ui/lit/lit.js";
 
 // gen/front_end/panels/common/gdpSignUpDialog.css.js
 var gdpSignUpDialog_css_default = `/*
@@ -1367,14 +1552,14 @@ var UIStrings2 = {
    */
   signUpFailed: "Your Google Developer Program profile couldn\u2019t be created. Please try again later."
 };
-var str_2 = i18n7.i18n.registerUIStrings("panels/common/GdpSignUpDialog.ts", UIStrings2);
-var i18nString2 = i18n7.i18n.getLocalizedString.bind(void 0, str_2);
+var str_2 = i18n9.i18n.registerUIStrings("panels/common/GdpSignUpDialog.ts", UIStrings2);
+var i18nString2 = i18n9.i18n.getLocalizedString.bind(void 0, str_2);
 var TERMS_OF_SERVICE_URL = "https://policies.google.com/terms";
 var PRIVACY_POLICY_URL = "https://policies.google.com/privacy";
 var CONTENT_POLICY_URL = "https://developers.google.com/profile/content-policy";
 var GDP_PROGRAM_URL = "https://developers.google.com/program";
 var DEFAULT_VIEW4 = (input, _output, target) => {
-  render5(html5`
+  render6(html6`
       <style>${gdpSignUpDialog_css_default}</style>
       <div class="gdp-sign-up-dialog-header" role="img" aria-label="Google Developer Program"></div>
       <div class="main-content">
@@ -1414,9 +1599,9 @@ var DEFAULT_VIEW4 = (input, _output, target) => {
             <div class="section-text">
               <div>${i18nString2(UIStrings2.tailorProfileBody)}</div><br/>
               <div>${uiI18n.getFormatLocalizedString(str_2, UIStrings2.tailorProfileBodyDisclaimer, {
-    PH1: UI5.XLink.XLink.create(CONTENT_POLICY_URL, i18nString2(UIStrings2.contentPolicy), "link", void 0, "content-policy"),
-    PH2: UI5.XLink.XLink.create(TERMS_OF_SERVICE_URL, i18nString2(UIStrings2.termsOfService), "link", void 0, "terms-of-service"),
-    PH3: UI5.XLink.XLink.create(PRIVACY_POLICY_URL, i18nString2(UIStrings2.privacyPolicy), "link", void 0, "privacy-policy")
+    PH1: UI6.XLink.XLink.create(CONTENT_POLICY_URL, i18nString2(UIStrings2.contentPolicy), "link", void 0, "content-policy"),
+    PH2: UI6.XLink.XLink.create(TERMS_OF_SERVICE_URL, i18nString2(UIStrings2.termsOfService), "link", void 0, "terms-of-service"),
+    PH3: UI6.XLink.XLink.create(PRIVACY_POLICY_URL, i18nString2(UIStrings2.privacyPolicy), "link", void 0, "privacy-policy")
   })}</div>
             </div>
           </div>
@@ -1444,7 +1629,7 @@ var DEFAULT_VIEW4 = (input, _output, target) => {
       </div>
     `, target);
 };
-var GdpSignUpDialog = class _GdpSignUpDialog extends UI5.Widget.VBox {
+var GdpSignUpDialog = class _GdpSignUpDialog extends UI6.Widget.VBox {
   #view;
   #dialog;
   #keepMeUpdated = false;
@@ -1462,10 +1647,10 @@ var GdpSignUpDialog = class _GdpSignUpDialog extends UI5.Widget.VBox {
   async #onSignUpClick() {
     this.#isSigningUp = true;
     this.requestUpdate();
-    const syncInfo = await new Promise((resolve) => Host3.InspectorFrontendHost.InspectorFrontendHostInstance.getSyncInformation(resolve));
+    const syncInfo = await new Promise((resolve) => Host4.InspectorFrontendHost.InspectorFrontendHostInstance.getSyncInformation(resolve));
     const user = syncInfo.accountFullName ?? "";
-    const emailPreference = this.#keepMeUpdated ? Host3.GdpClient.EmailPreference.ENABLED : Host3.GdpClient.EmailPreference.DISABLED;
-    const result = await Host3.GdpClient.GdpClient.instance().createProfile({ user, emailPreference });
+    const emailPreference = this.#keepMeUpdated ? Host4.GdpClient.EmailPreference.ENABLED : Host4.GdpClient.EmailPreference.DISABLED;
+    const result = await Host4.GdpClient.GdpClient.instance().createProfile({ user, emailPreference });
     if (result) {
       Common2.Settings.Settings.instance().moduleSetting("receive-gdp-badges").set(true);
       await Badges.UserBadges.instance().initialize();
@@ -1495,7 +1680,7 @@ var GdpSignUpDialog = class _GdpSignUpDialog extends UI5.Widget.VBox {
     this.#view(viewInput, void 0, this.contentElement);
   }
   static show({ onSuccess, onCancel } = {}) {
-    const dialog2 = new UI5.Dialog.Dialog("gdp-sign-up-dialog");
+    const dialog2 = new UI6.Dialog.Dialog("gdp-sign-up-dialog");
     dialog2.setAriaLabel(i18nString2(UIStrings2.gdpDialogAriaLabel));
     dialog2.setMaxContentSize(new Geometry.Size(384, 500));
     dialog2.setSizeBehavior(
@@ -1515,12 +1700,12 @@ var GdpSignUpDialog = class _GdpSignUpDialog extends UI5.Widget.VBox {
 // gen/front_end/panels/common/AiCodeCompletionDisclaimer.js
 import "./../../ui/components/spinners/spinners.js";
 import "./../../ui/components/tooltips/tooltips.js";
-import * as Host4 from "./../../core/host/host.js";
-import * as i18n9 from "./../../core/i18n/i18n.js";
+import * as Host5 from "./../../core/host/host.js";
+import * as i18n11 from "./../../core/i18n/i18n.js";
 import * as Root3 from "./../../core/root/root.js";
 import * as AiCodeCompletion2 from "./../../models/ai_code_completion/ai_code_completion.js";
-import * as UI6 from "./../../ui/legacy/legacy.js";
-import { Directives as Directives2, html as html6, nothing as nothing4, render as render6 } from "./../../ui/lit/lit.js";
+import * as UI7 from "./../../ui/legacy/legacy.js";
+import { Directives as Directives2, html as html7, nothing as nothing4, render as render7 } from "./../../ui/lit/lit.js";
 import * as VisualLogging4 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/common/aiCodeCompletionDisclaimer.css.js
@@ -1585,7 +1770,7 @@ var aiCodeCompletionDisclaimer_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./aiCodeCompletionDisclaimer.css")} */`;
 
 // gen/front_end/panels/common/AiCodeCompletionDisclaimer.js
-var UIStringsNotTranslate3 = {
+var UIStringsNotTranslate4 = {
   /**
    * @description Disclaimer text for AI code completion
    */
@@ -1623,22 +1808,22 @@ var UIStringsNotTranslate3 = {
    */
   dataIsBeingSentToGoogle: "Data is being sent to Google"
 };
-var lockedString3 = i18n9.i18n.lockedString;
+var lockedString4 = i18n11.i18n.lockedString;
 function getTooltipDisclaimerText2(noLogging, panel2) {
   switch (panel2) {
     case "console":
-      return noLogging ? lockedString3(UIStringsNotTranslate3.tooltipDisclaimerTextForAiCodeCompletionNoLoggingInConsole) : lockedString3(UIStringsNotTranslate3.tooltipDisclaimerTextForAiCodeCompletionInConsole);
+      return noLogging ? lockedString4(UIStringsNotTranslate4.tooltipDisclaimerTextForAiCodeCompletionNoLoggingInConsole) : lockedString4(UIStringsNotTranslate4.tooltipDisclaimerTextForAiCodeCompletionInConsole);
     case "sources":
-      return noLogging ? lockedString3(UIStringsNotTranslate3.tooltipDisclaimerTextForAiCodeCompletionNoLoggingInSources) : lockedString3(UIStringsNotTranslate3.tooltipDisclaimerTextForAiCodeCompletionInSources);
+      return noLogging ? lockedString4(UIStringsNotTranslate4.tooltipDisclaimerTextForAiCodeCompletionNoLoggingInSources) : lockedString4(UIStringsNotTranslate4.tooltipDisclaimerTextForAiCodeCompletionInSources);
   }
 }
 var DEFAULT_SUMMARY_TOOLBAR_VIEW = (input, output, target) => {
   if (input.aidaAvailability !== "available" || !input.disclaimerTooltipId || !input.spinnerTooltipId || !input.panel) {
-    render6(nothing4, target);
+    render7(nothing4, target);
     return;
   }
   const tooltipDisclaimerText = getTooltipDisclaimerText2(input.noLogging, input.panel);
-  render6(html6`
+  render7(html7`
         <style>${aiCodeCompletionDisclaimer_css_default}</style>
         <div class="ai-code-completion-disclaimer"><devtools-spinner
           .active=${false}
@@ -1656,7 +1841,7 @@ var DEFAULT_SUMMARY_TOOLBAR_VIEW = (input, output, target) => {
               variant="rich"
               jslogContext="ai-code-completion-spinner-tooltip">
           <div class="disclaimer-tooltip-container"><div class="tooltip-text">
-            ${lockedString3(UIStringsNotTranslate3.tooltipTextForSpinner)}
+            ${lockedString4(UIStringsNotTranslate4.tooltipTextForSpinner)}
           </div></div></devtools-tooltip>
           <span
               tabIndex="0"
@@ -1668,9 +1853,9 @@ var DEFAULT_SUMMARY_TOOLBAR_VIEW = (input, output, target) => {
               aria-details=${input.disclaimerTooltipId}
               aria-describedby=${input.disclaimerTooltipId}
               @click=${() => {
-    void UI6.ViewManager.ViewManager.instance().showView("chrome-ai");
+    void UI7.ViewManager.ViewManager.instance().showView("chrome-ai");
   }}
-          >${lockedString3(UIStringsNotTranslate3.relevantData)}</span>${lockedString3(UIStringsNotTranslate3.isSentToGoogle)}
+          >${lockedString4(UIStringsNotTranslate4.relevantData)}</span>${lockedString4(UIStringsNotTranslate4.isSentToGoogle)}
           <devtools-tooltip
               id=${input.disclaimerTooltipId}
               variant="rich"
@@ -1693,12 +1878,12 @@ var DEFAULT_SUMMARY_TOOLBAR_VIEW = (input, output, target) => {
     click: true
   })}
                     @click=${input.onManageInSettingsTooltipClick}
-                >${lockedString3(UIStringsNotTranslate3.manageInSettings)}</span></div></devtools-tooltip>
+                >${lockedString4(UIStringsNotTranslate4.manageInSettings)}</span></div></devtools-tooltip>
           </div>
         `, target);
 };
 var MINIMUM_LOADING_STATE_TIMEOUT = 1e3;
-var AiCodeCompletionDisclaimer = class extends UI6.Widget.Widget {
+var AiCodeCompletionDisclaimer = class extends UI7.Widget.Widget {
   #view;
   #viewOutput = {};
   #spinnerTooltipId;
@@ -1733,7 +1918,7 @@ var AiCodeCompletionDisclaimer = class extends UI6.Widget.Widget {
     if (loading) {
       if (!this.#loading) {
         this.#viewOutput.setLoading?.(true);
-        UI6.ARIAUtils.LiveAnnouncer.status(lockedString3(UIStringsNotTranslate3.dataIsBeingSentToGoogle));
+        UI7.ARIAUtils.LiveAnnouncer.status(lockedString4(UIStringsNotTranslate4.dataIsBeingSentToGoogle));
       }
       if (this.#spinnerLoadingTimeout) {
         clearTimeout(this.#spinnerLoadingTimeout);
@@ -1756,7 +1941,7 @@ var AiCodeCompletionDisclaimer = class extends UI6.Widget.Widget {
     this.requestUpdate();
   }
   async #onAidaAvailabilityChange() {
-    const currentAidaAvailability = await Host4.AidaClient.AidaClient.checkAccessPreconditions();
+    const currentAidaAvailability = await Host5.AidaClient.AidaClient.checkAccessPreconditions();
     if (currentAidaAvailability !== this.#aidaAvailability) {
       this.#aidaAvailability = currentAidaAvailability;
       this.requestUpdate();
@@ -1764,7 +1949,7 @@ var AiCodeCompletionDisclaimer = class extends UI6.Widget.Widget {
   }
   #onManageInSettingsTooltipClick() {
     this.#viewOutput.hideTooltip?.();
-    void UI6.ViewManager.ViewManager.instance().showView("chrome-ai");
+    void UI7.ViewManager.ViewManager.instance().showView("chrome-ai");
   }
   performUpdate() {
     this.#view({
@@ -1778,22 +1963,22 @@ var AiCodeCompletionDisclaimer = class extends UI6.Widget.Widget {
   }
   wasShown() {
     super.wasShown();
-    Host4.AidaClient.HostConfigTracker.instance().addEventListener("aidaAvailabilityChanged", this.#boundOnAidaAvailabilityChange);
+    Host5.AidaClient.HostConfigTracker.instance().addEventListener("aidaAvailabilityChanged", this.#boundOnAidaAvailabilityChange);
     void this.#onAidaAvailabilityChange();
   }
   willHide() {
     super.willHide();
-    Host4.AidaClient.HostConfigTracker.instance().removeEventListener("aidaAvailabilityChanged", this.#boundOnAidaAvailabilityChange);
+    Host5.AidaClient.HostConfigTracker.instance().removeEventListener("aidaAvailabilityChanged", this.#boundOnAidaAvailabilityChange);
   }
 };
 
 // gen/front_end/panels/common/AiCodeCompletionSummaryToolbar.js
 import "./../../ui/components/spinners/spinners.js";
 import "./../../ui/components/tooltips/tooltips.js";
-import * as Host5 from "./../../core/host/host.js";
-import * as i18n11 from "./../../core/i18n/i18n.js";
-import * as UI7 from "./../../ui/legacy/legacy.js";
-import { Directives as Directives3, html as html7, nothing as nothing5, render as render7 } from "./../../ui/lit/lit.js";
+import * as Host6 from "./../../core/host/host.js";
+import * as i18n13 from "./../../core/i18n/i18n.js";
+import * as UI8 from "./../../ui/legacy/legacy.js";
+import { Directives as Directives3, html as html8, nothing as nothing5, render as render8 } from "./../../ui/lit/lit.js";
 import * as VisualLogging5 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/common/aiCodeCompletionSummaryToolbar.css.js
@@ -1902,7 +2087,7 @@ var aiCodeCompletionSummaryToolbar_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./aiCodeCompletionSummaryToolbar.css")} */`;
 
 // gen/front_end/panels/common/AiCodeCompletionSummaryToolbar.js
-var UIStringsNotTranslate4 = {
+var UIStringsNotTranslate5 = {
   /**
    * @description Text for recitation notice
    */
@@ -1912,10 +2097,10 @@ var UIStringsNotTranslate4 = {
    */
   viewSources: "View Sources"
 };
-var lockedString4 = i18n11.i18n.lockedString;
+var lockedString5 = i18n13.i18n.lockedString;
 var DEFAULT_SUMMARY_TOOLBAR_VIEW2 = (input, _output, target) => {
   if (input.aidaAvailability !== "available") {
-    render7(nothing5, target);
+    render8(nothing5, target);
     return;
   }
   const toolbarClasses = Directives3.classMap({
@@ -1924,35 +2109,35 @@ var DEFAULT_SUMMARY_TOOLBAR_VIEW2 = (input, _output, target) => {
     "has-recitation-notice": Boolean(input.citations && input.citations.size > 0),
     "has-top-border": input.hasTopBorder
   });
-  const disclaimer = input.disclaimerTooltipId && input.spinnerTooltipId ? html7`<devtools-widget
-            .widgetConfig=${UI7.Widget.widgetConfig(AiCodeCompletionDisclaimer, {
+  const disclaimer = input.disclaimerTooltipId && input.spinnerTooltipId ? html8`<devtools-widget
+            .widgetConfig=${UI8.Widget.widgetConfig(AiCodeCompletionDisclaimer, {
     disclaimerTooltipId: input.disclaimerTooltipId,
     spinnerTooltipId: input.spinnerTooltipId,
     loading: input.loading,
     panel: input.panel
   })} class="disclaimer-widget"></devtools-widget>` : nothing5;
-  const recitationNotice = input.citations && input.citations.size > 0 ? html7`<div class="ai-code-completion-recitation-notice">
-                ${lockedString4(UIStringsNotTranslate4.generatedCodeMayBeSubjectToALicense)}
+  const recitationNotice = input.citations && input.citations.size > 0 ? html8`<div class="ai-code-completion-recitation-notice">
+                ${lockedString5(UIStringsNotTranslate5.generatedCodeMayBeSubjectToALicense)}
                 <span class="link"
                     role="link"
                     aria-details=${input.citationsTooltipId}
                     aria-describedby=${input.citationsTooltipId}
                     tabIndex="0">
-                  ${lockedString4(UIStringsNotTranslate4.viewSources)}&nbsp;${lockedString4("(" + input.citations.size + ")")}
+                  ${lockedString5(UIStringsNotTranslate5.viewSources)}&nbsp;${lockedString5("(" + input.citations.size + ")")}
                 </span>
                 <devtools-tooltip
                     id=${input.citationsTooltipId}
                     variant="rich"
                     jslogContext="ai-code-completion-citations"
                 ><div class="citations-tooltip-container">
-                    ${Directives3.repeat(input.citations, (citation) => html7`<x-link
+                    ${Directives3.repeat(input.citations, (citation) => html8`<x-link
                         tabIndex="0"
                         href=${citation}
                         jslog=${VisualLogging5.link("ai-code-completion-citations.citation-link").track({
     click: true
   })}>${citation}</x-link>`)}</div></devtools-tooltip>
             </div>` : nothing5;
-  render7(html7`
+  render8(html8`
         <style>${aiCodeCompletionSummaryToolbar_css_default}</style>
         <div class=${toolbarClasses}>
           ${disclaimer}
@@ -1960,7 +2145,7 @@ var DEFAULT_SUMMARY_TOOLBAR_VIEW2 = (input, _output, target) => {
         </div>
         `, target);
 };
-var AiCodeCompletionSummaryToolbar = class extends UI7.Widget.Widget {
+var AiCodeCompletionSummaryToolbar = class extends UI8.Widget.Widget {
   #view;
   #disclaimerTooltipId;
   #spinnerTooltipId;
@@ -1983,7 +2168,7 @@ var AiCodeCompletionSummaryToolbar = class extends UI7.Widget.Widget {
     this.requestUpdate();
   }
   async #onAidaAvailabilityChange() {
-    const currentAidaAvailability = await Host5.AidaClient.AidaClient.checkAccessPreconditions();
+    const currentAidaAvailability = await Host6.AidaClient.AidaClient.checkAccessPreconditions();
     if (currentAidaAvailability !== this.#aidaAvailability) {
       this.#aidaAvailability = currentAidaAvailability;
       this.requestUpdate();
@@ -2015,25 +2200,25 @@ var AiCodeCompletionSummaryToolbar = class extends UI7.Widget.Widget {
   }
   wasShown() {
     super.wasShown();
-    Host5.AidaClient.HostConfigTracker.instance().addEventListener("aidaAvailabilityChanged", this.#boundOnAidaAvailabilityChange);
+    Host6.AidaClient.HostConfigTracker.instance().addEventListener("aidaAvailabilityChanged", this.#boundOnAidaAvailabilityChange);
     void this.#onAidaAvailabilityChange();
   }
   willHide() {
     super.willHide();
-    Host5.AidaClient.HostConfigTracker.instance().removeEventListener("aidaAvailabilityChanged", this.#boundOnAidaAvailabilityChange);
+    Host6.AidaClient.HostConfigTracker.instance().removeEventListener("aidaAvailabilityChanged", this.#boundOnAidaAvailabilityChange);
   }
 };
 
 // gen/front_end/panels/common/BadgeNotification.js
 import * as Common3 from "./../../core/common/common.js";
-import * as Host6 from "./../../core/host/host.js";
-import * as i18n13 from "./../../core/i18n/i18n.js";
+import * as Host7 from "./../../core/host/host.js";
+import * as i18n15 from "./../../core/i18n/i18n.js";
 import * as Badges2 from "./../../models/badges/badges.js";
-import * as Buttons4 from "./../../ui/components/buttons/buttons.js";
+import * as Buttons5 from "./../../ui/components/buttons/buttons.js";
 import * as UIHelpers2 from "./../../ui/helpers/helpers.js";
 import * as uiI18n2 from "./../../ui/i18n/i18n.js";
-import * as UI8 from "./../../ui/legacy/legacy.js";
-import * as Lit2 from "./../../ui/lit/lit.js";
+import * as UI9 from "./../../ui/legacy/legacy.js";
+import * as Lit3 from "./../../ui/lit/lit.js";
 import * as VisualLogging6 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/common/badgeNotification.css.js
@@ -2134,7 +2319,7 @@ var badgeNotification_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./badgeNotification.css")} */`;
 
 // gen/front_end/panels/common/BadgeNotification.js
-var { html: html8, render: render8 } = Lit2;
+var { html: html9, render: render9 } = Lit3;
 var UIStrings3 = {
   /**
    * @description Title for close button
@@ -2178,16 +2363,16 @@ var UIStrings3 = {
    */
   createProfile: "Create profile"
 };
-var str_3 = i18n13.i18n.registerUIStrings("panels/common/BadgeNotification.ts", UIStrings3);
-var i18nString3 = i18n13.i18n.getLocalizedString.bind(void 0, str_3);
+var str_3 = i18n15.i18n.registerUIStrings("panels/common/BadgeNotification.ts", UIStrings3);
+var i18nString3 = i18n15.i18n.getLocalizedString.bind(void 0, str_3);
 var i18nFormatString = uiI18n2.getFormatLocalizedString.bind(void 0, str_3);
-var lockedString5 = i18n13.i18n.lockedString;
+var lockedString6 = i18n15.i18n.lockedString;
 var LEFT_OFFSET = 5;
 var BOTTOM_OFFSET = 5;
 var AUTO_CLOSE_TIME_IN_MS = 3e4;
 var DEFAULT_VIEW5 = (input, _output, target) => {
   const actionButtons = input.actions.map((property) => {
-    return html8`<devtools-button
+    return html9`<devtools-button
         class="notification-button"
         @click=${() => property.onClick()}
         jslog=${VisualLogging6.action(property.jslogContext).track({ click: true })}
@@ -2196,7 +2381,7 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
         .inverseColorTheme=${true}
     >${property.label}</devtools-button>`;
   });
-  const crossButton = html8`<devtools-button
+  const crossButton = html9`<devtools-button
         class="dismiss notification-button"
         @click=${input.onDismissClick}
         jslog=${VisualLogging6.action("badge-notification.dismiss").track({ click: true })}
@@ -2206,7 +2391,7 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
         .title=${i18nString3(UIStrings3.close)}
         .inverseColorTheme=${true}
     ></devtools-button>`;
-  render8(html8`
+  render9(html9`
     <style>${badgeNotification_css_default}</style>
     <div class="container" jslog=${VisualLogging6.dialog("badge-notification")}>
       <div class="badge-container" jslog=${VisualLogging6.item(input.jslogContext)}>
@@ -2225,7 +2410,7 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
 function revealBadgeSettings() {
   void Common3.Revealer.reveal(Common3.Settings.moduleSetting("receive-gdp-badges"));
 }
-var BadgeNotification = class extends UI8.Widget.Widget {
+var BadgeNotification = class extends UI9.Widget.Widget {
   jslogContext = "";
   message = "";
   imageUri = "";
@@ -2254,7 +2439,7 @@ var BadgeNotification = class extends UI8.Widget.Widget {
   }
   #positionNotification() {
     const boundingRect = this.contentElement.getBoundingClientRect();
-    const container = UI8.UIUtils.getDevToolsBoundingElement();
+    const container = UI9.UIUtils.getDevToolsBoundingElement();
     this.contentElement.positionAt(LEFT_OFFSET, container.clientHeight - boundingRect.height - BOTTOM_OFFSET, container);
   }
   #show(properties) {
@@ -2274,7 +2459,7 @@ var BadgeNotification = class extends UI8.Widget.Widget {
     this.#autoCloseTimeout = window.setTimeout(this.#onAutoClose, AUTO_CLOSE_TIME_IN_MS);
   }
   #presentStarterBadgeSettingsNudge(badge) {
-    const googleDeveloperProgramLink = UI8.XLink.XLink.create("https://developers.google.com/program", lockedString5("Google Developer Program"), "badge-link", void 0, "program-link");
+    const googleDeveloperProgramLink = UI9.XLink.XLink.create("https://developers.google.com/program", lockedString6("Google Developer Program"), "badge-link", void 0, "program-link");
     this.#show({
       message: i18nFormatString(UIStrings3.starterBadgeAwardMessageSettingDisabled, { PH1: badge.title, PH2: googleDeveloperProgramLink }),
       jslogContext: badge.jslogContext,
@@ -2300,7 +2485,7 @@ var BadgeNotification = class extends UI8.Widget.Widget {
     });
   }
   #presentStarterBadgeProfileNudge(badge) {
-    const googleDeveloperProgramLink = UI8.XLink.XLink.create("https://developers.google.com/program", lockedString5("Google Developer Program"), "badge-link", void 0, "program-link");
+    const googleDeveloperProgramLink = UI9.XLink.XLink.create("https://developers.google.com/program", lockedString6("Google Developer Program"), "badge-link", void 0, "program-link");
     this.#show({
       message: i18nFormatString(UIStrings3.starterBadgeAwardMessageNoGdpProfile, { PH1: badge.title, PH2: googleDeveloperProgramLink }),
       jslogContext: badge.jslogContext,
@@ -2345,7 +2530,7 @@ var BadgeNotification = class extends UI8.Widget.Widget {
           label: i18nString3(UIStrings3.viewProfile),
           jslogContext: "view-profile",
           onClick: () => {
-            UIHelpers2.openInNewTab(Host6.GdpClient.GOOGLE_DEVELOPER_PROGRAM_PROFILE_LINK);
+            UIHelpers2.openInNewTab(Host7.GdpClient.GOOGLE_DEVELOPER_PROGRAM_PROFILE_LINK);
           }
         }
       ],
@@ -2392,10 +2577,10 @@ __export(ExtensionPanel_exports, {
   ExtensionPanel: () => ExtensionPanel,
   ExtensionSidebarPane: () => ExtensionSidebarPane
 });
-import * as Platform3 from "./../../core/platform/platform.js";
+import * as Platform4 from "./../../core/platform/platform.js";
 import * as SDK from "./../../core/sdk/sdk.js";
 import * as Extensions from "./../../models/extensions/extensions.js";
-import * as UI10 from "./../../ui/legacy/legacy.js";
+import * as UI11 from "./../../ui/legacy/legacy.js";
 
 // gen/front_end/panels/common/ExtensionView.js
 var ExtensionView_exports = {};
@@ -2404,11 +2589,11 @@ __export(ExtensionView_exports, {
   ExtensionNotifierView: () => ExtensionNotifierView,
   ExtensionView: () => ExtensionView
 });
-import * as UI9 from "./../../ui/legacy/legacy.js";
-import * as Lit3 from "./../../ui/lit/lit.js";
-var { render: render9, html: html9, Directives: { ref } } = Lit3;
+import * as UI10 from "./../../ui/legacy/legacy.js";
+import * as Lit4 from "./../../ui/lit/lit.js";
+var { render: render10, html: html10, Directives: { ref } } = Lit4;
 var DEFAULT_VIEW6 = (input, output, target) => {
-  render9(html9`<iframe
+  render10(html10`<iframe
     ${ref((element) => {
     output.iframe = element;
   })}
@@ -2417,7 +2602,7 @@ var DEFAULT_VIEW6 = (input, output, target) => {
     class=${input.className}
     @load=${input.onLoad}></iframe>`, target);
 };
-var ExtensionView = class extends UI9.Widget.Widget {
+var ExtensionView = class extends UI10.Widget.Widget {
   #server;
   #id;
   #src;
@@ -2469,7 +2654,7 @@ var ExtensionView = class extends UI9.Widget.Widget {
     }
   }
 };
-var ExtensionNotifierView = class extends UI9.Widget.VBox {
+var ExtensionNotifierView = class extends UI10.Widget.VBox {
   server;
   id;
   constructor(server, id) {
@@ -2526,7 +2711,7 @@ var ExtensionIframe = class {
 };
 
 // gen/front_end/panels/common/ExtensionPanel.js
-var ExtensionPanel = class extends UI10.Panel.Panel {
+var ExtensionPanel = class extends UI11.Panel.Panel {
   server;
   id;
   panelToolbar;
@@ -2537,7 +2722,7 @@ var ExtensionPanel = class extends UI10.Panel.Panel {
     this.id = id;
     this.setHideOnDetach();
     this.panelToolbar = this.element.createChild("devtools-toolbar", "hidden");
-    this.#searchableView = new UI10.SearchableView.SearchableView(this, null);
+    this.#searchableView = new UI11.SearchableView.SearchableView(this, null);
     this.#searchableView.show(this.element);
     const extensionView = new ExtensionView(server, this.id, pageURL, "extension");
     extensionView.show(this.#searchableView.element);
@@ -2590,7 +2775,7 @@ var ExtensionButton = class {
   #toolbarButton;
   constructor(server, id, iconURL, tooltip, disabled) {
     this.id = id;
-    this.#toolbarButton = new UI10.Toolbar.ToolbarButton("", "");
+    this.#toolbarButton = new UI11.Toolbar.ToolbarButton("", "");
     this.#toolbarButton.addEventListener("Click", server.notifyButtonClicked.bind(server, this.id));
     this.update(iconURL, tooltip, disabled);
   }
@@ -2609,14 +2794,14 @@ var ExtensionButton = class {
     return this.#toolbarButton;
   }
 };
-var ExtensionSidebarPane = class extends UI10.View.SimpleView {
+var ExtensionSidebarPane = class extends UI11.View.SimpleView {
   #panelName;
   server;
   #id;
   extensionView;
   objectPropertiesView;
   constructor(server, panelName, title, id) {
-    const viewId = Platform3.StringUtilities.toKebabCase(title);
+    const viewId = Platform4.StringUtilities.toKebabCase(title);
     super({ title, viewId });
     this.element.classList.add("fill");
     this.#panelName = panelName;
@@ -2681,7 +2866,7 @@ var ExtensionSidebarPane = class extends UI10.View.SimpleView {
       return;
     }
     objectPropertiesView.element.removeChildren();
-    void UI10.UIUtils.Renderer.render(object, { title, editable: false, expand: true }).then((result) => {
+    void UI11.UIUtils.Renderer.render(object, { title, editable: false, expand: true }).then((result) => {
       if (!result) {
         callback();
         return;
@@ -2701,9 +2886,9 @@ __export(ExtensionServer_exports, {
   RevealableNetworkRequestFilter: () => RevealableNetworkRequestFilter
 });
 import * as Common4 from "./../../core/common/common.js";
-import * as Host7 from "./../../core/host/host.js";
-import * as i18n15 from "./../../core/i18n/i18n.js";
-import * as Platform4 from "./../../core/platform/platform.js";
+import * as Host8 from "./../../core/host/host.js";
+import * as i18n17 from "./../../core/i18n/i18n.js";
+import * as Platform5 from "./../../core/platform/platform.js";
 import * as SDK2 from "./../../core/sdk/sdk.js";
 import * as Bindings from "./../../models/bindings/bindings.js";
 import * as Extensions2 from "./../../models/extensions/extensions.js";
@@ -2712,7 +2897,7 @@ import * as Logs from "./../../models/logs/logs.js";
 import * as TextUtils from "./../../models/text_utils/text_utils.js";
 import * as Workspace from "./../../models/workspace/workspace.js";
 import * as Components from "./../../ui/legacy/components/utils/utils.js";
-import * as UI11 from "./../../ui/legacy/legacy.js";
+import * as UI12 from "./../../ui/legacy/legacy.js";
 import * as ThemeSupport3 from "./../../ui/legacy/theme_support/theme_support.js";
 var extensionOrigins = /* @__PURE__ */ new WeakMap();
 var kPermittedSchemes = ["http:", "https:", "file:", "data:", "chrome-extension:", "about:"];
@@ -2871,7 +3056,7 @@ var ExtensionServer = class _ExtensionServer extends Common4.ObjectWrapper.Objec
     if (existingTabId) {
       this.setInspectedTabId({ data: existingTabId });
     }
-    Host7.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host7.InspectorFrontendHostAPI.Events.SetInspectedTabId, this.setInspectedTabId, this);
+    Host8.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host8.InspectorFrontendHostAPI.Events.SetInspectedTabId, this.setInspectedTabId, this);
     this.initExtensions();
     ThemeSupport3.ThemeSupport.instance().addEventListener(ThemeSupport3.ThemeChangeEvent.eventName, this.#onThemeChange);
   }
@@ -2881,7 +3066,7 @@ var ExtensionServer = class _ExtensionServer extends Common4.ObjectWrapper.Objec
   dispose() {
     ThemeSupport3.ThemeSupport.instance().removeEventListener(ThemeSupport3.ThemeChangeEvent.eventName, this.#onThemeChange);
     SDK2.TargetManager.TargetManager.instance().removeEventListener("InspectedURLChanged", this.inspectedURLChanged, this);
-    Host7.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(Host7.InspectorFrontendHostAPI.Events.SetInspectedTabId, this.setInspectedTabId, this);
+    Host8.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(Host8.InspectorFrontendHostAPI.Events.SetInspectedTabId, this.setInspectedTabId, this);
     window.removeEventListener("message", this.onWindowMessage, false);
   }
   #onThemeChange = () => {
@@ -2900,7 +3085,7 @@ var ExtensionServer = class _ExtensionServer extends Common4.ObjectWrapper.Objec
   }
   initializeExtensions() {
     if (this.inspectedTabId !== null) {
-      Host7.InspectorFrontendHost.InspectorFrontendHostInstance.setAddExtensionCallback(this.addExtension.bind(this));
+      Host8.InspectorFrontendHost.InspectorFrontendHostInstance.setAddExtensionCallback(this.addExtension.bind(this));
     }
   }
   hasExtensions() {
@@ -3213,7 +3398,7 @@ var ExtensionServer = class _ExtensionServer extends Common4.ObjectWrapper.Objec
       return this.status.E_BADARG("command", `expected ${"createPanel"}`);
     }
     const id = message.id;
-    if (this.clientObjects.has(id) || UI11.InspectorView.InspectorView.instance().hasPanel(id)) {
+    if (this.clientObjects.has(id) || UI12.InspectorView.InspectorView.instance().hasPanel(id)) {
       return this.status.E_EXISTS(id);
     }
     const page = _ExtensionServer.expandResourcePath(this.getExtensionOrigin(port), message.page);
@@ -3222,9 +3407,9 @@ var ExtensionServer = class _ExtensionServer extends Common4.ObjectWrapper.Objec
     }
     let persistentId = this.getExtensionOrigin(port) + message.title;
     persistentId = persistentId.replace(/\s|:\d+/g, "");
-    const panelView = new ExtensionServerPanelView(persistentId, i18n15.i18n.lockedString(message.title), new ExtensionPanel(this, persistentId, id, page));
+    const panelView = new ExtensionServerPanelView(persistentId, i18n17.i18n.lockedString(message.title), new ExtensionPanel(this, persistentId, id, page));
     this.clientObjects.set(id, panelView);
-    UI11.InspectorView.InspectorView.instance().addPanel(panelView);
+    UI12.InspectorView.InspectorView.instance().addPanel(panelView);
     return this.status.OK();
   }
   onShowPanel(message) {
@@ -3236,7 +3421,7 @@ var ExtensionServer = class _ExtensionServer extends Common4.ObjectWrapper.Objec
     if (panelView && panelView instanceof ExtensionServerPanelView) {
       panelViewId = panelView.viewId();
     }
-    void UI11.InspectorView.InspectorView.instance().showPanel(panelViewId);
+    void UI12.InspectorView.InspectorView.instance().showPanel(panelViewId);
     return void 0;
   }
   onCreateToolbarButton(message, port) {
@@ -3279,7 +3464,7 @@ var ExtensionServer = class _ExtensionServer extends Common4.ObjectWrapper.Objec
       return this.status.E_BADARG("command", `expected ${"createSidebarPane"}`);
     }
     const id = message.id;
-    const sidebar = new ExtensionSidebarPane(this, message.panel, i18n15.i18n.lockedString(message.title), id);
+    const sidebar = new ExtensionSidebarPane(this, message.panel, i18n17.i18n.lockedString(message.title), id);
     this.#sidebarPanes.push(sidebar);
     this.clientObjects.set(id, sidebar);
     this.dispatchEventToListeners("SidebarPaneAdded", sidebar);
@@ -3662,7 +3847,7 @@ var ExtensionServer = class _ExtensionServer extends Common4.ObjectWrapper.Objec
     function keyCodeForEntry(entry) {
       let keyCode = entry.keyCode;
       if (!keyCode) {
-        if (entry.key === Platform4.KeyboardUtilities.ESCAPE_KEY) {
+        if (entry.key === Platform5.KeyboardUtilities.ESCAPE_KEY) {
           keyCode = 27;
         }
       }
@@ -3679,10 +3864,10 @@ var ExtensionServer = class _ExtensionServer extends Common4.ObjectWrapper.Objec
     this.registerAutosubscriptionHandler("resource-added", Workspace.Workspace.WorkspaceImpl.instance(), Workspace.Workspace.Events.UISourceCodeAdded, this.notifyResourceAdded);
     this.registerAutosubscriptionTargetManagerHandler("network-request-finished", SDK2.NetworkManager.NetworkManager, SDK2.NetworkManager.Events.RequestFinished, this.notifyRequestFinished);
     function onElementsSubscriptionStarted() {
-      UI11.Context.Context.instance().addFlavorChangeListener(SDK2.DOMModel.DOMNode, this.notifyElementsSelectionChanged, this);
+      UI12.Context.Context.instance().addFlavorChangeListener(SDK2.DOMModel.DOMNode, this.notifyElementsSelectionChanged, this);
     }
     function onElementsSubscriptionStopped() {
-      UI11.Context.Context.instance().removeFlavorChangeListener(SDK2.DOMModel.DOMNode, this.notifyElementsSelectionChanged, this);
+      UI12.Context.Context.instance().removeFlavorChangeListener(SDK2.DOMModel.DOMNode, this.notifyElementsSelectionChanged, this);
     }
     this.registerSubscriptionHandler("panel-objectSelected-elements", onElementsSubscriptionStarted.bind(this), onElementsSubscriptionStopped.bind(this));
     this.registerResourceContentCommittedHandler(this.notifyUISourceCodeContentCommitted);
@@ -3755,8 +3940,8 @@ var ExtensionServer = class _ExtensionServer extends Common4.ObjectWrapper.Objec
         return;
       }
       if (!this.registeredExtensions.get(extensionOrigin)) {
-        const injectedAPI = self.buildExtensionAPIInjectedScript(extensionInfo, this.inspectedTabId, ThemeSupport3.ThemeSupport.instance().themeName(), UI11.ShortcutRegistry.ShortcutRegistry.instance().globalShortcutKeys(), _ExtensionServer.instance().extensionAPITestHook);
-        Host7.InspectorFrontendHost.InspectorFrontendHostInstance.setInjectedScriptForOrigin(extensionOrigin, injectedAPI);
+        const injectedAPI = self.buildExtensionAPIInjectedScript(extensionInfo, this.inspectedTabId, ThemeSupport3.ThemeSupport.instance().themeName(), UI12.ShortcutRegistry.ShortcutRegistry.instance().globalShortcutKeys(), _ExtensionServer.instance().extensionAPITestHook);
+        Host8.InspectorFrontendHost.InspectorFrontendHostInstance.setInjectedScriptForOrigin(extensionOrigin, injectedAPI);
         this.registeredExtensions.set(extensionOrigin, extensionRegistration);
       }
       this.addExtensionFrame(extensionInfo);
@@ -3980,12 +4165,12 @@ var ExtensionServer = class _ExtensionServer extends Common4.ObjectWrapper.Objec
     this.extensionsEnabled = true;
   }
 };
-var ExtensionServerPanelView = class extends UI11.View.SimpleView {
+var ExtensionServerPanelView = class extends UI12.View.SimpleView {
   name;
   panel;
   constructor(name, title, panel2) {
-    const kebabTitle = Platform4.StringUtilities.toKebabCase(title);
-    const viewId = Platform4.StringUtilities.isExtendedKebabCase(kebabTitle) ? kebabTitle : "extension-panel";
+    const kebabTitle = Platform5.StringUtilities.toKebabCase(title);
+    const viewId = Platform5.StringUtilities.isExtendedKebabCase(kebabTitle) ? kebabTitle : "extension-panel";
     super({ title, viewId });
     this.name = name;
     this.panel = panel2;
@@ -4011,7 +4196,7 @@ var ExtensionStatus = class {
       const status = { code, description, details };
       if (code !== "OK") {
         status.isError = true;
-        console.error("Extension server error: " + Platform4.StringUtilities.sprintf(description, ...details));
+        console.error("Extension server error: " + Platform5.StringUtilities.sprintf(description, ...details));
       }
       return status;
     }
@@ -4034,12 +4219,12 @@ __export(PersistenceUtils_exports, {
 });
 import "./../../ui/kit/kit.js";
 import * as Common5 from "./../../core/common/common.js";
-import * as i18n17 from "./../../core/i18n/i18n.js";
-import * as Platform5 from "./../../core/platform/platform.js";
+import * as i18n19 from "./../../core/i18n/i18n.js";
+import * as Platform6 from "./../../core/platform/platform.js";
 import * as Persistence from "./../../models/persistence/persistence.js";
 import * as Workspace3 from "./../../models/workspace/workspace.js";
 import * as Components2 from "./../../ui/legacy/components/utils/utils.js";
-import { html as html10 } from "./../../ui/lit/lit.js";
+import { html as html11 } from "./../../ui/lit/lit.js";
 var UIStrings4 = {
   /**
    * @description Text in Persistence Utils of the Workspace settings in Settings
@@ -4052,8 +4237,8 @@ var UIStrings4 = {
    */
   linkedToS: "Linked to {PH1}"
 };
-var str_4 = i18n17.i18n.registerUIStrings("panels/common/PersistenceUtils.ts", UIStrings4);
-var i18nString4 = i18n17.i18n.getLocalizedString.bind(void 0, str_4);
+var str_4 = i18n19.i18n.registerUIStrings("panels/common/PersistenceUtils.ts", UIStrings4);
+var i18nString4 = i18n19.i18n.getLocalizedString.bind(void 0, str_4);
 var PersistenceUtils = class _PersistenceUtils {
   static tooltipForUISourceCode(uiSourceCode) {
     const binding = Persistence.Persistence.PersistenceImpl.instance().binding(uiSourceCode);
@@ -4064,9 +4249,9 @@ var PersistenceUtils = class _PersistenceUtils {
       return Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.tooltipForUISourceCode(binding.fileSystem);
     }
     if (binding.network.contentType().isFromSourceMap()) {
-      return i18nString4(UIStrings4.linkedToSourceMapS, { PH1: Platform5.StringUtilities.trimMiddle(binding.network.url(), 150) });
+      return i18nString4(UIStrings4.linkedToSourceMapS, { PH1: Platform6.StringUtilities.trimMiddle(binding.network.url(), 150) });
     }
-    return i18nString4(UIStrings4.linkedToS, { PH1: Platform5.StringUtilities.trimMiddle(binding.network.url(), 150) });
+    return i18nString4(UIStrings4.linkedToS, { PH1: Platform6.StringUtilities.trimMiddle(binding.network.url(), 150) });
   }
   static iconForUISourceCode(uiSourceCode) {
     const binding = Persistence.Persistence.PersistenceImpl.instance().binding(uiSourceCode);
@@ -4075,7 +4260,7 @@ var PersistenceUtils = class _PersistenceUtils {
         return null;
       }
       const dotClass = Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().project() === binding.fileSystem.project() ? "purple" : "green";
-      return html10`<devtools-icon class="small dot ${dotClass}" name="document"
+      return html11`<devtools-icon class="small dot ${dotClass}" name="document"
                                  title=${_PersistenceUtils.tooltipForUISourceCode(binding.network)}>
                   </devtools-icon>`;
     }
@@ -4083,9 +4268,9 @@ var PersistenceUtils = class _PersistenceUtils {
       return null;
     }
     if (Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().isActiveHeaderOverrides(uiSourceCode)) {
-      return html10`<devtools-icon class="small dot purple" name="document"></devtools-icon>`;
+      return html11`<devtools-icon class="small dot purple" name="document"></devtools-icon>`;
     }
-    return html10`<devtools-icon class="small" name="document"
+    return html11`<devtools-icon class="small" name="document"
                                title=${_PersistenceUtils.tooltipForUISourceCode(uiSourceCode)}>
                 </devtools-icon>`;
   }
@@ -4113,10 +4298,10 @@ __export(DOMLinkifier_exports, {
   Linkifier: () => Linkifier2
 });
 import * as Common6 from "./../../core/common/common.js";
-import * as i18n19 from "./../../core/i18n/i18n.js";
+import * as i18n21 from "./../../core/i18n/i18n.js";
 import * as SDK3 from "./../../core/sdk/sdk.js";
-import * as UI12 from "./../../ui/legacy/legacy.js";
-import { Directives as Directives4, html as html11, nothing as nothing6, render as render10 } from "./../../ui/lit/lit.js";
+import * as UI13 from "./../../ui/legacy/legacy.js";
+import { Directives as Directives4, html as html12, nothing as nothing6, render as render11 } from "./../../ui/lit/lit.js";
 import * as VisualLogging7 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/common/domLinkifier.css.js
@@ -4187,10 +4372,10 @@ var UIStrings5 = {
    */
   node: "<node>"
 };
-var str_5 = i18n19.i18n.registerUIStrings("panels/common/DOMLinkifier.ts", UIStrings5);
-var i18nString5 = i18n19.i18n.getLocalizedString.bind(void 0, str_5);
+var str_5 = i18n21.i18n.registerUIStrings("panels/common/DOMLinkifier.ts", UIStrings5);
+var i18nString5 = i18n21.i18n.getLocalizedString.bind(void 0, str_5);
 var DEFAULT_VIEW7 = (input, _output, target) => {
-  render10(html11`${input.tagName || input.pseudo ? html11`
+  render11(html12`${input.tagName || input.pseudo ? html12`
     <style>${domLinkifier_css_default}</style>
     <span class="monospace">
       <button class="node-link text-button link-style ${classMap({
@@ -4208,14 +4393,14 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
     ...input.classes.map((c) => `.${c}`),
     input.pseudo ? `::${input.pseudo}` : ""
   ].join(" ")}>${[
-    input.tagName ? html11`<span class="node-label-name">${input.tagName}</span>` : nothing6,
-    input.id ? html11`<span class="node-label-id">#${input.id}</span>` : nothing6,
-    ...input.classes.map((className) => html11`<span class="extra node-label-class">.${className}</span>`),
-    input.pseudo ? html11`<span class="extra node-label-pseudo">${input.pseudo}</span>` : nothing6
+    input.tagName ? html12`<span class="node-label-name">${input.tagName}</span>` : nothing6,
+    input.id ? html12`<span class="node-label-id">#${input.id}</span>` : nothing6,
+    ...input.classes.map((className) => html12`<span class="extra node-label-class">.${className}</span>`),
+    input.pseudo ? html12`<span class="extra node-label-pseudo">${input.pseudo}</span>` : nothing6
   ]}</button>
     </span>` : i18nString5(UIStrings5.node)}`, target);
 };
-var DOMNodeLink = class extends UI12.Widget.Widget {
+var DOMNodeLink = class extends UI13.Widget.Widget {
   #node = void 0;
   #options = void 0;
   #view;
@@ -4310,7 +4495,7 @@ var DOMNodeLink = class extends UI12.Widget.Widget {
   }
 };
 var DEFERRED_DEFAULT_VIEW = (input, _output, target) => {
-  render10(html11`
+  render11(html12`
       <style>${domLinkifier_css_default}</style>
       <button class="node-link text-button link-style"
           jslog=${VisualLogging7.link("node").track({ click: true })}
@@ -4320,7 +4505,7 @@ var DEFERRED_DEFAULT_VIEW = (input, _output, target) => {
         <slot></slot>
       </button>`, target);
 };
-var DeferredDOMNodeLink = class extends UI12.Widget.Widget {
+var DeferredDOMNodeLink = class extends UI13.Widget.Widget {
   #deferredNode = void 0;
   #options = void 0;
   #view;
@@ -4357,12 +4542,12 @@ var Linkifier2 = class _Linkifier {
   linkify(node, options) {
     if (node instanceof SDK3.DOMModel.DOMNode) {
       const link6 = document.createElement("devtools-widget");
-      link6.widgetConfig = UI12.Widget.widgetConfig((e) => new DOMNodeLink(e, node, options));
+      link6.widgetConfig = UI13.Widget.widgetConfig((e) => new DOMNodeLink(e, node, options));
       return link6;
     }
     if (node instanceof SDK3.DOMModel.DeferredDOMNode) {
       const link6 = document.createElement("devtools-widget");
-      link6.widgetConfig = UI12.Widget.widgetConfig((e) => new DeferredDOMNodeLink(e, node, options));
+      link6.widgetConfig = UI13.Widget.widgetConfig((e) => new DeferredDOMNodeLink(e, node, options));
       return link6;
     }
     throw new Error("Can't linkify non-node");
@@ -4370,25 +4555,25 @@ var Linkifier2 = class _Linkifier {
 };
 
 // gen/front_end/panels/common/CopyChangesToPrompt.js
-import * as Host8 from "./../../core/host/host.js";
-import * as i18n21 from "./../../core/i18n/i18n.js";
+import * as Host9 from "./../../core/host/host.js";
+import * as i18n23 from "./../../core/i18n/i18n.js";
 import * as GreenDev from "./../../models/greendev/greendev.js";
 import * as WorkspaceDiff from "./../../models/workspace_diff/workspace_diff.js";
 import * as Diff from "./../../third_party/diff/diff.js";
-import * as Buttons5 from "./../../ui/components/buttons/buttons.js";
+import * as Buttons6 from "./../../ui/components/buttons/buttons.js";
 import * as Snackbars3 from "./../../ui/components/snackbars/snackbars.js";
-import * as UI13 from "./../../ui/legacy/legacy.js";
-import * as Lit4 from "./../../ui/lit/lit.js";
-var { render: render11, html: html12 } = Lit4;
+import * as UI14 from "./../../ui/legacy/legacy.js";
+import * as Lit5 from "./../../ui/lit/lit.js";
+var { render: render12, html: html13 } = Lit5;
 var UIStrings6 = {
   /**
    * @description The message shown in a toast when the response is copied to the clipboard.
    */
   responseCopiedToClipboard: "Response copied to clipboard"
 };
-var str_6 = i18n21.i18n.registerUIStrings("panels/common/CopyChangesToPrompt.ts", UIStrings6);
-var i18nString6 = i18n21.i18n.getLocalizedString.bind(void 0, str_6);
-var CopyChangesToPrompt = class extends UI13.Widget.Widget {
+var str_6 = i18n23.i18n.registerUIStrings("panels/common/CopyChangesToPrompt.ts", UIStrings6);
+var i18nString6 = i18n23.i18n.getLocalizedString.bind(void 0, str_6);
+var CopyChangesToPrompt = class extends UI14.Widget.Widget {
   #workspaceDiff;
   #view;
   #patchAgentCSSChange = null;
@@ -4439,7 +4624,7 @@ var CopyChangesToPrompt = class extends UI13.Widget.Widget {
       diffs,
       patchAgentCSSChange: this.#patchAgentCSSChange,
       onCopyToClipboard: (text) => {
-        Host8.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(text);
+        Host9.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(text);
         Snackbars3.Snackbar.Snackbar.show({
           message: i18nString6(UIStrings6.responseCopiedToClipboard)
         });
@@ -4452,7 +4637,7 @@ var GEMINI_CHANGES_VIEW = (input, _output, target) => {
     return d.diff !== void 0 && d.diff.length > 0;
   });
   if (!hasDiffs && !input.patchAgentCSSChange) {
-    render11(Lit4.nothing, target);
+    render12(Lit5.nothing, target);
     return;
   }
   const promptForChangesPanel = hasDiffs ? buildGeminiCommand(input.diffs) : "";
@@ -4462,7 +4647,7 @@ var GEMINI_CHANGES_VIEW = (input, _output, target) => {
   function copyClick() {
     input.onCopyToClipboard(finalPrompt);
   }
-  render11(html12`<devtools-button
+  render12(html13`<devtools-button
       .iconName=${"copy"}
       .variant=${"outlined"}
       @click=${copyClick}>Copy prompt to clipboard</devtools-button>
@@ -4556,18 +4741,18 @@ var UIStrings7 = {
    */
   allow: "Allow"
 };
-var str_7 = i18n23.i18n.registerUIStrings("panels/common/common.ts", UIStrings7);
-var i18nString7 = i18n23.i18n.getLocalizedString.bind(void 0, str_7);
+var str_7 = i18n25.i18n.registerUIStrings("panels/common/common.ts", UIStrings7);
+var i18nString7 = i18n25.i18n.getLocalizedString.bind(void 0, str_7);
 var TypeToAllowDialog = class {
   static async show(options) {
-    const dialog2 = new UI14.Dialog.Dialog(options.jslogContext.dialog);
+    const dialog2 = new UI15.Dialog.Dialog(options.jslogContext.dialog);
     dialog2.setMaxContentSize(new Geometry2.Size(504, 340));
     dialog2.setSizeBehavior(
       "SetExactWidthMaxHeight"
       /* UI.GlassPane.SizeBehavior.SET_EXACT_WIDTH_MAX_HEIGHT */
     );
     dialog2.setDimmed(true);
-    const shadowRoot = UI14.UIUtils.createShadowRootWithCoreStyles(dialog2.contentElement, { cssFile: common_css_default });
+    const shadowRoot = UI15.UIUtils.createShadowRootWithCoreStyles(dialog2.contentElement, { cssFile: common_css_default });
     const content = shadowRoot.createChild("div", "type-to-allow-dialog");
     const result = await new Promise((resolve) => {
       const header = content.createChild("div", "header");
@@ -4584,12 +4769,12 @@ var TypeToAllowDialog = class {
         /* Buttons.Button.Size.SMALL */
       );
       content.createChild("div", "message").textContent = options.message;
-      const input = UI14.UIUtils.createInput("text-input", "text", options.jslogContext.input);
+      const input = UI15.UIUtils.createInput("text-input", "text", options.jslogContext.input);
       input.placeholder = options.inputPlaceholder;
       content.appendChild(input);
       const buttonsBar = content.createChild("div", "button");
-      const cancelButton = UI14.UIUtils.createTextButton(i18nString7(UIStrings7.cancel), () => resolve(false), { jslogContext: "cancel" });
-      const allowButton = UI14.UIUtils.createTextButton(i18nString7(UIStrings7.allow), () => {
+      const cancelButton = UI15.UIUtils.createTextButton(i18nString7(UIStrings7.cancel), () => resolve(false), { jslogContext: "cancel" });
+      const allowButton = UI15.UIUtils.createTextButton(i18nString7(UIStrings7.allow), () => {
         resolve(input.value === options.typePhrase || input.value === `'${options.typePhrase}'`);
       }, {
         jslogContext: "confirm",
@@ -4609,7 +4794,7 @@ var TypeToAllowDialog = class {
         resolve(false);
       });
       dialog2.show();
-      Host9.userMetrics.actionTaken(Host9.UserMetrics.Action.SelfXssWarningDialogShown);
+      Host10.userMetrics.actionTaken(Host10.UserMetrics.Action.SelfXssWarningDialogShown);
     });
     dialog2.hide();
     return result;
@@ -4620,6 +4805,7 @@ export {
   AiCodeCompletionSummaryToolbar,
   AiCodeCompletionTeaser,
   AiCodeGenerationTeaser_exports as AiCodeGenerationTeaser,
+  AiCodeGenerationUpgradeDialog,
   AnnotationManager,
   BadgeNotification,
   CopyChangesToPrompt,

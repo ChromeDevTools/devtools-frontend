@@ -55,6 +55,7 @@ entrypoints/formatter_worker/Substitute.test.js
 foundation/Universe.test.js
 models/ai_assistance/data_formatters/PerformanceInsightFormatter.test.js
 models/ai_assistance/data_formatters/PerformanceTraceFormatter.test.js
+models/crux-manager/CrUXManager.test.js
 models/formatter/FormatterWorkerPool.test.js
 models/formatter/ScriptFormatter.test.js
 models/issues_manager/DeprecationIssue.test.js
@@ -172,7 +173,6 @@ models/bindings/ResourceScriptMapping.test.js
 models/bindings/ResourceUtils.test.js
 models/breakpoints/BreakpointManager.test.js
 models/cpu_profile/CPUProfileDataModel.test.js
-models/crux-manager/CrUXManager.test.js
 models/emulation/DeviceModeModel.test.js
 models/emulation/EmulatedDevices.test.js
 models/extensions/HostUrlPattern.test.js

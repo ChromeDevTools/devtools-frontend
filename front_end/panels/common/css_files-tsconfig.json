@@ -8,6 +8,7 @@
         "aiCodeCompletionSummaryToolbar.css.js",
         "aiCodeCompletionTeaser.css.js",
         "aiCodeGenerationTeaser.css.js",
+        "aiCodeGenerationUpgradeDialog.css.js",
         "annotation.css.js",
         "badgeNotification.css.js",
         "common.css.js",

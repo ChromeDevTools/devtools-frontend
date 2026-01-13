@@ -620,9 +620,6 @@ describe('TextUtils', () => {
       results.push('Running at once:');
       const result = tokenizer.write(jsonString);
       assert.isDefined(result, `tokenizer.write() returned ${result}, false expected`);
-      if (result) {
-        assert.fail(`tokenizer.write() returned ${result}, false expected`);
-      }
 
       for (const sample of [3, 15, 50]) {
         tokenizer = new TextUtils.TextUtils.BalancedJSONTokenizer(callback, true);

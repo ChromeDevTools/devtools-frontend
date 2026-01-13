@@ -80,6 +80,7 @@ export function convertRawOutputToEval(opts: RawToEvalOptions): EvalFileOutput {
             assert.ok(modelData, 'No inferenceOptionMetadata');
             const processed: Conversation = {
               id,
+              autoRunExampleId: exampleIdFromInput,
               chromeVersion,
               explanation: exampleMetadata?.explanation ?? '',
               model: {

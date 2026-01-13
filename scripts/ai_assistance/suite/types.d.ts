@@ -31,6 +31,7 @@ export interface EvalFileOutput {
 export interface Conversation {
   id: string;
   chromeVersion: string;
+  autoRunExampleId: string;
   // These are explanations found in the input example HTML that can be used to
   // judge the AI's output.
   explanation: string;

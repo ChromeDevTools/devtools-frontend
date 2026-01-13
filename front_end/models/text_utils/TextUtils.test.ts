@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {SnapshotTester} from '../../testing/SnapshotTester.js';
+
 import * as TextUtils from './text_utils.js';
 
 type SplitByRegexExpected = Array<[string, number, number]>;
@@ -449,7 +451,7 @@ describe('TextUtils', () => {
     });
   });
 
-  describe('BalancedJSONTokenizer', () => {
+  describe('BalancedJSONTokenizer', function() {
     it('can be instantiated successfully', () => {
       const callback = () => {};
       const findMultiple = false;
@@ -528,6 +530,124 @@ describe('TextUtils', () => {
       assert.isFalse(result, 'return value was incorrect');
       assert.deepEqual(callbackResults, [], 'callback had unexpected results');
       assert.strictEqual(tokenizer.remainder(), ']]', 'remainder was incorrect');
+    });
+
+    const snapshotTester = new SnapshotTester(this, import.meta);
+
+    it('matches quotes', function() {
+      const testStrings = [
+        {'odd back slashes with text around': 'tes\\"t'},
+        {'escaped double quotes': '"test"'},
+        {'escaped back slash before double quote': 'test\\'},
+        {1: 2},
+        {'': ''},
+        {'nested brackets': {}},
+        {'nested brackets with double quotes': {'': ''}},
+        {etc: {'\\': '"'}},
+        {etc: {'\\\\': '\\'}},
+        {etc: {'\\\\"': '\\\\"'}},
+      ];
+      const results: string[] = [];
+      const callback = (str: string) => results.push(str);
+
+      for (const testString of testStrings) {
+        const jsonString = JSON.stringify(testString);
+        results.push('Parsing ' + jsonString);
+        const tokenizer = new TextUtils.TextUtils.BalancedJSONTokenizer(callback);
+        const result = tokenizer.write(jsonString);
+        assert.isTrue(result, `tokenizer.write() returned ${result}, true expected`);
+      }
+      snapshotTester.assert(this, results.join('\n'));
+    });
+
+    it('matches sequence using one shot', function() {
+      const testData = [
+        {one: 'one'},
+        [{one: 'one'}, {two: 'two'}],
+        [{one: 'one'}, {two: 'two'}, {three: 'three'}],
+      ];
+      const results: string[] = [];
+      const callback = (str: string) => results.push(str);
+
+      for (const data of testData) {
+        const jsonString = JSON.stringify(data);
+        results.push('Parsing ' + jsonString);
+        const tokenizer = new TextUtils.TextUtils.BalancedJSONTokenizer(callback);
+        const result = tokenizer.write(jsonString);
+        assert.isDefined(result, `tokenizer.write() returned ${result}, true expected`);
+      }
+      snapshotTester.assert(this, results.join('\n'));
+    });
+
+    it('matches sequence using multiple', function() {
+      const testData = [
+        {one: 'one'},
+        [{one: 'one'}, {two: 'two'}],
+        [{one: 'one'}, {two: 'two'}, {three: 'three'}],
+      ];
+      const results: string[] = [];
+      const callback = (str: string) => results.push(str);
+
+      for (const data of testData) {
+        const jsonString = JSON.stringify(data);
+        results.push('Parsing ' + jsonString);
+        const tokenizer = new TextUtils.TextUtils.BalancedJSONTokenizer(callback, true);
+        const result = tokenizer.write(jsonString);
+        const expectedResult = !(data instanceof Array);
+        assert.strictEqual(result, expectedResult, `tokenizer.write() returned ${result}, ${expectedResult} expected`);
+      }
+      snapshotTester.assert(this, results.join('\n'));
+    });
+
+    it('incremental writes', function() {
+      const testStrings = [
+        {'odd back slashes with text around': 'tes\\"t'},
+        {'escaped double quotes': '"test"'},
+        {'escaped back slash before double quote': 'test\\'},
+        {1: 2},
+        {'': ''},
+        {'nested brackets': {}},
+        {'nested brackets with double quotes': {'': ''}},
+        {etc: {'\\': '"'}},
+        {etc: {'\\\\': '\\'}},
+        {etc: {'\\\\"': '\\\\"'}},
+      ];
+      const results: string[] = [];
+      const callback = (str: string) => results.push(str);
+      const jsonString = JSON.stringify(testStrings);
+      let tokenizer = new TextUtils.TextUtils.BalancedJSONTokenizer(callback, true);
+
+      results.push('Running at once:');
+      const result = tokenizer.write(jsonString);
+      assert.isDefined(result, `tokenizer.write() returned ${result}, false expected`);
+      if (result) {
+        assert.fail(`tokenizer.write() returned ${result}, false expected`);
+      }
+
+      for (const sample of [3, 15, 50]) {
+        tokenizer = new TextUtils.TextUtils.BalancedJSONTokenizer(callback, true);
+        results.push('Running by ' + sample + ':');
+        for (let i = 0; i < jsonString.length; i += sample) {
+          const result = tokenizer.write(jsonString.substring(i, i + sample));
+          const expectedResult = (i + sample < jsonString.length);
+          assert.strictEqual(
+              !!result, expectedResult, `tokenizer.write() returned ${result}, ${expectedResult} expected`);
+        }
+      }
+      snapshotTester.assert(this, results.join('\n'));
+    });
+
+    it('garbage after object', function() {
+      const testString = '[{a: \'b\'}], {\'x\': {a: \'b\'}}';
+      const results: string[] = [];
+      const callback = (str: string) => results.push(str);
+
+      results.push('Parsing ' + testString);
+      const tokenizer = new TextUtils.TextUtils.BalancedJSONTokenizer(callback, true);
+      const result = tokenizer.write(testString);
+      assert.isFalse(result, `tokenizer.write() returned ${result}, false expected`);
+
+      snapshotTester.assert(this, results.join('\n'));
     });
   });
 

@@ -173,10 +173,17 @@ interface MismatchedData {
 type AttemptWithMismatchedHeaders =
     SDK.PreloadingModel.PrerenderAttempt|SDK.PreloadingModel.PrerenderUntilScriptAttempt;
 
+interface SpeculativeLoadingStatusForThisPageData {
+  kind: UsedKind;
+  prefetch: SDK.PreloadingModel.PreloadingAttempt|undefined;
+  prerenderLike: SDK.PreloadingModel.PreloadingAttempt|undefined;
+  mismatchedData: MismatchedData|undefined;
+  attemptWithMismatchedHeaders: AttemptWithMismatchedHeaders|undefined;
+}
+
 function renderSpeculativeLoadingStatusForThisPageSections(
-    kind: UsedKind, prefetch: SDK.PreloadingModel.PreloadingAttempt|undefined,
-    prerenderLike: SDK.PreloadingModel.PreloadingAttempt|undefined, mismatchedData: MismatchedData|undefined,
-    attemptWithMismatchedHeaders: AttemptWithMismatchedHeaders|undefined): LitTemplate {
+    {kind, prefetch, prerenderLike, mismatchedData, attemptWithMismatchedHeaders}:
+        SpeculativeLoadingStatusForThisPageData): LitTemplate {
   let badge: Badge;
   let basicMessage: LitTemplate;
   switch (kind) {
@@ -311,8 +318,19 @@ function renderMismatchedHTTPHeadersSections(attempt: AttemptWithMismatchedHeade
   // clang-format on
 }
 
+interface SpeculationsInitiatedByThisPageSummaryData {
+  badges: Badge[];
+  revealRuleSetView: () => void;
+  revealAttemptViewWithFilter: () => void;
+}
+
+interface ViewInput {
+  speculativeLoadingStatusData: SpeculativeLoadingStatusForThisPageData;
+  speculationsInitiatedSummaryData: SpeculationsInitiatedByThisPageSummaryData;
+}
+
 function renderSpeculationsInitiatedByThisPageSummarySections(
-    badges: Badge[], revealRuleSetView: () => void, revealAttemptViewWithFilter: () => void): LitTemplate {
+    {badges, revealRuleSetView, revealAttemptViewWithFilter}: SpeculationsInitiatedByThisPageSummaryData): LitTemplate {
   // Disabled until https://crbug.com/1079231 is fixed.
   // clang-format off
   return html`
@@ -379,12 +397,49 @@ function renderBadge(config: Badge): LitTemplate {
   }
 }
 
+type View = (input: ViewInput, output: undefined, target: HTMLElement|ShadowRoot) => void;
+
+const DEFAULT_VIEW: View =
+    ({speculativeLoadingStatusData, speculationsInitiatedSummaryData}: ViewInput, output, target): void => {
+      // Disabled until https://crbug.com/1079231 is fixed.
+      // clang-format off
+  render(html`
+    <style>${usedPreloadingStyles}</style>
+    <devtools-report>
+      ${renderSpeculativeLoadingStatusForThisPageSections(speculativeLoadingStatusData)}
+
+      <devtools-report-divider></devtools-report-divider>
+
+      ${renderSpeculationsInitiatedByThisPageSummarySections(speculationsInitiatedSummaryData)}
+
+      <devtools-report-divider></devtools-report-divider>
+
+      <devtools-report-section>
+        <x-link
+          class="link devtools-link"
+          href=${'https://developer.chrome.com/blog/prerender-pages/'}
+          jslog=${VisualLogging.link()
+                  .track({ click: true, keydown: 'Enter|Space' })
+                  .context('learn-more')}
+        >${i18nString(UIStrings.learnMore)}</x-link>
+      </devtools-report-section>
+    </devtools-report>`, target, {host: target instanceof ShadowRoot ? target.host : undefined});
+      // clang-format on
+    };
+
 /**
  * TODO(kenoss): Rename this class and file once https://crrev.com/c/4933567 landed.
  * This also shows summary of speculations initiated by this page.
  **/
 export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableComponent<UI.Widget.VBox> {
   readonly #shadow = this.attachShadow({mode: 'open'});
+  readonly #view: View;
+
+  constructor(view = DEFAULT_VIEW) {
+    super();
+    this.#view = view;
+  }
+
   #data: UsedPreloadingViewData = {
     pageURL: '' as Platform.DevToolsPath.UrlString,
     previousAttempts: [],
@@ -397,37 +452,13 @@ export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableCom
   }
 
   async #render(): Promise<void> {
+    const viewInput: ViewInput = {
+      speculativeLoadingStatusData: this.#getSpeculativeLoadingStatusForThisPageData(),
+      speculationsInitiatedSummaryData: this.#getSpeculationsInitiatedByThisPageSummaryData(),
+    };
     await RenderCoordinator.write('UsedPreloadingView render', () => {
-      render(this.#renderTemplate(), this.#shadow, {host: this});
+      this.#view(viewInput, undefined, this.#shadow);
     });
-  }
-
-  #renderTemplate(): LitTemplate {
-    // Disabled until https://crbug.com/1079231 is fixed.
-    // clang-format off
-    return html`
-      <style>${usedPreloadingStyles}</style>
-      <devtools-report>
-        ${this.#speculativeLoadingStatusForThisPageSections()}
-
-        <devtools-report-divider></devtools-report-divider>
-
-        ${this.#speculationsInitiatedByThisPageSummarySections()}
-
-        <devtools-report-divider></devtools-report-divider>
-
-        <devtools-report-section>
-          <x-link
-            class="link devtools-link"
-            href=${'https://developer.chrome.com/blog/prerender-pages/'}
-            jslog=${VisualLogging.link()
-                    .track({ click: true, keydown: 'Enter|Space' })
-                    .context('learn-more')}
-          >${i18nString(UIStrings.learnMore)}</x-link>
-        </devtools-report-section>
-      </devtools-report>
-    `;
-    // clang-format on
   }
 
   #isPrerenderLike(speculationAction: Protocol.Preload.SpeculationAction): boolean {
@@ -440,7 +471,7 @@ export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableCom
     return this.#isPrerenderLike(attempt.action);
   }
 
-  #speculativeLoadingStatusForThisPageSections(): LitTemplate {
+  #getSpeculativeLoadingStatusForThisPageData(): SpeculativeLoadingStatusForThisPageData {
     const pageURL = Common.ParsedURL.ParsedURL.urlWithoutHash(this.#data.pageURL);
     const forThisPage = this.#data.previousAttempts.filter(
         attempt => Common.ParsedURL.ParsedURL.urlWithoutHash(attempt.key.url) === pageURL);
@@ -468,8 +499,13 @@ export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableCom
       kind = UsedKind.NO_PRELOADS;
     }
 
-    return renderSpeculativeLoadingStatusForThisPageSections(
-        kind, prefetch, prerenderLike, this.#getMismatchedData(kind), this.#getAttemptWithMismatchedHeaders());
+    return {
+      kind,
+      prefetch,
+      prerenderLike,
+      mismatchedData: this.#getMismatchedData(kind),
+      attemptWithMismatchedHeaders: this.#getAttemptWithMismatchedHeaders(),
+    };
   }
 
   #getMismatchedData(kind: UsedKind): MismatchedData|undefined {
@@ -509,7 +545,7 @@ export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableCom
     return attempt;
   }
 
-  #speculationsInitiatedByThisPageSummarySections(): LitTemplate {
+  #getSpeculationsInitiatedByThisPageSummaryData(): SpeculationsInitiatedByThisPageSummaryData {
     const count = this.#data.currentAttempts.reduce((acc, attempt) => {
       acc.set(attempt.status, (acc.get(attempt.status) ?? 0) + 1);
       return acc;
@@ -544,7 +580,7 @@ export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableCom
       void Common.Revealer.reveal(new PreloadingHelper.PreloadingForward.AttemptViewWithFilter(null));
     };
 
-    return renderSpeculationsInitiatedByThisPageSummarySections(badges, revealRuleSetView, revealAttemptViewWithFilter);
+    return {badges, revealRuleSetView, revealAttemptViewWithFilter};
   }
 }
 

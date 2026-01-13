@@ -17,7 +17,11 @@ import {
 describe('Live edit', () => {
   setup({enabledFeatures: ['DevToolsLiveEdit']});
 
-  it('moves the breakpoint after reload when changes are not persisted', async ({devToolsPage, inspectedPage}) => {
+  // Live edit was disabled on the backend, but until the feature is fully removed as well we keep the test.
+  it.skip('[crbug.com/417884172] moves the breakpoint after reload when changes are not persisted', async ({
+                                                                                                      devToolsPage,
+                                                                                                      inspectedPage
+                                                                                                    }) => {
     await openSourceCodeEditorForFile(
         'live-edit-moving-breakpoint.js', 'live-edit-moving-breakpoint.html', devToolsPage, inspectedPage);
 

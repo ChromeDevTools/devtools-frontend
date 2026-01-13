@@ -8,7 +8,6 @@ import type * as Platform from '../../../core/platform/platform.js';
 import {createConsoleInsightWidget} from '../../../testing/ConsoleInsightHelpers.js';
 import {
   assertScreenshot,
-  getCleanTextContentFromElements,
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment, updateHostConfig} from '../../../testing/EnvironmentHelpers.js';
@@ -21,17 +20,6 @@ type Insight = Extract<Explain.ViewInput['state'], {type: Explain.State.INSIGHT}
 
 describeWithEnvironment('ConsoleInsight', () => {
   let component: Explain.ConsoleInsight|undefined;
-
-  function createConsoleInsight(
-      promptBuilder: Explain.PublicPromptBuilder,
-      aidaClient: Explain.PublicAidaClient,
-      aidaPreconditions: Host.AidaClient.AidaAccessPreconditions,
-  ) {
-    const checkAccessPreconditionsStub = sinon.stub(Host.AidaClient.AidaClient, 'checkAccessPreconditions');
-    checkAccessPreconditionsStub.callsFake(() => Promise.resolve(aidaPreconditions));
-    const component = new Explain.ConsoleInsight(promptBuilder, aidaClient, aidaPreconditions);
-    return {component, checkAccessPreconditionsStub};
-  }
 
   const containerCss = `
       box-sizing: border-box;
@@ -47,26 +35,6 @@ describeWithEnvironment('ConsoleInsight', () => {
     Common.Settings.settingForTest('console-insights-enabled').set(true);
     Common.Settings.settingForTest('console-insights-onboarding-finished').set(true);
   });
-
-  function getTestPromptBuilder() {
-    return {
-      async buildPrompt() {
-        return {
-          prompt: '',
-          sources: [
-            {
-              type: Console.PromptBuilder.SourceType.MESSAGE,
-              value: 'error message',
-            },
-          ],
-          isPageReloadRecommended: true,
-        };
-      },
-      getSearchQuery() {
-        return '';
-      },
-    };
-  }
 
   it('shows opt-in teaser when setting is turned off', async () => {
     Common.Settings.settingForTest('console-insights-enabled').set(false);
@@ -316,35 +284,25 @@ describeWithEnvironment('ConsoleInsight', () => {
       };
     }
 
-    ({component} = createConsoleInsight(
-         getTestPromptBuilder(), getAidaClientWithMetadata(), Host.AidaClient.AidaAccessPreconditions.AVAILABLE));
-    renderElementIntoDOM(component);
-    await component.updateComplete;
+    const {view, component} = await createConsoleInsightWidget({
+      aidaClient: getAidaClientWithMetadata(),
+    });
+    component.wasShown();
+    let nextInput = await view.nextInput;
+    assert.strictEqual(nextInput.state.type, Explain.State.INSIGHT);
+    const insight = nextInput.state as Insight;
+    assert.deepEqual(insight.directCitationUrls, [
+      'https://www.wiki.test/directSource',
+      'https://www.world-fact.test/',
+    ]);
+    assert.deepEqual(insight.relatedUrls, [
+      'https://www.firstSource.test/someInfo',
+    ]);
 
-    const markdownView = component.contentElement!.querySelector('devtools-markdown-view');
-    assert.strictEqual(
-        getCleanTextContentFromElements(markdownView!.shadowRoot!, '.message')[0],
-        'This is not[1] a real answer[2], it is just a test.');
-    const details = component.contentElement!.querySelector('details');
-    assert.strictEqual(details!.querySelector('summary')!.textContent?.trim(), 'Sources and related content');
-    const directCitations = details!.querySelectorAll('ol x-link');
-    assert.lengthOf(directCitations, 2);
-    assert.strictEqual(directCitations[0].textContent?.trim(), 'https://www.wiki.test/directSource');
-    assert.strictEqual(directCitations[0].getAttribute('href'), 'https://www.wiki.test/directSource');
-    assert.strictEqual(directCitations[1].textContent?.trim(), 'https://www.world-fact.test/');
-    assert.strictEqual(directCitations[1].getAttribute('href'), 'https://www.world-fact.test/');
-    const relatedContent = details!.querySelectorAll('ul x-link');
-    assert.lengthOf(relatedContent, 1);
-    assert.strictEqual(relatedContent[0].textContent?.trim(), 'https://www.firstSource.test/someInfo');
-    assert.strictEqual(relatedContent[0].getAttribute('href'), 'https://www.firstSource.test/someInfo');
-
-    assert.isFalse(details?.hasAttribute('open'));
-    assert.isFalse(directCitations[0].classList.contains('highlighted'));
-    const link = markdownView!.shadowRoot?.querySelector('sup button') as HTMLElement;
-    link.click();
-    await component.updateComplete;
-    assert.isTrue(details?.hasAttribute('open'));
-    assert.isTrue(directCitations[0].classList.contains('highlighted'));
+    view.input.citationClickHandler(1);
+    nextInput = await view.nextInput;
+    assert.isTrue(nextInput.areReferenceDetailsOpen);
+    assert.strictEqual(nextInput.highlightedCitationIndex, 0);
   });
 
   it('displays direct citations in code blocks', async () => {
@@ -393,32 +351,25 @@ after
       };
     }
 
-    ({component} = createConsoleInsight(
-         getTestPromptBuilder(), getAidaClientWithMetadata(), Host.AidaClient.AidaAccessPreconditions.AVAILABLE));
-    renderElementIntoDOM(component);
-    await component.updateComplete;
+    const {view, component} = await createConsoleInsightWidget({
+      aidaClient: getAidaClientWithMetadata(),
+    });
+    component.wasShown();
+    let nextInput = await view.nextInput;
+    assert.strictEqual(nextInput.state.type, Explain.State.INSIGHT);
+    const insight = nextInput.state as Insight;
 
-    const markdownView = component.contentElement!.querySelector('devtools-markdown-view');
-    const codeBlock = markdownView!.shadowRoot!.querySelector('devtools-code-block');
-    const citations = codeBlock!.shadowRoot!.querySelectorAll('button.citation');
-    assert.lengthOf(citations, 2);
-    assert.strictEqual(citations[0].textContent, '[1]');
-    assert.strictEqual(citations[1].textContent, '[2]');
+    assert.lengthOf(insight.directCitationUrls, 2);
+    assert.strictEqual(insight.directCitationUrls[0], 'https://www.wiki.test/directSource');
+    assert.strictEqual(insight.directCitationUrls[1], 'https://www.world-fact.test/');
+    assert.isFalse(nextInput.areReferenceDetailsOpen);
+    assert.strictEqual(nextInput.highlightedCitationIndex, -1);
 
-    const details = component.contentElement!.querySelector('details');
-    const directCitations = details!.querySelectorAll('ol x-link');
-    assert.lengthOf(directCitations, 2);
-    assert.strictEqual(directCitations[0].textContent?.trim(), 'https://www.wiki.test/directSource');
-    assert.strictEqual(directCitations[0].getAttribute('href'), 'https://www.wiki.test/directSource');
-    assert.strictEqual(directCitations[1].textContent?.trim(), 'https://www.world-fact.test/');
-    assert.strictEqual(directCitations[1].getAttribute('href'), 'https://www.world-fact.test/');
+    nextInput.citationClickHandler(1);
+    nextInput = await view.nextInput;
 
-    assert.isFalse(details?.hasAttribute('open'));
-    assert.isFalse(directCitations[0].classList.contains('highlighted'));
-    (citations[0] as HTMLElement).click();
-    await component.updateComplete;
-    assert.isTrue(details?.hasAttribute('open'));
-    assert.isTrue(directCitations[0].classList.contains('highlighted'));
+    assert.isTrue(nextInput.areReferenceDetailsOpen);
+    assert.strictEqual(nextInput.highlightedCitationIndex, 0);
   });
 
   it('displays training data citations', async () => {

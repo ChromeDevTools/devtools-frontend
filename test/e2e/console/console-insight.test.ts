@@ -22,6 +22,7 @@ describe('ConsoleInsight', function() {
       aidaAvailability: Partial<Root.Runtime.AidaAvailability>,
       devToolsConsoleInsights: Partial<Root.Runtime.HostConfigConsoleInsights>,
       devToolsPage: DevToolsPage,
+      aidaResponse?: string,
   ) {
     const syncInformation = {
       accountEmail: 'some-email',
@@ -32,6 +33,32 @@ describe('ConsoleInsight', function() {
       devToolsConsoleInsights: {...devToolsConsoleInsights},
       aidaAvailability: {...aidaAvailability},
     };
+
+    const effectiveAidaResponse = aidaResponse ?? JSON.stringify({
+      textChunk: {text: 'Default explanation'},
+      completed: true,
+    });
+
+    const aidaOverride = `
+            value.doAidaConversation = (request, streamId, callback) => {
+              const response = ${JSON.stringify(effectiveAidaResponse)};
+              // We need to delay this a bit to ensure the stream is registered.
+              setTimeout(() => {
+                if (window.InspectorFrontendAPI) {
+                  const parsed = JSON.parse(response);
+                  if (Array.isArray(parsed)) {
+                    for (const chunk of parsed) {
+                      window.InspectorFrontendAPI.streamWrite(streamId, JSON.stringify(chunk));
+                    }
+                  } else {
+                    window.InspectorFrontendAPI.streamWrite(streamId, response);
+                  }
+                }
+                callback({statusCode: 200});
+              }, 0);
+            };
+      `;
+
     await devToolsPage.evaluateOnNewDocument(`
         Object.defineProperty(window, 'InspectorFrontendHost', {
         configurable: true,
@@ -51,6 +78,8 @@ describe('ConsoleInsight', function() {
               cb(JSON.parse('${JSON.stringify(syncInformation)}'));
             };
 
+            ${aidaOverride}
+
             this._InspectorFrontendHost = value;
         }
       });
@@ -59,6 +88,15 @@ describe('ConsoleInsight', function() {
     await devToolsPage.reload({
       waitUntil: 'networkidle0',
     });
+
+    await devToolsPage.evaluate(`
+      (async () => {
+        const Common = await import('./core/common/common.js');
+        Common.Settings.Settings.instance().createLocalSetting('console-insights-onboarding-finished', false).set(true);
+        Common.Settings.Settings.instance().createSetting('console-insights-enabled', true).set(true);
+      })()
+    `);
+
     await devToolsPage.useSoftMenu();
   }
 
@@ -84,6 +122,124 @@ describe('ConsoleInsight', function() {
     await devToolsPage.hover('.console-message');
     await devToolsPage.click('.hover-button');
     await devToolsPage.waitFor('.devtools-console-insight');
+  });
+
+  it('shows citations', async ({devToolsPage, inspectedPage}) => {
+    const aidaResponse = JSON.stringify({
+      textChunk: {
+        text: 'Explanation with citation . ',
+      },
+      metadata: {
+        rpcGlobalId: 123,
+        attributionMetadata: {
+          citations: [
+            {
+              sourceType: 'WORLD_FACTS',
+              uri: 'https://example.com',
+              endIndex: 26,
+            },
+          ],
+        },
+        factualityMetadata: {
+          facts: [
+            {
+              sourceUri: 'https://example.com',
+            },
+          ],
+        },
+      },
+    });
+
+    await setupMocks({enabled: true}, {enabled: true}, devToolsPage, aidaResponse);
+    await devToolsPage.click(CONSOLE_TAB_SELECTOR);
+    await inspectedPage.evaluate(() => {
+      console.error(new Error('Unexpected error'));
+    });
+    await devToolsPage.waitFor('.console-message');
+    await devToolsPage.waitFor('.hover-button');
+    await devToolsPage.hover('.console-message');
+    await devToolsPage.click('.hover-button');
+
+    await devToolsPage.waitFor('.devtools-console-insight');
+
+    // Check for the inline citation link in the insight ([1])
+    const citationSelector = '.citation';
+    const citation = await devToolsPage.waitFor(citationSelector);
+    const citationText = await citation.evaluate(el => (el as HTMLElement).innerText);
+    assert.strictEqual(citationText, '[1]');
+
+    // check if the citations are collapsed
+    const detailsSelector = 'details.references';
+    const details = await devToolsPage.waitFor(detailsSelector);
+    const isOpen = await details.evaluate(el => el.hasAttribute('open'));
+    assert.isFalse(isOpen, 'Citations should be collapsed initially');
+
+    // Click on a citation link within the insight
+    await devToolsPage.click(citationSelector);
+
+    // Check if the citations are expanded and if the link is highlighted
+    await devToolsPage.waitFor(detailsSelector + '[open]');
+    const highlightedLinkSelector = 'x-link.highlighted';
+    await devToolsPage.waitFor(highlightedLinkSelector);
+  });
+
+  it('shows citations in code blocks', async ({devToolsPage, inspectedPage}) => {
+    const aidaResponse = JSON.stringify({
+      textChunk: {
+        text: 'Explanation with citation in code block:\n\n```\nconst foo = 1;\n```\n',
+      },
+      metadata: {
+        rpcGlobalId: 123,
+        attributionMetadata: {
+          citations: [
+            {
+              sourceType: 'WORLD_FACTS',
+              uri: 'https://example.com',
+              endIndex: 55,
+            },
+          ],
+        },
+        factualityMetadata: {
+          facts: [
+            {
+              sourceUri: 'https://example.com',
+            },
+          ],
+        },
+      },
+    });
+
+    await setupMocks({enabled: true}, {enabled: true}, devToolsPage, aidaResponse);
+    await devToolsPage.click(CONSOLE_TAB_SELECTOR);
+    await inspectedPage.evaluate(() => {
+      console.error(new Error('Unexpected error'));
+    });
+    await devToolsPage.waitFor('.console-message');
+    await devToolsPage.waitFor('.hover-button');
+    await devToolsPage.hover('.console-message');
+    await devToolsPage.click('.hover-button');
+
+    await devToolsPage.waitFor('.devtools-console-insight');
+
+    // Check for the citation link within the code block
+    const citationSelector = '.citation';
+    const citation = await devToolsPage.waitFor(citationSelector);
+    const citationText = await citation.evaluate(el => (el as HTMLElement).innerText);
+    assert.strictEqual(citationText, '[1]');
+
+    // check if the citations are collapsed
+    const detailsSelector = 'details.references';
+    const details = await devToolsPage.waitFor(detailsSelector);
+    const isOpen = await details.evaluate(el => el.hasAttribute('open'));
+    assert.isFalse(isOpen, 'Citations should be collapsed initially');
+
+    // Click on a citation link within the code block
+    await devToolsPage.click(citationSelector);
+
+    // Check if the citations are expanded and if the link is highlighted
+    await devToolsPage.waitFor(detailsSelector + '[open]');
+    const highlightedLinkSelector = 'x-link.highlighted';
+    await devToolsPage.waitFor(highlightedLinkSelector);
   });
 
   it('does not show context menu if AIDA is not available', async ({devToolsPage, inspectedPage}) => {

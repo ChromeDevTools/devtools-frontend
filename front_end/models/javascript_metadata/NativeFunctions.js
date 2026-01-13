@@ -170,7 +170,7 @@ export const NativeFunctions = [
   {
     name: "set",
     signatures: [["key","value"]],
-    receivers: ["Map","WeakMap","CrashReportStorage"]
+    receivers: ["Map","WeakMap","CrashReportContext"]
   },
   {
     name: "set",
@@ -1575,7 +1575,7 @@ export const NativeFunctions = [
   {
     name: "delete",
     signatures: [["key"]],
-    receivers: ["Map","WeakMap"]
+    receivers: ["Map","WeakMap","CrashReportContext"]
   },
   {
     name: "delete",
@@ -1997,11 +1997,6 @@ export const NativeFunctions = [
     name: "remove",
     signatures: [["start","end"]],
     receivers: ["SourceBuffer"]
-  },
-  {
-    name: "remove",
-    signatures: [["key"]],
-    receivers: ["CrashReportStorage"]
   },
   {
     name: "remove",
@@ -3863,7 +3858,7 @@ export const NativeFunctions = [
   {
     name: "initialize",
     signatures: [["length"]],
-    receivers: ["CrashReportStorage"]
+    receivers: ["CrashReportContext"]
   },
   {
     name: "initialize",

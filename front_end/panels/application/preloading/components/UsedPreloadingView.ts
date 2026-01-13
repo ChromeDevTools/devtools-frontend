@@ -20,7 +20,7 @@ import {html, type LitTemplate, nothing, render} from '../../../../ui/lit/lit.js
 import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js';
 import * as PreloadingHelper from '../helper/helper.js';
 
-import * as MismatchedPreloadingGrid from './MismatchedPreloadingGrid.js';
+import {MismatchedPreloadingGrid, type MismatchedPreloadingGridData} from './MismatchedPreloadingGrid.js';
 import preloadingGridStyles from './preloadingGrid.css.js';
 import {prefetchFailureReason, prerenderFailureReason} from './PreloadingString.js';
 import usedPreloadingStyles from './usedPreloadingView.css.js';
@@ -137,6 +137,8 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/application/preloading/components/UsedPreloadingView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
+const {widgetConfig} = UI.Widget;
+
 export interface UsedPreloadingViewData {
   pageURL: Platform.DevToolsPath.UrlString;
   previousAttempts: SDK.PreloadingModel.PreloadingAttempt[];
@@ -162,6 +164,182 @@ type Badge = {
   type: 'neutral',
   message: string,
 };
+
+interface MismatchedData {
+  pageURL: Platform.DevToolsPath.UrlString;
+  rows: MismatchedPreloadingGridData['rows'];
+}
+
+type AttemptWithMismatchedHeaders =
+    SDK.PreloadingModel.PrerenderAttempt|SDK.PreloadingModel.PrerenderUntilScriptAttempt;
+
+function renderSpeculativeLoadingStatusForThisPageSections(
+    kind: UsedKind, prefetch: SDK.PreloadingModel.PreloadingAttempt|undefined,
+    prerenderLike: SDK.PreloadingModel.PreloadingAttempt|undefined, mismatchedData: MismatchedData|undefined,
+    attemptWithMismatchedHeaders: AttemptWithMismatchedHeaders|undefined): LitTemplate {
+  let badge: Badge;
+  let basicMessage: LitTemplate;
+  switch (kind) {
+    case UsedKind.DOWNGRADED_PRERENDER_TO_PREFETCH_AND_USED:
+      badge = {type: 'success'};
+      basicMessage = html`${i18nString(UIStrings.downgradedPrefetchUsed)}`;
+      break;
+    case UsedKind.PREFETCH_USED:
+      badge = {type: 'success'};
+      basicMessage = html`${i18nString(UIStrings.prefetchUsed)}`;
+      break;
+    case UsedKind.PRERENDER_USED:
+      badge = {type: 'success'};
+      basicMessage = html`${i18nString(UIStrings.prerenderUsed)}`;
+      break;
+    case UsedKind.PREFETCH_FAILED:
+      badge = {type: 'failure'};
+      basicMessage = html`${i18nString(UIStrings.prefetchFailed)}`;
+      break;
+    case UsedKind.PRERENDER_FAILED:
+      badge = {type: 'failure'};
+      basicMessage = html`${i18nString(UIStrings.prerenderFailed)}`;
+      break;
+    case UsedKind.NO_PRELOADS:
+      badge = {type: 'neutral', message: i18nString(UIStrings.badgeNoSpeculativeLoads)};
+      basicMessage = html`${i18nString(UIStrings.noPreloads)}`;
+      break;
+  }
+
+  let maybeFailureReasonMessage;
+  if (kind === UsedKind.PREFETCH_FAILED) {
+    assertNotNullOrUndefined(prefetch);
+    maybeFailureReasonMessage = prefetchFailureReason(prefetch as SDK.PreloadingModel.PrefetchAttempt);
+  } else if (kind === UsedKind.PRERENDER_FAILED || kind === UsedKind.DOWNGRADED_PRERENDER_TO_PREFETCH_AND_USED) {
+    assertNotNullOrUndefined(prerenderLike);
+    maybeFailureReasonMessage = prerenderFailureReason(
+        prerenderLike as SDK.PreloadingModel.PrerenderAttempt | SDK.PreloadingModel.PrerenderUntilScriptAttempt);
+  }
+
+  // Disabled until https://crbug.com/1079231 is fixed.
+  // clang-format off
+  return html`
+    <devtools-report-section-header>
+      ${i18nString(UIStrings.speculativeLoadingStatusForThisPage)}
+    </devtools-report-section-header>
+    <devtools-report-section>
+      <div>
+        <div class="status-badge-container">
+          ${renderBadge(badge)}
+        </div>
+        <div>
+          ${basicMessage}
+        </div>
+      </div>
+    </devtools-report-section>
+
+    ${maybeFailureReasonMessage !== undefined ? html`
+      <devtools-report-section-header>
+        ${i18nString(UIStrings.detailsFailureReason)}
+      </devtools-report-section-header>
+      <devtools-report-section>
+        ${maybeFailureReasonMessage}
+      </devtools-report-section>` : nothing}
+
+    ${mismatchedData ? renderMismatchedSections(mismatchedData) : nothing}
+    ${attemptWithMismatchedHeaders ?
+        renderMismatchedHTTPHeadersSections(attemptWithMismatchedHeaders) : nothing}`;
+  // clang-format on
+}
+
+function renderMismatchedSections(data: MismatchedData): LitTemplate {
+  // Disabled until https://crbug.com/1079231 is fixed.
+  // clang-format off
+  return html`
+    <devtools-report-section-header>
+      ${i18nString(UIStrings.currentURL)}
+    </devtools-report-section-header>
+    <devtools-report-section>
+      <x-link
+        class="link devtools-link"
+        href=${data.pageURL}
+        jslog=${VisualLogging.link()
+                .track({ click: true, keydown: 'Enter|Space' })
+                .context('current-url')}
+      >${data.pageURL}</x-link>
+    </devtools-report-section>
+
+    <devtools-report-section-header>
+      ${i18nString(UIStrings.preloadedURLs)}
+    </devtools-report-section-header>
+    <devtools-report-section jslog=${VisualLogging.section('preloaded-urls')}>
+      <devtools-widget .widgetConfig=${widgetConfig(MismatchedPreloadingGrid, {data})}>
+      </devtools-widget>
+    </devtools-report-section>`;
+  // clang-format on
+}
+
+function renderMismatchedHTTPHeadersSections(attempt: AttemptWithMismatchedHeaders): LitTemplate {
+  // Disabled until https://crbug.com/1079231 is fixed.
+  // clang-format off
+  return html`
+    <devtools-report-section-header>
+      ${i18nString(UIStrings.mismatchedHeadersDetail)}
+    </devtools-report-section-header>
+    <devtools-report-section>
+      <style>${preloadingGridStyles}</style>
+      <div class="preloading-container">
+        <devtools-data-grid striped inline>
+          <table>
+            <tr>
+              <th id="header-name" weight="30" sortable>
+                ${i18nString(UIStrings.headerName)}
+              </th>
+              <th id="initial-value" weight="30" sortable>
+                ${i18nString(UIStrings.initialNavigationValue)}
+              </th>
+              <th id="activation-value" weight="30" sortable>
+                ${i18nString(UIStrings.activationNavigationValue)}
+              </th>
+            </tr>
+            ${(attempt.mismatchedHeaders ?? []).map(mismatchedHeaders => html`
+              <tr>
+                <td>${mismatchedHeaders.headerName}</td>
+                <td>${mismatchedHeaders.initialValue ?? i18nString(UIStrings.missing)}</td>
+                <td>${mismatchedHeaders.activationValue ?? i18nString(UIStrings.missing)}</td>
+              </tr>
+            `)}
+          </table>
+        </devtools-data-grid>
+      </div>
+    </devtools-report-section>`;
+  // clang-format on
+}
+
+function renderSpeculationsInitiatedByThisPageSummarySections(
+    badges: Badge[], revealRuleSetView: () => void, revealAttemptViewWithFilter: () => void): LitTemplate {
+  // Disabled until https://crbug.com/1079231 is fixed.
+  // clang-format off
+  return html`
+    <devtools-report-section-header>
+      ${i18nString(UIStrings.speculationsInitiatedByThisPage)}
+    </devtools-report-section-header>
+    <devtools-report-section>
+      <div>
+        <div class="status-badge-container">
+          ${badges.map(renderBadge)}
+        </div>
+
+        <div class="reveal-links">
+          <button class="link devtools-link" @click=${revealRuleSetView}
+              jslog=${VisualLogging.action('view-all-rules').track({click: true})}>
+            ${i18nString(UIStrings.viewAllRules)}
+          </button>
+         ・
+          <button class="link devtools-link" @click=${revealAttemptViewWithFilter}
+              jslog=${VisualLogging.action('view-all-speculations').track({click: true})}>
+           ${i18nString(UIStrings.viewAllSpeculations)}
+          </button>
+        </div>
+      </div>
+    </devtools-report-section>`;
+  // clang-format on
+}
 
 function renderBadge(config: Badge): LitTemplate {
   const badge = (klass: string, iconName: string, message: string): LitTemplate => {
@@ -258,8 +436,7 @@ export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableCom
     ].includes(speculationAction);
   }
 
-  #isPrerenderAttempt(attempt: SDK.PreloadingModel.PreloadingAttempt):
-      attempt is SDK.PreloadingModel.PrerenderAttempt|SDK.PreloadingModel.PrerenderUntilScriptAttempt {
+  #isPrerenderAttempt(attempt: SDK.PreloadingModel.PreloadingAttempt): attempt is AttemptWithMismatchedHeaders {
     return this.#isPrerenderLike(attempt.action);
   }
 
@@ -291,84 +468,13 @@ export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableCom
       kind = UsedKind.NO_PRELOADS;
     }
 
-    let badge: Badge;
-    let basicMessage: LitTemplate;
-    switch (kind) {
-      case UsedKind.DOWNGRADED_PRERENDER_TO_PREFETCH_AND_USED:
-        badge = {type: 'success'};
-        basicMessage = html`${i18nString(UIStrings.downgradedPrefetchUsed)}`;
-        break;
-      case UsedKind.PREFETCH_USED:
-        badge = {type: 'success'};
-        basicMessage = html`${i18nString(UIStrings.prefetchUsed)}`;
-        break;
-      case UsedKind.PRERENDER_USED:
-        badge = {type: 'success'};
-        basicMessage = html`${i18nString(UIStrings.prerenderUsed)}`;
-        break;
-      case UsedKind.PREFETCH_FAILED:
-        badge = {type: 'failure'};
-        basicMessage = html`${i18nString(UIStrings.prefetchFailed)}`;
-        break;
-      case UsedKind.PRERENDER_FAILED:
-        badge = {type: 'failure'};
-        basicMessage = html`${i18nString(UIStrings.prerenderFailed)}`;
-        break;
-      case UsedKind.NO_PRELOADS:
-        badge = {type: 'neutral', message: i18nString(UIStrings.badgeNoSpeculativeLoads)};
-        basicMessage = html`${i18nString(UIStrings.noPreloads)}`;
-        break;
-    }
-
-    let maybeFailureReasonMessage;
-    if (kind === UsedKind.PREFETCH_FAILED) {
-      assertNotNullOrUndefined(prefetch);
-      maybeFailureReasonMessage = prefetchFailureReason(prefetch as SDK.PreloadingModel.PrefetchAttempt);
-    } else if (kind === UsedKind.PRERENDER_FAILED || kind === UsedKind.DOWNGRADED_PRERENDER_TO_PREFETCH_AND_USED) {
-      assertNotNullOrUndefined(prerenderLike);
-      maybeFailureReasonMessage = prerenderFailureReason(
-          prerenderLike as SDK.PreloadingModel.PrerenderAttempt | SDK.PreloadingModel.PrerenderUntilScriptAttempt);
-    }
-
-    let maybeFailureReason: LitTemplate = nothing;
-    if (maybeFailureReasonMessage !== undefined) {
-      // Disabled until https://crbug.com/1079231 is fixed.
-      // clang-format off
-      maybeFailureReason = html`
-      <devtools-report-section-header>${i18nString(UIStrings.detailsFailureReason)}</devtools-report-section-header>
-      <devtools-report-section>
-        ${maybeFailureReasonMessage}
-      </devtools-report-section>
-      `;
-      // clang-format on
-    }
-
-    // Disabled until https://crbug.com/1079231 is fixed.
-    // clang-format off
-    return html`
-      <devtools-report-section-header>${i18nString(UIStrings.speculativeLoadingStatusForThisPage)}</devtools-report-section-header>
-      <devtools-report-section>
-        <div>
-          <div class="status-badge-container">
-            ${renderBadge(badge)}
-          </div>
-          <div>
-            ${basicMessage}
-          </div>
-        </div>
-      </devtools-report-section>
-
-      ${maybeFailureReason}
-
-      ${this.#maybeMismatchedSections(kind)}
-      ${this.#maybeMismatchedHTTPHeadersSections()}
-    `;
-    // clang-format on
+    return renderSpeculativeLoadingStatusForThisPageSections(
+        kind, prefetch, prerenderLike, this.#getMismatchedData(kind), this.#getAttemptWithMismatchedHeaders());
   }
 
-  #maybeMismatchedSections(kind: UsedKind): LitTemplate {
+  #getMismatchedData(kind: UsedKind): MismatchedData|undefined {
     if (kind !== UsedKind.NO_PRELOADS || this.#data.previousAttempts.length === 0) {
-      return nothing;
+      return undefined;
     }
 
     const rows = this.#data.previousAttempts.map(attempt => {
@@ -378,43 +484,19 @@ export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableCom
         status: attempt.status,
       };
     });
-    const data = {
+    return {
       pageURL: this.#data.pageURL,
       rows,
     };
-
-    // Disabled until https://crbug.com/1079231 is fixed.
-    // clang-format off
-    return html`
-      <devtools-report-section-header>${i18nString(UIStrings.currentURL)}</devtools-report-section-header>
-      <devtools-report-section>
-        <x-link
-          class="link devtools-link"
-          href=${this.#data.pageURL}
-          jslog=${VisualLogging.link()
-                  .track({ click: true, keydown: 'Enter|Space' })
-                  .context('current-url')}
-        >${this.#data.pageURL}</x-link>
-      </devtools-report-section>
-
-      <devtools-report-section-header>${i18nString(UIStrings.preloadedURLs)}</devtools-report-section-header>
-      <devtools-report-section
-      jslog=${VisualLogging.section('preloaded-urls')}>
-        <devtools-widget
-          .widgetConfig=${UI.Widget.widgetConfig(MismatchedPreloadingGrid.MismatchedPreloadingGrid, {data})}
-        ></devtools-widget>
-      </devtools-report-section>
-    `;
-    // clang-format on
   }
 
-  #maybeMismatchedHTTPHeadersSections(): LitTemplate {
+  #getAttemptWithMismatchedHeaders(): AttemptWithMismatchedHeaders|undefined {
     const attempt = this.#data.previousAttempts.find(
                         attempt => this.#isPrerenderAttempt(attempt) && attempt.mismatchedHeaders !== null) as
             SDK.PreloadingModel.PrerenderAttempt |
         SDK.PreloadingModel.PrerenderUntilScriptAttempt | undefined;
     if (!attempt?.mismatchedHeaders) {
-      return nothing;
+      return undefined;
     }
 
     if (attempt.key.url !== this.#data.pageURL) {
@@ -424,39 +506,7 @@ export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableCom
       throw new Error('unreachable');
     }
 
-    // Disabled until https://crbug.com/1079231 is fixed.
-    // clang-format off
-    return html`
-      <devtools-report-section-header>${i18nString(UIStrings.mismatchedHeadersDetail)}</devtools-report-section-header>
-      <devtools-report-section>
-        <style>${preloadingGridStyles}</style>
-        <div class="preloading-container">
-          <devtools-data-grid striped inline>
-            <table>
-              <tr>
-                <th id="header-name" weight="30" sortable>
-                  ${i18nString(UIStrings.headerName)}
-                </th>
-                <th id="initial-value" weight="30" sortable>
-                  ${i18nString(UIStrings.initialNavigationValue)}
-                </th>
-                <th id="activation-value" weight="30" sortable>
-                  ${i18nString(UIStrings.activationNavigationValue)}
-                </th>
-              </tr>
-              ${attempt.mismatchedHeaders.map(mismatchedHeaders => html`
-                <tr>
-                  <td>${mismatchedHeaders.headerName}</td>
-                  <td>${mismatchedHeaders.initialValue ?? i18nString(UIStrings.missing)}</td>
-                  <td>${mismatchedHeaders.activationValue ?? i18nString(UIStrings.missing)}</td>
-                </tr>
-              `)}
-            </table>
-          </devtools-data-grid>
-        </div>
-      </devtools-report-section>
-    `;
-    // clang-format on
+    return attempt;
   }
 
   #speculationsInitiatedByThisPageSummarySections(): LitTemplate {
@@ -494,31 +544,7 @@ export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableCom
       void Common.Revealer.reveal(new PreloadingHelper.PreloadingForward.AttemptViewWithFilter(null));
     };
 
-    // Disabled until https://crbug.com/1079231 is fixed.
-    // clang-format off
-    return html`
-      <devtools-report-section-header>${i18nString(UIStrings.speculationsInitiatedByThisPage)}</devtools-report-section-header>
-      <devtools-report-section>
-        <div>
-          <div class="status-badge-container">
-            ${badges.map(renderBadge)}
-          </div>
-
-          <div class="reveal-links">
-            <button class="link devtools-link" @click=${revealRuleSetView}
-            jslog=${VisualLogging.action('view-all-rules').track({click: true})}>
-              ${i18nString(UIStrings.viewAllRules)}
-            </button>
-           ・
-            <button class="link devtools-link" @click=${revealAttemptViewWithFilter}
-            jslog=${VisualLogging.action('view-all-speculations').track({click: true})}>
-             ${i18nString(UIStrings.viewAllSpeculations)}
-            </button>
-          </div>
-        </div>
-      </devtools-report-section>
-    `;
-    // clang-format on
+    return renderSpeculationsInitiatedByThisPageSummarySections(badges, revealRuleSetView, revealAttemptViewWithFilter);
   }
 }
 

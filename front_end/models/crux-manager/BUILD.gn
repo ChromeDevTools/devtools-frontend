@@ -28,6 +28,7 @@ devtools_entrypoint("bundle") {
     "../../../mcp/*",
     "../../entrypoints/main",
     "../../panels/timeline/*",
+    "../ai_assistance/*",
     "../trace/*",
   ]
 }

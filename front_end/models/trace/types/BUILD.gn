@@ -21,6 +21,7 @@ devtools_module("types") {
     "../../../core/platform:bundle",
     "../../../core/sdk:bundle",
     "../../../generated",
+    "../../../generated:protocol",
     "../../crux-manager:bundle",
     "../lantern:bundle",
   ]

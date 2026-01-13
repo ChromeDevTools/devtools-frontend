@@ -11,6 +11,8 @@ devtools_module("test_runner") {
   deps = [
     "../../core/common:bundle",
     "../../core/protocol_client:bundle",
+    "../../core/root:bundle",
+    "../../core/sdk:bundle",
     "../../models/bindings:bundle",
     "../../models/workspace:bundle",
     "../../services/tracing:bundle",

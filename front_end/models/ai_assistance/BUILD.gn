@@ -52,6 +52,7 @@ devtools_module("ai_assistance") {
     "../../third_party/diff:bundle",
     "../annotations:bundle",
     "../bindings:bundle",
+    "../crux-manager:bundle",
     "../logs:bundle",
     "../network_time_calculator:bundle",
     "../source_map_scopes:bundle",

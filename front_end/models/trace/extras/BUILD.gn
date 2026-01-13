@@ -23,7 +23,9 @@ devtools_module("extras") {
     "../../../core/platform:bundle",
     "../../../core/sdk:bundle",
     "../../../generated:protocol",
+    "../../../third_party/third-party-web:bundle",
     "../handlers:bundle",
+    "../helpers:bundle",
     "../types:bundle",
   ]
 }
@@ -55,7 +57,11 @@ ts_library("unittests") {
 
   deps = [
     "../../../core/platform:bundle",
+    "../../../core/sdk:bundle",
+    "../../../generated:protocol",
     "../../../models/trace:bundle",
     "../../../testing",
+    "../handlers:bundle",
+    "../types:bundle",
   ]
 }

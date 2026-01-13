@@ -25,6 +25,7 @@ devtools_ui_module("components") {
   ]
 
   deps = [
+    "../../../../core/common:bundle",
     "../../../../core/host:bundle",
     "../../../../core/i18n:bundle",
     "../../../../core/platform:bundle",
@@ -32,11 +33,13 @@ devtools_ui_module("components") {
     "../../../../models/ai_assistance:bundle",
     "../../../../models/trace:bundle",
     "../../../../panels/common:bundle",
+    "../../../../ui/components/buttons:bundle",
     "../../../../ui/components/helpers:bundle",
     "../../../../ui/components/spinners:bundle",
     "../../../../ui/components/tooltips:bundle",
     "../../../../ui/helpers:bundle",
     "../../../../ui/kit:bundle",
+    "../../../../ui/legacy:bundle",
     "../../../../ui/legacy/theme_support:bundle",
     "../../../../ui/lit:bundle",
     "../../../../ui/visual_logging:bundle",

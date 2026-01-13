@@ -13,6 +13,7 @@ devtools_ui_module("overlays") {
     "../../../core/common:bundle",
     "../../../core/i18n:bundle",
     "../../../core/platform:bundle",
+    "../../../models/ai_assistance:bundle",
     "../../../models/trace:bundle",
     "../../../services/trace_bounds:bundle",
     "../../../ui/legacy/components/perf_ui:bundle",

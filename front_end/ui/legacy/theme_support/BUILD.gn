@@ -37,6 +37,7 @@ devtools_entrypoint("bundle") {
     "../../../testing/*",
     "../../components/docs/*",
     "../../components/helpers/*",
+    "../../components/text_editor/*",
   ]
 }
 

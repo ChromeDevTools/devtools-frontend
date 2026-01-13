@@ -36,6 +36,7 @@ devtools_entrypoint("bundle") {
     "../../panels/emulation/*",
     "../../panels/lighthouse/*",
     "../../panels/settings/emulation/*",
+    "../../panels/timeline/*",
     "../crux-manager/*",
   ]
 

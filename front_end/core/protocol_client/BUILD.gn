@@ -19,6 +19,7 @@ devtools_foundation_module("protocol_client") {
     "../../core/host:bundle",
     "../../generated",
     "../../generated:protocol",
+    "../platform:bundle",
   ]
 }
 

@@ -46,6 +46,8 @@ devtools_ui_module("settings") {
     "../../models/project_settings:bundle",
     "../../models/text_utils:bundle",
     "../../models/workspace:bundle",
+    "../../ui/components/buttons:bundle",
+    "../../ui/components/input:bundle",
     "../../ui/components/legacy_wrapper:bundle",
     "../../ui/components/switch:bundle",
     "../../ui/helpers:bundle",
@@ -56,6 +58,7 @@ devtools_ui_module("settings") {
     "../../ui/legacy/components/settings_ui:bundle",
     "../../ui/legacy/components/utils:bundle",
     "../../ui/lit:bundle",
+    "../../ui/visual_logging:bundle",
     "../utils:bundle",
     "./components:bundle",
   ]

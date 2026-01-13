@@ -111,6 +111,7 @@ devtools_ui_module("ui") {
     "../../core/root:bundle",
     "../../core/sdk:bundle",
     "../../foundation:bundle",
+    "../../generated:protocol",
     "../../models/annotations:bundle",
     "../../models/geometry:bundle",
     "../../models/greendev:bundle",

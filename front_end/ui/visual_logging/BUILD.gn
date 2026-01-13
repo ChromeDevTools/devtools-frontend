@@ -35,6 +35,7 @@ devtools_entrypoint("bundle") {
   visibility = [
     ":*",
     "../../entrypoints/device_mode_emulation_frame/*",
+    "../../entrypoints/inspector_main/*",
     "../../entrypoints/main/*",
     "../../panels/*",
     "../components/*",

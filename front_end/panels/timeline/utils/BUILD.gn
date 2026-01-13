@@ -16,9 +16,11 @@ devtools_ui_module("utils") {
 
   deps = [
     "../../../core/common:bundle",
+    "../../../core/i18n:bundle",
     "../../../core/platform:bundle",
     "../../../core/sdk:bundle",
     "../../../generated",
+    "../../../generated:protocol",
     "../../../models/ai_assistance:bundle",
     "../../../models/bindings:bundle",
     "../../../models/crux-manager:bundle",

@@ -19,11 +19,15 @@ devtools_ui_module("webauthn") {
     "../../core/common:bundle",
     "../../core/host:bundle",
     "../../core/i18n:bundle",
+    "../../core/platform:bundle",
     "../../core/sdk:bundle",
     "../../generated:protocol",
+    "../../ui/components/buttons:bundle",
     "../../ui/components/input:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/data_grid:bundle",
+    "../../ui/lit:bundle",
+    "../../ui/visual_logging:bundle",
   ]
 }
 

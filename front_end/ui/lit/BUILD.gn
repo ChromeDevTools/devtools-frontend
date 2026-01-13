@@ -15,6 +15,7 @@ devtools_ui_module("lit") {
 
   deps = [
     "../../core/i18n:bundle",
+    "../../third_party/i18n:bundle",
     "../../third_party/lit:bundle",
   ]
 }

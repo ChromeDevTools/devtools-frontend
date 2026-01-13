@@ -36,6 +36,7 @@ devtools_entrypoint("bundle") {
     ":*",
     "../*",
     "../../../panels/ai_assistance:*",
+    "../../../panels/timeline/components:*",
   ]
 
   visibility += devtools_models_visibility

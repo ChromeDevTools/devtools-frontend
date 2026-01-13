@@ -40,6 +40,7 @@ devtools_ui_module("text_editor") {
     "../../../panels/common:bundle",
     "../../kit:bundle",
     "../../legacy:bundle",
+    "../../legacy/theme_support:bundle",
     "../../lit:bundle",
     "../../visual_logging:bundle",
     "../code_highlighter:bundle",

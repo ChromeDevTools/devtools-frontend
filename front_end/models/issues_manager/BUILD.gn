@@ -328,6 +328,7 @@ ts_library("unittests") {
     ":bundle",
     "../../core/common:bundle",
     "../../core/sdk:bundle",
+    "../../generated:protocol",
     "../../testing",
   ]
 }

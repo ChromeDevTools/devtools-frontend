@@ -208,7 +208,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     super(computedStyleModel, true /* delegatesFocus */);
     this.setMinimumSize(96, 26);
     this.registerRequiredCSS(stylesSidebarPaneStyles);
-    Common.Settings.Settings.instance().moduleSetting('text-editor-indent').addChangeListener(this.update.bind(this));
+    Common.Settings.Settings.instance().moduleSetting('text-editor-indent').addChangeListener(this.requestUpdate, this);
     this.toolbarPaneElement = this.createStylesSidebarToolbar();
     this.noMatchesElement = this.contentElement.createChild('div', 'gray-info-message hidden');
     this.noMatchesElement.textContent = i18nString(UIStrings.noMatchingSelectorOrStyle);
@@ -330,7 +330,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
   revealProperty(cssProperty: SDK.CSSProperty.CSSProperty): void {
     void this.decorator.highlightProperty(cssProperty);
     this.lastRevealedProperty = cssProperty;
-    this.update();
+    this.requestUpdate();
   }
 
   jumpToProperty(propertyName: string, sectionName?: string, blockName?: string): boolean {
@@ -366,7 +366,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     this.#swatchPopoverHelper.hide();
     this.#updateAbortController?.abort();
     this.resetCache();
-    this.update();
+    this.requestUpdate();
   }
 
   private sectionsContainerKeyDown(event: Event): void {
@@ -534,7 +534,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     this.nodeStylesUpdatedForTest(node, false);
   }
 
-  override async doUpdate(): Promise<void> {
+  override async performUpdate(): Promise<void> {
     this.#updateAbortController?.abort();
     this.#updateAbortController = new AbortController();
     await this.#innerDoUpdate(this.#updateAbortController.signal);
@@ -745,7 +745,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     }
 
     this.resetCache();
-    this.update();
+    this.requestUpdate();
   }
 
   #scheduleResetUpdateIfNotEditing(): void {

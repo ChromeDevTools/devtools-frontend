@@ -65,11 +65,11 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
     this.contentElement.setAttribute('jslog', `${VisualLogging.pane('styles-metrics')}`);
   }
 
-  override doUpdate(): Promise<void> {
+  override async performUpdate(): Promise<void> {
     // "style" attribute might have changed. Update metrics unless they are being edited
     // (if a CSS property is added, a StyleSheetChanged event is dispatched).
     if (this.isEditingMetrics) {
-      return Promise.resolve();
+      return await Promise.resolve();
     }
 
     // FIXME: avoid updates of a collapsed pane.
@@ -78,7 +78,7 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
     if (!node || node.nodeType() !== Node.ELEMENT_NODE || !cssModel) {
       this.contentElement.removeChildren();
       this.element.classList.add('collapsed');
-      return Promise.resolve();
+      return await Promise.resolve();
     }
 
     function callback(this: MetricsSidebarPane, style: Map<string, string>|null): void {
@@ -89,7 +89,7 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
     }
 
     if (!node.id) {
-      return Promise.resolve();
+      return await Promise.resolve();
     }
 
     const promises = [
@@ -100,11 +100,11 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
         }
       }),
     ];
-    return Promise.all(promises) as unknown as Promise<void>;
+    return await (Promise.all(promises) as unknown as Promise<void>);
   }
 
   override onCSSModelChanged(): void {
-    this.update();
+    this.requestUpdate();
   }
 
   /**
@@ -429,7 +429,7 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
       }
     }
     this.editingEnded(element, context);
-    this.update();
+    this.requestUpdate();
   }
 
   private applyUserInput(
@@ -519,7 +519,7 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
       }
 
       if (commitEditor) {
-        this.update();
+        this.requestUpdate();
       }
     }
   }

@@ -192,7 +192,7 @@ describeWithMockConnection('ElementsPanel', () => {
     const animateOnDOMUpdate = sinon.mock().atLeast(1).returns(undefined);
     Elements.ElementsTreeElement.ElementsTreeElement.animateOnDOMUpdate = animateOnDOMUpdate;
     const stylesSidebarPaneUpdate = sinon.mock().atLeast(1).returns(undefined);
-    panel.stylesWidget.doUpdate = stylesSidebarPaneUpdate;
+    panel.stylesWidget.performUpdate = stylesSidebarPaneUpdate;
 
     await treeOutline.toggleHideElement(selectedNode);
     assert.isTrue(treeOutline.isToggledToHidden(selectedNode));

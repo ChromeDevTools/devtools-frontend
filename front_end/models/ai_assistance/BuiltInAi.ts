@@ -47,7 +47,8 @@ export class BuiltInAi extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   }
 
   async getLanguageModelAvailability(): Promise<LanguageModelAvailability> {
-    if (!Root.Runtime.hostConfig.devToolsAiPromptApi?.enabled) {
+    if (!Root.Runtime.hostConfig.devToolsConsoleInsightsTeasers?.enabled ||
+        (Root.Runtime.hostConfig.devToolsAiPromptApi && !Root.Runtime.hostConfig.devToolsAiPromptApi.enabled)) {
       this.#availability = LanguageModelAvailability.DISABLED;
       return this.#availability;
     }
@@ -74,7 +75,7 @@ export class BuiltInAi extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   }
 
   isEventuallyAvailable(): boolean {
-    if (!this.#hasGpu && !Boolean(Root.Runtime.hostConfig.devToolsAiPromptApi?.allowWithoutGpu)) {
+    if (!this.#hasGpu && !Boolean(Root.Runtime.hostConfig.devToolsConsoleInsightsTeasers?.allowWithoutGpu)) {
       return false;
     }
     return this.#availability === LanguageModelAvailability.AVAILABLE ||
@@ -92,7 +93,7 @@ export class BuiltInAi extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   }
 
   startDownloadingModel(): void {
-    if (!Root.Runtime.hostConfig.devToolsAiPromptApi?.allowWithoutGpu && !this.#hasGpu) {
+    if (!Root.Runtime.hostConfig.devToolsConsoleInsightsTeasers?.allowWithoutGpu && !this.#hasGpu) {
       return;
     }
     if (this.#availability !== LanguageModelAvailability.DOWNLOADABLE) {
@@ -132,7 +133,7 @@ export class BuiltInAi extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   }
 
   async initialize(): Promise<void> {
-    if (!Root.Runtime.hostConfig.devToolsAiPromptApi?.allowWithoutGpu && !this.#hasGpu) {
+    if (!Root.Runtime.hostConfig.devToolsConsoleInsightsTeasers?.allowWithoutGpu && !this.#hasGpu) {
       return;
     }
     if (this.#availability !== LanguageModelAvailability.AVAILABLE &&

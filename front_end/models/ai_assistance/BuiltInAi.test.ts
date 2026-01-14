@@ -8,7 +8,7 @@ import * as AiAssistanceModel from '../ai_assistance/ai_assistance.js';
 describe('BuiltInAi', () => {
   it('can generate a console insight teaser', async () => {
     updateHostConfig({
-      devToolsAiPromptApi: {
+      devToolsConsoleInsightsTeasers: {
         enabled: true,
         allowWithoutGpu: true,
       },
@@ -46,7 +46,7 @@ describe('BuiltInAi', () => {
 
   it('is not available if there is no dedicated GPU', async () => {
     updateHostConfig({
-      devToolsAiPromptApi: {
+      devToolsConsoleInsightsTeasers: {
         enabled: true,
         allowWithoutGpu: false,
       },
@@ -65,7 +65,7 @@ describe('BuiltInAi', () => {
 
   it('can download the AI model', async () => {
     updateHostConfig({
-      devToolsAiPromptApi: {
+      devToolsConsoleInsightsTeasers: {
         enabled: true,
         allowWithoutGpu: true,
       },

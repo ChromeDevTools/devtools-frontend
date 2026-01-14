@@ -95,7 +95,6 @@ def main():
     with open(os.path.join(dest_dir, 'package.json'), 'w') as f:
         json.dump(pkg_json, f, indent=2)
 
-    print(f"Synced Rollup native dependency: {package_name} -> {dest_dir}")
     return 0
 
 

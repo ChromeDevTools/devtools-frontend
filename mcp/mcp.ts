@@ -35,6 +35,7 @@ export {
 export {AgentFocus} from '../front_end/models/ai_assistance/performance/AIContext.js';
 export {DebuggerWorkspaceBinding} from '../front_end/models/bindings/DebuggerWorkspaceBinding.js';
 export {CrUXManager} from '../front_end/models/crux-manager/CrUXManager.js';
+export * as Formatter from '../front_end/models/formatter/formatter.js';
 export {Issue} from '../front_end/models/issues_manager/Issue.js';
 export {
   AggregatedIssue,

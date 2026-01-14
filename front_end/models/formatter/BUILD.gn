@@ -32,6 +32,7 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     ":*",
+    "../../../mcp/*",
     "../../core/sdk/*",
     "../../entrypoints/formatter_worker/*",
     "../../models/bindings/*",

@@ -36,7 +36,7 @@ import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {html, render, type TemplateResult} from '../../ui/lit/lit.js';
+import {html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import type {ComputedStyleModel} from './ComputedStyleModel.js';
@@ -48,11 +48,7 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
   previousPropertyDataCandidate: SDK.CSSProperty.CSSProperty|null;
   private inlineStyle: SDK.CSSStyleDeclaration.CSSStyleDeclaration|null;
   private highlightMode: string;
-  private boxElements: Array<{
-    element: HTMLElement,
-    name: string,
-    backgroundColor: string,
-  }>;
+  private computedStyle: Map<string, string>|null;
   private isEditingMetrics?: boolean;
 
   constructor(computedStyleModel: ComputedStyleModel) {
@@ -63,7 +59,7 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
     this.previousPropertyDataCandidate = null;
     this.inlineStyle = null;
     this.highlightMode = '';
-    this.boxElements = [];
+    this.computedStyle = null;
     this.contentElement.setAttribute('jslog', `${VisualLogging.pane('styles-metrics')}`);
   }
 
@@ -85,8 +81,10 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
 
     function callback(this: MetricsSidebarPane, style: Map<string, string>|null): void {
       if (!style || this.node() !== node) {
+        this.computedStyle = null;
         return;
       }
+      this.computedStyle = style;
       this.updateMetrics(style);
     }
 
@@ -155,20 +153,17 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
       SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
     }
 
-    for (const {element, name, backgroundColor} of this.boxElements) {
-      const shouldHighlight = !node || mode === 'all' || name === mode;
-      element.style.backgroundColor = shouldHighlight ? backgroundColor : '';
-      element.classList.toggle('highlighted', shouldHighlight);
+    if (this.computedStyle) {
+      this.updateMetrics(this.computedStyle, mode);
     }
   }
 
-  private updateMetrics(style: Map<string, string>): void {
+  private updateMetrics(style: Map<string, string>, highlightedMode = 'all'): void {
     // Updating with computed style.
     const self = this;
 
     function createBoxPartElement(
-        this: MetricsSidebarPane, style: Map<string, string>, name: string, side: string,
-        suffix: string): TemplateResult {
+        this: MetricsSidebarPane, style: Map<string, string>, name: string, side: string, suffix: string): LitTemplate {
       const propertyName = (name !== 'position' ? name + '-' : '') + side + suffix;
       let value = style.get(propertyName);
 
@@ -256,8 +251,7 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
       Common.Color.Legacy.fromRGBA([0, 0, 0, 0]),
     ];
     const boxLabels = ['content', 'padding', 'border', 'margin', 'position'];
-    let previousBox: HTMLDivElement|null = null;
-    this.boxElements = [];
+    let previousBox: LitTemplate = nothing;
     for (let i = 0; i < boxes.length; ++i) {
       const name = boxes[i];
       const display = style.get('display');
@@ -275,18 +269,19 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
         continue;
       }
 
-      const boxElement = document.createElement('div');
-      boxElement.className = `${name} highlighted`;
+      const node = this.node();
+      const shouldHighlight = !node || highlightedMode === 'all' || name === highlightedMode;
       const backgroundColor = boxColors[i].asString(Common.Color.Format.RGBA) || '';
-      boxElement.style.backgroundColor = backgroundColor;
-      boxElement.setAttribute('jslog', `${VisualLogging.metricsBox().context(name).track({hover: true})}`);
-      boxElement.addEventListener(
-          'mouseover', this.highlightDOMNode.bind(this, true, name === 'position' ? 'all' : name), false);
-      this.boxElements.push({element: boxElement, name, backgroundColor});
 
-      if (name === 'content') {
-        // clang-format off
-        render(html`
+      const suffix = (name === 'border' ? '-width' : '');
+      // clang-format off
+      const box: LitTemplate = html`
+        <div
+            class="${name} ${shouldHighlight ? 'highlighted' : ''}"
+            style="background-color: ${shouldHighlight ? backgroundColor : ''}"
+            jslog=${VisualLogging.metricsBox().context(name).track({hover: true})}
+            @mouseover=${this.highlightDOMNode.bind(this, true, name === 'position' ? 'all' : name)}>
+        ${name === 'content' ? html`
           <span jslog=${VisualLogging.value('width').track({
                 dblclick: true,
                 keydown: 'Enter|Escape|ArrowUp|ArrowDown|PageUp|PageDown',
@@ -303,25 +298,19 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
               })}
               @dblclick=${(e: Event) => this.startEditing(e.currentTarget, 'height', 'height', style)}>
             ${getContentAreaHeightPx(style)}
-          </span>`, boxElement);
-        // clang-format on
-      } else {
-        const suffix = (name === 'border' ? '-width' : '');
-        // clang-format off
-        render(html`
+          </span>` : html`
           <div class="label">${boxLabels[i]}</div>
-          ${createBoxPartElement.call(this, style, name, 'top', suffix)}
-          <br>
-          ${createBoxPartElement.call(this, style, name, 'left', suffix)}
-          ${previousBox}
-          ${createBoxPartElement.call(this, style, name, 'right', suffix)}
-          <br>
-          ${createBoxPartElement.call(this, style, name, 'bottom', suffix)}
-        `, boxElement);
-        // clang-format on
-      }
+            ${createBoxPartElement.call(this, style, name, 'top', suffix)}
+            <br>
+            ${createBoxPartElement.call(this, style, name, 'left', suffix)}
+            ${previousBox}
+            ${createBoxPartElement.call(this, style, name, 'right', suffix)}
+            <br>
+            ${createBoxPartElement.call(this, style, name, 'bottom', suffix)}`}
+          </div>`;
+      // clang-format on
 
-      previousBox = boxElement;
+      previousBox = box;
     }
     // clang-format off
     render(html`

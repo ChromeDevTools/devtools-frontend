@@ -58,6 +58,7 @@ import * as PanelCommon from '../../panels/common/common.js';
 import * as Snippets from '../../panels/snippets/snippets.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as Snackbar from '../../ui/components/snackbars/snackbars.js';
+import * as UIHelpers from '../../ui/helpers/helpers.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
@@ -128,6 +129,10 @@ const UIStrings = {
    * @description Notification shown to the user whenever DevTools has finished downloading a local AI model.
    */
   aiModelDownloaded: 'AI model downloaded',
+  /**
+   * @description A title of the menu item in the main menu leading to https://github.com/ChromeDevTools/chrome-devtools-mcp.
+   */
+  getDevToolsMcp: 'Get `DevTools MCP`'
 } as const;
 const str_ = i18n.i18n.registerUIStrings('entrypoints/main/MainImpl.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -941,6 +946,15 @@ export class MainMenuItem implements UI.Toolbar.Provider {
     }
 
     contextMenu.defaultSection().appendAction('freestyler.main-menu', undefined, /* optional */ true);
+
+    contextMenu.defaultSection().appendItem(i18nString(UIStrings.getDevToolsMcp), () => {
+      UIHelpers.openInNewTab('https://github.com/ChromeDevTools/chrome-devtools-mcp');
+    }, {
+      additionalElement: UI.UIUtils.maybeCreateNewBadge('get-devtools-mcp'),
+      jslogContext: 'get-devtools-mcp',
+    });
+
+    contextMenu.defaultSection().appendSeparator();
 
     if (dockController.dockSide() === UI.DockController.DockState.UNDOCKED) {
       const mainTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();

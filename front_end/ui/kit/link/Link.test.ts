@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {Link} from '../kit.js';
 
 describe('devtools-link', () => {
@@ -36,6 +37,30 @@ describe('devtools-link', () => {
       link.connectedCallback();
       link.setAttribute('tabindex', '-1');
       assert.strictEqual(link.tabIndex, -1);
+    });
+  });
+
+  describe('visual logging', () => {
+    it('should default to href', () => {
+      const link = new Link();
+      link.setAttribute('href', 'https://example.com/');
+      renderElementIntoDOM(link);
+
+      const jslog = link.getAttribute('jslog');
+      assert.isNotEmpty(jslog);
+      assert.include(jslog, 'example');
+    });
+
+    it('should use the specific value', () => {
+      const link = new Link();
+      link.jslogContext = 'specialString';
+      link.setAttribute('href', 'https://example.com/');
+      renderElementIntoDOM(link);
+
+      const jslog = link.getAttribute('jslog');
+      assert.isNotEmpty(jslog);
+      assert.notInclude(jslog, 'example');
+      assert.include(jslog, 'specialString');
     });
   });
 });

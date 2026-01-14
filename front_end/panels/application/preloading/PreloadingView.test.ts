@@ -1023,8 +1023,8 @@ describeWithMockConnection('PreloadingSummaryView', () => {
     await RenderCoordinator.done();
 
     const usedPreloadingComponent = view.getUsedPreloadingForTest();
-    assert.isNotNull(usedPreloadingComponent.shadowRoot);
+    await usedPreloadingComponent.updateComplete;
 
-    assert.include(usedPreloadingComponent.shadowRoot.textContent, 'This page was successfully prerendered.');
+    assert.include(usedPreloadingComponent.contentElement.textContent, 'This page was successfully prerendered.');
   });
 });

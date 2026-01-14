@@ -564,9 +564,7 @@ export class PreloadingSummaryView extends UI.Widget.VBox {
     this.contentElement.insertBefore(this.warningsContainer, this.contentElement.firstChild);
     this.warningsView.show(this.warningsContainer);
 
-    const usedPreloadingContainer = new UI.Widget.VBox();
-    usedPreloadingContainer.contentElement.appendChild(this.usedPreloading);
-    usedPreloadingContainer.show(this.contentElement);
+    this.usedPreloading.show(this.contentElement);
   }
 
   override wasShown(): void {

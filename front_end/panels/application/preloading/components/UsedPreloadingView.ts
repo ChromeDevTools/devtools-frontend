@@ -1,7 +1,6 @@
 // Copyright 2023 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 import '../../../../ui/kit/kit.js';
 import '../../../../ui/components/report_view/report_view.js';
@@ -13,8 +12,6 @@ import type * as Platform from '../../../../core/platform/platform.js';
 import {assertNotNullOrUndefined} from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import * as Protocol from '../../../../generated/protocol.js';
-import * as LegacyWrapper from '../../../../ui/components/legacy_wrapper/legacy_wrapper.js';
-import * as RenderCoordinator from '../../../../ui/components/render_coordinator/render_coordinator.js';
 import * as UI from '../../../../ui/legacy/legacy.js';
 import {html, type LitTemplate, nothing, render} from '../../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js';
@@ -399,18 +396,17 @@ function renderBadge(config: Badge): LitTemplate {
 
 type View = (input: ViewInput, output: undefined, target: HTMLElement|ShadowRoot) => void;
 
-const DEFAULT_VIEW: View =
-    ({speculativeLoadingStatusData, speculationsInitiatedSummaryData}: ViewInput, output, target): void => {
-      // Disabled until https://crbug.com/1079231 is fixed.
-      // clang-format off
+const DEFAULT_VIEW: View = (input, _output, target) => {
+  // Disabled until https://crbug.com/1079231 is fixed.
+  // clang-format off
   render(html`
     <style>${usedPreloadingStyles}</style>
     <devtools-report>
-      ${renderSpeculativeLoadingStatusForThisPageSections(speculativeLoadingStatusData)}
+      ${renderSpeculativeLoadingStatusForThisPageSections(input.speculativeLoadingStatusData)}
 
       <devtools-report-divider></devtools-report-divider>
 
-      ${renderSpeculationsInitiatedByThisPageSummarySections(speculationsInitiatedSummaryData)}
+      ${renderSpeculationsInitiatedByThisPageSummarySections(input.speculationsInitiatedSummaryData)}
 
       <devtools-report-divider></devtools-report-divider>
 
@@ -423,20 +419,19 @@ const DEFAULT_VIEW: View =
                   .context('learn-more')}
         >${i18nString(UIStrings.learnMore)}</x-link>
       </devtools-report-section>
-    </devtools-report>`, target, {host: target instanceof ShadowRoot ? target.host : undefined});
-      // clang-format on
-    };
+    </devtools-report>`, target);
+  // clang-format on
+};
 
 /**
  * TODO(kenoss): Rename this class and file once https://crrev.com/c/4933567 landed.
  * This also shows summary of speculations initiated by this page.
  **/
-export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableComponent<UI.Widget.VBox> {
-  readonly #shadow = this.attachShadow({mode: 'open'});
+export class UsedPreloadingView extends UI.Widget.VBox {
   readonly #view: View;
 
   constructor(view = DEFAULT_VIEW) {
-    super();
+    super({useShadowDom: true});
     this.#view = view;
   }
 
@@ -448,17 +443,15 @@ export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableCom
 
   set data(data: UsedPreloadingViewData) {
     this.#data = data;
-    void this.#render();
+    this.requestUpdate();
   }
 
-  async #render(): Promise<void> {
+  override performUpdate(): void {
     const viewInput: ViewInput = {
       speculativeLoadingStatusData: this.#getSpeculativeLoadingStatusForThisPageData(),
       speculationsInitiatedSummaryData: this.#getSpeculationsInitiatedByThisPageSummaryData(),
     };
-    await RenderCoordinator.write('UsedPreloadingView render', () => {
-      this.#view(viewInput, undefined, this.#shadow);
-    });
+    this.#view(viewInput, undefined, this.contentElement);
   }
 
   #isPrerenderLike(speculationAction: Protocol.Preload.SpeculationAction): boolean {
@@ -581,13 +574,5 @@ export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableCom
     };
 
     return {badges, revealRuleSetView, revealAttemptViewWithFilter};
-  }
-}
-
-customElements.define('devtools-resources-used-preloading-view', UsedPreloadingView);
-
-declare global {
-  interface HTMLElementTagNameMap {
-    'devtools-resources-used-preloading-view': UsedPreloadingView;
   }
 }

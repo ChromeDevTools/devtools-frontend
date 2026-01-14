@@ -36,12 +36,14 @@ import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
+import {Directives, html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import type {ComputedStyleModel} from './ComputedStyleModel.js';
 import {ElementsSidebarPane} from './ElementsSidebarPane.js';
 import metricsSidebarPaneStyles from './metricsSidebarPane.css.js';
+
+const {live} = Directives;
 
 export class MetricsSidebarPane extends ElementsSidebarPane {
   originalPropertyData: SDK.CSSProperty.CSSProperty|null;
@@ -178,8 +180,8 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
       return html`<div class=${side} jslog=${VisualLogging.value(propertyName).track({
           dblclick: true, keydown: 'Enter|Escape|ArrowUp|ArrowDown|PageUp|PageDown', change: true,
           })}
-          @dblclick=${(e: Event) => this.startEditing(e.currentTarget, name, propertyName, style)}>
-        ${value}
+          @dblclick=${(e: Event) => this.startEditing(e.currentTarget, name, propertyName, style)}
+          .innerText=${live(value ?? '')}>
       </div>`;
       // clang-format on
     }
@@ -287,8 +289,8 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
                 keydown: 'Enter|Escape|ArrowUp|ArrowDown|PageUp|PageDown',
                 change: true,
               })}
-              @dblclick=${(e: Event) => this.startEditing(e.currentTarget, 'width', 'width', style)}>
-            ${getContentAreaWidthPx(style)}
+              @dblclick=${(e: Event) => this.startEditing(e.currentTarget, 'width', 'width', style)}
+              .innerText=${live(getContentAreaWidthPx(style))}>
           </span>
           <span> × </span>
           <span jslog=${VisualLogging.value('height').track({
@@ -296,8 +298,8 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
                 keydown: 'Enter|Escape|ArrowUp|ArrowDown|PageUp|PageDown',
                 change: true,
               })}
-              @dblclick=${(e: Event) => this.startEditing(e.currentTarget, 'height', 'height', style)}>
-            ${getContentAreaHeightPx(style)}
+              @dblclick=${(e: Event) => this.startEditing(e.currentTarget, 'height', 'height', style)}
+              .innerText=${live(getContentAreaHeightPx(style))}>
           </span>` : html`
           <div class="label">${boxLabels[i]}</div>
             ${createBoxPartElement.call(this, style, name, 'top', suffix)}

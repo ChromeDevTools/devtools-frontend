@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-imperative-dom-api */
+/* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 /*
  * Copyright (C) 2007 Apple Inc.  All rights reserved.
@@ -35,6 +36,7 @@ import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import {html, render, type TemplateResult} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import type {ComputedStyleModel} from './ComputedStyleModel.js';
@@ -162,38 +164,29 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
 
   private updateMetrics(style: Map<string, string>): void {
     // Updating with computed style.
-    const metricsElement = document.createElement('div');
-    metricsElement.className = 'metrics';
     const self = this;
 
     function createBoxPartElement(
         this: MetricsSidebarPane, style: Map<string, string>, name: string, side: string,
-        suffix: string): HTMLDivElement {
-      const element = document.createElement('div');
-      element.className = side;
-
+        suffix: string): TemplateResult {
       const propertyName = (name !== 'position' ? name + '-' : '') + side + suffix;
       let value = style.get(propertyName);
-      if (value === undefined) {
-        return element;
-      }
 
       if (value === '' || (name !== 'position' && value === 'unset')) {
         value = '\u2012';
       } else if (name === 'position' && value === 'auto') {
         value = '\u2012';
       }
-      value = value.replace(/px$/, '');
-      value = Platform.NumberUtilities.toFixedIfFloating(value);
-
-      element.textContent = value;
-      element.setAttribute('jslog', `${VisualLogging.value(propertyName).track({
-                             dblclick: true,
-                             keydown: 'Enter|Escape|ArrowUp|ArrowDown|PageUp|PageDown',
-                             change: true,
-                           })}`);
-      element.addEventListener('dblclick', this.startEditing.bind(this, element, name, propertyName, style), false);
-      return element;
+      value = value?.replace(/px$/, '');
+      value = value ? Platform.NumberUtilities.toFixedIfFloating(value) : value;
+      // clang-format off
+      return html`<div class=${side} jslog=${VisualLogging.value(propertyName).track({
+          dblclick: true, keydown: 'Enter|Escape|ArrowUp|ArrowDown|PageUp|PageDown', change: true,
+          })}
+          @dblclick=${(e: Event) => this.startEditing(e.currentTarget, name, propertyName, style)}>
+        ${value}
+      </div>`;
+      // clang-format on
     }
 
     function getContentAreaWidthPx(style: Map<string, string>): string {
@@ -292,66 +285,59 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
       this.boxElements.push({element: boxElement, name, backgroundColor});
 
       if (name === 'content') {
-        const widthElement = document.createElement('span');
-        widthElement.textContent = getContentAreaWidthPx(style);
-        widthElement.addEventListener(
-            'dblclick', this.startEditing.bind(this, widthElement, 'width', 'width', style), false);
-        widthElement.setAttribute('jslog', `${VisualLogging.value('width').track({
-                                    dblclick: true,
-                                    keydown: 'Enter|Escape|ArrowUp|ArrowDown|PageUp|PageDown',
-                                    change: true,
-                                  })}`);
-
-        const heightElement = document.createElement('span');
-        heightElement.textContent = getContentAreaHeightPx(style);
-        heightElement.addEventListener(
-            'dblclick', this.startEditing.bind(this, heightElement, 'height', 'height', style), false);
-        heightElement.setAttribute('jslog', `${VisualLogging.value('height').track({
-                                     dblclick: true,
-                                     keydown: 'Enter|Escape|ArrowUp|ArrowDown|PageUp|PageDown',
-                                     change: true,
-                                   })}`);
-
-        const timesElement = document.createElement('span');
-        timesElement.textContent = ' × ';
-
-        boxElement.appendChild(widthElement);
-        boxElement.appendChild(timesElement);
-        boxElement.appendChild(heightElement);
+        // clang-format off
+        render(html`
+          <span jslog=${VisualLogging.value('width').track({
+                dblclick: true,
+                keydown: 'Enter|Escape|ArrowUp|ArrowDown|PageUp|PageDown',
+                change: true,
+              })}
+              @dblclick=${(e: Event) => this.startEditing(e.currentTarget, 'width', 'width', style)}>
+            ${getContentAreaWidthPx(style)}
+          </span>
+          <span> × </span>
+          <span jslog=${VisualLogging.value('height').track({
+                dblclick: true,
+                keydown: 'Enter|Escape|ArrowUp|ArrowDown|PageUp|PageDown',
+                change: true,
+              })}
+              @dblclick=${(e: Event) => this.startEditing(e.currentTarget, 'height', 'height', style)}>
+            ${getContentAreaHeightPx(style)}
+          </span>`, boxElement);
+        // clang-format on
       } else {
         const suffix = (name === 'border' ? '-width' : '');
-
-        const labelElement = document.createElement('div');
-        labelElement.className = 'label';
-        labelElement.textContent = boxLabels[i];
-        boxElement.appendChild(labelElement);
-
-        boxElement.appendChild(createBoxPartElement.call(this, style, name, 'top', suffix));
-        boxElement.appendChild(document.createElement('br'));
-        boxElement.appendChild(createBoxPartElement.call(this, style, name, 'left', suffix));
-
-        if (previousBox) {
-          boxElement.appendChild(previousBox);
-        }
-
-        boxElement.appendChild(createBoxPartElement.call(this, style, name, 'right', suffix));
-        boxElement.appendChild(document.createElement('br'));
-        boxElement.appendChild(createBoxPartElement.call(this, style, name, 'bottom', suffix));
+        // clang-format off
+        render(html`
+          <div class="label">${boxLabels[i]}</div>
+          ${createBoxPartElement.call(this, style, name, 'top', suffix)}
+          <br>
+          ${createBoxPartElement.call(this, style, name, 'left', suffix)}
+          ${previousBox}
+          ${createBoxPartElement.call(this, style, name, 'right', suffix)}
+          <br>
+          ${createBoxPartElement.call(this, style, name, 'bottom', suffix)}
+        `, boxElement);
+        // clang-format on
       }
 
       previousBox = boxElement;
     }
-    if (previousBox) {
-      metricsElement.appendChild(previousBox);
-    }
-    metricsElement.addEventListener('mouseover', this.highlightDOMNode.bind(this, false, 'all'), false);
-    metricsElement.addEventListener('mouseleave', this.highlightDOMNode.bind(this, false, 'all'), false);
-    this.contentElement.removeChildren();
-    this.contentElement.appendChild(metricsElement);
+    // clang-format off
+    render(html`
+      <div class="metrics" @mouseover=${this.highlightDOMNode.bind(this, false, 'all')}
+          @mouseleave=${this.highlightDOMNode.bind(this, false, 'all')}>
+        ${previousBox}
+      </div>`, this.contentElement);
+    // clang-format on
     this.element.classList.remove('collapsed');
   }
 
-  startEditing(targetElement: Element, box: string, styleProperty: string, computedStyle: Map<string, string>): void {
+  startEditing(target: EventTarget|null, box: string, styleProperty: string, computedStyle: Map<string, string>): void {
+    if (!(target instanceof Element)) {
+      return;
+    }
+    const targetElement = target as Element;
     if (UI.UIUtils.isBeingEdited(targetElement)) {
       return;
     }

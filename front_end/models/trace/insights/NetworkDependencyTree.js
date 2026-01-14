@@ -4,6 +4,7 @@
 import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
+import * as Extras from '../extras/extras.js';
 import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 import { InsightCategory, } from './types.js';
@@ -406,10 +407,8 @@ function candidateRequestsByOrigin(data, mainResource, contextRequests, lcpGraph
         if (!hasValidTiming(request)) {
             return;
         }
-        // Filter out all resources that are loaded by the document. Connections are already early.
-        // TODO(jacktfranklin, b/392090449): swap this over to use the initiator
-        // lookup that fixes bugs with dynamically injected content.
-        if (data.NetworkRequests.incompleteInitiator.get(request) === mainResource) {
+        const initiator = Extras.Initiators.getNetworkInitiator(data, request);
+        if (initiator === mainResource) {
             return;
         }
         const url = new URL(request.args.data.url);

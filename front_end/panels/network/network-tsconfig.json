@@ -84,6 +84,9 @@
       "path": "../../core/sdk/bundle-tsconfig.json"
     },
     {
+      "path": "../../generated/protocol-tsconfig.json"
+    },
+    {
       "path": "../../models/annotations/bundle-tsconfig.json"
     },
     {
@@ -100,6 +103,9 @@
     },
     {
       "path": "../../models/network_time_calculator/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../models/persistence/bundle-tsconfig.json"
     },
     {
       "path": "../../models/text_utils/bundle-tsconfig.json"
@@ -138,10 +144,22 @@
       "path": "../../third_party/chromium/client-variations/bundle-tsconfig.json"
     },
     {
+      "path": "../../ui/components/adorners/bundle-tsconfig.json"
+    },
+    {
       "path": "../../ui/components/buttons/bundle-tsconfig.json"
     },
     {
       "path": "../../ui/components/expandable_list/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../ui/components/legacy_wrapper/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../ui/components/render_coordinator/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../ui/components/tooltips/bundle-tsconfig.json"
     },
     {
       "path": "../../ui/i18n/bundle-tsconfig.json"
@@ -178,6 +196,9 @@
     },
     {
       "path": "../../ui/lit/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../ui/visual_logging/bundle-tsconfig.json"
     },
     {
       "path": "../settings/emulation/components/bundle-tsconfig.json"

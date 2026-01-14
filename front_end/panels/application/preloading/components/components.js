@@ -2063,7 +2063,7 @@ import * as SDK7 from "./../../../../core/sdk/sdk.js";
 import * as LegacyWrapper from "./../../../../ui/components/legacy_wrapper/legacy_wrapper.js";
 import * as RenderCoordinator from "./../../../../ui/components/render_coordinator/render_coordinator.js";
 import * as UI7 from "./../../../../ui/legacy/legacy.js";
-import * as Lit4 from "./../../../../ui/lit/lit.js";
+import { html as html7, nothing as nothing6, render as render7 } from "./../../../../ui/lit/lit.js";
 import * as VisualLogging4 from "./../../../../ui/visual_logging/visual_logging.js";
 import * as PreloadingHelper3 from "./../helper/helper.js";
 
@@ -2148,7 +2148,6 @@ devtools-report-divider {
 /*# sourceURL=${import.meta.resolve("./usedPreloadingView.css")} */`;
 
 // gen/front_end/panels/application/preloading/components/UsedPreloadingView.js
-var { html: html7 } = Lit4;
 var UIStrings8 = {
   /**
    * @description Header for preloading status.
@@ -2257,8 +2256,211 @@ var UIStrings8 = {
 };
 var str_8 = i18n15.i18n.registerUIStrings("panels/application/preloading/components/UsedPreloadingView.ts", UIStrings8);
 var i18nString8 = i18n15.i18n.getLocalizedString.bind(void 0, str_8);
+var { widgetConfig } = UI7.Widget;
+function renderSpeculativeLoadingStatusForThisPageSections({ kind, prefetch, prerenderLike, mismatchedData, attemptWithMismatchedHeaders }) {
+  let badge;
+  let basicMessage;
+  switch (kind) {
+    case "DowngradedPrerenderToPrefetchAndUsed":
+      badge = { type: "success" };
+      basicMessage = html7`${i18nString8(UIStrings8.downgradedPrefetchUsed)}`;
+      break;
+    case "PrefetchUsed":
+      badge = { type: "success" };
+      basicMessage = html7`${i18nString8(UIStrings8.prefetchUsed)}`;
+      break;
+    case "PrerenderUsed":
+      badge = { type: "success" };
+      basicMessage = html7`${i18nString8(UIStrings8.prerenderUsed)}`;
+      break;
+    case "PrefetchFailed":
+      badge = { type: "failure" };
+      basicMessage = html7`${i18nString8(UIStrings8.prefetchFailed)}`;
+      break;
+    case "PrerenderFailed":
+      badge = { type: "failure" };
+      basicMessage = html7`${i18nString8(UIStrings8.prerenderFailed)}`;
+      break;
+    case "NoPreloads":
+      badge = { type: "neutral", message: i18nString8(UIStrings8.badgeNoSpeculativeLoads) };
+      basicMessage = html7`${i18nString8(UIStrings8.noPreloads)}`;
+      break;
+  }
+  let maybeFailureReasonMessage;
+  if (kind === "PrefetchFailed") {
+    assertNotNullOrUndefined4(prefetch);
+    maybeFailureReasonMessage = prefetchFailureReason(prefetch);
+  } else if (kind === "PrerenderFailed" || kind === "DowngradedPrerenderToPrefetchAndUsed") {
+    assertNotNullOrUndefined4(prerenderLike);
+    maybeFailureReasonMessage = prerenderFailureReason(prerenderLike);
+  }
+  return html7`
+    <devtools-report-section-header>
+      ${i18nString8(UIStrings8.speculativeLoadingStatusForThisPage)}
+    </devtools-report-section-header>
+    <devtools-report-section>
+      <div>
+        <div class="status-badge-container">
+          ${renderBadge(badge)}
+        </div>
+        <div>
+          ${basicMessage}
+        </div>
+      </div>
+    </devtools-report-section>
+
+    ${maybeFailureReasonMessage !== void 0 ? html7`
+      <devtools-report-section-header>
+        ${i18nString8(UIStrings8.detailsFailureReason)}
+      </devtools-report-section-header>
+      <devtools-report-section>
+        ${maybeFailureReasonMessage}
+      </devtools-report-section>` : nothing6}
+
+    ${mismatchedData ? renderMismatchedSections(mismatchedData) : nothing6}
+    ${attemptWithMismatchedHeaders ? renderMismatchedHTTPHeadersSections(attemptWithMismatchedHeaders) : nothing6}`;
+}
+function renderMismatchedSections(data) {
+  return html7`
+    <devtools-report-section-header>
+      ${i18nString8(UIStrings8.currentURL)}
+    </devtools-report-section-header>
+    <devtools-report-section>
+      <x-link
+        class="link devtools-link"
+        href=${data.pageURL}
+        jslog=${VisualLogging4.link().track({ click: true, keydown: "Enter|Space" }).context("current-url")}
+      >${data.pageURL}</x-link>
+    </devtools-report-section>
+
+    <devtools-report-section-header>
+      ${i18nString8(UIStrings8.preloadedURLs)}
+    </devtools-report-section-header>
+    <devtools-report-section jslog=${VisualLogging4.section("preloaded-urls")}>
+      <devtools-widget .widgetConfig=${widgetConfig(MismatchedPreloadingGrid, { data })}>
+      </devtools-widget>
+    </devtools-report-section>`;
+}
+function renderMismatchedHTTPHeadersSections(attempt) {
+  return html7`
+    <devtools-report-section-header>
+      ${i18nString8(UIStrings8.mismatchedHeadersDetail)}
+    </devtools-report-section-header>
+    <devtools-report-section>
+      <style>${preloadingGrid_css_default}</style>
+      <div class="preloading-container">
+        <devtools-data-grid striped inline>
+          <table>
+            <tr>
+              <th id="header-name" weight="30" sortable>
+                ${i18nString8(UIStrings8.headerName)}
+              </th>
+              <th id="initial-value" weight="30" sortable>
+                ${i18nString8(UIStrings8.initialNavigationValue)}
+              </th>
+              <th id="activation-value" weight="30" sortable>
+                ${i18nString8(UIStrings8.activationNavigationValue)}
+              </th>
+            </tr>
+            ${(attempt.mismatchedHeaders ?? []).map((mismatchedHeaders) => html7`
+              <tr>
+                <td>${mismatchedHeaders.headerName}</td>
+                <td>${mismatchedHeaders.initialValue ?? i18nString8(UIStrings8.missing)}</td>
+                <td>${mismatchedHeaders.activationValue ?? i18nString8(UIStrings8.missing)}</td>
+              </tr>
+            `)}
+          </table>
+        </devtools-data-grid>
+      </div>
+    </devtools-report-section>`;
+}
+function renderSpeculationsInitiatedByThisPageSummarySections({ badges, revealRuleSetView, revealAttemptViewWithFilter }) {
+  return html7`
+    <devtools-report-section-header>
+      ${i18nString8(UIStrings8.speculationsInitiatedByThisPage)}
+    </devtools-report-section-header>
+    <devtools-report-section>
+      <div>
+        <div class="status-badge-container">
+          ${badges.map(renderBadge)}
+        </div>
+
+        <div class="reveal-links">
+          <button class="link devtools-link" @click=${revealRuleSetView}
+              jslog=${VisualLogging4.action("view-all-rules").track({ click: true })}>
+            ${i18nString8(UIStrings8.viewAllRules)}
+          </button>
+         ・
+          <button class="link devtools-link" @click=${revealAttemptViewWithFilter}
+              jslog=${VisualLogging4.action("view-all-speculations").track({ click: true })}>
+           ${i18nString8(UIStrings8.viewAllSpeculations)}
+          </button>
+        </div>
+      </div>
+    </devtools-report-section>`;
+}
+function renderBadge(config) {
+  const badge = (klass, iconName, message) => {
+    return html7`
+      <span class=${klass}>
+        <devtools-icon name=${iconName}></devtools-icon>
+        <span>
+          ${message}
+        </span>
+      </span>
+    `;
+  };
+  switch (config.type) {
+    case "success": {
+      let message;
+      if (config.count === void 0) {
+        message = i18nString8(UIStrings8.badgeSuccess);
+      } else {
+        message = i18nString8(UIStrings8.badgeSuccessWithCount, { n: config.count });
+      }
+      return badge("status-badge status-badge-success", "check-circle", message);
+    }
+    case "failure": {
+      let message;
+      if (config.count === void 0) {
+        message = i18nString8(UIStrings8.badgeFailure);
+      } else {
+        message = i18nString8(UIStrings8.badgeFailureWithCount, { n: config.count });
+      }
+      return badge("status-badge status-badge-failure", "cross-circle", message);
+    }
+    case "neutral":
+      return badge("status-badge status-badge-neutral", "clear", config.message);
+  }
+}
+var DEFAULT_VIEW6 = ({ speculativeLoadingStatusData, speculationsInitiatedSummaryData }, output, target) => {
+  render7(html7`
+    <style>${usedPreloadingView_css_default}</style>
+    <devtools-report>
+      ${renderSpeculativeLoadingStatusForThisPageSections(speculativeLoadingStatusData)}
+
+      <devtools-report-divider></devtools-report-divider>
+
+      ${renderSpeculationsInitiatedByThisPageSummarySections(speculationsInitiatedSummaryData)}
+
+      <devtools-report-divider></devtools-report-divider>
+
+      <devtools-report-section>
+        <x-link
+          class="link devtools-link"
+          href=${"https://developer.chrome.com/blog/prerender-pages/"}
+          jslog=${VisualLogging4.link().track({ click: true, keydown: "Enter|Space" }).context("learn-more")}
+        >${i18nString8(UIStrings8.learnMore)}</x-link>
+      </devtools-report-section>
+    </devtools-report>`, target, { host: target instanceof ShadowRoot ? target.host : void 0 });
+};
 var UsedPreloadingView = class extends LegacyWrapper.LegacyWrapper.WrappableComponent {
   #shadow = this.attachShadow({ mode: "open" });
+  #view;
+  constructor(view = DEFAULT_VIEW6) {
+    super();
+    this.#view = view;
+  }
   #data = {
     pageURL: "",
     previousAttempts: [],
@@ -2269,31 +2471,13 @@ var UsedPreloadingView = class extends LegacyWrapper.LegacyWrapper.WrappableComp
     void this.#render();
   }
   async #render() {
+    const viewInput = {
+      speculativeLoadingStatusData: this.#getSpeculativeLoadingStatusForThisPageData(),
+      speculationsInitiatedSummaryData: this.#getSpeculationsInitiatedByThisPageSummaryData()
+    };
     await RenderCoordinator.write("UsedPreloadingView render", () => {
-      Lit4.render(this.#renderTemplate(), this.#shadow, { host: this });
+      this.#view(viewInput, void 0, this.#shadow);
     });
-  }
-  #renderTemplate() {
-    return html7`
-      <style>${usedPreloadingView_css_default}</style>
-      <devtools-report>
-        ${this.#speculativeLoadingStatusForThisPageSections()}
-
-        <devtools-report-divider></devtools-report-divider>
-
-        ${this.#speculationsInitiatedByThisPageSummarySections()}
-
-        <devtools-report-divider></devtools-report-divider>
-
-        <devtools-report-section>
-          <x-link
-            class="link devtools-link"
-            href=${"https://developer.chrome.com/blog/prerender-pages/"}
-            jslog=${VisualLogging4.link().track({ click: true, keydown: "Enter|Space" }).context("learn-more")}
-          >${i18nString8(UIStrings8.learnMore)}</x-link>
-        </devtools-report-section>
-      </devtools-report>
-    `;
   }
   #isPrerenderLike(speculationAction) {
     return [
@@ -2305,7 +2489,7 @@ var UsedPreloadingView = class extends LegacyWrapper.LegacyWrapper.WrappableComp
   #isPrerenderAttempt(attempt) {
     return this.#isPrerenderLike(attempt.action);
   }
-  #speculativeLoadingStatusForThisPageSections() {
+  #getSpeculativeLoadingStatusForThisPageData() {
     const pageURL = Common4.ParsedURL.ParsedURL.urlWithoutHash(this.#data.pageURL);
     const forThisPage = this.#data.previousAttempts.filter((attempt) => Common4.ParsedURL.ParsedURL.urlWithoutHash(attempt.key.url) === pageURL);
     const prefetch = forThisPage.filter(
@@ -2327,73 +2511,17 @@ var UsedPreloadingView = class extends LegacyWrapper.LegacyWrapper.WrappableComp
     } else {
       kind = "NoPreloads";
     }
-    let badge;
-    let basicMessage;
-    switch (kind) {
-      case "DowngradedPrerenderToPrefetchAndUsed":
-        badge = this.#badgeSuccess();
-        basicMessage = html7`${i18nString8(UIStrings8.downgradedPrefetchUsed)}`;
-        break;
-      case "PrefetchUsed":
-        badge = this.#badgeSuccess();
-        basicMessage = html7`${i18nString8(UIStrings8.prefetchUsed)}`;
-        break;
-      case "PrerenderUsed":
-        badge = this.#badgeSuccess();
-        basicMessage = html7`${i18nString8(UIStrings8.prerenderUsed)}`;
-        break;
-      case "PrefetchFailed":
-        badge = this.#badgeFailure();
-        basicMessage = html7`${i18nString8(UIStrings8.prefetchFailed)}`;
-        break;
-      case "PrerenderFailed":
-        badge = this.#badgeFailure();
-        basicMessage = html7`${i18nString8(UIStrings8.prerenderFailed)}`;
-        break;
-      case "NoPreloads":
-        badge = this.#badgeNeutral(i18nString8(UIStrings8.badgeNoSpeculativeLoads));
-        basicMessage = html7`${i18nString8(UIStrings8.noPreloads)}`;
-        break;
-    }
-    let maybeFailureReasonMessage;
-    if (kind === "PrefetchFailed") {
-      assertNotNullOrUndefined4(prefetch);
-      maybeFailureReasonMessage = prefetchFailureReason(prefetch);
-    } else if (kind === "PrerenderFailed" || kind === "DowngradedPrerenderToPrefetchAndUsed") {
-      assertNotNullOrUndefined4(prerenderLike);
-      maybeFailureReasonMessage = prerenderFailureReason(prerenderLike);
-    }
-    let maybeFailureReason = Lit4.nothing;
-    if (maybeFailureReasonMessage !== void 0) {
-      maybeFailureReason = html7`
-      <devtools-report-section-header>${i18nString8(UIStrings8.detailsFailureReason)}</devtools-report-section-header>
-      <devtools-report-section>
-        ${maybeFailureReasonMessage}
-      </devtools-report-section>
-      `;
-    }
-    return html7`
-      <devtools-report-section-header>${i18nString8(UIStrings8.speculativeLoadingStatusForThisPage)}</devtools-report-section-header>
-      <devtools-report-section>
-        <div>
-          <div class="status-badge-container">
-            ${badge}
-          </div>
-          <div>
-            ${basicMessage}
-          </div>
-        </div>
-      </devtools-report-section>
-
-      ${maybeFailureReason}
-
-      ${this.#maybeMismatchedSections(kind)}
-      ${this.#maybeMismatchedHTTPHeadersSections()}
-    `;
+    return {
+      kind,
+      prefetch,
+      prerenderLike,
+      mismatchedData: this.#getMismatchedData(kind),
+      attemptWithMismatchedHeaders: this.#getAttemptWithMismatchedHeaders()
+    };
   }
-  #maybeMismatchedSections(kind) {
+  #getMismatchedData(kind) {
     if (kind !== "NoPreloads" || this.#data.previousAttempts.length === 0) {
-      return Lit4.nothing;
+      return void 0;
     }
     const rows = this.#data.previousAttempts.map((attempt) => {
       return {
@@ -2402,69 +2530,22 @@ var UsedPreloadingView = class extends LegacyWrapper.LegacyWrapper.WrappableComp
         status: attempt.status
       };
     });
-    const data = {
+    return {
       pageURL: this.#data.pageURL,
       rows
     };
-    return html7`
-      <devtools-report-section-header>${i18nString8(UIStrings8.currentURL)}</devtools-report-section-header>
-      <devtools-report-section>
-        <x-link
-          class="link devtools-link"
-          href=${this.#data.pageURL}
-          jslog=${VisualLogging4.link().track({ click: true, keydown: "Enter|Space" }).context("current-url")}
-        >${this.#data.pageURL}</x-link>
-      </devtools-report-section>
-
-      <devtools-report-section-header>${i18nString8(UIStrings8.preloadedURLs)}</devtools-report-section-header>
-      <devtools-report-section
-      jslog=${VisualLogging4.section("preloaded-urls")}>
-        <devtools-widget
-          .widgetConfig=${UI7.Widget.widgetConfig(MismatchedPreloadingGrid, { data })}
-        ></devtools-widget>
-      </devtools-report-section>
-    `;
   }
-  #maybeMismatchedHTTPHeadersSections() {
+  #getAttemptWithMismatchedHeaders() {
     const attempt = this.#data.previousAttempts.find((attempt2) => this.#isPrerenderAttempt(attempt2) && attempt2.mismatchedHeaders !== null);
     if (!attempt?.mismatchedHeaders) {
-      return Lit4.nothing;
+      return void 0;
     }
     if (attempt.key.url !== this.#data.pageURL) {
       throw new Error("unreachable");
     }
-    return html7`
-      <devtools-report-section-header>${i18nString8(UIStrings8.mismatchedHeadersDetail)}</devtools-report-section-header>
-      <devtools-report-section>
-        <style>${preloadingGrid_css_default}</style>
-        <div class="preloading-container">
-          <devtools-data-grid striped inline>
-            <table>
-              <tr>
-                <th id="header-name" weight="30" sortable>
-                  ${i18nString8(UIStrings8.headerName)}
-                </th>
-                <th id="initial-value" weight="30" sortable>
-                  ${i18nString8(UIStrings8.initialNavigationValue)}
-                </th>
-                <th id="activation-value" weight="30" sortable>
-                  ${i18nString8(UIStrings8.activationNavigationValue)}
-                </th>
-              </tr>
-              ${attempt.mismatchedHeaders.map((mismatchedHeaders) => html7`
-                <tr>
-                  <td>${mismatchedHeaders.headerName}</td>
-                  <td>${mismatchedHeaders.initialValue ?? i18nString8(UIStrings8.missing)}</td>
-                  <td>${mismatchedHeaders.activationValue ?? i18nString8(UIStrings8.missing)}</td>
-                </tr>
-              `)}
-            </table>
-          </devtools-data-grid>
-        </div>
-      </devtools-report-section>
-    `;
+    return attempt;
   }
-  #speculationsInitiatedByThisPageSummarySections() {
+  #getSpeculationsInitiatedByThisPageSummaryData() {
     const count = this.#data.currentAttempts.reduce((acc, attempt) => {
       acc.set(attempt.status, (acc.get(attempt.status) ?? 0) + 1);
       return acc;
@@ -2490,19 +2571,19 @@ var UsedPreloadingView = class extends LegacyWrapper.LegacyWrapper.WrappableComp
     ) ?? 0);
     const badges = [];
     if (this.#data.currentAttempts.length === 0) {
-      badges.push(this.#badgeNeutral(i18nString8(UIStrings8.badgeNoSpeculativeLoads)));
+      badges.push({ type: "neutral", message: i18nString8(UIStrings8.badgeNoSpeculativeLoads) });
     }
     if (notTriggeredCount > 0) {
-      badges.push(this.#badgeNeutral(i18nString8(UIStrings8.badgeNotTriggeredWithCount, { n: notTriggeredCount })));
+      badges.push({ type: "neutral", message: i18nString8(UIStrings8.badgeNotTriggeredWithCount, { n: notTriggeredCount }) });
     }
     if (inProgressCount > 0) {
-      badges.push(this.#badgeNeutral(i18nString8(UIStrings8.badgeInProgressWithCount, { n: inProgressCount })));
+      badges.push({ type: "neutral", message: i18nString8(UIStrings8.badgeInProgressWithCount, { n: inProgressCount }) });
     }
     if (readyCount > 0) {
-      badges.push(this.#badgeSuccess(readyCount));
+      badges.push({ type: "success", count: readyCount });
     }
     if (failureCount > 0) {
-      badges.push(this.#badgeFailure(failureCount));
+      badges.push({ type: "failure", count: failureCount });
     }
     const revealRuleSetView = () => {
       void Common4.Revealer.reveal(new PreloadingHelper3.PreloadingForward.RuleSetView(null));
@@ -2510,59 +2591,7 @@ var UsedPreloadingView = class extends LegacyWrapper.LegacyWrapper.WrappableComp
     const revealAttemptViewWithFilter = () => {
       void Common4.Revealer.reveal(new PreloadingHelper3.PreloadingForward.AttemptViewWithFilter(null));
     };
-    return html7`
-      <devtools-report-section-header>${i18nString8(UIStrings8.speculationsInitiatedByThisPage)}</devtools-report-section-header>
-      <devtools-report-section>
-        <div>
-          <div class="status-badge-container">
-            ${badges}
-          </div>
-
-          <div class="reveal-links">
-            <button class="link devtools-link" @click=${revealRuleSetView}
-            jslog=${VisualLogging4.action("view-all-rules").track({ click: true })}>
-              ${i18nString8(UIStrings8.viewAllRules)}
-            </button>
-           ・
-            <button class="link devtools-link" @click=${revealAttemptViewWithFilter}
-            jslog=${VisualLogging4.action("view-all-speculations").track({ click: true })}>
-             ${i18nString8(UIStrings8.viewAllSpeculations)}
-            </button>
-          </div>
-        </div>
-      </devtools-report-section>
-    `;
-  }
-  #badgeSuccess(count) {
-    let message;
-    if (count === void 0) {
-      message = i18nString8(UIStrings8.badgeSuccess);
-    } else {
-      message = i18nString8(UIStrings8.badgeSuccessWithCount, { n: count });
-    }
-    return this.#badge("status-badge status-badge-success", "check-circle", message);
-  }
-  #badgeFailure(count) {
-    let message;
-    if (count === void 0) {
-      message = i18nString8(UIStrings8.badgeFailure);
-    } else {
-      message = i18nString8(UIStrings8.badgeFailureWithCount, { n: count });
-    }
-    return this.#badge("status-badge status-badge-failure", "cross-circle", message);
-  }
-  #badgeNeutral(message) {
-    return this.#badge("status-badge status-badge-neutral", "clear", message);
-  }
-  #badge(klass, iconName, message) {
-    return html7`
-      <span class=${klass}>
-        <devtools-icon name=${iconName}></devtools-icon>
-        <span>
-          ${message}
-        </span>
-      </span>
-    `;
+    return { badges, revealRuleSetView, revealAttemptViewWithFilter };
   }
 };
 customElements.define("devtools-resources-used-preloading-view", UsedPreloadingView);

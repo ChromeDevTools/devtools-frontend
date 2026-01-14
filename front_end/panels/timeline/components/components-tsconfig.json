@@ -76,16 +76,34 @@
       "path": "../../../core/platform/bundle-tsconfig.json"
     },
     {
+      "path": "../../../core/root/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../core/sdk/bundle-tsconfig.json"
+    },
+    {
       "path": "../../../generated/generated-tsconfig.json"
     },
     {
+      "path": "../../../generated/protocol-tsconfig.json"
+    },
+    {
+      "path": "../../../models/ai_assistance/bundle-tsconfig.json"
+    },
+    {
       "path": "../../../models/crux-manager/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../models/emulation/bundle-tsconfig.json"
     },
     {
       "path": "../../../models/live-metrics/bundle-tsconfig.json"
     },
     {
       "path": "../../../models/trace/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../models/trace/helpers/bundle-tsconfig.json"
     },
     {
       "path": "../../../models/workspace/bundle-tsconfig.json"
@@ -103,6 +121,9 @@
       "path": "../../../ui/components/helpers/bundle-tsconfig.json"
     },
     {
+      "path": "../../../ui/components/input/bundle-tsconfig.json"
+    },
+    {
       "path": "../../../ui/components/legacy_wrapper/bundle-tsconfig.json"
     },
     {
@@ -116,6 +137,9 @@
     },
     {
       "path": "../../../ui/components/settings/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../ui/components/tooltips/bundle-tsconfig.json"
     },
     {
       "path": "../../../ui/helpers/bundle-tsconfig.json"
@@ -134,6 +158,12 @@
     },
     {
       "path": "../../../ui/legacy/components/perf_ui/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../ui/legacy/components/utils/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../ui/legacy/theme_support/bundle-tsconfig.json"
     },
     {
       "path": "../../../ui/lit/bundle-tsconfig.json"

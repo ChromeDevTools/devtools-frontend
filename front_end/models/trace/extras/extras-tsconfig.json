@@ -58,7 +58,13 @@
       "path": "../../../generated/protocol-tsconfig.json"
     },
     {
+      "path": "../../../third_party/third-party-web/bundle-tsconfig.json"
+    },
+    {
       "path": "../handlers/bundle-tsconfig.json"
+    },
+    {
+      "path": "../helpers/bundle-tsconfig.json"
     },
     {
       "path": "../types/bundle-tsconfig.json"

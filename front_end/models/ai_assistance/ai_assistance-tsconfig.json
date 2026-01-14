@@ -107,6 +107,9 @@
       "path": "../bindings/bundle-tsconfig.json"
     },
     {
+      "path": "../crux-manager/bundle-tsconfig.json"
+    },
+    {
       "path": "../logs/bundle-tsconfig.json"
     },
     {

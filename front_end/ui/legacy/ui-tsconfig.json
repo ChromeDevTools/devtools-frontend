@@ -116,6 +116,9 @@
       "path": "../../foundation/bundle-tsconfig.json"
     },
     {
+      "path": "../../generated/protocol-tsconfig.json"
+    },
+    {
       "path": "../../models/annotations/bundle-tsconfig.json"
     },
     {

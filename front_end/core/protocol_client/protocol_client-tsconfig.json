@@ -55,6 +55,9 @@
     },
     {
       "path": "../../generated/protocol-tsconfig.json"
+    },
+    {
+      "path": "../platform/bundle-tsconfig.json"
     }
   ]
 }

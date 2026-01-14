@@ -2762,6 +2762,7 @@ __export(NetworkDependencyTree_exports, {
 import * as Common from "./../../../core/common/common.js";
 import * as i18n27 from "./../../../core/i18n/i18n.js";
 import * as Platform5 from "./../../../core/platform/platform.js";
+import * as Extras3 from "./../extras/extras.js";
 import * as Helpers16 from "./../helpers/helpers.js";
 import * as Types9 from "./../types/types.js";
 var UIStrings14 = {
@@ -3116,7 +3117,8 @@ function candidateRequestsByOrigin(data, mainResource, contextRequests, lcpGraph
     if (!hasValidTiming(request)) {
       return;
     }
-    if (data.NetworkRequests.incompleteInitiator.get(request) === mainResource) {
+    const initiator = Extras3.Initiators.getNetworkInitiator(data, request);
+    if (initiator === mainResource) {
       return;
     }
     const url = new URL(request.args.data.url);
@@ -3618,7 +3620,7 @@ __export(ThirdParties_exports, {
 });
 import * as i18n33 from "./../../../core/i18n/i18n.js";
 import * as ThirdPartyWeb from "./../../../third_party/third-party-web/third-party-web.js";
-import * as Extras3 from "./../extras/extras.js";
+import * as Extras4 from "./../extras/extras.js";
 import * as Handlers8 from "./../handlers/handlers.js";
 var UIStrings17 = {
   /** Title of an insight that provides details about the code on a web page that the user doesn't control (referred to as "third-party code"). */
@@ -3666,7 +3668,7 @@ function isThirdPartyInsight(model) {
   return model.insightKey === "ThirdParties";
 }
 function generateInsight17(data, context) {
-  const entitySummaries = Extras3.ThirdParties.summarizeByThirdParty(data, context.bounds);
+  const entitySummaries = Extras4.ThirdParties.summarizeByThirdParty(data, context.bounds);
   const firstPartyUrl = context.navigation?.args.data?.documentLoaderURL ?? data.Meta.mainFrameURL;
   const firstPartyEntity = ThirdPartyWeb.ThirdPartyWeb.getEntity(firstPartyUrl) || Handlers8.Helpers.makeUpEntity(data.Renderer.entityMappings.createdEntityCache, firstPartyUrl);
   return finalize17({

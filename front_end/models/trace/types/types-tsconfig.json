@@ -56,6 +56,9 @@
       "path": "../../../generated/generated-tsconfig.json"
     },
     {
+      "path": "../../../generated/protocol-tsconfig.json"
+    },
+    {
       "path": "../../crux-manager/bundle-tsconfig.json"
     },
     {

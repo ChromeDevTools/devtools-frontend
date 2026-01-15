@@ -678,7 +678,7 @@ export interface Mark extends Event {
 }
 
 export interface NavigationStart extends Mark {
-  name: 'navigationStart';
+  name: Name.NAVIGATION_START;
   args: Args&{
     frame: string,
     data?: ArgsData&{
@@ -738,7 +738,7 @@ export interface FirstContentfulPaint extends Mark {
 }
 
 export interface FirstPaint extends Mark {
-  name: 'firstPaint';
+  name: Name.MARK_FIRST_PAINT;
   args: Args&{
     frame: string,
     data?: ArgsData&{
@@ -761,8 +761,14 @@ const markerTypeGuards = [
 ];
 
 export const MarkerName = [
-  'MarkDOMContent', 'MarkLoad', 'firstPaint', 'firstContentfulPaint', 'largestContentfulPaint::Candidate',
-  'largestContentfulPaint::CandidateForSoftNavigation'
+  Name.MARK_DOM_CONTENT,
+  Name.MARK_LOAD,
+  Name.MARK_FIRST_PAINT,
+  Name.MARK_FCP,
+  Name.MARK_LCP_CANDIDATE,
+  Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION,
+  Name.NAVIGATION_START,
+  Name.SOFT_NAVIGATION_START,
 ] as const;
 
 export interface MarkerEvent extends Event {
@@ -968,7 +974,7 @@ export interface CommitLoad extends Instant {
 }
 
 export interface MarkDOMContent extends Instant {
-  name: 'MarkDOMContent';
+  name: Name.MARK_DOM_CONTENT;
   args: Args&{
     data?: ArgsData & {
       frame: string,
@@ -980,7 +986,7 @@ export interface MarkDOMContent extends Instant {
 }
 
 export interface MarkLoad extends Instant {
-  name: 'MarkLoad';
+  name: Name.MARK_LOAD;
   args: Args&{
     data?: ArgsData & {
       frame: string,
@@ -2256,11 +2262,14 @@ export function isLayoutInvalidationTracking(
 }
 
 export function isFirstContentfulPaint(event: Event): event is FirstContentfulPaint {
-  return event.name === 'firstContentfulPaint';
+  return event.name === Name.MARK_FCP;
 }
 
 export function isAnyLargestContentfulPaintCandidate(event: Event): event is AnyLargestContentfulPaintCandidate {
   return event.name === Name.MARK_LCP_CANDIDATE || event.name === Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION;
+}
+export function isSoftLargestContentfulPaintCandidate(event: Event): event is AnyLargestContentfulPaintCandidate {
+  return event.name === Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION;
 }
 export function isLargestImagePaintCandidate(event: Event): event is LargestImagePaintCandidate {
   return event.name === 'LargestImagePaint::Candidate';
@@ -2270,15 +2279,15 @@ export function isLargestTextPaintCandidate(event: Event): event is LargestTextP
 }
 
 export function isMarkLoad(event: Event): event is MarkLoad {
-  return event.name === 'MarkLoad';
+  return event.name === Name.MARK_LOAD;
 }
 
 export function isFirstPaint(event: Event): event is FirstPaint {
-  return event.name === 'firstPaint';
+  return event.name === Name.MARK_FIRST_PAINT;
 }
 
 export function isMarkDOMContent(event: Event): event is MarkDOMContent {
-  return event.name === 'MarkDOMContent';
+  return event.name === Name.MARK_DOM_CONTENT;
 }
 
 export function isInteractiveTime(event: Event): event is InteractiveTime {

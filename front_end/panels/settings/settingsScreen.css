@@ -146,10 +146,6 @@ devtools-button.link-icon {
   white-space: normal;
 }
 
-.settings-experiment-unstable {
-  color: var(--sys-color-token-subtle);
-}
-
 .settings-experiment .feedback-link {
   color: var(--sys-color-primary);
   text-decoration-line: underline;

@@ -167,15 +167,13 @@ export class ExperimentsSupport {
     return result;
   }
 
-  register(
-      experimentName: string, experimentTitle: string, unstable?: boolean, docLink?: string,
-      feedbackLink?: string): void {
+  register(experimentName: string, experimentTitle: string, docLink?: string, feedbackLink?: string): void {
     if (this.#experimentNames.has(experimentName)) {
       throw new Error(`Duplicate registration of experiment '${experimentName}'`);
     }
     this.#experimentNames.add(experimentName);
     this.#experiments.push(new Experiment(
-        this, experimentName, experimentTitle, Boolean(unstable),
+        this, experimentName, experimentTitle,
         docLink as Platform.DevToolsPath.UrlString ?? Platform.DevToolsPath.EmptyUrlString,
         feedbackLink as Platform.DevToolsPath.UrlString ?? Platform.DevToolsPath.EmptyUrlString));
   }
@@ -299,16 +297,14 @@ class ExperimentStorage {
 export class Experiment {
   name: string;
   title: string;
-  unstable: boolean;
   docLink?: Platform.DevToolsPath.UrlString;
   readonly feedbackLink?: Platform.DevToolsPath.UrlString;
   readonly #experiments: ExperimentsSupport;
   constructor(
-      experiments: ExperimentsSupport, name: string, title: string, unstable: boolean,
-      docLink: Platform.DevToolsPath.UrlString, feedbackLink: Platform.DevToolsPath.UrlString) {
+      experiments: ExperimentsSupport, name: string, title: string, docLink: Platform.DevToolsPath.UrlString,
+      feedbackLink: Platform.DevToolsPath.UrlString) {
     this.name = name;
     this.title = title;
-    this.unstable = unstable;
     this.docLink = docLink;
     this.feedbackLink = feedbackLink;
     this.#experiments = experiments;

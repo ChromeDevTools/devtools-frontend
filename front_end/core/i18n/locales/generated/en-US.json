@@ -7304,6 +7304,9 @@
   "panels/elements/components/ElementsTreeExpandButton.ts | expand": {
     "message": "Expand"
   },
+  "panels/elements/components/StylePropertyEditor.ts | denseLabel": {
+    "message": "Dense"
+  },
   "panels/elements/components/StylePropertyEditor.ts | deselectButton": {
     "message": "Remove {propertyName}: {propertyValue}"
   },

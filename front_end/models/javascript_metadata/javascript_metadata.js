@@ -7405,6 +7405,18 @@ var NativeFunctions = [
     signatures: [["feature"]]
   },
   {
+    name: "LanguageModelToolCall",
+    signatures: [["init"]]
+  },
+  {
+    name: "LanguageModelToolSuccess",
+    signatures: [["init"]]
+  },
+  {
+    name: "LanguageModelToolError",
+    signatures: [["init"]]
+  },
+  {
     name: "registerAnimator",
     signatures: [["name", "animatorCtor"]]
   },

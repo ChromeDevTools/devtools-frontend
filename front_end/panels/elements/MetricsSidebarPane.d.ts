@@ -6,10 +6,10 @@ export declare class MetricsSidebarPane extends ElementsSidebarPane {
     previousPropertyDataCandidate: SDK.CSSProperty.CSSProperty | null;
     private inlineStyle;
     private highlightMode;
-    private boxElements;
+    private computedStyle;
     private isEditingMetrics?;
     constructor(computedStyleModel: ComputedStyleModel);
-    doUpdate(): Promise<void>;
+    performUpdate(): Promise<void>;
     onCSSModelChanged(): void;
     /**
      * Toggle the visibility of the Metrics pane. This toggle allows external
@@ -22,7 +22,7 @@ export declare class MetricsSidebarPane extends ElementsSidebarPane {
     private getBox;
     private highlightDOMNode;
     private updateMetrics;
-    startEditing(targetElement: Element, box: string, styleProperty: string, computedStyle: Map<string, string>): void;
+    startEditing(target: EventTarget | null, box: string, styleProperty: string, computedStyle: Map<string, string>): void;
     private handleKeyDown;
     editingEnded(element: Element, context: {
         keyDownHandler: (arg0: Event) => void;

@@ -718,8 +718,6 @@ export declare namespace Audits {
         ExcludeSameSiteNoneInsecure = "ExcludeSameSiteNoneInsecure",
         ExcludeSameSiteLax = "ExcludeSameSiteLax",
         ExcludeSameSiteStrict = "ExcludeSameSiteStrict",
-        ExcludeInvalidSameParty = "ExcludeInvalidSameParty",
-        ExcludeSamePartyCrossPartyContext = "ExcludeSamePartyCrossPartyContext",
         ExcludeDomainNonASCII = "ExcludeDomainNonASCII",
         ExcludeThirdPartyCookieBlockedInFirstPartySet = "ExcludeThirdPartyCookieBlockedInFirstPartySet",
         ExcludeThirdPartyPhaseout = "ExcludeThirdPartyPhaseout",
@@ -9878,11 +9876,6 @@ export declare namespace Network {
          */
         priority: CookiePriority;
         /**
-         * True if cookie is SameParty.
-         * @deprecated
-         */
-        sameParty: boolean;
-        /**
          * Cookie source scheme type.
          */
         sourceScheme: CookieSourceScheme;
@@ -9922,8 +9915,6 @@ export declare namespace Network {
         SchemefulSameSiteStrict = "SchemefulSameSiteStrict",
         SchemefulSameSiteLax = "SchemefulSameSiteLax",
         SchemefulSameSiteUnspecifiedTreatedAsLax = "SchemefulSameSiteUnspecifiedTreatedAsLax",
-        SamePartyFromCrossPartyContext = "SamePartyFromCrossPartyContext",
-        SamePartyConflictsWithOtherAttributes = "SamePartyConflictsWithOtherAttributes",
         NameValuePairExceedsMaxSize = "NameValuePairExceedsMaxSize",
         DisallowedCharacter = "DisallowedCharacter",
         NoCookieContent = "NoCookieContent"
@@ -9946,7 +9937,6 @@ export declare namespace Network {
         SchemefulSameSiteStrict = "SchemefulSameSiteStrict",
         SchemefulSameSiteLax = "SchemefulSameSiteLax",
         SchemefulSameSiteUnspecifiedTreatedAsLax = "SchemefulSameSiteUnspecifiedTreatedAsLax",
-        SamePartyFromCrossPartyContext = "SamePartyFromCrossPartyContext",
         NameValuePairExceedsMaxSize = "NameValuePairExceedsMaxSize",
         PortMismatch = "PortMismatch",
         SchemeMismatch = "SchemeMismatch",
@@ -10070,10 +10060,6 @@ export declare namespace Network {
          * Cookie Priority.
          */
         priority?: CookiePriority;
-        /**
-         * True if cookie is SameParty.
-         */
-        sameParty?: boolean;
         /**
          * Cookie source scheme type.
          */
@@ -11203,10 +11189,6 @@ export declare namespace Network {
          * Cookie Priority type.
          */
         priority?: CookiePriority;
-        /**
-         * True if cookie is SameParty.
-         */
-        sameParty?: boolean;
         /**
          * Cookie source scheme type.
          */

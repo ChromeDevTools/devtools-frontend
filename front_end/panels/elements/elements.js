@@ -10,7 +10,7 @@ __export(InspectElementModeController_exports, {
   InspectElementModeController: () => InspectElementModeController,
   ToggleSearchActionDelegate: () => ToggleSearchActionDelegate
 });
-import * as Common15 from "./../../core/common/common.js";
+import * as Common14 from "./../../core/common/common.js";
 import * as Root8 from "./../../core/root/root.js";
 import * as SDK20 from "./../../core/sdk/sdk.js";
 import * as UI23 from "./../../ui/legacy/legacy.js";
@@ -26,7 +26,7 @@ __export(ElementsPanel_exports, {
   ElementsPanel: () => ElementsPanel,
   PseudoStateMarkerDecorator: () => PseudoStateMarkerDecorator
 });
-import * as Common14 from "./../../core/common/common.js";
+import * as Common13 from "./../../core/common/common.js";
 import * as Host5 from "./../../core/host/host.js";
 import * as i18n31 from "./../../core/i18n/i18n.js";
 import * as Platform10 from "./../../core/platform/platform.js";
@@ -845,7 +845,7 @@ __export(ComputedStyleModel_exports, {
   ComputedStyle: () => ComputedStyle,
   ComputedStyleModel: () => ComputedStyleModel
 });
-import * as Common8 from "./../../core/common/common.js";
+import * as Common7 from "./../../core/common/common.js";
 import * as Root5 from "./../../core/root/root.js";
 import * as SDK11 from "./../../core/sdk/sdk.js";
 import * as UI14 from "./../../ui/legacy/legacy.js";
@@ -856,7 +856,7 @@ __export(ComputedStyleWidget_exports, {
   ComputedStyleWidget: () => ComputedStyleWidget
 });
 import "./../../ui/legacy/legacy.js";
-import * as Common7 from "./../../core/common/common.js";
+import * as Common6 from "./../../core/common/common.js";
 import * as i18n17 from "./../../core/i18n/i18n.js";
 import * as Platform6 from "./../../core/platform/platform.js";
 import * as SDK10 from "./../../core/sdk/sdk.js";
@@ -1314,7 +1314,7 @@ __export(PropertyRenderer_exports, {
   URLRenderer: () => URLRenderer,
   rendererBase: () => rendererBase
 });
-import * as Common6 from "./../../core/common/common.js";
+import * as Common5 from "./../../core/common/common.js";
 import * as i18n15 from "./../../core/i18n/i18n.js";
 import * as SDK9 from "./../../core/sdk/sdk.js";
 import * as Components3 from "./../../ui/legacy/components/utils/utils.js";
@@ -1338,7 +1338,7 @@ __export(StylesSidebarPane_exports, {
   unescapeCssString: () => unescapeCssString
 });
 import "./../../ui/legacy/legacy.js";
-import * as Common5 from "./../../core/common/common.js";
+import * as Common4 from "./../../core/common/common.js";
 import * as Host3 from "./../../core/host/host.js";
 import * as i18n13 from "./../../core/i18n/i18n.js";
 import * as Platform5 from "./../../core/platform/platform.js";
@@ -1360,19 +1360,14 @@ var ElementsSidebarPane_exports = {};
 __export(ElementsSidebarPane_exports, {
   ElementsSidebarPane: () => ElementsSidebarPane
 });
-import * as Common2 from "./../../core/common/common.js";
 import * as UI5 from "./../../ui/legacy/legacy.js";
 var ElementsSidebarPane = class extends UI5.Widget.VBox {
   computedStyleModelInternal;
-  updateThrottler;
-  updateWhenVisible;
   constructor(computedStyleModel, delegatesFocus) {
     super({ useShadowDom: true, delegatesFocus, classes: ["flex-none"] });
     this.computedStyleModelInternal = computedStyleModel;
     this.computedStyleModelInternal.addEventListener("CSSModelChanged", this.onCSSModelChanged, this);
     this.computedStyleModelInternal.addEventListener("ComputedStyleChanged", this.onComputedStyleChanged, this);
-    this.updateThrottler = new Common2.Throttler.Throttler(100);
-    this.updateWhenVisible = false;
   }
   node() {
     return this.computedStyleModelInternal.node();
@@ -1383,24 +1378,8 @@ var ElementsSidebarPane = class extends UI5.Widget.VBox {
   computedStyleModel() {
     return this.computedStyleModelInternal;
   }
-  async doUpdate() {
+  async performUpdate() {
     return;
-  }
-  update() {
-    this.updateWhenVisible = !this.isShowing();
-    if (this.updateWhenVisible) {
-      return;
-    }
-    void this.updateThrottler.schedule(innerUpdate.bind(this));
-    function innerUpdate() {
-      return this.isShowing() ? this.doUpdate() : Promise.resolve();
-    }
-  }
-  wasShown() {
-    super.wasShown();
-    if (this.updateWhenVisible) {
-      this.update();
-    }
   }
   onCSSModelChanged(_event) {
   }
@@ -1627,7 +1606,7 @@ __export(StylePropertyTreeElement_exports, {
   VariableRenderer: () => VariableRenderer,
   getPropertyRenderers: () => getPropertyRenderers
 });
-import * as Common3 from "./../../core/common/common.js";
+import * as Common2 from "./../../core/common/common.js";
 import * as Host from "./../../core/host/host.js";
 import * as i18n9 from "./../../core/i18n/i18n.js";
 import * as Platform2 from "./../../core/platform/platform.js";
@@ -3109,7 +3088,7 @@ var CSSWideKeywordRenderer = class extends rendererBase(SDK6.CSSPropertyParserMa
       jslogContext: "css-wide-keyword-link"
     };
     if (SDK6.CSSMetadata.cssMetadata().isColorAwareProperty(resolvedProperty.name) || SDK6.CSSMetadata.cssMetadata().isCustomProperty(resolvedProperty.name)) {
-      const color = Common3.Color.parse(context.matchedResult.getComputedText(match.node));
+      const color = Common2.Color.parse(context.matchedResult.getComputedText(match.node));
       if (color) {
         return [new ColorRenderer(this.#stylesPane, this.#treeElement).renderColorSwatch(color, swatch), swatch];
       }
@@ -3178,7 +3157,7 @@ var VariableRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatchers
           </devtools-tooltip>
         ` : ""}
     `, varSwatch);
-    const color = computedValue && Common3.Color.parse(computedValue);
+    const color = computedValue && Common2.Color.parse(computedValue);
     if (!color) {
       return [varSwatch];
     }
@@ -3262,7 +3241,7 @@ var AttributeRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatcher
             variant=rich
             jslogContext=elements.css-var
           >${JSON.stringify(rawValue)}</devtools-tooltip>` : nothing}${match.type ? html5` <span class=${typeClass}>${match.type}</span>` : nothing}${renderedFallback ? html5`, <span class=${fallbackClass}>${renderedFallback.nodes}</span>` : nothing})</span>`, varSwatch);
-    const color = computedValue && Common3.Color.parse(computedValue);
+    const color = computedValue && Common2.Color.parse(computedValue);
     if (!color) {
       return [varSwatch];
     }
@@ -3377,7 +3356,7 @@ var ColorRenderer = class _ColorRenderer extends rendererBase(SDK6.CSSPropertyPa
       colorText = window.getComputedStyle(fakeSpan).backgroundColor?.toString() || colorText;
       fakeSpan.remove();
     }
-    const color = Common3.Color.parse(colorText);
+    const color = Common2.Color.parse(colorText);
     if (!color) {
       if (match.node.name === "CallExpression") {
         return Renderer.render(ASTUtils.children(match.node), context).nodes;
@@ -3410,7 +3389,7 @@ var ColorRenderer = class _ColorRenderer extends rendererBase(SDK6.CSSPropertyPa
       if (angle instanceof InlineEditor2.CSSAngle.CSSAngle) {
         angle.updateProperty(swatch.color?.asString() ?? "");
         angle.addEventListener(InlineEditor2.InlineEditorUtils.ValueChangedEvent.eventName, (ev) => {
-          const hue = Common3.Color.parseHueNumeric(ev.data.value);
+          const hue = Common2.Color.parseHueNumeric(ev.data.value);
           const color2 = swatch.color;
           if (!hue || !color2) {
             return;
@@ -3422,7 +3401,7 @@ var ColorRenderer = class _ColorRenderer extends rendererBase(SDK6.CSSPropertyPa
             "hsla"
             /* Common.Color.Format.HSLA */
           )) {
-            swatch.color = new Common3.Color.HSL(hue, color2.s, color2.l, color2.alpha);
+            swatch.color = new Common2.Color.HSL(hue, color2.s, color2.l, color2.alpha);
           } else if (color2.is(
             "hwb"
             /* Common.Color.Format.HWB */
@@ -3430,7 +3409,7 @@ var ColorRenderer = class _ColorRenderer extends rendererBase(SDK6.CSSPropertyPa
             "hwba"
             /* Common.Color.Format.HWBA */
           )) {
-            swatch.color = new Common3.Color.HWB(hue, color2.w, color2.b, color2.alpha);
+            swatch.color = new Common2.Color.HWB(hue, color2.w, color2.b, color2.alpha);
           }
           angle.updateProperty(swatch.color?.asString() ?? "");
         });
@@ -3508,7 +3487,7 @@ var LightDarkColorRenderer = class extends rendererBase(SDK6.CSSPropertyParserMa
     if (context.matchedResult.hasUnresolvedSubstitutions(match.node)) {
       return [content];
     }
-    const color = Common3.Color.parse(context.matchedResult.getComputedTextRange(match.light[0], match.light[match.light.length - 1]));
+    const color = Common2.Color.parse(context.matchedResult.getComputedTextRange(match.light[0], match.light[match.light.length - 1]));
     if (!color) {
       return [content];
     }
@@ -3528,7 +3507,7 @@ var LightDarkColorRenderer = class extends rendererBase(SDK6.CSSPropertyParserMa
     }));
     const inactiveColor = activeColor === match.light ? dark : light;
     const colorText = context.matchedResult.getComputedTextRange(activeColor[0], activeColor[activeColor.length - 1]);
-    const color = colorText && Common3.Color.parse(colorText);
+    const color = colorText && Common2.Color.parse(colorText);
     inactiveColor.classList.add("inactive-value");
     if (color) {
       colorSwatch.color = color;
@@ -3613,7 +3592,7 @@ var ColorMixRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatchers
     const nodeId = this.#pane.node()?.id;
     if (nodeId !== void 0 && childTracingContexts) {
       const evaluation = context.tracing?.applyEvaluation(childTracingContexts, () => {
-        const initialColor = Common3.Color.parse("#000");
+        const initialColor = Common2.Color.parse("#000");
         const colorText = document.createElement("span");
         colorText.textContent = initialColor.asString();
         const swatch2 = new ColorRenderer(this.#pane, null).renderColorSwatch(initialColor, colorText);
@@ -3624,7 +3603,7 @@ var ColorMixRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatchers
         const asyncEvalCallback = async () => {
           const results = await this.#pane.cssModel()?.resolveValues(void 0, nodeId, colorMixText);
           if (results) {
-            const color = Common3.Color.parse(results[0]);
+            const color = Common2.Color.parse(results[0]);
             if (color) {
               swatch2.color = color.as(
                 "hexa"
@@ -3802,7 +3781,7 @@ var LinkableNameRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatc
           icon.setAttribute("title", i18nString5(UIStrings5.jumpToAnimationsPanel));
           icon.addEventListener("mouseup", (ev) => {
             ev.consume(true);
-            void Common3.Revealer.reveal(maybeAnimationGroup);
+            void Common2.Revealer.reveal(maybeAnimationGroup);
           });
           el.insertBefore(icon, swatch);
         });
@@ -4152,7 +4131,7 @@ var GridTemplateRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatc
     if (match.lines.length <= 1) {
       return Renderer.render(ASTUtils.siblings(ASTUtils.declValue(match.node)), context).nodes;
     }
-    const indent = Common3.Settings.Settings.instance().moduleSetting("text-editor-indent").get();
+    const indent = Common2.Settings.Settings.instance().moduleSetting("text-editor-indent").get();
     const container = document.createDocumentFragment();
     for (const line of match.lines) {
       const value5 = Renderer.render(line, context);
@@ -4325,7 +4304,7 @@ var AnchorFunctionRenderer = class _AnchorFunctionRenderer extends rendererBase(
       if (!anchorNode) {
         return;
       }
-      void Common3.Revealer.reveal(anchorNode, false);
+      void Common2.Revealer.reveal(anchorNode, false);
     };
     const handleIconClick = (ev) => {
       ev.stopPropagation();
@@ -4467,7 +4446,7 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI8.TreeO
   #parentPane;
   #parentSection;
   isShorthand;
-  applyStyleThrottler = new Common3.Throttler.Throttler(0);
+  applyStyleThrottler = new Common2.Throttler.Throttler(0);
   newProperty;
   expandedDueToFilter = false;
   valueElement = null;
@@ -4799,7 +4778,7 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI8.TreeO
     if (!this.treeOutline) {
       return;
     }
-    const indent = Common3.Settings.Settings.instance().moduleSetting("text-editor-indent").get();
+    const indent = Common2.Settings.Settings.instance().moduleSetting("text-editor-indent").get();
     UI8.UIUtils.createTextChild(this.listItemElement.createChild("span", "styles-clipboard-only"), indent.repeat(this.section().nestingLevel + 1) + (this.property.disabled ? "/* " : ""));
     this.listItemElement.appendChild(this.nameElement);
     if (this.property.name.startsWith("--") && !(this.property.ownerStyle.parentRule instanceof SDK6.CSSRule.CSSFunctionRule)) {
@@ -4814,7 +4793,7 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI8.TreeO
         }
       };
       this.listItemElement.appendChild(tooltip);
-    } else if (Common3.Settings.Settings.instance().moduleSetting("show-css-property-documentation-on-hover").get()) {
+    } else if (Common2.Settings.Settings.instance().moduleSetting("show-css-property-documentation-on-hover").get()) {
       const tooltipId = this.getTooltipId("property-doc");
       this.nameElement.setAttribute("aria-details", tooltipId);
       const tooltip = new Tooltips.Tooltip.Tooltip({
@@ -4828,7 +4807,7 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI8.TreeO
         if (event.newState !== "open") {
           return;
         }
-        if (!Common3.Settings.Settings.instance().moduleSetting("show-css-property-documentation-on-hover").get()) {
+        if (!Common2.Settings.Settings.instance().moduleSetting("show-css-property-documentation-on-hover").get()) {
           event.consume(true);
           return;
         }
@@ -5164,7 +5143,7 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI8.TreeO
     const propertyNameClicked = element === this.nameElement;
     const uiLocation = Bindings2.CSSWorkspaceBinding.CSSWorkspaceBinding.instance().propertyUILocation(this.property, propertyNameClicked);
     if (uiLocation) {
-      void Common3.Revealer.reveal(uiLocation, omitFocus);
+      void Common2.Revealer.reveal(uiLocation, omitFocus);
     }
   }
   startEditingValue() {
@@ -5790,7 +5769,7 @@ __export(StylePropertiesSection_exports, {
   StylePropertiesSection: () => StylePropertiesSection
 });
 import "./../../ui/legacy/legacy.js";
-import * as Common4 from "./../../core/common/common.js";
+import * as Common3 from "./../../core/common/common.js";
 import * as Host2 from "./../../core/host/host.js";
 import * as i18n11 from "./../../core/i18n/i18n.js";
 import * as Platform3 from "./../../core/platform/platform.js";
@@ -5948,7 +5927,7 @@ var StylePropertiesSection = class _StylePropertiesSection {
       jslogContext: "elements.show-all-style-properties"
     });
     this.#styleRuleElement.appendChild(this.showAllButton);
-    const indent = Common4.Settings.Settings.instance().moduleSetting("text-editor-indent").get();
+    const indent = Common3.Settings.Settings.instance().moduleSetting("text-editor-indent").get();
     const selectorContainer = document.createElement("div");
     selectorContainer.createChild("span", "styles-clipboard-only").textContent = indent.repeat(this.nestingLevel);
     selectorContainer.classList.add("selector-container");
@@ -6482,7 +6461,7 @@ var StylePropertiesSection = class _StylePropertiesSection {
     return closingBrace;
   }
   indentElement(element, nestingLevel, clipboardOnly) {
-    const indent = Common4.Settings.Settings.instance().moduleSetting("text-editor-indent").get();
+    const indent = Common3.Settings.Settings.instance().moduleSetting("text-editor-indent").get();
     const indentElement = document.createElement("span");
     indentElement.classList.add("styles-clipboard-only");
     indentElement.setAttribute("slot", "indent");
@@ -6878,7 +6857,7 @@ var StylePropertiesSection = class _StylePropertiesSection {
       }
       const uiLocation = Bindings3.CSSWorkspaceBinding.CSSWorkspaceBinding.instance().rawLocationToUILocation(location);
       if (uiLocation) {
-        void Common4.Revealer.reveal(uiLocation);
+        void Common3.Revealer.reveal(uiLocation);
       }
       event.consume(true);
       return;
@@ -7001,7 +6980,7 @@ var StylePropertiesSection = class _StylePropertiesSection {
   static revealSelectorSource(rawLocation, focus2) {
     const uiLocation = Bindings3.CSSWorkspaceBinding.CSSWorkspaceBinding.instance().rawLocationToUILocation(rawLocation);
     if (uiLocation) {
-      void Common4.Revealer.reveal(uiLocation, !focus2);
+      void Common3.Revealer.reveal(uiLocation, !focus2);
     }
   }
   startEditingAtFirstPosition() {
@@ -7876,7 +7855,7 @@ var HIGHLIGHTABLE_PROPERTIES = [
   { mode: "align-items", properties: ["align-items"] },
   { mode: "flexibility", properties: ["flex", "flex-basis", "flex-grow", "flex-shrink"] }
 ];
-var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.eventMixin(ElementsSidebarPane) {
+var StylesSidebarPane = class _StylesSidebarPane extends Common4.ObjectWrapper.eventMixin(ElementsSidebarPane) {
   matchedStyles = null;
   currentToolbarPane = null;
   animatedToolbarPane = null;
@@ -7906,9 +7885,9 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
   sectionBlocks = [];
   idleCallbackManager = null;
   needsForceUpdate = false;
-  resizeThrottler = new Common5.Throttler.Throttler(100);
-  resetUpdateThrottler = new Common5.Throttler.Throttler(500);
-  computedStyleUpdateThrottler = new Common5.Throttler.Throttler(500);
+  resizeThrottler = new Common4.Throttler.Throttler(100);
+  resetUpdateThrottler = new Common4.Throttler.Throttler(500);
+  computedStyleUpdateThrottler = new Common4.Throttler.Throttler(500);
   scrollerElement;
   boundOnScroll;
   imagePreviewPopover;
@@ -7924,7 +7903,7 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
     );
     this.setMinimumSize(96, 26);
     this.registerRequiredCSS(stylesSidebarPane_css_default);
-    Common5.Settings.Settings.instance().moduleSetting("text-editor-indent").addChangeListener(this.update.bind(this));
+    Common4.Settings.Settings.instance().moduleSetting("text-editor-indent").addChangeListener(this.requestUpdate, this);
     this.toolbarPaneElement = this.createStylesSidebarToolbar();
     this.noMatchesElement = this.contentElement.createChild("div", "gray-info-message hidden");
     this.noMatchesElement.textContent = i18nString7(UIStrings7.noMatchingSelectorOrStyle);
@@ -7949,7 +7928,7 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
     }, () => this.node());
   }
   get webCustomData() {
-    if (!this.#webCustomData && Common5.Settings.Settings.instance().moduleSetting("show-css-property-documentation-on-hover").get()) {
+    if (!this.#webCustomData && Common4.Settings.Settings.instance().moduleSetting("show-css-property-documentation-on-hover").get()) {
       this.#webCustomData = WebCustomData.create();
     }
     return this.#webCustomData;
@@ -7991,7 +7970,7 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
   }
   static formatLeadingProperties(section3) {
     const selectorText = section3.headerText();
-    const indent = Common5.Settings.Settings.instance().moduleSetting("text-editor-indent").get();
+    const indent = Common4.Settings.Settings.instance().moduleSetting("text-editor-indent").get();
     const style = section3.style();
     const lines = [];
     for (const property of style.leadingProperties()) {
@@ -8013,7 +7992,7 @@ ${allDeclarationText}
   revealProperty(cssProperty) {
     void this.decorator.highlightProperty(cssProperty);
     this.lastRevealedProperty = cssProperty;
-    this.update();
+    this.requestUpdate();
   }
   jumpToProperty(propertyName, sectionName, blockName) {
     return this.decorator.findAndHighlightPropertyName(propertyName, sectionName, blockName);
@@ -8042,7 +8021,7 @@ ${allDeclarationText}
     this.#swatchPopoverHelper.hide();
     this.#updateAbortController?.abort();
     this.resetCache();
-    this.update();
+    this.requestUpdate();
   }
   sectionsContainerKeyDown(event) {
     const activeElement = UI11.DOMUtilities.deepActiveElement(this.sectionsContainer.contentElement.ownerDocument);
@@ -8180,7 +8159,7 @@ ${allDeclarationText}
     this.swatchPopoverHelper().reposition();
     this.nodeStylesUpdatedForTest(node, false);
   }
-  async doUpdate() {
+  async performUpdate() {
     this.#updateAbortController?.abort();
     this.#updateAbortController = new AbortController();
     await this.#innerDoUpdate(this.#updateAbortController.signal);
@@ -8349,7 +8328,7 @@ ${allDeclarationText}
       return;
     }
     this.resetCache();
-    this.update();
+    this.requestUpdate();
   }
   #scheduleResetUpdateIfNotEditing() {
     this.scheduleResetUpdateIfNotEditingCalledForTest();
@@ -8872,8 +8851,8 @@ ${allDeclarationText}
     }
   }
   createRenderingShortcuts() {
-    const prefersColorSchemeSetting = Common5.Settings.Settings.instance().moduleSetting("emulated-css-media-feature-prefers-color-scheme");
-    const autoDarkModeSetting = Common5.Settings.Settings.instance().moduleSetting("emulate-auto-dark-mode");
+    const prefersColorSchemeSetting = Common4.Settings.Settings.instance().moduleSetting("emulated-css-media-feature-prefers-color-scheme");
+    const autoDarkModeSetting = Common4.Settings.Settings.instance().moduleSetting("emulate-auto-dark-mode");
     const decorateStatus = (condition, title) => `${condition ? "\u2713 " : ""}${title}`;
     const button = new UI11.Toolbar.ToolbarToggle(i18nString7(UIStrings7.toggleRenderingEmulations), "brush", "brush-filled", void 0, false);
     button.element.setAttribute("jslog", `${VisualLogging5.dropDown("rendering-emulations").track({ click: true })}`);
@@ -9355,7 +9334,7 @@ var CSSPropertyPrompt = class extends UI11.TextPrompt.TextPrompt {
       if (variable) {
         const computedValue = this.treeElement.matchedStyles().computeCSSVariable(this.treeElement.property.ownerStyle, completion);
         if (computedValue) {
-          const color = Common5.Color.parse(computedValue.value);
+          const color = Common4.Color.parse(computedValue.value);
           if (color) {
             result.subtitleRenderer = colorSwatchRenderer.bind(null, color);
             result.isCSSVariableColor = true;
@@ -9863,7 +9842,7 @@ var URLRenderer = class extends rendererBase(SDK9.CSSPropertyParserMatchers.URLM
     UI12.UIUtils.createTextChild(container, "url(");
     let hrefUrl = null;
     if (this.rule?.resourceURL()) {
-      hrefUrl = Common6.ParsedURL.ParsedURL.completeURL(this.rule.resourceURL(), url);
+      hrefUrl = Common5.ParsedURL.ParsedURL.completeURL(this.rule.resourceURL(), url);
     } else if (this.node) {
       hrefUrl = this.node.resolveURL(url);
     }
@@ -10008,7 +9987,7 @@ var createTraceElement = (node, property, isPropertyOverloaded, matchedStyles, l
 var ColorRenderer2 = class extends rendererBase(SDK10.CSSPropertyParserMatchers.ColorMatch) {
   // clang-format on
   render(match, context) {
-    const color = Common7.Color.parse(match.text);
+    const color = Common6.Color.parse(match.text);
     if (!color) {
       return [document.createTextNode(match.text)];
     }
@@ -10032,7 +10011,7 @@ var navigateToSource = (cssProperty, event) => {
   if (!event) {
     return;
   }
-  void Common7.Revealer.reveal(cssProperty);
+  void Common6.Revealer.reveal(cssProperty);
   event.consume(true);
 };
 var propertySorter = (propA, propB) => {
@@ -10064,9 +10043,9 @@ var ComputedStyleWidget = class _ComputedStyleWidget extends UI13.Widget.VBox {
     this.computedStyleModel = computedStyleModel;
     this.computedStyleModel.addEventListener("CSSModelChanged", this.requestUpdate, this);
     this.computedStyleModel.addEventListener("ComputedStyleChanged", this.requestUpdate, this);
-    this.showInheritedComputedStylePropertiesSetting = Common7.Settings.Settings.instance().createSetting("show-inherited-computed-style-properties", false);
+    this.showInheritedComputedStylePropertiesSetting = Common6.Settings.Settings.instance().createSetting("show-inherited-computed-style-properties", false);
     this.showInheritedComputedStylePropertiesSetting.addChangeListener(this.requestUpdate.bind(this));
-    this.groupComputedStylesSetting = Common7.Settings.Settings.instance().createSetting("group-computed-styles", false);
+    this.groupComputedStylesSetting = Common6.Settings.Settings.instance().createSetting("group-computed-styles", false);
     this.groupComputedStylesSetting.addChangeListener(() => {
       this.requestUpdate();
     });
@@ -10295,7 +10274,7 @@ var ComputedStyleWidget = class _ComputedStyleWidget extends UI13.Widget.VBox {
         }, { jslogContext: "navigate-to-selector-source" });
       }
     }
-    contextMenu.defaultSection().appendItem(i18nString9(UIStrings9.navigateToStyle), () => Common7.Revealer.reveal(property), { jslogContext: "navigate-to-style" });
+    contextMenu.defaultSection().appendItem(i18nString9(UIStrings9.navigateToStyle), () => Common6.Revealer.reveal(property), { jslogContext: "navigate-to-style" });
     void contextMenu.show();
   }
   computePropertyTraces(matchedStyles) {
@@ -10389,7 +10368,7 @@ var maxLinkLength = 30;
 var alwaysShownComputedProperties = /* @__PURE__ */ new Set(["display", "height", "width"]);
 
 // gen/front_end/panels/elements/ComputedStyleModel.js
-var ComputedStyleModel = class extends Common8.ObjectWrapper.ObjectWrapper {
+var ComputedStyleModel = class extends Common7.ObjectWrapper.ObjectWrapper {
   #node;
   #cssModel;
   eventListeners;
@@ -10418,7 +10397,7 @@ var ComputedStyleModel = class extends Common8.ObjectWrapper.ObjectWrapper {
   }
   // This is a debounced method because the user might be navigated from Styles tab to Computed Style tab and vice versa.
   // For that case, we want to only run this function once.
-  evaluateTrackingComputedStyleUpdatesForNode = Common8.Debouncer.debounce(() => {
+  evaluateTrackingComputedStyleUpdatesForNode = Common7.Debouncer.debounce(() => {
     if (!this.#node) {
       if (this.currentTrackedNodeId) {
         void this.cssModel()?.trackComputedStyleUpdatesForNode(void 0);
@@ -10451,7 +10430,7 @@ var ComputedStyleModel = class extends Common8.ObjectWrapper.ObjectWrapper {
     if (this.#cssModel === cssModel) {
       return;
     }
-    Common8.EventTarget.removeEventListeners(this.eventListeners);
+    Common7.EventTarget.removeEventListeners(this.eventListeners);
     this.#cssModel = cssModel;
     const domModel = cssModel ? cssModel.domModel() : null;
     const resourceTreeModel = cssModel ? cssModel.target().model(SDK11.ResourceTreeModel.ResourceTreeModel) : null;
@@ -10632,7 +10611,7 @@ __export(ElementsTreeOutline_exports, {
   ElementsTreeOutline: () => ElementsTreeOutline,
   MappedCharToEntity: () => MappedCharToEntity
 });
-import * as Common11 from "./../../core/common/common.js";
+import * as Common10 from "./../../core/common/common.js";
 import * as i18n27 from "./../../core/i18n/i18n.js";
 import * as SDK16 from "./../../core/sdk/sdk.js";
 import * as Badges4 from "./../../models/badges/badges.js";
@@ -10876,7 +10855,7 @@ __export(ElementsTreeElement_exports, {
   isOpeningTag: () => isOpeningTag
 });
 import "./../../ui/components/adorners/adorners.js";
-import * as Common9 from "./../../core/common/common.js";
+import * as Common8 from "./../../core/common/common.js";
 import * as Host4 from "./../../core/host/host.js";
 import * as i18n23 from "./../../core/i18n/i18n.js";
 import * as Platform7 from "./../../core/platform/platform.js";
@@ -11748,7 +11727,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI16.TreeOutline.Tr
   #nodeElementToIssue = /* @__PURE__ */ new Map();
   #highlights = [];
   tagTypeContext;
-  #adornersThrottler = new Common9.Throttler.Throttler(100);
+  #adornersThrottler = new Common8.Throttler.Throttler(100);
   #nodeInfo;
   #containerAdornerActive = false;
   #flexAdornerActive = false;
@@ -11768,7 +11747,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI16.TreeOutline.Tr
     })}`);
     this.searchQuery = null;
     this.#expandedChildrenLimit = InitialChildrenLimit;
-    this.decorationsThrottler = new Common9.Throttler.Throttler(100);
+    this.decorationsThrottler = new Common8.Throttler.Throttler(100);
     this.inClipboard = false;
     this.#hovered = false;
     this.editing = null;
@@ -11807,7 +11786,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI16.TreeOutline.Tr
   }
   static visibleShadowRoots(node) {
     let roots = node.shadowRoots();
-    if (roots.length && !Common9.Settings.Settings.instance().moduleSetting("show-ua-shadow-dom").get()) {
+    if (roots.length && !Common8.Settings.Settings.instance().moduleSetting("show-ua-shadow-dom").get()) {
       roots = roots.filter(filter);
     }
     function filter(root) {
@@ -11873,7 +11852,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI16.TreeOutline.Tr
         if (this.nodeInternal.assignedSlot) {
           const deferredNode = this.nodeInternal.assignedSlot.deferredNode;
           deferredNode.resolve((node) => {
-            void Common9.Revealer.reveal(node);
+            void Common8.Revealer.reveal(node);
           });
         }
       },
@@ -12321,7 +12300,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI16.TreeOutline.Tr
       const frame = SDK14.FrameManager.FrameManager.instance().getFrame(frameOwnerId);
       if (frame) {
         const sourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(frame.url);
-        void Common9.Revealer.reveal(sourceCode);
+        void Common8.Revealer.reveal(sourceCode);
       }
     }
   }
@@ -12555,7 +12534,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI16.TreeOutline.Tr
         const frameOwnerFrameId = this.nodeInternal.frameOwnerFrameId();
         if (frameOwnerFrameId) {
           const frame = SDK14.FrameManager.FrameManager.instance().getFrame(frameOwnerFrameId);
-          void Common9.Revealer.reveal(frame);
+          void Common8.Revealer.reveal(frame);
         }
       }, { jslogContext: "show-frame-details" });
     }
@@ -12641,7 +12620,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI16.TreeOutline.Tr
       UI16.UIUtils.handleElementValueModifications(event, attribute);
       return "";
     }
-    if (!Common9.ParsedURL.ParsedURL.fromString(attributeValueElement.textContent || "")) {
+    if (!Common8.ParsedURL.ParsedURL.fromString(attributeValueElement.textContent || "")) {
       config.setPostKeydownFinishHandler(postKeyDownFinishHandler);
     }
     this.updateEditorHandles(attribute, config);
@@ -13475,7 +13454,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI16.TreeOutline.Tr
     if (!cascade) {
       return;
     }
-    const indent = Common9.Settings.Settings.instance().moduleSetting("text-editor-indent").get();
+    const indent = Common8.Settings.Settings.instance().moduleSetting("text-editor-indent").get();
     const lines = [];
     for (const style of cascade.nodeStyles().reverse()) {
       for (const property of style.leadingProperties()) {
@@ -13515,7 +13494,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI16.TreeOutline.Tr
     this.#highlights = Highlighting2.HighlightManager.HighlightManager.instance().highlightOrderedTextRanges(this.listItemElement, matchRanges);
   }
   editAsHTML() {
-    const promise = Common9.Revealer.reveal(this.node());
+    const promise = Common8.Revealer.reveal(this.node());
     void promise.then(() => {
       const action2 = UI16.ActionRegistry.ActionRegistry.instance().getAction("elements.edit-as-html");
       return action2.execute();
@@ -13998,7 +13977,7 @@ li.hovered:not(.always-parent) + ol.children:not(.shadow-root) {
 /*# sourceURL=${import.meta.resolve("./elementsTreeOutline.css")} */`;
 
 // gen/front_end/panels/elements/ShortcutTreeElement.js
-import * as Common10 from "./../../core/common/common.js";
+import * as Common9 from "./../../core/common/common.js";
 import * as i18n25 from "./../../core/i18n/i18n.js";
 import * as UI17 from "./../../ui/legacy/legacy.js";
 import * as Lit7 from "./../../ui/lit/lit.js";
@@ -14086,7 +14065,7 @@ var ShortcutTreeElement = class extends UI17.TreeOutline.TreeElement {
   onRevealAdornerClick(event) {
     event.stopPropagation();
     this.nodeShortcut.deferredNode.resolve((node) => {
-      void Common10.Revealer.reveal(node);
+      void Common9.Revealer.reveal(node);
     });
   }
   performUpdate() {
@@ -14273,14 +14252,14 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
     alreadyExpandedParentTreeElement: null,
     isUpdatingHighlights: false
   };
-  #highlightThrottler = new Common11.Throttler.Throttler(100);
+  #highlightThrottler = new Common10.Throttler.Throttler(100);
   constructor(element, view) {
     super(element, {
       useShadowDom: false,
       delegatesFocus: false
     });
     this.#view = view ?? DEFAULT_VIEW5;
-    if (Common11.Settings.Settings.instance().moduleSetting("highlight-node-on-hover-in-overlay").get()) {
+    if (Common10.Settings.Settings.instance().moduleSetting("highlight-node-on-hover-in-overlay").get()) {
       SDK16.TargetManager.TargetManager.instance().addModelListener(SDK16.OverlayModel.OverlayModel, "HighlightNodeRequested", this.#highlightNode, this, { scoped: true });
       SDK16.TargetManager.TargetManager.instance().addModelListener(SDK16.OverlayModel.OverlayModel, "InspectModeWillBeToggled", this.#clearHighlightedNode, this, { scoped: true });
     }
@@ -14466,7 +14445,7 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
     super.show(parentElement, insertBefore, suppressOrphanWidgetError);
   }
 };
-var ElementsTreeOutline = class _ElementsTreeOutline extends Common11.ObjectWrapper.eventMixin(UI19.TreeOutline.TreeOutline) {
+var ElementsTreeOutline = class _ElementsTreeOutline extends Common10.ObjectWrapper.eventMixin(UI19.TreeOutline.TreeOutline) {
   treeElementByNode;
   shadowRoot;
   elementInternal;
@@ -14550,7 +14529,7 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common11.ObjectWrap
     this.updateRecords = /* @__PURE__ */ new Map();
     this.treeElementsBeingUpdated = /* @__PURE__ */ new Set();
     this.decoratorExtensions = null;
-    this.showHTMLCommentsSetting = Common11.Settings.Settings.instance().moduleSetting("show-html-comments");
+    this.showHTMLCommentsSetting = Common10.Settings.Settings.instance().moduleSetting("show-html-comments");
     this.showHTMLCommentsSetting.addChangeListener(this.onShowHTMLCommentsChange.bind(this));
     this.setUseLightSelectionColor(true);
     this.#popupHelper = new UI19.PopoverHelper.PopoverHelper(this.elementInternal, (event) => {
@@ -14574,7 +14553,7 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common11.ObjectWrap
               return nothing3;
             }
             const issueKindIconName = IssueCounter.IssueCounter.getIssueKindIconName(issue.getKind());
-            const openIssueEvent = () => Common11.Revealer.reveal(issue);
+            const openIssueEvent = () => Common10.Revealer.reveal(issue);
             return html10`
                   <div class="squiggles-content-item">
                   <devtools-icon .name=${issueKindIconName} @click=${openIssueEvent}></devtools-icon>
@@ -15762,7 +15741,7 @@ __export(LayoutPane_exports, {
   LayoutPane: () => LayoutPane
 });
 import "./../../ui/components/node_text/node_text.js";
-import * as Common12 from "./../../core/common/common.js";
+import * as Common11 from "./../../core/common/common.js";
 import * as i18n29 from "./../../core/i18n/i18n.js";
 import * as Platform8 from "./../../core/platform/platform.js";
 import * as SDK17 from "./../../core/sdk/sdk.js";
@@ -15973,7 +15952,7 @@ var nodeToLayoutElement = (node) => {
     domClasses: className ? className.split(/\s+/).filter((s) => !!s) : void 0,
     enabled: false,
     reveal: () => {
-      void Common12.Revealer.reveal(node);
+      void Common11.Revealer.reveal(node);
       void node.scrollIntoView();
     },
     highlight: () => {
@@ -16182,7 +16161,7 @@ var LayoutPane = class _LayoutPane extends UI20.Widget.Widget {
   constructor(element, view = DEFAULT_VIEW6) {
     super(element);
     this.#settings = this.#makeSettings();
-    this.#uaShadowDOMSetting = Common12.Settings.Settings.instance().moduleSetting("show-ua-shadow-dom");
+    this.#uaShadowDOMSetting = Common11.Settings.Settings.instance().moduleSetting("show-ua-shadow-dom");
     this.#domModels = [];
     this.#view = view;
   }
@@ -16240,7 +16219,7 @@ var LayoutPane = class _LayoutPane extends UI20.Widget.Widget {
   #makeSettings() {
     const settings = [];
     for (const settingName of ["show-grid-line-labels", "show-grid-track-sizes", "show-grid-areas", "extend-grid-lines"]) {
-      const setting = Common12.Settings.Settings.instance().moduleSetting(settingName);
+      const setting = Common11.Settings.Settings.instance().moduleSetting(settingName);
       const settingValue = setting.get();
       const settingType = setting.type();
       if (!settingType) {
@@ -16277,12 +16256,12 @@ var LayoutPane = class _LayoutPane extends UI20.Widget.Widget {
     return settings;
   }
   onSettingChanged(setting, value5) {
-    Common12.Settings.Settings.instance().moduleSetting(setting).set(value5);
+    Common11.Settings.Settings.instance().moduleSetting(setting).set(value5);
   }
   wasShown() {
     super.wasShown();
     for (const setting of this.#settings) {
-      Common12.Settings.Settings.instance().moduleSetting(setting.name).addChangeListener(this.requestUpdate, this);
+      Common11.Settings.Settings.instance().moduleSetting(setting.name).addChangeListener(this.requestUpdate, this);
     }
     for (const domModel of this.#domModels) {
       this.modelRemoved(domModel);
@@ -16296,7 +16275,7 @@ var LayoutPane = class _LayoutPane extends UI20.Widget.Widget {
   willHide() {
     super.willHide();
     for (const setting of this.#settings) {
-      Common12.Settings.Settings.instance().moduleSetting(setting.name).removeChangeListener(this.requestUpdate, this);
+      Common11.Settings.Settings.instance().moduleSetting(setting.name).removeChangeListener(this.requestUpdate, this);
     }
     SDK17.TargetManager.TargetManager.instance().unobserveModels(SDK17.DOMModel.DOMModel, this);
     UI20.Context.Context.instance().removeFlavorChangeListener(SDK17.DOMModel.DOMNode, this.requestUpdate, this);
@@ -16379,10 +16358,11 @@ var MetricsSidebarPane_exports = {};
 __export(MetricsSidebarPane_exports, {
   MetricsSidebarPane: () => MetricsSidebarPane
 });
-import * as Common13 from "./../../core/common/common.js";
+import * as Common12 from "./../../core/common/common.js";
 import * as Platform9 from "./../../core/platform/platform.js";
 import * as SDK18 from "./../../core/sdk/sdk.js";
 import * as UI21 from "./../../ui/legacy/legacy.js";
+import { Directives, html as html12, nothing as nothing4, render as render9 } from "./../../ui/lit/lit.js";
 import * as VisualLogging11 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/metricsSidebarPane.css.js
@@ -16547,12 +16527,13 @@ visible. */
 /*# sourceURL=${import.meta.resolve("./metricsSidebarPane.css")} */`;
 
 // gen/front_end/panels/elements/MetricsSidebarPane.js
+var { live } = Directives;
 var MetricsSidebarPane = class extends ElementsSidebarPane {
   originalPropertyData;
   previousPropertyDataCandidate;
   inlineStyle;
   highlightMode;
-  boxElements;
+  computedStyle;
   isEditingMetrics;
   constructor(computedStyleModel) {
     super(computedStyleModel);
@@ -16561,28 +16542,30 @@ var MetricsSidebarPane = class extends ElementsSidebarPane {
     this.previousPropertyDataCandidate = null;
     this.inlineStyle = null;
     this.highlightMode = "";
-    this.boxElements = [];
+    this.computedStyle = null;
     this.contentElement.setAttribute("jslog", `${VisualLogging11.pane("styles-metrics")}`);
   }
-  doUpdate() {
+  async performUpdate() {
     if (this.isEditingMetrics) {
-      return Promise.resolve();
+      return await Promise.resolve();
     }
     const node = this.node();
     const cssModel = this.cssModel();
     if (!node || node.nodeType() !== Node.ELEMENT_NODE || !cssModel) {
       this.contentElement.removeChildren();
       this.element.classList.add("collapsed");
-      return Promise.resolve();
+      return await Promise.resolve();
     }
     function callback(style) {
       if (!style || this.node() !== node) {
+        this.computedStyle = null;
         return;
       }
+      this.computedStyle = style;
       this.updateMetrics(style);
     }
     if (!node.id) {
-      return Promise.resolve();
+      return await Promise.resolve();
     }
     const promises = [
       cssModel.getComputedStyle(node.id).then(callback.bind(this)),
@@ -16592,10 +16575,10 @@ var MetricsSidebarPane = class extends ElementsSidebarPane {
         }
       })
     ];
-    return Promise.all(promises);
+    return await Promise.all(promises);
   }
   onCSSModelChanged() {
-    this.update();
+    this.requestUpdate();
   }
   /**
    * Toggle the visibility of the Metrics pane. This toggle allows external
@@ -16634,39 +16617,30 @@ var MetricsSidebarPane = class extends ElementsSidebarPane {
       this.highlightMode = "";
       SDK18.OverlayModel.OverlayModel.hideDOMNodeHighlight();
     }
-    for (const { element, name, backgroundColor } of this.boxElements) {
-      const shouldHighlight = !node || mode === "all" || name === mode;
-      element.style.backgroundColor = shouldHighlight ? backgroundColor : "";
-      element.classList.toggle("highlighted", shouldHighlight);
+    if (this.computedStyle) {
+      this.updateMetrics(this.computedStyle, mode);
     }
   }
-  updateMetrics(style) {
-    const metricsElement = document.createElement("div");
-    metricsElement.className = "metrics";
+  updateMetrics(style, highlightedMode = "all") {
     const self = this;
     function createBoxPartElement(style2, name, side, suffix) {
-      const element = document.createElement("div");
-      element.className = side;
       const propertyName = (name !== "position" ? name + "-" : "") + side + suffix;
       let value5 = style2.get(propertyName);
-      if (value5 === void 0) {
-        return element;
-      }
       if (value5 === "" || name !== "position" && value5 === "unset") {
         value5 = "\u2012";
       } else if (name === "position" && value5 === "auto") {
         value5 = "\u2012";
       }
-      value5 = value5.replace(/px$/, "");
-      value5 = Platform9.NumberUtilities.toFixedIfFloating(value5);
-      element.textContent = value5;
-      element.setAttribute("jslog", `${VisualLogging11.value(propertyName).track({
+      value5 = value5?.replace(/px$/, "");
+      value5 = value5 ? Platform9.NumberUtilities.toFixedIfFloating(value5) : value5;
+      return html12`<div class=${side} jslog=${VisualLogging11.value(propertyName).track({
         dblclick: true,
         keydown: "Enter|Escape|ArrowUp|ArrowDown|PageUp|PageDown",
         change: true
-      })}`);
-      element.addEventListener("dblclick", this.startEditing.bind(this, element, name, propertyName, style2), false);
-      return element;
+      })}
+          @dblclick=${(e) => this.startEditing(e.currentTarget, name, propertyName, style2)}
+          .innerText=${live(value5 ?? "")}>
+      </div>`;
     }
     function getContentAreaWidthPx(style2) {
       let width = style2.get("width");
@@ -16716,15 +16690,14 @@ var MetricsSidebarPane = class extends ElementsSidebarPane {
     const noPositionType = /* @__PURE__ */ new Set(["static"]);
     const boxes = ["content", "padding", "border", "margin", "position"];
     const boxColors = [
-      Common13.Color.PageHighlight.Content,
-      Common13.Color.PageHighlight.Padding,
-      Common13.Color.PageHighlight.Border,
-      Common13.Color.PageHighlight.Margin,
-      Common13.Color.Legacy.fromRGBA([0, 0, 0, 0])
+      Common12.Color.PageHighlight.Content,
+      Common12.Color.PageHighlight.Padding,
+      Common12.Color.PageHighlight.Border,
+      Common12.Color.PageHighlight.Margin,
+      Common12.Color.Legacy.fromRGBA([0, 0, 0, 0])
     ];
     const boxLabels = ["content", "padding", "border", "margin", "position"];
-    let previousBox = null;
-    this.boxElements = [];
+    let previousBox = nothing4;
     for (let i = 0; i < boxes.length; ++i) {
       const name = boxes[i];
       const display = style.get("display");
@@ -16741,66 +16714,60 @@ var MetricsSidebarPane = class extends ElementsSidebarPane {
       if (name === "position" && noPositionType.has(position)) {
         continue;
       }
-      const boxElement = document.createElement("div");
-      boxElement.className = `${name} highlighted`;
+      const node = this.node();
+      const shouldHighlight = !node || highlightedMode === "all" || name === highlightedMode;
       const backgroundColor = boxColors[i].asString(
         "rgba"
         /* Common.Color.Format.RGBA */
       ) || "";
-      boxElement.style.backgroundColor = backgroundColor;
-      boxElement.setAttribute("jslog", `${VisualLogging11.metricsBox().context(name).track({ hover: true })}`);
-      boxElement.addEventListener("mouseover", this.highlightDOMNode.bind(this, true, name === "position" ? "all" : name), false);
-      this.boxElements.push({ element: boxElement, name, backgroundColor });
-      if (name === "content") {
-        const widthElement = document.createElement("span");
-        widthElement.textContent = getContentAreaWidthPx(style);
-        widthElement.addEventListener("dblclick", this.startEditing.bind(this, widthElement, "width", "width", style), false);
-        widthElement.setAttribute("jslog", `${VisualLogging11.value("width").track({
-          dblclick: true,
-          keydown: "Enter|Escape|ArrowUp|ArrowDown|PageUp|PageDown",
-          change: true
-        })}`);
-        const heightElement = document.createElement("span");
-        heightElement.textContent = getContentAreaHeightPx(style);
-        heightElement.addEventListener("dblclick", this.startEditing.bind(this, heightElement, "height", "height", style), false);
-        heightElement.setAttribute("jslog", `${VisualLogging11.value("height").track({
-          dblclick: true,
-          keydown: "Enter|Escape|ArrowUp|ArrowDown|PageUp|PageDown",
-          change: true
-        })}`);
-        const timesElement = document.createElement("span");
-        timesElement.textContent = " \xD7 ";
-        boxElement.appendChild(widthElement);
-        boxElement.appendChild(timesElement);
-        boxElement.appendChild(heightElement);
-      } else {
-        const suffix = name === "border" ? "-width" : "";
-        const labelElement = document.createElement("div");
-        labelElement.className = "label";
-        labelElement.textContent = boxLabels[i];
-        boxElement.appendChild(labelElement);
-        boxElement.appendChild(createBoxPartElement.call(this, style, name, "top", suffix));
-        boxElement.appendChild(document.createElement("br"));
-        boxElement.appendChild(createBoxPartElement.call(this, style, name, "left", suffix));
-        if (previousBox) {
-          boxElement.appendChild(previousBox);
-        }
-        boxElement.appendChild(createBoxPartElement.call(this, style, name, "right", suffix));
-        boxElement.appendChild(document.createElement("br"));
-        boxElement.appendChild(createBoxPartElement.call(this, style, name, "bottom", suffix));
-      }
-      previousBox = boxElement;
+      const suffix = name === "border" ? "-width" : "";
+      const box = html12`
+        <div
+            class="${name} ${shouldHighlight ? "highlighted" : ""}"
+            style="background-color: ${shouldHighlight ? backgroundColor : ""}"
+            jslog=${VisualLogging11.metricsBox().context(name).track({ hover: true })}
+            @mouseover=${this.highlightDOMNode.bind(this, true, name === "position" ? "all" : name)}>
+        ${name === "content" ? html12`
+          <span jslog=${VisualLogging11.value("width").track({
+        dblclick: true,
+        keydown: "Enter|Escape|ArrowUp|ArrowDown|PageUp|PageDown",
+        change: true
+      })}
+              @dblclick=${(e) => this.startEditing(e.currentTarget, "width", "width", style)}
+              .innerText=${live(getContentAreaWidthPx(style))}>
+          </span>
+          <span> × </span>
+          <span jslog=${VisualLogging11.value("height").track({
+        dblclick: true,
+        keydown: "Enter|Escape|ArrowUp|ArrowDown|PageUp|PageDown",
+        change: true
+      })}
+              @dblclick=${(e) => this.startEditing(e.currentTarget, "height", "height", style)}
+              .innerText=${live(getContentAreaHeightPx(style))}>
+          </span>` : html12`
+          <div class="label">${boxLabels[i]}</div>
+            ${createBoxPartElement.call(this, style, name, "top", suffix)}
+            <br>
+            ${createBoxPartElement.call(this, style, name, "left", suffix)}
+            ${previousBox}
+            ${createBoxPartElement.call(this, style, name, "right", suffix)}
+            <br>
+            ${createBoxPartElement.call(this, style, name, "bottom", suffix)}`}
+          </div>`;
+      previousBox = box;
     }
-    if (previousBox) {
-      metricsElement.appendChild(previousBox);
-    }
-    metricsElement.addEventListener("mouseover", this.highlightDOMNode.bind(this, false, "all"), false);
-    metricsElement.addEventListener("mouseleave", this.highlightDOMNode.bind(this, false, "all"), false);
-    this.contentElement.removeChildren();
-    this.contentElement.appendChild(metricsElement);
+    render9(html12`
+      <div class="metrics" @mouseover=${this.highlightDOMNode.bind(this, false, "all")}
+          @mouseleave=${this.highlightDOMNode.bind(this, false, "all")}>
+        ${previousBox}
+      </div>`, this.contentElement);
     this.element.classList.remove("collapsed");
   }
-  startEditing(targetElement, box, styleProperty, computedStyle) {
+  startEditing(target, box, styleProperty, computedStyle) {
+    if (!(target instanceof Element)) {
+      return;
+    }
+    const targetElement = target;
     if (UI21.UIUtils.isBeingEdited(targetElement)) {
       return;
     }
@@ -16846,7 +16813,7 @@ var MetricsSidebarPane = class extends ElementsSidebarPane {
       }
     }
     this.editingEnded(element, context);
-    this.update();
+    this.requestUpdate();
   }
   applyUserInput(element, userInput, previousContent, context, commitEditor) {
     if (!this.inlineStyle) {
@@ -16868,7 +16835,7 @@ var MetricsSidebarPane = class extends ElementsSidebarPane {
     const computedStyle = context.computedStyle;
     if (computedStyle.get("box-sizing") === "border-box" && (styleProperty === "width" || styleProperty === "height")) {
       if (!userInput.match(/px$/)) {
-        Common13.Console.Console.instance().error("For elements with box-sizing: border-box, only absolute content area dimensions can be applied");
+        Common12.Console.Console.instance().error("For elements with box-sizing: border-box, only absolute content area dimensions can be applied");
         return;
       }
       const borderBox = this.getBox(computedStyle, "border");
@@ -16911,7 +16878,7 @@ var MetricsSidebarPane = class extends ElementsSidebarPane {
         node.highlight(this.highlightMode);
       }
       if (commitEditor) {
-        this.update();
+        this.requestUpdate();
       }
     }
   }
@@ -17093,10 +17060,10 @@ var ElementsPanel = class _ElementsPanel extends UI22.Panel.Panel {
     this.mainContainer.id = "main-content";
     this.domTreeContainer.id = "elements-content";
     this.domTreeContainer.tabIndex = -1;
-    if (Common14.Settings.Settings.instance().moduleSetting("dom-word-wrap").get()) {
+    if (Common13.Settings.Settings.instance().moduleSetting("dom-word-wrap").get()) {
       this.domTreeContainer.classList.add("elements-wrap");
     }
-    Common14.Settings.Settings.instance().moduleSetting("dom-word-wrap").addChangeListener(this.domWordWrapSettingChanged.bind(this));
+    Common13.Settings.Settings.instance().moduleSetting("dom-word-wrap").addChangeListener(this.domWordWrapSettingChanged.bind(this));
     crumbsContainer.id = "elements-crumbs";
     if (this.domTreeButton) {
       this.accessibilityTreeView = new AccessibilityTreeView(this.domTreeButton, new TreeOutline13.TreeOutline.TreeOutline());
@@ -17110,12 +17077,12 @@ var ElementsPanel = class _ElementsPanel extends UI22.Panel.Panel {
     this.stylesWidget = new StylesSidebarPane(computedStyleModel);
     this.computedStyleWidget = new ComputedStyleWidget(computedStyleModel);
     this.metricsWidget = new MetricsSidebarPane(computedStyleModel);
-    Common14.Settings.Settings.instance().moduleSetting("sidebar-position").addChangeListener(this.updateSidebarPosition.bind(this));
+    Common13.Settings.Settings.instance().moduleSetting("sidebar-position").addChangeListener(this.updateSidebarPosition.bind(this));
     this.updateSidebarPosition();
     this.cssStyleTrackerByCSSModel = /* @__PURE__ */ new Map();
     this.currentSearchResultIndex = -1;
     this.pendingNodeReveal = false;
-    this.adornerManager = new ElementsComponents7.AdornerManager.AdornerManager(Common14.Settings.Settings.instance().moduleSetting("adorner-settings"));
+    this.adornerManager = new ElementsComponents7.AdornerManager.AdornerManager(Common13.Settings.Settings.instance().moduleSetting("adorner-settings"));
     this.adornersByName = /* @__PURE__ */ new Map();
     this.#domTreeWidget = new DOMTreeWidget();
     this.#domTreeWidget.omitRootDOMNode = true;
@@ -17125,10 +17092,10 @@ var ElementsPanel = class _ElementsPanel extends UI22.Panel.Panel {
     this.#domTreeWidget.onDocumentUpdated = this.documentUpdated.bind(this);
     this.#domTreeWidget.onElementExpanded = this.handleElementExpanded.bind(this);
     this.#domTreeWidget.onElementCollapsed = this.handleElementCollapsed.bind(this);
-    this.#domTreeWidget.setWordWrap(Common14.Settings.Settings.instance().moduleSetting("dom-word-wrap").get());
+    this.#domTreeWidget.setWordWrap(Common13.Settings.Settings.instance().moduleSetting("dom-word-wrap").get());
     SDK19.TargetManager.TargetManager.instance().observeModels(SDK19.DOMModel.DOMModel, this, { scoped: true });
     SDK19.TargetManager.TargetManager.instance().addEventListener("NameChanged", (event) => this.targetNameChanged(event.data));
-    Common14.Settings.Settings.instance().moduleSetting("show-ua-shadow-dom").addChangeListener(this.showUAShadowDOMChanged.bind(this));
+    Common13.Settings.Settings.instance().moduleSetting("show-ua-shadow-dom").addChangeListener(this.showUAShadowDOMChanged.bind(this));
     PanelCommon.ExtensionServer.ExtensionServer.instance().addEventListener("SidebarPaneAdded", this.extensionSidebarPaneAdded, this);
     if (Annotations.AnnotationRepository.annotationsEnabled()) {
       PanelCommon.AnnotationManager.instance().initializePlacementForAnnotationType(Annotations.AnnotationType.ELEMENT_NODE, this.resolveInitialState.bind(this), this.#domTreeWidget.element);
@@ -17392,7 +17359,7 @@ ${node.simpleSelector()} {}`, false);
       this.hideSearchHighlights();
     }
     this.searchConfig = searchConfig;
-    const showUAShadowDOM = Common14.Settings.Settings.instance().moduleSetting("show-ua-shadow-dom").get();
+    const showUAShadowDOM = Common13.Settings.Settings.instance().moduleSetting("show-ua-shadow-dom").get();
     const domModels = SDK19.TargetManager.TargetManager.instance().models(SDK19.DOMModel.DOMModel, { scoped: true });
     const promises = domModels.map((domModel) => domModel.performSearch(whitespaceTrimmedQuery, showUAShadowDOM));
     void Promise.all(promises).then((resultCounts) => {
@@ -17547,7 +17514,7 @@ ${node.simpleSelector()} {}`, false);
   async revealAndSelectNode(nodeToReveal, opts) {
     const { showPanel = true, focusNode = false, highlightInOverlay = true } = opts ?? {};
     this.omitDefaultSelection = true;
-    const node = Common14.Settings.Settings.instance().moduleSetting("show-ua-shadow-dom").get() ? nodeToReveal : this.leaveUserAgentShadowDOM(nodeToReveal);
+    const node = Common13.Settings.Settings.instance().moduleSetting("show-ua-shadow-dom").get() ? nodeToReveal : this.leaveUserAgentShadowDOM(nodeToReveal);
     if (highlightInOverlay) {
       node.highlightForTwoSeconds();
     }
@@ -17711,7 +17678,7 @@ ${node.simpleSelector()} {}`, false);
     if (this.sidebarPaneView?.tabbedPane().shouldHideOnDetach()) {
       return;
     }
-    const position = Common14.Settings.Settings.instance().moduleSetting("sidebar-position").get();
+    const position = Common13.Settings.Settings.instance().moduleSetting("sidebar-position").get();
     let splitMode = "Horizontal";
     if (position === "right" || position === "auto" && this.splitWidget.element.offsetWidth > 680) {
       splitMode = "Vertical";
@@ -17853,7 +17820,7 @@ ${node.simpleSelector()} {}`, false);
       return null;
     }
     if (reveal) {
-      await Common14.Revealer.reveal(anchor);
+      await Common13.Revealer.reveal(anchor);
     }
     const offsetToTagName = 22;
     const yPadding = 5;
@@ -17907,7 +17874,7 @@ var ContextMenuProvider = class {
     if (ElementsPanel.instance().element.isAncestor(event.target)) {
       return;
     }
-    contextMenu.revealSection().appendItem(i18nString15(UIStrings16.openInElementsPanel), () => Common14.Revealer.reveal(object), { jslogContext: "elements.reveal-node" });
+    contextMenu.revealSection().appendItem(i18nString15(UIStrings16.openInElementsPanel), () => Common13.Revealer.reveal(object), { jslogContext: "elements.reveal-node" });
   }
 };
 var DOMNodeRevealer = class {
@@ -17921,7 +17888,7 @@ var DOMNodeRevealer = class {
       } else {
         message = i18nString15(UIStrings16.nodeCannotBeFoundInTheCurrent);
       }
-      Common14.Console.Console.instance().warn(message);
+      Common13.Console.Console.instance().warn(message);
       throw reason;
     });
     function revealPromise(resolve, reject) {
@@ -18014,7 +17981,7 @@ var ElementsActionDelegate = class {
         ElementsPanel.instance().toggleAccessibilityTree();
         return true;
       case "elements.toggle-word-wrap": {
-        const setting = Common14.Settings.Settings.instance().moduleSetting("dom-word-wrap");
+        const setting = Common13.Settings.Settings.instance().moduleSetting("dom-word-wrap");
         setting.set(!setting.get());
         return true;
       }
@@ -18078,7 +18045,7 @@ var InspectElementModeController = class _InspectElementModeController {
     ), void 0, { scoped: true });
     SDK20.OverlayModel.OverlayModel.setInspectNodeHandler(this.inspectNode.bind(this));
     SDK20.TargetManager.TargetManager.instance().observeModels(SDK20.OverlayModel.OverlayModel, this, { scoped: true });
-    this.showDetailedInspectTooltipSetting = Common15.Settings.Settings.instance().moduleSetting("show-detailed-inspect-tooltip");
+    this.showDetailedInspectTooltipSetting = Common14.Settings.Settings.instance().moduleSetting("show-detailed-inspect-tooltip");
     this.showDetailedInspectTooltipSetting.addChangeListener(this.showDetailedInspectTooltipChanged.bind(this));
     document.addEventListener("keydown", (event) => {
       if (event.keyCode !== UI23.KeyboardShortcut.Keys.Esc.code) {
@@ -18117,7 +18084,7 @@ var InspectElementModeController = class _InspectElementModeController {
     if (this.isInInspectElementMode()) {
       mode = "none";
     } else {
-      mode = Common15.Settings.Settings.instance().moduleSetting("show-ua-shadow-dom").get() ? "searchForUAShadowDOM" : "searchForNode";
+      mode = Common14.Settings.Settings.instance().moduleSetting("show-ua-shadow-dom").get() ? "searchForUAShadowDOM" : "searchForNode";
     }
     this.setMode(mode);
   }
@@ -18145,8 +18112,8 @@ var InspectElementModeController = class _InspectElementModeController {
     this.toggleSearchAction.setToggled(false);
   }
   inspectNode(node) {
-    const returnToPanel = UI23.Context.Context.instance().flavor(Common15.ReturnToPanel.ReturnToPanelFlavor);
-    UI23.Context.Context.instance().setFlavor(Common15.ReturnToPanel.ReturnToPanelFlavor, null);
+    const returnToPanel = UI23.Context.Context.instance().flavor(Common14.ReturnToPanel.ReturnToPanelFlavor);
+    UI23.Context.Context.instance().setFlavor(Common14.ReturnToPanel.ReturnToPanelFlavor, null);
     if (returnToPanel) {
       return ElementsPanel.instance().revealAndSelectNode(node, { showPanel: false, highlightInOverlay: false }).then(() => {
         void UI23.ViewManager.ViewManager.instance().showView(returnToPanel.viewId, false, false);
@@ -18184,11 +18151,11 @@ __export(EventListenersWidget_exports, {
   DispatchFilterBy: () => DispatchFilterBy,
   EventListenersWidget: () => EventListenersWidget
 });
-import * as Common16 from "./../../core/common/common.js";
+import * as Common15 from "./../../core/common/common.js";
 import * as i18n33 from "./../../core/i18n/i18n.js";
 import * as SDK21 from "./../../core/sdk/sdk.js";
 import * as UI24 from "./../../ui/legacy/legacy.js";
-import { html as html12, render as render9 } from "./../../ui/lit/lit.js";
+import { html as html13, render as render10 } from "./../../ui/lit/lit.js";
 import * as VisualLogging14 from "./../../ui/visual_logging/visual_logging.js";
 import * as EventListeners from "./../event_listeners/event_listeners.js";
 var { bindToAction, bindToSetting } = UI24.UIUtils;
@@ -18230,7 +18197,7 @@ var str_17 = i18n33.i18n.registerUIStrings("panels/elements/EventListenersWidget
 var i18nString16 = i18n33.i18n.getLocalizedString.bind(void 0, str_17);
 var eventListenersWidgetInstance;
 var DEFAULT_VIEW7 = (input, _output, target) => {
-  render9(html12`
+  render10(html13`
     <div jslog=${VisualLogging14.pane("elements.event-listeners").track({ resize: true })}>
       <devtools-toolbar class="event-listener-toolbar" role="presentation">
         <devtools-button ${bindToAction(input.refreshEventListenersActionName)}></devtools-button>
@@ -18244,7 +18211,7 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
           aria-label=${i18nString16(UIStrings17.eventListenersCategory)}
           jslog=${VisualLogging14.filterDropdown().track({ change: true })}
           @change=${(e) => input.onDispatchFilterTypeChange(e.target.value)}>
-          ${input.dispatchFilters.map((filter) => html12`
+          ${input.dispatchFilters.map((filter) => html13`
             <option value=${filter.value} ?selected=${filter.value === input.selectedDispatchFilter}>
               ${filter.name}
             </option>`)}
@@ -18271,11 +18238,11 @@ var EventListenersWidget = class _EventListenersWidget extends UI24.Widget.VBox 
   constructor(view = DEFAULT_VIEW7) {
     super();
     this.#view = view;
-    this.showForAncestorsSetting = Common16.Settings.Settings.instance().moduleSetting("show-event-listeners-for-ancestors");
+    this.showForAncestorsSetting = Common15.Settings.Settings.instance().moduleSetting("show-event-listeners-for-ancestors");
     this.showForAncestorsSetting.addChangeListener(this.requestUpdate.bind(this));
-    this.dispatchFilterBySetting = Common16.Settings.Settings.instance().createSetting("event-listener-dispatch-filter-type", DispatchFilterBy.All);
+    this.dispatchFilterBySetting = Common15.Settings.Settings.instance().createSetting("event-listener-dispatch-filter-type", DispatchFilterBy.All);
     this.dispatchFilterBySetting.addChangeListener(this.requestUpdate.bind(this));
-    this.showFrameworkListenersSetting = Common16.Settings.Settings.instance().createSetting("show-frameowkr-listeners", true);
+    this.showFrameworkListenersSetting = Common15.Settings.Settings.instance().createSetting("show-frameowkr-listeners", true);
     this.showFrameworkListenersSetting.setTitle(i18nString16(UIStrings17.frameworkListeners));
     this.showFrameworkListenersSetting.addChangeListener(this.requestUpdate.bind(this));
     UI24.Context.Context.instance().addFlavorChangeListener(SDK21.DOMModel.DOMNode, this.requestUpdate.bind(this));
@@ -18399,14 +18366,14 @@ __export(PropertiesWidget_exports, {
   PropertiesWidget: () => PropertiesWidget
 });
 import "./../../ui/legacy/legacy.js";
-import * as Common17 from "./../../core/common/common.js";
+import * as Common16 from "./../../core/common/common.js";
 import * as Host6 from "./../../core/host/host.js";
 import * as i18n35 from "./../../core/i18n/i18n.js";
 import * as Platform11 from "./../../core/platform/platform.js";
 import * as SDK22 from "./../../core/sdk/sdk.js";
 import * as ObjectUI from "./../../ui/legacy/components/object_ui/object_ui.js";
 import * as UI25 from "./../../ui/legacy/legacy.js";
-import { html as html13, nothing as nothing4, render as render10 } from "./../../ui/lit/lit.js";
+import { html as html14, nothing as nothing5, render as render11 } from "./../../ui/lit/lit.js";
 import * as VisualLogging15 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/propertiesWidget.css.js
@@ -18457,7 +18424,7 @@ var UIStrings18 = {
 var str_18 = i18n35.i18n.registerUIStrings("panels/elements/PropertiesWidget.ts", UIStrings18);
 var i18nString17 = i18n35.i18n.getLocalizedString.bind(void 0, str_18);
 var DEFAULT_VIEW8 = (input, _output, target) => {
-  render10(html13`
+  render11(html14`
     <div jslog=${VisualLogging15.pane("element-properties").track({ resize: true })}>
       <div class="hbox properties-widget-toolbar">
         <devtools-toolbar class="styles-pane-toolbar" role="presentation">
@@ -18468,13 +18435,13 @@ var DEFAULT_VIEW8 = (input, _output, target) => {
           </devtools-checkbox>
         </devtools-toolbar>
       </div>
-      ${input.displayNoMatchingPropertyMessage ? html13`
+      ${input.displayNoMatchingPropertyMessage ? html14`
         <div class="gray-info-message">${i18nString17(UIStrings18.noMatchingProperty)}</div>
-      ` : nothing4}
+      ` : nothing5}
       ${input.treeOutlineElement}
     </div>`, target);
 };
-var getShowAllPropertiesSetting = () => Common17.Settings.Settings.instance().createSetting(
+var getShowAllPropertiesSetting = () => Common16.Settings.Settings.instance().createSetting(
   "show-all-properties",
   /* defaultValue */
   false
@@ -18602,7 +18569,7 @@ import * as SDK23 from "./../../core/sdk/sdk.js";
 import * as Bindings5 from "./../../models/bindings/bindings.js";
 import * as Components7 from "./../../ui/legacy/components/utils/utils.js";
 import * as UI26 from "./../../ui/legacy/legacy.js";
-import { html as html14, render as render11 } from "./../../ui/lit/lit.js";
+import { html as html15, render as render12 } from "./../../ui/lit/lit.js";
 
 // gen/front_end/panels/elements/nodeStackTraceWidget.css.js
 var nodeStackTraceWidget_css_default = `/*
@@ -18630,12 +18597,12 @@ var str_19 = i18n37.i18n.registerUIStrings("panels/elements/NodeStackTraceWidget
 var i18nString18 = i18n37.i18n.getLocalizedString.bind(void 0, str_19);
 var DEFAULT_VIEW9 = (input, _output, target) => {
   const { target: sdkTarget, linkifier, stackTrace } = input;
-  render11(html14`
+  render12(html15`
     <style>${nodeStackTraceWidget_css_default}</style>
-    ${target && stackTrace ? html14`<devtools-widget
+    ${target && stackTrace ? html15`<devtools-widget
                 class="stack-trace"
                 .widgetConfig=${UI26.Widget.widgetConfig(Components7.JSPresentationUtils.StackTracePreviewContent, { target: sdkTarget, linkifier, stackTrace })}>
-              </devtools-widget>` : html14`<div class="gray-info-message">${i18nString18(UIStrings19.noStackTraceAvailable)}</div>`}`, target);
+              </devtools-widget>` : html15`<div class="gray-info-message">${i18nString18(UIStrings19.noStackTraceAvailable)}</div>`}`, target);
 };
 var NodeStackTraceWidget = class extends UI26.Widget.VBox {
   #linkifier = new Components7.Linkifier.Linkifier(MaxLengthForLinks);
@@ -18675,7 +18642,7 @@ __export(ClassesPaneWidget_exports, {
   ClassNamePrompt: () => ClassNamePrompt,
   ClassesPaneWidget: () => ClassesPaneWidget
 });
-import * as Common18 from "./../../core/common/common.js";
+import * as Common17 from "./../../core/common/common.js";
 import * as i18n39 from "./../../core/i18n/i18n.js";
 import * as Platform12 from "./../../core/platform/platform.js";
 import * as SDK24 from "./../../core/sdk/sdk.js";
@@ -18783,7 +18750,7 @@ var ClassesPaneWidget = class extends UI27.Widget.Widget {
     SDK24.TargetManager.TargetManager.instance().addModelListener(SDK24.DOMModel.DOMModel, SDK24.DOMModel.Events.DOMMutated, this.onDOMMutated, this, { scoped: true });
     this.mutatingNodes = /* @__PURE__ */ new Set();
     this.pendingNodeClasses = /* @__PURE__ */ new Map();
-    this.updateNodeThrottler = new Common18.Throttler.Throttler(0);
+    this.updateNodeThrottler = new Common17.Throttler.Throttler(0);
     this.previousTarget = null;
     UI27.Context.Context.instance().addFlavorChangeListener(SDK24.DOMModel.DOMNode, this.onSelectedNodeChanged, this);
   }
@@ -19050,7 +19017,7 @@ import * as SDK25 from "./../../core/sdk/sdk.js";
 import * as Buttons5 from "./../../ui/components/buttons/buttons.js";
 import * as UIHelpers from "./../../ui/helpers/helpers.js";
 import * as UI28 from "./../../ui/legacy/legacy.js";
-import { html as html15, render as render12 } from "./../../ui/lit/lit.js";
+import { html as html16, render as render13 } from "./../../ui/lit/lit.js";
 import * as VisualLogging17 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/elementStatePaneWidget.css.js
@@ -19168,7 +19135,7 @@ var SpecificPseudoStates;
 })(SpecificPseudoStates || (SpecificPseudoStates = {}));
 var DEFAULT_VIEW10 = (input, _output, target) => {
   const createElementStateCheckbox = (state) => {
-    return html15`
+    return html16`
         <div id=${state.state}>
           <devtools-checkbox class="small" @click=${input.onStateCheckboxClicked}
               jslog=${VisualLogging17.toggle(state.state).track({ change: true })} ?checked=${state.checked} ?disabled=${state.disabled}
@@ -19177,7 +19144,7 @@ var DEFAULT_VIEW10 = (input, _output, target) => {
         </devtools-checkbox>
         </div>`;
   };
-  render12(html15`
+  render13(html16`
     <style>${elementStatePaneWidget_css_default}</style>
     <div class="styles-element-state-pane"
         jslog=${VisualLogging17.pane("element-states")}>

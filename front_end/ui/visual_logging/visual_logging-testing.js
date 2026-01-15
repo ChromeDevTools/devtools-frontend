@@ -1799,6 +1799,8 @@ var knownContextValues = /* @__PURE__ */ new Set([
   "grid-area",
   "grid-auto-columns",
   "grid-auto-flow",
+  "grid-auto-flow-column",
+  "grid-auto-flow-row",
   "grid-auto-rows",
   "grid-column",
   "grid-column-end",

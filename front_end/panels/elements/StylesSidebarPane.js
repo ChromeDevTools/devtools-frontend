@@ -178,7 +178,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
         super(computedStyleModel, true /* delegatesFocus */);
         this.setMinimumSize(96, 26);
         this.registerRequiredCSS(stylesSidebarPaneStyles);
-        Common.Settings.Settings.instance().moduleSetting('text-editor-indent').addChangeListener(this.update.bind(this));
+        Common.Settings.Settings.instance().moduleSetting('text-editor-indent').addChangeListener(this.requestUpdate, this);
         this.toolbarPaneElement = this.createStylesSidebarToolbar();
         this.noMatchesElement = this.contentElement.createChild('div', 'gray-info-message hidden');
         this.noMatchesElement.textContent = i18nString(UIStrings.noMatchingSelectorOrStyle);
@@ -274,7 +274,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
     revealProperty(cssProperty) {
         void this.decorator.highlightProperty(cssProperty);
         this.lastRevealedProperty = cssProperty;
-        this.update();
+        this.requestUpdate();
     }
     jumpToProperty(propertyName, sectionName, blockName) {
         return this.decorator.findAndHighlightPropertyName(propertyName, sectionName, blockName);
@@ -304,7 +304,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
         this.#swatchPopoverHelper.hide();
         this.#updateAbortController?.abort();
         this.resetCache();
-        this.update();
+        this.requestUpdate();
     }
     sectionsContainerKeyDown(event) {
         const activeElement = UI.DOMUtilities.deepActiveElement(this.sectionsContainer.contentElement.ownerDocument);
@@ -439,7 +439,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
         this.swatchPopoverHelper().reposition();
         this.nodeStylesUpdatedForTest(node, false);
     }
-    async doUpdate() {
+    async performUpdate() {
         this.#updateAbortController?.abort();
         this.#updateAbortController = new AbortController();
         await this.#innerDoUpdate(this.#updateAbortController.signal);
@@ -608,7 +608,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
             return;
         }
         this.resetCache();
-        this.update();
+        this.requestUpdate();
     }
     #scheduleResetUpdateIfNotEditing() {
         this.scheduleResetUpdateIfNotEditingCalledForTest();

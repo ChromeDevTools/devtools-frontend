@@ -173,6 +173,7 @@ style.setProperty('--image-file-gears', 'url(\"' + new URL(new URL('gears.svg', 
 style.setProperty('--image-file-global', 'url(\"' + new URL(new URL('global.svg', import.meta.url).href).toString() + '\")');
 style.setProperty('--image-file-google', 'url(\"' + new URL(new URL('google.svg', import.meta.url).href).toString() + '\")');
 style.setProperty('--image-file-goto-filled', 'url(\"' + new URL(new URL('goto-filled.svg', import.meta.url).href).toString() + '\")');
+style.setProperty('--image-file-grid-direction', 'url(\"' + new URL(new URL('grid-direction.svg', import.meta.url).href).toString() + '\")');
 style.setProperty('--image-file-grid-on', 'url(\"' + new URL(new URL('grid-on.svg', import.meta.url).href).toString() + '\")');
 style.setProperty('--image-file-group', 'url(\"' + new URL(new URL('group.svg', import.meta.url).href).toString() + '\")');
 style.setProperty('--image-file-heap-snapshot', 'url(\"' + new URL(new URL('heap-snapshot.svg', import.meta.url).href).toString() + '\")');

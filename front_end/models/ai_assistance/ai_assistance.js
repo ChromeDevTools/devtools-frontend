@@ -5583,40 +5583,50 @@ function freestylerBindingFunc(bindingName) {
 }
 var freestylerBinding = `(${String(freestylerBindingFunc)})('${FREESTYLER_BINDING_NAME}')`;
 var PAGE_EXPOSED_FUNCTIONS = ["setElementStyles"];
-function setupSetElementStyles(prefix) {
+var setupSetElementStyles = `function setupSetElementStyles(prefix) {
   const global = globalThis;
   async function setElementStyles(el, styles) {
     let selector = el.tagName.toLowerCase();
     if (el.id) {
-      selector = "#" + el.id;
+      selector = '#' + el.id;
     } else if (el.classList.length) {
       const parts = [];
       for (const cls of el.classList) {
         if (cls.startsWith(prefix)) {
           continue;
         }
-        parts.push("." + cls);
+        parts.push('.' + cls);
       }
       if (parts.length) {
-        selector = parts.join("");
+        selector = parts.join('');
       }
     }
-    const className = el.__freestylerClassName ?? `${prefix}-${global.freestyler.id}`;
+
+    // __freestylerClassName is not exposed to the page due to this being
+    // run in the isolated world.
+    const className = el.__freestylerClassName ?? \`\${prefix}-\${global.freestyler.id}\`;
     el.__freestylerClassName = className;
     el.classList.add(className);
+
+    // Remove inline styles with the same keys so that the edit applies.
     for (const key of Object.keys(styles)) {
+      // if it's kebab case.
       el.style.removeProperty(key);
-      el.style[key] = "";
+      // If it's camel case.
+      el.style[key] = '';
     }
+
     const bindingError = new Error();
+
     const result = await global.freestyler({
-      method: "setElementStyles",
+      method: 'setElementStyles',
       selector,
       className,
       styles,
       element: el,
-      error: bindingError
+      error: bindingError,
     });
+
     const rootNode = el.getRootNode();
     if (rootNode instanceof ShadowRoot) {
       const stylesheets = rootNode.adoptedStyleSheets;
@@ -5629,7 +5639,8 @@ function setupSetElementStyles(prefix) {
           if (!(rule instanceof CSSStyleRule)) {
             continue;
           }
-          hasAiStyleChange = rule.selectorText.startsWith(`.${prefix}`);
+
+          hasAiStyleChange = rule.selectorText.startsWith(\`.\${prefix}\`);
           if (hasAiStyleChange) {
             stylesheet = sheet;
             break;
@@ -5642,9 +5653,10 @@ function setupSetElementStyles(prefix) {
       }
     }
   }
+
   global.setElementStyles = setElementStyles;
-}
-var injectedFunctions = `(${String(setupSetElementStyles)})('${AI_ASSISTANCE_CSS_CLASS_NAME}')`;
+}`;
+var injectedFunctions = `(${setupSetElementStyles})('${AI_ASSISTANCE_CSS_CLASS_NAME}')`;
 
 // gen/front_end/models/ai_assistance/EvaluateAction.js
 function formatError(message) {

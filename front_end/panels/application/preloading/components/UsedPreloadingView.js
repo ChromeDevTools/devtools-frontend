@@ -1,7 +1,6 @@
 // Copyright 2023 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
 import '../../../../ui/kit/kit.js';
 import '../../../../ui/components/report_view/report_view.js';
 import './MismatchedPreloadingGrid.js';
@@ -9,8 +8,6 @@ import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import { assertNotNullOrUndefined } from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
-import * as LegacyWrapper from '../../../../ui/components/legacy_wrapper/legacy_wrapper.js';
-import * as RenderCoordinator from '../../../../ui/components/render_coordinator/render_coordinator.js';
 import * as UI from '../../../../ui/legacy/legacy.js';
 import { html, nothing, render } from '../../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js';
@@ -325,17 +322,17 @@ function renderBadge(config) {
             return badge('status-badge status-badge-neutral', 'clear', config.message);
     }
 }
-const DEFAULT_VIEW = ({ speculativeLoadingStatusData, speculationsInitiatedSummaryData }, output, target) => {
+const DEFAULT_VIEW = (input, _output, target) => {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html `
     <style>${usedPreloadingStyles}</style>
     <devtools-report>
-      ${renderSpeculativeLoadingStatusForThisPageSections(speculativeLoadingStatusData)}
+      ${renderSpeculativeLoadingStatusForThisPageSections(input.speculativeLoadingStatusData)}
 
       <devtools-report-divider></devtools-report-divider>
 
-      ${renderSpeculationsInitiatedByThisPageSummarySections(speculationsInitiatedSummaryData)}
+      ${renderSpeculationsInitiatedByThisPageSummarySections(input.speculationsInitiatedSummaryData)}
 
       <devtools-report-divider></devtools-report-divider>
 
@@ -348,18 +345,17 @@ const DEFAULT_VIEW = ({ speculativeLoadingStatusData, speculationsInitiatedSumma
         .context('learn-more')}
         >${i18nString(UIStrings.learnMore)}</x-link>
       </devtools-report-section>
-    </devtools-report>`, target, { host: target instanceof ShadowRoot ? target.host : undefined });
+    </devtools-report>`, target);
     // clang-format on
 };
 /**
  * TODO(kenoss): Rename this class and file once https://crrev.com/c/4933567 landed.
  * This also shows summary of speculations initiated by this page.
  **/
-export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableComponent {
-    #shadow = this.attachShadow({ mode: 'open' });
+export class UsedPreloadingView extends UI.Widget.VBox {
     #view;
     constructor(view = DEFAULT_VIEW) {
-        super();
+        super({ useShadowDom: true });
         this.#view = view;
     }
     #data = {
@@ -369,16 +365,14 @@ export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableCom
     };
     set data(data) {
         this.#data = data;
-        void this.#render();
+        this.requestUpdate();
     }
-    async #render() {
+    performUpdate() {
         const viewInput = {
             speculativeLoadingStatusData: this.#getSpeculativeLoadingStatusForThisPageData(),
             speculationsInitiatedSummaryData: this.#getSpeculationsInitiatedByThisPageSummaryData(),
         };
-        await RenderCoordinator.write('UsedPreloadingView render', () => {
-            this.#view(viewInput, undefined, this.#shadow);
-        });
+        this.#view(viewInput, undefined, this.contentElement);
     }
     #isPrerenderLike(speculationAction) {
         return [
@@ -489,5 +483,4 @@ export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableCom
         return { badges, revealRuleSetView, revealAttemptViewWithFilter };
     }
 }
-customElements.define('devtools-resources-used-preloading-view', UsedPreloadingView);
 //# sourceMappingURL=UsedPreloadingView.js.map

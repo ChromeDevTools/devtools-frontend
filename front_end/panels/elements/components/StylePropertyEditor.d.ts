@@ -1,4 +1,5 @@
 import '../../../ui/kit/kit.js';
+import '../../../ui/legacy/legacy.js';
 import { type IconInfo } from './CSSPropertyIconResolver.js';
 declare global {
     interface HTMLElementEventMap {

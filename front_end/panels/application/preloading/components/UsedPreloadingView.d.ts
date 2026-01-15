@@ -3,7 +3,6 @@ import '../../../../ui/components/report_view/report_view.js';
 import './MismatchedPreloadingGrid.js';
 import type * as Platform from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
-import * as LegacyWrapper from '../../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as UI from '../../../../ui/legacy/legacy.js';
 import { type MismatchedPreloadingGridData } from './MismatchedPreloadingGrid.js';
 export interface UsedPreloadingViewData {
@@ -55,14 +54,10 @@ type View = (input: ViewInput, output: undefined, target: HTMLElement | ShadowRo
  * TODO(kenoss): Rename this class and file once https://crrev.com/c/4933567 landed.
  * This also shows summary of speculations initiated by this page.
  **/
-export declare class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableComponent<UI.Widget.VBox> {
+export declare class UsedPreloadingView extends UI.Widget.VBox {
     #private;
     constructor(view?: View);
     set data(data: UsedPreloadingViewData);
-}
-declare global {
-    interface HTMLElementTagNameMap {
-        'devtools-resources-used-preloading-view': UsedPreloadingView;
-    }
+    performUpdate(): void;
 }
 export {};

@@ -476,9 +476,7 @@ export class PreloadingSummaryView extends UI.Widget.VBox {
         this.warningsContainer.classList.add('flex-none');
         this.contentElement.insertBefore(this.warningsContainer, this.contentElement.firstChild);
         this.warningsView.show(this.warningsContainer);
-        const usedPreloadingContainer = new UI.Widget.VBox();
-        usedPreloadingContainer.contentElement.appendChild(this.usedPreloading);
-        usedPreloadingContainer.show(this.contentElement);
+        this.usedPreloading.show(this.contentElement);
     }
     wasShown() {
         super.wasShown();

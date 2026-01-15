@@ -872,6 +872,7 @@ __export(CSSPropertyIconResolver_exports, {
   rotateAlignItemsIcon: () => rotateAlignItemsIcon,
   rotateFlexDirectionIcon: () => rotateFlexDirectionIcon,
   rotateFlexWrapIcon: () => rotateFlexWrapIcon,
+  rotateGridDirectionIcon: () => rotateGridDirectionIcon,
   rotateJustifyContentIcon: () => rotateJustifyContentIcon,
   rotateJustifyItemsIcon: () => rotateJustifyItemsIcon
 });
@@ -942,6 +943,30 @@ function rotateFlexDirectionIcon(direction) {
     scaleY: flipY ? -1 : 1
   };
 }
+function rotateGridDirectionIcon(direction) {
+  let flipX = true;
+  let flipY = false;
+  let rotate = -90;
+  if (direction === "right-to-left") {
+    rotate = 90;
+    flipY = false;
+    flipX = false;
+  } else if (direction === "top-to-bottom") {
+    rotate = 0;
+    flipX = false;
+    flipY = false;
+  } else if (direction === "bottom-to-top") {
+    rotate = 0;
+    flipX = false;
+    flipY = true;
+  }
+  return {
+    iconName: "grid-direction",
+    rotate,
+    scaleX: flipX ? -1 : 1,
+    scaleY: flipY ? -1 : 1
+  };
+}
 function rotateAlignContentIcon(iconName, direction) {
   return {
     iconName,
@@ -981,6 +1006,13 @@ function flexDirectionIcon(value) {
   }
   return getIcon;
 }
+function gridDirectionIcon(value) {
+  function getIcon(computedStyles) {
+    const directions = getPhysicalDirections(computedStyles);
+    return rotateGridDirectionIcon(directions[value]);
+  }
+  return getIcon;
+}
 function flexAlignContentIcon(iconName) {
   function getIcon(computedStyles) {
     const directions = getPhysicalDirections(computedStyles);
@@ -1002,7 +1034,9 @@ function flexAlignContentIcon(iconName) {
 function gridAlignContentIcon(iconName) {
   function getIcon(computedStyles) {
     const directions = getPhysicalDirections(computedStyles);
-    return rotateAlignContentIcon(iconName, directions.column);
+    const gridAutoFlow = computedStyles.get("grid-auto-flow") || "row";
+    const direction = gridAutoFlow.includes("column") ? directions.row : directions.column;
+    return rotateAlignContentIcon(iconName, direction);
   }
   return getIcon;
 }
@@ -1016,14 +1050,18 @@ function flexJustifyContentIcon(iconName) {
 function gridJustifyContentIcon(iconName) {
   function getIcon(computedStyles) {
     const directions = getPhysicalDirections(computedStyles);
-    return rotateJustifyContentIcon(iconName, directions.row);
+    const gridAutoFlow = computedStyles.get("grid-auto-flow") || "row";
+    const direction = gridAutoFlow.includes("column") ? directions.column : directions.row;
+    return rotateJustifyContentIcon(iconName, direction);
   }
   return getIcon;
 }
 function gridJustifyItemsIcon(iconName) {
   function getIcon(computedStyles) {
     const directions = getPhysicalDirections(computedStyles);
-    return rotateJustifyItemsIcon(iconName, directions.row);
+    const gridAutoFlow = computedStyles.get("grid-auto-flow") || "row";
+    const direction = gridAutoFlow.includes("column") ? directions.column : directions.row;
+    return rotateJustifyItemsIcon(iconName, direction);
   }
   return getIcon;
 }
@@ -1048,7 +1086,9 @@ function flexAlignItemsIcon(iconName) {
 function gridAlignItemsIcon(iconName) {
   function getIcon(computedStyles) {
     const directions = getPhysicalDirections(computedStyles);
-    return rotateAlignItemsIcon(iconName, directions.column);
+    const gridAutoFlow = computedStyles.get("grid-auto-flow") || "row";
+    const direction = gridAutoFlow.includes("column") ? directions.row : directions.column;
+    return rotateAlignItemsIcon(iconName, direction);
   }
   return getIcon;
 }
@@ -1144,6 +1184,8 @@ var flexItemIcons = /* @__PURE__ */ new Map([
   ["align-self: stretch", flexAlignSelfIcon("align-self-stretch")]
 ]);
 var gridContainerIcons = /* @__PURE__ */ new Map([
+  ["grid-auto-flow: row", gridDirectionIcon("row")],
+  ["grid-auto-flow: column", gridDirectionIcon("column")],
   ["align-content: center", gridAlignContentIcon("align-content-center")],
   ["align-content: space-around", gridAlignContentIcon("align-content-space-around")],
   ["align-content: space-between", gridAlignContentIcon("align-content-space-between")],
@@ -2183,7 +2225,9 @@ __export(StylePropertyEditor_exports, {
   StylePropertyEditor: () => StylePropertyEditor
 });
 import "./../../../ui/kit/kit.js";
+import "./../../../ui/legacy/legacy.js";
 import * as i18n15 from "./../../../core/i18n/i18n.js";
+import * as Input from "./../../../ui/components/input/input.js";
 import * as Lit5 from "./../../../ui/lit/lit.js";
 import * as VisualLogging7 from "./../../../ui/visual_logging/visual_logging.js";
 
@@ -2284,7 +2328,11 @@ var UIStrings8 = {
    * @example {flex-direction} propertyName
    * @example {row} propertyValue
    */
-  deselectButton: "Remove {propertyName}: {propertyValue}"
+  deselectButton: "Remove {propertyName}: {propertyValue}",
+  /**
+   * @description Label for the dense checkbox in the grid-auto-flow editor.
+   */
+  denseLabel: "Dense"
 };
 var str_8 = i18n15.i18n.registerUIStrings("panels/elements/components/StylePropertyEditor.ts", UIStrings8);
 var i18nString8 = i18n15.i18n.getLocalizedString.bind(void 0, str_8);
@@ -2321,6 +2369,7 @@ var StylePropertyEditor = class extends HTMLElement {
   #render() {
     render11(html11`
       <style>${stylePropertyEditor_css_default}</style>
+      <style>${Input.checkboxStyles}</style>
       <div class="container">
         ${this.editableProperties.map((prop) => this.#renderProperty(prop))}
       </div>
@@ -2336,6 +2385,9 @@ var StylePropertyEditor = class extends HTMLElement {
       "property-value": true,
       "not-authored": notAuthored
     });
+    if (prop.propertyName === "grid-auto-flow") {
+      return this.#renderGridAutoFlowProperty(prop, shownValue, classes);
+    }
     return html11`<div class="row">
       <div class="property">
         <span class="property-name">${prop.propertyName}</span>: <span class=${classes}>${shownValue}</span>
@@ -2344,6 +2396,46 @@ var StylePropertyEditor = class extends HTMLElement {
         ${prop.propertyValues.map((value) => this.#renderButton(value, prop.propertyName, value === authoredValue))}
       </div>
     </div>`;
+  }
+  #renderGridAutoFlowProperty(prop, shownValue, classes) {
+    const authoredValue = this.#authoredProperties.get(prop.propertyName);
+    const isDense = authoredValue === "dense" || authoredValue === "row dense" || authoredValue === "column dense";
+    const isRow = authoredValue === "row" || authoredValue === "row dense";
+    const isColumn = authoredValue === "column" || authoredValue === "column dense";
+    return html11`<div class="row">
+      <div class="property">
+        <span class="property-name">${prop.propertyName}</span>: <span class=${classes}>${shownValue}</span>
+      </div>
+      <div class="buttons">
+        ${this.#renderButton("row", prop.propertyName, isRow)}
+        ${this.#renderButton("column", prop.propertyName, isColumn)}
+        <devtools-checkbox
+          .checked=${isDense}
+          @change=${(e) => this.#onDenseCheckboxChange(e, isRow, isColumn)}
+        >
+          ${i18nString8(UIStrings8.denseLabel)}
+        </devtools-checkbox>
+      </div>
+    </div>`;
+  }
+  #onDenseCheckboxChange(e, isRow, isColumn) {
+    const checked = e.target.checked;
+    const propertyName = "grid-auto-flow";
+    const currentValue = this.#authoredProperties.get(propertyName);
+    let newValue = "";
+    if (isRow) {
+      newValue = checked ? "row dense" : "row";
+    } else if (isColumn) {
+      newValue = checked ? "column dense" : "column";
+    } else {
+      newValue = checked ? "dense" : "";
+    }
+    if (currentValue) {
+      this.dispatchEvent(new PropertyDeselectedEvent(propertyName, currentValue));
+    }
+    if (newValue) {
+      this.dispatchEvent(new PropertySelectedEvent(propertyName, newValue));
+    }
   }
   #renderButton(propertyValue, propertyName, selected = false) {
     const query = `${propertyName}: ${propertyValue}`;
@@ -2369,7 +2461,25 @@ var StylePropertyEditor = class extends HTMLElement {
     `;
   }
   #onButtonClick(propertyName, propertyValue, selected) {
-    if (selected) {
+    if (propertyName === "grid-auto-flow") {
+      const currentValue = this.#authoredProperties.get(propertyName);
+      const isDense = currentValue?.includes("dense") || false;
+      if (selected) {
+        const newValue = isDense ? "dense" : "";
+        if (currentValue) {
+          this.dispatchEvent(new PropertyDeselectedEvent(propertyName, currentValue));
+        }
+        if (newValue) {
+          this.dispatchEvent(new PropertySelectedEvent(propertyName, newValue));
+        }
+      } else {
+        const newValue = isDense ? `${propertyValue} dense` : propertyValue;
+        if (currentValue) {
+          this.dispatchEvent(new PropertyDeselectedEvent(propertyName, currentValue));
+        }
+        this.dispatchEvent(new PropertySelectedEvent(propertyName, newValue));
+      }
+    } else if (selected) {
       this.dispatchEvent(new PropertyDeselectedEvent(propertyName, propertyValue));
     } else {
       this.dispatchEvent(new PropertySelectedEvent(propertyName, propertyValue));
@@ -2454,6 +2564,13 @@ var FlexboxEditableProperties = [
   }
 ];
 var GridEditableProperties = [
+  {
+    propertyName: "grid-auto-flow",
+    propertyValues: [
+      "row",
+      "column"
+    ]
+  },
   {
     propertyName: "align-content",
     propertyValues: [

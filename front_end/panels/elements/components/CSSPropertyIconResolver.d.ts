@@ -26,6 +26,14 @@ export declare function getPhysicalDirections(computedStyles: ComputedStyles): D
  * By default, the icon is pointing top-down with the arrow on the right-hand side.
  */
 export declare function rotateFlexDirectionIcon(direction: PhysicalDirection): IconInfo;
+/**
+ * Rotates the grid direction icon in such way that it indicates
+ * the desired `direction` and the arrow in the icon is always at the bottom
+ * or at the right.
+ *
+ * By default, the icon is pointing top-down with the arrow on the right-hand side.
+ */
+export declare function rotateGridDirectionIcon(direction: PhysicalDirection): IconInfo;
 export declare function rotateAlignContentIcon(iconName: string, direction: PhysicalDirection): IconInfo;
 export declare function rotateJustifyContentIcon(iconName: string, direction: PhysicalDirection): IconInfo;
 export declare function rotateJustifyItemsIcon(iconName: string, direction: PhysicalDirection): IconInfo;

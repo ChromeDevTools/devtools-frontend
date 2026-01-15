@@ -2060,8 +2060,6 @@ import * as Common4 from "./../../../../core/common/common.js";
 import * as i18n15 from "./../../../../core/i18n/i18n.js";
 import { assertNotNullOrUndefined as assertNotNullOrUndefined4 } from "./../../../../core/platform/platform.js";
 import * as SDK7 from "./../../../../core/sdk/sdk.js";
-import * as LegacyWrapper from "./../../../../ui/components/legacy_wrapper/legacy_wrapper.js";
-import * as RenderCoordinator from "./../../../../ui/components/render_coordinator/render_coordinator.js";
 import * as UI7 from "./../../../../ui/legacy/legacy.js";
 import { html as html7, nothing as nothing6, render as render7 } from "./../../../../ui/lit/lit.js";
 import * as VisualLogging4 from "./../../../../ui/visual_logging/visual_logging.js";
@@ -2433,15 +2431,15 @@ function renderBadge(config) {
       return badge("status-badge status-badge-neutral", "clear", config.message);
   }
 }
-var DEFAULT_VIEW6 = ({ speculativeLoadingStatusData, speculationsInitiatedSummaryData }, output, target) => {
+var DEFAULT_VIEW6 = (input, _output, target) => {
   render7(html7`
     <style>${usedPreloadingView_css_default}</style>
     <devtools-report>
-      ${renderSpeculativeLoadingStatusForThisPageSections(speculativeLoadingStatusData)}
+      ${renderSpeculativeLoadingStatusForThisPageSections(input.speculativeLoadingStatusData)}
 
       <devtools-report-divider></devtools-report-divider>
 
-      ${renderSpeculationsInitiatedByThisPageSummarySections(speculationsInitiatedSummaryData)}
+      ${renderSpeculationsInitiatedByThisPageSummarySections(input.speculationsInitiatedSummaryData)}
 
       <devtools-report-divider></devtools-report-divider>
 
@@ -2452,13 +2450,12 @@ var DEFAULT_VIEW6 = ({ speculativeLoadingStatusData, speculationsInitiatedSummar
           jslog=${VisualLogging4.link().track({ click: true, keydown: "Enter|Space" }).context("learn-more")}
         >${i18nString8(UIStrings8.learnMore)}</x-link>
       </devtools-report-section>
-    </devtools-report>`, target, { host: target instanceof ShadowRoot ? target.host : void 0 });
+    </devtools-report>`, target);
 };
-var UsedPreloadingView = class extends LegacyWrapper.LegacyWrapper.WrappableComponent {
-  #shadow = this.attachShadow({ mode: "open" });
+var UsedPreloadingView = class extends UI7.Widget.VBox {
   #view;
   constructor(view = DEFAULT_VIEW6) {
-    super();
+    super({ useShadowDom: true });
     this.#view = view;
   }
   #data = {
@@ -2468,16 +2465,14 @@ var UsedPreloadingView = class extends LegacyWrapper.LegacyWrapper.WrappableComp
   };
   set data(data) {
     this.#data = data;
-    void this.#render();
+    this.requestUpdate();
   }
-  async #render() {
+  performUpdate() {
     const viewInput = {
       speculativeLoadingStatusData: this.#getSpeculativeLoadingStatusForThisPageData(),
       speculationsInitiatedSummaryData: this.#getSpeculationsInitiatedByThisPageSummaryData()
     };
-    await RenderCoordinator.write("UsedPreloadingView render", () => {
-      this.#view(viewInput, void 0, this.#shadow);
-    });
+    this.#view(viewInput, void 0, this.contentElement);
   }
   #isPrerenderLike(speculationAction) {
     return [
@@ -2594,7 +2589,6 @@ var UsedPreloadingView = class extends LegacyWrapper.LegacyWrapper.WrappableComp
     return { badges, revealRuleSetView, revealAttemptViewWithFilter };
   }
 };
-customElements.define("devtools-resources-used-preloading-view", UsedPreloadingView);
 export {
   MismatchedPreloadingGrid_exports as MismatchedPreloadingGrid,
   PreloadingDetailsReportView_exports as PreloadingDetailsReportView,

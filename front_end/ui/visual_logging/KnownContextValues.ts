@@ -1627,6 +1627,7 @@ export const knownContextValues = new Set([
   'float-64-bit',
   'flood-color',
   'flood-opacity',
+  'flow-tolerance',
   'focus',
   'focus-visible',
   'focus-within',

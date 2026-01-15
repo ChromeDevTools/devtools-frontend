@@ -474,6 +474,7 @@ export const generatedProperties = [
    "float",
    "flood-color",
    "flood-opacity",
+   "flow-tolerance",
    "font-display",
    "font-family",
    "font-feature-settings",
@@ -532,7 +533,6 @@ export const generatedProperties = [
    "interest-delay-start",
    "interpolate-size",
    "isolation",
-   "item-tolerance",
    "justify-content",
    "justify-items",
    "justify-self",
@@ -2309,6 +2309,13 @@ export const generatedProperties = [
   "name": "flood-opacity"
  },
  {
+  "keywords": [
+   "normal",
+   "infinite"
+  ],
+  "name": "flow-tolerance"
+ },
+ {
   "inherited": true,
   "longhands": [
    "font-style",
@@ -2880,13 +2887,6 @@ export const generatedProperties = [
    "isolate"
   ],
   "name": "isolation"
- },
- {
-  "keywords": [
-   "normal",
-   "infinite"
-  ],
-  "name": "item-tolerance"
  },
  {
   "name": "justify-content"
@@ -5835,6 +5835,12 @@ export const generatedPropertyValues = {
    "currentcolor"
   ]
  },
+ "flow-tolerance": {
+  "values": [
+   "normal",
+   "infinite"
+  ]
+ },
  "font-feature-settings": {
   "values": [
    "normal"
@@ -6154,12 +6160,6 @@ export const generatedPropertyValues = {
   "values": [
    "auto",
    "isolate"
-  ]
- },
- "item-tolerance": {
-  "values": [
-   "normal",
-   "infinite"
   ]
  },
  "left": {

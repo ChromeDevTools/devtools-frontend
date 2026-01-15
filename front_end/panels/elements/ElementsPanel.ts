@@ -982,7 +982,6 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
 
     const showMetricsWidgetInComputedPane = (): void => {
       this.metricsWidget.show(computedStylePanesWrapper.element, this.computedStyleWidget.element);
-      this.metricsWidget.toggleVisibility(true /* visible */);
       this.stylesWidget.removeEventListener(StylesSidebarPaneEvents.STYLES_UPDATE_COMPLETED, toggleMetricsWidget);
     };
 
@@ -993,14 +992,18 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
       } else {
         this.metricsWidget.show(matchedStylePanesWrapper.element);
         if (!this.stylesWidget.hasMatchedStyles) {
-          this.metricsWidget.toggleVisibility(false /* invisible */);
+          this.metricsWidget.hideWidget();
         }
         this.stylesWidget.addEventListener(StylesSidebarPaneEvents.STYLES_UPDATE_COMPLETED, toggleMetricsWidget);
       }
     };
 
     const toggleMetricsWidget = (event: Common.EventTarget.EventTargetEvent<StylesUpdateCompletedEvent>): void => {
-      this.metricsWidget.toggleVisibility(event.data.hasMatchedStyles);
+      if (event.data.hasMatchedStyles) {
+        this.metricsWidget.showWidget();
+      } else {
+        this.metricsWidget.hideWidget();
+      }
     };
 
     const tabSelected = (event: Common.EventTarget.EventTargetEvent<UI.TabbedPane.EventData>): void => {

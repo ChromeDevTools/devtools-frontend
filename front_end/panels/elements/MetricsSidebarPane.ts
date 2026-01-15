@@ -1,7 +1,6 @@
 // Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 
 /*
  * Copyright (C) 2007 Apple Inc.  All rights reserved.
@@ -175,7 +174,7 @@ const DEFAULT_VIEW: View = (input, output, target) => {
   }
   // clang-format off
   render(html`
-    <div class="metrics" @mouseover=${(e: Event) => { e.consume(); onHighlightNode(true, 'all'); }}
+    <div class="metrics ${!node ? 'collapsed' : ''}" @mouseover=${(e: Event) => { e.consume(); onHighlightNode(true, 'all'); }}
         @mouseleave=${(e: Event) => { e.consume(); onHighlightNode(false, 'all'); }}>
       ${previousBox}
     </div>`, target);
@@ -192,7 +191,7 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
   private view: View;
 
   constructor(computedStyleModel: ComputedStyleModel, view = DEFAULT_VIEW) {
-    super(computedStyleModel);
+    super(computedStyleModel, {jslog: `${VisualLogging.pane('styles-metrics')}`});
     this.registerRequiredCSS(metricsSidebarPaneStyles);
 
     this.originalPropertyData = null;
@@ -200,7 +199,6 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
     this.inlineStyle = null;
     this.highlightMode = '';
     this.computedStyle = null;
-    this.contentElement.setAttribute('jslog', `${VisualLogging.pane('styles-metrics')}`);
     this.view = view;
   }
 
@@ -215,8 +213,17 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
     const node = this.node();
     const cssModel = this.cssModel();
     if (!node || node.nodeType() !== Node.ELEMENT_NODE || !cssModel) {
-      this.contentElement.removeChildren();
-      this.element.classList.add('collapsed');
+      this.view(
+          {
+            style: new Map(),
+            highlightedMode: '',
+            node: null,
+            contentWidth: '',
+            contentHeight: '',
+            onHighlightNode: () => {},
+            onStartEditing: () => {},
+          },
+          undefined, this.contentElement);
       return await Promise.resolve();
     }
 
@@ -246,16 +253,6 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
 
   override onCSSModelChanged(): void {
     this.requestUpdate();
-  }
-
-  /**
-   * Toggle the visibility of the Metrics pane. This toggle allows external
-   * callers to control the visibility of this pane, but toggling this on does
-   * not guarantee the pane will always show up, because the pane's visibility
-   * is also controlled by the internal condition that style cannot be empty.
-   */
-  toggleVisibility(isVisible: boolean): void {
-    this.element.classList.toggle('invisible', !isVisible);
   }
 
   private getPropertyValueAsPx(style: Map<string, string>, propertyName: string): number {
@@ -344,7 +341,6 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
           onStartEditing: this.startEditing.bind(this),
         },
         undefined, this.contentElement);
-    this.element.classList.remove('collapsed');
   }
 
   startEditing(targetElement: Element, box: string, styleProperty: string, computedStyle: Map<string, string>): void {

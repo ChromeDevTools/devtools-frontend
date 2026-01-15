@@ -205,7 +205,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
   #updateComputedStylesAbortController?: AbortController;
 
   constructor(computedStyleModel: ComputedStyleModel) {
-    super(computedStyleModel, true /* delegatesFocus */);
+    super(computedStyleModel, {delegatesFocus: true});
     this.setMinimumSize(96, 26);
     this.registerRequiredCSS(stylesSidebarPaneStyles);
     Common.Settings.Settings.instance().moduleSetting('text-editor-indent').addChangeListener(this.requestUpdate, this);

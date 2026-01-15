@@ -177,6 +177,15 @@ describeWithMockConnection('StackTraceModel', () => {
       ].join('\n'));
     });
 
+    it('allows empty sync fragments', async () => {
+      const {model} = setup();
+
+      const stackTrace = await model.createFromProtocolRuntime({callFrames: []}, identityTranslateFn);
+
+      assert.lengthOf(stackTrace.syncFragment.frames, 0);
+      assert.lengthOf(stackTrace.asyncFragments, 0);
+    });
+
     it('calls the translate function with the correct raw frames', async () => {
       const {model, translateSpy} = setup();
       const callFrames = [

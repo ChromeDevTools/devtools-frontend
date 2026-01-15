@@ -79,6 +79,7 @@ export interface FunctionObjectParam<T extends string|number|symbol = string> ex
   type: ParametersTypes.OBJECT;
   // TODO: this can be also be ObjectParams
   properties: Record<T, FunctionPrimitiveParams|FunctionArrayParam>;
+  required: string[];
 }
 
 /**

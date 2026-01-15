@@ -86,7 +86,12 @@ Content:
               "description": "A CSS style property name to retrieve. For example, 'background-color'."
             }
           }
-        }
+        },
+        "required": [
+          "explanation",
+          "elements",
+          "styleProperties"
+        ]
       }
     },
     {
@@ -109,7 +114,12 @@ Content:
             "type": 1,
             "description": "Provide a summary of what the code does. For example, \"Checking related element styles\"."
           }
-        }
+        },
+        "required": [
+          "code",
+          "thought",
+          "title"
+        ]
       }
     }
   ],

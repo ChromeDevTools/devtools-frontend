@@ -313,7 +313,8 @@ export class StylingAgent extends AiAgent<SDK.DOMModel.DOMNode> {
               description: 'A CSS style property name to retrieve. For example, \'background-color\'.'
             }
           },
-        }
+        },
+        required: ['explanation', 'elements', 'styleProperties']
       },
       displayInfoFromArgs: params => {
         return {
@@ -396,6 +397,7 @@ const data = {
             description: 'Provide a summary of what the code does. For example, "Checking related element styles".',
           },
         },
+        required: ['code', 'thought', 'title']
       },
       displayInfoFromArgs: params => {
         return {
@@ -436,6 +438,7 @@ const data = {
               nullable: false,
             },
           },
+          required: ['elementId', 'annotationMessage']
         },
         handler: async params => {
           return await this.addElementAnnotation(params.elementId, params.annotationMessage);

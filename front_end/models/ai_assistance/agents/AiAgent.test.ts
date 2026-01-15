@@ -430,7 +430,12 @@ describeWithEnvironment('AiAgent', () => {
         super(opts);
         this.declareFunction('testFn', {
           description: 'test fn description',
-          parameters: {type: Host.AidaClient.ParametersTypes.OBJECT, properties: {}, description: 'arg description'},
+          parameters: {
+            type: Host.AidaClient.ParametersTypes.OBJECT,
+            properties: {},
+            description: 'arg description',
+            required: []
+          },
           handler: this.#test.bind(this),
         });
       }
@@ -469,6 +474,7 @@ describeWithEnvironment('AiAgent', () => {
               description: 'arg description',
               properties: {},
               type: 6,
+              required: [],
             },
           }],
       );

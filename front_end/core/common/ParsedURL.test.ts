@@ -301,6 +301,12 @@ describe('Parsed URL', () => {
     assert.strictEqual(extractedName, 'path.html', 'name extracted incorrectly');
   });
 
+  it('is able to extract name from a string with a trailing slash', () => {
+    const urlTest = 'http://www.example.com/path/';
+    const extractedName = ParsedURL.extractName(urlTest);
+    assert.strictEqual(extractedName, 'path', 'name extracted incorrectly');
+  });
+
   it('uses the completeURL function to return a data URL as it is', () => {
     const hrefTest = 'data:http://www.example.com';
     const baseUrlTest = urlString`www.example.com`;

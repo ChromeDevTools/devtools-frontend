@@ -70,7 +70,7 @@ const UIStringsNotTranslate = {
 } as const;
 
 const lockedString = i18n.i18n.lockedString;
-const PROMOTION_ID = 'ai-code-generation';
+export const PROMOTION_ID = 'ai-code-generation';
 
 export enum AiCodeGenerationTeaserDisplayState {
   TRIGGER = 'trigger',

@@ -352,6 +352,7 @@ export const knownContextValues = new Set([
   'ai-code-completion-teaser-dismissed',
   'ai-code-completion-teaser.dismiss',
   'ai-code-completion-teaser.fre',
+  'ai-code-generation-disclaimer',
   'ai-code-generation-teaser.info-button',
   'ai-code-generation-upgrade-dialog.continue',
   'ai-code-generation-upgrade-dialog.manage-in-settings',

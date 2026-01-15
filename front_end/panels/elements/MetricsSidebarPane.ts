@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-imperative-dom-api */
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 /*
  * Copyright (C) 2007 Apple Inc.  All rights reserved.
@@ -45,6 +44,144 @@ import metricsSidebarPaneStyles from './metricsSidebarPane.css.js';
 
 const {live} = Directives;
 
+interface ViewInput {
+  style: Map<string, string>;
+  highlightedMode: string;
+  node: SDK.DOMModel.DOMNode|null;
+  contentWidth: string;
+  contentHeight: string;
+  onHighlightNode: (showHighlight: boolean, mode: string) => void;
+  onStartEditing: (target: Element, box: string, styleProperty: string, computedStyle: Map<string, string>) => void;
+}
+
+type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+
+const DEFAULT_VIEW: View = (input, output, target) => {
+  const {style, highlightedMode, node, contentWidth, contentHeight, onHighlightNode, onStartEditing} = input;
+
+  function createBoxPartElement(style: Map<string, string>, name: string, side: string, suffix: string): LitTemplate {
+    const propertyName = (name !== 'position' ? name + '-' : '') + side + suffix;
+    let value = style.get(propertyName);
+
+    if (value === '' || (name !== 'position' && value === 'unset')) {
+      value = '\u2012';
+    } else if (name === 'position' && value === 'auto') {
+      value = '\u2012';
+    }
+    value = value?.replace(/px$/, '');
+    value = value ? Platform.NumberUtilities.toFixedIfFloating(value) : value;
+    // clang-format off
+    return html`<div class=${side} jslog=${VisualLogging.value(propertyName).track({
+        dblclick: true, keydown: 'Enter|Escape|ArrowUp|ArrowDown|PageUp|PageDown', change: true,
+        })}
+        @dblclick=${(e: Event) => onStartEditing(e.currentTarget as Element, name, propertyName, style)}
+        .innerText=${live(value ?? '')}>
+    </div>`;
+    // clang-format on
+  }
+
+  // Display types for which margin is ignored.
+  const noMarginDisplayType = new Set<string>([
+    'table-cell',
+    'table-column',
+    'table-column-group',
+    'table-footer-group',
+    'table-header-group',
+    'table-row',
+    'table-row-group',
+  ]);
+
+  // Display types for which padding is ignored.
+  const noPaddingDisplayType = new Set<string>([
+    'table-column',
+    'table-column-group',
+    'table-footer-group',
+    'table-header-group',
+    'table-row',
+    'table-row-group',
+  ]);
+
+  // Position types for which top, left, bottom and right are ignored.
+  const noPositionType = new Set<string>(['static']);
+
+  const boxes = ['content', 'padding', 'border', 'margin', 'position'];
+  const boxColors = [
+    Common.Color.PageHighlight.Content,
+    Common.Color.PageHighlight.Padding,
+    Common.Color.PageHighlight.Border,
+    Common.Color.PageHighlight.Margin,
+    Common.Color.Legacy.fromRGBA([0, 0, 0, 0]),
+  ];
+  const boxLabels = ['content', 'padding', 'border', 'margin', 'position'];
+  let previousBox: LitTemplate = nothing;
+  for (let i = 0; i < boxes.length; ++i) {
+    const name = boxes[i];
+    const display = style.get('display');
+    const position = style.get('position');
+    if (!display || !position) {
+      continue;
+    }
+    if (name === 'margin' && noMarginDisplayType.has(display)) {
+      continue;
+    }
+    if (name === 'padding' && noPaddingDisplayType.has(display)) {
+      continue;
+    }
+    if (name === 'position' && noPositionType.has(position)) {
+      continue;
+    }
+
+    const shouldHighlight = !node || highlightedMode === 'all' || name === highlightedMode;
+    const backgroundColor = boxColors[i].asString(Common.Color.Format.RGBA) || '';
+
+    const suffix = (name === 'border' ? '-width' : '');
+    // clang-format off
+    const box: LitTemplate = html`
+      <div
+          class="${name} ${shouldHighlight ? 'highlighted' : ''}"
+          style="background-color: ${shouldHighlight ? backgroundColor : ''}"
+          jslog=${VisualLogging.metricsBox().context(name).track({hover: true})}
+          @mouseover=${(e: Event) => {e.consume(); onHighlightNode(true, name === 'position' ? 'all' : name);}}>
+      ${name === 'content' ? html`
+        <span jslog=${VisualLogging.value('width').track({
+              dblclick: true,
+              keydown: 'Enter|Escape|ArrowUp|ArrowDown|PageUp|PageDown',
+              change: true,
+            })}
+            @dblclick=${(e: Event) => onStartEditing(e.currentTarget as Element, 'width', 'width', style)}
+            .innerText=${live(contentWidth)}>
+        </span>
+        <span> × </span>
+        <span jslog=${VisualLogging.value('height').track({
+              dblclick: true,
+              keydown: 'Enter|Escape|ArrowUp|ArrowDown|PageUp|PageDown',
+              change: true,
+            })}
+            @dblclick=${(e: Event) => onStartEditing(e.currentTarget as Element, 'height', 'height', style)}
+            .innerText=${live(contentHeight)}>
+        </span>` : html`
+        <div class="label">${boxLabels[i]}</div>
+          ${createBoxPartElement(style, name, 'top', suffix)}
+          <br>
+          ${createBoxPartElement(style, name, 'left', suffix)}
+          ${previousBox}
+          ${createBoxPartElement(style, name, 'right', suffix)}
+          <br>
+          ${createBoxPartElement(style, name, 'bottom', suffix)}`}
+        </div>`;
+    // clang-format on
+
+    previousBox = box;
+  }
+  // clang-format off
+  render(html`
+    <div class="metrics" @mouseover=${(e: Event) => { e.consume(); onHighlightNode(true, 'all'); }}
+        @mouseleave=${(e: Event) => { e.consume(); onHighlightNode(false, 'all'); }}>
+      ${previousBox}
+    </div>`, target);
+  // clang-format on
+};
+
 export class MetricsSidebarPane extends ElementsSidebarPane {
   originalPropertyData: SDK.CSSProperty.CSSProperty|null;
   previousPropertyDataCandidate: SDK.CSSProperty.CSSProperty|null;
@@ -52,8 +189,9 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
   private highlightMode: string;
   private computedStyle: Map<string, string>|null;
   private isEditingMetrics?: boolean;
+  private view: View;
 
-  constructor(computedStyleModel: ComputedStyleModel) {
+  constructor(computedStyleModel: ComputedStyleModel, view = DEFAULT_VIEW) {
     super(computedStyleModel);
     this.registerRequiredCSS(metricsSidebarPaneStyles);
 
@@ -63,6 +201,7 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
     this.highlightMode = '';
     this.computedStyle = null;
     this.contentElement.setAttribute('jslog', `${VisualLogging.pane('styles-metrics')}`);
+    this.view = view;
   }
 
   override async performUpdate(): Promise<void> {
@@ -141,8 +280,7 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
     return {left, top, right, bottom};
   }
 
-  private highlightDOMNode(showHighlight: boolean, mode: string, event: Event): void {
-    event.consume();
+  private highlightDOMNode(showHighlight: boolean, mode: string): void {
     const node = this.node();
     if (showHighlight && node) {
       if (this.highlightMode === mode) {
@@ -160,175 +298,56 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
     }
   }
 
+  private getContentAreaWidthPx(style: Map<string, string>): string {
+    let width = style.get('width');
+    if (!width) {
+      return '';
+    }
+    width = width.replace(/px$/, '');
+    const widthValue = Number(width);
+    if (!isNaN(widthValue) && style.get('box-sizing') === 'border-box') {
+      const borderBox = this.getBox(style, 'border');
+      const paddingBox = this.getBox(style, 'padding');
+
+      width = (widthValue - borderBox.left - borderBox.right - paddingBox.left - paddingBox.right).toString();
+    }
+
+    return Platform.NumberUtilities.toFixedIfFloating(width);
+  }
+
+  private getContentAreaHeightPx(style: Map<string, string>): string {
+    let height = style.get('height');
+    if (!height) {
+      return '';
+    }
+    height = height.replace(/px$/, '');
+    const heightValue = Number(height);
+    if (!isNaN(heightValue) && style.get('box-sizing') === 'border-box') {
+      const borderBox = this.getBox(style, 'border');
+      const paddingBox = this.getBox(style, 'padding');
+
+      height = (heightValue - borderBox.top - borderBox.bottom - paddingBox.top - paddingBox.bottom).toString();
+    }
+
+    return Platform.NumberUtilities.toFixedIfFloating(height);
+  }
+
   private updateMetrics(style: Map<string, string>, highlightedMode = 'all'): void {
-    // Updating with computed style.
-    const self = this;
-
-    function createBoxPartElement(
-        this: MetricsSidebarPane, style: Map<string, string>, name: string, side: string, suffix: string): LitTemplate {
-      const propertyName = (name !== 'position' ? name + '-' : '') + side + suffix;
-      let value = style.get(propertyName);
-
-      if (value === '' || (name !== 'position' && value === 'unset')) {
-        value = '\u2012';
-      } else if (name === 'position' && value === 'auto') {
-        value = '\u2012';
-      }
-      value = value?.replace(/px$/, '');
-      value = value ? Platform.NumberUtilities.toFixedIfFloating(value) : value;
-      // clang-format off
-      return html`<div class=${side} jslog=${VisualLogging.value(propertyName).track({
-          dblclick: true, keydown: 'Enter|Escape|ArrowUp|ArrowDown|PageUp|PageDown', change: true,
-          })}
-          @dblclick=${(e: Event) => this.startEditing(e.currentTarget, name, propertyName, style)}
-          .innerText=${live(value ?? '')}>
-      </div>`;
-      // clang-format on
-    }
-
-    function getContentAreaWidthPx(style: Map<string, string>): string {
-      let width = style.get('width');
-      if (!width) {
-        return '';
-      }
-      width = width.replace(/px$/, '');
-      const widthValue = Number(width);
-      if (!isNaN(widthValue) && style.get('box-sizing') === 'border-box') {
-        const borderBox = self.getBox(style, 'border');
-        const paddingBox = self.getBox(style, 'padding');
-
-        width = (widthValue - borderBox.left - borderBox.right - paddingBox.left - paddingBox.right).toString();
-      }
-
-      return Platform.NumberUtilities.toFixedIfFloating(width);
-    }
-
-    function getContentAreaHeightPx(style: Map<string, string>): string {
-      let height = style.get('height');
-      if (!height) {
-        return '';
-      }
-      height = height.replace(/px$/, '');
-      const heightValue = Number(height);
-      if (!isNaN(heightValue) && style.get('box-sizing') === 'border-box') {
-        const borderBox = self.getBox(style, 'border');
-        const paddingBox = self.getBox(style, 'padding');
-
-        height = (heightValue - borderBox.top - borderBox.bottom - paddingBox.top - paddingBox.bottom).toString();
-      }
-
-      return Platform.NumberUtilities.toFixedIfFloating(height);
-    }
-
-    // Display types for which margin is ignored.
-    const noMarginDisplayType = new Set<string>([
-      'table-cell',
-      'table-column',
-      'table-column-group',
-      'table-footer-group',
-      'table-header-group',
-      'table-row',
-      'table-row-group',
-    ]);
-
-    // Display types for which padding is ignored.
-    const noPaddingDisplayType = new Set<string>([
-      'table-column',
-      'table-column-group',
-      'table-footer-group',
-      'table-header-group',
-      'table-row',
-      'table-row-group',
-    ]);
-
-    // Position types for which top, left, bottom and right are ignored.
-    const noPositionType = new Set<string>(['static']);
-
-    const boxes = ['content', 'padding', 'border', 'margin', 'position'];
-    const boxColors = [
-      Common.Color.PageHighlight.Content,
-      Common.Color.PageHighlight.Padding,
-      Common.Color.PageHighlight.Border,
-      Common.Color.PageHighlight.Margin,
-      Common.Color.Legacy.fromRGBA([0, 0, 0, 0]),
-    ];
-    const boxLabels = ['content', 'padding', 'border', 'margin', 'position'];
-    let previousBox: LitTemplate = nothing;
-    for (let i = 0; i < boxes.length; ++i) {
-      const name = boxes[i];
-      const display = style.get('display');
-      const position = style.get('position');
-      if (!display || !position) {
-        continue;
-      }
-      if (name === 'margin' && noMarginDisplayType.has(display)) {
-        continue;
-      }
-      if (name === 'padding' && noPaddingDisplayType.has(display)) {
-        continue;
-      }
-      if (name === 'position' && noPositionType.has(position)) {
-        continue;
-      }
-
-      const node = this.node();
-      const shouldHighlight = !node || highlightedMode === 'all' || name === highlightedMode;
-      const backgroundColor = boxColors[i].asString(Common.Color.Format.RGBA) || '';
-
-      const suffix = (name === 'border' ? '-width' : '');
-      // clang-format off
-      const box: LitTemplate = html`
-        <div
-            class="${name} ${shouldHighlight ? 'highlighted' : ''}"
-            style="background-color: ${shouldHighlight ? backgroundColor : ''}"
-            jslog=${VisualLogging.metricsBox().context(name).track({hover: true})}
-            @mouseover=${this.highlightDOMNode.bind(this, true, name === 'position' ? 'all' : name)}>
-        ${name === 'content' ? html`
-          <span jslog=${VisualLogging.value('width').track({
-                dblclick: true,
-                keydown: 'Enter|Escape|ArrowUp|ArrowDown|PageUp|PageDown',
-                change: true,
-              })}
-              @dblclick=${(e: Event) => this.startEditing(e.currentTarget, 'width', 'width', style)}
-              .innerText=${live(getContentAreaWidthPx(style))}>
-          </span>
-          <span> × </span>
-          <span jslog=${VisualLogging.value('height').track({
-                dblclick: true,
-                keydown: 'Enter|Escape|ArrowUp|ArrowDown|PageUp|PageDown',
-                change: true,
-              })}
-              @dblclick=${(e: Event) => this.startEditing(e.currentTarget, 'height', 'height', style)}
-              .innerText=${live(getContentAreaHeightPx(style))}>
-          </span>` : html`
-          <div class="label">${boxLabels[i]}</div>
-            ${createBoxPartElement.call(this, style, name, 'top', suffix)}
-            <br>
-            ${createBoxPartElement.call(this, style, name, 'left', suffix)}
-            ${previousBox}
-            ${createBoxPartElement.call(this, style, name, 'right', suffix)}
-            <br>
-            ${createBoxPartElement.call(this, style, name, 'bottom', suffix)}`}
-          </div>`;
-      // clang-format on
-
-      previousBox = box;
-    }
-    // clang-format off
-    render(html`
-      <div class="metrics" @mouseover=${this.highlightDOMNode.bind(this, false, 'all')}
-          @mouseleave=${this.highlightDOMNode.bind(this, false, 'all')}>
-        ${previousBox}
-      </div>`, this.contentElement);
-    // clang-format on
+    this.view(
+        {
+          style,
+          highlightedMode,
+          node: this.node(),
+          contentWidth: this.getContentAreaWidthPx(style),
+          contentHeight: this.getContentAreaHeightPx(style),
+          onHighlightNode: this.highlightDOMNode.bind(this),
+          onStartEditing: this.startEditing.bind(this),
+        },
+        undefined, this.contentElement);
     this.element.classList.remove('collapsed');
   }
 
-  startEditing(target: EventTarget|null, box: string, styleProperty: string, computedStyle: Map<string, string>): void {
-    if (!(target instanceof Element)) {
-      return;
-    }
-    const targetElement = target as Element;
+  startEditing(targetElement: Element, box: string, styleProperty: string, computedStyle: Map<string, string>): void {
     if (UI.UIUtils.isBeingEdited(targetElement)) {
       return;
     }

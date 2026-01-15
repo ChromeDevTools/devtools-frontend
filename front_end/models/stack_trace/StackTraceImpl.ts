@@ -31,7 +31,9 @@ export class StackTraceImpl<SyncFragmentT extends FragmentImpl|DebuggableFragmen
 }
 
 export class FragmentImpl implements StackTrace.StackTrace.Fragment {
-  readonly node: FrameNode;
+  static readonly EMPTY_FRAGMENT = new FragmentImpl();
+
+  readonly node?: FrameNode;
   readonly stackTraces = new Set<AnyStackTraceImpl>();
 
   /**
@@ -46,11 +48,15 @@ export class FragmentImpl implements StackTrace.StackTrace.Fragment {
     return node.fragment;
   }
 
-  private constructor(node: FrameNode) {
+  private constructor(node?: FrameNode) {
     this.node = node;
   }
 
   get frames(): FrameImpl[] {
+    if (!this.node) {
+      return [];
+    }
+
     const frames: FrameImpl[] = [];
 
     for (const node of this.node.getCallStack()) {
@@ -101,6 +107,10 @@ export class DebuggableFragmentImpl implements StackTrace.StackTrace.DebuggableF
   }
 
   get frames(): DebuggableFrameImpl[] {
+    if (!this.fragment.node) {
+      return [];
+    }
+
     const frames: DebuggableFrameImpl[] = [];
 
     let index = 0;

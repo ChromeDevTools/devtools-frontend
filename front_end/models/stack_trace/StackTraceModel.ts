@@ -77,7 +77,7 @@ export class StackTraceModel extends SDK.SDKModel.SDKModel<unknown> {
         // is re-translated as a side-effect.
         // We just need to remember the stack traces of the skipped over fragments, so we can send the
         // UPDATED event also to them.
-        if (fragment.node.children.length === 0) {
+        if (fragment.node?.children.length === 0) {
           translatePromises.push(this.#translateFragment(fragment, translateRawFrames));
         }
         stackTracesToUpdate = stackTracesToUpdate.union(fragment.stackTraces);
@@ -133,6 +133,10 @@ export class StackTraceModel extends SDK.SDKModel.SDKModel<unknown> {
   }
 
   async #createFragment(frames: RawFrame[], rawFramesToUIFrames: TranslateRawFrames): Promise<FragmentImpl> {
+    if (frames.length === 0) {
+      return FragmentImpl.EMPTY_FRAGMENT;
+    }
+
     const release = await this.#mutex.acquire();
     try {
       const node = this.#trie.insert(frames);
@@ -150,6 +154,10 @@ export class StackTraceModel extends SDK.SDKModel.SDKModel<unknown> {
   }
 
   async #translateFragment(fragment: FragmentImpl, rawFramesToUIFrames: TranslateRawFrames): Promise<void> {
+    if (!fragment.node) {
+      return;
+    }
+
     const rawFrames = fragment.node.getCallStack().map(node => node.rawFrame).toArray();
     const uiFrames = await rawFramesToUIFrames(rawFrames, this.target());
     console.assert(rawFrames.length === uiFrames.length, 'Broken rawFramesToUIFrames implementation');

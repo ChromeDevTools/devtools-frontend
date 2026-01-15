@@ -53,8 +53,9 @@ const userArgsBuilder =
         })
         .option('test-target', {
           describe: 'Which panel do you want to run the examples against?',
-          choices: ['elements', 'performance-main-thread', 'performance-insights', 'elements-multimodal', 'patching'] as
-              const,
+          choices: [
+            'elements', 'performance-main-thread', 'performance-insights', 'elements-multimodal', 'patching', 'network'
+          ] as const,
           demandOption: true,
         })
         .option('eval', {

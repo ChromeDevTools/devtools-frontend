@@ -101,7 +101,8 @@ export function convertRawOutputToEval(opts: RawToEvalOptions): EvalFileOutput {
                 request: {
                   prompt: request.current_message.parts[0].text,
                   functionCallResponse: request.current_message.parts[0].functionResponse?.name,
-                  availableFunctionNames: request.function_declarations.map(dec => dec.name),
+                  availableFunctionNames:
+                      request.function_declarations ? request.function_declarations.map(dec => dec.name) : [],
                 },
                 response: {
                   rpcGlobalId: aidaResponse.metadata.rcpGlobalId ?? '',

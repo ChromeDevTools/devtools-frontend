@@ -5,6 +5,7 @@
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import type * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {Directives, html, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -212,14 +213,16 @@ const DEFERRED_DEFAULT_VIEW: DeferredView = (input, _output, target: HTMLElement
 export class DeferredDOMNodeLink extends UI.Widget.Widget {
   #deferredNode: SDK.DOMModel.DeferredDOMNode|undefined = undefined;
   #options: Options|undefined = undefined;
+  #styleSheetId: Protocol.DOM.StyleSheetId|undefined = undefined;
   #view: DeferredView;
 
   constructor(
       element?: HTMLElement, deferredNode?: SDK.DOMModel.DeferredDOMNode, options?: Options,
-      view: DeferredView = DEFERRED_DEFAULT_VIEW) {
+      styleSheetId?: Protocol.DOM.StyleSheetId, view: DeferredView = DEFERRED_DEFAULT_VIEW) {
     super(element, {useShadowDom: true});
     this.element.classList.remove('vbox');
     this.#deferredNode = deferredNode;
+    this.#styleSheetId = styleSheetId;
     this.#options = options;
     this.#view = view;
     this.performUpdate();
@@ -230,6 +233,14 @@ export class DeferredDOMNodeLink extends UI.Widget.Widget {
       preventKeyboardFocus: this.#options?.preventKeyboardFocus,
       onClick: () => {
         this.#deferredNode?.resolve?.(node => {
+          if (node && this.#styleSheetId) {
+            for (const adoptedStyle of node.adoptedStyleSheetsForNode) {
+              if (adoptedStyle.id === this.#styleSheetId) {
+                void Common.Revealer.reveal(adoptedStyle);
+                return;
+              }
+            }
+          }
           void Common.Revealer.reveal(node);
           void node?.scrollIntoView();
         });

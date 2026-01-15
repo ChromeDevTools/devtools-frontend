@@ -9,11 +9,12 @@ import * as CodeHighlighter from '../../ui/components/code_highlighter/code_high
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
+import {PanelUtils} from '../utils/utils.js';
 
 export class AdoptedStyleSheetTreeElement extends UI.TreeOutline.TreeElement {
   private eventListener: Common.EventTarget.EventDescriptor|null = null;
 
-  constructor(private readonly adoptedStyleSheet: SDK.DOMModel.AdoptedStyleSheet) {
+  constructor(readonly adoptedStyleSheet: SDK.DOMModel.AdoptedStyleSheet) {
     super('');
     const header = adoptedStyleSheet.cssModel.styleSheetHeaderForId(adoptedStyleSheet.id);
     if (header) {
@@ -49,6 +50,10 @@ export class AdoptedStyleSheetTreeElement extends UI.TreeOutline.TreeElement {
       UI.UIUtils.createTextChild(documentElement, ')');
     }
     treeElement.appendChild(new AdoptedStyleSheetContentsTreeElement(header));
+  }
+
+  highlight(): void {
+    PanelUtils.highlightElement(this.listItemElement);
   }
 }
 

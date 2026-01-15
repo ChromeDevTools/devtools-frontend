@@ -882,7 +882,7 @@ export class DOMNode extends Common.ObjectWrapper.ObjectWrapper<DOMNodeEventType
   }
 
   private toAdoptedStyleSheets(ids: Protocol.DOM.StyleSheetId[]): AdoptedStyleSheet[] {
-    return ids.map(id => (new AdoptedStyleSheet(id, this.#domModel.cssModel())));
+    return ids.map(id => (new AdoptedStyleSheet(id, this)));
   }
 
   setAdoptedStyleSheets(ids: Protocol.DOM.StyleSheetId[]): void {
@@ -1280,7 +1280,11 @@ export class DOMDocument extends DOMNode {
 }
 
 export class AdoptedStyleSheet {
-  constructor(readonly id: Protocol.DOM.StyleSheetId, readonly cssModel: CSSModel) {
+  constructor(readonly id: Protocol.DOM.StyleSheetId, readonly parent: DOMNode) {
+  }
+
+  get cssModel(): CSSModel {
+    return this.parent.domModel().cssModel();
   }
 }
 

@@ -274,8 +274,12 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     this.performUpdate();
   }
 
-  selectDOMNode(node: SDK.DOMModel.DOMNode|null, focus?: boolean): void {
-    this.#viewOutput?.elementsTreeOutline?.selectDOMNode(node, focus);
+  selectDOMNode(node: SDK.DOMModel.DOMNode|SDK.DOMModel.AdoptedStyleSheet|null, focus?: boolean): void {
+    if (node instanceof SDK.DOMModel.AdoptedStyleSheet) {
+      this.#viewOutput?.elementsTreeOutline?.highlightAdoptedStyleSheet(node);
+    } else {
+      this.#viewOutput?.elementsTreeOutline?.selectDOMNode(node, focus);
+    }
   }
 
   highlightNodeAttribute(node: SDK.DOMModel.DOMNode, attribute: string): void {
@@ -908,6 +912,22 @@ export class ElementsTreeOutline extends
     // node as the one passed in.
     if (this.selectedDOMNodeInternal === node) {
       this.selectedNodeChanged(Boolean(focus));
+    }
+  }
+
+  highlightAdoptedStyleSheet(adoptedStyleSheet: SDK.DOMModel.AdoptedStyleSheet): void {
+    const parentNode = !this.includeRootDOMNode && adoptedStyleSheet.parent === this.rootDOMNode && this.rootDOMNode ?
+        this.rootElement() :
+        this.createTreeElementFor(adoptedStyleSheet.parent);
+    if (!parentNode) {
+      return;
+    }
+
+    for (const child of parentNode.children()) {
+      if (child instanceof AdoptedStyleSheetTreeElement && child.adoptedStyleSheet === adoptedStyleSheet) {
+        child.highlight();
+        return;
+      }
     }
   }
 

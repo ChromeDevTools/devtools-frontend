@@ -409,6 +409,16 @@ export class StylePropertiesSection {
         link.textContent = label;
         return link;
       }
+      if (rule && rule.style.styleSheetId && rule.treeScope) {
+        // Make link for adopted stylesheet.
+        const ownerNode = new SDK.DOMModel.DeferredDOMNode(rule.cssModelInternal.target(), rule.treeScope);
+        const link = document.createElement('devtools-widget') as
+            UI.Widget.WidgetElement<PanelsCommon.DOMLinkifier.DeferredDOMNodeLink>;
+        link.widgetConfig = UI.Widget.widgetConfig(
+            e => new PanelsCommon.DOMLinkifier.DeferredDOMNodeLink(e, ownerNode, undefined, rule.style.styleSheetId));
+        link.textContent = label;
+        return link;
+      }
       return null;
     }
 

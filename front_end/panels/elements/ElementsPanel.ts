@@ -795,7 +795,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     return this.#domTreeWidget.selectedDOMNode();
   }
 
-  selectDOMNode(node: SDK.DOMModel.DOMNode, focus?: boolean): void {
+  selectDOMNode(node: SDK.DOMModel.DOMNode|SDK.DOMModel.AdoptedStyleSheet, focus?: boolean): void {
     this.#domTreeWidget.selectDOMNode(node, focus);
   }
 
@@ -897,6 +897,18 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.inspectElementCompleted();
     }
     this.notFirstInspectElement = true;
+  }
+
+  async revealAndSelectAdoptedStyleSheet(nodeToReveal: SDK.DOMModel.AdoptedStyleSheet, opts?: RevealAndSelectNodeOpts):
+      Promise<void> {
+    const {showPanel = true, focusNode = false} = opts ?? {};
+    this.omitDefaultSelection = true;
+
+    if (showPanel) {
+      await UI.ViewManager.ViewManager.instance().showView('elements', false, !focus);
+    }
+    this.selectDOMNode(nodeToReveal, focusNode);
+    delete this.omitDefaultSelection;
   }
 
   private showUAShadowDOMChanged(): void {
@@ -1309,10 +1321,12 @@ export class ContextMenuProvider implements
   }
 }
 
-export class DOMNodeRevealer implements
-    Common.Revealer.Revealer<SDK.DOMModel.DOMNode|SDK.DOMModel.DeferredDOMNode|SDK.RemoteObject.RemoteObject> {
-  reveal(node: SDK.DOMModel.DOMNode|SDK.DOMModel.DeferredDOMNode|SDK.RemoteObject.RemoteObject, omitFocus?: boolean):
-      Promise<void> {
+export class DOMNodeRevealer implements Common.Revealer.Revealer<
+    SDK.DOMModel.DOMNode|SDK.DOMModel.DeferredDOMNode|SDK.RemoteObject.RemoteObject|SDK.DOMModel.AdoptedStyleSheet> {
+  reveal(
+      node: SDK.DOMModel.DOMNode|SDK.DOMModel.DeferredDOMNode|SDK.RemoteObject.RemoteObject|
+      SDK.DOMModel.AdoptedStyleSheet,
+      omitFocus?: boolean): Promise<void> {
     const panel = ElementsPanel.instance();
     panel.pendingNodeReveal = true;
 
@@ -1332,7 +1346,7 @@ export class DOMNodeRevealer implements
 
     function revealPromise(
         resolve: () => void, reject: (arg0: Platform.UserVisibleError.UserVisibleError) => void): void {
-      if (node instanceof SDK.DOMModel.DOMNode) {
+      if (node instanceof SDK.DOMModel.DOMNode || node instanceof SDK.DOMModel.AdoptedStyleSheet) {
         onNodeResolved((node));
       } else if (node instanceof SDK.DOMModel.DeferredDOMNode) {
         (node).resolve(checkDeferredDOMNodeThenReveal);
@@ -1346,14 +1360,15 @@ export class DOMNodeRevealer implements
         }
       }
 
-      function onNodeResolved(resolvedNode: SDK.DOMModel.DOMNode): void {
+      function onNodeResolved(resolvedNode: SDK.DOMModel.DOMNode|SDK.DOMModel.AdoptedStyleSheet): void {
         panel.pendingNodeReveal = false;
 
         // A detached node could still have a parent and ownerDocument
         // properties, which means stepping up through the hierarchy to ensure
         // that the root node is the document itself. Any break implies
         // detachment.
-        let currentNode: SDK.DOMModel.DOMNode = resolvedNode;
+        let currentNode: SDK.DOMModel.DOMNode =
+            resolvedNode instanceof SDK.DOMModel.AdoptedStyleSheet ? resolvedNode.parent : resolvedNode;
         while (currentNode.parentNode) {
           currentNode = currentNode.parentNode;
         }
@@ -1367,7 +1382,11 @@ export class DOMNodeRevealer implements
         }
 
         if (resolvedNode) {
-          void panel.revealAndSelectNode(resolvedNode, {showPanel: true, focusNode: !omitFocus}).then(resolve);
+          const opts: RevealAndSelectNodeOpts = {showPanel: true, focusNode: !omitFocus};
+          const promise = resolvedNode instanceof SDK.DOMModel.AdoptedStyleSheet ?
+              panel.revealAndSelectAdoptedStyleSheet(resolvedNode, opts) :
+              panel.revealAndSelectNode(resolvedNode, opts);
+          void promise.then(resolve);
           return;
         }
         const msg = i18nString(UIStrings.nodeCannotBeFoundInTheCurrent);

@@ -250,7 +250,8 @@ describeWithEnvironment('PageLoadMetricsHandler', function() {
 
     it('extracts all marker events from a trace correctly', () => {
       for (const metricName of Trace.Types.Events.MarkerName) {
-        if (metricName === 'largestContentfulPaint::CandidateForSoftNavigation') {
+        if (metricName === Trace.Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION ||
+            metricName === Trace.Types.Events.Name.SOFT_NAVIGATION_START) {
           continue;
         }
 

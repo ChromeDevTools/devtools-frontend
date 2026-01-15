@@ -312,6 +312,10 @@ const UIStrings = {
    */
   largestContentfulPaint: 'Largest Contentful Paint',
   /**
+   * @description Text in Timeline UIUtils of the Performance panel
+   */
+  softLargestContentfulPaint: 'Soft Largest Contentful Paint',
+  /**
    * @description Text for timestamps of items
    */
   timestamp: 'Timestamp',
@@ -880,7 +884,7 @@ export function maybeInitSylesMap(): EventStylesMap {
         true,
         ),
     [Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION]: new TimelineRecordStyle(
-        i18nString(UIStrings.largestContentfulPaint),
+        i18nString(UIStrings.softLargestContentfulPaint),
         defaultCategoryStyles.rendering,
         true,
         ),
@@ -1125,15 +1129,14 @@ export function markerDetailsForEvent(event: Types.Events.Event): {
   }
   if (Types.Events.isAnyLargestContentfulPaintCandidate(event)) {
     color = 'var(--sys-color-green)';
-    title = Handlers.ModelHandlers.PageLoadMetrics.MetricName.LCP;
+    title = Types.Events.isSoftLargestContentfulPaintCandidate(event) ?
+        Handlers.ModelHandlers.PageLoadMetrics.MetricName.SOFT_LCP :
+        Handlers.ModelHandlers.PageLoadMetrics.MetricName.LCP;
   }
-  if (Types.Events.isNavigationStart(event)) {
+  if (Types.Events.isNavigationStart(event) || Types.Events.isSoftNavigationStart(event)) {
     color = 'var(--color-text-primary)';
-    title = Handlers.ModelHandlers.PageLoadMetrics.MetricName.NAV;
-  }
-  if (Types.Events.isSoftNavigationStart(event)) {
-    color = 'var(--sys-color-blue)';
-    title = Handlers.ModelHandlers.PageLoadMetrics.MetricName.SOFT_NAV;
+    title = Types.Events.isSoftNavigationStart(event) ? Handlers.ModelHandlers.PageLoadMetrics.MetricName.SOFT_NAV :
+                                                        Handlers.ModelHandlers.PageLoadMetrics.MetricName.NAV;
   }
   if (Types.Events.isMarkDOMContent(event)) {
     color = 'var(--color-text-disabled)';

@@ -460,8 +460,9 @@ export const enum MetricName {
   CLS = 'CLS',
   // Navigation
   NAV = 'Nav',
-  // Soft Navigation (just "Nav" b/c space is limited in flame chart)
-  SOFT_NAV = 'Nav',
+  // Soft Navigation and Soft Metrics
+  SOFT_NAV = 'Nav*',
+  SOFT_LCP = 'LCP*',
   // Note: INP is handled in UserInteractionsHandler
 }
 

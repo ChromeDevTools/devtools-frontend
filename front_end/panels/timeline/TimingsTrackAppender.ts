@@ -162,6 +162,7 @@ export class TimingsTrackAppender implements TrackAppender {
 
   /**
    * Gets the style for a page load marker event.
+   * TODO(paulirish): Unify with trace/Styles.ts markerDetailsForEvent. Currently only color is read, the rest is ignored.
    */
   markerStyleForPageLoadEvent(markerEvent: Trace.Types.Events.PageLoadEvent): TimelineMarkerStyle {
     const tallMarkerDashStyle = [6, 4];

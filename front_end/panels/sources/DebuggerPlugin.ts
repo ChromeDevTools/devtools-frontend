@@ -479,7 +479,8 @@ export class DebuggerPlugin extends Plugin {
         contextMenu.debugSection().appendItem(
             i18nString(UIStrings.addBreakpoint),
             this.createNewBreakpoint.bind(
-                this, line, EMPTY_BREAKPOINT_CONDITION, /* enabled */ true, /* isLogpoint */ false),
+                this, line, EMPTY_BREAKPOINT_CONDITION,
+                /* enabled */ true, /* isLogpoint */ false),
             {jslogContext: 'add-breakpoint'});
         if (supportsConditionalBreakpoints) {
           contextMenu.debugSection().appendItem(i18nString(UIStrings.addConditionalBreakpoint), () => {
@@ -491,7 +492,8 @@ export class DebuggerPlugin extends Plugin {
           contextMenu.debugSection().appendItem(
               i18nString(UIStrings.neverPauseHere),
               this.createNewBreakpoint.bind(
-                  this, line, NEVER_PAUSE_HERE_CONDITION, /* enabled */ true, /* isLogpoint */ false),
+                  this, line, NEVER_PAUSE_HERE_CONDITION, /* enabled */ true,
+                  /* isLogpoint */ false),
               {jslogContext: 'never-pause-here'});
         }
       }
@@ -865,7 +867,12 @@ export class DebuggerPlugin extends Plugin {
     const isLogpointForDialog = breakpoint?.isLogpoint() ?? Boolean(isLogpoint);
     const decorationElement = document.createElement('div');
     const compartment = new CodeMirror.Compartment();
-    const dialog = new BreakpointEditDialog(line.number - 1, oldCondition, isLogpointForDialog, async result => {
+    const dialog = new BreakpointEditDialog();
+    dialog.editorLineNumber = line.number - 1;
+    dialog.oldCondition = oldCondition,
+    dialog.breakpointType = isLogpointForDialog ? SDK.DebuggerModel.BreakpointType.LOGPOINT :
+                                                  SDK.DebuggerModel.BreakpointType.CONDITIONAL_BREAKPOINT;
+    dialog.onFinish = async result => {
       this.activeBreakpointDialog = null;
       this.#activeBreakpointEditRequest = undefined;
       dialog.detach();
@@ -883,7 +890,7 @@ export class DebuggerPlugin extends Plugin {
       } else {
         await this.createNewBreakpoint(line, result.condition, /* enabled */ true, result.isLogpoint);
       }
-    });
+    };
     editor.dispatch({
       effects: CodeMirror.StateEffect.appendConfig.of(compartment.of(CodeMirror.EditorView.decorations.of(
           CodeMirror.Decoration.set([CodeMirror.Decoration
@@ -909,7 +916,7 @@ export class DebuggerPlugin extends Plugin {
               dialog.saveAndFinish();
               this.#scheduledFinishingActiveDialog = false;
             } else {
-              dialog.focusEditor();
+              dialog.focus();
             }
           }
         }, 200);
@@ -918,7 +925,7 @@ export class DebuggerPlugin extends Plugin {
 
     dialog.markAsExternallyManaged();
     dialog.show(decorationElement);
-    dialog.focusEditor();
+    dialog.focus();
     this.activeBreakpointDialog = dialog;
     this.#activeBreakpointEditRequest = breakpointEditRequest;
 
@@ -1341,7 +1348,8 @@ export class DebuggerPlugin extends Plugin {
       const line = this.editor.state.doc.lineAt(editorLocation);
       const uiLocation = this.transformer.editorLocationToUILocation(line.number - 1, editorLocation - line.from);
       void this.setBreakpoint(
-          uiLocation.lineNumber, uiLocation.columnNumber, EMPTY_BREAKPOINT_CONDITION, /* enabled */ true,
+          uiLocation.lineNumber, uiLocation.columnNumber, EMPTY_BREAKPOINT_CONDITION,
+          /* enabled */ true,
           /* isLogpoint */ false);
     }
   }

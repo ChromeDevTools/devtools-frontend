@@ -11,12 +11,13 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as BreakpointManager from '../../models/breakpoints/breakpoints.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
-import {createIcon} from '../../ui/kit/kit.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import {Directives, html, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import breakpointEditDialogStyles from './breakpointEditDialog.css.js';
 
+const {ref} = Directives;
 const {Direction} = TextEditor.TextEditorHistory;
 
 const UIStrings = {
@@ -73,191 +74,255 @@ export interface BreakpointEditDialogResult {
   isLogpoint: boolean;
 }
 
+interface ViewInput {
+  state: CodeMirror.EditorState;
+  breakpointType: SDK.DebuggerModel.BreakpointType.LOGPOINT|SDK.DebuggerModel.BreakpointType.CONDITIONAL_BREAKPOINT;
+  editorLineNumber: number;
+  onTypeChanged(breakpointType: SDK.DebuggerModel.BreakpointType): void;
+  saveAndFinish(): void;
+}
+interface ViewOutput {
+  editor: TextEditor.TextEditor.TextEditor|undefined;
+}
+type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
+export const DEFAULT_VIEW: View = (input, output, target) => {
+  const editorRef = (e: Element|undefined): void => {
+    output.editor = e as TextEditor.TextEditor.TextEditor;
+  };
+
+  const onTypeChanged = (event: Event): void => {
+    if (event.target instanceof HTMLSelectElement && event.target.selectedOptions.length === 1) {
+      input.onTypeChanged(event.target.selectedOptions.item(0)?.value as SDK.DebuggerModel.BreakpointType);
+    }
+    output.editor?.focus();
+  };
+
+  // clang-format off
+  render(html`
+    <style>${breakpointEditDialogStyles}</style>
+    <div class=dialog-header>
+      <devtools-toolbar class=source-frame-breakpoint-toolbar>Line ${input.editorLineNumber + 1}:
+        <select
+          class=type-selector
+          title=${input.breakpointType === SDK.DebuggerModel.BreakpointType.LOGPOINT
+            ? i18nString(UIStrings.logAMessageToConsoleDoNotBreak)
+            : i18nString(UIStrings.pauseOnlyWhenTheConditionIsTrue)}
+          aria-label=${i18nString(UIStrings.breakpointType)}
+          jslog=${VisualLogging.dropDown('type').track({change: true})}
+          @change=${onTypeChanged}>
+            <option value=${SDK.DebuggerModel.BreakpointType.REGULAR_BREAKPOINT}>
+              ${i18nString(UIStrings.breakpoint)}
+            </option>
+            <option
+              value=${SDK.DebuggerModel.BreakpointType.CONDITIONAL_BREAKPOINT}
+              .selected=${input.breakpointType === SDK.DebuggerModel.BreakpointType.CONDITIONAL_BREAKPOINT}>
+                ${i18nString(UIStrings.conditionalBreakpoint)}
+            </option>
+            <option
+              value=${SDK.DebuggerModel.BreakpointType.LOGPOINT}
+              .selected=${input.breakpointType === SDK.DebuggerModel.BreakpointType.LOGPOINT}>
+                ${i18nString(UIStrings.logpoint)}
+            </option>
+        </select>
+      </devtools-toolbar>
+      <devtools-icon
+        name=cross
+        title=${i18nString(UIStrings.closeDialog)}
+        jslog=${VisualLogging.close().track({click: true})}
+        @click=${input.saveAndFinish}>
+      </devtools-icon>
+    </div>
+    <div class=condition-editor jslog=${VisualLogging.textField().track({change: true})}>
+      <devtools-text-editor
+        ${ref(editorRef)}
+        autofocus
+        .state=${input.state}
+        @focus=${() => output.editor?.focus()}></devtools-text-editor>
+    </div>
+    <div class=link-wrapper>
+      <devtools-icon name=open-externally class=link-icon></devtools-icon>
+      <x-link class="link devtools-link" tabindex="0" href="https://goo.gle/devtools-loc"
+                                          jslog=${VisualLogging.link('learn-more')}>${
+                     i18nString(UIStrings.learnMoreOnBreakpointTypes)}</x-link>
+    </div>
+    `,
+      // clang-format on
+      target);
+};
+
 export class BreakpointEditDialog extends UI.Widget.Widget {
-  private readonly onFinish: (result: BreakpointEditDialogResult) => void;
-  private finished: boolean;
-  private editor: TextEditor.TextEditor.TextEditor;
-  private readonly typeSelector: UI.Toolbar.ToolbarComboBox;
-  private placeholderCompartment: CodeMirror.Compartment;
+  readonly #view: View;
+  readonly #history = new TextEditor.AutocompleteHistory.AutocompleteHistory(
+      Common.Settings.Settings.instance().createLocalSetting('breakpoint-condition-history', []));
+  #finished = false;
+  #editorLineNumber = 0;
+  #oldCondition = '';
+  #breakpointType: SDK.DebuggerModel.BreakpointType.LOGPOINT|SDK.DebuggerModel.BreakpointType.CONDITIONAL_BREAKPOINT =
+      SDK.DebuggerModel.BreakpointType.CONDITIONAL_BREAKPOINT;
+  #onFinish: (result: BreakpointEditDialogResult) => void = () => {};
+  #editor?: TextEditor.TextEditor.TextEditor;
+  #state?: CodeMirror.EditorState;
 
-  #history: TextEditor.AutocompleteHistory.AutocompleteHistory;
-  #editorHistory: TextEditor.TextEditorHistory.TextEditorHistory;
-
-  constructor(
-      editorLineNumber: number, oldCondition: string, isLogpoint: boolean,
-      onFinish: (result: BreakpointEditDialogResult) => void) {
+  constructor(target?: HTMLElement, view = DEFAULT_VIEW) {
     super({
       jslog: `${VisualLogging.dialog('edit-breakpoint')}`,
       useShadowDom: true,
+      delegatesFocus: true,
+      classes: ['sources-edit-breakpoint-dialog'],
     });
-    this.registerRequiredCSS(breakpointEditDialogStyles);
+    this.#view = view;
 
-    const editorConfig = [
-      CodeMirror.javascript.javascriptLanguage,
-      TextEditor.Config.baseConfiguration(oldCondition || ''),
-      TextEditor.Config.closeBrackets.instance(),
-      TextEditor.Config.autocompletion.instance(),
-      CodeMirror.EditorView.lineWrapping,
-      TextEditor.Config.showCompletionHint,
-      TextEditor.Config.conservativeCompletion,
-      CodeMirror.javascript.javascriptLanguage.data.of({
-        autocomplete: (context: CodeMirror.CompletionContext) => this.#editorHistory.historyCompletions(context),
-      }),
-      CodeMirror.autocompletion(),
-      TextEditor.JavaScript.argumentHints(),
-    ];
-
-    this.onFinish = onFinish;
-    this.finished = false;
     this.element.tabIndex = -1;
+  }
 
-    this.element.classList.add('sources-edit-breakpoint-dialog');
-    const header = this.contentElement.createChild('div', 'dialog-header');
-    const toolbar = header.createChild('devtools-toolbar', 'source-frame-breakpoint-toolbar');
-    toolbar.appendText(`Line ${editorLineNumber + 1}:`);
+  get editorLineNumber(): number {
+    return this.#editorLineNumber;
+  }
+  set editorLineNumber(editorLineNumber: number) {
+    this.#editorLineNumber = editorLineNumber;
+    this.requestUpdate();
+  }
+  get oldCondition(): string {
+    return this.#oldCondition;
+  }
+  set oldCondition(oldCondition: string) {
+    this.#state = undefined;
+    this.#oldCondition = oldCondition;
+    this.requestUpdate();
+  }
+  get breakpointType(): SDK.DebuggerModel.BreakpointType {
+    return this.#breakpointType;
+  }
+  set breakpointType(
+      breakpointType: SDK.DebuggerModel.BreakpointType.LOGPOINT|
+      SDK.DebuggerModel.BreakpointType.CONDITIONAL_BREAKPOINT) {
+    this.#breakpointType = breakpointType;
+    this.requestUpdate();
+  }
+  get onFinish(): (result: BreakpointEditDialogResult) => void {
+    return this.#onFinish;
+  }
+  set onFinish(onFinish: (result: BreakpointEditDialogResult) => void) {
+    this.#onFinish = onFinish;
+    this.requestUpdate();
+  }
 
-    this.typeSelector = new UI.Toolbar.ToolbarComboBox(
-        this.onTypeChanged.bind(this), i18nString(UIStrings.breakpointType), undefined, 'type');
-    this.typeSelector.createOption(
-        i18nString(UIStrings.breakpoint), SDK.DebuggerModel.BreakpointType.REGULAR_BREAKPOINT);
-    const conditionalOption = this.typeSelector.createOption(
-        i18nString(UIStrings.conditionalBreakpoint), SDK.DebuggerModel.BreakpointType.CONDITIONAL_BREAKPOINT);
-    const logpointOption =
-        this.typeSelector.createOption(i18nString(UIStrings.logpoint), SDK.DebuggerModel.BreakpointType.LOGPOINT);
-    this.typeSelector.select(isLogpoint ? logpointOption : conditionalOption);
-    toolbar.appendToolbarItem(this.typeSelector);
+  override performUpdate(): void {
+    const input: ViewInput = {
+      state: this.#getEditorState(),
+      breakpointType: this.#breakpointType,
+      editorLineNumber: this.#editorLineNumber,
+      onTypeChanged: type => this.#typeChanged(type),
+      saveAndFinish: () => this.saveAndFinish(),
+    };
+    const that = this;
+    const output = {
+      get editor() {
+        return that.#editor;
+      },
+      set editor(editor) {
+        that.#editor = editor;
+      }
+    };
+    this.#view(input, output, this.contentElement);
+  }
 
-    const content = oldCondition || '';
+  #getEditorState(): CodeMirror.EditorState {
+    if (this.#state) {
+      return this.#state;
+    }
+    const getPlaceholder = (): CodeMirror.Extension => {
+      if (this.#breakpointType === SDK.DebuggerModel.BreakpointType.CONDITIONAL_BREAKPOINT) {
+        return CodeMirror.placeholder(i18nString(UIStrings.expressionToCheckBeforePausingEg));
+      }
+      if (this.#breakpointType === SDK.DebuggerModel.BreakpointType.LOGPOINT) {
+        return CodeMirror.placeholder(i18nString(UIStrings.logMessageEgXIsX));
+      }
+      return [];
+    };
+
+    const history = (): TextEditor.TextEditorHistory.TextEditorHistory|undefined =>
+        this.#editor && new TextEditor.TextEditorHistory.TextEditorHistory(this.#editor, this.#history);
+    const autocomplete = (context: CodeMirror.CompletionContext): CodeMirror.CompletionResult|null =>
+        history()?.historyCompletions(context) ?? null;
+    const historyBack = (force: boolean): boolean => history()?.moveHistory(Direction.BACKWARD, force) ?? false;
+    const historyForward = (force: boolean): boolean => history()?.moveHistory(Direction.FORWARD, force) ?? false;
+
     const finishIfComplete = (view: CodeMirror.EditorView): boolean => {
       void TextEditor.JavaScript.isExpressionComplete(view.state.doc.toString()).then(complete => {
         if (complete) {
-          this.finishEditing(true, this.editor.state.doc.toString());
+          this.finishEditing(true, view.state.doc.toString());
         } else {
           CodeMirror.insertNewlineAndIndent(view);
         }
       });
       return true;
     };
+
     const keymap = [
-      {key: 'ArrowUp', run: () => this.#editorHistory.moveHistory(Direction.BACKWARD)},
-      {key: 'ArrowDown', run: () => this.#editorHistory.moveHistory(Direction.FORWARD)},
-      {mac: 'Ctrl-p', run: () => this.#editorHistory.moveHistory(Direction.BACKWARD, true)},
-      {mac: 'Ctrl-n', run: () => this.#editorHistory.moveHistory(Direction.FORWARD, true)},
-      {
-        key: 'Mod-Enter',
-        run: finishIfComplete,
-      },
-      {
-        key: 'Enter',
-        run: finishIfComplete,
-      },
-      {
-        key: 'Shift-Enter',
-        run: CodeMirror.insertNewlineAndIndent,
-      },
+      {key: 'ArrowUp', run: () => historyBack(false)},
+      {key: 'ArrowDown', run: () => historyForward(false)},
+      {mac: 'Ctrl-p', run: () => historyBack(true)},
+      {mac: 'Ctrl-n', run: () => historyForward(true)},
+      {key: 'Mod-Enter', run: finishIfComplete},
+      {key: 'Enter', run: finishIfComplete},
+      {key: 'Shift-Enter', run: CodeMirror.insertNewlineAndIndent},
       {
         key: 'Escape',
         run: () => {
           this.finishEditing(false, '');
           return true;
-        },
+        }
       },
     ];
 
-    this.placeholderCompartment = new CodeMirror.Compartment();
+    const editorConfig = [
+      CodeMirror.javascript.javascriptLanguage,
+      TextEditor.Config.baseConfiguration(this.oldCondition),
+      TextEditor.Config.closeBrackets.instance(),
+      TextEditor.Config.autocompletion.instance(),
+      CodeMirror.EditorView.lineWrapping,
+      TextEditor.Config.showCompletionHint,
+      TextEditor.Config.conservativeCompletion,
+      CodeMirror.javascript.javascriptLanguage.data.of({autocomplete}),
+      CodeMirror.autocompletion(),
+      TextEditor.JavaScript.argumentHints(),
+    ];
 
-    const editorWrapper = this.contentElement.appendChild(document.createElement('div'));
-    editorWrapper.classList.add('condition-editor');
-    editorWrapper.setAttribute('jslog', `${VisualLogging.textField().track({change: true})}`);
-
-    this.editor = new TextEditor.TextEditor.TextEditor(CodeMirror.EditorState.create({
-      doc: content,
-      selection: {anchor: 0, head: content.length},
+    this.#state = CodeMirror.EditorState.create({
+      doc: this.oldCondition,
+      selection: {anchor: 0, head: this.oldCondition.length},
       extensions: [
-        this.placeholderCompartment.of(this.getPlaceholder()),
+        new CodeMirror.Compartment().of(getPlaceholder()),
         CodeMirror.keymap.of(keymap),
         editorConfig,
       ],
-    }));
-    editorWrapper.appendChild(this.editor);
-
-    const closeIcon = createIcon('cross');
-    closeIcon.title = i18nString(UIStrings.closeDialog);
-    closeIcon.setAttribute('jslog', `${VisualLogging.close().track({click: true})}`);
-    closeIcon.onclick = () => this.finishEditing(true, this.editor.state.doc.toString());
-    header.appendChild(closeIcon);
-
-    this.#history = new TextEditor.AutocompleteHistory.AutocompleteHistory(
-        Common.Settings.Settings.instance().createLocalSetting('breakpoint-condition-history', []));
-    this.#editorHistory = new TextEditor.TextEditorHistory.TextEditorHistory(this.editor, this.#history);
-
-    const linkWrapper = this.contentElement.appendChild(document.createElement('div'));
-    linkWrapper.classList.add('link-wrapper');
-    const link = UI.Fragment.html`<x-link class="link devtools-link" tabindex="0" href="https://goo.gle/devtools-loc"
-                                          jslog="${VisualLogging.link('learn-more')}">${
-                     i18nString(UIStrings.learnMoreOnBreakpointTypes)}</x-link>` as UI.XLink.XLink;
-    const linkIcon = createIcon('open-externally', 'link-icon');
-    link.prepend(linkIcon);
-    linkWrapper.appendChild(link);
-
-    this.updateTooltip();
+    });
+    return this.#state;
   }
 
-  saveAndFinish(): void {
-    this.finishEditing(true, this.editor.state.doc.toString());
-  }
-
-  focusEditor(): void {
-    this.editor.editor.focus();
-  }
-
-  private onTypeChanged(): void {
-    if (this.breakpointType === SDK.DebuggerModel.BreakpointType.REGULAR_BREAKPOINT) {
+  #typeChanged(breakpointType: SDK.DebuggerModel.BreakpointType): void {
+    if (breakpointType === SDK.DebuggerModel.BreakpointType.REGULAR_BREAKPOINT) {
       this.finishEditing(true, '');
       return;
     }
-    this.focusEditor();
-    this.editor.dispatch({effects: this.placeholderCompartment.reconfigure(this.getPlaceholder())});
-    this.updateTooltip();
-  }
-
-  private get breakpointType(): string|null {
-    const option = this.typeSelector.selectedOption();
-    return option ? option.value : null;
-  }
-
-  private getPlaceholder(): CodeMirror.Extension {
-    const type = this.breakpointType;
-    if (type === SDK.DebuggerModel.BreakpointType.CONDITIONAL_BREAKPOINT) {
-      return CodeMirror.placeholder(i18nString(UIStrings.expressionToCheckBeforePausingEg));
-    }
-    if (type === SDK.DebuggerModel.BreakpointType.LOGPOINT) {
-      return CodeMirror.placeholder(i18nString(UIStrings.logMessageEgXIsX));
-    }
-    return [];
-  }
-
-  private updateTooltip(): void {
-    const type = this.breakpointType;
-    if (type === SDK.DebuggerModel.BreakpointType.CONDITIONAL_BREAKPOINT) {
-      UI.Tooltip.Tooltip.install((this.typeSelector.element), i18nString(UIStrings.pauseOnlyWhenTheConditionIsTrue));
-    } else if (type === SDK.DebuggerModel.BreakpointType.LOGPOINT) {
-      UI.Tooltip.Tooltip.install((this.typeSelector.element), i18nString(UIStrings.logAMessageToConsoleDoNotBreak));
-    }
+    this.breakpointType = breakpointType;
+    this.requestUpdate();
   }
 
   finishEditing(committed: boolean, condition: string): void {
-    if (this.finished) {
+    if (this.#finished) {
       return;
     }
-    this.finished = true;
-    this.editor.remove();
+    this.#finished = true;
     this.#history.pushHistoryItem(condition);
     const isLogpoint = this.breakpointType === SDK.DebuggerModel.BreakpointType.LOGPOINT;
     this.onFinish({committed, condition: condition as BreakpointManager.BreakpointManager.UserCondition, isLogpoint});
   }
 
-  get editorForTest(): TextEditor.TextEditor.TextEditor {
-    return this.editor;
+  saveAndFinish(): void {
+    if (this.#editor) {
+      this.finishEditing(true, this.#editor.state.doc.toString());
+    }
   }
 }

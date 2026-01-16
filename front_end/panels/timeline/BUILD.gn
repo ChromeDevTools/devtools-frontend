@@ -246,8 +246,11 @@ devtools_ui_module("unittests") {
     "../../core/sdk:bundle",
     "../../models/bindings:bundle",
     "../../models/trace:bundle",
+    "../../models/trace_source_maps_resolver:bundle",
     "../../models/workspace:bundle",
     "../../testing",
+    "../../ui/legacy/components/utils:bundle",
+    "../../ui/legacy/theme_support:bundle",
     "./components:bundle",
   ]
 }

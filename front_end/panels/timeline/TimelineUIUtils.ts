@@ -313,17 +313,9 @@ const UIStrings = {
    */
   idleCallbackRequested: 'Idle callback requested',
   /**
-   * @description Stack label in Timeline UIUtils of the Performance panel
-   */
-  recalculationForced: 'Recalculation forced',
-  /**
    * @description Call site stack label in Timeline UIUtils of the Performance panel
    */
   firstLayoutInvalidation: 'First layout invalidation',
-  /**
-   * @description Stack label in Timeline UIUtils of the Performance panel
-   */
-  layoutForced: 'Layout forced',
   /**
    * @description Label in front of CSS property (eg `opacity`) being animated or a CSS animation name (eg `layer-4-fade-in-out`)
    */
@@ -1725,20 +1717,8 @@ export class TimelineUIUtils {
       parsedTrace: Trace.TraceModel.ParsedTrace): Promise<void> {
     const {startTime} = Trace.Helpers.Timing.eventTimingsMilliSeconds(event);
     let initiatorStackLabel = i18nString(UIStrings.initiatorStackTrace);
-    let stackLabel = i18nString(UIStrings.functionStack);
-    const stackTraceForEvent = Trace.Extras.StackTraceForEvent.get(event, parsedTrace.data);
-    if (stackTraceForEvent?.callFrames.length || stackTraceForEvent?.description || stackTraceForEvent?.parent) {
-      contentHelper.addSection(i18nString(UIStrings.functionStack));
-      await contentHelper.createChildStackTraceElement(stackTraceForEvent);
-      // TODO(andoli): also build stack trace component for other events
-      // that have a stack trace using the StackTraceForEvent helper.
-    } else {
-      const stackTrace = Trace.Helpers.Trace.getZeroIndexedStackTraceInEventPayload(event);
-      if (stackTrace?.length) {
-        contentHelper.addSection(stackLabel);
-        await contentHelper.createChildStackTraceElement(TimelineUIUtils.stackTraceFromCallFrames(stackTrace));
-      }
-    }
+    await contentHelper.appendFunctionStackTraceSection(event, parsedTrace);
+
     switch (event.name) {
       case Trace.Types.Events.Name.TIMER_FIRE:
         initiatorStackLabel = i18nString(UIStrings.timerInstalled);
@@ -1751,11 +1731,9 @@ export class TimelineUIUtils {
         break;
       case Trace.Types.Events.Name.RECALC_STYLE:
         initiatorStackLabel = i18nString(UIStrings.firstInvalidated);
-        stackLabel = i18nString(UIStrings.recalculationForced);
         break;
       case Trace.Types.Events.Name.LAYOUT:
         initiatorStackLabel = i18nString(UIStrings.firstLayoutInvalidation);
-        stackLabel = i18nString(UIStrings.layoutForced);
         break;
     }
 
@@ -1768,8 +1746,9 @@ export class TimelineUIUtils {
       // and the time since the initiator (Pending For).
       const stackTrace = Trace.Helpers.Trace.getZeroIndexedStackTraceInEventPayload(initiator);
       if (stackTrace) {
-        contentHelper.addSection(initiatorStackLabel);
-        await contentHelper.createChildStackTraceElement(TimelineUIUtils.stackTraceFromCallFrames(stackTrace));
+        const traceElement =
+            await contentHelper.createChildStackTraceElement(TimelineUIUtils.stackTraceFromCallFrames(stackTrace));
+        contentHelper.appendSectionWithBodyIfExists(initiatorStackLabel, {body: traceElement});
       }
 
       const link = this.createEntryLink(initiator);
@@ -2414,6 +2393,39 @@ export class TimelineDetailsContentHelper {
     this.fragment.appendChild(this.element);
   }
 
+  /**
+   * Creates a new section, but only if the provided `body` element is present,
+   * otherwise it does nothing.
+   */
+  appendSectionWithBodyIfExists(title: string, options: {
+    body: HTMLElement|null,
+    swatchColor?: string,
+    event?: Trace.Types.Events.Event,
+  }): void {
+    if (!options.body) {
+      return;
+    }
+    this.addSection(title, options.swatchColor, options.event);
+    this.tableElement.appendChild(options.body);
+  }
+
+  /**
+   * Generates a stack trace for the given event. If there is no stack data,
+   * nothing is appended; you can safely call this without fearing that it will
+   * create an empty section.
+   */
+  async appendFunctionStackTraceSection(
+      event: Trace.Types.Events.Event,
+      parsedTrace: Trace.TraceModel.ParsedTrace,
+      ): Promise<void> {
+    const stackTraceForEvent = Trace.Extras.StackTraceForEvent.get(event, parsedTrace.data);
+    if (!stackTraceForEvent) {
+      return;
+    }
+    const traceElement = await this.createChildStackTraceElement(stackTraceForEvent);
+    this.appendSectionWithBodyIfExists(i18nString(UIStrings.functionStack), {body: traceElement});
+  }
+
   linkifier(): LegacyComponents.Linkifier.Linkifier|null {
     return this.#linkifier;
   }
@@ -2481,9 +2493,13 @@ export class TimelineDetailsContentHelper {
     this.appendElementRow(title, locationContent);
   }
 
-  async createChildStackTraceElement(runtimeStackTrace: Protocol.Runtime.StackTrace): Promise<void> {
+  /**
+   * Creates a stack trace element for the given trace, but checks if it
+   * contains any entries, and discards it if it's empty.
+   */
+  async createChildStackTraceElement(runtimeStackTrace: Protocol.Runtime.StackTrace): Promise<HTMLElement|null> {
     if (!this.#linkifier) {
-      return;
+      return null;
     }
 
     let callFrameContents;
@@ -2493,7 +2509,6 @@ export class TimelineDetailsContentHelper {
       callFrameContents = new LegacyComponents.JSPresentationUtils.StackTracePreviewContent(
           undefined, this.target ?? undefined, this.#linkifier, {tabStops: true, showColumnNumber: true});
       callFrameContents.stackTrace = stackTrace;
-      await callFrameContents.updateComplete;
     } else {
       // I _think_ this only happens during tests.
       // See "TimelineFlameChartView > shows the details for a selected main thread event".
@@ -2505,10 +2520,16 @@ export class TimelineDetailsContentHelper {
           {runtimeStackTrace, tabStops: true, showColumnNumber: true});
     }
 
-    const stackTraceElement =
-        this.tableElement.createChild('div', 'timeline-details-view-row timeline-details-stack-values');
+    await callFrameContents.updateComplete;
+    if (!callFrameContents.hasContent()) {
+      return null;
+    }
+
+    const stackTraceElement = document.createElement('div');
+    stackTraceElement.classList.add('timeline-details-view-row', 'timeline-details-stack-values');
     callFrameContents.markAsRoot();
     callFrameContents.show(stackTraceElement);
+    return stackTraceElement;
   }
 }
 

@@ -79,7 +79,6 @@ devtools_entrypoint("bundle") {
     # as the UI modules should only be used to actually build user interfaces,
     # and the business logic should never depend on the UI modules.
     ":*",
-    "../../../../panels/ai_assistance/*",
     "../../../../panels/application/*",
     "../../../../panels/layer_viewer/*",
     "../../../../panels/media/*",

@@ -61,9 +61,9 @@ export class InsightRenderer {
   renderInsightToWidgetElement(
       parsedTrace: Trace.TraceModel.ParsedTrace, insightSet: Trace.Insights.Types.InsightSet,
       model: Trace.Insights.Types.InsightModel, insightName: string,
-      options: Partial<Pick<
-          BaseInsightComponent<Trace.Insights.Types.InsightModel>,
-          'selected'|'agentFocus'|'fieldMetrics'|'isAIAssistanceContext'>>): InsightWidgetElement {
+      options: Partial<
+          Pick<BaseInsightComponent<Trace.Insights.Types.InsightModel>, 'selected'|'agentFocus'|'fieldMetrics'>>):
+      InsightWidgetElement {
     let widgetElement = this.#insightWidgetCache.get(model);
     if (!widgetElement) {
       widgetElement = document.createElement('devtools-widget') as InsightWidgetElement;
@@ -85,7 +85,6 @@ export class InsightRenderer {
       insightSetKey: insightSet.id,
       agentFocus: options.agentFocus ?? null,
       fieldMetrics: options.fieldMetrics ?? null,
-      isAIAssistanceContext: options.isAIAssistanceContext ?? false,
     });
 
     return widgetElement;

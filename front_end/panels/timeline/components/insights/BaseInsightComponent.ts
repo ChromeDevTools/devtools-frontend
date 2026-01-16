@@ -69,7 +69,6 @@ interface ViewInput {
   internalName: string;
   model: InsightModel;
   selected: boolean;
-  isAIAssistanceContext: boolean;
   showAskAI: boolean;
   estimatedSavingsString: string|null;
   estimatedSavingsAriaLabel: string|null;
@@ -88,7 +87,6 @@ const DEFAULT_VIEW: View = (input, output, target) => {
     selected,
     estimatedSavingsString,
     estimatedSavingsAriaLabel,
-    isAIAssistanceContext,
     showAskAI,
     dispatchInsightToggle,
     renderContent,
@@ -98,8 +96,7 @@ const DEFAULT_VIEW: View = (input, output, target) => {
 
   const containerClasses = Lit.Directives.classMap({
     insight: true,
-    closed: !selected || isAIAssistanceContext,
-    'ai-assistance-context': isAIAssistanceContext,
+    closed: !selected,
   });
 
   let ariaLabel = `${i18nString(UIStrings.viewDetails, {PH1: model.title})}`;
@@ -139,10 +136,6 @@ const DEFAULT_VIEW: View = (input, output, target) => {
   }
 
   function renderHoverIcon(): Lit.LitTemplate {
-    if (isAIAssistanceContext) {
-      return Lit.nothing;
-    }
-
     const containerClasses = Lit.Directives.classMap({
       'insight-hover-icon': true,
       active: selected,
@@ -205,10 +198,6 @@ export interface BaseInsightData {
 export abstract class BaseInsightComponent<T extends InsightModel> extends UI.Widget.Widget {
   #view: View;
   abstract internalName: string;
-
-  // Tracks if this component is rendered withing the AI assistance panel.
-  // Currently only relevant to GreenDev.
-  #isAIAssistanceContext = false;
   #selected = false;
   #model: T|null = null;
   #agentFocus: AIAssistance.AIContext.AgentFocus|null = null;
@@ -241,11 +230,6 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends UI.Wi
   // requirements to use AI.
   protected hasAskAiSupport(): boolean {
     return false;
-  }
-
-  set isAIAssistanceContext(isAIAssistanceContext: boolean) {
-    this.#isAIAssistanceContext = isAIAssistanceContext;
-    this.requestUpdate();
   }
 
   set selected(selected: boolean) {
@@ -408,7 +392,6 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends UI.Wi
       selected: this.#selected,
       estimatedSavingsString: this.getEstimatedSavingsString(),
       estimatedSavingsAriaLabel: this.#getEstimatedSavingsAriaLabel(),
-      isAIAssistanceContext: this.#isAIAssistanceContext,
       showAskAI: this.#canShowAskAI(),
       dispatchInsightToggle: () => this.#dispatchInsightToggle(),
       renderContent: () => this.renderContent(),
@@ -514,7 +497,7 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends UI.Wi
   }
 
   #canShowAskAI(): boolean {
-    if (this.#isAIAssistanceContext || !this.hasAskAiSupport()) {
+    if (!this.hasAskAiSupport()) {
       return false;
     }
 

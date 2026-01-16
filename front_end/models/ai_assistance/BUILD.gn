@@ -13,7 +13,6 @@ devtools_module("ai_assistance") {
     "AiConversation.ts",
     "AiHistoryStorage.ts",
     "AiUtils.ts",
-    "ArtifactsManager.ts",
     "BuiltInAi.ts",
     "ChangeManager.ts",
     "ConversationHandler.ts",

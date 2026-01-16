@@ -59,6 +59,7 @@ interface FunctionArrayParam extends BaseFunctionParam {
 export interface FunctionObjectParam<T extends string | number | symbol = string> extends BaseFunctionParam {
     type: ParametersTypes.OBJECT;
     properties: Record<T, FunctionPrimitiveParams | FunctionArrayParam>;
+    required: string[];
 }
 /**
  * More about function declaration can be read at

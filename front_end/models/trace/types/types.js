@@ -279,6 +279,7 @@ __export(TraceEvents_exports, {
   isScrollLayer: () => isScrollLayer,
   isSelectorStats: () => isSelectorStats,
   isSetLayerId: () => isSetLayerId,
+  isSoftLargestContentfulPaintCandidate: () => isSoftLargestContentfulPaintCandidate,
   isSoftNavigationStart: () => isSoftNavigationStart,
   isStyleInvalidatorInvalidationTracking: () => isStyleInvalidatorInvalidationTracking,
   isStyleRecalcInvalidationTracking: () => isStyleRecalcInvalidationTracking,
@@ -365,7 +366,9 @@ var MarkerName = [
   "firstPaint",
   "firstContentfulPaint",
   "largestContentfulPaint::Candidate",
-  "largestContentfulPaint::CandidateForSoftNavigation"
+  "largestContentfulPaint::CandidateForSoftNavigation",
+  "navigationStart",
+  "SoftNavigationStart"
 ];
 function isMarkerEvent(event) {
   if (event.ph === "I" || "n") {
@@ -602,6 +605,9 @@ function isFirstContentfulPaint(event) {
 }
 function isAnyLargestContentfulPaintCandidate(event) {
   return event.name === "largestContentfulPaint::Candidate" || event.name === "largestContentfulPaint::CandidateForSoftNavigation";
+}
+function isSoftLargestContentfulPaintCandidate(event) {
+  return event.name === "largestContentfulPaint::CandidateForSoftNavigation";
 }
 function isLargestImagePaintCandidate(event) {
   return event.name === "LargestImagePaint::Candidate";

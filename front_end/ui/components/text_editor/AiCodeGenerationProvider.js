@@ -26,7 +26,9 @@ const aiCodeGenerationTeaserModeState = CodeMirror.StateField.define({
 });
 export class AiCodeGenerationProvider {
     #devtoolsLocale;
-    #aiCodeCompletionSetting = Common.Settings.Settings.instance().createSetting('ai-code-completion-enabled', false);
+    // 'ai-code-completion-enabled' setting controls both AI code completion and AI code generation.
+    // Since this provider deals with code generation, the field has been named `#aiCodeGenerationEnabledSetting`.
+    #aiCodeGenerationEnabledSetting = Common.Settings.Settings.instance().createSetting('ai-code-completion-enabled', false);
     #generationTeaserCompartment = new CodeMirror.Compartment();
     #generationTeaser;
     #editor;
@@ -64,11 +66,13 @@ export class AiCodeGenerationProvider {
     dispose() {
         this.#controller.abort();
         this.#cleanupAiCodeGeneration();
+        this.#aiCodeGenerationEnabledSetting.removeChangeListener(this.#boundOnUpdateAiCodeGenerationState);
+        Host.AidaClient.HostConfigTracker.instance().removeEventListener("aidaAvailabilityChanged" /* Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED */, this.#boundOnUpdateAiCodeGenerationState);
     }
     editorInitialized(editor) {
         this.#editor = editor;
         Host.AidaClient.HostConfigTracker.instance().addEventListener("aidaAvailabilityChanged" /* Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED */, this.#boundOnUpdateAiCodeGenerationState);
-        this.#aiCodeCompletionSetting.addChangeListener(this.#boundOnUpdateAiCodeGenerationState);
+        this.#aiCodeGenerationEnabledSetting.addChangeListener(this.#boundOnUpdateAiCodeGenerationState);
         void this.#updateAiCodeGenerationState();
     }
     #setupAiCodeGeneration() {
@@ -92,7 +96,7 @@ export class AiCodeGenerationProvider {
     async #updateAiCodeGenerationState() {
         const aidaAvailability = await Host.AidaClient.AidaClient.checkAccessPreconditions();
         const isAvailable = aidaAvailability === "available" /* Host.AidaClient.AidaAccessPreconditions.AVAILABLE */;
-        const isEnabled = this.#aiCodeCompletionSetting.get();
+        const isEnabled = this.#aiCodeGenerationEnabledSetting.get();
         if (isAvailable && isEnabled) {
             this.#setupAiCodeGeneration();
         }
@@ -261,6 +265,10 @@ export class AiCodeGenerationProvider {
             return;
         }
         catch (e) {
+            if (e instanceof Host.DispatchHttpRequestClient.DispatchHttpRequestError &&
+                e.type === Host.DispatchHttpRequestClient.ErrorType.ABORT) {
+                return;
+            }
             AiCodeGeneration.debugLog('Error while fetching code generation suggestions from AIDA', e);
             this.#aiCodeGenerationConfig?.onResponseReceived();
             Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiCodeGenerationError);
@@ -291,9 +299,10 @@ function aiCodeGenerationTeaserExtension(teaser) {
             const cursorPosition = this.#view.state.selection.main.head;
             const line = this.#view.state.doc.lineAt(cursorPosition);
             const isEmptyLine = line.length === 0;
+            const canShowDiscoveryState = UI.UIUtils.PromotionManager.instance().canShowPromotion(PanelCommon.AiCodeGenerationTeaser.PROMOTION_ID);
             const isComment = Boolean(AiCodeGenerationParser.extractCommentText(this.#view.state, cursorPosition));
             const isCursorAtEndOfLine = cursorPosition >= line.to;
-            if ((isEmptyLine) || (isComment && isCursorAtEndOfLine)) {
+            if ((isEmptyLine && canShowDiscoveryState) || (isComment && isCursorAtEndOfLine)) {
                 return CodeMirror.Decoration.set([
                     CodeMirror.Decoration.widget({ widget: new AccessiblePlaceholder(teaser), side: 1 }).range(cursorPosition),
                 ]);

@@ -62,7 +62,7 @@ const UIStringsNotTranslate = {
     learnMoreAboutHowYourDataIsBeingUsed: 'Learn more about how your data is being used',
 };
 const lockedString = i18n.i18n.lockedString;
-const PROMOTION_ID = 'ai-code-generation';
+export const PROMOTION_ID = 'ai-code-generation';
 export var AiCodeGenerationTeaserDisplayState;
 (function (AiCodeGenerationTeaserDisplayState) {
     AiCodeGenerationTeaserDisplayState["TRIGGER"] = "trigger";

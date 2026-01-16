@@ -567,7 +567,8 @@ var AiCodeGenerationTeaser_exports = {};
 __export(AiCodeGenerationTeaser_exports, {
   AiCodeGenerationTeaser: () => AiCodeGenerationTeaser,
   AiCodeGenerationTeaserDisplayState: () => AiCodeGenerationTeaserDisplayState,
-  DEFAULT_VIEW: () => DEFAULT_VIEW2
+  DEFAULT_VIEW: () => DEFAULT_VIEW2,
+  PROMOTION_ID: () => PROMOTION_ID2
 });
 import "./../../ui/components/tooltips/tooltips.js";
 import * as Host2 from "./../../core/host/host.js";

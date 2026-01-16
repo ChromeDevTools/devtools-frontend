@@ -128,12 +128,12 @@ export class ExperimentsSupport {
         }
         return result;
     }
-    register(experimentName, experimentTitle, unstable, docLink, feedbackLink) {
+    register(experimentName, experimentTitle, docLink, feedbackLink) {
         if (this.#experimentNames.has(experimentName)) {
             throw new Error(`Duplicate registration of experiment '${experimentName}'`);
         }
         this.#experimentNames.add(experimentName);
-        this.#experiments.push(new Experiment(this, experimentName, experimentTitle, Boolean(unstable), docLink ?? Platform.DevToolsPath.EmptyUrlString, feedbackLink ?? Platform.DevToolsPath.EmptyUrlString));
+        this.#experiments.push(new Experiment(this, experimentName, experimentTitle, docLink ?? Platform.DevToolsPath.EmptyUrlString, feedbackLink ?? Platform.DevToolsPath.EmptyUrlString));
     }
     isEnabled(experimentName) {
         this.checkExperiment(experimentName);
@@ -238,14 +238,12 @@ class ExperimentStorage {
 export class Experiment {
     name;
     title;
-    unstable;
     docLink;
     feedbackLink;
     #experiments;
-    constructor(experiments, name, title, unstable, docLink, feedbackLink) {
+    constructor(experiments, name, title, docLink, feedbackLink) {
         this.name = name;
         this.title = title;
-        this.unstable = unstable;
         this.docLink = docLink;
         this.feedbackLink = feedbackLink;
         this.#experiments = experiments;

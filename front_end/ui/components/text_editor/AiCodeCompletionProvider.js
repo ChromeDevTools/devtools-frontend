@@ -5,11 +5,13 @@ import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as AiCodeCompletion from '../../../models/ai_code_completion/ai_code_completion.js';
+import * as AiCodeGeneration from '../../../models/ai_code_generation/ai_code_generation.js';
 import * as PanelCommon from '../../../panels/common/common.js';
 import * as CodeMirror from '../../../third_party/codemirror.next/codemirror.next.js';
 import * as UI from '../../legacy/legacy.js';
 import * as VisualLogging from '../../visual_logging/visual_logging.js';
 import { AccessiblePlaceholder } from './AccessiblePlaceholder.js';
+import { AiCodeGenerationProvider } from './AiCodeGenerationProvider.js';
 import { acceptAiAutoCompleteSuggestion, aiAutoCompleteSuggestion, aiAutoCompleteSuggestionState, hasActiveAiSuggestion, setAiAutoCompleteSuggestion, showCompletionHint, } from './config.js';
 export var AiCodeCompletionTeaserMode;
 (function (AiCodeCompletionTeaserMode) {
@@ -38,6 +40,8 @@ export class AiCodeCompletionProvider {
     #editor;
     #aiCodeCompletionCitations = [];
     #aiCodeCompletionConfig;
+    #aiCodeGenerationConfig;
+    #aiCodeGenerationProvider;
     #boundOnUpdateAiCodeCompletionState = this.#updateAiCodeCompletionState.bind(this);
     constructor(aiCodeCompletionConfig) {
         const devtoolsLocale = i18n.DevToolsLocale.DevToolsLocale.instance();
@@ -45,12 +49,24 @@ export class AiCodeCompletionProvider {
             throw new Error('AI code completion feature is not enabled.');
         }
         this.#aiCodeCompletionConfig = aiCodeCompletionConfig;
+        if (AiCodeGeneration.AiCodeGeneration.AiCodeGeneration.isAiCodeGenerationEnabled(devtoolsLocale.locale)) {
+            this.#aiCodeGenerationConfig = {
+                generationContext: {
+                    inferenceLanguage: this.#aiCodeCompletionConfig.completionContext.inferenceLanguage,
+                },
+                onSuggestionAccepted: this.#aiCodeCompletionConfig.onSuggestionAccepted.bind(this),
+                onRequestTriggered: this.#aiCodeCompletionConfig.onRequestTriggered.bind(this),
+                onResponseReceived: this.#aiCodeCompletionConfig.onResponseReceived.bind(this),
+                panel: this.#aiCodeCompletionConfig.panel,
+            };
+            this.#aiCodeGenerationProvider = AiCodeGenerationProvider.createInstance(this.#aiCodeGenerationConfig);
+        }
     }
     static createInstance(aiCodeCompletionConfig) {
         return new AiCodeCompletionProvider(aiCodeCompletionConfig);
     }
     extension() {
-        return [
+        const extensions = [
             CodeMirror.EditorView.updateListener.of(update => this.#triggerAiCodeCompletion(update)),
             this.#teaserCompartment.of([]),
             aiAutoCompleteSuggestion,
@@ -58,6 +74,10 @@ export class AiCodeCompletionProvider {
             aiAutoCompleteSuggestionState,
             CodeMirror.Prec.highest(CodeMirror.keymap.of(this.#editorKeymap())),
         ];
+        if (this.#aiCodeGenerationProvider) {
+            extensions.push(this.#aiCodeGenerationProvider.extension());
+        }
+        return extensions;
     }
     dispose() {
         this.#detachTeaser();
@@ -65,6 +85,7 @@ export class AiCodeCompletionProvider {
         this.#aiCodeCompletionSetting.removeChangeListener(this.#boundOnUpdateAiCodeCompletionState);
         Host.AidaClient.HostConfigTracker.instance().removeEventListener("aidaAvailabilityChanged" /* Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED */, this.#boundOnUpdateAiCodeCompletionState);
         this.#cleanupAiCodeCompletion();
+        this.#aiCodeGenerationProvider?.dispose();
     }
     editorInitialized(editor) {
         this.#editor = editor;
@@ -77,6 +98,7 @@ export class AiCodeCompletionProvider {
         Host.AidaClient.HostConfigTracker.instance().addEventListener("aidaAvailabilityChanged" /* Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED */, this.#boundOnUpdateAiCodeCompletionState);
         this.#aiCodeCompletionSetting.addChangeListener(this.#boundOnUpdateAiCodeCompletionState);
         void this.#updateAiCodeCompletionState();
+        this.#aiCodeGenerationProvider?.editorInitialized(editor);
     }
     clearCache() {
         this.#aiCodeCompletion?.clearCachedRequest();

@@ -2528,6 +2528,9 @@
   "models/trace/Styles.ts | signReply": {
     "message": "Sign reply"
   },
+  "models/trace/Styles.ts | softLargestContentfulPaint": {
+    "message": "Soft Largest Contentful Paint"
+  },
   "models/trace/Styles.ts | streamingCompileTask": {
     "message": "Streaming compile task"
   },
@@ -13877,14 +13880,8 @@
   "panels/settings/SettingsScreen.ts | shortcuts": {
     "message": "Shortcuts"
   },
-  "panels/settings/SettingsScreen.ts | theseExperimentsAreParticularly": {
-    "message": "Warning: These experiments are particularly unstable. Enable at your own risk."
-  },
   "panels/settings/SettingsScreen.ts | theseExperimentsCouldBeUnstable": {
     "message": "Warning: These experiments could be unstable or unreliable."
-  },
-  "panels/settings/SettingsScreen.ts | unstableExperiments": {
-    "message": "Unstable experiments"
   },
   "panels/settings/WorkspaceSettingsTab.ts | addFolder": {
     "message": "Add folder"

@@ -4,7 +4,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import { type ComputedStyleModel, type CSSModelChangedEvent } from './ComputedStyleModel.js';
 export declare class ElementsSidebarPane extends UI.Widget.VBox {
     protected computedStyleModelInternal: ComputedStyleModel;
-    constructor(computedStyleModel: ComputedStyleModel, delegatesFocus?: boolean);
+    constructor(computedStyleModel: ComputedStyleModel, options?: UI.Widget.WidgetOptions);
     node(): SDK.DOMModel.DOMNode | null;
     cssModel(): SDK.CSSModel.CSSModel | null;
     computedStyleModel(): ComputedStyleModel;

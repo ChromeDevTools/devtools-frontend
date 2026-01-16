@@ -127,6 +127,7 @@ export class TimingsTrackAppender {
     */
     /**
      * Gets the style for a page load marker event.
+     * TODO(paulirish): Unify with trace/Styles.ts markerDetailsForEvent. Currently only color is read, the rest is ignored.
      */
     markerStyleForPageLoadEvent(markerEvent) {
         const tallMarkerDashStyle = [6, 4];

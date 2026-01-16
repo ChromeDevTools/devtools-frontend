@@ -392,6 +392,9 @@ export const generatedPropertyValues: {
     "flood-color": {
         values: string[];
     };
+    "flow-tolerance": {
+        values: string[];
+    };
     "font-feature-settings": {
         values: string[];
     };
@@ -522,9 +525,6 @@ export const generatedPropertyValues: {
         values: string[];
     };
     isolation: {
-        values: string[];
-    };
-    "item-tolerance": {
         values: string[];
     };
     left: {

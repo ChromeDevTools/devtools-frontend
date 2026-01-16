@@ -770,15 +770,19 @@ export class TimelineUIUtils {
         switch (event.name) {
             case "largestContentfulPaint::Candidate" /* Trace.Types.Events.Name.MARK_LCP_CANDIDATE */:
                 link = 'https://web.dev/lcp/';
-                name = 'largest contentful paint';
+                name = 'Largest Contentful Paint';
                 break;
             case "largestContentfulPaint::CandidateForSoftNavigation" /* Trace.Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION */:
                 link = 'https://developer.chrome.com/docs/web-platform/soft-navigations-experiment';
-                name = 'largest contentful paint (soft navigation)';
+                name = 'Soft Largest Contentful Paint';
+                break;
+            case "SoftNavigationStart" /* Trace.Types.Events.Name.SOFT_NAVIGATION_START */:
+                link = 'https://developer.chrome.com/docs/web-platform/soft-navigations-experiment';
+                name = 'Soft Navigations';
                 break;
             case "firstContentfulPaint" /* Trace.Types.Events.Name.MARK_FCP */:
                 link = 'https://web.dev/first-contentful-paint/';
-                name = 'first contentful paint';
+                name = 'First Contentful Paint';
                 break;
             default:
                 break;
@@ -920,6 +924,7 @@ export class TimelineUIUtils {
             if (url) {
                 contentHelper.appendElementRow(i18nString(UIStrings.url), LegacyComponents.Linkifier.Linkifier.linkifyURL(url));
             }
+            contentHelper.appendElementRow(i18nString(UIStrings.details), TimelineUIUtils.buildDetailsNodeForMarkerEvents(event));
         }
         if (Trace.Types.Events.isV8Compile(event)) {
             url = event.args.data?.url;

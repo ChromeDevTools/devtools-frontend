@@ -529,7 +529,7 @@ export interface Mark extends Event {
     ph: Phase.MARK;
 }
 export interface NavigationStart extends Mark {
-    name: 'navigationStart';
+    name: Name.NAVIGATION_START;
     args: Args & {
         frame: string;
         data?: ArgsData & {
@@ -582,7 +582,7 @@ export interface FirstContentfulPaint extends Mark {
     };
 }
 export interface FirstPaint extends Mark {
-    name: 'firstPaint';
+    name: Name.MARK_FIRST_PAINT;
     args: Args & {
         frame: string;
         data?: ArgsData & {
@@ -591,7 +591,7 @@ export interface FirstPaint extends Mark {
     };
 }
 export type PageLoadEvent = FirstContentfulPaint | MarkDOMContent | InteractiveTime | AnyLargestContentfulPaintCandidate | LayoutShift | FirstPaint | MarkLoad | NavigationStart | SoftNavigationStart;
-export declare const MarkerName: readonly ["MarkDOMContent", "MarkLoad", "firstPaint", "firstContentfulPaint", "largestContentfulPaint::Candidate", "largestContentfulPaint::CandidateForSoftNavigation"];
+export declare const MarkerName: readonly [Name.MARK_DOM_CONTENT, Name.MARK_LOAD, Name.MARK_FIRST_PAINT, Name.MARK_FCP, Name.MARK_LCP_CANDIDATE, Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION, Name.NAVIGATION_START, Name.SOFT_NAVIGATION_START];
 export interface MarkerEvent extends Event {
     name: typeof MarkerName[number];
 }
@@ -750,7 +750,7 @@ export interface CommitLoad extends Instant {
     };
 }
 export interface MarkDOMContent extends Instant {
-    name: 'MarkDOMContent';
+    name: Name.MARK_DOM_CONTENT;
     args: Args & {
         data?: ArgsData & {
             frame: string;
@@ -761,7 +761,7 @@ export interface MarkDOMContent extends Instant {
     };
 }
 export interface MarkLoad extends Instant {
-    name: 'MarkLoad';
+    name: Name.MARK_LOAD;
     args: Args & {
         data?: ArgsData & {
             frame: string;
@@ -1703,6 +1703,7 @@ export declare function isLayoutShift(event: Event): event is LayoutShift;
 export declare function isLayoutInvalidationTracking(event: Event): event is LayoutInvalidationTracking;
 export declare function isFirstContentfulPaint(event: Event): event is FirstContentfulPaint;
 export declare function isAnyLargestContentfulPaintCandidate(event: Event): event is AnyLargestContentfulPaintCandidate;
+export declare function isSoftLargestContentfulPaintCandidate(event: Event): event is AnyLargestContentfulPaintCandidate;
 export declare function isLargestImagePaintCandidate(event: Event): event is LargestImagePaintCandidate;
 export declare function isLargestTextPaintCandidate(event: Event): event is LargestTextPaintCandidate;
 export declare function isMarkLoad(event: Event): event is MarkLoad;

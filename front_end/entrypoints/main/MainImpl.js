@@ -293,30 +293,30 @@ export class MainImpl {
     }
     #initializeExperiments() {
         Root.Runtime.experiments.register('capture-node-creation-stacks', 'Capture node creation stacks');
-        Root.Runtime.experiments.register('live-heap-profile', 'Live heap profile', true);
-        Root.Runtime.experiments.register('protocol-monitor', 'Protocol Monitor', undefined, 'https://developer.chrome.com/blog/new-in-devtools-92/#protocol-monitor');
-        Root.Runtime.experiments.register('sampling-heap-profiler-timeline', 'Sampling heap profiler timeline', true);
+        Root.Runtime.experiments.register('live-heap-profile', 'Live heap profile');
+        Root.Runtime.experiments.register('protocol-monitor', 'Protocol Monitor', 'https://developer.chrome.com/blog/new-in-devtools-92/#protocol-monitor');
+        Root.Runtime.experiments.register('sampling-heap-profiler-timeline', 'Sampling heap profiler timeline');
         Root.Runtime.experiments.register('show-option-tp-expose-internals-in-heap-snapshot', 'Show option to expose internals in heap snapshots');
         // Timeline
-        Root.Runtime.experiments.register('timeline-invalidation-tracking', 'Performance panel: invalidation tracking', true);
-        Root.Runtime.experiments.register('timeline-show-all-events', 'Performance panel: show all events', true);
-        Root.Runtime.experiments.register('timeline-v8-runtime-call-stats', 'Performance panel: V8 runtime call stats', true);
-        Root.Runtime.experiments.register("timeline-debug-mode" /* Root.Runtime.ExperimentName.TIMELINE_DEBUG_MODE */, 'Performance panel: Enable debug mode (trace event details, etc)', true);
+        Root.Runtime.experiments.register('timeline-invalidation-tracking', 'Performance panel: invalidation tracking');
+        Root.Runtime.experiments.register('timeline-show-all-events', 'Performance panel: show all events');
+        Root.Runtime.experiments.register('timeline-v8-runtime-call-stats', 'Performance panel: V8 runtime call stats');
+        Root.Runtime.experiments.register("timeline-debug-mode" /* Root.Runtime.ExperimentName.TIMELINE_DEBUG_MODE */, 'Performance panel: debug mode (trace event details, etc)');
         // Debugging
-        Root.Runtime.experiments.register('instrumentation-breakpoints', 'Enable instrumentation breakpoints', true);
-        Root.Runtime.experiments.register('use-source-map-scopes', 'Use scope information from source maps', true);
+        Root.Runtime.experiments.register('instrumentation-breakpoints', 'Instrumentation breakpoints');
+        Root.Runtime.experiments.register('use-source-map-scopes', 'Use scope information from source maps');
         // Advanced Perceptual Contrast Algorithm.
-        Root.Runtime.experiments.register('apca', 'Enable new Advanced Perceptual Contrast Algorithm (APCA) replacing previous contrast ratio and AA/AAA guidelines', undefined, 'https://developer.chrome.com/blog/new-in-devtools-89/#apca');
+        Root.Runtime.experiments.register('apca', 'Advanced Perceptual Contrast Algorithm (APCA) replacing previous contrast ratio and AA/AAA guidelines', 'https://developer.chrome.com/blog/new-in-devtools-89/#apca');
         // Full Accessibility Tree
-        Root.Runtime.experiments.register('full-accessibility-tree', 'Enable full accessibility tree view in the Elements panel', undefined, 'https://developer.chrome.com/blog/new-in-devtools-90/#accessibility-tree', 'https://g.co/devtools/a11y-tree-feedback');
+        Root.Runtime.experiments.register('full-accessibility-tree', 'Full accessibility tree view in the Elements panel', 'https://developer.chrome.com/blog/new-in-devtools-90/#accessibility-tree', 'https://g.co/devtools/a11y-tree-feedback');
         // Font Editor
-        Root.Runtime.experiments.register('font-editor', 'Enable new font editor within the Styles tab', undefined, 'https://developer.chrome.com/blog/new-in-devtools-89/#font');
+        Root.Runtime.experiments.register('font-editor', 'New font editor in the Styles tab', 'https://developer.chrome.com/blog/new-in-devtools-89/#font');
         // Contrast issues reported via the Issues panel.
-        Root.Runtime.experiments.register('contrast-issues', 'Enable automatic contrast issue reporting via the Issues panel', undefined, 'https://developer.chrome.com/blog/new-in-devtools-90/#low-contrast');
+        Root.Runtime.experiments.register('contrast-issues', 'Automatic contrast issue reporting via the Issues panel', 'https://developer.chrome.com/blog/new-in-devtools-90/#low-contrast');
         // New cookie features.
-        Root.Runtime.experiments.register('experimental-cookie-features', 'Enable experimental cookie features');
+        Root.Runtime.experiments.register('experimental-cookie-features', 'Experimental cookie features');
         // Change grouping of sources panel to use Authored/Deployed trees
-        Root.Runtime.experiments.register("authored-deployed-grouping" /* Root.Runtime.ExperimentName.AUTHORED_DEPLOYED_GROUPING */, 'Group sources into authored and deployed trees', undefined, 'https://goo.gle/authored-deployed', 'https://goo.gle/authored-deployed-feedback');
+        Root.Runtime.experiments.register("authored-deployed-grouping" /* Root.Runtime.ExperimentName.AUTHORED_DEPLOYED_GROUPING */, 'Group sources into authored and deployed trees', 'https://goo.gle/authored-deployed', 'https://goo.gle/authored-deployed-feedback');
         // Hide third party code (as determined by ignore lists or source maps)
         Root.Runtime.experiments.register("just-my-code" /* Root.Runtime.ExperimentName.JUST_MY_CODE */, 'Hide ignore-listed code in Sources tree view');
         Root.Runtime.experiments.register("timeline-show-postmessage-events" /* Root.Runtime.ExperimentName.TIMELINE_SHOW_POST_MESSAGE_EVENTS */, 'Performance panel: show postMessage dispatch and handling flows');

@@ -167,6 +167,7 @@ export default `/*
   bottom: 0;
   width: 0.5px;
   pointer-events: auto;
+  background-color: var(--marker-color); /* stylelint-disable-line plugin/use_theme_colors */
 }
 
 .overlay-type-BOTTOM_INFO_BAR {

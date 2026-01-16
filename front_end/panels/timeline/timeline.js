@@ -11240,15 +11240,19 @@ var TimelineUIUtils = class _TimelineUIUtils {
     switch (event.name) {
       case "largestContentfulPaint::Candidate":
         link = "https://web.dev/lcp/";
-        name = "largest contentful paint";
+        name = "Largest Contentful Paint";
         break;
       case "largestContentfulPaint::CandidateForSoftNavigation":
         link = "https://developer.chrome.com/docs/web-platform/soft-navigations-experiment";
-        name = "largest contentful paint (soft navigation)";
+        name = "Soft Largest Contentful Paint";
+        break;
+      case "SoftNavigationStart":
+        link = "https://developer.chrome.com/docs/web-platform/soft-navigations-experiment";
+        name = "Soft Navigations";
         break;
       case "firstContentfulPaint":
         link = "https://web.dev/first-contentful-paint/";
-        name = "first contentful paint";
+        name = "First Contentful Paint";
         break;
       default:
         break;
@@ -11376,6 +11380,7 @@ var TimelineUIUtils = class _TimelineUIUtils {
       if (url) {
         contentHelper.appendElementRow(i18nString21(UIStrings21.url), LegacyComponents.Linkifier.Linkifier.linkifyURL(url));
       }
+      contentHelper.appendElementRow(i18nString21(UIStrings21.details), _TimelineUIUtils.buildDetailsNodeForMarkerEvents(event));
     }
     if (Trace25.Types.Events.isV8Compile(event)) {
       url = event.args.data?.url;
@@ -15415,6 +15420,7 @@ var timelineFlameChartView_css_default = `/*
   bottom: 0;
   width: 0.5px;
   pointer-events: auto;
+  background-color: var(--marker-color); /* stylelint-disable-line plugin/use_theme_colors */
 }
 
 .overlay-type-BOTTOM_INFO_BAR {
@@ -18193,6 +18199,7 @@ var TimingsTrackAppender = class {
   */
   /**
    * Gets the style for a page load marker event.
+   * TODO(paulirish): Unify with trace/Styles.ts markerDetailsForEvent. Currently only color is read, the rest is ignored.
    */
   markerStyleForPageLoadEvent(markerEvent) {
     const tallMarkerDashStyle = [6, 4];

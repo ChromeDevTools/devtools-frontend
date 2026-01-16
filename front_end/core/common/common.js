@@ -4219,6 +4219,9 @@ var ParsedURL = class _ParsedURL {
     return "";
   }
   static extractName(url) {
+    if (url.endsWith("/")) {
+      url = url.slice(0, -1);
+    }
     let index = url.lastIndexOf("/");
     const pathAndQuery = index !== -1 ? url.substr(index + 1) : url;
     index = pathAndQuery.indexOf("?");

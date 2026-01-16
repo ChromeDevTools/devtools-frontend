@@ -54,8 +54,14 @@ const markerTypeGuards = [
     isSoftNavigationStart,
 ];
 export const MarkerName = [
-    'MarkDOMContent', 'MarkLoad', 'firstPaint', 'firstContentfulPaint', 'largestContentfulPaint::Candidate',
-    'largestContentfulPaint::CandidateForSoftNavigation'
+    "MarkDOMContent" /* Name.MARK_DOM_CONTENT */,
+    "MarkLoad" /* Name.MARK_LOAD */,
+    "firstPaint" /* Name.MARK_FIRST_PAINT */,
+    "firstContentfulPaint" /* Name.MARK_FCP */,
+    "largestContentfulPaint::Candidate" /* Name.MARK_LCP_CANDIDATE */,
+    "largestContentfulPaint::CandidateForSoftNavigation" /* Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION */,
+    "navigationStart" /* Name.NAVIGATION_START */,
+    "SoftNavigationStart" /* Name.SOFT_NAVIGATION_START */,
 ];
 export function isMarkerEvent(event) {
     if (event.ph === "I" /* Phase.INSTANT */ || "n" /* Phase.ASYNC_NESTABLE_INSTANT */ || event.ph === "R" /* Phase.MARK */) {
@@ -295,10 +301,13 @@ export function isLayoutInvalidationTracking(event) {
     return event.name === "LayoutInvalidationTracking" /* Name.LAYOUT_INVALIDATION_TRACKING */;
 }
 export function isFirstContentfulPaint(event) {
-    return event.name === 'firstContentfulPaint';
+    return event.name === "firstContentfulPaint" /* Name.MARK_FCP */;
 }
 export function isAnyLargestContentfulPaintCandidate(event) {
     return event.name === "largestContentfulPaint::Candidate" /* Name.MARK_LCP_CANDIDATE */ || event.name === "largestContentfulPaint::CandidateForSoftNavigation" /* Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION */;
+}
+export function isSoftLargestContentfulPaintCandidate(event) {
+    return event.name === "largestContentfulPaint::CandidateForSoftNavigation" /* Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION */;
 }
 export function isLargestImagePaintCandidate(event) {
     return event.name === 'LargestImagePaint::Candidate';
@@ -307,13 +316,13 @@ export function isLargestTextPaintCandidate(event) {
     return event.name === 'LargestTextPaint::Candidate';
 }
 export function isMarkLoad(event) {
-    return event.name === 'MarkLoad';
+    return event.name === "MarkLoad" /* Name.MARK_LOAD */;
 }
 export function isFirstPaint(event) {
-    return event.name === 'firstPaint';
+    return event.name === "firstPaint" /* Name.MARK_FIRST_PAINT */;
 }
 export function isMarkDOMContent(event) {
-    return event.name === 'MarkDOMContent';
+    return event.name === "MarkDOMContent" /* Name.MARK_DOM_CONTENT */;
 }
 export function isInteractiveTime(event) {
     return event.name === 'InteractiveTime';

@@ -10,7 +10,8 @@ export declare class StackTraceImpl<SyncFragmentT extends FragmentImpl | Debugga
     constructor(syncFragment: SyncFragmentT, asyncFragments: AsyncFragmentImpl[]);
 }
 export declare class FragmentImpl implements StackTrace.StackTrace.Fragment {
-    readonly node: FrameNode;
+    static readonly EMPTY_FRAGMENT: FragmentImpl;
+    readonly node?: FrameNode;
     readonly stackTraces: Set<AnyStackTraceImpl>;
     /**
      * Fragments are deduplicated based on the node.

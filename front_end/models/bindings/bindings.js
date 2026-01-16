@@ -45,6 +45,7 @@ var StackTraceImpl = class extends Common.ObjectWrapper.ObjectWrapper {
   }
 };
 var FragmentImpl = class _FragmentImpl {
+  static EMPTY_FRAGMENT = new _FragmentImpl();
   node;
   stackTraces = /* @__PURE__ */ new Set();
   /**
@@ -62,6 +63,9 @@ var FragmentImpl = class _FragmentImpl {
     this.node = node;
   }
   get frames() {
+    if (!this.node) {
+      return [];
+    }
     const frames = [];
     for (const node of this.node.getCallStack()) {
       frames.push(...node.frames);
@@ -104,6 +108,9 @@ var DebuggableFragmentImpl = class {
     this.callFrames = callFrames;
   }
   get frames() {
+    if (!this.fragment.node) {
+      return [];
+    }
     const frames = [];
     let index = 0;
     for (const node of this.fragment.node.getCallStack()) {
@@ -293,7 +300,7 @@ var StackTraceModel = class extends SDK.SDKModel.SDKModel {
       const translatePromises = [];
       let stackTracesToUpdate = /* @__PURE__ */ new Set();
       for (const fragment of this.#affectedFragments(script)) {
-        if (fragment.node.children.length === 0) {
+        if (fragment.node?.children.length === 0) {
           translatePromises.push(this.#translateFragment(fragment, translateRawFrames));
         }
         stackTracesToUpdate = stackTracesToUpdate.union(fragment.stackTraces);
@@ -335,6 +342,9 @@ var StackTraceModel = class extends SDK.SDKModel.SDKModel {
     return await Promise.all(asyncFragments);
   }
   async #createFragment(frames, rawFramesToUIFrames) {
+    if (frames.length === 0) {
+      return FragmentImpl.EMPTY_FRAGMENT;
+    }
     const release = await this.#mutex.acquire();
     try {
       const node = this.#trie.insert(frames);
@@ -349,6 +359,9 @@ var StackTraceModel = class extends SDK.SDKModel.SDKModel {
     }
   }
   async #translateFragment(fragment, rawFramesToUIFrames) {
+    if (!fragment.node) {
+      return;
+    }
     const rawFrames = fragment.node.getCallStack().map((node) => node.rawFrame).toArray();
     const uiFrames = await rawFramesToUIFrames(rawFrames, this.target());
     console.assert(rawFrames.length === uiFrames.length, "Broken rawFramesToUIFrames implementation");

@@ -1293,7 +1293,7 @@ export class Overlays extends EventTarget {
                 const { color } = Trace.Styles.markerDetailsForEvent(overlay.entries[0]);
                 const markersComponent = this.#createTimingsMarkerElement(overlay);
                 overlayElement.appendChild(markersComponent);
-                overlayElement.style.backgroundColor = color;
+                overlayElement.style.setProperty('--marker-color', color);
                 return overlayElement;
             }
             default: {
@@ -1334,6 +1334,9 @@ export class Overlays extends EventTarget {
     #mouseMoveOverlay(e, event, name, overlay, markers, marker) {
         if (Trace.Types.Events.isSoftNavigationStart(event)) {
             name = 'Soft Nav';
+        }
+        else if (Trace.Types.Events.isSoftLargestContentfulPaintCandidate(event)) {
+            name = 'Soft LCP';
         }
         const fieldResult = overlay.entryToFieldResult.get(event);
         const popoverElement = this.#createOverlayPopover(overlay.adjustedTimestamp, name, fieldResult);

@@ -72,6 +72,7 @@ export class PatchAgent extends AiAgent {
                 description: '',
                 nullable: true,
                 properties: {},
+                required: [],
             },
             handler: async () => {
                 const files = this.#project.getFiles();
@@ -111,9 +112,10 @@ export class PatchAgent extends AiAgent {
                     isRegex: {
                         type: 4 /* Host.AidaClient.ParametersTypes.BOOLEAN */,
                         description: 'Whether the query is a regular expression or not',
-                        nullable: true,
+                        nullable: false,
                     }
                 },
+                required: ['query']
             },
             handler: async (args, options) => {
                 return {
@@ -142,6 +144,7 @@ export class PatchAgent extends AiAgent {
                         }
                     }
                 },
+                required: ['files']
             },
             handler: async (args, options) => {
                 debugLog('updateFiles', args.files);

@@ -1521,6 +1521,10 @@ var UIStrings = {
    */
   largestContentfulPaint: "Largest Contentful Paint",
   /**
+   * @description Text in Timeline UIUtils of the Performance panel
+   */
+  softLargestContentfulPaint: "Soft Largest Contentful Paint",
+  /**
    * @description Text for timestamps of items
    */
   timestamp: "Timestamp",
@@ -2061,7 +2065,7 @@ function maybeInitSylesMap() {
     [
       "largestContentfulPaint::CandidateForSoftNavigation"
       /* Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION */
-    ]: new TimelineRecordStyle(i18nString(UIStrings.largestContentfulPaint), defaultCategoryStyles.rendering, true),
+    ]: new TimelineRecordStyle(i18nString(UIStrings.softLargestContentfulPaint), defaultCategoryStyles.rendering, true),
     [
       "TimeStamp"
       /* Types.Events.Name.TIME_STAMP */
@@ -2329,15 +2333,11 @@ function markerDetailsForEvent(event) {
   }
   if (Types5.Events.isAnyLargestContentfulPaintCandidate(event)) {
     color = "var(--sys-color-green)";
-    title = "LCP";
+    title = Types5.Events.isSoftLargestContentfulPaintCandidate(event) ? "LCP*" : "LCP";
   }
-  if (Types5.Events.isNavigationStart(event)) {
+  if (Types5.Events.isNavigationStart(event) || Types5.Events.isSoftNavigationStart(event)) {
     color = "var(--color-text-primary)";
-    title = "Nav";
-  }
-  if (Types5.Events.isSoftNavigationStart(event)) {
-    color = "var(--sys-color-blue)";
-    title = "Nav";
+    title = Types5.Events.isSoftNavigationStart(event) ? "Nav*" : "Nav";
   }
   if (Types5.Events.isMarkDOMContent(event)) {
     color = "var(--color-text-disabled)";

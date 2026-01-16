@@ -1,6 +1,7 @@
 import '../../ui/components/tooltips/tooltips.js';
 import * as AiCodeCompletion from '../../models/ai_code_completion/ai_code_completion.js';
 import * as UI from '../../ui/legacy/legacy.js';
+export declare const PROMOTION_ID = "ai-code-generation";
 export declare enum AiCodeGenerationTeaserDisplayState {
     TRIGGER = "trigger",
     DISCOVERY = "discovery",

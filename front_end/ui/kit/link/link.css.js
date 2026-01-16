@@ -10,7 +10,7 @@ export default `/*
  */
 
 :host {
-  display: inline-block;
+  display: inline;
   cursor: pointer;
   text-decoration: underline;
   color: var(--text-link);

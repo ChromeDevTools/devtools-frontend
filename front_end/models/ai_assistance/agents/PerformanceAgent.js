@@ -663,6 +663,7 @@ export class PerformanceAgent extends AiAgent {
                         nullable: false,
                     }
                 },
+                required: ['insightSetId', 'insightName']
             },
             displayInfoFromArgs: params => {
                 return {
@@ -703,6 +704,7 @@ export class PerformanceAgent extends AiAgent {
                         nullable: false,
                     }
                 },
+                required: ['eventKey']
             },
             displayInfoFromArgs: params => {
                 return { title: lockedString('Looking at trace event…'), action: `getEventByKey('${params.eventKey}')` };
@@ -749,6 +751,7 @@ export class PerformanceAgent extends AiAgent {
                         nullable: false,
                     },
                 },
+                required: ['min', 'max']
             },
             displayInfoFromArgs: args => {
                 return {
@@ -797,6 +800,7 @@ export class PerformanceAgent extends AiAgent {
                         nullable: false,
                     },
                 },
+                required: ['min', 'max']
             },
             displayInfoFromArgs: args => {
                 return {
@@ -839,6 +843,7 @@ export class PerformanceAgent extends AiAgent {
                         nullable: false,
                     },
                 },
+                required: ['eventKey']
             },
             displayInfoFromArgs: args => {
                 return { title: lockedString('Looking at call tree…'), action: `getDetailedCallTree('${args.eventKey}')` };
@@ -882,6 +887,7 @@ export class PerformanceAgent extends AiAgent {
                             nullable: false,
                         },
                     },
+                    required: ['elementId', 'annotationMessage']
                 },
                 handler: async (params) => {
                     return await this.addElementAnnotation(params.elementId, params.annotationMessage);
@@ -907,6 +913,7 @@ export class PerformanceAgent extends AiAgent {
                             nullable: false,
                         },
                     },
+                    required: ['eventKey', 'annotationMessage']
                 },
                 handler: async (params) => {
                     return await this.addNetworkRequestAnnotation(params.eventKey, params.annotationMessage);
@@ -936,6 +943,7 @@ export class PerformanceAgent extends AiAgent {
                         nullable: false,
                     },
                 },
+                required: ['scriptUrl', 'line', 'column']
             },
             displayInfoFromArgs: args => {
                 return {
@@ -984,6 +992,7 @@ export class PerformanceAgent extends AiAgent {
                         nullable: false,
                     },
                 },
+                required: ['url']
             },
             displayInfoFromArgs: args => {
                 return { title: lockedString('Looking at resource content…'), action: `getResourceContent('${args.url}')` };
@@ -1033,6 +1042,7 @@ export class PerformanceAgent extends AiAgent {
                             nullable: false,
                         }
                     },
+                    required: ['eventKey']
                 },
                 displayInfoFromArgs: params => {
                     return { title: lockedString('Selecting event…'), action: `selectEventByKey('${params.eventKey}')` };
@@ -1083,6 +1093,7 @@ export class PerformanceAgent extends AiAgent {
                             nullable: true,
                         },
                     },
+                    required: ['type']
                 },
                 handler: async (params) => {
                     switch (params.type) {

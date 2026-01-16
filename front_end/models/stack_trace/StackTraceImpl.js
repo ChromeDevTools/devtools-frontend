@@ -15,6 +15,7 @@ export class StackTraceImpl extends Common.ObjectWrapper.ObjectWrapper {
     }
 }
 export class FragmentImpl {
+    static EMPTY_FRAGMENT = new FragmentImpl();
     node;
     stackTraces = new Set();
     /**
@@ -32,6 +33,9 @@ export class FragmentImpl {
         this.node = node;
     }
     get frames() {
+        if (!this.node) {
+            return [];
+        }
         const frames = [];
         for (const node of this.node.getCallStack()) {
             frames.push(...node.frames);
@@ -79,6 +83,9 @@ export class DebuggableFragmentImpl {
         this.callFrames = callFrames;
     }
     get frames() {
+        if (!this.fragment.node) {
+            return [];
+        }
         const frames = [];
         let index = 0;
         for (const node of this.fragment.node.getCallStack()) {

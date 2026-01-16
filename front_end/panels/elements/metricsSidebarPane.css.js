@@ -13,7 +13,7 @@ export default `/**
   font-size: 10px;
   text-align: center;
   white-space: nowrap;
-  min-height: var(--metrics-height);
+  height: var(--metrics-height);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -31,19 +31,11 @@ export default `/**
 
 :host {
   --metrics-height: 190px;
-
-  height: var(--metrics-height);
-  contain: strict;
 }
 
-:host(.invisible) {
-  visibility: hidden;
+.metrics.collapsed {
   height: 0;
-}
-
-:host(.collapsed) {
-  visibility: collapse;
-  height: 0;
+  padding: 0;
 }
 /* The font we use on Windows takes up more vertical space, so adjust
  * the height of the metrics sidebar pane accordingly.

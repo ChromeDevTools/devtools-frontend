@@ -43,7 +43,7 @@ export interface Option {
 export declare class ExperimentsSupport {
     #private;
     allConfigurableExperiments(): Experiment[];
-    register(experimentName: string, experimentTitle: string, unstable?: boolean, docLink?: string, feedbackLink?: string): void;
+    register(experimentName: string, experimentTitle: string, docLink?: string, feedbackLink?: string): void;
     isEnabled(experimentName: string): boolean;
     setEnabled(experimentName: string, enabled: boolean): void;
     enableExperimentsTransiently(experimentNames: string[]): void;
@@ -59,10 +59,9 @@ export declare class Experiment {
     #private;
     name: string;
     title: string;
-    unstable: boolean;
     docLink?: Platform.DevToolsPath.UrlString;
     readonly feedbackLink?: Platform.DevToolsPath.UrlString;
-    constructor(experiments: ExperimentsSupport, name: string, title: string, unstable: boolean, docLink: Platform.DevToolsPath.UrlString, feedbackLink: Platform.DevToolsPath.UrlString);
+    constructor(experiments: ExperimentsSupport, name: string, title: string, docLink: Platform.DevToolsPath.UrlString, feedbackLink: Platform.DevToolsPath.UrlString);
     isEnabled(): boolean;
     setEnabled(enabled: boolean): void;
 }

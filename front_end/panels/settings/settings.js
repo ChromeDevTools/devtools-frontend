@@ -180,10 +180,6 @@ devtools-button.link-icon {
   white-space: normal;
 }
 
-.settings-experiment-unstable {
-  color: var(--sys-color-token-subtle);
-}
-
 .settings-experiment .feedback-link {
   color: var(--sys-color-primary);
   text-decoration-line: underline;
@@ -239,10 +235,6 @@ devtools-button.link-icon {
 // gen/front_end/panels/settings/SettingsScreen.js
 var UIStrings = {
   /**
-   * @description Card header in Experiments settings tab that list all available unstable experiments that can be turned on or off.
-   */
-  unstableExperiments: "Unstable experiments",
-  /**
    * @description Name of the Settings view
    */
   settings: "Settings",
@@ -270,10 +262,6 @@ var UIStrings = {
    * @description Message shown in the GreenDev prototypes panel to warn users about any possible unstable features.
    */
   greenDevUnstable: "Warning: All these features are prototype and very unstable. They exist for user testing and are not designed to be relied on.",
-  /**
-   * @description Message text content in Settings Screen of the Settings
-   */
-  theseExperimentsAreParticularly: "Warning: These experiments are particularly unstable. Enable at your own risk.",
   /**
    * @description Message to display if a setting change requires a reload of DevTools
    */
@@ -551,7 +539,6 @@ var GenericSettingsTab = class _GenericSettingsTab extends UI.Widget.VBox {
 };
 var ExperimentsSettingsTab = class _ExperimentsSettingsTab extends UI.Widget.VBox {
   #experimentsSection;
-  #unstableExperimentsSection;
   experimentToControl = /* @__PURE__ */ new Map();
   containerElement;
   constructor() {
@@ -577,41 +564,27 @@ var ExperimentsSettingsTab = class _ExperimentsSettingsTab extends UI.Widget.VBo
     if (this.#experimentsSection) {
       this.#experimentsSection.remove();
     }
-    if (this.#unstableExperimentsSection) {
-      this.#unstableExperimentsSection.remove();
-    }
-    const experiments = Root.Runtime.experiments.allConfigurableExperiments().sort();
-    const unstableExperiments = experiments.filter((e) => e.unstable && e.title.toLowerCase().includes(filterText));
-    const stableExperiments = experiments.filter((e) => !e.unstable && e.title.toLowerCase().includes(filterText));
-    if (stableExperiments.length) {
+    const experiments = Root.Runtime.experiments.allConfigurableExperiments().sort((a, b) => {
+      return a.title.localeCompare(b.title);
+    });
+    const filteredExperiments = experiments.filter((e) => e.title.toLowerCase().includes(filterText));
+    if (filteredExperiments.length) {
       const experimentsBlock = document.createElement("div");
       experimentsBlock.classList.add("settings-experiments-block");
       const warningMessage = i18nString(UIStrings.theseExperimentsCouldBeUnstable);
       const warningSection = this.createExperimentsWarningSubsection(warningMessage);
-      for (const experiment of stableExperiments) {
+      for (const experiment of filteredExperiments) {
         experimentsBlock.appendChild(this.createExperimentCheckbox(experiment));
       }
       this.#experimentsSection = createSettingsCard(i18nString(UIStrings.experiments), warningSection, experimentsBlock);
       this.containerElement.appendChild(this.#experimentsSection);
-    }
-    if (unstableExperiments.length) {
-      const experimentsBlock = document.createElement("div");
-      experimentsBlock.classList.add("settings-experiments-block");
-      const warningMessage = i18nString(UIStrings.theseExperimentsAreParticularly);
-      for (const experiment of unstableExperiments) {
-        experimentsBlock.appendChild(this.createExperimentCheckbox(experiment));
-      }
-      this.#unstableExperimentsSection = createSettingsCard(i18nString(UIStrings.unstableExperiments), this.createExperimentsWarningSubsection(warningMessage), experimentsBlock);
-      this.containerElement.appendChild(this.#unstableExperimentsSection);
-    }
-    if (!stableExperiments.length && !unstableExperiments.length) {
+      UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.experimentsFound, { n: filteredExperiments.length }));
+    } else {
       const warning = document.createElement("span");
       warning.textContent = i18nString(UIStrings.noResults);
       UI.ARIAUtils.LiveAnnouncer.alert(warning.textContent);
       this.#experimentsSection = createSettingsCard(i18nString(UIStrings.experiments), warning);
       this.containerElement.appendChild(this.#experimentsSection);
-    } else {
-      UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.experimentsFound, { n: stableExperiments.length + unstableExperiments.length }));
     }
   }
   createExperimentsWarningSubsection(warningMessage) {
@@ -636,9 +609,6 @@ var ExperimentsSettingsTab = class _ExperimentsSettingsTab extends UI.Widget.VBo
     const p = document.createElement("p");
     this.experimentToControl.set(experiment, p);
     p.classList.add("settings-experiment");
-    if (experiment.unstable && !experiment.isEnabled()) {
-      p.classList.add("settings-experiment-unstable");
-    }
     p.appendChild(checkbox);
     const experimentLink = experiment.docLink;
     if (experimentLink) {

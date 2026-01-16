@@ -806,7 +806,6 @@ export class ElementsPanel extends UI.Panel.Panel {
         });
         const showMetricsWidgetInComputedPane = () => {
             this.metricsWidget.show(computedStylePanesWrapper.element, this.computedStyleWidget.element);
-            this.metricsWidget.toggleVisibility(true /* visible */);
             this.stylesWidget.removeEventListener("StylesUpdateCompleted" /* StylesSidebarPaneEvents.STYLES_UPDATE_COMPLETED */, toggleMetricsWidget);
         };
         const showMetricsWidgetInStylesPane = () => {
@@ -817,13 +816,18 @@ export class ElementsPanel extends UI.Panel.Panel {
             else {
                 this.metricsWidget.show(matchedStylePanesWrapper.element);
                 if (!this.stylesWidget.hasMatchedStyles) {
-                    this.metricsWidget.toggleVisibility(false /* invisible */);
+                    this.metricsWidget.hideWidget();
                 }
                 this.stylesWidget.addEventListener("StylesUpdateCompleted" /* StylesSidebarPaneEvents.STYLES_UPDATE_COMPLETED */, toggleMetricsWidget);
             }
         };
         const toggleMetricsWidget = (event) => {
-            this.metricsWidget.toggleVisibility(event.data.hasMatchedStyles);
+            if (event.data.hasMatchedStyles) {
+                this.metricsWidget.showWidget();
+            }
+            else {
+                this.metricsWidget.hideWidget();
+            }
         };
         const tabSelected = (event) => {
             const { tabId } = event.data;

@@ -441,7 +441,8 @@ var AiWarningInfobarPlugin = class extends Plugin {
 // gen/front_end/panels/sources/BreakpointEditDialog.js
 var BreakpointEditDialog_exports = {};
 __export(BreakpointEditDialog_exports, {
-  BreakpointEditDialog: () => BreakpointEditDialog
+  BreakpointEditDialog: () => BreakpointEditDialog,
+  DEFAULT_VIEW: () => DEFAULT_VIEW2
 });
 import "./../../ui/legacy/legacy.js";
 import * as Common from "./../../core/common/common.js";
@@ -449,8 +450,8 @@ import * as i18n6 from "./../../core/i18n/i18n.js";
 import * as SDK from "./../../core/sdk/sdk.js";
 import * as CodeMirror from "./../../third_party/codemirror.next/codemirror.next.js";
 import * as TextEditor2 from "./../../ui/components/text_editor/text_editor.js";
-import { createIcon } from "./../../ui/kit/kit.js";
 import * as UI4 from "./../../ui/legacy/legacy.js";
+import { Directives, html as html2, render as render2 } from "./../../ui/lit/lit.js";
 import * as VisualLogging2 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/sources/breakpointEditDialog.css.js
@@ -523,6 +524,7 @@ var breakpointEditDialog_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./breakpointEditDialog.css")} */`;
 
 // gen/front_end/panels/sources/BreakpointEditDialog.js
+var { ref } = Directives;
 var { Direction } = TextEditor2.TextEditorHistory;
 var UIStrings3 = {
   /**
@@ -571,64 +573,156 @@ var UIStrings3 = {
 };
 var str_3 = i18n6.i18n.registerUIStrings("panels/sources/BreakpointEditDialog.ts", UIStrings3);
 var i18nString3 = i18n6.i18n.getLocalizedString.bind(void 0, str_3);
+var DEFAULT_VIEW2 = (input, output, target) => {
+  const editorRef = (e) => {
+    output.editor = e;
+  };
+  const onTypeChanged = (event) => {
+    if (event.target instanceof HTMLSelectElement && event.target.selectedOptions.length === 1) {
+      input.onTypeChanged(event.target.selectedOptions.item(0)?.value);
+    }
+    output.editor?.focus();
+  };
+  render2(
+    html2`
+    <style>${breakpointEditDialog_css_default}</style>
+    <div class=dialog-header>
+      <devtools-toolbar class=source-frame-breakpoint-toolbar>Line ${input.editorLineNumber + 1}:
+        <select
+          class=type-selector
+          title=${input.breakpointType === "LOGPOINT" ? i18nString3(UIStrings3.logAMessageToConsoleDoNotBreak) : i18nString3(UIStrings3.pauseOnlyWhenTheConditionIsTrue)}
+          aria-label=${i18nString3(UIStrings3.breakpointType)}
+          jslog=${VisualLogging2.dropDown("type").track({ change: true })}
+          @change=${onTypeChanged}>
+            <option value=${"REGULAR_BREAKPOINT"}>
+              ${i18nString3(UIStrings3.breakpoint)}
+            </option>
+            <option
+              value=${"CONDITIONAL_BREAKPOINT"}
+              .selected=${input.breakpointType === "CONDITIONAL_BREAKPOINT"}>
+                ${i18nString3(UIStrings3.conditionalBreakpoint)}
+            </option>
+            <option
+              value=${"LOGPOINT"}
+              .selected=${input.breakpointType === "LOGPOINT"}>
+                ${i18nString3(UIStrings3.logpoint)}
+            </option>
+        </select>
+      </devtools-toolbar>
+      <devtools-icon
+        name=cross
+        title=${i18nString3(UIStrings3.closeDialog)}
+        jslog=${VisualLogging2.close().track({ click: true })}
+        @click=${input.saveAndFinish}>
+      </devtools-icon>
+    </div>
+    <div class=condition-editor jslog=${VisualLogging2.textField().track({ change: true })}>
+      <devtools-text-editor
+        ${ref(editorRef)}
+        autofocus
+        .state=${input.state}
+        @focus=${() => output.editor?.focus()}></devtools-text-editor>
+    </div>
+    <div class=link-wrapper>
+      <devtools-icon name=open-externally class=link-icon></devtools-icon>
+      <x-link class="link devtools-link" tabindex="0" href="https://goo.gle/devtools-loc"
+                                          jslog=${VisualLogging2.link("learn-more")}>${i18nString3(UIStrings3.learnMoreOnBreakpointTypes)}</x-link>
+    </div>
+    `,
+    // clang-format on
+    target
+  );
+};
 var BreakpointEditDialog = class extends UI4.Widget.Widget {
-  onFinish;
-  finished;
-  editor;
-  typeSelector;
-  placeholderCompartment;
-  #history;
-  #editorHistory;
-  constructor(editorLineNumber, oldCondition, isLogpoint, onFinish) {
+  #view;
+  #history = new TextEditor2.AutocompleteHistory.AutocompleteHistory(Common.Settings.Settings.instance().createLocalSetting("breakpoint-condition-history", []));
+  #finished = false;
+  #editorLineNumber = 0;
+  #oldCondition = "";
+  #breakpointType = "CONDITIONAL_BREAKPOINT";
+  #onFinish = () => {
+  };
+  #editor;
+  #state;
+  constructor(target, view = DEFAULT_VIEW2) {
     super({
       jslog: `${VisualLogging2.dialog("edit-breakpoint")}`,
-      useShadowDom: true
+      useShadowDom: true,
+      delegatesFocus: true,
+      classes: ["sources-edit-breakpoint-dialog"]
     });
-    this.registerRequiredCSS(breakpointEditDialog_css_default);
-    const editorConfig = [
-      CodeMirror.javascript.javascriptLanguage,
-      TextEditor2.Config.baseConfiguration(oldCondition || ""),
-      TextEditor2.Config.closeBrackets.instance(),
-      TextEditor2.Config.autocompletion.instance(),
-      CodeMirror.EditorView.lineWrapping,
-      TextEditor2.Config.showCompletionHint,
-      TextEditor2.Config.conservativeCompletion,
-      CodeMirror.javascript.javascriptLanguage.data.of({
-        autocomplete: (context) => this.#editorHistory.historyCompletions(context)
-      }),
-      CodeMirror.autocompletion(),
-      TextEditor2.JavaScript.argumentHints()
-    ];
-    this.onFinish = onFinish;
-    this.finished = false;
+    this.#view = view;
     this.element.tabIndex = -1;
-    this.element.classList.add("sources-edit-breakpoint-dialog");
-    const header = this.contentElement.createChild("div", "dialog-header");
-    const toolbar4 = header.createChild("devtools-toolbar", "source-frame-breakpoint-toolbar");
-    toolbar4.appendText(`Line ${editorLineNumber + 1}:`);
-    this.typeSelector = new UI4.Toolbar.ToolbarComboBox(this.onTypeChanged.bind(this), i18nString3(UIStrings3.breakpointType), void 0, "type");
-    this.typeSelector.createOption(
-      i18nString3(UIStrings3.breakpoint),
-      "REGULAR_BREAKPOINT"
-      /* SDK.DebuggerModel.BreakpointType.REGULAR_BREAKPOINT */
-    );
-    const conditionalOption = this.typeSelector.createOption(
-      i18nString3(UIStrings3.conditionalBreakpoint),
-      "CONDITIONAL_BREAKPOINT"
-      /* SDK.DebuggerModel.BreakpointType.CONDITIONAL_BREAKPOINT */
-    );
-    const logpointOption = this.typeSelector.createOption(
-      i18nString3(UIStrings3.logpoint),
-      "LOGPOINT"
-      /* SDK.DebuggerModel.BreakpointType.LOGPOINT */
-    );
-    this.typeSelector.select(isLogpoint ? logpointOption : conditionalOption);
-    toolbar4.appendToolbarItem(this.typeSelector);
-    const content = oldCondition || "";
+  }
+  get editorLineNumber() {
+    return this.#editorLineNumber;
+  }
+  set editorLineNumber(editorLineNumber) {
+    this.#editorLineNumber = editorLineNumber;
+    this.requestUpdate();
+  }
+  get oldCondition() {
+    return this.#oldCondition;
+  }
+  set oldCondition(oldCondition) {
+    this.#state = void 0;
+    this.#oldCondition = oldCondition;
+    this.requestUpdate();
+  }
+  get breakpointType() {
+    return this.#breakpointType;
+  }
+  set breakpointType(breakpointType) {
+    this.#breakpointType = breakpointType;
+    this.requestUpdate();
+  }
+  get onFinish() {
+    return this.#onFinish;
+  }
+  set onFinish(onFinish) {
+    this.#onFinish = onFinish;
+    this.requestUpdate();
+  }
+  performUpdate() {
+    const input = {
+      state: this.#getEditorState(),
+      breakpointType: this.#breakpointType,
+      editorLineNumber: this.#editorLineNumber,
+      onTypeChanged: (type) => this.#typeChanged(type),
+      saveAndFinish: () => this.saveAndFinish()
+    };
+    const that = this;
+    const output = {
+      get editor() {
+        return that.#editor;
+      },
+      set editor(editor) {
+        that.#editor = editor;
+      }
+    };
+    this.#view(input, output, this.contentElement);
+  }
+  #getEditorState() {
+    if (this.#state) {
+      return this.#state;
+    }
+    const getPlaceholder = () => {
+      if (this.#breakpointType === "CONDITIONAL_BREAKPOINT") {
+        return CodeMirror.placeholder(i18nString3(UIStrings3.expressionToCheckBeforePausingEg));
+      }
+      if (this.#breakpointType === "LOGPOINT") {
+        return CodeMirror.placeholder(i18nString3(UIStrings3.logMessageEgXIsX));
+      }
+      return [];
+    };
+    const history = () => this.#editor && new TextEditor2.TextEditorHistory.TextEditorHistory(this.#editor, this.#history);
+    const autocomplete = (context) => history()?.historyCompletions(context) ?? null;
+    const historyBack = (force) => history()?.moveHistory(-1, force) ?? false;
+    const historyForward = (force) => history()?.moveHistory(1, force) ?? false;
     const finishIfComplete = (view) => {
       void TextEditor2.JavaScript.isExpressionComplete(view.state.doc.toString()).then((complete) => {
         if (complete) {
-          this.finishEditing(true, this.editor.state.doc.toString());
+          this.finishEditing(true, view.state.doc.toString());
         } else {
           CodeMirror.insertNewlineAndIndent(view);
         }
@@ -636,28 +730,13 @@ var BreakpointEditDialog = class extends UI4.Widget.Widget {
       return true;
     };
     const keymap2 = [
-      { key: "ArrowUp", run: () => this.#editorHistory.moveHistory(
-        -1
-        /* Direction.BACKWARD */
-      ) },
-      { key: "ArrowDown", run: () => this.#editorHistory.moveHistory(
-        1
-        /* Direction.FORWARD */
-      ) },
-      { mac: "Ctrl-p", run: () => this.#editorHistory.moveHistory(-1, true) },
-      { mac: "Ctrl-n", run: () => this.#editorHistory.moveHistory(1, true) },
-      {
-        key: "Mod-Enter",
-        run: finishIfComplete
-      },
-      {
-        key: "Enter",
-        run: finishIfComplete
-      },
-      {
-        key: "Shift-Enter",
-        run: CodeMirror.insertNewlineAndIndent
-      },
+      { key: "ArrowUp", run: () => historyBack(false) },
+      { key: "ArrowDown", run: () => historyForward(false) },
+      { mac: "Ctrl-p", run: () => historyBack(true) },
+      { mac: "Ctrl-n", run: () => historyForward(true) },
+      { key: "Mod-Enter", run: finishIfComplete },
+      { key: "Enter", run: finishIfComplete },
+      { key: "Shift-Enter", run: CodeMirror.insertNewlineAndIndent },
       {
         key: "Escape",
         run: () => {
@@ -666,85 +745,50 @@ var BreakpointEditDialog = class extends UI4.Widget.Widget {
         }
       }
     ];
-    this.placeholderCompartment = new CodeMirror.Compartment();
-    const editorWrapper = this.contentElement.appendChild(document.createElement("div"));
-    editorWrapper.classList.add("condition-editor");
-    editorWrapper.setAttribute("jslog", `${VisualLogging2.textField().track({ change: true })}`);
-    this.editor = new TextEditor2.TextEditor.TextEditor(CodeMirror.EditorState.create({
-      doc: content,
-      selection: { anchor: 0, head: content.length },
+    const editorConfig = [
+      CodeMirror.javascript.javascriptLanguage,
+      TextEditor2.Config.baseConfiguration(this.oldCondition),
+      TextEditor2.Config.closeBrackets.instance(),
+      TextEditor2.Config.autocompletion.instance(),
+      CodeMirror.EditorView.lineWrapping,
+      TextEditor2.Config.showCompletionHint,
+      TextEditor2.Config.conservativeCompletion,
+      CodeMirror.javascript.javascriptLanguage.data.of({ autocomplete }),
+      CodeMirror.autocompletion(),
+      TextEditor2.JavaScript.argumentHints()
+    ];
+    this.#state = CodeMirror.EditorState.create({
+      doc: this.oldCondition,
+      selection: { anchor: 0, head: this.oldCondition.length },
       extensions: [
-        this.placeholderCompartment.of(this.getPlaceholder()),
+        new CodeMirror.Compartment().of(getPlaceholder()),
         CodeMirror.keymap.of(keymap2),
         editorConfig
       ]
-    }));
-    editorWrapper.appendChild(this.editor);
-    const closeIcon = createIcon("cross");
-    closeIcon.title = i18nString3(UIStrings3.closeDialog);
-    closeIcon.setAttribute("jslog", `${VisualLogging2.close().track({ click: true })}`);
-    closeIcon.onclick = () => this.finishEditing(true, this.editor.state.doc.toString());
-    header.appendChild(closeIcon);
-    this.#history = new TextEditor2.AutocompleteHistory.AutocompleteHistory(Common.Settings.Settings.instance().createLocalSetting("breakpoint-condition-history", []));
-    this.#editorHistory = new TextEditor2.TextEditorHistory.TextEditorHistory(this.editor, this.#history);
-    const linkWrapper = this.contentElement.appendChild(document.createElement("div"));
-    linkWrapper.classList.add("link-wrapper");
-    const link2 = UI4.Fragment.html`<x-link class="link devtools-link" tabindex="0" href="https://goo.gle/devtools-loc"
-                                          jslog="${VisualLogging2.link("learn-more")}">${i18nString3(UIStrings3.learnMoreOnBreakpointTypes)}</x-link>`;
-    const linkIcon = createIcon("open-externally", "link-icon");
-    link2.prepend(linkIcon);
-    linkWrapper.appendChild(link2);
-    this.updateTooltip();
+    });
+    return this.#state;
   }
-  saveAndFinish() {
-    this.finishEditing(true, this.editor.state.doc.toString());
-  }
-  focusEditor() {
-    this.editor.editor.focus();
-  }
-  onTypeChanged() {
-    if (this.breakpointType === "REGULAR_BREAKPOINT") {
+  #typeChanged(breakpointType) {
+    if (breakpointType === "REGULAR_BREAKPOINT") {
       this.finishEditing(true, "");
       return;
     }
-    this.focusEditor();
-    this.editor.dispatch({ effects: this.placeholderCompartment.reconfigure(this.getPlaceholder()) });
-    this.updateTooltip();
-  }
-  get breakpointType() {
-    const option = this.typeSelector.selectedOption();
-    return option ? option.value : null;
-  }
-  getPlaceholder() {
-    const type = this.breakpointType;
-    if (type === "CONDITIONAL_BREAKPOINT") {
-      return CodeMirror.placeholder(i18nString3(UIStrings3.expressionToCheckBeforePausingEg));
-    }
-    if (type === "LOGPOINT") {
-      return CodeMirror.placeholder(i18nString3(UIStrings3.logMessageEgXIsX));
-    }
-    return [];
-  }
-  updateTooltip() {
-    const type = this.breakpointType;
-    if (type === "CONDITIONAL_BREAKPOINT") {
-      UI4.Tooltip.Tooltip.install(this.typeSelector.element, i18nString3(UIStrings3.pauseOnlyWhenTheConditionIsTrue));
-    } else if (type === "LOGPOINT") {
-      UI4.Tooltip.Tooltip.install(this.typeSelector.element, i18nString3(UIStrings3.logAMessageToConsoleDoNotBreak));
-    }
+    this.breakpointType = breakpointType;
+    this.requestUpdate();
   }
   finishEditing(committed, condition) {
-    if (this.finished) {
+    if (this.#finished) {
       return;
     }
-    this.finished = true;
-    this.editor.remove();
+    this.#finished = true;
     this.#history.pushHistoryItem(condition);
     const isLogpoint = this.breakpointType === "LOGPOINT";
     this.onFinish({ committed, condition, isLogpoint });
   }
-  get editorForTest() {
-    return this.editor;
+  saveAndFinish() {
+    if (this.#editor) {
+      this.finishEditing(true, this.#editor.state.doc.toString());
+    }
   }
 };
 
@@ -753,7 +797,7 @@ var BreakpointsView_exports = {};
 __export(BreakpointsView_exports, {
   BreakpointsSidebarController: () => BreakpointsSidebarController,
   BreakpointsView: () => BreakpointsView,
-  DEFAULT_VIEW: () => DEFAULT_VIEW2
+  DEFAULT_VIEW: () => DEFAULT_VIEW3
 });
 import "./../../ui/kit/kit.js";
 import * as Common3 from "./../../core/common/common.js";
@@ -1276,7 +1320,7 @@ function getDifferentiatingPathMap(titleInfos) {
 }
 
 // gen/front_end/panels/sources/BreakpointsView.js
-var { html: html2, render: render2, Directives: { ifDefined, repeat, classMap, live } } = Lit;
+var { html: html3, render: render3, Directives: { ifDefined, repeat, classMap, live } } = Lit;
 var UIStrings4 = {
   /**
    * @description Label for a checkbox to toggle pausing on uncaught exceptions in the breakpoint sidebar of the Sources panel. When the checkbox is checked, DevTools will pause if an uncaught exception is thrown at runtime.
@@ -1659,8 +1703,8 @@ var BreakpointsSidebarController = class _BreakpointsSidebarController {
     }));
   }
 };
-var DEFAULT_VIEW2 = (input, _output, target) => {
-  render2(html2`
+var DEFAULT_VIEW3 = (input, _output, target) => {
+  render3(html3`
     <style>${Input.checkboxStyles}</style>
     <style>${breakpointsView_css_default}</style>
     <div jslog=${VisualLogging3.section("sources.js-breakpoints")} id="devtools-breakpoint-view">
@@ -1689,7 +1733,7 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
           </label>
       </div>
       <div role=tree>
-        ${repeat(input.breakpointGroups, (group) => group.url, (group, groupIndex) => html2`
+        ${repeat(input.breakpointGroups, (group) => group.url, (group, groupIndex) => html3`
             <details class=${classMap({ active: input.breakpointsActive })}
                   ?data-first-group=${groupIndex === 0}
                   ?data-last-group=${groupIndex === input.breakpointGroups.length - 1}
@@ -1732,7 +1776,7 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
                   </button>
                 </span>
               </summary>
-            ${repeat(group.breakpointItems, (item) => item.id, (item, itemIndex) => html2`
+            ${repeat(group.breakpointItems, (item) => item.id, (item, itemIndex) => html3`
                 <div class=${classMap({
     "breakpoint-item": true,
     hit: item.isHit,
@@ -1762,7 +1806,7 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
                           title=${ifDefined(input.itemDetails.get(item.id)?.codeSnippetTooltip)}
                           jslog=${VisualLogging3.action("sources.jump-to-breakpoint").track({ click: true })}>${input.itemDetails.get(item.id)?.codeSnippet}</span>
                   <span class='breakpoint-item-location-or-actions'>
-                    ${group.editable ? html2`
+                    ${group.editable ? html3`
                           <button data-edit-breakpoint @click=${input.itemEditClickHandler.bind(void 0, item)}
                                   title=${item.type === "LOGPOINT" ? i18nString4(UIStrings4.editLogpoint) : i18nString4(UIStrings4.editCondition)}
                                   jslog=${VisualLogging3.action("edit-breakpoint").track({ click: true })}>
@@ -1791,7 +1835,7 @@ var BreakpointsView = class _BreakpointsView extends UI5.Widget.VBox {
     }
     return breakpointsViewInstance;
   }
-  constructor(element, view = DEFAULT_VIEW2) {
+  constructor(element, view = DEFAULT_VIEW3) {
     super(element, { useShadowDom: true });
     this.#view = view;
     this.#controller = BreakpointsSidebarController.instance();
@@ -2131,7 +2175,7 @@ import * as SourceMapScopes from "./../../models/source_map_scopes/source_map_sc
 import * as Workspace4 from "./../../models/workspace/workspace.js";
 import { Icon } from "./../../ui/kit/kit.js";
 import * as UI6 from "./../../ui/legacy/legacy.js";
-import { Directives, html as html3, render as render3 } from "./../../ui/lit/lit.js";
+import { Directives as Directives2, html as html4, render as render4 } from "./../../ui/lit/lit.js";
 import * as VisualLogging4 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/sources/callStackSidebarPane.css.js
@@ -2317,7 +2361,7 @@ var UIStrings5 = {
 };
 var str_5 = i18n10.i18n.registerUIStrings("panels/sources/CallStackSidebarPane.ts", UIStrings5);
 var i18nString5 = i18n10.i18n.getLocalizedString.bind(void 0, str_5);
-var { createRef, ref } = Directives;
+var { createRef, ref: ref2 } = Directives2;
 var callstackSidebarPaneInstance;
 var CallStackSidebarPane = class _CallStackSidebarPane extends UI6.View.SimpleView {
   ignoreListMessageElement;
@@ -2369,24 +2413,24 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI6.View.SimpleVi
       this.maxAsyncStackChainDepth += defaultMaxAsyncStackChainDepth;
       this.requestUpdate();
     };
-    render3(html3`
+    render4(html4`
       <style>${callStackSidebarPane_css_default}</style>
-      <div class='ignore-listed-message' ${ref(ignoreListMessageRef)}>
+      <div class='ignore-listed-message' ${ref2(ignoreListMessageRef)}>
         <label class='ignore-listed-message-label'>
           <input type='checkbox' tabindex=0 class='ignore-listed-checkbox'
-              @change=${ignoreListCheckboxChanged} ${ref(ignoreListCheckboxRef)}></input>
+              @change=${ignoreListCheckboxChanged} ${ref2(ignoreListCheckboxRef)}></input>
           ${i18nString5(UIStrings5.showIgnorelistedFrames)}
         </label>
       </div>
-      <div class='gray-info-message' tabindex=-1 ${ref(notPausedRef)}>
+      <div class='gray-info-message' tabindex=-1 ${ref2(notPausedRef)}>
         ${i18nString5(UIStrings5.notPaused)}
       </div>
-      <div class='call-frame-warnings-message' tabindex=-1 ${ref(warningRef)}>
+      <div class='call-frame-warnings-message' tabindex=-1 ${ref2(warningRef)}>
         <devtools-icon .name=${"warning-filled"} class='call-frame-warning-icon small'></devtools-icon>
         ${i18nString5(UIStrings5.callFrameWarnings)}
       </div>
       ${this.list.element}
-      <div class='show-more-message hidden' ${ref(showMoreRef)}>
+      <div class='show-more-message hidden' ${ref2(showMoreRef)}>
         <span class='link' @click=${onShowMoreClicked}>${i18nString5(UIStrings5.showMore)}</span>
       </div>
     `, this.contentElement);
@@ -3232,7 +3276,7 @@ import * as Bindings3 from "./../../models/bindings/bindings.js";
 import * as Geometry from "./../../models/geometry/geometry.js";
 import * as Workspace6 from "./../../models/workspace/workspace.js";
 import * as CodeMirror3 from "./../../third_party/codemirror.next/codemirror.next.js";
-import { createIcon as createIcon2 } from "./../../ui/kit/kit.js";
+import { createIcon } from "./../../ui/kit/kit.js";
 import * as ColorPicker from "./../../ui/legacy/components/color_picker/color_picker.js";
 import * as InlineEditor from "./../../ui/legacy/components/inline_editor/inline_editor.js";
 import * as UI8 from "./../../ui/legacy/legacy.js";
@@ -3396,7 +3440,7 @@ var CurveSwatchWidget = class extends CodeMirror3.WidgetType {
   toDOM(view) {
     const container = document.createElement("span");
     const bezierText = container.createChild("span");
-    const icon = createIcon2("bezier-curve-filled", "bezier-swatch-icon");
+    const icon = createIcon("bezier-curve-filled", "bezier-swatch-icon");
     icon.setAttribute("jslog", `${VisualLogging5.showStyleEditor("bezier")}`);
     bezierText.append(this.text);
     UI8.Tooltip.Tooltip.install(icon, i18nString7(UIStrings8.openCubicBezierEditor));
@@ -3698,7 +3742,7 @@ devtools-icon[name="cross-circle-filled"] {
 /*# sourceURL=${import.meta.resolve("./debuggerPausedMessage.css")} */`;
 
 // gen/front_end/panels/sources/DebuggerPausedMessage.js
-var { html: html4, render: render4, nothing: nothing2, Directives: { ifDefined: ifDefined2 } } = Lit2;
+var { html: html5, render: render5, nothing: nothing2, Directives: { ifDefined: ifDefined2 } } = Lit2;
 var UIStrings9 = {
   /**
    * @description Text in the JavaScript Debugging pane of the Sources pane when a DOM breakpoint is hit
@@ -3811,22 +3855,22 @@ function domBreakpointSubtext(data) {
       messageElement = uiI18n.getFormatLocalizedString(str_9, UIStrings9.descendantSRemoved, { PH1: targetNodeLink });
     }
   }
-  return html4`
+  return html5`
       ${PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(data.node)}
-      ${data.targetNode ? html4`<br/>${messageElement}` : nothing2}
+      ${data.targetNode ? html5`<br/>${messageElement}` : nothing2}
   `;
 }
-var DEFAULT_VIEW3 = (input, _output, target) => {
-  render4(html4`
+var DEFAULT_VIEW4 = (input, _output, target) => {
+  render5(html5`
     <style>${debuggerPausedMessage_css_default}</style>
-    <div aria-live="polite" ?hidden=${!input}>${input ? html4`
+    <div aria-live="polite" ?hidden=${!input}>${input ? html5`
       <div class="paused-status ${input.errorLike ? "error-reason" : ""}">
         <span>
           <div class="status-main">
             <devtools-icon name=${input.errorLike ? "cross-circle-filled" : "info"} class="medium"></devtools-icon>
             ${input.mainText}
           </div>
-          ${input.subText || input.domBreakpointData ? html4`
+          ${input.subText || input.domBreakpointData ? html5`
             <div class="status-sub monospace" title=${ifDefined2(input.title ?? input.subText)}>${input.domBreakpointData ? domBreakpointSubtext(input.domBreakpointData) : input.subText}</div>
           ` : nothing2}
         </span>
@@ -3837,7 +3881,7 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
 var DebuggerPausedMessage = class _DebuggerPausedMessage extends UI9.Widget.Widget {
   view;
   #viewInput = null;
-  constructor(element, view = DEFAULT_VIEW3) {
+  constructor(element, view = DEFAULT_VIEW4) {
     super(element, {
       jslog: `${VisualLogging6.dialog("debugger-paused")}`,
       classes: ["paused-message", "flex-none"],
@@ -3988,12 +4032,12 @@ import * as TextUtils9 from "./../../models/text_utils/text_utils.js";
 import * as Workspace23 from "./../../models/workspace/workspace.js";
 import * as CodeMirror6 from "./../../third_party/codemirror.next/codemirror.next.js";
 import * as Buttons3 from "./../../ui/components/buttons/buttons.js";
-import * as TextEditor6 from "./../../ui/components/text_editor/text_editor.js";
+import * as TextEditor5 from "./../../ui/components/text_editor/text_editor.js";
 import * as Tooltips2 from "./../../ui/components/tooltips/tooltips.js";
 import * as ObjectUI2 from "./../../ui/legacy/components/object_ui/object_ui.js";
 import * as SourceFrame11 from "./../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI19 from "./../../ui/legacy/legacy.js";
-import { render as render6 } from "./../../ui/lit/lit.js";
+import { render as render7 } from "./../../ui/lit/lit.js";
 import * as VisualLogging12 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/sources/SourcesPanel.js
@@ -4054,7 +4098,7 @@ import * as TextUtils5 from "./../../models/text_utils/text_utils.js";
 import * as Workspace10 from "./../../models/workspace/workspace.js";
 import * as Buttons2 from "./../../ui/components/buttons/buttons.js";
 import * as Spinners from "./../../ui/components/spinners/spinners.js";
-import { createIcon as createIcon3 } from "./../../ui/kit/kit.js";
+import { createIcon as createIcon2 } from "./../../ui/kit/kit.js";
 import * as UI11 from "./../../ui/legacy/legacy.js";
 import * as VisualLogging7 from "./../../ui/visual_logging/visual_logging.js";
 import * as Snippets from "./../snippets/snippets.js";
@@ -5551,7 +5595,7 @@ var NavigatorFolderTreeElement = class _NavigatorFolderTreeElement extends UI11.
     } else if (type === Types.AutomaticFileSystem) {
       iconType = "folder-asterisk";
     }
-    const icon = createIcon3(iconType);
+    const icon = createIcon2(iconType);
     this.setLeadingIcons([icon]);
   }
   async onpopulate() {
@@ -6343,7 +6387,7 @@ import * as SDK9 from "./../../core/sdk/sdk.js";
 import * as Bindings7 from "./../../models/bindings/bindings.js";
 import * as Persistence11 from "./../../models/persistence/persistence.js";
 import * as Workspace19 from "./../../models/workspace/workspace.js";
-import { createIcon as createIcon4 } from "./../../ui/kit/kit.js";
+import { createIcon as createIcon3 } from "./../../ui/kit/kit.js";
 import * as QuickOpen from "./../../ui/legacy/components/quick_open/quick_open.js";
 import * as SourceFrame10 from "./../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI16 from "./../../ui/legacy/legacy.js";
@@ -6513,7 +6557,7 @@ import * as uiI18n3 from "./../../ui/i18n/i18n.js";
 import { Icon as Icon3 } from "./../../ui/kit/kit.js";
 import * as SourceFrame8 from "./../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI15 from "./../../ui/legacy/legacy.js";
-import { html as html5 } from "./../../ui/lit/lit.js";
+import { html as html6 } from "./../../ui/lit/lit.js";
 import * as VisualLogging8 from "./../../ui/visual_logging/visual_logging.js";
 import * as PanelCommon2 from "./../common/common.js";
 import * as Snippets3 from "./../snippets/snippets.js";
@@ -6545,7 +6589,7 @@ import * as TextUtils6 from "./../../models/text_utils/text_utils.js";
 import * as Workspace15 from "./../../models/workspace/workspace.js";
 import * as CodeMirror5 from "./../../third_party/codemirror.next/codemirror.next.js";
 import * as IssueCounter from "./../../ui/components/issue_counter/issue_counter.js";
-import * as TextEditor5 from "./../../ui/components/text_editor/text_editor.js";
+import * as TextEditor4 from "./../../ui/components/text_editor/text_editor.js";
 import { Icon as Icon2 } from "./../../ui/kit/kit.js";
 import * as SourceFrame6 from "./../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI14 from "./../../ui/legacy/legacy.js";
@@ -6813,7 +6857,7 @@ __export(SnippetsPlugin_exports, {
 });
 import * as Host5 from "./../../core/host/host.js";
 import * as i18n26 from "./../../core/i18n/i18n.js";
-import * as TextEditor4 from "./../../ui/components/text_editor/text_editor.js";
+import * as TextEditor3 from "./../../ui/components/text_editor/text_editor.js";
 import * as UI13 from "./../../ui/legacy/legacy.js";
 import * as Snippets2 from "./../snippets/snippets.js";
 var UIStrings13 = {
@@ -6839,7 +6883,7 @@ var SnippetsPlugin = class extends Plugin {
     return [runSnippet];
   }
   editorExtension() {
-    return TextEditor4.JavaScript.completion();
+    return TextEditor3.JavaScript.completion();
   }
 };
 
@@ -6877,7 +6921,7 @@ var UISourceCodeFrame = class _UISourceCodeFrame extends Common9.ObjectWrapper.e
     return [
       super.editorConfiguration(doc),
       rowMessages(this.allMessages()),
-      TextEditor5.Config.sourcesWordWrap.instance(),
+      TextEditor4.Config.sourcesWordWrap.instance(),
       // Inject editor extensions from plugins
       pluginCompartment.of(this.plugins.map((plugin) => plugin.editorExtension()))
     ];
@@ -7927,7 +7971,7 @@ var TabbedEditorContainer = class extends Common10.ObjectWrapper.ObjectWrapper {
     return tabId2;
   }
   addLoadErrorIcon(tabId2) {
-    const icon = html5`<devtools-icon class="small" name="cross-circle-filled"
+    const icon = html6`<devtools-icon class="small" name="cross-circle-filled"
                                      title=${i18nString13(UIStrings14.unableToLoadThisContent)}>
                       </devtools-icon>`;
     if (this.tabbedPane.tabView(tabId2)) {
@@ -7990,7 +8034,7 @@ var TabbedEditorContainer = class extends Common10.ObjectWrapper.ObjectWrapper {
       const tooltip = this.tooltipForFile(uiSourceCode);
       this.tabbedPane.changeTabTitle(tabId2, title, tooltip);
       if (uiSourceCode.loadError()) {
-        const icon = html5`<devtools-icon class="small" name="cross-circle-filled"
+        const icon = html6`<devtools-icon class="small" name="cross-circle-filled"
                                          title=${i18nString13(UIStrings14.unableToLoadThisContent)}>
                           </devtools-icon>`;
         this.tabbedPane.setTrailingTabIcon(tabId2, icon);
@@ -8291,7 +8335,7 @@ var SourcesView = class _SourcesView extends Common11.ObjectWrapper.eventMixin(U
     placeholder2.classList.add("sources-placeholder");
     const workspaceElement = placeholder2.createChild("div", "tabbed-pane-placeholder-row");
     workspaceElement.classList.add("workspace");
-    const icon = createIcon4("sync", "sync-icon");
+    const icon = createIcon3("sync", "sync-icon");
     workspaceElement.createChild("span", "icon-container").appendChild(icon);
     const text = workspaceElement.createChild("span");
     text.textContent = UIStrings15.workspaceDropInAFolderToSyncSources;
@@ -8863,7 +8907,7 @@ var threadsSidebarPane_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./threadsSidebarPane.css")} */`;
 
 // gen/front_end/panels/sources/ThreadsSidebarPane.js
-var { html: html6, render: render5, nothing: nothing3 } = Lit3;
+var { html: html7, render: render6, nothing: nothing3 } = Lit3;
 var UIStrings16 = {
   /**
    * @description Text in Threads Sidebar Pane of the Sources panel
@@ -8872,11 +8916,11 @@ var UIStrings16 = {
 };
 var str_16 = i18n33.i18n.registerUIStrings("panels/sources/ThreadsSidebarPane.ts", UIStrings16);
 var i18nString15 = i18n33.i18n.getLocalizedString.bind(void 0, str_16);
-var DEFAULT_VIEW4 = (input, _output, target) => {
-  render5(html6`
+var DEFAULT_VIEW5 = (input, _output, target) => {
+  render6(html7`
     <style>${threadsSidebarPane_css_default}</style>
     <div role="listbox">
-    ${input.threads.map((thread) => html6`
+    ${input.threads.map((thread) => html7`
       <button
         class="thread-item"
         @click=${thread.onSelect}
@@ -8886,7 +8930,7 @@ var DEFAULT_VIEW4 = (input, _output, target) => {
       >
         <div class="thread-item-title">${thread.name}</div>
         <div class="thread-item-paused-state">${thread.paused ? i18nString15(UIStrings16.paused) : ""}</div>
-        ${thread.selected ? html6`<devtools-icon name="large-arrow-right-filled" class="selected-thread-icon"></devtools-icon>` : nothing3}
+        ${thread.selected ? html7`<devtools-icon name="large-arrow-right-filled" class="selected-thread-icon"></devtools-icon>` : nothing3}
       </button>
     `)}
     </div>
@@ -8896,7 +8940,7 @@ var ThreadsSidebarPane = class extends UI17.Widget.VBox {
   #debuggerModels = /* @__PURE__ */ new Set();
   #selectedModel;
   #view;
-  constructor(element, view = DEFAULT_VIEW4) {
+  constructor(element, view = DEFAULT_VIEW5) {
     super(element, {
       jslog: `${VisualLogging10.section("sources.threads")}`
     });
@@ -10320,7 +10364,7 @@ var DebuggerPlugin = class extends Plugin {
         }
       }),
       breakpointMarkers,
-      TextEditor6.ExecutionPositionHighlighter.positionHighlighter("cm-executionLine", "cm-executionToken"),
+      TextEditor5.ExecutionPositionHighlighter.positionHighlighter("cm-executionLine", "cm-executionToken"),
       CodeMirror6.Prec.lowest(continueToMarkers.field),
       markIfContinueTo,
       valueDecorations.field,
@@ -10791,7 +10835,10 @@ var DebuggerPlugin = class extends Plugin {
     const isLogpointForDialog = breakpoint?.isLogpoint() ?? Boolean(isLogpoint);
     const decorationElement = document.createElement("div");
     const compartment = new CodeMirror6.Compartment();
-    const dialog4 = new BreakpointEditDialog(line.number - 1, oldCondition, isLogpointForDialog, async (result) => {
+    const dialog4 = new BreakpointEditDialog();
+    dialog4.editorLineNumber = line.number - 1;
+    dialog4.oldCondition = oldCondition, dialog4.breakpointType = isLogpointForDialog ? "LOGPOINT" : "CONDITIONAL_BREAKPOINT";
+    dialog4.onFinish = async (result) => {
       this.activeBreakpointDialog = null;
       this.#activeBreakpointEditRequest = void 0;
       dialog4.detach();
@@ -10821,7 +10868,7 @@ var DebuggerPlugin = class extends Plugin {
           result.isLogpoint
         );
       }
-    });
+    };
     editor.dispatch({
       effects: CodeMirror6.StateEffect.appendConfig.of(compartment.of(CodeMirror6.EditorView.decorations.of(CodeMirror6.Decoration.set([CodeMirror6.Decoration.widget({
         block: true,
@@ -10842,7 +10889,7 @@ var DebuggerPlugin = class extends Plugin {
               dialog4.saveAndFinish();
               this.#scheduledFinishingActiveDialog = false;
             } else {
-              dialog4.focusEditor();
+              dialog4.focus();
             }
           }
         }, 200);
@@ -10850,7 +10897,7 @@ var DebuggerPlugin = class extends Plugin {
     }, true);
     dialog4.markAsExternallyManaged();
     dialog4.show(decorationElement);
-    dialog4.focusEditor();
+    dialog4.focus();
     this.activeBreakpointDialog = dialog4;
     this.#activeBreakpointEditRequest = breakpointEditRequest;
     function isSameEditRequest(editA, editB) {
@@ -11504,10 +11551,10 @@ var DebuggerPlugin = class extends Plugin {
     this.executionLocation = executionLocation;
     if (executionLocation) {
       const editorLocation = this.transformer.uiLocationToEditorLocation(executionLocation.lineNumber, executionLocation.columnNumber);
-      const editorPosition = TextEditor6.Position.toOffset(this.editor.state.doc, editorLocation);
+      const editorPosition = TextEditor5.Position.toOffset(this.editor.state.doc, editorLocation);
       this.editor.dispatch({
         effects: [
-          TextEditor6.ExecutionPositionHighlighter.setHighlightedPosition.of(editorPosition)
+          TextEditor5.ExecutionPositionHighlighter.setHighlightedPosition.of(editorPosition)
         ]
       });
       void this.updateValueDecorations();
@@ -11519,7 +11566,7 @@ var DebuggerPlugin = class extends Plugin {
         effects: [
           continueToMarkers.update.of(CodeMirror6.Decoration.none),
           valueDecorations.update.of(CodeMirror6.Decoration.none),
-          TextEditor6.ExecutionPositionHighlighter.clearHighlightedPosition.of()
+          TextEditor5.ExecutionPositionHighlighter.clearHighlightedPosition.of()
         ]
       });
     }
@@ -11761,7 +11808,7 @@ var ValueDecoration = class extends CodeMirror6.WidgetType {
       const propertyCount = value2.preview ? value2.preview.properties.length : 0;
       const entryCount = value2.preview?.entries ? value2.preview.entries.length : 0;
       if (value2.preview && propertyCount + entryCount < 10) {
-        render6(formatter.renderObjectPreview(value2.preview), nameValuePair.createChild("span"));
+        render7(formatter.renderObjectPreview(value2.preview), nameValuePair.createChild("span"));
       } else {
         const propertyValue = ObjectUI2.ObjectPropertiesSection.ObjectPropertiesSection.createPropertyValue(
           value2,
@@ -12326,7 +12373,7 @@ import * as Root3 from "./../../core/root/root.js";
 import * as Persistence12 from "./../../models/persistence/persistence.js";
 import * as Workspace25 from "./../../models/workspace/workspace.js";
 import * as QuickOpen3 from "./../../ui/legacy/components/quick_open/quick_open.js";
-import { Directives as Directives2, html as html7 } from "./../../ui/lit/lit.js";
+import { Directives as Directives3, html as html8 } from "./../../ui/lit/lit.js";
 
 // gen/front_end/panels/sources/filteredUISourceCodeListProvider.css.js
 var filteredUISourceCodeListProvider_css_default = `/*
@@ -12387,7 +12434,7 @@ var UIStrings19 = {
 };
 var str_19 = i18n39.i18n.registerUIStrings("panels/sources/FilteredUISourceCodeListProvider.ts", UIStrings19);
 var i18nString18 = i18n39.i18n.getLocalizedString.bind(void 0, str_19);
-var { classMap: classMap2 } = Directives2;
+var { classMap: classMap2 } = Directives3;
 var FilteredUISourceCodeListProvider = class extends QuickOpen3.FilteredListWidget.Provider {
   queryLineNumberAndColumnNumber;
   defaultScores;
@@ -12504,7 +12551,7 @@ var FilteredUISourceCodeListProvider = class extends QuickOpen3.FilteredListWidg
         subtitleRanges.push({ offset: indexes[i], length: 1 });
       }
     }
-    return html7`
+    return html8`
       <style>${filteredUISourceCodeListProvider_css_default}</style>
       <div class="filtered-ui-source-code-list-item
                   ${classMap2({ "is-ignore-listed": isIgnoreListed })}">
@@ -12528,7 +12575,7 @@ var FilteredUISourceCodeListProvider = class extends QuickOpen3.FilteredListWidg
     if (text.length > maxTextLength) {
       splitPosition = text.length - maxTextLength;
     }
-    return html7`
+    return html8`
       <div class="first-part">${text.substring(0, splitPosition)}</div>
       <div class="second-part">${text.substring(splitPosition)}</div>`;
   }
@@ -12591,7 +12638,7 @@ import "./../../ui/kit/kit.js";
 import * as i18n41 from "./../../core/i18n/i18n.js";
 import * as QuickOpen4 from "./../../ui/legacy/components/quick_open/quick_open.js";
 import * as UI20 from "./../../ui/legacy/legacy.js";
-import { html as html8 } from "./../../ui/lit/lit.js";
+import { html as html9 } from "./../../ui/lit/lit.js";
 var UIStrings20 = {
   /**
    * @description Text in Go To Line Quick Open of the Sources panel
@@ -12655,7 +12702,7 @@ var GoToLineQuickOpen = class extends QuickOpen4.FilteredListWidget.Provider {
     return this.#goToLineStrings.length;
   }
   renderItem(itemIndex, _query) {
-    return html8`
+    return html9`
       <devtools-icon name="colon"></devtools-icon>
       <div>
         <div>${this.#goToLineStrings[itemIndex]}</div>
@@ -12856,8 +12903,8 @@ import "./../../ui/kit/kit.js";
 import * as Common15 from "./../../core/common/common.js";
 import * as Host10 from "./../../core/host/host.js";
 import { PanelUtils as PanelUtils2 } from "./../utils/utils.js";
-import { Directives as Directives3, html as html9 } from "./../../ui/lit/lit.js";
-var { styleMap } = Directives3;
+import { Directives as Directives4, html as html10 } from "./../../ui/lit/lit.js";
+var { styleMap } = Directives4;
 var OpenFileQuickOpen = class extends FilteredUISourceCodeListProvider {
   constructor() {
     super("source-file");
@@ -12882,7 +12929,7 @@ var OpenFileQuickOpen = class extends FilteredUISourceCodeListProvider {
   }
   renderItem(itemIndex, query) {
     const { iconName, color } = PanelUtils2.iconDataForResourceType(this.itemContentTypeAt(itemIndex));
-    return html9`
+    return html10`
       <devtools-icon class="large" name=${iconName} style=${styleMap({ color })}></devtools-icon>
       ${super.renderItem(itemIndex, query)}`;
   }
@@ -12900,7 +12947,7 @@ import * as i18n45 from "./../../core/i18n/i18n.js";
 import * as CodeMirror7 from "./../../third_party/codemirror.next/codemirror.next.js";
 import * as QuickOpen5 from "./../../ui/legacy/components/quick_open/quick_open.js";
 import * as UI22 from "./../../ui/legacy/legacy.js";
-import { html as html10, nothing as nothing4 } from "./../../ui/lit/lit.js";
+import { html as html11, nothing as nothing4 } from "./../../ui/lit/lit.js";
 var UIStrings22 = {
   /**
    * @description Text in Go To Line Quick Open of the Sources panel
@@ -13201,10 +13248,10 @@ var OutlineQuickOpen = class extends QuickOpen5.FilteredListWidget.Provider {
     }
     const title = item.title + (item.subtitle ? item.subtitle : "");
     const highlightRanges = QuickOpen5.FilteredListWidget.FilteredListWidget.getHighlightRanges(title, query, true);
-    return html10`
+    return html11`
       <devtools-icon name="deployed"></devtools-icon>
       <div><devtools-highlight type="markup" ranges=${highlightRanges}>${title}</devtools-highlight></div>
-      ${location ? html10`<span class="tag">${location}</span>` : nothing4}`;
+      ${location ? html11`<span class="tag">${location}</span>` : nothing4}`;
   }
   selectItem(itemIndex, _promptValue) {
     if (itemIndex === null) {
@@ -14077,7 +14124,7 @@ import * as SDK16 from "./../../core/sdk/sdk.js";
 import * as Formatter3 from "./../../models/formatter/formatter.js";
 import * as SourceMapScopes4 from "./../../models/source_map_scopes/source_map_scopes.js";
 import * as Buttons4 from "./../../ui/components/buttons/buttons.js";
-import * as TextEditor7 from "./../../ui/components/text_editor/text_editor.js";
+import * as TextEditor6 from "./../../ui/components/text_editor/text_editor.js";
 import * as ObjectUI4 from "./../../ui/legacy/components/object_ui/object_ui.js";
 
 // gen/front_end/ui/legacy/components/object_ui/objectValue.css.js
@@ -14578,7 +14625,7 @@ var WatchExpressionsSidebarPane = class _WatchExpressionsSidebarPane extends UI2
 var ObjectPropertyPrompt = class extends UI26.TextPrompt.TextPrompt {
   constructor() {
     super();
-    this.initialize(TextEditor7.JavaScript.completeInContext);
+    this.initialize(TextEditor6.JavaScript.completeInContext);
   }
 };
 var WatchExpression = class _WatchExpression extends Common18.ObjectWrapper.ObjectWrapper {

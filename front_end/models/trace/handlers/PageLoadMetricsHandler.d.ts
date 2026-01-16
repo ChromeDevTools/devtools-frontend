@@ -63,7 +63,8 @@ export declare const enum MetricName {
     TBT = "TBT",
     CLS = "CLS",
     NAV = "Nav",
-    SOFT_NAV = "Nav"
+    SOFT_NAV = "Nav*",
+    SOFT_LCP = "LCP*"
 }
 export interface MetricScore {
     metricName: MetricName;

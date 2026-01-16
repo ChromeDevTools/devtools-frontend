@@ -308,6 +308,10 @@ const UIStrings = {
      */
     largestContentfulPaint: 'Largest Contentful Paint',
     /**
+     * @description Text in Timeline UIUtils of the Performance panel
+     */
+    softLargestContentfulPaint: 'Soft Largest Contentful Paint',
+    /**
      * @description Text for timestamps of items
      */
     timestamp: 'Timestamp',
@@ -684,7 +688,7 @@ export function maybeInitSylesMap() {
         ["firstPaint" /* Types.Events.Name.MARK_FIRST_PAINT */]: new TimelineRecordStyle(i18nString(UIStrings.firstPaint), defaultCategoryStyles.painting, true),
         ["firstContentfulPaint" /* Types.Events.Name.MARK_FCP */]: new TimelineRecordStyle(i18nString(UIStrings.firstContentfulPaint), defaultCategoryStyles.rendering, true),
         ["largestContentfulPaint::Candidate" /* Types.Events.Name.MARK_LCP_CANDIDATE */]: new TimelineRecordStyle(i18nString(UIStrings.largestContentfulPaint), defaultCategoryStyles.rendering, true),
-        ["largestContentfulPaint::CandidateForSoftNavigation" /* Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION */]: new TimelineRecordStyle(i18nString(UIStrings.largestContentfulPaint), defaultCategoryStyles.rendering, true),
+        ["largestContentfulPaint::CandidateForSoftNavigation" /* Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION */]: new TimelineRecordStyle(i18nString(UIStrings.softLargestContentfulPaint), defaultCategoryStyles.rendering, true),
         ["TimeStamp" /* Types.Events.Name.TIME_STAMP */]: new TimelineRecordStyle(i18nString(UIStrings.timestamp), defaultCategoryStyles.scripting),
         ["ConsoleTime" /* Types.Events.Name.CONSOLE_TIME */]: new TimelineRecordStyle(i18nString(UIStrings.consoleTime), defaultCategoryStyles.scripting),
         ["UserTiming" /* Types.Events.Name.USER_TIMING */]: new TimelineRecordStyle(i18nString(UIStrings.userTiming), defaultCategoryStyles.scripting),
@@ -798,15 +802,14 @@ export function markerDetailsForEvent(event) {
     }
     if (Types.Events.isAnyLargestContentfulPaintCandidate(event)) {
         color = 'var(--sys-color-green)';
-        title = "LCP" /* Handlers.ModelHandlers.PageLoadMetrics.MetricName.LCP */;
+        title = Types.Events.isSoftLargestContentfulPaintCandidate(event) ?
+            "LCP*" /* Handlers.ModelHandlers.PageLoadMetrics.MetricName.SOFT_LCP */ :
+            "LCP" /* Handlers.ModelHandlers.PageLoadMetrics.MetricName.LCP */;
     }
-    if (Types.Events.isNavigationStart(event)) {
+    if (Types.Events.isNavigationStart(event) || Types.Events.isSoftNavigationStart(event)) {
         color = 'var(--color-text-primary)';
-        title = "Nav" /* Handlers.ModelHandlers.PageLoadMetrics.MetricName.NAV */;
-    }
-    if (Types.Events.isSoftNavigationStart(event)) {
-        color = 'var(--sys-color-blue)';
-        title = "Nav" /* Handlers.ModelHandlers.PageLoadMetrics.MetricName.SOFT_NAV */;
+        title = Types.Events.isSoftNavigationStart(event) ? "Nav*" /* Handlers.ModelHandlers.PageLoadMetrics.MetricName.SOFT_NAV */ :
+            "Nav" /* Handlers.ModelHandlers.PageLoadMetrics.MetricName.NAV */;
     }
     if (Types.Events.isMarkDOMContent(event)) {
         color = 'var(--color-text-disabled)';

@@ -1,6 +1,16 @@
 import * as SDK from '../../core/sdk/sdk.js';
 import type { ComputedStyleModel } from './ComputedStyleModel.js';
 import { ElementsSidebarPane } from './ElementsSidebarPane.js';
+interface ViewInput {
+    style: Map<string, string>;
+    highlightedMode: string;
+    node: SDK.DOMModel.DOMNode | null;
+    contentWidth: string;
+    contentHeight: string;
+    onHighlightNode: (showHighlight: boolean, mode: string) => void;
+    onStartEditing: (target: Element, box: string, styleProperty: string, computedStyle: Map<string, string>) => void;
+}
+type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 export declare class MetricsSidebarPane extends ElementsSidebarPane {
     originalPropertyData: SDK.CSSProperty.CSSProperty | null;
     previousPropertyDataCandidate: SDK.CSSProperty.CSSProperty | null;
@@ -8,21 +18,17 @@ export declare class MetricsSidebarPane extends ElementsSidebarPane {
     private highlightMode;
     private computedStyle;
     private isEditingMetrics?;
-    constructor(computedStyleModel: ComputedStyleModel);
+    private view;
+    constructor(computedStyleModel: ComputedStyleModel, view?: View);
     performUpdate(): Promise<void>;
     onCSSModelChanged(): void;
-    /**
-     * Toggle the visibility of the Metrics pane. This toggle allows external
-     * callers to control the visibility of this pane, but toggling this on does
-     * not guarantee the pane will always show up, because the pane's visibility
-     * is also controlled by the internal condition that style cannot be empty.
-     */
-    toggleVisibility(isVisible: boolean): void;
     private getPropertyValueAsPx;
     private getBox;
     private highlightDOMNode;
+    private getContentAreaWidthPx;
+    private getContentAreaHeightPx;
     private updateMetrics;
-    startEditing(target: EventTarget | null, box: string, styleProperty: string, computedStyle: Map<string, string>): void;
+    startEditing(targetElement: Element, box: string, styleProperty: string, computedStyle: Map<string, string>): void;
     private handleKeyDown;
     editingEnded(element: Element, context: {
         keyDownHandler: (arg0: Event) => void;
@@ -36,3 +42,4 @@ export declare class MetricsSidebarPane extends ElementsSidebarPane {
     private applyUserInput;
     private editingCommitted;
 }
+export {};

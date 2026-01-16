@@ -1363,8 +1363,11 @@ __export(ElementsSidebarPane_exports, {
 import * as UI5 from "./../../ui/legacy/legacy.js";
 var ElementsSidebarPane = class extends UI5.Widget.VBox {
   computedStyleModelInternal;
-  constructor(computedStyleModel, delegatesFocus) {
-    super({ useShadowDom: true, delegatesFocus, classes: ["flex-none"] });
+  constructor(computedStyleModel, options = {}) {
+    options.useShadowDom = options.useShadowDom ?? true;
+    options.classes = options.classes ?? [];
+    options.classes.push("flex-none");
+    super(options);
     this.computedStyleModelInternal = computedStyleModel;
     this.computedStyleModelInternal.addEventListener("CSSModelChanged", this.onCSSModelChanged, this);
     this.computedStyleModelInternal.addEventListener("ComputedStyleChanged", this.onComputedStyleChanged, this);
@@ -7896,11 +7899,7 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common4.ObjectWrapper.e
   #updateAbortController;
   #updateComputedStylesAbortController;
   constructor(computedStyleModel) {
-    super(
-      computedStyleModel,
-      true
-      /* delegatesFocus */
-    );
+    super(computedStyleModel, { delegatesFocus: true });
     this.setMinimumSize(96, 26);
     this.registerRequiredCSS(stylesSidebarPane_css_default);
     Common4.Settings.Settings.instance().moduleSetting("text-editor-indent").addChangeListener(this.requestUpdate, this);
@@ -16376,7 +16375,7 @@ var metricsSidebarPane_css_default = `/**
   font-size: 10px;
   text-align: center;
   white-space: nowrap;
-  min-height: var(--metrics-height);
+  height: var(--metrics-height);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -16394,19 +16393,11 @@ var metricsSidebarPane_css_default = `/**
 
 :host {
   --metrics-height: 190px;
-
-  height: var(--metrics-height);
-  contain: strict;
 }
 
-:host(.invisible) {
-  visibility: hidden;
+.metrics.collapsed {
   height: 0;
-}
-
-:host(.collapsed) {
-  visibility: collapse;
-  height: 0;
+  padding: 0;
 }
 /* The font we use on Windows takes up more vertical space, so adjust
  * the height of the metrics sidebar pane accordingly.
@@ -16528,6 +16519,127 @@ visible. */
 
 // gen/front_end/panels/elements/MetricsSidebarPane.js
 var { live } = Directives;
+var DEFAULT_VIEW7 = (input, output, target) => {
+  const { style, highlightedMode, node, contentWidth, contentHeight, onHighlightNode, onStartEditing } = input;
+  function createBoxPartElement(style2, name, side, suffix) {
+    const propertyName = (name !== "position" ? name + "-" : "") + side + suffix;
+    let value5 = style2.get(propertyName);
+    if (value5 === "" || name !== "position" && value5 === "unset") {
+      value5 = "\u2012";
+    } else if (name === "position" && value5 === "auto") {
+      value5 = "\u2012";
+    }
+    value5 = value5?.replace(/px$/, "");
+    value5 = value5 ? Platform9.NumberUtilities.toFixedIfFloating(value5) : value5;
+    return html12`<div class=${side} jslog=${VisualLogging11.value(propertyName).track({
+      dblclick: true,
+      keydown: "Enter|Escape|ArrowUp|ArrowDown|PageUp|PageDown",
+      change: true
+    })}
+        @dblclick=${(e) => onStartEditing(e.currentTarget, name, propertyName, style2)}
+        .innerText=${live(value5 ?? "")}>
+    </div>`;
+  }
+  const noMarginDisplayType = /* @__PURE__ */ new Set([
+    "table-cell",
+    "table-column",
+    "table-column-group",
+    "table-footer-group",
+    "table-header-group",
+    "table-row",
+    "table-row-group"
+  ]);
+  const noPaddingDisplayType = /* @__PURE__ */ new Set([
+    "table-column",
+    "table-column-group",
+    "table-footer-group",
+    "table-header-group",
+    "table-row",
+    "table-row-group"
+  ]);
+  const noPositionType = /* @__PURE__ */ new Set(["static"]);
+  const boxes = ["content", "padding", "border", "margin", "position"];
+  const boxColors = [
+    Common12.Color.PageHighlight.Content,
+    Common12.Color.PageHighlight.Padding,
+    Common12.Color.PageHighlight.Border,
+    Common12.Color.PageHighlight.Margin,
+    Common12.Color.Legacy.fromRGBA([0, 0, 0, 0])
+  ];
+  const boxLabels = ["content", "padding", "border", "margin", "position"];
+  let previousBox = nothing4;
+  for (let i = 0; i < boxes.length; ++i) {
+    const name = boxes[i];
+    const display = style.get("display");
+    const position = style.get("position");
+    if (!display || !position) {
+      continue;
+    }
+    if (name === "margin" && noMarginDisplayType.has(display)) {
+      continue;
+    }
+    if (name === "padding" && noPaddingDisplayType.has(display)) {
+      continue;
+    }
+    if (name === "position" && noPositionType.has(position)) {
+      continue;
+    }
+    const shouldHighlight = !node || highlightedMode === "all" || name === highlightedMode;
+    const backgroundColor = boxColors[i].asString(
+      "rgba"
+      /* Common.Color.Format.RGBA */
+    ) || "";
+    const suffix = name === "border" ? "-width" : "";
+    const box = html12`
+      <div
+          class="${name} ${shouldHighlight ? "highlighted" : ""}"
+          style="background-color: ${shouldHighlight ? backgroundColor : ""}"
+          jslog=${VisualLogging11.metricsBox().context(name).track({ hover: true })}
+          @mouseover=${(e) => {
+      e.consume();
+      onHighlightNode(true, name === "position" ? "all" : name);
+    }}>
+      ${name === "content" ? html12`
+        <span jslog=${VisualLogging11.value("width").track({
+      dblclick: true,
+      keydown: "Enter|Escape|ArrowUp|ArrowDown|PageUp|PageDown",
+      change: true
+    })}
+            @dblclick=${(e) => onStartEditing(e.currentTarget, "width", "width", style)}
+            .innerText=${live(contentWidth)}>
+        </span>
+        <span> × </span>
+        <span jslog=${VisualLogging11.value("height").track({
+      dblclick: true,
+      keydown: "Enter|Escape|ArrowUp|ArrowDown|PageUp|PageDown",
+      change: true
+    })}
+            @dblclick=${(e) => onStartEditing(e.currentTarget, "height", "height", style)}
+            .innerText=${live(contentHeight)}>
+        </span>` : html12`
+        <div class="label">${boxLabels[i]}</div>
+          ${createBoxPartElement(style, name, "top", suffix)}
+          <br>
+          ${createBoxPartElement(style, name, "left", suffix)}
+          ${previousBox}
+          ${createBoxPartElement(style, name, "right", suffix)}
+          <br>
+          ${createBoxPartElement(style, name, "bottom", suffix)}`}
+        </div>`;
+    previousBox = box;
+  }
+  render9(html12`
+    <div class="metrics ${!node ? "collapsed" : ""}" @mouseover=${(e) => {
+    e.consume();
+    onHighlightNode(true, "all");
+  }}
+        @mouseleave=${(e) => {
+    e.consume();
+    onHighlightNode(false, "all");
+  }}>
+      ${previousBox}
+    </div>`, target);
+};
 var MetricsSidebarPane = class extends ElementsSidebarPane {
   originalPropertyData;
   previousPropertyDataCandidate;
@@ -16535,15 +16647,16 @@ var MetricsSidebarPane = class extends ElementsSidebarPane {
   highlightMode;
   computedStyle;
   isEditingMetrics;
-  constructor(computedStyleModel) {
-    super(computedStyleModel);
+  view;
+  constructor(computedStyleModel, view = DEFAULT_VIEW7) {
+    super(computedStyleModel, { jslog: `${VisualLogging11.pane("styles-metrics")}` });
     this.registerRequiredCSS(metricsSidebarPane_css_default);
     this.originalPropertyData = null;
     this.previousPropertyDataCandidate = null;
     this.inlineStyle = null;
     this.highlightMode = "";
     this.computedStyle = null;
-    this.contentElement.setAttribute("jslog", `${VisualLogging11.pane("styles-metrics")}`);
+    this.view = view;
   }
   async performUpdate() {
     if (this.isEditingMetrics) {
@@ -16552,8 +16665,17 @@ var MetricsSidebarPane = class extends ElementsSidebarPane {
     const node = this.node();
     const cssModel = this.cssModel();
     if (!node || node.nodeType() !== Node.ELEMENT_NODE || !cssModel) {
-      this.contentElement.removeChildren();
-      this.element.classList.add("collapsed");
+      this.view({
+        style: /* @__PURE__ */ new Map(),
+        highlightedMode: "",
+        node: null,
+        contentWidth: "",
+        contentHeight: "",
+        onHighlightNode: () => {
+        },
+        onStartEditing: () => {
+        }
+      }, void 0, this.contentElement);
       return await Promise.resolve();
     }
     function callback(style) {
@@ -16580,15 +16702,6 @@ var MetricsSidebarPane = class extends ElementsSidebarPane {
   onCSSModelChanged() {
     this.requestUpdate();
   }
-  /**
-   * Toggle the visibility of the Metrics pane. This toggle allows external
-   * callers to control the visibility of this pane, but toggling this on does
-   * not guarantee the pane will always show up, because the pane's visibility
-   * is also controlled by the internal condition that style cannot be empty.
-   */
-  toggleVisibility(isVisible) {
-    this.element.classList.toggle("invisible", !isVisible);
-  }
   getPropertyValueAsPx(style, propertyName) {
     const propertyValue = style.get(propertyName);
     if (!propertyValue) {
@@ -16604,8 +16717,7 @@ var MetricsSidebarPane = class extends ElementsSidebarPane {
     const bottom = this.getPropertyValueAsPx(computedStyle, componentName + "-bottom" + suffix);
     return { left, top, right, bottom };
   }
-  highlightDOMNode(showHighlight, mode, event) {
-    event.consume();
+  highlightDOMNode(showHighlight, mode) {
     const node = this.node();
     if (showHighlight && node) {
       if (this.highlightMode === mode) {
@@ -16621,153 +16733,46 @@ var MetricsSidebarPane = class extends ElementsSidebarPane {
       this.updateMetrics(this.computedStyle, mode);
     }
   }
-  updateMetrics(style, highlightedMode = "all") {
-    const self = this;
-    function createBoxPartElement(style2, name, side, suffix) {
-      const propertyName = (name !== "position" ? name + "-" : "") + side + suffix;
-      let value5 = style2.get(propertyName);
-      if (value5 === "" || name !== "position" && value5 === "unset") {
-        value5 = "\u2012";
-      } else if (name === "position" && value5 === "auto") {
-        value5 = "\u2012";
-      }
-      value5 = value5?.replace(/px$/, "");
-      value5 = value5 ? Platform9.NumberUtilities.toFixedIfFloating(value5) : value5;
-      return html12`<div class=${side} jslog=${VisualLogging11.value(propertyName).track({
-        dblclick: true,
-        keydown: "Enter|Escape|ArrowUp|ArrowDown|PageUp|PageDown",
-        change: true
-      })}
-          @dblclick=${(e) => this.startEditing(e.currentTarget, name, propertyName, style2)}
-          .innerText=${live(value5 ?? "")}>
-      </div>`;
+  getContentAreaWidthPx(style) {
+    let width = style.get("width");
+    if (!width) {
+      return "";
     }
-    function getContentAreaWidthPx(style2) {
-      let width = style2.get("width");
-      if (!width) {
-        return "";
-      }
-      width = width.replace(/px$/, "");
-      const widthValue = Number(width);
-      if (!isNaN(widthValue) && style2.get("box-sizing") === "border-box") {
-        const borderBox = self.getBox(style2, "border");
-        const paddingBox = self.getBox(style2, "padding");
-        width = (widthValue - borderBox.left - borderBox.right - paddingBox.left - paddingBox.right).toString();
-      }
-      return Platform9.NumberUtilities.toFixedIfFloating(width);
+    width = width.replace(/px$/, "");
+    const widthValue = Number(width);
+    if (!isNaN(widthValue) && style.get("box-sizing") === "border-box") {
+      const borderBox = this.getBox(style, "border");
+      const paddingBox = this.getBox(style, "padding");
+      width = (widthValue - borderBox.left - borderBox.right - paddingBox.left - paddingBox.right).toString();
     }
-    function getContentAreaHeightPx(style2) {
-      let height = style2.get("height");
-      if (!height) {
-        return "";
-      }
-      height = height.replace(/px$/, "");
-      const heightValue = Number(height);
-      if (!isNaN(heightValue) && style2.get("box-sizing") === "border-box") {
-        const borderBox = self.getBox(style2, "border");
-        const paddingBox = self.getBox(style2, "padding");
-        height = (heightValue - borderBox.top - borderBox.bottom - paddingBox.top - paddingBox.bottom).toString();
-      }
-      return Platform9.NumberUtilities.toFixedIfFloating(height);
-    }
-    const noMarginDisplayType = /* @__PURE__ */ new Set([
-      "table-cell",
-      "table-column",
-      "table-column-group",
-      "table-footer-group",
-      "table-header-group",
-      "table-row",
-      "table-row-group"
-    ]);
-    const noPaddingDisplayType = /* @__PURE__ */ new Set([
-      "table-column",
-      "table-column-group",
-      "table-footer-group",
-      "table-header-group",
-      "table-row",
-      "table-row-group"
-    ]);
-    const noPositionType = /* @__PURE__ */ new Set(["static"]);
-    const boxes = ["content", "padding", "border", "margin", "position"];
-    const boxColors = [
-      Common12.Color.PageHighlight.Content,
-      Common12.Color.PageHighlight.Padding,
-      Common12.Color.PageHighlight.Border,
-      Common12.Color.PageHighlight.Margin,
-      Common12.Color.Legacy.fromRGBA([0, 0, 0, 0])
-    ];
-    const boxLabels = ["content", "padding", "border", "margin", "position"];
-    let previousBox = nothing4;
-    for (let i = 0; i < boxes.length; ++i) {
-      const name = boxes[i];
-      const display = style.get("display");
-      const position = style.get("position");
-      if (!display || !position) {
-        continue;
-      }
-      if (name === "margin" && noMarginDisplayType.has(display)) {
-        continue;
-      }
-      if (name === "padding" && noPaddingDisplayType.has(display)) {
-        continue;
-      }
-      if (name === "position" && noPositionType.has(position)) {
-        continue;
-      }
-      const node = this.node();
-      const shouldHighlight = !node || highlightedMode === "all" || name === highlightedMode;
-      const backgroundColor = boxColors[i].asString(
-        "rgba"
-        /* Common.Color.Format.RGBA */
-      ) || "";
-      const suffix = name === "border" ? "-width" : "";
-      const box = html12`
-        <div
-            class="${name} ${shouldHighlight ? "highlighted" : ""}"
-            style="background-color: ${shouldHighlight ? backgroundColor : ""}"
-            jslog=${VisualLogging11.metricsBox().context(name).track({ hover: true })}
-            @mouseover=${this.highlightDOMNode.bind(this, true, name === "position" ? "all" : name)}>
-        ${name === "content" ? html12`
-          <span jslog=${VisualLogging11.value("width").track({
-        dblclick: true,
-        keydown: "Enter|Escape|ArrowUp|ArrowDown|PageUp|PageDown",
-        change: true
-      })}
-              @dblclick=${(e) => this.startEditing(e.currentTarget, "width", "width", style)}
-              .innerText=${live(getContentAreaWidthPx(style))}>
-          </span>
-          <span> × </span>
-          <span jslog=${VisualLogging11.value("height").track({
-        dblclick: true,
-        keydown: "Enter|Escape|ArrowUp|ArrowDown|PageUp|PageDown",
-        change: true
-      })}
-              @dblclick=${(e) => this.startEditing(e.currentTarget, "height", "height", style)}
-              .innerText=${live(getContentAreaHeightPx(style))}>
-          </span>` : html12`
-          <div class="label">${boxLabels[i]}</div>
-            ${createBoxPartElement.call(this, style, name, "top", suffix)}
-            <br>
-            ${createBoxPartElement.call(this, style, name, "left", suffix)}
-            ${previousBox}
-            ${createBoxPartElement.call(this, style, name, "right", suffix)}
-            <br>
-            ${createBoxPartElement.call(this, style, name, "bottom", suffix)}`}
-          </div>`;
-      previousBox = box;
-    }
-    render9(html12`
-      <div class="metrics" @mouseover=${this.highlightDOMNode.bind(this, false, "all")}
-          @mouseleave=${this.highlightDOMNode.bind(this, false, "all")}>
-        ${previousBox}
-      </div>`, this.contentElement);
-    this.element.classList.remove("collapsed");
+    return Platform9.NumberUtilities.toFixedIfFloating(width);
   }
-  startEditing(target, box, styleProperty, computedStyle) {
-    if (!(target instanceof Element)) {
-      return;
+  getContentAreaHeightPx(style) {
+    let height = style.get("height");
+    if (!height) {
+      return "";
     }
-    const targetElement = target;
+    height = height.replace(/px$/, "");
+    const heightValue = Number(height);
+    if (!isNaN(heightValue) && style.get("box-sizing") === "border-box") {
+      const borderBox = this.getBox(style, "border");
+      const paddingBox = this.getBox(style, "padding");
+      height = (heightValue - borderBox.top - borderBox.bottom - paddingBox.top - paddingBox.bottom).toString();
+    }
+    return Platform9.NumberUtilities.toFixedIfFloating(height);
+  }
+  updateMetrics(style, highlightedMode = "all") {
+    this.view({
+      style,
+      highlightedMode,
+      node: this.node(),
+      contentWidth: this.getContentAreaWidthPx(style),
+      contentHeight: this.getContentAreaHeightPx(style),
+      onHighlightNode: this.highlightDOMNode.bind(this),
+      onStartEditing: this.startEditing.bind(this)
+    }, void 0, this.contentElement);
+  }
+  startEditing(targetElement, box, styleProperty, computedStyle) {
     if (UI21.UIUtils.isBeingEdited(targetElement)) {
       return;
     }
@@ -17606,10 +17611,6 @@ ${node.simpleSelector()} {}`, false);
     });
     const showMetricsWidgetInComputedPane = () => {
       this.metricsWidget.show(computedStylePanesWrapper.element, this.computedStyleWidget.element);
-      this.metricsWidget.toggleVisibility(
-        true
-        /* visible */
-      );
       this.stylesWidget.removeEventListener("StylesUpdateCompleted", toggleMetricsWidget);
     };
     const showMetricsWidgetInStylesPane = () => {
@@ -17619,16 +17620,17 @@ ${node.simpleSelector()} {}`, false);
       } else {
         this.metricsWidget.show(matchedStylePanesWrapper.element);
         if (!this.stylesWidget.hasMatchedStyles) {
-          this.metricsWidget.toggleVisibility(
-            false
-            /* invisible */
-          );
+          this.metricsWidget.hideWidget();
         }
         this.stylesWidget.addEventListener("StylesUpdateCompleted", toggleMetricsWidget);
       }
     };
     const toggleMetricsWidget = (event) => {
-      this.metricsWidget.toggleVisibility(event.data.hasMatchedStyles);
+      if (event.data.hasMatchedStyles) {
+        this.metricsWidget.showWidget();
+      } else {
+        this.metricsWidget.hideWidget();
+      }
     };
     const tabSelected = (event) => {
       const { tabId } = event.data;
@@ -18147,7 +18149,7 @@ var ToggleSearchActionDelegate = class {
 var EventListenersWidget_exports = {};
 __export(EventListenersWidget_exports, {
   ActionDelegate: () => ActionDelegate2,
-  DEFAULT_VIEW: () => DEFAULT_VIEW7,
+  DEFAULT_VIEW: () => DEFAULT_VIEW8,
   DispatchFilterBy: () => DispatchFilterBy,
   EventListenersWidget: () => EventListenersWidget
 });
@@ -18196,7 +18198,7 @@ var UIStrings17 = {
 var str_17 = i18n33.i18n.registerUIStrings("panels/elements/EventListenersWidget.ts", UIStrings17);
 var i18nString16 = i18n33.i18n.getLocalizedString.bind(void 0, str_17);
 var eventListenersWidgetInstance;
-var DEFAULT_VIEW7 = (input, _output, target) => {
+var DEFAULT_VIEW8 = (input, _output, target) => {
   render10(html13`
     <div jslog=${VisualLogging14.pane("elements.event-listeners").track({ resize: true })}>
       <devtools-toolbar class="event-listener-toolbar" role="presentation">
@@ -18235,7 +18237,7 @@ var EventListenersWidget = class _EventListenersWidget extends UI24.Widget.VBox 
   showFrameworkListenersSetting;
   lastRequestedNode;
   #view;
-  constructor(view = DEFAULT_VIEW7) {
+  constructor(view = DEFAULT_VIEW8) {
     super();
     this.#view = view;
     this.showForAncestorsSetting = Common15.Settings.Settings.instance().moduleSetting("show-event-listeners-for-ancestors");
@@ -18362,7 +18364,7 @@ var ActionDelegate2 = class {
 // gen/front_end/panels/elements/PropertiesWidget.js
 var PropertiesWidget_exports = {};
 __export(PropertiesWidget_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW8,
+  DEFAULT_VIEW: () => DEFAULT_VIEW9,
   PropertiesWidget: () => PropertiesWidget
 });
 import "./../../ui/legacy/legacy.js";
@@ -18423,7 +18425,7 @@ var UIStrings18 = {
 };
 var str_18 = i18n35.i18n.registerUIStrings("panels/elements/PropertiesWidget.ts", UIStrings18);
 var i18nString17 = i18n35.i18n.getLocalizedString.bind(void 0, str_18);
-var DEFAULT_VIEW8 = (input, _output, target) => {
+var DEFAULT_VIEW9 = (input, _output, target) => {
   render11(html14`
     <div jslog=${VisualLogging15.pane("element-properties").track({ resize: true })}>
       <div class="hbox properties-widget-toolbar">
@@ -18454,7 +18456,7 @@ var PropertiesWidget = class extends UI25.Widget.VBox {
   lastRequestedNode;
   #view;
   #displayNoMatchingPropertyMessage = false;
-  constructor(view = DEFAULT_VIEW8) {
+  constructor(view = DEFAULT_VIEW9) {
     super({ useShadowDom: true });
     this.registerRequiredCSS(propertiesWidget_css_default);
     this.showAllPropertiesSetting = getShowAllPropertiesSetting();
@@ -18560,7 +18562,7 @@ var PropertiesWidget = class extends UI25.Widget.VBox {
 // gen/front_end/panels/elements/NodeStackTraceWidget.js
 var NodeStackTraceWidget_exports = {};
 __export(NodeStackTraceWidget_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW9,
+  DEFAULT_VIEW: () => DEFAULT_VIEW10,
   MaxLengthForLinks: () => MaxLengthForLinks,
   NodeStackTraceWidget: () => NodeStackTraceWidget
 });
@@ -18595,7 +18597,7 @@ var UIStrings19 = {
 };
 var str_19 = i18n37.i18n.registerUIStrings("panels/elements/NodeStackTraceWidget.ts", UIStrings19);
 var i18nString18 = i18n37.i18n.getLocalizedString.bind(void 0, str_19);
-var DEFAULT_VIEW9 = (input, _output, target) => {
+var DEFAULT_VIEW10 = (input, _output, target) => {
   const { target: sdkTarget, linkifier, stackTrace } = input;
   render12(html15`
     <style>${nodeStackTraceWidget_css_default}</style>
@@ -18607,7 +18609,7 @@ var DEFAULT_VIEW9 = (input, _output, target) => {
 var NodeStackTraceWidget = class extends UI26.Widget.VBox {
   #linkifier = new Components7.Linkifier.Linkifier(MaxLengthForLinks);
   #view;
-  constructor(view = DEFAULT_VIEW9) {
+  constructor(view = DEFAULT_VIEW10) {
     super({ useShadowDom: true });
     this.#view = view;
   }
@@ -19009,7 +19011,7 @@ var ClassNamePrompt = class extends UI27.TextPrompt.TextPrompt {
 var ElementStatePaneWidget_exports = {};
 __export(ElementStatePaneWidget_exports, {
   ButtonProvider: () => ButtonProvider4,
-  DEFAULT_VIEW: () => DEFAULT_VIEW10,
+  DEFAULT_VIEW: () => DEFAULT_VIEW11,
   ElementStatePaneWidget: () => ElementStatePaneWidget
 });
 import * as i18n41 from "./../../core/i18n/i18n.js";
@@ -19133,7 +19135,7 @@ var SpecificPseudoStates;
   SpecificPseudoStates2["OPEN"] = "open";
   SpecificPseudoStates2["TARGET_CURRENT"] = "target-current";
 })(SpecificPseudoStates || (SpecificPseudoStates = {}));
-var DEFAULT_VIEW10 = (input, _output, target) => {
+var DEFAULT_VIEW11 = (input, _output, target) => {
   const createElementStateCheckbox = (state) => {
     return html16`
         <div id=${state.state}>
@@ -19182,7 +19184,7 @@ var ElementStatePaneWidget = class extends UI28.Widget.Widget {
   #cssModel;
   #states = /* @__PURE__ */ new Map();
   #view;
-  constructor(view = DEFAULT_VIEW10) {
+  constructor(view = DEFAULT_VIEW11) {
     super({ useShadowDom: true });
     this.#view = view;
     this.#duals = /* @__PURE__ */ new Map();

@@ -302,6 +302,82 @@ describe('DebuggerModel', () => {
       await stepIntoRequestPromise;
     });
   });
+
+  describe('ignoring sourcemaps', () => {
+    beforeEach(() => {
+      SDK.PageResourceLoader.PageResourceLoader.instance({
+        forceNew: true,
+        loadOverride: null,
+      });
+    });
+
+    it('ignores sourcemaps when DWARF symbols are present', () => {
+      const connection = new MockCDPConnection();
+      const target = createTarget({connection});
+      const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
+      const sourceMapManager = debuggerModel!.sourceMapManager();
+      const attachSourceMapSpy = sinon.spy(sourceMapManager, 'attachSourceMap');
+
+      const url = 'http://localhost/index.html';
+      const sourceMapUrl = 'http://localhost/index.html.map';
+      const debugSymbols = [{
+        type: Protocol.Debugger.DebugSymbolsType.ExternalDWARF,
+        externalURL: 'http://localhost/index.dwp',
+      }];
+
+      connection.dispatchEvent(
+          'Debugger.scriptParsed', {
+            scriptId: SCRIPT_ID_ONE,
+            url,
+            startLine: 0,
+            startColumn: 0,
+            endLine: 1,
+            endColumn: 10,
+            executionContextId: 1 as Protocol.Runtime.ExecutionContextId,
+            hash: '',
+            buildId: '',
+            isLiveEdit: false,
+            sourceMapURL: sourceMapUrl,
+            hasSourceURL: false,
+            length: 10,
+            debugSymbols,
+          },
+          target.sessionId);
+
+      sinon.assert.notCalled(attachSourceMapSpy);
+    });
+
+    it('attaches sourcemaps when DWARF symbols are not present', () => {
+      const connection = new MockCDPConnection();
+      const target = createTarget({connection});
+      const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
+      const sourceMapManager = debuggerModel!.sourceMapManager();
+      const attachSourceMapSpy = sinon.spy(sourceMapManager, 'attachSourceMap');
+
+      const url = 'http://localhost/index.html';
+      const sourceMapUrl = 'http://localhost/index.html.map';
+
+      connection.dispatchEvent(
+          'Debugger.scriptParsed', {
+            scriptId: SCRIPT_ID_ONE,
+            url,
+            startLine: 0,
+            startColumn: 0,
+            endLine: 1,
+            endColumn: 10,
+            executionContextId: 1 as Protocol.Runtime.ExecutionContextId,
+            hash: '',
+            buildId: '',
+            isLiveEdit: false,
+            sourceMapURL: sourceMapUrl,
+            hasSourceURL: false,
+            length: 10,
+          },
+          target.sessionId);
+
+      sinon.assert.called(attachSourceMapSpy);
+    });
+  });
 });
 
 describe('DebuggerModel', () => {

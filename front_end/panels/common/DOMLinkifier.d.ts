@@ -1,4 +1,5 @@
 import * as SDK from '../../core/sdk/sdk.js';
+import type * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
 export interface Options {
     tooltip?: string;
@@ -35,7 +36,7 @@ interface DeferredViewInput {
 type DeferredView = (input: DeferredViewInput, output: object, target: HTMLElement) => void;
 export declare class DeferredDOMNodeLink extends UI.Widget.Widget {
     #private;
-    constructor(element?: HTMLElement, deferredNode?: SDK.DOMModel.DeferredDOMNode, options?: Options, view?: DeferredView);
+    constructor(element?: HTMLElement, deferredNode?: SDK.DOMModel.DeferredDOMNode, options?: Options, styleSheetId?: Protocol.DOM.StyleSheetId, view?: DeferredView);
     performUpdate(): void;
 }
 export declare class Linkifier {

@@ -90,12 +90,31 @@ export declare class TimelineDetailsContentHelper {
     private tableElement;
     constructor(target: SDK.Target.Target | null, linkifier: LegacyComponents.Linkifier.Linkifier | null);
     addSection(title: string, swatchColor?: string, event?: Trace.Types.Events.Event): void;
+    /**
+     * Creates a new section, but only if the provided `body` element is present,
+     * otherwise it does nothing.
+     */
+    appendSectionWithBodyIfExists(title: string, options: {
+        body: HTMLElement | null;
+        swatchColor?: string;
+        event?: Trace.Types.Events.Event;
+    }): void;
+    /**
+     * Generates a stack trace for the given event. If there is no stack data,
+     * nothing is appended; you can safely call this without fearing that it will
+     * create an empty section.
+     */
+    appendFunctionStackTraceSection(event: Trace.Types.Events.Event, parsedTrace: Trace.TraceModel.ParsedTrace): Promise<void>;
     linkifier(): LegacyComponents.Linkifier.Linkifier | null;
     appendTextRow(title: string, value: string | number | boolean): void;
     appendElementRow(title: string, content: string | Node, isWarning?: boolean, isStacked?: boolean): void;
     appendLocationRow(title: string, url: string, startLine: number, startColumn?: number, text?: string, omitOrigin?: boolean): void;
     appendLocationRange(title: string, url: Platform.DevToolsPath.UrlString, startLine: number, endLine?: number): void;
-    createChildStackTraceElement(runtimeStackTrace: Protocol.Runtime.StackTrace): Promise<void>;
+    /**
+     * Creates a stack trace element for the given trace, but checks if it
+     * contains any entries, and discards it if it's empty.
+     */
+    createChildStackTraceElement(runtimeStackTrace: Protocol.Runtime.StackTrace): Promise<HTMLElement | null>;
 }
 export declare const categoryBreakdownCacheSymbol: unique symbol;
 export interface TimelineMarkerStyle {

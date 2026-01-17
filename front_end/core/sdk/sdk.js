@@ -25351,7 +25351,7 @@ var DOMNode = class _DOMNode extends Common21.ObjectWrapper.ObjectWrapper {
     }
   }
   toAdoptedStyleSheets(ids) {
-    return ids.map((id) => new AdoptedStyleSheet(id, this.#domModel.cssModel()));
+    return ids.map((id) => new AdoptedStyleSheet(id, this));
   }
   setAdoptedStyleSheets(ids) {
     this.#adoptedStyleSheets = this.toAdoptedStyleSheets(ids);
@@ -25679,10 +25679,13 @@ var DOMDocument = class extends DOMNode {
 };
 var AdoptedStyleSheet = class {
   id;
-  cssModel;
-  constructor(id, cssModel) {
+  parent;
+  constructor(id, parent) {
     this.id = id;
-    this.cssModel = cssModel;
+    this.parent = parent;
+  }
+  get cssModel() {
+    return this.parent.domModel().cssModel();
   }
 };
 var DOMModel = class _DOMModel extends SDKModel {

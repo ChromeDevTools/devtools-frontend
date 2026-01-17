@@ -160,11 +160,13 @@ const DEFERRED_DEFAULT_VIEW = (input, _output, target) => {
 export class DeferredDOMNodeLink extends UI.Widget.Widget {
     #deferredNode = undefined;
     #options = undefined;
+    #styleSheetId = undefined;
     #view;
-    constructor(element, deferredNode, options, view = DEFERRED_DEFAULT_VIEW) {
+    constructor(element, deferredNode, options, styleSheetId, view = DEFERRED_DEFAULT_VIEW) {
         super(element, { useShadowDom: true });
         this.element.classList.remove('vbox');
         this.#deferredNode = deferredNode;
+        this.#styleSheetId = styleSheetId;
         this.#options = options;
         this.#view = view;
         this.performUpdate();
@@ -174,6 +176,14 @@ export class DeferredDOMNodeLink extends UI.Widget.Widget {
             preventKeyboardFocus: this.#options?.preventKeyboardFocus,
             onClick: () => {
                 this.#deferredNode?.resolve?.(node => {
+                    if (node && this.#styleSheetId) {
+                        for (const adoptedStyle of node.adoptedStyleSheetsForNode) {
+                            if (adoptedStyle.id === this.#styleSheetId) {
+                                void Common.Revealer.reveal(adoptedStyle);
+                                return;
+                            }
+                        }
+                    }
                     void Common.Revealer.reveal(node);
                     void node?.scrollIntoView();
                 });

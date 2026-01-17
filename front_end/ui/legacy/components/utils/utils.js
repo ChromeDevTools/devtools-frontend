@@ -1496,6 +1496,11 @@ var StackTracePreviewContent = class extends UI2.Widget.Widget {
   #options;
   #links = [];
   #table;
+  /**
+   * Updated when we update to define if we have any rows for the StackTrace;
+   * allowing the caller to know if this element is empty or not.
+   */
+  #hasRows = false;
   constructor(element, target, linkifier, options) {
     super(element, { useShadowDom: true });
     this.#target = target;
@@ -1517,6 +1522,9 @@ var StackTracePreviewContent = class extends UI2.Widget.Widget {
     this.#stackTrace?.addEventListener("UPDATED", this.performUpdate.bind(this));
     this.performUpdate();
   }
+  hasContent() {
+    return this.#hasRows;
+  }
   performUpdate() {
     if (!this.#linkifier) {
       return;
@@ -1524,11 +1532,13 @@ var StackTracePreviewContent = class extends UI2.Widget.Widget {
     const { runtimeStackTrace, tabStops } = this.#options;
     if (this.#stackTrace) {
       const stackTraceRows2 = buildStackTraceRows(this.#stackTrace, this.#target ?? null, this.#linkifier, tabStops, this.#options.showColumnNumber);
+      this.#hasRows = stackTraceRows2.length > 0;
       this.#links = renderStackTraceTable(this.#table, this.element, this.#options.expandable ?? false, stackTraceRows2);
       return;
     }
     const updateCallback = renderStackTraceTable.bind(null, this.#table, this.element, this.#options.expandable ?? false);
     const stackTraceRows = buildStackTraceRowsForLegacyRuntimeStackTrace(runtimeStackTrace ?? { callFrames: [] }, this.#target ?? null, this.#linkifier, tabStops, updateCallback, this.#options.showColumnNumber);
+    this.#hasRows = stackTraceRows.length > 0;
     this.#links = renderStackTraceTable(this.#table, this.element, this.#options.expandable ?? false, stackTraceRows);
   }
   get linkElements() {

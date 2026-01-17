@@ -308,17 +308,9 @@ const UIStrings = {
      */
     idleCallbackRequested: 'Idle callback requested',
     /**
-     * @description Stack label in Timeline UIUtils of the Performance panel
-     */
-    recalculationForced: 'Recalculation forced',
-    /**
      * @description Call site stack label in Timeline UIUtils of the Performance panel
      */
     firstLayoutInvalidation: 'First layout invalidation',
-    /**
-     * @description Stack label in Timeline UIUtils of the Performance panel
-     */
-    layoutForced: 'Layout forced',
     /**
      * @description Label in front of CSS property (eg `opacity`) being animated or a CSS animation name (eg `layer-4-fade-in-out`)
      */
@@ -1517,21 +1509,7 @@ export class TimelineUIUtils {
     static async generateCauses(event, contentHelper, parsedTrace) {
         const { startTime } = Trace.Helpers.Timing.eventTimingsMilliSeconds(event);
         let initiatorStackLabel = i18nString(UIStrings.initiatorStackTrace);
-        let stackLabel = i18nString(UIStrings.functionStack);
-        const stackTraceForEvent = Trace.Extras.StackTraceForEvent.get(event, parsedTrace.data);
-        if (stackTraceForEvent?.callFrames.length || stackTraceForEvent?.description || stackTraceForEvent?.parent) {
-            contentHelper.addSection(i18nString(UIStrings.functionStack));
-            await contentHelper.createChildStackTraceElement(stackTraceForEvent);
-            // TODO(andoli): also build stack trace component for other events
-            // that have a stack trace using the StackTraceForEvent helper.
-        }
-        else {
-            const stackTrace = Trace.Helpers.Trace.getZeroIndexedStackTraceInEventPayload(event);
-            if (stackTrace?.length) {
-                contentHelper.addSection(stackLabel);
-                await contentHelper.createChildStackTraceElement(TimelineUIUtils.stackTraceFromCallFrames(stackTrace));
-            }
-        }
+        await contentHelper.appendFunctionStackTraceSection(event, parsedTrace);
         switch (event.name) {
             case "TimerFire" /* Trace.Types.Events.Name.TIMER_FIRE */:
                 initiatorStackLabel = i18nString(UIStrings.timerInstalled);
@@ -1544,11 +1522,9 @@ export class TimelineUIUtils {
                 break;
             case "UpdateLayoutTree" /* Trace.Types.Events.Name.RECALC_STYLE */:
                 initiatorStackLabel = i18nString(UIStrings.firstInvalidated);
-                stackLabel = i18nString(UIStrings.recalculationForced);
                 break;
             case "Layout" /* Trace.Types.Events.Name.LAYOUT */:
                 initiatorStackLabel = i18nString(UIStrings.firstLayoutInvalidation);
-                stackLabel = i18nString(UIStrings.layoutForced);
                 break;
         }
         const initiator = parsedTrace.data.Initiators.eventToInitiator.get(event);
@@ -1559,8 +1535,8 @@ export class TimelineUIUtils {
             // and the time since the initiator (Pending For).
             const stackTrace = Trace.Helpers.Trace.getZeroIndexedStackTraceInEventPayload(initiator);
             if (stackTrace) {
-                contentHelper.addSection(initiatorStackLabel);
-                await contentHelper.createChildStackTraceElement(TimelineUIUtils.stackTraceFromCallFrames(stackTrace));
+                const traceElement = await contentHelper.createChildStackTraceElement(TimelineUIUtils.stackTraceFromCallFrames(stackTrace));
+                contentHelper.appendSectionWithBodyIfExists(initiatorStackLabel, { body: traceElement });
             }
             const link = this.createEntryLink(initiator);
             contentHelper.appendElementRow(i18nString(UIStrings.initiatedBy), link);
@@ -2085,6 +2061,30 @@ export class TimelineDetailsContentHelper {
         this.tableElement = this.element.createChild('div', 'vbox timeline-details-chip-body');
         this.fragment.appendChild(this.element);
     }
+    /**
+     * Creates a new section, but only if the provided `body` element is present,
+     * otherwise it does nothing.
+     */
+    appendSectionWithBodyIfExists(title, options) {
+        if (!options.body) {
+            return;
+        }
+        this.addSection(title, options.swatchColor, options.event);
+        this.tableElement.appendChild(options.body);
+    }
+    /**
+     * Generates a stack trace for the given event. If there is no stack data,
+     * nothing is appended; you can safely call this without fearing that it will
+     * create an empty section.
+     */
+    async appendFunctionStackTraceSection(event, parsedTrace) {
+        const stackTraceForEvent = Trace.Extras.StackTraceForEvent.get(event, parsedTrace.data);
+        if (!stackTraceForEvent) {
+            return;
+        }
+        const traceElement = await this.createChildStackTraceElement(stackTraceForEvent);
+        this.appendSectionWithBodyIfExists(i18nString(UIStrings.functionStack), { body: traceElement });
+    }
     linkifier() {
         return this.#linkifier;
     }
@@ -2143,9 +2143,13 @@ export class TimelineDetailsContentHelper {
         UI.UIUtils.createTextChild(locationContent, Platform.StringUtilities.sprintf(' [%s…%s]', startLine + 1, (endLine || 0) + 1 || ''));
         this.appendElementRow(title, locationContent);
     }
+    /**
+     * Creates a stack trace element for the given trace, but checks if it
+     * contains any entries, and discards it if it's empty.
+     */
     async createChildStackTraceElement(runtimeStackTrace) {
         if (!this.#linkifier) {
-            return;
+            return null;
         }
         let callFrameContents;
         if (this.target) {
@@ -2153,7 +2157,6 @@ export class TimelineDetailsContentHelper {
                 .createStackTraceFromProtocolRuntime(runtimeStackTrace, this.target);
             callFrameContents = new LegacyComponents.JSPresentationUtils.StackTracePreviewContent(undefined, this.target ?? undefined, this.#linkifier, { tabStops: true, showColumnNumber: true });
             callFrameContents.stackTrace = stackTrace;
-            await callFrameContents.updateComplete;
         }
         else {
             // I _think_ this only happens during tests.
@@ -2163,9 +2166,15 @@ export class TimelineDetailsContentHelper {
             // without a `target`.
             callFrameContents = new LegacyComponents.JSPresentationUtils.StackTracePreviewContent(undefined, this.target ?? undefined, this.#linkifier, { runtimeStackTrace, tabStops: true, showColumnNumber: true });
         }
-        const stackTraceElement = this.tableElement.createChild('div', 'timeline-details-view-row timeline-details-stack-values');
+        await callFrameContents.updateComplete;
+        if (!callFrameContents.hasContent()) {
+            return null;
+        }
+        const stackTraceElement = document.createElement('div');
+        stackTraceElement.classList.add('timeline-details-view-row', 'timeline-details-stack-values');
         callFrameContents.markAsRoot();
         callFrameContents.show(stackTraceElement);
+        return stackTraceElement;
     }
 }
 export const categoryBreakdownCacheSymbol = Symbol('categoryBreakdownCache');

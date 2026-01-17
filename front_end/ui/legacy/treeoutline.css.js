@@ -120,11 +120,11 @@ ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus {
 
 .tree-outline li::before {
   user-select: none;
+  mask-position: left center;
   mask-image: var(--image-file-arrow-collapse);
   background-color: var(--icon-default);
   content: "\\A0\\A0";
   text-shadow: none;
-  margin-top: calc(-1 * var(--sys-size-2));
   height: var(--sys-size-8);
   width: var(--sys-size-8);
 }

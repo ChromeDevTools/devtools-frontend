@@ -22,6 +22,7 @@ export interface StackTraceAsyncRow {
 export declare class StackTracePreviewContent extends UI.Widget.Widget {
     #private;
     constructor(element?: HTMLElement, target?: SDK.Target.Target, linkifier?: Linkifier, options?: Options);
+    hasContent(): boolean;
     performUpdate(): void;
     get linkElements(): readonly HTMLElement[];
     set target(target: SDK.Target.Target | undefined);

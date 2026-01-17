@@ -60,7 +60,7 @@ export declare class DOMTreeWidget extends UI.Widget.Widget {
     set rootDOMNode(node: SDK.DOMModel.DOMNode | null);
     get rootDOMNode(): SDK.DOMModel.DOMNode | null;
     constructor(element?: HTMLElement, view?: View);
-    selectDOMNode(node: SDK.DOMModel.DOMNode | null, focus?: boolean): void;
+    selectDOMNode(node: SDK.DOMModel.DOMNode | SDK.DOMModel.AdoptedStyleSheet | null, focus?: boolean): void;
     highlightNodeAttribute(node: SDK.DOMModel.DOMNode, attribute: string): void;
     setWordWrap(wrap: boolean): void;
     selectedDOMNode(): SDK.DOMModel.DOMNode | null;
@@ -164,6 +164,7 @@ export declare class ElementsTreeOutline extends ElementsTreeOutline_base {
     get isXMLMimeType(): boolean;
     selectedDOMNode(): SDK.DOMModel.DOMNode | null;
     selectDOMNode(node: SDK.DOMModel.DOMNode | null, focus?: boolean): void;
+    highlightAdoptedStyleSheet(adoptedStyleSheet: SDK.DOMModel.AdoptedStyleSheet): void;
     editing(): boolean;
     update(): void;
     selectedNodeChanged(focus: boolean): void;

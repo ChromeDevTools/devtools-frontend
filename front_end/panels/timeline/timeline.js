@@ -10809,17 +10809,9 @@ var UIStrings21 = {
    */
   idleCallbackRequested: "Idle callback requested",
   /**
-   * @description Stack label in Timeline UIUtils of the Performance panel
-   */
-  recalculationForced: "Recalculation forced",
-  /**
    * @description Call site stack label in Timeline UIUtils of the Performance panel
    */
   firstLayoutInvalidation: "First layout invalidation",
-  /**
-   * @description Stack label in Timeline UIUtils of the Performance panel
-   */
-  layoutForced: "Layout forced",
   /**
    * @description Label in front of CSS property (eg `opacity`) being animated or a CSS animation name (eg `layer-4-fade-in-out`)
    */
@@ -11939,18 +11931,7 @@ var TimelineUIUtils = class _TimelineUIUtils {
   static async generateCauses(event, contentHelper, parsedTrace) {
     const { startTime } = Trace25.Helpers.Timing.eventTimingsMilliSeconds(event);
     let initiatorStackLabel = i18nString21(UIStrings21.initiatorStackTrace);
-    let stackLabel = i18nString21(UIStrings21.functionStack);
-    const stackTraceForEvent = Trace25.Extras.StackTraceForEvent.get(event, parsedTrace.data);
-    if (stackTraceForEvent?.callFrames.length || stackTraceForEvent?.description || stackTraceForEvent?.parent) {
-      contentHelper.addSection(i18nString21(UIStrings21.functionStack));
-      await contentHelper.createChildStackTraceElement(stackTraceForEvent);
-    } else {
-      const stackTrace = Trace25.Helpers.Trace.getZeroIndexedStackTraceInEventPayload(event);
-      if (stackTrace?.length) {
-        contentHelper.addSection(stackLabel);
-        await contentHelper.createChildStackTraceElement(_TimelineUIUtils.stackTraceFromCallFrames(stackTrace));
-      }
-    }
+    await contentHelper.appendFunctionStackTraceSection(event, parsedTrace);
     switch (event.name) {
       case "TimerFire":
         initiatorStackLabel = i18nString21(UIStrings21.timerInstalled);
@@ -11963,11 +11944,9 @@ var TimelineUIUtils = class _TimelineUIUtils {
         break;
       case "UpdateLayoutTree":
         initiatorStackLabel = i18nString21(UIStrings21.firstInvalidated);
-        stackLabel = i18nString21(UIStrings21.recalculationForced);
         break;
       case "Layout":
         initiatorStackLabel = i18nString21(UIStrings21.firstLayoutInvalidation);
-        stackLabel = i18nString21(UIStrings21.layoutForced);
         break;
     }
     const initiator = parsedTrace.data.Initiators.eventToInitiator.get(event);
@@ -11976,8 +11955,8 @@ var TimelineUIUtils = class _TimelineUIUtils {
     if (initiator) {
       const stackTrace = Trace25.Helpers.Trace.getZeroIndexedStackTraceInEventPayload(initiator);
       if (stackTrace) {
-        contentHelper.addSection(initiatorStackLabel);
-        await contentHelper.createChildStackTraceElement(_TimelineUIUtils.stackTraceFromCallFrames(stackTrace));
+        const traceElement = await contentHelper.createChildStackTraceElement(_TimelineUIUtils.stackTraceFromCallFrames(stackTrace));
+        contentHelper.appendSectionWithBodyIfExists(initiatorStackLabel, { body: traceElement });
       }
       const link = this.createEntryLink(initiator);
       contentHelper.appendElementRow(i18nString21(UIStrings21.initiatedBy), link);
@@ -12462,6 +12441,30 @@ var TimelineDetailsContentHelper = class {
     this.tableElement = this.element.createChild("div", "vbox timeline-details-chip-body");
     this.fragment.appendChild(this.element);
   }
+  /**
+   * Creates a new section, but only if the provided `body` element is present,
+   * otherwise it does nothing.
+   */
+  appendSectionWithBodyIfExists(title, options) {
+    if (!options.body) {
+      return;
+    }
+    this.addSection(title, options.swatchColor, options.event);
+    this.tableElement.appendChild(options.body);
+  }
+  /**
+   * Generates a stack trace for the given event. If there is no stack data,
+   * nothing is appended; you can safely call this without fearing that it will
+   * create an empty section.
+   */
+  async appendFunctionStackTraceSection(event, parsedTrace) {
+    const stackTraceForEvent = Trace25.Extras.StackTraceForEvent.get(event, parsedTrace.data);
+    if (!stackTraceForEvent) {
+      return;
+    }
+    const traceElement = await this.createChildStackTraceElement(stackTraceForEvent);
+    this.appendSectionWithBodyIfExists(i18nString21(UIStrings21.functionStack), { body: traceElement });
+  }
   linkifier() {
     return this.#linkifier;
   }
@@ -12519,22 +12522,31 @@ var TimelineDetailsContentHelper = class {
     UI11.UIUtils.createTextChild(locationContent, Platform12.StringUtilities.sprintf(" [%s\u2026%s]", startLine + 1, (endLine || 0) + 1 || ""));
     this.appendElementRow(title, locationContent);
   }
+  /**
+   * Creates a stack trace element for the given trace, but checks if it
+   * contains any entries, and discards it if it's empty.
+   */
   async createChildStackTraceElement(runtimeStackTrace) {
     if (!this.#linkifier) {
-      return;
+      return null;
     }
     let callFrameContents;
     if (this.target) {
       const stackTrace = await Bindings2.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createStackTraceFromProtocolRuntime(runtimeStackTrace, this.target);
       callFrameContents = new LegacyComponents.JSPresentationUtils.StackTracePreviewContent(void 0, this.target ?? void 0, this.#linkifier, { tabStops: true, showColumnNumber: true });
       callFrameContents.stackTrace = stackTrace;
-      await callFrameContents.updateComplete;
     } else {
       callFrameContents = new LegacyComponents.JSPresentationUtils.StackTracePreviewContent(void 0, this.target ?? void 0, this.#linkifier, { runtimeStackTrace, tabStops: true, showColumnNumber: true });
     }
-    const stackTraceElement = this.tableElement.createChild("div", "timeline-details-view-row timeline-details-stack-values");
+    await callFrameContents.updateComplete;
+    if (!callFrameContents.hasContent()) {
+      return null;
+    }
+    const stackTraceElement = document.createElement("div");
+    stackTraceElement.classList.add("timeline-details-view-row", "timeline-details-stack-values");
     callFrameContents.markAsRoot();
     callFrameContents.show(stackTraceElement);
+    return stackTraceElement;
   }
 };
 var categoryBreakdownCacheSymbol = Symbol("categoryBreakdownCache");

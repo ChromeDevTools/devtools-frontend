@@ -16604,9 +16604,6 @@
   "panels/timeline/TimelineUIUtils.ts | layerRoot": {
     "message": "Layer root"
   },
-  "panels/timeline/TimelineUIUtils.ts | layoutForced": {
-    "message": "Layout forced"
-  },
   "panels/timeline/TimelineUIUtils.ts | layoutRoot": {
     "message": "Layout root"
   },
@@ -16657,9 +16654,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | range": {
     "message": "Range"
-  },
-  "panels/timeline/TimelineUIUtils.ts | recalculationForced": {
-    "message": "Recalculation forced"
   },
   "panels/timeline/TimelineUIUtils.ts | relatedNode": {
     "message": "Related node"

@@ -6087,6 +6087,13 @@ var StylePropertiesSection = class _StylePropertiesSection {
         link2.textContent = label;
         return link2;
       }
+      if (rule && rule.style.styleSheetId && rule.treeScope) {
+        const ownerNode = new SDK7.DOMModel.DeferredDOMNode(rule.cssModelInternal.target(), rule.treeScope);
+        const link2 = document.createElement("devtools-widget");
+        link2.widgetConfig = UI10.Widget.widgetConfig((e) => new PanelsCommon.DOMLinkifier.DeferredDOMNodeLink(e, ownerNode, void 0, rule.style.styleSheetId));
+        link2.textContent = label;
+        return link2;
+      }
       return null;
     }
     if (header?.isMutable && !header.isViaInspector()) {
@@ -10630,6 +10637,7 @@ import * as CodeHighlighter from "./../../ui/components/code_highlighter/code_hi
 import * as Components5 from "./../../ui/legacy/components/utils/utils.js";
 import * as UI15 from "./../../ui/legacy/legacy.js";
 import * as VisualLogging7 from "./../../ui/visual_logging/visual_logging.js";
+import { PanelUtils as PanelUtils2 } from "./../utils/utils.js";
 var AdoptedStyleSheetTreeElement = class _AdoptedStyleSheetTreeElement extends UI15.TreeOutline.TreeElement {
   adoptedStyleSheet;
   eventListener = null;
@@ -10664,6 +10672,9 @@ var AdoptedStyleSheetTreeElement = class _AdoptedStyleSheetTreeElement extends U
       UI15.UIUtils.createTextChild(documentElement, ")");
     }
     treeElement.appendChild(new AdoptedStyleSheetContentsTreeElement(header));
+  }
+  highlight() {
+    PanelUtils2.highlightElement(this.listItemElement);
   }
 };
 var AdoptedStyleSheetContentsTreeElement = class extends UI15.TreeOutline.TreeElement {
@@ -14277,7 +14288,11 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
     this.performUpdate();
   }
   selectDOMNode(node, focus2) {
-    this.#viewOutput?.elementsTreeOutline?.selectDOMNode(node, focus2);
+    if (node instanceof SDK16.DOMModel.AdoptedStyleSheet) {
+      this.#viewOutput?.elementsTreeOutline?.highlightAdoptedStyleSheet(node);
+    } else {
+      this.#viewOutput?.elementsTreeOutline?.selectDOMNode(node, focus2);
+    }
   }
   highlightNodeAttribute(node, attribute) {
     this.#viewOutput?.elementsTreeOutline?.highlightNodeAttribute(node, attribute);
@@ -14801,6 +14816,18 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common10.ObjectWrap
     this.revealAndSelectNode(node, !focus2);
     if (this.selectedDOMNodeInternal === node) {
       this.selectedNodeChanged(Boolean(focus2));
+    }
+  }
+  highlightAdoptedStyleSheet(adoptedStyleSheet) {
+    const parentNode = !this.includeRootDOMNode && adoptedStyleSheet.parent === this.rootDOMNode && this.rootDOMNode ? this.rootElement() : this.createTreeElementFor(adoptedStyleSheet.parent);
+    if (!parentNode) {
+      return;
+    }
+    for (const child of parentNode.children()) {
+      if (child instanceof AdoptedStyleSheetTreeElement && child.adoptedStyleSheet === adoptedStyleSheet) {
+        child.highlight();
+        return;
+      }
     }
   }
   editing() {
@@ -17538,6 +17565,15 @@ ${node.simpleSelector()} {}`, false);
     }
     this.notFirstInspectElement = true;
   }
+  async revealAndSelectAdoptedStyleSheet(nodeToReveal, opts) {
+    const { showPanel = true, focusNode = false } = opts ?? {};
+    this.omitDefaultSelection = true;
+    if (showPanel) {
+      await UI22.ViewManager.ViewManager.instance().showView("elements", false, !focus);
+    }
+    this.selectDOMNode(nodeToReveal, focusNode);
+    delete this.omitDefaultSelection;
+  }
   showUAShadowDOMChanged() {
     this.#domTreeWidget.reload();
   }
@@ -17894,7 +17930,7 @@ var DOMNodeRevealer = class {
       throw reason;
     });
     function revealPromise(resolve, reject) {
-      if (node instanceof SDK19.DOMModel.DOMNode) {
+      if (node instanceof SDK19.DOMModel.DOMNode || node instanceof SDK19.DOMModel.AdoptedStyleSheet) {
         onNodeResolved(node);
       } else if (node instanceof SDK19.DOMModel.DeferredDOMNode) {
         node.resolve(checkDeferredDOMNodeThenReveal);
@@ -17909,7 +17945,7 @@ var DOMNodeRevealer = class {
       }
       function onNodeResolved(resolvedNode) {
         panel.pendingNodeReveal = false;
-        let currentNode = resolvedNode;
+        let currentNode = resolvedNode instanceof SDK19.DOMModel.AdoptedStyleSheet ? resolvedNode.parent : resolvedNode;
         while (currentNode.parentNode) {
           currentNode = currentNode.parentNode;
         }
@@ -17921,7 +17957,9 @@ var DOMNodeRevealer = class {
           return;
         }
         if (resolvedNode) {
-          void panel.revealAndSelectNode(resolvedNode, { showPanel: true, focusNode: !omitFocus }).then(resolve);
+          const opts = { showPanel: true, focusNode: !omitFocus };
+          const promise = resolvedNode instanceof SDK19.DOMModel.AdoptedStyleSheet ? panel.revealAndSelectAdoptedStyleSheet(resolvedNode, opts) : panel.revealAndSelectNode(resolvedNode, opts);
+          void promise.then(resolve);
           return;
         }
         const msg = i18nString15(UIStrings16.nodeCannotBeFoundInTheCurrent);

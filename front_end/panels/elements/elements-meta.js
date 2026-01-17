@@ -581,7 +581,8 @@ Common.Revealer.registerRevealer({
     return [
       SDK.DOMModel.DOMNode,
       SDK.DOMModel.DeferredDOMNode,
-      SDK.RemoteObject.RemoteObject
+      SDK.RemoteObject.RemoteObject,
+      SDK.DOMModel.AdoptedStyleSheet
     ];
   },
   destination: Common.Revealer.RevealerDestination.ELEMENTS_PANEL,

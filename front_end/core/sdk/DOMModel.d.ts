@@ -211,8 +211,9 @@ export declare class DOMDocument extends DOMNode {
 }
 export declare class AdoptedStyleSheet {
     readonly id: Protocol.DOM.StyleSheetId;
-    readonly cssModel: CSSModel;
-    constructor(id: Protocol.DOM.StyleSheetId, cssModel: CSSModel);
+    readonly parent: DOMNode;
+    constructor(id: Protocol.DOM.StyleSheetId, parent: DOMNode);
+    get cssModel(): CSSModel;
 }
 export declare class DOMModel extends SDKModel<EventTypes> {
     #private;

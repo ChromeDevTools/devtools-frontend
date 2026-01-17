@@ -7,6 +7,7 @@ import * as CodeHighlighter from '../../ui/components/code_highlighter/code_high
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
+import { PanelUtils } from '../utils/utils.js';
 export class AdoptedStyleSheetTreeElement extends UI.TreeOutline.TreeElement {
     adoptedStyleSheet;
     eventListener = null;
@@ -42,6 +43,9 @@ export class AdoptedStyleSheetTreeElement extends UI.TreeOutline.TreeElement {
             UI.UIUtils.createTextChild(documentElement, ')');
         }
         treeElement.appendChild(new AdoptedStyleSheetContentsTreeElement(header));
+    }
+    highlight() {
+        PanelUtils.highlightElement(this.listItemElement);
     }
 }
 export class AdoptedStyleSheetContentsTreeElement extends UI.TreeOutline.TreeElement {

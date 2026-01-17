@@ -93,13 +93,14 @@ export declare class ElementsPanel extends UI.Panel.Panel implements UI.Searchab
     private highlightCurrentSearchResult;
     private hideSearchHighlights;
     selectedDOMNode(): SDK.DOMModel.DOMNode | null;
-    selectDOMNode(node: SDK.DOMModel.DOMNode, focus?: boolean): void;
+    selectDOMNode(node: SDK.DOMModel.DOMNode | SDK.DOMModel.AdoptedStyleSheet, focus?: boolean): void;
     highlightNodeAttribute(node: SDK.DOMModel.DOMNode, attribute: string): void;
     selectAndShowSidebarTab(tabId: SidebarPaneTabId): void;
     private updateBreadcrumbIfNeeded;
     private crumbNodeSelected;
     private leaveUserAgentShadowDOM;
     revealAndSelectNode(nodeToReveal: SDK.DOMModel.DOMNode, opts?: RevealAndSelectNodeOpts): Promise<void>;
+    revealAndSelectAdoptedStyleSheet(nodeToReveal: SDK.DOMModel.AdoptedStyleSheet, opts?: RevealAndSelectNodeOpts): Promise<void>;
     private showUAShadowDOMChanged;
     private setupTextSelectionHack;
     private initializeSidebarPanes;
@@ -128,8 +129,8 @@ export declare class ElementsPanel extends UI.Panel.Panel implements UI.Searchab
 export declare class ContextMenuProvider implements UI.ContextMenu.Provider<SDK.RemoteObject.RemoteObject | SDK.DOMModel.DOMNode | SDK.DOMModel.DeferredDOMNode> {
     appendApplicableItems(event: Event, contextMenu: UI.ContextMenu.ContextMenu, object: SDK.RemoteObject.RemoteObject | SDK.DOMModel.DOMNode | SDK.DOMModel.DeferredDOMNode): void;
 }
-export declare class DOMNodeRevealer implements Common.Revealer.Revealer<SDK.DOMModel.DOMNode | SDK.DOMModel.DeferredDOMNode | SDK.RemoteObject.RemoteObject> {
-    reveal(node: SDK.DOMModel.DOMNode | SDK.DOMModel.DeferredDOMNode | SDK.RemoteObject.RemoteObject, omitFocus?: boolean): Promise<void>;
+export declare class DOMNodeRevealer implements Common.Revealer.Revealer<SDK.DOMModel.DOMNode | SDK.DOMModel.DeferredDOMNode | SDK.RemoteObject.RemoteObject | SDK.DOMModel.AdoptedStyleSheet> {
+    reveal(node: SDK.DOMModel.DOMNode | SDK.DOMModel.DeferredDOMNode | SDK.RemoteObject.RemoteObject | SDK.DOMModel.AdoptedStyleSheet, omitFocus?: boolean): Promise<void>;
 }
 export declare class CSSPropertyRevealer implements Common.Revealer.Revealer<SDK.CSSProperty.CSSProperty> {
     reveal(property: SDK.CSSProperty.CSSProperty): Promise<void>;

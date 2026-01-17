@@ -737,6 +737,15 @@ export class ElementsPanel extends UI.Panel.Panel {
         }
         this.notFirstInspectElement = true;
     }
+    async revealAndSelectAdoptedStyleSheet(nodeToReveal, opts) {
+        const { showPanel = true, focusNode = false } = opts ?? {};
+        this.omitDefaultSelection = true;
+        if (showPanel) {
+            await UI.ViewManager.ViewManager.instance().showView('elements', false, !focus);
+        }
+        this.selectDOMNode(nodeToReveal, focusNode);
+        delete this.omitDefaultSelection;
+    }
     showUAShadowDOMChanged() {
         this.#domTreeWidget.reload();
     }
@@ -1092,7 +1101,7 @@ export class DOMNodeRevealer {
             throw reason;
         });
         function revealPromise(resolve, reject) {
-            if (node instanceof SDK.DOMModel.DOMNode) {
+            if (node instanceof SDK.DOMModel.DOMNode || node instanceof SDK.DOMModel.AdoptedStyleSheet) {
                 onNodeResolved((node));
             }
             else if (node instanceof SDK.DOMModel.DeferredDOMNode) {
@@ -1114,7 +1123,7 @@ export class DOMNodeRevealer {
                 // properties, which means stepping up through the hierarchy to ensure
                 // that the root node is the document itself. Any break implies
                 // detachment.
-                let currentNode = resolvedNode;
+                let currentNode = resolvedNode instanceof SDK.DOMModel.AdoptedStyleSheet ? resolvedNode.parent : resolvedNode;
                 while (currentNode.parentNode) {
                     currentNode = currentNode.parentNode;
                 }
@@ -1126,7 +1135,11 @@ export class DOMNodeRevealer {
                     return;
                 }
                 if (resolvedNode) {
-                    void panel.revealAndSelectNode(resolvedNode, { showPanel: true, focusNode: !omitFocus }).then(resolve);
+                    const opts = { showPanel: true, focusNode: !omitFocus };
+                    const promise = resolvedNode instanceof SDK.DOMModel.AdoptedStyleSheet ?
+                        panel.revealAndSelectAdoptedStyleSheet(resolvedNode, opts) :
+                        panel.revealAndSelectNode(resolvedNode, opts);
+                    void promise.then(resolve);
                     return;
                 }
                 const msg = i18nString(UIStrings.nodeCannotBeFoundInTheCurrent);

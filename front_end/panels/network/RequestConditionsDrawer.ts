@@ -181,7 +181,6 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
   render(
       // clang-format off
     html`
-    <style>${RequestConditionsDrawer}</style>
     <devtools-toolbar jslog=${VisualLogging.toolbar()}>
       <devtools-checkbox
         ?checked=${input.enabled}

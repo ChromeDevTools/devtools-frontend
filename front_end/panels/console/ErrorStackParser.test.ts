@@ -241,6 +241,23 @@ describe('ErrorStackParser', () => {
     });
   });
 
+  it('correctly handles wasm function names with parentheses', () => {
+    const url = urlString`http://www.chromium.org/test.dart`;
+    const frames = parseErrorStack(`Error: MyError
+    at module0.new Foo (initializer) (${url}:42:1)`);
+
+    assert.exists(frames);
+    assert.lengthOf(frames, 2);
+    assert.deepEqual(frames[1].link, {
+      url,
+      prefix: '    at module0.new Foo (initializer) (',
+      suffix: ')',
+      lineNumber: 41,   // 0-based.
+      columnNumber: 0,  // 0-based.
+      enclosedInBraces: true,
+    });
+  });
+
   describe('augmentErrorStackWithScriptIds', () => {
     const sid = (id: string) => id as Protocol.Runtime.ScriptId;
 

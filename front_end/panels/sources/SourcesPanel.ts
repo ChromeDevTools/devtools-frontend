@@ -429,6 +429,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
       SourcesPanel.updateResizerAndSidebarButtons(this);
     }
     this.editorView.setMainWidget(this.#sourcesView);
+    this.callstackPane.requestUpdate();
   }
 
   override willHide(): void {

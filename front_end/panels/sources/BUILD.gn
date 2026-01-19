@@ -171,6 +171,7 @@ devtools_ui_module("unittests") {
     "BreakpointsView.test.ts",
     "BreakpointsViewUtils.test.ts",
     "CSSPlugin.test.ts",
+    "CallStackSidebarPane.test.ts",
     "CoveragePlugin.test.ts",
     "DebuggerPausedMessage.test.ts",
     "DebuggerPlugin.test.ts",

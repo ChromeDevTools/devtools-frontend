@@ -770,15 +770,6 @@ export class SourceMap {
         this.hasIgnoreListHint(sourceURL) === other.hasIgnoreListHint(sourceURL);
   }
 
-  expandCallFrame(frame: CallFrame): CallFrame[] {
-    this.#ensureSourceMapProcessed();
-    if (this.#scopesInfo === null) {
-      return [frame];
-    }
-
-    return this.#scopesInfo.expandCallFrame(frame);
-  }
-
   resolveScopeChain(frame: CallFrame): ScopeChainEntry[]|null {
     this.#ensureSourceMapProcessed();
     if (this.#scopesInfo === null) {

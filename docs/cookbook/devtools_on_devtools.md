@@ -14,7 +14,7 @@ any Chrome or Chromium build. Open DevTools on any page, e.g.
 
 ![](./images/devtools_on_devtools_starter.png)
 
-Then in the undocked DevTools window press Option+Cmd+I (on macOS) or
+Then in the undocked DevTools window press Cmd+Shift+I (on macOS) or
 Ctrl+Shift+I (on Windows, Linux, or Chrome OS), and a new DevTools window will
 open, that is debugging the actual DevTools window. You can tell them apart
 based on their window titles, the original one says *"DevTools -

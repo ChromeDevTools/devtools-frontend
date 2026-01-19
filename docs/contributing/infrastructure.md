@@ -297,6 +297,12 @@ Run the following command from the root of your Chromium checkout:
 ./tools/infra/builder-cache-clobber.py -S https://chromium-swarm.appspot.com/ --builder "Stand-alone Mac-arm64" --bucket ci --project devtools-frontend
 ```
 
+#### Note about caches on try bots:
+
+Try bots (CQ) operate in tester/compilator pairs. When clearing caches, ensure
+you target both builders in the pair. For example, if you clear the cache for
+`dtf_mac_arm64_rel`, you must also clear it for `dtf_mac_arm64_compile_rel`.
+
 ## Luci Analysis configuration
 
 [Luci Analysis](go/luci-analysis) is a tool that helps you understand the

@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
-
 import '../../../ui/components/spinners/spinners.js';
 
 import * as Host from '../../../core/host/host.js';
@@ -13,7 +11,7 @@ import type * as AiAssistanceModel from '../../../models/ai_assistance/ai_assist
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import type {MarkdownLitRenderer} from '../../../ui/components/markdown_view/MarkdownView.js';
 import * as UI from '../../../ui/legacy/legacy.js';
-import * as Lit from '../../../ui/lit/lit.js';
+import {Directives, html, nothing, render} from '../../../ui/lit/lit.js';
 import {PatchWidget} from '../PatchWidget.js';
 
 import {ChatInput} from './ChatInput.js';
@@ -22,7 +20,7 @@ import chatViewStyles from './chatView.css.js';
 
 export {ChatInput, type ImageInputData} from './ChatInput.js';
 
-const {html, Directives: {ref, repeat, createRef}} = Lit;
+const {ref, repeat, classMap} = Directives;
 
 /*
 * Strings that don't need to be translated at this time.
@@ -37,6 +35,12 @@ const UIStringsNotTranslate = {
 const lockedString = i18n.i18n.lockedString;
 
 const SCROLL_ROUNDING_OFFSET = 1;
+
+interface ViewOutput {
+  mainElement?: HTMLElement;
+  input?: UI.Widget.WidgetElement<ChatInput>;
+}
+type View = (input: ChatWidgetInput, output: ViewOutput, target: HTMLElement|ShadowRoot) => void;
 
 export interface Props {
   onTextSubmit:
@@ -70,12 +74,105 @@ export interface Props {
   additionalFloatyContext: UI.Floaty.FloatyContextSelection[];
 }
 
+interface ChatWidgetInput extends Props {
+  handleScroll: (ev: Event) => void;
+  handleSuggestionClick: (title: string) => void;
+  handleMessageContainerRef: (el: Element|undefined) => void;
+}
+
+const DEFAULT_VIEW: View = (input, output, target) => {
+  const inputWidgetClasses = classMap({
+    'chat-input-widget': true,
+    sticky: !input.isReadOnly,
+  });
+
+  // clang-format off
+    render(html`
+      <style>${chatViewStyles}</style>
+      <div class="chat-ui">
+        <main @scroll=${input.handleScroll} ${ref(element => { output.mainElement = element as HTMLElement; } )}>
+          ${input.messages.length > 0 ? html`
+            <div class="messages-container" ${ref(input.handleMessageContainerRef)}>
+              ${repeat(input.messages, message =>
+                html`<devtools-widget .widgetConfig=${UI.Widget.widgetConfig(ChatMessage, {
+                  message,
+                  isLoading: input.isLoading,
+                  isReadOnly: input.isReadOnly,
+                  canShowFeedbackForm: input.canShowFeedbackForm,
+                  userInfo: input.userInfo,
+                  markdownRenderer: input.markdownRenderer,
+                  isLastMessage: input.messages.at(-1) === message,
+                  onSuggestionClick: input.handleSuggestionClick,
+                  onFeedbackSubmit: input.onFeedbackSubmit,
+                  onCopyResponseClick: input.onCopyResponseClick,
+                })}></devtools-widget>`
+              )}
+              ${input.isLoading ? nothing : html`<devtools-widget
+                .widgetConfig=${UI.Widget.widgetConfig(PatchWidget, {
+                  changeSummary: input.changeSummary ?? '',
+                  changeManager: input.changeManager,
+                })}
+              ></devtools-widget>`}
+            </div>
+          ` : html`
+            <div class="empty-state-container">
+              <div class="header">
+                <div class="icon">
+                  <devtools-icon
+                    name="smart-assistant"
+                  ></devtools-icon>
+                </div>
+                <h1>${lockedString(UIStringsNotTranslate.emptyStateText)}</h1>
+              </div>
+              <div class="empty-state-content">
+                ${input.emptyStateSuggestions.map(({title, jslogContext}) => {
+                  return html`<devtools-button
+                    class="suggestion"
+                    @click=${() => input.handleSuggestionClick(title)}
+                    .data=${
+                      {
+                        variant: Buttons.Button.Variant.OUTLINED,
+                        size: Buttons.Button.Size.REGULAR,
+                        title,
+                        jslogContext: jslogContext ?? 'suggestion',
+                        disabled: input.isTextInputDisabled,
+                      } as Buttons.Button.ButtonData
+                    }
+                  >${title}</devtools-button>`;
+                })}
+              </div>
+            </div>
+          `}
+          <devtools-widget class=${inputWidgetClasses} .widgetConfig=${UI.Widget.widgetConfig(ChatInput, {
+            isLoading: input.isLoading,
+            blockedByCrossOrigin: input.blockedByCrossOrigin,
+            isTextInputDisabled: input.isTextInputDisabled,
+            inputPlaceholder: input.inputPlaceholder,
+            disclaimerText: input.disclaimerText,
+            selectedContext: input.selectedContext,
+            inspectElementToggled: input.inspectElementToggled,
+            multimodalInputEnabled: input.multimodalInputEnabled ?? false,
+            conversationType: input.conversationType,
+            uploadImageInputEnabled: input.uploadImageInputEnabled ?? false,
+            isReadOnly: input.isReadOnly,
+            additionalFloatyContext: input.additionalFloatyContext,
+            onContextClick: input.onContextClick,
+            onInspectElementClick: input.onInspectElementClick,
+            onTextSubmit: input.onTextSubmit,
+            onCancelClick: input.onCancelClick,
+            onNewConversation: input.onNewConversation,
+          })} ${ref(element => { output.input = element as UI.Widget.WidgetElement<ChatInput>; } )}></devtools-widget>
+        </main>
+      </div>
+    `, target);
+  // clang-format on
+};
 export class ChatView extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
   #scrollTop?: number;
   #props: Props;
   #messagesContainerElement?: Element;
-  #mainElementRef = createRef<HTMLElement>();
+  #output: ViewOutput = {};
   #messagesContainerResizeObserver = new ResizeObserver(() => this.#handleMessagesContainerResize());
   /**
    * Indicates whether the chat scroll position should be pinned to the bottom.
@@ -94,11 +191,12 @@ export class ChatView extends HTMLElement {
    * whether to pin the content to the bottom.
    */
   #isProgrammaticScroll = false;
-  #inputRef = createRef<UI.Widget.WidgetElement<ChatInput>>();
+  #view: View;
 
-  constructor(props: Props) {
+  constructor(props: Props, view = DEFAULT_VIEW) {
     super();
     this.#props = props;
+    this.#view = view;
   }
 
   set props(props: Props) {
@@ -132,7 +230,7 @@ export class ChatView extends HTMLElement {
       return;
     }
 
-    if (!this.#mainElementRef?.value) {
+    if (!this.#output.mainElement) {
       return;
     }
 
@@ -140,11 +238,11 @@ export class ChatView extends HTMLElement {
   }
 
   scrollToBottom(): void {
-    if (!this.#mainElementRef?.value) {
+    if (!this.#output.mainElement) {
       return;
     }
 
-    this.#setMainElementScrollTop(this.#mainElementRef.value.scrollHeight);
+    this.#setMainElementScrollTop(this.#output.mainElement.scrollHeight);
   }
 
   #handleMessagesContainerResize(): void {
@@ -152,26 +250,26 @@ export class ChatView extends HTMLElement {
       return;
     }
 
-    if (!this.#mainElementRef?.value) {
+    if (!this.#output.mainElement) {
       return;
     }
 
     if (this.#pinScrollToBottom) {
-      this.#setMainElementScrollTop(this.#mainElementRef.value.scrollHeight);
+      this.#setMainElementScrollTop(this.#output.mainElement.scrollHeight);
     }
   }
 
   #setMainElementScrollTop(scrollTop: number): void {
-    if (!this.#mainElementRef?.value) {
+    if (!this.#output.mainElement) {
       return;
     }
 
     this.#scrollTop = scrollTop;
     this.#isProgrammaticScroll = true;
-    this.#mainElementRef.value.scrollTop = scrollTop;
+    this.#output.mainElement.scrollTop = scrollTop;
   }
 
-  #handleMessageContainerRef(el: Element|undefined): void {
+  #handleMessageContainerRef = (el: Element|undefined): void => {
     this.#messagesContainerElement = el;
 
     if (el) {
@@ -180,7 +278,7 @@ export class ChatView extends HTMLElement {
       this.#pinScrollToBottom = true;
       this.#messagesContainerResizeObserver.disconnect();
     }
-  }
+  };
 
   #handleScroll = (ev: Event): void => {
     if (!ev.target || !(ev.target instanceof HTMLElement)) {
@@ -201,103 +299,21 @@ export class ChatView extends HTMLElement {
   };
 
   #handleSuggestionClick = (suggestion: string): void => {
-    this.#inputRef.value?.getWidget()?.setInputValue(suggestion);
+    this.#output.input?.getWidget()?.setInputValue(suggestion);
     this.#render();
     this.focusTextInput();
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceDynamicSuggestionClicked);
   };
 
   #render(): void {
-    const inputWidgetClasses = Lit.Directives.classMap({
-      'chat-input-widget': true,
-      sticky: !this.#props.isReadOnly,
-    });
-
-    // clang-format off
-    Lit.render(html`
-      <style>${chatViewStyles}</style>
-      <div class="chat-ui">
-        <main @scroll=${this.#handleScroll} ${ref(this.#mainElementRef)}>
-          ${this.#props.messages.length > 0 ? html`
-            <div class="messages-container" ${ref(this.#handleMessageContainerRef)}>
-              ${repeat(this.#props.messages, message =>
-                html`<devtools-widget .widgetConfig=${UI.Widget.widgetConfig(ChatMessage, {
-                  message,
-                  isLoading: this.#props.isLoading,
-                  isReadOnly: this.#props.isReadOnly,
-                  canShowFeedbackForm: this.#props.canShowFeedbackForm,
-                  userInfo: this.#props.userInfo,
-                  markdownRenderer: this.#props.markdownRenderer,
-                  isLastMessage: this.#props.messages.at(-1) === message,
-                  onSuggestionClick: this.#handleSuggestionClick,
-                  onFeedbackSubmit: this.#props.onFeedbackSubmit,
-                  onCopyResponseClick: this.#props.onCopyResponseClick,
-                })}></devtools-widget>`
-              )}
-              ${this.#props.isLoading ? Lit.nothing : html`<devtools-widget
-                .widgetConfig=${UI.Widget.widgetConfig(PatchWidget, {
-                  changeSummary: this.#props.changeSummary ?? '',
-                  changeManager: this.#props.changeManager,
-                })}
-              ></devtools-widget>`}
-            </div>
-          ` : html`
-            <div class="empty-state-container">
-              <div class="header">
-                <div class="icon">
-                  <devtools-icon
-                    name="smart-assistant"
-                  ></devtools-icon>
-                </div>
-                <h1>${lockedString(UIStringsNotTranslate.emptyStateText)}</h1>
-              </div>
-              <div class="empty-state-content">
-                ${this.#props.emptyStateSuggestions.map(({title, jslogContext}) => {
-                  return html`<devtools-button
-                    class="suggestion"
-                    @click=${() => this.#handleSuggestionClick(title)}
-                    .data=${
-                      {
-                        variant: Buttons.Button.Variant.OUTLINED,
-                        size: Buttons.Button.Size.REGULAR,
-                        title,
-                        jslogContext: jslogContext ?? 'suggestion',
-                        disabled: this.#props.isTextInputDisabled,
-                      } as Buttons.Button.ButtonData
-                    }
-                  >${title}</devtools-button>`;
-                })}
-              </div>
-            </div>
-          `}
-          <devtools-widget class=${inputWidgetClasses} .widgetConfig=${UI.Widget.widgetConfig(ChatInput, {
-            isLoading: this.#props.isLoading,
-            blockedByCrossOrigin: this.#props.blockedByCrossOrigin,
-            isTextInputDisabled: this.#props.isTextInputDisabled,
-            inputPlaceholder: this.#props.inputPlaceholder,
-            disclaimerText: this.#props.disclaimerText,
-            selectedContext: this.#props.selectedContext,
-            inspectElementToggled: this.#props.inspectElementToggled,
-            multimodalInputEnabled: this.#props.multimodalInputEnabled ?? false,
-            conversationType: this.#props.conversationType,
-            uploadImageInputEnabled: this.#props.uploadImageInputEnabled ?? false,
-            isReadOnly: this.#props.isReadOnly,
-            additionalFloatyContext: this.#props.additionalFloatyContext,
-            onContextClick: this.#props.onContextClick,
-            onInspectElementClick: this.#props.onInspectElementClick,
-            onTextSubmit: (
-                text: string, imageInput?: Host.AidaClient.Part,
-                multimodalInputType?: AiAssistanceModel.AiAgent.MultimodalInputType) => {
-              this.#props.onTextSubmit(text, imageInput, multimodalInputType);
-              this.#render();
-            },
-            onCancelClick: this.#props.onCancelClick,
-            onNewConversation: this.#props.onNewConversation,
-          })} ${ref(this.#inputRef)}></devtools-widget>
-        </main>
-      </div>
-    `, this.#shadow, {host: this});
-    // clang-format on
+    this.#view(
+        {
+          ...this.#props,
+          handleScroll: this.#handleScroll,
+          handleSuggestionClick: this.#handleSuggestionClick,
+          handleMessageContainerRef: this.#handleMessageContainerRef,
+        },
+        this.#output, this.#shadow);
   }
 }
 

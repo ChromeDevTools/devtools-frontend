@@ -397,6 +397,20 @@ function aiCodeGenerationTeaserExtension(teaser: PanelCommon.AiCodeGenerationTea
         // Required for mouse click to propagate to the info tooltip in teaser.
         return (event.target instanceof Node && teaser.contentElement.contains(event.target));
       },
+      keydown(event: KeyboardEvent): boolean {
+        if (!UI.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(event) ||
+            teaser.displayState !== PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.TRIGGER) {
+          return false;
+        }
+        if (event.key === '.') {
+          event.consume(true);
+          void VisualLogging.logKeyDown(
+              event.currentTarget, event, 'ai-code-generation-teaser.show-disclaimer-info-tooltip');
+          teaser.showTooltip();
+          return true;
+        }
+        return false;
+      }
     },
   });
 }

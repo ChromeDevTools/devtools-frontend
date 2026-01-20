@@ -95,7 +95,7 @@ export class AccessibilitySidebarView extends UI.Widget.VBox {
     if (!accessibilityModel) {
       return;
     }
-    if (!Root.Runtime.experiments.isEnabled('full-accessibility-tree')) {
+    if (!Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.FULL_ACCESSIBILITY_TREE)) {
       accessibilityModel.clear();
     }
     await accessibilityModel.requestPartialAXTree(node);

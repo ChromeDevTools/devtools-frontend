@@ -38,7 +38,7 @@ describe('Preview toggle', () => {
     checkbox.click();
     sinon.assert.callCount(setEnabledStub, 1);
     assert.isTrue(
-        setEnabledStub.firstCall.calledWith('testExperiment', true),
+        setEnabledStub.firstCall.calledWith('testExperiment' as Root.Runtime.ExperimentName, true),
         'experiments.setEnabled was not called with the correct experiment');
     sinon.assert.callCount(spy, 1);
     assert.isTrue(spy.firstCall.firstArg);
@@ -68,7 +68,7 @@ describe('Preview toggle', () => {
     checkbox.click();
     sinon.assert.callCount(setEnabledStub, 1);
     assert.isTrue(
-        setEnabledStub.firstCall.calledWith('testExperiment', false),
+        setEnabledStub.firstCall.calledWith('testExperiment' as Root.Runtime.ExperimentName, false),
         'experiments.setEnabled was not called with the correct experiment');
     sinon.assert.callCount(spy, 1);
     assert.isFalse(spy.firstCall.firstArg);

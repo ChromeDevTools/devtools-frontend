@@ -45,7 +45,7 @@ export class PreviewToggle extends HTMLElement {
   #helperText: string|null = null;
   #feedbackURL: string|null = null;
   #learnMoreURL: string|undefined;
-  #experiment = '';
+  #experiment: Root.Runtime.ExperimentName|'' = '';
   #onChangeCallback?: (checked: boolean) => void;
 
   set data(data: PreviewToggleData) {
@@ -59,7 +59,7 @@ export class PreviewToggle extends HTMLElement {
   }
 
   #render(): void {
-    const checked = Root.Runtime.experiments.isEnabled(this.#experiment);
+    const checked = this.#experiment && Root.Runtime.experiments.isEnabled(this.#experiment);
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(
@@ -95,7 +95,9 @@ export class PreviewToggle extends HTMLElement {
 
   #checkboxChanged(event: Event): void {
     const checked = (event.target as HTMLInputElement).checked;
-    Root.Runtime.experiments.setEnabled(this.#experiment, checked);
+    if (this.#experiment) {
+      Root.Runtime.experiments.setEnabled(this.#experiment, checked);
+    }
     this.#onChangeCallback?.(checked);
   }
 }

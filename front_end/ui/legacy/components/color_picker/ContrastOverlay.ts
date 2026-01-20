@@ -25,7 +25,7 @@ export class ContrastOverlay {
 
     this.contrastRatioSVG = UI.UIUtils.createSVGChild(colorElement, 'svg', 'spectrum-contrast-container fill');
     this.contrastRatioLines = new Map();
-    if (Root.Runtime.experiments.isEnabled('apca')) {
+    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.APCA)) {
       this.contrastRatioLines.set(
           'APCA', UI.UIUtils.createSVGChild(this.contrastRatioSVG, 'path', 'spectrum-contrast-line'));
     } else {
@@ -50,7 +50,8 @@ export class ContrastOverlay {
     if (!this.visible || this.contrastInfo.isNull()) {
       return;
     }
-    if (Root.Runtime.experiments.isEnabled('apca') && this.contrastInfo.contrastRatioAPCA() === null) {
+    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.APCA) &&
+        this.contrastInfo.contrastRatioAPCA() === null) {
       return;
     }
     if (!this.contrastInfo.contrastRatio()) {
@@ -90,7 +91,7 @@ export class ContrastRatioLineBuilder {
   }
 
   drawContrastRatioLine(width: number, height: number, level: string): string|null {
-    const isAPCA = Root.Runtime.experiments.isEnabled('apca');
+    const isAPCA = Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.APCA);
     const requiredContrast =
         isAPCA ? this.contrastInfo.contrastRatioAPCAThreshold() : this.contrastInfo.contrastRatioThreshold(level);
     if (!width || !height || requiredContrast === null) {
@@ -139,7 +140,7 @@ export class ContrastRatioLineBuilder {
               Common.ColorUtils.blendColors(Common.Color.Legacy.fromHSVA(candidateHSVA).rgba(), bgRGBA));
         };
 
-    if (Root.Runtime.experiments.isEnabled('apca')) {
+    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.APCA)) {
       candidateLuminance = (candidateHSVA: Common.ColorUtils.Color4D) => {
         return Common.ColorUtils.luminanceAPCA(
             Common.ColorUtils.blendColors(Common.Color.Legacy.fromHSVA(candidateHSVA).rgba(), bgRGBA));

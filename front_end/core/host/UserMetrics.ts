@@ -825,7 +825,7 @@ export enum DevtoolsExperiments {
   'live-heap-profile' = 11,
   'protocol-monitor' = 13,
   'sampling-heap-profiler-timeline' = 17,
-  'show-option-tp-expose-internals-in-heap-snapshot' = 18,
+  'show-option-to-expose-internals-in-heap-snapshot' = 18,
   'timeline-invalidation-tracking' = 26,
   'timeline-show-all-events' = 27,
   'timeline-v8-runtime-call-stats' = 28,

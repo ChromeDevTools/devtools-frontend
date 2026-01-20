@@ -119,11 +119,17 @@ export class Runtime {
     if (experiment === '*') {
       return true;
     }
-    if (experiment && experiment.startsWith('!') && experiments.isEnabled(experiment.substring(1))) {
-      return false;
+    if (experiment?.startsWith('!')) {
+      const experimentName = experiment.substring(1) as ExperimentName;
+      if (experiments.isEnabled(experimentName)) {
+        return false;
+      }
     }
-    if (experiment && !experiment.startsWith('!') && !experiments.isEnabled(experiment)) {
-      return false;
+    if (experiment && !experiment.startsWith('!')) {
+      const experimentName = experiment as ExperimentName;
+      if (!experiments.isEnabled(experimentName)) {
+        return false;
+      }
     }
     const {condition} = descriptor;
     return condition ? condition(hostConfig) : true;
@@ -151,10 +157,10 @@ export interface Option {
 
 export class ExperimentsSupport {
   #experiments: Experiment[] = [];
-  readonly #experimentNames = new Set<string>();
-  readonly #enabledTransiently = new Set<string>();
-  readonly #enabledByDefault = new Set<string>();
-  readonly #serverEnabled = new Set<string>();
+  readonly #experimentNames = new Set<ExperimentName>();
+  readonly #enabledTransiently = new Set<ExperimentName>();
+  readonly #enabledByDefault = new Set<ExperimentName>();
+  readonly #serverEnabled = new Set<ExperimentName>();
   readonly #storage = new ExperimentStorage();
 
   allConfigurableExperiments(): Experiment[] {
@@ -167,7 +173,7 @@ export class ExperimentsSupport {
     return result;
   }
 
-  register(experimentName: string, experimentTitle: string, docLink?: string, feedbackLink?: string): void {
+  register(experimentName: ExperimentName, experimentTitle: string, docLink?: string, feedbackLink?: string): void {
     if (this.#experimentNames.has(experimentName)) {
       throw new Error(`Duplicate registration of experiment '${experimentName}'`);
     }
@@ -178,7 +184,7 @@ export class ExperimentsSupport {
         feedbackLink as Platform.DevToolsPath.UrlString ?? Platform.DevToolsPath.EmptyUrlString));
   }
 
-  isEnabled(experimentName: string): boolean {
+  isEnabled(experimentName: ExperimentName): boolean {
     this.checkExperiment(experimentName);
     // Check for explicitly disabled #experiments first - the code could call setEnable(false) on the experiment enabled
     // by default and we should respect that.
@@ -195,38 +201,39 @@ export class ExperimentsSupport {
     return Boolean(this.#storage.get(experimentName));
   }
 
-  setEnabled(experimentName: string, enabled: boolean): void {
+  setEnabled(experimentName: ExperimentName, enabled: boolean): void {
     this.checkExperiment(experimentName);
     this.#storage.set(experimentName, enabled);
   }
 
-  enableExperimentsTransiently(experimentNames: string[]): void {
+  enableExperimentsTransiently(experimentNames: ExperimentName[]): void {
     for (const experimentName of experimentNames) {
       this.checkExperiment(experimentName);
       this.#enabledTransiently.add(experimentName);
     }
   }
 
-  enableExperimentsByDefault(experimentNames: string[]): void {
+  enableExperimentsByDefault(experimentNames: ExperimentName[]): void {
     for (const experimentName of experimentNames) {
       this.checkExperiment(experimentName);
       this.#enabledByDefault.add(experimentName);
     }
   }
 
-  setServerEnabledExperiments(experimentNames: string[]): void {
-    for (const experiment of experimentNames) {
-      this.checkExperiment(experiment);
-      this.#serverEnabled.add(experiment);
+  setServerEnabledExperiments(experiments: string[]): void {
+    for (const experiment of experiments) {
+      const experimentName = experiment as ExperimentName;
+      this.checkExperiment(experimentName);
+      this.#serverEnabled.add(experimentName);
     }
   }
 
-  enableForTest(experimentName: string): void {
+  enableForTest(experimentName: ExperimentName): void {
     this.checkExperiment(experimentName);
     this.#enabledTransiently.add(experimentName);
   }
 
-  disableForTest(experimentName: string): void {
+  disableForTest(experimentName: ExperimentName): void {
     this.checkExperiment(experimentName);
     this.#enabledTransiently.delete(experimentName);
   }
@@ -243,7 +250,7 @@ export class ExperimentsSupport {
     this.#storage.cleanUpStaleExperiments(this.#experimentNames);
   }
 
-  private checkExperiment(experimentName: string): void {
+  private checkExperiment(experimentName: ExperimentName): void {
     if (!this.#experimentNames.has(experimentName)) {
       throw new Error(`Unknown experiment '${experimentName}'`);
     }
@@ -271,11 +278,11 @@ class ExperimentStorage {
    *   - false: Explicitly disabled.
    *   - undefined: Disabled.
    */
-  get(experimentName: string): boolean|undefined {
+  get(experimentName: ExperimentName): boolean|undefined {
     return this.#experiments[experimentName];
   }
 
-  set(experimentName: string, enabled: boolean): void {
+  set(experimentName: ExperimentName, enabled: boolean): void {
     this.#experiments[experimentName] = enabled;
     this.#syncToLocalStorage();
   }
@@ -294,14 +301,18 @@ class ExperimentStorage {
   }
 }
 
+/**
+ * @deprecated Experiments should not be used anymore, instead use base::Feature.
+ * See docs/contributing/settings-experiments-features.md
+ */
 export class Experiment {
-  name: string;
+  name: ExperimentName;
   title: string;
   docLink?: Platform.DevToolsPath.UrlString;
   readonly feedbackLink?: Platform.DevToolsPath.UrlString;
   readonly #experiments: ExperimentsSupport;
   constructor(
-      experiments: ExperimentsSupport, name: string, title: string, docLink: Platform.DevToolsPath.UrlString,
+      experiments: ExperimentsSupport, name: ExperimentName, title: string, docLink: Platform.DevToolsPath.UrlString,
       feedbackLink: Platform.DevToolsPath.UrlString) {
     this.name = name;
     this.title = title;
@@ -322,18 +333,21 @@ export class Experiment {
 /** This must be constructed after the query parameters have been parsed. **/
 export const experiments = new ExperimentsSupport();
 
-/**
- * @deprecated Experiments should not be used anymore, instead use base::Feature.
- * See docs/contributing/settings-experiments-features.md
- */
-export const enum ExperimentName {
-  CAPTURE_NODE_CREATION_STACKS = 'capture-node-creation-stacks',
-  CSS_OVERVIEW = 'css-overview',
-  LIVE_HEAP_PROFILE = 'live-heap-profile',
+export enum ExperimentName {
   ALL = '*',
+  CAPTURE_NODE_CREATION_STACKS = 'capture-node-creation-stacks',
+  LIVE_HEAP_PROFILE = 'live-heap-profile',
   PROTOCOL_MONITOR = 'protocol-monitor',
+  SAMPLING_HEAP_PROFILER_TIMELINE = 'sampling-heap-profiler-timeline',
+  SHOW_OPTION_TO_EXPOSE_INTERNALS_IN_HEAP_SNAPSHOT = 'show-option-to-expose-internals-in-heap-snapshot',
+  TIMELINE_INVALIDATION_TRACKING = 'timeline-invalidation-tracking',
+  TIMELINE_SHOW_ALL_EVENTS = 'timeline-show-all-events',
+  TIMELINE_V8_RUNTIME_CALL_STATS = 'timeline-v8-runtime-call-stats',
+  APCA = 'apca',
+  FONT_EDITOR = 'font-editor',
   FULL_ACCESSIBILITY_TREE = 'full-accessibility-tree',
-  HEADER_OVERRIDES = 'header-overrides',
+  CONTRAST_ISSUES = 'contrast-issues',
+  EXPERIMENTAL_COOKIE_FEATURES = 'experimental-cookie-features',
   INSTRUMENTATION_BREAKPOINTS = 'instrumentation-breakpoints',
   AUTHORED_DEPLOYED_GROUPING = 'authored-deployed-grouping',
   JUST_MY_CODE = 'just-my-code',
@@ -342,8 +356,8 @@ export const enum ExperimentName {
   TIMELINE_DEBUG_MODE = 'timeline-debug-mode',
   // Adding or removing an entry from this enum?
   // You will need to update:
-  // 1. REGISTERED_EXPERIMENTS in EnvironmentHelpers.ts (to create this experiment in the test env)
-  // 2. DevToolsExperiments enum in host/UserMetrics.ts
+  // 1. DevToolsExperiments enum in host/UserMetrics.ts
+  // 2. Maybe REGISTERED_EXPERIMENTS in EnvironmentHelpers.ts (to create this experiment in the test env)
 }
 
 export enum GenAiEnterprisePolicyValue {

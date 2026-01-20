@@ -179,7 +179,7 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
   private authoredNode?: NavigatorGroupTreeNode;
   private deployedNode?: NavigatorGroupTreeNode;
   private navigatorGroupByFolderSetting: Common.Settings.Setting<boolean>;
-  private navigatorGroupByAuthoredExperiment?: string;
+  private navigatorGroupByAuthoredExperiment?: Root.Runtime.ExperimentName;
   #workspace!: Workspace.Workspace.WorkspaceImpl;
   private groupByFrame?: boolean;
   private groupByAuthored?: boolean;

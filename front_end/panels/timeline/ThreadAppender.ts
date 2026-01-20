@@ -151,7 +151,7 @@ export class ThreadAppender implements TrackAppender {
   #headerAppended = false;
   readonly threadType: Trace.Handlers.Threads.ThreadType = Trace.Handlers.Threads.ThreadType.MAIN_THREAD;
   readonly isOnMainFrame: boolean;
-  #showAllEventsEnabled = Root.Runtime.experiments.isEnabled('timeline-show-all-events');
+  #showAllEventsEnabled = Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_SHOW_ALL_EVENTS);
   #url = '';
   #headerNestingLevel: number|null = null;
   constructor(

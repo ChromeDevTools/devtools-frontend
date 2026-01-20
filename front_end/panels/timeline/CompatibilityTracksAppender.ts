@@ -327,7 +327,7 @@ export class CompatibilityTracksAppender {
       }
     };
     const threads = Trace.Handlers.Threads.threadsInTrace(this.#parsedTrace.data);
-    const showAllEvents = Root.Runtime.experiments.isEnabled('timeline-show-all-events');
+    const showAllEvents = Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_SHOW_ALL_EVENTS);
 
     for (const {pid, tid, name, type, entries, tree} of threads) {
       if (this.#parsedTrace.data.Meta.traceIsGeneric) {

@@ -609,8 +609,8 @@ describe('The Memory Panel', function() {
   });
 });
 
-describe(' The Memory Panel with show-option-tp-expose-internals-in-heap-snapshot experiment', () => {
-  setup({dockingMode: 'undocked', enabledDevToolsExperiments: ['show-option-tp-expose-internals-in-heap-snapshot']});
+describe(' The Memory Panel with show-option-to-expose-internals-in-heap-snapshot experiment', () => {
+  setup({dockingMode: 'undocked', enabledDevToolsExperiments: ['show-option-to-expose-internals-in-heap-snapshot']});
 
   it('Does not include backing store size in the shallow size of a JS Set', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToResource('memory/set.html');

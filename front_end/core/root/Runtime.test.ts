@@ -54,12 +54,15 @@ describe('Runtime', () => {
   });
 
   it('allConfigurableExperiments returns all registered experiments', () => {
-    Root.Runtime.experiments.register('example', 'example' as Platform.UIString.LocalizedString);
-    Root.Runtime.experiments.register('configurable', 'configurable' as Platform.UIString.LocalizedString);
+    Root.Runtime.experiments.register(
+        Root.Runtime.ExperimentName.FONT_EDITOR, 'font editor' as Platform.UIString.LocalizedString);
+    Root.Runtime.experiments.register(Root.Runtime.ExperimentName.APCA, 'apca' as Platform.UIString.LocalizedString);
 
     const experiments = Root.Runtime.experiments.allConfigurableExperiments();
 
-    assert.deepEqual(experiments.map(experiment => experiment.name), ['example', 'configurable']);
+    assert.deepEqual(
+        experiments.map(experiment => experiment.name),
+        [Root.Runtime.ExperimentName.FONT_EDITOR, Root.Runtime.ExperimentName.APCA]);
   });
 
   it('getChromeVersion result has the correct shape', () => {

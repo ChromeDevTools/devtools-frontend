@@ -22,7 +22,7 @@ describeWithMockConnection('ElementsPanel', () => {
   beforeEach(() => {
     stubNoopSettings();
     target = createTarget();
-    Root.Runtime.experiments.register('apca', '');
+    Root.Runtime.experiments.register(Root.Runtime.ExperimentName.APCA, '');
     setMockConnectionResponseHandler('DOM.requestChildNodes', () => ({}));
     setMockConnectionResponseHandler('DOM.getDocument', () => ({
                                                           root: {

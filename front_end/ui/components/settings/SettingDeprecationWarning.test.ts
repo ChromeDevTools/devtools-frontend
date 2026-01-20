@@ -22,7 +22,7 @@ function createWarningElement(deprecationNotice: Common.SettingRegistration.Sett
 }
 
 const warning = () => 'Warning' as Platform.UIString.LocalizedString;
-const EXPERIMENT_NAME = 'testExperiment';
+const EXPERIMENT_NAME = 'testExperiment' as Root.Runtime.ExperimentName;
 
 describe('SettingDeprecationWarning', () => {
   beforeEach(() => {

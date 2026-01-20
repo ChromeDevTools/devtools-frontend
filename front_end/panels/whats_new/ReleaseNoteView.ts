@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import '../../ui/components/markdown_view/markdown_view.js';
+import '../../ui/kit/kit.js';
 
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
@@ -87,14 +88,14 @@ export class ReleaseNoteView extends UI.Panel.Panel {
             <div class="video-container">
               ${releaseNote.videoLinks.map((value: {description: string, link: Platform.DevToolsPath.UrlString, type?: VideoType}) => {
                 return html`
-                  <x-link
+                  <devtools-link
                   href=${value.link}
-                  jslog=${VisualLogging.link().track({click: true}).context('learn-more')}>
+                  .jslogContext=${'learn-more'}>
                     <div class="video">
                       <img class="thumbnail" src=${input.getThumbnailPath(value.type ?? VideoType.WHATS_NEW)}>
                       <div class="thumbnail-description"><span>${value.description}</span></div>
                     </div>
-                </x-link>
+                </devtools-link>
                 `;
               })}
             </div>

@@ -1,6 +1,7 @@
 // Copyright 2023 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import '../../ui/kit/kit.js';
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
@@ -1193,13 +1194,11 @@ export class RecorderController extends LitElement {
         <div class="empty-state-header">${i18nString(UIStrings.header)}</div>
         <div class="empty-state-description">
           <span>${i18nString(UIStrings.recordingDescription)}</span>
-          <x-link
+          <devtools-link
             class="x-link devtools-link"
             href=${RECORDER_EXPLANATION_URL}
-            jslog=${VisualLogging.link()
-                    .track({ click: true, keydown: 'Enter|Space' })
-                    .context('learn-more')}
-          >${i18nString(UIStrings.learnMore)}</x-link>
+            .jslogContext=${'learn-more'}
+          >${i18nString(UIStrings.learnMore)}</devtools-link>
         </div>
         <devtools-button .variant=${Buttons.Button.Variant.TONAL} jslogContext=${Actions.RecorderActions.CREATE_RECORDING} @click=${this.#onCreateNewRecording}>${i18nString(UIStrings.createRecording)}</devtools-button>
       </div>
@@ -1474,9 +1473,9 @@ export class RecorderController extends LitElement {
               }
             ></devtools-button>
             <div class="feedback">
-              <x-link class="x-link" title=${i18nString(UIStrings.sendFeedback)} href=${
+              <devtools-link class="x-link" title=${i18nString(UIStrings.sendFeedback)} href=${
                 FEEDBACK_URL
-              } jslog=${VisualLogging.link('feedback').track({click: true})}>${i18nString(UIStrings.sendFeedback)}</x-link>
+              } .jslogContext=${'feedback'}>${i18nString(UIStrings.sendFeedback)}</devtools-link>
             </div>
             <div class="separator"></div>
             <devtools-shortcut-dialog

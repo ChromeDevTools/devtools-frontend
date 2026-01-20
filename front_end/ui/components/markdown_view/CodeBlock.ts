@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-lit-render-outside-of-view, @devtools/enforce-custom-element-definitions-location */
 
-import '../../../ui/legacy/legacy.js'; // for x-link
+import '../../../ui/kit/kit.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as CodeMirror from '../../../third_party/codemirror.next/codemirror.next.js';
@@ -204,12 +204,9 @@ export class CodeBlock extends HTMLElement {
   #renderNotice(): Lit.TemplateResult {
     // clang-format off
     return html`<p class="notice">
-      <x-link class="link" href="https://support.google.com/legal/answer/13505487" jslog=${
-        VisualLogging.link('code-disclaimer').track({
-          click: true,
-        })}>
+      <devtools-link class="link" href="https://support.google.com/legal/answer/13505487" .jslogContext=${'code-disclaimer'}>
         ${i18nString(UIStrings.disclaimer)}
-      </x-link>
+      </devtools-link>
     </p>`;
     // clang-format on
   }

@@ -4,13 +4,13 @@
 
 import '../../ui/components/spinners/spinners.js';
 import '../../ui/components/tooltips/tooltips.js';
+import '../../ui/kit/kit.js';
 
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as AiCodeCompletion from '../../models/ai_code_completion/ai_code_completion.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {Directives, html, nothing, render} from '../../ui/lit/lit.js';
-import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {AiCodeCompletionDisclaimer} from './AiCodeCompletionDisclaimer.js';
 import styles from './aiCodeCompletionSummaryToolbar.css.js';
@@ -86,12 +86,10 @@ export const DEFAULT_SUMMARY_TOOLBAR_VIEW: View = (input, _output, target) => {
                     variant="rich"
                     jslogContext="ai-code-completion-citations"
                 ><div class="citations-tooltip-container">
-                    ${Directives.repeat(input.citations, citation => html`<x-link
+                    ${Directives.repeat(input.citations, citation => html`<devtools-link
                         tabIndex="0"
                         href=${citation}
-                        jslog=${VisualLogging.link('ai-code-completion-citations.citation-link').track({
-      click: true
-    })}>${citation}</x-link>`)}</div></devtools-tooltip>
+                        .jslogContext=${'ai-code-completion-citations.citation-link'}>${citation}</devtools-link>`)}</div></devtools-tooltip>
             </div>` : nothing;
 
   render(

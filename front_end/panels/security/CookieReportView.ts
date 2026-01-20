@@ -4,6 +4,7 @@
 /* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 import '../../ui/legacy/components/data_grid/data_grid.js';
+import '../../ui/kit/kit.js';
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -15,7 +16,6 @@ import type * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as uiI18n from '../../ui/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
-import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as NetworkForward from '../network/forward/forward.js';
 
 import cookieReportViewStyles from './cookieReportView.css.js';
@@ -187,6 +187,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/security/CookieReportView.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export const i18nFormatString = uiI18n.getFormatLocalizedString.bind(undefined, str_);
+export const i18nFormatStringTemplate = uiI18n.getFormatLocalizedStringTemplate.bind(undefined, str_);
 
 export interface ViewInput {
   cookieRows: IssuesManager.CookieIssue.CookieReportInfo[];
@@ -221,11 +222,10 @@ const DEFAULT_VIEW: View = (input, output, target) => {
           class="medium"
           style="color: var(--icon-warning); margin-right: var(--sys-size-2);">
         </devtools-icon>
-        ${i18nFormatString(UIStrings.upperDeprecationWarning, {
-    PH1: UI.Fragment
-             .html`<x-link class="devtools-link" href="https://privacysandbox.com/news/privacy-sandbox-update/" jslog=${
-                 VisualLogging.link('privacy-sandbox-update').track({click: true})}>${
-                 i18nString(UIStrings.blogPostLink)}</x-link>`,
+        ${i18nFormatStringTemplate(UIStrings.upperDeprecationWarning, {
+    PH1:
+        html`<devtools-link class="devtools-link" href="https://privacysandbox.com/news/privacy-sandbox-update/" .jslogContext=${
+            'privacy-sandbox-update'}>${i18nString(UIStrings.blogPostLink)}</devtools-link>`,
   })}
       </div>
       <div class="body">
@@ -239,7 +239,7 @@ const DEFAULT_VIEW: View = (input, output, target) => {
         <div class="report overflow-auto">
             <div class="header">
               <h1>${i18nString(UIStrings.title)}</h1>
-              <div class="body">${i18nString(UIStrings.body)} <x-link class="devtools-link" href="https://developers.google.com/privacy-sandbox/cookies/prepare/audit-cookies" jslog=${VisualLogging.link('learn-more').track({click: true})}>${i18nString(UIStrings.learnMoreLink)}</x-link></div>
+              <div class="body">${i18nString(UIStrings.body)} <devtools-link class="devtools-link" href="https://developers.google.com/privacy-sandbox/cookies/prepare/audit-cookies" .jslogContext=${'learn-more'}>${i18nString(UIStrings.learnMoreLink)}</devtools-link></div>
             </div>
             ${input.cookieRows.length > 0 ?
               html`

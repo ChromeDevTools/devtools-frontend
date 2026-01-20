@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import '../../../ui/components/markdown_view/markdown_view.js';
+import '../../../ui/kit/kit.js';
 
 import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
@@ -576,12 +577,12 @@ function renderImageChatMessage(inlineData: Host.AidaClient.MediaBlob): Lit.LitT
   }
   const imageUrl = `data:${inlineData.mimeType};base64,${inlineData.data}`;
   // clang-format off
-    return html`<x-link
+    return html`<devtools-link
       class="image-link" title=${UIStringsNotTranslate.openImageInNewTab}
       href=${imageUrl}
     >
       <img src=${imageUrl} alt=${UIStringsNotTranslate.imageInputSentToTheModel} />
-    </x-link>`;
+    </devtools-link>`;
   // clang-format on
 }
 

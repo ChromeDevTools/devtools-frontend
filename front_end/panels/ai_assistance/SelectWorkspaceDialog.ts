@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../ui/kit/kit.js';
+
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -13,7 +15,6 @@ import * as Workspace from '../../models/workspace/workspace.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {html, nothing, render} from '../../ui/lit/lit.js';
-import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import selectWorkspaceDialogStyles from './selectWorkspaceDialog.css.js';
 
@@ -89,11 +90,11 @@ export const SELECT_WORKSPACE_DIALOG_DEFAULT_VIEW: View = (input, _output, targe
           <!-- Hardcoding, because there is no 'getFormatLocalizedString' equivalent for 'lockedString' -->
           <div>
             Tip: provide a
-            <x-link
+            <devtools-link
               class="devtools-link"
               href="https://goo.gle/devtools-automatic-workspace-folders"
-              jslog=${VisualLogging.link().track({click: true, keydown:'Enter|Space'}).context('automatic-workspaces-documentation')}
-            >com.chrome.devtools.json</x-link>
+              .jslogContext=${'automatic-workspaces-documentation'}
+            >com.chrome.devtools.json</devtools-link>
             file to automatically connect your project to DevTools.
           </div>
         ` : nothing}

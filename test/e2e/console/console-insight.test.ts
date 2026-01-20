@@ -179,7 +179,7 @@ describe('ConsoleInsight', function() {
 
     // Check if the citations are expanded and if the link is highlighted
     await devToolsPage.waitFor(detailsSelector + '[open]');
-    const highlightedLinkSelector = 'x-link.highlighted';
+    const highlightedLinkSelector = 'devtools-link.highlighted';
     await devToolsPage.waitFor(highlightedLinkSelector);
   });
 
@@ -238,7 +238,7 @@ describe('ConsoleInsight', function() {
 
     // Check if the citations are expanded and if the link is highlighted
     await devToolsPage.waitFor(detailsSelector + '[open]');
-    const highlightedLinkSelector = 'x-link.highlighted';
+    const highlightedLinkSelector = 'devtools-link.highlighted';
     await devToolsPage.waitFor(highlightedLinkSelector);
   });
 

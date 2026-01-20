@@ -18,13 +18,12 @@ export class ComputedStyleModel extends Common.ObjectWrapper.ObjectWrapper<Event
   private computedStylePromise?: Promise<ComputedStyle|null>;
   private currentTrackedNodeId?: number;
 
-  constructor() {
+  constructor(node?: SDK.DOMModel.DOMNode|null) {
     super();
     this.#cssModel = null;
     this.eventListeners = [];
-    this.#node = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
+    this.#node = node ?? null;
 
-    UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this.onNodeChanged, this);
     UI.Context.Context.instance().addFlavorChangeListener(
         StylesSidebarPane, this.evaluateTrackingComputedStyleUpdatesForNode, this);
     UI.Context.Context.instance().addFlavorChangeListener(
@@ -32,15 +31,21 @@ export class ComputedStyleModel extends Common.ObjectWrapper.ObjectWrapper<Event
   }
 
   dispose(): void {
-    UI.Context.Context.instance().removeFlavorChangeListener(SDK.DOMModel.DOMNode, this.onNodeChanged, this);
     UI.Context.Context.instance().removeFlavorChangeListener(
         StylesSidebarPane, this.evaluateTrackingComputedStyleUpdatesForNode, this);
     UI.Context.Context.instance().removeFlavorChangeListener(
         ComputedStyleWidget, this.evaluateTrackingComputedStyleUpdatesForNode, this);
   }
 
-  node(): SDK.DOMModel.DOMNode|null {
+  get node(): SDK.DOMModel.DOMNode|null {
     return this.#node;
+  }
+
+  set node(node: SDK.DOMModel.DOMNode|null) {
+    this.#node = node;
+    this.updateModel(this.#node ? this.#node.domModel().cssModel() : null);
+    this.onCSSModelChanged(null);
+    this.evaluateTrackingComputedStyleUpdatesForNode();
   }
 
   cssModel(): SDK.CSSModel.CSSModel|null {
@@ -81,13 +86,6 @@ export class ComputedStyleModel extends Common.ObjectWrapper.ObjectWrapper<Event
       this.currentTrackedNodeId = this.#node.id;
     }
   }, 100);
-
-  private onNodeChanged(event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode|null>): void {
-    this.#node = event.data;
-    this.updateModel(this.#node ? this.#node.domModel().cssModel() : null);
-    this.onCSSModelChanged(null);
-    this.evaluateTrackingComputedStyleUpdatesForNode();
-  }
 
   private updateModel(cssModel: SDK.CSSModel.CSSModel|null): void {
     if (this.#cssModel === cssModel) {
@@ -155,7 +153,7 @@ export class ComputedStyleModel extends Common.ObjectWrapper.ObjectWrapper<Event
   }
 
   private elementNode(): SDK.DOMModel.DOMNode|null {
-    const node = this.node();
+    const node = this.node;
     if (!node) {
       return null;
     }

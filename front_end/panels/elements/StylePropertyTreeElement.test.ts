@@ -28,6 +28,7 @@ import * as Elements from './elements.js';
 
 describeWithMockConnection('StylePropertyTreeElement', () => {
   let stylesSidebarPane: Elements.StylesSidebarPane.StylesSidebarPane;
+  let computedStyleModel: Elements.ComputedStyleModel.ComputedStyleModel;
   let mockVariableMap: Record<string, string|SDK.CSSProperty.CSSProperty>;
   let matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles;
   let fakeComputeCSSVariable: SinonStub<
@@ -38,7 +39,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
   const environmentVariables = {a: 'A'};
 
   beforeEach(async () => {
-    const computedStyleModel = new Elements.ComputedStyleModel.ComputedStyleModel();
+    computedStyleModel = new Elements.ComputedStyleModel.ComputedStyleModel();
     stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane(computedStyleModel);
     mockVariableMap = {
       '--a': 'red',
@@ -89,6 +90,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
     const node = new SDK.DOMModel.DOMNode(domModel);
     node.id = 0 as Protocol.DOM.NodeId;
     LegacyUI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
+    computedStyleModel.node = node;
   });
 
   function addProperty(name: string, value: string, longhandProperties: Protocol.CSS.CSSProperty[] = []) {
@@ -1905,6 +1907,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       const node = new SDK.DOMModel.DOMNode(domModel);
       node.id = 0 as Protocol.DOM.NodeId;
       LegacyUI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
+      computedStyleModel.node = node;
       const stylePropertyTreeElement = getTreeElement('property', '5px 2em');
       setMockConnectionResponseHandler(
           'CSS.getComputedStyleForNode', () => ({computedStyle: {}} as Protocol.CSS.GetComputedStyleForNodeResponse));
@@ -2129,6 +2132,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       currentNode.id = 1 as Protocol.DOM.NodeId;
       currentNode.parentNode = gridNode;
       LegacyUI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, currentNode);
+      computedStyleModel.node = currentNode;
     });
 
     function suggestions() {

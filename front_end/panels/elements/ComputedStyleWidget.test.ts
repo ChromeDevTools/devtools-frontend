@@ -60,11 +60,13 @@ describeWithMockConnection('ComputedStyleWidget', () => {
         ]
       });
 
-      const computedStyleModel = sinon.createStubInstance(Elements.ComputedStyleModel.ComputedStyleModel, {
-        fetchComputedStyle: Promise.resolve({node, computedStyle: new Map([['color', 'red']])}),
-        cssModel: sinon.createStubInstance(
-            SDK.CSSModel.CSSModel, {cachedMatchedCascadeForNode: Promise.resolve(cssMatchedStyles)}),
-        node,
+      const computedStyleModel = new Elements.ComputedStyleModel.ComputedStyleModel(node);
+      sinon.stub(computedStyleModel, 'fetchComputedStyle').callsFake(() => {
+        return Promise.resolve({node, computedStyle: new Map([['color', 'red']])});
+      });
+      sinon.stub(computedStyleModel, 'cssModel').callsFake(() => {
+        return sinon.createStubInstance(
+            SDK.CSSModel.CSSModel, {cachedMatchedCascadeForNode: Promise.resolve(cssMatchedStyles)});
       });
       const computedStyleWidget = new Elements.ComputedStyleWidget.ComputedStyleWidget(computedStyleModel);
       renderElementIntoDOM(computedStyleWidget);

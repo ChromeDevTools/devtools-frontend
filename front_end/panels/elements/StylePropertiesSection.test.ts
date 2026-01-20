@@ -16,7 +16,12 @@ import * as Elements from './elements.js';
 describeWithMockConnection('StylesPropertySection', () => {
   let computedStyleModel: Elements.ComputedStyleModel.ComputedStyleModel;
   beforeEach(() => {
+    SDK.PageResourceLoader.PageResourceLoader.instance({forceNew: true, loadOverride: null, maxConcurrentLoads: 1});
     computedStyleModel = new Elements.ComputedStyleModel.ComputedStyleModel();
+  });
+
+  afterEach(() => {
+    SDK.PageResourceLoader.PageResourceLoader.removeInstance();
   });
 
   it('contains specificity information', async () => {

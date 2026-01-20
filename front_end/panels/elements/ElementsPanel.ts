@@ -299,7 +299,10 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
 
     crumbsContainer.appendChild(this.breadcrumbs);
 
-    const computedStyleModel = new ComputedStyleModel();
+    const computedStyleModel = new ComputedStyleModel(UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode));
+    UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, event => {
+      computedStyleModel.node = event.data;
+    });
     this.stylesWidget = new StylesSidebarPane(computedStyleModel);
     this.computedStyleWidget = new ComputedStyleWidget(computedStyleModel);
     this.metricsWidget = new MetricsSidebarPane(computedStyleModel);

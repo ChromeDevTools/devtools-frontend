@@ -319,7 +319,7 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
         return link;
       }
       return null;
-    }, () => this.computedStyleModel.node());
+    }, () => this.computedStyleModel.node);
 
     const fontsWidget = new PlatformFontsWidget(this.computedStyleModel);
     fontsWidget.show(this.contentElement);
@@ -356,7 +356,7 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
   }
 
   private async fetchMatchedCascade(): Promise<SDK.CSSMatchedStyles.CSSMatchedStyles|null> {
-    const node = this.computedStyleModel.node();
+    const node = this.computedStyleModel.node;
     if (!node || !this.computedStyleModel.cssModel()) {
       return null;
     }
@@ -370,7 +370,7 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
 
     function validateStyles(this: ComputedStyleWidget, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles|null):
         SDK.CSSMatchedStyles.CSSMatchedStyles|null {
-      return matchedStyles && matchedStyles.node() === this.computedStyleModel.node() ? matchedStyles : null;
+      return matchedStyles && matchedStyles.node() === this.computedStyleModel.node ? matchedStyles : null;
     }
   }
 

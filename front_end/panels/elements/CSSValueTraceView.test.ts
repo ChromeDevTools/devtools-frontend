@@ -25,6 +25,7 @@ async function setUpStyles() {
   const node = new SDK.DOMModel.DOMNode(domModel);
   node.id = 0 as Protocol.DOM.NodeId;
   UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
+  computedStyleModel.node = node;
   const matchedStyles = await getMatchedStylesWithBlankRule({cssModel});
   const stylesPane = new Elements.StylesSidebarPane.StylesSidebarPane(computedStyleModel);
 

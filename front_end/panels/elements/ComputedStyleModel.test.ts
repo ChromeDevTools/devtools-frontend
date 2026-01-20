@@ -28,6 +28,8 @@ describeWithMockConnection('ComputedStyleModel', () => {
   let target: SDK.Target.Target;
   let computedStyleModel: Elements.ComputedStyleModel.ComputedStyleModel;
   let trackComputedStyleUpdatesForNodeSpy: sinon.SinonSpy;
+  let domNode1: SDK.DOMModel.DOMNode;
+  let domNode2: SDK.DOMModel.DOMNode;
 
   async function waitForTrackComputedStyleUpdatesForNodeCall(): Promise<void> {
     if (trackComputedStyleUpdatesForNodeSpy.getCalls().length > 0) {
@@ -45,6 +47,8 @@ describeWithMockConnection('ComputedStyleModel', () => {
   beforeEach(() => {
     stubNoopSettings();
     target = createTarget();
+    domNode1 = createNode(target, {nodeId: 1 as Protocol.DOM.NodeId});
+    domNode2 = createNode(target, {nodeId: 2 as Protocol.DOM.NodeId});
     const cssModel = target.model(SDK.CSSModel.CSSModel);
 
     UI.Context.Context.instance().setFlavor(Elements.StylesSidebarPane.StylesSidebarPane, null);
@@ -63,8 +67,7 @@ describeWithMockConnection('ComputedStyleModel', () => {
   });
 
   it('should track computed style updates when computed widget is shown', async () => {
-    UI.Context.Context.instance().setFlavor(
-        SDK.DOMModel.DOMNode, createNode(target, {nodeId: 1 as Protocol.DOM.NodeId}));
+    computedStyleModel.node = domNode1;
     UI.Context.Context.instance().setFlavor(
         Elements.ComputedStyleWidget.ComputedStyleWidget,
         sinon.createStubInstance(Elements.ComputedStyleWidget.ComputedStyleWidget));
@@ -81,8 +84,7 @@ describeWithMockConnection('ComputedStyleModel', () => {
            enabled: true,
          },
        });
-       UI.Context.Context.instance().setFlavor(
-           SDK.DOMModel.DOMNode, createNode(target, {nodeId: 1 as Protocol.DOM.NodeId}));
+       computedStyleModel.node = domNode1;
        UI.Context.Context.instance().setFlavor(
            Elements.StylesSidebarPane.StylesSidebarPane,
            sinon.createStubInstance(Elements.StylesSidebarPane.StylesSidebarPane));
@@ -93,8 +95,7 @@ describeWithMockConnection('ComputedStyleModel', () => {
      });
 
   it('should track computed style updates when the node is changed', async () => {
-    UI.Context.Context.instance().setFlavor(
-        SDK.DOMModel.DOMNode, createNode(target, {nodeId: 1 as Protocol.DOM.NodeId}));
+    computedStyleModel.node = domNode1;
     UI.Context.Context.instance().setFlavor(
         Elements.ComputedStyleWidget.ComputedStyleWidget,
         sinon.createStubInstance(Elements.ComputedStyleWidget.ComputedStyleWidget));
@@ -103,16 +104,14 @@ describeWithMockConnection('ComputedStyleModel', () => {
     sinon.assert.calledWith(trackComputedStyleUpdatesForNodeSpy, 1);
     trackComputedStyleUpdatesForNodeSpy.resetHistory();
 
-    UI.Context.Context.instance().setFlavor(
-        SDK.DOMModel.DOMNode, createNode(target, {nodeId: 2 as Protocol.DOM.NodeId}));
+    computedStyleModel.node = domNode2;
     await waitForTrackComputedStyleUpdatesForNodeCall();
 
     sinon.assert.calledWith(trackComputedStyleUpdatesForNodeSpy, 2);
   });
 
   it('should stop tracking when computed widget is hidden', async () => {
-    UI.Context.Context.instance().setFlavor(
-        SDK.DOMModel.DOMNode, createNode(target, {nodeId: 1 as Protocol.DOM.NodeId}));
+    computedStyleModel.node = domNode1;
     UI.Context.Context.instance().setFlavor(
         Elements.ComputedStyleWidget.ComputedStyleWidget,
         sinon.createStubInstance(Elements.ComputedStyleWidget.ComputedStyleWidget));
@@ -134,8 +133,7 @@ describeWithMockConnection('ComputedStyleModel', () => {
            enabled: false,
          },
        });
-       UI.Context.Context.instance().setFlavor(
-           SDK.DOMModel.DOMNode, createNode(target, {nodeId: 1 as Protocol.DOM.NodeId}));
+       computedStyleModel.node = domNode1;
        UI.Context.Context.instance().setFlavor(
            Elements.ComputedStyleWidget.ComputedStyleWidget,
            sinon.createStubInstance(Elements.ComputedStyleWidget.ComputedStyleWidget));

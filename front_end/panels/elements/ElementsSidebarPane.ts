@@ -21,7 +21,7 @@ export class ElementsSidebarPane extends UI.Widget.VBox {
   }
 
   node(): SDK.DOMModel.DOMNode|null {
-    return this.computedStyleModelInternal.node();
+    return this.computedStyleModelInternal.node;
   }
 
   cssModel(): SDK.CSSModel.CSSModel|null {

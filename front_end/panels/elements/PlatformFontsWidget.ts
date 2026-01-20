@@ -93,7 +93,7 @@ export class PlatformFontsWidget extends UI.Widget.VBox {
 
   override async performUpdate(): Promise<void> {
     const cssModel = this.sharedModel.cssModel();
-    const node = this.sharedModel.node();
+    const node = this.sharedModel.node;
     if (!node || !cssModel) {
       this.#view({platformFonts: null}, {}, this.contentElement);
       return;

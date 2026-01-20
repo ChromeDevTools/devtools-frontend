@@ -347,7 +347,8 @@ export class MainImpl {
 
     // Debugging
     Root.Runtime.experiments.register('instrumentation-breakpoints', 'Instrumentation breakpoints');
-    Root.Runtime.experiments.register('use-source-map-scopes', 'Use scope information from source maps');
+    Root.Runtime.experiments.register(
+        Root.Runtime.ExperimentName.USE_SOURCE_MAP_SCOPES, 'Use scope information from source maps');
 
     // Advanced Perceptual Contrast Algorithm.
     Root.Runtime.experiments.register(
@@ -389,6 +390,7 @@ export class MainImpl {
 
     Root.Runtime.experiments.enableExperimentsByDefault([
       Root.Runtime.ExperimentName.FULL_ACCESSIBILITY_TREE,
+      Root.Runtime.ExperimentName.USE_SOURCE_MAP_SCOPES,
       ...(Root.Runtime.Runtime.queryParam('isChromeForTesting') ? ['protocol-monitor'] : []),
     ]);
 

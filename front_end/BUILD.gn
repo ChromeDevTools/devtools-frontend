@@ -143,7 +143,6 @@ group("unittests") {
     "models/persistence:unittests",
     "models/project_settings:unittests",
     "models/source_map_scopes:unittests",
-    "models/stack_trace:unittests",
     "models/text_utils:unittests",
     "models/trace:unittests",
     "models/trace/extras:unittests",
@@ -284,6 +283,7 @@ group("foundation_unittests") {
     "models/crux-manager:foundation_unittests",
     "models/formatter:unittests",
     "models/issues_manager:foundation_unittests",
+    "models/stack_trace:unittests",
   ]
 }
 

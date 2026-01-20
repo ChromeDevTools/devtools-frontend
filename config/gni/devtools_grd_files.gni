@@ -2558,6 +2558,7 @@ grd_files_unbundled_sources = [
   "front_end/ui/legacy/InplaceEditor.js",
   "front_end/ui/legacy/InspectorView.js",
   "front_end/ui/legacy/KeyboardShortcut.js",
+  "front_end/ui/legacy/LinkContextMenuProvider.js",
   "front_end/ui/legacy/ListControl.js",
   "front_end/ui/legacy/ListModel.js",
   "front_end/ui/legacy/ListWidget.js",

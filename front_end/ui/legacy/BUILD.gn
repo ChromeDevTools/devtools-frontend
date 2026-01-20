@@ -70,6 +70,7 @@ devtools_ui_module("ui") {
     "InplaceEditor.ts",
     "InspectorView.ts",
     "KeyboardShortcut.ts",
+    "LinkContextMenuProvider.ts",
     "ListControl.ts",
     "ListModel.ts",
     "ListWidget.ts",

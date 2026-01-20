@@ -2,19 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as UIHelpers from '../helpers/helpers.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
-import type {ContextMenu, Provider} from './ContextMenu.js';
 import {html as xhtml} from './Fragment.js';
 import {Tooltip} from './Tooltip.js';
 import {
-  copyLinkAddressLabel,
   MaxLengthForDisplayedURLs,
-  openLinkExternallyLabel,
 } from './UIUtils.js';
 import {XElement} from './XElement.js';
 
@@ -125,29 +121,6 @@ export class XLink extends XElement {
       this.removeEventListener('keydown', this.onKeyDown, false);
       this.style.removeProperty('cursor');
     }
-  }
-}
-
-export class ContextMenuProvider implements Provider<Node> {
-  appendApplicableItems(_event: Event, contextMenu: ContextMenu, target: Node): void {
-    let targetNode: Node|null = target;
-    while (targetNode && !(targetNode instanceof XLink)) {
-      targetNode = targetNode.parentNodeOrShadowHost();
-    }
-    if (!targetNode?.href) {
-      return;
-    }
-    const node: XLink = targetNode;
-    contextMenu.revealSection().appendItem(openLinkExternallyLabel(), () => {
-      if (node.href) {
-        UIHelpers.openInNewTab(node.href);
-      }
-    }, {jslogContext: 'open-in-new-tab'});
-    contextMenu.revealSection().appendItem(copyLinkAddressLabel(), () => {
-      if (node.href) {
-        Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(node.href);
-      }
-    }, {jslogContext: 'copy-link-address'});
   }
 }
 

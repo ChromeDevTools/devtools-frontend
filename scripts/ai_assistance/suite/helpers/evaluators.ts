@@ -18,8 +18,60 @@ abstract class Evaluator {}
 
 const NUM_CONVERSATIONS = '# of conversations';
 const NUM_EVALS_PER_CONVERSATION = '# of evals';
-const OVERALL_STATS = 'Overall';
+const OVERALL_STATS = 'Weighted Overall';
 const PASS_RATE = 'Pass Rate';
+
+type RubricName = string;
+interface RubricScore {
+  rubric: RubricName;
+  score: number;
+  reason: string;
+}
+type RubricWeights = Record<RubricName, number>;
+
+const IMPORTANCE_WEIGHTS: Record<string, number> = {
+  critical: 5,
+  important: 2,
+  minor: 1,
+};
+
+function getWeightForImportance(importance?: string): number {
+  if (!importance) {
+    return IMPORTANCE_WEIGHTS.minor;
+  }
+  return IMPORTANCE_WEIGHTS[importance.toLowerCase()] ?? IMPORTANCE_WEIGHTS.minor;
+}
+
+function parseScoringInstructions(instructions: string): {scoringPrompt: string, rubricWeights: RubricWeights} {
+  const rubricWeights: RubricWeights = {};
+  const lines = instructions.split('\n');
+  // The instructions without the importance weights to not bias the LLM judge
+  const scoringPrompt: string[] = [];
+  let currentRubric: RubricName|null = null;
+
+  for (const line of lines) {
+    const rubricMatch = line.match(/^(?:#|##) Rubric: (.*)$/);
+    if (rubricMatch) {
+      currentRubric = rubricMatch[1].trim();
+      scoringPrompt.push(line);
+      continue;
+    }
+
+    const importanceMatch = line.match(/^Importance: (.*)$/);
+    if (importanceMatch && currentRubric) {
+      rubricWeights[currentRubric] = getWeightForImportance(importanceMatch[1].trim());
+      // Remove the importance line from the scoring prompt
+      continue;
+    }
+
+    scoringPrompt.push(line);
+  }
+
+  return {
+    scoringPrompt: scoringPrompt.join('\n'),
+    rubricWeights,
+  };
+}
 
 export class FunctionCalled extends Evaluator {
   static nameOnly(example: Conversation, funcName: string): boolean {
@@ -30,12 +82,18 @@ export class FunctionCalled extends Evaluator {
 }
 
 export class LLMComparison extends Evaluator {
+  static #cachedScoring: {scoringPrompt: string, rubricWeights: RubricWeights}|null = null;
+
   static async judge(example: Conversation, prompt: string):
-      Promise<{rubricScores: Array<{rubric: string, score: number, reason: string}>}> {
-    const scoringInstructions = loadInstructions('scoring');
+      Promise<{rubricScores: RubricScore[], rubricWeights: RubricWeights}> {
+    if (!this.#cachedScoring) {
+      const scoringInstructions = loadInstructions('scoring');
+      this.#cachedScoring = parseScoringInstructions(scoringInstructions);
+    }
+    const {scoringPrompt, rubricWeights} = this.#cachedScoring;
     const exampleAsMarkdown = getMarkdownConversation(example);
     const response = await generateGeminiContent(
-        `${scoringInstructions}
+        `${scoringPrompt}
         ${prompt}.
 
 ## Conversation to score:
@@ -58,8 +116,8 @@ ${exampleAsMarkdown}`,
           },
           required: ['rubricScores']
         });
-    const r = JSON.parse(response) as {rubricScores: Array<{rubric: string, score: number, reason: string}>};
-    return {rubricScores: r.rubricScores};
+    const r = JSON.parse(response) as {rubricScores: RubricScore[]};
+    return {rubricScores: r.rubricScores, rubricWeights};
   }
 }
 
@@ -75,7 +133,7 @@ export type ItEval = {
 }&({
   succeed: (example: Conversation) => boolean,
 }|{
-  judge: (example: Conversation) => Promise<{rubricScores: Array<{rubric: string, score: number, reason: string}>}>,
+  judge: (example: Conversation) => Promise<{rubricScores: RubricScore[], rubricWeights: RubricWeights}>,
 });
 
 function calculateStandardDeviation(values: number[]): number {
@@ -114,22 +172,22 @@ export async function itEval(config: ItEval): Promise<void> {
       }
       const allDevToolsConversations = outputs.flatMap(o => o.contents.conversations);
       const repeatCount = argv.repeat;
-      const results: Array<Array<{rubric: string, score: number, reason: string}>> = [];
+      const results: Array<{rubricScores: RubricScore[], rubricWeights: RubricWeights}> = [];
 
       // Collect scores from all examples.
       await Promise.all(allDevToolsConversations.map(async example => {
         for (let i = 0; i < repeatCount; i++) {
           const result = await config.judge(example);
-          results.push(result.rubricScores);
+          results.push(result);
         }
       }));
 
-      // Calculate stats for each rubric.
+      // Calculate stats for each rubric (take the average for each rubric among multiple conversations)
       const inputCount = allDevToolsConversations.length;
-      const statsByRubric: Record<string, RubricStats> = {};
-      const allRubrics = new Set(results.flatMap(r => r.map(i => i.rubric)));
+      const statsByRubric: Record<RubricName, RubricStats> = {};
+      const allRubrics = new Set(results.flatMap(r => r.rubricScores.map(i => i.rubric)));
       for (const rubric of allRubrics) {
-        const scores = results.flatMap(r => r.filter(i => i.rubric === rubric).map(i => i.score));
+        const scores = results.flatMap(r => r.rubricScores.filter(i => i.rubric === rubric).map(i => i.score));
         const total = scores.reduce((acc, score) => acc + score, 0);
 
         const average = scores.length ? total / scores.length : 0;
@@ -137,16 +195,31 @@ export async function itEval(config: ItEval): Promise<void> {
         statsByRubric[rubric] = {average, standardDeviation, allScores: scores};
       }
 
-      // Calculate overall stats.
-      const allScoresFlattened = results.flatMap(r => r.map(i => i.score));
-      const overallTotal = allScoresFlattened.reduce((acc, score) => acc + score, 0);
+      // Weight all rubrics (take the first result's weights, as they should be the same for all results).
+      const weights = results.length > 0 ? results[0].rubricWeights : {};
+      const allWeightedScores: number[] = [];
+      for (const rubricScores of results) {
+        let totalWeightedScore = 0;
+        let totalWeight = 0;
+        for (const {rubric, score} of rubricScores.rubricScores) {
+          const weight = weights[rubric] ?? IMPORTANCE_WEIGHTS.minor;
+          totalWeightedScore += score * weight;
+          totalWeight += weight;
+        }
+        if (totalWeight > 0) {
+          allWeightedScores.push(totalWeightedScore / totalWeight);
+        }
+      }
 
-      const overallAverage = allScoresFlattened.length ? overallTotal / allScoresFlattened.length : 0;
-      const overallStandardDeviation = calculateStandardDeviation(allScoresFlattened);
+      // Calculate average and standard deviation for the overall score.
+      const overallAverage = allWeightedScores.length ?
+          allWeightedScores.reduce((acc, score) => acc + score, 0) / allWeightedScores.length :
+          0;
+      const overallStandardDeviation = calculateStandardDeviation(allWeightedScores);
       const overallStats: RubricStats = {
         average: overallAverage,
         standardDeviation: overallStandardDeviation,
-        allScores: allScoresFlattened,
+        allScores: allWeightedScores,
       };
 
       state.store.saveResult(config.test, date, {
@@ -262,7 +335,7 @@ type Result = {
 }|{
   type: 'JUDGE',
 
-  statsByRubric: Record<string, RubricStats>,
+  statsByRubric: Record<RubricName, RubricStats>,
   overallStats: RubricStats,
   inputCount: number,
   repetitionCount: number,

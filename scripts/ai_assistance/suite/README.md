@@ -61,3 +61,40 @@ This will upload the changes to the GCP bucket and update the `DEPS` file for yo
 4. Commit the `DEPS` change and send the CL for review.
 
 If you get any authorisation errors, run `gsutil.py config` to refresh your authentication status.
+
+## Scoring
+
+The evaluation suite uses an LLM-as-a-judge system to score AI responses against several rubrics.
+
+### Multiple Runs
+
+By default, the script judges each conversation once. You can use the `--repeat N` flag to run the evaluation multiple times per query/input:
+
+```bash
+cd scripts/ai_assistance && npm run eval-suite -- --repeat 3
+```
+
+The results will show the **mean** and **standard deviation** for each rubric across all runs.
+
+### Weighted Averages
+
+The **Overall** score is calculated as a weighted average of individual rubric scores. This allows critical rubrics (like Correctness or Safety) to have a higher impact on the final score.
+
+#### Configuring Weights
+
+Weights are defined in the [scoring.md](file:///usr/local/google/home/kimanh/work/devtools/devtools-frontend/scripts/ai_assistance/suite/instructions/scoring.md) file using importance levels. You can add an `Importance:` line directly under a rubric heading:
+
+```markdown
+## Rubric: Correctness
+Importance: Critical
+...
+```
+
+The following importance levels are supported:
+- `Critical`
+- `Important`
+- `Minor` (Default)
+
+If a rubric does not have an importance level specified, it defaults to `Minor`.
+
+The weights are automatically stripped from the prompt before being sent to the LLM to ensure they do not bias the judge's scoring criteria.

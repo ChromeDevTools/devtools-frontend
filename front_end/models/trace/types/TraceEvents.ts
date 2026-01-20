@@ -1832,6 +1832,10 @@ export interface SyntheticJSSample extends Event {
   ph: Phase.INSTANT;
 }
 
+export function isJSSample(event: Event): event is SyntheticJSSample {
+  return event.name === Name.JS_SAMPLE;
+}
+
 export function isSyntheticInteraction(event: Event): event is SyntheticInteractionPair {
   return Boolean(
       'interactionId' in event && event.args?.data && 'beginEvent' in event.args.data && 'endEvent' in event.args.data);

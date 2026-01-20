@@ -19,11 +19,15 @@ export class EventsSerializer {
       return `${Types.File.EventKeyType.LEGACY_TIMELINE_FRAME}-${event.index}`;
     }
 
+    if (Types.Events.isJSSample(event)) {
+      return null;
+    }
+
     const rawEvents = Helpers.SyntheticEvents.SyntheticEventsManager.getActiveManager().getRawTraceEvents();
     const isSynthetic = Types.Events.isSyntheticBased(event);
     const index = rawEvents.indexOf(isSynthetic ? event.rawSourceEvent : event);
     if (index === -1) {
-      throw new Error(`Unknown trace event: ${event.name}`);
+      return null;
     }
 
     const key: Types.File.SyntheticEventKey|Types.File.RawEventKey = Types.Events.isSyntheticBased(event) ?

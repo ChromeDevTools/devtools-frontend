@@ -3,6 +3,8 @@
 // found in the LICENSE file.
 
 import assert from 'node:assert';
+import {hideBin} from 'yargs/helpers';
+import yargs from 'yargs/yargs';
 
 import {loadInstructions} from '../instructions/load.ts';
 import type {Conversation} from '../types.js';
@@ -10,7 +12,14 @@ import type {Conversation} from '../types.js';
 import {generateGeminiContent} from './gemini.ts';
 import {getMarkdownConversation, getOutputs, type Output} from './outputs.ts';
 
+const argv = yargs(hideBin(process.argv)).option('repeat', {type: 'number', default: 1}).parseSync();
+
 abstract class Evaluator {}
+
+const NUM_CONVERSATIONS = '# of conversations';
+const NUM_EVALS_PER_CONVERSATION = '# of evals';
+const OVERALL_STATS = 'Overall';
+const PASS_RATE = 'Pass Rate';
 
 export class FunctionCalled extends Evaluator {
   static nameOnly(example: Conversation, funcName: string): boolean {
@@ -21,12 +30,12 @@ export class FunctionCalled extends Evaluator {
 }
 
 export class LLMComparison extends Evaluator {
-  static async judge(example: Conversation, prompt: string): Promise<{score: number, reasons: string}> {
+  static async judge(example: Conversation, prompt: string):
+      Promise<{rubricScores: Array<{rubric: string, score: number, reason: string}>}> {
     const scoringInstructions = loadInstructions('scoring');
     const exampleAsMarkdown = getMarkdownConversation(example);
     const response = await generateGeminiContent(
         `${scoringInstructions}
-
         ${prompt}.
 
 ## Conversation to score:
@@ -34,13 +43,23 @@ ${exampleAsMarkdown}`,
         'gemini-2.5-flash', {
           type: 'object',
           properties: {
-            score: {type: 'number', description: 'A numerical score assigned by the AI.'},
-            reasons: {type: 'string', description: 'A string containing the reasons for the assigned score.'}
+            rubricScores: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  rubric: {type: 'string', description: 'The name of the rubric.'},
+                  score: {type: 'number', description: 'A numerical score assigned by the AI.'},
+                  reason: {type: 'string', description: 'A string containing the reasons for the assigned score.'}
+                },
+                required: ['rubric', 'score', 'reason']
+              }
+            }
           },
-          required: ['score', 'reasons']
+          required: ['rubricScores']
         });
-    const r = JSON.parse(response) as {score: number, reasons: string};
-    return {score: r.score, reasons: r.reasons};
+    const r = JSON.parse(response) as {rubricScores: Array<{rubric: string, score: number, reason: string}>};
+    return {rubricScores: r.rubricScores};
   }
 }
 
@@ -56,8 +75,17 @@ export type ItEval = {
 }&({
   succeed: (example: Conversation) => boolean,
 }|{
-  judge: (example: Conversation) => Promise<{score: number, reasons: string}>,
+  judge: (example: Conversation) => Promise<{rubricScores: Array<{rubric: string, score: number, reason: string}>}>,
 });
+
+function calculateStandardDeviation(values: number[]): number {
+  if (values.length === 0) {
+    return 0;
+  }
+  const mean = values.reduce((acc, val) => acc + val, 0) / values.length;
+  const variance = values.reduce((acc, val) => acc + Math.pow(val - mean, 2), 0) / values.length;
+  return Math.sqrt(variance);
+}
 
 export async function itEval(config: ItEval): Promise<void> {
   assert.ok(state);
@@ -85,13 +113,49 @@ export async function itEval(config: ItEval): Promise<void> {
         continue;
       }
       const allDevToolsConversations = outputs.flatMap(o => o.contents.conversations);
-      const scores = await Promise.all(allDevToolsConversations.map(async example => {
-        const result = await config.judge(example);
-        return result.score;
+      const repeatCount = argv.repeat;
+      const results: Array<Array<{rubric: string, score: number, reason: string}>> = [];
+
+      // Collect scores from all examples.
+      await Promise.all(allDevToolsConversations.map(async example => {
+        for (let i = 0; i < repeatCount; i++) {
+          const result = await config.judge(example);
+          results.push(result.rubricScores);
+        }
       }));
-      const totalOfAllScores = scores.reduce((acc: number, score: number) => acc + score, 0);
-      const average = totalOfAllScores / scores.length;
-      state.store.saveResult(config.test, date, {type: 'JUDGE', average, allScores: scores, total: totalOfAllScores});
+
+      // Calculate stats for each rubric.
+      const inputCount = allDevToolsConversations.length;
+      const statsByRubric: Record<string, RubricStats> = {};
+      const allRubrics = new Set(results.flatMap(r => r.map(i => i.rubric)));
+      for (const rubric of allRubrics) {
+        const scores = results.flatMap(r => r.filter(i => i.rubric === rubric).map(i => i.score));
+        const total = scores.reduce((acc, score) => acc + score, 0);
+
+        const average = scores.length ? total / scores.length : 0;
+        const standardDeviation = calculateStandardDeviation(scores);
+        statsByRubric[rubric] = {average, standardDeviation, allScores: scores};
+      }
+
+      // Calculate overall stats.
+      const allScoresFlattened = results.flatMap(r => r.map(i => i.score));
+      const overallTotal = allScoresFlattened.reduce((acc, score) => acc + score, 0);
+
+      const overallAverage = allScoresFlattened.length ? overallTotal / allScoresFlattened.length : 0;
+      const overallStandardDeviation = calculateStandardDeviation(allScoresFlattened);
+      const overallStats: RubricStats = {
+        average: overallAverage,
+        standardDeviation: overallStandardDeviation,
+        allScores: allScoresFlattened,
+      };
+
+      state.store.saveResult(config.test, date, {
+        type: 'JUDGE',
+        statsByRubric,
+        overallStats,
+        inputCount,
+        repetitionCount: repeatCount,
+      });
     }
   }
 }
@@ -118,28 +182,77 @@ function log(indentation: number, message: string): void {
   console.log(`${' '.repeat(indentation)}${message}`);
 }
 
+function formatRubricStats(stats: RubricStats): string {
+  return `${stats.average.toFixed(2)} (mean) ±${stats.standardDeviation.toFixed(2)}`;
+}
+
+function formatJudgeResult(result: Extract<Result, {type: 'JUDGE'}>, row: string): string {
+  if (row === NUM_CONVERSATIONS) {
+    return String(result.inputCount);
+  }
+  if (row === NUM_EVALS_PER_CONVERSATION) {
+    return String(result.repetitionCount);
+  }
+  if (row === OVERALL_STATS) {
+    return formatRubricStats(result.overallStats);
+  }
+  const stats = result.statsByRubric[row];
+  return stats ? formatRubricStats(stats) : '-';
+}
+
 function printResults(store: ResultStore): void {
   log(0, `Results for: ${store.type}/${store.label}`);
 
-  // Structures the results in Date => <Test Name, Test Output>.
-  const dataForTable: Record<string, Record<string, string>> = {};
-
   for (const [test, dateToResult] of store.results) {
-    for (const [date, result] of dateToResult) {
-      dataForTable[date] ??= {};
-      switch (result.type) {
-        case 'BINARY':
-          dataForTable[date][test] = `${result.success} / ${result.total} passed`;
-          break;
-        case 'JUDGE':
-          dataForTable[date][test] = `${result.average.toFixed(1)} average from ${result.allScores.length} inputs.`;
-          break;
-        default:
-          throw new Error('Unknown result type!');
+    if (Object.keys(Object.fromEntries(dateToResult)).length === 0) {
+      continue;
+    }
+    log(0, `\nTest: ${test}`);
+
+    const sortedDates = Array.from(dateToResult.keys()).sort();
+    // Collect all rubric names, if this is a LLM-as-a-judge rating
+    const allRubrics = new Set<string>();
+    for (const result of dateToResult.values()) {
+      if (result.type === 'JUDGE') {
+        Object.keys(result.statsByRubric).forEach(r => allRubrics.add(r));
       }
     }
+
+    const tableData: Record<string, Record<string, string>> = {};
+    for (const date of sortedDates) {
+      const result = dateToResult.get(date);
+      if (!result) {
+        continue;
+      }
+
+      switch (result.type) {
+        case 'BINARY':
+          if (!tableData[PASS_RATE]) {
+            tableData[PASS_RATE] = {};
+          }
+          tableData[PASS_RATE][date] = `${result.success} / ${result.total} passed`;
+          break;
+        case 'JUDGE':
+          // Create a row for each rubric, including overall and runs per query/input
+          for (const row
+                   of [OVERALL_STATS, ...Array.from(allRubrics).sort(), NUM_CONVERSATIONS,
+                       NUM_EVALS_PER_CONVERSATION]) {
+            if (!tableData[row]) {
+              tableData[row] = {};
+            }
+            tableData[row][date] = formatJudgeResult(result, row);
+          }
+          break;
+      }
+    }
+    console.table(tableData);
   }
-  console.table(dataForTable);
+}
+
+interface RubricStats {
+  average: number;
+  standardDeviation: number;
+  allScores: number[];
 }
 
 type Result = {
@@ -148,9 +261,11 @@ type Result = {
   success: number,
 }|{
   type: 'JUDGE',
-  average: number,
-  total: number,
-  allScores: number[],
+
+  statsByRubric: Record<string, RubricStats>,
+  overallStats: RubricStats,
+  inputCount: number,
+  repetitionCount: number,
 };
 
 class ResultStore {

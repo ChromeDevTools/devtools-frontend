@@ -1752,6 +1752,7 @@ var knownContextValues = /* @__PURE__ */ new Set([
   "geolocation.get-current-position",
   "geolocation.watch-position",
   "georgia",
+  "get-devtools-mcp",
   "gl",
   "global-ai-button",
   "global-ai-button-click-count",

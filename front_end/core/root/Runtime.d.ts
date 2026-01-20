@@ -229,6 +229,10 @@ export interface DevToolsEnableDurableMessages {
 interface HostConfigAiAssistanceContextSelectionAgent {
     enabled: boolean;
 }
+interface ConsoleInsightsTeasers {
+    enabled: boolean;
+    allowWithoutGpu: boolean;
+}
 /**
  * The host configuration that we expect from the DevTools back-end.
  *
@@ -277,6 +281,7 @@ export type HostConfig = Platform.TypeScriptUtilities.RecursivePartial<{
     devToolsAiPromptApi: AiPromptApi;
     devToolsEnableDurableMessages: DevToolsEnableDurableMessages;
     devToolsAiAssistanceContextSelectionAgent: HostConfigAiAssistanceContextSelectionAgent;
+    devToolsConsoleInsightsTeasers: ConsoleInsightsTeasers;
 }>;
 /**
  * The host configuration for this DevTools instance.

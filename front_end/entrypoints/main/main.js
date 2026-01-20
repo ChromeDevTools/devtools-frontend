@@ -454,6 +454,7 @@ import * as PanelCommon from "./../../panels/common/common.js";
 import * as Snippets from "./../../panels/snippets/snippets.js";
 import * as Buttons from "./../../ui/components/buttons/buttons.js";
 import * as Snackbar from "./../../ui/components/snackbars/snackbars.js";
+import * as UIHelpers from "./../../ui/helpers/helpers.js";
 import * as Components from "./../../ui/legacy/components/utils/utils.js";
 import * as UI2 from "./../../ui/legacy/legacy.js";
 import * as ThemeSupport from "./../../ui/legacy/theme_support/theme_support.js";
@@ -521,7 +522,11 @@ var UIStrings2 = {
   /**
    * @description Notification shown to the user whenever DevTools has finished downloading a local AI model.
    */
-  aiModelDownloaded: "AI model downloaded"
+  aiModelDownloaded: "AI model downloaded",
+  /**
+   * @description A title of the menu item in the main menu leading to https://github.com/ChromeDevTools/chrome-devtools-mcp.
+   */
+  getDevToolsMcp: "Get `DevTools MCP`"
 };
 var str_2 = i18n3.i18n.registerUIStrings("entrypoints/main/MainImpl.ts", UIStrings2);
 var i18nString2 = i18n3.i18n.getLocalizedString.bind(void 0, str_2);
@@ -1166,6 +1171,13 @@ var MainMenuItem = class _MainMenuItem {
       /* optional */
       true
     );
+    contextMenu.defaultSection().appendItem(i18nString2(UIStrings2.getDevToolsMcp), () => {
+      UIHelpers.openInNewTab("https://github.com/ChromeDevTools/chrome-devtools-mcp");
+    }, {
+      additionalElement: UI2.UIUtils.maybeCreateNewBadge("get-devtools-mcp"),
+      jslogContext: "get-devtools-mcp"
+    });
+    contextMenu.defaultSection().appendSeparator();
     if (dockController.dockSide() === "undocked") {
       const mainTarget = SDK2.TargetManager.TargetManager.instance().primaryPageTarget();
       if (mainTarget && mainTarget.type() === SDK2.Target.Type.FRAME) {

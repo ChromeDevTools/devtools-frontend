@@ -146,7 +146,6 @@ export declare class SourceMap {
      *          for it.
      */
     compatibleForURL(sourceURL: Platform.DevToolsPath.UrlString, other: SourceMap): boolean;
-    expandCallFrame(frame: CallFrame): CallFrame[];
     resolveScopeChain(frame: CallFrame): ScopeChainEntry[] | null;
     findOriginalFunctionName(position: ScopesCodec.Position): string | null;
     findOriginalFunctionScope(position: ScopesCodec.Position): {

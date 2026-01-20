@@ -603,13 +603,6 @@ export class SourceMap {
         return this.embeddedContentByURL(sourceURL) === other.embeddedContentByURL(sourceURL) &&
             this.hasIgnoreListHint(sourceURL) === other.hasIgnoreListHint(sourceURL);
     }
-    expandCallFrame(frame) {
-        this.#ensureSourceMapProcessed();
-        if (this.#scopesInfo === null) {
-            return [frame];
-        }
-        return this.#scopesInfo.expandCallFrame(frame);
-    }
     resolveScopeChain(frame) {
         this.#ensureSourceMapProcessed();
         if (this.#scopesInfo === null) {

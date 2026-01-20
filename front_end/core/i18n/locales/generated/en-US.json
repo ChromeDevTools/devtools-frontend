@@ -1208,6 +1208,9 @@
   "entrypoints/main/MainImpl.ts | focusDebuggee": {
     "message": "Focus page"
   },
+  "entrypoints/main/MainImpl.ts | getDevToolsMcp": {
+    "message": "Get DevTools MCP"
+  },
   "entrypoints/main/MainImpl.ts | help": {
     "message": "Help"
   },

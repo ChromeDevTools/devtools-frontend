@@ -550,25 +550,6 @@ export class DebuggerModel extends SDKModel {
         if (this.#expandCallFramesCallback) {
             pausedDetails.callFrames = await this.#expandCallFramesCallback.call(null, pausedDetails.callFrames);
         }
-        if (!Root.Runtime.experiments.isEnabled("use-source-map-scopes" /* Root.Runtime.ExperimentName.USE_SOURCE_MAP_SCOPES */)) {
-            return;
-        }
-        // TODO(crbug.com/40277685): Support attaching/detaching source maps after pausing.
-        // Expanding call frames via source maps here is only suitable for the experiment prototype because
-        // we block until all relevant source maps are loaded.
-        // We should change this so the "Debugger Plugin" and "Source Map" have a bottle neck where they expand
-        // call frames and that bottleneck should support attaching/detaching source maps while paused.
-        const finalFrames = [];
-        for (const frame of pausedDetails.callFrames) {
-            const sourceMap = await this.sourceMapManager().sourceMapForClientPromise(frame.script);
-            if (sourceMap?.hasScopeInfo()) {
-                finalFrames.push(...sourceMap.expandCallFrame(frame));
-            }
-            else {
-                finalFrames.push(frame);
-            }
-        }
-        pausedDetails.callFrames = finalFrames;
     }
     resumedScript() {
         this.resetDebuggerPausedDetails();
@@ -590,7 +571,8 @@ export class DebuggerModel extends SDKModel {
         const script = new Script(this, scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, hash, isContentScript, isLiveEdit, sourceMapURL, hasSourceURLComment, length, isModule, originStackTrace, codeOffset, scriptLanguage, selectedDebugSymbol, embedderName, buildId);
         this.registerScript(script);
         this.dispatchEventToListeners(Events.ParsedScriptSource, script);
-        if (script.sourceMapURL && !hasSyntaxError) {
+        if ((!selectedDebugSymbol || selectedDebugSymbol.type === "SourceMap" /* Protocol.Debugger.DebugSymbolsType.SourceMap */) &&
+            script.sourceMapURL && !hasSyntaxError) {
             this.#sourceMapManager.attachSourceMap(script, script.sourceURL, script.sourceMapURL);
         }
         const isDiscardable = hasSyntaxError && script.isAnonymousScript();

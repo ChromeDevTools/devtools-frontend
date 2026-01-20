@@ -7259,7 +7259,7 @@ var BuiltInAi = class _BuiltInAi extends Common7.ObjectWrapper.ObjectWrapper {
     this.initDoneForTesting = this.getLanguageModelAvailability().then(() => this.#sendAvailabilityMetrics()).then(() => this.initialize());
   }
   async getLanguageModelAvailability() {
-    if (!Root10.Runtime.hostConfig.devToolsAiPromptApi?.enabled) {
+    if (!Root10.Runtime.hostConfig.devToolsConsoleInsightsTeasers?.enabled || Root10.Runtime.hostConfig.devToolsAiPromptApi && !Root10.Runtime.hostConfig.devToolsAiPromptApi.enabled) {
       this.#availability = "disabled";
       return this.#availability;
     }
@@ -7283,7 +7283,7 @@ var BuiltInAi = class _BuiltInAi extends Common7.ObjectWrapper.ObjectWrapper {
     return this.#availability === "downloading";
   }
   isEventuallyAvailable() {
-    if (!this.#hasGpu && !Boolean(Root10.Runtime.hostConfig.devToolsAiPromptApi?.allowWithoutGpu)) {
+    if (!this.#hasGpu && !Boolean(Root10.Runtime.hostConfig.devToolsConsoleInsightsTeasers?.allowWithoutGpu)) {
       return false;
     }
     return this.#availability === "available" || this.#availability === "downloading" || this.#availability === "downloadable";
@@ -7296,7 +7296,7 @@ var BuiltInAi = class _BuiltInAi extends Common7.ObjectWrapper.ObjectWrapper {
     return this.#downloadProgress;
   }
   startDownloadingModel() {
-    if (!Root10.Runtime.hostConfig.devToolsAiPromptApi?.allowWithoutGpu && !this.#hasGpu) {
+    if (!Root10.Runtime.hostConfig.devToolsConsoleInsightsTeasers?.allowWithoutGpu && !this.#hasGpu) {
       return;
     }
     if (this.#availability !== "downloadable") {
@@ -7331,7 +7331,7 @@ var BuiltInAi = class _BuiltInAi extends Common7.ObjectWrapper.ObjectWrapper {
     return Boolean(this.#consoleInsightsSession);
   }
   async initialize() {
-    if (!Root10.Runtime.hostConfig.devToolsAiPromptApi?.allowWithoutGpu && !this.#hasGpu) {
+    if (!Root10.Runtime.hostConfig.devToolsConsoleInsightsTeasers?.allowWithoutGpu && !this.#hasGpu) {
       return;
     }
     if (this.#availability !== "available" && this.#availability !== "downloading") {

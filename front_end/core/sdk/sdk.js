@@ -18999,28 +18999,6 @@ var SourceMapScopesInfo = class _SourceMapScopesInfo {
     return result;
   }
   /**
-   * Takes a V8 provided call frame and expands any inlined frames into virtual call frames.
-   *
-   * For call frames where nothing was inlined, the result contains only a single element,
-   * the provided frame but with the original name.
-   *
-   * For call frames where we are paused in inlined code, this function returns a list of
-   * call frames from "inner to outer". This is the call frame at index 0
-   * signifies the top of this stack trace fragment.
-   *
-   * The rest are "virtual" call frames and will have an "inlineFrameIndex" set in ascending
-   * order, so the condition `result[index] === result[index].inlineFrameIndex` always holds.
-   */
-  expandCallFrame(callFrame) {
-    const { originalFunctionName, inlinedFunctions } = this.findInlinedFunctions(callFrame.location().lineNumber, callFrame.location().columnNumber);
-    const result = [];
-    for (const [index, fn] of inlinedFunctions.entries()) {
-      result.push(callFrame.createVirtualCallFrame(index, fn.name));
-    }
-    result.push(callFrame.createVirtualCallFrame(result.length, originalFunctionName));
-    return result;
-  }
-  /**
    * Given a generated position, this returns all the surrounding generated ranges from outer
    * to inner.
    */
@@ -19780,13 +19758,6 @@ var SourceMap = class {
    */
   compatibleForURL(sourceURL, other) {
     return this.embeddedContentByURL(sourceURL) === other.embeddedContentByURL(sourceURL) && this.hasIgnoreListHint(sourceURL) === other.hasIgnoreListHint(sourceURL);
-  }
-  expandCallFrame(frame) {
-    this.#ensureSourceMapProcessed();
-    if (this.#scopesInfo === null) {
-      return [frame];
-    }
-    return this.#scopesInfo.expandCallFrame(frame);
   }
   resolveScopeChain(frame) {
     this.#ensureSourceMapProcessed();
@@ -22738,22 +22709,6 @@ var DebuggerModel = class _DebuggerModel extends SDKModel {
     if (this.#expandCallFramesCallback) {
       pausedDetails.callFrames = await this.#expandCallFramesCallback.call(null, pausedDetails.callFrames);
     }
-    if (!Root7.Runtime.experiments.isEnabled(
-      "use-source-map-scopes"
-      /* Root.Runtime.ExperimentName.USE_SOURCE_MAP_SCOPES */
-    )) {
-      return;
-    }
-    const finalFrames = [];
-    for (const frame of pausedDetails.callFrames) {
-      const sourceMap = await this.sourceMapManager().sourceMapForClientPromise(frame.script);
-      if (sourceMap?.hasScopeInfo()) {
-        finalFrames.push(...sourceMap.expandCallFrame(frame));
-      } else {
-        finalFrames.push(frame);
-      }
-    }
-    pausedDetails.callFrames = finalFrames;
   }
   resumedScript() {
     this.resetDebuggerPausedDetails();
@@ -22772,7 +22727,7 @@ var DebuggerModel = class _DebuggerModel extends SDKModel {
     const script = new Script(this, scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, hash, isContentScript, isLiveEdit, sourceMapURL, hasSourceURLComment, length, isModule, originStackTrace, codeOffset, scriptLanguage, selectedDebugSymbol, embedderName, buildId);
     this.registerScript(script);
     this.dispatchEventToListeners(Events7.ParsedScriptSource, script);
-    if (script.sourceMapURL && !hasSyntaxError) {
+    if ((!selectedDebugSymbol || selectedDebugSymbol.type === "SourceMap") && script.sourceMapURL && !hasSyntaxError) {
       this.#sourceMapManager.attachSourceMap(script, script.sourceURL, script.sourceMapURL);
     }
     const isDiscardable = hasSyntaxError && script.isAnonymousScript();

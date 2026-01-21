@@ -983,6 +983,9 @@ export const enum ArithmeticFunction {
   CALC = 'calc',
   SIBLING_COUNT = 'sibling-count',
   SIBLING_INDEX = 'sibling-index',
+  ROUND = 'round',
+  MOD = 'mod',
+  REM = 'rem',
 }
 type MathFunction = SelectFunction|ArithmeticFunction;
 
@@ -1000,6 +1003,9 @@ export class MathFunctionMatch extends BaseFunctionMatch<MathFunction> {
       case ArithmeticFunction.CALC:
       case ArithmeticFunction.SIBLING_COUNT:
       case ArithmeticFunction.SIBLING_INDEX:
+      case ArithmeticFunction.ROUND:
+      case ArithmeticFunction.MOD:
+      case ArithmeticFunction.REM:
         return true;
     }
     // This assignment catches missed values in the switch above.
@@ -1021,6 +1027,9 @@ export class MathFunctionMatcher extends matcherBase(MathFunctionMatch) {
       case ArithmeticFunction.CALC:
       case ArithmeticFunction.SIBLING_COUNT:
       case ArithmeticFunction.SIBLING_INDEX:
+      case ArithmeticFunction.ROUND:
+      case ArithmeticFunction.MOD:
+      case ArithmeticFunction.REM:
         return maybeFunc;
     }
     // This assignment catches missed values in the switch above.

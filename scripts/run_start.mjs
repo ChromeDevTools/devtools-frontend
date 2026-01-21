@@ -27,6 +27,7 @@ DEFAULT_FEATURE_SET.enable('DevToolsGlobalAiButton', {
   promotion_enabled: false,
 });
 DEFAULT_FEATURE_SET.enable('DevToolsAiCodeCompletion');
+DEFAULT_FEATURE_SET.enable('DevToolsAiCodeGeneration');
 DEFAULT_FEATURE_SET.enable('DevToolsAiAssistancePerformanceAgent', {
   insights_enabled: true,
 });

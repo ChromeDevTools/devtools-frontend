@@ -24,6 +24,10 @@
         .ai-code-generation-teaser-trigger {
             display: inline-flex;
             align-items: center;
+
+            devtools-button {
+                --override-button-icon-color: var(--sys-color-token-subtle);
+            }
         }
 
         .ai-code-generation-teaser-generated {

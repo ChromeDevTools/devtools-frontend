@@ -16,7 +16,7 @@ const SURFACE_DUO_MENU_ITEM_SELECTOR = '[aria-label*="Surface Duo"]';
 const FOLDABLE_DEVICE_MENU_ITEM_SELECTOR = '[aria-label*="Asus Zenbook Fold"]';
 const EDIT_MENU_ITEM_SELECTOR = '[aria-label*="Edit"]';
 const TEST_DEVICE_MENU_ITEM_SELECTOR = '[aria-label*="Test device, unchecked"]';
-const DUAL_SCREEN_BUTTON_SELECTOR = '[aria-label="Toggle dual-screen mode"]';
+const DUAL_SCREEN_BUTTON_SELECTOR = 'devtools-button[title="Toggle dual-screen mode"]';
 const DEVICE_POSTURE_DROPDOWN_SELECTOR = '[aria-label="Device posture"]';
 const SCREEN_DIM_INPUT_SELECTOR = '[title="Width"]';
 const AUTO_AUTO_ADJUST_ZOOM_SELECTOR = '[aria-label*="Auto-adjust zoom"]';

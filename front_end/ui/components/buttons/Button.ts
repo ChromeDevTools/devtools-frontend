@@ -56,17 +56,12 @@ interface ButtonState {
   spinner?: boolean;
   type: ButtonType;
   value?: string;
-  title?: string;
   iconName?: string;
   toggledIconName?: string;
   toggleType?: ToggleType;
   jslogContext?: string;
   longClickable?: boolean;
   inverseColorTheme?: boolean;
-  /**
-   * Sets aria-label on the internal <button> element.
-   */
-  accessibleLabel?: string;
 }
 
 interface CommonButtonData {
@@ -151,9 +146,6 @@ export class Button extends HTMLElement {
     if ('size' in data && data.size) {
       this.#props.size = data.size;
     }
-    if (data.accessibleLabel) {
-      this.#props.accessibleLabel = data.accessibleLabel;
-    }
 
     this.#props.active = Boolean(data.active);
     this.#props.spinner = Boolean('spinner' in data ? data.spinner : false);
@@ -166,7 +158,14 @@ export class Button extends HTMLElement {
     this.#props.toggleType = data.toggleType;
     this.#props.checked = data.checked;
     this.#props.disabled = Boolean(data.disabled);
-    this.#props.title = data.title;
+    if (data.title) {
+      this.title = data.title;
+    }
+
+    if (data.accessibleLabel) {
+      this.accessibleLabel = data.accessibleLabel;
+    }
+
     this.#props.jslogContext = data.jslogContext;
     this.#props.longClickable = data.longClickable;
     this.#props.inverseColorTheme = data.inverseColorTheme;
@@ -198,9 +197,18 @@ export class Button extends HTMLElement {
     this.#render();
   }
 
-  set accessibleLabel(label: string) {
-    this.#props.accessibleLabel = label;
+  set accessibleLabel(label: string|undefined) {
+    if (label) {
+      this.setAttribute('accessibleLabel', label);
+    } else {
+      this.removeAttribute('accessibleLabel');
+    }
+
     this.#render();
+  }
+
+  get accessibleLabel(): string|undefined {
+    return this.getAttribute('accessibleLabel') || undefined;
   }
 
   set reducedFocusRing(reducedFocusRing: boolean) {
@@ -213,8 +221,12 @@ export class Button extends HTMLElement {
     this.#render();
   }
 
+  override get title(): string {
+    return super.title;
+  }
+
   override set title(title: string) {
-    this.#props.title = title;
+    super.title = title;
     this.#render();
   }
 
@@ -369,11 +381,11 @@ export class Button extends HTMLElement {
     Lit.render(
       html`
         <style>${buttonStyles}</style>
-        <button title=${ifDefined(this.#props.title)}
+        <button title=${ifDefined(this.title || undefined)}
                 ?disabled=${this.#props.disabled}
                 class=${classMap(classes)}
                 aria-pressed=${ifDefined(this.#props.toggled)}
-                aria-label=${ifDefined(this.#props.accessibleLabel)}
+                aria-label=${ifDefined(this.accessibleLabel || this.title || undefined)}
                 jslog=${ifDefined(jslog)}>
           ${hasIcon ? html`
             <devtools-icon name=${ifDefined(this.#props.toggled ? this.#props.toggledIconName : this.#props.iconName)}>

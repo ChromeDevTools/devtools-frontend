@@ -34,7 +34,7 @@ const COMPUTED_PROPERTY_SELECTOR = 'devtools-computed-style-property';
 const COMPUTED_STYLES_PANEL_SELECTOR = '[aria-label="Computed panel"]';
 const COMPUTED_STYLES_SHOW_ALL_SELECTOR = '[title="Show all"]';
 export const ELEMENTS_PANEL_SELECTOR = '.panel[aria-label="elements"]';
-const FONT_EDITOR_SELECTOR = '[aria-label="Font Editor"]';
+const FONT_EDITOR_SELECTOR = 'devtools-button[aria-label="Font Editor"]';
 const HIDDEN_FONT_EDITOR_SELECTOR = '.font-toolbar-hidden';
 export const SECTION_SUBTITLE_SELECTOR = '.styles-section-subtitle';
 const CLS_PANE_SELECTOR = '.styles-sidebar-toolbar-pane';

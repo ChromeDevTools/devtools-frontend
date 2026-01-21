@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../ui/kit/kit.js';
+
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -11,6 +13,7 @@ import * as UIHelpers from '../../ui/helpers/helpers.js';
 import * as uiI18n from '../../ui/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
+import {type LitTemplate, nothing} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import badgeNotificationStyles from './badgeNotification.css.js';
@@ -65,7 +68,7 @@ const UIStrings = {
 
 const str_ = i18n.i18n.registerUIStrings('panels/common/BadgeNotification.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-const i18nFormatString = uiI18n.getFormatLocalizedString.bind(undefined, str_);
+const i18nFormatStringTemplate = uiI18n.getFormatLocalizedStringTemplate.bind(undefined, str_);
 const lockedString = i18n.i18n.lockedString;
 
 const LEFT_OFFSET = 5;
@@ -80,7 +83,7 @@ export interface BadgeNotificationAction {
 }
 
 export interface BadgeNotificationProperties {
-  message: HTMLElement|string;
+  message: LitTemplate;
   jslogContext: string;
   imageUri: string;
   actions: BadgeNotificationAction[];
@@ -141,7 +144,7 @@ function revealBadgeSettings(): void {
 
 export class BadgeNotification extends UI.Widget.Widget {
   jslogContext = '';
-  message: HTMLElement|string = '';
+  message: LitTemplate = nothing;
   imageUri = '';
   actions: BadgeNotificationAction[] = [];
   isStarterBadge = false;
@@ -198,12 +201,12 @@ export class BadgeNotification extends UI.Widget.Widget {
   }
 
   #presentStarterBadgeSettingsNudge(badge: Badges.Badge): void {
-    const googleDeveloperProgramLink = UI.XLink.XLink.create(
-        'https://developers.google.com/program', lockedString('Google Developer Program'), 'badge-link', undefined,
-        'program-link');
     this.#show({
-      message: i18nFormatString(
-          UIStrings.starterBadgeAwardMessageSettingDisabled, {PH1: badge.title, PH2: googleDeveloperProgramLink}),
+      message: i18nFormatStringTemplate(UIStrings.starterBadgeAwardMessageSettingDisabled, {
+        PH1: badge.title,
+        PH2: html`<devtools-link class="badge-link" href="https://developers.google.com/program" .jslogContext=${
+                 'program-link'}>${lockedString('Google Developer Program')}</devtools-link>`
+      }),
       jslogContext: badge.jslogContext,
       actions: [
         {
@@ -228,12 +231,12 @@ export class BadgeNotification extends UI.Widget.Widget {
   }
 
   #presentStarterBadgeProfileNudge(badge: Badges.Badge): void {
-    const googleDeveloperProgramLink = UI.XLink.XLink.create(
-        'https://developers.google.com/program', lockedString('Google Developer Program'), 'badge-link', undefined,
-        'program-link');
     this.#show({
-      message: i18nFormatString(
-          UIStrings.starterBadgeAwardMessageNoGdpProfile, {PH1: badge.title, PH2: googleDeveloperProgramLink}),
+      message: i18nFormatStringTemplate(UIStrings.starterBadgeAwardMessageNoGdpProfile, {
+        PH1: badge.title,
+        PH2: html`<devtools-link class="badge-link" href="https://developers.google.com/program" .jslogContext=${
+                 'program-link'}>${lockedString('Google Developer Program')}</devtools-link>`
+      }),
       jslogContext: badge.jslogContext,
       actions: [
         {
@@ -262,7 +265,7 @@ export class BadgeNotification extends UI.Widget.Widget {
 
   #presentActivityBasedBadge(badge: Badges.Badge): void {
     this.#show({
-      message: i18nString(UIStrings.activityBasedBadgeAwardMessage, {PH1: badge.title}),
+      message: i18nFormatStringTemplate(UIStrings.activityBasedBadgeAwardMessage, {PH1: badge.title}),
       jslogContext: badge.jslogContext,
       actions: [
         {

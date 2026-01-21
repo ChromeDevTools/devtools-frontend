@@ -249,7 +249,7 @@ interface AiSettingParams {
 
 interface ViewInput {
   disabledReasons: string[];
-  sharedDisclaimerBulletPoints: Array<{icon: string, text: Common.UIString.LocalizedString|Lit.TemplateResult}>;
+  sharedDisclaimerBulletPoints: Array<{icon: string, text: Common.UIString.LocalizedString|Lit.LitTemplate}>;
   settingToParams: Map<Common.Settings.Setting<boolean>, AiSettingParams>;
   expandSetting(setting: Common.Settings.Setting<boolean>): void;
   toggleSetting(setting: Common.Settings.Setting<boolean>, ev: Event): void;
@@ -658,13 +658,11 @@ export class AISettingsTab extends UI.Widget.VBox {
     this.requestUpdate();
   }
 
-  #getSharedDisclaimerBulletPoints(): Array<{icon: string, text: Common.UIString.LocalizedString|Lit.TemplateResult}> {
-    const tosLink = UI.XLink.XLink.create(
-        'https://policies.google.com/terms', i18nString(UIStrings.termsOfService), undefined, undefined,
-        'terms-of-service');
-    const privacyNoticeLink = UI.XLink.XLink.create(
-        'https://policies.google.com/privacy', i18nString(UIStrings.privacyNotice), undefined, undefined,
-        'privacy-notice');
+  #getSharedDisclaimerBulletPoints(): Array<{icon: string, text: Common.UIString.LocalizedString|Lit.LitTemplate}> {
+    const tosLink = html`<devtools-link href="https://policies.google.com/terms" .jslogContext=${'terms-of-service'}>${
+        i18nString(UIStrings.termsOfService)}</devtools-link>`;
+    const privacyNoticeLink = html`<devtools-link href="https://policies.google.com/privacy" .jslogContext=${
+                                  'privacy-notice'}>${i18nString(UIStrings.privacyNotice)}</devtools-link>`;
     const noLogging = Root.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue ===
         Root.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING;
 
@@ -680,10 +678,10 @@ export class AISettingsTab extends UI.Widget.VBox {
       },
       {
         icon: 'policy',
-        text: html`${uiI18n.getFormatLocalizedString(str_, UIStrings.termsOfServicePrivacyNotice, {
+        text: uiI18n.getFormatLocalizedStringTemplate(str_, UIStrings.termsOfServicePrivacyNotice, {
           PH1: tosLink,
           PH2: privacyNoticeLink,
-        })}`,
+        }),
       },
     ];
   }

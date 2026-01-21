@@ -9,6 +9,7 @@ import {
 } from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
+import {html, type LitTemplate, render} from '../../ui/lit/lit.js';
 
 import * as PanelCommon from './common.js';
 
@@ -42,21 +43,17 @@ function createMockBadge(badgeCtor: new (badgeContext: Badges.BadgeContext) => B
   });
 }
 
-function assertMessageIncludes(messageInput: HTMLElement|string, textToInclude: string): void {
-  let actualText: string;
-  if (messageInput instanceof HTMLElement) {
-    actualText = messageInput.textContent;
-  } else {
-    actualText = messageInput;
-  }
-  assert.include(actualText, textToInclude);
+function assertMessageIncludes(messageInput: LitTemplate, textToInclude: string): void {
+  const el = document.createElement('div');
+  render(messageInput, el);
+  assert.include(el.innerText, textToInclude);
 }
 
 describeWithEnvironment('BadgeNotification', () => {
   async function createWidget(properties?: Partial<PanelCommon.BadgeNotification>) {
     const view = createViewFunctionStub(PanelCommon.BadgeNotification);
     const widget = new PanelCommon.BadgeNotification(undefined, view);
-    widget.message = properties?.message ?? 'Test message';
+    widget.message = properties?.message ?? html`Test message`;
     widget.imageUri = properties?.imageUri ?? 'test.png';
     widget.actions = properties?.actions ?? [];
     renderElementIntoDOM(widget, {allowMultipleChildren: true});

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-lit-render-outside-of-view */
 
+import '../../../ui/kit/kit.js';
 import './OriginMap.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';
@@ -12,7 +13,6 @@ import * as Dialogs from '../../../ui/components/dialogs/dialogs.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as Input from '../../../ui/components/input/input.js';
 import * as uiI18n from '../../../ui/i18n/i18n.js';
-import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
@@ -332,10 +332,6 @@ export class FieldSettingsDialog extends HTMLElement {
   }
 
   #render = (): void => {
-    const linkEl =
-        UI.XLink.XLink.create('https://developer.chrome.com/docs/crux', i18n.i18n.lockedString('Chrome UX Report'));
-    const descriptionEl = uiI18n.getFormatLocalizedString(str_, UIStrings.fetchAggregated, {PH1: linkEl});
-
     // clang-format off
     const output = html`
       <style>${fieldSettingsDialogStyles}</style>
@@ -356,7 +352,18 @@ export class FieldSettingsDialog extends HTMLElement {
         })}
       >
         <div class="content">
-          <div>${descriptionEl}</div>
+          <div>
+            ${uiI18n.getFormatLocalizedStringTemplate(
+              str_,
+              UIStrings.fetchAggregated,
+              {
+                PH1: html`<devtools-link
+                  href="https://developer.chrome.com/docs/crux"
+                  >${i18n.i18n.lockedString('Chrome UX Report')}</devtools-link
+                >`,
+              },
+            )}
+          </div>
           <div class="privacy-disclosure">
             <h3 class="section-title">${i18nString(UIStrings.privacyDisclosure)}</h3>
             <div>${i18nString(UIStrings.whenPerformanceIsShown)}</div>

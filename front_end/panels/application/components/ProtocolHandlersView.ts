@@ -74,8 +74,6 @@ const i18nTemplate = unboundI18nTemplate.bind(undefined, str_);
 
 function renderStatusMessage(
     protocolHandlers: readonly ProtocolHandler[], manifestLink: Platform.DevToolsPath.UrlString): TemplateResult {
-  const manifestInTextLink =
-      UI.XLink.XLink.create(manifestLink, i18nString(UIStrings.manifest), undefined, undefined, 'manifest');
   const statusString = protocolHandlers.length > 0 ? UIStrings.protocolDetected : UIStrings.protocolNotDetected;
   // clang-format off
   return html`
@@ -83,7 +81,9 @@ function renderStatusMessage(
       <devtools-icon class="inline-icon"
                      name=${protocolHandlers.length > 0 ? 'check-circle' : 'info'}>
       </devtools-icon>
-      ${uiI18n.getFormatLocalizedString(str_, statusString, {PH1: manifestInTextLink })}
+      ${uiI18n.getFormatLocalizedStringTemplate(str_, statusString, {PH1: html`
+        <devtools-link href=${manifestLink} .jslogContext=${'manifest'}>${i18nString(UIStrings.manifest)}</devtools-link>
+        ` })}
     </div>`;
   // clang-format on
 }

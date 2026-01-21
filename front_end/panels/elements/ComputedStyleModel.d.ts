@@ -6,12 +6,12 @@ export declare class ComputedStyleModel extends Common.ObjectWrapper.ObjectWrapp
     private frameResizedTimer?;
     private computedStylePromise?;
     private currentTrackedNodeId?;
-    constructor();
+    constructor(node?: SDK.DOMModel.DOMNode | null);
     dispose(): void;
-    node(): SDK.DOMModel.DOMNode | null;
+    get node(): SDK.DOMModel.DOMNode | null;
+    set node(node: SDK.DOMModel.DOMNode | null);
     cssModel(): SDK.CSSModel.CSSModel | null;
     private evaluateTrackingComputedStyleUpdatesForNode;
-    private onNodeChanged;
     private updateModel;
     private onCSSModelChanged;
     private onComputedStyleChanged;

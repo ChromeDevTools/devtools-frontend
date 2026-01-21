@@ -365,7 +365,7 @@ export default `/*
     display: table-cell;
   }
 
-  .sources-list x-link.highlighted {
+  .sources-list devtools-link.highlighted {
     animation: highlight-fadeout 2s;
   }
 

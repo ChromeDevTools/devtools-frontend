@@ -14,22 +14,26 @@ export class ComputedStyleModel extends Common.ObjectWrapper.ObjectWrapper {
     frameResizedTimer;
     computedStylePromise;
     currentTrackedNodeId;
-    constructor() {
+    constructor(node) {
         super();
         this.#cssModel = null;
         this.eventListeners = [];
-        this.#node = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
-        UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this.onNodeChanged, this);
+        this.#node = node ?? null;
         UI.Context.Context.instance().addFlavorChangeListener(StylesSidebarPane, this.evaluateTrackingComputedStyleUpdatesForNode, this);
         UI.Context.Context.instance().addFlavorChangeListener(ComputedStyleWidget, this.evaluateTrackingComputedStyleUpdatesForNode, this);
     }
     dispose() {
-        UI.Context.Context.instance().removeFlavorChangeListener(SDK.DOMModel.DOMNode, this.onNodeChanged, this);
         UI.Context.Context.instance().removeFlavorChangeListener(StylesSidebarPane, this.evaluateTrackingComputedStyleUpdatesForNode, this);
         UI.Context.Context.instance().removeFlavorChangeListener(ComputedStyleWidget, this.evaluateTrackingComputedStyleUpdatesForNode, this);
     }
-    node() {
+    get node() {
         return this.#node;
+    }
+    set node(node) {
+        this.#node = node;
+        this.updateModel(this.#node ? this.#node.domModel().cssModel() : null);
+        this.onCSSModelChanged(null);
+        this.evaluateTrackingComputedStyleUpdatesForNode();
     }
     cssModel() {
         return this.#cssModel?.isEnabled() ? this.#cssModel : null;
@@ -66,12 +70,6 @@ export class ComputedStyleModel extends Common.ObjectWrapper.ObjectWrapper {
             this.currentTrackedNodeId = this.#node.id;
         }
     }, 100);
-    onNodeChanged(event) {
-        this.#node = event.data;
-        this.updateModel(this.#node ? this.#node.domModel().cssModel() : null);
-        this.onCSSModelChanged(null);
-        this.evaluateTrackingComputedStyleUpdatesForNode();
-    }
     updateModel(cssModel) {
         if (this.#cssModel === cssModel) {
             return;
@@ -129,7 +127,7 @@ export class ComputedStyleModel extends Common.ObjectWrapper.ObjectWrapper {
         this.frameResizedTimer = window.setTimeout(refreshContents.bind(this), 100);
     }
     elementNode() {
-        const node = this.node();
+        const node = this.node;
         if (!node) {
             return null;
         }

@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import '../../ui/components/tooltips/tooltips.js';
+import '../../ui/kit/kit.js';
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -122,13 +123,13 @@ function renderNoModel(input) {
         lockedString(UIStringsNotTranslate.getHelpForWarning) :
         lockedString(UIStringsNotTranslate.getHelpForError)}
         </h2>
-        <div>You can get quick answers from <x-link
-            .jslog=${VisualLogging.link().track({ click: true, keydown: 'Enter|Space' }).context('insights-teaser-built-in-ai-documentation')}
+        <div>You can get quick answers from <devtools-link
+            .jslogContext=${'insights-teaser-built-in-ai-documentation'}
             class="link"
             href=${BUILT_IN_AI_DOCUMENTATION}
           >
             Chrome’s Built-in AI
-          </x-link>
+          </devtools-link>
           , without any data leaving your device.
         </div>
         <div>${lockedString(UIStringsNotTranslate.toUseDownload)}</div>
@@ -273,12 +274,12 @@ function renderFooter(input) {
       >
         <div class="info-tooltip-text">${lockedString(UIStringsNotTranslate.infoTooltipText)}</div>
         <div class="learn-more">
-          <x-link
+          <devtools-link
             class="devtools-link"
             title=${lockedString(UIStringsNotTranslate.learnMoreAboutAiSummaries)}
             href=${DATA_USAGE_URL}
-            jslog=${VisualLogging.link().track({ click: true, keydown: 'Enter|Space' }).context('explain.teaser.learn-more')}
-          >${lockedString(UIStringsNotTranslate.learnMoreAboutAiSummaries)}</x-link>
+            .jslogContext=${'explain.teaser.learn-more'}
+          >${lockedString(UIStringsNotTranslate.learnMoreAboutAiSummaries)}</devtools-link>
         </div>
       </devtools-tooltip>
       ${renderDontShowCheckbox(input)}
@@ -443,13 +444,11 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
                 {
                     iconName: 'warning',
                     // clang-format off
-                    content: html `<x-link
+                    content: html `<devtools-link
             href=${CODE_SNIPPET_WARNING_URL}
             class="link devtools-link"
-            jslog=${VisualLogging.link('explain.teaser.code-snippets-explainer').track({
-                        click: true
-                    })}
-          >${lockedString(UIStringsNotTranslate.freDisclaimerTextUseWithCaution)}</x-link>`,
+            .jslogContext=${'explain.teaser.code-snippets-explainer'}
+          >${lockedString(UIStringsNotTranslate.freDisclaimerTextUseWithCaution)}</devtools-link>`,
                     // clang-format on
                 }
             ],

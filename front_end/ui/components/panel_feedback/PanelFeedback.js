@@ -2,12 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-lit-render-outside-of-view, @devtools/enforce-custom-element-definitions-location */
-import '../../legacy/legacy.js';
+import '../../kit/kit.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as ComponentHelpers from '../../components/helpers/helpers.js';
 import { html, render } from '../../lit/lit.js';
-import * as VisualLogging from '../../visual_logging/visual_logging.js';
 import panelFeedbackStyles from './panelFeedback.css.js';
 const UIStrings = {
     /**
@@ -52,14 +51,14 @@ export class PanelFeedback extends HTMLElement {
         <h2 class="flex">
           <devtools-icon name="experiment" class="extra-large" style="color: var(--icon-primary);"></devtools-icon> ${i18nString(UIStrings.previewFeature)}
         </h2>
-        <p>${i18nString(UIStrings.previewText)} <x-link href=${this.#props.feedbackUrl} jslog=${VisualLogging.link('feedback').track({ click: true })}>${i18nString(UIStrings.previewTextFeedbackLink)}</x-link></p>
+        <p>${i18nString(UIStrings.previewText)} <devtools-link href=${this.#props.feedbackUrl} .jslogContext=${'feedback'}>${i18nString(UIStrings.previewTextFeedbackLink)}</devtools-link></p>
         <div class="video">
           <div class="thumbnail">
             <img src=${videoThumbnailUrl} role="presentation" />
           </div>
           <div class="video-description">
             <h3>${i18nString(UIStrings.videoAndDocumentation)}</h3>
-            <x-link class="quick-start-link" href=${this.#props.quickStartUrl} jslog=${VisualLogging.link('css-overview.quick-start').track({ click: true })}>${this.#props.quickStartLinkText}</x-link>
+            <devtools-link class="quick-start-link" href=${this.#props.quickStartUrl} .jslogContext=${'css-overview.quick-start'}>${this.#props.quickStartLinkText}</devtools-link>
           </div>
         </div>
       </div>

@@ -1,3 +1,4 @@
+import '../../ui/kit/kit.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as NetworkTimeCalculator from '../../models/network_time_calculator/network_time_calculator.js';
 import * as UI from '../../ui/legacy/legacy.js';

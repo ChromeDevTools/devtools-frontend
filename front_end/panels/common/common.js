@@ -63,6 +63,7 @@ var common_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./common.css")} */`;
 
 // gen/front_end/panels/common/AiCodeCompletionTeaser.js
+import "./../../ui/kit/kit.js";
 import * as Common from "./../../core/common/common.js";
 import * as Host from "./../../core/host/host.js";
 import * as i18n3 from "./../../core/i18n/i18n.js";
@@ -501,13 +502,11 @@ var AiCodeCompletionTeaser = class extends UI2.Widget.Widget {
     }, {
       iconName: "warning",
       // clang-format off
-      content: html2`<x-link
+      content: html2`<devtools-link
             href=${CODE_SNIPPET_WARNING_URL}
             class="link devtools-link"
-            jslog=${VisualLogging.link("code-snippets-explainer.ai-code-completion-teaser").track({
-        click: true
-      })}
-          >${lockedString(UIStringsNotTranslate.freDisclaimerTextUseWithCaution)}</x-link>`
+            .jslogContext=${"code-snippets-explainer.ai-code-completion-teaser"}
+          >${lockedString(UIStringsNotTranslate.freDisclaimerTextUseWithCaution)}</devtools-link>`
       // clang-format on
     });
     return reminderItems;
@@ -2000,11 +1999,11 @@ var AiCodeCompletionDisclaimer = class extends UI7.Widget.Widget {
 // gen/front_end/panels/common/AiCodeCompletionSummaryToolbar.js
 import "./../../ui/components/spinners/spinners.js";
 import "./../../ui/components/tooltips/tooltips.js";
+import "./../../ui/kit/kit.js";
 import * as Host6 from "./../../core/host/host.js";
 import * as i18n13 from "./../../core/i18n/i18n.js";
 import * as UI8 from "./../../ui/legacy/legacy.js";
 import { Directives as Directives3, html as html8, nothing as nothing5, render as render8 } from "./../../ui/lit/lit.js";
-import * as VisualLogging5 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/common/aiCodeCompletionSummaryToolbar.css.js
 var aiCodeCompletionSummaryToolbar_css_default = `/*
@@ -2155,12 +2154,10 @@ var DEFAULT_SUMMARY_TOOLBAR_VIEW2 = (input, _output, target) => {
                     variant="rich"
                     jslogContext="ai-code-completion-citations"
                 ><div class="citations-tooltip-container">
-                    ${Directives3.repeat(input.citations, (citation) => html8`<x-link
+                    ${Directives3.repeat(input.citations, (citation) => html8`<devtools-link
                         tabIndex="0"
                         href=${citation}
-                        jslog=${VisualLogging5.link("ai-code-completion-citations.citation-link").track({
-    click: true
-  })}>${citation}</x-link>`)}</div></devtools-tooltip>
+                        .jslogContext=${"ai-code-completion-citations.citation-link"}>${citation}</devtools-link>`)}</div></devtools-tooltip>
             </div>` : nothing5;
   render8(html8`
         <style>${aiCodeCompletionSummaryToolbar_css_default}</style>
@@ -2244,7 +2241,7 @@ import * as UIHelpers2 from "./../../ui/helpers/helpers.js";
 import * as uiI18n2 from "./../../ui/i18n/i18n.js";
 import * as UI9 from "./../../ui/legacy/legacy.js";
 import * as Lit3 from "./../../ui/lit/lit.js";
-import * as VisualLogging6 from "./../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging5 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/common/badgeNotification.css.js
 var badgeNotification_css_default = `/*
@@ -2400,7 +2397,7 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
     return html9`<devtools-button
         class="notification-button"
         @click=${() => property.onClick()}
-        jslog=${VisualLogging6.action(property.jslogContext).track({ click: true })}
+        jslog=${VisualLogging5.action(property.jslogContext).track({ click: true })}
         .variant=${"text"}
         .title=${property.title ?? ""}
         .inverseColorTheme=${true}
@@ -2409,7 +2406,7 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
   const crossButton = html9`<devtools-button
         class="dismiss notification-button"
         @click=${input.onDismissClick}
-        jslog=${VisualLogging6.action("badge-notification.dismiss").track({ click: true })}
+        jslog=${VisualLogging5.action("badge-notification.dismiss").track({ click: true })}
         aria-label=${i18nString3(UIStrings3.close)}
         .iconName=${"cross"}
         .variant=${"icon"}
@@ -2418,8 +2415,8 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
     ></devtools-button>`;
   render9(html9`
     <style>${badgeNotification_css_default}</style>
-    <div class="container" jslog=${VisualLogging6.dialog("badge-notification")}>
-      <div class="badge-container" jslog=${VisualLogging6.item(input.jslogContext)}>
+    <div class="container" jslog=${VisualLogging5.dialog("badge-notification")}>
+      <div class="badge-container" jslog=${VisualLogging5.item(input.jslogContext)}>
         <img class="badge-image" role="presentation" src=${input.imageUri}>
       </div>
       <div class="action-and-text-container">
@@ -4327,7 +4324,7 @@ import * as i18n21 from "./../../core/i18n/i18n.js";
 import * as SDK3 from "./../../core/sdk/sdk.js";
 import * as UI13 from "./../../ui/legacy/legacy.js";
 import { Directives as Directives4, html as html12, nothing as nothing6, render as render11 } from "./../../ui/lit/lit.js";
-import * as VisualLogging7 from "./../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging6 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/common/domLinkifier.css.js
 var domLinkifier_css_default = `/*
@@ -4407,7 +4404,7 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
     "dynamic-link": Boolean(input.dynamic),
     disabled: Boolean(input.disabled)
   })}"
-          jslog=${VisualLogging7.link("node").track({ click: true, keydown: "Enter" })}
+          jslog=${VisualLogging6.link("node").track({ click: true, keydown: "Enter" })}
           tabindex=${input.preventKeyboardFocus ? -1 : 0}
           @click=${input.onClick}
           @mouseover=${input.onMouseOver}
@@ -4523,7 +4520,7 @@ var DEFERRED_DEFAULT_VIEW = (input, _output, target) => {
   render11(html12`
       <style>${domLinkifier_css_default}</style>
       <button class="node-link text-button link-style"
-          jslog=${VisualLogging7.link("node").track({ click: true })}
+          jslog=${VisualLogging6.link("node").track({ click: true })}
           tabindex=${input.preventKeyboardFocus ? -1 : 0}
           @click=${input.onClick}
           @mousedown=${(e) => e.consume()}>
@@ -4576,14 +4573,14 @@ var Linkifier2 = class _Linkifier {
   }
   linkify(node, options) {
     if (node instanceof SDK3.DOMModel.DOMNode) {
-      const link6 = document.createElement("devtools-widget");
-      link6.widgetConfig = UI13.Widget.widgetConfig((e) => new DOMNodeLink(e, node, options));
-      return link6;
+      const link4 = document.createElement("devtools-widget");
+      link4.widgetConfig = UI13.Widget.widgetConfig((e) => new DOMNodeLink(e, node, options));
+      return link4;
     }
     if (node instanceof SDK3.DOMModel.DeferredDOMNode) {
-      const link6 = document.createElement("devtools-widget");
-      link6.widgetConfig = UI13.Widget.widgetConfig((e) => new DeferredDOMNodeLink(e, node, options));
-      return link6;
+      const link4 = document.createElement("devtools-widget");
+      link4.widgetConfig = UI13.Widget.widgetConfig((e) => new DeferredDOMNodeLink(e, node, options));
+      return link4;
     }
     throw new Error("Can't linkify non-node");
   }

@@ -59,7 +59,7 @@ h3 {
   gap: 20px;
 }
 
-x-link {
+devtools-link {
   color: var(--sys-color-primary);
   text-decoration-line: underline;
 }
@@ -77,7 +77,7 @@ x-link.quick-start-link {
 }
 
 @media (forced-colors: active) {
-  x-link {
+  devtools-link {
     color: linktext;
   }
 }

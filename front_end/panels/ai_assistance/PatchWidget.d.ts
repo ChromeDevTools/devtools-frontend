@@ -1,6 +1,7 @@
 import '../../ui/legacy/legacy.js';
 import '../../ui/components/markdown_view/markdown_view.js';
 import '../../ui/components/spinners/spinners.js';
+import '../../ui/kit/kit.js';
 import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';

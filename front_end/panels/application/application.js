@@ -4126,7 +4126,7 @@ var FrameDetailsReportView = class extends UI5.Widget.Widget {
   #view;
   constructor(element, view = DEFAULT_VIEW3) {
     super(element, { useShadowDom: true });
-    this.#protocolMonitorExperimentEnabled = Root.Runtime.experiments.isEnabled("protocol-monitor");
+    this.#protocolMonitorExperimentEnabled = Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.PROTOCOL_MONITOR);
     this.#view = view;
   }
   set frame(frame) {

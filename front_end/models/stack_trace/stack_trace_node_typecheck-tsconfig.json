@@ -8,8 +8,6 @@
     "forceConsistentCasingInFileNames": true,
     "inlineSources": true,
     "lib": [
-      "dom",
-      "dom.iterable",
       "ES2023",
       "ES2024.Promise",
       "ESNext.Iterator",
@@ -17,6 +15,7 @@
       "ESNext.Array"
     ],
     "module": "esnext",
+    "noEmit": true,
     "noEmitOnError": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitOverride": true,
@@ -29,23 +28,24 @@
     "sourceMap": true,
     "strict": true,
     "target": "es2023",
-    "tsBuildInfoFile": "stack_trace_impl-tsconfig.json.tsbuildinfo",
-    "typeRoots": [],
-    "types": [],
+    "tsBuildInfoFile": "stack_trace_node_typecheck-tsconfig.json.tsbuildinfo",
+    "typeRoots": [
+      "../../../../../../node_modules/@types",
+      "../../../../../../node_modules"
+    ],
+    "types": [
+      "node",
+      "undici-types"
+    ],
     "useUnknownInCatchVariables": false
   },
   "files": [
-    "../../../../../../front_end/models/stack_trace/StackTraceImpl.ts",
-    "../../../../../../front_end/models/stack_trace/StackTraceModel.ts",
-    "../../../../../../front_end/models/stack_trace/Trie.ts",
+    "../../../../../../front_end/models/stack_trace/StackTrace.ts",
     "../../../../../../front_end/legacy/legacy-defs.d.ts",
     "../../../../../../front_end/global_typings/global_defs.d.ts",
     "../../../../../../node_modules/@types/filesystem/index.d.ts"
   ],
   "references": [
-    {
-      "path": "./bundle-tsconfig.json"
-    },
     {
       "path": "../../core/common/bundle-tsconfig.json"
     },
@@ -53,7 +53,10 @@
       "path": "../../core/sdk/bundle-tsconfig.json"
     },
     {
-      "path": "../../generated/generated-tsconfig.json"
+      "path": "../../generated/protocol-tsconfig.json"
+    },
+    {
+      "path": "../workspace/bundle-tsconfig.json"
     }
   ]
 }

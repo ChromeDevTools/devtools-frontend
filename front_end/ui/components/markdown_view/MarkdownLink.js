@@ -2,9 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-lit-render-outside-of-view, @devtools/enforce-custom-element-definitions-location */
-import '../../legacy/legacy.js'; // Required for <x-link>.
+import '../../kit/kit.js';
 import { html, render } from '../../lit/lit.js';
-import * as VisualLogging from '../../visual_logging/visual_logging.js';
 import markdownLinkStyles from './markdownLink.css.js';
 import { getMarkdownLink } from './MarkdownLinksMap.js';
 /**
@@ -27,8 +26,8 @@ export class MarkdownLink extends HTMLElement {
         // clang-format off
         const output = html `
       <style>${markdownLinkStyles}</style>
-      <x-link class="devtools-link" href=${this.#linkUrl} jslog=${VisualLogging.link().track({ click: true })}
-      >${this.#linkText}</x-link>`;
+      <devtools-link class="devtools-link" href=${this.#linkUrl}
+      >${this.#linkText}</devtools-link>`;
         render(output, this.#shadow, { host: this });
         // clang-format on
     }

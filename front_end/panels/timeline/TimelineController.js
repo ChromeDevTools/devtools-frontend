@@ -196,7 +196,7 @@ export class TimelineController {
         // 'disabled-by-default-v8.cpu_profiler'
         //   └ default: on, option: enableJSSampling
         const categoriesArray = [
-            Root.Runtime.experiments.isEnabled('timeline-show-all-events') ? '*' : '-*',
+            Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_SHOW_ALL_EVENTS) ? '*' : '-*',
             Trace.Types.Events.Categories.Console,
             Trace.Types.Events.Categories.Loading,
             Trace.Types.Events.Categories.UserTiming,
@@ -217,13 +217,14 @@ export class TimelineController {
             'cppgc',
             'navigation,rail',
         ];
-        if (Root.Runtime.experiments.isEnabled('timeline-v8-runtime-call-stats') && options.enableJSSampling) {
+        if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_V8_RUNTIME_CALL_STATS) &&
+            options.enableJSSampling) {
             categoriesArray.push(disabledByDefault('v8.runtime_stats_sampling'));
         }
         if (options.enableJSSampling) {
             categoriesArray.push(disabledByDefault('v8.cpu_profiler'));
         }
-        if (Root.Runtime.experiments.isEnabled('timeline-invalidation-tracking')) {
+        if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_INVALIDATION_TRACKING)) {
             categoriesArray.push(disabledByDefault('devtools.timeline.invalidationTracking'));
         }
         if (options.capturePictures) {

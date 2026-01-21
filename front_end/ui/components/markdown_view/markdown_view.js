@@ -10,7 +10,7 @@ __export(CodeBlock_exports, {
   CodeBlock: () => CodeBlock,
   languageFromToken: () => languageFromToken
 });
-import "./../../legacy/legacy.js";
+import "./../../kit/kit.js";
 import * as i18n from "./../../../core/i18n/i18n.js";
 import * as CodeMirror from "./../../../third_party/codemirror.next/codemirror.next.js";
 import * as Buttons from "./../buttons/buttons.js";
@@ -281,11 +281,9 @@ var CodeBlock = class extends HTMLElement {
   }
   #renderNotice() {
     return html2`<p class="notice">
-      <x-link class="link" href="https://support.google.com/legal/answer/13505487" jslog=${VisualLogging.link("code-disclaimer").track({
-      click: true
-    })}>
+      <devtools-link class="link" href="https://support.google.com/legal/answer/13505487" .jslogContext=${"code-disclaimer"}>
         ${i18nString(UIStrings.disclaimer)}
-      </x-link>
+      </devtools-link>
     </p>`;
   }
   #renderCopyButton() {
@@ -439,9 +437,8 @@ var MarkdownLink_exports = {};
 __export(MarkdownLink_exports, {
   MarkdownLink: () => MarkdownLink
 });
-import "./../../legacy/legacy.js";
+import "./../../kit/kit.js";
 import { html as html4, render as render3 } from "./../../lit/lit.js";
-import * as VisualLogging2 from "./../../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/components/markdown_view/markdownLink.css.js
 var markdownLink_css_default = `/*
@@ -544,11 +541,11 @@ var getMarkdownLink = (key) => {
   if (key === "https://philipwalton.com/articles/the-state-of-es5-on-the-web/") {
     return key;
   }
-  const link4 = markdownLinks.get(key);
-  if (!link4) {
+  const link3 = markdownLinks.get(key);
+  if (!link3) {
     throw new Error(`Markdown link with key '${key}' is not available, please check MarkdownLinksMap.ts`);
   }
-  return link4;
+  return link3;
 };
 
 // gen/front_end/ui/components/markdown_view/MarkdownLink.js
@@ -566,8 +563,8 @@ var MarkdownLink = class extends HTMLElement {
   #render() {
     const output = html4`
       <style>${markdownLink_css_default}</style>
-      <x-link class="devtools-link" href=${this.#linkUrl} jslog=${VisualLogging2.link().track({ click: true })}
-      >${this.#linkText}</x-link>`;
+      <devtools-link class="devtools-link" href=${this.#linkUrl}
+      >${this.#linkText}</devtools-link>`;
     render3(output, this.#shadow, { host: this });
   }
 };
@@ -581,7 +578,7 @@ __export(MarkdownView_exports, {
   MarkdownView: () => MarkdownView
 });
 import * as Lit3 from "./../../lit/lit.js";
-import * as VisualLogging3 from "./../../visual_logging/visual_logging.js";
+import * as VisualLogging2 from "./../../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/components/markdown_view/markdownView.css.js
 var markdownView_css_default = `/*
@@ -955,7 +952,7 @@ var MarkdownInsightRenderer = class extends MarkdownLitRenderer {
       case "citation":
         return html6`<sup><button
             class="citation"
-            jslog=${VisualLogging3.link("inline-citation").track({ click: true })}
+            jslog=${VisualLogging2.link("inline-citation").track({ click: true })}
             @click=${this.#citationClickHandler.bind(this, Number(token.linkText))}
           >[${token.linkText}]</button></sup>`;
     }

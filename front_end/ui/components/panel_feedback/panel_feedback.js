@@ -56,12 +56,11 @@ var PanelFeedback_exports = {};
 __export(PanelFeedback_exports, {
   PanelFeedback: () => PanelFeedback
 });
-import "./../../legacy/legacy.js";
+import "./../../kit/kit.js";
 import * as i18n3 from "./../../../core/i18n/i18n.js";
 import * as Platform2 from "./../../../core/platform/platform.js";
 import * as ComponentHelpers2 from "./../helpers/helpers.js";
 import { html as html2, render as render2 } from "./../../lit/lit.js";
-import * as VisualLogging from "./../../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/components/panel_feedback/panelFeedback.css.js
 var panelFeedback_css_default = `/*
@@ -120,7 +119,7 @@ h3 {
   gap: 20px;
 }
 
-x-link {
+devtools-link {
   color: var(--sys-color-primary);
   text-decoration-line: underline;
 }
@@ -138,7 +137,7 @@ x-link.quick-start-link {
 }
 
 @media (forced-colors: active) {
-  x-link {
+  devtools-link {
     color: linktext;
   }
 }
@@ -188,14 +187,14 @@ var PanelFeedback = class extends HTMLElement {
         <h2 class="flex">
           <devtools-icon name="experiment" class="extra-large" style="color: var(--icon-primary);"></devtools-icon> ${i18nString2(UIStrings2.previewFeature)}
         </h2>
-        <p>${i18nString2(UIStrings2.previewText)} <x-link href=${this.#props.feedbackUrl} jslog=${VisualLogging.link("feedback").track({ click: true })}>${i18nString2(UIStrings2.previewTextFeedbackLink)}</x-link></p>
+        <p>${i18nString2(UIStrings2.previewText)} <devtools-link href=${this.#props.feedbackUrl} .jslogContext=${"feedback"}>${i18nString2(UIStrings2.previewTextFeedbackLink)}</devtools-link></p>
         <div class="video">
           <div class="thumbnail">
             <img src=${videoThumbnailUrl} role="presentation" />
           </div>
           <div class="video-description">
             <h3>${i18nString2(UIStrings2.videoAndDocumentation)}</h3>
-            <x-link class="quick-start-link" href=${this.#props.quickStartUrl} jslog=${VisualLogging.link("css-overview.quick-start").track({ click: true })}>${this.#props.quickStartLinkText}</x-link>
+            <devtools-link class="quick-start-link" href=${this.#props.quickStartUrl} .jslogContext=${"css-overview.quick-start"}>${this.#props.quickStartLinkText}</devtools-link>
           </div>
         </div>
       </div>
@@ -210,6 +209,7 @@ __export(PreviewToggle_exports, {
   PreviewToggle: () => PreviewToggle
 });
 import "./../../legacy/legacy.js";
+import "./../../kit/kit.js";
 import * as i18n5 from "./../../../core/i18n/i18n.js";
 import * as Root from "./../../../core/root/root.js";
 import { html as html3, nothing, render as render3 } from "./../../lit/lit.js";
@@ -294,7 +294,7 @@ var PreviewToggle = class extends HTMLElement {
     this.#render();
   }
   #render() {
-    const checked = Root.Runtime.experiments.isEnabled(this.#experiment);
+    const checked = this.#experiment && Root.Runtime.experiments.isEnabled(this.#experiment);
     render3(html3`
       <style>${previewToggle_css_default}</style>
       <div class="container">
@@ -306,10 +306,10 @@ var PreviewToggle = class extends HTMLElement {
           </devtools-icon>${this.#name}
           </devtools-checkbox>
         <div class="spacer"></div>
-        ${this.#feedbackURL && !this.#helperText ? html3`<div class="feedback"><x-link class="x-link" href=${this.#feedbackURL}>${i18nString3(UIStrings3.shortFeedbackLink)}</x-link></div>` : nothing}
-        ${this.#learnMoreURL ? html3`<div class="learn-more"><x-link class="x-link" href=${this.#learnMoreURL}>${i18nString3(UIStrings3.learnMoreLink)}</x-link></div>` : nothing}
+        ${this.#feedbackURL && !this.#helperText ? html3`<div class="feedback"><devtools-link class="x-link" href=${this.#feedbackURL}>${i18nString3(UIStrings3.shortFeedbackLink)}</devtools-link></div>` : nothing}
+        ${this.#learnMoreURL ? html3`<div class="learn-more"><devtools-link class="x-link" href=${this.#learnMoreURL}>${i18nString3(UIStrings3.learnMoreLink)}</devtools-link></div>` : nothing}
         <div class="helper">
-          ${this.#helperText && this.#feedbackURL ? html3`<p>${this.#helperText} <x-link class="x-link" href=${this.#feedbackURL}>${i18nString3(UIStrings3.previewTextFeedbackLink)}</x-link></p>` : nothing}
+          ${this.#helperText && this.#feedbackURL ? html3`<p>${this.#helperText} <devtools-link class="x-link" href=${this.#feedbackURL}>${i18nString3(UIStrings3.previewTextFeedbackLink)}</devtools-link></p>` : nothing}
         </div>
       </div>`, this.#shadow, {
       host: this
@@ -317,7 +317,9 @@ var PreviewToggle = class extends HTMLElement {
   }
   #checkboxChanged(event) {
     const checked = event.target.checked;
-    Root.Runtime.experiments.setEnabled(this.#experiment, checked);
+    if (this.#experiment) {
+      Root.Runtime.experiments.setEnabled(this.#experiment, checked);
+    }
     this.#onChangeCallback?.(checked);
   }
 };

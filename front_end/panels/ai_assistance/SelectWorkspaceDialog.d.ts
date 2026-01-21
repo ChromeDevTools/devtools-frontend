@@ -1,3 +1,4 @@
+import '../../ui/kit/kit.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';

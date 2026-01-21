@@ -1745,7 +1745,7 @@ var ThreadAppender = class {
   #headerAppended = false;
   threadType = "MAIN_THREAD";
   isOnMainFrame;
-  #showAllEventsEnabled = Root.Runtime.experiments.isEnabled("timeline-show-all-events");
+  #showAllEventsEnabled = Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_SHOW_ALL_EVENTS);
   #url = "";
   #headerNestingLevel = null;
   constructor(compatibilityBuilder, parsedTrace, processId, threadId, threadName, type, entries, tree) {
@@ -5507,7 +5507,7 @@ var TimelineController = class {
       await this.#navigateToAboutBlank();
     }
     const categoriesArray = [
-      Root2.Runtime.experiments.isEnabled("timeline-show-all-events") ? "*" : "-*",
+      Root2.Runtime.experiments.isEnabled(Root2.Runtime.ExperimentName.TIMELINE_SHOW_ALL_EVENTS) ? "*" : "-*",
       Trace17.Types.Events.Categories.Console,
       Trace17.Types.Events.Categories.Loading,
       Trace17.Types.Events.Categories.UserTiming,
@@ -5528,13 +5528,13 @@ var TimelineController = class {
       "cppgc",
       "navigation,rail"
     ];
-    if (Root2.Runtime.experiments.isEnabled("timeline-v8-runtime-call-stats") && options.enableJSSampling) {
+    if (Root2.Runtime.experiments.isEnabled(Root2.Runtime.ExperimentName.TIMELINE_V8_RUNTIME_CALL_STATS) && options.enableJSSampling) {
       categoriesArray.push(disabledByDefault("v8.runtime_stats_sampling"));
     }
     if (options.enableJSSampling) {
       categoriesArray.push(disabledByDefault("v8.cpu_profiler"));
     }
-    if (Root2.Runtime.experiments.isEnabled("timeline-invalidation-tracking")) {
+    if (Root2.Runtime.experiments.isEnabled(Root2.Runtime.ExperimentName.TIMELINE_INVALIDATION_TRACKING)) {
       categoriesArray.push(disabledByDefault("devtools.timeline.invalidationTracking"));
     }
     if (options.capturePictures) {
@@ -8551,12 +8551,9 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
   }
   #instantiateNewModel() {
     const config = Trace24.Types.Configuration.defaults();
-    config.showAllEvents = Root4.Runtime.experiments.isEnabled("timeline-show-all-events");
-    config.includeRuntimeCallStats = Root4.Runtime.experiments.isEnabled("timeline-v8-runtime-call-stats");
-    config.debugMode = Root4.Runtime.experiments.isEnabled(
-      "timeline-debug-mode"
-      /* Root.Runtime.ExperimentName.TIMELINE_DEBUG_MODE */
-    );
+    config.showAllEvents = Root4.Runtime.experiments.isEnabled(Root4.Runtime.ExperimentName.TIMELINE_SHOW_ALL_EVENTS);
+    config.includeRuntimeCallStats = Root4.Runtime.experiments.isEnabled(Root4.Runtime.ExperimentName.TIMELINE_V8_RUNTIME_CALL_STATS);
+    config.debugMode = Root4.Runtime.experiments.isEnabled(Root4.Runtime.ExperimentName.TIMELINE_DEBUG_MODE);
     const traceEngineModel = Trace24.TraceModel.Model.createWithAllHandlers(config);
     traceEngineModel.addEventListener(Trace24.TraceModel.ModelUpdateEvent.eventName, (e) => {
       const updateEvent = e;
@@ -9682,7 +9679,7 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
     return this.#viewMode.mode === "VIEWING_TRACE";
   }
   #applyActiveFilters(traceIsGeneric, exclusiveFilter = null) {
-    if (traceIsGeneric || Root4.Runtime.experiments.isEnabled("timeline-show-all-events")) {
+    if (traceIsGeneric || Root4.Runtime.experiments.isEnabled(Root4.Runtime.ExperimentName.TIMELINE_SHOW_ALL_EVENTS)) {
       return;
     }
     const newActiveFilters = exclusiveFilter ? [exclusiveFilter] : [
@@ -10979,10 +10976,7 @@ var TimelineUIUtils = class _TimelineUIUtils {
   static debugModeEnabled = void 0;
   static getGetDebugModeEnabled() {
     if (_TimelineUIUtils.debugModeEnabled === void 0) {
-      _TimelineUIUtils.debugModeEnabled = Root5.Runtime.experiments.isEnabled(
-        "timeline-debug-mode"
-        /* Root.Runtime.ExperimentName.TIMELINE_DEBUG_MODE */
-      );
+      _TimelineUIUtils.debugModeEnabled = Root5.Runtime.experiments.isEnabled(Root5.Runtime.ExperimentName.TIMELINE_DEBUG_MODE);
     }
     return _TimelineUIUtils.debugModeEnabled;
   }
@@ -11785,10 +11779,7 @@ var TimelineUIUtils = class _TimelineUIUtils {
     if (Trace25.Types.Events.isUserTiming(event) || Trace25.Types.Extensions.isSyntheticExtensionEntry(event) || Trace25.Types.Events.isProfileCall(event) || initiator || initiatorFor || hasStackTrace || parsedTrace?.data.Invalidations.invalidationsForEvent.get(event)) {
       await _TimelineUIUtils.generateCauses(event, contentHelper, parsedTrace);
     }
-    if (Root5.Runtime.experiments.isEnabled(
-      "timeline-debug-mode"
-      /* Root.Runtime.ExperimentName.TIMELINE_DEBUG_MODE */
-    )) {
+    if (Root5.Runtime.experiments.isEnabled(Root5.Runtime.ExperimentName.TIMELINE_DEBUG_MODE)) {
       _TimelineUIUtils.renderEventJson(event, contentHelper);
     }
     const stats = {};
@@ -18323,10 +18314,7 @@ import * as TimelineUtils from "./utils/utils.js";
 var showPostMessageEvents;
 function isShowPostMessageEventsEnabled() {
   if (showPostMessageEvents === void 0) {
-    showPostMessageEvents = Root7.Runtime.experiments.isEnabled(
-      "timeline-show-postmessage-events"
-      /* Root.Runtime.ExperimentName.TIMELINE_SHOW_POST_MESSAGE_EVENTS */
-    );
+    showPostMessageEvents = Root7.Runtime.experiments.isEnabled(Root7.Runtime.ExperimentName.TIMELINE_SHOW_POST_MESSAGE_EVENTS);
   }
   return showPostMessageEvents;
 }
@@ -18480,7 +18468,7 @@ var CompatibilityTracksAppender = class {
       }
     };
     const threads = Trace36.Handlers.Threads.threadsInTrace(this.#parsedTrace.data);
-    const showAllEvents = Root7.Runtime.experiments.isEnabled("timeline-show-all-events");
+    const showAllEvents = Root7.Runtime.experiments.isEnabled(Root7.Runtime.ExperimentName.TIMELINE_SHOW_ALL_EVENTS);
     for (const { pid, tid, name, type, entries, tree } of threads) {
       if (this.#parsedTrace.data.Meta.traceIsGeneric) {
         this.#threadAppenders.push(new ThreadAppender(this, this.#parsedTrace, pid, tid, name, "OTHER", entries, tree));

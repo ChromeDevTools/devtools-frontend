@@ -1097,7 +1097,7 @@ export class DOMModel extends SDKModel {
         if (!target.suspended()) {
             void this.agent.invoke_enable({});
         }
-        if (Root.Runtime.experiments.isEnabled('capture-node-creation-stacks')) {
+        if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.CAPTURE_NODE_CREATION_STACKS)) {
             void this.agent.invoke_setNodeStackTracesEnabled({ enable: true });
         }
     }

@@ -1,6 +1,7 @@
 // Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import '../../ui/kit/kit.js';
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -290,14 +291,12 @@ export const AI_SETTINGS_TAB_DEFAULT_VIEW = (input, _output, target) => {
             <h3 class="expansion-grid-whole-row">${i18nString(UIStrings.thingsToConsider)}</h3>
             ${settingData.toConsiderSettingItems.map(item => renderSettingItem(item))}
             <div class="expansion-grid-whole-row">
-              <x-link
+              <devtools-link
                 href=${settingData.learnMoreLink.url}
                 class="link"
                 tabindex=${tabindex}
-                jslog=${VisualLogging.link(settingData.learnMoreLink.linkJSLogContext).track({
-            click: true,
-        })}
-              >${i18nString(UIStrings.learnMore)}</x-link>
+                .jslogContext=${settingData.learnMoreLink.linkJSLogContext}
+              >${i18nString(UIStrings.learnMore)}</devtools-link>
             </div>
           </div>
         </div>

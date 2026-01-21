@@ -99,64 +99,41 @@ export class ActionDelegate {
                     if (!node) {
                         return;
                     }
+                    // Resolve to a remote object to ensure the node is alive in the context.
                     const object = await node.resolveToObject();
                     if (!object) {
                         return;
                     }
-                    const result = await object.callFunction(function () {
-                        function getFrameOffset(frame) {
-                            if (!frame) {
-                                return { x: 0, y: 0 };
-                            }
-                            // The offset of the frame's content relative to the frame element
-                            // contains the border width and the padding.
-                            // The border width.
-                            const borderTop = frame.clientTop;
-                            const borderLeft = frame.clientLeft;
-                            // The padding can be retrieved via computed styles.
-                            const styles = window.getComputedStyle(frame);
-                            const paddingTop = parseFloat(styles.paddingTop);
-                            const paddingLeft = parseFloat(styles.paddingLeft);
-                            // The position of the frame in it's parent.
-                            const rect = frame.getBoundingClientRect();
-                            // The offset of the parent frame's content relative to the
-                            // document. If there is no parent frame, the offset is 0.
-                            // In case of OOPiF, there is no access to the parent frame's
-                            // offset.
-                            const parentFrameOffset = getFrameOffset(frame.ownerDocument.defaultView?.frameElement ?? null);
-                            // The scroll position of the frame.
-                            const scrollX = frame.ownerDocument.defaultView?.scrollX ?? 0;
-                            const scrollY = frame.ownerDocument.defaultView?.scrollY ?? 0;
-                            return {
-                                x: parentFrameOffset.x + rect.left + borderLeft + paddingLeft + scrollX,
-                                y: parentFrameOffset.y + rect.top + borderTop + paddingTop + scrollY,
-                            };
-                        }
-                        // The bounding client rect of the node relative to the viewport.
-                        const rect = this.getBoundingClientRect();
-                        const frameOffset = getFrameOffset(this.ownerDocument.defaultView?.frameElement ?? null);
-                        // The scroll position of the frame.
-                        const scrollX = this.ownerDocument.defaultView?.scrollX ?? 0;
-                        const scrollY = this.ownerDocument.defaultView?.scrollY ?? 0;
-                        // The offset of the node's content relative to the top-level
-                        // document is the sum of the element offset relative to the
-                        // document's viewport, the document's scroll position, and the
-                        // parent's offset relative to the top-level document.
-                        return JSON.stringify({
-                            x: rect.left + frameOffset.x + scrollX,
-                            y: rect.top + frameOffset.y + scrollY,
-                            width: rect.width,
-                            height: rect.height,
-                            scale: 1,
-                        });
-                    });
-                    if (!result.object) {
-                        throw new Error('Clipping error: could not get object data.');
+                    // Get the Box Model via CDP.
+                    // This returns the quads relative to the target's viewport.
+                    // We use the 'border' quad to include the border and padding in the screenshot,
+                    // matching the 'width' and 'height' properties which are also Border Box dimensions.
+                    const nodeBoxModel = await node.boxModel();
+                    if (!nodeBoxModel) {
+                        throw new Error(`Unable to get box model of the node: ${new Error().stack}`);
                     }
-                    const clip = (JSON.parse(result.object.value));
-                    const response = await node.domModel().target().pageAgent().invoke_getLayoutMetrics();
-                    const error = response.getError();
-                    const zoom = !error && response.visualViewport.zoom || 1;
+                    const nodeBorderQuad = nodeBoxModel.border;
+                    // Get Layout Metrics to account for the Visual Viewport scroll and zoom.
+                    const metrics = await node.domModel().target().pageAgent().invoke_getLayoutMetrics();
+                    if (metrics.getError()) {
+                        throw new Error(`Unable to get metrics: ${new Error().stack}`);
+                    }
+                    const scrollX = metrics.cssVisualViewport.pageX;
+                    const scrollY = metrics.cssVisualViewport.pageY;
+                    // Calculate the global offset for OOPiFs (Out-of-Process iframes).
+                    // This accounts for the position of the target's frame within the main page.
+                    const { x: oopifOffsetX, y: oopifOffsetY } = await getOopifOffset(node.domModel().target());
+                    // Assemble the final Clip.
+                    // The absolute coordinates are: Global (OOPiF) + Viewport Scroll + Local Node Position (Border Box).
+                    const clip = {
+                        x: oopifOffsetX + scrollX + nodeBorderQuad[0],
+                        y: oopifOffsetY + scrollY + nodeBorderQuad[1],
+                        width: nodeBoxModel.width,
+                        height: nodeBoxModel.height,
+                        scale: 1,
+                    };
+                    // Apply Zoom factor.
+                    const zoom = metrics.cssVisualViewport.zoom ?? 1;
                     clip.x *= zoom;
                     clip.y *= zoom;
                     clip.width *= zoom;
@@ -174,5 +151,59 @@ export class ActionDelegate {
         }
         return false;
     }
+}
+/**
+ * Calculate the offset of the "Local Root" frame relative to the "Global Root" (the main frame).
+ * This involves traversing the CDP Targets for OOPiFs.
+ */
+async function getOopifOffset(target) {
+    if (!target) {
+        return { x: 0, y: 0 };
+    }
+    // Get the parent target. If there's no parent (we are at root) or it's not a frame, we are done.
+    const parentTarget = target.parentTarget();
+    if (!parentTarget || parentTarget.type() !== SDK.Target.Type.FRAME) {
+        return { x: 0, y: 0 };
+    }
+    // Identify the current frame's ID to find its owner in the parent.
+    const frameId = target.model(SDK.ResourceTreeModel.ResourceTreeModel)?.mainFrame?.id;
+    if (!frameId) {
+        return { x: 0, y: 0 };
+    }
+    // Get the DOMModel of the parent to query the frame owner element.
+    const parentDOMModel = parentTarget.model(SDK.DOMModel.DOMModel);
+    if (!parentDOMModel) {
+        return { x: 0, y: 0 };
+    }
+    // Retrieve the frame owner node (e.g. the <iframe> element) in the parent's document.
+    const frameOwnerDeferred = await parentDOMModel.getOwnerNodeForFrame(frameId);
+    const frameOwner = await frameOwnerDeferred?.resolvePromise();
+    if (!frameOwner) {
+        return { x: 0, y: 0 };
+    }
+    // Get the content box of the iframe element.
+    // This is relative to the parent target's viewport.
+    const boxModel = await frameOwner.boxModel();
+    if (!boxModel) {
+        return { x: 0, y: 0 };
+    }
+    // content is a Quad [x1, y1, x2, y2, x3, y3, x4, y4]
+    const contentQuad = boxModel.content;
+    const iframeContentX = contentQuad[0];
+    const iframeContentY = contentQuad[1];
+    // Get the scroll position of the parent target to convert viewport-relative coordinates
+    // to document-relative coordinates.
+    const parentMetrics = await parentTarget.pageAgent().invoke_getLayoutMetrics();
+    if (parentMetrics.getError()) {
+        return { x: 0, y: 0 };
+    }
+    const scrollX = parentMetrics.cssVisualViewport.pageX;
+    const scrollY = parentMetrics.cssVisualViewport.pageY;
+    // Recursively add the offset of the parent target itself (if it is also an OOPiF).
+    const parentOffset = await getOopifOffset(parentTarget);
+    return {
+        x: iframeContentX + scrollX + parentOffset.x,
+        y: iframeContentY + scrollY + parentOffset.y,
+    };
 }
 //# sourceMappingURL=DeviceModeWrapper.js.map

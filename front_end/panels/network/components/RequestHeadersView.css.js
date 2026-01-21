@@ -152,11 +152,11 @@ div.raw-headers-row {
   color: var(--sys-color-on-surface);
 }
 
-x-link {
+devtools-link {
   position: relative;
 }
 
-x-link .inline-icon {
+devtools-link .inline-icon {
   padding-right: 3px;
 }
 

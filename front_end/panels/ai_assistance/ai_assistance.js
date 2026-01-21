@@ -23,7 +23,7 @@ import * as Snackbars2 from "./../../ui/components/snackbars/snackbars.js";
 import * as UIHelpers2 from "./../../ui/helpers/helpers.js";
 import * as UI10 from "./../../ui/legacy/legacy.js";
 import * as Lit8 from "./../../ui/lit/lit.js";
-import * as VisualLogging7 from "./../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging6 from "./../../ui/visual_logging/visual_logging.js";
 import * as NetworkForward3 from "./../network/forward/forward.js";
 import * as NetworkPanel from "./../network/network.js";
 import * as TimelinePanel3 from "./../timeline/timeline.js";
@@ -464,6 +464,7 @@ __export(PatchWidget_exports, {
 import "./../../ui/legacy/legacy.js";
 import "./../../ui/components/markdown_view/markdown_view.js";
 import "./../../ui/components/spinners/spinners.js";
+import "./../../ui/kit/kit.js";
 import * as Common3 from "./../../core/common/common.js";
 import * as Host2 from "./../../core/host/host.js";
 import * as i18n3 from "./../../core/i18n/i18n.js";
@@ -477,11 +478,12 @@ import * as WorkspaceDiff from "./../../models/workspace_diff/workspace_diff.js"
 import * as Buttons3 from "./../../ui/components/buttons/buttons.js";
 import * as UI3 from "./../../ui/legacy/legacy.js";
 import { Directives, html as html5, nothing as nothing3, render as render5 } from "./../../ui/lit/lit.js";
-import * as VisualLogging2 from "./../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging from "./../../ui/visual_logging/visual_logging.js";
 import * as ChangesPanel from "./../changes/changes.js";
 import * as PanelCommon from "./../common/common.js";
 
 // gen/front_end/panels/ai_assistance/SelectWorkspaceDialog.js
+import "./../../ui/kit/kit.js";
 import * as Common2 from "./../../core/common/common.js";
 import * as Host from "./../../core/host/host.js";
 import * as i18n from "./../../core/i18n/i18n.js";
@@ -492,7 +494,6 @@ import * as Workspace from "./../../models/workspace/workspace.js";
 import * as Buttons2 from "./../../ui/components/buttons/buttons.js";
 import * as UI2 from "./../../ui/legacy/legacy.js";
 import { html as html4, nothing as nothing2, render as render4 } from "./../../ui/lit/lit.js";
-import * as VisualLogging from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/ai_assistance/selectWorkspaceDialog.css.js
 var selectWorkspaceDialog_css_default = `/*
@@ -633,11 +634,11 @@ var SELECT_WORKSPACE_DIALOG_DEFAULT_VIEW = (input, _output, target) => {
           <!-- Hardcoding, because there is no 'getFormatLocalizedString' equivalent for 'lockedString' -->
           <div>
             Tip: provide a
-            <x-link
+            <devtools-link
               class="devtools-link"
               href="https://goo.gle/devtools-automatic-workspace-folders"
-              jslog=${VisualLogging.link().track({ click: true, keydown: "Enter|Space" }).context("automatic-workspaces-documentation")}
-            >com.chrome.devtools.json</x-link>
+              .jslogContext=${"automatic-workspaces-documentation"}
+            >com.chrome.devtools.json</devtools-link>
             file to automatically connect your project to DevTools.
           </div>
         ` : nothing2}
@@ -974,15 +975,13 @@ var DEFAULT_VIEW2 = (input, output, target) => {
     if (!input.sources) {
       return nothing3;
     }
-    return html5`<x-link
+    return html5`<devtools-link
           class="link"
           title="${UIStringsNotTranslate2.viewUploadedFiles} ${UIStringsNotTranslate2.opensInNewTab}"
           href="data:text/plain;charset=utf-8,${encodeURIComponent(input.sources)}"
-          jslog=${VisualLogging2.link("files-used-in-patching").track({
-      click: true
-    })}>
+          .jslogContext=${"files-used-in-patching"}>
           ${UIStringsNotTranslate2.viewUploadedFiles}
-        </x-link>`;
+        </devtools-link>`;
   }
   function renderHeader() {
     if (input.savedToDisk) {
@@ -1054,11 +1053,9 @@ var DEFAULT_VIEW2 = (input, output, target) => {
       return html5`
           <div class="footer">
             <div class="left-side">
-              <x-link class="link disclaimer-link" href="https://support.google.com/legal/answer/13505487" jslog=${VisualLogging2.link("code-disclaimer").track({
-        click: true
-      })}>
+              <devtools-link class="link disclaimer-link" href="https://support.google.com/legal/answer/13505487" .jslogContext=${"code-disclaimer"}>
                 ${lockedString2(UIStringsNotTranslate2.codeDisclaimer)}
-              </x-link>
+              </devtools-link>
               ${renderSourcesLink()}
             </div>
             <div class="save-or-discard-buttons">
@@ -1082,7 +1079,7 @@ var DEFAULT_VIEW2 = (input, output, target) => {
     return html5`
         <div class="footer">
           ${input.projectName ? html5`
-            <div class="change-workspace" jslog=${VisualLogging2.section("patch-widget.workspace")}>
+            <div class="change-workspace" jslog=${VisualLogging.section("patch-widget.workspace")}>
                 <devtools-icon .name=${iconName}></devtools-icon>
                 <span class="folder-name" title=${input.projectPath}>${input.projectName}</span>
               ${input.onChangeWorkspaceClick ? html5`
@@ -1099,7 +1096,7 @@ var DEFAULT_VIEW2 = (input, output, target) => {
           ` : nothing3}
           <div class="apply-to-workspace-container" aria-live="polite">
             ${input.patchSuggestionState === PatchSuggestionState.LOADING ? html5`
-              <div class="loading-text-container" jslog=${VisualLogging2.section("patch-widget.apply-to-workspace-loading")}>
+              <div class="loading-text-container" jslog=${VisualLogging.section("patch-widget.apply-to-workspace-loading")}>
                 <devtools-spinner></devtools-spinner>
                 <span>
                   ${lockedString2(UIStringsNotTranslate2.applyingToWorkspace)}
@@ -1135,7 +1132,7 @@ var DEFAULT_VIEW2 = (input, output, target) => {
                <button
                  class="link tooltip-link"
                  role="link"
-                 jslog=${VisualLogging2.link("open-ai-settings").track({
+                 jslog=${VisualLogging.link("open-ai-settings").track({
       click: true
     })}
                  @click=${input.onLearnMoreTooltipClick}
@@ -1151,7 +1148,7 @@ var DEFAULT_VIEW2 = (input, output, target) => {
              ${renderHeader()}
              </div>
           </div>` : html5`
-          <details class="change-summary" jslog=${VisualLogging2.section("patch-widget")}>
+          <details class="change-summary" jslog=${VisualLogging.section("patch-widget")}>
             <summary class="header-container" ${Directives.ref(output.summaryRef)}>
               ${renderHeader()}
             </summary>
@@ -1279,13 +1276,11 @@ var PatchWidget = class extends UI3.Widget.Widget {
         {
           iconName: "warning",
           // clang-format off
-          content: html5`<x-link
+          content: html5`<devtools-link
             href=${CODE_SNIPPET_WARNING_URL}
             class="link devtools-link"
-            jslog=${VisualLogging2.link("code-snippets-explainer.patch-widget").track({
-            click: true
-          })}
-          >${lockedString2(UIStringsNotTranslate2.freDisclaimerTextUseWithCaution)}</x-link>`
+            .jslogContext=${"code-snippets-explainer.patch-widget"}
+          >${lockedString2(UIStringsNotTranslate2.freDisclaimerTextUseWithCaution)}</devtools-link>`
           // clang-format on
         }
       ],
@@ -1556,7 +1551,7 @@ import * as Input from "./../../ui/components/input/input.js";
 import * as Snackbars from "./../../ui/components/snackbars/snackbars.js";
 import * as UI4 from "./../../ui/legacy/legacy.js";
 import * as Lit4 from "./../../ui/lit/lit.js";
-import * as VisualLogging3 from "./../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging2 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/ai_assistance/components/chatInput.css.js
 var chatInput_css_default = `/*
@@ -2032,7 +2027,7 @@ var DEFAULT_VIEW3 = (input, output, target) => {
           class="link"
           role="link"
           aria-details=${tooltipId}
-          jslog=${VisualLogging3.link("open-ai-settings").track({
+          jslog=${VisualLogging2.link("open-ai-settings").track({
       click: true
     })}
           @click=${() => {
@@ -2047,7 +2042,7 @@ var DEFAULT_VIEW3 = (input, output, target) => {
           <button
             class="link tooltip-link"
             role="link"
-            jslog=${VisualLogging3.link("open-ai-settings").track({
+            jslog=${VisualLogging2.link("open-ai-settings").track({
       click: true
     })}
             @click=${() => {
@@ -2064,7 +2059,7 @@ var DEFAULT_VIEW3 = (input, output, target) => {
     ${input.isReadOnly ? html6`
         <div
           class="chat-readonly-container"
-          jslog=${VisualLogging3.section("read-only")}
+          jslog=${VisualLogging2.section("read-only")}
         >
           <span>${lockedString3(UIStringsNotTranslate3.pastConversation)}</span>
           <devtools-button
@@ -2148,7 +2143,7 @@ var DEFAULT_VIEW3 = (input, output, target) => {
     input.onTextInputChange(event.target.value);
   }}
               placeholder=${input.inputPlaceholder}
-              jslog=${VisualLogging3.textField("query").track({
+              jslog=${VisualLogging2.textField("query").track({
     change: true,
     keydown: "Enter"
   })}
@@ -2282,7 +2277,7 @@ var DEFAULT_VIEW3 = (input, output, target) => {
     "chat-input-footer": true,
     "is-read-only": input.isReadOnly
   })}
-      jslog=${VisualLogging3.section("footer")}
+      jslog=${VisualLogging2.section("footer")}
     >
       ${renderRelevantDataDisclaimer(RELEVANT_DATA_LINK_FOOTER_ID)}
     </footer>
@@ -2520,6 +2515,7 @@ __export(ChatMessage_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW4
 });
 import "./../../ui/components/markdown_view/markdown_view.js";
+import "./../../ui/kit/kit.js";
 import * as Common4 from "./../../core/common/common.js";
 import * as Host3 from "./../../core/host/host.js";
 import * as i18n7 from "./../../core/i18n/i18n.js";
@@ -2530,7 +2526,7 @@ import * as Input2 from "./../../ui/components/input/input.js";
 import * as UIHelpers from "./../../ui/helpers/helpers.js";
 import * as UI5 from "./../../ui/legacy/legacy.js";
 import * as Lit5 from "./../../ui/lit/lit.js";
-import * as VisualLogging4 from "./../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging3 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/ai_assistance/components/chatMessage.css.js
 var chatMessage_css_default = `/*
@@ -3031,7 +3027,7 @@ var DEFAULT_VIEW4 = (input, output, target) => {
       <style>${chatMessage_css_default}</style>
       <section
         class="chat-message query ${input.isLastMessage ? "is-last-message" : ""}"
-        jslog=${VisualLogging4.section("question")}
+        jslog=${VisualLogging3.section("question")}
       >
         <div class="message-info">
           ${image}
@@ -3050,7 +3046,7 @@ var DEFAULT_VIEW4 = (input, output, target) => {
     <style>${chatMessage_css_default}</style>
     <section
       class="chat-message answer ${input.isLastMessage ? "is-last-message" : ""}"
-      jslog=${VisualLogging4.section("answer")}
+      jslog=${VisualLogging3.section("answer")}
     >
       <div class="message-info">
         <devtools-icon name="smart-assistant"></devtools-icon>
@@ -3172,7 +3168,7 @@ function renderStep({ step, isLoading, markdownRenderer, isLast }) {
   });
   return html7`
     <details class=${stepClasses}
-      jslog=${VisualLogging4.section("step")}
+      jslog=${VisualLogging3.section("step")}
       .open=${Boolean(step.sideEffect)}>
       <summary>
         <div class="summary">
@@ -3193,7 +3189,7 @@ function renderSideEffectConfirmationUi(step) {
   }
   return html7`<div
     class="side-effect-confirmation"
-    jslog=${VisualLogging4.section("side-effect-confirmation")}
+    jslog=${VisualLogging3.section("side-effect-confirmation")}
   >
     <p>${lockedString4(UIStringsNotTranslate4.sideEffectConfirmationDescription)}</p>
     <div class="side-effect-buttons-container">
@@ -3227,9 +3223,9 @@ function renderError(message) {
         errorMessage = UIStringsNotTranslate4.maxStepsError;
         break;
       case "abort":
-        return html7`<p class="aborted" jslog=${VisualLogging4.section("aborted")}>${lockedString4(UIStringsNotTranslate4.stoppedResponse)}</p>`;
+        return html7`<p class="aborted" jslog=${VisualLogging3.section("aborted")}>${lockedString4(UIStringsNotTranslate4.stoppedResponse)}</p>`;
     }
-    return html7`<p class="error" jslog=${VisualLogging4.section("error")}>${lockedString4(errorMessage)}</p>`;
+    return html7`<p class="error" jslog=${VisualLogging3.section("error")}>${lockedString4(errorMessage)}</p>`;
   }
   return Lit5.nothing;
 }
@@ -3240,12 +3236,12 @@ function renderImageChatMessage(inlineData) {
     </div>`;
   }
   const imageUrl = `data:${inlineData.mimeType};base64,${inlineData.data}`;
-  return html7`<x-link
+  return html7`<devtools-link
       class="image-link" title=${UIStringsNotTranslate4.openImageInNewTab}
       href=${imageUrl}
     >
       <img src=${imageUrl} alt=${UIStringsNotTranslate4.imageInputSentToTheModel} />
-    </x-link>`;
+    </devtools-link>`;
 }
 function renderActions(input, output) {
   return html7`
@@ -3375,7 +3371,7 @@ function renderActions(input, output) {
           class="devtools-text-input feedback-input"
           @input=${(event) => input.onInputChange(event.target.value)}
           placeholder=${lockedString4(UIStringsNotTranslate4.provideFeedbackPlaceholder)}
-          jslog=${VisualLogging4.textField("feedback").track({ keydown: "Enter" })}
+          jslog=${VisualLogging3.textField("feedback").track({ keydown: "Enter" })}
         >
         <span class="feedback-disclaimer">${lockedString4(UIStringsNotTranslate4.disclaimer)}</span>
         <div>
@@ -4148,7 +4144,7 @@ import * as Root3 from "./../../core/root/root.js";
 import * as uiI18n from "./../../ui/i18n/i18n.js";
 import * as UI7 from "./../../ui/legacy/legacy.js";
 import { html as html9, render as render9 } from "./../../ui/lit/lit.js";
-import * as VisualLogging5 from "./../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging4 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/ai_assistance/components/disabledWidget.css.js
 var disabledWidget_css_default = `/*
@@ -4262,7 +4258,7 @@ function renderConsentViewContents(hostConfig) {
   settingsLink.addEventListener("click", () => {
     void UI7.ViewManager.ViewManager.instance().showView("chrome-ai");
   });
-  settingsLink.setAttribute("jslog", `${VisualLogging5.action("open-ai-settings").track({ click: true })}`);
+  settingsLink.setAttribute("jslog", `${VisualLogging4.action("open-ai-settings").track({ click: true })}`);
   let consentViewContents;
   if (hostConfig.devToolsAiAssistancePerformanceAgent?.enabled) {
     consentViewContents = uiI18n.getFormatLocalizedString(str_2, UIStrings2.turnOnForStylesRequestsPerformanceAndFiles, { PH1: settingsLink });
@@ -4320,7 +4316,7 @@ import * as i18n13 from "./../../core/i18n/i18n.js";
 import * as Root4 from "./../../core/root/root.js";
 import * as UI8 from "./../../ui/legacy/legacy.js";
 import { html as html10, render as render10 } from "./../../ui/lit/lit.js";
-import * as VisualLogging6 from "./../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging5 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/ai_assistance/components/exploreWidget.css.js
 var exploreWidget_css_default = `/*
@@ -4479,7 +4475,7 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
      <button
        class="link"
        role="link"
-       jslog=${VisualLogging6.link(featureCard.jslogContext).track({
+       jslog=${VisualLogging5.link(featureCard.jslogContext).track({
       click: true
     })}
        @click=${featureCard.onClick}
@@ -4502,7 +4498,7 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
             <button
               class="link"
               role="link"
-              jslog=${VisualLogging6.link("open-ai-settings").track({ click: true })}
+              jslog=${VisualLogging5.link("open-ai-settings").track({ click: true })}
               @click=${() => {
     void UI8.ViewManager.ViewManager.instance().showView("chrome-ai");
   }}
@@ -4994,7 +4990,7 @@ function getMarkdownRenderer(conversation) {
 }
 function toolbarView(input) {
   return html12`
-    <div class="toolbar-container" role="toolbar" jslog=${VisualLogging7.toolbar()}>
+    <div class="toolbar-container" role="toolbar" jslog=${VisualLogging6.toolbar()}>
       <devtools-toolbar class="freestyler-left-toolbar" role="presentation">
       ${input.showChatActions ? html12`<devtools-button
           title=${i18nString3(UIStrings3.newChat)}
@@ -5791,7 +5787,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
       id: crypto.randomUUID(),
       type: multimodalInputType
     } : void 0;
-    void VisualLogging7.logFunctionCall(`start-conversation-${this.#conversation.type}`, "ui");
+    void VisualLogging6.logFunctionCall(`start-conversation-${this.#conversation.type}`, "ui");
     await this.#doConversation(this.#conversation.run(text, {
       signal,
       extraContext: this.#additionalContextItemsFromFloaty,

@@ -256,7 +256,7 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
                 return link;
             }
             return null;
-        }, () => this.computedStyleModel.node());
+        }, () => this.computedStyleModel.node);
         const fontsWidget = new PlatformFontsWidget(this.computedStyleModel);
         fontsWidget.show(this.contentElement);
     }
@@ -287,7 +287,7 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
         }
     }
     async fetchMatchedCascade() {
-        const node = this.computedStyleModel.node();
+        const node = this.computedStyleModel.node;
         if (!node || !this.computedStyleModel.cssModel()) {
             return null;
         }
@@ -297,7 +297,7 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
         }
         return await cssModel.cachedMatchedCascadeForNode(node).then(validateStyles.bind(this));
         function validateStyles(matchedStyles) {
-            return matchedStyles && matchedStyles.node() === this.computedStyleModel.node() ? matchedStyles : null;
+            return matchedStyles && matchedStyles.node() === this.computedStyleModel.node ? matchedStyles : null;
         }
     }
     async rebuildAlphabeticalList(nodeStyle, matchedStyles) {

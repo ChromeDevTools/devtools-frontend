@@ -2381,7 +2381,7 @@ var ReportsGrid = class extends UI7.Widget.Widget {
   constructor(element, view = DEFAULT_VIEW6) {
     super(element);
     this.#view = view;
-    this.#protocolMonitorExperimentEnabled = Root.Runtime.experiments.isEnabled("protocol-monitor");
+    this.#protocolMonitorExperimentEnabled = Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.PROTOCOL_MONITOR);
     this.requestUpdate();
   }
   performUpdate() {

@@ -11,6 +11,7 @@ __export(SyncSection_exports, {
 });
 import "./../../../ui/components/settings/settings.js";
 import "./../../../ui/components/tooltips/tooltips.js";
+import "./../../../ui/kit/kit.js";
 import * as Common from "./../../../core/common/common.js";
 import * as Host from "./../../../core/host/host.js";
 import * as i18n from "./../../../core/i18n/i18n.js";
@@ -299,12 +300,12 @@ var DEFAULT_VIEW = (input, output, target) => {
             <div class="plan-details">
               ${getGdpSubscriptionText(input.gdpProfile)}
               &nbsp;·&nbsp;
-              <x-link
-                .jslog=${VisualLogging.link().track({ click: true, keydown: "Enter|Space" }).context("view-profile")}
+              <devtools-link
+                .jslogContext=${"view-profile"}
                 class="link"
                 href=${Host.GdpClient.GOOGLE_DEVELOPER_PROGRAM_PROFILE_LINK}>
                 ${i18nString(UIStrings.viewProfile)}
-              </x-link></div>
+              </devtools-link></div>
               ${hasReceiveBadgesCheckbox ? html`
                 <div class="setting-container" ${ref((el) => {
       output.highlightReceiveBadgesSetting = () => {

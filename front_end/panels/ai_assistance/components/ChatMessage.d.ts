@@ -1,4 +1,5 @@
 import '../../../ui/components/markdown_view/markdown_view.js';
+import '../../../ui/kit/kit.js';
 import * as Host from '../../../core/host/host.js';
 import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
 import type { MarkdownLitRenderer } from '../../../ui/components/markdown_view/MarkdownView.js';

@@ -1,5 +1,6 @@
 import '../../../ui/components/settings/settings.js';
 import '../../../ui/components/tooltips/tooltips.js';
+import '../../../ui/kit/kit.js';
 import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as UI from '../../../ui/legacy/legacy.js';

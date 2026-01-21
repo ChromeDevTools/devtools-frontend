@@ -2322,44 +2322,26 @@ var ActionDelegate = class {
           if (!object) {
             return;
           }
-          const result = await object.callFunction(function() {
-            function getFrameOffset(frame) {
-              if (!frame) {
-                return { x: 0, y: 0 };
-              }
-              const borderTop = frame.clientTop;
-              const borderLeft = frame.clientLeft;
-              const styles = window.getComputedStyle(frame);
-              const paddingTop = parseFloat(styles.paddingTop);
-              const paddingLeft = parseFloat(styles.paddingLeft);
-              const rect2 = frame.getBoundingClientRect();
-              const parentFrameOffset = getFrameOffset(frame.ownerDocument.defaultView?.frameElement ?? null);
-              const scrollX2 = frame.ownerDocument.defaultView?.scrollX ?? 0;
-              const scrollY2 = frame.ownerDocument.defaultView?.scrollY ?? 0;
-              return {
-                x: parentFrameOffset.x + rect2.left + borderLeft + paddingLeft + scrollX2,
-                y: parentFrameOffset.y + rect2.top + borderTop + paddingTop + scrollY2
-              };
-            }
-            const rect = this.getBoundingClientRect();
-            const frameOffset = getFrameOffset(this.ownerDocument.defaultView?.frameElement ?? null);
-            const scrollX = this.ownerDocument.defaultView?.scrollX ?? 0;
-            const scrollY = this.ownerDocument.defaultView?.scrollY ?? 0;
-            return JSON.stringify({
-              x: rect.left + frameOffset.x + scrollX,
-              y: rect.top + frameOffset.y + scrollY,
-              width: rect.width,
-              height: rect.height,
-              scale: 1
-            });
-          });
-          if (!result.object) {
-            throw new Error("Clipping error: could not get object data.");
+          const nodeBoxModel = await node.boxModel();
+          if (!nodeBoxModel) {
+            throw new Error(`Unable to get box model of the node: ${new Error().stack}`);
           }
-          const clip = JSON.parse(result.object.value);
-          const response = await node.domModel().target().pageAgent().invoke_getLayoutMetrics();
-          const error = response.getError();
-          const zoom = !error && response.visualViewport.zoom || 1;
+          const nodeBorderQuad = nodeBoxModel.border;
+          const metrics = await node.domModel().target().pageAgent().invoke_getLayoutMetrics();
+          if (metrics.getError()) {
+            throw new Error(`Unable to get metrics: ${new Error().stack}`);
+          }
+          const scrollX = metrics.cssVisualViewport.pageX;
+          const scrollY = metrics.cssVisualViewport.pageY;
+          const { x: oopifOffsetX, y: oopifOffsetY } = await getOopifOffset(node.domModel().target());
+          const clip = {
+            x: oopifOffsetX + scrollX + nodeBorderQuad[0],
+            y: oopifOffsetY + scrollY + nodeBorderQuad[1],
+            width: nodeBoxModel.width,
+            height: nodeBoxModel.height,
+            scale: 1
+          };
+          const zoom = metrics.cssVisualViewport.zoom ?? 1;
           clip.x *= zoom;
           clip.y *= zoom;
           clip.width *= zoom;
@@ -2378,6 +2360,46 @@ var ActionDelegate = class {
     return false;
   }
 };
+async function getOopifOffset(target) {
+  if (!target) {
+    return { x: 0, y: 0 };
+  }
+  const parentTarget = target.parentTarget();
+  if (!parentTarget || parentTarget.type() !== SDK2.Target.Type.FRAME) {
+    return { x: 0, y: 0 };
+  }
+  const frameId = target.model(SDK2.ResourceTreeModel.ResourceTreeModel)?.mainFrame?.id;
+  if (!frameId) {
+    return { x: 0, y: 0 };
+  }
+  const parentDOMModel = parentTarget.model(SDK2.DOMModel.DOMModel);
+  if (!parentDOMModel) {
+    return { x: 0, y: 0 };
+  }
+  const frameOwnerDeferred = await parentDOMModel.getOwnerNodeForFrame(frameId);
+  const frameOwner = await frameOwnerDeferred?.resolvePromise();
+  if (!frameOwner) {
+    return { x: 0, y: 0 };
+  }
+  const boxModel = await frameOwner.boxModel();
+  if (!boxModel) {
+    return { x: 0, y: 0 };
+  }
+  const contentQuad = boxModel.content;
+  const iframeContentX = contentQuad[0];
+  const iframeContentY = contentQuad[1];
+  const parentMetrics = await parentTarget.pageAgent().invoke_getLayoutMetrics();
+  if (parentMetrics.getError()) {
+    return { x: 0, y: 0 };
+  }
+  const scrollX = parentMetrics.cssVisualViewport.pageX;
+  const scrollY = parentMetrics.cssVisualViewport.pageY;
+  const parentOffset = await getOopifOffset(parentTarget);
+  return {
+    x: iframeContentX + scrollX + parentOffset.x,
+    y: iframeContentY + scrollY + parentOffset.y
+  };
+}
 
 // gen/front_end/panels/emulation/InspectedPagePlaceholder.js
 var InspectedPagePlaceholder_exports = {};

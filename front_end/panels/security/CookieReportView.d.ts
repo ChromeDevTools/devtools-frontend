@@ -1,4 +1,5 @@
 import '../../ui/legacy/components/data_grid/data_grid.js';
+import '../../ui/kit/kit.js';
 import * as Common from '../../core/common/common.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
@@ -7,6 +8,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 export declare const i18nString: (id: string, values?: import("../../core/i18n/i18nTypes.js").Values | undefined) => Common.UIString.LocalizedString;
 export declare const i18nFormatString: (stringId: string, placeholders: Record<string, string | Node>) => HTMLSpanElement;
+export declare const i18nFormatStringTemplate: (stringId: string, placeholders: Record<string, string | Node | Lit.LitTemplate>) => Lit.LitTemplate;
 export interface ViewInput {
     cookieRows: IssuesManager.CookieIssue.CookieReportInfo[];
     filterItems: UI.FilterBar.Item[];

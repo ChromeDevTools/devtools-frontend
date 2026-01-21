@@ -1,5 +1,6 @@
 import '../../ui/components/spinners/spinners.js';
 import '../../ui/components/tooltips/tooltips.js';
+import '../../ui/kit/kit.js';
 import * as Host from '../../core/host/host.js';
 import type * as AiCodeCompletion from '../../models/ai_code_completion/ai_code_completion.js';
 import * as UI from '../../ui/legacy/legacy.js';

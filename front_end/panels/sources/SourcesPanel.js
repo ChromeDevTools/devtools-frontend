@@ -375,6 +375,7 @@ export class SourcesPanel extends UI.Panel.Panel {
             SourcesPanel.updateResizerAndSidebarButtons(this);
         }
         this.editorView.setMainWidget(this.#sourcesView);
+        this.callstackPane.requestUpdate();
     }
     willHide() {
         super.willHide();
@@ -575,8 +576,8 @@ export class SourcesPanel extends UI.Panel.Panel {
         const groupByFolderSetting = Common.Settings.Settings.instance().moduleSetting('navigator-group-by-folder');
         contextMenu.appendItemsAtLocation('navigatorMenu');
         contextMenu.viewSection().appendCheckboxItem(i18nString(UIStrings.groupByFolder), () => groupByFolderSetting.set(!groupByFolderSetting.get()), { checked: groupByFolderSetting.get(), jslogContext: groupByFolderSetting.name });
-        this.addExperimentMenuItem(contextMenu.viewSection(), "authored-deployed-grouping" /* Root.Runtime.ExperimentName.AUTHORED_DEPLOYED_GROUPING */, i18nString(UIStrings.groupByAuthored));
-        this.addExperimentMenuItem(contextMenu.viewSection(), "just-my-code" /* Root.Runtime.ExperimentName.JUST_MY_CODE */, i18nString(UIStrings.hideIgnoreListed));
+        this.addExperimentMenuItem(contextMenu.viewSection(), Root.Runtime.ExperimentName.AUTHORED_DEPLOYED_GROUPING, i18nString(UIStrings.groupByAuthored));
+        this.addExperimentMenuItem(contextMenu.viewSection(), Root.Runtime.ExperimentName.JUST_MY_CODE, i18nString(UIStrings.hideIgnoreListed));
     }
     updateLastModificationTime() {
         this.lastModificationTime = window.performance.now();
@@ -821,7 +822,7 @@ export class SourcesPanel extends UI.Panel.Panel {
         const eventTarget = event.target;
         if (!uiSourceCode.project().isServiceProject() &&
             !eventTarget.isSelfOrDescendant(this.navigatorTabbedLocation.widget().element) &&
-            !(Root.Runtime.experiments.isEnabled("just-my-code" /* Root.Runtime.ExperimentName.JUST_MY_CODE */) &&
+            !(Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.JUST_MY_CODE) &&
                 Workspace.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(uiSourceCode))) {
             contextMenu.revealSection().appendItem(i18nString(UIStrings.revealInSidebar), this.revealInNavigator.bind(this, uiSourceCode), {
                 jslogContext: 'sources.reveal-in-navigator-sidebar',

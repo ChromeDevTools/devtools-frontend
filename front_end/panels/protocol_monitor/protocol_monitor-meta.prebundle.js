@@ -37,6 +37,6 @@ UI.ViewManager.registerViewExtension({
         const ProtocolMonitor = await loadProtocolMonitorModule();
         return new ProtocolMonitor.ProtocolMonitor.ProtocolMonitorImpl();
     },
-    experiment: "protocol-monitor" /* Root.Runtime.ExperimentName.PROTOCOL_MONITOR */,
+    experiment: Root.Runtime.ExperimentName.PROTOCOL_MONITOR,
 });
 //# sourceMappingURL=protocol_monitor-meta.prebundle.js.map

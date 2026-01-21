@@ -418,8 +418,8 @@ var DEFAULT_VIEW = (input, _output, target) => {
             class="medium"
             style="color: var(--icon-warning); margin-right: var(--sys-size-2);">
           </devtools-icon>
-          ${i18nFormatString(UIStrings.upperDeprecationWarning, {
-    PH1: UI.Fragment.html`<x-link class="devtools-link" href="https://privacysandbox.com/news/privacy-sandbox-update/" jslog=${VisualLogging.link("privacy-sandbox-update").track({ click: true })}>${i18nString(UIStrings.blogPostLink)}</x-link>`
+          ${i18nFormatStringTemplate(UIStrings.upperDeprecationWarning, {
+    PH1: html`<devtools-link class="devtools-link" href="https://privacysandbox.com/news/privacy-sandbox-update/" .jslogContext=${"privacy-sandbox-update"}>${i18nString(UIStrings.blogPostLink)}</devtools-link>`
   })}
         </div>
         <div class="body">
@@ -539,9 +539,11 @@ var CookieReportView_exports = {};
 __export(CookieReportView_exports, {
   CookieReportView: () => CookieReportView,
   i18nFormatString: () => i18nFormatString2,
+  i18nFormatStringTemplate: () => i18nFormatStringTemplate2,
   i18nString: () => i18nString2
 });
 import "./../../ui/legacy/components/data_grid/data_grid.js";
+import "./../../ui/kit/kit.js";
 import * as Common2 from "./../../core/common/common.js";
 import * as i18n3 from "./../../core/i18n/i18n.js";
 import * as Platform from "./../../core/platform/platform.js";
@@ -550,7 +552,6 @@ import * as IssuesManager from "./../../models/issues_manager/issues_manager.js"
 import * as uiI18n2 from "./../../ui/i18n/i18n.js";
 import * as UI2 from "./../../ui/legacy/legacy.js";
 import * as Lit from "./../../ui/lit/lit.js";
-import * as VisualLogging2 from "./../../ui/visual_logging/visual_logging.js";
 import * as NetworkForward from "./../network/forward/forward.js";
 
 // gen/front_end/panels/security/cookieReportView.css.js
@@ -813,6 +814,7 @@ var UIStrings2 = {
 var str_2 = i18n3.i18n.registerUIStrings("panels/security/CookieReportView.ts", UIStrings2);
 var i18nString2 = i18n3.i18n.getLocalizedString.bind(void 0, str_2);
 var i18nFormatString2 = uiI18n2.getFormatLocalizedString.bind(void 0, str_2);
+var i18nFormatStringTemplate2 = uiI18n2.getFormatLocalizedStringTemplate.bind(void 0, str_2);
 var DEFAULT_VIEW2 = (input, output, target) => {
   const deprecationMessage = html2`
     <div class="deprecation-warning">
@@ -822,8 +824,8 @@ var DEFAULT_VIEW2 = (input, output, target) => {
           class="medium"
           style="color: var(--icon-warning); margin-right: var(--sys-size-2);">
         </devtools-icon>
-        ${i18nFormatString2(UIStrings2.upperDeprecationWarning, {
-    PH1: UI2.Fragment.html`<x-link class="devtools-link" href="https://privacysandbox.com/news/privacy-sandbox-update/" jslog=${VisualLogging2.link("privacy-sandbox-update").track({ click: true })}>${i18nString2(UIStrings2.blogPostLink)}</x-link>`
+        ${i18nFormatStringTemplate2(UIStrings2.upperDeprecationWarning, {
+    PH1: html2`<devtools-link class="devtools-link" href="https://privacysandbox.com/news/privacy-sandbox-update/" .jslogContext=${"privacy-sandbox-update"}>${i18nString2(UIStrings2.blogPostLink)}</devtools-link>`
   })}
       </div>
       <div class="body">
@@ -835,7 +837,7 @@ var DEFAULT_VIEW2 = (input, output, target) => {
         <div class="report overflow-auto">
             <div class="header">
               <h1>${i18nString2(UIStrings2.title)}</h1>
-              <div class="body">${i18nString2(UIStrings2.body)} <x-link class="devtools-link" href="https://developers.google.com/privacy-sandbox/cookies/prepare/audit-cookies" jslog=${VisualLogging2.link("learn-more").track({ click: true })}>${i18nString2(UIStrings2.learnMoreLink)}</x-link></div>
+              <div class="body">${i18nString2(UIStrings2.body)} <devtools-link class="devtools-link" href="https://developers.google.com/privacy-sandbox/cookies/prepare/audit-cookies" .jslogContext=${"learn-more"}>${i18nString2(UIStrings2.learnMoreLink)}</devtools-link></div>
             </div>
             ${input.cookieRows.length > 0 ? html2`
                 <div class="filters-container">
@@ -1340,7 +1342,7 @@ import * as NetworkForward2 from "./../network/forward/forward.js";
 import { createIcon as createIcon3 } from "./../../ui/kit/kit.js";
 import * as UI5 from "./../../ui/legacy/legacy.js";
 import { html as html3, render as render3 } from "./../../ui/lit/lit.js";
-import * as VisualLogging3 from "./../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging2 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/security/lockIcon.css.js
 var lockIcon_css_default = `/*
@@ -2672,7 +2674,7 @@ var SecurityPanel = class _SecurityPanel extends UI5.Panel.Panel {
     this.update();
     this.sidebar.setMinimumSize(100, 25);
     this.sidebar.element.classList.add("panel-sidebar");
-    this.sidebar.element.setAttribute("jslog", `${VisualLogging3.pane("sidebar").track({ resize: true })}`);
+    this.sidebar.element.setAttribute("jslog", `${VisualLogging2.pane("sidebar").track({ resize: true })}`);
     this.mainView = new SecurityMainView();
     this.mainView.panel = this;
     this.element.addEventListener(ShowOriginEvent.eventName, (event) => {
@@ -2900,7 +2902,7 @@ var SecurityMainView = class extends UI5.Widget.VBox {
   explanations;
   securityState;
   constructor(element) {
-    super(element, { jslog: `${VisualLogging3.pane("security.main-view")}` });
+    super(element, { jslog: `${VisualLogging2.pane("security.main-view")}` });
     this.registerRequiredCSS(lockIcon_css_default, mainView_css_default);
     this.setMinimumSize(200, 100);
     this.contentElement.classList.add("security-main-view");
@@ -3300,7 +3302,7 @@ ${i18nString5(UIStrings5.ifYouBelieveThisIsShownInErrorSafety)}`;
 var SecurityOriginView = class extends UI5.Widget.VBox {
   originLockIcon;
   constructor(origin, originState) {
-    super({ jslog: `${VisualLogging3.pane("security.origin-view")}` });
+    super({ jslog: `${VisualLogging2.pane("security.origin-view")}` });
     this.registerRequiredCSS(originView_css_default, lockIcon_css_default);
     this.setMinimumSize(200, 100);
     this.element.classList.add("security-origin-view");

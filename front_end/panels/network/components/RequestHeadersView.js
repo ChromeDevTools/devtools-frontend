@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-lit-render-outside-of-view */
+import '../../../ui/kit/kit.js';
 import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
@@ -268,22 +269,22 @@ export class RequestHeadersView extends LegacyWrapper.LegacyWrapper.WrappableCom
         // Disabled until https://crbug.com/1079231 is fixed.
         // clang-format off
         return html `
-      <x-link
+      <devtools-link
           href="https://goo.gle/devtools-override"
           class="link devtools-link"
-          jslog=${VisualLogging.link('devtools-override').track({ click: true })}
+          .jslogContext=${'devtools-override'}
       >
         <devtools-icon name="help" class="inline-icon medium">
         </devtools-icon>
-      </x-link>
-      <x-link
+      </devtools-link>
+      <devtools-link
           @click=${revealHeadersFile}
           class="link devtools-link"
           title=${UIStrings.revealHeaderOverrides}
-          jslog=${VisualLogging.link('reveal-header-overrides').track({ click: true })}
+          .jslogContext=${'reveal-header-overrides'}
       >
         ${fileIcon}${Persistence.NetworkPersistenceManager.HEADERS_FILENAME}
-      </x-link>
+      </devtools-link>
     `;
         // clang-format on
     }

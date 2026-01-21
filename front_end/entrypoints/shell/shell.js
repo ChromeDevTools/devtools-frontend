@@ -2057,7 +2057,7 @@ UI2.ViewManager.registerViewExtension({
     const Profiler = await loadProfilerModule();
     return Profiler.LiveHeapProfileView.LiveHeapProfileView.instance();
   },
-  experiment: "live-heap-profile"
+  experiment: Root2.Runtime.ExperimentName.LIVE_HEAP_PROFILE
 });
 UI2.ActionRegistration.registerActionExtension({
   actionId: "live-heap-profile.toggle-recording",
@@ -2070,7 +2070,7 @@ UI2.ActionRegistration.registerActionExtension({
     return new Profiler.LiveHeapProfileView.ActionDelegate();
   },
   category: "MEMORY",
-  experiment: "live-heap-profile",
+  experiment: Root2.Runtime.ExperimentName.LIVE_HEAP_PROFILE,
   options: [
     {
       value: true,
@@ -2090,7 +2090,7 @@ UI2.ActionRegistration.registerActionExtension({
     return new Profiler.LiveHeapProfileView.ActionDelegate();
   },
   category: "MEMORY",
-  experiment: "live-heap-profile",
+  experiment: Root2.Runtime.ExperimentName.LIVE_HEAP_PROFILE,
   title: i18nLazyString2(UIStrings2.startRecordingHeapAllocationsAndReload)
 });
 UI2.ActionRegistration.registerActionExtension({
@@ -3017,7 +3017,7 @@ UI22.ViewManager.registerViewExtension({
   title: i18nLazyString22(UIStrings22.experiments),
   commandPrompt: i18nLazyString22(UIStrings22.showExperiments),
   order: 3,
-  experiment: "*",
+  experiment: Root3.Runtime.ExperimentName.ALL,
   async loadView() {
     const Settings22 = await loadSettingsModule();
     return new Settings22.SettingsScreen.ExperimentsSettingsTab();
@@ -3201,7 +3201,7 @@ UI8.ViewManager.registerViewExtension({
     const ProtocolMonitor = await loadProtocolMonitorModule();
     return new ProtocolMonitor.ProtocolMonitor.ProtocolMonitorImpl();
   },
-  experiment: "protocol-monitor"
+  experiment: Root4.Runtime.ExperimentName.PROTOCOL_MONITOR
 });
 
 // gen/front_end/models/persistence/persistence-meta.js
@@ -4323,7 +4323,7 @@ Common8.Settings.registerSettingExtension({
 });
 Common8.Settings.registerSettingExtension({
   category: "MEMORY",
-  experiment: "live-heap-profile",
+  experiment: Root6.Runtime.ExperimentName.LIVE_HEAP_PROFILE,
   title: i18nLazyString12(UIStrings12.liveMemoryAllocationAnnotations),
   settingName: "memory-live-heap-profile",
   settingType: "boolean",

@@ -714,7 +714,7 @@ export var DevtoolsExperiments;
     DevtoolsExperiments[DevtoolsExperiments["live-heap-profile"] = 11] = "live-heap-profile";
     DevtoolsExperiments[DevtoolsExperiments["protocol-monitor"] = 13] = "protocol-monitor";
     DevtoolsExperiments[DevtoolsExperiments["sampling-heap-profiler-timeline"] = 17] = "sampling-heap-profiler-timeline";
-    DevtoolsExperiments[DevtoolsExperiments["show-option-tp-expose-internals-in-heap-snapshot"] = 18] = "show-option-tp-expose-internals-in-heap-snapshot";
+    DevtoolsExperiments[DevtoolsExperiments["show-option-to-expose-internals-in-heap-snapshot"] = 18] = "show-option-to-expose-internals-in-heap-snapshot";
     DevtoolsExperiments[DevtoolsExperiments["timeline-invalidation-tracking"] = 26] = "timeline-invalidation-tracking";
     DevtoolsExperiments[DevtoolsExperiments["timeline-show-all-events"] = 27] = "timeline-show-all-events";
     DevtoolsExperiments[DevtoolsExperiments["timeline-v8-runtime-call-stats"] = 28] = "timeline-v8-runtime-call-stats";

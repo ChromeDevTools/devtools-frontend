@@ -77,7 +77,7 @@ export class CSSProperty extends Common.ObjectWrapper.ObjectWrapper {
     #matchers(matchedStyles, computedStyles) {
         const matchers = matchedStyles.propertyMatchers(this.ownerStyle, computedStyles);
         matchers.push(new CSSWideKeywordMatcher(this, matchedStyles));
-        if (Root.Runtime.experiments.isEnabled('font-editor')) {
+        if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.FONT_EDITOR)) {
             matchers.push(new FontMatcher());
         }
         return matchers;

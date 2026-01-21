@@ -1,4 +1,5 @@
 import '../../ui/components/tooltips/tooltips.js';
+import '../../ui/kit/kit.js';
 import type * as Tooltips from '../../ui/components/tooltips/tooltips.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { ConsoleViewMessage } from './ConsoleViewMessage.js';

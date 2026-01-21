@@ -1960,7 +1960,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         const renderers = this.property.parsedOk ?
             getPropertyRenderers(this.name, this.style, this.#parentPane, this.#matchedStyles, this, this.getComputedStyles() ?? new Map()) :
             [];
-        if (Root.Runtime.experiments.isEnabled('font-editor') && this.property.parsedOk) {
+        if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.FONT_EDITOR) && this.property.parsedOk) {
             renderers.push(new FontRenderer(this));
         }
         this.listItemElement.removeChildren();

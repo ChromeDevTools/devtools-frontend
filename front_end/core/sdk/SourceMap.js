@@ -435,7 +435,7 @@ export class SourceMap {
             nameIndex += tokenIter.nextVLQ();
             this.mappings().push(new SourceMapEntry(lineNumber, columnNumber, sourceIndex, sourceURL, sourceLineNumber, sourceColumnNumber, names[nameIndex]));
         }
-        if (Root.Runtime.experiments.isEnabled("use-source-map-scopes" /* Root.Runtime.ExperimentName.USE_SOURCE_MAP_SCOPES */)) {
+        if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.USE_SOURCE_MAP_SCOPES)) {
             if (!this.#scopesInfo) {
                 this.#scopesInfo = new SourceMapScopesInfo(this, { scopes: [], ranges: [] });
             }

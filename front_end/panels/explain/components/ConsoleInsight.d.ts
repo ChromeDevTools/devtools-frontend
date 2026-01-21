@@ -1,4 +1,5 @@
 import '../../../ui/components/spinners/spinners.js';
+import '../../../ui/kit/kit.js';
 import * as Host from '../../../core/host/host.js';
 import * as MarkdownView from '../../../ui/components/markdown_view/markdown_view.js';
 import * as UI from '../../../ui/legacy/legacy.js';

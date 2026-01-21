@@ -1,5 +1,6 @@
 // gen/front_end/panels/explain/components/ConsoleInsight.js
 import "./../../ui/components/spinners/spinners.js";
+import "./../../ui/kit/kit.js";
 import * as Common from "./../../core/common/common.js";
 import * as Host from "./../../core/host/host.js";
 import * as i18n from "./../../core/i18n/i18n.js";
@@ -376,7 +377,7 @@ var consoleInsight_css_default = `/*
     display: table-cell;
   }
 
-  .sources-list x-link.highlighted {
+  .sources-list devtools-link.highlighted {
     animation: highlight-fadeout 2s;
   }
 
@@ -645,9 +646,9 @@ function renderSearchButton(onSearch) {
   </devtools-button>`;
 }
 function renderLearnMoreAboutInsights() {
-  return html`<x-link href=${LEARN_MORE_URL} class="link" jslog=${VisualLogging.link("learn-more").track({ click: true })}>
+  return html`<devtools-link href=${LEARN_MORE_URL} class="link" .jslogContext=${"learn-more"}>
     ${i18nString(UIStrings.learnMore)}
-  </x-link>`;
+  </devtools-link>`;
 }
 function maybeRenderSources(directCitationUrls, highlightedCitationIndex, onCitationAnimationEnd, output) {
   if (!directCitationUrls.length) {
@@ -657,17 +658,17 @@ function maybeRenderSources(directCitationUrls, highlightedCitationIndex, onCita
     <ol class="sources-list">
       ${directCitationUrls.map((url, index) => html`
         <li>
-          <x-link
+          <devtools-link
             href=${url}
             class=${Directives.classMap({ link: true, highlighted: index === highlightedCitationIndex })}
-            jslog=${VisualLogging.link("references.console-insights").track({ click: true })}
+            .jslogContext=${"references.console-insights"}
             ${Directives.ref((e) => {
     output.citationLinks[index] = e;
   })}
             @animationend=${onCitationAnimationEnd}
           >
             ${url}
-          </x-link>
+          </devtools-link>
         </li>
       `)}
     </ol>
@@ -682,13 +683,13 @@ function maybeRenderRelatedContent(relatedUrls, directCitationUrls) {
     <ul class="references-list">
       ${relatedUrls.map((relatedUrl) => html`
         <li>
-          <x-link
+          <devtools-link
             href=${relatedUrl}
             class="link"
-            jslog=${VisualLogging.link("references.console-insights").track({ click: true })}
+            .jslogContext=${"references.console-insights"}
           >
             ${relatedUrl}
-          </x-link>
+          </devtools-link>
         </li>
       `)}
     </ul>
@@ -711,10 +712,10 @@ function renderInsightSourcesList(sources, isPageReloadRecommended) {
     <div class="insight-sources">
       <ul>
         ${Directives.repeat(sources, (item) => item.value, (item) => {
-    return html`<li><x-link class="link" title="${localizeType(item.type)} ${i18nString(UIStrings.opensInNewTab)}" href="data:text/plain;charset=utf-8,${encodeURIComponent(item.value)}" jslog=${VisualLogging.link("source-" + item.type).track({ click: true })}>
+    return html`<li><devtools-link class="link" title="${localizeType(item.type)} ${i18nString(UIStrings.opensInNewTab)}" href="data:text/plain;charset=utf-8,${encodeURIComponent(item.value)}" .jslogContext=${"source-" + item.type}>
             <devtools-icon name="open-externally"></devtools-icon>
             ${localizeType(item.type)}
-          </x-link></li>`;
+          </devtools-link></li>`;
   })}
         ${isPageReloadRecommended ? html`<li class="source-disclaimer">
           <devtools-icon name="warning"></devtools-icon>
@@ -766,28 +767,28 @@ function renderConsentReminder(noLogging) {
         <devtools-icon name="policy" class="medium">
         </devtools-icon>
       </div>
-      <div>Use of this feature is subject to the <x-link
+      <div>Use of this feature is subject to the <devtools-link
           href=${TERMS_OF_SERVICE_URL}
           class="link"
-          jslog=${VisualLogging.link("terms-of-service.console-insights").track({ click: true })}>
+          .jslogContext=${"terms-of-service.console-insights"}>
         Google Terms of Service
-        </x-link> and <x-link
+        </devtools-link> and <devtools-link
           href=${PRIVACY_POLICY_URL}
           class="link"
-          jslog=${VisualLogging.link("privacy-policy.console-insights").track({ click: true })}>
+          .jslogContext=${"privacy-policy.console-insights"}>
         Google Privacy Policy
-        </x-link>
+        </devtools-link>
       </div>
       <div>
         <devtools-icon name="warning" class="medium">
         </devtools-icon>
       </div>
       <div>
-        <x-link
+        <devtools-link
           href=${CODE_SNIPPET_WARNING_URL}
           class="link"
-          jslog=${VisualLogging.link("code-snippets-explainer.console-insights").track({ click: true })}
-        >Use generated code snippets with caution</x-link>
+          .jslogContext=${"code-snippets-explainer.console-insights"}
+        >Use generated code snippets with caution</devtools-link>
       </div>
     </div>`;
 }
@@ -815,10 +816,10 @@ function renderDisclaimer(noLogging, onDisclaimerSettingsLink) {
     AI tools may generate inaccurate info that doesn't represent Google's views. ${noLogging ? "The content you submit and that is generated by this feature will not be used to improve Google\u2019s AI models." : "Data sent to Google may be seen by human reviewers to improve this feature."} <button class="link" role="link" @click=${onDisclaimerSettingsLink}
               jslog=${VisualLogging.action("open-ai-settings").track({ click: true })}>
       Open settings
-    </button> or <x-link href=${LEARN_MORE_URL}
-        class="link" jslog=${VisualLogging.link("learn-more").track({ click: true })}>
+    </button> or <devtools-link href=${LEARN_MORE_URL}
+        class="link" .jslogContext=${"learn-more"}>
       learn more
-    </x-link>
+    </devtools-link>
   </span>`;
 }
 function renderDisclaimerFooter(noLogging, onDisclaimerSettingsLink) {

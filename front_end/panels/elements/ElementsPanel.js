@@ -211,7 +211,7 @@ export class ElementsPanel extends UI.Panel.Panel {
         this.mainContainer = document.createElement('div');
         this.domTreeContainer = document.createElement('div');
         const crumbsContainer = document.createElement('div');
-        if (Root.Runtime.experiments.isEnabled('full-accessibility-tree')) {
+        if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.FULL_ACCESSIBILITY_TREE)) {
             this.initializeFullAccessibilityTreeView();
         }
         this.mainContainer.appendChild(this.domTreeContainer);
@@ -241,7 +241,10 @@ export class ElementsPanel extends UI.Panel.Panel {
             this.crumbNodeSelected(event);
         });
         crumbsContainer.appendChild(this.breadcrumbs);
-        const computedStyleModel = new ComputedStyleModel();
+        const computedStyleModel = new ComputedStyleModel(UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode));
+        UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, event => {
+            computedStyleModel.node = event.data;
+        });
         this.stylesWidget = new StylesSidebarPane(computedStyleModel);
         this.computedStyleWidget = new ComputedStyleWidget(computedStyleModel);
         this.metricsWidget = new MetricsSidebarPane(computedStyleModel);

@@ -1,4 +1,4 @@
-import '../../../ui/legacy/legacy.js';
+import '../../../ui/kit/kit.js';
 import * as CodeMirror from '../../../third_party/codemirror.next/codemirror.next.js';
 export interface Citation {
     index: Number;

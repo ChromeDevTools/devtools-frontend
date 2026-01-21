@@ -171,11 +171,11 @@ div.raw-headers-row {
   color: var(--sys-color-on-surface);
 }
 
-x-link {
+devtools-link {
   position: relative;
 }
 
-x-link .inline-icon {
+devtools-link .inline-icon {
   padding-right: 3px;
 }
 
@@ -1337,6 +1337,7 @@ __export(RequestHeadersView_exports, {
   RequestHeadersView: () => RequestHeadersView,
   ToggleRawHeadersEvent: () => ToggleRawHeadersEvent
 });
+import "./../../../ui/kit/kit.js";
 import * as Common3 from "./../../../core/common/common.js";
 import * as Host4 from "./../../../core/host/host.js";
 import * as i18n9 from "./../../../core/i18n/i18n.js";
@@ -2146,22 +2147,22 @@ var RequestHeadersView = class extends LegacyWrapper.LegacyWrapper.WrappableComp
       }
     };
     return html6`
-      <x-link
+      <devtools-link
           href="https://goo.gle/devtools-override"
           class="link devtools-link"
-          jslog=${VisualLogging6.link("devtools-override").track({ click: true })}
+          .jslogContext=${"devtools-override"}
       >
         <devtools-icon name="help" class="inline-icon medium">
         </devtools-icon>
-      </x-link>
-      <x-link
+      </devtools-link>
+      <devtools-link
           @click=${revealHeadersFile}
           class="link devtools-link"
           title=${UIStrings5.revealHeaderOverrides}
-          jslog=${VisualLogging6.link("reveal-header-overrides").track({ click: true })}
+          .jslogContext=${"reveal-header-overrides"}
       >
         ${fileIcon}${Persistence2.NetworkPersistenceManager.HEADERS_FILENAME}
-      </x-link>
+      </devtools-link>
     `;
   }
   #getHeaderOverridesFileUrl() {

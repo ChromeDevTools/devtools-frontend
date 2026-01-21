@@ -4,6 +4,7 @@
 import '../../ui/legacy/legacy.js';
 import '../../ui/components/markdown_view/markdown_view.js';
 import '../../ui/components/spinners/spinners.js';
+import '../../ui/kit/kit.js';
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -163,15 +164,13 @@ const DEFAULT_VIEW = (input, output, target) => {
         if (!input.sources) {
             return nothing;
         }
-        return html `<x-link
+        return html `<devtools-link
           class="link"
           title="${UIStringsNotTranslate.viewUploadedFiles} ${UIStringsNotTranslate.opensInNewTab}"
           href="data:text/plain;charset=utf-8,${encodeURIComponent(input.sources)}"
-          jslog=${VisualLogging.link('files-used-in-patching').track({
-            click: true
-        })}>
+          .jslogContext=${'files-used-in-patching'}>
           ${UIStringsNotTranslate.viewUploadedFiles}
-        </x-link>`;
+        </devtools-link>`;
     }
     function renderHeader() {
         if (input.savedToDisk) {
@@ -247,11 +246,9 @@ const DEFAULT_VIEW = (input, output, target) => {
             return html `
           <div class="footer">
             <div class="left-side">
-              <x-link class="link disclaimer-link" href="https://support.google.com/legal/answer/13505487" jslog=${VisualLogging.link('code-disclaimer').track({
-                click: true,
-            })}>
+              <devtools-link class="link disclaimer-link" href="https://support.google.com/legal/answer/13505487" .jslogContext=${'code-disclaimer'}>
                 ${lockedString(UIStringsNotTranslate.codeDisclaimer)}
-              </x-link>
+              </devtools-link>
               ${renderSourcesLink()}
             </div>
             <div class="save-or-discard-buttons">
@@ -491,13 +488,11 @@ export class PatchWidget extends UI.Widget.Widget {
                 {
                     iconName: 'warning',
                     // clang-format off
-                    content: html `<x-link
+                    content: html `<devtools-link
             href=${CODE_SNIPPET_WARNING_URL}
             class="link devtools-link"
-            jslog=${VisualLogging.link('code-snippets-explainer.patch-widget').track({
-                        click: true
-                    })}
-          >${lockedString(UIStringsNotTranslate.freDisclaimerTextUseWithCaution)}</x-link>`,
+            .jslogContext=${'code-snippets-explainer.patch-widget'}
+          >${lockedString(UIStringsNotTranslate.freDisclaimerTextUseWithCaution)}</devtools-link>`,
                     // clang-format on
                 }
             ],

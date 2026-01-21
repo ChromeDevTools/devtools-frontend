@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-imperative-dom-api */
+import '../../ui/kit/kit.js';
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -463,12 +464,12 @@ export const DEFAULT_VIEW = (input, output, target) => {
           </tr>` : nothing}
        <tr class=network-timing-footer>
          <td colspan=1>
-           <x-link
+           <devtools-link
              href="https://developer.chrome.com/docs/devtools/network/reference/#timing-explanation"
              class=devtools-link
-             jslog=${VisualLogging.link().track({ click: true, keydown: 'Enter|Space' }).context('explanation')}>
+             .jslogContext=${'explanation'}>
                ${i18nString(UIStrings.explanation)}
-           </x-link>
+           </devtools-link>
          <td></td>
          <td class=${input.wasThrottled ? 'throttled' : ''} title=${ifDefined(throttledRequestTitle)}>
            ${input.wasThrottled ? html ` <devtools-icon name=watch @click=${revealThrottled}></devtools-icon>` : nothing}

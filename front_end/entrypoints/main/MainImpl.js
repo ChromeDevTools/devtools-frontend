@@ -297,37 +297,38 @@ export class MainImpl {
         return { syncedStorage, globalStorage, localStorage };
     }
     #initializeExperiments() {
-        Root.Runtime.experiments.register('capture-node-creation-stacks', 'Capture node creation stacks');
-        Root.Runtime.experiments.register('live-heap-profile', 'Live heap profile');
-        Root.Runtime.experiments.register('protocol-monitor', 'Protocol Monitor', 'https://developer.chrome.com/blog/new-in-devtools-92/#protocol-monitor');
-        Root.Runtime.experiments.register('sampling-heap-profiler-timeline', 'Sampling heap profiler timeline');
-        Root.Runtime.experiments.register('show-option-tp-expose-internals-in-heap-snapshot', 'Show option to expose internals in heap snapshots');
+        Root.Runtime.experiments.register(Root.Runtime.ExperimentName.CAPTURE_NODE_CREATION_STACKS, 'Capture node creation stacks');
+        Root.Runtime.experiments.register(Root.Runtime.ExperimentName.LIVE_HEAP_PROFILE, 'Live heap profile');
+        Root.Runtime.experiments.register(Root.Runtime.ExperimentName.PROTOCOL_MONITOR, 'Protocol Monitor', 'https://developer.chrome.com/blog/new-in-devtools-92/#protocol-monitor');
+        Root.Runtime.experiments.register(Root.Runtime.ExperimentName.SAMPLING_HEAP_PROFILER_TIMELINE, 'Sampling heap profiler timeline');
+        Root.Runtime.experiments.register(Root.Runtime.ExperimentName.SHOW_OPTION_TO_EXPOSE_INTERNALS_IN_HEAP_SNAPSHOT, 'Show option to expose internals in heap snapshots');
         // Timeline
-        Root.Runtime.experiments.register('timeline-invalidation-tracking', 'Performance panel: invalidation tracking');
-        Root.Runtime.experiments.register('timeline-show-all-events', 'Performance panel: show all events');
-        Root.Runtime.experiments.register('timeline-v8-runtime-call-stats', 'Performance panel: V8 runtime call stats');
-        Root.Runtime.experiments.register("timeline-debug-mode" /* Root.Runtime.ExperimentName.TIMELINE_DEBUG_MODE */, 'Performance panel: debug mode (trace event details, etc)');
+        Root.Runtime.experiments.register(Root.Runtime.ExperimentName.TIMELINE_INVALIDATION_TRACKING, 'Performance panel: invalidation tracking');
+        Root.Runtime.experiments.register(Root.Runtime.ExperimentName.TIMELINE_SHOW_ALL_EVENTS, 'Performance panel: show all events');
+        Root.Runtime.experiments.register(Root.Runtime.ExperimentName.TIMELINE_V8_RUNTIME_CALL_STATS, 'Performance panel: V8 runtime call stats');
+        Root.Runtime.experiments.register(Root.Runtime.ExperimentName.TIMELINE_DEBUG_MODE, 'Performance panel: debug mode (trace event details, etc)');
         // Debugging
-        Root.Runtime.experiments.register('instrumentation-breakpoints', 'Instrumentation breakpoints');
-        Root.Runtime.experiments.register('use-source-map-scopes', 'Use scope information from source maps');
+        Root.Runtime.experiments.register(Root.Runtime.ExperimentName.INSTRUMENTATION_BREAKPOINTS, 'Instrumentation breakpoints');
+        Root.Runtime.experiments.register(Root.Runtime.ExperimentName.USE_SOURCE_MAP_SCOPES, 'Use scope information from source maps');
         // Advanced Perceptual Contrast Algorithm.
-        Root.Runtime.experiments.register('apca', 'Advanced Perceptual Contrast Algorithm (APCA) replacing previous contrast ratio and AA/AAA guidelines', 'https://developer.chrome.com/blog/new-in-devtools-89/#apca');
+        Root.Runtime.experiments.register(Root.Runtime.ExperimentName.APCA, 'Advanced Perceptual Contrast Algorithm (APCA) replacing previous contrast ratio and AA/AAA guidelines', 'https://developer.chrome.com/blog/new-in-devtools-89/#apca');
         // Full Accessibility Tree
-        Root.Runtime.experiments.register('full-accessibility-tree', 'Full accessibility tree view in the Elements panel', 'https://developer.chrome.com/blog/new-in-devtools-90/#accessibility-tree', 'https://g.co/devtools/a11y-tree-feedback');
+        Root.Runtime.experiments.register(Root.Runtime.ExperimentName.FULL_ACCESSIBILITY_TREE, 'Full accessibility tree view in the Elements panel', 'https://developer.chrome.com/blog/new-in-devtools-90/#accessibility-tree', 'https://g.co/devtools/a11y-tree-feedback');
         // Font Editor
-        Root.Runtime.experiments.register('font-editor', 'New font editor in the Styles tab', 'https://developer.chrome.com/blog/new-in-devtools-89/#font');
+        Root.Runtime.experiments.register(Root.Runtime.ExperimentName.FONT_EDITOR, 'New font editor in the Styles tab', 'https://developer.chrome.com/blog/new-in-devtools-89/#font');
         // Contrast issues reported via the Issues panel.
-        Root.Runtime.experiments.register('contrast-issues', 'Automatic contrast issue reporting via the Issues panel', 'https://developer.chrome.com/blog/new-in-devtools-90/#low-contrast');
+        Root.Runtime.experiments.register(Root.Runtime.ExperimentName.CONTRAST_ISSUES, 'Automatic contrast issue reporting via the Issues panel', 'https://developer.chrome.com/blog/new-in-devtools-90/#low-contrast');
         // New cookie features.
-        Root.Runtime.experiments.register('experimental-cookie-features', 'Experimental cookie features');
+        Root.Runtime.experiments.register(Root.Runtime.ExperimentName.EXPERIMENTAL_COOKIE_FEATURES, 'Experimental cookie features');
         // Change grouping of sources panel to use Authored/Deployed trees
-        Root.Runtime.experiments.register("authored-deployed-grouping" /* Root.Runtime.ExperimentName.AUTHORED_DEPLOYED_GROUPING */, 'Group sources into authored and deployed trees', 'https://goo.gle/authored-deployed', 'https://goo.gle/authored-deployed-feedback');
+        Root.Runtime.experiments.register(Root.Runtime.ExperimentName.AUTHORED_DEPLOYED_GROUPING, 'Group sources into authored and deployed trees', 'https://goo.gle/authored-deployed', 'https://goo.gle/authored-deployed-feedback');
         // Hide third party code (as determined by ignore lists or source maps)
-        Root.Runtime.experiments.register("just-my-code" /* Root.Runtime.ExperimentName.JUST_MY_CODE */, 'Hide ignore-listed code in Sources tree view');
-        Root.Runtime.experiments.register("timeline-show-postmessage-events" /* Root.Runtime.ExperimentName.TIMELINE_SHOW_POST_MESSAGE_EVENTS */, 'Performance panel: show postMessage dispatch and handling flows');
+        Root.Runtime.experiments.register(Root.Runtime.ExperimentName.JUST_MY_CODE, 'Hide ignore-listed code in Sources tree view');
+        Root.Runtime.experiments.register(Root.Runtime.ExperimentName.TIMELINE_SHOW_POST_MESSAGE_EVENTS, 'Performance panel: show postMessage dispatch and handling flows');
         Root.Runtime.experiments.enableExperimentsByDefault([
-            "full-accessibility-tree" /* Root.Runtime.ExperimentName.FULL_ACCESSIBILITY_TREE */,
-            ...(Root.Runtime.Runtime.queryParam('isChromeForTesting') ? ['protocol-monitor'] : []),
+            Root.Runtime.ExperimentName.FULL_ACCESSIBILITY_TREE,
+            Root.Runtime.ExperimentName.USE_SOURCE_MAP_SCOPES,
+            ...(Root.Runtime.Runtime.queryParam('isChromeForTesting') ? [Root.Runtime.ExperimentName.PROTOCOL_MONITOR] : []),
         ]);
         Root.Runtime.experiments.cleanUpStaleExperiments();
         const enabledExperiments = Root.Runtime.Runtime.queryParam('enabledExperiments');
@@ -338,7 +339,7 @@ export class MainImpl {
         if (Host.InspectorFrontendHost.isUnderTest()) {
             const testParam = Root.Runtime.Runtime.queryParam('test');
             if (testParam?.includes('live-line-level-heap-profile.js')) {
-                Root.Runtime.experiments.enableForTest('live-heap-profile');
+                Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.LIVE_HEAP_PROFILE);
             }
         }
         for (const experiment of Root.Runtime.experiments.allConfigurableExperiments()) {
@@ -553,7 +554,7 @@ export class MainImpl {
             const runnable = await lateInitializationLoader();
             return await runnable.run();
         });
-        if (Root.Runtime.experiments.isEnabled('live-heap-profile')) {
+        if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.LIVE_HEAP_PROFILE)) {
             const PerfUI = await import('../../ui/legacy/components/perf_ui/perf_ui.js');
             const setting = 'memory-live-heap-profile';
             if (Common.Settings.Settings.instance().moduleSetting(setting).get()) {

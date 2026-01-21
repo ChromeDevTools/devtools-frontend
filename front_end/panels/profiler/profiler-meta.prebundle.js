@@ -92,7 +92,7 @@ UI.ViewManager.registerViewExtension({
         const Profiler = await loadProfilerModule();
         return Profiler.LiveHeapProfileView.LiveHeapProfileView.instance();
     },
-    experiment: "live-heap-profile" /* Root.Runtime.ExperimentName.LIVE_HEAP_PROFILE */,
+    experiment: Root.Runtime.ExperimentName.LIVE_HEAP_PROFILE,
 });
 UI.ActionRegistration.registerActionExtension({
     actionId: 'live-heap-profile.toggle-recording',
@@ -105,7 +105,7 @@ UI.ActionRegistration.registerActionExtension({
         return new Profiler.LiveHeapProfileView.ActionDelegate();
     },
     category: "MEMORY" /* UI.ActionRegistration.ActionCategory.MEMORY */,
-    experiment: "live-heap-profile" /* Root.Runtime.ExperimentName.LIVE_HEAP_PROFILE */,
+    experiment: Root.Runtime.ExperimentName.LIVE_HEAP_PROFILE,
     options: [
         {
             value: true,
@@ -125,7 +125,7 @@ UI.ActionRegistration.registerActionExtension({
         return new Profiler.LiveHeapProfileView.ActionDelegate();
     },
     category: "MEMORY" /* UI.ActionRegistration.ActionCategory.MEMORY */,
-    experiment: "live-heap-profile" /* Root.Runtime.ExperimentName.LIVE_HEAP_PROFILE */,
+    experiment: Root.Runtime.ExperimentName.LIVE_HEAP_PROFILE,
     title: i18nLazyString(UIStrings.startRecordingHeapAllocationsAndReload),
 });
 UI.ActionRegistration.registerActionExtension({

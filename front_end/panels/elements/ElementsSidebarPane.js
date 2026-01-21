@@ -14,7 +14,7 @@ export class ElementsSidebarPane extends UI.Widget.VBox {
         this.computedStyleModelInternal.addEventListener("ComputedStyleChanged" /* Events.COMPUTED_STYLE_CHANGED */, this.onComputedStyleChanged, this);
     }
     node() {
-        return this.computedStyleModelInternal.node();
+        return this.computedStyleModelInternal.node;
     }
     cssModel() {
         return this.computedStyleModelInternal.cssModel();

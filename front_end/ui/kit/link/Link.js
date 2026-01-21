@@ -66,20 +66,7 @@ export class Link extends HTMLElement {
         this.setAttribute('jslogcontext', jslogContext);
     }
     #onJslogContextChange() {
-        let jslogContext = this.jslogContext;
-        if (!jslogContext) {
-            try {
-                if (!this.href) {
-                    return;
-                }
-                const urlForContext = new URL(this.href);
-                urlForContext.search = '';
-                jslogContext = Platform.StringUtilities.toKebabCase(urlForContext.toString());
-            }
-            catch {
-                return;
-            }
-        }
+        const jslogContext = this.jslogContext ?? undefined;
         const jslog = VisualLogging.link().track({ click: true, keydown: 'Enter|Space' }).context(jslogContext);
         this.setAttribute('jslog', jslog.toString());
     }

@@ -260,8 +260,8 @@ const DEFAULT_VIEW = (input, _output, target) => {
             class="medium"
             style="color: var(--icon-warning); margin-right: var(--sys-size-2);">
           </devtools-icon>
-          ${i18nFormatString(UIStrings.upperDeprecationWarning, {
-        PH1: UI.Fragment.html `<x-link class="devtools-link" href="https://privacysandbox.com/news/privacy-sandbox-update/" jslog=${VisualLogging.link('privacy-sandbox-update').track({ click: true })}>${i18nString(UIStrings.blogPostLink)}</x-link>`,
+          ${i18nFormatStringTemplate(UIStrings.upperDeprecationWarning, {
+        PH1: html `<devtools-link class="devtools-link" href="https://privacysandbox.com/news/privacy-sandbox-update/" .jslogContext=${'privacy-sandbox-update'}>${i18nString(UIStrings.blogPostLink)}</devtools-link>`,
     })}
         </div>
         <div class="body">

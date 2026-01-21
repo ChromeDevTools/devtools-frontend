@@ -2265,7 +2265,7 @@ var DevtoolsExperiments;
   DevtoolsExperiments2[DevtoolsExperiments2["live-heap-profile"] = 11] = "live-heap-profile";
   DevtoolsExperiments2[DevtoolsExperiments2["protocol-monitor"] = 13] = "protocol-monitor";
   DevtoolsExperiments2[DevtoolsExperiments2["sampling-heap-profiler-timeline"] = 17] = "sampling-heap-profiler-timeline";
-  DevtoolsExperiments2[DevtoolsExperiments2["show-option-tp-expose-internals-in-heap-snapshot"] = 18] = "show-option-tp-expose-internals-in-heap-snapshot";
+  DevtoolsExperiments2[DevtoolsExperiments2["show-option-to-expose-internals-in-heap-snapshot"] = 18] = "show-option-to-expose-internals-in-heap-snapshot";
   DevtoolsExperiments2[DevtoolsExperiments2["timeline-invalidation-tracking"] = 26] = "timeline-invalidation-tracking";
   DevtoolsExperiments2[DevtoolsExperiments2["timeline-show-all-events"] = 27] = "timeline-show-all-events";
   DevtoolsExperiments2[DevtoolsExperiments2["timeline-v8-runtime-call-stats"] = 28] = "timeline-v8-runtime-call-stats";

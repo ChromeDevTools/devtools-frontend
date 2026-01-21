@@ -480,7 +480,7 @@ export class TimelineUIUtils {
     static getGetDebugModeEnabled() {
         if (TimelineUIUtils.debugModeEnabled === undefined) {
             TimelineUIUtils.debugModeEnabled =
-                Root.Runtime.experiments.isEnabled("timeline-debug-mode" /* Root.Runtime.ExperimentName.TIMELINE_DEBUG_MODE */);
+                Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_DEBUG_MODE);
         }
         return TimelineUIUtils.debugModeEnabled;
     }
@@ -1350,7 +1350,7 @@ export class TimelineUIUtils {
             parsedTrace?.data.Invalidations.invalidationsForEvent.get(event)) {
             await TimelineUIUtils.generateCauses(event, contentHelper, parsedTrace);
         }
-        if (Root.Runtime.experiments.isEnabled("timeline-debug-mode" /* Root.Runtime.ExperimentName.TIMELINE_DEBUG_MODE */)) {
+        if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_DEBUG_MODE)) {
             TimelineUIUtils.renderEventJson(event, contentHelper);
         }
         const stats = {};

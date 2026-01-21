@@ -1073,7 +1073,7 @@ var PlatformFontsWidget = class extends UI4.Widget.VBox {
   }
   async performUpdate() {
     const cssModel = this.sharedModel.cssModel();
-    const node = this.sharedModel.node();
+    const node = this.sharedModel.node;
     if (!node || !cssModel) {
       this.#view({ platformFonts: null }, {}, this.contentElement);
       return;
@@ -1373,7 +1373,7 @@ var ElementsSidebarPane = class extends UI5.Widget.VBox {
     this.computedStyleModelInternal.addEventListener("ComputedStyleChanged", this.onComputedStyleChanged, this);
   }
   node() {
-    return this.computedStyleModelInternal.node();
+    return this.computedStyleModelInternal.node;
   }
   cssModel() {
     return this.computedStyleModelInternal.cssModel();
@@ -4771,7 +4771,7 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI8.TreeO
       this.expandElement.setAttribute("jslog", `${VisualLogging3.expand().track({ click: true })}`);
     }
     const renderers = this.property.parsedOk ? getPropertyRenderers(this.name, this.style, this.#parentPane, this.#matchedStyles, this, this.getComputedStyles() ?? /* @__PURE__ */ new Map()) : [];
-    if (Root.Runtime.experiments.isEnabled("font-editor") && this.property.parsedOk) {
+    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.FONT_EDITOR) && this.property.parsedOk) {
       renderers.push(new FontRenderer(this));
     }
     this.listItemElement.removeChildren();
@@ -5965,7 +5965,7 @@ var StylePropertiesSection = class _StylePropertiesSection {
       this.newStyleRuleToolbar.appendToolbarItem(newRuleButton);
       UI10.ARIAUtils.setHidden(this.newStyleRuleToolbar, true);
     }
-    if (Root2.Runtime.experiments.isEnabled("font-editor") && this.editable) {
+    if (Root2.Runtime.experiments.isEnabled(Root2.Runtime.ExperimentName.FONT_EDITOR) && this.editable) {
       this.fontEditorToolbar = this.#styleRuleElement.createChild("devtools-toolbar", "sidebar-pane-section-toolbar");
       this.fontEditorSectionManager = new FontEditorSectionManager(this.parentPane.swatchPopoverHelper(), this);
       this.fontEditorButton = new UI10.Toolbar.ToolbarButton("Font Editor", "custom-typography", void 0, "font-editor");
@@ -10074,7 +10074,7 @@ var ComputedStyleWidget = class _ComputedStyleWidget extends UI13.Widget.VBox {
         return link2;
       }
       return null;
-    }, () => this.computedStyleModel.node());
+    }, () => this.computedStyleModel.node);
     const fontsWidget = new PlatformFontsWidget(this.computedStyleModel);
     fontsWidget.show(this.contentElement);
   }
@@ -10104,7 +10104,7 @@ var ComputedStyleWidget = class _ComputedStyleWidget extends UI13.Widget.VBox {
     }
   }
   async fetchMatchedCascade() {
-    const node = this.computedStyleModel.node();
+    const node = this.computedStyleModel.node;
     if (!node || !this.computedStyleModel.cssModel()) {
       return null;
     }
@@ -10114,7 +10114,7 @@ var ComputedStyleWidget = class _ComputedStyleWidget extends UI13.Widget.VBox {
     }
     return await cssModel.cachedMatchedCascadeForNode(node).then(validateStyles.bind(this));
     function validateStyles(matchedStyles) {
-      return matchedStyles && matchedStyles.node() === this.computedStyleModel.node() ? matchedStyles : null;
+      return matchedStyles && matchedStyles.node() === this.computedStyleModel.node ? matchedStyles : null;
     }
   }
   async rebuildAlphabeticalList(nodeStyle, matchedStyles) {
@@ -10381,22 +10381,26 @@ var ComputedStyleModel = class extends Common7.ObjectWrapper.ObjectWrapper {
   frameResizedTimer;
   computedStylePromise;
   currentTrackedNodeId;
-  constructor() {
+  constructor(node) {
     super();
     this.#cssModel = null;
     this.eventListeners = [];
-    this.#node = UI14.Context.Context.instance().flavor(SDK11.DOMModel.DOMNode);
-    UI14.Context.Context.instance().addFlavorChangeListener(SDK11.DOMModel.DOMNode, this.onNodeChanged, this);
+    this.#node = node ?? null;
     UI14.Context.Context.instance().addFlavorChangeListener(StylesSidebarPane, this.evaluateTrackingComputedStyleUpdatesForNode, this);
     UI14.Context.Context.instance().addFlavorChangeListener(ComputedStyleWidget, this.evaluateTrackingComputedStyleUpdatesForNode, this);
   }
   dispose() {
-    UI14.Context.Context.instance().removeFlavorChangeListener(SDK11.DOMModel.DOMNode, this.onNodeChanged, this);
     UI14.Context.Context.instance().removeFlavorChangeListener(StylesSidebarPane, this.evaluateTrackingComputedStyleUpdatesForNode, this);
     UI14.Context.Context.instance().removeFlavorChangeListener(ComputedStyleWidget, this.evaluateTrackingComputedStyleUpdatesForNode, this);
   }
-  node() {
+  get node() {
     return this.#node;
+  }
+  set node(node) {
+    this.#node = node;
+    this.updateModel(this.#node ? this.#node.domModel().cssModel() : null);
+    this.onCSSModelChanged(null);
+    this.evaluateTrackingComputedStyleUpdatesForNode();
   }
   cssModel() {
     return this.#cssModel?.isEnabled() ? this.#cssModel : null;
@@ -10426,12 +10430,6 @@ var ComputedStyleModel = class extends Common7.ObjectWrapper.ObjectWrapper {
       this.currentTrackedNodeId = this.#node.id;
     }
   }, 100);
-  onNodeChanged(event) {
-    this.#node = event.data;
-    this.updateModel(this.#node ? this.#node.domModel().cssModel() : null);
-    this.onCSSModelChanged(null);
-    this.evaluateTrackingComputedStyleUpdatesForNode();
-  }
   updateModel(cssModel) {
     if (this.#cssModel === cssModel) {
       return;
@@ -10488,7 +10486,7 @@ var ComputedStyleModel = class extends Common7.ObjectWrapper.ObjectWrapper {
     this.frameResizedTimer = window.setTimeout(refreshContents.bind(this), 100);
   }
   elementNode() {
-    const node = this.node();
+    const node = this.node;
     if (!node) {
       return null;
     }
@@ -17079,7 +17077,7 @@ var ElementsPanel = class _ElementsPanel extends UI22.Panel.Panel {
     this.mainContainer = document.createElement("div");
     this.domTreeContainer = document.createElement("div");
     const crumbsContainer = document.createElement("div");
-    if (Root7.Runtime.experiments.isEnabled("full-accessibility-tree")) {
+    if (Root7.Runtime.experiments.isEnabled(Root7.Runtime.ExperimentName.FULL_ACCESSIBILITY_TREE)) {
       this.initializeFullAccessibilityTreeView();
     }
     this.mainContainer.appendChild(this.domTreeContainer);
@@ -17105,7 +17103,10 @@ var ElementsPanel = class _ElementsPanel extends UI22.Panel.Panel {
       this.crumbNodeSelected(event);
     });
     crumbsContainer.appendChild(this.breadcrumbs);
-    const computedStyleModel = new ComputedStyleModel();
+    const computedStyleModel = new ComputedStyleModel(UI22.Context.Context.instance().flavor(SDK19.DOMModel.DOMNode));
+    UI22.Context.Context.instance().addFlavorChangeListener(SDK19.DOMModel.DOMNode, (event) => {
+      computedStyleModel.node = event.data;
+    });
     this.stylesWidget = new StylesSidebarPane(computedStyleModel);
     this.computedStyleWidget = new ComputedStyleWidget(computedStyleModel);
     this.metricsWidget = new MetricsSidebarPane(computedStyleModel);

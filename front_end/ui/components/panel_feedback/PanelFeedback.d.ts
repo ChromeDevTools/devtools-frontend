@@ -1,4 +1,4 @@
-import '../../legacy/legacy.js';
+import '../../kit/kit.js';
 import * as Platform from '../../../core/platform/platform.js';
 export interface PanelFeedbackData {
     feedbackUrl: Platform.DevToolsPath.UrlString;

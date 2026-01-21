@@ -6,9 +6,6 @@ import * as Handlers from './handlers/handlers.js';
 import * as Helpers from './helpers/helpers.js';
 import { TraceParseProgressEvent, TraceProcessor } from './Processor.js';
 import * as Types from './types/types.js';
-// Note: this model is implemented in a way that can support multiple trace
-// processors. Currently there is only one implemented, but you will see
-// references to "processors" plural because it can easily be extended in the future.
 /**
  * The Model is responsible for parsing arrays of raw trace events and storing the
  * resulting data. It can store multiple traces at once, and can return the data for

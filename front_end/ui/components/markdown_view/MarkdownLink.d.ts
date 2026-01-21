@@ -1,4 +1,4 @@
-import '../../legacy/legacy.js';
+import '../../kit/kit.js';
 export interface MarkdownLinkData {
     key: string;
     title: string;

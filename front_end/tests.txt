@@ -74,6 +74,9 @@ models/issues_manager/SRIMessageSignatureIssue.test.js
 models/issues_manager/SharedDictionaryIssue.test.js
 models/issues_manager/StylesheetLoadingIssue.test.js
 models/issues_manager/UnencodedDigestIssue.test.js
+models/stack_trace/StackTraceImpl.test.js
+models/stack_trace/StackTraceModel.test.js
+models/stack_trace/Trie.test.js
 core/common/Base64.browser.test.js
 core/dom_extension/DOMExtension.test.js
 core/host/AidaClient.test.js
@@ -197,9 +200,6 @@ models/project_settings/ProjectSettingsModel.test.js
 models/source_map_scopes/FunctionCodeResolver.test.js
 models/source_map_scopes/NamesResolver.test.js
 models/source_map_scopes/ScopeChainModel.test.js
-models/stack_trace/StackTraceImpl.test.js
-models/stack_trace/StackTraceModel.test.js
-models/stack_trace/Trie.test.js
 models/text_utils/ContentData.test.js
 models/text_utils/StaticContentProvider.test.js
 models/text_utils/StreamingContentData.test.js
@@ -521,6 +521,7 @@ panels/sources/BreakpointEditDialog.test.js
 panels/sources/BreakpointsView.test.js
 panels/sources/BreakpointsViewUtils.test.js
 panels/sources/CSSPlugin.test.js
+panels/sources/CallStackSidebarPane.test.js
 panels/sources/CoveragePlugin.test.js
 panels/sources/DebuggerPausedMessage.test.js
 panels/sources/DebuggerPlugin.test.js

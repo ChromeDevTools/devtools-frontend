@@ -617,9 +617,10 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
     }
     #instantiateNewModel() {
         const config = Trace.Types.Configuration.defaults();
-        config.showAllEvents = Root.Runtime.experiments.isEnabled('timeline-show-all-events');
-        config.includeRuntimeCallStats = Root.Runtime.experiments.isEnabled('timeline-v8-runtime-call-stats');
-        config.debugMode = Root.Runtime.experiments.isEnabled("timeline-debug-mode" /* Root.Runtime.ExperimentName.TIMELINE_DEBUG_MODE */);
+        config.showAllEvents = Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_SHOW_ALL_EVENTS);
+        config.includeRuntimeCallStats =
+            Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_V8_RUNTIME_CALL_STATS);
+        config.debugMode = Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_DEBUG_MODE);
         const traceEngineModel = Trace.TraceModel.Model.createWithAllHandlers(config);
         traceEngineModel.addEventListener(Trace.TraceModel.ModelUpdateEvent.eventName, e => {
             const updateEvent = e;
@@ -1757,7 +1758,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
         return this.#viewMode.mode === 'VIEWING_TRACE';
     }
     #applyActiveFilters(traceIsGeneric, exclusiveFilter = null) {
-        if (traceIsGeneric || Root.Runtime.experiments.isEnabled('timeline-show-all-events')) {
+        if (traceIsGeneric || Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_SHOW_ALL_EVENTS)) {
             return;
         }
         const newActiveFilters = exclusiveFilter ? [exclusiveFilter] : [

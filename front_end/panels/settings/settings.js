@@ -625,10 +625,10 @@ var ExperimentsSettingsTab = class _ExperimentsSettingsTab extends UI.Widget.VBo
       p.appendChild(linkButton);
     }
     if (experiment.feedbackLink) {
-      const link2 = UI.XLink.XLink.create(experiment.feedbackLink, void 0, void 0, void 0, `${experiment.name}-feedback`);
-      link2.textContent = i18nString(UIStrings.sendFeedback);
-      link2.classList.add("feedback-link");
-      p.appendChild(link2);
+      const link = UI.XLink.XLink.create(experiment.feedbackLink, void 0, void 0, void 0, `${experiment.name}-feedback`);
+      link.textContent = i18nString(UIStrings.sendFeedback);
+      link.classList.add("feedback-link");
+      p.appendChild(link);
     }
     return p;
   }
@@ -816,6 +816,7 @@ __export(AISettingsTab_exports, {
   AISettingsTab: () => AISettingsTab,
   AI_SETTINGS_TAB_DEFAULT_VIEW: () => AI_SETTINGS_TAB_DEFAULT_VIEW
 });
+import "./../../ui/kit/kit.js";
 import * as Common2 from "./../../core/common/common.js";
 import * as Host2 from "./../../core/host/host.js";
 import * as i18n3 from "./../../core/i18n/i18n.js";
@@ -1299,14 +1300,12 @@ var AI_SETTINGS_TAB_DEFAULT_VIEW = (input, _output, target) => {
             <h3 class="expansion-grid-whole-row">${i18nString2(UIStrings2.thingsToConsider)}</h3>
             ${settingData.toConsiderSettingItems.map((item2) => renderSettingItem(item2))}
             <div class="expansion-grid-whole-row">
-              <x-link
+              <devtools-link
                 href=${settingData.learnMoreLink.url}
                 class="link"
                 tabindex=${tabindex}
-                jslog=${VisualLogging2.link(settingData.learnMoreLink.linkJSLogContext).track({
-      click: true
-    })}
-              >${i18nString2(UIStrings2.learnMore)}</x-link>
+                .jslogContext=${settingData.learnMoreLink.linkJSLogContext}
+              >${i18nString2(UIStrings2.learnMore)}</devtools-link>
             </div>
           </div>
         </div>

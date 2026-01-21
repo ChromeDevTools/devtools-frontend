@@ -1,6 +1,7 @@
 // Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import '../../ui/kit/kit.js';
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -196,13 +197,11 @@ export class AiCodeCompletionTeaser extends UI.Widget.Widget {
         }, {
             iconName: 'warning',
             // clang-format off
-            content: html `<x-link
+            content: html `<devtools-link
             href=${CODE_SNIPPET_WARNING_URL}
             class="link devtools-link"
-            jslog=${VisualLogging.link('code-snippets-explainer.ai-code-completion-teaser').track({
-                click: true
-            })}
-          >${lockedString(UIStringsNotTranslate.freDisclaimerTextUseWithCaution)}</x-link>`,
+            .jslogContext=${'code-snippets-explainer.ai-code-completion-teaser'}
+          >${lockedString(UIStringsNotTranslate.freDisclaimerTextUseWithCaution)}</devtools-link>`,
             // clang-format on
         });
         return reminderItems;

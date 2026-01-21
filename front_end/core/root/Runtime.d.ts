@@ -43,42 +43,49 @@ export interface Option {
 export declare class ExperimentsSupport {
     #private;
     allConfigurableExperiments(): Experiment[];
-    register(experimentName: string, experimentTitle: string, docLink?: string, feedbackLink?: string): void;
-    isEnabled(experimentName: string): boolean;
-    setEnabled(experimentName: string, enabled: boolean): void;
-    enableExperimentsTransiently(experimentNames: string[]): void;
-    enableExperimentsByDefault(experimentNames: string[]): void;
-    setServerEnabledExperiments(experimentNames: string[]): void;
-    enableForTest(experimentName: string): void;
-    disableForTest(experimentName: string): void;
+    register(experimentName: ExperimentName, experimentTitle: string, docLink?: string, feedbackLink?: string): void;
+    isEnabled(experimentName: ExperimentName): boolean;
+    setEnabled(experimentName: ExperimentName, enabled: boolean): void;
+    enableExperimentsTransiently(experimentNames: ExperimentName[]): void;
+    enableExperimentsByDefault(experimentNames: ExperimentName[]): void;
+    setServerEnabledExperiments(experiments: string[]): void;
+    enableForTest(experimentName: ExperimentName): void;
+    disableForTest(experimentName: ExperimentName): void;
     clearForTest(): void;
     cleanUpStaleExperiments(): void;
     private checkExperiment;
 }
+/**
+ * @deprecated Experiments should not be used anymore, instead use base::Feature.
+ * See docs/contributing/settings-experiments-features.md
+ */
 export declare class Experiment {
     #private;
-    name: string;
+    name: ExperimentName;
     title: string;
     docLink?: Platform.DevToolsPath.UrlString;
     readonly feedbackLink?: Platform.DevToolsPath.UrlString;
-    constructor(experiments: ExperimentsSupport, name: string, title: string, docLink: Platform.DevToolsPath.UrlString, feedbackLink: Platform.DevToolsPath.UrlString);
+    constructor(experiments: ExperimentsSupport, name: ExperimentName, title: string, docLink: Platform.DevToolsPath.UrlString, feedbackLink: Platform.DevToolsPath.UrlString);
     isEnabled(): boolean;
     setEnabled(enabled: boolean): void;
 }
 /** This must be constructed after the query parameters have been parsed. **/
 export declare const experiments: ExperimentsSupport;
-/**
- * @deprecated Experiments should not be used anymore, instead use base::Feature.
- * See docs/contributing/settings-experiments-features.md
- */
-export declare const enum ExperimentName {
-    CAPTURE_NODE_CREATION_STACKS = "capture-node-creation-stacks",
-    CSS_OVERVIEW = "css-overview",
-    LIVE_HEAP_PROFILE = "live-heap-profile",
+export declare enum ExperimentName {
     ALL = "*",
+    CAPTURE_NODE_CREATION_STACKS = "capture-node-creation-stacks",
+    LIVE_HEAP_PROFILE = "live-heap-profile",
     PROTOCOL_MONITOR = "protocol-monitor",
+    SAMPLING_HEAP_PROFILER_TIMELINE = "sampling-heap-profiler-timeline",
+    SHOW_OPTION_TO_EXPOSE_INTERNALS_IN_HEAP_SNAPSHOT = "show-option-to-expose-internals-in-heap-snapshot",
+    TIMELINE_INVALIDATION_TRACKING = "timeline-invalidation-tracking",
+    TIMELINE_SHOW_ALL_EVENTS = "timeline-show-all-events",
+    TIMELINE_V8_RUNTIME_CALL_STATS = "timeline-v8-runtime-call-stats",
+    APCA = "apca",
+    FONT_EDITOR = "font-editor",
     FULL_ACCESSIBILITY_TREE = "full-accessibility-tree",
-    HEADER_OVERRIDES = "header-overrides",
+    CONTRAST_ISSUES = "contrast-issues",
+    EXPERIMENTAL_COOKIE_FEATURES = "experimental-cookie-features",
     INSTRUMENTATION_BREAKPOINTS = "instrumentation-breakpoints",
     AUTHORED_DEPLOYED_GROUPING = "authored-deployed-grouping",
     JUST_MY_CODE = "just-my-code",

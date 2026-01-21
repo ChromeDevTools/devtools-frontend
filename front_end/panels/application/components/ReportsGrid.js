@@ -112,7 +112,8 @@ export class ReportsGrid extends UI.Widget.Widget {
     constructor(element, view = DEFAULT_VIEW) {
         super(element);
         this.#view = view;
-        this.#protocolMonitorExperimentEnabled = Root.Runtime.experiments.isEnabled('protocol-monitor');
+        this.#protocolMonitorExperimentEnabled =
+            Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.PROTOCOL_MONITOR);
         this.requestUpdate();
     }
     performUpdate() {

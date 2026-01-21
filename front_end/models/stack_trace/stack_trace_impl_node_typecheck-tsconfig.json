@@ -8,8 +8,6 @@
     "forceConsistentCasingInFileNames": true,
     "inlineSources": true,
     "lib": [
-      "dom",
-      "dom.iterable",
       "ES2023",
       "ES2024.Promise",
       "ESNext.Iterator",
@@ -17,6 +15,7 @@
       "ESNext.Array"
     ],
     "module": "esnext",
+    "noEmit": true,
     "noEmitOnError": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitOverride": true,
@@ -29,9 +28,15 @@
     "sourceMap": true,
     "strict": true,
     "target": "es2023",
-    "tsBuildInfoFile": "stack_trace_impl-tsconfig.json.tsbuildinfo",
-    "typeRoots": [],
-    "types": [],
+    "tsBuildInfoFile": "stack_trace_impl_node_typecheck-tsconfig.json.tsbuildinfo",
+    "typeRoots": [
+      "../../../../../../node_modules/@types",
+      "../../../../../../node_modules"
+    ],
+    "types": [
+      "node",
+      "undici-types"
+    ],
     "useUnknownInCatchVariables": false
   },
   "files": [

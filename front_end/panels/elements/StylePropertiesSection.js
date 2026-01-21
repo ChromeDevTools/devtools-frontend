@@ -230,7 +230,7 @@ export class StylePropertiesSection {
             this.newStyleRuleToolbar.appendToolbarItem(newRuleButton);
             UI.ARIAUtils.setHidden(this.newStyleRuleToolbar, true);
         }
-        if (Root.Runtime.experiments.isEnabled('font-editor') && this.editable) {
+        if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.FONT_EDITOR) && this.editable) {
             this.fontEditorToolbar = this.#styleRuleElement.createChild('devtools-toolbar', 'sidebar-pane-section-toolbar');
             this.fontEditorSectionManager = new FontEditorSectionManager(this.parentPane.swatchPopoverHelper(), this);
             this.fontEditorButton =

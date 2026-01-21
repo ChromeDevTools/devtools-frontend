@@ -51,6 +51,7 @@ function setGlobalInstance(context) {
 var Runtime_exports = {};
 __export(Runtime_exports, {
   Experiment: () => Experiment,
+  ExperimentName: () => ExperimentName,
   ExperimentsSupport: () => ExperimentsSupport,
   GdpProfilesEnterprisePolicyValue: () => GdpProfilesEnterprisePolicyValue,
   GenAiEnterprisePolicyValue: () => GenAiEnterprisePolicyValue,
@@ -149,11 +150,17 @@ var Runtime = class _Runtime {
     if (experiment === "*") {
       return true;
     }
-    if (experiment && experiment.startsWith("!") && experiments.isEnabled(experiment.substring(1))) {
-      return false;
+    if (experiment?.startsWith("!")) {
+      const experimentName = experiment.substring(1);
+      if (experiments.isEnabled(experimentName)) {
+        return false;
+      }
     }
-    if (experiment && !experiment.startsWith("!") && !experiments.isEnabled(experiment)) {
-      return false;
+    if (experiment && !experiment.startsWith("!")) {
+      const experimentName = experiment;
+      if (!experiments.isEnabled(experimentName)) {
+        return false;
+      }
     }
     const { condition } = descriptor;
     return condition ? condition(hostConfig) : true;
@@ -219,10 +226,11 @@ var ExperimentsSupport = class {
       this.#enabledByDefault.add(experimentName);
     }
   }
-  setServerEnabledExperiments(experimentNames) {
-    for (const experiment of experimentNames) {
-      this.checkExperiment(experiment);
-      this.#serverEnabled.add(experiment);
+  setServerEnabledExperiments(experiments2) {
+    for (const experiment of experiments2) {
+      const experimentName = experiment;
+      this.checkExperiment(experimentName);
+      this.#serverEnabled.add(experimentName);
     }
   }
   enableForTest(experimentName) {
@@ -307,6 +315,29 @@ var Experiment = class {
   }
 };
 var experiments = new ExperimentsSupport();
+var ExperimentName;
+(function(ExperimentName2) {
+  ExperimentName2["ALL"] = "*";
+  ExperimentName2["CAPTURE_NODE_CREATION_STACKS"] = "capture-node-creation-stacks";
+  ExperimentName2["LIVE_HEAP_PROFILE"] = "live-heap-profile";
+  ExperimentName2["PROTOCOL_MONITOR"] = "protocol-monitor";
+  ExperimentName2["SAMPLING_HEAP_PROFILER_TIMELINE"] = "sampling-heap-profiler-timeline";
+  ExperimentName2["SHOW_OPTION_TO_EXPOSE_INTERNALS_IN_HEAP_SNAPSHOT"] = "show-option-to-expose-internals-in-heap-snapshot";
+  ExperimentName2["TIMELINE_INVALIDATION_TRACKING"] = "timeline-invalidation-tracking";
+  ExperimentName2["TIMELINE_SHOW_ALL_EVENTS"] = "timeline-show-all-events";
+  ExperimentName2["TIMELINE_V8_RUNTIME_CALL_STATS"] = "timeline-v8-runtime-call-stats";
+  ExperimentName2["APCA"] = "apca";
+  ExperimentName2["FONT_EDITOR"] = "font-editor";
+  ExperimentName2["FULL_ACCESSIBILITY_TREE"] = "full-accessibility-tree";
+  ExperimentName2["CONTRAST_ISSUES"] = "contrast-issues";
+  ExperimentName2["EXPERIMENTAL_COOKIE_FEATURES"] = "experimental-cookie-features";
+  ExperimentName2["INSTRUMENTATION_BREAKPOINTS"] = "instrumentation-breakpoints";
+  ExperimentName2["AUTHORED_DEPLOYED_GROUPING"] = "authored-deployed-grouping";
+  ExperimentName2["JUST_MY_CODE"] = "just-my-code";
+  ExperimentName2["USE_SOURCE_MAP_SCOPES"] = "use-source-map-scopes";
+  ExperimentName2["TIMELINE_SHOW_POST_MESSAGE_EVENTS"] = "timeline-show-postmessage-events";
+  ExperimentName2["TIMELINE_DEBUG_MODE"] = "timeline-debug-mode";
+})(ExperimentName || (ExperimentName = {}));
 var GenAiEnterprisePolicyValue;
 (function(GenAiEnterprisePolicyValue2) {
   GenAiEnterprisePolicyValue2[GenAiEnterprisePolicyValue2["ALLOW"] = 0] = "ALLOW";

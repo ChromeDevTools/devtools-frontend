@@ -6599,6 +6599,14 @@ var NativeFunctions = [
     signatures: [["html", "?options"]]
   },
   {
+    name: "streamAppendHTMLUnsafe",
+    signatures: [["?options"]]
+  },
+  {
+    name: "streamHTMLUnsafe",
+    signatures: [["?options"]]
+  },
+  {
     name: "scrollIntoViewIfNeeded",
     signatures: [["?centerIfNeeded"]]
   },

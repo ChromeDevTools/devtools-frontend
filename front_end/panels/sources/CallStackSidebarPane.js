@@ -41,6 +41,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import { Directives, html, render } from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import callStackSidebarPaneStyles from './callStackSidebarPane.css.js';
+import { QuickSourceView, SourcesPanel } from './SourcesPanel.js';
 const UIStrings = {
     /**
      * @description Text in Call Stack Sidebar Pane of the Sources panel
@@ -245,7 +246,9 @@ export class CallStackSidebarPane extends UI.View.SimpleView {
         if (this.maxAsyncStackChainDepth === defaultMaxAsyncStackChainDepth) {
             this.list.selectNextItem(true /* canWrap */, false /* center */);
             const selectedItem = this.list.selectedItem();
-            if (selectedItem) {
+            if (selectedItem &&
+                (UI.Context.Context.instance().flavor(QuickSourceView) ||
+                    UI.Context.Context.instance().flavor(SourcesPanel))) {
                 this.activateItem(selectedItem);
             }
         }

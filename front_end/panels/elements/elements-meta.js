@@ -225,7 +225,7 @@ UI.ViewManager.registerViewExtension({
   }
 });
 UI.ViewManager.registerViewExtension({
-  experiment: "capture-node-creation-stacks",
+  experiment: Root.Runtime.ExperimentName.CAPTURE_NODE_CREATION_STACKS,
   location: "elements-sidebar",
   id: "elements.dom-creation",
   commandPrompt: i18nLazyString(UIStrings.showStackTrace),

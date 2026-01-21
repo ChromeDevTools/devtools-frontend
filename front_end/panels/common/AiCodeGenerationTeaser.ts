@@ -143,8 +143,10 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
       // TODO(b/472291834): Disclaimer icon should match the placeholder's color
       // clang-format off
       teaserLabel = html`<div class="ai-code-generation-teaser-trigger">
-        ${toGenerateCode}&nbsp;
-        <div class="ai-code-generation-teaser-screen-reader-only">${toLearnHowYourDataIsBeingUsed}</div>
+        <span aria-atomic="true" aria-live="assertive">${toGenerateCode}&nbsp;</span>
+        <div class="ai-code-generation-teaser-screen-reader-only" aria-atomic="true" aria-live="assertive">
+          ${toLearnHowYourDataIsBeingUsed}
+        </div>
         <devtools-button
           .data=${{
               title: lockedString(UIStringsNotTranslate.learnMoreAboutHowYourDataIsBeingUsed),

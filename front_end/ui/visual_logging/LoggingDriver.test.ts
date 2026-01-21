@@ -1067,4 +1067,20 @@ describe('LoggingDriver', () => {
         VisualLoggingTesting.NonDomState.getNonDomLoggables(parent),
         {loggable, config: {ve: 1, context: '123'}, parent, size: undefined});
   });
+
+  it('does not log a non-DOM impression twice for the same loggable', async () => {
+    addLoggableElements();
+    const loggable = {};
+    const parent = document.getElementById('parent')!;
+    VisualLoggingTesting.NonDomState.registerLoggable(loggable, {ve: 1, context: '123'}, parent);
+    VisualLoggingTesting.NonDomState.registerLoggable(loggable, {ve: 1, context: '123'}, parent);
+    await VisualLoggingTesting.LoggingDriver.startLogging();
+    sinon.assert.calledOnce(recordImpression);
+
+    assert.sameDeepMembers(recordImpression.firstCall.firstArg.impressions, [
+      {id: getVeId(loggable), type: 1, context: 123, parent: getVeId(parent), width: 0, height: 0},
+      {id: getVeId('#element'), type: 1, context: 42, parent: getVeId(parent), width: 300, height: 300},
+      {id: getVeId(parent), type: 1, width: 300, height: 300},
+    ]);
+  });
 });

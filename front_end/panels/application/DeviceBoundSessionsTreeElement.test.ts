@@ -293,4 +293,46 @@ describeWithMockConnection('DeviceBoundSessionsTreeElement', () => {
     assert.strictEqual(root.children()[0].title, 'example1.com');
     assert.strictEqual(root.children()[1].title, 'example2.com');
   });
+
+  it('updates the session tree element visual state when a session is terminated', () => {
+    const root = new Application.DeviceBoundSessionsTreeElement.RootTreeElement(mockPanel, model);
+    root.onbind();
+
+    const site = 'example.com';
+    const sessionId = 'session_1';
+    const otherSessionId = 'session_2';
+    model.addVisibleSite(site);
+
+    const session1 = makeSession(site, sessionId);
+    const session2 = makeSession(site, otherSessionId);
+    model.dispatchEventToListeners(
+        Application.DeviceBoundSessionsModel.DeviceBoundSessionModelEvents.INITIALIZE_SESSIONS,
+        {sessions: [session1, session2]});
+    const siteNode = root.children()[0];
+    const session1Node = siteNode.children()[0];
+    const session2Node = siteNode.children()[1];
+
+    // Initially is not terminated.
+    assert.isFalse(session1Node.listItemElement.classList.contains('device-bound-session-terminated'));
+    assert.isFalse(session2Node.listItemElement.classList.contains('device-bound-session-terminated'));
+
+    // Simulate termination event.
+    const isSessionTerminatedStub = sinon.stub(model, 'isSessionTerminated');
+    isSessionTerminatedStub.withArgs(site, sessionId).returns(true);
+    model.dispatchEventToListeners(
+        Application.DeviceBoundSessionsModel.DeviceBoundSessionModelEvents.EVENT_OCCURRED, {site, sessionId});
+
+    // Session 1 should now be terminated. Session 2 remains unterminated.
+    assert.isTrue(session1Node.listItemElement.classList.contains('device-bound-session-terminated'));
+    assert.isFalse(session2Node.listItemElement.classList.contains('device-bound-session-terminated'));
+
+    // Simulate recreation event.
+    isSessionTerminatedStub.withArgs(site, sessionId).returns(false);
+    model.dispatchEventToListeners(
+        Application.DeviceBoundSessionsModel.DeviceBoundSessionModelEvents.EVENT_OCCURRED, {site, sessionId});
+
+    // Session 1 should no longer be terminated.
+    assert.isFalse(session1Node.listItemElement.classList.contains('device-bound-session-terminated'));
+    assert.isFalse(session2Node.listItemElement.classList.contains('device-bound-session-terminated'));
+  });
 });

@@ -120,6 +120,25 @@ export class RootTreeElement extends ApplicationPanelTreeElement {
     }
   }
 
+  #updateTerminatedSessionDisplay(site: string, sessionId: string|undefined): void {
+    const isSessionTerminated = this.#model.isSessionTerminated(site, sessionId);
+    const siteMapEntry = this.#sites.get(site);
+    if (!siteMapEntry) {
+      return;
+    }
+    const sessionElement = siteMapEntry.sessions.get(sessionId);
+    if (!sessionElement) {
+      return;
+    }
+    if (isSessionTerminated) {
+      sessionElement.listItemElement.classList.add('device-bound-session-terminated');
+      sessionElement.setLeadingIcons([createIcon('database-off')]);
+    } else {
+      sessionElement.listItemElement.classList.remove('device-bound-session-terminated');
+      sessionElement.setLeadingIcons([createIcon('database')]);
+    }
+  }
+
   #addSiteSessionIfMissing(site: string, sessionId: string|undefined): void {
     let siteMapEntry = this.#sites.get(site);
     if (!siteMapEntry) {
@@ -209,6 +228,7 @@ export class RootTreeElement extends ApplicationPanelTreeElement {
       {data: {site, sessionId}}: Common.EventTarget
           .EventTargetEvent<DeviceBoundSessionModelEventTypes[DeviceBoundSessionModelEvents.EVENT_OCCURRED]>): void {
     this.#addSiteSessionIfMissing(site, sessionId);
+    this.#updateTerminatedSessionDisplay(site, sessionId);
   }
 
   #onClearEvents({data: {emptySessions, emptySites}}: Common.EventTarget

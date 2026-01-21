@@ -56,3 +56,7 @@ devtools-icon.navigator-font-tree-item {
 .window-closed .tree-element-title {
   text-decoration: line-through;
 }
+
+.device-bound-session-terminated {
+  text-decoration: line-through;
+}

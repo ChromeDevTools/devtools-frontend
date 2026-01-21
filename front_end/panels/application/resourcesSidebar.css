@@ -60,3 +60,7 @@ devtools-icon.navigator-font-tree-item {
 .device-bound-session-terminated {
   text-decoration: line-through;
 }
+
+.no-device-bound-session {
+  font-style: italic;
+}

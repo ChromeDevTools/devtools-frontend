@@ -163,6 +163,9 @@ export class RootTreeElement extends ApplicationPanelTreeElement {
     if (!siteMapEntry.sessions.has(sessionId)) {
       const sessionElement = new ApplicationPanelTreeElement(
           this.resourcesPanel, sessionId ?? i18nString(UIStrings.noSession), false, 'device-bound-sessions-session');
+      if (sessionId === undefined) {
+        sessionElement.listItemElement.classList.add('no-device-bound-session');
+      }
       sessionElement.setLeadingIcons([createIcon('database')]);
       sessionElement.itemURL = `device-bound-sessions://${site}/${sessionId || ''}` as Platform.DevToolsPath.UrlString;
       const defaultOnSelect = sessionElement.onselect.bind(sessionElement);

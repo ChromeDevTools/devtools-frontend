@@ -272,8 +272,11 @@ describeWithMockConnection('DeviceBoundSessionsTreeElement', () => {
     assert.strictEqual(siteNode3.title, 'example1.com');
     assert.strictEqual(siteNode3.childCount(), 3);
     assert.strictEqual(siteNode3.children()[0].title, 'No session');
+    assert.isTrue(siteNode3.children()[0].listItemElement.classList.contains('no-device-bound-session'));
     assert.strictEqual(siteNode3.children()[1].title, 'session_1');
+    assert.isFalse(siteNode3.children()[1].listItemElement.classList.contains('no-device-bound-session'));
     assert.strictEqual(siteNode3.children()[2].title, 'session_2');
+    assert.isFalse(siteNode3.children()[2].listItemElement.classList.contains('no-device-bound-session'));
 
     // An event occurs that adds a "no session" to a new site.
     model.dispatchEventToListeners(
@@ -284,6 +287,7 @@ describeWithMockConnection('DeviceBoundSessionsTreeElement', () => {
     assert.strictEqual(siteNode4.title, 'example2.com');
     assert.strictEqual(siteNode4.childCount(), 1);
     assert.strictEqual(siteNode4.children()[0].title, 'No session');
+    assert.isTrue(siteNode4.children()[0].listItemElement.classList.contains('no-device-bound-session'));
 
     // An event occurs that adds a new session + site but it is not visible.
     model.dispatchEventToListeners(

@@ -9,6 +9,11 @@ const BLOCK_COMMENT_START_PATTERN = /^\/\*+\s*/;
 const BLOCK_COMMENT_END_PATTERN = /\s*\*+\/$/;
 const BLOCK_COMMENT_LINE_PREFIX_PATTERN = /^\s*\*\s?/;
 
+export interface CommentNodeInfo {
+  text: string;
+  to: number;
+}
+
 function findLastNonWhitespacePos(state: CodeMirror.EditorState, cursorPosition: number): number {
   const line = state.doc.lineAt(cursorPosition);
   const textBefore = line.text.substring(0, cursorPosition - line.from);
@@ -23,8 +28,8 @@ function resolveCommentNode(state: CodeMirror.EditorState, cursorPosition: numbe
   // The bias of -1 makes it check the character to the left of the position.
   const node = tree.resolveInner(lookupPos, -1);
   const nodeType = node.type.name;
-  // Check if the node type is a comment AND the cursor is within the node's range.
-  if (nodeType.includes('Comment') && cursorPosition >= node.to) {
+  // Check if the node type is a comment
+  if (nodeType.includes('Comment')) {
     if (!nodeType.includes('BlockComment')) {
       return node;
     }
@@ -48,7 +53,14 @@ function resolveCommentNode(state: CodeMirror.EditorState, cursorPosition: numbe
 
 function extractBlockComment(rawText: string): string|undefined {
   // Remove /* and */, whitespace, and common leading asterisks on new lines
-  let cleaned = rawText.replace(BLOCK_COMMENT_START_PATTERN, '').replace(BLOCK_COMMENT_END_PATTERN, '');
+  if (!rawText.match(BLOCK_COMMENT_START_PATTERN)) {
+    return;
+  }
+  let cleaned = rawText.replace(BLOCK_COMMENT_START_PATTERN, '');
+  if (!cleaned.match(BLOCK_COMMENT_END_PATTERN)) {
+    return;
+  }
+  cleaned = cleaned.replace(BLOCK_COMMENT_END_PATTERN, '');
   // Remove leading " * " from multi-line block comments
   cleaned = cleaned.split('\n').map(line => line.replace(BLOCK_COMMENT_LINE_PREFIX_PATTERN, '')).join('\n').trim();
   return cleaned;
@@ -59,19 +71,26 @@ function extractLineComment(rawText: string): string {
 }
 
 export class AiCodeGenerationParser {
-  static extractCommentText(state: CodeMirror.EditorState, cursorPosition: number): string|undefined {
+  static extractCommentNodeInfo(state: CodeMirror.EditorState, cursorPosition: number): CommentNodeInfo|undefined {
     const node = resolveCommentNode(state, cursorPosition);
     if (!node) {
       return;
     }
     const nodeType = node.type.name;
     const rawText = state.doc.sliceString(node.from, node.to);
+    let text = '';
     if (nodeType.includes('LineComment')) {
-      return extractLineComment(rawText);
+      text = extractLineComment(rawText);
+    } else if (nodeType.includes('BlockComment')) {
+      text = extractBlockComment(rawText) ?? '';
+    } else {
+      text = rawText;
     }
-    if (nodeType.includes('BlockComment')) {
-      return extractBlockComment(rawText);
+
+    if (!Boolean(text)) {
+      return;
     }
-    return rawText;
+
+    return {text, to: node.to};
   }
 }

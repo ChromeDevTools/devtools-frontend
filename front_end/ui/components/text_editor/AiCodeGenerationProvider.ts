@@ -258,13 +258,20 @@ export class AiCodeGenerationProvider {
     }
 
     this.#aiCodeGenerationCitations = [];
-    this.#generationTeaser.displayState = PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.LOADING;
     const cursor = this.#editor.state.selection.main.head;
-    const query = AiCodeGenerationParser.extractCommentText(this.#editor.state, cursor);
+    const commentNodeInfo = AiCodeGenerationParser.extractCommentNodeInfo(this.#editor.state, cursor);
+    if (!commentNodeInfo) {
+      return;
+    }
+    // Move cursor to end of comment node before triggering generation.
+    this.#editor.dispatch({selection: {anchor: commentNodeInfo.to}});
+
+    const query = commentNodeInfo.text;
     if (!query || query.trim().length === 0) {
       return;
     }
 
+    this.#generationTeaser.displayState = PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.LOADING;
     try {
       const startTime = performance.now();
       this.#aiCodeGenerationConfig?.onRequestTriggered();
@@ -297,7 +304,7 @@ export class AiCodeGenerationProvider {
         effects: [
           setAiAutoCompleteSuggestion.of({
             text: '\n' + suggestionText,
-            from: cursor,
+            from: commentNodeInfo.to,
             rpcGlobalId: generationResponse.metadata.rpcGlobalId,
             sampleId: topSample.sampleId,
             startTime,
@@ -359,14 +366,23 @@ function aiCodeGenerationTeaserExtension(teaser: PanelCommon.AiCodeGenerationTea
       const isEmptyLine = line.length === 0;
       const canShowDiscoveryState =
           UI.UIUtils.PromotionManager.instance().canShowPromotion(PanelCommon.AiCodeGenerationTeaser.PROMOTION_ID);
-      const isComment = Boolean(AiCodeGenerationParser.extractCommentText(this.#view.state, cursorPosition));
-      const isCursorAtEndOfLine = cursorPosition >= line.to;
 
-      if ((isEmptyLine && canShowDiscoveryState) || (isComment && isCursorAtEndOfLine)) {
+      if ((isEmptyLine && canShowDiscoveryState)) {
         return CodeMirror.Decoration.set([
           CodeMirror.Decoration.widget({widget: new AccessiblePlaceholder(teaser), side: 1}).range(cursorPosition),
         ]);
       }
+
+      const commentInfo = AiCodeGenerationParser.extractCommentNodeInfo(this.#view.state, cursorPosition);
+      if (commentInfo) {
+        // If cursor is inside the comment, show at the end of the comment node.
+        // If cursor is after the comment (but on same line), show at the cursor.
+        const decorationPos = Math.max(cursorPosition, commentInfo.to);
+        return CodeMirror.Decoration.set([
+          CodeMirror.Decoration.widget({widget: new AccessiblePlaceholder(teaser), side: 1}).range(decorationPos),
+        ]);
+      }
+
       return CodeMirror.Decoration.none;
     }
 

@@ -143,7 +143,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
       // TODO(b/472291834): Disclaimer icon should match the placeholder's color
       // clang-format off
       teaserLabel = html`<div class="ai-code-generation-teaser-trigger">
-        &nbsp;${toGenerateCode}&nbsp;
+        ${toGenerateCode}&nbsp;
         <div class="ai-code-generation-teaser-screen-reader-only">${toLearnHowYourDataIsBeingUsed}</div>
         <devtools-button
           .data=${{
@@ -231,7 +231,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
           <style>${styles}</style>
           <style>@scope to (devtools-widget > *) { ${UI.inspectorCommonStyles} }</style>
           <div class="ai-code-generation-teaser">
-            ${teaserLabel}
+            &nbsp;${teaserLabel}
           </div>
         `, target
       );

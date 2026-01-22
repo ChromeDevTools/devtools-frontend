@@ -1225,7 +1225,7 @@ export interface ProviderRegistration<T> {
   /** A function that asynchronously loads the provider instance. */
   loadProvider: () => Promise<Provider<T>>;
   /** Optional. The experiment that enables this provider. */
-  experiment?: Root.Runtime.ExperimentName;
+  experiment?: Root.ExperimentNames.ExperimentName;
 }
 
 export interface ContextMenuItemRegistration {
@@ -1236,5 +1236,5 @@ export interface ContextMenuItemRegistration {
   /** Optional. A number used for sorting items within the same location. Lower numbers appear first. */
   order?: number;
   /** Optional. The experiment that enables this item. */
-  experiment?: Root.Runtime.ExperimentName;
+  experiment?: Root.ExperimentNames.ExperimentName;
 }

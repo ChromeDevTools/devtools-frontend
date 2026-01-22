@@ -1338,7 +1338,7 @@ export class HeapSnapshotProfileType extends
 
   override customContent(): Element|null {
     const showOptionToExposeInternalsInHeapSnapshot = Root.Runtime.experiments.isEnabled(
-        Root.Runtime.ExperimentName.SHOW_OPTION_TO_EXPOSE_INTERNALS_IN_HEAP_SNAPSHOT);
+        Root.ExperimentNames.ExperimentName.SHOW_OPTION_TO_EXPOSE_INTERNALS_IN_HEAP_SNAPSHOT);
     const exposeInternalsInHeapSnapshotCheckbox =
         SettingsUI.SettingsUI.createSettingCheckbox(i18nString(UIStrings.exposeInternals), this.exposeInternals);
     this.customContentInternal = exposeInternalsInHeapSnapshotCheckbox;

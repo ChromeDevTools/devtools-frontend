@@ -35,7 +35,7 @@ const setUpEnvironmentWithUISourceCode =
 
 describeWithEnvironment('FilteredUISourceCodeListProvider', () => {
   before(() => {
-    Root.Runtime.experiments.register(Root.Runtime.ExperimentName.JUST_MY_CODE, '');
+    Root.Runtime.experiments.register(Root.ExperimentNames.ExperimentName.JUST_MY_CODE, '');
   });
 
   it('should exclude Fetch requests in the result', () => {
@@ -98,7 +98,7 @@ describeWithEnvironment('FilteredUISourceCodeListProvider', () => {
     const {workspace, project, uiSourceCode} = setUpEnvironmentWithUISourceCode(url, resourceType);
 
     // ignore the uiSourceCode
-    Root.Runtime.experiments.setEnabled(Root.Runtime.ExperimentName.JUST_MY_CODE, true);
+    Root.Runtime.experiments.setEnabled(Root.ExperimentNames.ExperimentName.JUST_MY_CODE, true);
     Workspace.IgnoreListManager.IgnoreListManager.instance().ignoreListUISourceCode(uiSourceCode);
 
     const filteredUISourceCodeListProvider =
@@ -108,7 +108,7 @@ describeWithEnvironment('FilteredUISourceCodeListProvider', () => {
     const result = filteredUISourceCodeListProvider.itemCount();
 
     workspace.removeProject(project);
-    Root.Runtime.experiments.setEnabled(Root.Runtime.ExperimentName.JUST_MY_CODE, false);
+    Root.Runtime.experiments.setEnabled(Root.ExperimentNames.ExperimentName.JUST_MY_CODE, false);
 
     assert.strictEqual(result, 0);
   });

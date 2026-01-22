@@ -2348,7 +2348,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
             this.name, this.style, this.#parentPane, this.#matchedStyles, this, this.getComputedStyles() ?? new Map()) :
         [];
 
-    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.FONT_EDITOR) && this.property.parsedOk) {
+    if (Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.FONT_EDITOR) && this.property.parsedOk) {
       renderers.push(new FontRenderer(this));
     }
     this.listItemElement.removeChildren();

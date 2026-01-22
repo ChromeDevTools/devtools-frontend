@@ -50,8 +50,8 @@ describeWithMockConnection('NetworkNavigatorView', () => {
     Persistence.Persistence.PersistenceImpl.instance({forceNew: true, workspace, breakpointManager});
     Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance({forceNew: true, workspace});
     UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry: actionRegistryInstance});
-    Root.Runtime.experiments.register(Root.Runtime.ExperimentName.AUTHORED_DEPLOYED_GROUPING, '');
-    Root.Runtime.experiments.register(Root.Runtime.ExperimentName.JUST_MY_CODE, '');
+    Root.Runtime.experiments.register(Root.ExperimentNames.ExperimentName.AUTHORED_DEPLOYED_GROUPING, '');
+    Root.Runtime.experiments.register(Root.ExperimentNames.ExperimentName.JUST_MY_CODE, '');
   });
 
   describe('reveals main target', () => {

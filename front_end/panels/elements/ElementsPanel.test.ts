@@ -24,7 +24,7 @@ describeWithMockConnection('ElementsPanel', () => {
   beforeEach(() => {
     stubNoopSettings();
     target = createTarget();
-    Root.Runtime.experiments.register(Root.Runtime.ExperimentName.APCA, '');
+    Root.Runtime.experiments.register(Root.ExperimentNames.ExperimentName.APCA, '');
     setMockConnectionResponseHandler('DOM.requestChildNodes', () => ({}));
     setMockConnectionResponseHandler('DOM.getDocument', () => ({
                                                           root: {

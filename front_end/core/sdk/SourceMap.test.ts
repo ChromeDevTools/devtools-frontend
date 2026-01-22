@@ -1239,7 +1239,7 @@ describeWithEnvironment('SourceMap', () => {
 
   describe('findEntry', () => {
     it('can resolve generated positions with inlineFrameIndex', () => {
-      Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.USE_SOURCE_MAP_SCOPES);
+      Root.Runtime.experiments.enableForTest(Root.ExperimentNames.ExperimentName.USE_SOURCE_MAP_SCOPES);
       // 'foo' calls 'bar', 'bar' calls 'baz'. 'bar' and 'baz' are inlined into 'foo'.
       const builder = new ScopesCodec.ScopeInfoBuilder();
       builder.startScope(0, 0, {kind: 'global', key: 'global'})
@@ -1281,7 +1281,7 @@ describeWithEnvironment('SourceMap', () => {
   });
 
   it('combines "scopes" proposal scopes appropriately for index maps', () => {
-    Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.USE_SOURCE_MAP_SCOPES);
+    Root.Runtime.experiments.enableForTest(Root.ExperimentNames.ExperimentName.USE_SOURCE_MAP_SCOPES);
     const info1 = new ScopesCodec.ScopeInfoBuilder()
                       .startScope(0, 0, {kind: 'global', key: 'global'})
                       .startScope(10, 0, {name: 'foo', key: 'foo', kind: 'function', isStackFrame: true})
@@ -1358,7 +1358,7 @@ describeWithEnvironment('SourceMap', () => {
     //
     // This should be resolved: presently it seems that when this experiment is on,
     // the "fallback" scopes are never generated (only blank ones are).
-    Root.Runtime.experiments.disableForTest(Root.Runtime.ExperimentName.USE_SOURCE_MAP_SCOPES);
+    Root.Runtime.experiments.disableForTest(Root.ExperimentNames.ExperimentName.USE_SOURCE_MAP_SCOPES);
 
     const scopeTreeStub = sinon.stub(Formatter.FormatterWorkerPool.formatterWorkerPool(), 'javaScriptScopeTree')
                               .returns(Promise.resolve({start: 0, end: 38, variables: [], kind: 1, children: []}));

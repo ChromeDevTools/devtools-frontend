@@ -16,7 +16,7 @@ export interface PreviewToggleData {
   name: string;
   helperText: string|null;
   feedbackURL: string|null;
-  experiment: Root.Runtime.ExperimentName;
+  experiment: Root.ExperimentNames.ExperimentName;
   learnMoreURL?: string;
   onChangeCallback?: (checked: boolean) => void;
 }
@@ -46,7 +46,7 @@ export class PreviewToggle extends HTMLElement {
   #helperText: string|null = null;
   #feedbackURL: string|null = null;
   #learnMoreURL: string|undefined;
-  #experiment: Root.Runtime.ExperimentName|'' = '';
+  #experiment: Root.ExperimentNames.ExperimentName|'' = '';
   #onChangeCallback?: (checked: boolean) => void;
 
   set data(data: PreviewToggleData) {

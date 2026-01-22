@@ -9,6 +9,7 @@ import("../../../scripts/build/typescript/typescript.gni")
 devtools_module("root") {
   sources = [
     "DevToolsContext.ts",
+    "ExperimentNames.ts",
     "Runtime.ts",
   ]
 

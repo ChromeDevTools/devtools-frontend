@@ -30,8 +30,8 @@ describeWithMockConnection('NavigatorView', () => {
   let workspace: Workspace.Workspace.WorkspaceImpl;
 
   beforeEach(() => {
-    Root.Runtime.experiments.register(Root.Runtime.ExperimentName.AUTHORED_DEPLOYED_GROUPING, '');
-    Root.Runtime.experiments.register(Root.Runtime.ExperimentName.JUST_MY_CODE, '');
+    Root.Runtime.experiments.register(Root.ExperimentNames.ExperimentName.AUTHORED_DEPLOYED_GROUPING, '');
+    Root.Runtime.experiments.register(Root.ExperimentNames.ExperimentName.JUST_MY_CODE, '');
 
     setMockResourceTree(false);
     setMockConnectionResponseHandler('Page.getResourceTree', async () => {

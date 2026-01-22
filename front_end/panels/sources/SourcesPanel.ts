@@ -639,7 +639,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
   }
 
   private addExperimentMenuItem(
-      menuSection: UI.ContextMenu.Section, experiment: Root.Runtime.ExperimentName,
+      menuSection: UI.ContextMenu.Section, experiment: Root.ExperimentNames.ExperimentName,
       menuItem: Common.UIString.LocalizedString): void {
     /** menu handler **/
     function toggleExperiment(): void {
@@ -670,10 +670,11 @@ export class SourcesPanel extends UI.Panel.Panel implements
         {checked: groupByFolderSetting.get(), jslogContext: groupByFolderSetting.name});
 
     this.addExperimentMenuItem(
-        contextMenu.viewSection(), Root.Runtime.ExperimentName.AUTHORED_DEPLOYED_GROUPING,
+        contextMenu.viewSection(), Root.ExperimentNames.ExperimentName.AUTHORED_DEPLOYED_GROUPING,
         i18nString(UIStrings.groupByAuthored));
     this.addExperimentMenuItem(
-        contextMenu.viewSection(), Root.Runtime.ExperimentName.JUST_MY_CODE, i18nString(UIStrings.hideIgnoreListed));
+        contextMenu.viewSection(), Root.ExperimentNames.ExperimentName.JUST_MY_CODE,
+        i18nString(UIStrings.hideIgnoreListed));
   }
 
   updateLastModificationTime(): void {
@@ -968,7 +969,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
     const eventTarget = (event.target as Node);
     if (!uiSourceCode.project().isServiceProject() &&
         !eventTarget.isSelfOrDescendant(this.navigatorTabbedLocation.widget().element) &&
-        !(Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.JUST_MY_CODE) &&
+        !(Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.JUST_MY_CODE) &&
           Workspace.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(
               uiSourceCode))) {
       contextMenu.revealSection().appendItem(

@@ -91,7 +91,7 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper<EventT
   }
 
   modelAdded(debuggerModel: SDK.DebuggerModel.DebuggerModel): void {
-    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.INSTRUMENTATION_BREAKPOINTS)) {
+    if (Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.INSTRUMENTATION_BREAKPOINTS)) {
       debuggerModel.setSynchronizeBreakpointsCallback(this.restoreBreakpointsForScript.bind(this));
     }
   }
@@ -128,7 +128,7 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper<EventT
   // This method explicitly awaits the source map (if necessary) and the uiSourceCodes
   // required to set all breakpoints that are related to this script.
   async restoreBreakpointsForScript(script: SDK.Script.Script): Promise<void> {
-    if (!Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.INSTRUMENTATION_BREAKPOINTS)) {
+    if (!Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.INSTRUMENTATION_BREAKPOINTS)) {
       return;
     }
     if (!script.sourceURL) {
@@ -1006,7 +1006,7 @@ export class ModelBreakpoint {
           };
         }));
         newState = positions.slice(0);  // Create a copy
-      } else if (!Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.INSTRUMENTATION_BREAKPOINTS)) {
+      } else if (!Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.INSTRUMENTATION_BREAKPOINTS)) {
         // Use this fallback if we do not have instrumentation breakpoints enabled yet. This currently makes
         // sure that v8 knows about the breakpoint and is able to restore it whenever the script is parsed.
         const lastResolvedState = this.#breakpoint.getLastResolvedState();

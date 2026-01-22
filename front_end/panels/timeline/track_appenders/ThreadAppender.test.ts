@@ -514,7 +514,7 @@ describeWithEnvironment('ThreadAppender', function() {
       assert.strictEqual(unknownEventIndex, -1);
 
       // Now enable the experiment and make sure the event is appended to the timeline data this time
-      Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.TIMELINE_SHOW_ALL_EVENTS);
+      Root.Runtime.experiments.enableForTest(Root.ExperimentNames.ExperimentName.TIMELINE_SHOW_ALL_EVENTS);
       const finalTimelineData = await renderThreadAppendersFromTrace(this, fileName);
       const finalFlamechartData = finalTimelineData.flameChartData;
       unknownEventIndex = finalTimelineData.entryData.findIndex(entry => {
@@ -523,7 +523,7 @@ describeWithEnvironment('ThreadAppender', function() {
       assert.isAbove(unknownEventIndex, -1);
       assert.exists(finalFlamechartData.entryStartTimes);
       assert.exists(finalFlamechartData.entryTotalTimes);
-      Root.Runtime.experiments.disableForTest(Root.Runtime.ExperimentName.TIMELINE_SHOW_ALL_EVENTS);
+      Root.Runtime.experiments.disableForTest(Root.ExperimentNames.ExperimentName.TIMELINE_SHOW_ALL_EVENTS);
     });
   });
   describe('AuctionWorklet threads', () => {

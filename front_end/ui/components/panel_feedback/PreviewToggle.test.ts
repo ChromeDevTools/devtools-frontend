@@ -25,7 +25,7 @@ describe('Preview toggle', () => {
       name: 'toggle name',
       helperText: 'more about this toggle',
       feedbackURL: 'https://feedbackurl.com',
-      experiment: 'testExperiment' as Root.Runtime.ExperimentName,
+      experiment: 'testExperiment' as Root.ExperimentNames.ExperimentName,
       onChangeCallback: spy,
     };
 
@@ -38,7 +38,7 @@ describe('Preview toggle', () => {
     checkbox.click();
     sinon.assert.callCount(setEnabledStub, 1);
     assert.isTrue(
-        setEnabledStub.firstCall.calledWith('testExperiment' as Root.Runtime.ExperimentName, true),
+        setEnabledStub.firstCall.calledWith('testExperiment' as Root.ExperimentNames.ExperimentName, true),
         'experiments.setEnabled was not called with the correct experiment');
     sinon.assert.callCount(spy, 1);
     assert.isTrue(spy.firstCall.firstArg);
@@ -56,7 +56,7 @@ describe('Preview toggle', () => {
       name: 'toggle name',
       helperText: 'more about this toggle',
       feedbackURL: 'https://feedbackurl.com',
-      experiment: 'testExperiment' as Root.Runtime.ExperimentName,
+      experiment: 'testExperiment' as Root.ExperimentNames.ExperimentName,
       onChangeCallback: spy,
     };
 
@@ -68,7 +68,7 @@ describe('Preview toggle', () => {
     checkbox.click();
     sinon.assert.callCount(setEnabledStub, 1);
     assert.isTrue(
-        setEnabledStub.firstCall.calledWith('testExperiment' as Root.Runtime.ExperimentName, false),
+        setEnabledStub.firstCall.calledWith('testExperiment' as Root.ExperimentNames.ExperimentName, false),
         'experiments.setEnabled was not called with the correct experiment');
     sinon.assert.callCount(spy, 1);
     assert.isFalse(spy.firstCall.firstArg);

@@ -199,10 +199,10 @@ function renderMainFrameInformation(
         frame.backForwardCacheDetails.explanationsTree,
         reasonToFramesMap)}
     <devtools-report-section>
-      <x-link href="https://web.dev/bfcache/" class="link"
-      jslog=${VisualLogging.action('learn-more.eligibility').track({click: true})}>
+      <devtools-link href="https://web.dev/bfcache/" class="link"
+      jslogcontext="learn-more.eligibility">
         ${i18nString(UIStrings.learnMore)}
-      </x-link>
+      </devtools-link>
     </devtools-report-section>`;
   // clang-format on
 }
@@ -370,12 +370,10 @@ function maybeRenderDeepLinkToUnload(explanation: Protocol.Page.BackForwardCache
   if (explanation.reason === Protocol.Page.BackForwardCacheNotRestoredReason.UnloadHandlerExistsInMainFrame ||
       explanation.reason === Protocol.Page.BackForwardCacheNotRestoredReason.UnloadHandlerExistsInSubFrame) {
     return html`
-        <x-link href="https://web.dev/bfcache/#never-use-the-unload-event" class="link"
-        jslog=${VisualLogging.action('learn-more.never-use-unload').track({
-      click: true,
-    })}>
+        <devtools-link href="https://web.dev/bfcache/#never-use-the-unload-event" class="link"
+        jslogContext=${'learn-more.never-use-unload'}>
           ${i18nString(UIStrings.neverUseUnload)}
-        </x-link>`;
+        </devtools-link>`;
   }
   return nothing;
 }

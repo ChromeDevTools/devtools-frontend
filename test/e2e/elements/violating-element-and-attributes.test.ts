@@ -47,7 +47,7 @@ describe('Element has violating properties', function() {
 
     assert.strictEqual(popupText, 'View Issue:\nA form field element should have an id or name attribute');
     // Open the issue panel and look for the title;
-    await devToolsPage.click('div.widget x-link');
+    await devToolsPage.click('div.widget devtools-link');
     const highlitedIssue = await devToolsPage.waitFor('.issue .header .title');
     const issueTitle = await highlitedIssue.evaluate(async node => node.textContent);
     assert.strictEqual(issueTitle, 'A form field element should have an id or name attribute');
@@ -110,7 +110,7 @@ describe('The elements panel', function() {
     });
 
     assert.strictEqual(popupText, 'Interactive element inside of a <legend> element');
-    await devToolsPage.click('div.widget x-link');
+    await devToolsPage.click('div.widget devtools-link');
     const highlitedIssue = await devToolsPage.waitFor('.issue .header .title');
     const issueTitle = await highlitedIssue.evaluate(async node => node.textContent);
     assert.strictEqual(issueTitle, 'Interactive element inside of a <legend> element');

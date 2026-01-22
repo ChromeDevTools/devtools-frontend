@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-lit-render-outside-of-view */
 
+import '../../../ui/kit/kit.js';
 import '../../../ui/legacy/legacy.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';
@@ -51,9 +52,9 @@ export class CSSHintDetailsView extends HTMLElement {
           ` : ''}
           ${link ? html`
                       <div class="footer">
-                        <x-link id="learn-more" href=${link} class="clickable underlined unbreakable-text">
+                        <devtools-link id="learn-more" href=${link} class="clickable underlined unbreakable-text">
                             ${i18nString(UIStrings.learnMore)}
-                        </x-link>
+                        </devtools-link>
                       </div>
                   `: ''}
         </div>

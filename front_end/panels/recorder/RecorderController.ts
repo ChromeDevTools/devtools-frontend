@@ -1195,7 +1195,7 @@ export class RecorderController extends LitElement {
         <div class="empty-state-description">
           <span>${i18nString(UIStrings.recordingDescription)}</span>
           <devtools-link
-            class="x-link devtools-link"
+            class="devtools-link"
             href=${RECORDER_EXPLANATION_URL}
             .jslogContext=${'learn-more'}
           >${i18nString(UIStrings.learnMore)}</devtools-link>
@@ -1473,7 +1473,7 @@ export class RecorderController extends LitElement {
               }
             ></devtools-button>
             <div class="feedback">
-              <devtools-link class="x-link" title=${i18nString(UIStrings.sendFeedback)} href=${
+              <devtools-link class="devtools-link" title=${i18nString(UIStrings.sendFeedback)} href=${
                 FEEDBACK_URL
               } .jslogContext=${'feedback'}>${i18nString(UIStrings.sendFeedback)}</devtools-link>
             </div>

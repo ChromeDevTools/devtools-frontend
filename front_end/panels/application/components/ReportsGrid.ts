@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../../ui/kit/kit.js';
 import '../../../ui/legacy/components/data_grid/data_grid.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';
@@ -80,11 +81,11 @@ export const DEFAULT_VIEW = (input: ViewInput, output: undefined, target: HTMLEl
               <th id="status" weight="20">
                 <style>${reportsGridStyles}</style>
                 <span class="status-header">${i18nString(UIStrings.status)}</span>
-                <x-link href="https://web.dev/reporting-api/#report-status"
-                jslog=${VisualLogging.link('report-status').track({click: true})}>
+                <devtools-link href="https://web.dev/reporting-api/#report-status"
+                .jslogContext=${'report-status'}>
                   <devtools-icon class="inline-icon medium" name="help" style="color: var(--icon-link);"
                   ></devtools-icon>
-                </x-link>
+                </devtools-link>
               </th>
               <th id="destination" weight="20">${i18nString(UIStrings.destination)}</th>
               <th id="timestamp" weight="20">${i18nString(UIStrings.generatedAt)}</th>
@@ -108,13 +109,11 @@ export const DEFAULT_VIEW = (input: ViewInput, output: undefined, target: HTMLEl
           <span class="empty-state-header">${i18nString(UIStrings.noReportsToDisplay)}</span>
           <div class="empty-state-description">
             <span>${i18nString(UIStrings.reportingApiDescription)}</span>
-            <x-link
+            <devtools-link
               class="devtools-link"
               href=${REPORTING_API_EXPLANATION_URL}
-              jslog=${VisualLogging.link()
-                      .track({ click: true, keydown: 'Enter|Space' })
-                      .context('learn-more')}
-            >${i18nString(UIStrings.learnMore)}</x-link>
+              .jslogContext=${'learn-more'}
+            >${i18nString(UIStrings.learnMore)}</devtools-link>
           </div>
         </div>
       `}

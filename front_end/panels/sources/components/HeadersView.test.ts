@@ -216,7 +216,7 @@ describe('HeadersView', () => {
     assert.instanceOf(addRuleButton, HTMLElement);
     assert.strictEqual(addRuleButton.textContent?.trim(), 'Add override rule');
 
-    const learnMoreLink = editor.shadowRoot.querySelector('.learn-more-row x-link');
+    const learnMoreLink = editor.shadowRoot.querySelector('.learn-more-row devtools-link');
     assert.instanceOf(learnMoreLink, HTMLElement);
     assert.strictEqual(learnMoreLink.title, 'https://goo.gle/devtools-override');
 

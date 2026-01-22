@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-lit-render-outside-of-view */
 
+import '../../../ui/kit/kit.js';
 import '../../../ui/legacy/legacy.js';
 
 import * as Host from '../../../core/host/host.js';
@@ -339,11 +340,11 @@ export class HeaderSectionRow extends HTMLElement {
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
       return html`
-        <x-link href=${blockedDetails.link.url} class="link">
+        <devtools-link href=${blockedDetails.link.url} class="link">
           <devtools-icon name="open-externally" class="inline-icon extra-large" style="color: var(--icon-link);">
           </devtools-icon
           >${i18nString(UIStrings.learnMore)}
-        </x-link>
+        </devtools-link>
       `;
       // clang-format on
     }

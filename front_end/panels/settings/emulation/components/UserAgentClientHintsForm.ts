@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-lit-render-outside-of-view*/
 
+import '../../../../ui/kit/kit.js';
 import '../../../../ui/legacy/legacy.js';
 
 import * as i18n from '../../../../core/i18n/i18n.js';
@@ -488,13 +489,6 @@ export class UserAgentClientHintsForm extends HTMLElement {
     this.dispatchEvent(new ClientHintsChangeEvent());
   };
 
-  #handleLinkPress = (event: KeyboardEvent): void => {
-    if (event.code === 'Space' || event.code === 'Enter') {
-      event.preventDefault();
-      (event.target as HTMLAnchorElement).click();
-    }
-  };
-
   #handleSubmit = (event: Event): void => {
     event.preventDefault();
     if (this.#showSubmitButton) {
@@ -869,17 +863,15 @@ export class UserAgentClientHintsForm extends HTMLElement {
             ${i18nString(UIStrings.title)}
           </div>
           <devtools-icon tabindex=${this.#isFormDisabled ? '-1' : '0'} class=info-icon name=info aria-label=${i18nString(UIStrings.userAgentClientHintsInfo)} title=${i18nString(UIStrings.userAgentClientHintsInfo)}></devtools-icon>
-          <x-link
+          <devtools-link
            tabindex=${this.#isFormDisabled ? '-1' : '0'}
            href="https://web.dev/user-agent-client-hints/"
-           target="_blank"
            class="link"
-           @keypress=${this.#handleLinkPress}
            aria-label=${i18nString(UIStrings.learnMore)}
-           jslog=${VisualLogging.link('learn-more').track({click: true})}
+           .jslogContext=${'learn-more'}
           >
             ${i18nString(UIStrings.learnMore)}
-          </x-link>
+          </devtools-link>
         </div>
         <form
           id="form-container"

@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../../ui/kit/kit.js';
+
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
@@ -81,7 +83,7 @@ function renderProvisionalHeadersWarning(isRequestCached: boolean): Lit.LitTempl
         <div class="explanation" title=${cautionTitle}>
           <devtools-icon class="inline-icon medium" name='warning-filled'>
           </devtools-icon>
-          ${cautionText} <x-link href="https://developer.chrome.com/docs/devtools/network/reference/#provisional-headers" class="link">${i18nString(UIStrings.learnMore)}</x-link>
+          ${cautionText} <devtools-link href="https://developer.chrome.com/docs/devtools/network/reference/#provisional-headers" class="link">${i18nString(UIStrings.learnMore)}</devtools-link>
         </div>
       </div>
     </div>

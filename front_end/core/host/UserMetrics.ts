@@ -209,11 +209,6 @@ export class UserMetrics {
     });
   }
 
-  recordingAssertion(value: RecordingAssertion): void {
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-        EnumeratedHistogram.RecordingAssertion, value, RecordingAssertion.MAX_VALUE);
-  }
-
   recordingToggled(value: RecordingToggled): void {
     InspectorFrontendHostInstance.recordEnumeratedHistogram(
         EnumeratedHistogram.RecordingToggled, value, RecordingToggled.MAX_VALUE);
@@ -224,34 +219,9 @@ export class UserMetrics {
         EnumeratedHistogram.RecordingReplayFinished, value, RecordingReplayFinished.MAX_VALUE);
   }
 
-  recordingReplaySpeed(value: RecordingReplaySpeed): void {
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-        EnumeratedHistogram.RecordingReplaySpeed, value, RecordingReplaySpeed.MAX_VALUE);
-  }
-
   recordingReplayStarted(value: RecordingReplayStarted): void {
     InspectorFrontendHostInstance.recordEnumeratedHistogram(
         EnumeratedHistogram.RecordingReplayStarted, value, RecordingReplayStarted.MAX_VALUE);
-  }
-
-  recordingEdited(value: RecordingEdited): void {
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-        EnumeratedHistogram.RecordingEdited, value, RecordingEdited.MAX_VALUE);
-  }
-
-  recordingExported(value: RecordingExported): void {
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-        EnumeratedHistogram.RecordingExported, value, RecordingExported.MAX_VALUE);
-  }
-
-  recordingCodeToggled(value: RecordingCodeToggled): void {
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-        EnumeratedHistogram.RecordingCodeToggled, value, RecordingCodeToggled.MAX_VALUE);
-  }
-
-  recordingCopiedToClipboard(value: RecordingCopiedToClipboard): void {
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-        EnumeratedHistogram.RecordingCopiedToClipboard, value, RecordingCopiedToClipboard.MAX_VALUE);
   }
 
   lighthouseModeRun(type: LighthouseModeRun): void {

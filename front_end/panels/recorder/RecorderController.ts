@@ -692,7 +692,6 @@ export class RecorderController extends LitElement {
     const indexToInsertAt = currentIndex + (position === Components.StepView.AddStepPosition.BEFORE ? 0 : 1);
     steps.splice(indexToInsertAt, 0, {type: Models.Schema.StepType.WaitForElement, selectors: ['body']});
     const recording = {...this.currentRecording, flow: {...this.currentRecording.flow, steps}};
-    Host.userMetrics.recordingEdited(Host.UserMetrics.RecordingEdited.STEP_ADDED);
     this.#stepBreakpointIndexes = new Set([...this.#stepBreakpointIndexes.values()].map(breakpointIndex => {
       if (indexToInsertAt > breakpointIndex) {
         return breakpointIndex;
@@ -723,7 +722,6 @@ export class RecorderController extends LitElement {
     const currentIndex = steps.indexOf(event.step);
     steps.splice(currentIndex, 1);
     const flow = {...this.currentRecording.flow, steps};
-    Host.userMetrics.recordingEdited(Host.UserMetrics.RecordingEdited.STEP_REMOVED);
     this.#stepBreakpointIndexes = new Set([...this.#stepBreakpointIndexes.values()]
                                               .map(breakpointIndex => {
                                                 if (currentIndex > breakpointIndex) {
@@ -958,10 +956,8 @@ export class RecorderController extends LitElement {
     await this.#exportContent(converter.getFilename(this.currentRecording.flow), content);
     const builtInMetric = CONVERTER_ID_TO_METRIC[converter.getId()];
     if (builtInMetric) {
-      Host.userMetrics.recordingExported(builtInMetric);
       UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.recordingExported));
     } else if (converter.getId().startsWith(Converters.ExtensionConverter.EXTENSION_PREFIX)) {
-      Host.userMetrics.recordingExported(Host.UserMetrics.RecordingExported.TO_EXTENSION);
       UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.recordingExported));
     } else {
       throw new Error('Could not find a metric for the export option with id = ' + id);
@@ -993,7 +989,6 @@ export class RecorderController extends LitElement {
     this.#setCurrentRecording(
         await this.#storage.updateRecording(this.currentRecording.storageName, flow),
         {keepBreakpoints: true, updateSession: true});
-    Host.userMetrics.recordingAssertion(Host.UserMetrics.RecordingAssertion.ASSERTION_ADDED);
     await this.updateComplete;
     // FIXME: call a method on the recording view widget.
     await this.#recordingView?.updateComplete;

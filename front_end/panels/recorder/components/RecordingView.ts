@@ -177,38 +177,6 @@ const networkConditionPresets = [
   SDK.NetworkManager.Fast4GConditions,
 ];
 
-function converterIdToFlowMetric(
-    converterId: string,
-    ): Host.UserMetrics.RecordingCopiedToClipboard {
-  switch (converterId) {
-    case Models.ConverterIds.ConverterIds.PUPPETEER:
-    case Models.ConverterIds.ConverterIds.PUPPETEER_FIREFOX:
-      return Host.UserMetrics.RecordingCopiedToClipboard.COPIED_RECORDING_WITH_PUPPETEER;
-    case Models.ConverterIds.ConverterIds.JSON:
-      return Host.UserMetrics.RecordingCopiedToClipboard.COPIED_RECORDING_WITH_JSON;
-    case Models.ConverterIds.ConverterIds.REPLAY:
-      return Host.UserMetrics.RecordingCopiedToClipboard.COPIED_RECORDING_WITH_REPLAY;
-    default:
-      return Host.UserMetrics.RecordingCopiedToClipboard.COPIED_RECORDING_WITH_EXTENSION;
-  }
-}
-
-function converterIdToStepMetric(
-    converterId: string,
-    ): Host.UserMetrics.RecordingCopiedToClipboard {
-  switch (converterId) {
-    case Models.ConverterIds.ConverterIds.PUPPETEER:
-    case Models.ConverterIds.ConverterIds.PUPPETEER_FIREFOX:
-      return Host.UserMetrics.RecordingCopiedToClipboard.COPIED_STEP_WITH_PUPPETEER;
-    case Models.ConverterIds.ConverterIds.JSON:
-      return Host.UserMetrics.RecordingCopiedToClipboard.COPIED_STEP_WITH_JSON;
-    case Models.ConverterIds.ConverterIds.REPLAY:
-      return Host.UserMetrics.RecordingCopiedToClipboard.COPIED_STEP_WITH_REPLAY;
-    default:
-      return Host.UserMetrics.RecordingCopiedToClipboard.COPIED_STEP_WITH_EXTENSION;
-  }
-}
-
 function renderSettings({
   settings,
   replaySettingsExpanded,
@@ -1193,8 +1161,6 @@ export class RecordingView extends UI.Widget.Widget {
     }
 
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(text);
-    const metric = step ? converterIdToStepMetric(converter.getId()) : converterIdToFlowMetric(converter.getId());
-    Host.userMetrics.recordingCopiedToClipboard(metric);
   }
 
   #onCopyStepEvent(event: CopyStepEvent): void {
@@ -1223,10 +1189,6 @@ export class RecordingView extends UI.Widget.Widget {
 
   showCodeToggle = (): void => {
     this.#showCodeView = !this.#showCodeView;
-    Host.userMetrics.recordingCodeToggled(
-        this.#showCodeView ? Host.UserMetrics.RecordingCodeToggled.CODE_SHOWN :
-                             Host.UserMetrics.RecordingCodeToggled.CODE_HIDDEN,
-    );
     void this.#convertToCode();
   };
 

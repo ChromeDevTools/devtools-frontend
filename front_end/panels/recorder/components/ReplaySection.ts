@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
@@ -63,13 +62,6 @@ const UIStrings = {
    * @description Label for a group of items in the replay menu that indicate various extensions that can be used for replay.
    */
   extensionGroup: 'Extensions',
-} as const;
-
-const replaySpeedToMetricSpeedMap = {
-  [PlayRecordingSpeed.NORMAL]: Host.UserMetrics.RecordingReplaySpeed.NORMAL,
-  [PlayRecordingSpeed.SLOW]: Host.UserMetrics.RecordingReplaySpeed.SLOW,
-  [PlayRecordingSpeed.VERY_SLOW]: Host.UserMetrics.RecordingReplaySpeed.VERY_SLOW,
-  [PlayRecordingSpeed.EXTREMELY_SLOW]: Host.UserMetrics.RecordingReplaySpeed.EXTREMELY_SLOW,
 } as const;
 
 const str_ = i18n.i18n.registerUIStrings(
@@ -331,10 +323,6 @@ export class ReplaySection extends UI.Widget.Widget {
     if (this.#settings && speed) {
       this.#settings.speed = speed;
       this.#settings.replayExtension = '';
-    }
-
-    if (replaySpeedToMetricSpeedMap[speed]) {
-      Host.userMetrics.recordingReplaySpeed(replaySpeedToMetricSpeedMap[speed]);
     }
     this.performUpdate();
   }

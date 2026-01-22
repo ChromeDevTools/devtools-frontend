@@ -21,6 +21,7 @@ generate_css("css_files") {
     "domLinkifier.css",
     "freDialog.css",
     "gdpSignUpDialog.css",
+    "geminiRebrandPromoDialog.css",
   ]
 }
 
@@ -41,6 +42,7 @@ devtools_ui_module("common") {
     "ExtensionView.ts",
     "FreDialog.ts",
     "GdpSignUpDialog.ts",
+    "GeminiRebrandPromoDialog.ts",
     "PersistenceUtils.ts",
   ]
 

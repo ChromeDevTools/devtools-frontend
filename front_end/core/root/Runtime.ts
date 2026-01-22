@@ -419,6 +419,10 @@ export interface HostConfigGreenDevUi {
   enabled: boolean;
 }
 
+export interface HostConfigGeminiRebranding {
+  enabled: boolean;
+}
+
 export interface HostConfigVeLogging {
   enabled: boolean;
   testing: boolean;
@@ -570,6 +574,7 @@ export type HostConfig = Platform.TypeScriptUtilities.RecursivePartial<{
   devToolsEnableDurableMessages: DevToolsEnableDurableMessages,
   devToolsAiAssistanceContextSelectionAgent: HostConfigAiAssistanceContextSelectionAgent,
   devToolsConsoleInsightsTeasers: ConsoleInsightsTeasers,
+  devToolsGeminiRebranding: HostConfigGeminiRebranding,
 }>;
 
 /**

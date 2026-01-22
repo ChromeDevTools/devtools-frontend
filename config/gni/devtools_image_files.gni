@@ -17,6 +17,8 @@ devtools_image_files = [
   "popoverArrows.png",
   "toolbarResizerVertical.png",
   "touchCursor_2x.png",
+  "geminiInDevTools.png",
+  "geminiInDevTools_2x.png",
   "touchCursor.png",
   "gdp-logo-light.png",
   "gdp-logo-dark.png",

@@ -581,6 +581,10 @@ export class MainImpl {
         AiAssistanceModel.ConversationHandler.ConversationHandlerEvents.EXTERNAL_CONVERSATION_STARTED,
         event => void VisualLogging.logFunctionCall(`start-conversation-${event.data}`, 'external'));
 
+    if (Root.Runtime.hostConfig.devToolsGeminiRebranding?.enabled) {
+      await PanelCommon.GeminiRebrandPromoDialog.maybeShow();
+    }
+
     MainImpl.timeEnd('Main._createAppUI');
 
     const appProvider = Common.AppProvider.getRegisteredAppProviders()[0];

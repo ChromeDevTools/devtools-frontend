@@ -531,6 +531,14 @@ export class AidaClient {
     if (!InspectorFrontendHostInstance.doAidaConversation) {
       throw new Error('doAidaConversation is not available');
     }
+
+    // Disable logging for now.
+    // For context, see b/454563259#comment35.
+    // We should be able to remove this ~end of April.
+    if (Root.Runtime.hostConfig.devToolsGeminiRebranding?.enabled) {
+      request.metadata.disable_user_content_logging = true;
+    }
+
     const stream = (() => {
       let {promise, resolve, reject} = Promise.withResolvers<string|null>();
       options?.signal?.addEventListener('abort', () => {

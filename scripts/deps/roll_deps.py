@@ -13,7 +13,7 @@ import json
 import os
 import subprocess
 import sys
-import shutil
+import urllib.request
 
 
 def node_path(options):
@@ -56,6 +56,7 @@ for f in FILES:
 class ReferenceMode(enum.Enum):
     Tot = 'tot'
     WorkingTree = 'working-tree'
+    CfT = 'CfT'
 
     def __str__(self):
         return self.value
@@ -92,6 +93,26 @@ def update(options):
     subprocess.check_call(['git', 'checkout', 'origin/main'],
                           cwd=options.chromium_dir)
     subprocess.check_call(['gclient', 'sync'], cwd=options.chromium_dir)
+
+
+def checkout_chromium_commit_position(options, target_position):
+    target_position = int(target_position)
+
+    grep_pattern = f'Cr-Commit-Position: .*@{{#{target_position}}}'
+    cmd = [
+        'git', 'log', 'origin/main', f'--grep={grep_pattern}', '-1',
+        '--format=%H'
+    ]
+    commit_hash = subprocess.check_output(cmd,
+                                          cwd=options.chromium_dir,
+                                          text=True).strip()
+
+    if not commit_hash:
+        raise RuntimeError(
+            f'Could not find commit for position {target_position}')
+
+    subprocess.check_call(['git', 'checkout', commit_hash],
+                          cwd=options.chromium_dir)
 
 
 def sync_node(options):
@@ -222,6 +243,45 @@ def update_deps_revision(options):
                 }, f)
 
 
+def get_json(url):
+    with urllib.request.urlopen(url) as response:
+        return json.loads(response.read().decode('utf-8'))
+
+
+def version_tuple(version):
+    return tuple(map(int, version.split('.')))
+
+
+def updateCfT(options):
+    """
+    Update the Chrome for testing dependency.
+    """
+    print('Updating Chrome for Testing...')
+    json_data = get_json(
+        "https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions.json"
+    )
+    canary_channel = json_data['channels']['Canary']
+    new_version = canary_channel['version']
+    commit_position = canary_channel['revision']
+
+    current_version = subprocess.check_output(
+        ['gclient', 'getdep', '--var=chrome'],
+        cwd=options.devtools_dir,
+        text=True).strip()
+
+    if current_version and (version_tuple(current_version)
+                            < version_tuple(new_version)):
+        print(
+            f'Updating Chrome for Testing: {current_version} -> {new_version}')
+        subprocess.check_call(
+            ['gclient', 'setdep', f'--var=chrome={new_version}'],
+            cwd=options.devtools_dir)
+    else:
+        print(f'Chrome for Testing is up to date: {current_version}')
+
+    return commit_position
+
+
 def update_readme_revision(options):
     print('updating README.chromium revision')
     readme_path = os.path.join(options.devtools_dir, 'front_end',
@@ -254,6 +314,9 @@ if __name__ == '__main__':
     OPTIONS = parse_options(sys.argv[1:])
     if OPTIONS.ref == ReferenceMode.Tot:
         update(OPTIONS)
+    if OPTIONS.ref == ReferenceMode.CfT:
+        commit_position = updateCfT(OPTIONS)
+        checkout_chromium_commit_position(OPTIONS, commit_position)
     elif OPTIONS.update_node:
         sync_node(OPTIONS)
     copy_files(OPTIONS)

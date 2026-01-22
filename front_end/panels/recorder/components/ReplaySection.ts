@@ -1,7 +1,6 @@
 // Copyright 2023 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
@@ -185,7 +184,6 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTML
         </devtools-button>
       </div>`,
     target,
-    { host: target },
   );
   // clang-format on
 };

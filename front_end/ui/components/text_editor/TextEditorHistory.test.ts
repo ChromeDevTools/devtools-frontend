@@ -128,6 +128,40 @@ describeWithEnvironment('TextEditorHistory', () => {
 
       assert.strictEqual(editor.state.selection.main.head, 10);
     });
+
+    describe('edit preservation', () => {
+      it('preserves edits when navigating through history', () => {
+        history.pushHistoryItem('entry 1');
+        history.pushHistoryItem('entry 2');
+        history.pushHistoryItem('entry 3');
+
+        // Navigate to entry 2 and edit it
+        editorHistory.moveHistory(Direction.BACKWARD);  // entry 3
+        editorHistory.moveHistory(Direction.BACKWARD);  // entry 2
+        setCodeMirrorContent(editor, 'entry 2 EDITED');
+
+        // Navigate back then forward
+        editorHistory.moveHistory(Direction.BACKWARD);  // entry 1
+        editorHistory.moveHistory(Direction.FORWARD);   // should be entry 2 EDITED
+
+        assert.strictEqual(editor.state.doc.toString(), 'entry 2 EDITED');
+      });
+
+      it('preserves uncommitted input when navigating through edited history', () => {
+        history.pushHistoryItem('entry 1');
+        history.pushHistoryItem('entry 2');
+        setCodeMirrorContent(editor, 'my new input');
+
+        // Navigate back, edit, navigate back more, then all the way forward
+        editorHistory.moveHistory(Direction.BACKWARD);  // entry 2
+        setCodeMirrorContent(editor, 'entry 2 EDITED');
+        editorHistory.moveHistory(Direction.BACKWARD);  // entry 1
+        editorHistory.moveHistory(Direction.FORWARD);   // entry 2 EDITED
+        editorHistory.moveHistory(Direction.FORWARD);   // my new input
+
+        assert.strictEqual(editor.state.doc.toString(), 'my new input');
+      });
+    });
   });
 
   describe('historyCompletions', () => {

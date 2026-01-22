@@ -10,15 +10,29 @@ export default `/*
  */
 
 @scope to (devtools-widget > *) {
+    .ai-code-generation-teaser-screen-reader-only {
+        position: absolute;
+        overflow: hidden;
+        clip-path: rect(0 0 0 0);
+        height: var(--sys-size-1);
+        width: var(--sys-size-1);
+        margin: -1 * var(--sys-size-1);;
+        padding: 0;
+        border: 0;
+    }
+
     .ai-code-generation-teaser {
         pointer-events: all;
         font-style: italic;
-        padding-left: var(--sys-size-3);
         line-height: var(--sys-size-7);
 
         .ai-code-generation-teaser-trigger {
             display: inline-flex;
             align-items: center;
+
+            devtools-button {
+                --override-button-icon-color: var(--sys-color-token-subtle);
+            }
         }
 
         .ai-code-generation-teaser-generated {
@@ -58,6 +72,7 @@ export default `/*
                 .link {
                     margin: var(--sys-size-5) var(--sys-size-8) 0 var(--sys-size-5);
                     display: inline-block;
+                    color: var(--sys-color-on-surface-subtle);
                 }
             }
         }

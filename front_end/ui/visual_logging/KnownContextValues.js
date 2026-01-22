@@ -353,6 +353,7 @@ export const knownContextValues = new Set([
     'ai-code-completion-teaser.fre',
     'ai-code-generation-disclaimer',
     'ai-code-generation-teaser.info-button',
+    'ai-code-generation-teaser.show-disclaimer-info-tooltip',
     'ai-code-generation-upgrade-dialog.continue',
     'ai-code-generation-upgrade-dialog.manage-in-settings',
     'ai-explorer',

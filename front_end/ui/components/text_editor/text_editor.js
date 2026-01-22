@@ -1212,6 +1212,18 @@ function aiCodeGenerationTeaserExtension(teaser) {
       },
       mousedown(event) {
         return event.target instanceof Node && teaser.contentElement.contains(event.target);
+      },
+      keydown(event) {
+        if (!UI2.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(event) || teaser.displayState !== PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.TRIGGER) {
+          return false;
+        }
+        if (event.key === ".") {
+          event.consume(true);
+          void VisualLogging2.logKeyDown(event.currentTarget, event, "ai-code-generation-teaser.show-disclaimer-info-tooltip");
+          teaser.showTooltip();
+          return true;
+        }
+        return false;
       }
     }
   });

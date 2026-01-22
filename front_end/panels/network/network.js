@@ -3551,8 +3551,8 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
       ` : Lit.nothing}
 
       <div class="cookies-panel-item site-has-cookies-in-other-partition ${input.siteHasCookieInOtherPartition ? "" : "hidden"}">
-        ${uiI18n2.getFormatLocalizedString(str_6, UIStrings6.siteHasCookieInOtherPartition, {
-    PH1: UI6.XLink.XLink.create("https://developer.chrome.com/en/docs/privacy-sandbox/chips/", i18nString6(UIStrings6.learnMore), void 0, void 0, "learn-more")
+        ${uiI18n2.getFormatLocalizedStringTemplate(str_6, UIStrings6.siteHasCookieInOtherPartition, {
+    PH1: html2`<devtools-link href="https://developer.chrome.com/en/docs/privacy-sandbox/chips/" .jslogContext=${"learn-more"}>${i18nString6(UIStrings6.learnMore)}</devtools-link>`
   })}
       </div>
 
@@ -6123,7 +6123,7 @@ var DEFAULT_VIEW6 = (input, output, target) => {
        ${input.serverTimings.length === 0 ? html6`
          <tr>
            <td colspan=3>
-             ${uiI18n3.getFormatLocalizedString(str_12, UIStrings12.duringDevelopmentYouCanUseSToAdd, { PH1: UI13.XLink.XLink.create("https://web.dev/custom-metrics/#server-timing-api", i18nString12(UIStrings12.theServerTimingApi), void 0, void 0, "server-timing-api") })}
+${uiI18n3.getFormatLocalizedStringTemplate(str_12, UIStrings12.duringDevelopmentYouCanUseSToAdd, { PH1: html6`<devtools-link href="https://web.dev/custom-metrics/#server-timing-api" .jslogContext=${"server-timing-api"}>${i18nString12(UIStrings12.theServerTimingApi)}</devtools-link>` })}
            </td>
          </tr>` : nothing6}
    </table>`,

@@ -4171,7 +4171,7 @@ UI9.ContextMenu.registerProvider({
     ];
   },
   async loadProvider() {
-    return new UI9.XLink.ContextMenuProvider();
+    return new UI9.LinkContextMenuProvider.LinkContextMenuProvider();
   },
   experiment: void 0
 });

@@ -1,4 +1,5 @@
 import '../../ui/components/switch/switch.js';
+import '../../ui/kit/kit.js';
 import * as UI from '../../ui/legacy/legacy.js';
 interface ViewInput {
     onSignUpClick: () => void;

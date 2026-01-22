@@ -99,8 +99,8 @@ export const DEFAULT_VIEW = (input, _output, target) => {
       ` : Lit.nothing}
 
       <div class="cookies-panel-item site-has-cookies-in-other-partition ${input.siteHasCookieInOtherPartition ? '' : 'hidden'}">
-        ${uiI18n.getFormatLocalizedString(str_, UIStrings.siteHasCookieInOtherPartition, {
-        PH1: UI.XLink.XLink.create('https://developer.chrome.com/en/docs/privacy-sandbox/chips/', i18nString(UIStrings.learnMore), undefined, undefined, 'learn-more'),
+        ${uiI18n.getFormatLocalizedStringTemplate(str_, UIStrings.siteHasCookieInOtherPartition, {
+        PH1: html `<devtools-link href="https://developer.chrome.com/en/docs/privacy-sandbox/chips/" .jslogContext=${'learn-more'}>${i18nString(UIStrings.learnMore)}</devtools-link>`
     })}
       </div>
 

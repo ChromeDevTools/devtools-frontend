@@ -4,8 +4,14 @@ import type * as Platform from '../../../core/platform/platform.js';
 import type * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
 import type { MarkdownLitRenderer } from '../../../ui/components/markdown_view/MarkdownView.js';
 import * as UI from '../../../ui/legacy/legacy.js';
+import { ChatInput } from './ChatInput.js';
 import { type Message, type ModelChatMessage } from './ChatMessage.js';
 export { ChatInput, type ImageInputData } from './ChatInput.js';
+interface ViewOutput {
+    mainElement?: HTMLElement;
+    input?: UI.Widget.WidgetElement<ChatInput>;
+}
+type View = (input: ChatWidgetInput, output: ViewOutput, target: HTMLElement | ShadowRoot) => void;
 export interface Props {
     onTextSubmit: (text: string, imageInput?: Host.AidaClient.Part, multimodalInputType?: AiAssistanceModel.AiAgent.MultimodalInputType) => void;
     onInspectElementClick: () => void;
@@ -35,9 +41,14 @@ export interface Props {
     markdownRenderer: MarkdownLitRenderer;
     additionalFloatyContext: UI.Floaty.FloatyContextSelection[];
 }
+interface ChatWidgetInput extends Props {
+    handleScroll: (ev: Event) => void;
+    handleSuggestionClick: (title: string) => void;
+    handleMessageContainerRef: (el: Element | undefined) => void;
+}
 export declare class ChatView extends HTMLElement {
     #private;
-    constructor(props: Props);
+    constructor(props: Props, view?: View);
     set props(props: Props);
     connectedCallback(): void;
     disconnectedCallback(): void;

@@ -790,11 +790,13 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
         if (this.#cruxManager.getConfigSetting().get().enabled) {
             return this.#renderCollectionPeriod();
         }
-        const linkEl = UI.XLink.XLink.create('https://developer.chrome.com/docs/crux', i18n.i18n.lockedString('Chrome UX Report'));
-        const messageEl = uiI18n.getFormatLocalizedString(str_, UIStrings.seeHowYourLocalMetricsCompare, { PH1: linkEl });
+        // clang-format off
         return html `
-      <div class="field-data-message">${messageEl}</div>
+      <div class="field-data-message">
+        ${uiI18n.getFormatLocalizedStringTemplate(str_, UIStrings.seeHowYourLocalMetricsCompare, { PH1: html `<devtools-link href="https://developer.chrome.com/docs/crux">${i18n.i18n.lockedString('Chrome UX Report')}</devtools-link>` })}
+      </div>
     `;
+        // clang-format on
     }
     #renderLogSection() {
         // clang-format off

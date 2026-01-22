@@ -402,7 +402,10 @@ export declare const enum SelectFunction {
 export declare const enum ArithmeticFunction {
     CALC = "calc",
     SIBLING_COUNT = "sibling-count",
-    SIBLING_INDEX = "sibling-index"
+    SIBLING_INDEX = "sibling-index",
+    ROUND = "round",
+    MOD = "mod",
+    REM = "rem"
 }
 type MathFunction = SelectFunction | ArithmeticFunction;
 export declare class BaseFunctionMatch<T extends string> implements Match {

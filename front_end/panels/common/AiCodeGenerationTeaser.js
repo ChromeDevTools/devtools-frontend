@@ -21,9 +21,21 @@ const UIStringsNotTranslate = {
      */
     cmdItoGenerateCode: 'Cmd+I to generate code',
     /**
+     * @description Aria label for teaser to generate code.
+     */
+    pressCtrlPeriodToLearnHowYourDataIsBeingUsed: 'Press ctrl . (“period”) to learn how your data is being used.',
+    /**
+     * @description Aria label for teaser to generate code in Mac.
+     */
+    pressCmdPeriodToLearnHowYourDataIsBeingUsed: 'Press cmd . (“period”) to learn how your data is being used.',
+    /**
      * @description Text for teaser when generating suggestion.
      */
     generating: 'Generating... (esc to cancel)',
+    /**
+     * @description Aria label for teaser when generating suggestion.
+     */
+    generatingAriaLabel: 'Generating. Press escape to cancel.',
     /**
      * @description Text for teaser for discoverability.
      */
@@ -96,11 +108,16 @@ export const DEFAULT_VIEW = (input, output, target) => {
             }
             const toGenerateCode = Host.Platform.isMac() ? lockedString(UIStringsNotTranslate.cmdItoGenerateCode) :
                 lockedString(UIStringsNotTranslate.ctrlItoGenerateCode);
+            const toLearnHowYourDataIsBeingUsed = Host.Platform.isMac() ?
+                lockedString(UIStringsNotTranslate.pressCmdPeriodToLearnHowYourDataIsBeingUsed) :
+                lockedString(UIStringsNotTranslate.pressCtrlPeriodToLearnHowYourDataIsBeingUsed);
             const tooltipDisclaimerText = getTooltipDisclaimerText(input.noLogging, input.panel);
             // TODO(b/472291834): Disclaimer icon should match the placeholder's color
             // clang-format off
             teaserLabel = html `<div class="ai-code-generation-teaser-trigger">
-        ${toGenerateCode}&nbsp;<devtools-button
+        &nbsp;${toGenerateCode}&nbsp;
+        <div class="ai-code-generation-teaser-screen-reader-only">${toLearnHowYourDataIsBeingUsed}</div>
+        <devtools-button
           .data=${{
                 title: lockedString(UIStringsNotTranslate.learnMoreAboutHowYourDataIsBeingUsed),
                 size: "MICRO" /* Buttons.Button.Size.MICRO */,
@@ -119,6 +136,11 @@ export const DEFAULT_VIEW = (input, output, target) => {
                 if (el instanceof HTMLElement) {
                     output.hideTooltip = () => {
                         el.hidePopover();
+                    };
+                    output.showTooltip = () => {
+                        el.showPopover();
+                        // Announce the content specifically for screen readers when triggered
+                        UI.ARIAUtils.LiveAnnouncer.status(tooltipDisclaimerText);
                     };
                 }
             })}>
@@ -146,10 +168,12 @@ export const DEFAULT_VIEW = (input, output, target) => {
             break;
         }
         case AiCodeGenerationTeaserDisplayState.LOADING: {
+            const teaserAriaLabel = lockedString(UIStringsNotTranslate.generatingAriaLabel);
             // clang-format off
             teaserLabel = html `
-        <span class="ai-code-generation-spinner"></span>&nbsp;${lockedString(UIStringsNotTranslate.generating)}&nbsp;
-        <span class="ai-code-generation-timer" ${Directives.ref(el => {
+        <div class="ai-code-generation-teaser-screen-reader-only">${teaserAriaLabel}</div>
+        <span class="ai-code-generation-spinner" aria-hidden="true"></span>&nbsp;${lockedString(UIStringsNotTranslate.generating)}&nbsp;
+        <span class="ai-code-generation-timer" aria-hidden="true" ${Directives.ref(el => {
                 if (el) {
                     output.setTimerText = (text) => {
                         el.textContent = text;
@@ -260,6 +284,9 @@ export class AiCodeGenerationTeaser extends UI.Widget.Widget {
         this.#viewOutput.hideTooltip?.();
         void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
         event.consume(true);
+    }
+    showTooltip() {
+        this.#viewOutput.showTooltip?.();
     }
 }
 //# sourceMappingURL=AiCodeGenerationTeaser.js.map

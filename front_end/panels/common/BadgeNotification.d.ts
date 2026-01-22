@@ -1,5 +1,7 @@
+import '../../ui/kit/kit.js';
 import * as Badges from '../../models/badges/badges.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import { type LitTemplate } from '../../ui/lit/lit.js';
 export interface BadgeNotificationAction {
     label: string;
     jslogContext: string;
@@ -7,7 +9,7 @@ export interface BadgeNotificationAction {
     onClick: () => void;
 }
 export interface BadgeNotificationProperties {
-    message: HTMLElement | string;
+    message: LitTemplate;
     jslogContext: string;
     imageUri: string;
     actions: BadgeNotificationAction[];
@@ -21,7 +23,7 @@ type View = typeof DEFAULT_VIEW;
 export declare class BadgeNotification extends UI.Widget.Widget {
     #private;
     jslogContext: string;
-    message: HTMLElement | string;
+    message: LitTemplate;
     imageUri: string;
     actions: BadgeNotificationAction[];
     isStarterBadge: boolean;

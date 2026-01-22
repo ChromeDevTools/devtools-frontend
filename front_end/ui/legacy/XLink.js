@@ -1,14 +1,13 @@
 // Copyright 2017 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as UIHelpers from '../helpers/helpers.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 import * as ARIAUtils from './ARIAUtils.js';
 import { html as xhtml } from './Fragment.js';
 import { Tooltip } from './Tooltip.js';
-import { copyLinkAddressLabel, MaxLengthForDisplayedURLs, openLinkExternallyLabel, } from './UIUtils.js';
+import { MaxLengthForDisplayedURLs, } from './UIUtils.js';
 import { XElement } from './XElement.js';
 export class XLink extends XElement {
     #href;
@@ -105,28 +104,6 @@ export class XLink extends XElement {
             this.removeEventListener('keydown', this.onKeyDown, false);
             this.style.removeProperty('cursor');
         }
-    }
-}
-export class ContextMenuProvider {
-    appendApplicableItems(_event, contextMenu, target) {
-        let targetNode = target;
-        while (targetNode && !(targetNode instanceof XLink)) {
-            targetNode = targetNode.parentNodeOrShadowHost();
-        }
-        if (!targetNode?.href) {
-            return;
-        }
-        const node = targetNode;
-        contextMenu.revealSection().appendItem(openLinkExternallyLabel(), () => {
-            if (node.href) {
-                UIHelpers.openInNewTab(node.href);
-            }
-        }, { jslogContext: 'open-in-new-tab' });
-        contextMenu.revealSection().appendItem(copyLinkAddressLabel(), () => {
-            if (node.href) {
-                Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(node.href);
-            }
-        }, { jslogContext: 'copy-link-address' });
     }
 }
 // eslint-disable-next-line @devtools/enforce-custom-element-prefix

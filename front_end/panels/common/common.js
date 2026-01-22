@@ -587,15 +587,29 @@ var aiCodeGenerationTeaser_css_default = `/*
  */
 
 @scope to (devtools-widget > *) {
+    .ai-code-generation-teaser-screen-reader-only {
+        position: absolute;
+        overflow: hidden;
+        clip-path: rect(0 0 0 0);
+        height: var(--sys-size-1);
+        width: var(--sys-size-1);
+        margin: -1 * var(--sys-size-1);;
+        padding: 0;
+        border: 0;
+    }
+
     .ai-code-generation-teaser {
         pointer-events: all;
         font-style: italic;
-        padding-left: var(--sys-size-3);
         line-height: var(--sys-size-7);
 
         .ai-code-generation-teaser-trigger {
             display: inline-flex;
             align-items: center;
+
+            devtools-button {
+                --override-button-icon-color: var(--sys-color-token-subtle);
+            }
         }
 
         .ai-code-generation-teaser-generated {
@@ -635,6 +649,7 @@ var aiCodeGenerationTeaser_css_default = `/*
                 .link {
                     margin: var(--sys-size-5) var(--sys-size-8) 0 var(--sys-size-5);
                     display: inline-block;
+                    color: var(--sys-color-on-surface-subtle);
                 }
             }
         }
@@ -672,9 +687,21 @@ var UIStringsNotTranslate2 = {
    */
   cmdItoGenerateCode: "Cmd+I to generate code",
   /**
+   * @description Aria label for teaser to generate code.
+   */
+  pressCtrlPeriodToLearnHowYourDataIsBeingUsed: "Press ctrl . (\u201Cperiod\u201D) to learn how your data is being used.",
+  /**
+   * @description Aria label for teaser to generate code in Mac.
+   */
+  pressCmdPeriodToLearnHowYourDataIsBeingUsed: "Press cmd . (\u201Cperiod\u201D) to learn how your data is being used.",
+  /**
    * @description Text for teaser when generating suggestion.
    */
   generating: "Generating... (esc to cancel)",
+  /**
+   * @description Aria label for teaser when generating suggestion.
+   */
+  generatingAriaLabel: "Generating. Press escape to cancel.",
   /**
    * @description Text for teaser for discoverability.
    */
@@ -742,9 +769,12 @@ var DEFAULT_VIEW2 = (input, output, target) => {
         return;
       }
       const toGenerateCode = Host2.Platform.isMac() ? lockedString2(UIStringsNotTranslate2.cmdItoGenerateCode) : lockedString2(UIStringsNotTranslate2.ctrlItoGenerateCode);
+      const toLearnHowYourDataIsBeingUsed = Host2.Platform.isMac() ? lockedString2(UIStringsNotTranslate2.pressCmdPeriodToLearnHowYourDataIsBeingUsed) : lockedString2(UIStringsNotTranslate2.pressCtrlPeriodToLearnHowYourDataIsBeingUsed);
       const tooltipDisclaimerText = getTooltipDisclaimerText(input.noLogging, input.panel);
       teaserLabel = html3`<div class="ai-code-generation-teaser-trigger">
-        ${toGenerateCode}&nbsp;<devtools-button
+        &nbsp;${toGenerateCode}&nbsp;
+        <div class="ai-code-generation-teaser-screen-reader-only">${toLearnHowYourDataIsBeingUsed}</div>
+        <devtools-button
           .data=${{
         title: lockedString2(UIStringsNotTranslate2.learnMoreAboutHowYourDataIsBeingUsed),
         size: "MICRO",
@@ -763,6 +793,10 @@ var DEFAULT_VIEW2 = (input, output, target) => {
         if (el instanceof HTMLElement) {
           output.hideTooltip = () => {
             el.hidePopover();
+          };
+          output.showTooltip = () => {
+            el.showPopover();
+            UI3.ARIAUtils.LiveAnnouncer.status(tooltipDisclaimerText);
           };
         }
       })}>
@@ -787,9 +821,11 @@ var DEFAULT_VIEW2 = (input, output, target) => {
       break;
     }
     case AiCodeGenerationTeaserDisplayState.LOADING: {
+      const teaserAriaLabel = lockedString2(UIStringsNotTranslate2.generatingAriaLabel);
       teaserLabel = html3`
-        <span class="ai-code-generation-spinner"></span>&nbsp;${lockedString2(UIStringsNotTranslate2.generating)}&nbsp;
-        <span class="ai-code-generation-timer" ${Directives.ref((el) => {
+        <div class="ai-code-generation-teaser-screen-reader-only">${teaserAriaLabel}</div>
+        <span class="ai-code-generation-spinner" aria-hidden="true"></span>&nbsp;${lockedString2(UIStringsNotTranslate2.generating)}&nbsp;
+        <span class="ai-code-generation-timer" aria-hidden="true" ${Directives.ref((el) => {
         if (el) {
           output.setTimerText = (text) => {
             el.textContent = text;
@@ -892,6 +928,9 @@ var AiCodeGenerationTeaser = class extends UI3.Widget.Widget {
     this.#viewOutput.hideTooltip?.();
     void UI3.ViewManager.ViewManager.instance().showView("chrome-ai");
     event.consume(true);
+  }
+  showTooltip() {
+    this.#viewOutput.showTooltip?.();
   }
 };
 
@@ -1392,6 +1431,7 @@ var AnnotationManager = class _AnnotationManager {
 
 // gen/front_end/panels/common/GdpSignUpDialog.js
 import "./../../ui/components/switch/switch.js";
+import "./../../ui/kit/kit.js";
 import * as Common2 from "./../../core/common/common.js";
 import * as Host4 from "./../../core/host/host.js";
 import * as i18n9 from "./../../core/i18n/i18n.js";
@@ -1622,10 +1662,10 @@ var DEFAULT_VIEW4 = (input, _output, target) => {
             <h2 class="section-title">${i18nString2(UIStrings2.tailorProfile)}</h2>
             <div class="section-text">
               <div>${i18nString2(UIStrings2.tailorProfileBody)}</div><br/>
-              <div>${uiI18n.getFormatLocalizedString(str_2, UIStrings2.tailorProfileBodyDisclaimer, {
-    PH1: UI6.XLink.XLink.create(CONTENT_POLICY_URL, i18nString2(UIStrings2.contentPolicy), "link", void 0, "content-policy"),
-    PH2: UI6.XLink.XLink.create(TERMS_OF_SERVICE_URL, i18nString2(UIStrings2.termsOfService), "link", void 0, "terms-of-service"),
-    PH3: UI6.XLink.XLink.create(PRIVACY_POLICY_URL, i18nString2(UIStrings2.privacyPolicy), "link", void 0, "privacy-policy")
+              <div>${uiI18n.getFormatLocalizedStringTemplate(str_2, UIStrings2.tailorProfileBodyDisclaimer, {
+    PH1: html6`<devtools-link href=${CONTENT_POLICY_URL} class="link" .jslogContext=${"content-policy"}>${i18nString2(UIStrings2.contentPolicy)}</devtools-link>`,
+    PH2: html6`<devtools-link href=${TERMS_OF_SERVICE_URL} class="link" .jslogContext=${"terms-of-service"}>${i18nString2(UIStrings2.termsOfService)}</devtools-link>`,
+    PH3: html6`<devtools-link href=${PRIVACY_POLICY_URL} class="link" .jslogContext=${"privacy-policy"}>${i18nString2(UIStrings2.privacyPolicy)}</devtools-link>`
   })}</div>
             </div>
           </div>
@@ -2232,6 +2272,7 @@ var AiCodeCompletionSummaryToolbar = class extends UI8.Widget.Widget {
 };
 
 // gen/front_end/panels/common/BadgeNotification.js
+import "./../../ui/kit/kit.js";
 import * as Common3 from "./../../core/common/common.js";
 import * as Host7 from "./../../core/host/host.js";
 import * as i18n15 from "./../../core/i18n/i18n.js";
@@ -2241,6 +2282,7 @@ import * as UIHelpers2 from "./../../ui/helpers/helpers.js";
 import * as uiI18n2 from "./../../ui/i18n/i18n.js";
 import * as UI9 from "./../../ui/legacy/legacy.js";
 import * as Lit3 from "./../../ui/lit/lit.js";
+import { nothing as nothing6 } from "./../../ui/lit/lit.js";
 import * as VisualLogging5 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/common/badgeNotification.css.js
@@ -2387,7 +2429,7 @@ var UIStrings3 = {
 };
 var str_3 = i18n15.i18n.registerUIStrings("panels/common/BadgeNotification.ts", UIStrings3);
 var i18nString3 = i18n15.i18n.getLocalizedString.bind(void 0, str_3);
-var i18nFormatString = uiI18n2.getFormatLocalizedString.bind(void 0, str_3);
+var i18nFormatStringTemplate = uiI18n2.getFormatLocalizedStringTemplate.bind(void 0, str_3);
 var lockedString6 = i18n15.i18n.lockedString;
 var LEFT_OFFSET = 5;
 var BOTTOM_OFFSET = 5;
@@ -2434,7 +2476,7 @@ function revealBadgeSettings() {
 }
 var BadgeNotification = class extends UI9.Widget.Widget {
   jslogContext = "";
-  message = "";
+  message = nothing6;
   imageUri = "";
   actions = [];
   isStarterBadge = false;
@@ -2481,9 +2523,11 @@ var BadgeNotification = class extends UI9.Widget.Widget {
     this.#autoCloseTimeout = window.setTimeout(this.#onAutoClose, AUTO_CLOSE_TIME_IN_MS);
   }
   #presentStarterBadgeSettingsNudge(badge) {
-    const googleDeveloperProgramLink = UI9.XLink.XLink.create("https://developers.google.com/program", lockedString6("Google Developer Program"), "badge-link", void 0, "program-link");
     this.#show({
-      message: i18nFormatString(UIStrings3.starterBadgeAwardMessageSettingDisabled, { PH1: badge.title, PH2: googleDeveloperProgramLink }),
+      message: i18nFormatStringTemplate(UIStrings3.starterBadgeAwardMessageSettingDisabled, {
+        PH1: badge.title,
+        PH2: html9`<devtools-link class="badge-link" href="https://developers.google.com/program" .jslogContext=${"program-link"}>${lockedString6("Google Developer Program")}</devtools-link>`
+      }),
       jslogContext: badge.jslogContext,
       actions: [
         {
@@ -2507,9 +2551,11 @@ var BadgeNotification = class extends UI9.Widget.Widget {
     });
   }
   #presentStarterBadgeProfileNudge(badge) {
-    const googleDeveloperProgramLink = UI9.XLink.XLink.create("https://developers.google.com/program", lockedString6("Google Developer Program"), "badge-link", void 0, "program-link");
     this.#show({
-      message: i18nFormatString(UIStrings3.starterBadgeAwardMessageNoGdpProfile, { PH1: badge.title, PH2: googleDeveloperProgramLink }),
+      message: i18nFormatStringTemplate(UIStrings3.starterBadgeAwardMessageNoGdpProfile, {
+        PH1: badge.title,
+        PH2: html9`<devtools-link class="badge-link" href="https://developers.google.com/program" .jslogContext=${"program-link"}>${lockedString6("Google Developer Program")}</devtools-link>`
+      }),
       jslogContext: badge.jslogContext,
       actions: [
         {
@@ -2537,7 +2583,7 @@ var BadgeNotification = class extends UI9.Widget.Widget {
   }
   #presentActivityBasedBadge(badge) {
     this.#show({
-      message: i18nString3(UIStrings3.activityBasedBadgeAwardMessage, { PH1: badge.title }),
+      message: i18nFormatStringTemplate(UIStrings3.activityBasedBadgeAwardMessage, { PH1: badge.title }),
       jslogContext: badge.jslogContext,
       actions: [
         {
@@ -4323,7 +4369,7 @@ import * as Common6 from "./../../core/common/common.js";
 import * as i18n21 from "./../../core/i18n/i18n.js";
 import * as SDK3 from "./../../core/sdk/sdk.js";
 import * as UI13 from "./../../ui/legacy/legacy.js";
-import { Directives as Directives4, html as html12, nothing as nothing6, render as render11 } from "./../../ui/lit/lit.js";
+import { Directives as Directives4, html as html12, nothing as nothing7, render as render11 } from "./../../ui/lit/lit.js";
 import * as VisualLogging6 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/common/domLinkifier.css.js
@@ -4415,10 +4461,10 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
     ...input.classes.map((c) => `.${c}`),
     input.pseudo ? `::${input.pseudo}` : ""
   ].join(" ")}>${[
-    input.tagName ? html12`<span class="node-label-name">${input.tagName}</span>` : nothing6,
-    input.id ? html12`<span class="node-label-id">#${input.id}</span>` : nothing6,
+    input.tagName ? html12`<span class="node-label-name">${input.tagName}</span>` : nothing7,
+    input.id ? html12`<span class="node-label-id">#${input.id}</span>` : nothing7,
     ...input.classes.map((className) => html12`<span class="extra node-label-class">.${className}</span>`),
-    input.pseudo ? html12`<span class="extra node-label-pseudo">${input.pseudo}</span>` : nothing6
+    input.pseudo ? html12`<span class="extra node-label-pseudo">${input.pseudo}</span>` : nothing7
   ]}</button>
     </span>` : i18nString5(UIStrings5.node)}`, target);
 };

@@ -236,6 +236,9 @@ export async function process() {
         const root = nonDomRoots[i];
         for (const { loggable, config, parent, size } of getNonDomLoggables(root)) {
             const loggingState = getOrCreateLoggingState(loggable, config, parent);
+            if (loggingState.impressionLogged) {
+                continue;
+            }
             if (size) {
                 loggingState.size = size;
             }

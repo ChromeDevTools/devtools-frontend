@@ -1855,8 +1855,7 @@ var generatedProperties = [
     "keywords": [
       "all",
       "around",
-      "between",
-      "none"
+      "between"
     ],
     "name": "column-rule-visibility-items"
   },
@@ -3887,8 +3886,7 @@ var generatedProperties = [
     "keywords": [
       "all",
       "around",
-      "between",
-      "none"
+      "between"
     ],
     "name": "row-rule-visibility-items"
   },
@@ -5583,8 +5581,7 @@ var generatedPropertyValues = {
     "values": [
       "all",
       "around",
-      "between",
-      "none"
+      "between"
     ]
   },
   "column-rule-width": {
@@ -6707,8 +6704,7 @@ var generatedPropertyValues = {
     "values": [
       "all",
       "around",
-      "between",
-      "none"
+      "between"
     ]
   },
   "row-rule-width": {
@@ -13468,6 +13464,9 @@ var MathFunctionMatch = class extends BaseFunctionMatch {
       case "calc":
       case "sibling-count":
       case "sibling-index":
+      case "round":
+      case "mod":
+      case "rem":
         return true;
     }
     const catchFallback = func;
@@ -13486,6 +13485,9 @@ var MathFunctionMatcher = class _MathFunctionMatcher extends matcherBase(MathFun
       case "calc":
       case "sibling-count":
       case "sibling-index":
+      case "round":
+      case "mod":
+      case "rem":
         return maybeFunc;
     }
     const catchFallback = maybeFunc;

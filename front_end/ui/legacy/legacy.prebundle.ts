@@ -24,6 +24,7 @@ import * as InplaceEditor from './InplaceEditor.js';
 import inspectorCommonStyles from './inspectorCommon.css.js';
 import * as InspectorView from './InspectorView.js';
 import * as KeyboardShortcut from './KeyboardShortcut.js';
+import * as LinkContextMenuProvider from './LinkContextMenuProvider.js';
 import * as ListControl from './ListControl.js';
 import * as ListModel from './ListModel.js';
 import * as ListWidget from './ListWidget.js';
@@ -77,6 +78,7 @@ export {
   inspectorCommonStyles,
   InspectorView,
   KeyboardShortcut,
+  LinkContextMenuProvider,
   ListControl,
   ListModel,
   ListWidget,
@@ -105,5 +107,5 @@ export {
   Widget,
   XElement,
   XLink,
-  ZoomManager,
+  ZoomManager
 };

@@ -88,6 +88,10 @@ button {
     border: none;
     overflow: hidden;
 
+    devtools-icon {
+      color: var(--override-button-icon-color, var(--icon-default));
+    }
+
     &.small {
       --button-height: var(--sys-size-9);
       --button-width: var(--sys-size-9);

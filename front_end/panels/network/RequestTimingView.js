@@ -491,7 +491,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
        ${input.serverTimings.length === 0 ? html `
          <tr>
            <td colspan=3>
-             ${uiI18n.getFormatLocalizedString(str_, UIStrings.duringDevelopmentYouCanUseSToAdd, { PH1: UI.XLink.XLink.create('https://web.dev/custom-metrics/#server-timing-api', i18nString(UIStrings.theServerTimingApi), undefined, undefined, 'server-timing-api') })}
+${uiI18n.getFormatLocalizedStringTemplate(str_, UIStrings.duringDevelopmentYouCanUseSToAdd, { PH1: html `<devtools-link href="https://web.dev/custom-metrics/#server-timing-api" .jslogContext=${'server-timing-api'}>${i18nString(UIStrings.theServerTimingApi)}</devtools-link>` })}
            </td>
          </tr>` : nothing}
    </table>`, 

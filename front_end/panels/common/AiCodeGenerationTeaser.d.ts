@@ -17,6 +17,7 @@ export interface ViewInput {
 }
 export interface ViewOutput {
     hideTooltip?: () => void;
+    showTooltip?: () => void;
     setTimerText?: (text: string) => void;
 }
 export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
@@ -30,4 +31,5 @@ export declare class AiCodeGenerationTeaser extends UI.Widget.Widget {
     set displayState(displayState: AiCodeGenerationTeaserDisplayState);
     set disclaimerTooltipId(disclaimerTooltipId: string);
     set panel(panel: AiCodeCompletion.AiCodeCompletion.ContextFlavor);
+    showTooltip(): void;
 }

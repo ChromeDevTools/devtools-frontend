@@ -1060,16 +1060,18 @@ var CookieReportView = class _CookieReportView extends UI2.Widget.VBox {
     }
     switch (insight.type) {
       case "GitHubResource": {
-        const githubLink = UI2.XLink.XLink.create(insight.tableEntryUrl ? insight.tableEntryUrl : "https://github.com/privacysandbox/privacy-sandbox-dev-support/blob/main/3pc-migration-readiness.md", i18nString2(UIStrings2.guidance), void 0, void 0, "readiness-list-link");
-        return html2`${uiI18n2.getFormatLocalizedString(str_2, UIStrings2.gitHubResource, {
+        const githubLink = html2`<devtools-link href=${insight.tableEntryUrl ?? "https://github.com/privacysandbox/privacy-sandbox-dev-support/blob/main/3pc-migration-readiness.md"} .jslogContext=${"readiness-list-link"}>${i18nString2(UIStrings2.guidance)}</devtools-link>`;
+        return html2`${uiI18n2.getFormatLocalizedStringTemplate(str_2, UIStrings2.gitHubResource, {
           PH1: githubLink
         })}`;
       }
       case "GracePeriod": {
         const url = SDK2.TargetManager.TargetManager.instance().primaryPageTarget()?.inspectedURL();
-        const gracePeriodLink = UI2.XLink.XLink.create("https://developers.google.com/privacy-sandbox/cookies/dashboard?url=" + // The order of the URLs matters - needs to be 1P + 3P.
-        (url ? Common2.ParsedURL.ParsedURL.fromString(url)?.host + "+" : "") + (domain.charAt(0) === "." ? domain.substring(1) : domain), i18nString2(UIStrings2.reportedIssues), void 0, void 0, "compatibility-lookup-link");
-        return html2`${uiI18n2.getFormatLocalizedString(str_2, UIStrings2.gracePeriod, {
+        const gracePeriodLink = html2`<devtools-link
+            href=${"https://developers.google.com/privacy-sandbox/cookies/dashboard?url=" + // The order of the URLs matters - needs to be 1P + 3P.
+        (url ? Common2.ParsedURL.ParsedURL.fromString(url)?.host + "+" : "") + (domain.charAt(0) === "." ? domain.substring(1) : domain)}
+            .jslogContext=${"compatibility-lookup-link"}>${i18nString2(UIStrings2.reportedIssues)}</devtools-link>`;
+        return html2`${uiI18n2.getFormatLocalizedStringTemplate(str_2, UIStrings2.gracePeriod, {
           PH1: gracePeriodLink
         })}`;
       }

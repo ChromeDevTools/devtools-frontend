@@ -16922,10 +16922,8 @@ var emptyWidget_css_default = `/*
 // gen/front_end/ui/legacy/XLink.js
 var XLink_exports = {};
 __export(XLink_exports, {
-  ContextMenuProvider: () => ContextMenuProvider,
   XLink: () => XLink
 });
-import * as Host8 from "./../../core/host/host.js";
 import * as Platform18 from "./../../core/platform/platform.js";
 import * as UIHelpers from "./../helpers/helpers.js";
 import * as VisualLogging16 from "./../visual_logging/visual_logging.js";
@@ -17273,28 +17271,6 @@ var XLink = class extends XElement {
     }
   }
 };
-var ContextMenuProvider = class {
-  appendApplicableItems(_event, contextMenu, target) {
-    let targetNode = target;
-    while (targetNode && !(targetNode instanceof XLink)) {
-      targetNode = targetNode.parentNodeOrShadowHost();
-    }
-    if (!targetNode?.href) {
-      return;
-    }
-    const node = targetNode;
-    contextMenu.revealSection().appendItem(openLinkExternallyLabel(), () => {
-      if (node.href) {
-        UIHelpers.openInNewTab(node.href);
-      }
-    }, { jslogContext: "open-in-new-tab" });
-    contextMenu.revealSection().appendItem(copyLinkAddressLabel(), () => {
-      if (node.href) {
-        Host8.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(node.href);
-      }
-    }, { jslogContext: "copy-link-address" });
-  }
-};
 customElements.define("x-link", XLink);
 
 // gen/front_end/ui/legacy/EmptyWidget.js
@@ -17382,7 +17358,7 @@ __export(FilterBar_exports, {
   TextFilterUI: () => TextFilterUI
 });
 import * as Common16 from "./../../core/common/common.js";
-import * as Host9 from "./../../core/host/host.js";
+import * as Host8 from "./../../core/host/host.js";
 import * as i18n26 from "./../../core/i18n/i18n.js";
 import * as Platform20 from "./../../core/platform/platform.js";
 import * as VisualLogging18 from "./../visual_logging/visual_logging.js";
@@ -17866,7 +17842,7 @@ var NamedBitSetFilterUI = class _NamedBitSetFilterUI extends Common16.ObjectWrap
   onTypeFilterClicked(event) {
     const e = event;
     let toggle6;
-    if (Host9.Platform.isMac()) {
+    if (Host8.Platform.isMac()) {
       toggle6 = e.metaKey && !e.ctrlKey && !e.altKey && !e.shiftKey;
     } else {
       toggle6 = e.ctrlKey && !e.metaKey && !e.altKey && !e.shiftKey;
@@ -18054,10 +18030,10 @@ var ForwardedInputEventHandler_exports = {};
 __export(ForwardedInputEventHandler_exports, {
   ForwardedInputEventHandler: () => ForwardedInputEventHandler
 });
-import * as Host10 from "./../../core/host/host.js";
+import * as Host9 from "./../../core/host/host.js";
 var ForwardedInputEventHandler = class {
   constructor() {
-    Host10.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host10.InspectorFrontendHostAPI.Events.KeyEventUnhandled, this.onKeyEventUnhandled, this);
+    Host9.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host9.InspectorFrontendHostAPI.Events.KeyEventUnhandled, this.onKeyEventUnhandled, this);
   }
   async onKeyEventUnhandled(event) {
     const { type, key, keyCode, modifiers } = event.data;
@@ -18244,6 +18220,37 @@ var Config = class {
   }
   setPostKeydownFinishHandler(postKeydownFinishHandler) {
     this.postKeydownFinishHandler = postKeydownFinishHandler;
+  }
+};
+
+// gen/front_end/ui/legacy/LinkContextMenuProvider.js
+var LinkContextMenuProvider_exports = {};
+__export(LinkContextMenuProvider_exports, {
+  LinkContextMenuProvider: () => LinkContextMenuProvider
+});
+import * as Host10 from "./../../core/host/host.js";
+import * as UIHelpers2 from "./../helpers/helpers.js";
+import { Link } from "./../kit/kit.js";
+var LinkContextMenuProvider = class {
+  appendApplicableItems(_event, contextMenu, target) {
+    let targetNode = target;
+    while (targetNode && !(targetNode instanceof XLink || targetNode instanceof Link)) {
+      targetNode = targetNode.parentNodeOrShadowHost();
+    }
+    if (!targetNode?.href) {
+      return;
+    }
+    const node = targetNode;
+    contextMenu.revealSection().appendItem(openLinkExternallyLabel(), () => {
+      if (node.href) {
+        UIHelpers2.openInNewTab(node.href);
+      }
+    }, { jslogContext: "open-in-new-tab" });
+    contextMenu.revealSection().appendItem(copyLinkAddressLabel(), () => {
+      if (node.href) {
+        Host10.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(node.href);
+      }
+    }, { jslogContext: "copy-link-address" });
   }
 };
 
@@ -22837,6 +22844,7 @@ export {
   InplaceEditor_exports as InplaceEditor,
   InspectorView_exports as InspectorView,
   KeyboardShortcut_exports as KeyboardShortcut,
+  LinkContextMenuProvider_exports as LinkContextMenuProvider,
   ListControl_exports as ListControl,
   ListModel_exports as ListModel,
   ListWidget_exports as ListWidget,

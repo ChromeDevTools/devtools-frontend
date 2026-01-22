@@ -1561,8 +1561,8 @@ var AISettingsTab = class extends UI2.Widget.VBox {
     this.requestUpdate();
   }
   #getSharedDisclaimerBulletPoints() {
-    const tosLink = UI2.XLink.XLink.create("https://policies.google.com/terms", i18nString2(UIStrings2.termsOfService), void 0, void 0, "terms-of-service");
-    const privacyNoticeLink = UI2.XLink.XLink.create("https://policies.google.com/privacy", i18nString2(UIStrings2.privacyNotice), void 0, void 0, "privacy-notice");
+    const tosLink = html2`<devtools-link href="https://policies.google.com/terms" .jslogContext=${"terms-of-service"}>${i18nString2(UIStrings2.termsOfService)}</devtools-link>`;
+    const privacyNoticeLink = html2`<devtools-link href="https://policies.google.com/privacy" .jslogContext=${"privacy-notice"}>${i18nString2(UIStrings2.privacyNotice)}</devtools-link>`;
     const noLogging = Root2.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue === Root2.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING;
     return [
       { icon: "psychiatry", text: i18nString2(UIStrings2.experimentalFeatures) },
@@ -1576,10 +1576,10 @@ var AISettingsTab = class extends UI2.Widget.VBox {
       },
       {
         icon: "policy",
-        text: html2`${uiI18n.getFormatLocalizedString(str_2, UIStrings2.termsOfServicePrivacyNotice, {
+        text: uiI18n.getFormatLocalizedStringTemplate(str_2, UIStrings2.termsOfServicePrivacyNotice, {
           PH1: tosLink,
           PH2: privacyNoticeLink
-        })}`
+        })
       }
     ];
   }

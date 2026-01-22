@@ -926,6 +926,9 @@ export class MathFunctionMatch extends BaseFunctionMatch {
             case "calc" /* ArithmeticFunction.CALC */:
             case "sibling-count" /* ArithmeticFunction.SIBLING_COUNT */:
             case "sibling-index" /* ArithmeticFunction.SIBLING_INDEX */:
+            case "round" /* ArithmeticFunction.ROUND */:
+            case "mod" /* ArithmeticFunction.MOD */:
+            case "rem" /* ArithmeticFunction.REM */:
                 return true;
         }
         // This assignment catches missed values in the switch above.
@@ -946,6 +949,9 @@ export class MathFunctionMatcher extends matcherBase(MathFunctionMatch) {
             case "calc" /* ArithmeticFunction.CALC */:
             case "sibling-count" /* ArithmeticFunction.SIBLING_COUNT */:
             case "sibling-index" /* ArithmeticFunction.SIBLING_INDEX */:
+            case "round" /* ArithmeticFunction.ROUND */:
+            case "mod" /* ArithmeticFunction.MOD */:
+            case "rem" /* ArithmeticFunction.REM */:
                 return maybeFunc;
         }
         // This assignment catches missed values in the switch above.

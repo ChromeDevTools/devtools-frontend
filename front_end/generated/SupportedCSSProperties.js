@@ -1792,8 +1792,7 @@ export const generatedProperties = [
         "keywords": [
             "all",
             "around",
-            "between",
-            "none"
+            "between"
         ],
         "name": "column-rule-visibility-items"
     },
@@ -3824,8 +3823,7 @@ export const generatedProperties = [
         "keywords": [
             "all",
             "around",
-            "between",
-            "none"
+            "between"
         ],
         "name": "row-rule-visibility-items"
     },
@@ -5520,8 +5518,7 @@ export const generatedPropertyValues = {
         "values": [
             "all",
             "around",
-            "between",
-            "none"
+            "between"
         ]
     },
     "column-rule-width": {
@@ -6644,8 +6641,7 @@ export const generatedPropertyValues = {
         "values": [
             "all",
             "around",
-            "between",
-            "none"
+            "between"
         ]
     },
     "row-rule-width": {

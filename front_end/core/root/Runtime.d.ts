@@ -190,6 +190,9 @@ export interface HostConfigThirdPartyCookieControls {
     thirdPartyCookieHeuristicsEnabled: boolean;
     managedBlockThirdPartyCookies: string | boolean;
 }
+export interface HostConfigAiAssistanceV2 {
+    enabled: boolean;
+}
 interface AiGeneratedTimelineLabels {
     enabled: boolean;
 }
@@ -263,6 +266,7 @@ export type HostConfig = Platform.TypeScriptUtilities.RecursivePartial<{
     devToolsAiAssistanceNetworkAgent: HostConfigAiAssistanceNetworkAgent;
     devToolsAiAssistanceFileAgent: HostConfigAiAssistanceFileAgent;
     devToolsAiAssistancePerformanceAgent: HostConfigAiAssistancePerformanceAgent;
+    devToolsAiAssistanceV2: HostConfigAiAssistanceV2;
     devToolsAiCodeCompletion: HostConfigAiCodeCompletion;
     devToolsAiCodeGeneration: HostConfigAiCodeGeneration;
     devToolsVeLogging: HostConfigVeLogging;

@@ -358,6 +358,7 @@ var knownContextValues = /* @__PURE__ */ new Set([
   "ai-code-completion-teaser.fre",
   "ai-code-generation-disclaimer",
   "ai-code-generation-teaser.info-button",
+  "ai-code-generation-teaser.show-disclaimer-info-tooltip",
   "ai-code-generation-upgrade-dialog.continue",
   "ai-code-generation-upgrade-dialog.manage-in-settings",
   "ai-explorer",
@@ -5672,6 +5673,9 @@ async function process() {
     const root = nonDomRoots[i];
     for (const { loggable, config, parent: parent2, size } of getNonDomLoggables(root)) {
       const loggingState = getOrCreateLoggingState(loggable, config, parent2);
+      if (loggingState.impressionLogged) {
+        continue;
+      }
       if (size) {
         loggingState.size = size;
       }

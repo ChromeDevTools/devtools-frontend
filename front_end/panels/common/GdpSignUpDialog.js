@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import '../../ui/components/switch/switch.js';
+import '../../ui/kit/kit.js';
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -131,10 +132,10 @@ export const DEFAULT_VIEW = (input, _output, target) => {
             <h2 class="section-title">${i18nString(UIStrings.tailorProfile)}</h2>
             <div class="section-text">
               <div>${i18nString(UIStrings.tailorProfileBody)}</div><br/>
-              <div>${uiI18n.getFormatLocalizedString(str_, UIStrings.tailorProfileBodyDisclaimer, {
-        PH1: UI.XLink.XLink.create(CONTENT_POLICY_URL, i18nString(UIStrings.contentPolicy), 'link', undefined, 'content-policy'),
-        PH2: UI.XLink.XLink.create(TERMS_OF_SERVICE_URL, i18nString(UIStrings.termsOfService), 'link', undefined, 'terms-of-service'),
-        PH3: UI.XLink.XLink.create(PRIVACY_POLICY_URL, i18nString(UIStrings.privacyPolicy), 'link', undefined, 'privacy-policy'),
+              <div>${uiI18n.getFormatLocalizedStringTemplate(str_, UIStrings.tailorProfileBodyDisclaimer, {
+        PH1: html `<devtools-link href=${CONTENT_POLICY_URL} class="link" .jslogContext=${'content-policy'}>${i18nString(UIStrings.contentPolicy)}</devtools-link>`,
+        PH2: html `<devtools-link href=${TERMS_OF_SERVICE_URL} class="link" .jslogContext=${'terms-of-service'}>${i18nString(UIStrings.termsOfService)}</devtools-link>`,
+        PH3: html `<devtools-link href=${PRIVACY_POLICY_URL} class="link" .jslogContext=${'privacy-policy'}>${i18nString(UIStrings.privacyPolicy)}</devtools-link>`,
     })}</div>
             </div>
           </div>

@@ -421,20 +421,21 @@ export class CookieReportView extends UI.Widget.VBox {
         }
         switch (insight.type) {
             case "GitHubResource" /* Protocol.Audits.InsightType.GitHubResource */: {
-                const githubLink = UI.XLink.XLink.create(insight.tableEntryUrl ?
-                    insight.tableEntryUrl :
-                    'https://github.com/privacysandbox/privacy-sandbox-dev-support/blob/main/3pc-migration-readiness.md', i18nString(UIStrings.guidance), undefined, undefined, 'readiness-list-link');
-                return html `${uiI18n.getFormatLocalizedString(str_, UIStrings.gitHubResource, {
+                const githubLink = html `<devtools-link href=${insight.tableEntryUrl ??
+                    'https://github.com/privacysandbox/privacy-sandbox-dev-support/blob/main/3pc-migration-readiness.md'} .jslogContext=${'readiness-list-link'}>${i18nString(UIStrings.guidance)}</devtools-link>`;
+                return html `${uiI18n.getFormatLocalizedStringTemplate(str_, UIStrings.gitHubResource, {
                     PH1: githubLink,
                 })}`;
             }
             case "GracePeriod" /* Protocol.Audits.InsightType.GracePeriod */: {
                 const url = SDK.TargetManager.TargetManager.instance().primaryPageTarget()?.inspectedURL();
-                const gracePeriodLink = UI.XLink.XLink.create('https://developers.google.com/privacy-sandbox/cookies/dashboard?url=' +
+                const gracePeriodLink = html `<devtools-link
+            href=${'https://developers.google.com/privacy-sandbox/cookies/dashboard?url=' +
                     // The order of the URLs matters - needs to be 1P + 3P.
                     (url ? Common.ParsedURL.ParsedURL.fromString(url)?.host + '+' : '') +
-                    (domain.charAt(0) === '.' ? domain.substring(1) : domain), i18nString(UIStrings.reportedIssues), undefined, undefined, 'compatibility-lookup-link');
-                return html `${uiI18n.getFormatLocalizedString(str_, UIStrings.gracePeriod, {
+                    (domain.charAt(0) === '.' ? domain.substring(1) : domain)}
+            .jslogContext=${'compatibility-lookup-link'}>${i18nString(UIStrings.reportedIssues)}</devtools-link>`;
+                return html `${uiI18n.getFormatLocalizedStringTemplate(str_, UIStrings.gracePeriod, {
                     PH1: gracePeriodLink,
                 })}`;
             }

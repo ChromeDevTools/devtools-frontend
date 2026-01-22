@@ -2128,14 +2128,15 @@ var str_7 = i18n13.i18n.registerUIStrings("panels/application/components/Protoco
 var i18nString6 = i18n13.i18n.getLocalizedString.bind(void 0, str_7);
 var i18nTemplate = unboundI18nTemplate.bind(void 0, str_7);
 function renderStatusMessage(protocolHandlers, manifestLink) {
-  const manifestInTextLink = UI6.XLink.XLink.create(manifestLink, i18nString6(UIStrings7.manifest), void 0, void 0, "manifest");
   const statusString = protocolHandlers.length > 0 ? UIStrings7.protocolDetected : UIStrings7.protocolNotDetected;
   return html6`
     <div class="protocol-handlers-row status">
       <devtools-icon class="inline-icon"
                      name=${protocolHandlers.length > 0 ? "check-circle" : "info"}>
       </devtools-icon>
-      ${uiI18n.getFormatLocalizedString(str_7, statusString, { PH1: manifestInTextLink })}
+      ${uiI18n.getFormatLocalizedStringTemplate(str_7, statusString, { PH1: html6`
+        <devtools-link href=${manifestLink} .jslogContext=${"manifest"}>${i18nString6(UIStrings7.manifest)}</devtools-link>
+        ` })}
     </div>`;
 }
 function renderProtocolTest(protocolHandlers, queryInputState, protocolSelectHandler, queryInputChangeHandler, testProtocolClickHandler) {

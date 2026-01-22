@@ -1,5 +1,4 @@
 import * as Platform from '../../core/platform/platform.js';
-import type { ContextMenu, Provider } from './ContextMenu.js';
 import { XElement } from './XElement.js';
 export declare class XLink extends XElement {
     #private;
@@ -12,7 +11,4 @@ export declare class XLink extends XElement {
     get href(): Platform.DevToolsPath.UrlString | null;
     attributeChangedCallback(attr: string, oldValue: string | null, newValue: string | null): void;
     private updateClick;
-}
-export declare class ContextMenuProvider implements Provider<Node> {
-    appendApplicableItems(_event: Event, contextMenu: ContextMenu, target: Node): void;
 }

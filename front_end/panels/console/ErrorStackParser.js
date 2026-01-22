@@ -32,24 +32,19 @@ export function parseSourcePositionsFromErrorStack(runtimeModel, stack) {
         let left = match[0].length;
         let right = line.length;
         let enclosedInBraces = false;
-        while (line[right - 1] === ')') {
+        if (line[right - 1] === ')') {
             right--;
             enclosedInBraces = true;
-            do {
-                left = line.indexOf('(', left);
-                if (left < 0) {
-                    return null;
-                }
-                left++;
-                if (!line.substring(left).startsWith('eval at ')) {
-                    break;
-                }
-                left += 8;
-                right = line.lastIndexOf(', ', right) - 1;
-                if (right < 0) {
-                    return null;
-                }
-            } while (true);
+            left = line.lastIndexOf(' (', right);
+            if (left < 0) {
+                return null;
+            }
+            left += 2;
+            // Relevant in the `eval at ...` case.
+            const newRight = line.indexOf('), ', left);
+            if (newRight > left) {
+                right = newRight;
+            }
         }
         const linkCandidate = line.substring(left, right);
         const splitResult = Common.ParsedURL.ParsedURL.splitLineAndColumn(linkCandidate);

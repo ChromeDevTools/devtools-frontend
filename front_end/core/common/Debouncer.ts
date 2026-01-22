@@ -9,7 +9,16 @@ export const debounce = function(func: (...args: any[]) => void, delay: number):
   let timer: ReturnType<typeof setTimeout>;
   const debounced = (...args: any[]): void => {
     clearTimeout(timer);
-    timer = setTimeout(() => func(...args), delay);
+    timer = setTimeout(() => func(...args), testDebounceOverride ? 0 : delay);
   };
   return debounced;
 };
+
+let testDebounceOverride = false;
+export function enableTestOverride(): void {
+  testDebounceOverride = true;
+}
+
+export function disableTestOverride(): void {
+  testDebounceOverride = false;
+}

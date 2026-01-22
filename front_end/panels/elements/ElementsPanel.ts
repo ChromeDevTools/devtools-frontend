@@ -199,6 +199,8 @@ const createAccessibilityTreeToggleButton = (isActive: boolean): HTMLElement => 
 
 let elementsPanelInstance: ElementsPanel;
 
+export const DEFAULT_COMPUTED_STYLES_DEBOUNCE_MS = 100;
+
 export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.Searchable,
                                                              SDK.TargetManager.SDKModelObserver<SDK.DOMModel.DOMModel>,
                                                              UI.View.ViewLocationResolver {
@@ -240,6 +242,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
 
   private cssStyleTrackerByCSSModel: Map<SDK.CSSModel.CSSModel, SDK.CSSModel.CSSPropertyTracker>;
   #domTreeWidget: DOMTreeWidget;
+  #computedStyleModel: ComputedStyleModel;
 
   getTreeOutlineForTesting(): ElementsTreeOutline|undefined {
     return this.#domTreeWidget.getTreeOutlineForTesting();
@@ -299,13 +302,20 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
 
     crumbsContainer.appendChild(this.breadcrumbs);
 
-    const computedStyleModel = new ComputedStyleModel(UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode));
+    this.#computedStyleModel = new ComputedStyleModel(UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode));
     UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, event => {
-      computedStyleModel.node = event.data;
+      this.#computedStyleModel.node = event.data;
+      this.evaluateTrackingComputedStyleUpdatesForNode();
     });
-    this.stylesWidget = new StylesSidebarPane(computedStyleModel);
-    this.computedStyleWidget = new ComputedStyleWidget(computedStyleModel);
-    this.metricsWidget = new MetricsSidebarPane(computedStyleModel);
+
+    UI.Context.Context.instance().addFlavorChangeListener(
+        StylesSidebarPane, this.evaluateTrackingComputedStyleUpdatesForNode, this);
+    UI.Context.Context.instance().addFlavorChangeListener(
+        ComputedStyleWidget, this.evaluateTrackingComputedStyleUpdatesForNode, this);
+
+    this.stylesWidget = new StylesSidebarPane(this.#computedStyleModel);
+    this.computedStyleWidget = new ComputedStyleWidget(this.#computedStyleModel);
+    this.metricsWidget = new MetricsSidebarPane(this.#computedStyleModel);
 
     Common.Settings.Settings.instance()
         .moduleSetting('sidebar-position')
@@ -345,6 +355,23 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
           Annotations.AnnotationType.ELEMENT_NODE, this.resolveInitialState.bind(this), this.#domTreeWidget.element);
     }
   }
+
+  // This is a debounced method because the user might be navigated from Styles tab to Computed Style tab and vice versa.
+  // For that case, we want to only run this function once.
+  private evaluateTrackingComputedStyleUpdatesForNode = Common.Debouncer.debounce((): void => {
+    const selectedNode = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
+    if (!selectedNode) {
+      return;
+    }
+
+    const isComputedStyleWidgetVisible = Boolean(UI.Context.Context.instance().flavor(ComputedStyleWidget));
+    const isStylesTabVisible = Boolean(UI.Context.Context.instance().flavor(StylesSidebarPane));
+    const shouldTrackComputedStyleUpdates = isComputedStyleWidgetVisible ||
+        (isStylesTabVisible && Root.Runtime.hostConfig.devToolsAnimationStylesInStylesTab?.enabled);
+
+    void selectedNode.domModel()?.cssModel()?.trackComputedStyleUpdatesForNode(
+        shouldTrackComputedStyleUpdates ? selectedNode.id : undefined);
+  }, 100);
 
   private handleElementExpanded(): void {
     if (Annotations.AnnotationRepository.annotationsEnabled()) {

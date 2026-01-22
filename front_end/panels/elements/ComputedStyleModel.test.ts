@@ -4,9 +4,8 @@
 
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
-import {createTarget, stubNoopSettings, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
+import {createTarget, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
-import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Elements from './elements.js';
 
@@ -14,7 +13,7 @@ function createNode(target: SDK.Target.Target, {nodeId}: {nodeId: Protocol.DOM.N
   const domModel = target.model(SDK.DOMModel.DOMModel);
   assert.exists(domModel);
 
-  return SDK.DOMModel.DOMNode.create(domModel, null, false, {
+  const node = SDK.DOMModel.DOMNode.create(domModel, null, false, {
     nodeId,
     backendNodeId: 2 as Protocol.DOM.BackendNodeId,
     nodeType: Node.ELEMENT_NODE,
@@ -22,132 +21,84 @@ function createNode(target: SDK.Target.Target, {nodeId}: {nodeId: Protocol.DOM.N
     localName: 'div',
     nodeValue: '',
   });
+
+  return node;
 }
 
 describeWithMockConnection('ComputedStyleModel', () => {
   let target: SDK.Target.Target;
   let computedStyleModel: Elements.ComputedStyleModel.ComputedStyleModel;
-  let trackComputedStyleUpdatesForNodeSpy: sinon.SinonSpy;
   let domNode1: SDK.DOMModel.DOMNode;
-  let domNode2: SDK.DOMModel.DOMNode;
-
-  async function waitForTrackComputedStyleUpdatesForNodeCall(): Promise<void> {
-    if (trackComputedStyleUpdatesForNodeSpy.getCalls().length > 0) {
-      return;
-    }
-
-    await new Promise<void>(resolve => {
-      requestAnimationFrame(async () => {
-        await waitForTrackComputedStyleUpdatesForNodeCall();
-        resolve();
-      });
-    });
-  }
 
   beforeEach(() => {
     stubNoopSettings();
     target = createTarget();
     domNode1 = createNode(target, {nodeId: 1 as Protocol.DOM.NodeId});
-    domNode2 = createNode(target, {nodeId: 2 as Protocol.DOM.NodeId});
     const cssModel = target.model(SDK.CSSModel.CSSModel);
-
-    UI.Context.Context.instance().setFlavor(Elements.StylesSidebarPane.StylesSidebarPane, null);
-    UI.Context.Context.instance().setFlavor(Elements.ComputedStyleWidget.ComputedStyleWidget, null);
-    UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, null);
-
     sinon.stub(Elements.ComputedStyleModel.ComputedStyleModel.prototype, 'cssModel').returns(cssModel);
-    trackComputedStyleUpdatesForNodeSpy =
-        sinon.spy(SDK.CSSModel.CSSModel.prototype, 'trackComputedStyleUpdatesForNode');
     computedStyleModel = new Elements.ComputedStyleModel.ComputedStyleModel();
   });
 
-  afterEach(() => {
-    computedStyleModel.dispose();
-    trackComputedStyleUpdatesForNodeSpy.restore();
-  });
+  afterEach(() => {});
 
-  it('should track computed style updates when computed widget is shown', async () => {
+  it('listens to events on the CSS Model when there is a node given', async () => {
+    const cssModel = domNode1.domModel().cssModel();
+    assert.isOk(cssModel);
+    const listenerSpy = sinon.spy(cssModel, 'addEventListener');
     computedStyleModel.node = domNode1;
-    UI.Context.Context.instance().setFlavor(
-        Elements.ComputedStyleWidget.ComputedStyleWidget,
-        sinon.createStubInstance(Elements.ComputedStyleWidget.ComputedStyleWidget));
 
-    await waitForTrackComputedStyleUpdatesForNodeCall();
-
-    sinon.assert.calledWith(trackComputedStyleUpdatesForNodeSpy, 1);
+    // Feels silly to assert each individual call; but assert 1 to verify that
+    // code path was executed as expected.
+    sinon.assert.calledWith(listenerSpy, SDK.CSSModel.Events.StyleSheetAdded);
   });
 
-  it('should track computed style updates when styles tab is shown and DevToolsAnimationStylesInStylesTab is enabled',
-     async () => {
-       updateHostConfig({
-         devToolsAnimationStylesInStylesTab: {
-           enabled: true,
-         },
-       });
-       computedStyleModel.node = domNode1;
-       UI.Context.Context.instance().setFlavor(
-           Elements.StylesSidebarPane.StylesSidebarPane,
-           sinon.createStubInstance(Elements.StylesSidebarPane.StylesSidebarPane));
+  it('does not listen to events when there is no node given', async () => {
+    const cssModel = domNode1.domModel().cssModel();
+    assert.isOk(cssModel);
+    const listenerSpy = sinon.spy(SDK.CSSModel.CSSModel.prototype, 'addEventListener');
+    computedStyleModel.node = null;
+    sinon.assert.callCount(listenerSpy, 0);
+  });
 
-       await waitForTrackComputedStyleUpdatesForNodeCall();
-
-       sinon.assert.calledWith(trackComputedStyleUpdatesForNodeSpy, 1);
-     });
-
-  it('should track computed style updates when the node is changed', async () => {
+  it('emits the CSS_MODEL_CHANGED event when there is a change', async () => {
+    const cssModel = domNode1.domModel().cssModel();
+    assert.isOk(cssModel);
     computedStyleModel.node = domNode1;
-    UI.Context.Context.instance().setFlavor(
-        Elements.ComputedStyleWidget.ComputedStyleWidget,
-        sinon.createStubInstance(Elements.ComputedStyleWidget.ComputedStyleWidget));
 
-    await waitForTrackComputedStyleUpdatesForNodeCall();
-    sinon.assert.calledWith(trackComputedStyleUpdatesForNodeSpy, 1);
-    trackComputedStyleUpdatesForNodeSpy.resetHistory();
+    const modelChangedListener = sinon.spy();
+    computedStyleModel.addEventListener(
+        Elements.ComputedStyleModel.Events.CSS_MODEL_CHANGED, event => modelChangedListener(event.data));
 
-    computedStyleModel.node = domNode2;
-    await waitForTrackComputedStyleUpdatesForNodeCall();
+    const FAKE_CSS_STYLESHEET_HEADER = {} as SDK.CSSStyleSheetHeader.CSSStyleSheetHeader;
+    cssModel.dispatchEventToListeners(SDK.CSSModel.Events.StyleSheetAdded, FAKE_CSS_STYLESHEET_HEADER);
 
-    sinon.assert.calledWith(trackComputedStyleUpdatesForNodeSpy, 2);
+    sinon.assert.calledOnceWithExactly(modelChangedListener, FAKE_CSS_STYLESHEET_HEADER);
   });
 
-  it('should stop tracking when computed widget is hidden', async () => {
+  it('emits the COMPUTED_STYLE_CHANGED event when the node ID matches', async () => {
+    const cssModel = domNode1.domModel().cssModel();
+    assert.isOk(cssModel);
     computedStyleModel.node = domNode1;
-    UI.Context.Context.instance().setFlavor(
-        Elements.ComputedStyleWidget.ComputedStyleWidget,
-        sinon.createStubInstance(Elements.ComputedStyleWidget.ComputedStyleWidget));
 
-    await waitForTrackComputedStyleUpdatesForNodeCall();
-    sinon.assert.calledWith(trackComputedStyleUpdatesForNodeSpy, 1);
-    trackComputedStyleUpdatesForNodeSpy.resetHistory();
+    const computedStyleListener = sinon.spy();
+    computedStyleModel.addEventListener(
+        Elements.ComputedStyleModel.Events.COMPUTED_STYLE_CHANGED, computedStyleListener);
+    cssModel.dispatchEventToListeners(SDK.CSSModel.Events.ComputedStyleUpdated, {nodeId: domNode1.id});
 
-    UI.Context.Context.instance().setFlavor(Elements.ComputedStyleWidget.ComputedStyleWidget, null);
-    await waitForTrackComputedStyleUpdatesForNodeCall();
-
-    sinon.assert.calledWith(trackComputedStyleUpdatesForNodeSpy, undefined);
+    sinon.assert.callCount(computedStyleListener, 1);
   });
 
-  it('should stop tracking when computed widget is hidden and styles tab is shown but the flag is not enabled',
-     async () => {
-       updateHostConfig({
-         devToolsAnimationStylesInStylesTab: {
-           enabled: false,
-         },
-       });
-       computedStyleModel.node = domNode1;
-       UI.Context.Context.instance().setFlavor(
-           Elements.ComputedStyleWidget.ComputedStyleWidget,
-           sinon.createStubInstance(Elements.ComputedStyleWidget.ComputedStyleWidget));
+  it('does not emit the COMPUTED_STYLE_CHANGED event if the Node ID is different', async () => {
+    const cssModel = domNode1.domModel().cssModel();
+    assert.isOk(cssModel);
+    computedStyleModel.node = domNode1;
 
-       await waitForTrackComputedStyleUpdatesForNodeCall();
-       sinon.assert.calledWith(trackComputedStyleUpdatesForNodeSpy, 1);
-       trackComputedStyleUpdatesForNodeSpy.resetHistory();
+    const computedStyleListener = sinon.spy();
+    computedStyleModel.addEventListener(
+        Elements.ComputedStyleModel.Events.COMPUTED_STYLE_CHANGED, computedStyleListener);
 
-       UI.Context.Context.instance().setFlavor(Elements.ComputedStyleWidget.ComputedStyleWidget, null);
-       UI.Context.Context.instance().setFlavor(
-           Elements.StylesSidebarPane.StylesSidebarPane,
-           sinon.createStubInstance(Elements.StylesSidebarPane.StylesSidebarPane));
-       await waitForTrackComputedStyleUpdatesForNodeCall();
-
-       sinon.assert.calledWith(trackComputedStyleUpdatesForNodeSpy, undefined);
-     });
+    cssModel.dispatchEventToListeners(
+        SDK.CSSModel.Events.ComputedStyleUpdated, {nodeId: (domNode1.id + 1) as Protocol.DOM.NodeId});
+    sinon.assert.callCount(computedStyleListener, 0);
+  });
 });

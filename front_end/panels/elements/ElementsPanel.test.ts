@@ -2,17 +2,19 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../core/common/common.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import {raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {createTarget, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
+import {createTarget, stubNoopSettings, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
+import {expectCall} from '../../testing/ExpectStubCall.js';
 import {
   describeWithMockConnection,
   dispatchEvent,
   setMockConnectionResponseHandler
 } from '../../testing/MockConnection.js';
-import type * as UI from '../../ui/legacy/legacy.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Elements from './elements.js';
 
@@ -208,5 +210,123 @@ describeWithMockConnection('ElementsPanel', () => {
     treeOutline.runPendingUpdates();
 
     panel.detach();
+  });
+
+  describe('tracking Computed styles', () => {
+    const StylesSidebarPane = Elements.StylesSidebarPane.StylesSidebarPane;
+    const ComputedStyleModel = Elements.ComputedStyleModel.ComputedStyleModel;
+    const ComputedStyleWidget = Elements.ComputedStyleWidget.ComputedStyleWidget;
+
+    let computedStyleNodeSpy: {
+      get: sinon.SinonSpy,
+      set: sinon.SinonSpy,
+    };
+    let panel: Elements.ElementsPanel.ElementsPanel;
+    let node: SDK.DOMModel.DOMNode;
+    let cssModel: sinon.SinonStubbedInstance<SDK.CSSModel.CSSModel>;
+
+    beforeEach(() => {
+      computedStyleNodeSpy = sinon.spy(ComputedStyleModel.prototype, 'node', ['get', 'set']);
+      Common.Debouncer.enableTestOverride();
+      panel = Elements.ElementsPanel.ElementsPanel.instance({forceNew: true});
+
+      cssModel = sinon.createStubInstance(SDK.CSSModel.CSSModel, {
+        target: sinon.createStubInstance(SDK.Target.Target, {
+          model: null,
+        }),
+      });
+
+      const domModel = sinon.createStubInstance(SDK.DOMModel.DOMModel, {
+        cssModel,
+      });
+      node = sinon.createStubInstance(SDK.DOMModel.DOMNode, {
+        domModel,
+      });
+      node.id = 1 as Protocol.DOM.NodeId;
+    });
+
+    afterEach(() => {
+      Common.Debouncer.disableTestOverride();
+      panel.detach();
+    });
+
+    it('updates the model when the selected DOM node changes', async () => {
+      UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
+      sinon.assert.calledOnceWithExactly(computedStyleNodeSpy.set, node);
+    });
+
+    it('enables tracking when a ComputedStyleWidget is created', async () => {
+      UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
+      const computedStylesWidget = sinon.createStubInstance(ComputedStyleWidget);
+      UI.Context.Context.instance().setFlavor(ComputedStyleWidget, computedStylesWidget);
+      await expectCall(cssModel.trackComputedStyleUpdatesForNode);
+      sinon.assert.calledOnceWithExactly(cssModel.trackComputedStyleUpdatesForNode, node.id);
+    });
+
+    it('stops tracking when the ComputedStyleWidget is removed', async () => {
+      UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
+
+      const computedStylesWidget = sinon.createStubInstance(ComputedStyleWidget);
+      UI.Context.Context.instance().setFlavor(ComputedStyleWidget, computedStylesWidget);
+      await expectCall(cssModel.trackComputedStyleUpdatesForNode);
+
+      sinon.assert.calledOnceWithExactly(cssModel.trackComputedStyleUpdatesForNode, node.id);
+      cssModel.trackComputedStyleUpdatesForNode.resetHistory();
+
+      UI.Context.Context.instance().setFlavor(ComputedStyleWidget, null);
+      await expectCall(cssModel.trackComputedStyleUpdatesForNode);
+      sinon.assert.calledOnceWithExactly(cssModel.trackComputedStyleUpdatesForNode, undefined);
+    });
+
+    it('enables tracking with a StylesSidebarPane and the DevToolsAnimationStylesInStylesTab experiment is enabled',
+       async () => {
+         UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
+         updateHostConfig({
+           devToolsAnimationStylesInStylesTab: {
+             enabled: true,
+           },
+         });
+
+         const stylesSidebarPane = sinon.createStubInstance(StylesSidebarPane);
+         UI.Context.Context.instance().setFlavor(StylesSidebarPane, stylesSidebarPane);
+         await expectCall(cssModel.trackComputedStyleUpdatesForNode);
+
+         sinon.assert.calledOnceWithExactly(cssModel.trackComputedStyleUpdatesForNode, node.id);
+       });
+
+    it('stops tracking when the StylesSidebarPane is removed', async () => {
+      UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
+      updateHostConfig({
+        devToolsAnimationStylesInStylesTab: {
+          enabled: true,
+        },
+      });
+
+      const stylesSidebarPane = sinon.createStubInstance(StylesSidebarPane);
+      UI.Context.Context.instance().setFlavor(StylesSidebarPane, stylesSidebarPane);
+      await expectCall(cssModel.trackComputedStyleUpdatesForNode);
+
+      sinon.assert.calledOnceWithExactly(cssModel.trackComputedStyleUpdatesForNode, node.id);
+      cssModel.trackComputedStyleUpdatesForNode.resetHistory();
+
+      UI.Context.Context.instance().setFlavor(StylesSidebarPane, null);
+      await expectCall(cssModel.trackComputedStyleUpdatesForNode);
+      sinon.assert.calledOnceWithExactly(cssModel.trackComputedStyleUpdatesForNode, undefined);
+    });
+
+    it('does not enabled tracking with a StylesSidebarPane but the DevToolsAnimationStylesInStylesTab experiment is disabled',
+       async () => {
+         UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
+         updateHostConfig({
+           devToolsAnimationStylesInStylesTab: {
+             enabled: false,
+           },
+         });
+         const stylesSidebarPane = sinon.createStubInstance(StylesSidebarPane);
+         UI.Context.Context.instance().setFlavor(StylesSidebarPane, stylesSidebarPane);
+         await expectCall(cssModel.trackComputedStyleUpdatesForNode);
+
+         sinon.assert.calledOnceWithExactly(cssModel.trackComputedStyleUpdatesForNode, undefined);
+       });
   });
 });

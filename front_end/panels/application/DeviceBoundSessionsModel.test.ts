@@ -371,6 +371,75 @@ describeWithMockConnection('DeviceBoundSessionsModel', () => {
     assert.isFalse(session?.isSessionTerminated);
   });
 
+  it('updates hasErrors status correctly on failed events and clear events', () => {
+    const site = 'example.com';
+    const sessionId = 'session_error_test';
+
+    // New session does not have errors.
+    const createEvent: Protocol.Network.DeviceBoundSessionEventOccurredEvent = {
+      eventId: 'event1' as Protocol.Network.DeviceBoundSessionEventId,
+      site,
+      sessionId,
+      succeeded: true,
+      creationEventDetails: {
+        newSession: makeSession(site, sessionId),
+        fetchResult: Protocol.Network.DeviceBoundSessionFetchResult.Success
+      }
+    };
+    networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.DeviceBoundSessionEventOccurred, createEvent);
+
+    assert.isFalse(model.sessionHasErrors(site, sessionId));
+    const session = model.getSession(site, sessionId);
+    assert.isFalse(session?.hasErrors);
+
+    // It has errors for a failed event.
+    const failedEvent: Protocol.Network.DeviceBoundSessionEventOccurredEvent = {
+      eventId: 'event2' as Protocol.Network.DeviceBoundSessionEventId,
+      site,
+      sessionId,
+      succeeded: false,
+      creationEventDetails: {fetchResult: Protocol.Network.DeviceBoundSessionFetchResult.InvalidConfigJson}
+    };
+    networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.DeviceBoundSessionEventOccurred, failedEvent);
+
+    assert.isTrue(model.sessionHasErrors(site, sessionId));
+    assert.isTrue(session?.hasErrors);
+
+    // It still has errors after a subsequent successful event.
+    const successEvent: Protocol.Network.DeviceBoundSessionEventOccurredEvent = {
+      eventId: 'event3' as Protocol.Network.DeviceBoundSessionEventId,
+      site,
+      sessionId,
+      succeeded: true,
+      challengeEventDetails:
+          {challenge: 'challenge', challengeResult: Protocol.Network.ChallengeEventDetailsChallengeResult.Success}
+    };
+    networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.DeviceBoundSessionEventOccurred, successEvent);
+
+    assert.isTrue(model.sessionHasErrors(site, sessionId));
+    assert.isTrue(session?.hasErrors);
+
+    const listener = sinon.spy();
+    model.addEventListener(Application.DeviceBoundSessionsModel.DeviceBoundSessionModelEvents.CLEAR_EVENTS, listener);
+
+    // Errors are not cleared when clearEvents is called when preserving the log.
+    Common.Settings.moduleSetting('device-bound-sessions-preserve-log').set(true);
+    model.clearEvents();
+    sinon.assert.notCalled(listener);
+    assert.isTrue(model.sessionHasErrors(site, sessionId));
+    assert.isTrue(session?.hasErrors);
+
+    // Errors are cleared when clearEvents is called when not preserving the log.
+    Common.Settings.moduleSetting('device-bound-sessions-preserve-log').set(false);
+    model.clearEvents();
+    sinon.assert.calledOnce(listener);
+    const noLongerFailedSessions = listener.firstCall.args[0].data.noLongerFailedSessions;
+    assert.strictEqual(noLongerFailedSessions.size, 1);
+    assert.deepEqual(noLongerFailedSessions.get(site), [sessionId]);
+    assert.isFalse(model.sessionHasErrors(site, sessionId));
+    assert.isFalse(session?.hasErrors);
+  });
+
   it('returns false for isSessionTerminated when session does not exist', () => {
     assert.isFalse(model.isSessionTerminated('unknown-site', 'unknown-session'));
   });

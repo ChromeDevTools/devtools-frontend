@@ -6,6 +6,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import type {TreeElement} from '../../ui/legacy/Treeoutline.js';
 
 import * as Application from './application.js';
 import type {ResourcesPanel} from './ResourcesPanel.js';
@@ -135,7 +136,8 @@ describeWithMockConnection('DeviceBoundSessionsTreeElement', () => {
         ['example2.com', ['session_1']],
         ['hidden.com', ['session_1']],
       ]),
-      emptySites: new Set(['example2.com', 'hidden.com'])
+      emptySites: new Set(['example2.com', 'hidden.com']),
+      noLongerFailedSessions: new Map(),
     });
 
     model.addVisibleSite('hidden.com');
@@ -338,5 +340,52 @@ describeWithMockConnection('DeviceBoundSessionsTreeElement', () => {
     // Session 1 should no longer be terminated.
     assert.isFalse(session1Node.listItemElement.classList.contains('device-bound-session-terminated'));
     assert.isFalse(session2Node.listItemElement.classList.contains('device-bound-session-terminated'));
+  });
+
+  it('updates the session tree element visual state when a session has errors', () => {
+    const root = new Application.DeviceBoundSessionsTreeElement.RootTreeElement(mockPanel, model);
+    root.onbind();
+
+    const site = 'example.com';
+    const sessionId = 'session_1';
+    const sessionId2 = 'session_2';
+    model.addVisibleSite(site);
+
+    const session = makeSession(site, sessionId);
+    const session2 = makeSession(site, sessionId2);
+    model.dispatchEventToListeners(
+        Application.DeviceBoundSessionsModel.DeviceBoundSessionModelEvents.INITIALIZE_SESSIONS,
+        {sessions: [session, session2]});
+    const siteNode = root.children()[0];
+    const sessionNode = siteNode.children()[0];
+    const sessionNode2 = siteNode.children()[1];
+
+    function checkIcon(node: TreeElement, expectedIcon: string) {
+      const icon = node.listItemElement.querySelector('devtools-icon');
+      assert.exists(icon);
+      assert.strictEqual(icon.getAttribute('name'), expectedIcon);
+    }
+
+    // Initially has database icon.
+    checkIcon(sessionNode, 'database');
+    checkIcon(sessionNode2, 'database');
+
+    // A failed event should change it to a warning icon.
+    const sessionHasErrorsStub = sinon.stub(model, 'sessionHasErrors');
+    sessionHasErrorsStub.withArgs(site, sessionId).returns(true);
+    model.dispatchEventToListeners(
+        Application.DeviceBoundSessionsModel.DeviceBoundSessionModelEvents.EVENT_OCCURRED, {site, sessionId});
+    checkIcon(sessionNode, 'warning');
+    checkIcon(sessionNode2, 'database');
+
+    // Clearing events should change it back to a database icon.
+    sessionHasErrorsStub.withArgs(site, sessionId).returns(false);
+    model.dispatchEventToListeners(Application.DeviceBoundSessionsModel.DeviceBoundSessionModelEvents.CLEAR_EVENTS, {
+      emptySessions: new Map(),
+      emptySites: new Set(),
+      noLongerFailedSessions: new Map([[site, [sessionId]]]),
+    });
+    checkIcon(sessionNode, 'database');
+    checkIcon(sessionNode2, 'database');
   });
 });

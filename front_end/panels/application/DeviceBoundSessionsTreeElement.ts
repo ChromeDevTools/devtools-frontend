@@ -120,8 +120,20 @@ export class RootTreeElement extends ApplicationPanelTreeElement {
     }
   }
 
-  #updateTerminatedSessionDisplay(site: string, sessionId: string|undefined): void {
+  #updateElementIconAndStyling(
+      sessionElement: ApplicationPanelTreeElement, isSessionTerminated: boolean, sessionHasErrors: boolean): void {
+    if (isSessionTerminated) {
+      sessionElement.listItemElement.classList.add('device-bound-session-terminated');
+      sessionElement.setLeadingIcons([createIcon('database-off')]);
+      return;
+    }
+    sessionElement.listItemElement.classList.remove('device-bound-session-terminated');
+    sessionElement.setLeadingIcons([createIcon(sessionHasErrors ? 'warning' : 'database')]);
+  }
+
+  #updateIconAndStyling(site: string, sessionId: string|undefined): void {
     const isSessionTerminated = this.#model.isSessionTerminated(site, sessionId);
+    const sessionHasErrors = this.#model.sessionHasErrors(site, sessionId);
     const siteMapEntry = this.#sites.get(site);
     if (!siteMapEntry) {
       return;
@@ -130,12 +142,21 @@ export class RootTreeElement extends ApplicationPanelTreeElement {
     if (!sessionElement) {
       return;
     }
-    if (isSessionTerminated) {
-      sessionElement.listItemElement.classList.add('device-bound-session-terminated');
-      sessionElement.setLeadingIcons([createIcon('database-off')]);
-    } else {
-      sessionElement.listItemElement.classList.remove('device-bound-session-terminated');
-      sessionElement.setLeadingIcons([createIcon('database')]);
+    this.#updateElementIconAndStyling(sessionElement, isSessionTerminated, sessionHasErrors);
+  }
+
+  #removeWarningIcons(noLongerFailedSessions: Map<string, Array<string|undefined>>): void {
+    for (const [site, noLongerFailedSessionIds] of noLongerFailedSessions) {
+      const siteData = this.#sites.get(site);
+      if (siteData) {
+        for (const noLongerFailedSessionId of noLongerFailedSessionIds) {
+          const sessionElement = siteData.sessions.get(noLongerFailedSessionId);
+          if (sessionElement) {
+            const isSessionTerminated = this.#model.isSessionTerminated(site, noLongerFailedSessionId);
+            this.#updateElementIconAndStyling(sessionElement, isSessionTerminated, /* sessionHasErrors=*/ false);
+          }
+        }
+      }
     }
   }
 
@@ -231,12 +252,13 @@ export class RootTreeElement extends ApplicationPanelTreeElement {
       {data: {site, sessionId}}: Common.EventTarget
           .EventTargetEvent<DeviceBoundSessionModelEventTypes[DeviceBoundSessionModelEvents.EVENT_OCCURRED]>): void {
     this.#addSiteSessionIfMissing(site, sessionId);
-    this.#updateTerminatedSessionDisplay(site, sessionId);
+    this.#updateIconAndStyling(site, sessionId);
   }
 
-  #onClearEvents({data: {emptySessions, emptySites}}: Common.EventTarget
+  #onClearEvents({data: {emptySessions, emptySites, noLongerFailedSessions}}: Common.EventTarget
                      .EventTargetEvent<DeviceBoundSessionModelEventTypes[DeviceBoundSessionModelEvents.CLEAR_EVENTS]>):
       void {
     this.#removeEmptyElements(emptySessions, emptySites);
+    this.#removeWarningIcons(noLongerFailedSessions);
   }
 }

@@ -26,6 +26,14 @@ devtools_entrypoint("bundle") {
 ts_library("unittests") {
   testonly = true
 
+  sources = [ "Runtime.browser.test.ts" ]
+
+  deps = [ ":bundle" ]
+}
+
+devtools_foundation_module("foundation_unittests") {
+  testonly = true
+
   sources = [ "Runtime.test.ts" ]
 
   deps = [ ":bundle" ]

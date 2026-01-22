@@ -276,6 +276,7 @@ group("foundation_unittests") {
     "core/i18n:foundation_unittests",
     "core/platform:unittests",
     "core/protocol_client:unittests",
+    "core/root:foundation_unittests",
     "core/sdk:foundation_unittests",
     "entrypoints/formatter_worker:unittests",
     "foundation:unittests",

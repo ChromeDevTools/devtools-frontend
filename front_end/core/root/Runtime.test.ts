@@ -64,8 +64,4 @@ describe('Runtime', () => {
         experiments.map(experiment => experiment.name),
         [Root.Runtime.ExperimentName.FONT_EDITOR, Root.Runtime.ExperimentName.APCA]);
   });
-
-  it('getChromeVersion result has the correct shape', () => {
-    assert.isTrue(/^\d{3}\.0\.0\.0$/.test(Root.Runtime.getChromeVersion()));
-  });
 });

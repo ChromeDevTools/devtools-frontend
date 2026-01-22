@@ -444,19 +444,47 @@ describe('ConsoleFormat', () => {
           styles,
           'background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAAAAABzHgM7AAAAF0lEQVR42mM4Awb/wYCBYg6EgghRzAEAWDWBGQVyKPMAAAAASUVORK5CYII=), url(http://localhost/a.png)');  // Multiple URLs
       assert.isFalse(styles.has('background-image'));
+
+      Console.ConsoleFormat.updateStyle(
+          styles, 'background-image:if(supports():"url(data:";else:url(http://localhost/a.png))');
+      assert.isFalse(styles.has('background-image'));
+
+      Console.ConsoleFormat.updateStyle(styles, 'background-image:if(else:urL(http://localhost/a.png))');
+      assert.isFalse(styles.has('background-image'));
+
+      Console.ConsoleFormat.updateStyle(styles, 'background-image:if(else:ur\\6c (http://localhost/a.png))');
+      assert.isFalse(styles.has('background-image'));
+
+      Console.ConsoleFormat.updateStyle(styles, 'background-image:if(else:\\u\\r\\l(http://localhost/a.png))');
+      assert.isFalse(styles.has('background-image'));
+
+      Console.ConsoleFormat.updateStyle(
+          styles, 'background-image:if(else:image\\-set("data:" 1x, "http://localhost/a.png" 2x))');
+      assert.isFalse(styles.has('background-image'));
+
+      Console.ConsoleFormat.updateStyle(
+          styles, 'background-image:if(else:image-se\\74 ("data:" 1x, "http://localhost/a.png" 2x))');
+      assert.isFalse(styles.has('background-image'));
+
+      Console.ConsoleFormat.updateStyle(styles, 'background-image:image-set("data:" 1x, "http://localhost/a.png" 2x)');
+      assert.isFalse(styles.has('background-image'));
     });
 
     it('allows data urls in values', () => {
       const dataUrl =
-          'url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAAAAABzHgM7AAAAF0lEQVR42mM4Awb/wYCBYg6EgghRzAEAWDWBGQVyKPMAAAAASUVORK5CYII=)';
+          'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAAAAABzHgM7AAAAF0lEQVR42mM4Awb/wYCBYg6EgghRzAEAWDWBGQVyKPMAAAAASUVORK5CYII=';
 
       const styles = new Map();
 
-      Console.ConsoleFormat.updateStyle(styles, `background-image:${dataUrl}`);
+      Console.ConsoleFormat.updateStyle(styles, `background-image:url(${dataUrl})`);
       assert.include(styles.get('background-image').value, 'data:image/png;base64');
 
-      Console.ConsoleFormat.updateStyle(styles, `border-image-source:${dataUrl}`);
+      Console.ConsoleFormat.updateStyle(styles, `border-image-source:url(${dataUrl})`);
       assert.include(styles.get('border-image-source').value, 'data:image/png;base64');
+
+      Console.ConsoleFormat.updateStyle(
+          styles, `background-image:image-set( "${dataUrl}" 1.5x , url("${dataUrl}") type( "image/png" ) )`);
+      assert.include(styles.get('background-image').value, 'data:image/png;base64');
     });
   });
 });

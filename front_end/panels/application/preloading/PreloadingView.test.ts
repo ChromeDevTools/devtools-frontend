@@ -7,6 +7,7 @@ import * as Protocol from '../../../generated/protocol.js';
 import {assertGridContents, assertGridWidgetContents} from '../../../testing/DataGridHelpers.js';
 import {
   getCleanTextContentFromElements,
+  getElementWithinComponent,
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
 import {createTarget} from '../../../testing/EnvironmentHelpers.js';
@@ -545,7 +546,6 @@ describeWithMockConnection('PreloadingAttemptView', () => {
     await emulator.openDevTools();
     const view = createAttemptView(emulator.primaryTarget);
     await RenderCoordinator.done();
-    await doubleRaf();
 
     const placeholder = view.contentElement.querySelector('.empty-state');
     assert.exists(placeholder);
@@ -580,11 +580,12 @@ describeWithMockConnection('PreloadingAttemptView', () => {
 `);
 
     await RenderCoordinator.done();
-    await doubleRaf();
 
     const preloadingGridComponent = view.getPreloadingGridForTest();
-    assert.isNotNull(preloadingGridComponent.contentElement);
 
+    assert.isNotNull(preloadingGridComponent.contentElement);
+    const preloadingDetailsComponent = view.getPreloadingDetailsForTest();
+    assert.isNotNull(preloadingDetailsComponent.shadowRoot);
     assertGridWidgetContents(
         preloadingGridComponent.contentElement,
         ['URL', 'Action', 'Rule set', 'Status'],
@@ -641,11 +642,11 @@ describeWithMockConnection('PreloadingAttemptView', () => {
     });
 
     await RenderCoordinator.done();
-    await doubleRaf();
 
     const preloadingGridComponent = view.getPreloadingGridForTest();
     assert.isNotNull(preloadingGridComponent.contentElement);
     const preloadingDetailsComponent = view.getPreloadingDetailsForTest();
+    assert.isNotNull(preloadingDetailsComponent.shadowRoot);
 
     assertGridWidgetContents(
         preloadingGridComponent.contentElement,
@@ -660,10 +661,10 @@ describeWithMockConnection('PreloadingAttemptView', () => {
         ],
     );
 
-    const placeholderHeader = preloadingDetailsComponent.contentElement.querySelector('.empty-state-header');
+    const placeholderHeader = preloadingDetailsComponent.shadowRoot.querySelector('.empty-state-header');
     assert.strictEqual(placeholderHeader?.textContent?.trim(), 'No element selected');
 
-    const placeholderDescription = preloadingDetailsComponent.contentElement.querySelector('.empty-state-description');
+    const placeholderDescription = preloadingDetailsComponent.shadowRoot.querySelector('.empty-state-description');
     assert.strictEqual(placeholderDescription?.textContent, 'Select an element for more details');
   });
 
@@ -719,7 +720,6 @@ describeWithMockConnection('PreloadingAttemptView', () => {
     });
 
     await RenderCoordinator.done();
-    await doubleRaf();
 
     const ruleSetSelectorToolbarItem = view.getRuleSetSelectorToolbarItemForTest();
     const preloadingGridComponent = view.getPreloadingGridForTest();
@@ -750,7 +750,6 @@ describeWithMockConnection('PreloadingAttemptView', () => {
     view.selectRuleSetOnFilterForTest('ruleSetId:0.2' as Protocol.Preload.RuleSetId);
 
     await RenderCoordinator.done();
-    await doubleRaf();
 
     assert.strictEqual(ruleSetSelectorToolbarItem.element.querySelector('span')?.textContent, 'example.com/');
 
@@ -771,7 +770,6 @@ describeWithMockConnection('PreloadingAttemptView', () => {
     view.selectRuleSetOnFilterForTest(null);
 
     await RenderCoordinator.done();
-    await doubleRaf();
 
     assert.strictEqual(ruleSetSelectorToolbarItem.element.querySelector('span')?.textContent, 'All speculative loads');
 
@@ -813,11 +811,11 @@ describeWithMockConnection('PreloadingAttemptView', () => {
 `);
 
     await RenderCoordinator.done();
-    await doubleRaf();
 
     const preloadingGridComponent = view.getPreloadingGridForTest();
     assert.isNotNull(preloadingGridComponent.contentElement);
     const preloadingDetailsComponent = view.getPreloadingDetailsForTest();
+    assert.isNotNull(preloadingDetailsComponent.shadowRoot);
 
     assertGridWidgetContents(
         preloadingGridComponent.contentElement,
@@ -835,9 +833,9 @@ describeWithMockConnection('PreloadingAttemptView', () => {
     preloadingGridComponent.contentElement.querySelectorAll('tr')[1].dispatchEvent(new Event('select'));
 
     await RenderCoordinator.done();
-    await preloadingDetailsComponent.updateComplete;
-    const report = preloadingDetailsComponent.contentElement.querySelector('devtools-report');
-    assert.instanceOf(report, ReportView.ReportView.Report);
+
+    const report =
+        getElementWithinComponent(preloadingDetailsComponent, 'devtools-report', ReportView.ReportView.Report);
 
     const keys = getCleanTextContentFromElements(report, 'devtools-report-key');
     const values = getCleanTextContentFromElements(report, 'devtools-report-value');
@@ -881,9 +879,9 @@ describeWithMockConnection('PreloadingAttemptView', () => {
     const preloadingGridComponent = view.getPreloadingGridForTest();
     assert.isNotNull(preloadingGridComponent.contentElement);
     const preloadingDetailsComponent = view.getPreloadingDetailsForTest();
+    assert.isNotNull(preloadingDetailsComponent.shadowRoot);
 
     await RenderCoordinator.done();
-    await doubleRaf();
 
     assertGridWidgetContents(
         preloadingGridComponent.contentElement,
@@ -901,9 +899,9 @@ describeWithMockConnection('PreloadingAttemptView', () => {
     preloadingGridComponent.contentElement.querySelectorAll('tr')[1].dispatchEvent(new Event('select'));
 
     await RenderCoordinator.done();
-    await preloadingDetailsComponent.updateComplete;
-    const report = preloadingDetailsComponent.contentElement.querySelector('devtools-report');
-    assert.instanceOf(report, ReportView.ReportView.Report);
+
+    const report =
+        getElementWithinComponent(preloadingDetailsComponent, 'devtools-report', ReportView.ReportView.Report);
 
     const keys = getCleanTextContentFromElements(report, 'devtools-report-key');
     const values = getCleanTextContentFromElements(report, 'devtools-report-value');
@@ -955,9 +953,9 @@ describeWithMockConnection('PreloadingAttemptView', () => {
     const preloadingGridComponent = view.getPreloadingGridForTest();
     assert.isNotNull(preloadingGridComponent.contentElement);
     const preloadingDetailsComponent = view.getPreloadingDetailsForTest();
+    assert.isNotNull(preloadingDetailsComponent.shadowRoot);
 
     await RenderCoordinator.done();
-    await doubleRaf();
 
     assertGridWidgetContents(
         preloadingGridComponent.contentElement,
@@ -975,9 +973,9 @@ describeWithMockConnection('PreloadingAttemptView', () => {
     preloadingGridComponent.contentElement.querySelectorAll('tr')[1].dispatchEvent(new Event('select'));
 
     await RenderCoordinator.done();
-    await preloadingDetailsComponent.updateComplete;
-    const report = preloadingDetailsComponent.contentElement.querySelector('devtools-report');
-    assert.instanceOf(report, ReportView.ReportView.Report);
+
+    const report =
+        getElementWithinComponent(preloadingDetailsComponent, 'devtools-report', ReportView.ReportView.Report);
 
     const keys = getCleanTextContentFromElements(report, 'devtools-report-key');
     const values = getCleanTextContentFromElements(report, 'devtools-report-value');

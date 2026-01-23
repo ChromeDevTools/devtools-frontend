@@ -16,7 +16,7 @@
     "selector-type-no-unknown": [
       true,
       {
-        "ignoreTypes": ["/^devtools-/", "/^dt-/", "x-link"]
+        "ignoreTypes": ["/^devtools-/", "/^dt-/"]
       }
     ],
     "selector-class-pattern": null,

@@ -11,23 +11,21 @@ import {
   copyLinkAddressLabel,
   openLinkExternallyLabel,
 } from './UIUtils.js';
-import {XLink} from './XLink.js';
 
 /**
  * We can move this next to the Link after
- * the x-link is removed and the context menu
- * is decoupled from the legacy bundle
+ * the context menu is decoupled from the legacy bundle
  */
 export class LinkContextMenuProvider implements Provider<Node> {
   appendApplicableItems(_event: Event, contextMenu: ContextMenu, target: Node): void {
     let targetNode: Node|null = target;
-    while (targetNode && !(targetNode instanceof XLink || targetNode instanceof Link)) {
+    while (targetNode && !(targetNode instanceof Link)) {
       targetNode = targetNode.parentNodeOrShadowHost();
     }
     if (!targetNode?.href) {
       return;
     }
-    const node: XLink|Link = targetNode;
+    const node: Link = targetNode;
     contextMenu.revealSection().appendItem(openLinkExternallyLabel(), () => {
       if (node.href) {
         UIHelpers.openInNewTab(node.href);

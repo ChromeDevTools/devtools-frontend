@@ -53,8 +53,8 @@ color: red;
       const linklessRenderer = new AiAssistance.MarkdownRendererWithCodeBlock();
       for (const linkCase of linkCases) {
         const elem = renderToElem(linkCase, linklessRenderer);
-        assert.lengthOf(elem.querySelectorAll('a, x-link, devtools-link'), 0);
-        assert.isFalse(['<a', '<x-link', '<devtools-link'].some(tagName => elem.outerHTML.includes(tagName)));
+        assert.lengthOf(elem.querySelectorAll('a, devtools-link'), 0);
+        assert.isFalse(['<a', '<devtools-link'].some(tagName => elem.outerHTML.includes(tagName)));
       }
     });
 
@@ -71,8 +71,8 @@ color: red;
       const linklessRenderer = new AiAssistance.MarkdownRendererWithCodeBlock();
       for (const imageCase of imageCases) {
         const elem = renderToElem(imageCase, linklessRenderer);
-        assert.lengthOf(elem.querySelectorAll('a, x-link, devtools-link, img, devtools-markdown-image'), 0);
-        assert.isFalse(['<a', '<x-link', '<devtools-link', '<img', '<devtools-markdown-image'].some(
+        assert.lengthOf(elem.querySelectorAll('a, devtools-link, img, devtools-markdown-image'), 0);
+        assert.isFalse(['<a', '<devtools-link', '<img', '<devtools-markdown-image'].some(
             tagName => elem.outerHTML.includes(tagName)));
       }
     });

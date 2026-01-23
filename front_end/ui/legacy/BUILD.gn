@@ -98,8 +98,6 @@ devtools_ui_module("ui") {
     "ViewManager.ts",
     "ViewRegistration.ts",
     "Widget.ts",
-    "XElement.ts",
-    "XLink.ts",
     "ZoomManager.ts",
   ]
 
@@ -160,15 +158,12 @@ devtools_entrypoint("bundle") {
     "../components/list:*",
     "../components/markdown_view:*",
     "../components/menus:*",
+    "../components/panel_feedback/*",
     "../components/request_link_icon:unittests",
     "../components/snackbars:*",
+    "../components/text_editor/*",
     "../components/tooltips:*",
     "./*",
-
-    # Required for x-link
-    "../components/panel_feedback/*",
-    "../components/settings/*",
-    "../components/text_editor/*",
 
     # Required for correct button styling in the Computed tab
     # (http://crbug.com/435601104).
@@ -211,7 +206,6 @@ devtools_ui_module("unittests") {
     "ViewManager.test.ts",
     "ViewRegistration.test.ts",
     "Widget.test.ts",
-    "XLink.test.ts",
   ]
 
   deps = [

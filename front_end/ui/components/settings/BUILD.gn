@@ -26,7 +26,6 @@ devtools_ui_module("settings") {
     "../../../core/host:bundle",
     "../../../core/i18n:bundle",
     "../../kit:bundle",
-    "../../legacy:bundle",
     "../../lit:bundle",
     "../../visual_logging:bundle",
     "../buttons:bundle",

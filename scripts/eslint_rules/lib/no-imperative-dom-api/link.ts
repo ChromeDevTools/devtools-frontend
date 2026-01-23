@@ -2,19 +2,19 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /**
- * @file A library to identify and templatize UI.XLink and related calls.
+ * @file A library to identify and templatize Link and related calls.
  */
 
 import {isIdentifier, isIdentifierChain, type RuleCreator} from './ast.ts';
 import {DomFragment} from './dom-fragment.ts';
 
-export const xLink: RuleCreator = {
+export const Link: RuleCreator = {
   create(context) {
     const sourceCode = context.sourceCode;
 
     return {
       CallExpression(node) {
-        if (isIdentifierChain(node.callee, ['UI', 'XLink', 'XLink', 'create'])) {
+        if (isIdentifierChain(node.callee, ['Link', 'create'])) {
           const domFragment = DomFragment.getOrCreate(node, sourceCode);
           domFragment.tagName = 'devtools-link';
           const url = node.arguments[0];
@@ -32,14 +32,14 @@ export const xLink: RuleCreator = {
           if (className && !isIdentifier(className, 'undefined')) {
             domFragment.classList.push(className);
           }
-          const jslogContext = node.arguments[4];
+          const jslogContext = node.arguments[3];
           if (jslogContext && !isIdentifier(jslogContext, 'undefined')) {
             domFragment.bindings.push({
               key: 'jslogContext',
               value: jslogContext,
             });
           }
-          const tabIndex = node.arguments[5];
+          const tabIndex = node.arguments[4];
           if (tabIndex && (tabIndex.type !== 'Literal' || tabIndex.value !== 0)) {
             domFragment.attributes.push({
               key: 'tabindex',

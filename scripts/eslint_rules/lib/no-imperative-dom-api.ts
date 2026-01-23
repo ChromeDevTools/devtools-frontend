@@ -19,13 +19,13 @@ import {domApi} from './no-imperative-dom-api/dom-api.ts';
 import {DomFragment} from './no-imperative-dom-api/dom-fragment.ts';
 import {i18n} from './no-imperative-dom-api/i18n.ts';
 import {icon} from './no-imperative-dom-api/icon.ts';
+import {Link} from './no-imperative-dom-api/link.ts';
 import {reportView} from './no-imperative-dom-api/report-view.ts';
 import {splitWidget} from './no-imperative-dom-api/split-widget.ts';
 import {toolbar} from './no-imperative-dom-api/toolbar.ts';
 import {uiFragment} from './no-imperative-dom-api/ui-fragment.ts';
 import {uiUtils} from './no-imperative-dom-api/ui-utils.ts';
 import {widget} from './no-imperative-dom-api/widget.ts';
-import {xLink} from './no-imperative-dom-api/x-link.ts';
 import {createRule} from './utils/ruleCreator.ts';
 
 type Identifier = TSESTree.Identifier;
@@ -68,7 +68,7 @@ export default createRule({
       uiFragment.create(context),
       uiUtils.create(context),
       widget.create(context),
-      xLink.create(context),
+      Link.create(context),
     ];
 
     function getEvent(event: Node): string|null {

@@ -51,8 +51,6 @@ import * as UIUtils from './UIUtils.js';
 import * as View from './View.js';
 import * as ViewManager from './ViewManager.js';
 import * as Widget from './Widget.js';
-import * as XElement from './XElement.js';
-import * as XLink from './XLink.js';
 import * as ZoomManager from './ZoomManager.js';
 
 export {
@@ -105,7 +103,5 @@ export {
   View,
   ViewManager,
   Widget,
-  XElement,
-  XLink,
   ZoomManager
 };

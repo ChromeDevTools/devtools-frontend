@@ -1488,9 +1488,9 @@ class SomeWidget extends UI.Widget.Widget {
   constructor() {
     super();
     this.contentElement.appendChild(
-        UI.XLink.XLink.create('https://google.com', 'Google', 'some-class', undefined, 'some-context', 0));
+        Link.create('https://google.com', 'Google', 'some-class', 'some-context', 0));
     this.contentElement.appendChild(
-        UI.XLink.XLink.create('https://chromium.org', 'Chromium', undefined, undefined, undefined, 1));
+        Link.create('https://chromium.org', 'Chromium', undefined, undefined, 1));
   }
 }`,
       output: `

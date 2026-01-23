@@ -192,7 +192,8 @@ describeWithEnvironment('StylingAgent', function() {
       const agent = new StylingAgent.StylingAgent({
         aidaClient: mockAidaClient([
           [{
-            functionCalls: [{name: 'executeJavaScript', args: {title: 'title2', thought: 'thought2', code: 'action2'}}],
+            functionCalls:
+                [{name: 'executeJavaScript', args: {title: 'title2', explanation: 'thought2', code: 'action2'}}],
             explanation: '',
           }],
           [{explanation: 'answer2'}]
@@ -403,7 +404,7 @@ describeWithEnvironment('StylingAgent', function() {
         [{
           functionCalls: [{
             name: 'executeJavaScript',
-            args: {code: 'const data = {"test": "observation"}', thought: 'I am thinking.', title: 'thinking'},
+            args: {code: 'const data = {"test": "observation"}', explanation: 'I am thinking.', title: 'thinking'},
           }],
           explanation: '',
         }],
@@ -528,7 +529,7 @@ describeWithEnvironment('StylingAgent', function() {
           [{
             functionCalls: [{
               name: 'executeJavaScript',
-              args: {thought: 'I am thinking.', code: 'console.log(\'hello\');'},
+              args: {explanation: 'I am thinking.', code: 'console.log(\'hello\');'},
             }],
             explanation: 'this is my text before the actual answer',
           }],
@@ -554,21 +555,21 @@ describeWithEnvironment('StylingAgent', function() {
           [{
             functionCalls: [{
               name: 'executeJavaScript',
-              args: {thought: 'thought 1', title: 'test', code: 'console.log(\'test\')'},
+              args: {explanation: 'thought 1', title: 'test', code: 'console.log(\'test\')'},
             }],
             explanation: '',
           }],
           [{
             functionCalls: [{
               name: 'executeJavaScript',
-              args: {thought: 'thought 2', title: 'test', code: 'console.log(\'test\')'},
+              args: {explanation: 'thought 2', title: 'test', code: 'console.log(\'test\')'},
             }],
             explanation: '',
           }],
           [{
             functionCalls: [{
               name: 'executeJavaScript',
-              args: {thought: 'thought 3', title: 'test', code: 'console.log(\'test\')'},
+              args: {explanation: 'thought 3', title: 'test', code: 'console.log(\'test\')'},
             }],
             explanation: '',
           }],
@@ -592,21 +593,21 @@ describeWithEnvironment('StylingAgent', function() {
           [{
             functionCalls: [{
               name: 'executeJavaScript',
-              args: {thought: 'thought 1', title: 'test', code: 'console.log(\'test\')'},
+              args: {explanation: 'thought 1', title: 'test', code: 'console.log(\'test\')'},
             }],
             explanation: '',
           }],
           [{
             functionCalls: [{
               name: 'executeJavaScript',
-              args: {thought: 'thought 2', title: 'test', code: 'console.log(\'test\')'},
+              args: {explanation: 'thought 2', title: 'test', code: 'console.log(\'test\')'},
             }],
             explanation: '',
           }],
           [{
             functionCalls: [{
               name: 'executeJavaScript',
-              args: {thought: 'thought 3', title: 'test', code: 'console.log(\'test\')'},
+              args: {explanation: 'thought 3', title: 'test', code: 'console.log(\'test\')'},
             }],
             explanation: '',
           }],

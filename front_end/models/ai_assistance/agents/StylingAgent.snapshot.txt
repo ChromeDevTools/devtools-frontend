@@ -106,7 +106,7 @@ Content:
             "type": 1,
             "description": "JavaScript code snippet to run on the inspected page. Make sure the code is formatted for readability.\n\n# Instructions\n\n* To return data, define a top-level `data` variable and populate it with data you want to get. Only JSON-serializable objects can be assigned to `data`.\n* If you modify styles on an element, ALWAYS call the pre-defined global `async setElementStyles(el: Element, styles: object)` function. This function is an internal mechanism for you and should never be presented as a command/advice to the user.\n* **CRITICAL** Only get styles that might be relevant to the user request.\n* **CRITICAL** Never assume a selector for the elements unless you verified your knowledge.\n* **CRITICAL** Consider that `data` variable from the previous function calls are not available in a new function call.\n\nFor example, the code to change element styles:\n\n```\nawait setElementStyles($0, {\n  color: 'blue',\n});\n```\n\nFor example, the code to get overlapping elements:\n\n```\nconst data = {\n  overlappingElements: Array.from(document.querySelectorAll('*'))\n    .filter(el => {\n      const rect = el.getBoundingClientRect();\n      const popupRect = $0.getBoundingClientRect();\n      return (\n        el !== $0 &&\n        rect.left < popupRect.right &&\n        rect.right > popupRect.left &&\n        rect.top < popupRect.bottom &&\n        rect.bottom > popupRect.top\n      );\n    })\n    .map(el => ({\n      tagName: el.tagName,\n      id: el.id,\n      className: el.className,\n      zIndex: window.getComputedStyle(el)['z-index']\n    }))\n};\n```\n"
           },
-          "thought": {
+          "explanation": {
             "type": 1,
             "description": "Explain why you want to run this code"
           },
@@ -117,7 +117,7 @@ Content:
         },
         "required": [
           "code",
-          "thought",
+          "explanation",
           "title"
         ]
       }
@@ -155,7 +155,7 @@ Content:
           "name": "executeJavaScript",
           "args": {
             "title": "title2",
-            "thought": "thought2",
+            "explanation": "thought2",
             "code": "action2"
           }
         }
@@ -259,7 +259,7 @@ Content:
             "name": "executeJavaScript",
             "args": {
               "code": "const data = {\"test\": \"observation\"}",
-              "thought": "I am thinking.",
+              "explanation": "I am thinking.",
               "title": "thinking"
             }
           }
@@ -451,7 +451,7 @@ Content:
         "functionCall": {
           "name": "executeJavaScript",
           "args": {
-            "thought": "thought 1",
+            "explanation": "thought 1",
             "title": "test",
             "code": "console.log('test')"
           }
@@ -479,7 +479,7 @@ Content:
         "functionCall": {
           "name": "executeJavaScript",
           "args": {
-            "thought": "thought 2",
+            "explanation": "thought 2",
             "title": "test",
             "code": "console.log('test')"
           }
@@ -507,7 +507,7 @@ Content:
         "functionCall": {
           "name": "executeJavaScript",
           "args": {
-            "thought": "thought 3",
+            "explanation": "thought 3",
             "title": "test",
             "code": "console.log('test')"
           }

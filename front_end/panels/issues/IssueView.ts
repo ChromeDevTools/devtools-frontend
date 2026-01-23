@@ -455,7 +455,7 @@ export class IssueView extends UI.TreeOutline.TreeElement {
       const linkListItem = linkList.createChild('li');
       // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
       render(
-          html`<devtools-link class="link devtools-link" href=${description.link} .jslogContext=${'learn-more'}>${
+          html`<devtools-link class="link devtools-link" href=${description.link} jslogcontext="learn-more">${
               i18nString(UIStrings.learnMoreS, {PH1: description.linkTitle})}</devtools-link>`,
           linkListItem);
     }

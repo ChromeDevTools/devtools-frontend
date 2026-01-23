@@ -1192,7 +1192,7 @@ export class RecorderController extends LitElement {
           <devtools-link
             class="devtools-link"
             href=${RECORDER_EXPLANATION_URL}
-            .jslogContext=${'learn-more'}
+            jslogcontext="learn-more"
           >${i18nString(UIStrings.learnMore)}</devtools-link>
         </div>
         <devtools-button .variant=${Buttons.Button.Variant.TONAL} jslogContext=${Actions.RecorderActions.CREATE_RECORDING} @click=${this.#onCreateNewRecording}>${i18nString(UIStrings.createRecording)}</devtools-button>
@@ -1470,7 +1470,7 @@ export class RecorderController extends LitElement {
             <div class="feedback">
               <devtools-link class="devtools-link" title=${i18nString(UIStrings.sendFeedback)} href=${
                 FEEDBACK_URL
-              } .jslogContext=${'feedback'}>${i18nString(UIStrings.sendFeedback)}</devtools-link>
+              } jslogcontext="feedback">${i18nString(UIStrings.sendFeedback)}</devtools-link>
             </div>
             <div class="separator"></div>
             <devtools-shortcut-dialog

@@ -262,7 +262,7 @@ function renderMismatchedSections(data: MismatchedData): LitTemplate {
       <devtools-link
         class="link devtools-link"
         href=${data.pageURL}
-        .jslogContext=${'current-url'}
+        jslogcontext="current-url"
       >${data.pageURL}</devtools-link>
     </devtools-report-section>
 
@@ -412,7 +412,7 @@ const DEFAULT_VIEW: View = (input, _output, target) => {
         <devtools-link
           class="link devtools-link"
           href=${'https://developer.chrome.com/blog/prerender-pages/'}
-          .jslogContext=${'learn-more'}
+          jslogcontext="learn-more"
         >${i18nString(UIStrings.learnMore)}</devtools-link>
       </devtools-report-section>
     </devtools-report>`, target);

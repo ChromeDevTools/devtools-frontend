@@ -300,7 +300,7 @@ function renderSearchButton(onSearch: ViewInput['callbacks']['onSearch']): Lit.T
 
 function renderLearnMoreAboutInsights(): Lit.TemplateResult {
   // clang-format off
-  return html`<devtools-link href=${LEARN_MORE_URL} class="link" .jslogContext=${'learn-more'}>
+  return html`<devtools-link href=${LEARN_MORE_URL} class="link" jslogcontext="learn-more">
     ${i18nString(UIStrings.learnMore)}
   </devtools-link>`;
   // clang-format on
@@ -321,7 +321,7 @@ function maybeRenderSources(
           <devtools-link
             href=${url}
             class=${Directives.classMap({link: true, highlighted: index === highlightedCitationIndex})}
-            .jslogContext=${'references.console-insights'}
+            jslogcontext="references.console-insights"
             ${Directives.ref(e => { output.citationLinks[index] = e as HTMLElement; })}
             @animationend=${onCitationAnimationEnd}
           >
@@ -347,7 +347,7 @@ function maybeRenderRelatedContent(relatedUrls: string[], directCitationUrls: st
           <devtools-link
             href=${relatedUrl}
             class="link"
-            .jslogContext=${'references.console-insights'}
+            jslogcontext="references.console-insights"
           >
             ${relatedUrl}
           </devtools-link>
@@ -454,12 +454,12 @@ function renderConsentReminder(noLogging: boolean): Lit.TemplateResult {
       <div>Use of this feature is subject to the <devtools-link
           href=${TERMS_OF_SERVICE_URL}
           class="link"
-          .jslogContext=${'terms-of-service.console-insights'}>
+          jslogcontext="terms-of-service.console-insights">
         Google Terms of Service
         </devtools-link> and <devtools-link
           href=${PRIVACY_POLICY_URL}
           class="link"
-          .jslogContext=${'privacy-policy.console-insights'}>
+          jslogcontext="privacy-policy.console-insights">
         Google Privacy Policy
         </devtools-link>
       </div>
@@ -471,7 +471,7 @@ function renderConsentReminder(noLogging: boolean): Lit.TemplateResult {
         <devtools-link
           href=${CODE_SNIPPET_WARNING_URL}
           class="link"
-          .jslogContext=${'code-snippets-explainer.console-insights'}
+          jslogcontext="code-snippets-explainer.console-insights"
         >Use generated code snippets with caution</devtools-link>
       </div>
     </div>`;
@@ -515,7 +515,7 @@ function renderDisclaimer(noLogging: boolean, onDisclaimerSettingsLink: () => vo
               jslog=${VisualLogging.action('open-ai-settings').track({click: true})}>
       Open settings
     </button> or <devtools-link href=${LEARN_MORE_URL}
-        class="link" .jslogContext=${'learn-more'}>
+        class="link" jslogcontext="learn-more">
       learn more
     </devtools-link>
   </span>`;

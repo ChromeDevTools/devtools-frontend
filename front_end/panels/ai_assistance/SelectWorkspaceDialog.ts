@@ -93,7 +93,7 @@ export const SELECT_WORKSPACE_DIALOG_DEFAULT_VIEW: View = (input, _output, targe
             <devtools-link
               class="devtools-link"
               href="https://goo.gle/devtools-automatic-workspace-folders"
-              .jslogContext=${'automatic-workspaces-documentation'}
+              jslogcontext="automatic-workspaces-documentation"
             >com.chrome.devtools.json</devtools-link>
             file to automatically connect your project to DevTools.
           </div>

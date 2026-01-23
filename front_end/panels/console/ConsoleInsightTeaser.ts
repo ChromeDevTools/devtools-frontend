@@ -169,7 +169,7 @@ function renderNoModel(input: ViewInput): Lit.TemplateResult {
           lockedString(UIStringsNotTranslate.getHelpForError)}
         </h2>
         <div>You can get quick answers from <devtools-link
-            .jslogContext=${'insights-teaser-built-in-ai-documentation'}
+            jslogcontext="insights-teaser-built-in-ai-documentation"
             class="link"
             href=${BUILT_IN_AI_DOCUMENTATION}
           >
@@ -329,7 +329,7 @@ function renderFooter(input: ViewInput): Lit.TemplateResult {
             class="devtools-link"
             title=${lockedString(UIStringsNotTranslate.learnMoreAboutAiSummaries)}
             href=${DATA_USAGE_URL}
-            .jslogContext=${'explain.teaser.learn-more'}
+            jslogcontext="explain.teaser.learn-more"
           >${lockedString(UIStringsNotTranslate.learnMoreAboutAiSummaries)}</devtools-link>
         </div>
       </devtools-tooltip>
@@ -513,7 +513,7 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
           content: html`<devtools-link
             href=${CODE_SNIPPET_WARNING_URL}
             class="link devtools-link"
-            .jslogContext=${'explain.teaser.code-snippets-explainer'}
+            jslogcontext="explain.teaser.code-snippets-explainer"
           >${lockedString(UIStringsNotTranslate.freDisclaimerTextUseWithCaution)}</devtools-link>`,
           // clang-format on
         }

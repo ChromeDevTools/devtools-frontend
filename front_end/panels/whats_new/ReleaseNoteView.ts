@@ -90,7 +90,7 @@ export class ReleaseNoteView extends UI.Panel.Panel {
                 return html`
                   <devtools-link
                   href=${value.link}
-                  .jslogContext=${'learn-more'}>
+                  jslogcontext="learn-more">
                     <div class="video">
                       <img class="thumbnail" src=${input.getThumbnailPath(value.type ?? VideoType.WHATS_NEW)}>
                       <div class="thumbnail-description"><span>${value.description}</span></div>

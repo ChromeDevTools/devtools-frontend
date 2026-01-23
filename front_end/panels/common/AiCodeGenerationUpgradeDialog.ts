@@ -82,7 +82,7 @@ export class AiCodeGenerationUpgradeDialog {
               @click=${() => {
                 void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
                 }}
-              .jslogContext=${'ai-code-generation-upgrade-dialog.manage-in-settings'}
+              jslogcontext="ai-code-generation-upgrade-dialog.manage-in-settings"
               .variant=${Buttons.Button.Variant.OUTLINED}
               aria-label=${lockedString(UIStringsNotTranslate.manageInSettings)}>
               ${lockedString(UIStringsNotTranslate.manageInSettings)}
@@ -91,7 +91,7 @@ export class AiCodeGenerationUpgradeDialog {
               @click=${() => {
                   dialog.hide();
                 }}
-              .jslogContext=${'ai-code-generation-upgrade-dialog.continue'}
+              jslogcontext="ai-code-generation-upgrade-dialog.continue"
               .variant=${Buttons.Button.Variant.PRIMARY}>
               ${lockedString(UIStringsNotTranslate.gotIt)}
             </devtools-button>

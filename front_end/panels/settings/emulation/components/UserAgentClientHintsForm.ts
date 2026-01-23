@@ -868,7 +868,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
            href="https://web.dev/user-agent-client-hints/"
            class="link"
            aria-label=${i18nString(UIStrings.learnMore)}
-           .jslogContext=${'learn-more'}
+           jslogcontext="learn-more"
           >
             ${i18nString(UIStrings.learnMore)}
           </devtools-link>

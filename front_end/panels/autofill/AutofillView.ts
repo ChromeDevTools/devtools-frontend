@@ -238,14 +238,14 @@ const DEFAULT_VIEW: View = (input: ViewInput, _output: ViewOutput, target: HTMLE
                 jslog=${VisualLogging.toggle(input.autoOpenViewSetting.name).track({ change: true })}>
               ${i18nString(UIStrings.autoShow)}
             </devtools-checkbox>
-            <devtools-link href=${AUTOFILL_FEEDBACK_URL} class="feedback link" .jslogContext=${'feedback'}>${i18nString(UIStrings.sendFeedback)}</devtools-link>
+            <devtools-link href=${AUTOFILL_FEEDBACK_URL} class="feedback link" jslogcontext="feedback">${i18nString(UIStrings.sendFeedback)}</devtools-link>
           </div>
           <div class="placeholder-container" jslog=${VisualLogging.pane('autofill-empty')}>
             <div class="empty-state">
               <span class="empty-state-header">${i18nString(UIStrings.noAutofill)}</span>
               <div class="empty-state-description">
                 <span>${i18nString(UIStrings.toStartDebugging)}</span>
-                <devtools-link href=${AUTOFILL_INFO_URL} class="link" .jslogContext=${'learn-more'}>${i18nString(UIStrings.learnMore)}</devtools-link>
+                <devtools-link href=${AUTOFILL_INFO_URL} class="link" jslogcontext="learn-more">${i18nString(UIStrings.learnMore)}</devtools-link>
               </div>
             </div>
           </div>
@@ -280,7 +280,7 @@ const DEFAULT_VIEW: View = (input: ViewInput, _output: ViewOutput, target: HTMLE
                   ${i18nString(UIStrings.autoShow)}
                 </devtools-checkbox>
               </div>
-              <devtools-link href=${AUTOFILL_FEEDBACK_URL} class="feedback link" .jslogContext=${'feedback'}>${i18nString(UIStrings.sendFeedback)}</devtools-link>
+              <devtools-link href=${AUTOFILL_FEEDBACK_URL} class="feedback link" jslogcontext="feedback">${i18nString(UIStrings.sendFeedback)}</devtools-link>
             </div>
             ${renderAddress()}
           </div>

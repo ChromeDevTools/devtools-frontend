@@ -159,7 +159,7 @@ const renderMainFrameInformation = (input: ViewInput): Lit.LitTemplate => {
     </devtools-report-divider>
     <devtools-report-section>
       <devtools-link href="https://privacycg.github.io/nav-tracking-mitigations/#bounce-tracking-mitigations" class="link"
-      .jslogContext=${'learn-more'}>
+      jslogcontext="learn-more">
         ${i18nString(UIStrings.learnMore)}
       </devtools-link>
     </devtools-report-section>

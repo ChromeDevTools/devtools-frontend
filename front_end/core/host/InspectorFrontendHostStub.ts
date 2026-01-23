@@ -562,4 +562,7 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
   }
   recordFunctionCall(_event: FunctionCallEvent): void {
   }
+
+  setChromeFlag(_flagName: string, _value: boolean): void {
+  }
 }

@@ -451,6 +451,8 @@ export interface InspectorFrontendHostAPI {
   recordKeyDown(event: KeyDownEvent): void;
   recordSettingAccess(event: SettingAccessEvent): void;
   recordFunctionCall(event: FunctionCallEvent): void;
+
+  setChromeFlag(flagName: string, value: boolean): void;
 }
 
 export interface AcceleratorDescriptor {

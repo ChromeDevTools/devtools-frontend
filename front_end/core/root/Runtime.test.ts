@@ -65,4 +65,101 @@ describe('Runtime', () => {
         experiments.map(experiment => experiment.name),
         [Root.ExperimentNames.ExperimentName.FONT_EDITOR, Root.ExperimentNames.ExperimentName.APCA]);
   });
+
+  describe('ExperimentsSupport', () => {
+    it('throws for unknown experiment', () => {
+      const support = new Root.Runtime.ExperimentsSupport();
+      assert.throws(() => support.isEnabled('test-experiment' as Root.ExperimentNames.ExperimentName));
+    });
+
+    it('throws if registering the same experiment twice', () => {
+      const support = new Root.Runtime.ExperimentsSupport();
+      support.register(
+          'experiment' as Root.ExperimentNames.ExperimentName, 'experiment title' as Platform.UIString.LocalizedString);
+      assert.throws(() => {
+        support.register(
+            'experiment' as Root.ExperimentNames.ExperimentName,
+            'experiment title' as Platform.UIString.LocalizedString);
+      });
+    });
+
+    it('registers a host experiment', () => {
+      const support = new Root.Runtime.ExperimentsSupport();
+      support.registerHostExperiment({
+        name: 'experiment' as Root.ExperimentNames.ExperimentName,
+        title: 'experiment title',
+        aboutFlag: 'about:flag',
+        isEnabled: false,
+      });
+      assert.isFalse(support.isEnabled('experiment' as Root.ExperimentNames.ExperimentName));
+    });
+
+    it('enables a host experiment', () => {
+      const support = new Root.Runtime.ExperimentsSupport();
+      support.registerHostExperiment({
+        name: 'experiment' as Root.ExperimentNames.ExperimentName,
+        title: 'experiment title',
+        aboutFlag: 'about:flag',
+        isEnabled: false,
+      });
+      support.setEnabled('experiment' as Root.ExperimentNames.ExperimentName, true);
+      assert.isTrue(support.isEnabled('experiment' as Root.ExperimentNames.ExperimentName));
+    });
+
+    it('enables a host experiment via initialization', () => {
+      const support = new Root.Runtime.ExperimentsSupport();
+      support.registerHostExperiment({
+        name: 'experiment' as Root.ExperimentNames.ExperimentName,
+        title: 'experiment title',
+        aboutFlag: 'about:flag',
+        isEnabled: true,
+      });
+      assert.isTrue(support.isEnabled('experiment' as Root.ExperimentNames.ExperimentName));
+    });
+
+    it('enables a host experiment for test', () => {
+      const support = new Root.Runtime.ExperimentsSupport();
+      support.registerHostExperiment({
+        name: 'experiment' as Root.ExperimentNames.ExperimentName,
+        title: 'experiment title',
+        aboutFlag: 'about:flag',
+        isEnabled: false,
+      });
+      assert.isFalse(support.isEnabled('experiment' as Root.ExperimentNames.ExperimentName));
+      support.enableForTest('experiment' as Root.ExperimentNames.ExperimentName);
+      assert.isTrue(support.isEnabled('experiment' as Root.ExperimentNames.ExperimentName));
+    });
+
+    it('throws if registering a host experiment with the same name as an existing experiment', () => {
+      const support = new Root.Runtime.ExperimentsSupport();
+      support.register(
+          'experiment' as Root.ExperimentNames.ExperimentName, 'experiment title' as Platform.UIString.LocalizedString);
+      assert.throws(() => {
+        support.registerHostExperiment({
+          name: 'experiment' as Root.ExperimentNames.ExperimentName,
+          title: 'experiment title',
+          aboutFlag: 'about:flag',
+          isEnabled: false,
+        });
+      });
+    });
+
+    it('throws if registering a host experiment with the same name as an existing host experiment', () => {
+      const support = new Root.Runtime.ExperimentsSupport();
+      support.registerHostExperiment({
+        name: 'experiment' as Root.ExperimentNames.ExperimentName,
+        title: 'experiment title',
+        aboutFlag: 'about:flag',
+        isEnabled: false,
+      });
+      assert.throws(() => {
+        support.registerHostExperiment({
+          name: 'experiment' as Root.ExperimentNames.ExperimentName,
+          title: 'experiment title',
+          aboutFlag: 'about:flag',
+          isEnabled: false,
+        });
+      });
+    });
+  });
 });

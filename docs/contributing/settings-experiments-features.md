@@ -12,6 +12,9 @@ Adding new DevTools experiments is deprecated, the preferred way for adding new
 features / exposing experimental features is via `base::Feature`s. These are
 controllable via Chromium command line parameters or optionally via `chrome://flags`.
 
+Note: We are currently in the process of migrating away from DevTools experiments,
+this documentation is partly outdated and will be updated ASAP.
+
 
 [TOC]
 
@@ -76,9 +79,9 @@ This step is optional. If you want the `base::Feature` to be controllable via th
 
 Please refer to this [example CL](https://crrev.com/c/5626314).
 
-## How to add experiments
+## DEPRECATED:How to add experiments
 
-Note: Adding new DevTools experiments is deprecated, please use a `base::Feature` instead.
+Note: We are currently in the process of migrating away from DevTools experiments, please use a `base::Feature` instead.
 
 If you want to launch a new feature in DevTools behind an experiment flag, you
 will need to do two things:

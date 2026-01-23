@@ -51,10 +51,17 @@ function findFunctionInClass(classNode, functionName) {
 /**
  * Determines if AST Node is a call to register a DevtoolsExperiment
  */
-function isExperimentRegistrationCall(node) {
+function isExperimentRegistrationCall(expression) {
+  return (expression && expression.type === 'CallExpression' && expression.callee.property.name === 'register');
+}
+
+/**
+ * Determines if AST Node is a call to register a DevtoolsHostExperiment
+ */
+function isHostExperimentRegistrationCall(expression) {
   return (
-      node.expression && node.expression.type === 'CallExpression' &&
-      node.expression.callee.property.name === 'register');
+      expression && expression.type === 'CallExpression' &&
+      expression.callee.property.name === 'registerHostExperiment');
 }
 
 /**
@@ -131,31 +138,40 @@ function getMainImplExperimentList(mainImplFile, experimentNames) {
   // Get list of experiments
   const experiments = [];
   for (const statement of initializeExperimentNode.value.body.body) {
-    if (isExperimentRegistrationCall(statement)) {
+    let expression = null;
+    if (statement.expression && statement.expression.type === 'CallExpression') {
+      expression = statement.expression;
+    } else if (statement.type === 'VariableDeclaration') {
+      expression = statement.declarations[0].init;
+    }
+
+    let experimentNameArg = '';
+    if (isExperimentRegistrationCall(expression)) {
       // Experiment name is first argument of registration call
-      const experimentNameArg = statement.expression.arguments[0];
-      // The experiment name can either be a literal, e.g. 'fooExperiment'..
-      if (experimentNameArg.type === 'Literal') {
-        experiments.push(experimentNameArg.value);
-      } else {
-        // .. or a member of Root.ExperimentNames.ExperimentName.
-        const experimentName = isExperimentNameReference(experimentNameArg);
-        if (experimentName) {
-          const translatedName = experimentNames.get(experimentName);
-          if (!translatedName) {
-            console.log(
-                `Failed to resolve Root.ExperimentNames.ExperimentName.${experimentName} to a string`,
-            );
-            process.exit(1);
-          }
-          experiments.push(translatedName);
-        } else {
+      experimentNameArg = expression.arguments[0];
+    } else if (isHostExperimentRegistrationCall(expression)) {
+      // Experiment name is the value of the `name` property of the first
+      // argument of registration call
+      experimentNameArg = expression.arguments[0].properties.find(property => property.key.name === 'name').value;
+    }
+    // Translate the Root.ExperimentNames.ExperimentName to a string
+    if (experimentNameArg) {
+      const experimentName = isExperimentNameReference(experimentNameArg);
+      if (experimentName) {
+        const translatedName = experimentNames.get(experimentName);
+        if (!translatedName) {
           console.log(
-              'Unexpected argument to Root.Runtime.experiments.register: ',
-              experimentNameArg,
+              'Failed to resolve Root.ExperimentNames.${experimentName} to a string',
           );
           process.exit(1);
         }
+        experiments.push(translatedName);
+      } else {
+        console.log(
+            'Unexpected argument to Root.Runtime.experiments.register: ',
+            experimentNameArg,
+        );
+        process.exit(1);
       }
     }
   }

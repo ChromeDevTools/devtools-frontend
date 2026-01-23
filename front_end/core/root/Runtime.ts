@@ -159,24 +159,35 @@ export interface Option {
 
 export class ExperimentsSupport {
   #experiments: Experiment[] = [];
+  #hostExperiments = new Map<ExperimentName, HostExperiment>();
   readonly #experimentNames = new Set<ExperimentName>();
-  readonly #enabledTransiently = new Set<ExperimentName>();
+  readonly #enabledForTests = new Set<ExperimentName>();
   readonly #enabledByDefault = new Set<ExperimentName>();
   readonly #serverEnabled = new Set<ExperimentName>();
   readonly #storage = new ExperimentStorage();
 
-  allConfigurableExperiments(): Experiment[] {
-    const result = [];
-    for (const experiment of this.#experiments) {
-      if (!this.#enabledTransiently.has(experiment.name)) {
-        result.push(experiment);
-      }
+  allConfigurableExperiments(): Array<Experiment|HostExperiment> {
+    return [...this.#experiments, ...this.#hostExperiments.values()];
+  }
+
+  registerHostExperiment(params: {
+    name: ExperimentName,
+    title: string,
+    aboutFlag: string,
+    isEnabled: boolean,
+    docLink?: Platform.DevToolsPath.UrlString,
+    readonly feedbackLink?: Platform.DevToolsPath.UrlString,
+  }): HostExperiment {
+    if (this.#isHostExperiment(params.name) || this.#isExperiment(params.name)) {
+      throw new Error(`Duplicate registration of experiment '${params.name}'`);
     }
-    return result;
+    const hostExperiment = new HostExperiment({...params, experiments: this});
+    this.#hostExperiments.set(params.name, hostExperiment);
+    return hostExperiment;
   }
 
   register(experimentName: ExperimentName, experimentTitle: string, docLink?: string, feedbackLink?: string): void {
-    if (this.#experimentNames.has(experimentName)) {
+    if (this.#isHostExperiment(experimentName) || this.#isExperiment(experimentName)) {
       throw new Error(`Duplicate registration of experiment '${experimentName}'`);
     }
     this.#experimentNames.add(experimentName);
@@ -187,63 +198,87 @@ export class ExperimentsSupport {
   }
 
   isEnabled(experimentName: ExperimentName): boolean {
-    this.checkExperiment(experimentName);
-    // Check for explicitly disabled #experiments first - the code could call setEnable(false) on the experiment enabled
-    // by default and we should respect that.
-    if (this.#storage.get(experimentName) === false) {
-      return false;
+    if (this.#isHostExperiment(experimentName)) {
+      return this.#enabledForTests.has(experimentName) ||
+          (this.#hostExperiments.get(experimentName)?.isEnabled() ?? false);
     }
-    if (this.#enabledTransiently.has(experimentName) || this.#enabledByDefault.has(experimentName)) {
-      return true;
+    if (this.#isExperiment(experimentName)) {
+      // Check for explicitly disabled #experiments first - the code could call setEnable(false)
+      // on the experiment enabled by default and we should respect that.
+      if (this.#storage.get(experimentName) === false) {
+        return false;
+      }
+      if (this.#enabledForTests.has(experimentName) || this.#enabledByDefault.has(experimentName)) {
+        return true;
+      }
+      if (this.#serverEnabled.has(experimentName)) {
+        return true;
+      }
+      return Boolean(this.#storage.get(experimentName));
     }
-    if (this.#serverEnabled.has(experimentName)) {
-      return true;
-    }
+    throw new Error(`Unknown experiment '${experimentName}'`);
+  }
 
-    return Boolean(this.#storage.get(experimentName));
+  getValueFromStorage(experimentName: ExperimentName): boolean|undefined {
+    return this.#storage.get(experimentName);
   }
 
   setEnabled(experimentName: ExperimentName, enabled: boolean): void {
-    this.checkExperiment(experimentName);
-    this.#storage.set(experimentName, enabled);
-  }
-
-  enableExperimentsTransiently(experimentNames: ExperimentName[]): void {
-    for (const experimentName of experimentNames) {
-      this.checkExperiment(experimentName);
-      this.#enabledTransiently.add(experimentName);
+    if (this.#isHostExperiment(experimentName)) {
+      this.#hostExperiments.get(experimentName)?.setEnabled(enabled);
+      return;
     }
+    if (this.#isExperiment(experimentName)) {
+      this.#storage.set(experimentName, enabled);
+      return;
+    }
+    throw new Error(`Unknown experiment '${experimentName}'`);
   }
 
+  // Only applicable to legacy experiments.
   enableExperimentsByDefault(experimentNames: ExperimentName[]): void {
     for (const experimentName of experimentNames) {
-      this.checkExperiment(experimentName);
+      if (!this.#isExperiment(experimentName)) {
+        throw new Error(`Unknown (legacy) experiment '${experimentName}'`);
+      }
       this.#enabledByDefault.add(experimentName);
     }
   }
 
+  // Only applicable to legacy experiments.
   setServerEnabledExperiments(experiments: string[]): void {
     for (const experiment of experiments) {
       const experimentName = experiment as ExperimentName;
-      this.checkExperiment(experimentName);
+      if (!this.#isExperiment(experimentName)) {
+        throw new Error(`Unknown (legacy) experiment '${experimentName}'`);
+      }
       this.#serverEnabled.add(experimentName);
     }
   }
 
   enableForTest(experimentName: ExperimentName): void {
-    this.checkExperiment(experimentName);
-    this.#enabledTransiently.add(experimentName);
+    if (!this.#isHostExperiment(experimentName) && !this.#isExperiment(experimentName)) {
+      throw new Error(`Unknown experiment '${experimentName}'`);
+    }
+    this.#enabledForTests.add(experimentName);
   }
 
   disableForTest(experimentName: ExperimentName): void {
-    this.checkExperiment(experimentName);
-    this.#enabledTransiently.delete(experimentName);
+    if (!this.#isHostExperiment(experimentName) && !this.#isExperiment(experimentName)) {
+      throw new Error(`Unknown experiment '${experimentName}'`);
+    }
+    this.#enabledForTests.delete(experimentName);
+  }
+
+  isEnabledForTest(experimentName: ExperimentName): boolean {
+    return this.#enabledForTests.has(experimentName);
   }
 
   clearForTest(): void {
     this.#experiments = [];
+    this.#hostExperiments.clear();
     this.#experimentNames.clear();
-    this.#enabledTransiently.clear();
+    this.#enabledForTests.clear();
     this.#enabledByDefault.clear();
     this.#serverEnabled.clear();
   }
@@ -252,10 +287,12 @@ export class ExperimentsSupport {
     this.#storage.cleanUpStaleExperiments(this.#experimentNames);
   }
 
-  private checkExperiment(experimentName: ExperimentName): void {
-    if (!this.#experimentNames.has(experimentName)) {
-      throw new Error(`Unknown experiment '${experimentName}'`);
-    }
+  #isHostExperiment(experimentName: ExperimentName): boolean {
+    return this.#hostExperiments.has(experimentName);
+  }
+
+  #isExperiment(experimentName: ExperimentName): boolean {
+    return this.#experimentNames.has(experimentName);
   }
 }
 
@@ -329,6 +366,44 @@ export class Experiment {
 
   setEnabled(enabled: boolean): void {
     this.#experiments.setEnabled(this.name, enabled);
+  }
+}
+
+export class HostExperiment {
+  name: ExperimentName;
+  title: string;
+  readonly #experiments: ExperimentsSupport;
+  // This is the name of the corresponding Chromium flag (in chrome/browser/about_flags.cc).
+  // It is NOT the the name of the corresponding Chromium `base::Feature`.
+  aboutFlag: string;
+  #isEnabled: boolean;
+  docLink?: Platform.DevToolsPath.UrlString;
+  readonly feedbackLink?: Platform.DevToolsPath.UrlString;
+
+  constructor(params: {
+    name: ExperimentName,
+    title: string,
+    experiments: ExperimentsSupport,
+    aboutFlag: string,
+    isEnabled: boolean,
+    docLink?: Platform.DevToolsPath.UrlString,
+    feedbackLink?: Platform.DevToolsPath.UrlString,
+  }) {
+    this.name = params.name;
+    this.title = params.title;
+    this.#experiments = params.experiments;
+    this.aboutFlag = params.aboutFlag;
+    this.#isEnabled = params.isEnabled;
+    this.docLink = params.docLink;
+    this.feedbackLink = params.feedbackLink;
+  }
+
+  isEnabled(): boolean {
+    return this.#experiments.isEnabledForTest(this.name) || this.#isEnabled;
+  }
+
+  setEnabled(enabled: boolean): void {
+    this.#isEnabled = enabled;
   }
 }
 
@@ -524,6 +599,10 @@ interface ConsoleInsightsTeasers {
   allowWithoutGpu: boolean;
 }
 
+interface DevToolsProtocolMonitor {
+  enabled: boolean;
+}
+
 /**
  * The host configuration that we expect from the DevTools back-end.
  *
@@ -575,6 +654,7 @@ export type HostConfig = Platform.TypeScriptUtilities.RecursivePartial<{
   devToolsAiAssistanceContextSelectionAgent: HostConfigAiAssistanceContextSelectionAgent,
   devToolsConsoleInsightsTeasers: ConsoleInsightsTeasers,
   devToolsGeminiRebranding: HostConfigGeminiRebranding,
+  devToolsProtocolMonitor: DevToolsProtocolMonitor,
 }>;
 
 /**

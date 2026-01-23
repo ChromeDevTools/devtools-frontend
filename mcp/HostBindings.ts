@@ -310,4 +310,7 @@ export class McpHostBindings implements Host.InspectorFrontendHostAPI.InspectorF
 
   recordFunctionCall(): void {
   }
+
+  setChromeFlag(): void {
+  }
 }

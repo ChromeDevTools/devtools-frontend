@@ -328,6 +328,19 @@ export class MainImpl {
     return {syncedStorage, globalStorage, localStorage};
   }
 
+  // eslint-disable-next-line no-unused-private-class-members
+  #migrateValueFromLegacyToHostExperiment(
+      legacyExperimentName: Root.ExperimentNames.ExperimentName, hostExperiment: Root.Runtime.HostExperiment): void {
+    const value = Root.Runtime.experiments.getValueFromStorage(legacyExperimentName);
+    if (value !== undefined && hostExperiment.aboutFlag) {
+      // Set the host experiment to the same value as the legacy experiment.
+      hostExperiment.setEnabled(value);
+      // Set the chrome flag to the same value as the legacy experiment.
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.setChromeFlag(hostExperiment.aboutFlag, value);
+      // The legacy experiment will be cleaned up by `cleanUpStaleExperiments`.
+    }
+  }
+
   #initializeExperiments(): void {
     Root.Runtime.experiments.register(
         Root.ExperimentNames.ExperimentName.CAPTURE_NODE_CREATION_STACKS, 'Capture node creation stacks');
@@ -413,7 +426,6 @@ export class MainImpl {
     if (enabledExperiments) {
       Root.Runtime.experiments.setServerEnabledExperiments(enabledExperiments.split(';'));
     }
-    Root.Runtime.experiments.enableExperimentsTransiently([]);
 
     if (Host.InspectorFrontendHost.isUnderTest()) {
       const testParam = Root.Runtime.Runtime.queryParam('test');

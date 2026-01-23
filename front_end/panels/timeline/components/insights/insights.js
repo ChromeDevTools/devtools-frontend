@@ -83,11 +83,6 @@ var baseInsightComponent_css_default = `/*
   }
 }
 
-.insight.ai-assistance-context {
-  display: block;
-  min-width: 200px;
-}
-
 .insight-hover-icon {
   position: absolute;
   top: var(--sys-size-5);
@@ -345,11 +340,10 @@ var UIStrings = {
 var str_ = i18n.i18n.registerUIStrings("panels/timeline/components/insights/BaseInsightComponent.ts", UIStrings);
 var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);
 var DEFAULT_VIEW = (input, output, target) => {
-  const { internalName, model, selected, estimatedSavingsString, estimatedSavingsAriaLabel, isAIAssistanceContext, showAskAI, dispatchInsightToggle, renderContent, onHeaderKeyDown, onAskAIButtonClick } = input;
+  const { internalName, model, selected, estimatedSavingsString, estimatedSavingsAriaLabel, showAskAI, dispatchInsightToggle, renderContent, onHeaderKeyDown, onAskAIButtonClick } = input;
   const containerClasses = Lit2.Directives.classMap({
     insight: true,
-    closed: !selected || isAIAssistanceContext,
-    "ai-assistance-context": isAIAssistanceContext
+    closed: !selected
   });
   let ariaLabel = `${i18nString(UIStrings.viewDetails, { PH1: model.title })}`;
   if (estimatedSavingsAriaLabel) {
@@ -381,9 +375,6 @@ var DEFAULT_VIEW = (input, output, target) => {
       </div>`;
   }
   function renderHoverIcon() {
-    if (isAIAssistanceContext) {
-      return Lit2.nothing;
-    }
     const containerClasses2 = Lit2.Directives.classMap({
       "insight-hover-icon": true,
       active: selected
@@ -428,9 +419,6 @@ var DEFAULT_VIEW = (input, output, target) => {
 };
 var BaseInsightComponent = class extends UI.Widget.Widget {
   #view;
-  // Tracks if this component is rendered withing the AI assistance panel.
-  // Currently only relevant to GreenDev.
-  #isAIAssistanceContext = false;
   #selected = false;
   #model = null;
   #agentFocus = null;
@@ -458,10 +446,6 @@ var BaseInsightComponent = class extends UI.Widget.Widget {
   // requirements to use AI.
   hasAskAiSupport() {
     return false;
-  }
-  set isAIAssistanceContext(isAIAssistanceContext) {
-    this.#isAIAssistanceContext = isAIAssistanceContext;
-    this.requestUpdate();
   }
   set selected(selected) {
     if (!this.#selected && selected) {
@@ -589,7 +573,6 @@ var BaseInsightComponent = class extends UI.Widget.Widget {
       selected: this.#selected,
       estimatedSavingsString: this.getEstimatedSavingsString(),
       estimatedSavingsAriaLabel: this.#getEstimatedSavingsAriaLabel(),
-      isAIAssistanceContext: this.#isAIAssistanceContext,
       showAskAI: this.#canShowAskAI(),
       dispatchInsightToggle: () => this.#dispatchInsightToggle(),
       renderContent: () => this.renderContent(),
@@ -678,7 +661,7 @@ var BaseInsightComponent = class extends UI.Widget.Widget {
     void action3.execute();
   }
   #canShowAskAI() {
-    if (this.#isAIAssistanceContext || !this.hasAskAiSupport()) {
+    if (!this.hasAskAiSupport()) {
       return false;
     }
     const { devToolsAiAssistancePerformanceAgent } = Root.Runtime.hostConfig;
@@ -2950,8 +2933,7 @@ var InsightRenderer = class {
       bounds: insightSet.bounds,
       insightSetKey: insightSet.id,
       agentFocus: options.agentFocus ?? null,
-      fieldMetrics: options.fieldMetrics ?? null,
-      isAIAssistanceContext: options.isAIAssistanceContext ?? false
+      fieldMetrics: options.fieldMetrics ?? null
     });
     return widgetElement;
   }

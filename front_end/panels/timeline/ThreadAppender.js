@@ -127,7 +127,7 @@ export class ThreadAppender {
     #headerAppended = false;
     threadType = "MAIN_THREAD" /* Trace.Handlers.Threads.ThreadType.MAIN_THREAD */;
     isOnMainFrame;
-    #showAllEventsEnabled = Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_SHOW_ALL_EVENTS);
+    #showAllEventsEnabled = Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.TIMELINE_SHOW_ALL_EVENTS);
     #url = '';
     #headerNestingLevel = null;
     constructor(compatibilityBuilder, parsedTrace, processId, threadId, threadName, type, entries, tree) {

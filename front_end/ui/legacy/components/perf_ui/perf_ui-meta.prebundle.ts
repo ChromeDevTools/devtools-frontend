@@ -91,7 +91,7 @@ Common.Settings.registerSettingExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.MEMORY,
-  experiment: Root.Runtime.ExperimentName.LIVE_HEAP_PROFILE,
+  experiment: Root.ExperimentNames.ExperimentName.LIVE_HEAP_PROFILE,
   title: i18nLazyString(UIStrings.liveMemoryAllocationAnnotations),
   settingName: 'memory-live-heap-profile',
   settingType: Common.Settings.SettingType.BOOLEAN,

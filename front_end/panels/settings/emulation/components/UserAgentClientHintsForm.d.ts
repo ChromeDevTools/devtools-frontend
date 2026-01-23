@@ -1,3 +1,4 @@
+import '../../../../ui/kit/kit.js';
 import '../../../../ui/legacy/legacy.js';
 import type * as Protocol from '../../../../generated/protocol.js';
 import type * as UI from '../../../../ui/legacy/legacy.js';

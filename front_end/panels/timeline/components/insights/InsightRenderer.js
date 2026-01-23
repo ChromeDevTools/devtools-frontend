@@ -69,7 +69,6 @@ export class InsightRenderer {
             insightSetKey: insightSet.id,
             agentFocus: options.agentFocus ?? null,
             fieldMetrics: options.fieldMetrics ?? null,
-            isAIAssistanceContext: options.isAIAssistanceContext ?? false,
         });
         return widgetElement;
     }

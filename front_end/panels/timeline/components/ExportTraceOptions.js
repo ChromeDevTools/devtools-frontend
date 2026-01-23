@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-lit-render-outside-of-view */
+import '../../../ui/kit/kit.js';
 import '../../../ui/components/tooltips/tooltips.js';
 import '../../../ui/components/buttons/buttons.js';
 import * as Common from '../../../core/common/common.js';
@@ -12,7 +13,6 @@ import * as Dialogs from '../../../ui/components/dialogs/dialogs.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
-import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import exportTraceOptionsStyles from './exportTraceOptions.css.js';
 const { html } = Lit;
 const UIStrings = {
@@ -231,12 +231,12 @@ export class ExportTraceOptions extends HTMLElement {
           ${this.#renderCheckbox('compress-with-gzip', this.#shouldCompressCheckbox, i18nString(UIStrings.shouldCompress), this.#state.shouldCompress)}
           <div class='export-trace-options-row export-trace-options-row-last'>
             <div class="export-trace-explanation">
-              <x-link
+              <devtools-link
                 href="https://developer.chrome.com/docs/devtools/performance/save-trace"
                 class=devtools-link
-                jslog=${VisualLogging.link().track({ click: true, keydown: 'Enter|Space' }).context('save-trace-explanation')}>
+                .jslogContext=${'save-trace-explanation'}>
                   ${i18nString(UIStrings.explanation)}
-              </x-link>
+              </devtools-link>
             </div>
             <devtools-button
                   class="setup-button"

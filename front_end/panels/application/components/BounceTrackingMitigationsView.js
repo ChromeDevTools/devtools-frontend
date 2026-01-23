@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 import '../../../ui/components/report_view/report_view.js';
 import '../../../ui/legacy/components/data_grid/data_grid.js';
+import '../../../ui/kit/kit.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
@@ -124,10 +125,10 @@ const renderMainFrameInformation = (input) => {
     <devtools-report-divider>
     </devtools-report-divider>
     <devtools-report-section>
-      <x-link href="https://privacycg.github.io/nav-tracking-mitigations/#bounce-tracking-mitigations" class="link"
-      jslog=${VisualLogging.link('learn-more').track({ click: true })}>
+      <devtools-link href="https://privacycg.github.io/nav-tracking-mitigations/#bounce-tracking-mitigations" class="link"
+      .jslogContext=${'learn-more'}>
         ${i18nString(UIStrings.learnMore)}
-      </x-link>
+      </devtools-link>
     </devtools-report-section>
   `;
     // clang-format on

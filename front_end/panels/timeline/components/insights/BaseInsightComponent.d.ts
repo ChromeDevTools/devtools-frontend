@@ -10,7 +10,6 @@ interface ViewInput {
     internalName: string;
     model: InsightModel;
     selected: boolean;
-    isAIAssistanceContext: boolean;
     showAskAI: boolean;
     estimatedSavingsString: string | null;
     estimatedSavingsAriaLabel: string | null;
@@ -34,7 +33,6 @@ export declare abstract class BaseInsightComponent<T extends InsightModel> exten
     protected data: BaseInsightData;
     readonly sharedTableState: TableState;
     protected hasAskAiSupport(): boolean;
-    set isAIAssistanceContext(isAIAssistanceContext: boolean);
     set selected(selected: boolean);
     get selected(): boolean;
     set parsedTrace(trace: Trace.TraceModel.ParsedTrace | null);

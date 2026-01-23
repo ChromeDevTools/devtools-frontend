@@ -1127,7 +1127,7 @@ export class HeapSnapshotProfileType extends Common.ObjectWrapper.eventMixin(Pro
         return i18nString(UIStrings.heapSnapshotProfilesShowMemory);
     }
     customContent() {
-        const showOptionToExposeInternalsInHeapSnapshot = Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.SHOW_OPTION_TO_EXPOSE_INTERNALS_IN_HEAP_SNAPSHOT);
+        const showOptionToExposeInternalsInHeapSnapshot = Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.SHOW_OPTION_TO_EXPOSE_INTERNALS_IN_HEAP_SNAPSHOT);
         const exposeInternalsInHeapSnapshotCheckbox = SettingsUI.SettingsUI.createSettingCheckbox(i18nString(UIStrings.exposeInternals), this.exposeInternals);
         this.customContentInternal = exposeInternalsInHeapSnapshotCheckbox;
         return showOptionToExposeInternalsInHeapSnapshot ? exposeInternalsInHeapSnapshotCheckbox : null;

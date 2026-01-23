@@ -385,7 +385,7 @@ function renderContrastIssue(key, issues) {
     }
     const color = (minContrastIssue.textColor.asString("hexa" /* Common.Color.Format.HEXA */));
     const backgroundColor = (minContrastIssue.backgroundColor.asString("hexa" /* Common.Color.Format.HEXA */));
-    const showAPCA = Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.APCA);
+    const showAPCA = Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.APCA);
     const title = i18nString(UIStrings.textColorSOverSBackgroundResults, {
         PH1: color,
         PH2: backgroundColor,
@@ -838,7 +838,7 @@ function renderContrastRatio(data) {
     if (!('contrastRatio' in data)) {
         throw new Error('Contrast ratio entry is missing a contrast ratio.');
     }
-    const showAPCA = Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.APCA);
+    const showAPCA = Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.APCA);
     const contrastRatio = Platform.NumberUtilities.floor(data.contrastRatio, 2);
     const contrastRatioString = showAPCA ? contrastRatio + '%' : contrastRatio;
     const border = getBorderString(data.backgroundColor);

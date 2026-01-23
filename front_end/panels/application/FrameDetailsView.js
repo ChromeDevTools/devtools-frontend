@@ -1,6 +1,7 @@
 // Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import '../../ui/kit/kit.js';
 import '../../ui/components/expandable_list/expandable_list.js';
 import '../../ui/components/report_view/report_view.js';
 import * as Common from '../../core/common/common.js';
@@ -279,10 +280,10 @@ function renderOriginTrial(trials) {
     <devtools-report-section>
       <span class="report-section">
         ${i18nString(UIStrings.originTrialsExplanation)}
-        <x-link href="https://developer.chrome.com/docs/web-platform/origin-trials/" class="link"
-                jslog=${VisualLogging.link('learn-more.origin-trials').track({ click: true })}>
+        <devtools-link href="https://developer.chrome.com/docs/web-platform/origin-trials/" class="link"
+                .jslogContext=${'learn-more.origin-trials'}>
           ${i18nString(UIStrings.learnMore)}
-        </x-link>
+        </devtools-link>
       </span>
     </devtools-report-section>
     <devtools-widget class="span-cols" .widgetConfig=${widgetConfig(OriginTrialTreeView, { data })}>
@@ -629,11 +630,11 @@ function renderApiAvailabilitySection(frame) {
       <devtools-report-section>
         <span class="report-section">
           ${i18nString(UIStrings.availabilityOfCertainApisDepends)}
-          <x-link
+          <devtools-link
             href="https://web.dev/why-coop-coep/" class="link"
-            jslog=${VisualLogging.link('learn-more.coop-coep').track({ click: true })}>
+            .jslogContext=${'learn-more.coop-coep'}>
             ${i18nString(UIStrings.learnMore)}
-          </x-link>
+          </devtools-link>
         </span>
       </devtools-report-section>
       ${renderSharedArrayBufferAvailability(frame)}
@@ -701,7 +702,7 @@ function renderMeasureMemoryAvailability(frame) {
         return html `
         <devtools-report-key>${i18nString(UIStrings.measureMemory)}</devtools-report-key>
         <devtools-report-value>
-          <span title=${tooltipText}>${availabilityText}</span>\xA0<x-link class="link" href="https://web.dev/monitor-total-page-memory-usage/" jslog=${VisualLogging.link('learn-more.monitor-memory-usage').track({ click: true })}>${i18nString(UIStrings.learnMore)}</x-link>
+          <span title=${tooltipText}>${availabilityText}</span>\xA0<devtools-link class="link" href="https://web.dev/monitor-total-page-memory-usage/" .jslogContext=${'learn-more.monitor-memory-usage'}>${i18nString(UIStrings.learnMore)}</devtools-link>
         </devtools-report-value>
       `;
     }
@@ -738,7 +739,7 @@ export class FrameDetailsReportView extends UI.Widget.Widget {
     constructor(element, view = DEFAULT_VIEW) {
         super(element, { useShadowDom: true });
         this.#protocolMonitorExperimentEnabled =
-            Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.PROTOCOL_MONITOR);
+            Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.PROTOCOL_MONITOR);
         this.#view = view;
     }
     set frame(frame) {

@@ -19,8 +19,8 @@ function resolveCommentNode(state, cursorPosition) {
     // The bias of -1 makes it check the character to the left of the position.
     const node = tree.resolveInner(lookupPos, -1);
     const nodeType = node.type.name;
-    // Check if the node type is a comment AND the cursor is within the node's range.
-    if (nodeType.includes('Comment') && cursorPosition >= node.to) {
+    // Check if the node type is a comment
+    if (nodeType.includes('Comment')) {
         if (!nodeType.includes('BlockComment')) {
             return node;
         }
@@ -43,7 +43,14 @@ function resolveCommentNode(state, cursorPosition) {
 }
 function extractBlockComment(rawText) {
     // Remove /* and */, whitespace, and common leading asterisks on new lines
-    let cleaned = rawText.replace(BLOCK_COMMENT_START_PATTERN, '').replace(BLOCK_COMMENT_END_PATTERN, '');
+    if (!rawText.match(BLOCK_COMMENT_START_PATTERN)) {
+        return;
+    }
+    let cleaned = rawText.replace(BLOCK_COMMENT_START_PATTERN, '');
+    if (!cleaned.match(BLOCK_COMMENT_END_PATTERN)) {
+        return;
+    }
+    cleaned = cleaned.replace(BLOCK_COMMENT_END_PATTERN, '');
     // Remove leading " * " from multi-line block comments
     cleaned = cleaned.split('\n').map(line => line.replace(BLOCK_COMMENT_LINE_PREFIX_PATTERN, '')).join('\n').trim();
     return cleaned;
@@ -52,20 +59,27 @@ function extractLineComment(rawText) {
     return rawText.replace(LINE_COMMENT_PATTERN, '').trim();
 }
 export class AiCodeGenerationParser {
-    static extractCommentText(state, cursorPosition) {
+    static extractCommentNodeInfo(state, cursorPosition) {
         const node = resolveCommentNode(state, cursorPosition);
         if (!node) {
             return;
         }
         const nodeType = node.type.name;
         const rawText = state.doc.sliceString(node.from, node.to);
+        let text = '';
         if (nodeType.includes('LineComment')) {
-            return extractLineComment(rawText);
+            text = extractLineComment(rawText);
         }
-        if (nodeType.includes('BlockComment')) {
-            return extractBlockComment(rawText);
+        else if (nodeType.includes('BlockComment')) {
+            text = extractBlockComment(rawText) ?? '';
         }
-        return rawText;
+        else {
+            text = rawText;
+        }
+        if (!Boolean(text)) {
+            return;
+        }
+        return { text, to: node.to };
     }
 }
 //# sourceMappingURL=AiCodeGenerationParser.js.map

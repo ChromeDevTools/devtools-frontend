@@ -1,6 +1,7 @@
 // Copyright 2022 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import '../../../ui/kit/kit.js';
 import '../../../ui/legacy/components/data_grid/data_grid.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as UI from '../../../ui/legacy/legacy.js';
@@ -80,11 +81,11 @@ export const DEFAULT_VIEW = (input, _output, target) => {
           <div class="empty-state-header">${i18nString(UIStrings.noEvents)}</div>
           <div class="empty-state-description">
             <span>${i18nString(UIStrings.sharedStorageDescription)}</span>
-            <x-link
-              class="x-link devtools-link"
+            <devtools-link
+              class="devtools-link"
               href=${SHARED_STORAGE_EXPLANATION_URL}
-              jslog=${VisualLogging.link().track({ click: true, keydown: 'Enter|Space' }).context('learn-more')}
-            >${i18nString(UIStrings.learnMore)}</x-link>
+              .jslogContext=${'learn-more'}
+            >${i18nString(UIStrings.learnMore)}</devtools-link>
           </div>
         </div>`
         : html `

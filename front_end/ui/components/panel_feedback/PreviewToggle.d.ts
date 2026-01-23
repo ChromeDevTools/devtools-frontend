@@ -5,7 +5,7 @@ export interface PreviewToggleData {
     name: string;
     helperText: string | null;
     feedbackURL: string | null;
-    experiment: Root.Runtime.ExperimentName;
+    experiment: Root.ExperimentNames.ExperimentName;
     learnMoreURL?: string;
     onChangeCallback?: (checked: boolean) => void;
 }

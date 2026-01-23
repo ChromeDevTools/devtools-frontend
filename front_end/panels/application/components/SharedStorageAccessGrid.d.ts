@@ -1,3 +1,4 @@
+import '../../../ui/kit/kit.js';
 import '../../../ui/legacy/components/data_grid/data_grid.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import * as UI from '../../../ui/legacy/legacy.js';

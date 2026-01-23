@@ -1,3 +1,4 @@
+import '../../../ui/kit/kit.js';
 import '../../../ui/legacy/legacy.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Protocol from '../../../generated/protocol.js';

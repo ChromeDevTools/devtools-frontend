@@ -1565,7 +1565,8 @@ var ObjectPropertyTreeElement = class _ObjectPropertyTreeElement extends UI2.Tre
     if (this.property.object) {
       contextMenu.appendApplicableItems(this.property.object);
       if (this.property.parent?.object instanceof SDK3.RemoteObject.LocalJSONObject) {
-        const propertyValue = typeof this.property.object === "object" ? JSON.stringify(this.property.object, null, 2) : this.property.object;
+        const { object: { value } } = this.property;
+        const propertyValue = typeof value === "object" ? JSON.stringify(value, null, 2) : value;
         const copyValueHandler = () => {
           Host.userMetrics.actionTaken(Host.UserMetrics.Action.NetworkPanelCopyValue);
           Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(propertyValue);

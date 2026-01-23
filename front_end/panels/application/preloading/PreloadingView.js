@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-imperative-dom-api */
 /* eslint-disable @devtools/no-lit-render-outside-of-view */
+import '../../../ui/kit/kit.js';
 import '../../../ui/legacy/legacy.js';
 import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
@@ -218,11 +219,11 @@ export class PreloadingRuleSetView extends UI.Widget.VBox {
           <span class="empty-state-header">${i18nString(UIStrings.noRulesDetected)}</span>
           <div class="empty-state-description">
             <span>${i18nString(UIStrings.rulesDescription)}</span>
-            <x-link
-              class="x-link devtools-link"
+            <devtools-link
+              class="devtools-link"
               href=${SPECULATION_EXPLANATION_URL}
-              jslog=${VisualLogging.link().track({ click: true, keydown: 'Enter|Space' }).context('learn-more')}
-            >${i18nString(UIStrings.learnMore)}</x-link>
+              .jslogContext=${'learn-more'}
+            >${i18nString(UIStrings.learnMore)}</devtools-link>
           </div>
         </div>
         <devtools-split-view sidebar-position="second">
@@ -366,11 +367,11 @@ export class PreloadingAttemptView extends UI.Widget.VBox {
           <span class="empty-state-header">${i18nString(UIStrings.noPrefetchAttempts)}</span>
           <div class="empty-state-description">
             <span>${i18nString(UIStrings.prefetchDescription)}</span>
-            <x-link
-              class="x-link devtools-link"
+            <devtools-link
+              class="devtools-link"
               href=${SPECULATION_EXPLANATION_URL}
-              jslog=${VisualLogging.link().track({ click: true, keydown: 'Enter|Space' }).context('learn-more')}
-            >${i18nString(UIStrings.learnMore)}</x-link>
+              .jslogContext=${'learn-more'}
+            >${i18nString(UIStrings.learnMore)}</devtools-link>
           </div>
         </div>
         <devtools-split-view sidebar-position="second">

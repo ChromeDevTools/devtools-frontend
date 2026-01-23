@@ -134,6 +134,9 @@ export function isPipelineReporter(event) {
 export function isSyntheticBased(event) {
     return 'rawSourceEvent' in event;
 }
+export function isJSSample(event) {
+    return event.name === "JSSample" /* Name.JS_SAMPLE */;
+}
 export function isSyntheticInteraction(event) {
     return Boolean('interactionId' in event && event.args?.data && 'beginEvent' in event.args.data && 'endEvent' in event.args.data);
 }

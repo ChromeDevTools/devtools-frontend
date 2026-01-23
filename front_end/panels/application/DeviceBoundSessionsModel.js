@@ -65,6 +65,13 @@ export class DeviceBoundSessionsModel extends Common.ObjectWrapper.ObjectWrapper
     isSiteVisible(site) {
         return this.#visibleSites.has(site);
     }
+    isSessionTerminated(site, sessionId) {
+        const session = this.getSession(site, sessionId);
+        if (session === undefined) {
+            return false;
+        }
+        return session.isSessionTerminated;
+    }
     getSession(site, sessionId) {
         return this.#siteSessions.get(site)?.get(sessionId);
     }
@@ -86,7 +93,11 @@ export class DeviceBoundSessionsModel extends Common.ObjectWrapper.ObjectWrapper
         }
         let sessionAndEvent = sessionIdToSessionMap.get(sessionId);
         if (!sessionAndEvent) {
-            sessionAndEvent = { session: undefined, eventsById: new Map() };
+            sessionAndEvent = {
+                session: undefined,
+                isSessionTerminated: false,
+                eventsById: new Map()
+            };
             sessionIdToSessionMap.set(sessionId, sessionAndEvent);
         }
         return sessionAndEvent;
@@ -108,6 +119,15 @@ export class DeviceBoundSessionsModel extends Common.ObjectWrapper.ObjectWrapper
         // Add the new challenge onto the session if there is one.
         if (event.succeeded && sessionAndEvent.session && event.challengeEventDetails) {
             sessionAndEvent.session.cachedChallenge = event.challengeEventDetails.challenge;
+        }
+        // Set the session's terminated status based on the event.
+        if (event.succeeded) {
+            if (event.terminationEventDetails) {
+                sessionAndEvent.isSessionTerminated = true;
+            }
+            else if (event.creationEventDetails) {
+                sessionAndEvent.isSessionTerminated = false;
+            }
         }
         this.dispatchEventToListeners("EVENT_OCCURRED" /* DeviceBoundSessionModelEvents.EVENT_OCCURRED */, { site: eventWithTimestamp.event.site, sessionId: eventWithTimestamp.event.sessionId });
     }

@@ -88,6 +88,7 @@ export declare class StylesSidebarPane extends StylesSidebarPane_base {
     getVariableParserError(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, variableName: string): ElementsComponents.CSSVariableValueView.CSSVariableParserError | null;
     getVariablePopoverContents(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, variableName: string, computedValue: string | null): ElementsComponents.CSSVariableValueView.CSSVariableValueView;
     private fetchComputedStylesFor;
+    private fetchComputedStyleExtraFieldsFor;
     onResize(): void;
     private resetCache;
     private fetchMatchedCascade;
@@ -102,7 +103,7 @@ export declare class StylesSidebarPane extends StylesSidebarPane_base {
     private innerRebuildUpdate;
     private nodeStylesUpdatedForTest;
     setMatchedStylesForTest(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles): void;
-    rebuildSectionsForMatchedStyleRulesForTest(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, computedStyles: Map<string, string> | null, parentsComputedStyles: Map<string, string> | null): Promise<SectionBlock[]>;
+    rebuildSectionsForMatchedStyleRulesForTest(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, computedStyles: Map<string, string> | null, parentsComputedStyles: Map<string, string> | null, computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields | null): Promise<SectionBlock[]>;
     private rebuildSectionsForMatchedStyleRules;
     createNewRuleInViaInspectorStyleSheet(): Promise<void>;
     private createNewRuleInStyleSheet;

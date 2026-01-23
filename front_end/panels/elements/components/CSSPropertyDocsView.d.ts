@@ -1,3 +1,4 @@
+import '../../../ui/kit/kit.js';
 import '../../../ui/legacy/legacy.js';
 export declare const enum BaselineStatus {
     LIMITED = "false",

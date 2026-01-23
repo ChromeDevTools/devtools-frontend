@@ -50,6 +50,7 @@
     "../../../../../../front_end/panels/common/ExtensionView.ts",
     "../../../../../../front_end/panels/common/FreDialog.ts",
     "../../../../../../front_end/panels/common/GdpSignUpDialog.ts",
+    "../../../../../../front_end/panels/common/GeminiRebrandPromoDialog.ts",
     "../../../../../../front_end/panels/common/PersistenceUtils.ts",
     "../../../../../../front_end/legacy/legacy-defs.d.ts",
     "../../../../../../front_end/global_typings/global_defs.d.ts",

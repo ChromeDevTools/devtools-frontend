@@ -12,7 +12,7 @@ import * as IssueCounter from '../../ui/components/issue_counter/issue_counter.j
 import * as MarkdownView from '../../ui/components/markdown_view/markdown_view.js';
 import { Icon } from '../../ui/kit/kit.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
+import { html, render } from '../../ui/lit/lit.js';
 import { AffectedBlockedByResponseView } from './AffectedBlockedByResponseView.js';
 import { AffectedCookiesView, AffectedRawCookieLinesView } from './AffectedCookiesView.js';
 import { AffectedDescendantsWithinSelectElementView } from './AffectedDescendantsWithinSelectElementView.js';
@@ -402,10 +402,9 @@ export class IssueView extends UI.TreeOutline.TreeElement {
         UI.ARIAUtils.setSetSize(linkWrapper.listItemElement, 3);
         const linkList = linkWrapper.listItemElement.createChild('ul', 'link-list');
         for (const description of this.#description.links) {
-            const link = UI.Fragment.html `<x-link class="link devtools-link" tabindex="0" href=${description.link}>${i18nString(UIStrings.learnMoreS, { PH1: description.linkTitle })}</x-link>`;
-            link.setAttribute('jslog', `${VisualLogging.link('learn-more').track({ click: true })}`);
             const linkListItem = linkList.createChild('li');
-            linkListItem.appendChild(link);
+            // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
+            render(html `<devtools-link class="link devtools-link" href=${description.link} .jslogContext=${'learn-more'}>${i18nString(UIStrings.learnMoreS, { PH1: description.linkTitle })}</devtools-link>`, linkListItem);
         }
         this.appendChild(linkWrapper);
     }

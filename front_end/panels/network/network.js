@@ -229,6 +229,7 @@ __export(RequestConditionsDrawer_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW,
   RequestConditionsDrawer: () => RequestConditionsDrawer
 });
+import "./../../ui/kit/kit.js";
 import "./../../ui/legacy/legacy.js";
 import "./../../ui/components/tooltips/tooltips.js";
 import * as i18n3 from "./../../core/i18n/i18n.js";
@@ -592,13 +593,13 @@ var AffectedCountWidget = class extends UI2.Widget.Widget {
   }
 };
 function learnMore() {
-  return html`<x-link
+  return html`<devtools-link
         href=${NETWORK_REQUEST_BLOCKING_EXPLANATION_URL}
         tabindex=0
         class=devtools-link
-        jslog=${VisualLogging.link().track({ click: true, keydown: "Enter|Space" }).context("learn-more")}>
+        .jslogContext=${"learn-more"}>
           ${i18nString2(UIStrings2.learnMore)}
-      </x-link>`;
+      </devtools-link>`;
 }
 var RequestConditionsDrawer = class _RequestConditionsDrawer extends UI2.Widget.VBox {
   manager;
@@ -2833,11 +2834,11 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
     UI5.Tooltip.Tooltip.install(element, title || text);
   }
   setTextAndTitleAsLink(element, cellText, titleText, handler) {
-    const link2 = document.createElement("span");
-    link2.classList.add("devtools-link");
-    link2.textContent = cellText;
-    link2.addEventListener("click", handler);
-    element.appendChild(link2);
+    const link = document.createElement("span");
+    link.classList.add("devtools-link");
+    link.textContent = cellText;
+    link.addEventListener("click", handler);
+    element.appendChild(link);
     UI5.Tooltip.Tooltip.install(element, titleText);
   }
   renderCell(c, columnId) {
@@ -3251,9 +3252,9 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
         cell.appendChild(document.createTextNode(i18nString5(UIStrings5.preflight)));
         if (initiator.initiatorRequest) {
           const icon = createIcon("arrow-up-down-circle");
-          const link2 = Components.Linkifier.Linkifier.linkifyRevealable(initiator.initiatorRequest, icon, void 0, i18nString5(UIStrings5.selectTheRequestThatTriggered), "trailing-link-icon", "initator-request");
-          UI5.ARIAUtils.setLabel(link2, i18nString5(UIStrings5.selectTheRequestThatTriggered));
-          cell.appendChild(link2);
+          const link = Components.Linkifier.Linkifier.linkifyRevealable(initiator.initiatorRequest, icon, void 0, i18nString5(UIStrings5.selectTheRequestThatTriggered), "trailing-link-icon", "initator-request");
+          UI5.ARIAUtils.setLabel(link, i18nString5(UIStrings5.selectTheRequestThatTriggered));
+          cell.appendChild(link);
         }
         break;
       }

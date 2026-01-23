@@ -6,27 +6,27 @@ var __export = (target, all) => {
 
 // gen/front_end/panels/ai_assistance/AiAssistancePanel.js
 import "./../../ui/kit/kit.js";
-import * as Common6 from "./../../core/common/common.js";
+import * as Common5 from "./../../core/common/common.js";
 import * as Host6 from "./../../core/host/host.js";
 import * as i18n15 from "./../../core/i18n/i18n.js";
 import * as Platform4 from "./../../core/platform/platform.js";
 import * as Root5 from "./../../core/root/root.js";
 import * as SDK3 from "./../../core/sdk/sdk.js";
-import * as AiAssistanceModel5 from "./../../models/ai_assistance/ai_assistance.js";
+import * as AiAssistanceModel4 from "./../../models/ai_assistance/ai_assistance.js";
 import * as Annotations from "./../../models/annotations/annotations.js";
 import * as Badges from "./../../models/badges/badges.js";
-import * as GreenDev4 from "./../../models/greendev/greendev.js";
+import * as GreenDev3 from "./../../models/greendev/greendev.js";
 import * as TextUtils from "./../../models/text_utils/text_utils.js";
 import * as Workspace6 from "./../../models/workspace/workspace.js";
-import * as Buttons7 from "./../../ui/components/buttons/buttons.js";
+import * as Buttons6 from "./../../ui/components/buttons/buttons.js";
 import * as Snackbars2 from "./../../ui/components/snackbars/snackbars.js";
 import * as UIHelpers2 from "./../../ui/helpers/helpers.js";
-import * as UI10 from "./../../ui/legacy/legacy.js";
-import * as Lit7 from "./../../ui/lit/lit.js";
+import * as UI8 from "./../../ui/legacy/legacy.js";
+import * as Lit4 from "./../../ui/lit/lit.js";
 import * as VisualLogging6 from "./../../ui/visual_logging/visual_logging.js";
-import * as NetworkForward3 from "./../network/forward/forward.js";
+import * as NetworkForward from "./../network/forward/forward.js";
 import * as NetworkPanel from "./../network/network.js";
-import * as TimelinePanel3 from "./../timeline/timeline.js";
+import * as TimelinePanel from "./../timeline/timeline.js";
 
 // gen/front_end/panels/ai_assistance/aiAssistancePanel.css.js
 var aiAssistancePanel_css_default = `/*
@@ -42,22 +42,6 @@ var aiAssistancePanel_css_default = `/*
   border-bottom: 1px solid var(--sys-color-divider);
   flex: 0 0 auto;
   justify-content: space-between;
-}
-
-.artifacts-toolbar-container {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  height: 27px;
-  padding: 5px;
-  border-bottom: 1px solid var(--sys-color-divider);
-}
-
-.assistance-view-wrapper-with-sidebar {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  overflow: hidden;
 }
 
 .ai-assistance-view-container {
@@ -87,372 +71,13 @@ var aiAssistancePanel_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("././aiAssistancePanel.css")} */`;
 
-// gen/front_end/panels/ai_assistance/components/CollapsibleAssistanceContentWidget.js
-import * as Buttons from "./../../ui/components/buttons/buttons.js";
-import * as Lit from "./../../ui/lit/lit.js";
-
-// gen/front_end/panels/ai_assistance/components/collapsibleAssistanceContentWidget.css.js
-var collapsibleAssistanceContentWidget_css_default = `/*
- * Copyright 2025 The Chromium Authors
- * Use of this source code is governed by a BSD-style license that can be
- * found in the LICENSE file.
- */
-
-:host {
-  display: block;
-  flex-shrink: 0;
-  width: 100%;
-  border: 2px solid var(--sys-color-neutral-container);
-  border-radius: 12px;
-  margin-bottom: 12px;
-  overflow: hidden;
-  background-color: var(--sys-color-cdt-base-container);
-}
-
-.header {
-  padding: 10px 16px;
-  cursor: pointer;
-  user-select: none;
-  display: flex;
-  align-items: center;
-  background-color: var(--sys-color-surface3);
-  justify-content: space-between;
-  transition: background-color 0.2s ease-in-out;
-}
-
-.content {
-  background-color: var(--sys-color-surface);
-  padding: 12px 16px;
-}
-
-/*# sourceURL=${import.meta.resolve("././components/collapsibleAssistanceContentWidget.css")} */`;
-
-// gen/front_end/panels/ai_assistance/components/CollapsibleAssistanceContentWidget.js
-var { render, html } = Lit;
-var CollapsibleAssistanceContentWidget = class extends HTMLElement {
-  #shadow = this.attachShadow({ mode: "open" });
-  #isCollapsed = false;
-  #headerText = "Details";
-  #onReveal;
-  set data(data) {
-    this.#headerText = data.headerText;
-    this.#onReveal = data.onReveal;
-    this.#render();
-  }
-  connectedCallback() {
-    this.#render();
-  }
-  #toggleCollapse() {
-    this.#isCollapsed = !this.#isCollapsed;
-    this.#render();
-  }
-  #render() {
-    const output = html`
-      <style>${collapsibleAssistanceContentWidget_css_default}</style>
-      <details ?open=${!this.#isCollapsed}>
-        <summary class="header" @click=${(event) => {
-      event.preventDefault();
-      this.#toggleCollapse();
-    }}>
-          ${this.#headerText}
-          <div>
-            <devtools-button .data=${{
-      variant: "icon",
-      iconName: "select-element",
-      color: "var(--sys-color-on-surface)",
-      width: "14px",
-      height: "14px",
-      title: "reveal"
-    }}
-              @click=${(event) => {
-      event.stopPropagation();
-      this.#onReveal?.();
-    }}
-            ></devtools-button>
-            <devtools-button .data=${{
-      variant: "icon",
-      iconName: this.#isCollapsed ? "triangle-right" : "triangle-down",
-      color: "var(--sys-color-on-surface)",
-      width: "14px",
-      height: "14px",
-      title: "expand"
-    }}
-            ></devtools-button>
-          </div>
-        </summary>
-        <div class="content">
-          <slot></slot>
-        </div>
-      </details>
-    `;
-    render(output, this.#shadow, { host: this });
-  }
-};
-customElements.define("devtools-collapsible-assistance-content-widget", CollapsibleAssistanceContentWidget);
-
-// gen/front_end/panels/ai_assistance/components/PerformanceAgentFlameChart.js
-import * as Trace from "./../../models/trace/trace.js";
-import * as PerfUI from "./../../ui/legacy/components/perf_ui/perf_ui.js";
-import * as Lit2 from "./../../ui/lit/lit.js";
-import * as Timeline from "./../timeline/timeline.js";
-var { html: html2 } = Lit2;
-var PerformanceAgentFlameChart = class extends HTMLElement {
-  #shadow = this.attachShadow({ mode: "open" });
-  #flameChartContainer = document.createElement("div");
-  #flameChart;
-  #dataProvider;
-  #parsedTrace = null;
-  constructor() {
-    super();
-    this.#flameChartContainer.classList.add("container");
-    this.#dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
-    this.#flameChart = new PerfUI.FlameChart.FlameChart(this.#dataProvider, this);
-    this.#flameChart.markAsRoot();
-    this.#flameChart.show(this.#flameChartContainer);
-    const observer = new ResizeObserver(this.#onResize.bind(this));
-    observer.observe(this.#flameChartContainer);
-  }
-  set data(data) {
-    if (!data.parsedTrace) {
-      return;
-    }
-    this.#parsedTrace = data.parsedTrace;
-    const entityMapper = new Trace.EntityMapper.EntityMapper(data.parsedTrace);
-    this.#dataProvider.setModel(data.parsedTrace, entityMapper);
-    this.#dataProvider.buildWithCustomTracksForTest({
-      filterTracks: (trackName) => trackName.startsWith("Main"),
-      expandTracks: () => true
-    });
-    let start = Trace.Types.Timing.Micro(data.start);
-    let end = Trace.Types.Timing.Micro(data.end);
-    const minTraceTime = data.parsedTrace.data.Meta.traceBounds.min;
-    const maxTraceTime = data.parsedTrace.data.Meta.traceBounds.max;
-    if (start < 0 || end < 0 || start >= end || start === end || start < minTraceTime || end > maxTraceTime) {
-      start = minTraceTime;
-      end = maxTraceTime;
-      console.log("[GreenDev] Flamechart widget bounds reset to the whole trace duration.");
-    }
-    const bounds = Trace.Helpers.Timing.traceWindowMicroSecondsToMilliSeconds({
-      min: start,
-      max: end,
-      range: Trace.Types.Timing.Micro(end - start)
-    });
-    this.#flameChart.setWindowTimes(bounds.min, bounds.max);
-    this.#flameChart.setSize(600, 300);
-    this.#render();
-  }
-  #onResize(entries) {
-    const container = entries[0];
-    this.#flameChart.setSize(container.contentRect.width, 600);
-  }
-  #render() {
-    if (!this.#parsedTrace) {
-      return;
-    }
-    const output = html2`
-        <style>
-          :host {
-            display: flex;
-          }
-
-          .container {
-            display: flex;
-            width: 100%;
-            height: 300px;
-          }
-
-          .flex-auto {
-            flex: auto;
-          }
-
-          .vbox {
-            display: flex;
-            flex-direction: column;
-            position: relative;
-          }
-        </style>
-        ${this.#flameChartContainer}
-      `;
-    Lit2.render(output, this.#shadow, { host: this });
-    this.#flameChart.update();
-    this.#flameChart.setSize(600, 300);
-  }
-  windowChanged(startTime, endTime, animate) {
-    this.#flameChart.setWindowTimes(startTime, endTime, animate);
-  }
-  updateRangeSelection(startTime, endTime) {
-    this.#flameChart.updateRangeSelection(startTime, endTime);
-  }
-  updateSelectedEntry(_entryIndex) {
-  }
-  updateSelectedGroup(_flameChart, _group) {
-  }
-};
-customElements.define("devtools-performance-agent-flame-chart", PerformanceAgentFlameChart);
-
-// gen/front_end/panels/ai_assistance/components/ArtifactsViewer.js
-import * as Common from "./../../core/common/common.js";
-import * as AiAssistanceModel from "./../../models/ai_assistance/ai_assistance.js";
-import * as Logs from "./../../models/logs/logs.js";
-import * as NetworkTimeCalculator from "./../../models/network_time_calculator/network_time_calculator.js";
-import * as Trace2 from "./../../models/trace/trace.js";
-import * as UI from "./../../ui/legacy/legacy.js";
-import * as Lit3 from "./../../ui/lit/lit.js";
-import * as NetworkForward from "./../network/forward/forward.js";
-import * as Network from "./../network/network.js";
-import * as Insights from "./../timeline/components/insights/insights.js";
-import * as Timeline2 from "./../timeline/timeline.js";
-
-// gen/front_end/panels/ai_assistance/components/artifactsViewer.css.js
-var artifactsViewer_css_default = `/*
- * Copyright 2025 The Chromium Authors
- * Use of this source code is governed by a BSD-style license that can be
- * found in the LICENSE file.
- */
-
-.artifacts-viewer {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  padding: 20px;
-  gap: 10px;
-}
-
-/*# sourceURL=${import.meta.resolve("././components/artifactsViewer.css")} */`;
-
-// gen/front_end/panels/ai_assistance/components/ArtifactsViewer.js
-var { html: html3, render: render3 } = Lit3;
-function renderArtifact(artifact, parsedTrace) {
-  switch (artifact.type) {
-    // clang-format off
-    case "insight": {
-      const insightRenderer = new Insights.InsightRenderer.InsightRenderer();
-      const componentName = artifact.insightType;
-      const insightSet = parsedTrace.insights?.values().next().value;
-      const insightModel = insightSet?.model[componentName];
-      if (!insightModel) {
-        return Lit3.nothing;
-      }
-      return html3`
-        <devtools-collapsible-assistance-content-widget .data=${{
-        headerText: `Insight - ${componentName}`,
-        onReveal: () => {
-          void UI.InspectorView.InspectorView.instance().showPanel("timeline").then(() => {
-            Timeline2.TimelinePanel.TimelinePanel.instance().revealInsight(insightModel);
-          });
-        }
-      }}>
-          ${insightRenderer.renderInsightToWidgetElement(parsedTrace, insightSet, insightModel, componentName, {
-        selected: true,
-        isAIAssistanceContext: true
-      })}
-        </devtools-collapsible-assistance-content-widget>`;
-    }
-    case "network-request": {
-      const networkRequest = artifact.request;
-      if ("args" in networkRequest && Trace2.Types.Events.isSyntheticNetworkRequest(networkRequest)) {
-        const calculator = new NetworkTimeCalculator.NetworkTimeCalculator(true);
-        const sdkRequest = Logs.NetworkLog.NetworkLog.instance().requestsForId(networkRequest.args.data.requestId).find((r) => r.url() === networkRequest.args.data.url) ?? null;
-        if (!sdkRequest) {
-          return Lit3.nothing;
-        }
-        return html3`
-        <devtools-collapsible-assistance-content-widget
-          .data=${{
-          headerText: `Network Request: ${sdkRequest.url().length > 80 ? sdkRequest.url().slice(0, 80) + "..." : sdkRequest.url()}`,
-          onReveal: () => {
-            void UI.InspectorView.InspectorView.instance().showPanel("network").then(() => {
-              void Common.Revealer.reveal(NetworkForward.UIRequestLocation.UIRequestLocation.tab(
-                sdkRequest,
-                "timing"
-                /* NetworkForward.UIRequestLocation.UIRequestTabs.TIMING */
-              ));
-            });
-          }
-        }}>
-          <devtools-widget class="actions" .widgetConfig=${UI.Widget.widgetConfig(Network.RequestTimingView.RequestTimingView, {
-          request: sdkRequest,
-          calculator
-        })}></devtools-widget>
-        </devtools-collapsible-assistance-content-widget>`;
-      }
-      return Lit3.nothing;
-    }
-    case "flamechart": {
-      return html3`
-        <devtools-collapsible-assistance-content-widget .data=${{
-        headerText: `Flamechart`,
-        onReveal: () => {
-          console.log("Reveal flamechart", artifact.start, artifact.end);
-        }
-      }}>
-          <devtools-performance-agent-flame-chart .data=${{
-        parsedTrace,
-        start: artifact.start,
-        end: artifact.end
-      }}>
-          </devtools-performance-agent-flame-chart>
-        </devtools-collapsible-assistance-content-widget>`;
-    }
-    default:
-      return Lit3.nothing;
-  }
-}
-var DEFAULT_VIEW = (input, _output, target) => {
-  render3(html3`
-      <style>${artifactsViewer_css_default}</style>
-      <div class="artifacts-viewer">
-        ${input.artifacts.map((artifact) => renderArtifact(artifact, input.parsedTrace))}
-      </div>
-    `, target);
-};
-var ArtifactsViewer = class extends UI.Widget.Widget {
-  #view;
-  #parsedTrace;
-  constructor(element, view = DEFAULT_VIEW) {
-    super(element);
-    this.#view = view;
-    this.#parsedTrace = null;
-  }
-  wasShown() {
-    super.wasShown();
-    AiAssistanceModel.ArtifactsManager.ArtifactsManager.instance().addEventListener(AiAssistanceModel.ArtifactsManager.ArtifactAddedEvent.eventName, () => {
-      if (this.#parsedTrace) {
-        this.performUpdate();
-      }
-    });
-    UI.Context.Context.instance().addFlavorChangeListener(AiAssistanceModel.AIContext.AgentFocus, ({ data }) => {
-      this.#parsedTrace = data.parsedTrace;
-      if (this.#parsedTrace) {
-        this.performUpdate();
-      }
-    });
-    const focus = UI.Context.Context.instance().flavor(AiAssistanceModel.AIContext.AgentFocus);
-    if (focus) {
-      this.#parsedTrace = focus.parsedTrace;
-      this.performUpdate();
-    }
-  }
-  performUpdate() {
-    if (!this.#parsedTrace) {
-      return;
-    }
-    this.#view({
-      artifacts: AiAssistanceModel.ArtifactsManager.ArtifactsManager.instance().artifacts,
-      parsedTrace: this.#parsedTrace
-    }, {}, this.contentElement);
-  }
-};
-
 // gen/front_end/panels/ai_assistance/components/ChatView.js
 import "./../../ui/components/spinners/spinners.js";
 import * as Host4 from "./../../core/host/host.js";
 import * as i18n9 from "./../../core/i18n/i18n.js";
-import * as Buttons6 from "./../../ui/components/buttons/buttons.js";
-import * as UI6 from "./../../ui/legacy/legacy.js";
-import { Directives as Directives4, html as html8, nothing as nothing6, render as render8 } from "./../../ui/lit/lit.js";
+import * as Buttons5 from "./../../ui/components/buttons/buttons.js";
+import * as UI5 from "./../../ui/legacy/legacy.js";
+import { Directives as Directives4, html as html5, nothing as nothing5, render as render5 } from "./../../ui/lit/lit.js";
 
 // gen/front_end/panels/ai_assistance/PatchWidget.js
 var PatchWidget_exports = {};
@@ -465,35 +90,35 @@ import "./../../ui/legacy/legacy.js";
 import "./../../ui/components/markdown_view/markdown_view.js";
 import "./../../ui/components/spinners/spinners.js";
 import "./../../ui/kit/kit.js";
-import * as Common3 from "./../../core/common/common.js";
+import * as Common2 from "./../../core/common/common.js";
 import * as Host2 from "./../../core/host/host.js";
 import * as i18n3 from "./../../core/i18n/i18n.js";
 import * as Platform3 from "./../../core/platform/platform.js";
 import * as Root2 from "./../../core/root/root.js";
-import * as AiAssistanceModel2 from "./../../models/ai_assistance/ai_assistance.js";
+import * as AiAssistanceModel from "./../../models/ai_assistance/ai_assistance.js";
 import * as GreenDev from "./../../models/greendev/greendev.js";
 import * as Persistence2 from "./../../models/persistence/persistence.js";
 import * as Workspace3 from "./../../models/workspace/workspace.js";
 import * as WorkspaceDiff from "./../../models/workspace_diff/workspace_diff.js";
-import * as Buttons3 from "./../../ui/components/buttons/buttons.js";
-import * as UI3 from "./../../ui/legacy/legacy.js";
-import { Directives, html as html5, nothing as nothing3, render as render5 } from "./../../ui/lit/lit.js";
+import * as Buttons2 from "./../../ui/components/buttons/buttons.js";
+import * as UI2 from "./../../ui/legacy/legacy.js";
+import { Directives, html as html2, nothing as nothing2, render as render2 } from "./../../ui/lit/lit.js";
 import * as VisualLogging from "./../../ui/visual_logging/visual_logging.js";
 import * as ChangesPanel from "./../changes/changes.js";
 import * as PanelCommon from "./../common/common.js";
 
 // gen/front_end/panels/ai_assistance/SelectWorkspaceDialog.js
 import "./../../ui/kit/kit.js";
-import * as Common2 from "./../../core/common/common.js";
+import * as Common from "./../../core/common/common.js";
 import * as Host from "./../../core/host/host.js";
 import * as i18n from "./../../core/i18n/i18n.js";
 import * as Root from "./../../core/root/root.js";
 import * as Geometry from "./../../models/geometry/geometry.js";
 import * as Persistence from "./../../models/persistence/persistence.js";
 import * as Workspace from "./../../models/workspace/workspace.js";
-import * as Buttons2 from "./../../ui/components/buttons/buttons.js";
-import * as UI2 from "./../../ui/legacy/legacy.js";
-import { html as html4, nothing as nothing2, render as render4 } from "./../../ui/lit/lit.js";
+import * as Buttons from "./../../ui/components/buttons/buttons.js";
+import * as UI from "./../../ui/legacy/legacy.js";
+import { html, nothing, render } from "./../../ui/lit/lit.js";
 
 // gen/front_end/panels/ai_assistance/selectWorkspaceDialog.css.js
 var selectWorkspaceDialog_css_default = `/*
@@ -625,12 +250,12 @@ var UIStringsNotTranslate = {
 var lockedString = i18n.i18n.lockedString;
 var SELECT_WORKSPACE_DIALOG_DEFAULT_VIEW = (input, _output, target) => {
   const hasFolders = input.folders.length > 0;
-  render4(html4`
+  render(html`
       <style>${selectWorkspaceDialog_css_default}</style>
       <h2 class="dialog-header">${lockedString(UIStringsNotTranslate.selectFolder)}</h2>
       <div class="main-content">
         <div class="select-project-root">${input.selectProjectRootText}</div>
-        ${input.showAutomaticWorkspaceNudge ? html4`
+        ${input.showAutomaticWorkspaceNudge ? html`
           <!-- Hardcoding, because there is no 'getFormatLocalizedString' equivalent for 'lockedString' -->
           <div>
             Tip: provide a
@@ -641,14 +266,14 @@ var SELECT_WORKSPACE_DIALOG_DEFAULT_VIEW = (input, _output, target) => {
             >com.chrome.devtools.json</devtools-link>
             file to automatically connect your project to DevTools.
           </div>
-        ` : nothing2}
+        ` : nothing}
       </div>
-      ${hasFolders ? html4`
+      ${hasFolders ? html`
         <ul role="listbox" aria-label=${lockedString(UIStringsNotTranslate.selectFolder)}
           aria-activedescendant=${input.folders.length > 0 ? `option-${input.selectedIndex}` : ""}>
           ${input.folders.map((folder, index) => {
     const optionId = `option-${index}`;
-    return html4`
+    return html`
               <li
                 id=${optionId}
                 @mousedown=${() => input.onProjectSelected(index)}
@@ -664,7 +289,7 @@ var SELECT_WORKSPACE_DIALOG_DEFAULT_VIEW = (input, _output, target) => {
               </li>`;
   })}
         </ul>
-      ` : nothing2}
+      ` : nothing}
       <div class="buttons">
         <devtools-button
           title=${lockedString(UIStringsNotTranslate.cancel)}
@@ -680,18 +305,18 @@ var SELECT_WORKSPACE_DIALOG_DEFAULT_VIEW = (input, _output, target) => {
           .jslogContext=${"add-folder"}
           @click=${input.onAddFolderButtonClick}
           .variant=${hasFolders ? "tonal" : "primary"}>${lockedString(UIStringsNotTranslate.addFolder)}</devtools-button>
-        ${hasFolders ? html4`
+        ${hasFolders ? html`
           <devtools-button
             title=${lockedString(UIStringsNotTranslate.select)}
             aria-label="Select"
             @click=${input.onSelectButtonClick}
             .jslogContext=${"select"}
             .variant=${"primary"}>${lockedString(UIStringsNotTranslate.select)}</devtools-button>
-        ` : nothing2}
+        ` : nothing}
       </div>
     `, target);
 };
-var SelectWorkspaceDialog = class _SelectWorkspaceDialog extends UI2.Widget.VBox {
+var SelectWorkspaceDialog = class _SelectWorkspaceDialog extends UI.Widget.VBox {
   #view;
   #workspace = Workspace.Workspace.WorkspaceImpl.instance();
   #selectedIndex = 0;
@@ -798,7 +423,7 @@ var SelectWorkspaceDialog = class _SelectWorkspaceDialog extends UI2.Widget.VBox
     const automaticFileSystem = this.#automaticFileSystemManager.automaticFileSystem;
     if (automaticFileSystem) {
       this.#folders.push({
-        name: Common2.ParsedURL.ParsedURL.extractName(automaticFileSystem.root),
+        name: Common.ParsedURL.ParsedURL.extractName(automaticFileSystem.root),
         path: automaticFileSystem.root,
         automaticFileSystem
       });
@@ -810,8 +435,8 @@ var SelectWorkspaceDialog = class _SelectWorkspaceDialog extends UI2.Widget.VBox
         continue;
       }
       this.#folders.push({
-        name: Common2.ParsedURL.ParsedURL.encodedPathToRawPathString(project.displayName()),
-        path: Common2.ParsedURL.ParsedURL.urlToRawPathString(project.id(), Host.Platform.isWin()),
+        name: Common.ParsedURL.ParsedURL.encodedPathToRawPathString(project.displayName()),
+        path: Common.ParsedURL.ParsedURL.urlToRawPathString(project.id(), Host.Platform.isWin()),
         project
       });
     }
@@ -846,7 +471,7 @@ var SelectWorkspaceDialog = class _SelectWorkspaceDialog extends UI2.Widget.VBox
     this.requestUpdate();
   }
   static show(onProjectSelected, currentProject) {
-    const dialog = new UI2.Dialog.Dialog("select-workspace");
+    const dialog = new UI.Dialog.Dialog("select-workspace");
     dialog.setAriaLabel(UIStringsNotTranslate.selectFolderAccessibleLabel);
     dialog.setMaxContentSize(new Geometry.Size(384, 340));
     dialog.setSizeBehavior(
@@ -965,7 +590,7 @@ var SelectedProjectType;
   SelectedProjectType2["AUTOMATIC_DISCONNECTED"] = "automaticDisconnected";
   SelectedProjectType2["AUTOMATIC_CONNECTED"] = "automaticConnected";
 })(SelectedProjectType || (SelectedProjectType = {}));
-var DEFAULT_VIEW2 = (input, output, target) => {
+var DEFAULT_VIEW = (input, output, target) => {
   if (!input.changeSummary && input.patchSuggestionState === PatchSuggestionState.INITIAL) {
     return;
   }
@@ -973,9 +598,9 @@ var DEFAULT_VIEW2 = (input, output, target) => {
   output.summaryRef = output.summaryRef ?? Directives.createRef();
   function renderSourcesLink() {
     if (!input.sources) {
-      return nothing3;
+      return nothing2;
     }
-    return html5`<devtools-link
+    return html2`<devtools-link
           class="link"
           title="${UIStringsNotTranslate2.viewUploadedFiles} ${UIStringsNotTranslate2.opensInNewTab}"
           href="data:text/plain;charset=utf-8,${encodeURIComponent(input.sources)}"
@@ -985,7 +610,7 @@ var DEFAULT_VIEW2 = (input, output, target) => {
   }
   function renderHeader() {
     if (input.savedToDisk) {
-      return html5`
+      return html2`
             <devtools-icon class="green-bright-icon summary-badge" name="check-circle"></devtools-icon>
             <span class="header-text">
               ${lockedString2(UIStringsNotTranslate2.savedToDisk)}
@@ -993,7 +618,7 @@ var DEFAULT_VIEW2 = (input, output, target) => {
           `;
     }
     if (input.patchSuggestionState === PatchSuggestionState.SUCCESS) {
-      return html5`
+      return html2`
             <devtools-icon class="on-tonal-icon summary-badge" name="difference"></devtools-icon>
             <span class="header-text">
               ${lockedString2(`File changes in ${input.projectName}`)}
@@ -1004,7 +629,7 @@ var DEFAULT_VIEW2 = (input, output, target) => {
             ></devtools-icon>
           `;
     }
-    return html5`
+    return html2`
           <devtools-icon class="on-tonal-icon summary-badge" name="pen-spark"></devtools-icon>
           <span class="header-text">
             ${lockedString2(UIStringsNotTranslate2.unsavedChanges)}
@@ -1017,40 +642,40 @@ var DEFAULT_VIEW2 = (input, output, target) => {
   }
   function renderContent() {
     if (!input.changeSummary && input.patchSuggestionState === PatchSuggestionState.INITIAL || input.savedToDisk) {
-      return nothing3;
+      return nothing2;
     }
     if (input.patchSuggestionState === PatchSuggestionState.SUCCESS) {
-      return html5`<devtools-widget .widgetConfig=${UI3.Widget.widgetConfig(ChangesPanel.CombinedDiffView.CombinedDiffView, {
+      return html2`<devtools-widget .widgetConfig=${UI2.Widget.widgetConfig(ChangesPanel.CombinedDiffView.CombinedDiffView, {
         workspaceDiff: input.workspaceDiff,
         // Ignore user creates inspector-stylesheets
         ignoredUrls: ["inspector://"]
       })}></devtools-widget>`;
     }
-    return html5`<devtools-code-block
+    return html2`<devtools-code-block
           .code=${input.changeSummary ?? ""}
           .codeLang=${"css"}
           .displayNotice=${true}
         ></devtools-code-block>
-        ${input.patchSuggestionState === PatchSuggestionState.ERROR ? html5`<div class="error-container">
+        ${input.patchSuggestionState === PatchSuggestionState.ERROR ? html2`<div class="error-container">
               <devtools-icon name="cross-circle-filled"></devtools-icon>${lockedString2(UIStringsNotTranslate2.genericErrorMessage)} ${renderSourcesLink()}
-            </div>` : nothing3}`;
+            </div>` : nothing2}`;
   }
   function renderCopyPrompt(changedCode) {
     if (!GreenDev.Prototypes.instance().isEnabled("copyToGemini") || !changedCode) {
-      return nothing3;
+      return nothing2;
     }
-    return html5`<devtools-widget class="copy-to-prompt"
-      .widgetConfig=${UI3.Widget.widgetConfig(PanelCommon.CopyChangesToPrompt, {
+    return html2`<devtools-widget class="copy-to-prompt"
+      .widgetConfig=${UI2.Widget.widgetConfig(PanelCommon.CopyChangesToPrompt, {
       workspaceDiff: input.workspaceDiff,
       patchAgentCSSChange: changedCode
     })}></devtools-widget>`;
   }
   function renderFooter() {
     if (input.savedToDisk) {
-      return nothing3;
+      return nothing2;
     }
     if (input.patchSuggestionState === PatchSuggestionState.SUCCESS) {
-      return html5`
+      return html2`
           <div class="footer">
             <div class="left-side">
               <devtools-link class="link disclaimer-link" href="https://support.google.com/legal/answer/13505487" .jslogContext=${"code-disclaimer"}>
@@ -1076,13 +701,13 @@ var DEFAULT_VIEW2 = (input, output, target) => {
           `;
     }
     const iconName = input.projectType === SelectedProjectType.AUTOMATIC_DISCONNECTED ? "folder-off" : input.projectType === SelectedProjectType.AUTOMATIC_CONNECTED ? "folder-asterisk" : "folder";
-    return html5`
+    return html2`
         <div class="footer">
-          ${input.projectName ? html5`
+          ${input.projectName ? html2`
             <div class="change-workspace" jslog=${VisualLogging.section("patch-widget.workspace")}>
                 <devtools-icon .name=${iconName}></devtools-icon>
                 <span class="folder-name" title=${input.projectPath}>${input.projectName}</span>
-              ${input.onChangeWorkspaceClick ? html5`
+              ${input.onChangeWorkspaceClick ? html2`
                 <devtools-button
                   @click=${input.onChangeWorkspaceClick}
                   .jslogContext=${"change-workspace"}
@@ -1091,18 +716,18 @@ var DEFAULT_VIEW2 = (input, output, target) => {
                   .disabled=${input.patchSuggestionState === PatchSuggestionState.LOADING}
                   ${Directives.ref(output.changeRef)}
                 >${lockedString2(UIStringsNotTranslate2.change)}</devtools-button>
-              ` : nothing3}
+              ` : nothing2}
             </div>
-          ` : nothing3}
+          ` : nothing2}
           <div class="apply-to-workspace-container" aria-live="polite">
-            ${input.patchSuggestionState === PatchSuggestionState.LOADING ? html5`
+            ${input.patchSuggestionState === PatchSuggestionState.LOADING ? html2`
               <div class="loading-text-container" jslog=${VisualLogging.section("patch-widget.apply-to-workspace-loading")}>
                 <devtools-spinner></devtools-spinner>
                 <span>
                   ${lockedString2(UIStringsNotTranslate2.applyingToWorkspace)}
                 </span>
               </div>
-            ` : html5`
+            ` : html2`
                ${renderCopyPrompt(input.changeSummary)}
                 <devtools-button
                 @click=${input.onApplyToWorkspace}
@@ -1111,12 +736,12 @@ var DEFAULT_VIEW2 = (input, output, target) => {
                 ${lockedString2(UIStringsNotTranslate2.applyToWorkspace)}
               </devtools-button>
             `}
-            ${input.patchSuggestionState === PatchSuggestionState.LOADING ? html5`<devtools-button
+            ${input.patchSuggestionState === PatchSuggestionState.LOADING ? html2`<devtools-button
               @click=${input.onCancel}
               .jslogContext=${"cancel"}
               .variant=${"outlined"}>
               ${lockedString2(UIStringsNotTranslate2.cancel)}
-            </devtools-button>` : nothing3}
+            </devtools-button>` : nothing2}
             <devtools-button
               aria-details="info-tooltip"
               .jslogContext=${"patch-widget.info-tooltip-trigger"}
@@ -1142,12 +767,12 @@ var DEFAULT_VIEW2 = (input, output, target) => {
           </div>
         </div>`;
   }
-  const template = input.savedToDisk ? html5`
+  const template = input.savedToDisk ? html2`
           <div class="change-summary saved-to-disk" role="status" aria-live="polite">
             <div class="header-container">
              ${renderHeader()}
              </div>
-          </div>` : html5`
+          </div>` : html2`
           <details class="change-summary" jslog=${VisualLogging.section("patch-widget")}>
             <summary class="header-container" ${Directives.ref(output.summaryRef)}>
               ${renderHeader()}
@@ -1156,14 +781,14 @@ var DEFAULT_VIEW2 = (input, output, target) => {
             ${renderFooter()}
           </details>
         `;
-  render5(template, target);
+  render2(template, target);
 };
-var PatchWidget = class extends UI3.Widget.Widget {
+var PatchWidget = class extends UI2.Widget.Widget {
   changeSummary = "";
   changeManager;
   // Whether the user completed first run experience dialog or not.
-  #aiPatchingFreCompletedSetting = Common3.Settings.Settings.instance().createSetting("ai-assistance-patching-fre-completed", false);
-  #projectIdSetting = Common3.Settings.Settings.instance().createSetting("ai-assistance-patching-selected-project-id", "");
+  #aiPatchingFreCompletedSetting = Common2.Settings.Settings.instance().createSetting("ai-assistance-patching-fre-completed", false);
+  #projectIdSetting = Common2.Settings.Settings.instance().createSetting("ai-assistance-patching-selected-project-id", "");
   #view;
   #viewOutput = {};
   #aidaClient;
@@ -1180,7 +805,7 @@ var PatchWidget = class extends UI3.Widget.Widget {
   #applyToDisconnectedAutomaticWorkspace = false;
   // `rpcId` from the `applyPatch` request
   #rpcId = null;
-  constructor(element, view = DEFAULT_VIEW2, opts) {
+  constructor(element, view = DEFAULT_VIEW, opts) {
     super(element);
     this.#aidaClient = opts?.aidaClient ?? new Host2.AidaClient.AidaClient();
     this.#noLogging = Root2.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue === Root2.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING;
@@ -1188,18 +813,18 @@ var PatchWidget = class extends UI3.Widget.Widget {
     this.requestUpdate();
   }
   #onLearnMoreTooltipClick() {
-    void UI3.ViewManager.ViewManager.instance().showView("chrome-ai");
+    void UI2.ViewManager.ViewManager.instance().showView("chrome-ai");
   }
   #getDisplayedProject() {
     if (this.#project) {
       return {
-        projectName: Common3.ParsedURL.ParsedURL.encodedPathToRawPathString(this.#project.displayName()),
-        projectPath: Common3.ParsedURL.ParsedURL.urlToRawPathString(this.#project.id(), Host2.Platform.isWin())
+        projectName: Common2.ParsedURL.ParsedURL.encodedPathToRawPathString(this.#project.displayName()),
+        projectPath: Common2.ParsedURL.ParsedURL.urlToRawPathString(this.#project.id(), Host2.Platform.isWin())
       };
     }
     if (this.#automaticFileSystem) {
       return {
-        projectName: Common3.ParsedURL.ParsedURL.extractName(this.#automaticFileSystem.root),
+        projectName: Common2.ParsedURL.ParsedURL.extractName(this.#automaticFileSystem.root),
         projectPath: this.#automaticFileSystem.root
       };
     }
@@ -1276,7 +901,7 @@ var PatchWidget = class extends UI3.Widget.Widget {
         {
           iconName: "warning",
           // clang-format off
-          content: html5`<devtools-link
+          content: html2`<devtools-link
             href=${CODE_SNIPPET_WARNING_URL}
             class="link devtools-link"
             .jslogContext=${"code-snippets-explainer.patch-widget"}
@@ -1285,7 +910,7 @@ var PatchWidget = class extends UI3.Widget.Widget {
         }
       ],
       onLearnMoreClick: () => {
-        void UI3.ViewManager.ViewManager.instance().showView("chrome-ai");
+        void UI2.ViewManager.ViewManager.instance().showView("chrome-ai");
       },
       ariaLabel: lockedString2(UIStringsNotTranslate2.freDisclaimerHeader),
       learnMoreButtonText: lockedString2(UIStringsNotTranslate2.learnMore)
@@ -1444,7 +1069,7 @@ ${processedFiles.map((filename) => `* ${filename}`).join("\n")}`;
       throw new Error("Project does not exist");
     }
     this.#applyPatchAbortController = new AbortController();
-    const agent = new AiAssistanceModel2.PatchAgent.PatchAgent({
+    const agent = new AiAssistanceModel.PatchAgent.PatchAgent({
       aidaClient: this.#aidaClient,
       serverSideLoggingEnabled: false,
       project: this.#project
@@ -1470,7 +1095,7 @@ window.aiAssistanceTestPatchPrompt = async (projectName, changeSummary, expected
     throw new Error("project not found");
   }
   const aidaClient = new Host2.AidaClient.AidaClient();
-  const agent = new AiAssistanceModel2.PatchAgent.PatchAgent({
+  const agent = new AiAssistanceModel.PatchAgent.PatchAgent({
     aidaClient,
     serverSideLoggingEnabled: false,
     project
@@ -1535,22 +1160,22 @@ window.aiAssistanceTestPatchPrompt = async (projectName, changeSummary, expected
 var ChatInput_exports = {};
 __export(ChatInput_exports, {
   ChatInput: () => ChatInput,
-  DEFAULT_VIEW: () => DEFAULT_VIEW3
+  DEFAULT_VIEW: () => DEFAULT_VIEW2
 });
 import "./../../ui/components/tooltips/tooltips.js";
 import * as i18n5 from "./../../core/i18n/i18n.js";
 import * as SDK from "./../../core/sdk/sdk.js";
-import * as AiAssistanceModel3 from "./../../models/ai_assistance/ai_assistance.js";
+import * as AiAssistanceModel2 from "./../../models/ai_assistance/ai_assistance.js";
 import * as GreenDev2 from "./../../models/greendev/greendev.js";
-import * as Trace3 from "./../../models/trace/trace.js";
+import * as Trace from "./../../models/trace/trace.js";
 import * as Workspace5 from "./../../models/workspace/workspace.js";
 import * as PanelsCommon from "./../common/common.js";
 import * as PanelUtils from "./../utils/utils.js";
-import * as Buttons4 from "./../../ui/components/buttons/buttons.js";
+import * as Buttons3 from "./../../ui/components/buttons/buttons.js";
 import * as Input from "./../../ui/components/input/input.js";
 import * as Snackbars from "./../../ui/components/snackbars/snackbars.js";
-import * as UI4 from "./../../ui/legacy/legacy.js";
-import * as Lit4 from "./../../ui/lit/lit.js";
+import * as UI3 from "./../../ui/legacy/legacy.js";
+import * as Lit from "./../../ui/lit/lit.js";
 import * as VisualLogging2 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/ai_assistance/components/chatInput.css.js
@@ -1945,7 +1570,7 @@ button.link {
 /*# sourceURL=${import.meta.resolve("././components/chatInput.css")} */`;
 
 // gen/front_end/panels/ai_assistance/components/ChatInput.js
-var { html: html6, Directives: { createRef, ref } } = Lit4;
+var { html: html3, Directives: { createRef, ref } } = Lit;
 var UIStrings = {
   /**
    * @description Label added to the text input to describe the context for screen readers. Not shown visibly on screen.
@@ -2010,18 +1635,18 @@ var JPEG_MIME_TYPE = "image/jpeg";
 var SHOW_LOADING_STATE_TIMEOUT = 100;
 var RELEVANT_DATA_LINK_CHAT_ID = "relevant-data-link-chat";
 var RELEVANT_DATA_LINK_FOOTER_ID = "relevant-data-link-footer";
-var DEFAULT_VIEW3 = (input, output, target) => {
-  const chatInputContainerCls = Lit4.Directives.classMap({
+var DEFAULT_VIEW2 = (input, output, target) => {
+  const chatInputContainerCls = Lit.Directives.classMap({
     "chat-input-container": true,
     "single-line-layout": !input.selectedContext,
     disabled: input.isTextInputDisabled
   });
   const renderRelevantDataDisclaimer = (tooltipId) => {
-    const classes = Lit4.Directives.classMap({
+    const classes = Lit.Directives.classMap({
       "chat-input-disclaimer": true,
       "hide-divider": !input.isLoading && input.blockedByCrossOrigin
     });
-    return html6`
+    return html3`
       <div class=${classes}>
         <button
           class="link"
@@ -2031,7 +1656,7 @@ var DEFAULT_VIEW3 = (input, output, target) => {
       click: true
     })}
           @click=${() => {
-      void UI4.ViewManager.ViewManager.instance().showView("chrome-ai");
+      void UI3.ViewManager.ViewManager.instance().showView("chrome-ai");
     }}
         >${lockedString3("Relevant data")}</button>&nbsp;${lockedString3("is sent to Google")}
         <devtools-tooltip
@@ -2046,17 +1671,17 @@ var DEFAULT_VIEW3 = (input, output, target) => {
       click: true
     })}
             @click=${() => {
-      void UI4.ViewManager.ViewManager.instance().showView("chrome-ai");
+      void UI3.ViewManager.ViewManager.instance().showView("chrome-ai");
     }}>${i18nString(UIStrings.learnAbout)}
           </button>
         </div></devtools-tooltip>
       </div>
     `;
   };
-  Lit4.render(html6`
+  Lit.render(html3`
     <style>${Input.textInputStyles}</style>
     <style>${chatInput_css_default}</style>
-    ${input.isReadOnly ? html6`
+    ${input.isReadOnly ? html3`
         <div
           class="chat-readonly-container"
           jslog=${VisualLogging2.section("read-only")}
@@ -2072,24 +1697,24 @@ var DEFAULT_VIEW3 = (input, output, target) => {
     jslogContext: "start-new-chat"
   }}
           >${lockedString3(UIStringsNotTranslate3.startNewChat)}</devtools-button>
-        </div>` : html6`
+        </div>` : html3`
         <form class="input-form" @submit=${input.onSubmit}>
-          ${GreenDev2.Prototypes.instance().isEnabled("inDevToolsFloaty") ? html6`
+          ${GreenDev2.Prototypes.instance().isEnabled("inDevToolsFloaty") ? html3`
               <ul class="floaty">
                 ${input.additionalFloatyContext.map((c) => {
-    return html6`
+    return html3`
                     <li>
                       <span class="context-item">
-                        ${c instanceof SDK.NetworkRequest.NetworkRequest ? html6`${c.url()}` : c instanceof SDK.DOMModel.DOMNode ? html6`
-                            <devtools-widget .widgetConfig=${UI4.Widget.widgetConfig(PanelsCommon.DOMLinkifier.DOMNodeLink, { node: c })}
-                            ></devtools-widget>` : "insight" in c ? html6`${c.insight.title}` : "event" in c && "traceStartTime" in c ? html6`
-                            ${c.event.name} @ ${i18n5.TimeUtilities.formatMicroSecondsAsMillisFixed(Trace3.Types.Timing.Micro(c.event.ts - c.traceStartTime))}` : Lit4.nothing}
+                        ${c instanceof SDK.NetworkRequest.NetworkRequest ? html3`${c.url()}` : c instanceof SDK.DOMModel.DOMNode ? html3`
+                            <devtools-widget .widgetConfig=${UI3.Widget.widgetConfig(PanelsCommon.DOMLinkifier.DOMNodeLink, { node: c })}
+                            ></devtools-widget>` : "insight" in c ? html3`${c.insight.title}` : "event" in c && "traceStartTime" in c ? html3`
+                            ${c.event.name} @ ${i18n5.TimeUtilities.formatMicroSecondsAsMillisFixed(Trace.Types.Timing.Micro(c.event.ts - c.traceStartTime))}` : Lit.nothing}
                       </span>
                       <devtools-button
                         class="floaty-delete-button"
                         @click=${(e) => {
       e.preventDefault();
-      UI4.Floaty.onFloatyContextDelete(c);
+      UI3.Floaty.onFloatyContextDelete(c);
     }}
                         .data=${{
       variant: "icon",
@@ -2103,7 +1728,7 @@ var DEFAULT_VIEW3 = (input, output, target) => {
                 <li class="open-floaty">
                   <devtools-button
                     class="floaty-add-button"
-                    @click=${UI4.Floaty.onFloatyOpen}
+                    @click=${UI3.Floaty.onFloatyOpen}
                     .data=${{
     variant: "icon",
     iconName: "select-element",
@@ -2112,9 +1737,9 @@ var DEFAULT_VIEW3 = (input, output, target) => {
   }}
                   ></devtools-button>
                 </li>
-              </ul>` : Lit4.nothing}
+              </ul>` : Lit.nothing}
           <div class=${chatInputContainerCls}>
-            ${input.multimodalInputEnabled && input.imageInput && !input.isTextInputDisabled ? html6`
+            ${input.multimodalInputEnabled && input.imageInput && !input.isTextInputDisabled ? html3`
                 <div class="image-input-container">
                   <devtools-button
                     aria-label=${lockedString3(UIStringsNotTranslate3.removeImageInputButtonTitle)}
@@ -2126,12 +1751,12 @@ var DEFAULT_VIEW3 = (input, output, target) => {
     title: lockedString3(UIStringsNotTranslate3.removeImageInputButtonTitle)
   }}
                   ></devtools-button>
-                  ${input.imageInput.isLoading ? html6`
+                  ${input.imageInput.isLoading ? html3`
                       <div class="loading">
                         <devtools-spinner></devtools-spinner>
-                      </div>` : html6`
+                      </div>` : html3`
                       <img src="data:${input.imageInput.mimeType};base64, ${input.imageInput.data}" alt="Image input" />`}
-                </div>` : Lit4.nothing}
+                </div>` : Lit.nothing}
             <textarea
               class="chat-input"
               .disabled=${input.isTextInputDisabled}
@@ -2152,9 +1777,9 @@ var DEFAULT_VIEW3 = (input, output, target) => {
             ></textarea>
             <div class="chat-input-actions">
               <div class="chat-input-actions-left">
-                ${input.selectedContext ? html6`
+                ${input.selectedContext ? html3`
                     <div class="select-element">
-                      ${input.conversationType === "freestyler" ? html6`
+                      ${input.conversationType === "freestyler" ? html3`
                           <devtools-button
                             .data=${{
     variant: "icon_toggle",
@@ -2168,10 +1793,10 @@ var DEFAULT_VIEW3 = (input, output, target) => {
     disabled: input.isTextInputDisabled
   }}
                             @click=${input.onInspectElementClick}
-                          ></devtools-button>` : Lit4.nothing}
+                          ></devtools-button>` : Lit.nothing}
                       <div
                         role=button
-                        class=${Lit4.Directives.classMap({
+                        class=${Lit.Directives.classMap({
     "resource-link": true,
     "has-picker-behavior": input.conversationType === "freestyler",
     disabled: input.isTextInputDisabled
@@ -2185,26 +1810,26 @@ var DEFAULT_VIEW3 = (input, output, target) => {
   }}
                         aria-description=${i18nString(UIStrings.revealContextDescription)}
                       >
-                        ${input.selectedContext.getItem() instanceof SDK.NetworkRequest.NetworkRequest ? PanelUtils.PanelUtils.getIconForNetworkRequest(input.selectedContext.getItem()) : input.selectedContext.getItem() instanceof Workspace5.UISourceCode.UISourceCode ? PanelUtils.PanelUtils.getIconForSourceFile(input.selectedContext.getItem()) : input.selectedContext.getItem() instanceof AiAssistanceModel3.AIContext.AgentFocus ? html6`<devtools-icon name="performance" title="Performance"></devtools-icon>` : Lit4.nothing}
+                        ${input.selectedContext.getItem() instanceof SDK.NetworkRequest.NetworkRequest ? PanelUtils.PanelUtils.getIconForNetworkRequest(input.selectedContext.getItem()) : input.selectedContext.getItem() instanceof Workspace5.UISourceCode.UISourceCode ? PanelUtils.PanelUtils.getIconForSourceFile(input.selectedContext.getItem()) : input.selectedContext.getItem() instanceof AiAssistanceModel2.AIContext.AgentFocus ? html3`<devtools-icon name="performance" title="Performance"></devtools-icon>` : Lit.nothing}
                         <span class="title">
-                          ${input.selectedContext.getItem() instanceof SDK.DOMModel.DOMNode ? html6`
-                              <devtools-widget .widgetConfig=${UI4.Widget.widgetConfig(PanelsCommon.DOMLinkifier.DOMNodeLink, {
+                          ${input.selectedContext.getItem() instanceof SDK.DOMModel.DOMNode ? html3`
+                              <devtools-widget .widgetConfig=${UI3.Widget.widgetConfig(PanelsCommon.DOMLinkifier.DOMNodeLink, {
     node: input.selectedContext.getItem(),
     options: {
-      hiddenClassList: input.selectedContext.getItem().classNames().filter((className) => className.startsWith(AiAssistanceModel3.Injected.AI_ASSISTANCE_CSS_CLASS_NAME)),
+      hiddenClassList: input.selectedContext.getItem().classNames().filter((className) => className.startsWith(AiAssistanceModel2.Injected.AI_ASSISTANCE_CSS_CLASS_NAME)),
       disabled: input.isTextInputDisabled
     }
   })}></devtools-widget>` : input.selectedContext.getTitle()}
                         </span>
                       </div>
-                    </div>` : Lit4.nothing}
+                    </div>` : Lit.nothing}
               </div>
               <div class="chat-input-actions-right">
                 <div class="chat-input-disclaimer-container">
                   ${renderRelevantDataDisclaimer(RELEVANT_DATA_LINK_CHAT_ID)}
                 </div>
-                ${input.multimodalInputEnabled && !input.blockedByCrossOrigin ? html6`
-                    ${input.uploadImageInputEnabled ? html6`
+                ${input.multimodalInputEnabled && !input.blockedByCrossOrigin ? html3`
+                    ${input.uploadImageInputEnabled ? html3`
                         <devtools-button
                           class="chat-input-button"
                           aria-label=${lockedString3(UIStringsNotTranslate3.addImageButtonTitle)}
@@ -2217,7 +1842,7 @@ var DEFAULT_VIEW3 = (input, output, target) => {
     title: lockedString3(UIStringsNotTranslate3.addImageButtonTitle),
     jslogContext: "upload-image"
   }}
-                        ></devtools-button>` : Lit4.nothing}
+                        ></devtools-button>` : Lit.nothing}
                     <devtools-button
                       class="chat-input-button"
                       aria-label=${lockedString3(UIStringsNotTranslate3.takeScreenshotButtonTitle)}
@@ -2230,8 +1855,8 @@ var DEFAULT_VIEW3 = (input, output, target) => {
     title: lockedString3(UIStringsNotTranslate3.takeScreenshotButtonTitle),
     jslogContext: "take-screenshot"
   }}
-                    ></devtools-button>` : Lit4.nothing}
-                ${input.isLoading ? html6`
+                    ></devtools-button>` : Lit.nothing}
+                ${input.isLoading ? html3`
                     <devtools-button
                       class="chat-input-button"
                       aria-label=${lockedString3(UIStringsNotTranslate3.cancelButtonTitle)}
@@ -2243,7 +1868,7 @@ var DEFAULT_VIEW3 = (input, output, target) => {
     title: lockedString3(UIStringsNotTranslate3.cancelButtonTitle),
     jslogContext: "stop"
   }}
-                    ></devtools-button>` : input.blockedByCrossOrigin ? html6`
+                    ></devtools-button>` : input.blockedByCrossOrigin ? html3`
                       <devtools-button
                         class="start-new-chat-button"
                         aria-label=${lockedString3(UIStringsNotTranslate3.startNewChat)}
@@ -2254,7 +1879,7 @@ var DEFAULT_VIEW3 = (input, output, target) => {
     title: lockedString3(UIStringsNotTranslate3.startNewChat),
     jslogContext: "start-new-chat"
   }}
-                      >${lockedString3(UIStringsNotTranslate3.startNewChat)}</devtools-button>` : html6`
+                      >${lockedString3(UIStringsNotTranslate3.startNewChat)}</devtools-button>` : html3`
                       <devtools-button
                         class="chat-input-button"
                         aria-label=${lockedString3(UIStringsNotTranslate3.sendButtonTitle)}
@@ -2273,7 +1898,7 @@ var DEFAULT_VIEW3 = (input, output, target) => {
           </div>
         </form>`}
     <footer
-      class=${Lit4.Directives.classMap({
+      class=${Lit.Directives.classMap({
     "chat-input-footer": true,
     "is-read-only": input.isReadOnly
   })}
@@ -2283,7 +1908,7 @@ var DEFAULT_VIEW3 = (input, output, target) => {
     </footer>
   `, target);
 };
-var ChatInput = class extends UI4.Widget.Widget {
+var ChatInput = class extends UI3.Widget.Widget {
   isLoading = false;
   blockedByCrossOrigin = false;
   isTextInputDisabled = false;
@@ -2420,7 +2045,7 @@ var ChatInput = class extends UI4.Widget.Widget {
   #view;
   constructor(element, view) {
     super(element);
-    this.#view = view ?? DEFAULT_VIEW3;
+    this.#view = view ?? DEFAULT_VIEW2;
   }
   wasShown() {
     super.wasShown();
@@ -2503,7 +2128,7 @@ var ChatInput = class extends UI4.Widget.Widget {
   };
   onImageUpload = (ev) => {
     ev.stopPropagation();
-    const fileSelector = UI4.UIUtils.createFileSelectorElement(this.#handleLoadImage.bind(this), ".jpeg,.jpg,.png");
+    const fileSelector = UI3.UIUtils.createFileSelectorElement(this.#handleLoadImage.bind(this), ".jpeg,.jpg,.png");
     fileSelector.click();
   };
 };
@@ -2512,20 +2137,20 @@ var ChatInput = class extends UI4.Widget.Widget {
 var ChatMessage_exports = {};
 __export(ChatMessage_exports, {
   ChatMessage: () => ChatMessage,
-  DEFAULT_VIEW: () => DEFAULT_VIEW4
+  DEFAULT_VIEW: () => DEFAULT_VIEW3
 });
 import "./../../ui/components/markdown_view/markdown_view.js";
 import "./../../ui/kit/kit.js";
-import * as Common4 from "./../../core/common/common.js";
+import * as Common3 from "./../../core/common/common.js";
 import * as Host3 from "./../../core/host/host.js";
 import * as i18n7 from "./../../core/i18n/i18n.js";
-import * as AiAssistanceModel4 from "./../../models/ai_assistance/ai_assistance.js";
+import * as AiAssistanceModel3 from "./../../models/ai_assistance/ai_assistance.js";
 import * as Marked from "./../../third_party/marked/marked.js";
-import * as Buttons5 from "./../../ui/components/buttons/buttons.js";
+import * as Buttons4 from "./../../ui/components/buttons/buttons.js";
 import * as Input2 from "./../../ui/components/input/input.js";
 import * as UIHelpers from "./../../ui/helpers/helpers.js";
-import * as UI5 from "./../../ui/legacy/legacy.js";
-import * as Lit5 from "./../../ui/lit/lit.js";
+import * as UI4 from "./../../ui/legacy/legacy.js";
+import * as Lit2 from "./../../ui/lit/lit.js";
 import * as VisualLogging3 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/ai_assistance/components/chatMessage.css.js
@@ -2884,7 +2509,7 @@ var chatMessage_css_default = `/*
 /*# sourceURL=${import.meta.resolve("././components/chatMessage.css")} */`;
 
 // gen/front_end/panels/ai_assistance/components/ChatMessage.js
-var { html: html7, Directives: { ref: ref2, ifDefined } } = Lit5;
+var { html: html4, Directives: { ref: ref2, ifDefined } } = Lit2;
 var lockedString4 = i18n7.i18n.lockedString;
 var REPORT_URL = "https://crbug.com/364805393";
 var SCROLL_ROUNDING_OFFSET = 1;
@@ -3014,15 +2639,15 @@ var UIStringsNotTranslate4 = {
    */
   imageUnavailable: "Image unavailable"
 };
-var DEFAULT_VIEW4 = (input, output, target) => {
+var DEFAULT_VIEW3 = (input, output, target) => {
   const message = input.message;
   if (message.entity === "user") {
     const name = input.userInfo.accountFullName || lockedString4(UIStringsNotTranslate4.you);
-    const image = input.userInfo.accountImage ? html7`<img src="data:image/png;base64, ${input.userInfo.accountImage}" alt=${UIStringsNotTranslate4.accountAvatar} />` : html7`<devtools-icon
+    const image = input.userInfo.accountImage ? html4`<img src="data:image/png;base64, ${input.userInfo.accountImage}" alt=${UIStringsNotTranslate4.accountAvatar} />` : html4`<devtools-icon
           name="profile"
         ></devtools-icon>`;
-    const imageInput = message.imageInput && "inlineData" in message.imageInput ? renderImageChatMessage(message.imageInput.inlineData) : Lit5.nothing;
-    Lit5.render(html7`
+    const imageInput = message.imageInput && "inlineData" in message.imageInput ? renderImageChatMessage(message.imageInput.inlineData) : Lit2.nothing;
+    Lit2.render(html4`
       <style>${Input2.textInputStyles}</style>
       <style>${chatMessage_css_default}</style>
       <section
@@ -3041,7 +2666,7 @@ var DEFAULT_VIEW4 = (input, output, target) => {
     `, target);
     return;
   }
-  Lit5.render(html7`
+  Lit2.render(html4`
     <style>${Input2.textInputStyles}</style>
     <style>${chatMessage_css_default}</style>
     <section
@@ -3054,10 +2679,10 @@ var DEFAULT_VIEW4 = (input, output, target) => {
           <h2>${lockedString4(UIStringsNotTranslate4.ai)}</h2>
         </div>
       </div>
-      ${Lit5.Directives.repeat(message.parts, (_, index) => index, (part, index) => {
+      ${Lit2.Directives.repeat(message.parts, (_, index) => index, (part, index) => {
     const isLastPart = index === message.parts.length - 1;
     if (part.type === "answer") {
-      return html7`<p>${renderTextAsMarkdown(part.text, input.markdownRenderer, { animate: !input.isReadOnly && input.isLoading && isLastPart && input.isLastMessage })}</p>`;
+      return html4`<p>${renderTextAsMarkdown(part.text, input.markdownRenderer, { animate: !input.isReadOnly && input.isLoading && isLastPart && input.isLastMessage })}</p>`;
     }
     return renderStep({
       step: part.step,
@@ -3067,7 +2692,7 @@ var DEFAULT_VIEW4 = (input, output, target) => {
     });
   })}
       ${renderError(message)}
-      ${input.isLastMessage && !input.isLoading ? renderActions(input, output) : Lit5.nothing}
+      ${input.isLastMessage && !input.isLoading ? renderActions(input, output) : Lit2.nothing}
     </section>
   `, target);
 };
@@ -3079,24 +2704,24 @@ function renderTextAsMarkdown(text, markdownRenderer, { animate, ref: refFn } = 
       markdownRenderer.renderToken(token);
     }
   } catch {
-    return html7`${text}`;
+    return html4`${text}`;
   }
-  return html7`<devtools-markdown-view
+  return html4`<devtools-markdown-view
     .data=${{ tokens, renderer: markdownRenderer, animationEnabled: animate }}
-    ${refFn ? ref2(refFn) : Lit5.nothing}>
+    ${refFn ? ref2(refFn) : Lit2.nothing}>
   </devtools-markdown-view>`;
 }
 function renderTitle(step) {
-  const paused = step.sideEffect ? html7`<span class="paused">${lockedString4(UIStringsNotTranslate4.paused)}: </span>` : Lit5.nothing;
+  const paused = step.sideEffect ? html4`<span class="paused">${lockedString4(UIStringsNotTranslate4.paused)}: </span>` : Lit2.nothing;
   const actionTitle = step.title ?? `${lockedString4(UIStringsNotTranslate4.investigating)}\u2026`;
-  return html7`<span class="title">${paused}${actionTitle}</span>`;
+  return html4`<span class="title">${paused}${actionTitle}</span>`;
 }
 function renderStepCode(step) {
   if (!step.code && !step.output) {
-    return Lit5.nothing;
+    return Lit2.nothing;
   }
   const codeHeadingText = step.output && !step.canceled ? lockedString4(UIStringsNotTranslate4.codeExecuted) : lockedString4(UIStringsNotTranslate4.codeToExecute);
-  const code = step.code ? html7`<div class="action-result">
+  const code = step.code ? html4`<div class="action-result">
       <devtools-code-block
         .code=${step.code.trim()}
         .codeLang=${"js"}
@@ -3104,8 +2729,8 @@ function renderStepCode(step) {
         .header=${codeHeadingText}
         .showCopyButton=${true}
       ></devtools-code-block>
-  </div>` : Lit5.nothing;
-  const output = step.output ? html7`<div class="js-code-output">
+  </div>` : Lit2.nothing;
+  const output = step.output ? html4`<div class="js-code-output">
     <devtools-code-block
       .code=${step.output}
       .codeLang=${"js"}
@@ -3113,14 +2738,14 @@ function renderStepCode(step) {
       .header=${lockedString4(UIStringsNotTranslate4.dataReturned)}
       .showCopyButton=${false}
     ></devtools-code-block>
-  </div>` : Lit5.nothing;
-  return html7`<div class="step-code">${code}${output}</div>`;
+  </div>` : Lit2.nothing;
+  return html4`<div class="step-code">${code}${output}</div>`;
 }
 function renderStepDetails({ step, markdownRenderer, isLast }) {
-  const sideEffects = isLast && step.sideEffect ? renderSideEffectConfirmationUi(step) : Lit5.nothing;
-  const thought = step.thought ? html7`<p>${renderTextAsMarkdown(step.thought, markdownRenderer)}</p>` : Lit5.nothing;
-  const contextDetails = step.contextDetails ? html7`${Lit5.Directives.repeat(step.contextDetails, (contextDetail) => {
-    return html7`<div class="context-details">
+  const sideEffects = isLast && step.sideEffect ? renderSideEffectConfirmationUi(step) : Lit2.nothing;
+  const thought = step.thought ? html4`<p>${renderTextAsMarkdown(step.thought, markdownRenderer)}</p>` : Lit2.nothing;
+  const contextDetails = step.contextDetails ? html4`${Lit2.Directives.repeat(step.contextDetails, (contextDetail) => {
+    return html4`<div class="context-details">
       <devtools-code-block
         .code=${contextDetail.text}
         .codeLang=${contextDetail.codeLang || ""}
@@ -3129,8 +2754,8 @@ function renderStepDetails({ step, markdownRenderer, isLast }) {
         .showCopyButton=${true}
       ></devtools-code-block>
     </div>`;
-  })}` : Lit5.nothing;
-  return html7`<div class="step-details">
+  })}` : Lit2.nothing;
+  return html4`<div class="step-details">
     ${thought}
     ${renderStepCode(step)}
     ${sideEffects}
@@ -3139,7 +2764,7 @@ function renderStepDetails({ step, markdownRenderer, isLast }) {
 }
 function renderStepBadge({ step, isLoading, isLast }) {
   if (isLoading && isLast && !step.sideEffect) {
-    return html7`<devtools-spinner></devtools-spinner>`;
+    return html4`<devtools-spinner></devtools-spinner>`;
   }
   let iconName = "checkmark";
   let ariaLabel = lockedString4(UIStringsNotTranslate4.completed);
@@ -3152,7 +2777,7 @@ function renderStepBadge({ step, isLoading, isLast }) {
     ariaLabel = lockedString4(UIStringsNotTranslate4.canceled);
     iconName = "cross";
   }
-  return html7`<devtools-icon
+  return html4`<devtools-icon
       class="indicator"
       role=${ifDefined(role)}
       aria-label=${ifDefined(ariaLabel)}
@@ -3160,13 +2785,13 @@ function renderStepBadge({ step, isLoading, isLast }) {
     ></devtools-icon>`;
 }
 function renderStep({ step, isLoading, markdownRenderer, isLast }) {
-  const stepClasses = Lit5.Directives.classMap({
+  const stepClasses = Lit2.Directives.classMap({
     step: true,
     empty: !step.thought && !step.code && !step.contextDetails && !step.sideEffect,
     paused: Boolean(step.sideEffect),
     canceled: Boolean(step.canceled)
   });
-  return html7`
+  return html4`
     <details class=${stepClasses}
       jslog=${VisualLogging3.section("step")}
       .open=${Boolean(step.sideEffect)}>
@@ -3185,9 +2810,9 @@ function renderStep({ step, isLoading, markdownRenderer, isLast }) {
 }
 function renderSideEffectConfirmationUi(step) {
   if (!step.sideEffect) {
-    return Lit5.nothing;
+    return Lit2.nothing;
   }
-  return html7`<div
+  return html4`<div
     class="side-effect-confirmation"
     jslog=${VisualLogging3.section("side-effect-confirmation")}
   >
@@ -3223,20 +2848,20 @@ function renderError(message) {
         errorMessage = UIStringsNotTranslate4.maxStepsError;
         break;
       case "abort":
-        return html7`<p class="aborted" jslog=${VisualLogging3.section("aborted")}>${lockedString4(UIStringsNotTranslate4.stoppedResponse)}</p>`;
+        return html4`<p class="aborted" jslog=${VisualLogging3.section("aborted")}>${lockedString4(UIStringsNotTranslate4.stoppedResponse)}</p>`;
     }
-    return html7`<p class="error" jslog=${VisualLogging3.section("error")}>${lockedString4(errorMessage)}</p>`;
+    return html4`<p class="error" jslog=${VisualLogging3.section("error")}>${lockedString4(errorMessage)}</p>`;
   }
-  return Lit5.nothing;
+  return Lit2.nothing;
 }
 function renderImageChatMessage(inlineData) {
-  if (inlineData.data === AiAssistanceModel4.AiConversation.NOT_FOUND_IMAGE_DATA) {
-    return html7`<div class="unavailable-image" title=${UIStringsNotTranslate4.imageUnavailable}>
+  if (inlineData.data === AiAssistanceModel3.AiConversation.NOT_FOUND_IMAGE_DATA) {
+    return html4`<div class="unavailable-image" title=${UIStringsNotTranslate4.imageUnavailable}>
       <devtools-icon name='file-image'></devtools-icon>
     </div>`;
   }
   const imageUrl = `data:${inlineData.mimeType};base64,${inlineData.data}`;
-  return html7`<devtools-link
+  return html4`<devtools-link
       class="image-link" title=${UIStringsNotTranslate4.openImageInNewTab}
       href=${imageUrl}
     >
@@ -3244,10 +2869,10 @@ function renderImageChatMessage(inlineData) {
     </devtools-link>`;
 }
 function renderActions(input, output) {
-  return html7`
+  return html4`
     <div class="ai-assistance-feedback-row">
       <div class="action-buttons">
-        ${input.showRateButtons ? html7`
+        ${input.showRateButtons ? html4`
           <devtools-button
             .data=${{
     variant: "icon",
@@ -3281,7 +2906,7 @@ function renderActions(input, output) {
   )}
           ></devtools-button>
           <div class="vertical-separator"></div>
-        ` : Lit5.nothing}
+        ` : Lit2.nothing}
         <devtools-button
           .data=${{
     variant: "icon",
@@ -3304,7 +2929,7 @@ function renderActions(input, output) {
             aria-label=${lockedString4(UIStringsNotTranslate4.copyResponse)}
             @click=${input.onCopyResponseClick}></devtools-button>
       </div>
-      ${input.suggestions ? html7`<div class="suggestions-container">
+      ${input.suggestions ? html4`<div class="suggestions-container">
         <div class="scroll-button-container left hidden" ${ref2((element) => {
     output.suggestionsLeftScrollButtonContainer = element;
   })}>
@@ -3323,7 +2948,7 @@ function renderActions(input, output) {
         <div class="suggestions-scroll-container" @scroll=${input.onSuggestionsScrollOrResize} ${ref2((element) => {
     output.suggestionsScrollContainer = element;
   })}>
-          ${input.suggestions.map((suggestion) => html7`<devtools-button
+          ${input.suggestions.map((suggestion) => html4`<devtools-button
             class='suggestion'
             .data=${{
     variant: "outlined",
@@ -3348,9 +2973,9 @@ function renderActions(input, output) {
             @click=${() => input.scrollSuggestionsScrollContainer("right")}
           ></devtools-button>
         </div>
-      </div>` : Lit5.nothing}
+      </div>` : Lit2.nothing}
     </div>
-    ${input.isShowingFeedbackForm ? html7`
+    ${input.isShowingFeedbackForm ? html4`
       <form class="feedback-form" @submit=${input.onSubmit}>
         <div class="feedback-header">
           <h4 class="feedback-title">${lockedString4(UIStringsNotTranslate4.whyThisRating)}</h4>
@@ -3389,10 +3014,10 @@ function renderActions(input, output) {
         </div>
       </div>
     </form>
-    ` : Lit5.nothing}
+    ` : Lit2.nothing}
   `;
 }
-var ChatMessage = class extends UI5.Widget.Widget {
+var ChatMessage = class extends UI4.Widget.Widget {
   message = { entity: "user", text: "" };
   isLoading = false;
   isReadOnly = false;
@@ -3407,7 +3032,7 @@ var ChatMessage = class extends UI5.Widget.Widget {
   onCopyResponseClick = () => {
   };
   #suggestionsResizeObserver = new ResizeObserver(() => this.#handleSuggestionsScrollOrResize());
-  #suggestionsEvaluateLayoutThrottler = new Common4.Throttler.Throttler(50);
+  #suggestionsEvaluateLayoutThrottler = new Common3.Throttler.Throttler(50);
   #feedbackValue = "";
   #currentRating;
   #isShowingFeedbackForm = false;
@@ -3416,7 +3041,7 @@ var ChatMessage = class extends UI5.Widget.Widget {
   #viewOutput = {};
   constructor(element, view) {
     super(element);
-    this.#view = view ?? DEFAULT_VIEW4;
+    this.#view = view ?? DEFAULT_VIEW3;
   }
   wasShown() {
     super.wasShown();
@@ -3937,20 +3562,20 @@ var UIStringsNotTranslate5 = {
 };
 var lockedString5 = i18n9.i18n.lockedString;
 var SCROLL_ROUNDING_OFFSET2 = 1;
-var DEFAULT_VIEW5 = (input, output, target) => {
+var DEFAULT_VIEW4 = (input, output, target) => {
   const inputWidgetClasses = classMap({
     "chat-input-widget": true,
     sticky: !input.isReadOnly
   });
-  render8(html8`
+  render5(html5`
       <style>${chatView_css_default}</style>
       <div class="chat-ui">
         <main @scroll=${input.handleScroll} ${ref3((element) => {
     output.mainElement = element;
   })}>
-          ${input.messages.length > 0 ? html8`
+          ${input.messages.length > 0 ? html5`
             <div class="messages-container" ${ref3(input.handleMessageContainerRef)}>
-              ${repeat(input.messages, (message) => html8`<devtools-widget .widgetConfig=${UI6.Widget.widgetConfig(ChatMessage, {
+              ${repeat(input.messages, (message) => html5`<devtools-widget .widgetConfig=${UI5.Widget.widgetConfig(ChatMessage, {
     message,
     isLoading: input.isLoading,
     isReadOnly: input.isReadOnly,
@@ -3962,14 +3587,14 @@ var DEFAULT_VIEW5 = (input, output, target) => {
     onFeedbackSubmit: input.onFeedbackSubmit,
     onCopyResponseClick: input.onCopyResponseClick
   })}></devtools-widget>`)}
-              ${input.isLoading ? nothing6 : html8`<devtools-widget
-                .widgetConfig=${UI6.Widget.widgetConfig(PatchWidget, {
+              ${input.isLoading ? nothing5 : html5`<devtools-widget
+                .widgetConfig=${UI5.Widget.widgetConfig(PatchWidget, {
     changeSummary: input.changeSummary ?? "",
     changeManager: input.changeManager
   })}
               ></devtools-widget>`}
             </div>
-          ` : html8`
+          ` : html5`
             <div class="empty-state-container">
               <div class="header">
                 <div class="icon">
@@ -3981,7 +3606,7 @@ var DEFAULT_VIEW5 = (input, output, target) => {
               </div>
               <div class="empty-state-content">
                 ${input.emptyStateSuggestions.map(({ title, jslogContext }) => {
-    return html8`<devtools-button
+    return html5`<devtools-button
                     class="suggestion"
                     @click=${() => input.handleSuggestionClick(title)}
                     .data=${{
@@ -3996,7 +3621,7 @@ var DEFAULT_VIEW5 = (input, output, target) => {
               </div>
             </div>
           `}
-          <devtools-widget class=${inputWidgetClasses} .widgetConfig=${UI6.Widget.widgetConfig(ChatInput, {
+          <devtools-widget class=${inputWidgetClasses} .widgetConfig=${UI5.Widget.widgetConfig(ChatInput, {
     isLoading: input.isLoading,
     blockedByCrossOrigin: input.blockedByCrossOrigin,
     isTextInputDisabled: input.isTextInputDisabled,
@@ -4046,7 +3671,7 @@ var ChatView = class extends HTMLElement {
    */
   #isProgrammaticScroll = false;
   #view;
-  constructor(props, view = DEFAULT_VIEW5) {
+  constructor(props, view = DEFAULT_VIEW4) {
     super();
     this.#props = props;
     this.#view = view;
@@ -4145,15 +3770,15 @@ customElements.define("devtools-ai-chat-view", ChatView);
 // gen/front_end/panels/ai_assistance/components/DisabledWidget.js
 var DisabledWidget_exports = {};
 __export(DisabledWidget_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW6,
+  DEFAULT_VIEW: () => DEFAULT_VIEW5,
   DisabledWidget: () => DisabledWidget
 });
 import * as Host5 from "./../../core/host/host.js";
 import * as i18n11 from "./../../core/i18n/i18n.js";
 import * as Root3 from "./../../core/root/root.js";
 import * as uiI18n from "./../../ui/i18n/i18n.js";
-import * as UI7 from "./../../ui/legacy/legacy.js";
-import { html as html9, render as render9 } from "./../../ui/lit/lit.js";
+import * as UI6 from "./../../ui/legacy/legacy.js";
+import { html as html6, render as render6 } from "./../../ui/lit/lit.js";
 import * as VisualLogging4 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/ai_assistance/components/disabledWidget.css.js
@@ -4250,23 +3875,23 @@ function renderAidaUnavailableContents(aidaAvailability) {
   switch (aidaAvailability) {
     case "no-account-email":
     case "sync-is-paused": {
-      return html9`${i18nString2(UIStrings2.notLoggedIn)}`;
+      return html6`${i18nString2(UIStrings2.notLoggedIn)}`;
     }
     case "no-internet": {
-      return html9`${i18nString2(UIStrings2.offline)}`;
+      return html6`${i18nString2(UIStrings2.offline)}`;
     }
   }
 }
 function renderConsentViewContents(hostConfig) {
   if (hostConfig.isOffTheRecord) {
-    return html9`${i18nString2(UIStrings2.notAvailableInIncognitoMode)}`;
+    return html6`${i18nString2(UIStrings2.notAvailableInIncognitoMode)}`;
   }
   const settingsLink = document.createElement("span");
   settingsLink.textContent = i18nString2(UIStrings2.settingsLink);
   settingsLink.classList.add("link");
-  UI7.ARIAUtils.markAsLink(settingsLink);
+  UI6.ARIAUtils.markAsLink(settingsLink);
   settingsLink.addEventListener("click", () => {
-    void UI7.ViewManager.ViewManager.instance().showView("chrome-ai");
+    void UI6.ViewManager.ViewManager.instance().showView("chrome-ai");
   });
   settingsLink.setAttribute("jslog", `${VisualLogging4.action("open-ai-settings").track({ click: true })}`);
   let consentViewContents;
@@ -4279,10 +3904,10 @@ function renderConsentViewContents(hostConfig) {
   } else {
     consentViewContents = uiI18n.getFormatLocalizedString(str_2, UIStrings2.turnOnForStyles, { PH1: settingsLink });
   }
-  return html9`${consentViewContents}`;
+  return html6`${consentViewContents}`;
 }
-var DEFAULT_VIEW6 = (input, _output, target) => {
-  render9(html9`
+var DEFAULT_VIEW5 = (input, _output, target) => {
+  render6(html6`
       <style>
         ${disabledWidget_css_default}
       </style>
@@ -4296,10 +3921,10 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
       </div>
     `, target);
 };
-var DisabledWidget = class extends UI7.Widget.Widget {
+var DisabledWidget = class extends UI6.Widget.Widget {
   aidaAvailability = "no-account-email";
   #view;
-  constructor(element, view = DEFAULT_VIEW6) {
+  constructor(element, view = DEFAULT_VIEW5) {
     super(element);
     this.#view = view;
   }
@@ -4319,13 +3944,13 @@ var DisabledWidget = class extends UI7.Widget.Widget {
 // gen/front_end/panels/ai_assistance/components/ExploreWidget.js
 var ExploreWidget_exports = {};
 __export(ExploreWidget_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW7,
+  DEFAULT_VIEW: () => DEFAULT_VIEW6,
   ExploreWidget: () => ExploreWidget
 });
 import * as i18n13 from "./../../core/i18n/i18n.js";
 import * as Root4 from "./../../core/root/root.js";
-import * as UI8 from "./../../ui/legacy/legacy.js";
-import { html as html10, render as render10 } from "./../../ui/lit/lit.js";
+import * as UI7 from "./../../ui/legacy/legacy.js";
+import { html as html7, render as render7 } from "./../../ui/lit/lit.js";
 import * as VisualLogging5 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/ai_assistance/components/exploreWidget.css.js
@@ -4479,9 +4104,9 @@ var UIStringsNotTranslate6 = {
   learnAbout: "Learn about AI in DevTools"
 };
 var lockedString6 = i18n13.i18n.lockedString;
-var DEFAULT_VIEW7 = (input, _output, target) => {
+var DEFAULT_VIEW6 = (input, _output, target) => {
   function renderFeatureCardContent(featureCard) {
-    return html10`Open
+    return html7`Open
      <button
        class="link"
        role="link"
@@ -4492,7 +4117,7 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
      >${featureCard.panelName}</button>
      ${featureCard.text}`;
   }
-  render10(html10`
+  render7(html7`
       <style>
         ${exploreWidget_css_default}
       </style>
@@ -4510,14 +4135,14 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
               role="link"
               jslog=${VisualLogging5.link("open-ai-settings").track({ click: true })}
               @click=${() => {
-    void UI8.ViewManager.ViewManager.instance().showView("chrome-ai");
+    void UI7.ViewManager.ViewManager.instance().showView("chrome-ai");
   }}
             >${lockedString6(UIStringsNotTranslate6.learnAbout)}
             </button>
           </p>
         </div>
         <div class="content">
-          ${input.featureCards.map((featureCard) => html10`
+          ${input.featureCards.map((featureCard) => html7`
               <div class="feature-card">
                 <div class="feature-card-icon">
                   <devtools-icon name=${featureCard.icon}></devtools-icon>
@@ -4532,9 +4157,9 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
       </div>
     `, target);
 };
-var ExploreWidget = class extends UI8.Widget.Widget {
+var ExploreWidget = class extends UI7.Widget.Widget {
   #view;
-  constructor(element, view = DEFAULT_VIEW7) {
+  constructor(element, view = DEFAULT_VIEW6) {
     super(element);
     this.#view = view;
   }
@@ -4545,49 +4170,49 @@ var ExploreWidget = class extends UI8.Widget.Widget {
   performUpdate() {
     const config = Root4.Runtime.hostConfig;
     const featureCards = [];
-    if (config.devToolsFreestyler?.enabled && UI8.ViewManager.ViewManager.instance().hasView("elements")) {
+    if (config.devToolsFreestyler?.enabled && UI7.ViewManager.ViewManager.instance().hasView("elements")) {
       featureCards.push({
         icon: "brush-2",
         heading: "CSS styles",
         jslogContext: "open-elements-panel",
         onClick: () => {
-          void UI8.ViewManager.ViewManager.instance().showView("elements");
+          void UI7.ViewManager.ViewManager.instance().showView("elements");
         },
         panelName: "Elements",
         text: "to ask about CSS styles"
       });
     }
-    if (config.devToolsAiAssistanceNetworkAgent?.enabled && UI8.ViewManager.ViewManager.instance().hasView("network")) {
+    if (config.devToolsAiAssistanceNetworkAgent?.enabled && UI7.ViewManager.ViewManager.instance().hasView("network")) {
       featureCards.push({
         icon: "arrow-up-down",
         heading: "Network",
         jslogContext: "open-network-panel",
         onClick: () => {
-          void UI8.ViewManager.ViewManager.instance().showView("network");
+          void UI7.ViewManager.ViewManager.instance().showView("network");
         },
         panelName: "Network",
         text: "to ask about a request's details"
       });
     }
-    if (config.devToolsAiAssistanceFileAgent?.enabled && UI8.ViewManager.ViewManager.instance().hasView("sources")) {
+    if (config.devToolsAiAssistanceFileAgent?.enabled && UI7.ViewManager.ViewManager.instance().hasView("sources")) {
       featureCards.push({
         icon: "document",
         heading: "Files",
         jslogContext: "open-sources-panel",
         onClick: () => {
-          void UI8.ViewManager.ViewManager.instance().showView("sources");
+          void UI7.ViewManager.ViewManager.instance().showView("sources");
         },
         panelName: "Sources",
         text: "to ask about a file's content"
       });
     }
-    if (config.devToolsAiAssistancePerformanceAgent?.enabled && UI8.ViewManager.ViewManager.instance().hasView("timeline")) {
+    if (config.devToolsAiAssistancePerformanceAgent?.enabled && UI7.ViewManager.ViewManager.instance().hasView("timeline")) {
       featureCards.push({
         icon: "performance",
         heading: "Performance",
         jslogContext: "open-performance-panel",
         onClick: () => {
-          void UI8.ViewManager.ViewManager.instance().showView("timeline");
+          void UI7.ViewManager.ViewManager.instance().showView("timeline");
         },
         panelName: "Performance",
         text: "to ask about a trace item"
@@ -4615,129 +4240,22 @@ var MarkdownRendererWithCodeBlock = class extends MarkdownView.MarkdownView.Mark
 };
 
 // gen/front_end/panels/ai_assistance/components/PerformanceAgentMarkdownRenderer.js
-import "./../../models/trace/insights/insights.js";
-import "./../timeline/components/components.js";
-import * as Common5 from "./../../core/common/common.js";
+import * as Common4 from "./../../core/common/common.js";
 import * as SDK2 from "./../../core/sdk/sdk.js";
-import * as GreenDev3 from "./../../models/greendev/greendev.js";
-import * as Logs2 from "./../../models/logs/logs.js";
-import * as NetworkTimeCalculator3 from "./../../models/network_time_calculator/network_time_calculator.js";
-import * as Helpers2 from "./../../models/trace/helpers/helpers.js";
-import * as Trace4 from "./../../models/trace/trace.js";
-import * as UI9 from "./../../ui/legacy/legacy.js";
-import * as Lit6 from "./../../ui/lit/lit.js";
+import * as Trace2 from "./../../models/trace/trace.js";
+import * as Lit3 from "./../../ui/lit/lit.js";
 import * as PanelsCommon2 from "./../common/common.js";
-import * as NetworkForward2 from "./../network/forward/forward.js";
-import * as Network2 from "./../network/network.js";
-import * as TimelineComponents from "./../timeline/components/components.js";
-import * as Insights2 from "./../timeline/components/insights/insights.js";
-import * as Timeline3 from "./../timeline/timeline.js";
-var { html: html11 } = Lit6.StaticHtml;
-var { ref: ref4, createRef: createRef2 } = Lit6.Directives;
-var { widgetConfig } = UI9.Widget;
+var { html: html8 } = Lit3.StaticHtml;
+var { ref: ref4, createRef: createRef2 } = Lit3.Directives;
 var PerformanceAgentMarkdownRenderer = class extends MarkdownRendererWithCodeBlock {
   mainFrameId;
   lookupEvent;
-  parsedTrace;
-  #insightRenderer = new Insights2.InsightRenderer.InsightRenderer();
-  constructor(mainFrameId = "", lookupEvent = () => null, parsedTrace = null) {
+  constructor(mainFrameId = "", lookupEvent = () => null) {
     super();
     this.mainFrameId = mainFrameId;
     this.lookupEvent = lookupEvent;
-    this.parsedTrace = parsedTrace;
   }
   templateForToken(token) {
-    if (!this.parsedTrace) {
-      return null;
-    }
-    if (token.type === "html" && GreenDev3.Prototypes.instance().isEnabled("inlineWidgets")) {
-      if (token.text.includes("<flame-chart-widget")) {
-        const startMatch = token.text.match(/start="?(\d+)"?/);
-        const endMatch = token.text.match(/end="?(\d+)"?/);
-        const start = startMatch ? Number(startMatch[1]) : this.parsedTrace.data.Meta.traceBounds.min;
-        const end = endMatch ? Number(endMatch[1]) : this.parsedTrace.data.Meta.traceBounds.max;
-        return html11`<devtools-performance-agent-flame-chart .data=${{
-          parsedTrace: this.parsedTrace,
-          start,
-          end
-        }}
-          }></devtools-performance-agent-flame-chart>`;
-      }
-      const regex = /<([a-z-]+)\s+value="([^"]+)">/;
-      const match = token.text.match(regex);
-      if (!match) {
-        return null;
-      }
-      const tagName = match[1];
-      const value = match[2];
-      if (tagName === "ai-insight" && value) {
-        const componentName = value;
-        const insightSet = this.parsedTrace.insights?.values().next().value;
-        const insightM = insightSet?.model[componentName];
-        if (!insightM) {
-          return null;
-        }
-        return html11`<devtools-collapsible-assistance-content-widget  .data=${{
-          headerText: `Insight - ${componentName}`,
-          onReveal: () => {
-            void UI9.InspectorView.InspectorView.instance().showPanel("timeline").then(() => {
-              Timeline3.TimelinePanel.TimelinePanel.instance().revealInsight(insightM);
-            });
-          }
-        }}>
-        ${this.#insightRenderer.renderInsightToWidgetElement(this.parsedTrace, insightSet, insightM, componentName, {
-          selected: true,
-          isAIAssistanceContext: true
-        })}
-        </devtools-collapsible-assistance-content-widget>`;
-      }
-      if (tagName === "network-request-widget" && value) {
-        const rawTraceEvent = Helpers2.SyntheticEvents.SyntheticEventsManager.getActiveManager().getRawTraceEvents().at(Number(value));
-        if (rawTraceEvent && Trace4.Types.Events.isSyntheticNetworkRequest(rawTraceEvent)) {
-          const rawTraceEventId = rawTraceEvent?.args?.data?.requestId;
-          const rawTraceEventUrl = rawTraceEvent?.args?.data?.url;
-          const networkRequest = rawTraceEvent ? Logs2.NetworkLog.NetworkLog.instance().requestsForId(rawTraceEventId).find((r) => r.url() === rawTraceEventUrl) : null;
-          if (networkRequest) {
-            const calculator = new NetworkTimeCalculator3.NetworkTimeCalculator(true);
-            return html11`<devtools-collapsible-assistance-content-widget
-            .data=${{
-              headerText: `Network Request: ${networkRequest.url().length > 80 ? networkRequest.url().slice(0, 80) + "..." : networkRequest.url()}`,
-              onReveal: () => {
-                void UI9.InspectorView.InspectorView.instance().showPanel("network").then(() => {
-                  void Common5.Revealer.reveal(NetworkForward2.UIRequestLocation.UIRequestLocation.tab(
-                    networkRequest,
-                    "timing"
-                    /* NetworkForward.UIRequestLocation.UIRequestTabs.TIMING */
-                  ));
-                });
-              }
-            }}>
-            <devtools-widget class="actions" .widgetConfig=${UI9.Widget.widgetConfig(Network2.RequestTimingView.RequestTimingView, {
-              request: networkRequest,
-              calculator
-            })}></devtools-widget>
-            </devtools-collapsible-assistance-content-widget>`;
-          }
-        }
-        const syntheticRequest = Helpers2.SyntheticEvents.SyntheticEventsManager.getActiveManager().syntheticEventForRawEventIndex(Number(value));
-        let networkTooltip = null;
-        if (syntheticRequest && Trace4.Types.Events.isSyntheticNetworkRequest(syntheticRequest)) {
-          networkTooltip = html11`<devtools-widget .widgetConfig=${widgetConfig(TimelineComponents.NetworkRequestTooltip.NetworkRequestTooltip, {
-            networkRequest: syntheticRequest
-          })}></devtools-widget>`;
-        }
-        return html11`<devtools-collapsible-assistance-content-widget
-        .data=${{
-          headerText: "Network Request",
-          onReveal: () => {
-            console.log("Reveal network request", value);
-          }
-        }}>
-          ${networkTooltip}
-          </devtools-collapsible-assistance-content-widget>`;
-      }
-      return null;
-    }
     if (token.type === "link" && token.href.startsWith("#")) {
       if (token.href.startsWith("#node-")) {
         const nodeId = Number(token.href.replace("#node-", ""));
@@ -4749,22 +4267,22 @@ var PerformanceAgentMarkdownRenderer = class extends MarkdownRendererWithCodeBlo
           templateRef.value.textContent = "";
           templateRef.value.append(node);
         });
-        return html11`<span ${ref4(templateRef)}>${token.text}</span>`;
+        return html8`<span ${ref4(templateRef)}>${token.text}</span>`;
       }
       const event = this.lookupEvent(token.href.slice(1));
       if (!event) {
-        return html11`${token.text}`;
+        return html8`${token.text}`;
       }
       let label = token.text;
       let title = "";
-      if (Trace4.Types.Events.isSyntheticNetworkRequest(event)) {
+      if (Trace2.Types.Events.isSyntheticNetworkRequest(event)) {
         title = event.args.data.url;
       } else {
         label += ` (${event.name})`;
       }
-      return html11`<a href="#" draggable=false .title=${title} @click=${(e) => {
+      return html8`<a href="#" draggable=false .title=${title} @click=${(e) => {
         e.stopPropagation();
-        void Common5.Revealer.reveal(new SDK2.TraceObject.RevealableEvent(event));
+        void Common4.Revealer.reveal(new SDK2.TraceObject.RevealableEvent(event));
       }}>${label}</a>`;
     }
     return super.templateForToken(token);
@@ -4795,7 +4313,7 @@ var PerformanceAgentMarkdownRenderer = class extends MarkdownRendererWithCodeBlo
 };
 
 // gen/front_end/panels/ai_assistance/AiAssistancePanel.js
-var { html: html12 } = Lit7;
+var { html: html9 } = Lit4;
 var AI_ASSISTANCE_SEND_FEEDBACK = "https://crbug.com/364805393";
 var AI_ASSISTANCE_HELP = "https://developer.chrome.com/docs/devtools/ai-assistance";
 var UIStrings3 = {
@@ -4988,10 +4506,10 @@ async function getEmptyStateSuggestions(conversation) {
 }
 function getMarkdownRenderer(conversation) {
   const context = conversation?.selectedContext;
-  if (context instanceof AiAssistanceModel5.PerformanceAgent.PerformanceTraceContext) {
+  if (context instanceof AiAssistanceModel4.PerformanceAgent.PerformanceTraceContext) {
     if (!context.external) {
       const focus = context.getItem();
-      return new PerformanceAgentMarkdownRenderer(focus.parsedTrace.data.Meta.mainFrameId, focus.lookupEvent.bind(focus), focus.parsedTrace);
+      return new PerformanceAgentMarkdownRenderer(focus.parsedTrace.data.Meta.mainFrameId, focus.lookupEvent.bind(focus));
     }
   } else if (conversation?.type === "drjones-performance-full") {
     return new PerformanceAgentMarkdownRenderer();
@@ -4999,10 +4517,10 @@ function getMarkdownRenderer(conversation) {
   return new MarkdownRendererWithCodeBlock();
 }
 function toolbarView(input) {
-  return html12`
+  return html9`
     <div class="toolbar-container" role="toolbar" jslog=${VisualLogging6.toolbar()}>
       <devtools-toolbar class="freestyler-left-toolbar" role="presentation">
-      ${input.showChatActions ? html12`<devtools-button
+      ${input.showChatActions ? html9`<devtools-button
           title=${i18nString3(UIStrings3.newChat)}
           aria-label=${i18nString3(UIStrings3.newChat)}
           .iconName=${"plus"}
@@ -5016,8 +4534,8 @@ function toolbarView(input) {
           .iconName=${"history"}
           .jslogContext=${"freestyler.history"}
           .populateMenuCall=${input.populateHistoryMenu}
-        ></devtools-menu-button>` : Lit7.nothing}
-        ${input.showActiveConversationActions ? html12`
+        ></devtools-menu-button>` : Lit4.nothing}
+        ${input.showActiveConversationActions ? html9`
           <devtools-button
               title=${i18nString3(UIStrings3.deleteChat)}
               aria-label=${i18nString3(UIStrings3.deleteChat)}
@@ -5034,7 +4552,7 @@ function toolbarView(input) {
             .jslogContext=${"export-ai-conversation"}
             .variant=${"toolbar"}
             @click=${input.onExportConversationClick}>
-          </devtools-button>` : Lit7.nothing}
+          </devtools-button>` : Lit4.nothing}
       </devtools-toolbar>
       <devtools-toolbar class="freestyler-right-toolbar" role="presentation">
         <devtools-link
@@ -5058,13 +4576,6 @@ function toolbarView(input) {
           .jslogContext=${"freestyler.settings"}
           .variant=${"toolbar"}
           @click=${input.onSettingsClick}></devtools-button>
-        <!-- If the green experiment is enabled, render the artifacts sidebar toggle button -->
-        ${GreenDev4.Prototypes.instance().isEnabled("artifactViewer") ? html12`<devtools-button
-          title=${i18nString3(UIStrings3.settings)}
-          aria-label=${i18nString3(UIStrings3.settings)}
-          .iconName=${input.artifactsSidebarVisible ? "left-panel-open" : "left-panel-close"}
-          .variant=${"toolbar"}
-          @click=${input.onArtifactsSidebarToggle}></devtools-button>` : Lit7.nothing}
       </devtools-toolbar>
     </div>
   `;
@@ -5073,10 +4584,10 @@ function defaultView(input, output, target) {
   function renderState() {
     switch (input.state) {
       case "chat-view": {
-        return html12`
+        return html9`
         <devtools-ai-chat-view
           .props=${input.props}
-          ${Lit7.Directives.ref((el) => {
+          ${Lit4.Directives.ref((el) => {
           if (!el || !(el instanceof ChatView)) {
             return;
           }
@@ -5085,73 +4596,49 @@ function defaultView(input, output, target) {
         ></devtools-ai-chat-view>`;
       }
       case "explore-view":
-        return html12`<devtools-widget
+        return html9`<devtools-widget
           class="fill-panel"
-          .widgetConfig=${UI10.Widget.widgetConfig(ExploreWidget)}
+          .widgetConfig=${UI8.Widget.widgetConfig(ExploreWidget)}
         ></devtools-widget>`;
       case "disabled-view":
-        return html12`<devtools-widget
+        return html9`<devtools-widget
           class="fill-panel"
-          .widgetConfig=${UI10.Widget.widgetConfig(DisabledWidget, input.props)}
+          .widgetConfig=${UI8.Widget.widgetConfig(DisabledWidget, input.props)}
         ></devtools-widget>`;
     }
   }
-  const panelWithToolbar = html12`
-    ${toolbarView(input)}
-    <div class="ai-assistance-view-container">${renderState()}</div>`;
-  if (GreenDev4.Prototypes.instance().isEnabled("artifactViewer")) {
-    Lit7.render(html12`
-        <devtools-split-view
-          direction="column"
-          sidebar-visibility=${input.artifactsSidebarVisible ? "visible" : "hidden"}
-          sidebar-position="second"
-          sidebar-initial-size="520"
-          style="width: 100%;">
-          <div slot="main" class="assistance-view-wrapper-with-sidebar">
-            ${panelWithToolbar}
-          </div>
-          <div slot="sidebar">
-            <div class="artifacts-toolbar-container" role="toolbar">
-              <div>Artifacts Viewer</div>
-            </div>
-            <devtools-widget
-              class="fill-panel"
-              .widgetConfig=${UI10.Widget.widgetConfig(ArtifactsViewer)}
-            ></devtools-widget>
-          </div>
-        </devtools-split-view>
-      `, target);
-  } else {
-    Lit7.render(panelWithToolbar, target);
-  }
+  Lit4.render(html9`
+      ${toolbarView(input)}
+      <div class="ai-assistance-view-container">${renderState()}</div>
+    `, target);
 }
 function createNodeContext(node) {
   if (!node) {
     return null;
   }
-  return new AiAssistanceModel5.StylingAgent.NodeContext(node);
+  return new AiAssistanceModel4.StylingAgent.NodeContext(node);
 }
 function createFileContext(file) {
   if (!file) {
     return null;
   }
-  return new AiAssistanceModel5.FileAgent.FileContext(file);
+  return new AiAssistanceModel4.FileAgent.FileContext(file);
 }
 function createRequestContext(request) {
   if (!request) {
     return null;
   }
   const calculator = NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator();
-  return new AiAssistanceModel5.NetworkAgent.RequestContext(request, calculator);
+  return new AiAssistanceModel4.NetworkAgent.RequestContext(request, calculator);
 }
 function createPerformanceTraceContext(focus) {
   if (!focus) {
     return null;
   }
-  return new AiAssistanceModel5.PerformanceAgent.PerformanceTraceContext(focus);
+  return new AiAssistanceModel4.PerformanceAgent.PerformanceTraceContext(focus);
 }
 var panelInstance;
-var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
+var AiAssistancePanel = class _AiAssistancePanel extends UI8.Panel.Panel {
   view;
   static panelName = "freestyler";
   // NodeJS debugging does not have Elements panel, thus this action might not exist.
@@ -5160,14 +4647,13 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
   #viewOutput = {};
   #serverSideLoggingEnabled = isAiAssistanceServerSideLoggingEnabled();
   #aiAssistanceEnabledSetting;
-  #changeManager = new AiAssistanceModel5.ChangeManager.ChangeManager();
-  #mutex = new Common6.Mutex.Mutex();
+  #changeManager = new AiAssistanceModel4.ChangeManager.ChangeManager();
+  #mutex = new Common5.Mutex.Mutex();
   #conversation;
   #selectedFile = null;
   #selectedElement = null;
   #selectedPerformanceTrace = null;
   #selectedRequest = null;
-  #isArtifactsSidebarOpen = false;
   // Messages displayed in the `ChatView` component.
   #messages = [];
   // Whether the UI should show loading or not.
@@ -5190,13 +4676,10 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
       accountImage: syncInfo.accountImage,
       accountFullName: syncInfo.accountFullName
     };
-    if (UI10.ActionRegistry.ActionRegistry.instance().hasAction("elements.toggle-element-search")) {
-      this.#toggleSearchElementAction = UI10.ActionRegistry.ActionRegistry.instance().getAction("elements.toggle-element-search");
+    if (UI8.ActionRegistry.ActionRegistry.instance().hasAction("elements.toggle-element-search")) {
+      this.#toggleSearchElementAction = UI8.ActionRegistry.ActionRegistry.instance().getAction("elements.toggle-element-search");
     }
-    AiAssistanceModel5.AiHistoryStorage.AiHistoryStorage.instance().addEventListener("AiHistoryDeleted", this.#onHistoryDeleted, this);
-    if (GreenDev4.Prototypes.instance().isEnabled("artifactViewer")) {
-      AiAssistanceModel5.ArtifactsManager.ArtifactsManager.instance().addEventListener(AiAssistanceModel5.ArtifactsManager.ArtifactAddedEvent.eventName, this.#onArtifactAdded.bind(this));
-    }
+    AiAssistanceModel4.AiHistoryStorage.AiHistoryStorage.instance().addEventListener("AiHistoryDeleted", this.#onHistoryDeleted, this);
   }
   async #getPanelViewInput() {
     const blockedByAge = Root5.Runtime.hostConfig.aidaAvailability?.blockedByAge === true;
@@ -5233,7 +4716,6 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
           changeManager: this.#changeManager,
           uploadImageInputEnabled: isAiAssistanceMultimodalUploadInputEnabled() && this.#conversation.type === "freestyler",
           markdownRenderer,
-          isArtifactsSidebarOpen: this.#isArtifactsSidebarOpen,
           onTextSubmit: async (text, imageInput, multimodalInputType) => {
             Host6.userMetrics.actionTaken(Host6.UserMetrics.Action.AiAssistanceQuerySubmitted);
             await this.#startConversation(text, imageInput, multimodalInputType);
@@ -5253,7 +4735,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
   }
   #getAiAssistanceEnabledSetting() {
     try {
-      return Common6.Settings.moduleSetting("ai-assistance-enabled");
+      return Common5.Settings.moduleSetting("ai-assistance-enabled");
     } catch {
       return;
     }
@@ -5276,7 +4758,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
    * the performance panel but have no trace imported.
    */
   #bindTimelineTraceListener() {
-    const timelinePanel = UI10.Context.Context.instance().flavor(TimelinePanel3.TimelinePanel.TimelinePanel);
+    const timelinePanel = UI8.Context.Context.instance().flavor(TimelinePanel.TimelinePanel.TimelinePanel);
     if (timelinePanel === this.#timelinePanelInstance) {
       return;
     }
@@ -5287,7 +4769,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
     }
   }
   #bindFloatyListener() {
-    const additionalContexts = UI10.Context.Context.instance().flavor(UI10.Floaty.FloatyFlavor);
+    const additionalContexts = UI8.Context.Context.instance().flavor(UI8.Floaty.FloatyFlavor);
     if (!additionalContexts) {
       return;
     }
@@ -5296,7 +4778,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
   }
   #getDefaultConversationType() {
     const { hostConfig } = Root5.Runtime;
-    const viewManager = UI10.ViewManager.ViewManager.instance();
+    const viewManager = UI8.ViewManager.ViewManager.instance();
     const isElementsPanelVisible = viewManager.isViewVisible("elements");
     const isNetworkPanelVisible = viewManager.isViewVisible("network");
     const isSourcesPanelVisible = viewManager.isViewVisible("sources");
@@ -5323,7 +4805,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
     if (this.#conversation?.type === targetConversationType) {
       return;
     }
-    const conversation = targetConversationType ? new AiAssistanceModel5.AiConversation.AiConversation(targetConversationType, [], void 0, false, this.#aidaClient, this.#changeManager) : void 0;
+    const conversation = targetConversationType ? new AiAssistanceModel4.AiConversation.AiConversation(targetConversationType, [], void 0, false, this.#aidaClient, this.#changeManager) : void 0;
     this.#updateConversationState(conversation);
   }
   #updateConversationState(conversation) {
@@ -5335,7 +4817,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
       if (!conversation) {
         const conversationType = this.#getDefaultConversationType();
         if (conversationType) {
-          conversation = new AiAssistanceModel5.AiConversation.AiConversation(conversationType, [], void 0, false, this.#aidaClient, this.#changeManager);
+          conversation = new AiAssistanceModel4.AiConversation.AiConversation(conversationType, [], void 0, false, this.#aidaClient, this.#changeManager);
         }
       }
       this.#conversation = conversation;
@@ -5348,34 +4830,28 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
     this.#viewOutput.chatView?.restoreScrollPosition();
     this.#viewOutput.chatView?.focusTextInput();
     void this.#handleAidaAvailabilityChange();
-    this.#selectedElement = createNodeContext(selectedElementFilter(UI10.Context.Context.instance().flavor(SDK3.DOMModel.DOMNode)));
-    this.#selectedRequest = createRequestContext(UI10.Context.Context.instance().flavor(SDK3.NetworkRequest.NetworkRequest));
-    this.#selectedPerformanceTrace = createPerformanceTraceContext(UI10.Context.Context.instance().flavor(AiAssistanceModel5.AIContext.AgentFocus));
-    this.#selectedFile = createFileContext(UI10.Context.Context.instance().flavor(Workspace6.UISourceCode.UISourceCode));
+    this.#selectedElement = createNodeContext(selectedElementFilter(UI8.Context.Context.instance().flavor(SDK3.DOMModel.DOMNode)));
+    this.#selectedRequest = createRequestContext(UI8.Context.Context.instance().flavor(SDK3.NetworkRequest.NetworkRequest));
+    this.#selectedPerformanceTrace = createPerformanceTraceContext(UI8.Context.Context.instance().flavor(AiAssistanceModel4.AIContext.AgentFocus));
+    this.#selectedFile = createFileContext(UI8.Context.Context.instance().flavor(Workspace6.UISourceCode.UISourceCode));
     this.#updateConversationState(this.#conversation);
     this.#aiAssistanceEnabledSetting?.addChangeListener(this.requestUpdate, this);
     Host6.AidaClient.HostConfigTracker.instance().addEventListener("aidaAvailabilityChanged", this.#handleAidaAvailabilityChange);
     this.#toggleSearchElementAction?.addEventListener("Toggled", this.requestUpdate, this);
-    UI10.Context.Context.instance().addFlavorChangeListener(SDK3.DOMModel.DOMNode, this.#handleDOMNodeFlavorChange);
-    UI10.Context.Context.instance().addFlavorChangeListener(SDK3.NetworkRequest.NetworkRequest, this.#handleNetworkRequestFlavorChange);
-    UI10.Context.Context.instance().addFlavorChangeListener(AiAssistanceModel5.AIContext.AgentFocus, this.#handlePerformanceTraceFlavorChange);
-    UI10.Context.Context.instance().addFlavorChangeListener(Workspace6.UISourceCode.UISourceCode, this.#handleUISourceCodeFlavorChange);
-    UI10.ViewManager.ViewManager.instance().addEventListener("ViewVisibilityChanged", this.#selectDefaultAgentIfNeeded, this);
+    UI8.Context.Context.instance().addFlavorChangeListener(SDK3.DOMModel.DOMNode, this.#handleDOMNodeFlavorChange);
+    UI8.Context.Context.instance().addFlavorChangeListener(SDK3.NetworkRequest.NetworkRequest, this.#handleNetworkRequestFlavorChange);
+    UI8.Context.Context.instance().addFlavorChangeListener(AiAssistanceModel4.AIContext.AgentFocus, this.#handlePerformanceTraceFlavorChange);
+    UI8.Context.Context.instance().addFlavorChangeListener(Workspace6.UISourceCode.UISourceCode, this.#handleUISourceCodeFlavorChange);
+    UI8.ViewManager.ViewManager.instance().addEventListener("ViewVisibilityChanged", this.#selectDefaultAgentIfNeeded, this);
     SDK3.TargetManager.TargetManager.instance().addModelListener(SDK3.DOMModel.DOMModel, SDK3.DOMModel.Events.AttrModified, this.#handleDOMNodeAttrChange, this);
     SDK3.TargetManager.TargetManager.instance().addModelListener(SDK3.DOMModel.DOMModel, SDK3.DOMModel.Events.AttrRemoved, this.#handleDOMNodeAttrChange, this);
-    UI10.Context.Context.instance().addFlavorChangeListener(TimelinePanel3.TimelinePanel.TimelinePanel, this.#bindTimelineTraceListener, this);
+    UI8.Context.Context.instance().addFlavorChangeListener(TimelinePanel.TimelinePanel.TimelinePanel, this.#bindTimelineTraceListener, this);
     this.#bindTimelineTraceListener();
     this.#selectDefaultAgentIfNeeded();
     Host6.userMetrics.actionTaken(Host6.UserMetrics.Action.AiAssistancePanelOpened);
-    if (GreenDev4.Prototypes.instance().isEnabled("inDevToolsFloaty")) {
-      UI10.Context.Context.instance().addFlavorChangeListener(UI10.Floaty.FloatyFlavor, this.#bindFloatyListener, this);
+    if (GreenDev3.Prototypes.instance().isEnabled("inDevToolsFloaty")) {
+      UI8.Context.Context.instance().addFlavorChangeListener(UI8.Floaty.FloatyFlavor, this.#bindFloatyListener, this);
       this.#bindFloatyListener();
-    }
-  }
-  #onArtifactAdded() {
-    if (AiAssistanceModel5.ArtifactsManager.ArtifactsManager.instance().artifacts.length > 0) {
-      this.#isArtifactsSidebarOpen = true;
-      this.requestUpdate();
     }
   }
   willHide() {
@@ -5383,12 +4859,12 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
     this.#aiAssistanceEnabledSetting?.removeChangeListener(this.requestUpdate, this);
     Host6.AidaClient.HostConfigTracker.instance().removeEventListener("aidaAvailabilityChanged", this.#handleAidaAvailabilityChange);
     this.#toggleSearchElementAction?.removeEventListener("Toggled", this.requestUpdate, this);
-    UI10.Context.Context.instance().removeFlavorChangeListener(SDK3.DOMModel.DOMNode, this.#handleDOMNodeFlavorChange);
-    UI10.Context.Context.instance().removeFlavorChangeListener(SDK3.NetworkRequest.NetworkRequest, this.#handleNetworkRequestFlavorChange);
-    UI10.Context.Context.instance().removeFlavorChangeListener(AiAssistanceModel5.AIContext.AgentFocus, this.#handlePerformanceTraceFlavorChange);
-    UI10.Context.Context.instance().removeFlavorChangeListener(Workspace6.UISourceCode.UISourceCode, this.#handleUISourceCodeFlavorChange);
-    UI10.ViewManager.ViewManager.instance().removeEventListener("ViewVisibilityChanged", this.#selectDefaultAgentIfNeeded, this);
-    UI10.Context.Context.instance().removeFlavorChangeListener(TimelinePanel3.TimelinePanel.TimelinePanel, this.#bindTimelineTraceListener, this);
+    UI8.Context.Context.instance().removeFlavorChangeListener(SDK3.DOMModel.DOMNode, this.#handleDOMNodeFlavorChange);
+    UI8.Context.Context.instance().removeFlavorChangeListener(SDK3.NetworkRequest.NetworkRequest, this.#handleNetworkRequestFlavorChange);
+    UI8.Context.Context.instance().removeFlavorChangeListener(AiAssistanceModel4.AIContext.AgentFocus, this.#handlePerformanceTraceFlavorChange);
+    UI8.Context.Context.instance().removeFlavorChangeListener(Workspace6.UISourceCode.UISourceCode, this.#handleUISourceCodeFlavorChange);
+    UI8.ViewManager.ViewManager.instance().removeEventListener("ViewVisibilityChanged", this.#selectDefaultAgentIfNeeded, this);
+    UI8.Context.Context.instance().removeFlavorChangeListener(TimelinePanel.TimelinePanel.TimelinePanel, this.#bindTimelineTraceListener, this);
     SDK3.TargetManager.TargetManager.instance().removeModelListener(SDK3.DOMModel.DOMModel, SDK3.DOMModel.Events.AttrModified, this.#handleDOMNodeAttrChange, this);
     SDK3.TargetManager.TargetManager.instance().removeModelListener(SDK3.DOMModel.DOMModel, SDK3.DOMModel.Events.AttrRemoved, this.#handleDOMNodeAttrChange, this);
     if (this.#timelinePanelInstance) {
@@ -5428,7 +4904,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
     }
     if (Boolean(ev.data)) {
       const calculator = NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator();
-      this.#selectedRequest = new AiAssistanceModel5.NetworkAgent.RequestContext(ev.data, calculator);
+      this.#selectedRequest = new AiAssistanceModel4.NetworkAgent.RequestContext(ev.data, calculator);
     } else {
       this.#selectedRequest = null;
     }
@@ -5438,7 +4914,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
     if (this.#selectedPerformanceTrace?.getItem() === ev.data) {
       return;
     }
-    this.#selectedPerformanceTrace = Boolean(ev.data) ? new AiAssistanceModel5.PerformanceAgent.PerformanceTraceContext(ev.data) : null;
+    this.#selectedPerformanceTrace = Boolean(ev.data) ? new AiAssistanceModel4.PerformanceAgent.PerformanceTraceContext(ev.data) : null;
     this.#updateConversationState(this.#conversation);
   };
   #handleUISourceCodeFlavorChange = (ev) => {
@@ -5446,7 +4922,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
     if (!newFile || this.#selectedFile?.getItem() === newFile) {
       return;
     }
-    this.#selectedFile = new AiAssistanceModel5.FileAgent.FileContext(ev.data);
+    this.#selectedFile = new AiAssistanceModel4.FileAgent.FileContext(ev.data);
     this.#updateConversationState(this.#conversation);
   };
   #getChangeSummary() {
@@ -5472,13 +4948,8 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
         UIHelpers2.openInNewTab(AI_ASSISTANCE_HELP);
       },
       onSettingsClick: () => {
-        void UI10.ViewManager.ViewManager.instance().showView("chrome-ai");
-      },
-      onArtifactsSidebarToggle: () => {
-        this.#isArtifactsSidebarOpen = !this.#isArtifactsSidebarOpen;
-        this.requestUpdate();
-      },
-      artifactsSidebarVisible: this.#isArtifactsSidebarOpen
+        void UI8.ViewManager.ViewManager.instance().showView("chrome-ai");
+      }
     };
   }
   async performUpdate() {
@@ -5497,7 +4968,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
     }
   }
   #handleSelectElementClick() {
-    UI10.Context.Context.instance().setFlavor(Common6.ReturnToPanel.ReturnToPanelFlavor, new Common6.ReturnToPanel.ReturnToPanelFlavor(this.panelName));
+    UI8.Context.Context.instance().setFlavor(Common5.ReturnToPanel.ReturnToPanelFlavor, new Common5.ReturnToPanel.ReturnToPanelFlavor(this.panelName));
     void this.#toggleSearchElementAction?.execute();
   }
   #isTextInputDisabled() {
@@ -5538,7 +5009,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
       case "drjones-network-request":
         return this.#conversation.selectedContext ? lockedString7(UIStringsNotTranslate7.inputPlaceholderForNetwork) : lockedString7(UIStringsNotTranslate7.inputPlaceholderForNetworkNoContext);
       case "drjones-performance-full": {
-        const perfPanel = UI10.Context.Context.instance().flavor(TimelinePanel3.TimelinePanel.TimelinePanel);
+        const perfPanel = UI8.Context.Context.instance().flavor(TimelinePanel.TimelinePanel.TimelinePanel);
         if (perfPanel?.hasActiveTrace()) {
           return this.#conversation.selectedContext ? lockedString7(UIStringsNotTranslate7.inputPlaceholderForPerformanceTrace) : lockedString7(UIStringsNotTranslate7.inputPlaceholderForPerformanceTraceNoContext);
         }
@@ -5595,26 +5066,26 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
       return;
     }
     const context = this.#conversation.selectedContext;
-    if (context instanceof AiAssistanceModel5.NetworkAgent.RequestContext) {
-      const requestLocation = NetworkForward3.UIRequestLocation.UIRequestLocation.tab(
+    if (context instanceof AiAssistanceModel4.NetworkAgent.RequestContext) {
+      const requestLocation = NetworkForward.UIRequestLocation.UIRequestLocation.tab(
         context.getItem(),
         "headers-component"
         /* NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT */
       );
-      return Common6.Revealer.reveal(requestLocation);
+      return Common5.Revealer.reveal(requestLocation);
     }
-    if (context instanceof AiAssistanceModel5.FileAgent.FileContext) {
-      return Common6.Revealer.reveal(context.getItem().uiLocation(0, 0));
+    if (context instanceof AiAssistanceModel4.FileAgent.FileContext) {
+      return Common5.Revealer.reveal(context.getItem().uiLocation(0, 0));
     }
-    if (context instanceof AiAssistanceModel5.PerformanceAgent.PerformanceTraceContext) {
+    if (context instanceof AiAssistanceModel4.PerformanceAgent.PerformanceTraceContext) {
       const focus = context.getItem();
       if (focus.callTree) {
         const event = focus.callTree.selectedNode?.event ?? focus.callTree.rootNode.event;
         const revealable = new SDK3.TraceObject.RevealableEvent(event);
-        return Common6.Revealer.reveal(revealable);
+        return Common5.Revealer.reveal(revealable);
       }
       if (focus.insight) {
-        return Common6.Revealer.reveal(focus.insight);
+        return Common5.Revealer.reveal(focus.insight);
       }
     }
   }
@@ -5676,7 +5147,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
     }
     let conversation = this.#conversation;
     if (!this.#conversation || this.#conversation.type !== targetConversationType || this.#conversation.isEmpty) {
-      conversation = new AiAssistanceModel5.AiConversation.AiConversation(targetConversationType, [], void 0, false, this.#aidaClient, this.#changeManager);
+      conversation = new AiAssistanceModel4.AiConversation.AiConversation(targetConversationType, [], void 0, false, this.#aidaClient, this.#changeManager);
     }
     this.#updateConversationState(conversation);
     const predefinedPrompt = opts?.["prompt"];
@@ -5694,7 +5165,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
     }
   }
   #populateHistoryMenu(contextMenu) {
-    const historicalConversations = AiAssistanceModel5.AiHistoryStorage.AiHistoryStorage.instance().getHistory().map((serializedConversation) => AiAssistanceModel5.AiConversation.AiConversation.fromSerializedConversation(serializedConversation));
+    const historicalConversations = AiAssistanceModel4.AiHistoryStorage.AiHistoryStorage.instance().getHistory().map((serializedConversation) => AiAssistanceModel4.AiConversation.AiConversation.fromSerializedConversation(serializedConversation));
     for (const conversation of historicalConversations.reverse()) {
       if (conversation.isEmpty || !conversation.title) {
         continue;
@@ -5711,7 +5182,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
       });
     }
     contextMenu.footerSection().appendItem(i18nString3(UIStrings3.clearChatHistory), () => {
-      void AiAssistanceModel5.AiHistoryStorage.AiHistoryStorage.instance().deleteAll();
+      void AiAssistanceModel4.AiHistoryStorage.AiHistoryStorage.instance().deleteAll();
     }, {
       disabled: historyEmpty
     });
@@ -5723,9 +5194,9 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
     if (!this.#conversation) {
       return;
     }
-    void AiAssistanceModel5.AiHistoryStorage.AiHistoryStorage.instance().deleteHistoryEntry(this.#conversation.id);
+    void AiAssistanceModel4.AiHistoryStorage.AiHistoryStorage.instance().deleteHistoryEntry(this.#conversation.id);
     this.#updateConversationState();
-    UI10.ARIAUtils.LiveAnnouncer.alert(i18nString3(UIStrings3.chatDeleted));
+    UI8.ARIAUtils.LiveAnnouncer.alert(i18nString3(UIStrings3.chatDeleted));
   }
   async #onExportConversationClick() {
     if (!this.#conversation) {
@@ -5754,7 +5225,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
   }
   #handleNewChatRequest() {
     this.#updateConversationState();
-    UI10.ARIAUtils.LiveAnnouncer.alert(i18nString3(UIStrings3.newChatCreated));
+    UI8.ARIAUtils.LiveAnnouncer.alert(i18nString3(UIStrings3.newChatCreated));
     if (Annotations.AnnotationRepository.annotationsEnabled()) {
       Annotations.AnnotationRepository.instance().deleteAllAnnotations();
     }
@@ -5954,15 +5425,15 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
           }
           switch (data.type) {
             case "context":
-              UI10.ARIAUtils.LiveAnnouncer.status(data.title);
+              UI8.ARIAUtils.LiveAnnouncer.status(data.title);
               break;
             case "answer": {
               if (!data.complete && !announcedAnswerLoading) {
                 announcedAnswerLoading = true;
-                UI10.ARIAUtils.LiveAnnouncer.status(lockedString7(UIStringsNotTranslate7.answerLoading));
+                UI8.ARIAUtils.LiveAnnouncer.status(lockedString7(UIStringsNotTranslate7.answerLoading));
               } else if (data.complete && !announcedAnswerReady) {
                 announcedAnswerReady = true;
-                UI10.ARIAUtils.LiveAnnouncer.status(lockedString7(UIStringsNotTranslate7.answerReady));
+                UI8.ARIAUtils.LiveAnnouncer.status(lockedString7(UIStringsNotTranslate7.answerReady));
               }
             }
           }
@@ -5988,7 +5459,7 @@ ${part.text}`);
         contentParts.push(`### ${step.title}`);
       }
       if (step.contextDetails) {
-        contentParts.push(AiAssistanceModel5.AiConversation.generateContextDetailsMarkdown(step.contextDetails));
+        contentParts.push(AiAssistanceModel4.AiConversation.generateContextDetailsMarkdown(step.contextDetails));
       }
       if (step.thought) {
         contentParts.push(step.thought);
@@ -6021,14 +5492,14 @@ var ActionDelegate = class {
       case "drjones.sources-floating-button":
       case "drjones.sources-panel-context": {
         void (async () => {
-          const view = UI10.ViewManager.ViewManager.instance().view(AiAssistancePanel.panelName);
+          const view = UI8.ViewManager.ViewManager.instance().view(AiAssistancePanel.panelName);
           if (!view) {
             return;
           }
-          await UI10.ViewManager.ViewManager.instance().showView(AiAssistancePanel.panelName);
-          const minDrawerSize = UI10.InspectorView.InspectorView.instance().totalSize() / 4;
-          if (UI10.InspectorView.InspectorView.instance().drawerSize() < minDrawerSize) {
-            UI10.InspectorView.InspectorView.instance().setDrawerSize(minDrawerSize);
+          await UI8.ViewManager.ViewManager.instance().showView(AiAssistancePanel.panelName);
+          const minDrawerSize = UI8.InspectorView.InspectorView.instance().totalSize() / 4;
+          if (UI8.InspectorView.InspectorView.instance().drawerSize() < minDrawerSize) {
+            UI8.InspectorView.InspectorView.instance().setDrawerSize(minDrawerSize);
           }
           const widget = await view.widget();
           void widget.handleAction(actionId, opts);
@@ -6058,7 +5529,6 @@ export {
   ExploreWidget_exports as ExploreWidget,
   MarkdownRendererWithCodeBlock,
   PatchWidget_exports as PatchWidget,
-  PerformanceAgentFlameChart,
   SELECT_WORKSPACE_DIALOG_DEFAULT_VIEW,
   SelectWorkspaceDialog,
   getResponseMarkdown

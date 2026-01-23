@@ -501,6 +501,7 @@ var CSSHintDetailsView_exports = {};
 __export(CSSHintDetailsView_exports, {
   CSSHintDetailsView: () => CSSHintDetailsView
 });
+import "./../../../ui/kit/kit.js";
 import "./../../../ui/legacy/legacy.js";
 import * as i18n3 from "./../../../core/i18n/i18n.js";
 import { Directives, html as html4, render as render4 } from "./../../../ui/lit/lit.js";
@@ -575,9 +576,9 @@ var CSSHintDetailsView = class extends HTMLElement {
           ` : ""}
           ${link ? html4`
                       <div class="footer">
-                        <x-link id="learn-more" href=${link} class="clickable underlined unbreakable-text">
+                        <devtools-link id="learn-more" href=${link} class="clickable underlined unbreakable-text">
                             ${i18nString2(UIStrings2.learnMore)}
-                        </x-link>
+                        </devtools-link>
                       </div>
                   ` : ""}
         </div>
@@ -593,6 +594,7 @@ var CSSPropertyDocsView_exports = {};
 __export(CSSPropertyDocsView_exports, {
   CSSPropertyDocsView: () => CSSPropertyDocsView
 });
+import "./../../../ui/kit/kit.js";
 import "./../../../ui/legacy/legacy.js";
 import * as Common from "./../../../core/common/common.js";
 import * as i18n5 from "./../../../core/i18n/i18n.js";
@@ -836,13 +838,13 @@ var CSSPropertyDocsView = class extends HTMLElement {
         ` : nothing2}
         ${link ? html5`
           <div class="docs-popup-section footer">
-            <x-link
+            <devtools-link
               id="learn-more"
               href=${link}
               class="clickable underlined unbreakable-text"
             >
               ${i18nString3(UIStrings3.learnMore)}
-            </x-link>
+            </devtools-link>
             <devtools-checkbox
               @change=${this.#dontShowChanged}
               jslog=${VisualLogging2.toggle("css-property-doc").track({ change: true })}>

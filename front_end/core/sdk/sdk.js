@@ -14450,7 +14450,7 @@ var CSSProperty = class _CSSProperty extends Common7.ObjectWrapper.ObjectWrapper
   #matchers(matchedStyles, computedStyles) {
     const matchers = matchedStyles.propertyMatchers(this.ownerStyle, computedStyles);
     matchers.push(new CSSWideKeywordMatcher(this, matchedStyles));
-    if (Root3.Runtime.experiments.isEnabled(Root3.Runtime.ExperimentName.FONT_EDITOR)) {
+    if (Root3.Runtime.experiments.isEnabled(Root3.ExperimentNames.ExperimentName.FONT_EDITOR)) {
       matchers.push(new FontMatcher());
     }
     return matchers;
@@ -19607,7 +19607,7 @@ var SourceMap = class {
       nameIndex += tokenIter.nextVLQ();
       this.mappings().push(new SourceMapEntry(lineNumber, columnNumber, sourceIndex, sourceURL, sourceLineNumber, sourceColumnNumber, names[nameIndex]));
     }
-    if (Root5.Runtime.experiments.isEnabled(Root5.Runtime.ExperimentName.USE_SOURCE_MAP_SCOPES)) {
+    if (Root5.Runtime.experiments.isEnabled(Root5.ExperimentNames.ExperimentName.USE_SOURCE_MAP_SCOPES)) {
       if (!this.#scopesInfo) {
         this.#scopesInfo = new SourceMapScopesInfo(this, { scopes: [], ranges: [] });
       }
@@ -20341,6 +20341,12 @@ var CSSModel = class _CSSModel extends SDKModel {
     }
     return await this.#styleLoader.computedStylePromise(nodeId);
   }
+  async getComputedStyleExtraFields(nodeId) {
+    if (!this.isEnabled()) {
+      await this.enable();
+    }
+    return await this.#styleLoader.extraFieldsPromise(nodeId);
+  }
   async getLayoutPropertiesFromComputedStyle(nodeId) {
     const styles = await this.getComputedStyle(nodeId);
     if (!styles) {
@@ -20874,24 +20880,32 @@ var ComputedStyleLoader = class {
   constructor(cssModel) {
     this.#cssModel = cssModel;
   }
-  computedStylePromise(nodeId) {
+  #getResponsePromise(nodeId) {
     let promise = this.#nodeIdToPromise.get(nodeId);
     if (promise) {
       return promise;
     }
-    promise = this.#cssModel.getAgent().invoke_getComputedStyleForNode({ nodeId }).then(({ computedStyle }) => {
+    promise = this.#cssModel.getAgent().invoke_getComputedStyleForNode({ nodeId }).then(({ computedStyle, extraFields }) => {
       this.#nodeIdToPromise.delete(nodeId);
       if (!computedStyle?.length) {
-        return null;
+        return { style: null, extraFields };
       }
       const result = /* @__PURE__ */ new Map();
       for (const property of computedStyle) {
         result.set(property.name, property.value);
       }
-      return result;
+      return { style: result, extraFields };
     });
     this.#nodeIdToPromise.set(nodeId, promise);
     return promise;
+  }
+  async computedStylePromise(nodeId) {
+    const computedStyleWithExtraFields = await this.#getResponsePromise(nodeId);
+    return computedStyleWithExtraFields.style;
+  }
+  async extraFieldsPromise(nodeId) {
+    const computedStyleWithExtraFields = await this.#getResponsePromise(nodeId);
+    return computedStyleWithExtraFields.extraFields;
   }
 };
 var InlineStyleResult = class {
@@ -22372,7 +22386,7 @@ var DebuggerModel = class _DebuggerModel extends SDKModel {
     const maxScriptsCacheSize = isRemoteFrontend ? 1e7 : 1e8;
     const enablePromise = this.agent.invoke_enable({ maxScriptsCacheSize });
     let instrumentationPromise;
-    if (Root7.Runtime.experiments.isEnabled(Root7.Runtime.ExperimentName.INSTRUMENTATION_BREAKPOINTS)) {
+    if (Root7.Runtime.experiments.isEnabled(Root7.ExperimentNames.ExperimentName.INSTRUMENTATION_BREAKPOINTS)) {
       instrumentationPromise = this.agent.invoke_setInstrumentationBreakpoint({
         instrumentation: "beforeScriptExecution"
       });
@@ -24183,7 +24197,7 @@ var OverlayModel = class _OverlayModel extends SDKModel {
       gridHighlightConfig: {},
       flexContainerHighlightConfig: {},
       flexItemHighlightConfig: {},
-      contrastAlgorithm: Root8.Runtime.experiments.isEnabled(Root8.Runtime.ExperimentName.APCA) ? "apca" : "aa"
+      contrastAlgorithm: Root8.Runtime.experiments.isEnabled(Root8.ExperimentNames.ExperimentName.APCA) ? "apca" : "aa"
     };
     if (mode === "all" || mode === "content") {
       highlightConfig.contentColor = Common20.Color.PageHighlight.Content.toProtocolRGBA();
@@ -25660,7 +25674,7 @@ var DOMModel = class _DOMModel extends SDKModel {
     if (!target.suspended()) {
       void this.agent.invoke_enable({});
     }
-    if (Root9.Runtime.experiments.isEnabled(Root9.Runtime.ExperimentName.CAPTURE_NODE_CREATION_STACKS)) {
+    if (Root9.Runtime.experiments.isEnabled(Root9.ExperimentNames.ExperimentName.CAPTURE_NODE_CREATION_STACKS)) {
       void this.agent.invoke_setNodeStackTracesEnabled({ enable: true });
     }
   }
@@ -27568,7 +27582,7 @@ var CookieModel = class extends SDKModel {
     if (cookie.expires()) {
       expires = Math.floor(Date.parse(`${cookie.expires()}`) / 1e3);
     }
-    const enabled = Root10.Runtime.experiments.isEnabled(Root10.Runtime.ExperimentName.EXPERIMENTAL_COOKIE_FEATURES);
+    const enabled = Root10.Runtime.experiments.isEnabled(Root10.ExperimentNames.ExperimentName.EXPERIMENTAL_COOKIE_FEATURES);
     const preserveUnset = (scheme) => scheme === "Unset" ? scheme : void 0;
     const protocolCookie = {
       name: cookie.name(),

@@ -247,13 +247,13 @@ var previewToggle_css_default = `/*
   flex: 1;
 }
 
-.x-link {
+.devtools-link {
   color: var(--sys-color-primary);
   text-decoration-line: underline;
   margin: 0 4px;
 }
 
-.feedback .x-link {
+.feedback .devtools-link {
   color: var(--sys-color-token-subtle);
 }
 
@@ -306,10 +306,10 @@ var PreviewToggle = class extends HTMLElement {
           </devtools-icon>${this.#name}
           </devtools-checkbox>
         <div class="spacer"></div>
-        ${this.#feedbackURL && !this.#helperText ? html3`<div class="feedback"><devtools-link class="x-link" href=${this.#feedbackURL}>${i18nString3(UIStrings3.shortFeedbackLink)}</devtools-link></div>` : nothing}
-        ${this.#learnMoreURL ? html3`<div class="learn-more"><devtools-link class="x-link" href=${this.#learnMoreURL}>${i18nString3(UIStrings3.learnMoreLink)}</devtools-link></div>` : nothing}
+        ${this.#feedbackURL && !this.#helperText ? html3`<div class="feedback"><devtools-link class="devtools-link" href=${this.#feedbackURL} jslogContext=${"feedback"}>${i18nString3(UIStrings3.shortFeedbackLink)}</devtools-link></div>` : nothing}
+        ${this.#learnMoreURL ? html3`<div class="learn-more"><devtools-link class="devtools-link" href=${this.#learnMoreURL} jslogContext=${"learn-more"}>${i18nString3(UIStrings3.learnMoreLink)}</devtools-link></div>` : nothing}
         <div class="helper">
-          ${this.#helperText && this.#feedbackURL ? html3`<p>${this.#helperText} <devtools-link class="x-link" href=${this.#feedbackURL}>${i18nString3(UIStrings3.previewTextFeedbackLink)}</devtools-link></p>` : nothing}
+          ${this.#helperText && this.#feedbackURL ? html3`<p>${this.#helperText} <devtools-link class="devtools-link" href=${this.#feedbackURL} jslogContext=${"feedback"}>${i18nString3(UIStrings3.previewTextFeedbackLink)}</devtools-link></p>` : nothing}
         </div>
       </div>`, this.#shadow, {
       host: this

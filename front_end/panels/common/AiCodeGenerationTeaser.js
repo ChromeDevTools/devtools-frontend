@@ -115,8 +115,10 @@ export const DEFAULT_VIEW = (input, output, target) => {
             // TODO(b/472291834): Disclaimer icon should match the placeholder's color
             // clang-format off
             teaserLabel = html `<div class="ai-code-generation-teaser-trigger">
-        &nbsp;${toGenerateCode}&nbsp;
-        <div class="ai-code-generation-teaser-screen-reader-only">${toLearnHowYourDataIsBeingUsed}</div>
+        <span aria-atomic="true" aria-live="assertive">${toGenerateCode}&nbsp;</span>
+        <div class="ai-code-generation-teaser-screen-reader-only" aria-atomic="true" aria-live="assertive">
+          ${toLearnHowYourDataIsBeingUsed}
+        </div>
         <devtools-button
           .data=${{
                 title: lockedString(UIStringsNotTranslate.learnMoreAboutHowYourDataIsBeingUsed),
@@ -198,7 +200,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
           <style>${styles}</style>
           <style>@scope to (devtools-widget > *) { ${UI.inspectorCommonStyles} }</style>
           <div class="ai-code-generation-teaser">
-            ${teaserLabel}
+            &nbsp;${teaserLabel}
           </div>
         `, target);
     // clang-format on

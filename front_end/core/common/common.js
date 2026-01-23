@@ -3782,16 +3782,25 @@ var Message = class {
 // gen/front_end/core/common/Debouncer.js
 var Debouncer_exports = {};
 __export(Debouncer_exports, {
-  debounce: () => debounce
+  debounce: () => debounce,
+  disableTestOverride: () => disableTestOverride,
+  enableTestOverride: () => enableTestOverride
 });
 var debounce = function(func, delay) {
   let timer;
   const debounced = (...args) => {
     clearTimeout(timer);
-    timer = setTimeout(() => func(...args), delay);
+    timer = setTimeout(() => func(...args), testDebounceOverride ? 0 : delay);
   };
   return debounced;
 };
+var testDebounceOverride = false;
+function enableTestOverride() {
+  testDebounceOverride = true;
+}
+function disableTestOverride() {
+  testDebounceOverride = false;
+}
 
 // gen/front_end/core/common/EventTarget.js
 var EventTarget_exports = {};

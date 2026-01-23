@@ -27,7 +27,7 @@ function isShowPostMessageEventsEnabled() {
     // cache is updated automatically.
     if (showPostMessageEvents === undefined) {
         showPostMessageEvents =
-            Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_SHOW_POST_MESSAGE_EVENTS);
+            Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.TIMELINE_SHOW_POST_MESSAGE_EVENTS);
     }
     return showPostMessageEvents;
 }
@@ -190,7 +190,7 @@ export class CompatibilityTracksAppender {
             }
         };
         const threads = Trace.Handlers.Threads.threadsInTrace(this.#parsedTrace.data);
-        const showAllEvents = Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_SHOW_ALL_EVENTS);
+        const showAllEvents = Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.TIMELINE_SHOW_ALL_EVENTS);
         for (const { pid, tid, name, type, entries, tree } of threads) {
             if (this.#parsedTrace.data.Meta.traceIsGeneric) {
                 // If the trace is generic, we just push all of the threads with no effort to differentiate them, hence

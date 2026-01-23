@@ -1,3 +1,4 @@
+import '../../ui/kit/kit.js';
 import '../../ui/legacy/legacy.js';
 import '../../ui/components/tooltips/tooltips.js';
 import type * as Common from '../../core/common/common.js';

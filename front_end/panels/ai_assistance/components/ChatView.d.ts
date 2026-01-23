@@ -36,7 +36,6 @@ export interface Props {
     emptyStateSuggestions: AiAssistanceModel.AiAgent.ConversationSuggestion[];
     inputPlaceholder: Platform.UIString.LocalizedString;
     disclaimerText: Platform.UIString.LocalizedString;
-    isArtifactsSidebarOpen: boolean;
     uploadImageInputEnabled?: boolean;
     markdownRenderer: MarkdownLitRenderer;
     additionalFloatyContext: UI.Floaty.FloatyContextSelection[];

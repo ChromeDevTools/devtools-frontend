@@ -24,6 +24,7 @@ type RevealAndSelectNodeOptsSelectionAndFocus = {
 type RevealAndSelectNodeOpts = RevealAndSelectNodeOptsSelectionAndFocus & {
     highlightInOverlay?: boolean;
 };
+export declare const DEFAULT_COMPUTED_STYLES_DEBOUNCE_MS = 100;
 export declare class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.Searchable, SDK.TargetManager.SDKModelObserver<SDK.DOMModel.DOMModel>, UI.View.ViewLocationResolver {
     #private;
     private splitWidget;
@@ -53,6 +54,7 @@ export declare class ElementsPanel extends UI.Panel.Panel implements UI.Searchab
     private cssStyleTrackerByCSSModel;
     getTreeOutlineForTesting(): ElementsTreeOutline | undefined;
     constructor();
+    private evaluateTrackingComputedStyleUpdatesForNode;
     private handleElementExpanded;
     private handleElementCollapsed;
     private initializeFullAccessibilityTreeView;

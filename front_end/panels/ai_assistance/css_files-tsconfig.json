@@ -5,11 +5,9 @@
     },
     "files": [
         "./aiAssistancePanel.css.js",
-        "./components/artifactsViewer.css.js",
         "./components/chatInput.css.js",
         "./components/chatMessage.css.js",
         "./components/chatView.css.js",
-        "./components/collapsibleAssistanceContentWidget.css.js",
         "./components/disabledWidget.css.js",
         "./components/exploreWidget.css.js",
         "./selectWorkspaceDialog.css.js"

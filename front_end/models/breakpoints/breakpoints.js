@@ -83,7 +83,7 @@ var BreakpointManager = class extends Common.ObjectWrapper.ObjectWrapper {
     return breakpointManagerInstance;
   }
   modelAdded(debuggerModel) {
-    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.INSTRUMENTATION_BREAKPOINTS)) {
+    if (Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.INSTRUMENTATION_BREAKPOINTS)) {
       debuggerModel.setSynchronizeBreakpointsCallback(this.restoreBreakpointsForScript.bind(this));
     }
   }
@@ -116,7 +116,7 @@ var BreakpointManager = class extends Common.ObjectWrapper.ObjectWrapper {
   // This method explicitly awaits the source map (if necessary) and the uiSourceCodes
   // required to set all breakpoints that are related to this script.
   async restoreBreakpointsForScript(script) {
-    if (!Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.INSTRUMENTATION_BREAKPOINTS)) {
+    if (!Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.INSTRUMENTATION_BREAKPOINTS)) {
       return;
     }
     if (!script.sourceURL) {
@@ -795,7 +795,7 @@ var ModelBreakpoint = class {
           };
         }));
         newState = positions.slice(0);
-      } else if (!Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.INSTRUMENTATION_BREAKPOINTS)) {
+      } else if (!Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.INSTRUMENTATION_BREAKPOINTS)) {
         const lastResolvedState = this.#breakpoint.getLastResolvedState();
         if (lastResolvedState) {
           newState = lastResolvedState.map((position) => ({ ...position, condition }));

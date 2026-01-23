@@ -38,7 +38,7 @@ export default `/*
   font: var(--sys-typescale-body4-regular);
 }
 
-.x-link {
+.devtools-link {
   color: var(--sys-color-primary);
   text-decoration-line: underline;
   cursor: pointer;

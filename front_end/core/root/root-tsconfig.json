@@ -36,6 +36,7 @@
   },
   "files": [
     "../../../../../../front_end/core/root/DevToolsContext.ts",
+    "../../../../../../front_end/core/root/ExperimentNames.ts",
     "../../../../../../front_end/core/root/Runtime.ts",
     "../../../../../../front_end/legacy/legacy-defs.d.ts",
     "../../../../../../front_end/global_typings/global_defs.d.ts",

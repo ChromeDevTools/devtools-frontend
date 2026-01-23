@@ -122,7 +122,7 @@ h3 {
   margin: 0;
 }
 
-.x-link {
+.devtools-link {
   color: var(--sys-color-primary);
   text-decoration-line: underline;
   cursor: pointer;
@@ -590,7 +590,7 @@ var cookieReportView_css_default = `/*
   font: var(--sys-typescale-body4-regular);
 }
 
-.x-link {
+.devtools-link {
   color: var(--sys-color-primary);
   text-decoration-line: underline;
   cursor: pointer;

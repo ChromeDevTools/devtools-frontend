@@ -5,11 +5,11 @@ var __export = (target, all) => {
 };
 
 // gen/front_end/panels/common/common.prebundle.js
-import * as Host10 from "./../../core/host/host.js";
-import * as i18n25 from "./../../core/i18n/i18n.js";
-import * as Geometry2 from "./../../models/geometry/geometry.js";
-import * as Buttons7 from "./../../ui/components/buttons/buttons.js";
-import * as UI15 from "./../../ui/legacy/legacy.js";
+import * as Host11 from "./../../core/host/host.js";
+import * as i18n27 from "./../../core/i18n/i18n.js";
+import * as Geometry3 from "./../../models/geometry/geometry.js";
+import * as Buttons8 from "./../../ui/components/buttons/buttons.js";
+import * as UI16 from "./../../ui/legacy/legacy.js";
 
 // gen/front_end/panels/common/common.css.js
 var common_css_default = `/*
@@ -772,8 +772,10 @@ var DEFAULT_VIEW2 = (input, output, target) => {
       const toLearnHowYourDataIsBeingUsed = Host2.Platform.isMac() ? lockedString2(UIStringsNotTranslate2.pressCmdPeriodToLearnHowYourDataIsBeingUsed) : lockedString2(UIStringsNotTranslate2.pressCtrlPeriodToLearnHowYourDataIsBeingUsed);
       const tooltipDisclaimerText = getTooltipDisclaimerText(input.noLogging, input.panel);
       teaserLabel = html3`<div class="ai-code-generation-teaser-trigger">
-        &nbsp;${toGenerateCode}&nbsp;
-        <div class="ai-code-generation-teaser-screen-reader-only">${toLearnHowYourDataIsBeingUsed}</div>
+        <span aria-atomic="true" aria-live="assertive">${toGenerateCode}&nbsp;</span>
+        <div class="ai-code-generation-teaser-screen-reader-only" aria-atomic="true" aria-live="assertive">
+          ${toLearnHowYourDataIsBeingUsed}
+        </div>
         <devtools-button
           .data=${{
         title: lockedString2(UIStringsNotTranslate2.learnMoreAboutHowYourDataIsBeingUsed),
@@ -846,7 +848,7 @@ var DEFAULT_VIEW2 = (input, output, target) => {
           <style>${aiCodeGenerationTeaser_css_default}</style>
           <style>@scope to (devtools-widget > *) { ${UI3.inspectorCommonStyles} }</style>
           <div class="ai-code-generation-teaser">
-            ${teaserLabel}
+            &nbsp;${teaserLabel}
           </div>
         `, target);
 };
@@ -1761,16 +1763,229 @@ var GdpSignUpDialog = class _GdpSignUpDialog extends UI6.Widget.VBox {
   }
 };
 
-// gen/front_end/panels/common/AiCodeCompletionDisclaimer.js
-import "./../../ui/components/spinners/spinners.js";
-import "./../../ui/components/tooltips/tooltips.js";
+// gen/front_end/panels/common/GeminiRebrandPromoDialog.js
+import "./../../ui/components/switch/switch.js";
+import "./../../ui/kit/kit.js";
+import * as Common3 from "./../../core/common/common.js";
 import * as Host5 from "./../../core/host/host.js";
 import * as i18n11 from "./../../core/i18n/i18n.js";
 import * as Root3 from "./../../core/root/root.js";
-import * as AiCodeCompletion2 from "./../../models/ai_code_completion/ai_code_completion.js";
+import * as Geometry2 from "./../../models/geometry/geometry.js";
+import * as Buttons5 from "./../../ui/components/buttons/buttons.js";
 import * as UI7 from "./../../ui/legacy/legacy.js";
-import { Directives as Directives2, html as html7, nothing as nothing4, render as render7 } from "./../../ui/lit/lit.js";
+import { html as html7, render as render7 } from "./../../ui/lit/lit.js";
 import * as VisualLogging4 from "./../../ui/visual_logging/visual_logging.js";
+
+// gen/front_end/panels/common/geminiRebrandPromoDialog.css.js
+var geminiRebrandPromoDialog_css_default = `/*
+ * Copyright 2026 The Chromium Authors
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+@scope to (devtools-widget > *) {
+    :scope {
+        width: 100%;
+        box-shadow: none;
+        padding: var(--sys-size-8);
+    }
+
+    .header {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .title {
+        font-size: 20px;
+    }
+
+    .banner-image {
+        margin: 10px 0;
+    }
+
+    .main-content {
+        display: flex;
+        flex-direction: column;
+        margin: var(--sys-size-6) 0;
+        gap: var(--sys-size-3);
+    }
+
+    .detail-row {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        margin: 5px;
+    }
+
+    .buttons {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 10px;
+    }
+}
+
+/*# sourceURL=${import.meta.resolve("./geminiRebrandPromoDialog.css")} */`;
+
+// gen/front_end/panels/common/GeminiRebrandPromoDialog.js
+var UIStrings3 = {
+  /**
+   * @description Aria label for the dialog
+   */
+  dialogAriaLabel: "Gemini 3 Flash in DevTools",
+  /**
+   *
+   * @description Button text for dismissing the dialog.
+   */
+  dismiss: "Dismiss",
+  /**
+   * @description Button text for getting started.
+   */
+  getStarted: "Get started",
+  /**
+   * @description Detail message shown in the dialog.
+   */
+  detailAiCompanion: "Meet your AI-powered companion for web dev",
+  /**
+   * @description Detail message shown in the dialog.
+   */
+  detailConsoleErrors: "Get instant, accurate answers for console errors",
+  /**
+   * @description Detail message shown in the dialog.
+   */
+  detailGenerateCode: "Generate CSS and JS snippets on the fly",
+  /**
+   * @description Detail message shown in the dialog.
+   */
+  detailPerformance: "Automatically find issues in performance traces"
+};
+var str_3 = i18n11.i18n.registerUIStrings("panels/common/GeminiRebrandPromoDialog.ts", UIStrings3);
+var i18nString3 = i18n11.i18n.getLocalizedString.bind(void 0, str_3);
+var PROMO_IMAGE_1X = new URL("../../Images/geminiInDevTools.png", import.meta.url).toString();
+var PROMO_IMAGE_2X = new URL("../../Images/geminiInDevTools_2x.png", import.meta.url).toString();
+var DEFAULT_VIEW5 = (input, _output, target) => {
+  render7(html7`
+      <style>${geminiRebrandPromoDialog_css_default}</style>
+
+      <div class="header">
+        <div class="title">Gemini 3 Flash in DevTools</div>
+        <div class="close-button">
+          <devtools-button
+            .iconName=${"cross"}
+            .variant=${"icon"}
+            .size=${"REGULAR"}
+            .title=${i18nString3(UIStrings3.dismiss)}
+            jslog=${VisualLogging4.close().track({ click: true })}
+            @click=${() => {
+  }}
+          ></devtools-button>
+        </div>
+      </div>
+
+      <img class="banner-image" srcset=${`${PROMO_IMAGE_1X} 1x, ${PROMO_IMAGE_2X} 2x`}>
+
+      <div class="main-content">
+        <div class="detail-row">
+          <devtools-icon name="performance"></devtools-icon>
+          <div>${i18nString3(UIStrings3.detailAiCompanion)}</div>
+        </div>
+        <div class="detail-row">
+          <devtools-icon name="lightbulb-spark"></devtools-icon>
+          <div>${i18nString3(UIStrings3.detailConsoleErrors)}</div>
+        </div>
+        <div class="detail-row">
+          <devtools-icon name="text-analysis"></devtools-icon>
+          <div>${i18nString3(UIStrings3.detailGenerateCode)}</div>
+        </div>
+        <div class="detail-row">
+          <devtools-icon name="smart-assistant"></devtools-icon>
+          <div>${i18nString3(UIStrings3.detailPerformance)}</div>
+        </div>
+      </div>
+
+      <div class="buttons">
+        <devtools-button
+          .variant=${"outlined"}
+          .jslogContext=${"cancel"}
+          @click=${input.onCancelClick}>${i18nString3(UIStrings3.dismiss)}</devtools-button>
+        <devtools-button
+          .variant=${"primary"}
+          .jslogContext=${"get-started"}
+          @click=${input.onGetStartedClick}>${i18nString3(UIStrings3.getStarted)}</devtools-button>
+      </div>
+    `, target);
+};
+var GeminiRebrandPromoDialog = class _GeminiRebrandPromoDialog extends UI7.Widget.VBox {
+  #view;
+  #dialog;
+  constructor(options, view) {
+    super();
+    this.#dialog = options.dialog;
+    this.#view = view ?? DEFAULT_VIEW5;
+    this.requestUpdate();
+  }
+  async #onGetStartedClick() {
+    this.#dialog.hide();
+    await UI7.ViewManager.ViewManager.instance().showView("freestyler");
+  }
+  #onCancelClick() {
+    this.#dialog.hide();
+  }
+  performUpdate() {
+    const viewInput = {
+      onGetStartedClick: this.#onGetStartedClick.bind(this),
+      onCancelClick: this.#onCancelClick.bind(this)
+    };
+    this.#view(viewInput, void 0, this.contentElement);
+  }
+  static show() {
+    const dialog2 = new UI7.Dialog.Dialog("gemini-rebranding-dialog");
+    dialog2.setAriaLabel(i18nString3(UIStrings3.dialogAriaLabel));
+    dialog2.setMaxContentSize(new Geometry2.Size(384, 500));
+    dialog2.setSizeBehavior(
+      "SetExactWidthMaxHeight"
+      /* UI.GlassPane.SizeBehavior.SET_EXACT_WIDTH_MAX_HEIGHT */
+    );
+    dialog2.setDimmed(true);
+    new _GeminiRebrandPromoDialog({ dialog: dialog2 }).show(dialog2.contentElement);
+    dialog2.show(
+      void 0,
+      /* stack */
+      true
+    );
+  }
+  static async maybeShow() {
+    if (!Root3.Runtime.hostConfig.aidaAvailability?.enabled) {
+      return;
+    }
+    const currentAidaAvailability = await Host5.AidaClient.AidaClient.checkAccessPreconditions();
+    if (currentAidaAvailability !== "available") {
+      return;
+    }
+    const setting = Common3.Settings.Settings.instance().createSetting(
+      "gemini-rebranding-dialog-shown",
+      false,
+      "Synced"
+      /* Common.Settings.SettingStorageType.SYNCED */
+    );
+    if (setting.get()) {
+      return;
+    }
+    setting.set(true);
+    _GeminiRebrandPromoDialog.show();
+  }
+};
+
+// gen/front_end/panels/common/AiCodeCompletionDisclaimer.js
+import "./../../ui/components/spinners/spinners.js";
+import "./../../ui/components/tooltips/tooltips.js";
+import * as Host6 from "./../../core/host/host.js";
+import * as i18n13 from "./../../core/i18n/i18n.js";
+import * as Root4 from "./../../core/root/root.js";
+import * as AiCodeCompletion2 from "./../../models/ai_code_completion/ai_code_completion.js";
+import * as UI8 from "./../../ui/legacy/legacy.js";
+import { Directives as Directives2, html as html8, nothing as nothing4, render as render8 } from "./../../ui/lit/lit.js";
+import * as VisualLogging5 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/common/aiCodeCompletionDisclaimer.css.js
 var aiCodeCompletionDisclaimer_css_default = `/*
@@ -1872,7 +2087,7 @@ var UIStringsNotTranslate4 = {
    */
   dataIsBeingSentToGoogle: "Data is being sent to Google"
 };
-var lockedString4 = i18n11.i18n.lockedString;
+var lockedString4 = i18n13.i18n.lockedString;
 function getTooltipDisclaimerText2(noLogging, panel2) {
   switch (panel2) {
     case "console":
@@ -1883,11 +2098,11 @@ function getTooltipDisclaimerText2(noLogging, panel2) {
 }
 var DEFAULT_SUMMARY_TOOLBAR_VIEW = (input, output, target) => {
   if (input.aidaAvailability !== "available" || !input.disclaimerTooltipId || !input.spinnerTooltipId || !input.panel) {
-    render7(nothing4, target);
+    render8(nothing4, target);
     return;
   }
   const tooltipDisclaimerText = getTooltipDisclaimerText2(input.noLogging, input.panel);
-  render7(html7`
+  render8(html8`
         <style>${aiCodeCompletionDisclaimer_css_default}</style>
         <div class="ai-code-completion-disclaimer"><devtools-spinner
           .active=${false}
@@ -1911,13 +2126,13 @@ var DEFAULT_SUMMARY_TOOLBAR_VIEW = (input, output, target) => {
               tabIndex="0"
               class="link"
               role="link"
-              jslog=${VisualLogging4.link("open-ai-settings").track({
+              jslog=${VisualLogging5.link("open-ai-settings").track({
     click: true
   })}
               aria-details=${input.disclaimerTooltipId}
               aria-describedby=${input.disclaimerTooltipId}
               @click=${() => {
-    void UI7.ViewManager.ViewManager.instance().showView("chrome-ai");
+    void UI8.ViewManager.ViewManager.instance().showView("chrome-ai");
   }}
           >${lockedString4(UIStringsNotTranslate4.relevantData)}</span>${lockedString4(UIStringsNotTranslate4.isSentToGoogle)}
           <devtools-tooltip
@@ -1938,7 +2153,7 @@ var DEFAULT_SUMMARY_TOOLBAR_VIEW = (input, output, target) => {
                     tabIndex="0"
                     class="link"
                     role="link"
-                    jslog=${VisualLogging4.link("open-ai-settings").track({
+                    jslog=${VisualLogging5.link("open-ai-settings").track({
     click: true
   })}
                     @click=${input.onManageInSettingsTooltipClick}
@@ -1947,7 +2162,7 @@ var DEFAULT_SUMMARY_TOOLBAR_VIEW = (input, output, target) => {
         `, target);
 };
 var MINIMUM_LOADING_STATE_TIMEOUT = 1e3;
-var AiCodeCompletionDisclaimer = class extends UI7.Widget.Widget {
+var AiCodeCompletionDisclaimer = class extends UI8.Widget.Widget {
   #view;
   #viewOutput = {};
   #spinnerTooltipId;
@@ -1963,7 +2178,7 @@ var AiCodeCompletionDisclaimer = class extends UI7.Widget.Widget {
   constructor(element, view = DEFAULT_SUMMARY_TOOLBAR_VIEW) {
     super(element);
     this.markAsExternallyManaged();
-    this.#noLogging = Root3.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue === Root3.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING;
+    this.#noLogging = Root4.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue === Root4.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING;
     this.#boundOnAidaAvailabilityChange = this.#onAidaAvailabilityChange.bind(this);
     this.#view = view;
   }
@@ -1982,7 +2197,7 @@ var AiCodeCompletionDisclaimer = class extends UI7.Widget.Widget {
     if (loading) {
       if (!this.#loading) {
         this.#viewOutput.setLoading?.(true);
-        UI7.ARIAUtils.LiveAnnouncer.status(lockedString4(UIStringsNotTranslate4.dataIsBeingSentToGoogle));
+        UI8.ARIAUtils.LiveAnnouncer.status(lockedString4(UIStringsNotTranslate4.dataIsBeingSentToGoogle));
       }
       if (this.#spinnerLoadingTimeout) {
         clearTimeout(this.#spinnerLoadingTimeout);
@@ -2005,7 +2220,7 @@ var AiCodeCompletionDisclaimer = class extends UI7.Widget.Widget {
     this.requestUpdate();
   }
   async #onAidaAvailabilityChange() {
-    const currentAidaAvailability = await Host5.AidaClient.AidaClient.checkAccessPreconditions();
+    const currentAidaAvailability = await Host6.AidaClient.AidaClient.checkAccessPreconditions();
     if (currentAidaAvailability !== this.#aidaAvailability) {
       this.#aidaAvailability = currentAidaAvailability;
       this.requestUpdate();
@@ -2013,7 +2228,7 @@ var AiCodeCompletionDisclaimer = class extends UI7.Widget.Widget {
   }
   #onManageInSettingsTooltipClick() {
     this.#viewOutput.hideTooltip?.();
-    void UI7.ViewManager.ViewManager.instance().showView("chrome-ai");
+    void UI8.ViewManager.ViewManager.instance().showView("chrome-ai");
   }
   performUpdate() {
     this.#view({
@@ -2027,12 +2242,12 @@ var AiCodeCompletionDisclaimer = class extends UI7.Widget.Widget {
   }
   wasShown() {
     super.wasShown();
-    Host5.AidaClient.HostConfigTracker.instance().addEventListener("aidaAvailabilityChanged", this.#boundOnAidaAvailabilityChange);
+    Host6.AidaClient.HostConfigTracker.instance().addEventListener("aidaAvailabilityChanged", this.#boundOnAidaAvailabilityChange);
     void this.#onAidaAvailabilityChange();
   }
   willHide() {
     super.willHide();
-    Host5.AidaClient.HostConfigTracker.instance().removeEventListener("aidaAvailabilityChanged", this.#boundOnAidaAvailabilityChange);
+    Host6.AidaClient.HostConfigTracker.instance().removeEventListener("aidaAvailabilityChanged", this.#boundOnAidaAvailabilityChange);
   }
 };
 
@@ -2040,10 +2255,10 @@ var AiCodeCompletionDisclaimer = class extends UI7.Widget.Widget {
 import "./../../ui/components/spinners/spinners.js";
 import "./../../ui/components/tooltips/tooltips.js";
 import "./../../ui/kit/kit.js";
-import * as Host6 from "./../../core/host/host.js";
-import * as i18n13 from "./../../core/i18n/i18n.js";
-import * as UI8 from "./../../ui/legacy/legacy.js";
-import { Directives as Directives3, html as html8, nothing as nothing5, render as render8 } from "./../../ui/lit/lit.js";
+import * as Host7 from "./../../core/host/host.js";
+import * as i18n15 from "./../../core/i18n/i18n.js";
+import * as UI9 from "./../../ui/legacy/legacy.js";
+import { Directives as Directives3, html as html9, nothing as nothing5, render as render9 } from "./../../ui/lit/lit.js";
 
 // gen/front_end/panels/common/aiCodeCompletionSummaryToolbar.css.js
 var aiCodeCompletionSummaryToolbar_css_default = `/*
@@ -2161,10 +2376,10 @@ var UIStringsNotTranslate5 = {
    */
   viewSources: "View Sources"
 };
-var lockedString5 = i18n13.i18n.lockedString;
+var lockedString5 = i18n15.i18n.lockedString;
 var DEFAULT_SUMMARY_TOOLBAR_VIEW2 = (input, _output, target) => {
   if (input.aidaAvailability !== "available") {
-    render8(nothing5, target);
+    render9(nothing5, target);
     return;
   }
   const toolbarClasses = Directives3.classMap({
@@ -2173,14 +2388,14 @@ var DEFAULT_SUMMARY_TOOLBAR_VIEW2 = (input, _output, target) => {
     "has-recitation-notice": Boolean(input.citations && input.citations.size > 0),
     "has-top-border": input.hasTopBorder
   });
-  const disclaimer = input.disclaimerTooltipId && input.spinnerTooltipId ? html8`<devtools-widget
-            .widgetConfig=${UI8.Widget.widgetConfig(AiCodeCompletionDisclaimer, {
+  const disclaimer = input.disclaimerTooltipId && input.spinnerTooltipId ? html9`<devtools-widget
+            .widgetConfig=${UI9.Widget.widgetConfig(AiCodeCompletionDisclaimer, {
     disclaimerTooltipId: input.disclaimerTooltipId,
     spinnerTooltipId: input.spinnerTooltipId,
     loading: input.loading,
     panel: input.panel
   })} class="disclaimer-widget"></devtools-widget>` : nothing5;
-  const recitationNotice = input.citations && input.citations.size > 0 ? html8`<div class="ai-code-completion-recitation-notice">
+  const recitationNotice = input.citations && input.citations.size > 0 ? html9`<div class="ai-code-completion-recitation-notice">
                 ${lockedString5(UIStringsNotTranslate5.generatedCodeMayBeSubjectToALicense)}
                 <span class="link"
                     role="link"
@@ -2194,12 +2409,12 @@ var DEFAULT_SUMMARY_TOOLBAR_VIEW2 = (input, _output, target) => {
                     variant="rich"
                     jslogContext="ai-code-completion-citations"
                 ><div class="citations-tooltip-container">
-                    ${Directives3.repeat(input.citations, (citation) => html8`<devtools-link
+                    ${Directives3.repeat(input.citations, (citation) => html9`<devtools-link
                         tabIndex="0"
                         href=${citation}
                         .jslogContext=${"ai-code-completion-citations.citation-link"}>${citation}</devtools-link>`)}</div></devtools-tooltip>
             </div>` : nothing5;
-  render8(html8`
+  render9(html9`
         <style>${aiCodeCompletionSummaryToolbar_css_default}</style>
         <div class=${toolbarClasses}>
           ${disclaimer}
@@ -2207,7 +2422,7 @@ var DEFAULT_SUMMARY_TOOLBAR_VIEW2 = (input, _output, target) => {
         </div>
         `, target);
 };
-var AiCodeCompletionSummaryToolbar = class extends UI8.Widget.Widget {
+var AiCodeCompletionSummaryToolbar = class extends UI9.Widget.Widget {
   #view;
   #disclaimerTooltipId;
   #spinnerTooltipId;
@@ -2230,7 +2445,7 @@ var AiCodeCompletionSummaryToolbar = class extends UI8.Widget.Widget {
     this.requestUpdate();
   }
   async #onAidaAvailabilityChange() {
-    const currentAidaAvailability = await Host6.AidaClient.AidaClient.checkAccessPreconditions();
+    const currentAidaAvailability = await Host7.AidaClient.AidaClient.checkAccessPreconditions();
     if (currentAidaAvailability !== this.#aidaAvailability) {
       this.#aidaAvailability = currentAidaAvailability;
       this.requestUpdate();
@@ -2262,28 +2477,28 @@ var AiCodeCompletionSummaryToolbar = class extends UI8.Widget.Widget {
   }
   wasShown() {
     super.wasShown();
-    Host6.AidaClient.HostConfigTracker.instance().addEventListener("aidaAvailabilityChanged", this.#boundOnAidaAvailabilityChange);
+    Host7.AidaClient.HostConfigTracker.instance().addEventListener("aidaAvailabilityChanged", this.#boundOnAidaAvailabilityChange);
     void this.#onAidaAvailabilityChange();
   }
   willHide() {
     super.willHide();
-    Host6.AidaClient.HostConfigTracker.instance().removeEventListener("aidaAvailabilityChanged", this.#boundOnAidaAvailabilityChange);
+    Host7.AidaClient.HostConfigTracker.instance().removeEventListener("aidaAvailabilityChanged", this.#boundOnAidaAvailabilityChange);
   }
 };
 
 // gen/front_end/panels/common/BadgeNotification.js
 import "./../../ui/kit/kit.js";
-import * as Common3 from "./../../core/common/common.js";
-import * as Host7 from "./../../core/host/host.js";
-import * as i18n15 from "./../../core/i18n/i18n.js";
+import * as Common4 from "./../../core/common/common.js";
+import * as Host8 from "./../../core/host/host.js";
+import * as i18n17 from "./../../core/i18n/i18n.js";
 import * as Badges2 from "./../../models/badges/badges.js";
-import * as Buttons5 from "./../../ui/components/buttons/buttons.js";
+import * as Buttons6 from "./../../ui/components/buttons/buttons.js";
 import * as UIHelpers2 from "./../../ui/helpers/helpers.js";
 import * as uiI18n2 from "./../../ui/i18n/i18n.js";
-import * as UI9 from "./../../ui/legacy/legacy.js";
+import * as UI10 from "./../../ui/legacy/legacy.js";
 import * as Lit3 from "./../../ui/lit/lit.js";
 import { nothing as nothing6 } from "./../../ui/lit/lit.js";
-import * as VisualLogging5 from "./../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging6 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/common/badgeNotification.css.js
 var badgeNotification_css_default = `/*
@@ -2383,8 +2598,8 @@ var badgeNotification_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./badgeNotification.css")} */`;
 
 // gen/front_end/panels/common/BadgeNotification.js
-var { html: html9, render: render9 } = Lit3;
-var UIStrings3 = {
+var { html: html10, render: render10 } = Lit3;
+var UIStrings4 = {
   /**
    * @description Title for close button
    */
@@ -2427,38 +2642,38 @@ var UIStrings3 = {
    */
   createProfile: "Create profile"
 };
-var str_3 = i18n15.i18n.registerUIStrings("panels/common/BadgeNotification.ts", UIStrings3);
-var i18nString3 = i18n15.i18n.getLocalizedString.bind(void 0, str_3);
-var i18nFormatStringTemplate = uiI18n2.getFormatLocalizedStringTemplate.bind(void 0, str_3);
-var lockedString6 = i18n15.i18n.lockedString;
+var str_4 = i18n17.i18n.registerUIStrings("panels/common/BadgeNotification.ts", UIStrings4);
+var i18nString4 = i18n17.i18n.getLocalizedString.bind(void 0, str_4);
+var i18nFormatStringTemplate = uiI18n2.getFormatLocalizedStringTemplate.bind(void 0, str_4);
+var lockedString6 = i18n17.i18n.lockedString;
 var LEFT_OFFSET = 5;
 var BOTTOM_OFFSET = 5;
 var AUTO_CLOSE_TIME_IN_MS = 3e4;
-var DEFAULT_VIEW5 = (input, _output, target) => {
+var DEFAULT_VIEW6 = (input, _output, target) => {
   const actionButtons = input.actions.map((property) => {
-    return html9`<devtools-button
+    return html10`<devtools-button
         class="notification-button"
         @click=${() => property.onClick()}
-        jslog=${VisualLogging5.action(property.jslogContext).track({ click: true })}
+        jslog=${VisualLogging6.action(property.jslogContext).track({ click: true })}
         .variant=${"text"}
         .title=${property.title ?? ""}
         .inverseColorTheme=${true}
     >${property.label}</devtools-button>`;
   });
-  const crossButton = html9`<devtools-button
+  const crossButton = html10`<devtools-button
         class="dismiss notification-button"
         @click=${input.onDismissClick}
-        jslog=${VisualLogging5.action("badge-notification.dismiss").track({ click: true })}
-        aria-label=${i18nString3(UIStrings3.close)}
+        jslog=${VisualLogging6.action("badge-notification.dismiss").track({ click: true })}
+        aria-label=${i18nString4(UIStrings4.close)}
         .iconName=${"cross"}
         .variant=${"icon"}
-        .title=${i18nString3(UIStrings3.close)}
+        .title=${i18nString4(UIStrings4.close)}
         .inverseColorTheme=${true}
     ></devtools-button>`;
-  render9(html9`
+  render10(html10`
     <style>${badgeNotification_css_default}</style>
-    <div class="container" jslog=${VisualLogging5.dialog("badge-notification")}>
-      <div class="badge-container" jslog=${VisualLogging5.item(input.jslogContext)}>
+    <div class="container" jslog=${VisualLogging6.dialog("badge-notification")}>
+      <div class="badge-container" jslog=${VisualLogging6.item(input.jslogContext)}>
         <img class="badge-image" role="presentation" src=${input.imageUri}>
       </div>
       <div class="action-and-text-container">
@@ -2472,9 +2687,9 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
   `, target);
 };
 function revealBadgeSettings() {
-  void Common3.Revealer.reveal(Common3.Settings.moduleSetting("receive-gdp-badges"));
+  void Common4.Revealer.reveal(Common4.Settings.moduleSetting("receive-gdp-badges"));
 }
-var BadgeNotification = class extends UI9.Widget.Widget {
+var BadgeNotification = class extends UI10.Widget.Widget {
   jslogContext = "";
   message = nothing6;
   imageUri = "";
@@ -2482,7 +2697,7 @@ var BadgeNotification = class extends UI9.Widget.Widget {
   isStarterBadge = false;
   #autoCloseTimeout;
   #view;
-  constructor(element, view = DEFAULT_VIEW5) {
+  constructor(element, view = DEFAULT_VIEW6) {
     super(element);
     this.#view = view;
     this.contentElement.role = "alert";
@@ -2503,7 +2718,7 @@ var BadgeNotification = class extends UI9.Widget.Widget {
   }
   #positionNotification() {
     const boundingRect = this.contentElement.getBoundingClientRect();
-    const container = UI9.UIUtils.getDevToolsBoundingElement();
+    const container = UI10.UIUtils.getDevToolsBoundingElement();
     this.contentElement.positionAt(LEFT_OFFSET, container.clientHeight - boundingRect.height - BOTTOM_OFFSET, container);
   }
   #show(properties) {
@@ -2524,21 +2739,21 @@ var BadgeNotification = class extends UI9.Widget.Widget {
   }
   #presentStarterBadgeSettingsNudge(badge) {
     this.#show({
-      message: i18nFormatStringTemplate(UIStrings3.starterBadgeAwardMessageSettingDisabled, {
+      message: i18nFormatStringTemplate(UIStrings4.starterBadgeAwardMessageSettingDisabled, {
         PH1: badge.title,
-        PH2: html9`<devtools-link class="badge-link" href="https://developers.google.com/program" .jslogContext=${"program-link"}>${lockedString6("Google Developer Program")}</devtools-link>`
+        PH2: html10`<devtools-link class="badge-link" href="https://developers.google.com/program" .jslogContext=${"program-link"}>${lockedString6("Google Developer Program")}</devtools-link>`
       }),
       jslogContext: badge.jslogContext,
       actions: [
         {
-          label: i18nString3(UIStrings3.noThanks),
+          label: i18nString4(UIStrings4.noThanks),
           jslogContext: "no-thanks",
           onClick: () => {
             this.#onDismissClick();
           }
         },
         {
-          label: i18nString3(UIStrings3.receiveBadges),
+          label: i18nString4(UIStrings4.receiveBadges),
           jslogContext: "receive-badges",
           onClick: () => {
             this.detach();
@@ -2552,21 +2767,21 @@ var BadgeNotification = class extends UI9.Widget.Widget {
   }
   #presentStarterBadgeProfileNudge(badge) {
     this.#show({
-      message: i18nFormatStringTemplate(UIStrings3.starterBadgeAwardMessageNoGdpProfile, {
+      message: i18nFormatStringTemplate(UIStrings4.starterBadgeAwardMessageNoGdpProfile, {
         PH1: badge.title,
-        PH2: html9`<devtools-link class="badge-link" href="https://developers.google.com/program" .jslogContext=${"program-link"}>${lockedString6("Google Developer Program")}</devtools-link>`
+        PH2: html10`<devtools-link class="badge-link" href="https://developers.google.com/program" .jslogContext=${"program-link"}>${lockedString6("Google Developer Program")}</devtools-link>`
       }),
       jslogContext: badge.jslogContext,
       actions: [
         {
-          label: i18nString3(UIStrings3.noThanks),
+          label: i18nString4(UIStrings4.noThanks),
           jslogContext: "no-thanks",
           onClick: () => {
             this.#onDismissClick();
           }
         },
         {
-          label: i18nString3(UIStrings3.createProfile),
+          label: i18nString4(UIStrings4.createProfile),
           jslogContext: "create-profile",
           onClick: () => {
             this.detach();
@@ -2583,11 +2798,11 @@ var BadgeNotification = class extends UI9.Widget.Widget {
   }
   #presentActivityBasedBadge(badge) {
     this.#show({
-      message: i18nFormatStringTemplate(UIStrings3.activityBasedBadgeAwardMessage, { PH1: badge.title }),
+      message: i18nFormatStringTemplate(UIStrings4.activityBasedBadgeAwardMessage, { PH1: badge.title }),
       jslogContext: badge.jslogContext,
       actions: [
         {
-          label: i18nString3(UIStrings3.manageSettings),
+          label: i18nString4(UIStrings4.manageSettings),
           jslogContext: "manage-settings",
           onClick: () => {
             this.detach();
@@ -2595,10 +2810,10 @@ var BadgeNotification = class extends UI9.Widget.Widget {
           }
         },
         {
-          label: i18nString3(UIStrings3.viewProfile),
+          label: i18nString4(UIStrings4.viewProfile),
           jslogContext: "view-profile",
           onClick: () => {
-            UIHelpers2.openInNewTab(Host7.GdpClient.GOOGLE_DEVELOPER_PROGRAM_PROFILE_LINK);
+            UIHelpers2.openInNewTab(Host8.GdpClient.GOOGLE_DEVELOPER_PROGRAM_PROFILE_LINK);
           }
         }
       ],
@@ -2648,7 +2863,7 @@ __export(ExtensionPanel_exports, {
 import * as Platform4 from "./../../core/platform/platform.js";
 import * as SDK from "./../../core/sdk/sdk.js";
 import * as Extensions from "./../../models/extensions/extensions.js";
-import * as UI11 from "./../../ui/legacy/legacy.js";
+import * as UI12 from "./../../ui/legacy/legacy.js";
 
 // gen/front_end/panels/common/ExtensionView.js
 var ExtensionView_exports = {};
@@ -2657,11 +2872,11 @@ __export(ExtensionView_exports, {
   ExtensionNotifierView: () => ExtensionNotifierView,
   ExtensionView: () => ExtensionView
 });
-import * as UI10 from "./../../ui/legacy/legacy.js";
+import * as UI11 from "./../../ui/legacy/legacy.js";
 import * as Lit4 from "./../../ui/lit/lit.js";
-var { render: render10, html: html10, Directives: { ref } } = Lit4;
-var DEFAULT_VIEW6 = (input, output, target) => {
-  render10(html10`<iframe
+var { render: render11, html: html11, Directives: { ref } } = Lit4;
+var DEFAULT_VIEW7 = (input, output, target) => {
+  render11(html11`<iframe
     ${ref((element) => {
     output.iframe = element;
   })}
@@ -2670,7 +2885,7 @@ var DEFAULT_VIEW6 = (input, output, target) => {
     class=${input.className}
     @load=${input.onLoad}></iframe>`, target);
 };
-var ExtensionView = class extends UI10.Widget.Widget {
+var ExtensionView = class extends UI11.Widget.Widget {
   #server;
   #id;
   #src;
@@ -2678,7 +2893,7 @@ var ExtensionView = class extends UI10.Widget.Widget {
   #iframe;
   #frameIndex;
   #view;
-  constructor(server, id, src, className, view = DEFAULT_VIEW6) {
+  constructor(server, id, src, className, view = DEFAULT_VIEW7) {
     super();
     this.#view = view;
     this.#server = server;
@@ -2722,7 +2937,7 @@ var ExtensionView = class extends UI10.Widget.Widget {
     }
   }
 };
-var ExtensionNotifierView = class extends UI10.Widget.VBox {
+var ExtensionNotifierView = class extends UI11.Widget.VBox {
   server;
   id;
   constructor(server, id) {
@@ -2779,7 +2994,7 @@ var ExtensionIframe = class {
 };
 
 // gen/front_end/panels/common/ExtensionPanel.js
-var ExtensionPanel = class extends UI11.Panel.Panel {
+var ExtensionPanel = class extends UI12.Panel.Panel {
   server;
   id;
   panelToolbar;
@@ -2790,7 +3005,7 @@ var ExtensionPanel = class extends UI11.Panel.Panel {
     this.id = id;
     this.setHideOnDetach();
     this.panelToolbar = this.element.createChild("devtools-toolbar", "hidden");
-    this.#searchableView = new UI11.SearchableView.SearchableView(this, null);
+    this.#searchableView = new UI12.SearchableView.SearchableView(this, null);
     this.#searchableView.show(this.element);
     const extensionView = new ExtensionView(server, this.id, pageURL, "extension");
     extensionView.show(this.#searchableView.element);
@@ -2843,7 +3058,7 @@ var ExtensionButton = class {
   #toolbarButton;
   constructor(server, id, iconURL, tooltip, disabled) {
     this.id = id;
-    this.#toolbarButton = new UI11.Toolbar.ToolbarButton("", "");
+    this.#toolbarButton = new UI12.Toolbar.ToolbarButton("", "");
     this.#toolbarButton.addEventListener("Click", server.notifyButtonClicked.bind(server, this.id));
     this.update(iconURL, tooltip, disabled);
   }
@@ -2862,7 +3077,7 @@ var ExtensionButton = class {
     return this.#toolbarButton;
   }
 };
-var ExtensionSidebarPane = class extends UI11.View.SimpleView {
+var ExtensionSidebarPane = class extends UI12.View.SimpleView {
   #panelName;
   server;
   #id;
@@ -2934,7 +3149,7 @@ var ExtensionSidebarPane = class extends UI11.View.SimpleView {
       return;
     }
     objectPropertiesView.element.removeChildren();
-    void UI11.UIUtils.Renderer.render(object, { title, editable: false, expand: true }).then((result) => {
+    void UI12.UIUtils.Renderer.render(object, { title, editable: false, expand: true }).then((result) => {
       if (!result) {
         callback();
         return;
@@ -2953,9 +3168,9 @@ __export(ExtensionServer_exports, {
   HostsPolicy: () => HostsPolicy,
   RevealableNetworkRequestFilter: () => RevealableNetworkRequestFilter
 });
-import * as Common4 from "./../../core/common/common.js";
-import * as Host8 from "./../../core/host/host.js";
-import * as i18n17 from "./../../core/i18n/i18n.js";
+import * as Common5 from "./../../core/common/common.js";
+import * as Host9 from "./../../core/host/host.js";
+import * as i18n19 from "./../../core/i18n/i18n.js";
 import * as Platform5 from "./../../core/platform/platform.js";
 import * as SDK2 from "./../../core/sdk/sdk.js";
 import * as Bindings from "./../../models/bindings/bindings.js";
@@ -2965,7 +3180,7 @@ import * as Logs from "./../../models/logs/logs.js";
 import * as TextUtils from "./../../models/text_utils/text_utils.js";
 import * as Workspace from "./../../models/workspace/workspace.js";
 import * as Components from "./../../ui/legacy/components/utils/utils.js";
-import * as UI12 from "./../../ui/legacy/legacy.js";
+import * as UI13 from "./../../ui/legacy/legacy.js";
 import * as ThemeSupport3 from "./../../ui/legacy/theme_support/theme_support.js";
 var extensionOrigins = /* @__PURE__ */ new WeakMap();
 var kPermittedSchemes = ["http:", "https:", "file:", "data:", "chrome-extension:", "about:"];
@@ -3052,7 +3267,7 @@ var RevealableNetworkRequestFilter = class {
     this.filter = filter;
   }
 };
-var ExtensionServer = class _ExtensionServer extends Common4.ObjectWrapper.ObjectWrapper {
+var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.ObjectWrapper {
   clientObjects;
   handlers;
   subscribers;
@@ -3124,7 +3339,7 @@ var ExtensionServer = class _ExtensionServer extends Common4.ObjectWrapper.Objec
     if (existingTabId) {
       this.setInspectedTabId({ data: existingTabId });
     }
-    Host8.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host8.InspectorFrontendHostAPI.Events.SetInspectedTabId, this.setInspectedTabId, this);
+    Host9.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host9.InspectorFrontendHostAPI.Events.SetInspectedTabId, this.setInspectedTabId, this);
     this.initExtensions();
     ThemeSupport3.ThemeSupport.instance().addEventListener(ThemeSupport3.ThemeChangeEvent.eventName, this.#onThemeChange);
   }
@@ -3134,7 +3349,7 @@ var ExtensionServer = class _ExtensionServer extends Common4.ObjectWrapper.Objec
   dispose() {
     ThemeSupport3.ThemeSupport.instance().removeEventListener(ThemeSupport3.ThemeChangeEvent.eventName, this.#onThemeChange);
     SDK2.TargetManager.TargetManager.instance().removeEventListener("InspectedURLChanged", this.inspectedURLChanged, this);
-    Host8.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(Host8.InspectorFrontendHostAPI.Events.SetInspectedTabId, this.setInspectedTabId, this);
+    Host9.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(Host9.InspectorFrontendHostAPI.Events.SetInspectedTabId, this.setInspectedTabId, this);
     window.removeEventListener("message", this.onWindowMessage, false);
   }
   #onThemeChange = () => {
@@ -3153,7 +3368,7 @@ var ExtensionServer = class _ExtensionServer extends Common4.ObjectWrapper.Objec
   }
   initializeExtensions() {
     if (this.inspectedTabId !== null) {
-      Host8.InspectorFrontendHost.InspectorFrontendHostInstance.setAddExtensionCallback(this.addExtension.bind(this));
+      Host9.InspectorFrontendHost.InspectorFrontendHostInstance.setAddExtensionCallback(this.addExtension.bind(this));
     }
   }
   hasExtensions() {
@@ -3326,7 +3541,7 @@ var ExtensionServer = class _ExtensionServer extends Common4.ObjectWrapper.Objec
     if (message.command !== "showNetworkPanel") {
       return this.status.E_BADARG("command", `expected ${"showNetworkPanel"}`);
     }
-    void Common4.Revealer.reveal(new RevealableNetworkRequestFilter(message.filter));
+    void Common5.Revealer.reveal(new RevealableNetworkRequestFilter(message.filter));
     return this.status.OK();
   }
   onCreateRecorderView(message, port) {
@@ -3466,7 +3681,7 @@ var ExtensionServer = class _ExtensionServer extends Common4.ObjectWrapper.Objec
       return this.status.E_BADARG("command", `expected ${"createPanel"}`);
     }
     const id = message.id;
-    if (this.clientObjects.has(id) || UI12.InspectorView.InspectorView.instance().hasPanel(id)) {
+    if (this.clientObjects.has(id) || UI13.InspectorView.InspectorView.instance().hasPanel(id)) {
       return this.status.E_EXISTS(id);
     }
     const page = _ExtensionServer.expandResourcePath(this.getExtensionOrigin(port), message.page);
@@ -3475,9 +3690,9 @@ var ExtensionServer = class _ExtensionServer extends Common4.ObjectWrapper.Objec
     }
     let persistentId = this.getExtensionOrigin(port) + message.title;
     persistentId = persistentId.replace(/\s|:\d+/g, "");
-    const panelView = new ExtensionServerPanelView(persistentId, i18n17.i18n.lockedString(message.title), new ExtensionPanel(this, persistentId, id, page));
+    const panelView = new ExtensionServerPanelView(persistentId, i18n19.i18n.lockedString(message.title), new ExtensionPanel(this, persistentId, id, page));
     this.clientObjects.set(id, panelView);
-    UI12.InspectorView.InspectorView.instance().addPanel(panelView);
+    UI13.InspectorView.InspectorView.instance().addPanel(panelView);
     return this.status.OK();
   }
   onShowPanel(message) {
@@ -3489,7 +3704,7 @@ var ExtensionServer = class _ExtensionServer extends Common4.ObjectWrapper.Objec
     if (panelView && panelView instanceof ExtensionServerPanelView) {
       panelViewId = panelView.viewId();
     }
-    void UI12.InspectorView.InspectorView.instance().showPanel(panelViewId);
+    void UI13.InspectorView.InspectorView.instance().showPanel(panelViewId);
     return void 0;
   }
   onCreateToolbarButton(message, port) {
@@ -3532,7 +3747,7 @@ var ExtensionServer = class _ExtensionServer extends Common4.ObjectWrapper.Objec
       return this.status.E_BADARG("command", `expected ${"createSidebarPane"}`);
     }
     const id = message.id;
-    const sidebar = new ExtensionSidebarPane(this, message.panel, i18n17.i18n.lockedString(message.title), id);
+    const sidebar = new ExtensionSidebarPane(this, message.panel, i18n19.i18n.lockedString(message.title), id);
     this.#sidebarPanes.push(sidebar);
     this.clientObjects.set(id, sidebar);
     this.dispatchEventToListeners("SidebarPaneAdded", sidebar);
@@ -3593,17 +3808,17 @@ var ExtensionServer = class _ExtensionServer extends Common4.ObjectWrapper.Objec
     }
     const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(message.url);
     if (uiSourceCode) {
-      void Common4.Revealer.reveal(uiSourceCode.uiLocation(message.lineNumber, message.columnNumber));
+      void Common5.Revealer.reveal(uiSourceCode.uiLocation(message.lineNumber, message.columnNumber));
       return this.status.OK();
     }
     const resource = Bindings.ResourceUtils.resourceForURL(message.url);
     if (resource) {
-      void Common4.Revealer.reveal(resource);
+      void Common5.Revealer.reveal(resource);
       return this.status.OK();
     }
     const request = Logs.NetworkLog.NetworkLog.instance().requestForURL(message.url);
     if (request) {
-      void Common4.Revealer.reveal(request);
+      void Common5.Revealer.reveal(request);
       return this.status.OK();
     }
     return this.status.E_NOTFOUND(message.url);
@@ -3659,7 +3874,7 @@ var ExtensionServer = class _ExtensionServer extends Common4.ObjectWrapper.Objec
       isAllowed = this.extensionAllowedOnContentProvider(contentProviderOrUrl, port);
     } else {
       const url = contentProviderOrUrl;
-      resource = { url, type: Common4.ResourceType.resourceTypes.Other.name() };
+      resource = { url, type: Common5.ResourceType.resourceTypes.Other.name() };
       isAllowed = this.extensionAllowedOnURL(url, port);
     }
     if (isAllowed) {
@@ -3685,7 +3900,7 @@ var ExtensionServer = class _ExtensionServer extends Common4.ObjectWrapper.Objec
     if (!(contentProvider instanceof Workspace.UISourceCode.UISourceCode)) {
       return this.extensionAllowedOnURL(contentProvider.contentURL(), port);
     }
-    if (contentProvider.contentType() !== Common4.ResourceType.resourceTypes.Script) {
+    if (contentProvider.contentType() !== Common5.ResourceType.resourceTypes.Script) {
       return this.extensionAllowedOnURL(contentProvider.contentURL(), port);
     }
     const scripts = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().scriptsForUISourceCode(contentProvider);
@@ -3932,10 +4147,10 @@ var ExtensionServer = class _ExtensionServer extends Common4.ObjectWrapper.Objec
     this.registerAutosubscriptionHandler("resource-added", Workspace.Workspace.WorkspaceImpl.instance(), Workspace.Workspace.Events.UISourceCodeAdded, this.notifyResourceAdded);
     this.registerAutosubscriptionTargetManagerHandler("network-request-finished", SDK2.NetworkManager.NetworkManager, SDK2.NetworkManager.Events.RequestFinished, this.notifyRequestFinished);
     function onElementsSubscriptionStarted() {
-      UI12.Context.Context.instance().addFlavorChangeListener(SDK2.DOMModel.DOMNode, this.notifyElementsSelectionChanged, this);
+      UI13.Context.Context.instance().addFlavorChangeListener(SDK2.DOMModel.DOMNode, this.notifyElementsSelectionChanged, this);
     }
     function onElementsSubscriptionStopped() {
-      UI12.Context.Context.instance().removeFlavorChangeListener(SDK2.DOMModel.DOMNode, this.notifyElementsSelectionChanged, this);
+      UI13.Context.Context.instance().removeFlavorChangeListener(SDK2.DOMModel.DOMNode, this.notifyElementsSelectionChanged, this);
     }
     this.registerSubscriptionHandler("panel-objectSelected-elements", onElementsSubscriptionStarted.bind(this), onElementsSubscriptionStopped.bind(this));
     this.registerResourceContentCommittedHandler(this.notifyUISourceCodeContentCommitted);
@@ -4008,8 +4223,8 @@ var ExtensionServer = class _ExtensionServer extends Common4.ObjectWrapper.Objec
         return;
       }
       if (!this.registeredExtensions.get(extensionOrigin)) {
-        const injectedAPI = self.buildExtensionAPIInjectedScript(extensionInfo, this.inspectedTabId, ThemeSupport3.ThemeSupport.instance().themeName(), UI12.ShortcutRegistry.ShortcutRegistry.instance().globalShortcutKeys(), _ExtensionServer.instance().extensionAPITestHook);
-        Host8.InspectorFrontendHost.InspectorFrontendHostInstance.setInjectedScriptForOrigin(extensionOrigin, injectedAPI);
+        const injectedAPI = self.buildExtensionAPIInjectedScript(extensionInfo, this.inspectedTabId, ThemeSupport3.ThemeSupport.instance().themeName(), UI13.ShortcutRegistry.ShortcutRegistry.instance().globalShortcutKeys(), _ExtensionServer.instance().extensionAPITestHook);
+        Host9.InspectorFrontendHost.InspectorFrontendHostInstance.setInjectedScriptForOrigin(extensionOrigin, injectedAPI);
         this.registeredExtensions.set(extensionOrigin, extensionRegistration);
       }
       this.addExtensionFrame(extensionInfo);
@@ -4096,7 +4311,7 @@ var ExtensionServer = class _ExtensionServer extends Common4.ObjectWrapper.Objec
   }
   static expandResourcePath(extensionOrigin, resourcePath) {
     const strippedOrigin = new URL(extensionOrigin).origin;
-    const resourceURL = new URL(Common4.ParsedURL.normalizePath(resourcePath), strippedOrigin);
+    const resourceURL = new URL(Common5.ParsedURL.normalizePath(resourcePath), strippedOrigin);
     if (resourceURL.origin !== strippedOrigin) {
       return void 0;
     }
@@ -4233,7 +4448,7 @@ var ExtensionServer = class _ExtensionServer extends Common4.ObjectWrapper.Objec
     this.extensionsEnabled = true;
   }
 };
-var ExtensionServerPanelView = class extends UI12.View.SimpleView {
+var ExtensionServerPanelView = class extends UI13.View.SimpleView {
   name;
   panel;
   constructor(name, title, panel2) {
@@ -4286,14 +4501,14 @@ __export(PersistenceUtils_exports, {
   PersistenceUtils: () => PersistenceUtils
 });
 import "./../../ui/kit/kit.js";
-import * as Common5 from "./../../core/common/common.js";
-import * as i18n19 from "./../../core/i18n/i18n.js";
+import * as Common6 from "./../../core/common/common.js";
+import * as i18n21 from "./../../core/i18n/i18n.js";
 import * as Platform6 from "./../../core/platform/platform.js";
 import * as Persistence from "./../../models/persistence/persistence.js";
 import * as Workspace3 from "./../../models/workspace/workspace.js";
 import * as Components2 from "./../../ui/legacy/components/utils/utils.js";
-import { html as html11 } from "./../../ui/lit/lit.js";
-var UIStrings4 = {
+import { html as html12 } from "./../../ui/lit/lit.js";
+var UIStrings5 = {
   /**
    * @description Text in Persistence Utils of the Workspace settings in Settings
    * @example {example.url} PH1
@@ -4305,8 +4520,8 @@ var UIStrings4 = {
    */
   linkedToS: "Linked to {PH1}"
 };
-var str_4 = i18n19.i18n.registerUIStrings("panels/common/PersistenceUtils.ts", UIStrings4);
-var i18nString4 = i18n19.i18n.getLocalizedString.bind(void 0, str_4);
+var str_5 = i18n21.i18n.registerUIStrings("panels/common/PersistenceUtils.ts", UIStrings5);
+var i18nString5 = i18n21.i18n.getLocalizedString.bind(void 0, str_5);
 var PersistenceUtils = class _PersistenceUtils {
   static tooltipForUISourceCode(uiSourceCode) {
     const binding = Persistence.Persistence.PersistenceImpl.instance().binding(uiSourceCode);
@@ -4317,33 +4532,33 @@ var PersistenceUtils = class _PersistenceUtils {
       return Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.tooltipForUISourceCode(binding.fileSystem);
     }
     if (binding.network.contentType().isFromSourceMap()) {
-      return i18nString4(UIStrings4.linkedToSourceMapS, { PH1: Platform6.StringUtilities.trimMiddle(binding.network.url(), 150) });
+      return i18nString5(UIStrings5.linkedToSourceMapS, { PH1: Platform6.StringUtilities.trimMiddle(binding.network.url(), 150) });
     }
-    return i18nString4(UIStrings4.linkedToS, { PH1: Platform6.StringUtilities.trimMiddle(binding.network.url(), 150) });
+    return i18nString5(UIStrings5.linkedToS, { PH1: Platform6.StringUtilities.trimMiddle(binding.network.url(), 150) });
   }
   static iconForUISourceCode(uiSourceCode) {
     const binding = Persistence.Persistence.PersistenceImpl.instance().binding(uiSourceCode);
     if (binding) {
-      if (!Common5.ParsedURL.schemeIs(binding.fileSystem.url(), "file:")) {
+      if (!Common6.ParsedURL.schemeIs(binding.fileSystem.url(), "file:")) {
         return null;
       }
       const dotClass = Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().project() === binding.fileSystem.project() ? "purple" : "green";
-      return html11`<devtools-icon class="small dot ${dotClass}" name="document"
+      return html12`<devtools-icon class="small dot ${dotClass}" name="document"
                                  title=${_PersistenceUtils.tooltipForUISourceCode(binding.network)}>
                   </devtools-icon>`;
     }
-    if (uiSourceCode.project().type() !== Workspace3.Workspace.projectTypes.FileSystem || !Common5.ParsedURL.schemeIs(uiSourceCode.url(), "file:")) {
+    if (uiSourceCode.project().type() !== Workspace3.Workspace.projectTypes.FileSystem || !Common6.ParsedURL.schemeIs(uiSourceCode.url(), "file:")) {
       return null;
     }
     if (Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().isActiveHeaderOverrides(uiSourceCode)) {
-      return html11`<devtools-icon class="small dot purple" name="document"></devtools-icon>`;
+      return html12`<devtools-icon class="small dot purple" name="document"></devtools-icon>`;
     }
-    return html11`<devtools-icon class="small" name="document"
+    return html12`<devtools-icon class="small" name="document"
                                title=${_PersistenceUtils.tooltipForUISourceCode(uiSourceCode)}>
                 </devtools-icon>`;
   }
 };
-var LinkDecorator = class extends Common5.ObjectWrapper.ObjectWrapper {
+var LinkDecorator = class extends Common6.ObjectWrapper.ObjectWrapper {
   constructor(persistence) {
     super();
     persistence.addEventListener(Persistence.Persistence.Events.BindingCreated, this.bindingChanged, this);
@@ -4365,12 +4580,12 @@ __export(DOMLinkifier_exports, {
   DeferredDOMNodeLink: () => DeferredDOMNodeLink,
   Linkifier: () => Linkifier2
 });
-import * as Common6 from "./../../core/common/common.js";
-import * as i18n21 from "./../../core/i18n/i18n.js";
+import * as Common7 from "./../../core/common/common.js";
+import * as i18n23 from "./../../core/i18n/i18n.js";
 import * as SDK3 from "./../../core/sdk/sdk.js";
-import * as UI13 from "./../../ui/legacy/legacy.js";
-import { Directives as Directives4, html as html12, nothing as nothing7, render as render11 } from "./../../ui/lit/lit.js";
-import * as VisualLogging6 from "./../../ui/visual_logging/visual_logging.js";
+import * as UI14 from "./../../ui/legacy/legacy.js";
+import { Directives as Directives4, html as html13, nothing as nothing7, render as render12 } from "./../../ui/lit/lit.js";
+import * as VisualLogging7 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/common/domLinkifier.css.js
 var domLinkifier_css_default = `/*
@@ -4432,7 +4647,7 @@ var domLinkifier_css_default = `/*
 
 // gen/front_end/panels/common/DOMLinkifier.js
 var { classMap } = Directives4;
-var UIStrings5 = {
+var UIStrings6 = {
   /**
    * @description Text displayed when trying to create a link to a node in the UI, but the node
    * location could not be found so we display this placeholder instead. Node refers to a DOM node.
@@ -4440,17 +4655,17 @@ var UIStrings5 = {
    */
   node: "<node>"
 };
-var str_5 = i18n21.i18n.registerUIStrings("panels/common/DOMLinkifier.ts", UIStrings5);
-var i18nString5 = i18n21.i18n.getLocalizedString.bind(void 0, str_5);
-var DEFAULT_VIEW7 = (input, _output, target) => {
-  render11(html12`${input.tagName || input.pseudo ? html12`
+var str_6 = i18n23.i18n.registerUIStrings("panels/common/DOMLinkifier.ts", UIStrings6);
+var i18nString6 = i18n23.i18n.getLocalizedString.bind(void 0, str_6);
+var DEFAULT_VIEW8 = (input, _output, target) => {
+  render12(html13`${input.tagName || input.pseudo ? html13`
     <style>${domLinkifier_css_default}</style>
     <span class="monospace">
       <button class="node-link text-button link-style ${classMap({
     "dynamic-link": Boolean(input.dynamic),
     disabled: Boolean(input.disabled)
   })}"
-          jslog=${VisualLogging6.link("node").track({ click: true, keydown: "Enter" })}
+          jslog=${VisualLogging7.link("node").track({ click: true, keydown: "Enter" })}
           tabindex=${input.preventKeyboardFocus ? -1 : 0}
           @click=${input.onClick}
           @mouseover=${input.onMouseOver}
@@ -4461,18 +4676,18 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
     ...input.classes.map((c) => `.${c}`),
     input.pseudo ? `::${input.pseudo}` : ""
   ].join(" ")}>${[
-    input.tagName ? html12`<span class="node-label-name">${input.tagName}</span>` : nothing7,
-    input.id ? html12`<span class="node-label-id">#${input.id}</span>` : nothing7,
-    ...input.classes.map((className) => html12`<span class="extra node-label-class">.${className}</span>`),
-    input.pseudo ? html12`<span class="extra node-label-pseudo">${input.pseudo}</span>` : nothing7
+    input.tagName ? html13`<span class="node-label-name">${input.tagName}</span>` : nothing7,
+    input.id ? html13`<span class="node-label-id">#${input.id}</span>` : nothing7,
+    ...input.classes.map((className) => html13`<span class="extra node-label-class">.${className}</span>`),
+    input.pseudo ? html13`<span class="extra node-label-pseudo">${input.pseudo}</span>` : nothing7
   ]}</button>
-    </span>` : i18nString5(UIStrings5.node)}`, target);
+    </span>` : i18nString6(UIStrings6.node)}`, target);
 };
-var DOMNodeLink = class extends UI13.Widget.Widget {
+var DOMNodeLink = class extends UI14.Widget.Widget {
   #node = void 0;
   #options = void 0;
   #view;
-  constructor(element, node, options, view = DEFAULT_VIEW7) {
+  constructor(element, node, options, view = DEFAULT_VIEW8) {
     super(element, { useShadowDom: true });
     this.element.classList.remove("vbox");
     this.#node = node;
@@ -4502,7 +4717,7 @@ var DOMNodeLink = class extends UI13.Widget.Widget {
       preventKeyboardFocus: options.preventKeyboardFocus,
       classes: [],
       onClick: () => {
-        void Common6.Revealer.reveal(this.#node);
+        void Common7.Revealer.reveal(this.#node);
         void this.#node?.scrollIntoView();
         return false;
       },
@@ -4563,17 +4778,17 @@ var DOMNodeLink = class extends UI13.Widget.Widget {
   }
 };
 var DEFERRED_DEFAULT_VIEW = (input, _output, target) => {
-  render11(html12`
+  render12(html13`
       <style>${domLinkifier_css_default}</style>
       <button class="node-link text-button link-style"
-          jslog=${VisualLogging6.link("node").track({ click: true })}
+          jslog=${VisualLogging7.link("node").track({ click: true })}
           tabindex=${input.preventKeyboardFocus ? -1 : 0}
           @click=${input.onClick}
           @mousedown=${(e) => e.consume()}>
         <slot></slot>
       </button>`, target);
 };
-var DeferredDOMNodeLink = class extends UI13.Widget.Widget {
+var DeferredDOMNodeLink = class extends UI14.Widget.Widget {
   #deferredNode = void 0;
   #options = void 0;
   #styleSheetId = void 0;
@@ -4595,12 +4810,12 @@ var DeferredDOMNodeLink = class extends UI13.Widget.Widget {
           if (node && this.#styleSheetId) {
             for (const adoptedStyle of node.adoptedStyleSheetsForNode) {
               if (adoptedStyle.id === this.#styleSheetId) {
-                void Common6.Revealer.reveal(adoptedStyle);
+                void Common7.Revealer.reveal(adoptedStyle);
                 return;
               }
             }
           }
-          void Common6.Revealer.reveal(node);
+          void Common7.Revealer.reveal(node);
           void node?.scrollIntoView();
         });
       }
@@ -4620,12 +4835,12 @@ var Linkifier2 = class _Linkifier {
   linkify(node, options) {
     if (node instanceof SDK3.DOMModel.DOMNode) {
       const link4 = document.createElement("devtools-widget");
-      link4.widgetConfig = UI13.Widget.widgetConfig((e) => new DOMNodeLink(e, node, options));
+      link4.widgetConfig = UI14.Widget.widgetConfig((e) => new DOMNodeLink(e, node, options));
       return link4;
     }
     if (node instanceof SDK3.DOMModel.DeferredDOMNode) {
       const link4 = document.createElement("devtools-widget");
-      link4.widgetConfig = UI13.Widget.widgetConfig((e) => new DeferredDOMNodeLink(e, node, options));
+      link4.widgetConfig = UI14.Widget.widgetConfig((e) => new DeferredDOMNodeLink(e, node, options));
       return link4;
     }
     throw new Error("Can't linkify non-node");
@@ -4633,25 +4848,25 @@ var Linkifier2 = class _Linkifier {
 };
 
 // gen/front_end/panels/common/CopyChangesToPrompt.js
-import * as Host9 from "./../../core/host/host.js";
-import * as i18n23 from "./../../core/i18n/i18n.js";
+import * as Host10 from "./../../core/host/host.js";
+import * as i18n25 from "./../../core/i18n/i18n.js";
 import * as GreenDev from "./../../models/greendev/greendev.js";
 import * as WorkspaceDiff from "./../../models/workspace_diff/workspace_diff.js";
 import * as Diff from "./../../third_party/diff/diff.js";
-import * as Buttons6 from "./../../ui/components/buttons/buttons.js";
+import * as Buttons7 from "./../../ui/components/buttons/buttons.js";
 import * as Snackbars3 from "./../../ui/components/snackbars/snackbars.js";
-import * as UI14 from "./../../ui/legacy/legacy.js";
+import * as UI15 from "./../../ui/legacy/legacy.js";
 import * as Lit5 from "./../../ui/lit/lit.js";
-var { render: render12, html: html13 } = Lit5;
-var UIStrings6 = {
+var { render: render13, html: html14 } = Lit5;
+var UIStrings7 = {
   /**
    * @description The message shown in a toast when the response is copied to the clipboard.
    */
   responseCopiedToClipboard: "Response copied to clipboard"
 };
-var str_6 = i18n23.i18n.registerUIStrings("panels/common/CopyChangesToPrompt.ts", UIStrings6);
-var i18nString6 = i18n23.i18n.getLocalizedString.bind(void 0, str_6);
-var CopyChangesToPrompt = class extends UI14.Widget.Widget {
+var str_7 = i18n25.i18n.registerUIStrings("panels/common/CopyChangesToPrompt.ts", UIStrings7);
+var i18nString7 = i18n25.i18n.getLocalizedString.bind(void 0, str_7);
+var CopyChangesToPrompt = class extends UI15.Widget.Widget {
   #workspaceDiff;
   #view;
   #patchAgentCSSChange = null;
@@ -4702,9 +4917,9 @@ var CopyChangesToPrompt = class extends UI14.Widget.Widget {
       diffs,
       patchAgentCSSChange: this.#patchAgentCSSChange,
       onCopyToClipboard: (text) => {
-        Host9.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(text);
+        Host10.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(text);
         Snackbars3.Snackbar.Snackbar.show({
-          message: i18nString6(UIStrings6.responseCopiedToClipboard)
+          message: i18nString7(UIStrings7.responseCopiedToClipboard)
         });
       }
     }, {}, this.contentElement);
@@ -4715,7 +4930,7 @@ var GEMINI_CHANGES_VIEW = (input, _output, target) => {
     return d.diff !== void 0 && d.diff.length > 0;
   });
   if (!hasDiffs && !input.patchAgentCSSChange) {
-    render12(Lit5.nothing, target);
+    render13(Lit5.nothing, target);
     return;
   }
   const promptForChangesPanel = hasDiffs ? buildGeminiCommand(input.diffs) : "";
@@ -4725,7 +4940,7 @@ var GEMINI_CHANGES_VIEW = (input, _output, target) => {
   function copyClick() {
     input.onCopyToClipboard(finalPrompt);
   }
-  render12(html13`<devtools-button
+  render13(html14`<devtools-button
       .iconName=${"copy"}
       .variant=${"outlined"}
       @click=${copyClick}>Copy prompt to clipboard</devtools-button>
@@ -4809,7 +5024,7 @@ Begin by searching for the relevant source files. Explain your mapping logic bef
 `;
 
 // gen/front_end/panels/common/common.prebundle.js
-var UIStrings7 = {
+var UIStrings8 = {
   /**
    * @description Text for the cancel button in the dialog.
    */
@@ -4819,18 +5034,18 @@ var UIStrings7 = {
    */
   allow: "Allow"
 };
-var str_7 = i18n25.i18n.registerUIStrings("panels/common/common.ts", UIStrings7);
-var i18nString7 = i18n25.i18n.getLocalizedString.bind(void 0, str_7);
+var str_8 = i18n27.i18n.registerUIStrings("panels/common/common.ts", UIStrings8);
+var i18nString8 = i18n27.i18n.getLocalizedString.bind(void 0, str_8);
 var TypeToAllowDialog = class {
   static async show(options) {
-    const dialog2 = new UI15.Dialog.Dialog(options.jslogContext.dialog);
-    dialog2.setMaxContentSize(new Geometry2.Size(504, 340));
+    const dialog2 = new UI16.Dialog.Dialog(options.jslogContext.dialog);
+    dialog2.setMaxContentSize(new Geometry3.Size(504, 340));
     dialog2.setSizeBehavior(
       "SetExactWidthMaxHeight"
       /* UI.GlassPane.SizeBehavior.SET_EXACT_WIDTH_MAX_HEIGHT */
     );
     dialog2.setDimmed(true);
-    const shadowRoot = UI15.UIUtils.createShadowRootWithCoreStyles(dialog2.contentElement, { cssFile: common_css_default });
+    const shadowRoot = UI16.UIUtils.createShadowRootWithCoreStyles(dialog2.contentElement, { cssFile: common_css_default });
     const content = shadowRoot.createChild("div", "type-to-allow-dialog");
     const result = await new Promise((resolve) => {
       const header = content.createChild("div", "header");
@@ -4847,12 +5062,12 @@ var TypeToAllowDialog = class {
         /* Buttons.Button.Size.SMALL */
       );
       content.createChild("div", "message").textContent = options.message;
-      const input = UI15.UIUtils.createInput("text-input", "text", options.jslogContext.input);
+      const input = UI16.UIUtils.createInput("text-input", "text", options.jslogContext.input);
       input.placeholder = options.inputPlaceholder;
       content.appendChild(input);
       const buttonsBar = content.createChild("div", "button");
-      const cancelButton = UI15.UIUtils.createTextButton(i18nString7(UIStrings7.cancel), () => resolve(false), { jslogContext: "cancel" });
-      const allowButton = UI15.UIUtils.createTextButton(i18nString7(UIStrings7.allow), () => {
+      const cancelButton = UI16.UIUtils.createTextButton(i18nString8(UIStrings8.cancel), () => resolve(false), { jslogContext: "cancel" });
+      const allowButton = UI16.UIUtils.createTextButton(i18nString8(UIStrings8.allow), () => {
         resolve(input.value === options.typePhrase || input.value === `'${options.typePhrase}'`);
       }, {
         jslogContext: "confirm",
@@ -4872,7 +5087,7 @@ var TypeToAllowDialog = class {
         resolve(false);
       });
       dialog2.show();
-      Host10.userMetrics.actionTaken(Host10.UserMetrics.Action.SelfXssWarningDialogShown);
+      Host11.userMetrics.actionTaken(Host11.UserMetrics.Action.SelfXssWarningDialogShown);
     });
     dialog2.hide();
     return result;
@@ -4894,6 +5109,7 @@ export {
   ExtensionView_exports as ExtensionView,
   FreDialog,
   GdpSignUpDialog,
+  GeminiRebrandPromoDialog,
   PersistenceUtils_exports as PersistenceUtils,
   TypeToAllowDialog
 };

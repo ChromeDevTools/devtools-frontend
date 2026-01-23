@@ -24,7 +24,6 @@ import * as NetworkForward from '../network/forward/forward.js';
 import * as NetworkPanel from '../network/network.js';
 import * as TimelinePanel from '../timeline/timeline.js';
 import aiAssistancePanelStyles from './aiAssistancePanel.css.js';
-import { ArtifactsViewer } from './components/ArtifactsViewer.js';
 import { ChatView, } from './components/ChatView.js';
 import { DisabledWidget } from './components/DisabledWidget.js';
 import { ExploreWidget } from './components/ExploreWidget.js';
@@ -230,7 +229,7 @@ function getMarkdownRenderer(conversation) {
     if (context instanceof AiAssistanceModel.PerformanceAgent.PerformanceTraceContext) {
         if (!context.external) {
             const focus = context.getItem();
-            return new PerformanceAgentMarkdownRenderer(focus.parsedTrace.data.Meta.mainFrameId, focus.lookupEvent.bind(focus), focus.parsedTrace);
+            return new PerformanceAgentMarkdownRenderer(focus.parsedTrace.data.Meta.mainFrameId, focus.lookupEvent.bind(focus));
         }
     }
     else if (conversation?.type === "drjones-performance-full" /* AiAssistanceModel.AiHistoryStorage.ConversationType.PERFORMANCE */) {
@@ -303,13 +302,6 @@ function toolbarView(input) {
           .jslogContext=${'freestyler.settings'}
           .variant=${"toolbar" /* Buttons.Button.Variant.TOOLBAR */}
           @click=${input.onSettingsClick}></devtools-button>
-        <!-- If the green experiment is enabled, render the artifacts sidebar toggle button -->
-        ${GreenDev.Prototypes.instance().isEnabled('artifactViewer') ? html `<devtools-button
-          title=${i18nString(UIStrings.settings)}
-          aria-label=${i18nString(UIStrings.settings)}
-          .iconName=${input.artifactsSidebarVisible ? 'left-panel-open' : 'left-panel-close'}
-          .variant=${"toolbar" /* Buttons.Button.Variant.TOOLBAR */}
-          @click=${input.onArtifactsSidebarToggle}></devtools-button>` : Lit.nothing}
       </devtools-toolbar>
     </div>
   `;
@@ -343,37 +335,10 @@ function defaultView(input, output, target) {
         ></devtools-widget>`;
         }
     }
-    const panelWithToolbar = html `
-    ${toolbarView(input)}
-    <div class="ai-assistance-view-container">${renderState()}</div>`;
-    // If the green experiment is enabled, render the chat view inside
-    // a split view to also have an artifacts viewer sidebar.
-    if (GreenDev.Prototypes.instance().isEnabled('artifactViewer')) {
-        Lit.render(html `
-        <devtools-split-view
-          direction="column"
-          sidebar-visibility=${input.artifactsSidebarVisible ? 'visible' : 'hidden'}
-          sidebar-position="second"
-          sidebar-initial-size="520"
-          style="width: 100%;">
-          <div slot="main" class="assistance-view-wrapper-with-sidebar">
-            ${panelWithToolbar}
-          </div>
-          <div slot="sidebar">
-            <div class="artifacts-toolbar-container" role="toolbar">
-              <div>Artifacts Viewer</div>
-            </div>
-            <devtools-widget
-              class="fill-panel"
-              .widgetConfig=${UI.Widget.widgetConfig(ArtifactsViewer)}
-            ></devtools-widget>
-          </div>
-        </devtools-split-view>
-      `, target);
-    }
-    else {
-        Lit.render(panelWithToolbar, target);
-    }
+    Lit.render(html `
+      ${toolbarView(input)}
+      <div class="ai-assistance-view-container">${renderState()}</div>
+    `, target);
     // clang-format on
 }
 function createNodeContext(node) {
@@ -418,7 +383,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     #selectedElement = null;
     #selectedPerformanceTrace = null;
     #selectedRequest = null;
-    #isArtifactsSidebarOpen = false;
     // Messages displayed in the `ChatView` component.
     #messages = [];
     // Whether the UI should show loading or not.
@@ -446,9 +410,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                 UI.ActionRegistry.ActionRegistry.instance().getAction('elements.toggle-element-search');
         }
         AiAssistanceModel.AiHistoryStorage.AiHistoryStorage.instance().addEventListener("AiHistoryDeleted" /* AiAssistanceModel.AiHistoryStorage.Events.HISTORY_DELETED */, this.#onHistoryDeleted, this);
-        if (GreenDev.Prototypes.instance().isEnabled('artifactViewer')) {
-            AiAssistanceModel.ArtifactsManager.ArtifactsManager.instance().addEventListener(AiAssistanceModel.ArtifactsManager.ArtifactAddedEvent.eventName, this.#onArtifactAdded.bind(this));
-        }
     }
     async #getPanelViewInput() {
         const blockedByAge = Root.Runtime.hostConfig.aidaAvailability?.blockedByAge === true;
@@ -488,7 +449,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                     uploadImageInputEnabled: isAiAssistanceMultimodalUploadInputEnabled() &&
                         this.#conversation.type === "freestyler" /* AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING */,
                     markdownRenderer,
-                    isArtifactsSidebarOpen: this.#isArtifactsSidebarOpen,
                     onTextSubmit: async (text, imageInput, multimodalInputType) => {
                         Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceQuerySubmitted);
                         await this.#startConversation(text, imageInput, multimodalInputType);
@@ -647,12 +607,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             this.#bindFloatyListener();
         }
     }
-    #onArtifactAdded() {
-        if (AiAssistanceModel.ArtifactsManager.ArtifactsManager.instance().artifacts.length > 0) {
-            this.#isArtifactsSidebarOpen = true;
-            this.requestUpdate();
-        }
-    }
     willHide() {
         super.willHide();
         this.#aiAssistanceEnabledSetting?.removeChangeListener(this.requestUpdate, this);
@@ -747,11 +701,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             onSettingsClick: () => {
                 void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
             },
-            onArtifactsSidebarToggle: () => {
-                this.#isArtifactsSidebarOpen = !this.#isArtifactsSidebarOpen;
-                this.requestUpdate();
-            },
-            artifactsSidebarVisible: this.#isArtifactsSidebarOpen,
         };
     }
     async performUpdate() {

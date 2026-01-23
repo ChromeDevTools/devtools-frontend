@@ -13386,7 +13386,8 @@ select option {
     font: var(--sys-typescale-body4-regular);
     color: var(--sys-color-on-surface-subtle);
 
-    > x-link {
+    > x-link,
+    > devtools-link {
       white-space: nowrap;
       margin-left: var(--sys-size-3);
     }
@@ -16902,9 +16903,10 @@ var EmptyWidget_exports = {};
 __export(EmptyWidget_exports, {
   EmptyWidget: () => EmptyWidget
 });
+import "./../kit/kit.js";
 import * as i18n24 from "./../../core/i18n/i18n.js";
-import { Directives as Directives3, html as html4, render as render5 } from "./../lit/lit.js";
-import * as VisualLogging17 from "./../visual_logging/visual_logging.js";
+import { Directives as Directives3, html as html3, render as render5 } from "./../lit/lit.js";
+import * as VisualLogging16 from "./../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/emptyWidget.css.js
 var emptyWidget_css_default = `/*
@@ -16919,360 +16921,6 @@ var emptyWidget_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./emptyWidget.css")} */`;
 
-// gen/front_end/ui/legacy/XLink.js
-var XLink_exports = {};
-__export(XLink_exports, {
-  XLink: () => XLink
-});
-import * as Platform18 from "./../../core/platform/platform.js";
-import * as UIHelpers from "./../helpers/helpers.js";
-import * as VisualLogging16 from "./../visual_logging/visual_logging.js";
-
-// gen/front_end/ui/legacy/Fragment.js
-var Fragment_exports = {};
-__export(Fragment_exports, {
-  Fragment: () => Fragment,
-  attributeMarker: () => attributeMarker,
-  html: () => html3,
-  textMarker: () => textMarker
-});
-function getNodeData(node) {
-  return node.data;
-}
-function setNodeData(node, value) {
-  node.data = value;
-}
-var Fragment = class _Fragment {
-  #element;
-  elementsById = /* @__PURE__ */ new Map();
-  constructor(element) {
-    this.#element = element;
-  }
-  element() {
-    return this.#element;
-  }
-  $(elementId) {
-    return this.elementsById.get(elementId);
-  }
-  static build(strings, ...values) {
-    return _Fragment.render(_Fragment.template(strings), values);
-  }
-  static cached(strings, ...values) {
-    let template = templateCache.get(strings);
-    if (!template) {
-      template = _Fragment.template(strings);
-      templateCache.set(strings, template);
-    }
-    return _Fragment.render(template, values);
-  }
-  static template(strings) {
-    let html8 = "";
-    let insideText = true;
-    for (let i = 0; i < strings.length - 1; i++) {
-      html8 += strings[i];
-      const close5 = strings[i].lastIndexOf(">");
-      const open = strings[i].indexOf("<", close5 + 1);
-      if (close5 !== -1 && open === -1) {
-        insideText = true;
-      } else if (open !== -1) {
-        insideText = false;
-      }
-      html8 += insideText ? textMarker : attributeMarker(i);
-    }
-    html8 += strings[strings.length - 1];
-    const template = document.createElement("template");
-    template.innerHTML = html8;
-    const walker = template.ownerDocument.createTreeWalker(template.content, NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT, null);
-    let valueIndex = 0;
-    const emptyTextNodes = [];
-    const binds = [];
-    const nodesToMark = [];
-    while (walker.nextNode()) {
-      const node = walker.currentNode;
-      if (node.nodeType === Node.ELEMENT_NODE && node.hasAttributes()) {
-        if (node.hasAttribute("$")) {
-          nodesToMark.push(node);
-          binds.push({ replaceNodeIndex: void 0, attr: void 0, elementId: node.getAttribute("$") || "" });
-          node.removeAttribute("$");
-        }
-        const attributesToRemove = [];
-        for (let i = 0; i < node.attributes.length; i++) {
-          const name = node.attributes[i].name;
-          if (!attributeMarkerRegex.test(name) && !attributeMarkerRegex.test(node.attributes[i].value)) {
-            continue;
-          }
-          attributesToRemove.push(name);
-          nodesToMark.push(node);
-          const attr = {
-            index: valueIndex,
-            names: name.split(attributeMarkerRegex),
-            values: node.attributes[i].value.split(attributeMarkerRegex)
-          };
-          valueIndex += attr.names.length - 1;
-          valueIndex += attr.values.length - 1;
-          const bind = {
-            elementId: void 0,
-            replaceNodeIndex: void 0,
-            attr
-          };
-          binds.push(bind);
-        }
-        for (let i = 0; i < attributesToRemove.length; i++) {
-          node.removeAttribute(attributesToRemove[i]);
-        }
-      }
-      if (node.nodeType === Node.TEXT_NODE && getNodeData(node).indexOf(textMarker) !== -1) {
-        const texts = getNodeData(node).split(textMarkerRegex);
-        setNodeData(node, texts[texts.length - 1]);
-        const parentNode = node.parentNode;
-        for (let i = 0; i < texts.length - 1; i++) {
-          if (texts[i]) {
-            parentNode.insertBefore(document.createTextNode(texts[i]), node);
-          }
-          const nodeToReplace = document.createElement("span");
-          nodesToMark.push(nodeToReplace);
-          binds.push({ attr: void 0, elementId: void 0, replaceNodeIndex: valueIndex++ });
-          parentNode.insertBefore(nodeToReplace, node);
-        }
-      }
-      if (node.nodeType === Node.TEXT_NODE && (!node.previousSibling || node.previousSibling.nodeType === Node.ELEMENT_NODE) && (!node.nextSibling || node.nextSibling.nodeType === Node.ELEMENT_NODE) && /^\s*$/.test(getNodeData(node))) {
-        emptyTextNodes.push(node);
-      }
-    }
-    for (let i = 0; i < nodesToMark.length; i++) {
-      nodesToMark[i].classList.add(generateClassName(i));
-    }
-    for (const emptyTextNode of emptyTextNodes) {
-      emptyTextNode.remove();
-    }
-    return { template, binds };
-  }
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  static render(template, values) {
-    const content = template.template.ownerDocument.importNode(template.template.content, true);
-    const resultElement = content.firstChild === content.lastChild ? content.firstChild : content;
-    const result = new _Fragment(resultElement);
-    const boundElements = [];
-    for (let i = 0; i < template.binds.length; i++) {
-      const className = generateClassName(i);
-      const element = content.querySelector("." + className);
-      element.classList.remove(className);
-      boundElements.push(element);
-    }
-    for (let bindIndex = 0; bindIndex < template.binds.length; bindIndex++) {
-      const bind = template.binds[bindIndex];
-      const element = boundElements[bindIndex];
-      if (bind.elementId !== void 0) {
-        result.elementsById.set(bind.elementId, element);
-      } else if (bind.replaceNodeIndex !== void 0) {
-        const value = values[bind.replaceNodeIndex];
-        element.parentNode.replaceChild(this.nodeForValue(value), element);
-      } else if (bind.attr !== void 0) {
-        if (bind.attr.names.length === 2 && bind.attr.values.length === 1 && typeof values[bind.attr.index] === "function") {
-          values[bind.attr.index].call(null, element);
-        } else {
-          let name = bind.attr.names[0];
-          for (let i = 1; i < bind.attr.names.length; i++) {
-            name += values[bind.attr.index + i - 1];
-            name += bind.attr.names[i];
-          }
-          if (name) {
-            let value = bind.attr.values[0];
-            for (let i = 1; i < bind.attr.values.length; i++) {
-              value += values[bind.attr.index + bind.attr.names.length - 1 + i - 1];
-              value += bind.attr.values[i];
-            }
-            element.setAttribute(name, value);
-          }
-        }
-      } else {
-        throw new Error("Unexpected bind");
-      }
-    }
-    return result;
-  }
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  static nodeForValue(value) {
-    if (value instanceof Node) {
-      return value;
-    }
-    if (value instanceof _Fragment) {
-      return value.#element;
-    }
-    if (Array.isArray(value)) {
-      const node = document.createDocumentFragment();
-      for (const v of value) {
-        node.appendChild(this.nodeForValue(v));
-      }
-      return node;
-    }
-    return document.createTextNode(String(value));
-  }
-};
-var textMarker = "{{template-text}}";
-var textMarkerRegex = /{{template-text}}/;
-var attributeMarker = (index) => "template-attribute" + index;
-var attributeMarkerRegex = /template-attribute\d+/;
-var generateClassName = (index) => "template-class-" + index;
-var templateCache = /* @__PURE__ */ new Map();
-var html3 = (strings, ...vararg) => {
-  return Fragment.cached(strings, ...vararg).element();
-};
-
-// gen/front_end/ui/legacy/XElement.js
-var XElement_exports = {};
-__export(XElement_exports, {
-  XElement: () => XElement
-});
-var XElement = class extends HTMLElement {
-  static get observedAttributes() {
-    return [
-      "flex",
-      "padding",
-      "padding-top",
-      "padding-bottom",
-      "padding-left",
-      "padding-right",
-      "margin",
-      "margin-top",
-      "margin-bottom",
-      "margin-left",
-      "margin-right",
-      "overflow",
-      "overflow-x",
-      "overflow-y",
-      "font-size",
-      "color",
-      "background",
-      "background-color",
-      "border",
-      "border-top",
-      "border-bottom",
-      "border-left",
-      "border-right",
-      "max-width",
-      "max-height"
-    ];
-  }
-  attributeChangedCallback(attr, _oldValue, newValue) {
-    if (attr === "flex") {
-      if (newValue === null) {
-        this.style.removeProperty("flex");
-      } else if (newValue === "initial" || newValue === "auto" || newValue === "none" || newValue.indexOf(" ") !== -1) {
-        this.style.setProperty("flex", newValue);
-      } else {
-        this.style.setProperty("flex", "0 0 " + newValue);
-      }
-      return;
-    }
-    if (newValue === null) {
-      this.style.removeProperty(attr);
-      if (attr.startsWith("padding-") || attr.startsWith("margin-") || attr.startsWith("border-") || attr.startsWith("background-") || attr.startsWith("overflow-")) {
-        const shorthand = attr.substring(0, attr.indexOf("-"));
-        const shorthandValue = this.getAttribute(shorthand);
-        if (shorthandValue !== null) {
-          this.style.setProperty(shorthand, shorthandValue);
-        }
-      }
-    } else {
-      this.style.setProperty(attr, newValue);
-    }
-  }
-};
-
-// gen/front_end/ui/legacy/XLink.js
-var XLink = class extends XElement {
-  #href;
-  clickable;
-  onClick;
-  onKeyDown;
-  static create(url, linkText, className, preventClick, jsLogContext, tabindex = "0") {
-    if (!linkText) {
-      linkText = url;
-    }
-    className = className || "";
-    const element = html3`
-  <x-link href='${url}' tabindex='${tabindex}' class='${className} devtools-link' ${preventClick ? "no-click" : ""}
-  jslog=${VisualLogging16.link().track({ click: true, keydown: "Enter|Space" }).context(jsLogContext)}>${Platform18.StringUtilities.trimMiddle(linkText, MaxLengthForDisplayedURLs)}</x-link>`;
-    return element;
-  }
-  constructor() {
-    super();
-    this.style.setProperty("display", "inline");
-    markAsLink(this);
-    this.setAttribute("tabindex", "0");
-    this.setAttribute("target", "_blank");
-    this.setAttribute("rel", "noopener");
-    this.#href = null;
-    this.clickable = true;
-    this.onClick = (event) => {
-      event.consume(true);
-      if (this.#href) {
-        UIHelpers.openInNewTab(this.#href);
-      }
-    };
-    this.onKeyDown = (event) => {
-      if (Platform18.KeyboardUtilities.isEnterOrSpaceKey(event)) {
-        event.consume(true);
-        if (this.#href) {
-          UIHelpers.openInNewTab(this.#href);
-        }
-      }
-    };
-  }
-  static get observedAttributes() {
-    return XElement.observedAttributes.concat(["href", "no-click", "title", "tabindex"]);
-  }
-  get href() {
-    return this.#href;
-  }
-  attributeChangedCallback(attr, oldValue, newValue) {
-    if (attr === "no-click") {
-      this.clickable = !newValue;
-      this.updateClick();
-      return;
-    }
-    if (attr === "href") {
-      if (!newValue) {
-        newValue = "";
-      }
-      let href = null;
-      try {
-        const url = new URL(newValue);
-        if (url.protocol !== "javascript:") {
-          href = Platform18.DevToolsPath.urlString`${url}`;
-        }
-      } catch {
-      }
-      this.#href = href;
-      if (!this.hasAttribute("title")) {
-        Tooltip.install(this, newValue);
-      }
-      this.updateClick();
-      return;
-    }
-    if (attr === "tabindex") {
-      if (oldValue !== newValue) {
-        this.setAttribute("tabindex", newValue || "0");
-      }
-      return;
-    }
-    super.attributeChangedCallback(attr, oldValue, newValue);
-  }
-  updateClick() {
-    if (this.#href !== null && this.clickable) {
-      this.addEventListener("click", this.onClick, false);
-      this.addEventListener("keydown", this.onKeyDown, false);
-      this.style.setProperty("cursor", "pointer");
-    } else {
-      this.removeEventListener("click", this.onClick, false);
-      this.removeEventListener("keydown", this.onKeyDown, false);
-      this.style.removeProperty("cursor");
-    }
-  }
-};
-customElements.define("x-link", XLink);
-
 // gen/front_end/ui/legacy/EmptyWidget.js
 var UIStrings12 = {
   /**
@@ -17284,17 +16932,17 @@ var str_12 = i18n24.i18n.registerUIStrings("ui/legacy/EmptyWidget.ts", UIStrings
 var i18nString12 = i18n24.i18n.getLocalizedString.bind(void 0, str_12);
 var { ref } = Directives3;
 var DEFAULT_VIEW = (input, output, target) => {
-  render5(html4`
+  render5(html3`
     <style>${inspectorCommon_css_default}</style>
     <style>${emptyWidget_css_default}</style>
-    <div class="empty-state" jslog=${VisualLogging17.section("empty-view")}
+    <div class="empty-state" jslog=${VisualLogging16.section("empty-view")}
          ${ref((e) => {
     output.contentElement = e;
   })}>
       <div class="empty-state-header">${input.header}</div>
       <div class="empty-state-description">
         <span>${input.text}</span>
-        ${input.link ? XLink.create(input.link, i18nString12(UIStrings12.learnMore), void 0, void 0, "learn-more") : ""}
+        ${input.link ? html3`<devtools-link href=${input.link} jslogContext=${"learn-more"}>${i18nString12(UIStrings12.learnMore)}</devtools-link>` : ""}
       </div>
       ${input.extraElements}
     </div>`, target);
@@ -17360,8 +17008,8 @@ __export(FilterBar_exports, {
 import * as Common16 from "./../../core/common/common.js";
 import * as Host8 from "./../../core/host/host.js";
 import * as i18n26 from "./../../core/i18n/i18n.js";
-import * as Platform20 from "./../../core/platform/platform.js";
-import * as VisualLogging18 from "./../visual_logging/visual_logging.js";
+import * as Platform19 from "./../../core/platform/platform.js";
+import * as VisualLogging17 from "./../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/filter.css.js
 var filter_css_default = `/*
@@ -17581,7 +17229,7 @@ var FilterBar = class extends Common16.ObjectWrapper.eventMixin(HBox) {
     this.registerRequiredCSS(filter_css_default);
     this.enabled = true;
     this.element.classList.add("filter-bar");
-    this.element.setAttribute("jslog", `${VisualLogging18.toolbar("filter-bar")}`);
+    this.element.setAttribute("jslog", `${VisualLogging17.toolbar("filter-bar")}`);
     this.stateSetting = Common16.Settings.Settings.instance().createSetting("filter-bar-" + name + "-toggled", Boolean(visibleByDefault));
     this.#filterButton = new ToolbarSettingToggle(this.stateSetting, "filter", i18nString13(UIStrings13.filter), "filter-filled", "filter");
     this.#filterButton.element.style.setProperty("--dot-toggle-top", "13px");
@@ -17758,7 +17406,7 @@ var NamedBitSetFilterUI = class _NamedBitSetFilterUI extends Common16.ObjectWrap
     super();
     this.filtersElement = document.createElement("div");
     this.filtersElement.classList.add("filter-bitset-filter");
-    this.filtersElement.setAttribute("jslog", `${VisualLogging18.section("filter-bitset")}`);
+    this.filtersElement.setAttribute("jslog", `${VisualLogging17.section("filter-bitset")}`);
     markAsListBox(this.filtersElement);
     markAsMultiSelectable(this.filtersElement);
     Tooltip.install(this.filtersElement, i18nString13(UIStrings13.sclickToSelectMultipleTypes, {
@@ -17836,7 +17484,7 @@ var NamedBitSetFilterUI = class _NamedBitSetFilterUI extends Common16.ObjectWrap
     }
     typeFilterElement.addEventListener("click", this.onTypeFilterClicked.bind(this), false);
     typeFilterElement.addEventListener("keydown", this.onTypeFilterKeydown.bind(this), false);
-    typeFilterElement.setAttribute("jslog", `${VisualLogging18.item(jslogContext).track({ click: true })}`);
+    typeFilterElement.setAttribute("jslog", `${VisualLogging17.item(jslogContext).track({ click: true })}`);
     this.typeFilterElements.push(typeFilterElement);
   }
   onTypeFilterClicked(event) {
@@ -17874,7 +17522,7 @@ var NamedBitSetFilterUI = class _NamedBitSetFilterUI extends Common16.ObjectWrap
       )) {
         event.consume(true);
       }
-    } else if (Platform20.KeyboardUtilities.isEnterOrSpaceKey(event)) {
+    } else if (Platform19.KeyboardUtilities.isEnterOrSpaceKey(event)) {
       this.onTypeFilterClicked(event);
     }
   }
@@ -17968,7 +17616,7 @@ var FilterSuggestionBuilder_exports = {};
 __export(FilterSuggestionBuilder_exports, {
   FilterSuggestionBuilder: () => FilterSuggestionBuilder
 });
-import * as Platform21 from "./../../core/platform/platform.js";
+import * as Platform20 from "./../../core/platform/platform.js";
 var FilterSuggestionBuilder = class {
   keys;
   valueSorter;
@@ -17989,7 +17637,7 @@ var FilterSuggestionBuilder = class {
     const valueDelimiterIndex = prefix.indexOf(":");
     const suggestions = [];
     if (valueDelimiterIndex === -1) {
-      const matcher = new RegExp("^" + Platform21.StringUtilities.escapeForRegExp(prefix), "i");
+      const matcher = new RegExp("^" + Platform20.StringUtilities.escapeForRegExp(prefix), "i");
       for (const key of this.keys) {
         if (matcher.test(key)) {
           suggestions.push({ text: modifier + key + ":" });
@@ -17998,7 +17646,7 @@ var FilterSuggestionBuilder = class {
     } else {
       const key = prefix.substring(0, valueDelimiterIndex).toLowerCase();
       const value = prefix.substring(valueDelimiterIndex + 1);
-      const matcher = new RegExp("^" + Platform21.StringUtilities.escapeForRegExp(value), "i");
+      const matcher = new RegExp("^" + Platform20.StringUtilities.escapeForRegExp(value), "i");
       const values = Array.from(this.valuesMap.get(key) || /* @__PURE__ */ new Set());
       this.valueSorter(key, values);
       for (const item8 of values) {
@@ -18049,13 +17697,204 @@ var ForwardedInputEventHandler = class {
 };
 new ForwardedInputEventHandler();
 
+// gen/front_end/ui/legacy/Fragment.js
+var Fragment_exports = {};
+__export(Fragment_exports, {
+  Fragment: () => Fragment,
+  attributeMarker: () => attributeMarker,
+  html: () => html4,
+  textMarker: () => textMarker
+});
+function getNodeData(node) {
+  return node.data;
+}
+function setNodeData(node, value) {
+  node.data = value;
+}
+var Fragment = class _Fragment {
+  #element;
+  elementsById = /* @__PURE__ */ new Map();
+  constructor(element) {
+    this.#element = element;
+  }
+  element() {
+    return this.#element;
+  }
+  $(elementId) {
+    return this.elementsById.get(elementId);
+  }
+  static build(strings, ...values) {
+    return _Fragment.render(_Fragment.template(strings), values);
+  }
+  static cached(strings, ...values) {
+    let template = templateCache.get(strings);
+    if (!template) {
+      template = _Fragment.template(strings);
+      templateCache.set(strings, template);
+    }
+    return _Fragment.render(template, values);
+  }
+  static template(strings) {
+    let html8 = "";
+    let insideText = true;
+    for (let i = 0; i < strings.length - 1; i++) {
+      html8 += strings[i];
+      const close5 = strings[i].lastIndexOf(">");
+      const open = strings[i].indexOf("<", close5 + 1);
+      if (close5 !== -1 && open === -1) {
+        insideText = true;
+      } else if (open !== -1) {
+        insideText = false;
+      }
+      html8 += insideText ? textMarker : attributeMarker(i);
+    }
+    html8 += strings[strings.length - 1];
+    const template = document.createElement("template");
+    template.innerHTML = html8;
+    const walker = template.ownerDocument.createTreeWalker(template.content, NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT, null);
+    let valueIndex = 0;
+    const emptyTextNodes = [];
+    const binds = [];
+    const nodesToMark = [];
+    while (walker.nextNode()) {
+      const node = walker.currentNode;
+      if (node.nodeType === Node.ELEMENT_NODE && node.hasAttributes()) {
+        if (node.hasAttribute("$")) {
+          nodesToMark.push(node);
+          binds.push({ replaceNodeIndex: void 0, attr: void 0, elementId: node.getAttribute("$") || "" });
+          node.removeAttribute("$");
+        }
+        const attributesToRemove = [];
+        for (let i = 0; i < node.attributes.length; i++) {
+          const name = node.attributes[i].name;
+          if (!attributeMarkerRegex.test(name) && !attributeMarkerRegex.test(node.attributes[i].value)) {
+            continue;
+          }
+          attributesToRemove.push(name);
+          nodesToMark.push(node);
+          const attr = {
+            index: valueIndex,
+            names: name.split(attributeMarkerRegex),
+            values: node.attributes[i].value.split(attributeMarkerRegex)
+          };
+          valueIndex += attr.names.length - 1;
+          valueIndex += attr.values.length - 1;
+          const bind = {
+            elementId: void 0,
+            replaceNodeIndex: void 0,
+            attr
+          };
+          binds.push(bind);
+        }
+        for (let i = 0; i < attributesToRemove.length; i++) {
+          node.removeAttribute(attributesToRemove[i]);
+        }
+      }
+      if (node.nodeType === Node.TEXT_NODE && getNodeData(node).indexOf(textMarker) !== -1) {
+        const texts = getNodeData(node).split(textMarkerRegex);
+        setNodeData(node, texts[texts.length - 1]);
+        const parentNode = node.parentNode;
+        for (let i = 0; i < texts.length - 1; i++) {
+          if (texts[i]) {
+            parentNode.insertBefore(document.createTextNode(texts[i]), node);
+          }
+          const nodeToReplace = document.createElement("span");
+          nodesToMark.push(nodeToReplace);
+          binds.push({ attr: void 0, elementId: void 0, replaceNodeIndex: valueIndex++ });
+          parentNode.insertBefore(nodeToReplace, node);
+        }
+      }
+      if (node.nodeType === Node.TEXT_NODE && (!node.previousSibling || node.previousSibling.nodeType === Node.ELEMENT_NODE) && (!node.nextSibling || node.nextSibling.nodeType === Node.ELEMENT_NODE) && /^\s*$/.test(getNodeData(node))) {
+        emptyTextNodes.push(node);
+      }
+    }
+    for (let i = 0; i < nodesToMark.length; i++) {
+      nodesToMark[i].classList.add(generateClassName(i));
+    }
+    for (const emptyTextNode of emptyTextNodes) {
+      emptyTextNode.remove();
+    }
+    return { template, binds };
+  }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  static render(template, values) {
+    const content = template.template.ownerDocument.importNode(template.template.content, true);
+    const resultElement = content.firstChild === content.lastChild ? content.firstChild : content;
+    const result = new _Fragment(resultElement);
+    const boundElements = [];
+    for (let i = 0; i < template.binds.length; i++) {
+      const className = generateClassName(i);
+      const element = content.querySelector("." + className);
+      element.classList.remove(className);
+      boundElements.push(element);
+    }
+    for (let bindIndex = 0; bindIndex < template.binds.length; bindIndex++) {
+      const bind = template.binds[bindIndex];
+      const element = boundElements[bindIndex];
+      if (bind.elementId !== void 0) {
+        result.elementsById.set(bind.elementId, element);
+      } else if (bind.replaceNodeIndex !== void 0) {
+        const value = values[bind.replaceNodeIndex];
+        element.parentNode.replaceChild(this.nodeForValue(value), element);
+      } else if (bind.attr !== void 0) {
+        if (bind.attr.names.length === 2 && bind.attr.values.length === 1 && typeof values[bind.attr.index] === "function") {
+          values[bind.attr.index].call(null, element);
+        } else {
+          let name = bind.attr.names[0];
+          for (let i = 1; i < bind.attr.names.length; i++) {
+            name += values[bind.attr.index + i - 1];
+            name += bind.attr.names[i];
+          }
+          if (name) {
+            let value = bind.attr.values[0];
+            for (let i = 1; i < bind.attr.values.length; i++) {
+              value += values[bind.attr.index + bind.attr.names.length - 1 + i - 1];
+              value += bind.attr.values[i];
+            }
+            element.setAttribute(name, value);
+          }
+        }
+      } else {
+        throw new Error("Unexpected bind");
+      }
+    }
+    return result;
+  }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  static nodeForValue(value) {
+    if (value instanceof Node) {
+      return value;
+    }
+    if (value instanceof _Fragment) {
+      return value.#element;
+    }
+    if (Array.isArray(value)) {
+      const node = document.createDocumentFragment();
+      for (const v of value) {
+        node.appendChild(this.nodeForValue(v));
+      }
+      return node;
+    }
+    return document.createTextNode(String(value));
+  }
+};
+var textMarker = "{{template-text}}";
+var textMarkerRegex = /{{template-text}}/;
+var attributeMarker = (index) => "template-attribute" + index;
+var attributeMarkerRegex = /template-attribute\d+/;
+var generateClassName = (index) => "template-class-" + index;
+var templateCache = /* @__PURE__ */ new Map();
+var html4 = (strings, ...vararg) => {
+  return Fragment.cached(strings, ...vararg).element();
+};
+
 // gen/front_end/ui/legacy/InplaceEditor.js
 var InplaceEditor_exports = {};
 __export(InplaceEditor_exports, {
   Config: () => Config,
   InplaceEditor: () => InplaceEditor
 });
-import * as Platform22 from "./../../core/platform/platform.js";
+import * as Platform21 from "./../../core/platform/platform.js";
 var inplaceEditorInstance = null;
 var InplaceEditor = class _InplaceEditor {
   focusRestorer;
@@ -18156,7 +17995,7 @@ var InplaceEditor = class _InplaceEditor {
       if (event.key === "Enter") {
         return "commit";
       }
-      if (event.keyCode === Keys.Esc.code || event.key === Platform22.KeyboardUtilities.ESCAPE_KEY) {
+      if (event.keyCode === Keys.Esc.code || event.key === Platform21.KeyboardUtilities.ESCAPE_KEY) {
         return "cancel";
       }
       if (event.key === "Tab") {
@@ -18231,6 +18070,171 @@ __export(LinkContextMenuProvider_exports, {
 import * as Host10 from "./../../core/host/host.js";
 import * as UIHelpers2 from "./../helpers/helpers.js";
 import { Link } from "./../kit/kit.js";
+
+// gen/front_end/ui/legacy/XLink.js
+var XLink_exports = {};
+__export(XLink_exports, {
+  XLink: () => XLink
+});
+import * as Platform22 from "./../../core/platform/platform.js";
+import * as UIHelpers from "./../helpers/helpers.js";
+import * as VisualLogging18 from "./../visual_logging/visual_logging.js";
+
+// gen/front_end/ui/legacy/XElement.js
+var XElement_exports = {};
+__export(XElement_exports, {
+  XElement: () => XElement
+});
+var XElement = class extends HTMLElement {
+  static get observedAttributes() {
+    return [
+      "flex",
+      "padding",
+      "padding-top",
+      "padding-bottom",
+      "padding-left",
+      "padding-right",
+      "margin",
+      "margin-top",
+      "margin-bottom",
+      "margin-left",
+      "margin-right",
+      "overflow",
+      "overflow-x",
+      "overflow-y",
+      "font-size",
+      "color",
+      "background",
+      "background-color",
+      "border",
+      "border-top",
+      "border-bottom",
+      "border-left",
+      "border-right",
+      "max-width",
+      "max-height"
+    ];
+  }
+  attributeChangedCallback(attr, _oldValue, newValue) {
+    if (attr === "flex") {
+      if (newValue === null) {
+        this.style.removeProperty("flex");
+      } else if (newValue === "initial" || newValue === "auto" || newValue === "none" || newValue.indexOf(" ") !== -1) {
+        this.style.setProperty("flex", newValue);
+      } else {
+        this.style.setProperty("flex", "0 0 " + newValue);
+      }
+      return;
+    }
+    if (newValue === null) {
+      this.style.removeProperty(attr);
+      if (attr.startsWith("padding-") || attr.startsWith("margin-") || attr.startsWith("border-") || attr.startsWith("background-") || attr.startsWith("overflow-")) {
+        const shorthand = attr.substring(0, attr.indexOf("-"));
+        const shorthandValue = this.getAttribute(shorthand);
+        if (shorthandValue !== null) {
+          this.style.setProperty(shorthand, shorthandValue);
+        }
+      }
+    } else {
+      this.style.setProperty(attr, newValue);
+    }
+  }
+};
+
+// gen/front_end/ui/legacy/XLink.js
+var XLink = class extends XElement {
+  #href;
+  clickable;
+  onClick;
+  onKeyDown;
+  static create(url, linkText, className, preventClick, jsLogContext, tabindex = "0") {
+    if (!linkText) {
+      linkText = url;
+    }
+    className = className || "";
+    const element = html4`
+  <x-link href='${url}' tabindex='${tabindex}' class='${className} devtools-link' ${preventClick ? "no-click" : ""}
+  jslog=${VisualLogging18.link().track({ click: true, keydown: "Enter|Space" }).context(jsLogContext)}>${Platform22.StringUtilities.trimMiddle(linkText, MaxLengthForDisplayedURLs)}</x-link>`;
+    return element;
+  }
+  constructor() {
+    super();
+    this.style.setProperty("display", "inline");
+    markAsLink(this);
+    this.setAttribute("tabindex", "0");
+    this.setAttribute("target", "_blank");
+    this.setAttribute("rel", "noopener");
+    this.#href = null;
+    this.clickable = true;
+    this.onClick = (event) => {
+      event.consume(true);
+      if (this.#href) {
+        UIHelpers.openInNewTab(this.#href);
+      }
+    };
+    this.onKeyDown = (event) => {
+      if (Platform22.KeyboardUtilities.isEnterOrSpaceKey(event)) {
+        event.consume(true);
+        if (this.#href) {
+          UIHelpers.openInNewTab(this.#href);
+        }
+      }
+    };
+  }
+  static get observedAttributes() {
+    return XElement.observedAttributes.concat(["href", "no-click", "title", "tabindex"]);
+  }
+  get href() {
+    return this.#href;
+  }
+  attributeChangedCallback(attr, oldValue, newValue) {
+    if (attr === "no-click") {
+      this.clickable = !newValue;
+      this.updateClick();
+      return;
+    }
+    if (attr === "href") {
+      if (!newValue) {
+        newValue = "";
+      }
+      let href = null;
+      try {
+        const url = new URL(newValue);
+        if (url.protocol !== "javascript:") {
+          href = Platform22.DevToolsPath.urlString`${url}`;
+        }
+      } catch {
+      }
+      this.#href = href;
+      if (!this.hasAttribute("title")) {
+        Tooltip.install(this, newValue);
+      }
+      this.updateClick();
+      return;
+    }
+    if (attr === "tabindex") {
+      if (oldValue !== newValue) {
+        this.setAttribute("tabindex", newValue || "0");
+      }
+      return;
+    }
+    super.attributeChangedCallback(attr, oldValue, newValue);
+  }
+  updateClick() {
+    if (this.#href !== null && this.clickable) {
+      this.addEventListener("click", this.onClick, false);
+      this.addEventListener("keydown", this.onKeyDown, false);
+      this.style.setProperty("cursor", "pointer");
+    } else {
+      this.removeEventListener("click", this.onClick, false);
+      this.removeEventListener("keydown", this.onKeyDown, false);
+      this.style.removeProperty("cursor");
+    }
+  }
+};
+customElements.define("x-link", XLink);
+
+// gen/front_end/ui/legacy/LinkContextMenuProvider.js
 var LinkContextMenuProvider = class {
   appendApplicableItems(_event, contextMenu, target) {
     let targetNode = target;

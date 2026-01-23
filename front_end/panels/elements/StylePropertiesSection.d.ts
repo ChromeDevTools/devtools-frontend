@@ -14,6 +14,7 @@ export declare class StylePropertiesSection {
     readonly matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles;
     private computedStyles;
     private parentsComputedStyles;
+    private computedStyleExtraFields;
     editable: boolean;
     private hoverTimer;
     private willCauseCancelEditing;
@@ -38,9 +39,10 @@ export declare class StylePropertiesSection {
     nextEditorTriggerButtonIdx: number;
     private sectionIdx;
     readonly sectionTooltipIdPrefix: number;
-    constructor(parentPane: StylesSidebarPane, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, style: SDK.CSSStyleDeclaration.CSSStyleDeclaration, sectionIdx: number, computedStyles: Map<string, string> | null, parentsComputedStyles: Map<string, string> | null, customHeaderText?: string);
+    constructor(parentPane: StylesSidebarPane, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, style: SDK.CSSStyleDeclaration.CSSStyleDeclaration, sectionIdx: number, computedStyles: Map<string, string> | null, parentsComputedStyles: Map<string, string> | null, computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields | null, customHeaderText?: string);
     setComputedStyles(computedStyles: Map<string, string> | null): void;
     setParentsComputedStyles(parentsComputedStyles: Map<string, string> | null): void;
+    setComputedStyleExtraFields(computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields | null): void;
     updateAuthoringHint(): void;
     setSectionIdx(sectionIdx: number): void;
     getSectionIdx(): number;

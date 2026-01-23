@@ -499,7 +499,7 @@ export class ElementsTreeOutline extends Common.ObjectWrapper.eventMixin(UI.Tree
                         return html `
                   <div class="squiggles-content-item">
                   <devtools-icon .name=${issueKindIconName} @click=${openIssueEvent}></devtools-icon>
-                  <x-link class="link" @click=${openIssueEvent}>${i18nString(UIStrings.viewIssue)}</x-link>
+                  <devtools-link class="link" @click=${openIssueEvent}>${i18nString(UIStrings.viewIssue)}</devtools-link>
                   <span>${elementIssueDetails.tooltip}</span>
                   </div>`;
                     })}

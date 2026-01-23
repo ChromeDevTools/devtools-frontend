@@ -305,7 +305,7 @@ export default `/*
   font-weight: var(--ref-typeface-weight-medium);
 }
 
-x-link {
+devtools-link {
   color: var(--sys-color-primary);
   text-decoration-line: underline;
 }

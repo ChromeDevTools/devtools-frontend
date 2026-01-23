@@ -133,11 +133,14 @@ var EventsSerializer = class _EventsSerializer {
     if (Types.Events.isLegacyTimelineFrame(event)) {
       return `${"l"}-${event.index}`;
     }
+    if (Types.Events.isJSSample(event)) {
+      return null;
+    }
     const rawEvents = Helpers3.SyntheticEvents.SyntheticEventsManager.getActiveManager().getRawTraceEvents();
     const isSynthetic = Types.Events.isSyntheticBased(event);
     const index = rawEvents.indexOf(isSynthetic ? event.rawSourceEvent : event);
     if (index === -1) {
-      throw new Error(`Unknown trace event: ${event.name}`);
+      return null;
     }
     const key = Types.Events.isSyntheticBased(event) ? `${"s"}-${index}` : `${"r"}-${index}`;
     if (key.length < 3) {

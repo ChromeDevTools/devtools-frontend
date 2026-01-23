@@ -38,15 +38,12 @@
     "../../../../../../front_end/panels/ai_assistance/AiAssistancePanel.ts",
     "../../../../../../front_end/panels/ai_assistance/PatchWidget.ts",
     "../../../../../../front_end/panels/ai_assistance/SelectWorkspaceDialog.ts",
-    "../../../../../../front_end/panels/ai_assistance/components/ArtifactsViewer.ts",
     "../../../../../../front_end/panels/ai_assistance/components/ChatInput.ts",
     "../../../../../../front_end/panels/ai_assistance/components/ChatMessage.ts",
     "../../../../../../front_end/panels/ai_assistance/components/ChatView.ts",
-    "../../../../../../front_end/panels/ai_assistance/components/CollapsibleAssistanceContentWidget.ts",
     "../../../../../../front_end/panels/ai_assistance/components/DisabledWidget.ts",
     "../../../../../../front_end/panels/ai_assistance/components/ExploreWidget.ts",
     "../../../../../../front_end/panels/ai_assistance/components/MarkdownRendererWithCodeBlock.ts",
-    "../../../../../../front_end/panels/ai_assistance/components/PerformanceAgentFlameChart.ts",
     "../../../../../../front_end/panels/ai_assistance/components/PerformanceAgentMarkdownRenderer.ts",
     "../../../../../../front_end/legacy/legacy-defs.d.ts",
     "../../../../../../front_end/global_typings/global_defs.d.ts",
@@ -103,9 +100,6 @@
     },
     {
       "path": "../../models/text_utils/bundle-tsconfig.json"
-    },
-    {
-      "path": "../../models/trace/bundle-tsconfig.json"
     },
     {
       "path": "../../models/trace/helpers/bundle-tsconfig.json"
@@ -169,9 +163,6 @@
     },
     {
       "path": "../../ui/legacy/bundle-tsconfig.json"
-    },
-    {
-      "path": "../../ui/legacy/components/perf_ui/bundle-tsconfig.json"
     },
     {
       "path": "../../ui/lit/bundle-tsconfig.json"

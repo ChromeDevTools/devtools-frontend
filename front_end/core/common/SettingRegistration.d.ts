@@ -107,7 +107,7 @@ export interface SettingRegistration {
      * The name of the experiment a setting is associated with. Enabling and disabling the declared
      * experiment will enable and disable the setting respectively.
      */
-    experiment?: Root.Runtime.ExperimentName;
+    experiment?: Root.ExperimentNames.ExperimentName;
     /**
      * A condition is a function that will make the setting available if it
      * returns true, and not available, otherwise. Make sure that objects you

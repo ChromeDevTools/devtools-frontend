@@ -93,6 +93,25 @@ export class RootTreeElement extends ApplicationPanelTreeElement {
             this.removeChild(siteTreeElement);
         }
     }
+    #updateTerminatedSessionDisplay(site, sessionId) {
+        const isSessionTerminated = this.#model.isSessionTerminated(site, sessionId);
+        const siteMapEntry = this.#sites.get(site);
+        if (!siteMapEntry) {
+            return;
+        }
+        const sessionElement = siteMapEntry.sessions.get(sessionId);
+        if (!sessionElement) {
+            return;
+        }
+        if (isSessionTerminated) {
+            sessionElement.listItemElement.classList.add('device-bound-session-terminated');
+            sessionElement.setLeadingIcons([createIcon('database-off')]);
+        }
+        else {
+            sessionElement.listItemElement.classList.remove('device-bound-session-terminated');
+            sessionElement.setLeadingIcons([createIcon('database')]);
+        }
+    }
     #addSiteSessionIfMissing(site, sessionId) {
         let siteMapEntry = this.#sites.get(site);
         if (!siteMapEntry) {
@@ -110,6 +129,9 @@ export class RootTreeElement extends ApplicationPanelTreeElement {
         }
         if (!siteMapEntry.sessions.has(sessionId)) {
             const sessionElement = new ApplicationPanelTreeElement(this.resourcesPanel, sessionId ?? i18nString(UIStrings.noSession), false, 'device-bound-sessions-session');
+            if (sessionId === undefined) {
+                sessionElement.listItemElement.classList.add('no-device-bound-session');
+            }
             sessionElement.setLeadingIcons([createIcon('database')]);
             sessionElement.itemURL = `device-bound-sessions://${site}/${sessionId || ''}`;
             const defaultOnSelect = sessionElement.onselect.bind(sessionElement);
@@ -163,6 +185,7 @@ export class RootTreeElement extends ApplicationPanelTreeElement {
     }
     #onEventOccurred({ data: { site, sessionId } }) {
         this.#addSiteSessionIfMissing(site, sessionId);
+        this.#updateTerminatedSessionDisplay(site, sessionId);
     }
     #onClearEvents({ data: { emptySessions, emptySites } }) {
         this.#removeEmptyElements(emptySessions, emptySites);

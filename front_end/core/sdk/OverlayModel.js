@@ -407,7 +407,7 @@ export class OverlayModel extends SDKModel {
             gridHighlightConfig: {},
             flexContainerHighlightConfig: {},
             flexItemHighlightConfig: {},
-            contrastAlgorithm: Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.APCA) ?
+            contrastAlgorithm: Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.APCA) ?
                 "apca" /* Protocol.Overlay.ContrastAlgorithm.Apca */ :
                 "aa" /* Protocol.Overlay.ContrastAlgorithm.Aa */,
         };

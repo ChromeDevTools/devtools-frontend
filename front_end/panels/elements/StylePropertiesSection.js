@@ -118,6 +118,7 @@ export class StylePropertiesSection {
     matchedStyles;
     computedStyles;
     parentsComputedStyles;
+    computedStyleExtraFields;
     editable;
     hoverTimer = null;
     willCauseCancelEditing = false;
@@ -151,7 +152,7 @@ export class StylePropertiesSection {
     static #nextSpecificityTooltipId = 0;
     static #nextSectionTooltipIdPrefix = 0;
     sectionTooltipIdPrefix = StylePropertiesSection.#nextSectionTooltipIdPrefix++;
-    constructor(parentPane, matchedStyles, style, sectionIdx, computedStyles, parentsComputedStyles, customHeaderText) {
+    constructor(parentPane, matchedStyles, style, sectionIdx, computedStyles, parentsComputedStyles, computedStyleExtraFields, customHeaderText) {
         this.#customHeaderText = customHeaderText;
         this.parentPane = parentPane;
         this.sectionIdx = sectionIdx;
@@ -159,6 +160,7 @@ export class StylePropertiesSection {
         this.matchedStyles = matchedStyles;
         this.computedStyles = computedStyles;
         this.parentsComputedStyles = parentsComputedStyles;
+        this.computedStyleExtraFields = computedStyleExtraFields;
         this.editable = Boolean(style.styleSheetId && style.range);
         this.originalPropertiesCount = style.leadingProperties().length;
         this.customPopulateCallback = () => this.populateStyle(this.styleInternal, this.propertiesTreeOutline);
@@ -230,7 +232,7 @@ export class StylePropertiesSection {
             this.newStyleRuleToolbar.appendToolbarItem(newRuleButton);
             UI.ARIAUtils.setHidden(this.newStyleRuleToolbar, true);
         }
-        if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.FONT_EDITOR) && this.editable) {
+        if (Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.FONT_EDITOR) && this.editable) {
             this.fontEditorToolbar = this.#styleRuleElement.createChild('devtools-toolbar', 'sidebar-pane-section-toolbar');
             this.fontEditorSectionManager = new FontEditorSectionManager(this.parentPane.swatchPopoverHelper(), this);
             this.fontEditorButton =
@@ -294,6 +296,9 @@ export class StylePropertiesSection {
     }
     setParentsComputedStyles(parentsComputedStyles) {
         this.parentsComputedStyles = parentsComputedStyles;
+    }
+    setComputedStyleExtraFields(computedStyleExtraFields) {
+        this.computedStyleExtraFields = computedStyleExtraFields;
     }
     updateAuthoringHint() {
         let child = this.propertiesTreeOutline.firstChild();
@@ -1018,6 +1023,7 @@ export class StylePropertiesSection {
             });
             item.setComputedStyles(this.computedStyles);
             item.setParentsComputedStyles(this.parentsComputedStyles);
+            item.setComputedStyleExtraFields(this.computedStyleExtraFields);
             parent.appendChild(item);
         }
         if (count < properties.length) {
@@ -1447,7 +1453,7 @@ export class BlankStylePropertiesSection extends StylePropertiesSection {
     constructor(stylesPane, matchedStyles, defaultSelectorText, styleSheetHeader, ruleLocation, insertAfterStyle, sectionIdx) {
         const cssModel = stylesPane.cssModel();
         const rule = SDK.CSSRule.CSSStyleRule.createDummyRule(cssModel, defaultSelectorText);
-        super(stylesPane, matchedStyles, rule.style, sectionIdx, null, null);
+        super(stylesPane, matchedStyles, rule.style, sectionIdx, null, null, null);
         this.normal = false;
         this.ruleLocation = ruleLocation;
         this.styleSheetHeader = styleSheetHeader;
@@ -1527,7 +1533,7 @@ export class BlankStylePropertiesSection extends StylePropertiesSection {
 }
 export class RegisteredPropertiesSection extends StylePropertiesSection {
     constructor(stylesPane, matchedStyles, style, sectionIdx, propertyName, expandedByDefault) {
-        super(stylesPane, matchedStyles, style, sectionIdx, null, null, propertyName);
+        super(stylesPane, matchedStyles, style, sectionIdx, null, null, null, propertyName);
         if (!expandedByDefault) {
             this.element.classList.add('hidden');
         }
@@ -1554,7 +1560,7 @@ export class RegisteredPropertiesSection extends StylePropertiesSection {
 }
 export class FunctionRuleSection extends StylePropertiesSection {
     constructor(stylesPane, matchedStyles, style, children, sectionIdx, functionName, expandedByDefault) {
-        super(stylesPane, matchedStyles, style, sectionIdx, null, null, functionName);
+        super(stylesPane, matchedStyles, style, sectionIdx, null, null, null, functionName);
         if (!expandedByDefault) {
             this.element.classList.add('hidden');
         }
@@ -1611,7 +1617,7 @@ export class FunctionRuleSection extends StylePropertiesSection {
 }
 export class AtRuleSection extends StylePropertiesSection {
     constructor(stylesPane, matchedStyles, style, sectionIdx, expandedByDefault) {
-        super(stylesPane, matchedStyles, style, sectionIdx, null, null);
+        super(stylesPane, matchedStyles, style, sectionIdx, null, null, null);
         this.selectorElement.className = 'font-palette-values-key';
         if (!expandedByDefault) {
             this.element.classList.add('hidden');
@@ -1620,14 +1626,14 @@ export class AtRuleSection extends StylePropertiesSection {
 }
 export class PositionTryRuleSection extends StylePropertiesSection {
     constructor(stylesPane, matchedStyles, style, sectionIdx, active) {
-        super(stylesPane, matchedStyles, style, sectionIdx, null, null);
+        super(stylesPane, matchedStyles, style, sectionIdx, null, null, null);
         this.selectorElement.className = 'position-try-values-key';
         this.propertiesTreeOutline.element.classList.toggle('no-affect', !active);
     }
 }
 export class KeyframePropertiesSection extends StylePropertiesSection {
     constructor(stylesPane, matchedStyles, style, sectionIdx) {
-        super(stylesPane, matchedStyles, style, sectionIdx, null, null);
+        super(stylesPane, matchedStyles, style, sectionIdx, null, null, null);
         this.selectorElement.className = 'keyframe-key';
     }
     headerText() {

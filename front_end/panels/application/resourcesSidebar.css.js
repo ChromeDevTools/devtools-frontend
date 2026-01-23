@@ -62,4 +62,12 @@ devtools-icon.navigator-font-tree-item {
   text-decoration: line-through;
 }
 
+.device-bound-session-terminated {
+  text-decoration: line-through;
+}
+
+.no-device-bound-session {
+  font-style: italic;
+}
+
 /*# sourceURL=${import.meta.resolve('./resourcesSidebar.css')} */`;

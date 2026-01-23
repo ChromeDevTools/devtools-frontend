@@ -23,7 +23,7 @@ import * as i18n43 from "./../../core/i18n/i18n.js";
 import * as IssuesManager12 from "./../../models/issues_manager/issues_manager.js";
 import * as IssueCounter5 from "./../../ui/components/issue_counter/issue_counter.js";
 import * as UI7 from "./../../ui/legacy/legacy.js";
-import * as VisualLogging6 from "./../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging5 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/issues/HiddenIssuesRow.js
 import "./../../ui/components/adorners/adorners.js";
@@ -730,7 +730,7 @@ import * as IssueCounter3 from "./../../ui/components/issue_counter/issue_counte
 import * as MarkdownView from "./../../ui/components/markdown_view/markdown_view.js";
 import { Icon as Icon3 } from "./../../ui/kit/kit.js";
 import * as UI6 from "./../../ui/legacy/legacy.js";
-import * as VisualLogging5 from "./../../ui/visual_logging/visual_logging.js";
+import { html as html2, render as render2 } from "./../../ui/lit/lit.js";
 
 // gen/front_end/panels/issues/AffectedBlockedByResponseView.js
 import * as Host2 from "./../../core/host/host.js";
@@ -1102,12 +1102,12 @@ var AffectedCookiesView = class extends AffectedResourcesView {
     element.classList.add("affected-resource-cookie");
     const name = document.createElement("td");
     if (hasAssociatedRequest) {
-      const link5 = document.createElement("button");
-      link5.classList.add("link", "devtools-link");
-      link5.textContent = cookie.name;
-      link5.tabIndex = 0;
-      link5.setAttribute("jslog", `${VisualLogging3.link("issues.filter-network-requests-by-cookie").track({ click: true })}`);
-      link5.addEventListener("click", () => {
+      const link4 = document.createElement("button");
+      link4.classList.add("link", "devtools-link");
+      link4.textContent = cookie.name;
+      link4.tabIndex = 0;
+      link4.setAttribute("jslog", `${VisualLogging3.link("issues.filter-network-requests-by-cookie").track({ click: true })}`);
+      link4.addEventListener("click", () => {
         Host3.userMetrics.issuesPanelResourceOpened(
           this.issue.getCategory(),
           "Cookie"
@@ -1128,7 +1128,7 @@ var AffectedCookiesView = class extends AffectedResourcesView {
           }
         ]));
       });
-      name.appendChild(link5);
+      name.appendChild(link4);
     } else {
       name.textContent = cookie.name;
     }
@@ -1154,13 +1154,13 @@ var AffectedRawCookieLinesView = class extends AffectedResourcesView {
       row.classList.add("affected-resource-directive");
       if (cookie.hasRequest) {
         const cookieLine = document.createElement("td");
-        const link5 = document.createElement("button");
-        link5.classList.add("link", "devtools-link");
-        link5.textContent = cookie.rawCookieLine;
-        link5.title = i18nString5(UIStrings5.filterSetCookieTitle);
-        link5.tabIndex = 0;
-        link5.setAttribute("jslog", `${VisualLogging3.link("issues.filter-network-requests-by-raw-cookie").track({ click: true })}`);
-        link5.addEventListener("click", () => {
+        const link4 = document.createElement("button");
+        link4.classList.add("link", "devtools-link");
+        link4.textContent = cookie.rawCookieLine;
+        link4.title = i18nString5(UIStrings5.filterSetCookieTitle);
+        link4.tabIndex = 0;
+        link4.setAttribute("jslog", `${VisualLogging3.link("issues.filter-network-requests-by-raw-cookie").track({ click: true })}`);
+        link4.addEventListener("click", () => {
           void Common3.Revealer.reveal(NetworkForward.UIFilter.UIRequestFilter.filters([
             {
               filterType: NetworkForward.UIFilter.FilterType.ResponseHeaderValueSetCookie,
@@ -1168,7 +1168,7 @@ var AffectedRawCookieLinesView = class extends AffectedResourcesView {
             }
           ]));
         });
-        cookieLine.appendChild(link5);
+        cookieLine.appendChild(link4);
         row.appendChild(cookieLine);
       } else {
         this.appendIssueDetailCell(row, cookie.rawCookieLine);
@@ -3066,10 +3066,8 @@ var IssueView = class _IssueView extends UI6.TreeOutline.TreeElement {
     UI6.ARIAUtils.setSetSize(linkWrapper.listItemElement, 3);
     const linkList = linkWrapper.listItemElement.createChild("ul", "link-list");
     for (const description of this.#description.links) {
-      const link5 = UI6.Fragment.html`<x-link class="link devtools-link" tabindex="0" href=${description.link}>${i18nString21(UIStrings21.learnMoreS, { PH1: description.linkTitle })}</x-link>`;
-      link5.setAttribute("jslog", `${VisualLogging5.link("learn-more").track({ click: true })}`);
       const linkListItem = linkList.createChild("li");
-      linkListItem.appendChild(link5);
+      render2(html2`<devtools-link class="link devtools-link" href=${description.link} .jslogContext=${"learn-more"}>${i18nString21(UIStrings21.learnMoreS, { PH1: description.linkTitle })}</devtools-link>`, linkListItem);
     }
     this.appendChild(linkWrapper);
   }
@@ -3264,7 +3262,7 @@ var IssuesPane = class extends UI7.Widget.VBox {
   #issueViewUpdatePromise = Promise.resolve();
   constructor() {
     super({
-      jslog: `${VisualLogging6.panel("issues")}`,
+      jslog: `${VisualLogging5.panel("issues")}`,
       useShadowDom: true
     });
     this.registerRequiredCSS(issuesPane_css_default);
@@ -3297,7 +3295,7 @@ var IssuesPane = class extends UI7.Widget.VBox {
   }
   #createToolbars() {
     const toolbarContainer = this.contentElement.createChild("div", "issues-toolbar-container");
-    toolbarContainer.setAttribute("jslog", `${VisualLogging6.toolbar()}`);
+    toolbarContainer.setAttribute("jslog", `${VisualLogging5.toolbar()}`);
     toolbarContainer.role = "toolbar";
     const leftToolbar = toolbarContainer.createChild("devtools-toolbar", "issues-toolbar-left");
     leftToolbar.role = "presentation";
@@ -3334,7 +3332,7 @@ var IssuesPane = class extends UI7.Widget.VBox {
       issuesManager: IssuesManager12.IssuesManager.IssuesManager.instance()
     };
     issueCounter.id = "console-issues-counter";
-    issueCounter.setAttribute("jslog", `${VisualLogging6.counter("issues")}`);
+    issueCounter.setAttribute("jslog", `${VisualLogging5.counter("issues")}`);
     const issuesToolbarItem = new UI7.Toolbar.ToolbarItem(issueCounter);
     rightToolbar.appendToolbarItem(issuesToolbarItem);
     return { toolbarContainer };

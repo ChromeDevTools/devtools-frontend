@@ -473,7 +473,7 @@ var resolveScopeChain = async function(callFrame) {
   if (scopeChain) {
     return scopeChain;
   }
-  scopeChain = Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.USE_SOURCE_MAP_SCOPES) ? callFrame.script.sourceMap()?.resolveScopeChain(callFrame) : null;
+  scopeChain = Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.USE_SOURCE_MAP_SCOPES) ? callFrame.script.sourceMap()?.resolveScopeChain(callFrame) : null;
   if (scopeChain) {
     return scopeChain;
   }

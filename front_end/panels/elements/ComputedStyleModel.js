@@ -2,29 +2,24 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as Common from '../../core/common/common.js';
-import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as UI from '../../ui/legacy/legacy.js';
-import { ComputedStyleWidget } from './ComputedStyleWidget.js';
-import { StylesSidebarPane } from './StylesSidebarPane.js';
+/**
+ * A thin wrapper around the CSS Model to gather up changes in CSS files that
+ * could impact a node's computed styles.
+ * Callers are expected to initiate tracking of the Node themselves via the CSS
+ * Model trackComputedStyleUpdatesForNode method.
+ */
 export class ComputedStyleModel extends Common.ObjectWrapper.ObjectWrapper {
     #node;
     #cssModel;
     eventListeners;
     frameResizedTimer;
     computedStylePromise;
-    currentTrackedNodeId;
     constructor(node) {
         super();
         this.#cssModel = null;
         this.eventListeners = [];
         this.#node = node ?? null;
-        UI.Context.Context.instance().addFlavorChangeListener(StylesSidebarPane, this.evaluateTrackingComputedStyleUpdatesForNode, this);
-        UI.Context.Context.instance().addFlavorChangeListener(ComputedStyleWidget, this.evaluateTrackingComputedStyleUpdatesForNode, this);
-    }
-    dispose() {
-        UI.Context.Context.instance().removeFlavorChangeListener(StylesSidebarPane, this.evaluateTrackingComputedStyleUpdatesForNode, this);
-        UI.Context.Context.instance().removeFlavorChangeListener(ComputedStyleWidget, this.evaluateTrackingComputedStyleUpdatesForNode, this);
     }
     get node() {
         return this.#node;
@@ -33,43 +28,10 @@ export class ComputedStyleModel extends Common.ObjectWrapper.ObjectWrapper {
         this.#node = node;
         this.updateModel(this.#node ? this.#node.domModel().cssModel() : null);
         this.onCSSModelChanged(null);
-        this.evaluateTrackingComputedStyleUpdatesForNode();
     }
     cssModel() {
         return this.#cssModel?.isEnabled() ? this.#cssModel : null;
     }
-    // This is a debounced method because the user might be navigated from Styles tab to Computed Style tab and vice versa.
-    // For that case, we want to only run this function once.
-    evaluateTrackingComputedStyleUpdatesForNode = Common.Debouncer.debounce(() => {
-        if (!this.#node) {
-            // There isn't a node selected now, so let's stop tracking computed style updates for the previously tracked node.
-            if (this.currentTrackedNodeId) {
-                void this.cssModel()?.trackComputedStyleUpdatesForNode(undefined);
-                this.currentTrackedNodeId = undefined;
-            }
-            return;
-        }
-        const isComputedStyleWidgetVisible = Boolean(UI.Context.Context.instance().flavor(ComputedStyleWidget));
-        const isStylesTabVisible = Boolean(UI.Context.Context.instance().flavor(StylesSidebarPane));
-        const shouldTrackComputedStyleUpdates = isComputedStyleWidgetVisible ||
-            (isStylesTabVisible && Root.Runtime.hostConfig.devToolsAnimationStylesInStylesTab?.enabled);
-        // There is a selected node but not the computed style widget nor the styles tab is visible.
-        // If there is a previously tracked node let's stop tracking computed style updates for that node.
-        if (!shouldTrackComputedStyleUpdates) {
-            if (this.currentTrackedNodeId) {
-                void this.cssModel()?.trackComputedStyleUpdatesForNode(undefined);
-                this.currentTrackedNodeId = undefined;
-            }
-            return;
-        }
-        // Either computed style widget or styles tab is visible
-        // if the currently tracked node id is not the same as the selected node
-        // let's start tracking the currently selected node.
-        if (this.currentTrackedNodeId !== this.#node.id) {
-            void this.cssModel()?.trackComputedStyleUpdatesForNode(this.#node.id);
-            this.currentTrackedNodeId = this.#node.id;
-        }
-    }, 100);
     updateModel(cssModel) {
         if (this.#cssModel === cssModel) {
             return;

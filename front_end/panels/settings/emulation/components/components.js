@@ -12,6 +12,7 @@ __export(UserAgentClientHintsForm_exports, {
   ClientHintsSubmitEvent: () => ClientHintsSubmitEvent,
   UserAgentClientHintsForm: () => UserAgentClientHintsForm
 });
+import "./../../../../ui/kit/kit.js";
 import "./../../../../ui/legacy/legacy.js";
 import * as i18n from "./../../../../core/i18n/i18n.js";
 import * as Platform from "./../../../../core/platform/platform.js";
@@ -610,12 +611,6 @@ var UserAgentClientHintsForm = class extends HTMLElement {
     }
     this.dispatchEvent(new ClientHintsChangeEvent());
   };
-  #handleLinkPress = (event) => {
-    if (event.code === "Space" || event.code === "Enter") {
-      event.preventDefault();
-      event.target.click();
-    }
-  };
   #handleSubmit = (event) => {
     event.preventDefault();
     if (this.#showSubmitButton) {
@@ -961,17 +956,15 @@ var UserAgentClientHintsForm = class extends HTMLElement {
             ${i18nString(UIStrings.title)}
           </div>
           <devtools-icon tabindex=${this.#isFormDisabled ? "-1" : "0"} class=info-icon name=info aria-label=${i18nString(UIStrings.userAgentClientHintsInfo)} title=${i18nString(UIStrings.userAgentClientHintsInfo)}></devtools-icon>
-          <x-link
+          <devtools-link
            tabindex=${this.#isFormDisabled ? "-1" : "0"}
            href="https://web.dev/user-agent-client-hints/"
-           target="_blank"
            class="link"
-           @keypress=${this.#handleLinkPress}
            aria-label=${i18nString(UIStrings.learnMore)}
-           jslog=${VisualLogging.link("learn-more").track({ click: true })}
+           .jslogContext=${"learn-more"}
           >
             ${i18nString(UIStrings.learnMore)}
-          </x-link>
+          </devtools-link>
         </div>
         <form
           id="form-container"

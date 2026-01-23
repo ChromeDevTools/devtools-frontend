@@ -38,7 +38,7 @@ function urlShort(row, securityOrigin) {
     return securityOrigin && url.startsWith(securityOrigin) ? url.slice(securityOrigin.length) : url;
 }
 export const PRELOADING_GRID_DEFAULT_VIEW = (input, _output, target) => {
-    if (!input.rows || input.pageURL === undefined) {
+    if (!input.rows || !input.pageURL) {
         render(nothing, target);
         return;
     }
@@ -89,7 +89,8 @@ export const PRELOADING_GRID_DEFAULT_VIEW = (input, _output, target) => {
       </devtools-data-grid>
     </div>
   `, target);
-}; // clang-format on
+    // clang-format on
+};
 /** Grid component to show prerendering attempts. **/
 export class PreloadingGrid extends UI.Widget.VBox {
     #view;

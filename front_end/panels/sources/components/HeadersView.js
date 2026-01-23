@@ -325,10 +325,10 @@ export class HeadersViewComponent extends HTMLElement {
         ${i18nString(UIStrings.addOverrideRule)}
       </devtools-button>
       <div class="learn-more-row">
-        <x-link
+        <devtools-link
             href="https://goo.gle/devtools-override"
             class="link"
-            jslog=${VisualLogging.link('learn-more').track({ click: true })}>${i18nString(UIStrings.learnMore)}</x-link>
+            jslogContext=${'learn-more'}>${i18nString(UIStrings.learnMore)}</devtools-link>
       </div>
     `, this.#shadow, { host: this });
         // clang-format on

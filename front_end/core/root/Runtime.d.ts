@@ -1,4 +1,5 @@
 import * as Platform from '../platform/platform.js';
+import type { ExperimentName } from './ExperimentNames.js';
 /**
  * Returns the base URL (similar to `<base>`).
  * Used to resolve the relative URLs of any additional DevTools files (locale strings, etc) needed.
@@ -71,28 +72,6 @@ export declare class Experiment {
 }
 /** This must be constructed after the query parameters have been parsed. **/
 export declare const experiments: ExperimentsSupport;
-export declare enum ExperimentName {
-    ALL = "*",
-    CAPTURE_NODE_CREATION_STACKS = "capture-node-creation-stacks",
-    LIVE_HEAP_PROFILE = "live-heap-profile",
-    PROTOCOL_MONITOR = "protocol-monitor",
-    SAMPLING_HEAP_PROFILER_TIMELINE = "sampling-heap-profiler-timeline",
-    SHOW_OPTION_TO_EXPOSE_INTERNALS_IN_HEAP_SNAPSHOT = "show-option-to-expose-internals-in-heap-snapshot",
-    TIMELINE_INVALIDATION_TRACKING = "timeline-invalidation-tracking",
-    TIMELINE_SHOW_ALL_EVENTS = "timeline-show-all-events",
-    TIMELINE_V8_RUNTIME_CALL_STATS = "timeline-v8-runtime-call-stats",
-    APCA = "apca",
-    FONT_EDITOR = "font-editor",
-    FULL_ACCESSIBILITY_TREE = "full-accessibility-tree",
-    CONTRAST_ISSUES = "contrast-issues",
-    EXPERIMENTAL_COOKIE_FEATURES = "experimental-cookie-features",
-    INSTRUMENTATION_BREAKPOINTS = "instrumentation-breakpoints",
-    AUTHORED_DEPLOYED_GROUPING = "authored-deployed-grouping",
-    JUST_MY_CODE = "just-my-code",
-    USE_SOURCE_MAP_SCOPES = "use-source-map-scopes",
-    TIMELINE_SHOW_POST_MESSAGE_EVENTS = "timeline-show-postmessage-events",
-    TIMELINE_DEBUG_MODE = "timeline-debug-mode"
-}
 export declare enum GenAiEnterprisePolicyValue {
     ALLOW = 0,
     ALLOW_WITHOUT_LOGGING = 1,
@@ -162,6 +141,9 @@ export interface HostConfigDeepLinksViaExtensibilityApi {
     enabled: boolean;
 }
 export interface HostConfigGreenDevUi {
+    enabled: boolean;
+}
+export interface HostConfigGeminiRebranding {
     enabled: boolean;
 }
 export interface HostConfigVeLogging {
@@ -293,6 +275,7 @@ export type HostConfig = Platform.TypeScriptUtilities.RecursivePartial<{
     devToolsEnableDurableMessages: DevToolsEnableDurableMessages;
     devToolsAiAssistanceContextSelectionAgent: HostConfigAiAssistanceContextSelectionAgent;
     devToolsConsoleInsightsTeasers: ConsoleInsightsTeasers;
+    devToolsGeminiRebranding: HostConfigGeminiRebranding;
 }>;
 /**
  * The host configuration for this DevTools instance.

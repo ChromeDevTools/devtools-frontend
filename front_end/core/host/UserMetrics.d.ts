@@ -24,15 +24,9 @@ export declare class UserMetrics {
     developerResourceScheme(developerResourceScheme: DeveloperResourceScheme): void;
     language(language: Intl.UnicodeBCP47LocaleIdentifier): void;
     syncSetting(devtoolsSyncSettingEnabled: boolean): void;
-    recordingAssertion(value: RecordingAssertion): void;
     recordingToggled(value: RecordingToggled): void;
     recordingReplayFinished(value: RecordingReplayFinished): void;
-    recordingReplaySpeed(value: RecordingReplaySpeed): void;
     recordingReplayStarted(value: RecordingReplayStarted): void;
-    recordingEdited(value: RecordingEdited): void;
-    recordingExported(value: RecordingExported): void;
-    recordingCodeToggled(value: RecordingCodeToggled): void;
-    recordingCopiedToClipboard(value: RecordingCopiedToClipboard): void;
     lighthouseModeRun(type: LighthouseModeRun): void;
     lighthouseCategoryUsed(type: LighthouseCategoryUsed): void;
     swatchActivated(swatch: SwatchType): void;

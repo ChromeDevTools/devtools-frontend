@@ -97,7 +97,7 @@ h3 {
   margin: 0;
 }
 
-.x-link {
+.devtools-link {
   color: var(--sys-color-primary);
   text-decoration-line: underline;
   cursor: pointer;

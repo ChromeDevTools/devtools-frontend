@@ -1,17 +1,20 @@
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
+/**
+ * A thin wrapper around the CSS Model to gather up changes in CSS files that
+ * could impact a node's computed styles.
+ * Callers are expected to initiate tracking of the Node themselves via the CSS
+ * Model trackComputedStyleUpdatesForNode method.
+ */
 export declare class ComputedStyleModel extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     #private;
     private eventListeners;
     private frameResizedTimer?;
     private computedStylePromise?;
-    private currentTrackedNodeId?;
     constructor(node?: SDK.DOMModel.DOMNode | null);
-    dispose(): void;
     get node(): SDK.DOMModel.DOMNode | null;
     set node(node: SDK.DOMModel.DOMNode | null);
     cssModel(): SDK.CSSModel.CSSModel | null;
-    private evaluateTrackingComputedStyleUpdatesForNode;
     private updateModel;
     private onCSSModelChanged;
     private onComputedStyleChanged;

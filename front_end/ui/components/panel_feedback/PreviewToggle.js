@@ -57,14 +57,14 @@ export class PreviewToggle extends HTMLElement {
           </devtools-checkbox>
         <div class="spacer"></div>
         ${this.#feedbackURL && !this.#helperText
-            ? html `<div class="feedback"><devtools-link class="x-link" href=${this.#feedbackURL}>${i18nString(UIStrings.shortFeedbackLink)}</devtools-link></div>`
+            ? html `<div class="feedback"><devtools-link class="devtools-link" href=${this.#feedbackURL} jslogContext=${'feedback'}>${i18nString(UIStrings.shortFeedbackLink)}</devtools-link></div>`
             : nothing}
         ${this.#learnMoreURL
-            ? html `<div class="learn-more"><devtools-link class="x-link" href=${this.#learnMoreURL}>${i18nString(UIStrings.learnMoreLink)}</devtools-link></div>`
+            ? html `<div class="learn-more"><devtools-link class="devtools-link" href=${this.#learnMoreURL} jslogContext=${'learn-more'}>${i18nString(UIStrings.learnMoreLink)}</devtools-link></div>`
             : nothing}
         <div class="helper">
           ${this.#helperText && this.#feedbackURL
-            ? html `<p>${this.#helperText} <devtools-link class="x-link" href=${this.#feedbackURL}>${i18nString(UIStrings.previewTextFeedbackLink)}</devtools-link></p>`
+            ? html `<p>${this.#helperText} <devtools-link class="devtools-link" href=${this.#feedbackURL} jslogContext=${'feedback'}>${i18nString(UIStrings.previewTextFeedbackLink)}</devtools-link></p>`
             : nothing}
         </div>
       </div>`, this.#shadow, {

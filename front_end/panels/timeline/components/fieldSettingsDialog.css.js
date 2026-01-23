@@ -109,7 +109,7 @@ input[type="text"][disabled] {
   color: var(--color-error-text);
 }
 
-x-link {
+devtools-link {
   color: var(--sys-color-primary);
   text-decoration-line: underline;
 }

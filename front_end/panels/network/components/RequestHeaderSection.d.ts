@@ -1,3 +1,4 @@
+import '../../../ui/kit/kit.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as NetworkForward from '../forward/forward.js';

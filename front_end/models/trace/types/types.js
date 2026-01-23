@@ -212,6 +212,7 @@ __export(TraceEvents_exports, {
   isInvalidateLayout: () => isInvalidateLayout,
   isInvalidationTracking: () => isInvalidationTracking,
   isJSInvocationEvent: () => isJSInvocationEvent,
+  isJSSample: () => isJSSample,
   isLargestImagePaintCandidate: () => isLargestImagePaintCandidate,
   isLargestTextPaintCandidate: () => isLargestTextPaintCandidate,
   isLayerTreeHostImplSnapshot: () => isLayerTreeHostImplSnapshot,
@@ -440,6 +441,9 @@ function isPipelineReporter(event) {
 }
 function isSyntheticBased(event) {
   return "rawSourceEvent" in event;
+}
+function isJSSample(event) {
+  return event.name === "JSSample";
 }
 function isSyntheticInteraction(event) {
   return Boolean("interactionId" in event && event.args?.data && "beginEvent" in event.args.data && "endEvent" in event.args.data);

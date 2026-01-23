@@ -39,6 +39,7 @@ core/platform/NumberUtilities.test.js
 core/platform/StringUtilities.test.js
 core/platform/TypedArrayUtilities.test.js
 core/protocol_client/InspectorBackend.test.js
+core/root/Runtime.test.js
 core/sdk/DebuggerModel.test.js
 core/sdk/PageResourceLoader.test.js
 core/sdk/RuntimeModel.test.js
@@ -83,7 +84,7 @@ core/host/AidaClient.test.js
 core/host/DispatchHttpRequestClient.test.js
 core/host/GdpClient.test.js
 core/i18n/i18nImpl.test.js
-core/root/Runtime.test.js
+core/root/Runtime.browser.test.js
 core/sdk/AccessibilityModel.test.js
 core/sdk/AnimationModel.test.js
 core/sdk/AutofillModel.test.js

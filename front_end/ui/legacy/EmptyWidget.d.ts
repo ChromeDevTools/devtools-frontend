@@ -1,3 +1,4 @@
+import '../../ui/kit/kit.js';
 import type * as Platform from '../../core/platform/platform.js';
 import { VBox } from './Widget.js';
 interface EmptyWidgetInput {

@@ -4662,7 +4662,7 @@ var HeapProfileView = class extends ProfileView {
     this.totalTime = 0;
     this.lastOrdinal = 0;
     this.timelineOverview = new HeapTimelineOverview();
-    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.SAMPLING_HEAP_PROFILER_TIMELINE)) {
+    if (Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.SAMPLING_HEAP_PROFILER_TIMELINE)) {
       this.timelineOverview.addEventListener("IdsRangeChanged", this.onIdsRangeChanged.bind(this));
       this.timelineOverview.show(this.element, this.element.firstChild);
       this.timelineOverview.start();
@@ -4843,7 +4843,7 @@ var SamplingHeapProfileType = class _SamplingHeapProfileType extends SamplingHea
     return formattedDescription.join("\n");
   }
   hasTemporaryView() {
-    return Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.SAMPLING_HEAP_PROFILER_TIMELINE);
+    return Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.SAMPLING_HEAP_PROFILER_TIMELINE);
   }
   startSampling() {
     const heapProfilerModel = this.obtainRecordingProfile();
@@ -4851,7 +4851,7 @@ var SamplingHeapProfileType = class _SamplingHeapProfileType extends SamplingHea
       return;
     }
     void heapProfilerModel.startSampling();
-    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.SAMPLING_HEAP_PROFILER_TIMELINE)) {
+    if (Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.SAMPLING_HEAP_PROFILER_TIMELINE)) {
       this.updateTimer = window.setTimeout(() => {
         void this.updateStats();
       }, this.updateIntervalMs);
@@ -8701,7 +8701,7 @@ var HeapSnapshotProfileType = class _HeapSnapshotProfileType extends Common13.Ob
     return i18nString13(UIStrings14.heapSnapshotProfilesShowMemory);
   }
   customContent() {
-    const showOptionToExposeInternalsInHeapSnapshot = Root2.Runtime.experiments.isEnabled(Root2.Runtime.ExperimentName.SHOW_OPTION_TO_EXPOSE_INTERNALS_IN_HEAP_SNAPSHOT);
+    const showOptionToExposeInternalsInHeapSnapshot = Root2.Runtime.experiments.isEnabled(Root2.ExperimentNames.ExperimentName.SHOW_OPTION_TO_EXPOSE_INTERNALS_IN_HEAP_SNAPSHOT);
     const exposeInternalsInHeapSnapshotCheckbox = SettingsUI.SettingsUI.createSettingCheckbox(i18nString13(UIStrings14.exposeInternals), this.exposeInternals);
     this.customContentInternal = exposeInternalsInHeapSnapshotCheckbox;
     return showOptionToExposeInternalsInHeapSnapshot ? exposeInternalsInHeapSnapshotCheckbox : null;

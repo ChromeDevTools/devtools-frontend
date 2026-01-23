@@ -39,7 +39,7 @@ export default `/*
   white-space: normal;
 }
 
-x-link {
+devtools-link {
   color: var(--sys-color-primary);
   text-decoration-line: underline;
 }

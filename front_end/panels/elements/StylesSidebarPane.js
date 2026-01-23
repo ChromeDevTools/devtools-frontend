@@ -474,11 +474,14 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
         this.matchedStyles = matchedStyles;
         const nodeId = this.node()?.id;
         const parentNodeId = this.matchedStyles?.getParentLayoutNodeId();
-        const [computedStyles, parentsComputedStyles] = await Promise.all([this.fetchComputedStylesFor(nodeId), this.fetchComputedStylesFor(parentNodeId)]);
+        const [computedStyles, parentsComputedStyles, computedStyleExtraFields] = await Promise.all([
+            this.fetchComputedStylesFor(nodeId), this.fetchComputedStylesFor(parentNodeId),
+            this.fetchComputedStyleExtraFieldsFor(nodeId)
+        ]);
         if (signal.aborted) {
             return;
         }
-        await this.innerRebuildUpdate(signal, this.matchedStyles, computedStyles, parentsComputedStyles);
+        await this.innerRebuildUpdate(signal, this.matchedStyles, computedStyles, parentsComputedStyles, computedStyleExtraFields);
         if (signal.aborted) {
             return;
         }
@@ -514,6 +517,13 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
             return null;
         }
         return await node.domModel().cssModel().getComputedStyle(nodeId);
+    }
+    async fetchComputedStyleExtraFieldsFor(nodeId) {
+        const node = this.node();
+        if (node === null || nodeId === undefined) {
+            return null;
+        }
+        return await node.domModel().cssModel().getComputedStyleExtraFields(nodeId);
     }
     onResize() {
         void this.resizeThrottler.schedule(this.#resize.bind(this));
@@ -742,7 +752,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
             element.startEditingName();
         }
     }
-    async innerRebuildUpdate(signal, matchedStyles, computedStyles, parentsComputedStyles) {
+    async innerRebuildUpdate(signal, matchedStyles, computedStyles, parentsComputedStyles, computedStyleExtraFields) {
         // ElementsSidebarPane's throttler schedules this method. Usually,
         // rebuild is suppressed while editing (see onCSSModelChanged()), but we need a
         // 'force' flag since the currently running throttler process cannot be canceled.
@@ -764,7 +774,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
             this.noMatchesElement.classList.remove('hidden');
             return;
         }
-        const blocks = await this.rebuildSectionsForMatchedStyleRules(matchedStyles, computedStyles, parentsComputedStyles);
+        const blocks = await this.rebuildSectionsForMatchedStyleRules(matchedStyles, computedStyles, parentsComputedStyles, computedStyleExtraFields);
         if (signal.aborted) {
             return;
         }
@@ -830,10 +840,10 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
     setMatchedStylesForTest(matchedStyles) {
         this.matchedStyles = matchedStyles;
     }
-    rebuildSectionsForMatchedStyleRulesForTest(matchedStyles, computedStyles, parentsComputedStyles) {
-        return this.rebuildSectionsForMatchedStyleRules(matchedStyles, computedStyles, parentsComputedStyles);
+    rebuildSectionsForMatchedStyleRulesForTest(matchedStyles, computedStyles, parentsComputedStyles, computedStyleExtraFields) {
+        return this.rebuildSectionsForMatchedStyleRules(matchedStyles, computedStyles, parentsComputedStyles, computedStyleExtraFields);
     }
-    async rebuildSectionsForMatchedStyleRules(matchedStyles, computedStyles, parentsComputedStyles) {
+    async rebuildSectionsForMatchedStyleRules(matchedStyles, computedStyles, parentsComputedStyles, computedStyleExtraFields) {
         if (this.idleCallbackManager) {
             this.idleCallbackManager.discard();
         }
@@ -874,7 +884,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
                 style.type === SDK.CSSStyleDeclaration.Type.Animation;
             if (lastBlock && (!isTransitionOrAnimationStyle || style.allProperties().length > 0)) {
                 this.idleCallbackManager.schedule(() => {
-                    const section = new StylePropertiesSection(this, matchedStyles, style, sectionIdx, computedStyles, parentsComputedStyles);
+                    const section = new StylePropertiesSection(this, matchedStyles, style, sectionIdx, computedStyles, parentsComputedStyles, computedStyleExtraFields);
                     sectionIdx++;
                     lastBlock.sections.push(section);
                 });
@@ -932,7 +942,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
                 addLayerSeparator(style);
                 const lastBlock = blocks[blocks.length - 1];
                 this.idleCallbackManager.schedule(() => {
-                    const section = new HighlightPseudoStylePropertiesSection(this, matchedStyles, style, sectionIdx, computedStyles, parentsComputedStyles);
+                    const section = new HighlightPseudoStylePropertiesSection(this, matchedStyles, style, sectionIdx, computedStyles, parentsComputedStyles, computedStyleExtraFields);
                     sectionIdx++;
                     lastBlock.sections.push(section);
                 });

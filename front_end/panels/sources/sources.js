@@ -444,6 +444,7 @@ __export(BreakpointEditDialog_exports, {
   BreakpointEditDialog: () => BreakpointEditDialog,
   DEFAULT_VIEW: () => DEFAULT_VIEW2
 });
+import "./../../ui/kit/kit.js";
 import "./../../ui/legacy/legacy.js";
 import * as Common from "./../../core/common/common.js";
 import * as i18n6 from "./../../core/i18n/i18n.js";
@@ -625,8 +626,8 @@ var DEFAULT_VIEW2 = (input, output, target) => {
     </div>
     <div class=link-wrapper>
       <devtools-icon name=open-externally class=link-icon></devtools-icon>
-      <x-link class="link devtools-link" tabindex="0" href="https://goo.gle/devtools-loc"
-                                          jslog=${VisualLogging2.link("learn-more")}>${i18nString3(UIStrings3.learnMoreOnBreakpointTypes)}</x-link>
+      <devtools-link class="devtools-link" href="https://goo.gle/devtools-loc"
+                                          .jslogContext=${"learn-more"}>${i18nString3(UIStrings3.learnMoreOnBreakpointTypes)}</devtools-link>
     </div>
     `,
     // clang-format on
@@ -3609,7 +3610,7 @@ var NavigatorView = class _NavigatorView extends UI8.Widget.VBox {
     this.navigatorGroupByFolderSetting = Common6.Settings.Settings.instance().moduleSetting("navigator-group-by-folder");
     this.navigatorGroupByFolderSetting.addChangeListener(this.groupingChanged.bind(this));
     if (enableAuthoredGrouping) {
-      this.navigatorGroupByAuthoredExperiment = Root.Runtime.ExperimentName.AUTHORED_DEPLOYED_GROUPING;
+      this.navigatorGroupByAuthoredExperiment = Root.ExperimentNames.ExperimentName.AUTHORED_DEPLOYED_GROUPING;
     }
     Workspace6.IgnoreListManager.IgnoreListManager.instance().addChangeListener(this.ignoreListChanged.bind(this));
     this.initGrouping();
@@ -3791,7 +3792,7 @@ var NavigatorView = class _NavigatorView extends UI8.Widget.VBox {
     return this.acceptProject(uiSourceCode.project());
   }
   addUISourceCode(uiSourceCode) {
-    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.JUST_MY_CODE) && Workspace6.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(uiSourceCode)) {
+    if (Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.JUST_MY_CODE) && Workspace6.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(uiSourceCode)) {
       return;
     }
     if (!this.acceptsUISourceCode(uiSourceCode)) {
@@ -4354,7 +4355,7 @@ var NavigatorView = class _NavigatorView extends UI8.Widget.VBox {
     this.#workspace.uiSourceCodes().forEach(this.addUISourceCode.bind(this));
   }
   ignoreListChanged() {
-    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.JUST_MY_CODE)) {
+    if (Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.JUST_MY_CODE)) {
       this.groupingChanged();
     } else {
       this.rootNode.updateTitleRecursive();
@@ -8390,18 +8391,18 @@ var ResourceOriginPlugin = class extends Plugin {
         return [];
       }
       const element = document.createElement("span");
-      links.forEach((link2, index) => {
+      links.forEach((link, index) => {
         if (index > 0) {
           element.append(", ");
         }
-        element.append(link2);
+        element.append(link);
       });
       return [new UI12.Toolbar.ToolbarItem(uiI18n2.getFormatLocalizedString(str_12, UIStrings12.fromS, { PH1: element }))];
     }
     for (const script of debuggerWorkspaceBinding.scriptsForUISourceCode(this.uiSourceCode)) {
       if (script.originStackTrace?.callFrames.length) {
-        const link2 = this.#linkifier.linkifyStackTraceTopFrame(script.debuggerModel.target(), script.originStackTrace);
-        return [new UI12.Toolbar.ToolbarItem(uiI18n2.getFormatLocalizedString(str_12, UIStrings12.fromS, { PH1: link2 }))];
+        const link = this.#linkifier.linkifyStackTraceTopFrame(script.debuggerModel.target(), script.originStackTrace);
+        return [new UI12.Toolbar.ToolbarItem(uiI18n2.getFormatLocalizedString(str_12, UIStrings12.fromS, { PH1: link }))];
       }
     }
     return [];
@@ -9610,10 +9611,10 @@ var TabbedEditorContainer = class extends Common10.ObjectWrapper.ObjectWrapper {
         const automaticFileSystemManager = Persistence7.AutomaticFileSystemManager.AutomaticFileSystemManager.instance();
         const { automaticFileSystem } = automaticFileSystemManager;
         if (automaticFileSystem?.state === "disconnected") {
-          const link2 = document.createElement("a");
-          link2.className = "devtools-link";
-          link2.textContent = Common10.ParsedURL.ParsedURL.extractName(automaticFileSystem.root);
-          link2.addEventListener("click", async (event) => {
+          const link = document.createElement("a");
+          link.className = "devtools-link";
+          link.textContent = Common10.ParsedURL.ParsedURL.extractName(automaticFileSystem.root);
+          link.addEventListener("click", async (event) => {
             event.consume();
             await UI15.ViewManager.ViewManager.instance().showView("navigator-files");
             await automaticFileSystemManager.connectAutomaticFileSystem(
@@ -9621,10 +9622,10 @@ var TabbedEditorContainer = class extends Common10.ObjectWrapper.ObjectWrapper {
               true
             );
           });
-          tooltip2.append(uiI18n3.getFormatLocalizedString(str_14, UIStrings14.changesWereNotSavedToFileSystemToSaveAddFolderToWorkspace, { PH1: link2 }));
+          tooltip2.append(uiI18n3.getFormatLocalizedString(str_14, UIStrings14.changesWereNotSavedToFileSystemToSaveAddFolderToWorkspace, { PH1: link }));
         } else {
-          const link2 = UI15.XLink.XLink.create("https://developer.chrome.com/docs/devtools/workspaces/", "Workspace");
-          tooltip2.append(uiI18n3.getFormatLocalizedString(str_14, UIStrings14.changesWereNotSavedToFileSystemToSaveSetUpYourWorkspace, { PH1: link2 }));
+          const link = UI15.XLink.XLink.create("https://developer.chrome.com/docs/devtools/workspaces/", "Workspace");
+          tooltip2.append(uiI18n3.getFormatLocalizedString(str_14, UIStrings14.changesWereNotSavedToFileSystemToSaveSetUpYourWorkspace, { PH1: link }));
         }
         suffixElement.append(icon, tooltip2);
         this.tabbedPane.setSuffixElement(tabId2, suffixElement);
@@ -11056,8 +11057,8 @@ var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
     const groupByFolderSetting = Common12.Settings.Settings.instance().moduleSetting("navigator-group-by-folder");
     contextMenu.appendItemsAtLocation("navigatorMenu");
     contextMenu.viewSection().appendCheckboxItem(i18nString16(UIStrings17.groupByFolder), () => groupByFolderSetting.set(!groupByFolderSetting.get()), { checked: groupByFolderSetting.get(), jslogContext: groupByFolderSetting.name });
-    this.addExperimentMenuItem(contextMenu.viewSection(), Root2.Runtime.ExperimentName.AUTHORED_DEPLOYED_GROUPING, i18nString16(UIStrings17.groupByAuthored));
-    this.addExperimentMenuItem(contextMenu.viewSection(), Root2.Runtime.ExperimentName.JUST_MY_CODE, i18nString16(UIStrings17.hideIgnoreListed));
+    this.addExperimentMenuItem(contextMenu.viewSection(), Root2.ExperimentNames.ExperimentName.AUTHORED_DEPLOYED_GROUPING, i18nString16(UIStrings17.groupByAuthored));
+    this.addExperimentMenuItem(contextMenu.viewSection(), Root2.ExperimentNames.ExperimentName.JUST_MY_CODE, i18nString16(UIStrings17.hideIgnoreListed));
   }
   updateLastModificationTime() {
     this.lastModificationTime = window.performance.now();
@@ -11291,7 +11292,7 @@ var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
       return;
     }
     const eventTarget = event.target;
-    if (!uiSourceCode.project().isServiceProject() && !eventTarget.isSelfOrDescendant(this.navigatorTabbedLocation.widget().element) && !(Root2.Runtime.experiments.isEnabled(Root2.Runtime.ExperimentName.JUST_MY_CODE) && Workspace22.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(uiSourceCode))) {
+    if (!uiSourceCode.project().isServiceProject() && !eventTarget.isSelfOrDescendant(this.navigatorTabbedLocation.widget().element) && !(Root2.Runtime.experiments.isEnabled(Root2.ExperimentNames.ExperimentName.JUST_MY_CODE) && Workspace22.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(uiSourceCode))) {
       contextMenu.revealSection().appendItem(i18nString16(UIStrings17.revealInSidebar), this.revealInNavigator.bind(this, uiSourceCode), {
         jslogContext: "sources.reveal-in-navigator-sidebar"
       });
@@ -12463,7 +12464,7 @@ var FilteredUISourceCodeListProvider = class extends QuickOpen3.FilteredListWidg
     if (this.uiSourceCodeIds.has(uiSourceCode.canonicalScriptId())) {
       return false;
     }
-    if (Root3.Runtime.experiments.isEnabled(Root3.Runtime.ExperimentName.JUST_MY_CODE) && Workspace25.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(uiSourceCode)) {
+    if (Root3.Runtime.experiments.isEnabled(Root3.ExperimentNames.ExperimentName.JUST_MY_CODE) && Workspace25.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(uiSourceCode)) {
       return false;
     }
     if (uiSourceCode.isFetchXHR()) {
@@ -13376,10 +13377,10 @@ var ContextMenuProvider = class {
       const targetObject = contentProvider;
       const contentDataOrError = await targetObject.requestContentData();
       const content = TextUtils12.ContentData.ContentData.textOr(contentDataOrError, "");
-      const link2 = document.createElement("a");
-      link2.download = targetObject.displayName;
-      link2.href = "data:" + targetObject.mimeType + ";base64," + content;
-      link2.click();
+      const link = document.createElement("a");
+      link.download = targetObject.displayName;
+      link.href = "data:" + targetObject.mimeType + ";base64," + content;
+      link.click();
     }
     if (contentProvider.contentType().isDocumentOrScriptOrStyleSheet()) {
       contextMenu.saveSection().appendItem(i18nString22(UIStrings23.saveAs), saveAs, { jslogContext: "save-as" });
@@ -13892,8 +13893,8 @@ var FilesNavigatorView = class extends NavigatorView {
     const placeholder2 = new UI25.EmptyWidget.EmptyWidget(i18nString24(UIStrings25.noWorkspace), i18nString24(UIStrings25.explainWorkspace));
     this.setPlaceholder(placeholder2);
     placeholder2.link = "https://developer.chrome.com/docs/devtools/workspaces/";
-    const link2 = UI25.XLink.XLink.create("https://goo.gle/devtools-automatic-workspace-folders", "com.chrome.devtools.json");
-    this.#automaticFileSystemNudge = uiI18n4.getFormatLocalizedString(str_25, UIStrings25.automaticWorkspaceNudge, { PH1: link2 });
+    const link = UI25.XLink.XLink.create("https://goo.gle/devtools-automatic-workspace-folders", "com.chrome.devtools.json");
+    this.#automaticFileSystemNudge = uiI18n4.getFormatLocalizedString(str_25, UIStrings25.automaticWorkspaceNudge, { PH1: link });
     this.#automaticFileSystemNudge.classList.add("automatic-file-system-nudge");
     this.contentElement.insertBefore(this.#automaticFileSystemNudge, this.contentElement.firstChild);
     const toolbar4 = document.createElement("devtools-toolbar");

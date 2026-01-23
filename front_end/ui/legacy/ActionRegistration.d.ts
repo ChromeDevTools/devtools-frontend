@@ -242,7 +242,7 @@ export interface ActionRegistration {
      * The name of the experiment an action is associated with. Enabling and disabling the declared
      * experiment will enable and disable the action respectively.
      */
-    experiment?: Root.Runtime.ExperimentName;
+    experiment?: Root.ExperimentNames.ExperimentName;
     /**
      * Whether an action needs to be promoted. A new badge is shown next to the menu items then.
      */

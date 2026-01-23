@@ -1467,6 +1467,7 @@ export interface SyntheticJSSample extends Event {
     };
     ph: Phase.INSTANT;
 }
+export declare function isJSSample(event: Event): event is SyntheticJSSample;
 export declare function isSyntheticInteraction(event: Event): event is SyntheticInteractionPair;
 export interface DrawFrame extends Instant {
     name: Name.DRAW_FRAME;

@@ -104,9 +104,9 @@ const DEFAULT_VIEW = (input, _output, target) => {
     ${renderStatusMessage(input.protocolHandler, input.manifestLink)}
     <div class="protocol-handlers-row">
       ${i18nTemplate(UIStrings.needHelpReadOur, { PH1: html `
-        <x-link href=${PROTOCOL_DOCUMENT_URL} tabindex=0 class="devtools-link" autofocus jslog=${VisualLogging.link('learn-more').track({ click: true, keydown: 'Enter|Space' })}>
+        <devtools-link href=${PROTOCOL_DOCUMENT_URL} class="devtools-link" autofocus .jslogContext=${'learn-more'}>
           ${i18nString(UIStrings.protocolHandlerRegistrations)}
-        </x-link>` })}
+        </devtools-link>` })}
     </div>
     ${renderProtocolTest(input.protocolHandler, input.queryInputState, input.protocolSelectHandler, input.queryInputChangeHandler, input.testProtocolClickHandler)}
   `, target);

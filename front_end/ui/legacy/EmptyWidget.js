@@ -1,13 +1,13 @@
 // Copyright 2011 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import '../../ui/kit/kit.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import { Directives, html, render } from '../lit/lit.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 import emptyWidgetStyles from './emptyWidget.css.js';
 import inspectorCommonStyles from './inspectorCommon.css.js';
 import { VBox } from './Widget.js';
-import { XLink } from './XLink.js';
 const UIStrings = {
     /**
      * @description Text that is usually a hyperlink to more documentation
@@ -27,7 +27,7 @@ const DEFAULT_VIEW = (input, output, target) => {
       <div class="empty-state-header">${input.header}</div>
       <div class="empty-state-description">
         <span>${input.text}</span>
-        ${input.link ? XLink.create(input.link, i18nString(UIStrings.learnMore), undefined, undefined, 'learn-more') : ''}
+        ${input.link ? html `<devtools-link href=${input.link} jslogContext=${'learn-more'}>${i18nString(UIStrings.learnMore)}</devtools-link>` : ''}
       </div>
       ${input.extraElements}
     </div>`, target);

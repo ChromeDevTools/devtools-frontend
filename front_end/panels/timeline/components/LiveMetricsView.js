@@ -761,10 +761,10 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
         tmp.searchParams.set('device', device);
         const cruxVis = `${tmp.origin}/#/${tmp.search}`;
         return html `
-        (<x-link href=${cruxVis}
+        (<devtools-link href=${cruxVis}
                  class="local-field-link"
                  title=${i18nString(UIStrings.fieldDataHistoryTooltip)}
-        >${i18nString(UIStrings.fieldDataHistoryLink)}</x-link>)
+        >${i18nString(UIStrings.fieldDataHistoryLink)}</devtools-link>)
       `;
     }
     #renderCollectionPeriod() {
@@ -1025,11 +1025,11 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
                 ${this.#renderInpCard()}
               </div>
             </div>
-            <x-link
+            <devtools-link
               href=${helpLink}
               class="local-field-link"
               title=${i18nString(UIStrings.localFieldLearnMoreTooltip)}
-            >${i18nString(UIStrings.localFieldLearnMoreLink)}</x-link>
+            >${i18nString(UIStrings.localFieldLearnMoreLink)}</devtools-link>
             ${this.#renderLogSection()}
           </main>
           <aside class="next-steps" aria-labelledby="next-steps-section-title">

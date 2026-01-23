@@ -924,10 +924,10 @@ function renderMainFrameInformation(frame, frameTreeData, reasonToFramesMap, scr
     </devtools-report-divider>
     ${maybeRenderExplanations(frame.backForwardCacheDetails.explanations, frame.backForwardCacheDetails.explanationsTree, reasonToFramesMap)}
     <devtools-report-section>
-      <x-link href="https://web.dev/bfcache/" class="link"
-      jslog=${VisualLogging.action("learn-more.eligibility").track({ click: true })}>
+      <devtools-link href="https://web.dev/bfcache/" class="link"
+      jslogcontext="learn-more.eligibility">
         ${i18nString(UIStrings2.learnMore)}
-      </x-link>
+      </devtools-link>
     </devtools-report-section>`;
 }
 function maybeRenderFrameTree(frameTreeData) {
@@ -1033,9 +1033,9 @@ function renderExplanations(category, explainerText, explanations, reasonToFrame
 }
 function maybeRenderReasonContext(explanation) {
   if (explanation.reason === "EmbedderExtensionSentMessageToCachedFrame" && explanation.context) {
-    const link6 = "chrome://extensions/?id=" + explanation.context;
+    const link = "chrome://extensions/?id=" + explanation.context;
     return html`${i18nString(UIStrings2.blockingExtensionId)}
-      <devtools-link .href=${link6}>${explanation.context}</devtools-link>`;
+      <devtools-link .href=${link}>${explanation.context}</devtools-link>`;
   }
   return nothing;
 }
@@ -1060,12 +1060,10 @@ function renderFramesPerReason(frames) {
 function maybeRenderDeepLinkToUnload(explanation) {
   if (explanation.reason === "UnloadHandlerExistsInMainFrame" || explanation.reason === "UnloadHandlerExistsInSubFrame") {
     return html`
-        <x-link href="https://web.dev/bfcache/#never-use-the-unload-event" class="link"
-        jslog=${VisualLogging.action("learn-more.never-use-unload").track({
-      click: true
-    })}>
+        <devtools-link href="https://web.dev/bfcache/#never-use-the-unload-event" class="link"
+        jslogContext=${"learn-more.never-use-unload"}>
           ${i18nString(UIStrings2.neverUseUnload)}
-        </x-link>`;
+        </devtools-link>`;
   }
   return nothing;
 }
@@ -1267,6 +1265,7 @@ __export(BounceTrackingMitigationsView_exports, {
 });
 import "./../../../ui/components/report_view/report_view.js";
 import "./../../../ui/legacy/components/data_grid/data_grid.js";
+import "./../../../ui/kit/kit.js";
 import * as i18n5 from "./../../../core/i18n/i18n.js";
 import * as SDK2 from "./../../../core/sdk/sdk.js";
 import * as Buttons2 from "./../../../ui/components/buttons/buttons.js";
@@ -1408,10 +1407,10 @@ var renderMainFrameInformation2 = (input) => {
     <devtools-report-divider>
     </devtools-report-divider>
     <devtools-report-section>
-      <x-link href="https://privacycg.github.io/nav-tracking-mitigations/#bounce-tracking-mitigations" class="link"
-      jslog=${VisualLogging2.link("learn-more").track({ click: true })}>
+      <devtools-link href="https://privacycg.github.io/nav-tracking-mitigations/#bounce-tracking-mitigations" class="link"
+      .jslogContext=${"learn-more"}>
         ${i18nString2(UIStrings3.learnMore)}
-      </x-link>
+      </devtools-link>
     </devtools-report-section>
   `;
 };
@@ -2168,9 +2167,9 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
     ${renderStatusMessage(input.protocolHandler, input.manifestLink)}
     <div class="protocol-handlers-row">
       ${i18nTemplate(UIStrings7.needHelpReadOur, { PH1: html6`
-        <x-link href=${PROTOCOL_DOCUMENT_URL} tabindex=0 class="devtools-link" autofocus jslog=${VisualLogging5.link("learn-more").track({ click: true, keydown: "Enter|Space" })}>
+        <devtools-link href=${PROTOCOL_DOCUMENT_URL} class="devtools-link" autofocus .jslogContext=${"learn-more"}>
           ${i18nString6(UIStrings7.protocolHandlerRegistrations)}
-        </x-link>` })}
+        </devtools-link>` })}
     </div>
     ${renderProtocolTest(input.protocolHandler, input.queryInputState, input.protocolSelectHandler, input.queryInputChangeHandler, input.testProtocolClickHandler)}
   `, target);
@@ -2235,6 +2234,7 @@ __export(ReportsGrid_exports, {
   ReportsGrid: () => ReportsGrid,
   i18nString: () => i18nString7
 });
+import "./../../../ui/kit/kit.js";
 import "./../../../ui/legacy/components/data_grid/data_grid.js";
 import * as i18n15 from "./../../../core/i18n/i18n.js";
 import * as Root from "./../../../core/root/root.js";
@@ -2334,11 +2334,11 @@ var DEFAULT_VIEW6 = (input, output, target) => {
               <th id="status" weight="20">
                 <style>${reportsGrid_css_default}</style>
                 <span class="status-header">${i18nString7(UIStrings8.status)}</span>
-                <x-link href="https://web.dev/reporting-api/#report-status"
-                jslog=${VisualLogging6.link("report-status").track({ click: true })}>
+                <devtools-link href="https://web.dev/reporting-api/#report-status"
+                .jslogContext=${"report-status"}>
                   <devtools-icon class="inline-icon medium" name="help" style="color: var(--icon-link);"
                   ></devtools-icon>
-                </x-link>
+                </devtools-link>
               </th>
               <th id="destination" weight="20">${i18nString7(UIStrings8.destination)}</th>
               <th id="timestamp" weight="20">${i18nString7(UIStrings8.generatedAt)}</th>
@@ -2362,11 +2362,11 @@ var DEFAULT_VIEW6 = (input, output, target) => {
           <span class="empty-state-header">${i18nString7(UIStrings8.noReportsToDisplay)}</span>
           <div class="empty-state-description">
             <span>${i18nString7(UIStrings8.reportingApiDescription)}</span>
-            <x-link
+            <devtools-link
               class="devtools-link"
               href=${REPORTING_API_EXPLANATION_URL}
-              jslog=${VisualLogging6.link().track({ click: true, keydown: "Enter|Space" }).context("learn-more")}
-            >${i18nString7(UIStrings8.learnMore)}</x-link>
+              .jslogContext=${"learn-more"}
+            >${i18nString7(UIStrings8.learnMore)}</devtools-link>
           </div>
         </div>
       `}
@@ -2382,7 +2382,7 @@ var ReportsGrid = class extends UI7.Widget.Widget {
   constructor(element, view = DEFAULT_VIEW6) {
     super(element);
     this.#view = view;
-    this.#protocolMonitorExperimentEnabled = Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.PROTOCOL_MONITOR);
+    this.#protocolMonitorExperimentEnabled = Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.PROTOCOL_MONITOR);
     this.requestUpdate();
   }
   performUpdate() {
@@ -2514,6 +2514,7 @@ __export(SharedStorageAccessGrid_exports, {
   SharedStorageAccessGrid: () => SharedStorageAccessGrid,
   i18nString: () => i18nString8
 });
+import "./../../../ui/kit/kit.js";
 import "./../../../ui/legacy/components/data_grid/data_grid.js";
 import * as i18n17 from "./../../../core/i18n/i18n.js";
 import * as UI9 from "./../../../ui/legacy/legacy.js";
@@ -2625,11 +2626,11 @@ var DEFAULT_VIEW8 = (input, _output, target) => {
           <div class="empty-state-header">${i18nString8(UIStrings9.noEvents)}</div>
           <div class="empty-state-description">
             <span>${i18nString8(UIStrings9.sharedStorageDescription)}</span>
-            <x-link
-              class="x-link devtools-link"
+            <devtools-link
+              class="devtools-link"
               href=${SHARED_STORAGE_EXPLANATION_URL}
-              jslog=${VisualLogging7.link().track({ click: true, keydown: "Enter|Space" }).context("learn-more")}
-            >${i18nString8(UIStrings9.learnMore)}</x-link>
+              .jslogContext=${"learn-more"}
+            >${i18nString8(UIStrings9.learnMore)}</devtools-link>
           </div>
         </div>` : html9`
         <div jslog=${VisualLogging7.section("events-table")}>
@@ -3216,11 +3217,11 @@ function renderGridOrNoDataMessage(input) {
             <div class="empty-state-header">${i18nString11(UIStrings12.noTrustTokens)}</div>
             <div class="empty-state-description">
               <span>${i18nString11(UIStrings12.trustTokensDescription)}</span>
-              <x-link
-                class="x-link devtools-link"
+              <devtools-link
+                class="devtools-link"
                 href=${PRIVATE_STATE_TOKENS_EXPLANATION_URL}
-                jslog=${VisualLogging8.link().track({ click: true, keydown: "Enter|Space" }).context("learn-more")}
-              >${i18nString11(UIStrings12.learnMore)}</x-link>
+                .jslogContext=${"learn-more"}
+              >${i18nString11(UIStrings12.learnMore)}</devtools-link>
             </div>
           </div>
         </div>

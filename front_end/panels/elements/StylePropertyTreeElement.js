@@ -133,12 +133,14 @@ export class EnvFunctionRenderer extends rendererBase(SDK.CSSPropertyParserMatch
     treeElement;
     matchedStyles;
     computedStyles;
+    computedStyleExtraFields;
     // clang-format on
-    constructor(treeElement, matchedStyles, computedStyles) {
+    constructor(treeElement, matchedStyles, computedStyles, computedStyleExtraFields) {
         super();
         this.treeElement = treeElement;
         this.matchedStyles = matchedStyles;
         this.computedStyles = computedStyles;
+        this.computedStyleExtraFields = computedStyleExtraFields;
     }
     render(match, context) {
         const [, fallbackNodes] = ASTUtils.callArgs(match.node);
@@ -152,7 +154,7 @@ export class EnvFunctionRenderer extends rendererBase(SDK.CSSPropertyParserMatch
             }
         }
         const span = document.createElement('span');
-        const func = this.treeElement?.getTracingTooltip('env', match.node, this.matchedStyles, this.computedStyles, context) ??
+        const func = this.treeElement?.getTracingTooltip('env', match.node, this.matchedStyles, this.computedStyles, this.computedStyleExtraFields, context) ??
             'env';
         const valueClass = classMap({ 'inactive-value': !match.varNameIsValid });
         const fallbackClass = classMap({ 'inactive-value': match.varNameIsValid });
@@ -262,12 +264,14 @@ export class VariableRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
     #treeElement;
     #matchedStyles;
     #computedStyles;
-    constructor(stylesPane, treeElement, matchedStyles, computedStyles) {
+    #computedStyleExtraFields;
+    constructor(stylesPane, treeElement, matchedStyles, computedStyles, computedStyleExtraFields) {
         super();
         this.#treeElement = treeElement;
         this.#stylesPane = stylesPane;
         this.#matchedStyles = matchedStyles;
         this.#computedStyles = computedStyles;
+        this.#computedStyleExtraFields = computedStyleExtraFields;
     }
     render(match, context) {
         if (this.#treeElement?.property.ownerStyle.parentRule instanceof SDK.CSSRule.CSSFunctionRule) {
@@ -281,7 +285,7 @@ export class VariableRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
         const substitution = context.tracing?.substitution({ match, context });
         if (substitution) {
             if (declaration?.declaration) {
-                const { nodes, cssControls } = Renderer.renderValueNodes({ name: declaration.name, value: declaration.value ?? '' }, substitution.cachedParsedValue(declaration.declaration, this.#matchedStyles, this.#computedStyles), getPropertyRenderers(declaration.name, declaration.style, this.#stylesPane, this.#matchedStyles, null, this.#computedStyles), substitution);
+                const { nodes, cssControls } = Renderer.renderValueNodes({ name: declaration.name, value: declaration.value ?? '' }, substitution.cachedParsedValue(declaration.declaration, this.#matchedStyles, this.#computedStyles), getPropertyRenderers(declaration.name, declaration.style, this.#stylesPane, this.#matchedStyles, null, this.#computedStyles, this.#computedStyleExtraFields), substitution);
                 cssControls.forEach((value, key) => value.forEach(control => context.addControl(key, control)));
                 return nodes;
             }
@@ -290,7 +294,7 @@ export class VariableRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
             }
         }
         const renderedFallback = match.fallback ? Renderer.render(match.fallback, context) : undefined;
-        const varCall = this.#treeElement?.getTracingTooltip('var', match.node, this.#matchedStyles, this.#computedStyles, context);
+        const varCall = this.#treeElement?.getTracingTooltip('var', match.node, this.#matchedStyles, this.#computedStyles, this.#computedStyleExtraFields, context);
         const tooltipContents = this.#stylesPane.getVariablePopoverContents(this.#matchedStyles, match.name, variableValue ?? null);
         const tooltipId = this.#treeElement?.getTooltipId('custom-property-var');
         const tooltip = tooltipId ? { tooltipId } : undefined;
@@ -354,12 +358,14 @@ export class AttributeRenderer extends rendererBase(SDK.CSSPropertyParserMatcher
     #treeElement;
     #matchedStyles;
     #computedStyles;
-    constructor(stylesPane, treeElement, matchedStyles, computedStyles) {
+    #computedStyleExtraFields;
+    constructor(stylesPane, treeElement, matchedStyles, computedStyles, computedStyleExtraFields) {
         super();
         this.#treeElement = treeElement;
         this.#stylesPane = stylesPane;
         this.#matchedStyles = matchedStyles;
         this.#computedStyles = computedStyles;
+        this.#computedStyleExtraFields = computedStyleExtraFields;
     }
     render(match, context) {
         if (this.#treeElement?.property.ownerStyle.parentRule instanceof SDK.CSSRule.CSSFunctionRule) {
@@ -391,12 +397,12 @@ export class AttributeRenderer extends rendererBase(SDK.CSSPropertyParserMatcher
             else if (match.substitutionText !== null) {
                 const matching = SDK.CSSPropertyParser.matchDeclaration('--property', match.substitutionText, this.#matchedStyles.propertyMatchers(match.style, this.#computedStyles));
                 return Renderer
-                    .renderValueNodes({ name: '--property', value: match.substitutionText }, matching, getPropertyRenderers('--property', match.style, this.#stylesPane, this.#matchedStyles, null, this.#computedStyles), substitution)
+                    .renderValueNodes({ name: '--property', value: match.substitutionText }, matching, getPropertyRenderers('--property', match.style, this.#stylesPane, this.#matchedStyles, null, this.#computedStyles, this.#computedStyleExtraFields), substitution)
                     .nodes;
             }
         }
         const renderedFallback = match.fallback ? Renderer.render(match.fallback, context) : undefined;
-        const attrCall = this.#treeElement?.getTracingTooltip('attr', match.node, this.#matchedStyles, this.#computedStyles, context);
+        const attrCall = this.#treeElement?.getTracingTooltip('attr', match.node, this.#matchedStyles, this.#computedStyles, this.#computedStyleExtraFields, context);
         const tooltipId = attributeMissing ? undefined : this.#treeElement?.getTooltipId('custom-attribute');
         const tooltip = tooltipId ? { tooltipId } : undefined;
         // clang-format off
@@ -518,7 +524,7 @@ export class ColorRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.Co
         const childTracingContexts = context.tracing?.evaluation([args], { match, context }) ?? undefined;
         const renderingContext = childTracingContexts?.at(0)?.renderingContext(context) ?? context;
         const { nodes, cssControls } = Renderer.renderInto(args, renderingContext, valueChild);
-        render(html `${this.#treeElement?.getTracingTooltip(func, match.node, this.#treeElement.matchedStyles(), this.#treeElement.getComputedStyles() ?? new Map(), renderingContext) ??
+        render(html `${this.#treeElement?.getTracingTooltip(func, match.node, this.#treeElement.matchedStyles(), this.#treeElement.getComputedStyles() ?? new Map(), this.#treeElement.getComputedStyleExtraFields(), renderingContext) ??
             func}${nodes}`, valueChild);
         return { valueChild, cssControls, childTracingContexts };
     }
@@ -714,12 +720,14 @@ export class ColorMixRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
     #pane;
     #matchedStyles;
     #computedStyles;
+    #computedStyleExtraFields;
     #treeElement;
-    constructor(pane, matchedStyles, computedStyles, treeElement) {
+    constructor(pane, matchedStyles, computedStyles, computedStyleExtraFields, treeElement) {
         super();
         this.#pane = pane;
         this.#matchedStyles = matchedStyles;
         this.#computedStyles = computedStyles;
+        this.#computedStyleExtraFields = computedStyleExtraFields;
         this.#treeElement = treeElement;
     }
     render(match, context) {
@@ -745,7 +753,7 @@ export class ColorMixRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
         const contentChild = document.createElement('span');
         const color1 = Renderer.renderInto(match.color1, childRenderingContexts[1], contentChild);
         const color2 = Renderer.renderInto(match.color2, childRenderingContexts[2], contentChild);
-        render(html `${this.#treeElement?.getTracingTooltip('color-mix', match.node, this.#matchedStyles, this.#computedStyles, context) ??
+        render(html `${this.#treeElement?.getTracingTooltip('color-mix', match.node, this.#matchedStyles, this.#computedStyles, this.#computedStyleExtraFields, context) ??
             'color-mix'}(${Renderer.render(match.space, childRenderingContexts[0]).nodes}, ${color1.nodes}, ${color2.nodes})`, contentChild);
         const color1Controls = color1.cssControls.get('color') ?? [];
         const color2Controls = color2.cssControls.get('color') ?? [];
@@ -990,11 +998,11 @@ export class BezierRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.B
 }
 // clang-format off
 export class AutoBaseRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.AutoBaseMatch) {
-    #computedStyle;
+    #computedStyleExtraFields;
     // clang-format on
-    constructor(computedStyle) {
+    constructor(computedStyle, computedStyleExtraFields) {
         super();
-        this.#computedStyle = computedStyle;
+        this.#computedStyleExtraFields = computedStyleExtraFields;
     }
     render(match, context) {
         const content = document.createElement('span');
@@ -1005,8 +1013,9 @@ export class AutoBaseRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
         content.appendChild(document.createTextNode(')'));
         Renderer.renderInto(match.auto, context, auto);
         Renderer.renderInto(match.base, context, base);
-        const activeAppearance = this.#computedStyle.get('appearance');
-        if (activeAppearance?.startsWith('base')) {
+        // TODO(crbug.com/475522248): Consider cases with nested elements which
+        // support base appearance and ensure the logic matches StyleAdjuster in blink.
+        if (this.#computedStyleExtraFields?.isAppearanceBase) {
             auto.classList.add('inactive-value');
         }
         else {
@@ -1383,12 +1392,14 @@ export class BaseFunctionRenderer extends rendererBase(SDK.CSSPropertyParserMatc
     #stylesPane;
     #matchedStyles;
     #computedStyles;
+    #computedStyleExtraFields;
     #treeElement;
     #propertyName;
-    constructor(stylesPane, matchedStyles, computedStyles, propertyName, treeElement) {
+    constructor(stylesPane, matchedStyles, computedStyles, computedStyleExtraFields, propertyName, treeElement) {
         super();
         this.#matchedStyles = matchedStyles;
         this.#computedStyles = computedStyles;
+        this.#computedStyleExtraFields = computedStyleExtraFields;
         this.#stylesPane = stylesPane;
         this.#treeElement = treeElement;
         this.#propertyName = propertyName;
@@ -1401,7 +1412,7 @@ export class BaseFunctionRenderer extends rendererBase(SDK.CSSPropertyParserMatc
             return span;
         });
         const span = document.createElement('span');
-        render(html `${this.#treeElement?.getTracingTooltip(match.func, match.node, this.#matchedStyles, this.#computedStyles, context) ??
+        render(html `${this.#treeElement?.getTracingTooltip(match.func, match.node, this.#matchedStyles, this.#computedStyles, this.#computedStyleExtraFields, context) ??
             match.func}(${renderedArgs.map((arg, idx) => idx === 0 ? [arg] : [html `, `, arg]).flat()})`, span);
         if (childTracingContexts) {
             const evaluation = context.tracing?.applyEvaluation(childTracingContexts, () => ({ placeholder: [span], asyncEvalCallback: () => this.applyEvaluation(span, match, context) }));
@@ -1585,11 +1596,11 @@ export class PositionTryRenderer extends rendererBase(SDK.CSSPropertyParserMatch
         return content;
     }
 }
-export function getPropertyRenderers(propertyName, style, stylesPane, matchedStyles, treeElement, computedStyles) {
+export function getPropertyRenderers(propertyName, style, stylesPane, matchedStyles, treeElement, computedStyles, computedStyleExtraFields) {
     return [
-        new VariableRenderer(stylesPane, treeElement, matchedStyles, computedStyles),
+        new VariableRenderer(stylesPane, treeElement, matchedStyles, computedStyles, computedStyleExtraFields),
         new ColorRenderer(stylesPane, treeElement),
-        new ColorMixRenderer(stylesPane, matchedStyles, computedStyles, treeElement),
+        new ColorMixRenderer(stylesPane, matchedStyles, computedStyles, computedStyleExtraFields, treeElement),
         new URLRenderer(style.parentRule, stylesPane.node()),
         new AngleRenderer(treeElement),
         new LinkableNameRenderer(matchedStyles, stylesPane),
@@ -1603,15 +1614,15 @@ export function getPropertyRenderers(propertyName, style, stylesPane, matchedSty
         new AnchorFunctionRenderer(stylesPane),
         new PositionAnchorRenderer(stylesPane),
         new FlexGridRenderer(stylesPane, treeElement),
-        new EnvFunctionRenderer(treeElement, matchedStyles, computedStyles),
+        new EnvFunctionRenderer(treeElement, matchedStyles, computedStyles, computedStyleExtraFields),
         new PositionTryRenderer(matchedStyles),
         new LengthRenderer(stylesPane, propertyName, treeElement),
-        new MathFunctionRenderer(stylesPane, matchedStyles, computedStyles, propertyName, treeElement),
-        new CustomFunctionRenderer(stylesPane, matchedStyles, computedStyles, propertyName, treeElement),
-        new AutoBaseRenderer(computedStyles),
+        new MathFunctionRenderer(stylesPane, matchedStyles, computedStyles, computedStyleExtraFields, propertyName, treeElement),
+        new CustomFunctionRenderer(stylesPane, matchedStyles, computedStyles, computedStyleExtraFields, propertyName, treeElement),
+        new AutoBaseRenderer(computedStyles, computedStyleExtraFields),
         new BinOpRenderer(),
         new RelativeColorChannelRenderer(treeElement),
-        new AttributeRenderer(stylesPane, treeElement, matchedStyles, computedStyles),
+        new AttributeRenderer(stylesPane, treeElement, matchedStyles, computedStyles, computedStyleExtraFields),
     ];
 }
 export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
@@ -1635,6 +1646,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     lastComputedValue = null;
     computedStyles = null;
     parentsComputedStyles = null;
+    computedStyleExtraFields = null;
     contextForTest;
     #gridNames = undefined;
     #tooltipKeyCounts = new Map();
@@ -1723,6 +1735,12 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     }
     getComputedStyles() {
         return this.computedStyles;
+    }
+    setComputedStyleExtraFields(computedStyleExtraFields) {
+        this.computedStyleExtraFields = computedStyleExtraFields;
+    }
+    getComputedStyleExtraFields() {
+        return this.computedStyleExtraFields;
     }
     setParentsComputedStyles(parentsComputedStyles) {
         this.parentsComputedStyles = parentsComputedStyles;
@@ -1958,9 +1976,9 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
             this.expandElement.setAttribute('jslog', `${VisualLogging.expand().track({ click: true })}`);
         }
         const renderers = this.property.parsedOk ?
-            getPropertyRenderers(this.name, this.style, this.#parentPane, this.#matchedStyles, this, this.getComputedStyles() ?? new Map()) :
+            getPropertyRenderers(this.name, this.style, this.#parentPane, this.#matchedStyles, this, this.getComputedStyles() ?? new Map(), this.getComputedStyleExtraFields()) :
             [];
-        if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.FONT_EDITOR) && this.property.parsedOk) {
+        if (Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.FONT_EDITOR) && this.property.parsedOk) {
             renderers.push(new FontRenderer(this));
         }
         this.listItemElement.removeChildren();
@@ -2132,7 +2150,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         };
         return swatch;
     }
-    getTracingTooltip(functionName, node, matchedStyles, computedStyles, context) {
+    getTracingTooltip(functionName, node, matchedStyles, computedStyles, computedStyleExtraFields, context) {
         if (context.tracing || !context.property) {
             return html `${functionName}`;
         }
@@ -2154,7 +2172,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
             if (e.newState === 'open') {
                 void this.querySelector('devtools-widget')
                     ?.getWidget()
-                    ?.showTrace(property, text, matchedStyles, computedStyles, getPropertyRenderers(property.name, property.ownerStyle, stylesPane, matchedStyles, null, computedStyles), expandPercentagesInShorthands, shorthandPositionOffset, this.openedViaHotkey);
+                    ?.showTrace(property, text, matchedStyles, computedStyles, getPropertyRenderers(property.name, property.ownerStyle, stylesPane, matchedStyles, null, computedStyles, computedStyleExtraFields), expandPercentagesInShorthands, shorthandPositionOffset, this.openedViaHotkey);
             }
         }}
             @toggle=${function (e) {

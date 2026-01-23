@@ -161,6 +161,7 @@ const createAccessibilityTreeToggleButton = (isActive) => {
     return button;
 };
 let elementsPanelInstance;
+export const DEFAULT_COMPUTED_STYLES_DEBOUNCE_MS = 100;
 export class ElementsPanel extends UI.Panel.Panel {
     splitWidget;
     #searchableView;
@@ -194,6 +195,7 @@ export class ElementsPanel extends UI.Panel.Panel {
     };
     cssStyleTrackerByCSSModel;
     #domTreeWidget;
+    #computedStyleModel;
     getTreeOutlineForTesting() {
         return this.#domTreeWidget.getTreeOutlineForTesting();
     }
@@ -211,7 +213,7 @@ export class ElementsPanel extends UI.Panel.Panel {
         this.mainContainer = document.createElement('div');
         this.domTreeContainer = document.createElement('div');
         const crumbsContainer = document.createElement('div');
-        if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.FULL_ACCESSIBILITY_TREE)) {
+        if (Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.FULL_ACCESSIBILITY_TREE)) {
             this.initializeFullAccessibilityTreeView();
         }
         this.mainContainer.appendChild(this.domTreeContainer);
@@ -241,13 +243,16 @@ export class ElementsPanel extends UI.Panel.Panel {
             this.crumbNodeSelected(event);
         });
         crumbsContainer.appendChild(this.breadcrumbs);
-        const computedStyleModel = new ComputedStyleModel(UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode));
+        this.#computedStyleModel = new ComputedStyleModel(UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode));
         UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, event => {
-            computedStyleModel.node = event.data;
+            this.#computedStyleModel.node = event.data;
+            this.evaluateTrackingComputedStyleUpdatesForNode();
         });
-        this.stylesWidget = new StylesSidebarPane(computedStyleModel);
-        this.computedStyleWidget = new ComputedStyleWidget(computedStyleModel);
-        this.metricsWidget = new MetricsSidebarPane(computedStyleModel);
+        UI.Context.Context.instance().addFlavorChangeListener(StylesSidebarPane, this.evaluateTrackingComputedStyleUpdatesForNode, this);
+        UI.Context.Context.instance().addFlavorChangeListener(ComputedStyleWidget, this.evaluateTrackingComputedStyleUpdatesForNode, this);
+        this.stylesWidget = new StylesSidebarPane(this.#computedStyleModel);
+        this.computedStyleWidget = new ComputedStyleWidget(this.#computedStyleModel);
+        this.metricsWidget = new MetricsSidebarPane(this.#computedStyleModel);
         Common.Settings.Settings.instance()
             .moduleSetting('sidebar-position')
             .addChangeListener(this.updateSidebarPosition.bind(this));
@@ -276,6 +281,19 @@ export class ElementsPanel extends UI.Panel.Panel {
             PanelCommon.AnnotationManager.instance().initializePlacementForAnnotationType(Annotations.AnnotationType.ELEMENT_NODE, this.resolveInitialState.bind(this), this.#domTreeWidget.element);
         }
     }
+    // This is a debounced method because the user might be navigated from Styles tab to Computed Style tab and vice versa.
+    // For that case, we want to only run this function once.
+    evaluateTrackingComputedStyleUpdatesForNode = Common.Debouncer.debounce(() => {
+        const selectedNode = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
+        if (!selectedNode) {
+            return;
+        }
+        const isComputedStyleWidgetVisible = Boolean(UI.Context.Context.instance().flavor(ComputedStyleWidget));
+        const isStylesTabVisible = Boolean(UI.Context.Context.instance().flavor(StylesSidebarPane));
+        const shouldTrackComputedStyleUpdates = isComputedStyleWidgetVisible ||
+            (isStylesTabVisible && Root.Runtime.hostConfig.devToolsAnimationStylesInStylesTab?.enabled);
+        void selectedNode.domModel()?.cssModel()?.trackComputedStyleUpdatesForNode(shouldTrackComputedStyleUpdates ? selectedNode.id : undefined);
+    }, 100);
     handleElementExpanded() {
         if (Annotations.AnnotationRepository.annotationsEnabled()) {
             void PanelCommon.AnnotationManager.instance().resolveAnnotationsOfType(Annotations.AnnotationType.ELEMENT_NODE);

@@ -1,4 +1,8 @@
 import * as CodeMirror from '../../../third_party/codemirror.next/codemirror.next.js';
+export interface CommentNodeInfo {
+    text: string;
+    to: number;
+}
 export declare class AiCodeGenerationParser {
-    static extractCommentText(state: CodeMirror.EditorState, cursorPosition: number): string | undefined;
+    static extractCommentNodeInfo(state: CodeMirror.EditorState, cursorPosition: number): CommentNodeInfo | undefined;
 }

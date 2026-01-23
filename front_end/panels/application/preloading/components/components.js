@@ -629,8 +629,8 @@ function prerenderFailureReason(attempt) {
   }
 }
 function ruleSetLocationShort(ruleSet, pageURL) {
-  const url2 = ruleSet.url === void 0 ? pageURL : ruleSet.url;
-  return Bindings.ResourceUtils.displayNameForURL(url2);
+  const url = ruleSet.url === void 0 ? pageURL : ruleSet.url;
+  return Bindings.ResourceUtils.displayNameForURL(url);
 }
 function ruleSetTagOrLocationShort(ruleSet, pageURL) {
   if (!ruleSet.errorMessage && ruleSet.tag) {
@@ -638,8 +638,8 @@ function ruleSetTagOrLocationShort(ruleSet, pageURL) {
   }
   return ruleSetLocationShort(ruleSet, pageURL);
 }
-function capitalizedAction(action5) {
-  switch (action5) {
+function capitalizedAction(action4) {
+  switch (action4) {
     case "Prefetch":
       return i18n.i18n.lockedString("Prefetch");
     case "Prerender":
@@ -676,8 +676,8 @@ function sortOrder(attempt) {
       Platform.assertNever(attempt.status, "Unknown Preloading attempt status");
   }
 }
-function status(status3) {
-  switch (status3) {
+function status(status2) {
+  switch (status2) {
     case "NotTriggered":
       return i18nString(UIStrings.statusNotTriggered);
     case "Pending":
@@ -762,8 +762,8 @@ var UIStrings2 = {
 var str_2 = i18n3.i18n.registerUIStrings("panels/application/preloading/components/MismatchedPreloadingGrid.ts", UIStrings2);
 var i18nString2 = i18n3.i18n.getLocalizedString.bind(void 0, str_2);
 var PreloadingUIUtils = class {
-  static status(status3) {
-    switch (status3) {
+  static status(status2) {
+    switch (status2) {
       case "NotTriggered":
         return i18nString2(UIStrings2.statusNotTriggered);
       case "Pending":
@@ -869,13 +869,14 @@ __export(PreloadingDetailsReportView_exports, {
 });
 import "./../../../../ui/components/report_view/report_view.js";
 import "./../../../../ui/components/request_link_icon/request_link_icon.js";
-import "./../../../../ui/legacy/components/utils/utils.js";
 import * as Common from "./../../../../core/common/common.js";
 import * as i18n5 from "./../../../../core/i18n/i18n.js";
 import { assertNotNullOrUndefined as assertNotNullOrUndefined2 } from "./../../../../core/platform/platform.js";
 import * as SDK3 from "./../../../../core/sdk/sdk.js";
 import * as Logs from "./../../../../models/logs/logs.js";
 import * as Buttons from "./../../../../ui/components/buttons/buttons.js";
+import * as LegacyWrapper from "./../../../../ui/components/legacy_wrapper/legacy_wrapper.js";
+import * as RenderCoordinator from "./../../../../ui/components/render_coordinator/render_coordinator.js";
 import * as UI2 from "./../../../../ui/legacy/legacy.js";
 import * as Lit2 from "./../../../../ui/lit/lit.js";
 import * as VisualLogging from "./../../../../ui/visual_logging/visual_logging.js";
@@ -1004,8 +1005,8 @@ var UIStrings3 = {
 var str_3 = i18n5.i18n.registerUIStrings("panels/application/preloading/components/PreloadingDetailsReportView.ts", UIStrings3);
 var i18nString3 = i18n5.i18n.getLocalizedString.bind(void 0, str_3);
 var PreloadingUIUtils2 = class {
-  static detailedStatus({ status: status3 }) {
-    switch (status3) {
+  static detailedStatus({ status: status2 }) {
+    switch (status2) {
       case "NotTriggered":
         return i18nString3(UIStrings3.detailedStatusNotTriggered);
       case "Pending":
@@ -1037,221 +1038,224 @@ var PreloadingUIUtils2 = class {
     }
   }
 };
-function url(data) {
-  const attempt = data.pipeline.getOriginallyTriggered();
-  const prefetchStatus = data.pipeline.getPrefetch()?.status;
-  let value;
-  if (attempt.action === "Prefetch" && attempt.requestId !== void 0 && prefetchStatus !== "NotTriggered") {
-    const { requestId, key: { url: url2 } } = attempt;
-    const affectedRequest = { requestId, url: url2 };
-    value = html2`
-        <devtools-request-link-icon
-          .data=${{
-      affectedRequest,
-      requestResolver: data.requestResolver || new Logs.RequestResolver.RequestResolver(),
-      displayURL: true,
-      urlToDisplay: url2
-    }}
-        >
-        </devtools-request-link-icon>
-    `;
-  } else {
-    value = html2`<div class="text-ellipsis" title=${attempt.key.url}>${attempt.key.url}</div>`;
+var PreloadingDetailsReportView = class extends LegacyWrapper.LegacyWrapper.WrappableComponent {
+  #shadow = this.attachShadow({ mode: "open" });
+  #data = null;
+  set data(data) {
+    this.#data = data;
+    void this.#render();
   }
-  return html2`
-      <devtools-report-key>${i18n5.i18n.lockedString("URL")}</devtools-report-key>
-      <devtools-report-value>
-        ${value}
-      </devtools-report-value>
-  `;
-}
-function isPrerenderLike(speculationAction) {
-  return [
-    "Prerender",
-    "PrerenderUntilScript"
-    /* Protocol.Preload.SpeculationAction.PrerenderUntilScript */
-  ].includes(speculationAction);
-}
-function action2(data, isFallbackToPrefetch) {
-  const attempt = data.pipeline.getOriginallyTriggered();
-  const action5 = capitalizedAction(attempt.action);
-  let maybeFallback = Lit2.nothing;
-  if (isFallbackToPrefetch) {
-    maybeFallback = html2`${i18nString3(UIStrings3.automaticallyFellBackToPrefetch)}`;
-  }
-  let maybeInspectButton = Lit2.nothing;
-  (() => {
-    if (!isPrerenderLike(attempt.action)) {
-      return;
-    }
-    const target = SDK3.TargetManager.TargetManager.instance().primaryPageTarget();
-    if (target === null) {
-      return;
-    }
-    const prerenderTarget = SDK3.TargetManager.TargetManager.instance().targets().find((child) => child.targetInfo()?.subtype === "prerender" && child.inspectedURL() === attempt.key.url);
-    const disabled = prerenderTarget === void 0;
-    const inspect = () => {
-      if (prerenderTarget === void 0) {
+  async #render() {
+    await RenderCoordinator.write("PreloadingDetailsReportView render", () => {
+      if (this.#data === null) {
+        Lit2.render(html2`
+          <style>${preloadingDetailsReportView_css_default}</style>
+          <style>${UI2.inspectorCommonStyles}</style>
+          <div class="empty-state">
+            <span class="empty-state-header">${i18nString3(UIStrings3.noElementSelected)}</span>
+            <span class="empty-state-description">${i18nString3(UIStrings3.selectAnElementForMoreDetails)}</span>
+          </div>
+        `, this.#shadow, { host: this });
         return;
       }
-      UI2.Context.Context.instance().setFlavor(SDK3.Target.Target, prerenderTarget);
-    };
-    maybeInspectButton = html2`
-        <devtools-button
-          @click=${inspect}
-          .title=${i18nString3(UIStrings3.buttonClickToInspect)}
-          .size=${"SMALL"}
-          .variant=${"outlined"}
-          .disabled=${disabled}
-          jslog=${VisualLogging.action("inspect-prerendered-page").track({ click: true })}
-        >
-          ${i18nString3(UIStrings3.buttonInspect)}
-        </devtools-button>
+      const pipeline = this.#data.pipeline;
+      const pageURL = this.#data.pageURL;
+      const isFallbackToPrefetch = pipeline.getPrerender()?.status === "Failure" && (pipeline.getPrefetch()?.status === "Ready" || pipeline.getPrefetch()?.status === "Success");
+      Lit2.render(html2`
+        <style>${preloadingDetailsReportView_css_default}</style>
+        <style>${UI2.inspectorCommonStyles}</style>
+        <devtools-report
+          .data=${{ reportTitle: "Speculative Loading Attempt" }}
+          jslog=${VisualLogging.section("preloading-details")}>
+          <devtools-report-section-header>${i18nString3(UIStrings3.detailsDetailedInformation)}</devtools-report-section-header>
+
+          ${this.#url()}
+          ${this.#action(isFallbackToPrefetch)}
+          ${this.#status(isFallbackToPrefetch)}
+          ${this.#targetHint()}
+          ${this.#maybePrefetchFailureReason()}
+          ${this.#maybePrerenderFailureReason()}
+
+          ${this.#data.ruleSets.map((ruleSet) => this.#renderRuleSet(ruleSet, pageURL))}
+        </devtools-report>
+      `, this.#shadow, { host: this });
+    });
+  }
+  #url() {
+    assertNotNullOrUndefined2(this.#data);
+    const attempt = this.#data.pipeline.getOriginallyTriggered();
+    const prefetchStatus = this.#data.pipeline.getPrefetch()?.status;
+    let value;
+    if (attempt.action === "Prefetch" && attempt.requestId !== void 0 && prefetchStatus !== "NotTriggered") {
+      const { requestId, key: { url } } = attempt;
+      const affectedRequest = { requestId, url };
+      value = html2`
+          <devtools-request-link-icon
+            .data=${{
+        affectedRequest,
+        requestResolver: this.#data.requestResolver || new Logs.RequestResolver.RequestResolver(),
+        displayURL: true,
+        urlToDisplay: url
+      }}
+          >
+          </devtools-request-link-icon>
+      `;
+    } else {
+      value = html2`
+          <div class="text-ellipsis" title=${attempt.key.url}>${attempt.key.url}</div>
+      `;
+    }
+    return html2`
+        <devtools-report-key>${i18n5.i18n.lockedString("URL")}</devtools-report-key>
+        <devtools-report-value>
+          ${value}
+        </devtools-report-value>
     `;
-  })();
-  return html2`
-      <devtools-report-key>${i18nString3(UIStrings3.detailsAction)}</devtools-report-key>
-      <devtools-report-value>
-        <div class="text-ellipsis" title="">
-          ${action5} ${maybeFallback} ${maybeInspectButton}
-        </div>
-      </devtools-report-value>
-  `;
-}
-function status2(data, isFallbackToPrefetch) {
-  const attempt = data.pipeline.getOriginallyTriggered();
-  const detailedStatus = isFallbackToPrefetch ? i18nString3(UIStrings3.detailedStatusFallbackToPrefetch) : PreloadingUIUtils2.detailedStatus(attempt);
-  return html2`
-      <devtools-report-key>${i18nString3(UIStrings3.detailsStatus)}</devtools-report-key>
-      <devtools-report-value>
-        ${detailedStatus}
-      </devtools-report-value>
-  `;
-}
-function maybePrefetchFailureReason(data) {
-  const attempt = data.pipeline.getOriginallyTriggered();
-  if (attempt.action !== "Prefetch") {
-    return Lit2.nothing;
   }
-  const failureDescription = prefetchFailureReason(attempt);
-  if (failureDescription === null) {
-    return Lit2.nothing;
+  #isPrerenderLike(speculationAction) {
+    return [
+      "Prerender",
+      "PrerenderUntilScript"
+      /* Protocol.Preload.SpeculationAction.PrerenderUntilScript */
+    ].includes(speculationAction);
   }
-  return html2`
-      <devtools-report-key>${i18nString3(UIStrings3.detailsFailureReason)}</devtools-report-key>
-      <devtools-report-value>
-        ${failureDescription}
-      </devtools-report-value>
-  `;
-}
-function targetHint(data) {
-  const attempt = data.pipeline.getOriginallyTriggered();
-  const hasTargetHint = isPrerenderLike(attempt.action) && attempt.key.targetHint !== void 0;
-  if (!hasTargetHint) {
-    return Lit2.nothing;
+  #action(isFallbackToPrefetch) {
+    assertNotNullOrUndefined2(this.#data);
+    const attempt = this.#data.pipeline.getOriginallyTriggered();
+    const action4 = capitalizedAction(attempt.action);
+    let maybeFallback = Lit2.nothing;
+    if (isFallbackToPrefetch) {
+      maybeFallback = html2`${i18nString3(UIStrings3.automaticallyFellBackToPrefetch)}`;
+    }
+    let maybeInspectButton = Lit2.nothing;
+    (() => {
+      if (!this.#isPrerenderLike(attempt.action)) {
+        return;
+      }
+      const target = SDK3.TargetManager.TargetManager.instance().primaryPageTarget();
+      if (target === null) {
+        return;
+      }
+      const prerenderTarget = SDK3.TargetManager.TargetManager.instance().targets().find((child) => child.targetInfo()?.subtype === "prerender" && child.inspectedURL() === attempt.key.url);
+      const disabled = prerenderTarget === void 0;
+      const inspect = () => {
+        if (prerenderTarget === void 0) {
+          return;
+        }
+        UI2.Context.Context.instance().setFlavor(SDK3.Target.Target, prerenderTarget);
+      };
+      maybeInspectButton = html2`
+          <devtools-button
+            @click=${inspect}
+            .title=${i18nString3(UIStrings3.buttonClickToInspect)}
+            .size=${"SMALL"}
+            .variant=${"outlined"}
+            .disabled=${disabled}
+            jslog=${VisualLogging.action("inspect-prerendered-page").track({ click: true })}
+          >
+            ${i18nString3(UIStrings3.buttonInspect)}
+          </devtools-button>
+      `;
+    })();
+    return html2`
+        <devtools-report-key>${i18nString3(UIStrings3.detailsAction)}</devtools-report-key>
+        <devtools-report-value>
+          <div class="text-ellipsis" title="">
+            ${action4} ${maybeFallback} ${maybeInspectButton}
+          </div>
+        </devtools-report-value>
+    `;
   }
-  return html2`
-      <devtools-report-key>${i18nString3(UIStrings3.detailsTargetHint)}</devtools-report-key>
-      <devtools-report-value>
-        ${PreloadingUIUtils2.detailedTargetHint(attempt.key)}
-      </devtools-report-value>
-  `;
-}
-function maybePrerenderFailureReason(data) {
-  const attempt = data.pipeline.getOriginallyTriggered();
-  if (!isPrerenderLike(attempt.action)) {
-    return Lit2.nothing;
+  #status(isFallbackToPrefetch) {
+    assertNotNullOrUndefined2(this.#data);
+    const attempt = this.#data.pipeline.getOriginallyTriggered();
+    const detailedStatus = isFallbackToPrefetch ? i18nString3(UIStrings3.detailedStatusFallbackToPrefetch) : PreloadingUIUtils2.detailedStatus(attempt);
+    return html2`
+        <devtools-report-key>${i18nString3(UIStrings3.detailsStatus)}</devtools-report-key>
+        <devtools-report-value>
+          ${detailedStatus}
+        </devtools-report-value>
+    `;
   }
-  const failureReason = prerenderFailureReason(attempt);
-  if (failureReason === null) {
-    return Lit2.nothing;
+  #maybePrefetchFailureReason() {
+    assertNotNullOrUndefined2(this.#data);
+    const attempt = this.#data.pipeline.getOriginallyTriggered();
+    if (attempt.action !== "Prefetch") {
+      return Lit2.nothing;
+    }
+    const failureDescription = prefetchFailureReason(attempt);
+    if (failureDescription === null) {
+      return Lit2.nothing;
+    }
+    return html2`
+        <devtools-report-key>${i18nString3(UIStrings3.detailsFailureReason)}</devtools-report-key>
+        <devtools-report-value>
+          ${failureDescription}
+        </devtools-report-value>
+    `;
   }
-  return html2`
-      <devtools-report-key>${i18nString3(UIStrings3.detailsFailureReason)}</devtools-report-key>
-      <devtools-report-value>
-        ${failureReason}
-      </devtools-report-value>
-  `;
-}
-var DEFAULT_VIEW2 = ({ data, onRevealRuleSet }, _, target) => {
-  if (data === null) {
-    Lit2.render(html2`
-      <style>${preloadingDetailsReportView_css_default}</style>
-      <style>${UI2.inspectorCommonStyles}</style>
-      <div class="empty-state">
-        <span class="empty-state-header">${i18nString3(UIStrings3.noElementSelected)}</span>
-        <span class="empty-state-description">${i18nString3(UIStrings3.selectAnElementForMoreDetails)}</span>
-      </div>
-    `, target, { host: target });
-    return;
+  #targetHint() {
+    assertNotNullOrUndefined2(this.#data);
+    const attempt = this.#data.pipeline.getOriginallyTriggered();
+    const hasTargetHint = this.#isPrerenderLike(attempt.action) && attempt.key.targetHint !== void 0;
+    if (!hasTargetHint) {
+      return Lit2.nothing;
+    }
+    return html2`
+        <devtools-report-key>${i18nString3(UIStrings3.detailsTargetHint)}</devtools-report-key>
+        <devtools-report-value>
+          ${PreloadingUIUtils2.detailedTargetHint(attempt.key)}
+        </devtools-report-value>
+    `;
   }
-  const pipeline = data.pipeline;
-  const pageURL = data.pageURL;
-  const isFallbackToPrefetch = pipeline.getPrerender()?.status === "Failure" && (pipeline.getPrefetch()?.status === "Ready" || pipeline.getPrefetch()?.status === "Success");
-  Lit2.render(html2`
-    <style>${preloadingDetailsReportView_css_default}</style>
-    <style>${UI2.inspectorCommonStyles}</style>
-    <devtools-report
-      .data=${{ reportTitle: "Speculative Loading Attempt" }}
-      jslog=${VisualLogging.section("preloading-details")}>
-      <devtools-report-section-header>${i18nString3(UIStrings3.detailsDetailedInformation)}</devtools-report-section-header>
-
-      ${url(data)}
-      ${action2(data, isFallbackToPrefetch)}
-      ${status2(data, isFallbackToPrefetch)}
-      ${targetHint(data)}
-      ${maybePrefetchFailureReason(data)}
-      ${maybePrerenderFailureReason(data)}
-
-      ${data.ruleSets.map((ruleSet) => {
+  #maybePrerenderFailureReason() {
+    assertNotNullOrUndefined2(this.#data);
+    const attempt = this.#data.pipeline.getOriginallyTriggered();
+    if (!this.#isPrerenderLike(attempt.action)) {
+      return Lit2.nothing;
+    }
+    const failureReason = prerenderFailureReason(attempt);
+    if (failureReason === null) {
+      return Lit2.nothing;
+    }
+    return html2`
+        <devtools-report-key>${i18nString3(UIStrings3.detailsFailureReason)}</devtools-report-key>
+        <devtools-report-value>
+          ${failureReason}
+        </devtools-report-value>
+    `;
+  }
+  #renderRuleSet(ruleSet, pageURL) {
+    const revealRuleSetView = () => {
+      void Common.Revealer.reveal(new PreloadingHelper.PreloadingForward.RuleSetView(ruleSet.id));
+    };
     const location = ruleSetLocationShort(ruleSet, pageURL);
     return html2`
-          <devtools-report-key>${i18nString3(UIStrings3.detailsRuleSet)}</devtools-report-key>
-          <devtools-report-value>
-            <div class="text-ellipsis" title="">
-              <button class="link" role="link"
-                @click=${() => onRevealRuleSet(ruleSet)}
-                title=${i18nString3(UIStrings3.buttonClickToRevealRuleSet)}
-                style=${Lit2.Directives.styleMap({
+      <devtools-report-key>${i18nString3(UIStrings3.detailsRuleSet)}</devtools-report-key>
+      <devtools-report-value>
+        <div class="text-ellipsis" title="">
+          <button class="link" role="link"
+            @click=${revealRuleSetView}
+            title=${i18nString3(UIStrings3.buttonClickToRevealRuleSet)}
+            style=${Lit2.Directives.styleMap({
       color: "var(--sys-color-primary)",
       "text-decoration": "underline"
     })}
-                jslog=${VisualLogging.action("reveal-rule-set").track({ click: true })}
-              >
-                ${location}
-              </button>
-            </div>
-          </devtools-report-value>
-        `;
-  })}
-    </devtools-report>
-  `, target, { host: target });
-};
-var PreloadingDetailsReportView = class extends UI2.Widget.VBox {
-  #view;
-  #data = null;
-  constructor(view = DEFAULT_VIEW2) {
-    super();
-    this.#view = view;
-  }
-  set data(data) {
-    this.#data = data;
-    this.requestUpdate();
-  }
-  performUpdate() {
-    this.#view({
-      data: this.#data,
-      onRevealRuleSet: (ruleSet) => {
-        void Common.Revealer.reveal(new PreloadingHelper.PreloadingForward.RuleSetView(ruleSet.id));
-      }
-    }, void 0, this.contentElement);
+            jslog=${VisualLogging.action("reveal-rule-set").track({ click: true })}
+          >
+            ${location}
+          </button>
+        </div>
+      </devtools-report-value>
+    `;
   }
 };
+customElements.define("devtools-resources-preloading-details-report-view", PreloadingDetailsReportView);
 
 // gen/front_end/panels/application/preloading/components/PreloadingDisabledInfobar.js
 var PreloadingDisabledInfobar_exports = {};
 __export(PreloadingDisabledInfobar_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW3,
+  DEFAULT_VIEW: () => DEFAULT_VIEW2,
   PreloadingDisabledInfobar: () => PreloadingDisabledInfobar
 });
 import "./../../../../ui/components/report_view/report_view.js";
@@ -1377,7 +1381,7 @@ var UIStrings4 = {
 var str_4 = i18n7.i18n.registerUIStrings("panels/application/preloading/components/PreloadingDisabledInfobar.ts", UIStrings4);
 var i18nString4 = i18n7.i18n.getLocalizedString.bind(void 0, str_4);
 var LINK = "https://developer.chrome.com/blog/prerender-pages/";
-var DEFAULT_VIEW3 = (input, _output, target) => {
+var DEFAULT_VIEW2 = (input, _output, target) => {
   let template = nothing2;
   if (input.header !== null) {
     template = html3`
@@ -1423,7 +1427,7 @@ var PreloadingDisabledInfobar = class extends UI3.Widget.VBox {
   #disabledByBatterySaver = false;
   #disabledByHoldbackPrefetchSpeculationRules = false;
   #disabledByHoldbackPrerenderSpeculationRules = false;
-  constructor(view = DEFAULT_VIEW3) {
+  constructor(view = DEFAULT_VIEW2) {
     super({ useShadowDom: true });
     this.#view = view;
   }
@@ -1612,11 +1616,11 @@ var str_5 = i18n9.i18n.registerUIStrings("panels/application/preloading/componen
 var i18nString5 = i18n9.i18n.getLocalizedString.bind(void 0, str_5);
 var { render: render4, html: html4, nothing: nothing3, Directives: { styleMap: styleMap2 } } = Lit3;
 function urlShort(row, securityOrigin) {
-  const url2 = row.pipeline.getOriginallyTriggered().key.url;
-  return securityOrigin && url2.startsWith(securityOrigin) ? url2.slice(securityOrigin.length) : url2;
+  const url = row.pipeline.getOriginallyTriggered().key.url;
+  return securityOrigin && url.startsWith(securityOrigin) ? url.slice(securityOrigin.length) : url;
 }
 var PRELOADING_GRID_DEFAULT_VIEW = (input, _output, target) => {
-  if (!input.rows || input.pageURL === void 0) {
+  if (!input.rows || !input.pageURL) {
     render4(nothing3, target);
     return;
   }
@@ -1698,7 +1702,7 @@ var PreloadingGrid = class extends UI4.Widget.VBox {
 // gen/front_end/panels/application/preloading/components/RuleSetDetailsView.js
 var RuleSetDetailsView_exports = {};
 __export(RuleSetDetailsView_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW4,
+  DEFAULT_VIEW: () => DEFAULT_VIEW3,
   RuleSetDetailsView: () => RuleSetDetailsView
 });
 import * as i18n11 from "./../../../../core/i18n/i18n.js";
@@ -1759,7 +1763,7 @@ var UIStrings6 = {
 var str_6 = i18n11.i18n.registerUIStrings("panels/application/preloading/components/RuleSetDetailsView.ts", UIStrings6);
 var i18nString6 = i18n11.i18n.getLocalizedString.bind(void 0, str_6);
 var codeMirrorJsonType = await CodeHighlighter.CodeHighlighter.languageFromMIME("application/json");
-var DEFAULT_VIEW4 = (input, _output, target) => {
+var DEFAULT_VIEW3 = (input, _output, target) => {
   render5(html5`
     <style>${RuleSetDetailsView_css_default}</style>
     <style>${UI5.inspectorCommonStyles}</style>
@@ -1789,7 +1793,7 @@ var RuleSetDetailsView = class extends UI5.Widget.VBox {
   #view;
   #ruleSet = null;
   #shouldPrettyPrint = true;
-  constructor(element, view = DEFAULT_VIEW4) {
+  constructor(element, view = DEFAULT_VIEW3) {
     super(element, { useShadowDom: true });
     this.#view = view;
   }
@@ -1840,7 +1844,7 @@ var RuleSetDetailsView = class extends UI5.Widget.VBox {
 // gen/front_end/panels/application/preloading/components/RuleSetGrid.js
 var RuleSetGrid_exports = {};
 __export(RuleSetGrid_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW5,
+  DEFAULT_VIEW: () => DEFAULT_VIEW4,
   RuleSetGrid: () => RuleSetGrid,
   i18nString: () => i18nString7
 });
@@ -1914,7 +1918,7 @@ var UIStrings7 = {
 };
 var str_7 = i18n13.i18n.registerUIStrings("panels/application/preloading/components/RuleSetGrid.ts", UIStrings7);
 var i18nString7 = i18n13.i18n.getLocalizedString.bind(void 0, str_7);
-var DEFAULT_VIEW5 = (input, _output, target) => {
+var DEFAULT_VIEW4 = (input, _output, target) => {
   let template = nothing5;
   if (input.data !== null) {
     const { rows, pageURL } = input.data;
@@ -2001,7 +2005,7 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
 var RuleSetGrid = class extends Common3.ObjectWrapper.eventMixin(UI6.Widget.VBox) {
   #view;
   #data = null;
-  constructor(view = DEFAULT_VIEW5) {
+  constructor(view = DEFAULT_VIEW4) {
     super({ useShadowDom: true });
     this.#view = view;
   }
@@ -2324,11 +2328,11 @@ function renderMismatchedSections(data) {
       ${i18nString8(UIStrings8.currentURL)}
     </devtools-report-section-header>
     <devtools-report-section>
-      <x-link
+      <devtools-link
         class="link devtools-link"
         href=${data.pageURL}
-        jslog=${VisualLogging4.link().track({ click: true, keydown: "Enter|Space" }).context("current-url")}
-      >${data.pageURL}</x-link>
+        .jslogContext=${"current-url"}
+      >${data.pageURL}</devtools-link>
     </devtools-report-section>
 
     <devtools-report-section-header>
@@ -2431,7 +2435,7 @@ function renderBadge(config) {
       return badge("status-badge status-badge-neutral", "clear", config.message);
   }
 }
-var DEFAULT_VIEW6 = (input, _output, target) => {
+var DEFAULT_VIEW5 = (input, _output, target) => {
   render7(html7`
     <style>${usedPreloadingView_css_default}</style>
     <devtools-report>
@@ -2444,17 +2448,17 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
       <devtools-report-divider></devtools-report-divider>
 
       <devtools-report-section>
-        <x-link
+        <devtools-link
           class="link devtools-link"
           href=${"https://developer.chrome.com/blog/prerender-pages/"}
-          jslog=${VisualLogging4.link().track({ click: true, keydown: "Enter|Space" }).context("learn-more")}
-        >${i18nString8(UIStrings8.learnMore)}</x-link>
+          .jslogContext=${"learn-more"}
+        >${i18nString8(UIStrings8.learnMore)}</devtools-link>
       </devtools-report-section>
     </devtools-report>`, target);
 };
 var UsedPreloadingView = class extends UI7.Widget.VBox {
   #view;
-  constructor(view = DEFAULT_VIEW6) {
+  constructor(view = DEFAULT_VIEW5) {
     super({ useShadowDom: true });
     this.#view = view;
   }

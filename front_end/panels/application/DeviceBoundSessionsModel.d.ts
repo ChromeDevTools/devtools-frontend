@@ -7,6 +7,7 @@ interface EventWithTimestamp {
 }
 export interface SessionAndEvents {
     session?: Protocol.Network.DeviceBoundSession;
+    isSessionTerminated: boolean;
     eventsById: Map<string, EventWithTimestamp>;
 }
 export declare class DeviceBoundSessionsModel extends Common.ObjectWrapper.ObjectWrapper<DeviceBoundSessionModelEventTypes> implements SDK.TargetManager.SDKModelObserver<SDK.NetworkManager.NetworkManager> {
@@ -18,6 +19,7 @@ export declare class DeviceBoundSessionsModel extends Common.ObjectWrapper.Objec
     clearVisibleSites(): void;
     clearEvents(): void;
     isSiteVisible(site: string): boolean;
+    isSessionTerminated(site: string, sessionId?: string): boolean;
     getSession(site: string, sessionId?: string): SessionAndEvents | undefined;
     getPreserveLogSetting(): Common.Settings.Setting<boolean>;
 }

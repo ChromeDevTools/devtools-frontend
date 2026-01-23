@@ -1,3 +1,4 @@
+import '../../ui/kit/kit.js';
 import '../../ui/components/expandable_list/expandable_list.js';
 import '../../ui/components/report_view/report_view.js';
 import * as SDK from '../../core/sdk/sdk.js';

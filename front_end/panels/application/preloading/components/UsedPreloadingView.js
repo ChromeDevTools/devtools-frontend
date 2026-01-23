@@ -201,13 +201,11 @@ function renderMismatchedSections(data) {
       ${i18nString(UIStrings.currentURL)}
     </devtools-report-section-header>
     <devtools-report-section>
-      <x-link
+      <devtools-link
         class="link devtools-link"
         href=${data.pageURL}
-        jslog=${VisualLogging.link()
-        .track({ click: true, keydown: 'Enter|Space' })
-        .context('current-url')}
-      >${data.pageURL}</x-link>
+        .jslogContext=${'current-url'}
+      >${data.pageURL}</devtools-link>
     </devtools-report-section>
 
     <devtools-report-section-header>
@@ -337,13 +335,11 @@ const DEFAULT_VIEW = (input, _output, target) => {
       <devtools-report-divider></devtools-report-divider>
 
       <devtools-report-section>
-        <x-link
+        <devtools-link
           class="link devtools-link"
           href=${'https://developer.chrome.com/blog/prerender-pages/'}
-          jslog=${VisualLogging.link()
-        .track({ click: true, keydown: 'Enter|Space' })
-        .context('learn-more')}
-        >${i18nString(UIStrings.learnMore)}</x-link>
+          .jslogContext=${'learn-more'}
+        >${i18nString(UIStrings.learnMore)}</devtools-link>
       </devtools-report-section>
     </devtools-report>`, target);
     // clang-format on

@@ -20,6 +20,8 @@ style.setProperty('--image-file-nodeIcon', 'url(\"' + new URL('./nodeIcon.avif',
 style.setProperty('--image-file-popoverArrows', 'url(\"' + new URL('./popoverArrows.png', import.meta.url).toString() + '\")');
 style.setProperty('--image-file-toolbarResizerVertical', 'url(\"' + new URL('./toolbarResizerVertical.png', import.meta.url).toString() + '\")');
 style.setProperty('--image-file-touchCursor_2x', 'url(\"' + new URL('./touchCursor_2x.png', import.meta.url).toString() + '\")');
+style.setProperty('--image-file-geminiInDevTools', 'url(\"' + new URL('./geminiInDevTools.png', import.meta.url).toString() + '\")');
+style.setProperty('--image-file-geminiInDevTools_2x', 'url(\"' + new URL('./geminiInDevTools_2x.png', import.meta.url).toString() + '\")');
 style.setProperty('--image-file-touchCursor', 'url(\"' + new URL('./touchCursor.png', import.meta.url).toString() + '\")');
 style.setProperty('--image-file-gdp-logo-light', 'url(\"' + new URL('./gdp-logo-light.png', import.meta.url).toString() + '\")');
 style.setProperty('--image-file-gdp-logo-dark', 'url(\"' + new URL('./gdp-logo-dark.png', import.meta.url).toString() + '\")');
@@ -113,6 +115,7 @@ style.setProperty('--image-file-cross-circle-filled', 'url(\"' + new URL('./src/
 style.setProperty('--image-file-cross-circle', 'url(\"' + new URL('./src/cross-circle.svg', import.meta.url).toString() + '\")');
 style.setProperty('--image-file-cross', 'url(\"' + new URL('./src/cross.svg', import.meta.url).toString() + '\")');
 style.setProperty('--image-file-custom-typography', 'url(\"' + new URL('./src/custom-typography.svg', import.meta.url).toString() + '\")');
+style.setProperty('--image-file-database-off', 'url(\"' + new URL('./src/database-off.svg', import.meta.url).toString() + '\")');
 style.setProperty('--image-file-database', 'url(\"' + new URL('./src/database.svg', import.meta.url).toString() + '\")');
 style.setProperty('--image-file-deployed', 'url(\"' + new URL('./src/deployed.svg', import.meta.url).toString() + '\")');
 style.setProperty('--image-file-device-fold', 'url(\"' + new URL('./src/device-fold.svg', import.meta.url).toString() + '\")');

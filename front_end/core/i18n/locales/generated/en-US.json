@@ -6455,6 +6455,27 @@
   "panels/common/GdpSignUpDialog.ts | termsOfService": {
     "message": "Terms of Service"
   },
+  "panels/common/GeminiRebrandPromoDialog.ts | detailAiCompanion": {
+    "message": "Meet your AI-powered companion for web dev"
+  },
+  "panels/common/GeminiRebrandPromoDialog.ts | detailConsoleErrors": {
+    "message": "Get instant, accurate answers for console errors"
+  },
+  "panels/common/GeminiRebrandPromoDialog.ts | detailGenerateCode": {
+    "message": "Generate CSS and JS snippets on the fly"
+  },
+  "panels/common/GeminiRebrandPromoDialog.ts | detailPerformance": {
+    "message": "Automatically find issues in performance traces"
+  },
+  "panels/common/GeminiRebrandPromoDialog.ts | dialogAriaLabel": {
+    "message": "Gemini 3 Flash in DevTools"
+  },
+  "panels/common/GeminiRebrandPromoDialog.ts | dismiss": {
+    "message": "Dismiss"
+  },
+  "panels/common/GeminiRebrandPromoDialog.ts | getStarted": {
+    "message": "Get started"
+  },
   "panels/common/PersistenceUtils.ts | linkedToS": {
     "message": "Linked to {PH1}"
   },

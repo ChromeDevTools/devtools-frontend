@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-lit-render-outside-of-view */
 /* eslint-disable @devtools/no-imperative-dom-api */
+import '../../ui/kit/kit.js';
 import '../../ui/legacy/legacy.js';
 import '../../ui/components/tooltips/tooltips.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -282,13 +283,13 @@ export class AffectedCountWidget extends UI.Widget.Widget {
     }
 }
 function learnMore() {
-    return html `<x-link
+    return html `<devtools-link
         href=${NETWORK_REQUEST_BLOCKING_EXPLANATION_URL}
         tabindex=0
         class=devtools-link
-        jslog=${VisualLogging.link().track({ click: true, keydown: 'Enter|Space' }).context('learn-more')}>
+        .jslogContext=${'learn-more'}>
           ${i18nString(UIStrings.learnMore)}
-      </x-link>`;
+      </devtools-link>`;
 }
 export class RequestConditionsDrawer extends UI.Widget.VBox {
     manager;

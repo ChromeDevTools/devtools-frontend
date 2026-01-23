@@ -35,13 +35,13 @@ export default `/*
   flex: 1;
 }
 
-.x-link {
+.devtools-link {
   color: var(--sys-color-primary);
   text-decoration-line: underline;
   margin: 0 4px;
 }
 
-.feedback .x-link {
+.feedback .devtools-link {
   color: var(--sys-color-token-subtle);
 }
 

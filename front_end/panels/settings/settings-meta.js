@@ -163,7 +163,7 @@ UI2.ViewManager.registerViewExtension({
   title: i18nLazyString2(UIStrings2.experiments),
   commandPrompt: i18nLazyString2(UIStrings2.showExperiments),
   order: 3,
-  experiment: Root.Runtime.ExperimentName.ALL,
+  experiment: Root.ExperimentNames.ExperimentName.ALL,
   async loadView() {
     const Settings2 = await loadSettingsModule();
     return new Settings2.SettingsScreen.ExperimentsSettingsTab();

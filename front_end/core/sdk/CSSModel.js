@@ -296,6 +296,12 @@ export class CSSModel extends SDKModel {
         }
         return await this.#styleLoader.computedStylePromise(nodeId);
     }
+    async getComputedStyleExtraFields(nodeId) {
+        if (!this.isEnabled()) {
+            await this.enable();
+        }
+        return await this.#styleLoader.extraFieldsPromise(nodeId);
+    }
     async getLayoutPropertiesFromComputedStyle(nodeId) {
         const styles = await this.getComputedStyle(nodeId);
         if (!styles) {
@@ -858,24 +864,33 @@ class ComputedStyleLoader {
     constructor(cssModel) {
         this.#cssModel = cssModel;
     }
-    computedStylePromise(nodeId) {
+    #getResponsePromise(nodeId) {
         let promise = this.#nodeIdToPromise.get(nodeId);
         if (promise) {
             return promise;
         }
-        promise = this.#cssModel.getAgent().invoke_getComputedStyleForNode({ nodeId }).then(({ computedStyle }) => {
-            this.#nodeIdToPromise.delete(nodeId);
-            if (!computedStyle?.length) {
-                return null;
-            }
-            const result = new Map();
-            for (const property of computedStyle) {
-                result.set(property.name, property.value);
-            }
-            return result;
-        });
+        promise =
+            this.#cssModel.getAgent().invoke_getComputedStyleForNode({ nodeId }).then(({ computedStyle, extraFields }) => {
+                this.#nodeIdToPromise.delete(nodeId);
+                if (!computedStyle?.length) {
+                    return { style: null, extraFields };
+                }
+                const result = new Map();
+                for (const property of computedStyle) {
+                    result.set(property.name, property.value);
+                }
+                return { style: result, extraFields };
+            });
         this.#nodeIdToPromise.set(nodeId, promise);
         return promise;
+    }
+    async computedStylePromise(nodeId) {
+        const computedStyleWithExtraFields = await this.#getResponsePromise(nodeId);
+        return computedStyleWithExtraFields.style;
+    }
+    async extraFieldsPromise(nodeId) {
+        const computedStyleWithExtraFields = await this.#getResponsePromise(nodeId);
+        return computedStyleWithExtraFields.extraFields;
     }
 }
 export class InlineStyleResult {

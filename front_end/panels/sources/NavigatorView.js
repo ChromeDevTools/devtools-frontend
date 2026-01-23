@@ -201,7 +201,7 @@ export class NavigatorView extends UI.Widget.VBox {
         this.navigatorGroupByFolderSetting = Common.Settings.Settings.instance().moduleSetting('navigator-group-by-folder');
         this.navigatorGroupByFolderSetting.addChangeListener(this.groupingChanged.bind(this));
         if (enableAuthoredGrouping) {
-            this.navigatorGroupByAuthoredExperiment = Root.Runtime.ExperimentName.AUTHORED_DEPLOYED_GROUPING;
+            this.navigatorGroupByAuthoredExperiment = Root.ExperimentNames.ExperimentName.AUTHORED_DEPLOYED_GROUPING;
         }
         Workspace.IgnoreListManager.IgnoreListManager.instance().addChangeListener(this.ignoreListChanged.bind(this));
         this.initGrouping();
@@ -392,7 +392,7 @@ export class NavigatorView extends UI.Widget.VBox {
         return this.acceptProject(uiSourceCode.project());
     }
     addUISourceCode(uiSourceCode) {
-        if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.JUST_MY_CODE) &&
+        if (Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.JUST_MY_CODE) &&
             Workspace.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(uiSourceCode)) {
             return;
         }
@@ -985,7 +985,7 @@ export class NavigatorView extends UI.Widget.VBox {
         this.#workspace.uiSourceCodes().forEach(this.addUISourceCode.bind(this));
     }
     ignoreListChanged() {
-        if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.JUST_MY_CODE)) {
+        if (Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.JUST_MY_CODE)) {
             this.groupingChanged();
         }
         else {

@@ -9,10 +9,8 @@ import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Tracing from '../../../services/tracing/tracing.js';
 import * as Annotations from '../../annotations/annotations.js';
-import * as Logs from '../../logs/logs.js';
 import * as SourceMapScopes from '../../source_map_scopes/source_map_scopes.js';
 import * as Trace from '../../trace/trace.js';
-import { ArtifactsManager } from '../ArtifactsManager.js';
 import { PerformanceInsightFormatter, } from '../data_formatters/PerformanceInsightFormatter.js';
 import { PerformanceTraceFormatter } from '../data_formatters/PerformanceTraceFormatter.js';
 import { debugLog } from '../debug.js';
@@ -50,74 +48,6 @@ const greenDevAdditionalAnnotationsGuidelines = `
 - In addition to this, the addElementAnnotation function should always be called for the LCP element, if known.
 - The annotationMessage should be descriptive and relevant to why the element or network request is being highlighted.
 `;
-const getGreenDevAdditionalWidgetGuidelines = () => {
-    // GreenDev is experimenting with multiple ways to display widget:
-    // if widgetsFromFunctionCalls is true, then we use function calls to add widgets
-    // otherwise we use ai-insight tags
-    const widgetsFromFunctionCalls = true;
-    if (widgetsFromFunctionCalls) {
-        return `
-- CRITICAL: You have access to a function for adding rich, interactive widgets to your response: \`addWidget\`.
-  You MUST use this function whenever you refer to a corresponding entity.
-
-- **\`addWidget({widget: {type: 'insight', insightType: '...'}})\`**:
-  - **When to use**: Call this function every time you mention a specific performance insight (e.g., LCP, INP, CLS culprits).
-  - **Purpose**: It embeds an interactive widget that provides a detailed breakdown and visualization of the insight.
-  - **Example**: If you are explaining the causes of a poor LCP score, you MUST also call \`addWidget({widget: {type: 'insight', insightType: 'LCPBreakdown'}})\`.
-
-- **\`addWidget({widget: {type: 'network-request', eventKey: '...'}})\`**:
-  - **When to use**: Call this function whenever you discuss a specific network request.
-  - **Purpose**: It adds a widget displaying the full details of the network request, such as its timing, headers, and priority.
-  - **Critical**: The eventKey should be the trace event key (only the number, no letters prefix or -) of that script's network request.
-  - **Example**: If you identify a render-blocking script, you MUST also call \`addWidget({widget: {type: 'network-request', eventKey: '...'}})\`.
-
-- **\`addWidget({widget: {type: 'flamechart', start: ..., end: ...}})\`**:
-  - **When to use**: Call this function to highlight a specific time range within the trace, especially when discussing long tasks, specific events, or periods of high activity.
-    - **Purpose**: It embeds a focused flame chart visualization for the given time range (in microseconds).
-    - **Example**: If you find a long task that is blocking the main thread, you MUST also call \`addWidget({widget: {type: 'flamechart', start: 123456, end: 789012}})\`.
-
-- **General Rules**:
-  - You MUST call this function as soon as you identify the entity you are discussing.
-  - Do NOT add more than one widget for the same insight, network request, or time range to avoid redundancy.
-  - If you have already shown a widget for any specific insight, network request, or time range, do not show it again.
-`;
-    }
-    return `
-- **Visualizing Insights**: When discussing the breakdown of specific metrics or a performance problem,
-you must render the appropriate Insight Overview component. Use these tags on a new line within your response:
-  - For LCP breakdown: <ai-insight value="LCPBreakdown">
-  - For INP breakdown: <ai-insight value="INPBreakdown">
-  - For CLS culprits: <ai-insight value="CLSCulprits">
-  - For third parties: <ai-insight value="ThirdParties">
-  - For document latency: <ai-insight value="DocumentLatency">
-  - For DOM size: <ai-insight value="DOMSize">
-  - For duplicate JavaScript: <ai-insight value="DuplicatedJavaScript">
-  - For font display: <ai-insight value="FontDisplay">
-  - For forced reflow: <ai-insight value="ForcedReflow">
-  - For image delivery: <ai-insight value="ImageDelivery">
-  - For LCP discovery: <ai-insight value="LCPDiscovery">
-  - For legacy JavaScript: <ai-insight value="LegacyJavaScript">
-  - For network dependency tree: <ai-insight value="NetworkDependencyTree">
-  - For render blocking: <ai-insight value="RenderBlocking">
-  - For slow CSS selector: <ai-insight value="SlowCSSSelector">
-  - For viewport: <ai-insight value="Viewport">
-  - For modern HTTP: <ai-insight value="ModernHTTP">
-  - For cache: <ai-insight value="Cache">
-- Do not place the <ai-insight> tag inside markdown code blocks (backticks). Output the tag directly as raw text.
-- **Visualizing Network Request Details**: When discussing a specific network request, represent its details in a structured widget for improved readability and focus.
-  - Use this tag on a new line within your response, replacing \`EVENT_KEY\` (only the number, no letters prefix or -) with the actual trace event key:
-    - For network event details: <network-request-widget value="EVENT_KEY">
-- **Visualizing Flamechart**: When discussing an interesting part of the trace, represent its details in a structured widget for improved readability and focus.
-  - Use this tag on a new line within your response, replacing "MIN_MICROSECONDS" and "MAX_MICROSECONDS" with the actual start and end times in microseconds:
-    - For a flame chart of a specific time range: <flame-chart-widget start="MIN_MICROSECONDS" end="MAX_MICROSECONDS">
-    - CRITICAL: MIN_MICROSECONDS and MAX_MICROSECONDS must be within the flamechart bounds and in microseconds.
-  - When you mention a specific performance event like LCP, INP, or a long task, you MUST also include a flamechart widget focused on the exact time range of that event.
-    - This provides essential visual context to your explanation.
-- CRITICAL: Avoid Redundancy - When using insight or network request widgets, do not repeat details in the text response.
-  - For example, for LCP, the phases like Time to First Byte will be part of the insight widget, so you must not state them in the text. This applies to other insights and network request timings.
-- Do not display any of the same widgets more than once. For example, if you have already displayed a network request widget for a specific event, do not display it again in the same response.
-`;
-};
 /**
  * Preamble clocks in at ~1341 tokens.
  *   The prose is around 4.5 chars per token.
@@ -126,7 +56,6 @@ you must render the appropriate Insight Overview component. Use these tags on a 
  * Check token length in https://aistudio.google.com/
  */
 const buildPreamble = () => {
-    const greenDevEnabled = Boolean(Root.Runtime.hostConfig.devToolsGreenDevUi?.enabled);
     const annotationsEnabled = Annotations.AnnotationRepository.annotationsEnabled();
     return `You are an assistant, expert in web performance and highly skilled with Chrome DevTools.
 
@@ -181,7 +110,6 @@ Note: if the user asks a specific question about the trace (such as "What is my 
 - Be direct and to the point. Avoid unnecessary introductory phrases or filler content. Focus on delivering actionable advice efficiently.
 
 ${annotationsEnabled ? greenDevAdditionalAnnotationsGuidelines : ''}
-${greenDevEnabled ? getGreenDevAdditionalWidgetGuidelines() : ''}
 
 ## Strict Constraints
 
@@ -1056,96 +984,6 @@ export class PerformanceAgent extends AiAgent {
                     const revealable = new SDK.TraceObject.RevealableEvent(event);
                     await Common.Revealer.reveal(revealable);
                     return { result: { success: true } };
-                },
-            });
-        }
-        if (Root.Runtime.hostConfig.devToolsGreenDevUi?.enabled) {
-            this.declareFunction('addWidget', {
-                description: 'Adds an insight widget to the response. When mentioning an insight, call this function to also display an appropriate widget. Use this as much as possible to provide a better user experience.',
-                parameters: {
-                    type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
-                    description: '',
-                    nullable: false,
-                    properties: {
-                        type: {
-                            type: 1 /* Host.AidaClient.ParametersTypes.STRING */,
-                            description: 'The type of the widget to add. Possible values: insight, network-request, flamechart',
-                            nullable: false,
-                        },
-                        insightType: {
-                            type: 1 /* Host.AidaClient.ParametersTypes.STRING */,
-                            description: 'The type of the insight widget. Include for insight widgets.',
-                            nullable: true,
-                        },
-                        eventKey: {
-                            type: 1 /* Host.AidaClient.ParametersTypes.STRING */,
-                            description: 'The event key for the network request widget. Include for network request widgets.',
-                            nullable: true,
-                        },
-                        start: {
-                            type: 3 /* Host.AidaClient.ParametersTypes.INTEGER */,
-                            description: 'The start time for the flame chart widget. Include for flame chart widgets.',
-                            nullable: true,
-                        },
-                        end: {
-                            type: 3 /* Host.AidaClient.ParametersTypes.INTEGER */,
-                            description: 'The end time for the flame chart widget. Include for flame chart widgets.',
-                            nullable: true,
-                        },
-                    },
-                    required: ['type']
-                },
-                handler: async (params) => {
-                    switch (params.type) {
-                        case 'insight':
-                            if (!params.insightType) {
-                                return { error: 'Missing insightType for insight widget' };
-                            }
-                            ArtifactsManager.instance().addArtifact({ type: 'insight', insightType: params.insightType });
-                            return { result: { success: true } };
-                        case 'network-request': {
-                            if (!params.eventKey) {
-                                return { error: 'Missing eventKey for network-request widget' };
-                            }
-                            const rawTraceEvent = Trace.Helpers.SyntheticEvents.SyntheticEventsManager.getActiveManager().getRawTraceEvents().at(Number(params.eventKey));
-                            // Get the trace event object if it is available.
-                            // If the trace is uploaded, we need to use the synthetic event.
-                            if (rawTraceEvent && Trace.Types.Events.isSyntheticNetworkRequest(rawTraceEvent)) {
-                                const rawTraceEventId = rawTraceEvent?.args?.data?.requestId;
-                                const rawTraceEventUrl = rawTraceEvent?.args?.data?.url;
-                                const networkRequest = rawTraceEvent ? Logs.NetworkLog.NetworkLog.instance()
-                                    .requestsForId(rawTraceEventId)
-                                    .find(r => r.url() === rawTraceEventUrl) :
-                                    null;
-                                if (networkRequest) {
-                                    ArtifactsManager.instance().addArtifact({ type: 'network-request', request: networkRequest });
-                                    return { result: { success: true } };
-                                }
-                            }
-                            const syntheticRequest = Trace.Helpers.SyntheticEvents.SyntheticEventsManager.getActiveManager()
-                                .syntheticEventForRawEventIndex(Number(params.eventKey));
-                            if (syntheticRequest && Trace.Types.Events.isSyntheticNetworkRequest(syntheticRequest)) {
-                                ArtifactsManager.instance().addArtifact({
-                                    type: 'network-request',
-                                    request: syntheticRequest,
-                                });
-                                return { result: { success: true } };
-                            }
-                            return { result: { error: 'Could not find network request' } };
-                        }
-                        case 'flamechart':
-                            if (params.start === undefined || params.end === undefined) {
-                                return { error: 'Missing start or end for flamechart widget' };
-                            }
-                            ArtifactsManager.instance().addArtifact({
-                                type: 'flamechart',
-                                start: Trace.Types.Timing.Micro(params.start),
-                                end: Trace.Types.Timing.Micro(params.end),
-                            });
-                            return { result: { success: true } };
-                        default:
-                            return { error: 'Invalid widget type' };
-                    }
                 },
             });
         }

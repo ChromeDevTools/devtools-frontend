@@ -1,6 +1,7 @@
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import type * as Protocol from '../../generated/protocol.js';
 import type * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import * as Tooltips from '../../ui/components/tooltips/tooltips.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
@@ -27,7 +28,8 @@ export declare class EnvFunctionRenderer extends EnvFunctionRenderer_base {
     readonly treeElement: StylePropertyTreeElement | null;
     readonly matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles;
     readonly computedStyles: Map<string, string>;
-    constructor(treeElement: StylePropertyTreeElement | null, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, computedStyles: Map<string, string>);
+    readonly computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields | null;
+    constructor(treeElement: StylePropertyTreeElement | null, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, computedStyles: Map<string, string>, computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields | null);
     render(match: SDK.CSSPropertyParserMatchers.EnvFunctionMatch, context: RenderingContext): Node[];
 }
 declare const FlexGridRenderer_base: abstract new () => {
@@ -54,7 +56,7 @@ declare const VariableRenderer_base: abstract new () => {
 };
 export declare class VariableRenderer extends VariableRenderer_base {
     #private;
-    constructor(stylesPane: StylesSidebarPane, treeElement: StylePropertyTreeElement | null, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, computedStyles: Map<string, string>);
+    constructor(stylesPane: StylesSidebarPane, treeElement: StylePropertyTreeElement | null, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, computedStyles: Map<string, string>, computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields | null);
     render(match: SDK.CSSPropertyParserMatchers.VariableMatch, context: RenderingContext): Node[];
 }
 declare const AttributeRenderer_base: abstract new () => {
@@ -63,7 +65,7 @@ declare const AttributeRenderer_base: abstract new () => {
 };
 export declare class AttributeRenderer extends AttributeRenderer_base {
     #private;
-    constructor(stylesPane: StylesSidebarPane, treeElement: StylePropertyTreeElement | null, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, computedStyles: Map<string, string>);
+    constructor(stylesPane: StylesSidebarPane, treeElement: StylePropertyTreeElement | null, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, computedStyles: Map<string, string>, computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields | null);
     render(match: SDK.CSSPropertyParserMatchers.AttributeMatch, context: RenderingContext): Node[];
 }
 declare const LinearGradientRenderer_base: abstract new () => {
@@ -108,7 +110,7 @@ declare const ColorMixRenderer_base: abstract new () => {
 };
 export declare class ColorMixRenderer extends ColorMixRenderer_base {
     #private;
-    constructor(pane: StylesSidebarPane, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, computedStyles: Map<string, string>, treeElement: StylePropertyTreeElement | null);
+    constructor(pane: StylesSidebarPane, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, computedStyles: Map<string, string>, computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields | null, treeElement: StylePropertyTreeElement | null);
     render(match: SDK.CSSPropertyParserMatchers.ColorMixMatch, context: RenderingContext): Node[];
 }
 declare const AngleRenderer_base: abstract new () => {
@@ -144,7 +146,7 @@ declare const AutoBaseRenderer_base: abstract new () => {
 };
 export declare class AutoBaseRenderer extends AutoBaseRenderer_base {
     #private;
-    constructor(computedStyle: Map<string, string>);
+    constructor(computedStyle: Map<string, string>, computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields | null);
     render(match: SDK.CSSPropertyParserMatchers.AutoBaseMatch, context: RenderingContext): Node[];
 }
 export declare const enum ShadowPropertyType {
@@ -226,7 +228,7 @@ declare const BaseFunctionRenderer_base: abstract new () => {
 };
 export declare class BaseFunctionRenderer extends BaseFunctionRenderer_base {
     #private;
-    constructor(stylesPane: StylesSidebarPane, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, computedStyles: Map<string, string>, propertyName: string, treeElement: StylePropertyTreeElement | null);
+    constructor(stylesPane: StylesSidebarPane, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, computedStyles: Map<string, string>, computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields | null, propertyName: string, treeElement: StylePropertyTreeElement | null);
     render(match: SDK.CSSPropertyParserMatchers.BaseFunctionMatch<string>, context: RenderingContext): Node[];
     applyEvaluation(span: HTMLSpanElement, match: SDK.CSSPropertyParserMatchers.BaseFunctionMatch<string>, context: RenderingContext): Promise<boolean>;
     applyMathFunction(renderedArgs: HTMLElement[], match: SDK.CSSPropertyParserMatchers.BaseFunctionMatch<string>, context: RenderingContext): Promise<void>;
@@ -268,7 +270,7 @@ export declare class PositionTryRenderer extends PositionTryRenderer_base {
     constructor(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles);
     render(match: SDK.CSSPropertyParserMatchers.PositionTryMatch, context: RenderingContext): Node[];
 }
-export declare function getPropertyRenderers(propertyName: string, style: SDK.CSSStyleDeclaration.CSSStyleDeclaration, stylesPane: StylesSidebarPane, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, treeElement: StylePropertyTreeElement | null, computedStyles: Map<string, string>): Array<MatchRenderer<SDK.CSSPropertyParser.Match>>;
+export declare function getPropertyRenderers(propertyName: string, style: SDK.CSSStyleDeclaration.CSSStyleDeclaration, stylesPane: StylesSidebarPane, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, treeElement: StylePropertyTreeElement | null, computedStyles: Map<string, string>, computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields | null): Array<MatchRenderer<SDK.CSSPropertyParser.Match>>;
 export declare class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     #private;
     private readonly style;
@@ -286,6 +288,7 @@ export declare class StylePropertyTreeElement extends UI.TreeOutline.TreeElement
     private lastComputedValue;
     private computedStyles;
     private parentsComputedStyles;
+    private computedStyleExtraFields;
     private contextForTest;
     constructor({ stylesPane, section, matchedStyles, property, isShorthand, inherited, overloaded, newProperty }: StylePropertyTreeElementParams);
     gridNames(): Promise<Set<string>>;
@@ -298,6 +301,8 @@ export declare class StylePropertyTreeElement extends UI.TreeOutline.TreeElement
     setComputedStyles(computedStyles: Map<string, string> | null): void;
     getComputedStyle(property: string): string | null;
     getComputedStyles(): Map<string, string> | null;
+    setComputedStyleExtraFields(computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields | null): void;
+    getComputedStyleExtraFields(): Protocol.CSS.ComputedStyleExtraFields | null;
     setParentsComputedStyles(parentsComputedStyles: Map<string, string> | null): void;
     get name(): string;
     get value(): string;
@@ -317,7 +322,7 @@ export declare class StylePropertyTreeElement extends UI.TreeOutline.TreeElement
     refreshIfComputedValueChanged(): void;
     updateTitle(): void;
     createExclamationMark(property: SDK.CSSProperty.CSSProperty, title: HTMLElement | null): Element;
-    getTracingTooltip(functionName: string, node: CodeMirror.SyntaxNode, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, computedStyles: Map<string, string>, context: RenderingContext): Lit.TemplateResult;
+    getTracingTooltip(functionName: string, node: CodeMirror.SyntaxNode, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, computedStyles: Map<string, string>, computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields | null, context: RenderingContext): Lit.TemplateResult;
     getTooltipId(key: string): string;
     updateAuthoringHint(): void;
     private mouseUp;

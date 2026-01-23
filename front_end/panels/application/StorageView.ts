@@ -10,7 +10,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import type * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as uiI18n from '../../ui/i18n/i18n.js';
-import {Icon} from '../../ui/kit/kit.js';
+import {Icon, Link} from '../../ui/kit/kit.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as SettingsUI from '../../ui/legacy/components/settings_ui/settings_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -218,9 +218,9 @@ export class StorageView extends UI.Widget.VBox {
     this.quotaRow = quota.appendSelectableRow();
     this.quotaRow.classList.add('quota-usage-row');
     const learnMoreRow = quota.appendRow();
-    const learnMore = UI.XLink.XLink.create(
+    const learnMore = Link.create(
         'https://developer.chrome.com/docs/devtools/progressive-web-apps#opaque-responses',
-        i18nString(UIStrings.learnMore), undefined, undefined, 'learn-more');
+        i18nString(UIStrings.learnMore), undefined, 'learn-more');
     learnMoreRow.appendChild(learnMore);
     this.quotaUsage = null;
     this.pieChart = new PerfUI.PieChart.PieChart();

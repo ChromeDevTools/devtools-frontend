@@ -8,6 +8,7 @@ import {
 import {
   describeWithEnvironment,
 } from '../../testing/EnvironmentHelpers.js';
+import {Link} from '../kit/kit.js';
 
 import * as UI from './legacy.js';
 
@@ -46,7 +47,7 @@ describeWithEnvironment('Infobar', () => {
   it('shows details message containing HTML element(s)', () => {
     const component = new UI.Infobar.Infobar(UI.Infobar.Type.WARNING, 'This is a warning');
     const linkText = 'example-link';
-    const link = UI.XLink.XLink.create('https://www.example.com', linkText);
+    const link = Link.create('https://www.example.com', linkText);
     component.createDetailsRowMessage(link);
     checkDetailsMessage(component, linkText);
   });

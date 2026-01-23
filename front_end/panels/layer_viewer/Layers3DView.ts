@@ -9,6 +9,7 @@ import type * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as Geometry from '../../models/geometry/geometry.js';
 import * as uiI18n from '../../ui/i18n/i18n.js';
+import {Link} from '../../ui/kit/kit.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -118,7 +119,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
         uiI18n.getFormatLocalizedString(
           str_, UIStrings.checkSForPossibleReasons,
           {
-            PH1: UI.XLink.XLink.create('about:gpu', undefined, undefined, undefined, 'about-gpu')
+            PH1: Link.create('about:gpu', undefined, undefined, 'about-gpu')
           }
         )
       ],

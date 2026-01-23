@@ -151,7 +151,7 @@ const UIStringsNotTranslate = {
    */
   accountAvatar: 'Account avatar',
   /**
-   * @description Title for the x-link which wraps the image input rendered in chat messages.
+   * @description Title for the link which wraps the image input rendered in chat messages.
    */
   openImageInNewTab: 'Open image in a new tab',
   /**

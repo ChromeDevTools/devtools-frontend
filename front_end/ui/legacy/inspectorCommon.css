@@ -494,7 +494,6 @@ select option {
     font: var(--sys-typescale-body4-regular);
     color: var(--sys-color-on-surface-subtle);
 
-    > x-link,
     > devtools-link {
       white-space: nowrap;
       margin-left: var(--sys-size-3);

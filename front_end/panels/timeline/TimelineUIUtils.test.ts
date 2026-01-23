@@ -1793,7 +1793,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
       const html = Timeline.TimelineUIUtils.TimelineUIUtils.buildDetailsNodeForMarkerEvents(
           markLCPEvent,
       );
-      const url = html.querySelector('x-link')?.getAttribute('href');
+      const url = html.querySelector('devtools-link')?.getAttribute('href');
       assert.strictEqual(url, 'https://web.dev/lcp/');
       assert.strictEqual(html.innerText, 'Learn more about Largest Contentful Paint.');
     });
@@ -1805,7 +1805,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
       const html = Timeline.TimelineUIUtils.TimelineUIUtils.buildDetailsNodeForMarkerEvents(
           markFCPEvent,
       );
-      const url = html.querySelector('x-link')?.getAttribute('href');
+      const url = html.querySelector('devtools-link')?.getAttribute('href');
       assert.strictEqual(url, 'https://web.dev/first-contentful-paint/');
       assert.strictEqual(html.innerText, 'Learn more about First Contentful Paint.');
     });
@@ -1817,7 +1817,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
       const html = Timeline.TimelineUIUtils.TimelineUIUtils.buildDetailsNodeForMarkerEvents(
           markLoadEvent,
       );
-      const url = html.querySelector('x-link')?.getAttribute('href');
+      const url = html.querySelector('devtools-link')?.getAttribute('href');
       assert.strictEqual(url, 'https://web.dev/user-centric-performance-metrics/');
       assert.strictEqual(html.innerText, 'Learn more about page performance metrics.');
     });

@@ -3,14 +3,12 @@
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-imperative-dom-api */
 
-import '../../ui/kit/kit.js';
-
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
-import {createIcon, type Icon} from '../../ui/kit/kit.js';
+import {createIcon, type Icon, Link} from '../../ui/kit/kit.js';
 import * as SettingsUI from '../../ui/legacy/components/settings_ui/settings_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -146,9 +144,9 @@ export class KeybindsSettingsTab extends UI.Widget.VBox implements UI.ListContro
     UI.ARIAUtils.setLabel(this.list.element, i18nString(UIStrings.keyboardShortcutsList));
     const footer = document.createElement('div');
     footer.classList.add('keybinds-footer');
-    const docsLink = UI.XLink.XLink.create(
+    const docsLink = Link.create(
         'https://developer.chrome.com/docs/devtools/shortcuts/', i18nString(UIStrings.FullListOfDevtoolsKeyboard),
-        undefined, undefined, 'learn-more');
+        undefined, 'learn-more');
     docsLink.classList.add('docs-link');
     footer.appendChild(docsLink);
     const restoreDefaultShortcutsButton =

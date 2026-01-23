@@ -56,6 +56,7 @@ import * as Adorners from '../../ui/components/adorners/adorners.js';
 import * as Dialogs from '../../ui/components/dialogs/dialogs.js';
 import * as LegacyWrapper from '../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as Snackbars from '../../ui/components/snackbars/snackbars.js';
+import {Link} from '../../ui/kit/kit.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as SettingsUI from '../../ui/legacy/components/settings_ui/settings_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -1340,7 +1341,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     const thirdPartyCheckbox =
         this.createSettingCheckbox(this.#thirdPartyTracksSetting, i18nString(UIStrings.showDataAddedByExtensions));
 
-    const localLink = UI.XLink.XLink.create(
+    const localLink = Link.create(
         'https://developer.chrome.com/docs/devtools/performance/extension', i18nString(UIStrings.learnMore));
     // Has to be done in JS because the element is inserted into the
     // checkbox's shadow DOM so any styling into timelinePanel.css would

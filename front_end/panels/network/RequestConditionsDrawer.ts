@@ -4,7 +4,6 @@
 /* eslint-disable @devtools/no-lit-render-outside-of-view */
 /* eslint-disable @devtools/no-imperative-dom-api */
 
-import '../../ui/kit/kit.js';
 import '../../ui/legacy/legacy.js';
 import '../../ui/components/tooltips/tooltips.js';
 
@@ -16,6 +15,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Logs from '../../models/logs/logs.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as uiI18n from '../../ui/i18n/i18n.js';
+import {Link} from '../../ui/kit/kit.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {Directives, html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -575,8 +575,7 @@ export class RequestConditionsDrawer extends UI.Widget.VBox implements
     const titles = content.createChild('div', 'blocked-url-edit-row');
     const label = titles.createChild('label');
     if (Root.Runtime.hostConfig.devToolsIndividualRequestThrottling?.enabled) {
-      const learnMore = UI.XLink.XLink.create(
-          PATTERN_API_DOCS_URL, i18nString(UIStrings.learnMore), undefined, undefined, 'learn-more');
+      const learnMore = Link.create(PATTERN_API_DOCS_URL, i18nString(UIStrings.learnMore), undefined, 'learn-more');
       learnMore.title = i18nString(UIStrings.learnMoreLabel);
       titles.append('\xA0', learnMore);
       label.textContent = i18nString(UIStrings.textEditPattern);

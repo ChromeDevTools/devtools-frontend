@@ -194,7 +194,7 @@ var PanelFeedback = class extends HTMLElement {
           </div>
           <div class="video-description">
             <h3>${i18nString2(UIStrings2.videoAndDocumentation)}</h3>
-            <devtools-link class="quick-start-link" href=${this.#props.quickStartUrl} .jslogContext=${"css-overview.quick-start"}>${this.#props.quickStartLinkText}</devtools-link>
+            <devtools-link class="quick-start-link" href=${this.#props.quickStartUrl} jslogcontext="css-overview.quick-start">${this.#props.quickStartLinkText}</devtools-link>
           </div>
         </div>
       </div>

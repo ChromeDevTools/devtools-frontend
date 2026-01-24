@@ -281,7 +281,7 @@ function renderOriginTrial(trials) {
       <span class="report-section">
         ${i18nString(UIStrings.originTrialsExplanation)}
         <devtools-link href="https://developer.chrome.com/docs/web-platform/origin-trials/" class="link"
-                .jslogContext=${'learn-more.origin-trials'}>
+                jslogcontext="learn-more.origin-trials">
           ${i18nString(UIStrings.learnMore)}
         </devtools-link>
       </span>
@@ -632,7 +632,7 @@ function renderApiAvailabilitySection(frame) {
           ${i18nString(UIStrings.availabilityOfCertainApisDepends)}
           <devtools-link
             href="https://web.dev/why-coop-coep/" class="link"
-            .jslogContext=${'learn-more.coop-coep'}>
+            jslogcontext="learn-more.coop-coep">
             ${i18nString(UIStrings.learnMore)}
           </devtools-link>
         </span>
@@ -702,7 +702,7 @@ function renderMeasureMemoryAvailability(frame) {
         return html `
         <devtools-report-key>${i18nString(UIStrings.measureMemory)}</devtools-report-key>
         <devtools-report-value>
-          <span title=${tooltipText}>${availabilityText}</span>\xA0<devtools-link class="link" href="https://web.dev/monitor-total-page-memory-usage/" .jslogContext=${'learn-more.monitor-memory-usage'}>${i18nString(UIStrings.learnMore)}</devtools-link>
+          <span title=${tooltipText}>${availabilityText}</span>\xA0<devtools-link class="link" href="https://web.dev/monitor-total-page-memory-usage/" jslogcontext="learn-more.monitor-memory-usage">${i18nString(UIStrings.learnMore)}</devtools-link>
         </devtools-report-value>
       `;
     }

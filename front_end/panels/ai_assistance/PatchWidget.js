@@ -168,7 +168,7 @@ const DEFAULT_VIEW = (input, output, target) => {
           class="link"
           title="${UIStringsNotTranslate.viewUploadedFiles} ${UIStringsNotTranslate.opensInNewTab}"
           href="data:text/plain;charset=utf-8,${encodeURIComponent(input.sources)}"
-          .jslogContext=${'files-used-in-patching'}>
+          jslogcontext="files-used-in-patching">
           ${UIStringsNotTranslate.viewUploadedFiles}
         </devtools-link>`;
     }
@@ -246,7 +246,7 @@ const DEFAULT_VIEW = (input, output, target) => {
             return html `
           <div class="footer">
             <div class="left-side">
-              <devtools-link class="link disclaimer-link" href="https://support.google.com/legal/answer/13505487" .jslogContext=${'code-disclaimer'}>
+              <devtools-link class="link disclaimer-link" href="https://support.google.com/legal/answer/13505487" jslogcontext="code-disclaimer">
                 ${lockedString(UIStringsNotTranslate.codeDisclaimer)}
               </devtools-link>
               ${renderSourcesLink()}
@@ -491,7 +491,7 @@ export class PatchWidget extends UI.Widget.Widget {
                     content: html `<devtools-link
             href=${CODE_SNIPPET_WARNING_URL}
             class="link devtools-link"
-            .jslogContext=${'code-snippets-explainer.patch-widget'}
+            jslogcontext="code-snippets-explainer.patch-widget"
           >${lockedString(UIStringsNotTranslate.freDisclaimerTextUseWithCaution)}</devtools-link>`,
                     // clang-format on
                 }

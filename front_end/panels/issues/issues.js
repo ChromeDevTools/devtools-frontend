@@ -3067,7 +3067,7 @@ var IssueView = class _IssueView extends UI6.TreeOutline.TreeElement {
     const linkList = linkWrapper.listItemElement.createChild("ul", "link-list");
     for (const description of this.#description.links) {
       const linkListItem = linkList.createChild("li");
-      render2(html2`<devtools-link class="link devtools-link" href=${description.link} .jslogContext=${"learn-more"}>${i18nString21(UIStrings21.learnMoreS, { PH1: description.linkTitle })}</devtools-link>`, linkListItem);
+      render2(html2`<devtools-link class="link devtools-link" href=${description.link} jslogcontext="learn-more">${i18nString21(UIStrings21.learnMoreS, { PH1: description.linkTitle })}</devtools-link>`, linkListItem);
     }
     this.appendChild(linkWrapper);
   }

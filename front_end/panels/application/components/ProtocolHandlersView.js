@@ -66,7 +66,7 @@ function renderStatusMessage(protocolHandlers, manifestLink) {
                      name=${protocolHandlers.length > 0 ? 'check-circle' : 'info'}>
       </devtools-icon>
       ${uiI18n.getFormatLocalizedStringTemplate(str_, statusString, { PH1: html `
-        <devtools-link href=${manifestLink} .jslogContext=${'manifest'}>${i18nString(UIStrings.manifest)}</devtools-link>
+        <devtools-link href=${manifestLink} jslogcontext="manifest">${i18nString(UIStrings.manifest)}</devtools-link>
         ` })}
     </div>`;
     // clang-format on
@@ -104,7 +104,7 @@ const DEFAULT_VIEW = (input, _output, target) => {
     ${renderStatusMessage(input.protocolHandler, input.manifestLink)}
     <div class="protocol-handlers-row">
       ${i18nTemplate(UIStrings.needHelpReadOur, { PH1: html `
-        <devtools-link href=${PROTOCOL_DOCUMENT_URL} class="devtools-link" autofocus .jslogContext=${'learn-more'}>
+        <devtools-link href=${PROTOCOL_DOCUMENT_URL} class="devtools-link" autofocus jslogcontext="learn-more">
           ${i18nString(UIStrings.protocolHandlerRegistrations)}
         </devtools-link>` })}
     </div>

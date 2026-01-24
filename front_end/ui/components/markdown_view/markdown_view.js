@@ -281,7 +281,7 @@ var CodeBlock = class extends HTMLElement {
   }
   #renderNotice() {
     return html2`<p class="notice">
-      <devtools-link class="link" href="https://support.google.com/legal/answer/13505487" .jslogContext=${"code-disclaimer"}>
+      <devtools-link class="link" href="https://support.google.com/legal/answer/13505487" jslogcontext="code-disclaimer">
         ${i18nString(UIStrings.disclaimer)}
       </devtools-link>
     </p>`;

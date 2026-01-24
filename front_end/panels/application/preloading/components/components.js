@@ -2331,7 +2331,7 @@ function renderMismatchedSections(data) {
       <devtools-link
         class="link devtools-link"
         href=${data.pageURL}
-        .jslogContext=${"current-url"}
+        jslogcontext="current-url"
       >${data.pageURL}</devtools-link>
     </devtools-report-section>
 
@@ -2451,7 +2451,7 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
         <devtools-link
           class="link devtools-link"
           href=${"https://developer.chrome.com/blog/prerender-pages/"}
-          .jslogContext=${"learn-more"}
+          jslogcontext="learn-more"
         >${i18nString8(UIStrings8.learnMore)}</devtools-link>
       </devtools-report-section>
     </devtools-report>`, target);

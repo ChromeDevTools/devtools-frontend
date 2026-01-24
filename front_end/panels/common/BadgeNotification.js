@@ -160,7 +160,7 @@ export class BadgeNotification extends UI.Widget.Widget {
         this.#show({
             message: i18nFormatStringTemplate(UIStrings.starterBadgeAwardMessageSettingDisabled, {
                 PH1: badge.title,
-                PH2: html `<devtools-link class="badge-link" href="https://developers.google.com/program" .jslogContext=${'program-link'}>${lockedString('Google Developer Program')}</devtools-link>`
+                PH2: html `<devtools-link class="badge-link" href="https://developers.google.com/program" jslogcontext="program-link">${lockedString('Google Developer Program')}</devtools-link>`
             }),
             jslogContext: badge.jslogContext,
             actions: [

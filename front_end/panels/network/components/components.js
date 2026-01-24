@@ -2152,7 +2152,7 @@ var RequestHeadersView = class extends LegacyWrapper.LegacyWrapper.WrappableComp
       <devtools-link
           href="https://goo.gle/devtools-override"
           class="link devtools-link"
-          .jslogContext=${"devtools-override"}
+          jslogcontext="devtools-override"
       >
         <devtools-icon name="help" class="inline-icon medium">
         </devtools-icon>
@@ -2161,7 +2161,7 @@ var RequestHeadersView = class extends LegacyWrapper.LegacyWrapper.WrappableComp
           @click=${revealHeadersFile}
           class="link devtools-link"
           title=${UIStrings5.revealHeaderOverrides}
-          .jslogContext=${"reveal-header-overrides"}
+          jslogcontext="reveal-header-overrides"
       >
         ${fileIcon}${Persistence2.NetworkPersistenceManager.HEADERS_FILENAME}
       </devtools-link>

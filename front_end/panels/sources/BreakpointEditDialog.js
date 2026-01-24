@@ -117,7 +117,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
     <div class=link-wrapper>
       <devtools-icon name=open-externally class=link-icon></devtools-icon>
       <devtools-link class="devtools-link" href="https://goo.gle/devtools-loc"
-                                          .jslogContext=${'learn-more'}>${i18nString(UIStrings.learnMoreOnBreakpointTypes)}</devtools-link>
+                                          jslogcontext="learn-more">${i18nString(UIStrings.learnMoreOnBreakpointTypes)}</devtools-link>
     </div>
     `, 
     // clang-format on

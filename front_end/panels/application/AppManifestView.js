@@ -481,7 +481,7 @@ function renderIdentity(identityData, onCopy, output) {
             jslog=${VisualLogging.action('help').track({ hover: true })}>
         </devtools-icon>
         <devtools-link href="https://developer.chrome.com/blog/pwa-manifest-id/"
-                      .jslogContext=${'learn-more'}
+                      jslogcontext="learn-more"
                       ${ref(setFocusOnSection(i18nString(UIStrings.identity), output))}>
           ${i18nString(UIStrings.learnMore)}
         </devtools-link>
@@ -583,7 +583,7 @@ function renderIcons(data, maskedIcons, onToggleIconMasked, output) {
       <div class="report-row">
         ${i18nTemplate(str_, UIStrings.needHelpReadOurS, {
         PH1: html `
-            <devtools-link href="https://web.dev/maskable-icon/" .jslogContext=${'learn-more'}>
+            <devtools-link href="https://web.dev/maskable-icon/" jslogcontext="learn-more">
               ${i18nString(UIStrings.documentationOnMaskableIcons)}
             </devtools-link>`,
     })}
@@ -677,7 +677,7 @@ function renderWindowControlsSection(data, selectedPlatform, onSelectOs, onToggl
         PH2: html `<code>
               <devtools-link
                 href="https://developer.mozilla.org/en-US/docs/Web/Manifest/display_override"
-                .jslogContext=${'display-override'}
+                jslogcontext="display-override"
                 ${ref(setFocusOnSection(i18nString(UIStrings.windowControlsOverlay), output))}>
                 display-override
               </devtools-link>
@@ -693,7 +693,7 @@ function renderWindowControlsSection(data, selectedPlatform, onSelectOs, onToggl
             ${i18nTemplate(str_, UIStrings.wcoNotFound, { PH1: html `<code>
                 <devtools-link
                     href="https://developer.mozilla.org/en-US/docs/Web/Manifest/display_override"
-                    .jslogContext=${'display-override'}
+                    jslogcontext="display-override"
                     ${ref(setFocusOnSection(i18nString(UIStrings.windowControlsOverlay), output))}>
                   display-override
                 </devtools-link>
@@ -702,7 +702,7 @@ function renderWindowControlsSection(data, selectedPlatform, onSelectOs, onToggl
         <div class="report-row">
           ${i18nTemplate(str_, UIStrings.wcoNeedHelpReadMore, { PH1: html `<devtools-link
               href="https://learn.microsoft.com/en-us/microsoft-edge/progressive-web-apps-chromium/how-to/window-controls-overlay"
-              .jslogContext=${'customize-pwa-tittle-bar'}>
+              jslogcontext="customize-pwa-tittle-bar">
             ${i18nString(UIStrings.customizePwaTitleBar)}
           </devtools-link>` })}
         </div>

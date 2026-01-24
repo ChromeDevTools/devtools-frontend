@@ -222,7 +222,7 @@ export class PreloadingRuleSetView extends UI.Widget.VBox {
             <devtools-link
               class="devtools-link"
               href=${SPECULATION_EXPLANATION_URL}
-              .jslogContext=${'learn-more'}
+              jslogcontext="learn-more"
             >${i18nString(UIStrings.learnMore)}</devtools-link>
           </div>
         </div>
@@ -370,7 +370,7 @@ export class PreloadingAttemptView extends UI.Widget.VBox {
             <devtools-link
               class="devtools-link"
               href=${SPECULATION_EXPLANATION_URL}
-              .jslogContext=${'learn-more'}
+              jslogcontext="learn-more"
             >${i18nString(UIStrings.learnMore)}</devtools-link>
           </div>
         </div>

@@ -310,7 +310,7 @@ const data = {
 \`\`\`
 `,
                     },
-                    thought: {
+                    explanation: {
                         type: 1 /* Host.AidaClient.ParametersTypes.STRING */,
                         description: 'Explain why you want to run this code',
                     },
@@ -319,12 +319,12 @@ const data = {
                         description: 'Provide a summary of what the code does. For example, "Checking related element styles".',
                     },
                 },
-                required: ['code', 'thought', 'title']
+                required: ['code', 'explanation', 'title']
             },
             displayInfoFromArgs: params => {
                 return {
                     title: params.title,
-                    thought: params.thought,
+                    thought: params.explanation,
                     action: params.code,
                 };
             },

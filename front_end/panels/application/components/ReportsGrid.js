@@ -64,7 +64,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
                 <style>${reportsGridStyles}</style>
                 <span class="status-header">${i18nString(UIStrings.status)}</span>
                 <devtools-link href="https://web.dev/reporting-api/#report-status"
-                .jslogContext=${'report-status'}>
+                jslogcontext="report-status">
                   <devtools-icon class="inline-icon medium" name="help" style="color: var(--icon-link);"
                   ></devtools-icon>
                 </devtools-link>
@@ -94,7 +94,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
             <devtools-link
               class="devtools-link"
               href=${REPORTING_API_EXPLANATION_URL}
-              .jslogContext=${'learn-more'}
+              jslogcontext="learn-more"
             >${i18nString(UIStrings.learnMore)}</devtools-link>
           </div>
         </div>

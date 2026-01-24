@@ -301,7 +301,7 @@ var DEFAULT_VIEW = (input, output, target) => {
               ${getGdpSubscriptionText(input.gdpProfile)}
               &nbsp;·&nbsp;
               <devtools-link
-                .jslogContext=${"view-profile"}
+                jslogcontext="view-profile"
                 class="link"
                 href=${Host.GdpClient.GOOGLE_DEVELOPER_PROGRAM_PROFILE_LINK}>
                 ${i18nString(UIStrings.viewProfile)}

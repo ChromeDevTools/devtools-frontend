@@ -19,7 +19,7 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 import * as PanelUtils from '../utils/utils.js';
 import requestConditionsDrawerStyles from './requestConditionsDrawer.css.js';
-const { ref } = Directives;
+const { ref, live } = Directives;
 const { widgetConfig } = UI.Widget;
 const UIStrings = {
     /**
@@ -373,10 +373,10 @@ export class RequestConditionsDrawer extends UI.Widget.VBox {
             // clang-format off
             html `
     <input class=blocked-url-checkbox
-      @click=${toggle}
+      @change=${toggle}
       type=checkbox
       title=${i18nString(UIStrings.enableThrottlingToggleLabel, { PH1: constructorStringOrWildcardURL })}
-      .checked=${enabled}
+      .checked=${live(enabled)}
       .disabled=${!editable || !originalOrUpgradedURLPattern}
       jslog=${VisualLogging.toggle().track({ change: true })}>
     <devtools-button
@@ -452,7 +452,7 @@ export class RequestConditionsDrawer extends UI.Widget.VBox {
             // clang-format off
             html `
     <input class=blocked-url-checkbox
-      @click=${toggle}
+      @change=${toggle}
       type=checkbox
       .checked=${condition.enabled}
       .disabled=${!editable}

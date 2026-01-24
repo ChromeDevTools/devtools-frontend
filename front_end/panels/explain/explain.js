@@ -646,7 +646,7 @@ function renderSearchButton(onSearch) {
   </devtools-button>`;
 }
 function renderLearnMoreAboutInsights() {
-  return html`<devtools-link href=${LEARN_MORE_URL} class="link" .jslogContext=${"learn-more"}>
+  return html`<devtools-link href=${LEARN_MORE_URL} class="link" jslogcontext="learn-more">
     ${i18nString(UIStrings.learnMore)}
   </devtools-link>`;
 }
@@ -661,7 +661,7 @@ function maybeRenderSources(directCitationUrls, highlightedCitationIndex, onCita
           <devtools-link
             href=${url}
             class=${Directives.classMap({ link: true, highlighted: index === highlightedCitationIndex })}
-            .jslogContext=${"references.console-insights"}
+            jslogcontext="references.console-insights"
             ${Directives.ref((e) => {
     output.citationLinks[index] = e;
   })}
@@ -686,7 +686,7 @@ function maybeRenderRelatedContent(relatedUrls, directCitationUrls) {
           <devtools-link
             href=${relatedUrl}
             class="link"
-            .jslogContext=${"references.console-insights"}
+            jslogcontext="references.console-insights"
           >
             ${relatedUrl}
           </devtools-link>
@@ -770,12 +770,12 @@ function renderConsentReminder(noLogging) {
       <div>Use of this feature is subject to the <devtools-link
           href=${TERMS_OF_SERVICE_URL}
           class="link"
-          .jslogContext=${"terms-of-service.console-insights"}>
+          jslogcontext="terms-of-service.console-insights">
         Google Terms of Service
         </devtools-link> and <devtools-link
           href=${PRIVACY_POLICY_URL}
           class="link"
-          .jslogContext=${"privacy-policy.console-insights"}>
+          jslogcontext="privacy-policy.console-insights">
         Google Privacy Policy
         </devtools-link>
       </div>
@@ -787,7 +787,7 @@ function renderConsentReminder(noLogging) {
         <devtools-link
           href=${CODE_SNIPPET_WARNING_URL}
           class="link"
-          .jslogContext=${"code-snippets-explainer.console-insights"}
+          jslogcontext="code-snippets-explainer.console-insights"
         >Use generated code snippets with caution</devtools-link>
       </div>
     </div>`;
@@ -817,7 +817,7 @@ function renderDisclaimer(noLogging, onDisclaimerSettingsLink) {
               jslog=${VisualLogging.action("open-ai-settings").track({ click: true })}>
       Open settings
     </button> or <devtools-link href=${LEARN_MORE_URL}
-        class="link" .jslogContext=${"learn-more"}>
+        class="link" jslogcontext="learn-more">
       learn more
     </devtools-link>
   </span>`;

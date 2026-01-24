@@ -262,7 +262,7 @@ var SELECT_WORKSPACE_DIALOG_DEFAULT_VIEW = (input, _output, target) => {
             <devtools-link
               class="devtools-link"
               href="https://goo.gle/devtools-automatic-workspace-folders"
-              .jslogContext=${"automatic-workspaces-documentation"}
+              jslogcontext="automatic-workspaces-documentation"
             >com.chrome.devtools.json</devtools-link>
             file to automatically connect your project to DevTools.
           </div>
@@ -604,7 +604,7 @@ var DEFAULT_VIEW = (input, output, target) => {
           class="link"
           title="${UIStringsNotTranslate2.viewUploadedFiles} ${UIStringsNotTranslate2.opensInNewTab}"
           href="data:text/plain;charset=utf-8,${encodeURIComponent(input.sources)}"
-          .jslogContext=${"files-used-in-patching"}>
+          jslogcontext="files-used-in-patching">
           ${UIStringsNotTranslate2.viewUploadedFiles}
         </devtools-link>`;
   }
@@ -678,7 +678,7 @@ var DEFAULT_VIEW = (input, output, target) => {
       return html2`
           <div class="footer">
             <div class="left-side">
-              <devtools-link class="link disclaimer-link" href="https://support.google.com/legal/answer/13505487" .jslogContext=${"code-disclaimer"}>
+              <devtools-link class="link disclaimer-link" href="https://support.google.com/legal/answer/13505487" jslogcontext="code-disclaimer">
                 ${lockedString2(UIStringsNotTranslate2.codeDisclaimer)}
               </devtools-link>
               ${renderSourcesLink()}
@@ -904,7 +904,7 @@ var PatchWidget = class extends UI2.Widget.Widget {
           content: html2`<devtools-link
             href=${CODE_SNIPPET_WARNING_URL}
             class="link devtools-link"
-            .jslogContext=${"code-snippets-explainer.patch-widget"}
+            jslogcontext="code-snippets-explainer.patch-widget"
           >${lockedString2(UIStringsNotTranslate2.freDisclaimerTextUseWithCaution)}</devtools-link>`
           // clang-format on
         }

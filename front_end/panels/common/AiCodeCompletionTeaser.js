@@ -200,7 +200,7 @@ export class AiCodeCompletionTeaser extends UI.Widget.Widget {
             content: html `<devtools-link
             href=${CODE_SNIPPET_WARNING_URL}
             class="link devtools-link"
-            .jslogContext=${'code-snippets-explainer.ai-code-completion-teaser'}
+            jslogcontext="code-snippets-explainer.ai-code-completion-teaser"
           >${lockedString(UIStringsNotTranslate.freDisclaimerTextUseWithCaution)}</devtools-link>`,
             // clang-format on
         });

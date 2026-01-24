@@ -1408,7 +1408,7 @@ var renderMainFrameInformation2 = (input) => {
     </devtools-report-divider>
     <devtools-report-section>
       <devtools-link href="https://privacycg.github.io/nav-tracking-mitigations/#bounce-tracking-mitigations" class="link"
-      .jslogContext=${"learn-more"}>
+      jslogcontext="learn-more">
         ${i18nString2(UIStrings3.learnMore)}
       </devtools-link>
     </devtools-report-section>
@@ -2134,7 +2134,7 @@ function renderStatusMessage(protocolHandlers, manifestLink) {
                      name=${protocolHandlers.length > 0 ? "check-circle" : "info"}>
       </devtools-icon>
       ${uiI18n.getFormatLocalizedStringTemplate(str_7, statusString, { PH1: html6`
-        <devtools-link href=${manifestLink} .jslogContext=${"manifest"}>${i18nString6(UIStrings7.manifest)}</devtools-link>
+        <devtools-link href=${manifestLink} jslogcontext="manifest">${i18nString6(UIStrings7.manifest)}</devtools-link>
         ` })}
     </div>`;
 }
@@ -2167,7 +2167,7 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
     ${renderStatusMessage(input.protocolHandler, input.manifestLink)}
     <div class="protocol-handlers-row">
       ${i18nTemplate(UIStrings7.needHelpReadOur, { PH1: html6`
-        <devtools-link href=${PROTOCOL_DOCUMENT_URL} class="devtools-link" autofocus .jslogContext=${"learn-more"}>
+        <devtools-link href=${PROTOCOL_DOCUMENT_URL} class="devtools-link" autofocus jslogcontext="learn-more">
           ${i18nString6(UIStrings7.protocolHandlerRegistrations)}
         </devtools-link>` })}
     </div>
@@ -2335,7 +2335,7 @@ var DEFAULT_VIEW6 = (input, output, target) => {
                 <style>${reportsGrid_css_default}</style>
                 <span class="status-header">${i18nString7(UIStrings8.status)}</span>
                 <devtools-link href="https://web.dev/reporting-api/#report-status"
-                .jslogContext=${"report-status"}>
+                jslogcontext="report-status">
                   <devtools-icon class="inline-icon medium" name="help" style="color: var(--icon-link);"
                   ></devtools-icon>
                 </devtools-link>
@@ -2365,7 +2365,7 @@ var DEFAULT_VIEW6 = (input, output, target) => {
             <devtools-link
               class="devtools-link"
               href=${REPORTING_API_EXPLANATION_URL}
-              .jslogContext=${"learn-more"}
+              jslogcontext="learn-more"
             >${i18nString7(UIStrings8.learnMore)}</devtools-link>
           </div>
         </div>

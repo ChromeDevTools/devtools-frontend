@@ -825,7 +825,7 @@ var DEFAULT_VIEW2 = (input, output, target) => {
           style="color: var(--icon-warning); margin-right: var(--sys-size-2);">
         </devtools-icon>
         ${i18nFormatStringTemplate2(UIStrings2.upperDeprecationWarning, {
-    PH1: html2`<devtools-link class="devtools-link" href="https://privacysandbox.com/news/privacy-sandbox-update/" .jslogContext=${"privacy-sandbox-update"}>${i18nString2(UIStrings2.blogPostLink)}</devtools-link>`
+    PH1: html2`<devtools-link class="devtools-link" href="https://privacysandbox.com/news/privacy-sandbox-update/" jslogcontext="privacy-sandbox-update">${i18nString2(UIStrings2.blogPostLink)}</devtools-link>`
   })}
       </div>
       <div class="body">
@@ -837,7 +837,7 @@ var DEFAULT_VIEW2 = (input, output, target) => {
         <div class="report overflow-auto">
             <div class="header">
               <h1>${i18nString2(UIStrings2.title)}</h1>
-              <div class="body">${i18nString2(UIStrings2.body)} <devtools-link class="devtools-link" href="https://developers.google.com/privacy-sandbox/cookies/prepare/audit-cookies" .jslogContext=${"learn-more"}>${i18nString2(UIStrings2.learnMoreLink)}</devtools-link></div>
+              <div class="body">${i18nString2(UIStrings2.body)} <devtools-link class="devtools-link" href="https://developers.google.com/privacy-sandbox/cookies/prepare/audit-cookies" jslogcontext="learn-more">${i18nString2(UIStrings2.learnMoreLink)}</devtools-link></div>
             </div>
             ${input.cookieRows.length > 0 ? html2`
                 <div class="filters-container">
@@ -1060,7 +1060,7 @@ var CookieReportView = class _CookieReportView extends UI2.Widget.VBox {
     }
     switch (insight.type) {
       case "GitHubResource": {
-        const githubLink = html2`<devtools-link href=${insight.tableEntryUrl ?? "https://github.com/privacysandbox/privacy-sandbox-dev-support/blob/main/3pc-migration-readiness.md"} .jslogContext=${"readiness-list-link"}>${i18nString2(UIStrings2.guidance)}</devtools-link>`;
+        const githubLink = html2`<devtools-link href=${insight.tableEntryUrl ?? "https://github.com/privacysandbox/privacy-sandbox-dev-support/blob/main/3pc-migration-readiness.md"} jslogcontext="readiness-list-link">${i18nString2(UIStrings2.guidance)}</devtools-link>`;
         return html2`${uiI18n2.getFormatLocalizedStringTemplate(str_2, UIStrings2.gitHubResource, {
           PH1: githubLink
         })}`;
@@ -1070,7 +1070,7 @@ var CookieReportView = class _CookieReportView extends UI2.Widget.VBox {
         const gracePeriodLink = html2`<devtools-link
             href=${"https://developers.google.com/privacy-sandbox/cookies/dashboard?url=" + // The order of the URLs matters - needs to be 1P + 3P.
         (url ? Common2.ParsedURL.ParsedURL.fromString(url)?.host + "+" : "") + (domain.charAt(0) === "." ? domain.substring(1) : domain)}
-            .jslogContext=${"compatibility-lookup-link"}>${i18nString2(UIStrings2.reportedIssues)}</devtools-link>`;
+            jslogcontext="compatibility-lookup-link">${i18nString2(UIStrings2.reportedIssues)}</devtools-link>`;
         return html2`${uiI18n2.getFormatLocalizedStringTemplate(str_2, UIStrings2.gracePeriod, {
           PH1: gracePeriodLink
         })}`;

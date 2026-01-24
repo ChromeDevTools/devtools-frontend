@@ -133,9 +133,9 @@ export const DEFAULT_VIEW = (input, _output, target) => {
             <div class="section-text">
               <div>${i18nString(UIStrings.tailorProfileBody)}</div><br/>
               <div>${uiI18n.getFormatLocalizedStringTemplate(str_, UIStrings.tailorProfileBodyDisclaimer, {
-        PH1: html `<devtools-link href=${CONTENT_POLICY_URL} class="link" .jslogContext=${'content-policy'}>${i18nString(UIStrings.contentPolicy)}</devtools-link>`,
-        PH2: html `<devtools-link href=${TERMS_OF_SERVICE_URL} class="link" .jslogContext=${'terms-of-service'}>${i18nString(UIStrings.termsOfService)}</devtools-link>`,
-        PH3: html `<devtools-link href=${PRIVACY_POLICY_URL} class="link" .jslogContext=${'privacy-policy'}>${i18nString(UIStrings.privacyPolicy)}</devtools-link>`,
+        PH1: html `<devtools-link href=${CONTENT_POLICY_URL} class="link" jslogcontext="content-policy">${i18nString(UIStrings.contentPolicy)}</devtools-link>`,
+        PH2: html `<devtools-link href=${TERMS_OF_SERVICE_URL} class="link" jslogcontext="terms-of-service">${i18nString(UIStrings.termsOfService)}</devtools-link>`,
+        PH3: html `<devtools-link href=${PRIVACY_POLICY_URL} class="link" jslogcontext="privacy-policy">${i18nString(UIStrings.privacyPolicy)}</devtools-link>`,
     })}</div>
             </div>
           </div>

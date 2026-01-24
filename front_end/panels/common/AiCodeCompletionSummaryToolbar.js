@@ -59,7 +59,7 @@ export const DEFAULT_SUMMARY_TOOLBAR_VIEW = (input, _output, target) => {
                     ${Directives.repeat(input.citations, citation => html `<devtools-link
                         tabIndex="0"
                         href=${citation}
-                        .jslogContext=${'ai-code-completion-citations.citation-link'}>${citation}</devtools-link>`)}</div></devtools-tooltip>
+                        jslogcontext="ai-code-completion-citations.citation-link">${citation}</devtools-link>`)}</div></devtools-tooltip>
             </div>` : nothing;
     render(html `
         <style>${styles}</style>

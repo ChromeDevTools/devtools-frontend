@@ -718,7 +718,7 @@ function renderIdentity(identityData, onCopy, output) {
             jslog=${VisualLogging.action("help").track({ hover: true })}>
         </devtools-icon>
         <devtools-link href="https://developer.chrome.com/blog/pwa-manifest-id/"
-                      .jslogContext=${"learn-more"}
+                      jslogcontext="learn-more"
                       ${ref(setFocusOnSection(i18nString(UIStrings.identity), output))}>
           ${i18nString(UIStrings.learnMore)}
         </devtools-link>
@@ -805,7 +805,7 @@ function renderIcons(data, maskedIcons, onToggleIconMasked, output) {
       <div class="report-row">
         ${i18nTemplate(str_, UIStrings.needHelpReadOurS, {
     PH1: html`
-            <devtools-link href="https://web.dev/maskable-icon/" .jslogContext=${"learn-more"}>
+            <devtools-link href="https://web.dev/maskable-icon/" jslogcontext="learn-more">
               ${i18nString(UIStrings.documentationOnMaskableIcons)}
             </devtools-link>`
   })}
@@ -884,7 +884,7 @@ function renderWindowControlsSection(data, selectedPlatform, onSelectOs, onToggl
     PH2: html`<code>
               <devtools-link
                 href="https://developer.mozilla.org/en-US/docs/Web/Manifest/display_override"
-                .jslogContext=${"display-override"}
+                jslogcontext="display-override"
                 ${ref(setFocusOnSection(i18nString(UIStrings.windowControlsOverlay), output))}>
                 display-override
               </devtools-link>
@@ -898,7 +898,7 @@ function renderWindowControlsSection(data, selectedPlatform, onSelectOs, onToggl
             ${i18nTemplate(str_, UIStrings.wcoNotFound, { PH1: html`<code>
                 <devtools-link
                     href="https://developer.mozilla.org/en-US/docs/Web/Manifest/display_override"
-                    .jslogContext=${"display-override"}
+                    jslogcontext="display-override"
                     ${ref(setFocusOnSection(i18nString(UIStrings.windowControlsOverlay), output))}>
                   display-override
                 </devtools-link>
@@ -907,7 +907,7 @@ function renderWindowControlsSection(data, selectedPlatform, onSelectOs, onToggl
         <div class="report-row">
           ${i18nTemplate(str_, UIStrings.wcoNeedHelpReadMore, { PH1: html`<devtools-link
               href="https://learn.microsoft.com/en-us/microsoft-edge/progressive-web-apps-chromium/how-to/window-controls-overlay"
-              .jslogContext=${"customize-pwa-tittle-bar"}>
+              jslogcontext="customize-pwa-tittle-bar">
             ${i18nString(UIStrings.customizePwaTitleBar)}
           </devtools-link>` })}
         </div>
@@ -2341,11 +2341,21 @@ var DeviceBoundSessionsModel = class extends Common3.ObjectWrapper.ObjectWrapper
       return;
     }
     const emptySessions = /* @__PURE__ */ new Map();
+    const noLongerFailedSessions = /* @__PURE__ */ new Map();
     const emptySites = /* @__PURE__ */ new Set();
     for (const [site, sessionIdToSessionMap] of [...this.#siteSessions]) {
       let emptySessionsSiteEntry = emptySessions.get(site);
+      let noLongerFailedSessionsSiteEntry = noLongerFailedSessions.get(site);
       for (const [sessionId, sessionAndEvents] of sessionIdToSessionMap) {
         sessionAndEvents.eventsById.clear();
+        if (sessionAndEvents.hasErrors) {
+          sessionAndEvents.hasErrors = false;
+          if (!noLongerFailedSessionsSiteEntry) {
+            noLongerFailedSessionsSiteEntry = [];
+            noLongerFailedSessions.set(site, noLongerFailedSessionsSiteEntry);
+          }
+          noLongerFailedSessionsSiteEntry.push(sessionId);
+        }
         if (sessionAndEvents.session) {
           continue;
         }
@@ -2361,7 +2371,7 @@ var DeviceBoundSessionsModel = class extends Common3.ObjectWrapper.ObjectWrapper
         emptySites.add(site);
       }
     }
-    this.dispatchEventToListeners("CLEAR_EVENTS", { emptySessions, emptySites });
+    this.dispatchEventToListeners("CLEAR_EVENTS", { emptySessions, emptySites, noLongerFailedSessions });
   }
   isSiteVisible(site) {
     return this.#visibleSites.has(site);
@@ -2372,6 +2382,13 @@ var DeviceBoundSessionsModel = class extends Common3.ObjectWrapper.ObjectWrapper
       return false;
     }
     return session.isSessionTerminated;
+  }
+  sessionHasErrors(site, sessionId) {
+    const session = this.getSession(site, sessionId);
+    if (session === void 0) {
+      return false;
+    }
+    return session.hasErrors;
   }
   getSession(site, sessionId) {
     return this.#siteSessions.get(site)?.get(sessionId);
@@ -2397,6 +2414,7 @@ var DeviceBoundSessionsModel = class extends Common3.ObjectWrapper.ObjectWrapper
       sessionAndEvent = {
         session: void 0,
         isSessionTerminated: false,
+        hasErrors: false,
         eventsById: /* @__PURE__ */ new Map()
       };
       sessionIdToSessionMap.set(sessionId, sessionAndEvent);
@@ -2423,6 +2441,9 @@ var DeviceBoundSessionsModel = class extends Common3.ObjectWrapper.ObjectWrapper
       } else if (event.creationEventDetails) {
         sessionAndEvent.isSessionTerminated = false;
       }
+    }
+    if (!event.succeeded) {
+      sessionAndEvent.hasErrors = true;
     }
     this.dispatchEventToListeners("EVENT_OCCURRED", { site: eventWithTimestamp.event.site, sessionId: eventWithTimestamp.event.sessionId });
   }
@@ -2526,8 +2547,18 @@ var RootTreeElement = class extends ApplicationPanelTreeElement {
       this.removeChild(siteTreeElement);
     }
   }
-  #updateTerminatedSessionDisplay(site, sessionId) {
+  #updateElementIconAndStyling(sessionElement, isSessionTerminated, sessionHasErrors) {
+    if (isSessionTerminated) {
+      sessionElement.listItemElement.classList.add("device-bound-session-terminated");
+      sessionElement.setLeadingIcons([createIcon3("database-off")]);
+      return;
+    }
+    sessionElement.listItemElement.classList.remove("device-bound-session-terminated");
+    sessionElement.setLeadingIcons([createIcon3(sessionHasErrors ? "warning" : "database")]);
+  }
+  #updateIconAndStyling(site, sessionId) {
     const isSessionTerminated = this.#model.isSessionTerminated(site, sessionId);
+    const sessionHasErrors = this.#model.sessionHasErrors(site, sessionId);
     const siteMapEntry = this.#sites.get(site);
     if (!siteMapEntry) {
       return;
@@ -2536,12 +2567,25 @@ var RootTreeElement = class extends ApplicationPanelTreeElement {
     if (!sessionElement) {
       return;
     }
-    if (isSessionTerminated) {
-      sessionElement.listItemElement.classList.add("device-bound-session-terminated");
-      sessionElement.setLeadingIcons([createIcon3("database-off")]);
-    } else {
-      sessionElement.listItemElement.classList.remove("device-bound-session-terminated");
-      sessionElement.setLeadingIcons([createIcon3("database")]);
+    this.#updateElementIconAndStyling(sessionElement, isSessionTerminated, sessionHasErrors);
+  }
+  #removeWarningIcons(noLongerFailedSessions) {
+    for (const [site, noLongerFailedSessionIds] of noLongerFailedSessions) {
+      const siteData = this.#sites.get(site);
+      if (siteData) {
+        for (const noLongerFailedSessionId of noLongerFailedSessionIds) {
+          const sessionElement = siteData.sessions.get(noLongerFailedSessionId);
+          if (sessionElement) {
+            const isSessionTerminated = this.#model.isSessionTerminated(site, noLongerFailedSessionId);
+            this.#updateElementIconAndStyling(
+              sessionElement,
+              isSessionTerminated,
+              /* sessionHasErrors=*/
+              false
+            );
+          }
+        }
+      }
     }
   }
   #addSiteSessionIfMissing(site, sessionId) {
@@ -2621,10 +2665,11 @@ var RootTreeElement = class extends ApplicationPanelTreeElement {
   }
   #onEventOccurred({ data: { site, sessionId } }) {
     this.#addSiteSessionIfMissing(site, sessionId);
-    this.#updateTerminatedSessionDisplay(site, sessionId);
+    this.#updateIconAndStyling(site, sessionId);
   }
-  #onClearEvents({ data: { emptySessions, emptySites } }) {
+  #onClearEvents({ data: { emptySessions, emptySites, noLongerFailedSessions } }) {
     this.#removeEmptyElements(emptySessions, emptySites);
+    this.#removeWarningIcons(noLongerFailedSessions);
   }
 };
 
@@ -3731,7 +3776,7 @@ function renderOriginTrial(trials) {
       <span class="report-section">
         ${i18nString7(UIStrings7.originTrialsExplanation)}
         <devtools-link href="https://developer.chrome.com/docs/web-platform/origin-trials/" class="link"
-                .jslogContext=${"learn-more.origin-trials"}>
+                jslogcontext="learn-more.origin-trials">
           ${i18nString7(UIStrings7.learnMore)}
         </devtools-link>
       </span>
@@ -4066,7 +4111,7 @@ function renderApiAvailabilitySection(frame) {
           ${i18nString7(UIStrings7.availabilityOfCertainApisDepends)}
           <devtools-link
             href="https://web.dev/why-coop-coep/" class="link"
-            .jslogContext=${"learn-more.coop-coep"}>
+            jslogcontext="learn-more.coop-coep">
             ${i18nString7(UIStrings7.learnMore)}
           </devtools-link>
         </span>
@@ -4131,7 +4176,7 @@ function renderMeasureMemoryAvailability(frame) {
     return html3`
         <devtools-report-key>${i18nString7(UIStrings7.measureMemory)}</devtools-report-key>
         <devtools-report-value>
-          <span title=${tooltipText}>${availabilityText}</span>\xA0<devtools-link class="link" href="https://web.dev/monitor-total-page-memory-usage/" .jslogContext=${"learn-more.monitor-memory-usage"}>${i18nString7(UIStrings7.learnMore)}</devtools-link>
+          <span title=${tooltipText}>${availabilityText}</span>\xA0<devtools-link class="link" href="https://web.dev/monitor-total-page-memory-usage/" jslogcontext="learn-more.monitor-memory-usage">${i18nString7(UIStrings7.learnMore)}</devtools-link>
         </devtools-report-value>
       `;
   }
@@ -6695,7 +6740,7 @@ var PreloadingRuleSetView = class extends UI9.Widget.VBox {
             <devtools-link
               class="devtools-link"
               href=${SPECULATION_EXPLANATION_URL}
-              .jslogContext=${"learn-more"}
+              jslogcontext="learn-more"
             >${i18nString13(UIStrings13.learnMore)}</devtools-link>
           </div>
         </div>
@@ -6827,7 +6872,7 @@ var PreloadingAttemptView = class extends UI9.Widget.VBox {
             <devtools-link
               class="devtools-link"
               href=${SPECULATION_EXPLANATION_URL}
-              .jslogContext=${"learn-more"}
+              jslogcontext="learn-more"
             >${i18nString13(UIStrings13.learnMore)}</devtools-link>
           </div>
         </div>

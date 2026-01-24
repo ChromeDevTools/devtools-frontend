@@ -505,7 +505,7 @@ var AiCodeCompletionTeaser = class extends UI2.Widget.Widget {
       content: html2`<devtools-link
             href=${CODE_SNIPPET_WARNING_URL}
             class="link devtools-link"
-            .jslogContext=${"code-snippets-explainer.ai-code-completion-teaser"}
+            jslogcontext="code-snippets-explainer.ai-code-completion-teaser"
           >${lockedString(UIStringsNotTranslate.freDisclaimerTextUseWithCaution)}</devtools-link>`
       // clang-format on
     });
@@ -1090,7 +1090,7 @@ var AiCodeGenerationUpgradeDialog = class {
               @click=${() => {
       void UI4.ViewManager.ViewManager.instance().showView("chrome-ai");
     }}
-              .jslogContext=${"ai-code-generation-upgrade-dialog.manage-in-settings"}
+              jslogcontext="ai-code-generation-upgrade-dialog.manage-in-settings"
               .variant=${"outlined"}
               aria-label=${lockedString3(UIStringsNotTranslate3.manageInSettings)}>
               ${lockedString3(UIStringsNotTranslate3.manageInSettings)}
@@ -1099,7 +1099,7 @@ var AiCodeGenerationUpgradeDialog = class {
               @click=${() => {
       dialog2.hide();
     }}
-              .jslogContext=${"ai-code-generation-upgrade-dialog.continue"}
+              jslogcontext="ai-code-generation-upgrade-dialog.continue"
               .variant=${"primary"}>
               ${lockedString3(UIStringsNotTranslate3.gotIt)}
             </devtools-button>
@@ -1665,9 +1665,9 @@ var DEFAULT_VIEW4 = (input, _output, target) => {
             <div class="section-text">
               <div>${i18nString2(UIStrings2.tailorProfileBody)}</div><br/>
               <div>${uiI18n.getFormatLocalizedStringTemplate(str_2, UIStrings2.tailorProfileBodyDisclaimer, {
-    PH1: html6`<devtools-link href=${CONTENT_POLICY_URL} class="link" .jslogContext=${"content-policy"}>${i18nString2(UIStrings2.contentPolicy)}</devtools-link>`,
-    PH2: html6`<devtools-link href=${TERMS_OF_SERVICE_URL} class="link" .jslogContext=${"terms-of-service"}>${i18nString2(UIStrings2.termsOfService)}</devtools-link>`,
-    PH3: html6`<devtools-link href=${PRIVACY_POLICY_URL} class="link" .jslogContext=${"privacy-policy"}>${i18nString2(UIStrings2.privacyPolicy)}</devtools-link>`
+    PH1: html6`<devtools-link href=${CONTENT_POLICY_URL} class="link" jslogcontext="content-policy">${i18nString2(UIStrings2.contentPolicy)}</devtools-link>`,
+    PH2: html6`<devtools-link href=${TERMS_OF_SERVICE_URL} class="link" jslogcontext="terms-of-service">${i18nString2(UIStrings2.termsOfService)}</devtools-link>`,
+    PH3: html6`<devtools-link href=${PRIVACY_POLICY_URL} class="link" jslogcontext="privacy-policy">${i18nString2(UIStrings2.privacyPolicy)}</devtools-link>`
   })}</div>
             </div>
           </div>
@@ -2412,7 +2412,7 @@ var DEFAULT_SUMMARY_TOOLBAR_VIEW2 = (input, _output, target) => {
                     ${Directives3.repeat(input.citations, (citation) => html9`<devtools-link
                         tabIndex="0"
                         href=${citation}
-                        .jslogContext=${"ai-code-completion-citations.citation-link"}>${citation}</devtools-link>`)}</div></devtools-tooltip>
+                        jslogcontext="ai-code-completion-citations.citation-link">${citation}</devtools-link>`)}</div></devtools-tooltip>
             </div>` : nothing5;
   render9(html9`
         <style>${aiCodeCompletionSummaryToolbar_css_default}</style>
@@ -2741,7 +2741,7 @@ var BadgeNotification = class extends UI10.Widget.Widget {
     this.#show({
       message: i18nFormatStringTemplate(UIStrings4.starterBadgeAwardMessageSettingDisabled, {
         PH1: badge.title,
-        PH2: html10`<devtools-link class="badge-link" href="https://developers.google.com/program" .jslogContext=${"program-link"}>${lockedString6("Google Developer Program")}</devtools-link>`
+        PH2: html10`<devtools-link class="badge-link" href="https://developers.google.com/program" jslogcontext="program-link">${lockedString6("Google Developer Program")}</devtools-link>`
       }),
       jslogContext: badge.jslogContext,
       actions: [

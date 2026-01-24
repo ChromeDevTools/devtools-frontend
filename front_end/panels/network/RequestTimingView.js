@@ -467,7 +467,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
            <devtools-link
              href="https://developer.chrome.com/docs/devtools/network/reference/#timing-explanation"
              class=devtools-link
-             .jslogContext=${'explanation'}>
+             jslogcontext="explanation">
                ${i18nString(UIStrings.explanation)}
            </devtools-link>
          <td></td>

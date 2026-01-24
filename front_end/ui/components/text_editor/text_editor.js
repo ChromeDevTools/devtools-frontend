@@ -1697,6 +1697,11 @@ var AutocompleteHistory = class _AutocompleteHistory {
   #historyOffset = 1;
   #uncommittedIsTop = false;
   /**
+   * Tracks session-local edits made to history entries during navigation.
+   * Maps history index to edited text. Cleared when a new command is committed.
+   */
+  #editedEntries = /* @__PURE__ */ new Map();
+  /**
    * Creates a new settings-backed history. The class assumes it has sole
    * ownership of the setting.
    */
@@ -1708,6 +1713,7 @@ var AutocompleteHistory = class _AutocompleteHistory {
     this.#data = [];
     this.#setting.set([]);
     this.#historyOffset = 1;
+    this.#editedEntries.clear();
   }
   length() {
     return this.#data.length;
@@ -1721,6 +1727,7 @@ var AutocompleteHistory = class _AutocompleteHistory {
       this.#uncommittedIsTop = false;
     }
     this.#historyOffset = 1;
+    this.#editedEntries.clear();
     if (text !== this.#currentHistoryItem()) {
       this.#data.push(text);
     }
@@ -1742,9 +1749,29 @@ var AutocompleteHistory = class _AutocompleteHistory {
     }
     if (this.#historyOffset === 1) {
       this.#pushCurrentText(currentText);
+    } else {
+      this.#saveCurrentEdit(currentText);
     }
     ++this.#historyOffset;
     return this.#currentHistoryItem();
+  }
+  /**
+   * Saves the current text as an edit if it differs from the current history item
+   * (which may already have edits from a previous navigation).
+   * Only saves non-empty edits to avoid issues with navigation-only calls.
+   */
+  #saveCurrentEdit(text) {
+    const index = this.#data.length - this.#historyOffset;
+    const currentValue = this.#currentHistoryItem();
+    if (text === currentValue) {
+      return;
+    }
+    const original = this.#data[index];
+    if (text !== original && text.length > 0) {
+      this.#editedEntries.set(index, text);
+    } else {
+      this.#editedEntries.delete(index);
+    }
   }
   next() {
     if (this.#historyOffset === 1) {
@@ -1765,7 +1792,8 @@ var AutocompleteHistory = class _AutocompleteHistory {
     return result;
   }
   #currentHistoryItem() {
-    return this.#data[this.#data.length - this.#historyOffset];
+    const index = this.#data.length - this.#historyOffset;
+    return this.#editedEntries.get(index) ?? this.#data[index];
   }
   #store() {
     this.#setting.set(this.#data.slice(-_AutocompleteHistory.#historySize));

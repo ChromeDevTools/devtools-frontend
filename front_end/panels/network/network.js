@@ -340,7 +340,7 @@ var requestConditionsDrawer_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./requestConditionsDrawer.css")} */`;
 
 // gen/front_end/panels/network/RequestConditionsDrawer.js
-var { ref } = Directives;
+var { ref, live } = Directives;
 var { widgetConfig } = UI2.Widget;
 var UIStrings2 = {
   /**
@@ -683,10 +683,10 @@ var RequestConditionsDrawer = class _RequestConditionsDrawer extends UI2.Widget.
         // clang-format off
         html`
     <input class=blocked-url-checkbox
-      @click=${toggle2}
+      @change=${toggle2}
       type=checkbox
       title=${i18nString2(UIStrings2.enableThrottlingToggleLabel, { PH1: constructorStringOrWildcardURL })}
-      .checked=${enabled}
+      .checked=${live(enabled)}
       .disabled=${!editable || !originalOrUpgradedURLPattern}
       jslog=${VisualLogging.toggle().track({ change: true })}>
     <devtools-button
@@ -759,7 +759,7 @@ var RequestConditionsDrawer = class _RequestConditionsDrawer extends UI2.Widget.
         // clang-format off
         html`
     <input class=blocked-url-checkbox
-      @click=${toggle2}
+      @change=${toggle2}
       type=checkbox
       .checked=${condition.enabled}
       .disabled=${!editable}
@@ -6100,7 +6100,7 @@ var DEFAULT_VIEW6 = (input, output, target) => {
            <devtools-link
              href="https://developer.chrome.com/docs/devtools/network/reference/#timing-explanation"
              class=devtools-link
-             .jslogContext=${"explanation"}>
+             jslogcontext="explanation">
                ${i18nString12(UIStrings12.explanation)}
            </devtools-link>
          <td></td>

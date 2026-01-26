@@ -82,7 +82,7 @@ export const DEFAULT_VIEW: View = (input, _output, target): void => {
             .size=${Buttons.Button.Size.REGULAR}
             .title=${i18nString(UIStrings.dismiss)}
             jslog=${VisualLogging.close().track({click: true})}
-            @click=${() => {}}
+            @click=${() => input.onCancelClick()}
           ></devtools-button>
         </div>
       </div>

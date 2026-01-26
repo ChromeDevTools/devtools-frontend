@@ -626,6 +626,7 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
     this.#startTime = performance.now();
     let teaserText = '';
     let firstChunkReceived = false;
+    let firstChunkTime = 0;
     try {
       for await (const chunk of this.#getOnDeviceInsight()) {
         teaserText += chunk;
@@ -634,7 +635,9 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
         this.requestUpdate();
         if (!firstChunkReceived) {
           firstChunkReceived = true;
-          Host.userMetrics.consoleInsightTeaserFirstChunkGenerated(performance.now() - this.#startTime);
+          firstChunkTime = performance.now();
+          Host.userMetrics.consoleInsightTeaserFirstChunkGenerated(firstChunkTime - this.#startTime);
+          Host.userMetrics.consoleInsightTeaserFirstChunkGeneratedMedium(firstChunkTime - this.#startTime);
         }
       }
     } catch (err) {
@@ -654,6 +657,8 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
     clearTimeout(this.#timeoutId);
     const duration = performance.now() - this.#startTime;
     Host.userMetrics.consoleInsightTeaserGenerated(duration);
+    Host.userMetrics.consoleInsightTeaserGeneratedMedium(duration);
+    Host.userMetrics.consoleInsightTeaserChunkToEndMedium(performance.now() - firstChunkTime);
     if (teaserText.length > 300) {
       Host.userMetrics.consoleInsightLongTeaserGenerated(duration);
     } else {

@@ -389,6 +389,8 @@ export interface InspectorFrontendHostAPI {
 
   recordPerformanceHistogram(histogramName: string, duration: number): void;
 
+  recordPerformanceHistogramMedium(histogramName: string, duration: number): void;
+
   recordUserMetricsAction(umaName: string): void;
 
   recordNewBadgeUsage(featureName: string): void;
@@ -512,7 +514,7 @@ export interface SyncInformation {
 }
 
 /**
- * Enum for recordPerformanceHistogram
+ * Enum for recordEnumeratedHistogram
  * Warning: There is another definition of this enum in the DevTools code
  * base, keep them in sync:
  * front_end/devtools_compatibility.js

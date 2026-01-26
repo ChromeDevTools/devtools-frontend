@@ -283,9 +283,24 @@ export class UserMetrics {
         'DevTools.Insights.TeaserGenerationTime', timeInMilliseconds);
   }
 
+  consoleInsightTeaserGeneratedMedium(timeInMilliseconds: number): void {
+    InspectorFrontendHostInstance.recordPerformanceHistogramMedium(
+        'DevTools.Insights.TeaserGenerationTimeMedium', timeInMilliseconds);
+  }
+
   consoleInsightTeaserFirstChunkGenerated(timeInMilliseconds: number): void {
     InspectorFrontendHostInstance.recordPerformanceHistogram(
         'DevTools.Insights.TeaserFirstChunkGenerationTime', timeInMilliseconds);
+  }
+
+  consoleInsightTeaserFirstChunkGeneratedMedium(timeInMilliseconds: number): void {
+    InspectorFrontendHostInstance.recordPerformanceHistogramMedium(
+        'DevTools.Insights.TeaserFirstChunkGenerationTimeMedium', timeInMilliseconds);
+  }
+
+  consoleInsightTeaserChunkToEndMedium(timeInMilliseconds: number): void {
+    InspectorFrontendHostInstance.recordPerformanceHistogramMedium(
+        'DevTools.Insights.TeaserChunkToEndMedium', timeInMilliseconds);
   }
 
   consoleInsightTeaserAbortedAfterFirstCharacter(timeInMilliseconds: number): void {

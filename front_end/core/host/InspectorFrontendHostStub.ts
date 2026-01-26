@@ -255,6 +255,13 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
     this.recordedPerformanceHistograms.push({histogramName, duration});
   }
 
+  recordPerformanceHistogramMedium(histogramName: string, duration: number): void {
+    if (this.recordedPerformanceHistograms.length >= MAX_RECORDED_HISTOGRAMS_SIZE) {
+      this.recordedPerformanceHistograms.shift();
+    }
+    this.recordedPerformanceHistograms.push({histogramName, duration});
+  }
+
   recordUserMetricsAction(_umaName: string): void {
   }
 

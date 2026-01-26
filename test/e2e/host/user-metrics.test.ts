@@ -65,7 +65,9 @@ async function setupInspectorFrontendHostStub(devToolsPage: DevToolsPage) {
       // @ts-expect-error
       globalThis.InspectorFrontendHost[prop] = stub[prop];
     }
-    for (const method of ['recordCountHistogram', 'recordEnumeratedHistogram', 'recordPerformanceHistogram']) {
+    for (const method
+             of ['recordCountHistogram', 'recordEnumeratedHistogram', 'recordPerformanceHistogram',
+                 'recordPerformanceHistogramMedium']) {
       // @ts-expect-error
       globalThis.InspectorFrontendHost[method] = stub[method];
     }

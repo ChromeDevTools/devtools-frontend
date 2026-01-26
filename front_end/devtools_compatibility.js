@@ -1021,6 +1021,13 @@
       DevToolsAPI.sendMessageToEmbedder('recordFunctionCall', [functionCallEvent], null);
     }
 
+    /**
+     * @param featureName
+     */
+    setChromeFlag(featureName, value) {
+      DevToolsAPI.sendMessageToEmbedder('setChromeFlag', [featureName, value], null);
+    }
+
     // Backward-compatible methods below this line --------------------------------------------
     /**
      * Support for legacy front-ends (<M65).

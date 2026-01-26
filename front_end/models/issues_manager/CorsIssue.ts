@@ -94,9 +94,6 @@ function getIssueCode(details: Protocol.Audits.CorsIssueDetails): IssueCode {
     case Protocol.Network.CorsError.LocalNetworkAccessPermissionDenied:
       return IssueCode.LOCAL_NETWORK_ACCESS_PERMISSION_DENIED;
   }
-  // TODO(b/394636065): Remove this once browser protocol has rolled, as we
-  // will never hit this case.
-  return null as unknown as IssueCode;
 }
 
 export class CorsIssue extends Issue<Protocol.Audits.CorsIssueDetails, IssueCode> {

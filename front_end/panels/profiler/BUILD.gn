@@ -105,18 +105,3 @@ devtools_entrypoint("meta") {
 
   visibility = [ "../../entrypoints/*" ]
 }
-
-devtools_ui_module("unittests") {
-  testonly = true
-
-  sources = [
-    "HeapDetachedElementsView.test.ts",
-    "HeapProfileView.test.ts",
-    "HeapSnapshotView.test.ts",
-  ]
-
-  deps = [
-    ":bundle",
-    "../../testing",
-  ]
-}

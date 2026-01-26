@@ -283,12 +283,6 @@ export class SamplingHeapProfileTypeBase extends
     UI.InspectorView.InspectorView.instance().setPanelWarnings('heap-profiler', warnings);
 
     this.recording = true;
-    const target = heapProfilerModel.target();
-    const animationModel = target.model(SDK.AnimationModel.AnimationModel);
-    if (animationModel) {
-      // TODO(b/406904348): Remove this once we correctly release animations on the backend.
-      await animationModel.releaseAllAnimations();
-    }
     this.startSampling();
   }
 

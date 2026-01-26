@@ -522,3 +522,7 @@ def CheckAuthorizedAuthor(input_api, output_api):
 def CheckPanProjectChecksOnCommit(input_api, output_api):
     return input_api.canned_checks.PanProjectChecks(
         input_api, output_api, excluded_paths=_EXCLUDED_PATHS, maxlen=120)
+
+
+def CheckAyeAye(input_api, output_api):
+    return input_api.canned_checks.CheckAyeAye(input_api, output_api)

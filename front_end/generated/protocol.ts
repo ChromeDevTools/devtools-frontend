@@ -10255,8 +10255,6 @@ export namespace Network {
     PreflightInvalidAllowCredentials = 'PreflightInvalidAllowCredentials',
     PreflightMissingAllowExternal = 'PreflightMissingAllowExternal',
     PreflightInvalidAllowExternal = 'PreflightInvalidAllowExternal',
-    PreflightMissingAllowPrivateNetwork = 'PreflightMissingAllowPrivateNetwork',
-    PreflightInvalidAllowPrivateNetwork = 'PreflightInvalidAllowPrivateNetwork',
     InvalidAllowMethodsPreflightResponse = 'InvalidAllowMethodsPreflightResponse',
     InvalidAllowHeadersPreflightResponse = 'InvalidAllowHeadersPreflightResponse',
     MethodDisallowedByPreflightResponse = 'MethodDisallowedByPreflightResponse',
@@ -10264,12 +10262,7 @@ export namespace Network {
     RedirectContainsCredentials = 'RedirectContainsCredentials',
     InsecurePrivateNetwork = 'InsecurePrivateNetwork',
     InvalidPrivateNetworkAccess = 'InvalidPrivateNetworkAccess',
-    UnexpectedPrivateNetworkAccess = 'UnexpectedPrivateNetworkAccess',
     NoCorsRedirectModeNotFollow = 'NoCorsRedirectModeNotFollow',
-    PreflightMissingPrivateNetworkAccessId = 'PreflightMissingPrivateNetworkAccessId',
-    PreflightMissingPrivateNetworkAccessName = 'PreflightMissingPrivateNetworkAccessName',
-    PrivateNetworkAccessPermissionUnavailable = 'PrivateNetworkAccessPermissionUnavailable',
-    PrivateNetworkAccessPermissionDenied = 'PrivateNetworkAccessPermissionDenied',
     LocalNetworkAccessPermissionDenied = 'LocalNetworkAccessPermissionDenied',
   }
 
@@ -11360,6 +11353,29 @@ export namespace Network {
      * The id of the session.
      */
     id: string;
+  }
+
+  export const enum DeviceBoundSessionWithUsageUsage {
+    NotInScope = 'NotInScope',
+    InScopeRefreshNotYetNeeded = 'InScopeRefreshNotYetNeeded',
+    InScopeRefreshNotAllowed = 'InScopeRefreshNotAllowed',
+    ProactiveRefreshNotPossible = 'ProactiveRefreshNotPossible',
+    ProactiveRefreshAttempted = 'ProactiveRefreshAttempted',
+    Deferred = 'Deferred',
+  }
+
+  /**
+   * How a device bound session was used during a request.
+   */
+  export interface DeviceBoundSessionWithUsage {
+    /**
+     * The key for the session.
+     */
+    sessionKey: DeviceBoundSessionKey;
+    /**
+     * How the session was used (or not used).
+     */
+    usage: DeviceBoundSessionWithUsageUsage;
   }
 
   /**
@@ -12878,6 +12894,10 @@ export namespace Network {
      * Connection timing information for the request.
      */
     connectTiming: ConnectTiming;
+    /**
+     * How the request site's device bound sessions were used during this request.
+     */
+    deviceBoundSessionUsages?: DeviceBoundSessionWithUsage[];
     /**
      * The client security state set for the request.
      */
@@ -18822,6 +18842,16 @@ export namespace Target {
      * `background: false`. The life-time of the tab is limited to the life-time of the session.
      */
     hidden?: boolean;
+    /**
+     * If specified, the option is used to determine if the new target should
+     * be focused or not. By default, the focus behavior depends on the
+     * value of the background field. For example, background=false and focus=false
+     * will result in the target tab being opened but the browser window remain
+     * unchanged (if it was in the background, it will remain in the background)
+     * and background=false with focus=undefined will result in the window being focused.
+     * Using background: true and focus: true is not supported and will result in an error.
+     */
+    focus?: boolean;
   }
 
   export interface CreateTargetResponse extends ProtocolResponseWithError {

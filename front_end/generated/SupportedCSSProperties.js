@@ -775,6 +775,7 @@ export const generatedProperties = [
    "view-transition-class",
    "view-transition-group",
    "view-transition-name",
+   "view-transition-scope",
    "visibility",
    "white-space-collapse",
    "widows",
@@ -1845,8 +1846,7 @@ export const generatedProperties = [
    "style",
    "paint",
    "inline-size",
-   "block-size",
-   "view-transition"
+   "block-size"
   ],
   "name": "contain"
  },
@@ -4805,6 +4805,14 @@ export const generatedProperties = [
   "name": "view-transition-name"
  },
  {
+  "inherited": false,
+  "keywords": [
+   "none",
+   "auto"
+  ],
+  "name": "view-transition-scope"
+ },
+ {
   "inherited": true,
   "keywords": [
    "visible",
@@ -5557,8 +5565,7 @@ export const generatedPropertyValues = {
    "style",
    "paint",
    "inline-size",
-   "block-size",
-   "view-transition"
+   "block-size"
   ]
  },
  "contain-intrinsic-height": {
@@ -7149,6 +7156,12 @@ export const generatedPropertyValues = {
   ]
  },
  "view-transition-name": {
+  "values": [
+   "none",
+   "auto"
+  ]
+ },
+ "view-transition-scope": {
   "values": [
    "none",
    "auto"

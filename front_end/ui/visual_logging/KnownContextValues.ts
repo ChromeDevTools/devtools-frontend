@@ -4201,6 +4201,7 @@ export const knownContextValues = new Set([
   'view-transition-class',
   'view-transition-group',
   'view-transition-name',
+  'view-transition-scope',
   'views-location-override',
   'virtual-authenticators',
   'visibility',

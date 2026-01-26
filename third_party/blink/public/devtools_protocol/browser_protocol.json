@@ -5664,7 +5664,7 @@
                 },
                 {
                     "name": "resolveValues",
-                    "description": "Resolve the specified values in the context of the provided element.\nFor example, a value of '1em' is evaluated according to the computed\n'font-size' of the element and a value 'calc(1px + 2px)' will be\nresolved to '3px'.\nIf the `propertyName` was specified the `values` are resolved as if\nthey were property's declaration. If a value cannot be parsed according\nto the provided property syntax, the value is parsed using combined\nsyntax as if null `propertyName` was provided. If the value cannot be\nresolved even then, return the provided value without any changes.",
+                    "description": "Resolve the specified values in the context of the provided element.\nFor example, a value of '1em' is evaluated according to the computed\n'font-size' of the element and a value 'calc(1px + 2px)' will be\nresolved to '3px'.\nIf the `propertyName` was specified the `values` are resolved as if\nthey were property's declaration. If a value cannot be parsed according\nto the provided property syntax, the value is parsed using combined\nsyntax as if null `propertyName` was provided. If the value cannot be\nresolved even then, return the provided value without any changes.\nNote: this function currently does not resolve CSS random() function,\nit returns unmodified random() function parts.`",
                     "experimental": true,
                     "parameters": [
                         {
@@ -15595,8 +15595,6 @@
                         "PreflightInvalidAllowCredentials",
                         "PreflightMissingAllowExternal",
                         "PreflightInvalidAllowExternal",
-                        "PreflightMissingAllowPrivateNetwork",
-                        "PreflightInvalidAllowPrivateNetwork",
                         "InvalidAllowMethodsPreflightResponse",
                         "InvalidAllowHeadersPreflightResponse",
                         "MethodDisallowedByPreflightResponse",
@@ -15604,12 +15602,7 @@
                         "RedirectContainsCredentials",
                         "InsecurePrivateNetwork",
                         "InvalidPrivateNetworkAccess",
-                        "UnexpectedPrivateNetworkAccess",
                         "NoCorsRedirectModeNotFollow",
-                        "PreflightMissingPrivateNetworkAccessId",
-                        "PreflightMissingPrivateNetworkAccessName",
-                        "PrivateNetworkAccessPermissionUnavailable",
-                        "PrivateNetworkAccessPermissionDenied",
                         "LocalNetworkAccessPermissionDenied"
                     ]
                 },
@@ -17153,6 +17146,32 @@
                             "name": "id",
                             "description": "The id of the session.",
                             "type": "string"
+                        }
+                    ]
+                },
+                {
+                    "id": "DeviceBoundSessionWithUsage",
+                    "description": "How a device bound session was used during a request.",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "sessionKey",
+                            "description": "The key for the session.",
+                            "$ref": "DeviceBoundSessionKey"
+                        },
+                        {
+                            "name": "usage",
+                            "description": "How the session was used (or not used).",
+                            "type": "string",
+                            "enum": [
+                                "NotInScope",
+                                "InScopeRefreshNotYetNeeded",
+                                "InScopeRefreshNotAllowed",
+                                "ProactiveRefreshNotPossible",
+                                "ProactiveRefreshAttempted",
+                                "Deferred"
+                            ]
                         }
                     ]
                 },
@@ -19344,6 +19363,15 @@
                             "description": "Connection timing information for the request.",
                             "experimental": true,
                             "$ref": "ConnectTiming"
+                        },
+                        {
+                            "name": "deviceBoundSessionUsages",
+                            "description": "How the request site's device bound sessions were used during this request.",
+                            "optional": true,
+                            "type": "array",
+                            "items": {
+                                "$ref": "DeviceBoundSessionWithUsage"
+                            }
                         },
                         {
                             "name": "clientSecurityState",
@@ -28591,6 +28619,13 @@
                         {
                             "name": "hidden",
                             "description": "Whether to create a hidden target. The hidden target is observable via protocol, but not\npresent in the tab UI strip. Cannot be created with `forTab: true`, `newWindow: true` or\n`background: false`. The life-time of the tab is limited to the life-time of the session.",
+                            "experimental": true,
+                            "optional": true,
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "focus",
+                            "description": "If specified, the option is used to determine if the new target should\nbe focused or not. By default, the focus behavior depends on the\nvalue of the background field. For example, background=false and focus=false\nwill result in the target tab being opened but the browser window remain\nunchanged (if it was in the background, it will remain in the background)\nand background=false with focus=undefined will result in the window being focused.\nUsing background: true and focus: true is not supported and will result in an error.",
                             "experimental": true,
                             "optional": true,
                             "type": "boolean"

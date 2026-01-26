@@ -50,6 +50,8 @@ const CustomChrome = function(this: any, _baseBrowserDecorator: unknown, args: B
       executablePath: TestConfig.chromeBinary,
       defaultViewport: null,
       dumpio: true,
+      // We do not need to process network in unit tests.
+      networkEnabled: false,
       args,
       ignoreDefaultArgs: ['--hide-scrollbars'],
     });

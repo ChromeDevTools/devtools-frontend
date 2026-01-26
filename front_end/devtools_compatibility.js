@@ -409,7 +409,7 @@
   // InspectorFrontendHostImpl --------------------------------------------------
 
   /**
-   * Enum for recordPerformanceHistogram
+   * Enum for recordEnumeratedHistogram
    * Warning: There is another definition of this enum in the DevTools code
    * base, keep them in sync:
    * front_end/core/host/InspectorFrontendHostAPI.ts
@@ -752,6 +752,14 @@
      */
     recordPerformanceHistogram(histogramName, duration) {
       DevToolsAPI.sendMessageToEmbedder('recordPerformanceHistogram', [histogramName, duration], null);
+    }
+
+    /**
+     * @param histogramName
+     * @param duration
+     */
+    recordPerformanceHistogramMedium(histogramName, duration) {
+      DevToolsAPI.sendMessageToEmbedder('recordPerformanceHistogramMedium', [histogramName, duration], null);
     }
 
     /**

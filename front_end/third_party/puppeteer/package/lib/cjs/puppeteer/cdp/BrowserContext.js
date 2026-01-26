@@ -150,6 +150,8 @@ class CdpBrowserContext extends BrowserContext_js_1.BrowserContext {
                         hasCrossSiteAncestor: cookie.partitionKey.hasCrossSiteAncestor,
                     }
                     : undefined,
+                // TODO: remove sameParty as it is removed from Chrome.
+                sameParty: cookie.sameParty ?? false,
             };
         });
     }

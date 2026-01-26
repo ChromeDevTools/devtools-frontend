@@ -3689,7 +3689,8 @@ export declare abstract class HTTPResponse {
      * The buffer might be re-encoded by the browser
      * based on HTTP-headers or other heuristics. If the browser
      * failed to detect the correct encoding, the buffer might
-     * be encoded incorrectly. See https://github.com/puppeteer/puppeteer/issues/6478.
+     * be encoded incorrectly. See
+     * https://github.com/puppeteer/puppeteer/issues/6478.
      */
     abstract content(): Promise<Uint8Array>;
     /**
@@ -3698,6 +3699,10 @@ export declare abstract class HTTPResponse {
     buffer(): Promise<Buffer>;
     /**
      * Promise which resolves to a text (utf8) representation of response body.
+     *
+     * @remarks
+     *
+     * This method will throw if the content is not utf-8 string
      */
     text(): Promise<string>;
     /**
@@ -7845,6 +7850,7 @@ export declare interface SerializedAXNode {
      * Children of this node, if there are any.
      */
     children?: SerializedAXNode[];
+
 
     /**
      * Get an ElementHandle for this AXNode if available.

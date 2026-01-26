@@ -503,6 +503,8 @@ class CdpPage extends Page_js_1.Page {
                 partitionKey: cookie.partitionKey
                     ? cookie.partitionKey.topLevelSite
                     : undefined,
+                // TODO: remove sameParty as it is removed from Chrome.
+                sameParty: cookie.sameParty ?? false,
             };
         });
     }

@@ -66,6 +66,7 @@ let BrowsingContext = (() => {
     let _print_decorators;
     let _handleUserPrompt_decorators;
     let _setViewport_decorators;
+    let _setTouchOverride_decorators;
     let _performActions_decorators;
     let _releaseActions_decorators;
     let _createWindowRealm_decorators;
@@ -104,6 +105,7 @@ let BrowsingContext = (() => {
             __esDecorate(this, null, _print_decorators, { kind: "method", name: "print", static: false, private: false, access: { has: obj => "print" in obj, get: obj => obj.print }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _handleUserPrompt_decorators, { kind: "method", name: "handleUserPrompt", static: false, private: false, access: { has: obj => "handleUserPrompt" in obj, get: obj => obj.handleUserPrompt }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _setViewport_decorators, { kind: "method", name: "setViewport", static: false, private: false, access: { has: obj => "setViewport" in obj, get: obj => obj.setViewport }, metadata: _metadata }, null, _instanceExtraInitializers);
+            __esDecorate(this, null, _setTouchOverride_decorators, { kind: "method", name: "setTouchOverride", static: false, private: false, access: { has: obj => "setTouchOverride" in obj, get: obj => obj.setTouchOverride }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _performActions_decorators, { kind: "method", name: "performActions", static: false, private: false, access: { has: obj => "performActions" in obj, get: obj => obj.performActions }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _releaseActions_decorators, { kind: "method", name: "releaseActions", static: false, private: false, access: { has: obj => "releaseActions" in obj, get: obj => obj.releaseActions }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _createWindowRealm_decorators, { kind: "method", name: "createWindowRealm", static: false, private: false, access: { has: obj => "createWindowRealm" in obj, get: obj => obj.createWindowRealm }, metadata: _metadata }, null, _instanceExtraInitializers);
@@ -130,6 +132,8 @@ let BrowsingContext = (() => {
         #navigation = __runInitializers(this, _instanceExtraInitializers);
         #reason;
         #url;
+        // Indicated whether client hints have been set to non-default.
+        #clientHintsAreSet = false;
         #children = new Map();
         #disposables = new DisposableStack();
         #realms = new Map();
@@ -368,6 +372,12 @@ let BrowsingContext = (() => {
                 ...options,
             });
         }
+        async setTouchOverride(maxTouchPoints) {
+            await this.#session.send('emulation.setTouchOverride', {
+                contexts: [this.id],
+                maxTouchPoints,
+            });
+        }
         async performActions(actions) {
             await this.#session.send('input.performActions', {
                 context: this.id,
@@ -486,6 +496,9 @@ let BrowsingContext = (() => {
             })], _setViewport_decorators = [throwIfDisposed(context => {
                 // SAFETY: Disposal implies this exists.
                 return context.#reason;
+            })], _setTouchOverride_decorators = [throwIfDisposed(context => {
+                // SAFETY: Disposal implies this exists.
+                return context.#reason;
             })], _performActions_decorators = [throwIfDisposed(context => {
                 // SAFETY: Disposal implies this exists.
                 return context.#reason;
@@ -569,6 +582,18 @@ let BrowsingContext = (() => {
         async setUserAgent(userAgent) {
             await this.#session.send('emulation.setUserAgentOverride', {
                 userAgent,
+                contexts: [this.id],
+            });
+        }
+        async setClientHintsOverride(clientHints) {
+            if (clientHints === null && !this.#clientHintsAreSet) {
+                // Ignore the call, as the client hints are not supposed to be changed. Required to
+                // avoid breakage with browsers that don't support client hints emulation.
+                return;
+            }
+            this.#clientHintsAreSet = true;
+            await this.#session.send('emulation.setClientHintsOverride', {
+                clientHints,
                 contexts: [this.id],
             });
         }

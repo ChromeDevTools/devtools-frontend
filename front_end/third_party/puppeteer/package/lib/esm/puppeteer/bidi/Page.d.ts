@@ -47,6 +47,9 @@ export declare class BidiPage extends Page {
     readonly coverage: Coverage;
     _client(): BidiCdpSession;
     private constructor();
+    /**
+     * @internal
+     */
     setUserAgent(userAgentOrOptions: string | {
         userAgent?: string;
         userAgentMetadata?: Protocol.Emulation.UserAgentMetadata;

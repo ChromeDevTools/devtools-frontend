@@ -3048,7 +3048,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    */
   // If moved update release-please config
   // x-release-please-start-version
-  const packageVersion = '24.35.0';
+  const packageVersion = '24.36.0';
   // x-release-please-end
 
   /**
@@ -10344,10 +10344,16 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     }
     /**
      * Promise which resolves to a text (utf8) representation of response body.
+     *
+     * @remarks
+     *
+     * This method will throw if the content is not utf-8 string
      */
     async text() {
       const content = await this.content();
-      return new TextDecoder().decode(content);
+      return new TextDecoder('utf-8', {
+        fatal: true
+      }).decode(content);
     }
     /**
      * Promise which resolves to a JSON representation of response body.
@@ -13021,7 +13027,10 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
             __disposeResources$4(env_2);
           }
         },
-        backendNodeId: this.payload.backendDOMNodeId
+        backendNodeId: this.payload.backendDOMNodeId,
+        // LoaderId is an experimental mechanism to establish unique IDs across
+        // navigations.
+        loaderId: _classPrivateFieldGet(_realm2, this).environment._loaderId
       };
       const userStringProperties = ['name', 'value', 'description', 'keyshortcuts', 'roledescription', 'valuetext', 'url'];
       const getUserStringPropertyValue = key => {
@@ -21207,7 +21216,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
           ...cookie,
           // TODO: a breaking change is needed in Puppeteer types to support other
           // partition keys.
-          partitionKey: cookie.partitionKey ? cookie.partitionKey.topLevelSite : undefined
+          partitionKey: cookie.partitionKey ? cookie.partitionKey.topLevelSite : undefined,
+          // TODO: remove sameParty as it is removed from Chrome.
+          sameParty: cookie.sameParty ?? false
         };
       });
     }
@@ -21986,7 +21997,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
           partitionKey: cookie.partitionKey ? {
             sourceOrigin: cookie.partitionKey.topLevelSite,
             hasCrossSiteAncestor: cookie.partitionKey.hasCrossSiteAncestor
-          } : undefined
+          } : undefined,
+          // TODO: remove sameParty as it is removed from Chrome.
+          sameParty: cookie.sameParty ?? false
         };
       });
     }
@@ -25058,9 +25071,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * @internal
    */
   const PUPPETEER_REVISIONS = Object.freeze({
-    chrome: '143.0.7499.192',
-    'chrome-headless-shell': '143.0.7499.192',
-    firefox: 'stable_146.0.1'
+    chrome: '144.0.7559.96',
+    'chrome-headless-shell': '144.0.7559.96',
+    firefox: 'stable_147.0.1'
   });
 
   /**

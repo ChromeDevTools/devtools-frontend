@@ -120,6 +120,7 @@ export declare class BrowsingContext extends EventEmitter<{
     print(options?: PrintOptions): Promise<string>;
     handleUserPrompt(options?: HandleUserPromptOptions): Promise<void>;
     setViewport(options?: SetViewportOptions): Promise<void>;
+    setTouchOverride(maxTouchPoints: number | null): Promise<void>;
     performActions(actions: Bidi.Input.SourceActions[]): Promise<void>;
     releaseActions(): Promise<void>;
     createWindowRealm(sandbox: string): WindowRealm;
@@ -140,6 +141,7 @@ export declare class BrowsingContext extends EventEmitter<{
     setJavaScriptEnabled(enabled: boolean): Promise<void>;
     isJavaScriptEnabled(): boolean;
     setUserAgent(userAgent: string | null): Promise<void>;
+    setClientHintsOverride(clientHints: Bidi.BidiUaClientHints.Emulation.ClientHintsMetadata | null): Promise<void>;
     setOfflineMode(enabled: boolean): Promise<void>;
     get bluetooth(): BluetoothEmulation;
     waitForDevicePrompt(timeout: number, signal?: AbortSignal): Promise<DeviceRequestPrompt>;

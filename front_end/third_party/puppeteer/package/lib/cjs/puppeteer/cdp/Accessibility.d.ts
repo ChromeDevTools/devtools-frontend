@@ -81,11 +81,17 @@ export interface SerializedAXNode {
      */
     children?: SerializedAXNode[];
     /**
-     * CDP-specifc ID to reference the DOM node.
+     * CDP-specific ID to reference the DOM node.
      *
      * @internal
      */
     backendNodeId?: number;
+    /**
+     * CDP-specific documentId.
+     *
+     * @internal
+     */
+    loaderId: string;
     /**
      * Get an ElementHandle for this AXNode if available.
      *

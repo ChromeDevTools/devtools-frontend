@@ -43,7 +43,7 @@ import type {
   CookieSameSite,
   DeleteCookiesRequest,
 } from '../common/Cookie.js';
-import {UnsupportedOperation} from '../common/Errors.js';
+import {ProtocolError, UnsupportedOperation} from '../common/Errors.js';
 import {EventEmitter} from '../common/EventEmitter.js';
 import {FileChooser} from '../common/FileChooser.js';
 import type {PDFOptions} from '../common/PDFOptions.js';
@@ -136,7 +136,6 @@ export class BidiPage extends Page {
   /**
    * @internal
    */
-  #overrideNavigatorPropertiesPreloadScript?: string;
   override async setUserAgent(
     userAgentOrOptions:
       | string
@@ -147,79 +146,40 @@ export class BidiPage extends Page {
         },
     userAgentMetadata?: Protocol.Emulation.UserAgentMetadata,
   ): Promise<void> {
-    let userAgent: string;
-    let metadata: Protocol.Emulation.UserAgentMetadata | undefined;
+    let userAgent: string | null;
+    let clientHints:
+      | Bidi.BidiUaClientHints.Emulation.ClientHintsMetadata
+      | undefined;
     let platform: string | undefined;
 
     if (typeof userAgentOrOptions === 'string') {
       userAgent = userAgentOrOptions;
-      metadata = userAgentMetadata;
+      clientHints = userAgentMetadata;
     } else {
-      userAgent =
-        userAgentOrOptions.userAgent ??
-        (await this.#browserContext.browser().userAgent());
-      metadata = userAgentOrOptions.userAgentMetadata;
-      platform = userAgentOrOptions.platform;
+      userAgent = userAgentOrOptions.userAgent ?? null;
+      clientHints = userAgentOrOptions.userAgentMetadata;
+      // Empty string platform should be interpreted as "no override".
+      platform =
+        userAgentOrOptions.platform === ''
+          ? undefined
+          : userAgentOrOptions.platform;
+    }
+    if (userAgent === '') {
+      // In WebDriver BiDi null is used to restore the original user agent.
+      userAgent = null;
+    }
+    await this.#frame.browsingContext.setUserAgent(userAgent);
+
+    if (platform && platform !== '') {
+      // Work-around until https://github.com/w3c/webdriver-bidi/issues/1065 is resolved.
+      // Set platform via client hints override.
+      clientHints = clientHints ?? {};
+      clientHints.platform = platform;
     }
 
-    if (
-      !this.#browserContext.browser().cdpSupported &&
-      (metadata || platform)
-    ) {
-      throw new UnsupportedOperation(
-        'Current Browser does not support `userAgentMetadata` or `platform`',
-      );
-    } else if (
-      this.#browserContext.browser().cdpSupported &&
-      (metadata || platform)
-    ) {
-      return await this._client().send('Network.setUserAgentOverride', {
-        userAgent: userAgent,
-        userAgentMetadata: metadata,
-        platform: platform,
-      });
-    }
-    const enable = userAgent !== '';
-    userAgent = userAgent ?? (await this.#browserContext.browser().userAgent());
-
-    await this.#frame.browsingContext.setUserAgent(enable ? userAgent : null);
-
-    const overrideNavigatorProperties = (platform: string | undefined) => {
-      if (platform) {
-        Object.defineProperty(navigator, 'platform', {
-          value: platform,
-          configurable: true,
-        });
-      }
-    };
-
-    const frames = [this.#frame];
-    for (const frame of frames) {
-      frames.push(...frame.childFrames());
-    }
-
-    if (this.#overrideNavigatorPropertiesPreloadScript) {
-      await this.removeScriptToEvaluateOnNewDocument(
-        this.#overrideNavigatorPropertiesPreloadScript,
-      );
-    }
-    const [evaluateToken] = await Promise.all([
-      enable
-        ? this.evaluateOnNewDocument(
-            overrideNavigatorProperties,
-            platform || undefined,
-          )
-        : undefined,
-      // When we disable the UserAgent we want to
-      // evaluate the original value in all Browsing Contexts
-      ...frames.map(frame => {
-        return frame.evaluate(
-          overrideNavigatorProperties,
-          platform || undefined,
-        );
-      }),
-    ]);
-    this.#overrideNavigatorPropertiesPreloadScript = evaluateToken?.identifier;
+    await this.#frame.browsingContext.setClientHintsOverride(
+      clientHints ?? null,
+    );
   }
 
   override async setBypassCSP(enabled: boolean): Promise<void> {
@@ -420,6 +380,7 @@ export class BidiPage extends Page {
   }
 
   override async setViewport(viewport: Viewport | null): Promise<void> {
+    let needsReload = false;
     if (!this.browser().cdpSupported) {
       const viewportSize =
         viewport?.width && viewport?.height
@@ -447,7 +408,7 @@ export class BidiPage extends Page {
               }
           : null;
 
-      await Promise.all([
+      const commands = [
         this.#frame.browsingContext.setViewport({
           viewport: viewportSize,
           devicePixelRatio,
@@ -455,13 +416,39 @@ export class BidiPage extends Page {
         this.#frame.browsingContext.setScreenOrientationOverride(
           screenOrientation,
         ),
-      ]);
+      ];
 
-      this.#viewport = viewport;
-      return;
+      if (
+        (this.#viewport?.hasTouch ?? false) !== (viewport?.hasTouch ?? false)
+      ) {
+        // The requested touch override state is different from the current one, meaning
+        // the reload is needed.
+        needsReload = true;
+        // 1 touch point if touch is enabled, null otherwise.
+        const maxTouchPoints = viewport?.hasTouch ? 1 : null;
+
+        commands.push(
+          this.#frame.browsingContext
+            .setTouchOverride(maxTouchPoints)
+            .catch(error => {
+              if (
+                error instanceof ProtocolError &&
+                (error.message.includes('unknown command') ||
+                  error.message.includes('unsupported operation'))
+              ) {
+                // Tolerate not implemented or not supported commands. At least until
+                // the `emulation.setTouchOverride` is supported by all the supported
+                // browsers.
+                return;
+              }
+              throw error;
+            }),
+        );
+      }
+      await Promise.all(commands);
+    } else {
+      needsReload = await this.#cdpEmulationManager.emulateViewport(viewport);
     }
-    const needsReload =
-      await this.#cdpEmulationManager.emulateViewport(viewport);
     this.#viewport = viewport;
     if (needsReload) {
       await this.reload();
@@ -1138,6 +1125,10 @@ function cdpSpecificCookiePropertiesFromBidiToPuppeteer(
     if (bidiCookie[CDP_SPECIFIC_PREFIX + property] !== undefined) {
       result[property] = bidiCookie[CDP_SPECIFIC_PREFIX + property];
     }
+  }
+  // TODO: remove once deprecated sameParty attribute is dropped.
+  if (!result.sameParty) {
+    result.sameParty = false;
   }
   return result;
 }

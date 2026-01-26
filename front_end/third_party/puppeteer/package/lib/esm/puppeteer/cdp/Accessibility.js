@@ -442,6 +442,9 @@ class AXNode {
                 }
             },
             backendNodeId: this.payload.backendDOMNodeId,
+            // LoaderId is an experimental mechanism to establish unique IDs across
+            // navigations.
+            loaderId: this.#realm.environment._loaderId,
         };
         const userStringProperties = [
             'name',

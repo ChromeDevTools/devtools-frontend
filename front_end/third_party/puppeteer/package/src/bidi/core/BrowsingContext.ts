@@ -155,6 +155,8 @@ export class BrowsingContext extends EventEmitter<{
   #navigation: Navigation | undefined;
   #reason?: string;
   #url: string;
+  // Indicated whether client hints have been set to non-default.
+  #clientHintsAreSet = false;
   readonly #children = new Map<string, BrowsingContext>();
   readonly #disposables = new DisposableStack();
   readonly #realms = new Map<string, WindowRealm>();
@@ -512,6 +514,17 @@ export class BrowsingContext extends EventEmitter<{
     // SAFETY: Disposal implies this exists.
     return context.#reason!;
   })
+  async setTouchOverride(maxTouchPoints: number | null): Promise<void> {
+    await this.#session.send('emulation.setTouchOverride', {
+      contexts: [this.id],
+      maxTouchPoints,
+    });
+  }
+
+  @throwIfDisposed<BrowsingContext>(context => {
+    // SAFETY: Disposal implies this exists.
+    return context.#reason!;
+  })
   async performActions(actions: Bidi.Input.SourceActions[]): Promise<void> {
     await this.#session.send('input.performActions', {
       context: this.id,
@@ -757,6 +770,22 @@ export class BrowsingContext extends EventEmitter<{
   async setUserAgent(userAgent: string | null): Promise<void> {
     await this.#session.send('emulation.setUserAgentOverride', {
       userAgent,
+      contexts: [this.id],
+    });
+  }
+
+  async setClientHintsOverride(
+    clientHints: Bidi.BidiUaClientHints.Emulation.ClientHintsMetadata | null,
+  ): Promise<void> {
+    if (clientHints === null && !this.#clientHintsAreSet) {
+      // Ignore the call, as the client hints are not supposed to be changed. Required to
+      // avoid breakage with browsers that don't support client hints emulation.
+      return;
+    }
+    this.#clientHintsAreSet = true;
+
+    await this.#session.send('emulation.setClientHintsOverride', {
+      clientHints,
       contexts: [this.id],
     });
   }

@@ -31,10 +31,14 @@ export class HTTPResponse {
     }
     /**
      * Promise which resolves to a text (utf8) representation of response body.
+     *
+     * @remarks
+     *
+     * This method will throw if the content is not utf-8 string
      */
     async text() {
         const content = await this.content();
-        return new TextDecoder().decode(content);
+        return new TextDecoder('utf-8', { fatal: true }).decode(content);
     }
     /**
      * Promise which resolves to a JSON representation of response body.

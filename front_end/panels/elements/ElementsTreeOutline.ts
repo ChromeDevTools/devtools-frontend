@@ -80,7 +80,7 @@ const str_ = i18n.i18n.registerUIStrings('panels/elements/ElementsTreeOutline.ts
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const elementsTreeOutlineByDOMModel = new WeakMap<SDK.DOMModel.DOMModel, ElementsTreeOutline>();
 
-const populatedTreeElements = new Set<ElementsTreeElement>();
+const populatedTreeElements = new WeakSet<ElementsTreeElement>();
 
 export type View = typeof DEFAULT_VIEW;
 

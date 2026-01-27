@@ -4,6 +4,7 @@
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
+import * as AIAssistance from '../../models/ai_assistance/ai_assistance.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -18,6 +19,14 @@ const UIStrings = {
      * @description Button's tooltip text.
      */
     openAiAssistance: 'Open AI assistance panel',
+    /**
+     * @description Button's string in promotion state.
+     */
+    gemini: 'Gemini',
+    /**
+     * @description Button's tooltip text.
+     */
+    openGemini: 'Open Gemini panel',
 };
 const str_ = i18n.i18n.registerUIStrings('entrypoints/main/GlobalAiButton.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -41,13 +50,17 @@ export const DEFAULT_VIEW = (input, output, target) => {
         'global-ai-button': true,
         expanded: inPromotionState,
     });
+    const strings = AIAssistance.AiUtils.isGeminiBranding() ?
+        { title: i18nString(UIStrings.openGemini), label: i18nString(UIStrings.gemini) } :
+        { title: i18nString(UIStrings.openAiAssistance), label: i18nString(UIStrings.aiAssistance) };
+    const icon = AIAssistance.AiUtils.getIconName();
     // clang-format off
     render(html `
     <style>${globalAiButtonStyles}</style>
     <div class="global-ai-button-container">
-      <button class=${classes} @click=${input.onClick} title=${i18nString(UIStrings.openAiAssistance)} jslog=${VisualLogging.action().track({ click: true }).context('global-ai-button')}>
-        <devtools-icon name="smart-assistant"></devtools-icon>
-        <span class="button-text">${` ${i18nString(UIStrings.aiAssistance)}`}</span>
+      <button class=${classes} @click=${input.onClick} title=${strings.title} jslog=${VisualLogging.action().track({ click: true }).context('global-ai-button')}>
+        <devtools-icon name=${icon}></devtools-icon>
+        <span class="button-text">${` ${strings.label}`}</span>
       </button>
     </div>
   `, target);

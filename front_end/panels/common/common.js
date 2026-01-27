@@ -68,6 +68,7 @@ import * as Common from "./../../core/common/common.js";
 import * as Host from "./../../core/host/host.js";
 import * as i18n3 from "./../../core/i18n/i18n.js";
 import * as Root from "./../../core/root/root.js";
+import * as AIAssistance from "./../../models/ai_assistance/ai_assistance.js";
 import * as AiCodeGeneration from "./../../models/ai_code_generation/ai_code_generation.js";
 import * as Snackbars from "./../../ui/components/snackbars/snackbars.js";
 import * as UI2 from "./../../ui/legacy/legacy.js";
@@ -513,8 +514,9 @@ var AiCodeCompletionTeaser = class extends UI2.Widget.Widget {
   }
   onAction = async (event) => {
     event.preventDefault();
+    const iconName = AIAssistance.AiUtils.getIconName();
     const result = await FreDialog.show({
-      header: { iconName: "smart-assistant", text: lockedString(UIStringsNotTranslate.freDisclaimerHeader) },
+      header: { iconName, text: lockedString(UIStringsNotTranslate.freDisclaimerHeader) },
       reminderItems: this.#createReminderItems(),
       onLearnMoreClick: () => {
         void UI2.ViewManager.ViewManager.instance().showView("chrome-ai");
@@ -1876,8 +1878,7 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
             .size=${"REGULAR"}
             .title=${i18nString3(UIStrings3.dismiss)}
             jslog=${VisualLogging4.close().track({ click: true })}
-            @click=${() => {
-  }}
+            @click=${() => input.onCancelClick()}
           ></devtools-button>
         </div>
       </div>

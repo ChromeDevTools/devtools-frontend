@@ -402,10 +402,6 @@ var NetworkLog = class _NetworkLog extends Common.ObjectWrapper.ObjectWrapper {
     if (!this.#requestsSet.has(request)) {
       return;
     }
-    if (request.isPreflightRequest() && request.corsErrorStatus()?.corsError === "UnexpectedPrivateNetworkAccess") {
-      this.removeRequest(request);
-      return;
-    }
     this.dispatchEventToListeners(Events.RequestUpdated, { request });
   }
   onRequestRedirect(event) {

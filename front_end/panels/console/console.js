@@ -4385,8 +4385,9 @@ var ConsoleInsightTeaser = class extends UI3.Widget.Widget {
   }
   async #showFreDialog() {
     const noLogging = Root2.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue === Root2.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING;
+    const iconName = AiAssistanceModel3.AiUtils.getIconName();
     const result = await PanelCommon.FreDialog.show({
-      header: { iconName: "smart-assistant", text: lockedString(UIStringsNotTranslate.freDisclaimerHeader) },
+      header: { iconName, text: lockedString(UIStringsNotTranslate.freDisclaimerHeader) },
       reminderItems: [
         {
           iconName: "psychiatry",

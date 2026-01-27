@@ -407,14 +407,6 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper {
         if (!this.#requestsSet.has(request)) {
             return;
         }
-        // This is only triggered in an edge case in which Chrome reports 2 preflight requests. The
-        // first preflight gets aborted and should not be shown in DevTools.
-        // (see https://crbug.com/1290390 for details)
-        if (request.isPreflightRequest() &&
-            request.corsErrorStatus()?.corsError === "UnexpectedPrivateNetworkAccess" /* Protocol.Network.CorsError.UnexpectedPrivateNetworkAccess */) {
-            this.removeRequest(request);
-            return;
-        }
         this.dispatchEventToListeners(Events.RequestUpdated, { request });
     }
     onRequestRedirect(event) {

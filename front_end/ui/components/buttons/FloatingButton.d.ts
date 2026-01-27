@@ -7,7 +7,7 @@ import '../../kit/kit.js';
  *
  * ```js
  * // Instantiate programmatically via the `create()` helper:
- * const button = Buttons.FloatingButton.create('smart-assistant', 'Ask AI!');
+ * const button = Buttons.FloatingButton.create(AiAssistance.AiUtils.getIconName(), 'Ask AI!');
  *
  * // Use within a template:
  * html`

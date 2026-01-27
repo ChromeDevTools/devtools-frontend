@@ -245,12 +245,6 @@ export class SamplingHeapProfileTypeBase extends Common.ObjectWrapper.eventMixin
         const warnings = [i18nString(UIStrings.heapProfilerIsRecording)];
         UI.InspectorView.InspectorView.instance().setPanelWarnings('heap-profiler', warnings);
         this.recording = true;
-        const target = heapProfilerModel.target();
-        const animationModel = target.model(SDK.AnimationModel.AnimationModel);
-        if (animationModel) {
-            // TODO(b/406904348): Remove this once we correctly release animations on the backend.
-            await animationModel.releaseAllAnimations();
-        }
         this.startSampling();
     }
     async stopRecordingProfile() {

@@ -953,6 +953,9 @@ export const generatedPropertyValues: {
     "view-transition-name": {
         values: string[];
     };
+    "view-transition-scope": {
+        values: string[];
+    };
     visibility: {
         values: string[];
     };

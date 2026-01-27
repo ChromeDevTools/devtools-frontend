@@ -6989,7 +6989,9 @@ function isAiAssistanceServerSideLoggingEnabled() {
 // gen/front_end/models/ai_assistance/AiUtils.js
 var AiUtils_exports = {};
 __export(AiUtils_exports, {
-  getDisabledReasons: () => getDisabledReasons
+  getDisabledReasons: () => getDisabledReasons,
+  getIconName: () => getIconName,
+  isGeminiBranding: () => isGeminiBranding
 });
 import * as Common6 from "./../../core/common/common.js";
 import * as Host9 from "./../../core/host/host.js";
@@ -7036,6 +7038,12 @@ function getDisabledReasons(aidaAvailability) {
   }
   reasons.push(...Common6.Settings.Settings.instance().moduleSetting("ai-assistance-enabled").disabledReasons());
   return reasons;
+}
+function isGeminiBranding() {
+  return !!Root9.Runtime.hostConfig.devToolsGeminiRebranding?.enabled;
+}
+function getIconName() {
+  return isGeminiBranding() ? "spark" : "smart-assistant";
 }
 
 // gen/front_end/models/ai_assistance/BuiltInAi.js

@@ -4,6 +4,7 @@
 import '../../../ui/components/spinners/spinners.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
+import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import { Directives, html, nothing, render } from '../../../ui/lit/lit.js';
@@ -21,10 +22,18 @@ const UIStringsNotTranslate = {
      * @description Text for the empty state of the AI assistance panel.
      */
     emptyStateText: 'How can I help you?',
+    /**
+     * @description Text for the empty state of the Gemini panel.
+     */
+    emptyStateTextGemini: 'Where should we start?',
 };
 const lockedString = i18n.i18n.lockedString;
 const SCROLL_ROUNDING_OFFSET = 1;
 const DEFAULT_VIEW = (input, output, target) => {
+    const chatUiClasses = classMap({
+        'chat-ui': true,
+        gemini: AiAssistanceModel.AiUtils.isGeminiBranding(),
+    });
     const inputWidgetClasses = classMap({
         'chat-input-widget': true,
         sticky: !input.isReadOnly,
@@ -32,7 +41,7 @@ const DEFAULT_VIEW = (input, output, target) => {
     // clang-format off
     render(html `
       <style>${chatViewStyles}</style>
-      <div class="chat-ui">
+      <div class=${chatUiClasses}>
         <main @scroll=${input.handleScroll} ${ref(element => { output.mainElement = element; })}>
           ${input.messages.length > 0 ? html `
             <div class="messages-container" ${ref(input.handleMessageContainerRef)}>
@@ -63,7 +72,11 @@ const DEFAULT_VIEW = (input, output, target) => {
                     name="smart-assistant"
                   ></devtools-icon>
                 </div>
-                <h1>${lockedString(UIStringsNotTranslate.emptyStateText)}</h1>
+                ${AiAssistanceModel.AiUtils.isGeminiBranding() ?
+        html `
+                    <h1 class='greeting'>Hello, ${input.accountName}</h1>
+                    <h1>${lockedString(UIStringsNotTranslate.emptyStateTextGemini)}</h1>
+                  ` : html `<h1>${lockedString(UIStringsNotTranslate.emptyStateText)}</h1>`}
               </div>
               <div class="empty-state-content">
                 ${input.emptyStateSuggestions.map(({ title, jslogContext }) => {
@@ -224,6 +237,8 @@ export class ChatView extends HTMLElement {
     #render() {
         this.#view({
             ...this.#props,
+            // TODO(b/468206227): This needs to be a first name.
+            accountName: this.#props.userInfo.accountFullName ?? '',
             handleScroll: this.#handleScroll,
             handleSuggestionClick: this.#handleSuggestionClick,
             handleMessageContainerRef: this.#handleMessageContainerRef,

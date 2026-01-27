@@ -5,7 +5,7 @@
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
-import type * as Root from '../../core/root/root.js';
+import * as Root from '../../core/root/root.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import type * as AiAssistance from './ai_assistance.js';
@@ -35,6 +35,22 @@ const UIStrings = {
    */
   debugWithAi: 'Debug with AI',
   /**
+   * @description The title of the Gemini panel.
+   */
+  gemini: 'Gemini',
+  /**
+   * @description The title of the command menu action for showing the Gemini panel.
+   */
+  showGemini: 'Show Gemini',
+  /**
+   * @description The setting title to enable the Gemini via the settings tab.
+   */
+  enableGemini: 'Enable Gemini',
+  /**
+   * @description Text of a context menu item to redirect to the Gemini panel with the current context
+   */
+  debugWithGemini: 'Debug with Gemini',
+  /**
    * @description Message shown to the user if the DevTools locale is not
    * supported.
    */
@@ -53,7 +69,12 @@ const UIStrings = {
 
 const str_ = i18n.i18n.registerUIStrings('panels/ai_assistance/ai_assistance-meta.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
+
+// Host config is initialized after this module executes, so need to lazily select the string.
+function i18nAiBrandedString(gemini: string, assistance: string) {
+  // eslint-disable-next-line @devtools/l10n-i18nString-call-only-with-uistrings
+  return () => Root.Runtime.hostConfig.devToolsGeminiRebranding?.enabled ? i18nString(gemini) : i18nString(assistance);
+}
 
 const setting = 'ai-assistance-enabled';
 
@@ -102,8 +123,8 @@ function isAnyFeatureAvailable(config?: Root.Runtime.HostConfig): boolean {
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
   id: 'freestyler',
-  commandPrompt: i18nLazyString(UIStrings.showAiAssistance),
-  title: i18nLazyString(UIStrings.aiAssistance),
+  commandPrompt: i18nAiBrandedString(UIStrings.showGemini, UIStrings.showAiAssistance),
+  title: i18nAiBrandedString(UIStrings.gemini, UIStrings.aiAssistance),
   order: 10,
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   hasToolbar: false,
@@ -118,7 +139,7 @@ Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.AI,
   settingName: setting,
   settingType: Common.Settings.SettingType.BOOLEAN,
-  title: i18nLazyString(UIStrings.enableAiAssistance),
+  title: i18nAiBrandedString(UIStrings.enableGemini, UIStrings.enableAiAssistance),
   defaultValue: false,
   reloadRequired: false,
   condition: isAnyFeatureAvailable,
@@ -146,7 +167,7 @@ UI.ActionRegistration.registerActionExtension({
     return [];
   },
   category: UI.ActionRegistration.ActionCategory.GLOBAL,
-  title: i18nLazyString(UIStrings.debugWithAi),
+  title: i18nAiBrandedString(UIStrings.debugWithGemini, UIStrings.debugWithAi),
   configurableBindings: false,
   async loadActionDelegate() {
     const AiAssistance = await loadAiAssistanceModule();
@@ -161,7 +182,7 @@ UI.ActionRegistration.registerActionExtension({
     return [];
   },
   category: UI.ActionRegistration.ActionCategory.GLOBAL,
-  title: i18nLazyString(UIStrings.debugWithAi),
+  title: i18nAiBrandedString(UIStrings.debugWithGemini, UIStrings.debugWithAi),
   configurableBindings: false,
   async loadActionDelegate() {
     const AiAssistance = await loadAiAssistanceModule();
@@ -177,7 +198,7 @@ UI.ActionRegistration.registerActionExtension({
     return [];
   },
   category: UI.ActionRegistration.ActionCategory.GLOBAL,
-  title: i18nLazyString(UIStrings.debugWithAi),
+  title: i18nAiBrandedString(UIStrings.debugWithGemini, UIStrings.debugWithAi),
   configurableBindings: false,
   async loadActionDelegate() {
     const AiAssistance = await loadAiAssistanceModule();
@@ -193,7 +214,7 @@ UI.ActionRegistration.registerActionExtension({
     return [];
   },
   category: UI.ActionRegistration.ActionCategory.GLOBAL,
-  title: i18nLazyString(UIStrings.debugWithAi),
+  title: i18nAiBrandedString(UIStrings.debugWithGemini, UIStrings.debugWithAi),
   configurableBindings: false,
   async loadActionDelegate() {
     const AiAssistance = await loadAiAssistanceModule();
@@ -209,7 +230,7 @@ UI.ActionRegistration.registerActionExtension({
     return [];
   },
   category: UI.ActionRegistration.ActionCategory.GLOBAL,
-  title: i18nLazyString(UIStrings.debugWithAi),
+  title: i18nAiBrandedString(UIStrings.debugWithGemini, UIStrings.debugWithAi),
   configurableBindings: false,
   async loadActionDelegate() {
     const AiAssistance = await loadAiAssistanceModule();
@@ -225,7 +246,7 @@ UI.ActionRegistration.registerActionExtension({
     return [];
   },
   category: UI.ActionRegistration.ActionCategory.GLOBAL,
-  title: i18nLazyString(UIStrings.debugWithAi),
+  title: i18nAiBrandedString(UIStrings.debugWithGemini, UIStrings.debugWithAi),
   configurableBindings: false,
   async loadActionDelegate() {
     const AiAssistance = await loadAiAssistanceModule();
@@ -241,7 +262,7 @@ UI.ActionRegistration.registerActionExtension({
     return [];
   },
   category: UI.ActionRegistration.ActionCategory.GLOBAL,
-  title: i18nLazyString(UIStrings.debugWithAi),
+  title: i18nAiBrandedString(UIStrings.debugWithGemini, UIStrings.debugWithAi),
   configurableBindings: false,
   async loadActionDelegate() {
     const AiAssistance = await loadAiAssistanceModule();
@@ -256,7 +277,7 @@ UI.ActionRegistration.registerActionExtension({
     return [];
   },
   category: UI.ActionRegistration.ActionCategory.GLOBAL,
-  title: i18nLazyString(UIStrings.debugWithAi),
+  title: i18nAiBrandedString(UIStrings.debugWithGemini, UIStrings.debugWithAi),
   configurableBindings: false,
   async loadActionDelegate() {
     const AiAssistance = await loadAiAssistanceModule();

@@ -18,12 +18,6 @@ export declare const enum IssueCode {
     PREFLIGHT_INVALID_ALLOW_EXTERNAL = "CorsIssue::PreflightInvalidAllowExternal",
     NO_CORS_REDIRECT_MODE_NOT_FOLLOW = "CorsIssue::NoCorsRedirectModeNotFollow",
     INVALID_PRIVATE_NETWORK_ACCESS = "CorsIssue::InvalidPrivateNetworkAccess",
-    UNEXPECTED_PRIVATE_NETWORK_ACCESS = "CorsIssue::UnexpectedPrivateNetworkAccess",
-    PREFLIGHT_ALLOW_PRIVATE_NETWORK_ERROR = "CorsIssue::PreflightAllowPrivateNetworkError",
-    PREFLIGHT_MISSING_PRIVATE_NETWORK_ACCESS_ID = "CorsIssue::PreflightMissingPrivateNetworkAccessId",
-    PREFLIGHT_MISSING_PRIVATE_NETWORK_ACCESS_NAME = "CorsIssue::PreflightMissingPrivateNetworkAccessName",
-    PRIVATE_NETWORK_ACCESS_PERMISSION_UNAVAILABLE = "CorsIssue::PrivateNetworkAccessPermissionUnavailable",
-    PRIVATE_NETWORK_ACCESS_PERMISSION_DENIED = "CorsIssue::PrivateNetworkAccessPermissionDenied",
     LOCAL_NETWORK_ACCESS_PERMISSION_DENIED = "CorsIssue::LocalNetworkAccessPermissionDenied"
 }
 export declare class CorsIssue extends Issue<Protocol.Audits.CorsIssueDetails, IssueCode> {

@@ -1,7 +1,7 @@
 import '../../../ui/components/spinners/spinners.js';
 import * as Host from '../../../core/host/host.js';
 import type * as Platform from '../../../core/platform/platform.js';
-import type * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
+import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
 import type { MarkdownLitRenderer } from '../../../ui/components/markdown_view/MarkdownView.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import { ChatInput } from './ChatInput.js';
@@ -41,6 +41,7 @@ export interface Props {
     additionalFloatyContext: UI.Floaty.FloatyContextSelection[];
 }
 interface ChatWidgetInput extends Props {
+    accountName: string;
     handleScroll: (ev: Event) => void;
     handleSuggestionClick: (title: string) => void;
     handleMessageContainerRef: (el: Element | undefined) => void;

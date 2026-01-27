@@ -76,9 +76,11 @@ export declare class Button extends HTMLElement {
     set toggleType(toggleType: ToggleType);
     set variant(variant: Variant);
     set size(size: Size);
-    set accessibleLabel(label: string);
+    set accessibleLabel(label: string | undefined);
+    get accessibleLabel(): string | undefined;
     set reducedFocusRing(reducedFocusRing: boolean);
     set type(type: ButtonType);
+    get title(): string;
     set title(title: string);
     get disabled(): boolean;
     set disabled(disabled: boolean);

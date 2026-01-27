@@ -425,9 +425,6 @@ var Button = class extends HTMLElement {
     if ("size" in data && data.size) {
       this.#props.size = data.size;
     }
-    if (data.accessibleLabel) {
-      this.#props.accessibleLabel = data.accessibleLabel;
-    }
     this.#props.active = Boolean(data.active);
     this.#props.spinner = Boolean("spinner" in data ? data.spinner : false);
     this.#props.type = "button";
@@ -438,7 +435,12 @@ var Button = class extends HTMLElement {
     this.#props.toggleType = data.toggleType;
     this.#props.checked = data.checked;
     this.#props.disabled = Boolean(data.disabled);
-    this.#props.title = data.title;
+    if (data.title) {
+      this.title = data.title;
+    }
+    if (data.accessibleLabel) {
+      this.accessibleLabel = data.accessibleLabel;
+    }
     this.#props.jslogContext = data.jslogContext;
     this.#props.longClickable = data.longClickable;
     this.#props.inverseColorTheme = data.inverseColorTheme;
@@ -465,8 +467,15 @@ var Button = class extends HTMLElement {
     this.#render();
   }
   set accessibleLabel(label) {
-    this.#props.accessibleLabel = label;
+    if (label) {
+      this.setAttribute("accessibleLabel", label);
+    } else {
+      this.removeAttribute("accessibleLabel");
+    }
     this.#render();
+  }
+  get accessibleLabel() {
+    return this.getAttribute("accessibleLabel") || void 0;
   }
   set reducedFocusRing(reducedFocusRing) {
     this.#props.reducedFocusRing = reducedFocusRing;
@@ -476,8 +485,11 @@ var Button = class extends HTMLElement {
     this.#props.type = type;
     this.#render();
   }
+  get title() {
+    return super.title;
+  }
   set title(title) {
-    this.#props.title = title;
+    super.title = title;
     this.#render();
   }
   get disabled() {
@@ -610,11 +622,11 @@ var Button = class extends HTMLElement {
     const jslog = this.#props.jslogContext && VisualLogging.action().track({ click: true }).context(this.#props.jslogContext);
     Lit.render(html`
         <style>${button_css_default}</style>
-        <button title=${ifDefined(this.#props.title)}
+        <button title=${ifDefined(this.title || void 0)}
                 ?disabled=${this.#props.disabled}
                 class=${classMap(classes)}
                 aria-pressed=${ifDefined(this.#props.toggled)}
-                aria-label=${ifDefined(this.#props.accessibleLabel)}
+                aria-label=${ifDefined(this.accessibleLabel || this.title || void 0)}
                 jslog=${ifDefined(jslog)}>
           ${hasIcon ? html`
             <devtools-icon name=${ifDefined(this.#props.toggled ? this.#props.toggledIconName : this.#props.iconName)}>
@@ -751,10 +763,54 @@ button {
   }
 }
 
+.gemini {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: var(--sys-size-9);
+  height: var(--sys-size-9);
+  border-radius: var(--sys-shape-corner-full);
+  background-image: var(--app-gradient-google-ai);
+  font: var(--sys-typescale-body4-medium);
+  color: var(--ref-palette-neutral100);
+  transition: width 1s, padding 1s;
+  margin-left: auto;
+  overflow: hidden;
+  position: relative;
+  border: 0;
+
+  &:focus-visible {
+    outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
+  }
+
+  &:hover::after,
+  &:active::after {
+    content: "";
+    height: 100%;
+    width: 100%;
+    border-radius: inherit;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  &:hover::after {
+    background-color: var(--sys-color-state-hover-on-prominent);
+  }
+
+  &:active::after {
+    background-color: var(--sys-color-state-ripple-primary);
+  }
+
+  devtools-icon {
+    color: var(--ref-palette-neutral100) !important; /* stylelint-disable-line declaration-no-important */
+  }
+}
+
 /*# sourceURL=${import.meta.resolve("./floatingButton.css")} */`;
 
 // gen/front_end/ui/components/buttons/FloatingButton.js
-var { html: html2 } = Lit2;
+var { html: html2, Directives: { classMap: classMap2 } } = Lit2;
 var FloatingButton = class extends HTMLElement {
   static observedAttributes = ["icon-name", "jslogcontext"];
   #shadow = this.attachShadow({ mode: "open" });
@@ -806,9 +862,12 @@ var FloatingButton = class extends HTMLElement {
     }
   }
   #render() {
+    const classes = classMap2({
+      gemini: this.iconName === "spark"
+    });
     Lit2.render(html2`
         <style>${floatingButton_css_default}</style>
-        <button><devtools-icon .name=${this.iconName}></devtools-icon></button>`, this.#shadow, { host: this });
+        <button class=${classes}><devtools-icon .name=${this.iconName}></devtools-icon></button>`, this.#shadow, { host: this });
   }
   #updateJslog() {
     if (this.jslogContext) {

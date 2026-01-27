@@ -170,7 +170,27 @@ main {
   }
 }
 
+.gemini {
+  .empty-state-container .icon {
+    display: none;
+  }
 
+  .empty-state-container .header {
+    align-items: flex-start;
+  }
+
+  .empty-state-content {
+    align-items: flex-start
+  }
+
+  .empty-state-container .greeting {
+    color: var(--sys-color-primary);
+  }
+
+  main {
+    align-items: flex-start;
+  }
+}
 
 .change-summary {
   background-color: var(--sys-color-surface3);

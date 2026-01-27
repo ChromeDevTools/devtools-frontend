@@ -1152,14 +1152,6 @@ export class HeapSnapshotProfileType extends Common.ObjectWrapper.eventMixin(Pro
         this.setProfileBeingRecorded(profile);
         this.addProfile(profile);
         profile.updateStatus(i18nString(UIStrings.snapshotting));
-        // Release all the animations before taking a heap snapshot.
-        // The animations are stored for replay in the animations panel and they might cause
-        // detached nodes to appear in snapshots. Because of this, we release
-        // all the animations first before taking a heap snapshot.
-        const animationModel = heapProfilerModel.target().model(SDK.AnimationModel.AnimationModel);
-        if (animationModel) {
-            await animationModel.releaseAllAnimations();
-        }
         await heapProfilerModel.takeHeapSnapshot({
             reportProgress: true,
             captureNumericValue: true,
@@ -1293,11 +1285,6 @@ export class TrackingHeapSnapshotProfileType extends Common.ObjectWrapper.eventM
         const heapProfilerModel = this.addNewProfile();
         if (!heapProfilerModel) {
             return;
-        }
-        const animationModel = heapProfilerModel.target().model(SDK.AnimationModel.AnimationModel);
-        if (animationModel) {
-            // TODO(b/406904348): Remove this once we correctly release animations on the backend.
-            await animationModel.releaseAllAnimations();
         }
         void heapProfilerModel.startTrackingHeapObjects(this.recordAllocationStacksSettingInternal.get());
     }

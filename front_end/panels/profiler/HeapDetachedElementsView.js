@@ -98,11 +98,6 @@ export class DetachedElementsProfileType extends Common.ObjectWrapper.eventMixin
         if (!heapProfilerModel || !target || !domModel) {
             return;
         }
-        const animationModel = target?.model(SDK.AnimationModel.AnimationModel);
-        if (animationModel) {
-            // TODO(b/406904348): Remove this once we correctly release animations on the backend.
-            await animationModel.releaseAllAnimations();
-        }
         const data = await domModel.getDetachedDOMNodes();
         const profile = new DetachedElementsProfileHeader(heapProfilerModel, this, data);
         this.addProfile(profile);

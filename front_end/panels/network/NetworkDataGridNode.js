@@ -38,6 +38,7 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as AiAssistance from '../../models/ai_assistance/ai_assistance.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Logs from '../../models/logs/logs.js';
 import * as NetworkForward from '../../panels/network/forward/forward.js';
@@ -1422,7 +1423,8 @@ export class NetworkRequestNode extends NetworkNode {
             const action = UI.ActionRegistry.ActionRegistry.instance().getAction('drjones.network-floating-button');
             const aiButtonContainer = document.createElement('span');
             aiButtonContainer.classList.add('ai-button-container');
-            const floatingButton = Buttons.FloatingButton.create('smart-assistant', action.title(), 'ask-ai');
+            const icon = AiAssistance.AiUtils.getIconName();
+            const floatingButton = Buttons.FloatingButton.create(icon, action.title(), 'ask-ai');
             floatingButton.addEventListener('click', ev => {
                 ev.stopPropagation();
                 this.select();

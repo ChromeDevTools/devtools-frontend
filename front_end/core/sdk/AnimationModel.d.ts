@@ -52,7 +52,6 @@ export declare class AnimationModel extends SDKModel<EventTypes> {
     private matchExistingGroups;
     private createGroupFromPendingAnimations;
     setPlaybackRate(playbackRate: number): void;
-    releaseAllAnimations(): Promise<void>;
     releaseAnimations(animations: string[]): void;
     suspendModel(): Promise<void>;
     resumeModel(): Promise<void>;

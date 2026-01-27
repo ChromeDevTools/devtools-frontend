@@ -837,6 +837,7 @@ var generatedProperties = [
       "view-transition-class",
       "view-transition-group",
       "view-transition-name",
+      "view-transition-scope",
       "visibility",
       "white-space-collapse",
       "widows",
@@ -1907,8 +1908,7 @@ var generatedProperties = [
       "style",
       "paint",
       "inline-size",
-      "block-size",
-      "view-transition"
+      "block-size"
     ],
     "name": "contain"
   },
@@ -4867,6 +4867,14 @@ var generatedProperties = [
     "name": "view-transition-name"
   },
   {
+    "inherited": false,
+    "keywords": [
+      "none",
+      "auto"
+    ],
+    "name": "view-transition-scope"
+  },
+  {
     "inherited": true,
     "keywords": [
       "visible",
@@ -5619,8 +5627,7 @@ var generatedPropertyValues = {
       "style",
       "paint",
       "inline-size",
-      "block-size",
-      "view-transition"
+      "block-size"
     ]
   },
   "contain-intrinsic-height": {
@@ -7211,6 +7218,12 @@ var generatedPropertyValues = {
     ]
   },
   "view-transition-name": {
+    "values": [
+      "none",
+      "auto"
+    ]
+  },
+  "view-transition-scope": {
     "values": [
       "none",
       "auto"
@@ -30467,10 +30480,6 @@ var AnimationModel = class extends SDKModel {
   setPlaybackRate(playbackRate) {
     this.playbackRate = playbackRate;
     void this.agent.invoke_setPlaybackRate({ playbackRate });
-  }
-  async releaseAllAnimations() {
-    const animationIds = [...this.animationGroups.values()].flatMap((animationGroup) => animationGroup.animations().map((animation) => animation.id()));
-    await this.agent.invoke_releaseAnimations({ animations: animationIds });
   }
   releaseAnimations(animations) {
     void this.agent.invoke_releaseAnimations({ animations });

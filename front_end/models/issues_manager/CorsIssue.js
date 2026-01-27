@@ -63,22 +63,12 @@ function getIssueCode(details) {
             return "CorsIssue::NoCorsRedirectModeNotFollow" /* IssueCode.NO_CORS_REDIRECT_MODE_NOT_FOLLOW */;
         case "InvalidPrivateNetworkAccess" /* Protocol.Network.CorsError.InvalidPrivateNetworkAccess */:
             return "CorsIssue::InvalidPrivateNetworkAccess" /* IssueCode.INVALID_PRIVATE_NETWORK_ACCESS */;
-        case "UnexpectedPrivateNetworkAccess" /* Protocol.Network.CorsError.UnexpectedPrivateNetworkAccess */:
-            return "CorsIssue::UnexpectedPrivateNetworkAccess" /* IssueCode.UNEXPECTED_PRIVATE_NETWORK_ACCESS */;
-        case "PreflightMissingAllowPrivateNetwork" /* Protocol.Network.CorsError.PreflightMissingAllowPrivateNetwork */:
-        case "PreflightInvalidAllowPrivateNetwork" /* Protocol.Network.CorsError.PreflightInvalidAllowPrivateNetwork */:
-            return "CorsIssue::PreflightAllowPrivateNetworkError" /* IssueCode.PREFLIGHT_ALLOW_PRIVATE_NETWORK_ERROR */;
-        case "PreflightMissingPrivateNetworkAccessId" /* Protocol.Network.CorsError.PreflightMissingPrivateNetworkAccessId */:
-            return "CorsIssue::PreflightMissingPrivateNetworkAccessId" /* IssueCode.PREFLIGHT_MISSING_PRIVATE_NETWORK_ACCESS_ID */;
-        case "PreflightMissingPrivateNetworkAccessName" /* Protocol.Network.CorsError.PreflightMissingPrivateNetworkAccessName */:
-            return "CorsIssue::PreflightMissingPrivateNetworkAccessName" /* IssueCode.PREFLIGHT_MISSING_PRIVATE_NETWORK_ACCESS_NAME */;
-        case "PrivateNetworkAccessPermissionUnavailable" /* Protocol.Network.CorsError.PrivateNetworkAccessPermissionUnavailable */:
-            return "CorsIssue::PrivateNetworkAccessPermissionUnavailable" /* IssueCode.PRIVATE_NETWORK_ACCESS_PERMISSION_UNAVAILABLE */;
-        case "PrivateNetworkAccessPermissionDenied" /* Protocol.Network.CorsError.PrivateNetworkAccessPermissionDenied */:
-            return "CorsIssue::PrivateNetworkAccessPermissionDenied" /* IssueCode.PRIVATE_NETWORK_ACCESS_PERMISSION_DENIED */;
         case "LocalNetworkAccessPermissionDenied" /* Protocol.Network.CorsError.LocalNetworkAccessPermissionDenied */:
             return "CorsIssue::LocalNetworkAccessPermissionDenied" /* IssueCode.LOCAL_NETWORK_ACCESS_PERMISSION_DENIED */;
     }
+    // TODO(b/394636065): Remove this once browser protocol has rolled, as we
+    // will never hit this case.
+    return null;
 }
 export class CorsIssue extends Issue {
     constructor(issueDetails, issuesModel, issueId) {
@@ -92,14 +82,6 @@ export class CorsIssue extends Issue {
             case "CorsIssue::InsecurePrivateNetwork" /* IssueCode.INSECURE_PRIVATE_NETWORK */:
                 return {
                     file: 'corsInsecurePrivateNetwork.md',
-                    links: [{
-                            link: 'https://developer.chrome.com/blog/private-network-access-update',
-                            linkTitle: i18nString(UIStrings.corsPrivateNetworkAccess),
-                        }],
-                };
-            case "CorsIssue::PreflightAllowPrivateNetworkError" /* IssueCode.PREFLIGHT_ALLOW_PRIVATE_NETWORK_ERROR */:
-                return {
-                    file: 'corsPreflightAllowPrivateNetworkError.md',
                     links: [{
                             link: 'https://developer.chrome.com/blog/private-network-access-update',
                             linkTitle: i18nString(UIStrings.corsPrivateNetworkAccess),
@@ -193,17 +175,6 @@ export class CorsIssue extends Issue {
                             linkTitle: i18nString(UIStrings.CORS),
                         }],
                 };
-            // TODO(1462857): Change the link after we have a blog post for PNA
-            // permission prompt.
-            case "CorsIssue::PreflightMissingPrivateNetworkAccessId" /* IssueCode.PREFLIGHT_MISSING_PRIVATE_NETWORK_ACCESS_ID */:
-            case "CorsIssue::PreflightMissingPrivateNetworkAccessName" /* IssueCode.PREFLIGHT_MISSING_PRIVATE_NETWORK_ACCESS_NAME */:
-                return {
-                    file: 'corsPrivateNetworkPermissionDenied.md',
-                    links: [{
-                            link: 'https://developer.chrome.com/blog/private-network-access-update',
-                            linkTitle: i18nString(UIStrings.corsPrivateNetworkAccess),
-                        }],
-                };
             case "CorsIssue::LocalNetworkAccessPermissionDenied" /* IssueCode.LOCAL_NETWORK_ACCESS_PERMISSION_DENIED */:
                 return {
                     file: 'corsLocalNetworkAccessPermissionDenied.md',
@@ -215,9 +186,6 @@ export class CorsIssue extends Issue {
             case "CorsIssue::PreflightMissingAllowExternal" /* IssueCode.PREFLIGHT_MISSING_ALLOW_EXTERNAL */:
             case "CorsIssue::PreflightInvalidAllowExternal" /* IssueCode.PREFLIGHT_INVALID_ALLOW_EXTERNAL */:
             case "CorsIssue::InvalidPrivateNetworkAccess" /* IssueCode.INVALID_PRIVATE_NETWORK_ACCESS */:
-            case "CorsIssue::UnexpectedPrivateNetworkAccess" /* IssueCode.UNEXPECTED_PRIVATE_NETWORK_ACCESS */:
-            case "CorsIssue::PrivateNetworkAccessPermissionUnavailable" /* IssueCode.PRIVATE_NETWORK_ACCESS_PERMISSION_UNAVAILABLE */:
-            case "CorsIssue::PrivateNetworkAccessPermissionDenied" /* IssueCode.PRIVATE_NETWORK_ACCESS_PERMISSION_DENIED */:
                 return null;
         }
     }
@@ -226,9 +194,7 @@ export class CorsIssue extends Issue {
     }
     getKind() {
         if (this.details().isWarning &&
-            (this.details().corsErrorStatus.corsError === "InsecurePrivateNetwork" /* Protocol.Network.CorsError.InsecurePrivateNetwork */ ||
-                this.details().corsErrorStatus.corsError === "PreflightMissingAllowPrivateNetwork" /* Protocol.Network.CorsError.PreflightMissingAllowPrivateNetwork */ ||
-                this.details().corsErrorStatus.corsError === "PreflightInvalidAllowPrivateNetwork" /* Protocol.Network.CorsError.PreflightInvalidAllowPrivateNetwork */)) {
+            this.details().corsErrorStatus.corsError === "InsecurePrivateNetwork" /* Protocol.Network.CorsError.InsecurePrivateNetwork */) {
             return "BreakingChange" /* IssueKind.BREAKING_CHANGE */;
         }
         return "PageError" /* IssueKind.PAGE_ERROR */;

@@ -78,4 +78,48 @@ button {
   }
 }
 
+.gemini {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: var(--sys-size-9);
+  height: var(--sys-size-9);
+  border-radius: var(--sys-shape-corner-full);
+  background-image: var(--app-gradient-google-ai);
+  font: var(--sys-typescale-body4-medium);
+  color: var(--ref-palette-neutral100);
+  transition: width 1s, padding 1s;
+  margin-left: auto;
+  overflow: hidden;
+  position: relative;
+  border: 0;
+
+  &:focus-visible {
+    outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
+  }
+
+  &:hover::after,
+  &:active::after {
+    content: "";
+    height: 100%;
+    width: 100%;
+    border-radius: inherit;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  &:hover::after {
+    background-color: var(--sys-color-state-hover-on-prominent);
+  }
+
+  &:active::after {
+    background-color: var(--sys-color-state-ripple-primary);
+  }
+
+  devtools-icon {
+    color: var(--ref-palette-neutral100) !important; /* stylelint-disable-line declaration-no-important */
+  }
+}
+
 /*# sourceURL=${import.meta.resolve('./floatingButton.css')} */`;

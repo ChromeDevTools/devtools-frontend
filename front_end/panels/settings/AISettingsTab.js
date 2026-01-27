@@ -411,7 +411,7 @@ export class AISettingsTab extends UI.Widget.VBox {
         if (this.#aiAssistanceSetting) {
             const aiAssistanceData = {
                 settingName: i18n.i18n.lockedString('AI assistance'),
-                iconName: 'smart-assistant',
+                iconName: AiAssistanceModel.AiUtils.getIconName(),
                 settingDescription: this.#getAiAssistanceSettingDescription(),
                 enableSettingText: i18nString(UIStrings.enableAiAssistance),
                 settingItems: [

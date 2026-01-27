@@ -1412,7 +1412,7 @@ var AISettingsTab = class extends UI2.Widget.VBox {
     if (this.#aiAssistanceSetting) {
       const aiAssistanceData = {
         settingName: i18n3.i18n.lockedString("AI assistance"),
-        iconName: "smart-assistant",
+        iconName: AiAssistanceModel.AiUtils.getIconName(),
         settingDescription: this.#getAiAssistanceSettingDescription(),
         enableSettingText: i18nString2(UIStrings2.enableAiAssistance),
         settingItems: [

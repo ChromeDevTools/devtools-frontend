@@ -4185,10 +4185,6 @@ var DetachedElementsProfileType = class extends Common7.ObjectWrapper.eventMixin
     if (!heapProfilerModel || !target || !domModel) {
       return;
     }
-    const animationModel = target?.model(SDK4.AnimationModel.AnimationModel);
-    if (animationModel) {
-      await animationModel.releaseAllAnimations();
-    }
     const data = await domModel.getDetachedDOMNodes();
     const profile = new DetachedElementsProfileHeader(heapProfilerModel, this, data);
     this.addProfile(profile);
@@ -4776,11 +4772,6 @@ var SamplingHeapProfileTypeBase = class extends Common9.ObjectWrapper.eventMixin
     const warnings = [i18nString9(UIStrings9.heapProfilerIsRecording)];
     UI11.InspectorView.InspectorView.instance().setPanelWarnings("heap-profiler", warnings);
     this.recording = true;
-    const target = heapProfilerModel.target();
-    const animationModel = target.model(SDK5.AnimationModel.AnimationModel);
-    if (animationModel) {
-      await animationModel.releaseAllAnimations();
-    }
     this.startSampling();
   }
   async stopRecordingProfile() {
@@ -8725,10 +8716,6 @@ var HeapSnapshotProfileType = class _HeapSnapshotProfileType extends Common13.Ob
     this.setProfileBeingRecorded(profile);
     this.addProfile(profile);
     profile.updateStatus(i18nString13(UIStrings14.snapshotting));
-    const animationModel = heapProfilerModel.target().model(SDK7.AnimationModel.AnimationModel);
-    if (animationModel) {
-      await animationModel.releaseAllAnimations();
-    }
     await heapProfilerModel.takeHeapSnapshot({
       reportProgress: true,
       captureNumericValue: true,
@@ -8860,10 +8847,6 @@ var TrackingHeapSnapshotProfileType = class _TrackingHeapSnapshotProfileType ext
     const heapProfilerModel = this.addNewProfile();
     if (!heapProfilerModel) {
       return;
-    }
-    const animationModel = heapProfilerModel.target().model(SDK7.AnimationModel.AnimationModel);
-    if (animationModel) {
-      await animationModel.releaseAllAnimations();
     }
     void heapProfilerModel.startTrackingHeapObjects(this.recordAllocationStacksSettingInternal.get());
   }

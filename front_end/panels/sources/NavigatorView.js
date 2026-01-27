@@ -8,6 +8,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as AiAssistance from '../../models/ai_assistance/ai_assistance.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
@@ -1198,7 +1199,8 @@ export class NavigatorSourceTreeElement extends UI.TreeOutline.TreeElement {
         const action = UI.ActionRegistry.ActionRegistry.instance().getAction('drjones.sources-floating-button');
         if (!this.aiButtonContainer) {
             this.aiButtonContainer = this.listItemElement.createChild('span', 'ai-button-container');
-            const floatingButton = Buttons.FloatingButton.create('smart-assistant', action.title(), 'ask-ai');
+            const icon = AiAssistance.AiUtils.getIconName();
+            const floatingButton = Buttons.FloatingButton.create(icon, action.title(), 'ask-ai');
             floatingButton.addEventListener('click', ev => {
                 ev.stopPropagation();
                 this.navigatorView.sourceSelected(this.uiSourceCode, false);

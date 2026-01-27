@@ -104,6 +104,9 @@
       "path": "../../generated/generated-tsconfig.json"
     },
     {
+      "path": "../../models/ai_assistance/bundle-tsconfig.json"
+    },
+    {
       "path": "../../models/annotations/bundle-tsconfig.json"
     },
     {

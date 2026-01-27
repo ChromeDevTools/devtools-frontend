@@ -1022,8 +1022,14 @@
   "entrypoints/main/GlobalAiButton.ts | aiAssistance": {
     "message": "AI assistance"
   },
+  "entrypoints/main/GlobalAiButton.ts | gemini": {
+    "message": "Gemini"
+  },
   "entrypoints/main/GlobalAiButton.ts | openAiAssistance": {
     "message": "Open AI assistance panel"
+  },
+  "entrypoints/main/GlobalAiButton.ts | openGemini": {
+    "message": "Open Gemini panel"
   },
   "entrypoints/main/main-meta.ts | auto": {
     "message": "auto"
@@ -3038,8 +3044,17 @@
   "panels/ai_assistance/ai_assistance-meta.ts | debugWithAi": {
     "message": "Debug with AI"
   },
+  "panels/ai_assistance/ai_assistance-meta.ts | debugWithGemini": {
+    "message": "Debug with Gemini"
+  },
   "panels/ai_assistance/ai_assistance-meta.ts | enableAiAssistance": {
     "message": "Enable AI assistance"
+  },
+  "panels/ai_assistance/ai_assistance-meta.ts | enableGemini": {
+    "message": "Enable Gemini"
+  },
+  "panels/ai_assistance/ai_assistance-meta.ts | gemini": {
+    "message": "Gemini"
   },
   "panels/ai_assistance/ai_assistance-meta.ts | geoRestricted": {
     "message": "This feature is unavailable in your region."
@@ -3049,6 +3064,9 @@
   },
   "panels/ai_assistance/ai_assistance-meta.ts | showAiAssistance": {
     "message": "Show AI assistance"
+  },
+  "panels/ai_assistance/ai_assistance-meta.ts | showGemini": {
+    "message": "Show Gemini"
   },
   "panels/ai_assistance/ai_assistance-meta.ts | wrongLocale": {
     "message": "To use this feature, set your language preference to English in DevTools settings."

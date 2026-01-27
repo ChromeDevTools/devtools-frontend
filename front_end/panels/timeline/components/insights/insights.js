@@ -356,6 +356,7 @@ var DEFAULT_VIEW = (input, output, target) => {
     const aiLabel = "Debug with AI";
     const ariaLabel2 = `Ask AI about ${model.title} insight`;
     const content = renderContent();
+    const iconName = AIAssistance.AiUtils.getIconName();
     return html2`
       <div class="insight-body">
         <div class="insight-description">${md(model.description)}</div>
@@ -364,7 +365,7 @@ var DEFAULT_VIEW = (input, output, target) => {
           <div class="ask-ai-btn-wrap">
             <devtools-button class="ask-ai"
               .variant=${"outlined"}
-              .iconName=${"smart-assistant"}
+              .iconName=${iconName}
               data-insights-ask-ai
               jslog=${VisualLogging.action(`timeline.insight-ask-ai.${internalName}`).track({ click: true })}
               @click=${onAskAIButtonClick}

@@ -6,6 +6,7 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
+import * as AIAssistance from '../../models/ai_assistance/ai_assistance.js';
 import * as AiCodeGeneration from '../../models/ai_code_generation/ai_code_generation.js';
 import * as Snackbars from '../../ui/components/snackbars/snackbars.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -208,8 +209,9 @@ export class AiCodeCompletionTeaser extends UI.Widget.Widget {
     }
     onAction = async (event) => {
         event.preventDefault();
+        const iconName = AIAssistance.AiUtils.getIconName();
         const result = await FreDialog.show({
-            header: { iconName: 'smart-assistant', text: lockedString(UIStringsNotTranslate.freDisclaimerHeader) },
+            header: { iconName, text: lockedString(UIStringsNotTranslate.freDisclaimerHeader) },
             reminderItems: this.#createReminderItems(),
             onLearnMoreClick: () => {
                 void UI.ViewManager.ViewManager.instance().showView('chrome-ai');

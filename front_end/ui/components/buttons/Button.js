@@ -47,9 +47,6 @@ export class Button extends HTMLElement {
         if ('size' in data && data.size) {
             this.#props.size = data.size;
         }
-        if (data.accessibleLabel) {
-            this.#props.accessibleLabel = data.accessibleLabel;
-        }
         this.#props.active = Boolean(data.active);
         this.#props.spinner = Boolean('spinner' in data ? data.spinner : false);
         this.#props.type = 'button';
@@ -60,7 +57,12 @@ export class Button extends HTMLElement {
         this.#props.toggleType = data.toggleType;
         this.#props.checked = data.checked;
         this.#props.disabled = Boolean(data.disabled);
-        this.#props.title = data.title;
+        if (data.title) {
+            this.title = data.title;
+        }
+        if (data.accessibleLabel) {
+            this.accessibleLabel = data.accessibleLabel;
+        }
         this.#props.jslogContext = data.jslogContext;
         this.#props.longClickable = data.longClickable;
         this.#props.inverseColorTheme = data.inverseColorTheme;
@@ -87,8 +89,16 @@ export class Button extends HTMLElement {
         this.#render();
     }
     set accessibleLabel(label) {
-        this.#props.accessibleLabel = label;
+        if (label) {
+            this.setAttribute('accessibleLabel', label);
+        }
+        else {
+            this.removeAttribute('accessibleLabel');
+        }
         this.#render();
+    }
+    get accessibleLabel() {
+        return this.getAttribute('accessibleLabel') || undefined;
     }
     set reducedFocusRing(reducedFocusRing) {
         this.#props.reducedFocusRing = reducedFocusRing;
@@ -98,8 +108,11 @@ export class Button extends HTMLElement {
         this.#props.type = type;
         this.#render();
     }
+    get title() {
+        return super.title;
+    }
     set title(title) {
-        this.#props.title = title;
+        super.title = title;
         this.#render();
     }
     get disabled() {
@@ -234,11 +247,11 @@ export class Button extends HTMLElement {
         // clang-format off
         Lit.render(html `
         <style>${buttonStyles}</style>
-        <button title=${ifDefined(this.#props.title)}
+        <button title=${ifDefined(this.title || undefined)}
                 ?disabled=${this.#props.disabled}
                 class=${classMap(classes)}
                 aria-pressed=${ifDefined(this.#props.toggled)}
-                aria-label=${ifDefined(this.#props.accessibleLabel)}
+                aria-label=${ifDefined(this.accessibleLabel || this.title || undefined)}
                 jslog=${ifDefined(jslog)}>
           ${hasIcon ? html `
             <devtools-icon name=${ifDefined(this.#props.toggled ? this.#props.toggledIconName : this.#props.iconName)}>

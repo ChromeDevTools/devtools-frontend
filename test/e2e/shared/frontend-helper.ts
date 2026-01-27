@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {createWriteStream} from 'node:fs';
+import {join} from 'node:path';
 import type * as puppeteer from 'puppeteer-core';
 
 import {installPageErrorHandlers} from '../../conductor/events.js';
@@ -22,6 +24,7 @@ interface DevToolsReloadParams {
   panel?: string;
 }
 
+let heapSnapshotCounter = 0;
 export class DevToolsPage extends PageWrapper {
   screenshotLog: Record<string, string> = {};
   #currentHighlightedElement?: HighlightedElement;
@@ -369,6 +372,43 @@ export class DevToolsPage extends PageWrapper {
     const index = Object.keys(this.screenshotLog).length + 1;
     const fullName = index + ' ' + (name ?? 'screenshot');
     this.screenshotLog[fullName] = await this.screenshot();
+  }
+
+  /**
+   * A helper that takes heap snapshots of the DevTools page that can be used to
+   * detect memory leaks. The snapshots are stored in out/<OutDir>.
+   *
+   * Usage:
+   *
+   * ```
+   *   ... prepare test state ...
+   *   await devToolsPsage.captureHeapSnapshot();
+   *   ... perform actions that trigger the leak ...
+   *   await devToolsPsage.captureHeapSnapshot();
+   * ```
+   *
+   * Now `out/<OutDir>/heap-snapshot-0.heapsnapshot` and
+   * `out/<OutDir>/heap-snapshot-1.heapsnapshot` are two snapshots that can be
+   * compared in the Memory panel of DevTools.
+   */
+  async captureHeapSnapshot(snapshotName = 'heap-snapshot') {
+    const session = await this.page.createCDPSession();
+    await session.send('HeapProfiler.enable');
+    await session.send('HeapProfiler.collectGarbage');
+
+    const snapshotId = heapSnapshotCounter++;
+    const fileName = `${snapshotName}-${snapshotId}.heapsnapshot`;
+    const filePath = join(process.cwd(), fileName);
+    const stream = createWriteStream(filePath);
+    session.on('HeapProfiler.addHeapSnapshotChunk', ({chunk}) => {
+      stream.write(chunk);
+    });
+    await session.send('HeapProfiler.takeHeapSnapshot', {reportProgress: false});
+    await new Promise<void>(resolve => {
+      stream.end(() => resolve());
+    });
+    await session.detach();
+    console.warn(`Heap snapshot saved to: ${filePath}`);
   }
 }
 

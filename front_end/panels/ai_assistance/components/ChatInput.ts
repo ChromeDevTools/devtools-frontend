@@ -135,6 +135,8 @@ export interface ViewInput {
   onRemoveImageInput: () => void;
   onImageUpload: (ev: Event) => void;
   onImagePaste: (event: ClipboardEvent) => void;
+  onImageDragOver: (event: DragEvent) => void;
+  onImageDrop: (event: DragEvent) => void;
 }
 
 export type ViewOutput = undefined;
@@ -289,6 +291,8 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
               maxlength="10000"
               @keydown=${input.onTextAreaKeyDown}
               @paste=${input.onImagePaste}
+              @dragover=${input.onImageDragOver}
+              @drop=${input.onImageDrop}
               @input=${(event: KeyboardEvent) => {
                 input.onTextInputChange((event.target as HTMLInputElement).value);
               }}
@@ -550,12 +554,12 @@ export class ChatInput extends UI.Widget.Widget implements SDK.TargetManager.Obs
     });
   }
 
-  #handleImagePaste = (event: ClipboardEvent): void => {
+  #handleImageDataTransferEvent(dataTransfer: DataTransfer|null, event: Event): void {
     if (this.conversationType !== AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING) {
       return;
     }
 
-    const files = event.clipboardData?.files;
+    const files = dataTransfer?.files;
     if (!files || files.length === 0) {
       return;
     }
@@ -567,6 +571,22 @@ export class ChatInput extends UI.Widget.Widget implements SDK.TargetManager.Obs
 
     event.preventDefault();
     void this.#handleLoadImage(imageFile);
+  }
+
+  #handleImagePaste = (event: ClipboardEvent): void => {
+    this.#handleImageDataTransferEvent(event.clipboardData, event);
+  };
+
+  #handleImageDragOver = (event: DragEvent): void => {
+    if (this.conversationType !== AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING) {
+      return;
+    }
+
+    event.preventDefault();
+  };
+
+  #handleImageDrop = (event: DragEvent): void => {
+    this.#handleImageDataTransferEvent(event.dataTransfer, event);
   };
 
   async #handleLoadImage(file: File): Promise<void> {
@@ -663,6 +683,8 @@ export class ChatInput extends UI.Widget.Widget implements SDK.TargetManager.Obs
           onTextAreaKeyDown: this.onTextAreaKeyDown,
           onCancel: this.onCancel,
           onImageUpload: this.onImageUpload,
+          onImageDragOver: this.#handleImageDragOver,
+          onImageDrop: this.#handleImageDrop,
         },
         undefined, this.contentElement);
   }

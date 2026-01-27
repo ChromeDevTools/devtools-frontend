@@ -186,6 +186,36 @@ describeWithEnvironment('ChatInput', () => {
       });
     });
 
+    it('handles drag-and-drop image upload', async () => {
+      const [view] = createComponent();
+
+      const file = new File(['test'], 'dropped_image.png', {type: 'image/png'});
+      const fileReaderStub = sinon.stub(window, 'FileReader');
+      fileReaderStub.returns(new MockFileReader() as unknown as FileReader);
+      const dataTransfer = new DataTransfer();
+      dataTransfer.items.add(file);
+      const dragOverEvent = new DragEvent('dragover', {
+        dataTransfer,
+      });
+      const dropEvent = new DragEvent('drop', {
+        dataTransfer,
+      });
+
+      view.input.onImageDragOver(dragOverEvent);
+      dragOverEvent.preventDefault();
+      view.input.onImageDrop(dropEvent);
+      dropEvent.preventDefault();
+
+      await new Promise(resolve => setTimeout(resolve, 0));
+
+      assert.deepEqual(view.input.imageInput, {
+        isLoading: false,
+        data: btoa('test'),
+        mimeType: 'image/png',
+        inputType: AiAssistanceModel.AiAgent.MultimodalInputType.UPLOADED_IMAGE
+      });
+    });
+
     it('should clear image input on primary page change', async () => {
       const target = createTarget();
       const [view] = createComponent();
@@ -244,6 +274,8 @@ describeWithEnvironment('ChatInput', () => {
             onRemoveImageInput: () => {},
             onImageUpload: () => {},
             onImagePaste: () => {},
+            onImageDragOver: () => {},
+            onImageDrop: () => {},
           },
           undefined, target);
       await assertScreenshot('ai_assistance/chat_input_multimodal_enabled.png');
@@ -279,6 +311,8 @@ describeWithEnvironment('ChatInput', () => {
             onRemoveImageInput: () => {},
             onImageUpload: () => {},
             onImagePaste: () => {},
+            onImageDragOver: () => {},
+            onImageDrop: () => {},
           },
           undefined, target);
       await assertScreenshot('ai_assistance/chat_input_multimodal_disabled.png');

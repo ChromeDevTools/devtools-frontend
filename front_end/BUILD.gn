@@ -139,6 +139,7 @@ group("unittests") {
     "models/heap_snapshot_model:unittests",
     "models/issues_manager:unittests",
     "models/javascript_metadata:unittests",
+    "models/live-metrics:unittests",
     "models/logs:unittests",
     "models/persistence:unittests",
     "models/project_settings:unittests",

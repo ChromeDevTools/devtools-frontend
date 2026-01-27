@@ -62,7 +62,29 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
 
   private constructor() {
     super();
-    SDK.TargetManager.TargetManager.instance().observeTargets(this);
+    const targetManager = SDK.TargetManager.TargetManager.instance();
+    targetManager.observeTargets(this, {scoped: true});
+    // Listen for target info changes to detect prerender activation.
+    // Scoped observers don't receive events when a prerendered target becomes
+    // primary because setScopeTarget() isn't called during that transition.
+    targetManager.addEventListener(
+        SDK.TargetManager.Events.AVAILABLE_TARGETS_CHANGED, this.#onAvailableTargetsChanged, this);
+  }
+
+  #onAvailableTargetsChanged(): void {
+    const primaryTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+    if (primaryTarget && primaryTarget !== this.#target) {
+      // Primary target changed (e.g., prerender activation). Switch to it.
+      void this.#switchToTarget(primaryTarget);
+    }
+  }
+
+  async #switchToTarget(newTarget: SDK.Target.Target): Promise<void> {
+    if (this.#target) {
+      await this.disable();
+    }
+    this.#target = newTarget;
+    await this.enable();
   }
 
   static instance(opts: {forceNew?: boolean} = {forceNew: false}): LiveMetrics {
@@ -371,31 +393,6 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
     this.#sendStatusUpdate();
   }
 
-  async #getFrameForExecutionContextId(executionContextId: Protocol.Runtime.ExecutionContextId):
-      Promise<SDK.ResourceTreeModel.ResourceTreeFrame|null> {
-    if (!this.#target) {
-      return null;
-    }
-
-    const runtimeModel = this.#target.model(SDK.RuntimeModel.RuntimeModel);
-    if (!runtimeModel) {
-      return null;
-    }
-
-    const executionContext = runtimeModel.executionContext(executionContextId);
-    if (!executionContext) {
-      return null;
-    }
-
-    const frameId = executionContext.frameId;
-    if (!frameId) {
-      return null;
-    }
-
-    const frameManager = SDK.FrameManager.FrameManager.instance();
-    return await frameManager.getOrWaitForFrame(frameId);
-  }
-
   async #onBindingCalled(event: {data: Protocol.Runtime.BindingCalledEvent}): Promise<void> {
     const {data} = event;
     if (data.name !== Spec.EVENT_BINDING_NAME) {
@@ -407,22 +404,8 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
     await this.#mutex.run(async () => {
       const webVitalsEvent = JSON.parse(data.payload) as Spec.WebVitalsEvent;
 
-      // This ensures that `#lastResetContextId` will always be an execution context on the
-      // primary frame. If we receive events from this execution context then we automatically
-      // know that they are for the primary frame.
-      if (this.#lastResetContextId !== data.executionContextId) {
-        if (webVitalsEvent.name !== 'reset') {
-          return;
-        }
-
-        // We should avoid calling this function for every event.
-        // If an interaction triggers a pre-rendered navigation then the old primary frame could
-        // be removed before we reach this point, and then it will hang forever.
-        const frame = await this.#getFrameForExecutionContextId(data.executionContextId);
-        if (!frame?.isPrimaryFrame()) {
-          return;
-        }
-
+      // Track the execution context from 'reset' events for logInteractionScripts().
+      if (webVitalsEvent.name === 'reset') {
         this.#lastResetContextId = data.executionContextId;
       }
 
@@ -464,6 +447,7 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
   }
 
   async targetAdded(target: SDK.Target.Target): Promise<void> {
+    // Scoped observers can also receive events for OOPIFs and workers.
     if (target !== SDK.TargetManager.TargetManager.instance().primaryPageTarget()) {
       return;
     }
@@ -472,20 +456,12 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
   }
 
   async targetRemoved(target: SDK.Target.Target): Promise<void> {
+    // Scoped observers can also receive events for OOPIFs and workers.
     if (target !== this.#target) {
       return;
     }
     await this.disable();
     this.#target = undefined;
-
-    // If the user navigates to a page that was pre-rendered then the primary page target
-    // will be swapped and the old target will be removed. We should ensure live metrics
-    // remain enabled on the new primary page target.
-    const primaryPageTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
-    if (primaryPageTarget) {
-      this.#target = primaryPageTarget;
-      await this.enable();
-    }
   }
 
   async enable(): Promise<void> {
@@ -554,6 +530,10 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
     if (!this.#target || !this.#enabled) {
       return;
     }
+
+    // Reset to ensure clean state when re-enabling on a new target.
+    // See crbug.com/478832430.
+    this.#lastResetContextId = undefined;
 
     await this.#killAllLiveMetricContexts();
 

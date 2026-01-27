@@ -7,7 +7,7 @@ import '../../../ui/components/spinners/spinners.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Platform from '../../../core/platform/platform.js';
-import type * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
+import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import type {MarkdownLitRenderer} from '../../../ui/components/markdown_view/MarkdownView.js';
 import * as UI from '../../../ui/legacy/legacy.js';
@@ -30,6 +30,10 @@ const UIStringsNotTranslate = {
    * @description Text for the empty state of the AI assistance panel.
    */
   emptyStateText: 'How can I help you?',
+  /**
+   * @description Text for the empty state of the Gemini panel.
+   */
+  emptyStateTextGemini: 'Where should we start?',
 } as const;
 
 const lockedString = i18n.i18n.lockedString;
@@ -74,12 +78,18 @@ export interface Props {
 }
 
 interface ChatWidgetInput extends Props {
+  accountName: string;
   handleScroll: (ev: Event) => void;
   handleSuggestionClick: (title: string) => void;
   handleMessageContainerRef: (el: Element|undefined) => void;
 }
 
 const DEFAULT_VIEW: View = (input, output, target) => {
+  const chatUiClasses = classMap({
+    'chat-ui': true,
+    gemini: AiAssistanceModel.AiUtils.isGeminiBranding(),
+  });
+
   const inputWidgetClasses = classMap({
     'chat-input-widget': true,
     sticky: !input.isReadOnly,
@@ -88,7 +98,7 @@ const DEFAULT_VIEW: View = (input, output, target) => {
   // clang-format off
     render(html`
       <style>${chatViewStyles}</style>
-      <div class="chat-ui">
+      <div class=${chatUiClasses}>
         <main @scroll=${input.handleScroll} ${ref(element => { output.mainElement = element as HTMLElement; } )}>
           ${input.messages.length > 0 ? html`
             <div class="messages-container" ${ref(input.handleMessageContainerRef)}>
@@ -121,7 +131,12 @@ const DEFAULT_VIEW: View = (input, output, target) => {
                     name="smart-assistant"
                   ></devtools-icon>
                 </div>
-                <h1>${lockedString(UIStringsNotTranslate.emptyStateText)}</h1>
+                ${AiAssistanceModel.AiUtils.isGeminiBranding() ?
+                  html`
+                    <h1 class='greeting'>Hello, ${input.accountName}</h1>
+                    <h1>${lockedString(UIStringsNotTranslate.emptyStateTextGemini)}</h1>
+                  ` : html`<h1>${lockedString(UIStringsNotTranslate.emptyStateText)}</h1>`
+                }
               </div>
               <div class="empty-state-content">
                 ${input.emptyStateSuggestions.map(({title, jslogContext}) => {
@@ -308,6 +323,8 @@ export class ChatView extends HTMLElement {
     this.#view(
         {
           ...this.#props,
+          // TODO(b/468206227): This needs to be a first name.
+          accountName: this.#props.userInfo.accountFullName ?? '',
           handleScroll: this.#handleScroll,
           handleSuggestionClick: this.#handleSuggestionClick,
           handleMessageContainerRef: this.#handleMessageContainerRef,

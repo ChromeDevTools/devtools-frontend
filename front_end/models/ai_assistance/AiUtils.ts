@@ -54,3 +54,11 @@ export function getDisabledReasons(aidaAvailability: Host.AidaClient.AidaAccessP
   reasons.push(...Common.Settings.Settings.instance().moduleSetting('ai-assistance-enabled').disabledReasons());
   return reasons;
 }
+
+export function isGeminiBranding(): boolean {
+  return !!Root.Runtime.hostConfig.devToolsGeminiRebranding?.enabled;
+}
+
+export function getIconName(): string {
+  return isGeminiBranding() ? 'spark' : 'smart-assistant';
+}

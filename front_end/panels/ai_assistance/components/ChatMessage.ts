@@ -292,6 +292,8 @@ export const DEFAULT_VIEW = (input: ChatMessageViewInput, output: ViewOutput, ta
     return;
   }
 
+  const icon = AiAssistanceModel.AiUtils.getIconName();
+
   // clang-format off
   Lit.render(html`
     <style>${Input.textInputStyles}</style>
@@ -301,7 +303,7 @@ export const DEFAULT_VIEW = (input: ChatMessageViewInput, output: ViewOutput, ta
       jslog=${VisualLogging.section('answer')}
     >
       <div class="message-info">
-        <devtools-icon name="smart-assistant"></devtools-icon>
+        <devtools-icon name=${icon}></devtools-icon>
         <div class="message-name">
           <h2>${lockedString(UIStringsNotTranslate.ai)}</h2>
         </div>

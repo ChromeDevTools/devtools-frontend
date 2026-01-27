@@ -75,6 +75,7 @@ devtools_ui_module("sources") {
     "../../core/sdk:bundle",
     "../../entrypoints/formatter_worker:bundle",
     "../../generated:protocol",
+    "../../models/ai_assistance:bundle",
     "../../models/ai_code_completion:bundle",
     "../../models/badges:bundle",
     "../../models/bindings:bundle",

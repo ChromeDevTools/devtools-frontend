@@ -80,6 +80,7 @@ devtools_ui_module("elements") {
     "../../core/root:bundle",
     "../../core/sdk:bundle",
     "../../generated",
+    "../../models/ai_assistance:bundle",
     "../../models/annotations:bundle",
     "../../models/badges:bundle",
     "../../models/bindings:bundle",

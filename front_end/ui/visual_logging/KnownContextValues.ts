@@ -1387,6 +1387,7 @@ export const knownContextValues = new Set([
   'elements.capture-area-screenshot',
   'elements.color-mix-popover',
   'elements.copy-styles',
+  'elements.css-animation-hint',
   'elements.css-color-mix',
   'elements.css-hint',
   'elements.css-property-doc',

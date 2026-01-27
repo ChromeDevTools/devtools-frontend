@@ -969,4 +969,67 @@ describeWithMockConnection('NodeCascade', () => {
 
     assert.deepEqual(matchedStyles.availableCSSVariables(matchedStyles.nodeStyles()[0]), ['--inner']);
   });
+
+  describe('isPropertyOverriddenByAnimation', () => {
+    it('returns true when a property is overridden by an animation', async () => {
+      const animationStyle = {
+        style: {
+          cssProperties: [{name: 'opacity', value: '1'}],
+          shorthandEntries: [],
+        },
+      } as Protocol.CSS.CSSAnimationStyle;
+
+      const matchedStyles = await getMatchedStyles({
+        matchedPayload: [ruleMatch('div', [{name: 'opacity', value: '0.5'}])],
+        animationStylesPayload: [animationStyle],
+      });
+
+      const styles = matchedStyles.nodeStyles();
+      const regularStyle = styles.find(style => style.type === SDK.CSSStyleDeclaration.Type.Regular);
+      assert.exists(regularStyle);
+      const property = regularStyle.allProperties().find(p => p.name === 'opacity');
+      assert.exists(property);
+
+      assert.isTrue(matchedStyles.isPropertyOverriddenByAnimation(property));
+    });
+
+    it('returns true when a property is overridden by a transition', async () => {
+      const transitionStyle = {
+        cssProperties: [{name: 'opacity', value: '1'}],
+        shorthandEntries: [],
+      } as Protocol.CSS.CSSStyle;
+
+      const matchedStyles = await getMatchedStyles({
+        matchedPayload: [ruleMatch('div', [{name: 'opacity', value: '0.5'}])],
+        transitionsStylePayload: transitionStyle,
+      });
+
+      const styles = matchedStyles.nodeStyles();
+      const regularStyle = styles.find(style => style.type === SDK.CSSStyleDeclaration.Type.Regular);
+      assert.exists(regularStyle);
+      const property = regularStyle.allProperties().find(p => p.name === 'opacity');
+      assert.exists(property);
+
+      assert.isTrue(matchedStyles.isPropertyOverriddenByAnimation(property));
+    });
+
+    it('returns false when a property is overridden by another regular property', async () => {
+      const matchedStyles = await getMatchedStyles({
+        matchedPayload: [
+          ruleMatch('div', [{name: 'opacity', value: '0.5'}]),
+          ruleMatch('div.active', [{name: 'opacity', value: '1'}]),  // Higher specificity
+        ],
+      });
+
+      const styles = matchedStyles.nodeStyles();
+      const regularStyle = styles.find(
+          style => style.type === SDK.CSSStyleDeclaration.Type.Regular &&
+              style.allProperties().find(p => p.value === '0.5'));
+      assert.exists(regularStyle);
+      const property = regularStyle.allProperties().find(p => p.name === 'opacity');
+      assert.exists(property);
+
+      assert.isFalse(matchedStyles.isPropertyOverriddenByAnimation(property));
+    });
+  });
 });

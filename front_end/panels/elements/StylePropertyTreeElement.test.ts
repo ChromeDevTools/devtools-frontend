@@ -562,6 +562,33 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
     });
   });
 
+  describe('Animation override hint', () => {
+    it('should create a hint when property is overridden by animation and verify tooltip content', () => {
+      const stylePropertyTreeElement = getTreeElement('opacity', '0.5');
+      sinon.stub(matchedStyles, 'isPropertyOverriddenByAnimation').returns(true);
+
+      stylePropertyTreeElement.updateAnimationOverrideHint();
+
+      const animationOverrideHintWrapper =
+          stylePropertyTreeElement.listItemElement.querySelector('.animation-override-hint-wrapper');
+      assert.exists(animationOverrideHintWrapper, 'Hint wrapper not found via .animation-override-hint-wrapper');
+
+      const tooltip =
+          stylePropertyTreeElement.listItemElement.querySelector<Tooltips.Tooltip.Tooltip>('devtools-tooltip');
+      assert.exists(tooltip, 'Animation override tooltip not found');
+    });
+
+    it('should not create a hint when property is not overridden by animation', () => {
+      const stylePropertyTreeElement = getTreeElement('opacity', '0.5');
+      sinon.stub(matchedStyles, 'isPropertyOverriddenByAnimation').returns(false);
+
+      stylePropertyTreeElement.updateAnimationOverrideHint();
+
+      const hintWrapper = stylePropertyTreeElement.listItemElement.querySelector('.animation-override-hint-wrapper');
+      assert.isNull(hintWrapper, 'Hint wrapper should not exist');
+    });
+  });
+
   describe('custom-properties', () => {
     it('linkifies var functions to declarations', async () => {
       const cssCustomPropertyDef = addProperty('--prop', 'value');

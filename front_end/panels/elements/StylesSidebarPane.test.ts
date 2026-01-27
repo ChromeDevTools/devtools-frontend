@@ -309,6 +309,7 @@ describe('StylesSidebarPane', () => {
 
       beforeEach(() => {
         sinon.stub(PanelsCommon.DOMLinkifier.Linkifier.instance(), 'linkify').returns(document.createElement('div'));
+        sinon.stub(UI.ViewManager.ViewManager.instance(), 'isViewVisible').returns(false);
         updateHostConfig({
           devToolsAnimationStylesInStylesTab: {
             enabled: true,
@@ -316,7 +317,7 @@ describe('StylesSidebarPane', () => {
         });
       });
 
-      it('should render transition & animation styles in the styles tab', async () => {
+      it('should not render transition & animation styles when the animations panel is not visible', async () => {
         const stylesSidebarPane =
             new Elements.StylesSidebarPane.StylesSidebarPane(new Elements.ComputedStyleModel.ComputedStyleModel());
         const matchedStyles = await getMatchedStyles({
@@ -328,15 +329,6 @@ describe('StylesSidebarPane', () => {
               style: {
                 cssProperties: [{
                   name: 'background-color',
-                  value: 'blue',
-                }],
-                shorthandEntries: [],
-              },
-            },
-            {
-              style: {
-                cssProperties: [{
-                  name: 'color',
                   value: 'blue',
                 }],
                 shorthandEntries: [],
@@ -355,13 +347,60 @@ describe('StylesSidebarPane', () => {
 
         const sectionBlocks = await stylesSidebarPane.rebuildSectionsForMatchedStyleRulesForTest(
             matchedStyles, new Map(), new Map(), null);
-        assert.lengthOf(sectionBlocks[0].sections, 3);
-        assert.strictEqual(sectionBlocks[0].sections[0].headerText(), 'transitions style');
-        assert.strictEqual(sectionBlocks[0].sections[1].headerText(), '--animation-name animation');
-        assert.strictEqual(sectionBlocks[0].sections[2].headerText(), 'animation style');
+        assert.lengthOf(sectionBlocks[0].sections, 0);
       });
 
+      it('should render transition & animation styles in the styles tab when the animations panel is visible',
+         async () => {
+           (UI.ViewManager.ViewManager.instance().isViewVisible as sinon.SinonStub).returns(true);
+           const stylesSidebarPane =
+               new Elements.StylesSidebarPane.StylesSidebarPane(new Elements.ComputedStyleModel.ComputedStyleModel());
+           const matchedStyles = await getMatchedStyles({
+             cssModel: stylesSidebarPane.cssModel() as SDK.CSSModel.CSSModel,
+             node: sinon.createStubInstance(SDK.DOMModel.DOMNode),
+             animationStylesPayload: [
+               {
+                 name: '--animation-name',
+                 style: {
+                   cssProperties: [{
+                     name: 'background-color',
+                     value: 'blue',
+                   }],
+                   shorthandEntries: [],
+                 },
+               },
+               {
+                 style: {
+                   cssProperties: [{
+                     name: 'color',
+                     value: 'blue',
+                   }],
+                   shorthandEntries: [],
+                 },
+               },
+             ],
+             transitionsStylePayload: {
+               cssProperties: [{
+                 name: 'color',
+                 value: 'red',
+               }],
+               shorthandEntries: [],
+             },
+             inheritedAnimatedPayload: [],
+           });
+
+           const sectionBlocks = await stylesSidebarPane.rebuildSectionsForMatchedStyleRulesForTest(
+               matchedStyles, new Map(), new Map(), null);
+           assert.lengthOf(sectionBlocks[0].sections, 3);
+           assert.strictEqual(sectionBlocks[0].sections[0].headerText(), 'transitions style');
+           assert.strictEqual(sectionBlocks[0].sections[1].headerText(), '--animation-name animation');
+           assert.strictEqual(sectionBlocks[0].sections[2].headerText(), 'animation style');
+         });
+
       describe('should auto update animated style sections when onComputedStyleChanged called', () => {
+        beforeEach(() => {
+          (UI.ViewManager.ViewManager.instance().isViewVisible as sinon.SinonStub).returns(true);
+        });
         describe('transition styles', () => {
           it('should trigger re-render when there was no transition style before', async () => {
             mockGetAnimatedComputedStyles({

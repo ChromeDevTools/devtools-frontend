@@ -908,6 +908,11 @@ export class CSSMatchedStyles {
     return domCascade ? domCascade.propertyState(property) : null;
   }
 
+  isPropertyOverriddenByAnimation(property: CSSProperty): boolean {
+    const domCascade = this.#styleToDOMCascade.get(property.ownerStyle);
+    return domCascade?.isPropertyOverriddenByAnimation(property) ?? false;
+  }
+
   resetActiveProperties(): void {
     Platform.assertNotNullOrUndefined(this.#mainDOMCascade);
     Platform.assertNotNullOrUndefined(this.#pseudoDOMCascades);
@@ -961,6 +966,7 @@ class NodeCascade {
   readonly styles: CSSStyleDeclaration[];
   readonly #isInherited: boolean;
   readonly propertiesState = new Map<CSSProperty, PropertyState>();
+  readonly propertiesOverriddenByAnimation = new Set<CSSProperty>();
   readonly activeProperties = new Map<string, CSSProperty>();
   readonly #node: DOMNode;
   constructor(
@@ -974,6 +980,7 @@ class NodeCascade {
 
   computeActiveProperties(): void {
     this.propertiesState.clear();
+    this.propertiesOverriddenByAnimation.clear();
     this.activeProperties.clear();
 
     for (let i = this.styles.length - 1; i >= 0; i--) {
@@ -1082,6 +1089,10 @@ class NodeCascade {
 
     if (activeProperty) {
       this.propertiesState.set(activeProperty, PropertyState.OVERLOADED);
+      if (propertyWithHigherSpecificity.ownerStyle.type === Type.Animation ||
+          propertyWithHigherSpecificity.ownerStyle.type === Type.Transition) {
+        this.propertiesOverriddenByAnimation.add(activeProperty);
+      }
     }
     this.propertiesState.set(propertyWithHigherSpecificity, PropertyState.ACTIVE);
     this.activeProperties.set(canonicalName, propertyWithHigherSpecificity);
@@ -1176,6 +1187,7 @@ function* forEach<T>(array: T[], startAfter?: T): Generator<T> {
 
 class DOMInheritanceCascade {
   readonly #propertiesState = new Map<CSSProperty, PropertyState>();
+  readonly #propertiesOverriddenByAnimation = new Set<CSSProperty>();
   readonly #availableCSSVariables = new Map<NodeCascade, Map<string, CSSVariableValue|null>>();
   readonly #computedCSSVariables = new Map<NodeCascade, Map<string, CSSVariableValue|CSSAttributeValue|null>>();
   readonly #styleToNodeCascade = new Map<CSSStyleDeclaration, NodeCascade>();
@@ -1568,9 +1580,15 @@ class DOMInheritanceCascade {
     return this.#propertiesState.get(property) || null;
   }
 
+  isPropertyOverriddenByAnimation(property: CSSProperty): boolean {
+    this.ensureInitialized();
+    return this.#propertiesOverriddenByAnimation.has(property);
+  }
+
   reset(): void {
     this.#initialized = false;
     this.#propertiesState.clear();
+    this.#propertiesOverriddenByAnimation.clear();
     this.#availableCSSVariables.clear();
     this.#computedCSSVariables.clear();
   }
@@ -1587,11 +1605,20 @@ class DOMInheritanceCascade {
       for (const [property, state] of nodeCascade.propertiesState) {
         if (state === PropertyState.OVERLOADED) {
           this.#propertiesState.set(property, PropertyState.OVERLOADED);
+          if (nodeCascade.propertiesOverriddenByAnimation.has(property)) {
+            this.#propertiesOverriddenByAnimation.add(property);
+          }
           continue;
         }
         const canonicalName = cssMetadata().canonicalPropertyName(property.name);
         if (activeProperties.has(canonicalName)) {
           this.#propertiesState.set(property, PropertyState.OVERLOADED);
+          const activeProperty = activeProperties.get(canonicalName);
+          if (activeProperty &&
+              (activeProperty.ownerStyle.type === Type.Animation ||
+               activeProperty.ownerStyle.type === Type.Transition)) {
+            this.#propertiesOverriddenByAnimation.add(property);
+          }
           continue;
         }
         activeProperties.set(canonicalName, property);

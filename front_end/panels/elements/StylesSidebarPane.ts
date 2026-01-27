@@ -237,6 +237,12 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
       }
       return null;
     }, () => this.node());
+
+    UI.ViewManager.ViewManager.instance().addEventListener(UI.ViewManager.Events.VIEW_VISIBILITY_CHANGED, event => {
+      if (event.data.revealedViewId === 'animations' || event.data.hiddenViewId === 'animations') {
+        this.#scheduleResetUpdateIfNotEditing();
+      }
+    });
   }
 
   get webCustomData(): WebCustomData|undefined {
@@ -741,6 +747,10 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
       return;
     }
 
+    if (!UI.ViewManager.ViewManager.instance().isViewVisible('animations')) {
+      return;
+    }
+
     void this.computedStyleUpdateThrottler.schedule(async () => {
       await this.#updateAnimatedStyles();
       this.handledComputedStyleChangedForTest();
@@ -1078,7 +1088,14 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     // We disable the layer widget initially. If we see a layer in
     // the matched styles we reenable the button.
     LayersWidget.ButtonProvider.instance().item().setVisible(false);
+    const animationsPanelVisible = UI.ViewManager.ViewManager.instance().isViewVisible('animations');
     for (const style of matchedStyles.nodeStyles()) {
+      const isTransitionOrAnimationStyle = style.type === SDK.CSSStyleDeclaration.Type.Transition ||
+          style.type === SDK.CSSStyleDeclaration.Type.Animation;
+      if (isTransitionOrAnimationStyle && !animationsPanelVisible) {
+        continue;
+      }
+
       const parentNode = matchedStyles.isInherited(style) ? matchedStyles.nodeForStyle(style) : null;
       if (parentNode && parentNode !== lastParentNode) {
         lastParentNode = parentNode;
@@ -1090,8 +1107,6 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
       addLayerSeparator(style);
 
       const lastBlock = blocks[blocks.length - 1];
-      const isTransitionOrAnimationStyle = style.type === SDK.CSSStyleDeclaration.Type.Transition ||
-          style.type === SDK.CSSStyleDeclaration.Type.Animation;
       if (lastBlock && (!isTransitionOrAnimationStyle || style.allProperties().length > 0)) {
         this.idleCallbackManager.schedule(() => {
           const section = new StylePropertiesSection(

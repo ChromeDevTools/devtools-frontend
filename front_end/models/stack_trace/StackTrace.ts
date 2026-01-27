@@ -62,3 +62,43 @@ export const enum Events {
 export interface EventTypes {
   [Events.UPDATED]: void;
 }
+
+/**
+ * A small wrapper around a DebuggableFrame usable as a UI.Context flavor.
+ * This is necessary as Frame and DebuggableFrame are updated in place, but
+ * for UI.Context we need a new instance.
+ */
+export class DebuggableFrameFlavor implements DebuggableFrame {
+  static #last?: DebuggableFrameFlavor;
+
+  readonly url?: string;
+  readonly uiSourceCode?: Workspace.UISourceCode.UISourceCode;
+  readonly name?: string;
+  readonly line: number;
+  readonly column: number;
+  readonly missingDebugInfo?: MissingDebugInfo;
+  readonly sdkFrame: SDK.DebuggerModel.CallFrame;
+
+  private constructor(frame: DebuggableFrame) {
+    this.url = frame.url;
+    this.uiSourceCode = frame.uiSourceCode;
+    this.name = frame.name;
+    this.line = frame.line;
+    this.column = frame.column;
+    this.missingDebugInfo = frame.missingDebugInfo;
+    this.sdkFrame = frame.sdkFrame;
+  }
+
+  /** @returns the same instance of DebuggableFrameFlavor for repeated calls with the same (i.e. deep equal) DebuggableFrame */
+  static for(frame: DebuggableFrame): DebuggableFrameFlavor {
+    function equals(a: DebuggableFrame, b: DebuggableFrame): boolean {
+      return a.url === b.url && a.uiSourceCode === b.uiSourceCode && a.name === b.name && a.line === b.line &&
+          a.column === b.column && a.sdkFrame === b.sdkFrame;
+    }
+
+    if (!DebuggableFrameFlavor.#last || !equals(DebuggableFrameFlavor.#last, frame)) {
+      DebuggableFrameFlavor.#last = new DebuggableFrameFlavor(frame);
+    }
+    return DebuggableFrameFlavor.#last;
+  }
+}

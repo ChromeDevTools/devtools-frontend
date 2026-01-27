@@ -58,6 +58,7 @@ devtools_foundation_module("unittests") {
   testonly = true
 
   sources = [
+    "StackTrace.test.ts",
     "StackTraceImpl.test.ts",
     "StackTraceModel.test.ts",
     "Trie.test.ts",

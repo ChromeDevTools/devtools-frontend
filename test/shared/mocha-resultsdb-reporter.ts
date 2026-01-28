@@ -107,6 +107,11 @@ class ResultsDbReporter extends Mocha.reporters.Spec {
     }
     if (this.htmlResult) {
       this.htmlResult.write(testResult.summaryHtml);
+      if (error instanceof ScreenshotError) {
+        for (const artifactId in error.screenshots) {
+          this.htmlResult.write(`<br>${artifactId}<br><img src="${error.screenshots[artifactId].filePath}">`);
+        }
+      }
     }
     ResultsDb.sendTestResult(testResult);
   }

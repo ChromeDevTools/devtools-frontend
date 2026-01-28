@@ -342,6 +342,17 @@ export async function waitForStackTopMatch(matcher: RegExp, devToolsPage: DevToo
   return stepLocation;
 }
 
+export async function waitForNewLocation(oldLocation: string, devToolsPage: DevToolsPage) {
+  // The call stack is updated asynchronously, so let us wait until we see the correct one
+  // (or report the last one we have seen before timeout).
+  let stepLocation = '<no call stack>';
+  await devToolsPage.waitForFunction(async () => {
+    stepLocation = await retrieveTopCallFrameWithoutResuming(devToolsPage) ?? '<invalid>';
+    return stepLocation && stepLocation !== oldLocation;
+  });
+  return stepLocation;
+}
+
 export async function setEventListenerBreakpoint(groupName: string, eventName: string, devToolsPage: DevToolsPage) {
   const eventListenerBreakpointsSection = await devToolsPage.waitForAria('Event Listener Breakpoints');
   const expanded = await eventListenerBreakpointsSection.evaluate(el => el.getAttribute('aria-expanded'));
@@ -525,32 +536,48 @@ async function hasPausedEvents(devToolsPage: DevToolsPage): Promise<boolean> {
   return Boolean(events?.length);
 }
 
-export async function stepThroughTheCode(devToolsPage: DevToolsPage) {
+export async function stepThroughTheCode(devToolsPage: DevToolsPage, checkLineChange = true) {
+  const currentLocation = checkLineChange ? await retrieveTopCallFrameWithoutResuming(devToolsPage) : '';
   await devToolsPage.getPendingEvents(DEBUGGER_PAUSED_EVENT);
   await devToolsPage.pressKey('F9');
   await devToolsPage.waitForFunction(() => hasPausedEvents(devToolsPage));
   await devToolsPage.waitFor(PAUSE_INDICATOR_SELECTOR);
+  if (checkLineChange) {
+    await waitForNewLocation(currentLocation, devToolsPage);
+  }
 }
 
-export async function stepIn(devToolsPage: DevToolsPage) {
+export async function stepIn(devToolsPage: DevToolsPage, checkLineChange = true) {
+  const currentLocation = checkLineChange ? await retrieveTopCallFrameWithoutResuming(devToolsPage) : '';
   await devToolsPage.getPendingEvents(DEBUGGER_PAUSED_EVENT);
   await devToolsPage.pressKey('F11');
   await devToolsPage.waitForFunction(() => hasPausedEvents(devToolsPage));
   await devToolsPage.waitFor(PAUSE_INDICATOR_SELECTOR);
+  if (checkLineChange) {
+    await waitForNewLocation(currentLocation, devToolsPage);
+  }
 }
 
-export async function stepOver(devToolsPage: DevToolsPage) {
+export async function stepOver(devToolsPage: DevToolsPage, checkLineChange = true) {
+  const currentLocation = checkLineChange ? await retrieveTopCallFrameWithoutResuming(devToolsPage) : '';
   await devToolsPage.getPendingEvents(DEBUGGER_PAUSED_EVENT);
   await devToolsPage.pressKey('F10');
   await devToolsPage.waitForFunction(() => hasPausedEvents(devToolsPage));
   await devToolsPage.waitFor(PAUSE_INDICATOR_SELECTOR);
+  if (checkLineChange) {
+    await waitForNewLocation(currentLocation, devToolsPage);
+  }
 }
 
-export async function stepOut(devToolsPage: DevToolsPage) {
+export async function stepOut(devToolsPage: DevToolsPage, checkLineChange = true) {
+  const currentLocation = checkLineChange ? await retrieveTopCallFrameWithoutResuming(devToolsPage) : '';
   await devToolsPage.getPendingEvents(DEBUGGER_PAUSED_EVENT);
   await devToolsPage.pressKey('F11', {shift: true});
   await devToolsPage.waitForFunction(() => hasPausedEvents(devToolsPage));
   await devToolsPage.waitFor(PAUSE_INDICATOR_SELECTOR);
+  if (checkLineChange) {
+    await waitForNewLocation(currentLocation, devToolsPage);
+  }
 }
 
 export async function openNestedWorkerFile(selectors: NestedFileSelector, devToolsPage: DevToolsPage) {

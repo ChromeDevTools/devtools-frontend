@@ -499,6 +499,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   #userInfo: {
     accountImage?: string,
     accountFullName?: string,
+    accountGivenName?: string,
   };
   #timelinePanelInstance: TimelinePanel.TimelinePanel.TimelinePanel|null = null;
   #runAbortController = new AbortController();
@@ -518,6 +519,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     this.#userInfo = {
       accountImage: syncInfo.accountImage,
       accountFullName: syncInfo.accountFullName,
+      accountGivenName: syncInfo.accountGivenName,
     };
 
     if (UI.ActionRegistry.ActionRegistry.instance().hasAction('elements.toggle-element-search')) {
@@ -821,6 +823,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       this.#userInfo = {
         accountImage: syncInfo.accountImage,
         accountFullName: syncInfo.accountFullName,
+        accountGivenName: syncInfo.accountGivenName,
       };
       this.requestUpdate();
     }

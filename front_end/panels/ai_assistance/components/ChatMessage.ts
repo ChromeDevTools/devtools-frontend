@@ -250,7 +250,7 @@ export interface MessageInput {
   isReadOnly: boolean;
   isLastMessage: boolean;
   canShowFeedbackForm: boolean;
-  userInfo: Pick<Host.InspectorFrontendHostAPI.SyncInformation, 'accountImage'|'accountFullName'>;
+  userInfo: Pick<Host.InspectorFrontendHostAPI.SyncInformation, 'accountImage'|'accountFullName'|'accountGivenName'>;
   markdownRenderer: MarkdownLitRenderer;
   onSuggestionClick: (suggestion: string) => void;
   onFeedbackSubmit: (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void;
@@ -260,7 +260,8 @@ export interface MessageInput {
 export const DEFAULT_VIEW = (input: ChatMessageViewInput, output: ViewOutput, target: HTMLElement): void => {
   const message = input.message;
   if (message.entity === ChatMessageEntity.USER) {
-    const name = input.userInfo.accountFullName || lockedString(UIStringsNotTranslate.you);
+    const givenName = AiAssistanceModel.AiUtils.isGeminiBranding() ? input.userInfo.accountGivenName : '';
+    const name = givenName || input.userInfo.accountFullName || lockedString(UIStringsNotTranslate.you);
     const image = input.userInfo.accountImage ?
         html`<img src="data:image/png;base64, ${input.userInfo.accountImage}" alt=${
             UIStringsNotTranslate.accountAvatar} />` :
@@ -748,7 +749,8 @@ export class ChatMessage extends UI.Widget.Widget {
   isReadOnly = false;
   canShowFeedbackForm = false;
   isLastMessage = false;
-  userInfo: Pick<Host.InspectorFrontendHostAPI.SyncInformation, 'accountImage'|'accountFullName'> = {};
+  userInfo:
+      Pick<Host.InspectorFrontendHostAPI.SyncInformation, 'accountImage'|'accountFullName'|'accountGivenName'> = {};
   markdownRenderer!: MarkdownLitRenderer;
   onSuggestionClick: (suggestion: string) => void = () => {};
   onFeedbackSubmit:

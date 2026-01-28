@@ -62,7 +62,7 @@ export interface Props {
   selectedContext: AiAssistanceModel.AiAgent.ConversationContext<unknown>|null;
   isLoading: boolean;
   canShowFeedbackForm: boolean;
-  userInfo: Pick<Host.InspectorFrontendHostAPI.SyncInformation, 'accountImage'|'accountFullName'>;
+  userInfo: Pick<Host.InspectorFrontendHostAPI.SyncInformation, 'accountImage'|'accountGivenName'>;
   conversationType: AiAssistanceModel.AiHistoryStorage.ConversationType;
   isReadOnly: boolean;
   blockedByCrossOrigin: boolean;
@@ -78,7 +78,7 @@ export interface Props {
 }
 
 interface ChatWidgetInput extends Props {
-  accountName: string;
+  accountGivenName: string;
   handleScroll: (ev: Event) => void;
   handleSuggestionClick: (title: string) => void;
   handleMessageContainerRef: (el: Element|undefined) => void;
@@ -133,7 +133,7 @@ const DEFAULT_VIEW: View = (input, output, target) => {
                 </div>
                 ${AiAssistanceModel.AiUtils.isGeminiBranding() ?
                   html`
-                    <h1 class='greeting'>Hello, ${input.accountName}</h1>
+                    <h1 class='greeting'>Hello${input.accountGivenName ? `, ${input.accountGivenName}` : ''}</h1>
                     <h1>${lockedString(UIStringsNotTranslate.emptyStateTextGemini)}</h1>
                   ` : html`<h1>${lockedString(UIStringsNotTranslate.emptyStateText)}</h1>`
                 }
@@ -323,8 +323,7 @@ export class ChatView extends HTMLElement {
     this.#view(
         {
           ...this.#props,
-          // TODO(b/468206227): This needs to be a first name.
-          accountName: this.#props.userInfo.accountFullName ?? '',
+          accountGivenName: this.#props.userInfo.accountGivenName ?? '',
           handleScroll: this.#handleScroll,
           handleSuggestionClick: this.#handleSuggestionClick,
           handleMessageContainerRef: this.#handleMessageContainerRef,

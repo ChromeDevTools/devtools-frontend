@@ -155,6 +155,7 @@ devtools_entrypoint("meta") {
     "../../core/root:bundle",
     "../../core/sdk:bundle",
     "../../models/breakpoints:bundle",
+    "../../models/stack_trace:bundle",
     "../../models/workspace:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/object_ui:bundle",

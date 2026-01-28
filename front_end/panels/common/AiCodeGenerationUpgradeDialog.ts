@@ -55,9 +55,10 @@ const UIStringsNotTranslate = {
 const lockedString = i18n.i18n.lockedString;
 
 export class AiCodeGenerationUpgradeDialog {
-  static show({noLogging}: {noLogging: boolean}): void {
+  static show({noLogging}: {noLogging: boolean}): Promise<boolean> {
     const dialog = new UI.Dialog.Dialog();
     dialog.setAriaLabel(lockedString(UIStringsNotTranslate.codeCompletionJustGotBetter));
+    const result = Promise.withResolvers<boolean>();
     // clang-format off
     Lit.render(html`
       <div class="ai-code-generation-upgrade-dialog">
@@ -96,7 +97,8 @@ export class AiCodeGenerationUpgradeDialog {
           <div class="right-buttons">
             <devtools-button
               @click=${() => {
-                void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
+                  result.resolve(true);
+                  void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
                 }}
               jslogcontext="ai-code-generation-upgrade-dialog.manage-in-settings"
               .variant=${Buttons.Button.Variant.OUTLINED}
@@ -105,6 +107,7 @@ export class AiCodeGenerationUpgradeDialog {
             </devtools-button>
             <devtools-button
               @click=${() => {
+                  result.resolve(true);
                   dialog.hide();
                 }}
               jslogcontext="ai-code-generation-upgrade-dialog.continue"
@@ -117,13 +120,18 @@ export class AiCodeGenerationUpgradeDialog {
     // clang-format on
 
     dialog.setOutsideClickCallback(ev => {
-      ev.consume(true);  // true = preventDefault()
-      dialog.hide();
+      ev.consume(true);
+    });
+
+    dialog.setOnHideCallback(() => {
+      result.resolve(false);
     });
 
     dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.MEASURE_CONTENT);
     dialog.setDimmed(true);
     dialog.show();
+
+    return result.promise;
   }
 
   private constructor() {

@@ -328,7 +328,6 @@ export class MainImpl {
     return {syncedStorage, globalStorage, localStorage};
   }
 
-  // eslint-disable-next-line no-unused-private-class-members
   #migrateValueFromLegacyToHostExperiment(
       legacyExperimentName: Root.ExperimentNames.ExperimentName, hostExperiment: Root.Runtime.HostExperiment): void {
     const value = Root.Runtime.experiments.getValueFromStorage(legacyExperimentName);
@@ -345,9 +344,19 @@ export class MainImpl {
     Root.Runtime.experiments.register(
         Root.ExperimentNames.ExperimentName.CAPTURE_NODE_CREATION_STACKS, 'Capture node creation stacks');
     Root.Runtime.experiments.register(Root.ExperimentNames.ExperimentName.LIVE_HEAP_PROFILE, 'Live heap profile');
-    Root.Runtime.experiments.register(
-        Root.ExperimentNames.ExperimentName.PROTOCOL_MONITOR, 'Protocol Monitor',
-        'https://developer.chrome.com/blog/new-in-devtools-92/#protocol-monitor');
+
+    const enableProtocolMonitor = (Root.Runtime.hostConfig.devToolsProtocolMonitor?.enabled ?? false) ||
+        Boolean(Root.Runtime.Runtime.queryParam('isChromeForTesting'));
+    const protocolMonitorExperiment = Root.Runtime.experiments.registerHostExperiment({
+      name: Root.ExperimentNames.ExperimentName.PROTOCOL_MONITOR,
+      title: 'Protocol Monitor',
+      aboutFlag: 'devtools-protocol-monitor',
+      isEnabled: enableProtocolMonitor,
+      docLink: 'https://developer.chrome.com/blog/new-in-devtools-92/#protocol-monitor' as
+          Platform.DevToolsPath.UrlString,
+    });
+    this.#migrateValueFromLegacyToHostExperiment(
+        Root.ExperimentNames.ExperimentName.PROTOCOL_MONITOR, protocolMonitorExperiment);
     Root.Runtime.experiments.register(
         Root.ExperimentNames.ExperimentName.SAMPLING_HEAP_PROFILER_TIMELINE, 'Sampling heap profiler timeline');
     Root.Runtime.experiments.register(
@@ -416,9 +425,6 @@ export class MainImpl {
     Root.Runtime.experiments.enableExperimentsByDefault([
       Root.ExperimentNames.ExperimentName.FULL_ACCESSIBILITY_TREE,
       Root.ExperimentNames.ExperimentName.USE_SOURCE_MAP_SCOPES,
-      ...(Root.Runtime.Runtime.queryParam('isChromeForTesting') ?
-              [Root.ExperimentNames.ExperimentName.PROTOCOL_MONITOR] :
-              []),
     ]);
 
     Root.Runtime.experiments.cleanUpStaleExperiments();

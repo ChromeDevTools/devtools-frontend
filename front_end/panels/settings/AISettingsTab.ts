@@ -482,7 +482,8 @@ export class AISettingsTab extends UI.Widget.VBox {
 
     if (this.#aiAssistanceSetting) {
       const aiAssistanceData: AiSettingParams = {
-        settingName: i18n.i18n.lockedString('AI assistance'),
+        settingName: i18n.i18n.lockedString(
+            AiAssistanceModel.AiUtils.isGeminiBranding() ? 'Gemini in Chrome DevTools' : 'AI assistance'),
         iconName: AiAssistanceModel.AiUtils.getIconName(),
         settingDescription: this.#getAiAssistanceSettingDescription(),
         enableSettingText: i18nString(UIStrings.enableAiAssistance),

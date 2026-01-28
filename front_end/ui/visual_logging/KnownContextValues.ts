@@ -1190,6 +1190,7 @@ export const knownContextValues = new Set([
   'dblclick',
   'de',
   'debug',
+  'debug-with-ai',
   'debugger',
   'debugger-paused',
   'debugger.breakpoint-input-window',

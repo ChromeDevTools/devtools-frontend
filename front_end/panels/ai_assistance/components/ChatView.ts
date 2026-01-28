@@ -134,7 +134,7 @@ const DEFAULT_VIEW: View = (input, output, target) => {
                 ${AiAssistanceModel.AiUtils.isGeminiBranding() ?
                   html`
                     <h1 class='greeting'>Hello${input.accountGivenName ? `, ${input.accountGivenName}` : ''}</h1>
-                    <h1>${lockedString(UIStringsNotTranslate.emptyStateTextGemini)}</h1>
+                    <p class='cta'>${lockedString(UIStringsNotTranslate.emptyStateTextGemini)}</p>
                   ` : html`<h1>${lockedString(UIStringsNotTranslate.emptyStateText)}</h1>`
                 }
               </div>

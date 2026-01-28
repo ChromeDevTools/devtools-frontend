@@ -79,7 +79,8 @@ export class DebuggableFrameFlavor implements DebuggableFrame {
   readonly missingDebugInfo?: MissingDebugInfo;
   readonly sdkFrame: SDK.DebuggerModel.CallFrame;
 
-  private constructor(frame: DebuggableFrame) {
+  /** Use the static {@link for}. Only public to satisfy the `setFlavor` Ctor type  */
+  constructor(frame: DebuggableFrame) {
     this.url = frame.url;
     this.uiSourceCode = frame.uiSourceCode;
     this.name = frame.name;

@@ -86,6 +86,7 @@ devtools_ui_module("sources") {
     "../../models/issues_manager:bundle",
     "../../models/persistence:bundle",
     "../../models/source_map_scopes:bundle",
+    "../../models/stack_trace:bundle",
     "../../models/text_utils:bundle",
     "../../models/workspace:bundle",
     "../../models/workspace_diff:bundle",

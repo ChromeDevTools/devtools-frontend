@@ -38,6 +38,7 @@ import type * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as SourceMapScopes from '../../models/source_map_scopes/source_map_scopes.js';
+import * as StackTrace from '../../models/stack_trace/stack_trace.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import {Icon} from '../../ui/kit/kit.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -243,6 +244,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
       this.showMoreMessageElement.classList.add('hidden');
       this.items.replaceAll([]);
       UI.Context.Context.instance().setFlavor(SDK.DebuggerModel.CallFrame, null);
+      UI.Context.Context.instance().setFlavor(StackTrace.StackTrace.DebuggableFrameFlavor, null);
       return;
     }
 
@@ -432,6 +434,14 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
     if (debuggerCallFrame && oldItem !== item) {
       debuggerCallFrame.debuggerModel.setSelectedCallFrame(debuggerCallFrame);
       UI.Context.Context.instance().setFlavor(SDK.DebuggerModel.CallFrame, debuggerCallFrame);
+      UI.Context.Context.instance().setFlavor(
+          StackTrace.StackTrace.DebuggableFrameFlavor,
+          StackTrace.StackTrace.DebuggableFrameFlavor.for({
+                                                            uiSourceCode: item.uiLocation?.uiSourceCode,
+                                                            line: uiLocation.lineNumber,
+                                                            column: uiLocation.columnNumber ?? -1,
+                                                            sdkFrame: debuggerCallFrame,
+                                                          }));
       if (oldItem) {
         this.refreshItem(oldItem);
       }

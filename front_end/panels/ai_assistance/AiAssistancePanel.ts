@@ -44,10 +44,6 @@ import {MarkdownRendererWithCodeBlock} from './components/MarkdownRendererWithCo
 import {PerformanceAgentMarkdownRenderer} from './components/PerformanceAgentMarkdownRenderer.js';
 import {isAiAssistancePatchingEnabled} from './PatchWidget.js';
 
-// FIXME: this export is temporary to avoid rewriting tests.
-export {ChatMessageEntity} from './components/ChatMessage.js';
-export type {AnswerPart, ModelChatMessage, StepPart} from './components/ChatMessage.js';
-
 const {html} = Lit;
 
 const AI_ASSISTANCE_SEND_FEEDBACK = 'https://crbug.com/364805393' as Platform.DevToolsPath.UrlString;

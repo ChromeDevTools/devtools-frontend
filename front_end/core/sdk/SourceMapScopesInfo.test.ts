@@ -1006,4 +1006,14 @@ describe('SourceMapScopesInfo', () => {
       assert.isTrue(scopeInfo.hasInlinedFrames(0, 18));
     });
   });
+
+  describe('isEmpty', () => {
+    it('returns true if all original scopes are null', () => {
+      const scopeInfo =
+          new SourceMapScopesInfo(sinon.createStubInstance(SDK.SourceMap.SourceMap), {scopes: [], ranges: []});
+      scopeInfo.addOriginalScopes([null, null]);
+
+      assert.isTrue(scopeInfo.isEmpty());
+    });
+  });
 });

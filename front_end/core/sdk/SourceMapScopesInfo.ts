@@ -190,7 +190,8 @@ export class SourceMapScopesInfo {
   }
 
   isEmpty(): boolean {
-    return !this.#originalScopes.length && !this.#generatedRanges.length;
+    const noScopes = this.#originalScopes.every(scope => scope === null);
+    return noScopes && !this.#generatedRanges.length;
   }
 
   addOriginalScopesAtIndex(sourceIdx: number, scope: ScopesCodec.OriginalScope): void {

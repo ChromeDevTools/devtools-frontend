@@ -3048,7 +3048,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    */
   // If moved update release-please config
   // x-release-please-start-version
-  const packageVersion = '24.36.0';
+  const packageVersion = '24.36.1';
   // x-release-please-end
 
   /**
@@ -22298,6 +22298,8 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   var _targetsIdsForInit = /*#__PURE__*/new WeakMap();
   var _initialAttachDone = /*#__PURE__*/new WeakMap();
   var _TargetManager_brand = /*#__PURE__*/new WeakSet();
+  var _silentDetach = /*#__PURE__*/new WeakMap();
+  var _getParentTarget = /*#__PURE__*/new WeakMap();
   var _onSessionDetached = /*#__PURE__*/new WeakMap();
   var _onTargetCreated = /*#__PURE__*/new WeakMap();
   var _onTargetDestroyed = /*#__PURE__*/new WeakMap();
@@ -22352,6 +22354,17 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       // done. It indicates whethere we are running the initial auto-attach step or
       // if we are handling targets after that.
       _classPrivateFieldInitSpec(this, _initialAttachDone, false);
+      _classPrivateFieldInitSpec(this, _silentDetach, async (session, parentSession) => {
+        await session.send('Runtime.runIfWaitingForDebugger').catch(debugError);
+        // We don't use `session.detach()` because that dispatches all commands on
+        // the connection instead of the parent session.
+        await parentSession.send('Target.detachFromTarget', {
+          sessionId: session.id()
+        }).catch(debugError);
+      });
+      _classPrivateFieldInitSpec(this, _getParentTarget, parentSession => {
+        return parentSession instanceof CdpCDPSession ? parentSession.target() : null;
+      });
       _classPrivateFieldInitSpec(this, _onSessionDetached, session => {
         _assertClassBrand(_TargetManager_brand, this, _removeAttachmentListeners).call(this, session);
       });
@@ -22374,7 +22387,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         const targetInfo = _classPrivateFieldGet(_discoveredTargetsByTargetId, this).get(event.targetId);
         _classPrivateFieldGet(_discoveredTargetsByTargetId, this).delete(event.targetId);
         _assertClassBrand(_TargetManager_brand, this, _finishInitializationIfReady).call(this, event.targetId);
-        if (targetInfo?.type === 'service_worker' && _classPrivateFieldGet(_attachedTargetsByTargetId, this).has(event.targetId)) {
+        if (targetInfo?.type === 'service_worker') {
           // Special case for service workers: report TargetGone event when
           // the worker is destroyed.
           const target = _classPrivateFieldGet(_attachedTargetsByTargetId, this).get(event.targetId);
@@ -22386,7 +22399,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       });
       _classPrivateFieldInitSpec(this, _onTargetInfoChanged, event => {
         _classPrivateFieldGet(_discoveredTargetsByTargetId, this).set(event.targetInfo.targetId, event.targetInfo);
-        if (_classPrivateFieldGet(_ignoredTargets, this).has(event.targetInfo.targetId) || !_classPrivateFieldGet(_attachedTargetsByTargetId, this).has(event.targetInfo.targetId) || !event.targetInfo.attached) {
+        if (_classPrivateFieldGet(_ignoredTargets, this).has(event.targetInfo.targetId) || !event.targetInfo.attached) {
           return;
         }
         const target = _classPrivateFieldGet(_attachedTargetsByTargetId, this).get(event.targetInfo.targetId);
@@ -22396,7 +22409,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         const previousURL = target.url();
         const wasInitialized = target._initializedDeferred.value() === exports.InitializationStatus.SUCCESS;
         if (isPageTargetBecomingPrimary(target, event.targetInfo)) {
-          const session = target?._session();
+          const session = target._session();
           assert(session, 'Target that is being activated is missing a CDPSession.');
           session.parentSession()?.emit(exports.CDPSessionEvent.Swapped, session);
         }
@@ -22415,14 +22428,6 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         if (!session) {
           throw new Error(`Session ${event.sessionId} was not created.`);
         }
-        const silentDetach = async () => {
-          await session.send('Runtime.runIfWaitingForDebugger').catch(debugError);
-          // We don't use `session.detach()` because that dispatches all commands on
-          // the connection instead of the parent session.
-          await parentSession.send('Target.detachFromTarget', {
-            sessionId: session.id()
-          }).catch(debugError);
-        };
         if (!_classPrivateFieldGet(_connection4, this).isAutoAttached(targetInfo.targetId)) {
           return;
         }
@@ -22434,7 +22439,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         // should determine if a target is auto-attached or not with the help of
         // CDP.
         if (targetInfo.type === 'service_worker') {
-          await silentDetach();
+          await _classPrivateFieldGet(_silentDetach, this).call(this, session, parentSession);
           if (_classPrivateFieldGet(_attachedTargetsByTargetId, this).has(targetInfo.targetId)) {
             return;
           }
@@ -22444,15 +22449,18 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
           this.emit("targetAvailable" /* TargetManagerEvent.TargetAvailable */, target);
           return;
         }
-        const isExistingTarget = _classPrivateFieldGet(_attachedTargetsByTargetId, this).has(targetInfo.targetId);
-        const target = isExistingTarget ? _classPrivateFieldGet(_attachedTargetsByTargetId, this).get(targetInfo.targetId) : _classPrivateFieldGet(_targetFactory, this).call(this, targetInfo, session, parentSession instanceof CdpCDPSession ? parentSession : undefined);
-        const parentTarget = parentSession instanceof CdpCDPSession ? parentSession.target() : null;
+        let target = _classPrivateFieldGet(_attachedTargetsByTargetId, this).get(targetInfo.targetId);
+        const isExistingTarget = target !== undefined;
+        if (!target) {
+          target = _classPrivateFieldGet(_targetFactory, this).call(this, targetInfo, session, parentSession instanceof CdpCDPSession ? parentSession : undefined);
+        }
+        const parentTarget = _classPrivateFieldGet(_getParentTarget, this).call(this, parentSession);
         if (_classPrivateFieldGet(_targetFilterCallback, this) && !_classPrivateFieldGet(_targetFilterCallback, this).call(this, target)) {
           _classPrivateFieldGet(_ignoredTargets, this).add(targetInfo.targetId);
           if (parentTarget?.type() === 'tab') {
             _assertClassBrand(_TargetManager_brand, this, _finishInitializationIfReady).call(this, parentTarget._targetId);
           }
-          await silentDetach();
+          await _classPrivateFieldGet(_silentDetach, this).call(this, session, parentSession);
           return;
         }
         if (_classPrivateFieldGet(_waitForInitiallyDiscoveredTargets, this) && event.targetInfo.type === 'tab' && !_classPrivateFieldGet(_initialAttachDone, this)) {
@@ -22461,7 +22469,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         _assertClassBrand(_TargetManager_brand, this, _setupAttachmentListeners).call(this, session);
         if (isExistingTarget) {
           session.setTarget(target);
-          _classPrivateFieldGet(_attachedTargetsBySessionId, this).set(session.id(), _classPrivateFieldGet(_attachedTargetsByTargetId, this).get(targetInfo.targetId));
+          _classPrivateFieldGet(_attachedTargetsBySessionId, this).set(session.id(), target);
         } else {
           target._initialize();
           _classPrivateFieldGet(_attachedTargetsByTargetId, this).set(targetInfo.targetId, target);
@@ -22490,7 +22498,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         if (!target) {
           return;
         }
-        if (parentSession instanceof CDPSession) {
+        if (parentSession instanceof CdpCDPSession) {
           parentSession.target()._removeChildTarget(target);
         }
         _classPrivateFieldGet(_attachedTargetsByTargetId, this).delete(target._targetId);
@@ -22567,8 +22575,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       session.off('Target.attachedToTarget', listener);
       _classPrivateFieldGet(_attachedToTargetListenersBySession, this).delete(session);
     }
-    if (_classPrivateFieldGet(_detachedFromTargetListenersBySession, this).has(session)) {
-      session.off('Target.detachedFromTarget', _classPrivateFieldGet(_detachedFromTargetListenersBySession, this).get(session));
+    const detachedListener = _classPrivateFieldGet(_detachedFromTargetListenersBySession, this).get(session);
+    if (detachedListener) {
+      session.off('Target.detachedFromTarget', detachedListener);
       _classPrivateFieldGet(_detachedFromTargetListenersBySession, this).delete(session);
     }
   }

@@ -204,8 +204,17 @@ export class UserMetrics {
     consoleInsightTeaserGenerated(timeInMilliseconds) {
         InspectorFrontendHostInstance.recordPerformanceHistogram('DevTools.Insights.TeaserGenerationTime', timeInMilliseconds);
     }
+    consoleInsightTeaserGeneratedMedium(timeInMilliseconds) {
+        InspectorFrontendHostInstance.recordPerformanceHistogramMedium('DevTools.Insights.TeaserGenerationTimeMedium', timeInMilliseconds);
+    }
     consoleInsightTeaserFirstChunkGenerated(timeInMilliseconds) {
         InspectorFrontendHostInstance.recordPerformanceHistogram('DevTools.Insights.TeaserFirstChunkGenerationTime', timeInMilliseconds);
+    }
+    consoleInsightTeaserFirstChunkGeneratedMedium(timeInMilliseconds) {
+        InspectorFrontendHostInstance.recordPerformanceHistogramMedium('DevTools.Insights.TeaserFirstChunkGenerationTimeMedium', timeInMilliseconds);
+    }
+    consoleInsightTeaserChunkToEndMedium(timeInMilliseconds) {
+        InspectorFrontendHostInstance.recordPerformanceHistogramMedium('DevTools.Insights.TeaserChunkToEndMedium', timeInMilliseconds);
     }
     consoleInsightTeaserAbortedAfterFirstCharacter(timeInMilliseconds) {
         InspectorFrontendHostInstance.recordPerformanceHistogram('DevTools.Insights.TeaserAfterFirstCharacterAbortionTime', timeInMilliseconds);

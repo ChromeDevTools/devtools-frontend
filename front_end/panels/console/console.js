@@ -654,9 +654,18 @@ var format = (fmt, args) => {
   addStringToken(fmt);
   return { tokens, args: args.slice(argIndex) };
 };
+var cssEscapeRegex = (cssString) => {
+  return [...cssString].map((char) => {
+    const charCodes = new Set([char.toLowerCase(), char.toUpperCase()].map((c) => c.charCodeAt(0).toString(16)));
+    const charCodeRegex = [...charCodes].map((charCode) => `\\\\0{0,${6 - charCode.length}}${charCode}[ \\n\\t]?`).join("|");
+    return `\\\\?(?:${charCodeRegex}|${char})`;
+  }).join("");
+};
 var updateStyle = (currentStyle, styleToAdd) => {
   const ALLOWED_PROPERTY_PREFIXES = ["background", "border", "color", "font", "line", "margin", "padding", "text"];
-  const URL_REGEX = /url\([\'\"]?([^\)]*)/g;
+  const URL_REGEX = new RegExp(`(?=${cssEscapeRegex("url")}\\(['"]?([^\\)]*))`, "gi");
+  const IMAGESET_REGEX = new RegExp(`(?=(${cssEscapeRegex("image-set")}\\(.*))`, "gi");
+  const GOOD_IMAGESET_REGEX = /^image-set\((?:(?:(?:url|type)\("[^\\"]*"\)|[\d.]+(?:x|dpi|dpcm|dppx)),?\s*)+\)/i;
   currentStyle.clear();
   const buffer = document.createElement("span");
   buffer.setAttribute("style", styleToAdd);
@@ -665,6 +674,10 @@ var updateStyle = (currentStyle, styleToAdd) => {
       continue;
     }
     const value = buffer.style.getPropertyValue(property);
+    const imageSets = [...value.matchAll(IMAGESET_REGEX)];
+    if (imageSets.some((match) => !GOOD_IMAGESET_REGEX.test(match[1]))) {
+      continue;
+    }
     const potentialUrls = [...value.matchAll(URL_REGEX)].map((match) => match[1]);
     if (potentialUrls.some((potentialUrl) => !Common2.ParsedURL.schemeIs(potentialUrl, "data:"))) {
       continue;
@@ -4507,6 +4520,7 @@ var ConsoleInsightTeaser = class extends UI3.Widget.Widget {
     this.#startTime = performance.now();
     let teaserText = "";
     let firstChunkReceived = false;
+    let firstChunkTime = 0;
     try {
       for await (const chunk of this.#getOnDeviceInsight()) {
         teaserText += chunk;
@@ -4515,7 +4529,9 @@ var ConsoleInsightTeaser = class extends UI3.Widget.Widget {
         this.requestUpdate();
         if (!firstChunkReceived) {
           firstChunkReceived = true;
-          Host2.userMetrics.consoleInsightTeaserFirstChunkGenerated(performance.now() - this.#startTime);
+          firstChunkTime = performance.now();
+          Host2.userMetrics.consoleInsightTeaserFirstChunkGenerated(firstChunkTime - this.#startTime);
+          Host2.userMetrics.consoleInsightTeaserFirstChunkGeneratedMedium(firstChunkTime - this.#startTime);
         }
       }
     } catch (err) {
@@ -4533,6 +4549,8 @@ var ConsoleInsightTeaser = class extends UI3.Widget.Widget {
     clearTimeout(this.#timeoutId);
     const duration = performance.now() - this.#startTime;
     Host2.userMetrics.consoleInsightTeaserGenerated(duration);
+    Host2.userMetrics.consoleInsightTeaserGeneratedMedium(duration);
+    Host2.userMetrics.consoleInsightTeaserChunkToEndMedium(performance.now() - firstChunkTime);
     if (teaserText.length > 300) {
       Host2.userMetrics.consoleInsightLongTeaserGenerated(duration);
     } else {

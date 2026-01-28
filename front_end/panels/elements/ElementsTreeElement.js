@@ -961,6 +961,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         }
     }
     onbind() {
+        this.performUpdate();
         if (this.treeOutline && !this.isClosingTag()) {
             this.treeOutline.treeElementByNode.set(this.nodeInternal, this);
             this.nodeInternal.addEventListener(SDK.DOMModel.DOMNodeEvents.TOP_LAYER_INDEX_CHANGED, this.performUpdate, this);
@@ -975,6 +976,46 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         if (this.editing) {
             this.editing.cancel();
         }
+        // Update the element to clean up adorner registrations with the
+        // ElementsPanel.
+        // We do not change the ElementsTreeElement state in case the
+        // element is bound again.
+        DEFAULT_VIEW({
+            containerAdornerActive: false,
+            showAdAdorner: false,
+            showContainerAdorner: false,
+            containerType: this.#layout?.containerType,
+            showFlexAdorner: false,
+            flexAdornerActive: false,
+            showGridAdorner: false,
+            showGridLanesAdorner: false,
+            showMediaAdorner: false,
+            showPopoverAdorner: false,
+            showTopLayerAdorner: false,
+            gridAdornerActive: false,
+            popoverAdornerActive: false,
+            isSubgrid: false,
+            showViewSourceAdorner: false,
+            showScrollAdorner: false,
+            showScrollSnapAdorner: false,
+            scrollSnapAdornerActive: false,
+            showSlotAdorner: false,
+            showStartingStyleAdorner: false,
+            startingStyleAdornerActive: false,
+            nodeInfo: this.#nodeInfo,
+            onStartingStyleAdornerClick: () => { },
+            onSlotAdornerClick: () => { },
+            topLayerIndex: -1,
+            onViewSourceAdornerClick: () => { },
+            onGutterClick: () => { },
+            onContainerAdornerClick: () => { },
+            onFlexAdornerClick: () => { },
+            onGridAdornerClick: () => { },
+            onMediaAdornerClick: () => { },
+            onPopoverAdornerClick: () => { },
+            onScrollSnapAdornerClick: () => { },
+            onTopLayerAdornerClick: () => { },
+        }, this, this.listItemElement);
         if (this.treeOutline && this.treeOutline.treeElementByNode.get(this.nodeInternal) === this) {
             this.treeOutline.treeElementByNode.delete(this.nodeInternal);
         }

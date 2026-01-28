@@ -68,6 +68,7 @@ export declare class InspectorFrontendHostStub implements InspectorFrontendHostA
     recordCountHistogram(histogramName: string, sample: number, min: number, exclusiveMax: number, bucketSize: number): void;
     recordEnumeratedHistogram(actionName: EnumeratedHistogram, actionCode: number, _bucketSize: number): void;
     recordPerformanceHistogram(histogramName: string, duration: number): void;
+    recordPerformanceHistogramMedium(histogramName: string, duration: number): void;
     recordUserMetricsAction(_umaName: string): void;
     recordNewBadgeUsage(_featureName: string): void;
     connectAutomaticFileSystem(_fileSystemPath: Platform.DevToolsPath.RawPathString, _fileSystemUUID: string, _addIfMissing: boolean, callback: (result: {
@@ -145,4 +146,5 @@ export declare class InspectorFrontendHostStub implements InspectorFrontendHostA
     recordKeyDown(_event: KeyDownEvent): void;
     recordSettingAccess(_event: SettingAccessEvent): void;
     recordFunctionCall(_event: FunctionCallEvent): void;
+    setChromeFlag(_flagName: string, _value: boolean): void;
 }

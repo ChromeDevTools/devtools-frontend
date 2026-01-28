@@ -43,18 +43,26 @@ export interface Option {
 }
 export declare class ExperimentsSupport {
     #private;
-    allConfigurableExperiments(): Experiment[];
+    allConfigurableExperiments(): Array<Experiment | HostExperiment>;
+    registerHostExperiment(params: {
+        name: ExperimentName;
+        title: string;
+        aboutFlag: string;
+        isEnabled: boolean;
+        docLink?: Platform.DevToolsPath.UrlString;
+        readonly feedbackLink?: Platform.DevToolsPath.UrlString;
+    }): HostExperiment;
     register(experimentName: ExperimentName, experimentTitle: string, docLink?: string, feedbackLink?: string): void;
     isEnabled(experimentName: ExperimentName): boolean;
+    getValueFromStorage(experimentName: ExperimentName): boolean | undefined;
     setEnabled(experimentName: ExperimentName, enabled: boolean): void;
-    enableExperimentsTransiently(experimentNames: ExperimentName[]): void;
     enableExperimentsByDefault(experimentNames: ExperimentName[]): void;
     setServerEnabledExperiments(experiments: string[]): void;
     enableForTest(experimentName: ExperimentName): void;
     disableForTest(experimentName: ExperimentName): void;
+    isEnabledForTest(experimentName: ExperimentName): boolean;
     clearForTest(): void;
     cleanUpStaleExperiments(): void;
-    private checkExperiment;
 }
 /**
  * @deprecated Experiments should not be used anymore, instead use base::Feature.
@@ -67,6 +75,25 @@ export declare class Experiment {
     docLink?: Platform.DevToolsPath.UrlString;
     readonly feedbackLink?: Platform.DevToolsPath.UrlString;
     constructor(experiments: ExperimentsSupport, name: ExperimentName, title: string, docLink: Platform.DevToolsPath.UrlString, feedbackLink: Platform.DevToolsPath.UrlString);
+    isEnabled(): boolean;
+    setEnabled(enabled: boolean): void;
+}
+export declare class HostExperiment {
+    #private;
+    name: ExperimentName;
+    title: string;
+    aboutFlag: string;
+    docLink?: Platform.DevToolsPath.UrlString;
+    readonly feedbackLink?: Platform.DevToolsPath.UrlString;
+    constructor(params: {
+        name: ExperimentName;
+        title: string;
+        experiments: ExperimentsSupport;
+        aboutFlag: string;
+        isEnabled: boolean;
+        docLink?: Platform.DevToolsPath.UrlString;
+        feedbackLink?: Platform.DevToolsPath.UrlString;
+    });
     isEnabled(): boolean;
     setEnabled(enabled: boolean): void;
 }
@@ -225,6 +252,9 @@ interface ConsoleInsightsTeasers {
     enabled: boolean;
     allowWithoutGpu: boolean;
 }
+interface DevToolsProtocolMonitor {
+    enabled: boolean;
+}
 /**
  * The host configuration that we expect from the DevTools back-end.
  *
@@ -276,6 +306,7 @@ export type HostConfig = Platform.TypeScriptUtilities.RecursivePartial<{
     devToolsAiAssistanceContextSelectionAgent: HostConfigAiAssistanceContextSelectionAgent;
     devToolsConsoleInsightsTeasers: ConsoleInsightsTeasers;
     devToolsGeminiRebranding: HostConfigGeminiRebranding;
+    devToolsProtocolMonitor: DevToolsProtocolMonitor;
 }>;
 /**
  * The host configuration for this DevTools instance.

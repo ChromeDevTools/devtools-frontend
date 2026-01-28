@@ -1374,7 +1374,6 @@ function getIssueCode2(details) {
     case "LocalNetworkAccessPermissionDenied":
       return "CorsIssue::LocalNetworkAccessPermissionDenied";
   }
-  return null;
 }
 var CorsIssue = class _CorsIssue extends Issue {
   constructor(issueDetails, issuesModel, issueId) {

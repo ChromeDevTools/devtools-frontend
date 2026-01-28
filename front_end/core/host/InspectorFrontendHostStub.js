@@ -178,6 +178,12 @@ export class InspectorFrontendHostStub {
         }
         this.recordedPerformanceHistograms.push({ histogramName, duration });
     }
+    recordPerformanceHistogramMedium(histogramName, duration) {
+        if (this.recordedPerformanceHistograms.length >= MAX_RECORDED_HISTOGRAMS_SIZE) {
+            this.recordedPerformanceHistograms.shift();
+        }
+        this.recordedPerformanceHistograms.push({ histogramName, duration });
+    }
     recordUserMetricsAction(_umaName) {
     }
     recordNewBadgeUsage(_featureName) {
@@ -426,6 +432,8 @@ export class InspectorFrontendHostStub {
     recordSettingAccess(_event) {
     }
     recordFunctionCall(_event) {
+    }
+    setChromeFlag(_flagName, _value) {
     }
 }
 //# sourceMappingURL=InspectorFrontendHostStub.js.map

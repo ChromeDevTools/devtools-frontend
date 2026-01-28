@@ -215,6 +215,7 @@ export class StylingAgent extends AiAgent {
         this.declareFunction('getStyles', {
             description: `Get computed and source styles for one or multiple elements on the inspected page for multiple elements at once by uid.
 
+**CRITICAL** An element uid is a number, not a selector.
 **CRITICAL** Use selectors to refer to elements in the text output. Do not use uids.
 **CRITICAL** Always provide the explanation argument to explain what and why you query.`,
             parameters: {
@@ -229,8 +230,8 @@ export class StylingAgent extends AiAgent {
                     },
                     elements: {
                         type: 5 /* Host.AidaClient.ParametersTypes.ARRAY */,
-                        description: 'A list of element uids to get data for',
-                        items: { type: 1 /* Host.AidaClient.ParametersTypes.STRING */, description: `An element uid.` },
+                        description: 'A list of element uids to get data for. These are numbers, not selectors.',
+                        items: { type: 3 /* Host.AidaClient.ParametersTypes.INTEGER */, description: `An element uid.` },
                         nullable: false,
                     },
                     styleProperties: {

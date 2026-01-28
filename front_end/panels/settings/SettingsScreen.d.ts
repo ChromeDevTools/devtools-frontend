@@ -52,8 +52,8 @@ export declare class ExperimentsSettingsTab extends UI.Widget.VBox implements Se
 export declare class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
     handleAction(_context: UI.Context.Context, actionId: string): boolean;
 }
-export declare class Revealer implements Common.Revealer.Revealer<Root.Runtime.Experiment | Common.Settings.Setting<unknown>> {
-    reveal(object: Root.Runtime.Experiment | Common.Settings.Setting<unknown>): Promise<void>;
+export declare class Revealer implements Common.Revealer.Revealer<Root.Runtime.Experiment | Root.Runtime.HostExperiment | Common.Settings.Setting<unknown>> {
+    reveal(object: Root.Runtime.Experiment | Root.Runtime.HostExperiment | Common.Settings.Setting<unknown>): Promise<void>;
 }
 export interface ShowSettingsScreenOptions {
     name?: string;

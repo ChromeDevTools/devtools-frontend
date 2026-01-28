@@ -686,6 +686,14 @@ var MainImpl = class {
     const globalStorage = new Common2.Settings.SettingsStorage(prefs, hostUnsyncedStorage, storagePrefix);
     return { syncedStorage, globalStorage, localStorage };
   }
+  // eslint-disable-next-line no-unused-private-class-members
+  #migrateValueFromLegacyToHostExperiment(legacyExperimentName, hostExperiment) {
+    const value = Root2.Runtime.experiments.getValueFromStorage(legacyExperimentName);
+    if (value !== void 0 && hostExperiment.aboutFlag) {
+      hostExperiment.setEnabled(value);
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.setChromeFlag(hostExperiment.aboutFlag, value);
+    }
+  }
   #initializeExperiments() {
     Root2.Runtime.experiments.register(Root2.ExperimentNames.ExperimentName.CAPTURE_NODE_CREATION_STACKS, "Capture node creation stacks");
     Root2.Runtime.experiments.register(Root2.ExperimentNames.ExperimentName.LIVE_HEAP_PROFILE, "Live heap profile");
@@ -716,7 +724,6 @@ var MainImpl = class {
     if (enabledExperiments) {
       Root2.Runtime.experiments.setServerEnabledExperiments(enabledExperiments.split(";"));
     }
-    Root2.Runtime.experiments.enableExperimentsTransiently([]);
     if (Host.InspectorFrontendHost.isUnderTest()) {
       const testParam = Root2.Runtime.Runtime.queryParam("test");
       if (testParam?.includes("live-line-level-heap-profile.js")) {

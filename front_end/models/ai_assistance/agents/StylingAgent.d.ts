@@ -46,7 +46,7 @@ export declare class StylingAgent extends AiAgent<SDK.DOMModel.DOMNode> {
         canceled: boolean;
     }>;
     static describeElement(element: SDK.DOMModel.DOMNode): Promise<string>;
-    getStyles(elements: string[], properties: string[]): Promise<FunctionCallHandlerResult<unknown>>;
+    getStyles(elements: number[], properties: string[]): Promise<FunctionCallHandlerResult<unknown>>;
     executeAction(action: string, options?: FunctionHandlerOptions): Promise<FunctionCallHandlerResult<unknown>>;
     addElementAnnotation(elementId: string, annotationMessage: string): Promise<FunctionCallHandlerResult<unknown>>;
     handleContextDetails(selectedElement: ConversationContext<SDK.DOMModel.DOMNode> | null): AsyncGenerator<ContextResponse, void, void>;

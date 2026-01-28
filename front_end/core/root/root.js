@@ -84,6 +84,7 @@ __export(Runtime_exports, {
   GdpProfilesEnterprisePolicyValue: () => GdpProfilesEnterprisePolicyValue,
   GenAiEnterprisePolicyValue: () => GenAiEnterprisePolicyValue,
   HostConfigFreestylerExecutionMode: () => HostConfigFreestylerExecutionMode,
+  HostExperiment: () => HostExperiment,
   Runtime: () => Runtime,
   conditions: () => conditions,
   experiments: () => experiments,
@@ -204,85 +205,112 @@ var Runtime = class _Runtime {
 };
 var ExperimentsSupport = class {
   #experiments = [];
+  #hostExperiments = /* @__PURE__ */ new Map();
   #experimentNames = /* @__PURE__ */ new Set();
-  #enabledTransiently = /* @__PURE__ */ new Set();
+  #enabledForTests = /* @__PURE__ */ new Set();
   #enabledByDefault = /* @__PURE__ */ new Set();
   #serverEnabled = /* @__PURE__ */ new Set();
   #storage = new ExperimentStorage();
   allConfigurableExperiments() {
-    const result = [];
-    for (const experiment of this.#experiments) {
-      if (!this.#enabledTransiently.has(experiment.name)) {
-        result.push(experiment);
-      }
+    return [...this.#experiments, ...this.#hostExperiments.values()];
+  }
+  registerHostExperiment(params) {
+    if (this.#isHostExperiment(params.name) || this.#isExperiment(params.name)) {
+      throw new Error(`Duplicate registration of experiment '${params.name}'`);
     }
-    return result;
+    const hostExperiment = new HostExperiment({ ...params, experiments: this });
+    this.#hostExperiments.set(params.name, hostExperiment);
+    return hostExperiment;
   }
   register(experimentName, experimentTitle, docLink, feedbackLink) {
-    if (this.#experimentNames.has(experimentName)) {
+    if (this.#isHostExperiment(experimentName) || this.#isExperiment(experimentName)) {
       throw new Error(`Duplicate registration of experiment '${experimentName}'`);
     }
     this.#experimentNames.add(experimentName);
     this.#experiments.push(new Experiment(this, experimentName, experimentTitle, docLink ?? Platform.DevToolsPath.EmptyUrlString, feedbackLink ?? Platform.DevToolsPath.EmptyUrlString));
   }
   isEnabled(experimentName) {
-    this.checkExperiment(experimentName);
-    if (this.#storage.get(experimentName) === false) {
-      return false;
+    if (this.#isHostExperiment(experimentName)) {
+      return this.#enabledForTests.has(experimentName) || (this.#hostExperiments.get(experimentName)?.isEnabled() ?? false);
     }
-    if (this.#enabledTransiently.has(experimentName) || this.#enabledByDefault.has(experimentName)) {
-      return true;
+    if (this.#isExperiment(experimentName)) {
+      if (this.#storage.get(experimentName) === false) {
+        return false;
+      }
+      if (this.#enabledForTests.has(experimentName) || this.#enabledByDefault.has(experimentName)) {
+        return true;
+      }
+      if (this.#serverEnabled.has(experimentName)) {
+        return true;
+      }
+      return Boolean(this.#storage.get(experimentName));
     }
-    if (this.#serverEnabled.has(experimentName)) {
-      return true;
-    }
-    return Boolean(this.#storage.get(experimentName));
+    throw new Error(`Unknown experiment '${experimentName}'`);
+  }
+  getValueFromStorage(experimentName) {
+    return this.#storage.get(experimentName);
   }
   setEnabled(experimentName, enabled) {
-    this.checkExperiment(experimentName);
-    this.#storage.set(experimentName, enabled);
-  }
-  enableExperimentsTransiently(experimentNames) {
-    for (const experimentName of experimentNames) {
-      this.checkExperiment(experimentName);
-      this.#enabledTransiently.add(experimentName);
+    if (this.#isHostExperiment(experimentName)) {
+      this.#hostExperiments.get(experimentName)?.setEnabled(enabled);
+      return;
     }
+    if (this.#isExperiment(experimentName)) {
+      this.#storage.set(experimentName, enabled);
+      return;
+    }
+    throw new Error(`Unknown experiment '${experimentName}'`);
   }
+  // Only applicable to legacy experiments.
   enableExperimentsByDefault(experimentNames) {
     for (const experimentName of experimentNames) {
-      this.checkExperiment(experimentName);
+      if (!this.#isExperiment(experimentName)) {
+        throw new Error(`Unknown (legacy) experiment '${experimentName}'`);
+      }
       this.#enabledByDefault.add(experimentName);
     }
   }
+  // Only applicable to legacy experiments.
   setServerEnabledExperiments(experiments2) {
     for (const experiment of experiments2) {
       const experimentName = experiment;
-      this.checkExperiment(experimentName);
+      if (!this.#isExperiment(experimentName)) {
+        throw new Error(`Unknown (legacy) experiment '${experimentName}'`);
+      }
       this.#serverEnabled.add(experimentName);
     }
   }
   enableForTest(experimentName) {
-    this.checkExperiment(experimentName);
-    this.#enabledTransiently.add(experimentName);
+    if (!this.#isHostExperiment(experimentName) && !this.#isExperiment(experimentName)) {
+      throw new Error(`Unknown experiment '${experimentName}'`);
+    }
+    this.#enabledForTests.add(experimentName);
   }
   disableForTest(experimentName) {
-    this.checkExperiment(experimentName);
-    this.#enabledTransiently.delete(experimentName);
+    if (!this.#isHostExperiment(experimentName) && !this.#isExperiment(experimentName)) {
+      throw new Error(`Unknown experiment '${experimentName}'`);
+    }
+    this.#enabledForTests.delete(experimentName);
+  }
+  isEnabledForTest(experimentName) {
+    return this.#enabledForTests.has(experimentName);
   }
   clearForTest() {
     this.#experiments = [];
+    this.#hostExperiments.clear();
     this.#experimentNames.clear();
-    this.#enabledTransiently.clear();
+    this.#enabledForTests.clear();
     this.#enabledByDefault.clear();
     this.#serverEnabled.clear();
   }
   cleanUpStaleExperiments() {
     this.#storage.cleanUpStaleExperiments(this.#experimentNames);
   }
-  checkExperiment(experimentName) {
-    if (!this.#experimentNames.has(experimentName)) {
-      throw new Error(`Unknown experiment '${experimentName}'`);
-    }
+  #isHostExperiment(experimentName) {
+    return this.#hostExperiments.has(experimentName);
+  }
+  #isExperiment(experimentName) {
+    return this.#experimentNames.has(experimentName);
   }
 };
 var ExperimentStorage = class {
@@ -340,6 +368,32 @@ var Experiment = class {
   }
   setEnabled(enabled) {
     this.#experiments.setEnabled(this.name, enabled);
+  }
+};
+var HostExperiment = class {
+  name;
+  title;
+  #experiments;
+  // This is the name of the corresponding Chromium flag (in chrome/browser/about_flags.cc).
+  // It is NOT the the name of the corresponding Chromium `base::Feature`.
+  aboutFlag;
+  #isEnabled;
+  docLink;
+  feedbackLink;
+  constructor(params) {
+    this.name = params.name;
+    this.title = params.title;
+    this.#experiments = params.experiments;
+    this.aboutFlag = params.aboutFlag;
+    this.#isEnabled = params.isEnabled;
+    this.docLink = params.docLink;
+    this.feedbackLink = params.feedbackLink;
+  }
+  isEnabled() {
+    return this.#experiments.isEnabledForTest(this.name) || this.#isEnabled;
+  }
+  setEnabled(enabled) {
+    this.#isEnabled = enabled;
   }
 };
 var experiments = new ExperimentsSupport();

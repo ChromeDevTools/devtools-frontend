@@ -90,7 +90,7 @@ export declare class SettingsStorage {
 export declare class Deprecation {
     readonly disabled: boolean;
     readonly warning: Platform.UIString.LocalizedString;
-    readonly experiment?: Root.Runtime.Experiment;
+    readonly experiment?: Root.Runtime.Experiment | Root.Runtime.HostExperiment;
     constructor({ deprecationNotice }: SettingRegistration);
 }
 export declare class Setting<V> {

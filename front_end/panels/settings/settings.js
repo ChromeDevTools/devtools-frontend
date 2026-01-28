@@ -601,6 +601,9 @@ var ExperimentsSettingsTab = class _ExperimentsSettingsTab extends UI.Widget.VBo
     checkbox.classList.add("experiment-label");
     checkbox.name = experiment.name;
     function listener() {
+      if (experiment instanceof Root.Runtime.HostExperiment) {
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance.setChromeFlag(experiment.aboutFlag, checkbox.checked);
+      }
       experiment.setEnabled(checkbox.checked);
       Host.userMetrics.experimentChanged(experiment.name, experiment.isEnabled());
       UI.InspectorView.InspectorView.instance().displayReloadRequiredWarning(i18nString(UIStrings.oneOrMoreSettingsHaveChanged));
@@ -633,7 +636,7 @@ var ExperimentsSettingsTab = class _ExperimentsSettingsTab extends UI.Widget.VBo
     return p;
   }
   highlightObject(experiment) {
-    if (experiment instanceof Root.Runtime.Experiment) {
+    if (experiment instanceof Root.Runtime.Experiment || experiment instanceof Root.Runtime.HostExperiment) {
       const element = this.experimentToControl.get(experiment);
       if (element) {
         PanelUtils.highlightElement(element);
@@ -668,7 +671,7 @@ var ActionDelegate = class {
 var Revealer = class {
   async reveal(object) {
     const context = UI.Context.Context.instance();
-    if (object instanceof Root.Runtime.Experiment) {
+    if (object instanceof Root.Runtime.Experiment || object instanceof Root.Runtime.HostExperiment) {
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront();
       await SettingsScreen.showSettingsScreen({ name: "experiments" });
       const experimentsSettingsTab = context.flavor(ExperimentsSettingsTab);

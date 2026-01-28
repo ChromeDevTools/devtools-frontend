@@ -39,7 +39,10 @@ export declare class UserMetrics {
     performanceAIMainThreadActivityResponseSize(bytes: number): void;
     builtInAiAvailability(availability: BuiltInAiAvailability): void;
     consoleInsightTeaserGenerated(timeInMilliseconds: number): void;
+    consoleInsightTeaserGeneratedMedium(timeInMilliseconds: number): void;
     consoleInsightTeaserFirstChunkGenerated(timeInMilliseconds: number): void;
+    consoleInsightTeaserFirstChunkGeneratedMedium(timeInMilliseconds: number): void;
+    consoleInsightTeaserChunkToEndMedium(timeInMilliseconds: number): void;
     consoleInsightTeaserAbortedAfterFirstCharacter(timeInMilliseconds: number): void;
     consoleInsightTeaserAbortedBeforeFirstCharacter(timeInMilliseconds: number): void;
     consoleInsightLongTeaserGenerated(timeInMilliseconds: number): void;

@@ -180,11 +180,32 @@ export const format = (fmt, args) => {
     addStringToken(fmt);
     return { tokens, args: args.slice(argIndex) };
 };
+/**
+ * This function converts a string into a partial regex string that
+ * case-insensitively matches it in CSS, even if CSS escapes are used.
+ *
+ * @param cssString the target string.
+ * @returns a partial regex matching the string in CSS.
+ */
+const cssEscapeRegex = (cssString) => {
+    return [...cssString]
+        .map(char => {
+        const charCodes = new Set([char.toLowerCase(), char.toUpperCase()].map(c => c.charCodeAt(0).toString(16)));
+        const charCodeRegex = [...charCodes].map(charCode => `\\\\0{0,${6 - charCode.length}}${charCode}[ \\n\\t]?`).join('|');
+        return `\\\\?(?:${charCodeRegex}|${char})`;
+    })
+        .join('');
+};
 export const updateStyle = (currentStyle, styleToAdd) => {
     const ALLOWED_PROPERTY_PREFIXES = ['background', 'border', 'color', 'font', 'line', 'margin', 'padding', 'text'];
     // We only allow data URLs with the `url()` CSS function.
     // The capture group is not intended to grab the whole URL exactly, just enough so we can check the scheme.
-    const URL_REGEX = /url\([\'\"]?([^\)]*)/g;
+    // The regex also covers CSS hex-escaped variations of `url()`.
+    const URL_REGEX = new RegExp(`(?=${cssEscapeRegex('url')}\\(['"]?([^\\)]*))`, 'gi');
+    // We greedily capture all `image-set()`s to make sure that all of
+    // them properly use `url()`s to enforce the data URL check later.
+    const IMAGESET_REGEX = new RegExp(`(?=(${cssEscapeRegex('image-set')}\\(.*))`, 'gi');
+    const GOOD_IMAGESET_REGEX = /^image-set\((?:(?:(?:url|type)\("[^\\"]*"\)|[\d.]+(?:x|dpi|dpcm|dppx)),?\s*)+\)/i;
     currentStyle.clear();
     /* eslint-disable-next-line @devtools/no-imperative-dom-api --
      * We're not mutating the DOM here, but just need a temporary
@@ -196,9 +217,15 @@ export const updateStyle = (currentStyle, styleToAdd) => {
         if (!ALLOWED_PROPERTY_PREFIXES.some(prefix => property.startsWith(prefix) || property.startsWith(`-webkit-${prefix}`))) {
             continue;
         }
+        const value = buffer.style.getPropertyValue(property);
+        // We make sure every `image-set()` only uses `url()`s for its images.
+        // If any of them seem malformed, we skip the whole property.
+        const imageSets = [...value.matchAll(IMAGESET_REGEX)];
+        if (imageSets.some(match => !GOOD_IMAGESET_REGEX.test(match[1]))) {
+            continue;
+        }
         // There could be multiple `url()` functions, so we check them all.
         // If any of them is not a `data` URL, we skip the whole property.
-        const value = buffer.style.getPropertyValue(property);
         const potentialUrls = [...value.matchAll(URL_REGEX)].map(match => match[1]);
         if (potentialUrls.some(potentialUrl => !Common.ParsedURL.schemeIs(potentialUrl, 'data:'))) {
             continue;

@@ -3144,7 +3144,8 @@ Common4.Revealer.registerRevealer({
   contextTypes() {
     return [
       Common4.Settings.Setting,
-      Root3.Runtime.Experiment
+      Root3.Runtime.Experiment,
+      Root3.Runtime.HostExperiment
     ];
   },
   destination: void 0,

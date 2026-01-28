@@ -40,6 +40,8 @@ export interface ViewInput {
     onRemoveImageInput: () => void;
     onImageUpload: (ev: Event) => void;
     onImagePaste: (event: ClipboardEvent) => void;
+    onImageDragOver: (event: DragEvent) => void;
+    onImageDrop: (event: DragEvent) => void;
 }
 export type ViewOutput = undefined;
 export declare const DEFAULT_VIEW: (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;

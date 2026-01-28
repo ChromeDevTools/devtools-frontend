@@ -1,4 +1,6 @@
 export declare class AiCodeGenerationUpgradeDialog {
-    static show(): void;
+    static show({ noLogging }: {
+        noLogging: boolean;
+    }): void;
     private constructor();
 }

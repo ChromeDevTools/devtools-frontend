@@ -74,7 +74,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/elements/ElementsTreeOutline.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const elementsTreeOutlineByDOMModel = new WeakMap();
-const populatedTreeElements = new Set();
+const populatedTreeElements = new WeakSet();
 export const DEFAULT_VIEW = (input, output, target) => {
     if (!output.elementsTreeOutline) {
         // FIXME: this is basically a ref to existing imperative

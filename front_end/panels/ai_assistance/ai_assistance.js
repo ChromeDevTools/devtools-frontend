@@ -1766,6 +1766,8 @@ var DEFAULT_VIEW2 = (input, output, target) => {
               maxlength="10000"
               @keydown=${input.onTextAreaKeyDown}
               @paste=${input.onImagePaste}
+              @dragover=${input.onImageDragOver}
+              @drop=${input.onImageDrop}
               @input=${(event) => {
     input.onTextInputChange(event.target.value);
   }}
@@ -1993,11 +1995,11 @@ var ChatInput = class extends UI3.Widget.Widget {
       this.focusTextInput();
     });
   }
-  #handleImagePaste = (event) => {
+  #handleImageDataTransferEvent(dataTransfer, event) {
     if (this.conversationType !== "freestyler") {
       return;
     }
-    const files = event.clipboardData?.files;
+    const files = dataTransfer?.files;
     if (!files || files.length === 0) {
       return;
     }
@@ -2007,6 +2009,18 @@ var ChatInput = class extends UI3.Widget.Widget {
     }
     event.preventDefault();
     void this.#handleLoadImage(imageFile);
+  }
+  #handleImagePaste = (event) => {
+    this.#handleImageDataTransferEvent(event.clipboardData, event);
+  };
+  #handleImageDragOver = (event) => {
+    if (this.conversationType !== "freestyler") {
+      return;
+    }
+    event.preventDefault();
+  };
+  #handleImageDrop = (event) => {
+    this.#handleImageDataTransferEvent(event.dataTransfer, event);
   };
   async #handleLoadImage(file) {
     const showLoadingTimeout = setTimeout(() => {
@@ -2090,7 +2104,9 @@ var ChatInput = class extends UI3.Widget.Widget {
       onSubmit: this.onSubmit,
       onTextAreaKeyDown: this.onTextAreaKeyDown,
       onCancel: this.onCancel,
-      onImageUpload: this.onImageUpload
+      onImageUpload: this.onImageUpload,
+      onImageDragOver: this.#handleImageDragOver,
+      onImageDrop: this.#handleImageDrop
     }, void 0, this.contentElement);
   }
   focusTextInput() {

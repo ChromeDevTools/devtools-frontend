@@ -66,9 +66,6 @@ function getIssueCode(details) {
         case "LocalNetworkAccessPermissionDenied" /* Protocol.Network.CorsError.LocalNetworkAccessPermissionDenied */:
             return "CorsIssue::LocalNetworkAccessPermissionDenied" /* IssueCode.LOCAL_NETWORK_ACCESS_PERMISSION_DENIED */;
     }
-    // TODO(b/394636065): Remove this once browser protocol has rolled, as we
-    // will never hit this case.
-    return null;
 }
 export class CorsIssue extends Issue {
     constructor(issueDetails, issuesModel, issueId) {

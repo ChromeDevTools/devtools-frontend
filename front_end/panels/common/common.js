@@ -1036,29 +1036,37 @@ var UIStringsNotTranslate3 = {
    */
   codeCompletionJustGotBetter: "Code completion just got better",
   /**
-   * @description First item in the description
+   * @description First item in the description.
    */
-  asYouType: "As you type, DevTools generates code suggestions to help you code faster.",
+  describeCodeInComment: "Pressing Ctrl+I on a comment in the Console and Sources panels now generates entire code blocks based on the instructions in the comment.",
   /**
-   * @description Second item in the description
+   * @description First item in the description.
    */
-  describeCodeInComment: "In Console and Sources, you can now describe the code you need in a comment, then press Ctrl+I to generate it.",
+  describeCodeInCommentForMacOs: "Pressing Cmd+I on a comment in the Console and Sources panels now generates entire code blocks based on the instructions in the comment.",
   /**
-   * @description Second item in the description
+   * @description Second item in the description.
    */
-  describeCodeInCommentForMacOs: "In Console and Sources, you can now describe the code you need in a comment, then press Cmd+I to generate it.",
+  asYouType: "You will still receive the real-time, as-you-type suggestions to help you code faster.",
+  /**
+   * @description Third item in the description.
+   */
+  disclaimerTextPrivacy: "To generate code suggestions, your console input, the history of your current console session, the currently inspected CSS, and the contents of the currently open file are shared with Google. This data may be seen by human reviewers to improve this feature.",
+  /**
+   * @description Third item in the description.
+   */
+  disclaimerTextPrivacyNoLogging: "To generate code suggestions, your console input, the history of your current console session, the currently inspected CSS, and the contents of the currently open file are shared with Google. This data will not be used to improve Google\u2019s AI models. Your organization may change these settings at any time.",
   /**
    * @description Text for the manage in settings button in the upgrade notice dialog.
    */
   manageInSettings: "Manage in settings",
   /**
-   * @description Text for the got it button in the upgrade notice dialog.
+   * @description Text for the generate code button in the upgrade notice dialog.
    */
-  gotIt: "Got it"
+  generateCode: "Generate code"
 };
 var lockedString3 = i18n7.i18n.lockedString;
 var AiCodeGenerationUpgradeDialog = class {
-  static show() {
+  static show({ noLogging }) {
     const dialog2 = new UI4.Dialog.Dialog();
     dialog2.setAriaLabel(lockedString3(UIStringsNotTranslate3.codeCompletionJustGotBetter));
     Lit2.render(html4`
@@ -1076,13 +1084,18 @@ var AiCodeGenerationUpgradeDialog = class {
         </header>
         <main class="reminder-container">
           <div class="reminder-item">
+            <devtools-icon class="reminder-icon" name="text-analysis"></devtools-icon>
+            <span>
+              ${Host3.Platform.isMac() ? lockedString3(UIStringsNotTranslate3.describeCodeInCommentForMacOs) : lockedString3(UIStringsNotTranslate3.describeCodeInComment)}
+            </span>
+          </div>
+          <div class="reminder-item">
             <devtools-icon class="reminder-icon" name="code"></devtools-icon>
             <span>${lockedString3(UIStringsNotTranslate3.asYouType)}</span>
           </div>
           <div class="reminder-item">
-            <devtools-icon class="reminder-icon" name="text-analysis"></devtools-icon>
-            <span>
-              ${Host3.Platform.isMac() ? lockedString3(UIStringsNotTranslate3.describeCodeInCommentForMacOs) : lockedString3(UIStringsNotTranslate3.describeCodeInComment)}
+            <devtools-icon class="reminder-icon" name="google"></devtools-icon>
+            <span>${noLogging ? lockedString3(UIStringsNotTranslate3.disclaimerTextPrivacyNoLogging) : lockedString3(UIStringsNotTranslate3.disclaimerTextPrivacy)}
             </span>
           </div>
         </main>
@@ -1103,7 +1116,7 @@ var AiCodeGenerationUpgradeDialog = class {
     }}
               jslogcontext="ai-code-generation-upgrade-dialog.continue"
               .variant=${"primary"}>
-              ${lockedString3(UIStringsNotTranslate3.gotIt)}
+              ${lockedString3(UIStringsNotTranslate3.generateCode)}
             </devtools-button>
           </div>
         </footer>

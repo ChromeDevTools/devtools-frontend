@@ -500,6 +500,12 @@ var InspectorFrontendHostStub = class {
     }
     this.recordedPerformanceHistograms.push({ histogramName, duration });
   }
+  recordPerformanceHistogramMedium(histogramName, duration) {
+    if (this.recordedPerformanceHistograms.length >= MAX_RECORDED_HISTOGRAMS_SIZE) {
+      this.recordedPerformanceHistograms.shift();
+    }
+    this.recordedPerformanceHistograms.push({ histogramName, duration });
+  }
   recordUserMetricsAction(_umaName) {
   }
   recordNewBadgeUsage(_featureName) {
@@ -736,6 +742,8 @@ var InspectorFrontendHostStub = class {
   recordSettingAccess(_event) {
   }
   recordFunctionCall(_event) {
+  }
+  setChromeFlag(_flagName, _value) {
   }
 };
 
@@ -1759,8 +1767,17 @@ var UserMetrics = class {
   consoleInsightTeaserGenerated(timeInMilliseconds) {
     InspectorFrontendHostInstance.recordPerformanceHistogram("DevTools.Insights.TeaserGenerationTime", timeInMilliseconds);
   }
+  consoleInsightTeaserGeneratedMedium(timeInMilliseconds) {
+    InspectorFrontendHostInstance.recordPerformanceHistogramMedium("DevTools.Insights.TeaserGenerationTimeMedium", timeInMilliseconds);
+  }
   consoleInsightTeaserFirstChunkGenerated(timeInMilliseconds) {
     InspectorFrontendHostInstance.recordPerformanceHistogram("DevTools.Insights.TeaserFirstChunkGenerationTime", timeInMilliseconds);
+  }
+  consoleInsightTeaserFirstChunkGeneratedMedium(timeInMilliseconds) {
+    InspectorFrontendHostInstance.recordPerformanceHistogramMedium("DevTools.Insights.TeaserFirstChunkGenerationTimeMedium", timeInMilliseconds);
+  }
+  consoleInsightTeaserChunkToEndMedium(timeInMilliseconds) {
+    InspectorFrontendHostInstance.recordPerformanceHistogramMedium("DevTools.Insights.TeaserChunkToEndMedium", timeInMilliseconds);
   }
   consoleInsightTeaserAbortedAfterFirstCharacter(timeInMilliseconds) {
     InspectorFrontendHostInstance.recordPerformanceHistogram("DevTools.Insights.TeaserAfterFirstCharacterAbortionTime", timeInMilliseconds);

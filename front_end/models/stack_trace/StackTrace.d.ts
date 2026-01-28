@@ -45,3 +45,21 @@ export declare const enum Events {
 export interface EventTypes {
     [Events.UPDATED]: void;
 }
+/**
+ * A small wrapper around a DebuggableFrame usable as a UI.Context flavor.
+ * This is necessary as Frame and DebuggableFrame are updated in place, but
+ * for UI.Context we need a new instance.
+ */
+export declare class DebuggableFrameFlavor implements DebuggableFrame {
+    #private;
+    readonly url?: string;
+    readonly uiSourceCode?: Workspace.UISourceCode.UISourceCode;
+    readonly name?: string;
+    readonly line: number;
+    readonly column: number;
+    readonly missingDebugInfo?: MissingDebugInfo;
+    readonly sdkFrame: SDK.DebuggerModel.CallFrame;
+    private constructor();
+    /** @returns the same instance of DebuggableFrameFlavor for repeated calls with the same (i.e. deep equal) DebuggableFrame */
+    static for(frame: DebuggableFrame): DebuggableFrameFlavor;
+}

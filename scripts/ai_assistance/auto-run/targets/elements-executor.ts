@@ -8,8 +8,9 @@ import type {IndividualPromptRequestResponse, TestTarget} from '../../types.d.ts
 import {
   executePromptCycle,
   extractCommentMetadata,
+  inspectDOMNodeByCommentIndex,
   openAiAssistancePanelFromMenu,
-  setupElementsPanelAndInspect,
+  setupElementsPanel,
   stripCommentsFromPage
 } from '../shared/puppeteer-helpers.ts';
 
@@ -21,8 +22,9 @@ export class ElementsExecutor implements TargetExecutor {
     testTarget: TestTarget,
   }): Promise<TargetPreparationResult> {
     commonLog(`[ElementsExecutor] Preparing example: ${exampleUrl} for target: ${userArgs.testTarget}`);
-    await setupElementsPanelAndInspect(devtoolsPage, page, commonLog);
+    await setupElementsPanel(devtoolsPage, commonLog);
     const metadata = await extractCommentMetadata(page, userArgs.includeFollowUp, commonLog);
+    await inspectDOMNodeByCommentIndex(devtoolsPage, metadata.commentIndex, commonLog);
     await openAiAssistancePanelFromMenu(devtoolsPage, commonLog);
     await stripCommentsFromPage(page, commonLog);
 

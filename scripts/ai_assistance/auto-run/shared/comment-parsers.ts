@@ -35,6 +35,8 @@ export function parseComment(comment: string): Record<string, string> {
     prompt: [],
   };
 
+  let hadExplicitPrompt = false;
+
   for (let line of comment.split('\n')) {
     line = line.trim();
     if (line === '') {
@@ -48,9 +50,12 @@ export function parseComment(comment: string): Record<string, string> {
     }
 
     const parts = line.split(':');
-    if (parts.length > 1) {
+    if (parts.length > 1 && parts[0].trim() !== '') {
       // A: B, so start a new section.
       activeKey = parts[0].toLowerCase();
+      if (activeKey === 'prompt') {
+        hadExplicitPrompt = true;
+      }
       // Store all the other parts (join back in case they contained colons themselves)
       const part = parts.slice(1).join(':').trim();
       if (part) {
@@ -72,6 +77,14 @@ export function parseComment(comment: string): Record<string, string> {
   Object.keys(lines).forEach(lineKey => {
     result[lineKey] = lines[lineKey].join('\n');
   });
+
+  Object.defineProperty(result, 'hadExplicitPrompt', {
+    value: hadExplicitPrompt,
+    writable: false,
+    enumerable: false,
+    configurable: false,
+  });
+
   return result;
 }
 
@@ -94,4 +107,15 @@ export function parseFollowUps(comment: Record<string, string>): string[] {
   // In case the input was "followup1" and "followup3", this removes holes
   // from the array.
   return followUpPrompts.filter(x => Boolean(x));
+}
+
+// When only one comment is present, it is always the instruction.
+// When multiple comments are present, the instruction is the one that has a
+// Prompt: or Explanation: section.
+export function findInstructionCommentIndex(comments: Array<Record<string, string>>): number {
+  if (comments.length === 1 && comments[0].prompt) {
+    return 0;
+  }
+  return comments.findIndex(
+      comment => Boolean(comment.prompt) && (comment.hadExplicitPrompt || Boolean(comment.explanation)));
 }

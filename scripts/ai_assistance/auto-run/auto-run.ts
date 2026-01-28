@@ -183,6 +183,10 @@ export class Example {
       this.#devtoolsPage = devtoolsPage;
       this.log('[Info]: Got devtools page');
 
+      await devtoolsPage.evaluate(() => {
+        localStorage.setItem('aiAssistanceStructuredLogEnabled', 'true');
+      });
+
       // Delegate to executor's prepare
       this.#preparationResult = await this.#executor.prepare(
           this.#url, this.#page, this.#devtoolsPage, (text: string) => this.log(text), this.#userArgs);

@@ -8,7 +8,7 @@ import type {ElementHandle, Page} from 'puppeteer-core';
 import type {IndividualPromptRequestResponse} from '../../types.d.ts';
 import {TraceDownloader} from '../trace-downloader.ts';
 
-import {parseComment, parseFollowUps} from './comment-parsers.ts';
+import {findInstructionCommentIndex, parseComment, parseFollowUps} from './comment-parsers.ts';
 
 const DEFAULT_FOLLOW_UP_QUERY = 'Fix the issue using JavaScript code execution.';
 
@@ -200,7 +200,7 @@ export async function extractCommentMetadata(
     page: Page,
     includeFollowUp: boolean,
     commonLog: (text: string) => void,
-    ): Promise<{queries: string[], explanation: string, rawComment: Record<string, string>}> {
+    ): Promise<{queries: string[], explanation: string, rawComment: Record<string, string>, commentIndex: number}> {
   const commentStrings = await getCommentStringsFromPage(page);
   if (commentStrings.length === 0) {
     throw new Error('[Extracting comment metadata] No comments found on the page.');
@@ -208,8 +208,9 @@ export async function extractCommentMetadata(
   commonLog(`[Extracting comment metadata] Extracted ${commentStrings.length} comment strings.`);
 
   const comments = commentStrings.map(comment => parseComment(comment));
-  const rawComment = comments[0];  // Assuming the first comment is the main one
-  if (!rawComment?.prompt) {
+  const commentIndex = findInstructionCommentIndex(comments);
+  const rawComment = comments[commentIndex];
+  if (!rawComment) {
     throw new Error('[Extracting comment metadata] Could not parse a valid prompt from the page comments.');
   }
   commonLog(`[Extracting comment metadata] Parsed main comment: ${JSON.stringify(rawComment)}`);
@@ -227,6 +228,7 @@ export async function extractCommentMetadata(
     queries,
     explanation: rawComment.explanation || '',
     rawComment,
+    commentIndex,
   };
 }
 
@@ -267,38 +269,33 @@ export async function stripCommentsFromPage(
  * Sets up the Elements panel and inspects a target element.
  * Calls getCommentStringsFromPage to populate globalThis.__commentElements.
  */
-export async function setupElementsPanelAndInspect(
+export async function setupElementsPanel(
     devtoolsPage: Page,
-    page: Page,
     commonLog: (text: string) => void,
     ): Promise<void> {
   commonLog('[Setup elements panel] Setting up Elements panel');
   await devtoolsPage.locator(':scope >>> #tab-elements').setTimeout(5000).click();
   commonLog('[Setup elements panel] Opened Elements panel');
-
-  await devtoolsPage.locator('aria/<body>').click();
-  commonLog('[Setup elements panel] Clicked body in Elements panel');
+  await devtoolsPage.locator('aria/<body>');
 
   commonLog('[Setup elements panel] Expanding all elements...');
-  let expand = await devtoolsPage.$$('pierce/.expand-button');
-  while (expand.length) {
-    for (const btn of expand) {
-      await btn.click();
-    }
-    await new Promise(resolve => setTimeout(resolve, 100));  // Wait for new buttons to appear
-    expand = await devtoolsPage.$$('pierce/.expand-button');
-  }
+  await devtoolsPage.keyboard.down('Alt');
+  await devtoolsPage.keyboard.press('ArrowRight');
+  await devtoolsPage.keyboard.press('ArrowRight');
+  await devtoolsPage.keyboard.up('Alt');
   commonLog('[Setup elements panel] Finished expanding all elements');
+}
 
-  // Ensure __commentElements is populated before trying to inspect
-  await getCommentStringsFromPage(page);
-  commonLog('[Setup elements panel] Populated globalThis.__commentElements by calling getCommentStringsFromPage.');
-
+export async function inspectDOMNodeByCommentIndex(
+    devtoolsPage: Page,
+    index: number,
+    commonLog: (text: string) => void,
+    ): Promise<void> {
   commonLog('[Setup elements panel] Locating console to inspect the element');
   await devtoolsPage.locator(':scope >>> #tab-console').click();
   await devtoolsPage.locator('aria/Console prompt').click();
   await devtoolsPage.keyboard.type(
-      'inspect(globalThis.__commentElements[0].targetElement)',
+      `inspect(globalThis.__commentElements[${index}].targetElement)`,
   );
   await devtoolsPage.keyboard.press('Enter');
   commonLog('[Setup elements panel] Typed inspect command in console');

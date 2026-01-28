@@ -34,26 +34,43 @@ export class NetworkExecutor implements TargetExecutor {
 
     commonLog(`[NetworkExecutor] Looking for request: ${requestName}`);
 
-    // Wait for the data grid to appear and populate
+    // Wait for the data grid to appear
     const dataGridRowSelector = '.data-grid-data-grid-node';
     await devtoolsPage.waitForSelector(dataGridRowSelector);
 
-    const rows = await devtoolsPage.$$(dataGridRowSelector);
-    if (rows.length === 0) {
-      throw new Error('[NetworkExecutor] No requests found in data grid.');
+    // Apply filter to find the request (handling virtual list/off-screen rows)
+    commonLog('[NetworkExecutor] Filtering requests');
+    const filterInputSelector = '.filter-bar .text-filter .toolbar-input-prompt';
+
+    // Ensure filter bar is visible
+    const filterInput = await devtoolsPage.$(filterInputSelector);
+    if (!filterInput || !(await filterInput.boundingBox())) {
+      const filterButtonSelector = '[aria-label="Filter"]';
+      await devtoolsPage.click(filterButtonSelector);
+      await devtoolsPage.waitForSelector(filterInputSelector);
     }
 
-    let requestNode: ElementHandle<Element>|undefined;
+    // Clear existing filter if any
+    const clearButtonSelector = 'devtools-button.toolbar-input-clear-button';
+    const clearButton = await devtoolsPage.$(clearButtonSelector);
+    if (clearButton && await clearButton.boundingBox()) {
+      await clearButton.click();
+    }
 
-    if (requestName) {
+    await devtoolsPage.click(filterInputSelector);
+    await devtoolsPage.keyboard.type(requestName);
+
+    // Wait for the specific request to appear in the grid
+    // We wait for a row that contains the text
+    const requestNode = await devtoolsPage.waitForFunction((selector, text) => {
+      const rows = document.querySelectorAll(selector);
       for (const row of rows) {
-        const text = await row.evaluate(el => el.textContent);
-        if (text?.includes(requestName)) {
-          requestNode = row;
-          break;
+        if (row.textContent?.includes(text)) {
+          return row;
         }
       }
-    }
+      return false;
+    }, {timeout: 5000}, dataGridRowSelector, requestName) as ElementHandle<Element>| false;
 
     if (!requestNode) {
       throw new Error(`[NetworkExecutor] Could not find a request matching: ${requestName}`);

@@ -53,6 +53,7 @@ devtools_ui_module("console") {
     "../../models/issues_manager:bundle",
     "../../models/logs:bundle",
     "../../models/source_map_scopes:bundle",
+    "../../models/stack_trace:bundle",
     "../../models/text_utils:bundle",
     "../../models/workspace:bundle",
     "../../third_party/codemirror.next:bundle",

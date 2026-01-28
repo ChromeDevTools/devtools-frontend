@@ -41,6 +41,7 @@ import * as Protocol from '../../generated/protocol.js';
 import * as Badges from '../../models/badges/badges.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Breakpoints from '../../models/breakpoints/breakpoints.js';
+import * as StackTrace from '../../models/stack_trace/stack_trace.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as PanelCommon from '../../panels/common/common.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
@@ -325,7 +326,8 @@ export class SourcesPanel extends UI.Panel.Panel implements
         .moduleSetting('breakpoints-active')
         .addChangeListener(this.breakpointsActiveStateChanged, this);
     UI.Context.Context.instance().addFlavorChangeListener(SDK.Target.Target, this.onCurrentTargetChanged, this);
-    UI.Context.Context.instance().addFlavorChangeListener(SDK.DebuggerModel.CallFrame, this.callFrameChanged, this);
+    UI.Context.Context.instance().addFlavorChangeListener(
+        StackTrace.StackTrace.DebuggableFrameFlavor, this.callFrameChanged, this);
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerWasEnabled, this.debuggerWasEnabled, this);
     SDK.TargetManager.TargetManager.instance().addModelListener(
@@ -696,16 +698,17 @@ export class SourcesPanel extends UI.Panel.Panel implements
   }
 
   private async callFrameChanged(): Promise<void> {
-    const callFrame = UI.Context.Context.instance().flavor(SDK.DebuggerModel.CallFrame);
+    const callFrame = UI.Context.Context.instance().flavor(StackTrace.StackTrace.DebuggableFrameFlavor);
     if (!callFrame) {
       return;
     }
     if (this.executionLineLocation) {
       this.executionLineLocation.dispose();
     }
+    // TODO(crbug.com/465879478): Remove LiveLocation once `DebuggableFrameFlavor` is backed by a "real" StackTrace.
     this.executionLineLocation =
         await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createCallFrameLiveLocation(
-            callFrame.location(), this.executionLineChanged.bind(this), this.liveLocationPool);
+            callFrame.sdkFrame.location(), this.executionLineChanged.bind(this), this.liveLocationPool);
   }
 
   private async updateDebuggerButtonsAndStatus(): Promise<void> {

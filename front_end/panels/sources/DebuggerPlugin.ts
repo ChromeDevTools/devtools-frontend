@@ -15,6 +15,7 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import * as Breakpoints from '../../models/breakpoints/breakpoints.js';
 import * as Formatter from '../../models/formatter/formatter.js';
 import * as SourceMapScopes from '../../models/source_map_scopes/source_map_scopes.js';
+import * as StackTrace from '../../models/stack_trace/stack_trace.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
@@ -249,7 +250,8 @@ export class DebuggerPlugin extends Plugin {
     this.ignoreListCallback = this.showIgnoreListInfobarIfNeeded.bind(this);
     Workspace.IgnoreListManager.IgnoreListManager.instance().addChangeListener(this.ignoreListCallback);
 
-    UI.Context.Context.instance().addFlavorChangeListener(SDK.DebuggerModel.CallFrame, this.callFrameChanged, this);
+    UI.Context.Context.instance().addFlavorChangeListener(
+        StackTrace.StackTrace.DebuggableFrameFlavor, this.callFrameChanged, this);
     this.liveLocationPool = new Bindings.LiveLocation.LiveLocationPool();
 
     this.updateScriptFiles();
@@ -649,11 +651,11 @@ export class DebuggerPlugin extends Plugin {
       return null;
     }
 
-    const selectedCallFrame =
-        (UI.Context.Context.instance().flavor(SDK.DebuggerModel.CallFrame) as SDK.DebuggerModel.CallFrame);
-    if (!selectedCallFrame) {
+    const debuggableFrame = UI.Context.Context.instance().flavor(StackTrace.StackTrace.DebuggableFrameFlavor);
+    if (!debuggableFrame) {
       return null;
     }
+    const selectedCallFrame = debuggableFrame.sdkFrame;
 
     let textPosition = editor.editor.posAtCoords(event);
     if (!textPosition) {
@@ -729,8 +731,9 @@ export class DebuggerPlugin extends Plugin {
         }
         objectPopoverHelper =
             await ObjectUI.ObjectPopoverHelper.ObjectPopoverHelper.buildObjectPopover(result.object, popover);
-        const potentiallyUpdatedCallFrame = UI.Context.Context.instance().flavor(SDK.DebuggerModel.CallFrame);
-        if (!objectPopoverHelper || selectedCallFrame !== potentiallyUpdatedCallFrame) {
+        const potentiallyUpdatedCallFrame =
+            UI.Context.Context.instance().flavor(StackTrace.StackTrace.DebuggableFrameFlavor);
+        if (!objectPopoverHelper || debuggableFrame !== potentiallyUpdatedCallFrame) {
           debuggerModel.runtimeModel().releaseObjectGroup('popover');
           if (objectPopoverHelper) {
             objectPopoverHelper.dispose();
@@ -988,10 +991,11 @@ export class DebuggerPlugin extends Plugin {
     if (!executionContext) {
       return null;
     }
-    const callFrame = UI.Context.Context.instance().flavor(SDK.DebuggerModel.CallFrame);
-    if (!callFrame) {
+    const debuggableFrame = UI.Context.Context.instance().flavor(StackTrace.StackTrace.DebuggableFrameFlavor);
+    if (!debuggableFrame) {
       return null;
     }
+    const callFrame = debuggableFrame.sdkFrame;
     const url = this.uiSourceCode.url();
 
     const rawLocationToEditorOffset: (location: SDK.DebuggerModel.Location|null) => Promise<number|null> = location =>
@@ -1058,10 +1062,11 @@ export class DebuggerPlugin extends Plugin {
     if (!executionContext || !this.editor) {
       return;
     }
-    const callFrame = UI.Context.Context.instance().flavor(SDK.DebuggerModel.CallFrame);
-    if (!callFrame) {
+    const debuggableFrame = UI.Context.Context.instance().flavor(StackTrace.StackTrace.DebuggableFrameFlavor);
+    if (!debuggableFrame) {
       return;
     }
+    const callFrame = debuggableFrame.sdkFrame;
     const start = callFrame.functionLocation() || callFrame.location();
     const debuggerModel = callFrame.debuggerModel;
 
@@ -1651,10 +1656,11 @@ export class DebuggerPlugin extends Plugin {
 
   private async callFrameChanged(): Promise<void> {
     this.liveLocationPool.disposeAll();
-    const callFrame = UI.Context.Context.instance().flavor(SDK.DebuggerModel.CallFrame);
-    if (!callFrame) {
+    const debuggableFrame = UI.Context.Context.instance().flavor(StackTrace.StackTrace.DebuggableFrameFlavor);
+    if (!debuggableFrame) {
       this.setExecutionLocation(null);
     } else {
+      const callFrame = debuggableFrame.sdkFrame;
       await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createCallFrameLiveLocation(
           callFrame.location(), async (liveLocation: Bindings.LiveLocation.LiveLocation) => {
             const uiLocation = await liveLocation.uiLocation();

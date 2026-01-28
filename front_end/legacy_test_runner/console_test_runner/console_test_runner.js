@@ -25,6 +25,7 @@ ConsoleTestRunner.Formatter;
  * @param {!ConsoleTestRunner.Formatter=} formatter
  */
 ConsoleTestRunner.dumpConsoleMessages = async function(printOriginatingCommand, dumpClassNames, formatter) {
+  await new Promise(requestAnimationFrame);
   TestRunner.addResults(
       await ConsoleTestRunner.dumpConsoleMessagesIntoArray(printOriginatingCommand, dumpClassNames, formatter));
 };
@@ -413,7 +414,7 @@ ConsoleTestRunner.expandConsoleMessages = function(callback, deepFilter, section
 
   TestRunner.deprecatedRunAfterPendingDispatches(expandTreeElements);
 
-  function expandTreeElements() {
+  async function expandTreeElements() {
     for (let i = 0; i < messageViews.length; ++i) {
       const element = messageViews[i].element();
       for (let node = element; node; node = node.traverseNextNode(element)) {
@@ -446,6 +447,7 @@ ConsoleTestRunner.expandConsoleMessages = function(callback, deepFilter, section
         }
       }
     }
+    await new Promise(requestAnimationFrame);
     TestRunner.deprecatedRunAfterPendingDispatches(callback);
   }
 };
@@ -462,7 +464,8 @@ ConsoleTestRunner.expandConsoleMessagesPromise = function(deepFilter, sectionFil
 /**
  * @param {!Function} callback
  */
-ConsoleTestRunner.expandGettersInConsoleMessages = function(callback) {
+ConsoleTestRunner.expandGettersInConsoleMessages = async function(callback) {
+  await new Promise(requestAnimationFrame);
   const messageViews = Console.ConsoleView.ConsoleView.instance().visibleViewMessages;
   const properties = [];
   let propertiesCount = 0;
@@ -480,12 +483,13 @@ ConsoleTestRunner.expandGettersInConsoleMessages = function(callback) {
     }
   }
 
-  function propertyExpandableUpdated() {
+  async function propertyExpandableUpdated() {
     --propertiesCount;
     if (propertiesCount === 0) {
       for (let i = 0; i < properties.length; ++i) {
         properties[i].click();
       }
+      await new Promise(requestAnimationFrame);
       TestRunner.deprecatedRunAfterPendingDispatches(callback);
     } else {
       TestRunner.addSniffer(

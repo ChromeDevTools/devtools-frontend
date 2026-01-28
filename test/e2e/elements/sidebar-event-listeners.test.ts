@@ -38,21 +38,23 @@ describe('Event listeners in the elements sidebar', () => {
     return eventListenerNames;
   };
 
-  const getEventListenerProperties = async (devToolsPage: DevToolsPage, selector: string) => {
+  const getEventListenerProperties =
+      async(devToolsPage: DevToolsPage, selector: string): Promise<Array<[string, string]>> => {
     const clickEventProperties = await devToolsPage.$$(selector);
 
-    const propertiesOutput = await Promise.all(clickEventProperties.map(n => n.evaluate((node: Element) => {
-      const nameNode = node.querySelector('.name');
-      const valueNode = node.querySelector('.value');
+    const propertiesOutput =
+        await Promise.all(clickEventProperties.map(n => n.evaluate((node: Element): [string, string] => {
+          const nameNode = node.querySelector('.name');
+          const valueNode = node.querySelector('.value');
 
-      if (!nameNode || !valueNode) {
-        throw new Error('Could not find a name and value node for event listener properties.');
-      }
+          if (!nameNode || !valueNode) {
+            throw new Error('Could not find a name and value node for event listener properties.');
+          }
 
-      const key = nameNode.textContent;
-      const value = valueNode.textContent;
-      return [key, value];
-    })));
+          const key = nameNode.textContent;
+          const value = valueNode.textContent;
+          return [key, value];
+        })));
 
     return propertiesOutput;
   };
@@ -114,14 +116,19 @@ describe('Event listeners in the elements sidebar', () => {
     await devToolsPage.waitFor(`${listenerSelector}[aria-expanded="true"]`);
 
     const clickEventPropertiesSelector = `${listenerSelector} + ol .name-and-value`;
-    const propertiesOutput = await getEventListenerProperties(devToolsPage, clickEventPropertiesSelector);
 
-    assert.deepEqual(propertiesOutput, [
-      ['useCapture', 'false'],
-      ['passive', 'false'],
-      ['once', 'false'],
-      ['handler', '() => {}'],
-    ]);
+    await devToolsPage.waitForFunction(async () => {
+      const propertiesOutput = await getEventListenerProperties(devToolsPage, clickEventPropertiesSelector);
+      const flatProperties = propertiesOutput.flat();
+      const expected = [
+        ['useCapture', 'false'],
+        ['passive', 'false'],
+        ['once', 'false'],
+        ['handler', '() => {}'],
+      ].flat();
+
+      return flatProperties.length === expected.length && !flatProperties.some((v, index) => v !== expected[index]);
+    });
   });
 
   it('shows custom event listeners and their properties correctly', async ({devToolsPage, inspectedPage}) => {
@@ -145,14 +152,18 @@ describe('Event listeners in the elements sidebar', () => {
     await devToolsPage.waitFor(`${listenerSelector}[aria-expanded="true"]`);
 
     const customEventProperties = `${listenerSelector} + ol .name-and-value`;
-    const propertiesOutput = await getEventListenerProperties(devToolsPage, customEventProperties);
+    await devToolsPage.waitForFunction(async () => {
+      const propertiesOutput = await getEventListenerProperties(devToolsPage, customEventProperties);
+      const flatProperties = propertiesOutput.flat();
+      const expected = [
+        ['useCapture', 'true'],
+        ['passive', 'false'],
+        ['once', 'true'],
+        ['handler', '() => console.log(\'test\')'],
+      ].flat();
 
-    assert.deepEqual(propertiesOutput, [
-      ['useCapture', 'true'],
-      ['passive', 'false'],
-      ['once', 'true'],
-      ['handler', '() => console.log(\'test\')'],
-    ]);
+      return flatProperties.length === expected.length && !flatProperties.some((v, index) => v !== expected[index]);
+    });
   });
 
   it('shows delete button by each node for a given event', async ({devToolsPage, inspectedPage}) => {

@@ -145,26 +145,62 @@ interface NodeChildren {
   properties?: ObjectTreeNode[];
   internalProperties?: ObjectTreeNode[];
   arrayRanges?: ArrayGroupTreeNode[];
+  accessors?: ObjectTreeNode[];
 }
 
-abstract class ObjectTreeNodeBase {
+abstract class ObjectTreeNodeBase extends Common.ObjectWrapper.ObjectWrapper<ObjectTreeNodeBase.EventTypes> {
   #children?: NodeChildren;
   protected extraProperties: ObjectTreeNode[] = [];
+  expanded = false;
   constructor(
       readonly parent?: ObjectTreeNodeBase,
       readonly propertiesMode: ObjectPropertiesMode = ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED) {
+    super();
+  }
+
+  // Performs a pre-order tree traversal over the populated children. If any children need to be populated, callers must
+  // do that while walking (pre-order visitation enables that).
+  * #walk(maxDepth = -1): Generator<ObjectTreeNodeBase> {
+    function* walkChildren(children: ObjectTreeNodeBase[]|undefined): Generator<ObjectTreeNodeBase> {
+      if (children) {
+        for (const child of children) {
+          yield* child.#walk(Math.max(-1, maxDepth - 1));
+        }
+      }
+    }
+    yield this;
+    if (maxDepth !== 0) {
+      yield* walkChildren(this.#children?.properties);
+      yield* walkChildren(this.#children?.arrayRanges);
+      yield* walkChildren(this.#children?.internalProperties);
+    }
+  }
+
+  async expandRecursively(maxDepth: number): Promise<void> {
+    for (const node of this.#walk(maxDepth)) {
+      await node.populateChildrenIfNeeded();
+      node.expanded = true;
+    }
+  }
+
+  collapseRecursively(): void {
+    for (const node of this.#walk()) {
+      node.expanded = false;
+    }
   }
 
   abstract get object(): SDK.RemoteObject.RemoteObject|undefined;
 
   removeChildren(): void {
     this.#children = undefined;
+    this.dispatchEventToListeners(ObjectTreeNodeBase.Events.CHILDREN_CHANGED);
   }
 
   removeChild(child: ObjectTreeNodeBase): void {
     remove(this.#children?.arrayRanges, child);
     remove(this.#children?.internalProperties, child);
     remove(this.#children?.properties, child);
+    this.dispatchEventToListeners(ObjectTreeNodeBase.Events.CHILDREN_CHANGED);
 
     function remove<T>(array: T[]|undefined, element: T): void {
       if (!array) {
@@ -181,14 +217,14 @@ abstract class ObjectTreeNodeBase {
     return this;
   }
 
-  async children(): Promise<NodeChildren> {
-    if (!this.#children) {
-      this.#children = await this.populateChildren();
-    }
+  get children(): NodeChildren|undefined {
     return this.#children;
   }
 
-  protected async populateChildren(): Promise<NodeChildren> {
+  async populateChildrenIfNeeded(): Promise<NodeChildren> {
+    if (this.#children) {
+      return this.#children;
+    }
     const object = this.object;
     if (!object) {
       return {};
@@ -230,10 +266,12 @@ abstract class ObjectTreeNodeBase {
 
     const properties = objectProperties?.map(p => new ObjectTreeNode(p, undefined, effectiveParent, undefined));
     properties?.push(...this.extraProperties);
+    properties?.sort(ObjectPropertiesSection.compareProperties);
+    const accessors = properties && ObjectTreeNodeBase.getGettersAndSetters(properties);
 
     const internalProperties =
         objectInternalProperties?.map(p => new ObjectTreeNode(p, undefined, effectiveParent, undefined));
-    return {properties, internalProperties};
+    return {properties, internalProperties, accessors};
   }
 
   get hasChildren(): boolean {
@@ -251,6 +289,36 @@ abstract class ObjectTreeNodeBase {
 
   addExtraProperties(...properties: SDK.RemoteObject.RemoteObjectProperty[]): void {
     this.extraProperties.push(...properties.map(p => new ObjectTreeNode(p, undefined, this, undefined)));
+  }
+
+  static getGettersAndSetters(properties: ObjectTreeNode[]): ObjectTreeNode[] {
+    const gettersAndSetters = [];
+    for (const property of properties) {
+      if (property.property.isOwn) {
+        if (property.property.getter) {
+          const getterProperty = new SDK.RemoteObject.RemoteObjectProperty(
+              'get ' + property.property.name, property.property.getter, false);
+          gettersAndSetters.push(new ObjectTreeNode(getterProperty, property.propertiesMode, property.parent));
+        }
+        if (property.property.setter) {
+          const setterProperty = new SDK.RemoteObject.RemoteObjectProperty(
+              'set ' + property.property.name, property.property.setter, false);
+          gettersAndSetters.push(new ObjectTreeNode(setterProperty, property.propertiesMode, property.parent));
+        }
+      }
+    }
+    return gettersAndSetters;
+  }
+}
+
+namespace ObjectTreeNodeBase {
+  export const enum Events {
+    VALUE_CHANGED = 'value-changed',
+    CHILDREN_CHANGED = 'children-changed',
+  }
+  export interface EventTypes {
+    [Events.VALUE_CHANGED]: void;
+    [Events.CHILDREN_CHANGED]: void;
   }
 }
 
@@ -280,7 +348,10 @@ class ArrayGroupTreeNode extends ObjectTreeNodeBase {
     this.#range = range;
   }
 
-  protected override async populateChildren(): Promise<NodeChildren> {
+  override async populateChildrenIfNeeded(): Promise<NodeChildren> {
+    if (this.children) {
+      return this.children;
+    }
     if (this.#range.count > ArrayGroupingTreeElement.bucketThreshold) {
       const ranges = await arrayRangeGroups(this.object, this.#range.fromIndex, this.#range.toIndex);
       const arrayRanges = ranges?.ranges.map(
@@ -303,7 +374,8 @@ class ArrayGroupTreeNode extends ObjectTreeNodeBase {
     const properties = allProperties.properties?.map(p => new ObjectTreeNode(p, this.propertiesMode, this, undefined));
     properties?.push(...this.extraProperties);
     properties?.sort(ObjectPropertiesSection.compareProperties);
-    return {properties};
+    const accessors = properties && ObjectTreeNodeBase.getGettersAndSetters(properties);
+    return {properties, accessors};
   }
 
   get singular(): boolean {
@@ -364,6 +436,57 @@ export class ObjectTreeNode extends ObjectTreeNodeBase {
 
   override selfOrParentIfInternal(): ObjectTreeNodeBase {
     return this.name === '[[Prototype]]' ? (this.parent ?? this) : this;
+  }
+
+  async setValue(expression: string): Promise<void> {
+    const property = SDK.RemoteObject.RemoteObject.toCallArgument(this.property.symbol || this.name);
+    expression = JavaScriptREPL.wrapObjectLiteral(expression.trim());
+
+    if (this.property.synthetic) {
+      let invalidate = false;
+      if (expression) {
+        invalidate = await this.property.setSyntheticValue(expression);
+      }
+      if (invalidate) {
+        this.parent?.removeChildren();
+      } else {
+        this.dispatchEventToListeners(ObjectTreeNodeBase.Events.VALUE_CHANGED);
+      }
+      return;
+    }
+
+    const parentObject = this.parent?.object as SDK.RemoteObject.RemoteObject;
+    const errorPromise =
+        expression ? parentObject.setPropertyValue(property, expression) : parentObject.deleteProperty(property);
+    const error = await errorPromise;
+    if (error) {
+      this.dispatchEventToListeners(ObjectTreeNodeBase.Events.VALUE_CHANGED);
+      return;
+    }
+
+    if (!expression) {
+      this.parent?.removeChild(this);
+    } else {
+      this.parent?.removeChildren();
+    }
+  }
+
+  async invokeGetter(getter: SDK.RemoteObject.RemoteObject): Promise<void> {
+    const invokeGetter = `
+          function invokeGetter(getter) {
+            return Reflect.apply(getter, this, []);
+          }`;
+    // Also passing a string instead of a Function to avoid coverage implementation messing with it.
+    const result = await this.parent
+                       ?.object
+                       // @ts-expect-error No way to teach TypeScript to preserve the Function-ness of `getter`.
+                       ?.callFunction(invokeGetter, [SDK.RemoteObject.RemoteObject.toCallArgument(getter)]);
+    if (!result?.object) {
+      return;
+    }
+    this.property.value = result.object;
+    this.property.wasThrown = result.wasThrown || false;
+    this.dispatchEventToListeners(ObjectTreeNodeBase.Events.VALUE_CHANGED);
   }
 }
 
@@ -668,8 +791,7 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
       }
       if (description.length > maxRenderableStringLength) {
         return html`<span class="value object-value-${subtype || type}" title=${description}><devtools-widget
-                  .widgetConfig=${
-            widgetConfig(ExpandableTextPropertyValue, {text: description})}></devtools-widget></span>`;
+          .widgetConfig=${widgetConfig(ExpandableTextPropertyValue, {text: description})}></devtools-widget></span>`;
       }
       const hasPreview = value.preview && showPreview;
       return html`<span class="value object-value-${subtype || type}" title=${description}>${
@@ -810,6 +932,7 @@ export class RootElement extends UI.TreeOutline.TreeElement {
     super(contentElement);
 
     this.object = object;
+    this.object.addEventListener(ObjectTreeNodeBase.Events.CHILDREN_CHANGED, this.onpopulate, this);
     this.linkifier = linkifier;
     this.emptyPlaceholder = emptyPlaceholder;
 
@@ -818,11 +941,6 @@ export class RootElement extends UI.TreeOutline.TreeElement {
     this.toggleOnClick = true;
     this.listItemElement.classList.add('object-properties-section-root-element');
     this.listItemElement.addEventListener('contextmenu', this.onContextMenu.bind(this), false);
-  }
-
-  override invalidateChildren(): void {
-    super.invalidateChildren();
-    this.object.removeChildren();
   }
 
   override onexpand(): void {
@@ -865,6 +983,7 @@ export class RootElement extends UI.TreeOutline.TreeElement {
   }
 
   override async onpopulate(): Promise<void> {
+    this.removeChildren();
     const treeOutline = (this.treeOutline as ObjectPropertiesSection | null);
     const skipProto = treeOutline ? Boolean(treeOutline.skipProtoInternal) : false;
     return await ObjectPropertyTreeElement.populate(
@@ -878,7 +997,7 @@ export class RootElement extends UI.TreeOutline.TreeElement {
  **/
 export const InitialVisibleChildrenLimit = 200;
 
-export interface TreeElementViewInput {
+export interface ObjectPropertyViewInput {
   startEditing(): unknown;
   invokeGetter(getter: SDK.RemoteObject.RemoteObject): unknown;
   onAutoComplete(expression: string, filter: string, force: boolean): unknown;
@@ -890,12 +1009,13 @@ export interface TreeElementViewInput {
   editingCommitted(detail: string): unknown;
   node: ObjectTreeNode;
 }
-interface TreeElementViewOutput {
+interface ObjectPropertyViewOutput {
   valueElement: Element|undefined;
   nameElement: Element|undefined;
 }
-type TreeElementView = (input: TreeElementViewInput, output: TreeElementViewOutput, target: HTMLElement) => void;
-export const TREE_ELEMENT_DEFAULT_VIEW: TreeElementView = (input, output, target) => {
+type ObjectPropertyView = (input: ObjectPropertyViewInput, output: ObjectPropertyViewOutput, target: HTMLElement) =>
+    void;
+export const OBJECT_PROPERTY_DEFAULT_VIEW: ObjectPropertyView = (input, output, target) => {
   const {property} = input.node;
   const isInternalEntries = property.synthetic && input.node.name === '[[Entries]]';
   const completionsId = `completions-${input.node.parent?.object?.objectId?.replaceAll('.', '-')}-${input.node.name}`;
@@ -950,7 +1070,10 @@ export const TREE_ELEMENT_DEFAULT_VIEW: TreeElementView = (input, output, target
         i18nString(UIStrings.valueUnavailable)}</span>`;
   };
 
-  const onDblClick = (event: Event): void => {
+  const onActivate = (event: MouseEvent|KeyboardEvent): void => {
+    if (event instanceof KeyboardEvent && !Platform.KeyboardUtilities.isEnterOrSpaceKey(event)) {
+      return;
+    }
     event.consume(true);
     if (property.value && !property.value.customPreview() && (property.writable || property.setter)) {
       input.startEditing();
@@ -970,7 +1093,8 @@ export const TREE_ELEMENT_DEFAULT_VIEW: TreeElementView = (input, output, target
                 @commit=${(e: UI.TextPrompt.TextPromptElement.CommitEvent) => input.editingCommitted(e.detail)}
                 @cancel=${() => input.editingEnded()}
                 @beforeautocomplete=${onAutoComplete}
-                @dblclick=${onDblClick}
+                @dblclick=${onActivate}
+                @keydown=${onActivate}
                 completions=${completionsId}
                 placeholder=${i18nString(UIStrings.stringIsTooLargeToEdit)}
                 ?editing=${input.editing}>
@@ -990,26 +1114,166 @@ export const TREE_ELEMENT_DEFAULT_VIEW: TreeElementView = (input, output, target
           target);
   // clang-format on
 };
+
+export class ObjectPropertyWidget extends UI.Widget.Widget {
+  #highlightChanges: Highlighting.HighlightChange[] = [];
+  #property?: ObjectTreeNode;
+  #nameElement?: Element;
+  #valueElement?: Element;
+  #completions: string[] = [];
+  #editing = false;
+  readonly #view: ObjectPropertyView;
+  #expanded = false;
+  #linkifier: Components.Linkifier.Linkifier|undefined;
+
+  constructor(target?: HTMLElement, view = OBJECT_PROPERTY_DEFAULT_VIEW) {
+    super(target);
+    this.#view = view;
+  }
+
+  get property(): ObjectTreeNode|undefined {
+    return this.#property;
+  }
+  set property(property: ObjectTreeNode) {
+    if (this.#property) {
+      this.#property.removeEventListener(ObjectTreeNodeBase.Events.VALUE_CHANGED, this.requestUpdate, this);
+      this.#property.removeEventListener(ObjectTreeNodeBase.Events.CHILDREN_CHANGED, this.requestUpdate, this);
+    }
+    this.#property = property;
+    this.#property.addEventListener(ObjectTreeNodeBase.Events.VALUE_CHANGED, this.requestUpdate, this);
+    this.#property.addEventListener(ObjectTreeNodeBase.Events.CHILDREN_CHANGED, this.requestUpdate, this);
+    this.requestUpdate();
+  }
+
+  get expanded(): boolean {
+    return this.#expanded;
+  }
+  set expanded(expanded: boolean) {
+    this.#expanded = expanded;
+    this.requestUpdate();
+  }
+
+  get linkifier(): Components.Linkifier.Linkifier|undefined {
+    return this.#linkifier;
+  }
+  set linkifier(linkifier: Components.Linkifier.Linkifier|undefined) {
+    this.#linkifier = linkifier;
+    this.requestUpdate();
+  }
+
+  override performUpdate(): void {
+    if (!this.#property) {
+      return;
+    }
+    const input: ObjectPropertyViewInput = {
+      expanded: this.#expanded,
+      editing: this.#editing,
+      editingEnded: this.#editingEnded.bind(this),
+      editingCommitted: this.#editingCommitted.bind(this),
+      node: this.#property,
+      linkifier: this.#linkifier,
+      completions: this.#editing ? this.#completions : [],
+      onAutoComplete: this.#updateCompletions.bind(this),
+      invokeGetter: this.#invokeGetter.bind(this),
+      startEditing: this.startEditing.bind(this),
+    };
+    const that = this;
+    const output: ObjectPropertyViewOutput = {
+      set nameElement(e: Element|undefined) {
+        that.#nameElement = e;
+      },
+      set valueElement(e: Element|undefined) {
+        that.#valueElement = e;
+      },
+    };
+    this.#view(input, output, this.element);
+  }
+
+  setSearchRegex(regex: RegExp, additionalCssClassName?: string): boolean {
+    let cssClasses = Highlighting.highlightedSearchResultClassName;
+    if (additionalCssClassName) {
+      cssClasses += ' ' + additionalCssClassName;
+    }
+    this.revertHighlightChanges();
+
+    if (this.#nameElement) {
+      this.#applySearch(regex, this.#nameElement, cssClasses);
+    }
+    if (this.property?.object) {
+      const valueType = this.property?.object.type;
+      if (valueType !== 'object' && this.#valueElement) {
+        this.#applySearch(regex, this.#valueElement, cssClasses);
+      }
+    }
+
+    return Boolean(this.#highlightChanges.length);
+  }
+
+  #applySearch(regex: RegExp, element: Element, cssClassName: string): void {
+    const ranges = [];
+    const content = element.textContent || '';
+    regex.lastIndex = 0;
+    let match = regex.exec(content);
+    while (match) {
+      ranges.push(new TextUtils.TextRange.SourceRange(match.index, match[0].length));
+      match = regex.exec(content);
+    }
+    if (ranges.length) {
+      Highlighting.highlightRangesWithStyleClass(element, ranges, cssClassName, this.#highlightChanges);
+    }
+  }
+
+  revertHighlightChanges(): void {
+    Highlighting.revertDomChanges(this.#highlightChanges);
+    this.#highlightChanges = [];
+  }
+
+  async #updateCompletions(expression: string, filter: string, force: boolean): Promise<void> {
+    const suggestions = await TextEditor.JavaScript.completeInContext(expression, filter, force);
+    this.#completions = suggestions.map(v => v.text);
+    this.requestUpdate();
+  }
+
+  get editing(): boolean {
+    return this.#editing;
+  }
+
+  startEditing(): void {
+    this.#editing = true;
+    this.requestUpdate();
+  }
+
+  #editingEnded(): void {
+    this.#completions = [];
+    this.#editing = false;
+    this.requestUpdate();
+  }
+
+  async #editingCommitted(newContent: string): Promise<void> {
+    this.#editingEnded();
+    await this.#property?.setValue(newContent);
+  }
+
+  #invokeGetter(getter: SDK.RemoteObject.RemoteObject): void {
+    void this.#property?.invokeGetter(getter);
+  }
+}
+
 export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
   property: ObjectTreeNode;
   override toggleOnClick: boolean;
-  private highlightChanges: Highlighting.HighlightChange[];
   private linkifier: Components.Linkifier.Linkifier|undefined;
   private readonly maxNumPropertiesToShow: number;
-  readOnly!: boolean;
-  #editing = false;
-  readonly #view: TreeElementView;
-  #completions: string[] = [];
-  #nameElement: Element|undefined;
-  #valueElement: Element|undefined;
-  constructor(property: ObjectTreeNode, linkifier?: Components.Linkifier.Linkifier, view = TREE_ELEMENT_DEFAULT_VIEW) {
+  readonly #widget: ObjectPropertyWidget;
+  constructor(property: ObjectTreeNode, linkifier?: Components.Linkifier.Linkifier) {
     // Pass an empty title, the title gets made later in onattach.
     super();
 
-    this.#view = view;
+    this.#widget = new ObjectPropertyWidget();
     this.property = property;
+    this.property.addEventListener(ObjectTreeNodeBase.Events.VALUE_CHANGED, this.#updateValue, this);
+    this.property.addEventListener(ObjectTreeNodeBase.Events.CHILDREN_CHANGED, this.#updateChildren, this);
     this.toggleOnClick = true;
-    this.highlightChanges = [];
     this.linkifier = linkifier;
     this.maxNumPropertiesToShow = InitialVisibleChildrenLimit;
     this.listItemElement.addEventListener('contextmenu', this.contextMenuFired.bind(this), false);
@@ -1025,7 +1289,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
       linkifier?: Components.Linkifier.Linkifier,
       emptyPlaceholder?: string|null,
       ): Promise<void> {
-    const properties = await value.children();
+    const properties = await value.populateChildrenIfNeeded();
     if (properties.arrayRanges) {
       await ArrayGroupingTreeElement.populate(treeElement, properties, linkifier);
     } else {
@@ -1035,8 +1299,8 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   static populateWithProperties(
-      treeNode: UI.TreeOutline.TreeElement, {properties, internalProperties}: NodeChildren, skipProto: boolean,
-      skipGettersAndSetters: boolean, linkifier?: Components.Linkifier.Linkifier,
+      treeNode: UI.TreeOutline.TreeElement, {properties, internalProperties, accessors}: NodeChildren,
+      skipProto: boolean, skipGettersAndSetters: boolean, linkifier?: Components.Linkifier.Linkifier,
       emptyPlaceholder?: string|null): void {
     properties?.sort(ObjectPropertiesSection.compareProperties);
 
@@ -1048,25 +1312,10 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
       treeNode.appendChild(treeElement);
     }
 
-    const tailProperties = [];
     for (const property of properties ?? []) {
       if (treeNode instanceof ObjectPropertyTreeElement &&
           !ObjectPropertiesSection.isDisplayableProperty(property.property, treeNode.property?.property)) {
         continue;
-      }
-
-      // FIXME move into node
-      if (property.property.isOwn && !skipGettersAndSetters) {
-        if (property.property.getter) {
-          const getterProperty = new SDK.RemoteObject.RemoteObjectProperty(
-              'get ' + property.property.name, property.property.getter, false);
-          tailProperties.push(new ObjectTreeNode(getterProperty, property.propertiesMode, property.parent));
-        }
-        if (property.property.setter) {
-          const setterProperty = new SDK.RemoteObject.RemoteObjectProperty(
-              'set ' + property.property.name, property.property.setter, false);
-          tailProperties.push(new ObjectTreeNode(setterProperty, property.propertiesMode, property.parent));
-        }
       }
 
       const canShowProperty = property.property.getter || !property.property.isAccessorProperty();
@@ -1081,8 +1330,9 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
         treeNode.appendChild(element);
       }
     }
-    for (let i = 0; i < tailProperties.length; ++i) {
-      treeNode.appendChild(new ObjectPropertyTreeElement(tailProperties[i], linkifier));
+
+    for (const accessor of accessors ?? []) {
+      treeNode.appendChild(new ObjectPropertyTreeElement(accessor, linkifier));
     }
 
     for (const property of internalProperties ?? []) {
@@ -1099,6 +1349,28 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
     ObjectPropertyTreeElement.appendEmptyPlaceholderIfNeeded(treeNode, emptyPlaceholder);
   }
 
+  revertHighlightChanges(): void {
+    this.#widget.revertHighlightChanges();
+  }
+  setSearchRegex(regex: RegExp, additionalCssClassName?: string): boolean {
+    return this.#widget.setSearchRegex(regex, additionalCssClassName);
+  }
+
+  // This is called by layout tests
+  startEditing(): void {
+    this.#widget.startEditing();
+  }
+
+  // This is called by layout tests
+  get editing(): boolean {
+    return this.#widget.editing;
+  }
+
+  // This is called by layout tests
+  async applyExpression(expression: string): Promise<void> {
+    await this.property.setValue(expression);
+  }
+
   private static appendEmptyPlaceholderIfNeeded(treeNode: UI.TreeOutline.TreeElement, emptyPlaceholder?: string|null):
       void {
     if (treeNode.childCount()) {
@@ -1109,44 +1381,6 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
     title.textContent = emptyPlaceholder || i18nString(UIStrings.noProperties);
     const infoElement = new UI.TreeOutline.TreeElement(title);
     treeNode.appendChild(infoElement);
-  }
-
-  get nameElement(): Element|undefined {
-    return this.#nameElement;
-  }
-
-  setSearchRegex(regex: RegExp, additionalCssClassName?: string): boolean {
-    let cssClasses = Highlighting.highlightedSearchResultClassName;
-    if (additionalCssClassName) {
-      cssClasses += ' ' + additionalCssClassName;
-    }
-    this.revertHighlightChanges();
-
-    if (this.#nameElement) {
-      this.applySearch(regex, this.#nameElement, cssClasses);
-    }
-    if (this.property.object) {
-      const valueType = this.property.object.type;
-      if (valueType !== 'object' && this.#valueElement) {
-        this.applySearch(regex, this.#valueElement, cssClasses);
-      }
-    }
-
-    return Boolean(this.highlightChanges.length);
-  }
-
-  private applySearch(regex: RegExp, element: Element, cssClassName: string): void {
-    const ranges = [];
-    const content = element.textContent || '';
-    regex.lastIndex = 0;
-    let match = regex.exec(content);
-    while (match) {
-      ranges.push(new TextUtils.TextRange.SourceRange(match.index, match[0].length));
-      match = regex.exec(content);
-    }
-    if (ranges.length) {
-      Highlighting.highlightRangesWithStyleClass(element, ranges, cssClassName, this.highlightChanges);
-    }
   }
 
   private showAllPropertiesElementSelected(element: UI.TreeOutline.TreeElement): boolean {
@@ -1171,16 +1405,10 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
     this.appendChild(showAllPropertiesButton);
   }
 
-  revertHighlightChanges(): void {
-    Highlighting.revertDomChanges(this.highlightChanges);
-    this.highlightChanges = [];
-  }
-
   override async onpopulate(): Promise<void> {
     const treeOutline = (this.treeOutline as ObjectPropertiesSection | null);
     const skipProto = treeOutline ? Boolean(treeOutline.skipProtoInternal) : false;
     this.removeChildren();
-    this.property.removeChildren();
 
     if (this.property.object) {
       await ObjectPropertyTreeElement.populate(this, this.property, skipProto, false, this.linkifier);
@@ -1190,57 +1418,29 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
     }
   }
 
-  override onenter(): boolean {
-    if (this.property.object && !this.property.object.customPreview() &&
-        (this.property.property.writable || this.property.property.setter)) {
-      this.startEditing();
-      return true;
-    }
-    return false;
-  }
-
   override onattach(): void {
-    this.performUpdate();
     this.updateExpandable();
+    this.#widget.markAsRoot();
+    this.#widget.show(this.listItemElement);
+    this.#widget.property = this.property;
+    this.#widget.linkifier = this.linkifier;
   }
 
   override onexpand(): void {
-    this.performUpdate();
+    this.#widget.expanded = true;
   }
 
   override oncollapse(): void {
-    this.performUpdate();
+    this.#widget.expanded = false;
   }
 
-  async #updateCompletions(expression: string, filter: string, force: boolean): Promise<void> {
-    const suggestions = await TextEditor.JavaScript.completeInContext(expression, filter, force);
-    this.#completions = suggestions.map(v => v.text);
-    this.performUpdate();
+  #updateValue(): void {
+    this.updateExpandable();
   }
 
-  performUpdate(): void {
-    const input: TreeElementViewInput = {
-      expanded: this.expanded,
-      editing: this.#editing,
-      editingEnded: this.editingEnded.bind(this),
-      editingCommitted: this.editingCommitted.bind(this),
-      node: this.property,
-      linkifier: this.linkifier,
-      completions: this.#editing ? this.#completions : [],
-      onAutoComplete: this.#updateCompletions.bind(this),
-      invokeGetter: this.onInvokeGetterClick.bind(this),
-      startEditing: this.startEditing.bind(this),
-    };
-    const that = this;
-    const output: TreeElementViewOutput = {
-      set nameElement(e: Element|undefined) {
-        that.#nameElement = e;
-      },
-      set valueElement(e: Element|undefined) {
-        that.#valueElement = e;
-      },
-    };
-    this.#view(input, output, this.listItemElement);
+  #updateChildren(): void {
+    this.removeChildren();
+    void this.onpopulate();
   }
 
   getContextMenu(event: Event): UI.ContextMenu.ContextMenu {
@@ -1282,115 +1482,6 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
   private contextMenuFired(event: Event): void {
     const contextMenu = this.getContextMenu(event);
     void contextMenu.show();
-  }
-
-  get editing(): boolean {
-    return this.#editing;
-  }
-
-  private startEditing(): void {
-    if (!this.readOnly) {
-      this.#editing = true;
-      this.performUpdate();
-    }
-  }
-
-  private editingEnded(): void {
-    this.#completions = [];
-    this.#editing = false;
-    this.performUpdate();
-    this.updateExpandable();
-    this.select();
-  }
-
-  private async editingCommitted(newContent: string): Promise<void> {
-    this.editingEnded();
-    await this.applyExpression(newContent);
-  }
-
-  private promptKeyDown(originalContent: string, event: Event): void {
-    const keyboardEvent = (event as KeyboardEvent);
-    if (keyboardEvent.key === 'Enter') {
-      keyboardEvent.consume();
-      void this.editingCommitted(originalContent);
-      return;
-    }
-    if (keyboardEvent.key === Platform.KeyboardUtilities.ESCAPE_KEY) {
-      keyboardEvent.consume();
-      this.editingEnded();
-      return;
-    }
-  }
-
-  private async applyExpression(expression: string): Promise<void> {
-    const property = SDK.RemoteObject.RemoteObject.toCallArgument(this.property.property.symbol || this.property.name);
-    expression = JavaScriptREPL.wrapObjectLiteral(expression.trim());
-
-    if (this.property.property.synthetic) {
-      let invalidate = false;
-      if (expression) {
-        invalidate = await this.property.property.setSyntheticValue(expression);
-      }
-      if (invalidate) {
-        const parent = this.parent;
-        if (parent) {
-          parent.invalidateChildren();
-          void parent.onpopulate();
-        }
-      } else {
-        this.performUpdate();
-      }
-      return;
-    }
-
-    const parentObject = this.property.parent?.object as SDK.RemoteObject.RemoteObject;
-    const errorPromise =
-        expression ? parentObject.setPropertyValue(property, expression) : parentObject.deleteProperty(property);
-    const error = await errorPromise;
-    if (error) {
-      this.performUpdate();
-      return;
-    }
-
-    if (!expression) {
-      // The property was deleted, so remove this tree element.
-      this.parent?.removeChild(this);
-      this.property.parent?.removeChild(this.property);
-    } else {
-      // Call updateSiblings since their value might be based on the value that just changed.
-      const parent = this.parent;
-      if (parent) {
-        parent.invalidateChildren();
-        this.property.parent?.removeChildren();
-        void parent.onpopulate();
-      }
-    }
-  }
-
-  override invalidateChildren(): void {
-    super.invalidateChildren();
-    this.property.removeChildren();
-  }
-
-  async onInvokeGetterClick(getter: SDK.RemoteObject.RemoteObject): Promise<void> {
-    const invokeGetter = `
-          function invokeGetter(getter) {
-            return Reflect.apply(getter, this, []);
-          }`;
-    // Also passing a string instead of a Function to avoid coverage implementation messing with it.
-    const result = await this.property.parent
-                       ?.object
-                       // @ts-expect-error No way to teach TypeScript to preserve the Function-ness of `getter`.
-                       ?.callFunction(invokeGetter, [SDK.RemoteObject.RemoteObject.toCallArgument(getter)]);
-    if (!result?.object) {
-      return;
-    }
-    this.property.property.value = result.object;
-    this.property.property.wasThrown = result.wasThrown || false;
-
-    this.performUpdate();
-    this.invalidateChildren();
-    this.updateExpandable();
   }
 
   private updateExpandable(): void {
@@ -1549,6 +1640,7 @@ export class ArrayGroupingTreeElement extends UI.TreeOutline.TreeElement {
   constructor(child: ArrayGroupTreeNode, linkifier?: Components.Linkifier.Linkifier) {
     super(Platform.StringUtilities.sprintf('[%d … %d]', child.range.fromIndex, child.range.toIndex), true);
     this.#child = child;
+    this.#child.addEventListener(ObjectTreeNodeBase.Events.CHILDREN_CHANGED, this.onpopulate, this);
     this.toggleOnClick = true;
     this.linkifier = linkifier;
   }
@@ -1574,14 +1666,8 @@ export class ArrayGroupingTreeElement extends UI.TreeOutline.TreeElement {
     ObjectPropertyTreeElement.populateWithProperties(treeNode, children, false, false, linkifier);
   }
 
-  override invalidateChildren(): void {
-    super.invalidateChildren();
-    this.#child.removeChildren();
-  }
-
   override async onpopulate(): Promise<void> {
     this.removeChildren();
-    this.#child.removeChildren();
     await ObjectPropertyTreeElement.populate(this, this.#child, false, false, this.linkifier);
   }
 

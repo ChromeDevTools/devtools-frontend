@@ -97,7 +97,7 @@ describeWithEnvironment('ObjectPropertyTreeElement', () => {
       node: new ObjectUI.ObjectPropertiesSection.ObjectTreeNode(property),
     };
     const output = {valueElement: undefined, nameElement: undefined};
-    ObjectUI.ObjectPropertiesSection.TREE_ELEMENT_DEFAULT_VIEW(input, output, container);
+    ObjectUI.ObjectPropertiesSection.OBJECT_PROPERTY_DEFAULT_VIEW(input, output, container);
 
     sinon.assert.notCalled(input.startEditing);
     const event = new MouseEvent('dblclick', {bubbles: true, cancelable: true});
@@ -107,12 +107,11 @@ describeWithEnvironment('ObjectPropertyTreeElement', () => {
     valueElement.dispatchEvent(event);
     sinon.assert.calledOnce(input.startEditing);
 
-    const viewFunction = sinon.stub<[ObjectUI.ObjectPropertiesSection.TreeElementViewInput, object, HTMLElement]>();
-    const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement(
-        new ObjectUI.ObjectPropertiesSection.ObjectTreeNode(property), undefined, viewFunction);
-    section.treeOutline = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeOutline();
+    const viewFunction = sinon.stub<[ObjectUI.ObjectPropertiesSection.ObjectPropertyViewInput, object, HTMLElement]>();
+    const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertyWidget(undefined, viewFunction);
+    section.property = new ObjectUI.ObjectPropertiesSection.ObjectTreeNode(property),
 
-    renderElementIntoDOM(section.listItemElement);
+    renderElementIntoDOM(section);
     const firstExpectedCall = expectCall(viewFunction);
     section.performUpdate();
     const [firstInput] = await firstExpectedCall;

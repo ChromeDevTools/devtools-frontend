@@ -1865,7 +1865,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       assert.isOk(linkSwatch);
       assert.strictEqual(linkSwatch.innerText, keyword);
       const spy = sinon.spy(stylePropertyTreeElement.parentPane(), 'revealProperty');
-      (linkSwatch.querySelector('button') as HTMLElement | undefined)?.click();
+      linkSwatch.querySelector('button')?.click();
       sinon.assert.calledOnceWithExactly(spy, originalDeclaration);
     });
 

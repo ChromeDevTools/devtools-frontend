@@ -408,7 +408,7 @@ function defaultView(input: ViewInput, output: PanelViewOutput, target: HTMLElem
       return html`
         <devtools-ai-chat-view
           .props=${input.props}
-          ${Lit.Directives.ref((el: Element | undefined) => {
+          ${Lit.Directives.ref(el => {
             if (!el || !(el instanceof ChatView)) {
               return;
             }

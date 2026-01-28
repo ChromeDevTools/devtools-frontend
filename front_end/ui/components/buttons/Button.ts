@@ -117,7 +117,7 @@ export class Button extends HTMLElement {
     longClickable: false,
   };
   #internals = this.attachInternals();
-  #slotRef = Lit.Directives.createRef();
+  #slotRef = Lit.Directives.createRef<HTMLSlotElement>();
 
   constructor() {
     super();
@@ -326,7 +326,7 @@ export class Button extends HTMLElement {
   }
 
   #render(): void {
-    const nodes = (this.#slotRef.value as HTMLSlotElement | undefined)?.assignedNodes();
+    const nodes = this.#slotRef.value?.assignedNodes();
     const isEmpty = !Boolean(nodes?.length);
     if (!this.#props.variant) {
       throw new Error('Button requires a variant to be defined');

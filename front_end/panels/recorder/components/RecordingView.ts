@@ -454,7 +454,7 @@ function renderTextEditor(input: ViewInput, output: ViewOutput): Lit.TemplateRes
   // clang-format off
   return html`
     <div class="text-editor" jslog=${VisualLogging.textField().track({change: true})}>
-      <devtools-text-editor .state=${input.editorState} ${Lit.Directives.ref((editor: Element | undefined) => {
+      <devtools-text-editor .state=${input.editorState} ${Lit.Directives.ref(editor => {
         if (!editor || !(editor instanceof TextEditor.TextEditor.TextEditor)) {
           return;
         }
@@ -645,7 +645,7 @@ function renderSections(input: ViewInput): Lit.LitTemplate {
       )}
       </div>
     `;
-    // clang-format on
+        // clang-format on
 }
 
 function renderHeader(input: ViewInput): Lit.LitTemplate {

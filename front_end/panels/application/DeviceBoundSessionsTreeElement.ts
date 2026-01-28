@@ -6,6 +6,7 @@ import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import {createIcon} from '../../ui/kit/kit.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 import {ApplicationPanelTreeElement} from './ApplicationPanelTreeElement.js';
 import {
@@ -46,6 +47,14 @@ const UIStrings = {
    * linked to a session.
    */
   noSession: 'No session',
+  /**
+   *@description Tooltip text for a terminated session.
+   */
+  terminatedSession: 'Session terminated',
+  /**
+   *@description Tooltip text for a session with errors.
+   */
+  sessionWithErrors: 'Session has errors',
 } as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/application/DeviceBoundSessionsTreeElement.ts', UIStrings);
@@ -122,13 +131,23 @@ export class RootTreeElement extends ApplicationPanelTreeElement {
 
   #updateElementIconAndStyling(
       sessionElement: ApplicationPanelTreeElement, isSessionTerminated: boolean, sessionHasErrors: boolean): void {
+    const title = sessionElement.title as string;
     if (isSessionTerminated) {
       sessionElement.listItemElement.classList.add('device-bound-session-terminated');
       sessionElement.setLeadingIcons([createIcon('database-off')]);
+      const terminatedTitle = i18nString(UIStrings.terminatedSession);
+      UI.ARIAUtils.setLabel(sessionElement.listItemElement, `${title}, ${terminatedTitle}`);
       return;
     }
     sessionElement.listItemElement.classList.remove('device-bound-session-terminated');
-    sessionElement.setLeadingIcons([createIcon(sessionHasErrors ? 'warning' : 'database')]);
+    if (sessionHasErrors) {
+      sessionElement.setLeadingIcons([createIcon('warning')]);
+      const errorTitle = i18nString(UIStrings.sessionWithErrors);
+      UI.ARIAUtils.setLabel(sessionElement.listItemElement, `${title}, ${errorTitle}`);
+    } else {
+      sessionElement.setLeadingIcons([createIcon('database')]);
+      UI.ARIAUtils.setLabel(sessionElement.listItemElement, title);
+    }
   }
 
   #updateIconAndStyling(site: string, sessionId: string|undefined): void {

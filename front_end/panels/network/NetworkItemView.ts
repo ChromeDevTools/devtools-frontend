@@ -21,6 +21,7 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as NetworkComponents from './components/components.js';
 import {EventSourceMessagesView} from './EventSourceMessagesView.js';
 import {RequestCookiesView} from './RequestCookiesView.js';
+import {RequestDeviceBoundSessionsView} from './RequestDeviceBoundSessionsView.js';
 import {RequestInitiatorView} from './RequestInitiatorView.js';
 import {RequestPayloadView} from './RequestPayloadView.js';
 import {RequestPreviewView} from './RequestPreviewView.js';
@@ -115,6 +116,17 @@ const UIStrings = {
    */
   cookies: 'Cookies',
   /**
+   * @description Title of the Device Bound Sessions tab in the Network panel. A
+   * website may decide to create a session for a user, for example when the user
+   * logs in. They can use a protocol to make it a "device bound session". That
+   * means that when the session expires, it is only possible for it to be
+   * extended on the device it was created on. Thus the session is considered
+   * to be bound to that device. For more details on the protocol, see
+   * https://github.com/w3c/webappsec-dbsc/blob/main/README.md and
+   * https://w3c.github.io/webappsec-dbsc/.
+   */
+  deviceBoundSessions: 'Device bound sessions',
+  /**
    * @description Text in Network Item View of the Network panel
    */
   requestAndResponseCookies: 'Request and response cookies',
@@ -140,6 +152,7 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
   #payloadView: RequestPayloadView|null = null;
   readonly #responseView: RequestResponseView|undefined;
   #cookiesView: RequestCookiesView|null = null;
+  #deviceBoundSessionsView: RequestDeviceBoundSessionsView|null = null;
   #initialTab?: NetworkForward.UIRequestLocation.UIRequestTabs;
   readonly #firstTab: NetworkForward.UIRequestLocation.UIRequestTabs;
 
@@ -253,10 +266,10 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
     super.wasShown();
     this.#request.addEventListener(SDK.NetworkRequest.Events.REQUEST_HEADERS_CHANGED, this.requestHeadersChanged, this);
     this.#request.addEventListener(
-        SDK.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED, this.maybeAppendCookiesPanel, this);
+        SDK.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED, this.maybeAppendCookieResponsePanels, this);
     this.#request.addEventListener(
         SDK.NetworkRequest.Events.TRUST_TOKEN_RESULT_ADDED, this.maybeShowErrorIconInTrustTokenTabHeader, this);
-    this.maybeAppendCookiesPanel();
+    this.maybeAppendCookieResponsePanels();
     this.maybeShowErrorIconInTrustTokenTabHeader();
 
     // Only select the initial tab the first time the view is shown after construction.
@@ -283,7 +296,7 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
     this.#request.removeEventListener(
         SDK.NetworkRequest.Events.REQUEST_HEADERS_CHANGED, this.requestHeadersChanged, this);
     this.#request.removeEventListener(
-        SDK.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED, this.maybeAppendCookiesPanel, this);
+        SDK.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED, this.maybeAppendCookieResponsePanels, this);
     this.#request.removeEventListener(
         SDK.NetworkRequest.Events.TRUST_TOKEN_RESULT_ADDED, this.maybeShowErrorIconInTrustTokenTabHeader, this);
   }
@@ -291,6 +304,11 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
   private async requestHeadersChanged(): Promise<void> {
     this.maybeAppendCookiesPanel();
     void this.maybeAppendPayloadPanel();
+  }
+
+  private maybeAppendCookieResponsePanels(): void {
+    this.maybeAppendCookiesPanel();
+    this.maybeAppendDeviceBoundSessionsPanel();
   }
 
   private maybeAppendCookiesPanel(): void {
@@ -308,6 +326,17 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
       icon.classList.add('small');
       icon.title = i18nString(UIStrings.thirdPartyPhaseout);
       this.setTrailingTabIcon(NetworkForward.UIRequestLocation.UIRequestTabs.COOKIES, icon);
+    }
+  }
+
+  private maybeAppendDeviceBoundSessionsPanel(): void {
+    const deviceBoundSessionsPresent = this.#request.getDeviceBoundSessionUsages().length > 0;
+    if (deviceBoundSessionsPresent && !this.#deviceBoundSessionsView) {
+      this.#deviceBoundSessionsView = new RequestDeviceBoundSessionsView(this.#request);
+      this.appendTab(
+          NetworkForward.UIRequestLocation.UIRequestTabs.DEVICE_BOUND_SESSIONS,
+          i18nString(UIStrings.deviceBoundSessions), this.#deviceBoundSessionsView,
+          i18nString(UIStrings.deviceBoundSessions));
     }
   }
 

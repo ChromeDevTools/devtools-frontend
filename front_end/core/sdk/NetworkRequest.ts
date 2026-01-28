@@ -258,6 +258,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   #exemptedResponseCookies: ExemptedSetCookieWithReason[] = [];
   #responseCookiesPartitionKey: Protocol.Network.CookiePartitionKey|null = null;
   #responseCookiesPartitionKeyOpaque: boolean|null = null;
+  #deviceBoundSessionUsages: Protocol.Network.DeviceBoundSessionWithUsage[] = [];
   #siteHasCookieInOtherPartition = false;
   localizedFailDescription: string|null = null;
   #url!: Platform.DevToolsPath.UrlString;
@@ -1612,6 +1613,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
     this.setRequestHeaders(extraRequestInfo.requestHeaders);
     this.#hasExtraRequestInfo = true;
     this.setRequestHeadersText('');  // Mark request headers as non-provisional
+    this.#deviceBoundSessionUsages = extraRequestInfo.deviceBoundSessionUsages || [];
     this.#clientSecurityState = extraRequestInfo.clientSecurityState;
     this.#appliedNetworkConditionsId = extraRequestInfo.appliedNetworkConditionsId;
     if (extraRequestInfo.connectTiming) {
@@ -1628,6 +1630,10 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
 
   setAppliedNetworkConditions(appliedNetworkConditionsId: string): void {
     this.#appliedNetworkConditionsId = appliedNetworkConditionsId;
+  }
+
+  getDeviceBoundSessionUsages(): Protocol.Network.DeviceBoundSessionWithUsage[] {
+    return this.#deviceBoundSessionUsages;
   }
 
   hasExtraRequestInfo(): boolean {
@@ -2151,6 +2157,7 @@ export interface ExtraRequestInfo {
   blockedRequestCookies: Array<{blockedReasons: Protocol.Network.CookieBlockedReason[], cookie: Cookie}>;
   requestHeaders: NameValue[];
   includedRequestCookies: IncludedCookieWithReason[];
+  deviceBoundSessionUsages?: Protocol.Network.DeviceBoundSessionWithUsage[];
   clientSecurityState?: Protocol.Network.ClientSecurityState;
   connectTiming: Protocol.Network.ConnectTiming;
   siteHasCookieInOtherPartition?: boolean;

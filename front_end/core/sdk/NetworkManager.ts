@@ -1022,6 +1022,7 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
     requestId,
     associatedCookies,
     headers,
+    deviceBoundSessionUsages,
     clientSecurityState,
     connectTiming,
     siteHasCookieInOtherPartition,
@@ -1036,10 +1037,11 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
         blockedRequestCookies.push({blockedReasons, cookie: Cookie.fromProtocolCookie(cookie)});
       }
     }
-    const extraRequestInfo = {
+    const extraRequestInfo: ExtraRequestInfo = {
       blockedRequestCookies,
       includedRequestCookies,
       requestHeaders: this.headersMapToHeadersArray(headers),
+      deviceBoundSessionUsages,
       clientSecurityState,
       connectTiming,
       siteHasCookieInOtherPartition,

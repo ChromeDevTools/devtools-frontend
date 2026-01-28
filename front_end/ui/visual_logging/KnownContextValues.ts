@@ -1887,6 +1887,7 @@ export const knownContextValues = new Set([
   'identity',
   'ignore-this-retainer',
   'image',
+  'image-animation',
   'image-orientation',
   'image-rendering',
   'image-url',

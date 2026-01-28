@@ -25922,6 +25922,637 @@
             ]
         },
         {
+            "domain": "SmartCardEmulation",
+            "experimental": true,
+            "types": [
+                {
+                    "id": "ResultCode",
+                    "description": "Indicates the PC/SC error code.\n\nThis maps to:\nPC/SC Lite: https://pcsclite.apdu.fr/api/group__ErrorCodes.html\nMicrosoft: https://learn.microsoft.com/en-us/windows/win32/secauthn/authentication-return-values",
+                    "type": "string",
+                    "enum": [
+                        "success",
+                        "removed-card",
+                        "reset-card",
+                        "unpowered-card",
+                        "unresponsive-card",
+                        "unsupported-card",
+                        "reader-unavailable",
+                        "sharing-violation",
+                        "not-transacted",
+                        "no-smartcard",
+                        "proto-mismatch",
+                        "system-cancelled",
+                        "not-ready",
+                        "cancelled",
+                        "insufficient-buffer",
+                        "invalid-handle",
+                        "invalid-parameter",
+                        "invalid-value",
+                        "no-memory",
+                        "timeout",
+                        "unknown-reader",
+                        "unsupported-feature",
+                        "no-readers-available",
+                        "service-stopped",
+                        "no-service",
+                        "comm-error",
+                        "internal-error",
+                        "server-too-busy",
+                        "unexpected",
+                        "shutdown",
+                        "unknown-card",
+                        "unknown"
+                    ]
+                },
+                {
+                    "id": "ShareMode",
+                    "description": "Maps to the |SCARD_SHARE_*| values.",
+                    "type": "string",
+                    "enum": [
+                        "shared",
+                        "exclusive",
+                        "direct"
+                    ]
+                },
+                {
+                    "id": "Disposition",
+                    "description": "Indicates what the reader should do with the card.",
+                    "type": "string",
+                    "enum": [
+                        "leave-card",
+                        "reset-card",
+                        "unpower-card",
+                        "eject-card"
+                    ]
+                },
+                {
+                    "id": "ConnectionState",
+                    "description": "Maps to |SCARD_*| connection state values.",
+                    "type": "string",
+                    "enum": [
+                        "absent",
+                        "present",
+                        "swallowed",
+                        "powered",
+                        "negotiable",
+                        "specific"
+                    ]
+                },
+                {
+                    "id": "ReaderStateFlags",
+                    "description": "Maps to the |SCARD_STATE_*| flags.",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "unaware",
+                            "optional": true,
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "ignore",
+                            "optional": true,
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "changed",
+                            "optional": true,
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "unknown",
+                            "optional": true,
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "unavailable",
+                            "optional": true,
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "empty",
+                            "optional": true,
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "present",
+                            "optional": true,
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "exclusive",
+                            "optional": true,
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "inuse",
+                            "optional": true,
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "mute",
+                            "optional": true,
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "unpowered",
+                            "optional": true,
+                            "type": "boolean"
+                        }
+                    ]
+                },
+                {
+                    "id": "ProtocolSet",
+                    "description": "Maps to the |SCARD_PROTOCOL_*| flags.",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "t0",
+                            "optional": true,
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "t1",
+                            "optional": true,
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "raw",
+                            "optional": true,
+                            "type": "boolean"
+                        }
+                    ]
+                },
+                {
+                    "id": "Protocol",
+                    "description": "Maps to the |SCARD_PROTOCOL_*| values.",
+                    "type": "string",
+                    "enum": [
+                        "t0",
+                        "t1",
+                        "raw"
+                    ]
+                },
+                {
+                    "id": "ReaderStateIn",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "reader",
+                            "type": "string"
+                        },
+                        {
+                            "name": "currentState",
+                            "$ref": "ReaderStateFlags"
+                        },
+                        {
+                            "name": "currentInsertionCount",
+                            "type": "integer"
+                        }
+                    ]
+                },
+                {
+                    "id": "ReaderStateOut",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "reader",
+                            "type": "string"
+                        },
+                        {
+                            "name": "eventState",
+                            "$ref": "ReaderStateFlags"
+                        },
+                        {
+                            "name": "eventCount",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "atr",
+                            "type": "binary"
+                        }
+                    ]
+                }
+            ],
+            "commands": [
+                {
+                    "name": "enable",
+                    "description": "Enables the |SmartCardEmulation| domain."
+                },
+                {
+                    "name": "disable",
+                    "description": "Disables the |SmartCardEmulation| domain."
+                },
+                {
+                    "name": "reportEstablishContextResult",
+                    "description": "Reports the successful result of a |SCardEstablishContext| call.\n\nThis maps to:\nPC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#gaa1b8970169fd4883a6dc4a8f43f19b67\nMicrosoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardestablishcontext",
+                    "parameters": [
+                        {
+                            "name": "requestId",
+                            "type": "string"
+                        },
+                        {
+                            "name": "contextId",
+                            "type": "integer"
+                        }
+                    ]
+                },
+                {
+                    "name": "reportReleaseContextResult",
+                    "description": "Reports the successful result of a |SCardReleaseContext| call.\n\nThis maps to:\nPC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#ga6aabcba7744c5c9419fdd6404f73a934\nMicrosoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardreleasecontext",
+                    "parameters": [
+                        {
+                            "name": "requestId",
+                            "type": "string"
+                        }
+                    ]
+                },
+                {
+                    "name": "reportListReadersResult",
+                    "description": "Reports the successful result of a |SCardListReaders| call.\n\nThis maps to:\nPC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#ga93b07815789b3cf2629d439ecf20f0d9\nMicrosoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardlistreadersa",
+                    "parameters": [
+                        {
+                            "name": "requestId",
+                            "type": "string"
+                        },
+                        {
+                            "name": "readers",
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "reportGetStatusChangeResult",
+                    "description": "Reports the successful result of a |SCardGetStatusChange| call.\n\nThis maps to:\nPC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#ga33247d5d1257d59e55647c3bb717db24\nMicrosoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardgetstatuschangea",
+                    "parameters": [
+                        {
+                            "name": "requestId",
+                            "type": "string"
+                        },
+                        {
+                            "name": "readerStates",
+                            "type": "array",
+                            "items": {
+                                "$ref": "ReaderStateOut"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "reportBeginTransactionResult",
+                    "description": "Reports the result of a |SCardBeginTransaction| call.\nOn success, this creates a new transaction object.\n\nThis maps to:\nPC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#gaddb835dce01a0da1d6ca02d33ee7d861\nMicrosoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardbegintransaction",
+                    "parameters": [
+                        {
+                            "name": "requestId",
+                            "type": "string"
+                        }
+                    ]
+                },
+                {
+                    "name": "reportPlainResult",
+                    "description": "Reports the successful result of a call that returns only a result code.\nUsed for: |SCardCancel|, |SCardDisconnect|, |SCardSetAttrib|, |SCardEndTransaction|.\n\nThis maps to:\n1. SCardCancel\n   PC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#gaacbbc0c6d6c0cbbeb4f4debf6fbeeee6\n   Microsoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardcancel\n\n2. SCardDisconnect\n   PC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#ga4be198045c73ec0deb79e66c0ca1738a\n   Microsoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scarddisconnect\n\n3. SCardSetAttrib\n   PC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#ga060f0038a4ddfd5dd2b8fadf3c3a2e4f\n   Microsoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardsetattrib\n\n4. SCardEndTransaction\n   PC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#gae8742473b404363e5c587f570d7e2f3b\n   Microsoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardendtransaction",
+                    "parameters": [
+                        {
+                            "name": "requestId",
+                            "type": "string"
+                        }
+                    ]
+                },
+                {
+                    "name": "reportConnectResult",
+                    "description": "Reports the successful result of a |SCardConnect| call.\n\nThis maps to:\nPC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#ga4e515829752e0a8dbc4d630696a8d6a5\nMicrosoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardconnecta",
+                    "parameters": [
+                        {
+                            "name": "requestId",
+                            "type": "string"
+                        },
+                        {
+                            "name": "handle",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "activeProtocol",
+                            "optional": true,
+                            "$ref": "Protocol"
+                        }
+                    ]
+                },
+                {
+                    "name": "reportDataResult",
+                    "description": "Reports the successful result of a call that sends back data on success.\nUsed for |SCardTransmit|, |SCardControl|, and |SCardGetAttrib|.\n\nThis maps to:\n1. SCardTransmit\n   PC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#ga9a2d77242a271310269065e64633ab99\n   Microsoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardtransmit\n\n2. SCardControl\n   PC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#gac3454d4657110fd7f753b2d3d8f4e32f\n   Microsoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardcontrol\n\n3. SCardGetAttrib\n   PC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#gaacfec51917255b7a25b94c5104961602\n   Microsoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardgetattrib",
+                    "parameters": [
+                        {
+                            "name": "requestId",
+                            "type": "string"
+                        },
+                        {
+                            "name": "data",
+                            "type": "binary"
+                        }
+                    ]
+                },
+                {
+                    "name": "reportStatusResult",
+                    "description": "Reports the successful result of a |SCardStatus| call.\n\nThis maps to:\nPC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#gae49c3c894ad7ac12a5b896bde70d0382\nMicrosoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardstatusa",
+                    "parameters": [
+                        {
+                            "name": "requestId",
+                            "type": "string"
+                        },
+                        {
+                            "name": "readerName",
+                            "type": "string"
+                        },
+                        {
+                            "name": "state",
+                            "$ref": "ConnectionState"
+                        },
+                        {
+                            "name": "atr",
+                            "type": "binary"
+                        },
+                        {
+                            "name": "protocol",
+                            "optional": true,
+                            "$ref": "Protocol"
+                        }
+                    ]
+                },
+                {
+                    "name": "reportError",
+                    "description": "Reports an error result for the given request.",
+                    "parameters": [
+                        {
+                            "name": "requestId",
+                            "type": "string"
+                        },
+                        {
+                            "name": "resultCode",
+                            "$ref": "ResultCode"
+                        }
+                    ]
+                }
+            ],
+            "events": [
+                {
+                    "name": "establishContextRequested",
+                    "description": "Fired when |SCardEstablishContext| is called.\n\nThis maps to:\nPC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#gaa1b8970169fd4883a6dc4a8f43f19b67\nMicrosoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardestablishcontext",
+                    "parameters": [
+                        {
+                            "name": "requestId",
+                            "type": "string"
+                        }
+                    ]
+                },
+                {
+                    "name": "releaseContextRequested",
+                    "description": "Fired when |SCardReleaseContext| is called.\n\nThis maps to:\nPC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#ga6aabcba7744c5c9419fdd6404f73a934\nMicrosoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardreleasecontext",
+                    "parameters": [
+                        {
+                            "name": "requestId",
+                            "type": "string"
+                        },
+                        {
+                            "name": "contextId",
+                            "type": "integer"
+                        }
+                    ]
+                },
+                {
+                    "name": "listReadersRequested",
+                    "description": "Fired when |SCardListReaders| is called.\n\nThis maps to:\nPC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#ga93b07815789b3cf2629d439ecf20f0d9\nMicrosoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardlistreadersa",
+                    "parameters": [
+                        {
+                            "name": "requestId",
+                            "type": "string"
+                        },
+                        {
+                            "name": "contextId",
+                            "type": "integer"
+                        }
+                    ]
+                },
+                {
+                    "name": "getStatusChangeRequested",
+                    "description": "Fired when |SCardGetStatusChange| is called. Timeout is specified in milliseconds.\n\nThis maps to:\nPC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#ga33247d5d1257d59e55647c3bb717db24\nMicrosoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardgetstatuschangea",
+                    "parameters": [
+                        {
+                            "name": "requestId",
+                            "type": "string"
+                        },
+                        {
+                            "name": "contextId",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "readerStates",
+                            "type": "array",
+                            "items": {
+                                "$ref": "ReaderStateIn"
+                            }
+                        },
+                        {
+                            "name": "timeout",
+                            "description": "in milliseconds, if absent, it means \"infinite\"",
+                            "optional": true,
+                            "type": "integer"
+                        }
+                    ]
+                },
+                {
+                    "name": "cancelRequested",
+                    "description": "Fired when |SCardCancel| is called.\n\nThis maps to:\nPC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#gaacbbc0c6d6c0cbbeb4f4debf6fbeeee6\nMicrosoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardcancel",
+                    "parameters": [
+                        {
+                            "name": "requestId",
+                            "type": "string"
+                        },
+                        {
+                            "name": "contextId",
+                            "type": "integer"
+                        }
+                    ]
+                },
+                {
+                    "name": "connectRequested",
+                    "description": "Fired when |SCardConnect| is called.\n\nThis maps to:\nPC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#ga4e515829752e0a8dbc4d630696a8d6a5\nMicrosoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardconnecta",
+                    "parameters": [
+                        {
+                            "name": "requestId",
+                            "type": "string"
+                        },
+                        {
+                            "name": "contextId",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "reader",
+                            "type": "string"
+                        },
+                        {
+                            "name": "shareMode",
+                            "$ref": "ShareMode"
+                        },
+                        {
+                            "name": "preferredProtocols",
+                            "$ref": "ProtocolSet"
+                        }
+                    ]
+                },
+                {
+                    "name": "disconnectRequested",
+                    "description": "Fired when |SCardDisconnect| is called.\n\nThis maps to:\nPC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#ga4be198045c73ec0deb79e66c0ca1738a\nMicrosoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scarddisconnect",
+                    "parameters": [
+                        {
+                            "name": "requestId",
+                            "type": "string"
+                        },
+                        {
+                            "name": "handle",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "disposition",
+                            "$ref": "Disposition"
+                        }
+                    ]
+                },
+                {
+                    "name": "transmitRequested",
+                    "description": "Fired when |SCardTransmit| is called.\n\nThis maps to:\nPC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#ga9a2d77242a271310269065e64633ab99\nMicrosoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardtransmit",
+                    "parameters": [
+                        {
+                            "name": "requestId",
+                            "type": "string"
+                        },
+                        {
+                            "name": "handle",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "data",
+                            "type": "binary"
+                        },
+                        {
+                            "name": "protocol",
+                            "optional": true,
+                            "$ref": "Protocol"
+                        }
+                    ]
+                },
+                {
+                    "name": "controlRequested",
+                    "description": "Fired when |SCardControl| is called.\n\nThis maps to:\nPC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#gac3454d4657110fd7f753b2d3d8f4e32f\nMicrosoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardcontrol",
+                    "parameters": [
+                        {
+                            "name": "requestId",
+                            "type": "string"
+                        },
+                        {
+                            "name": "handle",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "controlCode",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "data",
+                            "type": "binary"
+                        }
+                    ]
+                },
+                {
+                    "name": "getAttribRequested",
+                    "description": "Fired when |SCardGetAttrib| is called.\n\nThis maps to:\nPC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#gaacfec51917255b7a25b94c5104961602\nMicrosoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardgetattrib",
+                    "parameters": [
+                        {
+                            "name": "requestId",
+                            "type": "string"
+                        },
+                        {
+                            "name": "handle",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "attribId",
+                            "type": "integer"
+                        }
+                    ]
+                },
+                {
+                    "name": "setAttribRequested",
+                    "description": "Fired when |SCardSetAttrib| is called.\n\nThis maps to:\nPC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#ga060f0038a4ddfd5dd2b8fadf3c3a2e4f\nMicrosoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardsetattrib",
+                    "parameters": [
+                        {
+                            "name": "requestId",
+                            "type": "string"
+                        },
+                        {
+                            "name": "handle",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "attribId",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "data",
+                            "type": "binary"
+                        }
+                    ]
+                },
+                {
+                    "name": "statusRequested",
+                    "description": "Fired when |SCardStatus| is called.\n\nThis maps to:\nPC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#gae49c3c894ad7ac12a5b896bde70d0382\nMicrosoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardstatusa",
+                    "parameters": [
+                        {
+                            "name": "requestId",
+                            "type": "string"
+                        },
+                        {
+                            "name": "handle",
+                            "type": "integer"
+                        }
+                    ]
+                },
+                {
+                    "name": "beginTransactionRequested",
+                    "description": "Fired when |SCardBeginTransaction| is called.\n\nThis maps to:\nPC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#gaddb835dce01a0da1d6ca02d33ee7d861\nMicrosoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardbegintransaction",
+                    "parameters": [
+                        {
+                            "name": "requestId",
+                            "type": "string"
+                        },
+                        {
+                            "name": "handle",
+                            "type": "integer"
+                        }
+                    ]
+                },
+                {
+                    "name": "endTransactionRequested",
+                    "description": "Fired when |SCardEndTransaction| is called.\n\nThis maps to:\nPC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#gae8742473b404363e5c587f570d7e2f3b\nMicrosoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardendtransaction",
+                    "parameters": [
+                        {
+                            "name": "requestId",
+                            "type": "string"
+                        },
+                        {
+                            "name": "handle",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "disposition",
+                            "$ref": "Disposition"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
             "domain": "Storage",
             "experimental": true,
             "dependencies": [

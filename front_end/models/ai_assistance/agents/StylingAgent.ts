@@ -279,13 +279,14 @@ export class StylingAgent extends AiAgent<SDK.DOMModel.DOMNode> {
                                  });
 
     this.declareFunction<{
-      elements: string[],
+      elements: number[],
       styleProperties: string[],
       explanation: string,
     }>('getStyles', {
       description:
           `Get computed and source styles for one or multiple elements on the inspected page for multiple elements at once by uid.
 
+**CRITICAL** An element uid is a number, not a selector.
 **CRITICAL** Use selectors to refer to elements in the text output. Do not use uids.
 **CRITICAL** Always provide the explanation argument to explain what and why you query.`,
       parameters: {
@@ -300,8 +301,8 @@ export class StylingAgent extends AiAgent<SDK.DOMModel.DOMNode> {
           },
           elements: {
             type: Host.AidaClient.ParametersTypes.ARRAY,
-            description: 'A list of element uids to get data for',
-            items: {type: Host.AidaClient.ParametersTypes.STRING, description: `An element uid.`},
+            description: 'A list of element uids to get data for. These are numbers, not selectors.',
+            items: {type: Host.AidaClient.ParametersTypes.INTEGER, description: `An element uid.`},
             nullable: false,
           },
           styleProperties: {
@@ -605,7 +606,7 @@ const data = {
     return this.context?.getItem() ?? null;
   }
 
-  async getStyles(elements: string[], properties: string[]): Promise<FunctionCallHandlerResult<unknown>> {
+  async getStyles(elements: number[], properties: string[]): Promise<FunctionCallHandlerResult<unknown>> {
     const result:
         Record<string, {computed: Record<string, string|undefined>, authored: Record<string, string|undefined>}> = {};
     for (const uid of elements) {

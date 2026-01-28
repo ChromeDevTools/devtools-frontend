@@ -16,6 +16,7 @@ import {
   type ResponseData,
   ResponseType
 } from './agents/AiAgent.js';
+import {ContextSelectionAgent} from './agents/ContextSelectionAgent.js';
 import {FileAgent} from './agents/FileAgent.js';
 import {NetworkAgent} from './agents/NetworkAgent.js';
 import {PerformanceAgent} from './agents/PerformanceAgent.js';
@@ -87,6 +88,7 @@ export class AiConversation {
     this.#isReadOnly = isReadOnly;
     this.#isExternal = isExternal;
     this.history = this.#reconstructHistory(data);
+    // Needs to be last
     this.#agent = this.#createAgent();
   }
 
@@ -226,16 +228,22 @@ export class AiConversation {
   serialize(): SerializedConversation {
     return {
       id: this.id,
-      history: this.history.map(item => {
-        if (item.type === ResponseType.USER_QUERY) {
-          return {...item, imageInput: undefined};
-        }
-        // Remove the `confirm()`-function because `structuredClone()` throws on functions
-        if (item.type === ResponseType.SIDE_EFFECT) {
-          return {...item, confirm: undefined};
-        }
-        return item;
-      }),
+      history: this.history
+                   .map(item => {
+                     if (item.type === ResponseType.CONTEXT_CHANGE) {
+                       return null;
+                     }
+
+                     if (item.type === ResponseType.USER_QUERY) {
+                       return {...item, imageInput: undefined};
+                     }
+                     // Remove the `confirm()`-function because `structuredClone()` throws on functions
+                     if (item.type === ResponseType.SIDE_EFFECT) {
+                       return {...item, confirm: undefined};
+                     }
+                     return item;
+                   })
+                   .filter(history => !!history),
       type: this.#type,
       isExternal: this.#isExternal,
     };
@@ -264,6 +272,10 @@ export class AiConversation {
       }
       case ConversationType.PERFORMANCE: {
         agent = new PerformanceAgent(options);
+        break;
+      }
+      case ConversationType.NONE: {
+        agent = new ContextSelectionAgent(options);
         break;
       }
     }
@@ -366,6 +378,10 @@ Time: ${micros(time)}`;
     }
 
     function shouldAddToHistory(data: ResponseData): boolean {
+      if (data.type === ResponseType.CONTEXT_CHANGE) {
+        return false;
+      }
+
       // We don't want to save partial responses to the conversation history.
       // TODO(crbug.com/463325400): We should save interleaved answers to the history as well.
       if (data.type === ResponseType.ANSWER && !data.complete) {
@@ -383,6 +399,11 @@ Time: ${micros(time)}`;
         },
         options.multimodalInput,
         )) {
+      if (data.type === ResponseType.CONTEXT_CHANGE) {
+        this.#type = ConversationType.NETWORK;
+        this.#agent = this.#createAgent();
+      }
+
       if (shouldAddToHistory(data)) {
         void this.addHistoryItem(data);
       }

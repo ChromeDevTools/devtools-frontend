@@ -17,6 +17,7 @@ export const enum ResponseType {
   ERROR = 'error',
   QUERYING = 'querying',
   USER_QUERY = 'user-query',
+  CONTEXT_CHANGE = 'context-change'
 }
 
 export const enum ErrorType {
@@ -84,6 +85,11 @@ export interface SideEffectResponse {
   code?: string;
   confirm: (confirm: boolean) => void;
 }
+export interface ContextChangeResponse {
+  type: ResponseType.CONTEXT_CHANGE;
+  context: unknown;
+}
+
 interface SerializedSideEffectResponse extends Omit<SideEffectResponse, 'confirm'> {}
 
 export interface ActionResponse {
@@ -105,13 +111,13 @@ export interface UserQuery {
 }
 
 export type ResponseData = AnswerResponse|SuggestionsResponse|ErrorResponse|ActionResponse|SideEffectResponse|
-    ThoughtResponse|TitleResponse|QueryingResponse|ContextResponse|UserQuery;
+    ThoughtResponse|TitleResponse|QueryingResponse|ContextResponse|UserQuery|ContextChangeResponse;
 
 export type SerializedResponseData = AnswerResponse|SuggestionsResponse|ErrorResponse|ActionResponse|
     SerializedSideEffectResponse|ThoughtResponse|TitleResponse|QueryingResponse|ContextResponse|UserQuery;
 
 export type FunctionCallResponseData =
-    TitleResponse|ThoughtResponse|ActionResponse|SideEffectResponse|SuggestionsResponse;
+    TitleResponse|ThoughtResponse|ActionResponse|SideEffectResponse|SuggestionsResponse|ContextChangeResponse;
 
 export interface BuildRequestOptions {
   text: string;
@@ -200,10 +206,14 @@ export abstract class ConversationContext<T> {
 }
 
 export type FunctionCallHandlerResult<Result> = {
+  requiresApproval: true,
+}|{
   result: Result,
 }|{
-  requiresApproval: true,
-}|{error: string};
+  context: unknown,
+}|{
+  error: string,
+};
 
 export interface FunctionHandlerOptions {
   /**
@@ -594,6 +604,15 @@ export abstract class AiAgent<T> {
             yield this.#createErrorResponse(ErrorType.ABORT);
             break;
           }
+
+          if ('context' in result) {
+            yield {
+              type: ResponseType.CONTEXT_CHANGE,
+              context: result.context,
+            };
+
+            return;
+          }
           query = {
             functionResponse: {
               name: functionCall.name,
@@ -615,6 +634,7 @@ export abstract class AiAgent<T> {
     if (isStructuredLogEnabled()) {
       window.dispatchEvent(new CustomEvent('aiassistancedone'));
     }
+    return;
   }
 
   async *
@@ -622,7 +642,7 @@ export abstract class AiAgent<T> {
           name: string,
           args: Record<string, unknown>,
           options?: FunctionHandlerOptions&{explanation?: string},
-          ): AsyncGenerator<FunctionCallResponseData, {result: unknown}> {
+          ): AsyncGenerator<FunctionCallResponseData, {result: unknown}|{context: unknown}> {
     const call = this.#functionDeclarations.get(name);
     if (!call) {
       throw new Error(`Function ${name} is not found.`);
@@ -731,6 +751,10 @@ export abstract class AiAgent<T> {
         output: result.error,
         canceled: false,
       };
+    }
+
+    if ('context' in result) {
+      return result as {context: unknown};
     }
 
     return result as {result: unknown};

@@ -1427,6 +1427,7 @@ export const knownContextValues = new Set([
   'em',
   'emoji',
   'emptied',
+  'empty',
   'empty-cells',
   'empty-view',
   'emulate-auto-dark-mode',

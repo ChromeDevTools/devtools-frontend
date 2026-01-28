@@ -1236,6 +1236,32 @@ describeWithMockConnection('AI Assistance Panel', () => {
       const menuItem = findMenuItemWithLabel(contextMenu.defaultSection(), 'No past conversations');
       assert(menuItem);
     });
+
+    it('should have empty chat state if context selection is enabled', async () => {
+      updateHostConfig({devToolsAiAssistanceContextSelectionAgent: {enabled: true}});
+      const {view} = await createAiAssistancePanel(
+          {aidaClient: mockAidaClient([[{explanation: 'test'}], [{explanation: 'test2'}]])});
+
+      assert(view.input.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+      view.input.props.onTextSubmit('User question to Freestyler?');
+      const nextInput = await view.nextInput;
+      assert(nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+      assert.deepEqual(nextInput.props.messages, [
+        {
+          entity: AiAssistancePanel.ChatMessageEntity.USER,
+          text: 'User question to Freestyler?',
+          imageInput: undefined,
+        },
+        {
+          parts: [{
+            type: 'answer',
+            text: 'test',
+          }],
+          entity: AiAssistancePanel.ChatMessageEntity.MODEL,
+          rpcId: undefined,
+        },
+      ]);
+    });
   });
 
   describe('cross-origin', () => {
@@ -1776,7 +1802,6 @@ describeWithMockConnection('AI Assistance Panel', () => {
            assert.isFalse(view.input.props.isTextInputDisabled);
          });
     });
-
   });
 
   describe('getResponseMarkdown', function() {

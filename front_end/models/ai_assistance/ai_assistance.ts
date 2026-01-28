@@ -4,6 +4,7 @@
 
 import * as AgentProject from './AgentProject.js';
 import * as AiAgent from './agents/AiAgent.js';
+import * as ContextSelectionAgent from './agents/ContextSelectionAgent.js';
 import * as FileAgent from './agents/FileAgent.js';
 import * as NetworkAgent from './agents/NetworkAgent.js';
 import * as PatchAgent from './agents/PatchAgent.js';
@@ -40,6 +41,7 @@ export {
   AiUtils,
   BuiltInAi,
   ChangeManager,
+  ContextSelectionAgent,
   ConversationHandler,
   Debug,
   EvaluateAction,

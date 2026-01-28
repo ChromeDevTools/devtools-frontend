@@ -1,0 +1,73 @@
+Title: FileAgent buildRequest structure matches the snapshot
+Content:
+{
+  "client": "CHROME_DEVTOOLS",
+  "current_message": {
+    "parts": [
+      {
+        "text": "test input"
+      }
+    ],
+    "role": 1
+  },
+  "historical_contexts": [
+    {
+      "parts": [
+        {
+          "text": "question"
+        }
+      ],
+      "role": 1
+    },
+    {
+      "parts": [
+        {
+          "text": "answer"
+        }
+      ],
+      "role": 2
+    }
+  ],
+  "function_declarations": [
+    {
+      "name": "listNetworkRequests",
+      "description": "Gives a list of network requests",
+      "parameters": {
+        "type": 6,
+        "description": "",
+        "nullable": true,
+        "required": [],
+        "properties": {}
+      }
+    },
+    {
+      "name": "selectNetworkRequest",
+      "description": "From the list of selected request select one to debug",
+      "parameters": {
+        "type": 6,
+        "description": "",
+        "nullable": true,
+        "required": [
+          "url"
+        ],
+        "properties": {
+          "url": {
+            "type": 1,
+            "description": "The url of the requests",
+            "nullable": false
+          }
+        }
+      }
+    }
+  ],
+  "options": {},
+  "metadata": {
+    "disable_user_content_logging": false,
+    "string_session_id": "sessionId",
+    "user_tier": 3,
+    "client_version": "unit_test"
+  },
+  "functionality_type": 5,
+  "client_feature": 9
+}
+=== end content

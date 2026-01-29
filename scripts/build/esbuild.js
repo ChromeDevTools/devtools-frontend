@@ -39,21 +39,23 @@ const plugin = {
   },
 };
 
-esbuild
-    .build({
-      entryPoints,
-      outfile,
-      bundle: true,
-      format: 'esm',
-      platform: 'browser',
-      plugins: [plugin],
-      sourcemap: useSourceMaps,
-      minify,
-    })
-    .catch(err => {
-      console.error('Failed to run esbuild:', err);
-      console.error(
-          '\nIf error includes `Host version "X" does not match binary version "Y", you need to run `gclient sync`',
-      );
-      process.exit(1);
-    });
+try {
+  await esbuild.build({
+    entryPoints,
+    outfile,
+    bundle: true,
+    format: 'esm',
+    platform: 'browser',
+    plugins: [plugin],
+    sourcemap: useSourceMaps,
+    minify,
+  });
+} catch (err) {
+  console.error('Failed to run esbuild:', err);
+  console.error(
+      '\nIf error includes `Host version "X" does not match binary version "Y", you need to run `gclient sync`',
+  );
+  process.exit(1);
+}
+
+process.exit(0);

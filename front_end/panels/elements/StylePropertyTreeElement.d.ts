@@ -325,6 +325,8 @@ export declare class StylePropertyTreeElement extends UI.TreeOutline.TreeElement
     getTracingTooltip(functionName: string, node: CodeMirror.SyntaxNode, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, computedStyles: Map<string, string>, computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields | null, context: RenderingContext): Lit.TemplateResult;
     getTooltipId(key: string): string;
     updateAuthoringHint(): void;
+    updateAnimationOverrideHint(): void;
+    private overriddenByAnimation;
     private mouseUp;
     private handleContextMenuEvent;
     private handleCopyContextMenuEvent;

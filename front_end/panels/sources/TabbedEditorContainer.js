@@ -9,7 +9,7 @@ import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as Tooltips from '../../ui/components/tooltips/tooltips.js';
 import * as uiI18n from '../../ui/i18n/i18n.js';
-import { Icon } from '../../ui/kit/kit.js';
+import { Icon, Link } from '../../ui/kit/kit.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { html } from '../../ui/lit/lit.js';
@@ -535,7 +535,7 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper {
                     tooltip.append(uiI18n.getFormatLocalizedString(str_, UIStrings.changesWereNotSavedToFileSystemToSaveAddFolderToWorkspace, { PH1: link }));
                 }
                 else {
-                    const link = UI.XLink.XLink.create('https://developer.chrome.com/docs/devtools/workspaces/', 'Workspace');
+                    const link = Link.create('https://developer.chrome.com/docs/devtools/workspaces/', 'Workspace');
                     tooltip.append(uiI18n.getFormatLocalizedString(str_, UIStrings.changesWereNotSavedToFileSystemToSaveSetUpYourWorkspace, { PH1: link }));
                 }
                 suffixElement.append(icon, tooltip);

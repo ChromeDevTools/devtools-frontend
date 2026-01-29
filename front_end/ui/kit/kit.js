@@ -370,7 +370,7 @@ var link_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./link/link.css")} */`;
 
 // gen/front_end/ui/kit/link/Link.js
-var Link = class extends HTMLElement {
+var Link = class _Link extends HTMLElement {
   #shadow = this.attachShadow({ mode: "open" });
   static observedAttributes = ["href", "jslogcontext"];
   connectedCallback() {
@@ -443,6 +443,26 @@ var Link = class extends HTMLElement {
     render2(html2`<style>
           ${link_css_default}
         </style><slot></slot>`, this.#shadow, { host: this });
+  }
+  /**
+   * Should be used only by old code relying on imperative API,
+   * which we are activly migrating away from.
+   * @deprecated
+   */
+  static create(url, linkText, className, jsLogContext, tabindex = 0) {
+    const link2 = new _Link();
+    link2.href = url;
+    linkText = linkText ?? url;
+    link2.textContent = Platform.StringUtilities.trimMiddle(linkText, 150);
+    const classes = className ? `${className} devtools-link` : "devtools-link";
+    link2.setAttribute("class", classes);
+    if (jsLogContext) {
+      link2.setAttribute("jslogcontext", jsLogContext);
+    }
+    if (tabindex !== 0) {
+      link2.setAttribute("tabindex", String(tabindex));
+    }
+    return link2;
   }
 };
 customElements.define("devtools-link", Link);

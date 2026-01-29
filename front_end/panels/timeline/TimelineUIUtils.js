@@ -47,6 +47,7 @@ import * as CodeHighlighter from '../../ui/components/code_highlighter/code_high
 // eslint-disable-next-line @devtools/es-modules-import
 import codeHighlighterStyles from '../../ui/components/code_highlighter/codeHighlighter.css.js';
 import * as uiI18n from '../../ui/i18n/i18n.js';
+import { Link } from '../../ui/kit/kit.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 // eslint-disable-next-line @devtools/es-modules-import
 import imagePreviewStyles from '../../ui/legacy/components/utils/imagePreview.css.js';
@@ -779,7 +780,7 @@ export class TimelineUIUtils {
             default:
                 break;
         }
-        const html = UI.Fragment.html `<div>${UI.XLink.XLink.create(link, i18nString(UIStrings.learnMore), undefined, undefined, 'learn-more')} about ${name}.</div>`;
+        const html = UI.Fragment.html `<div>${Link.create(link, i18nString(UIStrings.learnMore), undefined, 'learn-more')} about ${name}.</div>`;
         return html;
     }
     static buildConsumeCacheDetails(eventData, contentHelper) {

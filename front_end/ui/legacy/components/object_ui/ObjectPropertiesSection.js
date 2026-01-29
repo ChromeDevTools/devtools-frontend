@@ -133,22 +133,54 @@ const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/object_ui/ObjectP
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const EXPANDABLE_MAX_DEPTH = 100;
 const objectPropertiesSectionMap = new WeakMap();
-class ObjectTreeNodeBase {
+class ObjectTreeNodeBase extends Common.ObjectWrapper.ObjectWrapper {
     parent;
     propertiesMode;
     #children;
     extraProperties = [];
+    expanded = false;
     constructor(parent, propertiesMode = 1 /* ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED */) {
+        super();
         this.parent = parent;
         this.propertiesMode = propertiesMode;
     }
+    // Performs a pre-order tree traversal over the populated children. If any children need to be populated, callers must
+    // do that while walking (pre-order visitation enables that).
+    *#walk(maxDepth = -1) {
+        function* walkChildren(children) {
+            if (children) {
+                for (const child of children) {
+                    yield* child.#walk(Math.max(-1, maxDepth - 1));
+                }
+            }
+        }
+        yield this;
+        if (maxDepth !== 0) {
+            yield* walkChildren(this.#children?.properties);
+            yield* walkChildren(this.#children?.arrayRanges);
+            yield* walkChildren(this.#children?.internalProperties);
+        }
+    }
+    async expandRecursively(maxDepth) {
+        for (const node of this.#walk(maxDepth)) {
+            await node.populateChildrenIfNeeded();
+            node.expanded = true;
+        }
+    }
+    collapseRecursively() {
+        for (const node of this.#walk()) {
+            node.expanded = false;
+        }
+    }
     removeChildren() {
         this.#children = undefined;
+        this.dispatchEventToListeners("children-changed" /* ObjectTreeNodeBase.Events.CHILDREN_CHANGED */);
     }
     removeChild(child) {
         remove(this.#children?.arrayRanges, child);
         remove(this.#children?.internalProperties, child);
         remove(this.#children?.properties, child);
+        this.dispatchEventToListeners("children-changed" /* ObjectTreeNodeBase.Events.CHILDREN_CHANGED */);
         function remove(array, element) {
             if (!array) {
                 return;
@@ -162,13 +194,13 @@ class ObjectTreeNodeBase {
     selfOrParentIfInternal() {
         return this;
     }
-    async children() {
-        if (!this.#children) {
-            this.#children = await this.populateChildren();
-        }
+    get children() {
         return this.#children;
     }
-    async populateChildren() {
+    async populateChildrenIfNeeded() {
+        if (this.#children) {
+            return this.#children;
+        }
         const object = this.object;
         if (!object) {
             return {};
@@ -199,8 +231,10 @@ class ObjectTreeNodeBase {
         }
         const properties = objectProperties?.map(p => new ObjectTreeNode(p, undefined, effectiveParent, undefined));
         properties?.push(...this.extraProperties);
+        properties?.sort(ObjectPropertiesSection.compareProperties);
+        const accessors = properties && ObjectTreeNodeBase.getGettersAndSetters(properties);
         const internalProperties = objectInternalProperties?.map(p => new ObjectTreeNode(p, undefined, effectiveParent, undefined));
-        return { properties, internalProperties };
+        return { properties, internalProperties, accessors };
     }
     get hasChildren() {
         return this.object?.hasChildren ?? false;
@@ -214,6 +248,22 @@ class ObjectTreeNodeBase {
     }
     addExtraProperties(...properties) {
         this.extraProperties.push(...properties.map(p => new ObjectTreeNode(p, undefined, this, undefined)));
+    }
+    static getGettersAndSetters(properties) {
+        const gettersAndSetters = [];
+        for (const property of properties) {
+            if (property.property.isOwn) {
+                if (property.property.getter) {
+                    const getterProperty = new SDK.RemoteObject.RemoteObjectProperty('get ' + property.property.name, property.property.getter, false);
+                    gettersAndSetters.push(new ObjectTreeNode(getterProperty, property.propertiesMode, property.parent));
+                }
+                if (property.property.setter) {
+                    const setterProperty = new SDK.RemoteObject.RemoteObjectProperty('set ' + property.property.name, property.property.setter, false);
+                    gettersAndSetters.push(new ObjectTreeNode(setterProperty, property.propertiesMode, property.parent));
+                }
+            }
+        }
+        return gettersAndSetters;
     }
 }
 export class ObjectTree extends ObjectTreeNodeBase {
@@ -234,7 +284,10 @@ class ArrayGroupTreeNode extends ObjectTreeNodeBase {
         this.#object = object;
         this.#range = range;
     }
-    async populateChildren() {
+    async populateChildrenIfNeeded() {
+        if (this.children) {
+            return this.children;
+        }
         if (this.#range.count > ArrayGroupingTreeElement.bucketThreshold) {
             const ranges = await arrayRangeGroups(this.object, this.#range.fromIndex, this.#range.toIndex);
             const arrayRanges = ranges?.ranges.map(([fromIndex, toIndex, count]) => new ArrayGroupTreeNode(this.object, { fromIndex, toIndex, count }));
@@ -254,7 +307,8 @@ class ArrayGroupTreeNode extends ObjectTreeNodeBase {
         const properties = allProperties.properties?.map(p => new ObjectTreeNode(p, this.propertiesMode, this, undefined));
         properties?.push(...this.extraProperties);
         properties?.sort(ObjectPropertiesSection.compareProperties);
-        return { properties };
+        const accessors = properties && ObjectTreeNodeBase.getGettersAndSetters(properties);
+        return { properties, accessors };
     }
     get singular() {
         return this.#range.fromIndex === this.#range.toIndex;
@@ -305,6 +359,53 @@ export class ObjectTreeNode extends ObjectTreeNodeBase {
     }
     selfOrParentIfInternal() {
         return this.name === '[[Prototype]]' ? (this.parent ?? this) : this;
+    }
+    async setValue(expression) {
+        const property = SDK.RemoteObject.RemoteObject.toCallArgument(this.property.symbol || this.name);
+        expression = JavaScriptREPL.wrapObjectLiteral(expression.trim());
+        if (this.property.synthetic) {
+            let invalidate = false;
+            if (expression) {
+                invalidate = await this.property.setSyntheticValue(expression);
+            }
+            if (invalidate) {
+                this.parent?.removeChildren();
+            }
+            else {
+                this.dispatchEventToListeners("value-changed" /* ObjectTreeNodeBase.Events.VALUE_CHANGED */);
+            }
+            return;
+        }
+        const parentObject = this.parent?.object;
+        const errorPromise = expression ? parentObject.setPropertyValue(property, expression) : parentObject.deleteProperty(property);
+        const error = await errorPromise;
+        if (error) {
+            this.dispatchEventToListeners("value-changed" /* ObjectTreeNodeBase.Events.VALUE_CHANGED */);
+            return;
+        }
+        if (!expression) {
+            this.parent?.removeChild(this);
+        }
+        else {
+            this.parent?.removeChildren();
+        }
+    }
+    async invokeGetter(getter) {
+        const invokeGetter = `
+          function invokeGetter(getter) {
+            return Reflect.apply(getter, this, []);
+          }`;
+        // Also passing a string instead of a Function to avoid coverage implementation messing with it.
+        const result = await this.parent
+            ?.object
+            // @ts-expect-error No way to teach TypeScript to preserve the Function-ness of `getter`.
+            ?.callFunction(invokeGetter, [SDK.RemoteObject.RemoteObject.toCallArgument(getter)]);
+        if (!result?.object) {
+            return;
+        }
+        this.property.value = result.object;
+        this.property.wasThrown = result.wasThrown || false;
+        this.dispatchEventToListeners("value-changed" /* ObjectTreeNodeBase.Events.VALUE_CHANGED */);
     }
 }
 export const getObjectPropertiesSectionFrom = (element) => {
@@ -568,7 +669,7 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
             }
             if (description.length > maxRenderableStringLength) {
                 return html `<span class="value object-value-${subtype || type}" title=${description}><devtools-widget
-                  .widgetConfig=${widgetConfig(ExpandableTextPropertyValue, { text: description })}></devtools-widget></span>`;
+          .widgetConfig=${widgetConfig(ExpandableTextPropertyValue, { text: description })}></devtools-widget></span>`;
             }
             const hasPreview = value.preview && showPreview;
             return html `<span class="value object-value-${subtype || type}" title=${description}>${hasPreview ? new RemoteObjectPreviewFormatter().renderObjectPreview(value.preview) :
@@ -669,6 +770,7 @@ export class RootElement extends UI.TreeOutline.TreeElement {
         const contentElement = document.createElement('slot');
         super(contentElement);
         this.object = object;
+        this.object.addEventListener("children-changed" /* ObjectTreeNodeBase.Events.CHILDREN_CHANGED */, this.onpopulate, this);
         this.linkifier = linkifier;
         this.emptyPlaceholder = emptyPlaceholder;
         this.setExpandable(true);
@@ -676,10 +778,6 @@ export class RootElement extends UI.TreeOutline.TreeElement {
         this.toggleOnClick = true;
         this.listItemElement.classList.add('object-properties-section-root-element');
         this.listItemElement.addEventListener('contextmenu', this.onContextMenu.bind(this), false);
-    }
-    invalidateChildren() {
-        super.invalidateChildren();
-        this.object.removeChildren();
     }
     onexpand() {
         if (this.treeOutline) {
@@ -711,6 +809,7 @@ export class RootElement extends UI.TreeOutline.TreeElement {
         void contextMenu.show();
     }
     async onpopulate() {
+        this.removeChildren();
         const treeOutline = this.treeOutline;
         const skipProto = treeOutline ? Boolean(treeOutline.skipProtoInternal) : false;
         return await ObjectPropertyTreeElement.populate(this, this.object, skipProto, false, this.linkifier, this.emptyPlaceholder);
@@ -721,7 +820,7 @@ export class RootElement extends UI.TreeOutline.TreeElement {
  * Remaining children are shown as soon as requested via a show more properties button.
  **/
 export const InitialVisibleChildrenLimit = 200;
-export const TREE_ELEMENT_DEFAULT_VIEW = (input, output, target) => {
+export const OBJECT_PROPERTY_DEFAULT_VIEW = (input, output, target) => {
     const { property } = input.node;
     const isInternalEntries = property.synthetic && input.node.name === '[[Entries]]';
     const completionsId = `completions-${input.node.parent?.object?.objectId?.replaceAll('.', '-')}-${input.node.name}`;
@@ -770,7 +869,10 @@ export const TREE_ELEMENT_DEFAULT_VIEW = (input, output, target) => {
         class=object-value-unavailable
         title=${i18nString(UIStrings.valueNotAccessibleToTheDebugger)}>${i18nString(UIStrings.valueUnavailable)}</span>`;
     };
-    const onDblClick = (event) => {
+    const onActivate = (event) => {
+        if (event instanceof KeyboardEvent && !Platform.KeyboardUtilities.isEnterOrSpaceKey(event)) {
+            return;
+        }
         event.consume(true);
         if (property.value && !property.value.customPreview() && (property.writable || property.setter)) {
             input.startEditing();
@@ -786,7 +888,8 @@ export const TREE_ELEMENT_DEFAULT_VIEW = (input, output, target) => {
                 @commit=${(e) => input.editingCommitted(e.detail)}
                 @cancel=${() => input.editingEnded()}
                 @beforeautocomplete=${onAutoComplete}
-                @dblclick=${onDblClick}
+                @dblclick=${onActivate}
+                @keydown=${onActivate}
                 completions=${completionsId}
                 placeholder=${i18nString(UIStrings.stringIsTooLargeToEdit)}
                 ?editing=${input.editing}>
@@ -801,25 +904,147 @@ export const TREE_ELEMENT_DEFAULT_VIEW = (input, output, target) => {
                 </devtools-prompt></span>`}</span>`, target);
     // clang-format on
 };
+export class ObjectPropertyWidget extends UI.Widget.Widget {
+    #highlightChanges = [];
+    #property;
+    #nameElement;
+    #valueElement;
+    #completions = [];
+    #editing = false;
+    #view;
+    #expanded = false;
+    #linkifier;
+    constructor(target, view = OBJECT_PROPERTY_DEFAULT_VIEW) {
+        super(target);
+        this.#view = view;
+    }
+    get property() {
+        return this.#property;
+    }
+    set property(property) {
+        if (this.#property) {
+            this.#property.removeEventListener("value-changed" /* ObjectTreeNodeBase.Events.VALUE_CHANGED */, this.requestUpdate, this);
+            this.#property.removeEventListener("children-changed" /* ObjectTreeNodeBase.Events.CHILDREN_CHANGED */, this.requestUpdate, this);
+        }
+        this.#property = property;
+        this.#property.addEventListener("value-changed" /* ObjectTreeNodeBase.Events.VALUE_CHANGED */, this.requestUpdate, this);
+        this.#property.addEventListener("children-changed" /* ObjectTreeNodeBase.Events.CHILDREN_CHANGED */, this.requestUpdate, this);
+        this.requestUpdate();
+    }
+    get expanded() {
+        return this.#expanded;
+    }
+    set expanded(expanded) {
+        this.#expanded = expanded;
+        this.requestUpdate();
+    }
+    get linkifier() {
+        return this.#linkifier;
+    }
+    set linkifier(linkifier) {
+        this.#linkifier = linkifier;
+        this.requestUpdate();
+    }
+    performUpdate() {
+        if (!this.#property) {
+            return;
+        }
+        const input = {
+            expanded: this.#expanded,
+            editing: this.#editing,
+            editingEnded: this.#editingEnded.bind(this),
+            editingCommitted: this.#editingCommitted.bind(this),
+            node: this.#property,
+            linkifier: this.#linkifier,
+            completions: this.#editing ? this.#completions : [],
+            onAutoComplete: this.#updateCompletions.bind(this),
+            invokeGetter: this.#invokeGetter.bind(this),
+            startEditing: this.startEditing.bind(this),
+        };
+        const that = this;
+        const output = {
+            set nameElement(e) {
+                that.#nameElement = e;
+            },
+            set valueElement(e) {
+                that.#valueElement = e;
+            },
+        };
+        this.#view(input, output, this.element);
+    }
+    setSearchRegex(regex, additionalCssClassName) {
+        let cssClasses = Highlighting.highlightedSearchResultClassName;
+        if (additionalCssClassName) {
+            cssClasses += ' ' + additionalCssClassName;
+        }
+        this.revertHighlightChanges();
+        if (this.#nameElement) {
+            this.#applySearch(regex, this.#nameElement, cssClasses);
+        }
+        if (this.property?.object) {
+            const valueType = this.property?.object.type;
+            if (valueType !== 'object' && this.#valueElement) {
+                this.#applySearch(regex, this.#valueElement, cssClasses);
+            }
+        }
+        return Boolean(this.#highlightChanges.length);
+    }
+    #applySearch(regex, element, cssClassName) {
+        const ranges = [];
+        const content = element.textContent || '';
+        regex.lastIndex = 0;
+        let match = regex.exec(content);
+        while (match) {
+            ranges.push(new TextUtils.TextRange.SourceRange(match.index, match[0].length));
+            match = regex.exec(content);
+        }
+        if (ranges.length) {
+            Highlighting.highlightRangesWithStyleClass(element, ranges, cssClassName, this.#highlightChanges);
+        }
+    }
+    revertHighlightChanges() {
+        Highlighting.revertDomChanges(this.#highlightChanges);
+        this.#highlightChanges = [];
+    }
+    async #updateCompletions(expression, filter, force) {
+        const suggestions = await TextEditor.JavaScript.completeInContext(expression, filter, force);
+        this.#completions = suggestions.map(v => v.text);
+        this.requestUpdate();
+    }
+    get editing() {
+        return this.#editing;
+    }
+    startEditing() {
+        this.#editing = true;
+        this.requestUpdate();
+    }
+    #editingEnded() {
+        this.#completions = [];
+        this.#editing = false;
+        this.requestUpdate();
+    }
+    async #editingCommitted(newContent) {
+        this.#editingEnded();
+        await this.#property?.setValue(newContent);
+    }
+    #invokeGetter(getter) {
+        void this.#property?.invokeGetter(getter);
+    }
+}
 export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
     property;
     toggleOnClick;
-    highlightChanges;
     linkifier;
     maxNumPropertiesToShow;
-    readOnly;
-    #editing = false;
-    #view;
-    #completions = [];
-    #nameElement;
-    #valueElement;
-    constructor(property, linkifier, view = TREE_ELEMENT_DEFAULT_VIEW) {
+    #widget;
+    constructor(property, linkifier) {
         // Pass an empty title, the title gets made later in onattach.
         super();
-        this.#view = view;
+        this.#widget = new ObjectPropertyWidget();
         this.property = property;
+        this.property.addEventListener("value-changed" /* ObjectTreeNodeBase.Events.VALUE_CHANGED */, this.#updateValue, this);
+        this.property.addEventListener("children-changed" /* ObjectTreeNodeBase.Events.CHILDREN_CHANGED */, this.#updateChildren, this);
         this.toggleOnClick = true;
-        this.highlightChanges = [];
         this.linkifier = linkifier;
         this.maxNumPropertiesToShow = InitialVisibleChildrenLimit;
         this.listItemElement.addEventListener('contextmenu', this.contextMenuFired.bind(this), false);
@@ -827,7 +1052,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
         this.setExpandRecursively(property.name !== '[[Prototype]]');
     }
     static async populate(treeElement, value, skipProto, skipGettersAndSetters, linkifier, emptyPlaceholder) {
-        const properties = await value.children();
+        const properties = await value.populateChildrenIfNeeded();
         if (properties.arrayRanges) {
             await ArrayGroupingTreeElement.populate(treeElement, properties, linkifier);
         }
@@ -835,7 +1060,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
             ObjectPropertyTreeElement.populateWithProperties(treeElement, properties, skipProto, skipGettersAndSetters, linkifier, emptyPlaceholder);
         }
     }
-    static populateWithProperties(treeNode, { properties, internalProperties }, skipProto, skipGettersAndSetters, linkifier, emptyPlaceholder) {
+    static populateWithProperties(treeNode, { properties, internalProperties, accessors }, skipProto, skipGettersAndSetters, linkifier, emptyPlaceholder) {
         properties?.sort(ObjectPropertiesSection.compareProperties);
         const entriesProperty = internalProperties?.find(({ property }) => property.name === '[[Entries]]');
         if (entriesProperty) {
@@ -844,22 +1069,10 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
             treeElement.expand();
             treeNode.appendChild(treeElement);
         }
-        const tailProperties = [];
         for (const property of properties ?? []) {
             if (treeNode instanceof ObjectPropertyTreeElement &&
                 !ObjectPropertiesSection.isDisplayableProperty(property.property, treeNode.property?.property)) {
                 continue;
-            }
-            // FIXME move into node
-            if (property.property.isOwn && !skipGettersAndSetters) {
-                if (property.property.getter) {
-                    const getterProperty = new SDK.RemoteObject.RemoteObjectProperty('get ' + property.property.name, property.property.getter, false);
-                    tailProperties.push(new ObjectTreeNode(getterProperty, property.propertiesMode, property.parent));
-                }
-                if (property.property.setter) {
-                    const setterProperty = new SDK.RemoteObject.RemoteObjectProperty('set ' + property.property.name, property.property.setter, false);
-                    tailProperties.push(new ObjectTreeNode(setterProperty, property.propertiesMode, property.parent));
-                }
             }
             const canShowProperty = property.property.getter || !property.property.isAccessorProperty();
             if (canShowProperty) {
@@ -873,8 +1086,8 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
                 treeNode.appendChild(element);
             }
         }
-        for (let i = 0; i < tailProperties.length; ++i) {
-            treeNode.appendChild(new ObjectPropertyTreeElement(tailProperties[i], linkifier));
+        for (const accessor of accessors ?? []) {
+            treeNode.appendChild(new ObjectPropertyTreeElement(accessor, linkifier));
         }
         for (const property of internalProperties ?? []) {
             const treeElement = new ObjectPropertyTreeElement(property, linkifier);
@@ -888,6 +1101,24 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
         }
         ObjectPropertyTreeElement.appendEmptyPlaceholderIfNeeded(treeNode, emptyPlaceholder);
     }
+    revertHighlightChanges() {
+        this.#widget.revertHighlightChanges();
+    }
+    setSearchRegex(regex, additionalCssClassName) {
+        return this.#widget.setSearchRegex(regex, additionalCssClassName);
+    }
+    // This is called by layout tests
+    startEditing() {
+        this.#widget.startEditing();
+    }
+    // This is called by layout tests
+    get editing() {
+        return this.#widget.editing;
+    }
+    // This is called by layout tests
+    async applyExpression(expression) {
+        await this.property.setValue(expression);
+    }
     static appendEmptyPlaceholderIfNeeded(treeNode, emptyPlaceholder) {
         if (treeNode.childCount()) {
             return;
@@ -897,39 +1128,6 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
         title.textContent = emptyPlaceholder || i18nString(UIStrings.noProperties);
         const infoElement = new UI.TreeOutline.TreeElement(title);
         treeNode.appendChild(infoElement);
-    }
-    get nameElement() {
-        return this.#nameElement;
-    }
-    setSearchRegex(regex, additionalCssClassName) {
-        let cssClasses = Highlighting.highlightedSearchResultClassName;
-        if (additionalCssClassName) {
-            cssClasses += ' ' + additionalCssClassName;
-        }
-        this.revertHighlightChanges();
-        if (this.#nameElement) {
-            this.applySearch(regex, this.#nameElement, cssClasses);
-        }
-        if (this.property.object) {
-            const valueType = this.property.object.type;
-            if (valueType !== 'object' && this.#valueElement) {
-                this.applySearch(regex, this.#valueElement, cssClasses);
-            }
-        }
-        return Boolean(this.highlightChanges.length);
-    }
-    applySearch(regex, element, cssClassName) {
-        const ranges = [];
-        const content = element.textContent || '';
-        regex.lastIndex = 0;
-        let match = regex.exec(content);
-        while (match) {
-            ranges.push(new TextUtils.TextRange.SourceRange(match.index, match[0].length));
-            match = regex.exec(content);
-        }
-        if (ranges.length) {
-            Highlighting.highlightRangesWithStyleClass(element, ranges, cssClassName, this.highlightChanges);
-        }
     }
     showAllPropertiesElementSelected(element) {
         this.removeChild(element);
@@ -951,15 +1149,10 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
         showAllPropertiesButton.onselect = this.showAllPropertiesElementSelected.bind(this, showAllPropertiesButton);
         this.appendChild(showAllPropertiesButton);
     }
-    revertHighlightChanges() {
-        Highlighting.revertDomChanges(this.highlightChanges);
-        this.highlightChanges = [];
-    }
     async onpopulate() {
         const treeOutline = this.treeOutline;
         const skipProto = treeOutline ? Boolean(treeOutline.skipProtoInternal) : false;
         this.removeChildren();
-        this.property.removeChildren();
         if (this.property.object) {
             await ObjectPropertyTreeElement.populate(this, this.property, skipProto, false, this.linkifier);
             if (this.childCount() > this.maxNumPropertiesToShow) {
@@ -967,52 +1160,25 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
             }
         }
     }
-    onenter() {
-        if (this.property.object && !this.property.object.customPreview() &&
-            (this.property.property.writable || this.property.property.setter)) {
-            this.startEditing();
-            return true;
-        }
-        return false;
-    }
     onattach() {
-        this.performUpdate();
         this.updateExpandable();
+        this.#widget.markAsRoot();
+        this.#widget.show(this.listItemElement);
+        this.#widget.property = this.property;
+        this.#widget.linkifier = this.linkifier;
     }
     onexpand() {
-        this.performUpdate();
+        this.#widget.expanded = true;
     }
     oncollapse() {
-        this.performUpdate();
+        this.#widget.expanded = false;
     }
-    async #updateCompletions(expression, filter, force) {
-        const suggestions = await TextEditor.JavaScript.completeInContext(expression, filter, force);
-        this.#completions = suggestions.map(v => v.text);
-        this.performUpdate();
+    #updateValue() {
+        this.updateExpandable();
     }
-    performUpdate() {
-        const input = {
-            expanded: this.expanded,
-            editing: this.#editing,
-            editingEnded: this.editingEnded.bind(this),
-            editingCommitted: this.editingCommitted.bind(this),
-            node: this.property,
-            linkifier: this.linkifier,
-            completions: this.#editing ? this.#completions : [],
-            onAutoComplete: this.#updateCompletions.bind(this),
-            invokeGetter: this.onInvokeGetterClick.bind(this),
-            startEditing: this.startEditing.bind(this),
-        };
-        const that = this;
-        const output = {
-            set nameElement(e) {
-                that.#nameElement = e;
-            },
-            set valueElement(e) {
-                that.#valueElement = e;
-            },
-        };
-        this.#view(input, output, this.listItemElement);
+    #updateChildren() {
+        this.removeChildren();
+        void this.onpopulate();
     }
     getContextMenu(event) {
         const contextMenu = new UI.ContextMenu.ContextMenu(event);
@@ -1045,104 +1211,6 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
     contextMenuFired(event) {
         const contextMenu = this.getContextMenu(event);
         void contextMenu.show();
-    }
-    get editing() {
-        return this.#editing;
-    }
-    startEditing() {
-        if (!this.readOnly) {
-            this.#editing = true;
-            this.performUpdate();
-        }
-    }
-    editingEnded() {
-        this.#completions = [];
-        this.#editing = false;
-        this.performUpdate();
-        this.updateExpandable();
-        this.select();
-    }
-    async editingCommitted(newContent) {
-        this.editingEnded();
-        await this.applyExpression(newContent);
-    }
-    promptKeyDown(originalContent, event) {
-        const keyboardEvent = event;
-        if (keyboardEvent.key === 'Enter') {
-            keyboardEvent.consume();
-            void this.editingCommitted(originalContent);
-            return;
-        }
-        if (keyboardEvent.key === Platform.KeyboardUtilities.ESCAPE_KEY) {
-            keyboardEvent.consume();
-            this.editingEnded();
-            return;
-        }
-    }
-    async applyExpression(expression) {
-        const property = SDK.RemoteObject.RemoteObject.toCallArgument(this.property.property.symbol || this.property.name);
-        expression = JavaScriptREPL.wrapObjectLiteral(expression.trim());
-        if (this.property.property.synthetic) {
-            let invalidate = false;
-            if (expression) {
-                invalidate = await this.property.property.setSyntheticValue(expression);
-            }
-            if (invalidate) {
-                const parent = this.parent;
-                if (parent) {
-                    parent.invalidateChildren();
-                    void parent.onpopulate();
-                }
-            }
-            else {
-                this.performUpdate();
-            }
-            return;
-        }
-        const parentObject = this.property.parent?.object;
-        const errorPromise = expression ? parentObject.setPropertyValue(property, expression) : parentObject.deleteProperty(property);
-        const error = await errorPromise;
-        if (error) {
-            this.performUpdate();
-            return;
-        }
-        if (!expression) {
-            // The property was deleted, so remove this tree element.
-            this.parent?.removeChild(this);
-            this.property.parent?.removeChild(this.property);
-        }
-        else {
-            // Call updateSiblings since their value might be based on the value that just changed.
-            const parent = this.parent;
-            if (parent) {
-                parent.invalidateChildren();
-                this.property.parent?.removeChildren();
-                void parent.onpopulate();
-            }
-        }
-    }
-    invalidateChildren() {
-        super.invalidateChildren();
-        this.property.removeChildren();
-    }
-    async onInvokeGetterClick(getter) {
-        const invokeGetter = `
-          function invokeGetter(getter) {
-            return Reflect.apply(getter, this, []);
-          }`;
-        // Also passing a string instead of a Function to avoid coverage implementation messing with it.
-        const result = await this.property.parent
-            ?.object
-            // @ts-expect-error No way to teach TypeScript to preserve the Function-ness of `getter`.
-            ?.callFunction(invokeGetter, [SDK.RemoteObject.RemoteObject.toCallArgument(getter)]);
-        if (!result?.object) {
-            return;
-        }
-        this.property.property.value = result.object;
-        this.property.property.wasThrown = result.wasThrown || false;
-        this.performUpdate();
-        this.invalidateChildren();
-        this.updateExpandable();
     }
     updateExpandable() {
         if (this.property.object) {
@@ -1281,6 +1349,7 @@ export class ArrayGroupingTreeElement extends UI.TreeOutline.TreeElement {
     constructor(child, linkifier) {
         super(Platform.StringUtilities.sprintf('[%d … %d]', child.range.fromIndex, child.range.toIndex), true);
         this.#child = child;
+        this.#child.addEventListener("children-changed" /* ObjectTreeNodeBase.Events.CHILDREN_CHANGED */, this.onpopulate, this);
         this.toggleOnClick = true;
         this.linkifier = linkifier;
     }
@@ -1303,13 +1372,8 @@ export class ArrayGroupingTreeElement extends UI.TreeOutline.TreeElement {
         }
         ObjectPropertyTreeElement.populateWithProperties(treeNode, children, false, false, linkifier);
     }
-    invalidateChildren() {
-        super.invalidateChildren();
-        this.#child.removeChildren();
-    }
     async onpopulate() {
         this.removeChildren();
-        this.#child.removeChildren();
         await ObjectPropertyTreeElement.populate(this, this.#child, false, false, this.linkifier);
     }
     onattach() {

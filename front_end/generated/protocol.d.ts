@@ -16001,6 +16001,331 @@ export declare namespace ServiceWorker {
         versions: ServiceWorkerVersion[];
     }
 }
+export declare namespace SmartCardEmulation {
+    /**
+     * Indicates the PC/SC error code.
+     *
+     * This maps to:
+     * PC/SC Lite: https://pcsclite.apdu.fr/api/group__ErrorCodes.html
+     * Microsoft: https://learn.microsoft.com/en-us/windows/win32/secauthn/authentication-return-values
+     */
+    const enum ResultCode {
+        Success = "success",
+        RemovedCard = "removed-card",
+        ResetCard = "reset-card",
+        UnpoweredCard = "unpowered-card",
+        UnresponsiveCard = "unresponsive-card",
+        UnsupportedCard = "unsupported-card",
+        ReaderUnavailable = "reader-unavailable",
+        SharingViolation = "sharing-violation",
+        NotTransacted = "not-transacted",
+        NoSmartcard = "no-smartcard",
+        ProtoMismatch = "proto-mismatch",
+        SystemCancelled = "system-cancelled",
+        NotReady = "not-ready",
+        Cancelled = "cancelled",
+        InsufficientBuffer = "insufficient-buffer",
+        InvalidHandle = "invalid-handle",
+        InvalidParameter = "invalid-parameter",
+        InvalidValue = "invalid-value",
+        NoMemory = "no-memory",
+        Timeout = "timeout",
+        UnknownReader = "unknown-reader",
+        UnsupportedFeature = "unsupported-feature",
+        NoReadersAvailable = "no-readers-available",
+        ServiceStopped = "service-stopped",
+        NoService = "no-service",
+        CommError = "comm-error",
+        InternalError = "internal-error",
+        ServerTooBusy = "server-too-busy",
+        Unexpected = "unexpected",
+        Shutdown = "shutdown",
+        UnknownCard = "unknown-card",
+        Unknown = "unknown"
+    }
+    /**
+     * Maps to the |SCARD_SHARE_*| values.
+     */
+    const enum ShareMode {
+        Shared = "shared",
+        Exclusive = "exclusive",
+        Direct = "direct"
+    }
+    /**
+     * Indicates what the reader should do with the card.
+     */
+    const enum Disposition {
+        LeaveCard = "leave-card",
+        ResetCard = "reset-card",
+        UnpowerCard = "unpower-card",
+        EjectCard = "eject-card"
+    }
+    /**
+     * Maps to |SCARD_*| connection state values.
+     */
+    const enum ConnectionState {
+        Absent = "absent",
+        Present = "present",
+        Swallowed = "swallowed",
+        Powered = "powered",
+        Negotiable = "negotiable",
+        Specific = "specific"
+    }
+    /**
+     * Maps to the |SCARD_STATE_*| flags.
+     */
+    interface ReaderStateFlags {
+        unaware?: boolean;
+        ignore?: boolean;
+        changed?: boolean;
+        unknown?: boolean;
+        unavailable?: boolean;
+        empty?: boolean;
+        present?: boolean;
+        exclusive?: boolean;
+        inuse?: boolean;
+        mute?: boolean;
+        unpowered?: boolean;
+    }
+    /**
+     * Maps to the |SCARD_PROTOCOL_*| flags.
+     */
+    interface ProtocolSet {
+        t0?: boolean;
+        t1?: boolean;
+        raw?: boolean;
+    }
+    /**
+     * Maps to the |SCARD_PROTOCOL_*| values.
+     */
+    const enum Protocol {
+        T0 = "t0",
+        T1 = "t1",
+        Raw = "raw"
+    }
+    interface ReaderStateIn {
+        reader: string;
+        currentState: ReaderStateFlags;
+        currentInsertionCount: integer;
+    }
+    interface ReaderStateOut {
+        reader: string;
+        eventState: ReaderStateFlags;
+        eventCount: integer;
+        atr: binary;
+    }
+    interface ReportEstablishContextResultRequest {
+        requestId: string;
+        contextId: integer;
+    }
+    interface ReportReleaseContextResultRequest {
+        requestId: string;
+    }
+    interface ReportListReadersResultRequest {
+        requestId: string;
+        readers: string[];
+    }
+    interface ReportGetStatusChangeResultRequest {
+        requestId: string;
+        readerStates: ReaderStateOut[];
+    }
+    interface ReportBeginTransactionResultRequest {
+        requestId: string;
+    }
+    interface ReportPlainResultRequest {
+        requestId: string;
+    }
+    interface ReportConnectResultRequest {
+        requestId: string;
+        handle: integer;
+        activeProtocol?: Protocol;
+    }
+    interface ReportDataResultRequest {
+        requestId: string;
+        data: binary;
+    }
+    interface ReportStatusResultRequest {
+        requestId: string;
+        readerName: string;
+        state: ConnectionState;
+        atr: binary;
+        protocol?: Protocol;
+    }
+    interface ReportErrorRequest {
+        requestId: string;
+        resultCode: ResultCode;
+    }
+    /**
+     * Fired when |SCardEstablishContext| is called.
+     *
+     * This maps to:
+     * PC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#gaa1b8970169fd4883a6dc4a8f43f19b67
+     * Microsoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardestablishcontext
+     */
+    interface EstablishContextRequestedEvent {
+        requestId: string;
+    }
+    /**
+     * Fired when |SCardReleaseContext| is called.
+     *
+     * This maps to:
+     * PC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#ga6aabcba7744c5c9419fdd6404f73a934
+     * Microsoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardreleasecontext
+     */
+    interface ReleaseContextRequestedEvent {
+        requestId: string;
+        contextId: integer;
+    }
+    /**
+     * Fired when |SCardListReaders| is called.
+     *
+     * This maps to:
+     * PC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#ga93b07815789b3cf2629d439ecf20f0d9
+     * Microsoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardlistreadersa
+     */
+    interface ListReadersRequestedEvent {
+        requestId: string;
+        contextId: integer;
+    }
+    /**
+     * Fired when |SCardGetStatusChange| is called. Timeout is specified in milliseconds.
+     *
+     * This maps to:
+     * PC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#ga33247d5d1257d59e55647c3bb717db24
+     * Microsoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardgetstatuschangea
+     */
+    interface GetStatusChangeRequestedEvent {
+        requestId: string;
+        contextId: integer;
+        readerStates: ReaderStateIn[];
+        /**
+         * in milliseconds, if absent, it means "infinite"
+         */
+        timeout?: integer;
+    }
+    /**
+     * Fired when |SCardCancel| is called.
+     *
+     * This maps to:
+     * PC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#gaacbbc0c6d6c0cbbeb4f4debf6fbeeee6
+     * Microsoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardcancel
+     */
+    interface CancelRequestedEvent {
+        requestId: string;
+        contextId: integer;
+    }
+    /**
+     * Fired when |SCardConnect| is called.
+     *
+     * This maps to:
+     * PC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#ga4e515829752e0a8dbc4d630696a8d6a5
+     * Microsoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardconnecta
+     */
+    interface ConnectRequestedEvent {
+        requestId: string;
+        contextId: integer;
+        reader: string;
+        shareMode: ShareMode;
+        preferredProtocols: ProtocolSet;
+    }
+    /**
+     * Fired when |SCardDisconnect| is called.
+     *
+     * This maps to:
+     * PC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#ga4be198045c73ec0deb79e66c0ca1738a
+     * Microsoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scarddisconnect
+     */
+    interface DisconnectRequestedEvent {
+        requestId: string;
+        handle: integer;
+        disposition: Disposition;
+    }
+    /**
+     * Fired when |SCardTransmit| is called.
+     *
+     * This maps to:
+     * PC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#ga9a2d77242a271310269065e64633ab99
+     * Microsoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardtransmit
+     */
+    interface TransmitRequestedEvent {
+        requestId: string;
+        handle: integer;
+        data: binary;
+        protocol?: Protocol;
+    }
+    /**
+     * Fired when |SCardControl| is called.
+     *
+     * This maps to:
+     * PC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#gac3454d4657110fd7f753b2d3d8f4e32f
+     * Microsoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardcontrol
+     */
+    interface ControlRequestedEvent {
+        requestId: string;
+        handle: integer;
+        controlCode: integer;
+        data: binary;
+    }
+    /**
+     * Fired when |SCardGetAttrib| is called.
+     *
+     * This maps to:
+     * PC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#gaacfec51917255b7a25b94c5104961602
+     * Microsoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardgetattrib
+     */
+    interface GetAttribRequestedEvent {
+        requestId: string;
+        handle: integer;
+        attribId: integer;
+    }
+    /**
+     * Fired when |SCardSetAttrib| is called.
+     *
+     * This maps to:
+     * PC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#ga060f0038a4ddfd5dd2b8fadf3c3a2e4f
+     * Microsoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardsetattrib
+     */
+    interface SetAttribRequestedEvent {
+        requestId: string;
+        handle: integer;
+        attribId: integer;
+        data: binary;
+    }
+    /**
+     * Fired when |SCardStatus| is called.
+     *
+     * This maps to:
+     * PC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#gae49c3c894ad7ac12a5b896bde70d0382
+     * Microsoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardstatusa
+     */
+    interface StatusRequestedEvent {
+        requestId: string;
+        handle: integer;
+    }
+    /**
+     * Fired when |SCardBeginTransaction| is called.
+     *
+     * This maps to:
+     * PC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#gaddb835dce01a0da1d6ca02d33ee7d861
+     * Microsoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardbegintransaction
+     */
+    interface BeginTransactionRequestedEvent {
+        requestId: string;
+        handle: integer;
+    }
+    /**
+     * Fired when |SCardEndTransaction| is called.
+     *
+     * This maps to:
+     * PC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#gae8742473b404363e5c587f570d7e2f3b
+     * Microsoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardendtransaction
+     */
+    interface EndTransactionRequestedEvent {
+        requestId: string;
+        handle: integer;
+        disposition: Disposition;
+    }
+}
 export declare namespace Storage {
     type SerializedStorageKey = string;
     /**

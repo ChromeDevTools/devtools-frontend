@@ -25,6 +25,7 @@ __export(LinearMemoryInspectorPane_exports, {
 });
 import * as Common from "./../../core/common/common.js";
 import * as i18n from "./../../core/i18n/i18n.js";
+import { Link } from "./../../ui/kit/kit.js";
 import * as UI from "./../../ui/legacy/legacy.js";
 import * as VisualLogging from "./../../ui/visual_logging/visual_logging.js";
 import * as LinearMemoryInspectorComponents from "./components/components.js";
@@ -66,7 +67,7 @@ var LinearMemoryInspectorPane = class _LinearMemoryInspectorPane extends Common.
     placeholder.createChild("span", "empty-state-header").textContent = i18nString(UIStrings.noOpenInspections);
     const description = placeholder.createChild("div", "empty-state-description");
     description.createChild("span").textContent = i18nString(UIStrings.memoryInspectorExplanation);
-    const link = UI.XLink.XLink.create(MEMORY_INSPECTOR_EXPLANATION_URL, i18nString(UIStrings.learnMore), void 0, void 0, "learn-more");
+    const link = Link.create(MEMORY_INSPECTOR_EXPLANATION_URL, i18nString(UIStrings.learnMore), void 0, "learn-more");
     description.appendChild(link);
     return placeholder;
   }

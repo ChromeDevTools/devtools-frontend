@@ -685,6 +685,10 @@ export class CSSMatchedStyles {
         const domCascade = this.#styleToDOMCascade.get(property.ownerStyle);
         return domCascade ? domCascade.propertyState(property) : null;
     }
+    isPropertyOverriddenByAnimation(property) {
+        const domCascade = this.#styleToDOMCascade.get(property.ownerStyle);
+        return domCascade?.isPropertyOverriddenByAnimation(property) ?? false;
+    }
     resetActiveProperties() {
         Platform.assertNotNullOrUndefined(this.#mainDOMCascade);
         Platform.assertNotNullOrUndefined(this.#pseudoDOMCascades);
@@ -735,6 +739,7 @@ class NodeCascade {
     styles;
     #isInherited;
     propertiesState = new Map();
+    propertiesOverriddenByAnimation = new Set();
     activeProperties = new Map();
     #node;
     constructor(matchedStyles, styles, node, isInherited, isHighlightPseudoCascade = false) {
@@ -746,6 +751,7 @@ class NodeCascade {
     }
     computeActiveProperties() {
         this.propertiesState.clear();
+        this.propertiesOverriddenByAnimation.clear();
         this.activeProperties.clear();
         for (let i = this.styles.length - 1; i >= 0; i--) {
             const style = this.styles[i];
@@ -841,6 +847,10 @@ class NodeCascade {
         }
         if (activeProperty) {
             this.propertiesState.set(activeProperty, "Overloaded" /* PropertyState.OVERLOADED */);
+            if (propertyWithHigherSpecificity.ownerStyle.type === Type.Animation ||
+                propertyWithHigherSpecificity.ownerStyle.type === Type.Transition) {
+                this.propertiesOverriddenByAnimation.add(activeProperty);
+            }
         }
         this.propertiesState.set(propertyWithHigherSpecificity, "Active" /* PropertyState.ACTIVE */);
         this.activeProperties.set(canonicalName, propertyWithHigherSpecificity);
@@ -921,6 +931,7 @@ function* forEach(array, startAfter) {
 }
 class DOMInheritanceCascade {
     #propertiesState = new Map();
+    #propertiesOverriddenByAnimation = new Set();
     #availableCSSVariables = new Map();
     #computedCSSVariables = new Map();
     #styleToNodeCascade = new Map();
@@ -1252,9 +1263,14 @@ class DOMInheritanceCascade {
         this.ensureInitialized();
         return this.#propertiesState.get(property) || null;
     }
+    isPropertyOverriddenByAnimation(property) {
+        this.ensureInitialized();
+        return this.#propertiesOverriddenByAnimation.has(property);
+    }
     reset() {
         this.#initialized = false;
         this.#propertiesState.clear();
+        this.#propertiesOverriddenByAnimation.clear();
         this.#availableCSSVariables.clear();
         this.#computedCSSVariables.clear();
     }
@@ -1269,11 +1285,20 @@ class DOMInheritanceCascade {
             for (const [property, state] of nodeCascade.propertiesState) {
                 if (state === "Overloaded" /* PropertyState.OVERLOADED */) {
                     this.#propertiesState.set(property, "Overloaded" /* PropertyState.OVERLOADED */);
+                    if (nodeCascade.propertiesOverriddenByAnimation.has(property)) {
+                        this.#propertiesOverriddenByAnimation.add(property);
+                    }
                     continue;
                 }
                 const canonicalName = cssMetadata().canonicalPropertyName(property.name);
                 if (activeProperties.has(canonicalName)) {
                     this.#propertiesState.set(property, "Overloaded" /* PropertyState.OVERLOADED */);
+                    const activeProperty = activeProperties.get(canonicalName);
+                    if (activeProperty &&
+                        (activeProperty.ownerStyle.type === Type.Animation ||
+                            activeProperty.ownerStyle.type === Type.Transition)) {
+                        this.#propertiesOverriddenByAnimation.add(property);
+                    }
                     continue;
                 }
                 activeProperties.set(canonicalName, property);

@@ -94,6 +94,7 @@ export declare class CSSMatchedStyles {
     resolveGlobalKeyword(property: CSSProperty, keyword: CSSWideKeyword): CSSValueSource | null;
     isInherited(style: CSSStyleDeclaration): boolean;
     propertyState(property: CSSProperty): PropertyState | null;
+    isPropertyOverriddenByAnimation(property: CSSProperty): boolean;
     resetActiveProperties(): void;
     propertyMatchers(style: CSSStyleDeclaration, computedStyles: Map<string, string> | null): Array<Matcher<Match>>;
     environmentVariable(name: string): string | undefined;

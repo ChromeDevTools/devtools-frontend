@@ -15,6 +15,7 @@ export class DebuggableFrameFlavor {
     column;
     missingDebugInfo;
     sdkFrame;
+    /** Use the static {@link for}. Only public to satisfy the `setFlavor` Ctor type  */
     constructor(frame) {
         this.url = frame.url;
         this.uiSourceCode = frame.uiSourceCode;

@@ -170,6 +170,10 @@ devtools-icon.icon-link {
   opacity: 50%;
 }
 
+.animation-override-hint {
+  max-width: 232px;
+}
+
 .hint-wrapper {
   align-items: center;
   display: inline-block;

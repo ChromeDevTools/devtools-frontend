@@ -69,8 +69,8 @@ const DEFAULT_VIEW = (input, output, target) => {
         if (!selected) {
             return Lit.nothing;
         }
-        const aiLabel = 'Debug with AI';
-        const ariaLabel = `Ask AI about ${model.title} insight`;
+        const aiLabel = AIAssistance.AiUtils.isGeminiBranding() ? 'Ask Gemini' : 'Ask AI';
+        const ariaLabel = `${aiLabel} about ${model.title} insight`;
         const content = renderContent();
         const iconName = AIAssistance.AiUtils.getIconName();
         // clang-format off

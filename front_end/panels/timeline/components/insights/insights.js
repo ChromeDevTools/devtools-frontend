@@ -353,8 +353,8 @@ var DEFAULT_VIEW = (input, output, target) => {
     if (!selected) {
       return Lit2.nothing;
     }
-    const aiLabel = "Debug with AI";
-    const ariaLabel2 = `Ask AI about ${model.title} insight`;
+    const aiLabel = AIAssistance.AiUtils.isGeminiBranding() ? "Ask Gemini" : "Ask AI";
+    const ariaLabel2 = `${aiLabel} about ${model.title} insight`;
     const content = renderContent();
     const iconName = AIAssistance.AiUtils.getIconName();
     return html2`

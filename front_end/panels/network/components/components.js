@@ -722,7 +722,7 @@ var HeaderSectionRow_css_default = `/*
   color: var(--sys-color-token-subtle);
 }
 
-x-link .inline-icon {
+devtools-link .inline-icon {
   padding-right: 3px;
 }
 

@@ -274,17 +274,17 @@ export class SecurityPanelSidebar extends UI.Widget.VBox {
             const icon = isOverviewElement ?
                 getSecurityStateIconForOverview(securityState, `lock-icon lock-icon-${securityState}`) :
                 getSecurityStateIconForDetailedView(securityState, `security-property security-property-${securityState}`);
-            const elementTitle = isOverviewElement ? (() => {
-                const title = document.createElement('span');
-                title.classList.add('title');
-                title.textContent = i18nString(UIStrings.overview);
-                return title;
-            })() : createHighlightedUrl(element.origin() ?? Platform.DevToolsPath.EmptyUrlString, securityState);
             element.setLeadingIcons([icon]);
-            if (element.listItemElement.lastChild) {
-                element.listItemElement.removeChild(element.listItemElement.lastChild);
+            if (isOverviewElement) {
+                element.title = i18nString(UIStrings.overview);
             }
-            element.listItemElement.appendChild(elementTitle);
+            else {
+                const elementTitle = createHighlightedUrl(element.origin() ?? Platform.DevToolsPath.EmptyUrlString, securityState);
+                if (element.listItemElement.lastChild) {
+                    element.listItemElement.removeChild(element.listItemElement.lastChild);
+                }
+                element.listItemElement.appendChild(elementTitle);
+            }
         }
     }
 }

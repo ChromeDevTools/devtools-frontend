@@ -6044,6 +6044,11 @@ export const NativeFunctions = [
     },
     {
         name: "respondWith",
+        signatures: [["agentResponse"]],
+        receivers: ["SubmitEvent"]
+    },
+    {
+        name: "respondWith",
         signatures: [["paymentAbortedResponse"]],
         receivers: ["AbortPaymentEvent"]
     },

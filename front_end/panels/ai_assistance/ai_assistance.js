@@ -2649,7 +2649,7 @@ var UIStringsNotTranslate4 = {
    */
   accountAvatar: "Account avatar",
   /**
-   * @description Title for the x-link which wraps the image input rendered in chat messages.
+   * @description Title for the link which wraps the image input rendered in chat messages.
    */
   openImageInNewTab: "Open image in a new tab",
   /**
@@ -2660,7 +2660,8 @@ var UIStringsNotTranslate4 = {
 var DEFAULT_VIEW3 = (input, output, target) => {
   const message = input.message;
   if (message.entity === "user") {
-    const name = input.userInfo.accountFullName || lockedString4(UIStringsNotTranslate4.you);
+    const givenName = AiAssistanceModel3.AiUtils.isGeminiBranding() ? input.userInfo.accountGivenName : "";
+    const name = givenName || input.userInfo.accountFullName || lockedString4(UIStringsNotTranslate4.you);
     const image = input.userInfo.accountImage ? html4`<img src="data:image/png;base64, ${input.userInfo.accountImage}" alt=${UIStringsNotTranslate4.accountAvatar} />` : html4`<devtools-icon
           name="profile"
         ></devtools-icon>`;
@@ -3353,12 +3354,17 @@ main {
 }
 
 .gemini {
+  .empty-state-container {
+    padding: var(--sys-size-8);
+  }
+
   .empty-state-container .icon {
     display: none;
   }
 
   .empty-state-container .header {
     align-items: flex-start;
+    line-height: var(--sys-size-4);
   }
 
   .empty-state-content {
@@ -3366,7 +3372,12 @@ main {
   }
 
   .empty-state-container .greeting {
+    font-size: var(--sys-size-10);
     color: var(--sys-color-primary);
+  }
+
+  .empty-state-container .cta {
+    font-size: var(--sys-size-10);
   }
 
   main {
@@ -3650,8 +3661,8 @@ var DEFAULT_VIEW4 = (input, output, target) => {
                   ></devtools-icon>
                 </div>
                 ${AiAssistanceModel4.AiUtils.isGeminiBranding() ? html5`
-                    <h1 class='greeting'>Hello, ${input.accountName}</h1>
-                    <h1>${lockedString5(UIStringsNotTranslate5.emptyStateTextGemini)}</h1>
+                    <h1 class='greeting'>Hello${input.accountGivenName ? `, ${input.accountGivenName}` : ""}</h1>
+                    <p class='cta'>${lockedString5(UIStringsNotTranslate5.emptyStateTextGemini)}</p>
                   ` : html5`<h1>${lockedString5(UIStringsNotTranslate5.emptyStateText)}</h1>`}
               </div>
               <div class="empty-state-content">
@@ -3809,8 +3820,7 @@ var ChatView = class extends HTMLElement {
   #render() {
     this.#view({
       ...this.#props,
-      // TODO(b/468206227): This needs to be a first name.
-      accountName: this.#props.userInfo.accountFullName ?? "",
+      accountGivenName: this.#props.userInfo.accountGivenName ?? "",
       handleScroll: this.#handleScroll,
       handleSuggestionClick: this.#handleSuggestionClick,
       handleMessageContainerRef: this.#handleMessageContainerRef
@@ -4476,6 +4486,10 @@ var UIStringsNotTranslate7 = {
    */
   inputPlaceholderForPerformanceTraceNoContext: "Record or select a performance trace to ask a question",
   /**
+   *@description Placeholder text for the chat UI input.
+   */
+  inputPlaceholderForNoContext: "Ask AI Assistance",
+  /**
    * @description Disclaimer text right after the chat input.
    */
   inputDisclaimerForStyling: "Chat messages and any data the inspected page can access via Web APIs are sent to Google and may be seen by human reviewers to improve this feature. This is an experimental AI feature and won\u2019t always get it right.",
@@ -4550,6 +4564,13 @@ async function getEmptyStateSuggestions(conversation) {
     case "drjones-performance-full": {
       return [
         { title: "What performance issues exist with my page?", jslogContext: "performance-default" }
+      ];
+    }
+    case "none": {
+      return [
+        { title: "How can I use DevTools to debug?", jslogContext: "empty" },
+        { title: "What performance issues exist with my page?", jslogContext: "empty" },
+        { title: "What are the slowest requests on this page?", jslogContext: "empty" }
       ];
     }
     default:
@@ -4726,7 +4747,8 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI8.Panel.Panel {
     this.#aidaAvailability = aidaAvailability;
     this.#userInfo = {
       accountImage: syncInfo.accountImage,
-      accountFullName: syncInfo.accountFullName
+      accountFullName: syncInfo.accountFullName,
+      accountGivenName: syncInfo.accountGivenName
     };
     if (UI8.ActionRegistry.ActionRegistry.instance().hasAction("elements.toggle-element-search")) {
       this.#toggleSearchElementAction = UI8.ActionRegistry.ActionRegistry.instance().getAction("elements.toggle-element-search");
@@ -4845,6 +4867,9 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI8.Panel.Panel {
     } else if (isPerformancePanelVisible && hostConfig.devToolsAiAssistancePerformanceAgent?.enabled) {
       targetConversationType = "drjones-performance-full";
     }
+    if (isAiAssistanceContextSelectionAgentEnabled() && !targetConversationType) {
+      return "none";
+    }
     return targetConversationType;
   }
   // We select the default agent based on the open panels if
@@ -4931,7 +4956,8 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI8.Panel.Panel {
       const syncInfo = await new Promise((resolve) => Host6.InspectorFrontendHost.InspectorFrontendHostInstance.getSyncInformation(resolve));
       this.#userInfo = {
         accountImage: syncInfo.accountImage,
-        accountFullName: syncInfo.accountFullName
+        accountFullName: syncInfo.accountFullName,
+        accountGivenName: syncInfo.accountGivenName
       };
       this.requestUpdate();
     }
@@ -5030,7 +5056,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI8.Panel.Panel {
     if (!this.#conversation) {
       return true;
     }
-    if (!this.#conversation.selectedContext) {
+    if (!this.#conversation.selectedContext && !isAiAssistanceContextSelectionAgentEnabled()) {
       return true;
     }
     return false;
@@ -5067,6 +5093,8 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI8.Panel.Panel {
         }
         return lockedString7(UIStringsNotTranslate7.inputPlaceholderForPerformanceWithNoRecording);
       }
+      case "none":
+        return lockedString7(UIStringsNotTranslate7.inputPlaceholderForNoContext);
     }
   }
   #getDisclaimerText() {
@@ -5096,6 +5124,8 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI8.Panel.Panel {
         if (noLogging) {
           return lockedString7(UIStringsNotTranslate7.inputDisclaimerForPerformanceEnterpriseNoLogging);
         }
+        return lockedString7(UIStringsNotTranslate7.inputDisclaimerForPerformance);
+      case "none":
         return lockedString7(UIStringsNotTranslate7.inputDisclaimerForPerformance);
     }
   }
@@ -5299,8 +5329,36 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI8.Panel.Panel {
         return this.#selectedRequest;
       case "drjones-performance-full":
         return this.#selectedPerformanceTrace;
+      case "none":
+        return null;
     }
   }
+  #handleConversationContextChange = (data) => {
+    if (data instanceof Workspace6.UISourceCode.UISourceCode) {
+      if (this.#selectedFile?.getItem() === data) {
+        return;
+      }
+      this.#selectedFile = new AiAssistanceModel5.FileAgent.FileContext(data);
+    } else if (data instanceof SDK3.DOMModel.DOMNode) {
+      if (this.#selectedElement?.getItem() === data || // Ignore non node type like comments or html tags
+      data.nodeType() === Node.ELEMENT_NODE) {
+        return;
+      }
+      this.#selectedElement = new AiAssistanceModel5.StylingAgent.NodeContext(data);
+    } else if (data instanceof SDK3.NetworkRequest.NetworkRequest) {
+      if (this.#selectedRequest?.getItem() === data) {
+        return;
+      }
+      const calculator = NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator();
+      this.#selectedRequest = new AiAssistanceModel5.NetworkAgent.RequestContext(data, calculator);
+    } else if (data instanceof AiAssistanceModel5.AIContext.AgentFocus) {
+      if (this.#selectedPerformanceTrace?.getItem() === data) {
+        return;
+      }
+      this.#selectedPerformanceTrace = new AiAssistanceModel5.PerformanceAgent.PerformanceTraceContext(data);
+    }
+    this.#updateConversationState(this.#conversation);
+  };
   async #startConversation(text, imageInput, multimodalInputType) {
     if (!this.#conversation) {
       return;
@@ -5469,6 +5527,12 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI8.Panel.Panel {
             }
             break;
           }
+          case "context-change": {
+            this.#handleConversationContextChange(data.context);
+            step.isLoading = false;
+            commitStep();
+            break;
+          }
         }
         if (!this.#conversation?.isReadOnly) {
           this.requestUpdate();
@@ -5567,6 +5631,9 @@ function isAiAssistanceMultimodalUploadInputEnabled() {
 }
 function isAiAssistanceMultimodalInputEnabled() {
   return Boolean(Root5.Runtime.hostConfig.devToolsFreestyler?.multimodal);
+}
+function isAiAssistanceContextSelectionAgentEnabled() {
+  return Boolean(Root5.Runtime.hostConfig.devToolsAiAssistanceContextSelectionAgent?.enabled);
 }
 function isAiAssistanceServerSideLoggingEnabled() {
   return !Root5.Runtime.hostConfig.aidaAvailability?.disallowLogging;

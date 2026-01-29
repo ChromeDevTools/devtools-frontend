@@ -22,7 +22,7 @@ import * as Root from "./../../core/root/root.js";
 import * as GreenDev from "./../../models/greendev/greendev.js";
 import * as Buttons from "./../../ui/components/buttons/buttons.js";
 import * as UIHelpers from "./../../ui/helpers/helpers.js";
-import { createIcon } from "./../../ui/kit/kit.js";
+import { createIcon, Link } from "./../../ui/kit/kit.js";
 import * as SettingsUI from "./../../ui/legacy/components/settings_ui/settings_ui.js";
 import * as Components from "./../../ui/legacy/components/utils/utils.js";
 import * as UI from "./../../ui/legacy/legacy.js";
@@ -628,7 +628,7 @@ var ExperimentsSettingsTab = class _ExperimentsSettingsTab extends UI.Widget.VBo
       p.appendChild(linkButton);
     }
     if (experiment.feedbackLink) {
-      const link = UI.XLink.XLink.create(experiment.feedbackLink, void 0, void 0, void 0, `${experiment.name}-feedback`);
+      const link = Link.create(experiment.feedbackLink, void 0, void 0, `${experiment.name}-feedback`);
       link.textContent = i18nString(UIStrings.sendFeedback);
       link.classList.add("feedback-link");
       p.appendChild(link);
@@ -1414,7 +1414,7 @@ var AISettingsTab = class extends UI2.Widget.VBox {
     }
     if (this.#aiAssistanceSetting) {
       const aiAssistanceData = {
-        settingName: i18n3.i18n.lockedString("AI assistance"),
+        settingName: i18n3.i18n.lockedString(AiAssistanceModel.AiUtils.isGeminiBranding() ? "Gemini in Chrome DevTools" : "AI assistance"),
         iconName: AiAssistanceModel.AiUtils.getIconName(),
         settingDescription: this.#getAiAssistanceSettingDescription(),
         enableSettingText: i18nString2(UIStrings2.enableAiAssistance),
@@ -2163,13 +2163,12 @@ __export(KeybindsSettingsTab_exports, {
   KeybindsSettingsTab: () => KeybindsSettingsTab,
   ShortcutListItem: () => ShortcutListItem
 });
-import "./../../ui/kit/kit.js";
 import * as Common4 from "./../../core/common/common.js";
 import * as Host3 from "./../../core/host/host.js";
 import * as i18n9 from "./../../core/i18n/i18n.js";
 import * as Platform4 from "./../../core/platform/platform.js";
 import * as Buttons4 from "./../../ui/components/buttons/buttons.js";
-import { createIcon as createIcon2 } from "./../../ui/kit/kit.js";
+import { createIcon as createIcon2, Link as Link2 } from "./../../ui/kit/kit.js";
 import * as SettingsUI5 from "./../../ui/legacy/components/settings_ui/settings_ui.js";
 import * as UI5 from "./../../ui/legacy/legacy.js";
 import * as VisualLogging4 from "./../../ui/visual_logging/visual_logging.js";
@@ -2465,7 +2464,7 @@ var KeybindsSettingsTab = class extends UI5.Widget.VBox {
     UI5.ARIAUtils.setLabel(this.list.element, i18nString5(UIStrings5.keyboardShortcutsList));
     const footer = document.createElement("div");
     footer.classList.add("keybinds-footer");
-    const docsLink = UI5.XLink.XLink.create("https://developer.chrome.com/docs/devtools/shortcuts/", i18nString5(UIStrings5.FullListOfDevtoolsKeyboard), void 0, void 0, "learn-more");
+    const docsLink = Link2.create("https://developer.chrome.com/docs/devtools/shortcuts/", i18nString5(UIStrings5.FullListOfDevtoolsKeyboard), void 0, "learn-more");
     docsLink.classList.add("docs-link");
     footer.appendChild(docsLink);
     const restoreDefaultShortcutsButton = UI5.UIUtils.createTextButton(i18nString5(UIStrings5.RestoreDefaultShortcuts), () => {

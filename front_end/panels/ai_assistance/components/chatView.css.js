@@ -171,12 +171,17 @@ main {
 }
 
 .gemini {
+  .empty-state-container {
+    padding: var(--sys-size-8);
+  }
+
   .empty-state-container .icon {
     display: none;
   }
 
   .empty-state-container .header {
     align-items: flex-start;
+    line-height: var(--sys-size-4);
   }
 
   .empty-state-content {
@@ -184,7 +189,12 @@ main {
   }
 
   .empty-state-container .greeting {
+    font-size: var(--sys-size-10);
     color: var(--sys-color-primary);
+  }
+
+  .empty-state-container .cta {
+    font-size: var(--sys-size-10);
   }
 
   main {

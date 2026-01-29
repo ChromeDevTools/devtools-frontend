@@ -3,8 +3,6 @@ import * as Host from '../../core/host/host.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { type ModelChatMessage } from './components/ChatMessage.js';
 import { ChatView, type Props as ChatViewProps } from './components/ChatView.js';
-export { ChatMessageEntity } from './components/ChatMessage.js';
-export type { AnswerPart, ModelChatMessage, StepPart } from './components/ChatMessage.js';
 interface ToolbarViewInput {
     onNewChatClick: () => void;
     populateHistoryMenu: (contextMenu: UI.ContextMenu.ContextMenu) => void;
@@ -58,3 +56,4 @@ export declare function getResponseMarkdown(message: ModelChatMessage): string;
 export declare class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
     handleAction(_context: UI.Context.Context, actionId: string, opts?: Record<string, unknown>): boolean;
 }
+export {};

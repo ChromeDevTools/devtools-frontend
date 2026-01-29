@@ -1069,6 +1069,7 @@ var AiCodeGenerationUpgradeDialog = class {
   static show({ noLogging }) {
     const dialog2 = new UI4.Dialog.Dialog();
     dialog2.setAriaLabel(lockedString3(UIStringsNotTranslate3.codeCompletionJustGotBetter));
+    const result = Promise.withResolvers();
     Lit2.render(html4`
       <div class="ai-code-generation-upgrade-dialog">
         <style>
@@ -1103,6 +1104,7 @@ var AiCodeGenerationUpgradeDialog = class {
           <div class="right-buttons">
             <devtools-button
               @click=${() => {
+      result.resolve(true);
       void UI4.ViewManager.ViewManager.instance().showView("chrome-ai");
     }}
               jslogcontext="ai-code-generation-upgrade-dialog.manage-in-settings"
@@ -1112,6 +1114,7 @@ var AiCodeGenerationUpgradeDialog = class {
             </devtools-button>
             <devtools-button
               @click=${() => {
+      result.resolve(true);
       dialog2.hide();
     }}
               jslogcontext="ai-code-generation-upgrade-dialog.continue"
@@ -1123,7 +1126,9 @@ var AiCodeGenerationUpgradeDialog = class {
       </div>`, dialog2.contentElement);
     dialog2.setOutsideClickCallback((ev) => {
       ev.consume(true);
-      dialog2.hide();
+    });
+    dialog2.setOnHideCallback(() => {
+      result.resolve(false);
     });
     dialog2.setSizeBehavior(
       "MeasureContent"
@@ -1131,6 +1136,7 @@ var AiCodeGenerationUpgradeDialog = class {
     );
     dialog2.setDimmed(true);
     dialog2.show();
+    return result.promise;
   }
   constructor() {
   }
@@ -2362,7 +2368,7 @@ var aiCodeCompletionSummaryToolbar_css_default = `/*
             gap: var(--sys-size-2);
             white-space: normal;
 
-            x-link {
+            devtools-link {
                 color: var(--sys-color-primary);
                 text-decoration: underline;
 

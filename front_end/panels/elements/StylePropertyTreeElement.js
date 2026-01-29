@@ -76,6 +76,14 @@ const UIStrings = {
      */
     viewComputedValue: 'View computed value',
     /**
+     * @description Tooltip text for a style property overridden by an animation.
+     */
+    overriddenByAnimation: 'Overridden by animation styles.',
+    /**
+     * @description Link text in the tooltip to open the Animations panel.
+     */
+    openAnimationsPanel: 'Open Animations panel',
+    /**
      * @description Title of the button that opens the flexbox editor in the Styles panel.
      */
     flexboxEditorButton: 'Open `flexbox` editor',
@@ -2051,6 +2059,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         }
         if (this.property.parsedOk) {
             this.updateAuthoringHint();
+            this.updateAnimationOverrideHint();
         }
         else {
             // Avoid having longhands under an invalid shorthand.
@@ -2248,6 +2257,50 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
                 break;
             }
         }
+    }
+    updateAnimationOverrideHint() {
+        const existingElement = this.listItemElement.querySelector('.animation-override-hint-wrapper');
+        if (existingElement) {
+            existingElement?.remove();
+        }
+        if (!this.overriddenByAnimation() || UI.ViewManager.ViewManager.instance().isViewVisible('animations')) {
+            return;
+        }
+        const wrapper = document.createElement('span');
+        wrapper.classList.add('animation-override-hint-wrapper', 'hint-wrapper');
+        const hintIcon = new Icon();
+        hintIcon.name = 'info';
+        hintIcon.classList.add('hint', 'small');
+        hintIcon.tabIndex = -1;
+        wrapper.append(hintIcon);
+        this.listItemElement.append(wrapper);
+        const tooltipId = this.getTooltipId('animation-override-hint');
+        hintIcon.setAttribute('aria-details', tooltipId);
+        const tooltip = new Tooltips.Tooltip.Tooltip({
+            anchor: hintIcon,
+            variant: 'rich',
+            padding: 'large',
+            id: tooltipId,
+            jslogContext: 'elements.css-animation-hint'
+        });
+        const message = i18nString(UIStrings.overriddenByAnimation);
+        const content = document.createElement('div');
+        content.classList.add('animation-override-hint');
+        content.textContent = message;
+        const link = document.createElement('devtools-link');
+        link.textContent = i18nString(UIStrings.openAnimationsPanel);
+        link.jslogContext = 'open-in-animations-panel';
+        link.addEventListener('click', event => {
+            event.preventDefault();
+            void UI.ViewManager.ViewManager.instance().showView('animations');
+        });
+        content.appendChild(document.createTextNode(' '));
+        content.appendChild(link);
+        tooltip.appendChild(content);
+        this.listItemElement.appendChild(tooltip);
+    }
+    overriddenByAnimation() {
+        return this.#matchedStyles.isPropertyOverriddenByAnimation(this.property);
     }
     mouseUp(event) {
         const activeTreeElement = parentMap.get(this.#parentPane);

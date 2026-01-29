@@ -6,6 +6,7 @@ import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as NetworkTimeCalculator from '../network_time_calculator/network_time_calculator.js';
+import { ContextSelectionAgent } from './agents/ContextSelectionAgent.js';
 import { FileAgent } from './agents/FileAgent.js';
 import { NetworkAgent } from './agents/NetworkAgent.js';
 import { PerformanceAgent } from './agents/PerformanceAgent.js';
@@ -53,6 +54,7 @@ export class AiConversation {
         this.#isReadOnly = isReadOnly;
         this.#isExternal = isExternal;
         this.history = this.#reconstructHistory(data);
+        // Needs to be last
         this.#agent = this.#createAgent();
     }
     get isReadOnly() {
@@ -176,7 +178,11 @@ export class AiConversation {
     serialize() {
         return {
             id: this.id,
-            history: this.history.map(item => {
+            history: this.history
+                .map(item => {
+                if (item.type === "context-change" /* ResponseType.CONTEXT_CHANGE */) {
+                    return null;
+                }
                 if (item.type === "user-query" /* ResponseType.USER_QUERY */) {
                     return { ...item, imageInput: undefined };
                 }
@@ -185,7 +191,8 @@ export class AiConversation {
                     return { ...item, confirm: undefined };
                 }
                 return item;
-            }),
+            })
+                .filter(history => !!history),
             type: this.#type,
             isExternal: this.#isExternal,
         };
@@ -213,6 +220,10 @@ export class AiConversation {
             }
             case "drjones-performance-full" /* ConversationType.PERFORMANCE */: {
                 agent = new PerformanceAgent(options);
+                break;
+            }
+            case "none" /* ConversationType.NONE */: {
+                agent = new ContextSelectionAgent(options);
                 break;
             }
         }
@@ -293,6 +304,9 @@ Time: ${micros(time)}`;
             throw new Error('Cross-origin context data should not be included');
         }
         function shouldAddToHistory(data) {
+            if (data.type === "context-change" /* ResponseType.CONTEXT_CHANGE */) {
+                return false;
+            }
             // We don't want to save partial responses to the conversation history.
             // TODO(crbug.com/463325400): We should save interleaved answers to the history as well.
             if (data.type === "answer" /* ResponseType.ANSWER */ && !data.complete) {
@@ -304,6 +318,10 @@ Time: ${micros(time)}`;
             signal: options.signal,
             selected: this.selectedContext ?? null,
         }, options.multimodalInput)) {
+            if (data.type === "context-change" /* ResponseType.CONTEXT_CHANGE */) {
+                this.#type = "drjones-network-request" /* ConversationType.NETWORK */;
+                this.#agent = this.#createAgent();
+            }
             if (shouldAddToHistory(data)) {
                 void this.addHistoryItem(data);
             }

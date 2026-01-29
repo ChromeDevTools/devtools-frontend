@@ -5,16 +5,14 @@ import * as Host from '../../core/host/host.js';
 import * as UIHelpers from '../helpers/helpers.js';
 import { Link } from '../kit/kit.js';
 import { copyLinkAddressLabel, openLinkExternallyLabel, } from './UIUtils.js';
-import { XLink } from './XLink.js';
 /**
  * We can move this next to the Link after
- * the x-link is removed and the context menu
- * is decoupled from the legacy bundle
+ * the context menu is decoupled from the legacy bundle
  */
 export class LinkContextMenuProvider {
     appendApplicableItems(_event, contextMenu, target) {
         let targetNode = target;
-        while (targetNode && !(targetNode instanceof XLink || targetNode instanceof Link)) {
+        while (targetNode && !(targetNode instanceof Link)) {
             targetNode = targetNode.parentNodeOrShadowHost();
         }
         if (!targetNode?.href) {

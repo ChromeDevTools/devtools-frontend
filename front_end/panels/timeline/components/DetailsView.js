@@ -6,7 +6,7 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as Trace from '../../../models/trace/trace.js';
 import * as uiI18n from '../../../ui/i18n/i18n.js';
-import * as UI from '../../../ui/legacy/legacy.js';
+import { Link } from '../../../ui/kit/kit.js';
 // *********************************************************************
 // At the moment this file consists of helpers to aid in the rendering
 // of events details in the bottom drawer. In the future, we should use
@@ -77,7 +77,7 @@ export function buildWarningElementsForEvent(event, parsedTrace) {
         const span = document.createElement('span');
         switch (warning) {
             case 'FORCED_REFLOW': {
-                const forcedReflowLink = UI.XLink.XLink.create('https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts', i18nString(UIStrings.forcedReflow), undefined, undefined, 'forced-reflow');
+                const forcedReflowLink = Link.create('https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts', i18nString(UIStrings.forcedReflow), undefined, 'forced-reflow');
                 span.appendChild(uiI18n.getFormatLocalizedString(str_, UIStrings.sIsALikelyPerformanceBottleneck, { PH1: forcedReflowLink }));
                 break;
             }
@@ -90,12 +90,12 @@ export function buildWarningElementsForEvent(event, parsedTrace) {
                 break;
             }
             case 'LONG_TASK': {
-                const longTaskLink = UI.XLink.XLink.create('https://web.dev/optimize-long-tasks/', i18nString(UIStrings.longTask), undefined, undefined, 'long-tasks');
+                const longTaskLink = Link.create('https://web.dev/optimize-long-tasks/', i18nString(UIStrings.longTask), undefined, 'long-tasks');
                 span.appendChild(uiI18n.getFormatLocalizedString(str_, UIStrings.sTookS, { PH1: longTaskLink, PH2: i18n.TimeUtilities.millisToString((duration || 0), true) }));
                 break;
             }
             case 'LONG_INTERACTION': {
-                const longInteractionINPLink = UI.XLink.XLink.create('https://web.dev/inp', i18nString(UIStrings.longInteractionINP), undefined, undefined, 'long-interaction');
+                const longInteractionINPLink = Link.create('https://web.dev/inp', i18nString(UIStrings.longInteractionINP), undefined, 'long-interaction');
                 span.appendChild(uiI18n.getFormatLocalizedString(str_, UIStrings.sIsLikelyPoorPageResponsiveness, { PH1: longInteractionINPLink }));
                 break;
             }

@@ -154,6 +154,7 @@ UI.ActionRegistration.registerActionExtension({
         return new AiAssistance.ActionDelegate();
     },
     condition: config => isAnyFeatureAvailable(config) && !isPolicyRestricted(config) && !isGeoRestricted(config),
+    featurePromotionId: 'debug-with-ai',
 });
 UI.ActionRegistration.registerActionExtension({
     actionId: 'freestyler.elements-floating-button',

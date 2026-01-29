@@ -124,7 +124,7 @@ devtools-link {
   text-decoration-line: underline;
 }
 
-x-link.quick-start-link {
+devtools-link.quick-start-link {
   font-size: 14px;
   line-height: 22px;
   letter-spacing: 0.04em;
@@ -208,8 +208,8 @@ var PreviewToggle_exports = {};
 __export(PreviewToggle_exports, {
   PreviewToggle: () => PreviewToggle
 });
-import "./../../legacy/legacy.js";
 import "./../../kit/kit.js";
+import "./../../legacy/legacy.js";
 import * as i18n5 from "./../../../core/i18n/i18n.js";
 import * as Root from "./../../../core/root/root.js";
 import { html as html3, nothing, render as render3 } from "./../../lit/lit.js";

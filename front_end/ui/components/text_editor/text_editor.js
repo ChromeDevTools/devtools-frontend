@@ -89,6 +89,7 @@ __export(AiCodeGenerationProvider_exports, {
 import * as Common2 from "./../../../core/common/common.js";
 import * as Host from "./../../../core/host/host.js";
 import * as i18n3 from "./../../../core/i18n/i18n.js";
+import * as Root from "./../../../core/root/root.js";
 import * as AiCodeGeneration from "./../../../models/ai_code_generation/ai_code_generation.js";
 import * as PanelCommon from "./../../../panels/common/common.js";
 import * as CodeMirror2 from "./../../../third_party/codemirror.next/codemirror.next.js";
@@ -932,6 +933,8 @@ var AiCodeGenerationProvider = class _AiCodeGenerationProvider {
   // 'ai-code-completion-enabled' setting controls both AI code completion and AI code generation.
   // Since this provider deals with code generation, the field has been named `#aiCodeGenerationEnabledSetting`.
   #aiCodeGenerationEnabledSetting = Common2.Settings.Settings.instance().createSetting("ai-code-completion-enabled", false);
+  #aiCodeGenerationSettingEnabled = this.#aiCodeGenerationEnabledSetting.get();
+  #aiCodeGenerationOnboardingCompletedSetting = Common2.Settings.Settings.instance().createSetting("ai-code-generation-onboarding-completed", false);
   #generationTeaserCompartment = new CodeMirror2.Compartment();
   #generationTeaser;
   #editor;
@@ -977,7 +980,7 @@ var AiCodeGenerationProvider = class _AiCodeGenerationProvider {
     this.#aiCodeGenerationEnabledSetting.addChangeListener(this.#boundOnUpdateAiCodeGenerationState);
     void this.#updateAiCodeGenerationState();
   }
-  #setupAiCodeGeneration() {
+  async #setupAiCodeGeneration() {
     if (this.#aiCodeGeneration) {
       return;
     }
@@ -1000,10 +1003,14 @@ var AiCodeGenerationProvider = class _AiCodeGenerationProvider {
     const isAvailable = aidaAvailability === "available";
     const isEnabled = this.#aiCodeGenerationEnabledSetting.get();
     if (isAvailable && isEnabled) {
-      this.#setupAiCodeGeneration();
+      if (!this.#aiCodeGenerationSettingEnabled) {
+        this.#aiCodeGenerationOnboardingCompletedSetting.set(true);
+      }
+      await this.#setupAiCodeGeneration();
     } else {
       this.#cleanupAiCodeGeneration();
     }
+    this.#aiCodeGenerationSettingEnabled = isEnabled;
   }
   #editorKeymap() {
     return [
@@ -1051,9 +1058,7 @@ var AiCodeGenerationProvider = class _AiCodeGenerationProvider {
           }
           if (UI2.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(event)) {
             if (event.key === "i") {
-              event.consume(true);
-              void VisualLogging2.logKeyDown(event.currentTarget, event, "ai-code-generation.triggered");
-              void this.#triggerAiCodeGeneration({ signal: this.#controller.signal });
+              void this.#triggerAiCodeGenerationFlow(event);
               return true;
             }
           }
@@ -1061,6 +1066,24 @@ var AiCodeGenerationProvider = class _AiCodeGenerationProvider {
         }
       }
     ];
+  }
+  async #triggerAiCodeGenerationFlow(event) {
+    event.consume(true);
+    const isOnboarded = await this.#onboardUser();
+    if (!isOnboarded) {
+      return;
+    }
+    void VisualLogging2.logKeyDown(event.currentTarget, event, "ai-code-generation.triggered");
+    void this.#triggerAiCodeGeneration({ signal: this.#controller.signal });
+  }
+  async #onboardUser() {
+    if (this.#aiCodeGenerationOnboardingCompletedSetting.get()) {
+      return true;
+    }
+    const noLogging = Root.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue === Root.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING;
+    const resolved = await PanelCommon.AiCodeGenerationUpgradeDialog.show({ noLogging });
+    this.#aiCodeGenerationOnboardingCompletedSetting.set(resolved);
+    return resolved;
   }
   #dismissTeaserAndSuggestion() {
     this.#generationTeaser.displayState = PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.TRIGGER;

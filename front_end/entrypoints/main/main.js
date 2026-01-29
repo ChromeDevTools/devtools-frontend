@@ -686,7 +686,6 @@ var MainImpl = class {
     const globalStorage = new Common2.Settings.SettingsStorage(prefs, hostUnsyncedStorage, storagePrefix);
     return { syncedStorage, globalStorage, localStorage };
   }
-  // eslint-disable-next-line no-unused-private-class-members
   #migrateValueFromLegacyToHostExperiment(legacyExperimentName, hostExperiment) {
     const value = Root2.Runtime.experiments.getValueFromStorage(legacyExperimentName);
     if (value !== void 0 && hostExperiment.aboutFlag) {
@@ -697,7 +696,15 @@ var MainImpl = class {
   #initializeExperiments() {
     Root2.Runtime.experiments.register(Root2.ExperimentNames.ExperimentName.CAPTURE_NODE_CREATION_STACKS, "Capture node creation stacks");
     Root2.Runtime.experiments.register(Root2.ExperimentNames.ExperimentName.LIVE_HEAP_PROFILE, "Live heap profile");
-    Root2.Runtime.experiments.register(Root2.ExperimentNames.ExperimentName.PROTOCOL_MONITOR, "Protocol Monitor", "https://developer.chrome.com/blog/new-in-devtools-92/#protocol-monitor");
+    const enableProtocolMonitor = (Root2.Runtime.hostConfig.devToolsProtocolMonitor?.enabled ?? false) || Boolean(Root2.Runtime.Runtime.queryParam("isChromeForTesting"));
+    const protocolMonitorExperiment = Root2.Runtime.experiments.registerHostExperiment({
+      name: Root2.ExperimentNames.ExperimentName.PROTOCOL_MONITOR,
+      title: "Protocol Monitor",
+      aboutFlag: "devtools-protocol-monitor",
+      isEnabled: enableProtocolMonitor,
+      docLink: "https://developer.chrome.com/blog/new-in-devtools-92/#protocol-monitor"
+    });
+    this.#migrateValueFromLegacyToHostExperiment(Root2.ExperimentNames.ExperimentName.PROTOCOL_MONITOR, protocolMonitorExperiment);
     Root2.Runtime.experiments.register(Root2.ExperimentNames.ExperimentName.SAMPLING_HEAP_PROFILER_TIMELINE, "Sampling heap profiler timeline");
     Root2.Runtime.experiments.register(Root2.ExperimentNames.ExperimentName.SHOW_OPTION_TO_EXPOSE_INTERNALS_IN_HEAP_SNAPSHOT, "Show option to expose internals in heap snapshots");
     Root2.Runtime.experiments.register(Root2.ExperimentNames.ExperimentName.TIMELINE_INVALIDATION_TRACKING, "Performance panel: invalidation tracking");
@@ -716,8 +723,7 @@ var MainImpl = class {
     Root2.Runtime.experiments.register(Root2.ExperimentNames.ExperimentName.TIMELINE_SHOW_POST_MESSAGE_EVENTS, "Performance panel: show postMessage dispatch and handling flows");
     Root2.Runtime.experiments.enableExperimentsByDefault([
       Root2.ExperimentNames.ExperimentName.FULL_ACCESSIBILITY_TREE,
-      Root2.ExperimentNames.ExperimentName.USE_SOURCE_MAP_SCOPES,
-      ...Root2.Runtime.Runtime.queryParam("isChromeForTesting") ? [Root2.ExperimentNames.ExperimentName.PROTOCOL_MONITOR] : []
+      Root2.ExperimentNames.ExperimentName.USE_SOURCE_MAP_SCOPES
     ]);
     Root2.Runtime.experiments.cleanUpStaleExperiments();
     const enabledExperiments = Root2.Runtime.Runtime.queryParam("enabledExperiments");

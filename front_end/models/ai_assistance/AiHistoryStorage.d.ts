@@ -1,6 +1,7 @@
 import * as Common from '../../core/common/common.js';
 import { type SerializedResponseData } from './agents/AiAgent.js';
 export declare const enum ConversationType {
+    NONE = "none",
     STYLING = "freestyler",
     FILE = "drjones-file",
     NETWORK = "drjones-network-request",

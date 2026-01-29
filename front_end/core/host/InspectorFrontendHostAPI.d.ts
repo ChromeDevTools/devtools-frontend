@@ -367,6 +367,8 @@ export interface SyncInformation {
     accountImage?: string;
     /** The full name of the account used for syncing */
     accountFullName?: string;
+    /** The given name of the account used for syncing */
+    accountGivenName?: string;
     /** Whether Chrome Sync is paused, equivalent to the user being logged out automatically */
     isSyncPaused?: boolean;
 }

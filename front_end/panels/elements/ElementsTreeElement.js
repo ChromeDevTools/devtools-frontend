@@ -47,7 +47,7 @@ import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as CodeHighlighter from '../../ui/components/code_highlighter/code_highlighter.js';
 import * as Highlighting from '../../ui/components/highlighting/highlighting.js';
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
-import { Icon } from '../../ui/kit/kit.js';
+import { Icon, Link } from '../../ui/kit/kit.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
@@ -2073,7 +2073,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
                 value = Platform.StringUtilities.trimMiddle(value, 60);
             }
             const link = node && node.nodeName().toLowerCase() === 'a' ?
-                UI.XLink.XLink.create(rewrittenHref, value, '', true /* preventClick */, 'image-url') :
+                Link.create(rewrittenHref, value, undefined, 'image-url') :
                 Components.Linkifier.Linkifier.linkifyURL(rewrittenHref, {
                     text: value,
                     preventClick: true,

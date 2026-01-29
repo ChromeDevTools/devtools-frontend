@@ -9,7 +9,8 @@ export declare const enum ResponseType {
     ANSWER = "answer",
     ERROR = "error",
     QUERYING = "querying",
-    USER_QUERY = "user-query"
+    USER_QUERY = "user-query",
+    CONTEXT_CHANGE = "context-change"
 }
 export declare const enum ErrorType {
     UNKNOWN = "unknown",
@@ -66,6 +67,10 @@ export interface SideEffectResponse {
     code?: string;
     confirm: (confirm: boolean) => void;
 }
+export interface ContextChangeResponse {
+    type: ResponseType.CONTEXT_CHANGE;
+    context: unknown;
+}
 interface SerializedSideEffectResponse extends Omit<SideEffectResponse, 'confirm'> {
 }
 export interface ActionResponse {
@@ -83,9 +88,9 @@ export interface UserQuery {
     imageInput?: Host.AidaClient.Part;
     imageId?: string;
 }
-export type ResponseData = AnswerResponse | SuggestionsResponse | ErrorResponse | ActionResponse | SideEffectResponse | ThoughtResponse | TitleResponse | QueryingResponse | ContextResponse | UserQuery;
+export type ResponseData = AnswerResponse | SuggestionsResponse | ErrorResponse | ActionResponse | SideEffectResponse | ThoughtResponse | TitleResponse | QueryingResponse | ContextResponse | UserQuery | ContextChangeResponse;
 export type SerializedResponseData = AnswerResponse | SuggestionsResponse | ErrorResponse | ActionResponse | SerializedSideEffectResponse | ThoughtResponse | TitleResponse | QueryingResponse | ContextResponse | UserQuery;
-export type FunctionCallResponseData = TitleResponse | ThoughtResponse | ActionResponse | SideEffectResponse | SuggestionsResponse;
+export type FunctionCallResponseData = TitleResponse | ThoughtResponse | ActionResponse | SideEffectResponse | SuggestionsResponse | ContextChangeResponse;
 export interface BuildRequestOptions {
     text: string;
 }
@@ -143,9 +148,11 @@ export declare abstract class ConversationContext<T> {
     getSuggestions(): Promise<ConversationSuggestions | undefined>;
 }
 export type FunctionCallHandlerResult<Result> = {
+    requiresApproval: true;
+} | {
     result: Result;
 } | {
-    requiresApproval: true;
+    context: unknown;
 } | {
     error: string;
 };

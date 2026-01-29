@@ -229,7 +229,6 @@ __export(RequestConditionsDrawer_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW,
   RequestConditionsDrawer: () => RequestConditionsDrawer
 });
-import "./../../ui/kit/kit.js";
 import "./../../ui/legacy/legacy.js";
 import "./../../ui/components/tooltips/tooltips.js";
 import * as i18n3 from "./../../core/i18n/i18n.js";
@@ -239,6 +238,7 @@ import * as SDK from "./../../core/sdk/sdk.js";
 import * as Logs from "./../../models/logs/logs.js";
 import * as Buttons from "./../../ui/components/buttons/buttons.js";
 import * as uiI18n from "./../../ui/i18n/i18n.js";
+import { Link } from "./../../ui/kit/kit.js";
 import * as UI2 from "./../../ui/legacy/legacy.js";
 import { Directives, html, nothing, render } from "./../../ui/lit/lit.js";
 import * as VisualLogging from "./../../ui/visual_logging/visual_logging.js";
@@ -804,7 +804,7 @@ var RequestConditionsDrawer = class _RequestConditionsDrawer extends UI2.Widget.
     const titles = content.createChild("div", "blocked-url-edit-row");
     const label = titles.createChild("label");
     if (Root.Runtime.hostConfig.devToolsIndividualRequestThrottling?.enabled) {
-      const learnMore2 = UI2.XLink.XLink.create(PATTERN_API_DOCS_URL, i18nString2(UIStrings2.learnMore), void 0, void 0, "learn-more");
+      const learnMore2 = Link.create(PATTERN_API_DOCS_URL, i18nString2(UIStrings2.learnMore), void 0, "learn-more");
       learnMore2.title = i18nString2(UIStrings2.learnMoreLabel);
       titles.append("\xA0", learnMore2);
       label.textContent = i18nString2(UIStrings2.textEditPattern);
@@ -4818,7 +4818,7 @@ __export(SignedExchangeInfoView_exports, {
 });
 import * as Host5 from "./../../core/host/host.js";
 import * as i18n17 from "./../../core/i18n/i18n.js";
-import { Icon } from "./../../ui/kit/kit.js";
+import { Icon, Link as Link2 } from "./../../ui/kit/kit.js";
 import * as Components3 from "./../../ui/legacy/components/utils/utils.js";
 import * as UI10 from "./../../ui/legacy/legacy.js";
 
@@ -5068,7 +5068,7 @@ var SignedExchangeInfoView = class extends UI10.Widget.VBox {
     }
     const titleElement = document.createDocumentFragment();
     titleElement.createChild("div", "header-name").textContent = i18nString9(UIStrings9.signedHttpExchange);
-    const learnMoreNode = UI10.XLink.XLink.create("https://github.com/WICG/webpackage", i18nString9(UIStrings9.learnmore), "header-toggle", void 0, "learn-more");
+    const learnMoreNode = Link2.create("https://github.com/WICG/webpackage", i18nString9(UIStrings9.learnmore), "header-toggle", "learn-more");
     titleElement.appendChild(learnMoreNode);
     const headerCategory = new Category2(root, titleElement);
     if (signedExchangeInfo.header) {

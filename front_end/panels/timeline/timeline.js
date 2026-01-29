@@ -3012,6 +3012,7 @@ var codeHighlighter_css_default = `/*
 
 // gen/front_end/panels/timeline/TimelineUIUtils.js
 import * as uiI18n from "./../../ui/i18n/i18n.js";
+import { Link as Link2 } from "./../../ui/kit/kit.js";
 import * as PerfUI13 from "./../../ui/legacy/components/perf_ui/perf_ui.js";
 
 // gen/front_end/ui/legacy/components/utils/imagePreview.css.js
@@ -4856,6 +4857,7 @@ import * as Adorners from "./../../ui/components/adorners/adorners.js";
 import * as Dialogs from "./../../ui/components/dialogs/dialogs.js";
 import * as LegacyWrapper from "./../../ui/components/legacy_wrapper/legacy_wrapper.js";
 import * as Snackbars from "./../../ui/components/snackbars/snackbars.js";
+import { Link } from "./../../ui/kit/kit.js";
 import * as PerfUI12 from "./../../ui/legacy/components/perf_ui/perf_ui.js";
 import * as SettingsUI from "./../../ui/legacy/components/settings_ui/settings_ui.js";
 import * as UI10 from "./../../ui/legacy/legacy.js";
@@ -9028,7 +9030,7 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
     this.settingsPane.append(SettingsUI.SettingsUI.createSettingCheckbox(this.captureLayersAndPicturesSetting.title(), this.captureLayersAndPicturesSetting, i18nString20(UIStrings20.capturesAdvancedPaint)));
     this.settingsPane.append(SettingsUI.SettingsUI.createSettingCheckbox(this.disableCaptureJSProfileSetting.title(), this.disableCaptureJSProfileSetting, i18nString20(UIStrings20.disablesJavascriptSampling)));
     const thirdPartyCheckbox = this.createSettingCheckbox(this.#thirdPartyTracksSetting, i18nString20(UIStrings20.showDataAddedByExtensions));
-    const localLink = UI10.XLink.XLink.create("https://developer.chrome.com/docs/devtools/performance/extension", i18nString20(UIStrings20.learnMore));
+    const localLink = Link.create("https://developer.chrome.com/docs/devtools/performance/extension", i18nString20(UIStrings20.learnMore));
     localLink.style.marginLeft = "5px";
     thirdPartyCheckbox.element.shadowRoot?.appendChild(localLink);
     this.settingsPane.append(thirdPartyCheckbox.element);
@@ -11243,7 +11245,7 @@ var TimelineUIUtils = class _TimelineUIUtils {
       default:
         break;
     }
-    const html4 = UI11.Fragment.html`<div>${UI11.XLink.XLink.create(link, i18nString21(UIStrings21.learnMore), void 0, void 0, "learn-more")} about ${name}.</div>`;
+    const html4 = UI11.Fragment.html`<div>${Link2.create(link, i18nString21(UIStrings21.learnMore), void 0, "learn-more")} about ${name}.</div>`;
     return html4;
   }
   static buildConsumeCacheDetails(eventData, contentHelper) {

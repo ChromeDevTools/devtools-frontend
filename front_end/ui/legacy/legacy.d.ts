@@ -47,7 +47,5 @@ import * as UIUtils from './UIUtils.js';
 import * as View from './View.js';
 import * as ViewManager from './ViewManager.js';
 import * as Widget from './Widget.js';
-import * as XElement from './XElement.js';
-import * as XLink from './XLink.js';
 import * as ZoomManager from './ZoomManager.js';
-export { ActionRegistration, ActionRegistry, ARIAUtils, Context, ContextFlavorListener, ContextMenu, Dialog, DockController, DOMUtilities, DropTarget, EmptyWidget, FilterBar, FilterSuggestionBuilder, Floaty, ForwardedInputEventHandler, Fragment, GlassPane, Infobar, InplaceEditor, inspectorCommonStyles, InspectorView, KeyboardShortcut, LinkContextMenuProvider, ListControl, ListModel, ListWidget, Panel, PopoverHelper, ProgressIndicator, RemoteDebuggingTerminatedScreen, ReportView, ResizerWidget, RootView, SearchableView, ShortcutRegistry, SoftContextMenu, SoftDropDown, SplitWidget, SuggestBox, TabbedPane, TargetCrashedScreen, TextPrompt, Toolbar, Tooltip, TreeOutline, UIUtils, View, ViewManager, Widget, XElement, XLink, ZoomManager };
+export { ActionRegistration, ActionRegistry, ARIAUtils, Context, ContextFlavorListener, ContextMenu, Dialog, DockController, DOMUtilities, DropTarget, EmptyWidget, FilterBar, FilterSuggestionBuilder, Floaty, ForwardedInputEventHandler, Fragment, GlassPane, Infobar, InplaceEditor, inspectorCommonStyles, InspectorView, KeyboardShortcut, LinkContextMenuProvider, ListControl, ListModel, ListWidget, Panel, PopoverHelper, ProgressIndicator, RemoteDebuggingTerminatedScreen, ReportView, ResizerWidget, RootView, SearchableView, ShortcutRegistry, SoftContextMenu, SoftDropDown, SplitWidget, SuggestBox, TabbedPane, TargetCrashedScreen, TextPrompt, Toolbar, Tooltip, TreeOutline, UIUtils, View, ViewManager, Widget, ZoomManager };

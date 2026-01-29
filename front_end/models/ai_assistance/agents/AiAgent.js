@@ -303,6 +303,13 @@ export class AiAgent {
                         yield this.#createErrorResponse("abort" /* ErrorType.ABORT */);
                         break;
                     }
+                    if ('context' in result) {
+                        yield {
+                            type: "context-change" /* ResponseType.CONTEXT_CHANGE */,
+                            context: result.context,
+                        };
+                        return;
+                    }
                     query = {
                         functionResponse: {
                             name: functionCall.name,
@@ -325,6 +332,7 @@ export class AiAgent {
         if (isStructuredLogEnabled()) {
             window.dispatchEvent(new CustomEvent('aiassistancedone'));
         }
+        return;
     }
     async *#callFunction(name, args, options) {
         const call = this.#functionDeclarations.get(name);
@@ -420,6 +428,9 @@ export class AiAgent {
                 output: result.error,
                 canceled: false,
             };
+        }
+        if ('context' in result) {
+            return result;
         }
         return result;
     }

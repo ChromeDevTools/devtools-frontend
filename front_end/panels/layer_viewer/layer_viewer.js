@@ -824,6 +824,7 @@ import * as i18n9 from "./../../core/i18n/i18n.js";
 import * as Platform2 from "./../../core/platform/platform.js";
 import * as Geometry from "./../../models/geometry/geometry.js";
 import * as uiI18n from "./../../ui/i18n/i18n.js";
+import { Link } from "./../../ui/kit/kit.js";
 import * as UI4 from "./../../ui/legacy/legacy.js";
 import * as Lit2 from "./../../ui/lit/lit.js";
 import * as VisualLogging3 from "./../../ui/visual_logging/visual_logging.js";
@@ -1199,7 +1200,7 @@ var DEFAULT_VIEW2 = (input, output, target) => {
     text: i18nString5(UIStrings5.webglSupportIsDisabledInYour),
     extraElements: [
       uiI18n.getFormatLocalizedString(str_5, UIStrings5.checkSForPossibleReasons, {
-        PH1: UI4.XLink.XLink.create("about:gpu", void 0, void 0, void 0, "about-gpu")
+        PH1: Link.create("about:gpu", void 0, void 0, "about-gpu")
       })
     ]
   })}></devtools-widget></div>` : Lit2.nothing}

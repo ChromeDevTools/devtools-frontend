@@ -48,6 +48,7 @@ export class AiCodeGenerationUpgradeDialog {
     static show({ noLogging }) {
         const dialog = new UI.Dialog.Dialog();
         dialog.setAriaLabel(lockedString(UIStringsNotTranslate.codeCompletionJustGotBetter));
+        const result = Promise.withResolvers();
         // clang-format off
         Lit.render(html `
       <div class="ai-code-generation-upgrade-dialog">
@@ -86,6 +87,7 @@ export class AiCodeGenerationUpgradeDialog {
           <div class="right-buttons">
             <devtools-button
               @click=${() => {
+            result.resolve(true);
             void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
         }}
               jslogcontext="ai-code-generation-upgrade-dialog.manage-in-settings"
@@ -95,6 +97,7 @@ export class AiCodeGenerationUpgradeDialog {
             </devtools-button>
             <devtools-button
               @click=${() => {
+            result.resolve(true);
             dialog.hide();
         }}
               jslogcontext="ai-code-generation-upgrade-dialog.continue"
@@ -106,12 +109,15 @@ export class AiCodeGenerationUpgradeDialog {
       </div>`, dialog.contentElement);
         // clang-format on
         dialog.setOutsideClickCallback(ev => {
-            ev.consume(true); // true = preventDefault()
-            dialog.hide();
+            ev.consume(true);
+        });
+        dialog.setOnHideCallback(() => {
+            result.resolve(false);
         });
         dialog.setSizeBehavior("MeasureContent" /* UI.GlassPane.SizeBehavior.MEASURE_CONTENT */);
         dialog.setDimmed(true);
         dialog.show();
+        return result.promise;
     }
     constructor() {
     }

@@ -144,6 +144,10 @@ const UIStringsNotTranslate = {
      */
     inputPlaceholderForPerformanceTraceNoContext: 'Record or select a performance trace to ask a question',
     /**
+     *@description Placeholder text for the chat UI input.
+     */
+    inputPlaceholderForNoContext: 'Ask AI Assistance',
+    /**
      * @description Disclaimer text right after the chat input.
      */
     inputDisclaimerForStyling: 'Chat messages and any data the inspected page can access via Web APIs are sent to Google and may be seen by human reviewers to improve this feature. This is an experimental AI feature and won’t always get it right.',
@@ -218,6 +222,13 @@ async function getEmptyStateSuggestions(conversation) {
         case "drjones-performance-full" /* AiAssistanceModel.AiHistoryStorage.ConversationType.PERFORMANCE */: {
             return [
                 { title: 'What performance issues exist with my page?', jslogContext: 'performance-default' },
+            ];
+        }
+        case "none" /* AiAssistanceModel.AiHistoryStorage.ConversationType.NONE */: {
+            return [
+                { title: 'How can I use DevTools to debug?', jslogContext: 'empty' },
+                { title: 'What performance issues exist with my page?', jslogContext: 'empty' },
+                { title: 'What are the slowest requests on this page?', jslogContext: 'empty' },
             ];
         }
         default:
@@ -315,7 +326,7 @@ function defaultView(input, output, target) {
                 return html `
         <devtools-ai-chat-view
           .props=${input.props}
-          ${Lit.Directives.ref((el) => {
+          ${Lit.Directives.ref(el => {
                     if (!el || !(el instanceof ChatView)) {
                         return;
                     }
@@ -404,6 +415,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         this.#userInfo = {
             accountImage: syncInfo.accountImage,
             accountFullName: syncInfo.accountFullName,
+            accountGivenName: syncInfo.accountGivenName,
         };
         if (UI.ActionRegistry.ActionRegistry.instance().hasAction('elements.toggle-element-search')) {
             this.#toggleSearchElementAction =
@@ -532,6 +544,9 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         else if (isPerformancePanelVisible && hostConfig.devToolsAiAssistancePerformanceAgent?.enabled) {
             targetConversationType = "drjones-performance-full" /* AiAssistanceModel.AiHistoryStorage.ConversationType.PERFORMANCE */;
         }
+        if (isAiAssistanceContextSelectionAgentEnabled() && !targetConversationType) {
+            return "none" /* AiAssistanceModel.AiHistoryStorage.ConversationType.NONE */;
+        }
         return targetConversationType;
     }
     // We select the default agent based on the open panels if
@@ -633,6 +648,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             this.#userInfo = {
                 accountImage: syncInfo.accountImage,
                 accountFullName: syncInfo.accountFullName,
+                accountGivenName: syncInfo.accountGivenName,
             };
             this.requestUpdate();
         }
@@ -731,7 +747,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         if (!this.#conversation) {
             return true;
         }
-        if (!this.#conversation.selectedContext) {
+        if (!this.#conversation.selectedContext && !isAiAssistanceContextSelectionAgentEnabled()) {
             return true;
         }
         return false;
@@ -777,6 +793,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                 }
                 return lockedString(UIStringsNotTranslate.inputPlaceholderForPerformanceWithNoRecording);
             }
+            case "none" /* AiAssistanceModel.AiHistoryStorage.ConversationType.NONE */:
+                return lockedString(UIStringsNotTranslate.inputPlaceholderForNoContext);
         }
     }
     #getDisclaimerText() {
@@ -807,6 +825,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                 if (noLogging) {
                     return lockedString(UIStringsNotTranslate.inputDisclaimerForPerformanceEnterpriseNoLogging);
                 }
+                return lockedString(UIStringsNotTranslate.inputDisclaimerForPerformance);
+            case "none" /* AiAssistanceModel.AiHistoryStorage.ConversationType.NONE */:
                 return lockedString(UIStringsNotTranslate.inputDisclaimerForPerformance);
         }
     }
@@ -1006,8 +1026,40 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                 return this.#selectedRequest;
             case "drjones-performance-full" /* AiAssistanceModel.AiHistoryStorage.ConversationType.PERFORMANCE */:
                 return this.#selectedPerformanceTrace;
+            case "none" /* AiAssistanceModel.AiHistoryStorage.ConversationType.NONE */:
+                return null;
         }
     }
+    #handleConversationContextChange = (data) => {
+        if (data instanceof Workspace.UISourceCode.UISourceCode) {
+            if (this.#selectedFile?.getItem() === data) {
+                return;
+            }
+            this.#selectedFile = new AiAssistanceModel.FileAgent.FileContext(data);
+        }
+        else if (data instanceof SDK.DOMModel.DOMNode) {
+            if (this.#selectedElement?.getItem() === data ||
+                // Ignore non node type like comments or html tags
+                data.nodeType() === Node.ELEMENT_NODE) {
+                return;
+            }
+            this.#selectedElement = new AiAssistanceModel.StylingAgent.NodeContext(data);
+        }
+        else if (data instanceof SDK.NetworkRequest.NetworkRequest) {
+            if (this.#selectedRequest?.getItem() === data) {
+                return;
+            }
+            const calculator = NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator();
+            this.#selectedRequest = new AiAssistanceModel.NetworkAgent.RequestContext(data, calculator);
+        }
+        else if (data instanceof AiAssistanceModel.AIContext.AgentFocus) {
+            if (this.#selectedPerformanceTrace?.getItem() === data) {
+                return;
+            }
+            this.#selectedPerformanceTrace = new AiAssistanceModel.PerformanceAgent.PerformanceTraceContext(data);
+        }
+        this.#updateConversationState(this.#conversation);
+    };
     async #startConversation(text, imageInput, multimodalInputType) {
         if (!this.#conversation) {
             return;
@@ -1192,6 +1244,12 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                         }
                         break;
                     }
+                    case "context-change" /* AiAssistanceModel.AiAgent.ResponseType.CONTEXT_CHANGE */: {
+                        this.#handleConversationContextChange(data.context);
+                        step.isLoading = false;
+                        commitStep();
+                        break;
+                    }
                 }
                 // Commit update intermediate step when not
                 // in read only mode.
@@ -1298,6 +1356,9 @@ function isAiAssistanceMultimodalUploadInputEnabled() {
 }
 function isAiAssistanceMultimodalInputEnabled() {
     return Boolean(Root.Runtime.hostConfig.devToolsFreestyler?.multimodal);
+}
+function isAiAssistanceContextSelectionAgentEnabled() {
+    return Boolean(Root.Runtime.hostConfig.devToolsAiAssistanceContextSelectionAgent?.enabled);
 }
 function isAiAssistanceServerSideLoggingEnabled() {
     return !Root.Runtime.hostConfig.aidaAvailability?.disallowLogging;

@@ -151,6 +151,7 @@ models/ai_assistance/ConversationHandler.test.js
 models/ai_assistance/EvaluateAction.test.js
 models/ai_assistance/ExtensionScope.test.js
 models/ai_assistance/agents/AiAgent.test.js
+models/ai_assistance/agents/ContextSelectionAgent.test.js
 models/ai_assistance/agents/FileAgent.test.js
 models/ai_assistance/agents/NetworkAgent.test.js
 models/ai_assistance/agents/PatchAgent.test.js
@@ -191,6 +192,7 @@ models/heap_snapshot_model/heap_snapshot_model.test.js
 models/issues_manager/CheckFormsIssuesTrigger.test.js
 models/issues_manager/IssuesManager.test.js
 models/javascript_metadata/JavaScriptMetadata.test.js
+models/live-metrics/LiveMetrics.test.js
 models/logs/NetworkLog.test.js
 models/logs/RequestResolver.test.js
 models/persistence/AutomaticFileSystemManager.test.js
@@ -700,7 +702,6 @@ ui/legacy/View.test.js
 ui/legacy/ViewManager.test.js
 ui/legacy/ViewRegistration.test.js
 ui/legacy/Widget.test.js
-ui/legacy/XLink.test.js
 ui/legacy/components/color_picker/ColorFormatSpec.test.js
 ui/legacy/components/color_picker/Spectrum.test.js
 ui/legacy/components/data_grid/DataGridElement.test.js

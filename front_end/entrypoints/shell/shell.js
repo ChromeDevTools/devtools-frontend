@@ -9,6 +9,7 @@ import * as i18n from "./../../core/i18n/i18n.js";
 import * as Root from "./../../core/root/root.js";
 import * as SDK from "./../../core/sdk/sdk.js";
 import * as Breakpoints from "./../../models/breakpoints/breakpoints.js";
+import * as StackTrace from "./../../models/stack_trace/stack_trace.js";
 import * as Workspace from "./../../models/workspace/workspace.js";
 import * as ObjectUI from "./../../ui/legacy/components/object_ui/object_ui.js";
 import * as QuickOpen from "./../../ui/legacy/components/quick_open/quick_open.js";
@@ -1900,7 +1901,7 @@ UI.Context.registerListener({
 });
 UI.Context.registerListener({
   contextTypes() {
-    return [SDK.DebuggerModel.CallFrame];
+    return [StackTrace.StackTrace.DebuggableFrameFlavor];
   },
   async loadListener() {
     const Sources = await loadSourcesModule();
@@ -6038,7 +6039,8 @@ UI15.ActionRegistration.registerActionExtension({
     const AiAssistance = await loadAiAssistanceModule();
     return new AiAssistance.ActionDelegate();
   },
-  condition: (config) => isAnyFeatureAvailable(config) && !isPolicyRestricted2(config) && !isGeoRestricted2(config)
+  condition: (config) => isAnyFeatureAvailable(config) && !isPolicyRestricted2(config) && !isGeoRestricted2(config),
+  featurePromotionId: "debug-with-ai"
 });
 UI15.ActionRegistration.registerActionExtension({
   actionId: "freestyler.elements-floating-button",

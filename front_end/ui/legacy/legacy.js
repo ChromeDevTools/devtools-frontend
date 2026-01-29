@@ -13386,7 +13386,6 @@ select option {
     font: var(--sys-typescale-body4-regular);
     color: var(--sys-color-on-surface-subtle);
 
-    > x-link,
     > devtools-link {
       white-space: nowrap;
       margin-left: var(--sys-size-3);
@@ -16966,8 +16965,8 @@ var EmptyWidget = class extends VBox {
     this.#view = view;
     this.performUpdate();
   }
-  set link(link3) {
-    this.#link = link3;
+  set link(link2) {
+    this.#link = link2;
     this.performUpdate();
   }
   set text(text) {
@@ -18068,177 +18067,12 @@ __export(LinkContextMenuProvider_exports, {
   LinkContextMenuProvider: () => LinkContextMenuProvider
 });
 import * as Host10 from "./../../core/host/host.js";
-import * as UIHelpers2 from "./../helpers/helpers.js";
-import { Link } from "./../kit/kit.js";
-
-// gen/front_end/ui/legacy/XLink.js
-var XLink_exports = {};
-__export(XLink_exports, {
-  XLink: () => XLink
-});
-import * as Platform22 from "./../../core/platform/platform.js";
 import * as UIHelpers from "./../helpers/helpers.js";
-import * as VisualLogging18 from "./../visual_logging/visual_logging.js";
-
-// gen/front_end/ui/legacy/XElement.js
-var XElement_exports = {};
-__export(XElement_exports, {
-  XElement: () => XElement
-});
-var XElement = class extends HTMLElement {
-  static get observedAttributes() {
-    return [
-      "flex",
-      "padding",
-      "padding-top",
-      "padding-bottom",
-      "padding-left",
-      "padding-right",
-      "margin",
-      "margin-top",
-      "margin-bottom",
-      "margin-left",
-      "margin-right",
-      "overflow",
-      "overflow-x",
-      "overflow-y",
-      "font-size",
-      "color",
-      "background",
-      "background-color",
-      "border",
-      "border-top",
-      "border-bottom",
-      "border-left",
-      "border-right",
-      "max-width",
-      "max-height"
-    ];
-  }
-  attributeChangedCallback(attr, _oldValue, newValue) {
-    if (attr === "flex") {
-      if (newValue === null) {
-        this.style.removeProperty("flex");
-      } else if (newValue === "initial" || newValue === "auto" || newValue === "none" || newValue.indexOf(" ") !== -1) {
-        this.style.setProperty("flex", newValue);
-      } else {
-        this.style.setProperty("flex", "0 0 " + newValue);
-      }
-      return;
-    }
-    if (newValue === null) {
-      this.style.removeProperty(attr);
-      if (attr.startsWith("padding-") || attr.startsWith("margin-") || attr.startsWith("border-") || attr.startsWith("background-") || attr.startsWith("overflow-")) {
-        const shorthand = attr.substring(0, attr.indexOf("-"));
-        const shorthandValue = this.getAttribute(shorthand);
-        if (shorthandValue !== null) {
-          this.style.setProperty(shorthand, shorthandValue);
-        }
-      }
-    } else {
-      this.style.setProperty(attr, newValue);
-    }
-  }
-};
-
-// gen/front_end/ui/legacy/XLink.js
-var XLink = class extends XElement {
-  #href;
-  clickable;
-  onClick;
-  onKeyDown;
-  static create(url, linkText, className, preventClick, jsLogContext, tabindex = "0") {
-    if (!linkText) {
-      linkText = url;
-    }
-    className = className || "";
-    const element = html4`
-  <x-link href='${url}' tabindex='${tabindex}' class='${className} devtools-link' ${preventClick ? "no-click" : ""}
-  jslog=${VisualLogging18.link().track({ click: true, keydown: "Enter|Space" }).context(jsLogContext)}>${Platform22.StringUtilities.trimMiddle(linkText, MaxLengthForDisplayedURLs)}</x-link>`;
-    return element;
-  }
-  constructor() {
-    super();
-    this.style.setProperty("display", "inline");
-    markAsLink(this);
-    this.setAttribute("tabindex", "0");
-    this.setAttribute("target", "_blank");
-    this.setAttribute("rel", "noopener");
-    this.#href = null;
-    this.clickable = true;
-    this.onClick = (event) => {
-      event.consume(true);
-      if (this.#href) {
-        UIHelpers.openInNewTab(this.#href);
-      }
-    };
-    this.onKeyDown = (event) => {
-      if (Platform22.KeyboardUtilities.isEnterOrSpaceKey(event)) {
-        event.consume(true);
-        if (this.#href) {
-          UIHelpers.openInNewTab(this.#href);
-        }
-      }
-    };
-  }
-  static get observedAttributes() {
-    return XElement.observedAttributes.concat(["href", "no-click", "title", "tabindex"]);
-  }
-  get href() {
-    return this.#href;
-  }
-  attributeChangedCallback(attr, oldValue, newValue) {
-    if (attr === "no-click") {
-      this.clickable = !newValue;
-      this.updateClick();
-      return;
-    }
-    if (attr === "href") {
-      if (!newValue) {
-        newValue = "";
-      }
-      let href = null;
-      try {
-        const url = new URL(newValue);
-        if (url.protocol !== "javascript:") {
-          href = Platform22.DevToolsPath.urlString`${url}`;
-        }
-      } catch {
-      }
-      this.#href = href;
-      if (!this.hasAttribute("title")) {
-        Tooltip.install(this, newValue);
-      }
-      this.updateClick();
-      return;
-    }
-    if (attr === "tabindex") {
-      if (oldValue !== newValue) {
-        this.setAttribute("tabindex", newValue || "0");
-      }
-      return;
-    }
-    super.attributeChangedCallback(attr, oldValue, newValue);
-  }
-  updateClick() {
-    if (this.#href !== null && this.clickable) {
-      this.addEventListener("click", this.onClick, false);
-      this.addEventListener("keydown", this.onKeyDown, false);
-      this.style.setProperty("cursor", "pointer");
-    } else {
-      this.removeEventListener("click", this.onClick, false);
-      this.removeEventListener("keydown", this.onKeyDown, false);
-      this.style.removeProperty("cursor");
-    }
-  }
-};
-customElements.define("x-link", XLink);
-
-// gen/front_end/ui/legacy/LinkContextMenuProvider.js
+import { Link } from "./../kit/kit.js";
 var LinkContextMenuProvider = class {
   appendApplicableItems(_event, contextMenu, target) {
     let targetNode = target;
-    while (targetNode && !(targetNode instanceof XLink || targetNode instanceof Link)) {
+    while (targetNode && !(targetNode instanceof Link)) {
       targetNode = targetNode.parentNodeOrShadowHost();
     }
     if (!targetNode?.href) {
@@ -18247,7 +18081,7 @@ var LinkContextMenuProvider = class {
     const node = targetNode;
     contextMenu.revealSection().appendItem(openLinkExternallyLabel(), () => {
       if (node.href) {
-        UIHelpers2.openInNewTab(node.href);
+        UIHelpers.openInNewTab(node.href);
       }
     }, { jslogContext: "open-in-new-tab" });
     contextMenu.revealSection().appendItem(copyLinkAddressLabel(), () => {
@@ -18265,10 +18099,10 @@ __export(ListWidget_exports, {
   ListWidget: () => ListWidget
 });
 import * as i18n28 from "./../../core/i18n/i18n.js";
-import * as Platform23 from "./../../core/platform/platform.js";
+import * as Platform22 from "./../../core/platform/platform.js";
 import * as Buttons8 from "./../components/buttons/buttons.js";
 import { html as html5, render as render6 } from "./../lit/lit.js";
-import * as VisualLogging19 from "./../visual_logging/visual_logging.js";
+import * as VisualLogging18 from "./../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/listWidget.css.js
 var listWidget_css_default = `/*
@@ -18555,7 +18389,7 @@ var ListWidget = class extends VBox {
     }
     const content = this.delegate.renderItem(item8, editable, this.#items.length - 1);
     if (!content.hasAttribute("jslog")) {
-      element.setAttribute("jslog", `${VisualLogging19.item()}`);
+      element.setAttribute("jslog", `${VisualLogging18.item()}`);
     }
     element.appendChild(content);
     if (editable) {
@@ -18718,8 +18552,8 @@ var Editor = class {
   constructor() {
     this.element = document.createElement("div");
     this.element.classList.add("editor-container");
-    this.element.setAttribute("jslog", `${VisualLogging19.pane("editor").track({ resize: true })}`);
-    this.element.addEventListener("keydown", onKeyDown.bind(null, Platform23.KeyboardUtilities.isEscKey, this.cancelClicked.bind(this)), false);
+    this.element.setAttribute("jslog", `${VisualLogging18.pane("editor").track({ resize: true })}`);
+    this.element.addEventListener("keydown", onKeyDown.bind(null, Platform22.KeyboardUtilities.isEscKey, this.cancelClicked.bind(this)), false);
     this.#contentElement = this.element.createChild("div", "editor-content");
     this.#contentElement.addEventListener("keydown", onKeyDown.bind(null, (event) => {
       if (event.key !== "Enter") {
@@ -18735,7 +18569,7 @@ var Editor = class {
       jslogContext: "cancel",
       variant: "outlined"
     });
-    this.cancelButton.setAttribute("jslog", `${VisualLogging19.action("cancel").track({ click: true })}`);
+    this.cancelButton.setAttribute("jslog", `${VisualLogging18.action("cancel").track({ click: true })}`);
     buttonsRow.appendChild(this.cancelButton);
     this.commitButton = createTextButton("", this.commitClicked.bind(this), {
       jslogContext: "commit",
@@ -18758,7 +18592,7 @@ var Editor = class {
     const input = createInput("", type);
     input.placeholder = title;
     input.addEventListener("input", this.validateControls.bind(this, false), false);
-    input.setAttribute("jslog", `${VisualLogging19.textField().track({ change: true, keydown: "Enter" }).context(name)}`);
+    input.setAttribute("jslog", `${VisualLogging18.textField().track({ change: true, keydown: "Enter" }).context(name)}`);
     setLabel(input, title);
     this.controlByName.set(name, input);
     this.controls.push(input);
@@ -18767,12 +18601,12 @@ var Editor = class {
   }
   createSelect(name, options, validator, title) {
     const select = document.createElement("select");
-    select.setAttribute("jslog", `${VisualLogging19.dropDown().track({ change: true }).context(name)}`);
+    select.setAttribute("jslog", `${VisualLogging18.dropDown().track({ change: true }).context(name)}`);
     for (let index = 0; index < options.length; ++index) {
       const option = select.createChild("option");
       option.value = options[index];
       option.textContent = options[index];
-      option.setAttribute("jslog", `${VisualLogging19.item(Platform23.StringUtilities.toKebabCase(options[index])).track({ click: true })}`);
+      option.setAttribute("jslog", `${VisualLogging18.item(Platform22.StringUtilities.toKebabCase(options[index])).track({ click: true })}`);
     }
     if (title) {
       Tooltip.install(select, title);
@@ -18868,12 +18702,12 @@ __export(Panel_exports, {
   Panel: () => Panel,
   PanelWithSidebar: () => PanelWithSidebar
 });
-import * as VisualLogging20 from "./../visual_logging/visual_logging.js";
+import * as VisualLogging19 from "./../visual_logging/visual_logging.js";
 var Panel = class extends VBox {
   panelName;
   constructor(name, useShadowDom) {
     super({ useShadowDom });
-    this.element.setAttribute("jslog", `${VisualLogging20.panel().context(name).track({ resize: true })}`);
+    this.element.setAttribute("jslog", `${VisualLogging19.panel().context(name).track({ resize: true })}`);
     this.element.classList.add("panel");
     this.element.setAttribute("aria-label", name);
     this.element.classList.add(name);
@@ -18906,7 +18740,7 @@ var PanelWithSidebar = class extends Panel {
     this.sidebarWidget.setMinimumSize(100, 25);
     this.panelSplitWidget.setSidebarWidget(this.sidebarWidget);
     this.sidebarWidget.element.classList.add("panel-sidebar");
-    this.sidebarWidget.element.setAttribute("jslog", `${VisualLogging20.pane("sidebar").track({ resize: true })}`);
+    this.sidebarWidget.element.setAttribute("jslog", `${VisualLogging19.pane("sidebar").track({ resize: true })}`);
   }
   panelSidebarElement() {
     return this.sidebarWidget.element;
@@ -18924,7 +18758,7 @@ var PopoverHelper_exports = {};
 __export(PopoverHelper_exports, {
   PopoverHelper: () => PopoverHelper
 });
-import * as VisualLogging21 from "./../visual_logging/visual_logging.js";
+import * as VisualLogging20 from "./../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/popover.css.js
 var popover_css_default = `/*
@@ -18967,7 +18801,7 @@ var popover_css_default = `/*
 // gen/front_end/ui/legacy/PopoverHelper.js
 var PopoverHelper = class _PopoverHelper {
   static createPopover = (jslogContext) => {
-    const popover2 = new GlassPane(`${VisualLogging21.popover(jslogContext).parent("mapped")}`);
+    const popover2 = new GlassPane(`${VisualLogging20.popover(jslogContext).parent("mapped")}`);
     popover2.registerRequiredCSS(popover_css_default);
     popover2.setSizeBehavior(
       "MeasureContent"
@@ -19152,7 +18986,7 @@ var PopoverHelper = class _PopoverHelper {
         popoverHelperInstance.hidePopover();
       }
       popoverHelperInstance = this;
-      VisualLogging21.setMappedParent(popover2.contentElement, this.container);
+      VisualLogging20.setMappedParent(popover2.contentElement, this.container);
       popover2.contentElement.style.scrollbarGutter = "stable";
       popover2.contentElement.addEventListener("mousemove", this.popoverMouseMove.bind(this), true);
       popover2.contentElement.addEventListener("mouseout", this.popoverMouseOut.bind(this, popover2), true);
@@ -19413,7 +19247,7 @@ __export(ReportView_exports, {
   ReportView: () => ReportView,
   Section: () => Section2
 });
-import * as VisualLogging22 from "./../visual_logging/visual_logging.js";
+import * as VisualLogging21 from "./../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/reportView.css.js
 var reportView_css_default = `/*
@@ -19594,15 +19428,15 @@ var ReportView = class extends VBox {
     }
     this.subtitleElement.textContent = subtitle;
   }
-  setURL(link3) {
+  setURL(link2) {
     if (!this.urlElement) {
       this.urlElement = this.headerElement.createChild("div", "report-url link");
     }
     this.urlElement.removeChildren();
-    if (link3) {
-      this.urlElement.appendChild(link3);
+    if (link2) {
+      this.urlElement.appendChild(link2);
     }
-    this.urlElement.setAttribute("jslog", `${VisualLogging22.link("source-location").track({ click: true })}`);
+    this.urlElement.setAttribute("jslog", `${VisualLogging21.link("source-location").track({ click: true })}`);
   }
   createToolbar() {
     return this.headerElement.createChild("devtools-toolbar");
@@ -19646,7 +19480,7 @@ var Section2 = class extends VBox {
       this.element.classList.add(className);
     }
     if (jslogContext) {
-      this.element.setAttribute("jslog", `${VisualLogging22.section(jslogContext)}`);
+      this.element.setAttribute("jslog", `${VisualLogging21.section(jslogContext)}`);
     }
     this.jslogContext = jslogContext;
     this.headerElement = this.element.createChild("div", "report-section-header");
@@ -19802,8 +19636,8 @@ __export(SearchableView_exports, {
 });
 import * as Common17 from "./../../core/common/common.js";
 import * as i18n32 from "./../../core/i18n/i18n.js";
-import * as Platform24 from "./../../core/platform/platform.js";
-import * as VisualLogging23 from "./../visual_logging/visual_logging.js";
+import * as Platform23 from "./../../core/platform/platform.js";
+import * as VisualLogging22 from "./../visual_logging/visual_logging.js";
 import * as Buttons10 from "./../components/buttons/buttons.js";
 import { createIcon as createIcon7 } from "./../kit/kit.js";
 
@@ -20098,7 +19932,7 @@ var SearchableView = class extends VBox {
     this.footerElementContainer = this.contentElement.createChild("div", "search-bar hidden");
     this.footerElementContainer.style.order = "100";
     this.footerElement = this.footerElementContainer.createChild("div", "toolbar-search");
-    this.footerElement.setAttribute("jslog", `${VisualLogging23.toolbar("search").track({ resize: true })}`);
+    this.footerElement.setAttribute("jslog", `${VisualLogging22.toolbar("search").track({ resize: true })}`);
     const replaceToggleToolbar = this.footerElement.createChild("devtools-toolbar", "replace-toggle-toolbar");
     this.replaceToggleButton = new ToolbarToggle(i18nString16(UIStrings16.enableFindAndReplace), "replace", void 0, "replace");
     setLabel(this.replaceToggleButton.element, i18nString16(UIStrings16.enableFindAndReplace));
@@ -20112,7 +19946,7 @@ var SearchableView = class extends VBox {
     this.searchInputElement.id = "search-input-field";
     this.searchInputElement.autocomplete = "off";
     this.searchInputElement.placeholder = i18nString16(UIStrings16.findString);
-    this.searchInputElement.setAttribute("jslog", `${VisualLogging23.textField("search").track({ change: true, keydown: "ArrowUp|ArrowDown|Enter|Escape" })}`);
+    this.searchInputElement.setAttribute("jslog", `${VisualLogging22.textField("search").track({ change: true, keydown: "ArrowUp|ArrowDown|Enter|Escape" })}`);
     this.searchInputElement.addEventListener("keydown", this.onSearchKeyDown.bind(this), true);
     this.searchInputElement.addEventListener("input", this.onInput.bind(this), false);
     iconAndInput.appendChild(this.searchInputElement);
@@ -20120,7 +19954,7 @@ var SearchableView = class extends VBox {
     this.replaceInputElement = replaceInputElements.createChild("input", "search-replace");
     this.replaceInputElement.addEventListener("keydown", this.onReplaceKeyDown.bind(this), true);
     this.replaceInputElement.placeholder = i18nString16(UIStrings16.replace);
-    this.replaceInputElement.setAttribute("jslog", `${VisualLogging23.textField("replace").track({ change: true, keydown: "Enter" })}`);
+    this.replaceInputElement.setAttribute("jslog", `${VisualLogging22.textField("replace").track({ change: true, keydown: "Enter" })}`);
     const replaceInputClearButton = createClearButton("clear-replace-input");
     replaceInputClearButton.addEventListener("click", () => {
       this.replaceInputElement.value = "";
@@ -20413,7 +20247,7 @@ var SearchableView = class extends VBox {
     }
   }
   onSearchKeyDown(event) {
-    if (Platform24.KeyboardUtilities.isEscKey(event)) {
+    if (Platform23.KeyboardUtilities.isEscKey(event)) {
       this.closeSearch();
       event.consume(true);
       return;
@@ -20546,7 +20380,7 @@ var SearchConfig = class {
     } catch {
     }
     if (!regex) {
-      regex = Platform24.StringUtilities.createPlainTextSearchRegex(query, modifiers);
+      regex = Platform23.StringUtilities.createPlainTextSearchRegex(query, modifiers);
     }
     if (this.wholeWord) {
       let { source } = regex;
@@ -20573,7 +20407,7 @@ __export(SoftDropDown_exports, {
 import * as i18n34 from "./../../core/i18n/i18n.js";
 import * as Geometry6 from "./../../models/geometry/geometry.js";
 import { createIcon as createIcon8 } from "./../kit/kit.js";
-import * as VisualLogging24 from "./../visual_logging/visual_logging.js";
+import * as VisualLogging23 from "./../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/softDropDown.css.js
 var softDropDown_css_default = `/*
@@ -20696,7 +20530,7 @@ var SoftDropDown = class {
     this.placeholderText = i18nString17(UIStrings17.noItemSelected);
     this.element = document.createElement("button");
     if (jslogContext) {
-      this.element.setAttribute("jslog", `${VisualLogging24.dropDown().track({ click: true, keydown: "ArrowUp|ArrowDown|Enter" }).context(jslogContext)}`);
+      this.element.setAttribute("jslog", `${VisualLogging23.dropDown().track({ click: true, keydown: "ArrowUp|ArrowDown|Enter" }).context(jslogContext)}`);
     }
     this.element.classList.add("soft-dropdown");
     appendStyle(this.element, softDropDownButton_css_default);
@@ -20726,8 +20560,8 @@ var SoftDropDown = class {
       cssFile: softDropDown_css_default
     }).appendChild(this.list.element);
     markAsMenu(this.list.element);
-    VisualLogging24.setMappedParent(this.list.element, this.element);
-    this.list.element.setAttribute("jslog", `${VisualLogging24.menu().parent("mapped").track({ resize: true, keydown: "ArrowUp|ArrowDown|PageUp|PageDown" })}`);
+    VisualLogging23.setMappedParent(this.list.element, this.element);
+    this.list.element.setAttribute("jslog", `${VisualLogging23.menu().parent("mapped").track({ resize: true, keydown: "ArrowUp|ArrowDown|PageUp|PageDown" })}`);
     this.element.addEventListener("mousedown", (event) => {
       if (this.glassPane.isShowing()) {
         this.hide(event);
@@ -20745,7 +20579,7 @@ var SoftDropDown = class {
       }
       this.selectHighlightedItem();
       if (event.target instanceof Element && event.target?.parentElement) {
-        void VisualLogging24.logClick(event.target.parentElement, event);
+        void VisualLogging23.logClick(event.target.parentElement, event);
       }
       this.hide(event);
     }, false);
@@ -21011,11 +20845,11 @@ __export(Treeoutline_exports, {
   treeElementBylistItemNode: () => treeElementBylistItemNode
 });
 import * as Common18 from "./../../core/common/common.js";
-import * as Platform25 from "./../../core/platform/platform.js";
+import * as Platform24 from "./../../core/platform/platform.js";
 import * as SDK3 from "./../../core/sdk/sdk.js";
 import * as Highlighting from "./../components/highlighting/highlighting.js";
 import * as Lit3 from "./../lit/lit.js";
-import * as VisualLogging25 from "./../visual_logging/visual_logging.js";
+import * as VisualLogging24 from "./../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/treeoutline.css.js
 var treeoutline_css_default = `/*
@@ -21375,7 +21209,7 @@ var TreeOutline = class extends Common18.ObjectWrapper.ObjectWrapper {
     this.focusable = true;
     this.setFocusable(true);
     this.element = this.contentElement;
-    this.element.setAttribute("jslog", `${VisualLogging25.tree()}`);
+    this.element.setAttribute("jslog", `${VisualLogging24.tree()}`);
     markAsTree(this.element);
     this.useLightSelectionColor = false;
     this.treeElementToScrollIntoView = null;
@@ -21584,7 +21418,7 @@ var TreeOutline = class extends Common18.ObjectWrapper.ObjectWrapper {
       let scrollParentElement = this.element;
       while (getComputedStyle(scrollParentElement).overflow === "visible" && scrollParentElement.parentElementOrShadowHost()) {
         const parent = scrollParentElement.parentElementOrShadowHost();
-        Platform25.assertNotNullOrUndefined(parent);
+        Platform24.assertNotNullOrUndefined(parent);
         scrollParentElement = parent;
       }
       const viewRect = scrollParentElement.getBoundingClientRect();
@@ -21702,7 +21536,7 @@ var TreeElement = class {
     this.listItemNode.addEventListener("mousedown", this.handleMouseDown.bind(this), false);
     this.listItemNode.addEventListener("click", this.treeElementToggled.bind(this), false);
     this.listItemNode.addEventListener("dblclick", this.handleDoubleClick.bind(this), false);
-    this.listItemNode.setAttribute("jslog", `${VisualLogging25.treeItem().parent("parentTreeItem").context(jslogContext).track({
+    this.listItemNode.setAttribute("jslog", `${VisualLogging24.treeItem().parent("parentTreeItem").context(jslogContext).track({
       click: true,
       keydown: "ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Backspace|Delete|Enter|Space|Home|End"
     })}`);
@@ -21783,9 +21617,9 @@ var TreeElement = class {
     }
     let insertionIndex;
     if (comparator) {
-      insertionIndex = Platform25.ArrayUtilities.lowerBound(this.childrenInternal, child, comparator);
+      insertionIndex = Platform24.ArrayUtilities.lowerBound(this.childrenInternal, child, comparator);
     } else if (this.treeOutline?.comparator) {
-      insertionIndex = Platform25.ArrayUtilities.lowerBound(this.childrenInternal, child, this.treeOutline.comparator);
+      insertionIndex = Platform24.ArrayUtilities.lowerBound(this.childrenInternal, child, this.treeOutline.comparator);
     } else {
       insertionIndex = this.childrenInternal.length;
     }
@@ -21998,7 +21832,7 @@ var TreeElement = class {
       this.collapse();
       unsetExpandable(this.listItemNode);
     } else {
-      VisualLogging25.registerLoggable(this.expandLoggable, `${VisualLogging25.expand()}`, this.listItemNode, new DOMRect(0, 0, 16, 16));
+      VisualLogging24.registerLoggable(this.expandLoggable, `${VisualLogging24.expand()}`, this.listItemNode, new DOMRect(0, 0, 16, 16));
       setExpanded(this.listItemNode, false);
     }
   }
@@ -22080,7 +21914,7 @@ var TreeElement = class {
     } else {
       this.expand();
     }
-    void VisualLogging25.logClick(this.expandLoggable, event);
+    void VisualLogging24.logClick(this.expandLoggable, event);
     event.consume();
   }
   handleMouseDown(event) {
@@ -22501,11 +22335,11 @@ var TreeSearch = class {
     view.updateCurrentMatchIndex(this.#currentMatchIndex);
   }
   next() {
-    this.#currentMatchIndex = Platform25.NumberUtilities.mod(this.#currentMatchIndex + 1, this.#matches.length);
+    this.#currentMatchIndex = Platform24.NumberUtilities.mod(this.#currentMatchIndex + 1, this.#matches.length);
     return this.currentMatch();
   }
   prev() {
-    this.#currentMatchIndex = Platform25.NumberUtilities.mod(this.#currentMatchIndex - 1, this.#matches.length);
+    this.#currentMatchIndex = Platform24.NumberUtilities.mod(this.#currentMatchIndex - 1, this.#matches.length);
     return this.currentMatch();
   }
   // This is a generator to sidestep stack overflow risks
@@ -22550,7 +22384,7 @@ var TreeSearch = class {
     this.reset();
     for (const _ of this.#innerSearch(node, currentMatch, jumpBackwards, match)) {
     }
-    this.#currentMatchIndex = Platform25.NumberUtilities.mod(this.#currentMatchIndex, this.#matches.length);
+    this.#currentMatchIndex = Platform24.NumberUtilities.mod(this.#currentMatchIndex, this.#matches.length);
     return this.#matches.length;
   }
 };
@@ -22771,14 +22605,14 @@ function loggingParentProvider(e) {
   const parentElement = treeElement?.parent?.listItemElement;
   return parentElement?.isConnected && parentElement || treeElement?.treeOutline?.contentElement;
 }
-VisualLogging25.registerParentProvider("parentTreeItem", loggingParentProvider);
+VisualLogging24.registerParentProvider("parentTreeItem", loggingParentProvider);
 
 // gen/front_end/ui/legacy/View.js
 var View_exports = {};
 __export(View_exports, {
   SimpleView: () => SimpleView
 });
-import * as Platform26 from "./../../core/platform/platform.js";
+import * as Platform25 from "./../../core/platform/platform.js";
 var SimpleView = class extends VBox {
   #title;
   #viewId;
@@ -22792,7 +22626,7 @@ var SimpleView = class extends VBox {
     super(options);
     this.#title = options.title;
     this.#viewId = options.viewId;
-    if (!Platform26.StringUtilities.isExtendedKebabCase(this.#viewId)) {
+    if (!Platform25.StringUtilities.isExtendedKebabCase(this.#viewId)) {
       throw new TypeError(`Invalid view ID '${this.#viewId}'`);
     }
   }
@@ -22875,8 +22709,6 @@ export {
   View_exports as View,
   ViewManager_exports as ViewManager,
   Widget_exports as Widget,
-  XElement_exports as XElement,
-  XLink_exports as XLink,
   ZoomManager_exports as ZoomManager,
   inspectorCommon_css_default as inspectorCommonStyles
 };

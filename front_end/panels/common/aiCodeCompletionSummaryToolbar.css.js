@@ -90,7 +90,7 @@ export default `/*
             gap: var(--sys-size-2);
             white-space: normal;
 
-            x-link {
+            devtools-link {
                 color: var(--sys-color-primary);
                 text-decoration: underline;
 

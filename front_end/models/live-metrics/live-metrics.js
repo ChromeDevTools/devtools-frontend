@@ -47,7 +47,22 @@ var LiveMetrics = class _LiveMetrics extends Common.ObjectWrapper.ObjectWrapper 
   #deviceModeModel = EmulationModel.DeviceModeModel.DeviceModeModel.tryInstance();
   constructor() {
     super();
-    SDK.TargetManager.TargetManager.instance().observeTargets(this);
+    const targetManager = SDK.TargetManager.TargetManager.instance();
+    targetManager.observeTargets(this, { scoped: true });
+    targetManager.addEventListener("AvailableTargetsChanged", this.#onAvailableTargetsChanged, this);
+  }
+  #onAvailableTargetsChanged() {
+    const primaryTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+    if (primaryTarget && primaryTarget !== this.#target) {
+      void this.#switchToTarget(primaryTarget);
+    }
+  }
+  async #switchToTarget(newTarget) {
+    if (this.#target) {
+      await this.disable();
+    }
+    this.#target = newTarget;
+    await this.enable();
   }
   static instance(opts = { forceNew: false }) {
     const { forceNew } = opts;
@@ -295,25 +310,6 @@ var LiveMetrics = class _LiveMetrics extends Common.ObjectWrapper.ObjectWrapper 
     }
     this.#sendStatusUpdate();
   }
-  async #getFrameForExecutionContextId(executionContextId) {
-    if (!this.#target) {
-      return null;
-    }
-    const runtimeModel = this.#target.model(SDK.RuntimeModel.RuntimeModel);
-    if (!runtimeModel) {
-      return null;
-    }
-    const executionContext = runtimeModel.executionContext(executionContextId);
-    if (!executionContext) {
-      return null;
-    }
-    const frameId = executionContext.frameId;
-    if (!frameId) {
-      return null;
-    }
-    const frameManager = SDK.FrameManager.FrameManager.instance();
-    return await frameManager.getOrWaitForFrame(frameId);
-  }
   async #onBindingCalled(event) {
     const { data } = event;
     if (data.name !== Spec.EVENT_BINDING_NAME) {
@@ -321,14 +317,7 @@ var LiveMetrics = class _LiveMetrics extends Common.ObjectWrapper.ObjectWrapper 
     }
     await this.#mutex.run(async () => {
       const webVitalsEvent = JSON.parse(data.payload);
-      if (this.#lastResetContextId !== data.executionContextId) {
-        if (webVitalsEvent.name !== "reset") {
-          return;
-        }
-        const frame = await this.#getFrameForExecutionContextId(data.executionContextId);
-        if (!frame?.isPrimaryFrame()) {
-          return;
-        }
+      if (webVitalsEvent.name === "reset") {
         this.#lastResetContextId = data.executionContextId;
       }
       await this.#handleWebVitalsEvent(webVitalsEvent, data.executionContextId);
@@ -372,11 +361,6 @@ var LiveMetrics = class _LiveMetrics extends Common.ObjectWrapper.ObjectWrapper 
     }
     await this.disable();
     this.#target = void 0;
-    const primaryPageTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
-    if (primaryPageTarget) {
-      this.#target = primaryPageTarget;
-      await this.enable();
-    }
   }
   async enable() {
     if (Host.InspectorFrontendHost.isUnderTest()) {
@@ -420,6 +404,7 @@ var LiveMetrics = class _LiveMetrics extends Common.ObjectWrapper.ObjectWrapper 
     if (!this.#target || !this.#enabled) {
       return;
     }
+    this.#lastResetContextId = void 0;
     await this.#killAllLiveMetricContexts();
     const runtimeModel = this.#target.model(SDK.RuntimeModel.RuntimeModel);
     if (runtimeModel) {

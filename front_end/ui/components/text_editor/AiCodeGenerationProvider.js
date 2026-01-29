@@ -4,6 +4,7 @@
 import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
+import * as Root from '../../../core/root/root.js';
 import * as AiCodeGeneration from '../../../models/ai_code_generation/ai_code_generation.js';
 import * as PanelCommon from '../../../panels/common/common.js';
 import * as CodeMirror from '../../../third_party/codemirror.next/codemirror.next.js';
@@ -29,6 +30,8 @@ export class AiCodeGenerationProvider {
     // 'ai-code-completion-enabled' setting controls both AI code completion and AI code generation.
     // Since this provider deals with code generation, the field has been named `#aiCodeGenerationEnabledSetting`.
     #aiCodeGenerationEnabledSetting = Common.Settings.Settings.instance().createSetting('ai-code-completion-enabled', false);
+    #aiCodeGenerationSettingEnabled = this.#aiCodeGenerationEnabledSetting.get();
+    #aiCodeGenerationOnboardingCompletedSetting = Common.Settings.Settings.instance().createSetting('ai-code-generation-onboarding-completed', false);
     #generationTeaserCompartment = new CodeMirror.Compartment();
     #generationTeaser;
     #editor;
@@ -75,7 +78,7 @@ export class AiCodeGenerationProvider {
         this.#aiCodeGenerationEnabledSetting.addChangeListener(this.#boundOnUpdateAiCodeGenerationState);
         void this.#updateAiCodeGenerationState();
     }
-    #setupAiCodeGeneration() {
+    async #setupAiCodeGeneration() {
         if (this.#aiCodeGeneration) {
             return;
         }
@@ -98,11 +101,17 @@ export class AiCodeGenerationProvider {
         const isAvailable = aidaAvailability === "available" /* Host.AidaClient.AidaAccessPreconditions.AVAILABLE */;
         const isEnabled = this.#aiCodeGenerationEnabledSetting.get();
         if (isAvailable && isEnabled) {
-            this.#setupAiCodeGeneration();
+            if (!this.#aiCodeGenerationSettingEnabled) {
+                // If the user enabled setting when code generation feature is already available,
+                // we do not need to show the upgrade dialog.
+                this.#aiCodeGenerationOnboardingCompletedSetting.set(true);
+            }
+            await this.#setupAiCodeGeneration();
         }
         else {
             this.#cleanupAiCodeGeneration();
         }
+        this.#aiCodeGenerationSettingEnabled = isEnabled;
     }
     #editorKeymap() {
         return [
@@ -151,9 +160,7 @@ export class AiCodeGenerationProvider {
                     }
                     if (UI.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(event)) {
                         if (event.key === 'i') {
-                            event.consume(true);
-                            void VisualLogging.logKeyDown(event.currentTarget, event, 'ai-code-generation.triggered');
-                            void this.#triggerAiCodeGeneration({ signal: this.#controller.signal });
+                            void this.#triggerAiCodeGenerationFlow(event);
                             return true;
                         }
                     }
@@ -161,6 +168,25 @@ export class AiCodeGenerationProvider {
                 }
             }
         ];
+    }
+    async #triggerAiCodeGenerationFlow(event) {
+        event.consume(true);
+        const isOnboarded = await this.#onboardUser();
+        if (!isOnboarded) {
+            return;
+        }
+        void VisualLogging.logKeyDown(event.currentTarget, event, 'ai-code-generation.triggered');
+        void this.#triggerAiCodeGeneration({ signal: this.#controller.signal });
+    }
+    async #onboardUser() {
+        if (this.#aiCodeGenerationOnboardingCompletedSetting.get()) {
+            return true;
+        }
+        const noLogging = Root.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue ===
+            Root.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING;
+        const resolved = await PanelCommon.AiCodeGenerationUpgradeDialog.show({ noLogging });
+        this.#aiCodeGenerationOnboardingCompletedSetting.set(resolved);
+        return resolved;
     }
     #dismissTeaserAndSuggestion() {
         this.#generationTeaser.displayState = PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.TRIGGER;

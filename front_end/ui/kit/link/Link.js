@@ -102,6 +102,26 @@ export class Link extends HTMLElement {
         </style><slot></slot>`, this.#shadow, { host: this });
         // clang-format on
     }
+    /**
+     * Should be used only by old code relying on imperative API,
+     * which we are activly migrating away from.
+     * @deprecated
+     */
+    static create(url, linkText, className, jsLogContext, tabindex = 0) {
+        const link = new Link();
+        link.href = url;
+        linkText = linkText ?? url;
+        link.textContent = Platform.StringUtilities.trimMiddle(linkText, 150);
+        const classes = className ? `${className} devtools-link` : 'devtools-link';
+        link.setAttribute('class', classes);
+        if (jsLogContext) {
+            link.setAttribute('jslogcontext', jsLogContext);
+        }
+        if (tabindex !== 0) {
+            link.setAttribute('tabindex', String(tabindex));
+        }
+        return link;
+    }
 }
 customElements.define('devtools-link', Link);
 //# sourceMappingURL=Link.js.map

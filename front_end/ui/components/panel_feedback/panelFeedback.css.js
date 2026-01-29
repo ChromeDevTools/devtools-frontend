@@ -64,7 +64,7 @@ devtools-link {
   text-decoration-line: underline;
 }
 
-x-link.quick-start-link {
+devtools-link.quick-start-link {
   font-size: 14px;
   line-height: 22px;
   letter-spacing: 0.04em;

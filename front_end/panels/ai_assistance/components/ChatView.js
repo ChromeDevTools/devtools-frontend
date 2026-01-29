@@ -74,8 +74,8 @@ const DEFAULT_VIEW = (input, output, target) => {
                 </div>
                 ${AiAssistanceModel.AiUtils.isGeminiBranding() ?
         html `
-                    <h1 class='greeting'>Hello, ${input.accountName}</h1>
-                    <h1>${lockedString(UIStringsNotTranslate.emptyStateTextGemini)}</h1>
+                    <h1 class='greeting'>Hello${input.accountGivenName ? `, ${input.accountGivenName}` : ''}</h1>
+                    <p class='cta'>${lockedString(UIStringsNotTranslate.emptyStateTextGemini)}</p>
                   ` : html `<h1>${lockedString(UIStringsNotTranslate.emptyStateText)}</h1>`}
               </div>
               <div class="empty-state-content">
@@ -237,8 +237,7 @@ export class ChatView extends HTMLElement {
     #render() {
         this.#view({
             ...this.#props,
-            // TODO(b/468206227): This needs to be a first name.
-            accountName: this.#props.userInfo.accountFullName ?? '',
+            accountGivenName: this.#props.userInfo.accountGivenName ?? '',
             handleScroll: this.#handleScroll,
             handleSuggestionClick: this.#handleSuggestionClick,
             handleMessageContainerRef: this.#handleMessageContainerRef,

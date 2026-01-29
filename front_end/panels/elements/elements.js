@@ -2670,6 +2670,10 @@ devtools-icon.icon-link {
   opacity: 50%;
 }
 
+.animation-override-hint {
+  max-width: 232px;
+}
+
 .hint-wrapper {
   align-items: center;
   display: inline-block;
@@ -3037,6 +3041,14 @@ var UIStrings5 = {
    * @description A context menu item in Styles panel to view the computed CSS property value.
    */
   viewComputedValue: "View computed value",
+  /**
+   * @description Tooltip text for a style property overridden by an animation.
+   */
+  overriddenByAnimation: "Overridden by animation styles.",
+  /**
+   * @description Link text in the tooltip to open the Animations panel.
+   */
+  openAnimationsPanel: "Open Animations panel",
   /**
    * @description Title of the button that opens the flexbox editor in the Styles panel.
    */
@@ -4969,6 +4981,7 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI8.TreeO
     }
     if (this.property.parsedOk) {
       this.updateAuthoringHint();
+      this.updateAnimationOverrideHint();
     } else {
       this.listItemElement.classList.add("not-parsed-ok");
       this.listItemElement.insertBefore(this.createExclamationMark(this.property, this.#parentPane.getVariableParserError(this.matchedStyles(), this.property.name)), this.listItemElement.firstChild);
@@ -5148,6 +5161,50 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI8.TreeO
         break;
       }
     }
+  }
+  updateAnimationOverrideHint() {
+    const existingElement = this.listItemElement.querySelector(".animation-override-hint-wrapper");
+    if (existingElement) {
+      existingElement?.remove();
+    }
+    if (!this.overriddenByAnimation() || UI8.ViewManager.ViewManager.instance().isViewVisible("animations")) {
+      return;
+    }
+    const wrapper = document.createElement("span");
+    wrapper.classList.add("animation-override-hint-wrapper", "hint-wrapper");
+    const hintIcon = new Icon();
+    hintIcon.name = "info";
+    hintIcon.classList.add("hint", "small");
+    hintIcon.tabIndex = -1;
+    wrapper.append(hintIcon);
+    this.listItemElement.append(wrapper);
+    const tooltipId = this.getTooltipId("animation-override-hint");
+    hintIcon.setAttribute("aria-details", tooltipId);
+    const tooltip = new Tooltips.Tooltip.Tooltip({
+      anchor: hintIcon,
+      variant: "rich",
+      padding: "large",
+      id: tooltipId,
+      jslogContext: "elements.css-animation-hint"
+    });
+    const message = i18nString5(UIStrings5.overriddenByAnimation);
+    const content = document.createElement("div");
+    content.classList.add("animation-override-hint");
+    content.textContent = message;
+    const link2 = document.createElement("devtools-link");
+    link2.textContent = i18nString5(UIStrings5.openAnimationsPanel);
+    link2.jslogContext = "open-in-animations-panel";
+    link2.addEventListener("click", (event) => {
+      event.preventDefault();
+      void UI8.ViewManager.ViewManager.instance().showView("animations");
+    });
+    content.appendChild(document.createTextNode(" "));
+    content.appendChild(link2);
+    tooltip.appendChild(content);
+    this.listItemElement.appendChild(tooltip);
+  }
+  overriddenByAnimation() {
+    return this.#matchedStyles.isPropertyOverriddenByAnimation(this.property);
   }
   mouseUp(event) {
     const activeTreeElement = parentMap.get(this.#parentPane);
@@ -8065,6 +8122,11 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
       }
       return null;
     }, () => this.node());
+    UI11.ViewManager.ViewManager.instance().addEventListener("ViewVisibilityChanged", (event) => {
+      if (event.data.revealedViewId === "animations" || event.data.hiddenViewId === "animations") {
+        this.#scheduleResetUpdateIfNotEditing();
+      }
+    });
   }
   get webCustomData() {
     if (!this.#webCustomData && Common5.Settings.Settings.instance().moduleSetting("show-css-property-documentation-on-hover").get()) {
@@ -8465,6 +8527,9 @@ ${allDeclarationText}
     if (!Root4.Runtime.hostConfig.devToolsAnimationStylesInStylesTab?.enabled) {
       return;
     }
+    if (!UI11.ViewManager.ViewManager.instance().isViewVisible("animations")) {
+      return;
+    }
     void this.computedStyleUpdateThrottler.schedule(async () => {
       await this.#updateAnimatedStyles();
       this.handledComputedStyleChangedForTest();
@@ -8700,7 +8765,12 @@ ${allDeclarationText}
       }
     };
     ButtonProvider.instance().item().setVisible(false);
+    const animationsPanelVisible = UI11.ViewManager.ViewManager.instance().isViewVisible("animations");
     for (const style of matchedStyles.nodeStyles()) {
+      const isTransitionOrAnimationStyle = style.type === SDK9.CSSStyleDeclaration.Type.Transition || style.type === SDK9.CSSStyleDeclaration.Type.Animation;
+      if (isTransitionOrAnimationStyle && !animationsPanelVisible) {
+        continue;
+      }
       const parentNode = matchedStyles.isInherited(style) ? matchedStyles.nodeForStyle(style) : null;
       if (parentNode && parentNode !== lastParentNode) {
         lastParentNode = parentNode;
@@ -8710,7 +8780,6 @@ ${allDeclarationText}
       }
       addLayerSeparator(style);
       const lastBlock = blocks[blocks.length - 1];
-      const isTransitionOrAnimationStyle = style.type === SDK9.CSSStyleDeclaration.Type.Transition || style.type === SDK9.CSSStyleDeclaration.Type.Animation;
       if (lastBlock && (!isTransitionOrAnimationStyle || style.allProperties().length > 0)) {
         this.idleCallbackManager.schedule(() => {
           const section3 = new StylePropertiesSection(this, matchedStyles, style, sectionIdx, computedStyles, parentsComputedStyles, computedStyleExtraFields);
@@ -10875,7 +10944,7 @@ import * as Buttons2 from "./../../ui/components/buttons/buttons.js";
 import * as CodeHighlighter3 from "./../../ui/components/code_highlighter/code_highlighter.js";
 import * as Highlighting2 from "./../../ui/components/highlighting/highlighting.js";
 import * as TextEditor from "./../../ui/components/text_editor/text_editor.js";
-import { Icon as Icon3 } from "./../../ui/kit/kit.js";
+import { Icon as Icon3, Link } from "./../../ui/kit/kit.js";
 import * as Components6 from "./../../ui/legacy/components/utils/utils.js";
 import * as UI15 from "./../../ui/legacy/legacy.js";
 import * as Lit6 from "./../../ui/lit/lit.js";
@@ -13167,7 +13236,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI15.TreeOutline.Tr
       if (value6.startsWith("data:")) {
         value6 = Platform7.StringUtilities.trimMiddle(value6, 60);
       }
-      const link2 = node && node.nodeName().toLowerCase() === "a" ? UI15.XLink.XLink.create(rewrittenHref, value6, "", true, "image-url") : Components6.Linkifier.Linkifier.linkifyURL(rewrittenHref, {
+      const link2 = node && node.nodeName().toLowerCase() === "a" ? Link.create(rewrittenHref, value6, void 0, "image-url") : Components6.Linkifier.Linkifier.linkifyURL(rewrittenHref, {
         text: value6,
         preventClick: true,
         showColumnNumber: false,

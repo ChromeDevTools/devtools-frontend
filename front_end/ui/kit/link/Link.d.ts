@@ -28,6 +28,12 @@ export declare class Link extends HTMLElement {
     get jslogContext(): string | null;
     set jslogContext(jslogContext: string);
     attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null): void;
+    /**
+     * Should be used only by old code relying on imperative API,
+     * which we are activly migrating away from.
+     * @deprecated
+     */
+    static create(url: string, linkText?: string, className?: string, jsLogContext?: string, tabindex?: number): Link;
 }
 declare global {
     interface HTMLElementTagNameMap {

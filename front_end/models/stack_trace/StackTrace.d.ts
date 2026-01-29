@@ -59,7 +59,8 @@ export declare class DebuggableFrameFlavor implements DebuggableFrame {
     readonly column: number;
     readonly missingDebugInfo?: MissingDebugInfo;
     readonly sdkFrame: SDK.DebuggerModel.CallFrame;
-    private constructor();
+    /** Use the static {@link for}. Only public to satisfy the `setFlavor` Ctor type  */
+    constructor(frame: DebuggableFrame);
     /** @returns the same instance of DebuggableFrameFlavor for repeated calls with the same (i.e. deep equal) DebuggableFrame */
     static for(frame: DebuggableFrame): DebuggableFrameFlavor;
 }

@@ -35,7 +35,7 @@ export default `/*
   grid-column-start: span 2;
 }
 
-x-link {
+devtools-link {
   color: var(--sys-color-primary);
   text-decoration-line: underline;
 }

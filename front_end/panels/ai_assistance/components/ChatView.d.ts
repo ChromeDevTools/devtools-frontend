@@ -26,7 +26,7 @@ export interface Props {
     selectedContext: AiAssistanceModel.AiAgent.ConversationContext<unknown> | null;
     isLoading: boolean;
     canShowFeedbackForm: boolean;
-    userInfo: Pick<Host.InspectorFrontendHostAPI.SyncInformation, 'accountImage' | 'accountFullName'>;
+    userInfo: Pick<Host.InspectorFrontendHostAPI.SyncInformation, 'accountImage' | 'accountGivenName'>;
     conversationType: AiAssistanceModel.AiHistoryStorage.ConversationType;
     isReadOnly: boolean;
     blockedByCrossOrigin: boolean;
@@ -41,7 +41,7 @@ export interface Props {
     additionalFloatyContext: UI.Floaty.FloatyContextSelection[];
 }
 interface ChatWidgetInput extends Props {
-    accountName: string;
+    accountGivenName: string;
     handleScroll: (ev: Event) => void;
     handleSuggestionClick: (title: string) => void;
     handleMessageContainerRef: (el: Element | undefined) => void;

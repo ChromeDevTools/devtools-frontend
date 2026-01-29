@@ -84,8 +84,6 @@
     "../../../../../../front_end/ui/legacy/ViewManager.ts",
     "../../../../../../front_end/ui/legacy/ViewRegistration.ts",
     "../../../../../../front_end/ui/legacy/Widget.ts",
-    "../../../../../../front_end/ui/legacy/XElement.ts",
-    "../../../../../../front_end/ui/legacy/XLink.ts",
     "../../../../../../front_end/ui/legacy/ZoomManager.ts",
     "../../../../../../front_end/legacy/legacy-defs.d.ts",
     "../../../../../../front_end/global_typings/global_defs.d.ts",

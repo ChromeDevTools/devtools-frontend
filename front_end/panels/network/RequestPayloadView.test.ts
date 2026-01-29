@@ -1,13 +1,157 @@
 // Copyright 2023 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import * as Platform from '../../core/platform/platform.js';
+import * as SDK from '../../core/sdk/sdk.js';
+import type * as Protocol from '../../generated/protocol.js';
+import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {render} from '../../ui/lit/lit.js';
 
 import * as Network from './network.js';
 
-describe('RequestPayloadView', () => {
+const {urlString} = Platform.DevToolsPath;
+
+describeWithEnvironment('RequestPayloadView', () => {
   it('decodes headers', async () => {
     const encoded = 'Test+%21%40%23%24%25%5E%26*%28%29_%2B+parameters.';
-    const parameterElement = Network.RequestPayloadView.RequestPayloadView.formatParameter(encoded, '', true);
-    assert.strictEqual(parameterElement.textContent, 'Test !@#$%^&*()_+ parameters.');
+    const parameterElement = document.createDocumentFragment();
+    render(Network.RequestPayloadView.RequestPayloadView.formatParameter(encoded, '', true), parameterElement);
+    assert.strictEqual(parameterElement.textContent?.trim(), 'Test !@#$%^&*()_+ parameters.');
+  });
+
+  it('does not decode headers if decodeParameters is false', async () => {
+    const encoded = 'Test+%21%40%23%24%25%5E%26*%28%29_%2B+parameters.';
+    const parameterElement = document.createDocumentFragment();
+    render(Network.RequestPayloadView.RequestPayloadView.formatParameter(encoded, '', false), parameterElement);
+    assert.strictEqual(parameterElement.textContent?.trim(), encoded);
+  });
+
+  it('adds the class name to the element', async () => {
+    const parameterElement = document.createDocumentFragment();
+    render(Network.RequestPayloadView.RequestPayloadView.formatParameter('test', 'test-class', true), parameterElement);
+    const div = parameterElement.firstElementChild;
+    assert.isNotNull(div);
+    assert.isTrue(div?.classList.contains('test-class'));
+  });
+
+  it('adds the empty-value class when value is empty', async () => {
+    const parameterElement = document.createDocumentFragment();
+    render(Network.RequestPayloadView.RequestPayloadView.formatParameter('', '', true), parameterElement);
+    const div = parameterElement.firstElementChild;
+    assert.isNotNull(div);
+    assert.isTrue(div?.classList.contains('empty-value'));
+  });
+
+  it('shows error message when decoding fails', async () => {
+    const invalidEncoded = '%E0%A4%A';  // Invalid URI sequence
+    const parameterElement = document.createDocumentFragment();
+    render(Network.RequestPayloadView.RequestPayloadView.formatParameter(invalidEncoded, '', true), parameterElement);
+    const errorSpan = parameterElement.querySelector('.payload-decode-error');
+    assert.isNotNull(errorSpan);
+    assert.strictEqual(errorSpan?.textContent, '(unable to decode value)');
+  });
+
+  it('displays query string parameters', async () => {
+    const request = SDK.NetworkRequest.NetworkRequest.create(
+        'requestId' as Protocol.Network.RequestId, urlString`https://example.com/api?foo=bar&baz=qux`, urlString``,
+        null, null, null);
+    const view = new Network.RequestPayloadView.RequestPayloadView(request);
+    renderElementIntoDOM(view);
+    view.wasShown();
+
+    await assertScreenshot('network/request-payload-query-params.png');
+  });
+
+  it('displays form data parameters', async () => {
+    const request = SDK.NetworkRequest.NetworkRequest.create(
+        'requestId' as Protocol.Network.RequestId, urlString`https://example.com/api`, urlString``, null, null, null);
+    request.setRequestHeaders([{name: 'Content-Type', value: 'application/x-www-form-urlencoded'}]);
+    // Mock requestFormData to return URL-encoded form data.
+    sinon.stub(request, 'requestFormData').resolves('foo=bar&baz=qux');
+
+    const view = new Network.RequestPayloadView.RequestPayloadView(request);
+    renderElementIntoDOM(view);
+    view.wasShown();
+
+    // TODO(crbug.com/407751697) Replace with updateComplete.
+    await new Promise(resolve => setTimeout(resolve, 0));
+    await assertScreenshot('network/request-payload-data-params.png');
+  });
+
+  it('toggles URL decoding', async () => {
+    const request = SDK.NetworkRequest.NetworkRequest.create(
+        'requestId' as Protocol.Network.RequestId, urlString`https://example.com/api?foo=bar%20baz`, urlString``, null,
+        null, null);
+    const view = new Network.RequestPayloadView.RequestPayloadView(request);
+    renderElementIntoDOM(view);
+    view.wasShown();
+
+    const treeOutline = view.element.querySelector<HTMLElement>('.request-payload-tree');
+    assert.isNotNull(treeOutline);
+    const shadowRoot = treeOutline.shadowRoot;
+    assert.isNotNull(shadowRoot);
+
+    const getPayloadValues = () => {
+      return Array.from(shadowRoot.querySelectorAll('.payload-value')).map(el => el.textContent).join(' ');
+    };
+
+    // Initial state: Decoded
+    assert.include(getPayloadValues(), 'bar baz');
+
+    const toggleButton = shadowRoot.querySelectorAll<HTMLElement>('.payload-toggle').item(1);
+    assert.exists(toggleButton);
+    toggleButton.click();
+
+    // Toggled state: Encoded
+    assert.include(getPayloadValues(), 'bar%20baz');
+
+    await assertScreenshot('network/request-payload-url-decoding.png');
+  });
+
+  it('toggles between parsed and source view', async () => {
+    const request = SDK.NetworkRequest.NetworkRequest.create(
+        'requestId' as Protocol.Network.RequestId, urlString`https://example.com/api?foo=bar`, urlString``, null, null,
+        null);
+    const view = new Network.RequestPayloadView.RequestPayloadView(request);
+    renderElementIntoDOM(view);
+    view.wasShown();
+
+    const treeOutline = view.element.querySelector<HTMLElement>('.request-payload-tree');
+    const shadowRoot = treeOutline?.shadowRoot;
+    assert.exists(shadowRoot);
+
+    const getTextContent = () => {
+      const names = Array.from(shadowRoot.querySelectorAll('.payload-name')).map(el => el.textContent);
+      const values = Array.from(shadowRoot.querySelectorAll('.payload-value')).map(el => el.textContent);
+      return [...names, ...values].join(' ');
+    };
+
+    // Initial state: Parsed (foo: bar)
+    const initialText = getTextContent();
+    assert.include(initialText, 'foo');
+    assert.include(initialText, 'bar');
+
+    // Find "View source" button.
+    const buttons = shadowRoot.querySelectorAll<HTMLElement>('.payload-toggle');
+    const viewSourceButton = Array.from(buttons).find(b => b.textContent?.includes('View source'));
+    assert.exists(viewSourceButton);
+
+    viewSourceButton.click();
+    await assertScreenshot('network/request-payload-url-source-view.png');
+
+    // Source state: "foo=bar"
+    const sourceText = getTextContent();
+    assert.include(sourceText, 'foo=bar');
+
+    // Toggle back
+    const viewParsedButton = Array.from(shadowRoot.querySelectorAll<HTMLElement>('.payload-toggle'))
+                                 .find(b => b.textContent?.includes('View parsed'));
+    assert.exists(viewParsedButton);
+    viewParsedButton.click();
+
+    const finalText = getTextContent();
+    assert.include(finalText, 'foo');
+    assert.include(finalText, 'bar');
   });
 });

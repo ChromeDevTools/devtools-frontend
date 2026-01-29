@@ -3256,6 +3256,7 @@ export const knownContextValues = new Set([
   'rule-set',
   'rule-set-details',
   'rule-style',
+  'rule-visibility-items',
   'rule-width',
   'rulers-enable',
   'run',

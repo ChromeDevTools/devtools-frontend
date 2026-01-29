@@ -3927,6 +3927,13 @@ export const generatedProperties = [
  },
  {
   "longhands": [
+   "column-rule-visibility-items",
+   "row-rule-visibility-items"
+  ],
+  "name": "rule-visibility-items"
+ },
+ {
+  "longhands": [
    "column-rule-width",
    "row-rule-width"
   ],

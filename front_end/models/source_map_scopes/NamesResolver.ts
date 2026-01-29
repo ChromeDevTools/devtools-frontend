@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
-import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../bindings/bindings.js';
@@ -366,17 +365,15 @@ const resolveScope = async(script: SDK.Script.Script, scopeChain: Formatter.Form
 export const resolveScopeChain =
     async function(callFrame: SDK.DebuggerModel.CallFrame): Promise<SDK.DebuggerModel.ScopeChainEntry[]> {
   const {pluginManager} = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
-  let scopeChain: SDK.DebuggerModel.ScopeChainEntry[]|null|undefined = await pluginManager.resolveScopeChain(callFrame);
+  const scopeChain: SDK.DebuggerModel.ScopeChainEntry[]|null|undefined =
+      await pluginManager.resolveScopeChain(callFrame);
   if (scopeChain) {
     return scopeChain;
   }
 
-  scopeChain = Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.USE_SOURCE_MAP_SCOPES) ?
-      callFrame.script.sourceMap()?.resolveScopeChain(callFrame) :
-      null;
-  if (scopeChain) {
-    return scopeChain;
-  }
+  // TODO(crbug.com/465968290): Re-enable creating the scope chain from the source map once:
+  //    1) We have a flag indicating whether the source map contained variable/binding information.
+  //    2) We have a chrome feature flag.
 
   if (callFrame.script.isWasm()) {
     return callFrame.scopeChain();

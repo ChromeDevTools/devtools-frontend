@@ -330,7 +330,9 @@ describeWithMockConnection('DeviceBoundSessionsTreeElement', () => {
 
     // Session 1 should now be terminated. Session 2 remains unterminated.
     assert.isTrue(session1Node.listItemElement.classList.contains('device-bound-session-terminated'));
+    assert.strictEqual(session1Node.listItemElement.getAttribute('aria-label'), 'session_1, Session terminated');
     assert.isFalse(session2Node.listItemElement.classList.contains('device-bound-session-terminated'));
+    assert.strictEqual(session2Node.listItemElement.getAttribute('aria-label'), 'session_2');
 
     // Simulate recreation event.
     isSessionTerminatedStub.withArgs(site, sessionId).returns(false);
@@ -339,6 +341,7 @@ describeWithMockConnection('DeviceBoundSessionsTreeElement', () => {
 
     // Session 1 should no longer be terminated.
     assert.isFalse(session1Node.listItemElement.classList.contains('device-bound-session-terminated'));
+    assert.strictEqual(session1Node.listItemElement.getAttribute('aria-label'), 'session_1');
     assert.isFalse(session2Node.listItemElement.classList.contains('device-bound-session-terminated'));
   });
 
@@ -368,7 +371,9 @@ describeWithMockConnection('DeviceBoundSessionsTreeElement', () => {
 
     // Initially has database icon.
     checkIcon(sessionNode, 'database');
+    assert.strictEqual(sessionNode.listItemElement.getAttribute('aria-label'), 'session_1');
     checkIcon(sessionNode2, 'database');
+    assert.strictEqual(sessionNode2.listItemElement.getAttribute('aria-label'), 'session_2');
 
     // A failed event should change it to a warning icon.
     const sessionHasErrorsStub = sinon.stub(model, 'sessionHasErrors');
@@ -376,7 +381,9 @@ describeWithMockConnection('DeviceBoundSessionsTreeElement', () => {
     model.dispatchEventToListeners(
         Application.DeviceBoundSessionsModel.DeviceBoundSessionModelEvents.EVENT_OCCURRED, {site, sessionId});
     checkIcon(sessionNode, 'warning');
+    assert.strictEqual(sessionNode.listItemElement.getAttribute('aria-label'), 'session_1, Session has errors');
     checkIcon(sessionNode2, 'database');
+    assert.strictEqual(sessionNode2.listItemElement.getAttribute('aria-label'), 'session_2');
 
     // Clearing events should change it back to a database icon.
     sessionHasErrorsStub.withArgs(site, sessionId).returns(false);
@@ -386,6 +393,7 @@ describeWithMockConnection('DeviceBoundSessionsTreeElement', () => {
       noLongerFailedSessions: new Map([[site, [sessionId]]]),
     });
     checkIcon(sessionNode, 'database');
+    assert.strictEqual(sessionNode.listItemElement.getAttribute('aria-label'), 'session_1');
     checkIcon(sessionNode2, 'database');
   });
 });

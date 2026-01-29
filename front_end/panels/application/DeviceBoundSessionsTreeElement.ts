@@ -49,12 +49,14 @@ const UIStrings = {
   noSession: 'No session',
   /**
    *@description Tooltip text for a terminated session.
+   *@example {session_1} sessionName
    */
-  terminatedSession: 'Session terminated',
+  terminatedSession: '{sessionName}, Session terminated',
   /**
    *@description Tooltip text for a session with errors.
+   *@example {session_1} sessionName
    */
-  sessionWithErrors: 'Session has errors',
+  sessionWithErrors: '{sessionName}, Session has errors',
 } as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/application/DeviceBoundSessionsTreeElement.ts', UIStrings);
@@ -135,15 +137,15 @@ export class RootTreeElement extends ApplicationPanelTreeElement {
     if (isSessionTerminated) {
       sessionElement.listItemElement.classList.add('device-bound-session-terminated');
       sessionElement.setLeadingIcons([createIcon('database-off')]);
-      const terminatedTitle = i18nString(UIStrings.terminatedSession);
-      UI.ARIAUtils.setLabel(sessionElement.listItemElement, `${title}, ${terminatedTitle}`);
+      const terminatedTitle = i18nString(UIStrings.terminatedSession, {sessionName: title});
+      UI.ARIAUtils.setLabel(sessionElement.listItemElement, terminatedTitle);
       return;
     }
     sessionElement.listItemElement.classList.remove('device-bound-session-terminated');
     if (sessionHasErrors) {
       sessionElement.setLeadingIcons([createIcon('warning')]);
-      const errorTitle = i18nString(UIStrings.sessionWithErrors);
-      UI.ARIAUtils.setLabel(sessionElement.listItemElement, `${title}, ${errorTitle}`);
+      const errorTitle = i18nString(UIStrings.sessionWithErrors, {sessionName: title});
+      UI.ARIAUtils.setLabel(sessionElement.listItemElement, errorTitle);
     } else {
       sessionElement.setLeadingIcons([createIcon('database')]);
       UI.ARIAUtils.setLabel(sessionElement.listItemElement, title);

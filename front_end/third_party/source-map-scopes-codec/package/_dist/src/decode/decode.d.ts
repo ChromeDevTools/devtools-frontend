@@ -1,4 +1,4 @@
-import type { Position, ScopeInfo, SourceMap } from "../scopes.js";
+import type { DecodedScopeInfo, Position, SourceMap } from "../scopes.js";
 /**
  * The mode decides how well-formed the encoded scopes have to be, to be accepted by the decoder.
  *
@@ -25,5 +25,5 @@ export interface DecodeOptions {
    * Has no effect when passing a {@link IndexSourceMapJson} directly to {@link decode}.
    */ generatedOffset: Position;
 }
-export declare function decode(sourceMap: SourceMap, options?: Partial<DecodeOptions>): ScopeInfo;
+export declare function decode(sourceMap: SourceMap, options?: Partial<DecodeOptions>): DecodedScopeInfo;
 //# sourceMappingURL=decode.d.ts.map

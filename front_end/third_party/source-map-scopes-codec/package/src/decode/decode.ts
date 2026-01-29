@@ -10,11 +10,11 @@ import {
   Tag,
 } from "../codec.js";
 import type {
+  DecodedScopeInfo,
   GeneratedRange,
   IndexSourceMapJson,
   OriginalScope,
   Position,
-  ScopeInfo,
   SourceMap,
   SourceMapJson,
   SubRangeBinding,
@@ -60,7 +60,7 @@ export const DEFAULT_DECODE_OPTIONS: DecodeOptions = {
 export function decode(
   sourceMap: SourceMap,
   options: Partial<DecodeOptions> = DEFAULT_DECODE_OPTIONS,
-): ScopeInfo {
+): DecodedScopeInfo {
   const opts = { ...DEFAULT_DECODE_OPTIONS, ...options };
   if ("sections" in sourceMap) {
     return decodeIndexMap(sourceMap, {
@@ -74,8 +74,10 @@ export function decode(
 function decodeMap(
   sourceMap: SourceMapJson,
   options: DecodeOptions,
-): ScopeInfo {
-  if (!sourceMap.scopes || !sourceMap.names) return { scopes: [], ranges: [] };
+): DecodedScopeInfo {
+  if (!sourceMap.scopes || !sourceMap.names) {
+    return { scopes: [], ranges: [], hasVariableAndBindingInfo: false };
+  }
 
   return new Decoder(sourceMap.scopes, sourceMap.names, options).decode();
 }
@@ -83,16 +85,21 @@ function decodeMap(
 function decodeIndexMap(
   sourceMap: IndexSourceMapJson,
   options: DecodeOptions,
-): ScopeInfo {
-  const scopeInfo: ScopeInfo = { scopes: [], ranges: [] };
+): DecodedScopeInfo {
+  const scopeInfo: DecodedScopeInfo = {
+    scopes: [],
+    ranges: [],
+    hasVariableAndBindingInfo: false,
+  };
 
   for (const section of sourceMap.sections) {
-    const { scopes, ranges } = decode(section.map, {
+    const { scopes, ranges, hasVariableAndBindingInfo } = decode(section.map, {
       ...options,
       generatedOffset: section.offset,
     });
     for (const scope of scopes) scopeInfo.scopes.push(scope);
     for (const range of ranges) scopeInfo.ranges.push(range);
+    scopeInfo.hasVariableAndBindingInfo ||= hasVariableAndBindingInfo;
   }
 
   return scopeInfo;
@@ -132,6 +139,9 @@ class Decoder {
     Map<number, [number, number, number][]>
   >();
 
+  #seenOriginalScopeVariables = false;
+  #seenGeneratedRangeBindings = false;
+
   constructor(scopes: string, names: string[], options: DecodeOptions) {
     this.#encodedScopes = scopes;
     this.#names = names;
@@ -140,7 +150,7 @@ class Decoder {
     this.#rangeState.column = options.generatedOffset.column;
   }
 
-  decode(): ScopeInfo {
+  decode(): DecodedScopeInfo {
     const iter = new TokenIterator(this.#encodedScopes);
 
     while (iter.hasNext()) {
@@ -175,6 +185,7 @@ class Decoder {
           }
 
           this.#handleOriginalScopeVariablesItem(variableIdxs);
+          this.#seenOriginalScopeVariables = true;
           break;
         }
         case Tag.ORIGINAL_SCOPE_END: {
@@ -224,6 +235,7 @@ class Decoder {
           }
 
           this.#handleGeneratedRangeBindingsItem(valueIdxs);
+          this.#seenGeneratedRangeBindings = true;
           break;
         }
         case Tag.GENERATED_RANGE_SUBRANGE_BINDING: {
@@ -239,6 +251,7 @@ class Decoder {
           }
 
           this.#recordGeneratedSubRangeBindingItem(variableIndex, bindings);
+          this.#seenGeneratedRangeBindings = true;
           break;
         }
         case Tag.GENERATED_RANGE_CALL_SITE: {
@@ -275,11 +288,18 @@ class Decoder {
       );
     }
 
-    const info = { scopes: this.#scopes, ranges: this.#ranges };
+    const info = {
+      scopes: this.#scopes,
+      ranges: this.#ranges,
+      hasVariableAndBindingInfo: this.#seenOriginalScopeVariables &&
+        this.#seenGeneratedRangeBindings,
+    };
 
     this.#scopes = [];
     this.#ranges = [];
     this.#flatOriginalScopes = [];
+    this.#seenOriginalScopeVariables = false;
+    this.#seenGeneratedRangeBindings = false;
 
     return info;
   }

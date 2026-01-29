@@ -4,6 +4,7 @@
 
 export type {
   Binding,
+  DecodedScopeInfo,
   GeneratedRange,
   OriginalPosition,
   OriginalScope,

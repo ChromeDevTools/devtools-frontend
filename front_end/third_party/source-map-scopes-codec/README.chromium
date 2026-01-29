@@ -1,8 +1,8 @@
 Name: source-map-scopes-codec
 Short Name: source-map-scopes-codec
 URL: https://github.com/ChromeDevTools/source-map-scopes-codec
-Version: 0.6.1
-Revision: d37113f9300493afbffea7b960afd8ba2e9d816a
+Version: 0.7.0
+Revision: 3a84349a869ea8136056e8ce1c37cb148d36165e
 License: BSD-3-Clause
 License File: LICENSE
 Security Critical: no

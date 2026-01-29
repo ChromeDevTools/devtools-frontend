@@ -1,5 +1,5 @@
 /**
- * The decoded scopes information found in a source map.
+ * The scopes information found in a source map.
  */ export interface ScopeInfo {
   /**
    * The length of {@linkcode scopes} must match the length of "sources" in the source map JSON. Each entry describes the scope tree of the corresponding source file.
@@ -7,6 +7,14 @@
   /**
    * The range tree of the generated bundle. Multiple top-level ranges are allowed but must not overlap source position wise.
    */ ranges: GeneratedRange[];
+}
+/**
+ * The scopes information produced by the decoder.
+ */ export interface DecodedScopeInfo extends ScopeInfo {
+  /**
+   * When the encoded scopes contained variable and binding expression items.
+   * Note that a value of `true` also indicates "partial" info and does not guarantee comprehensiveness.
+   */ hasVariableAndBindingInfo: boolean;
 }
 /**
  * A scope in the authored source.

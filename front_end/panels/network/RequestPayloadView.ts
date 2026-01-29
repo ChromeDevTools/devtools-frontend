@@ -132,7 +132,7 @@ export class RequestPayloadView extends UI.Widget.VBox {
 
     this.queryStringCategory = new Category(root, 'query-string');
     this.formDataCategory = new Category(root, 'form-data');
-    this.requestPayloadCategory = new Category(root, 'request-payload', i18nString(UIStrings.requestPayload));
+    this.requestPayloadCategory = new Category(root, 'request-payload');
   }
 
   override wasShown(): void {
@@ -332,25 +332,6 @@ export class RequestPayloadView extends UI.Widget.VBox {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private refreshRequestJSONPayload(parsedObject: any, sourceText: string): void {
     const rootListItem = this.requestPayloadCategory;
-    rootListItem.removeChildren();
-
-    const rootListItemElement = rootListItem.listItemElement;
-    rootListItemElement.removeChildren();
-    rootListItemElement.createChild('div', 'selection fill');
-    UI.UIUtils.createTextChild(rootListItemElement, this.requestPayloadCategory.title.toString());
-
-    if (viewSourceForItems.has(rootListItem)) {
-      this.appendJSONPayloadSource(rootListItem, parsedObject, sourceText);
-    } else {
-      this.appendJSONPayloadParsed(rootListItem, parsedObject, sourceText);
-    }
-  }
-
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private appendJSONPayloadSource(rootListItem: Category, parsedObject: any, sourceText: string): void {
-    const rootListItemElement = rootListItem.listItemElement;
-    this.populateTreeElementWithSourceText(rootListItem, sourceText);
 
     const viewParsed = function(this: RequestPayloadView, event: Event): void {
       rootListItemElement.removeEventListener('contextmenu', viewParsedContextMenu);
@@ -358,9 +339,6 @@ export class RequestPayloadView extends UI.Widget.VBox {
       this.refreshRequestJSONPayload(parsedObject, sourceText);
       event.consume();
     };
-
-    const viewParsedButton = this.createViewSourceToggle(/* viewSource */ true, viewParsed.bind(this));
-    rootListItemElement.appendChild(viewParsedButton);
 
     const viewParsedContextMenu = (event: Event): void => {
       if (!rootListItem.expanded) {
@@ -371,27 +349,6 @@ export class RequestPayloadView extends UI.Widget.VBox {
           i18nString(UIStrings.viewParsed), viewParsed.bind(this, event), {jslogContext: 'view-parsed'});
       void contextMenu.show();
     };
-
-    rootListItemElement.addEventListener('contextmenu', viewParsedContextMenu);
-  }
-
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private appendJSONPayloadParsed(rootListItem: Category, parsedObject: any, sourceText: string): void {
-    const object = (SDK.RemoteObject.RemoteObject.fromLocalObject(parsedObject) as SDK.RemoteObject.LocalJSONObject);
-    const section =
-        new ObjectUI.ObjectPropertiesSection.RootElement(new ObjectUI.ObjectPropertiesSection.ObjectTree(object));
-    section.title = (object.description);
-    section.expand();
-    // `editable` is not a valid property for `ObjectUI.ObjectPropertiesSection.RootElement`. Only for
-    // `ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection`. We do not know if this assignment is
-    // safe to delete.
-    // @ts-expect-error
-    section.editable = false;
-    rootListItem.childrenListElement.classList.add('source-code', 'object-properties-section');
-
-    rootListItem.appendChild(section);
-    const rootListItemElement = rootListItem.listItemElement;
 
     const viewSource = function(this: RequestPayloadView, event: Event): void {
       rootListItemElement.removeEventListener('contextmenu', viewSourceContextMenu);
@@ -411,16 +368,41 @@ export class RequestPayloadView extends UI.Widget.VBox {
       void contextMenu.show();
     };
 
-    const viewSourceButton = this.createViewSourceToggle(/* viewSource */ false, viewSource.bind(this));
-    rootListItemElement.appendChild(viewSourceButton);
+    const showSource = viewSourceForItems.has(rootListItem);
+    const rootListItemElement = rootListItem.listItemElement;
+    render(
+        html`<div class="selection fill"></div>${i18nString(UIStrings.requestPayload)}${
+            this.createViewSourceToggle(showSource, showSource ? viewParsed.bind(this) : viewSource.bind(this))}`,
+        rootListItemElement);
 
-    rootListItemElement.addEventListener('contextmenu', viewSourceContextMenu);
+    rootListItem.removeChildren();
+    if (showSource) {
+      this.populateTreeElementWithSourceText(rootListItem, sourceText);
+      rootListItemElement.addEventListener('contextmenu', viewParsedContextMenu);
+    } else {
+      rootListItem.childrenListElement.classList.add('source-code', 'object-properties-section');
+      this.populateTreeElementWithObject(rootListItem, parsedObject);
+      rootListItemElement.addEventListener('contextmenu', viewSourceContextMenu);
+    }
   }
 
-  private createViewSourceToggle(viewSource: boolean, handler: (arg0: Event) => void): Element {
-    const viewSourceToggleTitle = viewSource ? i18nString(UIStrings.viewParsed) : i18nString(UIStrings.viewSource);
-    return UI.UIUtils.createTextButton(
-        viewSourceToggleTitle, handler, {jslogContext: 'source-parse', className: 'payload-toggle'});
+  private populateTreeElementWithObject(rootListItem: Category, parsedObject: object): void {
+    const object = new SDK.RemoteObject.LocalJSONObject(parsedObject);
+    const section =
+        new ObjectUI.ObjectPropertiesSection.RootElement(new ObjectUI.ObjectPropertiesSection.ObjectTree(object));
+    section.title = (object.description);
+    section.expand();
+    rootListItem.appendChild(section);
+  }
+
+  private createViewSourceToggle(viewSource: boolean, handler: (arg0: Event) => void): LitTemplate {
+    return html`<devtools-button
+        class=payload-toggle
+        jslogi=${VisualLogging.action().track({click: true}).context('source-parse')}
+        .variant=${Buttons.Button.Variant.OUTLINED}
+        @click=${handler}>
+      ${viewSource ? i18nString(UIStrings.viewParsed) : i18nString(UIStrings.viewSource)}
+    </devtools-button>`;
   }
 
   private toggleURLDecoding(event: Event): void {

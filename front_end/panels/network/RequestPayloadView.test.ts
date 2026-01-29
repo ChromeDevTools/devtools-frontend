@@ -184,4 +184,57 @@ describeWithEnvironment('RequestPayloadView', () => {
     assert.strictEqual(payloadValueWidget.text, `foo=${text}`);
     await assertScreenshot('network/request-payload-show-more.png');
   });
+
+  it('displays JSON payload and toggles between parsed and source view', async () => {
+    const request = SDK.NetworkRequest.NetworkRequest.create(
+        'requestId' as Protocol.Network.RequestId, urlString`https://example.com/api`, urlString``, null, null, null);
+    request.setRequestHeaders([{name: 'Content-Type', value: 'application/json'}]);
+    sinon.stub(request, 'requestFormData').resolves('{"foo": "bar"}');
+
+    const view = new Network.RequestPayloadView.RequestPayloadView(request);
+    renderElementIntoDOM(view);
+    view.wasShown();
+
+    // TODO(crbug.com/407751697) Replace with updateComplete.
+    await new Promise(resolve => setTimeout(resolve, 0));
+
+    const treeOutline = view.element.querySelector<HTMLElement>('.request-payload-tree');
+    assert.exists(treeOutline);
+    const shadowRoot = treeOutline.shadowRoot;
+    assert.exists(shadowRoot);
+
+    const getButton = (text: string) => {
+      const buttons = shadowRoot.querySelectorAll<HTMLElement>('.payload-toggle');
+      return Array.from(buttons).find(b => b.textContent?.includes(text));
+    };
+
+    // Initial state: Parsed.
+    // Check that "View source" button exists
+    const viewSourceButton = getButton('View source');
+    assert.exists(viewSourceButton);
+    await assertScreenshot('network/request-payload-json.png');
+
+    // Toggle to source
+    viewSourceButton?.click();
+
+    // Check for source text
+    const payloadValue = shadowRoot.querySelector('.payload-value');
+    assert.exists(payloadValue);
+    const payloadValueWidget = UI.Widget.Widget.get(payloadValue);
+    assert.instanceOf(payloadValueWidget, Network.ShowMoreDetailsWidget.ShowMoreDetailsWidget);
+    assert.strictEqual(payloadValueWidget.text, '{"foo": "bar"}');
+
+    // Check that "View parsed" button exists
+    const viewParsedButton = getButton('View parsed');
+    assert.exists(viewParsedButton);
+    await assertScreenshot('network/request-payload-json-source.png');
+
+    // Click "View parsed"
+    viewParsedButton?.click();
+
+    // Check that "View source" button exists again
+    assert.exists(getButton('View source'));
+    // And check that source text is gone
+    assert.isNull(shadowRoot.querySelector('.payload-value'));
+  });
 });

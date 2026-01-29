@@ -419,12 +419,13 @@ export async function waitForSourceFiles<T>(
 
   const result = await action();
 
-  await devToolsPage.waitForFunction(async () => {
+  await devToolsPage.waitForFunction(async logger => {
     const files = await devToolsPage.evaluate(
         eventHandlerId => window.__sourceFileEvents.get(eventHandlerId)?.files, eventHandlerId);
     assert.isOk(files);
+    logger.log(`Checking ${files.length} files`);
     return await waitCondition(files);
-  });
+  }, undefined, 'Waiting for source files to match condition');
 
   await devToolsPage.evaluate((eventName, eventHandlerId) => {
     const handler = window.__sourceFileEvents.get(eventHandlerId);

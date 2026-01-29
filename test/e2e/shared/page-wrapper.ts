@@ -24,6 +24,10 @@ export interface ClickOptions {
   maxPixelsFromLeft?: number;
 }
 
+export interface Logger {
+  log(message: string): void;
+}
+
 type DeducedElementType<ElementType extends Element|null, Selector extends string> =
     ElementType extends null ? puppeteer.NodeFor<Selector>: ElementType;
 
@@ -52,12 +56,19 @@ export class PageWrapper {
    * {@link PageWrapper.evaluate} within the `waitForFunction` callback.
    */
   async waitForFunction<T>(
-      fn: () => T | undefined | Promise<T|undefined>, asyncScope = new AsyncScope(), description?: string) {
+      fn: (logger: Logger) => T | undefined | Promise<T|undefined>, asyncScope = new AsyncScope(),
+      description?: string) {
     const signal = AsyncScope.abortSignal;
-    const innerFunction = async () => {
+    const innerFunction = async (messages: string[]) => {
+      let iterations = 0;
+      const logger = {log: messages.push.bind(messages)};
       while (true) {
         signal?.throwIfAborted();
-        const result = await fn();
+        const messagesBefore = messages.length;
+        const result = await fn(logger);
+        // On completing an iteration, remove any leftover messages from the previous iteration.
+        messages.splice(0, messagesBefore);
+        messages.push(`Iteration ${iterations++} result: ${result ? 'success' : `${result}`}`);
         signal?.throwIfAborted();
         if (result) {
           return result as Exclude<NonNullable<T>, false>;
@@ -132,7 +143,7 @@ export class PageWrapper {
     return await asyncScope.exec(() => this.waitForFunction(async () => {
       const element = await this.$<ElementType, typeof selector>(selector, root, handler);
       return (element || undefined);
-    }, asyncScope), `Waiting for element matching selector '${handler ? `${handler}/` : ''}${selector}'`);
+    }, asyncScope, `Waiting for element matching selector '${handler ? `${handler}/` : ''}${selector}'`));
   }
 
   async performActionOnSelector(selector: string, options: {root?: puppeteer.ElementHandle}, action: Action):
@@ -155,16 +166,17 @@ export class PageWrapper {
         break;
       }
     }
-    return await this.waitForFunction(async () => {
+    return await this.waitForFunction(async logger => {
       const element = await this.waitFor(selector, options?.root, undefined, queryHandler);
       try {
         await action(element);
         await this.drainTaskQueue();
         return element;
-      } catch {
+      } catch (err) {
+        logger.log(`Threw error: ${err.message}`);
         return undefined;
       }
-    });
+    }, undefined, `Performing action on ${selector}`);
   }
 
   async click(selector: string, options?: ClickOptions) {
@@ -242,7 +254,7 @@ export class PageWrapper {
         return true;
       }
       return false;
-    }, asyncScope), `Waiting for no elements to match selector '${handler ? `${handler}/` : ''}${selector}'`);
+    }, asyncScope, `Waiting for no elements to match selector '${handler ? `${handler}/` : ''}${selector}'`));
   }
 
   /**
@@ -259,7 +271,7 @@ export class PageWrapper {
         } catch {
           return false;
         }
-      });
+      }, undefined, 'Clicking element');
     }, options?.modifiers ?? {});
   }
 
@@ -301,7 +313,7 @@ export class PageWrapper {
       }
 
       return false;
-    }, asyncScope), `Waiting for no elements with textContent '${textContent}'`);
+    }, asyncScope, `Waiting for no elements with textContent '${textContent}'`));
   }
 
   async doubleClick(
@@ -363,20 +375,16 @@ export class PageWrapper {
       const element = await this.$<ElementType, typeof selector>(selector, root, handler);
       const visible = await element.evaluate(node => node.checkVisibility());
       return visible ? element : undefined;
-    }, asyncScope), `Waiting for element matching selector '${handler ? `${handler}/` : ''}${selector}' to be visible`);
+    }, asyncScope, `Waiting for element matching selector '${handler ? `${handler}/` : ''}${selector}' to be visible`));
   }
 
   async waitForMany<ElementType extends Element|null = null, Selector extends string = string>(
       selector: Selector, count: number, root?: puppeteer.ElementHandle, asyncScope = new AsyncScope(),
       handler?: string) {
-    return await asyncScope.exec(
-        () => this.waitForFunction(
-            async () => {
-              const elements = await this.$$<ElementType, typeof selector>(selector, root, handler);
-              return elements.length >= count ? elements : undefined;
-            },
-            asyncScope, undefined),
-        `Waiting for ${count} elements to match selector '${handler ? `${handler}/` : ''}${selector}'`);
+    return await asyncScope.exec(() => this.waitForFunction(async () => {
+      const elements = await this.$$<ElementType, typeof selector>(selector, root, handler);
+      return elements.length >= count ? elements : undefined;
+    }, asyncScope, `Waiting for ${count} elements to match selector '${handler ? `${handler}/` : ''}${selector}'`));
   }
 
   async waitForManyWithTries<ElementType extends Element|null = null, Selector extends string = string>(
@@ -479,7 +487,7 @@ export class PageWrapper {
   async waitForClass(element: puppeteer.ElementHandle<Element>, classname: string) {
     await this.waitForFunction(async () => {
       return await this.hasClass(element, classname);
-    });
+    }, undefined, `Waiting for element to have class '${classname}'`);
   }
 
   waitForTextNotMatching(element: puppeteer.ElementHandle<Element>, regex: RegExp): Promise<string> {
@@ -489,7 +497,7 @@ export class PageWrapper {
         return;
       }
       return text;
-    });
+    }, undefined, `Waiting for text not to match '${regex}'`);
   }
 
   async setCheckBox(selector: string, wantChecked: boolean) {

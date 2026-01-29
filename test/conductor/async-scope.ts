@@ -5,10 +5,14 @@
 export class AsyncScope {
   static scopes = new Set<AsyncScope>();
   static abortSignal: AbortSignal|undefined;
-  private asyncStack: Array<{description?: string, frames: string[]}> = [];
+  private asyncStack: Array<{description?: string, frames: string[], messages: string[]}> = [];
 
   get descriptions(): string[] {
-    return this.asyncStack.map(({description}) => description).filter(d => d) as string[];
+    return this.asyncStack.flatMap(({description, messages}) => {
+      const indentedMessages = messages.map(message => ` - ${message}`);
+      return (description || indentedMessages.length > 0) ? [description ?? '[no description]', ...indentedMessages] :
+                                                            [];
+    });
   }
   get stack(): null|string[] {
     if (this.asyncStack.length === 0) {
@@ -17,7 +21,7 @@ export class AsyncScope {
     return this.asyncStack[this.asyncStack.length - 1].frames;
   }
 
-  push(description?: string) {
+  push(description?: string): string[] {
     const stack = new Error().stack;
     if (!stack) {
       throw new Error('Could not get stack trace');
@@ -30,7 +34,9 @@ export class AsyncScope {
         value =>
             !(value === 'Error' || value.includes('AsyncScope') || value.includes('runMicrotasks') ||
               value.includes('processTicksAndRejections')));
-    this.asyncStack.push({description, frames});
+    const messages: string[] = [];
+    this.asyncStack.push({description, frames, messages});
+    return messages;
   }
 
   pop() {
@@ -40,20 +46,20 @@ export class AsyncScope {
     }
   }
 
-  async exec<T>(callable: () => Promise<T>, description?: string) {
-    this.push(description);
+  async exec<T>(callable: (messages: string[]) => Promise<T>, description?: string) {
+    const messages = this.push(description);
     try {
-      const result = await callable();
+      const result = await callable(messages);
       return result;
     } finally {
       this.pop();
     }
   }
 
-  execSync<T>(callable: () => T, description?: string) {
-    this.push(description);
+  execSync<T>(callable: (messages: string[]) => T, description?: string) {
+    const messages = this.push(description);
     try {
-      const result = callable();
+      const result = callable(messages);
       return result;
     } finally {
       this.pop();

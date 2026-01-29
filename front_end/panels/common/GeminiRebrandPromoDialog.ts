@@ -81,7 +81,7 @@ export const DEFAULT_VIEW: View = (input, _output, target): void => {
             .variant=${Buttons.Button.Variant.ICON}
             .size=${Buttons.Button.Size.REGULAR}
             .title=${i18nString(UIStrings.dismiss)}
-            jslog=${VisualLogging.close().track({click: true})}
+            jslog=${VisualLogging.close().track({click: true}).context('gemini-promo-dismiss')}
             @click=${() => input.onCancelClick()}
           ></devtools-button>
         </div>
@@ -111,11 +111,11 @@ export const DEFAULT_VIEW: View = (input, _output, target): void => {
       <div class="buttons">
         <devtools-button
           .variant=${Buttons.Button.Variant.OUTLINED}
-          .jslogContext=${'cancel'}
+          jslog=${VisualLogging.close().track({click: true}).context('gemini-promo-dismiss')}
           @click=${input.onCancelClick}>${i18nString(UIStrings.dismiss)}</devtools-button>
         <devtools-button
           .variant=${Buttons.Button.Variant.PRIMARY}
-          .jslogContext=${'get-started'}
+          .jslogContext=${'gemini-promo-get-started'}
           @click=${input.onGetStartedClick}>${i18nString(UIStrings.getStarted)}</devtools-button>
       </div>
     `,
@@ -160,7 +160,7 @@ export class GeminiRebrandPromoDialog extends UI.Widget.VBox {
   }
 
   static show(): void {
-    const dialog = new UI.Dialog.Dialog('gemini-rebranding-dialog');
+    const dialog = new UI.Dialog.Dialog('gemini-promo-dialog');
     dialog.setAriaLabel(i18nString(UIStrings.dialogAriaLabel));
     dialog.setMaxContentSize(new Geometry.Size(384, 500));
     dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.SET_EXACT_WIDTH_MAX_HEIGHT);
@@ -181,7 +181,7 @@ export class GeminiRebrandPromoDialog extends UI.Widget.VBox {
     }
 
     const setting = Common.Settings.Settings.instance().createSetting<boolean>(
-        'gemini-rebranding-dialog-shown', false, Common.Settings.SettingStorageType.SYNCED);
+        'gemini-promo-dialog-shown', false, Common.Settings.SettingStorageType.SYNCED);
     if (setting.get()) {
       return;
     }

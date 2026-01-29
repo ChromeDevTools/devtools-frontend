@@ -8,4 +8,4 @@ Enable the Render blocking column in the Network panel to spot scripts or styles
 
 ### [MCP server](mcp-server)
 
-Simulate device viewports and user agents, work with extensions, and open pages in the background.
+Simulate device viewports and user agents, open pages in the background, and a new SKILL.md for more efficient use.

@@ -53,6 +53,7 @@ describe('DebuggerLanguagePluginManager', () => {
   describeWithMockConnection('getFunctionInfo', () => {
     let target: SDK.Target.Target;
     let pluginManager: Bindings.DebuggerLanguagePlugins.DebuggerLanguagePluginManager;
+    let debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding;
 
     const MISSING_DWO_FILE = 'test.dwo';
     const MISSING_DEBUG_FILES: SDK.DebuggerModel.MissingDebugFiles = {
@@ -76,7 +77,7 @@ describe('DebuggerLanguagePluginManager', () => {
         return true;
       }
       override addRawModule(_rawModuleId: string, _symbolsURL: string, _rawModule: Chrome.DevTools.RawModule):
-          Promise<string[]> {
+          Promise<string[]|{missingSymbolFiles: string[]}> {
         return Promise.resolve(['https://script-host/script.js']);
       }
     }
@@ -87,7 +88,7 @@ describe('DebuggerLanguagePluginManager', () => {
       const targetManager = target.targetManager();
       const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
       const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
-      const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
+      debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
         forceNew: true,
         resourceMapping,
         targetManager,
@@ -143,6 +144,19 @@ describe('DebuggerLanguagePluginManager', () => {
       const result = await pluginManager.getFunctionInfo(script, location);
       assert.exists(result);
       assert.deepEqual(result, {frames: [{name: FUNCTION_NAME}], missingSymbolFiles: [MISSING_DEBUG_FILES]});
+    });
+
+    it('correctly updates locations when missing debug info is reported', async () => {
+      const plugin = new Plugin('TestPlugin');
+      sinon.stub(plugin, 'addRawModule').returns(Promise.resolve({missingSymbolFiles: [MISSING_DWO_FILE]}));
+      pluginManager.addPlugin(plugin);
+
+      const updateLocationsSpy = sinon.spy(debuggerWorkspaceBinding, 'updateLocations');
+
+      const script = createAndRegisterScript();
+      await pluginManager.getSourcesForScript(script);
+
+      sinon.assert.calledWith(updateLocationsSpy, script);
     });
   });
 

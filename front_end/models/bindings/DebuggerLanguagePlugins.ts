@@ -933,15 +933,13 @@ export class DebuggerLanguagePluginManager implements
       // for the DebuggerModel again, which may disappear
       // in the meantime...
       void rawModuleHandle.addRawModulePromise.then(sourceFileURLs => {
-        if (!('missingSymbolFiles' in sourceFileURLs)) {
-          // The script might have disappeared meanwhile...
-          if (script.debuggerModel.scriptForId(script.scriptId) === script) {
-            const modelData = this.#debuggerModelToData.get(script.debuggerModel);
-            if (modelData) {  // The DebuggerModel could have disappeared meanwhile...
-              modelData.addSourceFiles(script, sourceFileURLs);
-              void this.#debuggerWorkspaceBinding.updateLocations(script);
-            }
+        // The script might have disappeared meanwhile...
+        if (script.debuggerModel.scriptForId(script.scriptId) === script) {
+          const modelData = this.#debuggerModelToData.get(script.debuggerModel);
+          if (modelData && Array.isArray(sourceFileURLs)) {  // The DebuggerModel could have disappeared meanwhile...
+            modelData.addSourceFiles(script, sourceFileURLs);
           }
+          void this.#debuggerWorkspaceBinding.updateLocations(script);
         }
       });
       return;

@@ -43,7 +43,7 @@ export class TestPlugin implements Bindings.DebuggerLanguagePlugins.DebuggerLang
   }
 
   async addRawModule(_rawModuleId: string, _symbolsURL: string, _rawModule: Chrome.DevTools.RawModule):
-      Promise<string[]> {
+      Promise<string[]|{missingSymbolFiles: string[]}> {
     return [];
   }
 

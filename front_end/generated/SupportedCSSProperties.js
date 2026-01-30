@@ -519,6 +519,7 @@ export const generatedProperties = [
    "hyphenate-character",
    "hyphenate-limit-chars",
    "hyphens",
+   "image-animation",
    "image-orientation",
    "image-rendering",
    "inherits",
@@ -2789,6 +2790,15 @@ export const generatedProperties = [
    "auto"
   ],
   "name": "hyphens"
+ },
+ {
+  "inherited": true,
+  "keywords": [
+   "normal",
+   "running",
+   "paused"
+  ],
+  "name": "image-animation"
  },
  {
   "inherited": true,
@@ -6148,6 +6158,13 @@ export const generatedPropertyValues = {
    "none",
    "manual",
    "auto"
+  ]
+ },
+ "image-animation": {
+  "values": [
+   "normal",
+   "running",
+   "paused"
   ]
  },
  "image-rendering": {

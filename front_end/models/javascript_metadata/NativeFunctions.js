@@ -7146,6 +7146,10 @@ export const NativeFunctions = [
     signatures: [["type","eventInit"]]
   },
   {
+    name: "addRestoreCallback",
+    signatures: [["callback"]]
+  },
+  {
     name: "addHandler",
     signatures: [["handler"]]
   },

@@ -1457,6 +1457,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     this.elementInternal.className = 'console-message-wrapper';
     this.elementInternal.setAttribute('jslog', `${VisualLogging.item('console-message').track({
                                         click: true,
+                                        resize: true,
                                         keydown: 'ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Enter|Space|Home|End',
                                       })}`);
     this.elementInternal.removeChildren();

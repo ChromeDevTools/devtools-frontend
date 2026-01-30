@@ -364,7 +364,8 @@ export class ListControl<T> {
       element = this.delegate.createElementForItem(item);
       if (!element.hasAttribute('jslog')) {
         element.setAttribute(
-            'jslog', `${VisualLogging.item().track({click: true, keydown: 'ArrowUp|ArrowDown|PageUp|PageDown'})}`);
+            'jslog',
+            `${VisualLogging.item().track({click: true, resize: true, keydown: 'ArrowUp|ArrowDown|PageUp|PageDown'})}`);
       }
       this.itemToElement.set(item, element);
       this.updateElementARIA(element, index);

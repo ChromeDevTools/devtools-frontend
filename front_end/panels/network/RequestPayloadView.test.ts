@@ -6,6 +6,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import * as UI from '../../ui/legacy/legacy.js';
 import {render} from '../../ui/lit/lit.js';
 
 import * as Network from './network.js';
@@ -103,10 +104,11 @@ describeWithEnvironment('RequestPayloadView', () => {
     assert.exists(toggleButton);
     toggleButton.click();
 
+    // Take the screenshot before checking contents, this forces the widget to render.
+    await assertScreenshot('network/request-payload-url-decoding.png');
+
     // Toggled state: Encoded
     assert.include(getPayloadValues(), 'bar%20baz');
-
-    await assertScreenshot('network/request-payload-url-decoding.png');
   });
 
   it('toggles between parsed and source view', async () => {
@@ -153,5 +155,33 @@ describeWithEnvironment('RequestPayloadView', () => {
     const finalText = getTextContent();
     assert.include(finalText, 'foo');
     assert.include(finalText, 'bar');
+  });
+
+  it('truncates long source text and in a ShowMore widget', async () => {
+    const text = 'A'.repeat(3010);
+    const request = SDK.NetworkRequest.NetworkRequest.create(
+        'requestId' as Protocol.Network.RequestId, urlString`https://example.com/api?foo=${text}`, urlString``, null,
+        null, null);
+    const view = new Network.RequestPayloadView.RequestPayloadView(request);
+    renderElementIntoDOM(view);
+    view.wasShown();
+
+    const treeOutline = view.element.querySelector<HTMLElement>('.request-payload-tree');
+    assert.exists(treeOutline);
+    const shadowRoot = treeOutline?.shadowRoot;
+    assert.exists(shadowRoot);
+
+    // Switch to View Source
+    const buttons = shadowRoot.querySelectorAll<HTMLElement>('.payload-toggle');
+    const viewSourceButton = Array.from(buttons).find(b => b.textContent?.includes('View source'));
+    assert.exists(viewSourceButton);
+    viewSourceButton.click();
+
+    const payloadValue = shadowRoot.querySelector('.payload-value');
+    assert.exists(payloadValue);
+    const payloadValueWidget = UI.Widget.Widget.get(payloadValue);
+    assert.instanceOf(payloadValueWidget, Network.ShowMoreDetailsWidget.ShowMoreDetailsWidget);
+    assert.strictEqual(payloadValueWidget.text, `foo=${text}`);
+    await assertScreenshot('network/request-payload-show-more.png');
   });
 });

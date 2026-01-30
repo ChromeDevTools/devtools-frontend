@@ -221,12 +221,12 @@ export class Section {
 
   /**
    * Appends a standard clickable item to this section.
-   * @param label The text to display for the item.
+   * @param labelOrItem The text to display for the item, or a premade Item. In the latter case, `option` is ignored.
    * @param handler The function to execute when the item is clicked.
    * @param options Optional settings for the item.
    * @returns The newly created `Item`.
    */
-  appendItem(label: string, handler: () => void, options?: {
+  appendItem(labelOrItem: string|Item, handler: () => void, options?: {
     accelerator?: Host.InspectorFrontendHostAPI.AcceleratorDescriptor,
     isPreviewFeature?: boolean,
     disabled?: boolean,
@@ -235,11 +235,16 @@ export class Section {
     jslogContext?: string,
     featureName?: string,
   }): Item {
-    const item = new Item(
-        this.contextMenu, 'item', label, options?.isPreviewFeature, options?.disabled, undefined, options?.accelerator,
-        options?.tooltip, options?.jslogContext, options?.featureName);
-    if (options?.additionalElement) {
-      item.customElement = options?.additionalElement;
+    let item;
+    if (labelOrItem instanceof Item) {
+      item = labelOrItem;
+    } else {
+      item = new Item(
+          this.contextMenu, 'item', labelOrItem, options?.isPreviewFeature, options?.disabled, undefined,
+          options?.accelerator, options?.tooltip, options?.jslogContext, options?.featureName);
+      if (options?.additionalElement) {
+        item.customElement = options?.additionalElement;
+      }
     }
     this.items.push(item);
     if (this.contextMenu) {

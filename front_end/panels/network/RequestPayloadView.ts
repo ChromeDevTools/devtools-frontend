@@ -49,8 +49,10 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import requestPayloadTreeStyles from './requestPayloadTree.css.js';
 import requestPayloadViewStyles from './requestPayloadView.css.js';
+import {ShowMoreDetailsWidget} from './ShowMoreDetailsWidget.js';
 
 const {classMap} = Directives;
+const {widgetConfig} = UI.Widget;
 const UIStrings = {
   /**
    * @description A context menu item Payload View of the Network panel to copy a parsed value.
@@ -77,10 +79,6 @@ const UIStrings = {
    * @description Text in Request Payload View of the Network panel
    */
   formData: 'Form Data',
-  /**
-   * @description Text to show more content
-   */
-  showMore: 'Show more',
   /**
    * @description Text for toggling the view of payload data (e.g. query string parameters) from source to parsed in the payload tab
    */
@@ -200,45 +198,16 @@ export class RequestPayloadView extends UI.Widget.VBox {
     }
   }
 
-  private populateTreeElementWithSourceText(treeElement: UI.TreeOutline.TreeElement, sourceText: string|null): void {
-    const MAX_LENGTH = 3000;
-    const text = (sourceText || '').trim();
-    const trim = text.length > MAX_LENGTH;
-
-    const sourceTextElement = document.createElement('span');
-    sourceTextElement.classList.add('payload-value');
-    sourceTextElement.classList.add('source-code');
-    sourceTextElement.textContent = trim ? text.substr(0, MAX_LENGTH) : text;
-
-    const sourceTreeElement = new UI.TreeOutline.TreeElement(sourceTextElement);
+  private populateTreeElementWithSourceText(treeElement: UI.TreeOutline.TreeElement, text: string): void {
+    const sourceTreeElement = new UI.TreeOutline.TreeElement();
 
     treeElement.removeChildren();
     treeElement.appendChild(sourceTreeElement);
     this.addEntryContextMenuHandler(sourceTreeElement, i18nString(UIStrings.copyPayload), 'copy-payload', () => text);
-    if (!trim) {
-      return;
-    }
-
-    const showMoreButton = new Buttons.Button.Button();
-    showMoreButton.data = {variant: Buttons.Button.Variant.OUTLINED, jslogContext: 'show-more'};
-    showMoreButton.innerText = i18nString(UIStrings.showMore);
-    showMoreButton.classList.add('request-payload-show-more-button');
-
-    function showMore(): void {
-      showMoreButton.remove();
-      sourceTextElement.textContent = text;
-      sourceTreeElement.listItemElement.removeEventListener('contextmenu', onContextMenuShowMore);
-    }
-    showMoreButton.addEventListener('click', showMore);
-
-    function onContextMenuShowMore(event: Event): void {
-      const contextMenu = new UI.ContextMenu.ContextMenu(event);
-      const section = contextMenu.newSection();
-      section.appendItem(i18nString(UIStrings.showMore), showMore, {jslogContext: 'show-more'});
-      void contextMenu.show();
-    }
-    sourceTreeElement.listItemElement.addEventListener('contextmenu', onContextMenuShowMore);
-    sourceTextElement.appendChild(showMoreButton);
+    render(
+        html`<devtools-widget class='payload-value source-code'
+           .widgetConfig=${widgetConfig(ShowMoreDetailsWidget, {text})}></devtools-widget>`,
+        sourceTreeElement.listItemElement);
   }
 
   private refreshParams(
@@ -306,7 +275,7 @@ export class RequestPayloadView extends UI.Widget.VBox {
 
     paramsTreeElement.removeChildren();
     if (shouldViewSource) {
-      this.populateTreeElementWithSourceText(paramsTreeElement, sourceText);
+      this.populateTreeElementWithSourceText(paramsTreeElement, (sourceText ?? '').trim());
       paramsTreeElement.listItemElement.addEventListener('contextmenu', viewParsedContextMenu);
     } else {
       this.populateTreeElementWithParsedParameters(paramsTreeElement, params);

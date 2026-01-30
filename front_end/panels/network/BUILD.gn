@@ -60,6 +60,7 @@ devtools_ui_module("network") {
     "ResourceChunkView.ts",
     "ResourceDirectSocketChunkView.ts",
     "ResourceWebSocketFrameView.ts",
+    "ShowMoreDetailsWidget.ts",
     "SignedExchangeInfoView.ts",
   ]
 
@@ -177,6 +178,7 @@ devtools_ui_module("unittests") {
     "RequestResponseView.test.ts",
     "RequestTimingView.test.ts",
     "ResourceDirectSocketChunkView.test.ts",
+    "ShowMoreDetailsWidget.test.ts",
   ]
 
   deps = [

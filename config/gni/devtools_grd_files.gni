@@ -1766,6 +1766,7 @@ grd_files_unbundled_sources = [
   "front_end/panels/network/ResourceChunkView.js",
   "front_end/panels/network/ResourceDirectSocketChunkView.js",
   "front_end/panels/network/ResourceWebSocketFrameView.js",
+  "front_end/panels/network/ShowMoreDetailsWidget.js",
   "front_end/panels/network/SignedExchangeInfoView.js",
   "front_end/panels/network/binaryResourceView.css.js",
   "front_end/panels/network/components/DirectSocketConnectionView.js",

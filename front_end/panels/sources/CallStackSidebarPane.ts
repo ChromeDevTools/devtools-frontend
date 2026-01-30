@@ -253,7 +253,8 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
     const itemPromises = [];
     const uniqueWarnings = new Set<string>();
     for (const frame of details.callFrames) {
-      const itemPromise = Item.createForDebuggerCallFrame(frame, this.locationPool, this.refreshItem.bind(this));
+      const itemPromise =
+          Item.createForDebuggerCallFrame(frame, this.locationPool, this.refreshItem.bind(this), this.list);
       itemPromises.push(itemPromise);
       if (frame.missingDebugInfoDetails) {
         uniqueWarnings.add(frame.missingDebugInfoDetails.details);
@@ -272,7 +273,8 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
       asyncStackTrace = stackTrace;
       const title = UI.UIUtils.asyncStackTraceLabel(asyncStackTrace.description, previousStackTrace);
       items.push(...await Item.createItemsForAsyncStack(
-          title, details.debuggerModel, asyncStackTrace.callFrames, this.locationPool, this.refreshItem.bind(this)));
+          title, details.debuggerModel, asyncStackTrace.callFrames, this.locationPool, this.refreshItem.bind(this),
+          this.list));
       previousStackTrace = asyncStackTrace.callFrames;
 
       if (--maxAsyncStackChainDepth <= 0) {
@@ -541,12 +543,13 @@ export class Item {
   updateDelegate: (arg0: Item) => void;
   /** Only set for synchronous frames */
   readonly frame?: SDK.DebuggerModel.CallFrame;
+  readonly list: UI.ListControl.ListControl<Item>;
 
   static async createForDebuggerCallFrame(
       frame: SDK.DebuggerModel.CallFrame, locationPool: Bindings.LiveLocation.LiveLocationPool,
-      updateDelegate: (arg0: Item) => void): Promise<Item> {
+      updateDelegate: (arg0: Item) => void, list: UI.ListControl.ListControl<Item>): Promise<Item> {
     const name = frame.functionName;
-    const item = new Item(UI.UIUtils.beautifyFunctionName(name), updateDelegate, frame);
+    const item = new Item(UI.UIUtils.beautifyFunctionName(name), updateDelegate, frame, list);
     await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createCallFrameLiveLocation(
         frame.location(), item.update.bind(item), locationPool);
     void SourceMapScopes.NamesResolver.resolveDebuggerFrameFunctionName(frame).then(functionName => {
@@ -563,16 +566,17 @@ export class Item {
 
   static async createItemsForAsyncStack(
       title: string, debuggerModel: SDK.DebuggerModel.DebuggerModel, frames: Protocol.Runtime.CallFrame[],
-      locationPool: Bindings.LiveLocation.LiveLocationPool, updateDelegate: (arg0: Item) => void): Promise<Item[]> {
+      locationPool: Bindings.LiveLocation.LiveLocationPool, updateDelegate: (arg0: Item) => void,
+      list: UI.ListControl.ListControl<Item>): Promise<Item[]> {
     const headerItemToItemsSet = new WeakMap<Item, Set<Item>>();
-    const asyncHeaderItem = new Item(title, updateDelegate);
+    const asyncHeaderItem = new Item(title, updateDelegate, undefined, list);
     headerItemToItemsSet.set(asyncHeaderItem, new Set());
     asyncHeaderItem.isAsyncHeader = true;
 
     const asyncFrameItems = [];
     const liveLocationPromises = [];
     for (const frame of frames) {
-      const item = new Item(UI.UIUtils.beautifyFunctionName(frame.functionName), update);
+      const item = new Item(UI.UIUtils.beautifyFunctionName(frame.functionName), update, undefined, list);
       const rawLocation =
           debuggerModel.createRawLocationByScriptId(frame.scriptId, frame.lineNumber, frame.columnNumber);
       liveLocationPromises.push(
@@ -613,7 +617,9 @@ export class Item {
     }
   }
 
-  constructor(title: string, updateDelegate: (arg0: Item) => void, frame?: SDK.DebuggerModel.CallFrame) {
+  constructor(
+      title: string, updateDelegate: (arg0: Item) => void, frame: SDK.DebuggerModel.CallFrame|undefined,
+      list: UI.ListControl.ListControl<Item>) {
     this.isIgnoreListed = false;
     this.title = title;
     this.linkText = '';
@@ -621,6 +627,7 @@ export class Item {
     this.isAsyncHeader = false;
     this.updateDelegate = updateDelegate;
     this.frame = frame;
+    this.list = list;
   }
 
   private async update(liveLocation: Bindings.LiveLocation.LiveLocation): Promise<void> {
@@ -628,6 +635,18 @@ export class Item {
     this.isIgnoreListed = Boolean(uiLocation?.isIgnoreListed());
     this.linkText = uiLocation ? uiLocation.linkText() : '';
     this.uiLocation = uiLocation;
+
+    if (this.frame && uiLocation && this === this.list.selectedItem()) {
+      UI.Context.Context.instance().setFlavor(
+          StackTrace.StackTrace.DebuggableFrameFlavor,
+          StackTrace.StackTrace.DebuggableFrameFlavor.for({
+                                                            uiSourceCode: uiLocation.uiSourceCode,
+                                                            line: uiLocation.lineNumber,
+                                                            column: uiLocation.columnNumber ?? -1,
+                                                            sdkFrame: this.frame,
+                                                          }));
+    }
+
     this.updateDelegate(this);
   }
 }

@@ -10,7 +10,9 @@ export declare class NetworkItemView extends UI.TabbedPane.TabbedPane {
     wasShown(): void;
     willHide(): void;
     private requestHeadersChanged;
+    private maybeAppendCookieResponsePanels;
     private maybeAppendCookiesPanel;
+    private maybeAppendDeviceBoundSessionsPanel;
     private maybeAppendPayloadPanel;
     private maybeShowErrorIconInTrustTokenTabHeader;
     resolveInitialState(parentElement: Element, reveal: boolean, lookupId: string, anchor?: SDK.DOMModel.DOMNode | SDK.NetworkRequest.NetworkRequest): Promise<{

@@ -12,6 +12,7 @@ interface UIHeaderLocation {
 }
 export declare const enum UIRequestTabs {
     COOKIES = "cookies",
+    DEVICE_BOUND_SESSIONS = "device-bound-sessions",
     EVENT_SOURCE = "eventSource",
     HEADERS_COMPONENT = "headers-component",
     PAYLOAD = "payload",

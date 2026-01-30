@@ -465,6 +465,7 @@ panels/network/NetworkPanel.test.js
 panels/network/NetworkSearchScope.test.js
 panels/network/RequestConditionsDrawer.test.js
 panels/network/RequestCookiesView.test.js
+panels/network/RequestDeviceBoundSessionsView.test.js
 panels/network/RequestHTMLView.test.js
 panels/network/RequestInitiatorView.test.js
 panels/network/RequestPayloadView.test.js

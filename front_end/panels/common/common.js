@@ -1896,7 +1896,7 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
             .variant=${"icon"}
             .size=${"REGULAR"}
             .title=${i18nString3(UIStrings3.dismiss)}
-            jslog=${VisualLogging4.close().track({ click: true })}
+            jslog=${VisualLogging4.close().track({ click: true }).context("gemini-promo-dismiss")}
             @click=${() => input.onCancelClick()}
           ></devtools-button>
         </div>
@@ -1926,11 +1926,11 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
       <div class="buttons">
         <devtools-button
           .variant=${"outlined"}
-          .jslogContext=${"cancel"}
+          jslog=${VisualLogging4.close().track({ click: true }).context("gemini-promo-dismiss")}
           @click=${input.onCancelClick}>${i18nString3(UIStrings3.dismiss)}</devtools-button>
         <devtools-button
           .variant=${"primary"}
-          .jslogContext=${"get-started"}
+          .jslogContext=${"gemini-promo-get-started"}
           @click=${input.onGetStartedClick}>${i18nString3(UIStrings3.getStarted)}</devtools-button>
       </div>
     `, target);
@@ -1959,7 +1959,7 @@ var GeminiRebrandPromoDialog = class _GeminiRebrandPromoDialog extends UI7.Widge
     this.#view(viewInput, void 0, this.contentElement);
   }
   static show() {
-    const dialog2 = new UI7.Dialog.Dialog("gemini-rebranding-dialog");
+    const dialog2 = new UI7.Dialog.Dialog("gemini-promo-dialog");
     dialog2.setAriaLabel(i18nString3(UIStrings3.dialogAriaLabel));
     dialog2.setMaxContentSize(new Geometry2.Size(384, 500));
     dialog2.setSizeBehavior(
@@ -1983,7 +1983,7 @@ var GeminiRebrandPromoDialog = class _GeminiRebrandPromoDialog extends UI7.Widge
       return;
     }
     const setting = Common3.Settings.Settings.instance().createSetting(
-      "gemini-rebranding-dialog-shown",
+      "gemini-promo-dialog-shown",
       false,
       "Synced"
       /* Common.Settings.SettingStorageType.SYNCED */

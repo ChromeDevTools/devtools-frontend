@@ -1123,6 +1123,9 @@ var AidaClient = class {
     };
   }
   registerClientEvent(clientEvent) {
+    if (Root2.Runtime.hostConfig.devToolsGeminiRebranding?.enabled) {
+      clientEvent.disable_user_content_logging = true;
+    }
     const { promise, resolve } = Promise.withResolvers();
     InspectorFrontendHostInstance.registerAidaClientEvent(JSON.stringify({
       client: CLIENT_NAME,
@@ -1134,6 +1137,9 @@ var AidaClient = class {
   async completeCode(request) {
     if (!InspectorFrontendHostInstance.aidaCodeComplete) {
       throw new Error("aidaCodeComplete is not available");
+    }
+    if (Root2.Runtime.hostConfig.devToolsGeminiRebranding?.enabled) {
+      request.metadata.disable_user_content_logging = true;
     }
     const { promise, resolve } = Promise.withResolvers();
     InspectorFrontendHostInstance.aidaCodeComplete(JSON.stringify(request), resolve);
@@ -1174,6 +1180,9 @@ var AidaClient = class {
     return { generatedSamples, metadata };
   }
   async generateCode(request, options) {
+    if (Root2.Runtime.hostConfig.devToolsGeminiRebranding?.enabled) {
+      request.metadata.disable_user_content_logging = true;
+    }
     const response = await makeHttpRequest({
       service: SERVICE_NAME,
       path: "/v1/aida:generateCode",

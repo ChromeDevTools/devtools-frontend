@@ -14,6 +14,7 @@
         "networkWaterfallColumn.css.js",
         "requestConditionsDrawer.css.js",
         "requestCookiesView.css.js",
+        "requestDeviceBoundSessionsView.css.js",
         "requestHTMLView.css.js",
         "requestHeadersTree.css.js",
         "requestInitiatorView.css.js",

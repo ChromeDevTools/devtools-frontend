@@ -35,7 +35,7 @@ import * as IssuesManager from "./../../models/issues_manager/issues_manager.js"
 import * as LegacyWrapper5 from "./../../ui/components/legacy_wrapper/legacy_wrapper.js";
 import { createIcon as createIcon13 } from "./../../ui/kit/kit.js";
 import * as SourceFrame5 from "./../../ui/legacy/components/source_frame/source_frame.js";
-import * as UI21 from "./../../ui/legacy/legacy.js";
+import * as UI22 from "./../../ui/legacy/legacy.js";
 
 // gen/front_end/panels/application/ApplicationPanelTreeElement.js
 import * as Common from "./../../core/common/common.js";
@@ -2456,6 +2456,7 @@ __export(DeviceBoundSessionsTreeElement_exports, {
 });
 import * as i18n9 from "./../../core/i18n/i18n.js";
 import { createIcon as createIcon3 } from "./../../ui/kit/kit.js";
+import * as UI4 from "./../../ui/legacy/legacy.js";
 var UIStrings5 = {
   /**
    *@description Text for section title Application panel sidebar. A website
@@ -2486,7 +2487,17 @@ var UIStrings5 = {
    * visually either by session name or by 'No session' if any events are not
    * linked to a session.
    */
-  noSession: "No session"
+  noSession: "No session",
+  /**
+   *@description Tooltip text for a terminated session.
+   *@example {session_1} sessionName
+   */
+  terminatedSession: "{sessionName}, Session terminated",
+  /**
+   *@description Tooltip text for a session with errors.
+   *@example {session_1} sessionName
+   */
+  sessionWithErrors: "{sessionName}, Session has errors"
 };
 var str_5 = i18n9.i18n.registerUIStrings("panels/application/DeviceBoundSessionsTreeElement.ts", UIStrings5);
 var i18nString5 = i18n9.i18n.getLocalizedString.bind(void 0, str_5);
@@ -2548,13 +2559,23 @@ var RootTreeElement = class extends ApplicationPanelTreeElement {
     }
   }
   #updateElementIconAndStyling(sessionElement, isSessionTerminated, sessionHasErrors) {
+    const title = sessionElement.title;
     if (isSessionTerminated) {
       sessionElement.listItemElement.classList.add("device-bound-session-terminated");
       sessionElement.setLeadingIcons([createIcon3("database-off")]);
+      const terminatedTitle = i18nString5(UIStrings5.terminatedSession, { sessionName: title });
+      UI4.ARIAUtils.setLabel(sessionElement.listItemElement, terminatedTitle);
       return;
     }
     sessionElement.listItemElement.classList.remove("device-bound-session-terminated");
-    sessionElement.setLeadingIcons([createIcon3(sessionHasErrors ? "warning" : "database")]);
+    if (sessionHasErrors) {
+      sessionElement.setLeadingIcons([createIcon3("warning")]);
+      const errorTitle = i18nString5(UIStrings5.sessionWithErrors, { sessionName: title });
+      UI4.ARIAUtils.setLabel(sessionElement.listItemElement, errorTitle);
+    } else {
+      sessionElement.setLeadingIcons([createIcon3("database")]);
+      UI4.ARIAUtils.setLabel(sessionElement.listItemElement, title);
+    }
   }
   #updateIconAndStyling(site, sessionId) {
     const isSessionTerminated = this.#model.isSessionTerminated(site, sessionId);
@@ -3055,7 +3076,7 @@ import * as NetworkForward from "./../network/forward/forward.js";
 import * as CspEvaluator from "./../../third_party/csp_evaluator/csp_evaluator.js";
 import * as Buttons3 from "./../../ui/components/buttons/buttons.js";
 import * as Components2 from "./../../ui/legacy/components/utils/utils.js";
-import * as UI5 from "./../../ui/legacy/legacy.js";
+import * as UI6 from "./../../ui/legacy/legacy.js";
 import { html as html3, nothing as nothing3, render as render3 } from "./../../ui/lit/lit.js";
 import * as VisualLogging3 from "./../../ui/visual_logging/visual_logging.js";
 import * as ApplicationComponents4 from "./components/components.js";
@@ -3191,7 +3212,7 @@ import "./../../ui/kit/kit.js";
 import "./../../ui/legacy/legacy.js";
 import "./../../ui/components/adorners/adorners.js";
 import * as i18n11 from "./../../core/i18n/i18n.js";
-import * as UI4 from "./../../ui/legacy/legacy.js";
+import * as UI5 from "./../../ui/legacy/legacy.js";
 import { Directives as Directives2, html as html2, nothing as nothing2, render as render2 } from "./../../ui/lit/lit.js";
 
 // gen/front_end/panels/application/originTrialTokenRows.css.js
@@ -3276,7 +3297,7 @@ var originTrialTreeView_css_default = `/*
 
 // gen/front_end/panels/application/OriginTrialTreeView.js
 var { classMap: classMap2 } = Directives2;
-var { widgetConfig: widgetConfig2 } = UI4.Widget;
+var { widgetConfig: widgetConfig2 } = UI5.Widget;
 var UIStrings6 = {
   /**
    * @description Label for the 'origin' field in a parsed Origin Trial Token.
@@ -3411,7 +3432,7 @@ var ROWS_DEFAULT_VIEW = (input, _output, target) => {
       `)}
     </div>`, target);
 };
-var OriginTrialTokenRows = class extends UI4.Widget.Widget {
+var OriginTrialTokenRows = class extends UI5.Widget.Widget {
   #view;
   #tokenWithStatus = null;
   #parsedTokenDetails = [];
@@ -3502,7 +3523,7 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
     </devtools-tree>
   `, target);
 };
-var OriginTrialTreeView = class extends UI4.Widget.Widget {
+var OriginTrialTreeView = class extends UI5.Widget.Widget {
   #data = { trials: [] };
   #view;
   constructor(element, view = DEFAULT_VIEW2) {
@@ -3519,7 +3540,7 @@ var OriginTrialTreeView = class extends UI4.Widget.Widget {
 };
 
 // gen/front_end/panels/application/FrameDetailsView.js
-var { widgetConfig: widgetConfig3 } = UI5.Widget;
+var { widgetConfig: widgetConfig3 } = UI6.Widget;
 var UIStrings7 = {
   /**
    * @description Section header in the Frame Details view
@@ -3877,7 +3898,7 @@ function maybeRenderCreationStacktrace(stackTrace, target) {
     return html3`
         <devtools-report-key title=${i18nString7(UIStrings7.creationStackTraceExplanation)}>${i18nString7(UIStrings7.creationStackTrace)}</devtools-report-key>
         <devtools-report-value jslog=${VisualLogging3.section("frame-creation-stack-trace")}>
-          <devtools-widget .widgetConfig=${UI5.Widget.widgetConfig(Components2.JSPresentationUtils.StackTracePreviewContent, { target, stackTrace, options: { expandable: true } })}>
+          <devtools-widget .widgetConfig=${UI6.Widget.widgetConfig(Components2.JSPresentationUtils.StackTracePreviewContent, { target, stackTrace, options: { expandable: true } })}>
           </devtools-widget>
         </devtools-report-value>
       `;
@@ -4197,7 +4218,7 @@ function renderAdditionalInfoSection(frame) {
       <devtools-report-divider></devtools-report-divider>
     `;
 }
-var FrameDetailsReportView = class extends UI5.Widget.Widget {
+var FrameDetailsReportView = class extends UI6.Widget.Widget {
   #frame;
   #target = null;
   #creationStackTrace = null;
@@ -4801,7 +4822,7 @@ import * as SDK9 from "./../../core/sdk/sdk.js";
 import * as Buttons4 from "./../../ui/components/buttons/buttons.js";
 import * as DataGrid3 from "./../../ui/legacy/components/data_grid/data_grid.js";
 import * as ObjectUI from "./../../ui/legacy/components/object_ui/object_ui.js";
-import * as UI6 from "./../../ui/legacy/legacy.js";
+import * as UI7 from "./../../ui/legacy/legacy.js";
 import * as Lit from "./../../ui/lit/lit.js";
 import * as VisualLogging4 from "./../../ui/visual_logging/visual_logging.js";
 import * as ApplicationComponents5 from "./components/components.js";
@@ -5070,7 +5091,7 @@ var IDBDatabaseView = class extends ApplicationComponents5.StorageMetadataView.S
   updatedForTests() {
   }
   async deleteDatabase() {
-    const ok = await UI6.UIUtils.ConfirmDialog.show(i18nString8(UIStrings8.databaseWillBeRemoved), i18nString8(UIStrings8.confirmDeleteDatabase, { PH1: this.database.databaseId.name }), this, { jslogContext: "delete-database-confirmation" });
+    const ok = await UI7.UIUtils.ConfirmDialog.show(i18nString8(UIStrings8.databaseWillBeRemoved), i18nString8(UIStrings8.confirmDeleteDatabase, { PH1: this.database.databaseId.name }), this, { jslogContext: "delete-database-confirmation" });
     if (ok) {
       void this.model.deleteDatabase(this.database.databaseId);
     }
@@ -5080,7 +5101,7 @@ var IDBDatabaseView = class extends ApplicationComponents5.StorageMetadataView.S
   }
 };
 customElements.define("devtools-idb-database-view", IDBDatabaseView);
-var IDBDataView = class extends UI6.View.SimpleView {
+var IDBDataView = class extends UI7.View.SimpleView {
   model;
   databaseId;
   isIndex;
@@ -5118,27 +5139,27 @@ var IDBDataView = class extends UI6.View.SimpleView {
     this.isIndex = Boolean(index);
     this.refreshObjectStoreCallback = refreshObjectStoreCallback;
     this.element.classList.add("indexed-db-data-view", "storage-view");
-    this.refreshButton = new UI6.Toolbar.ToolbarButton(i18nString8(UIStrings8.refresh), "refresh");
+    this.refreshButton = new UI7.Toolbar.ToolbarButton(i18nString8(UIStrings8.refresh), "refresh");
     this.refreshButton.addEventListener("Click", this.refreshButtonClicked, this);
     this.refreshButton.element.setAttribute("jslog", `${VisualLogging4.action("refresh").track({ click: true })}`);
-    this.deleteSelectedButton = new UI6.Toolbar.ToolbarButton(i18nString8(UIStrings8.deleteSelected), "bin");
+    this.deleteSelectedButton = new UI7.Toolbar.ToolbarButton(i18nString8(UIStrings8.deleteSelected), "bin");
     this.deleteSelectedButton.addEventListener("Click", (_event) => {
       void this.deleteButtonClicked(null);
     });
     this.deleteSelectedButton.element.setAttribute("jslog", `${VisualLogging4.action("delete-selected").track({ click: true })}`);
-    this.clearButton = new UI6.Toolbar.ToolbarButton(i18nString8(UIStrings8.clearObjectStore), "clear");
+    this.clearButton = new UI7.Toolbar.ToolbarButton(i18nString8(UIStrings8.clearObjectStore), "clear");
     this.clearButton.addEventListener("Click", () => {
       void this.clearButtonClicked();
     }, this);
     this.clearButton.element.setAttribute("jslog", `${VisualLogging4.action("clear-all").track({ click: true })}`);
-    const refreshIcon = UI6.UIUtils.createIconLabel({
+    const refreshIcon = UI7.UIUtils.createIconLabel({
       title: i18nString8(UIStrings8.dataMayBeStale),
       iconName: "warning",
       color: "var(--icon-warning)",
       width: "20px",
       height: "20px"
     });
-    this.needsRefresh = new UI6.Toolbar.ToolbarItem(refreshIcon);
+    this.needsRefresh = new UI7.Toolbar.ToolbarItem(refreshIcon);
     this.needsRefresh.setVisible(false);
     this.needsRefresh.setTitle(i18nString8(UIStrings8.someEntriesMayHaveBeenModified));
     this.clearingObjectStore = false;
@@ -5201,33 +5222,33 @@ var IDBDataView = class extends UI6.View.SimpleView {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   keyColumnHeaderFragment(prefix, keyPath) {
     const keyColumnHeaderFragment = document.createDocumentFragment();
-    UI6.UIUtils.createTextChild(keyColumnHeaderFragment, prefix);
+    UI7.UIUtils.createTextChild(keyColumnHeaderFragment, prefix);
     if (keyPath === null) {
       return keyColumnHeaderFragment;
     }
-    UI6.UIUtils.createTextChild(keyColumnHeaderFragment, " (" + i18nString8(UIStrings8.keyPath));
+    UI7.UIUtils.createTextChild(keyColumnHeaderFragment, " (" + i18nString8(UIStrings8.keyPath));
     if (Array.isArray(keyPath)) {
-      UI6.UIUtils.createTextChild(keyColumnHeaderFragment, "[");
+      UI7.UIUtils.createTextChild(keyColumnHeaderFragment, "[");
       for (let i = 0; i < keyPath.length; ++i) {
         if (i !== 0) {
-          UI6.UIUtils.createTextChild(keyColumnHeaderFragment, ", ");
+          UI7.UIUtils.createTextChild(keyColumnHeaderFragment, ", ");
         }
         keyColumnHeaderFragment.appendChild(this.keyPathStringFragment(keyPath[i]));
       }
-      UI6.UIUtils.createTextChild(keyColumnHeaderFragment, "]");
+      UI7.UIUtils.createTextChild(keyColumnHeaderFragment, "]");
     } else {
       const keyPathString = keyPath;
       keyColumnHeaderFragment.appendChild(this.keyPathStringFragment(keyPathString));
     }
-    UI6.UIUtils.createTextChild(keyColumnHeaderFragment, ")");
+    UI7.UIUtils.createTextChild(keyColumnHeaderFragment, ")");
     return keyColumnHeaderFragment;
   }
   keyPathStringFragment(keyPathString) {
     const keyPathStringFragment = document.createDocumentFragment();
-    UI6.UIUtils.createTextChild(keyPathStringFragment, '"');
+    UI7.UIUtils.createTextChild(keyPathStringFragment, '"');
     const keyPathSpan = keyPathStringFragment.createChild("span", "source-code indexed-db-key-path");
     keyPathSpan.textContent = keyPathString;
-    UI6.UIUtils.createTextChild(keyPathStringFragment, '"');
+    UI7.UIUtils.createTextChild(keyPathStringFragment, '"');
     return keyPathStringFragment;
   }
   createEditorToolbar() {
@@ -5236,18 +5257,18 @@ var IDBDataView = class extends UI6.View.SimpleView {
     editorToolbar.appendToolbarItem(this.refreshButton);
     editorToolbar.appendToolbarItem(this.clearButton);
     editorToolbar.appendToolbarItem(this.deleteSelectedButton);
-    editorToolbar.appendToolbarItem(new UI6.Toolbar.ToolbarSeparator());
-    this.pageBackButton = new UI6.Toolbar.ToolbarButton(i18nString8(UIStrings8.showPreviousPage), "triangle-left", void 0, "prev-page");
+    editorToolbar.appendToolbarItem(new UI7.Toolbar.ToolbarSeparator());
+    this.pageBackButton = new UI7.Toolbar.ToolbarButton(i18nString8(UIStrings8.showPreviousPage), "triangle-left", void 0, "prev-page");
     this.pageBackButton.addEventListener("Click", this.pageBackButtonClicked, this);
     editorToolbar.appendToolbarItem(this.pageBackButton);
-    this.pageForwardButton = new UI6.Toolbar.ToolbarButton(i18nString8(UIStrings8.showNextPage), "triangle-right", void 0, "next-page");
+    this.pageForwardButton = new UI7.Toolbar.ToolbarButton(i18nString8(UIStrings8.showNextPage), "triangle-right", void 0, "next-page");
     this.pageForwardButton.setEnabled(false);
     this.pageForwardButton.addEventListener("Click", this.pageForwardButtonClicked, this);
     editorToolbar.appendToolbarItem(this.pageForwardButton);
-    this.keyInput = new UI6.Toolbar.ToolbarFilter(i18nString8(UIStrings8.filterByKey), 0.5);
+    this.keyInput = new UI7.Toolbar.ToolbarFilter(i18nString8(UIStrings8.filterByKey), 0.5);
     this.keyInput.addEventListener("TextChanged", this.updateData.bind(this, false));
     editorToolbar.appendToolbarItem(this.keyInput);
-    editorToolbar.appendToolbarItem(new UI6.Toolbar.ToolbarSeparator());
+    editorToolbar.appendToolbarItem(new UI7.Toolbar.ToolbarSeparator());
     editorToolbar.appendToolbarItem(this.needsRefresh);
   }
   pageBackButtonClicked() {
@@ -5376,7 +5397,7 @@ var IDBDataView = class extends UI6.View.SimpleView {
     this.updateData(true);
   }
   async clearButtonClicked() {
-    const ok = await UI6.UIUtils.ConfirmDialog.show(i18nString8(UIStrings8.objectStoreWillBeCleared), i18nString8(UIStrings8.confirmClearObjectStore, { PH1: this.objectStore.name }), this.element, { jslogContext: "clear-object-store-confirmation" });
+    const ok = await UI7.UIUtils.ConfirmDialog.show(i18nString8(UIStrings8.objectStoreWillBeCleared), i18nString8(UIStrings8.confirmClearObjectStore, { PH1: this.objectStore.name }), this.element, { jslogContext: "clear-object-store-confirmation" });
     if (ok) {
       this.clearButton.setEnabled(false);
       this.clearingObjectStore = true;
@@ -5561,7 +5582,7 @@ __export(InterestGroupStorageView_exports, {
 });
 import * as i18n17 from "./../../core/i18n/i18n.js";
 import * as SourceFrame from "./../../ui/legacy/components/source_frame/source_frame.js";
-import * as UI7 from "./../../ui/legacy/legacy.js";
+import * as UI8 from "./../../ui/legacy/legacy.js";
 import * as VisualLogging5 from "./../../ui/visual_logging/visual_logging.js";
 import * as ApplicationComponents6 from "./components/components.js";
 
@@ -5615,7 +5636,7 @@ var i18nString9 = i18n17.i18n.getLocalizedString.bind(void 0, str_9);
 function eventEquals(a, b) {
   return a.accessTime === b.accessTime && a.type === b.type && a.ownerOrigin === b.ownerOrigin && a.name === b.name;
 }
-var InterestGroupStorageView = class extends UI7.SplitWidget.SplitWidget {
+var InterestGroupStorageView = class extends UI8.SplitWidget.SplitWidget {
   interestGroupGrid = new ApplicationComponents6.InterestGroupAccessGrid.InterestGroupAccessGrid();
   events = [];
   detailsGetter;
@@ -5630,9 +5651,9 @@ var InterestGroupStorageView = class extends UI7.SplitWidget.SplitWidget {
     );
     this.element.setAttribute("jslog", `${VisualLogging5.pane("interest-groups")}`);
     this.detailsGetter = detailsGetter;
-    const topPanel = new UI7.Widget.VBox();
-    this.noDisplayView = new UI7.EmptyWidget.EmptyWidget(i18nString9(UIStrings9.noValueSelected), i18nString9(UIStrings9.clickToDisplayBody));
-    this.noDataView = new UI7.EmptyWidget.EmptyWidget(i18nString9(UIStrings9.noDataAvailable), i18nString9(UIStrings9.noDataDescription));
+    const topPanel = new UI8.Widget.VBox();
+    this.noDisplayView = new UI8.EmptyWidget.EmptyWidget(i18nString9(UIStrings9.noValueSelected), i18nString9(UIStrings9.clickToDisplayBody));
+    this.noDataView = new UI8.EmptyWidget.EmptyWidget(i18nString9(UIStrings9.noDataAvailable), i18nString9(UIStrings9.noDataDescription));
     topPanel.setMinimumSize(0, 120);
     this.setMainWidget(topPanel);
     this.noDisplayView.setMinimumSize(0, 80);
@@ -5751,7 +5772,7 @@ import * as Common8 from "./../../core/common/common.js";
 import * as i18n21 from "./../../core/i18n/i18n.js";
 import * as SDK12 from "./../../core/sdk/sdk.js";
 import { createIcon as createIcon5 } from "./../../ui/kit/kit.js";
-import * as UI8 from "./../../ui/legacy/legacy.js";
+import * as UI9 from "./../../ui/legacy/legacy.js";
 
 // gen/front_end/panels/application/openedWindowDetailsView.css.js
 var openedWindowDetailsView_css_default = `/*
@@ -5910,7 +5931,7 @@ var booleanToYesNo = (b) => b ? i18nString11(UIStrings11.yes) : i18nString11(UIS
 function linkifyIcon(iconType, title, eventHandler) {
   const icon = createIcon5(iconType, "icon-link devtools-link");
   const button = document.createElement("button");
-  UI8.Tooltip.Tooltip.install(button, title);
+  UI9.Tooltip.Tooltip.install(button, title);
   button.classList.add("devtools-link", "link-style", "text-button");
   button.appendChild(icon);
   button.addEventListener("click", (event) => {
@@ -5947,7 +5968,7 @@ async function maybeCreateLinkToElementsPanel(opener) {
   });
   return linkElement;
 }
-var OpenedWindowDetailsView = class extends UI8.Widget.VBox {
+var OpenedWindowDetailsView = class extends UI9.Widget.VBox {
   targetInfo;
   isWindowClosed;
   reportView;
@@ -5962,7 +5983,7 @@ var OpenedWindowDetailsView = class extends UI8.Widget.VBox {
     this.targetInfo = targetInfo;
     this.isWindowClosed = isWindowClosed;
     this.contentElement.classList.add("frame-details-container");
-    this.reportView = new UI8.ReportView.ReportView(this.buildTitle());
+    this.reportView = new UI9.ReportView.ReportView(this.buildTitle());
     this.reportView.show(this.contentElement);
     this.reportView.registerRequiredCSS(openedWindowDetailsView_css_default);
     this.reportView.element.classList.add("frame-details-report-container");
@@ -5972,7 +5993,7 @@ var OpenedWindowDetailsView = class extends UI8.Widget.VBox {
     this.openerElementField = this.securitySection.appendField(i18nString11(UIStrings11.openerFrame));
     this.securitySection.setFieldVisible(i18nString11(UIStrings11.openerFrame), false);
     this.hasDOMAccessValue = this.securitySection.appendField(i18nString11(UIStrings11.accessToOpener));
-    UI8.Tooltip.Tooltip.install(this.hasDOMAccessValue, i18nString11(UIStrings11.showsWhetherTheOpenedWindowIs));
+    UI9.Tooltip.Tooltip.install(this.hasDOMAccessValue, i18nString11(UIStrings11.showsWhetherTheOpenedWindowIs));
     this.requestUpdate();
   }
   async performUpdate() {
@@ -6006,7 +6027,7 @@ var OpenedWindowDetailsView = class extends UI8.Widget.VBox {
     this.targetInfo = targetInfo;
   }
 };
-var WorkerDetailsView = class extends UI8.Widget.VBox {
+var WorkerDetailsView = class extends UI9.Widget.VBox {
   targetInfo;
   reportView;
   documentSection;
@@ -6017,7 +6038,7 @@ var WorkerDetailsView = class extends UI8.Widget.VBox {
     this.registerRequiredCSS(openedWindowDetailsView_css_default);
     this.targetInfo = targetInfo;
     this.contentElement.classList.add("frame-details-container");
-    this.reportView = new UI8.ReportView.ReportView(this.targetInfo.title || this.targetInfo.url || i18nString11(UIStrings11.worker));
+    this.reportView = new UI9.ReportView.ReportView(this.targetInfo.title || this.targetInfo.url || i18nString11(UIStrings11.worker));
     this.reportView.show(this.contentElement);
     this.reportView.registerRequiredCSS(openedWindowDetailsView_css_default);
     this.reportView.element.classList.add("frame-details-report-container");
@@ -6104,7 +6125,7 @@ import * as Platform4 from "./../../core/platform/platform.js";
 import { assertNotNullOrUndefined as assertNotNullOrUndefined2 } from "./../../core/platform/platform.js";
 import * as SDK14 from "./../../core/sdk/sdk.js";
 import * as Buttons5 from "./../../ui/components/buttons/buttons.js";
-import * as UI9 from "./../../ui/legacy/legacy.js";
+import * as UI10 from "./../../ui/legacy/legacy.js";
 import { Directives as Directives3, html as html5, render as render4 } from "./../../ui/lit/lit.js";
 import * as VisualLogging6 from "./../../ui/visual_logging/visual_logging.js";
 import * as PreloadingComponents from "./preloading/components/components.js";
@@ -6703,7 +6724,7 @@ var PreloadingUIUtils = class {
 function pageURL() {
   return SDK14.TargetManager.TargetManager.instance().scopeTarget()?.inspectedURL() || "";
 }
-var PreloadingRuleSetView = class extends UI9.Widget.VBox {
+var PreloadingRuleSetView = class extends UI10.Widget.VBox {
   model;
   focusedRuleSetId = null;
   warningsContainer;
@@ -6748,7 +6769,7 @@ var PreloadingRuleSetView = class extends UI9.Widget.VBox {
           <div slot="main" ${ref2(this.ruleSetGridContainerRef)}>
           </div>
           <div slot="sidebar" jslog=${VisualLogging6.section("rule-set-details")}>
-            <devtools-widget .widgetConfig=${UI9.Widget.widgetConfig(PreloadingComponents.RuleSetDetailsView.RuleSetDetailsView, {
+            <devtools-widget .widgetConfig=${UI10.Widget.widgetConfig(PreloadingComponents.RuleSetDetailsView.RuleSetDetailsView, {
       ruleSet: this.getRuleSet(),
       shouldPrettyPrint: this.shouldPrettyPrint
     })} ${ref2(this.ruleSetDetailsRef)}></devtools-widget>
@@ -6828,7 +6849,7 @@ var PreloadingRuleSetView = class extends UI9.Widget.VBox {
     return this.ruleSetGrid;
   }
 };
-var PreloadingAttemptView = class extends UI9.Widget.VBox {
+var PreloadingAttemptView = class extends UI10.Widget.VBox {
   model;
   // Note that we use id of (representative) preloading attempt while we show pipelines in grid.
   // This is because `NOT_TRIGGERED` preloading attempts don't have pipeline id and we can use it.
@@ -6854,7 +6875,7 @@ var PreloadingAttemptView = class extends UI9.Widget.VBox {
     this.warningsContainer.classList.add("flex-none");
     this.contentElement.insertBefore(this.warningsContainer, this.contentElement.firstChild);
     this.warningsView.show(this.warningsContainer);
-    const vbox = new UI9.Widget.VBox();
+    const vbox = new UI10.Widget.VBox();
     const toolbar6 = vbox.contentElement.createChild("devtools-toolbar", "preloading-toolbar");
     toolbar6.setAttribute("jslog", `${VisualLogging6.toolbar()}`);
     this.ruleSetSelector = new PreloadingRuleSetSelector(() => this.render());
@@ -6956,7 +6977,7 @@ var PreloadingAttemptView = class extends UI9.Widget.VBox {
     this.ruleSetSelector.select(id);
   }
 };
-var PreloadingSummaryView = class extends UI9.Widget.VBox {
+var PreloadingSummaryView = class extends UI10.Widget.VBox {
   model;
   warningsContainer;
   warningsView = new PreloadingComponents.PreloadingDisabledInfobar.PreloadingDisabledInfobar();
@@ -7014,11 +7035,11 @@ var PreloadingRuleSetSelector = class {
     this.model = model;
     SDK14.TargetManager.TargetManager.instance().addScopeChangeListener(this.onScopeChange.bind(this));
     SDK14.TargetManager.TargetManager.instance().addModelListener(SDK14.PreloadingModel.PreloadingModel, "ModelUpdated", this.onModelUpdated, this, { scoped: true });
-    this.listModel = new UI9.ListModel.ListModel();
-    this.dropDown = new UI9.SoftDropDown.SoftDropDown(this.listModel, this);
+    this.listModel = new UI10.ListModel.ListModel();
+    this.dropDown = new UI10.SoftDropDown.SoftDropDown(this.listModel, this);
     this.dropDown.setRowHeight(36);
     this.dropDown.setPlaceholderText(i18nString13(UIStrings13.filterAllPreloads));
-    this.toolbarItem = new UI9.Toolbar.ToolbarItem(this.dropDown.element);
+    this.toolbarItem = new UI10.Toolbar.ToolbarItem(this.dropDown.element);
     this.toolbarItem.setTitle(i18nString13(UIStrings13.filterFilterByRuleSet));
     this.toolbarItem.element.classList.add("toolbar-has-dropdown");
     this.toolbarItem.element.setAttribute("jslog", `${VisualLogging6.action("filter-by-rule-set").track({ click: true })}`);
@@ -7090,11 +7111,11 @@ var PreloadingRuleSetSelector = class {
   // Method for UI.SoftDropDown.Delegate<Protocol.Preload.RuleSetId|typeof AllRuleSetRootId>
   createElementForItem(id) {
     const element = document.createElement("div");
-    const shadowRoot = UI9.UIUtils.createShadowRootWithCoreStyles(element, { cssFile: preloadingViewDropDown_css_default });
+    const shadowRoot = UI10.UIUtils.createShadowRootWithCoreStyles(element, { cssFile: preloadingViewDropDown_css_default });
     const title = shadowRoot.createChild("div", "title");
-    UI9.UIUtils.createTextChild(title, Platform4.StringUtilities.trimEndWithMaxLength(this.titleFor(id), 100));
+    UI10.UIUtils.createTextChild(title, Platform4.StringUtilities.trimEndWithMaxLength(this.titleFor(id), 100));
     const subTitle = shadowRoot.createChild("div", "subtitle");
-    UI9.UIUtils.createTextChild(subTitle, this.subtitleFor(id));
+    UI10.UIUtils.createTextChild(subTitle, this.subtitleFor(id));
     return element;
   }
   // Method for UI.SoftDropDown.Delegate<Protocol.Preload.RuleSetId|typeof AllRuleSetRootId>
@@ -7269,11 +7290,11 @@ __export(ReportingApiView_exports, {
 import * as i18n29 from "./../../core/i18n/i18n.js";
 import * as SDK15 from "./../../core/sdk/sdk.js";
 import * as SourceFrame2 from "./../../ui/legacy/components/source_frame/source_frame.js";
-import * as UI10 from "./../../ui/legacy/legacy.js";
+import * as UI11 from "./../../ui/legacy/legacy.js";
 import { html as html6, render as render5 } from "./../../ui/lit/lit.js";
 import * as VisualLogging7 from "./../../ui/visual_logging/visual_logging.js";
 import * as ApplicationComponents7 from "./components/components.js";
-var { widgetConfig: widgetConfig4 } = UI10.Widget;
+var { widgetConfig: widgetConfig4 } = UI11.Widget;
 var UIStrings15 = {
   /**
    * @description Placeholder text that shows if no report or endpoint was detected.
@@ -7306,7 +7327,7 @@ var REPORTING_API_EXPLANATION_URL = "https://developer.chrome.com/docs/capabilit
 var DEFAULT_VIEW4 = (input, output, target) => {
   if (input.hasReports || input.hasEndpoints) {
     render5(html6`
-      <style>${UI10.inspectorCommonStyles}</style>
+      <style>${UI11.inspectorCommonStyles}</style>
       <devtools-split-view sidebar-position="second" sidebar-initial-size="150" jslog=${VisualLogging7.pane("reporting-api")}>
         ${input.hasReports ? html6`
           <devtools-split-view slot="main" sidebar-position="second" sidebar-initial-size="150">
@@ -7322,7 +7343,7 @@ var DEFAULT_VIEW4 = (input, output, target) => {
       jsonObject: input.focusedReport.body
     })}></devtools-widget>
               ` : html6`
-                <devtools-widget .widgetConfig=${widgetConfig4(UI10.EmptyWidget.EmptyWidget, {
+                <devtools-widget .widgetConfig=${widgetConfig4(UI11.EmptyWidget.EmptyWidget, {
       header: i18nString15(UIStrings15.noReportSelected),
       text: i18nString15(UIStrings15.clickToDisplayBody)
     })}></devtools-widget>
@@ -7346,7 +7367,7 @@ var DEFAULT_VIEW4 = (input, output, target) => {
     `, target);
   } else {
     render5(html6`
-      <devtools-widget .widgetConfig=${widgetConfig4(UI10.EmptyWidget.EmptyWidget, {
+      <devtools-widget .widgetConfig=${widgetConfig4(UI11.EmptyWidget.EmptyWidget, {
       header: i18nString15(UIStrings15.noReportOrEndpoint),
       text: i18nString15(UIStrings15.reportingApiDescription),
       link: REPORTING_API_EXPLANATION_URL
@@ -7354,7 +7375,7 @@ var DEFAULT_VIEW4 = (input, output, target) => {
     `, target);
   }
 };
-var ReportingApiView = class extends UI10.Widget.VBox {
+var ReportingApiView = class extends UI11.Widget.VBox {
   #endpoints;
   #view;
   #networkManager;
@@ -7525,7 +7546,7 @@ import * as Host6 from "./../../core/host/host.js";
 import * as i18n35 from "./../../core/i18n/i18n.js";
 import * as SDK17 from "./../../core/sdk/sdk.js";
 import { createIcon as createIcon8 } from "./../../ui/kit/kit.js";
-import * as UI12 from "./../../ui/legacy/legacy.js";
+import * as UI13 from "./../../ui/legacy/legacy.js";
 
 // gen/front_end/panels/application/ServiceWorkerCacheViews.js
 var ServiceWorkerCacheViews_exports = {};
@@ -7542,7 +7563,7 @@ import * as SDK16 from "./../../core/sdk/sdk.js";
 import * as TextUtils from "./../../models/text_utils/text_utils.js";
 import * as LegacyWrapper from "./../../ui/components/legacy_wrapper/legacy_wrapper.js";
 import * as DataGrid5 from "./../../ui/legacy/components/data_grid/data_grid.js";
-import * as UI11 from "./../../ui/legacy/legacy.js";
+import * as UI12 from "./../../ui/legacy/legacy.js";
 import * as VisualLogging8 from "./../../ui/visual_logging/visual_logging.js";
 import * as NetworkComponents from "./../network/components/components.js";
 import * as Network from "./../network/network.js";
@@ -7680,7 +7701,7 @@ var UIStrings17 = {
 };
 var str_17 = i18n33.i18n.registerUIStrings("panels/application/ServiceWorkerCacheViews.ts", UIStrings17);
 var i18nString17 = i18n33.i18n.getLocalizedString.bind(void 0, str_17);
-var ServiceWorkerCacheView = class extends UI11.View.SimpleView {
+var ServiceWorkerCacheView = class extends UI12.View.SimpleView {
   model;
   entriesForTest;
   splitWidget;
@@ -7710,9 +7731,9 @@ var ServiceWorkerCacheView = class extends UI11.View.SimpleView {
     const editorToolbar = this.element.createChild("devtools-toolbar", "data-view-toolbar");
     editorToolbar.setAttribute("jslog", `${VisualLogging8.toolbar()}`);
     this.element.appendChild(this.metadataView);
-    this.splitWidget = new UI11.SplitWidget.SplitWidget(false, false);
+    this.splitWidget = new UI12.SplitWidget.SplitWidget(false, false);
     this.splitWidget.show(this.element);
-    this.previewPanel = new UI11.Widget.VBox();
+    this.previewPanel = new UI12.Widget.VBox();
     const resizer = this.previewPanel.element.createChild("div", "cache-preview-panel-resizer");
     this.splitWidget.setMainWidget(this.previewPanel);
     this.splitWidget.installResizer(resizer);
@@ -7727,15 +7748,15 @@ var ServiceWorkerCacheView = class extends UI11.View.SimpleView {
     }
     this.dataGrid = null;
     this.refreshThrottler = new Common10.Throttler.Throttler(300);
-    this.refreshButton = new UI11.Toolbar.ToolbarButton(i18nString17(UIStrings17.refresh), "refresh", void 0, "cache-storage.refresh");
+    this.refreshButton = new UI12.Toolbar.ToolbarButton(i18nString17(UIStrings17.refresh), "refresh", void 0, "cache-storage.refresh");
     this.refreshButton.addEventListener("Click", this.refreshButtonClicked, this);
     editorToolbar.appendToolbarItem(this.refreshButton);
-    this.deleteSelectedButton = new UI11.Toolbar.ToolbarButton(i18nString17(UIStrings17.deleteSelected), "cross", void 0, "cache-storage.delete-selected");
+    this.deleteSelectedButton = new UI12.Toolbar.ToolbarButton(i18nString17(UIStrings17.deleteSelected), "cross", void 0, "cache-storage.delete-selected");
     this.deleteSelectedButton.addEventListener("Click", (_event) => {
       void this.deleteButtonClicked(null);
     });
     editorToolbar.appendToolbarItem(this.deleteSelectedButton);
-    const entryPathFilterBox = new UI11.Toolbar.ToolbarFilter(i18nString17(UIStrings17.filterByPath), 1);
+    const entryPathFilterBox = new UI12.Toolbar.ToolbarFilter(i18nString17(UIStrings17.filterByPath), 1);
     editorToolbar.appendToolbarItem(entryPathFilterBox);
     const entryPathFilterThrottler = new Common10.Throttler.Throttler(300);
     this.entryPathFilter = "";
@@ -7776,7 +7797,7 @@ var ServiceWorkerCacheView = class extends UI11.View.SimpleView {
       this.preview.detach();
     }
     if (!preview) {
-      preview = new UI11.EmptyWidget.EmptyWidget(i18nString17(UIStrings17.noCacheEntrySelected), i18nString17(UIStrings17.selectACacheEntryAboveToPreview));
+      preview = new UI12.EmptyWidget.EmptyWidget(i18nString17(UIStrings17.noCacheEntrySelected), i18nString17(UIStrings17.selectACacheEntryAboveToPreview));
     }
     this.preview = preview;
     this.preview.show(this.previewPanel.element);
@@ -8066,20 +8087,20 @@ var DataGridNode = class extends DataGrid5.DataGrid.DataGridNode {
       true,
       gridNode
     );
-    UI11.Tooltip.Tooltip.install(cell, tooltip);
+    UI12.Tooltip.Tooltip.install(cell, tooltip);
     return cell;
   }
 };
-var RequestView = class extends UI11.Widget.VBox {
+var RequestView = class extends UI12.Widget.VBox {
   tabbedPane;
   resourceViewTabSetting;
   constructor(request) {
     super();
-    this.tabbedPane = new UI11.TabbedPane.TabbedPane();
+    this.tabbedPane = new UI12.TabbedPane.TabbedPane();
     this.tabbedPane.element.setAttribute("jslog", `${VisualLogging8.section("network-item-preview")}`);
-    this.tabbedPane.addEventListener(UI11.TabbedPane.Events.TabSelected, this.tabSelected, this);
+    this.tabbedPane.addEventListener(UI12.TabbedPane.Events.TabSelected, this.tabSelected, this);
     this.resourceViewTabSetting = Common10.Settings.Settings.instance().createSetting("cache-storage-view-tab", "preview");
-    this.tabbedPane.appendTab("headers", i18nString17(UIStrings17.headers), LegacyWrapper.LegacyWrapper.legacyWrapper(UI11.Widget.VBox, new NetworkComponents.RequestHeadersView.RequestHeadersView(request)));
+    this.tabbedPane.appendTab("headers", i18nString17(UIStrings17.headers), LegacyWrapper.LegacyWrapper.legacyWrapper(UI12.Widget.VBox, new NetworkComponents.RequestHeadersView.RequestHeadersView(request)));
     this.tabbedPane.appendTab("preview", i18nString17(UIStrings17.preview), new Network.RequestPreviewView.RequestPreviewView(request));
     this.tabbedPane.show(this.element);
   }
@@ -8154,7 +8175,7 @@ var ServiceWorkerCacheTreeElement = class extends ExpandableApplicationPanelTree
     this.listItemElement.addEventListener("contextmenu", this.handleContextMenuEvent.bind(this), true);
   }
   handleContextMenuEvent(event) {
-    const contextMenu = new UI12.ContextMenu.ContextMenu(event);
+    const contextMenu = new UI13.ContextMenu.ContextMenu(event);
     contextMenu.defaultSection().appendItem(i18nString18(UIStrings18.refreshCaches), this.refreshCaches.bind(this), { jslogContext: "refresh-caches" });
     void contextMenu.show();
   }
@@ -8247,7 +8268,7 @@ var SWCacheTreeElement = class extends ApplicationPanelTreeElement {
     this.listItemElement.addEventListener("contextmenu", this.handleContextMenuEvent.bind(this), true);
   }
   handleContextMenuEvent(event) {
-    const contextMenu = new UI12.ContextMenu.ContextMenu(event);
+    const contextMenu = new UI13.ContextMenu.ContextMenu(event);
     contextMenu.defaultSection().appendItem(i18nString18(UIStrings18.delete), this.clearCache.bind(this), { jslogContext: "delete" });
     void contextMenu.show();
   }
@@ -8288,7 +8309,7 @@ import * as SDK19 from "./../../core/sdk/sdk.js";
 import * as NetworkForward2 from "./../network/forward/forward.js";
 import * as Buttons6 from "./../../ui/components/buttons/buttons.js";
 import * as Components3 from "./../../ui/legacy/components/utils/utils.js";
-import * as UI14 from "./../../ui/legacy/legacy.js";
+import * as UI15 from "./../../ui/legacy/legacy.js";
 import * as VisualLogging10 from "./../../ui/visual_logging/visual_logging.js";
 import * as MobileThrottling from "./../mobile_throttling/mobile_throttling.js";
 import * as ApplicationComponents9 from "./components/components.js";
@@ -8573,7 +8594,7 @@ __export(ServiceWorkerUpdateCycleView_exports, {
 });
 import * as i18n37 from "./../../core/i18n/i18n.js";
 import * as SDK18 from "./../../core/sdk/sdk.js";
-import * as UI13 from "./../../ui/legacy/legacy.js";
+import * as UI14 from "./../../ui/legacy/legacy.js";
 import * as VisualLogging9 from "./../../ui/visual_logging/visual_logging.js";
 var UIStrings19 = {
   /**
@@ -8687,9 +8708,9 @@ var ServiceWorkerUpdateCycleView = class {
   }
   createTimingTableHead() {
     const serverHeader = this.tableElement.createChild("tr", "service-worker-update-timing-table-header");
-    UI13.UIUtils.createTextChild(serverHeader.createChild("td"), i18nString19(UIStrings19.version));
-    UI13.UIUtils.createTextChild(serverHeader.createChild("td"), i18nString19(UIStrings19.updateActivity));
-    UI13.UIUtils.createTextChild(serverHeader.createChild("td"), i18nString19(UIStrings19.timeline));
+    UI14.UIUtils.createTextChild(serverHeader.createChild("td"), i18nString19(UIStrings19.version));
+    UI14.UIUtils.createTextChild(serverHeader.createChild("td"), i18nString19(UIStrings19.updateActivity));
+    UI14.UIUtils.createTextChild(serverHeader.createChild("td"), i18nString19(UIStrings19.timeline));
   }
   removeRows() {
     const rows = this.tableElement.getElementsByTagName("tr");
@@ -8724,7 +8745,7 @@ var ServiceWorkerUpdateCycleView = class {
       })}`);
       this.rows.push(tr);
       const timingBarVersionElement = tr.createChild("td");
-      UI13.UIUtils.createTextChild(timingBarVersionElement, "#" + range.id);
+      UI14.UIUtils.createTextChild(timingBarVersionElement, "#" + range.id);
       timingBarVersionElement.classList.add("service-worker-update-timing-bar-clickable");
       timingBarVersionElement.setAttribute("tabindex", "0");
       timingBarVersionElement.setAttribute("role", "switch");
@@ -8732,9 +8753,9 @@ var ServiceWorkerUpdateCycleView = class {
         this.onFocus(event);
       });
       timingBarVersionElement.setAttribute("jslog", `${VisualLogging9.expand("timing-info").track({ click: true })}`);
-      UI13.ARIAUtils.setChecked(timingBarVersionElement, false);
+      UI14.ARIAUtils.setChecked(timingBarVersionElement, false);
       const timingBarTitleElement = tr.createChild("td");
-      UI13.UIUtils.createTextChild(timingBarTitleElement, phaseName);
+      UI14.UIUtils.createTextChild(timingBarTitleElement, phaseName);
       const barContainer = tr.createChild("td").createChild("div", "service-worker-update-timing-row");
       const bar = barContainer.createChild("span", "service-worker-update-timing-bar " + phaseName.toLowerCase());
       bar.style.left = left + "%";
@@ -8752,14 +8773,14 @@ var ServiceWorkerUpdateCycleView = class {
     const startTimeItem = startRow.createChild("td");
     startTimeItem.colSpan = 3;
     const startTime = new Date(range.start).toISOString();
-    UI13.UIUtils.createTextChild(startTimeItem.createChild("span"), i18nString19(UIStrings19.startTimeS, { PH1: startTime }));
+    UI14.UIUtils.createTextChild(startTimeItem.createChild("span"), i18nString19(UIStrings19.startTimeS, { PH1: startTime }));
     startRow.tabIndex = 0;
     const endRow = this.tableElement.createChild("tr", "service-worker-update-timing-bar-details");
     endRow.classList.add("service-worker-update-timing-bar-details-collapsed");
     const endTimeItem = endRow.createChild("td");
     endTimeItem.colSpan = 3;
     const endTime = new Date(range.end).toISOString();
-    UI13.UIUtils.createTextChild(endTimeItem.createChild("span"), i18nString19(UIStrings19.endTimeS, { PH1: endTime }));
+    UI14.UIUtils.createTextChild(endTimeItem.createChild("span"), i18nString19(UIStrings19.endTimeS, { PH1: endTime }));
     endRow.tabIndex = 0;
     tr.addEventListener("keydown", (event) => {
       this.onKeydown(event, startRow, endRow);
@@ -8774,7 +8795,7 @@ var ServiceWorkerUpdateCycleView = class {
       startRow.classList.toggle("service-worker-update-timing-bar-details-expanded");
       endRow.classList.toggle("service-worker-update-timing-bar-details-collapsed");
       endRow.classList.toggle("service-worker-update-timing-bar-details-expanded");
-      UI13.ARIAUtils.setChecked(target, !expanded);
+      UI14.ARIAUtils.setChecked(target, !expanded);
     }
   }
   onFocus(event) {
@@ -9044,7 +9065,7 @@ var throttleDisabledForDebugging = false;
 var setThrottleDisabledForDebugging = (enable) => {
   throttleDisabledForDebugging = enable;
 };
-var ServiceWorkersView = class extends UI14.Widget.VBox {
+var ServiceWorkersView = class extends UI15.Widget.VBox {
   currentWorkersView;
   toolbar;
   sections;
@@ -9058,7 +9079,7 @@ var ServiceWorkersView = class extends UI14.Widget.VBox {
       useShadowDom: true
     });
     this.registerRequiredCSS(serviceWorkersView_css_default);
-    this.currentWorkersView = new UI14.ReportView.ReportView(i18n39.i18n.lockedString("Service workers"));
+    this.currentWorkersView = new UI15.ReportView.ReportView(i18n39.i18n.lockedString("Service workers"));
     this.currentWorkersView.setBodyScrollable(false);
     this.contentElement.classList.add("service-worker-list");
     this.currentWorkersView.show(this.contentElement);
@@ -9071,12 +9092,12 @@ var ServiceWorkersView = class extends UI14.Widget.VBox {
     this.sectionToRegistration = /* @__PURE__ */ new WeakMap();
     const othersDiv = this.contentElement.createChild("div", "service-workers-other-origin");
     othersDiv.setAttribute("jslog", `${VisualLogging10.section("other-origin")}`);
-    const othersView = new UI14.ReportView.ReportView();
+    const othersView = new UI15.ReportView.ReportView();
     othersView.setHeaderVisible(false);
     othersView.show(othersDiv);
     const othersSection = othersView.appendSection(i18nString20(UIStrings20.serviceWorkersFromOtherOrigins));
     const othersSectionRow = othersSection.appendRow();
-    const seeOthers = UI14.Fragment.html`<a class="devtools-link" role="link" tabindex="0" href="chrome://serviceworker-internals" target="_blank" style="display: inline; cursor: pointer;">${i18nString20(UIStrings20.seeAllRegistrations)}</a>`;
+    const seeOthers = UI15.Fragment.html`<a class="devtools-link" role="link" tabindex="0" href="chrome://serviceworker-internals" target="_blank" style="display: inline; cursor: pointer;">${i18nString20(UIStrings20.seeAllRegistrations)}</a>`;
     seeOthers.setAttribute("jslog", `${VisualLogging10.link("view-all").track({ click: true })}`);
     self.onInvokeElement(seeOthers, (event) => {
       const rootTarget = SDK19.TargetManager.TargetManager.instance().rootTarget();
@@ -9087,11 +9108,11 @@ var ServiceWorkersView = class extends UI14.Widget.VBox {
     this.toolbar.appendToolbarItem(MobileThrottling.ThrottlingManager.throttlingManager().createOfflineToolbarCheckbox());
     const updateOnReloadSetting = Common11.Settings.Settings.instance().createSetting("service-worker-update-on-reload", false);
     updateOnReloadSetting.setTitle(i18nString20(UIStrings20.updateOnReload));
-    const forceUpdate = new UI14.Toolbar.ToolbarSettingCheckbox(updateOnReloadSetting, i18nString20(UIStrings20.onPageReloadForceTheService));
+    const forceUpdate = new UI15.Toolbar.ToolbarSettingCheckbox(updateOnReloadSetting, i18nString20(UIStrings20.onPageReloadForceTheService));
     this.toolbar.appendToolbarItem(forceUpdate);
     const bypassServiceWorkerSetting = Common11.Settings.Settings.instance().createSetting("bypass-service-worker", false);
     bypassServiceWorkerSetting.setTitle(i18nString20(UIStrings20.bypassForNetwork));
-    const fallbackToNetwork = new UI14.Toolbar.ToolbarSettingCheckbox(bypassServiceWorkerSetting, i18nString20(UIStrings20.bypassTheServiceWorkerAndLoad));
+    const fallbackToNetwork = new UI15.Toolbar.ToolbarSettingCheckbox(bypassServiceWorkerSetting, i18nString20(UIStrings20.bypassTheServiceWorkerAndLoad));
     this.toolbar.appendToolbarItem(fallbackToNetwork);
     this.eventListeners = /* @__PURE__ */ new Map();
     SDK19.TargetManager.TargetManager.instance().observeModels(SDK19.ServiceWorkerManager.ServiceWorkerManager, this);
@@ -9299,9 +9320,9 @@ var Section = class {
     this.networkRequests.textContent = i18nString20(UIStrings20.networkRequests);
     this.networkRequests.addEventListener("click", this.networkRequestsClicked.bind(this));
     this.section.appendButtonToHeader(this.networkRequests);
-    this.updateButton = UI14.UIUtils.createTextButton(i18nString20(UIStrings20.update), this.updateButtonClicked.bind(this), { variant: "text", title: i18nString20(UIStrings20.update), jslogContext: "update" });
+    this.updateButton = UI15.UIUtils.createTextButton(i18nString20(UIStrings20.update), this.updateButtonClicked.bind(this), { variant: "text", title: i18nString20(UIStrings20.update), jslogContext: "update" });
     this.section.appendButtonToHeader(this.updateButton);
-    this.deleteButton = UI14.UIUtils.createTextButton(i18nString20(UIStrings20.unregister), this.unregisterButtonClicked.bind(this), {
+    this.deleteButton = UI15.UIUtils.createTextButton(i18nString20(UIStrings20.unregister), this.unregisterButtonClicked.bind(this), {
       variant: "text",
       title: i18nString20(UIStrings20.unregisterServiceWorker),
       jslogContext: "unregister"
@@ -9320,15 +9341,15 @@ var Section = class {
   }
   createSyncNotificationField(label, initialValue, placeholder, callback, jslogContext) {
     const form = this.wrapWidget(this.section.appendField(label)).createChild("form", "service-worker-editor-with-button");
-    const editor = UI14.UIUtils.createInput("source-code service-worker-notification-editor");
+    const editor = UI15.UIUtils.createInput("source-code service-worker-notification-editor");
     editor.setAttribute("jslog", `${VisualLogging10.textField().track({ change: true }).context(jslogContext)}`);
     form.appendChild(editor);
-    const button = UI14.UIUtils.createTextButton(label, void 0, { jslogContext });
+    const button = UI15.UIUtils.createTextButton(label, void 0, { jslogContext });
     button.type = "submit";
     form.appendChild(button);
     editor.value = initialValue;
     editor.placeholder = placeholder;
-    UI14.ARIAUtils.setLabel(editor, label);
+    UI15.ARIAUtils.setLabel(editor, label);
     form.addEventListener("submit", (e) => {
       callback(editor.value || "");
       e.consume(true);
@@ -9346,7 +9367,7 @@ var Section = class {
     installingEntry.createChild("div", icon);
     const statusString = installingEntry.createChild("span", "service-worker-version-string");
     statusString.textContent = label;
-    UI14.ARIAUtils.markAsAlert(statusString);
+    UI15.ARIAUtils.markAsAlert(statusString);
     return installingEntry;
   }
   updateClientsField(version) {
@@ -9370,14 +9391,14 @@ var Section = class {
     link3.setAttribute("jslog", `${VisualLogging10.link("source-location").track({ click: true })}`);
     name.appendChild(link3);
     if (this.registration.errors.length) {
-      const errorsLabel = UI14.UIUtils.createIconLabel({
+      const errorsLabel = UI15.UIUtils.createIconLabel({
         title: String(this.registration.errors.length),
         iconName: "cross-circle-filled",
         color: "var(--icon-error)"
       });
       errorsLabel.classList.add("devtools-link", "link");
       errorsLabel.tabIndex = 0;
-      UI14.ARIAUtils.setLabel(errorsLabel, i18nString20(UIStrings20.sRegistrationErrors, { PH1: this.registration.errors.length }));
+      UI15.ARIAUtils.setLabel(errorsLabel, i18nString20(UIStrings20.sRegistrationErrors, { PH1: this.registration.errors.length }));
       self.onInvokeElement(errorsLabel, () => Common11.Console.Console.instance().show());
       name.appendChild(errorsLabel);
     }
@@ -9420,10 +9441,10 @@ var Section = class {
       const localizedRunningStatus = SDK19.ServiceWorkerManager.ServiceWorkerVersion.RunningStatus[active.currentState.runningStatus]();
       const activeEntry = this.addVersion(versionsStack, "service-worker-active-circle", i18nString20(UIStrings20.sActivatedAndIsS, { PH1: active.id, PH2: localizedRunningStatus }));
       if (active.isRunning() || active.isStarting()) {
-        const stopButton = UI14.UIUtils.createTextButton(i18nString20(UIStrings20.stopString), this.stopButtonClicked.bind(this, active.id), { jslogContext: "stop" });
+        const stopButton = UI15.UIUtils.createTextButton(i18nString20(UIStrings20.stopString), this.stopButtonClicked.bind(this, active.id), { jslogContext: "stop" });
         activeEntry.appendChild(stopButton);
       } else if (active.isStartable()) {
-        const startButton = UI14.UIUtils.createTextButton(i18nString20(UIStrings20.startString), this.startButtonClicked.bind(this), { jslogContext: "start" });
+        const startButton = UI15.UIUtils.createTextButton(i18nString20(UIStrings20.startString), this.startButtonClicked.bind(this), { jslogContext: "start" });
         activeEntry.appendChild(startButton);
       }
       this.updateClientsField(active);
@@ -9435,7 +9456,7 @@ var Section = class {
     }
     if (waiting) {
       const waitingEntry = this.addVersion(versionsStack, "service-worker-waiting-circle", i18nString20(UIStrings20.sWaitingToActivate, { PH1: waiting.id }));
-      const skipWaitingButton = UI14.UIUtils.createTextButton(i18n39.i18n.lockedString("skipWaiting"), this.skipButtonClicked.bind(this), {
+      const skipWaitingButton = UI15.UIUtils.createTextButton(i18n39.i18n.lockedString("skipWaiting"), this.skipButtonClicked.bind(this), {
         title: i18n39.i18n.lockedString("skipWaiting"),
         jslogContext: "skip-waiting"
       });
@@ -9517,12 +9538,12 @@ var Section = class {
   updateClientInfo(element, targetInfo) {
     if (targetInfo.type !== "page" && targetInfo.type === "iframe") {
       const clientString2 = element.createChild("span", "service-worker-client-string");
-      UI14.UIUtils.createTextChild(clientString2, i18nString20(UIStrings20.workerS, { PH1: targetInfo.url }));
+      UI15.UIUtils.createTextChild(clientString2, i18nString20(UIStrings20.workerS, { PH1: targetInfo.url }));
       return;
     }
     element.removeChildren();
     const clientString = element.createChild("span", "service-worker-client-string");
-    UI14.UIUtils.createTextChild(clientString, targetInfo.url);
+    UI15.UIUtils.createTextChild(clientString, targetInfo.url);
     const focusButton = new Buttons6.Button.Button();
     focusButton.data = {
       iconName: "select-element",
@@ -9548,7 +9569,7 @@ var Section = class {
     void this.manager.stopWorker(versionId);
   }
   wrapWidget(container) {
-    const shadowRoot = UI14.UIUtils.createShadowRootWithCoreStyles(container, {
+    const shadowRoot = UI15.UIUtils.createShadowRootWithCoreStyles(container, {
       cssFile: [
         serviceWorkersView_css_default,
         /* These styles are for the timing table in serviceWorkerUpdateCycleView but this is the widget that it is rendered
@@ -9579,7 +9600,7 @@ __export(SharedStorageEventsView_exports, {
 import * as i18n41 from "./../../core/i18n/i18n.js";
 import * as SDK20 from "./../../core/sdk/sdk.js";
 import * as SourceFrame3 from "./../../ui/legacy/components/source_frame/source_frame.js";
-import * as UI15 from "./../../ui/legacy/legacy.js";
+import * as UI16 from "./../../ui/legacy/legacy.js";
 import * as VisualLogging11 from "./../../ui/visual_logging/visual_logging.js";
 import * as ApplicationComponents10 from "./components/components.js";
 
@@ -9617,7 +9638,7 @@ var i18nString21 = i18n41.i18n.getLocalizedString.bind(void 0, str_21);
 function eventEquals2(a, b) {
   return JSON.stringify(a) === JSON.stringify(b);
 }
-var SharedStorageEventsView = class extends UI15.SplitWidget.SplitWidget {
+var SharedStorageEventsView = class extends UI16.SplitWidget.SplitWidget {
   #sharedStorageEventGrid = new ApplicationComponents10.SharedStorageAccessGrid.SharedStorageAccessGrid();
   #events = [];
   #noDisplayView;
@@ -9630,7 +9651,7 @@ var SharedStorageEventsView = class extends UI15.SplitWidget.SplitWidget {
       true
     );
     this.element.setAttribute("jslog", `${VisualLogging11.pane("shared-storage-events")}`);
-    this.#noDisplayView = new UI15.EmptyWidget.EmptyWidget(i18nString21(UIStrings21.noEventSelected), i18nString21(UIStrings21.clickToDisplayBody));
+    this.#noDisplayView = new UI16.EmptyWidget.EmptyWidget(i18nString21(UIStrings21.noEventSelected), i18nString21(UIStrings21.clickToDisplayBody));
     this.#noDisplayView.setMinimumSize(0, 40);
     this.#sharedStorageEventGrid.setMinimumSize(0, 80);
     this.#sharedStorageEventGrid.onSelect = this.#onFocus.bind(this);
@@ -9928,7 +9949,7 @@ __export(SharedStorageItemsView_exports, {
 import * as Common15 from "./../../core/common/common.js";
 import * as i18n49 from "./../../core/i18n/i18n.js";
 import * as SourceFrame4 from "./../../ui/legacy/components/source_frame/source_frame.js";
-import * as UI18 from "./../../ui/legacy/legacy.js";
+import * as UI19 from "./../../ui/legacy/legacy.js";
 import * as ApplicationComponents13 from "./components/components.js";
 
 // gen/front_end/panels/application/KeyValueStorageItemsView.js
@@ -9938,7 +9959,7 @@ __export(KeyValueStorageItemsView_exports, {
 });
 import * as i18n47 from "./../../core/i18n/i18n.js";
 import * as Geometry from "./../../models/geometry/geometry.js";
-import * as UI17 from "./../../ui/legacy/legacy.js";
+import * as UI18 from "./../../ui/legacy/legacy.js";
 import { Directives as LitDirectives, html as html8, nothing as nothing5, render as render7 } from "./../../ui/lit/lit.js";
 import * as VisualLogging13 from "./../../ui/visual_logging/visual_logging.js";
 import * as ApplicationComponents12 from "./components/components.js";
@@ -9954,7 +9975,7 @@ import * as Common14 from "./../../core/common/common.js";
 import * as i18n45 from "./../../core/i18n/i18n.js";
 import * as Platform6 from "./../../core/platform/platform.js";
 import * as Buttons7 from "./../../ui/components/buttons/buttons.js";
-import * as UI16 from "./../../ui/legacy/legacy.js";
+import * as UI17 from "./../../ui/legacy/legacy.js";
 import * as Lit2 from "./../../ui/lit/lit.js";
 import * as VisualLogging12 from "./../../ui/visual_logging/visual_logging.js";
 import * as ApplicationComponents11 from "./components/components.js";
@@ -9996,7 +10017,7 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
                                 ?disabled=${!input.filterItemEnabled}
                                 @change=${input.onFilterChanged}
                                 style="flex-grow:0.4"></devtools-toolbar-input>
-        ${new UI16.Toolbar.ToolbarSeparator().element}
+        ${new UI17.Toolbar.ToolbarSeparator().element}
         <devtools-button title=${input.deleteAllButtonTitle}
                          @click=${input.onDeleteAll}
                          id=storage-items-delete-all
@@ -10021,7 +10042,7 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
     target
   );
 };
-var StorageItemsToolbar = class extends Common14.ObjectWrapper.eventMixin(UI16.Widget.VBox) {
+var StorageItemsToolbar = class extends Common14.ObjectWrapper.eventMixin(UI17.Widget.VBox) {
   filterRegex;
   #metadataView;
   #view;
@@ -10060,7 +10081,7 @@ var StorageItemsToolbar = class extends Common14.ObjectWrapper.eventMixin(UI16.W
           "Refresh"
           /* StorageItemsToolbar.Events.REFRESH */
         );
-        UI16.ARIAUtils.LiveAnnouncer.alert(i18nString23(UIStrings23.refreshedStatus));
+        UI17.ARIAUtils.LiveAnnouncer.alert(i18nString23(UIStrings23.refreshedStatus));
       },
       onDeleteAll: () => this.dispatchEventToListeners(
         "DeleteAll"
@@ -10113,9 +10134,9 @@ var StorageItemsToolbar = class extends Common14.ObjectWrapper.eventMixin(UI16.W
 };
 
 // gen/front_end/panels/application/KeyValueStorageItemsView.js
-var { ARIAUtils: ARIAUtils7 } = UI17;
-var { EmptyWidget: EmptyWidget8 } = UI17.EmptyWidget;
-var { VBox, widgetConfig: widgetConfig5 } = UI17.Widget;
+var { ARIAUtils: ARIAUtils8 } = UI18;
+var { EmptyWidget: EmptyWidget8 } = UI18.EmptyWidget;
+var { VBox, widgetConfig: widgetConfig5 } = UI18.Widget;
 var { Size } = Geometry;
 var { repeat } = LitDirectives;
 var UIStrings24 = {
@@ -10144,7 +10165,7 @@ var UIStrings24 = {
 var str_24 = i18n47.i18n.registerUIStrings("panels/application/KeyValueStorageItemsView.ts", UIStrings24);
 var i18nString24 = i18n47.i18n.getLocalizedString.bind(void 0, str_24);
 var MAX_VALUE_LENGTH = 4096;
-var KeyValueStorageItemsView = class extends UI17.Widget.VBox {
+var KeyValueStorageItemsView = class extends UI18.Widget.VBox {
   #preview;
   #previewValue;
   #items = [];
@@ -10163,7 +10184,7 @@ var KeyValueStorageItemsView = class extends UI17.Widget.VBox {
             <devtools-widget
               .widgetConfig=${widgetConfig5(StorageItemsToolbar, { metadataView })}
               class=flex-none
-              ${UI17.Widget.widgetRef(StorageItemsToolbar, (view2) => {
+              ${UI18.Widget.widgetRef(StorageItemsToolbar, (view2) => {
             output.toolbar = view2;
           })}
             ></devtools-widget>
@@ -10328,7 +10349,7 @@ var KeyValueStorageItemsView = class extends UI17.Widget.VBox {
     }
     this.performUpdate();
     this.#toolbar?.setCanDeleteSelected(Boolean(this.#selectedKey));
-    ARIAUtils7.LiveAnnouncer.alert(i18nString24(UIStrings24.numberEntries, { PH1: this.#items.length }));
+    ARIAUtils8.LiveAnnouncer.alert(i18nString24(UIStrings24.numberEntries, { PH1: this.#items.length }));
   }
   deleteSelectedItem() {
     if (!this.#selectedKey) {
@@ -10485,7 +10506,7 @@ var SharedStorageItemsView = class _SharedStorageItemsView extends KeyValueStora
         "ItemsCleared"
         /* SharedStorageItemsDispatcher.Events.ITEMS_CLEARED */
       );
-      UI18.ARIAUtils.LiveAnnouncer.alert(i18nString25(UIStrings25.sharedStorageItemsCleared));
+      UI19.ARIAUtils.LiveAnnouncer.alert(i18nString25(UIStrings25.sharedStorageItemsCleared));
       return;
     }
     await Promise.all(this.keys().map((key) => this.#sharedStorage.deleteEntry(key)));
@@ -10494,12 +10515,12 @@ var SharedStorageItemsView = class _SharedStorageItemsView extends KeyValueStora
       "FilteredItemsCleared"
       /* SharedStorageItemsDispatcher.Events.FILTERED_ITEMS_CLEARED */
     );
-    UI18.ARIAUtils.LiveAnnouncer.alert(i18nString25(UIStrings25.sharedStorageFilteredItemsCleared));
+    UI19.ARIAUtils.LiveAnnouncer.alert(i18nString25(UIStrings25.sharedStorageFilteredItemsCleared));
   }
   isEditAllowed(columnIdentifier, _oldText, newText) {
     if (columnIdentifier === "key" && newText === "") {
       void this.refreshItems().then(() => {
-        UI18.ARIAUtils.LiveAnnouncer.alert(i18nString25(UIStrings25.sharedStorageItemEditCanceled));
+        UI19.ARIAUtils.LiveAnnouncer.alert(i18nString25(UIStrings25.sharedStorageItemEditCanceled));
       });
       return false;
     }
@@ -10512,7 +10533,7 @@ var SharedStorageItemsView = class _SharedStorageItemsView extends KeyValueStora
       "ItemEdited"
       /* SharedStorageItemsDispatcher.Events.ITEM_EDITED */
     );
-    UI18.ARIAUtils.LiveAnnouncer.alert(i18nString25(UIStrings25.sharedStorageItemEdited));
+    UI19.ARIAUtils.LiveAnnouncer.alert(i18nString25(UIStrings25.sharedStorageItemEdited));
   }
   #showSharedStorageItems(items) {
     if (this.toolbar) {
@@ -10524,7 +10545,7 @@ var SharedStorageItemsView = class _SharedStorageItemsView extends KeyValueStora
     await this.#sharedStorage.deleteEntry(key);
     await this.refreshItems();
     this.sharedStorageItemsDispatcher.dispatchEventToListeners("ItemDeleted", { key });
-    UI18.ARIAUtils.LiveAnnouncer.alert(i18nString25(UIStrings25.sharedStorageItemDeleted));
+    UI19.ARIAUtils.LiveAnnouncer.alert(i18nString25(UIStrings25.sharedStorageItemDeleted));
   }
   async createPreview(key, value) {
     const wrappedEntry = key && { key, value: value || "" };
@@ -10567,7 +10588,7 @@ import * as i18n51 from "./../../core/i18n/i18n.js";
 import * as SDK22 from "./../../core/sdk/sdk.js";
 import * as LegacyWrapper3 from "./../../ui/components/legacy_wrapper/legacy_wrapper.js";
 import { createIcon as createIcon11 } from "./../../ui/kit/kit.js";
-import * as UI19 from "./../../ui/legacy/legacy.js";
+import * as UI20 from "./../../ui/legacy/legacy.js";
 import { StorageMetadataView as StorageMetadataView5 } from "./components/components.js";
 var UIStrings26 = {
   /**
@@ -10701,7 +10722,7 @@ var StorageBucketsTreeElement = class extends ExpandableApplicationPanelTreeElem
   onselect(selectedByUser) {
     super.onselect(selectedByUser);
     if (!this.view) {
-      this.view = LegacyWrapper3.LegacyWrapper.legacyWrapper(UI19.Widget.Widget, new StorageMetadataView5.StorageMetadataView());
+      this.view = LegacyWrapper3.LegacyWrapper.legacyWrapper(UI20.Widget.Widget, new StorageMetadataView5.StorageMetadataView());
       this.view.getComponent().enableStorageBucketControls(this.model);
       this.view.getComponent().setStorageBucket(this.storageBucketInfo);
     }
@@ -10725,7 +10746,7 @@ import * as uiI18n from "./../../ui/i18n/i18n.js";
 import { Icon, Link } from "./../../ui/kit/kit.js";
 import * as PerfUI from "./../../ui/legacy/components/perf_ui/perf_ui.js";
 import * as SettingsUI from "./../../ui/legacy/components/settings_ui/settings_ui.js";
-import * as UI20 from "./../../ui/legacy/legacy.js";
+import * as UI21 from "./../../ui/legacy/legacy.js";
 import * as VisualLogging15 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/application/storageView.css.js
@@ -10940,7 +10961,7 @@ var UIStrings27 = {
 };
 var str_27 = i18n53.i18n.registerUIStrings("panels/application/StorageView.ts", UIStrings27);
 var i18nString27 = i18n53.i18n.getLocalizedString.bind(void 0, str_27);
-var StorageView = class _StorageView extends UI20.Widget.VBox {
+var StorageView = class _StorageView extends UI21.Widget.VBox {
   pieColors;
   reportView;
   target;
@@ -10975,7 +10996,7 @@ var StorageView = class _StorageView extends UI20.Widget.VBox {
       ["service_workers", "rgb(255, 167, 36)"]
       // orange
     ]);
-    this.reportView = new UI20.ReportView.ReportView(i18nString27(UIStrings27.storageTitle));
+    this.reportView = new UI21.ReportView.ReportView(i18nString27(UIStrings27.storageTitle));
     this.reportView.registerRequiredCSS(storageView_css_default);
     this.reportView.element.classList.add("clear-storage-header");
     this.reportView.show(this.contentElement);
@@ -10988,7 +11009,7 @@ var StorageView = class _StorageView extends UI20.Widget.VBox {
     }
     this.includeThirdPartyCookiesSetting = Common16.Settings.Settings.instance().createSetting("clear-storage-include-third-party-cookies", false);
     const clearButtonSection = this.reportView.appendSection("", "clear-storage-button").appendRow();
-    this.clearButton = UI20.UIUtils.createTextButton(i18nString27(UIStrings27.clearSiteData), this.clear.bind(this), { jslogContext: "storage.clear-site-data" });
+    this.clearButton = UI21.UIUtils.createTextButton(i18nString27(UIStrings27.clearSiteData), this.clear.bind(this), { jslogContext: "storage.clear-site-data" });
     this.clearButton.id = "storage-view-clear-button";
     clearButtonSection.appendChild(this.clearButton);
     const includeThirdPartyCookiesCheckbox = SettingsUI.SettingsUI.createSettingCheckbox(i18nString27(UIStrings27.includingThirdPartyCookies), this.includeThirdPartyCookiesSetting);
@@ -11010,7 +11031,7 @@ var StorageView = class _StorageView extends UI20.Widget.VBox {
     this.previousOverrideFieldValue = "";
     const quotaOverrideCheckboxRow = quota.appendRow();
     quotaOverrideCheckboxRow.classList.add("quota-override-row");
-    this.quotaOverrideCheckbox = UI20.UIUtils.CheckboxLabel.create(i18nString27(UIStrings27.simulateCustomStorage), false);
+    this.quotaOverrideCheckbox = UI21.UIUtils.CheckboxLabel.create(i18nString27(UIStrings27.simulateCustomStorage), false);
     this.quotaOverrideCheckbox.setAttribute("jslog", `${VisualLogging15.toggle("simulate-custom-quota").track({ change: true })}`);
     quotaOverrideCheckboxRow.appendChild(this.quotaOverrideCheckbox);
     this.quotaOverrideCheckbox.addEventListener("click", this.onClickCheckbox.bind(this), false);
@@ -11018,7 +11039,7 @@ var StorageView = class _StorageView extends UI20.Widget.VBox {
     this.quotaOverrideEditor = this.quotaOverrideControlRow.createChild("input", "quota-override-notification-editor");
     this.quotaOverrideEditor.setAttribute("placeholder", i18nString27(UIStrings27.pleaseEnterANumber));
     this.quotaOverrideEditor.setAttribute("jslog", `${VisualLogging15.textField("quota-override").track({ change: true })}`);
-    this.quotaOverrideControlRow.appendChild(UI20.UIUtils.createLabel(i18nString27(UIStrings27.mb)));
+    this.quotaOverrideControlRow.appendChild(UI21.UIUtils.createLabel(i18nString27(UIStrings27.mb)));
     this.quotaOverrideControlRow.classList.add("hidden");
     this.quotaOverrideEditor.addEventListener("keyup", (event) => {
       if (event.key === "Enter") {
@@ -11205,7 +11226,7 @@ var StorageView = class _StorageView extends UI20.Widget.VBox {
       this.clearButton.textContent = label;
       this.clearButton.focus();
     }, 500);
-    UI20.ARIAUtils.LiveAnnouncer.alert(i18nString27(UIStrings27.SiteDataCleared));
+    UI21.ARIAUtils.LiveAnnouncer.alert(i18nString27(UIStrings27.SiteDataCleared));
   }
   static clear(target, storageKey, originForCookies, selectedStorageTypes, includeThirdPartyCookies) {
     console.assert(Boolean(storageKey));
@@ -11280,16 +11301,16 @@ var StorageView = class _StorageView extends UI20.Widget.VBox {
     const quotaAsString = i18n53.ByteUtilities.bytesToString(response.quota);
     const usageAsString = i18n53.ByteUtilities.bytesToString(response.usage);
     const formattedQuotaAsString = i18nString27(UIStrings27.storageWithCustomMarker, { PH1: quotaAsString });
-    const quota = quotaOverridden ? UI20.Fragment.Fragment.build`<b>${formattedQuotaAsString}</b>`.element() : quotaAsString;
+    const quota = quotaOverridden ? UI21.Fragment.Fragment.build`<b>${formattedQuotaAsString}</b>`.element() : quotaAsString;
     const element = uiI18n.getFormatLocalizedString(str_27, UIStrings27.storageQuotaUsed, { PH1: usageAsString, PH2: quota });
     this.quotaRow.appendChild(element);
-    UI20.Tooltip.Tooltip.install(this.quotaRow, i18nString27(UIStrings27.storageQuotaUsedWithBytes, { PH1: response.usage.toLocaleString(), PH2: response.quota.toLocaleString() }));
+    UI21.Tooltip.Tooltip.install(this.quotaRow, i18nString27(UIStrings27.storageQuotaUsedWithBytes, { PH1: response.usage.toLocaleString(), PH2: response.quota.toLocaleString() }));
     if (!response.overrideActive && response.quota < 125829120) {
       const icon = new Icon();
       icon.name = "info";
       icon.style.color = "var(--icon-info)";
       icon.classList.add("small");
-      UI20.Tooltip.Tooltip.install(this.quotaRow, i18nString27(UIStrings27.storageQuotaIsLimitedIn));
+      UI21.Tooltip.Tooltip.install(this.quotaRow, i18nString27(UIStrings27.storageQuotaIsLimitedIn));
       this.quotaRow.appendChild(icon);
     }
     if (this.quotaUsage === null || this.quotaUsage !== response.usage) {
@@ -11620,7 +11641,7 @@ function nameForExtensionStorageArea(storageArea) {
       throw new Error(`Unrecognized storage type: ${storageArea}`);
   }
 }
-var ApplicationPanelSidebar = class extends UI21.Widget.VBox {
+var ApplicationPanelSidebar = class extends UI22.Widget.VBox {
   panel;
   sidebarTree;
   applicationTreeElement;
@@ -11661,7 +11682,7 @@ var ApplicationPanelSidebar = class extends UI21.Widget.VBox {
   constructor(panel) {
     super();
     this.panel = panel;
-    this.sidebarTree = new UI21.TreeOutline.TreeOutlineInShadow(
+    this.sidebarTree = new UI22.TreeOutline.TreeOutlineInShadow(
       "NavigationTree"
       /* UI.TreeOutline.TreeVariant.NAVIGATION_TREE */
     );
@@ -11669,7 +11690,7 @@ var ApplicationPanelSidebar = class extends UI21.Widget.VBox {
     this.sidebarTree.element.classList.add("resources-sidebar");
     this.sidebarTree.setHideOverflow(true);
     this.sidebarTree.element.classList.add("filter-all");
-    this.sidebarTree.addEventListener(UI21.TreeOutline.Events.ElementAttached, this.treeElementAdded, this);
+    this.sidebarTree.addEventListener(UI22.TreeOutline.Events.ElementAttached, this.treeElementAdded, this);
     this.contentElement.appendChild(this.sidebarTree.element);
     const applicationSectionTitle = i18nString29(UIStrings29.application);
     this.applicationTreeElement = this.addSidebarSection(applicationSectionTitle, "application");
@@ -11818,13 +11839,13 @@ var ApplicationPanelSidebar = class extends UI21.Widget.VBox {
     this.contentElement.style.contain = "layout style";
   }
   addSidebarSection(title, jslogContext) {
-    const treeElement = new UI21.TreeOutline.TreeElement(title, true, jslogContext);
+    const treeElement = new UI22.TreeOutline.TreeElement(title, true, jslogContext);
     treeElement.listItemElement.classList.add("storage-group-list-item");
     treeElement.setCollapsible(false);
     treeElement.selectable = false;
     this.sidebarTree.appendChild(treeElement);
-    UI21.ARIAUtils.markAsHeading(treeElement.listItemElement, 3);
-    UI21.ARIAUtils.setLabel(treeElement.childrenListElement, title);
+    UI22.ARIAUtils.markAsHeading(treeElement.listItemElement, 3);
+    UI22.ARIAUtils.setLabel(treeElement.childrenListElement, title);
     return treeElement;
   }
   targetAdded(target) {
@@ -12181,11 +12202,11 @@ var ApplicationPanelSidebar = class extends UI21.Widget.VBox {
     if (!nodeUnderMouse) {
       return;
     }
-    const listNode = UI21.UIUtils.enclosingNodeOrSelfWithNodeName(nodeUnderMouse, "li");
+    const listNode = UI22.UIUtils.enclosingNodeOrSelfWithNodeName(nodeUnderMouse, "li");
     if (!listNode) {
       return;
     }
-    const element = UI21.TreeOutline.TreeElement.getTreeElementBylistItemNode(listNode);
+    const element = UI22.TreeOutline.TreeElement.getTreeElementBylistItemNode(listNode);
     if (this.previousHoveredElement === element) {
       return;
     }
@@ -12263,7 +12284,7 @@ var BackgroundServiceTreeElement = class extends ApplicationPanelTreeElement {
       this.view = new BackgroundServiceView(this.serviceName, this.model);
     }
     this.showView(this.view);
-    UI21.Context.Context.instance().setFlavor(BackgroundServiceView, this.view);
+    UI22.Context.Context.instance().setFlavor(BackgroundServiceView, this.view);
     Host9.userMetrics.panelShown("background_service_" + this.serviceName);
     return false;
   }
@@ -12296,7 +12317,7 @@ var AppManifestTreeElement = class extends ApplicationPanelTreeElement {
     this.setLeadingIcons([icon]);
     self.onInvokeElement(this.listItemElement, this.onInvoke.bind(this));
     this.view = new AppManifestView();
-    UI21.ARIAUtils.setLabel(this.listItemElement, i18nString29(UIStrings29.onInvokeManifestAlert));
+    UI22.ARIAUtils.setLabel(this.listItemElement, i18nString29(UIStrings29.onInvokeManifestAlert));
     const handleExpansion = (hasManifest) => {
       this.setExpandable(hasManifest);
     };
@@ -12333,13 +12354,13 @@ var AppManifestTreeElement = class extends ApplicationPanelTreeElement {
           event.consume(true);
         }
       });
-      UI21.ARIAUtils.setLabel(child.listItemElement, i18nString29(UIStrings29.beforeInvokeAlert, { PH1: child.listItemElement.title }));
+      UI22.ARIAUtils.setLabel(child.listItemElement, i18nString29(UIStrings29.beforeInvokeAlert, { PH1: child.listItemElement.title }));
       this.appendChild(child);
     }
   }
   onInvoke() {
     this.view.getManifestElement().scrollIntoView();
-    UI21.ARIAUtils.LiveAnnouncer.alert(i18nString29(UIStrings29.onInvokeAlert, { PH1: this.listItemElement.title }));
+    UI22.ARIAUtils.LiveAnnouncer.alert(i18nString29(UIStrings29.onInvokeAlert, { PH1: this.listItemElement.title }));
   }
 };
 var ClearStorageTreeElement = class extends ApplicationPanelTreeElement {
@@ -12402,7 +12423,7 @@ var IndexedDBTreeElement = class extends ExpandableApplicationPanelTreeElement {
     this.listItemElement.addEventListener("contextmenu", this.handleContextMenuEvent.bind(this), true);
   }
   handleContextMenuEvent(event) {
-    const contextMenu = new UI21.ContextMenu.ContextMenu(event);
+    const contextMenu = new UI22.ContextMenu.ContextMenu(event);
     contextMenu.defaultSection().appendItem(i18nString29(UIStrings29.refreshIndexeddb), this.refreshIndexedDB.bind(this), { jslogContext: "refresh-indexeddb" });
     void contextMenu.show();
   }
@@ -12486,7 +12507,7 @@ var IDBDatabaseTreeElement = class extends ApplicationPanelTreeElement {
     this.listItemElement.addEventListener("contextmenu", this.handleContextMenuEvent.bind(this), true);
   }
   handleContextMenuEvent(event) {
-    const contextMenu = new UI21.ContextMenu.ContextMenu(event);
+    const contextMenu = new UI22.ContextMenu.ContextMenu(event);
     contextMenu.defaultSection().appendItem(i18nString29(UIStrings29.refreshIndexeddb), this.refreshIndexedDB.bind(this), { jslogContext: "refresh-indexeddb" });
     void contextMenu.show();
   }
@@ -12546,7 +12567,7 @@ var IDBDatabaseTreeElement = class extends ApplicationPanelTreeElement {
       return false;
     }
     if (!this.view) {
-      this.view = LegacyWrapper5.LegacyWrapper.legacyWrapper(UI21.Widget.VBox, new IDBDatabaseView(this.model, this.database), "indexeddb-data");
+      this.view = LegacyWrapper5.LegacyWrapper.legacyWrapper(UI22.Widget.VBox, new IDBDatabaseView(this.model, this.database), "indexeddb-data");
     }
     this.showView(this.view);
     Host9.userMetrics.panelShown("indexed-db");
@@ -12599,7 +12620,7 @@ var IDBObjectStoreTreeElement = class extends ApplicationPanelTreeElement {
     }
   }
   handleContextMenuEvent(event) {
-    const contextMenu = new UI21.ContextMenu.ContextMenu(event);
+    const contextMenu = new UI22.ContextMenu.ContextMenu(event);
     contextMenu.defaultSection().appendItem(i18nString29(UIStrings29.clear), this.clearObjectStore.bind(this), { jslogContext: "clear" });
     void contextMenu.show();
   }
@@ -12766,7 +12787,7 @@ var DOMStorageTreeElement = class extends ApplicationPanelTreeElement {
     this.listItemElement.addEventListener("contextmenu", this.handleContextMenuEvent.bind(this), true);
   }
   handleContextMenuEvent(event) {
-    const contextMenu = new UI21.ContextMenu.ContextMenu(event);
+    const contextMenu = new UI22.ContextMenu.ContextMenu(event);
     contextMenu.defaultSection().appendItem(i18nString29(UIStrings29.clear), () => this.domStorage.clear(), { jslogContext: "clear" });
     void contextMenu.show();
   }
@@ -12796,7 +12817,7 @@ var ExtensionStorageTreeElement = class extends ApplicationPanelTreeElement {
     this.listItemElement.addEventListener("contextmenu", this.handleContextMenuEvent.bind(this), true);
   }
   handleContextMenuEvent(event) {
-    const contextMenu = new UI21.ContextMenu.ContextMenu(event);
+    const contextMenu = new UI22.ContextMenu.ContextMenu(event);
     contextMenu.defaultSection().appendItem(i18nString29(UIStrings29.clear), () => this.extensionStorage.clear(), { jslogContext: "clear" });
     void contextMenu.show();
   }
@@ -12839,7 +12860,7 @@ var CookieTreeElement = class extends ApplicationPanelTreeElement {
     this.listItemElement.addEventListener("contextmenu", this.handleContextMenuEvent.bind(this), true);
   }
   handleContextMenuEvent(event) {
-    const contextMenu = new UI21.ContextMenu.ContextMenu(event);
+    const contextMenu = new UI22.ContextMenu.ContextMenu(event);
     contextMenu.defaultSection().appendItem(i18nString29(UIStrings29.clear), () => this.resourcesPanel.clearCookies(this.target, this.#cookieDomain), { jslogContext: "clear" });
     void contextMenu.show();
   }
@@ -12850,12 +12871,12 @@ var CookieTreeElement = class extends ApplicationPanelTreeElement {
     return false;
   }
 };
-var StorageCategoryView = class extends UI21.Widget.VBox {
+var StorageCategoryView = class extends UI22.Widget.VBox {
   emptyWidget;
   constructor() {
     super();
     this.element.classList.add("storage-view");
-    this.emptyWidget = new UI21.EmptyWidget.EmptyWidget("", "");
+    this.emptyWidget = new UI22.EmptyWidget.EmptyWidget("", "");
     this.emptyWidget.show(this.element);
   }
   setText(text) {
@@ -12876,7 +12897,7 @@ var ResourcesSection = class {
   constructor(storagePanel, treeElement) {
     this.panel = storagePanel;
     this.treeElement = treeElement;
-    UI21.ARIAUtils.setLabel(this.treeElement.listItemNode, "Resources Section");
+    UI22.ARIAUtils.setLabel(this.treeElement.listItemNode, "Resources Section");
     this.treeElementForFrameId = /* @__PURE__ */ new Map();
     this.treeElementForTargetId = /* @__PURE__ */ new Map();
     const frameManager = SDK24.FrameManager.FrameManager.instance();
@@ -13090,7 +13111,7 @@ var FrameTreeElement = class _FrameTreeElement extends ApplicationPanelTreeEleme
     this.invalidateChildren();
     if (this.title !== frame.displayName()) {
       this.title = frame.displayName();
-      UI21.ARIAUtils.setLabel(this.listItemElement, this.title);
+      UI22.ARIAUtils.setLabel(this.listItemElement, this.title);
       if (this.parent) {
         const parent = this.parent;
         parent.removeChild(this);
@@ -13262,7 +13283,7 @@ var FrameResourceTreeElement = class extends ApplicationPanelTreeElement {
       if (view) {
         return view;
       }
-      return new UI21.EmptyWidget.EmptyWidget("", this.resource.url);
+      return new UI22.EmptyWidget.EmptyWidget("", this.resource.url);
     });
     return this.previewPromise;
   }
@@ -13295,7 +13316,7 @@ var FrameResourceTreeElement = class extends ApplicationPanelTreeElement {
     return true;
   }
   handleContextMenuEvent(event) {
-    const contextMenu = new UI21.ContextMenu.ContextMenu(event);
+    const contextMenu = new UI22.ContextMenu.ContextMenu(event);
     contextMenu.appendApplicableItems(this.resource);
     void contextMenu.show();
   }
@@ -13393,7 +13414,7 @@ import * as i18n59 from "./../../core/i18n/i18n.js";
 import * as SDK25 from "./../../core/sdk/sdk.js";
 import * as IssuesManager2 from "./../../models/issues_manager/issues_manager.js";
 import * as CookieTable from "./../../ui/legacy/components/cookie_table/cookie_table.js";
-import * as UI22 from "./../../ui/legacy/legacy.js";
+import * as UI23 from "./../../ui/legacy/legacy.js";
 import * as VisualLogging16 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/application/cookieItemsView.css.js
@@ -13475,7 +13496,7 @@ var UIStrings30 = {
 };
 var str_30 = i18n59.i18n.registerUIStrings("panels/application/CookieItemsView.ts", UIStrings30);
 var i18nString30 = i18n59.i18n.getLocalizedString.bind(void 0, str_30);
-var CookiePreviewWidget = class extends UI22.Widget.VBox {
+var CookiePreviewWidget = class extends UI23.Widget.VBox {
   cookie;
   showDecodedSetting;
   toggle;
@@ -13492,7 +13513,7 @@ var CookiePreviewWidget = class extends UI22.Widget.VBox {
     span.textContent = "Cookie Value";
     header.appendChild(span);
     this.contentElement.appendChild(header);
-    const toggle3 = UI22.UIUtils.CheckboxLabel.create(i18nString30(UIStrings30.showUrlDecoded), this.showDecodedSetting.get(), void 0, "show-url-decoded");
+    const toggle3 = UI23.UIUtils.CheckboxLabel.create(i18nString30(UIStrings30.showUrlDecoded), this.showDecodedSetting.get(), void 0, "show-url-decoded");
     toggle3.title = i18nString30(UIStrings30.showUrlDecoded);
     toggle3.classList.add("cookie-preview-widget-toggle");
     toggle3.addEventListener("click", () => this.showDecoded(!this.showDecodedSetting.get()));
@@ -13540,7 +13561,7 @@ var CookiePreviewWidget = class extends UI22.Widget.VBox {
     selection.addRange(range);
   }
 };
-var CookieItemsView = class extends UI22.Widget.VBox {
+var CookieItemsView = class extends UI23.Widget.VBox {
   model;
   cookieDomain;
   cookiesTable;
@@ -13572,7 +13593,7 @@ var CookieItemsView = class extends UI22.Widget.VBox {
       this.deleteCookie.bind(this)
     );
     this.cookiesTable.setMinimumSize(0, 50);
-    this.splitWidget = new UI22.SplitWidget.SplitWidget(
+    this.splitWidget = new UI23.SplitWidget.SplitWidget(
       /* isVertical: */
       false,
       /* secondIsSidebar: */
@@ -13580,16 +13601,16 @@ var CookieItemsView = class extends UI22.Widget.VBox {
       "cookie-items-split-view-state"
     );
     this.splitWidget.show(this.element);
-    this.previewPanel = new UI22.Widget.VBox();
+    this.previewPanel = new UI23.Widget.VBox();
     this.previewPanel.element.setAttribute("jslog", `${VisualLogging16.pane("preview").track({ resize: true })}`);
     const resizer = this.previewPanel.element.createChild("div", "preview-panel-resizer");
     this.splitWidget.setMainWidget(this.cookiesTable);
     this.splitWidget.setSidebarWidget(this.previewPanel);
     this.splitWidget.installResizer(resizer);
     this.previewWidget = new CookiePreviewWidget();
-    this.emptyWidget = new UI22.EmptyWidget.EmptyWidget(i18nString30(UIStrings30.noCookieSelected), i18nString30(UIStrings30.selectACookieToPreviewItsValue));
+    this.emptyWidget = new UI23.EmptyWidget.EmptyWidget(i18nString30(UIStrings30.noCookieSelected), i18nString30(UIStrings30.selectACookieToPreviewItsValue));
     this.emptyWidget.show(this.previewPanel.contentElement);
-    this.onlyIssuesFilterUI = new UI22.Toolbar.ToolbarCheckbox(i18nString30(UIStrings30.onlyShowCookiesWithAnIssue), i18nString30(UIStrings30.onlyShowCookiesWhichHaveAn), () => {
+    this.onlyIssuesFilterUI = new UI23.Toolbar.ToolbarCheckbox(i18nString30(UIStrings30.onlyShowCookiesWithAnIssue), i18nString30(UIStrings30.onlyShowCookiesWhichHaveAn), () => {
       this.updateWithCookies(this.allCookies);
     }, "only-show-cookies-with-issues");
     this.#toolbar.appendToolbarItem(this.onlyIssuesFilterUI);
@@ -13654,7 +13675,7 @@ var CookieItemsView = class extends UI22.Widget.VBox {
       this.#toolbar.setDeleteAllGlyph("clear-list");
     }
     this.cookiesTable.setCookies(this.shownCookies, this.model.getCookieToBlockedReasonsMap());
-    UI22.ARIAUtils.LiveAnnouncer.alert(i18nString30(UIStrings30.numberOfCookiesShownInTableS, { PH1: this.shownCookies.length }));
+    UI23.ARIAUtils.LiveAnnouncer.alert(i18nString30(UIStrings30.numberOfCookiesShownInTableS, { PH1: this.shownCookies.length }));
     this.#toolbar.setCanFilter(true);
     this.#toolbar.setCanDeleteAll(this.shownCookies.length > 0);
     this.#toolbar.setCanDeleteSelected(Boolean(this.cookiesTable.selectedCookie()));
@@ -13705,7 +13726,7 @@ __export(DeviceBoundSessionsView_exports, {
 import "./../../ui/components/report_view/report_view.js";
 import "./../../ui/legacy/components/data_grid/data_grid.js";
 import * as i18n61 from "./../../core/i18n/i18n.js";
-import * as UI23 from "./../../ui/legacy/legacy.js";
+import * as UI24 from "./../../ui/legacy/legacy.js";
 import { Directives as Directives4, html as html9, nothing as nothing6, render as render8 } from "./../../ui/lit/lit.js";
 import * as VisualLogging17 from "./../../ui/visual_logging/visual_logging.js";
 
@@ -13716,7 +13737,7 @@ var deviceBoundSessionsView_css_default = `/*
  * found in the LICENSE file.
  */
 .device-bound-session-grid-wrapper {
-  padding: 0 20px 5px;
+  margin: 0 20px 5px;
 }
 
 .device-bound-session-grid-wrapper devtools-data-grid {
@@ -13741,7 +13762,7 @@ var deviceBoundSessionsView_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./deviceBoundSessionsView.css")} */`;
 
 // gen/front_end/panels/application/DeviceBoundSessionsView.js
-var { widgetConfig: widgetConfig6 } = UI23.Widget;
+var { widgetConfig: widgetConfig6 } = UI24.Widget;
 var UIStrings31 = {
   /**
    *@description Label for a site, e.g. https://example.com/.
@@ -13847,6 +13868,10 @@ var UIStrings31 = {
    *@description Section header for details about an event.
    */
   eventDetails: "Event details",
+  /**
+   *@description Accessible label for the main area containing session details.
+   */
+  sessionDetails: "Session details",
   /**
    *@description Placeholder text when no row is selected in a table of events.
    */
@@ -14251,7 +14276,7 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
   const { sessionAndEvents, preserveLogSetting, defaultTitle, defaultDescription, selectedEvent, onEventRowSelected } = input;
   const toolbarHtml = preserveLogSetting ? html9`
         <devtools-toolbar class="device-bound-sessions-toolbar">
-        <devtools-checkbox title=${i18nString31(UIStrings31.doNotClearLogOnPageReload)} ${UI23.UIUtils.bindToSetting(preserveLogSetting)}>${i18nString31(UIStrings31.preserveLog)}</devtools-checkbox>
+        <devtools-checkbox title=${i18nString31(UIStrings31.doNotClearLogOnPageReload)} ${UI24.UIUtils.bindToSetting(preserveLogSetting)}>${i18nString31(UIStrings31.preserveLog)}</devtools-checkbox>
         </devtools-toolbar>
   ` : nothing6;
   if (!sessionAndEvents) {
@@ -14260,10 +14285,10 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
       return;
     }
     render8(html9`
-      <style>${UI23.inspectorCommonStyles}</style>
+      <style>${UI24.inspectorCommonStyles}</style>
       <style>${deviceBoundSessionsView_css_default}</style>
       ${toolbarHtml}
-      <devtools-widget .widgetConfig=${widgetConfig6(UI23.EmptyWidget.EmptyWidget, {
+      <devtools-widget .widgetConfig=${widgetConfig6(UI24.EmptyWidget.EmptyWidget, {
       header: defaultTitle,
       text: defaultDescription
     })} jslog=${VisualLogging17.pane("device-bound-sessions-empty")}></devtools-widget>
@@ -14275,7 +14300,7 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
     const { key, inclusionRules, cookieCravings } = sessionAndEvents.session;
     sessionDetailsHtml = html9`
         <devtools-report>
-          <devtools-report-section-header>${i18nString31(UIStrings31.sessionConfig)}</devtools-report-section-header>
+          <devtools-report-section-header role="heading" aria-level="2">${i18nString31(UIStrings31.sessionConfig)}</devtools-report-section-header>
           <devtools-report-key>${i18nString31(UIStrings31.keySite)}</devtools-report-key>
           <devtools-report-value>${key.site}</devtools-report-value>
           <devtools-report-key>${i18nString31(UIStrings31.keyId)}</devtools-report-key>
@@ -14288,7 +14313,7 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
           <devtools-report-value>${sessionAndEvents.session.cachedChallenge || ""}</devtools-report-value>
           <devtools-report-key>${i18nString31(UIStrings31.allowedRefreshInitiators)}</devtools-report-key>
           <devtools-report-value>${sessionAndEvents.session.allowedRefreshInitiators.join(", ")}</devtools-report-value>
-          <devtools-report-section-header>${i18nString31(UIStrings31.scope)}</devtools-report-section-header>
+          <devtools-report-section-header role="heading" aria-level="2">${i18nString31(UIStrings31.scope)}</devtools-report-section-header>
           <devtools-report-key>${i18nString31(UIStrings31.origin)}</devtools-report-key>
           <devtools-report-value>${inclusionRules.origin}</devtools-report-value>
           <devtools-report-key>${i18nString31(UIStrings31.includeSite)}</devtools-report-key>
@@ -14296,13 +14321,13 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
         </devtools-report>
         ${inclusionRules.urlRules.length > 0 ? html9`
           <div class="device-bound-session-grid-wrapper">
-            <devtools-data-grid class="device-bound-session-url-rules-grid" striped inline>
+            <devtools-data-grid class="device-bound-session-url-rules-grid" striped inline name=${i18nString31(UIStrings31.scope)}>
               <table>
                 <thead>
                   <tr>
-                    <th id="should-include" weight="1" sortable>${i18nString31(UIStrings31.ruleType)}</th>
-                    <th id="host-pattern" weight="2" sortable>${i18nString31(UIStrings31.ruleHostPattern)}</th>
-                    <th id="path-prefix" weight="2" sortable>${i18nString31(UIStrings31.rulePathPrefix)}</th>
+                    <th id="should-include" sortable>${i18nString31(UIStrings31.ruleType)}</th>
+                    <th id="host-pattern" sortable>${i18nString31(UIStrings31.ruleHostPattern)}</th>
+                    <th id="path-prefix" sortable>${i18nString31(UIStrings31.rulePathPrefix)}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -14318,19 +14343,19 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
             </devtools-data-grid>
           </div>
         ` : nothing6}
-        <devtools-report-section-header>${i18nString31(UIStrings31.cookieCravings)}</devtools-report-section-header>
+        <devtools-report-section-header role="heading" aria-level="2">${i18nString31(UIStrings31.cookieCravings)}</devtools-report-section-header>
         ${cookieCravings.length > 0 ? html9`
           <div class="device-bound-session-grid-wrapper">
-            <devtools-data-grid class="device-bound-session-cookie-cravings-grid" striped inline>
+            <devtools-data-grid class="device-bound-session-cookie-cravings-grid" striped inline name=${i18nString31(UIStrings31.cookieCravings)}>
               <table>
                 <thead>
                   <tr>
-                    <th id="name" weight="2" sortable>${i18nString31(UIStrings31.name)}</th>
-                    <th id="domain" weight="2" sortable>${i18n61.i18n.lockedString("Domain")}</th>
-                    <th id="path" weight="2" sortable>${i18n61.i18n.lockedString("Path")}</th>
-                    <th id="secure" type="boolean" align="center" weight="1" sortable>${i18n61.i18n.lockedString("Secure")}</th>
-                    <th id="http-only" type="boolean" align="center" weight="1" sortable>${i18n61.i18n.lockedString("HttpOnly")}</th>
-                    <th id="same-site" weight="1" sortable>${i18n61.i18n.lockedString("SameSite")}</th>
+                    <th id="name" sortable>${i18nString31(UIStrings31.name)}</th>
+                    <th id="domain" sortable>${i18n61.i18n.lockedString("Domain")}</th>
+                    <th id="path" sortable>${i18n61.i18n.lockedString("Path")}</th>
+                    <th id="secure" type="boolean" align="center" sortable>${i18n61.i18n.lockedString("Secure")}</th>
+                    <th id="http-only" type="boolean" align="center" sortable>${i18n61.i18n.lockedString("HttpOnly")}</th>
+                    <th id="same-site" sortable>${i18n61.i18n.lockedString("SameSite")}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -14352,10 +14377,10 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
   }
   const events = [...sessionAndEvents.eventsById.values()];
   const eventsHtml = html9`
-      <devtools-report-section-header>${i18nString31(UIStrings31.events)}</devtools-report-section-header>
+      <devtools-report-section-header role="heading" aria-level="2">${i18nString31(UIStrings31.events)}</devtools-report-section-header>
           ${events.length > 0 && onEventRowSelected ? html9`
             <div class="device-bound-session-grid-wrapper">
-                <devtools-data-grid class="device-bound-session-events-grid" striped inline ${Directives4.ref((el) => {
+                <devtools-data-grid class="device-bound-session-events-grid" striped inline name=${i18nString31(UIStrings31.events)} ${Directives4.ref((el) => {
     if (!el || !(el instanceof HTMLElement)) {
       return;
     }
@@ -14367,9 +14392,9 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
                 <table>
                   <thead>
                     <tr>
-                      <th id="type" weight="1" sortable>${i18nString31(UIStrings31.type)}</th>
-                      <th id="timestamp" weight="2" sortable>${i18nString31(UIStrings31.timestamp)}</th>
-                      <th id="details" weight="2" sortable>${i18nString31(UIStrings31.result)}</th>
+                      <th id="type" sortable>${i18nString31(UIStrings31.type)}</th>
+                      <th id="timestamp" sortable>${i18nString31(UIStrings31.timestamp)}</th>
+                      <th id="details" sortable>${i18nString31(UIStrings31.result)}</th>
                     </tr>
                   </thead>
                   <tbody>${events.map(({ event, timestamp }) => html9`
@@ -14433,24 +14458,24 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
         </devtools-report>
     ` : html9`<div class="device-bound-session-no-event-details">${i18nString31(UIStrings31.selectEventToViewDetails)}</div>`;
   const eventDetailsHtml = html9`
-      <devtools-report-section-header>${i18nString31(UIStrings31.eventDetails)}</devtools-report-section-header>
+      <devtools-report-section-header role="heading" aria-level="2">${i18nString31(UIStrings31.eventDetails)}</devtools-report-section-header>
       ${eventDetailsContentHtml}
   `;
   render8(html9`
-        <style>${UI23.inspectorCommonStyles}</style>
+        <style>${UI24.inspectorCommonStyles}</style>
         <style>${deviceBoundSessionsView_css_default}</style>
         ${toolbarHtml}
         <devtools-split-view sidebar-position="second">
-          <div slot="main" class="device-bound-session-view-wrapper">
+          <div slot="main" class="device-bound-session-view-wrapper" role="region" aria-label=${i18nString31(UIStrings31.sessionDetails)}>
             ${sessionDetailsHtml || nothing6}
             ${eventsHtml}
           </div>
-          <div slot="sidebar" class="device-bound-session-sidebar">
+          <div slot="sidebar" class="device-bound-session-sidebar" role="region" aria-label=${i18nString31(UIStrings31.eventDetails)}>
             ${eventDetailsHtml}
           </div>
         </devtools-split-view>`, target);
 };
-var DeviceBoundSessionsView = class extends UI23.Widget.VBox {
+var DeviceBoundSessionsView = class extends UI24.Widget.VBox {
   #site;
   #sessionId;
   #model;
@@ -14752,7 +14777,7 @@ import * as Common19 from "./../../core/common/common.js";
 import * as i18n63 from "./../../core/i18n/i18n.js";
 import * as TextUtils2 from "./../../models/text_utils/text_utils.js";
 import * as SourceFrame6 from "./../../ui/legacy/components/source_frame/source_frame.js";
-import * as UI24 from "./../../ui/legacy/legacy.js";
+import * as UI25 from "./../../ui/legacy/legacy.js";
 import * as VisualLogging18 from "./../../ui/visual_logging/visual_logging.js";
 var UIStrings32 = {
   /**
@@ -14815,7 +14840,7 @@ var DOMStorageItemsView = class extends KeyValueStorageItemsView {
   }
   itemsCleared() {
     super.itemsCleared();
-    UI24.ARIAUtils.LiveAnnouncer.alert(i18nString32(UIStrings32.domStorageItemsCleared));
+    UI25.ARIAUtils.LiveAnnouncer.alert(i18nString32(UIStrings32.domStorageItemsCleared));
   }
   domStorageItemRemoved(event) {
     if (!this.isShowing()) {
@@ -14825,7 +14850,7 @@ var DOMStorageItemsView = class extends KeyValueStorageItemsView {
   }
   itemRemoved(key) {
     super.itemRemoved(key);
-    UI24.ARIAUtils.LiveAnnouncer.alert(i18nString32(UIStrings32.domStorageItemDeleted));
+    UI25.ARIAUtils.LiveAnnouncer.alert(i18nString32(UIStrings32.domStorageItemDeleted));
   }
   domStorageItemAdded(event) {
     if (!this.isShowing()) {
@@ -14873,7 +14898,7 @@ import * as i18n65 from "./../../core/i18n/i18n.js";
 import * as TextUtils3 from "./../../models/text_utils/text_utils.js";
 import * as JSON5 from "./../../third_party/json5/json5.js";
 import * as SourceFrame7 from "./../../ui/legacy/components/source_frame/source_frame.js";
-import * as UI25 from "./../../ui/legacy/legacy.js";
+import * as UI26 from "./../../ui/legacy/legacy.js";
 import * as VisualLogging19 from "./../../ui/visual_logging/visual_logging.js";
 var UIStrings33 = {
   /**
@@ -14939,7 +14964,7 @@ var ExtensionStorageItemsView = class extends KeyValueStorageItemsView {
       return;
     }
     this.itemsCleared();
-    UI25.ARIAUtils.LiveAnnouncer.alert(i18nString33(UIStrings33.extensionStorageItemsCleared));
+    UI26.ARIAUtils.LiveAnnouncer.alert(i18nString33(UIStrings33.extensionStorageItemsCleared));
   }
   deleteSelectedItem() {
     if (!this.#isEditable) {
@@ -14988,7 +15013,7 @@ import * as Common21 from "./../../core/common/common.js";
 import * as Platform9 from "./../../core/platform/platform.js";
 import * as SDK26 from "./../../core/sdk/sdk.js";
 import * as SourceFrame8 from "./../../ui/legacy/components/source_frame/source_frame.js";
-import * as UI26 from "./../../ui/legacy/legacy.js";
+import * as UI27 from "./../../ui/legacy/legacy.js";
 import * as VisualLogging20 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/application/resourcesPanel.css.js
@@ -15144,7 +15169,7 @@ var resourcesPanel_css_default = `/*
 
 // gen/front_end/panels/application/ResourcesPanel.js
 var resourcesPanelInstance;
-var ResourcesPanel = class _ResourcesPanel extends UI26.Panel.PanelWithSidebar {
+var ResourcesPanel = class _ResourcesPanel extends UI27.Panel.PanelWithSidebar {
   resourcesLastSelectedItemSetting;
   visibleView;
   pendingViewPromise;
@@ -15163,7 +15188,7 @@ var ResourcesPanel = class _ResourcesPanel extends UI26.Panel.PanelWithSidebar {
     this.visibleView = null;
     this.pendingViewPromise = null;
     this.categoryView = null;
-    const mainContainer = new UI26.Widget.VBox();
+    const mainContainer = new UI27.Widget.VBox();
     mainContainer.setMinimumSize(100, 0);
     this.storageViews = mainContainer.element.createChild("div", "vbox flex-auto");
     this.storageViewToolbar = mainContainer.element.createChild("devtools-toolbar", "resources-toolbar");
@@ -15192,7 +15217,7 @@ var ResourcesPanel = class _ResourcesPanel extends UI26.Panel.PanelWithSidebar {
     return viewClassesToClose.some((type) => view instanceof type);
   }
   static async showAndGetSidebar() {
-    await UI26.ViewManager.ViewManager.instance().showView("resources");
+    await UI27.ViewManager.ViewManager.instance().showView("resources");
     return _ResourcesPanel.instance().sidebar;
   }
   focus() {
@@ -15223,7 +15248,7 @@ var ResourcesPanel = class _ResourcesPanel extends UI26.Panel.PanelWithSidebar {
     this.visibleView = view;
     this.storageViewToolbar.removeToolbarItems();
     this.storageViewToolbar.classList.toggle("hidden", true);
-    if (view instanceof UI26.View.SimpleView) {
+    if (view instanceof UI27.View.SimpleView) {
       void view.toolbarItems().then((items) => {
         items.map((item2) => this.storageViewToolbar.appendToolbarItem(item2));
         this.storageViewToolbar.classList.toggle("hidden", !items.length);

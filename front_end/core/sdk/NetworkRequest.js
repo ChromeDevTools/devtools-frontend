@@ -245,6 +245,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
     #exemptedResponseCookies = [];
     #responseCookiesPartitionKey = null;
     #responseCookiesPartitionKeyOpaque = null;
+    #deviceBoundSessionUsages = [];
     #siteHasCookieInOtherPartition = false;
     localizedFailDescription = null;
     #url;
@@ -1247,6 +1248,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
         this.setRequestHeaders(extraRequestInfo.requestHeaders);
         this.#hasExtraRequestInfo = true;
         this.setRequestHeadersText(''); // Mark request headers as non-provisional
+        this.#deviceBoundSessionUsages = extraRequestInfo.deviceBoundSessionUsages || [];
         this.#clientSecurityState = extraRequestInfo.clientSecurityState;
         this.#appliedNetworkConditionsId = extraRequestInfo.appliedNetworkConditionsId;
         if (extraRequestInfo.connectTiming) {
@@ -1257,6 +1259,9 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
     }
     setAppliedNetworkConditions(appliedNetworkConditionsId) {
         this.#appliedNetworkConditionsId = appliedNetworkConditionsId;
+    }
+    getDeviceBoundSessionUsages() {
+        return this.#deviceBoundSessionUsages;
     }
     hasExtraRequestInfo() {
         return this.#hasExtraRequestInfo;

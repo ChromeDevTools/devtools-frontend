@@ -65,7 +65,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
             .variant=${"icon" /* Buttons.Button.Variant.ICON */}
             .size=${"REGULAR" /* Buttons.Button.Size.REGULAR */}
             .title=${i18nString(UIStrings.dismiss)}
-            jslog=${VisualLogging.close().track({ click: true })}
+            jslog=${VisualLogging.close().track({ click: true }).context('gemini-promo-dismiss')}
             @click=${() => input.onCancelClick()}
           ></devtools-button>
         </div>
@@ -95,11 +95,11 @@ export const DEFAULT_VIEW = (input, _output, target) => {
       <div class="buttons">
         <devtools-button
           .variant=${"outlined" /* Buttons.Button.Variant.OUTLINED */}
-          .jslogContext=${'cancel'}
+          jslog=${VisualLogging.close().track({ click: true }).context('gemini-promo-dismiss')}
           @click=${input.onCancelClick}>${i18nString(UIStrings.dismiss)}</devtools-button>
         <devtools-button
           .variant=${"primary" /* Buttons.Button.Variant.PRIMARY */}
-          .jslogContext=${'get-started'}
+          .jslogContext=${'gemini-promo-get-started'}
           @click=${input.onGetStartedClick}>${i18nString(UIStrings.getStarted)}</devtools-button>
       </div>
     `, target);
@@ -129,7 +129,7 @@ export class GeminiRebrandPromoDialog extends UI.Widget.VBox {
         this.#view(viewInput, undefined, this.contentElement);
     }
     static show() {
-        const dialog = new UI.Dialog.Dialog('gemini-rebranding-dialog');
+        const dialog = new UI.Dialog.Dialog('gemini-promo-dialog');
         dialog.setAriaLabel(i18nString(UIStrings.dialogAriaLabel));
         dialog.setMaxContentSize(new Geometry.Size(384, 500));
         dialog.setSizeBehavior("SetExactWidthMaxHeight" /* UI.GlassPane.SizeBehavior.SET_EXACT_WIDTH_MAX_HEIGHT */);
@@ -145,7 +145,7 @@ export class GeminiRebrandPromoDialog extends UI.Widget.VBox {
         if (currentAidaAvailability !== "available" /* Host.AidaClient.AidaAccessPreconditions.AVAILABLE */) {
             return;
         }
-        const setting = Common.Settings.Settings.instance().createSetting('gemini-rebranding-dialog-shown', false, "Synced" /* Common.Settings.SettingStorageType.SYNCED */);
+        const setting = Common.Settings.Settings.instance().createSetting('gemini-promo-dialog-shown', false, "Synced" /* Common.Settings.SettingStorageType.SYNCED */);
         if (setting.get()) {
             return;
         }

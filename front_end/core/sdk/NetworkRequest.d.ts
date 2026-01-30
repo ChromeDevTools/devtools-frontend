@@ -227,6 +227,7 @@ export declare class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<E
     setCharset(charset: string): void;
     addExtraRequestInfo(extraRequestInfo: ExtraRequestInfo): void;
     setAppliedNetworkConditions(appliedNetworkConditionsId: string): void;
+    getDeviceBoundSessionUsages(): Protocol.Network.DeviceBoundSessionWithUsage[];
     hasExtraRequestInfo(): boolean;
     blockedRequestCookies(): BlockedCookieWithReason[];
     setIncludedRequestCookies(includedRequestCookies: IncludedCookieWithReason[]): void;
@@ -342,6 +343,7 @@ export interface ExtraRequestInfo {
     }>;
     requestHeaders: NameValue[];
     includedRequestCookies: IncludedCookieWithReason[];
+    deviceBoundSessionUsages?: Protocol.Network.DeviceBoundSessionWithUsage[];
     clientSecurityState?: Protocol.Network.ClientSecurityState;
     connectTiming: Protocol.Network.ConnectTiming;
     siteHasCookieInOtherPartition?: boolean;

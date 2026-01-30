@@ -104,6 +104,12 @@ const str_ = i18n.i18n.registerUIStrings('panels/timeline/overlays/components/En
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const lockedString = i18n.i18n.lockedString;
 function isAiAssistanceServerSideLoggingEnabled() {
+    // Disable logging for now.
+    // For context, see b/454563259#comment35.
+    // We should be able to remove this ~end of April.
+    if (Root.Runtime.hostConfig.devToolsGeminiRebranding?.enabled) {
+        return false;
+    }
     return !Root.Runtime.hostConfig.aidaAvailability?.disallowLogging;
 }
 export class EntryLabelRemoveEvent extends Event {

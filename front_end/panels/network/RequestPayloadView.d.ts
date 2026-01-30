@@ -1,5 +1,6 @@
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import { type LitTemplate } from '../../ui/lit/lit.js';
 export declare class RequestPayloadView extends UI.Widget.VBox {
     private request;
     private decodeRequestParameters;
@@ -10,13 +11,12 @@ export declare class RequestPayloadView extends UI.Widget.VBox {
     wasShown(): void;
     willHide(): void;
     private addEntryContextMenuHandler;
-    static formatParameter(value: string, className: string, decodeParameters: boolean): Element;
     private refreshQueryString;
     private refreshFormData;
     private populateTreeElementWithSourceText;
     private refreshParams;
-    private appendParamsSource;
-    private appendParamsParsed;
+    static formatParameter(value: string, className: string, decodeParameters: boolean): LitTemplate;
+    private populateTreeElementWithParsedParameters;
     private refreshRequestJSONPayload;
     private appendJSONPayloadSource;
     private appendJSONPayloadParsed;

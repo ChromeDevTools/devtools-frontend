@@ -1,4 +1,4 @@
-import type { Position, ScopeInfo, SourceMap } from "../scopes.ts";
+import type { DecodedScopeInfo, Position, SourceMap } from "../scopes.ts";
 /**
  * The mode decides how well-formed the encoded scopes have to be, to be accepted by the decoder.
  *
@@ -28,4 +28,4 @@ export interface DecodeOptions {
     generatedOffset: Position;
 }
 export declare const DEFAULT_DECODE_OPTIONS: DecodeOptions;
-export declare function decode(sourceMap: SourceMap, options?: Partial<DecodeOptions>): ScopeInfo;
+export declare function decode(sourceMap: SourceMap, options?: Partial<DecodeOptions>): DecodedScopeInfo;

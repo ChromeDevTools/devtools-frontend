@@ -50,6 +50,7 @@
     "../../../../../../front_end/panels/network/NetworkWaterfallColumn.ts",
     "../../../../../../front_end/panels/network/RequestConditionsDrawer.ts",
     "../../../../../../front_end/panels/network/RequestCookiesView.ts",
+    "../../../../../../front_end/panels/network/RequestDeviceBoundSessionsView.ts",
     "../../../../../../front_end/panels/network/RequestHTMLView.ts",
     "../../../../../../front_end/panels/network/RequestInitiatorView.ts",
     "../../../../../../front_end/panels/network/RequestPayloadView.ts",

@@ -7188,6 +7188,10 @@ export const NativeFunctions = [
         signatures: [["options_bounds", "children_updated"]]
     },
     {
+        name: "debugLog",
+        signatures: [["message"]]
+    },
+    {
         name: "allowsFeature",
         signatures: [["feature", "?origin"]]
     },

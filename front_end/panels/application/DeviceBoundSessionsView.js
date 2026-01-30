@@ -115,6 +115,10 @@ const UIStrings = {
      */
     eventDetails: 'Event details',
     /**
+     *@description Accessible label for the main area containing session details.
+     */
+    sessionDetails: 'Session details',
+    /**
      *@description Placeholder text when no row is selected in a table of events.
      */
     selectEventToViewDetails: 'Select an event row to view more details.',
@@ -544,7 +548,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
         const { key, inclusionRules, cookieCravings } = sessionAndEvents.session;
         sessionDetailsHtml = html `
         <devtools-report>
-          <devtools-report-section-header>${i18nString(UIStrings.sessionConfig)}</devtools-report-section-header>
+          <devtools-report-section-header role="heading" aria-level="2">${i18nString(UIStrings.sessionConfig)}</devtools-report-section-header>
           <devtools-report-key>${i18nString(UIStrings.keySite)}</devtools-report-key>
           <devtools-report-value>${key.site}</devtools-report-value>
           <devtools-report-key>${i18nString(UIStrings.keyId)}</devtools-report-key>
@@ -557,7 +561,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
           <devtools-report-value>${sessionAndEvents.session.cachedChallenge || ''}</devtools-report-value>
           <devtools-report-key>${i18nString(UIStrings.allowedRefreshInitiators)}</devtools-report-key>
           <devtools-report-value>${sessionAndEvents.session.allowedRefreshInitiators.join(', ')}</devtools-report-value>
-          <devtools-report-section-header>${i18nString(UIStrings.scope)}</devtools-report-section-header>
+          <devtools-report-section-header role="heading" aria-level="2">${i18nString(UIStrings.scope)}</devtools-report-section-header>
           <devtools-report-key>${i18nString(UIStrings.origin)}</devtools-report-key>
           <devtools-report-value>${inclusionRules.origin}</devtools-report-value>
           <devtools-report-key>${i18nString(UIStrings.includeSite)}</devtools-report-key>
@@ -565,13 +569,13 @@ export const DEFAULT_VIEW = (input, _output, target) => {
         </devtools-report>
         ${inclusionRules.urlRules.length > 0 ? html `
           <div class="device-bound-session-grid-wrapper">
-            <devtools-data-grid class="device-bound-session-url-rules-grid" striped inline>
+            <devtools-data-grid class="device-bound-session-url-rules-grid" striped inline name=${i18nString(UIStrings.scope)}>
               <table>
                 <thead>
                   <tr>
-                    <th id="should-include" weight="1" sortable>${i18nString(UIStrings.ruleType)}</th>
-                    <th id="host-pattern" weight="2" sortable>${i18nString(UIStrings.ruleHostPattern)}</th>
-                    <th id="path-prefix" weight="2" sortable>${i18nString(UIStrings.rulePathPrefix)}</th>
+                    <th id="should-include" sortable>${i18nString(UIStrings.ruleType)}</th>
+                    <th id="host-pattern" sortable>${i18nString(UIStrings.ruleHostPattern)}</th>
+                    <th id="path-prefix" sortable>${i18nString(UIStrings.rulePathPrefix)}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -588,19 +592,19 @@ export const DEFAULT_VIEW = (input, _output, target) => {
           </div>
         ` :
             nothing}
-        <devtools-report-section-header>${i18nString(UIStrings.cookieCravings)}</devtools-report-section-header>
+        <devtools-report-section-header role="heading" aria-level="2">${i18nString(UIStrings.cookieCravings)}</devtools-report-section-header>
         ${cookieCravings.length > 0 ? html `
           <div class="device-bound-session-grid-wrapper">
-            <devtools-data-grid class="device-bound-session-cookie-cravings-grid" striped inline>
+            <devtools-data-grid class="device-bound-session-cookie-cravings-grid" striped inline name=${i18nString(UIStrings.cookieCravings)}>
               <table>
                 <thead>
                   <tr>
-                    <th id="name" weight="2" sortable>${i18nString(UIStrings.name)}</th>
-                    <th id="domain" weight="2" sortable>${i18n.i18n.lockedString('Domain')}</th>
-                    <th id="path" weight="2" sortable>${i18n.i18n.lockedString('Path')}</th>
-                    <th id="secure" type="boolean" align="center" weight="1" sortable>${i18n.i18n.lockedString('Secure')}</th>
-                    <th id="http-only" type="boolean" align="center" weight="1" sortable>${i18n.i18n.lockedString('HttpOnly')}</th>
-                    <th id="same-site" weight="1" sortable>${i18n.i18n.lockedString('SameSite')}</th>
+                    <th id="name" sortable>${i18nString(UIStrings.name)}</th>
+                    <th id="domain" sortable>${i18n.i18n.lockedString('Domain')}</th>
+                    <th id="path" sortable>${i18n.i18n.lockedString('Path')}</th>
+                    <th id="secure" type="boolean" align="center" sortable>${i18n.i18n.lockedString('Secure')}</th>
+                    <th id="http-only" type="boolean" align="center" sortable>${i18n.i18n.lockedString('HttpOnly')}</th>
+                    <th id="same-site" sortable>${i18n.i18n.lockedString('SameSite')}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -623,11 +627,11 @@ export const DEFAULT_VIEW = (input, _output, target) => {
     }
     const events = [...sessionAndEvents.eventsById.values()];
     const eventsHtml = html `
-      <devtools-report-section-header>${i18nString(UIStrings.events)}</devtools-report-section-header>
+      <devtools-report-section-header role="heading" aria-level="2">${i18nString(UIStrings.events)}</devtools-report-section-header>
           ${events.length > 0 && onEventRowSelected ?
         html `
             <div class="device-bound-session-grid-wrapper">
-                <devtools-data-grid class="device-bound-session-events-grid" striped inline ${Directives.ref((el) => {
+                <devtools-data-grid class="device-bound-session-events-grid" striped inline name=${i18nString(UIStrings.events)} ${Directives.ref((el) => {
             if (!el || !(el instanceof HTMLElement)) {
                 return;
             }
@@ -639,9 +643,9 @@ export const DEFAULT_VIEW = (input, _output, target) => {
                 <table>
                   <thead>
                     <tr>
-                      <th id="type" weight="1" sortable>${i18nString(UIStrings.type)}</th>
-                      <th id="timestamp" weight="2" sortable>${i18nString(UIStrings.timestamp)}</th>
-                      <th id="details" weight="2" sortable>${i18nString(UIStrings.result)}</th>
+                      <th id="type" sortable>${i18nString(UIStrings.type)}</th>
+                      <th id="timestamp" sortable>${i18nString(UIStrings.timestamp)}</th>
+                      <th id="details" sortable>${i18nString(UIStrings.result)}</th>
                     </tr>
                   </thead>
                   <tbody>${events.map(({ event, timestamp }) => html `
@@ -713,7 +717,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
     ` :
         html `<div class="device-bound-session-no-event-details">${i18nString(UIStrings.selectEventToViewDetails)}</div>`;
     const eventDetailsHtml = html `
-      <devtools-report-section-header>${i18nString(UIStrings.eventDetails)}</devtools-report-section-header>
+      <devtools-report-section-header role="heading" aria-level="2">${i18nString(UIStrings.eventDetails)}</devtools-report-section-header>
       ${eventDetailsContentHtml}
   `;
     render(html `
@@ -721,11 +725,11 @@ export const DEFAULT_VIEW = (input, _output, target) => {
         <style>${deviceBoundSessionsViewStyles}</style>
         ${toolbarHtml}
         <devtools-split-view sidebar-position="second">
-          <div slot="main" class="device-bound-session-view-wrapper">
+          <div slot="main" class="device-bound-session-view-wrapper" role="region" aria-label=${i18nString(UIStrings.sessionDetails)}>
             ${sessionDetailsHtml || nothing}
             ${eventsHtml}
           </div>
-          <div slot="sidebar" class="device-bound-session-sidebar">
+          <div slot="sidebar" class="device-bound-session-sidebar" role="region" aria-label=${i18nString(UIStrings.eventDetails)}>
             ${eventDetailsHtml}
           </div>
         </devtools-split-view>`, target);

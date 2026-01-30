@@ -58,6 +58,12 @@ export class AiAgent {
     constructor(opts) {
         this.#aidaClient = opts.aidaClient;
         this.#serverSideLoggingEnabled = opts.serverSideLoggingEnabled ?? false;
+        // Disable logging for now.
+        // For context, see b/454563259#comment35.
+        // We should be able to remove this ~end of April.
+        if (Root.Runtime.hostConfig.devToolsGeminiRebranding?.enabled) {
+            this.#serverSideLoggingEnabled = false;
+        }
         this.#sessionId = opts.sessionId ?? crypto.randomUUID();
         this.confirmSideEffect = opts.confirmSideEffectForTest ?? (() => Promise.withResolvers());
     }

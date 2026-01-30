@@ -36,6 +36,12 @@ export class AiCodeGeneration {
     constructor(opts) {
         this.#aidaClient = opts.aidaClient;
         this.#serverSideLoggingEnabled = opts.serverSideLoggingEnabled ?? false;
+        // Disable logging for now.
+        // For context, see b/454563259#comment35.
+        // We should be able to remove this ~end of April.
+        if (Root.Runtime.hostConfig.devToolsGeminiRebranding?.enabled) {
+            this.#serverSideLoggingEnabled = false;
+        }
     }
     #buildRequest(prompt, preamble, inferenceLanguage = "JAVASCRIPT" /* Host.AidaClient.AidaInferenceLanguage.JAVASCRIPT */) {
         const userTier = Host.AidaClient.convertToUserTierEnum(this.#userTier);

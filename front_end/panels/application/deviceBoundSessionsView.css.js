@@ -9,7 +9,7 @@ export default `/*
  * found in the LICENSE file.
  */
 .device-bound-session-grid-wrapper {
-  padding: 0 20px 5px;
+  margin: 0 20px 5px;
 }
 
 .device-bound-session-grid-wrapper devtools-data-grid {

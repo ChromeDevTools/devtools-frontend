@@ -4,6 +4,7 @@
 
 import './BinaryResourceView.js';
 import './RequestConditionsDrawer.js';
+import './RequestDeviceBoundSessionsView.js';
 import './EventSourceMessagesView.js';
 import './NetworkConfigView.js';
 import './NetworkDataGridNode.js';
@@ -42,6 +43,7 @@ import * as NetworkSearchScope from './NetworkSearchScope.js';
 import * as NetworkWaterfallColumn from './NetworkWaterfallColumn.js';
 import * as RequestConditionsDrawer from './RequestConditionsDrawer.js';
 import * as RequestCookiesView from './RequestCookiesView.js';
+import * as RequestDeviceBoundSessionsView from './RequestDeviceBoundSessionsView.js';
 import * as RequestHTMLView from './RequestHTMLView.js';
 import * as RequestInitiatorView from './RequestInitiatorView.js';
 import * as RequestPayloadView from './RequestPayloadView.js';
@@ -68,6 +70,7 @@ export {
   NetworkWaterfallColumn,
   RequestConditionsDrawer,
   RequestCookiesView,
+  RequestDeviceBoundSessionsView,
   RequestHTMLView,
   RequestInitiatorView,
   RequestPayloadView,

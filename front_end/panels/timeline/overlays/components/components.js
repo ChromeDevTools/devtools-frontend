@@ -679,6 +679,9 @@ var str_2 = i18n3.i18n.registerUIStrings("panels/timeline/overlays/components/En
 var i18nString2 = i18n3.i18n.getLocalizedString.bind(void 0, str_2);
 var lockedString = i18n3.i18n.lockedString;
 function isAiAssistanceServerSideLoggingEnabled() {
+  if (Root.Runtime.hostConfig.devToolsGeminiRebranding?.enabled) {
+    return false;
+  }
   return !Root.Runtime.hostConfig.aidaAvailability?.disallowLogging;
 }
 var EntryLabelRemoveEvent = class _EntryLabelRemoveEvent extends Event {

@@ -1,7 +1,7 @@
 // Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
+/* eslint-disable @devtools/no-imperative-dom-api,@devtools/no-lit-render-outside-of-view */
 /*
  * Copyright (C) 2007, 2008 Apple Inc.  All rights reserved.
  * Copyright (C) IBM Corp. 2009  All rights reserved.
@@ -42,9 +42,11 @@ import objectPropertiesSectionStyles from '../../ui/legacy/components/object_ui/
 // eslint-disable-next-line @devtools/es-modules-import
 import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import { Directives, html, render } from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import requestPayloadTreeStyles from './requestPayloadTree.css.js';
 import requestPayloadViewStyles from './requestPayloadView.css.js';
+const { classMap } = Directives;
 const UIStrings = {
     /**
      * @description A context menu item Payload View of the Network panel to copy a parsed value.
@@ -148,34 +150,6 @@ export class RequestPayloadView extends UI.Widget.VBox {
             void contextMenu.show();
         });
     }
-    static formatParameter(value, className, decodeParameters) {
-        let errorDecoding = false;
-        if (decodeParameters) {
-            value = value.replace(/\+/g, ' ');
-            if (value.indexOf('%') >= 0) {
-                try {
-                    value = decodeURIComponent(value);
-                }
-                catch {
-                    errorDecoding = true;
-                }
-            }
-        }
-        const div = document.createElement('div');
-        if (className) {
-            div.className = className;
-        }
-        if (value === '') {
-            div.classList.add('empty-value');
-        }
-        if (errorDecoding) {
-            div.createChild('span', 'payload-decode-error').textContent = i18nString(UIStrings.unableToDecodeValue);
-        }
-        else {
-            div.textContent = value;
-        }
-        return div;
-    }
     refreshQueryString() {
         const queryString = this.request.queryString();
         const queryParameters = this.request.queryParameters;
@@ -244,28 +218,8 @@ export class RequestPayloadView extends UI.Widget.VBox {
         sourceTextElement.appendChild(showMoreButton);
     }
     refreshParams(title, params, sourceText, paramsTreeElement) {
-        paramsTreeElement.removeChildren();
-        paramsTreeElement.listItemElement.removeChildren();
-        paramsTreeElement.listItemElement.createChild('div', 'selection fill');
-        UI.UIUtils.createTextChild(paramsTreeElement.listItemElement, title);
-        const payloadCount = document.createElement('span');
-        payloadCount.classList.add('payload-count');
-        const numberOfParams = params ? params.length : 0;
-        payloadCount.textContent = `\xA0(${numberOfParams})`;
-        paramsTreeElement.listItemElement.appendChild(payloadCount);
-        const shouldViewSource = viewSourceForItems.has(paramsTreeElement);
-        if (shouldViewSource) {
-            this.appendParamsSource(title, params, sourceText, paramsTreeElement);
-        }
-        else {
-            this.appendParamsParsed(title, params, sourceText, paramsTreeElement);
-        }
-    }
-    appendParamsSource(title, params, sourceText, paramsTreeElement) {
-        this.populateTreeElementWithSourceText(paramsTreeElement, sourceText);
-        const listItemElement = paramsTreeElement.listItemElement;
         const viewParsed = function (event) {
-            listItemElement.removeEventListener('contextmenu', viewParsedContextMenu);
+            paramsTreeElement.listItemElement.removeEventListener('contextmenu', viewParsedContextMenu);
             viewSourceForItems.delete(paramsTreeElement);
             this.refreshParams(title, params, sourceText, paramsTreeElement);
             event.consume();
@@ -278,35 +232,14 @@ export class RequestPayloadView extends UI.Widget.VBox {
             contextMenu.newSection().appendItem(i18nString(UIStrings.viewParsed), viewParsed.bind(this, event), { jslogContext: 'view-parsed' });
             void contextMenu.show();
         };
-        const viewParsedButton = this.createViewSourceToggle(/* viewSource */ true, viewParsed.bind(this));
-        listItemElement.appendChild(viewParsedButton);
-        listItemElement.addEventListener('contextmenu', viewParsedContextMenu);
-    }
-    appendParamsParsed(title, params, sourceText, paramsTreeElement) {
-        for (const param of params || []) {
-            const paramNameValue = document.createDocumentFragment();
-            if (param.name !== '') {
-                const name = RequestPayloadView.formatParameter(param.name, 'payload-name', this.decodeRequestParameters);
-                const value = RequestPayloadView.formatParameter(param.value, 'payload-value source-code', this.decodeRequestParameters);
-                paramNameValue.appendChild(name);
-                paramNameValue.appendChild(value);
-            }
-            else {
-                paramNameValue.appendChild(RequestPayloadView.formatParameter(i18nString(UIStrings.empty), 'empty-request-payload', this.decodeRequestParameters));
-            }
-            const paramTreeElement = new UI.TreeOutline.TreeElement(paramNameValue);
-            this.addEntryContextMenuHandler(paramTreeElement, i18nString(UIStrings.copyValue), 'copy-value', () => decodeURIComponent(param.value));
-            paramsTreeElement.appendChild(paramTreeElement);
-        }
-        const listItemElement = paramsTreeElement.listItemElement;
         const viewSource = function (event) {
-            listItemElement.removeEventListener('contextmenu', viewSourceContextMenu);
+            paramsTreeElement.listItemElement.removeEventListener('contextmenu', viewSourceContextMenu);
             viewSourceForItems.add(paramsTreeElement);
             this.refreshParams(title, params, sourceText, paramsTreeElement);
             event.consume();
         };
         const toggleURLDecoding = function (event) {
-            listItemElement.removeEventListener('contextmenu', viewSourceContextMenu);
+            paramsTreeElement.listItemElement.removeEventListener('contextmenu', viewSourceContextMenu);
             this.toggleURLDecoding(event);
         };
         const viewSourceContextMenu = (event) => {
@@ -320,12 +253,59 @@ export class RequestPayloadView extends UI.Widget.VBox {
             section.appendItem(viewURLEncodedText, toggleURLDecoding.bind(this, event), { jslogContext: 'toggle-url-decoding' });
             void contextMenu.show();
         };
-        const viewSourceButton = this.createViewSourceToggle(/* viewSource */ false, viewSource.bind(this));
-        listItemElement.appendChild(viewSourceButton);
-        const toggleTitle = this.decodeRequestParameters ? i18nString(UIStrings.viewUrlEncoded) : i18nString(UIStrings.viewDecoded);
-        const toggleButton = UI.UIUtils.createTextButton(toggleTitle, toggleURLDecoding.bind(this), { jslogContext: 'decode-encode', className: 'payload-toggle' });
-        listItemElement.appendChild(toggleButton);
-        listItemElement.addEventListener('contextmenu', viewSourceContextMenu);
+        const count = `\xA0(${params?.length ?? 0})`;
+        const shouldViewSource = viewSourceForItems.has(paramsTreeElement);
+        render(html `<div class="selection fill"></div>${title}<span class=payload-count>${count}</span>${shouldViewSource ? this.createViewSourceToggle(/* viewSource */ true, viewParsed.bind(this)) :
+            html `${this.createViewSourceToggle(/* viewSource */ false, viewSource.bind(this))}
+      <devtools-button
+        class=payload-toggle
+        jslogi=${VisualLogging.action().track({ click: true }).context('decode-encode')}
+        .variant=${"outlined" /* Buttons.Button.Variant.OUTLINED */}
+        @click=${toggleURLDecoding.bind(this)}>
+        ${this.decodeRequestParameters ? i18nString(UIStrings.viewUrlEncoded) : i18nString(UIStrings.viewDecoded)}
+      </devtools-button>`}`, paramsTreeElement.listItemElement);
+        paramsTreeElement.removeChildren();
+        if (shouldViewSource) {
+            this.populateTreeElementWithSourceText(paramsTreeElement, sourceText);
+            paramsTreeElement.listItemElement.addEventListener('contextmenu', viewParsedContextMenu);
+        }
+        else {
+            this.populateTreeElementWithParsedParameters(paramsTreeElement, params);
+            paramsTreeElement.listItemElement.addEventListener('contextmenu', viewSourceContextMenu);
+        }
+    }
+    static formatParameter(value, className, decodeParameters) {
+        let errorDecoding = false;
+        if (decodeParameters) {
+            value = value.replace(/\+/g, ' ');
+            if (value.indexOf('%') >= 0) {
+                try {
+                    value = decodeURIComponent(value);
+                }
+                catch {
+                    errorDecoding = true;
+                }
+            }
+        }
+        const classes = classMap({ [className]: !!className, 'empty-value': value === '' });
+        return html `<div class=${classes}>
+      ${errorDecoding ? html `<span class=payload-decode-error>${i18nString(UIStrings.unableToDecodeValue)}</span>` :
+            value}
+    </div>`;
+    }
+    populateTreeElementWithParsedParameters(paramsTreeElement, params) {
+        for (const param of params || []) {
+            const paramNameValue = document.createDocumentFragment();
+            if (param.name !== '') {
+                render(html `${RequestPayloadView.formatParameter(param.name, 'payload-name', this.decodeRequestParameters)}${RequestPayloadView.formatParameter(param.value, 'payload-value source-code', this.decodeRequestParameters)}`, paramNameValue);
+            }
+            else {
+                render(RequestPayloadView.formatParameter(i18nString(UIStrings.empty), 'empty-request-payload', this.decodeRequestParameters), paramNameValue);
+            }
+            const paramTreeElement = new UI.TreeOutline.TreeElement(paramNameValue);
+            this.addEntryContextMenuHandler(paramTreeElement, i18nString(UIStrings.copyValue), 'copy-value', () => decodeURIComponent(param.value));
+            paramsTreeElement.appendChild(paramTreeElement);
+        }
     }
     // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -818,7 +818,7 @@ export class NetworkDispatcher {
     }
     requestIntercepted({}) {
     }
-    requestWillBeSentExtraInfo({ requestId, associatedCookies, headers, clientSecurityState, connectTiming, siteHasCookieInOtherPartition, appliedNetworkConditionsId }) {
+    requestWillBeSentExtraInfo({ requestId, associatedCookies, headers, deviceBoundSessionUsages, clientSecurityState, connectTiming, siteHasCookieInOtherPartition, appliedNetworkConditionsId }) {
         const blockedRequestCookies = [];
         const includedRequestCookies = [];
         for (const { blockedReasons, exemptionReason, cookie } of associatedCookies) {
@@ -833,6 +833,7 @@ export class NetworkDispatcher {
             blockedRequestCookies,
             includedRequestCookies,
             requestHeaders: this.headersMapToHeadersArray(headers),
+            deviceBoundSessionUsages,
             clientSecurityState,
             connectTiming,
             siteHasCookieInOtherPartition,

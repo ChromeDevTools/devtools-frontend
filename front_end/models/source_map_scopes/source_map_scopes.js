@@ -204,7 +204,6 @@ __export(NamesResolver_exports, {
   setScopeResolvedForTest: () => setScopeResolvedForTest
 });
 import * as Common from "./../../core/common/common.js";
-import * as Root from "./../../core/root/root.js";
 import * as SDK2 from "./../../core/sdk/sdk.js";
 import * as Bindings2 from "./../bindings/bindings.js";
 import * as Formatter2 from "./../formatter/formatter.js";
@@ -469,11 +468,7 @@ var resolveScope = async (script, scopeChain) => {
 };
 var resolveScopeChain = async function(callFrame) {
   const { pluginManager } = Bindings2.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
-  let scopeChain = await pluginManager.resolveScopeChain(callFrame);
-  if (scopeChain) {
-    return scopeChain;
-  }
-  scopeChain = Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.USE_SOURCE_MAP_SCOPES) ? callFrame.script.sourceMap()?.resolveScopeChain(callFrame) : null;
+  const scopeChain = await pluginManager.resolveScopeChain(callFrame);
   if (scopeChain) {
     return scopeChain;
   }

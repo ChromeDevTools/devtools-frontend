@@ -157,7 +157,8 @@ export class SourceMapScopesInfo {
         return Boolean(this.#originalScopes[sourceIdx]);
     }
     isEmpty() {
-        return !this.#originalScopes.length && !this.#generatedRanges.length;
+        const noScopes = this.#originalScopes.every(scope => scope === null);
+        return noScopes && !this.#generatedRanges.length;
     }
     addOriginalScopesAtIndex(sourceIdx, scope) {
         if (!this.#originalScopes[sourceIdx]) {

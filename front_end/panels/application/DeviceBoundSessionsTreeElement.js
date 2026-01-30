@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 import * as i18n from '../../core/i18n/i18n.js';
 import { createIcon } from '../../ui/kit/kit.js';
+import * as UI from '../../ui/legacy/legacy.js';
 import { ApplicationPanelTreeElement } from './ApplicationPanelTreeElement.js';
 const UIStrings = {
     /**
@@ -35,6 +36,16 @@ const UIStrings = {
      * linked to a session.
      */
     noSession: 'No session',
+    /**
+     *@description Tooltip text for a terminated session.
+     *@example {session_1} sessionName
+     */
+    terminatedSession: '{sessionName}, Session terminated',
+    /**
+     *@description Tooltip text for a session with errors.
+     *@example {session_1} sessionName
+     */
+    sessionWithErrors: '{sessionName}, Session has errors',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/DeviceBoundSessionsTreeElement.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -94,13 +105,24 @@ export class RootTreeElement extends ApplicationPanelTreeElement {
         }
     }
     #updateElementIconAndStyling(sessionElement, isSessionTerminated, sessionHasErrors) {
+        const title = sessionElement.title;
         if (isSessionTerminated) {
             sessionElement.listItemElement.classList.add('device-bound-session-terminated');
             sessionElement.setLeadingIcons([createIcon('database-off')]);
+            const terminatedTitle = i18nString(UIStrings.terminatedSession, { sessionName: title });
+            UI.ARIAUtils.setLabel(sessionElement.listItemElement, terminatedTitle);
             return;
         }
         sessionElement.listItemElement.classList.remove('device-bound-session-terminated');
-        sessionElement.setLeadingIcons([createIcon(sessionHasErrors ? 'warning' : 'database')]);
+        if (sessionHasErrors) {
+            sessionElement.setLeadingIcons([createIcon('warning')]);
+            const errorTitle = i18nString(UIStrings.sessionWithErrors, { sessionName: title });
+            UI.ARIAUtils.setLabel(sessionElement.listItemElement, errorTitle);
+        }
+        else {
+            sessionElement.setLeadingIcons([createIcon('database')]);
+            UI.ARIAUtils.setLabel(sessionElement.listItemElement, title);
+        }
     }
     #updateIconAndStyling(site, sessionId) {
         const isSessionTerminated = this.#model.isSessionTerminated(site, sessionId);

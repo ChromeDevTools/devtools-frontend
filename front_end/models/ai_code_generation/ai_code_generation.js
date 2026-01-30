@@ -60,6 +60,9 @@ var AiCodeGeneration = class {
   constructor(opts) {
     this.#aidaClient = opts.aidaClient;
     this.#serverSideLoggingEnabled = opts.serverSideLoggingEnabled ?? false;
+    if (Root.Runtime.hostConfig.devToolsGeminiRebranding?.enabled) {
+      this.#serverSideLoggingEnabled = false;
+    }
   }
   #buildRequest(prompt, preamble, inferenceLanguage = "JAVASCRIPT") {
     const userTier = Host.AidaClient.convertToUserTierEnum(this.#userTier);

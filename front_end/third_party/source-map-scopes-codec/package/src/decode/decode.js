@@ -17,14 +17,19 @@ export function decode(sourceMap, options = DEFAULT_DECODE_OPTIONS) {
     return decodeMap(sourceMap, opts);
 }
 function decodeMap(sourceMap, options) {
-    if (!sourceMap.scopes || !sourceMap.names)
-        return { scopes: [], ranges: [] };
+    if (!sourceMap.scopes || !sourceMap.names) {
+        return { scopes: [], ranges: [], hasVariableAndBindingInfo: false };
+    }
     return new Decoder(sourceMap.scopes, sourceMap.names, options).decode();
 }
 function decodeIndexMap(sourceMap, options) {
-    const scopeInfo = { scopes: [], ranges: [] };
+    const scopeInfo = {
+        scopes: [],
+        ranges: [],
+        hasVariableAndBindingInfo: false,
+    };
     for (const section of sourceMap.sections) {
-        const { scopes, ranges } = decode(section.map, {
+        const { scopes, ranges, hasVariableAndBindingInfo } = decode(section.map, {
             ...options,
             generatedOffset: section.offset,
         });
@@ -32,6 +37,7 @@ function decodeIndexMap(sourceMap, options) {
             scopeInfo.scopes.push(scope);
         for (const range of ranges)
             scopeInfo.ranges.push(range);
+        scopeInfo.hasVariableAndBindingInfo ||= hasVariableAndBindingInfo;
     }
     return scopeInfo;
 }
@@ -59,6 +65,8 @@ class Decoder {
     #rangeStack = [];
     #flatOriginalScopes = [];
     #subRangeBindingsForRange = new Map();
+    #seenOriginalScopeVariables = false;
+    #seenGeneratedRangeBindings = false;
     constructor(scopes, names, options) {
         this.#encodedScopes = scopes;
         this.#names = names;
@@ -96,6 +104,7 @@ class Decoder {
                         variableIdxs.push(iter.nextSignedVLQ());
                     }
                     this.#handleOriginalScopeVariablesItem(variableIdxs);
+                    this.#seenOriginalScopeVariables = true;
                     break;
                 }
                 case 2 /* Tag.ORIGINAL_SCOPE_END */: {
@@ -138,6 +147,7 @@ class Decoder {
                         valueIdxs.push(iter.nextUnsignedVLQ());
                     }
                     this.#handleGeneratedRangeBindingsItem(valueIdxs);
+                    this.#seenGeneratedRangeBindings = true;
                     break;
                 }
                 case 7 /* Tag.GENERATED_RANGE_SUBRANGE_BINDING */: {
@@ -151,6 +161,7 @@ class Decoder {
                         ]);
                     }
                     this.#recordGeneratedSubRangeBindingItem(variableIndex, bindings);
+                    this.#seenGeneratedRangeBindings = true;
                     break;
                 }
                 case 8 /* Tag.GENERATED_RANGE_CALL_SITE */: {
@@ -178,10 +189,17 @@ class Decoder {
         if (this.#rangeStack.length > 0) {
             this.#throwInStrictMode("Encountered GENERATED_RANGE_START without matching END!");
         }
-        const info = { scopes: this.#scopes, ranges: this.#ranges };
+        const info = {
+            scopes: this.#scopes,
+            ranges: this.#ranges,
+            hasVariableAndBindingInfo: this.#seenOriginalScopeVariables &&
+                this.#seenGeneratedRangeBindings,
+        };
         this.#scopes = [];
         this.#ranges = [];
         this.#flatOriginalScopes = [];
+        this.#seenOriginalScopeVariables = false;
+        this.#seenGeneratedRangeBindings = false;
         return info;
     }
     #throwInStrictMode(message) {

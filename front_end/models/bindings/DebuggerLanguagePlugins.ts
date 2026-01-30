@@ -792,26 +792,18 @@ export class DebuggerLanguagePluginManager implements
         const rawLocation = new SDK.DebuggerModel.Location(
             script.debuggerModel, script.scriptId, frame.lineNumber, frame.columnNumber, index);
         const uiLocation = await this.rawLocationToUILocation(rawLocation);
-        return {
-          uiSourceCode: uiLocation?.uiSourceCode,
-          url: uiLocation ? undefined : frame.url,
-          name,
-          line: uiLocation?.lineNumber ?? frame.lineNumber,
-          column: uiLocation?.columnNumber ?? frame.columnNumber,
-        };
+        return translatedFromUILocation(uiLocation, name, frame);
       });
 
       translatedFrames.push(await Promise.all(framePromises));
       return true;
     }
 
-    // Identity map the frame, then add the missing debug info details.
-    const mappedFrame: (typeof translatedFrames)[number][number] = {
-      url: frame.url,
-      name: frame.functionName,
-      line: frame.lineNumber,
-      column: frame.columnNumber,
-    };
+    // Translate the location only. We go through via "DebuggerWorkspaceBinding". It'll still try the plugin
+    // first, but this way, we'll get a UISourceCode for the raw script if the plugin fails to translate.
+    const uiLocation = await this.#debuggerWorkspaceBinding.rawLocationToUILocation(
+        new SDK.DebuggerModel.Location(script.debuggerModel, script.scriptId, frame.lineNumber, frame.columnNumber));
+    const mappedFrame = translatedFromUILocation(uiLocation, frame.functionName, frame);
 
     if ('missingSymbolFiles' in functionInfo && functionInfo.missingSymbolFiles.length) {
       translatedFrames.push([{
@@ -831,6 +823,27 @@ export class DebuggerLanguagePluginManager implements
     }
 
     return true;
+
+    function translatedFromUILocation(
+        uiLocation: Workspace.UISourceCode.UILocation|null, name: string|undefined,
+        fallback: StackTraceImpl.Trie.RawFrame): (typeof translatedFrames)[number][number] {
+      if (uiLocation) {
+        return {
+          uiSourceCode: uiLocation.uiSourceCode,
+          url: undefined,
+          name,
+          line: uiLocation.lineNumber,
+          column: uiLocation.columnNumber ?? -1,
+        };
+      }
+      return {
+        uiSourceCode: undefined,
+        url: fallback.url,
+        name: fallback.functionName,
+        line: fallback.lineNumber,
+        column: fallback.columnNumber,
+      };
+    }
   }
 
   scriptsForUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): SDK.Script.Script[] {

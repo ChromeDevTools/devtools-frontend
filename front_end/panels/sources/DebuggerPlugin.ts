@@ -31,6 +31,7 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import {AddDebugInfoURLDialog} from './AddSourceMapURLDialog.js';
 import {BreakpointEditDialog} from './BreakpointEditDialog.js';
 import {BreakpointsSidebarController} from './BreakpointsView.js';
+import {convertMissingDebugInfo} from './CallStackSidebarPane.js';
 import {Plugin} from './Plugin.js';
 import {SourcesPanel} from './SourcesPanel.js';
 
@@ -1439,7 +1440,9 @@ export class DebuggerPlugin extends Plugin {
     });
   }
 
-  private updateMissingDebugInfoInfobar(warning: SDK.DebuggerModel.MissingDebugInfoDetails|null): void {
+  private updateMissingDebugInfoInfobar(
+      warning: {resources: SDK.DebuggerModel.MissingDebugFiles[], details: Platform.UIString.LocalizedString}|
+      null): void {
     if (this.missingDebugInfoBar) {
       return;
     }
@@ -1658,7 +1661,12 @@ export class DebuggerPlugin extends Plugin {
       const uiLocation = new Workspace.UISourceCode.UILocation(
           frameFlavor.frame.uiSourceCode, frameFlavor.frame.line, frameFlavor.frame.column);
       this.setExecutionLocation(uiLocation);
-      this.updateMissingDebugInfoInfobar(frameFlavor.sdkFrame.missingDebugInfoDetails);
+      if (frameFlavor.sdkFrame.missingDebugInfoDetails) {
+        this.updateMissingDebugInfoInfobar(
+            convertMissingDebugInfo(frameFlavor.sdkFrame.missingDebugInfoDetails, frameFlavor.sdkFrame.functionName));
+      } else {
+        this.updateMissingDebugInfoInfobar(null);
+      }
       // We are paused and the user is specifically looking at this UISourceCode either because
       // this file is on top of stack, or the user explicitly selected a stack frame for this UISourceCode.
       this.#recordSourcesPanelDebuggedMetrics();

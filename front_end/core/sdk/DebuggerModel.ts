@@ -1186,10 +1186,20 @@ export interface MissingDebugFiles {
   initiator: PageResourceLoadInitiator;
 }
 
-export interface MissingDebugInfoDetails {
-  details: string;
-  resources: MissingDebugFiles[];
+export const enum MissingDebugInfoType {
+  /** No debug information at all for the call frame */
+  NO_INFO = 'NO_INFO',
+
+  /** Some debug information available, but it references files with debug information we were not able to retrieve */
+  PARTIAL_INFO = 'PARTIAL_INFO',
 }
+
+export type MissingDebugInfo = {
+  type: MissingDebugInfoType.NO_INFO,
+}|{
+  type: MissingDebugInfoType.PARTIAL_INFO,
+  missingDebugFiles: MissingDebugFiles[],
+};
 
 export class CallFrame {
   debuggerModel: DebuggerModel;
@@ -1202,7 +1212,7 @@ export class CallFrame {
   readonly functionName: string;
   readonly #functionLocation: Location|undefined;
   #returnValue: RemoteObject|null;
-  missingDebugInfoDetails: MissingDebugInfoDetails|null;
+  missingDebugInfoDetails: MissingDebugInfo|null;
   readonly exception: RemoteObject|null;
 
   readonly canBeRestarted: boolean;

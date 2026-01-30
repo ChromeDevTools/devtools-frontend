@@ -88,6 +88,16 @@ const UIStrings = {
    * The user opens this context menu by selecting a specific call frame in the call stack sidebar pane.
    */
   restartFrame: 'Restart frame',
+  /**
+   * @description Error message that is displayed in UI debugging information cannot be found for a call frame
+   * @example {main} PH1
+   */
+  failedToLoadDebugSymbolsForFunction: 'No debug information for function "{PH1}"',
+  /**
+   * @description Error message that is displayed in UI when a file needed for debugging information for a call frame is missing
+   * @example {mainp.debug.wasm.dwp} PH1
+   */
+  debugSymbolsIncomplete: 'The debug information for function {PH1} is incomplete',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/sources/CallStackSidebarPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -257,7 +267,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
           Item.createForDebuggerCallFrame(frame, this.locationPool, this.refreshItem.bind(this), this.list);
       itemPromises.push(itemPromise);
       if (frame.missingDebugInfoDetails) {
-        uniqueWarnings.add(frame.missingDebugInfoDetails.details);
+        uniqueWarnings.add(convertMissingDebugInfo(frame.missingDebugInfoDetails, frame.functionName).details);
       }
     }
     const items = await Promise.all(itemPromises);
@@ -369,9 +379,10 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
       const icon = new Icon();
       icon.name = 'warning-filled';
       icon.classList.add('call-frame-warning-icon', 'small');
-      const messages = callframe.missingDebugInfoDetails.resources.map(
+      const {resources, details} = convertMissingDebugInfo(callframe.missingDebugInfoDetails, callframe.functionName);
+      const messages = resources.map(
           r => i18nString(UIStrings.debugFileNotFound, {PH1: Common.ParsedURL.ParsedURL.extractName(r.resourceUrl)}));
-      UI.Tooltip.Tooltip.install(icon, [callframe.missingDebugInfoDetails.details, ...messages].join('\n'));
+      UI.Tooltip.Tooltip.install(icon, [details, ...messages].join('\n'));
       element.appendChild(icon);
     }
     return element;
@@ -648,5 +659,22 @@ export class Item {
     }
 
     this.updateDelegate(this);
+  }
+}
+
+export function convertMissingDebugInfo(
+    missingDebugInfo: SDK.DebuggerModel.MissingDebugInfo, functionName: string|undefined):
+    {details: Platform.UIString.LocalizedString, resources: SDK.DebuggerModel.MissingDebugFiles[]} {
+  switch (missingDebugInfo.type) {
+    case SDK.DebuggerModel.MissingDebugInfoType.PARTIAL_INFO:
+      return {
+        details: i18nString(UIStrings.debugSymbolsIncomplete, {PH1: functionName ?? ''}),
+        resources: missingDebugInfo.missingDebugFiles
+      };
+    case SDK.DebuggerModel.MissingDebugInfoType.NO_INFO:
+      return {
+        details: i18nString(UIStrings.failedToLoadDebugSymbolsForFunction, {PH1: functionName ?? ''}),
+        resources: []
+      };
   }
 }

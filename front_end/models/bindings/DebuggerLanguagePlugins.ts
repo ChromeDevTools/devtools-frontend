@@ -58,16 +58,6 @@ const UIStrings = {
    * @example {File not found} PH3
    */
   failedToLoadDebugSymbolsFor: '[{PH1}] Failed to load debug symbols for {PH2} ({PH3})',
-  /**
-   * @description Error message that is displayed in UI debugging information cannot be found for a call frame
-   * @example {main} PH1
-   */
-  failedToLoadDebugSymbolsForFunction: 'No debug information for function "{PH1}"',
-  /**
-   * @description Error message that is displayed in UI when a file needed for debugging information for a call frame is missing
-   * @example {mainp.debug.wasm.dwp} PH1
-   */
-  debugSymbolsIncomplete: 'The debug information for function {PH1} is incomplete',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('models/bindings/DebuggerLanguagePlugins.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -508,14 +498,12 @@ export class DebuggerLanguagePluginManager implements
               return functionInfo.frames.map(({name}, index) => callFrame.createVirtualCallFrame(index, name));
             }
             if ('missingSymbolFiles' in functionInfo && functionInfo.missingSymbolFiles.length) {
-              const resources = functionInfo.missingSymbolFiles;
-              const details = i18nString(UIStrings.debugSymbolsIncomplete, {PH1: callFrame.functionName});
-              callFrame.missingDebugInfoDetails = {details, resources};
-            } else {
               callFrame.missingDebugInfoDetails = {
-                details: i18nString(UIStrings.failedToLoadDebugSymbolsForFunction, {PH1: callFrame.functionName}),
-                resources: [],
+                type: SDK.DebuggerModel.MissingDebugInfoType.PARTIAL_INFO,
+                missingDebugFiles: functionInfo.missingSymbolFiles,
               };
+            } else {
+              callFrame.missingDebugInfoDetails = {type: SDK.DebuggerModel.MissingDebugInfoType.NO_INFO};
             }
           }
           return callFrame;

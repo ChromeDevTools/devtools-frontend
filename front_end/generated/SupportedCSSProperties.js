@@ -499,6 +499,7 @@ export const generatedProperties = [
    "font-variation-settings",
    "font-weight",
    "forced-color-adjust",
+   "frame-sizing",
    "gap-rule-overlap",
    "grid-auto-columns",
    "grid-auto-flow",
@@ -2596,6 +2597,16 @@ export const generatedProperties = [
    "preserve-parent-color"
   ],
   "name": "forced-color-adjust"
+ },
+ {
+  "keywords": [
+   "auto",
+   "content-width",
+   "content-height",
+   "content-block-size",
+   "content-inline-size"
+  ],
+  "name": "frame-sizing"
  },
  {
   "longhands": [
@@ -6032,6 +6043,15 @@ export const generatedPropertyValues = {
    "auto",
    "none",
    "preserve-parent-color"
+  ]
+ },
+ "frame-sizing": {
+  "values": [
+   "auto",
+   "content-width",
+   "content-height",
+   "content-block-size",
+   "content-inline-size"
   ]
  },
  "gap-rule-overlap": {

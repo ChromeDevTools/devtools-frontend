@@ -7138,6 +7138,10 @@ export const NativeFunctions = [
     signatures: [["?options"]]
   },
   {
+    name: "deferPageSwap",
+    signatures: [["options"]]
+  },
+  {
     name: "NavigationCurrentEntryChangeEvent",
     signatures: [["type","eventInit"]]
   },

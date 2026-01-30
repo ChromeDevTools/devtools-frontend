@@ -646,7 +646,7 @@ export class StepEditor extends LitElement {
   #renderTypeRow(editable: boolean): Lit.TemplateResult {
     this.#renderedAttributes.add('type');
     // clang-format off
-    return html`<div class="row attribute" data-attribute="type" jslog=${VisualLogging.treeItem('type')}>
+    return html`<div class="row attribute" data-attribute="type" jslog=${VisualLogging.treeItem('type').track({resize: true})}>
       <div id="type">type<span class="separator">:</span></div>
       <devtools-suggestion-input
         aria-labelledby="type"
@@ -667,7 +667,7 @@ export class StepEditor extends LitElement {
       return;
     }
     // clang-format off
-    return html`<div class="row attribute" data-attribute=${attribute} jslog=${VisualLogging.treeItem(Platform.StringUtilities.toKebabCase(attribute))}>
+    return html`<div class="row attribute" data-attribute=${attribute} jslog=${VisualLogging.treeItem(Platform.StringUtilities.toKebabCase(attribute)).track({resize: true})}>
       <div id=${attribute}>${attribute}<span class="separator">:</span></div>
       <devtools-suggestion-input
         .disabled=${this.disabled}
@@ -706,7 +706,7 @@ export class StepEditor extends LitElement {
     }
     // clang-format off
     return html`
-      <div class="attribute" data-attribute="frame" jslog=${VisualLogging.treeItem('frame')}>
+      <div class="attribute" data-attribute="frame" jslog=${VisualLogging.treeItem('frame').track({resize: true})}>
         <div class="row">
           <div id="frame">frame<span class="separator">:</span></div>
           ${this.#renderDeleteButton('frame')}

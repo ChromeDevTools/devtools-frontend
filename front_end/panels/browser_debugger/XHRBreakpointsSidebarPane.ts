@@ -238,6 +238,7 @@ export class XHRBreakpointsSidebarPane extends UI.Widget.VBox implements UI.Cont
     listItemElement.setAttribute('jslog', `${VisualLogging.item().track({
                                    click: true,
                                    dblclick: true,
+                                   resize: true,
                                    keydown: 'ArrowUp|ArrowDown|PageUp|PageDown|Enter|Space',
                                  })}`);
     return listItemElement;

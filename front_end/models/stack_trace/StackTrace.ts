@@ -65,29 +65,23 @@ export interface EventTypes {
 
 /**
  * A small wrapper around a DebuggableFrame usable as a UI.Context flavor.
- * This is necessary as Frame and DebuggableFrame are updated in place, but
- * for UI.Context we need a new instance.
+ * This is necessary as DebuggableFrame are just interfaces and the impl classes are hidden.
+ *
+ * Moreover, re-translation creates a new DebuggableFrame instance even though the
+ * translation result stays the same, in which case we don't need a new instance for the flavor.
  */
-export class DebuggableFrameFlavor implements DebuggableFrame {
+export class DebuggableFrameFlavor {
   static #last?: DebuggableFrameFlavor;
 
-  readonly url?: string;
-  readonly uiSourceCode?: Workspace.UISourceCode.UISourceCode;
-  readonly name?: string;
-  readonly line: number;
-  readonly column: number;
-  readonly missingDebugInfo?: MissingDebugInfo;
-  readonly sdkFrame: SDK.DebuggerModel.CallFrame;
+  readonly frame: DebuggableFrame;
 
   /** Use the static {@link for}. Only public to satisfy the `setFlavor` Ctor type  */
   constructor(frame: DebuggableFrame) {
-    this.url = frame.url;
-    this.uiSourceCode = frame.uiSourceCode;
-    this.name = frame.name;
-    this.line = frame.line;
-    this.column = frame.column;
-    this.missingDebugInfo = frame.missingDebugInfo;
-    this.sdkFrame = frame.sdkFrame;
+    this.frame = frame;
+  }
+
+  get sdkFrame(): SDK.DebuggerModel.CallFrame {
+    return this.frame.sdkFrame;
   }
 
   /** @returns the same instance of DebuggableFrameFlavor for repeated calls with the same (i.e. deep equal) DebuggableFrame */
@@ -97,7 +91,7 @@ export class DebuggableFrameFlavor implements DebuggableFrame {
           a.column === b.column && a.sdkFrame === b.sdkFrame;
     }
 
-    if (!DebuggableFrameFlavor.#last || !equals(DebuggableFrameFlavor.#last, frame)) {
+    if (!DebuggableFrameFlavor.#last || !equals(DebuggableFrameFlavor.#last.frame, frame)) {
       DebuggableFrameFlavor.#last = new DebuggableFrameFlavor(frame);
     }
     return DebuggableFrameFlavor.#last;

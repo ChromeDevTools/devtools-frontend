@@ -27,8 +27,7 @@ describe('DebuggableFrameFlavor for', () => {
     } satisfies StackTrace.StackTrace.DebuggableFrame;
     const flavor1 = StackTrace.StackTrace.DebuggableFrameFlavor.for(frame);
 
-    frame.line = 30;
-    const flavor2 = StackTrace.StackTrace.DebuggableFrameFlavor.for(frame);
+    const flavor2 = StackTrace.StackTrace.DebuggableFrameFlavor.for({...frame, line: 30});
 
     assert.notStrictEqual(flavor2, flavor1);
   });

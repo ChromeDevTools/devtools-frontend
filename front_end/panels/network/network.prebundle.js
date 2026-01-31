@@ -50,6 +50,7 @@ import * as RequestResponseView from './RequestResponseView.js';
 import * as RequestTimingView from './RequestTimingView.js';
 import * as ResourceDirectSocketChunkView from './ResourceDirectSocketChunkView.js';
 import * as ResourceWebSocketFrameView from './ResourceWebSocketFrameView.js';
+import * as ShowMoreDetailsWidget from './ShowMoreDetailsWidget.js';
 import * as SignedExchangeInfoView from './SignedExchangeInfoView.js';
-export { BinaryResourceView, EventSourceMessagesView, NetworkConfigView, NetworkDataGridNode, NetworkFrameGrouper, NetworkItemView, NetworkLogView, NetworkLogViewColumns, NetworkManageCustomHeadersView, NetworkOverview, NetworkPanel, NetworkSearchScope, NetworkWaterfallColumn, RequestConditionsDrawer, RequestCookiesView, RequestDeviceBoundSessionsView, RequestHTMLView, RequestInitiatorView, RequestPayloadView, RequestPreviewView, RequestResponseView, RequestTimingView, ResourceDirectSocketChunkView, ResourceWebSocketFrameView, SignedExchangeInfoView, };
+export { BinaryResourceView, EventSourceMessagesView, NetworkConfigView, NetworkDataGridNode, NetworkFrameGrouper, NetworkItemView, NetworkLogView, NetworkLogViewColumns, NetworkManageCustomHeadersView, NetworkOverview, NetworkPanel, NetworkSearchScope, NetworkWaterfallColumn, RequestConditionsDrawer, RequestCookiesView, RequestDeviceBoundSessionsView, RequestHTMLView, RequestInitiatorView, RequestPayloadView, RequestPreviewView, RequestResponseView, RequestTimingView, ResourceDirectSocketChunkView, ResourceWebSocketFrameView, ShowMoreDetailsWidget, SignedExchangeInfoView, };
 //# sourceMappingURL=network.prebundle.js.map

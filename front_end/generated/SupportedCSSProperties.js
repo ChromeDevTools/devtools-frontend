@@ -498,6 +498,7 @@ export const generatedProperties = [
             "font-variation-settings",
             "font-weight",
             "forced-color-adjust",
+            "frame-sizing",
             "gap-rule-overlap",
             "grid-auto-columns",
             "grid-auto-flow",
@@ -517,6 +518,7 @@ export const generatedProperties = [
             "hyphenate-character",
             "hyphenate-limit-chars",
             "hyphens",
+            "image-animation",
             "image-orientation",
             "image-rendering",
             "inherits",
@@ -2597,6 +2599,16 @@ export const generatedProperties = [
         "name": "forced-color-adjust"
     },
     {
+        "keywords": [
+            "auto",
+            "content-width",
+            "content-height",
+            "content-block-size",
+            "content-inline-size"
+        ],
+        "name": "frame-sizing"
+    },
+    {
         "longhands": [
             "row-gap",
             "column-gap"
@@ -2777,6 +2789,15 @@ export const generatedProperties = [
             "auto"
         ],
         "name": "hyphens"
+    },
+    {
+        "inherited": true,
+        "keywords": [
+            "normal",
+            "running",
+            "paused"
+        ],
+        "name": "image-animation"
     },
     {
         "inherited": true,
@@ -6033,6 +6054,15 @@ export const generatedPropertyValues = {
             "preserve-parent-color"
         ]
     },
+    "frame-sizing": {
+        "values": [
+            "auto",
+            "content-width",
+            "content-height",
+            "content-block-size",
+            "content-inline-size"
+        ]
+    },
     "gap-rule-overlap": {
         "values": [
             "row-over-column",
@@ -6127,6 +6157,13 @@ export const generatedPropertyValues = {
             "none",
             "manual",
             "auto"
+        ]
+    },
+    "image-animation": {
+        "values": [
+            "normal",
+            "running",
+            "paused"
         ]
     },
     "image-rendering": {

@@ -2162,6 +2162,7 @@ __export(CallStackSidebarPane_exports, {
   ActionDelegate: () => ActionDelegate4,
   CallStackSidebarPane: () => CallStackSidebarPane,
   Item: () => Item,
+  convertMissingDebugInfo: () => convertMissingDebugInfo,
   defaultMaxAsyncStackChainDepth: () => defaultMaxAsyncStackChainDepth,
   elementSymbol: () => elementSymbol
 });
@@ -6242,7 +6243,6 @@ var DebuggerPlugin = class extends Plugin {
   // truth for re-creating the breakpoints.
   breakpoints = [];
   continueToLocations = null;
-  liveLocationPool;
   // When the editor content is changed by the user, this becomes
   // true. When the plugin is muted, breakpoints show up as disabled
   // and can't be manipulated. It is cleared again when the content is
@@ -6277,7 +6277,6 @@ var DebuggerPlugin = class extends Plugin {
     this.ignoreListCallback = this.showIgnoreListInfobarIfNeeded.bind(this);
     Workspace13.IgnoreListManager.IgnoreListManager.instance().addChangeListener(this.ignoreListCallback);
     UI11.Context.Context.instance().addFlavorChangeListener(StackTrace.StackTrace.DebuggableFrameFlavor, this.callFrameChanged, this);
-    this.liveLocationPool = new Bindings5.LiveLocation.LiveLocationPool();
     this.updateScriptFiles();
     this.muted = this.uiSourceCode.isDirty();
     this.initializedMuted = this.muted;
@@ -7477,22 +7476,18 @@ var DebuggerPlugin = class extends Plugin {
   breakpointWasSetForTest(_lineNumber, _columnNumber, _condition, _enabled) {
   }
   async callFrameChanged() {
-    this.liveLocationPool.disposeAll();
-    const debuggableFrame = UI11.Context.Context.instance().flavor(StackTrace.StackTrace.DebuggableFrameFlavor);
-    if (!debuggableFrame) {
-      this.setExecutionLocation(null);
+    const frameFlavor = UI11.Context.Context.instance().flavor(StackTrace.StackTrace.DebuggableFrameFlavor);
+    if (frameFlavor?.frame.uiSourceCode?.canonicalScriptId() === this.uiSourceCode.canonicalScriptId()) {
+      const uiLocation = new Workspace13.UISourceCode.UILocation(frameFlavor.frame.uiSourceCode, frameFlavor.frame.line, frameFlavor.frame.column);
+      this.setExecutionLocation(uiLocation);
+      if (frameFlavor.sdkFrame.missingDebugInfoDetails) {
+        this.updateMissingDebugInfoInfobar(convertMissingDebugInfo(frameFlavor.sdkFrame.missingDebugInfoDetails, frameFlavor.sdkFrame.functionName));
+      } else {
+        this.updateMissingDebugInfoInfobar(null);
+      }
+      this.#recordSourcesPanelDebuggedMetrics();
     } else {
-      const callFrame = debuggableFrame.sdkFrame;
-      await Bindings5.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createCallFrameLiveLocation(callFrame.location(), async (liveLocation) => {
-        const uiLocation = await liveLocation.uiLocation();
-        if (uiLocation && uiLocation.uiSourceCode.canonicalScriptId() === this.uiSourceCode.canonicalScriptId()) {
-          this.setExecutionLocation(uiLocation);
-          this.updateMissingDebugInfoInfobar(callFrame.missingDebugInfoDetails);
-          this.#recordSourcesPanelDebuggedMetrics();
-        } else {
-          this.setExecutionLocation(null);
-        }
-      }, this.liveLocationPool);
+      this.setExecutionLocation(null);
     }
   }
   setExecutionLocation(executionLocation) {
@@ -7545,7 +7540,6 @@ var DebuggerPlugin = class extends Plugin {
     window.clearTimeout(this.refreshBreakpointsTimeout);
     this.editor = void 0;
     UI11.Context.Context.instance().removeFlavorChangeListener(SDK8.DebuggerModel.CallFrame, this.callFrameChanged, this);
-    this.liveLocationPool.disposeAll();
   }
   /**
    * Only records metrics once per DebuggerPlugin instance and must only be
@@ -10731,7 +10725,6 @@ var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
   threadsSidebarPane;
   watchSidebarPane;
   callstackPane;
-  liveLocationPool;
   lastModificationTime;
   #paused;
   switchToPausedTargetTimeout;
@@ -10799,7 +10792,6 @@ var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
     Common12.Settings.Settings.instance().moduleSetting("sidebar-position").addChangeListener(this.updateSidebarPosition.bind(this));
     this.updateSidebarPosition();
     void this.updateDebuggerButtonsAndStatus();
-    this.liveLocationPool = new Bindings8.LiveLocation.LiveLocationPool();
     this.setTarget(UI18.Context.Context.instance().flavor(SDK11.Target.Target));
     Common12.Settings.Settings.instance().moduleSetting("breakpoints-active").addChangeListener(this.breakpointsActiveStateChanged, this);
     UI18.Context.Context.instance().addFlavorChangeListener(SDK11.Target.Target, this.onCurrentTargetChanged, this);
@@ -11072,28 +11064,16 @@ var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
   updateLastModificationTime() {
     this.lastModificationTime = window.performance.now();
   }
-  async executionLineChanged(liveLocation) {
-    const uiLocation = await liveLocation.uiLocation();
-    if (liveLocation.isDisposed()) {
+  async callFrameChanged() {
+    const frameFlavor = UI18.Context.Context.instance().flavor(StackTrace3.StackTrace.DebuggableFrameFlavor);
+    if (!frameFlavor?.frame.uiSourceCode) {
       return;
     }
-    if (!uiLocation) {
-      return;
-    }
+    const uiLocation = new Workspace22.UISourceCode.UILocation(frameFlavor.frame.uiSourceCode, frameFlavor.frame.line, frameFlavor.frame.column);
     if (window.performance.now() - this.lastModificationTime < lastModificationTimeout) {
       return;
     }
     this.#sourcesView.showSourceLocation(uiLocation.uiSourceCode, uiLocation, void 0, true);
-  }
-  async callFrameChanged() {
-    const callFrame = UI18.Context.Context.instance().flavor(StackTrace3.StackTrace.DebuggableFrameFlavor);
-    if (!callFrame) {
-      return;
-    }
-    if (this.executionLineLocation) {
-      this.executionLineLocation.dispose();
-    }
-    this.executionLineLocation = await Bindings8.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createCallFrameLiveLocation(callFrame.sdkFrame.location(), this.executionLineChanged.bind(this), this.liveLocationPool);
   }
   async updateDebuggerButtonsAndStatus() {
     const currentTarget = UI18.Context.Context.instance().flavor(SDK11.Target.Target);
@@ -11135,7 +11115,6 @@ var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
     if (this.switchToPausedTargetTimeout) {
       clearTimeout(this.switchToPausedTargetTimeout);
     }
-    this.liveLocationPool.disposeAll();
   }
   switchToPausedTarget(debuggerModel) {
     delete this.switchToPausedTargetTimeout;
@@ -11759,7 +11738,17 @@ var UIStrings18 = {
    * "frame" is a noun. "Frame" refers to an individual item in the call stack, i.e. a call frame.
    * The user opens this context menu by selecting a specific call frame in the call stack sidebar pane.
    */
-  restartFrame: "Restart frame"
+  restartFrame: "Restart frame",
+  /**
+   * @description Error message that is displayed in UI debugging information cannot be found for a call frame
+   * @example {main} PH1
+   */
+  failedToLoadDebugSymbolsForFunction: 'No debug information for function "{PH1}"',
+  /**
+   * @description Error message that is displayed in UI when a file needed for debugging information for a call frame is missing
+   * @example {mainp.debug.wasm.dwp} PH1
+   */
+  debugSymbolsIncomplete: "The debug information for function {PH1} is incomplete"
 };
 var str_18 = i18n37.i18n.registerUIStrings("panels/sources/CallStackSidebarPane.ts", UIStrings18);
 var i18nString17 = i18n37.i18n.getLocalizedString.bind(void 0, str_18);
@@ -11891,10 +11880,10 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI19.View.SimpleV
     const itemPromises = [];
     const uniqueWarnings = /* @__PURE__ */ new Set();
     for (const frame of details.callFrames) {
-      const itemPromise = Item.createForDebuggerCallFrame(frame, this.locationPool, this.refreshItem.bind(this));
+      const itemPromise = Item.createForDebuggerCallFrame(frame, this.locationPool, this.refreshItem.bind(this), this.list);
       itemPromises.push(itemPromise);
       if (frame.missingDebugInfoDetails) {
-        uniqueWarnings.add(frame.missingDebugInfoDetails.details);
+        uniqueWarnings.add(convertMissingDebugInfo(frame.missingDebugInfoDetails, frame.functionName).details);
       }
     }
     const items = await Promise.all(itemPromises);
@@ -11908,7 +11897,7 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI19.View.SimpleV
     for await (const { stackTrace } of details.debuggerModel.iterateAsyncParents(details)) {
       asyncStackTrace = stackTrace;
       const title = UI19.UIUtils.asyncStackTraceLabel(asyncStackTrace.description, previousStackTrace);
-      items.push(...await Item.createItemsForAsyncStack(title, details.debuggerModel, asyncStackTrace.callFrames, this.locationPool, this.refreshItem.bind(this)));
+      items.push(...await Item.createItemsForAsyncStack(title, details.debuggerModel, asyncStackTrace.callFrames, this.locationPool, this.refreshItem.bind(this), this.list));
       previousStackTrace = asyncStackTrace.callFrames;
       if (--maxAsyncStackChainDepth <= 0) {
         break;
@@ -11997,8 +11986,9 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI19.View.SimpleV
       const icon2 = new Icon3();
       icon2.name = "warning-filled";
       icon2.classList.add("call-frame-warning-icon", "small");
-      const messages = callframe.missingDebugInfoDetails.resources.map((r) => i18nString17(UIStrings18.debugFileNotFound, { PH1: Common13.ParsedURL.ParsedURL.extractName(r.resourceUrl) }));
-      UI19.Tooltip.Tooltip.install(icon2, [callframe.missingDebugInfoDetails.details, ...messages].join("\n"));
+      const { resources, details } = convertMissingDebugInfo(callframe.missingDebugInfoDetails, callframe.functionName);
+      const messages = resources.map((r) => i18nString17(UIStrings18.debugFileNotFound, { PH1: Common13.ParsedURL.ParsedURL.extractName(r.resourceUrl) }));
+      UI19.Tooltip.Tooltip.install(icon2, [details, ...messages].join("\n"));
       element.appendChild(icon2);
     }
     return element;
@@ -12150,9 +12140,10 @@ var Item = class _Item {
   updateDelegate;
   /** Only set for synchronous frames */
   frame;
-  static async createForDebuggerCallFrame(frame, locationPool, updateDelegate) {
+  list;
+  static async createForDebuggerCallFrame(frame, locationPool, updateDelegate, list) {
     const name = frame.functionName;
-    const item = new _Item(UI19.UIUtils.beautifyFunctionName(name), updateDelegate, frame);
+    const item = new _Item(UI19.UIUtils.beautifyFunctionName(name), updateDelegate, frame, list);
     await Bindings9.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createCallFrameLiveLocation(frame.location(), item.update.bind(item), locationPool);
     void SourceMapScopes2.NamesResolver.resolveDebuggerFrameFunctionName(frame).then((functionName) => {
       if (functionName && functionName !== name) {
@@ -12162,15 +12153,15 @@ var Item = class _Item {
     });
     return item;
   }
-  static async createItemsForAsyncStack(title, debuggerModel, frames, locationPool, updateDelegate) {
+  static async createItemsForAsyncStack(title, debuggerModel, frames, locationPool, updateDelegate, list) {
     const headerItemToItemsSet = /* @__PURE__ */ new WeakMap();
-    const asyncHeaderItem = new _Item(title, updateDelegate);
+    const asyncHeaderItem = new _Item(title, updateDelegate, void 0, list);
     headerItemToItemsSet.set(asyncHeaderItem, /* @__PURE__ */ new Set());
     asyncHeaderItem.isAsyncHeader = true;
     const asyncFrameItems = [];
     const liveLocationPromises = [];
     for (const frame of frames) {
-      const item = new _Item(UI19.UIUtils.beautifyFunctionName(frame.functionName), update);
+      const item = new _Item(UI19.UIUtils.beautifyFunctionName(frame.functionName), update, void 0, list);
       const rawLocation = debuggerModel.createRawLocationByScriptId(frame.scriptId, frame.lineNumber, frame.columnNumber);
       liveLocationPromises.push(Bindings9.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createCallFrameLiveLocation(rawLocation, item.update.bind(item), locationPool));
       void SourceMapScopes2.NamesResolver.resolveProfileFrameFunctionName(frame, debuggerModel.target()).then((functionName) => {
@@ -12203,7 +12194,7 @@ var Item = class _Item {
       }
     }
   }
-  constructor(title, updateDelegate, frame) {
+  constructor(title, updateDelegate, frame, list) {
     this.isIgnoreListed = false;
     this.title = title;
     this.linkText = "";
@@ -12211,15 +12202,38 @@ var Item = class _Item {
     this.isAsyncHeader = false;
     this.updateDelegate = updateDelegate;
     this.frame = frame;
+    this.list = list;
   }
   async update(liveLocation) {
     const uiLocation = await liveLocation.uiLocation();
     this.isIgnoreListed = Boolean(uiLocation?.isIgnoreListed());
     this.linkText = uiLocation ? uiLocation.linkText() : "";
     this.uiLocation = uiLocation;
+    if (this.frame && uiLocation && this === this.list.selectedItem()) {
+      UI19.Context.Context.instance().setFlavor(StackTrace5.StackTrace.DebuggableFrameFlavor, StackTrace5.StackTrace.DebuggableFrameFlavor.for({
+        uiSourceCode: uiLocation.uiSourceCode,
+        line: uiLocation.lineNumber,
+        column: uiLocation.columnNumber ?? -1,
+        sdkFrame: this.frame
+      }));
+    }
     this.updateDelegate(this);
   }
 };
+function convertMissingDebugInfo(missingDebugInfo, functionName) {
+  switch (missingDebugInfo.type) {
+    case "PARTIAL_INFO":
+      return {
+        details: i18nString17(UIStrings18.debugSymbolsIncomplete, { PH1: functionName ?? "" }),
+        resources: missingDebugInfo.missingDebugFiles
+      };
+    case "NO_INFO":
+      return {
+        details: i18nString17(UIStrings18.failedToLoadDebugSymbolsForFunction, { PH1: functionName ?? "" }),
+        resources: []
+      };
+  }
+}
 
 // gen/front_end/panels/sources/FilePathScoreFunction.js
 var FilePathScoreFunction_exports = {};

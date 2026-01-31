@@ -8522,7 +8522,7 @@ var SoftContextMenu = class _SoftContextMenu {
     menuItemElement.addEventListener("mouseover", this.menuItemMouseOver.bind(this), false);
     menuItemElement.addEventListener("mouseleave", this.menuItemMouseLeave.bind(this), false);
     if (item8.jslogContext) {
-      menuItemElement.setAttribute("jslog", `${VisualLogging8.item().context(item8.jslogContext)}`);
+      menuItemElement.setAttribute("jslog", `${VisualLogging8.item(item8.jslogContext).track({ click: true, resize: true })}`);
     }
     return menuItemElement;
   }
@@ -8944,15 +8944,20 @@ var Section = class {
   }
   /**
    * Appends a standard clickable item to this section.
-   * @param label The text to display for the item.
+   * @param labelOrItem The text to display for the item, or a premade Item. In the latter case, `option` is ignored.
    * @param handler The function to execute when the item is clicked.
    * @param options Optional settings for the item.
    * @returns The newly created `Item`.
    */
-  appendItem(label, handler, options) {
-    const item8 = new Item(this.contextMenu, "item", label, options?.isPreviewFeature, options?.disabled, void 0, options?.accelerator, options?.tooltip, options?.jslogContext, options?.featureName);
-    if (options?.additionalElement) {
-      item8.customElement = options?.additionalElement;
+  appendItem(labelOrItem, handler, options) {
+    let item8;
+    if (labelOrItem instanceof Item) {
+      item8 = labelOrItem;
+    } else {
+      item8 = new Item(this.contextMenu, "item", labelOrItem, options?.isPreviewFeature, options?.disabled, void 0, options?.accelerator, options?.tooltip, options?.jslogContext, options?.featureName);
+      if (options?.additionalElement) {
+        item8.customElement = options?.additionalElement;
+      }
     }
     this.items.push(item8);
     if (this.contextMenu) {
@@ -10018,7 +10023,7 @@ var ListControl = class {
     if (!element) {
       element = this.delegate.createElementForItem(item8);
       if (!element.hasAttribute("jslog")) {
-        element.setAttribute("jslog", `${VisualLogging10.item().track({ click: true, keydown: "ArrowUp|ArrowDown|PageUp|PageDown" })}`);
+        element.setAttribute("jslog", `${VisualLogging10.item().track({ click: true, resize: true, keydown: "ArrowUp|ArrowDown|PageUp|PageDown" })}`);
       }
       this.itemToElement.set(item8, element);
       this.updateElementARIA(element, index);
@@ -18389,7 +18394,7 @@ var ListWidget = class extends VBox {
     }
     const content = this.delegate.renderItem(item8, editable, this.#items.length - 1);
     if (!content.hasAttribute("jslog")) {
-      element.setAttribute("jslog", `${VisualLogging18.item()}`);
+      element.setAttribute("jslog", `${VisualLogging18.item().track({ resize: true })}`);
     }
     element.appendChild(content);
     if (editable) {
@@ -21538,6 +21543,7 @@ var TreeElement = class {
     this.listItemNode.addEventListener("dblclick", this.handleDoubleClick.bind(this), false);
     this.listItemNode.setAttribute("jslog", `${VisualLogging24.treeItem().parent("parentTreeItem").context(jslogContext).track({
       click: true,
+      resize: true,
       keydown: "ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Backspace|Delete|Enter|Space|Home|End"
     })}`);
     markAsTreeitem(this.listItemNode);

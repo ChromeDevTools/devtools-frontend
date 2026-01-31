@@ -83,6 +83,16 @@ const UIStrings = {
      * The user opens this context menu by selecting a specific call frame in the call stack sidebar pane.
      */
     restartFrame: 'Restart frame',
+    /**
+     * @description Error message that is displayed in UI debugging information cannot be found for a call frame
+     * @example {main} PH1
+     */
+    failedToLoadDebugSymbolsForFunction: 'No debug information for function "{PH1}"',
+    /**
+     * @description Error message that is displayed in UI when a file needed for debugging information for a call frame is missing
+     * @example {mainp.debug.wasm.dwp} PH1
+     */
+    debugSymbolsIncomplete: 'The debug information for function {PH1} is incomplete',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/sources/CallStackSidebarPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -217,10 +227,10 @@ export class CallStackSidebarPane extends UI.View.SimpleView {
         const itemPromises = [];
         const uniqueWarnings = new Set();
         for (const frame of details.callFrames) {
-            const itemPromise = Item.createForDebuggerCallFrame(frame, this.locationPool, this.refreshItem.bind(this));
+            const itemPromise = Item.createForDebuggerCallFrame(frame, this.locationPool, this.refreshItem.bind(this), this.list);
             itemPromises.push(itemPromise);
             if (frame.missingDebugInfoDetails) {
-                uniqueWarnings.add(frame.missingDebugInfoDetails.details);
+                uniqueWarnings.add(convertMissingDebugInfo(frame.missingDebugInfoDetails, frame.functionName).details);
             }
         }
         const items = await Promise.all(itemPromises);
@@ -234,7 +244,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView {
         for await (const { stackTrace } of details.debuggerModel.iterateAsyncParents(details)) {
             asyncStackTrace = stackTrace;
             const title = UI.UIUtils.asyncStackTraceLabel(asyncStackTrace.description, previousStackTrace);
-            items.push(...await Item.createItemsForAsyncStack(title, details.debuggerModel, asyncStackTrace.callFrames, this.locationPool, this.refreshItem.bind(this)));
+            items.push(...await Item.createItemsForAsyncStack(title, details.debuggerModel, asyncStackTrace.callFrames, this.locationPool, this.refreshItem.bind(this), this.list));
             previousStackTrace = asyncStackTrace.callFrames;
             if (--maxAsyncStackChainDepth <= 0) {
                 break;
@@ -323,8 +333,9 @@ export class CallStackSidebarPane extends UI.View.SimpleView {
             const icon = new Icon();
             icon.name = 'warning-filled';
             icon.classList.add('call-frame-warning-icon', 'small');
-            const messages = callframe.missingDebugInfoDetails.resources.map(r => i18nString(UIStrings.debugFileNotFound, { PH1: Common.ParsedURL.ParsedURL.extractName(r.resourceUrl) }));
-            UI.Tooltip.Tooltip.install(icon, [callframe.missingDebugInfoDetails.details, ...messages].join('\n'));
+            const { resources, details } = convertMissingDebugInfo(callframe.missingDebugInfoDetails, callframe.functionName);
+            const messages = resources.map(r => i18nString(UIStrings.debugFileNotFound, { PH1: Common.ParsedURL.ParsedURL.extractName(r.resourceUrl) }));
+            UI.Tooltip.Tooltip.install(icon, [details, ...messages].join('\n'));
             element.appendChild(icon);
         }
         return element;
@@ -476,9 +487,10 @@ export class Item {
     updateDelegate;
     /** Only set for synchronous frames */
     frame;
-    static async createForDebuggerCallFrame(frame, locationPool, updateDelegate) {
+    list;
+    static async createForDebuggerCallFrame(frame, locationPool, updateDelegate, list) {
         const name = frame.functionName;
-        const item = new Item(UI.UIUtils.beautifyFunctionName(name), updateDelegate, frame);
+        const item = new Item(UI.UIUtils.beautifyFunctionName(name), updateDelegate, frame, list);
         await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createCallFrameLiveLocation(frame.location(), item.update.bind(item), locationPool);
         void SourceMapScopes.NamesResolver.resolveDebuggerFrameFunctionName(frame).then(functionName => {
             if (functionName && functionName !== name) {
@@ -491,15 +503,15 @@ export class Item {
         });
         return item;
     }
-    static async createItemsForAsyncStack(title, debuggerModel, frames, locationPool, updateDelegate) {
+    static async createItemsForAsyncStack(title, debuggerModel, frames, locationPool, updateDelegate, list) {
         const headerItemToItemsSet = new WeakMap();
-        const asyncHeaderItem = new Item(title, updateDelegate);
+        const asyncHeaderItem = new Item(title, updateDelegate, undefined, list);
         headerItemToItemsSet.set(asyncHeaderItem, new Set());
         asyncHeaderItem.isAsyncHeader = true;
         const asyncFrameItems = [];
         const liveLocationPromises = [];
         for (const frame of frames) {
-            const item = new Item(UI.UIUtils.beautifyFunctionName(frame.functionName), update);
+            const item = new Item(UI.UIUtils.beautifyFunctionName(frame.functionName), update, undefined, list);
             const rawLocation = debuggerModel.createRawLocationByScriptId(frame.scriptId, frame.lineNumber, frame.columnNumber);
             liveLocationPromises.push(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createCallFrameLiveLocation(rawLocation, item.update.bind(item), locationPool));
             void SourceMapScopes.NamesResolver.resolveProfileFrameFunctionName(frame, debuggerModel.target())
@@ -534,7 +546,7 @@ export class Item {
             }
         }
     }
-    constructor(title, updateDelegate, frame) {
+    constructor(title, updateDelegate, frame, list) {
         this.isIgnoreListed = false;
         this.title = title;
         this.linkText = '';
@@ -542,13 +554,36 @@ export class Item {
         this.isAsyncHeader = false;
         this.updateDelegate = updateDelegate;
         this.frame = frame;
+        this.list = list;
     }
     async update(liveLocation) {
         const uiLocation = await liveLocation.uiLocation();
         this.isIgnoreListed = Boolean(uiLocation?.isIgnoreListed());
         this.linkText = uiLocation ? uiLocation.linkText() : '';
         this.uiLocation = uiLocation;
+        if (this.frame && uiLocation && this === this.list.selectedItem()) {
+            UI.Context.Context.instance().setFlavor(StackTrace.StackTrace.DebuggableFrameFlavor, StackTrace.StackTrace.DebuggableFrameFlavor.for({
+                uiSourceCode: uiLocation.uiSourceCode,
+                line: uiLocation.lineNumber,
+                column: uiLocation.columnNumber ?? -1,
+                sdkFrame: this.frame,
+            }));
+        }
         this.updateDelegate(this);
+    }
+}
+export function convertMissingDebugInfo(missingDebugInfo, functionName) {
+    switch (missingDebugInfo.type) {
+        case "PARTIAL_INFO" /* SDK.DebuggerModel.MissingDebugInfoType.PARTIAL_INFO */:
+            return {
+                details: i18nString(UIStrings.debugSymbolsIncomplete, { PH1: functionName ?? '' }),
+                resources: missingDebugInfo.missingDebugFiles
+            };
+        case "NO_INFO" /* SDK.DebuggerModel.MissingDebugInfoType.NO_INFO */:
+            return {
+                details: i18nString(UIStrings.failedToLoadDebugSymbolsForFunction, { PH1: functionName ?? '' }),
+                resources: []
+            };
     }
 }
 //# sourceMappingURL=CallStackSidebarPane.js.map

@@ -30,6 +30,7 @@ export default `/*
   border-bottom: 1px solid var(--sys-color-divider);
   color: var(--sys-color-on-surface);
   background-color: var(--sys-color-cdt-base-container);
+  margin: 0;
 }
 
 .report-url {

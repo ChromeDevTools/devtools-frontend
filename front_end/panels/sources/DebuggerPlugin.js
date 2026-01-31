@@ -27,6 +27,7 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import { AddDebugInfoURLDialog } from './AddSourceMapURLDialog.js';
 import { BreakpointEditDialog } from './BreakpointEditDialog.js';
 import { BreakpointsSidebarController } from './BreakpointsView.js';
+import { convertMissingDebugInfo } from './CallStackSidebarPane.js';
 import { Plugin } from './Plugin.js';
 import { SourcesPanel } from './SourcesPanel.js';
 const { EMPTY_BREAKPOINT_CONDITION, NEVER_PAUSE_HERE_CONDITION } = Breakpoints.BreakpointManager;
@@ -177,7 +178,6 @@ export class DebuggerPlugin extends Plugin {
     // truth for re-creating the breakpoints.
     breakpoints = [];
     continueToLocations = null;
-    liveLocationPool;
     // When the editor content is changed by the user, this becomes
     // true. When the plugin is muted, breakpoints show up as disabled
     // and can't be manipulated. It is cleared again when the content is
@@ -212,7 +212,6 @@ export class DebuggerPlugin extends Plugin {
         this.ignoreListCallback = this.showIgnoreListInfobarIfNeeded.bind(this);
         Workspace.IgnoreListManager.IgnoreListManager.instance().addChangeListener(this.ignoreListCallback);
         UI.Context.Context.instance().addFlavorChangeListener(StackTrace.StackTrace.DebuggableFrameFlavor, this.callFrameChanged, this);
-        this.liveLocationPool = new Bindings.LiveLocation.LiveLocationPool();
         this.updateScriptFiles();
         this.muted = this.uiSourceCode.isDirty();
         this.initializedMuted = this.muted;
@@ -1435,26 +1434,22 @@ export class DebuggerPlugin extends Plugin {
     breakpointWasSetForTest(_lineNumber, _columnNumber, _condition, _enabled) {
     }
     async callFrameChanged() {
-        this.liveLocationPool.disposeAll();
-        const debuggableFrame = UI.Context.Context.instance().flavor(StackTrace.StackTrace.DebuggableFrameFlavor);
-        if (!debuggableFrame) {
-            this.setExecutionLocation(null);
+        const frameFlavor = UI.Context.Context.instance().flavor(StackTrace.StackTrace.DebuggableFrameFlavor);
+        if (frameFlavor?.frame.uiSourceCode?.canonicalScriptId() === this.uiSourceCode.canonicalScriptId()) {
+            const uiLocation = new Workspace.UISourceCode.UILocation(frameFlavor.frame.uiSourceCode, frameFlavor.frame.line, frameFlavor.frame.column);
+            this.setExecutionLocation(uiLocation);
+            if (frameFlavor.sdkFrame.missingDebugInfoDetails) {
+                this.updateMissingDebugInfoInfobar(convertMissingDebugInfo(frameFlavor.sdkFrame.missingDebugInfoDetails, frameFlavor.sdkFrame.functionName));
+            }
+            else {
+                this.updateMissingDebugInfoInfobar(null);
+            }
+            // We are paused and the user is specifically looking at this UISourceCode either because
+            // this file is on top of stack, or the user explicitly selected a stack frame for this UISourceCode.
+            this.#recordSourcesPanelDebuggedMetrics();
         }
         else {
-            const callFrame = debuggableFrame.sdkFrame;
-            await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createCallFrameLiveLocation(callFrame.location(), async (liveLocation) => {
-                const uiLocation = await liveLocation.uiLocation();
-                if (uiLocation && uiLocation.uiSourceCode.canonicalScriptId() === this.uiSourceCode.canonicalScriptId()) {
-                    this.setExecutionLocation(uiLocation);
-                    this.updateMissingDebugInfoInfobar(callFrame.missingDebugInfoDetails);
-                    // We are paused and the user is specifically looking at this UISourceCode either because
-                    // this file is on top of stack, or the user explicitly selected a stack frame for this UISourceCode.
-                    this.#recordSourcesPanelDebuggedMetrics();
-                }
-                else {
-                    this.setExecutionLocation(null);
-                }
-            }, this.liveLocationPool);
+            this.setExecutionLocation(null);
         }
     }
     setExecutionLocation(executionLocation) {
@@ -1510,7 +1505,6 @@ export class DebuggerPlugin extends Plugin {
         // still running or scheduled will early return and not do any work.
         this.editor = undefined;
         UI.Context.Context.instance().removeFlavorChangeListener(SDK.DebuggerModel.CallFrame, this.callFrameChanged, this);
-        this.liveLocationPool.disposeAll();
     }
     /**
      * Only records metrics once per DebuggerPlugin instance and must only be

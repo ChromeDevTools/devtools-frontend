@@ -28,12 +28,12 @@ export class Report extends HTMLElement {
         // clang-format off
         render(html `
       <style>${reportStyles}</style>
-      ${this.#reportTitle ? html `<div class="report-title">
+      ${this.#reportTitle ? html `<h1 class="report-title">
         ${this.#reportTitle}
         ${this.#reportUrl ? Components.Linkifier.Linkifier.linkifyURL(this.#reportUrl, {
             tabStop: true, jslogContext: 'source-location', className: 'report-url'
         }) : nothing}
-      </div>` : nothing}
+      </h1>` : nothing}
       <div class="content">
         <slot></slot>
       </div>

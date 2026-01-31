@@ -9,7 +9,9 @@ export declare class TestPlugin implements Bindings.DebuggerLanguagePlugins.Debu
     evaluate(_expression: string, _context: Chrome.DevTools.RawLocation, _stopId: Bindings.DebuggerLanguagePlugins.StopId): Promise<Chrome.DevTools.RemoteObject | null>;
     getProperties(_objectId: string): Promise<Chrome.DevTools.PropertyDescriptor[]>;
     releaseObject(_objectId: string): Promise<void>;
-    addRawModule(_rawModuleId: string, _symbolsURL: string, _rawModule: Chrome.DevTools.RawModule): Promise<string[]>;
+    addRawModule(_rawModuleId: string, _symbolsURL: string, _rawModule: Chrome.DevTools.RawModule): Promise<string[] | {
+        missingSymbolFiles: string[];
+    }>;
     sourceLocationToRawLocation(_sourceLocation: Chrome.DevTools.SourceLocation): Promise<Chrome.DevTools.RawLocationRange[]>;
     rawLocationToSourceLocation(_rawLocation: Chrome.DevTools.RawLocation): Promise<Chrome.DevTools.SourceLocation[]>;
     getScopeInfo(type: string): Promise<Chrome.DevTools.ScopeInfo>;

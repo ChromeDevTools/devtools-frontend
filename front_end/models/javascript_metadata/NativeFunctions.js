@@ -7136,8 +7136,16 @@ export const NativeFunctions = [
         signatures: [["?options"]]
     },
     {
+        name: "deferPageSwap",
+        signatures: [["options"]]
+    },
+    {
         name: "NavigationCurrentEntryChangeEvent",
         signatures: [["type", "eventInit"]]
+    },
+    {
+        name: "addRestoreCallback",
+        signatures: [["callback"]]
     },
     {
         name: "addHandler",

@@ -52,6 +52,7 @@ import * as RequestResponseView from './RequestResponseView.js';
 import * as RequestTimingView from './RequestTimingView.js';
 import * as ResourceDirectSocketChunkView from './ResourceDirectSocketChunkView.js';
 import * as ResourceWebSocketFrameView from './ResourceWebSocketFrameView.js';
+import * as ShowMoreDetailsWidget from './ShowMoreDetailsWidget.js';
 import * as SignedExchangeInfoView from './SignedExchangeInfoView.js';
 
 export {
@@ -79,5 +80,6 @@ export {
   RequestTimingView,
   ResourceDirectSocketChunkView,
   ResourceWebSocketFrameView,
+  ShowMoreDetailsWidget,
   SignedExchangeInfoView,
 };

@@ -21,7 +21,6 @@ export declare class DebuggerPlugin extends Plugin {
     private scriptFileForDebuggerModel;
     private breakpoints;
     private continueToLocations;
-    private readonly liveLocationPool;
     private muted;
     private initializedMuted;
     private ignoreListInfobar;

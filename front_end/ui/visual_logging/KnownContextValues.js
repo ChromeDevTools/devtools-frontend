@@ -1688,6 +1688,7 @@ export const knownContextValues = new Set([
     'frame',
     'frame-creation-stack-trace',
     'frame-resource',
+    'frame-sizing',
     'frame-viewer-hide-chrome-window',
     'frame-viewer-show-paints',
     'frame-viewer-show-slow-scroll-rects',

@@ -27,7 +27,6 @@ export declare class SourcesPanel extends UI.Panel.Panel implements UI.ContextMe
     private threadsSidebarPane;
     private readonly watchSidebarPane;
     private readonly callstackPane;
-    private liveLocationPool;
     private lastModificationTime;
     private switchToPausedTargetTimeout?;
     private executionLineLocation?;
@@ -68,7 +67,6 @@ export declare class SourcesPanel extends UI.Panel.Panel implements UI.ContextMe
     private addExperimentMenuItem;
     private populateNavigatorMenu;
     updateLastModificationTime(): void;
-    private executionLineChanged;
     private callFrameChanged;
     private updateDebuggerButtonsAndStatus;
     private updateDebuggerButtonsAndStatusForTest;

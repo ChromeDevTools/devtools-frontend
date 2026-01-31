@@ -2609,6 +2609,10 @@ var UIStringsNotTranslate4 = {
    */
   ai: "AI",
   /**
+   * @description Gemini (do not translate)
+   */
+  gemini: "Gemini",
+  /**
    * @description The fallback text when we can't find the user full name
    */
   you: "You",
@@ -2696,7 +2700,7 @@ var DEFAULT_VIEW3 = (input, output, target) => {
       <div class="message-info">
         <devtools-icon name=${icon}></devtools-icon>
         <div class="message-name">
-          <h2>${lockedString4(UIStringsNotTranslate4.ai)}</h2>
+          <h2>${AiAssistanceModel3.AiUtils.isGeminiBranding() ? lockedString4(UIStringsNotTranslate4.gemini) : lockedString4(UIStringsNotTranslate4.ai)}</h2>
         </div>
       </div>
       ${Lit2.Directives.repeat(message.parts, (_, index) => index, (part, index) => {

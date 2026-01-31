@@ -437,7 +437,7 @@ var FilteredListWidget = class extends Common.ObjectWrapper.eventMixin(UI.Widget
     wrapperElement.className = "filtered-list-widget-item";
     if (this.provider) {
       render(this.provider.renderItem(item2, this.cleanValue()), wrapperElement);
-      wrapperElement.setAttribute("jslog", `${VisualLogging.item(this.provider.jslogContextAt(item2)).track({ click: true })}`);
+      wrapperElement.setAttribute("jslog", `${VisualLogging.item(this.provider.jslogContextAt(item2)).track({ click: true, resize: true })}`);
     }
     UI.ARIAUtils.markAsOption(wrapperElement);
     return wrapperElement;

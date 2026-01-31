@@ -100,6 +100,10 @@ const UIStringsNotTranslate = {
      */
     ai: 'AI',
     /**
+     * @description Gemini (do not translate)
+     */
+    gemini: 'Gemini',
+    /**
      * @description The fallback text when we can't find the user full name
      */
     you: 'You',
@@ -194,7 +198,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
       <div class="message-info">
         <devtools-icon name=${icon}></devtools-icon>
         <div class="message-name">
-          <h2>${lockedString(UIStringsNotTranslate.ai)}</h2>
+          <h2>${AiAssistanceModel.AiUtils.isGeminiBranding() ? lockedString(UIStringsNotTranslate.gemini) : lockedString(UIStringsNotTranslate.ai)}</h2>
         </div>
       </div>
       ${Lit.Directives.repeat(message.parts, (_, index) => index, (part, index) => {

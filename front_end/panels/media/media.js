@@ -2098,7 +2098,7 @@ var DEFAULT_VIEW = (input, _output, target) => {
     })}
                @click=${() => input.onPlayerClick(player.playerID)}
                @contextmenu=${(e) => input.onPlayerContextMenu(player.playerID, e)}
-               jslog=${VisualLogging5.item("player").track({ click: true })}>
+               jslog=${VisualLogging5.item("player").track({ click: true, resize: true })}>
             <div class="player-entry-status-icon vbox">
               <div class="player-entry-status-icon-centering">
                 <devtools-icon name=${player.iconName}></devtools-icon>

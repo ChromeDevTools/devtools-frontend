@@ -461,6 +461,9 @@ export const generatedPropertyValues: {
     "forced-color-adjust": {
         values: string[];
     };
+    "frame-sizing": {
+        values: string[];
+    };
     "gap-rule-overlap": {
         values: string[];
     };
@@ -507,6 +510,9 @@ export const generatedPropertyValues: {
         values: string[];
     };
     hyphens: {
+        values: string[];
+    };
+    "image-animation": {
         values: string[];
     };
     "image-rendering": {

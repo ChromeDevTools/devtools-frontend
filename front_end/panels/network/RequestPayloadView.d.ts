@@ -18,8 +18,7 @@ export declare class RequestPayloadView extends UI.Widget.VBox {
     static formatParameter(value: string, className: string, decodeParameters: boolean): LitTemplate;
     private populateTreeElementWithParsedParameters;
     private refreshRequestJSONPayload;
-    private appendJSONPayloadSource;
-    private appendJSONPayloadParsed;
+    private populateTreeElementWithObject;
     private createViewSourceToggle;
     private toggleURLDecoding;
 }

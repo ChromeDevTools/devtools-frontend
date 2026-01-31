@@ -561,6 +561,7 @@ var generatedProperties = [
       "font-variation-settings",
       "font-weight",
       "forced-color-adjust",
+      "frame-sizing",
       "gap-rule-overlap",
       "grid-auto-columns",
       "grid-auto-flow",
@@ -580,6 +581,7 @@ var generatedProperties = [
       "hyphenate-character",
       "hyphenate-limit-chars",
       "hyphens",
+      "image-animation",
       "image-orientation",
       "image-rendering",
       "inherits",
@@ -2660,6 +2662,16 @@ var generatedProperties = [
     "name": "forced-color-adjust"
   },
   {
+    "keywords": [
+      "auto",
+      "content-width",
+      "content-height",
+      "content-block-size",
+      "content-inline-size"
+    ],
+    "name": "frame-sizing"
+  },
+  {
     "longhands": [
       "row-gap",
       "column-gap"
@@ -2840,6 +2852,15 @@ var generatedProperties = [
       "auto"
     ],
     "name": "hyphens"
+  },
+  {
+    "inherited": true,
+    "keywords": [
+      "normal",
+      "running",
+      "paused"
+    ],
+    "name": "image-animation"
   },
   {
     "inherited": true,
@@ -6096,6 +6117,15 @@ var generatedPropertyValues = {
       "preserve-parent-color"
     ]
   },
+  "frame-sizing": {
+    "values": [
+      "auto",
+      "content-width",
+      "content-height",
+      "content-block-size",
+      "content-inline-size"
+    ]
+  },
   "gap-rule-overlap": {
     "values": [
       "row-over-column",
@@ -6190,6 +6220,13 @@ var generatedPropertyValues = {
       "none",
       "manual",
       "auto"
+    ]
+  },
+  "image-animation": {
+    "values": [
+      "normal",
+      "running",
+      "paused"
     ]
   },
   "image-rendering": {

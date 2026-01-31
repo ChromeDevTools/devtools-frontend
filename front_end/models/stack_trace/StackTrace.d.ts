@@ -47,20 +47,17 @@ export interface EventTypes {
 }
 /**
  * A small wrapper around a DebuggableFrame usable as a UI.Context flavor.
- * This is necessary as Frame and DebuggableFrame are updated in place, but
- * for UI.Context we need a new instance.
+ * This is necessary as DebuggableFrame are just interfaces and the impl classes are hidden.
+ *
+ * Moreover, re-translation creates a new DebuggableFrame instance even though the
+ * translation result stays the same, in which case we don't need a new instance for the flavor.
  */
-export declare class DebuggableFrameFlavor implements DebuggableFrame {
+export declare class DebuggableFrameFlavor {
     #private;
-    readonly url?: string;
-    readonly uiSourceCode?: Workspace.UISourceCode.UISourceCode;
-    readonly name?: string;
-    readonly line: number;
-    readonly column: number;
-    readonly missingDebugInfo?: MissingDebugInfo;
-    readonly sdkFrame: SDK.DebuggerModel.CallFrame;
+    readonly frame: DebuggableFrame;
     /** Use the static {@link for}. Only public to satisfy the `setFlavor` Ctor type  */
     constructor(frame: DebuggableFrame);
+    get sdkFrame(): SDK.DebuggerModel.CallFrame;
     /** @returns the same instance of DebuggableFrameFlavor for repeated calls with the same (i.e. deep equal) DebuggableFrame */
     static for(frame: DebuggableFrame): DebuggableFrameFlavor;
 }

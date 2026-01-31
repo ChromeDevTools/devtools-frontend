@@ -1,3 +1,4 @@
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
@@ -56,8 +57,13 @@ export declare class Item {
     updateDelegate: (arg0: Item) => void;
     /** Only set for synchronous frames */
     readonly frame?: SDK.DebuggerModel.CallFrame;
-    static createForDebuggerCallFrame(frame: SDK.DebuggerModel.CallFrame, locationPool: Bindings.LiveLocation.LiveLocationPool, updateDelegate: (arg0: Item) => void): Promise<Item>;
-    static createItemsForAsyncStack(title: string, debuggerModel: SDK.DebuggerModel.DebuggerModel, frames: Protocol.Runtime.CallFrame[], locationPool: Bindings.LiveLocation.LiveLocationPool, updateDelegate: (arg0: Item) => void): Promise<Item[]>;
-    constructor(title: string, updateDelegate: (arg0: Item) => void, frame?: SDK.DebuggerModel.CallFrame);
+    readonly list: UI.ListControl.ListControl<Item>;
+    static createForDebuggerCallFrame(frame: SDK.DebuggerModel.CallFrame, locationPool: Bindings.LiveLocation.LiveLocationPool, updateDelegate: (arg0: Item) => void, list: UI.ListControl.ListControl<Item>): Promise<Item>;
+    static createItemsForAsyncStack(title: string, debuggerModel: SDK.DebuggerModel.DebuggerModel, frames: Protocol.Runtime.CallFrame[], locationPool: Bindings.LiveLocation.LiveLocationPool, updateDelegate: (arg0: Item) => void, list: UI.ListControl.ListControl<Item>): Promise<Item[]>;
+    constructor(title: string, updateDelegate: (arg0: Item) => void, frame: SDK.DebuggerModel.CallFrame | undefined, list: UI.ListControl.ListControl<Item>);
     private update;
 }
+export declare function convertMissingDebugInfo(missingDebugInfo: SDK.DebuggerModel.MissingDebugInfo, functionName: string | undefined): {
+    details: Platform.UIString.LocalizedString;
+    resources: SDK.DebuggerModel.MissingDebugFiles[];
+};

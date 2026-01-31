@@ -206,7 +206,6 @@ export class SourcesPanel extends UI.Panel.Panel {
     threadsSidebarPane;
     watchSidebarPane;
     callstackPane;
-    liveLocationPool;
     lastModificationTime;
     #paused;
     switchToPausedTargetTimeout;
@@ -285,7 +284,6 @@ export class SourcesPanel extends UI.Panel.Panel {
             .addChangeListener(this.updateSidebarPosition.bind(this));
         this.updateSidebarPosition();
         void this.updateDebuggerButtonsAndStatus();
-        this.liveLocationPool = new Bindings.LiveLocation.LiveLocationPool();
         this.setTarget(UI.Context.Context.instance().flavor(SDK.Target.Target));
         Common.Settings.Settings.instance()
             .moduleSetting('breakpoints-active')
@@ -583,30 +581,16 @@ export class SourcesPanel extends UI.Panel.Panel {
     updateLastModificationTime() {
         this.lastModificationTime = window.performance.now();
     }
-    async executionLineChanged(liveLocation) {
-        const uiLocation = await liveLocation.uiLocation();
-        if (liveLocation.isDisposed()) {
+    async callFrameChanged() {
+        const frameFlavor = UI.Context.Context.instance().flavor(StackTrace.StackTrace.DebuggableFrameFlavor);
+        if (!frameFlavor?.frame.uiSourceCode) {
             return;
         }
-        if (!uiLocation) {
-            return;
-        }
+        const uiLocation = new Workspace.UISourceCode.UILocation(frameFlavor.frame.uiSourceCode, frameFlavor.frame.line, frameFlavor.frame.column);
         if (window.performance.now() - this.lastModificationTime < lastModificationTimeout) {
             return;
         }
         this.#sourcesView.showSourceLocation(uiLocation.uiSourceCode, uiLocation, undefined, true);
-    }
-    async callFrameChanged() {
-        const callFrame = UI.Context.Context.instance().flavor(StackTrace.StackTrace.DebuggableFrameFlavor);
-        if (!callFrame) {
-            return;
-        }
-        if (this.executionLineLocation) {
-            this.executionLineLocation.dispose();
-        }
-        // TODO(crbug.com/465879478): Remove LiveLocation once `DebuggableFrameFlavor` is backed by a "real" StackTrace.
-        this.executionLineLocation =
-            await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createCallFrameLiveLocation(callFrame.sdkFrame.location(), this.executionLineChanged.bind(this), this.liveLocationPool);
     }
     async updateDebuggerButtonsAndStatus() {
         const currentTarget = UI.Context.Context.instance().flavor(SDK.Target.Target);
@@ -650,7 +634,6 @@ export class SourcesPanel extends UI.Panel.Panel {
         if (this.switchToPausedTargetTimeout) {
             clearTimeout(this.switchToPausedTargetTimeout);
         }
-        this.liveLocationPool.disposeAll();
     }
     switchToPausedTarget(debuggerModel) {
         delete this.switchToPausedTargetTimeout;

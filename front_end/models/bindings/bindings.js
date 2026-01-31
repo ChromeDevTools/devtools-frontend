@@ -1979,17 +1979,7 @@ var UIStrings2 = {
    * @example {http://web.dev/file.wasm} PH2
    * @example {File not found} PH3
    */
-  failedToLoadDebugSymbolsFor: "[{PH1}] Failed to load debug symbols for {PH2} ({PH3})",
-  /**
-   * @description Error message that is displayed in UI debugging information cannot be found for a call frame
-   * @example {main} PH1
-   */
-  failedToLoadDebugSymbolsForFunction: 'No debug information for function "{PH1}"',
-  /**
-   * @description Error message that is displayed in UI when a file needed for debugging information for a call frame is missing
-   * @example {mainp.debug.wasm.dwp} PH1
-   */
-  debugSymbolsIncomplete: "The debug information for function {PH1} is incomplete"
+  failedToLoadDebugSymbolsFor: "[{PH1}] Failed to load debug symbols for {PH2} ({PH3})"
 };
 var str_2 = i18n3.i18n.registerUIStrings("models/bindings/DebuggerLanguagePlugins.ts", UIStrings2);
 var i18nString2 = i18n3.i18n.getLocalizedString.bind(void 0, str_2);
@@ -2345,13 +2335,14 @@ var DebuggerLanguagePluginManager = class {
           return functionInfo.frames.map(({ name }, index) => callFrame.createVirtualCallFrame(index, name));
         }
         if ("missingSymbolFiles" in functionInfo && functionInfo.missingSymbolFiles.length) {
-          const resources = functionInfo.missingSymbolFiles;
-          const details = i18nString2(UIStrings2.debugSymbolsIncomplete, { PH1: callFrame.functionName });
-          callFrame.missingDebugInfoDetails = { details, resources };
+          callFrame.missingDebugInfoDetails = {
+            type: "PARTIAL_INFO",
+            missingDebugFiles: functionInfo.missingSymbolFiles
+          };
         } else {
           callFrame.missingDebugInfoDetails = {
-            details: i18nString2(UIStrings2.failedToLoadDebugSymbolsForFunction, { PH1: callFrame.functionName }),
-            resources: []
+            type: "NO_INFO"
+            /* SDK.DebuggerModel.MissingDebugInfoType.NO_INFO */
           };
         }
       }
@@ -2571,24 +2562,14 @@ var DebuggerLanguagePluginManager = class {
     if ("frames" in functionInfo && functionInfo.frames.length) {
       const framePromises = functionInfo.frames.map(async ({ name }, index) => {
         const rawLocation = new SDK8.DebuggerModel.Location(script.debuggerModel, script.scriptId, frame.lineNumber, frame.columnNumber, index);
-        const uiLocation = await this.rawLocationToUILocation(rawLocation);
-        return {
-          uiSourceCode: uiLocation?.uiSourceCode,
-          url: uiLocation ? void 0 : frame.url,
-          name,
-          line: uiLocation?.lineNumber ?? frame.lineNumber,
-          column: uiLocation?.columnNumber ?? frame.columnNumber
-        };
+        const uiLocation2 = await this.rawLocationToUILocation(rawLocation);
+        return translatedFromUILocation(uiLocation2, name, frame);
       });
       translatedFrames.push(await Promise.all(framePromises));
       return true;
     }
-    const mappedFrame = {
-      url: frame.url,
-      name: frame.functionName,
-      line: frame.lineNumber,
-      column: frame.columnNumber
-    };
+    const uiLocation = await this.#debuggerWorkspaceBinding.rawLocationToUILocation(new SDK8.DebuggerModel.Location(script.debuggerModel, script.scriptId, frame.lineNumber, frame.columnNumber));
+    const mappedFrame = translatedFromUILocation(uiLocation, frame.functionName, frame);
     if ("missingSymbolFiles" in functionInfo && functionInfo.missingSymbolFiles.length) {
       translatedFrames.push([{
         ...mappedFrame,
@@ -2606,6 +2587,24 @@ var DebuggerLanguagePluginManager = class {
       }]);
     }
     return true;
+    function translatedFromUILocation(uiLocation2, name, fallback) {
+      if (uiLocation2) {
+        return {
+          uiSourceCode: uiLocation2.uiSourceCode,
+          url: void 0,
+          name,
+          line: uiLocation2.lineNumber,
+          column: uiLocation2.columnNumber ?? -1
+        };
+      }
+      return {
+        uiSourceCode: void 0,
+        url: fallback.url,
+        name: fallback.functionName,
+        line: fallback.lineNumber,
+        column: fallback.columnNumber
+      };
+    }
   }
   scriptsForUISourceCode(uiSourceCode) {
     for (const modelData of this.#debuggerModelToData.values()) {
@@ -2682,14 +2681,12 @@ var DebuggerLanguagePluginManager = class {
         rawModuleHandle.scripts.push(script);
       }
       void rawModuleHandle.addRawModulePromise.then((sourceFileURLs) => {
-        if (!("missingSymbolFiles" in sourceFileURLs)) {
-          if (script.debuggerModel.scriptForId(script.scriptId) === script) {
-            const modelData = this.#debuggerModelToData.get(script.debuggerModel);
-            if (modelData) {
-              modelData.addSourceFiles(script, sourceFileURLs);
-              void this.#debuggerWorkspaceBinding.updateLocations(script);
-            }
+        if (script.debuggerModel.scriptForId(script.scriptId) === script) {
+          const modelData = this.#debuggerModelToData.get(script.debuggerModel);
+          if (modelData && Array.isArray(sourceFileURLs)) {
+            modelData.addSourceFiles(script, sourceFileURLs);
           }
+          void this.#debuggerWorkspaceBinding.updateLocations(script);
         }
       });
       return;

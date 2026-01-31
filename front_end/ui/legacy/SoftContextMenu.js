@@ -290,7 +290,7 @@ export class SoftContextMenu {
         menuItemElement.addEventListener('mouseover', this.menuItemMouseOver.bind(this), false);
         menuItemElement.addEventListener('mouseleave', this.menuItemMouseLeave.bind(this), false);
         if (item.jslogContext) {
-            menuItemElement.setAttribute('jslog', `${VisualLogging.item().context(item.jslogContext)}`);
+            menuItemElement.setAttribute('jslog', `${VisualLogging.item(item.jslogContext).track({ click: true, resize: true })}`);
         }
         return menuItemElement;
     }

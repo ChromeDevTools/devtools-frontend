@@ -60,6 +60,7 @@
     "../../../../../../front_end/panels/network/ResourceChunkView.ts",
     "../../../../../../front_end/panels/network/ResourceDirectSocketChunkView.ts",
     "../../../../../../front_end/panels/network/ResourceWebSocketFrameView.ts",
+    "../../../../../../front_end/panels/network/ShowMoreDetailsWidget.ts",
     "../../../../../../front_end/panels/network/SignedExchangeInfoView.ts",
     "../../../../../../front_end/legacy/legacy-defs.d.ts",
     "../../../../../../front_end/global_typings/global_defs.d.ts",

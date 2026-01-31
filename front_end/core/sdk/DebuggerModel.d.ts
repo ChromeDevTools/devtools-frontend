@@ -178,10 +178,18 @@ export interface MissingDebugFiles {
     resourceUrl: Platform.DevToolsPath.UrlString;
     initiator: PageResourceLoadInitiator;
 }
-export interface MissingDebugInfoDetails {
-    details: string;
-    resources: MissingDebugFiles[];
+export declare const enum MissingDebugInfoType {
+    /** No debug information at all for the call frame */
+    NO_INFO = "NO_INFO",
+    /** Some debug information available, but it references files with debug information we were not able to retrieve */
+    PARTIAL_INFO = "PARTIAL_INFO"
 }
+export type MissingDebugInfo = {
+    type: MissingDebugInfoType.NO_INFO;
+} | {
+    type: MissingDebugInfoType.PARTIAL_INFO;
+    missingDebugFiles: MissingDebugFiles[];
+};
 export declare class CallFrame {
     #private;
     debuggerModel: DebuggerModel;
@@ -189,7 +197,7 @@ export declare class CallFrame {
     payload: Protocol.Debugger.CallFrame;
     readonly inlineFrameIndex: number;
     readonly functionName: string;
-    missingDebugInfoDetails: MissingDebugInfoDetails | null;
+    missingDebugInfoDetails: MissingDebugInfo | null;
     readonly exception: RemoteObject | null;
     readonly canBeRestarted: boolean;
     constructor(debuggerModel: DebuggerModel, script: Script, payload: Protocol.Debugger.CallFrame, inlineFrameIndex?: number, functionName?: string, exception?: RemoteObject | null);

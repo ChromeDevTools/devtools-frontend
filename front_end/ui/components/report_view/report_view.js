@@ -46,6 +46,7 @@ var report_css_default = `/*
   border-bottom: 1px solid var(--sys-color-divider);
   color: var(--sys-color-on-surface);
   background-color: var(--sys-color-cdt-base-container);
+  margin: 0;
 }
 
 .report-url {
@@ -201,14 +202,14 @@ var Report = class extends HTMLElement {
   #render() {
     render(html`
       <style>${report_css_default}</style>
-      ${this.#reportTitle ? html`<div class="report-title">
+      ${this.#reportTitle ? html`<h1 class="report-title">
         ${this.#reportTitle}
         ${this.#reportUrl ? Components.Linkifier.Linkifier.linkifyURL(this.#reportUrl, {
       tabStop: true,
       jslogContext: "source-location",
       className: "report-url"
     }) : nothing}
-      </div>` : nothing}
+      </h1>` : nothing}
       <div class="content">
         <slot></slot>
       </div>

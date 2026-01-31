@@ -1472,17 +1472,11 @@
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "Unknown error loading file"
   },
-  "models/bindings/DebuggerLanguagePlugins.ts | debugSymbolsIncomplete": {
-    "message": "The debug information for function {PH1} is incomplete"
-  },
   "models/bindings/DebuggerLanguagePlugins.ts | errorInDebuggerLanguagePlugin": {
     "message": "Error in debugger language plugin: {PH1}"
   },
   "models/bindings/DebuggerLanguagePlugins.ts | failedToLoadDebugSymbolsFor": {
     "message": "[{PH1}] Failed to load debug symbols for {PH2} ({PH3})"
-  },
-  "models/bindings/DebuggerLanguagePlugins.ts | failedToLoadDebugSymbolsForFunction": {
-    "message": "No debug information for function \"{PH1}\""
   },
   "models/bindings/DebuggerLanguagePlugins.ts | loadedDebugSymbolsForButDidnt": {
     "message": "[{PH1}] Loaded debug symbols for {PH2}, but didn't find any source files"
@@ -11075,9 +11069,6 @@
   "panels/network/RequestPayloadView.ts | requestPayload": {
     "message": "Request Payload"
   },
-  "panels/network/RequestPayloadView.ts | showMore": {
-    "message": "Show more"
-  },
   "panels/network/RequestPayloadView.ts | unableToDecodeValue": {
     "message": "(unable to decode value)"
   },
@@ -11341,6 +11332,9 @@
   },
   "panels/network/ResourceWebSocketFrameView.ts | webSocketFrame": {
     "message": "Web Socket Frame"
+  },
+  "panels/network/ShowMoreDetailsWidget.ts | showMore": {
+    "message": "Show more"
   },
   "panels/network/SignedExchangeInfoView.ts | certificate": {
     "message": "Certificate"
@@ -14110,6 +14104,12 @@
   },
   "panels/sources/CallStackSidebarPane.ts | debugFileNotFound": {
     "message": "Failed to load debug file \"{PH1}\"."
+  },
+  "panels/sources/CallStackSidebarPane.ts | debugSymbolsIncomplete": {
+    "message": "The debug information for function {PH1} is incomplete"
+  },
+  "panels/sources/CallStackSidebarPane.ts | failedToLoadDebugSymbolsForFunction": {
+    "message": "No debug information for function \"{PH1}\""
   },
   "panels/sources/CallStackSidebarPane.ts | notPaused": {
     "message": "Not paused"

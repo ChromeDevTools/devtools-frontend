@@ -10,6 +10,7 @@ ts_e2e_library("sources") {
     "breakpoint-csp-violations.test.ts",
     "breakpoint-javascript.test.ts",
     "breakpoints-sidebarpane.test.ts",
+    "call-stack.test.ts",
     "can-break-with-wasm-sourcemaps.test.ts",
     "can-disable-auto-sources-focus.test.ts",
     "can-handle-special-characters.test.ts",

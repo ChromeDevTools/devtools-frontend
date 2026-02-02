@@ -599,8 +599,8 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     this.#beforePausedCallback = callback;
   }
 
-  setExpandCallFramesCallback(callback: ((arg0: CallFrame[]) => Promise<CallFrame[]>)|null): void {
-    this.#expandCallFramesCallback = callback;
+  setExpandCallFramesCallback(_callback: ((arg0: CallFrame[]) => Promise<CallFrame[]>)|null): void {
+    // TODO(crbug.com/465879478): Remove expandFrames callback altogether. Do nothing for now.
   }
 
   setEvaluateOnCallFrameCallback(

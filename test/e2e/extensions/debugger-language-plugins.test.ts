@@ -479,13 +479,17 @@ describe('The Debugger Language Plugins', () => {
     await devToolsPage.click(PAUSE_ON_UNCAUGHT_EXCEPTION_SELECTOR);
     await inspectedPage.goToResource('sources/wasm/unreachable.html');
     await addDummyExternalDWARFInfo('unreachable.wasm', devToolsPage);
-    await devToolsPage.waitFor(RESUME_BUTTON);
-    // TODO: it should actually wait for rendering to finish.
-    await devToolsPage.drainTaskQueue();
 
     // Call stack shows inline function names and source locations.
+    await devToolsPage.waitForFunction(async () => {
+      return (await getCallFrameNames(devToolsPage))[0] === '$Main';
+    });
     const funcNames = await getCallFrameNames(devToolsPage);
     assert.deepEqual(funcNames, ['$Main', 'go', 'await in go', '(anonymous)']);
+
+    await devToolsPage.waitForFunction(async () => {
+      return (await getCallFrameLocations(devToolsPage))[0] === 'unreachable.ll:6';
+    });
     const sourceLocations = await getCallFrameLocations(devToolsPage);
     assert.deepEqual(sourceLocations, ['unreachable.ll:6', 'unreachable.html:27', 'unreachable.html:30']);
   });

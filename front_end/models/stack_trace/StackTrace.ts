@@ -75,15 +75,9 @@ export class DebuggableFrameFlavor {
 
   readonly frame: DebuggableFrame;
 
-  // TODO(crbug.com/465879478): Remove once this is no longer part of SDK.CallFrame.
-  //     We need to stash this separately because DebuggerModel sets this on CallFrame after the
-  //     fact so we can't just check it in the `equals` below.
-  readonly #missingDebugInfo: SDK.DebuggerModel.MissingDebugInfo|null;
-
   /** Use the static {@link for}. Only public to satisfy the `setFlavor` Ctor type  */
   constructor(frame: DebuggableFrame) {
     this.frame = frame;
-    this.#missingDebugInfo = frame.sdkFrame.missingDebugInfoDetails;
   }
 
   get sdkFrame(): SDK.DebuggerModel.CallFrame {
@@ -94,11 +88,11 @@ export class DebuggableFrameFlavor {
   static for(frame: DebuggableFrame): DebuggableFrameFlavor {
     function equals(a: DebuggableFrame, b: DebuggableFrame): boolean {
       return a.url === b.url && a.uiSourceCode === b.uiSourceCode && a.name === b.name && a.line === b.line &&
-          a.column === b.column && a.sdkFrame === b.sdkFrame;
+          a.column === b.column && a.sdkFrame === b.sdkFrame &&
+          JSON.stringify(a.missingDebugInfo) === JSON.stringify(b.missingDebugInfo);
     }
 
-    if (!DebuggableFrameFlavor.#last || !equals(DebuggableFrameFlavor.#last.frame, frame) ||
-        DebuggableFrameFlavor.#last.#missingDebugInfo !== frame.sdkFrame.missingDebugInfoDetails) {
+    if (!DebuggableFrameFlavor.#last || !equals(DebuggableFrameFlavor.#last.frame, frame)) {
       DebuggableFrameFlavor.#last = new DebuggableFrameFlavor(frame);
     }
     return DebuggableFrameFlavor.#last;

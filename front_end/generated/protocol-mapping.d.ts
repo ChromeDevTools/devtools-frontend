@@ -2791,6 +2791,15 @@ export namespace ProtocolMapping {
       returnType: void;
     };
     /**
+     * Runs an extension default action.
+     * Available if the client is connected using the --remote-debugging-pipe
+     * flag and the --enable-unsafe-extension-debugging flag is set.
+     */
+    'Extensions.triggerAction': {
+      paramsType: [Protocol.Extensions.TriggerActionRequest];
+      returnType: void;
+    };
+    /**
      * Installs an unpacked extension from the filesystem similar to
      * --load-extension CLI flags. Returns extension ID once the extension
      * has been installed. Available if the client is connected using the

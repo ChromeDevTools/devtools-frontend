@@ -175,7 +175,7 @@ export class Example {
 
       const devtoolsTarget = await this.#browser.waitForTarget(target => {
         const isAcquiredBefore = acquiredDevToolsTargets.has(target);
-        return (target.type() === 'other' && target.url().startsWith('devtools://') && !isAcquiredBefore);
+        return (target.type() === 'other' && target.url().includes('devtools_app.html') && !isAcquiredBefore);
       });
       acquiredDevToolsTargets.set(devtoolsTarget, true);
 

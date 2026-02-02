@@ -861,16 +861,18 @@ describe('Recorder', function() {
   it('should capture a change that causes navigation without blur or change', async ({inspectedPage, devToolsPage}) => {
     await startRecording('recorder/programmatic-navigation-on-keydown.html', undefined, devToolsPage, inspectedPage);
     await inspectedPage.bringToFront();
-    await inspectedPage.waitForSelector('input');
+    await inspectedPage.waitForSelector('input:focus');
     await inspectedPage.page.keyboard.press('1');
     await inspectedPage.page.keyboard.press('Enter', {delay: 50});
 
-    await devToolsPage.waitForFunction(async () => {
+    await devToolsPage.waitForFunction(async logger => {
       const controller = await getRecordingController(devToolsPage);
-      return await controller.evaluate(
-          c => c.getCurrentRecordingForTesting()?.flow.steps.length === 5,
+      const steps = await controller.evaluate(
+          c => c.getCurrentRecordingForTesting()?.flow.steps.length,
       );
-    });
+      logger.log(`Recorded ${steps} steps`);
+      return steps === 5;
+    }, undefined, 'Waiting for 5 steps to be recorded');
 
     const recording = await stopRecording(devToolsPage);
     assert.deepEqual(

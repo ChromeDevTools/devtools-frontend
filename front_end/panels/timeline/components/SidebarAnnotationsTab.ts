@@ -424,7 +424,7 @@ export const DEFAULT_VIEW: (input: SidebarAnnotationsTabViewInput, output: objec
                   @mouseout=${() => (annotation.type === 'ENTRY_LABEL') ? input.onAnnotationHoverOut() : null}
                   aria-label=${label}
                   tabindex="0"
-                  jslog=${VisualLogging.item(`timeline.annotation-sidebar.annotation-${jslogForAnnotation(annotation)}`).track({click: true, resize: true})}
+                  jslog=${VisualLogging.item(`timeline.annotation-sidebar.annotation-${jslogForAnnotation(annotation)}`).track({click: true})}
                 >
                   <div class="annotation">
                     ${renderAnnotationIdentifier(annotation, input.annotationEntryToColorMap)}

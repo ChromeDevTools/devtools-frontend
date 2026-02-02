@@ -197,7 +197,7 @@ export class LighthouseReportRenderer {
         continue;
       }
 
-      auditEl.setAttribute('jslog', `${VisualLogging.item(`lighthouse.audit.${id}`).track({resize: true})}`);
+      auditEl.setAttribute('jslog', `${VisualLogging.item(`lighthouse.audit.${id}`)}`);
 
       let state: string|undefined;
       for (const className of auditEl.classList) {

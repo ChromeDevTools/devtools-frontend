@@ -98,7 +98,7 @@ const DEFAULT_VIEW: View = (input, output, target) => {
   render(html`
     <div class="animation-group-preview-ui">
       <button
-        jslog=${VisualLogging.item(`animations.buffer-preview${input.isScrollDrivenAnimationGroup ? '-sda' : ''}`).track({click: true, resize: true})}
+        jslog=${VisualLogging.item(`animations.buffer-preview${input.isScrollDrivenAnimationGroup ? '-sda' : ''}`).track({click: true})}
         class=${classes}
         role="option"
         aria-label=${input.label}

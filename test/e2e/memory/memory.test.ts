@@ -210,7 +210,7 @@ describe('The Memory Panel', function() {
     await waitForNonEmptyHeapSnapshotData(devToolsPage);
     await setSearchFilter('leaking', devToolsPage);
     await waitForSearchResultNumber(4, devToolsPage);
-    await findSearchResult('\"leaking\"', '2 of 4', devToolsPage);
+    await findSearchResult('\"leaking\"', '1 of 4', devToolsPage);
 
     await devToolsPage.waitForFunction(async () => {
       // Wait for all the rows of the data-grid to load.
@@ -468,7 +468,7 @@ describe('The Memory Panel', function() {
     await waitForNonEmptyHeapSnapshotData(devToolsPage);
     await setSearchFilter('searchable_string', devToolsPage);
     await waitForSearchResultNumber(2, devToolsPage);
-    await findSearchResult('"searchable_string"', '2 of 2', devToolsPage);
+    await findSearchResult('"searchable_string"', '1 of 2', devToolsPage);
     await waitForRetainerChain(
         [
           '{y}', 'KeyType', `Window (global*) / localhost:${inspectedPage.serverPort}`,

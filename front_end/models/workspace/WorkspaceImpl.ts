@@ -268,7 +268,7 @@ export class WorkspaceImpl extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     return [...this.#projects.values()];
   }
 
-  projectsForType(type: string): Project[] {
+  projectsForType(type: projectTypes): Project[] {
     function filterByType(project: Project): boolean {
       return project.type() === type;
     }

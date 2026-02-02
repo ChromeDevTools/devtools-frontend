@@ -839,6 +839,8 @@ function checkPendingEventExpectation(): void {
             event.impressions = event.impressions.filter(impression => !matchedImpressions.has(impression));
           }
         }
+        pendingEventExpectation.missingEvents = pendingEventExpectation.missingEvents.filter(
+            event => !('impressions' in event) || event.impressions.length > 0);
         return;
       }
       if (!compareVeEvents(actualEvents[i], expectedEvent)) {

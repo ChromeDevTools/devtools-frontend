@@ -114,7 +114,6 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
   private list: UI.ListControl.ListControl<Item>;
   private readonly showMoreMessageElement: Element;
   private showIgnoreListed = false;
-  private readonly locationPool = new Bindings.LiveLocation.LiveLocationPool();
   private maxAsyncStackChainDepth = defaultMaxAsyncStackChainDepth;
   private readonly updateItemThrottler = new Common.Throttler.Throttler(100);
   private readonly scheduledForUpdateItems = new Set<Item>();
@@ -224,9 +223,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
     this.requestUpdate();
   }
 
-  override async performUpdate(): Promise<void> {
-    this.locationPool.disposeAll();
-
+  override performUpdate(): void {
     this.callFrameWarningsElement.classList.add('hidden');
 
     if (!this.#stackTrace) {

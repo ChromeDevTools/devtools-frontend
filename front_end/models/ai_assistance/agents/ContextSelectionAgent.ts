@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Host from '../../../core/host/host.js';
+import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
 import * as Logs from '../../logs/logs.js';
@@ -14,6 +15,7 @@ import {
   type RequestOptions,
 } from './AiAgent.js';
 
+const lockedString = i18n.i18n.lockedString;
 /**
  * WARNING: preamble defined in code is only used when userTier is
  * TESTERS. Otherwise, a server-side preamble is used (see
@@ -78,7 +80,10 @@ export class ContextSelectionAgent extends AiAgent<never> {
         required: [],
         properties: {},
       },
-      handler: async _params => {
+      displayInfoFromArgs: () => {
+        return {title: lockedString('Listing network requests…')};
+      },
+      handler: async () => {
         const requestURls = [];
         for (const request of Logs.NetworkLog.NetworkLog.instance().requests()) {
           requestURls.push(request.url());
@@ -104,6 +109,9 @@ export class ContextSelectionAgent extends AiAgent<never> {
             nullable: false,
           },
         },
+      },
+      displayInfoFromArgs: args => {
+        return {title: lockedString('Getting network request…'), action: `selectNetworkRequest(${args.url})`};
       },
       handler: async ({url}) => {
         // TODO: Switch to using IDs to make is easier to link to as well.

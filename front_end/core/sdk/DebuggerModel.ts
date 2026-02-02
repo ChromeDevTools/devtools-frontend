@@ -1169,21 +1169,6 @@ export interface MissingDebugFiles {
   initiator: PageResourceLoadInitiator;
 }
 
-export const enum MissingDebugInfoType {
-  /** No debug information at all for the call frame */
-  NO_INFO = 'NO_INFO',
-
-  /** Some debug information available, but it references files with debug information we were not able to retrieve */
-  PARTIAL_INFO = 'PARTIAL_INFO',
-}
-
-export type MissingDebugInfo = {
-  type: MissingDebugInfoType.NO_INFO,
-}|{
-  type: MissingDebugInfoType.PARTIAL_INFO,
-  missingDebugFiles: MissingDebugFiles[],
-};
-
 export class CallFrame {
   debuggerModel: DebuggerModel;
   readonly script: Script;
@@ -1195,7 +1180,6 @@ export class CallFrame {
   readonly functionName: string;
   readonly #functionLocation: Location|undefined;
   #returnValue: RemoteObject|null;
-  missingDebugInfoDetails: MissingDebugInfo|null;
   readonly exception: RemoteObject|null;
 
   readonly canBeRestarted: boolean;
@@ -1211,7 +1195,6 @@ export class CallFrame {
     this.#localScope = null;
     this.inlineFrameIndex = inlineFrameIndex || 0;
     this.functionName = functionName ?? payload.functionName;
-    this.missingDebugInfoDetails = null;
     this.canBeRestarted = Boolean(payload.canBeRestarted);
     this.exception = exception;
     for (let i = 0; i < payload.scopeChain.length; ++i) {

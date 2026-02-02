@@ -63,7 +63,7 @@ describeWithEnvironment('CallStackSidebarPane', () => {
      async () => {
        const {details, debuggerModel, script} = getPausedDetails();
        const callStackSidebarPane = Sources.CallStackSidebarPane.CallStackSidebarPane.instance({forceNew: true});
-       callStackSidebarPane.flavorChanged(details);
+       await callStackSidebarPane.flavorChanged(details);
 
        const setSelectedCallFrameSpy = sinon.spy(debuggerModel, 'setSelectedCallFrame');
 
@@ -89,7 +89,7 @@ describeWithEnvironment('CallStackSidebarPane', () => {
        const {details, debuggerModel, script} = getPausedDetails();
        const callStackSidebarPane = Sources.CallStackSidebarPane.CallStackSidebarPane.instance({forceNew: true});
 
-       callStackSidebarPane.flavorChanged(details);
+       await callStackSidebarPane.flavorChanged(details);
 
        const setSelectedCallFrameSpy = sinon.spy(debuggerModel, 'setSelectedCallFrame');
 
@@ -113,7 +113,7 @@ describeWithEnvironment('CallStackSidebarPane', () => {
   it('does not activate item when SourceMapAttached event fires and no view is active', async () => {
     const {details, debuggerModel, script} = getPausedDetails();
     const callStackSidebarPane = Sources.CallStackSidebarPane.CallStackSidebarPane.instance({forceNew: true});
-    callStackSidebarPane.flavorChanged(details);
+    await callStackSidebarPane.flavorChanged(details);
 
     const setSelectedCallFrameSpy = sinon.spy(debuggerModel, 'setSelectedCallFrame');
 

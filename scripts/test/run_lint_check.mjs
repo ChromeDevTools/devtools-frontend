@@ -352,7 +352,9 @@ async function run() {
     }
   }
 
-  const frontEndFiles = scripts.filter(script => script.includes('front_end'));
+  const frontEndFiles = scripts.filter(
+    script => script.includes('front_end') && !script.endsWith('.test.ts'),
+  );
   const esLintRules = scripts.filter(script =>
     script.includes('scripts/eslint_rules')
   );

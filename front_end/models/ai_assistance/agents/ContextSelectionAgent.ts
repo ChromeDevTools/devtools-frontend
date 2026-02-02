@@ -78,13 +78,7 @@ export class ContextSelectionAgent extends AiAgent<never> {
         required: [],
         properties: {},
       },
-      handler: async (_params, options) => {
-        if (!options?.approved) {
-          return {
-            requiresApproval: true,
-          };
-        }
-
+      handler: async _params => {
         const requestURls = [];
         for (const request of Logs.NetworkLog.NetworkLog.instance().requests()) {
           requestURls.push(request.url());

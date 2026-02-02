@@ -150,7 +150,6 @@ export class DebuggerModel extends SDKModel<EventTypes> {
                                      start: Location,
                                      end: Location,
                                    }>>)|null = null;
-  #expandCallFramesCallback: ((arg0: CallFrame[]) => Promise<CallFrame[]>)|null = null;
   evaluateOnCallFrameCallback:
       ((arg0: CallFrame, arg1: EvaluationOptions) => Promise<EvaluationResult|null>)|null = null;
   #synchronizeBreakpointsCallback: ((script: Script) => Promise<void>)|null = null;
@@ -599,10 +598,6 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     this.#beforePausedCallback = callback;
   }
 
-  setExpandCallFramesCallback(_callback: ((arg0: CallFrame[]) => Promise<CallFrame[]>)|null): void {
-    // TODO(crbug.com/465879478): Remove expandFrames callback altogether. Do nothing for now.
-  }
-
   setEvaluateOnCallFrameCallback(
       callback: ((arg0: CallFrame, arg1: EvaluationOptions) => Promise<EvaluationResult|null>)|null): void {
     this.evaluateOnCallFrameCallback = callback;
@@ -627,7 +622,6 @@ export class DebuggerModel extends SDKModel<EventTypes> {
 
     const pausedDetails =
         new DebuggerPausedDetails(this, callFrames, reason, auxData, breakpointIds, asyncStackTrace, asyncStackTraceId);
-    await this.#expandCallFrames(pausedDetails);
 
     if (this.continueToLocationCallback) {
       const callback = this.continueToLocationCallback;
@@ -645,13 +639,6 @@ export class DebuggerModel extends SDKModel<EventTypes> {
       }
     } else {
       Common.EventTarget.fireEvent('DevTools.DebuggerPaused');
-    }
-  }
-
-  /** Delegates to the DebuggerLanguagePlugin and potential attached source maps to expand inlined call frames */
-  async #expandCallFrames(pausedDetails: DebuggerPausedDetails): Promise<void> {
-    if (this.#expandCallFramesCallback) {
-      pausedDetails.callFrames = await this.#expandCallFramesCallback.call(null, pausedDetails.callFrames);
     }
   }
 
@@ -708,10 +695,6 @@ export class DebuggerModel extends SDKModel<EventTypes> {
   }
 
   async setDebugInfoURL(script: Script, _externalURL: Platform.DevToolsPath.UrlString): Promise<void> {
-    if (this.#expandCallFramesCallback && this.#debuggerPausedDetails) {
-      this.#debuggerPausedDetails.callFrames =
-          await this.#expandCallFramesCallback.call(null, this.#debuggerPausedDetails.callFrames);
-    }
     this.dispatchEventToListeners(Events.DebugInfoAttached, script);
   }
 

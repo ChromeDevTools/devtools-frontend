@@ -489,35 +489,12 @@ export class DebuggerLanguagePluginManager implements
     return this.callFrameByStopId.get(stopId);
   }
 
-  private expandCallFrames(callFrames: SDK.DebuggerModel.CallFrame[]): Promise<SDK.DebuggerModel.CallFrame[]> {
-    return Promise
-        .all(callFrames.map(async callFrame => {
-          const functionInfo = await this.getFunctionInfo(callFrame.script, callFrame.location());
-          if (functionInfo) {
-            if ('frames' in functionInfo && functionInfo.frames.length) {
-              return functionInfo.frames.map(({name}, index) => callFrame.createVirtualCallFrame(index, name));
-            }
-            if ('missingSymbolFiles' in functionInfo && functionInfo.missingSymbolFiles.length) {
-              callFrame.missingDebugInfoDetails = {
-                type: SDK.DebuggerModel.MissingDebugInfoType.PARTIAL_INFO,
-                missingDebugFiles: functionInfo.missingSymbolFiles,
-              };
-            } else {
-              callFrame.missingDebugInfoDetails = {type: SDK.DebuggerModel.MissingDebugInfoType.NO_INFO};
-            }
-          }
-          return callFrame;
-        }))
-        .then(callFrames => callFrames.flat());
-  }
-
   modelAdded(debuggerModel: SDK.DebuggerModel.DebuggerModel): void {
     this.#debuggerModelToData.set(debuggerModel, new ModelData(debuggerModel, this.#workspace));
     debuggerModel.addEventListener(SDK.DebuggerModel.Events.GlobalObjectCleared, this.globalObjectCleared, this);
     debuggerModel.addEventListener(SDK.DebuggerModel.Events.ParsedScriptSource, this.parsedScriptSource, this);
     debuggerModel.addEventListener(SDK.DebuggerModel.Events.DebuggerResumed, this.debuggerResumed, this);
     debuggerModel.setEvaluateOnCallFrameCallback(this.evaluateOnCallFrame.bind(this));
-    debuggerModel.setExpandCallFramesCallback(this.expandCallFrames.bind(this));
   }
 
   modelRemoved(debuggerModel: SDK.DebuggerModel.DebuggerModel): void {
@@ -525,7 +502,6 @@ export class DebuggerLanguagePluginManager implements
     debuggerModel.removeEventListener(SDK.DebuggerModel.Events.ParsedScriptSource, this.parsedScriptSource, this);
     debuggerModel.removeEventListener(SDK.DebuggerModel.Events.DebuggerResumed, this.debuggerResumed, this);
     debuggerModel.setEvaluateOnCallFrameCallback(null);
-    debuggerModel.setExpandCallFramesCallback(null);
     const modelData = this.#debuggerModelToData.get(debuggerModel);
     if (modelData) {
       modelData.dispose();

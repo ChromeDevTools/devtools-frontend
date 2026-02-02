@@ -119,7 +119,6 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
   private readonly updateItemThrottler = new Common.Throttler.Throttler(100);
   private readonly scheduledForUpdateItems = new Set<Item>();
   private muteActivateItem?: boolean;
-  private lastDebuggerModel: SDK.DebuggerModel.DebuggerModel|null = null;
 
   #stackTrace: StackTrace.StackTrace.DebuggableStackTrace|null = null;
 
@@ -192,9 +191,6 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
     this.showMoreMessageElement = showMoreRef.value as HTMLElement;
 
     this.requestUpdate();
-
-    SDK.TargetManager.TargetManager.instance().addModelListener(
-        SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebugInfoAttached, this.debugInfoAttached, this);
   }
 
   static instance(opts: {
@@ -212,7 +208,6 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
     this.showIgnoreListed = false;
     this.ignoreListCheckboxElement.checked = false;
     this.maxAsyncStackChainDepth = defaultMaxAsyncStackChainDepth;
-    this.setSourceMapSubscription(details?.debuggerModel ?? null);
 
     if (this.#stackTrace) {
       this.#stackTrace.removeEventListener(StackTrace.StackTrace.Events.UPDATED, this.requestUpdate, this);
@@ -227,28 +222,6 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
     }
 
     this.requestUpdate();
-  }
-
-  private debugInfoAttached(): void {
-    this.requestUpdate();
-  }
-
-  private setSourceMapSubscription(debuggerModel: SDK.DebuggerModel.DebuggerModel|null): void {
-    // Shortcut for the case when we are listening to the same model.
-    if (this.lastDebuggerModel === debuggerModel) {
-      return;
-    }
-
-    if (this.lastDebuggerModel) {
-      this.lastDebuggerModel.sourceMapManager().removeEventListener(
-          SDK.SourceMapManager.Events.SourceMapAttached, this.debugInfoAttached, this);
-    }
-
-    this.lastDebuggerModel = debuggerModel;
-    if (this.lastDebuggerModel) {
-      this.lastDebuggerModel.sourceMapManager().addEventListener(
-          SDK.SourceMapManager.Events.SourceMapAttached, this.debugInfoAttached, this);
-    }
   }
 
   override async performUpdate(): Promise<void> {

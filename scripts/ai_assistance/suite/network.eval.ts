@@ -7,7 +7,35 @@ import {loadInstructions} from './instructions/load.ts';
 
 await evalGroup({type: 'network', label: 'request-info'}, async function() {
   await itEval({
-    test: 'is an accurate response',
-    judge: example => LLMComparison.judge(example, loadInstructions('request-info')),
+    test: 'is an accurate response to \'What is this network request about\'',
+    judge: example => LLMComparison.judge(example, loadInstructions('network.eval')),
+  });
+});
+
+await evalGroup({type: 'network', label: 'bad-request-4xx'}, async function() {
+  await itEval({
+    test: 'is an accurate response to \'Why is this network request failing\' (4xx)',
+    judge: example => LLMComparison.judge(example, loadInstructions('network.eval')),
+  });
+});
+
+await evalGroup({type: 'network', label: 'cors-credentials'}, async function() {
+  await itEval({
+    test: 'is an accurate response to \'Why is this network request failing\' (CORS credentials)',
+    judge: example => LLMComparison.judge(example, loadInstructions('network.eval')),
+  });
+});
+
+await evalGroup({type: 'network', label: 'redirect-3xx'}, async function() {
+  await itEval({
+    test: 'is an accurate response to \'Why is this network request failing\' (3xx)',
+    judge: example => LLMComparison.judge(example, loadInstructions('network.eval')),
+  });
+});
+
+await evalGroup({type: 'network', label: 'server-error-5xx'}, async function() {
+  await itEval({
+    test: 'is an accurate response to \'Why is this network request failing\' (5xx)',
+    judge: example => LLMComparison.judge(example, loadInstructions('network.eval')),
   });
 });

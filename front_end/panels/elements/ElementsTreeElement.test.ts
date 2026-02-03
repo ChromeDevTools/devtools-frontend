@@ -7,7 +7,7 @@ import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
-import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, registerActions} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 
@@ -45,6 +45,67 @@ describe('ElementsTreeElement', () => {
       assert.strictEqual(result.text, expected.text);
       assert.deepEqual(result.entityRanges, expected.entityRanges);
     });
+  });
+
+  it('renders gutter decorations correctly', async () => {
+    const target = document.createElement('div');
+    target.style.width = '100px';
+    target.style.height = '20px';
+    const style = document.createElement('style');
+    // FIXME: styles are currently external to ElementsTreeElement.
+    style.innerText = Elements.ElementsTreeOutline.elementsTreeOutlineStyles;
+    target.append(style);
+    renderElementIntoDOM(target, {
+      includeCommonStyles: true,
+    });
+    const decorations = [
+      {title: 'Decoration 1', color: 'red'},
+      {title: 'Decoration 2', color: 'blue'},
+    ];
+    const descendantDecorations = [
+      {title: 'Descendant 1', color: 'green'},
+    ];
+    Elements.ElementsTreeElement.DEFAULT_VIEW(
+        {
+          containerAdornerActive: false,
+          showAdAdorner: false,
+          showContainerAdorner: false,
+          showFlexAdorner: false,
+          flexAdornerActive: false,
+          showGridAdorner: false,
+          showGridLanesAdorner: false,
+          showMediaAdorner: false,
+          showPopoverAdorner: false,
+          showTopLayerAdorner: false,
+          gridAdornerActive: false,
+          popoverAdornerActive: false,
+          isSubgrid: false,
+          showViewSourceAdorner: false,
+          showScrollAdorner: false,
+          showScrollSnapAdorner: false,
+          scrollSnapAdornerActive: false,
+          showSlotAdorner: false,
+          showStartingStyleAdorner: false,
+          startingStyleAdornerActive: false,
+          onStartingStyleAdornerClick: () => {},
+          onSlotAdornerClick: () => {},
+          topLayerIndex: -1,
+          onViewSourceAdornerClick: () => {},
+          onGutterClick: () => {},
+          onContainerAdornerClick: () => {},
+          onFlexAdornerClick: () => {},
+          onGridAdornerClick: () => {},
+          onMediaAdornerClick: () => {},
+          onPopoverAdornerClick: () => {},
+          onScrollSnapAdornerClick: () => {},
+          onTopLayerAdornerClick: () => {},
+          decorations,
+          descendantDecorations,
+          decorationsTooltip: 'Title',
+          indent: 20,
+        },
+        {}, target);
+    await assertScreenshot('elements/gutter_decorations.png');
   });
 });
 

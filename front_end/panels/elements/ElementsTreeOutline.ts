@@ -83,6 +83,7 @@ const elementsTreeOutlineByDOMModel = new WeakMap<SDK.DOMModel.DOMModel, Element
 const populatedTreeElements = new WeakSet<ElementsTreeElement>();
 
 export type View = typeof DEFAULT_VIEW;
+export {elementsTreeOutlineStyles};
 
 interface ViewInput {
   omitRootDOMNode: boolean;

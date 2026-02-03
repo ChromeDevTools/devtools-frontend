@@ -417,11 +417,13 @@ export interface ViewInput {
   showStartingStyleAdorner: boolean;
   startingStyleAdornerActive: boolean;
   onStartingStyleAdornerClick: (e: Event) => void;
+  decorations: Decoration[];
+  descendantDecorations: Decoration[];
+  decorationsTooltip: string;
+  indent: number;
 }
 
 export interface ViewOutput {
-  gutterContainer?: HTMLElement;
-  decorationsElement?: HTMLElement;
   contentElement?: HTMLElement;
 }
 
@@ -443,6 +445,11 @@ export function adornerRef(): DirectiveResult<typeof Lit.Directives.RefDirective
   });
 }
 
+export interface Decoration {
+  title: string;
+  color: string;
+}
+
 function handleAdornerKeydown(cb: (event: Event) => void): (event: KeyboardEvent) => void {
   return (event: KeyboardEvent) => {
     if (event.code === 'Enter' || event.code === 'Space') {
@@ -458,13 +465,24 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
       input.showGridAdorner || input.showGridLanesAdorner || input.showMediaAdorner || input.showPopoverAdorner ||
       input.showTopLayerAdorner || input.showViewSourceAdorner || input.showScrollAdorner ||
       input.showScrollSnapAdorner || input.showSlotAdorner || input.showStartingStyleAdorner;
+  const gutterContainerClasses = {
+    'has-decorations': input.decorations.length || input.descendantDecorations.length,
+    'gutter-container': true,
+  };
   // clang-format off
   render(html`
     <div ${ref(el => { output.contentElement = el as HTMLElement; })}>
       ${input.nodeInfo ? html`<span class="highlight">${input.nodeInfo}</span>` : nothing}
-      <div class="gutter-container" @click=${input.onGutterClick} ${ref(el => { output.gutterContainer = el as HTMLElement; })}>
+      <div class=${Lit.Directives.classMap(gutterContainerClasses)}
+           style="left: ${-input.indent}px"
+           @click=${input.onGutterClick}>
         <devtools-icon name="dots-horizontal"></devtools-icon>
-        <div class="hidden" ${ref(el => { output.decorationsElement = el as HTMLElement; })}></div>
+        ${input.decorations.length || input.descendantDecorations.length ? html`
+        <div class="elements-gutter-decoration-container"
+             title=${input.decorationsTooltip}>
+             ${input.decorations.map(d => html`<div class="elements-gutter-decoration" style="--decoration-color: ${d.color}"></div>`)}
+             ${input.descendantDecorations.map(d => html`<div class="elements-gutter-decoration elements-has-decorated-children" style="--decoration-color: ${d.color}"></div>`)}
+        </div>` : nothing}
       </div>
       ${hasAdorners ? html`<div class="adorner-container ${!hasAdorners ? 'hidden' : ''}">
         ${input.showAdAdorner ? html`<devtools-adorner
@@ -640,8 +658,6 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
   override treeOutline: ElementsTreeOutline|null;
 
   // Handled by the view output for now.
-  gutterContainer!: HTMLElement;
-  decorationsElement!: HTMLElement;
   contentElement!: HTMLElement;
 
   private searchQuery: string|null;
@@ -671,6 +687,10 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
   #scrollSnapAdornerActive = false;
   #startingStyleAdornerActive = false;
   #layout: SDK.CSSModel.LayoutProperties|null = null;
+
+  #decorations: Decoration[] = [];
+  #descendantDecorations: Decoration[] = [];
+  #decorationsTooltip = '';
 
   constructor(node: SDK.DOMModel.DOMNode, isClosingTag?: boolean) {
     // The title will be updated in onattach.
@@ -797,6 +817,10 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
           showScrollAdorner: ((this.node().nodeName() === 'HTML' && this.node().ownerDocument?.isScrollable()) ||
                               (this.node().nodeName() !== '#document' && this.node().isScrollable())) &&
               !this.isClosingTag(),
+          decorations: this.#decorations,
+          descendantDecorations: this.expanded ? [] : this.#descendantDecorations,
+          decorationsTooltip: this.#decorationsTooltip,
+          indent: this.computeLeftIndent(),
           showScrollSnapAdorner: Boolean(this.#layout?.hasScroll) && !this.isClosingTag(),
           scrollSnapAdornerActive: this.#scrollSnapAdornerActive,
           showSlotAdorner: Boolean(this.nodeInternal.assignedSlot) && !this.isClosingTag(),
@@ -1156,6 +1180,10 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
           onPopoverAdornerClick: () => {},
           onScrollSnapAdornerClick: () => {},
           onTopLayerAdornerClick: () => {},
+          decorations: [],
+          descendantDecorations: [],
+          decorationsTooltip: '',
+          indent: 0,
         },
         this, this.listItemElement);
 
@@ -2278,10 +2306,6 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   updateDecorations(): void {
-    const indent = this.computeLeftIndent();
-    this.gutterContainer.style.left = (-indent) + 'px';
-    this.listItemElement.style.setProperty('--indent', indent + 'px');
-
     if (this.isClosingTag()) {
       return;
     }
@@ -2339,60 +2363,27 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     return Promise.all(promises).then(updateDecorationsUI.bind(this));
 
     function updateDecorationsUI(this: ElementsTreeElement): void {
-      this.decorationsElement.removeChildren();
-      this.decorationsElement.classList.add('hidden');
-      this.gutterContainer.classList.toggle(
-          'has-decorations', Boolean(decorations.length || descendantDecorations.length));
-      UI.ARIAUtils.setLabel(this.decorationsElement, '');
+      this.#decorations = decorations;
+      this.#descendantDecorations = descendantDecorations;
 
       if (!decorations.length && !descendantDecorations.length) {
+        this.#decorationsTooltip = '';
+        this.performUpdate();
         return;
       }
 
-      const colors = new Set<string>();
-      const titles = document.createElement('div');
-
+      const tooltip: string[] = [];
       for (const decoration of decorations) {
-        const titleElement = titles.createChild('div');
-        titleElement.textContent = decoration.title;
-        colors.add(decoration.color);
+        tooltip.push(decoration.title);
       }
-      if (this.expanded && !decorations.length) {
-        return;
-      }
-
-      const descendantColors = new Set<string>();
-      if (descendantDecorations.length) {
-        let element = titles.createChild('div');
-        element.textContent = i18nString(UIStrings.children);
+      if (!this.expanded && descendantDecorations.length) {
+        tooltip.push(i18nString(UIStrings.children));
         for (const decoration of descendantDecorations) {
-          element = titles.createChild('div');
-          element.style.marginLeft = '15px';
-          element.textContent = decoration.title;
-          descendantColors.add(decoration.color);
+          tooltip.push(decoration.title);
         }
       }
-
-      let offset = 0;
-      processColors.call(this, colors, 'elements-gutter-decoration');
-      if (!this.expanded) {
-        processColors.call(this, descendantColors, 'elements-gutter-decoration elements-has-decorated-children');
-      }
-      UI.Tooltip.Tooltip.install(this.decorationsElement, titles.textContent);
-      UI.ARIAUtils.setLabel(this.decorationsElement, titles.textContent || '');
-
-      function processColors(this: ElementsTreeElement, colors: Set<string>, className: string): void {
-        for (const color of colors) {
-          const child = this.decorationsElement.createChild('div', className);
-          this.decorationsElement.classList.remove('hidden');
-          child.style.backgroundColor = color;
-          child.style.borderColor = color;
-          if (offset) {
-            child.style.marginLeft = offset + 'px';
-          }
-          offset += 3;
-        }
-      }
+      this.#decorationsTooltip = tooltip.join('\n');
+      this.performUpdate();
     }
   }
 

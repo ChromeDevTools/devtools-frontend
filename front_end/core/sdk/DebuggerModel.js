@@ -129,7 +129,6 @@ export class DebuggerModel extends SDKModel {
     #skipAllPausesTimeout = 0;
     #beforePausedCallback = null;
     #computeAutoStepRangesCallback = null;
-    #expandCallFramesCallback = null;
     evaluateOnCallFrameCallback = null;
     #synchronizeBreakpointsCallback = null;
     // We need to be able to register listeners for individual breakpoints. As such, we dispatch
@@ -506,9 +505,6 @@ export class DebuggerModel extends SDKModel {
     setBeforePausedCallback(callback) {
         this.#beforePausedCallback = callback;
     }
-    setExpandCallFramesCallback(callback) {
-        this.#expandCallFramesCallback = callback;
-    }
     setEvaluateOnCallFrameCallback(callback) {
         this.evaluateOnCallFrameCallback = callback;
     }
@@ -525,7 +521,6 @@ export class DebuggerModel extends SDKModel {
             return;
         }
         const pausedDetails = new DebuggerPausedDetails(this, callFrames, reason, auxData, breakpointIds, asyncStackTrace, asyncStackTraceId);
-        await this.#expandCallFrames(pausedDetails);
         if (this.continueToLocationCallback) {
             const callback = this.continueToLocationCallback;
             this.continueToLocationCallback = null;
@@ -543,12 +538,6 @@ export class DebuggerModel extends SDKModel {
         }
         else {
             Common.EventTarget.fireEvent('DevTools.DebuggerPaused');
-        }
-    }
-    /** Delegates to the DebuggerLanguagePlugin and potential attached source maps to expand inlined call frames */
-    async #expandCallFrames(pausedDetails) {
-        if (this.#expandCallFramesCallback) {
-            pausedDetails.callFrames = await this.#expandCallFramesCallback.call(null, pausedDetails.callFrames);
         }
     }
     resumedScript() {
@@ -589,10 +578,6 @@ export class DebuggerModel extends SDKModel {
         this.#sourceMapManager.attachSourceMap(script, script.sourceURL, script.sourceMapURL);
     }
     async setDebugInfoURL(script, _externalURL) {
-        if (this.#expandCallFramesCallback && this.#debuggerPausedDetails) {
-            this.#debuggerPausedDetails.callFrames =
-                await this.#expandCallFramesCallback.call(null, this.#debuggerPausedDetails.callFrames);
-        }
         this.dispatchEventToListeners(Events.DebugInfoAttached, script);
     }
     executionContextDestroyed(executionContext) {
@@ -933,7 +918,6 @@ export class CallFrame {
     functionName;
     #functionLocation;
     #returnValue;
-    missingDebugInfoDetails;
     exception;
     canBeRestarted;
     constructor(debuggerModel, script, payload, inlineFrameIndex, functionName, exception = null) {
@@ -945,7 +929,6 @@ export class CallFrame {
         this.#localScope = null;
         this.inlineFrameIndex = inlineFrameIndex || 0;
         this.functionName = functionName ?? payload.functionName;
-        this.missingDebugInfoDetails = null;
         this.canBeRestarted = Boolean(payload.canBeRestarted);
         this.exception = exception;
         for (let i = 0; i < payload.scopeChain.length; ++i) {

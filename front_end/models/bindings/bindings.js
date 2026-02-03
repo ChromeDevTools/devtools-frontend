@@ -2327,42 +2327,18 @@ var DebuggerLanguagePluginManager = class {
   callFrameForStopId(stopId) {
     return this.callFrameByStopId.get(stopId);
   }
-  expandCallFrames(callFrames) {
-    return Promise.all(callFrames.map(async (callFrame) => {
-      const functionInfo = await this.getFunctionInfo(callFrame.script, callFrame.location());
-      if (functionInfo) {
-        if ("frames" in functionInfo && functionInfo.frames.length) {
-          return functionInfo.frames.map(({ name }, index) => callFrame.createVirtualCallFrame(index, name));
-        }
-        if ("missingSymbolFiles" in functionInfo && functionInfo.missingSymbolFiles.length) {
-          callFrame.missingDebugInfoDetails = {
-            type: "PARTIAL_INFO",
-            missingDebugFiles: functionInfo.missingSymbolFiles
-          };
-        } else {
-          callFrame.missingDebugInfoDetails = {
-            type: "NO_INFO"
-            /* SDK.DebuggerModel.MissingDebugInfoType.NO_INFO */
-          };
-        }
-      }
-      return callFrame;
-    })).then((callFrames2) => callFrames2.flat());
-  }
   modelAdded(debuggerModel) {
     this.#debuggerModelToData.set(debuggerModel, new ModelData(debuggerModel, this.#workspace));
     debuggerModel.addEventListener(SDK8.DebuggerModel.Events.GlobalObjectCleared, this.globalObjectCleared, this);
     debuggerModel.addEventListener(SDK8.DebuggerModel.Events.ParsedScriptSource, this.parsedScriptSource, this);
     debuggerModel.addEventListener(SDK8.DebuggerModel.Events.DebuggerResumed, this.debuggerResumed, this);
     debuggerModel.setEvaluateOnCallFrameCallback(this.evaluateOnCallFrame.bind(this));
-    debuggerModel.setExpandCallFramesCallback(this.expandCallFrames.bind(this));
   }
   modelRemoved(debuggerModel) {
     debuggerModel.removeEventListener(SDK8.DebuggerModel.Events.GlobalObjectCleared, this.globalObjectCleared, this);
     debuggerModel.removeEventListener(SDK8.DebuggerModel.Events.ParsedScriptSource, this.parsedScriptSource, this);
     debuggerModel.removeEventListener(SDK8.DebuggerModel.Events.DebuggerResumed, this.debuggerResumed, this);
     debuggerModel.setEvaluateOnCallFrameCallback(null);
-    debuggerModel.setExpandCallFramesCallback(null);
     const modelData = this.#debuggerModelToData.get(debuggerModel);
     if (modelData) {
       modelData.dispose();
@@ -3474,8 +3450,6 @@ var DebuggerWorkspaceBinding = class _DebuggerWorkspaceBinding {
     this.ignoreListManager = ignoreListManager;
     this.workspace = workspace;
     this.#debuggerModelToData = /* @__PURE__ */ new Map();
-    targetManager.addModelListener(SDK11.DebuggerModel.DebuggerModel, SDK11.DebuggerModel.Events.GlobalObjectCleared, this.globalObjectCleared, this);
-    targetManager.addModelListener(SDK11.DebuggerModel.DebuggerModel, SDK11.DebuggerModel.Events.DebuggerResumed, this.debuggerResumed, this);
     targetManager.observeModels(SDK11.DebuggerModel.DebuggerModel, this);
     this.ignoreListManager.addEventListener("IGNORED_SCRIPT_RANGES_UPDATED", (event) => this.updateLocations(event.data));
     this.#liveLocationPromises = /* @__PURE__ */ new Set();
@@ -3600,21 +3574,6 @@ var DebuggerWorkspaceBinding = class _DebuggerWorkspaceBinding {
     const locationPromise = StackTraceTopFrameLocation.createStackTraceTopFrameLocation(rawLocations, this, updateDelegate, locationPool);
     this.recordLiveLocationChange(locationPromise);
     return await locationPromise;
-  }
-  async createCallFrameLiveLocation(location, updateDelegate, locationPool) {
-    const script = location.script();
-    if (!script) {
-      return null;
-    }
-    const debuggerModel = location.debuggerModel;
-    const liveLocationPromise = this.createLiveLocation(location, updateDelegate, locationPool);
-    this.recordLiveLocationChange(liveLocationPromise);
-    const liveLocation = await liveLocationPromise;
-    if (!liveLocation) {
-      return null;
-    }
-    this.registerCallFrameLiveLocation(debuggerModel, liveLocation);
-    return liveLocation;
   }
   async rawLocationToUILocation(rawLocation) {
     const uiLocation = await this.pluginManager.rawLocationToUILocation(rawLocation);
@@ -3756,19 +3715,6 @@ var DebuggerWorkspaceBinding = class _DebuggerWorkspaceBinding {
     const scripts = this.pluginManager.scriptsForUISourceCode(uiSourceCode);
     return scripts.every((script) => script.isJavaScript());
   }
-  globalObjectCleared(event) {
-    this.reset(event.data);
-  }
-  reset(debuggerModel) {
-    const modelData = this.#debuggerModelToData.get(debuggerModel);
-    if (!modelData) {
-      return;
-    }
-    for (const location of modelData.callFrameLocations.values()) {
-      this.removeLiveLocation(location);
-    }
-    modelData.callFrameLocations.clear();
-  }
   resetForTest(target) {
     const debuggerModel = target.model(SDK11.DebuggerModel.DebuggerModel);
     const modelData = this.#debuggerModelToData.get(debuggerModel);
@@ -3776,21 +3722,11 @@ var DebuggerWorkspaceBinding = class _DebuggerWorkspaceBinding {
       modelData.getResourceScriptMapping().resetForTest();
     }
   }
-  registerCallFrameLiveLocation(debuggerModel, location) {
-    const modelData = this.#debuggerModelToData.get(debuggerModel);
-    if (modelData) {
-      const locations = modelData.callFrameLocations;
-      locations.add(location);
-    }
-  }
   removeLiveLocation(location) {
     const modelData = this.#debuggerModelToData.get(location.rawLocation.debuggerModel);
     if (modelData) {
       modelData.disposeLocation(location);
     }
-  }
-  debuggerResumed(event) {
-    this.reset(event.data);
   }
   async shouldPause(debuggerPausedDetails, autoSteppingContext) {
     const { callFrames: [frame] } = debuggerPausedDetails;
@@ -3832,7 +3768,6 @@ var DebuggerWorkspaceBinding = class _DebuggerWorkspaceBinding {
 var ModelData2 = class {
   #debuggerModel;
   #debuggerWorkspaceBinding;
-  callFrameLocations;
   #defaultMapping;
   #resourceMapping;
   #resourceScriptMapping;
@@ -3841,7 +3776,6 @@ var ModelData2 = class {
   constructor(debuggerModel, debuggerWorkspaceBinding) {
     this.#debuggerModel = debuggerModel;
     this.#debuggerWorkspaceBinding = debuggerWorkspaceBinding;
-    this.callFrameLocations = /* @__PURE__ */ new Set();
     const { workspace } = debuggerWorkspaceBinding.resourceMapping;
     this.#defaultMapping = new DefaultScriptMapping(debuggerModel, workspace, debuggerWorkspaceBinding);
     this.#resourceMapping = debuggerWorkspaceBinding.resourceMapping;

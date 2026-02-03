@@ -728,9 +728,11 @@ __export(ContextSelectionAgent_exports, {
   ContextSelectionAgent: () => ContextSelectionAgent
 });
 import * as Host2 from "./../../core/host/host.js";
+import * as i18n from "./../../core/i18n/i18n.js";
 import * as Platform from "./../../core/platform/platform.js";
 import * as Root2 from "./../../core/root/root.js";
 import * as Logs from "./../logs/logs.js";
+var lockedString = i18n.i18n.lockedString;
 var preamble = `
 You are a Web Development Assistant integrated into Chrome DevTools. Your tone is educational, supportive, and technically precise.
 You aim to help developers of all levels, prioritizing teaching web concepts as the primary entry point for any solution.
@@ -781,12 +783,10 @@ var ContextSelectionAgent = class extends AiAgent {
         required: [],
         properties: {}
       },
-      handler: async (_params, options) => {
-        if (!options?.approved) {
-          return {
-            requiresApproval: true
-          };
-        }
+      displayInfoFromArgs: () => {
+        return { title: lockedString("Listing network requests\u2026") };
+      },
+      handler: async () => {
         const requestURls = [];
         for (const request of Logs.NetworkLog.NetworkLog.instance().requests()) {
           requestURls.push(request.url());
@@ -810,6 +810,9 @@ var ContextSelectionAgent = class extends AiAgent {
             nullable: false
           }
         }
+      },
+      displayInfoFromArgs: (args) => {
+        return { title: lockedString("Getting network request\u2026"), action: `selectNetworkRequest(${args.url})` };
       },
       handler: async ({ url }) => {
         const request = Logs.NetworkLog.NetworkLog.instance().requests().find((req) => {
@@ -840,7 +843,7 @@ __export(FileAgent_exports, {
   FileContext: () => FileContext
 });
 import * as Host3 from "./../../core/host/host.js";
-import * as i18n from "./../../core/i18n/i18n.js";
+import * as i18n3 from "./../../core/i18n/i18n.js";
 import * as Root3 from "./../../core/root/root.js";
 
 // gen/front_end/models/ai_assistance/data_formatters/FileFormatter.js
@@ -1390,7 +1393,7 @@ var UIStringsNotTranslate = {
    */
   analyzingFile: "Analyzing file"
 };
-var lockedString = i18n.i18n.lockedString;
+var lockedString2 = i18n3.i18n.lockedString;
 var FileContext = class extends ConversationContext {
   #file;
   constructor(file) {
@@ -1430,7 +1433,7 @@ var FileAgent = class extends AiAgent {
     }
     yield {
       type: "context",
-      title: lockedString(UIStringsNotTranslate.analyzingFile),
+      title: lockedString2(UIStringsNotTranslate.analyzingFile),
       details: createContextDetailsForFileAgent(selectedFile)
     };
   }
@@ -1460,7 +1463,7 @@ __export(NetworkAgent_exports, {
   RequestContext: () => RequestContext
 });
 import * as Host4 from "./../../core/host/host.js";
-import * as i18n3 from "./../../core/i18n/i18n.js";
+import * as i18n5 from "./../../core/i18n/i18n.js";
 import * as Root4 from "./../../core/root/root.js";
 var preamble3 = `You are the most advanced network request debugging assistant integrated into Chrome DevTools.
 The user selected a network request in the browser's DevTools Network Panel and sends a query to understand the request.
@@ -1522,7 +1525,7 @@ var UIStringsNotTranslate2 = {
    */
   requestInitiatorChain: "Request initiator chain"
 };
-var lockedString2 = i18n3.i18n.lockedString;
+var lockedString3 = i18n5.i18n.lockedString;
 var RequestContext = class extends ConversationContext {
   #request;
   #calculator;
@@ -1564,7 +1567,7 @@ var NetworkAgent = class extends AiAgent {
     }
     yield {
       type: "context",
-      title: lockedString2(UIStringsNotTranslate2.analyzingNetworkData),
+      title: lockedString3(UIStringsNotTranslate2.analyzingNetworkData),
       details: await createContextDetailsForNetworkAgent(selectedNetworkRequest)
     };
   }
@@ -1582,25 +1585,25 @@ async function createContextDetailsForNetworkAgent(selectedNetworkRequest) {
   const request = selectedNetworkRequest.getItem();
   const formatter = new NetworkRequestFormatter(request, selectedNetworkRequest.calculator);
   const requestContextDetail = {
-    title: lockedString2(UIStringsNotTranslate2.request),
-    text: lockedString2(UIStringsNotTranslate2.requestUrl) + ": " + request.url() + "\n\n" + formatter.formatRequestHeaders()
+    title: lockedString3(UIStringsNotTranslate2.request),
+    text: lockedString3(UIStringsNotTranslate2.requestUrl) + ": " + request.url() + "\n\n" + formatter.formatRequestHeaders()
   };
   const responseBody = await formatter.formatResponseBody();
   const responseBodyString = responseBody ? `
 
 ${responseBody}` : "";
   const responseContextDetail = {
-    title: lockedString2(UIStringsNotTranslate2.response),
-    text: lockedString2(UIStringsNotTranslate2.responseStatus) + ": " + request.statusCode + " " + request.statusText + `
+    title: lockedString3(UIStringsNotTranslate2.response),
+    text: lockedString3(UIStringsNotTranslate2.responseStatus) + ": " + request.statusCode + " " + request.statusText + `
 
 ${formatter.formatResponseHeaders()}` + responseBodyString
   };
   const timingContextDetail = {
-    title: lockedString2(UIStringsNotTranslate2.timing),
+    title: lockedString3(UIStringsNotTranslate2.timing),
     text: formatter.formatNetworkRequestTiming()
   };
   const initiatorChainContextDetail = {
-    title: lockedString2(UIStringsNotTranslate2.requestInitiatorChain),
+    title: lockedString3(UIStringsNotTranslate2.requestInitiatorChain),
     text: formatter.formatRequestInitiatorChain()
   };
   return [
@@ -1858,7 +1861,7 @@ __export(PerformanceAgent_exports, {
 });
 import * as Common2 from "./../../core/common/common.js";
 import * as Host6 from "./../../core/host/host.js";
-import * as i18n5 from "./../../core/i18n/i18n.js";
+import * as i18n7 from "./../../core/i18n/i18n.js";
 import * as Platform2 from "./../../core/platform/platform.js";
 import * as Root6 from "./../../core/root/root.js";
 import * as SDK from "./../../core/sdk/sdk.js";
@@ -4209,7 +4212,7 @@ var UIStringsNotTranslated = {
    */
   mainThreadActivity: "Investigating main thread activity\u2026"
 };
-var lockedString3 = i18n5.i18n.lockedString;
+var lockedString4 = i18n7.i18n.lockedString;
 var greenDevAdditionalAnnotationsFunction = `
 - CRITICAL: You also have access to functions called addElementAnnotation and addNeworkRequestAnnotation,
 which should be used to highlight elements and network requests (respectively).`;
@@ -4481,7 +4484,7 @@ var PerformanceAgent = class extends AiAgent {
     }
     yield {
       type: "context",
-      title: lockedString3(UIStringsNotTranslated.analyzingTrace),
+      title: lockedString4(UIStringsNotTranslated.analyzingTrace),
       details: [
         {
           title: "Trace",
@@ -4740,7 +4743,7 @@ ${result}`,
       },
       displayInfoFromArgs: (params) => {
         return {
-          title: lockedString3(`Investigating insight ${params.insightName}\u2026`),
+          title: lockedString4(`Investigating insight ${params.insightName}\u2026`),
           action: `getInsightDetails('${params.insightSetId}', '${params.insightName}')`
         };
       },
@@ -4778,7 +4781,7 @@ ${result}`,
         required: ["eventKey"]
       },
       displayInfoFromArgs: (params) => {
-        return { title: lockedString3("Looking at trace event\u2026"), action: `getEventByKey('${params.eventKey}')` };
+        return { title: lockedString4("Looking at trace event\u2026"), action: `getEventByKey('${params.eventKey}')` };
       },
       handler: async (params) => {
         debugLog("Function call: getEventByKey", params);
@@ -4825,7 +4828,7 @@ ${result}`,
       },
       displayInfoFromArgs: (args) => {
         return {
-          title: lockedString3(UIStringsNotTranslated.mainThreadActivity),
+          title: lockedString4(UIStringsNotTranslated.mainThreadActivity),
           action: `getMainThreadTrackSummary({min: ${args.min}, max: ${args.max}})`
         };
       },
@@ -4874,7 +4877,7 @@ ${result}`,
       },
       displayInfoFromArgs: (args) => {
         return {
-          title: lockedString3(UIStringsNotTranslated.networkActivitySummary),
+          title: lockedString4(UIStringsNotTranslated.networkActivitySummary),
           action: `getNetworkTrackSummary({min: ${args.min}, max: ${args.max}})`
         };
       },
@@ -4916,7 +4919,7 @@ ${result}`,
         required: ["eventKey"]
       },
       displayInfoFromArgs: (args) => {
-        return { title: lockedString3("Looking at call tree\u2026"), action: `getDetailedCallTree('${args.eventKey}')` };
+        return { title: lockedString4("Looking at call tree\u2026"), action: `getDetailedCallTree('${args.eventKey}')` };
       },
       handler: async (args) => {
         debugLog("Function call: getDetailedCallTree");
@@ -5015,7 +5018,7 @@ ${result}`,
       },
       displayInfoFromArgs: (args) => {
         return {
-          title: lockedString3("Looking up function code\u2026"),
+          title: lockedString4("Looking up function code\u2026"),
           action: `getFunctionCode('${args.scriptUrl}', ${args.line}, ${args.column})`
         };
       },
@@ -5063,7 +5066,7 @@ ${result}`,
         required: ["url"]
       },
       displayInfoFromArgs: (args) => {
-        return { title: lockedString3("Looking at resource content\u2026"), action: `getResourceContent('${args.url}')` };
+        return { title: lockedString4("Looking at resource content\u2026"), action: `getResourceContent('${args.url}')` };
       },
       handler: async (args) => {
         debugLog("Function call: getResourceContent");
@@ -5107,7 +5110,7 @@ ${result}`,
           required: ["eventKey"]
         },
         displayInfoFromArgs: (params) => {
-          return { title: lockedString3("Selecting event\u2026"), action: `selectEventByKey('${params.eventKey}')` };
+          return { title: lockedString4("Selecting event\u2026"), action: `selectEventByKey('${params.eventKey}')` };
         },
         handler: async (params) => {
           debugLog("Function call: selectEventByKey", params);
@@ -5159,7 +5162,7 @@ __export(PerformanceAnnotationsAgent_exports, {
   PerformanceAnnotationsAgent: () => PerformanceAnnotationsAgent
 });
 import * as Host7 from "./../../core/host/host.js";
-import * as i18n7 from "./../../core/i18n/i18n.js";
+import * as i18n9 from "./../../core/i18n/i18n.js";
 import * as Root7 from "./../../core/root/root.js";
 var UIStringsNotTranslated2 = {
   analyzingCallTree: "Analyzing call tree"
@@ -5167,7 +5170,7 @@ var UIStringsNotTranslated2 = {
    * @description Shown when the agent is investigating network activity
    */
 };
-var lockedString4 = i18n7.i18n.lockedString;
+var lockedString5 = i18n9.i18n.lockedString;
 var callTreePreamble = `You are an expert performance analyst embedded within Chrome DevTools.
 You meticulously examine web application behavior captured by the Chrome DevTools Performance Panel and Chrome tracing.
 You will receive a structured text representation of a call tree, derived from a user-selected call frame within a performance trace's flame chart.
@@ -5256,7 +5259,7 @@ var PerformanceAnnotationsAgent = class extends AiAgent {
     const callTree = focus.callTree;
     yield {
       type: "context",
-      title: lockedString4(UIStringsNotTranslated2.analyzingCallTree),
+      title: lockedString5(UIStringsNotTranslated2.analyzingCallTree),
       details: [
         {
           title: "Selected call tree",
@@ -5317,7 +5320,7 @@ __export(StylingAgent_exports, {
   StylingAgent: () => StylingAgent
 });
 import * as Host8 from "./../../core/host/host.js";
-import * as i18n9 from "./../../core/i18n/i18n.js";
+import * as i18n11 from "./../../core/i18n/i18n.js";
 import * as Platform5 from "./../../core/platform/platform.js";
 import * as Root8 from "./../../core/root/root.js";
 import * as SDK5 from "./../../core/sdk/sdk.js";
@@ -6057,7 +6060,7 @@ var UIStringsNotTranslate3 = {
    */
   dataUsed: "Data used"
 };
-var lockedString5 = i18n9.i18n.lockedString;
+var lockedString6 = i18n11.i18n.lockedString;
 var preamble5 = `You are the most advanced CSS/DOM/HTML debugging assistant integrated into Chrome DevTools.
 You always suggest considering the best web development practices and the newest platform features such as view transitions.
 The user selected a DOM element in the browser's DevTools and sends a query about the page or the selected DOM element.
@@ -6641,9 +6644,9 @@ const data = {
     }
     yield {
       type: "context",
-      title: lockedString5(UIStringsNotTranslate3.analyzingThePrompt),
+      title: lockedString6(UIStringsNotTranslate3.analyzingThePrompt),
       details: [{
-        title: lockedString5(UIStringsNotTranslate3.dataUsed),
+        title: lockedString6(UIStringsNotTranslate3.dataUsed),
         text: await _StylingAgent.describeElement(selectedElement.getItem())
       }]
     };
@@ -7135,7 +7138,7 @@ __export(AiUtils_exports, {
 });
 import * as Common6 from "./../../core/common/common.js";
 import * as Host10 from "./../../core/host/host.js";
-import * as i18n11 from "./../../core/i18n/i18n.js";
+import * as i18n13 from "./../../core/i18n/i18n.js";
 import * as Root10 from "./../../core/root/root.js";
 var UIStrings = {
   /**
@@ -7155,8 +7158,8 @@ var UIStrings = {
    */
   notAvailableInIncognitoMode: "AI assistance is not available in Incognito mode or Guest mode."
 };
-var str_ = i18n11.i18n.registerUIStrings("models/ai_assistance/AiUtils.ts", UIStrings);
-var i18nString = i18n11.i18n.getLocalizedString.bind(void 0, str_);
+var str_ = i18n13.i18n.registerUIStrings("models/ai_assistance/AiUtils.ts", UIStrings);
+var i18nString = i18n13.i18n.getLocalizedString.bind(void 0, str_);
 function getDisabledReasons(aidaAvailability) {
   const reasons = [];
   if (Root10.Runtime.hostConfig.isOffTheRecord) {
@@ -7447,7 +7450,7 @@ __export(ConversationHandler_exports, {
 });
 import * as Common8 from "./../../core/common/common.js";
 import * as Host12 from "./../../core/host/host.js";
-import * as i18n13 from "./../../core/i18n/i18n.js";
+import * as i18n15 from "./../../core/i18n/i18n.js";
 import * as Platform6 from "./../../core/platform/platform.js";
 import * as Root12 from "./../../core/root/root.js";
 import * as SDK7 from "./../../core/sdk/sdk.js";
@@ -7458,7 +7461,7 @@ var UIStringsNotTranslate4 = {
    */
   enableInSettings: "For AI features to be available, you need to enable AI assistance in DevTools settings."
 };
-var lockedString6 = i18n13.i18n.lockedString;
+var lockedString7 = i18n15.i18n.lockedString;
 function isAiAssistanceServerSideLoggingEnabled2() {
   return !Root12.Runtime.hostConfig.aidaAvailability?.disallowLogging;
 }
@@ -7548,7 +7551,7 @@ var ConversationHandler = class _ConversationHandler extends Common8.ObjectWrapp
       const disabledReasons = await this.#getDisabledReasons();
       const aiAssistanceSetting = this.#aiAssistanceEnabledSetting?.getIfNotDisabled();
       if (!aiAssistanceSetting) {
-        disabledReasons.push(lockedString6(UIStringsNotTranslate4.enableInSettings));
+        disabledReasons.push(lockedString7(UIStringsNotTranslate4.enableInSettings));
       }
       if (disabledReasons.length > 0) {
         return this.#generateErrorResponse(disabledReasons.join(" "));

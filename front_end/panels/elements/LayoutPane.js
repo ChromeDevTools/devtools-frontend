@@ -155,27 +155,25 @@ const DEFAULT_VIEW = (input, output, target) => {
             event.preventDefault();
         }
     };
-    // clang-format off
     const renderElement = (element) => html `<div
           class="element"
-          jslog=${VisualLogging.item().track({ resize: true })}>
+          jslog=${VisualLogging.item()}>
         <devtools-checkbox
           data-element="true"
           class="checkbox-label"
           .checked=${element.enabled}
           @change=${(e) => input.onElementToggle(element, e)}
-          jslog=${VisualLogging.toggle().track({ click: true, resize: true })}>
+          jslog=${VisualLogging.toggle().track({
+        click: true
+    })}>
           <span
               class="node-text-container"
               data-label="true"
               @mouseenter=${(e) => input.onMouseEnter(element, e)}
               @mouseleave=${(e) => input.onMouseLeave(element, e)}>
             <devtools-node-text .data=${{
-        nodeId: element.domId,
-        nodeTitle: element.name,
-        nodeClasses: element.domClasses
-    }}>
-            </devtools-node-text>
+        nodeId: element.domId, nodeTitle: element.name, nodeClasses: element.domClasses,
+    }}></devtools-node-text>
           </span>
         </devtools-checkbox>
         <label

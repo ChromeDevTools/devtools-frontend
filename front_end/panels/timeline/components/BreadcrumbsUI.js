@@ -87,7 +87,7 @@ export class BreadcrumbsUI extends HTMLElement {
         // clang-format off
         return html `
           <div class="breadcrumb" @contextmenu=${(event) => this.#onContextMenu(event, breadcrumb)} @click=${() => this.#activateBreadcrumb(breadcrumb)}
-          jslog=${VisualLogging.item('timeline.breadcrumb-select').track({ click: true, resize: true })}>
+          jslog=${VisualLogging.item('timeline.breadcrumb-select').track({ click: true })}>
            <span class="${(breadcrumb === this.#activeBreadcrumb) ? 'active-breadcrumb' : ''} range">
             ${(index === 0) ?
             `Full range (${i18n.TimeUtilities.preciseMillisToString(breadcrumbRange, 2)})` :

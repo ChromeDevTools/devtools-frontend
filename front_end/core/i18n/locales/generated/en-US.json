@@ -12245,6 +12245,12 @@
   "panels/recorder/components/RecordingView.ts | cancelReplay": {
     "message": "Cancel replay"
   },
+  "panels/recorder/components/RecordingView.ts | codeSidebarClosed": {
+    "message": "Code sidebar closed"
+  },
+  "panels/recorder/components/RecordingView.ts | codeSidebarOpened": {
+    "message": "Code sidebar opened"
+  },
   "panels/recorder/components/RecordingView.ts | default": {
     "message": "Default"
   },

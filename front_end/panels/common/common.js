@@ -1892,6 +1892,8 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
         <div class="title">Gemini 3 Flash in DevTools</div>
         <div class="close-button">
           <devtools-button
+            aria-hidden="true"
+            tabindex="-1"
             .iconName=${"cross"}
             .variant=${"icon"}
             .size=${"REGULAR"}

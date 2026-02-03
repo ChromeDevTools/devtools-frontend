@@ -1724,8 +1724,7 @@ export const generatedProperties = [
         "inherited": false,
         "keywords": [
             "none",
-            "auto",
-            "spanning-item",
+            "normal",
             "intersection"
         ],
         "name": "column-rule-break"
@@ -2689,6 +2688,7 @@ export const generatedProperties = [
         "longhands": [
             "grid-template-areas",
             "grid-template-columns",
+            "grid-template-rows",
             "grid-lanes-direction"
         ],
         "name": "grid-lanes"
@@ -3773,8 +3773,7 @@ export const generatedProperties = [
         "inherited": false,
         "keywords": [
             "none",
-            "auto",
-            "spanning-item",
+            "normal",
             "intersection"
         ],
         "name": "row-rule-break"
@@ -5526,8 +5525,7 @@ export const generatedPropertyValues = {
     "column-rule-break": {
         "values": [
             "none",
-            "auto",
-            "spanning-item",
+            "normal",
             "intersection"
         ]
     },
@@ -6664,8 +6662,7 @@ export const generatedPropertyValues = {
     "row-rule-break": {
         "values": [
             "none",
-            "auto",
-            "spanning-item",
+            "normal",
             "intersection"
         ]
     },

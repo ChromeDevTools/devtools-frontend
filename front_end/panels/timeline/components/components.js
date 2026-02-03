@@ -205,7 +205,7 @@ var BreadcrumbsUI = class extends HTMLElement {
     const breadcrumbRange = Trace.Helpers.Timing.microToMilli(breadcrumb.window.range);
     return html`
           <div class="breadcrumb" @contextmenu=${(event) => this.#onContextMenu(event, breadcrumb)} @click=${() => this.#activateBreadcrumb(breadcrumb)}
-          jslog=${VisualLogging.item("timeline.breadcrumb-select").track({ click: true, resize: true })}>
+          jslog=${VisualLogging.item("timeline.breadcrumb-select").track({ click: true })}>
            <span class="${breadcrumb === this.#activeBreadcrumb ? "active-breadcrumb" : ""} range">
             ${index === 0 ? `Full range (${i18n.TimeUtilities.preciseMillisToString(breadcrumbRange, 2)})` : `${i18n.TimeUtilities.preciseMillisToString(breadcrumbRange, 2)}`}
             </span>
@@ -7330,7 +7330,7 @@ var DEFAULT_VIEW9 = (input, _output, target) => {
                   @mouseout=${() => annotation.type === "ENTRY_LABEL" ? input.onAnnotationHoverOut() : null}
                   aria-label=${label}
                   tabindex="0"
-                  jslog=${VisualLogging7.item(`timeline.annotation-sidebar.annotation-${jslogForAnnotation(annotation)}`).track({ click: true, resize: true })}
+                  jslog=${VisualLogging7.item(`timeline.annotation-sidebar.annotation-${jslogForAnnotation(annotation)}`).track({ click: true })}
                 >
                   <div class="annotation">
                     ${renderAnnotationIdentifier(annotation, input.annotationEntryToColorMap)}

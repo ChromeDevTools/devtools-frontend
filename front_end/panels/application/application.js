@@ -8741,7 +8741,6 @@ var ServiceWorkerUpdateCycleView = class {
       const tr = this.tableElement.createChild("tr", "service-worker-update-timeline");
       tr.setAttribute("jslog", `${VisualLogging9.treeItem("update-timeline").track({
         click: true,
-        resize: true,
         keydown: "ArrowLeft|ArrowRight|ArrowUp|ArrowDown|Enter|Space"
       })}`);
       this.rows.push(tr);

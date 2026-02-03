@@ -683,6 +683,11 @@ var cssOverviewCompletedView_css_default = `/**
     height: 25px;
     border-radius: 3px;
     margin-right: 16px;
+
+    &:focus-visible {
+      outline: 2px solid var(--sys-color-state-focus-ring);
+      outline-offset: 2px;
+    }
   }
 
   .block-title {

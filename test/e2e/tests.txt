@@ -173,6 +173,7 @@ sources/authored-deployed-grouping.test.js
 sources/breakpoint-csp-violations.test.js
 sources/breakpoint-javascript.test.js
 sources/breakpoints-sidebarpane.test.js
+sources/call-stack.test.js
 sources/can-break-with-wasm-sourcemaps.test.js
 sources/can-disable-auto-sources-focus.test.js
 sources/can-handle-special-characters.test.js

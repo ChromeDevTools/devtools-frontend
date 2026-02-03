@@ -1438,8 +1438,8 @@ export class DebuggerPlugin extends Plugin {
         if (frameFlavor?.frame.uiSourceCode?.canonicalScriptId() === this.uiSourceCode.canonicalScriptId()) {
             const uiLocation = new Workspace.UISourceCode.UILocation(frameFlavor.frame.uiSourceCode, frameFlavor.frame.line, frameFlavor.frame.column);
             this.setExecutionLocation(uiLocation);
-            if (frameFlavor.sdkFrame.missingDebugInfoDetails) {
-                this.updateMissingDebugInfoInfobar(convertMissingDebugInfo(frameFlavor.sdkFrame.missingDebugInfoDetails, frameFlavor.sdkFrame.functionName));
+            if (frameFlavor.frame.missingDebugInfo) {
+                this.updateMissingDebugInfoInfobar(convertMissingDebugInfo(frameFlavor.frame.missingDebugInfo, frameFlavor.sdkFrame.functionName));
             }
             else {
                 this.updateMissingDebugInfoInfobar(null);

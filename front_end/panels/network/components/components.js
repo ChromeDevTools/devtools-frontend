@@ -1265,7 +1265,7 @@ var DEFAULT_VIEW2 = (input, output, target) => {
     ${headers.map((header) => html4`
       <devtools-header-section-row
         .data=${{ header }}
-        jslog=${VisualLogging4.item("request-header").track({ resize: true })}
+        jslog=${VisualLogging4.item("request-header")}
       ></devtools-header-section-row>
     `)}
   `, target);

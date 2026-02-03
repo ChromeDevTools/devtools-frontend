@@ -63,7 +63,6 @@ export declare class DebuggerLanguagePluginManager implements SDK.TargetManager.
     private evaluateOnCallFrame;
     stopIdForCallFrame(callFrame: SDK.DebuggerModel.CallFrame): StopId;
     callFrameForStopId(stopId: StopId): SDK.DebuggerModel.CallFrame | undefined;
-    private expandCallFrames;
     modelAdded(debuggerModel: SDK.DebuggerModel.DebuggerModel): void;
     modelRemoved(debuggerModel: SDK.DebuggerModel.DebuggerModel): void;
     private globalObjectCleared;

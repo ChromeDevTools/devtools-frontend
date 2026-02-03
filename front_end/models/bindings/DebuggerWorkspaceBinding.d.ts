@@ -38,7 +38,6 @@ export declare class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKMo
     createStackTraceFromDebuggerPaused(pausedDetails: SDK.DebuggerModel.DebuggerPausedDetails, target: SDK.Target.Target): Promise<StackTrace.StackTrace.DebuggableStackTrace>;
     createLiveLocation(rawLocation: SDK.DebuggerModel.Location, updateDelegate: (arg0: LiveLocation) => Promise<void>, locationPool: LiveLocationPool): Promise<Location | null>;
     createStackTraceTopFrameLiveLocation(rawLocations: SDK.DebuggerModel.Location[], updateDelegate: (arg0: LiveLocation) => Promise<void>, locationPool: LiveLocationPool): Promise<LiveLocation>;
-    createCallFrameLiveLocation(location: SDK.DebuggerModel.Location, updateDelegate: (arg0: LiveLocation) => Promise<void>, locationPool: LiveLocationPool): Promise<Location | null>;
     rawLocationToUILocation(rawLocation: SDK.DebuggerModel.Location): Promise<Workspace.UISourceCode.UILocation | null>;
     uiSourceCodeForSourceMapSourceURL(debuggerModel: SDK.DebuggerModel.DebuggerModel, url: Platform.DevToolsPath.UrlString, isContentScript: boolean): Workspace.UISourceCode.UISourceCode | null;
     uiSourceCodeForSourceMapSourceURLPromise(debuggerModel: SDK.DebuggerModel.DebuggerModel, url: Platform.DevToolsPath.UrlString, isContentScript: boolean): Promise<Workspace.UISourceCode.UISourceCode>;
@@ -83,12 +82,8 @@ export declare class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKMo
     scriptFile(uiSourceCode: Workspace.UISourceCode.UISourceCode, debuggerModel: SDK.DebuggerModel.DebuggerModel): ResourceScriptFile | null;
     scriptsForUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): SDK.Script.Script[];
     supportsConditionalBreakpoints(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean;
-    private globalObjectCleared;
-    private reset;
     resetForTest(target: SDK.Target.Target): void;
-    private registerCallFrameLiveLocation;
     removeLiveLocation(location: Location): void;
-    private debuggerResumed;
     private shouldPause;
 }
 export declare class Location extends LiveLocationWithPool {

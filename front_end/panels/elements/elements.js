@@ -11817,7 +11817,6 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI15.TreeOutline.Tr
     this.treeOutline = null;
     this.listItemElement.setAttribute("jslog", `${VisualLogging8.treeItem().parent("elementsTreeOutline").track({
       keydown: "ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Backspace|Delete|Enter|Space|Home|End",
-      resize: true,
       drag: true,
       click: true
     })}`);
@@ -16178,13 +16177,15 @@ var DEFAULT_VIEW6 = (input, output, target) => {
   };
   const renderElement = (element) => html11`<div
           class="element"
-          jslog=${VisualLogging10.item().track({ resize: true })}>
+          jslog=${VisualLogging10.item()}>
         <devtools-checkbox
           data-element="true"
           class="checkbox-label"
           .checked=${element.enabled}
           @change=${(e) => input.onElementToggle(element, e)}
-          jslog=${VisualLogging10.toggle().track({ click: true, resize: true })}>
+          jslog=${VisualLogging10.toggle().track({
+    click: true
+  })}>
           <span
               class="node-text-container"
               data-label="true"
@@ -16194,8 +16195,7 @@ var DEFAULT_VIEW6 = (input, output, target) => {
     nodeId: element.domId,
     nodeTitle: element.name,
     nodeClasses: element.domClasses
-  }}>
-            </devtools-node-text>
+  }}></devtools-node-text>
           </span>
         </devtools-checkbox>
         <label

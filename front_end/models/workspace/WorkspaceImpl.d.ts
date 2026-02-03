@@ -97,7 +97,7 @@ export declare class WorkspaceImpl extends Common.ObjectWrapper.ObjectWrapper<Ev
     project(projectId: string): Project | null;
     projectForFileSystemRoot(root: Platform.DevToolsPath.RawPathString): Project | null;
     projects(): Project[];
-    projectsForType(type: string): Project[];
+    projectsForType(type: projectTypes): Project[];
     uiSourceCodes(): UISourceCode[];
     setHasResourceContentTrackingExtensions(hasExtensions: boolean): void;
     hasResourceContentTrackingExtensions(): boolean;

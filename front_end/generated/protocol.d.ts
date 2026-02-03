@@ -6896,11 +6896,25 @@ export declare namespace Extensions {
         Sync = "sync",
         Managed = "managed"
     }
+    interface TriggerActionRequest {
+        /**
+         * Extension id.
+         */
+        id: string;
+        /**
+         * A tab target ID to trigger the default extension action on.
+         */
+        targetId: string;
+    }
     interface LoadUnpackedRequest {
         /**
          * Absolute file path.
          */
         path: string;
+        /**
+         * Enable the extension in incognito
+         */
+        enableInIncognito?: boolean;
     }
     interface LoadUnpackedResponse extends ProtocolResponseWithError {
         /**
@@ -16131,6 +16145,7 @@ export declare namespace SmartCardEmulation {
     }
     interface ReportBeginTransactionResultRequest {
         requestId: string;
+        handle: integer;
     }
     interface ReportPlainResultRequest {
         requestId: string;

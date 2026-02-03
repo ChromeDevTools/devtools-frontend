@@ -1,7 +1,6 @@
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import type * as Protocol from '../../generated/protocol.js';
-import * as Bindings from '../../models/bindings/bindings.js';
+import * as StackTrace from '../../models/stack_trace/stack_trace.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as UI from '../../ui/legacy/legacy.js';
 export declare class CallStackSidebarPane extends UI.View.SimpleView implements UI.ContextFlavorListener.ContextFlavorListener, UI.ListControl.ListDelegate<Item> {
@@ -14,20 +13,16 @@ export declare class CallStackSidebarPane extends UI.View.SimpleView implements 
     private list;
     private readonly showMoreMessageElement;
     private showIgnoreListed;
-    private readonly locationPool;
     private maxAsyncStackChainDepth;
     private readonly updateItemThrottler;
     private readonly scheduledForUpdateItems;
     private muteActivateItem?;
-    private lastDebuggerModel;
     private constructor();
     static instance(opts?: {
         forceNew: boolean | null;
     }): CallStackSidebarPane;
-    flavorChanged(details: SDK.DebuggerModel.DebuggerPausedDetails | null): void;
-    private debugInfoAttached;
-    private setSourceMapSubscription;
-    performUpdate(): Promise<void>;
+    flavorChanged(details: SDK.DebuggerModel.DebuggerPausedDetails | null): Promise<void>;
+    performUpdate(): void;
     private updatedForTest;
     private refreshItem;
     createElementForItem(item: Item): Element;
@@ -54,16 +49,14 @@ export declare class Item {
     linkText: string;
     uiLocation: Workspace.UISourceCode.UILocation | null;
     isAsyncHeader: boolean;
-    updateDelegate: (arg0: Item) => void;
     /** Only set for synchronous frames */
-    readonly frame?: SDK.DebuggerModel.CallFrame;
-    readonly list: UI.ListControl.ListControl<Item>;
-    static createForDebuggerCallFrame(frame: SDK.DebuggerModel.CallFrame, locationPool: Bindings.LiveLocation.LiveLocationPool, updateDelegate: (arg0: Item) => void, list: UI.ListControl.ListControl<Item>): Promise<Item>;
-    static createItemsForAsyncStack(title: string, debuggerModel: SDK.DebuggerModel.DebuggerModel, frames: Protocol.Runtime.CallFrame[], locationPool: Bindings.LiveLocation.LiveLocationPool, updateDelegate: (arg0: Item) => void, list: UI.ListControl.ListControl<Item>): Promise<Item[]>;
-    constructor(title: string, updateDelegate: (arg0: Item) => void, frame: SDK.DebuggerModel.CallFrame | undefined, list: UI.ListControl.ListControl<Item>);
-    private update;
+    frame?: StackTrace.StackTrace.DebuggableFrame;
+    static createForDebuggableFrame(frame: StackTrace.StackTrace.DebuggableFrame): Item;
+    static createForFrame(frame: StackTrace.StackTrace.Frame): Item;
+    static createForAsyncHeader(fragment: StackTrace.StackTrace.AsyncFragment, previousFragment: StackTrace.StackTrace.Fragment): Item;
+    private constructor();
 }
-export declare function convertMissingDebugInfo(missingDebugInfo: SDK.DebuggerModel.MissingDebugInfo, functionName: string | undefined): {
+export declare function convertMissingDebugInfo(missingDebugInfo: StackTrace.StackTrace.MissingDebugInfo, functionName: string | undefined): {
     details: Platform.UIString.LocalizedString;
     resources: SDK.DebuggerModel.MissingDebugFiles[];
 };

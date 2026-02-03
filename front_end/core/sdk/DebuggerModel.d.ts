@@ -69,7 +69,6 @@ export declare class DebuggerModel extends SDKModel<EventTypes> {
     private setDebuggerPausedDetails;
     private resetDebuggerPausedDetails;
     setBeforePausedCallback(callback: ((arg0: DebuggerPausedDetails, autoSteppingContext: Location | null) => Promise<boolean>) | null): void;
-    setExpandCallFramesCallback(callback: ((arg0: CallFrame[]) => Promise<CallFrame[]>) | null): void;
     setEvaluateOnCallFrameCallback(callback: ((arg0: CallFrame, arg1: EvaluationOptions) => Promise<EvaluationResult | null>) | null): void;
     setSynchronizeBreakpointsCallback(callback: ((script: Script) => Promise<void>) | null): void;
     pausedScript(callFrames: Protocol.Debugger.CallFrame[], reason: Protocol.Debugger.PausedEventReason, auxData: Object | undefined, breakpointIds: string[], asyncStackTrace?: Protocol.Runtime.StackTrace, asyncStackTraceId?: Protocol.Runtime.StackTraceId): Promise<void>;
@@ -178,18 +177,6 @@ export interface MissingDebugFiles {
     resourceUrl: Platform.DevToolsPath.UrlString;
     initiator: PageResourceLoadInitiator;
 }
-export declare const enum MissingDebugInfoType {
-    /** No debug information at all for the call frame */
-    NO_INFO = "NO_INFO",
-    /** Some debug information available, but it references files with debug information we were not able to retrieve */
-    PARTIAL_INFO = "PARTIAL_INFO"
-}
-export type MissingDebugInfo = {
-    type: MissingDebugInfoType.NO_INFO;
-} | {
-    type: MissingDebugInfoType.PARTIAL_INFO;
-    missingDebugFiles: MissingDebugFiles[];
-};
 export declare class CallFrame {
     #private;
     debuggerModel: DebuggerModel;
@@ -197,7 +184,6 @@ export declare class CallFrame {
     payload: Protocol.Debugger.CallFrame;
     readonly inlineFrameIndex: number;
     readonly functionName: string;
-    missingDebugInfoDetails: MissingDebugInfo | null;
     readonly exception: RemoteObject | null;
     readonly canBeRestarted: boolean;
     constructor(debuggerModel: DebuggerModel, script: Script, payload: Protocol.Debugger.CallFrame, inlineFrameIndex?: number, functionName?: string, exception?: RemoteObject | null);

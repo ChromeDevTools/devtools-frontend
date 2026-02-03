@@ -1071,6 +1071,8 @@ export const toggleAccessibilityPane = async (devToolsPage: DevToolsPage) => {
   }
   await devToolsPage.click('aria/Accessibility');
   await devToolsPage.waitFor('.source-order-checkbox');
+  await devToolsPage.waitFor('[aria-label="ARIA Attributes"]');
+  await devToolsPage.waitFor('[aria-label="Computed Properties"]');
   await expectVeEvents(
       [
         veClick('Panel: elements > Toolbar: sidebar > DropDown: more-tabs > Menu > Action: accessibility.view'),

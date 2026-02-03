@@ -60,12 +60,26 @@
       super();
       this.#shadow.append(document.getElementById('template').content.cloneNode(true));
       for (const section of this.#shadow.querySelectorAll('details')) {
-      section.ontoggle = e => section.open && section.querySelector('input').select({focusVisible: true});
+        section.ontoggle = e => section.open && section.querySelector('input').select({focusVisible: true});
+      }
+      this.onkeydown = this.keyDown.bind(this);
+    }
+
+    keyDown(e) {
+      if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+        const views = Array.from(document.querySelectorAll('screenshot-view'));
+        const index = e.key === 'ArrowUp' ? views.indexOf(this) - 1
+                                          : views.indexOf(this) + 1;
+        views[index]?.expand();
+
+        e.stopImmediatePropagation();
+        e.preventDefault();
       }
     }
 
     expand() {
       this.#shadow.querySelector('details').open = true;
+      this.#shadow.querySelector('details input').select({focusVisible: true});
     }
   }
   customElements.define('screenshot-view', ScreenshotView);
@@ -76,6 +90,7 @@
       const node = document.createElement(tag);
       node.slot = slot;
       details.appendChild(node);
+      node.onkeydown = details.keyDown.bind(details);
       return node;
     };
     document.body.appendChild(details);
@@ -83,7 +98,6 @@
     append('img', 'golden').src = expected_image.filePath;
     append('img', 'generated').src = actual_image.filePath;
     append('img', 'diff').src = image_diff.filePath;
-
   }
   document.body.querySelector('screenshot-view')?.expand();
 </script>

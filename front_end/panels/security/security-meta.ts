@@ -2,12 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import * as Security from './security.js';
+import type * as Security from './security.js';
 
 const UIStrings = {
   /**
@@ -53,18 +52,5 @@ UI.ViewManager.registerViewExtension({
   async loadView() {
     const Security = await loadSecurityModule();
     return Security.SecurityPanel.SecurityPanel.instance();
-  },
-});
-
-Common.Revealer.registerRevealer({
-  contextTypes() {
-    return [
-      Security.CookieReportView.CookieReportView,
-    ];
-  },
-  destination: Common.Revealer.RevealerDestination.SECURITY_PANEL,
-  async loadRevealer() {
-    const Security = await loadSecurityModule();
-    return new Security.SecurityPanel.SecurityRevealer();
   },
 });

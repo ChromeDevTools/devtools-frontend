@@ -327,7 +327,6 @@ export class CookieIssue extends Issue<Protocol.Audits.CookieIssueDetails> {
           Protocol.Log.LogEntryLevel.Warning, UIStrings.consoleTpcdErrorMessage, {
             url: this.details().request?.url as Platform.DevToolsPath.UrlString | undefined,
             affectedResources: {requestId: this.details().request?.requestId, issueId: this.issueId},
-            isCookieReportIssue: true
           });
     }
     return;

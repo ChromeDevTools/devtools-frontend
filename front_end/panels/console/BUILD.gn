@@ -75,7 +75,6 @@ devtools_ui_module("console") {
     "../../ui/visual_logging:bundle",
     "../common:bundle",
     "../console_counters:bundle",
-    "../security:bundle",
   ]
 }
 

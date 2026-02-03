@@ -38,7 +38,6 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
-import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
@@ -47,7 +46,6 @@ import type * as IssuesManager from '../../models/issues_manager/issues_manager.
 import * as Logs from '../../models/logs/logs.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
-import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as CodeHighlighter from '../../ui/components/code_highlighter/code_highlighter.js';
 import * as Highlighting from '../../ui/components/highlighting/highlighting.js';
 import * as IssueCounter from '../../ui/components/issue_counter/issue_counter.js';
@@ -61,7 +59,6 @@ import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
-import * as Security from '../security/security.js';
 
 import {format, updateStyle} from './ConsoleFormat.js';
 import {ConsoleInsightTeaser} from './ConsoleInsightTeaser.js';
@@ -220,10 +217,6 @@ const UIStrings = {
    * @description Message to offer insights for a console message
    */
   explainThisMessageWithAI: 'Understand this message. Powered by AI',
-  /**
-   * @description Tooltip shown when user hovers over the cookie icon to explain that the button will bring the user to the cookie report
-   */
-  SeeIssueInCookieReport: 'Click to open privacy and security panel and show third-party cookie report',
   /**
    * @description Element text content in Object Properties Section
    */
@@ -574,23 +567,6 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     return elements;
   }
 
-  #appendCookieReportButtonToElem(elem: HTMLElement): void {
-    const button = new Buttons.Button.Button();
-    button.data = {
-      size: Buttons.Button.Size.SMALL,
-      variant: Buttons.Button.Variant.ICON,
-      iconName: 'cookie',
-      jslogContext: 'privacy',
-      title: i18nString(UIStrings.SeeIssueInCookieReport)
-    };
-
-    button.addEventListener('click', () => {
-      void Common.Revealer.reveal(new Security.CookieReportView.CookieReportView());
-    });
-
-    elem.appendChild(button);
-  }
-
   #getLinkifierMetric(): Host.UserMetrics.Action|undefined {
     const request = Logs.NetworkLog.NetworkLog.requestForConsoleMessage(this.message);
     if (request?.resourceType().isStyleSheet()) {
@@ -630,14 +606,6 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       }
       return null;
     };
-
-    if (this.message.isCookieReportIssue && Root.Runtime.hostConfig.devToolsPrivacyUI?.enabled) {
-      const anchorWrapperElement = document.createElement('span');
-      anchorWrapperElement.classList.add('console-message-anchor', 'cookie-report-anchor');
-      this.#appendCookieReportButtonToElem(anchorWrapperElement);
-      UI.UIUtils.createTextChild(anchorWrapperElement, ' ');
-      return anchorWrapperElement;
-    }
 
     const anchorElement = linkify(this.message);
     // Append a space to prevent the anchor text from being glued to the console message when the user selects and copies the console messages.

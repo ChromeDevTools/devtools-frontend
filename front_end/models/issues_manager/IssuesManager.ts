@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
-import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 
@@ -12,7 +11,7 @@ import {BounceTrackingIssue} from './BounceTrackingIssue.js';
 import {ClientHintIssue} from './ClientHintIssue.js';
 import {ContentSecurityPolicyIssue} from './ContentSecurityPolicyIssue.js';
 import {CookieDeprecationMetadataIssue} from './CookieDeprecationMetadataIssue.js';
-import {CookieIssue, CookieIssueSubCategory} from './CookieIssue.js';
+import {CookieIssue} from './CookieIssue.js';
 import {CorsIssue} from './CorsIssue.js';
 import {CrossOriginEmbedderPolicyIssue, isCrossOriginEmbedderPolicyIssue} from './CrossOriginEmbedderPolicyIssue.js';
 import {DeprecationIssue} from './DeprecationIssue.js';
@@ -211,7 +210,6 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
   #thirdPartyCookiePhaseoutIssueCount = new Map<IssueKind, number>();
   #issuesById = new Map<string, Issue>();
   #issuesByOutermostTarget: WeakMap<SDK.Target.Target, Set<Issue>> = new Map();
-  #thirdPartyCookiePhaseoutIssueMessageSent = false;
 
   constructor(
       private readonly showThirdPartyIssuesSetting?: Common.Settings.Setting<boolean>,
@@ -314,7 +312,6 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
 
   #onIssueAddedEvent(event: Common.EventTarget.EventTargetEvent<SDK.IssuesModel.IssueAddedEvent>): void {
     const {issuesModel, inspectorIssue} = event.data;
-    const isPrivacyUiEnabled = Root.Runtime.hostConfig.devToolsPrivacyUI?.enabled;
 
     const issues = createIssuesFromProtocolIssue(issuesModel, inspectorIssue);
     for (const issue of issues) {
@@ -323,16 +320,7 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
       if (!message) {
         continue;
       }
-
-      // Only show one message for third-party cookie phaseout issues if the new privacy ui is enabled
-      const is3rdPartyCookiePhaseoutIssue =
-          CookieIssue.getSubCategory(issue.code()) === CookieIssueSubCategory.THIRD_PARTY_PHASEOUT_COOKIE;
-      if (!is3rdPartyCookiePhaseoutIssue || !isPrivacyUiEnabled || !this.#thirdPartyCookiePhaseoutIssueMessageSent) {
-        issuesModel.target().model(SDK.ConsoleModel.ConsoleModel)?.addMessage(message);
-      }
-      if (is3rdPartyCookiePhaseoutIssue && isPrivacyUiEnabled) {
-        this.#thirdPartyCookiePhaseoutIssueMessageSent = true;
-      }
+      issuesModel.target().model(SDK.ConsoleModel.ConsoleModel)?.addMessage(message);
     }
   }
 
@@ -453,7 +441,6 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     this.#issuesById.clear();
     this.#hiddenIssueCount.clear();
     this.#thirdPartyCookiePhaseoutIssueCount.clear();
-    this.#thirdPartyCookiePhaseoutIssueMessageSent = false;
     const values = this.hideIssueSetting?.get();
     for (const [key, issue] of this.#allIssues) {
       if (this.#issueFilter(issue)) {

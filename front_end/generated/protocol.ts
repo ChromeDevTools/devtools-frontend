@@ -11223,7 +11223,7 @@ export namespace Network {
     remotePort?: integer;
   }
 
-  export const enum PrivateNetworkRequestPolicy {
+  export const enum LocalNetworkAccessRequestPolicy {
     Allow = 'Allow',
     BlockFromInsecureToMorePrivate = 'BlockFromInsecureToMorePrivate',
     WarnFromInsecureToMorePrivate = 'WarnFromInsecureToMorePrivate',
@@ -11250,7 +11250,7 @@ export namespace Network {
   export interface ClientSecurityState {
     initiatorIsSecureContext: boolean;
     initiatorIPAddressSpace: IPAddressSpace;
-    privateNetworkRequestPolicy: PrivateNetworkRequestPolicy;
+    localNetworkAccessRequestPolicy: LocalNetworkAccessRequestPolicy;
   }
 
   export const enum CrossOriginOpenerPolicyValue {

@@ -16889,7 +16889,7 @@
                     ]
                 },
                 {
-                    "id": "PrivateNetworkRequestPolicy",
+                    "id": "LocalNetworkAccessRequestPolicy",
                     "experimental": true,
                     "type": "string",
                     "enum": [
@@ -16937,8 +16937,8 @@
                             "$ref": "IPAddressSpace"
                         },
                         {
-                            "name": "privateNetworkRequestPolicy",
-                            "$ref": "PrivateNetworkRequestPolicy"
+                            "name": "localNetworkAccessRequestPolicy",
+                            "$ref": "LocalNetworkAccessRequestPolicy"
                         }
                     ]
                 },

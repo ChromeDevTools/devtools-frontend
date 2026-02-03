@@ -61,6 +61,15 @@ export async function getOutputs(type: string, label: string): Promise<Output[]>
   });
 }
 
+export async function getGolden(type: string, label: string): Promise<Conversation|null> {
+  const goldenPath = path.join(BASE_DIR, type, 'golden', `${label}.json`);
+  if (!fs.existsSync(goldenPath)) {
+    return null;
+  }
+  const contents = JSON.parse(fs.readFileSync(goldenPath, 'utf8')) as EvalFileOutput;
+  return contents.conversations[0] || null;
+}
+
 /**
  * Finds all files within one level of nested folders in a given directory,
  * returning a list of files prefixed with their parent folder's name.

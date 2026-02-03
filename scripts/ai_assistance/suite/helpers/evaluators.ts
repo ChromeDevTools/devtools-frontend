@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as jsRouge from 'js-rouge';
 import assert from 'node:assert';
 import {hideBin} from 'yargs/helpers';
 import yargs from 'yargs/yargs';
@@ -10,7 +11,7 @@ import {loadInstructions} from '../instructions/load.ts';
 import type {Conversation} from '../types.js';
 
 import {generateGeminiContent} from './gemini.ts';
-import {getMarkdownConversation, getOutputs, type Output} from './outputs.ts';
+import {getGolden, getMarkdownConversation, getOutputs, type Output} from './outputs.ts';
 
 const argv = yargs(hideBin(process.argv)).option('repeat', {type: 'number', default: 1}).parseSync();
 
@@ -20,6 +21,7 @@ const NUM_CONVERSATIONS = '# of conversations';
 const NUM_EVALS_PER_CONVERSATION = '# of evals';
 const OVERALL_STATS = 'Weighted Overall';
 const PASS_RATE = 'Pass Rate';
+const ROUGE_L_SUM = 'ROUGE-Lsum';
 
 type RubricName = string;
 interface RubricScore {
@@ -121,6 +123,135 @@ ${exampleAsMarkdown}`,
   }
 }
 
+export class ROUGE extends Evaluator {
+  private static tokenize(text: string): string[] {
+    // Normalizing newlines to spaces before tokenizing ensures that tokens
+    // separated by newlines are correctly split and recognized identically
+    // by both the full-text tokenizer and the sentence-level tokenizer.
+    // Without this, words joined by a newline (like "word\nnext") might be
+    // treated as a single token by some tokenizers but split by the segmenter.
+    const normalizedText = text.replace(/\n/g, ' ');
+    return jsRouge.treeBankTokenize(normalizedText.toLowerCase());
+  }
+
+  /**
+   * Returns the indices of tokens in 'a' that are part of the Longest Common Subsequence with 'b'.
+   *
+   * This is used to identify which parts of a candidate sentence are covered by a reference sentence.
+   */
+  private static lcsIndices(a: string[], b: string[]): number[] {
+    // First, create a matrix to find the longest matching subsequence up
+    // to a point.
+    const n = a.length;
+    const m = b.length;
+    const matrix = Array(n + 1).fill(0).map(() => Array(m + 1).fill(0));
+    for (let i = 1; i <= n; i++) {
+      for (let j = 1; j <= m; j++) {
+        if (a[i - 1] === b[j - 1]) {
+          matrix[i][j] = matrix[i - 1][j - 1] + 1;
+        } else {
+          matrix[i][j] = Math.max(matrix[i - 1][j], matrix[i][j - 1]);
+        }
+      }
+    }
+
+    // Now backtrack and collect all indices of tokens in a, that match tokens in b.
+    const indices: number[] = [];
+    let i = n, j = m;
+    while (i > 0 && j > 0) {
+      if (a[i - 1] === b[j - 1]) {
+        indices.push(i - 1);
+        i--;
+        j--;
+      } else if (matrix[i - 1][j] >= matrix[i][j - 1]) {
+        i--;
+      } else {
+        j--;
+      }
+    }
+    return indices;
+  }
+
+  private static segment(text: string): string[] {
+    // Segments sentences.
+    // 1. Split by newlines (common in walkthroughs/bullet points)
+    // 2. Further split by sentence-ending punctuation followed by a space and a capital letter.
+    // (This avoids splitting on abbreviations like v146.0 or i.e.)
+    return text.split(/\n+/)
+        .flatMap(line => line.split(/(?<=[.!?])\s+(?=[A-Z])/g))
+        .map(s => s.trim())
+        .filter(s => s.length > 0);
+  }
+
+  /**
+   * Calculates the ROUGE-Lsum score (Summary-level LCS union).
+   *
+   * It calculates the union of LCS matches between each sentence in the candidate
+   * and each sentence in the golden reference. This ensures that the structural
+   * flow of information is captured while allowing for sentence reordering.
+   */
+  static score(candidate: string, golden: string): number {
+    if (!candidate.trim() || !golden.trim()) {
+      return 0;
+    }
+
+    const candSentences = this.segment(candidate);
+    const goldenSentences = this.segment(golden);
+
+    const candTokenizedSentences = candSentences.map(s => this.tokenize(s));
+    const goldenTokenizedSentences = goldenSentences.map(s => this.tokenize(s));
+
+    let totalCandTokensCount = 0;
+    for (const tokens of candTokenizedSentences) {
+      totalCandTokensCount += tokens.length;
+    }
+    let totalGoldenTokensCount = 0;
+    for (const tokens of goldenTokenizedSentences) {
+      totalGoldenTokensCount += tokens.length;
+    }
+
+    if (totalGoldenTokensCount === 0 || totalCandTokensCount === 0) {
+      return 0;
+    }
+
+    // union_lcs_C: Precision perspective (unique matched tokens in candidate)
+    let totalCandUnionLcsCount = 0;
+    for (const candTokens of candTokenizedSentences) {
+      const matchedIndices = new Set<number>();
+      for (const goldenTokens of goldenTokenizedSentences) {
+        const indices = this.lcsIndices(candTokens, goldenTokens);
+        for (const idx of indices) {
+          // We mark the token index in the candidate sentence as matched.
+          // This implements the "union" part of ROUGE-Lsum: a candidate token
+          // is counted only once per candidate sentence.
+          matchedIndices.add(idx);
+        }
+      }
+      totalCandUnionLcsCount += matchedIndices.size;
+    }
+
+    // union_lcs_G: Recall perspective (unique matched tokens in golden)
+    let totalGoldenUnionLcsCount = 0;
+    for (const goldenTokens of goldenTokenizedSentences) {
+      const matchedIndices = new Set<number>();
+      for (const candTokens of candTokenizedSentences) {
+        const indices = this.lcsIndices(goldenTokens, candTokens);
+        for (const idx of indices) {
+          // We mark the token index in the golden sentence as matched.
+          matchedIndices.add(idx);
+        }
+      }
+      totalGoldenUnionLcsCount += matchedIndices.size;
+    }
+
+    const recall = totalGoldenUnionLcsCount / totalGoldenTokensCount;
+    const precision = totalCandUnionLcsCount / totalCandTokensCount;
+    const f1 = (precision + recall) > 0 ? (2 * precision * recall) / (precision + recall) : 0;
+
+    return f1;
+  }
+}
+
 interface GroupTestState {
   store: ResultStore;
   outputsByDate: Partial<Record<string, Output[]>>;
@@ -134,6 +265,8 @@ export type ItEval = {
   succeed: (example: Conversation) => boolean,
 }|{
   judge: (example: Conversation) => Promise<{rubricScores: RubricScore[], rubricWeights: RubricWeights}>,
+}|{
+  rouge: true,
 });
 
 function calculateStandardDeviation(values: number[]): number {
@@ -230,6 +363,32 @@ export async function itEval(config: ItEval): Promise<void> {
         repetitionCount: repeatCount,
       });
     }
+  } else if ('rouge' in config) {
+    const golden = await getGolden(state.store.type, state.store.label);
+    const goldenText = golden?.queries.at(-1)?.response.text ?? '';
+
+    for (const [date, outputs] of Object.entries(state.outputsByDate)) {
+      if (!outputs) {
+        continue;
+      }
+      const allDevToolsConversations = outputs.flatMap(o => o.contents.conversations);
+      const scores: number[] = [];
+
+      for (const conversation of allDevToolsConversations) {
+        const candidateText = conversation.queries.at(-1)?.response.text ?? '';
+        const score = ROUGE.score(candidateText, goldenText);
+        scores.push(score);
+      }
+
+      const total = scores.reduce((acc, score) => acc + score, 0);
+      const average = scores.length ? total / scores.length : 0;
+      const standardDeviation = calculateStandardDeviation(scores);
+
+      state.store.saveResult(config.test, date, {
+        type: 'ROUGE',
+        stats: {average, standardDeviation, allScores: scores},
+      });
+    }
   }
 }
 
@@ -316,6 +475,12 @@ function printResults(store: ResultStore): void {
             tableData[row][date] = formatJudgeResult(result, row);
           }
           break;
+        case 'ROUGE':
+          if (!tableData[ROUGE_L_SUM]) {
+            tableData[ROUGE_L_SUM] = {};
+          }
+          tableData[ROUGE_L_SUM][date] = formatRubricStats(result.stats);
+          break;
       }
     }
     console.table(tableData);
@@ -339,6 +504,9 @@ type Result = {
   overallStats: RubricStats,
   inputCount: number,
   repetitionCount: number,
+}|{
+  type: 'ROUGE',
+  stats: RubricStats,
 };
 
 class ResultStore {

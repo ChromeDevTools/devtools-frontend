@@ -14301,23 +14301,15 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
     sessionDetailsHtml = html9`
         <devtools-report>
           <devtools-report-section-header role="heading" aria-level="2">${i18nString31(UIStrings31.sessionConfig)}</devtools-report-section-header>
-          <devtools-report-key>${i18nString31(UIStrings31.keySite)}</devtools-report-key>
-          <devtools-report-value>${key.site}</devtools-report-value>
-          <devtools-report-key>${i18nString31(UIStrings31.keyId)}</devtools-report-key>
-          <devtools-report-value>${key.id}</devtools-report-value>
-          <devtools-report-key>${i18nString31(UIStrings31.refreshUrl)}</devtools-report-key>
-          <devtools-report-value>${sessionAndEvents.session.refreshUrl}</devtools-report-value>
-          <devtools-report-key>${i18nString31(UIStrings31.expiryDate)}</devtools-report-key>
-          <devtools-report-value>${new Date(sessionAndEvents.session.expiryDate * 1e3).toLocaleString()}</devtools-report-value>
-          <devtools-report-key>${i18nString31(UIStrings31.cachedChallenge)}</devtools-report-key>
-          <devtools-report-value>${sessionAndEvents.session.cachedChallenge || ""}</devtools-report-value>
-          <devtools-report-key>${i18nString31(UIStrings31.allowedRefreshInitiators)}</devtools-report-key>
-          <devtools-report-value>${sessionAndEvents.session.allowedRefreshInitiators.join(", ")}</devtools-report-value>
+          ${renderKeyValue(i18nString31(UIStrings31.keySite), key.site, "dbsc-site")}
+          ${renderKeyValue(i18nString31(UIStrings31.keyId), key.id, "dbsc-id")}
+          ${renderKeyValue(i18nString31(UIStrings31.refreshUrl), sessionAndEvents.session.refreshUrl, "dbsc-refresh-url")}
+          ${renderKeyValue(i18nString31(UIStrings31.expiryDate), new Date(sessionAndEvents.session.expiryDate * 1e3).toLocaleString(), "dbsc-expiry-date")}
+          ${renderKeyValue(i18nString31(UIStrings31.cachedChallenge), sessionAndEvents.session.cachedChallenge || "", "dbsc-cached-challenge")}
+          ${renderKeyValue(i18nString31(UIStrings31.allowedRefreshInitiators), sessionAndEvents.session.allowedRefreshInitiators.join(", "), "dbsc-allowed-refresh-initiators")}
           <devtools-report-section-header role="heading" aria-level="2">${i18nString31(UIStrings31.scope)}</devtools-report-section-header>
-          <devtools-report-key>${i18nString31(UIStrings31.origin)}</devtools-report-key>
-          <devtools-report-value>${inclusionRules.origin}</devtools-report-value>
-          <devtools-report-key>${i18nString31(UIStrings31.includeSite)}</devtools-report-key>
-          <devtools-report-value>${boolToString(inclusionRules.includeSite)}</devtools-report-value>
+          ${renderKeyValue(i18nString31(UIStrings31.origin), inclusionRules.origin, "dbsc-origin")}
+          ${renderKeyValue(i18nString31(UIStrings31.includeSite), boolToString(inclusionRules.includeSite), "dbsc-include-site")}
         </devtools-report>
         ${inclusionRules.urlRules.length > 0 ? html9`
           <div class="device-bound-session-grid-wrapper">
@@ -14410,47 +14402,34 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
             </div>
           ` : html9`<div class="device-bound-session-no-events-wrapper">${i18nString31(UIStrings31.noEvents)}</div>`}`;
   const creationEventDetails = selectedEvent?.creationEventDetails && html9`
-          <devtools-report-key>${i18nString31(UIStrings31.fetchResult)}</devtools-report-key>
-          <devtools-report-value>${fetchResultToString(selectedEvent.creationEventDetails.fetchResult)}</devtools-report-value>
+            ${renderKeyValue(i18nString31(UIStrings31.fetchResult), fetchResultToString(selectedEvent.creationEventDetails.fetchResult), "dbsc-creation-fetch-result")}
             ${selectedEvent.creationEventDetails.newSession && html9`
-              <devtools-report-key>${i18nString31(UIStrings31.updatedSessionConfig)}</devtools-report-key>
-              <devtools-report-value>${i18nString31(UIStrings31.yes)}</devtools-report-value>
+             ${renderKeyValue(i18nString31(UIStrings31.updatedSessionConfig), i18nString31(UIStrings31.yes), "dbsc-creation-updated-session-config")}
             `}
           `;
   const refreshEventDetails = selectedEvent?.refreshEventDetails && html9`
-          <devtools-report-key>${i18nString31(UIStrings31.refreshResult)}</devtools-report-key>
-          <devtools-report-value>${refreshResultToString(selectedEvent.refreshEventDetails.refreshResult)}</devtools-report-value>
-          <devtools-report-key>${i18nString31(UIStrings31.causedAnyRequestDeferrals)}</devtools-report-key>
-          <devtools-report-value>${boolToString(!selectedEvent.refreshEventDetails.wasFullyProactiveRefresh)}</devtools-report-value>
+          ${renderKeyValue(i18nString31(UIStrings31.refreshResult), refreshResultToString(selectedEvent.refreshEventDetails.refreshResult), "dbsc-refresh-result")}
+          ${renderKeyValue(i18nString31(UIStrings31.causedAnyRequestDeferrals), boolToString(!selectedEvent.refreshEventDetails.wasFullyProactiveRefresh), "dbsc-refresh-was-fully-proactive-refresh")}
             ${selectedEvent.refreshEventDetails.fetchResult && html9`
-              <devtools-report-key>${i18nString31(UIStrings31.fetchResult)}</devtools-report-key>
-              <devtools-report-value>${fetchResultToString(selectedEvent.refreshEventDetails.fetchResult)}</devtools-report-value>
+              ${renderKeyValue(i18nString31(UIStrings31.fetchResult), fetchResultToString(selectedEvent.refreshEventDetails.fetchResult), "dbsc-refresh-fetch-result")}
             `}
             ${selectedEvent.refreshEventDetails.newSession && html9`
-              <devtools-report-key>${i18nString31(UIStrings31.updatedSessionConfig)}</devtools-report-key>
-              <devtools-report-value>${i18nString31(UIStrings31.yes)}</devtools-report-value>
+              ${renderKeyValue(i18nString31(UIStrings31.updatedSessionConfig), i18nString31(UIStrings31.yes), "dbsc-refresh-updated-session-config")}
             `}
           `;
   const challengeEventDetails = selectedEvent?.challengeEventDetails && html9`
-          <devtools-report-key>${i18nString31(UIStrings31.challengeResult)}</devtools-report-key>
-          <devtools-report-value>${challengeResultToString(selectedEvent.challengeEventDetails.challengeResult)}</devtools-report-value>
-          <devtools-report-key>${i18nString31(UIStrings31.challenge)}</devtools-report-key>
-          <devtools-report-value>${selectedEvent.challengeEventDetails.challenge}</devtools-report-value>
+          ${renderKeyValue(i18nString31(UIStrings31.challengeResult), challengeResultToString(selectedEvent.challengeEventDetails.challengeResult), "dbsc-challenge-result")}
+          ${renderKeyValue(i18nString31(UIStrings31.challenge), selectedEvent.challengeEventDetails.challenge, "dbsc-challenge")}
           `;
   const terminationEventDetails = selectedEvent?.terminationEventDetails && html9`
-          <devtools-report-key>${i18nString31(UIStrings31.deletionReason)}</devtools-report-key>
-          <devtools-report-value>${deletionReasonToString(selectedEvent.terminationEventDetails.deletionReason)}</devtools-report-value>
+          ${renderKeyValue(i18nString31(UIStrings31.deletionReason), deletionReasonToString(selectedEvent.terminationEventDetails.deletionReason), "dbsc-termination-reason")}
           `;
   const eventDetailsContentHtml = selectedEvent ? html9`
         <devtools-report>
-          <devtools-report-key>${i18nString31(UIStrings31.keySite)}</devtools-report-key>
-          <devtools-report-value>${selectedEvent.site}</devtools-report-value>
-          <devtools-report-key>${i18nString31(UIStrings31.sessionId)}</devtools-report-key>
-          <devtools-report-value>${selectedEvent.sessionId}</devtools-report-value>
-          <devtools-report-key>${i18nString31(UIStrings31.type)}</devtools-report-key>
-          <devtools-report-value>${getEventTypeString(selectedEvent)}</devtools-report-value>
-          <devtools-report-key>${i18nString31(UIStrings31.eventResult)}</devtools-report-key>
-          <devtools-report-value>${succeededToString(selectedEvent.succeeded)}</devtools-report-value>
+          ${renderKeyValue(i18nString31(UIStrings31.keySite), selectedEvent.site, "dbsc-event-site")}
+          ${selectedEvent.sessionId && renderKeyValue(i18nString31(UIStrings31.sessionId), selectedEvent.sessionId, "dbsc-event-session-id")}
+          ${renderKeyValue(i18nString31(UIStrings31.type), getEventTypeString(selectedEvent), "dbsc-event-type")}
+          ${renderKeyValue(i18nString31(UIStrings31.eventResult), succeededToString(selectedEvent.succeeded), "dbsc-event-result")}
           ${creationEventDetails}
           ${refreshEventDetails}
           ${challengeEventDetails}
@@ -14538,6 +14517,12 @@ var DeviceBoundSessionsView = class extends UI24.Widget.VBox {
     this.performUpdate();
   }
 };
+function renderKeyValue(key, value, id) {
+  return html9`
+    <devtools-report-key id=${id}>${key}</devtools-report-key>
+    <devtools-report-value role="text" aria-describedby=${id}>${value}</devtools-report-value>
+  `;
+}
 function ruleTypeToString(ruleType) {
   switch (ruleType) {
     case "Exclude":

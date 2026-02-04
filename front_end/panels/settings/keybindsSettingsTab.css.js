@@ -172,4 +172,61 @@ button.text-button {
   margin-top: 10px;
 }
 
+@media (forced-colors: active) {
+  /* Keyboard focus on wrapper element (shortcut items) */
+  .keybinds-list-item-wrapper {
+    &:focus,
+    &:focus-visible {
+      background-color: Highlight !important; /* stylelint-disable-line declaration-no-important */
+      forced-color-adjust: none;
+
+      & .keybinds-list-text,
+      & .keybinds-action-name {
+        color: HighlightText !important; /* stylelint-disable-line declaration-no-important */
+      }
+
+      & .keybinds-key {
+        background: HighlightText;
+        color: Highlight;
+      }
+    }
+
+    /* Hover state (shortcut items) */
+    &:has(.keybinds-list-item:hover) {
+      background-color: Highlight !important; /* stylelint-disable-line declaration-no-important */
+      forced-color-adjust: none;
+
+      & .keybinds-list-text {
+        color: HighlightText !important; /* stylelint-disable-line declaration-no-important */
+      }
+
+      & .keybinds-key {
+        background: HighlightText;
+        color: Highlight;
+      }
+    }
+  }
+
+  /* Editing state */
+  .keybinds-list-item.keybinds-editing {
+    background-color: Highlight !important; /* stylelint-disable-line declaration-no-important */
+    forced-color-adjust: none;
+
+    & .keybinds-list-text {
+      color: HighlightText !important; /* stylelint-disable-line declaration-no-important */
+    }
+  }
+
+  /* Category headers (e.g., "Background Services", "Debugger") */
+  .keybinds-category-header {
+    &:hover,
+    &:focus,
+    &:focus-visible {
+      background-color: Highlight !important; /* stylelint-disable-line declaration-no-important */
+      color: HighlightText !important; /* stylelint-disable-line declaration-no-important */
+      forced-color-adjust: none;
+    }
+  }
+}
+
 /*# sourceURL=${import.meta.resolve('./keybindsSettingsTab.css')} */`;

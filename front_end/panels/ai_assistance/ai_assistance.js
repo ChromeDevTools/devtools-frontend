@@ -2710,7 +2710,6 @@ var DEFAULT_VIEW3 = (input, output, target) => {
     }
     return renderStep({
       step: part.step,
-      isLoading: input.isLoading,
       markdownRenderer: input.markdownRenderer,
       isLast: isLastPart
     });
@@ -2786,8 +2785,8 @@ function renderStepDetails({ step, markdownRenderer, isLast }) {
     ${contextDetails}
   </div>`;
 }
-function renderStepBadge({ step, isLoading, isLast }) {
-  if (isLoading && isLast && !step.sideEffect) {
+function renderStepBadge({ step, isLast }) {
+  if (step.isLoading && isLast && !step.sideEffect) {
     return html4`<devtools-spinner></devtools-spinner>`;
   }
   let iconName = "checkmark";
@@ -2808,7 +2807,7 @@ function renderStepBadge({ step, isLoading, isLast }) {
       .name=${iconName}
     ></devtools-icon>`;
 }
-function renderStep({ step, isLoading, markdownRenderer, isLast }) {
+function renderStep({ step, markdownRenderer, isLast }) {
   const stepClasses = Lit2.Directives.classMap({
     step: true,
     empty: !step.thought && !step.code && !step.contextDetails && !step.sideEffect,
@@ -2821,7 +2820,7 @@ function renderStep({ step, isLoading, markdownRenderer, isLast }) {
       .open=${Boolean(step.sideEffect)}>
       <summary>
         <div class="summary">
-          ${renderStepBadge({ step, isLoading, isLast })}
+          ${renderStepBadge({ step, isLast })}
           ${renderTitle(step)}
           <devtools-icon
             class="arrow"
@@ -3639,7 +3638,7 @@ var DEFAULT_VIEW4 = (input, output, target) => {
             <div class="messages-container" ${ref3(input.handleMessageContainerRef)}>
               ${repeat(input.messages, (message) => html5`<devtools-widget .widgetConfig=${UI5.Widget.widgetConfig(ChatMessage, {
     message,
-    isLoading: input.isLoading,
+    isLoading: input.isLoading && input.messages.at(-1) === message,
     isReadOnly: input.isReadOnly,
     canShowFeedbackForm: input.canShowFeedbackForm,
     userInfo: input.userInfo,

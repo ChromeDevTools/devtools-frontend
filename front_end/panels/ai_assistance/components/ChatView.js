@@ -47,7 +47,7 @@ const DEFAULT_VIEW = (input, output, target) => {
             <div class="messages-container" ${ref(input.handleMessageContainerRef)}>
               ${repeat(input.messages, message => html `<devtools-widget .widgetConfig=${UI.Widget.widgetConfig(ChatMessage, {
         message,
-        isLoading: input.isLoading,
+        isLoading: input.isLoading && input.messages.at(-1) === message,
         isReadOnly: input.isReadOnly,
         canShowFeedbackForm: input.canShowFeedbackForm,
         userInfo: input.userInfo,

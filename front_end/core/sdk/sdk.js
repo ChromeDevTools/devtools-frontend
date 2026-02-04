@@ -21315,7 +21315,12 @@ var HeapProfilerModel = class extends SDKModel {
     return Boolean(response.getError());
   }
   async takeHeapSnapshot(heapSnapshotOptions) {
-    await this.#heapProfilerAgent.invoke_takeHeapSnapshot(heapSnapshotOptions);
+    await TargetManager.instance().suspendAllTargets("heap-snapshot");
+    try {
+      await this.#heapProfilerAgent.invoke_takeHeapSnapshot(heapSnapshotOptions);
+    } finally {
+      await TargetManager.instance().resumeAllTargets();
+    }
   }
   async startTrackingHeapObjects(recordAllocationStacks) {
     const response = await this.#heapProfilerAgent.invoke_startTrackingHeapObjects({ trackAllocations: recordAllocationStacks });

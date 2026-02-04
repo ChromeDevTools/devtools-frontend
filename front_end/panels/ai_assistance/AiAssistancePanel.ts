@@ -729,7 +729,9 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       this.#conversation = conversation;
     }
 
-    this.#conversation?.setContext(this.#getConversationContext(this.#conversation));
+    this.#conversation?.setContext(this.#getConversationContext(
+        isAiAssistanceContextSelectionAgentEnabled() ? this.#getDefaultConversationType() :
+                                                       (this.#conversation?.type ?? null)));
 
     this.requestUpdate();
   }
@@ -1269,12 +1271,9 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     this.#runAbortController = new AbortController();
   }
 
-  #getConversationContext(conversation?: AiAssistanceModel.AiConversation.AiConversation):
+  #getConversationContext(type?: AiAssistanceModel.AiHistoryStorage.ConversationType):
       AiAssistanceModel.AiAgent.ConversationContext<unknown>|null {
-    if (!conversation) {
-      return null;
-    }
-    switch (conversation.type) {
+    switch (type) {
       case AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING:
         return this.#selectedElement;
       case AiAssistanceModel.AiHistoryStorage.ConversationType.FILE:
@@ -1284,35 +1283,28 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       case AiAssistanceModel.AiHistoryStorage.ConversationType.PERFORMANCE:
         return this.#selectedPerformanceTrace;
       case AiAssistanceModel.AiHistoryStorage.ConversationType.NONE:
+      case undefined:
         return null;
     }
   }
 
   #handleConversationContextChange = (data: unknown): void => {
     if (data instanceof Workspace.UISourceCode.UISourceCode) {
-      if (this.#selectedFile?.getItem() === data) {
-        return;
-      }
-      this.#selectedFile = new AiAssistanceModel.FileAgent.FileContext(data);
+      const context = new AiAssistanceModel.FileAgent.FileContext(data);
+      this.#selectedFile = context;
 
     } else if (data instanceof SDK.DOMModel.DOMNode) {
-      if (this.#selectedElement?.getItem() === data ||
-          // Ignore non node type like comments or html tags
-          data.nodeType() === Node.ELEMENT_NODE) {
-        return;
-      }
-      this.#selectedElement = new AiAssistanceModel.StylingAgent.NodeContext(data);
+      const context = new AiAssistanceModel.StylingAgent.NodeContext(data);
+      this.#selectedElement = context;
+
     } else if (data instanceof SDK.NetworkRequest.NetworkRequest) {
-      if (this.#selectedRequest?.getItem() === data) {
-        return;
-      }
       const calculator = NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator();
-      this.#selectedRequest = new AiAssistanceModel.NetworkAgent.RequestContext(data, calculator);
+
+      const context = new AiAssistanceModel.NetworkAgent.RequestContext(data, calculator);
+      this.#selectedRequest = context;
     } else if (data instanceof AiAssistanceModel.AIContext.AgentFocus) {
-      if (this.#selectedPerformanceTrace?.getItem() === data) {
-        return;
-      }
-      this.#selectedPerformanceTrace = new AiAssistanceModel.PerformanceAgent.PerformanceTraceContext(data);
+      const context = new AiAssistanceModel.PerformanceAgent.PerformanceTraceContext(data);
+      this.#selectedPerformanceTrace = context;
     }
 
     this.#updateConversationState(this.#conversation);
@@ -1329,7 +1321,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     // Cancel any previous in-flight conversation.
     this.#cancel();
     const signal = this.#runAbortController.signal;
-    const context = this.#getConversationContext(this.#conversation);
+    const context = this.#getConversationContext(this.#conversation.type);
     this.#conversation.setContext(context);
 
     // If a different context is provided, it must be from the same origin.

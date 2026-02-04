@@ -17,10 +17,10 @@ import {
   ResponseType
 } from './agents/AiAgent.js';
 import {ContextSelectionAgent} from './agents/ContextSelectionAgent.js';
-import {FileAgent} from './agents/FileAgent.js';
-import {NetworkAgent} from './agents/NetworkAgent.js';
-import {PerformanceAgent} from './agents/PerformanceAgent.js';
-import {StylingAgent} from './agents/StylingAgent.js';
+import {FileAgent, FileContext} from './agents/FileAgent.js';
+import {NetworkAgent, RequestContext} from './agents/NetworkAgent.js';
+import {PerformanceAgent, PerformanceTraceContext} from './agents/PerformanceAgent.js';
+import {NodeContext, StylingAgent} from './agents/StylingAgent.js';
 import {AiHistoryStorage, ConversationType, type SerializedConversation} from './AiHistoryStorage.js';
 import type {ChangeManager} from './ChangeManager.js';
 import {NetworkRequestFormatter} from './data_formatters/NetworkRequestFormatter.js';
@@ -59,14 +59,17 @@ export class AiConversation {
   }
 
   readonly id: string;
-  #type: ConversationType;
+  // Handled in #updateAgent
+  #type!: ConversationType;
+  // Handled in #updateAgent
+  #agent!: AiAgent<unknown>;
+
   #isReadOnly: boolean;
   readonly history: ResponseData[];
   #isExternal: boolean;
 
   #aidaClient: Host.AidaClient.AidaClient;
   #changeManager: ChangeManager|undefined;
-  #agent: AiAgent<unknown>;
   #origin?: string;
 
   #contexts: Array<ConversationContext<unknown>> = [];
@@ -82,14 +85,13 @@ export class AiConversation {
   ) {
     this.#changeManager = changeManager;
     this.#aidaClient = aidaClient;
-    this.#type = type;
 
     this.id = id;
     this.#isReadOnly = isReadOnly;
     this.#isExternal = isExternal;
     this.history = this.#reconstructHistory(data);
     // Needs to be last
-    this.#agent = this.#createAgent();
+    this.#updateAgent(type);
   }
 
   get isReadOnly(): boolean {
@@ -123,10 +125,26 @@ export class AiConversation {
   setContext(updateContext: ConversationContext<unknown>|null): void {
     if (!updateContext) {
       this.#contexts = [];
+      if (isAiAssistanceContextSelectionAgentEnabled()) {
+        this.#updateAgent(ConversationType.NONE);
+      }
+
       return;
     }
 
     this.#contexts = [updateContext];
+
+    if (isAiAssistanceContextSelectionAgentEnabled()) {
+      if (updateContext instanceof FileContext) {
+        this.#updateAgent(ConversationType.FILE);
+      } else if (updateContext instanceof NodeContext) {
+        this.#updateAgent(ConversationType.STYLING);
+      } else if (updateContext instanceof RequestContext) {
+        this.#updateAgent(ConversationType.NETWORK);
+      } else if (updateContext instanceof PerformanceTraceContext) {
+        this.#updateAgent(ConversationType.PERFORMANCE);
+      }
+    }
   }
 
   get selectedContext(): ConversationContext<unknown>|undefined {
@@ -249,37 +267,40 @@ export class AiConversation {
     };
   }
 
-  #createAgent(): AiAgent<unknown> {
+  #updateAgent(type: ConversationType): void {
+    if (this.#type === type) {
+      return;
+    }
+
+    this.#type = type;
     const options = {
       aidaClient: this.#aidaClient,
       serverSideLoggingEnabled: isAiAssistanceServerSideLoggingEnabled(),
       sessionId: this.id,
       changeManager: this.#changeManager,
     };
-    let agent: AiAgent<unknown>;
-    switch (this.#type) {
+    switch (type) {
       case ConversationType.STYLING: {
-        agent = new StylingAgent(options);
+        this.#agent = new StylingAgent(options);
         break;
       }
       case ConversationType.NETWORK: {
-        agent = new NetworkAgent(options);
+        this.#agent = new NetworkAgent(options);
         break;
       }
       case ConversationType.FILE: {
-        agent = new FileAgent(options);
+        this.#agent = new FileAgent(options);
         break;
       }
       case ConversationType.PERFORMANCE: {
-        agent = new PerformanceAgent(options);
+        this.#agent = new PerformanceAgent(options);
         break;
       }
       case ConversationType.NONE: {
-        agent = new ContextSelectionAgent(options);
+        this.#agent = new ContextSelectionAgent(options);
         break;
       }
     }
-    return agent;
   }
 
   #factsCache = new Map<ExtraContext, Host.AidaClient.RequestFact>();
@@ -399,11 +420,6 @@ Time: ${micros(time)}`;
         },
         options.multimodalInput,
         )) {
-      if (data.type === ResponseType.CONTEXT_CHANGE) {
-        this.#type = ConversationType.NETWORK;
-        this.#agent = this.#createAgent();
-      }
-
       if (shouldAddToHistory(data)) {
         void this.addHistoryItem(data);
       }
@@ -439,3 +455,7 @@ function isAiAssistanceServerSideLoggingEnabled(): boolean {
 type ExtraContext = SDK.DOMModel.DOMNode|SDK.NetworkRequest.NetworkRequest|
                     {event: Trace.Types.Events.Event, traceStartTime: Trace.Types.Timing.Micro}|
                     {insight: Trace.Insights.Types.InsightModel, trace: Trace.TraceModel.ParsedTrace};
+
+function isAiAssistanceContextSelectionAgentEnabled(): boolean {
+  return Boolean(Root.Runtime.hostConfig.devToolsAiAssistanceContextSelectionAgent?.enabled);
+}

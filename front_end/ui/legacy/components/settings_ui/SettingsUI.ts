@@ -19,7 +19,7 @@ const UIStrings = {
   /**
    * @description Message to display if a setting change requires a reload of DevTools
    */
-  oneOrMoreSettingsHaveChanged: 'One or more settings have changed which requires a reload to take effect',
+  settingsChangedReloadDevTools: 'Settings changed. To apply, reload DevTools.',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/settings_ui/SettingsUI.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -94,7 +94,7 @@ const createSettingSelect = function(
     if (reloadWarning) {
       reloadWarning.classList.remove('hidden');
       UI.InspectorView.InspectorView.instance().displayReloadRequiredWarning(
-          i18nString(UIStrings.oneOrMoreSettingsHaveChanged));
+          i18nString(UIStrings.settingsChangedReloadDevTools));
     }
   }
 };
@@ -111,7 +111,7 @@ export const createControlForSetting = function(
       component.onchange = () => {
         if (setting.reloadRequired()) {
           UI.InspectorView.InspectorView.instance().displayReloadRequiredWarning(
-              i18nString(UIStrings.oneOrMoreSettingsHaveChanged));
+              i18nString(UIStrings.settingsChangedReloadDevTools));
         }
       };
       return component;

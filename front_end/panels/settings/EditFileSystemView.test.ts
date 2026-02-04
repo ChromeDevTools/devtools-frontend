@@ -118,13 +118,18 @@ describeWithEnvironment('EditFileSystemView widget', () => {
     sinon.assert.notCalled(fileSystem.addExcludedFolder);
   });
 
+  function makeCustomEvent<T>(type: string, currentTarget: HTMLElement, detail: T = {} as T) {
+    const event = new CustomEvent(type, {detail});
+    sinon.stub(event, 'currentTarget').value(currentTarget);
+    return event;
+  }
+
   it('renders the new status when editing a sub-directory', async () => {
     const {view} = await setup(new Set(['foo/']));
     const node = document.createElement('tr');
     node.setAttribute('data-index', '0');
 
-    view.input.onEdit(
-        new CustomEvent('edit', {detail: {node, columnId: 'url', valueBeforeEditing: 'foo/', newText: ''}}));
+    view.input.onEdit(makeCustomEvent('edit', node, {columnId: 'url', valueBeforeEditing: 'foo/', newText: ''}));
 
     await view.nextInput;
     assert.deepEqual(view.input.excludedFolderPaths, [
@@ -137,8 +142,7 @@ describeWithEnvironment('EditFileSystemView widget', () => {
     const node = document.createElement('tr');
     node.setAttribute('data-index', '0');
 
-    view.input.onEdit(
-        new CustomEvent('edit', {detail: {node, columnId: 'url', valueBeforeEditing: 'foo/', newText: 'bar/'}}));
+    view.input.onEdit(makeCustomEvent('edit', node, {columnId: 'url', valueBeforeEditing: 'foo/', newText: 'bar/'}));
 
     await view.nextInput;
     sinon.assert.calledOnceWithExactly(
@@ -150,8 +154,7 @@ describeWithEnvironment('EditFileSystemView widget', () => {
     const node = document.createElement('tr');
     node.setAttribute('data-index', '0');
 
-    view.input.onEdit(
-        new CustomEvent('edit', {detail: {node, columnId: 'url', valueBeforeEditing: 'foo/', newText: 'bar/'}}));
+    view.input.onEdit(makeCustomEvent('edit', node, {columnId: 'url', valueBeforeEditing: 'foo/', newText: 'bar/'}));
 
     await view.nextInput;
     sinon.assert.calledOnceWithExactly(fileSystem.addExcludedFolder, 'bar/' as Platform.DevToolsPath.EncodedPathString);
@@ -162,7 +165,7 @@ describeWithEnvironment('EditFileSystemView widget', () => {
     const node = document.createElement('tr');
     node.setAttribute('data-index', '0');
 
-    view.input.onDelete(new CustomEvent('delete', {detail: node}));
+    view.input.onDelete(makeCustomEvent('delete', node));
 
     await view.nextInput;
     assert.isEmpty(view.input.excludedFolderPaths);
@@ -173,7 +176,7 @@ describeWithEnvironment('EditFileSystemView widget', () => {
     const node = document.createElement('tr');
     node.setAttribute('data-index', '0');
 
-    view.input.onDelete(new CustomEvent('delete', {detail: node}));
+    view.input.onDelete(makeCustomEvent('delete', node));
 
     await view.nextInput;
     sinon.assert.calledOnceWithExactly(

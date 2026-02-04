@@ -61,9 +61,8 @@ export interface EditFileSystemViewInput {
   fileSystemPath: Platform.DevToolsPath.UrlString;
   excludedFolderPaths: PathWithStatus[];
   onCreate: (event: CustomEvent<{url?: string}>) => void;
-  onEdit:
-      (event: CustomEvent<{node: HTMLElement, columnId: string, valueBeforeEditing: string, newText: string}>) => void;
-  onDelete: (event: CustomEvent<HTMLElement>) => void;
+  onEdit: (event: CustomEvent<{columnId: string, valueBeforeEditing: string, newText: string}>) => void;
+  onDelete: (event: CustomEvent) => void;
 }
 
 export type View = (input: EditFileSystemViewInput, output: object, target: HTMLElement) => void;
@@ -77,8 +76,6 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
         <span class="excluded-folder-url">${input.fileSystemPath}</span>
         <devtools-data-grid
           @create=${input.onCreate}
-          @edit=${input.onEdit}
-          @delete=${input.onDelete}
           class="exclude-subfolders-table"
           parts="excluded-folder-row-with-error"
           inline striped>
@@ -90,7 +87,9 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
             </thead>
             <tbody>
             ${input.excludedFolderPaths.map((path, index) => html`
-              <tr data-url=${path.path} data-index=${index}>
+              <tr data-url=${path.path} data-index=${index}
+                  @edit=${input.onEdit}
+                  @delete=${input.onDelete}>
                 <td style=${styleMap({backgroundColor: path.status !== ExcludedFolderStatus.VALID ? 'var(--sys-color-error-container)' : undefined})}>${path.path}</td>
               </tr>
             `)}
@@ -139,8 +138,9 @@ export class EditFileSystemView extends UI.Widget.VBox {
       fileSystemPath: this.#fileSystem?.path() ?? Platform.DevToolsPath.urlString``,
       excludedFolderPaths: this.#excludedFolderPaths,
       onCreate: e => this.#onCreate(e.detail.url),
-      onEdit: e => this.#onEdit(e.detail.node.dataset.index ?? '-1', e.detail.valueBeforeEditing, e.detail.newText),
-      onDelete: e => this.#onDelete(e.detail.dataset.index ?? '-1'),
+      onEdit: e => this.#onEdit(
+          (e.currentTarget as HTMLElement).dataset.index ?? '-1', e.detail.valueBeforeEditing, e.detail.newText),
+      onDelete: e => this.#onDelete((e.currentTarget as HTMLElement).dataset.index ?? '-1'),
     };
     this.#view(input, {}, this.contentElement);
   }

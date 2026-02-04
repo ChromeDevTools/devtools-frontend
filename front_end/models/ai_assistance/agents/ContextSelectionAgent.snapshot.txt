@@ -58,6 +58,36 @@ Content:
           }
         }
       }
+    },
+    {
+      "name": "listSourceFiles",
+      "description": "Returns a list of all files in the project.",
+      "parameters": {
+        "type": 6,
+        "description": "",
+        "nullable": true,
+        "required": [],
+        "properties": {}
+      }
+    },
+    {
+      "name": "selectSourceFile",
+      "description": "Returns a list of all files in the project.",
+      "parameters": {
+        "type": 6,
+        "description": "",
+        "nullable": true,
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": 1,
+            "description": "The name of the file",
+            "nullable": false
+          }
+        }
+      }
     }
   ],
   "options": {},

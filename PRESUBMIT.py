@@ -109,6 +109,7 @@ def _CheckWithNodeScript(input_api,
                          output_api,
                          script_path,
                          script_arguments=None,
+                         allow_typescript=False,
                          message=None):
     original_sys_path = sys.path
     try:
@@ -126,6 +127,23 @@ def _CheckWithNodeScript(input_api,
                               process,
                               script_arguments=script_arguments,
                               message=message)
+
+
+def _GetFilesToLint(input_api, lint_config_files, accepted_endings):
+    run_full_check = False
+    files_to_lint = []
+
+    # We are changing the lint configuration; run the full check.
+    if len(lint_config_files) != 0:
+        run_full_check = True
+    else:
+        root_dir = input_api.os_path.join(input_api.PresubmitLocalPath())
+        # Only run the linter on files that are relevant, to save PRESUBMIT time.
+        files_to_lint = _GetAffectedFiles(input_api, root_dir, ['D'],
+                                          accepted_endings)
+
+    should_bail_out = len(files_to_lint) == 0 and not run_full_check
+    return should_bail_out, files_to_lint
 
 
 def _CheckFormat(input_api, output_api):
@@ -194,7 +212,6 @@ def CheckDevToolsLint(input_api, output_api):
                                        'scripts', 'test', 'run_lint_check.mjs')
 
     lint_related_paths = [
-        lint_path,
         input_api.os_path.join(input_api.PresubmitLocalPath(),
                                'eslint.config.mjs'),
         input_api.os_path.join(input_api.PresubmitLocalPath(),
@@ -204,30 +221,34 @@ def CheckDevToolsLint(input_api, output_api):
         # This file includes the LitAnalyzer rules
         input_api.os_path.join(input_api.PresubmitLocalPath(), 'front_end',
                                'tsconfig.json'),
+        input_api.os_path.join(input_api.PresubmitLocalPath(), 'scripts',
+                               'test', 'run_lint_check.mjs'),
         input_api.os_path.join(input_api.PresubmitLocalPath(), 'node_modules'),
     ]
 
     lint_config_files = _GetAffectedFiles(input_api, lint_related_paths, [],
                                           [])
-    root_dir = input_api.os_path.join(input_api.PresubmitLocalPath())
-    lintable_files_changed = _GetAffectedFiles(input_api, root_dir, ['D'],
-                                               ['.css', '.mjs', '.js', '.ts'])
 
-    should_bail_out = len(lintable_files_changed) == 0 and len(
-        lint_config_files) == 0
-
+    should_bail_out, files_to_lint = _GetFilesToLint(
+        input_api, lint_config_files, ['.css', '.mjs', '.js', '.ts'])
     if should_bail_out:
         # Run the formatter on all non-js like files
         results = []
         results.extend(_CheckFormat(input_api, output_api))
         return results
 
+    # If there are more than 50 files to check, don't bother and check
+    # everything, so as to not run into command line length limits on Windows.
+    if len(files_to_lint) > 50:
+        files_to_lint = []
+
     results = []
     results.extend(
         _CheckWithNodeScript(input_api,
                              output_api,
                              lint_path,
-                             script_arguments=[],
+                             script_arguments=files_to_lint,
+                             allow_typescript=True,
                              message="Lint"))
 
     results.extend(_CheckFormat(input_api, output_api))

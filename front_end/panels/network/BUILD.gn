@@ -79,6 +79,7 @@ devtools_ui_module("network") {
     "../../models/logs:bundle",
     "../../models/network_time_calculator:bundle",
     "../../models/persistence:bundle",
+    "../../models/stack_trace:bundle",
     "../../models/text_utils:bundle",
     "../../models/trace:bundle",
     "../../models/workspace:bundle",

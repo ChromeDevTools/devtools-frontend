@@ -5,7 +5,9 @@
 
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as Bindings from '../../models/bindings/bindings.js';
 import * as Logs from '../../models/logs/logs.js';
+import type * as StackTrace from '../../models/stack_trace/stack_trace.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
@@ -172,17 +174,31 @@ export class RequestInitiatorView extends UI.Widget.VBox {
     this.#view = view;
   }
 
-  static createStackTracePreview(
+  static async createStackTracePreview(
       request: SDK.NetworkRequest.NetworkRequest, linkifier: Components.Linkifier.Linkifier,
-      focusableLink?: boolean): Components.JSPresentationUtils.StackTracePreviewContent|null {
+      focusableLink?: boolean): Promise<{
+    preview: Components.JSPresentationUtils.StackTracePreviewContent,
+    stackTrace: StackTrace.StackTrace.StackTrace|null,
+  }|null> {
     const initiator = request.initiator();
     if (!initiator?.stack) {
       return null;
     }
     const networkManager = SDK.NetworkManager.NetworkManager.forRequest(request);
     const target = networkManager ? networkManager.target() : undefined;
-    return new Components.JSPresentationUtils.StackTracePreviewContent(
-        undefined, target, linkifier, {runtimeStackTrace: initiator.stack, tabStops: focusableLink});
+    if (target) {
+      const stackTrace = await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
+                             .createStackTraceFromProtocolRuntime(initiator.stack, target);
+      const preview = new Components.JSPresentationUtils.StackTracePreviewContent(
+          undefined, target, linkifier, {tabStops: focusableLink});
+      preview.stackTrace = stackTrace;
+      return {preview, stackTrace};
+    }
+    return {
+      preview: new Components.JSPresentationUtils.StackTracePreviewContent(
+          undefined, target, linkifier, {runtimeStackTrace: initiator.stack, tabStops: focusableLink}),
+      stackTrace: null
+    };
   }
 
   override performUpdate(): void {

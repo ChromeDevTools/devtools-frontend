@@ -182,7 +182,7 @@ export class StartView extends UI.Widget.Widget {
 <form class="lighthouse-start-view">
   <header class="hbox">
     <div class="lighthouse-logo"></div>
-    <div class="lighthouse-title">${i18nString(UIStrings.generateLighthouseReport)}</div>
+    <h1 class="lighthouse-title">${i18nString(UIStrings.generateLighthouseReport)}</h1>
     <div class="lighthouse-start-button-container" $="start-button-container">${this.startButton}</div>
   </header>
   <div $="help-text" class="lighthouse-help-text hidden"></div>

@@ -4,6 +4,7 @@
 
 import * as jsRouge from 'js-rouge';
 import assert from 'node:assert';
+import {AsyncLocalStorage} from 'node:async_hooks';
 import {hideBin} from 'yargs/helpers';
 import yargs from 'yargs/yargs';
 
@@ -14,6 +15,40 @@ import {generateGeminiContent} from './gemini.ts';
 import {getGolden, getMarkdownConversation, getOutputs, type Output} from './outputs.ts';
 
 const argv = yargs(hideBin(process.argv)).option('repeat', {type: 'number', default: 1}).parseSync();
+
+/**
+ * Ensures we don't exceed a certain number of concurrent tasks.
+ * Used globally for Gemini API calls to respect rate limits while parallelizing groups.
+ */
+class ConcurrencyLimiter {
+  #activeCount = 0;
+  #queue: Array<() => void> = [];
+  #limit: number;
+
+  constructor(limit: number) {
+    this.#limit = limit;
+  }
+
+  async run<T>(task: () => Promise<T>): Promise<T> {
+    if (this.#activeCount >= this.#limit) {
+      await new Promise<void>(resolve => {
+        this.#queue.push(resolve);
+      });
+    }
+    this.#activeCount++;
+    try {
+      return await task();
+    } finally {
+      this.#activeCount--;
+      const next = this.#queue.shift();
+      if (next) {
+        next();
+      }
+    }
+  }
+}
+
+const geminiLimiter = new ConcurrencyLimiter(25);
 
 abstract class Evaluator {}
 
@@ -255,9 +290,10 @@ export class ROUGE extends Evaluator {
 interface GroupTestState {
   store: ResultStore;
   outputsByDate: Partial<Record<string, Output[]>>;
+  logs: string[];
 }
 
-let state: GroupTestState|null = null;
+const stateStorage = new AsyncLocalStorage<GroupTestState>();
 
 export type ItEval = {
   test: string,
@@ -279,6 +315,7 @@ function calculateStandardDeviation(values: number[]): number {
 }
 
 export async function itEval(config: ItEval): Promise<void> {
+  const state = stateStorage.getStore();
   assert.ok(state);
   if ('succeed' in config) {
     for (const [date, outputs] of Object.entries(state.outputsByDate)) {
@@ -305,14 +342,10 @@ export async function itEval(config: ItEval): Promise<void> {
       }
       const allDevToolsConversations = outputs.flatMap(o => o.contents.conversations);
       const repeatCount = argv.repeat;
-      const results: Array<{rubricScores: RubricScore[], rubricWeights: RubricWeights}> = [];
 
       // Collect scores from all examples.
-      await Promise.all(allDevToolsConversations.map(async example => {
-        for (let i = 0; i < repeatCount; i++) {
-          const result = await config.judge(example);
-          results.push(result);
-        }
+      const results = await Promise.all(allDevToolsConversations.flatMap(example => {
+        return Array.from({length: repeatCount}, () => geminiLimiter.run(() => config.judge(example)));
       }));
 
       // Calculate stats for each rubric (take the average for each rubric among multiple conversations)
@@ -401,17 +434,28 @@ export async function evalGroup(config: GroupConfig, cb: (() => Promise<void>)):
   const store = new ResultStore(config.type, config.label);
   const outputs = await getOutputs(config.type, config.label);
   const outputsByDate = Object.groupBy(outputs, o => o.dateFolder);
-  state = {
+
+  const state: GroupTestState = {
     store,
     outputsByDate,
+    logs: [],
   };
 
-  await cb();
-  printResults(state.store);
+  await stateStorage.run(state, async () => {
+    await cb();
+    console.log(state.logs.join('\n'));
+    printResults(state.store);
+  });
 }
 
 function log(indentation: number, message: string): void {
-  console.log(`${' '.repeat(indentation)}${message}`);
+  const state = stateStorage.getStore();
+  const formatted = `${' '.repeat(indentation)}${message}`;
+  if (state) {
+    state.logs.push(formatted);
+  } else {
+    console.log(formatted);
+  }
 }
 
 function formatRubricStats(stats: RubricStats): string {

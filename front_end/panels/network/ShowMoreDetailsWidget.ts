@@ -41,14 +41,14 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
             @contextmenu=${onContextMenuShowMore}
             >${input.showMore ? input.text : input.text.substr(0, MAX_LENGTH)}</span>
           ${
-             !input.showMore && input.text.length > MAX_LENGTH ? html`<devtools-button
+          !input.showMore && input.text.length > MAX_LENGTH ? html`<devtools-button
             .variant=${Buttons.Button.Variant.OUTLINED}
             .jslogContext=${'show-more'}
             @click=${input.onToggle}>
             ${i18nString(UIStrings.showMore)}
           </devtools-button>` :
-                                                                 Lit.nothing}`,
-         target);
+                                                              Lit.nothing}`,
+      target);
 };
 
 interface CopyMenuItem {

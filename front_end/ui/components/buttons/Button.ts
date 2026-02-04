@@ -126,7 +126,7 @@ export class Button extends HTMLElement {
   }
 
   override cloneNode(deep?: boolean): Node {
-    const node = super.cloneNode(deep) as Button;
+    const node = document.importNode(this, deep);
     Object.assign(node.#props, this.#props);
     node.#render();
     return node;

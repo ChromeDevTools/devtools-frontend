@@ -440,7 +440,7 @@ describe('The Network Request view', () => {
     });
     await devToolsPage.waitFor('[aria-label=Payload].tabbed-pane-header-tab[aria-selected=true]', networkView);
     const payloadView = await devToolsPage.waitFor('.request-payload-view');
-    const payloadOutline = await devToolsPage.$$('[role=treeitem]:not(.hidden)', payloadView);
+    const payloadOutline = await devToolsPage.$$('ol:not(.hidden) > [role=treeitem]:not(.hidden)', payloadView);
     const payloadOutlineText =
         await Promise.all(payloadOutline.map(async item => await item.evaluate(el => el.textContent || '')));
     const expectedPayloadContent = [

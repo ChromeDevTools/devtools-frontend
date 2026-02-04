@@ -23,6 +23,7 @@ export type * as CDPConnection from '../front_end/core/protocol_client/CDPConnec
 export {ConnectionTransport} from '../front_end/core/protocol_client/ConnectionTransport.js';
 export * as ProtocolClient from '../front_end/core/protocol_client/protocol_client.js';
 export {DebuggerModel} from '../front_end/core/sdk/DebuggerModel.js';
+export {RuntimeModel} from '../front_end/core/sdk/RuntimeModel.js';
 export {Target} from '../front_end/core/sdk/Target.js';
 export {TargetManager} from '../front_end/core/sdk/TargetManager.js';
 export * as Foundation from '../front_end/foundation/foundation.js';

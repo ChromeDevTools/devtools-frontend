@@ -318,4 +318,32 @@ describeWithEnvironment('InspectorView', () => {
       });
     });
   });
+
+  describe('reload required warnings', () => {
+    it('displays both debugged tab and devtools reload warnings independently', () => {
+      const {inspectorView} = createInspectorViewWithDockState(DockState.BOTTOM);
+      inspectorView.displayDebuggedTabReloadRequiredWarning('Debugged tab reload required');
+      inspectorView.displayReloadRequiredWarning('DevTools reload required');
+
+      // The infobars are added to a flex-none div within the content element.
+      // We expect two children in that div.
+      const infoBarDiv = inspectorView.contentElement.querySelector('.flex-none');
+      assert.exists(infoBarDiv);
+      assert.strictEqual(infoBarDiv.childElementCount, 2);
+
+      const firstInfobar = infoBarDiv.children[0];
+      const secondInfobar = infoBarDiv.children[1];
+
+      assert.exists(firstInfobar.shadowRoot);
+      assert.exists(secondInfobar.shadowRoot);
+
+      const firstLabel = firstInfobar.shadowRoot.querySelector('.infobar-info-text');
+      const secondLabel = secondInfobar.shadowRoot.querySelector('.infobar-info-text');
+
+      assert.exists(firstLabel);
+      assert.exists(secondLabel);
+      assert.strictEqual(firstLabel.textContent, 'Debugged tab reload required');
+      assert.strictEqual(secondLabel.textContent, 'DevTools reload required');
+    });
+  });
 });

@@ -22,16 +22,16 @@ const UIStringsNotTranslate = {
    * @description First item in the description.
    */
   describeCodeInComment:
-      'Pressing Ctrl+I on a comment in the Console and Sources panels now generates entire code blocks based on the instructions in the comment.',
+      'Pressing ctrl+i on a comment in the Console and Sources panels now generates entire code blocks based on the instructions in the comment',
   /**
    * @description First item in the description.
    */
   describeCodeInCommentForMacOs:
-      'Pressing Cmd+I on a comment in the Console and Sources panels now generates entire code blocks based on the instructions in the comment.',
+      'Pressing cmd+i on a comment in the Console and Sources panels now generates entire code blocks based on the instructions in the comment',
   /**
    * @description Second item in the description.
    */
-  asYouType: 'You will still receive the real-time, as-you-type suggestions to help you code faster.',
+  asYouType: 'You will still receive the real-time, as-you-type suggestions to help you code faster',
   /**
    * @description Third item in the description.
    */

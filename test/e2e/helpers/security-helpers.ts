@@ -8,10 +8,8 @@ import {openCommandMenu} from './quick_open-helpers.js';
 import {openPanelViaMoreTools} from './settings-helpers.js';
 import {veImpression} from './visual-logging-helpers.js';
 
-const PRIVACY_AND_SECURITY_PANEL_CONTENT = '.view-container[aria-label="Privacy and security panel"]';
 const SECURITY_PANEL_CONTENT = '.view-container[aria-label="Security panel"]';
 const SECURITY_TAB_SELECTOR = '#tab-security';
-const PRIVACY_AND_SECURITY_PANEL_TITLE = 'Privacy and security';
 const SECURITY_PANEL_TITLE = 'Security';
 
 export async function securityTabExists(devToolsPage: DevToolsPage) {
@@ -22,13 +20,13 @@ export async function securityTabDoesNotExist(devToolsPage: DevToolsPage) {
   await devToolsPage.waitForNone(SECURITY_TAB_SELECTOR);
 }
 
-export async function securityPanelContentIsLoaded(privacyEnabled = false, devToolsPage: DevToolsPage) {
-  await devToolsPage.waitFor(privacyEnabled ? PRIVACY_AND_SECURITY_PANEL_CONTENT : SECURITY_PANEL_CONTENT);
+export async function securityPanelContentIsLoaded(devToolsPage: DevToolsPage) {
+  await devToolsPage.waitFor(SECURITY_PANEL_CONTENT);
 }
 
-export async function navigateToSecurityTab(privacyEnabled = false, devToolsPage: DevToolsPage) {
+export async function navigateToSecurityTab(devToolsPage: DevToolsPage) {
   await devToolsPage.click(SECURITY_TAB_SELECTOR);
-  await securityPanelContentIsLoaded(privacyEnabled, devToolsPage);
+  await securityPanelContentIsLoaded(devToolsPage);
 }
 
 export async function closeSecurityTab(devToolsPage: DevToolsPage) {
@@ -36,10 +34,10 @@ export async function closeSecurityTab(devToolsPage: DevToolsPage) {
   await securityTabDoesNotExist(devToolsPage);
 }
 
-export async function openSecurityPanelFromMoreTools(privacyEnabled = false, devToolsPage: DevToolsPage) {
-  await openPanelViaMoreTools(privacyEnabled ? PRIVACY_AND_SECURITY_PANEL_TITLE : SECURITY_PANEL_TITLE, devToolsPage);
+export async function openSecurityPanelFromMoreTools(devToolsPage: DevToolsPage) {
+  await openPanelViaMoreTools(SECURITY_PANEL_TITLE, devToolsPage);
   await securityTabExists(devToolsPage);
-  await securityPanelContentIsLoaded(privacyEnabled, devToolsPage);
+  await securityPanelContentIsLoaded(devToolsPage);
 }
 
 export async function openSecurityPanelFromCommandMenu(devToolsPage: DevToolsPage) {
@@ -47,7 +45,7 @@ export async function openSecurityPanelFromCommandMenu(devToolsPage: DevToolsPag
   await devToolsPage.typeText('Show Security');
   await devToolsPage.pressKey('Enter');
   await securityTabExists(devToolsPage);
-  await securityPanelContentIsLoaded(true, devToolsPage);
+  await securityPanelContentIsLoaded(devToolsPage);
 }
 
 export function veImpressionForSecurityPanel() {

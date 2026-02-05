@@ -5,10 +5,7 @@
 import("../../../scripts/build/typescript/typescript.gni")
 
 ts_e2e_library("security") {
-  sources = [
-    "privacy.test.ts",
-    "security.test.ts",
-  ]
+  sources = [ "security.test.ts" ]
 
   deps = [
     "../../shared",

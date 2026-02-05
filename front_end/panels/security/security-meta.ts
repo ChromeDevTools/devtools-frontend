@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../core/i18n/i18n.js';
-import * as Root from '../../core/root/root.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import type * as Security from './security.js';
@@ -14,17 +13,9 @@ const UIStrings = {
    */
   security: 'Security',
   /**
-   * @description Title of privacy and security panel. This is used when the kDevToolsPrivacyUI feature flag is enabled.
-   */
-  PrivacyAndSecurity: 'Privacy and security',
-  /**
    * @description Default command to open the security panel
    */
   showSecurity: 'Show Security',
-  /**
-   * @description Command to open the privacy and security panel. This is used when the kDevToolPrivacyUI feature flag is enabled
-   */
-  showPrivacyAndSecurity: 'Show Privacy and security',
 } as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/security/security-meta.ts', UIStrings);
@@ -42,11 +33,8 @@ async function loadSecurityModule(): Promise<typeof Security> {
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.PANEL,
   id: 'security',
-  title: () => Root.Runtime.hostConfig.devToolsPrivacyUI?.enabled ? i18nLazyString(UIStrings.PrivacyAndSecurity)() :
-                                                                    i18nLazyString(UIStrings.security)(),
-  commandPrompt: () => Root.Runtime.hostConfig.devToolsPrivacyUI?.enabled ?
-      i18nLazyString(UIStrings.showPrivacyAndSecurity)() :
-      i18nLazyString(UIStrings.showSecurity)(),
+  title: () => i18nLazyString(UIStrings.security)(),
+  commandPrompt: () => i18nLazyString(UIStrings.showSecurity)(),
   order: 80,
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   async loadView() {

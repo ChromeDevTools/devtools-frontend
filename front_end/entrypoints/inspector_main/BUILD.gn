@@ -33,7 +33,6 @@ devtools_module("inspector_main") {
     "../../generated:protocol",
     "../../models/bindings:bundle",
     "../../panels/mobile_throttling:bundle",
-    "../../panels/security:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/settings_ui:bundle",
     "../../ui/legacy/components/utils:bundle",

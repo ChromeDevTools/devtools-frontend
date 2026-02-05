@@ -10,8 +10,6 @@ import("../visibility.gni")
 
 generate_css("css_files") {
   sources = [
-    "cookieControlsView.css",
-    "cookieReportView.css",
     "lockIcon.css",
     "mainView.css",
     "originView.css",
@@ -21,10 +19,6 @@ generate_css("css_files") {
 
 devtools_ui_module("security") {
   sources = [
-    "CookieControlsTreeElement.ts",
-    "CookieControlsView.ts",
-    "CookieReportTreeElement.ts",
-    "CookieReportView.ts",
     "OriginTreeElement.ts",
     "SecurityModel.ts",
     "SecurityPanel.ts",
@@ -89,8 +83,6 @@ devtools_ui_module("unittests") {
   testonly = true
 
   sources = [
-    "CookieControlsView.test.ts",
-    "CookieReportView.test.ts",
     "SecurityModel.test.ts",
     "SecurityPanel.test.ts",
   ]

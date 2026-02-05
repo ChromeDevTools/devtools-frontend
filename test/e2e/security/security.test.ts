@@ -13,7 +13,7 @@ import {
 describe('The Security Panel', function() {
   setup({dockingMode: 'bottom'});
   it('is open by default when devtools initializes', async ({devToolsPage}) => {
-    await navigateToSecurityTab(true, devToolsPage);
+    await navigateToSecurityTab(devToolsPage);
   });
 
   it('closes without crashing and stays closed after reloading tools', async ({devToolsPage}) => {
@@ -24,7 +24,7 @@ describe('The Security Panel', function() {
 
   it('appears under More tools after being closed', async ({devToolsPage}) => {
     await closeSecurityTab(devToolsPage);
-    await openSecurityPanelFromMoreTools(true, devToolsPage);
+    await openSecurityPanelFromMoreTools(devToolsPage);
     await devToolsPage.reload();
     await securityTabExists(devToolsPage);
   });
@@ -35,7 +35,7 @@ describe('The Security Panel', function() {
   });
 
   it('shows blocked resources in the sidebar', async ({devToolsPage, inspectedPage}) => {
-    await navigateToSecurityTab(true, devToolsPage);
+    await navigateToSecurityTab(devToolsPage);
     await inspectedPage.goToResourceWithCustomHost('devtools.test', 'security/mixed-content.html');
     const nonSecureOrigins = await devToolsPage.waitForAria('Non-secure origins');
     await devToolsPage.waitForElementWithTextContent('http://devtools.test', nonSecureOrigins);

@@ -12,7 +12,6 @@ import {describeWithMockConnection, setMockConnectionResponseHandler} from '../.
 import {createWorkspaceProject} from '../../testing/OverridesHelpers.js';
 import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
-import * as Root from '../root/root.js';
 
 import * as SDK from './sdk.js';
 
@@ -1113,56 +1112,6 @@ describeWithMockConnection('NetworkManager', () => {
         assert.lengthOf(updatedRequests, 0);
       });
     });
-  });
-
-  it('setCookieControls is not invoked if the browsers enterprise setting blocks third party cookies', () => {
-    Object.assign(
-        Root.Runtime.hostConfig,
-        {thirdPartyCookieControls: {managedBlockThirdPartyCookies: true}, devToolsPrivacyUI: {enabled: true}});
-
-    const enableThirdPartyCookieRestrictionSetting =
-        Common.Settings.Settings.instance().createSetting('cookie-control-override-enabled', false);
-    const disableThirdPartyCookieMetadataSetting =
-        Common.Settings.Settings.instance().createSetting('grace-period-mitigation-disabled', true);
-    const disableThirdPartyCookieHeuristicsSetting =
-        Common.Settings.Settings.instance().createSetting('heuristic-mitigation-disabled', true);
-    assert.isFalse(enableThirdPartyCookieRestrictionSetting.get());
-    assert.isTrue(disableThirdPartyCookieMetadataSetting.get());
-    assert.isTrue(disableThirdPartyCookieHeuristicsSetting.get());
-
-    const target = createTarget();
-    const expectedCall = sinon.spy(target.networkAgent(), 'invoke_setCookieControls');
-
-    new SDK.NetworkManager.NetworkManager(target);
-
-    // function should not be called since there is a enterprise policy blocking third-party cookies
-    sinon.assert.notCalled(expectedCall);
-  });
-
-  it('setCookieControls gets invoked with expected values when network agent auto attach', () => {
-    updateHostConfig({devToolsPrivacyUI: {enabled: true}});
-
-    const enableThirdPartyCookieRestrictionSetting =
-        Common.Settings.Settings.instance().createSetting('cookie-control-override-enabled', false);
-    const disableThirdPartyCookieMetadataSetting =
-        Common.Settings.Settings.instance().createSetting('grace-period-mitigation-disabled', true);
-    const disableThirdPartyCookieHeuristicsSetting =
-        Common.Settings.Settings.instance().createSetting('heuristic-mitigation-disabled', true);
-    assert.isFalse(enableThirdPartyCookieRestrictionSetting.get());
-    assert.isTrue(disableThirdPartyCookieMetadataSetting.get());
-    assert.isTrue(disableThirdPartyCookieHeuristicsSetting.get());
-
-    const target = createTarget();
-    const expectedCall = sinon.spy(target.networkAgent(), 'invoke_setCookieControls');
-
-    new SDK.NetworkManager.NetworkManager(target);
-
-    // Metadata and heuristics should be disabled when cookie controls is disabled.
-    assert.isTrue(expectedCall.calledOnceWith({
-      enableThirdPartyCookieRestriction: false,
-      disableThirdPartyCookieMetadata: false,
-      disableThirdPartyCookieHeuristics: false
-    }));
   });
 });
 

@@ -1036,6 +1036,10 @@
       DevToolsAPI.sendMessageToEmbedder('setChromeFlag', [featureName, value], null);
     }
 
+    requestRestart() {
+      DevToolsAPI.sendMessageToEmbedder('requestRestart', [], null);
+    }
+
     // Backward-compatible methods below this line --------------------------------------------
     /**
      * Support for legacy front-ends (<M65).

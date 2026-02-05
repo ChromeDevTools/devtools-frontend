@@ -80,11 +80,41 @@ describeWithEnvironment('ObjectPropertyTreeElement', () => {
     sinon.assert.calledWith(copyText, 'bar');
   });
 
+  it('does not edit readonly values', async () => {
+    const property = new SDK.RemoteObject.RemoteObjectProperty(
+        'name', SDK.RemoteObject.RemoteObject.fromLocalObject(42), true, true);
+    const container = document.createElement('div');
+    const input = {
+      editable: false,
+      startEditing: sinon.stub(),
+      invokeGetter: sinon.stub(),
+      onAutoComplete: sinon.stub(),
+      linkifier: undefined,
+      completions: [],
+      expanded: false,
+      editing: false,
+      editingEnded: sinon.stub(),
+      editingCommitted: sinon.stub(),
+      node: new ObjectUI.ObjectPropertiesSection.ObjectTreeNode(property),
+    };
+    const output = {valueElement: undefined, nameElement: undefined};
+    ObjectUI.ObjectPropertiesSection.OBJECT_PROPERTY_DEFAULT_VIEW(input, output, container);
+
+    sinon.assert.notCalled(input.startEditing);
+    const event = new MouseEvent('dblclick', {bubbles: true, cancelable: true});
+    const valueElement = container.querySelector('.value');
+    assert.exists(valueElement);
+    assert.strictEqual(valueElement, output.valueElement);
+    valueElement.dispatchEvent(event);
+    sinon.assert.notCalled(input.startEditing);
+  });
+
   it('can edit values', async () => {
     const property = new SDK.RemoteObject.RemoteObjectProperty(
         'name', SDK.RemoteObject.RemoteObject.fromLocalObject(42), true, true);
     const container = document.createElement('div');
     const input = {
+      editable: true,
       startEditing: sinon.stub(),
       invokeGetter: sinon.stub(),
       onAutoComplete: sinon.stub(),

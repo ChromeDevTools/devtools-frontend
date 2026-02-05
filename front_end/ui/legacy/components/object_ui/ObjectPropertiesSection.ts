@@ -496,16 +496,16 @@ export const getObjectPropertiesSectionFrom = (element: Element): ObjectProperti
 
 export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow {
   private readonly root: ObjectTree;
-  editable: boolean;
+  readonly editable: boolean;
   readonly #objectTreeElement: RootElement;
   titleElement: Element;
   skipProtoInternal?: boolean;
   constructor(
       object: SDK.RemoteObject.RemoteObject, title?: string|Element|null, linkifier?: Components.Linkifier.Linkifier,
-      showOverflow?: boolean) {
+      showOverflow?: boolean, editable = true) {
     super();
     this.root = new ObjectTree(object);
-    this.editable = true;
+    this.editable = editable;
     if (!showOverflow) {
       this.setHideOverflow(true);
     }
@@ -549,13 +549,9 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
     const propertyValue =
         ObjectPropertiesSection.createPropertyValue(object, /* wasThrown */ false, /* showPreview */ true);
     shadowRoot.appendChild(propertyValue);
-    const objectPropertiesSection = new ObjectPropertiesSection(object, titleElement, linkifier);
-    objectPropertiesSection.editable = false;
+    const objectPropertiesSection = new ObjectPropertiesSection(object, titleElement, linkifier, undefined, !readOnly);
     if (skipProto) {
       objectPropertiesSection.skipProto();
-    }
-    if (readOnly) {
-      objectPropertiesSection.setEditable(false);
     }
 
     return objectPropertiesSection;
@@ -863,10 +859,6 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
     this.#objectTreeElement.expand();
   }
 
-  setEditable(value: boolean): void {
-    this.editable = value;
-  }
-
   objectTreeElement(): UI.TreeOutline.TreeElement {
     return this.#objectTreeElement;
   }
@@ -998,6 +990,7 @@ export class RootElement extends UI.TreeOutline.TreeElement {
 export const InitialVisibleChildrenLimit = 200;
 
 export interface ObjectPropertyViewInput {
+  editable: boolean;
   startEditing(): unknown;
   invokeGetter(getter: SDK.RemoteObject.RemoteObject): unknown;
   onAutoComplete(expression: string, filter: string, force: boolean): unknown;
@@ -1075,7 +1068,7 @@ export const OBJECT_PROPERTY_DEFAULT_VIEW: ObjectPropertyView = (input, output, 
       return;
     }
     event.consume(true);
-    if (property.value && !property.value.customPreview() && (property.writable || property.setter)) {
+    if (input.editable && property.value && !property.value.customPreview() && (property.writable || property.setter)) {
       input.startEditing();
     }
   };
@@ -1125,6 +1118,7 @@ export class ObjectPropertyWidget extends UI.Widget.Widget {
   readonly #view: ObjectPropertyView;
   #expanded = false;
   #linkifier: Components.Linkifier.Linkifier|undefined;
+  #editable = false;
 
   constructor(target?: HTMLElement, view = OBJECT_PROPERTY_DEFAULT_VIEW) {
     super(target);
@@ -1161,11 +1155,20 @@ export class ObjectPropertyWidget extends UI.Widget.Widget {
     this.requestUpdate();
   }
 
+  get editable(): boolean {
+    return this.#editable;
+  }
+  set editable(val: boolean) {
+    this.#editable = val;
+    this.requestUpdate();
+  }
+
   override performUpdate(): void {
     if (!this.#property) {
       return;
     }
     const input: ObjectPropertyViewInput = {
+      editable: this.#editable,
       expanded: this.#expanded,
       editing: this.#editing,
       editingEnded: this.#editingEnded.bind(this),
@@ -1366,6 +1369,13 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
     return this.#widget.editing;
   }
 
+  get editable(): boolean {
+    return this.#widget.editable;
+  }
+  set editable(val: boolean) {
+    this.#widget.editable = val;
+  }
+
   // This is called by layout tests
   async applyExpression(expression: string): Promise<void> {
     await this.property.setValue(expression);
@@ -1424,6 +1434,10 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
     this.#widget.show(this.listItemElement);
     this.#widget.property = this.property;
     this.#widget.linkifier = this.linkifier;
+    this.#widget.editable = this.treeOutline instanceof ObjectPropertiesSectionsTreeOutline ||
+            this.treeOutline instanceof ObjectPropertiesSection ?
+        this.treeOutline.editable :
+        false;
   }
 
   override onexpand(): void {
@@ -1775,11 +1789,10 @@ export class Renderer implements UI.UIUtils.Renderer {
       throw new Error('Can\'t render ' + object);
     }
     const title = options?.title;
-    const section = new ObjectPropertiesSection(object, title);
+    const section = new ObjectPropertiesSection(object, title, undefined, undefined, Boolean(options?.editable));
     if (!title) {
       section.titleLessMode();
     }
-    section.editable = Boolean(options?.editable);
     if (options?.expand) {
       section.firstChild()?.expand();
     }

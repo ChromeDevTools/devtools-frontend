@@ -121,6 +121,7 @@ lucicfg.emit(
 ## Swarming permissions (enable LED runs and "Debug" button)
 
 # project-devtools-admins:            ci, try
+# chrome-devtools-eng:                try
 # v8-infra:                           ci, try
 # v8-infra-users-highly-privileged:   [all buckets]
 
@@ -153,7 +154,7 @@ led_users(
 led_users(
     pool_realm = "pools/try",
     builder_realms = ["try"],
-    groups = non_privileged_groups,
+    groups = non_privileged_groups + ["chrome-devtools-eng"],
 )
 
 led_users(

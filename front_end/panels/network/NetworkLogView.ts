@@ -1451,17 +1451,14 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
   }
 
   private removeNodeAndMaybeAncestors(node: NetworkRequestNode): void {
-    let parent: NetworkNode|
-        (DataGrid.DataGrid.DataGridNode<DataGrid.ViewportDataGrid.ViewportDataGridNode<
-             DataGrid.SortableDataGrid.SortableDataGridNode<NetworkNode>>>|
-         null) = node.parent;
+    let parent = node.parent;
     if (!parent) {
       return;
     }
     parent.removeChild(node);
     while (parent && !parent.hasChildren() && parent.dataGrid && parent.dataGrid.rootNode() !== parent) {
       const grandparent = (parent.parent as NetworkNode);
-      grandparent.removeChild(parent);
+      grandparent.removeChild(parent as NetworkNode);
       parent = grandparent;
     }
   }

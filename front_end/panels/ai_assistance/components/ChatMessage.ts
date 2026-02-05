@@ -323,6 +323,7 @@ export const DEFAULT_VIEW = (input: ChatMessageViewInput, output: ViewOutput, ta
           }
           return renderStep({
             step: part.step,
+            isLoading: input.isLoading,
             markdownRenderer: input.markdownRenderer,
             isLast: isLastPart,
           });
@@ -450,11 +451,12 @@ function renderStepDetails({
   // clang-format on
 }
 
-function renderStepBadge({step, isLast}: {
+function renderStepBadge({step, isLoading, isLast}: {
   step: Step,
+  isLoading: boolean,
   isLast: boolean,
 }): Lit.LitTemplate {
-  if (step.isLoading && isLast && !step.sideEffect) {
+  if (isLoading && isLast && !step.sideEffect) {
     return html`<devtools-spinner></devtools-spinner>`;
   }
 
@@ -478,8 +480,9 @@ function renderStepBadge({step, isLast}: {
     ></devtools-icon>`;
 }
 
-function renderStep({step, markdownRenderer, isLast}: {
+function renderStep({step, isLoading, markdownRenderer, isLast}: {
   step: Step,
+  isLoading: boolean,
   markdownRenderer: MarkdownLitRenderer,
   isLast: boolean,
 }): Lit.LitTemplate {
@@ -496,7 +499,7 @@ function renderStep({step, markdownRenderer, isLast}: {
       .open=${Boolean(step.sideEffect)}>
       <summary>
         <div class="summary">
-          ${renderStepBadge({ step, isLast })}
+          ${renderStepBadge({ step, isLoading, isLast })}
           ${renderTitle(step)}
           <devtools-icon
             class="arrow"

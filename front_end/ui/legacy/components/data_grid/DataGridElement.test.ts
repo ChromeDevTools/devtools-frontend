@@ -344,6 +344,40 @@ describeWithEnvironment('DataGrid', () => {
     sinon.assert.calledOnce(openCallback);
   });
 
+  it('dispatches expand/collapse events', async () => {
+    const expandCallback = sinon.stub();
+    const collapseCallback = sinon.stub();
+    const element = await renderDataGrid(html`
+        <devtools-data-grid striped name="Display Name">
+          <table>
+            <tr>
+              <th id="column-1">Column 1</th>
+            </tr>
+            <tr @expand=${expandCallback as () => void}
+                @collapse=${collapseCallback as () => void}>
+              <td>Parent Value 1</td>
+              <td>
+                <table>
+                  <tr>
+                    <td>Child Value 1</td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+        </devtools-data-grid>`);
+
+    // Navigate to parent row.
+    sendKeydown(element, 'ArrowDown');
+    // Expand parent row.
+    sendKeydown(element, 'ArrowRight');
+    sinon.assert.calledOnce(expandCallback);
+
+    // Collapse parent row.
+    sendKeydown(element, 'ArrowLeft');
+    sinon.assert.calledOnce(collapseCallback);
+  });
+
   it('can set initial sort order from template', async () => {
     const element = await renderDataGrid(html`
         <devtools-data-grid striped name="Display Name">

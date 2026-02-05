@@ -143,7 +143,10 @@ interface ViewInput {
   selectedUrl: Platform.DevToolsPath.UrlString|null;
   maxSize: number;
   onOpen: (url: Platform.DevToolsPath.UrlString) => void;
+  onExpand: (url: Platform.DevToolsPath.UrlString) => void;
+  onCollapse: (url: Platform.DevToolsPath.UrlString) => void;
   highlightRegExp: RegExp|null;
+  expandedUrls: Set<Platform.DevToolsPath.UrlString>;
 }
 
 type View = (input: ViewInput, output: object, target: HTMLElement) => void;
@@ -181,6 +184,7 @@ export class CoverageListView extends UI.Widget.VBox {
   #coverageInfo: CoverageListItem[] = [];
   #selectedUrl: Platform.DevToolsPath.UrlString|null = null;
   #maxSize = 0;
+  #expandedUrls = new Set<Platform.DevToolsPath.UrlString>();
   #view: View;
 
   constructor(element?: HTMLElement, view = DEFAULT_VIEW) {
@@ -213,8 +217,17 @@ export class CoverageListView extends UI.Widget.VBox {
       items: this.#coverageInfo,
       selectedUrl: this.#selectedUrl,
       maxSize: this.#maxSize,
+      expandedUrls: this.#expandedUrls,
       onOpen: (url: Platform.DevToolsPath.UrlString) => {
         this.selectedUrl = url;
+      },
+      onExpand: (url: Platform.DevToolsPath.UrlString) => {
+        this.#expandedUrls.add(url);
+        this.requestUpdate();
+      },
+      onCollapse: (url: Platform.DevToolsPath.UrlString) => {
+        this.#expandedUrls.delete(url);
+        this.requestUpdate();
       },
       highlightRegExp: this.#highlightRegExp,
     };
@@ -281,7 +294,9 @@ function renderItem(info: CoverageListItem, input: ViewInput): TemplateResult {
   return html`
     <style>${coverageListViewStyles}</style>
     <tr data-url=${info.url} selected=${info.url === input.selectedUrl}
-        @open=${() => input.onOpen(info.url)}>
+        @open=${() => input.onOpen(info.url)}
+        @expand=${() => input.onExpand(info.url)}
+        @collapse=${() => input.onCollapse(info.url)}>
       <td data-value=${info.url} title=${info.url} aria-label=${info.url}>
         <devtools-highlight ranges=${highlightRange(info.url)} class="url-outer" aria-hidden="true">
           <div class="url-prefix">${splitURL ? splitURL[1] : info.url}</div>
@@ -325,7 +340,7 @@ function renderItem(info: CoverageListItem, input: ViewInput): TemplateResult {
       </td>
       ${info.sources.length > 0 ? html`
         <td><table>
-          ${repeat(info.sources, source => source.url, source => renderItem(source, input))}
+          ${input.expandedUrls.has(info.url) ? repeat(info.sources, source => source.url, source => renderItem(source, input)) : nothing}
         </table></td>` : nothing}
     </tr>`;
   // clang-format on

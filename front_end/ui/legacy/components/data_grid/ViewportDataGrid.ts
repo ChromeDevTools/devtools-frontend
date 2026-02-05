@@ -7,7 +7,7 @@ import * as Platform from '../../../../core/platform/platform.js';
 import type * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import * as RenderCoordinator from '../../../components/render_coordinator/render_coordinator.js';
 
-import {type DataGridData, DataGridImpl, DataGridNode, type Parameters} from './DataGrid.js';
+import {type DataGridData, DataGridImpl, DataGridNode, Events as DataGridEvents, type Parameters} from './DataGrid.js';
 
 let nextId = 0;
 
@@ -492,6 +492,7 @@ export class ViewportDataGridNode<T> extends DataGridNode<ViewportDataGridNode<T
       (this.dataGrid as ViewportDataGrid<T>).announceSelectedGridNode();
     }
     (this.dataGrid as ViewportDataGrid<T>).scheduleUpdateStructure();
+    this.dataGrid?.dispatchEventToListeners(DataGridEvents.COLLAPSED_NODE, this);
   }
 
   override expand(): void {

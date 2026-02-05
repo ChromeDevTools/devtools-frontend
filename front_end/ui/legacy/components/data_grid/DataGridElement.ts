@@ -81,6 +81,12 @@ class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMTemplate {
     this.#dataGrid.addEventListener(
         DataGridEvents.OPENED_NODE,
         e => (e.data as DataGridElementNode).configElement.dispatchEvent(new CustomEvent('open')));
+    this.#dataGrid.addEventListener(
+        DataGridEvents.EXPANDED_NODE,
+        e => (e.data as DataGridElementNode).configElement.dispatchEvent(new CustomEvent('expand')));
+    this.#dataGrid.addEventListener(
+        DataGridEvents.COLLAPSED_NODE,
+        e => (e.data as DataGridElementNode).configElement.dispatchEvent(new CustomEvent('collapse')));
     this.#dataGrid.addEventListener(DataGridEvents.SORTING_CHANGED, () => this.dispatchEvent(new CustomEvent('sort', {
       detail: {columnId: this.#dataGrid.sortColumnId(), ascending: this.#dataGrid.isSortOrderAscending()}
     })));
@@ -168,6 +174,14 @@ class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMTemplate {
 
   get columns(): ColumnDescriptor[] {
     return this.#columns;
+  }
+
+  #updateHasChildren(dataGridNode: DataGridElementNode, dataRow: Element): void {
+    let hasChildren = dataGridNode.children.length > 0;
+    if (!hasChildren) {
+      hasChildren = Boolean(dataRow.querySelector('td table'));
+    }
+    dataGridNode.setHasChildren(hasChildren);
   }
 
   #updateColumns(): void {
@@ -292,6 +306,7 @@ class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMTemplate {
       const nextNode = this.#findNextExistingNode(element);
       const index = nextNode ? parentNode.children.indexOf(nextNode) : parentNode.children.length;
       const node = new DataGridElementNode(element, this);
+      this.#updateHasChildren(node, element);
       if ((parentRow || node.hasChildren()) && !this.#dataGrid.disclosureColumnId) {
         this.#dataGrid.disclosureColumnId = this.#columns[0].id;
       }
@@ -319,7 +334,7 @@ class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMTemplate {
     for (const element of this.#getDataRows(nodes)) {
       const node = DataGridElementNode.get(element);
       if (node) {
-        node.remove();
+        DataGridElementNode.remove(node);
       }
     }
   }
@@ -344,6 +359,7 @@ class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMTemplate {
       } else if (attributeName === 'highlighted') {
         dataGridNode.setHighlighted(hasBooleanAttribute(dataRow, 'highlighted'));
       } else {
+        this.#updateHasChildren(dataGridNode, dataRow);
         dataGridNode.refresh();
       }
     }

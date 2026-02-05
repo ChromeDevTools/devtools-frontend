@@ -1,4 +1,4 @@
-Title: FileAgent buildRequest structure matches the snapshot
+Title: ContextSelectionAgent buildRequest structure matches the snapshot
 Content:
 {
   "client": "CHROME_DEVTOOLS",
@@ -31,7 +31,7 @@ Content:
   "function_declarations": [
     {
       "name": "listNetworkRequests",
-      "description": "Gives a list of network requests",
+      "description": "Gives a list of network requests including URL, status code, and duration in ms",
       "parameters": {
         "type": 6,
         "description": "",

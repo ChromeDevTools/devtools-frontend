@@ -73,7 +73,7 @@ export class ContextSelectionAgent extends AiAgent<never> {
     super(opts);
 
     this.declareFunction<Record<string, never>>('listNetworkRequests', {
-      description: `Gives a list of network requests`,
+      description: `Gives a list of network requests including URL, status code, and duration in ms`,
       parameters: {
         type: Host.AidaClient.ParametersTypes.OBJECT,
         description: '',
@@ -85,13 +85,17 @@ export class ContextSelectionAgent extends AiAgent<never> {
         return {title: lockedString('Listing network requests…')};
       },
       handler: async () => {
-        const requestURls = [];
+        const requests = [];
         for (const request of Logs.NetworkLog.NetworkLog.instance().requests()) {
-          requestURls.push(request.url());
+          requests.push({
+            url: request.url(),
+            statusCode: request.statusCode,
+            duration: request.duration,
+          });
         }
 
         return {
-          result: requestURls,
+          result: requests,
         };
       },
     });

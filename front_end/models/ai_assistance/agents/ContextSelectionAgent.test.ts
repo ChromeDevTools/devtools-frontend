@@ -3,7 +3,9 @@
 // found in the LICENSE file.
 
 import * as Host from '../../../core/host/host.js';
+import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
+import type * as Protocol from '../../../generated/protocol.js';
 import {mockAidaClient} from '../../../testing/AiAssistanceHelpers.js';
 import {
   restoreUserAgentForTesting,
@@ -13,10 +15,13 @@ import {
 import {describeWithMockConnection} from '../../../testing/MockConnection.js';
 import {SnapshotTester} from '../../../testing/SnapshotTester.js';
 import * as Bindings from '../../bindings/bindings.js';
+import * as Logs from '../../logs/logs.js';
 import * as Workspace from '../../workspace/workspace.js';
 import {AiAgent, ContextSelectionAgent} from '../ai_assistance.js';
 
-describeWithMockConnection('FileAgent', function() {
+const {urlString} = Platform.DevToolsPath;
+
+describeWithMockConnection('ContextSelectionAgent', function() {
   const snapshotTester = new SnapshotTester(this, import.meta);
 
   function mockHostConfig() {
@@ -101,6 +106,78 @@ describeWithMockConnection('FileAgent', function() {
         {
           role: 2,
           parts: [{text: 'This is the answer'}],
+        },
+      ]);
+    });
+  });
+
+  describe('listNetworkRequests', () => {
+    it('lists network requests', async () => {
+      const request = SDK.NetworkRequest.NetworkRequest.create(
+          'requestId' as Protocol.Network.RequestId,
+          urlString`https://example.com/`,
+          urlString`https://example.com/`,
+          null,
+          null,
+          null,
+      );
+      request.statusCode = 200;
+      request.setIssueTime(0, 0);
+      request.endTime = 2;
+
+      const networkLog = Logs.NetworkLog.NetworkLog.instance();
+      sinon.stub(networkLog, 'requests').returns([request]);
+
+      const agent = new ContextSelectionAgent.ContextSelectionAgent({
+        aidaClient: mockAidaClient([
+          [{
+            functionCalls: [{
+              name: 'listNetworkRequests',
+              args: {},
+            }],
+            explanation: '',
+          }],
+          [{explanation: 'Done'}],
+        ]),
+      });
+
+      await Array.fromAsync(agent.run('test', {selected: null}));
+
+      const requestToAida = agent.buildRequest({text: ''}, Host.AidaClient.Role.USER);
+      assert.deepEqual(requestToAida.historical_contexts, [
+        {
+          role: 1,
+          parts: [{text: 'test'}],
+        },
+        {
+          role: 2,
+          parts: [{
+            functionCall: {
+              name: 'listNetworkRequests',
+              args: {},
+            },
+          }],
+        },
+        {
+          role: Host.AidaClient.Role.ROLE_UNSPECIFIED,
+          parts: [{
+            functionResponse: {
+              name: 'listNetworkRequests',
+              response: {
+                result: [
+                  {
+                    url: 'https://example.com/',
+                    statusCode: 200,
+                    duration: 2,
+                  },
+                ],
+              },
+            },
+          }],
+        },
+        {
+          role: 2,
+          parts: [{text: 'Done'}],
         },
       ]);
     });

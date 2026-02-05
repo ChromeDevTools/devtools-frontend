@@ -1354,19 +1354,4 @@ export class SecurityDetailsTable {
         }
     }
 }
-export class SecurityRevealer {
-    async reveal() {
-        await UI.ViewManager.ViewManager.instance().showView('security');
-        const view = UI.ViewManager.ViewManager.instance().view('security');
-        if (view) {
-            const securityPanel = await view.widget();
-            if (securityPanel instanceof SecurityPanel && securityPanel.sidebar.cookieReportTreeElement) {
-                securityPanel.sidebar.cookieReportTreeElement.select(/* omitFocus=*/ false, /* selectedByUser=*/ true);
-            }
-            else {
-                throw new Error('Expected securityPanel to be an instance of SecurityPanel with a cookieReportTreeElement in the sidebar');
-            }
-        }
-    }
-}
 //# sourceMappingURL=SecurityPanel.js.map

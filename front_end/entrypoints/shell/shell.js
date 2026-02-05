@@ -6039,8 +6039,7 @@ UI15.ActionRegistration.registerActionExtension({
     const AiAssistance = await loadAiAssistanceModule();
     return new AiAssistance.ActionDelegate();
   },
-  condition: (config) => isAnyFeatureAvailable(config) && !isPolicyRestricted2(config) && !isGeoRestricted2(config),
-  featurePromotionId: "debug-with-ai"
+  condition: (config) => isAnyFeatureAvailable(config) && !isPolicyRestricted2(config) && !isGeoRestricted2(config)
 });
 UI15.ActionRegistration.registerActionExtension({
   actionId: "freestyler.elements-floating-button",

@@ -16,7 +16,7 @@ const UIStrings = {
     /**
      * @description Message to display if a setting change requires a reload of DevTools
      */
-    oneOrMoreSettingsHaveChanged: 'One or more settings have changed which requires a reload to take effect',
+    settingsChangedReloadDevTools: 'Settings changed. To apply, reload DevTools.',
     /**
      * @description Text in Command Menu of the Command Menu
      */
@@ -91,7 +91,7 @@ export class CommandMenu {
                     Host.userMetrics.actionTaken(Host.UserMetrics.Action.ToggleEmulateFocusedPageFromCommandMenu);
                 }
                 if (reloadRequired) {
-                    UI.InspectorView.InspectorView.instance().displayReloadRequiredWarning(i18nString(UIStrings.oneOrMoreSettingsHaveChanged));
+                    UI.InspectorView.InspectorView.instance().displayReloadRequiredWarning(i18nString(UIStrings.settingsChangedReloadDevTools));
                 }
             },
             availableHandler,

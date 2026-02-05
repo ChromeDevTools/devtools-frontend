@@ -1,33 +1,32 @@
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { type LitTemplate } from '../../ui/lit/lit.js';
+interface ViewInput {
+    decodeRequestParameters: boolean;
+    setURLDecoding(value: boolean): void;
+    viewQueryParamSource: boolean;
+    setViewQueryParamSource(value: boolean): void;
+    viewFormParamSource: boolean;
+    setViewFormParamSource(value: boolean): void;
+    viewJSONPayloadSource: boolean;
+    setViewJSONPayloadSource(value: boolean): void;
+    copyValue(value: string): void;
+    formData: string | undefined;
+    formParameters: SDK.NetworkRequest.NameValue[] | undefined;
+    queryString: string | null;
+    queryParameters: SDK.NetworkRequest.NameValue[] | null;
+}
+type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+export declare const DEFAULT_VIEW: View;
 export declare class RequestPayloadView extends UI.Widget.VBox {
-    private request;
-    private decodeRequestParameters;
-    private queryStringCategory;
-    private formDataCategory;
-    private requestPayloadCategory;
-    constructor(request: SDK.NetworkRequest.NetworkRequest);
+    #private;
+    constructor(target?: HTMLElement, view?: View);
+    set request(request: SDK.NetworkRequest.NetworkRequest);
+    get request(): SDK.NetworkRequest.NetworkRequest | undefined;
     wasShown(): void;
     willHide(): void;
     private addEntryContextMenuHandler;
-    private refreshQueryString;
-    private refreshFormData;
-    private populateTreeElementWithSourceText;
-    private refreshParams;
+    performUpdate(): void;
     static formatParameter(value: string, className: string, decodeParameters: boolean): LitTemplate;
-    private populateTreeElementWithParsedParameters;
-    private refreshRequestJSONPayload;
-    private populateTreeElementWithObject;
-    private createViewSourceToggle;
-    private toggleURLDecoding;
 }
-export declare class Category extends UI.TreeOutline.TreeElement {
-    toggleOnClick: boolean;
-    private readonly expandedSetting;
-    expanded: boolean;
-    constructor(root: UI.TreeOutline.TreeOutline, name: string, title?: string);
-    createLeaf(): UI.TreeOutline.TreeElement;
-    onexpand(): void;
-    oncollapse(): void;
-}
+export {};

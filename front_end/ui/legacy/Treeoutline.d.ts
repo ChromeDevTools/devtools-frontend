@@ -282,6 +282,8 @@ export declare class TreeViewElement extends HTMLElementWithLightDOMTemplate {
     get hideOverflow(): boolean;
     set navgiationVariant(navigationVariant: boolean);
     get navigationVariant(): boolean;
+    set dense(dense: boolean);
+    get dense(): boolean;
     attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null): void;
 }
 export declare namespace TreeViewElement {
@@ -296,9 +298,15 @@ export declare namespace TreeViewElement {
         });
     }
 }
+export declare class TreeElementWrapper extends HTMLElement {
+    #private;
+    set treeElement(treeElement: TreeElement);
+    get treeElement(): TreeElement | undefined;
+}
 declare global {
     interface HTMLElementTagNameMap {
         'devtools-tree': TreeViewElement;
+        'devtools-tree-wrapper': TreeElementWrapper;
     }
 }
 export {};

@@ -39,6 +39,11 @@ li.storage-group-list-item::before {
     background: var(--sys-color-state-hover-on-subtle);
   }
 
+  &:focus-visible {
+    outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
+    outline-offset: calc(var(--sys-size-2) * -1);
+  }
+
   &.selected {
     background: var(--sys-color-tonal-container);
     color: var(--sys-color-on-tonal-container);

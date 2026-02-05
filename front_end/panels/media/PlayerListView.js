@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 import '../../ui/kit/kit.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { Directives, html, render } from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -32,7 +33,8 @@ const DEFAULT_VIEW = (input, _output, target) => {
     // clang-format off
     render(html `
       <style>${playerListViewStyles}</style>
-      <div class="player-entry-header">${i18nString(UIStrings.players)}</div>
+      <div class="player-entry-header" id="players-header">${i18nString(UIStrings.players)}</div>
+      <div role="listbox" aria-labelledby="players-header">
       ${input.players.map(player => {
         const isSelected = player.playerID === input.selectedPlayerID;
         return html `
@@ -42,8 +44,17 @@ const DEFAULT_VIEW = (input, _output, target) => {
             selected: isSelected,
             'force-white-icons': isSelected,
         })}
+               tabindex="0"
                @click=${() => input.onPlayerClick(player.playerID)}
+               @keydown=${(e) => {
+            if (Platform.KeyboardUtilities.isEnterOrSpaceKey(e)) {
+                e.preventDefault();
+                input.onPlayerClick(player.playerID);
+            }
+        }}
                @contextmenu=${(e) => input.onPlayerContextMenu(player.playerID, e)}
+               role="option"
+               aria-selected=${isSelected}
                jslog=${VisualLogging.item('player').track({ click: true })}>
             <div class="player-entry-status-icon vbox">
               <div class="player-entry-status-icon-centering">
@@ -55,6 +66,7 @@ const DEFAULT_VIEW = (input, _output, target) => {
           </div>
         `;
     })}
+      </div>
     `, target);
     // clang-format on
 };

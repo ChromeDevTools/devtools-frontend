@@ -265,7 +265,7 @@ var UIStrings = {
   /**
    * @description Message to display if a setting change requires a reload of DevTools
    */
-  oneOrMoreSettingsHaveChanged: "One or more settings have changed which requires a reload to take effect",
+  settingsChangedReloadDevTools: "Settings changed. To apply, reload DevTools.",
   /**
    * @description Warning text shown when the user has entered text to filter the
    * list of experiments, but no experiments match the filter.
@@ -606,7 +606,7 @@ var ExperimentsSettingsTab = class _ExperimentsSettingsTab extends UI.Widget.VBo
       }
       experiment.setEnabled(checkbox.checked);
       Host.userMetrics.experimentChanged(experiment.name, experiment.isEnabled());
-      UI.InspectorView.InspectorView.instance().displayReloadRequiredWarning(i18nString(UIStrings.oneOrMoreSettingsHaveChanged));
+      UI.InspectorView.InspectorView.instance().displayReloadRequiredWarning(i18nString(UIStrings.settingsChangedReloadDevTools));
     }
     checkbox.addEventListener("click", listener, false);
     const p = document.createElement("p");
@@ -779,7 +779,7 @@ function renderWidgetOptions(settings) {
           settings.inlineWidgets.set(false);
         }
       }
-      UI.InspectorView.InspectorView.instance().displayReloadRequiredWarning(i18nString(UIStrings.oneOrMoreSettingsHaveChanged));
+      UI.InspectorView.InspectorView.instance().displayReloadRequiredWarning(i18nString(UIStrings.settingsChangedReloadDevTools));
     };
   }
   return html`
@@ -797,7 +797,7 @@ function renderWidgetOptions(settings) {
 function renderPrototypeCheckboxes(settings, keys) {
   const { bindToSetting } = UI.UIUtils;
   function showChangeWarning() {
-    UI.InspectorView.InspectorView.instance().displayReloadRequiredWarning(i18nString(UIStrings.oneOrMoreSettingsHaveChanged));
+    UI.InspectorView.InspectorView.instance().displayReloadRequiredWarning(i18nString(UIStrings.settingsChangedReloadDevTools));
   }
   const checkboxes = Object.keys(settings).map((name) => {
     const settingName = name;

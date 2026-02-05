@@ -280,7 +280,8 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
             return;
         }
         if (this.#request.queryParameters || await this.#request.requestFormData()) {
-            this.#payloadView = new RequestPayloadView(this.#request);
+            this.#payloadView = new RequestPayloadView();
+            this.#payloadView.request = this.#request;
             this.appendTab("payload" /* NetworkForward.UIRequestLocation.UIRequestTabs.PAYLOAD */, i18nString(UIStrings.payload), this.#payloadView, i18nString(UIStrings.payload), /* userGesture=*/ void 0, 
             /* isCloseable=*/ void 0, /* isPreviewFeature=*/ void 0, /* index=*/ 1);
         }

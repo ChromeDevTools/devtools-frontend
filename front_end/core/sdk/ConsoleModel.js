@@ -433,7 +433,6 @@ export class ConsoleMessage {
     #exceptionId = undefined;
     #affectedResources;
     category;
-    isCookieReportIssue = false;
     /**
      * The parent frame of the `console.log` call of logpoints or conditional breakpoints
      * if they called `console.*` explicitly. The parent frame is where V8 paused
@@ -460,7 +459,6 @@ export class ConsoleMessage {
         this.workerId = details?.workerId;
         this.#affectedResources = details?.affectedResources;
         this.category = details?.category;
-        this.isCookieReportIssue = Boolean(details?.isCookieReportIssue);
         if (!this.#executionContextId && this.#runtimeModel) {
             if (this.scriptId) {
                 this.#executionContextId = this.#runtimeModel.executionContextIdForScriptId(this.scriptId);

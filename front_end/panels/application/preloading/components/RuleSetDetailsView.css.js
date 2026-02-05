@@ -9,11 +9,6 @@ export default `/*
  * found in the LICENSE file.
  */
 
-:host {
-  display: block;
-  height: 100%;
-}
-
 .placeholder {
   display: flex;
   height: 100%;

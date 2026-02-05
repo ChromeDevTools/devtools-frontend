@@ -833,7 +833,7 @@ var UIStrings3 = {
   /**
    * @description Message to display if a setting change requires a reload of DevTools
    */
-  oneOrMoreSettingsHaveChanged: "One or more settings have changed which requires a reload to take effect",
+  settingsChangedReloadDevTools: "Settings changed. To apply, reload DevTools.",
   /**
    * @description Text in Command Menu of the Command Menu
    */
@@ -906,7 +906,7 @@ var CommandMenu = class _CommandMenu {
           Host.userMetrics.actionTaken(Host.UserMetrics.Action.ToggleEmulateFocusedPageFromCommandMenu);
         }
         if (reloadRequired) {
-          UI2.InspectorView.InspectorView.instance().displayReloadRequiredWarning(i18nString3(UIStrings3.oneOrMoreSettingsHaveChanged));
+          UI2.InspectorView.InspectorView.instance().displayReloadRequiredWarning(i18nString3(UIStrings3.settingsChangedReloadDevTools));
         }
       },
       availableHandler,

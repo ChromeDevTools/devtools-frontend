@@ -701,9 +701,9 @@ import "./../../ui/kit/kit.js";
 import * as Common5 from "./../../core/common/common.js";
 import * as Host2 from "./../../core/host/host.js";
 import * as i18n5 from "./../../core/i18n/i18n.js";
-import * as Root2 from "./../../core/root/root.js";
+import * as Root from "./../../core/root/root.js";
 import * as AiAssistanceModel3 from "./../../models/ai_assistance/ai_assistance.js";
-import * as Buttons2 from "./../../ui/components/buttons/buttons.js";
+import * as Buttons from "./../../ui/components/buttons/buttons.js";
 import * as UI3 from "./../../ui/legacy/legacy.js";
 import * as Lit2 from "./../../ui/lit/lit.js";
 import * as VisualLogging2 from "./../../ui/visual_logging/visual_logging.js";
@@ -853,14 +853,12 @@ import * as Common4 from "./../../core/common/common.js";
 import * as Host from "./../../core/host/host.js";
 import * as i18n3 from "./../../core/i18n/i18n.js";
 import * as Platform2 from "./../../core/platform/platform.js";
-import * as Root from "./../../core/root/root.js";
 import * as SDK3 from "./../../core/sdk/sdk.js";
 import * as AiAssistanceModel from "./../../models/ai_assistance/ai_assistance.js";
 import * as Bindings from "./../../models/bindings/bindings.js";
 import * as Logs from "./../../models/logs/logs.js";
 import * as TextUtils3 from "./../../models/text_utils/text_utils.js";
 import * as Workspace from "./../../models/workspace/workspace.js";
-import * as Buttons from "./../../ui/components/buttons/buttons.js";
 import * as CodeHighlighter from "./../../ui/components/code_highlighter/code_highlighter.js";
 import * as Highlighting from "./../../ui/components/highlighting/highlighting.js";
 import * as IssueCounter from "./../../ui/components/issue_counter/issue_counter.js";
@@ -982,7 +980,6 @@ import * as Components from "./../../ui/legacy/components/utils/utils.js";
 import * as UI2 from "./../../ui/legacy/legacy.js";
 import { render as render2 } from "./../../ui/lit/lit.js";
 import * as VisualLogging from "./../../ui/visual_logging/visual_logging.js";
-import * as Security from "./../security/security.js";
 
 // gen/front_end/panels/console/consoleView.css.js
 var consoleView_css_default = `/* Copyright 2021 The Chromium Authors
@@ -1473,11 +1470,6 @@ var consoleView_css_default = `/* Copyright 2021 The Chromium Authors
   margin-left: 4px;
 }
 
-.cookie-report-anchor {
-  margin-top: -3px;
-  margin-bottom: -5px;
-}
-
 .console-message-nowrap-below,
 .console-message-nowrap-below div,
 .console-message-nowrap-below span {
@@ -1924,10 +1916,6 @@ var UIStrings2 = {
    */
   explainThisMessageWithAI: "Understand this message. Powered by AI",
   /**
-   * @description Tooltip shown when user hovers over the cookie icon to explain that the button will bring the user to the cookie report
-   */
-  SeeIssueInCookieReport: "Click to open privacy and security panel and show third-party cookie report",
-  /**
    * @description Element text content in Object Properties Section
    */
   dots: "(...)",
@@ -2227,20 +2215,6 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
     }
     return elements;
   }
-  #appendCookieReportButtonToElem(elem) {
-    const button = new Buttons.Button.Button();
-    button.data = {
-      size: "SMALL",
-      variant: "icon",
-      iconName: "cookie",
-      jslogContext: "privacy",
-      title: i18nString2(UIStrings2.SeeIssueInCookieReport)
-    };
-    button.addEventListener("click", () => {
-      void Common4.Revealer.reveal(new Security.CookieReportView.CookieReportView());
-    });
-    elem.appendChild(button);
-  }
   #getLinkifierMetric() {
     const request = Logs.NetworkLog.NetworkLog.requestForConsoleMessage(this.message);
     if (request?.resourceType().isStyleSheet()) {
@@ -2280,13 +2254,6 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
       }
       return null;
     };
-    if (this.message.isCookieReportIssue && Root.Runtime.hostConfig.devToolsPrivacyUI?.enabled) {
-      const anchorWrapperElement = document.createElement("span");
-      anchorWrapperElement.classList.add("console-message-anchor", "cookie-report-anchor");
-      this.#appendCookieReportButtonToElem(anchorWrapperElement);
-      UI2.UIUtils.createTextChild(anchorWrapperElement, " ");
-      return anchorWrapperElement;
-    }
     const anchorElement = linkify(this.message);
     if (anchorElement) {
       anchorElement.tabIndex = -1;
@@ -4398,7 +4365,7 @@ var ConsoleInsightTeaser = class extends UI3.Widget.Widget {
     }
   }
   async #showFreDialog() {
-    const noLogging = Root2.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue === Root2.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING;
+    const noLogging = Root.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue === Root.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING;
     const iconName = AiAssistanceModel3.AiUtils.getIconName();
     const result = await PanelCommon.FreDialog.show({
       header: { iconName, text: lockedString(UIStringsNotTranslate.freDisclaimerHeader) },
@@ -4579,7 +4546,7 @@ var ConsoleInsightTeaser = class extends UI3.Widget.Widget {
     if (!UI3.ActionRegistry.ActionRegistry.instance().hasAction(EXPLAIN_TEASER_ACTION_ID)) {
       return false;
     }
-    if (Root2.Runtime.hostConfig.aidaAvailability?.blockedByAge || Root2.Runtime.hostConfig.isOffTheRecord) {
+    if (Root.Runtime.hostConfig.aidaAvailability?.blockedByAge || Root.Runtime.hostConfig.isOffTheRecord) {
       return false;
     }
     if (this.#aidaAvailability !== "available") {
@@ -4632,10 +4599,10 @@ __export(ConsolePinPane_exports, {
 import * as Common6 from "./../../core/common/common.js";
 import * as i18n7 from "./../../core/i18n/i18n.js";
 import * as Platform3 from "./../../core/platform/platform.js";
-import * as Root3 from "./../../core/root/root.js";
+import * as Root2 from "./../../core/root/root.js";
 import * as SDK5 from "./../../core/sdk/sdk.js";
 import * as CodeMirror from "./../../third_party/codemirror.next/codemirror.next.js";
-import * as Buttons3 from "./../../ui/components/buttons/buttons.js";
+import * as Buttons2 from "./../../ui/components/buttons/buttons.js";
 import * as TextEditor from "./../../ui/components/text_editor/text_editor.js";
 import * as ObjectUI2 from "./../../ui/legacy/components/object_ui/object_ui.js";
 import * as UI4 from "./../../ui/legacy/legacy.js";
@@ -5009,7 +4976,7 @@ var ConsolePinPresenter = class extends UI4.Widget.Widget {
       TextEditor.Config.closeBrackets.instance(),
       TextEditor.Config.autocompletion.instance()
     ];
-    if (Root3.Runtime.Runtime.queryParam("noJavaScriptCompletion") !== "true") {
+    if (Root2.Runtime.Runtime.queryParam("noJavaScriptCompletion") !== "true") {
       extensions.push(TextEditor.JavaScript.completion());
     }
     return CodeMirror.EditorState.create({ doc, extensions });
@@ -6092,7 +6059,7 @@ __export(ConsolePrompt_exports, {
 import * as Common9 from "./../../core/common/common.js";
 import * as Host4 from "./../../core/host/host.js";
 import * as i18n13 from "./../../core/i18n/i18n.js";
-import * as Root5 from "./../../core/root/root.js";
+import * as Root4 from "./../../core/root/root.js";
 import * as SDK8 from "./../../core/sdk/sdk.js";
 import * as Badges from "./../../models/badges/badges.js";
 import * as Formatter2 from "./../../models/formatter/formatter.js";
@@ -6126,7 +6093,7 @@ import * as Common8 from "./../../core/common/common.js";
 import * as Host3 from "./../../core/host/host.js";
 import * as i18n11 from "./../../core/i18n/i18n.js";
 import * as Platform5 from "./../../core/platform/platform.js";
-import * as Root4 from "./../../core/root/root.js";
+import * as Root3 from "./../../core/root/root.js";
 import * as SDK7 from "./../../core/sdk/sdk.js";
 import * as AiCodeCompletion from "./../../models/ai_code_completion/ai_code_completion.js";
 import * as Bindings3 from "./../../models/bindings/bindings.js";
@@ -7268,7 +7235,7 @@ var ConsoleView = class _ConsoleView extends UI7.Widget.VBox {
     this.focusPrompt();
   }
   messagesPasted(event) {
-    if (!Root4.Runtime.Runtime.queryParam("isChromeForTesting") && !Root4.Runtime.Runtime.queryParam("disableSelfXssWarnings") && !this.selfXssWarningDisabledSetting.get()) {
+    if (!Root3.Runtime.Runtime.queryParam("isChromeForTesting") && !Root3.Runtime.Runtime.queryParam("disableSelfXssWarnings") && !this.selfXssWarningDisabledSetting.get()) {
       event.preventDefault();
       this.prompt.showSelfXssWarning();
     }
@@ -7870,7 +7837,7 @@ var ConsolePrompt = class extends Common9.ObjectWrapper.eventMixin(UI9.Widget.Wi
     if (this.#selfXssWarningShown) {
       return [];
     }
-    if (Root5.Runtime.Runtime.queryParam("noJavaScriptCompletion") !== "true") {
+    if (Root4.Runtime.Runtime.queryParam("noJavaScriptCompletion") !== "true") {
       return [
         CodeMirror2.javascript.javascript(),
         TextEditor2.JavaScript.completion()

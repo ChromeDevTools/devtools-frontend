@@ -73,7 +73,6 @@ export declare const RevealerDestination: {
     TIMELINE_PANEL: () => Platform.UIString.LocalizedString;
     APPLICATION_PANEL: () => Platform.UIString.LocalizedString;
     SOURCES_PANEL: () => Platform.UIString.LocalizedString;
-    SECURITY_PANEL: () => Platform.UIString.LocalizedString;
     MEMORY_INSPECTOR_PANEL: () => Platform.UIString.LocalizedString;
     ANIMATIONS_PANEL: () => Platform.UIString.LocalizedString;
 };

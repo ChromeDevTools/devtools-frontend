@@ -22,6 +22,9 @@ export default `/*
 
 .item.highlighted {
   background-color: var(--sys-color-state-hover-on-subtle);
+  outline: var(--sys-size-2) solid var(--sys-color-primary);
+  outline-offset: calc(-1 * var(--sys-size-2));
+  border-radius: var(--sys-shape-corner-extra-small);
 }
 
 @media (forced-colors: active) {
@@ -30,7 +33,7 @@ export default `/*
   }
 
   .item-list {
-    border: 1px solid ButtonText;
+    border: var(--sys-size-1) solid ButtonText;
     background-color: ButtonFace;
   }
 
@@ -38,6 +41,9 @@ export default `/*
     forced-color-adjust: none;
     color: HighlightText;
     background-color: Highlight;
+    outline: var(--sys-size-2) solid Highlight;
+    outline-offset: calc(-1 * var(--sys-size-2));
+    border-radius: var(--sys-shape-corner-extra-small);
   }
 }
 

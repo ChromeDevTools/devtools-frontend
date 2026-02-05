@@ -1,10 +1,8 @@
-import * as Common from '../../core/common/common.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import { type Icon } from '../../ui/kit/kit.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import { CookieReportView } from './CookieReportView.js';
 import { type PageVisibleSecurityState, SecurityModel } from './SecurityModel.js';
 import { SecurityPanelSidebar } from './SecurityPanelSidebar.js';
 export declare function getSecurityStateIconForDetailedView(securityState: Protocol.Security.SecurityState, className: string): Icon;
@@ -104,6 +102,3 @@ export interface OriginState {
     originView?: SecurityOriginView | null;
 }
 export type Origin = Platform.DevToolsPath.UrlString;
-export declare class SecurityRevealer implements Common.Revealer.Revealer<CookieReportView> {
-    reveal(): Promise<void>;
-}

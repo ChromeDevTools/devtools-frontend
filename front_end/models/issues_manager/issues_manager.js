@@ -1081,8 +1081,7 @@ var CookieIssue = class _CookieIssue extends Issue {
     )) {
       return new SDK3.ConsoleModel.ConsoleMessage(issuesModel.target().model(SDK3.RuntimeModel.RuntimeModel), Common3.Console.FrontendMessageSource.ISSUE_PANEL, "warning", UIStrings5.consoleTpcdErrorMessage, {
         url: this.details().request?.url,
-        affectedResources: { requestId: this.details().request?.requestId, issueId: this.issueId },
-        isCookieReportIssue: true
+        affectedResources: { requestId: this.details().request?.requestId, issueId: this.issueId }
       });
     }
     return;
@@ -3464,7 +3463,6 @@ __export(IssuesManager_exports, {
   getHideIssueByCodeSetting: () => getHideIssueByCodeSetting
 });
 import * as Common6 from "./../../core/common/common.js";
-import * as Root2 from "./../../core/root/root.js";
 import * as SDK4 from "./../../core/sdk/sdk.js";
 
 // gen/front_end/models/issues_manager/BounceTrackingIssue.js
@@ -4520,7 +4518,6 @@ var IssuesManager = class _IssuesManager extends Common6.ObjectWrapper.ObjectWra
   #thirdPartyCookiePhaseoutIssueCount = /* @__PURE__ */ new Map();
   #issuesById = /* @__PURE__ */ new Map();
   #issuesByOutermostTarget = /* @__PURE__ */ new Map();
-  #thirdPartyCookiePhaseoutIssueMessageSent = false;
   constructor(showThirdPartyIssuesSetting, hideIssueSetting) {
     super();
     this.showThirdPartyIssuesSetting = showThirdPartyIssuesSetting;
@@ -4592,7 +4589,6 @@ var IssuesManager = class _IssuesManager extends Common6.ObjectWrapper.ObjectWra
   }
   #onIssueAddedEvent(event) {
     const { issuesModel, inspectorIssue } = event.data;
-    const isPrivacyUiEnabled = Root2.Runtime.hostConfig.devToolsPrivacyUI?.enabled;
     const issues = createIssuesFromProtocolIssue(issuesModel, inspectorIssue);
     for (const issue of issues) {
       this.addIssue(issuesModel, issue);
@@ -4600,13 +4596,7 @@ var IssuesManager = class _IssuesManager extends Common6.ObjectWrapper.ObjectWra
       if (!message) {
         continue;
       }
-      const is3rdPartyCookiePhaseoutIssue = CookieIssue.getSubCategory(issue.code()) === "ThirdPartyPhaseoutCookie";
-      if (!is3rdPartyCookiePhaseoutIssue || !isPrivacyUiEnabled || !this.#thirdPartyCookiePhaseoutIssueMessageSent) {
-        issuesModel.target().model(SDK4.ConsoleModel.ConsoleModel)?.addMessage(message);
-      }
-      if (is3rdPartyCookiePhaseoutIssue && isPrivacyUiEnabled) {
-        this.#thirdPartyCookiePhaseoutIssueMessageSent = true;
-      }
+      issuesModel.target().model(SDK4.ConsoleModel.ConsoleModel)?.addMessage(message);
     }
   }
   addIssue(issuesModel, issue) {
@@ -4707,7 +4697,6 @@ var IssuesManager = class _IssuesManager extends Common6.ObjectWrapper.ObjectWra
     this.#issuesById.clear();
     this.#hiddenIssueCount.clear();
     this.#thirdPartyCookiePhaseoutIssueCount.clear();
-    this.#thirdPartyCookiePhaseoutIssueMessageSent = false;
     const values = this.hideIssueSetting?.get();
     for (const [key, issue] of this.#allIssues) {
       if (this.#issueFilter(issue)) {

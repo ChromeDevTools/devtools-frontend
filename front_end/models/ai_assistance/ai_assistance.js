@@ -6813,24 +6813,25 @@ var AiConversation = class _AiConversation {
     return new _AiConversation(serializedConversation.type, history, serializedConversation.id, true, void 0, void 0, serializedConversation.isExternal);
   }
   id;
+  // Handled in #updateAgent
   #type;
+  // Handled in #updateAgent
+  #agent;
   #isReadOnly;
   history;
   #isExternal;
   #aidaClient;
   #changeManager;
-  #agent;
   #origin;
   #contexts = [];
   constructor(type, data = [], id = crypto.randomUUID(), isReadOnly = true, aidaClient = new Host9.AidaClient.AidaClient(), changeManager, isExternal = false) {
     this.#changeManager = changeManager;
     this.#aidaClient = aidaClient;
-    this.#type = type;
     this.id = id;
     this.#isReadOnly = isReadOnly;
     this.#isExternal = isExternal;
     this.history = this.#reconstructHistory(data);
-    this.#agent = this.#createAgent();
+    this.#updateAgent(type);
   }
   get isReadOnly() {
     return this.#isReadOnly;
@@ -6859,9 +6860,38 @@ var AiConversation = class _AiConversation {
   setContext(updateContext) {
     if (!updateContext) {
       this.#contexts = [];
+      if (isAiAssistanceContextSelectionAgentEnabled()) {
+        this.#updateAgent(
+          "none"
+          /* ConversationType.NONE */
+        );
+      }
       return;
     }
     this.#contexts = [updateContext];
+    if (isAiAssistanceContextSelectionAgentEnabled()) {
+      if (updateContext instanceof FileContext) {
+        this.#updateAgent(
+          "drjones-file"
+          /* ConversationType.FILE */
+        );
+      } else if (updateContext instanceof NodeContext) {
+        this.#updateAgent(
+          "freestyler"
+          /* ConversationType.STYLING */
+        );
+      } else if (updateContext instanceof RequestContext) {
+        this.#updateAgent(
+          "drjones-network-request"
+          /* ConversationType.NETWORK */
+        );
+      } else if (updateContext instanceof PerformanceTraceContext) {
+        this.#updateAgent(
+          "drjones-performance-full"
+          /* ConversationType.PERFORMANCE */
+        );
+      }
+    }
   }
   get selectedContext() {
     return this.#contexts.at(0);
@@ -6981,37 +7011,39 @@ ${item.text.trim()}`);
       isExternal: this.#isExternal
     };
   }
-  #createAgent() {
+  #updateAgent(type) {
+    if (this.#type === type) {
+      return;
+    }
+    this.#type = type;
     const options = {
       aidaClient: this.#aidaClient,
       serverSideLoggingEnabled: isAiAssistanceServerSideLoggingEnabled(),
       sessionId: this.id,
       changeManager: this.#changeManager
     };
-    let agent;
-    switch (this.#type) {
+    switch (type) {
       case "freestyler": {
-        agent = new StylingAgent(options);
+        this.#agent = new StylingAgent(options);
         break;
       }
       case "drjones-network-request": {
-        agent = new NetworkAgent(options);
+        this.#agent = new NetworkAgent(options);
         break;
       }
       case "drjones-file": {
-        agent = new FileAgent(options);
+        this.#agent = new FileAgent(options);
         break;
       }
       case "drjones-performance-full": {
-        agent = new PerformanceAgent(options);
+        this.#agent = new PerformanceAgent(options);
         break;
       }
       case "none": {
-        agent = new ContextSelectionAgent(options);
+        this.#agent = new ContextSelectionAgent(options);
         break;
       }
     }
-    return agent;
   }
   #factsCache = /* @__PURE__ */ new Map();
   async #createFactsForExtraContext(contexts) {
@@ -7100,10 +7132,6 @@ ${desc}`,
       signal: options.signal,
       selected: this.selectedContext ?? null
     }, options.multimodalInput)) {
-      if (data.type === "context-change") {
-        this.#type = "drjones-network-request";
-        this.#agent = this.#createAgent();
-      }
       if (shouldAddToHistory(data)) {
         void this.addHistoryItem(data);
       }
@@ -7127,6 +7155,9 @@ ${desc}`,
 };
 function isAiAssistanceServerSideLoggingEnabled() {
   return !Root9.Runtime.hostConfig.aidaAvailability?.disallowLogging;
+}
+function isAiAssistanceContextSelectionAgentEnabled() {
+  return Boolean(Root9.Runtime.hostConfig.devToolsAiAssistanceContextSelectionAgent?.enabled);
 }
 
 // gen/front_end/models/ai_assistance/AiUtils.js

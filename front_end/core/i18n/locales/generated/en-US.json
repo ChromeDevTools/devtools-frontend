@@ -110,9 +110,6 @@
   "core/common/Revealer.ts | requestConditionsDrawer": {
     "message": "Request conditions drawer"
   },
-  "core/common/Revealer.ts | securityPanel": {
-    "message": "Security panel"
-  },
   "core/common/Revealer.ts | sourcesPanel": {
     "message": "Sources panel"
   },
@@ -6877,9 +6874,6 @@
   },
   "panels/console/ConsoleViewMessage.ts | repeatS": {
     "message": "{n, plural, =1 {Repeated # time} other {Repeated # times}}"
-  },
-  "panels/console/ConsoleViewMessage.ts | SeeIssueInCookieReport": {
-    "message": "Click to open privacy and security panel and show third-party cookie report"
   },
   "panels/console/ConsoleViewMessage.ts | someEvent": {
     "message": "<some> event"
@@ -13946,9 +13940,6 @@
   "panels/settings/SettingsScreen.ts | noResults": {
     "message": "No experiments match the filter"
   },
-  "panels/settings/SettingsScreen.ts | oneOrMoreSettingsHaveChanged": {
-    "message": "One or more settings have changed which requires a reload to take effect"
-  },
   "panels/settings/SettingsScreen.ts | restoreDefaultsAndReload": {
     "message": "Restore defaults and reload"
   },
@@ -13960,6 +13951,9 @@
   },
   "panels/settings/SettingsScreen.ts | settings": {
     "message": "Settings"
+  },
+  "panels/settings/SettingsScreen.ts | settingsChangedReloadDevTools": {
+    "message": "Settings changed. To apply, reload DevTools."
   },
   "panels/settings/SettingsScreen.ts | shortcuts": {
     "message": "Shortcuts"
@@ -17717,14 +17711,14 @@
   "ui/legacy/components/quick_open/CommandMenu.ts | noCommandsFound": {
     "message": "No commands found"
   },
-  "ui/legacy/components/quick_open/CommandMenu.ts | oneOrMoreSettingsHaveChanged": {
-    "message": "One or more settings have changed which requires a reload to take effect"
-  },
   "ui/legacy/components/quick_open/CommandMenu.ts | run": {
     "message": "Run"
   },
   "ui/legacy/components/quick_open/CommandMenu.ts | runCommand": {
     "message": "Run command"
+  },
+  "ui/legacy/components/quick_open/CommandMenu.ts | settingsChangedReloadDevTools": {
+    "message": "Settings changed. To apply, reload DevTools."
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | newFeature": {
     "message": "This is a new feature"
@@ -17750,8 +17744,8 @@
   "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
     "message": "Type ? to see available commands"
   },
-  "ui/legacy/components/settings_ui/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
-    "message": "One or more settings have changed which requires a reload to take effect"
+  "ui/legacy/components/settings_ui/SettingsUI.ts | settingsChangedReloadDevTools": {
+    "message": "Settings changed. To apply, reload DevTools."
   },
   "ui/legacy/components/settings_ui/SettingsUI.ts | srequiresReload": {
     "message": "*Requires reload"

@@ -71,7 +71,6 @@ export interface ConsoleMessageDetails {
     context?: string;
     affectedResources?: AffectedResources;
     category?: Protocol.Log.LogEntryCategory;
-    isCookieReportIssue?: boolean;
 }
 export declare class ConsoleMessage {
     #private;
@@ -89,7 +88,6 @@ export declare class ConsoleMessage {
     workerId?: string;
     context?: string;
     category?: Protocol.Log.LogEntryCategory;
-    isCookieReportIssue: boolean;
     /**
      * The parent frame of the `console.log` call of logpoints or conditional breakpoints
      * if they called `console.*` explicitly. The parent frame is where V8 paused

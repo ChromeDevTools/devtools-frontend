@@ -241,7 +241,6 @@ export class CookieIssue extends Issue {
             return new SDK.ConsoleModel.ConsoleMessage(issuesModel.target().model(SDK.RuntimeModel.RuntimeModel), Common.Console.FrontendMessageSource.ISSUE_PANEL, "warning" /* Protocol.Log.LogEntryLevel.Warning */, UIStrings.consoleTpcdErrorMessage, {
                 url: this.details().request?.url,
                 affectedResources: { requestId: this.details().request?.requestId, issueId: this.issueId },
-                isCookieReportIssue: true
             });
         }
         return;

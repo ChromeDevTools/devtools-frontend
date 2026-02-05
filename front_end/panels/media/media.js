@@ -1970,6 +1970,7 @@ __export(PlayerListView_exports, {
 });
 import "./../../ui/kit/kit.js";
 import * as i18n11 from "./../../core/i18n/i18n.js";
+import * as Platform3 from "./../../core/platform/platform.js";
 import * as UI6 from "./../../ui/legacy/legacy.js";
 import { Directives, html, render } from "./../../ui/lit/lit.js";
 import * as VisualLogging5 from "./../../ui/visual_logging/visual_logging.js";
@@ -2009,6 +2010,11 @@ li.storage-group-list-item::before {
 
   &:hover {
     background: var(--sys-color-state-hover-on-subtle);
+  }
+
+  &:focus-visible {
+    outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
+    outline-offset: calc(var(--sys-size-2) * -1);
   }
 
   &.selected {
@@ -2086,7 +2092,8 @@ var i18nString6 = i18n11.i18n.getLocalizedString.bind(void 0, str_6);
 var DEFAULT_VIEW = (input, _output, target) => {
   render(html`
       <style>${playerListView_css_default}</style>
-      <div class="player-entry-header">${i18nString6(UIStrings6.players)}</div>
+      <div class="player-entry-header" id="players-header">${i18nString6(UIStrings6.players)}</div>
+      <div role="listbox" aria-labelledby="players-header">
       ${input.players.map((player) => {
     const isSelected = player.playerID === input.selectedPlayerID;
     return html`
@@ -2096,8 +2103,17 @@ var DEFAULT_VIEW = (input, _output, target) => {
       selected: isSelected,
       "force-white-icons": isSelected
     })}
+               tabindex="0"
                @click=${() => input.onPlayerClick(player.playerID)}
+               @keydown=${(e) => {
+      if (Platform3.KeyboardUtilities.isEnterOrSpaceKey(e)) {
+        e.preventDefault();
+        input.onPlayerClick(player.playerID);
+      }
+    }}
                @contextmenu=${(e) => input.onPlayerContextMenu(player.playerID, e)}
+               role="option"
+               aria-selected=${isSelected}
                jslog=${VisualLogging5.item("player").track({ click: true })}>
             <div class="player-entry-status-icon vbox">
               <div class="player-entry-status-icon-centering">
@@ -2109,6 +2125,7 @@ var DEFAULT_VIEW = (input, _output, target) => {
           </div>
         `;
   })}
+      </div>
     `, target);
 };
 var PlayerListView = class extends UI6.Widget.VBox {

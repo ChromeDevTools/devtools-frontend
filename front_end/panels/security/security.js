@@ -1331,7 +1331,6 @@ __export(SecurityPanel_exports, {
   SecurityMainView: () => SecurityMainView,
   SecurityOriginView: () => SecurityOriginView,
   SecurityPanel: () => SecurityPanel,
-  SecurityRevealer: () => SecurityRevealer,
   createHighlightedUrl: () => createHighlightedUrl,
   getSecurityStateIconForDetailedView: () => getSecurityStateIconForDetailedView,
   getSecurityStateIconForOverview: () => getSecurityStateIconForOverview
@@ -3513,25 +3512,6 @@ var SecurityDetailsTable = class {
       valueCell.textContent = value;
     } else {
       valueCell.appendChild(value);
-    }
-  }
-};
-var SecurityRevealer = class {
-  async reveal() {
-    await UI5.ViewManager.ViewManager.instance().showView("security");
-    const view = UI5.ViewManager.ViewManager.instance().view("security");
-    if (view) {
-      const securityPanel = await view.widget();
-      if (securityPanel instanceof SecurityPanel && securityPanel.sidebar.cookieReportTreeElement) {
-        securityPanel.sidebar.cookieReportTreeElement.select(
-          /* omitFocus=*/
-          false,
-          /* selectedByUser=*/
-          true
-        );
-      } else {
-        throw new Error("Expected securityPanel to be an instance of SecurityPanel with a cookieReportTreeElement in the sidebar");
-      }
     }
   }
 };

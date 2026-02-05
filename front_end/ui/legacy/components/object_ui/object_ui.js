@@ -381,7 +381,8 @@ var objectPropertiesSection_css_default = `/*
   overflow-x: auto;
 }
 
-.object-properties-section li {
+.object-properties-section li,
+li.object-properties-section  {
   user-select: text;
 
   &::before {

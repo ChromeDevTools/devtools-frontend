@@ -15,6 +15,7 @@ export default `/*
 }
 
 .request-payload-tree {
+  display: block;
   flex-grow: 1;
   overflow-y: auto;
   margin: 0;

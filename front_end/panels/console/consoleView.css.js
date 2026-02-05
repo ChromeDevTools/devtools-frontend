@@ -491,11 +491,6 @@ export default `/* Copyright 2021 The Chromium Authors
   margin-left: 4px;
 }
 
-.cookie-report-anchor {
-  margin-top: -3px;
-  margin-bottom: -5px;
-}
-
 .console-message-nowrap-below,
 .console-message-nowrap-below div,
 .console-message-nowrap-below span {

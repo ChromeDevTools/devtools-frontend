@@ -4,6 +4,7 @@
 /* eslint-disable @devtools/no-imperative-dom-api */
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as Bindings from '../../models/bindings/bindings.js';
 import * as Logs from '../../models/logs/logs.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -136,14 +137,24 @@ export class RequestInitiatorView extends UI.Widget.VBox {
         this.request = request;
         this.#view = view;
     }
-    static createStackTracePreview(request, linkifier, focusableLink) {
+    static async createStackTracePreview(request, linkifier, focusableLink) {
         const initiator = request.initiator();
         if (!initiator?.stack) {
             return null;
         }
         const networkManager = SDK.NetworkManager.NetworkManager.forRequest(request);
         const target = networkManager ? networkManager.target() : undefined;
-        return new Components.JSPresentationUtils.StackTracePreviewContent(undefined, target, linkifier, { runtimeStackTrace: initiator.stack, tabStops: focusableLink });
+        if (target) {
+            const stackTrace = await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
+                .createStackTraceFromProtocolRuntime(initiator.stack, target);
+            const preview = new Components.JSPresentationUtils.StackTracePreviewContent(undefined, target, linkifier, { tabStops: focusableLink });
+            preview.stackTrace = stackTrace;
+            return { preview, stackTrace };
+        }
+        return {
+            preview: new Components.JSPresentationUtils.StackTracePreviewContent(undefined, target, linkifier, { runtimeStackTrace: initiator.stack, tabStops: focusableLink }),
+            stackTrace: null
+        };
     }
     performUpdate() {
         const initiatorGraph = Logs.NetworkLog.NetworkLog.instance().initiatorGraphForRequest(this.request);

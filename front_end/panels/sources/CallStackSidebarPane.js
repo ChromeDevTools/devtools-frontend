@@ -164,7 +164,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView {
       </div>
       ${this.list.element}
       <div class='show-more-message hidden' ${ref(showMoreRef)}>
-        <span class='link' @click=${onShowMoreClicked}>${i18nString(UIStrings.showMore)}</span>
+        <button class='link' @click=${onShowMoreClicked}>${i18nString(UIStrings.showMore)}</button>
       </div>
     `, this.contentElement);
         // clang-format on

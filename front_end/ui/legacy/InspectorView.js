@@ -139,6 +139,7 @@ export class InspectorView extends VBox {
     focusRestorer;
     ownerSplitWidget;
     reloadRequiredInfobar;
+    #debuggedTabReloadRequiredInfobar;
     #selectOverrideFolderInfobar;
     #resizeObserver;
     #toggleOrientationButton;
@@ -533,7 +534,7 @@ export class InspectorView extends VBox {
         }
     }
     displayDebuggedTabReloadRequiredWarning(message) {
-        if (!this.reloadRequiredInfobar) {
+        if (!this.#debuggedTabReloadRequiredInfobar) {
             const infobar = new Infobar("info" /* InfobarType.INFO */, message, [
                 {
                     text: i18nString(UIStrings.reloadDebuggedTab),
@@ -548,16 +549,16 @@ export class InspectorView extends VBox {
             ], undefined, 'reload-required');
             infobar.setParentView(this);
             this.attachInfobar(infobar);
-            this.reloadRequiredInfobar = infobar;
+            this.#debuggedTabReloadRequiredInfobar = infobar;
             infobar.setCloseCallback(() => {
-                delete this.reloadRequiredInfobar;
+                this.#debuggedTabReloadRequiredInfobar = undefined;
             });
             SDK.TargetManager.TargetManager.instance().addModelListener(SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged, this.removeDebuggedTabReloadRequiredWarning, this);
         }
     }
     removeDebuggedTabReloadRequiredWarning() {
-        if (this.reloadRequiredInfobar) {
-            this.reloadRequiredInfobar.dispose();
+        if (this.#debuggedTabReloadRequiredInfobar) {
+            this.#debuggedTabReloadRequiredInfobar.dispose();
             SDK.TargetManager.TargetManager.instance().removeModelListener(SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged, this.removeDebuggedTabReloadRequiredWarning, this);
         }
     }

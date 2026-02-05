@@ -4910,7 +4910,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI8.Panel.Panel {
       }
       this.#conversation = conversation;
     }
-    this.#conversation?.setContext(this.#getConversationContext(this.#conversation));
+    this.#conversation?.setContext(this.#getConversationContext(isAiAssistanceContextSelectionAgentEnabled() ? this.#getDefaultConversationType() : this.#conversation?.type ?? null));
     this.requestUpdate();
   }
   wasShown() {
@@ -5330,11 +5330,8 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI8.Panel.Panel {
     this.#runAbortController.abort();
     this.#runAbortController = new AbortController();
   }
-  #getConversationContext(conversation) {
-    if (!conversation) {
-      return null;
-    }
-    switch (conversation.type) {
+  #getConversationContext(type) {
+    switch (type) {
       case "freestyler":
         return this.#selectedElement;
       case "drjones-file":
@@ -5344,32 +5341,24 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI8.Panel.Panel {
       case "drjones-performance-full":
         return this.#selectedPerformanceTrace;
       case "none":
+      case void 0:
         return null;
     }
   }
   #handleConversationContextChange = (data) => {
     if (data instanceof Workspace6.UISourceCode.UISourceCode) {
-      if (this.#selectedFile?.getItem() === data) {
-        return;
-      }
-      this.#selectedFile = new AiAssistanceModel5.FileAgent.FileContext(data);
+      const context = new AiAssistanceModel5.FileAgent.FileContext(data);
+      this.#selectedFile = context;
     } else if (data instanceof SDK3.DOMModel.DOMNode) {
-      if (this.#selectedElement?.getItem() === data || // Ignore non node type like comments or html tags
-      data.nodeType() === Node.ELEMENT_NODE) {
-        return;
-      }
-      this.#selectedElement = new AiAssistanceModel5.StylingAgent.NodeContext(data);
+      const context = new AiAssistanceModel5.StylingAgent.NodeContext(data);
+      this.#selectedElement = context;
     } else if (data instanceof SDK3.NetworkRequest.NetworkRequest) {
-      if (this.#selectedRequest?.getItem() === data) {
-        return;
-      }
       const calculator = NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator();
-      this.#selectedRequest = new AiAssistanceModel5.NetworkAgent.RequestContext(data, calculator);
+      const context = new AiAssistanceModel5.NetworkAgent.RequestContext(data, calculator);
+      this.#selectedRequest = context;
     } else if (data instanceof AiAssistanceModel5.AIContext.AgentFocus) {
-      if (this.#selectedPerformanceTrace?.getItem() === data) {
-        return;
-      }
-      this.#selectedPerformanceTrace = new AiAssistanceModel5.PerformanceAgent.PerformanceTraceContext(data);
+      const context = new AiAssistanceModel5.PerformanceAgent.PerformanceTraceContext(data);
+      this.#selectedPerformanceTrace = context;
     }
     this.#updateConversationState(this.#conversation);
   };
@@ -5379,7 +5368,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI8.Panel.Panel {
     }
     this.#cancel();
     const signal = this.#runAbortController.signal;
-    const context = this.#getConversationContext(this.#conversation);
+    const context = this.#getConversationContext(this.#conversation.type);
     this.#conversation.setContext(context);
     if (this.#conversation.isBlockedByOrigin) {
       throw new Error("cross-origin context data should not be included");

@@ -1,5 +1,6 @@
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Logs from '../../models/logs/logs.js';
+import type * as StackTrace from '../../models/stack_trace/stack_trace.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 export interface ViewInput {
@@ -16,7 +17,10 @@ export declare class RequestInitiatorView extends UI.Widget.VBox {
     private readonly linkifier;
     private readonly request;
     constructor(request: SDK.NetworkRequest.NetworkRequest, view?: View);
-    static createStackTracePreview(request: SDK.NetworkRequest.NetworkRequest, linkifier: Components.Linkifier.Linkifier, focusableLink?: boolean): Components.JSPresentationUtils.StackTracePreviewContent | null;
+    static createStackTracePreview(request: SDK.NetworkRequest.NetworkRequest, linkifier: Components.Linkifier.Linkifier, focusableLink?: boolean): Promise<{
+        preview: Components.JSPresentationUtils.StackTracePreviewContent;
+        stackTrace: StackTrace.StackTrace.StackTrace | null;
+    } | null>;
     performUpdate(): void;
     wasShown(): void;
 }

@@ -39,9 +39,12 @@ export default `/*
 
   &:has(.payload-name) {
     margin: var(--sys-size-3) 0;
-    display: grid;
-    grid-template-columns: min-content 1fr;
-    gap: var(--sys-size-6);
+
+    .tree-element-title {
+      display: grid;
+      grid-template-columns: min-content 1fr;
+      gap: var(--sys-size-6);
+    }
   }
 }
 

@@ -7,10 +7,10 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as NetworkTimeCalculator from '../network_time_calculator/network_time_calculator.js';
 import { ContextSelectionAgent } from './agents/ContextSelectionAgent.js';
-import { FileAgent } from './agents/FileAgent.js';
-import { NetworkAgent } from './agents/NetworkAgent.js';
-import { PerformanceAgent } from './agents/PerformanceAgent.js';
-import { StylingAgent } from './agents/StylingAgent.js';
+import { FileAgent, FileContext } from './agents/FileAgent.js';
+import { NetworkAgent, RequestContext } from './agents/NetworkAgent.js';
+import { PerformanceAgent, PerformanceTraceContext } from './agents/PerformanceAgent.js';
+import { NodeContext, StylingAgent } from './agents/StylingAgent.js';
 import { AiHistoryStorage } from './AiHistoryStorage.js';
 import { NetworkRequestFormatter } from './data_formatters/NetworkRequestFormatter.js';
 import { PerformanceInsightFormatter } from './data_formatters/PerformanceInsightFormatter.js';
@@ -37,25 +37,26 @@ export class AiConversation {
         return new AiConversation(serializedConversation.type, history, serializedConversation.id, true, undefined, undefined, serializedConversation.isExternal);
     }
     id;
+    // Handled in #updateAgent
     #type;
+    // Handled in #updateAgent
+    #agent;
     #isReadOnly;
     history;
     #isExternal;
     #aidaClient;
     #changeManager;
-    #agent;
     #origin;
     #contexts = [];
     constructor(type, data = [], id = crypto.randomUUID(), isReadOnly = true, aidaClient = new Host.AidaClient.AidaClient(), changeManager, isExternal = false) {
         this.#changeManager = changeManager;
         this.#aidaClient = aidaClient;
-        this.#type = type;
         this.id = id;
         this.#isReadOnly = isReadOnly;
         this.#isExternal = isExternal;
         this.history = this.#reconstructHistory(data);
         // Needs to be last
-        this.#agent = this.#createAgent();
+        this.#updateAgent(type);
     }
     get isReadOnly() {
         return this.#isReadOnly;
@@ -81,9 +82,26 @@ export class AiConversation {
     setContext(updateContext) {
         if (!updateContext) {
             this.#contexts = [];
+            if (isAiAssistanceContextSelectionAgentEnabled()) {
+                this.#updateAgent("none" /* ConversationType.NONE */);
+            }
             return;
         }
         this.#contexts = [updateContext];
+        if (isAiAssistanceContextSelectionAgentEnabled()) {
+            if (updateContext instanceof FileContext) {
+                this.#updateAgent("drjones-file" /* ConversationType.FILE */);
+            }
+            else if (updateContext instanceof NodeContext) {
+                this.#updateAgent("freestyler" /* ConversationType.STYLING */);
+            }
+            else if (updateContext instanceof RequestContext) {
+                this.#updateAgent("drjones-network-request" /* ConversationType.NETWORK */);
+            }
+            else if (updateContext instanceof PerformanceTraceContext) {
+                this.#updateAgent("drjones-performance-full" /* ConversationType.PERFORMANCE */);
+            }
+        }
     }
     get selectedContext() {
         return this.#contexts.at(0);
@@ -197,37 +215,39 @@ export class AiConversation {
             isExternal: this.#isExternal,
         };
     }
-    #createAgent() {
+    #updateAgent(type) {
+        if (this.#type === type) {
+            return;
+        }
+        this.#type = type;
         const options = {
             aidaClient: this.#aidaClient,
             serverSideLoggingEnabled: isAiAssistanceServerSideLoggingEnabled(),
             sessionId: this.id,
             changeManager: this.#changeManager,
         };
-        let agent;
-        switch (this.#type) {
+        switch (type) {
             case "freestyler" /* ConversationType.STYLING */: {
-                agent = new StylingAgent(options);
+                this.#agent = new StylingAgent(options);
                 break;
             }
             case "drjones-network-request" /* ConversationType.NETWORK */: {
-                agent = new NetworkAgent(options);
+                this.#agent = new NetworkAgent(options);
                 break;
             }
             case "drjones-file" /* ConversationType.FILE */: {
-                agent = new FileAgent(options);
+                this.#agent = new FileAgent(options);
                 break;
             }
             case "drjones-performance-full" /* ConversationType.PERFORMANCE */: {
-                agent = new PerformanceAgent(options);
+                this.#agent = new PerformanceAgent(options);
                 break;
             }
             case "none" /* ConversationType.NONE */: {
-                agent = new ContextSelectionAgent(options);
+                this.#agent = new ContextSelectionAgent(options);
                 break;
             }
         }
-        return agent;
     }
     #factsCache = new Map();
     async #createFactsForExtraContext(contexts) {
@@ -318,10 +338,6 @@ Time: ${micros(time)}`;
             signal: options.signal,
             selected: this.selectedContext ?? null,
         }, options.multimodalInput)) {
-            if (data.type === "context-change" /* ResponseType.CONTEXT_CHANGE */) {
-                this.#type = "drjones-network-request" /* ConversationType.NETWORK */;
-                this.#agent = this.#createAgent();
-            }
             if (shouldAddToHistory(data)) {
                 void this.addHistoryItem(data);
             }
@@ -345,5 +361,8 @@ Time: ${micros(time)}`;
 }
 function isAiAssistanceServerSideLoggingEnabled() {
     return !Root.Runtime.hostConfig.aidaAvailability?.disallowLogging;
+}
+function isAiAssistanceContextSelectionAgentEnabled() {
+    return Boolean(Root.Runtime.hostConfig.devToolsAiAssistanceContextSelectionAgent?.enabled);
 }
 //# sourceMappingURL=AiConversation.js.map

@@ -3590,10 +3590,6 @@ var UIStrings = {
   /**
    * @description The UI destination when right clicking an item that can be revealed
    */
-  securityPanel: "Security panel",
-  /**
-   * @description The UI destination when right clicking an item that can be revealed
-   */
   sourcesPanel: "Sources panel",
   /**
    * @description The UI destination when right clicking an item that can be revealed
@@ -3695,7 +3691,6 @@ var RevealerDestination = {
   TIMELINE_PANEL: i18nLazyString(UIStrings.timelinePanel),
   APPLICATION_PANEL: i18nLazyString(UIStrings.applicationPanel),
   SOURCES_PANEL: i18nLazyString(UIStrings.sourcesPanel),
-  SECURITY_PANEL: i18nLazyString(UIStrings.securityPanel),
   MEMORY_INSPECTOR_PANEL: i18nLazyString(UIStrings.memoryInspectorPanel),
   ANIMATIONS_PANEL: i18nLazyString(UIStrings.animationsPanel)
 };

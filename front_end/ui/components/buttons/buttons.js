@@ -407,7 +407,7 @@ var Button = class extends HTMLElement {
     this.addEventListener("click", this.#boundOnClick, true);
   }
   cloneNode(deep) {
-    const node = super.cloneNode(deep);
+    const node = document.importNode(this, deep);
     Object.assign(node.#props, this.#props);
     node.#render();
     return node;

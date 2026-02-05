@@ -3891,6 +3891,7 @@ __export(RequestInitiatorView_exports, {
 });
 import * as i18n15 from "./../../core/i18n/i18n.js";
 import * as SDK7 from "./../../core/sdk/sdk.js";
+import * as Bindings2 from "./../../models/bindings/bindings.js";
 import * as Logs3 from "./../../models/logs/logs.js";
 import * as Components2 from "./../../ui/legacy/components/utils/utils.js";
 import * as UI8 from "./../../ui/legacy/legacy.js";
@@ -4069,14 +4070,23 @@ var RequestInitiatorView = class extends UI8.Widget.VBox {
     this.request = request;
     this.#view = view;
   }
-  static createStackTracePreview(request, linkifier, focusableLink) {
+  static async createStackTracePreview(request, linkifier, focusableLink) {
     const initiator = request.initiator();
     if (!initiator?.stack) {
       return null;
     }
     const networkManager = SDK7.NetworkManager.NetworkManager.forRequest(request);
     const target = networkManager ? networkManager.target() : void 0;
-    return new Components2.JSPresentationUtils.StackTracePreviewContent(void 0, target, linkifier, { runtimeStackTrace: initiator.stack, tabStops: focusableLink });
+    if (target) {
+      const stackTrace = await Bindings2.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createStackTraceFromProtocolRuntime(initiator.stack, target);
+      const preview = new Components2.JSPresentationUtils.StackTracePreviewContent(void 0, target, linkifier, { tabStops: focusableLink });
+      preview.stackTrace = stackTrace;
+      return { preview, stackTrace };
+    }
+    return {
+      preview: new Components2.JSPresentationUtils.StackTracePreviewContent(void 0, target, linkifier, { runtimeStackTrace: initiator.stack, tabStops: focusableLink }),
+      stackTrace: null
+    };
   }
   performUpdate() {
     const initiatorGraph = Logs3.NetworkLog.NetworkLog.instance().initiatorGraphForRequest(this.request);
@@ -4102,7 +4112,7 @@ var RequestInitiatorView = class extends UI8.Widget.VBox {
 // gen/front_end/panels/network/RequestPayloadView.js
 var RequestPayloadView_exports = {};
 __export(RequestPayloadView_exports, {
-  Category: () => Category,
+  DEFAULT_VIEW: () => DEFAULT_VIEW6,
   RequestPayloadView: () => RequestPayloadView
 });
 import * as Common6 from "./../../core/common/common.js";
@@ -4131,7 +4141,8 @@ var objectPropertiesSection_css_default = `/*
   overflow-x: auto;
 }
 
-.object-properties-section li {
+.object-properties-section li,
+li.object-properties-section  {
   user-select: text;
 
   &::before {
@@ -4391,9 +4402,12 @@ var requestPayloadTree_css_default = `/*
 
   &:has(.payload-name) {
     margin: var(--sys-size-3) 0;
-    display: grid;
-    grid-template-columns: min-content 1fr;
-    gap: var(--sys-size-6);
+
+    .tree-element-title {
+      display: grid;
+      grid-template-columns: min-content 1fr;
+      gap: var(--sys-size-6);
+    }
   }
 }
 
@@ -4488,6 +4502,7 @@ var requestPayloadView_css_default = `/*
 }
 
 .request-payload-tree {
+  display: block;
   flex-grow: 1;
   overflow-y: auto;
   margin: 0;
@@ -4623,40 +4638,178 @@ var UIStrings10 = {
 };
 var str_10 = i18n19.i18n.registerUIStrings("panels/network/RequestPayloadView.ts", UIStrings10);
 var i18nString10 = i18n19.i18n.getLocalizedString.bind(void 0, str_10);
-var RequestPayloadView = class _RequestPayloadView extends UI10.Widget.VBox {
-  request;
-  decodeRequestParameters;
-  queryStringCategory;
-  formDataCategory;
-  requestPayloadCategory;
-  constructor(request) {
-    super({ jslog: `${VisualLogging7.pane("payload").track({ resize: true })}` });
-    this.registerRequiredCSS(requestPayloadView_css_default);
-    this.element.classList.add("request-payload-view");
-    this.request = request;
-    this.decodeRequestParameters = true;
+var DEFAULT_VIEW6 = (input, output, target) => {
+  const createViewSourceToggle = (viewSource, callback) => html6`<devtools-button
+      class="payload-toggle"
+      jslog=${VisualLogging7.action().track({ click: true }).context("source-parse")}
+      .variant=${"outlined"}
+      @click=${(e) => {
+    e.consume();
+    callback(!viewSource);
+  }}>
+      ${viewSource ? i18nString10(UIStrings10.viewParsed) : i18nString10(UIStrings10.viewSource)}
+    </devtools-button>`;
+  const copyValueContextmenu = (title, value, jslogContext) => (e) => {
+    e.consume(true);
+    const contextMenu = new UI10.ContextMenu.ContextMenu(e);
+    const copyValueHandler = () => input.copyValue(value());
+    contextMenu.clipboardSection().appendItem(title, copyValueHandler, { jslogContext });
+    void contextMenu.show();
+  };
+  const createSourceText = (text) => html6`<li role=treeitem
+      @contextmenu=${copyValueContextmenu(i18nString10(UIStrings10.copyPayload), () => text, "copy-payload")}>
+        <devtools-widget class='payload-value source-code' .widgetConfig=${widgetConfig3(ShowMoreDetailsWidget, { text })}>
+        </devtools-widget>
+      </li>`;
+  const createParsedParams = (params) => params.map((param) => html6`<li role=treeitem @contextmenu=${copyValueContextmenu(i18nString10(UIStrings10.copyValue), () => decodeURIComponent(param.value), "copy-value")}>${param.name !== "" ? html6`${RequestPayloadView.formatParameter(param.name, "payload-name", input.decodeRequestParameters)}${RequestPayloadView.formatParameter(param.value, "payload-value source-code", input.decodeRequestParameters)}` : RequestPayloadView.formatParameter(i18nString10(UIStrings10.empty), "empty-request-payload", input.decodeRequestParameters)}</li>`);
+  const parsedFormData = (() => {
+    if (input.formData && !input.formParameters) {
+      try {
+        return JSON.parse(input.formData);
+      } catch {
+      }
+      return void 0;
+    }
+  })();
+  const createPayload = (parsedFormData2) => {
+    const object = new SDK8.RemoteObject.LocalJSONObject(parsedFormData2);
+    const section4 = new ObjectUI.ObjectPropertiesSection.RootElement(new ObjectUI.ObjectPropertiesSection.ObjectTree(object));
+    section4.title = document.createTextNode(object.description);
+    section4.listItemElement.classList.add("source-code", "object-properties-section");
+    section4.childrenListElement.classList.add("source-code", "object-properties-section");
+    section4.expand();
+    return html6`<devtools-tree-wrapper
+          .treeElement=${section4}></devtools-tree-wrapper>`;
+  };
+  const queryStringExpandedSetting = Common6.Settings.Settings.instance().createSetting("request-info-query-string-category-expanded", true);
+  const formDataExpandedSetting = Common6.Settings.Settings.instance().createSetting("request-info-form-data-category-expanded", true);
+  const requestPayloadExpandedSetting = Common6.Settings.Settings.instance().createSetting("request-info-request-payload-category-expanded", true);
+  const toggleURLDecoding = (e) => {
+    e.consume();
+    input.setURLDecoding(!input.decodeRequestParameters);
+  };
+  const onContextMenu = (viewSource, callback, includeURLDecodingOption = true) => (event) => {
+    const contextMenu = new UI10.ContextMenu.ContextMenu(event);
+    const section4 = contextMenu.newSection();
+    if (viewSource) {
+      section4.appendItem(i18nString10(UIStrings10.viewParsed), () => callback(!viewSource), { jslogContext: "view-parsed" });
+    } else {
+      section4.appendItem(i18nString10(UIStrings10.viewSource), () => callback(!viewSource), { jslogContext: "view-source" });
+      if (includeURLDecodingOption) {
+        const viewURLEncodedText = input.decodeRequestParameters ? i18nString10(UIStrings10.viewUrlEncoded) : i18nString10(UIStrings10.viewDecoded);
+        section4.appendItem(viewURLEncodedText, toggleURLDecoding.bind(void 0, event), { jslogContext: "toggle-url-decoding" });
+      }
+    }
+    void contextMenu.show();
+  };
+  render7(html6`<style>${requestPayloadView_css_default}</style>
+   <devtools-tree dense class=request-payload-tree .template=${html6`
+     <style>${objectValue_css_default}</style>
+     <style>${objectPropertiesSection_css_default}</style>
+     <style>${requestPayloadTree_css_default}</style>
+     <ul role=tree>
+      <li
+          role=treeitem
+          ?hidden=${!input.queryParameters}
+          jslog=${VisualLogging7.section().context("query-string")}
+          @contextmenu=${onContextMenu(input.viewQueryParamSource, input.setViewQueryParamSource)}
+          @expanded=${(e) => queryStringExpandedSetting.set(e.detail.expanded)}
+        >
+        <div class="selection fill"></div>${i18nString10(UIStrings10.queryStringParameters)}<span
+          class=payload-count>${`\xA0(${input.queryParameters?.length ?? 0})`}</span>${createViewSourceToggle(input.viewQueryParamSource, input.setViewQueryParamSource)}
+        <devtools-button
+            class=payload-toggle
+            ?hidden=${input.viewQueryParamSource}
+            jslog=${VisualLogging7.action().track({ click: true }).context("decode-encode")}
+            .variant=${"outlined"}
+            @click=${toggleURLDecoding}>
+          ${input.decodeRequestParameters ? i18nString10(UIStrings10.viewUrlEncoded) : i18nString10(UIStrings10.viewDecoded)}
+        </devtools-button>
+        <ul role=group ?hidden=${!queryStringExpandedSetting.get()}>
+          ${input.viewQueryParamSource ? createSourceText(input.queryString ?? "") : createParsedParams(input.queryParameters ?? [])}
+        </ul>
+      </li>
+      <li
+          role=treeitem
+          ?hidden=${!input.formData || !input.formParameters}
+          jslog=${VisualLogging7.section().context("form-data")}
+          @contextmenu=${onContextMenu(input.viewFormParamSource, input.setViewFormParamSource)}
+          @expanded=${(e) => formDataExpandedSetting.set(e.detail.expanded)}
+        >
+        <div class="selection fill"></div>${i18nString10(UIStrings10.formData)}<span
+          class=payload-count>${`\xA0(${input.formParameters?.length ?? 0})`}</span>${createViewSourceToggle(input.viewFormParamSource, input.setViewFormParamSource)}
+        <devtools-button
+            class=payload-toggle
+            ?hidden=${input.viewFormParamSource}
+            jslog=${VisualLogging7.action().track({ click: true }).context("decode-encode")}
+            .variant=${"outlined"}
+            @click=${toggleURLDecoding}>
+          ${input.decodeRequestParameters ? i18nString10(UIStrings10.viewUrlEncoded) : i18nString10(UIStrings10.viewDecoded)}
+        </devtools-button>
+        <ul role=group ?hidden=${!formDataExpandedSetting.get()}>>
+          ${input.viewFormParamSource ? createSourceText(input.formData ?? "") : createParsedParams(input.formParameters ?? [])}
+        </ul>
+      </li>
+      <li
+          role=treeitem
+          ?hidden=${!input.formData || Boolean(input.formParameters)}
+          jslog=${VisualLogging7.section().context("request-payload")}
+          @contextmenu=${onContextMenu(
+    input.viewJSONPayloadSource,
+    input.setViewJSONPayloadSource,
+    /* includeURLDecodingOption*/
+    false
+  )}
+          @expanded=${(e) => requestPayloadExpandedSetting.set(e.detail.expanded)}
+        >
+        <div class="selection fill"></div>${i18nString10(UIStrings10.requestPayload)}${createViewSourceToggle(input.viewJSONPayloadSource, input.setViewJSONPayloadSource)}
+        <ul role=group ?hidden=${!requestPayloadExpandedSetting.get()}>
+          ${!parsedFormData || input.viewJSONPayloadSource ? createSourceText(input.formData ?? "") : createPayload(parsedFormData)}
+        </ul>
+      </li>
+     </ul>
+     `}></devtools-tree>
+   `, target);
+};
+var RequestPayloadView = class extends UI10.Widget.VBox {
+  #request;
+  #decodeRequestParameters = true;
+  #formData;
+  #formParameters;
+  #view;
+  #viewJSONPayloadSource = false;
+  #viewFormParamSource = false;
+  #viewQueryParamSource = false;
+  constructor(target, view = DEFAULT_VIEW6) {
+    super({ jslog: `${VisualLogging7.pane("payload").track({ resize: true })}`, classes: ["request-payload-view"] });
+    this.#view = view;
+  }
+  set request(request) {
+    if (this.#request) {
+      this.#request.removeEventListener(SDK8.NetworkRequest.Events.REQUEST_HEADERS_CHANGED, this.#refreshFormData, this);
+    }
+    this.#request = request;
     const contentType = request.requestContentType();
     if (contentType) {
-      this.decodeRequestParameters = Boolean(contentType.match(/^application\/x-www-form-urlencoded\s*(;.*)?$/i));
+      this.#decodeRequestParameters = Boolean(contentType.match(/^application\/x-www-form-urlencoded\s*(;.*)?$/i));
     }
-    const root = new UI10.TreeOutline.TreeOutlineInShadow();
-    root.registerRequiredCSS(objectValue_css_default, objectPropertiesSection_css_default, requestPayloadTree_css_default);
-    root.element.classList.add("request-payload-tree");
-    root.setDense(true);
-    this.element.appendChild(root.element);
-    this.queryStringCategory = new Category(root, "query-string");
-    this.formDataCategory = new Category(root, "form-data");
-    this.requestPayloadCategory = new Category(root, "request-payload");
+    if (this.isShowing()) {
+      this.#request?.addEventListener(SDK8.NetworkRequest.Events.REQUEST_HEADERS_CHANGED, this.#refreshFormData, this);
+    }
+    this.requestUpdate();
+    void this.#refreshFormData();
+  }
+  get request() {
+    return this.#request;
   }
   wasShown() {
     super.wasShown();
-    this.request.addEventListener(SDK8.NetworkRequest.Events.REQUEST_HEADERS_CHANGED, this.refreshFormData, this);
-    this.refreshQueryString();
-    void this.refreshFormData();
+    this.request?.addEventListener(SDK8.NetworkRequest.Events.REQUEST_HEADERS_CHANGED, this.#refreshFormData, this);
+    void this.#refreshFormData();
   }
   willHide() {
     super.willHide();
-    this.request.removeEventListener(SDK8.NetworkRequest.Events.REQUEST_HEADERS_CHANGED, this.refreshFormData, this);
+    this.request?.removeEventListener(SDK8.NetworkRequest.Events.REQUEST_HEADERS_CHANGED, this.#refreshFormData, this);
   }
   addEntryContextMenuHandler(treeElement, menuItem, jslogContext, getValue) {
     treeElement.listItemElement.addEventListener("contextmenu", (event) => {
@@ -4670,107 +4823,48 @@ var RequestPayloadView = class _RequestPayloadView extends UI10.Widget.VBox {
       void contextMenu.show();
     });
   }
-  refreshQueryString() {
-    const queryString = this.request.queryString();
-    const queryParameters = this.request.queryParameters;
-    this.queryStringCategory.hidden = !queryParameters;
-    if (queryParameters) {
-      this.refreshParams(i18nString10(UIStrings10.queryStringParameters), queryParameters, queryString, this.queryStringCategory);
-    }
-  }
-  async refreshFormData() {
-    const formData = await this.request.requestFormData();
-    if (!formData) {
-      this.formDataCategory.hidden = true;
-      this.requestPayloadCategory.hidden = true;
+  performUpdate() {
+    if (!this.request) {
       return;
     }
-    const formParameters = await this.request.formParameters();
-    if (formParameters) {
-      this.formDataCategory.hidden = false;
-      this.requestPayloadCategory.hidden = true;
-      this.refreshParams(i18nString10(UIStrings10.formData), formParameters, formData, this.formDataCategory);
-    } else {
-      this.requestPayloadCategory.hidden = false;
-      this.formDataCategory.hidden = true;
-      try {
-        const json = JSON.parse(formData);
-        this.refreshRequestJSONPayload(json, formData);
-      } catch {
-        this.populateTreeElementWithSourceText(this.requestPayloadCategory, formData);
+    const input = {
+      queryString: this.request.queryString(),
+      queryParameters: this.request.queryParameters,
+      formData: this.#formData,
+      formParameters: this.#formParameters,
+      decodeRequestParameters: this.#decodeRequestParameters,
+      setURLDecoding: (value) => {
+        this.#decodeRequestParameters = value;
+        this.requestUpdate();
+      },
+      viewQueryParamSource: this.#viewQueryParamSource,
+      setViewQueryParamSource: (value) => {
+        this.#viewQueryParamSource = value;
+        this.requestUpdate();
+      },
+      viewFormParamSource: this.#viewFormParamSource,
+      setViewFormParamSource: (value) => {
+        this.#viewFormParamSource = value;
+        this.requestUpdate();
+      },
+      viewJSONPayloadSource: this.#viewJSONPayloadSource,
+      setViewJSONPayloadSource: (value) => {
+        this.#viewJSONPayloadSource = value;
+        this.requestUpdate();
+      },
+      copyValue: (value) => {
+        Host4.userMetrics.actionTaken(Host4.UserMetrics.Action.NetworkPanelCopyValue);
+        Host4.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(value);
       }
-    }
+    };
+    this.#view(input, {}, this.element);
   }
-  populateTreeElementWithSourceText(treeElement, text) {
-    const sourceTreeElement = new UI10.TreeOutline.TreeElement();
-    treeElement.removeChildren();
-    treeElement.appendChild(sourceTreeElement);
-    this.addEntryContextMenuHandler(sourceTreeElement, i18nString10(UIStrings10.copyPayload), "copy-payload", () => text);
-    render7(html6`<devtools-widget class='payload-value source-code'
-           .widgetConfig=${widgetConfig3(ShowMoreDetailsWidget, { text })}></devtools-widget>`, sourceTreeElement.listItemElement);
-  }
-  refreshParams(title, params, sourceText, paramsTreeElement) {
-    const viewParsed = function(event) {
-      paramsTreeElement.listItemElement.removeEventListener("contextmenu", viewParsedContextMenu);
-      viewSourceForItems.delete(paramsTreeElement);
-      this.refreshParams(title, params, sourceText, paramsTreeElement);
-      event.consume();
-    };
-    const viewParsedContextMenu = (event) => {
-      if (!paramsTreeElement.expanded) {
-        return;
-      }
-      const contextMenu = new UI10.ContextMenu.ContextMenu(event);
-      contextMenu.newSection().appendItem(i18nString10(UIStrings10.viewParsed), viewParsed.bind(this, event), { jslogContext: "view-parsed" });
-      void contextMenu.show();
-    };
-    const viewSource = function(event) {
-      paramsTreeElement.listItemElement.removeEventListener("contextmenu", viewSourceContextMenu);
-      viewSourceForItems.add(paramsTreeElement);
-      this.refreshParams(title, params, sourceText, paramsTreeElement);
-      event.consume();
-    };
-    const toggleURLDecoding = function(event) {
-      paramsTreeElement.listItemElement.removeEventListener("contextmenu", viewSourceContextMenu);
-      this.toggleURLDecoding(event);
-    };
-    const viewSourceContextMenu = (event) => {
-      if (!paramsTreeElement.expanded) {
-        return;
-      }
-      const contextMenu = new UI10.ContextMenu.ContextMenu(event);
-      const section4 = contextMenu.newSection();
-      section4.appendItem(i18nString10(UIStrings10.viewSource), viewSource.bind(this, event), { jslogContext: "view-source" });
-      const viewURLEncodedText = this.decodeRequestParameters ? i18nString10(UIStrings10.viewUrlEncoded) : i18nString10(UIStrings10.viewDecoded);
-      section4.appendItem(viewURLEncodedText, toggleURLDecoding.bind(this, event), { jslogContext: "toggle-url-decoding" });
-      void contextMenu.show();
-    };
-    const count = `\xA0(${params?.length ?? 0})`;
-    const shouldViewSource = viewSourceForItems.has(paramsTreeElement);
-    render7(html6`<div class="selection fill"></div>${title}<span class=payload-count>${count}</span>${shouldViewSource ? this.createViewSourceToggle(
-      /* viewSource */
-      true,
-      viewParsed.bind(this)
-    ) : html6`${this.createViewSourceToggle(
-      /* viewSource */
-      false,
-      viewSource.bind(this)
-    )}
-      <devtools-button
-        class=payload-toggle
-        jslogi=${VisualLogging7.action().track({ click: true }).context("decode-encode")}
-        .variant=${"outlined"}
-        @click=${toggleURLDecoding.bind(this)}>
-        ${this.decodeRequestParameters ? i18nString10(UIStrings10.viewUrlEncoded) : i18nString10(UIStrings10.viewDecoded)}
-      </devtools-button>`}`, paramsTreeElement.listItemElement);
-    paramsTreeElement.removeChildren();
-    if (shouldViewSource) {
-      this.populateTreeElementWithSourceText(paramsTreeElement, (sourceText ?? "").trim());
-      paramsTreeElement.listItemElement.addEventListener("contextmenu", viewParsedContextMenu);
-    } else {
-      this.populateTreeElementWithParsedParameters(paramsTreeElement, params);
-      paramsTreeElement.listItemElement.addEventListener("contextmenu", viewSourceContextMenu);
+  async #refreshFormData() {
+    this.#formData = await this.request?.requestFormData() ?? void 0;
+    if (this.#formData) {
+      this.#formParameters = await this.request?.formParameters() ?? void 0;
     }
+    this.requestUpdate();
   }
   static formatParameter(value, className, decodeParameters) {
     let errorDecoding = false;
@@ -4789,112 +4883,6 @@ var RequestPayloadView = class _RequestPayloadView extends UI10.Widget.VBox {
       ${errorDecoding ? html6`<span class=payload-decode-error>${i18nString10(UIStrings10.unableToDecodeValue)}</span>` : value}
     </div>`;
   }
-  populateTreeElementWithParsedParameters(paramsTreeElement, params) {
-    for (const param of params || []) {
-      const paramNameValue = document.createDocumentFragment();
-      if (param.name !== "") {
-        render7(html6`${_RequestPayloadView.formatParameter(param.name, "payload-name", this.decodeRequestParameters)}${_RequestPayloadView.formatParameter(param.value, "payload-value source-code", this.decodeRequestParameters)}`, paramNameValue);
-      } else {
-        render7(_RequestPayloadView.formatParameter(i18nString10(UIStrings10.empty), "empty-request-payload", this.decodeRequestParameters), paramNameValue);
-      }
-      const paramTreeElement = new UI10.TreeOutline.TreeElement(paramNameValue);
-      this.addEntryContextMenuHandler(paramTreeElement, i18nString10(UIStrings10.copyValue), "copy-value", () => decodeURIComponent(param.value));
-      paramsTreeElement.appendChild(paramTreeElement);
-    }
-  }
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  refreshRequestJSONPayload(parsedObject, sourceText) {
-    const rootListItem = this.requestPayloadCategory;
-    const viewParsed = function(event) {
-      rootListItemElement.removeEventListener("contextmenu", viewParsedContextMenu);
-      viewSourceForItems.delete(rootListItem);
-      this.refreshRequestJSONPayload(parsedObject, sourceText);
-      event.consume();
-    };
-    const viewParsedContextMenu = (event) => {
-      if (!rootListItem.expanded) {
-        return;
-      }
-      const contextMenu = new UI10.ContextMenu.ContextMenu(event);
-      contextMenu.newSection().appendItem(i18nString10(UIStrings10.viewParsed), viewParsed.bind(this, event), { jslogContext: "view-parsed" });
-      void contextMenu.show();
-    };
-    const viewSource = function(event) {
-      rootListItemElement.removeEventListener("contextmenu", viewSourceContextMenu);
-      viewSourceForItems.add(rootListItem);
-      this.refreshRequestJSONPayload(parsedObject, sourceText);
-      event.consume();
-    };
-    const viewSourceContextMenu = (event) => {
-      if (!rootListItem.expanded) {
-        return;
-      }
-      const contextMenu = new UI10.ContextMenu.ContextMenu(event);
-      contextMenu.newSection().appendItem(i18nString10(UIStrings10.viewSource), viewSource.bind(this, event), { jslogContext: "view-source" });
-      void contextMenu.show();
-    };
-    const showSource = viewSourceForItems.has(rootListItem);
-    const rootListItemElement = rootListItem.listItemElement;
-    render7(html6`<div class="selection fill"></div>${i18nString10(UIStrings10.requestPayload)}${this.createViewSourceToggle(showSource, showSource ? viewParsed.bind(this) : viewSource.bind(this))}`, rootListItemElement);
-    rootListItem.removeChildren();
-    if (showSource) {
-      this.populateTreeElementWithSourceText(rootListItem, sourceText);
-      rootListItemElement.addEventListener("contextmenu", viewParsedContextMenu);
-    } else {
-      rootListItem.childrenListElement.classList.add("source-code", "object-properties-section");
-      this.populateTreeElementWithObject(rootListItem, parsedObject);
-      rootListItemElement.addEventListener("contextmenu", viewSourceContextMenu);
-    }
-  }
-  populateTreeElementWithObject(rootListItem, parsedObject) {
-    const object = new SDK8.RemoteObject.LocalJSONObject(parsedObject);
-    const section4 = new ObjectUI.ObjectPropertiesSection.RootElement(new ObjectUI.ObjectPropertiesSection.ObjectTree(object));
-    section4.title = object.description;
-    section4.expand();
-    rootListItem.appendChild(section4);
-  }
-  createViewSourceToggle(viewSource, handler) {
-    return html6`<devtools-button
-        class=payload-toggle
-        jslogi=${VisualLogging7.action().track({ click: true }).context("source-parse")}
-        .variant=${"outlined"}
-        @click=${handler}>
-      ${viewSource ? i18nString10(UIStrings10.viewParsed) : i18nString10(UIStrings10.viewSource)}
-    </devtools-button>`;
-  }
-  toggleURLDecoding(event) {
-    this.decodeRequestParameters = !this.decodeRequestParameters;
-    this.refreshQueryString();
-    void this.refreshFormData();
-    event.consume();
-  }
-};
-var viewSourceForItems = /* @__PURE__ */ new WeakSet();
-var Category = class extends UI10.TreeOutline.TreeElement {
-  toggleOnClick;
-  expandedSetting;
-  expanded;
-  constructor(root, name, title) {
-    super(title || "", true);
-    this.toggleOnClick = true;
-    this.hidden = true;
-    this.expandedSetting = Common6.Settings.Settings.instance().createSetting("request-info-" + name + "-category-expanded", true);
-    this.expanded = this.expandedSetting.get();
-    this.listItemElement.setAttribute("jslog", `${VisualLogging7.section().context(name)}`);
-    root.appendChild(this);
-  }
-  createLeaf() {
-    const leaf = new UI10.TreeOutline.TreeElement();
-    this.appendChild(leaf);
-    return leaf;
-  }
-  onexpand() {
-    this.expandedSetting.set(true);
-  }
-  oncollapse() {
-    this.expandedSetting.set(false);
-  }
 };
 
 // gen/front_end/panels/network/RequestPreviewView.js
@@ -4912,7 +4900,7 @@ import * as VisualLogging8 from "./../../ui/visual_logging/visual_logging.js";
 // gen/front_end/panels/network/RequestHTMLView.js
 var RequestHTMLView_exports = {};
 __export(RequestHTMLView_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW6,
+  DEFAULT_VIEW: () => DEFAULT_VIEW7,
   RequestHTMLView: () => RequestHTMLView
 });
 import * as UI11 from "./../../ui/legacy/legacy.js";
@@ -4938,7 +4926,7 @@ var requestHTMLView_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./requestHTMLView.css")} */`;
 
 // gen/front_end/panels/network/RequestHTMLView.js
-var DEFAULT_VIEW6 = (input, _output, target) => {
+var DEFAULT_VIEW7 = (input, _output, target) => {
   render8(html7`
     <style>${requestHTMLView_css_default}</style>
     <div class="html request-view widget vbox">
@@ -4952,7 +4940,7 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
 var RequestHTMLView = class _RequestHTMLView extends UI11.Widget.VBox {
   #dataURL;
   #view;
-  constructor(dataURL, view = DEFAULT_VIEW6) {
+  constructor(dataURL, view = DEFAULT_VIEW7) {
     super({ useShadowDom: true });
     this.#dataURL = dataURL;
     this.#view = view;
@@ -4977,7 +4965,7 @@ var RequestHTMLView = class _RequestHTMLView extends UI11.Widget.VBox {
 // gen/front_end/panels/network/SignedExchangeInfoView.js
 var SignedExchangeInfoView_exports = {};
 __export(SignedExchangeInfoView_exports, {
-  Category: () => Category2,
+  Category: () => Category,
   SignedExchangeInfoView: () => SignedExchangeInfoView
 });
 import * as Host5 from "./../../core/host/host.js";
@@ -5211,7 +5199,7 @@ var SignedExchangeInfoView = class extends UI12.Widget.VBox {
     this.element.appendChild(root.element);
     const errorFieldSetMap = /* @__PURE__ */ new Map();
     if (signedExchangeInfo.errors?.length) {
-      const errorMessagesCategory = new Category2(root, i18nString11(UIStrings11.errors));
+      const errorMessagesCategory = new Category(root, i18nString11(UIStrings11.errors));
       for (const error of signedExchangeInfo.errors) {
         const fragment = document.createDocumentFragment();
         const icon = new Icon();
@@ -5234,7 +5222,7 @@ var SignedExchangeInfoView = class extends UI12.Widget.VBox {
     titleElement.createChild("div", "header-name").textContent = i18nString11(UIStrings11.signedHttpExchange);
     const learnMoreNode = Link2.create("https://github.com/WICG/webpackage", i18nString11(UIStrings11.learnmore), "header-toggle", "learn-more");
     titleElement.appendChild(learnMoreNode);
-    const headerCategory = new Category2(root, titleElement);
+    const headerCategory = new Category(root, titleElement);
     if (signedExchangeInfo.header) {
       const header = signedExchangeInfo.header;
       const redirectDestination = request.redirectDestination();
@@ -5258,7 +5246,7 @@ var SignedExchangeInfoView = class extends UI12.Widget.VBox {
       for (let i = 0; i < header.signatures.length; ++i) {
         const errorFieldSet = errorFieldSetMap.get(i) || /* @__PURE__ */ new Set();
         const signature = header.signatures[i];
-        const signatureCategory = new Category2(root, i18nString11(UIStrings11.signature));
+        const signatureCategory = new Category(root, i18nString11(UIStrings11.signature));
         signatureCategory.createLeaf(this.formatHeader(i18nString11(UIStrings11.label), signature.label));
         signatureCategory.createLeaf(this.formatHeaderForHexData(i18nString11(UIStrings11.signature), signature.signature, errorFieldSet.has(
           "signatureSig"
@@ -5302,7 +5290,7 @@ var SignedExchangeInfoView = class extends UI12.Widget.VBox {
     }
     if (signedExchangeInfo.securityDetails) {
       const securityDetails = signedExchangeInfo.securityDetails;
-      const securityCategory = new Category2(root, i18nString11(UIStrings11.certificate));
+      const securityCategory = new Category(root, i18nString11(UIStrings11.certificate));
       securityCategory.createLeaf(this.formatHeader(i18nString11(UIStrings11.subject), securityDetails.subjectName));
       securityCategory.createLeaf(this.formatHeader(i18nString11(UIStrings11.validFrom), new Date(1e3 * securityDetails.validFrom).toUTCString()));
       securityCategory.createLeaf(this.formatHeader(i18nString11(UIStrings11.validUntil), new Date(1e3 * securityDetails.validTo).toUTCString()));
@@ -5336,7 +5324,7 @@ var SignedExchangeInfoView = class extends UI12.Widget.VBox {
     return fragment;
   }
 };
-var Category2 = class extends UI12.TreeOutline.TreeElement {
+var Category = class extends UI12.TreeOutline.TreeElement {
   toggleOnClick;
   expanded;
   constructor(root, title) {
@@ -5433,7 +5421,7 @@ var RequestPreviewView = class extends UI13.Widget.VBox {
 // gen/front_end/panels/network/RequestResponseView.js
 var RequestResponseView_exports = {};
 __export(RequestResponseView_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW7,
+  DEFAULT_VIEW: () => DEFAULT_VIEW8,
   RequestResponseView: () => RequestResponseView
 });
 import * as Common7 from "./../../core/common/common.js";
@@ -5462,7 +5450,7 @@ var str_13 = i18n25.i18n.registerUIStrings("panels/network/RequestResponseView.t
 var i18nString13 = i18n25.i18n.getLocalizedString.bind(void 0, str_13);
 var widgetConfig4 = UI14.Widget.widgetConfig;
 var widgetRef = UI14.Widget.widgetRef;
-var DEFAULT_VIEW7 = (input, output, target) => {
+var DEFAULT_VIEW8 = (input, output, target) => {
   let widget;
   if (TextUtils2.StreamingContentData.isError(input.contentData)) {
     widget = html8`<devtools-widget
@@ -5486,7 +5474,7 @@ var RequestResponseView = class extends UI14.Widget.VBox {
   request;
   #view;
   #revealPosition;
-  constructor(request, view = DEFAULT_VIEW7) {
+  constructor(request, view = DEFAULT_VIEW8) {
     super();
     this.request = request;
     this.#view = view;
@@ -5531,7 +5519,7 @@ var RequestResponseView = class extends UI14.Widget.VBox {
 // gen/front_end/panels/network/RequestTimingView.js
 var RequestTimingView_exports = {};
 __export(RequestTimingView_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW8,
+  DEFAULT_VIEW: () => DEFAULT_VIEW9,
   RequestTimingView: () => RequestTimingView
 });
 import "./../../ui/kit/kit.js";
@@ -6091,7 +6079,7 @@ function getLocalizedResponseSourceForCode(swResponseSource) {
       return i18nString14(UIStrings14.fallbackCode);
   }
 }
-var DEFAULT_VIEW8 = (input, output, target) => {
+var DEFAULT_VIEW9 = (input, output, target) => {
   const revealThrottled = () => {
     if (input.wasThrottled) {
       void Common8.Revealer.reveal(input.wasThrottled);
@@ -6303,7 +6291,7 @@ var RequestTimingView = class _RequestTimingView extends UI15.Widget.VBox {
   #calculator;
   #lastMinimumBoundary = -1;
   #view;
-  constructor(target, view = DEFAULT_VIEW8) {
+  constructor(target, view = DEFAULT_VIEW9) {
     super(target, { classes: ["resource-timing-view"] });
     this.#view = view;
   }
@@ -7363,7 +7351,8 @@ var NetworkItemView = class extends UI19.TabbedPane.TabbedPane {
       return;
     }
     if (this.#request.queryParameters || await this.#request.requestFormData()) {
-      this.#payloadView = new RequestPayloadView(this.#request);
+      this.#payloadView = new RequestPayloadView();
+      this.#payloadView.request = this.#request;
       this.appendTab(
         "payload",
         i18nString18(UIStrings18.payload),
@@ -7468,7 +7457,7 @@ import * as Platform10 from "./../../core/platform/platform.js";
 import * as Root2 from "./../../core/root/root.js";
 import * as SDK15 from "./../../core/sdk/sdk.js";
 import * as Annotations2 from "./../../models/annotations/annotations.js";
-import * as Bindings2 from "./../../models/bindings/bindings.js";
+import * as Bindings3 from "./../../models/bindings/bindings.js";
 import * as HAR from "./../../models/har/har.js";
 import * as Logs5 from "./../../models/logs/logs.js";
 import * as NetworkTimeCalculator4 from "./../../models/network_time_calculator/network_time_calculator.js";
@@ -8033,6 +8022,7 @@ __export(NetworkLogViewColumns_exports, {
 });
 import * as Common15 from "./../../core/common/common.js";
 import * as i18n39 from "./../../core/i18n/i18n.js";
+import * as StackTrace from "./../../models/stack_trace/stack_trace.js";
 import { Icon as Icon3 } from "./../../ui/kit/kit.js";
 import * as DataGrid7 from "./../../ui/legacy/components/data_grid/data_grid.js";
 import * as Components4 from "./../../ui/legacy/components/utils/utils.js";
@@ -9868,23 +9858,36 @@ var NetworkLogViewColumns = class _NetworkLogViewColumns {
     if (!request) {
       return null;
     }
+    let descriptor = void 0;
     return {
       box: anchor.boxInWindow(),
       show: async (popover) => {
-        this.popupLinkifier.addEventListener("liveLocationUpdated", () => {
+        const content = await RequestInitiatorView.createStackTracePreview(request, this.popupLinkifier, false);
+        if (!content) {
+          return false;
+        }
+        descriptor = content.stackTrace?.addEventListener("UPDATED", async () => {
+          await content.preview.updateComplete;
           popover.setSizeBehavior(
             "MeasureContent"
             /* UI.GlassPane.SizeBehavior.MEASURE_CONTENT */
           );
         });
-        const content = RequestInitiatorView.createStackTracePreview(request, this.popupLinkifier, false);
-        if (!content) {
-          return false;
-        }
-        content.show(popover.contentElement);
+        content.preview.show(popover.contentElement);
+        await content.preview.updateComplete.then(() => {
+          popover.setSizeBehavior(
+            "MeasureContent"
+            /* UI.GlassPane.SizeBehavior.MEASURE_CONTENT */
+          );
+        });
         return true;
       },
-      hide: this.popupLinkifier.reset.bind(this.popupLinkifier)
+      hide: () => {
+        this.popupLinkifier.reset();
+        if (descriptor) {
+          Common15.EventTarget.removeEventListeners([descriptor]);
+        }
+      }
     };
   }
   addEventDividers(times, className) {
@@ -10943,7 +10946,7 @@ var NetworkLogView = class _NetworkLogView extends Common16.ObjectWrapper.eventM
   }
   async onLoadFromFile(file) {
     const outputStream = new Common16.StringOutputStream.StringOutputStream();
-    const reader = new Bindings2.FileUtils.ChunkedFileReader(
+    const reader = new Bindings3.FileUtils.ChunkedFileReader(
       file,
       /* chunkSize */
       1e7
@@ -11824,7 +11827,7 @@ var NetworkLogView = class _NetworkLogView extends Common16.ObjectWrapper.eventM
     const url = mainTarget.inspectedURL();
     const parsedURL = Common16.ParsedURL.ParsedURL.fromString(url);
     const filename = parsedURL ? parsedURL.host : "network-log";
-    const stream = new Bindings2.FileUtils.FileOutputStream();
+    const stream = new Bindings3.FileUtils.FileOutputStream();
     if (!await stream.open(Common16.ParsedURL.ParsedURL.concatenate(filename, ".har"))) {
       return;
     }

@@ -48,7 +48,7 @@ export class TextEditorHistory {
 
     const text = editor.state.doc.toString();
     const history = this.#history;
-    const newText = isBackward ? history.previous(text) : history.next();
+    const newText = isBackward ? history.previous(text) : history.next(text);
     if (newText === undefined) {
       return false;
     }

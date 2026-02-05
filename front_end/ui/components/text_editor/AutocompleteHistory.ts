@@ -107,10 +107,11 @@ export class AutocompleteHistory {
     }
   }
 
-  next(): string|undefined {
+  next(currentText: string): string|undefined {
     if (this.#historyOffset === 1) {
       return undefined;
     }
+    this.#saveCurrentEdit(currentText);
     --this.#historyOffset;
     return this.#currentHistoryItem();
   }

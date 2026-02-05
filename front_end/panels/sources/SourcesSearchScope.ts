@@ -86,7 +86,8 @@ export class SourcesSearchScope implements Search.SearchScope.SearchScope {
       if (!searchInAnonymousAndContentScripts && project.type() === Workspace.Workspace.projectTypes.ContentScripts) {
         return false;
       }
-      if (!localOverridesEnabled && project.type() === Workspace.Workspace.projectTypes.FileSystem) {
+      if (!localOverridesEnabled && project.type() === Workspace.Workspace.projectTypes.FileSystem &&
+          Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemType(project) === 'overrides') {
         return false;
       }
       return true;

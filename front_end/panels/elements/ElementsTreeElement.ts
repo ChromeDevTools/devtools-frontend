@@ -34,6 +34,7 @@
  */
 
 import '../../ui/components/adorners/adorners.js';
+import '../../ui/components/buttons/buttons.js';
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
@@ -50,7 +51,6 @@ import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import type * as Adorners from '../../ui/components/adorners/adorners.js';
-import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as CodeHighlighter from '../../ui/components/code_highlighter/code_highlighter.js';
 import * as Highlighting from '../../ui/components/highlighting/highlighting.js';
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
@@ -417,6 +417,13 @@ export interface ViewInput {
   showStartingStyleAdorner: boolean;
   startingStyleAdornerActive: boolean;
   onStartingStyleAdornerClick: (e: Event) => void;
+
+  isHovered: boolean;
+  isSelected: boolean;
+  showAiButton: boolean;
+  aiButtonTitle?: string;
+  onAiButtonClick: (e: Event) => void;
+
   decorations: Decoration[];
   descendantDecorations: Decoration[];
   decorationsTooltip: string;
@@ -473,6 +480,9 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
   render(html`
     <div ${ref(el => { output.contentElement = el as HTMLElement; })}>
       ${input.nodeInfo ? html`<span class="highlight">${input.nodeInfo}</span>` : nothing}
+      ${input.isHovered || input.isSelected ? html`
+        <div class="selection fill" style=${`margin-left: ${-input.indent}px`}></div>
+      ` : nothing}
       <div class=${Lit.Directives.classMap(gutterContainerClasses)}
            style="left: ${-input.indent}px"
            @click=${input.onGutterClick}>
@@ -648,6 +658,20 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
           <span>${ElementsComponents.AdornerManager.RegisteredAdorners.SCROLL_SNAP}</span>
         </devtools-adorner>` : nothing}
       </div>`: nothing}
+      ${input.isSelected ? html`
+        <span class="selected-hint" title=${i18nString(UIStrings.useSInTheConsoleToReferToThis, {PH1: '$0'})} aria-hidden="true"></span>
+      ` : nothing}
+      ${input.showAiButton ? html`
+        <span class="ai-button-container">
+          <devtools-floating-button
+            icon-name=${AIAssistance.AiUtils.getIconName()}
+            title=${input.aiButtonTitle || ''}
+            jslogcontext="ask-ai"
+            @click=${input.onAiButtonClick}
+            @mousedown=${(e: Event) => e.stopPropagation()}>
+          </devtools-floating-button>
+        </span>
+      ` : nothing}
     </div>
   `, target);
   // clang-format on
@@ -668,9 +692,6 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
   private editing: EditorHandles|null;
   private htmlEditElement?: HTMLElement;
   expandAllButtonElement: UI.TreeOutline.TreeElement|null;
-  selectionElement?: HTMLDivElement;
-  private hintElement?: HTMLElement;
-  private aiButtonContainer?: HTMLElement;
   #elementIssues = new Map<string, IssuesManager.Issue.Issue>();
   #nodeElementToIssue = new Map<Element, IssuesManager.Issue.Issue[]>();
   #highlights: Range[] = [];
@@ -851,6 +872,21 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
             }
             this.treeOutline.revealInTopLayer(this.node());
           },
+          isHovered: this.#hovered,
+          isSelected: this.selected,
+          showAiButton: Boolean(this.#hovered || this.selected) && this.node().nodeType() === Node.ELEMENT_NODE &&
+              UI.ActionRegistry.ActionRegistry.instance().hasAction('freestyler.elements-floating-button'),
+          aiButtonTitle: UI.ActionRegistry.ActionRegistry.instance().hasAction('freestyler.elements-floating-button') ?
+              UI.ActionRegistry.ActionRegistry.instance().getAction('freestyler.elements-floating-button').title() :
+              undefined,
+          onAiButtonClick: (ev: Event) => {
+            ev.stopPropagation();
+            this.select(true, false);
+            const action = UI.ActionRegistry.ActionRegistry.instance().getAction('freestyler.elements-floating-button');
+            if (action) {
+              void action.execute();
+            }
+          },
         },
         this, this.listItemElement);
   }
@@ -986,22 +1022,15 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       return;
     }
 
-    if (isHovered && !this.aiButtonContainer) {
-      this.createAiButton();
-    } else if (!isHovered && this.aiButtonContainer) {
-      this.aiButtonContainer.remove();
-      delete this.aiButtonContainer;
-    }
-
     this.#hovered = isHovered;
 
     if (this.listItemElement) {
       if (isHovered) {
-        this.createSelection();
         this.listItemElement.classList.add('hovered');
       } else {
         this.listItemElement.classList.remove('hovered');
       }
+      this.performUpdate();
     }
   }
 
@@ -1065,54 +1094,6 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
 
   setExpandedChildrenLimit(expandedChildrenLimit: number): void {
     this.#expandedChildrenLimit = expandedChildrenLimit;
-  }
-
-  private createSelection(): void {
-    const contentElement = this.contentElement;
-    if (!contentElement) {
-      return;
-    }
-
-    if (!this.selectionElement) {
-      this.selectionElement = document.createElement('div');
-      this.selectionElement.className = 'selection fill';
-      this.selectionElement.style.setProperty('margin-left', (-this.computeLeftIndent()) + 'px');
-      contentElement.prepend(this.selectionElement);
-    }
-  }
-
-  private createHint(): void {
-    if (this.contentElement && !this.hintElement) {
-      this.hintElement = this.contentElement.createChild('span', 'selected-hint');
-      const selectedElementCommand = '$0';
-      UI.Tooltip.Tooltip.install(
-          this.hintElement, i18nString(UIStrings.useSInTheConsoleToReferToThis, {PH1: selectedElementCommand}));
-      UI.ARIAUtils.setHidden(this.hintElement, true);
-    }
-  }
-
-  private createAiButton(): void {
-    const isElementNode = this.node().nodeType() === Node.ELEMENT_NODE;
-    if (!isElementNode ||
-        !UI.ActionRegistry.ActionRegistry.instance().hasAction('freestyler.elements-floating-button')) {
-      return;
-    }
-
-    const action = UI.ActionRegistry.ActionRegistry.instance().getAction('freestyler.elements-floating-button');
-    if (this.contentElement && !this.aiButtonContainer) {
-      this.aiButtonContainer = this.contentElement.createChild('span', 'ai-button-container');
-      const floatingButton =
-          Buttons.FloatingButton.create(AIAssistance.AiUtils.getIconName(), action.title(), 'ask-ai');
-      floatingButton.addEventListener('click', ev => {
-        ev.stopPropagation();
-        this.select(true, false);
-        void action.execute();
-      }, {capture: true});
-      floatingButton.addEventListener('mousedown', ev => {
-        ev.stopPropagation();
-      }, {capture: true});
-      this.aiButtonContainer.appendChild(floatingButton);
-    }
   }
 
   override onbind(): void {
@@ -1180,6 +1161,10 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
           onPopoverAdornerClick: () => {},
           onScrollSnapAdornerClick: () => {},
           onTopLayerAdornerClick: () => {},
+          isHovered: false,
+          isSelected: false,
+          showAiButton: false,
+          onAiButtonClick: () => {},
           decorations: [],
           descendantDecorations: [],
           decorationsTooltip: '',
@@ -1247,8 +1232,8 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
 
   override onattach(): void {
     if (this.#hovered) {
-      this.createSelection();
       this.listItemElement.classList.add('hovered');
+      this.performUpdate();
     }
 
     this.updateTitle();
@@ -1306,8 +1291,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       this.nodeInternal.highlight();
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.ChangeInspectedNodeInElementsPanel);
     }
-    this.createSelection();
-    this.createHint();
+    this.performUpdate();
     this.treeOutline.suppressRevealAndSelect = false;
     return true;
   }
@@ -2280,10 +2264,6 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     // fixme: make it clear that `this.title = x` is a setter with significant side effects
     this.title = this.contentElement;
     this.updateDecorations();
-    if (this.selected) {
-      this.createSelection();
-      this.createHint();
-    }
 
     // If there is an issue with this node, make sure to update it.
     for (const issue of this.#elementIssues.values()) {

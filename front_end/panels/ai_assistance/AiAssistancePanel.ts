@@ -595,6 +595,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           onContextClick: this.#handleContextClick.bind(this),
           onNewConversation: this.#handleNewChatRequest.bind(this),
           onCopyResponseClick: this.#onCopyResponseClick.bind(this),
+          onContextRemoved: isAiAssistanceContextSelectionAgentEnabled() ? this.#handleContextRemoved.bind(this) : null,
         }
       };
     }
@@ -1103,6 +1104,11 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       }
     }
     // Node picker is using linkifier.
+  }
+
+  #handleContextRemoved(): void {
+    this.#conversation?.setContext(null);
+    this.requestUpdate();
   }
 
   #canExecuteQuery(): boolean {

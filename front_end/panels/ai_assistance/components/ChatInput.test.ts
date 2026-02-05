@@ -276,6 +276,7 @@ describeWithEnvironment('ChatInput', () => {
             onImagePaste: () => {},
             onImageDragOver: () => {},
             onImageDrop: () => {},
+            onContextRemoved: null,
           },
           undefined, target);
       await assertScreenshot('ai_assistance/chat_input_multimodal_enabled.png');
@@ -313,6 +314,7 @@ describeWithEnvironment('ChatInput', () => {
             onImagePaste: () => {},
             onImageDragOver: () => {},
             onImageDrop: () => {},
+            onContextRemoved: null,
           },
           undefined, target);
       await assertScreenshot('ai_assistance/chat_input_multimodal_disabled.png');

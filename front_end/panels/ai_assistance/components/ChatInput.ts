@@ -39,6 +39,10 @@ const UIStrings = {
    * @description The footer disclaimer that links to more information about the AI feature.
    */
   learnAbout: 'Learn about AI in DevTools',
+  /**
+   * @description Label added to the button that remove the currently selected context in AI Assistance panel.
+   */
+  removeContext: 'Remove selected context',
 } as const;
 
 /*
@@ -137,23 +141,27 @@ export interface ViewInput {
   onImagePaste: (event: ClipboardEvent) => void;
   onImageDragOver: (event: DragEvent) => void;
   onImageDrop: (event: DragEvent) => void;
+  onContextRemoved: (() => void)|null;
 }
 
 export type ViewOutput = undefined;
 
-export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLElement): void => {
-  const chatInputContainerCls = Lit.Directives.classMap({
-    'chat-input-container': true,
-    'single-line-layout': !input.selectedContext,
-    disabled: input.isTextInputDisabled,
-  });
+export const
+    DEFAULT_VIEW =
+        (input: ViewInput, output: ViewOutput, target: HTMLElement):
+            void => {
+              const chatInputContainerCls = Lit.Directives.classMap({
+                'chat-input-container': true,
+                'single-line-layout': !input.selectedContext,
+                disabled: input.isTextInputDisabled,
+              });
 
-  const renderRelevantDataDisclaimer = (tooltipId: string): Lit.LitTemplate => {
-    const classes = Lit.Directives.classMap({
-      'chat-input-disclaimer': true,
-      'hide-divider': !input.isLoading && input.blockedByCrossOrigin,
-    });
-    // clang-format off
+              const renderRelevantDataDisclaimer = (tooltipId: string): Lit.LitTemplate => {
+                const classes = Lit.Directives.classMap({
+                  'chat-input-disclaimer': true,
+                  'hide-divider': !input.isLoading && input.blockedByCrossOrigin,
+                });
+                // clang-format off
     return html`
       <div class=${classes}>
         <button
@@ -185,10 +193,10 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
         </div></devtools-tooltip>
       </div>
     `;
-    // clang-format on
-  };
+                // clang-format on
+              };
 
-  // clang-format off
+              // clang-format off
   Lit.render(html`
     <style>${Input.textInputStyles}</style>
     <style>${chatInputStyles}</style>
@@ -363,6 +371,16 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
                             :
                             input.selectedContext.getTitle()}
                         </span>
+                        ${input.onContextRemoved ? html`
+                                  <devtools-button
+                                    title=${i18nString(UIStrings.removeContext)}
+                                    aria-label=${i18nString(UIStrings.removeContext)}
+                                    class="remove-context"
+                                    .iconName=${'cross'}
+                                    .size=${Buttons.Button.Size.MICRO}
+                                    .jslogContext=${'context-removed'}
+                                    .variant=${Buttons.Button.Variant.ICON}
+                                    @click=${input.onContextRemoved}></devtools-button>` : Lit.nothing}
                       </div>
                     </div>`
                   : Lit.nothing}
@@ -462,8 +480,8 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
       ${renderRelevantDataDisclaimer(RELEVANT_DATA_LINK_FOOTER_ID)}
     </footer>
   `, target);
-  // clang-format on
-};
+              // clang-format on
+            };
 
 /**
  * ChatInput is a presenter for the input area in the AI Assistance panel.
@@ -503,6 +521,7 @@ export class ChatInput extends UI.Widget.Widget implements SDK.TargetManager.Obs
   onInspectElementClick = (): void => {};
   onCancelClick = (): void => {};
   onNewConversation = (): void => {};
+  onContextRemoved: (() => void)|null = null;
 
   async #handleTakeScreenshot(): Promise<void> {
     const mainTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
@@ -685,6 +704,7 @@ export class ChatInput extends UI.Widget.Widget implements SDK.TargetManager.Obs
           onImageUpload: this.onImageUpload,
           onImageDragOver: this.#handleImageDragOver,
           onImageDrop: this.#handleImageDrop,
+          onContextRemoved: this.onContextRemoved,
         },
         undefined, this.contentElement);
   }

@@ -1802,6 +1802,22 @@ describeWithMockConnection('AI Assistance Panel', () => {
            assert.isFalse(view.input.props.isTextInputDisabled);
          });
     });
+
+    describe('removing context', () => {
+      it('should remove context when button is pressed', async () => {
+        enableAllFeatureAndSetting();
+        updateHostConfig({devToolsAiAssistanceContextSelectionAgent: {enabled: true}});
+        const {view} = await createAiAssistancePanel();
+
+        assert(view.input.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+        assert.isDefined(view.input.props.onContextRemoved);
+        view.input.props.onContextRemoved?.();
+
+        const nextInput = await view.nextInput;
+        assert(nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+        assert.isNull(nextInput.props.selectedContext);
+      });
+    });
   });
 
   describe('getResponseMarkdown', function() {

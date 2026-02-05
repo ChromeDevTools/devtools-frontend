@@ -97,7 +97,7 @@ export class AiCodeGenerationUpgradeDialog {
           <div class="right-buttons">
             <devtools-button
               @click=${() => {
-                  result.resolve(true);
+                  result.resolve(false);
                   void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
                 }}
               jslogcontext="ai-code-generation-upgrade-dialog.manage-in-settings"

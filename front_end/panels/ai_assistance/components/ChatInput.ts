@@ -142,6 +142,7 @@ export interface ViewInput {
   onImageDragOver: (event: DragEvent) => void;
   onImageDrop: (event: DragEvent) => void;
   onContextRemoved: (() => void)|null;
+  onContextAdd: (() => void)|null;
 }
 
 export type ViewOutput = undefined;
@@ -152,7 +153,7 @@ export const
             void => {
               const chatInputContainerCls = Lit.Directives.classMap({
                 'chat-input-container': true,
-                'single-line-layout': !input.selectedContext,
+                'single-line-layout': !input.selectedContext && !input.onContextAdd,
                 disabled: input.isTextInputDisabled,
               });
 
@@ -383,7 +384,17 @@ export const
                                     @click=${input.onContextRemoved}></devtools-button>` : Lit.nothing}
                       </div>
                     </div>`
-                  : Lit.nothing}
+                  :
+                    input.onContextAdd ? html`
+                                  <devtools-button
+                                    title=${i18nString(UIStrings.removeContext)}
+                                    aria-label=${i18nString(UIStrings.removeContext)}
+                                    class="add-context"
+                                    .iconName=${'plus'}
+                                    .size=${Buttons.Button.Size.SMALL}
+                                    .jslogContext=${'context-add'}
+                                    .variant=${Buttons.Button.Variant.ICON}
+                                    @click=${input.onContextAdd}></devtools-button>` : Lit.nothing}
               </div>
               <div class="chat-input-actions-right">
                 <div class="chat-input-disclaimer-container">
@@ -522,6 +533,7 @@ export class ChatInput extends UI.Widget.Widget implements SDK.TargetManager.Obs
   onCancelClick = (): void => {};
   onNewConversation = (): void => {};
   onContextRemoved: (() => void)|null = null;
+  onContextAdd: (() => void)|null = null;
 
   async #handleTakeScreenshot(): Promise<void> {
     const mainTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
@@ -705,6 +717,7 @@ export class ChatInput extends UI.Widget.Widget implements SDK.TargetManager.Obs
           onImageDragOver: this.#handleImageDragOver,
           onImageDrop: this.#handleImageDrop,
           onContextRemoved: this.onContextRemoved,
+          onContextAdd: this.onContextAdd,
         },
         undefined, this.contentElement);
   }

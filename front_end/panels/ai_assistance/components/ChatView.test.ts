@@ -24,6 +24,7 @@ describeWithEnvironment('ChatView', () => {
       onCopyResponseClick: noop,
       onNewConversation: noop,
       onContextRemoved: noop,
+      onContextAdd: noop,
       changeManager: new AiAssistanceModel.ChangeManager.ChangeManager(),
       inspectElementToggled: false,
       conversationType: AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING,

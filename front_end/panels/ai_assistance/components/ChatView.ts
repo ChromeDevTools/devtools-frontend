@@ -57,6 +57,7 @@ export interface Props {
   onNewConversation: () => void;
   onCopyResponseClick: (message: ModelChatMessage) => void;
   onContextRemoved: (() => void)|null;
+  onContextAdd: (() => void)|null;
   changeManager: AiAssistanceModel.ChangeManager.ChangeManager;
   inspectElementToggled: boolean;
   messages: Message[];
@@ -177,6 +178,7 @@ const DEFAULT_VIEW: View = (input, output, target) => {
             onCancelClick: input.onCancelClick,
             onNewConversation: input.onNewConversation,
             onContextRemoved: input.onContextRemoved,
+            onContextAdd: input.onContextAdd,
           })} ${ref(element => { output.input = element as UI.Widget.WidgetElement<ChatInput>; } )}></devtools-widget>
         </main>
       </div>

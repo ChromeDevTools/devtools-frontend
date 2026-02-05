@@ -1810,12 +1810,46 @@ describeWithMockConnection('AI Assistance Panel', () => {
         const {view} = await createAiAssistancePanel();
 
         assert(view.input.state === AiAssistancePanel.ViewState.CHAT_VIEW);
-        assert.isDefined(view.input.props.onContextRemoved);
-        view.input.props.onContextRemoved?.();
+        assert.isNotNull(view.input.props.onContextRemoved);
+        view.input.props.onContextRemoved();
 
         const nextInput = await view.nextInput;
         assert(nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
         assert.isNull(nextInput.props.selectedContext);
+      });
+    });
+
+    describe('add context', () => {
+      it('should add context when button is pressed', async () => {
+        enableAllFeatureAndSetting();
+        updateHostConfig({devToolsAiAssistanceContextSelectionAgent: {enabled: true}});
+
+        const node = sinon.createStubInstance(SDK.DOMModel.DOMNode, {
+          nodeType: Node.ELEMENT_NODE,
+        });
+        UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
+        sinon.stub(AiAssistanceModel.StylingAgent.NodeContext.prototype, 'getSuggestions')
+            .returns(Promise.resolve([{title: 'test suggestion'}]));
+        const {view} = await createAiAssistancePanel({
+          aidaClient: mockAidaClient([
+            [{explanation: 'test'}],
+          ]),
+        });
+
+        assert(view.input.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+        assert.isNotNull(view.input.props.onContextRemoved);
+        view.input.props.onContextRemoved();
+
+        let nextInput = await view.nextInput;
+
+        assert(nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+        assert.isNotNull(nextInput.props.onContextAdd);
+
+        nextInput.props.onContextAdd();
+        nextInput = await view.nextInput;
+
+        assert(nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+        assert.strictEqual(nextInput.props.selectedContext?.getItem(), node);
       });
     });
   });

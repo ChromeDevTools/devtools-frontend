@@ -14981,6 +14981,7 @@ export namespace Page {
     SharedWorkerMessage = 'SharedWorkerMessage',
     SharedWorkerWithNoActiveClient = 'SharedWorkerWithNoActiveClient',
     WebLocks = 'WebLocks',
+    WebLocksContention = 'WebLocksContention',
     WebHID = 'WebHID',
     WebBluetooth = 'WebBluetooth',
     WebShare = 'WebShare',

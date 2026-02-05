@@ -49,7 +49,7 @@ ChromeWS.prototype = {
   name: 'ChromeWS',
 
   DEFAULT_CMD: {
-    linux: '@REPO_SOURCE_DIR@/third_party/chrome/chrome-linux/chrome',
+    linux: '@REPO_SOURCE_DIR@/third_party/chrome/chrome-linux/chrome-linux64/chrome',
   },
   ENV_CMD: 'CHROME_BIN',
 };

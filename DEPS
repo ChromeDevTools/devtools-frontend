@@ -24,7 +24,7 @@ vars = {
   'inspector_protocol_revision': '39acff851716ef40aaa0312ce0d359e37ef0d467',
 
   # Keeping track of the last time we rolled the browser protocol files.
-  'chromium_browser_protocol_revision' : '646502f8c6f04517f8d3605c4a5a5fa20d0af6f5',
+  'chromium_browser_protocol_revision' : '894232ec55c07f1499cfd86b67d62de0b1366c1c',
 
   'clang_format_url': 'https://chromium.googlesource.com/external/github.com/llvm/llvm-project/clang/tools/clang-format.git',
   'clang_format_revision': 'c2725e0622e1a86d55f14514f2177a39efea4a0e',
@@ -49,7 +49,10 @@ vars = {
   # Chrome version used for tests. It should be regularly updated to
   # match the Canary version listed here:
   # https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions.json
-  'chrome': '146.0.7668.0',
+  # Note: This var is no longer referenced in the body of this DEPS file.
+  # However it is used by the roll script (scripts/deps/roll_deps.py) to ease
+  # version resolution. DO NOT REMOVE!
+  'chrome': '146.0.7670.0',
 
   # 'magic' text to tell depot_tools that git submodules should be accepted but
   # but parity with DEPS file is expected.
@@ -229,6 +232,58 @@ deps = {
       }
     ]
   },
+  'third_party/chrome/chrome-win': {
+    'dep_type': 'gcs',
+    'condition': 'host_os == "win" and build_with_chromium == False and non_git_source',
+    'bucket': 'chrome-for-testing-public',
+    'objects': [
+      {
+        'object_name': '146.0.7668.0/win64/chrome-win64.zip',
+        'sha256sum': 'dc815ffaaf8fc604c30115c611c3b3b8bb3256ebceededc179f7924f62c78b97',
+        'size_bytes': 190130732,
+        'generation': 1770151696387192,
+      },
+    ],
+  },
+  'third_party/chrome/chrome-mac-x64': {
+    'dep_type': 'gcs',
+    'condition': 'host_os == "mac" and build_with_chromium == False and host_cpu != "arm64" and non_git_source',
+    'bucket': 'chrome-for-testing-public',
+    'objects': [
+      {
+        'object_name': '146.0.7668.0/mac-x64/chrome-mac-x64.zip',
+        'sha256sum': '393a6ecb8dc17ee7437c9c279c8302fdad1c3d92d7dd3492fdca27982724d3f8',
+        'size_bytes': 184657917,
+        'generation': 1770147933597714,
+      },
+    ],
+  },
+  'third_party/chrome/chrome-mac-arm64': {
+    'dep_type': 'gcs',
+    'condition': 'host_os == "mac" and build_with_chromium == False and host_cpu == "arm64" and non_git_source',
+    'bucket': 'chrome-for-testing-public',
+    'objects': [
+      {
+        'object_name': '146.0.7668.0/mac-arm64/chrome-mac-arm64.zip',
+        'sha256sum': '0d4cdd0da5db60d018e8d6d02ee56bf0347c88b30d7354833406e4363c77d9c5',
+        'size_bytes': 175719398,
+        'generation': 1770142108458350,
+      },
+    ],
+  },
+  'third_party/chrome/chrome-linux': {
+    'dep_type': 'gcs',
+    'condition': 'host_os == "linux" and build_with_chromium == False and non_git_source',
+    'bucket': 'chrome-for-testing-public',
+    'objects': [
+      {
+        'object_name': '146.0.7668.0/linux64/chrome-linux64.zip',
+        'sha256sum': '6024d569259fc4ce9bd252c7b46a00e3c26d7ffe77f50597a0dbca9539b4b83f',
+        'size_bytes': 181392293,
+        'generation': 1770140368601927,
+      },
+    ],
+  },
   'third_party/node/win': {
       'dep_type': 'gcs',
       'condition': 'host_os == "win" and build_with_chromium == False and non_git_source',
@@ -266,64 +321,6 @@ hooks = [
         'vpython3',
         'third_party/depot_tools/update_depot_tools_toggle.py',
         '--disable',
-    ],
-  },
-
-  # Pull Chrome binaries from CfT buckets.
-  {
-    'name': 'download_chrome_win',
-    'pattern': '.',
-    'condition': 'host_os == "win" and build_with_chromium == False',
-    'action': [ 'vpython3',
-                'scripts/deps/download_chrome.py',
-                '--url=https://storage.googleapis.com/chrome-for-testing-public/' + Var('chrome') + '/win64/chrome-win64.zip',
-                '--target=third_party/chrome',
-                '--rename_from=chrome-win64',
-                '--rename_to=chrome-win',
-                '--path_to_binary=chrome-win/chrome.exe',
-                '--version_number=' + Var('chrome'),
-    ],
-  },
-  {
-    'name': 'download_chrome_mac',
-    'pattern': '.',
-    'condition': 'host_os == "mac" and build_with_chromium == False and host_cpu != "arm64"',
-    'action': [ 'vpython3',
-                'scripts/deps/download_chrome.py',
-                '--url=https://storage.googleapis.com/chrome-for-testing-public/' + Var('chrome') + '/mac-x64/chrome-mac-x64.zip',
-                '--target=third_party/chrome',
-                '--rename_from=chrome-mac-x64',
-                '--rename_to=chrome-mac',
-                '--path_to_binary=chrome-mac/Google Chrome for Testing.app/Contents',
-                '--version_number=' + Var('chrome'),
-    ],
-  },
-  {
-    'name': 'download_chrome_mac',
-    'pattern': '.',
-    'condition': 'host_os == "mac" and build_with_chromium == False and host_cpu == "arm64"',
-    'action': [ 'vpython3',
-                'scripts/deps/download_chrome.py',
-                '--url=https://storage.googleapis.com/chrome-for-testing-public/' + Var('chrome') + '/mac-arm64/chrome-mac-arm64.zip',
-                '--target=third_party/chrome',
-                '--rename_from=chrome-mac-arm64',
-                '--rename_to=chrome-mac',
-                '--path_to_binary=chrome-mac/Google Chrome for Testing.app/Contents',
-                '--version_number=' + Var('chrome'),
-    ],
-  },
-  {
-    'name': 'download_chrome_linux',
-    'pattern': '.',
-    'condition': 'host_os == "linux" and build_with_chromium == False',
-    'action': [ 'vpython3',
-                'scripts/deps/download_chrome.py',
-                '--url=https://storage.googleapis.com/chrome-for-testing-public/' + Var('chrome') + '/linux64/chrome-linux64.zip',
-                '--target=third_party/chrome',
-                '--rename_from=chrome-linux64',
-                '--rename_to=chrome-linux',
-                '--path_to_binary=chrome-linux/chrome',
-                '--version_number=' + Var('chrome'),
     ],
   },
   {
@@ -368,6 +365,13 @@ hooks = [
       'vpython3',
       'scripts/deps/sync_rollup_libs.py',
     ],
+  },
+
+  {
+    'name': 'fix_cft_permissions',
+    'pattern': '.',
+    'condition': 'build_with_chromium == False',
+    'action': [ 'vpython3', 'scripts/deps/fix_cft_permissions.py'],
   },
 ]
 

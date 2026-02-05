@@ -52,7 +52,7 @@ To get an overview of all available build options, run `./tools/bootstrap.py -he
 You can load the extension to Chrome directly from the DevTools repository root with the following command:
 
 ```bash
-third_party/chrome/chrome-linux/chrome --load-extension=$PWD/out/DevTools_CXX_Debugging.stage2/src
+third_party/chrome/chrome-linux/chrome-linux64/chrome --load-extension=$PWD/out/DevTools_CXX_Debugging.stage2/src
 ```
 
 ## Unittests

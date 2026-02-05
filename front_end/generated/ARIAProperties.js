@@ -1314,9 +1314,6 @@ export const config = {
    ]
   },
   {
-   "implicitValues": {
-    "aria-live": "off"
-   },
    "name": "marquee",
    "nameFrom": [
     "author"
@@ -1975,9 +1972,6 @@ export const config = {
    ]
   },
   {
-   "implicitValues": {
-    "aria-live": "off"
-   },
    "name": "timer",
    "nameFrom": [
     "author"

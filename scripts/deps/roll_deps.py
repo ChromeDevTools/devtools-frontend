@@ -14,6 +14,8 @@ import os
 import subprocess
 import sys
 import urllib.request
+import tempfile
+import hashlib
 
 
 def node_path(options):
@@ -276,10 +278,84 @@ def updateCfT(options):
         subprocess.check_call(
             ['gclient', 'setdep', f'--var=chrome={new_version}'],
             cwd=options.devtools_dir)
+        dep_keys = [
+            'third_party/chrome/chrome-win',
+            'third_party/chrome/chrome-mac-x64',
+            'third_party/chrome/chrome-mac-arm64',
+            'third_party/chrome/chrome-linux',
+        ]
+        for key in dep_keys:
+            dep_props = subprocess.check_output(
+                ['gclient', 'getdep', f'--revision={key}'],
+                cwd=options.devtools_dir,
+                text=True).strip()
+            object_path = json.loads(dep_props.replace(
+                "'", '"'))[0]['object_name'].replace(current_version,
+                                                     new_version)
+            gcs_metadata = get_gcs_metadata('chrome-for-testing-public',
+                                            object_path)
+            if not gcs_metadata:
+                print("Failed to fetch GCS metadata. DEPS file not updated.")
+                exit(1)
+            print(f'Updating GCS dependency: {key}')
+            subprocess.check_call([
+                'gclient',
+                'setdep',
+                f'--revision={key}@{gcs_metadata["object_name"]},{gcs_metadata["sha256sum"]},'
+                f'{gcs_metadata["size_bytes"]},{gcs_metadata["generation"]}',
+            ],
+                                  cwd=options.devtools_dir)
     else:
         print(f'Chrome for Testing is up to date: {current_version}')
 
     return commit_position
+
+
+def get_gcs_metadata(bucket, object_path):
+    """
+    Fetches metadata required for a DEPS GCS entry.
+    """
+    gs_url = f"gs://{bucket}/{object_path}"
+    print(f"Fetching metadata for {gs_url}...")
+    try:
+        describe_proc = subprocess.run([
+            'gcloud', 'storage', 'objects', 'describe', gs_url,
+            '--format=json(size,generation)'
+        ],
+                                       capture_output=True,
+                                       text=True,
+                                       check=True,
+                                       encoding='utf-8')
+        metadata = json.loads(describe_proc.stdout)
+
+        with tempfile.NamedTemporaryFile(delete=False) as tmp_file:
+            temp_path = tmp_file.name
+            print(f"Downloading to {temp_path} for SHA256 calculation...")
+            subprocess.run(['gcloud', 'storage', 'cp', gs_url, temp_path],
+                           check=True)
+
+            sha256_hash = ""
+            hasher = hashlib.sha256()
+            with open(temp_path, 'rb') as f:
+                while chunk := f.read(8192):
+                    hasher.update(chunk)
+            sha256_hash = hasher.hexdigest()
+        os.remove(temp_path)
+        print("Metadata fetch complete.")
+
+        return {
+            'object_name': object_path,
+            'sha256sum': sha256_hash,
+            'size_bytes': int(metadata['size']),
+            'generation': int(metadata['generation']),
+        }
+    except subprocess.CalledProcessError as e:
+        print(f"Error interacting with GCS for {gs_url}: {e}")
+        if e.stderr: print(f"gcloud stderr: {e.stderr}")
+        return None
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+        return None
 
 
 def update_readme_revision(options):

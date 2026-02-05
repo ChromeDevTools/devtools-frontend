@@ -250,19 +250,19 @@ This works with Chromium 79 or later.
 To run on **Mac**:
 
 ```bash
-<path-to-devtools-frontend>./third_party/chrome/chrome-mac/Google\ Chrome\ for\ Testing.app/Contents/MacOS/Google\ Chrome\ for\ Testing --disable-infobars --disable-features=MediaRouter --custom-devtools-frontend=file://$(realpath out/Default/gen/front_end) --use-mock-keychain
+<path-to-devtools-frontend>./third_party/chrome/chrome-mac-{arm64|x64}/chrome-mac-{arm64|x64}/Google\ Chrome\ for\ Testing.app/Contents/MacOS/Google\ Chrome\ for\ Testing --disable-infobars --disable-features=MediaRouter --custom-devtools-frontend=file://$(realpath out/Default/gen/front_end) --use-mock-keychain
 ```
 
 To run on **Linux**:
 
 ```bash
-<path-to-devtools-frontend>./third_party/chrome/chrome-linux/chrome --disable-infobars --custom-devtools-frontend=file://$(realpath out/Default/gen/front_end)
+<path-to-devtools-frontend>./third_party/chrome/chrome-linux/chrome-linux64/chrome --disable-infobars --custom-devtools-frontend=file://$(realpath out/Default/gen/front_end)
 ```
 
 To run on **Windows**:
 
 ```bash
-<path-to-devtools-frontend>\third_party\chrome\chrome-win\chrome.exe --disable-infobars --custom-devtools-frontend="<path-to-devtools-frontend>\out\Default\gen\front_end"
+<path-to-devtools-frontend>\third_party\chrome\chrome-win\chrome-win64\chrome.exe --disable-infobars --custom-devtools-frontend="<path-to-devtools-frontend>\out\Default\gen\front_end"
 ```
 
 Note that `$(realpath out/Default/gen/front_end)` expands to the absolute path to build artifacts for DevTools frontend.

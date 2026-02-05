@@ -70,10 +70,21 @@ export function defaultChromePath() {
     };
     return path.join(BUILD_ROOT, paths[os.platform() as 'linux' | 'win32' | 'darwin']);
   }
-  const paths = {
-    linux: path.join('chrome-linux', 'chrome'),
-    darwin: path.join('chrome-mac', 'Google Chrome for Testing.app', 'Contents', 'MacOS', 'Google Chrome for Testing'),
-    win32: path.join('chrome-win', 'chrome.exe'),
-  };
-  return path.join(SOURCE_ROOT, 'third_party', 'chrome', paths[os.platform() as 'linux' | 'win32' | 'darwin']);
+  return path.join(SOURCE_ROOT, 'third_party', 'chrome', localChromePath());
+}
+
+function localChromePath() {
+  const platform = os.platform();
+  switch (platform) {
+    case 'linux':
+      return path.join('chrome-linux', 'chrome-linux64', 'chrome');
+    case 'darwin': {
+      const name = os.arch() === 'arm64' ? 'chrome-mac-arm64' : 'chrome-mac-x64';
+      return path.join(name, name, 'Google Chrome for Testing.app', 'Contents', 'MacOS', 'Google Chrome for Testing');
+    }
+    case 'win32':
+      return path.join('chrome-win', 'chrome-win64', 'chrome.exe');
+    default:
+      throw new Error(`Unsupported platform: ${platform}`);
+  }
 }

@@ -793,7 +793,7 @@ export async function expectVeEvents(expectedEvents: TestLogEntry[]): Promise<vo
   checkPendingEventExpectation();
 
   const timeout = setTimeout(() => {
-    if (pendingEventExpectation?.missingEvents) {
+    if (pendingEventExpectation?.missingEvents?.length) {
       const allLogs = veDebugEventsLog.filter(ve => {
         if ('interaction' in ve) {
           // Very noisy in the error and not providing context

@@ -1299,22 +1299,23 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     if (data instanceof Workspace.UISourceCode.UISourceCode) {
       const context = new AiAssistanceModel.FileAgent.FileContext(data);
       this.#selectedFile = context;
-
+      this.#conversation?.setContext(context);
     } else if (data instanceof SDK.DOMModel.DOMNode) {
       const context = new AiAssistanceModel.StylingAgent.NodeContext(data);
       this.#selectedElement = context;
-
+      this.#conversation?.setContext(context);
     } else if (data instanceof SDK.NetworkRequest.NetworkRequest) {
       const calculator = NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator();
-
       const context = new AiAssistanceModel.NetworkAgent.RequestContext(data, calculator);
       this.#selectedRequest = context;
+      this.#conversation?.setContext(context);
     } else if (data instanceof AiAssistanceModel.AIContext.AgentFocus) {
       const context = new AiAssistanceModel.PerformanceAgent.PerformanceTraceContext(data);
       this.#selectedPerformanceTrace = context;
+      this.#conversation?.setContext(context);
     }
 
-    this.#updateConversationState(this.#conversation);
+    this.requestUpdate();
   };
 
   async #startConversation(

@@ -147,10 +147,13 @@ export class ContextSelectionAgent extends AiAgent<never> {
         return {title: lockedString('Listing source requests…')};
       },
       handler: async () => {
-        const uiSourceCodes = this.#getUISourceCodes();
+        const files = [];
+        for (const file of this.#getUISourceCodes()) {
+          files.push(file.fullDisplayName());
+        }
 
         return {
-          result: uiSourceCodes,
+          result: files,
         };
       },
     });

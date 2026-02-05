@@ -56,8 +56,8 @@ def download_and_extract(options):
     if os.path.exists(VERSION_NUMBER_FILE):
         with open(VERSION_NUMBER_FILE) as file:
             version_number = file.read().strip()
-            if version_number == options.version_number:
-                assert os.path.exists(EXPECTED_BINARY)
+            if version_number == options.version_number and os.path.exists(
+                    EXPECTED_BINARY):
                 return
 
     # Remove previous download.

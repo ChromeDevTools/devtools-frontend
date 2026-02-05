@@ -172,6 +172,7 @@ devtools_ui_module("unittests") {
 
   sources = [
     "AccessibilityTreeView.test.ts",
+    "AdoptedStyleSheetTreeElement.test.ts",
     "CSSRuleValidator.test.ts",
     "CSSValueTraceView.test.ts",
     "ClassesPaneWidget.test.ts",

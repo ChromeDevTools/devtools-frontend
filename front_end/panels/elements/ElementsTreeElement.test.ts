@@ -544,4 +544,48 @@ describeWithMockConnection('ElementsTreeElement highlighting', () => {
     domModel.dispatchEventToListeners(SDK.DOMModel.Events.AttrModified, {node: attrTestNode, name: 'attrFoo'});
     assert.strictEqual(await highlights, 1);
   });
+
+  it('edits a text node', async () => {
+    const longText = 'This is a long text that is longer than 80 characters to ensure that the text node is ' +
+        'not rendered inline and the parent element is expandable.';
+    const textNodePayload = createTextNodePayload(longText);
+    const textNode = SDK.DOMModel.DOMNode.create(domModel, textTestNode.ownerDocument, false, textNodePayload);
+    textTestNode.setChildrenPayload([textNodePayload]);
+    textNode.parentNode = textTestNode;
+
+    const setNodeValueSpy = sinon.spy(textNode, 'setNodeValue');
+    sinon.stub(SDK.OverlayModel.OverlayModel, 'hideDOMNodeHighlight');
+
+    const textNodeTreeElement = new Elements.ElementsTreeElement.ElementsTreeElement(textNode);
+    assert.exists(textNodeTreeElement);
+    textTestTreeElement.appendChild(textNodeTreeElement);
+
+    await textTestTreeElement.onpopulate();
+
+    treeOutline.selectDOMNode(textNode, true);
+
+    const textElementDOM = textNodeTreeElement.listItemElement.querySelector('.webkit-html-text-node') as HTMLElement;
+    assert.exists(textElementDOM);
+
+    // Start editing by calling ondblclick
+    const event = new MouseEvent('dblclick', {bubbles: true, cancelable: true});
+    Object.defineProperty(event, 'target', {value: textElementDOM});
+    assert.isFalse(textNodeTreeElement.ondblclick(event));
+
+    assert.isTrue(textNodeTreeElement.isEditing());
+
+    assert.strictEqual(textElementDOM.textContent, longText);
+
+    // The inplace editor is now active on textElementDOM.
+    textElementDOM.textContent = 'New Text';
+
+    // The commit is triggered by blur or enter.
+    textElementDOM.dispatchEvent(new KeyboardEvent('keydown', {key: 'Enter'}));
+
+    assert.isFalse(textNodeTreeElement.isEditing());
+
+    sinon.assert.calledOnce(setNodeValueSpy);
+    sinon.assert.calledWith(setNodeValueSpy, 'New Text');
+  });
+
 });

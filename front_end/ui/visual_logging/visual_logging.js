@@ -5100,7 +5100,7 @@ async function expectVeEvents(expectedEvents) {
   pendingEventExpectation = { expectedEvents, success, fail, unmatchedEvents: [] };
   checkPendingEventExpectation();
   const timeout = setTimeout(() => {
-    if (pendingEventExpectation?.missingEvents) {
+    if (pendingEventExpectation?.missingEvents?.length) {
       const allLogs = veDebugEventsLog.filter((ve) => {
         if ("interaction" in ve) {
           return ve.interaction !== "SettingAccess";

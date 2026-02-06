@@ -3,9 +3,11 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { ElementsTreeElement } from './ElementsTreeElement.js';
+import elementsTreeOutlineStyles from './elementsTreeOutline.css.js';
 import type { MarkerDecoratorRegistration } from './MarkerDecorator.js';
 import { TopLayerContainer } from './TopLayerContainer.js';
 export type View = typeof DEFAULT_VIEW;
+export { elementsTreeOutlineStyles };
 interface ViewInput {
     omitRootDOMNode: boolean;
     selectEnabled: boolean;
@@ -265,4 +267,3 @@ export interface ClipboardData {
     node: SDK.DOMModel.DOMNode;
     isCut: boolean;
 }
-export {};

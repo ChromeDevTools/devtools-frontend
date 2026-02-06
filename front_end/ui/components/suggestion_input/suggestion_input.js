@@ -360,19 +360,12 @@ var SuggestionBox = class SuggestionBox2 extends LitElement {
       return;
     }
     return html`<style>${suggestionInput_css_default}</style><ul class="suggestions">
-      ${this.#suggestions.map((suggestion, index) => {
-      return html`<li
-          class=${classMap({
-        selected: index === this.cursor
-      })}
-          @mousedown=${this.#dispatchSuggestEvent.bind(this, suggestion)}
-          jslog=${VisualLogging.item("suggestion").track({
-        click: true
-      })}
-        >
+      ${this.#suggestions.map((suggestion, index) => html`
+        <li class=${classMap({ selected: index === this.cursor })}
+            @mousedown=${this.#dispatchSuggestEvent.bind(this, suggestion)}
+            jslog=${VisualLogging.item("suggestion").track({ click: true, resize: true })}>
           ${suggestion}
-        </li>`;
-    })}
+        </li>`)}
     </ul>`;
   }
 };

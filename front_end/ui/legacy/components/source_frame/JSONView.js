@@ -125,10 +125,8 @@ export class JSONView extends UI.Widget.VBox {
         this.initialized = true;
         const obj = SDK.RemoteObject.RemoteObject.fromLocalObject(this.parsedJSON.data);
         const title = this.parsedJSON.prefix + obj.description + this.parsedJSON.suffix;
-        this.treeOutline =
-            new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection(obj, title, undefined, true /* showOverflow */);
+        this.treeOutline = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection(obj, title, undefined, true /* showOverflow */, false /* editable */);
         this.treeOutline.enableContextMenu();
-        this.treeOutline.setEditable(false);
         if (!this.startCollapsed) {
             this.treeOutline.expand();
         }

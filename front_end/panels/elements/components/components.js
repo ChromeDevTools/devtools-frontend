@@ -1902,7 +1902,7 @@ var ElementsBreadcrumbs = class extends HTMLElement {
                   data-crumb="true"
                 >
                   <a href="#" draggable=false class="crumb-link"
-                    jslog=${VisualLogging4.item().track({ click: true })}
+                    jslog=${VisualLogging4.item().track({ click: true, resize: true })}
                     @click=${this.#onCrumbClick(crumb.node)}
                     @mousemove=${this.#onCrumbMouseMove(crumb.node)}
                     @mouseleave=${this.#onCrumbMouseLeave(crumb.node)}
@@ -2455,7 +2455,7 @@ var StylePropertyEditor = class extends HTMLElement {
     return html11`
       <button title=${title}
               class=${classes}
-              jslog=${VisualLogging7.item().track({ click: true }).context(`${propertyName}-${propertyValue}`)}
+              jslog=${VisualLogging7.item().track({ click: true, resize: true }).context(`${propertyName}-${propertyValue}`)}
               @click=${() => this.#onButtonClick(propertyName, propertyValue, selected)}>
         <devtools-icon style=${transform} name=${iconInfo.iconName}>
         </devtools-icon>

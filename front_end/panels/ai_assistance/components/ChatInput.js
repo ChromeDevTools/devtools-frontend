@@ -31,6 +31,10 @@ const UIStrings = {
      * @description The footer disclaimer that links to more information about the AI feature.
      */
     learnAbout: 'Learn about AI in DevTools',
+    /**
+     * @description Label added to the button that remove the currently selected context in AI Assistance panel.
+     */
+    removeContext: 'Remove selected context',
 };
 /*
 * Strings that don't need to be translated at this time.
@@ -302,6 +306,16 @@ export const DEFAULT_VIEW = (input, output, target) => {
                     :
                         input.selectedContext.getTitle()}
                         </span>
+                        ${input.onContextRemoved ? html `
+                                  <devtools-button
+                                    title=${i18nString(UIStrings.removeContext)}
+                                    aria-label=${i18nString(UIStrings.removeContext)}
+                                    class="remove-context"
+                                    .iconName=${'cross'}
+                                    .size=${"MICRO" /* Buttons.Button.Size.MICRO */}
+                                    .jslogContext=${'context-removed'}
+                                    .variant=${"icon" /* Buttons.Button.Variant.ICON */}
+                                    @click=${input.onContextRemoved}></devtools-button>` : Lit.nothing}
                       </div>
                     </div>`
                 : Lit.nothing}
@@ -433,6 +447,7 @@ export class ChatInput extends UI.Widget.Widget {
     onInspectElementClick = () => { };
     onCancelClick = () => { };
     onNewConversation = () => { };
+    onContextRemoved = null;
     async #handleTakeScreenshot() {
         const mainTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
         if (!mainTarget) {
@@ -590,6 +605,7 @@ export class ChatInput extends UI.Widget.Widget {
             onImageUpload: this.onImageUpload,
             onImageDragOver: this.#handleImageDragOver,
             onImageDrop: this.#handleImageDrop,
+            onContextRemoved: this.onContextRemoved,
         }, undefined, this.contentElement);
     }
     focusTextInput() {

@@ -407,6 +407,7 @@ panels/elements/components/ElementsTreeExpandButton.test.js
 panels/elements/components/QueryContainer.test.js
 panels/elements/components/StylePropertyEditor.test.js
 panels/elements/AccessibilityTreeView.test.js
+panels/elements/AdoptedStyleSheetTreeElement.test.js
 panels/elements/CSSRuleValidator.test.js
 panels/elements/CSSValueTraceView.test.js
 panels/elements/ClassesPaneWidget.test.js

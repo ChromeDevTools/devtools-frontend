@@ -1833,11 +1833,11 @@ var JSONView = class _JSONView extends UI6.Widget.VBox {
       obj,
       title,
       void 0,
-      true
-      /* showOverflow */
+      true,
+      false
+      /* editable */
     );
     this.treeOutline.enableContextMenu();
-    this.treeOutline.setEditable(false);
     if (!this.startCollapsed) {
       this.treeOutline.expand();
     }

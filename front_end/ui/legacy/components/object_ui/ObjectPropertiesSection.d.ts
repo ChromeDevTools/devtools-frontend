@@ -78,10 +78,10 @@ export declare const getObjectPropertiesSectionFrom: (element: Element) => Objec
 export declare class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow {
     #private;
     private readonly root;
-    editable: boolean;
+    readonly editable: boolean;
     titleElement: Element;
     skipProtoInternal?: boolean;
-    constructor(object: SDK.RemoteObject.RemoteObject, title?: string | Element | null, linkifier?: Components.Linkifier.Linkifier, showOverflow?: boolean);
+    constructor(object: SDK.RemoteObject.RemoteObject, title?: string | Element | null, linkifier?: Components.Linkifier.Linkifier, showOverflow?: boolean, editable?: boolean);
     static defaultObjectPresentation(object: SDK.RemoteObject.RemoteObject, linkifier?: Components.Linkifier.Linkifier, skipProto?: boolean, readOnly?: boolean): Element;
     static defaultObjectPropertiesSection(object: SDK.RemoteObject.RemoteObject, linkifier?: Components.Linkifier.Linkifier, skipProto?: boolean, readOnly?: boolean): ObjectPropertiesSection;
     static compareProperties(propertyA: ObjectTreeNode | SDK.RemoteObject.RemoteObjectProperty, propertyB: ObjectTreeNode | SDK.RemoteObject.RemoteObjectProperty): number;
@@ -95,7 +95,6 @@ export declare class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineI
     static isDisplayableProperty(property: SDK.RemoteObject.RemoteObjectProperty, parentProperty?: SDK.RemoteObject.RemoteObjectProperty): boolean;
     skipProto(): void;
     expand(): void;
-    setEditable(value: boolean): void;
     objectTreeElement(): UI.TreeOutline.TreeElement;
     enableContextMenu(): void;
     private contextMenuEventFired;
@@ -130,6 +129,7 @@ export declare class RootElement extends UI.TreeOutline.TreeElement {
  **/
 export declare const InitialVisibleChildrenLimit = 200;
 export interface ObjectPropertyViewInput {
+    editable: boolean;
     startEditing(): unknown;
     invokeGetter(getter: SDK.RemoteObject.RemoteObject): unknown;
     onAutoComplete(expression: string, filter: string, force: boolean): unknown;
@@ -156,6 +156,8 @@ export declare class ObjectPropertyWidget extends UI.Widget.Widget {
     set expanded(expanded: boolean);
     get linkifier(): Components.Linkifier.Linkifier | undefined;
     set linkifier(linkifier: Components.Linkifier.Linkifier | undefined);
+    get editable(): boolean;
+    set editable(val: boolean);
     performUpdate(): void;
     setSearchRegex(regex: RegExp, additionalCssClassName?: string): boolean;
     revertHighlightChanges(): void;
@@ -175,6 +177,8 @@ export declare class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElemen
     setSearchRegex(regex: RegExp, additionalCssClassName?: string): boolean;
     startEditing(): void;
     get editing(): boolean;
+    get editable(): boolean;
+    set editable(val: boolean);
     applyExpression(expression: string): Promise<void>;
     private static appendEmptyPlaceholderIfNeeded;
     private showAllPropertiesElementSelected;

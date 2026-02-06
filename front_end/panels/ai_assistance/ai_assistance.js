@@ -1205,7 +1205,6 @@ var chatInput_css_default = `/*
   max-width: var(--sys-size-36);
   background-color: var(--sys-color-cdt-base-container);
   width: 100%;
-
 }
 
 .chat-readonly-container {
@@ -1404,6 +1403,8 @@ var chatInput_css_default = `/*
 
   .resource-link,
   .resource-task {
+    display: flex;
+    align-items: center;
     cursor: pointer;
     padding: var(--sys-size-2) var(--sys-size-3);
     font: var(--sys-typescale-body5-regular);
@@ -1422,6 +1423,12 @@ var chatInput_css_default = `/*
     & .title {
       vertical-align: middle;
       font: var(--sys-typescale-body5-regular);
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    & .remove-context {
+      vertical-align: middle;
     }
 
     &.has-picker-behavior {
@@ -1436,8 +1443,8 @@ var chatInput_css_default = `/*
     devtools-file-source-icon {
       display: inline-flex;
       vertical-align: middle;
-      width: var(--sys-size-7);
-      height: var(--sys-size-7);
+      min-width: var(--sys-size-7);
+      min-height: var(--sys-size-7);
     }
 
     /*
@@ -1585,7 +1592,11 @@ var UIStrings = {
   /**
    * @description The footer disclaimer that links to more information about the AI feature.
    */
-  learnAbout: "Learn about AI in DevTools"
+  learnAbout: "Learn about AI in DevTools",
+  /**
+   * @description Label added to the button that remove the currently selected context in AI Assistance panel.
+   */
+  removeContext: "Remove selected context"
 };
 var UIStringsNotTranslate3 = {
   /**
@@ -1825,6 +1836,16 @@ var DEFAULT_VIEW2 = (input, output, target) => {
     }
   })}></devtools-widget>` : input.selectedContext.getTitle()}
                         </span>
+                        ${input.onContextRemoved ? html3`
+                                  <devtools-button
+                                    title=${i18nString(UIStrings.removeContext)}
+                                    aria-label=${i18nString(UIStrings.removeContext)}
+                                    class="remove-context"
+                                    .iconName=${"cross"}
+                                    .size=${"MICRO"}
+                                    .jslogContext=${"context-removed"}
+                                    .variant=${"icon"}
+                                    @click=${input.onContextRemoved}></devtools-button>` : Lit.nothing}
                       </div>
                     </div>` : Lit.nothing}
               </div>
@@ -1946,6 +1967,7 @@ var ChatInput = class extends UI3.Widget.Widget {
   };
   onNewConversation = () => {
   };
+  onContextRemoved = null;
   async #handleTakeScreenshot() {
     const mainTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
     if (!mainTarget) {
@@ -2106,7 +2128,8 @@ var ChatInput = class extends UI3.Widget.Widget {
       onCancel: this.onCancel,
       onImageUpload: this.onImageUpload,
       onImageDragOver: this.#handleImageDragOver,
-      onImageDrop: this.#handleImageDrop
+      onImageDrop: this.#handleImageDrop,
+      onContextRemoved: this.onContextRemoved
     }, void 0, this.contentElement);
   }
   focusTextInput() {
@@ -2710,6 +2733,7 @@ var DEFAULT_VIEW3 = (input, output, target) => {
     }
     return renderStep({
       step: part.step,
+      isLoading: input.isLoading,
       markdownRenderer: input.markdownRenderer,
       isLast: isLastPart
     });
@@ -2785,8 +2809,8 @@ function renderStepDetails({ step, markdownRenderer, isLast }) {
     ${contextDetails}
   </div>`;
 }
-function renderStepBadge({ step, isLast }) {
-  if (step.isLoading && isLast && !step.sideEffect) {
+function renderStepBadge({ step, isLoading, isLast }) {
+  if (isLoading && isLast && !step.sideEffect) {
     return html4`<devtools-spinner></devtools-spinner>`;
   }
   let iconName = "checkmark";
@@ -2807,7 +2831,7 @@ function renderStepBadge({ step, isLast }) {
       .name=${iconName}
     ></devtools-icon>`;
 }
-function renderStep({ step, markdownRenderer, isLast }) {
+function renderStep({ step, isLoading, markdownRenderer, isLast }) {
   const stepClasses = Lit2.Directives.classMap({
     step: true,
     empty: !step.thought && !step.code && !step.contextDetails && !step.sideEffect,
@@ -2820,7 +2844,7 @@ function renderStep({ step, markdownRenderer, isLast }) {
       .open=${Boolean(step.sideEffect)}>
       <summary>
         <div class="summary">
-          ${renderStepBadge({ step, isLast })}
+          ${renderStepBadge({ step, isLoading, isLast })}
           ${renderTitle(step)}
           <devtools-icon
             class="arrow"
@@ -3702,7 +3726,8 @@ var DEFAULT_VIEW4 = (input, output, target) => {
     onInspectElementClick: input.onInspectElementClick,
     onTextSubmit: input.onTextSubmit,
     onCancelClick: input.onCancelClick,
-    onNewConversation: input.onNewConversation
+    onNewConversation: input.onNewConversation,
+    onContextRemoved: input.onContextRemoved
   })} ${ref3((element) => {
     output.input = element;
   })}></devtools-widget>
@@ -4493,6 +4518,10 @@ var UIStringsNotTranslate7 = {
    */
   inputPlaceholderForNoContext: "Ask AI Assistance",
   /**
+   * @description Placeholder text for the chat UI input with branding Gemini (do not translate)
+   */
+  inputPlaceholderForNoContextBranded: "Ask Gemini",
+  /**
    * @description Disclaimer text right after the chat input.
    */
   inputDisclaimerForStyling: "Chat messages and any data the inspected page can access via Web APIs are sent to Google and may be seen by human reviewers to improve this feature. This is an experimental AI feature and won\u2019t always get it right.",
@@ -4810,7 +4839,8 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI8.Panel.Panel {
           onCancelClick: this.#cancel.bind(this),
           onContextClick: this.#handleContextClick.bind(this),
           onNewConversation: this.#handleNewChatRequest.bind(this),
-          onCopyResponseClick: this.#onCopyResponseClick.bind(this)
+          onCopyResponseClick: this.#onCopyResponseClick.bind(this),
+          onContextRemoved: isAiAssistanceContextSelectionAgentEnabled() ? this.#handleContextRemoved.bind(this) : null
         }
       };
     }
@@ -5105,6 +5135,9 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI8.Panel.Panel {
         return lockedString7(UIStringsNotTranslate7.inputPlaceholderForPerformanceWithNoRecording);
       }
       case "none":
+        if (AiAssistanceModel5.AiUtils.isGeminiBranding()) {
+          return lockedString7(UIStringsNotTranslate7.inputPlaceholderForNoContextBranded);
+        }
         return lockedString7(UIStringsNotTranslate7.inputPlaceholderForNoContext);
     }
   }
@@ -5184,6 +5217,10 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI8.Panel.Panel {
         return Common5.Revealer.reveal(focus.insight);
       }
     }
+  }
+  #handleContextRemoved() {
+    this.#conversation?.setContext(null);
+    this.requestUpdate();
   }
   #canExecuteQuery() {
     const isBrandedBuild = Boolean(Root5.Runtime.hostConfig.aidaAvailability?.enabled);
@@ -5349,18 +5386,22 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI8.Panel.Panel {
     if (data instanceof Workspace6.UISourceCode.UISourceCode) {
       const context = new AiAssistanceModel5.FileAgent.FileContext(data);
       this.#selectedFile = context;
+      this.#conversation?.setContext(context);
     } else if (data instanceof SDK3.DOMModel.DOMNode) {
       const context = new AiAssistanceModel5.StylingAgent.NodeContext(data);
       this.#selectedElement = context;
+      this.#conversation?.setContext(context);
     } else if (data instanceof SDK3.NetworkRequest.NetworkRequest) {
       const calculator = NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator();
       const context = new AiAssistanceModel5.NetworkAgent.RequestContext(data, calculator);
       this.#selectedRequest = context;
+      this.#conversation?.setContext(context);
     } else if (data instanceof AiAssistanceModel5.AIContext.AgentFocus) {
       const context = new AiAssistanceModel5.PerformanceAgent.PerformanceTraceContext(data);
       this.#selectedPerformanceTrace = context;
+      this.#conversation?.setContext(context);
     }
-    this.#updateConversationState(this.#conversation);
+    this.requestUpdate();
   };
   async #startConversation(text, imageInput, multimodalInputType) {
     if (!this.#conversation) {

@@ -1672,8 +1672,6 @@ var DEFAULT_VIEW = (input, _output, target) => {
         <span class="excluded-folder-url">${input.fileSystemPath}</span>
         <devtools-data-grid
           @create=${input.onCreate}
-          @edit=${input.onEdit}
-          @delete=${input.onDelete}
           class="exclude-subfolders-table"
           parts="excluded-folder-row-with-error"
           inline striped>
@@ -1685,7 +1683,9 @@ var DEFAULT_VIEW = (input, _output, target) => {
             </thead>
             <tbody>
             ${input.excludedFolderPaths.map((path, index) => html3`
-              <tr data-url=${path.path} data-index=${index}>
+              <tr data-url=${path.path} data-index=${index}
+                  @edit=${input.onEdit}
+                  @delete=${input.onDelete}>
                 <td style=${styleMap({ backgroundColor: path.status !== 1 ? "var(--sys-color-error-container)" : void 0 })}>${path.path}</td>
               </tr>
             `)}
@@ -1729,8 +1729,8 @@ var EditFileSystemView = class _EditFileSystemView extends UI3.Widget.VBox {
       fileSystemPath: this.#fileSystem?.path() ?? Platform2.DevToolsPath.urlString``,
       excludedFolderPaths: this.#excludedFolderPaths,
       onCreate: (e) => this.#onCreate(e.detail.url),
-      onEdit: (e) => this.#onEdit(e.detail.node.dataset.index ?? "-1", e.detail.valueBeforeEditing, e.detail.newText),
-      onDelete: (e) => this.#onDelete(e.detail.dataset.index ?? "-1")
+      onEdit: (e) => this.#onEdit(e.currentTarget.dataset.index ?? "-1", e.detail.valueBeforeEditing, e.detail.newText),
+      onDelete: (e) => this.#onDelete(e.currentTarget.dataset.index ?? "-1")
     };
     this.#view(input, {}, this.contentElement);
   }
@@ -2693,7 +2693,7 @@ var ShortcutListItem = class {
     this.settingsTab = settingsTab;
     this.item = item2;
     this.element = document.createElement("div");
-    this.element.setAttribute("jslog", `${VisualLogging4.item().context(item2.id()).track({ keydown: "Escape" })}`);
+    this.element.setAttribute("jslog", `${VisualLogging4.item().context(item2.id()).track({ keydown: "Escape", resize: true })}`);
     this.editedShortcuts = /* @__PURE__ */ new Map();
     this.shortcutInputs = /* @__PURE__ */ new Map();
     this.shortcuts = UI5.ShortcutRegistry.ShortcutRegistry.instance().shortcutsForAction(item2.id());

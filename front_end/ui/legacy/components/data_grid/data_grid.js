@@ -1825,7 +1825,10 @@ var DataGridNode = class {
   }
   createElement() {
     this.elementInternal = document.createElement("tr");
-    this.elementInternal.setAttribute("jslog", `${VisualLogging.tableRow().track({ keydown: "ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Enter|Space" })}`);
+    this.elementInternal.setAttribute("jslog", `${VisualLogging.tableRow().track({
+      resize: true,
+      keydown: "ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Enter|Space"
+    })}`);
     this.elementInternal.classList.add("data-grid-data-grid-node");
     if (this.dataGrid) {
       this.dataGrid.elementToDataGridNode.set(this.elementInternal, this);
@@ -2930,10 +2933,8 @@ var SortableDataGrid = class _SortableDataGrid extends ViewportDataGrid {
     return 0;
   }
   static NumericComparator(columnId, a, b) {
-    const aValue = a.data[columnId];
-    const bValue = b.data[columnId];
-    const aNumber = Number(aValue instanceof Node ? aValue.textContent : aValue);
-    const bNumber = Number(bValue instanceof Node ? bValue.textContent : bValue);
+    const aNumber = a.getNumericValue(columnId);
+    const bNumber = b.getNumericValue(columnId);
     return aNumber < bNumber ? -1 : aNumber > bNumber ? 1 : 0;
   }
   static StringComparator(columnId, a, b) {
@@ -3017,6 +3018,45 @@ var SortableDataGrid = class _SortableDataGrid extends ViewportDataGrid {
   }
 };
 var SortableDataGridNode = class extends ViewportDataGridNode {
+  #numericData = /* @__PURE__ */ new Map();
+  #childrenDirty = true;
+  #lastSortingFunction = null;
+  get data() {
+    return super.data;
+  }
+  set data(x) {
+    this.#numericData.clear();
+    super.data = x;
+  }
+  getNumericValue(columnId) {
+    let value = this.#numericData.get(columnId);
+    if (value === void 0) {
+      const rawValue = this.data[columnId];
+      value = Number(rawValue instanceof Node ? rawValue.textContent : rawValue);
+      this.#numericData.set(columnId, value);
+    }
+    return value;
+  }
+  insertChild(child, index) {
+    super.insertChild(child, index);
+    this.#childrenDirty = true;
+  }
+  removeChild(child) {
+    super.removeChild(child);
+    this.#childrenDirty = true;
+  }
+  refresh() {
+    this.#numericData.clear();
+    super.refresh();
+    this.parent?.markChildrenDirty();
+  }
+  expand() {
+    super.expand();
+    this.sortChildren();
+  }
+  markChildrenDirty() {
+    this.#childrenDirty = true;
+  }
   insertChildOrdered(node) {
     const dataGrid = this.dataGrid;
     if (dataGrid) {
@@ -3025,13 +3065,17 @@ var SortableDataGridNode = class extends ViewportDataGridNode {
   }
   sortChildren() {
     const dataGrid = this.dataGrid;
-    if (!dataGrid) {
+    if (!dataGrid || !this.expanded) {
       return;
     }
-    this.children.sort(dataGrid.sortingFunction);
-    for (let i = 0; i < this.children.length; ++i) {
-      const child = this.children[i];
-      child.recalculateSiblings(i);
+    if (this.#childrenDirty || this.#lastSortingFunction !== dataGrid.sortingFunction) {
+      this.children.sort(dataGrid.sortingFunction);
+      this.#childrenDirty = false;
+      this.#lastSortingFunction = dataGrid.sortingFunction;
+      for (let i = 0; i < this.children.length; ++i) {
+        const child = this.children[i];
+        child.recalculateSiblings(i);
+      }
     }
     for (let i = 0; i < this.children.length; ++i) {
       const child = this.children[i];

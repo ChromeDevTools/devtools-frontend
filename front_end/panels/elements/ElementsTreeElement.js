@@ -32,6 +32,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 import '../../ui/components/adorners/adorners.js';
+import '../../ui/components/buttons/buttons.js';
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -43,7 +44,6 @@ import * as Badges from '../../models/badges/badges.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
-import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as CodeHighlighter from '../../ui/components/code_highlighter/code_highlighter.js';
 import * as Highlighting from '../../ui/components/highlighting/highlighting.js';
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
@@ -381,13 +381,27 @@ export const DEFAULT_VIEW = (input, output, target) => {
         input.showGridAdorner || input.showGridLanesAdorner || input.showMediaAdorner || input.showPopoverAdorner ||
         input.showTopLayerAdorner || input.showViewSourceAdorner || input.showScrollAdorner ||
         input.showScrollSnapAdorner || input.showSlotAdorner || input.showStartingStyleAdorner;
+    const gutterContainerClasses = {
+        'has-decorations': input.decorations.length || input.descendantDecorations.length,
+        'gutter-container': true,
+    };
     // clang-format off
     render(html `
     <div ${ref(el => { output.contentElement = el; })}>
       ${input.nodeInfo ? html `<span class="highlight">${input.nodeInfo}</span>` : nothing}
-      <div class="gutter-container" @click=${input.onGutterClick} ${ref(el => { output.gutterContainer = el; })}>
+      ${input.isHovered || input.isSelected ? html `
+        <div class="selection fill" style=${`margin-left: ${-input.indent}px`}></div>
+      ` : nothing}
+      <div class=${Lit.Directives.classMap(gutterContainerClasses)}
+           style="left: ${-input.indent}px"
+           @click=${input.onGutterClick}>
         <devtools-icon name="dots-horizontal"></devtools-icon>
-        <div class="hidden" ${ref(el => { output.decorationsElement = el; })}></div>
+        ${input.decorations.length || input.descendantDecorations.length ? html `
+        <div class="elements-gutter-decoration-container"
+             title=${input.decorationsTooltip}>
+             ${input.decorations.map(d => html `<div class="elements-gutter-decoration" style="--decoration-color: ${d.color}"></div>`)}
+             ${input.descendantDecorations.map(d => html `<div class="elements-gutter-decoration elements-has-decorated-children" style="--decoration-color: ${d.color}"></div>`)}
+        </div>` : nothing}
       </div>
       ${hasAdorners ? html `<div class="adorner-container ${!hasAdorners ? 'hidden' : ''}">
         ${input.showAdAdorner ? html `<devtools-adorner
@@ -553,6 +567,20 @@ export const DEFAULT_VIEW = (input, output, target) => {
           <span>${ElementsComponents.AdornerManager.RegisteredAdorners.SCROLL_SNAP}</span>
         </devtools-adorner>` : nothing}
       </div>` : nothing}
+      ${input.isSelected ? html `
+        <span class="selected-hint" title=${i18nString(UIStrings.useSInTheConsoleToReferToThis, { PH1: '$0' })} aria-hidden="true"></span>
+      ` : nothing}
+      ${input.showAiButton ? html `
+        <span class="ai-button-container">
+          <devtools-floating-button
+            icon-name=${AIAssistance.AiUtils.getIconName()}
+            title=${input.aiButtonTitle || ''}
+            jslogcontext="ask-ai"
+            @click=${input.onAiButtonClick}
+            @mousedown=${(e) => e.stopPropagation()}>
+          </devtools-floating-button>
+        </span>
+      ` : nothing}
     </div>
   `, target);
     // clang-format on
@@ -561,8 +589,6 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     nodeInternal;
     treeOutline;
     // Handled by the view output for now.
-    gutterContainer;
-    decorationsElement;
     contentElement;
     searchQuery;
     #expandedChildrenLimit;
@@ -572,9 +598,6 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     editing;
     htmlEditElement;
     expandAllButtonElement;
-    selectionElement;
-    hintElement;
-    aiButtonContainer;
     #elementIssues = new Map();
     #nodeElementToIssue = new Map();
     #highlights = [];
@@ -588,6 +611,9 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     #scrollSnapAdornerActive = false;
     #startingStyleAdornerActive = false;
     #layout = null;
+    #decorations = [];
+    #descendantDecorations = [];
+    #decorationsTooltip = '';
     constructor(node, isClosingTag) {
         // The title will be updated in onattach.
         super();
@@ -595,6 +621,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         this.treeOutline = null;
         this.listItemElement.setAttribute('jslog', `${VisualLogging.treeItem().parent('elementsTreeOutline').track({
             keydown: 'ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Backspace|Delete|Enter|Space|Home|End',
+            resize: true,
             drag: true,
             click: true,
         })}`);
@@ -696,6 +723,10 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
             showScrollAdorner: ((this.node().nodeName() === 'HTML' && this.node().ownerDocument?.isScrollable()) ||
                 (this.node().nodeName() !== '#document' && this.node().isScrollable())) &&
                 !this.isClosingTag(),
+            decorations: this.#decorations,
+            descendantDecorations: this.expanded ? [] : this.#descendantDecorations,
+            decorationsTooltip: this.#decorationsTooltip,
+            indent: this.computeLeftIndent(),
             showScrollSnapAdorner: Boolean(this.#layout?.hasScroll) && !this.isClosingTag(),
             scrollSnapAdornerActive: this.#scrollSnapAdornerActive,
             showSlotAdorner: Boolean(this.nodeInternal.assignedSlot) && !this.isClosingTag(),
@@ -725,6 +756,21 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
                     return;
                 }
                 this.treeOutline.revealInTopLayer(this.node());
+            },
+            isHovered: this.#hovered,
+            isSelected: this.selected,
+            showAiButton: Boolean(this.#hovered || this.selected) && this.node().nodeType() === Node.ELEMENT_NODE &&
+                UI.ActionRegistry.ActionRegistry.instance().hasAction('freestyler.elements-floating-button'),
+            aiButtonTitle: UI.ActionRegistry.ActionRegistry.instance().hasAction('freestyler.elements-floating-button') ?
+                UI.ActionRegistry.ActionRegistry.instance().getAction('freestyler.elements-floating-button').title() :
+                undefined,
+            onAiButtonClick: (ev) => {
+                ev.stopPropagation();
+                this.select(true, false);
+                const action = UI.ActionRegistry.ActionRegistry.instance().getAction('freestyler.elements-floating-button');
+                if (action) {
+                    void action.execute();
+                }
             },
         }, this, this.listItemElement);
     }
@@ -848,22 +894,15 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         if (this.#hovered === isHovered) {
             return;
         }
-        if (isHovered && !this.aiButtonContainer) {
-            this.createAiButton();
-        }
-        else if (!isHovered && this.aiButtonContainer) {
-            this.aiButtonContainer.remove();
-            delete this.aiButtonContainer;
-        }
         this.#hovered = isHovered;
         if (this.listItemElement) {
             if (isHovered) {
-                this.createSelection();
                 this.listItemElement.classList.add('hovered');
             }
             else {
                 this.listItemElement.classList.remove('hovered');
             }
+            this.performUpdate();
         }
     }
     addIssue(newIssue) {
@@ -918,47 +957,6 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     }
     setExpandedChildrenLimit(expandedChildrenLimit) {
         this.#expandedChildrenLimit = expandedChildrenLimit;
-    }
-    createSelection() {
-        const contentElement = this.contentElement;
-        if (!contentElement) {
-            return;
-        }
-        if (!this.selectionElement) {
-            this.selectionElement = document.createElement('div');
-            this.selectionElement.className = 'selection fill';
-            this.selectionElement.style.setProperty('margin-left', (-this.computeLeftIndent()) + 'px');
-            contentElement.prepend(this.selectionElement);
-        }
-    }
-    createHint() {
-        if (this.contentElement && !this.hintElement) {
-            this.hintElement = this.contentElement.createChild('span', 'selected-hint');
-            const selectedElementCommand = '$0';
-            UI.Tooltip.Tooltip.install(this.hintElement, i18nString(UIStrings.useSInTheConsoleToReferToThis, { PH1: selectedElementCommand }));
-            UI.ARIAUtils.setHidden(this.hintElement, true);
-        }
-    }
-    createAiButton() {
-        const isElementNode = this.node().nodeType() === Node.ELEMENT_NODE;
-        if (!isElementNode ||
-            !UI.ActionRegistry.ActionRegistry.instance().hasAction('freestyler.elements-floating-button')) {
-            return;
-        }
-        const action = UI.ActionRegistry.ActionRegistry.instance().getAction('freestyler.elements-floating-button');
-        if (this.contentElement && !this.aiButtonContainer) {
-            this.aiButtonContainer = this.contentElement.createChild('span', 'ai-button-container');
-            const floatingButton = Buttons.FloatingButton.create(AIAssistance.AiUtils.getIconName(), action.title(), 'ask-ai');
-            floatingButton.addEventListener('click', ev => {
-                ev.stopPropagation();
-                this.select(true, false);
-                void action.execute();
-            }, { capture: true });
-            floatingButton.addEventListener('mousedown', ev => {
-                ev.stopPropagation();
-            }, { capture: true });
-            this.aiButtonContainer.appendChild(floatingButton);
-        }
     }
     onbind() {
         this.performUpdate();
@@ -1015,6 +1013,14 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
             onPopoverAdornerClick: () => { },
             onScrollSnapAdornerClick: () => { },
             onTopLayerAdornerClick: () => { },
+            isHovered: false,
+            isSelected: false,
+            showAiButton: false,
+            onAiButtonClick: () => { },
+            decorations: [],
+            descendantDecorations: [],
+            decorationsTooltip: '',
+            indent: 0,
         }, this, this.listItemElement);
         if (this.treeOutline && this.treeOutline.treeElementByNode.get(this.nodeInternal) === this) {
             this.treeOutline.treeElementByNode.delete(this.nodeInternal);
@@ -1062,8 +1068,8 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     }
     onattach() {
         if (this.#hovered) {
-            this.createSelection();
             this.listItemElement.classList.add('hovered');
+            this.performUpdate();
         }
         this.updateTitle();
         this.listItemElement.draggable = true;
@@ -1112,8 +1118,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
             this.nodeInternal.highlight();
             Host.userMetrics.actionTaken(Host.UserMetrics.Action.ChangeInspectedNodeInElementsPanel);
         }
-        this.createSelection();
-        this.createHint();
+        this.performUpdate();
         this.treeOutline.suppressRevealAndSelect = false;
         return true;
     }
@@ -1910,10 +1915,6 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         // fixme: make it clear that `this.title = x` is a setter with significant side effects
         this.title = this.contentElement;
         this.updateDecorations();
-        if (this.selected) {
-            this.createSelection();
-            this.createHint();
-        }
         // If there is an issue with this node, make sure to update it.
         for (const issue of this.#elementIssues.values()) {
             this.#applyIssueStyleAndTooltip(issue);
@@ -1931,9 +1932,6 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         return 12 * (depth - 2) + (this.isExpandable() && this.isCollapsible() ? 1 : 12);
     }
     updateDecorations() {
-        const indent = this.computeLeftIndent();
-        this.gutterContainer.style.left = (-indent) + 'px';
-        this.listItemElement.style.setProperty('--indent', indent + 'px');
         if (this.isClosingTag()) {
             return;
         }
@@ -1974,53 +1972,25 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         }
         return Promise.all(promises).then(updateDecorationsUI.bind(this));
         function updateDecorationsUI() {
-            this.decorationsElement.removeChildren();
-            this.decorationsElement.classList.add('hidden');
-            this.gutterContainer.classList.toggle('has-decorations', Boolean(decorations.length || descendantDecorations.length));
-            UI.ARIAUtils.setLabel(this.decorationsElement, '');
+            this.#decorations = decorations;
+            this.#descendantDecorations = descendantDecorations;
             if (!decorations.length && !descendantDecorations.length) {
+                this.#decorationsTooltip = '';
+                this.performUpdate();
                 return;
             }
-            const colors = new Set();
-            const titles = document.createElement('div');
+            const tooltip = [];
             for (const decoration of decorations) {
-                const titleElement = titles.createChild('div');
-                titleElement.textContent = decoration.title;
-                colors.add(decoration.color);
+                tooltip.push(decoration.title);
             }
-            if (this.expanded && !decorations.length) {
-                return;
-            }
-            const descendantColors = new Set();
-            if (descendantDecorations.length) {
-                let element = titles.createChild('div');
-                element.textContent = i18nString(UIStrings.children);
+            if (!this.expanded && descendantDecorations.length) {
+                tooltip.push(i18nString(UIStrings.children));
                 for (const decoration of descendantDecorations) {
-                    element = titles.createChild('div');
-                    element.style.marginLeft = '15px';
-                    element.textContent = decoration.title;
-                    descendantColors.add(decoration.color);
+                    tooltip.push(decoration.title);
                 }
             }
-            let offset = 0;
-            processColors.call(this, colors, 'elements-gutter-decoration');
-            if (!this.expanded) {
-                processColors.call(this, descendantColors, 'elements-gutter-decoration elements-has-decorated-children');
-            }
-            UI.Tooltip.Tooltip.install(this.decorationsElement, titles.textContent);
-            UI.ARIAUtils.setLabel(this.decorationsElement, titles.textContent || '');
-            function processColors(colors, className) {
-                for (const color of colors) {
-                    const child = this.decorationsElement.createChild('div', className);
-                    this.decorationsElement.classList.remove('hidden');
-                    child.style.backgroundColor = color;
-                    child.style.borderColor = color;
-                    if (offset) {
-                        child.style.marginLeft = offset + 'px';
-                    }
-                    offset += 3;
-                }
-            }
+            this.#decorationsTooltip = tooltip.join('\n');
+            this.performUpdate();
         }
     }
     buildAttributeDOM(parentElement, name, value, updateRecord, forceValue, node) {

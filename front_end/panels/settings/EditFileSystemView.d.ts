@@ -18,12 +18,11 @@ export interface EditFileSystemViewInput {
         url?: string;
     }>) => void;
     onEdit: (event: CustomEvent<{
-        node: HTMLElement;
         columnId: string;
         valueBeforeEditing: string;
         newText: string;
     }>) => void;
-    onDelete: (event: CustomEvent<HTMLElement>) => void;
+    onDelete: (event: CustomEvent) => void;
 }
 export type View = (input: EditFileSystemViewInput, output: object, target: HTMLElement) => void;
 export declare const DEFAULT_VIEW: View;

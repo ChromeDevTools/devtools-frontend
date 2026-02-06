@@ -148,6 +148,10 @@ const UIStringsNotTranslate = {
      */
     inputPlaceholderForNoContext: 'Ask AI Assistance',
     /**
+     * @description Placeholder text for the chat UI input with branding Gemini (do not translate)
+     */
+    inputPlaceholderForNoContextBranded: 'Ask Gemini',
+    /**
      * @description Disclaimer text right after the chat input.
      */
     inputDisclaimerForStyling: 'Chat messages and any data the inspected page can access via Web APIs are sent to Google and may be seen by human reviewers to improve this feature. This is an experimental AI feature and won’t always get it right.',
@@ -479,6 +483,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                     onContextClick: this.#handleContextClick.bind(this),
                     onNewConversation: this.#handleNewChatRequest.bind(this),
                     onCopyResponseClick: this.#onCopyResponseClick.bind(this),
+                    onContextRemoved: isAiAssistanceContextSelectionAgentEnabled() ? this.#handleContextRemoved.bind(this) : null,
                 }
             };
         }
@@ -803,6 +808,9 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                 return lockedString(UIStringsNotTranslate.inputPlaceholderForPerformanceWithNoRecording);
             }
             case "none" /* AiAssistanceModel.AiHistoryStorage.ConversationType.NONE */:
+                if (AiAssistanceModel.AiUtils.isGeminiBranding()) {
+                    return lockedString(UIStringsNotTranslate.inputPlaceholderForNoContextBranded);
+                }
                 return lockedString(UIStringsNotTranslate.inputPlaceholderForNoContext);
         }
     }
@@ -880,6 +888,10 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             }
         }
         // Node picker is using linkifier.
+    }
+    #handleContextRemoved() {
+        this.#conversation?.setContext(null);
+        this.requestUpdate();
     }
     #canExecuteQuery() {
         const isBrandedBuild = Boolean(Root.Runtime.hostConfig.aidaAvailability?.enabled);
@@ -1044,21 +1056,25 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         if (data instanceof Workspace.UISourceCode.UISourceCode) {
             const context = new AiAssistanceModel.FileAgent.FileContext(data);
             this.#selectedFile = context;
+            this.#conversation?.setContext(context);
         }
         else if (data instanceof SDK.DOMModel.DOMNode) {
             const context = new AiAssistanceModel.StylingAgent.NodeContext(data);
             this.#selectedElement = context;
+            this.#conversation?.setContext(context);
         }
         else if (data instanceof SDK.NetworkRequest.NetworkRequest) {
             const calculator = NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator();
             const context = new AiAssistanceModel.NetworkAgent.RequestContext(data, calculator);
             this.#selectedRequest = context;
+            this.#conversation?.setContext(context);
         }
         else if (data instanceof AiAssistanceModel.AIContext.AgentFocus) {
             const context = new AiAssistanceModel.PerformanceAgent.PerformanceTraceContext(data);
             this.#selectedPerformanceTrace = context;
+            this.#conversation?.setContext(context);
         }
-        this.#updateConversationState(this.#conversation);
+        this.requestUpdate();
     };
     async #startConversation(text, imageInput, multimodalInputType) {
         if (!this.#conversation) {

@@ -15,11 +15,11 @@ const UIStringsNotTranslate = {
     /**
      * @description Text for teaser to generate code.
      */
-    ctrlItoGenerateCode: 'Ctrl+I to generate code',
+    ctrlItoGenerateCode: 'ctrl+i to generate code',
     /**
      * @description Text for teaser to generate code in Mac.
      */
-    cmdItoGenerateCode: 'Cmd+I to generate code',
+    cmdItoGenerateCode: 'cmd+i to generate code',
     /**
      * @description Aria label for teaser to generate code.
      */

@@ -1,31 +1,95 @@
 // Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
 import * as i18n from '../../../../core/i18n/i18n.js';
-import * as Lit from '../../../../ui/lit/lit.js';
+import * as UI from '../../../../ui/legacy/legacy.js';
+import { Directives, html, nothing, render } from '../../../../ui/lit/lit.js';
 import timespanBreakdownOverlayStyles from './timespanBreakdownOverlay.css.js';
-const { html } = Lit;
-export class TimespanBreakdownOverlay extends HTMLElement {
-    #shadow = this.attachShadow({ mode: 'open' });
+const renderSection = (section, position) => {
+    const style = Directives.styleMap({ left: position ? `${position.left}px` : undefined, width: position ? `${position.width}px` : undefined });
+    // clang-format off
+    return html `
+      <div class="timespan-breakdown-overlay-section" style=${style}>
+        <div class="timespan-breakdown-overlay-label">
+          ${section.showDuration ?
+        html `<span class="duration-text">${i18n.TimeUtilities.formatMicroSecondsAsMillisFixed(section.bounds.range)}</span> ` :
+        nothing}
+          <span class="section-label-text">${section.label}</span>
+        </div>
+      </div>`;
+    // clang-format on
+};
+export const DEFAULT_VIEW = (input, _output, target) => {
+    const style = Directives.styleMap({
+        left: input.left ? `${input.left}px` : undefined,
+        width: input.width ? `${input.width}px` : undefined,
+        top: input.top ? `${input.top}px` : undefined,
+        maxHeight: input.maxHeight ? `${input.maxHeight}px` : undefined,
+        position: 'relative'
+    });
+    // clang-format off
+    render(html `
+        <style>${timespanBreakdownOverlayStyles}</style>
+        <div style=${style} class=${input.className}>
+          ${input.sections?.map((curr, index) => {
+        return renderSection(curr, input.positions[index]);
+    })}
+        </div>`, target);
+    // clang-format off
+};
+export class TimespanBreakdownOverlay extends UI.Widget.Widget {
     #canvasRect = null;
     #sections = null;
+    #sectionsPositions = [];
+    #left = null;
+    #width = null;
+    #maxHeight = null;
+    #top = null;
+    #view;
+    constructor(element, view = DEFAULT_VIEW) {
+        super(element, { classes: ['devtools-timespan-breakdown-overlay'] });
+        this.#view = view;
+        this.requestUpdate();
+    }
+    set top(top) {
+        this.#top = top;
+        this.requestUpdate();
+    }
+    set maxHeight(maxHeight) {
+        this.#maxHeight = maxHeight;
+        this.requestUpdate();
+    }
+    set width(width) {
+        this.#width = width;
+        this.requestUpdate();
+    }
+    set left(left) {
+        this.#left = left;
+        this.requestUpdate();
+    }
     set isBelowEntry(isBelow) {
-        this.classList.toggle('is-below', isBelow);
+        this.element.classList.toggle('is-below', isBelow);
     }
     set canvasRect(rect) {
         if (this.#canvasRect && rect && this.#canvasRect.width === rect.width && this.#canvasRect.height === rect.height) {
             return;
         }
         this.#canvasRect = rect;
-        this.#render();
+        this.requestUpdate();
+    }
+    set widths(widths) {
+        if (widths === this.#sectionsPositions) {
+            return;
+        }
+        this.#sectionsPositions = widths;
+        this.requestUpdate();
     }
     set sections(sections) {
         if (sections === this.#sections) {
             return;
         }
         this.#sections = sections;
-        this.#render();
+        this.requestUpdate();
     }
     /**
      * We use this method after the overlay has been positioned in order to move
@@ -34,7 +98,7 @@ export class TimespanBreakdownOverlay extends HTMLElement {
      * align the text so the label is visible as long as possible.
      */
     checkSectionLabelPositioning() {
-        const sections = this.#shadow.querySelectorAll('.timespan-breakdown-overlay-section');
+        const sections = this.element.querySelectorAll('.timespan-breakdown-overlay-section');
         if (!sections) {
             return;
         }
@@ -117,30 +181,25 @@ export class TimespanBreakdownOverlay extends HTMLElement {
             }
         }
     }
-    renderedSections() {
-        return Array.from(this.#shadow.querySelectorAll('.timespan-breakdown-overlay-section'));
-    }
-    #renderSection(section) {
-        // clang-format off
-        return html `
-      <div class="timespan-breakdown-overlay-section">
-        <div class="timespan-breakdown-overlay-label">
-        ${section.showDuration ?
-            html `<span class="duration-text">${i18n.TimeUtilities.formatMicroSecondsAsMillisFixed(section.bounds.range)}</span> ` : Lit.nothing}
-          <span class="section-label-text">${section.label}</span>
-        </div>
-      </div>`;
-        // clang-format on
-    }
-    #render() {
+    performUpdate() {
+        let className = 'timeline-segment-container';
         if (this.#sections) {
-            this.classList.toggle('odd-number-of-sections', this.#sections.length % 2 === 1);
-            this.classList.toggle('even-number-of-sections', this.#sections.length % 2 === 0);
+            if (this.#sections.length % 2 === 0) {
+                className += ' even-number-of-sections';
+            }
+            else {
+                className += ' odd-number-of-sections';
+            }
         }
-        Lit.render(html `<style>${timespanBreakdownOverlayStyles}</style>
-             ${this.#sections?.map(this.#renderSection)}`, this.#shadow, { host: this });
+        this.#view({ sections: this.#sections,
+            positions: this.#sectionsPositions,
+            left: this.#left,
+            width: this.#width,
+            top: this.#top,
+            maxHeight: this.#maxHeight,
+            className
+        }, undefined, this.contentElement);
         this.checkSectionLabelPositioning();
     }
 }
-customElements.define('devtools-timespan-breakdown-overlay', TimespanBreakdownOverlay);
 //# sourceMappingURL=TimespanBreakdownOverlay.js.map

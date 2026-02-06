@@ -1,4 +1,5 @@
 import '../../ui/components/adorners/adorners.js';
+import '../../ui/components/buttons/buttons.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Elements from '../../models/elements/elements.js';
 import type * as IssuesManager from '../../models/issues_manager/issues_manager.js';
@@ -57,20 +58,29 @@ export interface ViewInput {
     showStartingStyleAdorner: boolean;
     startingStyleAdornerActive: boolean;
     onStartingStyleAdornerClick: (e: Event) => void;
+    isHovered: boolean;
+    isSelected: boolean;
+    showAiButton: boolean;
+    aiButtonTitle?: string;
+    onAiButtonClick: (e: Event) => void;
+    decorations: Decoration[];
+    descendantDecorations: Decoration[];
+    decorationsTooltip: string;
+    indent: number;
 }
 export interface ViewOutput {
-    gutterContainer?: HTMLElement;
-    decorationsElement?: HTMLElement;
     contentElement?: HTMLElement;
 }
 export declare function adornerRef(): DirectiveResult<typeof Lit.Directives.RefDirective>;
+export interface Decoration {
+    title: string;
+    color: string;
+}
 export declare const DEFAULT_VIEW: (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
 export declare class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     #private;
     nodeInternal: SDK.DOMModel.DOMNode;
     treeOutline: ElementsTreeOutline | null;
-    gutterContainer: HTMLElement;
-    decorationsElement: HTMLElement;
     contentElement: HTMLElement;
     private searchQuery;
     private readonly decorationsThrottler;
@@ -78,9 +88,6 @@ export declare class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     private editing;
     private htmlEditElement?;
     expandAllButtonElement: UI.TreeOutline.TreeElement | null;
-    selectionElement?: HTMLDivElement;
-    private hintElement?;
-    private aiButtonContainer?;
     readonly tagTypeContext: TagTypeContext;
     constructor(node: SDK.DOMModel.DOMNode, isClosingTag?: boolean);
     static animateOnDOMUpdate(treeElement: ElementsTreeElement): void;
@@ -101,9 +108,6 @@ export declare class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     get issuesByNodeElement(): Map<Element, IssuesManager.Issue.Issue[]>;
     expandedChildrenLimit(): number;
     setExpandedChildrenLimit(expandedChildrenLimit: number): void;
-    private createSelection;
-    private createHint;
-    private createAiButton;
     onbind(): void;
     onunbind(): void;
     onattach(): void;

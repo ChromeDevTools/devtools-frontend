@@ -779,30 +779,6 @@ export namespace config {
         deprecated?: undefined;
     } | {
         implicitValues: {
-            "aria-live": string;
-            "aria-atomic"?: undefined;
-            "aria-checked"?: undefined;
-            "aria-expanded"?: undefined;
-            "aria-haspopup"?: undefined;
-            "aria-level"?: undefined;
-            "aria-orientation"?: undefined;
-            "aria-valuemax"?: undefined;
-            "aria-valuemin"?: undefined;
-            "aria-selected"?: undefined;
-        };
-        name: string;
-        nameFrom: string[];
-        superclasses: string[];
-        internalRoles?: undefined;
-        nameRequired?: undefined;
-        childrenPresentational?: undefined;
-        scope?: undefined;
-        requiredAttributes?: undefined;
-        mustContain?: undefined;
-        abstract?: undefined;
-        deprecated?: undefined;
-    } | {
-        implicitValues: {
             "aria-orientation": string;
             "aria-atomic"?: undefined;
             "aria-live"?: undefined;

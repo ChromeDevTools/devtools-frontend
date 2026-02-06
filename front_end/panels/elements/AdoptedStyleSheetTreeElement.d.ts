@@ -11,9 +11,16 @@ export declare class AdoptedStyleSheetTreeElement extends UI.TreeOutline.TreeEle
 }
 export declare class AdoptedStyleSheetContentsTreeElement extends UI.TreeOutline.TreeElement {
     private readonly styleSheetHeader;
+    private editing;
     constructor(styleSheetHeader: SDK.CSSStyleSheetHeader.CSSStyleSheetHeader);
     onbind(): void;
     onunbind(): void;
     onpopulate(): Promise<void>;
     onStyleSheetChanged({ data: { styleSheetId } }: Common.EventTarget.EventTargetEvent<SDK.CSSModel.StyleSheetChangedEvent>): void;
+    ondblclick(event: Event): boolean;
+    onenter(): boolean;
+    private startEditing;
+    private editingCommitted;
+    private editingCancelled;
+    isEditing(): boolean;
 }

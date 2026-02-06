@@ -6,6 +6,7 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
 import * as Logs from '../../logs/logs.js';
+import * as Workspace from '../../workspace/workspace.js';
 import { AiAgent, } from './AiAgent.js';
 const lockedString = i18n.i18n.lockedString;
 /**
@@ -116,7 +117,78 @@ export class ContextSelectionAgent extends AiAgent {
                 };
             },
         });
+        this.declareFunction('listSourceFiles', {
+            description: `Returns a list of all files in the project.`,
+            parameters: {
+                type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
+                description: '',
+                nullable: true,
+                required: [],
+                properties: {},
+            },
+            displayInfoFromArgs: () => {
+                return { title: lockedString('Listing source requests…') };
+            },
+            handler: async () => {
+                const files = [];
+                for (const file of this.#getUISourceCodes()) {
+                    files.push(file.fullDisplayName());
+                }
+                return {
+                    result: files,
+                };
+            },
+        });
+        this.declareFunction('selectSourceFile', {
+            description: `Returns a list of all files in the project.`,
+            parameters: {
+                type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
+                description: '',
+                nullable: true,
+                required: ['name'],
+                properties: {
+                    name: {
+                        type: 1 /* Host.AidaClient.ParametersTypes.STRING */,
+                        description: 'The name of the file',
+                        nullable: false,
+                    },
+                },
+            },
+            displayInfoFromArgs: args => {
+                return { title: lockedString('Getting source file'), action: `selectSourceFile(${args.name})` };
+            },
+            handler: async (params) => {
+                for (const file of this.#getUISourceCodes()) {
+                    if (file.fullDisplayName() === params.name) {
+                        return {
+                            context: file,
+                        };
+                    }
+                }
+                return { error: 'Unable to find file.' };
+            },
+        });
     }
+    #getUISourceCodes = () => {
+        const workspace = Workspace.Workspace.WorkspaceImpl.instance();
+        const projects = workspace.projects().filter(project => {
+            switch (project.type()) {
+                case Workspace.Workspace.projectTypes.Network:
+                case Workspace.Workspace.projectTypes.FileSystem:
+                case Workspace.Workspace.projectTypes.ConnectableFileSystem:
+                    return true;
+                default:
+                    return false;
+            }
+        });
+        const uiSourceCodes = [];
+        for (const project of projects) {
+            for (const uiSourceCode of project.uiSourceCodes()) {
+                uiSourceCodes.push(uiSourceCode);
+            }
+        }
+        return uiSourceCodes;
+    };
     async *handleContextDetails() {
     }
     async enhanceQuery(query) {

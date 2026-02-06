@@ -7,6 +7,7 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as AIAssistance from '../../../models/ai_assistance/ai_assistance.js';
 import * as Trace from '../../../models/trace/trace.js';
+import * as UI from '../../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as Components from './components/components.js';
 const UIStrings = {
@@ -715,8 +716,11 @@ export class Overlays extends EventTarget {
         if (overlay.sections.length === 0) {
             return;
         }
-        const component = element.querySelector('devtools-timespan-breakdown-overlay');
-        const elementSections = component?.renderedSections() ?? [];
+        const component = element.querySelector('.devtools-timespan-breakdown-overlay');
+        if (!component) {
+            return;
+        }
+        const widget = UI.Widget.Widget.get(component);
         // Handle horizontal positioning.
         const leftEdgePixel = this.#xPixelForMicroSeconds('main', overlay.sections[0].bounds.min);
         const rightEdgePixel = this.#xPixelForMicroSeconds('main', overlay.sections[overlay.sections.length - 1].bounds.max);
@@ -724,12 +728,9 @@ export class Overlays extends EventTarget {
             return;
         }
         const rangeWidth = rightEdgePixel - leftEdgePixel;
-        element.style.left = `${leftEdgePixel}px`;
-        element.style.width = `${rangeWidth}px`;
-        if (elementSections.length === 0) {
-            return;
-        }
-        let count = 0;
+        widget.left = leftEdgePixel;
+        widget.width = rangeWidth;
+        const widths = [];
         for (const section of overlay.sections) {
             const leftPixel = this.#xPixelForMicroSeconds('main', section.bounds.min);
             const rightPixel = this.#xPixelForMicroSeconds('main', section.bounds.max);
@@ -737,16 +738,14 @@ export class Overlays extends EventTarget {
                 return;
             }
             const rangeWidth = rightPixel - leftPixel;
-            const sectionElement = elementSections[count];
-            sectionElement.style.left = `${leftPixel}px`;
-            sectionElement.style.width = `${rangeWidth}px`;
-            count++;
+            widths.push({ left: leftPixel, width: rangeWidth });
         }
+        widget.widths = widths;
         // Handle vertical positioning based on the entry's vertical position.
         if (overlay.entry && (overlay.renderLocation === 'BELOW_EVENT' || overlay.renderLocation === 'ABOVE_EVENT')) {
             // Max height for the overlay box when attached to an entry.
             const MAX_BOX_HEIGHT = 50;
-            element.style.maxHeight = `${MAX_BOX_HEIGHT}px`;
+            widget.maxHeight = MAX_BOX_HEIGHT;
             const y = this.yPixelForEventOnChart(overlay.entry);
             if (y === null) {
                 return;
@@ -757,7 +756,7 @@ export class Overlays extends EventTarget {
             }
             if (overlay.renderLocation === 'BELOW_EVENT') {
                 const top = y + eventHeight;
-                element.style.top = `${top}px`;
+                widget.top = top;
             }
             else {
                 // Some padding so the box hovers just on top.
@@ -769,7 +768,7 @@ export class Overlays extends EventTarget {
                 // Constrain height to available space.
                 const height = Math.min(MAX_BOX_HEIGHT, minSpace);
                 const top = bottom - height;
-                element.style.top = `${top}px`;
+                widget.top = top;
             }
         }
     }
@@ -1282,11 +1281,13 @@ export class Overlays extends EventTarget {
                 return overlayElement;
             }
             case 'TIMESPAN_BREAKDOWN': {
-                const component = new Components.TimespanBreakdownOverlay.TimespanBreakdownOverlay();
-                component.sections = overlay.sections;
-                component.canvasRect = this.#charts.mainChart.canvasBoundingClientRect();
-                component.isBelowEntry = overlay.renderLocation === 'BELOW_EVENT';
-                overlayElement.appendChild(component);
+                const widget = document.createElement('devtools-widget');
+                widget.widgetConfig = UI.Widget.widgetConfig(Components.TimespanBreakdownOverlay.TimespanBreakdownOverlay, {
+                    isBelowEntry: overlay.renderLocation === 'BELOW_EVENT',
+                    canvasRect: this.#charts.mainChart.canvasBoundingClientRect(),
+                    sections: overlay.sections,
+                });
+                overlayElement.appendChild(widget);
                 return overlayElement;
             }
             case 'TIMINGS_MARKER': {
@@ -1397,10 +1398,14 @@ export class Overlays extends EventTarget {
                 break;
             }
             case 'TIMESPAN_BREAKDOWN': {
-                const component = element.querySelector('devtools-timespan-breakdown-overlay');
-                if (component) {
-                    component.sections = overlay.sections;
-                    component.canvasRect = this.#charts.mainChart.canvasBoundingClientRect();
+                const component = element.querySelector('.devtools-timespan-breakdown-overlay');
+                if (!component) {
+                    return;
+                }
+                const widget = UI.Widget.Widget.get(component);
+                if (widget) {
+                    widget.sections = overlay.sections;
+                    widget.canvasRect = this.#charts.mainChart.canvasBoundingClientRect();
                 }
                 break;
             }
@@ -1448,8 +1453,12 @@ export class Overlays extends EventTarget {
             case 'ENTRIES_LINK':
                 break;
             case 'TIMESPAN_BREAKDOWN': {
-                const component = element.querySelector('devtools-timespan-breakdown-overlay');
-                component?.checkSectionLabelPositioning();
+                const component = element.querySelector('.devtools-timespan-breakdown-overlay');
+                if (!component) {
+                    return;
+                }
+                const widget = UI.Widget.Widget.get(component);
+                widget?.checkSectionLabelPositioning();
                 break;
             }
             case 'TIMESTAMP_MARKER':

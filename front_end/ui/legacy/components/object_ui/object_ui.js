@@ -995,10 +995,10 @@ var ObjectPropertiesSection = class _ObjectPropertiesSection extends UI2.TreeOut
   #objectTreeElement;
   titleElement;
   skipProtoInternal;
-  constructor(object, title, linkifier, showOverflow) {
+  constructor(object, title, linkifier, showOverflow, editable = true) {
     super();
     this.root = new ObjectTree(object);
-    this.editable = true;
+    this.editable = editable;
     if (!showOverflow) {
       this.setHideOverflow(true);
     }
@@ -1039,13 +1039,9 @@ var ObjectPropertiesSection = class _ObjectPropertiesSection extends UI2.TreeOut
       true
     );
     shadowRoot.appendChild(propertyValue);
-    const objectPropertiesSection = new _ObjectPropertiesSection(object, titleElement, linkifier);
-    objectPropertiesSection.editable = false;
+    const objectPropertiesSection = new _ObjectPropertiesSection(object, titleElement, linkifier, void 0, !readOnly);
     if (skipProto) {
       objectPropertiesSection.skipProto();
-    }
-    if (readOnly) {
-      objectPropertiesSection.setEditable(false);
     }
     return objectPropertiesSection;
   }
@@ -1287,9 +1283,6 @@ var ObjectPropertiesSection = class _ObjectPropertiesSection extends UI2.TreeOut
   expand() {
     this.#objectTreeElement.expand();
   }
-  setEditable(value) {
-    this.editable = value;
-  }
   objectTreeElement() {
     return this.#objectTreeElement;
   }
@@ -1438,7 +1431,7 @@ var OBJECT_PROPERTY_DEFAULT_VIEW = (input, output, target) => {
       return;
     }
     event.consume(true);
-    if (property.value && !property.value.customPreview() && (property.writable || property.setter)) {
+    if (input.editable && property.value && !property.value.customPreview() && (property.writable || property.setter)) {
       input.startEditing();
     }
   };
@@ -1472,6 +1465,7 @@ var ObjectPropertyWidget = class extends UI2.Widget.Widget {
   #view;
   #expanded = false;
   #linkifier;
+  #editable = false;
   constructor(target, view = OBJECT_PROPERTY_DEFAULT_VIEW) {
     super(target);
     this.#view = view;
@@ -1503,11 +1497,19 @@ var ObjectPropertyWidget = class extends UI2.Widget.Widget {
     this.#linkifier = linkifier;
     this.requestUpdate();
   }
+  get editable() {
+    return this.#editable;
+  }
+  set editable(val) {
+    this.#editable = val;
+    this.requestUpdate();
+  }
   performUpdate() {
     if (!this.#property) {
       return;
     }
     const input = {
+      editable: this.#editable,
       expanded: this.#expanded,
       editing: this.#editing,
       editingEnded: this.#editingEnded.bind(this),
@@ -1670,6 +1672,12 @@ var ObjectPropertyTreeElement = class _ObjectPropertyTreeElement extends UI2.Tre
   get editing() {
     return this.#widget.editing;
   }
+  get editable() {
+    return this.#widget.editable;
+  }
+  set editable(val) {
+    this.#widget.editable = val;
+  }
   // This is called by layout tests
   async applyExpression(expression) {
     await this.property.setValue(expression);
@@ -1721,6 +1729,7 @@ var ObjectPropertyTreeElement = class _ObjectPropertyTreeElement extends UI2.Tre
     this.#widget.show(this.listItemElement);
     this.#widget.property = this.property;
     this.#widget.linkifier = this.linkifier;
+    this.#widget.editable = this.treeOutline instanceof ObjectPropertiesSectionsTreeOutline || this.treeOutline instanceof ObjectPropertiesSection ? this.treeOutline.editable : false;
   }
   onexpand() {
     this.#widget.expanded = true;
@@ -2001,11 +2010,10 @@ var Renderer = class _Renderer {
       throw new Error("Can't render " + object);
     }
     const title = options?.title;
-    const section = new ObjectPropertiesSection(object, title);
+    const section = new ObjectPropertiesSection(object, title, void 0, void 0, Boolean(options?.editable));
     if (!title) {
       section.titleLessMode();
     }
-    section.editable = Boolean(options?.editable);
     if (options?.expand) {
       section.firstChild()?.expand();
     }

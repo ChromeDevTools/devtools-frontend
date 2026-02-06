@@ -1525,10 +1525,12 @@ customElements.define("devtools-time-range-overlay", TimeRangeOverlay);
 // gen/front_end/panels/timeline/overlays/components/TimespanBreakdownOverlay.js
 var TimespanBreakdownOverlay_exports = {};
 __export(TimespanBreakdownOverlay_exports, {
+  DEFAULT_VIEW: () => DEFAULT_VIEW,
   TimespanBreakdownOverlay: () => TimespanBreakdownOverlay
 });
 import * as i18n7 from "./../../../../core/i18n/i18n.js";
-import * as Lit2 from "./../../../../ui/lit/lit.js";
+import * as UI2 from "./../../../../ui/legacy/legacy.js";
+import { Directives as Directives3, html as html4, nothing as nothing2, render as render4 } from "./../../../../ui/lit/lit.js";
 
 // gen/front_end/panels/timeline/overlays/components/timespanBreakdownOverlay.css.js
 var timespanBreakdownOverlay_css_default = `/*
@@ -1537,158 +1539,221 @@ var timespanBreakdownOverlay_css_default = `/*
  * found in the LICENSE file.
  */
 
-.timespan-breakdown-overlay-section {
-  border: solid;
-  border-color: var(--sys-color-on-surface);
-  border-width: 4px 1px 0;
-  align-content: flex-start;
-  text-align: center;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  background-image: linear-gradient(180deg, var(--sys-color-on-primary), transparent);
-  height: 90%;
-  box-sizing: border-box;
-  padding-top: var(--sys-size-2);
+@scope to (devtools-widget > *) {
+  .timespan-breakdown-overlay-section {
+    border: solid;
+    border-color: var(--sys-color-on-surface);
+    border-width: 4px 1px 0;
+    align-content: flex-start;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    background-image: linear-gradient(180deg, var(--sys-color-on-primary), transparent);
+    height: 90%;
+    box-sizing: border-box;
+    padding-top: var(--sys-size-2);
 
-  :host(.is-below) & {
-    border-top-width: 0;
-    border-bottom-width: 4px;
-    align-content: flex-end; /* anchor the text at the bottom */
-    padding-bottom: var(--sys-size-2);
-    padding-top: 0;
+    .is-below & {
+      border-top-width: 0;
+      border-bottom-width: 4px;
+      align-content: flex-end;
+      /* anchor the text at the bottom */
+      padding-bottom: var(--sys-size-2);
+      padding-top: 0;
 
-    /* re-order so the timestamp is below label */
-    .timespan-breakdown-overlay-label {
-      display: flex;
-      flex-direction: column-reverse;
+      /* re-order so the timestamp is below label */
+      .timespan-breakdown-overlay-label {
+        display: flex;
+        flex-direction: column-reverse;
+      }
     }
   }
-}
 
-:host {
-  display: flex;
-  overflow: hidden;
-  flex-direction: row;
-  justify-content: flex-end;
-  align-items: flex-end;
-  width: 100%;
-  box-sizing: border-box;
-  height: 100%;
-  max-height: 100px;
+  .timeline-segment-container {
+    display: flex;
+    overflow: hidden;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: flex-end;
+    width: 100%;
+    box-sizing: border-box;
+    height: 100%;
+    max-height: 100px;
 
-  /* Ensure that the first & last sections always have the left/right border */
-  /* (disable stylelint because we need the !important to override border
+    /* Ensure that the first & last sections always have the left/right border */
+    /* (disable stylelint because we need the !important to override border
    * styles below + keeping them here is clearer to read) */
-  .timespan-breakdown-overlay-section:first-child {
-    border-left-width: 1px !important; /* stylelint-disable-line declaration-no-important */
+    .timespan-breakdown-overlay-section:first-child {
+      /* stylelint-disable-next-line declaration-no-important */
+      border-left-width: 1px !important;
+    }
+
+    .timespan-breakdown-overlay-section:last-child {
+      /* stylelint-disable-next-line declaration-no-important */
+      border-right-width: 1px !important;
+    }
   }
 
-  .timespan-breakdown-overlay-section:last-child {
-    border-right-width: 1px !important; /* stylelint-disable-line declaration-no-important */
+  .timeline-segment-container.is-below {
+    align-items: flex-start;
   }
-}
 
-:host(.is-below) {
-  align-items: flex-start;
-}
-
-/* Depending on if the number of sections is odd or even, we alternate the
+  /* Depending on if the number of sections is odd or even, we alternate the
  * heights of the even/odd sections. We do this to ensure that the first item
  * is never a "high" item, because that looks a bit clunky. */
-:host(.odd-number-of-sections) {
-  .timespan-breakdown-overlay-section:nth-child(even) {
-    height: 100%;
+  .timeline-segment-container.even-number-of-sections {
+    .timespan-breakdown-overlay-section:nth-child(even) {
+      height: 100%;
+    }
+
+    .timespan-breakdown-overlay-section:nth-child(odd) {
+      border-left-width: 0;
+      border-right-width: 0;
+    }
   }
 
-  .timespan-breakdown-overlay-section:nth-child(odd) {
-    border-left-width: 0;
-    border-right-width: 0;
+  .timeline-segment-container.odd-number-of-sections {
+    .timespan-breakdown-overlay-section:nth-child(odd) {
+      height: 100%;
+    }
+
+    .timespan-breakdown-overlay-section:nth-child(even) {
+      border-left-width: 0;
+      border-right-width: 0;
+    }
   }
-}
 
-:host(.even-number-of-sections) {
-  .timespan-breakdown-overlay-section:nth-child(odd) {
-    height: 100%;
-  }
-
-  .timespan-breakdown-overlay-section:nth-child(even) {
-    border-left-width: 0;
-    border-right-width: 0;
-  }
-}
-
-.timespan-breakdown-overlay-label {
-  font-family: var(--default-font-family);
-  font-size: var(--sys-typescale-body2-size);
-  line-height: var(--sys-typescale-body4-line-height);
-  font-weight: var(--ref-typeface-weight-medium);
-  color: var(--sys-color-on-surface);
-  text-align: center;
-  box-sizing: border-box;
-  width: max-content;
-  padding: 0 3px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  text-wrap: nowrap;
-
-  .duration-text {
-    font-size: var(--sys-typescale-body4-size);
-    text-overflow: ellipsis;
+  .timespan-breakdown-overlay-label {
+    font-family: var(--default-font-family);
+    font-size: var(--sys-typescale-body2-size);
+    line-height: var(--sys-typescale-body4-line-height);
+    font-weight: var(--ref-typeface-weight-medium);
+    color: var(--sys-color-on-surface);
+    text-align: center;
+    box-sizing: border-box;
+    width: max-content;
+    padding: 0 3px;
     overflow: hidden;
+    text-overflow: ellipsis;
     text-wrap: nowrap;
-    display: block;
-  }
 
-  .discovery-time-ms {
-    font-weight: var(--ref-typeface-weight-bold);
-  }
+    .duration-text {
+      font-size: var(--sys-typescale-body4-size);
+      text-overflow: ellipsis;
+      overflow: hidden;
+      text-wrap: nowrap;
+      display: block;
+    }
 
-  &.labelHidden {
-    /* Have to use this not display: none so it maintains its width */
-    user-select: none;
-    pointer-events: none;
-    visibility: hidden;
-  }
+    .discovery-time-ms {
+      font-weight: var(--ref-typeface-weight-bold);
+    }
 
-  &.labelTruncated {
-    /* This means the label will show the text that fits with an ellipsis for
+    &.labelHidden {
+      /* Have to use this not display: none so it maintains its width */
+      user-select: none;
+      pointer-events: none;
+      visibility: hidden;
+    }
+
+    &.labelTruncated {
+      /* This means the label will show the text that fits with an ellipsis for
      * the overflow */
-    max-width: 100%;
-  }
+      max-width: 100%;
+    }
 
-  &.offScreenLeft {
-    text-align: left;
-  }
+    &.offScreenLeft {
+      text-align: left;
+    }
 
-  &.offScreenRight {
-    text-align: right;
+    &.offScreenRight {
+      text-align: right;
+    }
   }
 }
 
 /*# sourceURL=${import.meta.resolve("./timespanBreakdownOverlay.css")} */`;
 
 // gen/front_end/panels/timeline/overlays/components/TimespanBreakdownOverlay.js
-var { html: html4 } = Lit2;
-var TimespanBreakdownOverlay = class extends HTMLElement {
-  #shadow = this.attachShadow({ mode: "open" });
+var renderSection = (section, position) => {
+  const style = Directives3.styleMap({ left: position ? `${position.left}px` : void 0, width: position ? `${position.width}px` : void 0 });
+  return html4`
+      <div class="timespan-breakdown-overlay-section" style=${style}>
+        <div class="timespan-breakdown-overlay-label">
+          ${section.showDuration ? html4`<span class="duration-text">${i18n7.TimeUtilities.formatMicroSecondsAsMillisFixed(section.bounds.range)}</span> ` : nothing2}
+          <span class="section-label-text">${section.label}</span>
+        </div>
+      </div>`;
+};
+var DEFAULT_VIEW = (input, _output, target) => {
+  const style = Directives3.styleMap({
+    left: input.left ? `${input.left}px` : void 0,
+    width: input.width ? `${input.width}px` : void 0,
+    top: input.top ? `${input.top}px` : void 0,
+    maxHeight: input.maxHeight ? `${input.maxHeight}px` : void 0,
+    position: "relative"
+  });
+  render4(html4`
+        <style>${timespanBreakdownOverlay_css_default}</style>
+        <div style=${style} class=${input.className}>
+          ${input.sections?.map((curr, index) => {
+    return renderSection(curr, input.positions[index]);
+  })}
+        </div>`, target);
+};
+var TimespanBreakdownOverlay = class extends UI2.Widget.Widget {
   #canvasRect = null;
   #sections = null;
+  #sectionsPositions = [];
+  #left = null;
+  #width = null;
+  #maxHeight = null;
+  #top = null;
+  #view;
+  constructor(element, view = DEFAULT_VIEW) {
+    super(element, { classes: ["devtools-timespan-breakdown-overlay"] });
+    this.#view = view;
+    this.requestUpdate();
+  }
+  set top(top) {
+    this.#top = top;
+    this.requestUpdate();
+  }
+  set maxHeight(maxHeight) {
+    this.#maxHeight = maxHeight;
+    this.requestUpdate();
+  }
+  set width(width) {
+    this.#width = width;
+    this.requestUpdate();
+  }
+  set left(left) {
+    this.#left = left;
+    this.requestUpdate();
+  }
   set isBelowEntry(isBelow) {
-    this.classList.toggle("is-below", isBelow);
+    this.element.classList.toggle("is-below", isBelow);
   }
   set canvasRect(rect) {
     if (this.#canvasRect && rect && this.#canvasRect.width === rect.width && this.#canvasRect.height === rect.height) {
       return;
     }
     this.#canvasRect = rect;
-    this.#render();
+    this.requestUpdate();
+  }
+  set widths(widths) {
+    if (widths === this.#sectionsPositions) {
+      return;
+    }
+    this.#sectionsPositions = widths;
+    this.requestUpdate();
   }
   set sections(sections) {
     if (sections === this.#sections) {
       return;
     }
     this.#sections = sections;
-    this.#render();
+    this.requestUpdate();
   }
   /**
    * We use this method after the overlay has been positioned in order to move
@@ -1697,7 +1762,7 @@ var TimespanBreakdownOverlay = class extends HTMLElement {
    * align the text so the label is visible as long as possible.
    */
   checkSectionLabelPositioning() {
-    const sections = this.#shadow.querySelectorAll(".timespan-breakdown-overlay-section");
+    const sections = this.element.querySelectorAll(".timespan-breakdown-overlay-section");
     if (!sections) {
       return;
     }
@@ -1747,29 +1812,27 @@ var TimespanBreakdownOverlay = class extends HTMLElement {
       }
     }
   }
-  renderedSections() {
-    return Array.from(this.#shadow.querySelectorAll(".timespan-breakdown-overlay-section"));
-  }
-  #renderSection(section) {
-    return html4`
-      <div class="timespan-breakdown-overlay-section">
-        <div class="timespan-breakdown-overlay-label">
-        ${section.showDuration ? html4`<span class="duration-text">${i18n7.TimeUtilities.formatMicroSecondsAsMillisFixed(section.bounds.range)}</span> ` : Lit2.nothing}
-          <span class="section-label-text">${section.label}</span>
-        </div>
-      </div>`;
-  }
-  #render() {
+  performUpdate() {
+    let className = "timeline-segment-container";
     if (this.#sections) {
-      this.classList.toggle("odd-number-of-sections", this.#sections.length % 2 === 1);
-      this.classList.toggle("even-number-of-sections", this.#sections.length % 2 === 0);
+      if (this.#sections.length % 2 === 0) {
+        className += " even-number-of-sections";
+      } else {
+        className += " odd-number-of-sections";
+      }
     }
-    Lit2.render(html4`<style>${timespanBreakdownOverlay_css_default}</style>
-             ${this.#sections?.map(this.#renderSection)}`, this.#shadow, { host: this });
+    this.#view({
+      sections: this.#sections,
+      positions: this.#sectionsPositions,
+      left: this.#left,
+      width: this.#width,
+      top: this.#top,
+      maxHeight: this.#maxHeight,
+      className
+    }, void 0, this.contentElement);
     this.checkSectionLabelPositioning();
   }
 };
-customElements.define("devtools-timespan-breakdown-overlay", TimespanBreakdownOverlay);
 export {
   EntriesLinkOverlay_exports as EntriesLinkOverlay,
   EntryLabelOverlay_exports as EntryLabelOverlay,

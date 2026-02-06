@@ -63,7 +63,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
                     ${VALUE_TYPE_MODE_LIST.filter(x => isValidMode(type, x)).map(mode => {
             return html `
                         <option value=${mode} .selected=${input.valueTypeModes.get(type) === mode}
-                                jslog=${VisualLogging.item(mode).track({ click: true })}>${i18n.i18n.lockedString(mode)}
+                                jslog=${VisualLogging.item(mode).track({ click: true, resize: true })}>${i18n.i18n.lockedString(mode)}
                         </option>`;
         })}
                 </select>

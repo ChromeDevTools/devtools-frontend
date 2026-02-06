@@ -3110,6 +3110,9 @@
   "panels/ai_assistance/components/ChatInput.ts | learnAbout": {
     "message": "Learn about AI in DevTools"
   },
+  "panels/ai_assistance/components/ChatInput.ts | removeContext": {
+    "message": "Remove selected context"
+  },
   "panels/ai_assistance/components/ChatInput.ts | revealContextDescription": {
     "message": "Reveal the selected context item in DevTools"
   },

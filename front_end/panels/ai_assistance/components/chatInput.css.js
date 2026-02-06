@@ -27,7 +27,6 @@ export default `/*
   max-width: var(--sys-size-36);
   background-color: var(--sys-color-cdt-base-container);
   width: 100%;
-
 }
 
 .chat-readonly-container {
@@ -226,6 +225,8 @@ export default `/*
 
   .resource-link,
   .resource-task {
+    display: flex;
+    align-items: center;
     cursor: pointer;
     padding: var(--sys-size-2) var(--sys-size-3);
     font: var(--sys-typescale-body5-regular);
@@ -244,6 +245,12 @@ export default `/*
     & .title {
       vertical-align: middle;
       font: var(--sys-typescale-body5-regular);
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    & .remove-context {
+      vertical-align: middle;
     }
 
     &.has-picker-behavior {
@@ -258,8 +265,8 @@ export default `/*
     devtools-file-source-icon {
       display: inline-flex;
       vertical-align: middle;
-      width: var(--sys-size-7);
-      height: var(--sys-size-7);
+      min-width: var(--sys-size-7);
+      min-height: var(--sys-size-7);
     }
 
     /*

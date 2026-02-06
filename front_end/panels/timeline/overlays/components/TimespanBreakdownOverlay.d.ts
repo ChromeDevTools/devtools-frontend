@@ -1,8 +1,30 @@
 import type * as Trace from '../../../../models/trace/trace.js';
-export declare class TimespanBreakdownOverlay extends HTMLElement {
+import * as UI from '../../../../ui/legacy/legacy.js';
+export interface Input {
+    sections: Trace.Types.Overlays.TimespanBreakdownEntryBreakdown[] | null;
+    positions: SectionPosition[];
+    left: number | null;
+    width: number | null;
+    maxHeight: number | null;
+    top: number | null;
+    className: string;
+}
+export interface SectionPosition {
+    left: number | null;
+    width: number | null;
+}
+type View = (input: Input, _output: undefined, target: HTMLElement) => void;
+export declare const DEFAULT_VIEW: (input: Input, _output: undefined, target: HTMLElement) => void;
+export declare class TimespanBreakdownOverlay extends UI.Widget.Widget {
     #private;
+    constructor(element?: HTMLElement, view?: View);
+    set top(top: number);
+    set maxHeight(maxHeight: number);
+    set width(width: number);
+    set left(left: number);
     set isBelowEntry(isBelow: boolean);
     set canvasRect(rect: DOMRect | null);
+    set widths(widths: SectionPosition[]);
     set sections(sections: Trace.Types.Overlays.TimespanBreakdownEntryBreakdown[] | null);
     /**
      * We use this method after the overlay has been positioned in order to move
@@ -11,10 +33,6 @@ export declare class TimespanBreakdownOverlay extends HTMLElement {
      * align the text so the label is visible as long as possible.
      */
     checkSectionLabelPositioning(): void;
-    renderedSections(): HTMLElement[];
+    performUpdate(): void;
 }
-declare global {
-    interface HTMLElementTagNameMap {
-        'devtools-timespan-breakdown-overlay': TimespanBreakdownOverlay;
-    }
-}
+export {};

@@ -6820,6 +6820,10 @@ export const NativeFunctions = [
         signatures: [["type", "?eventInitDict"]]
     },
     {
+        name: "WebMCPEvent",
+        signatures: [["type", "?eventInitDict"]]
+    },
+    {
         name: "WheelEvent",
         signatures: [["type", "?eventInitDict"]]
     },

@@ -15,10 +15,8 @@ export class SortableDataGrid extends ViewportDataGrid {
         return 0;
     }
     static NumericComparator(columnId, a, b) {
-        const aValue = a.data[columnId];
-        const bValue = b.data[columnId];
-        const aNumber = Number(aValue instanceof Node ? aValue.textContent : aValue);
-        const bNumber = Number(bValue instanceof Node ? bValue.textContent : bValue);
+        const aNumber = a.getNumericValue(columnId);
+        const bNumber = b.getNumericValue(columnId);
         return aNumber < bNumber ? -1 : (aNumber > bNumber ? 1 : 0);
     }
     static StringComparator(columnId, a, b) {
@@ -102,6 +100,45 @@ export class SortableDataGrid extends ViewportDataGrid {
     }
 }
 export class SortableDataGridNode extends ViewportDataGridNode {
+    #numericData = new Map();
+    #childrenDirty = true;
+    #lastSortingFunction = null;
+    get data() {
+        return super.data;
+    }
+    set data(x) {
+        this.#numericData.clear();
+        super.data = x;
+    }
+    getNumericValue(columnId) {
+        let value = this.#numericData.get(columnId);
+        if (value === undefined) {
+            const rawValue = this.data[columnId];
+            value = Number(rawValue instanceof Node ? rawValue.textContent : rawValue);
+            this.#numericData.set(columnId, value);
+        }
+        return value;
+    }
+    insertChild(child, index) {
+        super.insertChild(child, index);
+        this.#childrenDirty = true;
+    }
+    removeChild(child) {
+        super.removeChild(child);
+        this.#childrenDirty = true;
+    }
+    refresh() {
+        this.#numericData.clear();
+        super.refresh();
+        this.parent?.markChildrenDirty();
+    }
+    expand() {
+        super.expand();
+        this.sortChildren();
+    }
+    markChildrenDirty() {
+        this.#childrenDirty = true;
+    }
     insertChildOrdered(node) {
         const dataGrid = this.dataGrid;
         if (dataGrid) {
@@ -110,13 +147,17 @@ export class SortableDataGridNode extends ViewportDataGridNode {
     }
     sortChildren() {
         const dataGrid = this.dataGrid;
-        if (!dataGrid) {
+        if (!dataGrid || !this.expanded) {
             return;
         }
-        this.children.sort(dataGrid.sortingFunction);
-        for (let i = 0; i < this.children.length; ++i) {
-            const child = this.children[i];
-            child.recalculateSiblings(i);
+        if (this.#childrenDirty || this.#lastSortingFunction !== dataGrid.sortingFunction) {
+            this.children.sort(dataGrid.sortingFunction);
+            this.#childrenDirty = false;
+            this.#lastSortingFunction = dataGrid.sortingFunction;
+            for (let i = 0; i < this.children.length; ++i) {
+                const child = this.children[i];
+                child.recalculateSiblings(i);
+            }
         }
         for (let i = 0; i < this.children.length; ++i) {
             const child = this.children[i];

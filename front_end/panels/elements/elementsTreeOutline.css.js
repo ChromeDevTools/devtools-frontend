@@ -222,14 +222,25 @@ select {
 }
 
 .elements-gutter-decoration {
-  position: absolute;
-  top: 3px;
-  left: 2px;
   height: 9px;
   width: 9px;
   border-radius: 5px;
-  border: 1px solid var(--sys-color-orange-bright);
-  background-color: var(--sys-color-orange-bright);
+  border: 1px solid var(--decoration-color); /* stylelint-disable-line plugin/use_theme_colors */
+  background-color: var(--decoration-color); /* stylelint-disable-line plugin/use_theme_colors */
+}
+
+.elements-gutter-decoration-container {
+  display: flex;
+  position: absolute;
+  top: 0;
+  left: 1px;
+  width: 15px;
+  height: 15px;
+  align-items: center;
+}
+
+.elements-gutter-decoration + .elements-gutter-decoration {
+  margin-left: -6px;
 }
 
 .elements-gutter-decoration.elements-has-decorated-children {

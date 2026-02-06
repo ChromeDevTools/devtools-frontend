@@ -208,6 +208,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
         }
         return renderStep({
             step: part.step,
+            isLoading: input.isLoading,
             markdownRenderer: input.markdownRenderer,
             isLast: isLastPart,
         });
@@ -306,8 +307,8 @@ function renderStepDetails({ step, markdownRenderer, isLast, }) {
   </div>`;
     // clang-format on
 }
-function renderStepBadge({ step, isLast }) {
-    if (step.isLoading && isLast && !step.sideEffect) {
+function renderStepBadge({ step, isLoading, isLast }) {
+    if (isLoading && isLast && !step.sideEffect) {
         return html `<devtools-spinner></devtools-spinner>`;
     }
     let iconName = 'checkmark';
@@ -329,7 +330,7 @@ function renderStepBadge({ step, isLast }) {
       .name=${iconName}
     ></devtools-icon>`;
 }
-function renderStep({ step, markdownRenderer, isLast }) {
+function renderStep({ step, isLoading, markdownRenderer, isLast }) {
     const stepClasses = Lit.Directives.classMap({
         step: true,
         empty: !step.thought && !step.code && !step.contextDetails && !step.sideEffect,
@@ -343,7 +344,7 @@ function renderStep({ step, markdownRenderer, isLast }) {
       .open=${Boolean(step.sideEffect)}>
       <summary>
         <div class="summary">
-          ${renderStepBadge({ step, isLast })}
+          ${renderStepBadge({ step, isLoading, isLast })}
           ${renderTitle(step)}
           <devtools-icon
             class="arrow"

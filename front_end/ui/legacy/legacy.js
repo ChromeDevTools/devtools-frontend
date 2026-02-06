@@ -8523,7 +8523,7 @@ var SoftContextMenu = class _SoftContextMenu {
     menuItemElement.addEventListener("mouseover", this.menuItemMouseOver.bind(this), false);
     menuItemElement.addEventListener("mouseleave", this.menuItemMouseLeave.bind(this), false);
     if (item8.jslogContext) {
-      menuItemElement.setAttribute("jslog", `${VisualLogging8.item().context(item8.jslogContext)}`);
+      menuItemElement.setAttribute("jslog", `${VisualLogging8.item(item8.jslogContext).track({ click: true, resize: true })}`);
     }
     return menuItemElement;
   }
@@ -10024,7 +10024,7 @@ var ListControl = class {
     if (!element) {
       element = this.delegate.createElementForItem(item8);
       if (!element.hasAttribute("jslog")) {
-        element.setAttribute("jslog", `${VisualLogging10.item().track({ click: true, keydown: "ArrowUp|ArrowDown|PageUp|PageDown" })}`);
+        element.setAttribute("jslog", `${VisualLogging10.item().track({ click: true, resize: true, keydown: "ArrowUp|ArrowDown|PageUp|PageDown" })}`);
       }
       this.itemToElement.set(item8, element);
       this.updateElementARIA(element, index);
@@ -17997,7 +17997,7 @@ var InplaceEditor = class _InplaceEditor {
       element.dispatchEvent(new Event("change"));
     }
     function defaultFinishHandler(event) {
-      if (event.key === "Enter") {
+      if (event.key === "Enter" && !event.shiftKey) {
         return "commit";
       }
       if (event.keyCode === Keys.Esc.code || event.key === Platform21.KeyboardUtilities.ESCAPE_KEY) {
@@ -18395,7 +18395,7 @@ var ListWidget = class extends VBox {
     }
     const content = this.delegate.renderItem(item8, editable, this.#items.length - 1);
     if (!content.hasAttribute("jslog")) {
-      element.setAttribute("jslog", `${VisualLogging18.item()}`);
+      element.setAttribute("jslog", `${VisualLogging18.item().track({ resize: true })}`);
     }
     element.appendChild(content);
     if (editable) {
@@ -21551,6 +21551,7 @@ var TreeElement = class {
     this.listItemNode.addEventListener("dblclick", this.handleDoubleClick.bind(this), false);
     this.listItemNode.setAttribute("jslog", `${VisualLogging24.treeItem().parent("parentTreeItem").context(jslogContext).track({
       click: true,
+      resize: true,
       keydown: "ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Backspace|Delete|Enter|Space|Home|End"
     })}`);
     markAsTreeitem(this.listItemNode);

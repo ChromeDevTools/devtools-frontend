@@ -502,8 +502,10 @@ export class SearchableView extends VBox {
   private updateSearchNavigationButtonState(enabled: boolean): void {
     this.replaceButtonElement.disabled = !enabled;
     this.replaceAllButtonElement.disabled = !enabled;
-    this.searchNavigationPrevElement.setEnabled(enabled);
-    this.searchNavigationNextElement.setEnabled(enabled);
+    if (this.searchProvider.supportsMatchCounts?.() === true) {
+      this.searchNavigationPrevElement.setEnabled(enabled);
+      this.searchNavigationNextElement.setEnabled(enabled);
+    }
   }
 
   private updateSearchMatchesCountAndCurrentMatchIndex(matches: number, currentMatchIndex: number): void {
@@ -682,6 +684,7 @@ export class SearchableView extends VBox {
 const searchableViewsByElement = new WeakMap<Element, SearchableView>();
 
 export interface Searchable {
+  supportsMatchCounts?(): boolean;
   currentQuery?: string;
   currentSearchMatches?: number;
   onSearchCanceled(): void;

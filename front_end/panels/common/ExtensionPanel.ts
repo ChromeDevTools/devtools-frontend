@@ -52,6 +52,10 @@ export class ExtensionPanel extends UI.Panel.Panel implements UI.SearchableView.
         this.id, Extensions.ExtensionAPI.PrivateAPI.Panels.SearchAction.PerformSearch, query);
   }
 
+  supportsMatchCounts(): boolean {
+    return false;
+  }
+
   jumpToNextSearchResult(): void {
     this.server.notifySearchAction(this.id, Extensions.ExtensionAPI.PrivateAPI.Panels.SearchAction.NextSearchResult);
   }

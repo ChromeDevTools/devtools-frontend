@@ -84,7 +84,10 @@ export class ContextSelectionAgent extends AiAgent<never> {
         properties: {},
       },
       displayInfoFromArgs: () => {
-        return {title: lockedString('Listing network requests…')};
+        return {
+          title: lockedString('Listing network requests…'),
+          action: 'listNetworkRequest()',
+        };
       },
       handler: async () => {
         const requests = [];
@@ -125,7 +128,10 @@ export class ContextSelectionAgent extends AiAgent<never> {
         },
       },
       displayInfoFromArgs: args => {
-        return {title: lockedString('Getting network request…'), action: `selectNetworkRequest(${args.url})`};
+        return {
+          title: lockedString('Getting network request…'),
+          action: `selectNetworkRequest(${args.url})`,
+        };
       },
       handler: async ({url}) => {
         // TODO: Switch to using IDs to make is easier to link to as well.
@@ -157,7 +163,10 @@ export class ContextSelectionAgent extends AiAgent<never> {
         properties: {},
       },
       displayInfoFromArgs: () => {
-        return {title: lockedString('Listing source requests…')};
+        return {
+          title: lockedString('Listing source requests…'),
+          action: 'listSourceFile()',
+        };
       },
       handler: async () => {
         const files = [];
@@ -187,7 +196,10 @@ export class ContextSelectionAgent extends AiAgent<never> {
         },
       },
       displayInfoFromArgs: args => {
-        return {title: lockedString('Getting source file'), action: `selectSourceFile(${args.name})`};
+        return {
+          title: lockedString('Getting source file'),
+          action: `selectSourceFile(${args.name})`,
+        };
       },
       handler: async params => {
         for (const file of this.#getUISourceCodes()) {

@@ -7,7 +7,7 @@ import type * as Protocol from '../../generated/protocol.js';
 import {createTarget, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 
-import * as Elements from './elements.js';
+import * as ComputedStyle from './computed_style.js';
 
 function createNode(target: SDK.Target.Target, {nodeId}: {nodeId: Protocol.DOM.NodeId}): SDK.DOMModel.DOMNode {
   const domModel = target.model(SDK.DOMModel.DOMModel);
@@ -27,7 +27,7 @@ function createNode(target: SDK.Target.Target, {nodeId}: {nodeId: Protocol.DOM.N
 
 describeWithMockConnection('ComputedStyleModel', () => {
   let target: SDK.Target.Target;
-  let computedStyleModel: Elements.ComputedStyleModel.ComputedStyleModel;
+  let computedStyleModel: ComputedStyle.ComputedStyleModel.ComputedStyleModel;
   let domNode1: SDK.DOMModel.DOMNode;
 
   beforeEach(() => {
@@ -35,8 +35,8 @@ describeWithMockConnection('ComputedStyleModel', () => {
     target = createTarget();
     domNode1 = createNode(target, {nodeId: 1 as Protocol.DOM.NodeId});
     const cssModel = target.model(SDK.CSSModel.CSSModel);
-    sinon.stub(Elements.ComputedStyleModel.ComputedStyleModel.prototype, 'cssModel').returns(cssModel);
-    computedStyleModel = new Elements.ComputedStyleModel.ComputedStyleModel();
+    sinon.stub(ComputedStyle.ComputedStyleModel.ComputedStyleModel.prototype, 'cssModel').returns(cssModel);
+    computedStyleModel = new ComputedStyle.ComputedStyleModel.ComputedStyleModel();
   });
 
   afterEach(() => {});
@@ -67,7 +67,7 @@ describeWithMockConnection('ComputedStyleModel', () => {
 
     const modelChangedListener = sinon.spy();
     computedStyleModel.addEventListener(
-        Elements.ComputedStyleModel.Events.CSS_MODEL_CHANGED, event => modelChangedListener(event.data));
+        ComputedStyle.ComputedStyleModel.Events.CSS_MODEL_CHANGED, event => modelChangedListener(event.data));
 
     const FAKE_CSS_STYLESHEET_HEADER = {} as SDK.CSSStyleSheetHeader.CSSStyleSheetHeader;
     cssModel.dispatchEventToListeners(SDK.CSSModel.Events.StyleSheetAdded, FAKE_CSS_STYLESHEET_HEADER);
@@ -82,7 +82,7 @@ describeWithMockConnection('ComputedStyleModel', () => {
 
     const computedStyleListener = sinon.spy();
     computedStyleModel.addEventListener(
-        Elements.ComputedStyleModel.Events.COMPUTED_STYLE_CHANGED, computedStyleListener);
+        ComputedStyle.ComputedStyleModel.Events.COMPUTED_STYLE_CHANGED, computedStyleListener);
     cssModel.dispatchEventToListeners(SDK.CSSModel.Events.ComputedStyleUpdated, {nodeId: domNode1.id});
 
     sinon.assert.callCount(computedStyleListener, 1);
@@ -95,7 +95,7 @@ describeWithMockConnection('ComputedStyleModel', () => {
 
     const computedStyleListener = sinon.spy();
     computedStyleModel.addEventListener(
-        Elements.ComputedStyleModel.Events.COMPUTED_STYLE_CHANGED, computedStyleListener);
+        ComputedStyle.ComputedStyleModel.Events.COMPUTED_STYLE_CHANGED, computedStyleListener);
 
     cssModel.dispatchEventToListeners(
         SDK.CSSModel.Events.ComputedStyleUpdated, {nodeId: (domNode1.id + 1) as Protocol.DOM.NodeId});

@@ -33,11 +33,11 @@
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import type * as ComputedStyle from '../../models/computed_style/computed_style.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {Directives, html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import type {ComputedStyleModel} from './ComputedStyleModel.js';
 import {ElementsSidebarPane} from './ElementsSidebarPane.js';
 import metricsSidebarPaneStyles from './metricsSidebarPane.css.js';
 
@@ -190,7 +190,7 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
   private isEditingMetrics?: boolean;
   private view: View;
 
-  constructor(computedStyleModel: ComputedStyleModel, view = DEFAULT_VIEW) {
+  constructor(computedStyleModel: ComputedStyle.ComputedStyleModel.ComputedStyleModel, view = DEFAULT_VIEW) {
     super(computedStyleModel, {jslog: `${VisualLogging.pane('styles-metrics')}`});
     this.registerRequiredCSS(metricsSidebarPaneStyles);
 

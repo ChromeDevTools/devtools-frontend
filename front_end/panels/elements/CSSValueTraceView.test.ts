@@ -4,6 +4,7 @@
 
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
+import * as ComputedStyle from '../../models/computed_style/computed_style.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection, setMockConnectionResponseHandler} from '../../testing/MockConnection.js';
@@ -18,7 +19,7 @@ async function setUpStyles() {
   setMockConnectionResponseHandler('CSS.enable', () => ({}));
   setMockConnectionResponseHandler(
       'CSS.getEnvironmentVariables', () => ({} as Protocol.CSS.GetEnvironmentVariablesResponse));
-  const computedStyleModel = new Elements.ComputedStyleModel.ComputedStyleModel();
+  const computedStyleModel = new ComputedStyle.ComputedStyleModel.ComputedStyleModel();
   const cssModel = new SDK.CSSModel.CSSModel(createTarget());
   await cssModel.resumeModel();
   const domModel = cssModel.domModel();

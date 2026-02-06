@@ -5,6 +5,7 @@
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import * as ComputedStyle from '../../models/computed_style/computed_style.js';
 import type * as TextUtils from '../../models/text_utils/text_utils.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
@@ -14,10 +15,10 @@ import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as Elements from './elements.js';
 
 describeWithMockConnection('StylesPropertySection', () => {
-  let computedStyleModel: Elements.ComputedStyleModel.ComputedStyleModel;
+  let computedStyleModel: ComputedStyle.ComputedStyleModel.ComputedStyleModel;
   beforeEach(() => {
     SDK.PageResourceLoader.PageResourceLoader.instance({forceNew: true, loadOverride: null, maxConcurrentLoads: 1});
-    computedStyleModel = new Elements.ComputedStyleModel.ComputedStyleModel();
+    computedStyleModel = new ComputedStyle.ComputedStyleModel.ComputedStyleModel();
   });
 
   afterEach(() => {

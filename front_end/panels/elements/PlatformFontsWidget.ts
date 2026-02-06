@@ -4,10 +4,10 @@
 
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Protocol from '../../generated/protocol.js';
+import * as ComputedStyle from '../../models/computed_style/computed_style.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {html, render} from '../../ui/lit/lit.js';
 
-import {type ComputedStyleModel, Events as ComputedStyleModelEvents} from './ComputedStyleModel.js';
 import platformFontsWidgetStyles from './platformFontsWidget.css.js';
 
 const UIStrings = {
@@ -78,17 +78,19 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
 };
 
 export class PlatformFontsWidget extends UI.Widget.VBox {
-  private readonly sharedModel: ComputedStyleModel;
+  private readonly sharedModel: ComputedStyle.ComputedStyleModel.ComputedStyleModel;
   readonly #view: View;
 
-  constructor(sharedModel: ComputedStyleModel, view: View = DEFAULT_VIEW) {
+  constructor(sharedModel: ComputedStyle.ComputedStyleModel.ComputedStyleModel, view: View = DEFAULT_VIEW) {
     super({useShadowDom: true});
     this.#view = view;
     this.registerRequiredCSS(platformFontsWidgetStyles);
 
     this.sharedModel = sharedModel;
-    this.sharedModel.addEventListener(ComputedStyleModelEvents.CSS_MODEL_CHANGED, this.requestUpdate, this);
-    this.sharedModel.addEventListener(ComputedStyleModelEvents.COMPUTED_STYLE_CHANGED, this.requestUpdate, this);
+    this.sharedModel.addEventListener(
+        ComputedStyle.ComputedStyleModel.Events.CSS_MODEL_CHANGED, this.requestUpdate, this);
+    this.sharedModel.addEventListener(
+        ComputedStyle.ComputedStyleModel.Events.COMPUTED_STYLE_CHANGED, this.requestUpdate, this);
   }
 
   override async performUpdate(): Promise<void> {

@@ -5,6 +5,7 @@
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
+import * as ComputedStyle from '../../models/computed_style/computed_style.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import {describeWithEnvironment, setupActionRegistry} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
@@ -30,7 +31,7 @@ describeWithMockConnection('ColorSwatchPopoverIcon', () => {
           false, '', undefined, []);
       const treeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
         stylesPane:
-            new Elements.StylesSidebarPane.StylesSidebarPane(new Elements.ComputedStyleModel.ComputedStyleModel()),
+            new Elements.StylesSidebarPane.StylesSidebarPane(new ComputedStyle.ComputedStyleModel.ComputedStyleModel()),
         section: sinon.createStubInstance(Elements.StylePropertiesSection.StylePropertiesSection),
         matchedStyles: await getMatchedStyles(),
         property,

@@ -1,0 +1,40 @@
+# Copyright 2026 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../scripts/build/ninja/devtools_module.gni")
+import("../../../scripts/build/typescript/typescript.gni")
+
+devtools_module("computed_style") {
+  sources = [ "ComputedStyleModel.ts" ]
+
+  deps = [
+    "../../core/common:bundle",
+    "../../core/sdk:bundle",
+  ]
+}
+
+devtools_entrypoint("bundle") {
+  entrypoint = "computed_style.ts"
+
+  deps = [ ":computed_style" ]
+
+  visibility = [
+    ":*",
+    "../../panels/elements/*",
+  ]
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [ "ComputedStyleModel.test.ts" ]
+
+  deps = [
+    ":bundle",
+    "../../core/sdk:bundle",
+    "../../generated:protocol",
+    "../../testing",
+  ]
+}

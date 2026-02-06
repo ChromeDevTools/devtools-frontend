@@ -131,6 +131,7 @@ group("unittests") {
     "models/badges:unittests",
     "models/bindings:unittests",
     "models/breakpoints:unittests",
+    "models/computed_style:unittests",
     "models/cpu_profile:unittests",
     "models/emulation:unittests",
     "models/extensions:unittests",

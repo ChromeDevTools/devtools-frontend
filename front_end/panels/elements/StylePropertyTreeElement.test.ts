@@ -8,6 +8,7 @@ import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
+import * as ComputedStyle from '../../models/computed_style/computed_style.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
@@ -28,7 +29,7 @@ import * as Elements from './elements.js';
 
 describeWithMockConnection('StylePropertyTreeElement', () => {
   let stylesSidebarPane: Elements.StylesSidebarPane.StylesSidebarPane;
-  let computedStyleModel: Elements.ComputedStyleModel.ComputedStyleModel;
+  let computedStyleModel: ComputedStyle.ComputedStyleModel.ComputedStyleModel;
   let mockVariableMap: Record<string, string|SDK.CSSProperty.CSSProperty>;
   let matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles;
   let fakeComputeCSSVariable: SinonStub<
@@ -39,7 +40,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
   const environmentVariables = {a: 'A'};
 
   beforeEach(async () => {
-    computedStyleModel = new Elements.ComputedStyleModel.ComputedStyleModel();
+    computedStyleModel = new ComputedStyle.ComputedStyleModel.ComputedStyleModel();
     stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane(computedStyleModel);
     mockVariableMap = {
       '--a': 'red',
@@ -112,7 +113,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
         propertyName, result, true, false, true, false, '', undefined, []);
     matchedStyles.functionRules()[0].style.allProperties().push(property);
     return new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
-      stylesPane: stylesSidebarPane,
+      stylesPane: new Elements.StylesSidebarPane.StylesSidebarPane(computedStyleModel),
       section: sinon.createStubInstance(Elements.StylePropertiesSection.StylePropertiesSection),
       matchedStyles,
       property,
@@ -126,7 +127,8 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
   function getTreeElement(name: string, value: string, longhandProperties: Protocol.CSS.CSSProperty[] = []) {
     const property = addProperty(name, value, longhandProperties);
     const section = new Elements.StylePropertiesSection.StylePropertiesSection(
-        stylesSidebarPane, matchedStyles, property.ownerStyle, 0, null, null, null);
+        new Elements.StylesSidebarPane.StylesSidebarPane(computedStyleModel), matchedStyles, property.ownerStyle, 0,
+        null, null, null);
     return new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
       stylesPane: stylesSidebarPane,
       section,

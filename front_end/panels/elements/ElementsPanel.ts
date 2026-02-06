@@ -41,6 +41,7 @@ import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as Annotations from '../../models/annotations/annotations.js';
+import * as ComputedStyle from '../../models/computed_style/computed_style.js';
 import * as PanelCommon from '../../panels/common/common.js';
 import type * as Adorners from '../../ui/components/adorners/adorners.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
@@ -52,7 +53,6 @@ import type {AXTreeNodeData} from './AccessibilityTreeUtils.js';
 import {AccessibilityTreeView} from './AccessibilityTreeView.js';
 import {ColorSwatchPopoverIcon} from './ColorSwatchPopoverIcon.js';
 import * as ElementsComponents from './components/components.js';
-import {ComputedStyleModel} from './ComputedStyleModel.js';
 import {ComputedStyleWidget} from './ComputedStyleWidget.js';
 import elementsPanelStyles from './elementsPanel.css.js';
 import {DOMTreeWidget, type ElementsTreeOutline} from './ElementsTreeOutline.js';
@@ -242,7 +242,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
 
   private cssStyleTrackerByCSSModel: Map<SDK.CSSModel.CSSModel, SDK.CSSModel.CSSPropertyTracker>;
   #domTreeWidget: DOMTreeWidget;
-  #computedStyleModel: ComputedStyleModel;
+  #computedStyleModel: ComputedStyle.ComputedStyleModel.ComputedStyleModel;
 
   getTreeOutlineForTesting(): ElementsTreeOutline|undefined {
     return this.#domTreeWidget.getTreeOutlineForTesting();
@@ -302,7 +302,8 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
 
     crumbsContainer.appendChild(this.breadcrumbs);
 
-    this.#computedStyleModel = new ComputedStyleModel(UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode));
+    this.#computedStyleModel = new ComputedStyle.ComputedStyleModel.ComputedStyleModel(
+        UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode));
     UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, event => {
       this.#computedStyleModel.node = event.data;
       this.evaluateTrackingComputedStyleUpdatesForNode();

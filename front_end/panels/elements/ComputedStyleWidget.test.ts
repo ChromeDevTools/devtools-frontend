@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
+import * as ComputedStyle from '../../models/computed_style/computed_style.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import type * as TreeOutline from '../../ui/components/tree_outline/tree_outline.js';
@@ -60,7 +61,7 @@ describeWithMockConnection('ComputedStyleWidget', () => {
         ]
       });
 
-      const computedStyleModel = new Elements.ComputedStyleModel.ComputedStyleModel(node);
+      const computedStyleModel = new ComputedStyle.ComputedStyleModel.ComputedStyleModel(node);
       sinon.stub(computedStyleModel, 'fetchComputedStyle').callsFake(() => {
         return Promise.resolve({node, computedStyle: new Map([['color', 'red']])});
       });

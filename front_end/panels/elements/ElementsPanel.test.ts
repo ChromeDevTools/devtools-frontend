@@ -6,6 +6,7 @@ import * as Common from '../../core/common/common.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
+import * as ComputedStyle from '../../models/computed_style/computed_style.js';
 import {raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, stubNoopSettings, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../testing/ExpectStubCall.js';
@@ -214,7 +215,7 @@ describeWithMockConnection('ElementsPanel', () => {
 
   describe('tracking Computed styles', () => {
     const StylesSidebarPane = Elements.StylesSidebarPane.StylesSidebarPane;
-    const ComputedStyleModel = Elements.ComputedStyleModel.ComputedStyleModel;
+    const ComputedStyleModel = ComputedStyle.ComputedStyleModel.ComputedStyleModel;
     const ComputedStyleWidget = Elements.ComputedStyleWidget.ComputedStyleWidget;
 
     let computedStyleNodeSpy: {

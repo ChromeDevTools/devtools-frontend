@@ -4,6 +4,7 @@
 
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import * as ComputedStyle from '../../models/computed_style/computed_style.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {
   createTarget,
@@ -32,7 +33,7 @@ describe('StylesSidebarPane', () => {
     beforeEach(() => {
       const target = createTarget();
       const cssModel = target.model(SDK.CSSModel.CSSModel);
-      sinon.stub(Elements.ComputedStyleModel.ComputedStyleModel.prototype, 'cssModel').returns(cssModel);
+      sinon.stub(ComputedStyle.ComputedStyleModel.ComputedStyleModel.prototype, 'cssModel').returns(cssModel);
     });
 
     it('unescapes CSS strings', () => {
@@ -69,7 +70,7 @@ describe('StylesSidebarPane', () => {
     describe('rebuildSectionsForMatchedStyleRulesForTest', () => {
       it('should add @position-try section', async () => {
         const stylesSidebarPane =
-            new Elements.StylesSidebarPane.StylesSidebarPane(new Elements.ComputedStyleModel.ComputedStyleModel());
+            new Elements.StylesSidebarPane.StylesSidebarPane(new ComputedStyle.ComputedStyleModel.ComputedStyleModel());
         const matchedStyles = await getMatchedStyles({
           cssModel: stylesSidebarPane.cssModel() as SDK.CSSModel.CSSModel,
           node: sinon.createStubInstance(SDK.DOMModel.DOMNode),
@@ -95,8 +96,7 @@ describe('StylesSidebarPane', () => {
 
       it('correctly hides and shows nested section blocks when filtering', async () => {
         const stylesSidebarPane =
-            new Elements.StylesSidebarPane.StylesSidebarPane(new Elements.ComputedStyleModel.ComputedStyleModel());
-
+            new Elements.StylesSidebarPane.StylesSidebarPane(new ComputedStyle.ComputedStyleModel.ComputedStyleModel());
         const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
         node.nodeName.returns('div');
         node.id = 1 as Protocol.DOM.NodeId;
@@ -178,7 +178,7 @@ describe('StylesSidebarPane', () => {
 
     it('should add @font-* section to the end', async () => {
       const stylesSidebarPane =
-          new Elements.StylesSidebarPane.StylesSidebarPane(new Elements.ComputedStyleModel.ComputedStyleModel());
+          new Elements.StylesSidebarPane.StylesSidebarPane(new ComputedStyle.ComputedStyleModel.ComputedStyleModel());
       const matchedStyles = await getMatchedStyles({
         cssModel: stylesSidebarPane.cssModel() as SDK.CSSModel.CSSModel,
         node: sinon.createStubInstance(SDK.DOMModel.DOMNode),
@@ -233,7 +233,7 @@ describe('StylesSidebarPane', () => {
 
     it('should add @function section to the end', async () => {
       const stylesSidebarPane =
-          new Elements.StylesSidebarPane.StylesSidebarPane(new Elements.ComputedStyleModel.ComputedStyleModel());
+          new Elements.StylesSidebarPane.StylesSidebarPane(new ComputedStyle.ComputedStyleModel.ComputedStyleModel());
       const matchedStyles = await getMatchedStyles({
         cssModel: stylesSidebarPane.cssModel() as SDK.CSSModel.CSSModel,
         node: sinon.createStubInstance(SDK.DOMModel.DOMNode),
@@ -319,7 +319,7 @@ describe('StylesSidebarPane', () => {
 
       it('should not render transition & animation styles when the animations panel is not visible', async () => {
         const stylesSidebarPane =
-            new Elements.StylesSidebarPane.StylesSidebarPane(new Elements.ComputedStyleModel.ComputedStyleModel());
+            new Elements.StylesSidebarPane.StylesSidebarPane(new ComputedStyle.ComputedStyleModel.ComputedStyleModel());
         const matchedStyles = await getMatchedStyles({
           cssModel: stylesSidebarPane.cssModel() as SDK.CSSModel.CSSModel,
           node: sinon.createStubInstance(SDK.DOMModel.DOMNode),
@@ -353,8 +353,8 @@ describe('StylesSidebarPane', () => {
       it('should render transition & animation styles in the styles tab when the animations panel is visible',
          async () => {
            (UI.ViewManager.ViewManager.instance().isViewVisible as sinon.SinonStub).returns(true);
-           const stylesSidebarPane =
-               new Elements.StylesSidebarPane.StylesSidebarPane(new Elements.ComputedStyleModel.ComputedStyleModel());
+           const stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane(
+               new ComputedStyle.ComputedStyleModel.ComputedStyleModel());
            const matchedStyles = await getMatchedStyles({
              cssModel: stylesSidebarPane.cssModel() as SDK.CSSModel.CSSModel,
              node: sinon.createStubInstance(SDK.DOMModel.DOMNode),
@@ -416,7 +416,7 @@ describe('StylesSidebarPane', () => {
             node.id = 1 as Protocol.DOM.NodeId;
 
             const stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane(
-                new Elements.ComputedStyleModel.ComputedStyleModel(node));
+                new ComputedStyle.ComputedStyleModel.ComputedStyleModel(node));
             const resetUpdateSpy = sinon.spy(stylesSidebarPane, 'scheduleResetUpdateIfNotEditingCalledForTest');
             const matchedStyles = await getMatchedStyles({
               cssModel: stylesSidebarPane.cssModel() as SDK.CSSModel.CSSModel,
@@ -450,7 +450,7 @@ describe('StylesSidebarPane', () => {
             node.id = 1 as Protocol.DOM.NodeId;
 
             const stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane(
-                new Elements.ComputedStyleModel.ComputedStyleModel(node));
+                new ComputedStyle.ComputedStyleModel.ComputedStyleModel(node));
             const resetUpdateSpy = sinon.spy(stylesSidebarPane, 'scheduleResetUpdateIfNotEditingCalledForTest');
             const matchedStyles = await getMatchedStyles({
               cssModel: stylesSidebarPane.cssModel() as SDK.CSSModel.CSSModel,
@@ -499,7 +499,7 @@ describe('StylesSidebarPane', () => {
             node.id = 1 as Protocol.DOM.NodeId;
 
             const stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane(
-                new Elements.ComputedStyleModel.ComputedStyleModel(node));
+                new ComputedStyle.ComputedStyleModel.ComputedStyleModel(node));
             const resetUpdateSpy = sinon.spy(stylesSidebarPane, 'scheduleResetUpdateIfNotEditingCalledForTest');
             const matchedStyles = await getMatchedStyles({
               cssModel: stylesSidebarPane.cssModel() as SDK.CSSModel.CSSModel,
@@ -527,7 +527,7 @@ describe('StylesSidebarPane', () => {
             node.id = 1 as Protocol.DOM.NodeId;
 
             const stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane(
-                new Elements.ComputedStyleModel.ComputedStyleModel(node));
+                new ComputedStyle.ComputedStyleModel.ComputedStyleModel(node));
             const resetUpdateSpy = sinon.spy(stylesSidebarPane, 'scheduleResetUpdateIfNotEditingCalledForTest');
             const matchedStyles = await getMatchedStyles({
               cssModel: stylesSidebarPane.cssModel() as SDK.CSSModel.CSSModel,
@@ -571,7 +571,7 @@ describe('StylesSidebarPane', () => {
             node.id = 1 as Protocol.DOM.NodeId;
 
             const stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane(
-                new Elements.ComputedStyleModel.ComputedStyleModel(node));
+                new ComputedStyle.ComputedStyleModel.ComputedStyleModel(node));
             const resetUpdateSpy = sinon.spy(stylesSidebarPane, 'scheduleResetUpdateIfNotEditingCalledForTest');
             const matchedStyles = await getMatchedStyles({
               cssModel: stylesSidebarPane.cssModel() as SDK.CSSModel.CSSModel,
@@ -624,7 +624,7 @@ describe('StylesSidebarPane', () => {
                  node.parentNode = sinon.createStubInstance(SDK.DOMModel.DOMNode);
 
                  const stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane(
-                     new Elements.ComputedStyleModel.ComputedStyleModel(node));
+                     new ComputedStyle.ComputedStyleModel.ComputedStyleModel(node));
                  const resetUpdateSpy = sinon.spy(stylesSidebarPane, 'scheduleResetUpdateIfNotEditingCalledForTest');
                  const matchedStyles = await getMatchedStyles({
                    cssModel: stylesSidebarPane.cssModel() as SDK.CSSModel.CSSModel,
@@ -661,7 +661,7 @@ describe('StylesSidebarPane', () => {
                  node.parentNode = sinon.createStubInstance(SDK.DOMModel.DOMNode);
 
                  const stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane(
-                     new Elements.ComputedStyleModel.ComputedStyleModel(node));
+                     new ComputedStyle.ComputedStyleModel.ComputedStyleModel(node));
                  const resetUpdateSpy = sinon.spy(stylesSidebarPane, 'scheduleResetUpdateIfNotEditingCalledForTest');
                  const matchedStyles = await getMatchedStyles({
                    cssModel: stylesSidebarPane.cssModel() as SDK.CSSModel.CSSModel,
@@ -698,7 +698,7 @@ describe('StylesSidebarPane', () => {
                  node.parentNode = sinon.createStubInstance(SDK.DOMModel.DOMNode);
 
                  const stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane(
-                     new Elements.ComputedStyleModel.ComputedStyleModel(node));
+                     new ComputedStyle.ComputedStyleModel.ComputedStyleModel(node));
                  const resetUpdateSpy = sinon.spy(stylesSidebarPane, 'scheduleResetUpdateIfNotEditingCalledForTest');
                  const matchedStyles = await getMatchedStyles({
                    cssModel: stylesSidebarPane.cssModel() as SDK.CSSModel.CSSModel,

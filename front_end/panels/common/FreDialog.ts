@@ -54,6 +54,7 @@ export class FreDialog {
     if (ariaLabel) {
       dialog.setAriaLabel(ariaLabel);
     }
+    dialog.contentElement.tabIndex = -1;
     const result = Promise.withResolvers<boolean>();
     // clang-format off
     Lit.render(html`
@@ -131,6 +132,9 @@ export class FreDialog {
     dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.MEASURE_CONTENT);
     dialog.setDimmed(true);
     dialog.show();
+    // Explicitly calling focus as `dialog.show()` does not put the FRE
+    // dialog in focus.
+    dialog.contentElement.focus();
 
     return result.promise;
   }

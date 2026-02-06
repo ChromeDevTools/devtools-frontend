@@ -5,6 +5,7 @@
 
 import type * as Platform from '../../../../core/platform/platform.js';
 import type * as TextUtils from '../../../../models/text_utils/text_utils.js';
+import * as Lit from '../../../lit/lit.js';
 import * as UI from '../../legacy.js';
 
 import dataGridStyles from './dataGrid.css.js';
@@ -607,3 +608,35 @@ export interface DataGridInternalToken {
 const INTERNAL_TOKEN: DataGridInternalToken = {
   token: 'DataGridInternalToken'
 };
+
+export const ifExpanded = Lit.Directive.directive(class extends Lit.Directive.Directive {
+  #partInfo: {type: Lit.Directive.PartType, startNode: Node};
+  constructor(partInfo: Lit.Directive.PartInfo) {
+    if (partInfo.type !== Lit.Directive.PartType.CHILD) {
+      throw new Error('expand directive must be used in a child node');
+    }
+    super(partInfo);
+    this.#partInfo = partInfo as {type: Lit.Directive.PartType, startNode: Node};
+  }
+
+  render(content: () => Lit.TemplateResult): Lit.LitTemplate {
+    return this.#isInExpandedRow(this.#partInfo.startNode) ? content() : Lit.nothing;
+  }
+
+  #isInExpandedRow(element: Node|null|undefined): boolean {
+    if (!element) {
+      return false;
+    }
+    if (!(element instanceof HTMLElement)) {
+      element = element.parentNode;
+    }
+    if (!(element instanceof HTMLElement)) {
+      return false;
+    }
+    const node = DataGridElementNode.get(element.closest('tr') ?? undefined);
+    if (!node) {
+      return false;
+    }
+    return node.expanded;
+  }
+});

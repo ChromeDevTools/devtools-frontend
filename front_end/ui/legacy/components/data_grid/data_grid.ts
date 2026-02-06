@@ -13,4 +13,5 @@ import * as ShowMoreDataGridNode from './ShowMoreDataGridNode.js';
 import * as SortableDataGrid from './SortableDataGrid.js';
 import * as ViewportDataGrid from './ViewportDataGrid.js';
 
+export {ifExpanded} from './DataGridElement.js';
 export {DataGrid, ShowMoreDataGridNode, SortableDataGrid, ViewportDataGrid};

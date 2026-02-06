@@ -3,17 +3,19 @@
 // found in the LICENSE file.
 
 import '../../ui/components/highlighting/highlighting.js';
-import '../../ui/legacy/components/data_grid/data_grid.js';
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as Workspace from '../../models/workspace/workspace.js';
+import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {Directives, html, nothing, render, type TemplateResult} from '../../ui/lit/lit.js';
 
 import coverageListViewStyles from './coverageListView.css.js';
 import {CoverageType} from './CoverageModel.js';
+
+const {ifExpanded} = DataGrid;
 
 export interface CoverageListItem {
   url: Platform.DevToolsPath.UrlString;
@@ -143,8 +145,8 @@ interface ViewInput {
   selectedUrl: Platform.DevToolsPath.UrlString|null;
   maxSize: number;
   onOpen: (url: Platform.DevToolsPath.UrlString) => void;
-  onExpand: (url: Platform.DevToolsPath.UrlString) => void;
-  onCollapse: (url: Platform.DevToolsPath.UrlString) => void;
+  onExpand: () => void;
+  onCollapse: () => void;
   highlightRegExp: RegExp|null;
   expandedUrls: Set<Platform.DevToolsPath.UrlString>;
 }
@@ -221,12 +223,10 @@ export class CoverageListView extends UI.Widget.VBox {
       onOpen: (url: Platform.DevToolsPath.UrlString) => {
         this.selectedUrl = url;
       },
-      onExpand: (url: Platform.DevToolsPath.UrlString) => {
-        this.#expandedUrls.add(url);
+      onExpand: () => {
         this.requestUpdate();
       },
-      onCollapse: (url: Platform.DevToolsPath.UrlString) => {
-        this.#expandedUrls.delete(url);
+      onCollapse: () => {
         this.requestUpdate();
       },
       highlightRegExp: this.#highlightRegExp,
@@ -295,8 +295,8 @@ function renderItem(info: CoverageListItem, input: ViewInput): TemplateResult {
     <style>${coverageListViewStyles}</style>
     <tr data-url=${info.url} selected=${info.url === input.selectedUrl}
         @open=${() => input.onOpen(info.url)}
-        @expand=${() => input.onExpand(info.url)}
-        @collapse=${() => input.onCollapse(info.url)}>
+        @expand=${() => input.onExpand()}
+        @collapse=${() => input.onCollapse()}>
       <td data-value=${info.url} title=${info.url} aria-label=${info.url}>
         <devtools-highlight ranges=${highlightRange(info.url)} class="url-outer" aria-hidden="true">
           <div class="url-prefix">${splitURL ? splitURL[1] : info.url}</div>
@@ -340,7 +340,7 @@ function renderItem(info: CoverageListItem, input: ViewInput): TemplateResult {
       </td>
       ${info.sources.length > 0 ? html`
         <td><table>
-          ${input.expandedUrls.has(info.url) ? repeat(info.sources, source => source.url, source => renderItem(source, input)) : nothing}
+          ${ifExpanded(() => html`${repeat(info.sources, source => source.url, source => renderItem(source, input))}`)}
         </table></td>` : nothing}
     </tr>`;
   // clang-format on

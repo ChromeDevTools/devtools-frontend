@@ -47,7 +47,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import {html, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import {AdoptedStyleSheetTreeElement} from './AdoptedStyleSheetTreeElement.js';
+import {AdoptedStyleSheetSetTreeElement, AdoptedStyleSheetTreeElement} from './AdoptedStyleSheetTreeElement.js';
 import {getElementIssueDetails} from './ElementIssueUtils.js';
 import {ElementsPanel} from './ElementsPanel.js';
 import {ElementsTreeElement, InitialChildrenLimit, isOpeningTag} from './ElementsTreeElement.js';
@@ -917,15 +917,21 @@ export class ElementsTreeOutline extends
   }
 
   highlightAdoptedStyleSheet(adoptedStyleSheet: SDK.DOMModel.AdoptedStyleSheet): void {
-    const parentNode = !this.includeRootDOMNode && adoptedStyleSheet.parent === this.rootDOMNode && this.rootDOMNode ?
+    const parentDOMNode =
+        !this.includeRootDOMNode && adoptedStyleSheet.parent === this.rootDOMNode && this.rootDOMNode ?
         this.rootElement() :
         this.createTreeElementFor(adoptedStyleSheet.parent);
-    if (!parentNode) {
+    if (!parentDOMNode) {
+      return;
+    }
+    const parentNode = parentDOMNode.firstChild();
+    if (!(parentNode && parentNode instanceof AdoptedStyleSheetSetTreeElement)) {
       return;
     }
 
     for (const child of parentNode.children()) {
       if (child instanceof AdoptedStyleSheetTreeElement && child.adoptedStyleSheet === adoptedStyleSheet) {
+        parentNode.expand();
         child.highlight();
         return;
       }
@@ -980,8 +986,8 @@ export class ElementsTreeOutline extends
     this.dispatchEventToListeners(ElementsTreeOutline.Events.ElementsTreeUpdated, nodes);
   }
 
-  findTreeElement(node: SDK.DOMModel.DOMNode|SDK.DOMModel.AdoptedStyleSheet): ElementsTreeElement|null {
-    if (node instanceof SDK.DOMModel.AdoptedStyleSheet) {
+  findTreeElement(node: SDK.DOMModel.DOMNode|SDK.DOMModel.AdoptedStyleSheet[]): ElementsTreeElement|null {
+    if (node instanceof Array) {
       return null;
     }
     let treeElement = this.lookUpTreeElement(node);
@@ -1768,10 +1774,10 @@ export class ElementsTreeOutline extends
     }
   }
 
-  private createElementTreeElement(node: SDK.DOMModel.DOMNode|SDK.DOMModel.AdoptedStyleSheet, isClosingTag?: boolean):
+  private createElementTreeElement(node: SDK.DOMModel.DOMNode|SDK.DOMModel.AdoptedStyleSheet[], isClosingTag?: boolean):
       UI.TreeOutline.TreeElement {
-    if (node instanceof SDK.DOMModel.AdoptedStyleSheet) {
-      return new AdoptedStyleSheetTreeElement(node);
+    if (node instanceof Array) {
+      return new AdoptedStyleSheetSetTreeElement(node);
     }
     const treeElement = new ElementsTreeElement(node, isClosingTag);
     treeElement.setExpandable(!isClosingTag && this.hasVisibleChildren(node));
@@ -1800,8 +1806,12 @@ export class ElementsTreeOutline extends
     return treeElement.childAt(index) as ElementsTreeElement;
   }
 
-  private visibleChildren(node: SDK.DOMModel.DOMNode): Array<SDK.DOMModel.DOMNode|SDK.DOMModel.AdoptedStyleSheet> {
-    let visibleChildren = [...node.adoptedStyleSheetsForNode, ...ElementsTreeElement.visibleShadowRoots(node)];
+  private visibleChildren(node: SDK.DOMModel.DOMNode): Array<SDK.DOMModel.DOMNode|SDK.DOMModel.AdoptedStyleSheet[]> {
+    const visibleChildren: Array<SDK.DOMModel.DOMNode|SDK.DOMModel.AdoptedStyleSheet[]> = [];
+    if (node.adoptedStyleSheetsForNode.length) {
+      visibleChildren.push(node.adoptedStyleSheetsForNode);
+    }
+    visibleChildren.push(...ElementsTreeElement.visibleShadowRoots(node));
 
     const contentDocument = node.contentDocument();
     if (contentDocument) {
@@ -1838,7 +1848,7 @@ export class ElementsTreeOutline extends
       if (!this.showHTMLCommentsSetting.get()) {
         children = children.filter(n => n.nodeType() !== Node.COMMENT_NODE);
       }
-      visibleChildren = visibleChildren.concat(children);
+      visibleChildren.push(...children);
     }
 
     const afterPseudoElement = node.afterPseudoElement();
@@ -1927,7 +1937,7 @@ export class ElementsTreeOutline extends
   }
 
   insertChildElement(
-      treeElement: ElementsTreeElement|TopLayerContainer, child: SDK.DOMModel.DOMNode|SDK.DOMModel.AdoptedStyleSheet,
+      treeElement: ElementsTreeElement|TopLayerContainer, child: SDK.DOMModel.DOMNode|SDK.DOMModel.AdoptedStyleSheet[],
       index: number, isClosingTag?: boolean): UI.TreeOutline.TreeElement {
     const newElement = this.createElementTreeElement(child, isClosingTag);
     treeElement.insertChild(newElement, index);
@@ -1957,12 +1967,12 @@ export class ElementsTreeOutline extends
 
     const node = treeElement.node();
     const visibleChildren = this.visibleChildren(node);
-    const visibleChildrenSet = new Set<SDK.DOMModel.DOMNode|SDK.DOMModel.AdoptedStyleSheet>(visibleChildren);
+    const visibleChildrenSet = new Set<SDK.DOMModel.DOMNode|SDK.DOMModel.AdoptedStyleSheet[]>(visibleChildren);
 
     // Remove any tree elements that no longer have this node as their parent and save
     // all existing elements that could be reused. This also removes closing tag element.
-    const existingTreeElements =
-        new Map<SDK.DOMModel.DOMNode|SDK.DOMModel.AdoptedStyleSheet, UI.TreeOutline.TreeElement&ElementsTreeElement>();
+    const existingTreeElements = new Map<
+        SDK.DOMModel.DOMNode|SDK.DOMModel.AdoptedStyleSheet[], UI.TreeOutline.TreeElement&ElementsTreeElement>();
     for (let i = treeElement.childCount() - 1; i >= 0; --i) {
       const existingTreeElement = treeElement.childAt(i);
       if (!(existingTreeElement instanceof ElementsTreeElement)) {

@@ -98,13 +98,18 @@ describeWithMockConnection('AdoptedStyleSheetTreeElement highlighting', () => {
       length: initialCSS.length,
       loadingFailed: false,
     });
-    const adoptedStyleSheetTreeElement =
-        new Elements.AdoptedStyleSheetTreeElement.AdoptedStyleSheetTreeElement(adoptedSheet);
-    shadowRootTreeElement.appendChild(adoptedStyleSheetTreeElement);
+    const adoptedStyleSheetSetTreeElement =
+        new Elements.AdoptedStyleSheetTreeElement.AdoptedStyleSheetSetTreeElement([adoptedSheet]);
+    shadowRootTreeElement.appendChild(adoptedStyleSheetSetTreeElement);
     await shadowRootTreeElement.onpopulate();
     shadowRootTreeElement.expand();
     assert.strictEqual(shadowRootTreeElement.childCount(), 1);
-    assert.strictEqual(shadowRootTreeElement.children()[0], adoptedStyleSheetTreeElement);
+    assert.strictEqual(shadowRootTreeElement.children()[0], adoptedStyleSheetSetTreeElement);
+    await adoptedStyleSheetSetTreeElement.onpopulate();
+    adoptedStyleSheetSetTreeElement.expand();
+    assert.strictEqual(adoptedStyleSheetSetTreeElement.childCount(), 1);
+    const adoptedStyleSheetTreeElement = adoptedStyleSheetSetTreeElement.children()[0] as
+        Elements.AdoptedStyleSheetTreeElement.AdoptedStyleSheetTreeElement;
     await adoptedStyleSheetTreeElement.onpopulate();
     adoptedStyleSheetTreeElement.expand();
     assert.strictEqual(adoptedStyleSheetTreeElement.childCount(), 1);

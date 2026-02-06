@@ -13,6 +13,17 @@ import {PanelUtils} from '../utils/utils.js';
 
 import type {EditorHandles} from './ElementsTreeElement.js';
 
+export class AdoptedStyleSheetSetTreeElement extends UI.TreeOutline.TreeElement {
+  constructor(readonly adoptedStyleSheets: SDK.DOMModel.AdoptedStyleSheet[]) {
+    super('');
+    const documentElement = this.listItemElement.createChild('span');
+    UI.UIUtils.createTextChild(documentElement, '#adopted-style-sheets');
+    for (const adoptedStyleSheet of adoptedStyleSheets) {
+      this.appendChild(new AdoptedStyleSheetTreeElement(adoptedStyleSheet));
+    }
+  }
+}
+
 export class AdoptedStyleSheetTreeElement extends UI.TreeOutline.TreeElement {
   private eventListener: Common.EventTarget.EventDescriptor|null = null;
 

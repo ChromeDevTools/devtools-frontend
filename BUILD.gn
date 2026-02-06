@@ -212,3 +212,6 @@ copy_to_gen("favicon") {
 group("mcp") {
   deps = [ "./mcp" ]
 }
+
+# TODO(@nvitkov): When http://b/469573569 is fixed
+write_file("$target_gen_dir/package.json", "{}")

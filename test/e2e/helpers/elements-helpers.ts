@@ -281,7 +281,7 @@ export const waitForElementWithPartialText = async (text: string, devToolsPage: 
   return await devToolsPage.waitForFunction(async () => await elementWithPartialText(text, devToolsPage));
 };
 
-const elementWithPartialText = async (text: string, devToolsPage: DevToolsPage) => {
+export const elementWithPartialText = async (text: string, devToolsPage: DevToolsPage) => {
   const tree = await devToolsPage.waitFor('Page DOM[role="tree"]', undefined, undefined, 'aria');
   const elements = await devToolsPage.$$('[role="treeitem"]', tree, 'aria');
   for (const handle of elements) {

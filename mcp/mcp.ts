@@ -53,6 +53,7 @@ export {
 export * as MarkdownIssueDescription from '../front_end/models/issues_manager/MarkdownIssueDescription.js';
 export * as StackTrace from '../front_end/models/stack_trace/stack_trace.js';
 export * as TraceEngine from '../front_end/models/trace/trace.js';
+export {IgnoreListManager} from '../front_end/models/workspace/IgnoreListManager.js';
 export * as Marked from '../front_end/third_party/marked/marked.js';
 
 installInspectorFrontendHost(new McpHostBindings());

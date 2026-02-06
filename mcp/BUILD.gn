@@ -27,6 +27,7 @@ devtools_module("mcp") {
     "../front_end/models/issues_manager:bundle",
     "../front_end/models/stack_trace:bundle",
     "../front_end/models/trace:bundle",
+    "../front_end/models/workspace:bundle",
     "../front_end/models/workspace:meta",
   ]
 }

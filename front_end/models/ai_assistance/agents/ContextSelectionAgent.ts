@@ -2,10 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
+import * as SDK from '../../../core/sdk/sdk.js';
 import * as Logs from '../../logs/logs.js';
 import * as Workspace from '../../workspace/workspace.js';
 
@@ -86,7 +88,14 @@ export class ContextSelectionAgent extends AiAgent<never> {
       },
       handler: async () => {
         const requests = [];
+        const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+        const inspectedURL = target?.inspectedURL();
+        const mainSecurityOrigin = inspectedURL ? new Common.ParsedURL.ParsedURL(inspectedURL).securityOrigin() : null;
+
         for (const request of Logs.NetworkLog.NetworkLog.instance().requests()) {
+          if (mainSecurityOrigin && request.securityOrigin() !== mainSecurityOrigin) {
+            continue;
+          }
           requests.push({
             url: request.url(),
             statusCode: request.statusCode,

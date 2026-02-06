@@ -181,5 +181,65 @@ describeWithMockConnection('ContextSelectionAgent', function() {
         },
       ]);
     });
+
+    it('filters network requests by security origin', async () => {
+      const origin = urlString`https://example.com`;
+      const otherOrigin = urlString`https://other.com`;
+
+      const target = sinon.createStubInstance(SDK.Target.Target);
+      target.inspectedURL.returns(urlString`${origin}/`);
+      sinon.stub(SDK.TargetManager.TargetManager.instance(), 'primaryPageTarget').returns(target);
+
+      const sameOriginRequest = SDK.NetworkRequest.NetworkRequest.create(
+          'requestId1' as Protocol.Network.RequestId,
+          urlString`${origin}/foo`,
+          urlString`${origin}/foo`,
+          null,
+          null,
+          null,
+      );
+      sameOriginRequest.statusCode = 200;
+
+      const crossOriginRequest = SDK.NetworkRequest.NetworkRequest.create(
+          'requestId2' as Protocol.Network.RequestId,
+          urlString`${otherOrigin}/bar`,
+          urlString`${otherOrigin}/bar`,
+          null,
+          null,
+          null,
+      );
+      crossOriginRequest.statusCode = 200;
+
+      const networkLog = Logs.NetworkLog.NetworkLog.instance();
+      sinon.stub(networkLog, 'requests').returns([sameOriginRequest, crossOriginRequest]);
+
+      const agent = new ContextSelectionAgent.ContextSelectionAgent({
+        aidaClient: mockAidaClient([
+          [{
+            functionCalls: [{
+              name: 'listNetworkRequests',
+              args: {},
+            }],
+            explanation: '',
+          }],
+          [{explanation: 'Done'}],
+        ]),
+      });
+
+      await Array.fromAsync(agent.run('test', {selected: null}));
+
+      const requestToAida = agent.buildRequest({text: ''}, Host.AidaClient.Role.USER);
+      const part = requestToAida.historical_contexts?.[2].parts[0];
+
+      assert(part && 'functionResponse' in part, 'Expected functionResponse part');
+      assert.strictEqual(part.functionResponse.name, 'listNetworkRequests');
+      assert.deepEqual(part.functionResponse.response.result, [
+        {
+          url: `${origin}/foo`,
+          statusCode: 200,
+          duration: -1,
+        },
+      ]);
+    });
   });
 });

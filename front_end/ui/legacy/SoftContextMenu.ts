@@ -335,8 +335,7 @@ export class SoftContextMenu {
     menuItemElement.addEventListener('mouseleave', (this.menuItemMouseLeave.bind(this) as EventListener), false);
 
     if (item.jslogContext) {
-      menuItemElement.setAttribute(
-          'jslog', `${VisualLogging.item(item.jslogContext).track({click: true, resize: true})}`);
+      menuItemElement.setAttribute('jslog', `${VisualLogging.item().context(item.jslogContext)}`);
     }
     return menuItemElement;
   }

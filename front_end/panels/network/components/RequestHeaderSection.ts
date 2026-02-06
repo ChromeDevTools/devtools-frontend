@@ -59,7 +59,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
     ${headers.map(header => html`
       <devtools-header-section-row
         .data=${{ header }}
-        jslog=${VisualLogging.item('request-header').track({resize: true})}
+        jslog=${VisualLogging.item('request-header')}
       ></devtools-header-section-row>
     `)}
   `, target);

@@ -721,7 +721,6 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     this.listItemElement.setAttribute(
         'jslog', `${VisualLogging.treeItem().parent('elementsTreeOutline').track({
           keydown: 'ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Backspace|Delete|Enter|Space|Home|End',
-          resize: true,
           drag: true,
           click: true,
         })}`);

@@ -144,7 +144,7 @@ const DEFAULT_VIEW: View = (input: ViewInput, _output: ViewOutput, target: HTMLE
       // clang-format off
       return html`
         <span class=${spanClasses}
-              jslog=${VisualLogging.item('matched-address-item').track({hover: true, resize: true})}
+              jslog=${VisualLogging.item('matched-address-item').track({hover: true})}
               @mouseenter=${() => input.onHighlightMatchesInAddress(startIndex)}
               @mouseleave=${input.onClearHighlightedMatches}>
           ${templateLines}

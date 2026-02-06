@@ -1334,6 +1334,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       this.#conversation?.setContext(context);
     }
 
+    void VisualLogging.logFunctionCall(`context-change-${this.#conversation?.type}`);
+
     this.requestUpdate();
   };
 

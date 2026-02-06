@@ -73,6 +73,7 @@ let currentUpdateQueue: Map<Widget, PromiseWithResolvers<void>>|null = null;
 const currentlyProcessed = new Set<Widget>();
 let nextUpdateQueue = new Map<Widget, PromiseWithResolvers<void>>();
 let pendingAnimationFrame: number|null = null;
+let overallUpdatePromise: PromiseWithResolvers<void>|null = null;
 
 function enqueueIntoNextUpdateQueue(widget: Widget): Promise<void> {
   const scheduledUpdate = nextUpdateQueue.get(widget) ?? Promise.withResolvers<void>();
@@ -132,6 +133,10 @@ function runNextUpdate(): void {
     } else {
       currentUpdateQueue = null;
       currentlyProcessed.clear();
+      if (!pendingAnimationFrame && overallUpdatePromise) {
+        overallUpdatePromise.resolve();
+        overallUpdatePromise = null;
+      }
     }
   });
 }
@@ -412,6 +417,16 @@ export class Widget {
    */
   static get(node: Node): Widget|undefined {
     return widgetMap.get(node);
+  }
+
+  static get allUpdatesComplete(): Promise<void> {
+    if (!pendingAnimationFrame && !currentUpdateQueue) {
+      return Promise.resolve();
+    }
+    if (!overallUpdatePromise) {
+      overallUpdatePromise = Promise.withResolvers<void>();
+    }
+    return overallUpdatePromise.promise;
   }
 
   static getOrCreateWidget(element: HTMLElement): Widget {

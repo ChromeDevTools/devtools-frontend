@@ -6,7 +6,7 @@ import type * as Common from '../../core/common/common.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
-import {raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
 import {
   describeWithMockConnection,
@@ -124,7 +124,7 @@ describeWithMockConnection('PropertiesWidget', () => {
     renderElementIntoDOM(view);
     await viewFunction.nextInput;
     // Wait for the property widgets to update
-    await raf();
+    await UI.Widget.Widget.allUpdatesComplete;
 
     const {treeOutlineElement} = viewFunction.input;
     const treeShadowRoot = treeOutlineElement.shadowRoot;

@@ -5,13 +5,14 @@
 import type * as Common from '../../core/common/common.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import type * as Protocol from '../../generated/protocol.js';
-import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import * as Protocol from '../../generated/protocol.js';
+import {raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
 import {
   describeWithMockConnection,
   setMockConnectionResponseHandler,
 } from '../../testing/MockConnection.js';
+import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -45,6 +46,7 @@ describeWithMockConnection('PropertiesWidget', () => {
     sinon.stub(node, 'resolveToObject').withArgs('properties-sidebar-pane').resolves({
       getAllProperties: () => ({}),
       getOwnProperties: () => ({}),
+      arrayLength: () => 0,
     } as unknown as SDK.RemoteObject.RemoteObject);
     UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
 
@@ -74,4 +76,65 @@ describeWithMockConnection('PropertiesWidget', () => {
      updatesUiOnEvent(SDK.DOMModel.Events.ChildNodeCountUpdated, true));
   it('does not update UI on out of scope child node count updated event',
      updatesUiOnEvent(SDK.DOMModel.Events.ChildNodeCountUpdated, false));
+
+  it('invokes a getter when clicking on the invoke button', async () => {
+    SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
+    const model = target.model(SDK.DOMModel.DOMModel);
+    assert.exists(model);
+    const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+    assert.exists(runtimeModel);
+
+    const node = new SDK.DOMModel.DOMNode(model);
+    const object = runtimeModel.createRemoteObject({
+      type: Protocol.Runtime.RemoteObjectType.Object,
+      subtype: Protocol.Runtime.RemoteObjectSubtype.Null,
+      objectId: '1' as Protocol.Runtime.RemoteObjectId,
+    });
+
+    setMockConnectionResponseHandler('Runtime.getProperties', () => ({
+                                                                result: [
+                                                                  {
+                                                                    name: 'myGetter',
+                                                                    isOwn: true,
+                                                                    enumerable: true,
+                                                                    configurable: true,
+                                                                    get: {
+                                                                      type: Protocol.Runtime.RemoteObjectType.Function,
+                                                                      objectId: '2' as Protocol.Runtime.RemoteObjectId,
+                                                                      className: 'Function',
+                                                                      description: 'get myGetter()',
+                                                                    },
+                                                                  },
+                                                                ],
+                                                              }));
+    const callFunctionOn = sinon.stub().resolves({
+      result: {
+        type: Protocol.Runtime.RemoteObjectType.Object,
+        subtype: Protocol.Runtime.RemoteObjectSubtype.Null,
+        value: null,
+      },
+    });
+    setMockConnectionResponseHandler('Runtime.callFunctionOn', callFunctionOn);
+
+    sinon.stub(node, 'resolveToObject').withArgs('properties-sidebar-pane').resolves(object);
+    UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
+
+    const viewFunction = createViewFunctionStub(Elements.PropertiesWidget.PropertiesWidget);
+    view = new Elements.PropertiesWidget.PropertiesWidget(viewFunction);
+    renderElementIntoDOM(view);
+    await viewFunction.nextInput;
+    // Wait for the property widgets to update
+    await raf();
+
+    const {treeOutlineElement} = viewFunction.input;
+    const treeShadowRoot = treeOutlineElement.shadowRoot;
+    assert.exists(treeShadowRoot);
+    const invokeButton = treeShadowRoot.querySelector('.object-value-calculate-value-button');
+    assert.exists(invokeButton);
+    (invokeButton as HTMLElement).click();
+    sinon.assert.calledWith(callFunctionOn, sinon.match({
+      objectId: '1',
+      arguments: sinon.match([{objectId: '2'}]),
+    }));
+  });
 });

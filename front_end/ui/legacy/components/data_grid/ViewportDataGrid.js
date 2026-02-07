@@ -412,6 +412,7 @@ export class ViewportDataGridNode extends DataGridNode {
             this.dataGrid.announceSelectedGridNode();
         }
         this.dataGrid.scheduleUpdateStructure();
+        this.dataGrid?.dispatchEventToListeners("CollapsedNode" /* DataGridEvents.COLLAPSED_NODE */, this);
     }
     expand() {
         if (this.expanded) {

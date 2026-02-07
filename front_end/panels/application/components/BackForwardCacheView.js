@@ -309,7 +309,7 @@ function renderFramesPerReason(frames) {
     }
     const rows = [html `<div>${i18nString(UIStrings.framesPerIssue, { n: frames.length })}</div>`];
     rows.push(...frames.map(url => html `<div class="text-ellipsis" title=${url}
-    jslog=${VisualLogging.treeItem().track({ resize: true })}>${url}</div>`));
+    jslog=${VisualLogging.treeItem()}>${url}</div>`));
     return html `
       <div class="details-list"
       jslog=${VisualLogging.tree('frames-per-issue')}>
@@ -317,9 +317,7 @@ function renderFramesPerReason(frames) {
         rows,
         title: i18nString(UIStrings.framesPerIssue, { n: frames.length }),
     }}
-        jslog=${VisualLogging.treeItem().track({
-        resize: true
-    })}></devtools-expandable-list>
+        jslog=${VisualLogging.treeItem()}></devtools-expandable-list>
       </div>
     `;
 }

@@ -306,7 +306,7 @@ export class ShortcutListItem {
         this.settingsTab = settingsTab;
         this.item = item;
         this.element = document.createElement('div');
-        this.element.setAttribute('jslog', `${VisualLogging.item().context(item.id()).track({ keydown: 'Escape', resize: true })}`);
+        this.element.setAttribute('jslog', `${VisualLogging.item().context(item.id()).track({ keydown: 'Escape' })}`);
         this.editedShortcuts = new Map();
         this.shortcutInputs = new Map();
         this.shortcuts = UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutsForAction(item.id());

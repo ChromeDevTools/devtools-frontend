@@ -1059,7 +1059,7 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
                     ${VALUE_TYPE_MODE_LIST.filter((x) => isValidMode(type, x)).map((mode) => {
       return html3`
                         <option value=${mode} .selected=${input.valueTypeModes.get(type) === mode}
-                                jslog=${VisualLogging3.item(mode).track({ click: true, resize: true })}>${i18n5.i18n.lockedString(mode)}
+                                jslog=${VisualLogging3.item(mode).track({ click: true })}>${i18n5.i18n.lockedString(mode)}
                         </option>`;
     })}
                 </select>
@@ -1362,7 +1362,7 @@ function renderEndiannessSetting(onEndiannessChanged, currentEndiannes) {
     /* Endianness.BIG */
   ].map((endianness) => {
     return html5`<option value=${endianness} .selected=${currentEndiannes === endianness}
-            jslog=${VisualLogging5.item(Platform3.StringUtilities.toKebabCase(endianness)).track({ click: true, resize: true })}>${i18n9.i18n.lockedString(endianness)}</option>`;
+            jslog=${VisualLogging5.item(Platform3.StringUtilities.toKebabCase(endianness)).track({ click: true })}>${i18n9.i18n.lockedString(endianness)}</option>`;
   })}
       </select>
     </label>

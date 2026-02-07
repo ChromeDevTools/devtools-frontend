@@ -35,6 +35,7 @@ import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as ComputedStyleModule from '../../models/computed_style/computed_style.js';
 import * as TreeOutline from '../../ui/components/tree_outline/tree_outline.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
@@ -228,8 +229,8 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
         this.registerRequiredCSS(computedStyleSidebarPaneStyles);
         this.contentElement.classList.add('styles-sidebar-computed-style-widget');
         this.computedStyleModel = computedStyleModel;
-        this.computedStyleModel.addEventListener("CSSModelChanged" /* Events.CSS_MODEL_CHANGED */, this.requestUpdate, this);
-        this.computedStyleModel.addEventListener("ComputedStyleChanged" /* Events.COMPUTED_STYLE_CHANGED */, this.requestUpdate, this);
+        this.computedStyleModel.addEventListener("CSSModelChanged" /* ComputedStyleModule.ComputedStyleModel.Events.CSS_MODEL_CHANGED */, this.requestUpdate, this);
+        this.computedStyleModel.addEventListener("ComputedStyleChanged" /* ComputedStyleModule.ComputedStyleModel.Events.COMPUTED_STYLE_CHANGED */, this.requestUpdate, this);
         this.showInheritedComputedStylePropertiesSetting =
             Common.Settings.Settings.instance().createSetting('show-inherited-computed-style-properties', false);
         this.showInheritedComputedStylePropertiesSetting.addChangeListener(this.requestUpdate.bind(this));

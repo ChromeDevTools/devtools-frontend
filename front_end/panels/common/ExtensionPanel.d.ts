@@ -11,6 +11,7 @@ export declare class ExtensionPanel extends UI.Panel.Panel implements UI.Searcha
     onSearchCanceled(): void;
     searchableView(): UI.SearchableView.SearchableView;
     performSearch(searchConfig: UI.SearchableView.SearchConfig, _shouldJump: boolean, _jumpBackwards?: boolean): void;
+    supportsMatchCounts(): boolean;
     jumpToNextSearchResult(): void;
     jumpToPreviousSearchResult(): void;
     supportsCaseSensitiveSearch(): boolean;

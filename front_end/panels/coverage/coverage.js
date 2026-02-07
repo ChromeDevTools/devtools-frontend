@@ -873,10 +873,10 @@ __export(CoverageListView_exports, {
   coverageTypeToString: () => coverageTypeToString
 });
 import "./../../ui/components/highlighting/highlighting.js";
-import "./../../ui/legacy/components/data_grid/data_grid.js";
 import * as Common2 from "./../../core/common/common.js";
 import * as i18n from "./../../core/i18n/i18n.js";
 import * as Workspace3 from "./../../models/workspace/workspace.js";
+import * as DataGrid from "./../../ui/legacy/components/data_grid/data_grid.js";
 import * as UI from "./../../ui/legacy/legacy.js";
 import { Directives, html, nothing, render } from "./../../ui/lit/lit.js";
 
@@ -970,6 +970,7 @@ var coverageListView_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./coverageListView.css")} */`;
 
 // gen/front_end/panels/coverage/CoverageListView.js
+var { ifExpanded } = DataGrid;
 var UIStrings = {
   /**
    * @description Text that appears on a button for the css resource type filter.
@@ -1103,6 +1104,7 @@ var CoverageListView = class extends UI.Widget.VBox {
   #coverageInfo = [];
   #selectedUrl = null;
   #maxSize = 0;
+  #expandedUrls = /* @__PURE__ */ new Set();
   #view;
   constructor(element, view = DEFAULT_VIEW) {
     super(element, { useShadowDom: true, delegatesFocus: true });
@@ -1129,8 +1131,15 @@ var CoverageListView = class extends UI.Widget.VBox {
       items: this.#coverageInfo,
       selectedUrl: this.#selectedUrl,
       maxSize: this.#maxSize,
+      expandedUrls: this.#expandedUrls,
       onOpen: (url) => {
         this.selectedUrl = url;
+      },
+      onExpand: () => {
+        this.requestUpdate();
+      },
+      onCollapse: () => {
+        this.requestUpdate();
       },
       highlightRegExp: this.#highlightRegExp
     };
@@ -1186,7 +1195,9 @@ function renderItem(info, input) {
   return html`
     <style>${coverageListView_css_default}</style>
     <tr data-url=${info.url} selected=${info.url === input.selectedUrl}
-        @open=${() => input.onOpen(info.url)}>
+        @open=${() => input.onOpen(info.url)}
+        @expand=${() => input.onExpand()}
+        @collapse=${() => input.onCollapse()}>
       <td data-value=${info.url} title=${info.url} aria-label=${info.url}>
         <devtools-highlight ranges=${highlightRange(info.url)} class="url-outer" aria-hidden="true">
           <div class="url-prefix">${splitURL ? splitURL[1] : info.url}</div>
@@ -1222,7 +1233,7 @@ function renderItem(info, input) {
       </td>
       ${info.sources.length > 0 ? html`
         <td><table>
-          ${repeat(info.sources, (source) => source.url, (source) => renderItem(source, input))}
+          ${ifExpanded(() => html`${repeat(info.sources, (source) => source.url, (source) => renderItem(source, input))}`)}
         </table></td>` : nothing}
     </tr>`;
 }

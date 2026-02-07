@@ -92,6 +92,7 @@ export declare class Widget {
      * @returns the {@link Widget} that is attached to the `node` or `undefined`.
      */
     static get(node: Node): Widget | undefined;
+    static get allUpdatesComplete(): Promise<void>;
     static getOrCreateWidget(element: HTMLElement): Widget;
     markAsRoot(): void;
     parentWidget(): Widget | null;

@@ -4,7 +4,7 @@
 
 import './InspectElementModeController.js';
 import './ColorSwatchPopoverIcon.js';
-import './ComputedStyleModel.js';
+
 import './DOMPath.js';
 import './ElementsSidebarPane.js';
 import './ElementsTreeElement.js';
@@ -34,7 +34,6 @@ import * as AccessibilityTreeView from './AccessibilityTreeView.js';
 import * as AdoptedStyleSheetTreeElement from './AdoptedStyleSheetTreeElement.js';
 import * as ClassesPaneWidget from './ClassesPaneWidget.js';
 import * as ColorSwatchPopoverIcon from './ColorSwatchPopoverIcon.js';
-import * as ComputedStyleModel from './ComputedStyleModel.js';
 import * as ComputedStyleWidget from './ComputedStyleWidget.js';
 import * as CSSRuleValidator from './CSSRuleValidator.js';
 import * as CSSValueTraceView from './CSSValueTraceView.js';
@@ -70,7 +69,6 @@ export {
   AdoptedStyleSheetTreeElement,
   ClassesPaneWidget,
   ColorSwatchPopoverIcon,
-  ComputedStyleModel,
   ComputedStyleWidget,
   CSSRuleValidator,
   CSSValueTraceView,

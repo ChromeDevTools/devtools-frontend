@@ -52,6 +52,11 @@ devtools-icon {
   margin-right: var(--sys-size-4);
 }
 
+.tree-element-title > div {
+  display: flex;
+  align-items: center;
+}
+
 .navigator-sm-script-tree-item devtools-icon,
 .navigator-script-tree-item devtools-icon,
 .navigator-snippet-tree-item devtools-icon {

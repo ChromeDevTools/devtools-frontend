@@ -55,7 +55,7 @@ const DEFAULT_VIEW = (input, _output, target) => {
                @contextmenu=${(e) => input.onPlayerContextMenu(player.playerID, e)}
                role="option"
                aria-selected=${isSelected}
-               jslog=${VisualLogging.item('player').track({ click: true, resize: true })}>
+               jslog=${VisualLogging.item('player').track({ click: true })}>
             <div class="player-entry-status-icon vbox">
               <div class="player-entry-status-icon-centering">
                 <devtools-icon name=${player.iconName}></devtools-icon>

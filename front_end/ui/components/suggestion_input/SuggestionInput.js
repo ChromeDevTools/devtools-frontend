@@ -163,16 +163,21 @@ let SuggestionBox = class SuggestionBox extends LitElement {
         if (this.#suggestions.length === 0) {
             return;
         }
-        // clang-format off
         return html `<style>${contentEditableStyles}</style><ul class="suggestions">
-      ${this.#suggestions.map((suggestion, index) => html `
-        <li class=${classMap({ selected: index === this.cursor })}
-            @mousedown=${this.#dispatchSuggestEvent.bind(this, suggestion)}
-            jslog=${VisualLogging.item('suggestion').track({ click: true, resize: true })}>
+      ${this.#suggestions.map((suggestion, index) => {
+            return html `<li
+          class=${classMap({
+                selected: index === this.cursor,
+            })}
+          @mousedown=${this.#dispatchSuggestEvent.bind(this, suggestion)}
+          jslog=${VisualLogging.item('suggestion').track({
+                click: true,
+            })}
+        >
           ${suggestion}
-        </li>`)}
+        </li>`;
+        })}
     </ul>`;
-        // clang-format on
     }
 };
 __decorate([

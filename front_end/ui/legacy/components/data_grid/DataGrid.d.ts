@@ -142,7 +142,9 @@ export declare const enum Events {
     DESELECTED_NODE = "DeselectedNode",
     OPENED_NODE = "OpenedNode",
     SORTING_CHANGED = "SortingChanged",
-    PADDING_CHANGED = "PaddingChanged"
+    PADDING_CHANGED = "PaddingChanged",
+    EXPANDED_NODE = "ExpandedNode",
+    COLLAPSED_NODE = "CollapsedNode"
 }
 export interface EventTypes<T> {
     [Events.SELECTED_NODE]: DataGridNode<T>;
@@ -150,6 +152,8 @@ export interface EventTypes<T> {
     [Events.OPENED_NODE]: DataGridNode<T>;
     [Events.SORTING_CHANGED]: void;
     [Events.PADDING_CHANGED]: void;
+    [Events.EXPANDED_NODE]: DataGridNode<T>;
+    [Events.COLLAPSED_NODE]: DataGridNode<T>;
 }
 export declare enum Order {
     Ascending = "sort-ascending",

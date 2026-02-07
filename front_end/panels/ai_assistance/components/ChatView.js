@@ -114,6 +114,7 @@ const DEFAULT_VIEW = (input, output, target) => {
         onCancelClick: input.onCancelClick,
         onNewConversation: input.onNewConversation,
         onContextRemoved: input.onContextRemoved,
+        onContextAdd: input.onContextAdd,
     })} ${ref(element => { output.input = element; })}></devtools-widget>
         </main>
       </div>

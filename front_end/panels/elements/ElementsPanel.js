@@ -38,6 +38,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Annotations from '../../models/annotations/annotations.js';
+import * as ComputedStyle from '../../models/computed_style/computed_style.js';
 import * as PanelCommon from '../../panels/common/common.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as TreeOutline from '../../ui/components/tree_outline/tree_outline.js';
@@ -46,7 +47,6 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import { AccessibilityTreeView } from './AccessibilityTreeView.js';
 import { ColorSwatchPopoverIcon } from './ColorSwatchPopoverIcon.js';
 import * as ElementsComponents from './components/components.js';
-import { ComputedStyleModel } from './ComputedStyleModel.js';
 import { ComputedStyleWidget } from './ComputedStyleWidget.js';
 import elementsPanelStyles from './elementsPanel.css.js';
 import { DOMTreeWidget } from './ElementsTreeOutline.js';
@@ -243,7 +243,7 @@ export class ElementsPanel extends UI.Panel.Panel {
             this.crumbNodeSelected(event);
         });
         crumbsContainer.appendChild(this.breadcrumbs);
-        this.#computedStyleModel = new ComputedStyleModel(UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode));
+        this.#computedStyleModel = new ComputedStyle.ComputedStyleModel.ComputedStyleModel(UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode));
         UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, event => {
             this.#computedStyleModel.node = event.data;
             this.evaluateTrackingComputedStyleUpdatesForNode();

@@ -38,6 +38,9 @@ export class ExtensionPanel extends UI.Panel.Panel {
         const query = searchConfig.query;
         this.server.notifySearchAction(this.id, "performSearch" /* Extensions.ExtensionAPI.PrivateAPI.Panels.SearchAction.PerformSearch */, query);
     }
+    supportsMatchCounts() {
+        return false;
+    }
     jumpToNextSearchResult() {
         this.server.notifySearchAction(this.id, "nextSearchResult" /* Extensions.ExtensionAPI.PrivateAPI.Panels.SearchAction.NextSearchResult */);
     }

@@ -61,6 +61,7 @@ export declare class SearchableView extends VBox {
     private onValueChanged;
 }
 export interface Searchable {
+    supportsMatchCounts?(): boolean;
     currentQuery?: string;
     currentSearchMatches?: number;
     onSearchCanceled(): void;

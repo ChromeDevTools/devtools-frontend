@@ -446,8 +446,10 @@ export class SearchableView extends VBox {
     updateSearchNavigationButtonState(enabled) {
         this.replaceButtonElement.disabled = !enabled;
         this.replaceAllButtonElement.disabled = !enabled;
-        this.searchNavigationPrevElement.setEnabled(enabled);
-        this.searchNavigationNextElement.setEnabled(enabled);
+        if (this.searchProvider.supportsMatchCounts?.() === true) {
+            this.searchNavigationPrevElement.setEnabled(enabled);
+            this.searchNavigationNextElement.setEnabled(enabled);
+        }
     }
     updateSearchMatchesCountAndCurrentMatchIndex(matches, currentMatchIndex) {
         if (!this.currentQuery) {

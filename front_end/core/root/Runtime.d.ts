@@ -283,7 +283,6 @@ export type HostConfig = Platform.TypeScriptUtilities.RecursivePartial<{
     devToolsAiCodeGeneration: HostConfigAiCodeGeneration;
     devToolsVeLogging: HostConfigVeLogging;
     devToolsWellKnown: HostConfigWellKnown;
-    devToolsPrivacyUI: HostConfigPrivacyUI;
     devToolsIndividualRequestThrottling: DevToolsIndividualRequestThrottling;
     /**
      * OffTheRecord here indicates that the user's profile is either incognito,

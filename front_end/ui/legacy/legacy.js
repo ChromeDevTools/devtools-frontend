@@ -1952,6 +1952,7 @@ var currentUpdateQueue = null;
 var currentlyProcessed = /* @__PURE__ */ new Set();
 var nextUpdateQueue = /* @__PURE__ */ new Map();
 var pendingAnimationFrame = null;
+var overallUpdatePromise = null;
 function enqueueIntoNextUpdateQueue(widget) {
   const scheduledUpdate = nextUpdateQueue.get(widget) ?? Promise.withResolvers();
   nextUpdateQueue.delete(widget);
@@ -2007,6 +2008,10 @@ function runNextUpdate() {
     } else {
       currentUpdateQueue = null;
       currentlyProcessed.clear();
+      if (!pendingAnimationFrame && overallUpdatePromise) {
+        overallUpdatePromise.resolve();
+        overallUpdatePromise = null;
+      }
     }
   });
 }
@@ -2207,6 +2212,15 @@ var Widget = class _Widget {
    */
   static get(node) {
     return widgetMap.get(node);
+  }
+  static get allUpdatesComplete() {
+    if (!pendingAnimationFrame && !currentUpdateQueue) {
+      return Promise.resolve();
+    }
+    if (!overallUpdatePromise) {
+      overallUpdatePromise = Promise.withResolvers();
+    }
+    return overallUpdatePromise.promise;
   }
   static getOrCreateWidget(element) {
     const widget = _Widget.get(element);
@@ -8523,7 +8537,7 @@ var SoftContextMenu = class _SoftContextMenu {
     menuItemElement.addEventListener("mouseover", this.menuItemMouseOver.bind(this), false);
     menuItemElement.addEventListener("mouseleave", this.menuItemMouseLeave.bind(this), false);
     if (item8.jslogContext) {
-      menuItemElement.setAttribute("jslog", `${VisualLogging8.item(item8.jslogContext).track({ click: true, resize: true })}`);
+      menuItemElement.setAttribute("jslog", `${VisualLogging8.item().context(item8.jslogContext)}`);
     }
     return menuItemElement;
   }
@@ -10024,7 +10038,7 @@ var ListControl = class {
     if (!element) {
       element = this.delegate.createElementForItem(item8);
       if (!element.hasAttribute("jslog")) {
-        element.setAttribute("jslog", `${VisualLogging10.item().track({ click: true, resize: true, keydown: "ArrowUp|ArrowDown|PageUp|PageDown" })}`);
+        element.setAttribute("jslog", `${VisualLogging10.item().track({ click: true, keydown: "ArrowUp|ArrowDown|PageUp|PageDown" })}`);
       }
       this.itemToElement.set(item8, element);
       this.updateElementARIA(element, index);
@@ -18395,7 +18409,7 @@ var ListWidget = class extends VBox {
     }
     const content = this.delegate.renderItem(item8, editable, this.#items.length - 1);
     if (!content.hasAttribute("jslog")) {
-      element.setAttribute("jslog", `${VisualLogging18.item().track({ resize: true })}`);
+      element.setAttribute("jslog", `${VisualLogging18.item()}`);
     }
     element.appendChild(content);
     if (editable) {
@@ -20206,8 +20220,10 @@ var SearchableView = class extends VBox {
   updateSearchNavigationButtonState(enabled) {
     this.replaceButtonElement.disabled = !enabled;
     this.replaceAllButtonElement.disabled = !enabled;
-    this.searchNavigationPrevElement.setEnabled(enabled);
-    this.searchNavigationNextElement.setEnabled(enabled);
+    if (this.searchProvider.supportsMatchCounts?.() === true) {
+      this.searchNavigationPrevElement.setEnabled(enabled);
+      this.searchNavigationNextElement.setEnabled(enabled);
+    }
   }
   updateSearchMatchesCountAndCurrentMatchIndex(matches, currentMatchIndex) {
     if (!this.currentQuery) {
@@ -21551,7 +21567,6 @@ var TreeElement = class {
     this.listItemNode.addEventListener("dblclick", this.handleDoubleClick.bind(this), false);
     this.listItemNode.setAttribute("jslog", `${VisualLogging24.treeItem().parent("parentTreeItem").context(jslogContext).track({
       click: true,
-      resize: true,
       keydown: "ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Backspace|Delete|Enter|Space|Home|End"
     })}`);
     markAsTreeitem(this.listItemNode);

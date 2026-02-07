@@ -160,7 +160,6 @@ export class ServiceWorkerUpdateCycleView {
             const tr = this.tableElement.createChild('tr', 'service-worker-update-timeline');
             tr.setAttribute('jslog', `${VisualLogging.treeItem('update-timeline').track({
                 click: true,
-                resize: true,
                 keydown: 'ArrowLeft|ArrowRight|ArrowUp|ArrowDown|Enter|Space',
             })}`);
             this.rows.push(tr);

@@ -154,12 +154,9 @@ export class PropertiesWidget extends UI.Widget.VBox {
                 return;
             }
             const treeElement = this.treeOutline.rootElement();
-            let { properties } = await SDK.RemoteObject.RemoteObject.loadFromObjectPerProto(object, true /* generatePreview */);
             treeElement.removeChildren();
-            if (properties === null) {
-                properties = [];
-            }
-            ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement.populateWithProperties(treeElement, { properties: properties.map(p => new ObjectUI.ObjectPropertiesSection.ObjectTreeNode(p)) }, true /* skipProto */, true /* skipGettersAndSetters */);
+            const root = new ObjectUI.ObjectPropertiesSection.ObjectTree(object, 1 /* ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED */);
+            ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement.populateWithProperties(treeElement, await root.populateChildrenIfNeeded(), true /* skipProto */, true /* skipGettersAndSetters */);
             this.internalFilterProperties();
         }
         this.#view({

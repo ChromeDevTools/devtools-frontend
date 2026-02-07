@@ -40,7 +40,6 @@ export declare class NetworkManager extends SDKModel<EventTypes> {
     requestForId(id: string): NetworkRequest | null;
     requestForLoaderId(loaderId: Protocol.Network.LoaderId): NetworkRequest | null;
     private cacheDisabledSettingChanged;
-    private cookieControlFlagsSettingChanged;
     dispose(): void;
     private bypassServiceWorkerChanged;
     getSecurityIsolationStatus(frameId: Protocol.Page.FrameId | null): Promise<Protocol.Network.SecurityIsolationStatus | null>;

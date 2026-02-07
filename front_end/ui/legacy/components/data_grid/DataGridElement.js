@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-imperative-dom-api */
+import * as Lit from '../../../lit/lit.js';
 import * as UI from '../../legacy.js';
 import dataGridStyles from './dataGrid.css.js';
 import { Order } from './DataGrid.js';
@@ -59,6 +60,8 @@ class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMTemplate {
         this.#dataGrid.addEventListener("SelectedNode" /* DataGridEvents.SELECTED_NODE */, e => e.data.configElement.dispatchEvent(new CustomEvent('select')));
         this.#dataGrid.addEventListener("DeselectedNode" /* DataGridEvents.DESELECTED_NODE */, () => this.dispatchEvent(new CustomEvent('deselect')));
         this.#dataGrid.addEventListener("OpenedNode" /* DataGridEvents.OPENED_NODE */, e => e.data.configElement.dispatchEvent(new CustomEvent('open')));
+        this.#dataGrid.addEventListener("ExpandedNode" /* DataGridEvents.EXPANDED_NODE */, e => e.data.configElement.dispatchEvent(new CustomEvent('expand')));
+        this.#dataGrid.addEventListener("CollapsedNode" /* DataGridEvents.COLLAPSED_NODE */, e => e.data.configElement.dispatchEvent(new CustomEvent('collapse')));
         this.#dataGrid.addEventListener("SortingChanged" /* DataGridEvents.SORTING_CHANGED */, () => this.dispatchEvent(new CustomEvent('sort', {
             detail: { columnId: this.#dataGrid.sortColumnId(), ascending: this.#dataGrid.isSortOrderAscending() }
         })));
@@ -133,6 +136,13 @@ class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMTemplate {
     }
     get columns() {
         return this.#columns;
+    }
+    #updateHasChildren(dataGridNode, dataRow) {
+        let hasChildren = dataGridNode.children.length > 0;
+        if (!hasChildren) {
+            hasChildren = Boolean(dataRow.querySelector('td table'));
+        }
+        dataGridNode.setHasChildren(hasChildren);
     }
     #updateColumns() {
         for (const column of Object.keys(this.#dataGrid.columns)) {
@@ -251,6 +261,7 @@ class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMTemplate {
             const nextNode = this.#findNextExistingNode(element);
             const index = nextNode ? parentNode.children.indexOf(nextNode) : parentNode.children.length;
             const node = new DataGridElementNode(element, this);
+            this.#updateHasChildren(node, element);
             if ((parentRow || node.hasChildren()) && !this.#dataGrid.disclosureColumnId) {
                 this.#dataGrid.disclosureColumnId = this.#columns[0].id;
             }
@@ -277,7 +288,7 @@ class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMTemplate {
         for (const element of this.#getDataRows(nodes)) {
             const node = DataGridElementNode.get(element);
             if (node) {
-                node.remove();
+                DataGridElementNode.remove(node);
             }
         }
     }
@@ -306,6 +317,7 @@ class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMTemplate {
                 dataGridNode.setHighlighted(hasBooleanAttribute(dataRow, 'highlighted'));
             }
             else {
+                this.#updateHasChildren(dataGridNode, dataRow);
                 dataGridNode.refresh();
             }
         }
@@ -511,4 +523,33 @@ function hasBooleanAttribute(element, name) {
 const INTERNAL_TOKEN = {
     token: 'DataGridInternalToken'
 };
+export const ifExpanded = Lit.Directive.directive(class extends Lit.Directive.Directive {
+    #partInfo;
+    constructor(partInfo) {
+        if (partInfo.type !== Lit.Directive.PartType.CHILD) {
+            throw new Error('expand directive must be used in a child node');
+        }
+        super(partInfo);
+        this.#partInfo = partInfo;
+    }
+    render(content) {
+        return this.#isInExpandedRow(this.#partInfo.startNode) ? content() : Lit.nothing;
+    }
+    #isInExpandedRow(element) {
+        if (!element) {
+            return false;
+        }
+        if (!(element instanceof HTMLElement)) {
+            element = element.parentNode;
+        }
+        if (!(element instanceof HTMLElement)) {
+            return false;
+        }
+        const node = DataGridElementNode.get(element.closest('tr') ?? undefined);
+        if (!node) {
+            return false;
+        }
+        return node.expanded;
+    }
+});
 //# sourceMappingURL=DataGridElement.js.map

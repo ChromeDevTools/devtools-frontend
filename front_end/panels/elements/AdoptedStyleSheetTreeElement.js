@@ -8,6 +8,18 @@ import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import { PanelUtils } from '../utils/utils.js';
+export class AdoptedStyleSheetSetTreeElement extends UI.TreeOutline.TreeElement {
+    adoptedStyleSheets;
+    constructor(adoptedStyleSheets) {
+        super('');
+        this.adoptedStyleSheets = adoptedStyleSheets;
+        const documentElement = this.listItemElement.createChild('span');
+        UI.UIUtils.createTextChild(documentElement, '#adopted-style-sheets');
+        for (const adoptedStyleSheet of adoptedStyleSheets) {
+            this.appendChild(new AdoptedStyleSheetTreeElement(adoptedStyleSheet));
+        }
+    }
+}
 export class AdoptedStyleSheetTreeElement extends UI.TreeOutline.TreeElement {
     adoptedStyleSheet;
     eventListener = null;

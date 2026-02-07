@@ -1651,7 +1651,7 @@ var RELEVANT_DATA_LINK_FOOTER_ID = "relevant-data-link-footer";
 var DEFAULT_VIEW2 = (input, output, target) => {
   const chatInputContainerCls = Lit.Directives.classMap({
     "chat-input-container": true,
-    "single-line-layout": !input.selectedContext,
+    "single-line-layout": !input.selectedContext && !input.onContextAdd,
     disabled: input.isTextInputDisabled
   });
   const renderRelevantDataDisclaimer = (tooltipId) => {
@@ -1847,7 +1847,16 @@ var DEFAULT_VIEW2 = (input, output, target) => {
                                     .variant=${"icon"}
                                     @click=${input.onContextRemoved}></devtools-button>` : Lit.nothing}
                       </div>
-                    </div>` : Lit.nothing}
+                    </div>` : input.onContextAdd ? html3`
+                                  <devtools-button
+                                    title=${i18nString(UIStrings.removeContext)}
+                                    aria-label=${i18nString(UIStrings.removeContext)}
+                                    class="add-context"
+                                    .iconName=${"plus"}
+                                    .size=${"SMALL"}
+                                    .jslogContext=${"context-add"}
+                                    .variant=${"icon"}
+                                    @click=${input.onContextAdd}></devtools-button>` : Lit.nothing}
               </div>
               <div class="chat-input-actions-right">
                 <div class="chat-input-disclaimer-container">
@@ -1968,6 +1977,7 @@ var ChatInput = class extends UI3.Widget.Widget {
   onNewConversation = () => {
   };
   onContextRemoved = null;
+  onContextAdd = null;
   async #handleTakeScreenshot() {
     const mainTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
     if (!mainTarget) {
@@ -2129,7 +2139,8 @@ var ChatInput = class extends UI3.Widget.Widget {
       onImageUpload: this.onImageUpload,
       onImageDragOver: this.#handleImageDragOver,
       onImageDrop: this.#handleImageDrop,
-      onContextRemoved: this.onContextRemoved
+      onContextRemoved: this.onContextRemoved,
+      onContextAdd: this.onContextAdd
     }, void 0, this.contentElement);
   }
   focusTextInput() {
@@ -3727,7 +3738,8 @@ var DEFAULT_VIEW4 = (input, output, target) => {
     onTextSubmit: input.onTextSubmit,
     onCancelClick: input.onCancelClick,
     onNewConversation: input.onNewConversation,
-    onContextRemoved: input.onContextRemoved
+    onContextRemoved: input.onContextRemoved,
+    onContextAdd: input.onContextAdd
   })} ${ref3((element) => {
     output.input = element;
   })}></devtools-widget>
@@ -4808,6 +4820,11 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI8.Panel.Panel {
     if (this.#conversation) {
       const emptyStateSuggestions = await getEmptyStateSuggestions(this.#conversation);
       const markdownRenderer = getMarkdownRenderer(this.#conversation);
+      let onContextAdd = null;
+      if (isAiAssistanceContextSelectionAgentEnabled() && // Only add it the button if can have anything already selected
+      this.#getConversationContext(this.#getDefaultConversationType())) {
+        onContextAdd = this.#handleContextAdd.bind(this);
+      }
       return {
         state: "chat-view",
         props: {
@@ -4840,7 +4857,8 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI8.Panel.Panel {
           onContextClick: this.#handleContextClick.bind(this),
           onNewConversation: this.#handleNewChatRequest.bind(this),
           onCopyResponseClick: this.#onCopyResponseClick.bind(this),
-          onContextRemoved: isAiAssistanceContextSelectionAgentEnabled() ? this.#handleContextRemoved.bind(this) : null
+          onContextRemoved: isAiAssistanceContextSelectionAgentEnabled() ? this.#handleContextRemoved.bind(this) : null,
+          onContextAdd
         }
       };
     }
@@ -5222,6 +5240,10 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI8.Panel.Panel {
     this.#conversation?.setContext(null);
     this.requestUpdate();
   }
+  #handleContextAdd() {
+    this.#conversation?.setContext(this.#getConversationContext(this.#getDefaultConversationType()));
+    this.requestUpdate();
+  }
   #canExecuteQuery() {
     const isBrandedBuild = Boolean(Root5.Runtime.hostConfig.aidaAvailability?.enabled);
     const isBlockedByAge = Boolean(Root5.Runtime.hostConfig.aidaAvailability?.blockedByAge);
@@ -5401,6 +5423,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI8.Panel.Panel {
       this.#selectedPerformanceTrace = context;
       this.#conversation?.setContext(context);
     }
+    void VisualLogging6.logFunctionCall(`context-change-${this.#conversation?.type}`);
     this.requestUpdate();
   };
   async #startConversation(text, imageInput, multimodalInputType) {

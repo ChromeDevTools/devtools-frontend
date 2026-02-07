@@ -44,7 +44,7 @@ import * as IssueCounter from '../../ui/components/issue_counter/issue_counter.j
 import * as UI from '../../ui/legacy/legacy.js';
 import { html, nothing, render } from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
-import { AdoptedStyleSheetTreeElement } from './AdoptedStyleSheetTreeElement.js';
+import { AdoptedStyleSheetSetTreeElement, AdoptedStyleSheetTreeElement } from './AdoptedStyleSheetTreeElement.js';
 import { getElementIssueDetails } from './ElementIssueUtils.js';
 import { ElementsPanel } from './ElementsPanel.js';
 import { ElementsTreeElement, InitialChildrenLimit, isOpeningTag } from './ElementsTreeElement.js';
@@ -759,14 +759,19 @@ export class ElementsTreeOutline extends Common.ObjectWrapper.eventMixin(UI.Tree
         }
     }
     highlightAdoptedStyleSheet(adoptedStyleSheet) {
-        const parentNode = !this.includeRootDOMNode && adoptedStyleSheet.parent === this.rootDOMNode && this.rootDOMNode ?
+        const parentDOMNode = !this.includeRootDOMNode && adoptedStyleSheet.parent === this.rootDOMNode && this.rootDOMNode ?
             this.rootElement() :
             this.createTreeElementFor(adoptedStyleSheet.parent);
-        if (!parentNode) {
+        if (!parentDOMNode) {
+            return;
+        }
+        const parentNode = parentDOMNode.firstChild();
+        if (!(parentNode && parentNode instanceof AdoptedStyleSheetSetTreeElement)) {
             return;
         }
         for (const child of parentNode.children()) {
             if (child instanceof AdoptedStyleSheetTreeElement && child.adoptedStyleSheet === adoptedStyleSheet) {
+                parentNode.expand();
                 child.highlight();
                 return;
             }
@@ -815,7 +820,7 @@ export class ElementsTreeOutline extends Common.ObjectWrapper.eventMixin(UI.Tree
         this.dispatchEventToListeners(ElementsTreeOutline.Events.ElementsTreeUpdated, nodes);
     }
     findTreeElement(node) {
-        if (node instanceof SDK.DOMModel.AdoptedStyleSheet) {
+        if (node instanceof Array) {
             return null;
         }
         let treeElement = this.lookUpTreeElement(node);
@@ -1476,8 +1481,8 @@ export class ElementsTreeOutline extends Common.ObjectWrapper.eventMixin(UI.Tree
         }
     }
     createElementTreeElement(node, isClosingTag) {
-        if (node instanceof SDK.DOMModel.AdoptedStyleSheet) {
-            return new AdoptedStyleSheetTreeElement(node);
+        if (node instanceof Array) {
+            return new AdoptedStyleSheetSetTreeElement(node);
         }
         const treeElement = new ElementsTreeElement(node, isClosingTag);
         treeElement.setExpandable(!isClosingTag && this.hasVisibleChildren(node));
@@ -1502,7 +1507,11 @@ export class ElementsTreeOutline extends Common.ObjectWrapper.eventMixin(UI.Tree
         return treeElement.childAt(index);
     }
     visibleChildren(node) {
-        let visibleChildren = [...node.adoptedStyleSheetsForNode, ...ElementsTreeElement.visibleShadowRoots(node)];
+        const visibleChildren = [];
+        if (node.adoptedStyleSheetsForNode.length) {
+            visibleChildren.push(node.adoptedStyleSheetsForNode);
+        }
+        visibleChildren.push(...ElementsTreeElement.visibleShadowRoots(node));
         const contentDocument = node.contentDocument();
         if (contentDocument) {
             visibleChildren.push(contentDocument);
@@ -1531,7 +1540,7 @@ export class ElementsTreeOutline extends Common.ObjectWrapper.eventMixin(UI.Tree
             if (!this.showHTMLCommentsSetting.get()) {
                 children = children.filter(n => n.nodeType() !== Node.COMMENT_NODE);
             }
-            visibleChildren = visibleChildren.concat(children);
+            visibleChildren.push(...children);
         }
         const afterPseudoElement = node.afterPseudoElement();
         if (afterPseudoElement) {

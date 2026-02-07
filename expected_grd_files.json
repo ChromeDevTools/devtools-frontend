@@ -403,6 +403,7 @@
   "front_end/models/badges/badges.js",
   "front_end/models/bindings/bindings.js",
   "front_end/models/breakpoints/breakpoints.js",
+  "front_end/models/computed_style/computed_style.js",
   "front_end/models/cpu_profile/cpu_profile.js",
   "front_end/models/crux-manager/crux-manager.js",
   "front_end/models/elements/elements.js",

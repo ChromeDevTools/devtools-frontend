@@ -1796,10 +1796,11 @@ var AutocompleteHistory = class _AutocompleteHistory {
       this.#editedEntries.delete(index);
     }
   }
-  next() {
+  next(currentText) {
     if (this.#historyOffset === 1) {
       return void 0;
     }
+    this.#saveCurrentEdit(currentText);
     --this.#historyOffset;
     return this.#currentHistoryItem();
   }
@@ -2941,7 +2942,7 @@ var TextEditorHistory = class {
     }
     const text = editor.state.doc.toString();
     const history2 = this.#history;
-    const newText = isBackward ? history2.previous(text) : history2.next();
+    const newText = isBackward ? history2.previous(text) : history2.next(text);
     if (newText === void 0) {
       return false;
     }

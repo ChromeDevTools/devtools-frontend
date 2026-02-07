@@ -1,5 +1,5 @@
 import * as SDK from '../../core/sdk/sdk.js';
-import type { ComputedStyleModel } from './ComputedStyleModel.js';
+import type * as ComputedStyle from '../../models/computed_style/computed_style.js';
 import { ElementsSidebarPane } from './ElementsSidebarPane.js';
 interface ViewInput {
     style: Map<string, string>;
@@ -19,7 +19,7 @@ export declare class MetricsSidebarPane extends ElementsSidebarPane {
     private computedStyle;
     private isEditingMetrics?;
     private view;
-    constructor(computedStyleModel: ComputedStyleModel, view?: View);
+    constructor(computedStyleModel: ComputedStyle.ComputedStyleModel.ComputedStyleModel, view?: View);
     performUpdate(): Promise<void>;
     onCSSModelChanged(): void;
     private getPropertyValueAsPx;

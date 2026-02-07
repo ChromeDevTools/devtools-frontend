@@ -1,6 +1,10 @@
 import type * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
+export declare class AdoptedStyleSheetSetTreeElement extends UI.TreeOutline.TreeElement {
+    readonly adoptedStyleSheets: SDK.DOMModel.AdoptedStyleSheet[];
+    constructor(adoptedStyleSheets: SDK.DOMModel.AdoptedStyleSheet[]);
+}
 export declare class AdoptedStyleSheetTreeElement extends UI.TreeOutline.TreeElement {
     readonly adoptedStyleSheet: SDK.DOMModel.AdoptedStyleSheet;
     private eventListener;

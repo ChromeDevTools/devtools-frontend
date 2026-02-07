@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as i18n from '../../core/i18n/i18n.js';
+import * as ComputedStyle from '../../models/computed_style/computed_style.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { html, render } from '../../ui/lit/lit.js';
 import platformFontsWidgetStyles from './platformFontsWidget.css.js';
@@ -70,8 +71,8 @@ export class PlatformFontsWidget extends UI.Widget.VBox {
         this.#view = view;
         this.registerRequiredCSS(platformFontsWidgetStyles);
         this.sharedModel = sharedModel;
-        this.sharedModel.addEventListener("CSSModelChanged" /* ComputedStyleModelEvents.CSS_MODEL_CHANGED */, this.requestUpdate, this);
-        this.sharedModel.addEventListener("ComputedStyleChanged" /* ComputedStyleModelEvents.COMPUTED_STYLE_CHANGED */, this.requestUpdate, this);
+        this.sharedModel.addEventListener("CSSModelChanged" /* ComputedStyle.ComputedStyleModel.Events.CSS_MODEL_CHANGED */, this.requestUpdate, this);
+        this.sharedModel.addEventListener("ComputedStyleChanged" /* ComputedStyle.ComputedStyleModel.Events.COMPUTED_STYLE_CHANGED */, this.requestUpdate, this);
     }
     async performUpdate() {
         const cssModel = this.sharedModel.cssModel();

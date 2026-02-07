@@ -10452,9 +10452,6 @@ var NetworkManager = class _NetworkManager extends SDKModel {
     if (Common5.Settings.Settings.instance().moduleSetting("cache-disabled").get()) {
       void this.#networkAgent.invoke_setCacheDisabled({ cacheDisabled: true });
     }
-    if (Root2.Runtime.hostConfig.devToolsPrivacyUI?.enabled && Root2.Runtime.hostConfig.thirdPartyCookieControls?.managedBlockThirdPartyCookies !== true && (Common5.Settings.Settings.instance().createSetting("cookie-control-override-enabled", void 0).get() || Common5.Settings.Settings.instance().createSetting("grace-period-mitigation-disabled", void 0).get() || Common5.Settings.Settings.instance().createSetting("heuristic-mitigation-disabled", void 0).get())) {
-      this.cookieControlFlagsSettingChanged();
-    }
     void this.#networkAgent.invoke_enable({
       maxPostDataSize: MAX_EAGER_POST_REQUEST_BODY_LENGTH,
       enableDurableMessages: Root2.Runtime.hostConfig.devToolsEnableDurableMessages?.enabled,
@@ -10468,9 +10465,6 @@ var NetworkManager = class _NetworkManager extends SDKModel {
     }
     this.#bypassServiceWorkerSetting.addChangeListener(this.bypassServiceWorkerChanged, this);
     Common5.Settings.Settings.instance().moduleSetting("cache-disabled").addChangeListener(this.cacheDisabledSettingChanged, this);
-    Common5.Settings.Settings.instance().createSetting("cookie-control-override-enabled", void 0).addChangeListener(this.cookieControlFlagsSettingChanged, this);
-    Common5.Settings.Settings.instance().createSetting("grace-period-mitigation-disabled", void 0).addChangeListener(this.cookieControlFlagsSettingChanged, this);
-    Common5.Settings.Settings.instance().createSetting("heuristic-mitigation-disabled", void 0).addChangeListener(this.cookieControlFlagsSettingChanged, this);
   }
   static forRequest(request) {
     return requestToManagerMap.get(request) || null;
@@ -10605,16 +10599,6 @@ var NetworkManager = class _NetworkManager extends SDKModel {
   }
   cacheDisabledSettingChanged({ data: enabled }) {
     void this.#networkAgent.invoke_setCacheDisabled({ cacheDisabled: enabled });
-  }
-  cookieControlFlagsSettingChanged() {
-    const overridesEnabled = Boolean(Common5.Settings.Settings.instance().createSetting("cookie-control-override-enabled", void 0).get());
-    const gracePeriodEnabled = overridesEnabled ? Boolean(Common5.Settings.Settings.instance().createSetting("grace-period-mitigation-disabled", void 0).get()) : false;
-    const heuristicEnabled = overridesEnabled ? Boolean(Common5.Settings.Settings.instance().createSetting("heuristic-mitigation-disabled", void 0).get()) : false;
-    void this.#networkAgent.invoke_setCookieControls({
-      enableThirdPartyCookieRestriction: overridesEnabled,
-      disableThirdPartyCookieMetadata: gracePeriodEnabled,
-      disableThirdPartyCookieHeuristics: heuristicEnabled
-    });
   }
   dispose() {
     Common5.Settings.Settings.instance().moduleSetting("cache-disabled").removeChangeListener(this.cacheDisabledSettingChanged, this);

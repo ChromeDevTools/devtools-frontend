@@ -449,6 +449,12 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         if (this.#conversation) {
             const emptyStateSuggestions = await getEmptyStateSuggestions(this.#conversation);
             const markdownRenderer = getMarkdownRenderer(this.#conversation);
+            let onContextAdd = null;
+            if (isAiAssistanceContextSelectionAgentEnabled() &&
+                // Only add it the button if can have anything already selected
+                this.#getConversationContext(this.#getDefaultConversationType())) {
+                onContextAdd = this.#handleContextAdd.bind(this);
+            }
             return {
                 state: "chat-view" /* ViewState.CHAT_VIEW */,
                 props: {
@@ -484,6 +490,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                     onNewConversation: this.#handleNewChatRequest.bind(this),
                     onCopyResponseClick: this.#onCopyResponseClick.bind(this),
                     onContextRemoved: isAiAssistanceContextSelectionAgentEnabled() ? this.#handleContextRemoved.bind(this) : null,
+                    onContextAdd,
                 }
             };
         }
@@ -893,6 +900,10 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         this.#conversation?.setContext(null);
         this.requestUpdate();
     }
+    #handleContextAdd() {
+        this.#conversation?.setContext(this.#getConversationContext(this.#getDefaultConversationType()));
+        this.requestUpdate();
+    }
     #canExecuteQuery() {
         const isBrandedBuild = Boolean(Root.Runtime.hostConfig.aidaAvailability?.enabled);
         const isBlockedByAge = Boolean(Root.Runtime.hostConfig.aidaAvailability?.blockedByAge);
@@ -1074,6 +1085,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             this.#selectedPerformanceTrace = context;
             this.#conversation?.setContext(context);
         }
+        void VisualLogging.logFunctionCall(`context-change-${this.#conversation?.type}`);
         this.requestUpdate();
     };
     async #startConversation(text, imageInput, multimodalInputType) {

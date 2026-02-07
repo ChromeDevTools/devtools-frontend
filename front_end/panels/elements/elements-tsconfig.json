@@ -43,7 +43,6 @@
     "../../../../../../front_end/panels/elements/CSSValueTraceView.ts",
     "../../../../../../front_end/panels/elements/ClassesPaneWidget.ts",
     "../../../../../../front_end/panels/elements/ColorSwatchPopoverIcon.ts",
-    "../../../../../../front_end/panels/elements/ComputedStyleModel.ts",
     "../../../../../../front_end/panels/elements/ComputedStyleWidget.ts",
     "../../../../../../front_end/panels/elements/DOMPath.ts",
     "../../../../../../front_end/panels/elements/ElementIssueUtils.ts",
@@ -114,6 +113,9 @@
     },
     {
       "path": "../../models/bindings/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../models/computed_style/bundle-tsconfig.json"
     },
     {
       "path": "../../models/elements/bundle-tsconfig.json"

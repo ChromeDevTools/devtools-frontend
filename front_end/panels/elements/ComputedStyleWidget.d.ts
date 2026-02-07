@@ -1,6 +1,6 @@
 import '../../ui/legacy/legacy.js';
+import * as ComputedStyleModule from '../../models/computed_style/computed_style.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import { type ComputedStyleModel } from './ComputedStyleModel.js';
 export declare class ComputedStyleWidget extends UI.Widget.VBox {
     #private;
     private computedStyleModel;
@@ -11,7 +11,7 @@ export declare class ComputedStyleWidget extends UI.Widget.VBox {
     private readonly noMatchesElement;
     private readonly linkifier;
     private readonly imagePreviewPopover;
-    constructor(computedStyleModel: ComputedStyleModel);
+    constructor(computedStyleModel: ComputedStyleModule.ComputedStyleModel.ComputedStyleModel);
     onResize(): void;
     wasShown(): void;
     willHide(): void;

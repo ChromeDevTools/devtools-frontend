@@ -253,7 +253,7 @@ export class ElementsBreadcrumbs extends HTMLElement {
                   data-crumb="true"
                 >
                   <a href="#" draggable=false class="crumb-link"
-                    jslog=${VisualLogging.item().track({ click: true, resize: true })}
+                    jslog=${VisualLogging.item().track({ click: true })}
                     @click=${this.#onCrumbClick(crumb.node)}
                     @mousemove=${this.#onCrumbMouseMove(crumb.node)}
                     @mouseleave=${this.#onCrumbMouseLeave(crumb.node)}

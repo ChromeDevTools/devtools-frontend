@@ -178,6 +178,7 @@ models/bindings/ResourceMapping.test.js
 models/bindings/ResourceScriptMapping.test.js
 models/bindings/ResourceUtils.test.js
 models/breakpoints/BreakpointManager.test.js
+models/computed_style/ComputedStyleModel.test.js
 models/cpu_profile/CPUProfileDataModel.test.js
 models/emulation/DeviceModeModel.test.js
 models/emulation/EmulatedDevices.test.js
@@ -412,7 +413,6 @@ panels/elements/CSSRuleValidator.test.js
 panels/elements/CSSValueTraceView.test.js
 panels/elements/ClassesPaneWidget.test.js
 panels/elements/ColorSwatchPopoverIcon.test.js
-panels/elements/ComputedStyleModel.test.js
 panels/elements/ComputedStyleWidget.test.js
 panels/elements/DOMTreeWidget.test.js
 panels/elements/ElementStatePaneWidget.test.js
@@ -508,8 +508,6 @@ panels/recorder/util/SharedObject.test.js
 panels/screencast/ScreencastApp.test.js
 panels/search/SearchResultsPane.test.js
 panels/search/SearchView.test.js
-panels/security/CookieControlsView.test.js
-panels/security/CookieReportView.test.js
 panels/security/SecurityModel.test.js
 panels/security/SecurityPanel.test.js
 panels/settings/AISettingsTab.test.js

@@ -292,7 +292,6 @@ import * as i18n3 from "./../../core/i18n/i18n.js";
 import * as Root from "./../../core/root/root.js";
 import * as SDK from "./../../core/sdk/sdk.js";
 import * as MobileThrottling from "./../../panels/mobile_throttling/mobile_throttling.js";
-import * as Security from "./../../panels/security/security.js";
 import * as Components from "./../../ui/legacy/components/utils/utils.js";
 import * as UI2 from "./../../ui/legacy/legacy.js";
 import * as Lit from "./../../ui/lit/lit.js";
@@ -403,29 +402,6 @@ var InspectorMainImpl = class {
     Host2.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host2.InspectorFrontendHostAPI.Events.ReloadInspectedPage, ({ data: hard }) => {
       SDK.ResourceTreeModel.ResourceTreeModel.reloadAllPages(hard);
     });
-    if (!Root.Runtime.hostConfig.devToolsPrivacyUI?.enabled || Root.Runtime.hostConfig.thirdPartyCookieControls?.managedBlockThirdPartyCookies === true) {
-      return;
-    }
-    const browserCookieControls = Root.Runtime.hostConfig.thirdPartyCookieControls;
-    const cookieControlOverrideSetting = Common2.Settings.Settings.instance().createSetting("cookie-control-override-enabled", void 0);
-    const gracePeriodMitigationDisabledSetting = Common2.Settings.Settings.instance().createSetting("grace-period-mitigation-disabled", void 0);
-    const heuristicMitigationDisabledSetting = Common2.Settings.Settings.instance().createSetting("heuristic-mitigation-disabled", void 0);
-    if (cookieControlOverrideSetting.get() !== void 0) {
-      if (browserCookieControls?.thirdPartyCookieRestrictionEnabled !== cookieControlOverrideSetting.get()) {
-        Security.CookieControlsView.showInfobar();
-        return;
-      }
-      if (cookieControlOverrideSetting.get()) {
-        if (browserCookieControls?.thirdPartyCookieMetadataEnabled === gracePeriodMitigationDisabledSetting.get()) {
-          Security.CookieControlsView.showInfobar();
-          return;
-        }
-        if (browserCookieControls?.thirdPartyCookieHeuristicsEnabled === heuristicMitigationDisabledSetting.get()) {
-          Security.CookieControlsView.showInfobar();
-          return;
-        }
-      }
-    }
   }
 };
 Common2.Runnable.registerEarlyInitializationRunnable(() => new InspectorMainImpl());

@@ -59,6 +59,7 @@ let currentUpdateQueue = null;
 const currentlyProcessed = new Set();
 let nextUpdateQueue = new Map();
 let pendingAnimationFrame = null;
+let overallUpdatePromise = null;
 function enqueueIntoNextUpdateQueue(widget) {
     const scheduledUpdate = nextUpdateQueue.get(widget) ?? Promise.withResolvers();
     nextUpdateQueue.delete(widget);
@@ -115,6 +116,10 @@ function runNextUpdate() {
         else {
             currentUpdateQueue = null;
             currentlyProcessed.clear();
+            if (!pendingAnimationFrame && overallUpdatePromise) {
+                overallUpdatePromise.resolve();
+                overallUpdatePromise = null;
+            }
         }
     });
 }
@@ -315,6 +320,15 @@ export class Widget {
      */
     static get(node) {
         return widgetMap.get(node);
+    }
+    static get allUpdatesComplete() {
+        if (!pendingAnimationFrame && !currentUpdateQueue) {
+            return Promise.resolve();
+        }
+        if (!overallUpdatePromise) {
+            overallUpdatePromise = Promise.withResolvers();
+        }
+        return overallUpdatePromise.promise;
     }
     static getOrCreateWidget(element) {
         const widget = Widget.get(element);

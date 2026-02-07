@@ -171,7 +171,7 @@ export declare class ElementsTreeOutline extends ElementsTreeOutline_base {
     update(): void;
     selectedNodeChanged(focus: boolean): void;
     private fireElementsTreeUpdated;
-    findTreeElement(node: SDK.DOMModel.DOMNode | SDK.DOMModel.AdoptedStyleSheet): ElementsTreeElement | null;
+    findTreeElement(node: SDK.DOMModel.DOMNode | SDK.DOMModel.AdoptedStyleSheet[]): ElementsTreeElement | null;
     private lookUpTreeElement;
     createTreeElementFor(node: SDK.DOMModel.DOMNode): ElementsTreeElement | null;
     private revealAndSelectNode;
@@ -239,7 +239,7 @@ export declare class ElementsTreeOutline extends ElementsTreeOutline_base {
     private createExpandAllButtonTreeElement;
     setExpandedChildrenLimit(treeElement: ElementsTreeElement, expandedChildrenLimit: number): void;
     private updateChildren;
-    insertChildElement(treeElement: ElementsTreeElement | TopLayerContainer, child: SDK.DOMModel.DOMNode | SDK.DOMModel.AdoptedStyleSheet, index: number, isClosingTag?: boolean): UI.TreeOutline.TreeElement;
+    insertChildElement(treeElement: ElementsTreeElement | TopLayerContainer, child: SDK.DOMModel.DOMNode | SDK.DOMModel.AdoptedStyleSheet[], index: number, isClosingTag?: boolean): UI.TreeOutline.TreeElement;
     private moveChild;
     private markersChanged;
     private affectedByStartingStylesFlagUpdated;

@@ -3221,7 +3221,7 @@ var SourcesSearchScope = class _SourcesSearchScope {
       if (!searchInAnonymousAndContentScripts && project.type() === Workspace4.Workspace.projectTypes.ContentScripts) {
         return false;
       }
-      if (!localOverridesEnabled && project.type() === Workspace4.Workspace.projectTypes.FileSystem) {
+      if (!localOverridesEnabled && project.type() === Workspace4.Workspace.projectTypes.FileSystem && Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemType(project) === "overrides") {
         return false;
       }
       return true;

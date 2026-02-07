@@ -1,4 +1,5 @@
 import type * as TextUtils from '../../../../models/text_utils/text_utils.js';
+import * as Lit from '../../../lit/lit.js';
 import * as UI from '../../legacy.js';
 import { type ColumnDescriptor, type ResizeMethod } from './DataGrid.js';
 /**
@@ -61,4 +62,16 @@ declare global {
 export interface DataGridInternalToken {
     token: 'DataGridInternalToken';
 }
+export declare const ifExpanded: (content: () => Lit.TemplateResult) => Lit.DirectiveResult<{
+    new (partInfo: Lit.Directive.PartInfo): {
+        "__#private@#partInfo": {
+            type: Lit.Directive.PartType;
+            startNode: Node;
+        };
+        render(content: () => Lit.TemplateResult): Lit.LitTemplate;
+        "__#private@#isInExpandedRow"(element: Node | null | undefined): boolean;
+        get _$isConnected(): boolean;
+        update(_part: Lit.Directive.Part, props: Array<unknown>): unknown;
+    };
+}>;
 export {};

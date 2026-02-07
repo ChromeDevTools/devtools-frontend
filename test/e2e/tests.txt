@@ -158,7 +158,6 @@ recorder/replay.test.js
 recorder/ui.test.js
 rendering/rendering.test.js
 search/search-scope.test.js
-security/privacy.test.js
 security/security.test.js
 sensors/emulate-hardware-concurrency.test.js
 sensors/idle.test.js

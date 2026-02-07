@@ -13,7 +13,7 @@ export declare class AutocompleteHistory {
      */
     pushHistoryItem(text: string): void;
     previous(currentText: string): string | undefined;
-    next(): string | undefined;
+    next(currentText: string): string | undefined;
     /** Returns a de-duplicated list of history entries that start with the specified prefix */
     matchingEntries(prefix: string, limit?: number): Set<string>;
 }

@@ -1,10 +1,12 @@
 // Copyright 2026 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
+import * as SDK from '../../../core/sdk/sdk.js';
 import * as Logs from '../../logs/logs.js';
 import * as Workspace from '../../workspace/workspace.js';
 import { AiAgent, } from './AiAgent.js';
@@ -61,7 +63,7 @@ export class ContextSelectionAgent extends AiAgent {
     constructor(opts) {
         super(opts);
         this.declareFunction('listNetworkRequests', {
-            description: `Gives a list of network requests`,
+            description: `Gives a list of network requests including URL, status code, and duration in ms`,
             parameters: {
                 type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
                 description: '',
@@ -70,15 +72,28 @@ export class ContextSelectionAgent extends AiAgent {
                 properties: {},
             },
             displayInfoFromArgs: () => {
-                return { title: lockedString('Listing network requests…') };
+                return {
+                    title: lockedString('Listing network requests…'),
+                    action: 'listNetworkRequest()',
+                };
             },
             handler: async () => {
-                const requestURls = [];
+                const requests = [];
+                const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+                const inspectedURL = target?.inspectedURL();
+                const mainSecurityOrigin = inspectedURL ? new Common.ParsedURL.ParsedURL(inspectedURL).securityOrigin() : null;
                 for (const request of Logs.NetworkLog.NetworkLog.instance().requests()) {
-                    requestURls.push(request.url());
+                    if (mainSecurityOrigin && request.securityOrigin() !== mainSecurityOrigin) {
+                        continue;
+                    }
+                    requests.push({
+                        url: request.url(),
+                        statusCode: request.statusCode,
+                        duration: request.duration,
+                    });
                 }
                 return {
-                    result: requestURls,
+                    result: requests,
                 };
             },
         });
@@ -98,7 +113,10 @@ export class ContextSelectionAgent extends AiAgent {
                 },
             },
             displayInfoFromArgs: args => {
-                return { title: lockedString('Getting network request…'), action: `selectNetworkRequest(${args.url})` };
+                return {
+                    title: lockedString('Getting network request…'),
+                    action: `selectNetworkRequest(${args.url})`,
+                };
             },
             handler: async ({ url }) => {
                 // TODO: Switch to using IDs to make is easier to link to as well.
@@ -127,7 +145,10 @@ export class ContextSelectionAgent extends AiAgent {
                 properties: {},
             },
             displayInfoFromArgs: () => {
-                return { title: lockedString('Listing source requests…') };
+                return {
+                    title: lockedString('Listing source requests…'),
+                    action: 'listSourceFile()',
+                };
             },
             handler: async () => {
                 const files = [];
@@ -155,7 +176,10 @@ export class ContextSelectionAgent extends AiAgent {
                 },
             },
             displayInfoFromArgs: args => {
-                return { title: lockedString('Getting source file'), action: `selectSourceFile(${args.name})` };
+                return {
+                    title: lockedString('Getting source file'),
+                    action: `selectSourceFile(${args.name})`,
+                };
             },
             handler: async (params) => {
                 for (const file of this.#getUISourceCodes()) {

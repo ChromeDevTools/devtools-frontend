@@ -1,5 +1,4 @@
 import '../../ui/components/highlighting/highlighting.js';
-import '../../ui/legacy/components/data_grid/data_grid.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { CoverageType } from './CoverageModel.js';
@@ -21,7 +20,10 @@ interface ViewInput {
     selectedUrl: Platform.DevToolsPath.UrlString | null;
     maxSize: number;
     onOpen: (url: Platform.DevToolsPath.UrlString) => void;
+    onExpand: () => void;
+    onCollapse: () => void;
     highlightRegExp: RegExp | null;
+    expandedUrls: Set<Platform.DevToolsPath.UrlString>;
 }
 type View = (input: ViewInput, output: object, target: HTMLElement) => void;
 export declare const DEFAULT_VIEW: View;

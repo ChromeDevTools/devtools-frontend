@@ -252,6 +252,7 @@ var FreDialog = class {
     if (ariaLabel) {
       dialog2.setAriaLabel(ariaLabel);
     }
+    dialog2.contentElement.tabIndex = -1;
     const result = Promise.withResolvers();
     Lit.render(html`
       <div class="fre-disclaimer">
@@ -320,6 +321,7 @@ var FreDialog = class {
     );
     dialog2.setDimmed(true);
     dialog2.show();
+    dialog2.contentElement.focus();
     return result.promise;
   }
   constructor() {
@@ -3050,6 +3052,9 @@ var ExtensionPanel = class extends UI12.Panel.Panel {
   performSearch(searchConfig, _shouldJump, _jumpBackwards) {
     const query = searchConfig.query;
     this.server.notifySearchAction(this.id, "performSearch", query);
+  }
+  supportsMatchCounts() {
+    return false;
   }
   jumpToNextSearchResult() {
     this.server.notifySearchAction(

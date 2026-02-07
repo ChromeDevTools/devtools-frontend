@@ -93,10 +93,11 @@ export class AutocompleteHistory {
             this.#editedEntries.delete(index);
         }
     }
-    next() {
+    next(currentText) {
         if (this.#historyOffset === 1) {
             return undefined;
         }
+        this.#saveCurrentEdit(currentText);
         --this.#historyOffset;
         return this.#currentHistoryItem();
     }

@@ -112,7 +112,9 @@ export declare const enum Events {
     PERSISTENT_GRID_OVERLAY_STATE_CHANGED = "PersistentGridOverlayStateChanged",
     PERSISTENT_FLEX_CONTAINER_OVERLAY_STATE_CHANGED = "PersistentFlexContainerOverlayStateChanged",
     PERSISTENT_SCROLL_SNAP_OVERLAY_STATE_CHANGED = "PersistentScrollSnapOverlayStateChanged",
-    PERSISTENT_CONTAINER_QUERY_OVERLAY_STATE_CHANGED = "PersistentContainerQueryOverlayStateChanged"
+    PERSISTENT_CONTAINER_QUERY_OVERLAY_STATE_CHANGED = "PersistentContainerQueryOverlayStateChanged",
+    INSPECT_PANEL_SHOW_REQUESTED = "InspectPanelShowRequested",
+    INSPECTED_ELEMENT_WINDOW_RESTORED = "InspectedElementWindowRestored"
 }
 export interface ChangedNodeId {
     nodeId: number;
@@ -127,6 +129,8 @@ export interface EventTypes {
     [Events.PERSISTENT_FLEX_CONTAINER_OVERLAY_STATE_CHANGED]: ChangedNodeId;
     [Events.PERSISTENT_SCROLL_SNAP_OVERLAY_STATE_CHANGED]: ChangedNodeId;
     [Events.PERSISTENT_CONTAINER_QUERY_OVERLAY_STATE_CHANGED]: ChangedNodeId;
+    [Events.INSPECT_PANEL_SHOW_REQUESTED]: number;
+    [Events.INSPECTED_ELEMENT_WINDOW_RESTORED]: number;
 }
 export interface Highlighter {
     highlightInOverlay(data: HighlightData, config: Protocol.Overlay.HighlightConfig): void;

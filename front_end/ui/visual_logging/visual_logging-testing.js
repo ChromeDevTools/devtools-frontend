@@ -1809,6 +1809,7 @@ var knownContextValues = /* @__PURE__ */ new Set([
   "gotpointercapture",
   "grace-period-link",
   "grace-period-mitigation-disabled",
+  "greendev",
   "greendev-ai-annotations-enabled",
   "greendev-artifact-viewer-enabled",
   "greendev-copy-to-gemini-enabled",

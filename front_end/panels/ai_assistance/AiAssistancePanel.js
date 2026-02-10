@@ -544,6 +544,9 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         this.#additionalContextItemsFromFloaty = additionalContexts.selectedContexts;
         this.requestUpdate();
     }
+    async #handlePerformanceRecordAndReload() {
+        return await TimelinePanel.TimelinePanel.TimelinePanel.executeRecordAndReload();
+    }
     #getDefaultConversationType() {
         const { hostConfig } = Root.Runtime;
         const viewManager = UI.ViewManager.ViewManager.instance();
@@ -585,7 +588,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             return;
         }
         const conversation = targetConversationType ?
-            new AiAssistanceModel.AiConversation.AiConversation(targetConversationType, [], undefined, false, this.#aidaClient, this.#changeManager) :
+            new AiAssistanceModel.AiConversation.AiConversation(targetConversationType, [], undefined, false, this.#aidaClient, this.#changeManager, false, this.#handlePerformanceRecordAndReload.bind(this), this.#handleInspectElement.bind(this)) :
             undefined;
         this.#updateConversationState(conversation);
     }
@@ -599,7 +602,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             if (!conversation) {
                 const conversationType = this.#getDefaultConversationType();
                 if (conversationType) {
-                    conversation = new AiAssistanceModel.AiConversation.AiConversation(conversationType, [], undefined, false, this.#aidaClient, this.#changeManager);
+                    conversation = new AiAssistanceModel.AiConversation.AiConversation(conversationType, [], undefined, false, this.#aidaClient, this.#changeManager, false, this.#handlePerformanceRecordAndReload.bind(this), this.#handleInspectElement.bind(this));
                 }
             }
             this.#conversation = conversation;
@@ -961,7 +964,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         }
         let conversation = this.#conversation;
         if (!this.#conversation || this.#conversation.type !== targetConversationType || this.#conversation.isEmpty) {
-            conversation = new AiAssistanceModel.AiConversation.AiConversation(targetConversationType, [], undefined, false, this.#aidaClient, this.#changeManager);
+            conversation = new AiAssistanceModel.AiConversation.AiConversation(targetConversationType, [], undefined, false, this.#aidaClient, this.#changeManager, false, this.#handlePerformanceRecordAndReload.bind(this), this.#handleInspectElement.bind(this));
         }
         this.#updateConversationState(conversation);
         const predefinedPrompt = opts?.['prompt'];
@@ -1088,6 +1091,46 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         void VisualLogging.logFunctionCall(`context-change-${this.#conversation?.type}`);
         this.requestUpdate();
     };
+    async #handleInspectElement() {
+        if (!this.#toggleSearchElementAction) {
+            return null;
+        }
+        const result = new Promise(resolve => {
+            // Track the new flavor change for dom node.
+            const handleDOMNodeFlavorChange = (ev) => {
+                if (!ev.data) {
+                    return;
+                }
+                resolve(selectedElementFilter(ev.data));
+                removeListeners();
+            };
+            // If the inspect mode is toggled, we want to resolve null.
+            const handleInspectModeToggled = (ev) => {
+                if (!ev.data) {
+                    // The inspect element is toggled off
+                    // before the flavor change event fires
+                    // so we need to wait a bit to see if the flavor changed.
+                    window.setTimeout(() => {
+                        resolve((selectedElementFilter(UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode))));
+                        removeListeners();
+                    }, 50);
+                }
+            };
+            const removeListeners = () => {
+                UI.Context.Context.instance().removeFlavorChangeListener(SDK.DOMModel.DOMNode, handleDOMNodeFlavorChange);
+                this.#toggleSearchElementAction?.removeEventListener("Toggled" /* UI.ActionRegistration.Events.TOGGLED */, handleInspectModeToggled);
+            };
+            UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, handleDOMNodeFlavorChange);
+            this.#toggleSearchElementAction?.addEventListener("Toggled" /* UI.ActionRegistration.Events.TOGGLED */, handleInspectModeToggled);
+            // Clean-up listeners in case of abort.
+            this.#runAbortController.signal.addEventListener('abort', () => {
+                resolve(null);
+                removeListeners();
+            }, { once: true });
+        });
+        void this.#toggleSearchElementAction.execute();
+        return await result;
+    }
     async #startConversation(text, imageInput, multimodalInputType) {
         if (!this.#conversation) {
             return;

@@ -3022,6 +3022,8 @@ declare namespace ProtocolProxyApi {
 
     invoke_setShowContainerQueryOverlays(params: Protocol.Overlay.SetShowContainerQueryOverlaysRequest): Promise<Protocol.ProtocolResponseWithError>;
 
+    invoke_setShowInspectedElementAnchor(params: Protocol.Overlay.SetShowInspectedElementAnchorRequest): Promise<Protocol.ProtocolResponseWithError>;
+
     /**
      * Requests that backend shows paint rectangles
      */
@@ -3086,6 +3088,16 @@ declare namespace ProtocolProxyApi {
      * Fired when user asks to capture screenshot of some area on the page.
      */
     screenshotRequested(params: Protocol.Overlay.ScreenshotRequestedEvent): void;
+
+    /**
+     * Fired when user asks to show the Inspect panel.
+     */
+    inspectPanelShowRequested(params: Protocol.Overlay.InspectPanelShowRequestedEvent): void;
+
+    /**
+     * Fired when user asks to restore the Inspected Element floating window.
+     */
+    inspectedElementWindowRestored(params: Protocol.Overlay.InspectedElementWindowRestoredEvent): void;
 
     /**
      * Fired when user cancels the inspect mode.

@@ -1049,6 +1049,14 @@ export declare namespace Audits {
         IncorrectDigestType = "IncorrectDigestType",
         IncorrectDigestLength = "IncorrectDigestLength"
     }
+    const enum ConnectionAllowlistError {
+        InvalidHeader = "InvalidHeader",
+        MoreThanOneList = "MoreThanOneList",
+        ItemNotInnerList = "ItemNotInnerList",
+        InvalidAllowlistItemType = "InvalidAllowlistItemType",
+        ReportingEndpointNotToken = "ReportingEndpointNotToken",
+        InvalidUrlPattern = "InvalidUrlPattern"
+    }
     /**
      * Details for issues around "Attribution Reporting API" usage.
      * Explainer: https://github.com/WICG/attribution-reporting-api
@@ -1093,6 +1101,10 @@ export declare namespace Audits {
     }
     interface UnencodedDigestIssueDetails {
         error: UnencodedDigestError;
+        request: AffectedRequest;
+    }
+    interface ConnectionAllowlistIssueDetails {
+        error: ConnectionAllowlistError;
         request: AffectedRequest;
     }
     const enum GenericIssueErrorType {
@@ -1445,6 +1457,7 @@ export declare namespace Audits {
         ElementAccessibilityIssue = "ElementAccessibilityIssue",
         SRIMessageSignatureIssue = "SRIMessageSignatureIssue",
         UnencodedDigestIssue = "UnencodedDigestIssue",
+        ConnectionAllowlistIssue = "ConnectionAllowlistIssue",
         UserReidentificationIssue = "UserReidentificationIssue",
         PermissionElementIssue = "PermissionElementIssue"
     }
@@ -1482,6 +1495,7 @@ export declare namespace Audits {
         elementAccessibilityIssueDetails?: ElementAccessibilityIssueDetails;
         sriMessageSignatureIssueDetails?: SRIMessageSignatureIssueDetails;
         unencodedDigestIssueDetails?: UnencodedDigestIssueDetails;
+        connectionAllowlistIssueDetails?: ConnectionAllowlistIssueDetails;
         userReidentificationIssueDetails?: UserReidentificationIssueDetails;
         permissionElementIssueDetails?: PermissionElementIssueDetails;
     }
@@ -9495,8 +9509,8 @@ export declare namespace Network {
         MethodDisallowedByPreflightResponse = "MethodDisallowedByPreflightResponse",
         HeaderDisallowedByPreflightResponse = "HeaderDisallowedByPreflightResponse",
         RedirectContainsCredentials = "RedirectContainsCredentials",
-        InsecurePrivateNetwork = "InsecurePrivateNetwork",
-        InvalidPrivateNetworkAccess = "InvalidPrivateNetworkAccess",
+        InsecureLocalNetwork = "InsecureLocalNetwork",
+        InvalidLocalNetworkAccess = "InvalidLocalNetworkAccess",
         NoCorsRedirectModeNotFollow = "NoCorsRedirectModeNotFollow",
         LocalNetworkAccessPermissionDenied = "LocalNetworkAccessPermissionDenied"
     }
@@ -12574,6 +12588,16 @@ export declare namespace Overlay {
         CaptureAreaScreenshot = "captureAreaScreenshot",
         None = "none"
     }
+    interface InspectedElementAnchorConfig {
+        /**
+         * Identifier of the node to highlight.
+         */
+        nodeId?: DOM.NodeId;
+        /**
+         * Identifier of the backend node to highlight.
+         */
+        backendNodeId?: DOM.BackendNodeId;
+    }
     interface GetHighlightObjectForTestRequest {
         /**
          * Id of the node to get highlight object for.
@@ -12779,6 +12803,12 @@ export declare namespace Overlay {
          */
         containerQueryHighlightConfigs: ContainerQueryHighlightConfig[];
     }
+    interface SetShowInspectedElementAnchorRequest {
+        /**
+         * Node identifier for which to show an anchor for.
+         */
+        inspectedElementAnchorConfig: InspectedElementAnchorConfig;
+    }
     interface SetShowPaintRectsRequest {
         /**
          * True for showing paint rectangles
@@ -12854,6 +12884,24 @@ export declare namespace Overlay {
          * Viewport to capture, in device independent pixels (dip).
          */
         viewport: Page.Viewport;
+    }
+    /**
+     * Fired when user asks to show the Inspect panel.
+     */
+    interface InspectPanelShowRequestedEvent {
+        /**
+         * Id of the node to show in the panel.
+         */
+        backendNodeId: DOM.BackendNodeId;
+    }
+    /**
+     * Fired when user asks to restore the Inspected Element floating window.
+     */
+    interface InspectedElementWindowRestoredEvent {
+        /**
+         * Id of the node to restore the floating window for.
+         */
+        backendNodeId: DOM.BackendNodeId;
     }
 }
 /**

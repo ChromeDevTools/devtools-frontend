@@ -1,4 +1,6 @@
 import * as Host from '../../../core/host/host.js';
+import * as SDK from '../../../core/sdk/sdk.js';
+import type * as Trace from '../../trace/trace.js';
 import { type AgentOptions, AiAgent, type ContextResponse, type RequestOptions } from './AiAgent.js';
 /**
  * One agent instance handles one conversation. Create a new agent
@@ -10,7 +12,10 @@ export declare class ContextSelectionAgent extends AiAgent<never> {
     readonly clientFeature = Host.AidaClient.ClientFeature.CHROME_FILE_AGENT;
     get userTier(): string | undefined;
     get options(): RequestOptions;
-    constructor(opts: AgentOptions);
+    constructor(opts: AgentOptions & {
+        performanceRecordAndReload?: () => Promise<Trace.TraceModel.ParsedTrace>;
+        onInspectElement?: () => Promise<SDK.DOMModel.DOMNode | null>;
+    });
     handleContextDetails(): AsyncGenerator<ContextResponse, void, void>;
     enhanceQuery(query: string): Promise<string>;
 }

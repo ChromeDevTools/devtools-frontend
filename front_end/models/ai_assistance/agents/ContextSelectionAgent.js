@@ -9,6 +9,7 @@ import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Logs from '../../logs/logs.js';
 import * as Workspace from '../../workspace/workspace.js';
+import { AgentFocus } from '../performance/AIContext.js';
 import { AiAgent, } from './AiAgent.js';
 const lockedString = i18n.i18n.lockedString;
 /**
@@ -60,8 +61,12 @@ export class ContextSelectionAgent extends AiAgent {
             modelId,
         };
     }
+    #performanceRecordAndReload;
+    #onInspectElement;
     constructor(opts) {
         super(opts);
+        this.#performanceRecordAndReload = opts.performanceRecordAndReload;
+        this.#onInspectElement = opts.onInspectElement;
         this.declareFunction('listNetworkRequests', {
             description: `Gives a list of network requests including URL, status code, and duration in ms`,
             parameters: {
@@ -190,6 +195,63 @@ export class ContextSelectionAgent extends AiAgent {
                     }
                 }
                 return { error: 'Unable to find file.' };
+            },
+        });
+        this.declareFunction('performanceRecordAndReload', {
+            description: 'Start a new performance recording and reload the page.',
+            parameters: {
+                type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
+                description: '',
+                nullable: true,
+                required: [],
+                properties: {},
+            },
+            displayInfoFromArgs: () => {
+                return {
+                    title: 'Recording a performance trace…',
+                    action: 'performanceRecordAndReload()',
+                };
+            },
+            handler: async () => {
+                if (!this.#performanceRecordAndReload) {
+                    return {
+                        error: 'Performance recording is not available.',
+                    };
+                }
+                const result = await this.#performanceRecordAndReload();
+                return {
+                    context: AgentFocus.fromParsedTrace(result),
+                };
+            }
+        });
+        this.declareFunction('inspectDom', {
+            description: `Prompts user to select a DOM element from the page.`,
+            parameters: {
+                type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
+                description: '',
+                nullable: true,
+                required: [],
+                properties: {},
+            },
+            displayInfoFromArgs: () => {
+                return {
+                    title: lockedString('Please select an element on the page...'),
+                    action: 'selectElement()',
+                };
+            },
+            handler: async () => {
+                if (!this.#onInspectElement) {
+                    return { error: 'The inspect element action is not available.' };
+                }
+                const node = await this.#onInspectElement();
+                if (node) {
+                    return {
+                        context: node,
+                    };
+                }
+                return {
+                    error: 'Unable to select element.',
+                };
             },
         });
     }

@@ -3,7 +3,7 @@ import * as Protocol from '../../generated/protocol.js';
 import { Issue, IssueCategory, IssueKind } from './Issue.js';
 import type { MarkdownIssueDescription } from './MarkdownIssueDescription.js';
 export declare const enum IssueCode {
-    INSECURE_PRIVATE_NETWORK = "CorsIssue::InsecurePrivateNetwork",
+    INSECURE_LOCAL_NETWORK = "CorsIssue::InsecureLocalNetwork",
     INVALID_HEADER_VALUES = "CorsIssue::InvalidHeaders",
     WILDCARD_ORIGN_NOT_ALLOWED = "CorsIssue::WildcardOriginWithCredentials",
     PREFLIGHT_RESPONSE_INVALID = "CorsIssue::PreflightResponseInvalid",
@@ -17,7 +17,7 @@ export declare const enum IssueCode {
     PREFLIGHT_MISSING_ALLOW_EXTERNAL = "CorsIssue::PreflightMissingAllowExternal",
     PREFLIGHT_INVALID_ALLOW_EXTERNAL = "CorsIssue::PreflightInvalidAllowExternal",
     NO_CORS_REDIRECT_MODE_NOT_FOLLOW = "CorsIssue::NoCorsRedirectModeNotFollow",
-    INVALID_PRIVATE_NETWORK_ACCESS = "CorsIssue::InvalidPrivateNetworkAccess",
+    INVALID_LOCAL_NETWORK_ACCESS = "CorsIssue::InvalidLocalNetworkAccess",
     LOCAL_NETWORK_ACCESS_PERMISSION_DENIED = "CorsIssue::LocalNetworkAccessPermissionDenied"
 }
 export declare class CorsIssue extends Issue<Protocol.Audits.CorsIssueDetails, IssueCode> {

@@ -34,7 +34,7 @@ export class AiConversation {
             }
             return entry;
         });
-        return new AiConversation(serializedConversation.type, history, serializedConversation.id, true, undefined, undefined, serializedConversation.isExternal);
+        return new AiConversation(serializedConversation.type, history, serializedConversation.id, true, undefined, undefined, serializedConversation.isExternal, undefined);
     }
     id;
     // Handled in #updateAgent
@@ -48,9 +48,13 @@ export class AiConversation {
     #changeManager;
     #origin;
     #contexts = [];
-    constructor(type, data = [], id = crypto.randomUUID(), isReadOnly = true, aidaClient = new Host.AidaClient.AidaClient(), changeManager, isExternal = false) {
+    #performanceRecordAndReload;
+    #onInspectElement;
+    constructor(type, data = [], id = crypto.randomUUID(), isReadOnly = true, aidaClient = new Host.AidaClient.AidaClient(), changeManager, isExternal = false, performanceRecordAndReload, onInspectElement) {
         this.#changeManager = changeManager;
         this.#aidaClient = aidaClient;
+        this.#performanceRecordAndReload = performanceRecordAndReload;
+        this.#onInspectElement = onInspectElement;
         this.id = id;
         this.#isReadOnly = isReadOnly;
         this.#isExternal = isExternal;
@@ -225,6 +229,8 @@ export class AiConversation {
             serverSideLoggingEnabled: isAiAssistanceServerSideLoggingEnabled(),
             sessionId: this.id,
             changeManager: this.#changeManager,
+            performanceRecordAndReload: this.#performanceRecordAndReload,
+            onInspectElement: this.#onInspectElement,
         };
         switch (type) {
             case "freestyler" /* ConversationType.STYLING */: {

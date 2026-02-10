@@ -1316,10 +1316,6 @@ var UIStrings6 = {
    */
   corsLocalNetworkAccess: "Local Network Access",
   /**
-   * @description Label for the link for CORS private network issues
-   */
-  corsPrivateNetworkAccess: "Private Network Access",
-  /**
    * @description Label for the link for CORS network issues
    */
   CORS: "Cross-Origin Resource Sharing (`CORS`)"
@@ -1364,12 +1360,12 @@ function getIssueCode2(details) {
       return "CorsIssue::PreflightMissingAllowExternal";
     case "PreflightInvalidAllowExternal":
       return "CorsIssue::PreflightInvalidAllowExternal";
-    case "InsecurePrivateNetwork":
-      return "CorsIssue::InsecurePrivateNetwork";
+    case "InsecureLocalNetwork":
+      return "CorsIssue::InsecureLocalNetwork";
     case "NoCorsRedirectModeNotFollow":
       return "CorsIssue::NoCorsRedirectModeNotFollow";
-    case "InvalidPrivateNetworkAccess":
-      return "CorsIssue::InvalidPrivateNetworkAccess";
+    case "InvalidLocalNetworkAccess":
+      return "CorsIssue::InvalidLocalNetworkAccess";
     case "LocalNetworkAccessPermissionDenied":
       return "CorsIssue::LocalNetworkAccessPermissionDenied";
   }
@@ -1383,12 +1379,12 @@ var CorsIssue = class _CorsIssue extends Issue {
   }
   getDescription() {
     switch (getIssueCode2(this.details())) {
-      case "CorsIssue::InsecurePrivateNetwork":
+      case "CorsIssue::InsecureLocalNetwork":
         return {
           file: "corsInsecurePrivateNetwork.md",
           links: [{
             link: "https://developer.chrome.com/blog/private-network-access-update",
-            linkTitle: i18nString3(UIStrings6.corsPrivateNetworkAccess)
+            linkTitle: i18nString3(UIStrings6.corsLocalNetworkAccess)
           }]
         };
       case "CorsIssue::InvalidHeaders":
@@ -1489,7 +1485,7 @@ var CorsIssue = class _CorsIssue extends Issue {
         };
       case "CorsIssue::PreflightMissingAllowExternal":
       case "CorsIssue::PreflightInvalidAllowExternal":
-      case "CorsIssue::InvalidPrivateNetworkAccess":
+      case "CorsIssue::InvalidLocalNetworkAccess":
         return null;
     }
   }
@@ -1497,7 +1493,7 @@ var CorsIssue = class _CorsIssue extends Issue {
     return JSON.stringify(this.details());
   }
   getKind() {
-    if (this.details().isWarning && this.details().corsErrorStatus.corsError === "InsecurePrivateNetwork") {
+    if (this.details().isWarning && this.details().corsErrorStatus.corsError === "InsecureLocalNetwork") {
       return "BreakingChange";
     }
     return "PageError";

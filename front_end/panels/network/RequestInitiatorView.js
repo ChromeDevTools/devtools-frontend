@@ -142,19 +142,17 @@ export class RequestInitiatorView extends UI.Widget.VBox {
         if (!initiator?.stack) {
             return null;
         }
+        const targetManager = SDK.TargetManager.TargetManager.instance();
         const networkManager = SDK.NetworkManager.NetworkManager.forRequest(request);
-        const target = networkManager ? networkManager.target() : undefined;
+        const target = networkManager?.target() ?? targetManager.primaryPageTarget() ?? targetManager.rootTarget();
+        let stackTrace = null;
+        const preview = new Components.JSPresentationUtils.StackTracePreviewContent(undefined, target ?? undefined, linkifier, { tabStops: focusableLink });
         if (target) {
-            const stackTrace = await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
+            stackTrace = await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
                 .createStackTraceFromProtocolRuntime(initiator.stack, target);
-            const preview = new Components.JSPresentationUtils.StackTracePreviewContent(undefined, target, linkifier, { tabStops: focusableLink });
             preview.stackTrace = stackTrace;
-            return { preview, stackTrace };
         }
-        return {
-            preview: new Components.JSPresentationUtils.StackTracePreviewContent(undefined, target, linkifier, { runtimeStackTrace: initiator.stack, tabStops: focusableLink }),
-            stackTrace: null
-        };
+        return { preview, stackTrace };
     }
     performUpdate() {
         const initiatorGraph = Logs.NetworkLog.NetworkLog.instance().initiatorGraphForRequest(this.request);

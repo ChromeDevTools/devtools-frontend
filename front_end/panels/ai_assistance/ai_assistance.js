@@ -4909,6 +4909,9 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI8.Panel.Panel {
     this.#additionalContextItemsFromFloaty = additionalContexts.selectedContexts;
     this.requestUpdate();
   }
+  async #handlePerformanceRecordAndReload() {
+    return await TimelinePanel.TimelinePanel.TimelinePanel.executeRecordAndReload();
+  }
   #getDefaultConversationType() {
     const { hostConfig } = Root5.Runtime;
     const viewManager = UI8.ViewManager.ViewManager.instance();
@@ -4941,7 +4944,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI8.Panel.Panel {
     if (this.#conversation?.type === targetConversationType) {
       return;
     }
-    const conversation = targetConversationType ? new AiAssistanceModel5.AiConversation.AiConversation(targetConversationType, [], void 0, false, this.#aidaClient, this.#changeManager) : void 0;
+    const conversation = targetConversationType ? new AiAssistanceModel5.AiConversation.AiConversation(targetConversationType, [], void 0, false, this.#aidaClient, this.#changeManager, false, this.#handlePerformanceRecordAndReload.bind(this), this.#handleInspectElement.bind(this)) : void 0;
     this.#updateConversationState(conversation);
   }
   #updateConversationState(conversation) {
@@ -4953,7 +4956,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI8.Panel.Panel {
       if (!conversation) {
         const conversationType = this.#getDefaultConversationType();
         if (conversationType) {
-          conversation = new AiAssistanceModel5.AiConversation.AiConversation(conversationType, [], void 0, false, this.#aidaClient, this.#changeManager);
+          conversation = new AiAssistanceModel5.AiConversation.AiConversation(conversationType, [], void 0, false, this.#aidaClient, this.#changeManager, false, this.#handlePerformanceRecordAndReload.bind(this), this.#handleInspectElement.bind(this));
         }
       }
       this.#conversation = conversation;
@@ -5302,7 +5305,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI8.Panel.Panel {
     }
     let conversation = this.#conversation;
     if (!this.#conversation || this.#conversation.type !== targetConversationType || this.#conversation.isEmpty) {
-      conversation = new AiAssistanceModel5.AiConversation.AiConversation(targetConversationType, [], void 0, false, this.#aidaClient, this.#changeManager);
+      conversation = new AiAssistanceModel5.AiConversation.AiConversation(targetConversationType, [], void 0, false, this.#aidaClient, this.#changeManager, false, this.#handlePerformanceRecordAndReload.bind(this), this.#handleInspectElement.bind(this));
     }
     this.#updateConversationState(conversation);
     const predefinedPrompt = opts?.["prompt"];
@@ -5426,6 +5429,40 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI8.Panel.Panel {
     void VisualLogging6.logFunctionCall(`context-change-${this.#conversation?.type}`);
     this.requestUpdate();
   };
+  async #handleInspectElement() {
+    if (!this.#toggleSearchElementAction) {
+      return null;
+    }
+    const result = new Promise((resolve) => {
+      const handleDOMNodeFlavorChange = (ev) => {
+        if (!ev.data) {
+          return;
+        }
+        resolve(selectedElementFilter(ev.data));
+        removeListeners();
+      };
+      const handleInspectModeToggled = (ev) => {
+        if (!ev.data) {
+          window.setTimeout(() => {
+            resolve(selectedElementFilter(UI8.Context.Context.instance().flavor(SDK3.DOMModel.DOMNode)));
+            removeListeners();
+          }, 50);
+        }
+      };
+      const removeListeners = () => {
+        UI8.Context.Context.instance().removeFlavorChangeListener(SDK3.DOMModel.DOMNode, handleDOMNodeFlavorChange);
+        this.#toggleSearchElementAction?.removeEventListener("Toggled", handleInspectModeToggled);
+      };
+      UI8.Context.Context.instance().addFlavorChangeListener(SDK3.DOMModel.DOMNode, handleDOMNodeFlavorChange);
+      this.#toggleSearchElementAction?.addEventListener("Toggled", handleInspectModeToggled);
+      this.#runAbortController.signal.addEventListener("abort", () => {
+        resolve(null);
+        removeListeners();
+      }, { once: true });
+    });
+    void this.#toggleSearchElementAction.execute();
+    return await result;
+  }
   async #startConversation(text, imageInput, multimodalInputType) {
     if (!this.#conversation) {
       return;

@@ -188,6 +188,7 @@ export declare class TimelinePanel extends TimelinePanel_base implements Client,
      * 3. Flash the Insight with the highlight colour we use in other panels.
      */
     revealInsight(insightModel: Trace.Insights.Types.InsightModel): void;
+    static executeRecordAndReload(): Promise<Trace.TraceModel.ParsedTrace>;
     static handleExternalRecordRequest(): AsyncGenerator<AiAssistanceModel.AiAgent.ExternalRequestResponse, AiAssistanceModel.AiAgent.ExternalRequestResponse>;
     static handleExternalAnalyzeRequest(prompt: string): Promise<AsyncGenerator<AiAssistanceModel.AiAgent.ExternalRequestResponse, AiAssistanceModel.AiAgent.ExternalRequestResponse>>;
 }

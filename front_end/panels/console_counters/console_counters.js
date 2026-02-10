@@ -18,8 +18,9 @@ import * as SDK from "./../../core/sdk/sdk.js";
 import * as IssuesManager from "./../../models/issues_manager/issues_manager.js";
 import * as IssueCounter from "./../../ui/components/issue_counter/issue_counter.js";
 import * as UI from "./../../ui/legacy/legacy.js";
-import { html, nothing, render } from "./../../ui/lit/lit.js";
+import * as Lit from "./../../ui/lit/lit.js";
 import * as VisualLogging from "./../../ui/visual_logging/visual_logging.js";
+var { html, nothing, render } = Lit;
 var UIStrings = {
   /**
    * @description The console error count in the Warning Error Counter shown in the main toolbar (top-left in DevTools). The error count refers to the number of errors currently present in the JavaScript console.
@@ -82,21 +83,21 @@ var DEFAULT_VIEW = (input, _output, target) => {
     displayMode: "OnlyMostImportant"
   };
   render(html`<div class="status-buttons"
-         ><icon-button
+         >${errors + warnings ? html`<icon-button
             .data=${iconData}
             title=${consoleTitle}
-            class=${"small" + warnings || errors ? nothing : "hidden"}
+            class=${"small"}
             jslog=${VisualLogging.counter("console").track({
     click: true
   })}
-         ></icon-button><devtools-issue-counter
-            class=${"main-toolbar" + (issues ? "" : " hidden")}
+         ></icon-button>` : nothing}${issues ? html`<devtools-issue-counter
+            class=${"main-toolbar"}
             title=${issuesTitle}
             .data=${issueCounterData}
             jslog=${VisualLogging.counter("issue").track({
     click: true
   })}
-         ></devtools-issue-counter></div>`, target);
+         ></devtools-issue-counter>` : nothing}</div>`, target);
 };
 var WarningErrorCounterWidget = class _WarningErrorCounterWidget extends UI.Widget.Widget {
   setVisibility;

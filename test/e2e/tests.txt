@@ -101,7 +101,7 @@ issues/cookie-attribute-exceeds-max-size-issues.test.js
 issues/cookie-deprecation-metadata-issues.test.js
 issues/cookie-domain-attribute-non-ascii.test.js
 issues/cors-issues.test.js
-issues/cors-private-network-issues.test.js
+issues/cors-local-network-issues.test.js
 issues/deprecation-issues.test.js
 issues/expect-ct-issues.test.js
 issues/group-by-categories.test.js

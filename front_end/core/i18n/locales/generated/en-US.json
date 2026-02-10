@@ -1586,9 +1586,6 @@
   "models/issues_manager/CorsIssue.ts | corsLocalNetworkAccess": {
     "message": "Local Network Access"
   },
-  "models/issues_manager/CorsIssue.ts | corsPrivateNetworkAccess": {
-    "message": "Private Network Access"
-  },
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | coopAndCoep": {
     "message": "COOP and COEP"
   },

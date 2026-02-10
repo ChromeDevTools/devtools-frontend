@@ -9,10 +9,6 @@ const UIStrings = {
      */
     corsLocalNetworkAccess: 'Local Network Access',
     /**
-     * @description Label for the link for CORS private network issues
-     */
-    corsPrivateNetworkAccess: 'Private Network Access',
-    /**
      * @description Label for the link for CORS network issues
      */
     CORS: 'Cross-Origin Resource Sharing (`CORS`)',
@@ -57,12 +53,12 @@ function getIssueCode(details) {
             return "CorsIssue::PreflightMissingAllowExternal" /* IssueCode.PREFLIGHT_MISSING_ALLOW_EXTERNAL */;
         case "PreflightInvalidAllowExternal" /* Protocol.Network.CorsError.PreflightInvalidAllowExternal */:
             return "CorsIssue::PreflightInvalidAllowExternal" /* IssueCode.PREFLIGHT_INVALID_ALLOW_EXTERNAL */;
-        case "InsecurePrivateNetwork" /* Protocol.Network.CorsError.InsecurePrivateNetwork */:
-            return "CorsIssue::InsecurePrivateNetwork" /* IssueCode.INSECURE_PRIVATE_NETWORK */;
+        case "InsecureLocalNetwork" /* Protocol.Network.CorsError.InsecureLocalNetwork */:
+            return "CorsIssue::InsecureLocalNetwork" /* IssueCode.INSECURE_LOCAL_NETWORK */;
         case "NoCorsRedirectModeNotFollow" /* Protocol.Network.CorsError.NoCorsRedirectModeNotFollow */:
             return "CorsIssue::NoCorsRedirectModeNotFollow" /* IssueCode.NO_CORS_REDIRECT_MODE_NOT_FOLLOW */;
-        case "InvalidPrivateNetworkAccess" /* Protocol.Network.CorsError.InvalidPrivateNetworkAccess */:
-            return "CorsIssue::InvalidPrivateNetworkAccess" /* IssueCode.INVALID_PRIVATE_NETWORK_ACCESS */;
+        case "InvalidLocalNetworkAccess" /* Protocol.Network.CorsError.InvalidLocalNetworkAccess */:
+            return "CorsIssue::InvalidLocalNetworkAccess" /* IssueCode.INVALID_LOCAL_NETWORK_ACCESS */;
         case "LocalNetworkAccessPermissionDenied" /* Protocol.Network.CorsError.LocalNetworkAccessPermissionDenied */:
             return "CorsIssue::LocalNetworkAccessPermissionDenied" /* IssueCode.LOCAL_NETWORK_ACCESS_PERMISSION_DENIED */;
     }
@@ -76,12 +72,12 @@ export class CorsIssue extends Issue {
     }
     getDescription() {
         switch (getIssueCode(this.details())) {
-            case "CorsIssue::InsecurePrivateNetwork" /* IssueCode.INSECURE_PRIVATE_NETWORK */:
+            case "CorsIssue::InsecureLocalNetwork" /* IssueCode.INSECURE_LOCAL_NETWORK */:
                 return {
                     file: 'corsInsecurePrivateNetwork.md',
                     links: [{
                             link: 'https://developer.chrome.com/blog/private-network-access-update',
-                            linkTitle: i18nString(UIStrings.corsPrivateNetworkAccess),
+                            linkTitle: i18nString(UIStrings.corsLocalNetworkAccess),
                         }],
                 };
             case "CorsIssue::InvalidHeaders" /* IssueCode.INVALID_HEADER_VALUES */:
@@ -182,7 +178,7 @@ export class CorsIssue extends Issue {
                 };
             case "CorsIssue::PreflightMissingAllowExternal" /* IssueCode.PREFLIGHT_MISSING_ALLOW_EXTERNAL */:
             case "CorsIssue::PreflightInvalidAllowExternal" /* IssueCode.PREFLIGHT_INVALID_ALLOW_EXTERNAL */:
-            case "CorsIssue::InvalidPrivateNetworkAccess" /* IssueCode.INVALID_PRIVATE_NETWORK_ACCESS */:
+            case "CorsIssue::InvalidLocalNetworkAccess" /* IssueCode.INVALID_LOCAL_NETWORK_ACCESS */:
                 return null;
         }
     }
@@ -191,7 +187,7 @@ export class CorsIssue extends Issue {
     }
     getKind() {
         if (this.details().isWarning &&
-            this.details().corsErrorStatus.corsError === "InsecurePrivateNetwork" /* Protocol.Network.CorsError.InsecurePrivateNetwork */) {
+            this.details().corsErrorStatus.corsError === "InsecureLocalNetwork" /* Protocol.Network.CorsError.InsecureLocalNetwork */) {
             return "BreakingChange" /* IssueKind.BREAKING_CHANGE */;
         }
         return "PageError" /* IssueKind.PAGE_ERROR */;

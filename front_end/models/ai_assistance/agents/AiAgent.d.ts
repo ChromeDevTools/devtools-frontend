@@ -1,4 +1,5 @@
 import * as Host from '../../../core/host/host.js';
+import type * as SDK from '../../../core/sdk/sdk.js';
 export declare const enum ResponseType {
     CONTEXT = "context",
     TITLE = "title",
@@ -103,6 +104,7 @@ export interface AgentOptions {
     serverSideLoggingEnabled?: boolean;
     sessionId?: string;
     confirmSideEffectForTest?: typeof Promise.withResolvers;
+    onInspectElement?: () => Promise<SDK.DOMModel.DOMNode | null>;
 }
 export interface ParsedAnswer {
     answer: string;

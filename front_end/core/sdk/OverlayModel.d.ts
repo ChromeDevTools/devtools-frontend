@@ -91,6 +91,8 @@ export declare class OverlayModel extends SDKModel<EventTypes> implements Protoc
     static inspectNodeHandler: ((node: DOMNode) => Promise<void>) | null;
     getOverlayAgent(): ProtocolProxyApi.OverlayApi;
     hasStyleSheetText(url: Platform.DevToolsPath.UrlString): Promise<boolean>;
+    inspectPanelShowRequested({ backendNodeId }: Protocol.Overlay.InspectPanelShowRequestedEvent): void;
+    inspectedElementWindowRestored({ backendNodeId }: Protocol.Overlay.InspectedElementWindowRestoredEvent): void;
 }
 export declare class WindowControls {
     #private;

@@ -10402,6 +10402,26 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
     const insightSetKey = insightModel.navigation?.args.data?.navigationId ?? Trace24.Types.Events.NO_NAVIGATION;
     this.#setActiveInsight({ model: insightModel, insightSetKey }, { highlightInsight: true });
   }
+  static async executeRecordAndReload() {
+    await UI10.ViewManager.ViewManager.instance().showView("timeline");
+    const panelInstance = _TimelinePanel.instance();
+    const result = await new Promise((resolve) => {
+      function listener(e) {
+        resolve(e.data);
+        panelInstance.removeEventListener("RecordingCompleted", listener);
+      }
+      panelInstance.addEventListener("RecordingCompleted", listener);
+      panelInstance.recordReload();
+    });
+    if ("errorText" in result) {
+      throw new Error(result.errorText);
+    }
+    const trace = panelInstance.model.parsedTrace(result.traceIndex);
+    if (!trace) {
+      throw new Error("Failed to parse trace");
+    }
+    return trace;
+  }
   static async *handleExternalRecordRequest() {
     yield {
       type: "notification",

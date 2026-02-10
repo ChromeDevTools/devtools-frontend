@@ -562,7 +562,6 @@ var generatedProperties = [
       "font-weight",
       "forced-color-adjust",
       "frame-sizing",
-      "gap-rule-overlap",
       "grid-auto-columns",
       "grid-auto-flow",
       "grid-auto-rows",
@@ -617,6 +616,7 @@ var generatedProperties = [
       "margin-left",
       "margin-right",
       "margin-top",
+      "margin-trim",
       "marker-end",
       "marker-mid",
       "marker-start",
@@ -722,6 +722,7 @@ var generatedProperties = [
       "ruby-align",
       "ruby-overhang",
       "ruby-position",
+      "rule-overlap",
       "rx",
       "ry",
       "scale",
@@ -809,10 +810,10 @@ var generatedProperties = [
       "text-wrap-mode",
       "text-wrap-style",
       "timeline-scope",
+      "timeline-trigger-activation-range-end",
+      "timeline-trigger-activation-range-start",
       "timeline-trigger-active-range-end",
       "timeline-trigger-active-range-start",
-      "timeline-trigger-entry-range-end",
-      "timeline-trigger-entry-range-start",
       "timeline-trigger-name",
       "timeline-trigger-source",
       "top",
@@ -2678,14 +2679,6 @@ var generatedProperties = [
     "name": "gap"
   },
   {
-    "inherited": false,
-    "keywords": [
-      "row-over-column",
-      "column-over-row"
-    ],
-    "name": "gap-rule-overlap"
-  },
-  {
     "longhands": [
       "grid-template-rows",
       "grid-template-columns",
@@ -3134,6 +3127,9 @@ var generatedProperties = [
       "auto"
     ],
     "name": "margin-top"
+  },
+  {
+    "name": "margin-trim"
   },
   {
     "inherited": true,
@@ -3730,7 +3726,9 @@ var generatedProperties = [
       "none",
       "flip-block",
       "flip-inline",
-      "flip-start"
+      "flip-start",
+      "flip-x",
+      "flip-y"
     ],
     "name": "position-try-fallbacks"
   },
@@ -3999,6 +3997,14 @@ var generatedProperties = [
       "column-rule-interior-inset-end"
     ],
     "name": "rule-interior-inset"
+  },
+  {
+    "inherited": false,
+    "keywords": [
+      "row-over-column",
+      "column-over-row"
+    ],
+    "name": "rule-overlap"
   },
   {
     "longhands": [
@@ -4664,12 +4670,25 @@ var generatedProperties = [
     "longhands": [
       "timeline-trigger-name",
       "timeline-trigger-source",
-      "timeline-trigger-entry-range-start",
-      "timeline-trigger-entry-range-end",
+      "timeline-trigger-activation-range-start",
+      "timeline-trigger-activation-range-end",
       "timeline-trigger-active-range-start",
       "timeline-trigger-active-range-end"
     ],
     "name": "timeline-trigger"
+  },
+  {
+    "longhands": [
+      "timeline-trigger-activation-range-start",
+      "timeline-trigger-activation-range-end"
+    ],
+    "name": "timeline-trigger-activation-range"
+  },
+  {
+    "name": "timeline-trigger-activation-range-end"
+  },
+  {
+    "name": "timeline-trigger-activation-range-start"
   },
   {
     "longhands": [
@@ -4683,19 +4702,6 @@ var generatedProperties = [
   },
   {
     "name": "timeline-trigger-active-range-start"
-  },
-  {
-    "longhands": [
-      "timeline-trigger-entry-range-start",
-      "timeline-trigger-entry-range-end"
-    ],
-    "name": "timeline-trigger-entry-range"
-  },
-  {
-    "name": "timeline-trigger-entry-range-end"
-  },
-  {
-    "name": "timeline-trigger-entry-range-start"
   },
   {
     "name": "timeline-trigger-name"
@@ -6124,12 +6130,6 @@ var generatedPropertyValues = {
       "content-inline-size"
     ]
   },
-  "gap-rule-overlap": {
-    "values": [
-      "row-over-column",
-      "column-over-row"
-    ]
-  },
   "grid-auto-columns": {
     "values": [
       "auto",
@@ -6660,7 +6660,9 @@ var generatedPropertyValues = {
       "none",
       "flip-block",
       "flip-inline",
-      "flip-start"
+      "flip-start",
+      "flip-x",
+      "flip-y"
     ]
   },
   "position-try-order": {
@@ -6780,6 +6782,12 @@ var generatedPropertyValues = {
     "values": [
       "over",
       "under"
+    ]
+  },
+  "rule-overlap": {
+    "values": [
+      "row-over-column",
+      "column-over-row"
     ]
   },
   "rx": {
@@ -24482,6 +24490,12 @@ var OverlayModel = class _OverlayModel extends SDKModel {
   }
   async hasStyleSheetText(url) {
     return await this.#windowControls.initializeStyleSheetText(url);
+  }
+  inspectPanelShowRequested({ backendNodeId }) {
+    this.dispatchEventToListeners("InspectPanelShowRequested", backendNodeId);
+  }
+  inspectedElementWindowRestored({ backendNodeId }) {
+    this.dispatchEventToListeners("InspectedElementWindowRestored", backendNodeId);
   }
 };
 var WindowControls = class _WindowControls {

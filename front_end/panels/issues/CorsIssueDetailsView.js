@@ -167,7 +167,7 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
                 this.appendColumnTitle(header, i18nString(UIStrings.preflightRequestIfProblematic));
                 this.appendColumnTitle(header, i18nString(UIStrings.allowCredentialsValueFromHeader));
                 break;
-            case "CorsIssue::InsecurePrivateNetwork" /* IssuesManager.CorsIssue.IssueCode.INSECURE_PRIVATE_NETWORK */:
+            case "CorsIssue::InsecureLocalNetwork" /* IssuesManager.CorsIssue.IssueCode.INSECURE_LOCAL_NETWORK */:
                 this.appendColumnTitle(header, i18nString(UIStrings.resourceAddressSpace));
                 this.appendColumnTitle(header, i18nString(UIStrings.initiatorAddressSpace));
                 this.appendColumnTitle(header, i18nString(UIStrings.initiatorContext));
@@ -339,7 +339,7 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
                 }
                 this.appendIssueDetailCell(element, details.corsErrorStatus.failedParameter, 'code-example');
                 break;
-            case "CorsIssue::InsecurePrivateNetwork" /* IssuesManager.CorsIssue.IssueCode.INSECURE_PRIVATE_NETWORK */:
+            case "CorsIssue::InsecureLocalNetwork" /* IssuesManager.CorsIssue.IssueCode.INSECURE_LOCAL_NETWORK */:
                 element.appendChild(this.createRequestCell(details.request, opts));
                 this.#appendStatus(element, details.isWarning);
                 this.appendIssueDetailCell(element, details.resourceIPAddressSpace ?? '');

@@ -11,7 +11,7 @@ export declare class AiConversation {
     static fromSerializedConversation(serializedConversation: SerializedConversation): AiConversation;
     readonly id: string;
     readonly history: ResponseData[];
-    constructor(type: ConversationType, data?: ResponseData[], id?: string, isReadOnly?: boolean, aidaClient?: Host.AidaClient.AidaClient, changeManager?: ChangeManager, isExternal?: boolean);
+    constructor(type: ConversationType, data?: ResponseData[], id?: string, isReadOnly?: boolean, aidaClient?: Host.AidaClient.AidaClient, changeManager?: ChangeManager, isExternal?: boolean, performanceRecordAndReload?: () => Promise<Trace.TraceModel.ParsedTrace>, onInspectElement?: () => Promise<SDK.DOMModel.DOMNode | null>);
     get isReadOnly(): boolean;
     get title(): string | undefined;
     get isEmpty(): boolean;

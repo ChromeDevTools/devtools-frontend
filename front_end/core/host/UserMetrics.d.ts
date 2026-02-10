@@ -601,7 +601,7 @@ export declare enum IssueCreated {
     'SharedArrayBufferIssue::TransferIssue' = 36,
     'SharedArrayBufferIssue::CreationIssue' = 37,
     LowTextContrastIssue = 41,
-    'CorsIssue::InsecurePrivateNetwork' = 42,
+    'CorsIssue::InsecureLocalNetwork' = 42,
     'CorsIssue::InvalidHeaders' = 44,
     'CorsIssue::WildcardOriginWithCredentials' = 45,
     'CorsIssue::PreflightResponseInvalid' = 46,
@@ -620,7 +620,6 @@ export declare enum IssueCreated {
     DeprecationIssue = 60,
     'ClientHintIssue::MetaTagAllowListInvalidOrigin' = 61,
     'ClientHintIssue::MetaTagModifiedHTML' = 62,
-    'CorsIssue::PreflightAllowPrivateNetworkError' = 63,
     'GenericIssue::CrossOriginPortalPostMessageError' = 64,
     'GenericIssue::FormLabelForNameError' = 65,
     'GenericIssue::FormDuplicateIdForInputError' = 66,
@@ -635,10 +634,6 @@ export declare enum IssueCreated {
     'GenericIssue::FormInputHasWrongButWellIntendedAutocompleteValueError' = 75,
     'StylesheetLoadingIssue::LateImportRule' = 76,
     'StylesheetLoadingIssue::RequestFailed' = 77,
-    'CorsIssue::PreflightMissingPrivateNetworkAccessId' = 78,
-    'CorsIssue::PreflightMissingPrivateNetworkAccessName' = 79,
-    'CorsIssue::PrivateNetworkAccessPermissionUnavailable' = 80,
-    'CorsIssue::PrivateNetworkAccessPermissionDenied' = 81,
     'CookieIssue::WarnThirdPartyPhaseout::ReadCookie' = 82,
     'CookieIssue::WarnThirdPartyPhaseout::SetCookie' = 83,
     'CookieIssue::ExcludeThirdPartyPhaseout::ReadCookie' = 84,
@@ -671,7 +666,8 @@ export declare enum IssueCreated {
     'CorsIssue::LocalNetworkAccessPermissionDenied' = 111,
     'SRIMessageSignatureIssue::ValidationFailedIntegrityMismatch' = 112,
     'ElementAccessibilityIssue::InteractiveContentSummaryDescendant' = 113,
-    MAX_VALUE = 114
+    'CorsIssue::InvalidLocalNetworkAccess' = 114,
+    MAX_VALUE = 115
 }
 export declare const enum DeveloperResourceLoaded {
     LOAD_THROUGH_PAGE_VIA_TARGET = 0,

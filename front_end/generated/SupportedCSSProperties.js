@@ -499,7 +499,6 @@ export const generatedProperties = [
             "font-weight",
             "forced-color-adjust",
             "frame-sizing",
-            "gap-rule-overlap",
             "grid-auto-columns",
             "grid-auto-flow",
             "grid-auto-rows",
@@ -554,6 +553,7 @@ export const generatedProperties = [
             "margin-left",
             "margin-right",
             "margin-top",
+            "margin-trim",
             "marker-end",
             "marker-mid",
             "marker-start",
@@ -659,6 +659,7 @@ export const generatedProperties = [
             "ruby-align",
             "ruby-overhang",
             "ruby-position",
+            "rule-overlap",
             "rx",
             "ry",
             "scale",
@@ -746,10 +747,10 @@ export const generatedProperties = [
             "text-wrap-mode",
             "text-wrap-style",
             "timeline-scope",
+            "timeline-trigger-activation-range-end",
+            "timeline-trigger-activation-range-start",
             "timeline-trigger-active-range-end",
             "timeline-trigger-active-range-start",
-            "timeline-trigger-entry-range-end",
-            "timeline-trigger-entry-range-start",
             "timeline-trigger-name",
             "timeline-trigger-source",
             "top",
@@ -2615,14 +2616,6 @@ export const generatedProperties = [
         "name": "gap"
     },
     {
-        "inherited": false,
-        "keywords": [
-            "row-over-column",
-            "column-over-row"
-        ],
-        "name": "gap-rule-overlap"
-    },
-    {
         "longhands": [
             "grid-template-rows",
             "grid-template-columns",
@@ -3071,6 +3064,9 @@ export const generatedProperties = [
             "auto"
         ],
         "name": "margin-top"
+    },
+    {
+        "name": "margin-trim"
     },
     {
         "inherited": true,
@@ -3667,7 +3663,9 @@ export const generatedProperties = [
             "none",
             "flip-block",
             "flip-inline",
-            "flip-start"
+            "flip-start",
+            "flip-x",
+            "flip-y"
         ],
         "name": "position-try-fallbacks"
     },
@@ -3936,6 +3934,14 @@ export const generatedProperties = [
             "column-rule-interior-inset-end"
         ],
         "name": "rule-interior-inset"
+    },
+    {
+        "inherited": false,
+        "keywords": [
+            "row-over-column",
+            "column-over-row"
+        ],
+        "name": "rule-overlap"
     },
     {
         "longhands": [
@@ -4601,12 +4607,25 @@ export const generatedProperties = [
         "longhands": [
             "timeline-trigger-name",
             "timeline-trigger-source",
-            "timeline-trigger-entry-range-start",
-            "timeline-trigger-entry-range-end",
+            "timeline-trigger-activation-range-start",
+            "timeline-trigger-activation-range-end",
             "timeline-trigger-active-range-start",
             "timeline-trigger-active-range-end"
         ],
         "name": "timeline-trigger"
+    },
+    {
+        "longhands": [
+            "timeline-trigger-activation-range-start",
+            "timeline-trigger-activation-range-end"
+        ],
+        "name": "timeline-trigger-activation-range"
+    },
+    {
+        "name": "timeline-trigger-activation-range-end"
+    },
+    {
+        "name": "timeline-trigger-activation-range-start"
     },
     {
         "longhands": [
@@ -4620,19 +4639,6 @@ export const generatedProperties = [
     },
     {
         "name": "timeline-trigger-active-range-start"
-    },
-    {
-        "longhands": [
-            "timeline-trigger-entry-range-start",
-            "timeline-trigger-entry-range-end"
-        ],
-        "name": "timeline-trigger-entry-range"
-    },
-    {
-        "name": "timeline-trigger-entry-range-end"
-    },
-    {
-        "name": "timeline-trigger-entry-range-start"
     },
     {
         "name": "timeline-trigger-name"
@@ -6061,12 +6067,6 @@ export const generatedPropertyValues = {
             "content-inline-size"
         ]
     },
-    "gap-rule-overlap": {
-        "values": [
-            "row-over-column",
-            "column-over-row"
-        ]
-    },
     "grid-auto-columns": {
         "values": [
             "auto",
@@ -6597,7 +6597,9 @@ export const generatedPropertyValues = {
             "none",
             "flip-block",
             "flip-inline",
-            "flip-start"
+            "flip-start",
+            "flip-x",
+            "flip-y"
         ]
     },
     "position-try-order": {
@@ -6717,6 +6719,12 @@ export const generatedPropertyValues = {
         "values": [
             "over",
             "under"
+        ]
+    },
+    "rule-overlap": {
+        "values": [
+            "row-over-column",
+            "column-over-row"
         ]
     },
     "rx": {

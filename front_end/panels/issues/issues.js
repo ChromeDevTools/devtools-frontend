@@ -2331,7 +2331,7 @@ var CorsIssueDetailsView = class _CorsIssueDetailsView extends AffectedResources
         this.appendColumnTitle(header, i18nString19(UIStrings19.preflightRequestIfProblematic));
         this.appendColumnTitle(header, i18nString19(UIStrings19.allowCredentialsValueFromHeader));
         break;
-      case "CorsIssue::InsecurePrivateNetwork":
+      case "CorsIssue::InsecureLocalNetwork":
         this.appendColumnTitle(header, i18nString19(UIStrings19.resourceAddressSpace));
         this.appendColumnTitle(header, i18nString19(UIStrings19.initiatorAddressSpace));
         this.appendColumnTitle(header, i18nString19(UIStrings19.initiatorContext));
@@ -2500,7 +2500,7 @@ var CorsIssueDetailsView = class _CorsIssueDetailsView extends AffectedResources
         }
         this.appendIssueDetailCell(element, details.corsErrorStatus.failedParameter, "code-example");
         break;
-      case "CorsIssue::InsecurePrivateNetwork":
+      case "CorsIssue::InsecureLocalNetwork":
         element.appendChild(this.createRequestCell(details.request, opts));
         this.#appendStatus(element, details.isWarning);
         this.appendIssueDetailCell(element, details.resourceIPAddressSpace ?? "");

@@ -4075,18 +4075,16 @@ var RequestInitiatorView = class extends UI8.Widget.VBox {
     if (!initiator?.stack) {
       return null;
     }
+    const targetManager = SDK7.TargetManager.TargetManager.instance();
     const networkManager = SDK7.NetworkManager.NetworkManager.forRequest(request);
-    const target = networkManager ? networkManager.target() : void 0;
+    const target = networkManager?.target() ?? targetManager.primaryPageTarget() ?? targetManager.rootTarget();
+    let stackTrace = null;
+    const preview = new Components2.JSPresentationUtils.StackTracePreviewContent(void 0, target ?? void 0, linkifier, { tabStops: focusableLink });
     if (target) {
-      const stackTrace = await Bindings2.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createStackTraceFromProtocolRuntime(initiator.stack, target);
-      const preview = new Components2.JSPresentationUtils.StackTracePreviewContent(void 0, target, linkifier, { tabStops: focusableLink });
+      stackTrace = await Bindings2.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createStackTraceFromProtocolRuntime(initiator.stack, target);
       preview.stackTrace = stackTrace;
-      return { preview, stackTrace };
     }
-    return {
-      preview: new Components2.JSPresentationUtils.StackTracePreviewContent(void 0, target, linkifier, { runtimeStackTrace: initiator.stack, tabStops: focusableLink }),
-      stackTrace: null
-    };
+    return { preview, stackTrace };
   }
   performUpdate() {
     const initiatorGraph = Logs3.NetworkLog.NetworkLog.instance().initiatorGraphForRequest(this.request);

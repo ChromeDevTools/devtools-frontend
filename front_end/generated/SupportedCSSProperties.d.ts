@@ -464,9 +464,6 @@ export const generatedPropertyValues: {
     "frame-sizing": {
         values: string[];
     };
-    "gap-rule-overlap": {
-        values: string[];
-    };
     "grid-auto-columns": {
         values: string[];
     };
@@ -750,6 +747,9 @@ export const generatedPropertyValues: {
         values: string[];
     };
     "ruby-position": {
+        values: string[];
+    };
+    "rule-overlap": {
         values: string[];
     };
     rx: {

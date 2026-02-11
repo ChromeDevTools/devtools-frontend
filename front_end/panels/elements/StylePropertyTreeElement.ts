@@ -2155,6 +2155,9 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   renderedPropertyText(): string {
+    if (!this.#isConnected()) {
+      return '';
+    }
     if (!this.nameElement || !this.valueElement) {
       return '';
     }
@@ -3434,7 +3437,17 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   styleTextAppliedForTest(): void {
   }
 
+  // If the item isn't connected to the DOM, then reading its innerText will
+  // also include any invisible text (e.g. sources, styles), so we don't want
+  // to do that.
+  #isConnected(): boolean {
+    return this.listItemElement.isConnected;
+  }
+
   applyStyleText(styleText: string, majorChange: boolean, property?: SDK.CSSProperty.CSSProperty|null): Promise<void> {
+    if (!this.#isConnected()) {
+      return Promise.resolve();
+    }
     return this.applyStyleThrottler.schedule(this.innerApplyStyleText.bind(this, styleText, majorChange, property));
   }
 
@@ -3442,6 +3455,10 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       styleText: string, majorChange: boolean, property?: SDK.CSSProperty.CSSProperty|null): Promise<void> {
     // this.property might have been nulled at the end of the last innerApplyStyleText.
     if (!this.treeOutline || !this.property) {
+      return;
+    }
+
+    if (!this.#isConnected()) {
       return;
     }
 

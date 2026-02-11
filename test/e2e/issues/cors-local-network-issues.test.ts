@@ -58,7 +58,7 @@ describe('Cors Local Network issues', () => {
 
     await expandIssue(devToolsPage);
     const issueElement =
-        await getIssueByTitle('Ensure private network requests are made from secure contexts', devToolsPage);
+        await getIssueByTitle('Ensure that local network requests are compatible with restrictions', devToolsPage);
     assert.isOk(issueElement);
     const section =
         await getResourcesElement('2 requests', issueElement, '.cors-issue-affected-resource-label', devToolsPage);
@@ -134,7 +134,7 @@ describe('Cors Local Network issues', () => {
 
     await expandIssue(devToolsPage);
     const issueElement =
-        await getIssueByTitle('Ensure private network requests are made from secure contexts', devToolsPage);
+        await getIssueByTitle('Ensure that local network requests are compatible with restrictions', devToolsPage);
     assert.isOk(issueElement);
     const section =
         await getResourcesElement('2 requests', issueElement, '.cors-issue-affected-resource-label', devToolsPage);

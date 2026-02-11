@@ -106,14 +106,6 @@ export class CorsIssue extends Issue<Protocol.Audits.CorsIssueDetails, IssueCode
 
   getDescription(): MarkdownIssueDescription|null {
     switch (getIssueCode(this.details())) {
-      case IssueCode.INSECURE_LOCAL_NETWORK:
-        return {
-          file: 'corsInsecurePrivateNetwork.md',
-          links: [{
-            link: 'https://developer.chrome.com/blog/private-network-access-update',
-            linkTitle: i18nString(UIStrings.corsLocalNetworkAccess),
-          }],
-        };
       case IssueCode.INVALID_HEADER_VALUES:
         return {
           file: 'corsInvalidHeaderValues.md',
@@ -202,11 +194,12 @@ export class CorsIssue extends Issue<Protocol.Audits.CorsIssueDetails, IssueCode
             linkTitle: i18nString(UIStrings.CORS),
           }],
         };
+      case IssueCode.INSECURE_LOCAL_NETWORK:
       case IssueCode.LOCAL_NETWORK_ACCESS_PERMISSION_DENIED:
         return {
           file: 'corsLocalNetworkAccessPermissionDenied.md',
           links: [{
-            link: 'https://chromestatus.com/feature/5152728072060928',
+            link: 'https://developer.chrome.com/blog/local-network-access',
             linkTitle: i18nString(UIStrings.corsLocalNetworkAccess),
           }],
         };

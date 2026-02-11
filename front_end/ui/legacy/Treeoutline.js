@@ -1330,7 +1330,7 @@ class TreeViewTreeElement extends TreeElement {
             this.listItemElement.classList.add(className);
             this.#clonedClasses.add(className);
         }
-        InterceptBindingDirective.attachEventListeners(this.configElement, this.listItemElement);
+        InterceptBindingDirective.setEventListeners(this.configElement, this.listItemElement);
         for (const child of this.configElement.childNodes) {
             if (child instanceof HTMLUListElement && child.role === 'group') {
                 continue;

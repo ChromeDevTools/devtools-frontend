@@ -279,7 +279,6 @@ export class StackTracePreviewContent extends UI.Widget.Widget {
         UI.DOMUtilities.appendStyle(this.element.shadowRoot, jsUtilsStyles);
         this.#table = this.contentElement.createChild('table', 'stack-preview-container');
         this.#table.classList.toggle('width-constrained', this.#options.widthConstrained ?? false);
-        this.#stackTrace?.addEventListener("UPDATED" /* StackTrace.StackTrace.Events.UPDATED */, this.performUpdate.bind(this));
         this.performUpdate();
     }
     hasContent() {
@@ -318,7 +317,11 @@ export class StackTracePreviewContent extends UI.Widget.Widget {
         this.requestUpdate();
     }
     set stackTrace(stackTrace) {
+        if (this.#stackTrace) {
+            this.#stackTrace.removeEventListener("UPDATED" /* StackTrace.StackTrace.Events.UPDATED */, this.requestUpdate, this);
+        }
         this.#stackTrace = stackTrace;
+        this.#stackTrace.addEventListener("UPDATED" /* StackTrace.StackTrace.Events.UPDATED */, this.requestUpdate, this);
         this.requestUpdate();
     }
     onDetach() {

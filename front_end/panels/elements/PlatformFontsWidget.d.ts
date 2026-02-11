@@ -8,8 +8,9 @@ type View = (input: PlatformFontsWidgetInput, output: object, target: HTMLElemen
 export declare const DEFAULT_VIEW: View;
 export declare class PlatformFontsWidget extends UI.Widget.VBox {
     #private;
-    private readonly sharedModel;
-    constructor(sharedModel: ComputedStyle.ComputedStyleModel.ComputedStyleModel, view?: View);
+    constructor(element?: HTMLElement, view?: View);
+    get sharedModel(): ComputedStyle.ComputedStyleModel.ComputedStyleModel | null;
+    set sharedModel(model: ComputedStyle.ComputedStyleModel.ComputedStyleModel);
     performUpdate(): Promise<void>;
 }
 export {};

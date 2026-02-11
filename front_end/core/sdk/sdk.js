@@ -9721,7 +9721,7 @@ var Target = class extends ProtocolClient.InspectorBackend.TargetBase {
     this.#capabilitiesMask = 0;
     switch (type) {
       case Type.FRAME:
-        this.#capabilitiesMask = 1 | 8192 | 2 | 4 | 8 | 16 | 32 | 128 | 256 | 1024 | 2048 | 32768 | 65536 | 131072 | 262144 | 524288;
+        this.#capabilitiesMask = 1 | 8192 | 2 | 4 | 8 | 16 | 32 | 128 | 256 | 1024 | 2048 | 32768 | 65536 | 131072 | 262144 | 524288 | 1048576;
         if (parentTarget?.type() !== Type.FRAME) {
           this.#capabilitiesMask |= 4096 | 64 | 512 | 16384;
           if (Common3.ParsedURL.schemeIs(targetInfo?.url, "chrome-extension:")) {
@@ -9754,7 +9754,7 @@ var Target = class extends ProtocolClient.InspectorBackend.TargetBase {
         this.#capabilitiesMask = 4 | 8 | 524288 | 16;
         break;
       case Type.NODE:
-        this.#capabilitiesMask = 4 | 16 | 32 | 131072;
+        this.#capabilitiesMask = 4 | 16 | 32 | 131072 | 1048576;
         break;
       case Type.AUCTION_WORKLET:
         this.#capabilitiesMask = 4 | 524288;
@@ -26666,7 +26666,12 @@ var StorageKeyManager = class extends SDKModel {
 function parseStorageKey(storageKeyString) {
   const components = storageKeyString.split("^");
   const origin = Common23.ParsedURL.ParsedURL.extractOrigin(components[0]);
-  const storageKey = { origin, components: /* @__PURE__ */ new Map() };
+  const storageKey = {
+    // For file:// URLs, extracting the origin collapses it to "file://".
+    // Node.js uses the full file URL as the StorageKey, so keep the original URL here.
+    origin: origin === "file://" ? components[0] : origin,
+    components: /* @__PURE__ */ new Map()
+  };
   for (let i = 1; i < components.length; ++i) {
     storageKey.components.set(components[i].charAt(0), components[i].substring(1));
   }

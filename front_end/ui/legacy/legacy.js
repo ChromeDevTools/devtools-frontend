@@ -9968,6 +9968,24 @@ var ListControl = class {
     }
     return false;
   }
+  selectFirstItem(center) {
+    const index = this.findFirstSelectable(0, 1, false);
+    if (index !== -1) {
+      this.scrollIntoView(index, center);
+      this.select(index);
+      return true;
+    }
+    return false;
+  }
+  selectLastItem(center) {
+    const index = this.findFirstSelectable(this.model.length - 1, -1, false);
+    if (index !== -1) {
+      this.scrollIntoView(index, center);
+      this.select(index);
+      return true;
+    }
+    return false;
+  }
   scrollIntoView(index, center) {
     if (this.mode === ListMode.NonViewport) {
       this.elementAtIndex(index).scrollIntoViewIfNeeded(Boolean(center));
@@ -10009,6 +10027,12 @@ var ListControl = class {
       case "PageDown":
         selected = this.selectItemNextPage(false);
         break;
+      case "Home":
+        selected = this.selectFirstItem();
+        break;
+      case "End":
+        selected = this.selectLastItem();
+        break;
     }
     if (selected) {
       event.consume(true);
@@ -10038,7 +10062,7 @@ var ListControl = class {
     if (!element) {
       element = this.delegate.createElementForItem(item8);
       if (!element.hasAttribute("jslog")) {
-        element.setAttribute("jslog", `${VisualLogging10.item().track({ click: true, keydown: "ArrowUp|ArrowDown|PageUp|PageDown" })}`);
+        element.setAttribute("jslog", `${VisualLogging10.item().track({ click: true, keydown: "ArrowUp|ArrowDown|PageUp|PageDown|Home|End" })}`);
       }
       this.itemToElement.set(item8, element);
       this.updateElementARIA(element, index);
@@ -12705,11 +12729,8 @@ var ToolbarSettingComboBox = class extends ToolbarComboBox {
 var ToolbarCheckbox = class extends ToolbarItem {
   #checkboxLabel;
   constructor(text, tooltip, listener, jslogContext) {
-    const checkboxLabel = CheckboxLabel.create(text, void 0, void 0, jslogContext);
+    const checkboxLabel = CheckboxLabel.create(text, void 0, void 0, jslogContext, void 0, tooltip);
     super(checkboxLabel);
-    if (tooltip) {
-      Tooltip.install(this.element, tooltip);
-    }
     if (listener) {
       this.element.addEventListener("click", listener, false);
     }
@@ -15136,7 +15157,7 @@ var CheckboxLabel = class _CheckboxLabel extends HTMLElement {
     this.#textElement.addEventListener("click", (e) => e.stopPropagation());
     this.#textElement.createChild("slot");
   }
-  static create(title, checked, subtitle, jslogContext, small) {
+  static create(title, checked, subtitle, jslogContext, small, tooltip) {
     const element = document.createElement("devtools-checkbox");
     element.#checkboxElement.checked = Boolean(checked);
     if (jslogContext) {
@@ -15144,10 +15165,14 @@ var CheckboxLabel = class _CheckboxLabel extends HTMLElement {
     }
     if (title !== void 0) {
       element.#textElement.textContent = title;
-      element.#checkboxElement.title = title;
       if (subtitle !== void 0) {
         element.#textElement.createChild("div", "devtools-checkbox-subtitle").textContent = subtitle;
       }
+    }
+    const inputTooltip = tooltip ?? title;
+    if (inputTooltip) {
+      element.#checkboxElement.title = inputTooltip;
+      element.#checkboxElement.setAttribute("aria-description", inputTooltip);
     }
     element.#checkboxElement.classList.toggle("small", small);
     return element;
@@ -15777,6 +15802,7 @@ function bindToAction(actionName) {
 }
 var InterceptBindingDirective = class _InterceptBindingDirective extends Lit2.Directive.Directive {
   static #interceptedBindings = /* @__PURE__ */ new WeakMap();
+  static #attachedBindings = /* @__PURE__ */ new WeakMap();
   update(part, [listener]) {
     if (part.type !== Lit2.Directive.PartType.EVENT) {
       return listener;
@@ -15793,13 +15819,21 @@ var InterceptBindingDirective = class _InterceptBindingDirective extends Lit2.Di
   render(_listener) {
     return void 0;
   }
-  static attachEventListeners(templateElement, renderedElement) {
-    const eventListeners = _InterceptBindingDirective.#interceptedBindings.get(templateElement);
-    if (!eventListeners) {
-      return;
+  static setEventListeners(templateElement, renderedElement) {
+    const attachedListeners = _InterceptBindingDirective.#attachedBindings.get(renderedElement);
+    if (attachedListeners) {
+      for (const [name, listener] of attachedListeners) {
+        renderedElement.removeEventListener(name, listener);
+      }
     }
-    for (const [name, listener] of eventListeners) {
-      renderedElement.addEventListener(name, listener);
+    const newListeners = _InterceptBindingDirective.#interceptedBindings.get(templateElement);
+    if (newListeners?.size) {
+      for (const [name, listener] of newListeners) {
+        renderedElement.addEventListener(name, listener);
+      }
+      _InterceptBindingDirective.#attachedBindings.set(renderedElement, new Map(newListeners));
+    } else {
+      _InterceptBindingDirective.#attachedBindings.delete(renderedElement);
     }
   }
 };
@@ -15828,7 +15862,7 @@ var HTMLElementWithLightDOMTemplate = class _HTMLElementWithLightDOMTemplate ext
       clone.appendChild(_HTMLElementWithLightDOMTemplate.cloneNode(child));
     }
     if (node instanceof Element && clone instanceof Element) {
-      InterceptBindingDirective.attachEventListeners(node, clone);
+      InterceptBindingDirective.setEventListeners(node, clone);
     }
     return clone;
   }
@@ -22446,7 +22480,7 @@ var TreeViewTreeElement = class _TreeViewTreeElement extends TreeElement {
       this.listItemElement.classList.add(className);
       this.#clonedClasses.add(className);
     }
-    InterceptBindingDirective.attachEventListeners(this.configElement, this.listItemElement);
+    InterceptBindingDirective.setEventListeners(this.configElement, this.listItemElement);
     for (const child of this.configElement.childNodes) {
       if (child instanceof HTMLUListElement && child.role === "group") {
         continue;

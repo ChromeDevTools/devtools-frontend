@@ -67,11 +67,11 @@ const UIStringsNotTranslate = {
     /**
      * @description Code generation disclaimer item text for the fre dialog.
      */
-    freDisclaimerDescribeCodeInComment: 'In Console or Sources, describe the code you need in a comment, then press Ctrl+I to generate it.',
+    freDisclaimerDescribeCodeInComment: 'In Console or Sources, describe the code you need in a comment, then press ctrl+i to generate it.',
     /**
      * @description Code generation disclaimer item text for the fre dialog.
      */
-    freDisclaimerDescribeCodeInCommentForMacOs: 'In Console or Sources, describe the code you need in a comment, then press Cmd+I to generate it.',
+    freDisclaimerDescribeCodeInCommentForMacOs: 'In Console or Sources, describe the code you need in a comment, then press cmd+i to generate it.',
     /**
      * @description Privacy disclaimer item text for the fre dialog.
      */
@@ -119,7 +119,17 @@ export const DEFAULT_VIEW = (input, _output, target) => {
               <span>${lockedString(UIStringsNotTranslate.i)}</span>
             </span>
             </span>&nbsp;${lockedString(UIStringsNotTranslate.toTurnOnCodeSuggestions)}&nbsp;
-            <span role="button" class="ai-code-completion-teaser-dismiss" @click=${input.onDismiss}
+            <span role="button" class="ai-code-completion-teaser-dismiss"
+              tabindex="0"
+              @click=${input.onDismiss}
+              @keydown=${(e) => {
+        // Handle Enter and Space events to make dismiss button accessible for only keyboard users.
+        if (e.key === 'Enter' || e.key === ' ') {
+            input.onDismiss(e);
+            e.stopPropagation();
+            e.preventDefault();
+        }
+    }}
               jslog=${VisualLogging.action('ai-code-completion-teaser.dismiss').track({ click: true })}>
                 ${lockedString(UIStringsNotTranslate.dontShowAgain)}
             </span>

@@ -16,14 +16,6 @@ export declare const enum CookieStatus {
     ALLOWED_BY_GRACE_PERIOD = 2,
     ALLOWED_BY_HEURISTICS = 3
 }
-export interface CookieReportInfo {
-    name: string;
-    domain: string;
-    type?: string;
-    platform?: string;
-    status: CookieStatus;
-    insight?: Protocol.Audits.CookieIssueInsight;
-}
 export declare class CookieIssue extends Issue<Protocol.Audits.CookieIssueDetails> {
     cookieId(): string;
     primaryKey(): string;
@@ -47,7 +39,6 @@ export declare class CookieIssue extends Issue<Protocol.Audits.CookieIssueDetail
     getDescription(): MarkdownIssueDescription | null;
     isCausedByThirdParty(): boolean;
     getKind(): IssueKind;
-    makeCookieReportEntry(): CookieReportInfo | undefined;
     static getCookieStatus(cookieIssueDetails: Protocol.Audits.CookieIssueDetails): CookieStatus | undefined;
     static fromInspectorIssue(issuesModel: SDK.IssuesModel.IssuesModel | null, inspectorIssue: Protocol.Audits.InspectorIssue): CookieIssue[];
     static getSubCategory(code: string): CookieIssueSubCategory;

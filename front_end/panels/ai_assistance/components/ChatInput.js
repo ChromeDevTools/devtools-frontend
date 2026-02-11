@@ -326,7 +326,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
                                     class="add-context"
                                     .iconName=${'plus'}
                                     .size=${"SMALL" /* Buttons.Button.Size.SMALL */}
-                                    .jslogContext=${'context-add'}
+                                    .jslogContext=${'context-added'}
                                     .variant=${"icon" /* Buttons.Button.Variant.ICON */}
                                     @click=${input.onContextAdd}></devtools-button>` : Lit.nothing}
               </div>

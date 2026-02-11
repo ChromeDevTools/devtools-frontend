@@ -32,7 +32,10 @@ export class AnimationsTrackAppender {
         return this.#compatibilityBuilder.appendEventsAtLevel(animations, trackStartLevel, this, this.#eventAppendedCallback);
     }
     #appendTrackHeaderAtLevel(currentLevel, expanded) {
-        const style = buildGroupStyle({ useFirstLineForOverview: false });
+        const style = buildGroupStyle({
+            useFirstLineForOverview: false,
+            collapsible: 2 /* PerfUI.FlameChart.GroupCollapsibleState.IF_MULTI_ROW */,
+        });
         const group = buildTrackHeader("animations" /* VisualLoggingTrackName.ANIMATIONS */, currentLevel, i18nString(UIStrings.animations), style, 
         /* selectable= */ true, expanded);
         this.#compatibilityBuilder.registerTrackForGroup(group, this);

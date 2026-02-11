@@ -65,5 +65,6 @@ export declare const enum Capability {
     IO = 131072,
     MEDIA = 262144,
     EVENT_BREAKPOINTS = 524288,
+    DOM_STORAGE = 1048576,
     NONE = 0
 }

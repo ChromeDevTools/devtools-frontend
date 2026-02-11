@@ -2854,7 +2854,7 @@ var DOMStorageModel = class extends SDK5.SDKModel.SDKModel {
     return result;
   }
 };
-SDK5.SDKModel.SDKModel.register(DOMStorageModel, { capabilities: 2, autostart: false });
+SDK5.SDKModel.SDKModel.register(DOMStorageModel, { capabilities: 1048576, autostart: false });
 var DOMStorageDispatcher = class {
   model;
   constructor(model) {
@@ -12905,10 +12905,12 @@ var ResourcesSection = class {
     frameManager.addEventListener("FrameRemoved", (event) => this.frameDetached(event.data.frameId), this);
     frameManager.addEventListener("FrameNavigated", (event) => this.frameNavigated(event.data.frame), this);
     frameManager.addEventListener("ResourceAdded", (event) => this.resourceAdded(event.data.resource), this);
-    SDK24.TargetManager.TargetManager.instance().addModelListener(SDK24.ChildTargetManager.ChildTargetManager, "TargetCreated", this.windowOpened, this, { scoped: true });
-    SDK24.TargetManager.TargetManager.instance().addModelListener(SDK24.ChildTargetManager.ChildTargetManager, "TargetInfoChanged", this.windowChanged, this, { scoped: true });
-    SDK24.TargetManager.TargetManager.instance().addModelListener(SDK24.ChildTargetManager.ChildTargetManager, "TargetDestroyed", this.windowDestroyed, this, { scoped: true });
-    SDK24.TargetManager.TargetManager.instance().observeTargets(this, { scoped: true });
+    if (this.panel.mode !== "node") {
+      SDK24.TargetManager.TargetManager.instance().addModelListener(SDK24.ChildTargetManager.ChildTargetManager, "TargetCreated", this.windowOpened, this, { scoped: true });
+      SDK24.TargetManager.TargetManager.instance().addModelListener(SDK24.ChildTargetManager.ChildTargetManager, "TargetInfoChanged", this.windowChanged, this, { scoped: true });
+      SDK24.TargetManager.TargetManager.instance().addModelListener(SDK24.ChildTargetManager.ChildTargetManager, "TargetDestroyed", this.windowDestroyed, this, { scoped: true });
+      SDK24.TargetManager.TargetManager.instance().observeTargets(this, { scoped: true });
+    }
   }
   initialize() {
     const frameManager = SDK24.FrameManager.FrameManager.instance();
@@ -15181,8 +15183,10 @@ var ResourcesPanel = class _ResourcesPanel extends UI27.Panel.PanelWithSidebar {
   cookieView;
   deviceBoundSessionsView;
   sidebar;
-  constructor() {
+  mode = "default";
+  constructor(mode = "default") {
     super("resources");
+    this.mode = mode;
     this.registerRequiredCSS(resourcesPanel_css_default);
     this.resourcesLastSelectedItemSetting = Common21.Settings.Settings.instance().createSetting("resources-last-selected-element-path", []);
     this.visibleView = null;
@@ -15200,10 +15204,10 @@ var ResourcesPanel = class _ResourcesPanel extends UI27.Panel.PanelWithSidebar {
     this.sidebar = new ApplicationPanelSidebar(this);
     this.sidebar.show(this.panelSidebarElement());
   }
-  static instance(opts = { forceNew: null }) {
-    const { forceNew } = opts;
+  static instance(opts = { forceNew: null, mode: "default" }) {
+    const { forceNew, mode } = opts;
     if (!resourcesPanelInstance || forceNew) {
-      resourcesPanelInstance = new _ResourcesPanel();
+      resourcesPanelInstance = new _ResourcesPanel(mode);
     }
     return resourcesPanelInstance;
   }

@@ -179,7 +179,7 @@ export class DOMStorageModel extends SDK.SDKModel.SDKModel {
         return result;
     }
 }
-SDK.SDKModel.SDKModel.register(DOMStorageModel, { capabilities: 2 /* SDK.Target.Capability.DOM */, autostart: false });
+SDK.SDKModel.SDKModel.register(DOMStorageModel, { capabilities: 1048576 /* SDK.Target.Capability.DOM_STORAGE */, autostart: false });
 export class DOMStorageDispatcher {
     model;
     constructor(model) {

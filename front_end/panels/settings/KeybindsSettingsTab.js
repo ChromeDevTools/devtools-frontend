@@ -197,8 +197,9 @@ export class KeybindsSettingsTab extends UI.Widget.VBox {
     heightForItem(_item) {
         return 0;
     }
-    isItemSelectable(_item) {
-        return true;
+    isItemSelectable(item) {
+        // Category headers (UI.ActionRegistration.ActionCategory) should not be selectable
+        return item instanceof UI.ActionRegistration.Action;
     }
     selectedItemChanged(_from, to, fromElement, toElement) {
         if (fromElement) {
@@ -278,7 +279,7 @@ export class KeybindsSettingsTab extends UI.Widget.VBox {
         }
         this.list.refreshAllItems();
         if (!this.list.selectedItem()) {
-            this.list.selectItem(this.items.at(0));
+            this.list.selectFirstItem();
         }
     }
     willHide() {

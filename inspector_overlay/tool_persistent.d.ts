@@ -5,6 +5,7 @@ import { type FlexContainerHighlight } from './highlight_flex_common.js';
 import { type GridHighlight } from './highlight_grid_common.js';
 import { type IsolatedElementHighlight } from './highlight_isolated_element.js';
 import { type ScrollSnapHighlight } from './highlight_scroll_snap.js';
+import type { GreenDevAnchorsHighlight, GreenDevAnchorsOverlay } from './tool_green_dev_anchors.js';
 export interface PersistentToolMessage {
     highlightType: string;
     highlightIndex: number;
@@ -23,6 +24,8 @@ export declare class PersistentOverlay extends Overlay {
     private gridLabels;
     private draggableBorders;
     private dragHandler?;
+    private greenDevAnchorsOverlay?;
+    setGreenDevAnchorsOverlay(greenDevAnchorsOverlay: GreenDevAnchorsOverlay): void;
     reset(data: ResetData): void;
     renderGridMarkup(): void;
     install(): void;
@@ -31,6 +34,7 @@ export declare class PersistentOverlay extends Overlay {
     drawFlexContainerHighlight(highlight: FlexContainerHighlight): void;
     drawScrollSnapHighlight(highlight: ScrollSnapHighlight): void;
     drawContainerQueryHighlight(highlight: ContainerQueryHighlight): void;
+    drawGreenDevFloatyAnchors(highlights: GreenDevAnchorsHighlight[]): void;
     drawIsolatedElementHighlight(highlight: IsolatedElementHighlight): void;
     isPointInDraggablePath(x: number, y: number): DraggableMetadata | undefined;
 }

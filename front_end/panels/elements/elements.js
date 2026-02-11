@@ -844,7 +844,8 @@ import * as ElementsComponents7 from "./components/components.js";
 // gen/front_end/panels/elements/ComputedStyleWidget.js
 var ComputedStyleWidget_exports = {};
 __export(ComputedStyleWidget_exports, {
-  ComputedStyleWidget: () => ComputedStyleWidget
+  ComputedStyleWidget: () => ComputedStyleWidget,
+  DEFAULT_VIEW: () => DEFAULT_VIEW3
 });
 import "./../../ui/legacy/legacy.js";
 import * as Common6 from "./../../core/common/common.js";
@@ -1054,19 +1055,29 @@ var DEFAULT_VIEW = (input, _output, target) => {
     </div>`, target);
 };
 var PlatformFontsWidget = class extends UI4.Widget.VBox {
-  sharedModel;
   #view;
-  constructor(sharedModel, view = DEFAULT_VIEW) {
-    super({ useShadowDom: true });
+  #sharedModel = null;
+  constructor(element, view = DEFAULT_VIEW) {
+    super(element, { useShadowDom: true });
     this.#view = view;
     this.registerRequiredCSS(platformFontsWidget_css_default);
-    this.sharedModel = sharedModel;
-    this.sharedModel.addEventListener("CSSModelChanged", this.requestUpdate, this);
-    this.sharedModel.addEventListener("ComputedStyleChanged", this.requestUpdate, this);
+  }
+  get sharedModel() {
+    return this.#sharedModel;
+  }
+  set sharedModel(model) {
+    if (model !== this.sharedModel) {
+      this.sharedModel?.removeEventListener("CSSModelChanged", this.requestUpdate, this);
+      this.sharedModel?.removeEventListener("ComputedStyleChanged", this.requestUpdate, this);
+      model.addEventListener("CSSModelChanged", this.requestUpdate, this);
+      model.addEventListener("ComputedStyleChanged", this.requestUpdate, this);
+    }
+    this.#sharedModel = model;
+    void this.requestUpdate();
   }
   async performUpdate() {
-    const cssModel = this.sharedModel.cssModel();
-    const node = this.sharedModel.node;
+    const cssModel = this.#sharedModel?.cssModel();
+    const node = this.#sharedModel?.node;
     if (!node || !cssModel) {
       this.#view({ platformFonts: null }, {}, this.contentElement);
       return;
@@ -9986,7 +9997,7 @@ var BinOpRenderer = class extends rendererBase(SDK9.CSSPropertyParserMatchers.Bi
 };
 
 // gen/front_end/panels/elements/ComputedStyleWidget.js
-var { html: html6 } = Lit5;
+var { html: html6, render: render5 } = Lit5;
 var UIStrings9 = {
   /**
    * @description Text for a checkbox setting that controls whether the user-supplied filter text
@@ -10127,19 +10138,33 @@ var propertySorter = (propA, propB) => {
   const canonicalB = SDK10.CSSMetadata.cssMetadata().canonicalPropertyName(propB);
   return Platform6.StringUtilities.compare(canonicalA, canonicalB);
 };
+var DEFAULT_VIEW3 = (input, _output, target) => {
+  render5(html6`
+    <div class="styles-sidebar-pane-toolbar">${input.toolbar}</div>
+    <div class="computed-style-tree-outline-container">
+      ${input.computedStylesTree}
+    </div>
+    ${!input.hasMatches ? html6`<div class="gray-info-message">${i18nString9(UIStrings9.noMatchingProperty)}</div>` : ""}
+    <div class="platform-fonts-widget-container">
+      <devtools-widget .widgetConfig=${UI13.Widget.widgetConfig(PlatformFontsWidget, { sharedModel: input.computedStyleModel })}></devtools-widget>
+    </div>
+  `, target);
+};
 var ComputedStyleWidget = class _ComputedStyleWidget extends UI13.Widget.VBox {
   computedStyleModel;
   showInheritedComputedStylePropertiesSetting;
   groupComputedStylesSetting;
   input;
   filterRegex;
-  noMatchesElement;
   linkifier;
   imagePreviewPopover;
   #computedStylesTree = new TreeOutline6.TreeOutline.TreeOutline();
   #treeData;
+  #view;
+  toolbarElement;
   constructor(computedStyleModel) {
     super({ useShadowDom: true });
+    this.#view = DEFAULT_VIEW3;
     this.registerRequiredCSS(computedStyleSidebarPane_css_default);
     this.contentElement.classList.add("styles-sidebar-computed-style-widget");
     this.computedStyleModel = computedStyleModel;
@@ -10151,8 +10176,11 @@ var ComputedStyleWidget = class _ComputedStyleWidget extends UI13.Widget.VBox {
     this.groupComputedStylesSetting.addChangeListener(() => {
       this.requestUpdate();
     });
-    const hbox = this.contentElement.createChild("div", "hbox styles-sidebar-pane-toolbar");
-    const toolbar2 = hbox.createChild("devtools-toolbar", "styles-pane-toolbar");
+    this.toolbarElement = document.createElement("div");
+    this.toolbarElement.classList.add("hbox", "styles-sidebar-pane-toolbar");
+    const toolbar2 = document.createElement("devtools-toolbar");
+    toolbar2.classList.add("styles-pane-toolbar");
+    this.toolbarElement.appendChild(toolbar2);
     const filterInput = new UI13.Toolbar.ToolbarFilter(void 0, 1, 1, void 0, void 0, false);
     filterInput.addEventListener("TextChanged", this.onFilterChanged, this);
     toolbar2.appendToolbarItem(filterInput);
@@ -10160,9 +10188,6 @@ var ComputedStyleWidget = class _ComputedStyleWidget extends UI13.Widget.VBox {
     this.filterRegex = null;
     toolbar2.appendToolbarItem(new UI13.Toolbar.ToolbarSettingCheckbox(this.showInheritedComputedStylePropertiesSetting, void 0, i18nString9(UIStrings9.showAll)));
     toolbar2.appendToolbarItem(new UI13.Toolbar.ToolbarSettingCheckbox(this.groupComputedStylesSetting, void 0, i18nString9(UIStrings9.group)));
-    this.noMatchesElement = this.contentElement.createChild("div", "gray-info-message");
-    this.noMatchesElement.textContent = i18nString9(UIStrings9.noMatchingProperty);
-    this.contentElement.appendChild(this.#computedStylesTree);
     this.linkifier = new Components4.Linkifier.Linkifier(maxLinkLength);
     this.imagePreviewPopover = new ImagePreviewPopover(this.contentElement, (event) => {
       const link2 = event.composedPath()[0];
@@ -10171,8 +10196,7 @@ var ComputedStyleWidget = class _ComputedStyleWidget extends UI13.Widget.VBox {
       }
       return null;
     }, () => this.computedStyleModel.node);
-    const fontsWidget = new PlatformFontsWidget(this.computedStyleModel);
-    fontsWidget.show(this.contentElement);
+    this.#updateView({ hasMatches: true });
   }
   onResize() {
     const isNarrow = this.contentElement.offsetWidth < 260;
@@ -10186,10 +10210,21 @@ var ComputedStyleWidget = class _ComputedStyleWidget extends UI13.Widget.VBox {
     super.willHide();
     UI13.Context.Context.instance().setFlavor(_ComputedStyleWidget, null);
   }
+  /**
+   * @param input.hasMatches Whether any properties matched the current filter (or if any properties exist at all).
+   */
+  #updateView({ hasMatches }) {
+    this.#view({
+      computedStylesTree: this.#computedStylesTree,
+      toolbar: this.toolbarElement,
+      hasMatches,
+      computedStyleModel: this.computedStyleModel
+    }, null, this.contentElement);
+  }
   async performUpdate() {
-    const [nodeStyles, matchedStyles] = await Promise.all([this.computedStyleModel.fetchComputedStyle(), this.fetchMatchedCascade()]);
+    const { computedStyle: nodeStyles, matchedStyles } = await this.computedStyleModel.fetchAllComputedStyleInfo();
     if (!nodeStyles || !matchedStyles) {
-      this.noMatchesElement.classList.remove("hidden");
+      this.#updateView({ hasMatches: false });
       return;
     }
     const shouldGroupComputedStyles = this.groupComputedStylesSetting.get();
@@ -10197,20 +10232,6 @@ var ComputedStyleWidget = class _ComputedStyleWidget extends UI13.Widget.VBox {
       await this.rebuildGroupedList(nodeStyles, matchedStyles);
     } else {
       await this.rebuildAlphabeticalList(nodeStyles, matchedStyles);
-    }
-  }
-  async fetchMatchedCascade() {
-    const node = this.computedStyleModel.node;
-    if (!node || !this.computedStyleModel.cssModel()) {
-      return null;
-    }
-    const cssModel = this.computedStyleModel.cssModel();
-    if (!cssModel) {
-      return null;
-    }
-    return await cssModel.cachedMatchedCascadeForNode(node).then(validateStyles.bind(this));
-    function validateStyles(matchedStyles) {
-      return matchedStyles && matchedStyles.node() === this.computedStyleModel.node ? matchedStyles : null;
     }
   }
   async rebuildAlphabeticalList(nodeStyle, matchedStyles) {
@@ -10255,7 +10276,7 @@ var ComputedStyleWidget = class _ComputedStyleWidget extends UI13.Widget.VBox {
     this.linkifier.reset();
     const cssModel = this.computedStyleModel.cssModel();
     if (!nodeStyle || !matchedStyles || !cssModel) {
-      this.noMatchesElement.classList.remove("hidden");
+      this.#updateView({ hasMatches: false });
       return;
     }
     const node = nodeStyle.node;
@@ -10439,7 +10460,7 @@ var ComputedStyleWidget = class _ComputedStyleWidget extends UI13.Widget.VBox {
       defaultRenderer: this.#treeData.defaultRenderer,
       compact: this.#treeData.compact
     };
-    this.noMatchesElement.classList.toggle("hidden", Boolean(tree3.length));
+    this.#updateView({ hasMatches: Boolean(tree3.length) });
   }
   async filterGroupLists() {
     if (!this.#treeData) {
@@ -10463,7 +10484,7 @@ var ComputedStyleWidget = class _ComputedStyleWidget extends UI13.Widget.VBox {
       compact: this.#treeData.compact
     };
     await this.#computedStylesTree.expandRecursively(0);
-    this.noMatchesElement.classList.toggle("hidden", Boolean(tree3.length));
+    this.#updateView({ hasMatches: Boolean(tree3.length) });
   }
 };
 var maxLinkLength = 30;
@@ -10559,7 +10580,7 @@ devtools-tree-outline {
 // gen/front_end/panels/elements/ElementsTreeOutline.js
 var ElementsTreeOutline_exports = {};
 __export(ElementsTreeOutline_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW5,
+  DEFAULT_VIEW: () => DEFAULT_VIEW6,
   DOMTreeWidget: () => DOMTreeWidget,
   ElementsTreeOutline: () => ElementsTreeOutline,
   MappedCharToEntity: () => MappedCharToEntity,
@@ -10575,7 +10596,7 @@ import * as CodeHighlighter5 from "./../../ui/components/code_highlighter/code_h
 import * as Highlighting3 from "./../../ui/components/highlighting/highlighting.js";
 import * as IssueCounter from "./../../ui/components/issue_counter/issue_counter.js";
 import * as UI18 from "./../../ui/legacy/legacy.js";
-import { html as html10, nothing as nothing3, render as render7 } from "./../../ui/lit/lit.js";
+import { html as html10, nothing as nothing3, render as render8 } from "./../../ui/lit/lit.js";
 import * as VisualLogging9 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/AdoptedStyleSheetTreeElement.js
@@ -10882,7 +10903,7 @@ function getTooltipFromElementAccessibilityIssue(reason) {
 // gen/front_end/panels/elements/ElementsTreeElement.js
 var ElementsTreeElement_exports = {};
 __export(ElementsTreeElement_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW3,
+  DEFAULT_VIEW: () => DEFAULT_VIEW4,
   EditTagBlocklist: () => EditTagBlocklist,
   ElementsTreeElement: () => ElementsTreeElement,
   ForbiddenClosingTagElements: () => ForbiddenClosingTagElements,
@@ -11248,7 +11269,7 @@ function getRegisteredDecorators() {
 }
 
 // gen/front_end/panels/elements/ElementsTreeElement.js
-var { html: html8, nothing: nothing2, render: render5, Directives: { ref: ref2 } } = Lit6;
+var { html: html8, nothing: nothing2, render: render6, Directives: { ref: ref2 } } = Lit6;
 var UIStrings12 = {
   /**
    * @description Title for Ad adorner. This iframe is marked as advertisement frame.
@@ -11561,13 +11582,13 @@ function handleAdornerKeydown(cb) {
     }
   };
 }
-var DEFAULT_VIEW3 = (input, output, target) => {
+var DEFAULT_VIEW4 = (input, output, target) => {
   const hasAdorners = input.showAdAdorner || input.showContainerAdorner || input.showFlexAdorner || input.showGridAdorner || input.showGridLanesAdorner || input.showMediaAdorner || input.showPopoverAdorner || input.showTopLayerAdorner || input.showViewSourceAdorner || input.showScrollAdorner || input.showScrollSnapAdorner || input.showSlotAdorner || input.showStartingStyleAdorner;
   const gutterContainerClasses = {
     "has-decorations": input.decorations.length || input.descendantDecorations.length,
     "gutter-container": true
   };
-  render5(html8`
+  render6(html8`
     <div ${ref2((el) => {
     output.contentElement = el;
   })}>
@@ -11884,7 +11905,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI15.TreeOutline.Tr
     }
   }
   performUpdate() {
-    DEFAULT_VIEW3({
+    DEFAULT_VIEW4({
       containerAdornerActive: this.#containerAdornerActive,
       showAdAdorner: this.nodeInternal.isAdFrameNode(),
       showContainerAdorner: Boolean(this.#layout?.containerType) && !this.isClosingTag(),
@@ -12143,7 +12164,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI15.TreeOutline.Tr
     if (this.editing) {
       this.editing.cancel();
     }
-    DEFAULT_VIEW3({
+    DEFAULT_VIEW4({
       containerAdornerActive: false,
       showAdAdorner: false,
       showContainerAdorner: false,
@@ -14045,7 +14066,7 @@ import * as UI16 from "./../../ui/legacy/legacy.js";
 import * as Lit7 from "./../../ui/lit/lit.js";
 import * as VisualElements from "./../../ui/visual_logging/visual_logging.js";
 import * as ElementsComponents6 from "./components/components.js";
-var { html: html9, render: render6 } = Lit7;
+var { html: html9, render: render7 } = Lit7;
 var UIStrings13 = {
   /**
    * @description Link text content in Elements Tree Outline of the Elements panel
@@ -14054,8 +14075,8 @@ var UIStrings13 = {
 };
 var str_13 = i18n25.i18n.registerUIStrings("panels/elements/ShortcutTreeElement.ts", UIStrings13);
 var i18nString12 = i18n25.i18n.getLocalizedString.bind(void 0, str_13);
-var DEFAULT_VIEW4 = (input, _output, target) => {
-  render6(html9`
+var DEFAULT_VIEW5 = (input, _output, target) => {
+  render7(html9`
     <div class="selection fill"></div>
     <span class="elements-tree-shortcut-title">\u21AA ${input.title}</span>
     <devtools-adorner
@@ -14077,7 +14098,7 @@ var ShortcutTreeElement = class extends UI16.TreeOutline.TreeElement {
   nodeShortcut;
   #hovered;
   #view;
-  constructor(nodeShortcut, view = DEFAULT_VIEW4) {
+  constructor(nodeShortcut, view = DEFAULT_VIEW5) {
     super("");
     this.nodeShortcut = nodeShortcut;
     this.#view = view;
@@ -14212,7 +14233,7 @@ var str_14 = i18n27.i18n.registerUIStrings("panels/elements/ElementsTreeOutline.
 var i18nString13 = i18n27.i18n.getLocalizedString.bind(void 0, str_14);
 var elementsTreeOutlineByDOMModel = /* @__PURE__ */ new WeakMap();
 var populatedTreeElements = /* @__PURE__ */ new WeakSet();
-var DEFAULT_VIEW5 = (input, output, target) => {
+var DEFAULT_VIEW6 = (input, output, target) => {
   if (!output.elementsTreeOutline) {
     output.elementsTreeOutline = new ElementsTreeOutline(input.omitRootDOMNode, input.selectEnabled, input.hideGutter);
     output.elementsTreeOutline.addEventListener(ElementsTreeOutline.Events.SelectedNodeChanged, input.onSelectedNodeChanged, void 0);
@@ -14320,7 +14341,7 @@ var DOMTreeWidget = class extends UI18.Widget.Widget {
       useShadowDom: false,
       delegatesFocus: false
     });
-    this.#view = view ?? DEFAULT_VIEW5;
+    this.#view = view ?? DEFAULT_VIEW6;
     if (Common9.Settings.Settings.instance().moduleSetting("highlight-node-on-hover-in-overlay").get()) {
       SDK15.TargetManager.TargetManager.instance().addModelListener(SDK15.OverlayModel.OverlayModel, "HighlightNodeRequested", this.#highlightNode, this, { scoped: true });
       SDK15.TargetManager.TargetManager.instance().addModelListener(SDK15.OverlayModel.OverlayModel, "InspectModeWillBeToggled", this.#clearHighlightedNode, this, { scoped: true });
@@ -14611,7 +14632,7 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common9.ObjectWrapp
         box: hoveredNode.boxInWindow(),
         show: async (popover) => {
           popover.setIgnoreLeftMargin(true);
-          render7(html10`
+          render8(html10`
             <div class="squiggles-content">
               ${issues.map((issue) => {
             const elementIssueDetails = getElementIssueDetails(issue);
@@ -16027,7 +16048,7 @@ var UIStrings15 = {
 };
 var str_15 = i18n29.i18n.registerUIStrings("panels/elements/LayoutPane.ts", UIStrings15);
 var i18nString14 = i18n29.i18n.getLocalizedString.bind(void 0, str_15);
-var { render: render8, html: html11 } = Lit8;
+var { render: render9, html: html11 } = Lit8;
 var nodeToLayoutElement = (node) => {
   const className = node.getAttribute("class");
   const nodeId = node.id;
@@ -16107,7 +16128,7 @@ function isBooleanSetting(setting) {
   return setting.type === "boolean";
 }
 var layoutPaneInstance;
-var DEFAULT_VIEW6 = (input, output, target) => {
+var DEFAULT_VIEW7 = (input, output, target) => {
   const onColorLabelKeyUp = (event) => {
     if (event.key !== "Enter" && event.key !== " ") {
       return;
@@ -16173,7 +16194,7 @@ var DEFAULT_VIEW6 = (input, output, target) => {
            @click=${(e) => input.onElementClick(element, e)}
            ></devtools-button>
       </div>`;
-  render8(
+  render9(
     html11`
       <div style="min-width: min-content;" jslog=${VisualLogging10.pane("layout").track({ resize: true })}>
         <style>${layoutPane_css_default}</style>
@@ -16245,7 +16266,7 @@ var LayoutPane = class _LayoutPane extends UI19.Widget.Widget {
   #uaShadowDOMSetting;
   #domModels;
   #view;
-  constructor(element, view = DEFAULT_VIEW6) {
+  constructor(element, view = DEFAULT_VIEW7) {
     super(element);
     this.#settings = this.#makeSettings();
     this.#uaShadowDOMSetting = Common10.Settings.Settings.instance().moduleSetting("show-ua-shadow-dom");
@@ -16449,7 +16470,7 @@ import * as Common11 from "./../../core/common/common.js";
 import * as Platform9 from "./../../core/platform/platform.js";
 import * as SDK17 from "./../../core/sdk/sdk.js";
 import * as UI20 from "./../../ui/legacy/legacy.js";
-import { Directives as Directives2, html as html12, nothing as nothing4, render as render9 } from "./../../ui/lit/lit.js";
+import { Directives as Directives2, html as html12, nothing as nothing4, render as render10 } from "./../../ui/lit/lit.js";
 import * as VisualLogging11 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/metricsSidebarPane.css.js
@@ -16607,7 +16628,7 @@ visible. */
 
 // gen/front_end/panels/elements/MetricsSidebarPane.js
 var { live } = Directives2;
-var DEFAULT_VIEW7 = (input, output, target) => {
+var DEFAULT_VIEW8 = (input, output, target) => {
   const { style, highlightedMode, node, contentWidth, contentHeight, onHighlightNode, onStartEditing } = input;
   function createBoxPartElement(style2, name, side, suffix) {
     const propertyName = (name !== "position" ? name + "-" : "") + side + suffix;
@@ -16716,7 +16737,7 @@ var DEFAULT_VIEW7 = (input, output, target) => {
         </div>`;
     previousBox = box;
   }
-  render9(html12`
+  render10(html12`
     <div class="metrics ${!node ? "collapsed" : ""}" @mouseover=${(e) => {
     e.consume();
     onHighlightNode(true, "all");
@@ -16736,7 +16757,7 @@ var MetricsSidebarPane = class extends ElementsSidebarPane {
   computedStyle;
   isEditingMetrics;
   view;
-  constructor(computedStyleModel, view = DEFAULT_VIEW7) {
+  constructor(computedStyleModel, view = DEFAULT_VIEW8) {
     super(computedStyleModel, { jslog: `${VisualLogging11.pane("styles-metrics")}` });
     this.registerRequiredCSS(metricsSidebarPane_css_default);
     this.originalPropertyData = null;
@@ -18268,7 +18289,7 @@ var ToggleSearchActionDelegate = class {
 var EventListenersWidget_exports = {};
 __export(EventListenersWidget_exports, {
   ActionDelegate: () => ActionDelegate2,
-  DEFAULT_VIEW: () => DEFAULT_VIEW8,
+  DEFAULT_VIEW: () => DEFAULT_VIEW9,
   DispatchFilterBy: () => DispatchFilterBy,
   EventListenersWidget: () => EventListenersWidget
 });
@@ -18276,7 +18297,7 @@ import * as Common14 from "./../../core/common/common.js";
 import * as i18n33 from "./../../core/i18n/i18n.js";
 import * as SDK20 from "./../../core/sdk/sdk.js";
 import * as UI23 from "./../../ui/legacy/legacy.js";
-import { html as html13, render as render10 } from "./../../ui/lit/lit.js";
+import { html as html13, render as render11 } from "./../../ui/lit/lit.js";
 import * as VisualLogging14 from "./../../ui/visual_logging/visual_logging.js";
 import * as EventListeners from "./../event_listeners/event_listeners.js";
 var { bindToAction, bindToSetting } = UI23.UIUtils;
@@ -18317,8 +18338,8 @@ var UIStrings17 = {
 var str_17 = i18n33.i18n.registerUIStrings("panels/elements/EventListenersWidget.ts", UIStrings17);
 var i18nString16 = i18n33.i18n.getLocalizedString.bind(void 0, str_17);
 var eventListenersWidgetInstance;
-var DEFAULT_VIEW8 = (input, _output, target) => {
-  render10(html13`
+var DEFAULT_VIEW9 = (input, _output, target) => {
+  render11(html13`
     <div jslog=${VisualLogging14.pane("elements.event-listeners").track({ resize: true })}>
       <devtools-toolbar class="event-listener-toolbar" role="presentation">
         <devtools-button ${bindToAction(input.refreshEventListenersActionName)}></devtools-button>
@@ -18356,7 +18377,7 @@ var EventListenersWidget = class _EventListenersWidget extends UI23.Widget.VBox 
   showFrameworkListenersSetting;
   lastRequestedNode;
   #view;
-  constructor(view = DEFAULT_VIEW8) {
+  constructor(view = DEFAULT_VIEW9) {
     super();
     this.#view = view;
     this.showForAncestorsSetting = Common14.Settings.Settings.instance().moduleSetting("show-event-listeners-for-ancestors");
@@ -18483,7 +18504,7 @@ var ActionDelegate2 = class {
 // gen/front_end/panels/elements/PropertiesWidget.js
 var PropertiesWidget_exports = {};
 __export(PropertiesWidget_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW9,
+  DEFAULT_VIEW: () => DEFAULT_VIEW10,
   PropertiesWidget: () => PropertiesWidget
 });
 import "./../../ui/legacy/legacy.js";
@@ -18494,7 +18515,7 @@ import * as Platform11 from "./../../core/platform/platform.js";
 import * as SDK21 from "./../../core/sdk/sdk.js";
 import * as ObjectUI from "./../../ui/legacy/components/object_ui/object_ui.js";
 import * as UI24 from "./../../ui/legacy/legacy.js";
-import { html as html14, nothing as nothing5, render as render11 } from "./../../ui/lit/lit.js";
+import { html as html14, nothing as nothing5, render as render12 } from "./../../ui/lit/lit.js";
 import * as VisualLogging15 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/propertiesWidget.css.js
@@ -18544,8 +18565,8 @@ var UIStrings18 = {
 };
 var str_18 = i18n35.i18n.registerUIStrings("panels/elements/PropertiesWidget.ts", UIStrings18);
 var i18nString17 = i18n35.i18n.getLocalizedString.bind(void 0, str_18);
-var DEFAULT_VIEW9 = (input, _output, target) => {
-  render11(html14`
+var DEFAULT_VIEW10 = (input, _output, target) => {
+  render12(html14`
     <div jslog=${VisualLogging15.pane("element-properties").track({ resize: true })}>
       <div class="hbox properties-widget-toolbar">
         <devtools-toolbar class="styles-pane-toolbar" role="presentation">
@@ -18575,7 +18596,7 @@ var PropertiesWidget = class extends UI24.Widget.VBox {
   lastRequestedNode;
   #view;
   #displayNoMatchingPropertyMessage = false;
-  constructor(view = DEFAULT_VIEW9) {
+  constructor(view = DEFAULT_VIEW10) {
     super({ useShadowDom: true });
     this.registerRequiredCSS(propertiesWidget_css_default);
     this.showAllPropertiesSetting = getShowAllPropertiesSetting();
@@ -18678,7 +18699,7 @@ var PropertiesWidget = class extends UI24.Widget.VBox {
 // gen/front_end/panels/elements/NodeStackTraceWidget.js
 var NodeStackTraceWidget_exports = {};
 __export(NodeStackTraceWidget_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW10,
+  DEFAULT_VIEW: () => DEFAULT_VIEW11,
   MaxLengthForLinks: () => MaxLengthForLinks,
   NodeStackTraceWidget: () => NodeStackTraceWidget
 });
@@ -18687,7 +18708,7 @@ import * as SDK22 from "./../../core/sdk/sdk.js";
 import * as Bindings5 from "./../../models/bindings/bindings.js";
 import * as Components7 from "./../../ui/legacy/components/utils/utils.js";
 import * as UI25 from "./../../ui/legacy/legacy.js";
-import { html as html15, render as render12 } from "./../../ui/lit/lit.js";
+import { html as html15, render as render13 } from "./../../ui/lit/lit.js";
 
 // gen/front_end/panels/elements/nodeStackTraceWidget.css.js
 var nodeStackTraceWidget_css_default = `/*
@@ -18713,9 +18734,9 @@ var UIStrings19 = {
 };
 var str_19 = i18n37.i18n.registerUIStrings("panels/elements/NodeStackTraceWidget.ts", UIStrings19);
 var i18nString18 = i18n37.i18n.getLocalizedString.bind(void 0, str_19);
-var DEFAULT_VIEW10 = (input, _output, target) => {
+var DEFAULT_VIEW11 = (input, _output, target) => {
   const { target: sdkTarget, linkifier, stackTrace } = input;
-  render12(html15`
+  render13(html15`
     <style>${nodeStackTraceWidget_css_default}</style>
     ${target && stackTrace ? html15`<devtools-widget
                 class="stack-trace"
@@ -18725,7 +18746,7 @@ var DEFAULT_VIEW10 = (input, _output, target) => {
 var NodeStackTraceWidget = class extends UI25.Widget.VBox {
   #linkifier = new Components7.Linkifier.Linkifier(MaxLengthForLinks);
   #view;
-  constructor(view = DEFAULT_VIEW10) {
+  constructor(view = DEFAULT_VIEW11) {
     super({ useShadowDom: true });
     this.#view = view;
   }
@@ -19127,7 +19148,7 @@ var ClassNamePrompt = class extends UI26.TextPrompt.TextPrompt {
 var ElementStatePaneWidget_exports = {};
 __export(ElementStatePaneWidget_exports, {
   ButtonProvider: () => ButtonProvider4,
-  DEFAULT_VIEW: () => DEFAULT_VIEW11,
+  DEFAULT_VIEW: () => DEFAULT_VIEW12,
   ElementStatePaneWidget: () => ElementStatePaneWidget
 });
 import * as i18n41 from "./../../core/i18n/i18n.js";
@@ -19135,7 +19156,7 @@ import * as SDK24 from "./../../core/sdk/sdk.js";
 import * as Buttons4 from "./../../ui/components/buttons/buttons.js";
 import * as UIHelpers from "./../../ui/helpers/helpers.js";
 import * as UI27 from "./../../ui/legacy/legacy.js";
-import { html as html16, render as render13 } from "./../../ui/lit/lit.js";
+import { html as html16, render as render14 } from "./../../ui/lit/lit.js";
 import * as VisualLogging17 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/elementStatePaneWidget.css.js
@@ -19251,7 +19272,7 @@ var SpecificPseudoStates;
   SpecificPseudoStates2["OPEN"] = "open";
   SpecificPseudoStates2["TARGET_CURRENT"] = "target-current";
 })(SpecificPseudoStates || (SpecificPseudoStates = {}));
-var DEFAULT_VIEW11 = (input, _output, target) => {
+var DEFAULT_VIEW12 = (input, _output, target) => {
   const createElementStateCheckbox = (state) => {
     return html16`
         <div id=${state.state}>
@@ -19262,7 +19283,7 @@ var DEFAULT_VIEW11 = (input, _output, target) => {
         </devtools-checkbox>
         </div>`;
   };
-  render13(html16`
+  render14(html16`
     <style>${elementStatePaneWidget_css_default}</style>
     <div class="styles-element-state-pane"
         jslog=${VisualLogging17.pane("element-states")}>
@@ -19300,7 +19321,7 @@ var ElementStatePaneWidget = class extends UI27.Widget.Widget {
   #cssModel;
   #states = /* @__PURE__ */ new Map();
   #view;
-  constructor(view = DEFAULT_VIEW11) {
+  constructor(view = DEFAULT_VIEW12) {
     super({ useShadowDom: true });
     this.#view = view;
     this.#duals = /* @__PURE__ */ new Map();

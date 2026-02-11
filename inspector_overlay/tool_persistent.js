@@ -38,10 +38,15 @@ export class PersistentOverlay extends Overlay {
     gridLabels;
     draggableBorders = new Map();
     dragHandler;
+    greenDevAnchorsOverlay;
+    setGreenDevAnchorsOverlay(greenDevAnchorsOverlay) {
+        this.greenDevAnchorsOverlay = greenDevAnchorsOverlay;
+    }
     reset(data) {
         super.reset(data);
         this.gridLabelState.gridLayerCounter = 0;
         this.gridLabels.innerHTML = '';
+        this.greenDevAnchorsOverlay?.reset(data);
     }
     renderGridMarkup() {
         const gridLabels = this.document.createElement('div');
@@ -86,6 +91,12 @@ export class PersistentOverlay extends Overlay {
         this.context.save();
         drawContainerQueryHighlight(highlight, this.context, this.emulationScaleFactor);
         this.context.restore();
+    }
+    drawGreenDevFloatyAnchors(highlights) {
+        if (this.greenDevAnchorsOverlay && !this.greenDevAnchorsOverlay.installed) {
+            this.greenDevAnchorsOverlay.install();
+        }
+        this.greenDevAnchorsOverlay?.drawGreenDevAnchors(highlights);
     }
     drawIsolatedElementHighlight(highlight) {
         if (!this.dragHandler) {

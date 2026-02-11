@@ -52,7 +52,7 @@ export class InteractionsTrackAppender {
     #appendTrackHeaderAtLevel(currentLevel, expanded) {
         const trackIsCollapsible = this.#parsedTrace.data.UserInteractions.interactionEvents.length > 0;
         const style = buildGroupStyle({
-            collapsible: trackIsCollapsible ? 0 /* PerfUI.FlameChart.GroupCollapsibleState.ALWAYS */ :
+            collapsible: trackIsCollapsible ? 2 /* PerfUI.FlameChart.GroupCollapsibleState.IF_MULTI_ROW */ :
                 1 /* PerfUI.FlameChart.GroupCollapsibleState.NEVER */,
             useDecoratorsForOverview: true,
         });

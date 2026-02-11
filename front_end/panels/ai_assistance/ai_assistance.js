@@ -1854,7 +1854,7 @@ var DEFAULT_VIEW2 = (input, output, target) => {
                                     class="add-context"
                                     .iconName=${"plus"}
                                     .size=${"SMALL"}
-                                    .jslogContext=${"context-add"}
+                                    .jslogContext=${"context-added"}
                                     .variant=${"icon"}
                                     @click=${input.onContextAdd}></devtools-button>` : Lit.nothing}
               </div>
@@ -4781,6 +4781,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI8.Panel.Panel {
   #selectedRequest = null;
   // Messages displayed in the `ChatView` component.
   #messages = [];
+  #isContextAutoSelectionSuspended = false;
   // Whether the UI should show loading or not.
   #isLoading = false;
   // Stores the availability status of the `AidaClient` and the reason for unavailability, if any.
@@ -4960,8 +4961,11 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI8.Panel.Panel {
         }
       }
       this.#conversation = conversation;
+      this.#isContextAutoSelectionSuspended = false;
     }
-    this.#conversation?.setContext(this.#getConversationContext(isAiAssistanceContextSelectionAgentEnabled() ? this.#getDefaultConversationType() : this.#conversation?.type ?? null));
+    if (!this.#isContextAutoSelectionSuspended) {
+      this.#conversation?.setContext(this.#getConversationContext(isAiAssistanceContextSelectionAgentEnabled() ? this.#getDefaultConversationType() : this.#conversation?.type ?? null));
+    }
     this.requestUpdate();
   }
   wasShown() {
@@ -5241,9 +5245,11 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI8.Panel.Panel {
   }
   #handleContextRemoved() {
     this.#conversation?.setContext(null);
+    this.#isContextAutoSelectionSuspended = true;
     this.requestUpdate();
   }
   #handleContextAdd() {
+    this.#isContextAutoSelectionSuspended = false;
     this.#conversation?.setContext(this.#getConversationContext(this.#getDefaultConversationType()));
     this.requestUpdate();
   }
@@ -5262,6 +5268,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI8.Panel.Panel {
       this.#viewOutput.chatView?.focusTextInput();
       return;
     }
+    this.#isContextAutoSelectionSuspended = false;
     let targetConversationType;
     switch (actionId) {
       case "freestyler.elements-floating-button": {
@@ -5426,6 +5433,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI8.Panel.Panel {
       this.#selectedPerformanceTrace = context;
       this.#conversation?.setContext(context);
     }
+    this.#isContextAutoSelectionSuspended = false;
     void VisualLogging6.logFunctionCall(`context-change-${this.#conversation?.type}`);
     this.requestUpdate();
   };

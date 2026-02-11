@@ -6,6 +6,9 @@ import commonStyle from './common.css';
 import { adoptStyleSheet } from './common.js';
 import { gridStyle } from './highlight_grid_common.js';
 // @ts-expect-error Importing CSS is handled in Rollup.
+import greenDevAnchorsStyle from './tool_green_dev_anchors.css';
+import { GreenDevAnchorsOverlay } from './tool_green_dev_anchors.js';
+// @ts-expect-error Importing CSS is handled in Rollup.
 import highlightGridStyle from './tool_grid.css';
 // @ts-expect-error Importing CSS is handled in Rollup.
 import highlightStyle from './tool_highlight.css';
@@ -28,14 +31,17 @@ adoptStyleSheet(commonStyle);
 const gridStyleSheet = new CSSStyleSheet();
 gridStyleSheet.replaceSync(gridStyle);
 const highlightOverlay = new HighlightOverlay(window, [highlightStyle, gridStyleSheet]);
-const persistentOverlay = new PersistentOverlay(window, [highlightGridStyle, gridStyleSheet]);
+const persistentOverlay = new PersistentOverlay(window, [highlightGridStyle, greenDevAnchorsStyle, gridStyleSheet]);
 const pausedOverlay = new PausedOverlay(window, pausedStyle);
 const screenshotOverlay = new ScreenshotOverlay(window, screenshotStyle);
+const greenDevAnchorsOverlay = new GreenDevAnchorsOverlay(window, greenDevAnchorsStyle);
 const sourceOrderOverlay = new SourceOrderOverlay(window, sourceOrderStyle);
 const viewportSizeOverlay = new ViewportSizeOverlay(window);
 const windowControlsOverlay = new WindowControlsOverlay(window, [wcoStyle]);
+persistentOverlay.setGreenDevAnchorsOverlay(greenDevAnchorsOverlay);
 // Key in this object is the name the backend refers to a particular overlay by.
 const overlays = {
+    greenDevFloaty: greenDevAnchorsOverlay,
     highlight: highlightOverlay,
     persistent: persistentOverlay,
     paused: pausedOverlay,

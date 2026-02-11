@@ -4,7 +4,6 @@
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as ThirdPartyWeb from '../../third_party/third-party-web/third-party-web.js';
 import { Issue } from './Issue.js';
 import { resolveLazyDescription, } from './MarkdownIssueDescription.js';
 const UIStrings = {
@@ -177,22 +176,6 @@ export class CookieIssue extends Issue {
             return "PageError" /* IssueKind.PAGE_ERROR */;
         }
         return "BreakingChange" /* IssueKind.BREAKING_CHANGE */;
-    }
-    makeCookieReportEntry() {
-        const status = CookieIssue.getCookieStatus(this.details());
-        const details = this.details();
-        if (details.cookie && details.cookieUrl && status !== undefined) {
-            const entity = ThirdPartyWeb.ThirdPartyWeb.getEntity(details.cookieUrl);
-            return {
-                name: details.cookie.name,
-                domain: details.cookie.domain,
-                type: entity?.category,
-                platform: entity?.name,
-                status,
-                insight: this.details().insight,
-            };
-        }
-        return;
     }
     static getCookieStatus(cookieIssueDetails) {
         if (cookieIssueDetails.cookieExclusionReasons.includes("ExcludeThirdPartyPhaseout" /* Protocol.Audits.CookieExclusionReason.ExcludeThirdPartyPhaseout */)) {

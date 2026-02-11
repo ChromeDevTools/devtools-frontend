@@ -28,8 +28,10 @@ export class ResourcesPanel extends UI.Panel.PanelWithSidebar {
     cookieView;
     deviceBoundSessionsView;
     sidebar;
-    constructor() {
+    mode = 'default';
+    constructor(mode = 'default') {
         super('resources');
+        this.mode = mode;
         this.registerRequiredCSS(resourcesPanelStyles);
         this.resourcesLastSelectedItemSetting =
             Common.Settings.Settings.instance().createSetting('resources-last-selected-element-path', []);
@@ -48,10 +50,10 @@ export class ResourcesPanel extends UI.Panel.PanelWithSidebar {
         this.sidebar = new ApplicationPanelSidebar(this);
         this.sidebar.show(this.panelSidebarElement());
     }
-    static instance(opts = { forceNew: null }) {
-        const { forceNew } = opts;
+    static instance(opts = { forceNew: null, mode: 'default' }) {
+        const { forceNew, mode } = opts;
         if (!resourcesPanelInstance || forceNew) {
-            resourcesPanelInstance = new ResourcesPanel();
+            resourcesPanelInstance = new ResourcesPanel(mode);
         }
         return resourcesPanelInstance;
     }

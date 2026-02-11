@@ -408,6 +408,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     #selectedRequest = null;
     // Messages displayed in the `ChatView` component.
     #messages = [];
+    #isContextAutoSelectionSuspended = false;
     // Whether the UI should show loading or not.
     #isLoading = false;
     // Stores the availability status of the `AidaClient` and the reason for unavailability, if any.
@@ -606,9 +607,12 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                 }
             }
             this.#conversation = conversation;
+            this.#isContextAutoSelectionSuspended = false;
         }
-        this.#conversation?.setContext(this.#getConversationContext(isAiAssistanceContextSelectionAgentEnabled() ? this.#getDefaultConversationType() :
-            (this.#conversation?.type ?? null)));
+        if (!this.#isContextAutoSelectionSuspended) {
+            this.#conversation?.setContext(this.#getConversationContext(isAiAssistanceContextSelectionAgentEnabled() ? this.#getDefaultConversationType() :
+                (this.#conversation?.type ?? null)));
+        }
         this.requestUpdate();
     }
     wasShown() {
@@ -901,9 +905,11 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     }
     #handleContextRemoved() {
         this.#conversation?.setContext(null);
+        this.#isContextAutoSelectionSuspended = true;
         this.requestUpdate();
     }
     #handleContextAdd() {
+        this.#isContextAutoSelectionSuspended = false;
         this.#conversation?.setContext(this.#getConversationContext(this.#getDefaultConversationType()));
         this.requestUpdate();
     }
@@ -921,6 +927,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             this.#viewOutput.chatView?.focusTextInput();
             return;
         }
+        this.#isContextAutoSelectionSuspended = false;
         let targetConversationType;
         switch (actionId) {
             case 'freestyler.elements-floating-button': {
@@ -1088,6 +1095,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             this.#selectedPerformanceTrace = context;
             this.#conversation?.setContext(context);
         }
+        this.#isContextAutoSelectionSuspended = false;
         void VisualLogging.logFunctionCall(`context-change-${this.#conversation?.type}`);
         this.requestUpdate();
     };

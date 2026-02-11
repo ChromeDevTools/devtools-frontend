@@ -64,19 +64,29 @@ export const DEFAULT_VIEW = (input, _output, target) => {
     // clang-format on
 };
 export class PlatformFontsWidget extends UI.Widget.VBox {
-    sharedModel;
     #view;
-    constructor(sharedModel, view = DEFAULT_VIEW) {
-        super({ useShadowDom: true });
+    #sharedModel = null;
+    constructor(element, view = DEFAULT_VIEW) {
+        super(element, { useShadowDom: true });
         this.#view = view;
         this.registerRequiredCSS(platformFontsWidgetStyles);
-        this.sharedModel = sharedModel;
-        this.sharedModel.addEventListener("CSSModelChanged" /* ComputedStyle.ComputedStyleModel.Events.CSS_MODEL_CHANGED */, this.requestUpdate, this);
-        this.sharedModel.addEventListener("ComputedStyleChanged" /* ComputedStyle.ComputedStyleModel.Events.COMPUTED_STYLE_CHANGED */, this.requestUpdate, this);
+    }
+    get sharedModel() {
+        return this.#sharedModel;
+    }
+    set sharedModel(model) {
+        if (model !== this.sharedModel) {
+            this.sharedModel?.removeEventListener("CSSModelChanged" /* ComputedStyle.ComputedStyleModel.Events.CSS_MODEL_CHANGED */, this.requestUpdate, this);
+            this.sharedModel?.removeEventListener("ComputedStyleChanged" /* ComputedStyle.ComputedStyleModel.Events.COMPUTED_STYLE_CHANGED */, this.requestUpdate, this);
+            model.addEventListener("CSSModelChanged" /* ComputedStyle.ComputedStyleModel.Events.CSS_MODEL_CHANGED */, this.requestUpdate, this);
+            model.addEventListener("ComputedStyleChanged" /* ComputedStyle.ComputedStyleModel.Events.COMPUTED_STYLE_CHANGED */, this.requestUpdate, this);
+        }
+        this.#sharedModel = model;
+        void this.requestUpdate();
     }
     async performUpdate() {
-        const cssModel = this.sharedModel.cssModel();
-        const node = this.sharedModel.node;
+        const cssModel = this.#sharedModel?.cssModel();
+        const node = this.#sharedModel?.node;
         if (!node || !cssModel) {
             this.#view({ platformFonts: null }, {}, this.contentElement);
             return;

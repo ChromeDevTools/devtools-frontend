@@ -114,6 +114,25 @@ export class ComputedStyleModel extends Common.ObjectWrapper.ObjectWrapper {
                 null;
         }
     }
+    async fetchMatchedCascade() {
+        const node = this.node;
+        if (!node || !this.cssModel()) {
+            return null;
+        }
+        const cssModel = this.cssModel();
+        if (!cssModel) {
+            return null;
+        }
+        const matchedStyles = await cssModel.cachedMatchedCascadeForNode(node);
+        if (!matchedStyles) {
+            return null;
+        }
+        return matchedStyles.node() === this.node ? matchedStyles : null;
+    }
+    async fetchAllComputedStyleInfo() {
+        const [computedStyle, matchedStyles] = await Promise.all([this.fetchComputedStyle(), this.fetchMatchedCascade()]);
+        return { computedStyle, matchedStyles };
+    }
 }
 export class ComputedStyle {
     node;

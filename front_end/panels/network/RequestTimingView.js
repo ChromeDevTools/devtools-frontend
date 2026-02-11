@@ -532,7 +532,7 @@ export class RequestTimingView extends UI.Widget.VBox {
             calculator: this.#calculator,
             requestStartTime: this.#request.startTime,
             requestIssueTime: this.#request.issueTime(),
-            requestUnfinished: false,
+            requestUnfinished: !this.#request.finished,
             fetchDetails: this.#fetchDetailsTree(),
             routerDetails: this.#routerDetailsTree(),
             wasThrottled: conditions?.urlPattern ? conditions : undefined,

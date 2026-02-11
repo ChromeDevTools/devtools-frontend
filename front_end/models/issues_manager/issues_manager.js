@@ -831,7 +831,6 @@ __export(CookieIssue_exports, {
 import * as Common3 from "./../../core/common/common.js";
 import * as i18n9 from "./../../core/i18n/i18n.js";
 import * as SDK3 from "./../../core/sdk/sdk.js";
-import * as ThirdPartyWeb from "./../../third_party/third-party-web/third-party-web.js";
 var UIStrings5 = {
   /**
    * @description Label for the link for SameSiteCookies Issues
@@ -1003,22 +1002,6 @@ var CookieIssue = class _CookieIssue extends Issue {
       return "PageError";
     }
     return "BreakingChange";
-  }
-  makeCookieReportEntry() {
-    const status = _CookieIssue.getCookieStatus(this.details());
-    const details = this.details();
-    if (details.cookie && details.cookieUrl && status !== void 0) {
-      const entity = ThirdPartyWeb.ThirdPartyWeb.getEntity(details.cookieUrl);
-      return {
-        name: details.cookie.name,
-        domain: details.cookie.domain,
-        type: entity?.category,
-        platform: entity?.name,
-        status,
-        insight: this.details().insight
-      };
-    }
-    return;
   }
   static getCookieStatus(cookieIssueDetails) {
     if (cookieIssueDetails.cookieExclusionReasons.includes(

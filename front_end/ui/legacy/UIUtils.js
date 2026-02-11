@@ -1003,7 +1003,7 @@ export class CheckboxLabel extends HTMLElement {
         this.#textElement.addEventListener('click', e => e.stopPropagation());
         this.#textElement.createChild('slot');
     }
-    static create(title, checked, subtitle, jslogContext, small) {
+    static create(title, checked, subtitle, jslogContext, small, tooltip) {
         const element = document.createElement('devtools-checkbox');
         element.#checkboxElement.checked = Boolean(checked);
         if (jslogContext) {
@@ -1011,10 +1011,16 @@ export class CheckboxLabel extends HTMLElement {
         }
         if (title !== undefined) {
             element.#textElement.textContent = title;
-            element.#checkboxElement.title = title;
             if (subtitle !== undefined) {
                 element.#textElement.createChild('div', 'devtools-checkbox-subtitle').textContent = subtitle;
             }
+        }
+        // checkboxElement tooltip: tooltip first, then title (custom tooltip takes precedence for the input)
+        const inputTooltip = tooltip ?? title;
+        if (inputTooltip) {
+            element.#checkboxElement.title = inputTooltip;
+            // Set aria-description for screen reader announcement
+            element.#checkboxElement.setAttribute('aria-description', inputTooltip);
         }
         element.#checkboxElement.classList.toggle('small', small);
         return element;
@@ -1667,6 +1673,7 @@ export function bindToAction(actionName) {
 }
 export class InterceptBindingDirective extends Lit.Directive.Directive {
     static #interceptedBindings = new WeakMap();
+    static #attachedBindings = new WeakMap();
     update(part, [listener]) {
         if (part.type !== Lit.Directive.PartType.EVENT) {
             return listener;
@@ -1683,13 +1690,22 @@ export class InterceptBindingDirective extends Lit.Directive.Directive {
     render(_listener) {
         return undefined;
     }
-    static attachEventListeners(templateElement, renderedElement) {
-        const eventListeners = InterceptBindingDirective.#interceptedBindings.get(templateElement);
-        if (!eventListeners) {
-            return;
+    static setEventListeners(templateElement, renderedElement) {
+        const attachedListeners = InterceptBindingDirective.#attachedBindings.get(renderedElement);
+        if (attachedListeners) {
+            for (const [name, listener] of attachedListeners) {
+                renderedElement.removeEventListener(name, listener);
+            }
         }
-        for (const [name, listener] of eventListeners) {
-            renderedElement.addEventListener(name, listener);
+        const newListeners = InterceptBindingDirective.#interceptedBindings.get(templateElement);
+        if (newListeners?.size) {
+            for (const [name, listener] of newListeners) {
+                renderedElement.addEventListener(name, listener);
+            }
+            InterceptBindingDirective.#attachedBindings.set(renderedElement, new Map(newListeners));
+        }
+        else {
+            InterceptBindingDirective.#attachedBindings.delete(renderedElement);
         }
     }
 }
@@ -1718,7 +1734,7 @@ export class HTMLElementWithLightDOMTemplate extends HTMLElement {
             clone.appendChild(HTMLElementWithLightDOMTemplate.cloneNode(child));
         }
         if (node instanceof Element && clone instanceof Element) {
-            InterceptBindingDirective.attachEventListeners(node, clone);
+            InterceptBindingDirective.setEventListeners(node, clone);
         }
         return clone;
     }

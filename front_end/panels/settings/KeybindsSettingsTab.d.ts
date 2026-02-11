@@ -11,7 +11,7 @@ export declare class KeybindsSettingsTab extends UI.Widget.VBox implements UI.Li
      * This method will never be called.
      */
     heightForItem(_item: KeybindsItem): number;
-    isItemSelectable(_item: KeybindsItem): boolean;
+    isItemSelectable(item: KeybindsItem): boolean;
     selectedItemChanged(_from: KeybindsItem | null, to: KeybindsItem | null, fromElement: HTMLElement | null, toElement: HTMLElement | null): void;
     updateSelectedItemARIA(_fromElement: Element | null, _toElement: Element | null): boolean;
     startEditing(action: UI.ActionRegistration.Action): void;

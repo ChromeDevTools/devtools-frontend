@@ -20,9 +20,11 @@ export declare class ResourcesPanel extends UI.Panel.PanelWithSidebar {
     private cookieView;
     private deviceBoundSessionsView;
     private readonly sidebar;
+    mode: 'default' | 'node';
     private constructor();
     static instance(opts?: {
-        forceNew: boolean | null;
+        forceNew?: boolean | null;
+        mode?: 'default' | 'node';
     }): ResourcesPanel;
     private static shouldCloseOnReset;
     static showAndGetSidebar(): Promise<ApplicationPanelSidebar>;

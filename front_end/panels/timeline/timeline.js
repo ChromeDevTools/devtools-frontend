@@ -124,7 +124,10 @@ var AnimationsTrackAppender = class {
     return this.#compatibilityBuilder.appendEventsAtLevel(animations, trackStartLevel, this, this.#eventAppendedCallback);
   }
   #appendTrackHeaderAtLevel(currentLevel, expanded) {
-    const style = buildGroupStyle({ useFirstLineForOverview: false });
+    const style = buildGroupStyle({
+      useFirstLineForOverview: false,
+      collapsible: 2
+    });
     const group = buildTrackHeader(
       "animations",
       currentLevel,
@@ -635,7 +638,7 @@ var InteractionsTrackAppender = class {
   #appendTrackHeaderAtLevel(currentLevel, expanded) {
     const trackIsCollapsible = this.#parsedTrace.data.UserInteractions.interactionEvents.length > 0;
     const style = buildGroupStyle({
-      collapsible: trackIsCollapsible ? 0 : 1,
+      collapsible: trackIsCollapsible ? 2 : 1,
       useDecoratorsForOverview: true
     });
     const group = buildTrackHeader(

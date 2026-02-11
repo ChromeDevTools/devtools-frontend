@@ -49,6 +49,8 @@ export declare class ListControl<T> {
     selectNextItem(canWrap?: boolean, center?: boolean): boolean;
     selectItemPreviousPage(center?: boolean): boolean;
     selectItemNextPage(center?: boolean): boolean;
+    selectFirstItem(center?: boolean): boolean;
+    selectLastItem(center?: boolean): boolean;
     private scrollIntoView;
     private onClick;
     private onKeyDown;

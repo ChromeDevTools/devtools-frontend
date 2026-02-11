@@ -2588,8 +2588,8 @@ var KeybindsSettingsTab = class extends UI5.Widget.VBox {
   heightForItem(_item) {
     return 0;
   }
-  isItemSelectable(_item) {
-    return true;
+  isItemSelectable(item2) {
+    return item2 instanceof UI5.ActionRegistration.Action;
   }
   selectedItemChanged(_from, to, fromElement, toElement) {
     if (fromElement) {
@@ -2665,7 +2665,7 @@ var KeybindsSettingsTab = class extends UI5.Widget.VBox {
     }
     this.list.refreshAllItems();
     if (!this.list.selectedItem()) {
-      this.list.selectItem(this.items.at(0));
+      this.list.selectFirstItem();
     }
   }
   willHide() {

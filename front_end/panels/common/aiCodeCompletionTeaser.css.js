@@ -31,6 +31,12 @@ export default `/*
         .ai-code-completion-teaser-dismiss {
             text-decoration: underline;
             cursor: pointer;
+
+            &:focus-visible {
+                border-radius: var(--sys-shape-corner-extra-small);
+                outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
+                outline-offset: 0;
+            }
         }
 
         .ai-code-completion-teaser-action {

@@ -45,6 +45,7 @@
     "../../../../inspector_overlay/highlight_isolated_element.ts",
     "../../../../inspector_overlay/highlight_scroll_snap.ts",
     "../../../../inspector_overlay/main.ts",
+    "../../../../inspector_overlay/tool_green_dev_anchors.ts",
     "../../../../inspector_overlay/tool_highlight.ts",
     "../../../../inspector_overlay/tool_paused.ts",
     "../../../../inspector_overlay/tool_persistent.ts",

@@ -1256,6 +1256,9 @@
   "entrypoints/node_app/app/NodeMain.ts | NodejsTitleS": {
     "message": "DevTools - Node.js: {PH1}"
   },
+  "entrypoints/node_app/node_app.ts | application": {
+    "message": "Application"
+  },
   "entrypoints/node_app/node_app.ts | connection": {
     "message": "Connection"
   },
@@ -1264,6 +1267,9 @@
   },
   "entrypoints/node_app/node_app.ts | node": {
     "message": "node"
+  },
+  "entrypoints/node_app/node_app.ts | showApplication": {
+    "message": "Show Application"
   },
   "entrypoints/node_app/node_app.ts | showConnection": {
     "message": "Show Connection"

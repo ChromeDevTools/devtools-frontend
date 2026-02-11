@@ -40,7 +40,7 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
                 this.#capabilitiesMask = 1 /* Capability.BROWSER */ | 8192 /* Capability.STORAGE */ | 2 /* Capability.DOM */ | 4 /* Capability.JS */ |
                     8 /* Capability.LOG */ | 16 /* Capability.NETWORK */ | 32 /* Capability.TARGET */ | 128 /* Capability.TRACING */ | 256 /* Capability.EMULATION */ |
                     1024 /* Capability.INPUT */ | 2048 /* Capability.INSPECTOR */ | 32768 /* Capability.AUDITS */ | 65536 /* Capability.WEB_AUTHN */ | 131072 /* Capability.IO */ |
-                    262144 /* Capability.MEDIA */ | 524288 /* Capability.EVENT_BREAKPOINTS */;
+                    262144 /* Capability.MEDIA */ | 524288 /* Capability.EVENT_BREAKPOINTS */ | 1048576 /* Capability.DOM_STORAGE */;
                 if (parentTarget?.type() !== Type.FRAME) {
                     // This matches backend exposing certain capabilities only for the main frame.
                     this.#capabilitiesMask |=
@@ -82,7 +82,8 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
                 this.#capabilitiesMask = 4 /* Capability.JS */ | 8 /* Capability.LOG */ | 524288 /* Capability.EVENT_BREAKPOINTS */ | 16 /* Capability.NETWORK */;
                 break;
             case Type.NODE:
-                this.#capabilitiesMask = 4 /* Capability.JS */ | 16 /* Capability.NETWORK */ | 32 /* Capability.TARGET */ | 131072 /* Capability.IO */;
+                this.#capabilitiesMask =
+                    4 /* Capability.JS */ | 16 /* Capability.NETWORK */ | 32 /* Capability.TARGET */ | 131072 /* Capability.IO */ | 1048576 /* Capability.DOM_STORAGE */;
                 break;
             case Type.AUCTION_WORKLET:
                 this.#capabilitiesMask = 4 /* Capability.JS */ | 524288 /* Capability.EVENT_BREAKPOINTS */;

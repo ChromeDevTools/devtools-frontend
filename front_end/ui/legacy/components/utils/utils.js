@@ -1519,7 +1519,6 @@ var StackTracePreviewContent = class extends UI2.Widget.Widget {
     UI2.DOMUtilities.appendStyle(this.element.shadowRoot, jsUtils_css_default);
     this.#table = this.contentElement.createChild("table", "stack-preview-container");
     this.#table.classList.toggle("width-constrained", this.#options.widthConstrained ?? false);
-    this.#stackTrace?.addEventListener("UPDATED", this.performUpdate.bind(this));
     this.performUpdate();
   }
   hasContent() {
@@ -1557,7 +1556,11 @@ var StackTracePreviewContent = class extends UI2.Widget.Widget {
     this.requestUpdate();
   }
   set stackTrace(stackTrace) {
+    if (this.#stackTrace) {
+      this.#stackTrace.removeEventListener("UPDATED", this.requestUpdate, this);
+    }
     this.#stackTrace = stackTrace;
+    this.#stackTrace.addEventListener("UPDATED", this.requestUpdate, this);
     this.requestUpdate();
   }
   onDetach() {

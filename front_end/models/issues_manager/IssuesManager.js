@@ -6,6 +6,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import { AttributionReportingIssue } from './AttributionReportingIssue.js';
 import { BounceTrackingIssue } from './BounceTrackingIssue.js';
 import { ClientHintIssue } from './ClientHintIssue.js';
+import { ConnectionAllowlistIssue } from './ConnectionAllowlistIssue.js';
 import { ContentSecurityPolicyIssue } from './ContentSecurityPolicyIssue.js';
 import { CookieDeprecationMetadataIssue } from './CookieDeprecationMetadataIssue.js';
 import { CookieIssue } from './CookieIssue.js';
@@ -129,6 +130,10 @@ const issueCodeHandlers = new Map([
     [
         "UnencodedDigestIssue" /* Protocol.Audits.InspectorIssueCode.UnencodedDigestIssue */,
         UnencodedDigestIssue.fromInspectorIssue,
+    ],
+    [
+        "ConnectionAllowlistIssue" /* Protocol.Audits.InspectorIssueCode.ConnectionAllowlistIssue */,
+        ConnectionAllowlistIssue.fromInspectorIssue,
     ],
     [
         "PermissionElementIssue" /* Protocol.Audits.InspectorIssueCode.PermissionElementIssue */,

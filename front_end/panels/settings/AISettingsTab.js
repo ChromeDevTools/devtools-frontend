@@ -7,7 +7,6 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
 import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
-import * as AiCodeGeneration from '../../models/ai_code_generation/ai_code_generation.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as Input from '../../ui/components/input/input.js';
 import * as Switch from '../../ui/components/switch/switch.js';
@@ -460,9 +459,7 @@ export class AISettingsTab extends UI.Widget.VBox {
             this.#settingToParams.set(this.#aiAnnotationsSetting, aiAnnotationsData);
         }
         if (this.#aiCodeCompletionSetting) {
-            const devtoolsLocale = i18n.DevToolsLocale.DevToolsLocale.instance();
-            const isAiCodeGenerationEnabled = AiCodeGeneration.AiCodeGeneration.AiCodeGeneration.isAiCodeGenerationEnabled(devtoolsLocale.locale);
-            const settingItems = isAiCodeGenerationEnabled ?
+            const settingItems = Root.Runtime.hostConfig.devToolsAiCodeGeneration?.enabled ?
                 [
                     { iconName: 'code', text: i18nString(UIStrings.asYouTypeRelevantDataIsBeingSentToGoogle) }, {
                         iconName: 'text-analysis',

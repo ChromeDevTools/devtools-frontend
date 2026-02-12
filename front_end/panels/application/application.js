@@ -6108,7 +6108,7 @@ __export(PreloadingTreeElement_exports, {
 });
 import * as i18n27 from "./../../core/i18n/i18n.js";
 import { createIcon as createIcon6 } from "./../../ui/kit/kit.js";
-import * as PreloadingHelper from "./preloading/helper/helper.js";
+import * as PreloadingHelper2 from "./preloading/helper/helper.js";
 
 // gen/front_end/panels/application/preloading/PreloadingView.js
 var PreloadingView_exports = {};
@@ -6157,6 +6157,11 @@ var UIStrings12 = {
    * @description  Description text for Prefetch status PrefetchFailedNon2XX.
    */
   PrefetchFailedNon2XX: "The prefetch failed because of a non-2xx HTTP response status code.",
+  /**
+   * @description  Description text for Prefetch status PrefetchFailedNon2XX when the HTTP status code is known.
+   * @example {404} PH1
+   */
+  PrefetchFailedNon2XXWithStatusCode: "The prefetch failed because of a non-2xx HTTP response status code ({PH1}).",
   /**
    * @description  Description text for Prefetch status PrefetchIneligibleRetryAfter.
    */
@@ -6518,6 +6523,9 @@ function ruleSetTagOrLocationShort(ruleSet, pageURL2) {
   }
   return ruleSetLocationShort(ruleSet, pageURL2);
 }
+
+// gen/front_end/panels/application/preloading/PreloadingView.js
+import * as PreloadingHelper from "./preloading/helper/helper.js";
 
 // gen/front_end/panels/application/preloading/preloadingView.css.js
 var preloadingView_css_default = `/*
@@ -6949,10 +6957,12 @@ var PreloadingAttemptView = class extends UI10.Widget.VBox {
         const ruleSet = this.model.getRuleSetById(id2);
         return ruleSet === null ? [] : [ruleSet];
       });
+      const statusCode = attempt.action === "Prefetch" ? PreloadingHelper.PreloadingForward.prefetchStatusCode(attempt.requestId) : void 0;
       return {
         id,
         pipeline,
-        ruleSets
+        ruleSets,
+        statusCode
       };
     });
     this.preloadingGrid.rows = rows;
@@ -7217,10 +7227,10 @@ var PreloadingSummaryTreeElement = class extends ExpandableApplicationPanelTreeE
     this.#ruleSet.initialize(model);
     this.#attempt.initialize(model);
     if (this.#attempt.selected) {
-      const filter = new PreloadingHelper.PreloadingForward.AttemptViewWithFilter(null);
+      const filter = new PreloadingHelper2.PreloadingForward.AttemptViewWithFilter(null);
       this.expandAndRevealAttempts(filter);
     } else if (this.#ruleSet.selected) {
-      const filter = new PreloadingHelper.PreloadingForward.RuleSetView(null);
+      const filter = new PreloadingHelper2.PreloadingForward.RuleSetView(null);
       this.expandAndRevealRuleSet(filter);
     } else if (this.#selected && !this.#view) {
       this.onselect(false);

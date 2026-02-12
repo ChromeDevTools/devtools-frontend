@@ -12546,14 +12546,14 @@ var TimelineDetailsContentHelper = class {
     if (!this.#linkifier) {
       return null;
     }
-    let callFrameContents;
-    if (this.target) {
-      const stackTrace = await Bindings2.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createStackTraceFromProtocolRuntime(runtimeStackTrace, this.target);
-      callFrameContents = new LegacyComponents.JSPresentationUtils.StackTracePreviewContent(void 0, this.target ?? void 0, this.#linkifier, { tabStops: true, showColumnNumber: true });
-      callFrameContents.stackTrace = stackTrace;
-    } else {
-      callFrameContents = new LegacyComponents.JSPresentationUtils.StackTracePreviewContent(void 0, this.target ?? void 0, this.#linkifier, { runtimeStackTrace, tabStops: true, showColumnNumber: true });
+    const targetManager = SDK8.TargetManager.TargetManager.instance();
+    const target = this.target ?? targetManager.primaryPageTarget() ?? targetManager.rootTarget();
+    if (!target) {
+      return null;
     }
+    const stackTrace = await Bindings2.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createStackTraceFromProtocolRuntime(runtimeStackTrace, target);
+    const callFrameContents = new LegacyComponents.JSPresentationUtils.StackTracePreviewContent(void 0, target, this.#linkifier, { tabStops: true, showColumnNumber: true });
+    callFrameContents.stackTrace = stackTrace;
     await callFrameContents.updateComplete;
     if (!callFrameContents.hasContent()) {
       return null;

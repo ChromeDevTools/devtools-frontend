@@ -8,8 +8,10 @@ var __export = (target, all) => {
 var PreloadingForward_exports = {};
 __export(PreloadingForward_exports, {
   AttemptViewWithFilter: () => AttemptViewWithFilter,
-  RuleSetView: () => RuleSetView
+  RuleSetView: () => RuleSetView,
+  prefetchStatusCode: () => prefetchStatusCode
 });
+import * as Logs from "./../../../../models/logs/logs.js";
 var RuleSetView = class {
   ruleSetId;
   constructor(ruleSetId) {
@@ -22,6 +24,14 @@ var AttemptViewWithFilter = class {
     this.ruleSetId = ruleSetId;
   }
 };
+function prefetchStatusCode(requestId) {
+  const networkLog = Logs.NetworkLog.NetworkLog.instance();
+  const requests = networkLog.requestsForId(requestId);
+  if (requests.length > 0) {
+    return requests[requests.length - 1].statusCode;
+  }
+  return void 0;
+}
 export {
   PreloadingForward_exports as PreloadingForward
 };

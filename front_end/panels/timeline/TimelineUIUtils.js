@@ -2152,21 +2152,16 @@ export class TimelineDetailsContentHelper {
         if (!this.#linkifier) {
             return null;
         }
-        let callFrameContents;
-        if (this.target) {
-            const stackTrace = await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
-                .createStackTraceFromProtocolRuntime(runtimeStackTrace, this.target);
-            callFrameContents = new LegacyComponents.JSPresentationUtils.StackTracePreviewContent(undefined, this.target ?? undefined, this.#linkifier, { tabStops: true, showColumnNumber: true });
-            callFrameContents.stackTrace = stackTrace;
+        // Fallback to the main page/root target. Maybe the main page has a source map we need.
+        // Worst case the stack is identity mapped.
+        const targetManager = SDK.TargetManager.TargetManager.instance();
+        const target = this.target ?? targetManager.primaryPageTarget() ?? targetManager.rootTarget();
+        if (!target) {
+            return null;
         }
-        else {
-            // I _think_ this only happens during tests.
-            // See "TimelineFlameChartView > shows the details for a selected main thread event".
-            // For now, just defer to the still-supported legacy runtime stack trace. When
-            // that is removed, we could instead create a stub StackTrace ourselves, even
-            // without a `target`.
-            callFrameContents = new LegacyComponents.JSPresentationUtils.StackTracePreviewContent(undefined, this.target ?? undefined, this.#linkifier, { runtimeStackTrace, tabStops: true, showColumnNumber: true });
-        }
+        const stackTrace = await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createStackTraceFromProtocolRuntime(runtimeStackTrace, target);
+        const callFrameContents = new LegacyComponents.JSPresentationUtils.StackTracePreviewContent(undefined, target, this.#linkifier, { tabStops: true, showColumnNumber: true });
+        callFrameContents.stackTrace = stackTrace;
         await callFrameContents.updateComplete;
         if (!callFrameContents.hasContent()) {
             return null;

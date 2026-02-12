@@ -245,9 +245,7 @@ var ImagePreview = class {
 // gen/front_end/ui/legacy/components/utils/JSPresentationUtils.js
 var JSPresentationUtils_exports = {};
 __export(JSPresentationUtils_exports, {
-  StackTracePreviewContent: () => StackTracePreviewContent,
-  buildStackTraceRows: () => buildStackTraceRows,
-  buildStackTraceRowsForLegacyRuntimeStackTrace: () => buildStackTraceRowsForLegacyRuntimeStackTrace
+  StackTracePreviewContent: () => StackTracePreviewContent
 });
 import * as Common3 from "./../../../../core/common/common.js";
 import * as i18n5 from "./../../../../core/i18n/i18n.js";
@@ -686,7 +684,6 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
     return this.maybeLinkifyScriptLocation(target, String(callFrame.scriptId), callFrame.url, callFrame.lineNumber, linkifyOptions);
   }
   maybeLinkifyStackTraceFrame(target, frame, options) {
-    let fallbackAnchor = null;
     const linkifyURLOptions = {
       ...options,
       lineNumber: frame.line,
@@ -701,10 +698,8 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
       omitOrigin: options?.omitOrigin
     };
     const { className = "" } = linkifyURLOptions;
-    if (frame.url) {
-      fallbackAnchor = _Linkifier.linkifyURL(frame.url, linkifyURLOptions);
-    }
-    if (!target || target.isDisposed()) {
+    const fallbackAnchor = _Linkifier.linkifyURL(frame.url, linkifyURLOptions);
+    if (!target || target.isDisposed() || !frame.uiSourceCode) {
       return fallbackAnchor;
     }
     const createLinkOptions = {
@@ -719,7 +714,7 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
       showColumnNumber: linkifyURLOptions.showColumnNumber ?? false,
       revealBreakpoint: options?.revealBreakpoint
     };
-    const uiLocation = frame.uiSourceCode?.uiLocation(frame.line, frame.column) ?? null;
+    const uiLocation = frame.uiSourceCode.uiLocation(frame.line, frame.column) ?? null;
     this.updateAnchorFromUILocation(link3, linkDisplayOptions, uiLocation);
     const anchors = this.anchorsByTarget.get(target);
     anchors.push(link3);
@@ -1401,13 +1396,8 @@ function buildStackTraceRows(stackTrace, target, linkifier, tabStops, showColumn
         inlineFrameIndex: 0,
         revealBreakpoint: previousStackFrameWasBreakpointCondition
       });
-      if (link3) {
-        link3.setAttribute("jslog", `${VisualLogging2.link("stack-trace").track({ click: true })}`);
-        link3.addEventListener("contextmenu", populateContextMenu.bind(null, link3));
-        if (!link3.textContent) {
-          link3.textContent = i18nString3(UIStrings3.unknownSource);
-        }
-      }
+      link3.setAttribute("jslog", `${VisualLogging2.link("stack-trace").track({ click: true })}`);
+      link3.addEventListener("contextmenu", populateContextMenu.bind(null, link3));
       stackTraceRows.push({ functionName, link: link3 });
       previousStackFrameWasBreakpointCondition = [
         SDK3.DebuggerModel.COND_BREAKPOINT_SOURCE_URL,

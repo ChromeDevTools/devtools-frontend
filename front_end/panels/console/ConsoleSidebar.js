@@ -44,7 +44,7 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/console/ConsoleSidebar.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-const { render, html, nothing, Directives } = Lit;
+const { render, html, nothing } = Lit;
 const GROUP_ICONS = {
     ["message" /* GroupName.ALL */]: { icon: 'list', label: UIStrings.dMessages },
     ["user message" /* GroupName.CONSOLE_API */]: { icon: 'profile', label: UIStrings.dUserMessages },
@@ -54,23 +54,15 @@ const GROUP_ICONS = {
     ["verbose" /* GroupName.VERBOSE */]: { icon: 'bug', label: UIStrings.dVerbose },
 };
 export const DEFAULT_VIEW = (input, output, target) => {
-    const nodeFilterMap = new WeakMap();
-    const onSelectionChanged = (event) => {
-        const filter = nodeFilterMap.get(event.detail);
-        if (filter) {
-            input.onSelectionChanged(filter);
-        }
-    };
     render(html `<devtools-tree
         navigation-variant
         hide-overflow
-        @select=${onSelectionChanged}
         .template=${html `
           <ul role="tree">
             ${input.groups.map(group => html `
               <li
                 role="treeitem"
-                ${Directives.ref(element => element && nodeFilterMap.set(element, group.filter))}
+                @select=${() => input.onSelectionChanged(group.filter)}
                 ?selected=${group.filter === input.selectedFilter}>
                   <style>${consoleSidebarStyles}</style>
                   <devtools-icon name=${GROUP_ICONS[group.name].icon}></devtools-icon>
@@ -83,7 +75,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
                   <ul role="group" hidden>
                     ${group.urlGroups.values().map(urlGroup => html `
                       <li
-                        ${Directives.ref(element => element && nodeFilterMap.set(element, urlGroup.filter))}
+                        @select=${() => input.onSelectionChanged(urlGroup.filter)}
                         role="treeitem"
                         ?selected=${urlGroup.filter === input.selectedFilter}
                         title=${urlGroup.url ?? ''}>

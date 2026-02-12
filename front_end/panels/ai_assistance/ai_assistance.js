@@ -1596,7 +1596,11 @@ var UIStrings = {
   /**
    * @description Label added to the button that remove the currently selected context in AI Assistance panel.
    */
-  removeContext: "Remove selected context"
+  removeContext: "Remove from context",
+  /**
+   * @description Label added to the button that add selected context from the current panel in AI Assistance panel.
+   */
+  addContext: "Add selected item as context"
 };
 var UIStringsNotTranslate3 = {
   /**
@@ -1849,8 +1853,8 @@ var DEFAULT_VIEW2 = (input, output, target) => {
                       </div>
                     </div>` : input.onContextAdd ? html3`
                                   <devtools-button
-                                    title=${i18nString(UIStrings.removeContext)}
-                                    aria-label=${i18nString(UIStrings.removeContext)}
+                                    title=${i18nString(UIStrings.addContext)}
+                                    aria-label=${i18nString(UIStrings.addContext)}
                                     class="add-context"
                                     .iconName=${"plus"}
                                     .size=${"SMALL"}
@@ -5469,7 +5473,13 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI8.Panel.Panel {
       }, { once: true });
     });
     void this.#toggleSearchElementAction.execute();
-    return await result;
+    try {
+      return await result;
+    } finally {
+      if (this.#toggleSearchElementAction.toggled()) {
+        void this.#toggleSearchElementAction.execute();
+      }
+    }
   }
   async #startConversation(text, imageInput, multimodalInputType) {
     if (!this.#conversation) {

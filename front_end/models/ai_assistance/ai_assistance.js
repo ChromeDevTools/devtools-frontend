@@ -1224,7 +1224,7 @@ You aim to help developers of all levels, prioritizing teaching web concepts as 
 
 # Considerations
 * Determine what the question the domain of the question is - styling, network, sources, performance or other part of DevTools.
-* When possible proactively try to gather additional data and select context that they user may find relevant to the question they are asking utilizing the function calls available to you.
+* Proactively try to gather additional data. If a select specific data can be selected, select one.
 * Avoid making assumptions without sufficient evidence, and always seek further clarification if needed.
 * Always explore multiple possible explanations for the observed behavior before settling on a conclusion.
 * When presenting solutions, clearly distinguish between the primary cause and contributing factors.
@@ -1264,7 +1264,7 @@ var ContextSelectionAgent = class extends AiAgent {
     this.#performanceRecordAndReload = opts.performanceRecordAndReload;
     this.#onInspectElement = opts.onInspectElement;
     this.declareFunction("listNetworkRequests", {
-      description: `Gives a list of network requests including URL, status code, and duration in ms`,
+      description: `Gives a list of network requests including URL, status code, and duration in ms.`,
       parameters: {
         type: 6,
         description: "",
@@ -1293,13 +1293,18 @@ var ContextSelectionAgent = class extends AiAgent {
             duration: request.duration
           });
         }
+        if (requests.length === 0) {
+          return {
+            error: "No requests recorded by DevTools"
+          };
+        }
         return {
           result: requests
         };
       }
     });
     this.declareFunction("selectNetworkRequest", {
-      description: `From the list of selected request select one to debug`,
+      description: `Selects a specific network request to further provide information about. Use this when asked about network requests issues.`,
       parameters: {
         type: 6,
         description: "",
@@ -1359,7 +1364,7 @@ var ContextSelectionAgent = class extends AiAgent {
       }
     });
     this.declareFunction("selectSourceFile", {
-      description: `Returns a list of all files in the project.`,
+      description: `Selects a source file. Use this when asked about files on the page.`,
       parameters: {
         type: 6,
         description: "",
@@ -1368,14 +1373,14 @@ var ContextSelectionAgent = class extends AiAgent {
         properties: {
           name: {
             type: 1,
-            description: "The name of the file",
+            description: "The name of the file you want to select.",
             nullable: false
           }
         }
       },
       displayInfoFromArgs: (args) => {
         return {
-          title: lockedString("Getting source file"),
+          title: lockedString("Getting source file\u2026"),
           action: `selectSourceFile(${args.name})`
         };
       },
@@ -1391,7 +1396,7 @@ var ContextSelectionAgent = class extends AiAgent {
       }
     });
     this.declareFunction("performanceRecordAndReload", {
-      description: "Start a new performance recording and reload the page.",
+      description: "Records a new performance trace, to help debug performance issue.",
       parameters: {
         type: 6,
         description: "",
@@ -1418,7 +1423,7 @@ var ContextSelectionAgent = class extends AiAgent {
       }
     });
     this.declareFunction("inspectDom", {
-      description: `Prompts user to select a DOM element from the page.`,
+      description: `Prompts user to select a DOM element from the page. Use this when you don't know which element is selected.`,
       parameters: {
         type: 6,
         description: "",
@@ -1428,7 +1433,7 @@ var ContextSelectionAgent = class extends AiAgent {
       },
       displayInfoFromArgs: () => {
         return {
-          title: lockedString("Please select an element on the page..."),
+          title: lockedString("Please select an element on the page\u2026"),
           action: "selectElement()"
         };
       },
@@ -1687,6 +1692,41 @@ ${dataAsText}`;
     }
     return "<redacted cross-origin initiator URL>";
   }
+  static formatStatus(status) {
+    let responseStatus = "";
+    if (status.statusCode) {
+      responseStatus = `Response status: ${status.statusCode} ${status.statusText}
+`;
+    }
+    const flags = [];
+    flags.push(status.finished ? "finished" : "pending");
+    if (status.failed) {
+      flags.push("failed");
+    }
+    if (status.canceled) {
+      flags.push("canceled");
+    }
+    if (status.preserved) {
+      flags.push("preserved");
+    }
+    const requestStatus = flags.length > 0 ? `Network request status: ${flags.join(", ")}
+` : "";
+    return `${responseStatus}${requestStatus}`;
+  }
+  static formatFailureReasons(reasons) {
+    const lines = [];
+    if (reasons.blockedReason) {
+      lines.push(`Blocked reason: ${reasons.blockedReason}`);
+    }
+    if (reasons.corsErrorStatus) {
+      lines.push(`CORS error: ${reasons.corsErrorStatus.corsError} ${reasons.corsErrorStatus.failedParameter}`);
+    }
+    if (reasons.localizedFailDescription) {
+      lines.push(`Fail description: ${reasons.localizedFailDescription}`);
+    }
+    return lines.length > 0 ? `${lines.join("\n")}
+` : "";
+  }
   constructor(request, calculator) {
     this.#request = request;
     this.#calculator = calculator;
@@ -1719,13 +1759,29 @@ ${this.formatRequestHeaders()}
 
 ${this.formatResponseHeaders()}${responseBody}
 
-Response status: ${this.#request.statusCode} ${this.#request.statusText}
-
+${this.formatStatus()}${this.formatFailureReasons()}
 Request timing:
 ${this.formatNetworkRequestTiming()}
 
 Request initiator chain:
 ${this.formatRequestInitiatorChain()}`;
+  }
+  formatStatus() {
+    return _a.formatStatus({
+      statusCode: this.#request.statusCode,
+      statusText: this.#request.statusText,
+      failed: this.#request.failed,
+      canceled: this.#request.canceled,
+      preserved: this.#request.preserved,
+      finished: this.#request.finished
+    });
+  }
+  formatFailureReasons() {
+    return _a.formatFailureReasons({
+      blockedReason: this.#request.blockedReason(),
+      corsErrorStatus: this.#request.corsErrorStatus(),
+      localizedFailDescription: this.#request.localizedFailDescription
+    });
   }
   /**
    * Note: nothing here should include information from origins other than
@@ -2156,10 +2212,6 @@ var UIStringsNotTranslate2 = {
    */
   timing: "Timing",
   /**
-   * @description Prefix text for response status.
-   */
-  responseStatus: "Response Status",
-  /**
    * @description Title text for request initiator chain.
    */
   requestInitiatorChain: "Request initiator chain"
@@ -2233,9 +2285,9 @@ async function createContextDetailsForNetworkAgent(selectedNetworkRequest) {
 ${responseBody}` : "";
   const responseContextDetail = {
     title: lockedString3(UIStringsNotTranslate2.response),
-    text: lockedString3(UIStringsNotTranslate2.responseStatus) + ": " + request.statusCode + " " + request.statusText + `
+    text: formatter.formatResponseHeaders() + responseBodyString + `
 
-${formatter.formatResponseHeaders()}` + responseBodyString
+${formatter.formatStatus()}${formatter.formatFailureReasons()}`
   };
   const timingContextDetail = {
     title: lockedString3(UIStringsNotTranslate2.timing),

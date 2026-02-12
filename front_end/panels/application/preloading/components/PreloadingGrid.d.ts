@@ -10,6 +10,7 @@ export interface PreloadingGridRow {
     id: string;
     pipeline: SDK.PreloadingModel.PreloadPipeline;
     ruleSets: Protocol.Preload.RuleSet[];
+    statusCode?: number;
 }
 export interface ViewInput {
     rows?: PreloadingGridRow[];

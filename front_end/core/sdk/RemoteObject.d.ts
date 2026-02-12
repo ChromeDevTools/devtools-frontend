@@ -10,6 +10,7 @@ export declare abstract class RemoteObject {
     static arrayNameFromDescription(description: string): string;
     static arrayLength(object: RemoteObject | Protocol.Runtime.RemoteObject | Protocol.Runtime.ObjectPreview): number;
     static arrayBufferByteLength(object: RemoteObject | Protocol.Runtime.RemoteObject | Protocol.Runtime.ObjectPreview): number;
+    static isEmptyArray(object: RemoteObject | Protocol.Runtime.RemoteObject | Protocol.Runtime.ObjectPreview): boolean;
     static unserializableDescription(object: unknown): string | null;
     static toCallArgument(object: string | number | bigint | boolean | RemoteObject | Protocol.Runtime.RemoteObject | null | undefined): Protocol.Runtime.CallArgument;
     static loadFromObjectPerProto(object: RemoteObject, generatePreview: boolean, nonIndexedPropertiesOnly?: boolean): Promise<GetPropertiesResult>;

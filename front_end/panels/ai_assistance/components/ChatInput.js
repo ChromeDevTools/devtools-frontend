@@ -34,7 +34,11 @@ const UIStrings = {
     /**
      * @description Label added to the button that remove the currently selected context in AI Assistance panel.
      */
-    removeContext: 'Remove selected context',
+    removeContext: 'Remove from context',
+    /**
+     * @description Label added to the button that add selected context from the current panel in AI Assistance panel.
+     */
+    addContext: 'Add selected item as context',
 };
 /*
 * Strings that don't need to be translated at this time.
@@ -321,8 +325,8 @@ export const DEFAULT_VIEW = (input, output, target) => {
                 :
                     input.onContextAdd ? html `
                                   <devtools-button
-                                    title=${i18nString(UIStrings.removeContext)}
-                                    aria-label=${i18nString(UIStrings.removeContext)}
+                                    title=${i18nString(UIStrings.addContext)}
+                                    aria-label=${i18nString(UIStrings.addContext)}
                                     class="add-context"
                                     .iconName=${'plus'}
                                     .size=${"SMALL" /* Buttons.Button.Size.SMALL */}

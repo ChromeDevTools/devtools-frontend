@@ -3966,7 +3966,7 @@ var UIStrings8 = {
 var str_8 = i18n15.i18n.registerUIStrings("panels/network/RequestInitiatorView.ts", UIStrings8);
 var i18nString8 = i18n15.i18n.getLocalizedString.bind(void 0, str_8);
 var DEFAULT_VIEW4 = (input, _output, target) => {
-  const hasInitiatorData = input.initiatorGraph.initiators.size > 1 || input.initiatorGraph.initiated.size > 1 || input.hasStackTrace;
+  const hasInitiatorData = input.initiatorGraph.initiators.size > 1 || input.initiatorGraph.initiated.size > 1 || input.stackTrace;
   if (!hasInitiatorData) {
     render5(html4`
       <div class="empty-view" style="display: flex; justify-content: center; align-items: center; height: 100%; color: var(--sys-color-token-subtle);">
@@ -3976,6 +3976,9 @@ var DEFAULT_VIEW4 = (input, _output, target) => {
     return;
   }
   const renderStackTraceSection = () => {
+    if (!input.stackTrace) {
+      return html4`${nothing5}`;
+    }
     return html4`
       <li role="treeitem" class="request-initiator-view-section-title" aria-expanded="true">
         ${i18nString8(UIStrings8.requestCallStack)}
@@ -3984,7 +3987,8 @@ var DEFAULT_VIEW4 = (input, _output, target) => {
             <devtools-widget .widgetConfig=${widgetConfig2(Components2.JSPresentationUtils.StackTracePreviewContent, {
       target: input.target,
       linkifier: input.linkifier,
-      options: { runtimeStackTrace: input.request.initiator()?.stack, tabStops: true }
+      options: { tabStops: true },
+      stackTrace: input.stackTrace
     })}></devtools-widget>
           </li>
         </ul>
@@ -4052,7 +4056,7 @@ var DEFAULT_VIEW4 = (input, _output, target) => {
           ${requestInitiatorViewTree_css_default}
         </style>
         <ul role="tree">
-           ${input.hasStackTrace ? renderStackTraceSection() : Lit2.nothing}
+           ${renderStackTraceSection()}
            ${input.initiatorGraph.initiators.size > 1 || input.initiatorGraph.initiated.size > 1 ? renderInitiatorChain(input.initiatorGraph) : Lit2.nothing}
         </ul>
       `}></devtools-tree>
@@ -4086,14 +4090,19 @@ var RequestInitiatorView = class extends UI8.Widget.VBox {
     }
     return { preview, stackTrace };
   }
-  performUpdate() {
+  async performUpdate() {
     const initiatorGraph = Logs3.NetworkLog.NetworkLog.instance().initiatorGraphForRequest(this.request);
-    const hasStackTrace = !!this.request.initiator()?.stack;
+    const targetManager = SDK7.TargetManager.TargetManager.instance();
     const networkManager = SDK7.NetworkManager.NetworkManager.forRequest(this.request);
-    const target = networkManager ? networkManager.target() : void 0;
+    const target = networkManager?.target() ?? targetManager.primaryPageTarget() ?? targetManager.rootTarget();
+    const rawStack = this.request.initiator()?.stack;
+    let stackTrace = null;
+    if (rawStack && target) {
+      stackTrace = await Bindings2.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createStackTraceFromProtocolRuntime(rawStack, target);
+    }
     const viewInput = {
       initiatorGraph,
-      hasStackTrace,
+      stackTrace,
       request: this.request,
       linkifier: this.linkifier,
       target: target || void 0
@@ -11754,8 +11763,9 @@ var NetworkLogView = class _NetworkLogView extends Common16.ObjectWrapper.eventM
           const existingConditions = manager.requestConditions.findCondition(urlPattern.constructorString);
           const isBlocking = existingConditions?.conditions === SDK15.NetworkManager.BlockingConditions;
           const isThrottling = existingConditions && existingConditions.conditions !== SDK15.NetworkManager.BlockingConditions && existingConditions.conditions !== SDK15.NetworkManager.NoThrottlingConditions;
-          blockingMenu.debugSection().appendItem(isBlocking ? i18nString21(UIStrings21.unblockS, { PH1: urlPattern.constructorString }) : i18nString21(UIStrings21.blockRequestUrl), () => isBlocking ? removeRequestCondition(urlPattern) : addRequestCondition(urlPattern, SDK15.NetworkManager.BlockingConditions), { jslogContext: "block-request-url" });
-          throttlingMenu.debugSection().appendItem(isThrottling ? i18nString21(UIStrings21.unthrottleS, { PH1: urlPattern.constructorString }) : i18nString21(UIStrings21.throttleRequestUrl), () => isThrottling ? removeRequestCondition(urlPattern) : addRequestCondition(urlPattern, SDK15.NetworkManager.Slow3GConditions), { jslogContext: "throttle-request-url" });
+          const croppedURL = Platform10.StringUtilities.trimMiddle(urlPattern.constructorString, maxBlockedURLLength);
+          blockingMenu.debugSection().appendItem(isBlocking ? i18nString21(UIStrings21.unblockS, { PH1: croppedURL }) : i18nString21(UIStrings21.blockRequestUrl), () => isBlocking ? removeRequestCondition(urlPattern) : addRequestCondition(urlPattern, SDK15.NetworkManager.BlockingConditions), { jslogContext: "block-request-url" });
+          throttlingMenu.debugSection().appendItem(isThrottling ? i18nString21(UIStrings21.unthrottleS, { PH1: croppedURL }) : i18nString21(UIStrings21.throttleRequestUrl), () => isThrottling ? removeRequestCondition(urlPattern) : addRequestCondition(urlPattern, SDK15.NetworkManager.Slow3GConditions), { jslogContext: "throttle-request-url" });
         }
         const domain = request.parsedURL.domain();
         const domainPattern = domain && SDK15.NetworkManager.RequestURLPattern.create(`*://${domain}`);
@@ -11765,8 +11775,9 @@ var NetworkLogView = class _NetworkLogView extends Common16.ObjectWrapper.eventM
           const existingConditions = manager.requestConditions.findCondition(domainPattern.constructorString);
           const isBlocking = existingConditions?.conditions === SDK15.NetworkManager.BlockingConditions;
           const isThrottling = existingConditions && existingConditions.conditions !== SDK15.NetworkManager.BlockingConditions && existingConditions.conditions !== SDK15.NetworkManager.NoThrottlingConditions;
-          blockingMenu.debugSection().appendItem(isBlocking ? i18nString21(UIStrings21.unblockS, { PH1: domainPattern.constructorString }) : i18nString21(UIStrings21.blockRequestDomain), () => isBlocking ? removeRequestCondition(domainPattern) : addRequestCondition(domainPattern, SDK15.NetworkManager.BlockingConditions), { jslogContext: "block-request-domain" });
-          throttlingMenu.debugSection().appendItem(isThrottling ? i18nString21(UIStrings21.unthrottleS, { PH1: domainPattern.constructorString }) : i18nString21(UIStrings21.throttleRequestDomain), () => isThrottling ? removeRequestCondition(domainPattern) : addRequestCondition(domainPattern, SDK15.NetworkManager.Slow3GConditions), { jslogContext: "throttle-request-domain" });
+          const croppedURL = Platform10.StringUtilities.trimMiddle(domainPattern.constructorString, maxBlockedURLLength);
+          blockingMenu.debugSection().appendItem(isBlocking ? i18nString21(UIStrings21.unblockS, { PH1: croppedURL }) : i18nString21(UIStrings21.blockRequestDomain), () => isBlocking ? removeRequestCondition(domainPattern) : addRequestCondition(domainPattern, SDK15.NetworkManager.BlockingConditions), { jslogContext: "block-request-domain" });
+          throttlingMenu.debugSection().appendItem(isThrottling ? i18nString21(UIStrings21.unthrottleS, { PH1: croppedURL }) : i18nString21(UIStrings21.throttleRequestDomain), () => isThrottling ? removeRequestCondition(domainPattern) : addRequestCondition(domainPattern, SDK15.NetworkManager.Slow3GConditions), { jslogContext: "throttle-request-domain" });
         }
       }
       if (SDK15.NetworkManager.NetworkManager.canReplayRequest(request)) {

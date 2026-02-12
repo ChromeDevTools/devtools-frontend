@@ -305,7 +305,9 @@ export class PreloadingDetailsReportView extends LegacyWrapper.LegacyWrapper.Wra
         if (attempt.action !== "Prefetch" /* Protocol.Preload.SpeculationAction.Prefetch */) {
             return Lit.nothing;
         }
-        const failureDescription = prefetchFailureReason(attempt);
+        // Lookup status code for Non2XX failures
+        const statusCode = PreloadingHelper.PreloadingForward.prefetchStatusCode(attempt.requestId);
+        const failureDescription = prefetchFailureReason(attempt, statusCode);
         if (failureDescription === null) {
             return Lit.nothing;
         }

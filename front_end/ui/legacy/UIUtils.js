@@ -1761,7 +1761,7 @@ export class HTMLElementWithLightDOMTemplate extends HTMLElement {
                 HTMLElementWithLightDOMTemplate.patchLitTemplate(value);
                 return value;
             }
-            if (Array.isArray(value)) {
+            if (Array.isArray(value) || value instanceof Iterator) {
                 return value.map(patchValue);
             }
             return value;

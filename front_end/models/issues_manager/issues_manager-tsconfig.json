@@ -39,6 +39,7 @@
     "../../../../../../front_end/models/issues_manager/BounceTrackingIssue.ts",
     "../../../../../../front_end/models/issues_manager/CheckFormsIssuesTrigger.ts",
     "../../../../../../front_end/models/issues_manager/ClientHintIssue.ts",
+    "../../../../../../front_end/models/issues_manager/ConnectionAllowlistIssue.ts",
     "../../../../../../front_end/models/issues_manager/ContentSecurityPolicyIssue.ts",
     "../../../../../../front_end/models/issues_manager/ContrastCheckTrigger.ts",
     "../../../../../../front_end/models/issues_manager/CookieDeprecationMetadataIssue.ts",

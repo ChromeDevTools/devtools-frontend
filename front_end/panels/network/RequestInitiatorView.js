@@ -31,7 +31,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/network/RequestInitiatorView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export const DEFAULT_VIEW = (input, _output, target) => {
-    const hasInitiatorData = input.initiatorGraph.initiators.size > 1 || input.initiatorGraph.initiated.size > 1 || input.hasStackTrace;
+    const hasInitiatorData = input.initiatorGraph.initiators.size > 1 || input.initiatorGraph.initiated.size > 1 || input.stackTrace;
     if (!hasInitiatorData) {
         render(html `
       <div class="empty-view" style="display: flex; justify-content: center; align-items: center; height: 100%; color: var(--sys-color-token-subtle);">
@@ -41,6 +41,9 @@ export const DEFAULT_VIEW = (input, _output, target) => {
         return;
     }
     const renderStackTraceSection = () => {
+        if (!input.stackTrace) {
+            return html `${nothing}`;
+        }
         return html `
       <li role="treeitem" class="request-initiator-view-section-title" aria-expanded="true">
         ${i18nString(UIStrings.requestCallStack)}
@@ -49,7 +52,8 @@ export const DEFAULT_VIEW = (input, _output, target) => {
             <devtools-widget .widgetConfig=${widgetConfig(Components.JSPresentationUtils.StackTracePreviewContent, {
             target: input.target,
             linkifier: input.linkifier,
-            options: { runtimeStackTrace: input.request.initiator()?.stack, tabStops: true }
+            options: { tabStops: true },
+            stackTrace: input.stackTrace,
         })}></devtools-widget>
           </li>
         </ul>
@@ -117,7 +121,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
           ${requestInitiatorViewTreeStyles}
         </style>
         <ul role="tree">
-           ${input.hasStackTrace ? renderStackTraceSection() : Lit.nothing}
+           ${renderStackTraceSection()}
            ${(input.initiatorGraph.initiators.size > 1 || input.initiatorGraph.initiated.size > 1) ?
         renderInitiatorChain(input.initiatorGraph) :
         Lit.nothing}
@@ -154,14 +158,20 @@ export class RequestInitiatorView extends UI.Widget.VBox {
         }
         return { preview, stackTrace };
     }
-    performUpdate() {
+    async performUpdate() {
         const initiatorGraph = Logs.NetworkLog.NetworkLog.instance().initiatorGraphForRequest(this.request);
-        const hasStackTrace = !!this.request.initiator()?.stack;
+        const targetManager = SDK.TargetManager.TargetManager.instance();
         const networkManager = SDK.NetworkManager.NetworkManager.forRequest(this.request);
-        const target = networkManager ? networkManager.target() : undefined;
+        const target = networkManager?.target() ?? targetManager.primaryPageTarget() ?? targetManager.rootTarget();
+        const rawStack = this.request.initiator()?.stack;
+        let stackTrace = null;
+        if (rawStack && target) {
+            stackTrace = await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
+                .createStackTraceFromProtocolRuntime(rawStack, target);
+        }
         const viewInput = {
             initiatorGraph,
-            hasStackTrace,
+            stackTrace,
             request: this.request,
             linkifier: this.linkifier,
             target: target || undefined,

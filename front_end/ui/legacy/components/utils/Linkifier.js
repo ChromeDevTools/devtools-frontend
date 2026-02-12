@@ -287,7 +287,6 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper {
         return this.maybeLinkifyScriptLocation(target, String(callFrame.scriptId), callFrame.url, callFrame.lineNumber, linkifyOptions);
     }
     maybeLinkifyStackTraceFrame(target, frame, options) {
-        let fallbackAnchor = null;
         const linkifyURLOptions = {
             ...options,
             lineNumber: frame.line,
@@ -302,10 +301,8 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper {
             omitOrigin: options?.omitOrigin,
         };
         const { className = '' } = linkifyURLOptions;
-        if (frame.url) {
-            fallbackAnchor = Linkifier.linkifyURL(frame.url, linkifyURLOptions);
-        }
-        if (!target || target.isDisposed()) {
+        const fallbackAnchor = Linkifier.linkifyURL(frame.url, linkifyURLOptions);
+        if (!target || target.isDisposed() || !frame.uiSourceCode) {
             return fallbackAnchor;
         }
         const createLinkOptions = {
@@ -320,7 +317,7 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper {
             showColumnNumber: linkifyURLOptions.showColumnNumber ?? false,
             revealBreakpoint: options?.revealBreakpoint,
         };
-        const uiLocation = frame.uiSourceCode?.uiLocation(frame.line, frame.column) ?? null;
+        const uiLocation = frame.uiSourceCode.uiLocation(frame.line, frame.column) ?? null;
         this.updateAnchorFromUILocation(link, linkDisplayOptions, uiLocation);
         const anchors = this.anchorsByTarget.get(target);
         anchors.push(link);

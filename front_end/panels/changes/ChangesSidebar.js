@@ -20,25 +20,22 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/changes/ChangesSidebar.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-const { render, html, Directives: { ref } } = Lit;
+const { render, html } = Lit;
 export const DEFAULT_VIEW = (input, output, target) => {
     const tooltip = (uiSourceCode) => uiSourceCode.contentType().isFromSourceMap() ?
         i18nString(UIStrings.sFromSourceMap, { PH1: uiSourceCode.displayName() }) :
         uiSourceCode.url();
     const icon = (uiSourceCode) => Snippets.ScriptSnippetFileSystem.isSnippetsUISourceCode(uiSourceCode) ? 'snippet' : 'document';
-    const configElements = new WeakMap();
-    const onSelect = (e) => input.onSelect(configElements.get(e.detail) ?? null);
     render(
     // clang-format off
     html `<devtools-tree
-             @selected=${onSelect}
              navigation-variant
              hide-overflow .template=${html `
                <ul role="tree">
                  ${input.sourceCodes.values().map(uiSourceCode => html `
                    <li
                      role="treeitem"
-                     ${ref(e => e instanceof HTMLLIElement && configElements.set(e, uiSourceCode))}
+                     @select=${() => input.onSelect(uiSourceCode)}
                      ?selected=${uiSourceCode === input.selectedSourceCode}>
                        <style>${changesSidebarStyles}</style>
                        <div class=${'navigator-' + uiSourceCode.contentType().name() + '-tree-item'}>

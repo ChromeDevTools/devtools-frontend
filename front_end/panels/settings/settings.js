@@ -740,60 +740,14 @@ var GREENDEV_VIEW = (input, _output, target) => {
                ${renderPrototypeCheckboxes(input.settings, ["aiAnnotations", "inDevToolsFloaty", "copyToGemini"])}
              </div>
            </devtools-card>
-
-           <devtools-card .heading=${"GreenDev widgets"}>
-             <div class="experiments-warning-subsection">
-              <devtools-icon .name=${"warning"}></devtools-icon>
-              <span>${i18nString(UIStrings.greenDevUnstable)}</span>
-             </div>
-             <div class="settings-experiments-block greendev-widgets">
-               ${renderWidgetOptions(input.settings)}
-             </div>
-           </devtools-card>
          </div>
        `, target);
 };
 var GREENDEV_PROTOTYPE_NAMES = {
   inDevToolsFloaty: "In DevTools context picker",
   aiAnnotations: "AI auto-annotations",
-  inlineWidgets: "Inline widgets in AI Assistance",
-  artifactViewer: "Widgets in the Artifact viewer",
   copyToGemini: "Copy changes to AI Prompt"
 };
-function renderWidgetOptions(settings) {
-  function onChange(nowActiveRadio) {
-    return () => {
-      switch (nowActiveRadio) {
-        case "inlineWidgets": {
-          settings.artifactViewer.set(false);
-          settings.inlineWidgets.set(true);
-          break;
-        }
-        case "artifactViewer": {
-          settings.artifactViewer.set(true);
-          settings.inlineWidgets.set(false);
-          break;
-        }
-        case "none": {
-          settings.artifactViewer.set(false);
-          settings.inlineWidgets.set(false);
-        }
-      }
-      UI.InspectorView.InspectorView.instance().displayReloadRequiredWarning(i18nString(UIStrings.settingsChangedReloadDevTools));
-    };
-  }
-  return html`
-    <p class="settings-experiment">
-      <label><input type="radio" name="widgets-choice" @change=${onChange("inlineWidgets")}>${GREENDEV_PROTOTYPE_NAMES["inlineWidgets"]}</label>
-    </p>
-    <p class="settings-experiment">
-      <label><input type="radio" name="widgets-choice" @change=${onChange("artifactViewer")}>${GREENDEV_PROTOTYPE_NAMES["artifactViewer"]}</label>
-    </p>
-    <p class="settings-experiment">
-      <label><input type="radio" name="widgets-choice" @change=${onChange("none")}>None</label>
-    </p>
-  `;
-}
 function renderPrototypeCheckboxes(settings, keys) {
   const { bindToSetting } = UI.UIUtils;
   function showChangeWarning() {
@@ -825,7 +779,6 @@ import * as Host2 from "./../../core/host/host.js";
 import * as i18n3 from "./../../core/i18n/i18n.js";
 import * as Root2 from "./../../core/root/root.js";
 import * as AiAssistanceModel from "./../../models/ai_assistance/ai_assistance.js";
-import * as AiCodeGeneration from "./../../models/ai_code_generation/ai_code_generation.js";
 import * as Buttons2 from "./../../ui/components/buttons/buttons.js";
 import * as Input from "./../../ui/components/input/input.js";
 import * as Switch from "./../../ui/components/switch/switch.js";
@@ -1462,9 +1415,7 @@ var AISettingsTab = class extends UI2.Widget.VBox {
       this.#settingToParams.set(this.#aiAnnotationsSetting, aiAnnotationsData);
     }
     if (this.#aiCodeCompletionSetting) {
-      const devtoolsLocale = i18n3.DevToolsLocale.DevToolsLocale.instance();
-      const isAiCodeGenerationEnabled = AiCodeGeneration.AiCodeGeneration.AiCodeGeneration.isAiCodeGenerationEnabled(devtoolsLocale.locale);
-      const settingItems = isAiCodeGenerationEnabled ? [
+      const settingItems = Root2.Runtime.hostConfig.devToolsAiCodeGeneration?.enabled ? [
         { iconName: "code", text: i18nString2(UIStrings2.asYouTypeRelevantDataIsBeingSentToGoogle) },
         {
           iconName: "text-analysis",

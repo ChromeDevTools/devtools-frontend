@@ -1137,7 +1137,14 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             }, { once: true });
         });
         void this.#toggleSearchElementAction.execute();
-        return await result;
+        try {
+            return await result;
+        }
+        finally {
+            if (this.#toggleSearchElementAction.toggled()) {
+                void this.#toggleSearchElementAction.execute();
+            }
+        }
     }
     async #startConversation(text, imageInput, multimodalInputType) {
         if (!this.#conversation) {

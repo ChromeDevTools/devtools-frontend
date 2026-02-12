@@ -1609,10 +1609,10 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin(UI.Widget.VB
                     const isThrottling = existingConditions &&
                         existingConditions.conditions !== SDK.NetworkManager.BlockingConditions &&
                         existingConditions.conditions !== SDK.NetworkManager.NoThrottlingConditions;
-                    blockingMenu.debugSection().appendItem(isBlocking ? i18nString(UIStrings.unblockS, { PH1: urlPattern.constructorString }) :
-                        i18nString(UIStrings.blockRequestUrl), () => isBlocking ? removeRequestCondition(urlPattern) :
+                    const croppedURL = Platform.StringUtilities.trimMiddle(urlPattern.constructorString, maxBlockedURLLength);
+                    blockingMenu.debugSection().appendItem(isBlocking ? i18nString(UIStrings.unblockS, { PH1: croppedURL }) : i18nString(UIStrings.blockRequestUrl), () => isBlocking ? removeRequestCondition(urlPattern) :
                         addRequestCondition(urlPattern, SDK.NetworkManager.BlockingConditions), { jslogContext: 'block-request-url' });
-                    throttlingMenu.debugSection().appendItem(isThrottling ? i18nString(UIStrings.unthrottleS, { PH1: urlPattern.constructorString }) :
+                    throttlingMenu.debugSection().appendItem(isThrottling ? i18nString(UIStrings.unthrottleS, { PH1: croppedURL }) :
                         i18nString(UIStrings.throttleRequestUrl), () => isThrottling ? removeRequestCondition(urlPattern) :
                         addRequestCondition(urlPattern, SDK.NetworkManager.Slow3GConditions), { jslogContext: 'throttle-request-url' });
                 }
@@ -1627,10 +1627,10 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin(UI.Widget.VB
                     const isThrottling = existingConditions &&
                         existingConditions.conditions !== SDK.NetworkManager.BlockingConditions &&
                         existingConditions.conditions !== SDK.NetworkManager.NoThrottlingConditions;
-                    blockingMenu.debugSection().appendItem(isBlocking ? i18nString(UIStrings.unblockS, { PH1: domainPattern.constructorString }) :
-                        i18nString(UIStrings.blockRequestDomain), () => isBlocking ? removeRequestCondition(domainPattern) :
+                    const croppedURL = Platform.StringUtilities.trimMiddle(domainPattern.constructorString, maxBlockedURLLength);
+                    blockingMenu.debugSection().appendItem(isBlocking ? i18nString(UIStrings.unblockS, { PH1: croppedURL }) : i18nString(UIStrings.blockRequestDomain), () => isBlocking ? removeRequestCondition(domainPattern) :
                         addRequestCondition(domainPattern, SDK.NetworkManager.BlockingConditions), { jslogContext: 'block-request-domain' });
-                    throttlingMenu.debugSection().appendItem(isThrottling ? i18nString(UIStrings.unthrottleS, { PH1: domainPattern.constructorString }) :
+                    throttlingMenu.debugSection().appendItem(isThrottling ? i18nString(UIStrings.unthrottleS, { PH1: croppedURL }) :
                         i18nString(UIStrings.throttleRequestDomain), () => isThrottling ? removeRequestCondition(domainPattern) :
                         addRequestCondition(domainPattern, SDK.NetworkManager.Slow3GConditions), { jslogContext: 'throttle-request-domain' });
                 }

@@ -287,8 +287,8 @@ export declare class TreeViewElement extends HTMLElementWithLightDOMTemplate {
     attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null): void;
 }
 export declare namespace TreeViewElement {
-    class SelectEvent extends CustomEvent<HTMLLIElement> {
-        constructor(detail: HTMLLIElement);
+    class SelectEvent extends CustomEvent<void> {
+        constructor();
     }
     class ExpandEvent extends CustomEvent<{
         expanded: boolean;

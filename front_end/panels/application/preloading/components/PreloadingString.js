@@ -28,6 +28,11 @@ const UIStrings = {
      */
     PrefetchFailedNon2XX: 'The prefetch failed because of a non-2xx HTTP response status code.',
     /**
+     * @description  Description text for Prefetch status PrefetchFailedNon2XX when the HTTP status code is known.
+     * @example {404} PH1
+     */
+    PrefetchFailedNon2XXWithStatusCode: 'The prefetch failed because of a non-2xx HTTP response status code ({PH1}).',
+    /**
      * @description  Description text for Prefetch status PrefetchIneligibleRetryAfter.
      */
     PrefetchIneligibleRetryAfter: 'A previous prefetch to the origin got a HTTP 503 response with an Retry-After header that has not elapsed yet.',
@@ -379,7 +384,7 @@ export const PrefetchReasonDescription = {
     PrefetchEvictedAfterBrowsingDataRemoved: { name: i18nLazyString(UIStrings.PrefetchEvictedAfterBrowsingDataRemoved) },
 };
 /** Decoding PrefetchFinalStatus prefetchAttempt to failure description. **/
-export function prefetchFailureReason({ prefetchStatus }) {
+export function prefetchFailureReason({ prefetchStatus }, statusCode) {
     // If you face an error on rolling CDP changes, see
     // https://docs.google.com/document/d/1PnrfowsZMt62PX1EvvTp2Nqs3ji1zrklrAEe1JYbkTk
     switch (prefetchStatus) {
@@ -411,6 +416,9 @@ export function prefetchFailureReason({ prefetchStatus }) {
         case "PrefetchFailedNetError" /* Protocol.Preload.PrefetchStatus.PrefetchFailedNetError */:
             return PrefetchReasonDescription['PrefetchFailedNetError'].name();
         case "PrefetchFailedNon2XX" /* Protocol.Preload.PrefetchStatus.PrefetchFailedNon2XX */:
+            if (statusCode !== undefined) {
+                return i18nString(UIStrings.PrefetchFailedNon2XXWithStatusCode, { PH1: String(statusCode) });
+            }
             return PrefetchReasonDescription['PrefetchFailedNon2XX'].name();
         case "PrefetchIneligibleRetryAfter" /* Protocol.Preload.PrefetchStatus.PrefetchIneligibleRetryAfter */:
             return PrefetchReasonDescription['PrefetchIneligibleRetryAfter'].name();
@@ -717,14 +725,14 @@ export function status(status) {
             return i18n.i18n.lockedString('Internal error');
     }
 }
-export function composedStatus(attempt) {
+export function composedStatus(attempt, statusCode) {
     const short = status(attempt.status);
     if (attempt.status !== "Failure" /* SDK.PreloadingModel.PreloadingStatus.FAILURE */) {
         return short;
     }
     switch (attempt.action) {
         case "Prefetch" /* Protocol.Preload.SpeculationAction.Prefetch */: {
-            const detail = prefetchFailureReason(attempt) ?? i18n.i18n.lockedString('Internal error');
+            const detail = prefetchFailureReason(attempt, statusCode) ?? i18n.i18n.lockedString('Internal error');
             return short + ' - ' + detail;
         }
         case "Prerender" /* Protocol.Preload.SpeculationAction.Prerender */:

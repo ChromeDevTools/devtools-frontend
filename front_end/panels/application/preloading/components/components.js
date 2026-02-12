@@ -46,6 +46,11 @@ var UIStrings = {
    */
   PrefetchFailedNon2XX: "The prefetch failed because of a non-2xx HTTP response status code.",
   /**
+   * @description  Description text for Prefetch status PrefetchFailedNon2XX when the HTTP status code is known.
+   * @example {404} PH1
+   */
+  PrefetchFailedNon2XXWithStatusCode: "The prefetch failed because of a non-2xx HTTP response status code ({PH1}).",
+  /**
    * @description  Description text for Prefetch status PrefetchIneligibleRetryAfter.
    */
   PrefetchIneligibleRetryAfter: "A previous prefetch to the origin got a HTTP 503 response with an Retry-After header that has not elapsed yet.",
@@ -396,7 +401,7 @@ var PrefetchReasonDescription = {
   PrefetchNotEligibleRedirectToServiceWorker: { name: () => i18n.i18n.lockedString("Unknown") },
   PrefetchEvictedAfterBrowsingDataRemoved: { name: i18nLazyString(UIStrings.PrefetchEvictedAfterBrowsingDataRemoved) }
 };
-function prefetchFailureReason({ prefetchStatus }) {
+function prefetchFailureReason({ prefetchStatus }, statusCode) {
   switch (prefetchStatus) {
     case null:
       return null;
@@ -426,6 +431,9 @@ function prefetchFailureReason({ prefetchStatus }) {
     case "PrefetchFailedNetError":
       return PrefetchReasonDescription["PrefetchFailedNetError"].name();
     case "PrefetchFailedNon2XX":
+      if (statusCode !== void 0) {
+        return i18nString(UIStrings.PrefetchFailedNon2XXWithStatusCode, { PH1: String(statusCode) });
+      }
       return PrefetchReasonDescription["PrefetchFailedNon2XX"].name();
     case "PrefetchIneligibleRetryAfter":
       return PrefetchReasonDescription["PrefetchIneligibleRetryAfter"].name();
@@ -699,14 +707,14 @@ function status(status2) {
       return i18n.i18n.lockedString("Internal error");
   }
 }
-function composedStatus(attempt) {
+function composedStatus(attempt, statusCode) {
   const short = status(attempt.status);
   if (attempt.status !== "Failure") {
     return short;
   }
   switch (attempt.action) {
     case "Prefetch": {
-      const detail = prefetchFailureReason(attempt) ?? i18n.i18n.lockedString("Internal error");
+      const detail = prefetchFailureReason(attempt, statusCode) ?? i18n.i18n.lockedString("Internal error");
       return short + " - " + detail;
     }
     case "Prerender":
@@ -1183,7 +1191,8 @@ var PreloadingDetailsReportView = class extends LegacyWrapper.LegacyWrapper.Wrap
     if (attempt.action !== "Prefetch") {
       return Lit2.nothing;
     }
-    const failureDescription = prefetchFailureReason(attempt);
+    const statusCode = PreloadingHelper.PreloadingForward.prefetchStatusCode(attempt.requestId);
+    const failureDescription = prefetchFailureReason(attempt, statusCode);
     if (failureDescription === null) {
       return Lit2.nothing;
     }
@@ -1657,7 +1666,7 @@ var PRELOADING_GRID_DEFAULT_VIEW = (input, _output, target) => {
       "vertical-align": "sub"
     })}
                     ></devtools-icon>` : ""}
-                  ${hasWarning ? i18nString5(UIStrings5.prefetchFallbackReady) : composedStatus(attempt)}
+                  ${hasWarning ? i18nString5(UIStrings5.prefetchFallbackReady) : composedStatus(attempt, row.statusCode)}
                 </div>
               </td>
             </tr>`;

@@ -15887,7 +15887,7 @@ var HTMLElementWithLightDOMTemplate = class _HTMLElementWithLightDOMTemplate ext
         _HTMLElementWithLightDOMTemplate.patchLitTemplate(value);
         return value;
       }
-      if (Array.isArray(value)) {
+      if (Array.isArray(value) || value instanceof Iterator) {
         return value.map(patchValue);
       }
       return value;
@@ -22540,7 +22540,7 @@ var TreeViewElement = class _TreeViewElement extends HTMLElementWithLightDOMTemp
     super();
     this.#treeOutline.addEventListener(Events2.ElementSelected, (event) => {
       if (event.data instanceof TreeViewTreeElement) {
-        this.dispatchEvent(new _TreeViewElement.SelectEvent(event.data.configElement));
+        event.data.listItemElement.dispatchEvent(new _TreeViewElement.SelectEvent());
       }
     });
     this.#treeOutline.addEventListener(Events2.ElementExpanded, (event) => {
@@ -22686,8 +22686,8 @@ var TreeViewElement = class _TreeViewElement extends HTMLElementWithLightDOMTemp
 };
 (function(TreeViewElement2) {
   class SelectEvent extends CustomEvent {
-    constructor(detail) {
-      super("select", { detail });
+    constructor() {
+      super("select");
     }
   }
   TreeViewElement2.SelectEvent = SelectEvent;

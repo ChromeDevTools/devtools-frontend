@@ -5,7 +5,7 @@ import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 export interface ViewInput {
     initiatorGraph: Logs.NetworkLog.InitiatorGraph;
-    hasStackTrace: boolean;
+    stackTrace: StackTrace.StackTrace.StackTrace | null;
     request: SDK.NetworkRequest.NetworkRequest;
     linkifier: Components.Linkifier.Linkifier;
     target?: SDK.Target.Target;
@@ -21,7 +21,7 @@ export declare class RequestInitiatorView extends UI.Widget.VBox {
         preview: Components.JSPresentationUtils.StackTracePreviewContent;
         stackTrace: StackTrace.StackTrace.StackTrace | null;
     } | null>;
-    performUpdate(): void;
+    performUpdate(): Promise<void>;
     wasShown(): void;
 }
 export {};

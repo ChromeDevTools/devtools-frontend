@@ -23,7 +23,7 @@ You aim to help developers of all levels, prioritizing teaching web concepts as 
 
 # Considerations
 * Determine what the question the domain of the question is - styling, network, sources, performance or other part of DevTools.
-* When possible proactively try to gather additional data and select context that they user may find relevant to the question they are asking utilizing the function calls available to you.
+* Proactively try to gather additional data. If a select specific data can be selected, select one.
 * Avoid making assumptions without sufficient evidence, and always seek further clarification if needed.
 * Always explore multiple possible explanations for the observed behavior before settling on a conclusion.
 * When presenting solutions, clearly distinguish between the primary cause and contributing factors.
@@ -68,7 +68,7 @@ export class ContextSelectionAgent extends AiAgent {
         this.#performanceRecordAndReload = opts.performanceRecordAndReload;
         this.#onInspectElement = opts.onInspectElement;
         this.declareFunction('listNetworkRequests', {
-            description: `Gives a list of network requests including URL, status code, and duration in ms`,
+            description: `Gives a list of network requests including URL, status code, and duration in ms.`,
             parameters: {
                 type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
                 description: '',
@@ -97,13 +97,18 @@ export class ContextSelectionAgent extends AiAgent {
                         duration: request.duration,
                     });
                 }
+                if (requests.length === 0) {
+                    return {
+                        error: 'No requests recorded by DevTools',
+                    };
+                }
                 return {
                     result: requests,
                 };
             },
         });
         this.declareFunction('selectNetworkRequest', {
-            description: `From the list of selected request select one to debug`,
+            description: `Selects a specific network request to further provide information about. Use this when asked about network requests issues.`,
             parameters: {
                 type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
                 description: '',
@@ -166,7 +171,7 @@ export class ContextSelectionAgent extends AiAgent {
             },
         });
         this.declareFunction('selectSourceFile', {
-            description: `Returns a list of all files in the project.`,
+            description: `Selects a source file. Use this when asked about files on the page.`,
             parameters: {
                 type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
                 description: '',
@@ -175,14 +180,14 @@ export class ContextSelectionAgent extends AiAgent {
                 properties: {
                     name: {
                         type: 1 /* Host.AidaClient.ParametersTypes.STRING */,
-                        description: 'The name of the file',
+                        description: 'The name of the file you want to select.',
                         nullable: false,
                     },
                 },
             },
             displayInfoFromArgs: args => {
                 return {
-                    title: lockedString('Getting source file'),
+                    title: lockedString('Getting source file…'),
                     action: `selectSourceFile(${args.name})`,
                 };
             },
@@ -198,7 +203,7 @@ export class ContextSelectionAgent extends AiAgent {
             },
         });
         this.declareFunction('performanceRecordAndReload', {
-            description: 'Start a new performance recording and reload the page.',
+            description: 'Records a new performance trace, to help debug performance issue.',
             parameters: {
                 type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
                 description: '',
@@ -225,7 +230,7 @@ export class ContextSelectionAgent extends AiAgent {
             }
         });
         this.declareFunction('inspectDom', {
-            description: `Prompts user to select a DOM element from the page.`,
+            description: `Prompts user to select a DOM element from the page. Use this when you don't know which element is selected.`,
             parameters: {
                 type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
                 description: '',
@@ -235,7 +240,7 @@ export class ContextSelectionAgent extends AiAgent {
             },
             displayInfoFromArgs: () => {
                 return {
-                    title: lockedString('Please select an element on the page...'),
+                    title: lockedString('Please select an element on the page…'),
                     action: 'selectElement()',
                 };
             },

@@ -68,10 +68,6 @@ const UIStringsNotTranslate = {
      */
     timing: 'Timing',
     /**
-     * @description Prefix text for response status.
-     */
-    responseStatus: 'Response Status',
-    /**
      * @description Title text for request initiator chain.
      */
     requestInitiatorChain: 'Request initiator chain',
@@ -146,8 +142,8 @@ async function createContextDetailsForNetworkAgent(selectedNetworkRequest) {
     const responseBodyString = responseBody ? `\n\n${responseBody}` : '';
     const responseContextDetail = {
         title: lockedString(UIStringsNotTranslate.response),
-        text: lockedString(UIStringsNotTranslate.responseStatus) + ': ' + request.statusCode + ' ' + request.statusText +
-            `\n\n${formatter.formatResponseHeaders()}` + responseBodyString,
+        text: formatter.formatResponseHeaders() + responseBodyString +
+            `\n\n${formatter.formatStatus()}${formatter.formatFailureReasons()}`,
     };
     const timingContextDetail = {
         title: lockedString(UIStringsNotTranslate.timing),

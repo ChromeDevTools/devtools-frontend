@@ -82,7 +82,7 @@ function populateContextMenu(link, event) {
     void contextMenu.show();
 }
 // TODO(crbug.com/456517732): remove when all usages of runtimeStackTrace are migrated.
-export function buildStackTraceRowsForLegacyRuntimeStackTrace(stackTrace, target, linkifier, tabStops, updateCallback, showColumnNumber) {
+function buildStackTraceRowsForLegacyRuntimeStackTrace(stackTrace, target, linkifier, tabStops, updateCallback, showColumnNumber) {
     const stackTraceRows = [];
     if (updateCallback) {
         const throttler = new Common.Throttler.Throttler(100);
@@ -131,7 +131,7 @@ export function buildStackTraceRowsForLegacyRuntimeStackTrace(stackTrace, target
     }
     return stackTraceRows;
 }
-export function buildStackTraceRows(stackTrace, target, linkifier, tabStops, showColumnNumber) {
+function buildStackTraceRows(stackTrace, target, linkifier, tabStops, showColumnNumber) {
     const stackTraceRows = [];
     function buildStackTraceRowsHelper(fragment, previousFragment = undefined) {
         let asyncRow = null;
@@ -151,13 +151,8 @@ export function buildStackTraceRows(stackTrace, target, linkifier, tabStops, sho
                 inlineFrameIndex: 0,
                 revealBreakpoint: previousStackFrameWasBreakpointCondition,
             });
-            if (link) {
-                link.setAttribute('jslog', `${VisualLogging.link('stack-trace').track({ click: true })}`);
-                link.addEventListener('contextmenu', populateContextMenu.bind(null, link));
-                if (!link.textContent) {
-                    link.textContent = i18nString(UIStrings.unknownSource);
-                }
-            }
+            link.setAttribute('jslog', `${VisualLogging.link('stack-trace').track({ click: true })}`);
+            link.addEventListener('contextmenu', populateContextMenu.bind(null, link));
             stackTraceRows.push({ functionName, link });
             previousStackFrameWasBreakpointCondition = [
                 SDK.DebuggerModel.COND_BREAKPOINT_SOURCE_URL,

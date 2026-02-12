@@ -49,6 +49,10 @@ export class RemoteObject {
         const matches = object.description?.match(descriptionLengthParenRegex);
         return matches ? parseInt(matches[1], 10) : 0;
     }
+    static isEmptyArray(object) {
+        const matches = object.description?.match(descriptionLengthParenRegex);
+        return Boolean(matches?.[1] === '0');
+    }
     static unserializableDescription(object) {
         if (typeof object === 'number') {
             const description = String(object);
@@ -452,7 +456,8 @@ export class RemoteObjectImpl extends RemoteObject {
     }
     isLinearMemoryInspectable() {
         return this.type === 'object' && this.subtype !== undefined &&
-            ['webassemblymemory', 'typedarray', 'dataview', 'arraybuffer'].includes(this.subtype);
+            ['webassemblymemory', 'typedarray', 'dataview', 'arraybuffer'].includes(this.subtype) &&
+            !RemoteObject.isEmptyArray(this);
     }
 }
 export class ScopeRemoteObject extends RemoteObjectImpl {

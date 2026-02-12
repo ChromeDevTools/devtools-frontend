@@ -56,6 +56,38 @@ export class NetworkRequestFormatter {
         }
         return '<redacted cross-origin initiator URL>';
     }
+    static formatStatus(status) {
+        let responseStatus = '';
+        if (status.statusCode) {
+            responseStatus = `Response status: ${status.statusCode} ${status.statusText}\n`;
+        }
+        const flags = [];
+        flags.push(status.finished ? 'finished' : 'pending');
+        if (status.failed) {
+            flags.push('failed');
+        }
+        if (status.canceled) {
+            flags.push('canceled');
+        }
+        if (status.preserved) {
+            flags.push('preserved');
+        }
+        const requestStatus = flags.length > 0 ? `Network request status: ${flags.join(', ')}\n` : '';
+        return `${responseStatus}${requestStatus}`;
+    }
+    static formatFailureReasons(reasons) {
+        const lines = [];
+        if (reasons.blockedReason) {
+            lines.push(`Blocked reason: ${reasons.blockedReason}`);
+        }
+        if (reasons.corsErrorStatus) {
+            lines.push(`CORS error: ${reasons.corsErrorStatus.corsError} ${reasons.corsErrorStatus.failedParameter}`);
+        }
+        if (reasons.localizedFailDescription) {
+            lines.push(`Fail description: ${reasons.localizedFailDescription}`);
+        }
+        return lines.length > 0 ? `${lines.join('\n')}\n` : '';
+    }
     constructor(request, calculator) {
         this.#request = request;
         this.#calculator = calculator;
@@ -85,11 +117,27 @@ ${this.formatRequestHeaders()}
 
 ${this.formatResponseHeaders()}${responseBody}
 
-Response status: ${this.#request.statusCode} ${this.#request.statusText}
-
+${this.formatStatus()}${this.formatFailureReasons()}
 Request timing:\n${this.formatNetworkRequestTiming()}
 
 Request initiator chain:\n${this.formatRequestInitiatorChain()}`;
+    }
+    formatStatus() {
+        return _a.formatStatus({
+            statusCode: this.#request.statusCode,
+            statusText: this.#request.statusText,
+            failed: this.#request.failed,
+            canceled: this.#request.canceled,
+            preserved: this.#request.preserved,
+            finished: this.#request.finished,
+        });
+    }
+    formatFailureReasons() {
+        return _a.formatFailureReasons({
+            blockedReason: this.#request.blockedReason(),
+            corsErrorStatus: this.#request.corsErrorStatus(),
+            localizedFailDescription: this.#request.localizedFailDescription,
+        });
     }
     /**
      * Note: nothing here should include information from origins other than

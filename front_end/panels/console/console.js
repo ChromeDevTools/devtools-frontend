@@ -5269,7 +5269,7 @@ var UIStrings4 = {
 };
 var str_4 = i18n9.i18n.registerUIStrings("panels/console/ConsoleSidebar.ts", UIStrings4);
 var i18nString4 = i18n9.i18n.getLocalizedString.bind(void 0, str_4);
-var { render: render5, html: html4, nothing: nothing4, Directives: Directives2 } = Lit3;
+var { render: render5, html: html4, nothing: nothing4 } = Lit3;
 var GROUP_ICONS = {
   [
     "message"
@@ -5297,23 +5297,15 @@ var GROUP_ICONS = {
   ]: { icon: "bug", label: UIStrings4.dVerbose }
 };
 var DEFAULT_VIEW4 = (input, output, target) => {
-  const nodeFilterMap = /* @__PURE__ */ new WeakMap();
-  const onSelectionChanged = (event) => {
-    const filter = nodeFilterMap.get(event.detail);
-    if (filter) {
-      input.onSelectionChanged(filter);
-    }
-  };
   render5(html4`<devtools-tree
         navigation-variant
         hide-overflow
-        @select=${onSelectionChanged}
         .template=${html4`
           <ul role="tree">
             ${input.groups.map((group) => html4`
               <li
                 role="treeitem"
-                ${Directives2.ref((element) => element && nodeFilterMap.set(element, group.filter))}
+                @select=${() => input.onSelectionChanged(group.filter)}
                 ?selected=${group.filter === input.selectedFilter}>
                   <style>${consoleSidebar_css_default}</style>
                   <devtools-icon name=${GROUP_ICONS[group.name].icon}></devtools-icon>
@@ -5325,7 +5317,7 @@ var DEFAULT_VIEW4 = (input, output, target) => {
                   <ul role="group" hidden>
                     ${group.urlGroups.values().map((urlGroup) => html4`
                       <li
-                        ${Directives2.ref((element) => element && nodeFilterMap.set(element, urlGroup.filter))}
+                        @select=${() => input.onSelectionChanged(urlGroup.filter)}
                         role="treeitem"
                         ?selected=${urlGroup.filter === input.selectedFilter}
                         title=${urlGroup.url ?? ""}>

@@ -80,7 +80,7 @@ export const PRELOADING_GRID_DEFAULT_VIEW = (input, _output, target) => {
             'vertical-align': 'sub',
         })}
                     ></devtools-icon>` : ''}
-                  ${hasWarning ? i18nString(UIStrings.prefetchFallbackReady) : composedStatus(attempt)}
+                  ${hasWarning ? i18nString(UIStrings.prefetchFallbackReady) : composedStatus(attempt, row.statusCode)}
                 </div>
               </td>
             </tr>`;

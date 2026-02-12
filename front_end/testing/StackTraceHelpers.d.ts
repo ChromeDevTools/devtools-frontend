@@ -1,3 +1,4 @@
+import * as Common from '../core/common/common.js';
 import * as Protocol from '../generated/protocol.js';
 import type * as StackTrace from '../models/stack_trace/stack_trace.js';
 /**
@@ -12,3 +13,15 @@ export declare function stringifyFrame(frame: StackTrace.StackTrace.Frame): stri
 export declare function stringifyFragment(fragment: StackTrace.StackTrace.Fragment): string;
 export declare function stringifyAsyncFragment(fragment: StackTrace.StackTrace.AsyncFragment): string;
 export declare function stringifyStackTrace(stackTrace: StackTrace.StackTrace.StackTrace): string;
+export declare class StubStackTrace extends Common.ObjectWrapper.ObjectWrapper<StackTrace.StackTrace.EventTypes> implements StackTrace.StackTrace.StackTrace {
+    readonly syncFragment: StackTrace.StackTrace.Fragment;
+    readonly asyncFragments: StackTrace.StackTrace.AsyncFragment[];
+    /**
+     * Create a stub stack trace by passing a string of the format `<url>:<name>:<line>:<column>` for each frame.
+     */
+    static create(syncFragmentDescriptor: string[], asyncFragmentDescriptors?: Array<{
+        description: string;
+        frames: string[];
+    }>): StubStackTrace;
+    constructor(syncFragment: StackTrace.StackTrace.Fragment, asyncFragments: StackTrace.StackTrace.AsyncFragment[]);
+}

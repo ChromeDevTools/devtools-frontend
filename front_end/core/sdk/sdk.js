@@ -4614,6 +4614,7 @@ var generatedProperties = [
       "uppercase",
       "lowercase",
       "full-width",
+      "full-size-kana",
       "none",
       "math-auto"
     ],
@@ -7110,6 +7111,7 @@ var generatedPropertyValues = {
       "uppercase",
       "lowercase",
       "full-width",
+      "full-size-kana",
       "none",
       "math-auto"
     ]
@@ -17331,6 +17333,10 @@ var RemoteObject = class _RemoteObject {
     const matches = object.description?.match(descriptionLengthParenRegex);
     return matches ? parseInt(matches[1], 10) : 0;
   }
+  static isEmptyArray(object) {
+    const matches = object.description?.match(descriptionLengthParenRegex);
+    return Boolean(matches?.[1] === "0");
+  }
   static unserializableDescription(object) {
     if (typeof object === "number") {
       const description = String(object);
@@ -17711,7 +17717,7 @@ var RemoteObjectImpl = class extends RemoteObject {
     return Boolean(this.#objectId) && this.type === "object" && this.subtype === "node";
   }
   isLinearMemoryInspectable() {
-    return this.type === "object" && this.subtype !== void 0 && ["webassemblymemory", "typedarray", "dataview", "arraybuffer"].includes(this.subtype);
+    return this.type === "object" && this.subtype !== void 0 && ["webassemblymemory", "typedarray", "dataview", "arraybuffer"].includes(this.subtype) && !RemoteObject.isEmptyArray(this);
   }
 };
 var ScopeRemoteObject = class extends RemoteObjectImpl {

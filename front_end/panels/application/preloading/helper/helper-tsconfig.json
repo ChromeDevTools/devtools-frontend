@@ -46,6 +46,9 @@
     },
     {
       "path": "../../../../generated/protocol-tsconfig.json"
+    },
+    {
+      "path": "../../../../models/logs/bundle-tsconfig.json"
     }
   ]
 }

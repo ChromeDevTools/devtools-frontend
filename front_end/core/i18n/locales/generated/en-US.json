@@ -1556,6 +1556,9 @@
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
     "message": "Client Hints Infrastructure"
   },
+  "models/issues_manager/ConnectionAllowlistIssue.ts | connectionAllowlistHeader": {
+    "message": "Connection-Allowlist specification"
+  },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "Content Security Policy - Eval"
   },
@@ -3107,6 +3110,9 @@
   "panels/ai_assistance/AiAssistancePanel.ts | settings": {
     "message": "Settings"
   },
+  "panels/ai_assistance/components/ChatInput.ts | addContext": {
+    "message": "Add selected item as context"
+  },
   "panels/ai_assistance/components/ChatInput.ts | inputTextAriaDescription": {
     "message": "You can also use one of the suggested prompts above to start your conversation"
   },
@@ -3114,7 +3120,7 @@
     "message": "Learn about AI in DevTools"
   },
   "panels/ai_assistance/components/ChatInput.ts | removeContext": {
-    "message": "Remove selected context"
+    "message": "Remove from context"
   },
   "panels/ai_assistance/components/ChatInput.ts | revealContextDescription": {
     "message": "Reveal the selected context item in DevTools"
@@ -5368,6 +5374,9 @@
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNon2XX": {
     "message": "The prefetch failed because of a non-2xx HTTP response status code."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNon2XXWithStatusCode": {
+    "message": "The prefetch failed because of a non-2xx HTTP response status code ({PH1})."
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchIneligibleRetryAfter": {
     "message": "A previous prefetch to the origin got a HTTP 503 response with an Retry-After header that has not elapsed yet."

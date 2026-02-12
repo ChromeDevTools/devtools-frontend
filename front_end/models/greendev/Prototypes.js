@@ -24,11 +24,9 @@ export class Prototypes {
     settings() {
         const settings = Common.Settings.Settings.instance();
         const inDevToolsFloaty = settings.createSetting('greendev-in-devtools-floaty-enabled', false, "Local" /* Common.Settings.SettingStorageType.LOCAL */);
-        const inlineWidgets = settings.createSetting('greendev-inline-widgets-enabled', false, "Local" /* Common.Settings.SettingStorageType.LOCAL */);
         const aiAnnotations = settings.createSetting('greendev-ai-annotations-enabled', false, "Local" /* Common.Settings.SettingStorageType.LOCAL */);
-        const artifactViewer = settings.createSetting('greendev-artifact-viewer-enabled', false, "Local" /* Common.Settings.SettingStorageType.LOCAL */);
         const copyToGemini = settings.createSetting('greendev-copy-to-gemini-enabled', false, "Local" /* Common.Settings.SettingStorageType.LOCAL */);
-        return { inDevToolsFloaty, inlineWidgets, aiAnnotations, artifactViewer, copyToGemini };
+        return { inDevToolsFloaty, aiAnnotations, copyToGemini };
     }
 }
 //# sourceMappingURL=Prototypes.js.map

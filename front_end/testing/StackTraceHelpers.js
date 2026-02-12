@@ -1,6 +1,7 @@
 // Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import * as Common from '../core/common/common.js';
 /**
  * Easily create `Protocol.Runtime.CallFrame`s by passing a string of the format: `<url>:<scriptId>:<name>:<line>:<column>`
  */
@@ -55,5 +56,30 @@ export function stringifyAsyncFragment(fragment) {
 }
 export function stringifyStackTrace(stackTrace) {
     return [stringifyFragment(stackTrace.syncFragment), ...stackTrace.asyncFragments.map(stringifyAsyncFragment)].join('\n');
+}
+export class StubStackTrace extends Common.ObjectWrapper.ObjectWrapper {
+    syncFragment;
+    asyncFragments;
+    /**
+     * Create a stub stack trace by passing a string of the format `<url>:<name>:<line>:<column>` for each frame.
+     */
+    static create(syncFragmentDescriptor, asyncFragmentDescriptors = []) {
+        function toFrame(descriptor) {
+            // Since URLs can contain colons, we count from the end and rejoin the rest again.
+            const parts = descriptor.split(':');
+            return {
+                url: parts.slice(0, -3).join(':'),
+                name: parts.at(-3) ?? '',
+                line: parts.at(-2) ? Number.parseInt(parts.at(-2), 10) : -1,
+                column: parts.at(-1) ? Number.parseInt(parts.at(-1), 10) : -1,
+            };
+        }
+        return new StubStackTrace({ frames: syncFragmentDescriptor.map(toFrame) }, asyncFragmentDescriptors.map(fragment => ({ description: fragment.description, frames: fragment.frames.map(toFrame) })));
+    }
+    constructor(syncFragment, asyncFragments) {
+        super();
+        this.syncFragment = syncFragment;
+        this.asyncFragments = asyncFragments;
+    }
 }
 //# sourceMappingURL=StackTraceHelpers.js.map

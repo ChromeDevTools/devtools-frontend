@@ -428,14 +428,14 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
       UI.Context.Context.instance().setFlavor(
           StackTrace.StackTrace.DebuggableFrameFlavor,
           StackTrace.StackTrace.DebuggableFrameFlavor.for(debuggerCallFrame));
+    } else {
+      void Common.Revealer.reveal(uiLocation);
     }
     if (oldItem !== item) {
       if (oldItem) {
         this.refreshItem(oldItem);
       }
       this.refreshItem(item);
-    } else {
-      void Common.Revealer.reveal(uiLocation);
     }
   }
 

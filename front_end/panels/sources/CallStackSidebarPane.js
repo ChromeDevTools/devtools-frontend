@@ -379,14 +379,14 @@ export class CallStackSidebarPane extends UI.View.SimpleView {
             UI.Context.Context.instance().setFlavor(SDK.DebuggerModel.CallFrame, debuggerCallFrame.sdkFrame);
             UI.Context.Context.instance().setFlavor(StackTrace.StackTrace.DebuggableFrameFlavor, StackTrace.StackTrace.DebuggableFrameFlavor.for(debuggerCallFrame));
         }
+        else {
+            void Common.Revealer.reveal(uiLocation);
+        }
         if (oldItem !== item) {
             if (oldItem) {
                 this.refreshItem(oldItem);
             }
             this.refreshItem(item);
-        }
-        else {
-            void Common.Revealer.reveal(uiLocation);
         }
     }
     activeCallFrameItem() {

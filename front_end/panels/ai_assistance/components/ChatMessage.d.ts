@@ -51,6 +51,7 @@ export interface RatingViewInput {
 export interface ActionViewInput {
     onReportClick: () => void;
     onCopyResponseClick: () => void;
+    showActions: boolean;
 }
 export interface SuggestionViewInput {
     suggestions?: [string, ...string[]];

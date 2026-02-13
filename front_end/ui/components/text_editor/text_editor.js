@@ -1021,6 +1021,9 @@ var AiCodeGenerationProvider = class _AiCodeGenerationProvider {
             return false;
           }
           if (hasActiveAiSuggestion(this.#editor.state)) {
+            if (this.#editor.state.field(aiAutoCompleteSuggestionState)?.source === "completion") {
+              return false;
+            }
             this.#dismissTeaserAndSuggestion();
             return true;
           }
@@ -1176,7 +1179,8 @@ var AiCodeGenerationProvider = class _AiCodeGenerationProvider {
             rpcGlobalId: generationResponse.metadata.rpcGlobalId,
             sampleId: topSample.sampleId,
             startTime,
-            onImpression: this.#aiCodeGeneration?.registerUserImpression.bind(this.#aiCodeGeneration)
+            onImpression: this.#aiCodeGeneration?.registerUserImpression.bind(this.#aiCodeGeneration),
+            source: "generation"
           }),
           setAiCodeGenerationTeaserMode.of(AiCodeGenerationTeaserMode.ACTIVE)
         ]
@@ -1414,6 +1418,9 @@ var AiCodeCompletionProvider = class _AiCodeCompletionProvider {
           if (!this.#aiCodeCompletion || !this.#editor || !hasActiveAiSuggestion(this.#editor.state)) {
             return false;
           }
+          if (this.#editor.state.field(aiAutoCompleteSuggestionState)?.source === "generation") {
+            return false;
+          }
           this.#editor.dispatch({
             effects: setAiAutoCompleteSuggestion.of(null)
           });
@@ -1528,7 +1535,8 @@ var AiCodeCompletionProvider = class _AiCodeCompletionProvider {
               sampleId,
               startTime,
               clearCachedRequest: this.clearCache.bind(this),
-              onImpression: this.#aiCodeCompletion?.registerUserImpression.bind(this.#aiCodeCompletion)
+              onImpression: this.#aiCodeCompletion?.registerUserImpression.bind(this.#aiCodeCompletion),
+              source: "completion"
             })
           });
         }

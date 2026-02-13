@@ -156,6 +156,12 @@ export class AiCodeCompletionProvider {
                     if (!this.#aiCodeCompletion || !this.#editor || !hasActiveAiSuggestion(this.#editor.state)) {
                         return false;
                     }
+                    if (this.#editor.state.field(aiAutoCompleteSuggestionState)?.source === "generation" /* AiSuggestionSource.GENERATION */) {
+                        // If the suggestion is from code generation, we don't want to
+                        // dismiss it here. The user should use the code generation
+                        // provider's keymap to dismiss the suggestion.
+                        return false;
+                    }
                     this.#editor.dispatch({
                         effects: setAiAutoCompleteSuggestion.of(null),
                     });
@@ -272,6 +278,7 @@ export class AiCodeCompletionProvider {
                             startTime,
                             clearCachedRequest: this.clearCache.bind(this),
                             onImpression: this.#aiCodeCompletion?.registerUserImpression.bind(this.#aiCodeCompletion),
+                            source: "completion" /* AiSuggestionSource.COMPLETION */,
                         })
                     });
                 }

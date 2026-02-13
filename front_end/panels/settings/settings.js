@@ -3015,7 +3015,7 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
             <input
               class="harmony-input"
               jslog=${VisualLogging5.textField().track({ keydown: "Enter", change: true }).context(input.excludePatternSetting.name)}
-              ${UI6.UIUtils.bindToSetting(input.excludePatternSetting)}
+              ${UI6.UIUtils.bindToSetting(input.excludePatternSetting, { jslog: false })}
               id="workspace-setting-folder-exclude-pattern"></input>
           </div>
           <div class="mappings-info">${i18nString6(UIStrings6.mappingsAreInferredAutomatically)}</div>

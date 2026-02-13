@@ -314,7 +314,11 @@ export declare function getDevToolsBoundingElement(): HTMLElement;
  */
 export declare const bindCheckbox: (input: CheckboxLabel, setting: Common.Settings.Setting<boolean>, metric?: UserMetricOptions) => void;
 export declare const bindCheckboxImpl: (input: CheckboxLabel, apply: (value: boolean) => void, metric?: UserMetricOptions) => (value: boolean) => void;
-export declare const bindToSetting: (settingOrName: string | Common.Settings.Setting<boolean | string> | Common.Settings.RegExpSetting, stringValidator?: (newSettingValue: string) => boolean) => ReturnType<typeof Directives.ref>;
+export type BindToSettingOpts = ((newSettingValue: string) => boolean) | {
+    validator?: (newSettingValue: string) => boolean;
+    jslog?: boolean;
+};
+export declare const bindToSetting: (settingOrName: string | Common.Settings.Setting<boolean | string> | Common.Settings.RegExpSetting, optionsOrValidator?: BindToSettingOpts) => ReturnType<typeof Directives.ref>;
 /**
  * Track toggle action as a whole or
  * track on and off action separately.

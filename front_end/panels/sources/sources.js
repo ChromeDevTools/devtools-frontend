@@ -12031,14 +12031,14 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI19.View.SimpleV
       debuggerCallFrame.sdkFrame.debuggerModel.setSelectedCallFrame(debuggerCallFrame.sdkFrame);
       UI19.Context.Context.instance().setFlavor(SDK12.DebuggerModel.CallFrame, debuggerCallFrame.sdkFrame);
       UI19.Context.Context.instance().setFlavor(StackTrace5.StackTrace.DebuggableFrameFlavor, StackTrace5.StackTrace.DebuggableFrameFlavor.for(debuggerCallFrame));
+    } else {
+      void Common13.Revealer.reveal(uiLocation);
     }
     if (oldItem !== item) {
       if (oldItem) {
         this.refreshItem(oldItem);
       }
       this.refreshItem(item);
-    } else {
-      void Common13.Revealer.reveal(uiLocation);
     }
   }
   activeCallFrameItem() {

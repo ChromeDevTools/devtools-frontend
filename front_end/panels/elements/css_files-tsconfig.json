@@ -6,7 +6,7 @@
     "files": [
         "accessibilityTreeView.css.js",
         "classesPaneWidget.css.js",
-        "computedStyleSidebarPane.css.js",
+        "computedStyleWidget.css.js",
         "cssValueTraceView.css.js",
         "elementStatePaneWidget.css.js",
         "elementsPanel.css.js",

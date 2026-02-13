@@ -156,10 +156,11 @@ export declare class ToolbarInputElement extends HTMLElement {
     static observedAttributes: string[];
     item?: ToolbarInput;
     datalist: HTMLDataListElement | null;
-    value: string | undefined;
     connectedCallback(): void;
     focus(): void;
     attributeChangedCallback(name: string, _oldValue: string, newValue: string): void;
+    get value(): string;
+    set value(value: string);
     set disabled(disabled: boolean);
     get disabled(): boolean;
 }

@@ -21,6 +21,14 @@ const UIStringsNotTranslate = {
      */
     cmdItoGenerateCode: 'cmd+i to generate code',
     /**
+     * @description Text for teaser to learn how data is being used.
+     */
+    ctrlOneTimeDisclaimerToLearnHowYourDataIsBeingUsed: 'ctrl+. to learn how your data is being used.',
+    /**
+     * @description Text for teaser to learn how data is being used in Mac.
+     */
+    cmdOneTimeDisclaimerToLearnHowYourDataIsBeingUsed: 'cmd+. to learn how your data is being used.',
+    /**
      * @description Aria label for teaser to generate code.
      */
     pressCtrlPeriodToLearnHowYourDataIsBeingUsed: 'Press ctrl . (“period”) to learn how your data is being used.',
@@ -108,18 +116,22 @@ export const DEFAULT_VIEW = (input, output, target) => {
             }
             const toGenerateCode = Host.Platform.isMac() ? lockedString(UIStringsNotTranslate.cmdItoGenerateCode) :
                 lockedString(UIStringsNotTranslate.ctrlItoGenerateCode);
-            const toLearnHowYourDataIsBeingUsed = Host.Platform.isMac() ?
+            const toLearnHowYourDataIsBeingUsedScreenReaderOnly = Host.Platform.isMac() ?
                 lockedString(UIStringsNotTranslate.pressCmdPeriodToLearnHowYourDataIsBeingUsed) :
                 lockedString(UIStringsNotTranslate.pressCtrlPeriodToLearnHowYourDataIsBeingUsed);
+            const toLearnHowYourDataIsBeingUsedVisible = Host.Platform.isMac() ?
+                lockedString(UIStringsNotTranslate.cmdOneTimeDisclaimerToLearnHowYourDataIsBeingUsed) :
+                lockedString(UIStringsNotTranslate.ctrlOneTimeDisclaimerToLearnHowYourDataIsBeingUsed);
             const tooltipDisclaimerText = getTooltipDisclaimerText(input.noLogging, input.panel);
-            // TODO(b/472291834): Disclaimer icon should match the placeholder's color
             // clang-format off
             teaserLabel = html `<div class="ai-code-generation-teaser-trigger">
-        <span aria-atomic="true" aria-live="assertive">${toGenerateCode}&nbsp;</span>
-        <div class="ai-code-generation-teaser-screen-reader-only" aria-atomic="true" aria-live="assertive">
-          ${toLearnHowYourDataIsBeingUsed}
-        </div>
-        <devtools-button
+        <span aria-atomic="true" aria-live="assertive">${toGenerateCode}</span>
+        ${input.showDataUsageTeaser ?
+                html `<span aria-hidden="true">${'. ' + toLearnHowYourDataIsBeingUsedVisible}</span>` : nothing}
+        <span class="ai-code-generation-teaser-screen-reader-only" aria-atomic="true" aria-live="assertive">
+          ${toLearnHowYourDataIsBeingUsedScreenReaderOnly}
+        </span>
+        &nbsp;<devtools-button
           .data=${{
                 title: lockedString(UIStringsNotTranslate.learnMoreAboutHowYourDataIsBeingUsed),
                 size: "MICRO" /* Buttons.Button.Size.MICRO */,
@@ -209,12 +221,13 @@ export const DEFAULT_VIEW = (input, output, target) => {
 export class AiCodeGenerationTeaser extends UI.Widget.Widget {
     #view;
     #viewOutput = {};
-    #displayState = AiCodeGenerationTeaserDisplayState.TRIGGER;
+    #displayState = AiCodeGenerationTeaserDisplayState.DISCOVERY;
     #disclaimerTooltipId;
     #noLogging; // Whether the enterprise setting is `ALLOW_WITHOUT_LOGGING` or not.
     #panel;
     #timerIntervalId;
     #loadStartTime;
+    static #showDataUsageTeaser = true;
     constructor(view) {
         super();
         this.markAsExternallyManaged();
@@ -229,6 +242,7 @@ export class AiCodeGenerationTeaser extends UI.Widget.Widget {
             onManageInSettingsTooltipClick: this.#onManageInSettingsTooltipClick.bind(this),
             disclaimerTooltipId: this.#disclaimerTooltipId,
             noLogging: this.#noLogging,
+            showDataUsageTeaser: AiCodeGenerationTeaser.#showDataUsageTeaser,
             panel: this.#panel,
         }, this.#viewOutput, this.contentElement);
     }
@@ -242,6 +256,9 @@ export class AiCodeGenerationTeaser extends UI.Widget.Widget {
     set displayState(displayState) {
         if (displayState === this.#displayState) {
             return;
+        }
+        if (this.#displayState === AiCodeGenerationTeaserDisplayState.TRIGGER) {
+            AiCodeGenerationTeaser.#showDataUsageTeaser = false;
         }
         this.#displayState = displayState;
         this.requestUpdate();

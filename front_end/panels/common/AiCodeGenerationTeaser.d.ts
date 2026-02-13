@@ -13,6 +13,7 @@ export interface ViewInput {
     disclaimerTooltipId?: string;
     noLogging: boolean;
     onManageInSettingsTooltipClick: (event: Event) => void;
+    showDataUsageTeaser: boolean;
     panel?: AiCodeCompletion.AiCodeCompletion.ContextFlavor;
 }
 export interface ViewOutput {

@@ -233,7 +233,6 @@ import "./../../ui/legacy/legacy.js";
 import "./../../ui/components/tooltips/tooltips.js";
 import * as i18n3 from "./../../core/i18n/i18n.js";
 import * as Platform from "./../../core/platform/platform.js";
-import * as Root from "./../../core/root/root.js";
 import * as SDK from "./../../core/sdk/sdk.js";
 import * as Logs from "./../../models/logs/logs.js";
 import * as Buttons from "./../../ui/components/buttons/buttons.js";
@@ -346,15 +345,7 @@ var UIStrings2 = {
   /**
    * @description Text to enable blocking of network requests
    */
-  enableNetworkRequestBlocking: "Enable network request blocking",
-  /**
-   * @description Text to enable blocking of network requests
-   */
   enableBlockingAndThrottling: "Enable blocking and throttling",
-  /**
-   * @description Tooltip text that appears when hovering over the plus button in the Blocked URLs Pane of the Network panel
-   */
-  addPattern: "Add pattern",
   /**
    * @description Tooltip text that appears when hovering over the plus button in the Blocked URLs Pane of the Network panel
    */
@@ -362,15 +353,7 @@ var UIStrings2 = {
   /**
    * @description Accessible label for the button to add request blocking patterns in the network request blocking tool
    */
-  addNetworkRequestBlockingPattern: "Add network request blocking pattern",
-  /**
-   * @description Accessible label for the button to add request blocking patterns in the network request blocking tool
-   */
   addPatternLabel: "Add network request throttling or blocking pattern",
-  /**
-   * @description Text that shows in the network request blocking panel if no pattern has yet been added.
-   */
-  noNetworkRequestsBlocked: "No blocked network requests",
   /**
    * @description Text that shows in the network request blocking panel if no pattern has yet been added.
    */
@@ -381,24 +364,10 @@ var UIStrings2 = {
    */
   noThrottlingOrBlockingPattern: `To throttle or block a network request, add a rule here manually or via the network panel's context menu. {PH1}`,
   /**
-   * @description Text that shows  in the network request blocking panel if no pattern has yet been added.
-   * @example {Add pattern} PH1
-   */
-  addPatternToBlock: 'Add a pattern by clicking on the "{PH1}" button.',
-  /**
-   * @description Text in Blocked URLs Pane of the Network panel
-   * @example {4} PH1
-   */
-  dBlocked: "{PH1} blocked",
-  /**
    * @description Text in Blocked URLs Pane of the Network panel
    * @example {4} PH1
    */
   dAffected: "{PH1} affected",
-  /**
-   * @description Text in Blocked URLs Pane of the Network panel
-   */
-  textPatternToBlockMatching: "Text pattern to block matching requests; use * for wildcard",
   /**
    * @description Text in Blocked URLs Pane of the Network panel
    */
@@ -480,7 +449,6 @@ var NETWORK_REQUEST_BLOCKING_EXPLANATION_URL = "https://developer.chrome.com/doc
 var PATTERN_API_DOCS_URL = "https://developer.mozilla.org/en-US/docs/Web/API/URL_Pattern_API";
 var { bindToAction } = UI2.UIUtils;
 var DEFAULT_VIEW = (input, output, target) => {
-  const individualThrottlingEnabled = Boolean(Root.Runtime.hostConfig.devToolsIndividualRequestThrottling?.enabled);
   render(
     // clang-format off
     html`
@@ -489,24 +457,24 @@ var DEFAULT_VIEW = (input, output, target) => {
         ?checked=${input.enabled}
         @click=${input.toggleEnabled}
         .jslogContext=${"network.enable-request-blocking"}>
-        ${individualThrottlingEnabled ? i18nString2(UIStrings2.enableBlockingAndThrottling) : i18nString2(UIStrings2.enableNetworkRequestBlocking)}
+        ${i18nString2(UIStrings2.enableBlockingAndThrottling)}
       </devtools-checkbox>
       <div class="toolbar-divider"></div>
       <devtools-button ${bindToAction("network.add-network-request-blocking-pattern")}></devtools-button>
       <devtools-button ${bindToAction("network.remove-all-network-request-blocking-patterns")}></devtools-button>
     </devtools-toolbar>
     <div class=empty-state ${ref((e) => input.list.setEmptyPlaceholder(e ?? null))}>
-      <span class=empty-state-header>${individualThrottlingEnabled ? i18nString2(UIStrings2.noPattern) : i18nString2(UIStrings2.noNetworkRequestsBlocked)}</span>
+      <span class=empty-state-header>${i18nString2(UIStrings2.noPattern)}</span>
       <div class=empty-state-description>
-        ${individualThrottlingEnabled ? uiI18n.getFormatLocalizedStringTemplate(str_2, UIStrings2.noThrottlingOrBlockingPattern, { PH1: learnMore() }) : html`<span>${i18nString2(UIStrings2.addPatternToBlock, { PH1: i18nString2(UIStrings2.addPattern) })}</span>${learnMore()}`}
+        ${uiI18n.getFormatLocalizedStringTemplate(str_2, UIStrings2.noThrottlingOrBlockingPattern, { PH1: learnMore() })}
       </div>
       <devtools-button
         @click=${input.addPattern}
         class=add-button
         .jslogContext=${"network.add-network-request-blocking-pattern"}
-        title=${individualThrottlingEnabled ? i18nString2(UIStrings2.addPatternLabel) : i18nString2(UIStrings2.addNetworkRequestBlockingPattern)}
+        title=${i18nString2(UIStrings2.addPatternLabel)}
         .variant=${"tonal"}>
-          ${individualThrottlingEnabled ? i18nString2(UIStrings2.addRule) : i18nString2(UIStrings2.addPattern)}
+          ${i18nString2(UIStrings2.addRule)}
       </devtools-button>
     </div>
     <devtools-widget .widgetConfig=${UI2.Widget.widgetConfig(UI2.Widget.VBox)}>
@@ -518,30 +486,10 @@ var DEFAULT_VIEW = (input, output, target) => {
   );
 };
 var AFFECTED_COUNT_DEFAULT_VIEW = (input, output, target) => {
-  if (Root.Runtime.hostConfig.devToolsIndividualRequestThrottling?.enabled) {
-    render(html`${i18nString2(UIStrings2.dAffected, { PH1: input.count })}`, target);
-  } else {
-    render(html`${i18nString2(UIStrings2.dBlocked, { PH1: input.count })}`, target);
-  }
+  render(html`${i18nString2(UIStrings2.dAffected, { PH1: input.count })}`, target);
 };
 function matchesUrl(conditions, url) {
-  function matchesPattern(pattern, url2) {
-    let pos = 0;
-    const parts = pattern.split("*");
-    for (let index = 0; index < parts.length; index++) {
-      const part = parts[index];
-      if (!part.length) {
-        continue;
-      }
-      pos = url2.indexOf(part, pos);
-      if (pos === -1) {
-        return false;
-      }
-      pos += part.length;
-    }
-    return true;
-  }
-  return Boolean(Root.Runtime.hostConfig.devToolsIndividualRequestThrottling?.enabled ? conditions.originalOrUpgradedURLPattern?.test(url) : conditions.wildcardURL && matchesPattern(conditions.wildcardURL, url));
+  return Boolean(conditions.originalOrUpgradedURLPattern?.test(url));
 }
 var AffectedCountWidget = class extends UI2.Widget.Widget {
   #view;
@@ -569,7 +517,7 @@ var AffectedCountWidget = class extends UI2.Widget.Widget {
     if (!this.#condition || !this.#drawer) {
       return;
     }
-    const count = !Root.Runtime.hostConfig.devToolsIndividualRequestThrottling?.enabled || this.#condition.isBlocking ? this.#drawer.blockedRequestsCount(this.#condition) : this.#drawer.throttledRequestsCount(this.#condition);
+    const count = this.#condition.isBlocking ? this.#drawer.blockedRequestsCount(this.#condition) : this.#drawer.throttledRequestsCount(this.#condition);
     this.#view({ count }, {}, this.element);
   }
   wasShown() {
@@ -664,24 +612,23 @@ var RequestConditionsDrawer = class _RequestConditionsDrawer extends UI2.Widget.
       }
     };
     const { enabled, originalOrUpgradedURLPattern, constructorStringOrWildcardURL, wildcardURL } = condition;
-    if (Root.Runtime.hostConfig.devToolsIndividualRequestThrottling?.enabled) {
-      const moveUp = (e) => {
-        if (this.manager.requestConditions.conditionsEnabled) {
-          UI2.ARIAUtils.LiveAnnouncer.status(i18nString2(UIStrings2.patternMovedUp));
-          e.consume(true);
-          this.manager.requestConditions.increasePriority(condition);
-        }
-      };
-      const moveDown = (e) => {
-        if (this.manager.requestConditions.conditionsEnabled) {
-          UI2.ARIAUtils.LiveAnnouncer.status(i18nString2(UIStrings2.patternMovedDown));
-          e.consume(true);
-          this.manager.requestConditions.decreasePriority(condition);
-        }
-      };
-      render(
-        // clang-format off
-        html`
+    const moveUp = (e) => {
+      if (this.manager.requestConditions.conditionsEnabled) {
+        UI2.ARIAUtils.LiveAnnouncer.status(i18nString2(UIStrings2.patternMovedUp));
+        e.consume(true);
+        this.manager.requestConditions.increasePriority(condition);
+      }
+    };
+    const moveDown = (e) => {
+      if (this.manager.requestConditions.conditionsEnabled) {
+        UI2.ARIAUtils.LiveAnnouncer.status(i18nString2(UIStrings2.patternMovedDown));
+        e.consume(true);
+        this.manager.requestConditions.decreasePriority(condition);
+      }
+    };
+    render(
+      // clang-format off
+      html`
     <input class=blocked-url-checkbox
       @change=${toggle2}
       type=checkbox
@@ -742,34 +689,18 @@ var RequestConditionsDrawer = class _RequestConditionsDrawer extends UI2.Widget.
        class=conditions-selector
        title=${i18nString2(UIStrings2.requestConditionsLabel)}
        .widgetConfig=${UI2.Widget.widgetConfig(MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelectorWidget, {
-          variant: "individual-request-conditions",
-          jslogContext: "request-conditions",
-          disabled: !editable,
-          onConditionsChanged,
-          currentConditions: condition.conditions
-        })}></devtools-widget>
+        variant: "individual-request-conditions",
+        jslogContext: "request-conditions",
+        disabled: !editable,
+        onConditionsChanged,
+        currentConditions: condition.conditions
+      })}></devtools-widget>
     <devtools-widget
       ?disabled=${!editable || !originalOrUpgradedURLPattern}
       .widgetConfig=${widgetConfig(AffectedCountWidget, { condition, drawer: this })}></devtools-widget>`,
-        // clang-format on
-        element
-      );
-    } else {
-      render(
-        // clang-format off
-        html`
-    <input class=blocked-url-checkbox
-      @change=${toggle2}
-      type=checkbox
-      .checked=${condition.enabled}
-      .disabled=${!editable}
-      jslog=${VisualLogging.toggle().track({ change: true })}>
-    <div @click=${toggle2} class=blocked-url-label>${wildcardURL}</div>
-    <devtools-widget .widgetConfig=${widgetConfig(AffectedCountWidget, { condition, drawer: this })}></devtools-widget>`,
-        // clang-format on
-        element
-      );
-    }
+      // clang-format on
+      element
+    );
   }
   toggleEnabled() {
     this.manager.requestConditions.conditionsEnabled = !this.manager.requestConditions.conditionsEnabled;
@@ -781,12 +712,12 @@ var RequestConditionsDrawer = class _RequestConditionsDrawer extends UI2.Widget.
   }
   beginEdit(pattern) {
     this.editor = this.createEditor();
-    this.editor.control("url").value = Root.Runtime.hostConfig.devToolsIndividualRequestThrottling?.enabled ? pattern.constructorStringOrWildcardURL : pattern.wildcardURL ?? "";
+    this.editor.control("url").value = pattern.constructorStringOrWildcardURL;
     return this.editor;
   }
   commitEdit(item, editor, isNew) {
     const constructorString = editor.control("url").value;
-    const pattern = Root.Runtime.hostConfig.devToolsIndividualRequestThrottling?.enabled ? SDK.NetworkManager.RequestURLPattern.create(constructorString) : constructorString;
+    const pattern = SDK.NetworkManager.RequestURLPattern.create(constructorString);
     if (!pattern) {
       throw new Error("Failed to parse pattern");
     }
@@ -803,14 +734,10 @@ var RequestConditionsDrawer = class _RequestConditionsDrawer extends UI2.Widget.
     const content = editor.contentElement();
     const titles = content.createChild("div", "blocked-url-edit-row");
     const label = titles.createChild("label");
-    if (Root.Runtime.hostConfig.devToolsIndividualRequestThrottling?.enabled) {
-      const learnMore2 = Link.create(PATTERN_API_DOCS_URL, i18nString2(UIStrings2.learnMore), void 0, "learn-more");
-      learnMore2.title = i18nString2(UIStrings2.learnMoreLabel);
-      titles.append("\xA0", learnMore2);
-      label.textContent = i18nString2(UIStrings2.textEditPattern);
-    } else {
-      label.textContent = i18nString2(UIStrings2.textPatternToBlockMatching);
-    }
+    const learnMore2 = Link.create(PATTERN_API_DOCS_URL, i18nString2(UIStrings2.learnMore), void 0, "learn-more");
+    learnMore2.title = i18nString2(UIStrings2.learnMoreLabel);
+    titles.append("\xA0", learnMore2);
+    label.textContent = i18nString2(UIStrings2.textEditPattern);
     const fields = content.createChild("div", "blocked-url-edit-row");
     const validator = (_item, _index, input) => {
       if (!input.value) {
@@ -819,14 +746,12 @@ var RequestConditionsDrawer = class _RequestConditionsDrawer extends UI2.Widget.
       if (this.manager.requestConditions.has(input.value)) {
         return { errorMessage: i18nString2(UIStrings2.patternAlreadyExists), valid: false };
       }
-      if (Root.Runtime.hostConfig.devToolsIndividualRequestThrottling?.enabled) {
-        const isValid = SDK.NetworkManager.RequestURLPattern.isValidPattern(input.value);
-        switch (isValid) {
-          case "failed-to-parse":
-            return { errorMessage: i18nString2(UIStrings2.patternFailedToParse), valid: false };
-          case "has-regexp-groups":
-            return { errorMessage: i18nString2(UIStrings2.patternFailedWithRegExpGroups), valid: false };
-        }
+      const isValid = SDK.NetworkManager.RequestURLPattern.isValidPattern(input.value);
+      switch (isValid) {
+        case "failed-to-parse":
+          return { errorMessage: i18nString2(UIStrings2.patternFailedToParse), valid: false };
+        case "has-regexp-groups":
+          return { errorMessage: i18nString2(UIStrings2.patternFailedWithRegExpGroups), valid: false };
       }
       return { valid: true, errorMessage: void 0 };
     };
@@ -837,7 +762,7 @@ var RequestConditionsDrawer = class _RequestConditionsDrawer extends UI2.Widget.
   }
   update() {
     const enabled = this.manager.requestConditions.conditionsEnabled;
-    const newItems = Array.from(this.manager.requestConditions.conditions.filter((pattern) => Root.Runtime.hostConfig.devToolsIndividualRequestThrottling?.enabled || pattern.wildcardURL));
+    const newItems = Array.from(this.manager.requestConditions.conditions);
     let oldIndex = 0;
     for (; oldIndex < newItems.length; ++oldIndex) {
       const pattern = newItems[oldIndex];
@@ -7461,7 +7386,6 @@ import * as Common16 from "./../../core/common/common.js";
 import * as Host9 from "./../../core/host/host.js";
 import * as i18n41 from "./../../core/i18n/i18n.js";
 import * as Platform10 from "./../../core/platform/platform.js";
-import * as Root2 from "./../../core/root/root.js";
 import * as SDK15 from "./../../core/sdk/sdk.js";
 import * as Annotations2 from "./../../models/annotations/annotations.js";
 import * as Bindings3 from "./../../models/bindings/bindings.js";
@@ -11700,85 +11624,57 @@ var NetworkLogView = class _NetworkLogView extends Common16.ObjectWrapper.eventM
     contextMenu.editSection().appendItem(i18nString21(UIStrings21.clearBrowserCache), this.clearBrowserCache.bind(this), { jslogContext: "clear-browser-cache" });
     contextMenu.editSection().appendItem(i18nString21(UIStrings21.clearBrowserCookies), this.clearBrowserCookies.bind(this), { jslogContext: "clear-browser-cookies" });
     if (request) {
+      let removeRequestCondition = function(pattern) {
+        const entry = manager.requestConditions.findCondition(pattern.constructorString);
+        if (entry) {
+          manager.requestConditions.delete(entry);
+          void UI24.ViewManager.ViewManager.instance().showView("network.blocked-urls");
+        }
+      }, addRequestCondition = function(pattern, conditions) {
+        const entry = manager.requestConditions.findCondition(pattern.constructorString);
+        if (entry) {
+          entry.conditions = conditions;
+        } else {
+          manager.requestConditions.add(SDK15.NetworkManager.RequestCondition.create(pattern, conditions));
+        }
+        manager.requestConditions.conditionsEnabled = true;
+        void UI24.ViewManager.ViewManager.instance().showView("network.blocked-urls");
+      };
       const maxBlockedURLLength = 20;
       const manager = SDK15.NetworkManager.MultitargetNetworkManager.instance();
-      if (!Root2.Runtime.hostConfig.devToolsIndividualRequestThrottling?.enabled) {
-        let addBlockedURL = function(url) {
-          manager.requestConditions.add(SDK15.NetworkManager.RequestCondition.createFromSetting({ enabled: true, url }));
-          manager.requestConditions.conditionsEnabled = true;
-          void UI24.ViewManager.ViewManager.instance().showView("network.blocked-urls");
-        }, removeBlockedURL = function(url) {
-          const entry = manager.requestConditions.findCondition(url);
-          if (entry) {
-            manager.requestConditions.delete(entry);
-          }
-          void UI24.ViewManager.ViewManager.instance().showView("network.blocked-urls");
-        };
-        const urlWithoutScheme = request.parsedURL.urlWithoutScheme();
-        if (urlWithoutScheme && !manager.requestConditions.has(urlWithoutScheme)) {
-          contextMenu.debugSection().appendItem(i18nString21(UIStrings21.blockRequestUrl), addBlockedURL.bind(null, urlWithoutScheme), { jslogContext: "block-request-url" });
-        } else if (urlWithoutScheme) {
-          const croppedURL = Platform10.StringUtilities.trimMiddle(urlWithoutScheme, maxBlockedURLLength);
-          contextMenu.debugSection().appendItem(i18nString21(UIStrings21.unblockS, { PH1: croppedURL }), removeBlockedURL.bind(null, urlWithoutScheme), { jslogContext: "unblock" });
-        }
-        const domain = request.parsedURL.domain();
-        if (domain && !manager.requestConditions.has(domain)) {
-          contextMenu.debugSection().appendItem(i18nString21(UIStrings21.blockRequestDomain), addBlockedURL.bind(null, domain), { jslogContext: "block-request-domain" });
-        } else if (domain) {
-          const croppedDomain = Platform10.StringUtilities.trimMiddle(domain, maxBlockedURLLength);
-          contextMenu.debugSection().appendItem(i18nString21(UIStrings21.unblockS, { PH1: croppedDomain }), removeBlockedURL.bind(null, domain), { jslogContext: "unblock" });
-        }
-      } else {
-        let removeRequestCondition = function(pattern) {
-          const entry = manager.requestConditions.findCondition(pattern.constructorString);
-          if (entry) {
-            manager.requestConditions.delete(entry);
-            void UI24.ViewManager.ViewManager.instance().showView("network.blocked-urls");
-          }
-        }, addRequestCondition = function(pattern, conditions) {
-          const entry = manager.requestConditions.findCondition(pattern.constructorString);
-          if (entry) {
-            entry.conditions = conditions;
-          } else {
-            manager.requestConditions.add(SDK15.NetworkManager.RequestCondition.create(pattern, conditions));
-          }
-          manager.requestConditions.conditionsEnabled = true;
-          void UI24.ViewManager.ViewManager.instance().showView("network.blocked-urls");
-        };
-        const blockingMenu = contextMenu.debugSection().appendSubMenuItem(
-          i18nString21(UIStrings21.blockRequests),
-          /* disabled=*/
-          true
-        );
-        const throttlingMenu = contextMenu.debugSection().appendSubMenuItem(
-          i18nString21(UIStrings21.throttleRequests),
-          /* disabled=*/
-          true
-        );
-        const urlWithoutScheme = request.parsedURL.urlWithoutScheme();
-        const urlPattern = urlWithoutScheme && SDK15.NetworkManager.RequestURLPattern.create(`*://${urlWithoutScheme}`);
-        if (urlPattern) {
-          throttlingMenu.setEnabled(true);
-          blockingMenu.setEnabled(true);
-          const existingConditions = manager.requestConditions.findCondition(urlPattern.constructorString);
-          const isBlocking = existingConditions?.conditions === SDK15.NetworkManager.BlockingConditions;
-          const isThrottling = existingConditions && existingConditions.conditions !== SDK15.NetworkManager.BlockingConditions && existingConditions.conditions !== SDK15.NetworkManager.NoThrottlingConditions;
-          const croppedURL = Platform10.StringUtilities.trimMiddle(urlPattern.constructorString, maxBlockedURLLength);
-          blockingMenu.debugSection().appendItem(isBlocking ? i18nString21(UIStrings21.unblockS, { PH1: croppedURL }) : i18nString21(UIStrings21.blockRequestUrl), () => isBlocking ? removeRequestCondition(urlPattern) : addRequestCondition(urlPattern, SDK15.NetworkManager.BlockingConditions), { jslogContext: "block-request-url" });
-          throttlingMenu.debugSection().appendItem(isThrottling ? i18nString21(UIStrings21.unthrottleS, { PH1: croppedURL }) : i18nString21(UIStrings21.throttleRequestUrl), () => isThrottling ? removeRequestCondition(urlPattern) : addRequestCondition(urlPattern, SDK15.NetworkManager.Slow3GConditions), { jslogContext: "throttle-request-url" });
-        }
-        const domain = request.parsedURL.domain();
-        const domainPattern = domain && SDK15.NetworkManager.RequestURLPattern.create(`*://${domain}`);
-        if (domainPattern) {
-          throttlingMenu.setEnabled(true);
-          blockingMenu.setEnabled(true);
-          const existingConditions = manager.requestConditions.findCondition(domainPattern.constructorString);
-          const isBlocking = existingConditions?.conditions === SDK15.NetworkManager.BlockingConditions;
-          const isThrottling = existingConditions && existingConditions.conditions !== SDK15.NetworkManager.BlockingConditions && existingConditions.conditions !== SDK15.NetworkManager.NoThrottlingConditions;
-          const croppedURL = Platform10.StringUtilities.trimMiddle(domainPattern.constructorString, maxBlockedURLLength);
-          blockingMenu.debugSection().appendItem(isBlocking ? i18nString21(UIStrings21.unblockS, { PH1: croppedURL }) : i18nString21(UIStrings21.blockRequestDomain), () => isBlocking ? removeRequestCondition(domainPattern) : addRequestCondition(domainPattern, SDK15.NetworkManager.BlockingConditions), { jslogContext: "block-request-domain" });
-          throttlingMenu.debugSection().appendItem(isThrottling ? i18nString21(UIStrings21.unthrottleS, { PH1: croppedURL }) : i18nString21(UIStrings21.throttleRequestDomain), () => isThrottling ? removeRequestCondition(domainPattern) : addRequestCondition(domainPattern, SDK15.NetworkManager.Slow3GConditions), { jslogContext: "throttle-request-domain" });
-        }
+      const blockingMenu = contextMenu.debugSection().appendSubMenuItem(
+        i18nString21(UIStrings21.blockRequests),
+        /* disabled=*/
+        true
+      );
+      const throttlingMenu = contextMenu.debugSection().appendSubMenuItem(
+        i18nString21(UIStrings21.throttleRequests),
+        /* disabled=*/
+        true
+      );
+      const urlWithoutScheme = request.parsedURL.urlWithoutScheme();
+      const urlPattern = urlWithoutScheme && SDK15.NetworkManager.RequestURLPattern.create(`*://${urlWithoutScheme}`);
+      if (urlPattern) {
+        throttlingMenu.setEnabled(true);
+        blockingMenu.setEnabled(true);
+        const existingConditions = manager.requestConditions.findCondition(urlPattern.constructorString);
+        const isBlocking = existingConditions?.conditions === SDK15.NetworkManager.BlockingConditions;
+        const isThrottling = existingConditions && existingConditions.conditions !== SDK15.NetworkManager.BlockingConditions && existingConditions.conditions !== SDK15.NetworkManager.NoThrottlingConditions;
+        const croppedURL = Platform10.StringUtilities.trimMiddle(urlPattern.constructorString, maxBlockedURLLength);
+        blockingMenu.debugSection().appendItem(isBlocking ? i18nString21(UIStrings21.unblockS, { PH1: croppedURL }) : i18nString21(UIStrings21.blockRequestUrl), () => isBlocking ? removeRequestCondition(urlPattern) : addRequestCondition(urlPattern, SDK15.NetworkManager.BlockingConditions), { jslogContext: "block-request-url" });
+        throttlingMenu.debugSection().appendItem(isThrottling ? i18nString21(UIStrings21.unthrottleS, { PH1: croppedURL }) : i18nString21(UIStrings21.throttleRequestUrl), () => isThrottling ? removeRequestCondition(urlPattern) : addRequestCondition(urlPattern, SDK15.NetworkManager.Slow3GConditions), { jslogContext: "throttle-request-url" });
+      }
+      const domain = request.parsedURL.domain();
+      const domainPattern = domain && SDK15.NetworkManager.RequestURLPattern.create(`*://${domain}`);
+      if (domainPattern) {
+        throttlingMenu.setEnabled(true);
+        blockingMenu.setEnabled(true);
+        const existingConditions = manager.requestConditions.findCondition(domainPattern.constructorString);
+        const isBlocking = existingConditions?.conditions === SDK15.NetworkManager.BlockingConditions;
+        const isThrottling = existingConditions && existingConditions.conditions !== SDK15.NetworkManager.BlockingConditions && existingConditions.conditions !== SDK15.NetworkManager.NoThrottlingConditions;
+        const croppedURL = Platform10.StringUtilities.trimMiddle(domainPattern.constructorString, maxBlockedURLLength);
+        blockingMenu.debugSection().appendItem(isBlocking ? i18nString21(UIStrings21.unblockS, { PH1: croppedURL }) : i18nString21(UIStrings21.blockRequestDomain), () => isBlocking ? removeRequestCondition(domainPattern) : addRequestCondition(domainPattern, SDK15.NetworkManager.BlockingConditions), { jslogContext: "block-request-domain" });
+        throttlingMenu.debugSection().appendItem(isThrottling ? i18nString21(UIStrings21.unthrottleS, { PH1: croppedURL }) : i18nString21(UIStrings21.throttleRequestDomain), () => isThrottling ? removeRequestCondition(domainPattern) : addRequestCondition(domainPattern, SDK15.NetworkManager.Slow3GConditions), { jslogContext: "throttle-request-domain" });
       }
       if (SDK15.NetworkManager.NetworkManager.canReplayRequest(request)) {
         contextMenu.debugSection().appendItem(i18nString21(UIStrings21.replayXhr), SDK15.NetworkManager.NetworkManager.replayRequest.bind(null, request), { jslogContext: "replay-xhr" });

@@ -122,6 +122,12 @@ export class AiCodeGenerationProvider {
                         return false;
                     }
                     if (hasActiveAiSuggestion(this.#editor.state)) {
+                        if (this.#editor.state.field(aiAutoCompleteSuggestionState)?.source === "completion" /* AiSuggestionSource.COMPLETION */) {
+                            // If the suggestion is from code completion, we don't want to
+                            // dismiss it here. The user should use the code completion
+                            // provider's keymap to dismiss the suggestion.
+                            return false;
+                        }
                         this.#dismissTeaserAndSuggestion();
                         return true;
                     }
@@ -284,6 +290,7 @@ export class AiCodeGenerationProvider {
                         sampleId: topSample.sampleId,
                         startTime,
                         onImpression: this.#aiCodeGeneration?.registerUserImpression.bind(this.#aiCodeGeneration),
+                        source: "generation" /* AiSuggestionSource.GENERATION */,
                     }),
                     setAiCodeGenerationTeaserMode.of(AiCodeGenerationTeaserMode.ACTIVE)
                 ]

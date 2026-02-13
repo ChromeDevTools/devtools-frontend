@@ -11627,17 +11627,7 @@ var RequestCondition = class extends Common5.ObjectWrapper.ObjectWrapper {
     return this.#pattern instanceof RequestURLPattern ? this.#pattern.constructorString : this.#pattern.upgradedPattern?.constructorString ?? this.#pattern.wildcardURL;
   }
   set pattern(pattern) {
-    if (typeof pattern === "string") {
-      if (Root2.Runtime.hostConfig.devToolsIndividualRequestThrottling?.enabled) {
-        throw new Error("Should not use wildcard urls");
-      }
-      this.#pattern = {
-        wildcardURL: pattern,
-        upgradedPattern: RequestURLPattern.upgradeFromWildcard(pattern) ?? void 0
-      };
-    } else {
-      this.#pattern = pattern;
-    }
+    this.#pattern = pattern;
     this.dispatchEventToListeners(
       "request-condition-changed"
       /* RequestCondition.Events.REQUEST_CONDITION_CHANGED */
@@ -11714,10 +11704,7 @@ var RequestConditions = class extends Common5.ObjectWrapper.ObjectWrapper {
     this.#conditionsEnabledSetting.set(enabled);
   }
   findCondition(pattern) {
-    if (Root2.Runtime.hostConfig.devToolsIndividualRequestThrottling?.enabled) {
-      return this.#conditions.find((condition) => condition.constructorString === pattern);
-    }
-    return this.#conditions.find((condition) => condition.wildcardURL === pattern);
+    return this.#conditions.find((condition) => condition.constructorString === pattern);
   }
   has(url) {
     return Boolean(this.findCondition(url));
@@ -11775,70 +11762,63 @@ var RequestConditions = class extends Common5.ObjectWrapper.ObjectWrapper {
     function isNonBlockingCondition(condition) {
       return !("block" in condition);
     }
-    if (Root2.Runtime.hostConfig.devToolsIndividualRequestThrottling?.enabled) {
-      const urlPatterns = [];
-      const matchedNetworkConditions = [];
-      if (this.conditionsEnabled) {
-        for (const condition of this.#conditions) {
-          const urlPattern = condition.constructorString;
-          const conditions = condition.conditions;
-          if (!condition.enabled || !urlPattern || conditions === NoThrottlingConditions) {
-            continue;
-          }
-          const block = !isNonBlockingCondition(conditions);
-          urlPatterns.push({ urlPattern, block });
-          if (!block) {
-            const { ruleIds } = condition;
-            matchedNetworkConditions.push({ ruleIds, urlPattern, conditions });
-          }
+    const urlPatterns = [];
+    const matchedNetworkConditions = [];
+    if (this.conditionsEnabled) {
+      for (const condition of this.#conditions) {
+        const urlPattern = condition.constructorString;
+        const conditions = condition.conditions;
+        if (!condition.enabled || !urlPattern || conditions === NoThrottlingConditions) {
+          continue;
+        }
+        const block = !isNonBlockingCondition(conditions);
+        urlPatterns.push({ urlPattern, block });
+        if (!block) {
+          const { ruleIds } = condition;
+          matchedNetworkConditions.push({ ruleIds, urlPattern, conditions });
         }
       }
-      if (globalConditions) {
-        matchedNetworkConditions.push({ conditions: globalConditions });
-      }
-      const promises = [];
-      for (const agent of agents) {
-        promises.push(agent.invoke_setBlockedURLs({ urlPatterns }));
-        promises.push(agent.invoke_emulateNetworkConditionsByRule({
-          offline,
-          matchedNetworkConditions: matchedNetworkConditions.map(({ urlPattern, conditions }) => ({
-            urlPattern: urlPattern ?? "",
-            latency: conditions.latency,
-            downloadThroughput: conditions.download < 0 ? 0 : conditions.download,
-            uploadThroughput: conditions.upload < 0 ? 0 : conditions.upload,
-            packetLoss: (conditions.packetLoss ?? 0) < 0 ? 0 : conditions.packetLoss,
-            packetQueueLength: conditions.packetQueueLength,
-            packetReordering: conditions.packetReordering,
-            connectionType: NetworkManager.connectionType(conditions)
-          }))
-        }).then((response) => {
-          if (!response.getError()) {
-            for (let i = 0; i < response.ruleIds.length; ++i) {
-              const ruleId = response.ruleIds[i];
-              const { ruleIds, conditions, urlPattern } = matchedNetworkConditions[i];
-              if (ruleIds) {
-                this.#requestConditionsById.set(ruleId, { urlPattern, conditions });
-                matchedNetworkConditions[i].ruleIds?.add(ruleId);
-              }
+    }
+    if (globalConditions) {
+      matchedNetworkConditions.push({ conditions: globalConditions });
+    }
+    const promises = [];
+    for (const agent of agents) {
+      promises.push(agent.invoke_setBlockedURLs({ urlPatterns }));
+      promises.push(agent.invoke_emulateNetworkConditionsByRule({
+        offline,
+        matchedNetworkConditions: matchedNetworkConditions.map(({ urlPattern, conditions }) => ({
+          urlPattern: urlPattern ?? "",
+          latency: conditions.latency,
+          downloadThroughput: conditions.download < 0 ? 0 : conditions.download,
+          uploadThroughput: conditions.upload < 0 ? 0 : conditions.upload,
+          packetLoss: (conditions.packetLoss ?? 0) < 0 ? 0 : conditions.packetLoss,
+          packetQueueLength: conditions.packetQueueLength,
+          packetReordering: conditions.packetReordering,
+          connectionType: NetworkManager.connectionType(conditions)
+        }))
+      }).then((response) => {
+        if (!response.getError()) {
+          for (let i = 0; i < response.ruleIds.length; ++i) {
+            const ruleId = response.ruleIds[i];
+            const { ruleIds, conditions, urlPattern } = matchedNetworkConditions[i];
+            if (ruleIds) {
+              this.#requestConditionsById.set(ruleId, { urlPattern, conditions });
+              matchedNetworkConditions[i].ruleIds?.add(ruleId);
             }
           }
-        }));
-        promises.push(agent.invoke_overrideNetworkState({
-          offline,
-          latency: globalConditions?.latency ?? 0,
-          downloadThroughput: globalConditions?.download ?? -1,
-          uploadThroughput: globalConditions?.upload ?? -1,
-          connectionType: globalConditions ? NetworkManager.connectionType(globalConditions) : "none"
-        }));
-      }
-      this.#conditionsAppliedForTestPromise = this.#conditionsAppliedForTestPromise.then(() => Promise.all(promises));
-      return urlPatterns.length > 0;
+        }
+      }));
+      promises.push(agent.invoke_overrideNetworkState({
+        offline,
+        latency: globalConditions?.latency ?? 0,
+        downloadThroughput: globalConditions?.download ?? -1,
+        uploadThroughput: globalConditions?.upload ?? -1,
+        connectionType: globalConditions ? NetworkManager.connectionType(globalConditions) : "none"
+      }));
     }
-    const urls = this.conditionsEnabled ? this.#conditions.filter((condition) => condition.enabled && condition.wildcardURL).map((condition) => condition.wildcardURL) : [];
-    for (const agent of agents) {
-      void agent.invoke_setBlockedURLs({ urls });
-    }
-    return urls.length > 0;
+    this.#conditionsAppliedForTestPromise = this.#conditionsAppliedForTestPromise.then(() => Promise.all(promises));
+    return urlPatterns.length > 0;
   }
   conditionsAppliedForTest() {
     return this.#conditionsAppliedForTestPromise;
@@ -11950,9 +11930,6 @@ var MultitargetNetworkManager = class _MultitargetNetworkManager extends Common5
     }
     this.#networkAgents.add(networkAgent);
     this.#fetchAgents.add(fetchAgent);
-    if (this.isThrottling() && !Root2.Runtime.hostConfig.devToolsIndividualRequestThrottling?.enabled) {
-      this.updateNetworkConditions(networkAgent);
-    }
   }
   modelRemoved(networkManager) {
     for (const entry of this.inflightMainResourceRequests) {
@@ -11973,13 +11950,7 @@ var MultitargetNetworkManager = class _MultitargetNetworkManager extends Common5
   }
   setNetworkConditions(conditions) {
     this.#networkConditions = conditions;
-    if (Root2.Runtime.hostConfig.devToolsIndividualRequestThrottling?.enabled) {
-      this.#requestConditions.applyConditions(this.isOffline(), this.isThrottling() ? this.#networkConditions : null, ...this.#networkAgents);
-    } else {
-      for (const agent of this.#networkAgents) {
-        this.updateNetworkConditions(agent);
-      }
-    }
+    this.#requestConditions.applyConditions(this.isOffline(), this.isThrottling() ? this.#networkConditions : null, ...this.#networkAgents);
     this.dispatchEventToListeners(
       "ConditionsChanged"
       /* MultitargetNetworkManager.Events.CONDITIONS_CHANGED */
@@ -12080,21 +12051,6 @@ var MultitargetNetworkManager = class _MultitargetNetworkManager extends Common5
   }
   isBlocking() {
     return this.#isBlocking && this.requestConditions.conditionsEnabled;
-  }
-  /**
-   * @deprecated Kept for layout tests
-   * TODO(pfaffe) remove
-   */
-  setBlockingEnabled(enabled) {
-    this.requestConditions.conditionsEnabled = enabled;
-  }
-  /**
-   * @deprecated Kept for layout tests
-   * TODO(pfaffe) remove
-   */
-  setBlockedPatterns(patterns) {
-    this.requestConditions.clear();
-    this.requestConditions.add(...patterns.map((pattern) => RequestCondition.createFromSetting(pattern)));
   }
   updateBlockedPatterns() {
     this.#isBlocking = this.#requestConditions.applyConditions(this.isOffline(), this.isThrottling() ? this.#networkConditions : null, ...this.#networkAgents);

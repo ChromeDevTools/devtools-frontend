@@ -208,7 +208,7 @@ export declare class RequestCondition extends Common.ObjectWrapper.ObjectWrapper
     get constructorString(): string | undefined;
     get wildcardURL(): string | undefined;
     get constructorStringOrWildcardURL(): string;
-    set pattern(pattern: RequestURLPattern | string);
+    set pattern(pattern: RequestURLPattern);
     get enabled(): boolean;
     set enabled(enabled: boolean);
     get conditions(): ThrottlingConditions;
@@ -285,16 +285,6 @@ export declare class MultitargetNetworkManager extends Common.ObjectWrapper.Obje
     private updateAcceptedEncodingsOverride;
     get requestConditions(): RequestConditions;
     isBlocking(): boolean;
-    /**
-     * @deprecated Kept for layout tests
-     * TODO(pfaffe) remove
-     */
-    private setBlockingEnabled;
-    /**
-     * @deprecated Kept for layout tests
-     * TODO(pfaffe) remove
-     */
-    private setBlockedPatterns;
     private updateBlockedPatterns;
     isIntercepting(): boolean;
     setInterceptionHandlerForPatterns(patterns: InterceptionPattern[], requestInterceptor: (arg0: InterceptedRequest) => Promise<void>): Promise<void>;

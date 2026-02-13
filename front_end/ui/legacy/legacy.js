@@ -12312,7 +12312,7 @@ var ToolbarInputElement = class extends HTMLElement {
   static observedAttributes = ["value", "disabled"];
   item;
   datalist = null;
-  value = void 0;
+  #value = void 0;
   #disabled = false;
   connectedCallback() {
     if (this.item) {
@@ -12357,8 +12357,8 @@ var ToolbarInputElement = class extends HTMLElement {
         this
       );
     }
-    if (this.value) {
-      this.item.setValue(this.value);
+    if (this.#value) {
+      this.item.setValue(this.#value);
     }
     if (this.#disabled) {
       this.item.setEnabled(false);
@@ -12385,7 +12385,7 @@ var ToolbarInputElement = class extends HTMLElement {
       if (this.item && this.item.value() !== newValue) {
         this.item.setValue(newValue, true);
       } else {
-        this.value = newValue;
+        this.#value = newValue;
       }
     } else if (name === "disabled") {
       this.#disabled = typeof newValue === "string";
@@ -12393,6 +12393,12 @@ var ToolbarInputElement = class extends HTMLElement {
         this.item.setEnabled(!this.#disabled);
       }
     }
+  }
+  get value() {
+    return this.item ? this.item.value() : this.#value ?? "";
+  }
+  set value(value) {
+    this.setAttribute("value", value);
   }
   set disabled(disabled) {
     if (disabled) {
@@ -15973,8 +15979,19 @@ var bindCheckboxImpl = function(input, apply, metric) {
     }
   };
 };
-var bindToSetting = (settingOrName, stringValidator) => {
+var bindToSetting = (settingOrName, optionsOrValidator) => {
   const setting = typeof settingOrName === "string" ? Common14.Settings.Settings.instance().moduleSetting(settingOrName) : settingOrName;
+  let stringValidator;
+  let jslog = true;
+  if (typeof optionsOrValidator === "function") {
+    stringValidator = optionsOrValidator;
+  } else if (optionsOrValidator) {
+    stringValidator = optionsOrValidator.validator;
+    if (optionsOrValidator.jslog !== void 0) {
+      jslog = optionsOrValidator.jslog;
+    }
+  }
+  const jslogBuilder = jslog ? VisualLogging14.toggle(setting.name).track({ change: true }) : null;
   let setValue;
   function settingChanged() {
     setValue(setting.get());
@@ -15984,6 +16001,9 @@ var bindToSetting = (settingOrName, stringValidator) => {
       if (e === void 0) {
         setting.removeChangeListener(settingChanged);
         return;
+      }
+      if (jslogBuilder) {
+        e.setAttribute("jslog", jslogBuilder.toString());
       }
       setting.addChangeListener(settingChanged);
       setValue = bindCheckboxImpl(e, setting.set.bind(setting));
@@ -15995,6 +16015,9 @@ var bindToSetting = (settingOrName, stringValidator) => {
       if (e === void 0) {
         setting.removeChangeListener(settingChanged);
         return;
+      }
+      if (jslogBuilder) {
+        e.setAttribute("jslog", jslogBuilder.toString());
       }
       setting.addChangeListener(settingChanged);
       setValue = bindInput(
@@ -16019,6 +16042,9 @@ var bindToSetting = (settingOrName, stringValidator) => {
       if (e === void 0) {
         setting.removeChangeListener(settingChanged);
         return;
+      }
+      if (jslogBuilder) {
+        e.setAttribute("jslog", jslogBuilder.toString());
       }
       setting.addChangeListener(settingChanged);
       setValue = bindInput(

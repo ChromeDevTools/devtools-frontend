@@ -2754,7 +2754,7 @@ var DEFAULT_VIEW3 = (input, output, target) => {
     });
   })}
       ${renderError(message)}
-      ${input.isLastMessage && !input.isLoading ? renderActions(input, output) : Lit2.nothing}
+      ${input.showActions ? renderActions(input, output) : Lit2.nothing}
     </section>
   `, target);
 };
@@ -3137,8 +3137,9 @@ var ChatMessage = class extends UI4.Widget.Widget {
       onInputChange: this.#handleInputChange.bind(this),
       isSubmitButtonDisabled: this.#isSubmitButtonDisabled,
       // Props for actions logic
+      showActions: !(this.isLastMessage && this.isLoading),
       showRateButtons: this.message.entity === "model" && !!this.message.rpcId,
-      suggestions: this.message.entity === "model" && !this.isReadOnly && this.message.parts.at(-1)?.type === "answer" ? this.message.parts.at(-1).suggestions : void 0,
+      suggestions: this.isLastMessage && this.message.entity === "model" && !this.isReadOnly && this.message.parts.at(-1)?.type === "answer" ? this.message.parts.at(-1).suggestions : void 0,
       currentRating: this.#currentRating,
       isShowingFeedbackForm: this.#isShowingFeedbackForm,
       onFeedbackSubmit: this.onFeedbackSubmit
@@ -4942,7 +4943,15 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI8.Panel.Panel {
   // We select the default agent based on the open panels if
   // there isn't any active conversation.
   #selectDefaultAgentIfNeeded() {
-    if (this.#conversation && !this.#conversation.isEmpty || this.#isLoading) {
+    if (this.#isLoading) {
+      return;
+    }
+    if (this.#conversation && !this.#conversation.isEmpty) {
+      const context = this.#getConversationContext(this.#getDefaultConversationType());
+      if (context && isAiAssistanceContextSelectionAgentEnabled()) {
+        this.#conversation?.setContext(context);
+        this.requestUpdate();
+      }
       return;
     }
     const targetConversationType = this.#getDefaultConversationType();

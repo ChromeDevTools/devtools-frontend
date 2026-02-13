@@ -24,7 +24,7 @@ export async function createNetworkPanelForMockConnection() {
         settingRegistrations: Common.SettingRegistration.getRegisteredSettings(),
     });
     const networkPanel = Network.NetworkPanel.NetworkPanel.instance({ forceNew: true, displayScreenshotDelay: 0 });
-    renderElementIntoDOM(networkPanel);
+    renderElementIntoDOM(networkPanel, { allowMultipleChildren: true });
     await RenderCoordinator.done();
     return networkPanel;
 }

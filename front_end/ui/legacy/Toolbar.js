@@ -691,7 +691,7 @@ export class ToolbarInputElement extends HTMLElement {
     static observedAttributes = ['value', 'disabled'];
     item;
     datalist = null;
-    value = undefined;
+    #value = undefined;
     #disabled = false;
     connectedCallback() {
         if (this.item) {
@@ -716,8 +716,8 @@ export class ToolbarInputElement extends HTMLElement {
             /* shrinkFactor=*/ undefined, tooltip, this.datalist ? this.#onAutocomplete.bind(this) : undefined, 
             /* dynamicCompletions=*/ undefined, jslogContext, this);
         }
-        if (this.value) {
-            this.item.setValue(this.value);
+        if (this.#value) {
+            this.item.setValue(this.#value);
         }
         if (this.#disabled) {
             this.item.setEnabled(false);
@@ -745,7 +745,7 @@ export class ToolbarInputElement extends HTMLElement {
                 this.item.setValue(newValue, true);
             }
             else {
-                this.value = newValue;
+                this.#value = newValue;
             }
         }
         else if (name === 'disabled') {
@@ -754,6 +754,12 @@ export class ToolbarInputElement extends HTMLElement {
                 this.item.setEnabled(!this.#disabled);
             }
         }
+    }
+    get value() {
+        return this.item ? this.item.value() : (this.#value ?? '');
+    }
+    set value(value) {
+        this.setAttribute('value', value);
     }
     set disabled(disabled) {
         if (disabled) {

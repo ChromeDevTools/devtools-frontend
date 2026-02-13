@@ -1789,6 +1789,9 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         return matches;
     }
     renderedPropertyText() {
+        if (!this.#isConnected()) {
+            return '';
+        }
         if (!this.nameElement || !this.valueElement) {
             return '';
         }
@@ -2412,8 +2415,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         }
         const regex = new RegExp(propertyNamePattern, 'i');
         await computedStyleWidget.filterComputedStyles(regex);
-        computedStyleWidget.input.setValue(this.property.name);
-        computedStyleWidget.input.element.focus();
+        computedStyleWidget.setFilterInput(this.property.name);
     }
     copyCssDeclarationAsJs() {
         const cssDeclarationValue = getCssDeclarationAsJavascriptProperty(this.property);
@@ -2897,12 +2899,24 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     }
     styleTextAppliedForTest() {
     }
+    // If the item isn't connected to the DOM, then reading its innerText will
+    // also include any invisible text (e.g. sources, styles), so we don't want
+    // to do that.
+    #isConnected() {
+        return this.listItemElement.isConnected;
+    }
     applyStyleText(styleText, majorChange, property) {
+        if (!this.#isConnected()) {
+            return Promise.resolve();
+        }
         return this.applyStyleThrottler.schedule(this.innerApplyStyleText.bind(this, styleText, majorChange, property));
     }
     async innerApplyStyleText(styleText, majorChange, property) {
         // this.property might have been nulled at the end of the last innerApplyStyleText.
         if (!this.treeOutline || !this.property) {
+            return;
+        }
+        if (!this.#isConnected()) {
             return;
         }
         const oldStyleRange = this.style.range;

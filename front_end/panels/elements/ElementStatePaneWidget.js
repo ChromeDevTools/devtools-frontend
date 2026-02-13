@@ -86,7 +86,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
         jslog=${VisualLogging.pane('element-states')}>
       <div class="page-state-checkbox">
         <devtools-checkbox class="small" title=${i18nString(UIStrings.emulatesAFocusedPage)}
-            jslog=${VisualLogging.toggle('emulate-page-focus').track({ change: true })} ${bindToSetting('emulate-page-focus')}>${i18nString(UIStrings.emulateFocusedPage)}</devtools-checkbox>
+            ${bindToSetting('emulate-page-focus')}>${i18nString(UIStrings.emulateFocusedPage)}</devtools-checkbox>
         <devtools-button
             @click=${() => UIHelpers.openInNewTab('https://developer.chrome.com/docs/devtools/rendering/apply-effects#emulate_a_focused_page')}
            .data=${{

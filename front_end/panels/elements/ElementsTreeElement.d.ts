@@ -23,6 +23,14 @@ interface ClosingTagContext {
 export type TagTypeContext = OpeningTagContext | ClosingTagContext;
 export declare function isOpeningTag(context: TagTypeContext): context is OpeningTagContext;
 export interface ViewInput {
+    node: SDK.DOMModel.DOMNode | null;
+    isClosingTag: boolean;
+    expanded: boolean;
+    isExpandable: boolean;
+    isXMLMimeType: boolean;
+    updateRecord: Elements.ElementUpdateRecord.ElementUpdateRecord | null;
+    onHighlightSearchResults: () => void;
+    onExpand: () => void;
     containerAdornerActive: boolean;
     flexAdornerActive: boolean;
     gridAdornerActive: boolean;
@@ -40,7 +48,6 @@ export interface ViewInput {
     showViewSourceAdorner: boolean;
     showScrollAdorner: boolean;
     showScrollSnapAdorner: boolean;
-    nodeInfo?: DocumentFragment;
     topLayerIndex: number;
     scrollSnapAdornerActive: boolean;
     onGutterClick: (e: Event) => void;
@@ -81,7 +88,6 @@ export declare class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     #private;
     nodeInternal: SDK.DOMModel.DOMNode;
     treeOutline: ElementsTreeOutline | null;
-    contentElement: HTMLElement;
     private searchQuery;
     private readonly decorationsThrottler;
     private inClipboard;
@@ -94,7 +100,7 @@ export declare class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     static visibleShadowRoots(node: SDK.DOMModel.DOMNode): SDK.DOMModel.DOMNode[];
     static canShowInlineText(node: SDK.DOMModel.DOMNode): boolean;
     static populateForcedPseudoStateItems(contextMenu: UI.ContextMenu.ContextMenu, node: SDK.DOMModel.DOMNode): void;
-    performUpdate(): void;
+    performUpdate(clearNode?: boolean): void;
     highlightAttribute(attributeName: string): void;
     isClosingTag(): boolean;
     node(): SDK.DOMModel.DOMNode;
@@ -108,6 +114,7 @@ export declare class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     get issuesByNodeElement(): Map<Element, IssuesManager.Issue.Issue[]>;
     expandedChildrenLimit(): number;
     setExpandedChildrenLimit(expandedChildrenLimit: number): void;
+    onTopLayerIndexChanged(): void;
     onbind(): void;
     onunbind(): void;
     onattach(): void;
@@ -148,11 +155,6 @@ export declare class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     updateTitle(updateRecord?: Elements.ElementUpdateRecord.ElementUpdateRecord | null): void;
     private computeLeftIndent;
     updateDecorations(): void;
-    private buildAttributeDOM;
-    private linkifyElementByRelation;
-    private buildPseudoElementDOM;
-    private buildTagDOM;
-    private nodeTitleInfo;
     remove(): Promise<void>;
     toggleEditAsHTML(callback?: ((arg0: boolean) => void), startEditing?: boolean): void;
     private copyCSSPath;

@@ -70,8 +70,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
       <div class="hbox properties-widget-toolbar">
         <devtools-toolbar class="styles-pane-toolbar" role="presentation">
           <devtools-toolbar-input type="filter" @change=${input.onFilterChanged} style="flex-grow:1; flex-shrink:1"></devtools-toolbar-input>
-          <devtools-checkbox title=${i18nString(UIStrings.showAllTooltip)} ${bindToSetting(getShowAllPropertiesSetting())}
-              jslog=${VisualLogging.toggle('show-all-properties').track({ change: true })}>
+          <devtools-checkbox title=${i18nString(UIStrings.showAllTooltip)} ${bindToSetting(getShowAllPropertiesSetting())}>
             ${i18nString(UIStrings.showAll)}
           </devtools-checkbox>
         </devtools-toolbar>

@@ -41,6 +41,10 @@ export declare const showCompletionHint: CM.ViewPlugin<{
 }>;
 export declare function contentIncludingHint(view: CM.EditorView): string;
 export declare const setAiAutoCompleteSuggestion: CM.StateEffectType<ActiveSuggestion | null>;
+export declare const enum AiSuggestionSource {
+    COMPLETION = "completion",
+    GENERATION = "generation"
+}
 export interface ActiveSuggestion {
     text: string;
     from: number;
@@ -49,6 +53,7 @@ export interface ActiveSuggestion {
     startTime: number;
     onImpression: (rpcGlobalId: Host.AidaClient.RpcGlobalId, latency: number, sampleId?: number) => void;
     clearCachedRequest?: () => void;
+    source: AiSuggestionSource;
 }
 export declare const aiAutoCompleteSuggestionState: CM.StateField<ActiveSuggestion | null>;
 export declare function hasActiveAiSuggestion(state: CM.EditorState): boolean;

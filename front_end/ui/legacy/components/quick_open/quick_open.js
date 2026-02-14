@@ -780,7 +780,7 @@ var QuickOpenImpl = class {
     }
     this.prefixes.push(prefix);
     this.providers.set(prefix, {
-      provider: extension.provider,
+      provider: () => extension.provider(extension.jslogContext),
       titlePrefix: extension.titlePrefix,
       titleSuggestion: extension.titleSuggestion
     });
@@ -1020,8 +1020,8 @@ var CommandMenu = class _CommandMenu {
 };
 var CommandMenuProvider = class extends Provider {
   commands;
-  constructor(commandsForTest = []) {
-    super("command");
+  constructor(jslogContext, commandsForTest = []) {
+    super(jslogContext);
     this.commands = commandsForTest;
   }
   attach() {
@@ -1168,10 +1168,11 @@ var ShowActionDelegate2 = class {
 registerProvider({
   prefix: ">",
   iconName: "chevron-right",
-  provider: () => Promise.resolve(new CommandMenuProvider()),
+  provider: (jslogContext) => Promise.resolve(new CommandMenuProvider(jslogContext)),
   helpTitle: () => i18nString3(UIStrings3.runCommand),
   titlePrefix: () => i18nString3(UIStrings3.run),
-  titleSuggestion: () => i18nString3(UIStrings3.command)
+  titleSuggestion: () => i18nString3(UIStrings3.command),
+  jslogContext: "command"
 });
 
 // gen/front_end/ui/legacy/components/quick_open/HelpQuickOpen.js
@@ -1189,11 +1190,14 @@ var HelpQuickOpen = class extends Provider {
     getRegisteredProviders().forEach(this.addProvider.bind(this));
   }
   async addProvider(extension) {
+    if (extension.prefix === "?") {
+      return;
+    }
     this.providers.push({
       prefix: extension.prefix || "",
       iconName: extension.iconName,
       title: extension.helpTitle(),
-      jslogContext: (await extension.provider()).jslogContext
+      jslogContext: extension.jslogContext
     });
   }
   itemCount() {
@@ -1225,10 +1229,11 @@ var HelpQuickOpen = class extends Provider {
 registerProvider({
   prefix: "?",
   iconName: "help",
-  provider: () => Promise.resolve(new HelpQuickOpen("help")),
+  provider: (jslogContext) => Promise.resolve(new HelpQuickOpen(jslogContext)),
   helpTitle: () => "Help",
   titlePrefix: () => "Help",
-  titleSuggestion: void 0
+  titleSuggestion: void 0,
+  jslogContext: "help"
 });
 export {
   CommandMenu_exports as CommandMenu,

@@ -8078,6 +8078,7 @@ var CSSWideKeywords = [
   "initial",
   "revert",
   "revert-layer",
+  "revert-rule",
   "unset"
 ];
 var PositionTryOrderKeywords = [
@@ -16715,6 +16716,12 @@ var DOMInheritanceCascade = class {
           property,
           "revert"
           /* CSSWideKeyword.REVERT */
+        );
+      case "revert-rule":
+        return this.#findPropertyInPreviousStyle(property, () => true) ?? this.resolveGlobalKeyword(
+          property,
+          "unset"
+          /* CSSWideKeyword.UNSET */
         );
       case "unset":
         return this.#findPropertyInParentCascadeIfInherited(property) ?? this.#findCustomPropertyRegistration(property.name);

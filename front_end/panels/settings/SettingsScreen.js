@@ -54,6 +54,10 @@ const UIStrings = {
      */
     settingsChangedReloadDevTools: 'Settings changed. To apply, reload DevTools.',
     /**
+     * @description Message to display if a setting change requires a reload of DevTools
+     */
+    settingsChangedRestartChrome: 'Settings changed. To apply, restart Chrome.',
+    /**
      * @description Warning text shown when the user has entered text to filter the
      * list of experiments, but no experiments match the filter.
      */
@@ -391,7 +395,12 @@ export class ExperimentsSettingsTab extends UI.Widget.VBox {
             }
             experiment.setEnabled(checkbox.checked);
             Host.userMetrics.experimentChanged(experiment.name, experiment.isEnabled());
-            UI.InspectorView.InspectorView.instance().displayReloadRequiredWarning(i18nString(UIStrings.settingsChangedReloadDevTools));
+            if (experiment instanceof Root.Runtime.HostExperiment && experiment.requiresChromeRestart) {
+                UI.InspectorView.InspectorView.instance().displayChromeRestartRequiredWarning(i18nString(UIStrings.settingsChangedRestartChrome));
+            }
+            else {
+                UI.InspectorView.InspectorView.instance().displayReloadRequiredWarning(i18nString(UIStrings.settingsChangedReloadDevTools));
+            }
         }
         checkbox.addEventListener('click', listener, false);
         const p = document.createElement('p');
@@ -524,7 +533,7 @@ const GREENDEV_VIEW = (input, _output, target) => {
               <span>${i18nString(UIStrings.greenDevUnstable)}</span>
              </div>
              <div class="settings-experiments-block">
-               ${renderPrototypeCheckboxes(input.settings, ['aiAnnotations', 'inDevToolsFloaty', 'copyToGemini'])}
+               ${renderPrototypeCheckboxes(input.settings, ['aiAnnotations', 'copyToGemini'])}
              </div>
            </devtools-card>
          </div>
@@ -532,7 +541,6 @@ const GREENDEV_VIEW = (input, _output, target) => {
     // clang-format on
 };
 const GREENDEV_PROTOTYPE_NAMES = {
-    inDevToolsFloaty: 'In DevTools context picker',
     aiAnnotations: 'AI auto-annotations',
     copyToGemini: 'Copy changes to AI Prompt'
 };

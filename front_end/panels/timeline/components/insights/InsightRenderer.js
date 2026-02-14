@@ -58,7 +58,6 @@ export class InsightRenderer {
         const componentClass = INSIGHT_NAME_TO_COMPONENT[insightName];
         widgetElement.widgetConfig = widgetConfig(componentClass, {
             selected: options.selected ?? false,
-            parsedTrace,
             // The `model` passed in as a parameter is the base type, but since
             // `componentClass` is the union of every derived insight component, the
             // `model` for the widget config is the union of every model. That can't be

@@ -21,7 +21,6 @@ export interface ViewInput {
     inputPlaceholder: Platform.UIString.LocalizedString;
     selectedContext: AiAssistanceModel.AiAgent.ConversationContext<unknown> | null;
     inspectElementToggled: boolean;
-    additionalFloatyContext: UI.Floaty.FloatyContextSelection[];
     disclaimerText: string;
     conversationType: AiAssistanceModel.AiHistoryStorage.ConversationType;
     multimodalInputEnabled: boolean;
@@ -46,7 +45,7 @@ export interface ViewInput {
     onContextAdd: (() => void) | null;
 }
 export type ViewOutput = undefined;
-export declare const DEFAULT_VIEW: (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
+export declare const DEFAULT_VIEW: (input: ViewInput, _output: ViewOutput, target: HTMLElement) => void;
 /**
  * ChatInput is a presenter for the input area in the AI Assistance panel.
  */
@@ -58,7 +57,6 @@ export declare class ChatInput extends UI.Widget.Widget implements SDK.TargetMan
     inputPlaceholder: Platform.UIString.LocalizedString;
     selectedContext: AiAssistanceModel.AiAgent.ConversationContext<unknown> | null;
     inspectElementToggled: boolean;
-    additionalFloatyContext: UI.Floaty.FloatyContextSelection[];
     disclaimerText: string;
     conversationType: AiAssistanceModel.AiHistoryStorage.ConversationType;
     multimodalInputEnabled: boolean;

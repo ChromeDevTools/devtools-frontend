@@ -11308,6 +11308,7 @@ function getRegisteredDecorators() {
 
 // gen/front_end/panels/elements/ElementsTreeElement.js
 var { html: html8, nothing: nothing2, render: render7, Directives: { ref: ref2 } } = Lit6;
+var { animateOn } = UI15.UIUtils;
 var UIStrings12 = {
   /**
    * @description Title for Ad adorner. This iframe is marked as advertisement frame.
@@ -11611,6 +11612,7 @@ function adornerRef() {
     }
   });
 }
+var DOM_UPDATE_ANIMATION_CLASS_NAME = "dom-update-highlight";
 function handleAdornerKeydown(cb) {
   return (event) => {
     if (event.code === "Enter" || event.code === "Space") {
@@ -11652,18 +11654,13 @@ function renderTitle(node, isClosingTag, expanded, isExpandable, isXMLMimeType, 
         }
         const result = convertUnicodeCharsToHTMLEntities(firstChild.nodeValue());
         const textContent = Platform7.StringUtilities.collapseWhitespace(result.text);
-        const highlightAnimation = updateRecord?.hasChangedChildren() || updateRecord?.isCharDataModified() ? ref2((el) => {
-          if (el) {
-            UI15.UIUtils.runCSSAnimationOnce(el, "dom-update-highlight");
-          }
-        }) : nothing2;
         const renderTextNode = ref2((el) => {
           if (el) {
             el.textContent = textContent;
             Highlighting2.highlightRangesWithStyleClass(el, result.entityRanges, "webkit-html-entity-value");
           }
         });
-        return html8`${openingTag}<span class="webkit-html-text-node" jslog=${VisualLogging8.value("text-node").track({ change: true, dblclick: true })} ${highlightAnimation} ${renderTextNode}></span>\u200B${renderTag(node, tagName, true, expanded, false, updateRecord)}`;
+        return html8`${openingTag}<span class="webkit-html-text-node" jslog=${VisualLogging8.value("text-node").track({ change: true, dblclick: true })} ${animateOn(Boolean(updateRecord?.hasChangedChildren() || updateRecord?.isCharDataModified()), DOM_UPDATE_ANIMATION_CLASS_NAME)} ${renderTextNode}></span>\u200B${renderTag(node, tagName, true, expanded, false, updateRecord)}`;
       }
       if (isXMLMimeType || !ForbiddenClosingTagElements.has(tagName)) {
         return html8`${openingTag}${renderTag(node, tagName, true, expanded, false, updateRecord)}`;
@@ -11693,11 +11690,6 @@ function renderTitle(node, isClosingTag, expanded, isExpandable, isXMLMimeType, 
       }
       const result = convertUnicodeCharsToHTMLEntities(node.nodeValue());
       const textContent = Platform7.StringUtilities.collapseWhitespace(result.text);
-      const highlightAnimation = updateRecord?.isCharDataModified() ? ref2((el) => {
-        if (el) {
-          UI15.UIUtils.runCSSAnimationOnce(el, "dom-update-highlight");
-        }
-      }) : nothing2;
       const renderTextNode = ref2((el) => {
         if (el) {
           el.textContent = textContent;
@@ -11707,7 +11699,7 @@ function renderTitle(node, isClosingTag, expanded, isExpandable, isXMLMimeType, 
       return html8`"<span class="webkit-html-text-node" jslog=${VisualLogging8.value("text-node").track({
         change: true,
         dblclick: true
-      })} ${highlightAnimation} ${renderTextNode}></span>"`;
+      })} ${animateOn(Boolean(updateRecord?.isCharDataModified()), DOM_UPDATE_ANIMATION_CLASS_NAME)} ${renderTextNode}></span>"`;
     }
     case Node.COMMENT_NODE: {
       return html8`<span class="webkit-html-comment">&lt;!--${node.nodeValue()}--&gt;</span>`;
@@ -11785,16 +11777,6 @@ function renderAttribute(attr, updateRecord, isDiff, node) {
     change: true,
     dblclick: true
   });
-  const highlightNameAnimation = updateRecord?.isAttributeModified(name) && !hasText ? ref2((el) => {
-    if (el) {
-      UI15.UIUtils.runCSSAnimationOnce(el, "dom-update-highlight");
-    }
-  }) : nothing2;
-  const highlightValueAnimation = updateRecord?.isAttributeModified(name) && hasText ? ref2((el) => {
-    if (el) {
-      UI15.UIUtils.runCSSAnimationOnce(el, "dom-update-highlight");
-    }
-  }) : nothing2;
   function linkifyValue(value6) {
     const rewrittenHref = node ? node.resolveURL(value6) : null;
     if (rewrittenHref === null) {
@@ -11912,7 +11894,8 @@ function renderAttribute(attr, updateRecord, isDiff, node) {
       valueRelationRefDirective = relationRef("CommandFor", i18nString11(UIStrings12.showCommandForTarget));
     }
   }
-  return html8`<span class="webkit-html-attribute" jslog=${jslog}><span class="webkit-html-attribute-name" ${highlightNameAnimation} ${relationRefDirective}>${name}</span>${hasText ? html8`=\u200B"<span class="webkit-html-attribute-value" ${highlightValueAnimation} ${setAttrValue} ${valueRelationRefDirective}></span>"` : nothing2}</span>`;
+  return html8`<span class="webkit-html-attribute" jslog=${jslog}><span class="webkit-html-attribute-name"
+      ${animateOn(Boolean(updateRecord?.isAttributeModified(name) && !hasText), DOM_UPDATE_ANIMATION_CLASS_NAME)} ${relationRefDirective}>${name}</span>${hasText ? html8`=\u200B"<span class="webkit-html-attribute-value" ${animateOn(Boolean(updateRecord?.isAttributeModified(name) && hasText), DOM_UPDATE_ANIMATION_CLASS_NAME)} ${setAttrValue} ${valueRelationRefDirective}></span>"` : nothing2}</span>`;
 }
 function renderTag(node, tagName, isClosingTag, expanded, isDistinctTreeElement, updateRecord) {
   const classMap3 = {
@@ -11925,11 +11908,6 @@ function renderTag(node, tagName, isClosingTag, expanded, isDistinctTreeElement,
     hasUpdates = updateRecord.hasRemovedAttributes() || updateRecord.hasRemovedChildren();
     hasUpdates = hasUpdates || !expanded && updateRecord.hasChangedChildren();
   }
-  const highlightAnimation = hasUpdates ? ref2((el) => {
-    if (el) {
-      UI15.UIUtils.runCSSAnimationOnce(el, "dom-update-highlight");
-    }
-  }) : nothing2;
   const setAriaLabel = ref2((el) => {
     if (el?.textContent) {
       UI15.ARIAUtils.setLabel(el, el.textContent);
@@ -11940,7 +11918,7 @@ function renderTag(node, tagName, isClosingTag, expanded, isDistinctTreeElement,
   const jslog = !isClosingTag ? VisualLogging8.value("tag-name").track({ change: true, dblclick: true }) : "";
   return html8`<span
       class=${Lit6.Directives.classMap(classMap3)} ${setAriaLabel}
-      >&lt;<span class=${tagNameClass} jslog=${jslog || nothing2} ${highlightAnimation}>${tagString}</span>${attributes.map((attr) => html8` ${renderAttribute(attr, updateRecord, false, node)}`)}&gt;</span>\u200B`;
+      >&lt;<span class=${tagNameClass} jslog=${jslog || nothing2} ${animateOn(hasUpdates, DOM_UPDATE_ANIMATION_CLASS_NAME)}>${tagString}</span>${attributes.map((attr) => html8` ${renderAttribute(attr, updateRecord, false, node)}`)}&gt;</span>\u200B`;
 }
 var DEFAULT_VIEW4 = (input, output, target) => {
   const hasAdorners = input.showAdAdorner || input.showContainerAdorner || input.showFlexAdorner || input.showGridAdorner || input.showGridLanesAdorner || input.showMediaAdorner || input.showPopoverAdorner || input.showTopLayerAdorner || input.showViewSourceAdorner || input.showScrollAdorner || input.showScrollSnapAdorner || input.showSlotAdorner || input.showStartingStyleAdorner;
@@ -12224,7 +12202,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI15.TreeOutline.Tr
   }
   static animateOnDOMUpdate(treeElement) {
     const tagName = treeElement.listItemElement.querySelector(".webkit-html-tag-name");
-    UI15.UIUtils.runCSSAnimationOnce(tagName || treeElement.listItemElement, "dom-update-highlight");
+    UI15.UIUtils.runCSSAnimationOnce(tagName || treeElement.listItemElement, DOM_UPDATE_ANIMATION_CLASS_NAME);
   }
   static visibleShadowRoots(node) {
     let roots = node.shadowRoots();
@@ -12428,7 +12406,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI15.TreeOutline.Tr
         }
       }
     }
-    UI15.UIUtils.runCSSAnimationOnce(animationElement, "dom-update-highlight");
+    UI15.UIUtils.runCSSAnimationOnce(animationElement, DOM_UPDATE_ANIMATION_CLASS_NAME);
   }
   isClosingTag() {
     return !isOpeningTag(this.tagTypeContext);
@@ -12683,13 +12661,6 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI15.TreeOutline.Tr
   }
   select(omitFocus, selectedByUser) {
     if (this.editing) {
-      return false;
-    }
-    const handledByFloaty = UI15.Floaty.onFloatyClick({
-      type: "ELEMENT_NODE_ID",
-      data: { nodeId: this.nodeInternal.id }
-    });
-    if (handledByFloaty) {
       return false;
     }
     return super.select(omitFocus, selectedByUser);

@@ -637,6 +637,7 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
     }
     const linkDisplayOptions = {
       showColumnNumber: linkifyURLOptions.showColumnNumber ?? false,
+      maxLength: linkifyURLOptions.maxLength,
       revealBreakpoint: options?.revealBreakpoint
     };
     const updateDelegate = async (liveLocation) => {
@@ -712,10 +713,11 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
     linkInfo.userMetric = options?.userMetric;
     const linkDisplayOptions = {
       showColumnNumber: linkifyURLOptions.showColumnNumber ?? false,
+      maxLength: linkifyURLOptions.maxLength,
       revealBreakpoint: options?.revealBreakpoint
     };
     const uiLocation = frame.uiSourceCode.uiLocation(frame.line, frame.column) ?? null;
-    this.updateAnchorFromUILocation(link3, linkDisplayOptions, uiLocation);
+    _Linkifier.updateAnchorFromUILocation(link3, linkDisplayOptions, uiLocation);
     const anchors = this.anchorsByTarget.get(target);
     anchors.push(link3);
     return link3;
@@ -743,7 +745,7 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
     const { link: link3, linkInfo } = _Linkifier.createLink("", "", { jslogContext: "script-location" });
     linkInfo.enableDecorator = this.useLinkDecorator;
     linkInfo.fallback = fallbackAnchor;
-    const linkDisplayOptions = { showColumnNumber: false };
+    const linkDisplayOptions = { showColumnNumber: false, maxLength: this.maxLength };
     const updateDelegate = async (liveLocation) => {
       await this.updateAnchor(link3, linkDisplayOptions, liveLocation);
       this.dispatchEventToListeners("liveLocationUpdated", liveLocation);
@@ -766,7 +768,7 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
     if (!pool) {
       return link3;
     }
-    const linkDisplayOptions = { showColumnNumber: false };
+    const linkDisplayOptions = { showColumnNumber: false, maxLength: this.maxLength };
     const updateDelegate = async (liveLocation) => {
       await this.updateAnchor(link3, linkDisplayOptions, liveLocation);
       this.dispatchEventToListeners("liveLocationUpdated", liveLocation);
@@ -808,9 +810,9 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
     this.#anchorUpdaters.set(anchor, function(anchor2) {
       void this.updateAnchor(anchor2, options, liveLocation);
     });
-    this.updateAnchorFromUILocation(anchor, options, uiLocation);
+    _Linkifier.updateAnchorFromUILocation(anchor, options, uiLocation);
   }
-  updateAnchorFromUILocation(anchor, options, uiLocation) {
+  static updateAnchorFromUILocation(anchor, options, uiLocation) {
     if (!uiLocation) {
       anchor.classList.add("invalid-link");
       anchor.removeAttribute("role");
@@ -821,7 +823,7 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
       _Linkifier.bindBreakpoint(anchor, uiLocation);
     }
     const text = uiLocation.linkText(true, options.showColumnNumber);
-    _Linkifier.setTrimmedText(anchor, text, this.maxLength);
+    _Linkifier.setTrimmedText(anchor, text, options.maxLength);
     let titleText = uiLocation.uiSourceCode.url();
     if (uiLocation.uiSourceCode.mimeType() === "application/wasm") {
       if (typeof uiLocation.columnNumber === "number") {
@@ -1520,15 +1522,17 @@ var StackTracePreviewContent = class extends UI2.Widget.Widget {
     }
     const { runtimeStackTrace, tabStops } = this.#options;
     if (this.#stackTrace) {
-      const stackTraceRows2 = buildStackTraceRows(this.#stackTrace, this.#target ?? null, this.#linkifier, tabStops, this.#options.showColumnNumber);
-      this.#hasRows = stackTraceRows2.length > 0;
-      this.#links = renderStackTraceTable(this.#table, this.element, this.#options.expandable ?? false, stackTraceRows2);
+      const stackTraceRows = buildStackTraceRows(this.#stackTrace, this.#target ?? null, this.#linkifier, tabStops, this.#options.showColumnNumber);
+      this.#hasRows = stackTraceRows.length > 0;
+      this.#links = renderStackTraceTable(this.#table, this.element, this.#options.expandable ?? false, stackTraceRows);
       return;
     }
-    const updateCallback = renderStackTraceTable.bind(null, this.#table, this.element, this.#options.expandable ?? false);
-    const stackTraceRows = buildStackTraceRowsForLegacyRuntimeStackTrace(runtimeStackTrace ?? { callFrames: [] }, this.#target ?? null, this.#linkifier, tabStops, updateCallback, this.#options.showColumnNumber);
-    this.#hasRows = stackTraceRows.length > 0;
-    this.#links = renderStackTraceTable(this.#table, this.element, this.#options.expandable ?? false, stackTraceRows);
+    if (runtimeStackTrace) {
+      const updateCallback = renderStackTraceTable.bind(null, this.#table, this.element, this.#options.expandable ?? false);
+      const stackTraceRows = buildStackTraceRowsForLegacyRuntimeStackTrace(runtimeStackTrace ?? { callFrames: [] }, this.#target ?? null, this.#linkifier, tabStops, updateCallback, this.#options.showColumnNumber);
+      this.#hasRows = stackTraceRows.length > 0;
+      this.#links = renderStackTraceTable(this.#table, this.element, this.#options.expandable ?? false, stackTraceRows);
+    }
   }
   get linkElements() {
     return this.#links;

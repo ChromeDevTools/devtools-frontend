@@ -702,6 +702,7 @@ var MainImpl = class {
       title: "Protocol Monitor",
       aboutFlag: "devtools-protocol-monitor",
       isEnabled: enableProtocolMonitor,
+      requiresChromeRestart: false,
       docLink: "https://developer.chrome.com/blog/new-in-devtools-92/#protocol-monitor"
     });
     this.#migrateValueFromLegacyToHostExperiment(Root2.ExperimentNames.ExperimentName.PROTOCOL_MONITOR, protocolMonitorExperiment);

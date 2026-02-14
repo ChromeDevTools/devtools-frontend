@@ -2170,7 +2170,6 @@ import * as Common13 from "./../../core/common/common.js";
 import * as Host9 from "./../../core/host/host.js";
 import * as i18n37 from "./../../core/i18n/i18n.js";
 import * as Platform13 from "./../../core/platform/platform.js";
-import * as SDK12 from "./../../core/sdk/sdk.js";
 import * as Bindings9 from "./../../models/bindings/bindings.js";
 import * as Persistence10 from "./../../models/persistence/persistence.js";
 import * as StackTrace5 from "./../../models/stack_trace/stack_trace.js";
@@ -7538,7 +7537,7 @@ var DebuggerPlugin = class extends Plugin {
     super.dispose();
     window.clearTimeout(this.refreshBreakpointsTimeout);
     this.editor = void 0;
-    UI11.Context.Context.instance().removeFlavorChangeListener(SDK8.DebuggerModel.CallFrame, this.callFrameChanged, this);
+    UI11.Context.Context.instance().removeFlavorChangeListener(StackTrace.StackTrace.DebuggableFrameFlavor, this.callFrameChanged, this);
   }
   /**
    * Only records metrics once per DebuggerPlugin instance and must only be
@@ -11858,7 +11857,6 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI19.View.SimpleV
       this.ignoreListMessageElement.classList.add("hidden");
       this.showMoreMessageElement.classList.add("hidden");
       this.items.replaceAll([]);
-      UI19.Context.Context.instance().setFlavor(SDK12.DebuggerModel.CallFrame, null);
       UI19.Context.Context.instance().setFlavor(StackTrace5.StackTrace.DebuggableFrameFlavor, null);
       return;
     }
@@ -12029,7 +12027,6 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI19.View.SimpleV
     const oldItem = this.activeCallFrameItem();
     if (debuggerCallFrame) {
       debuggerCallFrame.sdkFrame.debuggerModel.setSelectedCallFrame(debuggerCallFrame.sdkFrame);
-      UI19.Context.Context.instance().setFlavor(SDK12.DebuggerModel.CallFrame, debuggerCallFrame.sdkFrame);
       UI19.Context.Context.instance().setFlavor(StackTrace5.StackTrace.DebuggableFrameFlavor, StackTrace5.StackTrace.DebuggableFrameFlavor.for(debuggerCallFrame));
     } else {
       void Common13.Revealer.reveal(uiLocation);
@@ -12042,9 +12039,9 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI19.View.SimpleV
     }
   }
   activeCallFrameItem() {
-    const callFrame = UI19.Context.Context.instance().flavor(SDK12.DebuggerModel.CallFrame);
-    if (callFrame) {
-      return this.items.find((callFrameItem) => callFrameItem.frame?.sdkFrame === callFrame) || null;
+    const frameFlavor = UI19.Context.Context.instance().flavor(StackTrace5.StackTrace.DebuggableFrameFlavor);
+    if (frameFlavor) {
+      return this.items.find((callFrameItem) => callFrameItem.frame === frameFlavor.frame) || null;
     }
     return null;
   }
@@ -12628,9 +12625,6 @@ var str_20 = i18n41.i18n.registerUIStrings("panels/sources/GoToLineQuickOpen.ts"
 var i18nString19 = i18n41.i18n.getLocalizedString.bind(void 0, str_20);
 var GoToLineQuickOpen = class extends QuickOpen4.FilteredListWidget.Provider {
   #goToLineStrings = [];
-  constructor() {
-    super("source-line");
-  }
   selectItem(_itemIndex, promptValue) {
     const sourceFrame = this.currentSourceFrame();
     if (!sourceFrame) {
@@ -12850,9 +12844,6 @@ import { PanelUtils as PanelUtils2 } from "./../utils/utils.js";
 import { Directives as Directives4, html as html10 } from "./../../ui/lit/lit.js";
 var { styleMap } = Directives4;
 var OpenFileQuickOpen = class extends FilteredUISourceCodeListProvider {
-  constructor() {
-    super("source-file");
-  }
   attach() {
     this.setDefaultScores(SourcesView.defaultUISourceCodeScores());
     super.attach();
@@ -13160,9 +13151,6 @@ function outline(state) {
 var OutlineQuickOpen = class extends QuickOpen5.FilteredListWidget.Provider {
   items = [];
   active = false;
-  constructor() {
-    super("source-symbol");
-  }
   attach() {
     const sourceFrame = this.currentSourceFrame();
     if (sourceFrame) {
@@ -13250,7 +13238,7 @@ __export(PersistenceActions_exports, {
 import * as Common16 from "./../../core/common/common.js";
 import * as Host11 from "./../../core/host/host.js";
 import * as i18n47 from "./../../core/i18n/i18n.js";
-import * as SDK13 from "./../../core/sdk/sdk.js";
+import * as SDK12 from "./../../core/sdk/sdk.js";
 import * as Bindings10 from "./../../models/bindings/bindings.js";
 import * as Persistence16 from "./../../models/persistence/persistence.js";
 import * as TextUtils12 from "./../../models/text_utils/text_utils.js";
@@ -13359,7 +13347,7 @@ var ContextMenuProvider = class {
     }
     if (contentProvider.contentType().isDocumentOrScriptOrStyleSheet()) {
       contextMenu.saveSection().appendItem(i18nString22(UIStrings23.saveAs), saveAs, { jslogContext: "save-as" });
-    } else if (contentProvider instanceof SDK13.Resource.Resource && contentProvider.contentType().isImage()) {
+    } else if (contentProvider instanceof SDK12.Resource.Resource && contentProvider.contentType().isImage()) {
       contextMenu.saveSection().appendItem(i18nString22(UIStrings23.saveImage), saveImage, { jslogContext: "save-image" });
     }
     const uiSourceCode = Workspace28.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(contentProvider.contentURL());
@@ -13389,7 +13377,7 @@ var ContextMenuProvider = class {
       }
     }
     contextMenu.overrideSection().appendItem(i18nString22(UIStrings23.overrideContent), handler, { disabled, jslogContext: "override-content" });
-    if (contentProvider instanceof SDK13.NetworkRequest.NetworkRequest) {
+    if (contentProvider instanceof SDK12.NetworkRequest.NetworkRequest) {
       contextMenu.overrideSection().appendItem(i18nString22(UIStrings23.showOverrides), async () => {
         await UI23.ViewManager.ViewManager.instance().showView("navigator-overrides");
         Host11.userMetrics.actionTaken(Host11.UserMetrics.Action.ShowAllOverridesFromNetworkContextMenu);
@@ -13402,7 +13390,7 @@ var ContextMenuProvider = class {
     if (isSuccess) {
       await Common16.Revealer.reveal(uiSourceCode);
     }
-    if (contentProvider instanceof SDK13.NetworkRequest.NetworkRequest) {
+    if (contentProvider instanceof SDK12.NetworkRequest.NetworkRequest) {
       Host11.userMetrics.actionTaken(Host11.UserMetrics.Action.OverrideContentFromNetworkContextMenu);
     } else if (contentProvider instanceof Workspace28.UISourceCode.UISourceCode) {
       Host11.userMetrics.actionTaken(Host11.UserMetrics.Action.OverrideContentFromSourcesContextMenu);
@@ -13454,7 +13442,7 @@ function getScript(contentProvider) {
     return null;
   }
   const target = Bindings10.NetworkProject.NetworkProject.targetForUISourceCode(contentProvider);
-  const model = target?.model(SDK13.DebuggerModel.DebuggerModel);
+  const model = target?.model(SDK12.DebuggerModel.DebuggerModel);
   if (model) {
     const resourceFile = Bindings10.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().scriptFile(contentProvider, model);
     if (resourceFile?.script) {
@@ -13470,7 +13458,7 @@ __export(ScopeChainSidebarPane_exports, {
   ScopeChainSidebarPane: () => ScopeChainSidebarPane
 });
 import * as i18n49 from "./../../core/i18n/i18n.js";
-import * as SDK14 from "./../../core/sdk/sdk.js";
+import * as SDK13 from "./../../core/sdk/sdk.js";
 import * as SourceMapScopes2 from "./../../models/source_map_scopes/source_map_scopes.js";
 import * as StackTrace7 from "./../../models/stack_trace/stack_trace.js";
 import * as ObjectUI3 from "./../../ui/legacy/components/object_ui/object_ui.js";
@@ -13592,7 +13580,7 @@ var ScopeChainSidebarPane = class _ScopeChainSidebarPane extends UI24.Widget.VBo
     if (this.hasFocus()) {
       return;
     }
-    if (UI24.Context.Context.instance().flavor(SDK14.DebuggerModel.DebuggerPausedDetails)) {
+    if (UI24.Context.Context.instance().flavor(SDK13.DebuggerModel.DebuggerPausedDetails)) {
       this.treeOutline.forceSelect();
     }
   }
@@ -13684,7 +13672,7 @@ import * as Common17 from "./../../core/common/common.js";
 import * as Host12 from "./../../core/host/host.js";
 import * as i18n51 from "./../../core/i18n/i18n.js";
 import * as Platform15 from "./../../core/platform/platform.js";
-import * as SDK15 from "./../../core/sdk/sdk.js";
+import * as SDK14 from "./../../core/sdk/sdk.js";
 import * as Bindings11 from "./../../models/bindings/bindings.js";
 import * as Persistence18 from "./../../models/persistence/persistence.js";
 import * as TextUtils13 from "./../../models/text_utils/text_utils.js";
@@ -13811,9 +13799,9 @@ var NetworkNavigatorView = class _NetworkNavigatorView extends NavigatorView {
   constructor() {
     super("navigator-network", true);
     this.registerRequiredCSS(sourcesNavigator_css_default);
-    SDK15.TargetManager.TargetManager.instance().addEventListener("InspectedURLChanged", this.inspectedURLChanged, this);
+    SDK14.TargetManager.TargetManager.instance().addEventListener("InspectedURLChanged", this.inspectedURLChanged, this);
     Host12.userMetrics.panelLoaded("sources", "DevTools.Launch.Sources");
-    SDK15.TargetManager.TargetManager.instance().addScopeChangeListener(this.onScopeChange.bind(this));
+    SDK14.TargetManager.TargetManager.instance().addScopeChangeListener(this.onScopeChange.bind(this));
   }
   static instance(opts = { forceNew: null }) {
     const { forceNew } = opts;
@@ -13823,7 +13811,7 @@ var NetworkNavigatorView = class _NetworkNavigatorView extends NavigatorView {
     return networkNavigatorViewInstance;
   }
   acceptProject(project) {
-    return project.type() === Workspace30.Workspace.projectTypes.Network && SDK15.TargetManager.TargetManager.instance().isInScope(Bindings11.NetworkProject.NetworkProject.getTargetForProject(project));
+    return project.type() === Workspace30.Workspace.projectTypes.Network && SDK14.TargetManager.TargetManager.instance().isInScope(Bindings11.NetworkProject.NetworkProject.getTargetForProject(project));
   }
   onScopeChange() {
     for (const project of Workspace30.Workspace.WorkspaceImpl.instance().projects()) {
@@ -13835,7 +13823,7 @@ var NetworkNavigatorView = class _NetworkNavigatorView extends NavigatorView {
     }
   }
   inspectedURLChanged(event) {
-    const mainTarget = SDK15.TargetManager.TargetManager.instance().scopeTarget();
+    const mainTarget = SDK14.TargetManager.TargetManager.instance().scopeTarget();
     if (event.data !== mainTarget) {
       return;
     }
@@ -13850,7 +13838,7 @@ var NetworkNavigatorView = class _NetworkNavigatorView extends NavigatorView {
     }
   }
   uiSourceCodeAdded(uiSourceCode) {
-    const mainTarget = SDK15.TargetManager.TargetManager.instance().scopeTarget();
+    const mainTarget = SDK14.TargetManager.TargetManager.instance().scopeTarget();
     const inspectedURL = mainTarget?.inspectedURL();
     if (!inspectedURL) {
       return;
@@ -14085,9 +14073,10 @@ import * as Common18 from "./../../core/common/common.js";
 import * as Host13 from "./../../core/host/host.js";
 import * as i18n53 from "./../../core/i18n/i18n.js";
 import * as Platform16 from "./../../core/platform/platform.js";
-import * as SDK16 from "./../../core/sdk/sdk.js";
+import * as SDK15 from "./../../core/sdk/sdk.js";
 import * as Formatter3 from "./../../models/formatter/formatter.js";
 import * as SourceMapScopes3 from "./../../models/source_map_scopes/source_map_scopes.js";
+import * as StackTrace9 from "./../../models/stack_trace/stack_trace.js";
 import * as Buttons4 from "./../../ui/components/buttons/buttons.js";
 import * as TextEditor6 from "./../../ui/components/text_editor/text_editor.js";
 import * as ObjectUI4 from "./../../ui/legacy/components/object_ui/object_ui.js";
@@ -14451,8 +14440,8 @@ var WatchExpressionsSidebarPane = class _WatchExpressionsSidebarPane extends UI2
       true
     );
     this.expandController = new ObjectUI4.ObjectPropertiesSection.ObjectPropertiesSectionsTreeExpandController(this.treeOutline);
-    UI26.Context.Context.instance().addFlavorChangeListener(SDK16.RuntimeModel.ExecutionContext, this.requestUpdate, this);
-    UI26.Context.Context.instance().addFlavorChangeListener(SDK16.DebuggerModel.CallFrame, this.requestUpdate, this);
+    UI26.Context.Context.instance().addFlavorChangeListener(SDK15.RuntimeModel.ExecutionContext, this.requestUpdate, this);
+    UI26.Context.Context.instance().addFlavorChangeListener(StackTrace9.StackTrace.DebuggableFrameFlavor, this.requestUpdate, this);
     this.linkifier = new Components4.Linkifier.Linkifier();
     this.requestUpdate();
   }
@@ -14648,7 +14637,7 @@ var WatchExpression = class _WatchExpression extends Common18.ObjectWrapper.Obje
     );
   }
   update() {
-    const currentExecutionContext = UI26.Context.Context.instance().flavor(SDK16.RuntimeModel.ExecutionContext);
+    const currentExecutionContext = UI26.Context.Context.instance().flavor(SDK15.RuntimeModel.ExecutionContext);
     if (currentExecutionContext && this.#expression) {
       void this.#evaluateExpression(currentExecutionContext, this.#expression).then((result) => {
         if ("object" in result) {

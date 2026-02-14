@@ -1,6 +1,5 @@
 import * as Common from '../../core/common/common.js';
 export interface GreenDevSettings {
-    inDevToolsFloaty: Common.Settings.Setting<boolean>;
     aiAnnotations: Common.Settings.Setting<boolean>;
     copyToGemini: Common.Settings.Setting<boolean>;
 }

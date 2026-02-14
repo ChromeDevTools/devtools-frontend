@@ -63,6 +63,7 @@ import { MappedCharToEntity } from './ElementsTreeOutline.js';
 import { ImagePreviewPopover } from './ImagePreviewPopover.js';
 import { getRegisteredDecorators } from './MarkerDecorator.js';
 const { html, nothing, render, Directives: { ref } } = Lit;
+const { animateOn } = UI.UIUtils;
 const UIStrings = {
     /**
      * @description Title for Ad adorner. This iframe is marked as advertisement frame.
@@ -367,6 +368,7 @@ export function adornerRef() {
         }
     });
 }
+const DOM_UPDATE_ANIMATION_CLASS_NAME = 'dom-update-highlight';
 function handleAdornerKeydown(cb) {
     return (event) => {
         if (event.code === 'Enter' || event.code === 'Space') {
@@ -408,20 +410,13 @@ function renderTitle(node, isClosingTag, expanded, isExpandable, isXMLMimeType, 
                 }
                 const result = convertUnicodeCharsToHTMLEntities(firstChild.nodeValue());
                 const textContent = Platform.StringUtilities.collapseWhitespace(result.text);
-                const highlightAnimation = (updateRecord?.hasChangedChildren() || updateRecord?.isCharDataModified()) ?
-                    ref(el => {
-                        if (el) {
-                            UI.UIUtils.runCSSAnimationOnce(el, 'dom-update-highlight');
-                        }
-                    }) :
-                    nothing;
                 const renderTextNode = ref(el => {
                     if (el) {
                         el.textContent = textContent;
                         Highlighting.highlightRangesWithStyleClass(el, result.entityRanges, 'webkit-html-entity-value');
                     }
                 });
-                return html `${openingTag}<span class="webkit-html-text-node" jslog=${VisualLogging.value('text-node').track({ change: true, dblclick: true })} ${highlightAnimation} ${renderTextNode}></span>\u200B${renderTag(node, tagName, true, expanded, false, updateRecord)}`;
+                return html `${openingTag}<span class="webkit-html-text-node" jslog=${VisualLogging.value('text-node').track({ change: true, dblclick: true })} ${animateOn(Boolean((updateRecord?.hasChangedChildren() || updateRecord?.isCharDataModified())), DOM_UPDATE_ANIMATION_CLASS_NAME)} ${renderTextNode}></span>\u200B${renderTag(node, tagName, true, expanded, false, updateRecord)}`;
             }
             if (isXMLMimeType || !ForbiddenClosingTagElements.has(tagName)) {
                 return html `${openingTag}${renderTag(node, tagName, true, expanded, false, updateRecord)}`;
@@ -451,12 +446,6 @@ function renderTitle(node, isClosingTag, expanded, isExpandable, isXMLMimeType, 
             }
             const result = convertUnicodeCharsToHTMLEntities(node.nodeValue());
             const textContent = Platform.StringUtilities.collapseWhitespace(result.text);
-            const highlightAnimation = updateRecord?.isCharDataModified() ? ref(el => {
-                if (el) {
-                    UI.UIUtils.runCSSAnimationOnce(el, 'dom-update-highlight');
-                }
-            }) :
-                nothing;
             const renderTextNode = ref(el => {
                 if (el) {
                     el.textContent = textContent;
@@ -466,7 +455,7 @@ function renderTitle(node, isClosingTag, expanded, isExpandable, isXMLMimeType, 
             return html `"<span class="webkit-html-text-node" jslog=${VisualLogging.value('text-node').track({
                 change: true,
                 dblclick: true
-            })} ${highlightAnimation} ${renderTextNode}></span>"`;
+            })} ${animateOn(Boolean(updateRecord?.isCharDataModified()), DOM_UPDATE_ANIMATION_CLASS_NAME)} ${renderTextNode}></span>"`;
         }
         case Node.COMMENT_NODE: {
             return html `<span class="webkit-html-comment">&lt;!--${node.nodeValue()}--&gt;</span>`;
@@ -545,18 +534,6 @@ function renderAttribute(attr, updateRecord, isDiff, node) {
         change: true,
         dblclick: true,
     });
-    const highlightNameAnimation = updateRecord?.isAttributeModified(name) && !hasText ? ref(el => {
-        if (el) {
-            UI.UIUtils.runCSSAnimationOnce(el, 'dom-update-highlight');
-        }
-    }) :
-        nothing;
-    const highlightValueAnimation = updateRecord?.isAttributeModified(name) && hasText ? ref(el => {
-        if (el) {
-            UI.UIUtils.runCSSAnimationOnce(el, 'dom-update-highlight');
-        }
-    }) :
-        nothing;
     function linkifyValue(value) {
         const rewrittenHref = node ? node.resolveURL(value) : null;
         if (rewrittenHref === null) {
@@ -686,7 +663,8 @@ function renderAttribute(attr, updateRecord, isDiff, node) {
             valueRelationRefDirective = relationRef("CommandFor" /* Protocol.DOM.GetElementByRelationRequestRelation.CommandFor */, i18nString(UIStrings.showCommandForTarget));
         }
     }
-    return html `<span class="webkit-html-attribute" jslog=${jslog}><span class="webkit-html-attribute-name" ${highlightNameAnimation} ${relationRefDirective}>${name}</span>${hasText ? html `=\u200B"<span class="webkit-html-attribute-value" ${highlightValueAnimation} ${setAttrValue} ${valueRelationRefDirective}></span>"` :
+    return html `<span class="webkit-html-attribute" jslog=${jslog}><span class="webkit-html-attribute-name"
+      ${animateOn(Boolean(updateRecord?.isAttributeModified(name) && !hasText), DOM_UPDATE_ANIMATION_CLASS_NAME)} ${relationRefDirective}>${name}</span>${hasText ? html `=\u200B"<span class="webkit-html-attribute-value" ${animateOn(Boolean(updateRecord?.isAttributeModified(name) && hasText), DOM_UPDATE_ANIMATION_CLASS_NAME)} ${setAttrValue} ${valueRelationRefDirective}></span>"` :
         nothing}</span>`;
 }
 function renderTag(node, tagName, isClosingTag, expanded, isDistinctTreeElement, updateRecord) {
@@ -700,12 +678,6 @@ function renderTag(node, tagName, isClosingTag, expanded, isDistinctTreeElement,
         hasUpdates = updateRecord.hasRemovedAttributes() || updateRecord.hasRemovedChildren();
         hasUpdates = hasUpdates || (!expanded && updateRecord.hasChangedChildren());
     }
-    const highlightAnimation = hasUpdates ? ref(el => {
-        if (el) {
-            UI.UIUtils.runCSSAnimationOnce(el, 'dom-update-highlight');
-        }
-    }) :
-        nothing;
     // We are taking full text content of the tag, including attributes and children, to set the aria label.
     // FIXME: we should compute the aria label ourselves if it is event needed.
     const setAriaLabel = ref(el => {
@@ -718,7 +690,7 @@ function renderTag(node, tagName, isClosingTag, expanded, isDistinctTreeElement,
     const jslog = !isClosingTag ? VisualLogging.value('tag-name').track({ change: true, dblclick: true }) : '';
     return html `<span
       class=${Lit.Directives.classMap(classMap)} ${setAriaLabel}
-      >&lt;<span class=${tagNameClass} jslog=${jslog || nothing} ${highlightAnimation}>${tagString}</span>${attributes.map(attr => html ` ${renderAttribute(attr, updateRecord, false, node)}`)}&gt;</span>\u200B`;
+      >&lt;<span class=${tagNameClass} jslog=${jslog || nothing} ${animateOn(hasUpdates, DOM_UPDATE_ANIMATION_CLASS_NAME)}>${tagString}</span>${attributes.map(attr => html ` ${renderAttribute(attr, updateRecord, false, node)}`)}&gt;</span>\u200B`;
 }
 export const DEFAULT_VIEW = (input, output, target) => {
     const hasAdorners = input.showAdAdorner || input.showContainerAdorner || input.showFlexAdorner ||
@@ -1004,7 +976,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     }
     static animateOnDOMUpdate(treeElement) {
         const tagName = treeElement.listItemElement.querySelector('.webkit-html-tag-name');
-        UI.UIUtils.runCSSAnimationOnce(tagName || treeElement.listItemElement, 'dom-update-highlight');
+        UI.UIUtils.runCSSAnimationOnce(tagName || treeElement.listItemElement, DOM_UPDATE_ANIMATION_CLASS_NAME);
     }
     static visibleShadowRoots(node) {
         let roots = node.shadowRoots();
@@ -1219,7 +1191,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
                 }
             }
         }
-        UI.UIUtils.runCSSAnimationOnce(animationElement, 'dom-update-highlight');
+        UI.UIUtils.runCSSAnimationOnce(animationElement, DOM_UPDATE_ANIMATION_CLASS_NAME);
     }
     isClosingTag() {
         return !isOpeningTag(this.tagTypeContext);
@@ -1467,13 +1439,6 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     }
     select(omitFocus, selectedByUser) {
         if (this.editing) {
-            return false;
-        }
-        const handledByFloaty = UI.Floaty.onFloatyClick({
-            type: "ELEMENT_NODE_ID" /* UI.Floaty.FloatyContextTypes.ELEMENT_NODE_ID */,
-            data: { nodeId: this.nodeInternal.id },
-        });
-        if (handledByFloaty) {
             return false;
         }
         return super.select(omitFocus, selectedByUser);

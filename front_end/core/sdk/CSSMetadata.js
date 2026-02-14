@@ -282,12 +282,14 @@ export const CubicBezierKeywordValues = new Map([
 /**
  * Spec: https://drafts.csswg.org/css-cascade/#defaulting-keywords
  * https://drafts.csswg.org/css-cascade-5/#revert-layer
+ * https://drafts.csswg.org/css-cascade-6/#revert-rule
  **/
 export const CSSWideKeywords = [
     "inherit" /* CSSWideKeyword.INHERIT */,
     "initial" /* CSSWideKeyword.INITIAL */,
     "revert" /* CSSWideKeyword.REVERT */,
     "revert-layer" /* CSSWideKeyword.REVERT_LAYER */,
+    "revert-rule" /* CSSWideKeyword.REVERT_RULE */,
     "unset" /* CSSWideKeyword.UNSET */,
 ];
 export const PositionTryOrderKeywords = [

@@ -107,7 +107,6 @@ const DEFAULT_VIEW = (input, output, target) => {
         conversationType: input.conversationType,
         uploadImageInputEnabled: input.uploadImageInputEnabled ?? false,
         isReadOnly: input.isReadOnly,
-        additionalFloatyContext: input.additionalFloatyContext,
         onContextClick: input.onContextClick,
         onInspectElementClick: input.onInspectElementClick,
         onTextSubmit: input.onTextSubmit,

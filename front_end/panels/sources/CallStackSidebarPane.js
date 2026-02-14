@@ -31,7 +31,6 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
-import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as StackTrace from '../../models/stack_trace/stack_trace.js';
@@ -205,7 +204,6 @@ export class CallStackSidebarPane extends UI.View.SimpleView {
             this.ignoreListMessageElement.classList.add('hidden');
             this.showMoreMessageElement.classList.add('hidden');
             this.items.replaceAll([]);
-            UI.Context.Context.instance().setFlavor(SDK.DebuggerModel.CallFrame, null);
             UI.Context.Context.instance().setFlavor(StackTrace.StackTrace.DebuggableFrameFlavor, null);
             return;
         }
@@ -376,7 +374,6 @@ export class CallStackSidebarPane extends UI.View.SimpleView {
         const oldItem = this.activeCallFrameItem();
         if (debuggerCallFrame) {
             debuggerCallFrame.sdkFrame.debuggerModel.setSelectedCallFrame(debuggerCallFrame.sdkFrame);
-            UI.Context.Context.instance().setFlavor(SDK.DebuggerModel.CallFrame, debuggerCallFrame.sdkFrame);
             UI.Context.Context.instance().setFlavor(StackTrace.StackTrace.DebuggableFrameFlavor, StackTrace.StackTrace.DebuggableFrameFlavor.for(debuggerCallFrame));
         }
         else {
@@ -390,9 +387,9 @@ export class CallStackSidebarPane extends UI.View.SimpleView {
         }
     }
     activeCallFrameItem() {
-        const callFrame = UI.Context.Context.instance().flavor(SDK.DebuggerModel.CallFrame);
-        if (callFrame) {
-            return this.items.find(callFrameItem => callFrameItem.frame?.sdkFrame === callFrame) || null;
+        const frameFlavor = UI.Context.Context.instance().flavor(StackTrace.StackTrace.DebuggableFrameFlavor);
+        if (frameFlavor) {
+            return this.items.find(callFrameItem => callFrameItem.frame === frameFlavor.frame) || null;
         }
         return null;
     }

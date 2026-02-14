@@ -21,12 +21,6 @@ var Prototypes = class _Prototypes {
   }
   settings() {
     const settings = Common.Settings.Settings.instance();
-    const inDevToolsFloaty = settings.createSetting(
-      "greendev-in-devtools-floaty-enabled",
-      false,
-      "Local"
-      /* Common.Settings.SettingStorageType.LOCAL */
-    );
     const aiAnnotations = settings.createSetting(
       "greendev-ai-annotations-enabled",
       false,
@@ -39,7 +33,7 @@ var Prototypes = class _Prototypes {
       "Local"
       /* Common.Settings.SettingStorageType.LOCAL */
     );
-    return { inDevToolsFloaty, aiAnnotations, copyToGemini };
+    return { aiAnnotations, copyToGemini };
   }
 };
 export {

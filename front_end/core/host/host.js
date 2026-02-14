@@ -745,6 +745,8 @@ var InspectorFrontendHostStub = class {
   }
   setChromeFlag(_flagName, _value) {
   }
+  requestRestart() {
+  }
 };
 
 // gen/front_end/core/host/InspectorFrontendHost.js

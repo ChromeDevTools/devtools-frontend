@@ -72,14 +72,6 @@ export class CorsIssue extends Issue {
     }
     getDescription() {
         switch (getIssueCode(this.details())) {
-            case "CorsIssue::InsecureLocalNetwork" /* IssueCode.INSECURE_LOCAL_NETWORK */:
-                return {
-                    file: 'corsInsecurePrivateNetwork.md',
-                    links: [{
-                            link: 'https://developer.chrome.com/blog/private-network-access-update',
-                            linkTitle: i18nString(UIStrings.corsLocalNetworkAccess),
-                        }],
-                };
             case "CorsIssue::InvalidHeaders" /* IssueCode.INVALID_HEADER_VALUES */:
                 return {
                     file: 'corsInvalidHeaderValues.md',
@@ -168,11 +160,12 @@ export class CorsIssue extends Issue {
                             linkTitle: i18nString(UIStrings.CORS),
                         }],
                 };
+            case "CorsIssue::InsecureLocalNetwork" /* IssueCode.INSECURE_LOCAL_NETWORK */:
             case "CorsIssue::LocalNetworkAccessPermissionDenied" /* IssueCode.LOCAL_NETWORK_ACCESS_PERMISSION_DENIED */:
                 return {
                     file: 'corsLocalNetworkAccessPermissionDenied.md',
                     links: [{
-                            link: 'https://chromestatus.com/feature/5152728072060928',
+                            link: 'https://developer.chrome.com/blog/local-network-access',
                             linkTitle: i18nString(UIStrings.corsLocalNetworkAccess),
                         }],
                 };

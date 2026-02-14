@@ -14,7 +14,6 @@ import * as i18n from "./../../../../core/i18n/i18n.js";
 import * as Root from "./../../../../core/root/root.js";
 import * as AIAssistance from "./../../../../models/ai_assistance/ai_assistance.js";
 import * as Badges from "./../../../../models/badges/badges.js";
-import * as GreenDev from "./../../../../models/greendev/greendev.js";
 import * as Buttons from "./../../../../ui/components/buttons/buttons.js";
 import * as UI from "./../../../../ui/legacy/legacy.js";
 import * as Lit2 from "./../../../../ui/lit/lit.js";
@@ -339,7 +338,7 @@ var UIStrings = {
 };
 var str_ = i18n.i18n.registerUIStrings("panels/timeline/components/insights/BaseInsightComponent.ts", UIStrings);
 var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);
-var DEFAULT_VIEW = (input, output, target) => {
+var DEFAULT_VIEW = (input, _output, target) => {
   const { internalName, model, selected, estimatedSavingsString, estimatedSavingsAriaLabel, showAskAI, dispatchInsightToggle, renderContent, onHeaderKeyDown, onAskAIButtonClick } = input;
   const containerClasses = Lit2.Directives.classMap({
     insight: true,
@@ -424,7 +423,6 @@ var BaseInsightComponent = class extends UI.Widget.Widget {
   #model = null;
   #agentFocus = null;
   #fieldMetrics = null;
-  #parsedTrace = null;
   #initialOverlays = null;
   constructor(element, view = DEFAULT_VIEW) {
     super(element, { useShadowDom: true });
@@ -461,9 +459,6 @@ var BaseInsightComponent = class extends UI.Widget.Widget {
   get selected() {
     return this.#selected;
   }
-  set parsedTrace(trace) {
-    this.#parsedTrace = trace;
-  }
   set model(model) {
     this.#model = model;
     this.requestUpdate();
@@ -494,18 +489,6 @@ var BaseInsightComponent = class extends UI.Widget.Widget {
   #dispatchInsightToggle() {
     if (!this.data.insightSetKey || !this.#model) {
       return;
-    }
-    if (this.#parsedTrace && GreenDev.Prototypes.instance().isEnabled("inDevToolsFloaty")) {
-      const floatyHandled = UI.Floaty.onFloatyClick({
-        type: "PERFORMANCE_INSIGHT",
-        data: {
-          insight: this.#model,
-          trace: this.#parsedTrace
-        }
-      });
-      if (floatyHandled) {
-        return;
-      }
     }
     const focus = UI.Context.Context.instance().flavor(AIAssistance.AIContext.AgentFocus);
     if (this.#selected) {
@@ -2924,7 +2907,6 @@ var InsightRenderer = class {
     const componentClass = INSIGHT_NAME_TO_COMPONENT[insightName];
     widgetElement.widgetConfig = widgetConfig20(componentClass, {
       selected: options.selected ?? false,
-      parsedTrace,
       // The `model` passed in as a parameter is the base type, but since
       // `componentClass` is the union of every derived insight component, the
       // `model` for the widget config is the union of every model. That can't be

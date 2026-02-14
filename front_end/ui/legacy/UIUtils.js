@@ -597,16 +597,33 @@ export class ElementFocusRestorer {
 export function runCSSAnimationOnce(element, className) {
     function animationEndCallback() {
         element.classList.remove(className);
-        element.removeEventListener('webkitAnimationEnd', animationEndCallback, false);
+        element.removeEventListener('animationend', animationEndCallback, false);
         element.removeEventListener('animationcancel', animationEndCallback, false);
     }
-    if (element.classList.contains(className)) {
-        element.classList.remove(className);
-    }
-    element.addEventListener('webkitAnimationEnd', animationEndCallback, false);
+    // Remove class if it exists.
+    element.classList.toggle(className, /* force=*/ false);
+    element.addEventListener('animationend', animationEndCallback, false);
     element.addEventListener('animationcancel', animationEndCallback, false);
     element.classList.add(className);
 }
+class AnimateOnDirective extends Lit.Directive.Directive {
+    #previousValue = false;
+    render(_condition, _className) {
+        return undefined; // Directives don't have to render HTML
+    }
+    update(part, [condition, className]) {
+        const el = part.element;
+        // Only trigger if the condition transitioned from false -> true
+        if (condition && !this.#previousValue) {
+            this.#animate(el, className);
+        }
+        this.#previousValue = condition;
+    }
+    #animate(el, className) {
+        runCSSAnimationOnce(el, className);
+    }
+}
+export const animateOn = Lit.Directive.directive(AnimateOnDirective);
 export function measurePreferredSize(element, containerElement) {
     const oldParent = element.parentElement;
     const oldNextSibling = element.nextSibling;

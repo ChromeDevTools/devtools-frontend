@@ -44,7 +44,7 @@ export declare class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventT
     reset(): void;
     dispose(): void;
     private updateAnchor;
-    private updateAnchorFromUILocation;
+    private static updateAnchorFromUILocation;
     private static updateLinkDecorations;
     static linkifyURL(url: Platform.DevToolsPath.UrlString, options?: LinkifyURLOptions): HTMLElement;
     static linkifyRevealable(revealable: Object, text: string | HTMLElement, fallbackHref?: Platform.DevToolsPath.UrlString, title?: string, className?: string, jslogContext?: string): HTMLElement;

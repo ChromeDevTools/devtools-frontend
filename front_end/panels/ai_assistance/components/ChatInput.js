@@ -5,8 +5,6 @@ import '../../../ui/components/tooltips/tooltips.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
-import * as GreenDev from '../../../models/greendev/greendev.js';
-import * as Trace from '../../../models/trace/trace.js';
 import * as Workspace from '../../../models/workspace/workspace.js';
 import * as PanelsCommon from '../../../panels/common/common.js';
 import * as PanelUtils from '../../../panels/utils/utils.js';
@@ -93,7 +91,7 @@ const JPEG_MIME_TYPE = 'image/jpeg';
 const SHOW_LOADING_STATE_TIMEOUT = 100;
 const RELEVANT_DATA_LINK_CHAT_ID = 'relevant-data-link-chat';
 const RELEVANT_DATA_LINK_FOOTER_ID = 'relevant-data-link-footer';
-export const DEFAULT_VIEW = (input, output, target) => {
+export const DEFAULT_VIEW = (input, _output, target) => {
     const chatInputContainerCls = Lit.Directives.classMap({
         'chat-input-container': true,
         'single-line-layout': !input.selectedContext && !input.onContextAdd,
@@ -163,51 +161,6 @@ export const DEFAULT_VIEW = (input, output, target) => {
         :
             html `
         <form class="input-form" @submit=${input.onSubmit}>
-          ${GreenDev.Prototypes.instance().isEnabled('inDevToolsFloaty') ?
-                html `
-              <ul class="floaty">
-                ${input.additionalFloatyContext.map(c => {
-                    return html `
-                    <li>
-                      <span class="context-item">
-                        ${c instanceof SDK.NetworkRequest.NetworkRequest ? html `${c.url()}` :
-                        c instanceof SDK.DOMModel.DOMNode ? html `
-                            <devtools-widget .widgetConfig=${UI.Widget.widgetConfig(PanelsCommon.DOMLinkifier.DOMNodeLink, { node: c })}
-                            ></devtools-widget>` :
-                            'insight' in c ? html `${c.insight.title}` :
-                                'event' in c && 'traceStartTime' in c ? html `
-                            ${c.event.name} @ ${i18n.TimeUtilities.formatMicroSecondsAsMillisFixed(Trace.Types.Timing.Micro(c.event.ts - c.traceStartTime))}` :
-                                    Lit.nothing}
-                      </span>
-                      <devtools-button
-                        class="floaty-delete-button"
-                        @click=${(e) => {
-                        e.preventDefault();
-                        UI.Floaty.onFloatyContextDelete(c);
-                    }}
-                        .data=${{
-                        variant: "icon" /* Buttons.Button.Variant.ICON */,
-                        iconName: 'cross',
-                        title: 'Delete',
-                        size: "SMALL" /* Buttons.Button.Size.SMALL */,
-                    }}
-                      ></devtools-button>
-                    </li>`;
-                })}
-                <li class="open-floaty">
-                  <devtools-button
-                    class="floaty-add-button"
-                    @click=${UI.Floaty.onFloatyOpen}
-                    .data=${{
-                    variant: "icon" /* Buttons.Button.Variant.ICON */,
-                    iconName: 'select-element',
-                    title: 'Open context picker',
-                    size: "SMALL" /* Buttons.Button.Size.SMALL */,
-                }}
-                  ></devtools-button>
-                </li>
-              </ul>`
-                : Lit.nothing}
           <div class=${chatInputContainerCls}>
             ${(input.multimodalInputEnabled && input.imageInput && !input.isTextInputDisabled) ?
                 html `
@@ -439,7 +392,6 @@ export class ChatInput extends UI.Widget.Widget {
     inputPlaceholder = '';
     selectedContext = null;
     inspectElementToggled = false;
-    additionalFloatyContext = [];
     disclaimerText = '';
     conversationType = "freestyler" /* AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING */;
     multimodalInputEnabled = false;
@@ -597,7 +549,6 @@ export class ChatInput extends UI.Widget.Widget {
             selectedContext: this.selectedContext,
             inspectElementToggled: this.inspectElementToggled,
             isTextInputEmpty: this.#isTextInputEmpty(),
-            additionalFloatyContext: this.additionalFloatyContext,
             disclaimerText: this.disclaimerText,
             conversationType: this.conversationType,
             multimodalInputEnabled: this.multimodalInputEnabled,

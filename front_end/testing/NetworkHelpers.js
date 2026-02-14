@@ -10,11 +10,16 @@ export async function createNetworkPanelForMockConnection() {
     registerNoopActions(['network.toggle-recording', 'network.clear', 'inspector-main.reload']);
     const dummyStorage = new Common.Settings.SettingsStorage({});
     for (const settingName of ['network-color-code-resource-types', 'network.group-by-frame', 'network-record-film-strip-setting']) {
-        Common.Settings.registerSettingExtension({
-            settingName,
-            settingType: "boolean" /* Common.Settings.SettingType.BOOLEAN */,
-            defaultValue: false,
-        });
+        try {
+            Common.Settings.registerSettingExtension({
+                settingName,
+                settingType: "boolean" /* Common.Settings.SettingType.BOOLEAN */,
+                defaultValue: false,
+            });
+        }
+        catch {
+            // ignore duplicate errors.
+        }
     }
     Common.Settings.Settings.instance({
         forceNew: true,

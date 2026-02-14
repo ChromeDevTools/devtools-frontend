@@ -13,7 +13,6 @@ export declare function outline(state: CodeMirror.EditorState): OutlineItem[];
 export declare class OutlineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
     private items;
     private active;
-    constructor();
     attach(): void;
     detach(): void;
     itemCount(): number;

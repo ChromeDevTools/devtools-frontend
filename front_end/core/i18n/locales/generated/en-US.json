@@ -13742,6 +13742,9 @@
   "panels/settings/SettingsScreen.ts | settingsChangedReloadDevTools": {
     "message": "Settings changed. To apply, reload DevTools."
   },
+  "panels/settings/SettingsScreen.ts | settingsChangedRestartChrome": {
+    "message": "Settings changed. To apply, restart Chrome."
+  },
   "panels/settings/SettingsScreen.ts | shortcuts": {
     "message": "Shortcuts"
   },
@@ -17738,6 +17741,9 @@
   "ui/legacy/Infobar.ts | dontShowAgain": {
     "message": "Don't show again"
   },
+  "ui/legacy/InspectorView.ts | areYouSureYouWantToRestartChrome": {
+    "message": "Are you sure you want to restart Chrome?"
+  },
   "ui/legacy/InspectorView.ts | closeDrawer": {
     "message": "Close drawer"
   },
@@ -17773,6 +17779,9 @@
   },
   "ui/legacy/InspectorView.ts | reloadDevtools": {
     "message": "Reload DevTools"
+  },
+  "ui/legacy/InspectorView.ts | restartChrome": {
+    "message": "Restart Chrome"
   },
   "ui/legacy/InspectorView.ts | selectFolder": {
     "message": "Select folder"

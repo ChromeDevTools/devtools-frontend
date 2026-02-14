@@ -238,6 +238,7 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper {
         }
         const linkDisplayOptions = {
             showColumnNumber: linkifyURLOptions.showColumnNumber ?? false,
+            maxLength: linkifyURLOptions.maxLength,
             revealBreakpoint: options?.revealBreakpoint,
         };
         const updateDelegate = async (liveLocation) => {
@@ -315,10 +316,11 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper {
         linkInfo.userMetric = options?.userMetric;
         const linkDisplayOptions = {
             showColumnNumber: linkifyURLOptions.showColumnNumber ?? false,
+            maxLength: linkifyURLOptions.maxLength,
             revealBreakpoint: options?.revealBreakpoint,
         };
         const uiLocation = frame.uiSourceCode.uiLocation(frame.line, frame.column) ?? null;
-        this.updateAnchorFromUILocation(link, linkDisplayOptions, uiLocation);
+        Linkifier.updateAnchorFromUILocation(link, linkDisplayOptions, uiLocation);
         const anchors = this.anchorsByTarget.get(target);
         anchors.push(link);
         return link;
@@ -351,7 +353,7 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper {
         const { link, linkInfo } = Linkifier.createLink('', '', { jslogContext: 'script-location' });
         linkInfo.enableDecorator = this.useLinkDecorator;
         linkInfo.fallback = fallbackAnchor;
-        const linkDisplayOptions = { showColumnNumber: false };
+        const linkDisplayOptions = { showColumnNumber: false, maxLength: this.maxLength };
         const updateDelegate = async (liveLocation) => {
             await this.updateAnchor(link, linkDisplayOptions, liveLocation);
             this.dispatchEventToListeners("liveLocationUpdated" /* Events.LIVE_LOCATION_UPDATED */, liveLocation);
@@ -376,7 +378,7 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper {
         if (!pool) {
             return link;
         }
-        const linkDisplayOptions = { showColumnNumber: false };
+        const linkDisplayOptions = { showColumnNumber: false, maxLength: this.maxLength };
         const updateDelegate = async (liveLocation) => {
             await this.updateAnchor(link, linkDisplayOptions, liveLocation);
             this.dispatchEventToListeners("liveLocationUpdated" /* Events.LIVE_LOCATION_UPDATED */, liveLocation);
@@ -422,9 +424,9 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper {
         this.#anchorUpdaters.set(anchor, function (anchor) {
             void this.updateAnchor(anchor, options, liveLocation);
         });
-        this.updateAnchorFromUILocation(anchor, options, uiLocation);
+        Linkifier.updateAnchorFromUILocation(anchor, options, uiLocation);
     }
-    updateAnchorFromUILocation(anchor, options, uiLocation) {
+    static updateAnchorFromUILocation(anchor, options, uiLocation) {
         if (!uiLocation) {
             anchor.classList.add('invalid-link');
             anchor.removeAttribute('role');
@@ -435,7 +437,7 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper {
             Linkifier.bindBreakpoint(anchor, uiLocation);
         }
         const text = uiLocation.linkText(true /* skipTrim */, options.showColumnNumber);
-        Linkifier.setTrimmedText(anchor, text, this.maxLength);
+        Linkifier.setTrimmedText(anchor, text, options.maxLength);
         let titleText = uiLocation.uiSourceCode.url();
         if (uiLocation.uiSourceCode.mimeType() === 'application/wasm') {
             // For WebAssembly locations, we follow the conventions described in

@@ -40,7 +40,6 @@ export interface Props {
     disclaimerText: Platform.UIString.LocalizedString;
     uploadImageInputEnabled?: boolean;
     markdownRenderer: MarkdownLitRenderer;
-    additionalFloatyContext: UI.Floaty.FloatyContextSelection[];
 }
 interface ChatWidgetInput extends Props {
     accountGivenName: string;

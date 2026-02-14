@@ -95,9 +95,10 @@ export declare function getRegisteredProviders(): ProviderRegistration[];
 export interface ProviderRegistration {
     prefix: string;
     iconName: string;
-    provider: () => Promise<Provider>;
+    provider: (jslogContext: string) => Promise<Provider>;
     helpTitle: (() => string);
     titlePrefix: (() => string);
     titleSuggestion?: (() => string);
+    jslogContext: string;
 }
 export {};

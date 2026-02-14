@@ -378,6 +378,7 @@ var HostExperiment = class {
   // It is NOT the the name of the corresponding Chromium `base::Feature`.
   aboutFlag;
   #isEnabled;
+  requiresChromeRestart;
   docLink;
   feedbackLink;
   constructor(params) {
@@ -386,6 +387,7 @@ var HostExperiment = class {
     this.#experiments = params.experiments;
     this.aboutFlag = params.aboutFlag;
     this.#isEnabled = params.isEnabled;
+    this.requiresChromeRestart = params.requiresChromeRestart;
     this.docLink = params.docLink;
     this.feedbackLink = params.feedbackLink;
   }

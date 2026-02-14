@@ -13,11 +13,15 @@ export class HelpQuickOpen extends Provider {
         getRegisteredProviders().forEach(this.addProvider.bind(this));
     }
     async addProvider(extension) {
+        // We want to exclude Help menu as we are already in it.
+        if (extension.prefix === '?') {
+            return;
+        }
         this.providers.push({
             prefix: extension.prefix || '',
             iconName: extension.iconName,
             title: extension.helpTitle(),
-            jslogContext: (await extension.provider()).jslogContext,
+            jslogContext: extension.jslogContext,
         });
     }
     itemCount() {
@@ -51,9 +55,10 @@ export class HelpQuickOpen extends Provider {
 registerProvider({
     prefix: '?',
     iconName: 'help',
-    provider: () => Promise.resolve(new HelpQuickOpen('help')),
+    provider: jslogContext => Promise.resolve(new HelpQuickOpen(jslogContext)),
     helpTitle: () => 'Help',
     titlePrefix: () => 'Help',
     titleSuggestion: undefined,
+    jslogContext: 'help'
 });
 //# sourceMappingURL=HelpQuickOpen.js.map

@@ -49,6 +49,7 @@ export declare class ExperimentsSupport {
         title: string;
         aboutFlag: string;
         isEnabled: boolean;
+        requiresChromeRestart: boolean;
         docLink?: Platform.DevToolsPath.UrlString;
         readonly feedbackLink?: Platform.DevToolsPath.UrlString;
     }): HostExperiment;
@@ -83,6 +84,7 @@ export declare class HostExperiment {
     name: ExperimentName;
     title: string;
     aboutFlag: string;
+    readonly requiresChromeRestart: boolean;
     docLink?: Platform.DevToolsPath.UrlString;
     readonly feedbackLink?: Platform.DevToolsPath.UrlString;
     constructor(params: {
@@ -91,6 +93,7 @@ export declare class HostExperiment {
         experiments: ExperimentsSupport;
         aboutFlag: string;
         isEnabled: boolean;
+        requiresChromeRestart: boolean;
         docLink?: Platform.DevToolsPath.UrlString;
         feedbackLink?: Platform.DevToolsPath.UrlString;
     });

@@ -311,6 +311,7 @@ export interface InspectorFrontendHostAPI {
     recordSettingAccess(event: SettingAccessEvent): void;
     recordFunctionCall(event: FunctionCallEvent): void;
     setChromeFlag(flagName: string, value: boolean): void;
+    requestRestart(): void;
 }
 export interface AcceleratorDescriptor {
     keyCode: number;

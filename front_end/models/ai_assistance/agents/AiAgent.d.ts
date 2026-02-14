@@ -70,7 +70,7 @@ export interface SideEffectResponse {
 }
 export interface ContextChangeResponse {
     type: ResponseType.CONTEXT_CHANGE;
-    context: unknown;
+    context: ConversationContext<unknown>;
 }
 interface SerializedSideEffectResponse extends Omit<SideEffectResponse, 'confirm'> {
 }

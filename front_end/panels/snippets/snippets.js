@@ -230,15 +230,11 @@ var i18nString2 = i18n3.i18n.getLocalizedString.bind(void 0, str_2);
 var i18nLazyString = i18n3.i18n.getLazilyComputedLocalizedString.bind(void 0, str_2);
 var snippetsQuickOpenInstance;
 var SnippetsQuickOpen = class _SnippetsQuickOpen extends QuickOpen.FilteredListWidget.Provider {
-  snippets;
-  constructor() {
-    super("snippet");
-    this.snippets = [];
-  }
-  static instance(opts = { forceNew: null }) {
-    const { forceNew } = opts;
+  snippets = [];
+  static instance(opts) {
+    const { forceNew, jslogContext } = opts;
     if (!snippetsQuickOpenInstance || forceNew) {
-      snippetsQuickOpenInstance = new _SnippetsQuickOpen();
+      snippetsQuickOpenInstance = new _SnippetsQuickOpen(jslogContext);
     }
     return snippetsQuickOpenInstance;
   }
@@ -281,10 +277,11 @@ var SnippetsQuickOpen = class _SnippetsQuickOpen extends QuickOpen.FilteredListW
 QuickOpen.FilteredListWidget.registerProvider({
   prefix: "!",
   iconName: "exclamation",
-  provider: () => Promise.resolve(SnippetsQuickOpen.instance()),
+  provider: (jslogContext) => Promise.resolve(SnippetsQuickOpen.instance({ forceNew: null, jslogContext })),
   helpTitle: i18nLazyString(UIStrings2.runSnippet),
   titlePrefix: i18nLazyString(UIStrings2.run),
-  titleSuggestion: i18nLazyString(UIStrings2.snippet)
+  titleSuggestion: i18nLazyString(UIStrings2.snippet),
+  jslogContext: "snippet"
 });
 export {
   ScriptSnippetFileSystem_exports as ScriptSnippetFileSystem,

@@ -1504,7 +1504,7 @@ export class DebuggerPlugin extends Plugin {
         // Clear `this.editor` to signal that we are disposed. Any function from this `DebuggerPlugin` instance
         // still running or scheduled will early return and not do any work.
         this.editor = undefined;
-        UI.Context.Context.instance().removeFlavorChangeListener(SDK.DebuggerModel.CallFrame, this.callFrameChanged, this);
+        UI.Context.Context.instance().removeFlavorChangeListener(StackTrace.StackTrace.DebuggableFrameFlavor, this.callFrameChanged, this);
     }
     /**
      * Only records metrics once per DebuggerPlugin instance and must only be

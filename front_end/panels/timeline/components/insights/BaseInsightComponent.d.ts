@@ -35,7 +35,6 @@ export declare abstract class BaseInsightComponent<T extends InsightModel> exten
     protected hasAskAiSupport(): boolean;
     set selected(selected: boolean);
     get selected(): boolean;
-    set parsedTrace(trace: Trace.TraceModel.ParsedTrace | null);
     set model(model: T);
     set insightSetKey(insightSetKey: string | null);
     get bounds(): Trace.Types.Timing.TraceWindowMicro | null;

@@ -7,7 +7,6 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as GreenDev from '../../models/greendev/greendev.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import { createIcon } from '../kit/kit.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
@@ -15,7 +14,6 @@ import { ActionRegistry } from './ActionRegistry.js';
 import * as ARIAUtils from './ARIAUtils.js';
 import { Dialog } from './Dialog.js';
 import { DockController } from './DockController.js';
-import { Floaty } from './Floaty.js';
 import { GlassPane } from './GlassPane.js';
 import { Infobar } from './Infobar.js';
 import { KeyboardShortcut } from './KeyboardShortcut.js';
@@ -46,6 +44,14 @@ const UIStrings = {
      * @description Title of an action that reloads the DevTools
      */
     reloadDevtools: 'Reload DevTools',
+    /**
+     * @description Title of an action that restarts Chrome
+     */
+    restartChrome: 'Restart Chrome',
+    /**
+     * @description Confirmation dialog text for restarting Chrome
+     */
+    areYouSureYouWantToRestartChrome: 'Are you sure you want to restart Chrome?',
     /**
      * @description Text for context menu action to move a tab to the main tab bar
      */
@@ -139,6 +145,7 @@ export class InspectorView extends VBox {
     focusRestorer;
     ownerSplitWidget;
     reloadRequiredInfobar;
+    #chromeRestartRequiredInfobar;
     #debuggedTabReloadRequiredInfobar;
     #selectOverrideFolderInfobar;
     #resizeObserver;
@@ -303,9 +310,6 @@ export class InspectorView extends VBox {
         this.element.style.setProperty('--devtools-window-top', `${rect.top}px`);
         this.element.style.setProperty('--devtools-window-bottom', `${window.innerHeight - rect.bottom}px`);
         this.element.style.setProperty('--devtools-window-height', `${rect.height}px`);
-        if (Floaty.exists()) {
-            Floaty.instance().setDevToolsRect(rect);
-        }
     }
     wasShown() {
         super.wasShown();
@@ -314,12 +318,6 @@ export class InspectorView extends VBox {
         this.element.ownerDocument.addEventListener('keydown', this.keyDownBound, false);
         DockController.instance().addEventListener("DockSideChanged" /* DockControllerEvents.DOCK_SIDE_CHANGED */, this.#applyDrawerOrientationForDockSide, this);
         this.#applyDrawerOrientationForDockSide();
-        if (GreenDev.Prototypes.instance().isEnabled('inDevToolsFloaty')) {
-            Floaty.instance({
-                forceNew: true,
-                document: this.element.ownerDocument,
-            });
-        }
     }
     willHide() {
         super.willHide();
@@ -563,7 +561,7 @@ export class InspectorView extends VBox {
         }
     }
     displayReloadRequiredWarning(message) {
-        if (!this.reloadRequiredInfobar) {
+        if (!this.reloadRequiredInfobar && !this.#chromeRestartRequiredInfobar) {
             const infobar = new Infobar("info" /* InfobarType.INFO */, message, [
                 {
                     text: i18nString(UIStrings.reloadDevtools),
@@ -577,7 +575,33 @@ export class InspectorView extends VBox {
             this.attachInfobar(infobar);
             this.reloadRequiredInfobar = infobar;
             infobar.setCloseCallback(() => {
-                delete this.reloadRequiredInfobar;
+                this.reloadRequiredInfobar = undefined;
+            });
+        }
+    }
+    displayChromeRestartRequiredWarning(message) {
+        if (this.reloadRequiredInfobar) {
+            this.reloadRequiredInfobar.dispose();
+        }
+        if (!this.#chromeRestartRequiredInfobar) {
+            const infobar = new Infobar("info" /* InfobarType.INFO */, message, [
+                {
+                    text: i18nString(UIStrings.restartChrome),
+                    delegate: () => {
+                        if (confirm(i18nString(UIStrings.areYouSureYouWantToRestartChrome))) {
+                            Host.InspectorFrontendHost.InspectorFrontendHostInstance.requestRestart();
+                        }
+                    },
+                    dismiss: false,
+                    buttonVariant: "primary" /* Buttons.Button.Variant.PRIMARY */,
+                    jslogContext: 'main.chrome-restart-chrome',
+                },
+            ], undefined, 'reload-required');
+            infobar.setParentView(this);
+            this.attachInfobar(infobar);
+            this.#chromeRestartRequiredInfobar = infobar;
+            infobar.setCloseCallback(() => {
+                this.#chromeRestartRequiredInfobar = undefined;
             });
         }
     }

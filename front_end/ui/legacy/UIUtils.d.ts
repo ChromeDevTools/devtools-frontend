@@ -51,6 +51,12 @@ export declare class ElementFocusRestorer {
     restore(): void;
 }
 export declare function runCSSAnimationOnce(element: Element, className: string): void;
+declare class AnimateOnDirective extends Lit.Directive.Directive {
+    #private;
+    render(_condition: boolean, _className: string): void;
+    update(part: Lit.Directive.ElementPart, [condition, className]: [boolean, string]): void;
+}
+export declare const animateOn: (_condition: boolean, _className: string) => Lit.DirectiveResult<typeof AnimateOnDirective>;
 export declare function measurePreferredSize(element: Element, containerElement?: Element | null): Geometry.Size;
 export declare function startBatchUpdate(): void;
 export declare function endBatchUpdate(): void;

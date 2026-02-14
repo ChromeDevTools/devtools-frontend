@@ -1015,13 +1015,6 @@ export class NetworkRequestNode extends NetworkNode {
         return array ? String(array.length) : '';
     }
     select(suppressSelectedEvent) {
-        const id = this.request()?.requestId();
-        if (id) {
-            const floatyHandled = UI.Floaty.onFloatyClick({ type: "NETWORK_REQUEST" /* UI.Floaty.FloatyContextTypes.NETWORK_REQUEST */, data: { requestId: id } });
-            if (floatyHandled) {
-                return;
-            }
-        }
         super.select(suppressSelectedEvent);
         this.parentView().dispatchEventToListeners("RequestSelected" /* Events.RequestSelected */, this.requestInternal);
     }

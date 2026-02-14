@@ -8,9 +8,13 @@ import * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Logs from '../../logs/logs.js';
+import * as NetworkTimeCalculator from '../../network_time_calculator/network_time_calculator.js';
 import * as Workspace from '../../workspace/workspace.js';
-import { AgentFocus } from '../performance/AIContext.js';
 import { AiAgent, } from './AiAgent.js';
+import { FileContext } from './FileAgent.js';
+import { RequestContext } from './NetworkAgent.js';
+import { PerformanceTraceContext } from './PerformanceAgent.js';
+import { NodeContext } from './StylingAgent.js';
 const lockedString = i18n.i18n.lockedString;
 /**
  * WARNING: preamble defined in code is only used when userTier is
@@ -24,8 +28,8 @@ You aim to help developers of all levels, prioritizing teaching web concepts as 
 # Considerations
 * Determine what the question the domain of the question is - styling, network, sources, performance or other part of DevTools.
 * Proactively try to gather additional data. If a select specific data can be selected, select one.
+* Always try select single specific context before answering the question.
 * Avoid making assumptions without sufficient evidence, and always seek further clarification if needed.
-* Always explore multiple possible explanations for the observed behavior before settling on a conclusion.
 * When presenting solutions, clearly distinguish between the primary cause and contributing factors.
 * Please answer only if you are sure about the answer. Otherwise, explain why you're not able to answer.
 * When answering, always consider MULTIPLE possible solutions.
@@ -37,7 +41,6 @@ You aim to help developers of all levels, prioritizing teaching web concepts as 
 * Always specify the language for code blocks (e.g., \`\`\`css, \`\`\`javascript).
 * Keep text responses concise and scannable.
 
-* ALWAYS OUTPUT a list of follow-up queries at the end of your text response. The format is SUGGESTIONS: ["suggestion1", "suggestion2", "suggestion3"]. Make sure that the array and the \`SUGGESTIONS: \` text is in the same line. You're also capable of executing the fix for the issue user mentioned. Reflect this in your suggestions.
 * **CRITICAL** NEVER write full Python programs - you should only write individual statements that invoke a single function from the provided library.
 * **CRITICAL** NEVER output text before a function call. Always do a function call first.
 * **CRITICAL** You are a debugging assistant in DevTools. NEVER provide answers to questions of unrelated topics such as legal advice, financial advice, personal opinions, medical advice, religion, race, politics, sexuality, gender, or any other non web-development topics. Answer "Sorry, I can't answer that. I'm best at questions about debugging web pages." to such questions.
@@ -63,12 +66,14 @@ export class ContextSelectionAgent extends AiAgent {
     }
     #performanceRecordAndReload;
     #onInspectElement;
+    #networkTimeCalculator;
     constructor(opts) {
         super(opts);
         this.#performanceRecordAndReload = opts.performanceRecordAndReload;
         this.#onInspectElement = opts.onInspectElement;
+        this.#networkTimeCalculator = opts.networkTimeCalculator;
         this.declareFunction('listNetworkRequests', {
-            description: `Gives a list of network requests including URL, status code, and duration in ms.`,
+            description: `Gives a list of network requests including URL, status code, and duration.`,
             parameters: {
                 type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
                 description: '',
@@ -94,7 +99,7 @@ export class ContextSelectionAgent extends AiAgent {
                     requests.push({
                         url: request.url(),
                         statusCode: request.statusCode,
-                        duration: request.duration,
+                        duration: i18n.TimeUtilities.secondsToString(request.duration),
                     });
                 }
                 if (requests.length === 0) {
@@ -136,8 +141,9 @@ export class ContextSelectionAgent extends AiAgent {
                         req.url() === Platform.DevToolsPath.urlString `${url}/`;
                 });
                 if (request) {
+                    const calculator = this.#networkTimeCalculator ?? new NetworkTimeCalculator.NetworkTransferTimeCalculator();
                     return {
-                        context: request,
+                        context: new RequestContext(request, calculator),
                     };
                 }
                 return {
@@ -195,7 +201,7 @@ export class ContextSelectionAgent extends AiAgent {
                 for (const file of this.#getUISourceCodes()) {
                     if (file.fullDisplayName() === params.name) {
                         return {
-                            context: file,
+                            context: new FileContext(file),
                         };
                     }
                 }
@@ -225,7 +231,7 @@ export class ContextSelectionAgent extends AiAgent {
                 }
                 const result = await this.#performanceRecordAndReload();
                 return {
-                    context: AgentFocus.fromParsedTrace(result),
+                    context: PerformanceTraceContext.fromParsedTrace(result),
                 };
             }
         });
@@ -251,7 +257,7 @@ export class ContextSelectionAgent extends AiAgent {
                 const node = await this.#onInspectElement();
                 if (node) {
                     return {
-                        context: node,
+                        context: new NodeContext(node),
                     };
                 }
                 return {

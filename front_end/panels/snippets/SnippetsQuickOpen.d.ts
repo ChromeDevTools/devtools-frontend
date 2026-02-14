@@ -4,9 +4,9 @@ import * as QuickOpen from '../../ui/legacy/components/quick_open/quick_open.js'
 import { type TemplateResult } from '../../ui/lit/lit.js';
 export declare class SnippetsQuickOpen extends QuickOpen.FilteredListWidget.Provider {
     private snippets;
-    private constructor();
-    static instance(opts?: {
+    static instance(opts: {
         forceNew: boolean | null;
+        jslogContext: string;
     }): SnippetsQuickOpen;
     selectItem(itemIndex: number | null, _promptValue: string): void;
     notFoundText(_query: string): string;

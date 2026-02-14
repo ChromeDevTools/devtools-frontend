@@ -45,11 +45,13 @@ export declare const enum CSSWideKeyword {
     INITIAL = "initial",
     REVERT = "revert",
     REVERT_LAYER = "revert-layer",
+    REVERT_RULE = "revert-rule",
     UNSET = "unset"
 }
 /**
  * Spec: https://drafts.csswg.org/css-cascade/#defaulting-keywords
  * https://drafts.csswg.org/css-cascade-5/#revert-layer
+ * https://drafts.csswg.org/css-cascade-6/#revert-rule
  **/
 export declare const CSSWideKeywords: CSSWideKeyword[];
 /** https://www.w3.org/TR/css-anchor-position-1/#typedef-try-size **/

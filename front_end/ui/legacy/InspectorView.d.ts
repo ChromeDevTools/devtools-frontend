@@ -85,6 +85,7 @@ export declare class InspectorView extends VBox implements ViewLocationResolver 
     displayDebuggedTabReloadRequiredWarning(message: string): void;
     removeDebuggedTabReloadRequiredWarning(): void;
     displayReloadRequiredWarning(message: string): void;
+    displayChromeRestartRequiredWarning(message: string): void;
     displaySelectOverrideFolderInfobar(callback: () => void): void;
     private createInfoBarDiv;
     private attachInfobar;

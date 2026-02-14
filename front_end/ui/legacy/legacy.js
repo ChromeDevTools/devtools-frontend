@@ -57,7 +57,7 @@ var Context = class _Context {
   #dispatchFlavorChange(flavorType, flavorValue) {
     for (const extension of getRegisteredListeners()) {
       if (extension.contextTypes().includes(flavorType)) {
-        void extension.loadListener().then((instance2) => instance2.flavorChanged(flavorValue));
+        void extension.loadListener().then((instance) => instance.flavorChanged(flavorValue));
       }
     }
     const dispatcher = this.#eventDispatchers.get(flavorType);
@@ -535,7 +535,7 @@ __export(ARIAUtils_exports, {
   setValueText: () => setValueText,
   unsetExpandable: () => unsetExpandable
 });
-import * as Platform17 from "./../../core/platform/platform.js";
+import * as Platform16 from "./../../core/platform/platform.js";
 
 // gen/front_end/ui/legacy/Dialog.js
 var Dialog_exports = {};
@@ -633,6 +633,7 @@ __export(UIUtils_exports, {
   StyleValueDelimiters: () => StyleValueDelimiters,
   addPlatformClass: () => addPlatformClass,
   animateFunction: () => animateFunction,
+  animateOn: () => animateOn,
   anotherProfilerActiveLabel: () => anotherProfilerActiveLabel,
   asyncStackTraceLabel: () => asyncStackTraceLabel,
   beautifyFunctionName: () => beautifyFunctionName,
@@ -718,10 +719,10 @@ __export(Toolbar_exports, {
   registerToolbarItem: () => registerToolbarItem
 });
 import * as Common13 from "./../../core/common/common.js";
-import * as i18n20 from "./../../core/i18n/i18n.js";
-import * as Platform14 from "./../../core/platform/platform.js";
+import * as i18n19 from "./../../core/i18n/i18n.js";
+import * as Platform13 from "./../../core/platform/platform.js";
 import * as Root5 from "./../../core/root/root.js";
-import * as Buttons6 from "./../components/buttons/buttons.js";
+import * as Buttons5 from "./../components/buttons/buttons.js";
 import * as VisualLogging13 from "./../visual_logging/visual_logging.js";
 import { createIcon as createIcon6 } from "./../kit/kit.js";
 
@@ -739,8 +740,8 @@ __export(ContextMenu_exports, {
 });
 import * as Host6 from "./../../core/host/host.js";
 import * as Root4 from "./../../core/root/root.js";
-import * as Buttons5 from "./../components/buttons/buttons.js";
-import { html as html2, render as render3 } from "./../lit/lit.js";
+import * as Buttons4 from "./../components/buttons/buttons.js";
+import { html, render as render2 } from "./../lit/lit.js";
 import * as VisualLogging9 from "./../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/ShortcutRegistry.js
@@ -1503,7 +1504,7 @@ var SoftContextMenu_exports = {};
 __export(SoftContextMenu_exports, {
   SoftContextMenu: () => SoftContextMenu
 });
-import * as i18n16 from "./../../core/i18n/i18n.js";
+import * as i18n15 from "./../../core/i18n/i18n.js";
 import { createIcon as createIcon5 } from "./../kit/kit.js";
 import * as VisualLogging8 from "./../visual_logging/visual_logging.js";
 
@@ -1518,11 +1519,10 @@ __export(InspectorView_exports, {
 });
 import * as Common10 from "./../../core/common/common.js";
 import * as Host5 from "./../../core/host/host.js";
-import * as i18n14 from "./../../core/i18n/i18n.js";
+import * as i18n13 from "./../../core/i18n/i18n.js";
 import * as Root3 from "./../../core/root/root.js";
-import * as SDK2 from "./../../core/sdk/sdk.js";
-import * as GreenDev2 from "./../../models/greendev/greendev.js";
-import * as Buttons4 from "./../components/buttons/buttons.js";
+import * as SDK from "./../../core/sdk/sdk.js";
+import * as Buttons3 from "./../components/buttons/buttons.js";
 import { createIcon as createIcon4 } from "./../kit/kit.js";
 import * as VisualLogging7 from "./../visual_logging/visual_logging.js";
 
@@ -1696,105 +1696,605 @@ var CloseButtonProvider = class _CloseButtonProvider {
   }
 };
 
-// gen/front_end/ui/legacy/Floaty.js
-var Floaty_exports = {};
-__export(Floaty_exports, {
-  Floaty: () => Floaty,
-  FloatyFlavor: () => FloatyFlavor,
-  FloatyUI: () => FloatyUI,
-  onFloatyClick: () => onFloatyClick,
-  onFloatyContextDelete: () => onFloatyContextDelete,
-  onFloatyOpen: () => onFloatyOpen
+// gen/front_end/ui/legacy/Infobar.js
+var Infobar_exports = {};
+__export(Infobar_exports, {
+  Infobar: () => Infobar
 });
 import * as i18n5 from "./../../core/i18n/i18n.js";
-import * as Platform6 from "./../../core/platform/platform.js";
-import * as SDK from "./../../core/sdk/sdk.js";
-import * as GreenDev from "./../../models/greendev/greendev.js";
-import * as Logs from "./../../models/logs/logs.js";
-import * as Trace from "./../../models/trace/trace.js";
 import * as Buttons from "./../components/buttons/buttons.js";
-import { html, render } from "./../lit/lit.js";
+import * as VisualLogging3 from "./../visual_logging/visual_logging.js";
+import { createIcon } from "./../kit/kit.js";
 
-// gen/front_end/ui/legacy/floaty.css.js
-var floaty_css_default = `/*
- * Copyright 2025 The Chromium Authors
+// gen/front_end/ui/legacy/infobar.css.js
+var infobar_css_default = `/*
+ * Copyright 2015 The Chromium Authors
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file.
  */
-
-dialog {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  max-width: 400px;
-  min-width: 200px;
-  min-height: 100px;
-  max-height: 400px;
-  overflow-y: auto;
-  margin: 0;
-  padding: 0;
-  box-shadow: var(--drop-shadow);
-  background: var(--sys-color-tonal-container);
-  border-radius: var(--sys-shape-corner-medium-small);
-  border: none;
-  flex-direction: column;
-
-  header {
-    padding: var(--sys-size-6);
-
-    span {
-      font: var(--sys-typescale-headline5);
-    }
-
-    display: flex;
-    align-items: flex-start;
-
-    .close-button {
-      margin-left: auto;
-    }
-  }
-
-  section.body {
-    border-radius: var(--sys-shape-corner-medium-small);
-    background: var(--sys-color-surface);
-    height: 100%;
-    padding: var(--sys-size-6);
-  }
-
-  .floaty-contexts {
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-
-    li {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      padding: var(--sys-size-2) var(--sys-size-3);
-      border-radius: var(--sys-shape-corner-extra-small);
-      border: 1px solid var(--sys-color-tonal-outline);
-      font: var(--sys-typescale-monospace-regular);
-      display: flex;
-      align-items: center;
-      justify-content: flex-start;
-
-      devtools-button {
-        margin-left: auto;
-      }
-    }
-  }
-
-  section.actions {
-    margin-top: var(--sys-size-7);
+@media (prefers-reduced-motion: no-preference) {
+  :host {
+    transition: all var(--sys-motion-duration-long2);
+    transition-timing-function: var(--sys-motion-curve-spatial);
   }
 }
 
-dialog[open] {
+@starting-style {
+  :host {
+    height: 0;
+    opacity: 0%;
+  }
+}
+
+.infobar {
+  --summary-header-height: var(--sys-size-11);
+
+  color: var(--sys-color-on-surface);
+  background-color: var(--sys-color-cdt-base-container);
+  display: flex;
+  flex: auto;
+  flex-direction: row;
+  position: relative;
+  padding: var(--sys-size-5) var(--sys-size-8);
+  min-width: fit-content;
+  min-height: calc(var(--summary-header-height) + var(--sys-size-5) * 2);
+
+  .icon-container {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    height: var(--summary-header-height);
+  }
+
+  dt-close-button {
+    margin-left: var(--sys-size-3);
+  }
+}
+
+.infobar:focus {
+  outline: 2px solid var(--sys-color-state-focus-ring);
+  outline-offset: -2px;
+}
+
+.infobar-warning {
+  background-color: var(--sys-color-surface-yellow);
+  color: var(--sys-color-on-surface-yellow);
+}
+
+.infobar-error {
+  --override-infobar-error-background: var(--sys-color-surface-error);
+  --override-infobar-error-text: var(--sys-color-on-surface-error);
+
+  background-color: var(--override-infobar-error-background);
+  color: var(--override-infobar-error-text);
+}
+
+.infobar-main-row {
+  display: inline-flex;
+  flex-direction: row;
+  margin-right: auto;
+}
+
+.infobar-info-container {
+  display: flex;
+  row-gap: var(--sys-size-4);
+  align-items: center;
+  flex-grow: 1;
+  flex-wrap: wrap;
+}
+
+.infobar-info-text {
+  font: var(--sys-typescale-body3-regular);
+  margin-right: var(--sys-size-8);
+}
+
+.infobar-details-row {
+  display: flex;
+  flex-direction: column;
+  line-height: 18px;
+
+  + .infobar-details-row {
+    padding-top: var(--sys-size-3);
+  }
+}
+
+.infobar-selectable {
+  user-select: text;
+}
+
+.infobar-button {
+  color: var(--sys-color-token-subtle);
+}
+
+.info-icon {
+  color: var(--sys-color-primary);
+}
+
+.warning-icon {
+  color: var(--icon-warning);
+}
+
+.error-icon {
+  color: var(--icon-error);
+}
+
+.issue-icon {
+  color: var(--sys-color-primary);
+}
+
+.info-icon,
+.warning-icon,
+.error-icon,
+.issue-icon {
+  margin-right: var(--sys-size-8);
+  width: var(--sys-size-8);
+  height: var(--sys-size-8);
+  flex-shrink: 0;
+}
+
+.infobar-info-actions {
+  display: flex;
+  gap: var(--sys-size-5);
+}
+
+.devtools-link.text-button:hover,
+.devtools-link.text-button:focus,
+.devtools-link.text-button:active {
+  background-color: transparent;
+  box-shadow: none;
+}
+
+details {
+  margin-right: auto;
+
+  summary {
+    display: flex;
+    min-height: var(--summary-header-height);
+
+    &:focus-visible {
+      outline: var(--sys-color-state-focus-ring) auto var(--sys-size-1);
+      outline-offset: var(--sys-size-3);
+    }
+
+    &::marker {
+      content: '';
+    }
+  }
+
+  devtools-icon[name="arrow-drop-down"] {
+    align-self: center;
+    transform: rotate(270deg);
+  }
+
+  &[open] {
+    devtools-icon[name="arrow-drop-down"] {
+      transform: rotate(0deg);
+    }
+
+    &::details-content {
+      padding: var(--sys-size-4) 0 0 var(--sys-size-9);
+    }
+
+  }
+}
+
+/*# sourceURL=${import.meta.resolve("./infobar.css")} */`;
+
+// gen/front_end/ui/legacy/Infobar.js
+var UIStrings3 = {
+  /**
+   * @description Text on a button to close the infobar and never show the infobar in the future
+   */
+  dontShowAgain: "Don't show again",
+  /**
+   * @description Text to close something
+   */
+  close: "Close"
+};
+var str_3 = i18n5.i18n.registerUIStrings("ui/legacy/Infobar.ts", UIStrings3);
+var i18nString3 = i18n5.i18n.getLocalizedString.bind(void 0, str_3);
+var Infobar = class _Infobar {
+  element;
+  shadowRoot;
+  contentElement;
+  detailsRows;
+  infoContainer;
+  infoMessage;
+  infoText;
+  actionContainer;
+  disableSetting;
+  closeButton;
+  closeCallback;
+  parentView;
+  mainRow;
+  constructor(type, text, actions, disableSetting, jslogContext) {
+    this.element = document.createElement("div");
+    if (jslogContext) {
+      this.element.setAttribute("jslog", `${VisualLogging3.dialog(jslogContext).track({ resize: true, keydown: "Enter|Escape" })}`);
+    }
+    this.element.classList.add("flex-none");
+    this.shadowRoot = createShadowRootWithCoreStyles(this.element, { cssFile: infobar_css_default });
+    this.contentElement = this.shadowRoot.createChild("div", "infobar infobar-" + type);
+    const icon = createIcon(TYPE_TO_ICON[type], type + "-icon");
+    this.contentElement.createChild("div", "icon-container").appendChild(icon);
+    this.mainRow = this.contentElement.createChild("div", "infobar-main-row");
+    this.infoContainer = this.mainRow.createChild("div", "infobar-info-container");
+    this.infoMessage = this.infoContainer.createChild("div", "infobar-info-message");
+    this.infoText = this.infoMessage.createChild("div", "infobar-info-text");
+    this.infoText.textContent = text;
+    markAsAlert(this.infoText);
+    this.actionContainer = this.infoContainer.createChild("div", "infobar-info-actions");
+    let defaultActionButtonVariant = "outlined";
+    this.disableSetting = disableSetting || null;
+    if (disableSetting) {
+      const disableButton = createTextButton(i18nString3(UIStrings3.dontShowAgain), this.onDisable.bind(this), { className: "infobar-button", jslogContext: "dont-show-again" });
+      this.actionContainer.appendChild(disableButton);
+      defaultActionButtonVariant = "tonal";
+    }
+    if (actions) {
+      this.contentElement.setAttribute("role", "group");
+      for (const action6 of actions) {
+        const actionCallback = this.actionCallbackFactory(action6);
+        const buttonVariant = action6.buttonVariant ?? defaultActionButtonVariant;
+        const button = createTextButton(action6.text, actionCallback, {
+          className: "infobar-button",
+          jslogContext: action6.jslogContext,
+          variant: buttonVariant
+        });
+        this.actionContainer.appendChild(button);
+      }
+    }
+    this.closeButton = this.contentElement.createChild("dt-close-button", "icon-container");
+    this.closeButton.setTabbable(true);
+    this.closeButton.setSize(
+      "SMALL"
+      /* Buttons.Button.Size.SMALL */
+    );
+    setDescription(this.closeButton, i18nString3(UIStrings3.close));
+    self.onInvokeElement(this.closeButton, this.dispose.bind(this));
+    if (type !== "issue") {
+      this.contentElement.tabIndex = 0;
+    }
+    setLabel(this.contentElement, text);
+    this.contentElement.addEventListener("keydown", (event) => {
+      if (event.keyCode === Keys.Esc.code) {
+        this.dispose();
+        event.consume();
+        return;
+      }
+    });
+    this.closeCallback = null;
+  }
+  static create(type, text, actions, disableSetting, jslogContext) {
+    if (disableSetting?.get()) {
+      return null;
+    }
+    return new _Infobar(type, text, actions, disableSetting, jslogContext);
+  }
+  dispose() {
+    this.element.remove();
+    this.onResize();
+    if (this.closeCallback) {
+      this.closeCallback.call(null);
+    }
+  }
+  setText(text) {
+    this.infoText.textContent = text;
+    this.onResize();
+  }
+  setCloseCallback(callback) {
+    this.closeCallback = callback;
+  }
+  setParentView(parentView) {
+    this.parentView = parentView;
+  }
+  actionCallbackFactory(action6) {
+    if (!action6.delegate) {
+      return action6.dismiss ? this.dispose.bind(this) : () => {
+      };
+    }
+    if (!action6.dismiss) {
+      return action6.delegate;
+    }
+    return (() => {
+      if (action6.delegate) {
+        action6.delegate();
+      }
+      this.dispose();
+    }).bind(this);
+  }
+  onResize() {
+    if (this.parentView) {
+      this.parentView.doResize();
+    }
+  }
+  onDisable() {
+    if (this.disableSetting) {
+      this.disableSetting.set(true);
+    }
+    this.dispose();
+  }
+  createDetailsRowMessage(message) {
+    if (!this.detailsRows) {
+      const details = document.createElement("details");
+      const summary = details.createChild("summary");
+      const triangleIcon = createIcon("arrow-drop-down");
+      summary.createChild("div", "icon-container").appendChild(triangleIcon);
+      this.contentElement.insertBefore(details, this.mainRow);
+      summary.appendChild(this.mainRow);
+      this.detailsRows = details.createChild("div", "infobar-details-rows");
+    }
+    const infobarDetailsRow = this.detailsRows.createChild("div", "infobar-details-row");
+    const detailsRowMessage = infobarDetailsRow.createChild("span", "infobar-row-message");
+    if (typeof message === "string") {
+      detailsRowMessage.textContent = message;
+    } else {
+      detailsRowMessage.appendChild(message);
+    }
+    return detailsRowMessage;
+  }
+};
+var TYPE_TO_ICON = {
+  [
+    "warning"
+    /* Type.WARNING */
+  ]: "warning",
+  [
+    "info"
+    /* Type.INFO */
+  ]: "info",
+  [
+    "issue"
+    /* Type.ISSUE */
+  ]: "issue-text-filled",
+  [
+    "error"
+    /* Type.ERROR */
+  ]: "cross-circle"
+};
+
+// gen/front_end/ui/legacy/SplitWidget.js
+var SplitWidget_exports = {};
+__export(SplitWidget_exports, {
+  SplitWidget: () => SplitWidget,
+  SplitWidgetElement: () => SplitWidgetElement
+});
+import * as Common7 from "./../../core/common/common.js";
+import * as Platform6 from "./../../core/platform/platform.js";
+import * as Geometry2 from "./../../models/geometry/geometry.js";
+import * as VisualLogging4 from "./../visual_logging/visual_logging.js";
+
+// gen/front_end/ui/legacy/ResizerWidget.js
+var ResizerWidget_exports = {};
+__export(ResizerWidget_exports, {
+  ResizerWidget: () => ResizerWidget,
+  SimpleResizerWidget: () => SimpleResizerWidget
+});
+import * as Common5 from "./../../core/common/common.js";
+var ResizerWidget = class extends Common5.ObjectWrapper.ObjectWrapper {
+  #isEnabled = true;
+  #elements = /* @__PURE__ */ new Set();
+  #installDragOnMouseDownBound;
+  #cursor = "nwse-resize";
+  #startX;
+  #startY;
+  constructor() {
+    super();
+    this.#installDragOnMouseDownBound = this.#installDragOnMouseDown.bind(this);
+  }
+  isEnabled() {
+    return this.#isEnabled;
+  }
+  setEnabled(enabled) {
+    this.#isEnabled = enabled;
+    this.updateElementCursors();
+  }
+  elements() {
+    return [...this.#elements];
+  }
+  addElement(element) {
+    if (!this.#elements.has(element)) {
+      this.#elements.add(element);
+      element.addEventListener("pointerdown", this.#installDragOnMouseDownBound, false);
+      this.#updateElementCursor(element);
+    }
+  }
+  removeElement(element) {
+    if (this.#elements.has(element)) {
+      this.#elements.delete(element);
+      element.removeEventListener("pointerdown", this.#installDragOnMouseDownBound, false);
+      element.style.removeProperty("cursor");
+    }
+  }
+  updateElementCursors() {
+    this.#elements.forEach(this.#updateElementCursor.bind(this));
+  }
+  #updateElementCursor(element) {
+    if (this.#isEnabled) {
+      element.style.setProperty("cursor", this.cursor());
+      element.style.setProperty("touch-action", "none");
+    } else {
+      element.style.removeProperty("cursor");
+      element.style.removeProperty("touch-action");
+    }
+  }
+  cursor() {
+    return this.#cursor;
+  }
+  setCursor(cursor) {
+    this.#cursor = cursor;
+    this.updateElementCursors();
+  }
+  #installDragOnMouseDown(event) {
+    const element = event.target;
+    if (!this.#elements.has(element)) {
+      return false;
+    }
+    elementDragStart(element, this.#dragStart.bind(this), (event2) => {
+      this.#drag(event2);
+    }, this.#dragEnd.bind(this), this.cursor(), event);
+    return void 0;
+  }
+  #dragStart(event) {
+    if (!this.#isEnabled) {
+      return false;
+    }
+    this.#startX = event.pageX;
+    this.#startY = event.pageY;
+    this.sendDragStart(this.#startX, this.#startY);
+    return true;
+  }
+  sendDragStart(x, y) {
+    this.dispatchEventToListeners("ResizeStart", { startX: x, currentX: x, startY: y, currentY: y });
+  }
+  #drag(event) {
+    if (!this.#isEnabled) {
+      this.#dragEnd(event);
+      return true;
+    }
+    this.sendDragMove(this.#startX, event.pageX, this.#startY, event.pageY, event.shiftKey);
+    event.preventDefault();
+    return false;
+  }
+  sendDragMove(startX, currentX, startY, currentY, shiftKey) {
+    this.dispatchEventToListeners("ResizeUpdateXY", { startX, currentX, startY, currentY, shiftKey });
+  }
+  #dragEnd(_event) {
+    this.dispatchEventToListeners(
+      "ResizeEnd"
+      /* Events.RESIZE_END */
+    );
+    this.#startX = void 0;
+    this.#startY = void 0;
+  }
+};
+var SimpleResizerWidget = class extends ResizerWidget {
+  #isVertical = true;
+  isVertical() {
+    return this.#isVertical;
+  }
+  /**
+   * Vertical widget resizes height (along y-axis).
+   */
+  setVertical(vertical) {
+    this.#isVertical = vertical;
+    this.updateElementCursors();
+  }
+  cursor() {
+    return this.#isVertical ? "ns-resize" : "ew-resize";
+  }
+  sendDragStart(x, y) {
+    const position = this.#isVertical ? y : x;
+    this.dispatchEventToListeners("ResizeStart", { startPosition: position, currentPosition: position });
+  }
+  sendDragMove(startX, currentX, startY, currentY, shiftKey) {
+    if (this.#isVertical) {
+      this.dispatchEventToListeners("ResizeUpdatePosition", { startPosition: startY, currentPosition: currentY, shiftKey });
+    } else {
+      this.dispatchEventToListeners("ResizeUpdatePosition", { startPosition: startX, currentPosition: currentX, shiftKey });
+    }
+  }
+};
+
+// gen/front_end/ui/legacy/splitWidget.css.js
+var splitWidget_css_default = `/*
+ * Copyright (C) 2011 Google Inc. All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ * 1. Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following disclaimer
+ * in the documentation and/or other materials provided with the
+ * distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY GOOGLE INC. AND ITS CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL GOOGLE INC.
+ * OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+.shadow-split-widget {
+  display: flex;
+  overflow: hidden;
+}
+
+.shadow-split-widget-contents {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  contain: layout size style;
+}
+
+.shadow-split-widget-sidebar {
+  flex: none;
+}
+
+.shadow-split-widget-main,
+.shadow-split-widget-sidebar.maximized {
+  flex: auto;
+}
+
+.shadow-split-widget.hbox > .shadow-split-widget-resizer {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 6px;
+  z-index: 4000;
+}
+
+.shadow-split-widget.vbox > .shadow-split-widget-resizer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 6px;
+  z-index: 4000;
+}
+
+.shadow-split-widget.vbox > .shadow-split-widget-sidebar.no-default-splitter {
+  border: 0 !important; /* stylelint-disable-line declaration-no-important */
+}
+
+.shadow-split-widget.vbox > .shadow-split-widget-sidebar:not(.maximized) {
+  border: 0;
+  border-top: 1px solid var(--sys-color-divider);
+}
+
+.shadow-split-widget.hbox > .shadow-split-widget-sidebar:not(.maximized) {
+  border: 0;
+  border-left: 1px solid var(--sys-color-divider);
+}
+
+.shadow-split-widget.vbox > .shadow-split-widget-sidebar:first-child:not(.maximized) {
+  border: 0;
+  border-bottom: 1px solid var(--sys-color-divider);
+}
+
+.shadow-split-widget.hbox > .shadow-split-widget-sidebar:first-child:not(.maximized) {
+  border: 0;
+  border-right: 1px solid var(--sys-color-divider);
+}
+
+:host-context(.disable-resizer-for-elements-hack) .shadow-split-widget-resizer {
+  pointer-events: none;
+}
+
+:host {
   display: flex;
 }
 
-/*# sourceURL=${import.meta.resolve("./floaty.css")} */`;
+/*# sourceURL=${import.meta.resolve("./splitWidget.css")} */`;
 
 // gen/front_end/ui/legacy/Widget.js
 var Widget_exports = {};
@@ -2812,925 +3312,6 @@ Element.prototype.removeChildren = function() {
   return originalRemoveChildren.call(this);
 };
 
-// gen/front_end/ui/legacy/Floaty.js
-var instance = null;
-var FloatyFlavor = class {
-  selectedContexts = [];
-  constructor(contexts) {
-    this.selectedContexts = Array.from(contexts);
-  }
-};
-var Floaty = class _Floaty {
-  static defaultVisibility = false;
-  #container;
-  #floaty;
-  #boundKeyDown = this.#onKeyShortcut.bind(this);
-  static exists() {
-    return instance !== null;
-  }
-  static instance(opts = { forceNew: null, document: null }) {
-    if (instance) {
-      return instance;
-    }
-    if (!opts.document) {
-      throw new Error("document required");
-    }
-    instance = new _Floaty(opts.document);
-    return instance;
-  }
-  constructor(document2) {
-    this.#container = document2.createElement("div");
-    this.#container.classList.add("floaty-container");
-    this.#floaty = new FloatyUI();
-    this.#floaty.markAsRoot();
-    this.#insertIntoDOM();
-  }
-  #onKeyShortcut(e) {
-    const origin = e.composedPath().at(0);
-    if (origin && (origin instanceof HTMLTextAreaElement || origin instanceof HTMLInputElement)) {
-      return;
-    }
-    if (e.key === "f") {
-      this.open();
-    }
-  }
-  #insertIntoDOM() {
-    if (GreenDev.Prototypes.instance().isEnabled("inDevToolsFloaty")) {
-      this.#floaty.show(this.#container);
-      document.body.appendChild(this.#container);
-      document.body.addEventListener("keydown", this.#boundKeyDown);
-    }
-  }
-  setDevToolsRect(rect) {
-    this.#floaty.devtoolsRect = rect;
-  }
-  open() {
-    this.#floaty.open = true;
-  }
-  registerClick(input) {
-    if (this.#floaty.state !== "inspect") {
-      return;
-    }
-    const type = input.type;
-    switch (type) {
-      case "ELEMENT_NODE_ID": {
-        const mainTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
-        if (!mainTarget) {
-          return;
-        }
-        const domModel = mainTarget.model(SDK.DOMModel.DOMModel);
-        const node = domModel?.nodeForId(input.data.nodeId);
-        if (node) {
-          this.#floaty.addSelectedContext(node);
-        }
-        break;
-      }
-      case "NETWORK_REQUEST": {
-        const networkRequests = Logs.NetworkLog.NetworkLog.instance().requestsForId(input.data.requestId);
-        for (const req of networkRequests) {
-          this.#floaty.addSelectedContext(req);
-        }
-        break;
-      }
-      case "PERFORMANCE_EVENT": {
-        this.#floaty.addSelectedContext(input.data);
-        break;
-      }
-      case "PERFORMANCE_INSIGHT": {
-        this.#floaty.addSelectedContext(input.data);
-        break;
-      }
-      default:
-        Platform6.assertNever(type, "Unsupported Floaty Context type");
-    }
-  }
-  inInspectMode() {
-    return this.#floaty.state === "inspect";
-  }
-  deleteContext(context) {
-    this.#floaty.removeSelectedContext(context);
-  }
-};
-function onFloatyOpen() {
-  if (!GreenDev.Prototypes.instance().isEnabled("inDevToolsFloaty")) {
-    return;
-  }
-  Floaty.instance().open();
-}
-function onFloatyContextDelete(context) {
-  if (!GreenDev.Prototypes.instance().isEnabled("inDevToolsFloaty")) {
-    return;
-  }
-  Floaty.instance().deleteContext(context);
-}
-function onFloatyClick(input) {
-  if (!GreenDev.Prototypes.instance().isEnabled("inDevToolsFloaty")) {
-    return false;
-  }
-  const floaty = Floaty.instance();
-  if (floaty.inInspectMode()) {
-    floaty.registerClick(input);
-    return true;
-  }
-  return false;
-}
-var FloatyUI = class extends Widget {
-  #view;
-  #dialog = null;
-  #initialMouseX = 0;
-  #initialMouseY = 0;
-  #initialDialogLeft = 0;
-  #initialDialogTop = 0;
-  #devtoolsRect = null;
-  #selectedContexts = /* @__PURE__ */ new Set();
-  #open = Floaty.defaultVisibility;
-  #state = "readonly";
-  constructor(element, view = VIEW) {
-    super(element);
-    this.#view = view;
-  }
-  get devtoolsRect() {
-    return this.#devtoolsRect;
-  }
-  get state() {
-    return this.#state;
-  }
-  set state(x) {
-    this.#state = x;
-    this.requestUpdate();
-  }
-  set devtoolsRect(rect) {
-    this.#devtoolsRect = rect;
-    this.#repositionWithNewRect(rect);
-    this.requestUpdate();
-  }
-  addSelectedContext(context) {
-    if (this.#selectedContexts.has(context)) {
-      return;
-    }
-    this.#selectedContexts.add(context);
-    Context.instance().setFlavor(FloatyFlavor, new FloatyFlavor(this.#selectedContexts));
-    this.requestUpdate();
-  }
-  removeSelectedContext(context) {
-    this.#selectedContexts.delete(context);
-    this.#state = "readonly";
-    Context.instance().setFlavor(FloatyFlavor, new FloatyFlavor(this.#selectedContexts));
-    this.requestUpdate();
-  }
-  get open() {
-    return this.#open;
-  }
-  set open(open) {
-    this.#open = open;
-    this.requestUpdate();
-  }
-  wasShown() {
-    super.wasShown();
-    this.requestUpdate();
-  }
-  #repositionWithNewRect(rect) {
-    if (!this.#dialog) {
-      return;
-    }
-    const computedStyle = window.getComputedStyle(this.#dialog);
-    const currentLeft = parseInt(computedStyle.left, 10);
-    const currentTop = parseInt(computedStyle.top, 10);
-    this.#dialog.style.left = `${Math.max(currentLeft, rect.left)}px`;
-    this.#dialog.style.top = `${Math.max(currentTop, rect.top)}px`;
-  }
-  #onInspectClick() {
-    if (this.#state === "inspect") {
-      this.#state = "readonly";
-    } else {
-      this.#state = "inspect";
-    }
-    this.requestUpdate();
-  }
-  #onDialogClose(e) {
-    e.preventDefault();
-    this.#open = false;
-    this.requestUpdate();
-  }
-  #onContextDelete(context) {
-    return (e) => {
-      e.preventDefault();
-      this.removeSelectedContext(context);
-    };
-  }
-  performUpdate() {
-    this.#view({
-      open: this.open,
-      onDragStart: this.#onDragStart,
-      selectedContexts: this.#selectedContexts,
-      state: this.#state,
-      onInspectClick: this.#onInspectClick.bind(this),
-      onDialogClose: this.#onDialogClose.bind(this),
-      onContextDelete: this.#onContextDelete.bind(this)
-    }, null, this.contentElement);
-    this.#dialog = this.contentElement.querySelector("dialog");
-  }
-  #onDragStart = (event) => {
-    if (!this.#dialog) {
-      return;
-    }
-    this.#initialMouseX = event.clientX;
-    this.#initialMouseY = event.clientY;
-    const computedStyle = window.getComputedStyle(this.#dialog);
-    this.#initialDialogLeft = parseInt(computedStyle.left, 10);
-    this.#initialDialogTop = parseInt(computedStyle.top, 10);
-    document.addEventListener("mousemove", this.#onDrag);
-    document.addEventListener("mouseup", this.#onDragEnd);
-  };
-  #onDrag = (event) => {
-    if (!this.#dialog) {
-      return;
-    }
-    const deltaX = event.clientX - this.#initialMouseX;
-    const deltaY = event.clientY - this.#initialMouseY;
-    const minLeft = this.#devtoolsRect?.left ?? 0;
-    const minTop = this.#devtoolsRect?.top ?? 0;
-    const newLeft = Math.max(minLeft, this.#initialDialogLeft + deltaX);
-    const newTop = Math.max(minTop, this.#initialDialogTop + deltaY);
-    this.#dialog.style.left = `${newLeft}px`;
-    this.#dialog.style.top = `${newTop}px`;
-  };
-  #onDragEnd = () => {
-    document.removeEventListener("mousemove", this.#onDrag);
-    document.removeEventListener("mouseup", this.#onDragEnd);
-  };
-};
-var VIEW = (input, _output, target) => {
-  const contexts = Array.from(input.selectedContexts);
-  render(html`
-   <style>${floaty_css_default}</style>
-   <dialog ?open=${input.open} @mousedown=${input.onDragStart}>
-    <header>
-      <span>DevTools context picker</span>
-      <devtools-button
-        class="close-button"
-        @click=${input.onDialogClose}
-        .data=${{
-    variant: "toolbar",
-    iconName: "cross",
-    title: "Close",
-    size: "SMALL"
-  }}
-      ></devtools-button>
-    </header>
-    <section class="body">
-      <section class="contexts">
-      ${contexts.length === 0 ? html`
-        <span class="no-context">Select items to add them to the AI agent's context.</span>
-        ` : html`
-        <ul class="floaty-contexts">
-          ${contexts.map((context) => {
-    return html`<li>
-            <span class="context-item">
-              ${floatyContextToUI(context)}
-            </span>
-            <devtools-button
-              class="close-button"
-              @click=${input.onContextDelete(context)}
-              .data=${{
-      variant: "toolbar",
-      iconName: "cross",
-      title: "Delete",
-      size: "SMALL"
-    }}
-            ></devtools-button>
-            </li>`;
-  })}
-        </ul>
-      `}
-      </section>
-      <section class="actions">
-          <devtools-button title="Select" @click=${input.onInspectClick}
-            .active=${input.state === "inspect"}
-            .variant=${"tonal"} .iconName=${"select-element"}
-          >Select</devtools-button>
-        </devtools-toolbar>
-      </section>
-    </section>
-   </dialog>`, target);
-};
-function floatyContextToUI(context) {
-  if (context instanceof SDK.NetworkRequest.NetworkRequest) {
-    return html`${context.url()}`;
-  }
-  if (context instanceof SDK.DOMModel.DOMNode) {
-    return html`${context.simpleSelector()}`;
-  }
-  if ("insight" in context) {
-    return html`Insight: ${context.insight.title}`;
-  }
-  if ("event" in context && "traceStartTime" in context) {
-    const time = Trace.Types.Timing.Micro(context.event.ts - context.traceStartTime);
-    return html`${context.event.name} @ ${i18n5.TimeUtilities.formatMicroSecondsAsMillisFixed(time)}`;
-  }
-  Platform6.assertNever(context, "");
-}
-
-// gen/front_end/ui/legacy/Infobar.js
-var Infobar_exports = {};
-__export(Infobar_exports, {
-  Infobar: () => Infobar
-});
-import * as i18n6 from "./../../core/i18n/i18n.js";
-import * as Buttons2 from "./../components/buttons/buttons.js";
-import * as VisualLogging3 from "./../visual_logging/visual_logging.js";
-import { createIcon } from "./../kit/kit.js";
-
-// gen/front_end/ui/legacy/infobar.css.js
-var infobar_css_default = `/*
- * Copyright 2015 The Chromium Authors
- * Use of this source code is governed by a BSD-style license that can be
- * found in the LICENSE file.
- */
-@media (prefers-reduced-motion: no-preference) {
-  :host {
-    transition: all var(--sys-motion-duration-long2);
-    transition-timing-function: var(--sys-motion-curve-spatial);
-  }
-}
-
-@starting-style {
-  :host {
-    height: 0;
-    opacity: 0%;
-  }
-}
-
-.infobar {
-  --summary-header-height: var(--sys-size-11);
-
-  color: var(--sys-color-on-surface);
-  background-color: var(--sys-color-cdt-base-container);
-  display: flex;
-  flex: auto;
-  flex-direction: row;
-  position: relative;
-  padding: var(--sys-size-5) var(--sys-size-8);
-  min-width: fit-content;
-  min-height: calc(var(--summary-header-height) + var(--sys-size-5) * 2);
-
-  .icon-container {
-    display: flex;
-    flex-shrink: 0;
-    align-items: center;
-    height: var(--summary-header-height);
-  }
-
-  dt-close-button {
-    margin-left: var(--sys-size-3);
-  }
-}
-
-.infobar:focus {
-  outline: 2px solid var(--sys-color-state-focus-ring);
-  outline-offset: -2px;
-}
-
-.infobar-warning {
-  background-color: var(--sys-color-surface-yellow);
-  color: var(--sys-color-on-surface-yellow);
-}
-
-.infobar-error {
-  --override-infobar-error-background: var(--sys-color-surface-error);
-  --override-infobar-error-text: var(--sys-color-on-surface-error);
-
-  background-color: var(--override-infobar-error-background);
-  color: var(--override-infobar-error-text);
-}
-
-.infobar-main-row {
-  display: inline-flex;
-  flex-direction: row;
-  margin-right: auto;
-}
-
-.infobar-info-container {
-  display: flex;
-  row-gap: var(--sys-size-4);
-  align-items: center;
-  flex-grow: 1;
-  flex-wrap: wrap;
-}
-
-.infobar-info-text {
-  font: var(--sys-typescale-body3-regular);
-  margin-right: var(--sys-size-8);
-}
-
-.infobar-details-row {
-  display: flex;
-  flex-direction: column;
-  line-height: 18px;
-
-  + .infobar-details-row {
-    padding-top: var(--sys-size-3);
-  }
-}
-
-.infobar-selectable {
-  user-select: text;
-}
-
-.infobar-button {
-  color: var(--sys-color-token-subtle);
-}
-
-.info-icon {
-  color: var(--sys-color-primary);
-}
-
-.warning-icon {
-  color: var(--icon-warning);
-}
-
-.error-icon {
-  color: var(--icon-error);
-}
-
-.issue-icon {
-  color: var(--sys-color-primary);
-}
-
-.info-icon,
-.warning-icon,
-.error-icon,
-.issue-icon {
-  margin-right: var(--sys-size-8);
-  width: var(--sys-size-8);
-  height: var(--sys-size-8);
-  flex-shrink: 0;
-}
-
-.infobar-info-actions {
-  display: flex;
-  gap: var(--sys-size-5);
-}
-
-.devtools-link.text-button:hover,
-.devtools-link.text-button:focus,
-.devtools-link.text-button:active {
-  background-color: transparent;
-  box-shadow: none;
-}
-
-details {
-  margin-right: auto;
-
-  summary {
-    display: flex;
-    min-height: var(--summary-header-height);
-
-    &:focus-visible {
-      outline: var(--sys-color-state-focus-ring) auto var(--sys-size-1);
-      outline-offset: var(--sys-size-3);
-    }
-
-    &::marker {
-      content: '';
-    }
-  }
-
-  devtools-icon[name="arrow-drop-down"] {
-    align-self: center;
-    transform: rotate(270deg);
-  }
-
-  &[open] {
-    devtools-icon[name="arrow-drop-down"] {
-      transform: rotate(0deg);
-    }
-
-    &::details-content {
-      padding: var(--sys-size-4) 0 0 var(--sys-size-9);
-    }
-
-  }
-}
-
-/*# sourceURL=${import.meta.resolve("./infobar.css")} */`;
-
-// gen/front_end/ui/legacy/Infobar.js
-var UIStrings3 = {
-  /**
-   * @description Text on a button to close the infobar and never show the infobar in the future
-   */
-  dontShowAgain: "Don't show again",
-  /**
-   * @description Text to close something
-   */
-  close: "Close"
-};
-var str_3 = i18n6.i18n.registerUIStrings("ui/legacy/Infobar.ts", UIStrings3);
-var i18nString3 = i18n6.i18n.getLocalizedString.bind(void 0, str_3);
-var Infobar = class _Infobar {
-  element;
-  shadowRoot;
-  contentElement;
-  detailsRows;
-  infoContainer;
-  infoMessage;
-  infoText;
-  actionContainer;
-  disableSetting;
-  closeButton;
-  closeCallback;
-  parentView;
-  mainRow;
-  constructor(type, text, actions, disableSetting, jslogContext) {
-    this.element = document.createElement("div");
-    if (jslogContext) {
-      this.element.setAttribute("jslog", `${VisualLogging3.dialog(jslogContext).track({ resize: true, keydown: "Enter|Escape" })}`);
-    }
-    this.element.classList.add("flex-none");
-    this.shadowRoot = createShadowRootWithCoreStyles(this.element, { cssFile: infobar_css_default });
-    this.contentElement = this.shadowRoot.createChild("div", "infobar infobar-" + type);
-    const icon = createIcon(TYPE_TO_ICON[type], type + "-icon");
-    this.contentElement.createChild("div", "icon-container").appendChild(icon);
-    this.mainRow = this.contentElement.createChild("div", "infobar-main-row");
-    this.infoContainer = this.mainRow.createChild("div", "infobar-info-container");
-    this.infoMessage = this.infoContainer.createChild("div", "infobar-info-message");
-    this.infoText = this.infoMessage.createChild("div", "infobar-info-text");
-    this.infoText.textContent = text;
-    markAsAlert(this.infoText);
-    this.actionContainer = this.infoContainer.createChild("div", "infobar-info-actions");
-    let defaultActionButtonVariant = "outlined";
-    this.disableSetting = disableSetting || null;
-    if (disableSetting) {
-      const disableButton = createTextButton(i18nString3(UIStrings3.dontShowAgain), this.onDisable.bind(this), { className: "infobar-button", jslogContext: "dont-show-again" });
-      this.actionContainer.appendChild(disableButton);
-      defaultActionButtonVariant = "tonal";
-    }
-    if (actions) {
-      this.contentElement.setAttribute("role", "group");
-      for (const action6 of actions) {
-        const actionCallback = this.actionCallbackFactory(action6);
-        const buttonVariant = action6.buttonVariant ?? defaultActionButtonVariant;
-        const button = createTextButton(action6.text, actionCallback, {
-          className: "infobar-button",
-          jslogContext: action6.jslogContext,
-          variant: buttonVariant
-        });
-        this.actionContainer.appendChild(button);
-      }
-    }
-    this.closeButton = this.contentElement.createChild("dt-close-button", "icon-container");
-    this.closeButton.setTabbable(true);
-    this.closeButton.setSize(
-      "SMALL"
-      /* Buttons.Button.Size.SMALL */
-    );
-    setDescription(this.closeButton, i18nString3(UIStrings3.close));
-    self.onInvokeElement(this.closeButton, this.dispose.bind(this));
-    if (type !== "issue") {
-      this.contentElement.tabIndex = 0;
-    }
-    setLabel(this.contentElement, text);
-    this.contentElement.addEventListener("keydown", (event) => {
-      if (event.keyCode === Keys.Esc.code) {
-        this.dispose();
-        event.consume();
-        return;
-      }
-    });
-    this.closeCallback = null;
-  }
-  static create(type, text, actions, disableSetting, jslogContext) {
-    if (disableSetting?.get()) {
-      return null;
-    }
-    return new _Infobar(type, text, actions, disableSetting, jslogContext);
-  }
-  dispose() {
-    this.element.remove();
-    this.onResize();
-    if (this.closeCallback) {
-      this.closeCallback.call(null);
-    }
-  }
-  setText(text) {
-    this.infoText.textContent = text;
-    this.onResize();
-  }
-  setCloseCallback(callback) {
-    this.closeCallback = callback;
-  }
-  setParentView(parentView) {
-    this.parentView = parentView;
-  }
-  actionCallbackFactory(action6) {
-    if (!action6.delegate) {
-      return action6.dismiss ? this.dispose.bind(this) : () => {
-      };
-    }
-    if (!action6.dismiss) {
-      return action6.delegate;
-    }
-    return (() => {
-      if (action6.delegate) {
-        action6.delegate();
-      }
-      this.dispose();
-    }).bind(this);
-  }
-  onResize() {
-    if (this.parentView) {
-      this.parentView.doResize();
-    }
-  }
-  onDisable() {
-    if (this.disableSetting) {
-      this.disableSetting.set(true);
-    }
-    this.dispose();
-  }
-  createDetailsRowMessage(message) {
-    if (!this.detailsRows) {
-      const details = document.createElement("details");
-      const summary = details.createChild("summary");
-      const triangleIcon = createIcon("arrow-drop-down");
-      summary.createChild("div", "icon-container").appendChild(triangleIcon);
-      this.contentElement.insertBefore(details, this.mainRow);
-      summary.appendChild(this.mainRow);
-      this.detailsRows = details.createChild("div", "infobar-details-rows");
-    }
-    const infobarDetailsRow = this.detailsRows.createChild("div", "infobar-details-row");
-    const detailsRowMessage = infobarDetailsRow.createChild("span", "infobar-row-message");
-    if (typeof message === "string") {
-      detailsRowMessage.textContent = message;
-    } else {
-      detailsRowMessage.appendChild(message);
-    }
-    return detailsRowMessage;
-  }
-};
-var TYPE_TO_ICON = {
-  [
-    "warning"
-    /* Type.WARNING */
-  ]: "warning",
-  [
-    "info"
-    /* Type.INFO */
-  ]: "info",
-  [
-    "issue"
-    /* Type.ISSUE */
-  ]: "issue-text-filled",
-  [
-    "error"
-    /* Type.ERROR */
-  ]: "cross-circle"
-};
-
-// gen/front_end/ui/legacy/SplitWidget.js
-var SplitWidget_exports = {};
-__export(SplitWidget_exports, {
-  SplitWidget: () => SplitWidget,
-  SplitWidgetElement: () => SplitWidgetElement
-});
-import * as Common7 from "./../../core/common/common.js";
-import * as Platform7 from "./../../core/platform/platform.js";
-import * as Geometry2 from "./../../models/geometry/geometry.js";
-import * as VisualLogging4 from "./../visual_logging/visual_logging.js";
-
-// gen/front_end/ui/legacy/ResizerWidget.js
-var ResizerWidget_exports = {};
-__export(ResizerWidget_exports, {
-  ResizerWidget: () => ResizerWidget,
-  SimpleResizerWidget: () => SimpleResizerWidget
-});
-import * as Common5 from "./../../core/common/common.js";
-var ResizerWidget = class extends Common5.ObjectWrapper.ObjectWrapper {
-  #isEnabled = true;
-  #elements = /* @__PURE__ */ new Set();
-  #installDragOnMouseDownBound;
-  #cursor = "nwse-resize";
-  #startX;
-  #startY;
-  constructor() {
-    super();
-    this.#installDragOnMouseDownBound = this.#installDragOnMouseDown.bind(this);
-  }
-  isEnabled() {
-    return this.#isEnabled;
-  }
-  setEnabled(enabled) {
-    this.#isEnabled = enabled;
-    this.updateElementCursors();
-  }
-  elements() {
-    return [...this.#elements];
-  }
-  addElement(element) {
-    if (!this.#elements.has(element)) {
-      this.#elements.add(element);
-      element.addEventListener("pointerdown", this.#installDragOnMouseDownBound, false);
-      this.#updateElementCursor(element);
-    }
-  }
-  removeElement(element) {
-    if (this.#elements.has(element)) {
-      this.#elements.delete(element);
-      element.removeEventListener("pointerdown", this.#installDragOnMouseDownBound, false);
-      element.style.removeProperty("cursor");
-    }
-  }
-  updateElementCursors() {
-    this.#elements.forEach(this.#updateElementCursor.bind(this));
-  }
-  #updateElementCursor(element) {
-    if (this.#isEnabled) {
-      element.style.setProperty("cursor", this.cursor());
-      element.style.setProperty("touch-action", "none");
-    } else {
-      element.style.removeProperty("cursor");
-      element.style.removeProperty("touch-action");
-    }
-  }
-  cursor() {
-    return this.#cursor;
-  }
-  setCursor(cursor) {
-    this.#cursor = cursor;
-    this.updateElementCursors();
-  }
-  #installDragOnMouseDown(event) {
-    const element = event.target;
-    if (!this.#elements.has(element)) {
-      return false;
-    }
-    elementDragStart(element, this.#dragStart.bind(this), (event2) => {
-      this.#drag(event2);
-    }, this.#dragEnd.bind(this), this.cursor(), event);
-    return void 0;
-  }
-  #dragStart(event) {
-    if (!this.#isEnabled) {
-      return false;
-    }
-    this.#startX = event.pageX;
-    this.#startY = event.pageY;
-    this.sendDragStart(this.#startX, this.#startY);
-    return true;
-  }
-  sendDragStart(x, y) {
-    this.dispatchEventToListeners("ResizeStart", { startX: x, currentX: x, startY: y, currentY: y });
-  }
-  #drag(event) {
-    if (!this.#isEnabled) {
-      this.#dragEnd(event);
-      return true;
-    }
-    this.sendDragMove(this.#startX, event.pageX, this.#startY, event.pageY, event.shiftKey);
-    event.preventDefault();
-    return false;
-  }
-  sendDragMove(startX, currentX, startY, currentY, shiftKey) {
-    this.dispatchEventToListeners("ResizeUpdateXY", { startX, currentX, startY, currentY, shiftKey });
-  }
-  #dragEnd(_event) {
-    this.dispatchEventToListeners(
-      "ResizeEnd"
-      /* Events.RESIZE_END */
-    );
-    this.#startX = void 0;
-    this.#startY = void 0;
-  }
-};
-var SimpleResizerWidget = class extends ResizerWidget {
-  #isVertical = true;
-  isVertical() {
-    return this.#isVertical;
-  }
-  /**
-   * Vertical widget resizes height (along y-axis).
-   */
-  setVertical(vertical) {
-    this.#isVertical = vertical;
-    this.updateElementCursors();
-  }
-  cursor() {
-    return this.#isVertical ? "ns-resize" : "ew-resize";
-  }
-  sendDragStart(x, y) {
-    const position = this.#isVertical ? y : x;
-    this.dispatchEventToListeners("ResizeStart", { startPosition: position, currentPosition: position });
-  }
-  sendDragMove(startX, currentX, startY, currentY, shiftKey) {
-    if (this.#isVertical) {
-      this.dispatchEventToListeners("ResizeUpdatePosition", { startPosition: startY, currentPosition: currentY, shiftKey });
-    } else {
-      this.dispatchEventToListeners("ResizeUpdatePosition", { startPosition: startX, currentPosition: currentX, shiftKey });
-    }
-  }
-};
-
-// gen/front_end/ui/legacy/splitWidget.css.js
-var splitWidget_css_default = `/*
- * Copyright (C) 2011 Google Inc. All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are
- * met:
- *
- * 1. Redistributions of source code must retain the above copyright
- * notice, this list of conditions and the following disclaimer.
- *
- * 2. Redistributions in binary form must reproduce the above
- * copyright notice, this list of conditions and the following disclaimer
- * in the documentation and/or other materials provided with the
- * distribution.
- *
- * THIS SOFTWARE IS PROVIDED BY GOOGLE INC. AND ITS CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
- * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL GOOGLE INC.
- * OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
-.shadow-split-widget {
-  display: flex;
-  overflow: hidden;
-}
-
-.shadow-split-widget-contents {
-  display: flex;
-  position: relative;
-  flex-direction: column;
-  contain: layout size style;
-}
-
-.shadow-split-widget-sidebar {
-  flex: none;
-}
-
-.shadow-split-widget-main,
-.shadow-split-widget-sidebar.maximized {
-  flex: auto;
-}
-
-.shadow-split-widget.hbox > .shadow-split-widget-resizer {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 6px;
-  z-index: 4000;
-}
-
-.shadow-split-widget.vbox > .shadow-split-widget-resizer {
-  position: absolute;
-  left: 0;
-  right: 0;
-  height: 6px;
-  z-index: 4000;
-}
-
-.shadow-split-widget.vbox > .shadow-split-widget-sidebar.no-default-splitter {
-  border: 0 !important; /* stylelint-disable-line declaration-no-important */
-}
-
-.shadow-split-widget.vbox > .shadow-split-widget-sidebar:not(.maximized) {
-  border: 0;
-  border-top: 1px solid var(--sys-color-divider);
-}
-
-.shadow-split-widget.hbox > .shadow-split-widget-sidebar:not(.maximized) {
-  border: 0;
-  border-left: 1px solid var(--sys-color-divider);
-}
-
-.shadow-split-widget.vbox > .shadow-split-widget-sidebar:first-child:not(.maximized) {
-  border: 0;
-  border-bottom: 1px solid var(--sys-color-divider);
-}
-
-.shadow-split-widget.hbox > .shadow-split-widget-sidebar:first-child:not(.maximized) {
-  border: 0;
-  border-right: 1px solid var(--sys-color-divider);
-}
-
-:host-context(.disable-resizer-for-elements-hack) .shadow-split-widget-resizer {
-  pointer-events: none;
-}
-
-:host {
-  display: flex;
-}
-
-/*# sourceURL=${import.meta.resolve("./splitWidget.css")} */`;
-
 // gen/front_end/ui/legacy/ZoomManager.js
 var ZoomManager_exports = {};
 __export(ZoomManager_exports, {
@@ -4276,13 +3857,13 @@ var SplitWidget = class extends Common7.ObjectWrapper.eventMixin(Widget) {
     }
     const totalPreferred = preferredMainSize + preferredSidebarSize;
     if (totalPreferred <= totalSize) {
-      return Platform7.NumberUtilities.clamp(sidebarSize, preferredSidebarSize, totalSize - preferredMainSize);
+      return Platform6.NumberUtilities.clamp(sidebarSize, preferredSidebarSize, totalSize - preferredMainSize);
     }
     if (minMainSize + minSidebarSize <= totalSize) {
       const delta = totalPreferred - totalSize;
       const sidebarDelta = delta * preferredSidebarSize / totalPreferred;
       sidebarSize = preferredSidebarSize - sidebarDelta;
-      return Platform7.NumberUtilities.clamp(sidebarSize, minSidebarSize, totalSize - minMainSize);
+      return Platform6.NumberUtilities.clamp(sidebarSize, minSidebarSize, totalSize - minMainSize);
     }
     return Math.max(0, totalSize - minMainSize);
   }
@@ -4544,12 +4125,12 @@ __export(TabbedPane_exports, {
   TabbedPaneTab: () => TabbedPaneTab
 });
 import * as Common8 from "./../../core/common/common.js";
-import * as i18n8 from "./../../core/i18n/i18n.js";
-import * as Platform8 from "./../../core/platform/platform.js";
+import * as i18n7 from "./../../core/i18n/i18n.js";
+import * as Platform7 from "./../../core/platform/platform.js";
 import * as Annotations from "./../../models/annotations/annotations.js";
 import * as Geometry3 from "./../../models/geometry/geometry.js";
-import * as Buttons3 from "./../components/buttons/buttons.js";
-import { render as render2 } from "./../lit/lit.js";
+import * as Buttons2 from "./../components/buttons/buttons.js";
+import { render } from "./../lit/lit.js";
 import * as VisualLogging5 from "./../visual_logging/visual_logging.js";
 import { createIcon as createIcon2, Icon } from "./../kit/kit.js";
 
@@ -5149,8 +4730,8 @@ var UIStrings4 = {
    */
   moveTabLeft: "Move left"
 };
-var str_4 = i18n8.i18n.registerUIStrings("ui/legacy/TabbedPane.ts", UIStrings4);
-var i18nString4 = i18n8.i18n.getLocalizedString.bind(void 0, str_4);
+var str_4 = i18n7.i18n.registerUIStrings("ui/legacy/TabbedPane.ts", UIStrings4);
+var i18nString4 = i18n7.i18n.getLocalizedString.bind(void 0, str_4);
 var TabbedPane = class extends Common8.ObjectWrapper.eventMixin(VBox) {
   #headerElement;
   headerContentsElement;
@@ -5408,12 +4989,12 @@ var TabbedPane = class extends Common8.ObjectWrapper.eventMixin(VBox) {
   }
   selectNextTab() {
     const index = this.#tabs.indexOf(this.currentTab);
-    const nextIndex = Platform8.NumberUtilities.mod(index + 1, this.#tabs.length);
+    const nextIndex = Platform7.NumberUtilities.mod(index + 1, this.#tabs.length);
     this.selectTab(this.#tabs[nextIndex].id, true);
   }
   selectPrevTab() {
     const index = this.#tabs.indexOf(this.currentTab);
-    const nextIndex = Platform8.NumberUtilities.mod(index - 1, this.#tabs.length);
+    const nextIndex = Platform7.NumberUtilities.mod(index - 1, this.#tabs.length);
     this.selectTab(this.#tabs[nextIndex].id, true);
   }
   getTabIndex(id2) {
@@ -5765,7 +5346,7 @@ var TabbedPane = class extends Common8.ObjectWrapper.eventMixin(VBox) {
     void menu5.show().then(() => setExpanded(this.dropDownButton, menu5.isHostedMenuOpen()));
   }
   dropDownKeydown(event) {
-    if (Platform8.KeyboardUtilities.isEnterOrSpaceKey(event)) {
+    if (Platform7.KeyboardUtilities.isEnterOrSpaceKey(event)) {
       this.dropDownButton.click();
       event.consume(true);
     }
@@ -6215,7 +5796,7 @@ var TabbedPaneTab = class {
       const suffixElement = measuring ? this.suffixElement.cloneNode() : this.suffixElement;
       suffixElementContainer.appendChild(suffixElement);
     } else {
-      render2(this.suffixElement, suffixElementContainer);
+      render(this.suffixElement, suffixElementContainer);
     }
     titleElement.insertAdjacentElement("afterend", suffixElementContainer);
     tabSuffixElements.set(tabElement, suffixElementContainer);
@@ -6281,7 +5862,7 @@ var TabbedPaneTab = class {
     return tabAnnotationIcon;
   }
   createCloseIconButton() {
-    const closeButton = new Buttons3.Button.Button();
+    const closeButton = new Buttons2.Button.Button();
     closeButton.data = {
       variant: "icon",
       size: "MICRO",
@@ -6459,8 +6040,8 @@ __export(ViewManager_exports, {
 });
 import * as Common9 from "./../../core/common/common.js";
 import * as Host4 from "./../../core/host/host.js";
-import * as i18n12 from "./../../core/i18n/i18n.js";
-import * as Platform9 from "./../../core/platform/platform.js";
+import * as i18n11 from "./../../core/i18n/i18n.js";
+import * as Platform8 from "./../../core/platform/platform.js";
 import { createIcon as createIcon3 } from "./../kit/kit.js";
 import * as VisualLogging6 from "./../visual_logging/visual_logging.js";
 
@@ -6558,7 +6139,7 @@ found in the LICENSE file. */
 /*# sourceURL=${import.meta.resolve("./viewContainers.css")} */`;
 
 // gen/front_end/ui/legacy/ViewRegistration.js
-import * as i18n10 from "./../../core/i18n/i18n.js";
+import * as i18n9 from "./../../core/i18n/i18n.js";
 import * as Root2 from "./../../core/root/root.js";
 var UIStrings5 = {
   /**
@@ -6590,8 +6171,8 @@ var UIStrings5 = {
    */
   sources: "Sources"
 };
-var str_5 = i18n10.i18n.registerUIStrings("ui/legacy/ViewRegistration.ts", UIStrings5);
-var i18nString5 = i18n10.i18n.getLocalizedString.bind(void 0, str_5);
+var str_5 = i18n9.i18n.registerUIStrings("ui/legacy/ViewRegistration.ts", UIStrings5);
+var i18nString5 = i18n9.i18n.getLocalizedString.bind(void 0, str_5);
 var registeredViewExtensions = /* @__PURE__ */ new Map();
 function registerViewExtension(registration) {
   const viewId = registration.id;
@@ -6641,7 +6222,7 @@ function getLocalizedViewLocationCategory(category) {
     case "SOURCES":
       return i18nString5(UIStrings5.sources);
     case "":
-      return i18n10.i18n.lockedString("");
+      return i18n9.i18n.lockedString("");
   }
 }
 
@@ -6653,8 +6234,8 @@ var UIStrings6 = {
    */
   sPanel: "{PH1} panel"
 };
-var str_6 = i18n12.i18n.registerUIStrings("ui/legacy/ViewManager.ts", UIStrings6);
-var i18nString6 = i18n12.i18n.getLocalizedString.bind(void 0, str_6);
+var str_6 = i18n11.i18n.registerUIStrings("ui/legacy/ViewManager.ts", UIStrings6);
+var i18nString6 = i18n11.i18n.getLocalizedString.bind(void 0, str_6);
 var defaultOptionsForTabs = {
   security: true,
   freestyler: true
@@ -6777,7 +6358,7 @@ var ViewManager = class _ViewManager extends Common9.ObjectWrapper.ObjectWrapper
       if (this.views.has(viewId)) {
         throw new Error(`Duplicate view id '${viewId}'`);
       }
-      if (!Platform9.StringUtilities.isExtendedKebabCase(viewId)) {
+      if (!Platform8.StringUtilities.isExtendedKebabCase(viewId)) {
         throw new Error(`Invalid view ID '${viewId}'`);
       }
       this.views.set(viewId, view);
@@ -7458,6 +7039,14 @@ var UIStrings7 = {
    */
   reloadDevtools: "Reload DevTools",
   /**
+   * @description Title of an action that restarts Chrome
+   */
+  restartChrome: "Restart Chrome",
+  /**
+   * @description Confirmation dialog text for restarting Chrome
+   */
+  areYouSureYouWantToRestartChrome: "Are you sure you want to restart Chrome?",
+  /**
    * @description Text for context menu action to move a tab to the main tab bar
    */
   moveToMainTabBar: "Move to main tab bar",
@@ -7515,8 +7104,8 @@ var UIStrings7 = {
    */
   toggleDrawerOrientation: "Toggle drawer orientation"
 };
-var str_7 = i18n14.i18n.registerUIStrings("ui/legacy/InspectorView.ts", UIStrings7);
-var i18nString7 = i18n14.i18n.getLocalizedString.bind(void 0, str_7);
+var str_7 = i18n13.i18n.registerUIStrings("ui/legacy/InspectorView.ts", UIStrings7);
+var i18nString7 = i18n13.i18n.getLocalizedString.bind(void 0, str_7);
 var inspectorViewInstance = null;
 var MIN_MAIN_PANEL_WIDTH = 240;
 var MIN_VERTICAL_DRAWER_WIDTH = 200;
@@ -7549,6 +7138,7 @@ var InspectorView = class _InspectorView extends VBox {
   focusRestorer;
   ownerSplitWidget;
   reloadRequiredInfobar;
+  #chromeRestartRequiredInfobar;
   #debuggedTabReloadRequiredInfobar;
   #selectOverrideFolderInfobar;
   #resizeObserver;
@@ -7703,9 +7293,6 @@ var InspectorView = class _InspectorView extends VBox {
     this.element.style.setProperty("--devtools-window-top", `${rect.top}px`);
     this.element.style.setProperty("--devtools-window-bottom", `${window.innerHeight - rect.bottom}px`);
     this.element.style.setProperty("--devtools-window-height", `${rect.height}px`);
-    if (Floaty.exists()) {
-      Floaty.instance().setDevToolsRect(rect);
-    }
   }
   wasShown() {
     super.wasShown();
@@ -7714,12 +7301,6 @@ var InspectorView = class _InspectorView extends VBox {
     this.element.ownerDocument.addEventListener("keydown", this.keyDownBound, false);
     DockController.instance().addEventListener("DockSideChanged", this.#applyDrawerOrientationForDockSide, this);
     this.#applyDrawerOrientationForDockSide();
-    if (GreenDev2.Prototypes.instance().isEnabled("inDevToolsFloaty")) {
-      Floaty.instance({
-        forceNew: true,
-        document: this.element.ownerDocument
-      });
-    }
   }
   willHide() {
     super.willHide();
@@ -7940,17 +7521,17 @@ var InspectorView = class _InspectorView extends VBox {
       infobar.setCloseCallback(() => {
         this.#debuggedTabReloadRequiredInfobar = void 0;
       });
-      SDK2.TargetManager.TargetManager.instance().addModelListener(SDK2.ResourceTreeModel.ResourceTreeModel, SDK2.ResourceTreeModel.Events.PrimaryPageChanged, this.removeDebuggedTabReloadRequiredWarning, this);
+      SDK.TargetManager.TargetManager.instance().addModelListener(SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged, this.removeDebuggedTabReloadRequiredWarning, this);
     }
   }
   removeDebuggedTabReloadRequiredWarning() {
     if (this.#debuggedTabReloadRequiredInfobar) {
       this.#debuggedTabReloadRequiredInfobar.dispose();
-      SDK2.TargetManager.TargetManager.instance().removeModelListener(SDK2.ResourceTreeModel.ResourceTreeModel, SDK2.ResourceTreeModel.Events.PrimaryPageChanged, this.removeDebuggedTabReloadRequiredWarning, this);
+      SDK.TargetManager.TargetManager.instance().removeModelListener(SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged, this.removeDebuggedTabReloadRequiredWarning, this);
     }
   }
   displayReloadRequiredWarning(message) {
-    if (!this.reloadRequiredInfobar) {
+    if (!this.reloadRequiredInfobar && !this.#chromeRestartRequiredInfobar) {
       const infobar = new Infobar("info", message, [
         {
           text: i18nString7(UIStrings7.reloadDevtools),
@@ -7964,7 +7545,33 @@ var InspectorView = class _InspectorView extends VBox {
       this.attachInfobar(infobar);
       this.reloadRequiredInfobar = infobar;
       infobar.setCloseCallback(() => {
-        delete this.reloadRequiredInfobar;
+        this.reloadRequiredInfobar = void 0;
+      });
+    }
+  }
+  displayChromeRestartRequiredWarning(message) {
+    if (this.reloadRequiredInfobar) {
+      this.reloadRequiredInfobar.dispose();
+    }
+    if (!this.#chromeRestartRequiredInfobar) {
+      const infobar = new Infobar("info", message, [
+        {
+          text: i18nString7(UIStrings7.restartChrome),
+          delegate: () => {
+            if (confirm(i18nString7(UIStrings7.areYouSureYouWantToRestartChrome))) {
+              Host5.InspectorFrontendHost.InspectorFrontendHostInstance.requestRestart();
+            }
+          },
+          dismiss: false,
+          buttonVariant: "primary",
+          jslogContext: "main.chrome-restart-chrome"
+        }
+      ], void 0, "reload-required");
+      infobar.setParentView(this);
+      this.attachInfobar(infobar);
+      this.#chromeRestartRequiredInfobar = infobar;
+      infobar.setCloseCallback(() => {
+        this.#chromeRestartRequiredInfobar = void 0;
       });
     }
   }
@@ -8010,10 +7617,10 @@ function shouldShowLocaleInfobar() {
   if (languageSettingValue !== "en-US") {
     return false;
   }
-  return !i18n14.DevToolsLocale.localeLanguagesMatch(navigator.language, languageSettingValue) && i18n14.DevToolsLocale.DevToolsLocale.instance().languageIsSupportedByDevTools(navigator.language);
+  return !i18n13.DevToolsLocale.localeLanguagesMatch(navigator.language, languageSettingValue) && i18n13.DevToolsLocale.DevToolsLocale.instance().languageIsSupportedByDevTools(navigator.language);
 }
 function createLocaleInfobar() {
-  const devtoolsLocale = i18n14.DevToolsLocale.DevToolsLocale.instance();
+  const devtoolsLocale = i18n13.DevToolsLocale.DevToolsLocale.instance();
   const closestSupportedLocale = devtoolsLocale.lookupClosestDevToolsLocale(navigator.language);
   const locale = new Intl.Locale(closestSupportedLocale);
   const closestSupportedLanguageInCurrentLocale = new Intl.DisplayNames([devtoolsLocale.locale], { type: "language" }).of(locale.language || "en") || "English";
@@ -8287,8 +7894,8 @@ var UIStrings8 = {
    */
   newFeature: "This is a new feature"
 };
-var str_8 = i18n16.i18n.registerUIStrings("ui/legacy/SoftContextMenu.ts", UIStrings8);
-var i18nString8 = i18n16.i18n.getLocalizedString.bind(void 0, str_8);
+var str_8 = i18n15.i18n.registerUIStrings("ui/legacy/SoftContextMenu.ts", UIStrings8);
+var i18nString8 = i18n15.i18n.getLocalizedString.bind(void 0, str_8);
 var SoftContextMenu = class _SoftContextMenu {
   items;
   itemSelectedCallback;
@@ -9664,7 +9271,7 @@ var MenuButton = class extends HTMLElement {
     if (!this.iconName) {
       throw new Error("<devtools-menu-button> expects an icon.");
     }
-    render3(html2`
+    render2(html`
         <devtools-button .disabled=${this.disabled}
                          .iconName=${this.iconName}
                          .variant=${"icon"}
@@ -9718,7 +9325,7 @@ __export(TextPrompt_exports, {
   TextPromptElement: () => TextPromptElement
 });
 import * as Common12 from "./../../core/common/common.js";
-import * as Platform13 from "./../../core/platform/platform.js";
+import * as Platform12 from "./../../core/platform/platform.js";
 import * as TextUtils from "./../../models/text_utils/text_utils.js";
 import * as VisualLogging12 from "./../visual_logging/visual_logging.js";
 
@@ -9727,8 +9334,8 @@ var SuggestBox_exports = {};
 __export(SuggestBox_exports, {
   SuggestBox: () => SuggestBox
 });
-import * as i18n18 from "./../../core/i18n/i18n.js";
-import * as Platform12 from "./../../core/platform/platform.js";
+import * as i18n17 from "./../../core/i18n/i18n.js";
+import * as Platform11 from "./../../core/platform/platform.js";
 import * as Geometry4 from "./../../models/geometry/geometry.js";
 import * as VisualLogging11 from "./../visual_logging/visual_logging.js";
 
@@ -9738,7 +9345,7 @@ __export(ListControl_exports, {
   ListControl: () => ListControl,
   ListMode: () => ListMode
 });
-import * as Platform10 from "./../../core/platform/platform.js";
+import * as Platform9 from "./../../core/platform/platform.js";
 import * as VisualLogging10 from "./../visual_logging/visual_logging.js";
 var ListMode;
 (function(ListMode2) {
@@ -9858,7 +9465,7 @@ var ListControl = class {
     const scrollTop = this.element.scrollTop;
     const viewportHeight = this.element.offsetHeight;
     this.clearViewport();
-    this.updateViewport(Platform10.NumberUtilities.clamp(scrollTop, 0, this.totalHeight() - viewportHeight), viewportHeight);
+    this.updateViewport(Platform9.NumberUtilities.clamp(scrollTop, 0, this.totalHeight() - viewportHeight), viewportHeight);
   }
   invalidateItemHeight() {
     if (this.mode !== ListMode.EqualHeightItems) {
@@ -9996,7 +9603,7 @@ var ListControl = class {
     const viewportHeight = this.element.offsetHeight;
     if (center) {
       const scrollTo = (top + bottom) / 2 - viewportHeight / 2;
-      this.updateViewport(Platform10.NumberUtilities.clamp(scrollTo, 0, this.totalHeight() - viewportHeight), viewportHeight);
+      this.updateViewport(Platform9.NumberUtilities.clamp(scrollTo, 0, this.totalHeight() - viewportHeight), viewportHeight);
       return;
     }
     const scrollTop = this.element.scrollTop;
@@ -10049,7 +9656,7 @@ var ListControl = class {
       return 0;
     }
     if (this.mode === ListMode.VariousHeightItems) {
-      return Math.min(this.model.length - 1, Platform10.ArrayUtilities.lowerBound(this.variableOffsets, offset, Platform10.ArrayUtilities.DEFAULT_COMPARATOR, 0, this.model.length));
+      return Math.min(this.model.length - 1, Platform9.ArrayUtilities.lowerBound(this.variableOffsets, offset, Platform9.ArrayUtilities.DEFAULT_COMPARATOR, 0, this.model.length));
     }
     if (!this.fixedHeight) {
       this.measureHeight();
@@ -10189,7 +9796,7 @@ var ListControl = class {
     const scrollTop = this.element.scrollTop;
     if (this.renderedHeight < viewportHeight || totalHeight < viewportHeight) {
       this.clearViewport();
-      this.updateViewport(Platform10.NumberUtilities.clamp(scrollTop, 0, totalHeight - viewportHeight), viewportHeight);
+      this.updateViewport(Platform9.NumberUtilities.clamp(scrollTop, 0, totalHeight - viewportHeight), viewportHeight);
       return;
     }
     const heightDelta = totalHeight - this.renderedHeight;
@@ -10212,7 +9819,7 @@ var ListControl = class {
       return;
     }
     this.clearViewport();
-    this.updateViewport(Platform10.NumberUtilities.clamp(scrollTop, 0, totalHeight - viewportHeight), viewportHeight);
+    this.updateViewport(Platform9.NumberUtilities.clamp(scrollTop, 0, totalHeight - viewportHeight), viewportHeight);
     this.refreshARIA();
   }
   invalidateNonViewportMode(start, remove, add) {
@@ -10299,7 +9906,7 @@ __export(ListModel_exports, {
   ListModel: () => ListModel
 });
 import * as Common11 from "./../../core/common/common.js";
-import * as Platform11 from "./../../core/platform/platform.js";
+import * as Platform10 from "./../../core/platform/platform.js";
 var ListModel = class extends Common11.ObjectWrapper.ObjectWrapper {
   items;
   constructor(items) {
@@ -10335,7 +9942,7 @@ var ListModel = class extends Common11.ObjectWrapper.ObjectWrapper {
     this.replaced(index, [], 1);
   }
   insertWithComparator(value, comparator) {
-    this.insert(Platform11.ArrayUtilities.lowerBound(this.items, value, comparator), value);
+    this.insert(Platform10.ArrayUtilities.lowerBound(this.items, value, comparator), value);
   }
   join(separator) {
     return this.items.join(separator);
@@ -10491,8 +10098,8 @@ var UIStrings9 = {
    */
   sSuggestionSSelected: "{PH1}, suggestion selected"
 };
-var str_9 = i18n18.i18n.registerUIStrings("ui/legacy/SuggestBox.ts", UIStrings9);
-var i18nString9 = i18n18.i18n.getLocalizedString.bind(void 0, str_9);
+var str_9 = i18n17.i18n.registerUIStrings("ui/legacy/SuggestBox.ts", UIStrings9);
+var i18nString9 = i18n17.i18n.getLocalizedString.bind(void 0, str_9);
 var SuggestBox = class {
   suggestBoxDelegate;
   maxItemsHeight;
@@ -10613,7 +10220,7 @@ var SuggestBox = class {
     }
     element.tabIndex = -1;
     const maxTextLength = 50 + query.length;
-    const displayText = Platform12.StringUtilities.trimEndWithMaxLength((item8.title || item8.text).trim(), maxTextLength).replace(/\n/g, "\u21B5");
+    const displayText = Platform11.StringUtilities.trimEndWithMaxLength((item8.title || item8.text).trim(), maxTextLength).replace(/\n/g, "\u21B5");
     const titleElement = element.createChild("span", "suggestion-title");
     const index = displayText.toLowerCase().indexOf(query.toLowerCase());
     if (index > 0) {
@@ -10630,7 +10237,7 @@ var SuggestBox = class {
       element.appendChild(subtitleElement);
     } else if (item8.subtitle) {
       const subtitleElement = element.createChild("span", "suggestion-subtitle");
-      subtitleElement.textContent = Platform12.StringUtilities.trimEndWithMaxLength(item8.subtitle, maxTextLength - displayText.length);
+      subtitleElement.textContent = Platform11.StringUtilities.trimEndWithMaxLength(item8.subtitle, maxTextLength - displayText.length);
     }
     if (item8.iconElement) {
       element.appendChild(item8.iconElement);
@@ -10929,7 +10536,7 @@ var TextPromptElement = class _TextPromptElement extends HTMLElement {
         /* commit=*/
         true
       );
-    } else if (Platform13.KeyboardUtilities.isEscKey(event)) {
+    } else if (Platform12.KeyboardUtilities.isEscKey(event)) {
       this.#done(
         event,
         /* commit=*/
@@ -11303,7 +10910,7 @@ var TextPrompt = class extends Common12.ObjectWrapper.ObjectWrapper {
     let text = this.text();
     const currentEntry = event.data;
     if (event.inputType === "insertFromPaste" && text.includes("\n")) {
-      text = Platform13.StringUtilities.stripLineBreaks(text);
+      text = Platform12.StringUtilities.stripLineBreaks(text);
       this.setText(text);
     }
     const caretPosition = this.getCaretPosition();
@@ -11684,8 +11291,8 @@ var UIStrings10 = {
    */
   filter: "Filter"
 };
-var str_10 = i18n20.i18n.registerUIStrings("ui/legacy/Toolbar.ts", UIStrings10);
-var i18nString10 = i18n20.i18n.getLocalizedString.bind(void 0, str_10);
+var str_10 = i18n19.i18n.registerUIStrings("ui/legacy/Toolbar.ts", UIStrings10);
+var i18nString10 = i18n19.i18n.getLocalizedString.bind(void 0, str_10);
 var Toolbar = class _Toolbar extends HTMLElement {
   #shadowRoot = this.attachShadow({ mode: "open" });
   items = [];
@@ -11717,7 +11324,7 @@ var Toolbar = class _Toolbar extends HTMLElement {
           continue;
         }
         let item8;
-        if (element instanceof Buttons6.Button.Button) {
+        if (element instanceof Buttons5.Button.Button) {
           item8 = new ToolbarButton("", void 0, void 0, void 0, element);
         } else if (element instanceof ToolbarInputElement) {
           item8 = element.item;
@@ -12111,7 +11718,7 @@ var ToolbarButton = class extends ToolbarItem {
   adorner;
   constructor(title, glyph, text, jslogContext, button) {
     if (!button) {
-      button = new Buttons6.Button.Button();
+      button = new Buttons5.Button.Button();
       if (glyph && !text) {
         button.data = { variant: "icon", iconName: glyph };
       } else {
@@ -12231,7 +11838,7 @@ var ToolbarInput = class extends ToolbarItem {
       this.element.style.flexShrink = String(shrinkFactor);
     }
     const clearButtonText = i18nString10(UIStrings10.clearInput);
-    const clearButton = new Buttons6.Button.Button();
+    const clearButton = new Buttons5.Button.Button();
     clearButton.data = {
       variant: "icon",
       iconName: "cross-circle-filled",
@@ -12285,7 +11892,7 @@ var ToolbarInput = class extends ToolbarItem {
     if (event.key === "Enter" && this.prompt.text()) {
       this.dispatchEventToListeners("EnterPressed", this.prompt.text());
     }
-    if (!Platform14.KeyboardUtilities.isEscKey(event) || !this.prompt.text()) {
+    if (!Platform13.KeyboardUtilities.isEscKey(event) || !this.prompt.text()) {
       return;
     }
     this.setValue("", true);
@@ -12460,7 +12067,7 @@ var ToolbarMenuButton = class extends ToolbarItem {
   constructor(contextMenuHandler, isIconDropdown, useSoftMenu, jslogContext, iconName, keepOpen) {
     let element;
     if (iconName) {
-      element = new Buttons6.Button.Button();
+      element = new Buttons5.Button.Button();
       element.data = { variant: "icon", iconName };
     } else {
       element = document.createElement("button");
@@ -12629,7 +12236,7 @@ var ToolbarComboBox = class extends ToolbarItem {
       option.value = value;
     }
     if (!jslogContext) {
-      jslogContext = value ? Platform14.StringUtilities.toKebabCase(value) : void 0;
+      jslogContext = value ? Platform13.StringUtilities.toKebabCase(value) : void 0;
     }
     option.setAttribute("jslog", `${VisualLogging13.item(jslogContext).track({ click: true })}`);
     return option;
@@ -12780,10 +12387,10 @@ function getRegisteredToolbarItems() {
 // gen/front_end/ui/legacy/UIUtils.js
 import * as Common14 from "./../../core/common/common.js";
 import * as Host7 from "./../../core/host/host.js";
-import * as i18n22 from "./../../core/i18n/i18n.js";
-import * as Platform16 from "./../../core/platform/platform.js";
+import * as i18n21 from "./../../core/i18n/i18n.js";
+import * as Platform15 from "./../../core/platform/platform.js";
 import * as Geometry5 from "./../../models/geometry/geometry.js";
-import * as Buttons7 from "./../components/buttons/buttons.js";
+import * as Buttons6 from "./../components/buttons/buttons.js";
 import { Icon as Icon2 } from "./../kit/kit.js";
 import * as Lit2 from "./../lit/lit.js";
 import * as VisualLogging14 from "./../visual_logging/visual_logging.js";
@@ -14296,7 +13903,7 @@ div.error {
 /*# sourceURL=${import.meta.resolve("./smallBubble.css")} */`;
 
 // gen/front_end/ui/legacy/UIUtils.js
-var { Directives: Directives2, render: render4 } = Lit2;
+var { Directives: Directives2, render: render3 } = Lit2;
 var UIStrings11 = {
   /**
    * @description label to open link externally
@@ -14347,8 +13954,8 @@ var UIStrings11 = {
    */
   new: "NEW"
 };
-var str_11 = i18n22.i18n.registerUIStrings("ui/legacy/UIUtils.ts", UIStrings11);
-var i18nString11 = i18n22.i18n.getLocalizedString.bind(void 0, str_11);
+var str_11 = i18n21.i18n.registerUIStrings("ui/legacy/UIUtils.ts", UIStrings11);
+var i18nString11 = i18n21.i18n.getLocalizedString.bind(void 0, str_11);
 function installDragHandle(element, elementDragStart2, elementDrag, elementDragEnd, cursor, hoverCursor, startDelay, mouseDownPreventDefault = true) {
   function onMouseDown(event) {
     const dragHandler = new DragHandler();
@@ -14623,7 +14230,7 @@ function modifiedHexValue(hexString, event) {
     delta *= -1;
   }
   const maxValue = Math.pow(16, hexStrLen) - 1;
-  const result = Platform16.NumberUtilities.clamp(number + delta, 0, maxValue);
+  const result = Platform15.NumberUtilities.clamp(number + delta, 0, maxValue);
   let resultString = result.toString(16).toUpperCase();
   for (let i = 0, lengthDelta = hexStrLen - resultString.length; i < lengthDelta; ++i) {
     resultString = "0" + resultString;
@@ -14771,7 +14378,7 @@ function addPlatformClass(element) {
 }
 function installComponentRootStyles(element) {
   appendStyle(element, inspectorCommon_css_default);
-  appendStyle(element, Buttons7.textButtonStyles);
+  appendStyle(element, Buttons6.textButtonStyles);
   if (!Host7.Platform.isMac() && measuredScrollbarWidth(element.ownerDocument) === 0) {
     element.classList.add("overlay-scrollbar-enabled");
   }
@@ -14808,16 +14415,35 @@ var ElementFocusRestorer = class {
 function runCSSAnimationOnce(element, className) {
   function animationEndCallback() {
     element.classList.remove(className);
-    element.removeEventListener("webkitAnimationEnd", animationEndCallback, false);
+    element.removeEventListener("animationend", animationEndCallback, false);
     element.removeEventListener("animationcancel", animationEndCallback, false);
   }
-  if (element.classList.contains(className)) {
-    element.classList.remove(className);
-  }
-  element.addEventListener("webkitAnimationEnd", animationEndCallback, false);
+  element.classList.toggle(
+    className,
+    /* force=*/
+    false
+  );
+  element.addEventListener("animationend", animationEndCallback, false);
   element.addEventListener("animationcancel", animationEndCallback, false);
   element.classList.add(className);
 }
+var AnimateOnDirective = class extends Lit2.Directive.Directive {
+  #previousValue = false;
+  render(_condition, _className) {
+    return void 0;
+  }
+  update(part, [condition, className]) {
+    const el = part.element;
+    if (condition && !this.#previousValue) {
+      this.#animate(el, className);
+    }
+    this.#previousValue = condition;
+  }
+  #animate(el, className) {
+    runCSSAnimationOnce(el, className);
+  }
+};
+var animateOn = Lit2.Directive.directive(AnimateOnDirective);
 function measurePreferredSize(element, containerElement) {
   const oldParent = element.parentElement;
   const oldNextSibling = element.nextSibling;
@@ -14891,7 +14517,7 @@ function animateFunction(window2, func, params, duration, animationComplete) {
   const start = window2.performance.now();
   let raf = window2.requestAnimationFrame(animationStep);
   function animationStep(timestamp) {
-    const progress = Platform16.NumberUtilities.clamp((timestamp - start) / duration, 0, 1);
+    const progress = Platform15.NumberUtilities.clamp((timestamp - start) / duration, 0, 1);
     func(...params.map((p) => p.from + (p.to - p.from) * progress));
     if (progress < 1) {
       raf = window2.requestAnimationFrame(animationStep);
@@ -14907,7 +14533,7 @@ var LongClickController = class _LongClickController {
   editKey;
   longClickData;
   longClickInterval;
-  constructor(element, callback, isEditKeyFunc = (event) => Platform16.KeyboardUtilities.isEnterOrSpaceKey(event)) {
+  constructor(element, callback, isEditKeyFunc = (event) => Platform15.KeyboardUtilities.isEnterOrSpaceKey(event)) {
     this.element = element;
     this.callback = callback;
     this.editKey = isEditKeyFunc;
@@ -14996,7 +14622,7 @@ var createTextChildren = (element, ...childrenText) => {
   }
 };
 function createTextButton(text, clickHandler, opts) {
-  const button = new Buttons7.Button.Button();
+  const button = new Buttons6.Button.Button();
   if (opts?.className) {
     button.className = opts.className;
   }
@@ -15082,12 +14708,12 @@ function createSelect(name, options) {
         optGroup.label = key;
         for (const child of value) {
           if (typeof child === "string") {
-            optGroup.appendChild(createOption(child, child, Platform16.StringUtilities.toKebabCase(child)));
+            optGroup.appendChild(createOption(child, child, Platform15.StringUtilities.toKebabCase(child)));
           }
         }
       }
     } else if (typeof option === "string") {
-      select.add(createOption(option, option, Platform16.StringUtilities.toKebabCase(option)));
+      select.add(createOption(option, option, Platform15.StringUtilities.toKebabCase(option)));
     }
   }
   return select;
@@ -15292,7 +14918,7 @@ var DevToolsCloseButton = class extends HTMLElement {
   constructor() {
     super();
     const root = createShadowRootWithCoreStyles(this);
-    this.#button = new Buttons7.Button.Button();
+    this.#button = new Buttons6.Button.Button();
     this.#button.data = { variant: "icon", iconName: "cross" };
     this.#button.classList.add("close-button");
     this.#button.setAttribute("jslog", `${VisualLogging14.close().track({ click: true })}`);
@@ -15397,10 +15023,10 @@ function trimText(context, text, maxWidth, trimFunction) {
   return text !== "\u2026" ? text : "";
 }
 function trimTextMiddle(context, text, maxWidth) {
-  return trimText(context, text, maxWidth, (text2, width) => Platform16.StringUtilities.trimMiddle(text2, width));
+  return trimText(context, text, maxWidth, (text2, width) => Platform15.StringUtilities.trimMiddle(text2, width));
 }
 function trimTextEnd(context, text, maxWidth) {
-  return trimText(context, text, maxWidth, (text2, width) => Platform16.StringUtilities.trimEndWithMaxLength(text2, width));
+  return trimText(context, text, maxWidth, (text2, width) => Platform15.StringUtilities.trimEndWithMaxLength(text2, width));
 }
 function measureTextWidth(context, text) {
   const maxCacheableLength = 200;
@@ -15640,7 +15266,7 @@ function createShadowRootWithCoreStyles(element, options = {
 }) {
   const { cssFile, delegatesFocus } = options;
   const shadowRoot = element.attachShadow({ mode: "open", delegatesFocus });
-  appendStyle(shadowRoot, inspectorCommon_css_default, Buttons7.textButtonStyles);
+  appendStyle(shadowRoot, inspectorCommon_css_default, Buttons6.textButtonStyles);
   if (Array.isArray(cssFile)) {
     appendStyle(shadowRoot, ...cssFile);
   } else if (cssFile) {
@@ -15750,7 +15376,7 @@ function bindToAction(actionName) {
     setEnabled(event.data);
   }
   return Directives2.ref((e) => {
-    if (!e || !(e instanceof Buttons7.Button.Button)) {
+    if (!e || !(e instanceof Buttons6.Button.Button)) {
       action6.removeEventListener("Enabled", actionEnabledChanged);
       action6.removeEventListener("Toggled", toggled);
       return;
@@ -15910,7 +15536,7 @@ var HTMLElementWithLightDOMTemplate = class _HTMLElementWithLightDOMTemplate ext
       this.#mutationObserver.observe(this.#contentTemplate.content, { childList: true, attributes: true, subtree: true, characterData: true });
     }
     _HTMLElementWithLightDOMTemplate.patchLitTemplate(template);
-    render4(template, this.#contentTemplate.content);
+    render3(template, this.#contentTemplate.content);
   }
   #onChange(mutationList) {
     this.onChange(mutationList);
@@ -16804,7 +16430,7 @@ var LiveAnnouncer = class _LiveAnnouncer {
     const dialog3 = Dialog.getInstance();
     const element = _LiveAnnouncer.getOrCreateAnnouncerElement(dialog3?.isShowing() ? dialog3.contentElement : void 0, role);
     const announcedMessage = element.textContent === message ? `${message}\xA0` : message;
-    element.textContent = Platform17.StringUtilities.trimEndWithMaxLength(announcedMessage, 1e4);
+    element.textContent = Platform16.StringUtilities.trimEndWithMaxLength(announcedMessage, 1e4);
   }
   static getOrCreateAnnouncerElement(container = document.body, role, opts) {
     const existingAnnouncerElement = _LiveAnnouncer.#announcerElementsByRole[role].get(container);
@@ -16983,8 +16609,8 @@ __export(EmptyWidget_exports, {
   EmptyWidget: () => EmptyWidget
 });
 import "./../kit/kit.js";
-import * as i18n24 from "./../../core/i18n/i18n.js";
-import { Directives as Directives3, html as html3, render as render5 } from "./../lit/lit.js";
+import * as i18n23 from "./../../core/i18n/i18n.js";
+import { Directives as Directives3, html as html2, render as render4 } from "./../lit/lit.js";
 import * as VisualLogging16 from "./../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/emptyWidget.css.js
@@ -17007,11 +16633,11 @@ var UIStrings12 = {
    */
   learnMore: "Learn more"
 };
-var str_12 = i18n24.i18n.registerUIStrings("ui/legacy/EmptyWidget.ts", UIStrings12);
-var i18nString12 = i18n24.i18n.getLocalizedString.bind(void 0, str_12);
+var str_12 = i18n23.i18n.registerUIStrings("ui/legacy/EmptyWidget.ts", UIStrings12);
+var i18nString12 = i18n23.i18n.getLocalizedString.bind(void 0, str_12);
 var { ref } = Directives3;
 var DEFAULT_VIEW = (input, output, target) => {
-  render5(html3`
+  render4(html2`
     <style>${inspectorCommon_css_default}</style>
     <style>${emptyWidget_css_default}</style>
     <div class="empty-state" jslog=${VisualLogging16.section("empty-view")}
@@ -17021,7 +16647,7 @@ var DEFAULT_VIEW = (input, output, target) => {
       <div class="empty-state-header">${input.header}</div>
       <div class="empty-state-description">
         <span>${input.text}</span>
-        ${input.link ? html3`<devtools-link href=${input.link} jslogContext=${"learn-more"}>${i18nString12(UIStrings12.learnMore)}</devtools-link>` : ""}
+        ${input.link ? html2`<devtools-link href=${input.link} jslogContext=${"learn-more"}>${i18nString12(UIStrings12.learnMore)}</devtools-link>` : ""}
       </div>
       ${input.extraElements}
     </div>`, target);
@@ -17086,8 +16712,8 @@ __export(FilterBar_exports, {
 });
 import * as Common16 from "./../../core/common/common.js";
 import * as Host8 from "./../../core/host/host.js";
-import * as i18n26 from "./../../core/i18n/i18n.js";
-import * as Platform19 from "./../../core/platform/platform.js";
+import * as i18n25 from "./../../core/i18n/i18n.js";
+import * as Platform18 from "./../../core/platform/platform.js";
 import * as VisualLogging17 from "./../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/filter.css.js
@@ -17294,8 +16920,8 @@ var UIStrings13 = {
    */
   allStrings: "All"
 };
-var str_13 = i18n26.i18n.registerUIStrings("ui/legacy/FilterBar.ts", UIStrings13);
-var i18nString13 = i18n26.i18n.getLocalizedString.bind(void 0, str_13);
+var str_13 = i18n25.i18n.registerUIStrings("ui/legacy/FilterBar.ts", UIStrings13);
+var i18nString13 = i18n25.i18n.getLocalizedString.bind(void 0, str_13);
 var FilterBar = class extends Common16.ObjectWrapper.eventMixin(HBox) {
   enabled;
   stateSetting;
@@ -17601,7 +17227,7 @@ var NamedBitSetFilterUI = class _NamedBitSetFilterUI extends Common16.ObjectWrap
       )) {
         event.consume(true);
       }
-    } else if (Platform19.KeyboardUtilities.isEnterOrSpaceKey(event)) {
+    } else if (Platform18.KeyboardUtilities.isEnterOrSpaceKey(event)) {
       this.onTypeFilterClicked(event);
     }
   }
@@ -17695,7 +17321,7 @@ var FilterSuggestionBuilder_exports = {};
 __export(FilterSuggestionBuilder_exports, {
   FilterSuggestionBuilder: () => FilterSuggestionBuilder
 });
-import * as Platform20 from "./../../core/platform/platform.js";
+import * as Platform19 from "./../../core/platform/platform.js";
 var FilterSuggestionBuilder = class {
   keys;
   valueSorter;
@@ -17716,7 +17342,7 @@ var FilterSuggestionBuilder = class {
     const valueDelimiterIndex = prefix.indexOf(":");
     const suggestions = [];
     if (valueDelimiterIndex === -1) {
-      const matcher = new RegExp("^" + Platform20.StringUtilities.escapeForRegExp(prefix), "i");
+      const matcher = new RegExp("^" + Platform19.StringUtilities.escapeForRegExp(prefix), "i");
       for (const key of this.keys) {
         if (matcher.test(key)) {
           suggestions.push({ text: modifier + key + ":" });
@@ -17725,7 +17351,7 @@ var FilterSuggestionBuilder = class {
     } else {
       const key = prefix.substring(0, valueDelimiterIndex).toLowerCase();
       const value = prefix.substring(valueDelimiterIndex + 1);
-      const matcher = new RegExp("^" + Platform20.StringUtilities.escapeForRegExp(value), "i");
+      const matcher = new RegExp("^" + Platform19.StringUtilities.escapeForRegExp(value), "i");
       const values = Array.from(this.valuesMap.get(key) || /* @__PURE__ */ new Set());
       this.valueSorter(key, values);
       for (const item8 of values) {
@@ -17781,7 +17407,7 @@ var Fragment_exports = {};
 __export(Fragment_exports, {
   Fragment: () => Fragment,
   attributeMarker: () => attributeMarker,
-  html: () => html4,
+  html: () => html3,
   textMarker: () => textMarker
 });
 function getNodeData(node) {
@@ -17814,10 +17440,10 @@ var Fragment = class _Fragment {
     return _Fragment.render(template, values);
   }
   static template(strings) {
-    let html8 = "";
+    let html7 = "";
     let insideText = true;
     for (let i = 0; i < strings.length - 1; i++) {
-      html8 += strings[i];
+      html7 += strings[i];
       const close5 = strings[i].lastIndexOf(">");
       const open = strings[i].indexOf("<", close5 + 1);
       if (close5 !== -1 && open === -1) {
@@ -17825,11 +17451,11 @@ var Fragment = class _Fragment {
       } else if (open !== -1) {
         insideText = false;
       }
-      html8 += insideText ? textMarker : attributeMarker(i);
+      html7 += insideText ? textMarker : attributeMarker(i);
     }
-    html8 += strings[strings.length - 1];
+    html7 += strings[strings.length - 1];
     const template = document.createElement("template");
-    template.innerHTML = html8;
+    template.innerHTML = html7;
     const walker = template.ownerDocument.createTreeWalker(template.content, NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT, null);
     let valueIndex = 0;
     const emptyTextNodes = [];
@@ -17963,7 +17589,7 @@ var attributeMarker = (index) => "template-attribute" + index;
 var attributeMarkerRegex = /template-attribute\d+/;
 var generateClassName = (index) => "template-class-" + index;
 var templateCache = /* @__PURE__ */ new Map();
-var html4 = (strings, ...vararg) => {
+var html3 = (strings, ...vararg) => {
   return Fragment.cached(strings, ...vararg).element();
 };
 
@@ -17973,7 +17599,7 @@ __export(InplaceEditor_exports, {
   Config: () => Config,
   InplaceEditor: () => InplaceEditor
 });
-import * as Platform21 from "./../../core/platform/platform.js";
+import * as Platform20 from "./../../core/platform/platform.js";
 var inplaceEditorInstance = null;
 var InplaceEditor = class _InplaceEditor {
   focusRestorer;
@@ -18074,7 +17700,7 @@ var InplaceEditor = class _InplaceEditor {
       if (event.key === "Enter" && !event.shiftKey) {
         return "commit";
       }
-      if (event.keyCode === Keys.Esc.code || event.key === Platform21.KeyboardUtilities.ESCAPE_KEY) {
+      if (event.keyCode === Keys.Esc.code || event.key === Platform20.KeyboardUtilities.ESCAPE_KEY) {
         return "cancel";
       }
       if (event.key === "Tab") {
@@ -18178,10 +17804,10 @@ __export(ListWidget_exports, {
   Editor: () => Editor,
   ListWidget: () => ListWidget
 });
-import * as i18n28 from "./../../core/i18n/i18n.js";
-import * as Platform22 from "./../../core/platform/platform.js";
-import * as Buttons8 from "./../components/buttons/buttons.js";
-import { html as html5, render as render6 } from "./../lit/lit.js";
+import * as i18n27 from "./../../core/i18n/i18n.js";
+import * as Platform21 from "./../../core/platform/platform.js";
+import * as Buttons7 from "./../components/buttons/buttons.js";
+import { html as html4, render as render5 } from "./../lit/lit.js";
 import * as VisualLogging18 from "./../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/listWidget.css.js
@@ -18383,8 +18009,8 @@ var UIStrings14 = {
    */
   removedItem: "Item has been removed"
 };
-var str_14 = i18n28.i18n.registerUIStrings("ui/legacy/ListWidget.ts", UIStrings14);
-var i18nString14 = i18n28.i18n.getLocalizedString.bind(void 0, str_14);
+var str_14 = i18n27.i18n.registerUIStrings("ui/legacy/ListWidget.ts", UIStrings14);
+var i18nString14 = i18n27.i18n.getLocalizedString.bind(void 0, str_14);
 var ListWidget = class extends VBox {
   delegate;
   list;
@@ -18517,7 +18143,7 @@ var ListWidget = class extends VBox {
     const controls = document.createElement("div");
     controls.classList.add("controls-container");
     controls.classList.add("fill");
-    render6(html5`
+    render5(html4`
       <div class="controls-gradient"></div>
       <div class="controls-buttons">
         <devtools-toolbar>
@@ -18633,7 +18259,7 @@ var Editor = class {
     this.element = document.createElement("div");
     this.element.classList.add("editor-container");
     this.element.setAttribute("jslog", `${VisualLogging18.pane("editor").track({ resize: true })}`);
-    this.element.addEventListener("keydown", onKeyDown.bind(null, Platform22.KeyboardUtilities.isEscKey, this.cancelClicked.bind(this)), false);
+    this.element.addEventListener("keydown", onKeyDown.bind(null, Platform21.KeyboardUtilities.isEscKey, this.cancelClicked.bind(this)), false);
     this.#contentElement = this.element.createChild("div", "editor-content");
     this.#contentElement.addEventListener("keydown", onKeyDown.bind(null, (event) => {
       if (event.key !== "Enter") {
@@ -18686,7 +18312,7 @@ var Editor = class {
       const option = select.createChild("option");
       option.value = options[index];
       option.textContent = options[index];
-      option.setAttribute("jslog", `${VisualLogging18.item(Platform22.StringUtilities.toKebabCase(options[index])).track({ click: true })}`);
+      option.setAttribute("jslog", `${VisualLogging18.item(Platform21.StringUtilities.toKebabCase(options[index])).track({ click: true })}`);
     }
     if (title) {
       Tooltip.install(select, title);
@@ -19216,9 +18842,9 @@ __export(RemoteDebuggingTerminatedScreen_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW2,
   RemoteDebuggingTerminatedScreen: () => RemoteDebuggingTerminatedScreen
 });
-import * as i18n30 from "./../../core/i18n/i18n.js";
-import * as Buttons9 from "./../components/buttons/buttons.js";
-import { html as html6, render as render7 } from "./../lit/lit.js";
+import * as i18n29 from "./../../core/i18n/i18n.js";
+import * as Buttons8 from "./../components/buttons/buttons.js";
+import { html as html5, render as render6 } from "./../lit/lit.js";
 
 // gen/front_end/ui/legacy/remoteDebuggingTerminatedScreen.css.js
 var remoteDebuggingTerminatedScreen_css_default = `/*
@@ -19280,10 +18906,10 @@ var UIStrings15 = {
    */
   reconnectDevtools: "Reconnect `DevTools`"
 };
-var str_15 = i18n30.i18n.registerUIStrings("ui/legacy/RemoteDebuggingTerminatedScreen.ts", UIStrings15);
-var i18nString15 = i18n30.i18n.getLocalizedString.bind(void 0, str_15);
+var str_15 = i18n29.i18n.registerUIStrings("ui/legacy/RemoteDebuggingTerminatedScreen.ts", UIStrings15);
+var i18nString15 = i18n29.i18n.getLocalizedString.bind(void 0, str_15);
 var DEFAULT_VIEW2 = (input, _output, target) => {
-  render7(html6`
+  render6(html5`
     <style>${remoteDebuggingTerminatedScreen_css_default}</style>
     <div class="header">${i18nString15(UIStrings15.debuggingConnectionWasClosed)}</div>
     <div class="content">
@@ -19715,10 +19341,10 @@ __export(SearchableView_exports, {
   SearchableView: () => SearchableView
 });
 import * as Common17 from "./../../core/common/common.js";
-import * as i18n32 from "./../../core/i18n/i18n.js";
-import * as Platform23 from "./../../core/platform/platform.js";
+import * as i18n31 from "./../../core/i18n/i18n.js";
+import * as Platform22 from "./../../core/platform/platform.js";
 import * as VisualLogging22 from "./../visual_logging/visual_logging.js";
-import * as Buttons10 from "./../components/buttons/buttons.js";
+import * as Buttons9 from "./../components/buttons/buttons.js";
 import { createIcon as createIcon7 } from "./../kit/kit.js";
 
 // gen/front_end/ui/legacy/searchableView.css.js
@@ -19959,10 +19585,10 @@ var UIStrings16 = {
    */
   clearInput: "Clear"
 };
-var str_16 = i18n32.i18n.registerUIStrings("ui/legacy/SearchableView.ts", UIStrings16);
-var i18nString16 = i18n32.i18n.getLocalizedString.bind(void 0, str_16);
+var str_16 = i18n31.i18n.registerUIStrings("ui/legacy/SearchableView.ts", UIStrings16);
+var i18nString16 = i18n31.i18n.getLocalizedString.bind(void 0, str_16);
 function createClearButton(jslogContext) {
-  const button = new Buttons10.Button.Button();
+  const button = new Buttons9.Button.Button();
   button.data = {
     variant: "icon",
     size: "SMALL",
@@ -20055,7 +19681,7 @@ var SearchableView = class extends VBox {
     };
     if (this.searchProvider.supportsCaseSensitiveSearch()) {
       const iconName = "match-case";
-      this.caseSensitiveButton = new Buttons10.Button.Button();
+      this.caseSensitiveButton = new Buttons9.Button.Button();
       this.caseSensitiveButton.data = {
         variant: "icon_toggle",
         size: "SMALL",
@@ -20072,7 +19698,7 @@ var SearchableView = class extends VBox {
     }
     if (this.searchProvider.supportsWholeWordSearch()) {
       const iconName = "match-whole-word";
-      this.wholeWordButton = new Buttons10.Button.Button();
+      this.wholeWordButton = new Buttons9.Button.Button();
       this.wholeWordButton.data = {
         variant: "icon_toggle",
         size: "SMALL",
@@ -20089,7 +19715,7 @@ var SearchableView = class extends VBox {
     }
     if (this.searchProvider.supportsRegexSearch()) {
       const iconName = "regular-expression";
-      this.regexButton = new Buttons10.Button.Button();
+      this.regexButton = new Buttons9.Button.Button();
       this.regexButton.data = {
         variant: "icon_toggle",
         size: "SMALL",
@@ -20126,7 +19752,7 @@ var SearchableView = class extends VBox {
     this.matchesElementValue = this.matchesElement.createChild("span");
     setHidden(this.matchesElementValue, true);
     toolbar4.appendToolbarItem(matchesText);
-    const cancelButtonElement = new Buttons10.Button.Button();
+    const cancelButtonElement = new Buttons9.Button.Button();
     cancelButtonElement.data = {
       variant: "toolbar",
       size: "REGULAR",
@@ -20329,7 +19955,7 @@ var SearchableView = class extends VBox {
     }
   }
   onSearchKeyDown(event) {
-    if (Platform23.KeyboardUtilities.isEscKey(event)) {
+    if (Platform22.KeyboardUtilities.isEscKey(event)) {
       this.closeSearch();
       event.consume(true);
       return;
@@ -20462,7 +20088,7 @@ var SearchConfig = class {
     } catch {
     }
     if (!regex) {
-      regex = Platform23.StringUtilities.createPlainTextSearchRegex(query, modifiers);
+      regex = Platform22.StringUtilities.createPlainTextSearchRegex(query, modifiers);
     }
     if (this.wholeWord) {
       let { source } = regex;
@@ -20486,7 +20112,7 @@ var SoftDropDown_exports = {};
 __export(SoftDropDown_exports, {
   SoftDropDown: () => SoftDropDown
 });
-import * as i18n34 from "./../../core/i18n/i18n.js";
+import * as i18n33 from "./../../core/i18n/i18n.js";
 import * as Geometry6 from "./../../models/geometry/geometry.js";
 import { createIcon as createIcon8 } from "./../kit/kit.js";
 import * as VisualLogging23 from "./../visual_logging/visual_logging.js";
@@ -20598,8 +20224,8 @@ var UIStrings17 = {
    */
   noItemSelected: "(no item selected)"
 };
-var str_17 = i18n34.i18n.registerUIStrings("ui/legacy/SoftDropDown.ts", UIStrings17);
-var i18nString17 = i18n34.i18n.getLocalizedString.bind(void 0, str_17);
+var str_17 = i18n33.i18n.registerUIStrings("ui/legacy/SoftDropDown.ts", UIStrings17);
+var i18nString17 = i18n33.i18n.getLocalizedString.bind(void 0, str_17);
 var SoftDropDown = class {
   delegate;
   selectedItem;
@@ -20866,8 +20492,8 @@ __export(TargetCrashedScreen_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW3,
   TargetCrashedScreen: () => TargetCrashedScreen
 });
-import * as i18n36 from "./../../core/i18n/i18n.js";
-import { html as html7, render as render8 } from "./../lit/lit.js";
+import * as i18n35 from "./../../core/i18n/i18n.js";
+import { html as html6, render as render7 } from "./../lit/lit.js";
 
 // gen/front_end/ui/legacy/targetCrashedScreen.css.js
 var targetCrashedScreen_css_default = `/*
@@ -20900,10 +20526,10 @@ var UIStrings18 = {
    */
   oncePageIsReloadedDevtoolsWill: "Once page is reloaded, DevTools will automatically reconnect."
 };
-var str_18 = i18n36.i18n.registerUIStrings("ui/legacy/TargetCrashedScreen.ts", UIStrings18);
-var i18nString18 = i18n36.i18n.getLocalizedString.bind(void 0, str_18);
+var str_18 = i18n35.i18n.registerUIStrings("ui/legacy/TargetCrashedScreen.ts", UIStrings18);
+var i18nString18 = i18n35.i18n.getLocalizedString.bind(void 0, str_18);
 var DEFAULT_VIEW3 = (input, _output, target) => {
-  render8(html7`
+  render7(html6`
     <style>${targetCrashedScreen_css_default}</style>
     <div class="message">${i18nString18(UIStrings18.devtoolsWasDisconnectedFromThe)}</div>
     <div class="message">${i18nString18(UIStrings18.oncePageIsReloadedDevtoolsWill)}</div>`, target);
@@ -20934,8 +20560,8 @@ __export(Treeoutline_exports, {
   treeElementBylistItemNode: () => treeElementBylistItemNode
 });
 import * as Common18 from "./../../core/common/common.js";
-import * as Platform24 from "./../../core/platform/platform.js";
-import * as SDK3 from "./../../core/sdk/sdk.js";
+import * as Platform23 from "./../../core/platform/platform.js";
+import * as SDK2 from "./../../core/sdk/sdk.js";
 import * as Highlighting from "./../components/highlighting/highlighting.js";
 import * as Lit3 from "./../lit/lit.js";
 import * as VisualLogging24 from "./../visual_logging/visual_logging.js";
@@ -21261,7 +20887,7 @@ ol.tree-outline.tree-variant-navigation:not(.hide-selection-when-blurred) li.sel
 
 // gen/front_end/ui/legacy/Treeoutline.js
 var nodeToParentTreeElementMap = /* @__PURE__ */ new WeakMap();
-var { render: render9 } = Lit3;
+var { render: render8 } = Lit3;
 var Events2;
 (function(Events3) {
   Events3["ElementAttached"] = "ElementAttached";
@@ -21507,7 +21133,7 @@ var TreeOutline = class extends Common18.ObjectWrapper.ObjectWrapper {
       let scrollParentElement = this.element;
       while (getComputedStyle(scrollParentElement).overflow === "visible" && scrollParentElement.parentElementOrShadowHost()) {
         const parent = scrollParentElement.parentElementOrShadowHost();
-        Platform24.assertNotNullOrUndefined(parent);
+        Platform23.assertNotNullOrUndefined(parent);
         scrollParentElement = parent;
       }
       const viewRect = scrollParentElement.getBoundingClientRect();
@@ -21706,9 +21332,9 @@ var TreeElement = class {
     }
     let insertionIndex;
     if (comparator) {
-      insertionIndex = Platform24.ArrayUtilities.lowerBound(this.childrenInternal, child, comparator);
+      insertionIndex = Platform23.ArrayUtilities.lowerBound(this.childrenInternal, child, comparator);
     } else if (this.treeOutline?.comparator) {
-      insertionIndex = Platform24.ArrayUtilities.lowerBound(this.childrenInternal, child, this.treeOutline.comparator);
+      insertionIndex = Platform23.ArrayUtilities.lowerBound(this.childrenInternal, child, this.treeOutline.comparator);
     } else {
       insertionIndex = this.childrenInternal.length;
     }
@@ -21896,7 +21522,7 @@ var TreeElement = class {
       this.listItemNode.insertBefore(this.leadingIconsElement, this.titleElement);
       this.ensureSelection();
     }
-    render9(icons, this.leadingIconsElement);
+    render8(icons, this.leadingIconsElement);
   }
   get tooltip() {
     return this.tooltipInternal;
@@ -22424,11 +22050,11 @@ var TreeSearch = class {
     view.updateCurrentMatchIndex(this.#currentMatchIndex);
   }
   next() {
-    this.#currentMatchIndex = Platform24.NumberUtilities.mod(this.#currentMatchIndex + 1, this.#matches.length);
+    this.#currentMatchIndex = Platform23.NumberUtilities.mod(this.#currentMatchIndex + 1, this.#matches.length);
     return this.currentMatch();
   }
   prev() {
-    this.#currentMatchIndex = Platform24.NumberUtilities.mod(this.#currentMatchIndex - 1, this.#matches.length);
+    this.#currentMatchIndex = Platform23.NumberUtilities.mod(this.#currentMatchIndex - 1, this.#matches.length);
     return this.currentMatch();
   }
   // This is a generator to sidestep stack overflow risks
@@ -22473,12 +22099,12 @@ var TreeSearch = class {
     this.reset();
     for (const _ of this.#innerSearch(node, currentMatch, jumpBackwards, match)) {
     }
-    this.#currentMatchIndex = Platform24.NumberUtilities.mod(this.#currentMatchIndex, this.#matches.length);
+    this.#currentMatchIndex = Platform23.NumberUtilities.mod(this.#currentMatchIndex, this.#matches.length);
     return this.#matches.length;
   }
 };
 var TreeViewTreeElement = class _TreeViewTreeElement extends TreeElement {
-  static CLONED_ATTRIBUTES = SDK3.DOMModel.ARIA_ATTRIBUTES.union(/* @__PURE__ */ new Set(["jslog"]));
+  static CLONED_ATTRIBUTES = SDK2.DOMModel.ARIA_ATTRIBUTES.union(/* @__PURE__ */ new Set(["jslog"]));
   #clonedAttributes = /* @__PURE__ */ new Set();
   #clonedClasses = /* @__PURE__ */ new Set();
   static #elementToTreeElement = /* @__PURE__ */ new WeakMap();
@@ -22753,7 +22379,7 @@ var View_exports = {};
 __export(View_exports, {
   SimpleView: () => SimpleView
 });
-import * as Platform25 from "./../../core/platform/platform.js";
+import * as Platform24 from "./../../core/platform/platform.js";
 var SimpleView = class extends VBox {
   #title;
   #viewId;
@@ -22767,7 +22393,7 @@ var SimpleView = class extends VBox {
     super(options);
     this.#title = options.title;
     this.#viewId = options.viewId;
-    if (!Platform25.StringUtilities.isExtendedKebabCase(this.#viewId)) {
+    if (!Platform24.StringUtilities.isExtendedKebabCase(this.#viewId)) {
       throw new TypeError(`Invalid view ID '${this.#viewId}'`);
     }
   }
@@ -22815,7 +22441,6 @@ export {
   EmptyWidget_exports as EmptyWidget,
   FilterBar_exports as FilterBar,
   FilterSuggestionBuilder_exports as FilterSuggestionBuilder,
-  Floaty_exports as Floaty,
   ForwardedInputEventHandler_exports as ForwardedInputEventHandler,
   Fragment_exports as Fragment,
   GlassPane_exports as GlassPane,

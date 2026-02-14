@@ -290,9 +290,6 @@ export function outline(state) {
 export class OutlineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
     items = [];
     active = false;
-    constructor() {
-        super('source-symbol');
-    }
     attach() {
         const sourceFrame = this.currentSourceFrame();
         if (sourceFrame) {

@@ -1417,14 +1417,6 @@ var CorsIssue = class _CorsIssue extends Issue {
   }
   getDescription() {
     switch (getIssueCode2(this.details())) {
-      case "CorsIssue::InsecureLocalNetwork":
-        return {
-          file: "corsInsecurePrivateNetwork.md",
-          links: [{
-            link: "https://developer.chrome.com/blog/private-network-access-update",
-            linkTitle: i18nString3(UIStrings7.corsLocalNetworkAccess)
-          }]
-        };
       case "CorsIssue::InvalidHeaders":
         return {
           file: "corsInvalidHeaderValues.md",
@@ -1513,11 +1505,12 @@ var CorsIssue = class _CorsIssue extends Issue {
             linkTitle: i18nString3(UIStrings7.CORS)
           }]
         };
+      case "CorsIssue::InsecureLocalNetwork":
       case "CorsIssue::LocalNetworkAccessPermissionDenied":
         return {
           file: "corsLocalNetworkAccessPermissionDenied.md",
           links: [{
-            link: "https://chromestatus.com/feature/5152728072060928",
+            link: "https://developer.chrome.com/blog/local-network-access",
             linkTitle: i18nString3(UIStrings7.corsLocalNetworkAccess)
           }]
         };

@@ -435,5 +435,7 @@ export class InspectorFrontendHostStub {
     }
     setChromeFlag(_flagName, _value) {
     }
+    requestRestart() {
+    }
 }
 //# sourceMappingURL=InspectorFrontendHostStub.js.map

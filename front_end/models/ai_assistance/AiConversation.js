@@ -34,7 +34,7 @@ export class AiConversation {
             }
             return entry;
         });
-        return new AiConversation(serializedConversation.type, history, serializedConversation.id, true, undefined, undefined, serializedConversation.isExternal, undefined);
+        return new AiConversation(serializedConversation.type, history, serializedConversation.id, true, undefined, undefined, serializedConversation.isExternal, undefined, undefined);
     }
     id;
     // Handled in #updateAgent
@@ -50,11 +50,13 @@ export class AiConversation {
     #contexts = [];
     #performanceRecordAndReload;
     #onInspectElement;
-    constructor(type, data = [], id = crypto.randomUUID(), isReadOnly = true, aidaClient = new Host.AidaClient.AidaClient(), changeManager, isExternal = false, performanceRecordAndReload, onInspectElement) {
+    #networkTimeCalculator;
+    constructor(type, data = [], id = crypto.randomUUID(), isReadOnly = true, aidaClient = new Host.AidaClient.AidaClient(), changeManager, isExternal = false, performanceRecordAndReload, onInspectElement, networkTimeCalculator) {
         this.#changeManager = changeManager;
         this.#aidaClient = aidaClient;
         this.#performanceRecordAndReload = performanceRecordAndReload;
         this.#onInspectElement = onInspectElement;
+        this.#networkTimeCalculator = networkTimeCalculator;
         this.id = id;
         this.#isReadOnly = isReadOnly;
         this.#isExternal = isExternal;
@@ -231,6 +233,7 @@ export class AiConversation {
             changeManager: this.#changeManager,
             performanceRecordAndReload: this.#performanceRecordAndReload,
             onInspectElement: this.#onInspectElement,
+            networkTimeCalculator: this.#networkTimeCalculator,
         };
         switch (type) {
             case "freestyler" /* ConversationType.STYLING */: {
@@ -322,6 +325,14 @@ Time: ${micros(time)}`;
         }
     }
     async *run(initialQuery, options = {}) {
+        const userQuery = {
+            type: "user-query" /* ResponseType.USER_QUERY */,
+            query: initialQuery,
+            imageInput: options.multimodalInput?.input,
+            imageId: options.multimodalInput?.id,
+        };
+        void this.addHistoryItem(userQuery);
+        yield userQuery;
         if (options.extraContext) {
             await this.#createFactsForExtraContext(options.extraContext);
         }
@@ -329,6 +340,9 @@ Time: ${micros(time)}`;
         if (this.isBlockedByOrigin) {
             throw new Error('Cross-origin context data should not be included');
         }
+        yield* this.#runAgent(initialQuery, options);
+    }
+    async *#runAgent(initialQuery, options = {}) {
         function shouldAddToHistory(data) {
             if (data.type === "context-change" /* ResponseType.CONTEXT_CHANGE */) {
                 return false;
@@ -346,6 +360,11 @@ Time: ${micros(time)}`;
         }, options.multimodalInput)) {
             if (shouldAddToHistory(data)) {
                 void this.addHistoryItem(data);
+            }
+            if (data.type === "context-change" /* ResponseType.CONTEXT_CHANGE */) {
+                this.setContext(data.context);
+                yield* this.#runAgent(initialQuery, options);
+                return;
             }
             yield data;
         }

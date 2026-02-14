@@ -19,10 +19,10 @@ export declare const AFFECTED_COUNT_DEFAULT_VIEW: AffectedCountView;
 export declare class AffectedCountWidget extends UI.Widget.Widget {
     #private;
     constructor(target?: HTMLElement, view?: AffectedCountView);
+    get lookUpRequestCount(): ((condition: SDK.NetworkManager.RequestCondition) => number) | undefined;
+    set lookUpRequestCount(val: (condition: SDK.NetworkManager.RequestCondition) => number);
     get condition(): SDK.NetworkManager.RequestCondition | undefined;
     set condition(conditions: SDK.NetworkManager.RequestCondition);
-    get drawer(): RequestConditionsDrawer | undefined;
-    set drawer(drawer: RequestConditionsDrawer);
     performUpdate(): void;
     wasShown(): void;
     willHide(): void;
@@ -45,8 +45,6 @@ export declare class RequestConditionsDrawer extends UI.Widget.VBox implements U
     commitEdit(item: SDK.NetworkManager.RequestCondition, editor: UI.ListWidget.Editor<SDK.NetworkManager.RequestCondition>, isNew: boolean): void;
     private createEditor;
     update(): void;
-    blockedRequestsCount(condition: SDK.NetworkManager.RequestCondition): number;
-    throttledRequestsCount(condition: SDK.NetworkManager.RequestCondition): number;
     private onNetworkLogReset;
     private onRequestFinished;
     wasShown(): void;

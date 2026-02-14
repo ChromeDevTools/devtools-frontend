@@ -227,12 +227,6 @@ export class AiAgent {
         query = multimodalInput ? [{ text: enhancedQuery }, multimodalInput.input] : [{ text: enhancedQuery }];
         // Request is built here to capture history up to this point.
         let request = this.buildRequest(query, Host.AidaClient.Role.USER);
-        yield {
-            type: "user-query" /* ResponseType.USER_QUERY */,
-            query: initialQuery,
-            imageInput: multimodalInput?.input,
-            imageId: multimodalInput?.id,
-        };
         yield* this.handleContextDetails(options.selected);
         for (let i = 0; i < MAX_STEPS; i++) {
             yield {

@@ -15,7 +15,6 @@ import * as DropTarget from './DropTarget.js';
 import * as EmptyWidget from './EmptyWidget.js';
 import * as FilterBar from './FilterBar.js';
 import * as FilterSuggestionBuilder from './FilterSuggestionBuilder.js';
-import * as Floaty from './Floaty.js';
 import * as ForwardedInputEventHandler from './ForwardedInputEventHandler.js';
 import * as Fragment from './Fragment.js';
 import * as GlassPane from './GlassPane.js';
@@ -67,7 +66,6 @@ export {
   EmptyWidget,
   FilterBar,
   FilterSuggestionBuilder,
-  Floaty,
   ForwardedInputEventHandler,
   Fragment,
   GlassPane,

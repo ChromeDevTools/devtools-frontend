@@ -23,10 +23,9 @@ export class Prototypes {
     }
     settings() {
         const settings = Common.Settings.Settings.instance();
-        const inDevToolsFloaty = settings.createSetting('greendev-in-devtools-floaty-enabled', false, "Local" /* Common.Settings.SettingStorageType.LOCAL */);
         const aiAnnotations = settings.createSetting('greendev-ai-annotations-enabled', false, "Local" /* Common.Settings.SettingStorageType.LOCAL */);
         const copyToGemini = settings.createSetting('greendev-copy-to-gemini-enabled', false, "Local" /* Common.Settings.SettingStorageType.LOCAL */);
-        return { inDevToolsFloaty, aiAnnotations, copyToGemini };
+        return { aiAnnotations, copyToGemini };
     }
 }
 //# sourceMappingURL=Prototypes.js.map

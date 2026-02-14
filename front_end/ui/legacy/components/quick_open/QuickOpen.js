@@ -36,7 +36,7 @@ export class QuickOpenImpl {
         }
         this.prefixes.push(prefix);
         this.providers.set(prefix, {
-            provider: extension.provider,
+            provider: () => extension.provider(extension.jslogContext),
             titlePrefix: extension.titlePrefix,
             titleSuggestion: extension.titleSuggestion,
         });

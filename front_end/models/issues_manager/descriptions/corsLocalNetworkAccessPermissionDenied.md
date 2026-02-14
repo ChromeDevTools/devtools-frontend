@@ -1,4 +1,4 @@
-# Ensure that local network requests are compatible with upcoming restrictions
+# Ensure that local network requests are compatible with restrictions
 
 A site requested a resource from a network that it could only access because of
 its users' privileged network position.
@@ -6,7 +6,7 @@ its users' privileged network position.
 These requests expose devices and servers to the internet, increasing the risk
 of a cross-site request forgery (CSRF) attack and/or information leakage.
 
-To mitigate these risks, Chrome will begin requiring the user grant explicit
+To mitigate these risks, Chrome is requiring the user grant explicit
 permission before a site can make local network requests. Local network requests
 are those that go to either private IP addresses, .local domains, or loopback
 addresses. Additionally, Chrome will block local network requests (both

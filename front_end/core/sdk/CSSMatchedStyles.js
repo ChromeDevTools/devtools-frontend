@@ -1058,6 +1058,9 @@ class DOMInheritanceCascade {
             case "revert-layer" /* CSSWideKeyword.REVERT_LAYER */:
                 return this.#findPropertyInPreviousStyle(property, isPreviousLayer) ??
                     this.resolveGlobalKeyword(property, "revert" /* CSSWideKeyword.REVERT */);
+            case "revert-rule" /* CSSWideKeyword.REVERT_RULE */:
+                return this.#findPropertyInPreviousStyle(property, () => true) ??
+                    this.resolveGlobalKeyword(property, "unset" /* CSSWideKeyword.UNSET */);
             case "unset" /* CSSWideKeyword.UNSET */:
                 return this.#findPropertyInParentCascadeIfInherited(property) ??
                     this.#findCustomPropertyRegistration(property.name);

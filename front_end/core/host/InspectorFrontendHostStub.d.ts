@@ -147,4 +147,5 @@ export declare class InspectorFrontendHostStub implements InspectorFrontendHostA
     recordSettingAccess(_event: SettingAccessEvent): void;
     recordFunctionCall(_event: FunctionCallEvent): void;
     setChromeFlag(_flagName: string, _value: boolean): void;
+    requestRestart(): void;
 }

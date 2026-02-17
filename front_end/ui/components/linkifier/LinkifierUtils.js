@@ -2,6 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as Bindings from '../../../models/bindings/bindings.js';
+/**
+ * @deprecated do not use
+ */
 export function linkText(url, lineNumber) {
     if (url) {
         const displayName = Bindings.ResourceUtils.displayNameForURL(url);

@@ -7481,7 +7481,7 @@ var BuiltInAi = class _BuiltInAi extends Common8.ObjectWrapper.ObjectWrapper {
     this.initDoneForTesting = this.getLanguageModelAvailability().then(() => this.#sendAvailabilityMetrics()).then(() => this.initialize());
   }
   async getLanguageModelAvailability() {
-    if (!Root11.Runtime.hostConfig.devToolsConsoleInsightsTeasers?.enabled || Root11.Runtime.hostConfig.devToolsAiPromptApi && !Root11.Runtime.hostConfig.devToolsAiPromptApi.enabled) {
+    if (!Root11.Runtime.hostConfig.devToolsConsoleInsightsTeasers?.enabled) {
       this.#availability = "disabled";
       return this.#availability;
     }

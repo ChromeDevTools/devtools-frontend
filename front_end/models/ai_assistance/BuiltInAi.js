@@ -25,8 +25,7 @@ export class BuiltInAi extends Common.ObjectWrapper.ObjectWrapper {
             this.getLanguageModelAvailability().then(() => this.#sendAvailabilityMetrics()).then(() => this.initialize());
     }
     async getLanguageModelAvailability() {
-        if (!Root.Runtime.hostConfig.devToolsConsoleInsightsTeasers?.enabled ||
-            (Root.Runtime.hostConfig.devToolsAiPromptApi && !Root.Runtime.hostConfig.devToolsAiPromptApi.enabled)) {
+        if (!Root.Runtime.hostConfig.devToolsConsoleInsightsTeasers?.enabled) {
             this.#availability = "disabled" /* LanguageModelAvailability.DISABLED */;
             return this.#availability;
         }

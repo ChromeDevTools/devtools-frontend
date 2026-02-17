@@ -31,7 +31,7 @@ export declare class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKMo
      * The promise returned by this function is resolved once all *currently*
      * pending LiveLocations are processed.
      */
-    pendingLiveLocationChangesPromise(): Promise<void | Location | StackTraceTopFrameLocation | null>;
+    pendingLiveLocationChangesPromise(): Promise<void>;
     private recordLiveLocationChange;
     updateLocations(script: SDK.Script.Script): Promise<void>;
     createStackTraceFromProtocolRuntime(stackTrace: Protocol.Runtime.StackTrace, target: SDK.Target.Target): Promise<StackTrace.StackTrace.StackTrace>;
@@ -94,18 +94,8 @@ export declare class Location extends LiveLocationWithPool {
     uiLocation(): Promise<Workspace.UISourceCode.UILocation | null>;
     dispose(): void;
 }
-declare class StackTraceTopFrameLocation extends LiveLocationWithPool {
-    #private;
-    constructor(updateDelegate: (arg0: LiveLocation) => Promise<void>, locationPool: LiveLocationPool);
-    static createStackTraceTopFrameLocation(rawLocations: SDK.DebuggerModel.Location[], binding: DebuggerWorkspaceBinding, updateDelegate: (arg0: LiveLocation) => Promise<void>, locationPool: LiveLocationPool): Promise<StackTraceTopFrameLocation>;
-    uiLocation(): Promise<Workspace.UISourceCode.UILocation | null>;
-    dispose(): void;
-    private scheduleUpdate;
-    private updateLocation;
-}
 export interface DebuggerSourceMapping {
     rawLocationToUILocation(rawLocation: SDK.DebuggerModel.Location): Workspace.UISourceCode.UILocation | null;
     uiLocationToRawLocations(uiSourceCode: Workspace.UISourceCode.UISourceCode, lineNumber: number, columnNumber?: number): SDK.DebuggerModel.Location[];
     uiLocationRangeToRawLocationRanges(uiSourceCode: Workspace.UISourceCode.UISourceCode, textRange: TextUtils.TextRange.TextRange): SDK.DebuggerModel.LocationRange[] | null;
 }
-export {};

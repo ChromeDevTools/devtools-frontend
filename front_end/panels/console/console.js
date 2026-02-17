@@ -2326,14 +2326,22 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
       clickableElement.tabIndex = -1;
     }
     clickableElement.appendChild(messageElement);
-    const stackTraceElement = contentElement.createChild("div");
-    const stackTracePreview = new Components.JSPresentationUtils.StackTracePreviewContent(void 0, target ?? void 0, this.linkifier, { runtimeStackTrace: stackTrace, widthConstrained: true });
+    const stackTraceElement = contentElement.createChild("div", "hidden-stack-trace");
+    const targetManager = SDK3.TargetManager.TargetManager.instance();
+    const stackTraceTarget = target ?? targetManager.primaryPageTarget() ?? targetManager.rootTarget();
+    const stackTracePreview = new Components.JSPresentationUtils.StackTracePreviewContent(void 0, stackTraceTarget ?? void 0, this.linkifier, { widthConstrained: true });
+    if (stackTraceTarget && stackTrace) {
+      const selectableChildIndex = this.selectableChildren.length;
+      void Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createStackTraceFromProtocolRuntime(stackTrace, stackTraceTarget).then((stackTrace2) => {
+        stackTracePreview.stackTrace = stackTrace2;
+        return stackTracePreview.updateComplete;
+      }).then(() => {
+        const selectableLinks = stackTracePreview.linkElements.map((element) => ({ element, forceSelect: () => element.focus() }));
+        this.selectableChildren.splice(selectableChildIndex, 0, ...selectableLinks);
+      });
+    }
     stackTracePreview.markAsRoot();
     stackTracePreview.show(stackTraceElement);
-    for (const linkElement of stackTracePreview.linkElements) {
-      this.selectableChildren.push({ element: linkElement, forceSelect: () => linkElement.focus() });
-    }
-    stackTraceElement.classList.add("hidden-stack-trace");
     UI2.ARIAUtils.setLabel(contentElement, `${messageElement.textContent} ${i18nString2(UIStrings2.stackMessageCollapsed)}`);
     UI2.ARIAUtils.markAsGroup(stackTraceElement);
     return { stackTraceElement, contentElement, messageElement, clickableElement, toggleElement };

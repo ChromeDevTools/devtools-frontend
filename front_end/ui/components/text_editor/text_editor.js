@@ -102,7 +102,7 @@ __export(AiCodeGenerationParser_exports, {
   AiCodeGenerationParser: () => AiCodeGenerationParser
 });
 import * as CodeMirror from "./../../../third_party/codemirror.next/codemirror.next.js";
-var LINE_COMMENT_PATTERN = /^(?:\/\/|#)\s*/;
+var LINE_COMMENT_PATTERN = /^(?:\/\/|#)\s*/gm;
 var BLOCK_COMMENT_START_PATTERN = /^\/\*+\s*/;
 var BLOCK_COMMENT_END_PATTERN = /\s*\*+\/$/;
 var BLOCK_COMMENT_LINE_PREFIX_PATTERN = /^\s*\*\s?/;
@@ -137,7 +137,7 @@ function resolveCommentNode(state, cursorPosition) {
   }
   return;
 }
-function extractBlockComment(rawText) {
+function extractBlockCommentText(rawText) {
   if (!rawText.match(BLOCK_COMMENT_START_PATTERN)) {
     return;
   }
@@ -149,8 +149,22 @@ function extractBlockComment(rawText) {
   cleaned = cleaned.split("\n").map((line) => line.replace(BLOCK_COMMENT_LINE_PREFIX_PATTERN, "")).join("\n").trim();
   return cleaned;
 }
-function extractLineComment(rawText) {
-  return rawText.replace(LINE_COMMENT_PATTERN, "").trim();
+function extractLineComment(node, state) {
+  let firstNode = node;
+  let lastNode = node;
+  let prev = node.prevSibling;
+  while (prev?.type.name.includes("LineComment")) {
+    firstNode = prev;
+    prev = prev.prevSibling;
+  }
+  let next = node.nextSibling;
+  while (next?.type.name.includes("LineComment")) {
+    lastNode = next;
+    next = next.nextSibling;
+  }
+  const fullRawText = state.doc.sliceString(firstNode.from, lastNode.to);
+  const concatenatedText = fullRawText.replaceAll(LINE_COMMENT_PATTERN, "").replace(/\n\s*\n/g, "\n").trim();
+  return concatenatedText ? { text: concatenatedText, to: lastNode.to } : void 0;
 }
 var AiCodeGenerationParser = class {
   static extractCommentNodeInfo(state, cursorPosition) {
@@ -162,9 +176,10 @@ var AiCodeGenerationParser = class {
     const rawText = state.doc.sliceString(node.from, node.to);
     let text = "";
     if (nodeType.includes("LineComment")) {
-      text = extractLineComment(rawText);
-    } else if (nodeType.includes("BlockComment")) {
-      text = extractBlockComment(rawText) ?? "";
+      return extractLineComment(node, state);
+    }
+    if (nodeType.includes("BlockComment")) {
+      text = extractBlockCommentText(rawText) ?? "";
     } else {
       text = rawText;
     }
@@ -1039,20 +1054,11 @@ var AiCodeGenerationProvider = class _AiCodeGenerationProvider {
       },
       {
         key: "Tab",
-        run: () => {
-          if (!this.#aiCodeGeneration || !this.#editor || !hasActiveAiSuggestion(this.#editor.state)) {
-            return false;
-          }
-          const { accepted, suggestion } = acceptAiAutoCompleteSuggestion(this.#editor.editor);
-          if (!accepted) {
-            return false;
-          }
-          if (suggestion?.rpcGlobalId) {
-            this.#aiCodeGeneration.registerUserAcceptance(suggestion.rpcGlobalId, suggestion.sampleId);
-          }
-          this.#aiCodeGenerationConfig?.onSuggestionAccepted(this.#aiCodeGenerationCitations);
-          return true;
-        }
+        run: this.#acceptAiSuggestion.bind(this)
+      },
+      {
+        key: "Enter",
+        run: this.#acceptAiSuggestion.bind(this)
       },
       {
         any: (_view, event) => {
@@ -1096,6 +1102,20 @@ var AiCodeGenerationProvider = class _AiCodeGenerationProvider {
         setAiAutoCompleteSuggestion.of(null)
       ]
     });
+  }
+  #acceptAiSuggestion() {
+    if (!this.#aiCodeGeneration || !this.#editor || !hasActiveAiSuggestion(this.#editor.state)) {
+      return false;
+    }
+    const { accepted, suggestion } = acceptAiAutoCompleteSuggestion(this.#editor.editor);
+    if (!accepted) {
+      return false;
+    }
+    if (suggestion?.rpcGlobalId) {
+      this.#aiCodeGeneration.registerUserAcceptance(suggestion.rpcGlobalId, suggestion.sampleId);
+    }
+    this.#aiCodeGenerationConfig?.onSuggestionAccepted(this.#aiCodeGenerationCitations);
+    return true;
   }
   #activateTeaser(update) {
     const currentTeaserMode = update.state.field(aiCodeGenerationTeaserModeState);
@@ -1174,7 +1194,7 @@ var AiCodeGenerationProvider = class _AiCodeGenerationProvider {
       this.#editor.dispatch({
         effects: [
           setAiAutoCompleteSuggestion.of({
-            text: "\n" + suggestionText,
+            text: "\n" + suggestionText + "\n",
             from: commentNodeInfo.to,
             rpcGlobalId: generationResponse.metadata.rpcGlobalId,
             sampleId: topSample.sampleId,

@@ -11,6 +11,9 @@ export declare class LinkifierClick extends Event {
     static readonly eventName = "linkifieractivated";
     constructor(data: LinkifierData);
 }
+/**
+ * @deprecated do not use
+ */
 export declare class Linkifier extends HTMLElement {
     #private;
     set data(data: LinkifierData);

@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as CodeMirror from '../../../third_party/codemirror.next/codemirror.next.js';
-const LINE_COMMENT_PATTERN = /^(?:\/\/|#)\s*/;
+const LINE_COMMENT_PATTERN = /^(?:\/\/|#)\s*/gm;
 const BLOCK_COMMENT_START_PATTERN = /^\/\*+\s*/;
 const BLOCK_COMMENT_END_PATTERN = /\s*\*+\/$/;
 const BLOCK_COMMENT_LINE_PREFIX_PATTERN = /^\s*\*\s?/;
@@ -41,7 +41,7 @@ function resolveCommentNode(state, cursorPosition) {
     }
     return;
 }
-function extractBlockComment(rawText) {
+function extractBlockCommentText(rawText) {
     // Remove /* and */, whitespace, and common leading asterisks on new lines
     if (!rawText.match(BLOCK_COMMENT_START_PATTERN)) {
         return;
@@ -55,8 +55,24 @@ function extractBlockComment(rawText) {
     cleaned = cleaned.split('\n').map(line => line.replace(BLOCK_COMMENT_LINE_PREFIX_PATTERN, '')).join('\n').trim();
     return cleaned;
 }
-function extractLineComment(rawText) {
-    return rawText.replace(LINE_COMMENT_PATTERN, '').trim();
+function extractLineComment(node, state) {
+    let firstNode = node;
+    let lastNode = node;
+    let prev = node.prevSibling;
+    while (prev?.type.name.includes('LineComment')) {
+        firstNode = prev;
+        prev = prev.prevSibling;
+    }
+    let next = node.nextSibling;
+    while (next?.type.name.includes('LineComment')) {
+        lastNode = next;
+        next = next.nextSibling;
+    }
+    // Extract all lines between the first and last identified node
+    const fullRawText = state.doc.sliceString(firstNode.from, lastNode.to);
+    // Process each line to remove prefixes (// or #)
+    const concatenatedText = fullRawText.replaceAll(LINE_COMMENT_PATTERN, '').replace(/\n\s*\n/g, '\n').trim();
+    return concatenatedText ? { text: concatenatedText, to: lastNode.to } : undefined;
 }
 export class AiCodeGenerationParser {
     static extractCommentNodeInfo(state, cursorPosition) {
@@ -68,10 +84,10 @@ export class AiCodeGenerationParser {
         const rawText = state.doc.sliceString(node.from, node.to);
         let text = '';
         if (nodeType.includes('LineComment')) {
-            text = extractLineComment(rawText);
+            return extractLineComment(node, state);
         }
-        else if (nodeType.includes('BlockComment')) {
-            text = extractBlockComment(rawText) ?? '';
+        if (nodeType.includes('BlockComment')) {
+            text = extractBlockCommentText(rawText) ?? '';
         }
         else {
             text = rawText;

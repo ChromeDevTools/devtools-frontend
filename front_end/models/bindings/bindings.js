@@ -3543,7 +3543,11 @@ var DebuggerWorkspaceBinding = class _DebuggerWorkspaceBinding {
     this.#liveLocationPromises.add(promise);
   }
   async updateLocations(script) {
-    const updatePromises = [script.target().model(StackTraceModel_exports.StackTraceModel)?.scriptInfoChanged(script, this.#translateRawFrames.bind(this))];
+    const stackTraceUpdatePromise = script.target().model(StackTraceModel_exports.StackTraceModel)?.scriptInfoChanged(script, this.#translateRawFrames.bind(this));
+    if (stackTraceUpdatePromise) {
+      this.recordLiveLocationChange(stackTraceUpdatePromise);
+    }
+    const updatePromises = [stackTraceUpdatePromise];
     const modelData = this.#debuggerModelToData.get(script.debuggerModel);
     if (modelData) {
       const updatePromise = modelData.updateLocations(script);
@@ -3554,11 +3558,15 @@ var DebuggerWorkspaceBinding = class _DebuggerWorkspaceBinding {
   }
   async createStackTraceFromProtocolRuntime(stackTrace, target) {
     const model = target.model(StackTraceModel_exports.StackTraceModel);
-    return await model.createFromProtocolRuntime(stackTrace, this.#translateRawFrames.bind(this));
+    const stackTracePromise = model.createFromProtocolRuntime(stackTrace, this.#translateRawFrames.bind(this));
+    this.recordLiveLocationChange(stackTracePromise);
+    return await stackTracePromise;
   }
   async createStackTraceFromDebuggerPaused(pausedDetails, target) {
     const model = target.model(StackTraceModel_exports.StackTraceModel);
-    return await model.createFromDebuggerPaused(pausedDetails, this.#translateRawFrames.bind(this));
+    const stackTracePromise = model.createFromDebuggerPaused(pausedDetails, this.#translateRawFrames.bind(this));
+    this.recordLiveLocationChange(stackTracePromise);
+    return await stackTracePromise;
   }
   async createLiveLocation(rawLocation, updateDelegate, locationPool) {
     const modelData = this.#debuggerModelToData.get(rawLocation.debuggerModel);

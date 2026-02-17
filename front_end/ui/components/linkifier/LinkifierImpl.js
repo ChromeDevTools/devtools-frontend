@@ -20,6 +20,9 @@ export class LinkifierClick extends Event {
         this.data = data;
     }
 }
+/**
+ * @deprecated do not use
+ */
 export class Linkifier extends HTMLElement {
     #shadow = this.attachShadow({ mode: 'open' });
     #url = Platform.DevToolsPath.EmptyUrlString;

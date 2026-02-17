@@ -740,6 +740,14 @@ var UIStringsNotTranslate2 = {
   /**
    * @description Text for teaser when suggestion has been generated.
    */
+  or: "or",
+  /**
+   * @description Text for teaser when suggestion has been generated.
+   */
+  enter: "enter",
+  /**
+   * @description Text for teaser when suggestion has been generated.
+   */
   toAccept: "to accept",
   /**
    * @description Text for tooltip shown on hovering over "Relevant Data" in the disclaimer text for AI code generation in Console panel.
@@ -868,6 +876,8 @@ var DEFAULT_VIEW2 = (input, output, target) => {
     case AiCodeGenerationTeaserDisplayState.GENERATED: {
       teaserLabel = html3`<div class="ai-code-generation-teaser-generated">
           <span>${lockedString2(UIStringsNotTranslate2.tab)}</span>
+          &nbsp;${lockedString2(UIStringsNotTranslate2.or)}&nbsp;
+          <span>${lockedString2(UIStringsNotTranslate2.enter)}</span>
           &nbsp;${lockedString2(UIStringsNotTranslate2.toAccept)}
         </div>`;
       break;

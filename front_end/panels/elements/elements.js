@@ -11725,18 +11725,12 @@ function renderTitle(node, isClosingTag, expanded, isExpandable, isXMLMimeType, 
     }
     case Node.DOCUMENT_NODE: {
       const text = node.documentURL;
-      const linkify = ref2((el) => {
-        if (el) {
-          el.removeChildren();
-          el.appendChild(Components6.Linkifier.Linkifier.linkifyURL(text, {
-            text,
-            preventClick: true,
-            showColumnNumber: false,
-            inlineFrameIndex: 0
-          }));
-        }
-      });
-      return html8`<span>#document (<span ${linkify}></span>)</span>`;
+      return html8`<span>#document (<span>${Components6.Linkifier.Linkifier.renderLinkifiedUrl(text, {
+        text,
+        preventClick: true,
+        showColumnNumber: false,
+        inlineFrameIndex: 0
+      })}</span>)</span>`;
     }
     case Node.DOCUMENT_FRAGMENT_NODE: {
       return html8`<span class="webkit-html-fragment">${Platform7.StringUtilities.collapseWhitespace(node.nodeNameInCorrectCase())}</span>`;

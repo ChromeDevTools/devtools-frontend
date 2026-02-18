@@ -1,10 +1,8 @@
 import * as SDK from '../../../../core/sdk/sdk.js';
-import type * as Protocol from '../../../../generated/protocol.js';
 import * as StackTrace from '../../../../models/stack_trace/stack_trace.js';
 import * as UI from '../../legacy.js';
 import { Linkifier } from './Linkifier.js';
 export interface Options {
-    runtimeStackTrace?: Protocol.Runtime.StackTrace;
     tabStops?: boolean;
     widthConstrained?: boolean;
     showColumnNumber?: boolean;

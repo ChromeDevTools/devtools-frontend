@@ -1326,6 +1326,7 @@ export function createFileSelectorElement(callback, accept) {
     return fileSelectorElement;
 }
 export const MaxLengthForDisplayedURLs = 150;
+export const MaxLengthForDisplayedURLsInConsole = 40;
 export class MessageDialog {
     static async show(header, message, where, jslogContext) {
         const dialog = new Dialog(jslogContext);

@@ -201,6 +201,7 @@ export declare function loadImage(url: string): Promise<HTMLImageElement | null>
  */
 export declare function createFileSelectorElement(callback: (arg0: File) => void, accept?: string): HTMLInputElement;
 export declare const MaxLengthForDisplayedURLs = 150;
+export declare const MaxLengthForDisplayedURLsInConsole = 40;
 export declare class MessageDialog {
     static show(header: string, message: string, where?: Element | Document, jslogContext?: string): Promise<void>;
 }

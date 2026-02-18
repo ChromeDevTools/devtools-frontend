@@ -35,7 +35,6 @@ import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as ComputedStyleModule from '../../models/computed_style/computed_style.js';
 import * as TreeOutline from '../../ui/components/tree_outline/tree_outline.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
@@ -236,16 +235,16 @@ export const DEFAULT_VIEW = (input, _output, target) => {
         >${i18nString(UIStrings.group)}</devtools-checkbox>
       </devtools-toolbar>
     </div>
-    <div class="computed-style-tree-outline-container">
-      ${input.computedStylesTree}
-    </div>
+    ${input.computedStylesTree}
     ${!input.hasMatches ? html `<div class="gray-info-message">${i18nString(UIStrings.noMatchingProperty)}</div>` : ''}
-    <devtools-widget .widgetConfig=${UI.Widget.widgetConfig(PlatformFontsWidget, { sharedModel: input.computedStyleModel })}></devtools-widget>
+    ${input.computedStyleModel ? html `<devtools-widget .widgetConfig=${UI.Widget.widgetConfig(PlatformFontsWidget, { sharedModel: input.computedStyleModel })}></devtools-widget>` : ''}
   `, target);
     // clang-format on
 };
 export class ComputedStyleWidget extends UI.Widget.VBox {
-    computedStyleModel;
+    #computedStyleModel;
+    #nodeStyle = null;
+    #matchedStyles = null;
     showInheritedComputedStylePropertiesSetting;
     groupComputedStylesSetting;
     filterRegex;
@@ -255,13 +254,10 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
     #treeData;
     #view;
     #filterText = '';
-    constructor(computedStyleModel) {
+    constructor() {
         super({ useShadowDom: true });
         this.#view = DEFAULT_VIEW;
         this.contentElement.classList.add('styles-sidebar-computed-style-widget');
-        this.computedStyleModel = computedStyleModel;
-        this.computedStyleModel.addEventListener("CSSModelChanged" /* ComputedStyleModule.ComputedStyleModel.Events.CSS_MODEL_CHANGED */, this.requestUpdate, this);
-        this.computedStyleModel.addEventListener("ComputedStyleChanged" /* ComputedStyleModule.ComputedStyleModel.Events.COMPUTED_STYLE_CHANGED */, this.requestUpdate, this);
         this.showInheritedComputedStylePropertiesSetting =
             Common.Settings.Settings.instance().createSetting('show-inherited-computed-style-properties', false);
         this.showInheritedComputedStylePropertiesSetting.addChangeListener(this.requestUpdate.bind(this));
@@ -277,7 +273,7 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
                 return link;
             }
             return null;
-        }, () => this.computedStyleModel.node);
+        }, () => this.#computedStyleModel ? this.#computedStyleModel.node : null);
         this.#updateView({ hasMatches: true });
     }
     onResize() {
@@ -299,15 +295,37 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
         this.#view({
             computedStylesTree: this.#computedStylesTree,
             hasMatches,
-            computedStyleModel: this.computedStyleModel,
+            computedStyleModel: this.#computedStyleModel,
             showInheritedComputedStylePropertiesSetting: this.showInheritedComputedStylePropertiesSetting,
             groupComputedStylesSetting: this.groupComputedStylesSetting,
             onFilterChanged: this.onFilterChanged.bind(this),
             filterText: this.#filterText,
         }, null, this.contentElement);
     }
+    get nodeStyle() {
+        return this.#nodeStyle;
+    }
+    set nodeStyle(nodeStyle) {
+        this.#nodeStyle = nodeStyle;
+        this.requestUpdate();
+    }
+    get matchedStyles() {
+        return this.#matchedStyles;
+    }
+    set matchedStyles(matchedStyles) {
+        this.#matchedStyles = matchedStyles;
+        this.requestUpdate();
+    }
+    get computedStyleModel() {
+        return this.#computedStyleModel;
+    }
+    set computedStyleModel(computedStyleModel) {
+        this.#computedStyleModel = computedStyleModel;
+        this.requestUpdate();
+    }
     async performUpdate() {
-        const { computedStyle: nodeStyles, matchedStyles } = await this.computedStyleModel.fetchAllComputedStyleInfo();
+        const nodeStyles = this.#nodeStyle;
+        const matchedStyles = this.#matchedStyles;
         if (!nodeStyles || !matchedStyles) {
             this.#updateView({ hasMatches: false });
             return;
@@ -323,7 +341,7 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
     async rebuildAlphabeticalList(nodeStyle, matchedStyles) {
         this.imagePreviewPopover.hide();
         this.linkifier.reset();
-        const cssModel = this.computedStyleModel.cssModel();
+        const cssModel = this.#computedStyleModel?.cssModel();
         if (!cssModel) {
             return;
         }
@@ -360,7 +378,7 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
     async rebuildGroupedList(nodeStyle, matchedStyles) {
         this.imagePreviewPopover.hide();
         this.linkifier.reset();
-        const cssModel = this.computedStyleModel.cssModel();
+        const cssModel = this.#computedStyleModel?.cssModel();
         if (!nodeStyle || !matchedStyles || !cssModel) {
             this.#updateView({ hasMatches: false });
             return;

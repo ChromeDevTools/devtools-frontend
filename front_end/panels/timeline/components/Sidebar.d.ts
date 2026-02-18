@@ -46,4 +46,12 @@ export declare class SidebarWidget extends UI.Widget.VBox {
     setActiveInsight(activeInsight: ActiveInsight | null, opts: {
         highlight: boolean;
     }): void;
+    /**
+     * True if the sidebar has been visible at least one time. This is persisted
+     * to the user settings so it persists across sessions. This is used because
+     * we do not force the RPP sidebar open by default; if a user has seen it &
+     * then closed it, we will not re-open it automatically. But if a user
+     * has never seen it, we want them to see it once to know it exists.
+     */
+    sidebarHasBeenOpened(): boolean;
 }

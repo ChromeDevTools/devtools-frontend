@@ -16,7 +16,7 @@ import * as AiAssistanceModel5 from "./../../models/ai_assistance/ai_assistance.
 import * as Annotations from "./../../models/annotations/annotations.js";
 import * as Badges from "./../../models/badges/badges.js";
 import * as TextUtils from "./../../models/text_utils/text_utils.js";
-import * as Workspace6 from "./../../models/workspace/workspace.js";
+import * as Workspace5 from "./../../models/workspace/workspace.js";
 import * as Buttons6 from "./../../ui/components/buttons/buttons.js";
 import * as Snackbars2 from "./../../ui/components/snackbars/snackbars.js";
 import * as UIHelpers2 from "./../../ui/helpers/helpers.js";
@@ -1167,7 +1167,6 @@ import "./../../ui/components/tooltips/tooltips.js";
 import * as i18n5 from "./../../core/i18n/i18n.js";
 import * as SDK from "./../../core/sdk/sdk.js";
 import * as AiAssistanceModel2 from "./../../models/ai_assistance/ai_assistance.js";
-import * as Workspace5 from "./../../models/workspace/workspace.js";
 import * as PanelsCommon from "./../common/common.js";
 import * as PanelUtils from "./../utils/utils.js";
 import * as Buttons3 from "./../../ui/components/buttons/buttons.js";
@@ -1589,15 +1588,7 @@ var UIStrings = {
   /**
    * @description The footer disclaimer that links to more information about the AI feature.
    */
-  learnAbout: "Learn about AI in DevTools",
-  /**
-   * @description Label added to the button that remove the currently selected context in AI Assistance panel.
-   */
-  removeContext: "Remove from context",
-  /**
-   * @description Label added to the button that add selected context from the current panel in AI Assistance panel.
-   */
-  addContext: "Add selected item as context"
+  learnAbout: "Learn about AI in DevTools"
 };
 var UIStringsNotTranslate3 = {
   /**
@@ -1639,7 +1630,31 @@ var UIStringsNotTranslate3 = {
   /**
    * @description Message displayed in toast in case of any failures while uploading an image file as input.
    */
-  uploadImageFailureMessage: "Failed to upload image. Please try again."
+  uploadImageFailureMessage: "Failed to upload image. Please try again.",
+  /**
+   * @description Label added to the button that add selected context from the current panel in AI Assistance panel.
+   */
+  addContext: "Add item for context",
+  /**
+   * @description Label added to the button that remove the currently selected element in AI Assistance panel.
+   */
+  removeContextElement: "Remove element from context",
+  /**
+   * @description Label added to the button that remove the currently selected context in AI Assistance panel.
+   */
+  removeContextRequest: "Remove request from context",
+  /**
+   * @description Label added to the button that remove the currently selected context in AI Assistance panel.
+   */
+  removeContextFile: "Remove file from context",
+  /**
+   * @description Label added to the button that remove the currently selected context in AI Assistance panel.
+   */
+  removeContextPerfInsight: "Remove performance insight from context",
+  /**
+   * @description Label added to the button that remove the currently selected context in AI Assistance panel.
+   */
+  removeContext: "Remove from context"
 };
 var str_ = i18n5.i18n.registerUIStrings("panels/ai_assistance/components/ChatInput.ts", UIStrings);
 var i18nString = i18n5.i18n.getLocalizedString.bind(void 0, str_);
@@ -1649,6 +1664,21 @@ var JPEG_MIME_TYPE = "image/jpeg";
 var SHOW_LOADING_STATE_TIMEOUT = 100;
 var RELEVANT_DATA_LINK_CHAT_ID = "relevant-data-link-chat";
 var RELEVANT_DATA_LINK_FOOTER_ID = "relevant-data-link-footer";
+function getContextRemoveLabel(context) {
+  if (context instanceof AiAssistanceModel2.FileAgent.FileContext) {
+    return lockedString3(UIStringsNotTranslate3.removeContextFile);
+  }
+  if (context instanceof AiAssistanceModel2.StylingAgent.NodeContext) {
+    return lockedString3(UIStringsNotTranslate3.removeContextElement);
+  }
+  if (context instanceof AiAssistanceModel2.NetworkAgent.RequestContext) {
+    return lockedString3(UIStringsNotTranslate3.removeContextRequest);
+  }
+  if (context instanceof AiAssistanceModel2.PerformanceAgent.PerformanceTraceContext) {
+    return lockedString3(UIStringsNotTranslate3.removeContextPerfInsight);
+  }
+  return lockedString3(UIStringsNotTranslate3.removeContext);
+}
 var DEFAULT_VIEW2 = (input, _output, target) => {
   const chatInputContainerCls = Lit.Directives.classMap({
     "chat-input-container": true,
@@ -1787,9 +1817,9 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
   }}
                         aria-description=${i18nString(UIStrings.revealContextDescription)}
                       >
-                        ${input.selectedContext.getItem() instanceof SDK.NetworkRequest.NetworkRequest ? PanelUtils.PanelUtils.getIconForNetworkRequest(input.selectedContext.getItem()) : input.selectedContext.getItem() instanceof Workspace5.UISourceCode.UISourceCode ? PanelUtils.PanelUtils.getIconForSourceFile(input.selectedContext.getItem()) : input.selectedContext.getItem() instanceof AiAssistanceModel2.AIContext.AgentFocus ? html3`<devtools-icon name="performance" title="Performance"></devtools-icon>` : Lit.nothing}
+                        ${input.selectedContext instanceof AiAssistanceModel2.NetworkAgent.RequestContext ? PanelUtils.PanelUtils.getIconForNetworkRequest(input.selectedContext.getItem()) : input.selectedContext instanceof AiAssistanceModel2.FileAgent.FileContext ? PanelUtils.PanelUtils.getIconForSourceFile(input.selectedContext.getItem()) : input.selectedContext instanceof AiAssistanceModel2.PerformanceAgent.PerformanceTraceContext ? html3`<devtools-icon name="performance" title="Performance"></devtools-icon>` : Lit.nothing}
                         <span class="title">
-                          ${input.selectedContext.getItem() instanceof SDK.DOMModel.DOMNode ? html3`
+                          ${input.selectedContext instanceof AiAssistanceModel2.StylingAgent.NodeContext ? html3`
                               <devtools-widget .widgetConfig=${UI3.Widget.widgetConfig(PanelsCommon.DOMLinkifier.DOMNodeLink, {
     node: input.selectedContext.getItem(),
     options: {
@@ -1800,8 +1830,8 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
                         </span>
                         ${input.onContextRemoved ? html3`
                                   <devtools-button
-                                    title=${i18nString(UIStrings.removeContext)}
-                                    aria-label=${i18nString(UIStrings.removeContext)}
+                                    title=${getContextRemoveLabel(input.selectedContext)}
+                                    aria-label=${getContextRemoveLabel(input.selectedContext)}
                                     class="remove-context"
                                     .iconName=${"cross"}
                                     .size=${"MICRO"}
@@ -1811,8 +1841,8 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
                       </div>
                     </div>` : input.onContextAdd ? html3`
                                   <devtools-button
-                                    title=${i18nString(UIStrings.addContext)}
-                                    aria-label=${i18nString(UIStrings.addContext)}
+                                    title=${lockedString3(UIStringsNotTranslate3.addContext)}
+                                    aria-label=${lockedString3(UIStringsNotTranslate3.addContext)}
                                     class="add-context"
                                     .iconName=${"plus"}
                                     .size=${"SMALL"}
@@ -4934,7 +4964,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI8.Panel.Panel {
     this.#selectedElement = createNodeContext(selectedElementFilter(UI8.Context.Context.instance().flavor(SDK3.DOMModel.DOMNode)));
     this.#selectedRequest = createRequestContext(UI8.Context.Context.instance().flavor(SDK3.NetworkRequest.NetworkRequest));
     this.#selectedPerformanceTrace = createPerformanceTraceContext(UI8.Context.Context.instance().flavor(AiAssistanceModel5.AIContext.AgentFocus));
-    this.#selectedFile = createFileContext(UI8.Context.Context.instance().flavor(Workspace6.UISourceCode.UISourceCode));
+    this.#selectedFile = createFileContext(UI8.Context.Context.instance().flavor(Workspace5.UISourceCode.UISourceCode));
     this.#updateConversationState(this.#conversation);
     this.#aiAssistanceEnabledSetting?.addChangeListener(this.requestUpdate, this);
     Host6.AidaClient.HostConfigTracker.instance().addEventListener("aidaAvailabilityChanged", this.#handleAidaAvailabilityChange);
@@ -4942,7 +4972,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI8.Panel.Panel {
     UI8.Context.Context.instance().addFlavorChangeListener(SDK3.DOMModel.DOMNode, this.#handleDOMNodeFlavorChange);
     UI8.Context.Context.instance().addFlavorChangeListener(SDK3.NetworkRequest.NetworkRequest, this.#handleNetworkRequestFlavorChange);
     UI8.Context.Context.instance().addFlavorChangeListener(AiAssistanceModel5.AIContext.AgentFocus, this.#handlePerformanceTraceFlavorChange);
-    UI8.Context.Context.instance().addFlavorChangeListener(Workspace6.UISourceCode.UISourceCode, this.#handleUISourceCodeFlavorChange);
+    UI8.Context.Context.instance().addFlavorChangeListener(Workspace5.UISourceCode.UISourceCode, this.#handleUISourceCodeFlavorChange);
     UI8.ViewManager.ViewManager.instance().addEventListener("ViewVisibilityChanged", this.#selectDefaultAgentIfNeeded, this);
     SDK3.TargetManager.TargetManager.instance().addModelListener(SDK3.DOMModel.DOMModel, SDK3.DOMModel.Events.AttrModified, this.#handleDOMNodeAttrChange, this);
     SDK3.TargetManager.TargetManager.instance().addModelListener(SDK3.DOMModel.DOMModel, SDK3.DOMModel.Events.AttrRemoved, this.#handleDOMNodeAttrChange, this);
@@ -4959,7 +4989,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI8.Panel.Panel {
     UI8.Context.Context.instance().removeFlavorChangeListener(SDK3.DOMModel.DOMNode, this.#handleDOMNodeFlavorChange);
     UI8.Context.Context.instance().removeFlavorChangeListener(SDK3.NetworkRequest.NetworkRequest, this.#handleNetworkRequestFlavorChange);
     UI8.Context.Context.instance().removeFlavorChangeListener(AiAssistanceModel5.AIContext.AgentFocus, this.#handlePerformanceTraceFlavorChange);
-    UI8.Context.Context.instance().removeFlavorChangeListener(Workspace6.UISourceCode.UISourceCode, this.#handleUISourceCodeFlavorChange);
+    UI8.Context.Context.instance().removeFlavorChangeListener(Workspace5.UISourceCode.UISourceCode, this.#handleUISourceCodeFlavorChange);
     UI8.ViewManager.ViewManager.instance().removeEventListener("ViewVisibilityChanged", this.#selectDefaultAgentIfNeeded, this);
     UI8.Context.Context.instance().removeFlavorChangeListener(TimelinePanel.TimelinePanel.TimelinePanel, this.#bindTimelineTraceListener, this);
     SDK3.TargetManager.TargetManager.instance().removeModelListener(SDK3.DOMModel.DOMModel, SDK3.DOMModel.Events.AttrModified, this.#handleDOMNodeAttrChange, this);
@@ -5332,8 +5362,8 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI8.Panel.Panel {
       finalTitle = finalTitle.substring(0, maxTitleLength);
     }
     const filename = `${prefix}${finalTitle}${suffix}`;
-    await Workspace6.FileManager.FileManager.instance().save(filename, contentData, true);
-    Workspace6.FileManager.FileManager.instance().close(filename);
+    await Workspace5.FileManager.FileManager.instance().save(filename, contentData, true);
+    Workspace5.FileManager.FileManager.instance().close(filename);
   }
   async #openHistoricConversation(conversation) {
     if (this.#conversation?.id === conversation.id) {

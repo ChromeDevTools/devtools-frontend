@@ -627,6 +627,7 @@ __export(UIUtils_exports, {
   InterceptBindingDirective: () => InterceptBindingDirective,
   LongClickController: () => LongClickController,
   MaxLengthForDisplayedURLs: () => MaxLengthForDisplayedURLs,
+  MaxLengthForDisplayedURLsInConsole: () => MaxLengthForDisplayedURLsInConsole,
   MessageDialog: () => MessageDialog,
   PromotionManager: () => PromotionManager,
   Renderer: () => Renderer,
@@ -15077,6 +15078,7 @@ function createFileSelectorElement(callback, accept) {
   return fileSelectorElement;
 }
 var MaxLengthForDisplayedURLs = 150;
+var MaxLengthForDisplayedURLsInConsole = 40;
 var MessageDialog = class {
   static async show(header, message, where, jslogContext) {
     const dialog3 = new Dialog(jslogContext);

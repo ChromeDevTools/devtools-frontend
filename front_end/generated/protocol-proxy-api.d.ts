@@ -1832,7 +1832,8 @@ declare namespace ProtocolProxyApi {
     invoke_setSmallViewportHeightDifferenceOverride(params: Protocol.Emulation.SetSmallViewportHeightDifferenceOverrideRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
-     * Returns device's screen configuration.
+     * Returns device's screen configuration. In headful mode, the physical screens configuration is returned,
+     * whereas in headless mode, a virtual headless screen configuration is provided instead.
      */
     invoke_getScreenInfos(): Promise<Protocol.Emulation.GetScreenInfosResponse>;
 

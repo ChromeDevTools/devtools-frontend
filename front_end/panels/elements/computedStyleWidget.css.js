@@ -19,12 +19,7 @@ export default `/*
     width: 100%;
   }
 
-  .styles-sidebar-computed-style-widget {
-    min-height: auto;
-  }
-
-  .computed-style-tree-outline-container {
-    flex-grow: 1;
+  devtools-tree-outline {
     flex-shrink: 0;
   }
 

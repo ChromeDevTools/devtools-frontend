@@ -2069,10 +2069,6 @@ export class ConsoleTableMessageView extends ConsoleViewMessage {
  * @constant
  */
 const MaxLengthToIgnoreHighlighter = 10000;
-/**
- * @constant
- */
-export const MaxLengthForLinks = 40;
 let maxTokenizableStringLength = 10000;
 let longStringVisibleLength = 5000;
 export const getMaxTokenizableStringLength = () => {

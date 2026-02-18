@@ -16,5 +16,4 @@ export declare class NodeStackTraceWidget extends UI.Widget.VBox {
     willHide(): void;
     performUpdate(): Promise<void>;
 }
-export declare const MaxLengthForLinks = 40;
 export {};

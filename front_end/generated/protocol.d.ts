@@ -791,6 +791,16 @@ export declare namespace Audits {
          */
         insight?: CookieIssueInsight;
     }
+    const enum PerformanceIssueType {
+        DocumentCookie = "DocumentCookie"
+    }
+    /**
+     * Details for a performance issue.
+     */
+    interface PerformanceIssueDetails {
+        performanceIssueType: PerformanceIssueType;
+        sourceCodeLocation?: SourceCodeLocation;
+    }
     const enum MixedContentResolutionStatus {
         MixedContentBlocked = "MixedContentBlocked",
         MixedContentAutomaticallyUpgraded = "MixedContentAutomaticallyUpgraded",
@@ -1453,7 +1463,8 @@ export declare namespace Audits {
         UnencodedDigestIssue = "UnencodedDigestIssue",
         ConnectionAllowlistIssue = "ConnectionAllowlistIssue",
         UserReidentificationIssue = "UserReidentificationIssue",
-        PermissionElementIssue = "PermissionElementIssue"
+        PermissionElementIssue = "PermissionElementIssue",
+        PerformanceIssue = "PerformanceIssue"
     }
     /**
      * This struct holds a list of optional fields with additional information
@@ -1492,6 +1503,7 @@ export declare namespace Audits {
         connectionAllowlistIssueDetails?: ConnectionAllowlistIssueDetails;
         userReidentificationIssueDetails?: UserReidentificationIssueDetails;
         permissionElementIssueDetails?: PermissionElementIssueDetails;
+        performanceIssueDetails?: PerformanceIssueDetails;
     }
     /**
      * A unique id for a DevTools inspector issue. Allows other entities (e.g.

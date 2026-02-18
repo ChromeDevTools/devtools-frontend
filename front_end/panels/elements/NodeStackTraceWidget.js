@@ -30,7 +30,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
     // clang-format on
 };
 export class NodeStackTraceWidget extends UI.Widget.VBox {
-    #linkifier = new Components.Linkifier.Linkifier(MaxLengthForLinks);
+    #linkifier = new Components.Linkifier.Linkifier(UI.UIUtils.MaxLengthForDisplayedURLsInConsole);
     #view;
     constructor(view = DEFAULT_VIEW) {
         super({ useShadowDom: true });
@@ -60,5 +60,4 @@ export class NodeStackTraceWidget extends UI.Widget.VBox {
         this.#view(input, {}, this.contentElement);
     }
 }
-export const MaxLengthForLinks = 40;
 //# sourceMappingURL=NodeStackTraceWidget.js.map

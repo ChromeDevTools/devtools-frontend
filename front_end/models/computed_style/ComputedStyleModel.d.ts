@@ -22,11 +22,12 @@ export declare class ComputedStyleModel extends Common.ObjectWrapper.ObjectWrapp
     private onFrameResized;
     private elementNode;
     fetchComputedStyle(): Promise<ComputedStyle | null>;
-    private fetchMatchedCascade;
-    fetchAllComputedStyleInfo(): Promise<{
-        computedStyle: ComputedStyle | null;
-        matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles | null;
-    }>;
+    /**
+     * Fetches the CSS cascade for the node, including matched rules, inherited
+     * styles, and pseudo-elements.
+     * This allows determining which properties are active or overridden.
+     */
+    fetchMatchedCascade(): Promise<SDK.CSSMatchedStyles.CSSMatchedStyles | null>;
 }
 export declare const enum Events {
     CSS_MODEL_CHANGED = "CSSModelChanged",

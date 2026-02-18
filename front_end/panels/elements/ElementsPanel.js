@@ -171,7 +171,7 @@ export class ElementsPanel extends UI.Panel.Panel {
     accessibilityTreeView;
     breadcrumbs;
     stylesWidget;
-    computedStyleWidget;
+    #computedStyleWidget;
     metricsWidget;
     searchResults;
     currentSearchResultIndex;
@@ -251,7 +251,10 @@ export class ElementsPanel extends UI.Panel.Panel {
         UI.Context.Context.instance().addFlavorChangeListener(StylesSidebarPane, this.evaluateTrackingComputedStyleUpdatesForNode, this);
         UI.Context.Context.instance().addFlavorChangeListener(ComputedStyleWidget, this.evaluateTrackingComputedStyleUpdatesForNode, this);
         this.stylesWidget = new StylesSidebarPane(this.#computedStyleModel);
-        this.computedStyleWidget = new ComputedStyleWidget(this.#computedStyleModel);
+        this.#computedStyleWidget = new ComputedStyleWidget();
+        this.#computedStyleWidget.computedStyleModel = this.#computedStyleModel;
+        this.#computedStyleModel.addEventListener("ComputedStyleChanged" /* ComputedStyle.ComputedStyleModel.Events.COMPUTED_STYLE_CHANGED */, this.#updateComputedStyles, this);
+        this.#computedStyleModel.addEventListener("CSSModelChanged" /* ComputedStyle.ComputedStyleModel.Events.CSS_MODEL_CHANGED */, this.#updateComputedStyles, this);
         this.metricsWidget = new MetricsSidebarPane(this.#computedStyleModel);
         Common.Settings.Settings.instance()
             .moduleSetting('sidebar-position')
@@ -294,6 +297,12 @@ export class ElementsPanel extends UI.Panel.Panel {
             (isStylesTabVisible && Root.Runtime.hostConfig.devToolsAnimationStylesInStylesTab?.enabled);
         void selectedNode.domModel()?.cssModel()?.trackComputedStyleUpdatesForNode(shouldTrackComputedStyleUpdates ? selectedNode.id : undefined);
     }, 100);
+    async #updateComputedStyles() {
+        const computedStyle = await this.#computedStyleModel.fetchComputedStyle();
+        const matchedCascade = await this.#computedStyleModel.fetchMatchedCascade();
+        this.#computedStyleWidget.nodeStyle = computedStyle;
+        this.#computedStyleWidget.matchedStyles = matchedCascade;
+    }
     handleElementExpanded() {
         if (Annotations.AnnotationRepository.annotationsEnabled()) {
             void PanelCommon.AnnotationManager.instance().resolveAnnotationsOfType(Annotations.AnnotationType.ELEMENT_NODE);
@@ -823,7 +832,7 @@ export class ElementsPanel extends UI.Panel.Panel {
         const computedStylePanesWrapper = new UI.Widget.VBox();
         computedStylePanesWrapper.element.classList.add('style-panes-wrapper');
         computedStylePanesWrapper.element.setAttribute('jslog', `${VisualLogging.pane('computed').track({ resize: true })}`);
-        this.computedStyleWidget.show(computedStylePanesWrapper.element);
+        this.#computedStyleWidget.show(computedStylePanesWrapper.element);
         const stylesSplitWidget = new UI.SplitWidget.SplitWidget(true /* isVertical */, true /* secondIsSidebar */, 'elements.styles.sidebar.width', 100);
         stylesSplitWidget.setMainWidget(matchedStylePanesWrapper);
         stylesSplitWidget.hideSidebar();
@@ -835,7 +844,7 @@ export class ElementsPanel extends UI.Panel.Panel {
             this.stylesWidget.appendToolbarItem(stylesSplitWidget.createShowHideSidebarButton(i18nString(UIStrings.showComputedStylesSidebar), i18nString(UIStrings.hideComputedStylesSidebar), i18nString(UIStrings.computedStylesShown), i18nString(UIStrings.computedStylesHidden), 'computed-styles'));
         });
         const showMetricsWidgetInComputedPane = () => {
-            this.metricsWidget.show(computedStylePanesWrapper.element, this.computedStyleWidget.element);
+            this.metricsWidget.show(computedStylePanesWrapper.element, this.#computedStyleWidget.element);
             this.stylesWidget.removeEventListener("StylesUpdateCompleted" /* StylesSidebarPaneEvents.STYLES_UPDATE_COMPLETED */, toggleMetricsWidget);
         };
         const showMetricsWidgetInStylesPane = () => {
@@ -938,7 +947,7 @@ export class ElementsPanel extends UI.Panel.Panel {
         }
     }
     getComputedStyleWidget() {
-        return this.computedStyleWidget;
+        return this.#computedStyleWidget;
     }
     setupStyleTracking(cssModel) {
         const cssPropertyTracker = cssModel.createCSSPropertyTracker(TrackedCSSProperties);

@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-imperative-dom-api */
+import * as Common from '../../../core/common/common.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import { InsightActivated, InsightDeactivated } from './insights/SidebarInsight.js';
 import { SidebarAnnotationsTab } from './SidebarAnnotationsTab.js';
@@ -50,6 +51,13 @@ export class SidebarWidget extends UI.Widget.VBox {
      * user pops the sidebar open, we want to re-activate it.
      */
     #insightToRestoreOnOpen = null;
+    /**
+     * We track if the user has opened the sidebar once. This is used to
+     * automatically show the sidebar for new users when they first record or
+     * import a trace, but then persist its state (so if they close it, it stays
+     * closed).
+     */
+    #hasOpenedOnce = Common.Settings.Settings.instance().createSetting('timeline-sidebar-opened-at-least-once', false);
     constructor() {
         super();
         this.setMinimumSize(MIN_SIDEBAR_WIDTH_PX, 0);
@@ -61,6 +69,7 @@ export class SidebarWidget extends UI.Widget.VBox {
     }
     wasShown() {
         super.wasShown();
+        this.#hasOpenedOnce.set(true);
         this.#tabbedPane.show(this.element);
         this.#updateAnnotationsCountBadge();
         if (this.#insightToRestoreOnOpen) {
@@ -100,6 +109,16 @@ export class SidebarWidget extends UI.Widget.VBox {
         if (activeInsight) {
             this.#tabbedPane.selectTab("insights" /* SidebarTabs.INSIGHTS */);
         }
+    }
+    /**
+     * True if the sidebar has been visible at least one time. This is persisted
+     * to the user settings so it persists across sessions. This is used because
+     * we do not force the RPP sidebar open by default; if a user has seen it &
+     * then closed it, we will not re-open it automatically. But if a user
+     * has never seen it, we want them to see it once to know it exists.
+     */
+    sidebarHasBeenOpened() {
+        return this.#hasOpenedOnce.get();
     }
 }
 class InsightsView extends UI.Widget.VBox {

@@ -34,7 +34,6 @@ export declare class ElementsPanel extends UI.Panel.Panel implements UI.Searchab
     private readonly accessibilityTreeView;
     private breadcrumbs;
     stylesWidget: StylesSidebarPane;
-    private readonly computedStyleWidget;
     private readonly metricsWidget;
     private searchResults;
     private currentSearchResultIndex;

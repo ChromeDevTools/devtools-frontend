@@ -841,7 +841,6 @@ __export(ConsoleViewMessage_exports, {
   ConsoleGroupViewMessage: () => ConsoleGroupViewMessage,
   ConsoleTableMessageView: () => ConsoleTableMessageView,
   ConsoleViewMessage: () => ConsoleViewMessage,
-  MaxLengthForLinks: () => MaxLengthForLinks,
   concatErrorDescriptionAndIssueSummary: () => concatErrorDescriptionAndIssueSummary,
   getLongStringVisibleLength: () => getLongStringVisibleLength,
   getMaxTokenizableStringLength: () => getMaxTokenizableStringLength,
@@ -3723,7 +3722,6 @@ var ConsoleTableMessageView = class extends ConsoleViewMessage {
   }
 };
 var MaxLengthToIgnoreHighlighter = 1e4;
-var MaxLengthForLinks = 40;
 var maxTokenizableStringLength = 1e4;
 var longStringVisibleLength = 5e3;
 var getMaxTokenizableStringLength = () => {
@@ -6511,7 +6509,7 @@ var ConsoleView = class _ConsoleView extends UI7.Widget.VBox {
     this.messagesElement.addEventListener("contextmenu", this.handleContextMenuEvent.bind(this), false);
     const throttler = new Common8.Throttler.Throttler(100);
     const refilterMessages = () => throttler.schedule(async () => this.onFilterChanged());
-    this.linkifier = new Components4.Linkifier.Linkifier(MaxLengthForLinks);
+    this.linkifier = new Components4.Linkifier.Linkifier(UI7.UIUtils.MaxLengthForDisplayedURLsInConsole);
     this.linkifier.addEventListener("liveLocationUpdated", refilterMessages);
     this.consoleMessages = [];
     this.consoleGroupStarts = [];

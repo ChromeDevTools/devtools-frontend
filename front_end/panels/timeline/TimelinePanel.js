@@ -384,6 +384,19 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
      */
     #userHadShortcutsDialogOpenedOnce = Common.Settings.Settings.instance().createSetting('timeline.user-had-shortcuts-dialog-opened-once', false);
     /**
+     * Rather than auto-pop the sidebar every time the user records a trace,
+     * which could get annoying, we instead persist the state of the sidebar
+     * visibility to a setting so it's restored across sessions.
+     * However, sometimes we have to automatically hide the sidebar, like when a
+     * trace recording is happening, or the user is on the landing page. In those
+     * times, we toggle this flag to true. Then, when we enter the VIEWING_TRACE
+     * mode, we check this flag and pop the sidebar open if it's set to true.
+     * Longer term a better fix here would be to divide the 3 UI screens
+     * (status pane, landing page, trace view) into distinct components /
+     * widgets, to avoid this complexity.
+     */
+    #restoreSidebarVisibilityOnTraceLoad = false;
+    /**
      * Navigation radio buttons located in the shortcuts dialog.
      */
     #navigationRadioButtons = document.createElement('form');
@@ -784,9 +797,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
                 this.#hideLandingPage();
                 this.#setModelForActiveTrace();
                 this.#removeStatusPane();
-                if (newMode.forceOpenSidebar) {
-                    this.#showSidebar();
-                }
+                this.#showSidebarIfRequired();
                 this.flameChart.dimThirdPartiesIfRequired();
                 this.dispatchEventToListeners("IsViewingTrace" /* Events.IS_VIEWING_TRACE */, true);
                 return;
@@ -1379,7 +1390,6 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
                 this.#changeView({
                     mode: 'VIEWING_TRACE',
                     traceIndex: recordingData.parsedTraceIndex,
-                    forceOpenSidebar: false,
                 });
             }
         }
@@ -1392,7 +1402,6 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
             this.#changeView({
                 mode: 'VIEWING_TRACE',
                 traceIndex: recordingData.parsedTraceIndex,
-                forceOpenSidebar: false,
             });
         }
         return true;
@@ -1939,16 +1948,28 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
         });
     }
     /**
-     * After the user imports / records a trace, we auto-show the sidebar.
+     * After the user imports / records a trace, we auto-show the sidebar if:
+     * 1. The user has never seen it before, so we show it once to aid discovery
+     * 2. The user had it open, and we hid it (for example, during recording), so now we need to bring it back.
      */
-    #showSidebar() {
-        const disabledByLocalStorageForTests = window.localStorage.getItem('disable-auto-show-rpp-sidebar-for-test') === 'true';
-        if (disabledByLocalStorageForTests) {
+    #showSidebarIfRequired() {
+        const disabledByLocalStorage = window.localStorage.getItem('disable-auto-show-rpp-sidebar-for-test') === 'true';
+        if (Root.Runtime.Runtime.queryParam('disable-auto-performance-sidebar-reveal') !== null || disabledByLocalStorage) {
+            // Used in interaction tests & screenshot tests.
             return;
         }
-        if (!this.#splitWidget.sidebarIsShowing()) {
+        const needToRestore = this.#restoreSidebarVisibilityOnTraceLoad;
+        const userHasSeenSidebar = this.#sideBar.sidebarHasBeenOpened();
+        if ((!userHasSeenSidebar || needToRestore) && !this.#splitWidget.sidebarIsShowing()) {
             this.#splitWidget.showBoth();
         }
+        this.#restoreSidebarVisibilityOnTraceLoad = false;
+    }
+    /**
+     * Exposed for testing.
+     */
+    splitWidget() {
+        return this.#splitWidget;
     }
     // Build a map mapping annotated entries to the colours that are used to display them in the FlameChart.
     // We need this map to display the entries in the sidebar with the same colours.
@@ -2037,6 +2058,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
      */
     #hideSidebar() {
         if (this.#splitWidget.sidebarIsShowing()) {
+            this.#restoreSidebarVisibilityOnTraceLoad = true;
             this.#splitWidget.hideSidebar();
         }
     }
@@ -2124,7 +2146,6 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
                 this.#changeView({
                     mode: 'VIEWING_TRACE',
                     traceIndex: this.#traceEngineModel.lastTraceIndex(),
-                    forceOpenSidebar: false,
                 });
             }
             else {
@@ -2141,8 +2162,6 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
             this.#changeView({
                 mode: 'VIEWING_TRACE',
                 traceIndex,
-                // This is a new trace, so we want to open the insights sidebar automatically.
-                forceOpenSidebar: true,
             });
             const parsedTrace = this.#traceEngineModel.parsedTrace(traceIndex);
             if (!parsedTrace) {

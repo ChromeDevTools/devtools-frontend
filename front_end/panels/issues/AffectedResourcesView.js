@@ -197,8 +197,7 @@ export class AffectedResourcesView extends UI.TreeOutline.TreeElement {
         const sourceCodeLocation = document.createElement('td');
         sourceCodeLocation.classList.add('affected-source-location');
         if (sourceLocation) {
-            const maxLengthForDisplayedURLs = 40; // Same as console messages.
-            const linkifier = new Components.Linkifier.Linkifier(maxLengthForDisplayedURLs);
+            const linkifier = new Components.Linkifier.Linkifier(UI.UIUtils.MaxLengthForDisplayedURLsInConsole);
             const sourceAnchor = linkifier.linkifyScriptLocation(target || null, sourceLocation.scriptId || null, sourceLocation.url, sourceLocation.lineNumber, { columnNumber: sourceLocation.columnNumber, inlineFrameIndex: 0 });
             sourceAnchor.setAttribute('jslog', `${VisualLogging.link('source-location').track({ click: true })}`);
             sourceCodeLocation.appendChild(sourceAnchor);

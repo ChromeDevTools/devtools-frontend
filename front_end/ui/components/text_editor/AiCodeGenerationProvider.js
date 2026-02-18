@@ -384,9 +384,19 @@ function aiCodeGenerationTeaserExtension(teaser) {
                 // Required for mouse hover to propagate to the info button in teaser.
                 return (event.target instanceof Node && teaser.contentElement.contains(event.target));
             },
-            mousedown(event) {
-                // Required for mouse click to propagate to the info tooltip in teaser.
-                return (event.target instanceof Node && teaser.contentElement.contains(event.target));
+            mousedown(event, view) {
+                if (!(event.target instanceof Node) || !teaser.contentElement.contains(event.target)) {
+                    return false;
+                }
+                // On mouse click, move the cursor position to the end of the line.
+                const cursorPosition = view.state.selection.main.head;
+                const line = view.state.doc.lineAt(cursorPosition);
+                if (cursorPosition !== line.to) {
+                    view.dispatch({ selection: { anchor: line.to, head: line.to } });
+                }
+                // Explicitly focus the editor.
+                view.focus();
+                return true;
             },
             keydown(event) {
                 if (!UI.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(event) ||

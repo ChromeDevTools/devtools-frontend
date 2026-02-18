@@ -173,10 +173,6 @@ export declare class ConsoleTableMessageView extends ConsoleViewMessage {
     private buildTableMessage;
     approximateFastHeight(): number;
 }
-/**
- * @constant
- */
-export declare const MaxLengthForLinks = 40;
 export declare const getMaxTokenizableStringLength: () => number;
 export declare const setMaxTokenizableStringLength: (length: number) => void;
 export declare const getLongStringVisibleLength: () => number;

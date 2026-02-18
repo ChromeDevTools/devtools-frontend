@@ -59,7 +59,7 @@ import { ConsolePinPane } from './ConsolePinPane.js';
 import { ConsolePrompt } from './ConsolePrompt.js';
 import { ConsoleSidebar } from './ConsoleSidebar.js';
 import consoleViewStyles from './consoleView.css.js';
-import { ConsoleCommand, ConsoleCommandResult, ConsoleGroupViewMessage, ConsoleTableMessageView, ConsoleViewMessage, getMessageForElement, MaxLengthForLinks, } from './ConsoleViewMessage.js';
+import { ConsoleCommand, ConsoleCommandResult, ConsoleGroupViewMessage, ConsoleTableMessageView, ConsoleViewMessage, getMessageForElement, } from './ConsoleViewMessage.js';
 import { ConsoleViewport } from './ConsoleViewport.js';
 const UIStrings = {
     /**
@@ -468,7 +468,7 @@ export class ConsoleView extends UI.Widget.VBox {
         // the linkifiers live location change event.
         const throttler = new Common.Throttler.Throttler(100);
         const refilterMessages = () => throttler.schedule(async () => this.onFilterChanged());
-        this.linkifier = new Components.Linkifier.Linkifier(MaxLengthForLinks);
+        this.linkifier = new Components.Linkifier.Linkifier(UI.UIUtils.MaxLengthForDisplayedURLsInConsole);
         this.linkifier.addEventListener("liveLocationUpdated" /* Components.Linkifier.Events.LIVE_LOCATION_UPDATED */, refilterMessages);
         this.consoleMessages = [];
         this.consoleGroupStarts = [];

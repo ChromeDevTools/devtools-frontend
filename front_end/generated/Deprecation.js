@@ -93,6 +93,18 @@ export const UIStrings = {
      */
     IntlV8BreakIterator: "`Intl.v8BreakIterator` is deprecated. Please use `Intl.Segmenter` instead.",
     /**
+     * @description Warning message for web developers when they call the deprecated LanguageModel.params() method.
+     */
+    LanguageModelParams: "LanguageModel.params() is deprecated and now only available in extension contexts. The topK and temperature related fields within its result are also deprecated.",
+    /**
+     * @description Warning message for web developers when they use the deprecated 'temperature' option in LanguageModel.create() or access the .temperature attribute.
+     */
+    LanguageModelTemperature: "The 'temperature' parameter/attribute for LanguageModel is deprecated. It is only functional within extensions and may be removed in the future.",
+    /**
+     * @description Warning message for web developers when they use the deprecated 'topK' option in LanguageModel.create() or access the .topK attribute.
+     */
+    LanguageModelTopK: "The 'topK' parameter/attribute for LanguageModel is deprecated. It is only functional within extensions and may be removed in the future.",
+    /**
      * @description This warning occurs when a stylesheet loaded from a local file directive does not end in the file type `.css`.
      */
     LocalCSSFileExtensionRejected: "CSS cannot be loaded from `file:` URLs unless they end in a `.css` file extension.",
@@ -283,6 +295,15 @@ export const DEPRECATIONS_METADATA = {
     "InsecurePrivateNetworkSubresourceRequest": {
         "chromeStatusFeature": 5436853517811712,
         "milestone": 92
+    },
+    "LanguageModelParams": {
+        "chromeStatusFeature": 5134603979063296
+    },
+    "LanguageModelTemperature": {
+        "chromeStatusFeature": 5134603979063296
+    },
+    "LanguageModelTopK": {
+        "chromeStatusFeature": 5134603979063296
     },
     "LocalCSSFileExtensionRejected": {
         "milestone": 64

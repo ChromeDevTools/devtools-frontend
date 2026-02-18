@@ -852,7 +852,6 @@ import * as Common6 from "./../../core/common/common.js";
 import * as i18n17 from "./../../core/i18n/i18n.js";
 import * as Platform6 from "./../../core/platform/platform.js";
 import * as SDK10 from "./../../core/sdk/sdk.js";
-import * as ComputedStyleModule from "./../../models/computed_style/computed_style.js";
 import * as TreeOutline6 from "./../../ui/components/tree_outline/tree_outline.js";
 import * as InlineEditor4 from "./../../ui/legacy/components/inline_editor/inline_editor.js";
 import * as Components4 from "./../../ui/legacy/components/utils/utils.js";
@@ -877,12 +876,7 @@ var computedStyleWidget_css_default = `/*
     width: 100%;
   }
 
-  .styles-sidebar-computed-style-widget {
-    min-height: auto;
-  }
-
-  .computed-style-tree-outline-container {
-    flex-grow: 1;
+  devtools-tree-outline {
     flex-shrink: 0;
   }
 
@@ -10186,15 +10180,15 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
         >${i18nString9(UIStrings9.group)}</devtools-checkbox>
       </devtools-toolbar>
     </div>
-    <div class="computed-style-tree-outline-container">
-      ${input.computedStylesTree}
-    </div>
+    ${input.computedStylesTree}
     ${!input.hasMatches ? html6`<div class="gray-info-message">${i18nString9(UIStrings9.noMatchingProperty)}</div>` : ""}
-    <devtools-widget .widgetConfig=${UI13.Widget.widgetConfig(PlatformFontsWidget, { sharedModel: input.computedStyleModel })}></devtools-widget>
+    ${input.computedStyleModel ? html6`<devtools-widget .widgetConfig=${UI13.Widget.widgetConfig(PlatformFontsWidget, { sharedModel: input.computedStyleModel })}></devtools-widget>` : ""}
   `, target);
 };
 var ComputedStyleWidget = class _ComputedStyleWidget extends UI13.Widget.VBox {
-  computedStyleModel;
+  #computedStyleModel;
+  #nodeStyle = null;
+  #matchedStyles = null;
   showInheritedComputedStylePropertiesSetting;
   groupComputedStylesSetting;
   filterRegex;
@@ -10204,13 +10198,10 @@ var ComputedStyleWidget = class _ComputedStyleWidget extends UI13.Widget.VBox {
   #treeData;
   #view;
   #filterText = "";
-  constructor(computedStyleModel) {
+  constructor() {
     super({ useShadowDom: true });
     this.#view = DEFAULT_VIEW3;
     this.contentElement.classList.add("styles-sidebar-computed-style-widget");
-    this.computedStyleModel = computedStyleModel;
-    this.computedStyleModel.addEventListener("CSSModelChanged", this.requestUpdate, this);
-    this.computedStyleModel.addEventListener("ComputedStyleChanged", this.requestUpdate, this);
     this.showInheritedComputedStylePropertiesSetting = Common6.Settings.Settings.instance().createSetting("show-inherited-computed-style-properties", false);
     this.showInheritedComputedStylePropertiesSetting.addChangeListener(this.requestUpdate.bind(this));
     this.groupComputedStylesSetting = Common6.Settings.Settings.instance().createSetting("group-computed-styles", false);
@@ -10225,7 +10216,7 @@ var ComputedStyleWidget = class _ComputedStyleWidget extends UI13.Widget.VBox {
         return link2;
       }
       return null;
-    }, () => this.computedStyleModel.node);
+    }, () => this.#computedStyleModel ? this.#computedStyleModel.node : null);
     this.#updateView({ hasMatches: true });
   }
   onResize() {
@@ -10247,15 +10238,37 @@ var ComputedStyleWidget = class _ComputedStyleWidget extends UI13.Widget.VBox {
     this.#view({
       computedStylesTree: this.#computedStylesTree,
       hasMatches,
-      computedStyleModel: this.computedStyleModel,
+      computedStyleModel: this.#computedStyleModel,
       showInheritedComputedStylePropertiesSetting: this.showInheritedComputedStylePropertiesSetting,
       groupComputedStylesSetting: this.groupComputedStylesSetting,
       onFilterChanged: this.onFilterChanged.bind(this),
       filterText: this.#filterText
     }, null, this.contentElement);
   }
+  get nodeStyle() {
+    return this.#nodeStyle;
+  }
+  set nodeStyle(nodeStyle) {
+    this.#nodeStyle = nodeStyle;
+    this.requestUpdate();
+  }
+  get matchedStyles() {
+    return this.#matchedStyles;
+  }
+  set matchedStyles(matchedStyles) {
+    this.#matchedStyles = matchedStyles;
+    this.requestUpdate();
+  }
+  get computedStyleModel() {
+    return this.#computedStyleModel;
+  }
+  set computedStyleModel(computedStyleModel) {
+    this.#computedStyleModel = computedStyleModel;
+    this.requestUpdate();
+  }
   async performUpdate() {
-    const { computedStyle: nodeStyles, matchedStyles } = await this.computedStyleModel.fetchAllComputedStyleInfo();
+    const nodeStyles = this.#nodeStyle;
+    const matchedStyles = this.#matchedStyles;
     if (!nodeStyles || !matchedStyles) {
       this.#updateView({ hasMatches: false });
       return;
@@ -10270,7 +10283,7 @@ var ComputedStyleWidget = class _ComputedStyleWidget extends UI13.Widget.VBox {
   async rebuildAlphabeticalList(nodeStyle, matchedStyles) {
     this.imagePreviewPopover.hide();
     this.linkifier.reset();
-    const cssModel = this.computedStyleModel.cssModel();
+    const cssModel = this.#computedStyleModel?.cssModel();
     if (!cssModel) {
       return;
     }
@@ -10307,7 +10320,7 @@ var ComputedStyleWidget = class _ComputedStyleWidget extends UI13.Widget.VBox {
   async rebuildGroupedList(nodeStyle, matchedStyles) {
     this.imagePreviewPopover.hide();
     this.linkifier.reset();
-    const cssModel = this.computedStyleModel.cssModel();
+    const cssModel = this.#computedStyleModel?.cssModel();
     if (!nodeStyle || !matchedStyles || !cssModel) {
       this.#updateView({ hasMatches: false });
       return;
@@ -17157,7 +17170,7 @@ var ElementsPanel = class _ElementsPanel extends UI21.Panel.Panel {
   accessibilityTreeView;
   breadcrumbs;
   stylesWidget;
-  computedStyleWidget;
+  #computedStyleWidget;
   metricsWidget;
   searchResults;
   currentSearchResultIndex;
@@ -17233,7 +17246,10 @@ var ElementsPanel = class _ElementsPanel extends UI21.Panel.Panel {
     UI21.Context.Context.instance().addFlavorChangeListener(StylesSidebarPane, this.evaluateTrackingComputedStyleUpdatesForNode, this);
     UI21.Context.Context.instance().addFlavorChangeListener(ComputedStyleWidget, this.evaluateTrackingComputedStyleUpdatesForNode, this);
     this.stylesWidget = new StylesSidebarPane(this.#computedStyleModel);
-    this.computedStyleWidget = new ComputedStyleWidget(this.#computedStyleModel);
+    this.#computedStyleWidget = new ComputedStyleWidget();
+    this.#computedStyleWidget.computedStyleModel = this.#computedStyleModel;
+    this.#computedStyleModel.addEventListener("ComputedStyleChanged", this.#updateComputedStyles, this);
+    this.#computedStyleModel.addEventListener("CSSModelChanged", this.#updateComputedStyles, this);
     this.metricsWidget = new MetricsSidebarPane(this.#computedStyleModel);
     Common12.Settings.Settings.instance().moduleSetting("sidebar-position").addChangeListener(this.updateSidebarPosition.bind(this));
     this.updateSidebarPosition();
@@ -17271,6 +17287,12 @@ var ElementsPanel = class _ElementsPanel extends UI21.Panel.Panel {
     const shouldTrackComputedStyleUpdates = isComputedStyleWidgetVisible || isStylesTabVisible && Root6.Runtime.hostConfig.devToolsAnimationStylesInStylesTab?.enabled;
     void selectedNode.domModel()?.cssModel()?.trackComputedStyleUpdatesForNode(shouldTrackComputedStyleUpdates ? selectedNode.id : void 0);
   }, 100);
+  async #updateComputedStyles() {
+    const computedStyle = await this.#computedStyleModel.fetchComputedStyle();
+    const matchedCascade = await this.#computedStyleModel.fetchMatchedCascade();
+    this.#computedStyleWidget.nodeStyle = computedStyle;
+    this.#computedStyleWidget.matchedStyles = matchedCascade;
+  }
   handleElementExpanded() {
     if (Annotations.AnnotationRepository.annotationsEnabled()) {
       void PanelCommon.AnnotationManager.instance().resolveAnnotationsOfType(Annotations.AnnotationType.ELEMENT_NODE);
@@ -17772,7 +17794,7 @@ ${node.simpleSelector()} {}`, false);
     const computedStylePanesWrapper = new UI21.Widget.VBox();
     computedStylePanesWrapper.element.classList.add("style-panes-wrapper");
     computedStylePanesWrapper.element.setAttribute("jslog", `${VisualLogging12.pane("computed").track({ resize: true })}`);
-    this.computedStyleWidget.show(computedStylePanesWrapper.element);
+    this.#computedStyleWidget.show(computedStylePanesWrapper.element);
     const stylesSplitWidget = new UI21.SplitWidget.SplitWidget(true, true, "elements.styles.sidebar.width", 100);
     stylesSplitWidget.setMainWidget(matchedStylePanesWrapper);
     stylesSplitWidget.hideSidebar();
@@ -17784,7 +17806,7 @@ ${node.simpleSelector()} {}`, false);
       this.stylesWidget.appendToolbarItem(stylesSplitWidget.createShowHideSidebarButton(i18nString15(UIStrings16.showComputedStylesSidebar), i18nString15(UIStrings16.hideComputedStylesSidebar), i18nString15(UIStrings16.computedStylesShown), i18nString15(UIStrings16.computedStylesHidden), "computed-styles"));
     });
     const showMetricsWidgetInComputedPane = () => {
-      this.metricsWidget.show(computedStylePanesWrapper.element, this.computedStyleWidget.element);
+      this.metricsWidget.show(computedStylePanesWrapper.element, this.#computedStyleWidget.element);
       this.stylesWidget.removeEventListener("StylesUpdateCompleted", toggleMetricsWidget);
     };
     const showMetricsWidgetInStylesPane = () => {
@@ -17891,7 +17913,7 @@ ${node.simpleSelector()} {}`, false);
     }
   }
   getComputedStyleWidget() {
-    return this.computedStyleWidget;
+    return this.#computedStyleWidget;
   }
   setupStyleTracking(cssModel) {
     const cssPropertyTracker = cssModel.createCSSPropertyTracker(TrackedCSSProperties);
@@ -18733,7 +18755,6 @@ var PropertiesWidget = class extends UI24.Widget.VBox {
 var NodeStackTraceWidget_exports = {};
 __export(NodeStackTraceWidget_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW11,
-  MaxLengthForLinks: () => MaxLengthForLinks,
   NodeStackTraceWidget: () => NodeStackTraceWidget
 });
 import * as i18n37 from "./../../core/i18n/i18n.js";
@@ -18777,7 +18798,7 @@ var DEFAULT_VIEW11 = (input, _output, target) => {
               </devtools-widget>` : html15`<div class="gray-info-message">${i18nString18(UIStrings19.noStackTraceAvailable)}</div>`}`, target);
 };
 var NodeStackTraceWidget = class extends UI25.Widget.VBox {
-  #linkifier = new Components7.Linkifier.Linkifier(MaxLengthForLinks);
+  #linkifier = new Components7.Linkifier.Linkifier(UI25.UIUtils.MaxLengthForDisplayedURLsInConsole);
   #view;
   constructor(view = DEFAULT_VIEW11) {
     super({ useShadowDom: true });
@@ -18805,7 +18826,6 @@ var NodeStackTraceWidget = class extends UI25.Widget.VBox {
     this.#view(input, {}, this.contentElement);
   }
 };
-var MaxLengthForLinks = 40;
 
 // gen/front_end/panels/elements/ClassesPaneWidget.js
 var ClassesPaneWidget_exports = {};

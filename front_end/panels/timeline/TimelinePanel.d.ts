@@ -151,6 +151,10 @@ export declare class TimelinePanel extends TimelinePanel_base implements Client,
     toggleRecording(): Promise<void>;
     recordReload(): void;
     private onClearButton;
+    /**
+     * Exposed for testing.
+     */
+    splitWidget(): UI.SplitWidget.SplitWidget;
     private buildColorsAnnotationsMap;
     private getEntryColorByEntry;
     private recordingStarted;

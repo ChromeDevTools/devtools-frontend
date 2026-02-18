@@ -32,7 +32,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import * as StackTrace from '../../../../models/stack_trace/stack_trace.js';
@@ -58,17 +57,9 @@ const UIStrings = {
      * @description A link to rehide frames that are by default hidden.
      */
     showLess: 'Show less',
-    /**
-     * @description Text indicating that source url of a link is currently unknown
-     */
-    unknownSource: 'unknown',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/utils/JSPresentationUtils.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-/**
- * Keep consistent with ConsoleViewMessage.MaxLengthForLinks.
- */
-const MAX_LINK_LENGTH = 40;
 function populateContextMenu(link, event) {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     event.consume(true);
@@ -84,56 +75,6 @@ function populateContextMenu(link, event) {
     }
     contextMenu.appendApplicableItems(event);
     void contextMenu.show();
-}
-// TODO(crbug.com/456517732): remove when all usages of runtimeStackTrace are migrated.
-function buildStackTraceRowsForLegacyRuntimeStackTrace(stackTrace, target, linkifier, tabStops, updateCallback, showColumnNumber) {
-    const stackTraceRows = [];
-    if (updateCallback) {
-        const throttler = new Common.Throttler.Throttler(100);
-        linkifier.addEventListener("liveLocationUpdated" /* LinkifierEvents.LIVE_LOCATION_UPDATED */, () => {
-            void throttler.schedule(async () => updateCallback(stackTraceRows));
-        });
-    }
-    function buildStackTraceRowsHelper(stackTrace, previousCallFrames = undefined) {
-        let asyncRow = null;
-        if (previousCallFrames) {
-            asyncRow = {
-                asyncDescription: UI.UIUtils.asyncStackTraceLabel(stackTrace.description, previousCallFrames),
-            };
-            stackTraceRows.push(asyncRow);
-        }
-        let previousStackFrameWasBreakpointCondition = false;
-        for (const stackFrame of stackTrace.callFrames) {
-            const functionName = UI.UIUtils.beautifyFunctionName(stackFrame.functionName);
-            const link = linkifier.maybeLinkifyConsoleCallFrame(target, stackFrame, {
-                showColumnNumber,
-                tabStop: Boolean(tabStops),
-                inlineFrameIndex: 0,
-                revealBreakpoint: previousStackFrameWasBreakpointCondition,
-            });
-            if (link) {
-                link.setAttribute('jslog', `${VisualLogging.link('stack-trace').track({ click: true })}`);
-                link.addEventListener('contextmenu', populateContextMenu.bind(null, link));
-                if (!link.textContent) {
-                    link.textContent = i18nString(UIStrings.unknownSource);
-                }
-            }
-            stackTraceRows.push({ functionName, link });
-            previousStackFrameWasBreakpointCondition = [
-                SDK.DebuggerModel.COND_BREAKPOINT_SOURCE_URL,
-                SDK.DebuggerModel.LOGPOINT_SOURCE_URL,
-            ].includes(stackFrame.url);
-        }
-    }
-    buildStackTraceRowsHelper(stackTrace);
-    let previousCallFrames = stackTrace.callFrames;
-    for (let asyncStackTrace = stackTrace.parent; asyncStackTrace; asyncStackTrace = asyncStackTrace.parent) {
-        if (asyncStackTrace.callFrames.length) {
-            buildStackTraceRowsHelper(asyncStackTrace, previousCallFrames);
-        }
-        previousCallFrames = asyncStackTrace.callFrames;
-    }
-    return stackTraceRows;
 }
 function buildStackTraceRows(stackTrace, target, linkifier, tabStops, showColumnNumber) {
     const stackTraceRows = [];
@@ -154,7 +95,7 @@ function buildStackTraceRows(stackTrace, target, linkifier, tabStops, showColumn
                 tabStop: Boolean(tabStops),
                 inlineFrameIndex: 0,
                 revealBreakpoint: previousStackFrameWasBreakpointCondition,
-                maxLength: MAX_LINK_LENGTH,
+                maxLength: UI.UIUtils.MaxLengthForDisplayedURLsInConsole,
             });
             link.setAttribute('jslog', `${VisualLogging.link('stack-trace').track({ click: true })}`);
             link.addEventListener('contextmenu', populateContextMenu.bind(null, link));
@@ -285,23 +226,12 @@ export class StackTracePreviewContent extends UI.Widget.Widget {
         return this.#hasRows;
     }
     performUpdate() {
-        if (!this.#linkifier) {
+        if (!this.#linkifier || !this.#stackTrace) {
             return;
         }
-        const { runtimeStackTrace, tabStops } = this.#options;
-        if (this.#stackTrace) {
-            const stackTraceRows = buildStackTraceRows(this.#stackTrace, this.#target ?? null, this.#linkifier, tabStops, this.#options.showColumnNumber);
-            this.#hasRows = stackTraceRows.length > 0;
-            this.#links = renderStackTraceTable(this.#table, this.element, this.#options.expandable ?? false, stackTraceRows);
-            return;
-        }
-        if (runtimeStackTrace) {
-            // TODO(crbug.com/456517732): remove when all usages of runtimeStackTrace are migrated.
-            const updateCallback = renderStackTraceTable.bind(null, this.#table, this.element, this.#options.expandable ?? false);
-            const stackTraceRows = buildStackTraceRowsForLegacyRuntimeStackTrace(runtimeStackTrace ?? { callFrames: [] }, this.#target ?? null, this.#linkifier, tabStops, updateCallback, this.#options.showColumnNumber);
-            this.#hasRows = stackTraceRows.length > 0;
-            this.#links = renderStackTraceTable(this.#table, this.element, this.#options.expandable ?? false, stackTraceRows);
-        }
+        const stackTraceRows = buildStackTraceRows(this.#stackTrace, this.#target ?? null, this.#linkifier, this.#options.tabStops, this.#options.showColumnNumber);
+        this.#hasRows = stackTraceRows.length > 0;
+        this.#links = renderStackTraceTable(this.#table, this.element, this.#options.expandable ?? false, stackTraceRows);
     }
     get linkElements() {
         return this.#links;

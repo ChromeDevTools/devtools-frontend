@@ -3904,6 +3904,7 @@ export const knownContextValues = new Set([
     'timeline-show-postmessage-events',
     'timeline-show-screenshots',
     'timeline-show-settings-toolbar',
+    'timeline-sidebar-opened-at-least-once',
     'timeline-status',
     'timeline-tree-current-thread',
     'timeline-tree-group-by',

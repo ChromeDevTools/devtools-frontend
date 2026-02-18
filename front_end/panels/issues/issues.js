@@ -940,8 +940,7 @@ var AffectedResourcesView = class extends UI3.TreeOutline.TreeElement {
     const sourceCodeLocation = document.createElement("td");
     sourceCodeLocation.classList.add("affected-source-location");
     if (sourceLocation) {
-      const maxLengthForDisplayedURLs = 40;
-      const linkifier = new Components2.Linkifier.Linkifier(maxLengthForDisplayedURLs);
+      const linkifier = new Components2.Linkifier.Linkifier(UI3.UIUtils.MaxLengthForDisplayedURLsInConsole);
       const sourceAnchor = linkifier.linkifyScriptLocation(target || null, sourceLocation.scriptId || null, sourceLocation.url, sourceLocation.lineNumber, { columnNumber: sourceLocation.columnNumber, inlineFrameIndex: 0 });
       sourceAnchor.setAttribute("jslog", `${VisualLogging2.link("source-location").track({ click: true })}`);
       sourceCodeLocation.appendChild(sourceAnchor);

@@ -5,7 +5,6 @@ import '../../../ui/components/tooltips/tooltips.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
-import * as Workspace from '../../../models/workspace/workspace.js';
 import * as PanelsCommon from '../../../panels/common/common.js';
 import * as PanelUtils from '../../../panels/utils/utils.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
@@ -29,14 +28,6 @@ const UIStrings = {
      * @description The footer disclaimer that links to more information about the AI feature.
      */
     learnAbout: 'Learn about AI in DevTools',
-    /**
-     * @description Label added to the button that remove the currently selected context in AI Assistance panel.
-     */
-    removeContext: 'Remove from context',
-    /**
-     * @description Label added to the button that add selected context from the current panel in AI Assistance panel.
-     */
-    addContext: 'Add selected item as context',
 };
 /*
 * Strings that don't need to be translated at this time.
@@ -82,6 +73,30 @@ const UIStringsNotTranslate = {
      * @description Message displayed in toast in case of any failures while uploading an image file as input.
      */
     uploadImageFailureMessage: 'Failed to upload image. Please try again.',
+    /**
+     * @description Label added to the button that add selected context from the current panel in AI Assistance panel.
+     */
+    addContext: 'Add item for context',
+    /**
+     * @description Label added to the button that remove the currently selected element in AI Assistance panel.
+     */
+    removeContextElement: 'Remove element from context',
+    /**
+     * @description Label added to the button that remove the currently selected context in AI Assistance panel.
+     */
+    removeContextRequest: 'Remove request from context',
+    /**
+     * @description Label added to the button that remove the currently selected context in AI Assistance panel.
+     */
+    removeContextFile: 'Remove file from context',
+    /**
+     * @description Label added to the button that remove the currently selected context in AI Assistance panel.
+     */
+    removeContextPerfInsight: 'Remove performance insight from context',
+    /**
+     * @description Label added to the button that remove the currently selected context in AI Assistance panel.
+     */
+    removeContext: 'Remove from context',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/ai_assistance/components/ChatInput.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -91,6 +106,21 @@ const JPEG_MIME_TYPE = 'image/jpeg';
 const SHOW_LOADING_STATE_TIMEOUT = 100;
 const RELEVANT_DATA_LINK_CHAT_ID = 'relevant-data-link-chat';
 const RELEVANT_DATA_LINK_FOOTER_ID = 'relevant-data-link-footer';
+function getContextRemoveLabel(context) {
+    if (context instanceof AiAssistanceModel.FileAgent.FileContext) {
+        return lockedString(UIStringsNotTranslate.removeContextFile);
+    }
+    if (context instanceof AiAssistanceModel.StylingAgent.NodeContext) {
+        return lockedString(UIStringsNotTranslate.removeContextElement);
+    }
+    if (context instanceof AiAssistanceModel.NetworkAgent.RequestContext) {
+        return lockedString(UIStringsNotTranslate.removeContextRequest);
+    }
+    if (context instanceof AiAssistanceModel.PerformanceAgent.PerformanceTraceContext) {
+        return lockedString(UIStringsNotTranslate.removeContextPerfInsight);
+    }
+    return lockedString(UIStringsNotTranslate.removeContext);
+}
 export const DEFAULT_VIEW = (input, _output, target) => {
     const chatInputContainerCls = Lit.Directives.classMap({
         'chat-input-container': true,
@@ -243,15 +273,15 @@ export const DEFAULT_VIEW = (input, _output, target) => {
                 }}
                         aria-description=${i18nString(UIStrings.revealContextDescription)}
                       >
-                        ${input.selectedContext.getItem() instanceof SDK.NetworkRequest.NetworkRequest ?
+                        ${input.selectedContext instanceof AiAssistanceModel.NetworkAgent.RequestContext ?
                     PanelUtils.PanelUtils.getIconForNetworkRequest(input.selectedContext.getItem()) :
-                    input.selectedContext.getItem() instanceof Workspace.UISourceCode.UISourceCode ?
+                    input.selectedContext instanceof AiAssistanceModel.FileAgent.FileContext ?
                         PanelUtils.PanelUtils.getIconForSourceFile(input.selectedContext.getItem()) :
-                        input.selectedContext.getItem() instanceof AiAssistanceModel.AIContext.AgentFocus ?
+                        input.selectedContext instanceof AiAssistanceModel.PerformanceAgent.PerformanceTraceContext ?
                             html `<devtools-icon name="performance" title="Performance"></devtools-icon>` :
                             Lit.nothing}
                         <span class="title">
-                          ${input.selectedContext.getItem() instanceof SDK.DOMModel.DOMNode ?
+                          ${input.selectedContext instanceof AiAssistanceModel.StylingAgent.NodeContext ?
                     html `
                               <devtools-widget .widgetConfig=${UI.Widget.widgetConfig(PanelsCommon.DOMLinkifier.DOMNodeLink, {
                         node: input.selectedContext.getItem(),
@@ -265,8 +295,8 @@ export const DEFAULT_VIEW = (input, _output, target) => {
                         </span>
                         ${input.onContextRemoved ? html `
                                   <devtools-button
-                                    title=${i18nString(UIStrings.removeContext)}
-                                    aria-label=${i18nString(UIStrings.removeContext)}
+                                    title=${getContextRemoveLabel(input.selectedContext)}
+                                    aria-label=${getContextRemoveLabel(input.selectedContext)}
                                     class="remove-context"
                                     .iconName=${'cross'}
                                     .size=${"MICRO" /* Buttons.Button.Size.MICRO */}
@@ -278,8 +308,8 @@ export const DEFAULT_VIEW = (input, _output, target) => {
                 :
                     input.onContextAdd ? html `
                                   <devtools-button
-                                    title=${i18nString(UIStrings.addContext)}
-                                    aria-label=${i18nString(UIStrings.addContext)}
+                                    title=${lockedString(UIStringsNotTranslate.addContext)}
+                                    aria-label=${lockedString(UIStringsNotTranslate.addContext)}
                                     class="add-context"
                                     .iconName=${'plus'}
                                     .size=${"SMALL" /* Buttons.Button.Size.SMALL */}

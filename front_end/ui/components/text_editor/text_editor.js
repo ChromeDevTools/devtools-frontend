@@ -1279,8 +1279,17 @@ function aiCodeGenerationTeaserExtension(teaser) {
       mousemove(event) {
         return event.target instanceof Node && teaser.contentElement.contains(event.target);
       },
-      mousedown(event) {
-        return event.target instanceof Node && teaser.contentElement.contains(event.target);
+      mousedown(event, view) {
+        if (!(event.target instanceof Node) || !teaser.contentElement.contains(event.target)) {
+          return false;
+        }
+        const cursorPosition = view.state.selection.main.head;
+        const line = view.state.doc.lineAt(cursorPosition);
+        if (cursorPosition !== line.to) {
+          view.dispatch({ selection: { anchor: line.to, head: line.to } });
+        }
+        view.focus();
+        return true;
       },
       keydown(event) {
         if (!UI2.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(event) || teaser.displayState !== PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.TRIGGER) {

@@ -107,8 +107,8 @@
   "core/common/Revealer.ts | networkPanel": {
     "message": "Πλαίσιο δικτύου"
   },
-  "core/common/Revealer.ts | securityPanel": {
-    "message": "Πλαίσιο ασφάλειας"
+  "core/common/Revealer.ts | requestConditionsDrawer": {
+    "message": "Συρτάρι συνθηκών αιτήματος"
   },
   "core/common/Revealer.ts | sourcesPanel": {
     "message": "Πλαίσιο πηγών"
@@ -173,7 +173,7 @@
   "core/common/SettingRegistration.ts | sources": {
     "message": "Πηγές"
   },
-  "core/host/InspectorFrontendHost.ts | devtoolsS": {
+  "core/host/InspectorFrontendHostStub.ts | devtoolsS": {
     "message": "Εργαλεία για προγραμματιστές - {PH1}"
   },
   "core/host/ResourceLoader.ts | cacheError": {
@@ -296,6 +296,9 @@
   "core/sdk/DebuggerModel.ts | withBlock": {
     "message": "Αποκλεισμός With"
   },
+  "core/sdk/NetworkManager.ts | block": {
+    "message": "Αποκλεισμός"
+  },
   "core/sdk/NetworkManager.ts | directSocketStatusAborted": {
     "message": "Ακυρώθηκε"
   },
@@ -404,9 +407,6 @@
   "core/sdk/NetworkRequest.ts | notOnPath": {
     "message": "Αυτό το cookie αποκλείστηκε επειδή η διαδρομή του δεν αποτελούσε ακριβή αντιστοίχιση ή υπερκατάλογο της διαδρομής του URL αιτήματος."
   },
-  "core/sdk/NetworkRequest.ts | samePartyFromCrossPartyContext": {
-    "message": "Αυτό το cookie αποκλείστηκε επειδή είχε το χαρακτηριστικό \"SameParty\" αλλά το αίτημα ήταν μεταξύ μερών. Το αίτημα θεωρήθηκε αίτημα μεταξύ μερών επειδή ο τομέας του URL του πόρου και οι τομείς των περιβαλλόντων πλαισίων/εγγράφων του πόρου δεν είναι ούτε κάτοχοι ούτε μέλη στο ίδιο First-Party Set."
-  },
   "core/sdk/NetworkRequest.ts | sameSiteLax": {
     "message": "Αυτό το cookie αποκλείστηκε επειδή είχε το χαρακτηριστικό \"SameSite=Lax\" και το αίτημα πραγματοποιήθηκε από διαφορετικό ιστότοπο και δεν εκκινήθηκε από πλοήγηση ανώτερου επιπέδου."
   },
@@ -448,12 +448,6 @@
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieHadInvalidSyntax": {
     "message": "Αυτή η κεφαλίδα Set-Cookie έχει μη έγκυρη σύνταξη."
-  },
-  "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedBecauseItHadTheSameparty": {
-    "message": "Αυτή η προσπάθεια ορισμού ενός cookie μέσω μιας κεφαλίδας Set-Cookie αποκλείστηκε επειδή είχε το χαρακτηριστικό \"SameParty\" αλλά το αίτημα ήταν μεταξύ μερών. Το αίτημα θεωρήθηκε αίτημα μεταξύ μερών επειδή ο τομέας του URL του πόρου και οι τομείς των περιβαλλόντων πλαισίων/εγγράφων του πόρου δεν είναι ούτε κάτοχοι ούτε μέλη στο ίδιο First-Party Set."
-  },
-  "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedBecauseItHadTheSamepartyAttribute": {
-    "message": "Αυτή η προσπάθεια ορισμού ενός cookie μέσω μιας κεφαλίδας Set-Cookie αποκλείστηκε επειδή είχε το χαρακτηριστικό \"SameParty\" αλλά είχε επίσης άλλα χαρακτηριστικά που προκαλούσαν διένεξη. Το Chrome απαιτεί τα cookie που χρησιμοποιούν το χαρακτηριστικό \"SameParty\" να έχουν επίσης το χαρακτηριστικό \"Secure\" και να μην περιορίζονται στο χαρακτηριστικό \"SameSite=Strict\"."
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedBecauseItHadTheSamesiteStrictLax": {
     "message": "Αυτή η προσπάθεια ορισμού ενός cookie μέσω μιας κεφαλίδας Set-Cookie αποκλείστηκε επειδή είχε το χαρακτηριστικό \"{PH1}\" αλλά προήλθε από απόκριση μεταξύ ιστοτόπων η οποία δεν αποτελούσε απόκριση σε πλοήγηση ανώτερου επιπέδου. Αυτή η απόκριση θεωρείται μεταξύ ιστοτόπων επειδή το URL έχει διαφορετικό σχήμα από τον τρέχοντα ιστότοπο."
@@ -572,6 +566,9 @@
   "core/sdk/sdk-meta.ts | captureAsyncStackTraces": {
     "message": "Λήψη μη συγχρονισμένων ιχνηλατήσεων στοίβας"
   },
+  "core/sdk/sdk-meta.ts | cssSourceMaps": {
+    "message": "Αντιστοιχίσεις πηγών CSS"
+  },
   "core/sdk/sdk-meta.ts | customFormatters": {
     "message": "Προσαρμοσμένοι μορφοποιητές"
   },
@@ -586,6 +583,12 @@
   },
   "core/sdk/sdk-meta.ts | disableCache": {
     "message": "Απενεργοποίηση κρυφής μνήμης όσο τα Εργαλεία για προγραμματιστές είναι ανοιχτά"
+  },
+  "core/sdk/sdk-meta.ts | disableCssSourceMaps": {
+    "message": "Απενεργοποίηση αντιστοιχίσεων πηγής CSS"
+  },
+  "core/sdk/sdk-meta.ts | disableJavaScriptSourceMaps": {
+    "message": "Απενεργοποίηση αντιστοιχίσεων πηγής JavaScript"
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "Απενεργοποίηση JavaScript"
@@ -689,6 +692,12 @@
   "core/sdk/sdk-meta.ts | enableCache": {
     "message": "Ενεργοποίηση κρυφής μνήμης"
   },
+  "core/sdk/sdk-meta.ts | enableCssSourceMaps": {
+    "message": "Ενεργοποίηση αντιστοιχίσεων πηγής CSS"
+  },
+  "core/sdk/sdk-meta.ts | enableJavaScriptSourceMaps": {
+    "message": "Ενεργοποίηση αντιστοιχίσεων πηγής JavaScript"
+  },
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "Ενεργοποίηση JavaScript"
   },
@@ -699,7 +708,7 @@
     "message": "Ενεργοποίηση αποκλεισμού αιτημάτων δικτύου"
   },
   "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
-    "message": "Να επιτρέπεται στο DevTools η φόρτωση πόρων, όπως αντιστοιχίσεων πηγών, από απομακρυσμένες διαδρομές αρχείων. Απενεργοποιημένο από προεπιλογή για λόγος ασφαλείας."
+    "message": "Να επιτρέπεται η φόρτωση απομακρυσμένων πόρων διαδρομής αρχείων στα Εργαλεία για προγραμματιστές"
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Ενεργοποίηση μορφής WebP"
@@ -727,6 +736,12 @@
   },
   "core/sdk/sdk-meta.ts | highlightAdFrames": {
     "message": "Επισήμανση πλαισίων διαφημίσεων"
+  },
+  "core/sdk/sdk-meta.ts | javaScriptSourceMaps": {
+    "message": "Αντιστοιχίσεις πηγής JavaScript"
+  },
+  "core/sdk/sdk-meta.ts | logXmlhttprequests": {
+    "message": "Καταγραφή XMLHttpRequests"
   },
   "core/sdk/sdk-meta.ts | networkCacheExplanation": {
     "message": "Η απενεργοποίηση της κρυφής μνήμης δικτύου θα προσομοιώσει μια εμπειρία δικτύου παρόμοια με αυτήν ενός νέου επισκέπτη."
@@ -778,6 +793,9 @@
   },
   "core/sdk/sdk-meta.ts | reducedContrast": {
     "message": "Μειωμένη αντίθεση"
+  },
+  "core/sdk/sdk-meta.ts | remoteFileLoadingInfo": {
+    "message": "Οι αντιστοιχίσεις πηγής είναι ένα παράδειγμα πόρου. Είναι απενεργοποιημένες από προεπιλογή για λόγους ασφαλείας."
   },
   "core/sdk/sdk-meta.ts | screen": {
     "message": "οθόνη"
@@ -899,8 +917,8 @@
   "entrypoints/inspector_main/RenderingOptions.ts | frameRenderingStats": {
     "message": "Στατιστικά απόδοσης πλαισίου"
   },
-  "entrypoints/inspector_main/RenderingOptions.ts | highlightAdFrames": {
-    "message": "Επισήμανση πλαισίων διαφημίσεων"
+  "entrypoints/inspector_main/RenderingOptions.ts | highlightAds": {
+    "message": "Επισήμανση διαφημίσεων"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | highlightsAreasOfThePageBlueThat": {
     "message": "Επισημαίνει περιοχές της σελίδας (μπλε χρώμα) που μετατοπίστηκαν. Ενδέχεται να μην είναι κατάλληλο για άτομα που είναι ευάλωτα στη φωτοεπιληψία."
@@ -908,11 +926,11 @@
   "entrypoints/inspector_main/RenderingOptions.ts | highlightsAreasOfThePageGreen": {
     "message": "Επισημαίνει περιοχές της σελίδας (πράσινο χρώμα) που χρειάζεται να σχεδιαστούν ξανά. Ενδέχεται να μην είναι κατάλληλο για άτομα που είναι ευάλωτα στη φωτοεπιληψία."
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | highlightsElementsRedDetectedToBe": {
+    "message": "Επισημαίνει τα στοιχεία που έχουν εντοπιστεί ως διαφημίσεις (με κόκκινο χρώμα)."
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | highlightsElementsTealThatCan": {
     "message": "Επισημαίνει στοιχεία (σε γαλαζοπράσινο χρώμα) που μπορούν να επιβραδύνουν την κύλιση, όπως δείκτες χειρισμού συμβάντων τροχού ποντικιού και αφής και άλλες καταστάσεις κύλισης του κύριου νήματος."
-  },
-  "entrypoints/inspector_main/RenderingOptions.ts | highlightsFramesRedDetectedToBe": {
-    "message": "Επισημαίνει πλαίσια (με κόκκινο χρώμα) που προσδιορίζονται ως διαφημίσεις."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | layerBorders": {
     "message": "Περιγράμματα επιπέδου"
@@ -1001,6 +1019,18 @@
   "entrypoints/main/GlobalAiButton.ts | aiAssistance": {
     "message": "Βοήθεια AI"
   },
+  "entrypoints/main/GlobalAiButton.ts | gemini": {
+    "message": "Gemini"
+  },
+  "entrypoints/main/GlobalAiButton.ts | openAiAssistance": {
+    "message": "Άνοιγμα πλαισίου βοήθειας AI"
+  },
+  "entrypoints/main/GlobalAiButton.ts | openGemini": {
+    "message": "Άνοιγμα πλαισίου Gemini"
+  },
+  "entrypoints/main/MainImpl.ts | aiModelDownloaded": {
+    "message": "Έγινε λήψη του μοντέλου AI"
+  },
   "entrypoints/main/MainImpl.ts | customizeAndControlDevtools": {
     "message": "Προσαρμογή και έλεγχος των Εργαλείων για προγραμματιστές"
   },
@@ -1019,8 +1049,14 @@
   "entrypoints/main/MainImpl.ts | dockToRight": {
     "message": "Αγκύρωση στα δεξιά"
   },
+  "entrypoints/main/MainImpl.ts | externalRequestReceived": {
+    "message": "Τα DevTools έλαβαν εξωτερικό αίτημα"
+  },
   "entrypoints/main/MainImpl.ts | focusDebuggee": {
     "message": "Σελίδα εστίασης"
+  },
+  "entrypoints/main/MainImpl.ts | getDevToolsMcp": {
+    "message": "Λήψη DevTools MCP"
   },
   "entrypoints/main/MainImpl.ts | help": {
     "message": "Βοήθεια"
@@ -1196,28 +1232,28 @@
   "entrypoints/main/main-meta.ts | zoomOut": {
     "message": "Σμίκρυνση"
   },
-  "entrypoints/node_app/NodeConnectionsPanel.ts | addConnection": {
+  "entrypoints/node_app/app/NodeConnectionsPanel.ts | addConnection": {
     "message": "Προσθήκη σύνδεσης"
   },
-  "entrypoints/node_app/NodeConnectionsPanel.ts | networkAddressEgLocalhost": {
+  "entrypoints/node_app/app/NodeConnectionsPanel.ts | networkAddressEgLocalhost": {
     "message": "Διεύθυνση δικτύου (π.χ. localhost:9229)"
   },
-  "entrypoints/node_app/NodeConnectionsPanel.ts | noConnectionsSpecified": {
+  "entrypoints/node_app/app/NodeConnectionsPanel.ts | noConnectionsSpecified": {
     "message": "Δεν προσδιορίστηκαν συνδέσεις"
   },
-  "entrypoints/node_app/NodeConnectionsPanel.ts | nodejsDebuggingGuide": {
+  "entrypoints/node_app/app/NodeConnectionsPanel.ts | nodejsDebuggingGuide": {
     "message": "Οδηγός αποσφαλμάτωσης Node.js"
   },
-  "entrypoints/node_app/NodeConnectionsPanel.ts | specifyNetworkEndpointAnd": {
+  "entrypoints/node_app/app/NodeConnectionsPanel.ts | specifyNetworkEndpointAnd": {
     "message": "Προσδιορίστε το τελικό σημείο του δικτύου και τα Εργαλεία για προγραμματιστές θα συνδεθούν αυτόματα σε αυτό. Διαβάστε το άρθρο {PH1} για να μάθετε περισσότερα."
   },
-  "entrypoints/node_app/NodeMain.ts | NodejsTitleS": {
+  "entrypoints/node_app/app/NodeMain.ts | NodejsTitleS": {
     "message": "Εργαλεία για προγραμματιστές - Node.js: {PH1}"
   },
-  "entrypoints/node_app/NodeMain.ts | main": {
+  "entrypoints/node_app/app/NodeMain.ts | main": {
     "message": "Κύριο"
   },
-  "entrypoints/node_app/NodeMain.ts | nodejsS": {
+  "entrypoints/node_app/app/NodeMain.ts | nodejsS": {
     "message": "Node.js: {PH1}"
   },
   "entrypoints/node_app/node_app.ts | connection": {
@@ -1237,6 +1273,9 @@
   },
   "entrypoints/worker_app/WorkerMain.ts | main": {
     "message": "Κύριο"
+  },
+  "generated/Deprecation.ts | AttributionReporting": {
+    "message": "Οι αναφορές απόδοσης καταργήθηκαν και θα αφαιρεθούν. Ανατρέξτε στη διεύθυνση https://goo.gle/ps-status για λεπτομέρειες."
   },
   "generated/Deprecation.ts | AuthorizationCoveredByWildcard": {
     "message": "Authorization will not be covered by the wildcard symbol (*) in CORS Access-Control-Allow-Headers handling."
@@ -1259,9 +1298,6 @@
   "generated/Deprecation.ts | ChromeLoadTimesWasAlternateProtocolAvailable": {
     "message": "chrome.loadTimes() is deprecated, instead use standardized API: nextHopProtocol in Navigation Timing 2."
   },
-  "generated/Deprecation.ts | CookieWithTruncatingChar": {
-    "message": "Cookies containing a \\(0|r|n) character will be rejected instead of truncated."
-  },
   "generated/Deprecation.ts | CrossOriginAccessBasedOnDocumentDomain": {
     "message": "Η χαλάρωση της πολιτικής κοινής προέλευσης με ρύθμιση του document.domain έχει καταργηθεί και θα απενεργοποιηθεί από προεπιλογή. Αυτή η προειδοποίηση κατάργησης αφορά μια πρόσβαση διασταυρούμενων προελεύσεων που ενεργοποιήθηκε με τη ρύθμιση του document.domain."
   },
@@ -1273,6 +1309,12 @@
   },
   "generated/Deprecation.ts | DataUrlInSvgUse": {
     "message": "Υποστήριξη για δεδομένα: Τα URL στο SVGUseElement έχουν καταργηθεί και θα αποσυρθούν στο μέλλον."
+  },
+  "generated/Deprecation.ts | ExampleBrowserProcessDeprecation": {
+    "message": "Αυτό είναι ένα παράδειγμα για την εμφάνιση του κώδικα που απαιτείται για μια κατάργηση που αναφέρεται σε διαδικασία προγράμματος περιήγησης."
+  },
+  "generated/Deprecation.ts | Fledge": {
+    "message": "Το Protected Audience API έχει καταργηθεί και θα αφαιρεθεί σε κάποια μελλοντική κυκλοφορία."
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
     "message": "Τα getCurrentPosition() και watchPosition() δεν λειτουργούν πλέον σε μη ασφαλείς προελεύσεις. Για να χρησιμοποιήσετε αυτή τη λειτουργία, θα πρέπει να εξετάσετε το ενδεχόμενο να αλλάξετε την εφαρμογή σας σε ασφαλή προέλευση, όπως HTTPS. Ανατρέξτε στη διεύθυνση https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ για περισσότερες λεπτομέρειες."
@@ -1300,12 +1342,6 @@
   },
   "generated/Deprecation.ts | LocalCSSFileExtensionRejected": {
     "message": "CSS cannot be loaded from file: URLs unless they end in a .css file extension."
-  },
-  "generated/Deprecation.ts | MediaSourceAbortRemove": {
-    "message": "Η χρήση του SourceBuffer.abort() για ακύρωση της ασύγχρονης κατάργησης εύρους του στοιχείου remove() έχει καταργηθεί λόγω αλλαγής προδιαγραφών. Η υποστήριξη θα καταργηθεί μελλοντικά. Εναλλακτικά, θα πρέπει να χρησιμοποιήσετε τη λειτουργία αναμονής για το συμβάν updateend. Το abort() προορίζεται μόνο για την ακύρωση της ασύγχρονης προσάρτησης μέσου ή την επαναφορά κατάστασης συντακτικού αναλυτή."
-  },
-  "generated/Deprecation.ts | MediaSourceDurationTruncatingBuffered": {
-    "message": "Setting MediaSource.duration below the highest presentation timestamp of any buffered coded frames is deprecated due to specification change. Support for implicit removal of truncated buffered media will be removed in the future. You should instead perform explicit remove(newDuration, oldDuration) on all sourceBuffers, where newDuration < oldDuration."
   },
   "generated/Deprecation.ts | NoSysexWebMIDIWithoutPermission": {
     "message": "Web MIDI will ask a permission to use even if the sysex is not specified in the MIDIOptions."
@@ -1364,9 +1400,6 @@
   "generated/Deprecation.ts | PrefixedVideoSupportsFullscreen": {
     "message": "Το HTMLVideoElement.webkitSupportsFullscreen έχει καταργηθεί. Εναλλακτικά, χρησιμοποιήστε το Document.fullscreenEnabled."
   },
-  "generated/Deprecation.ts | PrivacySandboxExtensionsAPI": {
-    "message": "Το API chrome.privacy.websites.privacySandboxEnabled καταργείται αλλά θα παραμείνει ενεργό για συμβατότητα με παλιότερη έκδοση, έως την κυκλοφορία του M113. Εναλλακτικά, χρησιμοποιήστε τα chrome.privacy.websites.topicsEnabled, chrome.privacy.websites.fledgeEnabled και chrome.privacy.websites.adMeasurementEnabled. Ανατρέξτε στη διεύθυνση https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled."
-  },
   "generated/Deprecation.ts | RTCConstraintEnableDtlsSrtpFalse": {
     "message": "Ο περιορισμός DtlsSrtpKeyAgreement καταργήθηκε. Έχετε καθορίσει μια τιμή false για αυτόν τον περιορισμό, η οποία ερμηνεύεται ως προσπάθεια χρήσης της μεθόδου SDES key negotiation που καταργήθηκε. Αυτή η λειτουργία καταργήθηκε, χρησιμοποιήστε εναλλακτικά μια υπηρεσία που υποστηρίζει το DTLS key negotiation."
   },
@@ -1379,6 +1412,9 @@
   "generated/Deprecation.ts | RangeExpand": {
     "message": "Το Range.expand() έχει καταργηθεί. Εναλλακτικά, χρησιμοποιήστε το Selection.modify()."
   },
+  "generated/Deprecation.ts | RelatedWebsiteSets": {
+    "message": "Το Related Website Sets καταργήθηκε και θα αφαιρεθεί. Ανατρέξτε στη διεύθυνση https://privacysandbox.com/news/update-on-plans-for-privacy-sandbox-technologies/ για περισσότερες λεπτομέρειες."
+  },
   "generated/Deprecation.ts | RequestedSubresourceWithEmbeddedCredentials": {
     "message": "Subresource requests whose URLs contain embedded credentials (e.g. https://user:pass@host/) are blocked."
   },
@@ -1388,8 +1424,17 @@
   "generated/Deprecation.ts | SharedArrayBufferConstructedWithoutIsolation": {
     "message": "SharedArrayBuffer will require cross-origin isolation. See https://developer.chrome.com/blog/enabling-shared-array-buffer/ for more details."
   },
+  "generated/Deprecation.ts | SharedStorage": {
+    "message": "Το Shared Storage API έχει καταργηθεί και θα αφαιρεθεί σε μελλοντική κυκλοφορία."
+  },
+  "generated/Deprecation.ts | StorageAccessAPI_requestStorageAccessFor_Method": {
+    "message": "Το document.requestStorageAccessFor καταργήθηκε και θα αφαιρεθεί. Ανατρέξτε στη διεύθυνση https://privacysandbox.com/news/update-on-plans-for-privacy-sandbox-technologies/ για περισσότερες λεπτομέρειες."
+  },
   "generated/Deprecation.ts | TextToSpeech_DisallowedByAutoplay": {
     "message": "Το speechSynthesis.speak() χωρίς ενεργοποίηση χρήστη καταργήθηκε και θα αποσυρθεί."
+  },
+  "generated/Deprecation.ts | Topics": {
+    "message": "Το Topics API έχει καταργηθεί και θα αφαιρεθεί σε μελλοντική κυκλοφορία."
   },
   "generated/Deprecation.ts | UnloadHandler": {
     "message": "Οι λειτουργίες αναμονής συμβάντος unload έχουν καταργηθεί και θα αφαιρεθούν."
@@ -1397,11 +1442,17 @@
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "Extensions should opt into cross-origin isolation to continue using SharedArrayBuffer. See https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
   },
+  "generated/Deprecation.ts | WebBluetoothRemoteCharacteristicWriteValue": {
+    "message": "Το BluetoothRemoteGATTCharacteristic.writeValue() καταργήθηκε. Εναλλακτικά, χρησιμοποιήστε το writeValueWithResponse() ή το writeValueWithoutResponse()."
+  },
   "generated/Deprecation.ts | XHRJSONEncodingDetection": {
     "message": "UTF-16 is not supported by response json in XMLHttpRequest"
   },
   "generated/Deprecation.ts | XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
     "message": "Το συγχρονισμένο XMLHttpRequest στο κύριο νήμα έχει καταργηθεί λόγω των επιζήμιων συνεπειών του στην εμπειρία τελικού χρήστη. Για περισσότερη βοήθεια, ανατρέξτε στη σελίδα https://xhr.spec.whatwg.org/."
+  },
+  "generated/Deprecation.ts | XSLT": {
+    "message": "Το XSLTProcessor και οι οδηγίες επεξεργασίας XSLT έχουν καταργηθεί από όλα τα προγράμματα περιήγησης. Αυτές οι λειτουργίες θα καταργηθούν σύντομα από αυτό το πρόγραμμα περιήγησης."
   },
   "models/ai_assistance/AiUtils.ts | ageRestricted": {
     "message": "Αυτή η λειτουργία είναι διαθέσιμη μόνο σε χρήστες άνω των 18 ετών."
@@ -1415,23 +1466,14 @@
   "models/ai_assistance/AiUtils.ts | offline": {
     "message": "Αυτή η λειτουργία είναι διαθέσιμη μόνο με ενεργή σύνδεση στο διαδίκτυο."
   },
-  "models/ai_assistance/ConversationHandler.ts | externalRequestReceived": {
-    "message": "Τα DevTools έλαβαν εξωτερικό αίτημα"
-  },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "Άγνωστο σφάλμα κατά τη φόρτωση του αρχείου"
-  },
-  "models/bindings/DebuggerLanguagePlugins.ts | debugSymbolsIncomplete": {
-    "message": "Οι πληροφορίες εντοπισμού και διόρθωσης σφαλμάτων για τη συνάρτηση {PH1} δεν είναι πλήρεις"
   },
   "models/bindings/DebuggerLanguagePlugins.ts | errorInDebuggerLanguagePlugin": {
     "message": "Σφάλμα στην προσθήκη γλώσσας του εργαλείου εντοπισμού σφαλμάτων: {PH1}"
   },
   "models/bindings/DebuggerLanguagePlugins.ts | failedToLoadDebugSymbolsFor": {
     "message": "[{PH1}] Αποτυχία φόρτωσης συμβόλων εντοπισμού σφαλμάτων για {PH2} ({PH3})"
-  },
-  "models/bindings/DebuggerLanguagePlugins.ts | failedToLoadDebugSymbolsForFunction": {
-    "message": "Δεν υπάρχουν πληροφορίες εντοπισμού και διόρθωσης σφαλμάτων για τη συνάρτηση \"{PH1}\""
   },
   "models/bindings/DebuggerLanguagePlugins.ts | loadedDebugSymbolsForButDidnt": {
     "message": "[{PH1}] Φορτώθηκαν σύμβολα εντοπισμού σφαλμάτων για {PH2}, αλλά δεν βρέθηκαν αρχεία προέλευσης"
@@ -1532,9 +1574,6 @@
   "models/issues_manager/CookieIssue.ts | fileCrosSiteRedirectBug": {
     "message": "Υποβολή αναφοράς σφάλματος"
   },
-  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
-    "message": "First-Party Sets και το χαρακτηριστικό SameParty"
-  },
   "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
     "message": "Πώς λειτουργεί το Schemeful Same-Site"
   },
@@ -1546,9 +1585,6 @@
   },
   "models/issues_manager/CorsIssue.ts | corsLocalNetworkAccess": {
     "message": "Πρόσβαση στο τοπικό δίκτυο"
-  },
-  "models/issues_manager/CorsIssue.ts | corsPrivateNetworkAccess": {
-    "message": "Πρόσβαση σε ιδιωτικό δίκτυο"
   },
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | coopAndCoep": {
     "message": "COOP και COEP"
@@ -1576,6 +1612,9 @@
   },
   "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
     "message": "Επεξηγηματικό CORB"
+  },
+  "models/issues_manager/GenericIssue.ts | historyManipulationInterventionPageTitle": {
+    "message": "Επεξήγηση παρέμβασης για τον χειρισμό ιστορικού"
   },
   "models/issues_manager/GenericIssue.ts | howDoesAutofillWorkPageTitle": {
     "message": "Πώς λειτουργεί η αυτόματη συμπλήρωση;"
@@ -1685,18 +1724,6 @@
   "models/network_time_calculator/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
     "message": "Λανθάνων χρόνος {PH1}, λήψη {PH2} (σύνολο {PH3})"
   },
-  "models/persistence/EditFileSystemView.ts | enterAPath": {
-    "message": "Εισαγάγετε μια διαδρομή"
-  },
-  "models/persistence/EditFileSystemView.ts | enterAUniquePath": {
-    "message": "Εισαγάγετε μοναδική διαδρομή"
-  },
-  "models/persistence/EditFileSystemView.ts | excludedFolders": {
-    "message": "Εξαιρούμενοι υποφάκελοι"
-  },
-  "models/persistence/EditFileSystemView.ts | url": {
-    "message": "URL"
-  },
   "models/persistence/IsolatedFileSystem.ts | blobCouldNotBeLoaded": {
     "message": "Δεν ήταν δυνατή η φόρτωση του Blob."
   },
@@ -1717,39 +1744,6 @@
   },
   "models/persistence/IsolatedFileSystemManager.ts | unableToAddFilesystemS": {
     "message": "Δεν είναι δυνατή η προσθήκη στο σύστημα αρχείων: {PH1}"
-  },
-  "models/persistence/PersistenceActions.ts | openInContainingFolder": {
-    "message": "Άνοιγμα στον φάκελο που περιέχεται"
-  },
-  "models/persistence/PersistenceActions.ts | overrideContent": {
-    "message": "Παράκαμψη περιεχομένου"
-  },
-  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
-    "message": "Το {PH1} είναι ένα αρχείο με αντιστοίχιση πηγής και δεν μπορεί να παρακαμφθεί."
-  },
-  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileWarning": {
-    "message": "Να γίνει εναλλακτικά παράκαμψη του {PH1};"
-  },
-  "models/persistence/PersistenceActions.ts | saveAs": {
-    "message": "Αποθήκευση ως…"
-  },
-  "models/persistence/PersistenceActions.ts | saveFailed": {
-    "message": "Η αποθήκευση του αρχείου στον δίσκο απέτυχε."
-  },
-  "models/persistence/PersistenceActions.ts | saveImage": {
-    "message": "Αποθήκευση εικόνας"
-  },
-  "models/persistence/PersistenceActions.ts | saveWasmFailed": {
-    "message": "Δεν είναι δυνατή η αποθήκευση της λειτουργικής μονάδας WASM στον δίσκο. Πιθανότατα η λειτουργική μονάδα είναι πολύ μεγάλη."
-  },
-  "models/persistence/PersistenceActions.ts | showOverrides": {
-    "message": "Εμφάνιση όλων των παρακάμψεων"
-  },
-  "models/persistence/PersistenceUtils.ts | linkedToS": {
-    "message": "Συνδέθηκε με {PH1}"
-  },
-  "models/persistence/PersistenceUtils.ts | linkedToSourceMapS": {
-    "message": "Με σύνδεση στην αντιστοίχιση πηγών: {PH1}"
   },
   "models/persistence/PlatformFileSystem.ts | unableToReadFilesWithThis": {
     "message": "Δεν είναι δυνατή η ανάγνωση αρχείων από το PlatformFileSystem."
@@ -1857,7 +1851,7 @@
     "message": "Χρόνος κονσόλας"
   },
   "models/trace/Styles.ts | cppGc": {
-    "message": "CPP GC"
+    "message": "C++ GC"
   },
   "models/trace/Styles.ts | createWebsocket": {
     "message": "Δημιουργία WebSocket"
@@ -2096,6 +2090,9 @@
   "models/trace/Styles.ts | signReply": {
     "message": "Υπογραφή απάντησης"
   },
+  "models/trace/Styles.ts | softLargestContentfulPaint": {
+    "message": "Soft Largest Contentful Paint"
+  },
   "models/trace/Styles.ts | streamingCompileTask": {
     "message": "Εργασία μεταγλώττισης σε ροή"
   },
@@ -2157,7 +2154,7 @@
     "message": "Κινούμενη εικόνα"
   },
   "models/trace/insights/CLSCulprits.ts | description": {
-    "message": "Οι μετατοπίσεις διάταξης προκύπτουν, όταν τα στοιχεία μετακινούνται χωρίς αλληλεπίδραση με τον χρήστη. [Διερευνήστε τις αιτίες των μετατοπίσεων διάταξης](https://web.dev/articles/optimize-cls), όπως είναι η προσθήκη και η κατάργηση στοιχείων ή η αλλαγή των γραμματοσειρών τους κατά τη φόρτωση της σελίδας."
+    "message": "Οι μετατοπίσεις διάταξης προκύπτουν, όταν τα στοιχεία μετακινούνται χωρίς αλληλεπίδραση με τον χρήστη. [Διερευνήστε τις αιτίες των μετατοπίσεων διάταξης](https://developer.chrome.com/docs/performance/insights/cls-culprit), όπως είναι η προσθήκη και η κατάργηση στοιχείων ή η αλλαγή των γραμματοσειρών τους κατά τη φόρτωση της σελίδας."
   },
   "models/trace/insights/CLSCulprits.ts | injectedIframe": {
     "message": "Έγινε εισαγωγή iframe"
@@ -2193,7 +2190,7 @@
     "message": "TTL κρυφής μνήμης"
   },
   "models/trace/insights/Cache.ts | description": {
-    "message": "Ο μεγάλος συνολικός χρόνος της κρυφής μνήμης μπορεί να επιταχύνει τις επαναλαμβανόμενες επισκέψεις στη σελίδα σας. [Μάθετε περισσότερα](https://web.dev/uses-long-cache-ttl/)."
+    "message": "Ο μεγάλος συνολικός χρόνος της κρυφής μνήμης μπορεί να επιταχύνει τις επαναλαμβανόμενες επισκέψεις στη σελίδα σας. [Μάθετε περισσότερα σχετικά με την αποθήκευση στην κρυφή μνήμη](https://developer.chrome.com/docs/performance/insights/cache)."
   },
   "models/trace/insights/Cache.ts | noRequestsToCache": {
     "message": "Δεν υπάρχουν αιτήματα με αναποτελεσματικές πολιτικές κρυφής μνήμης"
@@ -2208,7 +2205,7 @@
     "message": "Χρήση αποδοτικών συνολικών χρόνων κρυφής μνήμης"
   },
   "models/trace/insights/DOMSize.ts | description": {
-    "message": "Ένα μεγάλο DOM μπορεί να αυξήσει τη διάρκεια των υπολογισμών στιλ και των επαναλήψεων ροών διάταξης και, συνεπώς, να επηρεάσει την απόκριση της σελίδας. Ένα μεγάλο DOM θα αυξήσει επίσης τη χρήση της μνήμης. [Μάθετε πώς μπορείτε να αποφύγετε ένα υπερβολικά μεγάλο μέγεθος DOM](https://developer.chrome.com/docs/lighthouse/performance/dom-size/)."
+    "message": "Ένα μεγάλο DOM μπορεί να αυξήσει τη διάρκεια των υπολογισμών στιλ και των επαναλήψεων ροών διάταξης και, συνεπώς, να επηρεάσει την απόκριση της σελίδας. Ένα μεγάλο DOM θα αυξήσει επίσης τη χρήση της μνήμης. [Μάθετε πώς μπορείτε να αποφύγετε ένα υπερβολικά μεγάλο μέγεθος DOM](https://developer.chrome.com/docs/performance/insights/dom-size)."
   },
   "models/trace/insights/DOMSize.ts | duration": {
     "message": "Διάρκεια"
@@ -2244,7 +2241,7 @@
     "message": "Τιμή"
   },
   "models/trace/insights/DocumentLatency.ts | description": {
-    "message": "Το πρώτο αίτημα δικτύου είναι το πιο σημαντικό.  Μειώστε τον λανθάνοντα χρόνο αποφεύγοντας τις ανακατευθύνσεις, προκειμένου να διασφαλίσετε μια γρήγορη απόκριση διακομιστή, και ενεργοποιώντας τη συμπίεση κειμένου."
+    "message": "Το πρώτο αίτημα δικτύου είναι το πιο σημαντικό. [Μειώστε τον λανθάνοντα χρόνο](https://developer.chrome.com/docs/performance/insights/document-latency) αποφεύγοντας τις ανακατευθύνσεις, προκειμένου να διασφαλίσετε μια γρήγορη απόκριση διακομιστή, και ενεργοποιώντας τη συμπίεση κειμένου."
   },
   "models/trace/insights/DocumentLatency.ts | failedRedirects": {
     "message": "Είχε ανακατευθύνσεις ({PH1} ανακατευθύνσεις, +{PH2})"
@@ -2283,13 +2280,13 @@
     "message": "Πηγή"
   },
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
-    "message": "Καταργήστε τις μεγάλες, διπλότυπες λειτουργικές μονάδες JavaScript από τα πακέτα, για να μειώσετε τα μη απαραίτητα byte που καταναλώνονται από τη δραστηριότητα δικτύου."
+    "message": "Καταργήστε τις μεγάλες, [διπλότυπες λειτουργικές μονάδες JavaScript](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) από τα πακέτα, για να μειώσετε τα μη απαραίτητα byte που καταναλώνονται από τη δραστηριότητα δικτύου."
   },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "Διπλότυπο JavaScript"
   },
   "models/trace/insights/FontDisplay.ts | description": {
-    "message": "Μπορείτε να ορίσετε το [font-display](https://developer.chrome.com/blog/font-display) σε swap ή optional, για να διασφαλίσετε ότι το κείμενο θα είναι πάντα ορατό. Το swap μπορεί να βελτιστοποιηθεί περαιτέρω, για να περιοριστούν οι μετατοπίσεις διάταξης με [παρακάμψεις μετρήσεων γραμματοσειράς](https://developer.chrome.com/blog/font-fallbacks)."
+    "message": "Μπορείτε να ορίσετε το [font-display](https://developer.chrome.com/docs/performance/insights/font-display) σε swap ή optional, για να διασφαλίσετε ότι το κείμενο θα είναι πάντα ορατό. Το swap μπορεί να βελτιστοποιηθεί περαιτέρω, για να περιοριστούν οι μετατοπίσεις διάταξης με [παρακάμψεις μετρήσεων γραμματοσειράς](https://developer.chrome.com/blog/font-fallbacks)."
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "Γραμματοσειρά"
@@ -2304,10 +2301,10 @@
     "message": "(ανώνυμες)"
   },
   "models/trace/insights/ForcedReflow.ts | description": {
-    "message": "Μια αναγκαστική επανάληψη ροής συμβαίνει όταν η JavaScript υποβάλλει ερωτήματα για γεωμετρικές ιδιότητες (όπως offsetWidth), αφού τα στιλ έχουν καταστεί μη έγκυρα από μια αλλαγή στην κατάσταση DOM. Αυτό μπορεί να οδηγήσει σε κακή απόδοση. Μάθετε περισσότερα σχετικά με τις [αναγκαστικές επαναλήψεις ροής](https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts) και τις πιθανές ενέργειες μετριασμού."
+    "message": "Μια αναγκαστική επανάληψη ροής συμβαίνει όταν η JavaScript υποβάλλει ερωτήματα για γεωμετρικές ιδιότητες (όπως offsetWidth), αφού τα στιλ έχουν καταστεί μη έγκυρα από μια αλλαγή στην κατάσταση DOM. Αυτό μπορεί να οδηγήσει σε κακή απόδοση. Μάθετε περισσότερα σχετικά με τις [αναγκαστικές επαναλήψεις ροής](https://developer.chrome.com/docs/performance/insights/forced-reflow) και τις πιθανές ενέργειες μετριασμού."
   },
-  "models/trace/insights/ForcedReflow.ts | relatedStackTrace": {
-    "message": "Ιχνηλάτηση στοίβας"
+  "models/trace/insights/ForcedReflow.ts | reflowCallFrames": {
+    "message": "Πλαίσια κλήσης που ενεργοποιούν την επανάληψη ροής"
   },
   "models/trace/insights/ForcedReflow.ts | title": {
     "message": "Επιβολή επανάληψης ροής"
@@ -2322,7 +2319,7 @@
     "message": "[χωρίς απόδοση]"
   },
   "models/trace/insights/INPBreakdown.ts | description": {
-    "message": "Ξεκινήστε με τη διερεύνηση του μεγαλύτερου επιμέρους τμήματος. [Οι καθυστερήσεις μπορούν να ελαχιστοποιηθούν](https://web.dev/articles/optimize-inp#optimize_interactions). Για να μειώσετε τη διάρκεια επεξεργασίας, [βελτιστοποιήστε τα κόστη κύριου νήματος](https://web.dev/articles/optimize-long-tasks), συχνά σε JS."
+    "message": "Ξεκινήστε τη διερεύνηση του [τρόπου βελτίωσης του INP](https://developer.chrome.com/docs/performance/insights/inp-breakdown), εξετάζοντας το μεγαλύτερο επιμέρους τμήμα."
   },
   "models/trace/insights/INPBreakdown.ts | duration": {
     "message": "Διάρκεια"
@@ -2346,7 +2343,7 @@
     "message": "Ανάλυση INP"
   },
   "models/trace/insights/ImageDelivery.ts | description": {
-    "message": "Η μείωση του χρόνου λήψης των εικόνων μπορεί να βελτιώσει τον αντιληπτό χρόνο φόρτωσης της σελίδας και του LCP. [Μάθετε περισσότερα σχετικά με τη βελτιστοποίηση του μεγέθους εικόνας](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
+    "message": "Η μείωση του χρόνου λήψης των εικόνων μπορεί να βελτιώσει τον αντιληπτό χρόνο φόρτωσης της σελίδας και του LCP. [Μάθετε περισσότερα σχετικά με τη βελτιστοποίηση του μεγέθους εικόνας](https://developer.chrome.com/docs/performance/insights/image-delivery)"
   },
   "models/trace/insights/ImageDelivery.ts | estimatedSavings": {
     "message": "{PH1} ({PH2} κατ' εκτίμηση)"
@@ -2376,7 +2373,7 @@
     "message": "Η χρήση μορφών βίντεο αντί για GIF μπορεί να βελτιώσει το μέγεθος λήψης του περιεχομένου κινούμενων εικόνων."
   },
   "models/trace/insights/LCPBreakdown.ts | description": {
-    "message": "Κάθε [επιμέρους τμήμα έχει συγκεκριμένες στρατηγικές βελτίωσης](https://web.dev/articles/optimize-lcp#lcp-breakdown). Ιδανικά, το μεγαλύτερο μέρος του χρόνου LCP θα πρέπει να δαπανάται για τη φόρτωση των πόρων, όχι σε καθυστερήσεις."
+    "message": "Κάθε [επιμέρους τμήμα έχει συγκεκριμένες στρατηγικές βελτίωσης](https://developer.chrome.com/docs/performance/insights/lcp-breakdown). Ιδανικά, το μεγαλύτερο μέρος του χρόνου LCP θα πρέπει να δαπανάται για τη φόρτωση των πόρων, όχι σε καθυστερήσεις."
   },
   "models/trace/insights/LCPBreakdown.ts | duration": {
     "message": "Διάρκεια"
@@ -2406,7 +2403,7 @@
     "message": "Ανάλυση LCP"
   },
   "models/trace/insights/LCPDiscovery.ts | description": {
-    "message": "Βελτιστοποιήστε το LCP κάνοντας την εικόνα LCP [ανακαλύψιμη](https://web.dev/articles/optimize-lcp#1_eliminate_resource_load_delay) απευθείας από το HTML και [αποφεύγοντας την αργή φόρτωση](https://web.dev/articles/lcp-lazy-loading)"
+    "message": "[Βελτιστοποιήστε το LCP](https://developer.chrome.com/docs/performance/insights/lcp-discovery) κάνοντας την εικόνα LCP ανακαλύψιμη απευθείας από το HTML και αποφεύγοντας την αργή φόρτωση"
   },
   "models/trace/insights/LCPDiscovery.ts | fetchPriorityApplied": {
     "message": "fetchpriority=high applied"
@@ -2439,13 +2436,13 @@
     "message": "Αχρησιμοποίητα byte"
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
-    "message": "Τα polyfill και οι μετασχηματισμοί επιτρέπουν στα προγράμματα περιήγησης παλαιού τύπου να χρησιμοποιούν νέες λειτουργίες JavaScript. Ωστόσο, πολλές από αυτές δεν είναι απαραίτητες για σύγχρονα προγράμματα περιήγησης. Εξετάστε το ενδεχόμενο να τροποποιήσετε τη διαδικασία κατασκευής JavaScript, ώστε να μην μετατρέπονται οι λειτουργίες [Baseline](https://web.dev/articles/baseline-and-polyfills), εκτός εάν γνωρίζετε ότι πρέπει να υποστηρίζετε παλαιότερα προγράμματα περιήγησης. [Μάθετε γιατί οι περισσότεροι ιστότοποι μπορούν να αναπτύξουν κώδικα ES6+ χωρίς μετατροπή](https://philipwalton.com/articles/the-state-of-es5-on-the-web/)"
+    "message": "Τα polyfill και οι μετασχηματισμοί επιτρέπουν στα προγράμματα περιήγησης παλαιού τύπου να χρησιμοποιούν νέες λειτουργίες JavaScript. Ωστόσο, πολλές από αυτές δεν είναι απαραίτητες για σύγχρονα προγράμματα περιήγησης. Εξετάστε το ενδεχόμενο να τροποποιήσετε τη διαδικασία κατασκευής JavaScript, ώστε να μην μετατρέπονται οι λειτουργίες [Baseline](https://web.dev/articles/baseline-and-polyfills), εκτός εάν γνωρίζετε ότι πρέπει να υποστηρίζετε παλαιότερα προγράμματα περιήγησης. [Μάθετε γιατί οι περισσότεροι ιστότοποι μπορούν να αναπτύξουν κώδικα ES6+ χωρίς μετατροπή](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "JavaScript παλαιού τύπου"
   },
   "models/trace/insights/ModernHTTP.ts | description": {
-    "message": "Το HTTP/2 και το HTTP/3 προσφέρουν πολλά οφέλη σε σχέση με το HTTP/1.1, όπως πολυπλεξία. [Μάθετε περισσότερα σχετικά με τη χρήση του σύγχρονου HTTP](https://developer.chrome.com/docs/lighthouse/best-practices/uses-http2/)."
+    "message": "Το HTTP/2 και το HTTP/3 προσφέρουν πολλά οφέλη σε σχέση με το HTTP/1.1, όπως πολυπλεξία. [Μάθετε περισσότερα σχετικά με τη χρήση του σύγχρονου HTTP](https://developer.chrome.com/docs/performance/insights/modern-http)."
   },
   "models/trace/insights/ModernHTTP.ts | noOldProtocolRequests": {
     "message": "Κανένα αίτημα δεν χρησιμοποίησε HTTP/1.1 ή η τρέχουσα χρήση HTTP/1.1 δεν παρουσιάζει σημαντική ευκαιρία βελτιστοποίησης. Τα αιτήματα HTTP/1.1 επισημαίνονται μόνο αν έξι ή περισσότερα στατικά στοιχεία έχουν την ίδια προέλευση και δεν προβάλλονται από ένα τοπικό περιβάλλον ανάπτυξης ή μια πηγή τρίτου μέρους."
@@ -2478,7 +2475,7 @@
     "message": "Προσύνδεση που δεν χρησιμοποιείται. Ελέγξτε ότι το χαρακτηριστικό crossorigin χρησιμοποιείται σωστά."
   },
   "models/trace/insights/NetworkDependencyTree.ts | description": {
-    "message": "Για τη βελτίωση της φόρτωσης σελίδας, [αποφύγετε τη δημιουργία αλυσίδων κρίσιμων αιτημάτων](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains), μειώνοντας το μήκος των αλυσίδων ή το μέγεθος λήψης των πόρων ή αναβάλλοντας τη λήψη των μη απαραίτητων πόρων."
+    "message": "Για τη βελτίωση της φόρτωσης σελίδας, [αποφύγετε τη δημιουργία αλυσίδων κρίσιμων αιτημάτων](https://developer.chrome.com/docs/performance/insights/network-dependency-tree), μειώνοντας το μήκος των αλυσίδων ή το μέγεθος λήψης των πόρων ή αναβάλλοντας τη λήψη των μη απαραίτητων πόρων."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableDescription": {
     "message": "Προσθέστε υποδείξεις [προσύνδεσης](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) στις πιο σημαντικές προελεύσεις σας, αλλά προσπαθήστε να μην χρησιμοποιήσετε πάνω από 4."
@@ -2517,7 +2514,7 @@
     "message": "Για τη βελτίωση της φόρτωσης σελίδας, αποφύγετε τη δημιουργία αλυσίδων κρίσιμων αιτημάτων, μειώνοντας το μήκος των αλυσίδων ή το μέγεθος λήψης των πόρων ή αναβάλλοντας τη λήψη των μη απαραίτητων πόρων."
   },
   "models/trace/insights/RenderBlocking.ts | description": {
-    "message": "Τα αιτήματα αποκλείουν την αρχική απόδοση της σελίδας, κάτι που μπορεί να οδηγήσει σε καθυστέρηση της μέτρησης LCP. Η [αναβολή ή η ενσωμάτωση](https://web.dev/learn/performance/understanding-the-critical-path#render-blocking_resources) μπορεί να μετακινήσει αυτά τα αιτήματα δικτύου εκτός της κρίσιμης διαδρομής."
+    "message": "Τα αιτήματα αποκλείουν την αρχική απόδοση της σελίδας, κάτι που μπορεί να οδηγήσει σε καθυστέρηση της μέτρησης LCP. Η [αναβολή ή η ενσωμάτωση](https://developer.chrome.com/docs/performance/insights/render-blocking) μπορεί να μετακινήσει αυτά τα αιτήματα δικτύου εκτός της κρίσιμης διαδρομής."
   },
   "models/trace/insights/RenderBlocking.ts | duration": {
     "message": "Διάρκεια"
@@ -2532,7 +2529,7 @@
     "message": "Αιτήματα αποκλεισμού απόδοσης"
   },
   "models/trace/insights/SlowCSSSelector.ts | description": {
-    "message": "Αν τα κόστη του εκ νέου υπολογισμού στιλ παραμένουν υψηλά, η βελτιστοποίηση επιλογέα μπορεί να τα μειώσει. [Βελτιστοποιήστε τους επιλογείς](https://developer.chrome.com/docs/devtools/performance/selector-stats) με υψηλό χρόνο που έχει παρέλθει και υψηλό ποσοστό slow-path. Το κόστος αντιστοίχισης μπορεί να μειωθεί με τη χρήση λιγότερων και απλούστερων επιλογέων και DOM μικρότερου μεγέθους και βάθους."
+    "message": "Αν τα κόστη του εκ νέου υπολογισμού στιλ παραμένουν υψηλά, η βελτιστοποίηση επιλογέα μπορεί να τα μειώσει. [Βελτιστοποιήστε τους επιλογείς](https://developer.chrome.com/docs/performance/insights/slow-css-selector) με υψηλό χρόνο που έχει παρέλθει και υψηλό ποσοστό slow-path. Το κόστος αντιστοίχισης μπορεί να μειωθεί με τη χρήση λιγότερων και απλούστερων επιλογέων και DOM μικρότερου μεγέθους και βάθους."
   },
   "models/trace/insights/SlowCSSSelector.ts | elapsed": {
     "message": "Χρόνος που παρήλθε"
@@ -2571,7 +2568,7 @@
     "message": "Μέγεθος μεταφοράς"
   },
   "models/trace/insights/ThirdParties.ts | description": {
-    "message": "Ο κώδικας τρίτου μέρους μπορεί να επηρεάσει σημαντικά την απόδοση φόρτωσης. [Μειώστε και αναβάλετε τη φόρτωση κώδικα τρίτου μέρους](https://web.dev/articles/optimizing-content-efficiency-loading-third-party-javascript/), για να δώσετε προτεραιότητα στο περιεχόμενο της σελίδας σας."
+    "message": "Ο κώδικας τρίτου μέρους μπορεί να επηρεάσει σημαντικά την απόδοση φόρτωσης. [Μειώστε και αναβάλετε τη φόρτωση κώδικα τρίτου μέρους](https://developer.chrome.com/docs/performance/insights/third-parties), για να δώσετε προτεραιότητα στο περιεχόμενο της σελίδας σας."
   },
   "models/trace/insights/ThirdParties.ts | noThirdParties": {
     "message": "Δεν βρέθηκαν τρίτα μέρη"
@@ -2580,7 +2577,7 @@
     "message": "Τρίτα μέρη"
   },
   "models/trace/insights/Viewport.ts | description": {
-    "message": "Οι αλληλεπιδράσεις με πάτημα μπορεί να [καθυστερούν έως και 300 ms](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/), αν η θύρα προβολής δεν είναι βελτιστοποιημένη για κινητά."
+    "message": "Οι αλληλεπιδράσεις με πάτημα μπορεί να [καθυστερούν έως και 300 ms](https://developer.chrome.com/docs/performance/insights/viewport), αν η θύρα προβολής δεν είναι βελτιστοποιημένη για κινητά."
   },
   "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
     "message": "Καθυστέρηση πατήματος σε κινητό"
@@ -3074,14 +3071,20 @@
   "panels/ai_assistance/ai_assistance-meta.ts | aiAssistance": {
     "message": "Βοήθεια AI"
   },
-  "panels/ai_assistance/ai_assistance-meta.ts | askAi": {
-    "message": "Ρωτήστε το AI"
-  },
   "panels/ai_assistance/ai_assistance-meta.ts | debugWithAi": {
     "message": "Αποσφαλμάτωση με AI"
   },
+  "panels/ai_assistance/ai_assistance-meta.ts | debugWithGemini": {
+    "message": "Αποσφαλμάτωση με το Gemini"
+  },
   "panels/ai_assistance/ai_assistance-meta.ts | enableAiAssistance": {
     "message": "Ενεργοποίηση βοήθειας AI"
+  },
+  "panels/ai_assistance/ai_assistance-meta.ts | enableGemini": {
+    "message": "Ενεργοποίηση Gemini"
+  },
+  "panels/ai_assistance/ai_assistance-meta.ts | gemini": {
+    "message": "Gemini"
   },
   "panels/ai_assistance/ai_assistance-meta.ts | geoRestricted": {
     "message": "Αυτή η λειτουργία δεν είναι διαθέσιμη στην περιοχή σας."
@@ -3092,40 +3095,43 @@
   "panels/ai_assistance/ai_assistance-meta.ts | showAiAssistance": {
     "message": "Εμφάνιση βοήθειας AI"
   },
+  "panels/ai_assistance/ai_assistance-meta.ts | showGemini": {
+    "message": "Εμφάνιση Gemini"
+  },
   "panels/ai_assistance/ai_assistance-meta.ts | wrongLocale": {
     "message": "Για να χρησιμοποιήσετε αυτή τη λειτουργία, ορίστε την προτίμηση γλώσσας στα Αγγλικά στις ρυθμίσεις των Εργαλείων για προγραμματιστές."
   },
-  "panels/ai_assistance/components/ChatView.ts | inputTextAriaDescription": {
+  "panels/ai_assistance/components/ChatInput.ts | inputTextAriaDescription": {
     "message": "Μπορείτε επίσης να χρησιμοποιήσετε μία από τις προτεινόμενες οδηγίες για να ξεκινήσετε τη συνομιλία σας"
   },
-  "panels/ai_assistance/components/ChatView.ts | learnAbout": {
+  "panels/ai_assistance/components/ChatInput.ts | learnAbout": {
     "message": "Μάθετε σχετικά με το AI στα Εργαλεία για προγραμματιστές"
   },
-  "panels/ai_assistance/components/ChatView.ts | notAvailableInIncognitoMode": {
-    "message": "Η βοήθεια AI δεν είναι διαθέσιμη στην Κατάσταση ανώνυμης περιήγησης ή στη Λειτουργία επισκέπτη"
-  },
-  "panels/ai_assistance/components/ChatView.ts | notLoggedIn": {
-    "message": "Αυτή η λειτουργία είναι διαθέσιμη μόνο όταν είστε συνδεδεμένοι στο Chrome με τον Λογαριασμό σας Google"
-  },
-  "panels/ai_assistance/components/ChatView.ts | offline": {
-    "message": "Ελέγξτε τη σύνδεσή σας στο διαδίκτυο και δοκιμάστε ξανά"
-  },
-  "panels/ai_assistance/components/ChatView.ts | revealContextDescription": {
+  "panels/ai_assistance/components/ChatInput.ts | revealContextDescription": {
     "message": "Αποκάλυψη του επιλεγμένου στοιχείου περιβάλλοντος στα Εργαλεία για προγραμματιστές"
   },
-  "panels/ai_assistance/components/ChatView.ts | settingsLink": {
+  "panels/ai_assistance/components/DisabledWidget.ts | notAvailableInIncognitoMode": {
+    "message": "Η βοήθεια AI δεν είναι διαθέσιμη στην Κατάσταση ανώνυμης περιήγησης ή στη Λειτουργία επισκέπτη"
+  },
+  "panels/ai_assistance/components/DisabledWidget.ts | notLoggedIn": {
+    "message": "Αυτή η λειτουργία είναι διαθέσιμη μόνο όταν είστε συνδεδεμένοι στο Chrome με τον Λογαριασμό σας Google"
+  },
+  "panels/ai_assistance/components/DisabledWidget.ts | offline": {
+    "message": "Ελέγξτε τη σύνδεσή σας στο διαδίκτυο και δοκιμάστε ξανά"
+  },
+  "panels/ai_assistance/components/DisabledWidget.ts | settingsLink": {
     "message": "Βοήθεια AI στις Ρυθμίσεις"
   },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStyles": {
+  "panels/ai_assistance/components/DisabledWidget.ts | turnOnForStyles": {
     "message": "Ενεργοποιήστε τη {PH1}, για να λάβετε βοήθεια με την κατανόηση των στιλ CSS"
   },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesAndRequests": {
+  "panels/ai_assistance/components/DisabledWidget.ts | turnOnForStylesAndRequests": {
     "message": "Ενεργοποιήστε τη {PH1}, για να λάβετε βοήθεια με τα στιλ και τα αιτήματα δικτύου"
   },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsAndFiles": {
+  "panels/ai_assistance/components/DisabledWidget.ts | turnOnForStylesRequestsAndFiles": {
     "message": "Ενεργοποιήστε τη {PH1}, για να λάβετε βοήθεια με τα στιλ, τα αιτήματα δικτύου και τα αρχεία"
   },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsPerformanceAndFiles": {
+  "panels/ai_assistance/components/DisabledWidget.ts | turnOnForStylesRequestsPerformanceAndFiles": {
     "message": "Ενεργοποιήστε τη {PH1}, για να λάβετε βοήθεια με τα στιλ, τα αιτήματα δικτύου, την απόδοση και τα αρχεία"
   },
   "panels/animation/AnimationTimeline.ts | animationDescription": {
@@ -3209,6 +3215,9 @@
   "panels/application/AppManifestView.ts | appIdNote": {
     "message": "Σημείωση: Το id δεν προσδιορίζεται στο μανιφέστο. Αντ' αυτού, χρησιμοποιείται το start_url. Για να προσδιορίσετε ένα αναγνωριστικό εφαρμογής που αντιστοιχεί στην τρέχουσα ταυτότητα, ορίστε το πεδίο id σε {PH1} {PH2}."
   },
+  "panels/application/AppManifestView.ts | appManifest": {
+    "message": "Μανιφέστο"
+  },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
     "message": "Δεν συνιστάται η δήλωση εικονιδίου με purpose τύπου any maskable. Είναι πιθανό να φαίνεται λανθασμένο σε ορισμένες πλατφόρμες λόγω υπερβολικής ή πολύ λίγης αναπλήρωσης."
   },
@@ -3281,6 +3290,9 @@
   "panels/application/AppManifestView.ts | manifestCouldNotBeFetchedIsEmpty": {
     "message": "Δεν ήταν δυνατή η ανάκτηση του μανιφέστου, το μανιφέστο είναι κενό ή δεν ήταν δυνατή η ανάλυσή του."
   },
+  "panels/application/AppManifestView.ts | manifestDescription": {
+    "message": "Ένα μανιφέστο ορίζει τον τρόπο εμφάνισης της εφαρμογής σας στις αρχικές οθόνες των τηλεφώνων και την εμφάνιση της εφαρμογής κατά την εκκίνησή της."
+  },
   "panels/application/AppManifestView.ts | manifestDisplayPropertyMustBeOne": {
     "message": "Η ιδιότητα display του μανιφέστου πρέπει να είναι standalone, fullscreen ή minimal-ui"
   },
@@ -3305,6 +3317,9 @@
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "URL νέας σημείωσης"
   },
+  "panels/application/AppManifestView.ts | noManifestDetected": {
+    "message": "Δεν εντοπίστηκε μανιφέστο"
+  },
   "panels/application/AppManifestView.ts | noPlayStoreIdProvided": {
     "message": "Δεν παρασχέθηκε αναγνωριστικό Play Store"
   },
@@ -3316,6 +3331,9 @@
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
     "message": "Κανένα παρεχόμενο εικονίδιο δεν είναι τετράγωνο μεγέθους {PH1} τουλάχιστον pixel σε μορφή PNG, SVG ή WebP, με το χαρακτηριστικό σκοπού μη ορισμένο ή ορισμένο σε \"any\"."
+  },
+  "panels/application/AppManifestView.ts | onInvokeAlert": {
+    "message": "Έγινε κύλιση σε {PH1}"
   },
   "panels/application/AppManifestView.ts | orientation": {
     "message": "Προσανατολισμός"
@@ -3446,9 +3464,6 @@
   "panels/application/AppManifestView.ts | windowControlsOverlay": {
     "message": "Επικάλυψη στοιχείων ελέγχου παραθύρου"
   },
-  "panels/application/ApplicationPanelSidebar.ts | appManifest": {
-    "message": "Μανιφέστο"
-  },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "Εφαρμογή"
   },
@@ -3518,9 +3533,6 @@
   "panels/application/ApplicationPanelSidebar.ts | manifest": {
     "message": "Μανιφέστο"
   },
-  "panels/application/ApplicationPanelSidebar.ts | manifestDescription": {
-    "message": "Ένα μανιφέστο ορίζει τον τρόπο εμφάνισης της εφαρμογής σας στις αρχικές οθόνες των τηλεφώνων και την εμφάνιση της εφαρμογής κατά την εκκίνησή της."
-  },
   "panels/application/ApplicationPanelSidebar.ts | noCookies": {
     "message": "Δεν έχουν οριστεί cookie"
   },
@@ -3532,9 +3544,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | noLocalStorage": {
     "message": "Δεν εντοπίστηκε τοπικός αποθηκευτικός χώρος"
-  },
-  "panels/application/ApplicationPanelSidebar.ts | noManifestDetected": {
-    "message": "Δεν εντοπίστηκε μανιφέστο"
   },
   "panels/application/ApplicationPanelSidebar.ts | noSessionStorage": {
     "message": "Δεν εντοπίστηκε αποθηκευτικός χώρος περιόδου λειτουργίας"
@@ -3710,11 +3719,554 @@
   "panels/application/DOMStorageItemsView.ts | domStorageItemsCleared": {
     "message": "Τα στοιχεία αποθηκευτικού χώρου DOM διαγράφηκαν."
   },
+  "panels/application/DeviceBoundSessionsTreeElement.ts | deviceBoundSessions": {
+    "message": "Περίοδοι λειτουργίας συνδεδεμένες με τη συσκευή"
+  },
+  "panels/application/DeviceBoundSessionsTreeElement.ts | deviceBoundSessionsCategoryDescription": {
+    "message": "Σε αυτή τη σελίδα μπορείτε να δείτε περιόδους λειτουργίας που είναι συνδεδεμένες με συσκευές και συσχετισμένα συμβάντα"
+  },
+  "panels/application/DeviceBoundSessionsTreeElement.ts | noSession": {
+    "message": "Δεν υπάρχει περίοδος λειτουργίας"
+  },
+  "panels/application/DeviceBoundSessionsTreeElement.ts | sessionWithErrors": {
+    "message": "{sessionName}, η περίοδος λειτουργίας έχει σφάλματα"
+  },
+  "panels/application/DeviceBoundSessionsTreeElement.ts | terminatedSession": {
+    "message": "{sessionName}, η περίοδος λειτουργίας τερματίστηκε"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | allowedRefreshInitiators": {
+    "message": "Επιτρεπόμενα στοιχεία εκκίνησης ανανέωσης"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | boundCookieSetForbidden": {
+    "message": "Εγγραφή σε περιβάλλον που δεν μπορεί να ορίσει δεσμευμένα cookie"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | cachedChallenge": {
+    "message": "Πρόκληση αποθηκευμένη στην κρυφή μνήμη"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | cantSetBoundCookie": {
+    "message": "Δεν επιτρέπεται ο ορισμός δεσμευμένου cookie"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | causedAnyRequestDeferrals": {
+    "message": "Προκάλεσε αναβολές αιτημάτων"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | challenge": {
+    "message": "Πρόκληση"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | challengeResult": {
+    "message": "Αποτέλεσμα πρόκλησης"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | clearBrowsingData": {
+    "message": "Κατάργηση δεδομένων περιήγησης που ξεκίνησε ο χρήστης"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | cookieCravings": {
+    "message": "Cookie"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | creation": {
+    "message": "Δημιουργία"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | deletionReason": {
+    "message": "Λόγος διαγραφής"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | doNotClearLogOnPageReload": {
+    "message": "Να μην διαγράφεται το αρχείο καταγραφής μετά την επανάληψη φόρτωσης σελίδων ή την πλοήγηση σε σελίδες."
+  },
+  "panels/application/DeviceBoundSessionsView.ts | emptyScopeSpecificationDomain": {
+    "message": "Κενός τομέας προδιαγραφής εύρους"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | emptyScopeSpecificationPath": {
+    "message": "Κενή διαδρομή προδιαγραφής εύρους"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | emptySessionConfig": {
+    "message": "Διαμόρφωση κενής περιόδου λειτουργίας για εγγραφή"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | error": {
+    "message": "Σφάλμα"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | eventDetails": {
+    "message": "Λεπτομέρειες συμβάντος"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | eventResult": {
+    "message": "Αποτέλεσμα συμβάντος"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | events": {
+    "message": "Συμβάντα"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | expired": {
+    "message": "Έληξε"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | expiryDate": {
+    "message": "Ημερομηνία λήξης"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | failedToRestoreKey": {
+    "message": "Η επαναφορά του κλειδιού από τον δίσκο απέτυχε"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | failedToUnwrapKey": {
+    "message": "Η αποκάλυψη του κλειδιού απέτυχε"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | fatalError": {
+    "message": "Ανεπανόρθωτο σφάλμα"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | federatedKeyThumbprintMismatch": {
+    "message": "Το κατανεμημένο κλειδί είχε λανθασμένο αποτύπωμα"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | federatedNotAuthorizedByProvider": {
+    "message": "Η κατανεμημένη περίοδος λειτουργίας δεν εξουσιοδοτήθηκε από το αρχείο .well-known του παρόχου"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | federatedNotAuthorizedByRelyingParty": {
+    "message": "Η κατανεμημένη περίοδος λειτουργίας δεν εξουσιοδοτήθηκε από το αρχείο .well-known του συμβαλλόμενου μέρους"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | fetchResult": {
+    "message": "Αποτέλεσμα λήψης"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | includeSite": {
+    "message": "Συμπερίληψη ιστοτόπου"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | initializedService": {
+    "message": "Η υπηρεσία προετοιμάστηκε"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidChallenge": {
+    "message": "Μη έγκυρη πρόκληση"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidConfigJson": {
+    "message": "Μη έγκυρο JSON διαμόρφωσης περιόδου σύνδεσης"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidCredentialsConfig": {
+    "message": "Μη έγκυρη διαμόρφωση διαπιστευτηρίων"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidCredentialsCookie": {
+    "message": "Μη έγκυρα διαπιστευτήρια - μη έγκυρο cookie"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidCredentialsCookieCreationTime": {
+    "message": "Μη έγκυρα διαπιστευτήρια - μη έγκυρη ώρα δημιουργίας cookie"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidCredentialsCookieInvalidDomain": {
+    "message": "Μη έγκυρα διαπιστευτήρια - μη έγκυρος τομέας cookie"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidCredentialsCookieName": {
+    "message": "Μη έγκυρα διαπιστευτήρια - μη έγκυρο όνομα cookie"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidCredentialsCookieParsing": {
+    "message": "Μη έγκυρα διαπιστευτήρια - η ανάλυση των cookie απέτυχε"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidCredentialsCookiePrefix": {
+    "message": "Μη έγκυρα διαπιστευτήρια - μη έγκυρο πρόθεμα cookie"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidCredentialsCookieUnpermittedAttribute": {
+    "message": "Μη έγκυρα διαπιστευτήρια - το χαρακτηριστικό του cookie δεν επιτρέπεται"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidCredentialsEmptyName": {
+    "message": "Μη έγκυρα διαπιστευτήρια - κενό όνομα"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidCredentialsType": {
+    "message": "Μη έγκυρα διαπιστευτήρια - κενά ή ο τύπος τους δεν είναι cookie"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidFederatedKey": {
+    "message": "Μη έγκυρο κατανεμημένο κλειδί"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidFederatedSessionProviderFailedToRestoreKey": {
+    "message": "Η κατανεμημένη περίοδος λειτουργίας δεν είναι έγκυρη λόγω αποτυχίας επαναφοράς του κλειδιού παρόχου περιόδου λειτουργίας"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidFederatedSessionProviderSessionMissing": {
+    "message": "Η κατανεμημένη περίοδος λειτουργίας δεν είναι έγκυρη επειδή δεν βρέθηκε η περίοδος λειτουργίας παρόχου"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidFederatedSessionUrl": {
+    "message": "Το URL του κατανεμημένου παρόχου δεν είναι έγκυρο"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidFederatedSessionWrongProviderOrigin": {
+    "message": "Η κατανεμημένη περίοδος λειτουργίας δεν είναι έγκυρη λόγω αναντιστοιχίας με την προέλευση παρόχου"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidFetcherUrl": {
+    "message": "Μη έγκυρο URL fetcher"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidRefreshUrl": {
+    "message": "Μη έγκυρο URL ανανέωσης"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidScopeIncludeSite": {
+    "message": "Μη έγκυρο include_site εντός του εύρους"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidScopeOrigin": {
+    "message": "Μη έγκυρη προέλευση εύρους"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidScopeRuleHostPattern": {
+    "message": "Μη έγκυρο μοτίβο κεντρικού υπολογιστή κανόνα εύρους"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidScopeRulePath": {
+    "message": "Μη έγκυρη διαδρομή κανόνα εύρους"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidScopeSpecification": {
+    "message": "Μη έγκυρη προδιαγραφή εύρους"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidScopeSpecificationType": {
+    "message": "Ο τύπος προδιαγραφής εύρους δεν είναι \"να συμπεριληφθεί\" ούτε \"να εξαιρεθεί\""
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidSessionId": {
+    "message": "Μη έγκυρο αναγνωριστικό περιόδου λειτουργίας"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidSessionParams": {
+    "message": "Μη έγκυρες παράμετροι περιόδου λειτουργίας"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | keyError": {
+    "message": "Σφάλμα κλειδιού"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | keyId": {
+    "message": "Αναγνωριστικό"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | keySite": {
+    "message": "Ιστότοπος"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | mismatchedSessionId": {
+    "message": "Το αναγνωριστικό περιόδου λειτουργίας δεν αντιστοιχεί"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | missingScope": {
+    "message": "Λείπει το εύρος"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | missingScopeIncludeSite": {
+    "message": "Λείπει το include_site από το εύρος"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | missingScopeSpecificationType": {
+    "message": "Λείπει ο τύπος προδιαγραφής εύρους"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | name": {
+    "message": "Όνομα"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | netError": {
+    "message": "Σφάλμα δικτύου"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | no": {
+    "message": "Όχι"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | noCredentials": {
+    "message": "Δεν υπάρχουν διαπιστευτήρια"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | noEvents": {
+    "message": "Δεν έχουν καταγραφεί ακόμα συμβάντα."
+  },
+  "panels/application/DeviceBoundSessionsView.ts | noSessionId": {
+    "message": "Δεν υπάρχει αναγνωριστικό περιόδου λειτουργίας"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | noSessionMatch": {
+    "message": "Δεν υπάρχει αντιστοίχιση αναγνωριστικού περιόδου λειτουργίας"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | origin": {
+    "message": "Προέλευση"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | persistentHttpError": {
+    "message": "Επίμονο σφάλμα HTTP"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | preserveLog": {
+    "message": "Διατήρηση αρχείου καταγραφής"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | proxyError": {
+    "message": "Σφάλμα διακομιστή μεσολάβησης"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | refresh": {
+    "message": "Ανανέωση"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | refreshFatalError": {
+    "message": "Ανεπανόρθωτο σφάλμα κατά την ανανέωση"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | refreshInitiatorInvalidHostPattern": {
+    "message": "Το επιτρεπόμενο στοιχείο εκκίνησης ανανέωσης έχει μη έγκυρο μοτίβο κεντρικού υπολογιστή"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | refreshInitiatorNotString": {
+    "message": "Το επιτρεπόμενο στοιχείο εκκίνησης ανανέωσης δεν είναι συμβολοσειρά"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | refreshQuotaExceeded": {
+    "message": "Έγινε υπέρβαση του ορίου ανανέωσης"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | refreshResult": {
+    "message": "Αποτέλεσμα ανανέωσης"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | refreshUrl": {
+    "message": "URL ανανέωσης"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | refreshUrlSameSiteMismatch": {
+    "message": "Αναντιστοιχία ίδιου ιστοτόπου για URL ανανέωσης"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | refreshed": {
+    "message": "Ανανεώθηκε"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | registrationAttemptedChallenge": {
+    "message": "Η εγγραφή εμφάνισε κωδικό απόκρισης σφάλματος πρόκλησης"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | relyingPartyWellKnownHasRelyingOrigins": {
+    "message": "Το περιεχόμενο .well-known του συμβαλλόμενου μέρους έχει relying_origins"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | relyingPartyWellKnownMalformed": {
+    "message": "Το περιεχόμενο .well-known του συμβαλλόμενου μέρους έχει λανθασμένη μορφή"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | relyingPartyWellKnownUnavailable": {
+    "message": "Μη διαθέσιμο αρχείο .well-known συμβαλλόμενου μέρους"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | result": {
+    "message": "Αποτέλεσμα"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | ruleHostPattern": {
+    "message": "Μοτίβο κεντρικού υπολογιστή"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | rulePathPrefix": {
+    "message": "Πρόθεμα διαδρομής"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | ruleType": {
+    "message": "Τύπος κανόνα"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | ruleTypeExclude": {
+    "message": "Να εξαιρεθεί"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | ruleTypeInclude": {
+    "message": "Να συμπεριληφθεί"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | scope": {
+    "message": "Εύρος"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | scopeOriginContainsPath": {
+    "message": "Η προέλευση εύρους περιέχει μια διαδρομή"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | scopeOriginSameSiteMismatch": {
+    "message": "Αναντιστοιχία ίδιου ιστοτόπου για προέλευση εύρους"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | scopeRuleOriginScopedHostPatternMismatch": {
+    "message": "Η περίοδος λειτουργίας με εύρος προέλευσης παρουσιάζει αναντιστοιχία μεταξύ του μοτίβου κεντρικού υπολογιστή και της προέλευσης"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | scopeRuleSiteScopedHostPatternMismatch": {
+    "message": "Η περίοδος λειτουργίας με εύρος ιστοτόπου παρουσιάζει αναντιστοιχία μεταξύ του μοτίβου κεντρικού υπολογιστή και της προέλευσης"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | selectEventToViewDetails": {
+    "message": "Επιλέξτε μια σειρά συμβάντος, για να δείτε περισσότερες λεπτομέρειες."
+  },
+  "panels/application/DeviceBoundSessionsView.ts | serverError": {
+    "message": "Προσωρινό σφάλμα τελικού σημείου"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | serverRequestedTermination": {
+    "message": "Ο διακομιστής ζήτησε τερματισμό"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | sessionConfig": {
+    "message": "Διαμόρφωση περιόδου λειτουργίας"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | sessionDeletedDuringRefresh": {
+    "message": "Η περίοδος λειτουργίας διαγράφηκε κατά την ανανέωση"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | sessionDetails": {
+    "message": "Λεπτομέρειες περιόδου λειτουργίας"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | sessionId": {
+    "message": "Αναγνωριστικό περιόδου λειτουργίας"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | sessionProviderWellKnownHasProviderOrigin": {
+    "message": "Το περιεχόμενο .well-known του παρόχου περιόδου λειτουργίας έχει provider_origin"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | sessionProviderWellKnownMalformed": {
+    "message": "Το περιεχόμενο .well-known του παρόχου περιόδου λειτουργίας έχει λανθασμένη μορφή"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | sessionProviderWellKnownUnavailable": {
+    "message": "Το αρχείο .well-known παρόχου περιόδου λειτουργίας δεν είναι διαθέσιμο"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | signingError": {
+    "message": "Σφάλμα υπογραφής"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | signingQuotaExceeded": {
+    "message": "Έγινε υπέρβαση του ορίου υπογραφής"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | storagePartitionCleared": {
+    "message": "Καταργήθηκε από τον διαμερισμό αποθηκευτικού χώρου"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | subdomainRegistrationUnauthorized": {
+    "message": "Το αρχείο .well-known δεν εξουσιοδότησε την εγγραφή από υποτομέα"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | subdomainRegistrationWellKnownMalformed": {
+    "message": "Το περιεχόμενο .well-known της εγγραφής υποτομέα έχει λανθασμένη μορφή"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | subdomainRegistrationWellKnownUnavailable": {
+    "message": "Μη διαθέσιμο αρχείο .well-known εγγραφής υποτομέα"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | success": {
+    "message": "Επιτυχία"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | termination": {
+    "message": "Τερματισμός"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | timestamp": {
+    "message": "Ημερομηνία"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | tooManyChallenges": {
+    "message": "Πάρα πολλές προκλήσεις"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | tooManyRelyingOriginLabels": {
+    "message": "Πάρα πολλές ετικέτες συμβαλλόμενης προέλευσης στο αρχείο .well-known"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | transientHttpError": {
+    "message": "Προσωρινό σφάλμα HTTP"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | type": {
+    "message": "Τύπος"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | unknown": {
+    "message": "Άγνωστο"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | unreachable": {
+    "message": "Το τελικό σημείο δεν είναι προσβάσιμο"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | updatedSessionConfig": {
+    "message": "Ενημερωμένη διαμόρφωση περιόδου λειτουργίας"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | yes": {
+    "message": "Ναι"
+  },
   "panels/application/ExtensionStorageItemsView.ts | extensionStorageItems": {
     "message": "Στοιχεία αποθηκευτικού χώρου επέκτασης"
   },
   "panels/application/ExtensionStorageItemsView.ts | extensionStorageItemsCleared": {
     "message": "Τα στοιχεία αποθηκευτικού χώρου επέκτασης διαγράφηκαν"
+  },
+  "panels/application/FrameDetailsView.ts | aFrameAncestorIsAnInsecure": {
+    "message": "Το προγονικό πλαίσιο είναι ένα μη ασφαλές περιβάλλον"
+  },
+  "panels/application/FrameDetailsView.ts | adStatus": {
+    "message": "Κατάσταση διαφήμισης"
+  },
+  "panels/application/FrameDetailsView.ts | additionalInformation": {
+    "message": "Πρόσθετες πληροφορίες"
+  },
+  "panels/application/FrameDetailsView.ts | apiAvailability": {
+    "message": "Διαθεσιμότητα API"
+  },
+  "panels/application/FrameDetailsView.ts | availabilityOfCertainApisDepends": {
+    "message": "Η διαθεσιμότητα ορισμένων API εξαρτάται από το απομονωμένο έγγραφο διασταυρούμενων προελεύσεων."
+  },
+  "panels/application/FrameDetailsView.ts | available": {
+    "message": "διαθέσιμη"
+  },
+  "panels/application/FrameDetailsView.ts | availableNotTransferable": {
+    "message": "διαθέσιμο, χωρίς δυνατότητα μεταφοράς"
+  },
+  "panels/application/FrameDetailsView.ts | availableTransferable": {
+    "message": "διαθέσιμο, με δυνατότητα μεταφοράς"
+  },
+  "panels/application/FrameDetailsView.ts | child": {
+    "message": "θυγατρικό"
+  },
+  "panels/application/FrameDetailsView.ts | childDescription": {
+    "message": "Αυτό το πλαίσιο αναγνωρίστηκε ως θυγατρικό πλαίσιο μιας διαφήμισης"
+  },
+  "panels/application/FrameDetailsView.ts | clickToOpenInNetworkPanel": {
+    "message": "Κάντε κλικ για άνοιγμα στο πλαίσιο Δίκτυο"
+  },
+  "panels/application/FrameDetailsView.ts | clickToOpenInNetworkPanelMight": {
+    "message": "Κάντε κλικ για άνοιγμα στο πλαίσιο Δίκτυο (ενδέχεται να απαιτείται επανάληψη της φόρτωσης της σελίδας)"
+  },
+  "panels/application/FrameDetailsView.ts | clickToOpenInSourcesPanel": {
+    "message": "Κάντε κλικ για άνοιγμα στο πλαίσιο Πηγές"
+  },
+  "panels/application/FrameDetailsView.ts | contentSecurityPolicy": {
+    "message": "Πολιτική ασφάλειας περιεχομένου (CSP)"
+  },
+  "panels/application/FrameDetailsView.ts | createdByAdScriptExplanation": {
+    "message": "Υπήρχε ένα σενάριο διαφήμισης στη στοίβα (async) stack κατά τη δημιουργία αυτού του πλαισίου. Η εξέταση της stack trace δημιουργίας αυτού του πλαισίου ενδέχεται να παράσχει περισσότερα insight."
+  },
+  "panels/application/FrameDetailsView.ts | creationStackTrace": {
+    "message": "Stack Trace δημιουργίας πλαισίου"
+  },
+  "panels/application/FrameDetailsView.ts | creationStackTraceExplanation": {
+    "message": "Αυτό το πλαίσιο δημιουργήθηκε μέσω προγραμματισμού. Το stack trace εμφανίζει πού συνέβει αυτό."
+  },
+  "panels/application/FrameDetailsView.ts | creatorAdScriptAncestry": {
+    "message": "Καταγωγή σεναρίου διαφήμισης δημιουργού"
+  },
+  "panels/application/FrameDetailsView.ts | crossoriginIsolated": {
+    "message": "Απομονωμένα διασταυρούμενων προελεύσεων"
+  },
+  "panels/application/FrameDetailsView.ts | document": {
+    "message": "Έγγραφο"
+  },
+  "panels/application/FrameDetailsView.ts | frameId": {
+    "message": "Αναγνωριστικό πλαισίου"
+  },
+  "panels/application/FrameDetailsView.ts | learnMore": {
+    "message": "Μάθετε περισσότερα"
+  },
+  "panels/application/FrameDetailsView.ts | localhostIsAlwaysASecureContext": {
+    "message": "Το Localhost αποτελεί πάντα ασφαλές περιβάλλον"
+  },
+  "panels/application/FrameDetailsView.ts | matchedBlockingRuleExplanation": {
+    "message": "Αυτό το πλαίσιο θεωρείται πλαίσιο διαφήμισης επειδή το τρέχον (ή το προηγούμενο) κύριο έγγραφό του είναι πόρος διαφήμισης."
+  },
+  "panels/application/FrameDetailsView.ts | measureMemory": {
+    "message": "Μέτρηση μνήμης"
+  },
+  "panels/application/FrameDetailsView.ts | no": {
+    "message": "Όχι"
+  },
+  "panels/application/FrameDetailsView.ts | none": {
+    "message": "Κανένας"
+  },
+  "panels/application/FrameDetailsView.ts | origin": {
+    "message": "Προέλευση"
+  },
+  "panels/application/FrameDetailsView.ts | originTrialsExplanation": {
+    "message": "Οι δοκιμές προέλευσης σάς δίνουν πρόσβαση σε μια νέα ή πειραματική λειτουργία."
+  },
+  "panels/application/FrameDetailsView.ts | ownerElement": {
+    "message": "Στοιχείο κατόχου"
+  },
+  "panels/application/FrameDetailsView.ts | parentIsAdExplanation": {
+    "message": "Αυτό το πλαίσιο θεωρείται πλαίσιο διαφήμισης επειδή το γονικό του πλαίσιο είναι πλαίσιο διαφήμισης."
+  },
+  "panels/application/FrameDetailsView.ts | reportingTo": {
+    "message": "αναφορά σε"
+  },
+  "panels/application/FrameDetailsView.ts | requiresCrossoriginIsolated": {
+    "message": "απαιτεί απομονωμένο περιβάλλον διασταυρούμενων προελεύσεων"
+  },
+  "panels/application/FrameDetailsView.ts | root": {
+    "message": "ρίζα"
+  },
+  "panels/application/FrameDetailsView.ts | rootDescription": {
+    "message": "Αυτό το πλαίσιο αναγνωρίστηκε ως το πλαίσιο ρίζας μιας διαφήμισης"
+  },
+  "panels/application/FrameDetailsView.ts | rootScriptFilterlistRule": {
+    "message": "Κανόνας λίστας φίλτρων σεναρίου ρίζας"
+  },
+  "panels/application/FrameDetailsView.ts | secureContext": {
+    "message": "Ασφαλές περιβάλλον"
+  },
+  "panels/application/FrameDetailsView.ts | securityIsolation": {
+    "message": "Ασφάλεια και απομόνωση"
+  },
+  "panels/application/FrameDetailsView.ts | sharedarraybufferConstructorIs": {
+    "message": "Ο κατασκευαστής SharedArrayBuffer είναι διαθέσιμος και η μεταφορά των SABs δεν είναι δυνατή μέσω postMessage"
+  },
+  "panels/application/FrameDetailsView.ts | sharedarraybufferConstructorIsAvailable": {
+    "message": "Ο κατασκευαστής SharedArrayBuffer είναι διαθέσιμος αλλά η μεταφορά των SABs δεν είναι δυνατή μέσω postMessage"
+  },
+  "panels/application/FrameDetailsView.ts | theFramesSchemeIsInsecure": {
+    "message": "Το σχήμα του πλαισίου δεν είναι ασφαλές"
+  },
+  "panels/application/FrameDetailsView.ts | thePerformanceAPI": {
+    "message": "Το API performance.measureUserAgentSpecificMemory() είναι διαθέσιμο"
+  },
+  "panels/application/FrameDetailsView.ts | thePerformancemeasureuseragentspecificmemory": {
+    "message": "Το API performance.measureUserAgentSpecificMemory() δεν είναι διαθέσιμο"
+  },
+  "panels/application/FrameDetailsView.ts | thisAdditionalDebugging": {
+    "message": "Αυτές οι πρόσθετες πληροφορίες (αποσφαλμάτωσης) εμφανίζονται επειδή είναι ενεργό το πείραμα Παρακολούθηση πρωτοκόλλου."
+  },
+  "panels/application/FrameDetailsView.ts | transferRequiresCrossoriginIsolatedPermission": {
+    "message": "Η μεταφορά SharedArrayBuffer απαιτεί την ενεργοποίηση της πολιτικής αδειών:"
+  },
+  "panels/application/FrameDetailsView.ts | unavailable": {
+    "message": "μη διαθέσιμο"
+  },
+  "panels/application/FrameDetailsView.ts | unreachableUrl": {
+    "message": "Μη προσβάσιμο URL"
+  },
+  "panels/application/FrameDetailsView.ts | url": {
+    "message": "URL"
+  },
+  "panels/application/FrameDetailsView.ts | willRequireCrossoriginIsolated": {
+    "message": "Στο μέλλον, το ⚠️ θα απαιτεί απομονωμένο περιεχόμενο διασταυρούμενων προελεύσεων"
+  },
+  "panels/application/FrameDetailsView.ts | yes": {
+    "message": "Ναι"
   },
   "panels/application/IndexedDBViews.ts | clearObjectStore": {
     "message": "Διαγραφή χώρου αποθήκευσης αντικειμένου"
@@ -3877,6 +4429,39 @@
   },
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "Ναι"
+  },
+  "panels/application/OriginTrialTreeView.ts | expiryTime": {
+    "message": "Χρόνος λήξης"
+  },
+  "panels/application/OriginTrialTreeView.ts | isThirdParty": {
+    "message": "Τρίτο μέρος"
+  },
+  "panels/application/OriginTrialTreeView.ts | matchSubDomains": {
+    "message": "Αντιστοίχιση υποτομέων"
+  },
+  "panels/application/OriginTrialTreeView.ts | noTrialTokens": {
+    "message": "Δεν υπάρχουν διακριτικά δοκιμής"
+  },
+  "panels/application/OriginTrialTreeView.ts | origin": {
+    "message": "Προέλευση"
+  },
+  "panels/application/OriginTrialTreeView.ts | rawTokenText": {
+    "message": "Διακριτικό raw"
+  },
+  "panels/application/OriginTrialTreeView.ts | status": {
+    "message": "Κατάσταση διακριτικού"
+  },
+  "panels/application/OriginTrialTreeView.ts | token": {
+    "message": "Διακριτικό"
+  },
+  "panels/application/OriginTrialTreeView.ts | tokens": {
+    "message": "Διακριτικά {PH1}"
+  },
+  "panels/application/OriginTrialTreeView.ts | trialName": {
+    "message": "Όνομα δοκιμής"
+  },
+  "panels/application/OriginTrialTreeView.ts | usageRestriction": {
+    "message": "Περιορισμός χρήσης"
   },
   "panels/application/PreloadingTreeElement.ts | rules": {
     "message": "Κανόνες"
@@ -4658,6 +5243,9 @@
   "panels/application/components/BackForwardCacheView.ts | supportPendingExplanation": {
     "message": "Εκκρεμεί η υποστήριξη του Chrome για αυτούς τους λόγους. Αυτό σημαίνει ότι δεν πρόκειται να αποτρέψουν την καταλληλότητα της σελίδας για την κρυφή μνήμη πίσω-εμπρός σε κάποια μελλοντική έκδοση του Chrome."
   },
+  "panels/application/components/BackForwardCacheView.ts | testCompleted": {
+    "message": "Η δοκιμή της κρυφής μνήμης πίσω-εμπρός ολοκληρώθηκε."
+  },
   "panels/application/components/BackForwardCacheView.ts | unavailable": {
     "message": "μη διαθέσιμο"
   },
@@ -4697,159 +5285,6 @@
   "panels/application/components/EndpointsGrid.ts | noEndpointsToDisplay": {
     "message": "Δεν υπάρχουν τελικά σημεία για προβολή"
   },
-  "panels/application/components/FrameDetailsView.ts | aFrameAncestorIsAnInsecure": {
-    "message": "Το προγονικό πλαίσιο είναι ένα μη ασφαλές περιβάλλον"
-  },
-  "panels/application/components/FrameDetailsView.ts | adStatus": {
-    "message": "Κατάσταση διαφήμισης"
-  },
-  "panels/application/components/FrameDetailsView.ts | additionalInformation": {
-    "message": "Πρόσθετες πληροφορίες"
-  },
-  "panels/application/components/FrameDetailsView.ts | apiAvailability": {
-    "message": "Διαθεσιμότητα API"
-  },
-  "panels/application/components/FrameDetailsView.ts | availabilityOfCertainApisDepends": {
-    "message": "Η διαθεσιμότητα ορισμένων API εξαρτάται από το απομονωμένο έγγραφο διασταυρούμενων προελεύσεων."
-  },
-  "panels/application/components/FrameDetailsView.ts | available": {
-    "message": "διαθέσιμη"
-  },
-  "panels/application/components/FrameDetailsView.ts | availableNotTransferable": {
-    "message": "διαθέσιμο, χωρίς δυνατότητα μεταφοράς"
-  },
-  "panels/application/components/FrameDetailsView.ts | availableTransferable": {
-    "message": "διαθέσιμο, με δυνατότητα μεταφοράς"
-  },
-  "panels/application/components/FrameDetailsView.ts | child": {
-    "message": "θυγατρικό"
-  },
-  "panels/application/components/FrameDetailsView.ts | childDescription": {
-    "message": "Αυτό το πλαίσιο αναγνωρίστηκε ως θυγατρικό πλαίσιο μιας διαφήμισης"
-  },
-  "panels/application/components/FrameDetailsView.ts | clickToOpenInElementsPanel": {
-    "message": "Κάντε κλικ για άνοιγμα στο πλαίσιο Στοιχεία"
-  },
-  "panels/application/components/FrameDetailsView.ts | clickToOpenInNetworkPanel": {
-    "message": "Κάντε κλικ για άνοιγμα στο πλαίσιο Δίκτυο"
-  },
-  "panels/application/components/FrameDetailsView.ts | clickToOpenInNetworkPanelMight": {
-    "message": "Κάντε κλικ για άνοιγμα στο πλαίσιο Δίκτυο (ενδέχεται να απαιτείται επανάληψη της φόρτωσης της σελίδας)"
-  },
-  "panels/application/components/FrameDetailsView.ts | clickToOpenInSourcesPanel": {
-    "message": "Κάντε κλικ για άνοιγμα στο πλαίσιο Πηγές"
-  },
-  "panels/application/components/FrameDetailsView.ts | contentSecurityPolicy": {
-    "message": "Πολιτική ασφάλειας περιεχομένου (CSP)"
-  },
-  "panels/application/components/FrameDetailsView.ts | createdByAdScriptExplanation": {
-    "message": "Υπήρχε ένα σενάριο διαφήμισης στη στοίβα (async) stack κατά τη δημιουργία αυτού του πλαισίου. Η εξέταση της stack trace δημιουργίας αυτού του πλαισίου ενδέχεται να παράσχει περισσότερα insight."
-  },
-  "panels/application/components/FrameDetailsView.ts | creationStackTrace": {
-    "message": "Stack Trace δημιουργίας πλαισίου"
-  },
-  "panels/application/components/FrameDetailsView.ts | creationStackTraceExplanation": {
-    "message": "Αυτό το πλαίσιο δημιουργήθηκε μέσω προγραμματισμού. Το stack trace εμφανίζει πού συνέβει αυτό."
-  },
-  "panels/application/components/FrameDetailsView.ts | creatorAdScriptAncestry": {
-    "message": "Καταγωγή σεναρίου διαφήμισης δημιουργού"
-  },
-  "panels/application/components/FrameDetailsView.ts | crossoriginIsolated": {
-    "message": "Απομονωμένα διασταυρούμενων προελεύσεων"
-  },
-  "panels/application/components/FrameDetailsView.ts | document": {
-    "message": "Έγγραφο"
-  },
-  "panels/application/components/FrameDetailsView.ts | frameId": {
-    "message": "Αναγνωριστικό πλαισίου"
-  },
-  "panels/application/components/FrameDetailsView.ts | learnMore": {
-    "message": "Μάθετε περισσότερα"
-  },
-  "panels/application/components/FrameDetailsView.ts | localhostIsAlwaysASecureContext": {
-    "message": "Το Localhost αποτελεί πάντα ασφαλές περιβάλλον"
-  },
-  "panels/application/components/FrameDetailsView.ts | matchedBlockingRuleExplanation": {
-    "message": "Αυτό το πλαίσιο θεωρείται πλαίσιο διαφήμισης επειδή το τρέχον (ή το προηγούμενο) κύριο έγγραφό του είναι πόρος διαφήμισης."
-  },
-  "panels/application/components/FrameDetailsView.ts | measureMemory": {
-    "message": "Μέτρηση μνήμης"
-  },
-  "panels/application/components/FrameDetailsView.ts | no": {
-    "message": "Όχι"
-  },
-  "panels/application/components/FrameDetailsView.ts | none": {
-    "message": "Κανένας"
-  },
-  "panels/application/components/FrameDetailsView.ts | origin": {
-    "message": "Προέλευση"
-  },
-  "panels/application/components/FrameDetailsView.ts | originTrialsExplanation": {
-    "message": "Οι δοκιμές προέλευσης σάς δίνουν πρόσβαση σε μια νέα ή πειραματική λειτουργία."
-  },
-  "panels/application/components/FrameDetailsView.ts | ownerElement": {
-    "message": "Στοιχείο κατόχου"
-  },
-  "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
-    "message": "Αυτό το πλαίσιο θεωρείται πλαίσιο διαφήμισης επειδή το γονικό του πλαίσιο είναι πλαίσιο διαφήμισης."
-  },
-  "panels/application/components/FrameDetailsView.ts | reportingTo": {
-    "message": "αναφορά σε"
-  },
-  "panels/application/components/FrameDetailsView.ts | requiresCrossoriginIsolated": {
-    "message": "απαιτεί απομονωμένο περιβάλλον διασταυρούμενων προελεύσεων"
-  },
-  "panels/application/components/FrameDetailsView.ts | root": {
-    "message": "ρίζα"
-  },
-  "panels/application/components/FrameDetailsView.ts | rootDescription": {
-    "message": "Αυτό το πλαίσιο αναγνωρίστηκε ως το πλαίσιο ρίζας μιας διαφήμισης"
-  },
-  "panels/application/components/FrameDetailsView.ts | rootScriptFilterlistRule": {
-    "message": "Κανόνας λίστας φίλτρων σεναρίου ρίζας"
-  },
-  "panels/application/components/FrameDetailsView.ts | secureContext": {
-    "message": "Ασφαλές περιβάλλον"
-  },
-  "panels/application/components/FrameDetailsView.ts | securityIsolation": {
-    "message": "Ασφάλεια και απομόνωση"
-  },
-  "panels/application/components/FrameDetailsView.ts | sharedarraybufferConstructorIs": {
-    "message": "Ο κατασκευαστής SharedArrayBuffer είναι διαθέσιμος και η μεταφορά των SABs δεν είναι δυνατή μέσω postMessage"
-  },
-  "panels/application/components/FrameDetailsView.ts | sharedarraybufferConstructorIsAvailable": {
-    "message": "Ο κατασκευαστής SharedArrayBuffer είναι διαθέσιμος αλλά η μεταφορά των SABs δεν είναι δυνατή μέσω postMessage"
-  },
-  "panels/application/components/FrameDetailsView.ts | theFramesSchemeIsInsecure": {
-    "message": "Το σχήμα του πλαισίου δεν είναι ασφαλές"
-  },
-  "panels/application/components/FrameDetailsView.ts | thePerformanceAPI": {
-    "message": "Το API performance.measureUserAgentSpecificMemory() είναι διαθέσιμο"
-  },
-  "panels/application/components/FrameDetailsView.ts | thePerformancemeasureuseragentspecificmemory": {
-    "message": "Το API performance.measureUserAgentSpecificMemory() δεν είναι διαθέσιμο"
-  },
-  "panels/application/components/FrameDetailsView.ts | thisAdditionalDebugging": {
-    "message": "Αυτές οι πρόσθετες πληροφορίες (αποσφαλμάτωσης) εμφανίζονται επειδή είναι ενεργό το πείραμα Παρακολούθηση πρωτοκόλλου."
-  },
-  "panels/application/components/FrameDetailsView.ts | transferRequiresCrossoriginIsolatedPermission": {
-    "message": "Η μεταφορά SharedArrayBuffer απαιτεί την ενεργοποίηση της πολιτικής αδειών:"
-  },
-  "panels/application/components/FrameDetailsView.ts | unavailable": {
-    "message": "μη διαθέσιμο"
-  },
-  "panels/application/components/FrameDetailsView.ts | unreachableUrl": {
-    "message": "Μη προσβάσιμο URL"
-  },
-  "panels/application/components/FrameDetailsView.ts | url": {
-    "message": "URL"
-  },
-  "panels/application/components/FrameDetailsView.ts | willRequireCrossoriginIsolated": {
-    "message": "Στο μέλλον, το ⚠️ θα απαιτεί απομονωμένο περιεχόμενο διασταυρούμενων προελεύσεων"
-  },
-  "panels/application/components/FrameDetailsView.ts | yes": {
-    "message": "Ναι"
-  },
   "panels/application/components/InterestGroupAccessGrid.ts | allInterestGroupStorageEvents": {
     "message": "Όλα τα συμβάντα αποθήκευσης ομάδων ενδιαφέροντος."
   },
@@ -4870,39 +5305,6 @@
   },
   "panels/application/components/InterestGroupAccessGrid.ts | noEvents": {
     "message": "Δεν εντοπίστηκαν συμβάντα ομάδων ενδιαφέροντος"
-  },
-  "panels/application/components/OriginTrialTreeView.ts | expiryTime": {
-    "message": "Χρόνος λήξης"
-  },
-  "panels/application/components/OriginTrialTreeView.ts | isThirdParty": {
-    "message": "Τρίτο μέρος"
-  },
-  "panels/application/components/OriginTrialTreeView.ts | matchSubDomains": {
-    "message": "Αντιστοίχιση υποτομέων"
-  },
-  "panels/application/components/OriginTrialTreeView.ts | noTrialTokens": {
-    "message": "Δεν υπάρχουν διακριτικά δοκιμής"
-  },
-  "panels/application/components/OriginTrialTreeView.ts | origin": {
-    "message": "Προέλευση"
-  },
-  "panels/application/components/OriginTrialTreeView.ts | rawTokenText": {
-    "message": "Διακριτικό raw"
-  },
-  "panels/application/components/OriginTrialTreeView.ts | status": {
-    "message": "Κατάσταση διακριτικού"
-  },
-  "panels/application/components/OriginTrialTreeView.ts | token": {
-    "message": "Διακριτικό"
-  },
-  "panels/application/components/OriginTrialTreeView.ts | tokens": {
-    "message": "Διακριτικά {PH1}"
-  },
-  "panels/application/components/OriginTrialTreeView.ts | trialName": {
-    "message": "Όνομα δοκιμής"
-  },
-  "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
-    "message": "Περιορισμός χρήσης"
   },
   "panels/application/components/PermissionsPolicySection.ts | allowedFeatures": {
     "message": "Επιτρεπόμενες λειτουργίες"
@@ -5032,18 +5434,6 @@
   },
   "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "Κοινόχρηστος αποθηκευτικός χώρος"
-  },
-  "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
-    "message": "Δεν είναι δυνατή η απόδοση της ιχνηλάτησης στοίβας."
-  },
-  "panels/application/components/StackTrace.ts | creationStackTrace": {
-    "message": "Stack Trace δημιουργίας πλαισίου"
-  },
-  "panels/application/components/StackTrace.ts | showLess": {
-    "message": "Εμφάνιση λιγότερων"
-  },
-  "panels/application/components/StackTrace.ts | showSMoreFrames": {
-    "message": "{n,plural, =1{Εμφάνιση # ακόμη πλαισίου}other{Εμφάνιση # ακόμη πλαισίων}}"
   },
   "panels/application/components/StorageMetadataView.ts | bucketName": {
     "message": "Όνομα κάδου"
@@ -5333,18 +5723,6 @@
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "Κατάσταση"
   },
-  "panels/application/preloading/components/PreloadingMismatchedHeadersGrid.ts | activationNavigationValue": {
-    "message": "Τιμή στην πλοήγηση ενεργοποίησης"
-  },
-  "panels/application/preloading/components/PreloadingMismatchedHeadersGrid.ts | headerName": {
-    "message": "Όνομα κεφαλίδας"
-  },
-  "panels/application/preloading/components/PreloadingMismatchedHeadersGrid.ts | initialNavigationValue": {
-    "message": "Τιμή στην αρχική πλοήγηση"
-  },
-  "panels/application/preloading/components/PreloadingMismatchedHeadersGrid.ts | missing": {
-    "message": "(λείπει)"
-  },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchEvictedAfterBrowsingDataRemoved": {
     "message": "Η προαναζήτηση απορρίφθηκε, επειδή καταργήθηκαν δεδομένα περιήγησης."
   },
@@ -5621,6 +5999,9 @@
   "panels/application/preloading/components/RuleSetGrid.ts | status": {
     "message": "Κατάσταση"
   },
+  "panels/application/preloading/components/UsedPreloadingView.ts | activationNavigationValue": {
+    "message": "Τιμή στην πλοήγηση ενεργοποίησης"
+  },
   "panels/application/preloading/components/UsedPreloadingView.ts | badgeFailure": {
     "message": "Αποτυχία"
   },
@@ -5651,11 +6032,20 @@
   "panels/application/preloading/components/UsedPreloadingView.ts | downgradedPrefetchUsed": {
     "message": "Η αρχική σελίδα επιχείρησε να προαποδώσει το URL αυτής της σελίδας. Η προαπόδοση απέτυχε, αλλά το σώμα απόκρισης που προέκυψε χρησιμοποιήθηκε ως προαναζήτηση."
   },
+  "panels/application/preloading/components/UsedPreloadingView.ts | headerName": {
+    "message": "Όνομα κεφαλίδας"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | initialNavigationValue": {
+    "message": "Τιμή στην αρχική πλοήγηση"
+  },
   "panels/application/preloading/components/UsedPreloadingView.ts | learnMore": {
     "message": "Μάθετε περισσότερα: Προληπτική φόρτωση στον ιστότοπο developer.chrome.com"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | mismatchedHeadersDetail": {
     "message": "Κεφαλίδες αιτημάτων HTTP με εσφαλμένη αντιστοίχιση"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | missing": {
+    "message": "(λείπει)"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | noPreloads": {
     "message": "Η σελίδα εκκίνησης δεν προσπάθησε να φορτώσει προληπτικά το URL αυτής της σελίδας."
@@ -5993,11 +6383,11 @@
   "panels/common/BadgeNotification.ts | manageSettings": {
     "message": "Διαχείριση ρυθμίσεων"
   },
+  "panels/common/BadgeNotification.ts | noThanks": {
+    "message": "Όχι, ευχαριστώ"
+  },
   "panels/common/BadgeNotification.ts | receiveBadges": {
     "message": "Ενεργοποίηση σημάτων"
-  },
-  "panels/common/BadgeNotification.ts | remindMeLater": {
-    "message": "Υπενθύμιση αργότερα"
   },
   "panels/common/BadgeNotification.ts | starterBadgeAwardMessageNoGdpProfile": {
     "message": "Κερδίσατε το σήμα {PH1} για το {PH2}! Δημιουργήστε ένα προφίλ, για να διεκδικήσετε το σήμα σας."
@@ -6007,6 +6397,12 @@
   },
   "panels/common/BadgeNotification.ts | viewProfile": {
     "message": "Προβολή προφίλ"
+  },
+  "panels/common/CopyChangesToPrompt.ts | responseCopiedToClipboard": {
+    "message": "Η απάντηση αντιγράφηκε στο πρόχειρο"
+  },
+  "panels/common/DOMLinkifier.ts | node": {
+    "message": "<κόμβος>"
   },
   "panels/common/FreDialog.ts | cancel": {
     "message": "Ακύρωση"
@@ -6067,6 +6463,33 @@
   },
   "panels/common/GdpSignUpDialog.ts | termsOfService": {
     "message": "Όροι Παροχής Υπηρεσιών"
+  },
+  "panels/common/GeminiRebrandPromoDialog.ts | detailAiCompanion": {
+    "message": "Γνωρίστε έναν βοηθό για προγραμματιστές ιστού που παρέχεται με την υποστήριξη του AI"
+  },
+  "panels/common/GeminiRebrandPromoDialog.ts | detailConsoleErrors": {
+    "message": "Λάβετε άμεσες, ακριβείς απαντήσεις για σφάλματα κονσόλας"
+  },
+  "panels/common/GeminiRebrandPromoDialog.ts | detailGenerateCode": {
+    "message": "Άμεση δημιουργία αποσπασμάτων CSS και JS"
+  },
+  "panels/common/GeminiRebrandPromoDialog.ts | detailPerformance": {
+    "message": "Αυτόματος εντοπισμός προβλημάτων στα ίχνη απόδοσης"
+  },
+  "panels/common/GeminiRebrandPromoDialog.ts | dialogAriaLabel": {
+    "message": "Gemini 3 Flash στα Εργαλεία για προγραμματιστές"
+  },
+  "panels/common/GeminiRebrandPromoDialog.ts | dismiss": {
+    "message": "Παράβλεψη"
+  },
+  "panels/common/GeminiRebrandPromoDialog.ts | getStarted": {
+    "message": "Έναρξη"
+  },
+  "panels/common/PersistenceUtils.ts | linkedToS": {
+    "message": "Συνδέθηκε με {PH1}"
+  },
+  "panels/common/PersistenceUtils.ts | linkedToSourceMapS": {
+    "message": "Με σύνδεση στην αντιστοίχιση πηγών: {PH1}"
   },
   "panels/common/common.ts | allow": {
     "message": "Να επιτρέπεται"
@@ -6272,9 +6695,6 @@
   "panels/console/ConsoleViewMessage.ts | Mxx": {
     "message": " M<XX>"
   },
-  "panels/console/ConsoleViewMessage.ts | SeeIssueInCookieReport": {
-    "message": "Κάντε κλικ για να ανοίξετε το πλαίσιο απορρήτου και ασφάλειας και να εμφανίσετε την αναφορά cookie τρίτου μέρους"
-  },
   "panels/console/ConsoleViewMessage.ts | assertionFailed": {
     "message": "Η επιβεβαίωση απέτυχε: "
   },
@@ -6298,6 +6718,9 @@
   },
   "panels/console/ConsoleViewMessage.ts | deprecationS": {
     "message": "[Deprecation] {PH1}"
+  },
+  "panels/console/ConsoleViewMessage.ts | dots": {
+    "message": "(…)"
   },
   "panels/console/ConsoleViewMessage.ts | error": {
     "message": "Σφάλμα"
@@ -6334,6 +6757,9 @@
   },
   "panels/console/ConsoleViewMessage.ts | interventionS": {
     "message": "[Intervention] {PH1}"
+  },
+  "panels/console/ConsoleViewMessage.ts | invokePropertyGetter": {
+    "message": "Κλήση μεθόδου επιστροφής ιδιότητας"
   },
   "panels/console/ConsoleViewMessage.ts | logpoint": {
     "message": "Σημείο καταγραφής"
@@ -6434,9 +6860,6 @@
   "panels/console/console-meta.ts | hideTimestamps": {
     "message": "Απόκρυψη χρονικών σημάνσεων"
   },
-  "panels/console/console-meta.ts | logXmlhttprequests": {
-    "message": "Καταγραφή XMLHttpRequests"
-  },
   "panels/console/console-meta.ts | onlyShowMessagesFromTheCurrent": {
     "message": "Να εμφανίζονται μηνύματα μόνο από το τρέχον περιβάλλον (top, iframe, worker, επέκταση)"
   },
@@ -6445,6 +6868,9 @@
   },
   "panels/console/console-meta.ts | showConsole": {
     "message": "Εμφάνιση κονσόλας"
+  },
+  "panels/console/console-meta.ts | showConsoleInsightTeasers": {
+    "message": "Εμφάνιση συνόψεων AI για μηνύματα κονσόλας"
   },
   "panels/console/console-meta.ts | showCorsErrorsInConsole": {
     "message": "Να εμφανίζονται σφάλματα CORS στην κονσόλα"
@@ -6854,6 +7280,12 @@
   "panels/elements/CSSRuleValidator.ts | fontVariationSettingsWarning": {
     "message": "Η τιμή για τον ορισμό του “{PH1}” {PH2} είναι εκτός του υποστηριζόμενου εύρους [{PH3}, {PH4}] για την οικογένεια γραμματοσειρών “{PH5}”."
   },
+  "panels/elements/CSSRuleValidator.ts | invalidAnchorPositioning": {
+    "message": "Ορίστηκε μια αγκύρωση, αλλά το στοιχείο δεν τοποθετήθηκε βάσει αγκύρωσης, αλλά στη θέση \"{POSITION}\"."
+  },
+  "panels/elements/CSSRuleValidator.ts | invalidAnchorPositioningFix": {
+    "message": "Ορίστε τη θέση σε \"σταθερή\" ή \"απόλυτη\"."
+  },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
     "message": "Δοκιμάστε να αλλάξετε την ιδιότητα {EXISTING_PARENT_ELEMENT_RULE} στο γονικό στοιχείο σε {TARGET_PARENT_ELEMENT_RULE}."
   },
@@ -6871,6 +7303,9 @@
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
     "message": "Η ιδιοκτησία {REASON_PROPERTY_DECLARATION_CODE} εμποδίζει την εφαρμογή του {AFFECTED_PROPERTY_DECLARATION_CODE}."
+  },
+  "panels/elements/CSSRuleValidator.ts | unusedAnchorPositioning": {
+    "message": "Ορίστηκε μια αγκύρωση, αλλά το στοιχείο είναι κρυφό."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Προσθήκη νέας κλάσης"
@@ -6890,6 +7325,9 @@
   "panels/elements/ColorSwatchPopoverIcon.ts | openShadowEditor": {
     "message": "Άνοιγμα προγράμματος επεξεργασίας σκιών"
   },
+  "panels/elements/ComputedStyleWidget.ts | filterUpdateAriaText": {
+    "message": "Φίλτρο που εφαρμόστηκε: {PH1} Συνολικά αποτελέσματα: {PH2}"
+  },
   "panels/elements/ComputedStyleWidget.ts | group": {
     "message": "Ομαδοποίηση"
   },
@@ -6897,16 +7335,13 @@
     "message": "Πλοήγηση στον πηγαίο κώδικα του επιλογέα"
   },
   "panels/elements/ComputedStyleWidget.ts | navigateToStyle": {
-    "message": "Πλοήγηση στο στιλ"
+    "message": "Πλοήγηση στα στιλ"
   },
   "panels/elements/ComputedStyleWidget.ts | noMatchingProperty": {
     "message": "Δεν υπάρχει ιδιότητα που να αντιστοιχεί"
   },
   "panels/elements/ComputedStyleWidget.ts | showAll": {
     "message": "Εμφάνιση όλων"
-  },
-  "panels/elements/DOMLinkifier.ts | node": {
-    "message": "<κόμβος>"
   },
   "panels/elements/ElementIssueUtils.ts | disallowedOptGroupChild": {
     "message": "Μη έγκυρο στοιχείο ή κόμβος κειμένου στο <optgroup>"
@@ -7088,14 +7523,17 @@
   "panels/elements/ElementsTreeElement.ts | deleteElement": {
     "message": "Διαγραφή στοιχείου"
   },
+  "panels/elements/ElementsTreeElement.ts | disableContainer": {
+    "message": "Απενεργοποίηση επικάλυψης κοντέινερ"
+  },
   "panels/elements/ElementsTreeElement.ts | disableFlexMode": {
     "message": "Απενεργοποίηση ευέλικτης λειτουργίας"
   },
+  "panels/elements/ElementsTreeElement.ts | disableGridLanesMode": {
+    "message": "Απενεργοποίηση λειτουργίας λωρίδων πλέγματος"
+  },
   "panels/elements/ElementsTreeElement.ts | disableGridMode": {
     "message": "Απενεργοποίηση λειτουργίας πλέγματος"
-  },
-  "panels/elements/ElementsTreeElement.ts | disableMasonryMode": {
-    "message": "Απενεργοποίηση λειτουργίας masonry"
   },
   "panels/elements/ElementsTreeElement.ts | disableScrollSnap": {
     "message": "Απενεργοποίηση επικάλυψης scroll-snap"
@@ -7121,14 +7559,17 @@
   "panels/elements/ElementsTreeElement.ts | elementHasScrollableOverflow": {
     "message": "Αυτό το στοιχείο έχει υπερχείλιση με δυνατότητα κύλισης"
   },
+  "panels/elements/ElementsTreeElement.ts | enableContainer": {
+    "message": "Ενεργοποίηση επικάλυψης κοντέινερ"
+  },
   "panels/elements/ElementsTreeElement.ts | enableFlexMode": {
     "message": "Ενεργοποίηση ευέλικτης λειτουργίας"
   },
+  "panels/elements/ElementsTreeElement.ts | enableGridLanesMode": {
+    "message": "Ενεργοποίηση λειτουργίας λωρίδων πλέγματος"
+  },
   "panels/elements/ElementsTreeElement.ts | enableGridMode": {
     "message": "Ενεργοποίηση λειτουργίας πλέγματος"
-  },
-  "panels/elements/ElementsTreeElement.ts | enableMasonryMode": {
-    "message": "Ενεργοποίηση λειτουργίας masonry"
   },
   "panels/elements/ElementsTreeElement.ts | enableScrollSnap": {
     "message": "Ενεργοποίηση επικάλυψης scroll-snap"
@@ -7184,6 +7625,9 @@
   "panels/elements/ElementsTreeElement.ts | removeScrollbars": {
     "message": "Κατάργηση μπαρών κύλισης"
   },
+  "panels/elements/ElementsTreeElement.ts | reveal": {
+    "message": "αποκάλυψη"
+  },
   "panels/elements/ElementsTreeElement.ts | scrollIntoView": {
     "message": "Κύλιση για προβολή"
   },
@@ -7216,6 +7660,9 @@
   },
   "panels/elements/ElementsTreeElement.ts | valueIsTooLargeToEdit": {
     "message": "<η τιμή είναι πολύ μεγάλη για επεξεργασία>"
+  },
+  "panels/elements/ElementsTreeElement.ts | viewSourceCode": {
+    "message": "Προβολή πηγαίου κώδικα"
   },
   "panels/elements/ElementsTreeElement.ts | wrapTheseItems": {
     "message": "Ομαδοποίηση αυτών των στοιχείων"
@@ -7274,17 +7721,17 @@
   "panels/elements/LayoutPane.ts | flexboxOverlays": {
     "message": "Επικαλύψεις Flexbox"
   },
-  "panels/elements/LayoutPane.ts | gridOrMasonry": {
-    "message": "Πλέγμα / Masonry"
+  "panels/elements/LayoutPane.ts | gridOrGridLanes": {
+    "message": "Πλέγμα / Λωρίδες πλέγματος"
   },
-  "panels/elements/LayoutPane.ts | gridOrMasonryOverlays": {
-    "message": "Επικαλύψεις πλέγματος / Masonry"
+  "panels/elements/LayoutPane.ts | gridOrGridLanesOverlays": {
+    "message": "Επικαλύψεις πλέγματος / λωρίδων πλέγματος"
   },
   "panels/elements/LayoutPane.ts | noFlexboxLayoutsFoundOnThisPage": {
     "message": "Δεν βρέθηκαν διατάξεις flexbox σε αυτήν τη σελίδα"
   },
-  "panels/elements/LayoutPane.ts | noGridOrMasonryLayoutsFoundOnThisPage": {
-    "message": "Δεν βρέθηκαν διατάξεις πλέγματος ή masonry σε αυτή τη σελίδα"
+  "panels/elements/LayoutPane.ts | noGridOrGridLanesLayoutsFoundOnThisPage": {
+    "message": "Δεν βρέθηκαν διατάξεις πλέγματος ή λωρίδων πλέγματος σε αυτή τη σελίδα"
   },
   "panels/elements/LayoutPane.ts | overlayDisplaySettings": {
     "message": "Ρυθμίσεις εμφάνισης επικάλυψης"
@@ -7406,6 +7853,9 @@
   "panels/elements/StylePropertyTreeElement.ts | gridEditorButton": {
     "message": "Άνοιγμα προγράμματος επεξεργασίας grid"
   },
+  "panels/elements/StylePropertyTreeElement.ts | gridLanesEditorButton": {
+    "message": "Άνοιγμα προγράμματος επεξεργασίας grid-lanes"
+  },
   "panels/elements/StylePropertyTreeElement.ts | invalidPropertyValue": {
     "message": "Μη έγκυρη τιμή ιδιότητας"
   },
@@ -7418,11 +7868,17 @@
   "panels/elements/StylePropertyTreeElement.ts | jumpToAnimationsPanel": {
     "message": "Μετάβαση στο πλαίσιο Κινούμενες εικόνες"
   },
+  "panels/elements/StylePropertyTreeElement.ts | openAnimationsPanel": {
+    "message": "Άνοιγμα πλαισίου κινούμενων εικόνων"
+  },
   "panels/elements/StylePropertyTreeElement.ts | openColorPickerS": {
     "message": "Άνοιγμα επιλογέα χρώματος. {PH1}"
   },
   "panels/elements/StylePropertyTreeElement.ts | openInSourcesPanel": {
     "message": "Άνοιγμα στο πλαίσιο Πηγές"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | overriddenByAnimation": {
+    "message": "Παρακάμπτεται από τα στιλ κινούμενης εικόνας."
   },
   "panels/elements/StylePropertyTreeElement.ts | sIsNotDefined": {
     "message": "Το {PH1} δεν έχει προσδιοριστεί"
@@ -7471,9 +7927,6 @@
   },
   "panels/elements/StylesSidebarPane.ts | visibleSelectors": {
     "message": "{n,plural, =1{# ορατός επιλογέας παρατίθεται παρακάτω}other{# ορατοί επιλογείς που παρατίθενται παρακάτω}}"
-  },
-  "panels/elements/TopLayerContainer.ts | reveal": {
-    "message": "αποκάλυψη"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Παραβλέφθηκε"
@@ -7528,6 +7981,9 @@
   },
   "panels/elements/components/ElementsTreeExpandButton.ts | expand": {
     "message": "Ανάπτυξη"
+  },
+  "panels/elements/components/StylePropertyEditor.ts | denseLabel": {
+    "message": "Συμπαγές"
   },
   "panels/elements/components/StylePropertyEditor.ts | deselectButton": {
     "message": "Κατάργηση {propertyName}: {propertyValue}"
@@ -8045,6 +8501,9 @@
   "panels/issues/AffectedPartitioningBlobURLView.ts | noBlobURLAvailable": {
     "message": "Δεν διατίθεται URL Blob για αυτό το πρόβλημα."
   },
+  "panels/issues/AffectedPermissionElementsView.ts | nElements": {
+    "message": "{n,plural, =1{# στοιχείο}other{# στοιχεία}}"
+  },
   "panels/issues/AffectedResourcesView.ts | clickToRevealTheFramesDomNodeIn": {
     "message": "Κάντε κλικ για να αποκαλύψετε τον κόμβο DOM του πλαισίου στο πλαίσιο Στοιχεία"
   },
@@ -8296,6 +8755,9 @@
   },
   "panels/issues/IssuesPane.ts | other": {
     "message": "Άλλο"
+  },
+  "panels/issues/IssuesPane.ts | permissionElement": {
+    "message": "Στοιχείο PEPC"
   },
   "panels/issues/IssuesPane.ts | quirksMode": {
     "message": "Λειτουργία ιδιαιτεροτήτων"
@@ -9089,6 +9551,9 @@
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | addS": {
     "message": "Προσθήκη {PH1}"
   },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | blockingGroup": {
+    "message": "Αποκλεισμός"
+  },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | custom": {
     "message": "Προσαρμοσμένο"
   },
@@ -9335,39 +9800,6 @@
   "panels/network/BinaryResourceView.ts | hexViewer": {
     "message": "Σύστημα προβολής Hex"
   },
-  "panels/network/BlockedURLsPane.ts | addNetworkRequestBlockingPattern": {
-    "message": "Προσθήκη μοτίβου αποκλεισμού αιτημάτων δικτύου"
-  },
-  "panels/network/BlockedURLsPane.ts | addPattern": {
-    "message": "Προσθήκη μοτίβου"
-  },
-  "panels/network/BlockedURLsPane.ts | addPatternToBlock": {
-    "message": "Προσθέστε ένα μοτίβο για τον αποκλεισμό των αιτημάτων δικτύου, κάνοντας κλικ στο κουμπί {PH1}."
-  },
-  "panels/network/BlockedURLsPane.ts | dBlocked": {
-    "message": "Το {PH1} αποκλείστηκε."
-  },
-  "panels/network/BlockedURLsPane.ts | enableNetworkRequestBlocking": {
-    "message": "Ενεργοποίηση αποκλεισμού αιτημάτων δικτύου"
-  },
-  "panels/network/BlockedURLsPane.ts | itemDeleted": {
-    "message": "Το στοιχείο διαγράφηκε επιτυχώς"
-  },
-  "panels/network/BlockedURLsPane.ts | learnMore": {
-    "message": "Μάθετε περισσότερα"
-  },
-  "panels/network/BlockedURLsPane.ts | noNetworkRequestsBlocked": {
-    "message": "Δεν υπάρχουν αποκλεισμένα αιτήματα δικτύου"
-  },
-  "panels/network/BlockedURLsPane.ts | patternAlreadyExists": {
-    "message": "Το μοτίβο υπάρχει ήδη."
-  },
-  "panels/network/BlockedURLsPane.ts | patternInputCannotBeEmpty": {
-    "message": "Η είσοδος μοτίβου δεν μπορεί να είναι κενή."
-  },
-  "panels/network/BlockedURLsPane.ts | textPatternToBlockMatching": {
-    "message": "Μοτίβο κειμένου για τον αποκλεισμό αιτημάτων που αντιστοιχούν. Χρησιμοποιήστε το * για χαρακτήρα μπαλαντέρ"
-  },
   "panels/network/EventSourceMessagesView.ts | clearAll": {
     "message": "Διαγραφή όλων"
   },
@@ -9437,6 +9869,9 @@
   "panels/network/NetworkDataGridNode.ts | blockeds": {
     "message": "(αποκλείστηκαν:{PH1})"
   },
+  "panels/network/NetworkDataGridNode.ts | blocking": {
+    "message": "Αποκλεισμός"
+  },
   "panels/network/NetworkDataGridNode.ts | broken": {
     "message": "Το Chrome δεν προσπάθησε να δημιουργήσει σύνδεση HTTP/3 επειδή επισημάνθηκε ως κατεστραμμένη."
   },
@@ -9491,6 +9926,9 @@
   "panels/network/NetworkDataGridNode.ts | finished": {
     "message": "Ολοκληρώθηκε"
   },
+  "panels/network/NetworkDataGridNode.ts | inBodyParserBlocking": {
+    "message": "Ενσωματωμένος αποκλεισμός συντακτικού αναλυτή"
+  },
   "panels/network/NetworkDataGridNode.ts | initialPriorityToolTip": {
     "message": "{PH1}, Αρχική προτεραιότητα: {PH2}"
   },
@@ -9515,6 +9953,12 @@
   "panels/network/NetworkDataGridNode.ts | memoryCache": {
     "message": "(κρυφή μνήμη)"
   },
+  "panels/network/NetworkDataGridNode.ts | nonBlocking": {
+    "message": "Χωρίς αποκλεισμό"
+  },
+  "panels/network/NetworkDataGridNode.ts | nonBlockingDynamic": {
+    "message": "Δυναμική μη αποκλεισμού"
+  },
   "panels/network/NetworkDataGridNode.ts | origin": {
     "message": "προέλευση"
   },
@@ -9533,6 +9977,9 @@
   "panels/network/NetworkDataGridNode.ts | pendingq": {
     "message": "(σε εκκρεμότητα)"
   },
+  "panels/network/NetworkDataGridNode.ts | potentiallyBlocking": {
+    "message": "Δυνητικός αποκλεισμός"
+  },
   "panels/network/NetworkDataGridNode.ts | prefetchCache": {
     "message": "(κρυφή μνήμη λήψης)"
   },
@@ -9547,9 +9994,6 @@
   },
   "panels/network/NetworkDataGridNode.ts | redirect": {
     "message": "Ανακατεύθυνση"
-  },
-  "panels/network/NetworkDataGridNode.ts | responseIsIpProtectedToolTip": {
-    "message": "Αυτό το αίτημα στάλθηκε μέσω διακομιστών μεσολάβησης της Προστασίας IP."
   },
   "panels/network/NetworkDataGridNode.ts | sPreflight": {
     "message": "{PH1} + προληπτική εκτέλεση"
@@ -9599,6 +10043,9 @@
   "panels/network/NetworkDataGridNode.ts | unknownExplanation": {
     "message": "Δεν είναι δυνατή η εμφάνιση της κατάστασης του αιτήματος εδώ επειδή έγινε unload της σελίδας που το υπέβαλε ενώ το αίτημα ήταν σε εξέλιξη. Μπορείτε να χρησιμοποιήσετε το chrome://net-export για να καταγράψετε ένα αρχείο καταγραφής δικτύου και να δείτε όλες τις λεπτομέρειες του αιτήματος."
   },
+  "panels/network/NetworkDataGridNode.ts | wasThrottled": {
+    "message": "Το αίτημα περιορίστηκε ({PH1})"
+  },
   "panels/network/NetworkItemView.ts | connectionInfo": {
     "message": "Πληροφορίες σύνδεσης"
   },
@@ -9607,6 +10054,9 @@
   },
   "panels/network/NetworkItemView.ts | cookies": {
     "message": "Cookie"
+  },
+  "panels/network/NetworkItemView.ts | deviceBoundSessions": {
+    "message": "Περίοδοι λειτουργίας συνδεδεμένες με τη συσκευή"
   },
   "panels/network/NetworkItemView.ts | directsocketMessages": {
     "message": "Μηνύματα DirectSocket"
@@ -9682,6 +10132,9 @@
   },
   "panels/network/NetworkLogView.ts | blockRequestUrl": {
     "message": "Αποκλεισμός URL αιτήματος"
+  },
+  "panels/network/NetworkLogView.ts | blockRequests": {
+    "message": "Αποκλεισμός αιτημάτων"
   },
   "panels/network/NetworkLogView.ts | blockedRequests": {
     "message": "Αποκλεισμένα αιτήματα"
@@ -9821,9 +10274,6 @@
   "panels/network/NetworkLogView.ts | invertsFilter": {
     "message": "Αντιστρέφει το φίλτρο αναζήτησης"
   },
-  "panels/network/NetworkLogView.ts | ippRequests": {
-    "message": "Αιτήματα με προστασία IP"
-  },
   "panels/network/NetworkLogView.ts | loadS": {
     "message": "Φόρτωση: {PH1}"
   },
@@ -9838,9 +10288,6 @@
   },
   "panels/network/NetworkLogView.ts | onlyShowBlockedRequests": {
     "message": "Εμφάνιση μόνο των αποκλεισμένων αιτημάτων"
-  },
-  "panels/network/NetworkLogView.ts | onlyShowIPProtectedRequests": {
-    "message": "Εμφανίζονται μόνο τα αιτήματα που αποστέλλονται σε διακομιστές μεσολάβησης της προστασίας IP. Δεν έχει καμία επίδραση στην κανονική περιήγηση."
   },
   "panels/network/NetworkLogView.ts | onlyShowRequestsWithBlockedCookies": {
     "message": "Εμφάνιση μόνο των αιτημάτων με αποκλεισμένα cookie απόκρισης"
@@ -9911,8 +10358,20 @@
   "panels/network/NetworkLogView.ts | thirdParty": {
     "message": "Αιτήματα τρίτου μέρους"
   },
+  "panels/network/NetworkLogView.ts | throttleRequestDomain": {
+    "message": "Περιορισμός τομέα αιτήματος"
+  },
+  "panels/network/NetworkLogView.ts | throttleRequestUrl": {
+    "message": "Περιορισμός URL αιτήματος"
+  },
+  "panels/network/NetworkLogView.ts | throttleRequests": {
+    "message": "Περιορισμός αιτημάτων"
+  },
   "panels/network/NetworkLogView.ts | unblockS": {
     "message": "Κατάργηση αποκλεισμού {PH1}"
+  },
+  "panels/network/NetworkLogView.ts | unthrottleS": {
+    "message": "Διακοπή περιορισμού {PH1}"
   },
   "panels/network/NetworkLogViewColumns.ts | connectionId": {
     "message": "Αναγνωριστικό σύνδεσης"
@@ -9969,13 +10428,16 @@
     "message": "Απομακρυσμένη διεύθυνση"
   },
   "panels/network/NetworkLogViewColumns.ts | remoteAddressSpace": {
-    "message": "Χώρος απομακρυσμένης διεύθυνσης"
+    "message": "Χώρος απομακρυσμένων διευθύνσεων"
+  },
+  "panels/network/NetworkLogViewColumns.ts | renderBlocking": {
+    "message": "Αποκλεισμός απόδοσης"
   },
   "panels/network/NetworkLogViewColumns.ts | requestHeaders": {
     "message": "Κεφαλίδες αιτημάτων"
   },
   "panels/network/NetworkLogViewColumns.ts | responseHeaders": {
-    "message": "Κεφαλίδες αποκρίσεων"
+    "message": "Κεφαλίδες απόκρισης"
   },
   "panels/network/NetworkLogViewColumns.ts | responseTime": {
     "message": "Χρόνος απόκρισης"
@@ -10106,6 +10568,75 @@
   "panels/network/NetworkSearchScope.ts | url": {
     "message": "URL"
   },
+  "panels/network/RequestConditionsDrawer.ts | addPatternLabel": {
+    "message": "Προσθήκη μοτίβου περιορισμού ή αποκλεισμού αιτημάτων δικτύου"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addRule": {
+    "message": "Προσθήκη κανόνα"
+  },
+  "panels/network/RequestConditionsDrawer.ts | dAffected": {
+    "message": "Επηρεάστηκαν {PH1}"
+  },
+  "panels/network/RequestConditionsDrawer.ts | decreasePriority": {
+    "message": "Μετακίνηση {PH1} προς τα κάτω"
+  },
+  "panels/network/RequestConditionsDrawer.ts | editPattern": {
+    "message": "Επεξεργασία {PH1}"
+  },
+  "panels/network/RequestConditionsDrawer.ts | enableBlockingAndThrottling": {
+    "message": "Ενεργοποίηση αποκλεισμού και περιορισμού"
+  },
+  "panels/network/RequestConditionsDrawer.ts | enableThrottlingToggleLabel": {
+    "message": "Περιορισμός ή αποκλεισμός {PH1}"
+  },
+  "panels/network/RequestConditionsDrawer.ts | increasePriority": {
+    "message": "Μετακίνηση {PH1} προς τα επάνω"
+  },
+  "panels/network/RequestConditionsDrawer.ts | itemDeleted": {
+    "message": "Το στοιχείο διαγράφηκε επιτυχώς"
+  },
+  "panels/network/RequestConditionsDrawer.ts | learnMore": {
+    "message": "Μάθετε περισσότερα"
+  },
+  "panels/network/RequestConditionsDrawer.ts | learnMoreLabel": {
+    "message": "Μάθετε περισσότερα σχετικά με τη σύνταξη τύπου URL"
+  },
+  "panels/network/RequestConditionsDrawer.ts | noPattern": {
+    "message": "Τίποτα δεν έχει περιοριστεί ή αποκλειστεί"
+  },
+  "panels/network/RequestConditionsDrawer.ts | noThrottlingOrBlockingPattern": {
+    "message": "Για να περιορίσετε ή να αποκλείσετε ένα αίτημα δικτύου, προσθέστε έναν κανόνα εδώ με μη αυτόματο τρόπο ή μέσω του μενού περιβάλλοντος του πλαισίου δικτύου. {PH1}"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternAlreadyExists": {
+    "message": "Το μοτίβο υπάρχει ήδη."
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternFailedToParse": {
+    "message": "Απέτυχε η ανάλυση αυτού του μοτίβου ως URLPattern"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternFailedWithRegExpGroups": {
+    "message": "Δεν επιτρέπονται ομάδες RegExp"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternInputCannotBeEmpty": {
+    "message": "Η είσοδος μοτίβου δεν μπορεί να είναι κενή."
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternMovedDown": {
+    "message": "Ο τύπος URL μετακινήθηκε προς τα κάτω"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternMovedUp": {
+    "message": "Ο τύπος URL μετακινήθηκε προς τα επάνω"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternWasUpgraded": {
+    "message": "Αυτό το μοτίβο αναβαθμίστηκε από {PH1}"
+  },
+  "panels/network/RequestConditionsDrawer.ts | removePattern": {
+    "message": "Κατάργηση {PH1}"
+  },
+  "panels/network/RequestConditionsDrawer.ts | requestConditionsLabel": {
+    "message": "Συνθήκες αιτήματος"
+  },
+  "panels/network/RequestConditionsDrawer.ts | textEditPattern": {
+    "message": "Μοτίβο κειμένου για τον αποκλεισμό ή τον περιορισμό αιτημάτων που αντιστοιχούν. Χρησιμοποιήστε σύνταξη τύπου URL."
+  },
   "panels/network/RequestCookiesView.ts | cookiesThatWereReceivedFromThe": {
     "message": "Τα cookie που λήφθηκαν από τον διακομιστή στην κεφαλίδα set-cookie της απόκρισης"
   },
@@ -10139,6 +10670,30 @@
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "Αυτό το αίτημα δεν έχει cookie."
   },
+  "panels/network/RequestDeviceBoundSessionsView.ts | deferralDecision": {
+    "message": "Απόφαση αναβολής"
+  },
+  "panels/network/RequestDeviceBoundSessionsView.ts | deferred": {
+    "message": "Αναβλήθηκε (Ανανέωση)"
+  },
+  "panels/network/RequestDeviceBoundSessionsView.ts | inScopeRefreshNotAllowed": {
+    "message": "Δεν αναβλήθηκε (Το αίτημα εμπίπετει στο εύρος της περιόδου λειτουργίας, αλλά δεν επιτρέπεται στο στοιχείο εκκίνησης να ενεργοποιήσει την ανανέωση)"
+  },
+  "panels/network/RequestDeviceBoundSessionsView.ts | inScopeRefreshNotYetNeeded": {
+    "message": "Δεν αναβλήθηκε (Το αίτημα εμπίπτει στο εύρος της περιόδου λειτουργίας, αλλά τα cookie εξακολουθούν να υπάρχουν)"
+  },
+  "panels/network/RequestDeviceBoundSessionsView.ts | notInScope": {
+    "message": "Δεν αναβλήθηκε (Το αίτημα δεν εμπίπτει στο εύρος της περιόδου λειτουργίας)"
+  },
+  "panels/network/RequestDeviceBoundSessionsView.ts | proactiveRefreshAttempted": {
+    "message": "Δεν αναβλήθηκε (Έγινε προσπάθεια προληπτικής ανανέωσης)"
+  },
+  "panels/network/RequestDeviceBoundSessionsView.ts | proactiveRefreshNotPossible": {
+    "message": "Δεν αναβλήθηκε (Το αίτημα εμπίπτει στο εύρος της περιόδου λειτουργίας, αλλά δεν είναι δυνατή η προληπτική ανανέωση)"
+  },
+  "panels/network/RequestDeviceBoundSessionsView.ts | sessionId": {
+    "message": "Αναγνωριστικό περιόδου λειτουργίας"
+  },
   "panels/network/RequestInitiatorView.ts | noInitiator": {
     "message": "Δεν υπάρχουν δεδομένα στοιχείου εκκίνησης"
   },
@@ -10165,9 +10720,6 @@
   },
   "panels/network/RequestPayloadView.ts | requestPayload": {
     "message": "Φορτίο αιτήματος"
-  },
-  "panels/network/RequestPayloadView.ts | showMore": {
-    "message": "Εμφάνιση περισσότερων"
   },
   "panels/network/RequestPayloadView.ts | unableToDecodeValue": {
     "message": "(δεν είναι δυνατή η αποκωδικοποίηση της τιμής)"
@@ -10262,14 +10814,14 @@
   "panels/network/RequestTimingView.ts | receivingPush": {
     "message": "Λήψη Push"
   },
+  "panels/network/RequestTimingView.ts | requestResponse": {
+    "message": "Αίτημα/απόκριση"
+  },
   "panels/network/RequestTimingView.ts | requestSent": {
     "message": "Το αίτημα στάλθηκε"
   },
   "panels/network/RequestTimingView.ts | requestToServiceworker": {
     "message": "Αίτημα σε ServiceWorker"
-  },
-  "panels/network/RequestTimingView.ts | requestresponse": {
-    "message": "Αίτημα/απόκριση"
   },
   "panels/network/RequestTimingView.ts | resourceScheduling": {
     "message": "Προγραμματισμός πόρων"
@@ -10333,6 +10885,9 @@
   },
   "panels/network/RequestTimingView.ts | waitingTtfb": {
     "message": "Αναμονή για απόκριση διακομιστή"
+  },
+  "panels/network/RequestTimingView.ts | wasThrottled": {
+    "message": "Το αίτημα περιορίστηκε ({PH1})"
   },
   "panels/network/RequestTimingView.ts | waterfall": {
     "message": "Waterfall"
@@ -10430,6 +10985,9 @@
   "panels/network/ResourceWebSocketFrameView.ts | webSocketFrame": {
     "message": "Πλαίσιο Web Socket"
   },
+  "panels/network/ShowMoreDetailsWidget.ts | showMore": {
+    "message": "Εμφάνιση περισσότερων"
+  },
   "panels/network/SignedExchangeInfoView.ts | certificate": {
     "message": "Πιστοποιητικό"
   },
@@ -10470,7 +11028,7 @@
     "message": "Κωδικός απόκρισης"
   },
   "panels/network/SignedExchangeInfoView.ts | responseHeaders": {
-    "message": "Κεφαλίδες αποκρίσεων"
+    "message": "Κεφαλίδες απόκρισης"
   },
   "panels/network/SignedExchangeInfoView.ts | signature": {
     "message": "Υπογραφή"
@@ -10519,6 +11077,9 @@
   },
   "panels/network/components/DirectSocketConnectionView.ts | general": {
     "message": "Γενικά"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | joinedMulticastGroups": {
+    "message": "joinedMulticastGroups"
   },
   "panels/network/components/DirectSocketConnectionView.ts | openInfo": {
     "message": "Άνοιγμα Πληροφοριών"
@@ -10614,7 +11175,7 @@
     "message": "URL αιτήματος"
   },
   "panels/network/components/RequestHeadersView.ts | responseHeaders": {
-    "message": "Κεφαλίδες αποκρίσεων"
+    "message": "Κεφαλίδες απόκρισης"
   },
   "panels/network/components/RequestHeadersView.ts | revealHeaderOverrides": {
     "message": "Αποκάλυψη ορισμών παράκαμψης κεφαλίδας"
@@ -10706,8 +11267,8 @@
   "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
     "message": "Για τη χρήση αυτού του πόρου από διαφορετικό ιστότοπο, ο διακομιστής ενδέχεται να χαλαρώσει την κεφαλίδα απόκρισης για την πολιτική πόρων διασταυρούμενων προελεύσεων:"
   },
-  "panels/network/network-meta.ts | addNetworkRequestBlockingPattern": {
-    "message": "Προσθήκη μοτίβου αποκλεισμού αιτημάτων δικτύου"
+  "panels/network/network-meta.ts | addNetworkRequestBlockingOrThrottlingPattern": {
+    "message": "Προσθήκη μοτίβου αποκλεισμού ή περιορισμού αιτημάτων δικτύου"
   },
   "panels/network/network-meta.ts | allowToGenerateHarWithSensitiveData": {
     "message": "Να επιτρέπεται η δημιουργία HAR με ευαίσθητα δεδομένα"
@@ -10760,8 +11321,8 @@
   "panels/network/network-meta.ts | networkConditions": {
     "message": "Συνθήκες δικτύου"
   },
-  "panels/network/network-meta.ts | networkRequestBlocking": {
-    "message": "Αποκλεισμός αιτήματος δικτύου"
+  "panels/network/network-meta.ts | networkRequestConditions": {
+    "message": "Συνθήκες αιτήματος"
   },
   "panels/network/network-meta.ts | networkThrottling": {
     "message": "περιορισμός δικτύου"
@@ -10769,8 +11330,8 @@
   "panels/network/network-meta.ts | recordNetworkLog": {
     "message": "Εγγραφή αρχείου καταγραφής δικτύου"
   },
-  "panels/network/network-meta.ts | removeAllNetworkRequestBlockingPatterns": {
-    "message": "Κατάργηση όλων των μοτίβων αποκλεισμού αιτημάτων δικτύου"
+  "panels/network/network-meta.ts | removeAllNetworkRequestBlockingOrThrottlingPatterns": {
+    "message": "Κατάργηση όλων των μοτίβων αποκλεισμού ή περιορισμού αιτημάτων δικτύου"
   },
   "panels/network/network-meta.ts | resourceType": {
     "message": "τύπος πόρου"
@@ -10784,8 +11345,8 @@
   "panels/network/network-meta.ts | showNetworkConditions": {
     "message": "Εμφάνιση συνθηκών δικτύου"
   },
-  "panels/network/network-meta.ts | showNetworkRequestBlocking": {
-    "message": "Εμφάνιση αποκλεισμού αιτήματος δικτύου"
+  "panels/network/network-meta.ts | showRequestConditions": {
+    "message": "Εμφάνιση συνθηκών αιτήματος"
   },
   "panels/network/network-meta.ts | showSearch": {
     "message": "Εμφάνιση εργαλείου αναζήτησης"
@@ -11146,6 +11707,9 @@
   },
   "panels/profiler/HeapSnapshotView.ts | objectsRetainedByDetachedDomNodes": {
     "message": "Αντικείμενα που διατηρήθηκαν από αποσυνδεδεμένους κόμβους DOM"
+  },
+  "panels/profiler/HeapSnapshotView.ts | objectsRetainedByEventHandlers": {
+    "message": "Αντικείμενα που διατηρούνται από δείκτες χειρισμού συμβάντων"
   },
   "panels/profiler/HeapSnapshotView.ts | otherJSObjects": {
     "message": "Άλλα στοιχεία JS"
@@ -11618,8 +12182,17 @@
   "panels/recorder/RecorderController.ts | numberOfRecordings": {
     "message": "εγγραφές"
   },
+  "panels/recorder/RecorderController.ts | recordingDeleted": {
+    "message": "Η εγγραφή διαγράφηκε"
+  },
   "panels/recorder/RecorderController.ts | recordingDescription": {
     "message": "Χρησιμοποιήστε τις εγγραφές για να δημιουργήσετε αυτοματοποιημένες δοκιμές end-to-end ή ίχνη απόδοσης."
+  },
+  "panels/recorder/RecorderController.ts | recordingExported": {
+    "message": "Έγινε εξαγωγή της εγγραφής"
+  },
+  "panels/recorder/RecorderController.ts | recordingImported": {
+    "message": "Έγινε εισαγωγή της εγγραφής"
   },
   "panels/recorder/RecorderController.ts | replayRecording": {
     "message": "Επανάληψη εγγραφής"
@@ -11707,6 +12280,12 @@
   },
   "panels/recorder/components/RecordingView.ts | cancelReplay": {
     "message": "Ακύρωση επανάληψης"
+  },
+  "panels/recorder/components/RecordingView.ts | codeSidebarClosed": {
+    "message": "Η πλευρική γραμμή κώδικα έκλεισε"
+  },
+  "panels/recorder/components/RecordingView.ts | codeSidebarOpened": {
+    "message": "Η πλευρική γραμμή κώδικα άνοιξε"
   },
   "panels/recorder/components/RecordingView.ts | default": {
     "message": "Προεπιλογή"
@@ -11807,6 +12386,9 @@
   "panels/recorder/components/ReplaySection.ts | speedGroup": {
     "message": "Ταχύτητα"
   },
+  "panels/recorder/components/SelectorPicker.ts | selectorPicker": {
+    "message": "Επιλέξτε ένα στοιχείο στη σελίδα για να ενημερώσετε τους επιλογείς"
+  },
   "panels/recorder/components/StepEditor.ts | addAttribute": {
     "message": "Προσθήκη {attributeName}"
   },
@@ -11833,9 +12415,6 @@
   },
   "panels/recorder/components/StepEditor.ts | removeSelectorPart": {
     "message": "Κατάργηση τμήματος επιλογέα"
-  },
-  "panels/recorder/components/StepEditor.ts | selectorPicker": {
-    "message": "Επιλέξτε ένα στοιχείο στη σελίδα για να ενημερώσετε τους επιλογείς"
   },
   "panels/recorder/components/StepEditor.ts | unknownActionType": {
     "message": "Άγνωστος τύπος ενέργειας."
@@ -12037,234 +12616,6 @@
   },
   "panels/search/SearchView.ts | typeAndPressSToSearch": {
     "message": "Πληκτρολογήστε και πατήστε {PH1} για αναζήτηση"
-  },
-  "panels/security/CookieControlsView.ts | cardDisclaimer": {
-    "message": "Μόνο όταν είναι ανοιχτά τα Εργαλεία για προγραμματιστές"
-  },
-  "panels/security/CookieControlsView.ts | cardTitle": {
-    "message": "Προσωρινός περιορισμός των cookie τρίτου μέρους"
-  },
-  "panels/security/CookieControlsView.ts | enableFlag": {
-    "message": "Για να χρησιμοποιήσετε αυτή τη ρύθμιση, ορίστε τη λειτουργία {PH1} σε Προεπιλογή"
-  },
-  "panels/security/CookieControlsView.ts | enrollGracePeriod": {
-    "message": "Για να χρησιμοποιήσετε αυτή τη ρύθμιση, εγγράψτε αυτόν τον ιστότοπο ή τους ενσωματωμένους σε αυτόν ιστοτόπους στην περίοδο {PH1}"
-  },
-  "panels/security/CookieControlsView.ts | enterpriseDisclaimer": {
-    "message": "Ο οργανισμός σας διαχειρίζεται την πρόσβαση σε cookie τρίτου μέρους για αυτόν τον ιστότοπο"
-  },
-  "panels/security/CookieControlsView.ts | enterpriseTooltip": {
-    "message": "Η διαχείριση αυτής της ρύθμισης πραγματοποιείται από τον οργανισμό σας"
-  },
-  "panels/security/CookieControlsView.ts | exceptions": {
-    "message": "Εξαιρέσεις"
-  },
-  "panels/security/CookieControlsView.ts | exceptionsExplanation": {
-    "message": "Σενάρια που παρέχουν πρόσβαση σε cookie τρίτου μέρους"
-  },
-  "panels/security/CookieControlsView.ts | gracePeriod": {
-    "message": "περίοδος χάριτος"
-  },
-  "panels/security/CookieControlsView.ts | gracePeriodExplanation": {
-    "message": "Εάν αυτός ο ιστότοπος ή ένας ιστότοπος που είναι ενσωματωμένος σε αυτόν έχει εγγραφεί σε {PH1}, τότε ο ιστότοπος μπορεί να έχει πρόσβαση σε cookie τρίτου μέρους"
-  },
-  "panels/security/CookieControlsView.ts | gracePeriodTitle": {
-    "message": "Περίοδος χάριτος για cookie τρίτου μέρους"
-  },
-  "panels/security/CookieControlsView.ts | heuristicExplanation": {
-    "message": "Σε {PH1}, όπως αναδυόμενα παράθυρα ή ανακατευθύνσεις, ένας ιστότοπος που είναι ενσωματωμένος σε αυτόν τον ιστότοπο μπορεί να έχει πρόσβαση σε cookie τρίτου μέρους"
-  },
-  "panels/security/CookieControlsView.ts | heuristicTitle": {
-    "message": "Εξαίρεση βάσει ευρετικών μηχανισμών"
-  },
-  "panels/security/CookieControlsView.ts | scenarios": {
-    "message": "προκαθορισμένα σενάρια"
-  },
-  "panels/security/CookieControlsView.ts | siteReloadMessage": {
-    "message": "Για να εφαρμόσετε τα ενημερωμένα στοιχεία ελέγχου, επαναλάβετε τη φόρτωση της σελίδας"
-  },
-  "panels/security/CookieControlsView.ts | tpcdHeuristicsGrants": {
-    "message": "#tpcd-heuristics-grants"
-  },
-  "panels/security/CookieControlsView.ts | tpcdMetadataGrants": {
-    "message": "#tpcd-metadata-grants"
-  },
-  "panels/security/CookieControlsView.ts | viewDetails": {
-    "message": "Προβολή λεπτομερειών"
-  },
-  "panels/security/CookieControlsView.ts | viewExplanation": {
-    "message": "Δοκιμάστε πώς θα λειτουργεί αυτός ο ιστότοπος, αν περιοριστούν τα cookie τρίτου μέρους στο Chrome"
-  },
-  "panels/security/CookieControlsView.ts | viewTitle": {
-    "message": "Στοιχεία ελέγχου"
-  },
-  "panels/security/CookieReportView.ts | adCookieTypeString": {
-    "message": "Διαφήμιση"
-  },
-  "panels/security/CookieReportView.ts | allowed": {
-    "message": "Επιτρέπεται"
-  },
-  "panels/security/CookieReportView.ts | allowedByException": {
-    "message": "Επιτρέπεται κατ' εξαίρεση"
-  },
-  "panels/security/CookieReportView.ts | analyticsCookieTypeString": {
-    "message": "Αναλυτικά στοιχεία"
-  },
-  "panels/security/CookieReportView.ts | blocked": {
-    "message": "Αποκλεισμένο"
-  },
-  "panels/security/CookieReportView.ts | body": {
-    "message": "Αυτός ο ιστότοπος ενδέχεται να μην λειτουργεί, αν περιοριστούν τα cookie τρίτου μέρους και άλλα cookie στο Chrome."
-  },
-  "panels/security/CookieReportView.ts | cdnCookieTypeString": {
-    "message": "ΔΠΠ"
-  },
-  "panels/security/CookieReportView.ts | consentProviderCookieTypeString": {
-    "message": "Πάροχος συναίνεσης"
-  },
-  "panels/security/CookieReportView.ts | contentCookieTypeString": {
-    "message": "Περιεχόμενο"
-  },
-  "panels/security/CookieReportView.ts | customerSuccessCookieTypeString": {
-    "message": "Επιτυχία πελατών"
-  },
-  "panels/security/CookieReportView.ts | domain": {
-    "message": "Τομέας"
-  },
-  "panels/security/CookieReportView.ts | emptyReport": {
-    "message": "Δεν έχει μείνει ούτε ψίχουλο"
-  },
-  "panels/security/CookieReportView.ts | emptyReportExplanation": {
-    "message": "Δεν βρέθηκαν προβλήματα που να σχετίζονται με cookie τρίτου μέρους"
-  },
-  "panels/security/CookieReportView.ts | gitHubResource": {
-    "message": "Έλεγχος {PH1} από ιστότοπο τρίτου μέρους"
-  },
-  "panels/security/CookieReportView.ts | gracePeriod": {
-    "message": "Έλεγχος {PH1}. Η εξαίρεση περιόδου χάριτος είναι ενεργή."
-  },
-  "panels/security/CookieReportView.ts | guidance": {
-    "message": "καθοδήγηση"
-  },
-  "panels/security/CookieReportView.ts | heuristics": {
-    "message": "Απαιτείται ενέργεια αργότερα. Η εξαίρεση βάσει ευρετικών μηχανισμών είναι ενεργή."
-  },
-  "panels/security/CookieReportView.ts | hostingCookieTypeString": {
-    "message": "Φιλοξενία"
-  },
-  "panels/security/CookieReportView.ts | learnMoreLink": {
-    "message": "Μάθετε περισσότερα σχετικά με τον τρόπο χρήσης των cookie τρίτου μέρους"
-  },
-  "panels/security/CookieReportView.ts | marketingCookieTypeString": {
-    "message": "Μάρκετινγκ"
-  },
-  "panels/security/CookieReportView.ts | name": {
-    "message": "Όνομα"
-  },
-  "panels/security/CookieReportView.ts | other": {
-    "message": "Επικοινωνήστε με τον ιστότοπο τρίτου μέρους για περισσότερες πληροφορίες"
-  },
-  "panels/security/CookieReportView.ts | otherCookieTypeString": {
-    "message": "Άλλο"
-  },
-  "panels/security/CookieReportView.ts | platform": {
-    "message": "Πλατφόρμα"
-  },
-  "panels/security/CookieReportView.ts | recommendation": {
-    "message": "Πρόταση"
-  },
-  "panels/security/CookieReportView.ts | report": {
-    "message": "Αναφορά cookie τρίτου μέρους"
-  },
-  "panels/security/CookieReportView.ts | reportedIssues": {
-    "message": "ζητήματα που έχουν αναφερθεί"
-  },
-  "panels/security/CookieReportView.ts | showRequestsWithThisCookie": {
-    "message": "Εμφάνιση αιτημάτων με αυτό το cookie"
-  },
-  "panels/security/CookieReportView.ts | socialCookieTypeString": {
-    "message": "Κοινωνικά δίκτυα"
-  },
-  "panels/security/CookieReportView.ts | status": {
-    "message": "Κατάσταση"
-  },
-  "panels/security/CookieReportView.ts | tagManagerCookieTypeString": {
-    "message": "Διαχειριστής ετικετών"
-  },
-  "panels/security/CookieReportView.ts | title": {
-    "message": "Cookie τρίτου μέρους"
-  },
-  "panels/security/CookieReportView.ts | type": {
-    "message": "Τύπος"
-  },
-  "panels/security/CookieReportView.ts | unknown": {
-    "message": "Άγνωστο"
-  },
-  "panels/security/CookieReportView.ts | utilityCookieTypeString": {
-    "message": "Βοηθητικό πρόγραμμα"
-  },
-  "panels/security/CookieReportView.ts | videoCookieTypeString": {
-    "message": "Βίντεο"
-  },
-  "panels/security/IPProtectionView.ts | AuthTokensUnavailable": {
-    "message": "Συμπληρώθηκε το όριο για τα διακριτικά ελέγχου ταυτότητας. Η προστασία IP θα τεθεί σε παύση."
-  },
-  "panels/security/IPProtectionView.ts | Available": {
-    "message": "Η προστασία IP είναι ενεργοποιημένη και λειτουργεί."
-  },
-  "panels/security/IPProtectionView.ts | BypassedByDevTools": {
-    "message": "Η προστασία IP παρακάμπτεται από τα Εργαλεία για προγραμματιστές."
-  },
-  "panels/security/IPProtectionView.ts | FeatureNotEnabled": {
-    "message": "Η λειτουργία Προστασία IP δεν είναι ενεργοποιημένη."
-  },
-  "panels/security/IPProtectionView.ts | MaskedDomainListNotEnabled": {
-    "message": "Η λειτουργία Λίστα καλυμμένων τομέων δεν είναι ενεργοποιημένη."
-  },
-  "panels/security/IPProtectionView.ts | MaskedDomainListNotPopulated": {
-    "message": "Η Λίστα καλυμμένων τομέων δεν έχει συμπληρωθεί."
-  },
-  "panels/security/IPProtectionView.ts | Unavailable": {
-    "message": "Η προστασία IP δεν είναι διαθέσιμη."
-  },
-  "panels/security/IPProtectionView.ts | bypassDescription": {
-    "message": "Προσωρινή παράβλεψη της προστασίας IP για δοκιμή"
-  },
-  "panels/security/IPProtectionView.ts | bypassTitle": {
-    "message": "Παράβλεψη προστασίας IP"
-  },
-  "panels/security/IPProtectionView.ts | cardTitle": {
-    "message": "Κατάσταση διακομιστή μεσολάβησης προστασίας IP"
-  },
-  "panels/security/IPProtectionView.ts | idColumn": {
-    "message": "Έγγραφο ταυτοποίησης"
-  },
-  "panels/security/IPProtectionView.ts | methodColumn": {
-    "message": "Μέθοδος"
-  },
-  "panels/security/IPProtectionView.ts | notInIncognito": {
-    "message": "Ο διακομιστής μεσολάβησης IP δεν είναι διαθέσιμος"
-  },
-  "panels/security/IPProtectionView.ts | openIncognito": {
-    "message": "Ο διακομιστής μεσολάβησης IP είναι διαθέσιμος μόνο στην κατάσταση ανώνυμης περιήγησης. Άνοιγμα ιστοτόπου σε ανώνυμη περιήγηση."
-  },
-  "panels/security/IPProtectionView.ts | proxyRequests": {
-    "message": "Αιτήματα διακομιστή μεσολάβησης"
-  },
-  "panels/security/IPProtectionView.ts | statusColumn": {
-    "message": "Κατάσταση"
-  },
-  "panels/security/IPProtectionView.ts | statusUnknown": {
-    "message": "Άγνωστη κατάσταση"
-  },
-  "panels/security/IPProtectionView.ts | urlColumn": {
-    "message": "URL"
-  },
-  "panels/security/IPProtectionView.ts | viewExplanation": {
-    "message": "Δοκιμάστε πώς θα λειτουργεί αυτός ο ιστότοπος, αν ενεργοποιηθεί ο διακομιστής μεσολάβησης IP στο Chrome"
-  },
-  "panels/security/IPProtectionView.ts | viewTitle": {
-    "message": "Στοιχεία ελέγχου διακομιστή μεσολάβησης προστασίας IP"
   },
   "panels/security/SecurityModel.ts | cipherWithMAC": {
     "message": "{PH1} με {PH2}"
@@ -12566,15 +12917,6 @@
   "panels/security/SecurityPanel.ts | yourPageRequestedNonsecure": {
     "message": "Η σελίδα σας ζήτησε μη ασφαλείς πηγές που αποκλείστηκαν."
   },
-  "panels/security/SecurityPanelSidebar.ts | cookieReport": {
-    "message": "Cookie τρίτου μέρους"
-  },
-  "panels/security/SecurityPanelSidebar.ts | flagControls": {
-    "message": "Στοιχεία ελέγχου"
-  },
-  "panels/security/SecurityPanelSidebar.ts | ipProtection": {
-    "message": "Προστασία IP"
-  },
   "panels/security/SecurityPanelSidebar.ts | mainOrigin": {
     "message": "Κύρια προέλευση"
   },
@@ -12583,9 +12925,6 @@
   },
   "panels/security/SecurityPanelSidebar.ts | overview": {
     "message": "Επισκόπηση"
-  },
-  "panels/security/SecurityPanelSidebar.ts | privacy": {
-    "message": "Απόρρητο"
   },
   "panels/security/SecurityPanelSidebar.ts | reloadToViewDetails": {
     "message": "Επανάληψη φόρτωσης για προβολή λεπτομερειών"
@@ -12599,14 +12938,8 @@
   "panels/security/SecurityPanelSidebar.ts | unknownCanceled": {
     "message": "Άγνωστο / ακυρώθηκε"
   },
-  "panels/security/security-meta.ts | PrivacyAndSecurity": {
-    "message": "Απόρρητο και ασφάλεια"
-  },
   "panels/security/security-meta.ts | security": {
     "message": "Ασφάλεια"
-  },
-  "panels/security/security-meta.ts | showPrivacyAndSecurity": {
-    "message": "Εμφάνιση Απορρήτου και ασφάλειας"
   },
   "panels/security/security-meta.ts | showSecurity": {
     "message": "Εμφάνιση Ασφάλειας"
@@ -12863,6 +13196,9 @@
   "panels/settings/AISettingsTab.ts | asYouTypeCodeSuggestions": {
     "message": "Καθώς πληκτρολογείτε στο πλαίσιο Κονσόλα ή Πηγές, θα εμφανίζονται προτάσεις κώδικα. Πατήστε το πλήκτρο Tab για να αποδεχτείτε μια πρόταση."
   },
+  "panels/settings/AISettingsTab.ts | asYouTypeRelevantDataIsBeingSentToGoogle": {
+    "message": "Καθώς πληκτρολογείτε, τα σχετικά δεδομένα αποστέλλονται στην Google για τη δημιουργία προτάσεων κώδικα. Πατήστε Tab για αποδοχή."
+  },
   "panels/settings/AISettingsTab.ts | boostYourProductivity": {
     "message": "Ενισχύστε την παραγωγικότητά σας με AI"
   },
@@ -12883,6 +13219,12 @@
   },
   "panels/settings/AISettingsTab.ts | dataCollectionNoLogging": {
     "message": "Ανάλογα με τη διαχείριση ή/και την περιοχή του Λογαριασμού σας Google, η Google ενδέχεται να μην συλλέγει δεδομένα"
+  },
+  "panels/settings/AISettingsTab.ts | describeCodeInComment": {
+    "message": "Στην Κονσόλα ή στις Πηγές, περιγράψτε τον κώδικα που χρειάζεστε σε ένα σχόλιο και, στη συνέχεια, πατήστε Ctrl+I για να τον δημιουργήσετε."
+  },
+  "panels/settings/AISettingsTab.ts | describeCodeInCommentForMacOs": {
+    "message": "Στην Κονσόλα ή στις Πηγές, περιγράψτε τον κώδικα που χρειάζεστε σε ένα σχόλιο και, στη συνέχεια, πατήστε Cmd+I για να τον δημιουργήσετε."
   },
   "panels/settings/AISettingsTab.ts | enableAiAssistance": {
     "message": "Ενεργοποίηση βοήθειας AI"
@@ -12915,10 +13257,10 @@
     "message": "Κατανοήστε τα στιλ CSS, τη δραστηριότητα δικτύου, τα στοιχεία συμφόρησης απόδοσης και τις προελεύσεις αρχείων με insight με την υποστήριξη AI"
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsData": {
-    "message": "Για τη δημιουργία επεξηγήσεων, οποιοδήποτε ερώτημα χρήστη και δεδομένα στα οποία μπορεί να έχει πρόσβαση η επιθεωρούμενη σελίδα μέσω API ιστού, αιτημάτων δικτύου, αρχείων και ιχνών απόδοσης αποστέλλονται στην Google. Αυτά τα δεδομένα ενδέχεται να τα δουν αναθεωρητές για τη βελτίωση αυτής της λειτουργίας. Μην χρησιμοποιείτε τη λειτουργία σε σελίδες με προσωπικές ή ευαίσθητες πληροφορίες."
+    "message": "Για τη δημιουργία επεξηγήσεων, στέλνονται στην Google τα μηνύματα συνομιλίας, τυχόν δεδομένα που μπορεί να δει η επιθεωρούμενη σελίδα χρησιμοποιώντας Web API και τα στοιχεία που επιλέγετε, όπως αρχεία, αιτήματα δικτύου και ίχνη απόδοσης. Αυτά τα δεδομένα ενδέχεται να τα δουν αναθεωρητές για τη βελτίωση αυτής της λειτουργίας. Μην χρησιμοποιείτε τη λειτουργία σε σελίδες με προσωπικές ή ευαίσθητες πληροφορίες."
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsDataNoLogging": {
-    "message": "Για τη δημιουργία επεξηγήσεων, οποιοδήποτε ερώτημα χρήστη και δεδομένα στα οποία μπορεί να έχει πρόσβαση η επιθεωρούμενη σελίδα μέσω API ιστού, αιτημάτων δικτύου, αρχείων και ιχνών απόδοσης αποστέλλονται στην Google. Αυτά τα δεδομένα δεν θα χρησιμοποιηθούν για τη βελτίωση των μοντέλων Google AI. Ο οργανισμός σας μπορεί να αλλάξει αυτές τις ρυθμίσεις ανά πάσα στιγμή."
+    "message": "Για τη δημιουργία επεξηγήσεων, στέλνονται στην Google τα μηνύματα συνομιλίας, τυχόν δεδομένα που μπορεί να δει η επιθεωρούμενη σελίδα χρησιμοποιώντας Web API και τα στοιχεία που επιλέγετε, όπως αρχεία, αιτήματα δικτύου και ίχνη απόδοσης. Αυτά τα δεδομένα δεν θα χρησιμοποιηθούν για τη βελτίωση των μοντέλων AI της Google. Ο οργανισμός σας μπορεί να αλλάξει αυτές τις ρυθμίσεις ανά πάσα στιγμή."
   },
   "panels/settings/AISettingsTab.ts | generatedAiAnnotationsSendData": {
     "message": "Για τη δημιουργία προτάσεων σχολιασμού, το ίχνος απόδοσης αποστέλλεται στην Google. Αυτά τα δεδομένα ενδέχεται να τα δουν αναθεωρητές για τη βελτίωση αυτής της λειτουργίας."
@@ -12930,7 +13272,7 @@
     "message": "Σας βοηθά να σχολιάσετε το ίχνος απόδοσης με ετικέτες που δημιουργούνται αυτόματα"
   },
   "panels/settings/AISettingsTab.ts | helpUnderstandCodeSuggestions": {
-    "message": "Λάβετε βοήθεια για την ολοκλήρωση του κώδικά σας"
+    "message": "Γράψτε κώδικα πιο γρήγορα χρησιμοποιώντας προτάσεις με την υποστήριξη του AI"
   },
   "panels/settings/AISettingsTab.ts | helpUnderstandConsole": {
     "message": "Σας βοηθά να κατανοήσετε και να διορθώσετε ειδοποιήσεις και σφάλματα κονσόλας"
@@ -12982,6 +13324,18 @@
   },
   "panels/settings/AISettingsTab.ts | whenOn": {
     "message": "Όταν είναι ενεργή"
+  },
+  "panels/settings/EditFileSystemView.ts | enterAPath": {
+    "message": "Εισαγάγετε μια διαδρομή"
+  },
+  "panels/settings/EditFileSystemView.ts | enterAUniquePath": {
+    "message": "Εισαγάγετε μοναδική διαδρομή"
+  },
+  "panels/settings/EditFileSystemView.ts | excludedFolders": {
+    "message": "Εξαιρούμενοι υποφάκελοι"
+  },
+  "panels/settings/EditFileSystemView.ts | url": {
+    "message": "URL"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "Προσθέστε έναν κανόνα τυπικής έκφρασης για το URL του σεναρίου"
@@ -13064,6 +13418,9 @@
   "panels/settings/KeybindsSettingsTab.ts | noShortcutForAction": {
     "message": "Δεν υπάρχει συντόμευση για την ενέργεια"
   },
+  "panels/settings/KeybindsSettingsTab.ts | recordingKeys": {
+    "message": "Επαναπρογραμματισμός πλήκτρων"
+  },
   "panels/settings/KeybindsSettingsTab.ts | removeShortcut": {
     "message": "Κατάργηση συντόμευσης"
   },
@@ -13094,14 +13451,17 @@
   "panels/settings/SettingsScreen.ts | experiments": {
     "message": "Πειράματα"
   },
+  "panels/settings/SettingsScreen.ts | experimentsFound": {
+    "message": "{n,plural, =1{Βρέθηκε # πείραμα}other{Βρέθηκαν # πειράματα}}"
+  },
+  "panels/settings/SettingsScreen.ts | greenDevUnstable": {
+    "message": "Ειδοποίηση: Όλες αυτές οι λειτουργίες είναι πρωτότυπες και πολύ ασταθείς. Παρέχονται για σκοπούς δοκιμών από τους χρήστες και δεν έχουν σχεδιαστεί για να βασίζεστε σε αυτές."
+  },
   "panels/settings/SettingsScreen.ts | learnMore": {
     "message": "Μάθετε περισσότερα"
   },
   "panels/settings/SettingsScreen.ts | noResults": {
     "message": "Κανένα πείραμα δεν αντιστοιχεί στο φίλτρο"
-  },
-  "panels/settings/SettingsScreen.ts | oneOrMoreSettingsHaveChanged": {
-    "message": "Μία ή περισσότερες ρυθμίσεις έχουν αλλάξει, με αποτέλεσμα να απαιτείται επανάληψη φόρτωσης"
   },
   "panels/settings/SettingsScreen.ts | restoreDefaultsAndReload": {
     "message": "Επαναφορά προεπιλογών και επανάληψη φόρτωσης"
@@ -13115,17 +13475,14 @@
   "panels/settings/SettingsScreen.ts | settings": {
     "message": "Ρυθμίσεις"
   },
+  "panels/settings/SettingsScreen.ts | settingsChangedReloadDevTools": {
+    "message": "Οι ρυθμίσεις άλλαξαν. Για να τις εφαρμόσετε, επαναλάβετε τη φόρτωση των Εργαλείων για προγραμματιστές."
+  },
   "panels/settings/SettingsScreen.ts | shortcuts": {
     "message": "Συντομεύσεις"
   },
-  "panels/settings/SettingsScreen.ts | theseExperimentsAreParticularly": {
-    "message": "Προειδοποίηση: Αυτά τα πειράματα είναι ιδιαίτερα ασταθή. Ενεργοποιήστε τα με δική σας ευθύνη."
-  },
   "panels/settings/SettingsScreen.ts | theseExperimentsCouldBeUnstable": {
     "message": "Προειδοποίηση: Αυτά τα πειράματα μπορεί να είναι ασταθή ή μη αξιόπιστα."
-  },
-  "panels/settings/SettingsScreen.ts | unstableExperiments": {
-    "message": "Ασταθή πειράματα"
   },
   "panels/settings/WorkspaceSettingsTab.ts | addFolder": {
     "message": "Προσθήκη φακέλου"
@@ -13349,6 +13706,9 @@
   "panels/settings/settings-meta.ts | experiments": {
     "message": "Πειράματα"
   },
+  "panels/settings/settings-meta.ts | greenDevProtoTypes": {
+    "message": "GreenDev"
+  },
   "panels/settings/settings-meta.ts | ignoreList": {
     "message": "Λίστα παράβλεψης"
   },
@@ -13366,6 +13726,9 @@
   },
   "panels/settings/settings-meta.ts | showExperiments": {
     "message": "Εμφάνιση πειραμάτων"
+  },
+  "panels/settings/settings-meta.ts | showGreenDev": {
+    "message": "Εμφάνιση GreenDev"
   },
   "panels/settings/settings-meta.ts | showIgnoreList": {
     "message": "Εμφάνιση λίστας παράβλεψης"
@@ -13519,6 +13882,12 @@
   },
   "panels/sources/CallStackSidebarPane.ts | debugFileNotFound": {
     "message": "Αποτυχία φόρτωσης του αρχείου εντοπισμού σφαλμάτων \"{PH1}\"."
+  },
+  "panels/sources/CallStackSidebarPane.ts | debugSymbolsIncomplete": {
+    "message": "Οι πληροφορίες εντοπισμού και διόρθωσης σφαλμάτων για τη συνάρτηση {PH1} δεν είναι πλήρεις"
+  },
+  "panels/sources/CallStackSidebarPane.ts | failedToLoadDebugSymbolsForFunction": {
+    "message": "Δεν υπάρχουν πληροφορίες εντοπισμού και διόρθωσης σφαλμάτων για τη συνάρτηση \"{PH1}\""
   },
   "panels/sources/CallStackSidebarPane.ts | notPaused": {
     "message": "Δεν είναι σε παύση"
@@ -13871,6 +14240,33 @@
   "panels/sources/OutlineQuickOpen.ts | openAJavascriptOrCssFileToSee": {
     "message": "Ανοίξτε ένα αρχείο JavaScript ή CSS για να δείτε τα σύμβολα"
   },
+  "panels/sources/PersistenceActions.ts | openInContainingFolder": {
+    "message": "Άνοιγμα στον φάκελο που περιέχεται"
+  },
+  "panels/sources/PersistenceActions.ts | overrideContent": {
+    "message": "Παράκαμψη περιεχομένου"
+  },
+  "panels/sources/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
+    "message": "Το {PH1} είναι ένα αρχείο με αντιστοίχιση πηγής και δεν μπορεί να παρακαμφθεί."
+  },
+  "panels/sources/PersistenceActions.ts | overrideSourceMappedFileWarning": {
+    "message": "Να γίνει εναλλακτικά παράκαμψη του {PH1};"
+  },
+  "panels/sources/PersistenceActions.ts | saveAs": {
+    "message": "Αποθήκευση ως…"
+  },
+  "panels/sources/PersistenceActions.ts | saveFailed": {
+    "message": "Η αποθήκευση του αρχείου στον δίσκο απέτυχε."
+  },
+  "panels/sources/PersistenceActions.ts | saveImage": {
+    "message": "Αποθήκευση εικόνας"
+  },
+  "panels/sources/PersistenceActions.ts | saveWasmFailed": {
+    "message": "Δεν είναι δυνατή η αποθήκευση της λειτουργικής μονάδας WASM στον δίσκο. Πιθανότατα η λειτουργική μονάδα είναι πολύ μεγάλη."
+  },
+  "panels/sources/PersistenceActions.ts | showOverrides": {
+    "message": "Εμφάνιση όλων των παρακάμψεων"
+  },
   "panels/sources/ProfilePlugin.ts | kb": {
     "message": "kB"
   },
@@ -14174,9 +14570,6 @@
   "panels/sources/sources-meta.ts | createNewSnippet": {
     "message": "Δημιουργία νέου αποσπάσματος"
   },
-  "panels/sources/sources-meta.ts | cssSourceMaps": {
-    "message": "Αντιστοιχίσεις πηγών CSS"
-  },
   "panels/sources/sources-meta.ts | deactivateBreakpoints": {
     "message": "Απενεργοποίηση σημείων διακοπής"
   },
@@ -14200,12 +14593,6 @@
   },
   "panels/sources/sources-meta.ts | disableCodeFolding": {
     "message": "Απενεργοποίηση αναδίπλωσης κώδικα"
-  },
-  "panels/sources/sources-meta.ts | disableCssSourceMaps": {
-    "message": "Απενεργοποίηση αντιστοιχίσεων πηγής CSS"
-  },
-  "panels/sources/sources-meta.ts | disableJavaScriptSourceMaps": {
-    "message": "Απενεργοποίηση αντιστοιχίσεων πηγής JavaScript"
   },
   "panels/sources/sources-meta.ts | disableTabMovesFocus": {
     "message": "Απενεργοποίηση πλήκτρου tab για μετακίνηση εστίασης"
@@ -14252,12 +14639,6 @@
   "panels/sources/sources-meta.ts | enableCodeFolding": {
     "message": "Ενεργοποίηση αναδίπλωσης κώδικα"
   },
-  "panels/sources/sources-meta.ts | enableCssSourceMaps": {
-    "message": "Ενεργοποίηση αντιστοιχίσεων πηγής CSS"
-  },
-  "panels/sources/sources-meta.ts | enableJavaScriptSourceMaps": {
-    "message": "Ενεργοποίηση αντιστοιχίσεων πηγής JavaScript"
-  },
   "panels/sources/sources-meta.ts | enableTabMovesFocus": {
     "message": "Ενεργοποίηση πλήκτρου tab για μετακίνηση εστίασης"
   },
@@ -14284,9 +14665,6 @@
   },
   "panels/sources/sources-meta.ts | incrementCssUnitBy": {
     "message": "Αύξηση της μονάδας CSS κατά {PH1}"
-  },
-  "panels/sources/sources-meta.ts | javaScriptSourceMaps": {
-    "message": "Αντιστοιχίσεις πηγής JavaScript"
   },
   "panels/sources/sources-meta.ts | jumpToNextEditingLocation": {
     "message": "Απευθείας μετάβαση στην επόμενη τοποθεσία επεξεργασίας"
@@ -14439,7 +14817,10 @@
     "message": "Στο τέλος"
   },
   "panels/sources/sources-meta.ts | wasmAutoStepping": {
-    "message": "Κατά την αποσφαλμάτωση Wasm με πληροφορίες αποσφαλμάτωσης, μην κάνετε παύση στον κώδικα byte Wasm, εάν είναι δυνατόν"
+    "message": "Κώδικας byte αυτόματου βηματισμού Wasm"
+  },
+  "panels/sources/sources-meta.ts | wasmAutoSteppingInfo": {
+    "message": "Κατά την αποσφαλμάτωση Wasm με πληροφορίες αποσφαλμάτωσης, δοκιμάστε να παραλείψετε τον κώδικα byte Wasm"
   },
   "panels/sources/sources-meta.ts | watch": {
     "message": "Ρολόι"
@@ -14627,8 +15008,20 @@
   "panels/timeline/ThreadAppender.ts | workletServiceS": {
     "message": "Υπηρεσία worklet δημοπρασίας – {PH1}"
   },
+  "panels/timeline/TimelineController.ts | initializingTracing": {
+    "message": "Προετοιμασία ιχνηλάτησης…"
+  },
+  "panels/timeline/TimelineController.ts | tracing": {
+    "message": "Ιχνηλάτηση…"
+  },
   "panels/timeline/TimelineController.ts | tracingNotSupported": {
     "message": "Η εγγραφή ίχνους απόδοσης δεν υποστηρίζεται για αυτόν τον τύπο στόχου."
+  },
+  "panels/timeline/TimelineController.ts | waitingForLoadEvent": {
+    "message": "Αναμονή για συμβάν φόρτωσης…"
+  },
+  "panels/timeline/TimelineController.ts | waitingForLoadEventPlus5Seconds": {
+    "message": "Αναμονή για συμβάν φόρτωσης (+5 δευτ.)…"
   },
   "panels/timeline/TimelineDetailsView.ts | bottomup": {
     "message": "Από κάτω προς τα επάνω"
@@ -14780,6 +15173,9 @@
   "panels/timeline/TimelinePanel.ts | close": {
     "message": "Κλείσιμο"
   },
+  "panels/timeline/TimelinePanel.ts | compressingTraceForDownload": {
+    "message": "Συμπίεση…"
+  },
   "panels/timeline/TimelinePanel.ts | cpu": {
     "message": "CPU:"
   },
@@ -14800,6 +15196,9 @@
   },
   "panels/timeline/TimelinePanel.ts | enableSelectorStats": {
     "message": "Ενεργοποίηση στατιστικών στοιχείων επιλογέα CSS (αργό)"
+  },
+  "panels/timeline/TimelinePanel.ts | encodingTraceForDownload": {
+    "message": "Κωδικοποίηση…"
   },
   "panels/timeline/TimelinePanel.ts | eventSelected": {
     "message": "Επιλέχθηκε συμβάν {PH1}"
@@ -14839,6 +15238,9 @@
   },
   "panels/timeline/TimelinePanel.ts | networkConditions": {
     "message": "Συνθήκες δικτύου"
+  },
+  "panels/timeline/TimelinePanel.ts | preparingTraceForDownload": {
+    "message": "Προετοιμασία…"
   },
   "panels/timeline/TimelinePanel.ts | processed": {
     "message": "Έγινε επεξεργασία"
@@ -15224,9 +15626,6 @@
   "panels/timeline/TimelineUIUtils.ts | layerRoot": {
     "message": "Ρίζα επιπέδου"
   },
-  "panels/timeline/TimelineUIUtils.ts | layoutForced": {
-    "message": "Επιβλήθηκε διάταξη"
-  },
   "panels/timeline/TimelineUIUtils.ts | layoutRoot": {
     "message": "Ρίζα διάταξης"
   },
@@ -15277,9 +15676,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | range": {
     "message": "Εύρος"
-  },
-  "panels/timeline/TimelineUIUtils.ts | recalculationForced": {
-    "message": "Επιβλήθηκε εκ νέου υπολογισμός"
   },
   "panels/timeline/TimelineUIUtils.ts | relatedNode": {
     "message": "Σχετικός κόμβος"
@@ -15479,14 +15875,17 @@
   "panels/timeline/components/DetailsView.ts | websocketProtocol": {
     "message": "Πρωτόκολλο WebSocket"
   },
+  "panels/timeline/components/ExportTraceOptions.ts | explanation": {
+    "message": "Επεξήγηση"
+  },
   "panels/timeline/components/ExportTraceOptions.ts | exportTraceOptionsDialogTitle": {
     "message": "Αποθήκευση ίχνους απόδοσης "
   },
   "panels/timeline/components/ExportTraceOptions.ts | includeAnnotations": {
     "message": "Συμπερίληψη σχολιασμών"
   },
-  "panels/timeline/components/ExportTraceOptions.ts | includeScriptContent": {
-    "message": "Συμπερίληψη περιεχομένου σεναρίου"
+  "panels/timeline/components/ExportTraceOptions.ts | includeResourceContent": {
+    "message": "Συμπερίληψη περιεχομένου πόρου"
   },
   "panels/timeline/components/ExportTraceOptions.ts | includeSourcemap": {
     "message": "Συμπερίληψη αντιστοιχίσεων πηγής σεναρίου"
@@ -15494,11 +15893,11 @@
   "panels/timeline/components/ExportTraceOptions.ts | moreInfoLabel": {
     "message": "Πρόσθετες πληροφορίες:"
   },
+  "panels/timeline/components/ExportTraceOptions.ts | resourceContentPrivacyInfo": {
+    "message": "Περιλαμβάνει το πλήρες περιεχόμενο όλων των HTML, CSS και σεναρίων που έχουν φορτωθεί (εκτός από τις επεκτάσεις)."
+  },
   "panels/timeline/components/ExportTraceOptions.ts | saveButtonTitle": {
     "message": "Αποθήκευση"
-  },
-  "panels/timeline/components/ExportTraceOptions.ts | scriptContentPrivacyInfo": {
-    "message": "Περιλαμβάνει το πλήρες περιεχόμενο όλων των σεναρίων που έχουν φορτωθεί (εκτός από τις επεκτάσεις)."
   },
   "panels/timeline/components/ExportTraceOptions.ts | shouldCompress": {
     "message": "Συμπίεση με gzip"
@@ -15661,6 +16060,12 @@
   },
   "panels/timeline/components/LiveMetricsView.ts | eventLogs": {
     "message": "Ενότητα αρχείων καταγραφής αλληλεπίδρασης και μετατόπισης διάταξης"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | fieldDataHistoryLink": {
+    "message": "Προβολή ιστορικού"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | fieldDataHistoryTooltip": {
+    "message": "Προβολή ιστορικού δεδομένων πεδίου στο CrUX Vis"
   },
   "panels/timeline/components/LiveMetricsView.ts | fieldMetricsTitle": {
     "message": "Μετρήσεις πεδίου"
@@ -15960,7 +16365,7 @@
     "message": "Από την κρυφή μνήμη"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | inBodyParserBlocking": {
-    "message": "Αποκλεισμός ενσωματωμένου συντακτικού αναλυτή"
+    "message": "Ενσωματωμένος αποκλεισμός συντακτικού αναλυτή"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | initiatedBy": {
     "message": "Ξεκίνησε από"
@@ -16018,6 +16423,9 @@
   },
   "panels/timeline/components/NetworkRequestTooltip.ts | waitingOnMainThread": {
     "message": "Αναμονή στο κύριο νήμα"
+  },
+  "panels/timeline/components/NetworkRequestTooltip.ts | wasThrottled": {
+    "message": "Το αίτημα περιορίστηκε ({PH1})"
   },
   "panels/timeline/components/NetworkThrottlingSelector.ts | add": {
     "message": "Προσθήκη…"
@@ -16256,14 +16664,23 @@
   "panels/timeline/utils/IgnoreList.ts | unknown": {
     "message": "Άγνωστος"
   },
+  "panels/utils/utils.ts | prefetchFailed": {
+    "message": "Το αίτημα προαναζήτησης για το {PH1} απέτυχε"
+  },
   "panels/utils/utils.ts | requestContentHeadersOverridden": {
     "message": "Το περιεχόμενο και οι κεφαλίδες του αιτήματος παρακάμπτονται"
   },
   "panels/utils/utils.ts | requestContentOverridden": {
     "message": "Το περιεχόμενο αιτήματος παρακάμπτεται"
   },
+  "panels/utils/utils.ts | requestFailed": {
+    "message": "Το αίτημα για το {PH1} απέτυχε"
+  },
   "panels/utils/utils.ts | requestHeadersOverridden": {
     "message": "Οι κεφαλίδες αιτημάτων παρακάμπτονται"
+  },
+  "panels/utils/utils.ts | resourceTypeWithThrottling": {
+    "message": "{PH1} (περιορίστηκε στα {PH2})"
   },
   "panels/utils/utils.ts | thirdPartyPhaseout": {
     "message": "Τα cookie για αυτό το αίτημα έχουν αποκλειστεί είτε λόγω επισημάνσεων Chrome είτε λόγω της διαμόρφωσης του προγράμματος περιήγησης. Μάθετε περισσότερα στο πλαίσιο Ζητήματα."
@@ -16471,6 +16888,12 @@
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "Το ζήτημα δεν είναι διαθέσιμο αυτήν τη στιγμή"
+  },
+  "ui/components/list/List.ts | edit": {
+    "message": "Επεξεργασία"
+  },
+  "ui/components/list/List.ts | remove": {
+    "message": "Κατάργηση"
   },
   "ui/components/markdown_view/CodeBlock.ts | code": {
     "message": "Κώδικας"
@@ -16763,12 +17186,6 @@
   "ui/legacy/SearchableView.ts | useRegularExpression": {
     "message": "Χρήση τυπικής έκφρασης"
   },
-  "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
-    "message": "Μία ή περισσότερες ρυθμίσεις έχουν αλλάξει, με αποτέλεσμα να απαιτείται επανάληψη φόρτωσης"
-  },
-  "ui/legacy/SettingsUI.ts | srequiresReload": {
-    "message": "*Απαιτεί επανάληψη φόρτωσης"
-  },
   "ui/legacy/SoftContextMenu.ts | checked": {
     "message": "επιλεγμένο"
   },
@@ -16816,6 +17233,9 @@
   },
   "ui/legacy/TabbedPane.ts | moveTabRight": {
     "message": "Μετακίνηση δεξιά"
+  },
+  "ui/legacy/TabbedPane.ts | panelContainsAnnotation": {
+    "message": "Αυτό το πλαίσιο έχει έναν ή περισσότερους σχολιασμούς"
   },
   "ui/legacy/TabbedPane.ts | previewFeature": {
     "message": "Λειτουργία προεπισκόπησης"
@@ -16931,8 +17351,8 @@
   "ui/legacy/components/color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
     "message": "Χρήση προτεινόμενου χρώματος {PH1}για τη διόρθωση της χαμηλής αντίθεσης"
   },
-  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorClippedTooltipText": {
-    "message": "Οι τιμές του χρώματος περικόπηκαν για να αντιστοιχούν στο φάσμα χρωμάτων της μορφής. Το πραγματικό αποτέλεσμα ήταν {PH1}"
+  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorShiftWarning": {
+    "message": "⚠️ Η μετατροπή σε περιορισμένο φάσμα θα προκαλέσει αλλαγές χρωμάτων"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | addToPalette": {
     "message": "Προσθήκη στην παλέτα"
@@ -16988,6 +17408,9 @@
   "ui/legacy/components/cookie_table/CookiesTable.ts | cookies": {
     "message": "Cookie"
   },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | domain": {
+    "message": "Τομέας"
+  },
   "ui/legacy/components/cookie_table/CookiesTable.ts | editableCookies": {
     "message": "Cookie με δυνατότητα επεξεργασίας"
   },
@@ -16999,6 +17422,18 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | opaquePartitionKey": {
     "message": "(αδιαφανής)"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | partitionKeySite": {
+    "message": "Ιστότοπος κλειδιού διαμερίσματος"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | path": {
+    "message": "Διαδρομή"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | priority": {
+    "message": "Προτεραιότητα"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | secure": {
+    "message": "Ασφαλές"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | session": {
     "message": "Περίοδος λειτουργίας"
@@ -17339,14 +17774,14 @@
   "ui/legacy/components/quick_open/CommandMenu.ts | noCommandsFound": {
     "message": "Δεν βρέθηκαν εντολές"
   },
-  "ui/legacy/components/quick_open/CommandMenu.ts | oneOrMoreSettingsHaveChanged": {
-    "message": "Μία ή περισσότερες ρυθμίσεις έχουν αλλάξει, με αποτέλεσμα να απαιτείται επανάληψη φόρτωσης"
-  },
   "ui/legacy/components/quick_open/CommandMenu.ts | run": {
     "message": "Εκτέλεση"
   },
   "ui/legacy/components/quick_open/CommandMenu.ts | runCommand": {
     "message": "Εκτέλεση εντολής"
+  },
+  "ui/legacy/components/quick_open/CommandMenu.ts | settingsChangedReloadDevTools": {
+    "message": "Οι ρυθμίσεις άλλαξαν. Για να τις εφαρμόσετε, επαναλάβετε τη φόρτωση των Εργαλείων για προγραμματιστές."
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | newFeature": {
     "message": "Αυτή είναι μια νέα λειτουργία"
@@ -17371,6 +17806,12 @@
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | runCommand": {
     "message": "Εκτέλεση εντολής"
+  },
+  "ui/legacy/components/settings_ui/SettingsUI.ts | settingsChangedReloadDevTools": {
+    "message": "Οι ρυθμίσεις άλλαξαν. Για να τις εφαρμόσετε, επαναλάβετε τη φόρτωση των Εργαλείων για προγραμματιστές."
+  },
+  "ui/legacy/components/settings_ui/SettingsUI.ts | srequiresReload": {
+    "message": "*Απαιτεί επανάληψη φόρτωσης"
   },
   "ui/legacy/components/source_frame/FontView.ts | font": {
     "message": "Γραμματοσειρά"

@@ -107,8 +107,8 @@
   "core/common/Revealer.ts | networkPanel": {
     "message": "ନେଟୱାର୍କ ପ୍ୟାନେଲ୍"
   },
-  "core/common/Revealer.ts | securityPanel": {
-    "message": "ସୁରକ୍ଷା ପେନେଲ"
+  "core/common/Revealer.ts | requestConditionsDrawer": {
+    "message": "ଅନୁରୋଧ ସର୍ତ୍ତାବଳୀ ଡ୍ରୟର"
   },
   "core/common/Revealer.ts | sourcesPanel": {
     "message": "ସୋର୍ସ ପ୍ୟାନେଲ୍"
@@ -173,7 +173,7 @@
   "core/common/SettingRegistration.ts | sources": {
     "message": "ସୋର୍ସଗୁଡ଼ିକ"
   },
-  "core/host/InspectorFrontendHost.ts | devtoolsS": {
+  "core/host/InspectorFrontendHostStub.ts | devtoolsS": {
     "message": "DevTools - {PH1}"
   },
   "core/host/ResourceLoader.ts | cacheError": {
@@ -296,6 +296,9 @@
   "core/sdk/DebuggerModel.ts | withBlock": {
     "message": "With ବ୍ଲକ"
   },
+  "core/sdk/NetworkManager.ts | block": {
+    "message": "ବ୍ଲକ କରନ୍ତୁ"
+  },
   "core/sdk/NetworkManager.ts | directSocketStatusAborted": {
     "message": "ରଦ୍ଦ କରାଯାଇଛି"
   },
@@ -404,9 +407,6 @@
   "core/sdk/NetworkRequest.ts | notOnPath": {
     "message": "ଏହି କୁକୀର ପାଥ୍ ଅନୁରୋଧ କରାଯାଇଥିବା URLର ପାଥ୍ ସହ ସଠିକ ମେଳ ହୋଇନଥିବା କିମ୍ବା ଏହାର ସୁପରଡିରେକ୍ଟୋରୀ ହୋଇନଥିବା ଯୋଗୁଁ ଏହି କୁକୀକୁ ବ୍ଲକ୍ କରାଯାଇଛି।"
   },
-  "core/sdk/NetworkRequest.ts | samePartyFromCrossPartyContext": {
-    "message": "ଏହି କୁକୀରେ \"SameParty\" ଆଟ୍ରିବ୍ୟୁଟ୍ ଥିଲା କିନ୍ତୁ ଅନୁରୋଧଟି କ୍ରସ୍-ପାର୍ଟି ହୋଇଥିବା ଯୋଗୁଁ ଏହାକୁ ବ୍ଲକ୍ କରାଯାଇଛି। ରିସୋର୍ସଗୁଡ଼ିକର URLର ଡୋମେନ୍ ଏବଂ ରିସୋର୍ସଗୁଡ଼ିକର ଏନକ୍ଲୋଜିଂ ଫ୍ରେମ୍/ଡକ୍ୟୁମେଣ୍ଟଗୁଡ଼ିକର ଡୋମେନ୍, ସେହି ସମାନ ପ୍ରଥମ-ପାର୍ଟି ସେଟରେ ମାଲିକ ବା ସଦସ୍ୟ ହୋଇନଥିବା ଯୋଗୁଁ ଏହି ଅନୁରୋଧକୁ କ୍ରସ୍-ପାର୍ଟି ଭାବେ ବିଚାର କରାଯାଇଛି।"
-  },
   "core/sdk/NetworkRequest.ts | sameSiteLax": {
     "message": "ଏହି କୁକୀରେ \"SameSite=Lax\" ଆଟ୍ରିବ୍ୟୁଟ୍ ଥିବା ଯୋଗୁଁ ଏବଂ ଅନୁରୋଧଟି ଏକ ଭିନ୍ନ ସାଇଟରୁ କରାଯାଇଥିବା ଓ ଏକ ଉଚ୍ଚ-ସ୍ତରୀୟ ନାଭିଗେସନ୍ ଦ୍ୱାରା ଆରମ୍ଭ ହୋଇନଥିବା ଯୋଗୁଁ ଏହାକୁ ବ୍ଲକ୍ କରାଯାଇଛି।"
   },
@@ -448,12 +448,6 @@
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieHadInvalidSyntax": {
     "message": "ଏହି Set-Cookie ହେଡରରେ ଅବୈଧ ସିଣ୍ଟାକ୍ସ ଅଛି।"
-  },
-  "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedBecauseItHadTheSameparty": {
-    "message": "ଏକ କୁକୀରେ \"SameParty\" ଆଟ୍ରିବ୍ୟୁଟ୍ ଥିଲା କିନ୍ତୁ ଅନୁରୋଧଟି କ୍ରସ୍-ପାର୍ଟି ହୋଇଥିବା ଯୋଗୁଁ Set-Cookie ହେଡର୍ ମାଧ୍ୟମରେ ଏହାକୁ ସେଟ୍ କରିବାର ଏହି ପ୍ରଚେଷ୍ଟାକୁ ବ୍ଲକ୍ କରାଯାଇଛି। ରିସୋର୍ସଗୁଡ଼ିକର URLର ଡୋମେନ୍ ଏବଂ ରିସୋର୍ସଗୁଡ଼ିକର ଏନକ୍ଲୋଜିଂ ଫ୍ରେମ୍/ଡକ୍ୟୁମେଣ୍ଟଗୁଡ଼ିକର ଡୋମେନ୍, ସେହି ସମାନ ପ୍ରଥମ-ପାର୍ଟି ସେଟରେ ମାଲିକ ବା ସଦସ୍ୟ ହୋଇନଥିବା ଯୋଗୁଁ ଏହି ଅନୁରୋଧକୁ କ୍ରସ୍-ପାର୍ଟି ଭାବେ ବିଚାର କରାଯାଇଛି।"
-  },
-  "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedBecauseItHadTheSamepartyAttribute": {
-    "message": "ଏକ କୁକୀରେ \"SameParty\" ଆଟ୍ରିବ୍ୟୁଟ୍ ଥିଲା କିନ୍ତୁ ଏହା ସହିତ ଏଥିରେ ଅନ୍ୟ ବିବାଦୀୟ ଆଟ୍ରିବ୍ୟୁଟଗୁଡ଼ିକ ମଧ୍ୟ ଥିବା ଯୋଗୁଁ Set-Cookie ହେଡର୍ ମାଧ୍ୟମରେ ଏହାକୁ ସେଟ୍ କରିବାର ଏହି ପ୍ରଚେଷ୍ଟାକୁ ବ୍ଲକ୍ କରାଯାଇଛି। Chrome ଏପରି କୁକୀ ଆବଶ୍ୟକ କରେ ଯେଉଁଗୁଡ଼ିକ \"SameParty\" ଆଟ୍ରିବ୍ୟୁଟ୍ ବ୍ୟବହାର କରିବା ସହ \"Secure\" ଆଟ୍ରିବ୍ୟୁଟ୍ ମଧ୍ୟ ବ୍ୟବହାର କରେ ଏବଂ ସେଗୁଡ଼ିକ \"SameSite=Strict\"ରେ ସୀମିତ ହୋଇନଥାଏ।"
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedBecauseItHadTheSamesiteStrictLax": {
     "message": "ଏକ କୁକୀରେ \"{PH1}\" ଆଟ୍ରିବ୍ୟୁଟ୍ ଥିଲା କିନ୍ତୁ ଏହା ଏକ ଶୀର୍ଷ-ସ୍ତରର ନାଭିଗେସନର ଉତ୍ତର ହୋଇନଥିବା ଏକ କ୍ରସ୍-ସାଇଟ୍ ଉତ୍ତରରୁ ଆସିଥିବା ଯୋଗୁଁ Set-Cookie ହେଡର୍ ମାଧ୍ୟମରେ ଏହାକୁ ସେଟ୍ କରିବାର ଏହି ପ୍ରଚେଷ୍ଟାକୁ ବ୍ଲକ୍ କରାଯାଇଛି। ବର୍ତ୍ତମାନର ସାଇଟଠାରୁ URLର ସ୍କିମଟି ଭିନ୍ନ ହୋଇଥିବା ଯୋଗୁଁ ଏହି ଉତ୍ତରକୁ କ୍ରସ୍-ସାଇଟ୍ ଭାବେ ବିଚାର କରାଯାଉଛି।"
@@ -572,6 +566,9 @@
   "core/sdk/sdk-meta.ts | captureAsyncStackTraces": {
     "message": "ଏସିଙ୍କ୍ ଷ୍ଟାକ୍ ଟ୍ରେସଗୁଡ଼ିକୁ କ୍ୟାପଚର୍ କରନ୍ତୁ"
   },
+  "core/sdk/sdk-meta.ts | cssSourceMaps": {
+    "message": "CSS ସୋର୍ସ ମେପ"
+  },
   "core/sdk/sdk-meta.ts | customFormatters": {
     "message": "କଷ୍ଟମ ଫର୍ମାଟର"
   },
@@ -586,6 +583,12 @@
   },
   "core/sdk/sdk-meta.ts | disableCache": {
     "message": "DevTools ଖୋଲା ଥିବା ସମୟରେ କେଶେକୁ ଅକ୍ଷମ କରନ୍ତୁ"
+  },
+  "core/sdk/sdk-meta.ts | disableCssSourceMaps": {
+    "message": "CSS ସୋର୍ସ ମ୍ୟାପକୁ ଅକ୍ଷମ କରନ୍ତୁ"
+  },
+  "core/sdk/sdk-meta.ts | disableJavaScriptSourceMaps": {
+    "message": "JavaScript ସୋର୍ସ ମ୍ୟାପଗୁଡ଼ିକୁ ଅକ୍ଷମ କରନ୍ତୁ"
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "JavaScriptକୁ ଅକ୍ଷମ କରନ୍ତୁ"
@@ -689,6 +692,12 @@
   "core/sdk/sdk-meta.ts | enableCache": {
     "message": "କ୍ୟାଶ୍ ସକ୍ଷମ କରନ୍ତୁ"
   },
+  "core/sdk/sdk-meta.ts | enableCssSourceMaps": {
+    "message": "CSS ସୋର୍ସ ମ୍ୟାପକୁ ସକ୍ଷମ କରନ୍ତୁ"
+  },
+  "core/sdk/sdk-meta.ts | enableJavaScriptSourceMaps": {
+    "message": "JavaScript ସୋର୍ସ ମ୍ୟାପକୁ ସକ୍ଷମ କରନ୍ତୁ"
+  },
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "JavaScript ସକ୍ଷମ କରନ୍ତୁ"
   },
@@ -699,7 +708,7 @@
     "message": "ନେଟୱାର୍କ ଅନୁରୋଧ ବ୍ଲକ୍ କରିବା ସକ୍ଷମ କରନ୍ତୁ"
   },
   "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
-    "message": "DevToolsକୁ ରିମୋଟ ଫାଇଲ ପାଥରୁ ସୋର୍ସ ମେପ ପରି ରିସୋର୍ସଗୁଡ଼ିକୁ ଲୋଡ କରିବାକୁ ଅନୁମତି ଦିଅନ୍ତୁ। ସୁରକ୍ଷା କାରଣଗୁଡ଼ିକ ଯୋଗୁଁ ଡିଫଲ୍ଟ ଭାବେ ଅକ୍ଷମ କରାଯାଇଛି।"
+    "message": "DevToolsରେ ରିମୋଟ ଫାଇଲ ପାଥ ରିସୋର୍ସଗୁଡ଼ିକୁ ଲୋଡ କରିବାକୁ ଅନୁମତି ଦିଅନ୍ତୁ"
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "WebP ଫର୍ମାଟକୁ ସକ୍ଷମ କରନ୍ତୁ"
@@ -726,7 +735,13 @@
     "message": "ସ୍କ୍ରୋଲ୍ ପରଫରମାନ୍ସ ବୋଟଲନେକ୍ ଲୁଚାନ୍ତୁ"
   },
   "core/sdk/sdk-meta.ts | highlightAdFrames": {
-    "message": "ବିଜ୍ଞାପନ ଫ୍ରେମଗୁଡ଼ିକୁ ହାଇଲାଇଟ୍ କରନ୍ତୁ"
+    "message": "ବିଜ୍ଞାପନ ଫ୍ରେମଗୁଡ଼ିକୁ ହାଇଲାଇଟ କରନ୍ତୁ"
+  },
+  "core/sdk/sdk-meta.ts | javaScriptSourceMaps": {
+    "message": "JavaScript ସୋର୍ସର ମେପ"
+  },
+  "core/sdk/sdk-meta.ts | logXmlhttprequests": {
+    "message": "XMLHttpRequests ଲଗ କରନ୍ତୁ"
   },
   "core/sdk/sdk-meta.ts | networkCacheExplanation": {
     "message": "ନେଟୱାର୍କ କେଶେକୁ ଅକ୍ଷମ କଲେ ଏହା ପ୍ରଥମ ଥର ଭିଜିଟରଙ୍କ ସହ ସମାନ ଏକ ନେଟୱାର୍କ ଅନୁଭୂତି ସିମୁଲେଟ କରିବ।"
@@ -778,6 +793,9 @@
   },
   "core/sdk/sdk-meta.ts | reducedContrast": {
     "message": "ହ୍ରାସ ହୋଇଥିବା କଣ୍ଟ୍ରାଷ୍ଟ"
+  },
+  "core/sdk/sdk-meta.ts | remoteFileLoadingInfo": {
+    "message": "ଉଦାହରଣ ରିସୋର୍ସ ହେଉଛି ସୋର୍ସ ମେପ। ସିକ୍ୟୁରିଟି କାରଣଗୁଡ଼ିକ ଯୋଗୁଁ ଡିଫଲ୍ଟ ଭାବେ ଅକ୍ଷମ କରାଯାଇଛି।"
   },
   "core/sdk/sdk-meta.ts | screen": {
     "message": "ସ୍କ୍ରିନ୍"
@@ -899,8 +917,8 @@
   "entrypoints/inspector_main/RenderingOptions.ts | frameRenderingStats": {
     "message": "ଫ୍ରେମ୍ ରେଣ୍ଡରିଂ ପରିସଂଖ୍ୟାନ"
   },
-  "entrypoints/inspector_main/RenderingOptions.ts | highlightAdFrames": {
-    "message": "ବିଜ୍ଞାପନ ଫ୍ରେମଗୁଡ଼ିକୁ ହାଇଲାଇଟ୍ କରନ୍ତୁ"
+  "entrypoints/inspector_main/RenderingOptions.ts | highlightAds": {
+    "message": "ବିଜ୍ଞାପନଗୁଡ଼ିକୁ ହାଇଲାଇଟ କରନ୍ତୁ"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | highlightsAreasOfThePageBlueThat": {
     "message": "ପୃଷ୍ଠା (ନୀଳ)ର ସ୍ଥାନାନ୍ତରିତ କରାଯାଇଥିବା ଏରିଆଗୁଡ଼ିକୁ ହାଇଲାଇଟ୍ କରେ। ଫଟୋସେନସିଟିଭ୍ ଏପିଲେପସୀ ଦ୍ଵାରା ଆକ୍ରାନ୍ତ ଲୋକଙ୍କ ପାଇଁ ଏହା ଉପଯୁକ୍ତ ହୋଇନପାରେ।"
@@ -908,11 +926,11 @@
   "entrypoints/inspector_main/RenderingOptions.ts | highlightsAreasOfThePageGreen": {
     "message": "ପୃଷ୍ଠାର ହାଇଲାଇଟ୍ କରାଯାଇଥିବା ଅଂଶଗୁଡ଼ିକୁ (ସବୁଜ ରଙ୍ଗର) ପୁଣି ପେଣ୍ଟ୍ କରିବା ଆବଶ୍ୟକ। ଫଟୋସେନସିଟିଭ୍ ଏପିଲେପସୀ ଦ୍ଵାରା ଆକ୍ରାନ୍ତ ଲୋକଙ୍କ ପାଇଁ ଏହା ଉପଯୁକ୍ତ ହୋଇନପାରେ।"
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | highlightsElementsRedDetectedToBe": {
+    "message": "ବିଜ୍ଞାପନଗୁଡ଼ିକ ଭାବରେ ଚିହ୍ନିତ କରାଯାଇଥିବା ଏଲିମେଣ୍ଟଗୁଡ଼ିକ (ଲାଲ) ହାଇଲାଇଟ କରେ।"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | highlightsElementsTealThatCan": {
     "message": "ଟଚ୍ ଏବଂ ହ୍ୱିଲ୍ ଇଭେଣ୍ଟ ହ୍ୟାଣ୍ଡେଲର୍ ଏବଂ ଅନ୍ୟ ମୁଖ୍ୟ-ଥ୍ରେଡ୍ ସ୍କ୍ରୋଲିଂ ପରିସ୍ଥିତିଗୁଡ଼ିକ ସମେତ ସ୍କ୍ରୋଲିଂକୁ ମନ୍ଥର କରୁଥିବା ଉପାଦାନଗୁଡ଼ିକୁ (ଟିଲ୍) ହାଇଲାଇଟ୍ କରେ।"
-  },
-  "entrypoints/inspector_main/RenderingOptions.ts | highlightsFramesRedDetectedToBe": {
-    "message": "ହାଇଲାଇଟ୍ ହୋଇଥିବା ଫ୍ରେମଗୁଡ଼ିକ (ଲାଲ ରଙ୍ଗର) ବିଜ୍ଞାପନ ବୋଲି ଚିହ୍ନିତ କରାଯାଇଛି।"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | layerBorders": {
     "message": "ଲେୟାର୍ ବୋର୍ଡରଗୁଡ଼ିକ"
@@ -1001,6 +1019,18 @@
   "entrypoints/main/GlobalAiButton.ts | aiAssistance": {
     "message": "AI ସହାୟତା"
   },
+  "entrypoints/main/GlobalAiButton.ts | gemini": {
+    "message": "Gemini"
+  },
+  "entrypoints/main/GlobalAiButton.ts | openAiAssistance": {
+    "message": "AI ସହାୟତା ପେନେଲ ଖୋଲନ୍ତୁ"
+  },
+  "entrypoints/main/GlobalAiButton.ts | openGemini": {
+    "message": "Gemini ପେନେଲ ଖୋଲନ୍ତୁ"
+  },
+  "entrypoints/main/MainImpl.ts | aiModelDownloaded": {
+    "message": "AI ମଡେଲ ଡାଉନଲୋଡ କରାଯାଇଛି"
+  },
   "entrypoints/main/MainImpl.ts | customizeAndControlDevtools": {
     "message": "DevToolsକୁ କଷ୍ଟମାଇଜ୍ ଓ ନିୟନ୍ତ୍ରଣ କରନ୍ତୁ"
   },
@@ -1019,8 +1049,14 @@
   "entrypoints/main/MainImpl.ts | dockToRight": {
     "message": "ଡାହାଣକୁ ଡକ୍ କରନ୍ତୁ"
   },
+  "entrypoints/main/MainImpl.ts | externalRequestReceived": {
+    "message": "DevTools ଏକ ଏକ୍ସଟର୍ନଲ ଅନୁରୋଧ ପାଇଛି"
+  },
   "entrypoints/main/MainImpl.ts | focusDebuggee": {
     "message": "ଫୋକସ ପୃଷ୍ଠା"
+  },
+  "entrypoints/main/MainImpl.ts | getDevToolsMcp": {
+    "message": "DevTools MCP ପାଆନ୍ତୁ"
   },
   "entrypoints/main/MainImpl.ts | help": {
     "message": "ସାହାଯ୍ୟ"
@@ -1196,28 +1232,28 @@
   "entrypoints/main/main-meta.ts | zoomOut": {
     "message": "ଜୁମ୍ ଆଉଟ୍ କରନ୍ତୁ"
   },
-  "entrypoints/node_app/NodeConnectionsPanel.ts | addConnection": {
+  "entrypoints/node_app/app/NodeConnectionsPanel.ts | addConnection": {
     "message": "ସଂଯୋଗ ଯୋଗ କରନ୍ତୁ"
   },
-  "entrypoints/node_app/NodeConnectionsPanel.ts | networkAddressEgLocalhost": {
+  "entrypoints/node_app/app/NodeConnectionsPanel.ts | networkAddressEgLocalhost": {
     "message": "ନେଟୱାର୍କ ଠିକଣା (ଉ.ଦା. localhost:9229)"
   },
-  "entrypoints/node_app/NodeConnectionsPanel.ts | noConnectionsSpecified": {
+  "entrypoints/node_app/app/NodeConnectionsPanel.ts | noConnectionsSpecified": {
     "message": "କୌଣସି ସଂଯୋଗ ନିର୍ଦ୍ଦିଷ୍ଟ କରାଯାଇନାହିଁ"
   },
-  "entrypoints/node_app/NodeConnectionsPanel.ts | nodejsDebuggingGuide": {
+  "entrypoints/node_app/app/NodeConnectionsPanel.ts | nodejsDebuggingGuide": {
     "message": "Node.jsର ଡିବଗିଂ ଗାଇଡ୍"
   },
-  "entrypoints/node_app/NodeConnectionsPanel.ts | specifyNetworkEndpointAnd": {
+  "entrypoints/node_app/app/NodeConnectionsPanel.ts | specifyNetworkEndpointAnd": {
     "message": "ନେଟୱାର୍କ ଏଣ୍ଡପଏଣ୍ଟ ନିର୍ଦ୍ଦିଷ୍ଟ କରନ୍ତୁ ଏବଂ ସ୍ୱଚାଳିତ ଭାବରେ DevTools ଏହା ସହିତ ସଂଯୋଗ ହେବ। ଅଧିକ ଜାଣିବାକୁ {PH1}କୁ ପଢ଼ନ୍ତୁ।"
   },
-  "entrypoints/node_app/NodeMain.ts | NodejsTitleS": {
+  "entrypoints/node_app/app/NodeMain.ts | NodejsTitleS": {
     "message": "DevTools - Node.js: {PH1}"
   },
-  "entrypoints/node_app/NodeMain.ts | main": {
+  "entrypoints/node_app/app/NodeMain.ts | main": {
     "message": "ମୁଖ୍ୟ"
   },
-  "entrypoints/node_app/NodeMain.ts | nodejsS": {
+  "entrypoints/node_app/app/NodeMain.ts | nodejsS": {
     "message": "Node.js: {PH1}"
   },
   "entrypoints/node_app/node_app.ts | connection": {
@@ -1237,6 +1273,9 @@
   },
   "entrypoints/worker_app/WorkerMain.ts | main": {
     "message": "ମୁଖ୍ୟ"
+  },
+  "generated/Deprecation.ts | AttributionReporting": {
+    "message": "ଆଟ୍ରିବ୍ୟୁସନ ରିପୋର୍ଟିଂକୁ ଡେପ୍ରିକେଟ କରାଯାଇଛି ଏବଂ ଏହାକୁ କାଢ଼ି ଦିଆଯିବ। ବିବରଣୀ ପାଇଁ https://goo.gle/ps-status ଦେଖନ୍ତୁ।"
   },
   "generated/Deprecation.ts | AuthorizationCoveredByWildcard": {
     "message": "CORS Access-Control-Allow-Headersର ପରିଚାଳନାରେ, ୱାଇଲ୍ଡକାର୍ଡ ଚିହ୍ନ (*) ଦ୍ୱାରା ଅଥୋରାଇଜେସନକୁ କଭର କରାଯିବ ନାହିଁ।"
@@ -1259,9 +1298,6 @@
   "generated/Deprecation.ts | ChromeLoadTimesWasAlternateProtocolAvailable": {
     "message": "chrome.loadTimes() ଅସମର୍ଥିତ ଅଟେ, ଏହା ପରିବର୍ତ୍ତେ Navigation Timing 2ରେ ଷ୍ଟାଣ୍ଡାର୍ଡାଇଜ୍ଡ API: nextHopProtocol ବ୍ୟବହାର କରନ୍ତୁ।"
   },
-  "generated/Deprecation.ts | CookieWithTruncatingChar": {
-    "message": "\\(0|r|n)ଟି କେରେକ୍ଟର ଥିବା କୁକୀକୁ ଛୋଟ କରିଦିଆଯିବା ପରିବର୍ତ୍ତେ ଅଗ୍ରାହ୍ୟ କରାଯିବ।"
-  },
   "generated/Deprecation.ts | CrossOriginAccessBasedOnDocumentDomain": {
     "message": "document.domainକୁ ସେଟ କରି ସମାନ-ଅରିଜିନ ନୀତିକୁ କୋହଳ କରିବାକୁ ଅସମର୍ଥିତ କରାଯାଇଛି ଏବଂ ଏହାକୁ ଡିଫଲ୍ଟ ରୂପେ ଅକ୍ଷମ କରାଯିବ। ଏହି ଅସମର୍ଥିତ ଚେତାବନୀ, document.domainକୁ ସେଟ କରି ସକ୍ଷମ କରାଯାଇଥିବା ଏକ କ୍ରସ-ଅରିଜିନ ଆକ୍ସେସ ପାଇଁ ଅଟେ।"
   },
@@ -1273,6 +1309,12 @@
   },
   "generated/Deprecation.ts | DataUrlInSvgUse": {
     "message": "ଡାଟା ପାଇଁ ସମର୍ଥନ: SVGUseElementରେ ଥିବା URLଗୁଡ଼ିକ ଅସମର୍ଥିତ ଅଟେ ଏବଂ ଏଗୁଡ଼ିକୁ ଭବିଷ୍ୟତରେ କାଢ଼ି ଦିଆଯିବ।"
+  },
+  "generated/Deprecation.ts | ExampleBrowserProcessDeprecation": {
+    "message": "ଏହା ହେଉଛି ଏକ ବ୍ରାଉଜର ପ୍ରକ୍ରିୟା ପାଇଁ ଆବଶ୍ୟକ କୋଡ ଦେଖାଇବାର ଏକ ଉଦାହରଣ ଯାହା ଡେପ୍ରିକେସନର ରିପୋର୍ଟ କରିଛି।"
+  },
+  "generated/Deprecation.ts | Fledge": {
+    "message": "Protected Audience APIକୁ ଡେପ୍ରିକେଟ କରାଯାଇଛି ଏବଂ ଭବିଷ୍ୟତର ଏକ ରିଲିଜରେ ଏହାକୁ କାଢ଼ି ଦିଆଯିବ।"
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
     "message": "getCurrentPosition() ଏବଂ watchPosition() ଆଉ ଅସୁରକ୍ଷିତ ଅରିଜିନରେ କାମ କରେ ନାହିଁ। ଏହି ଫିଚର ବ୍ୟବହାର କରିବାକୁ, ଆପଣ ଆପଣଙ୍କ ଆପ୍ଲିକେସନକୁ HTTPS ପରି ଏକ ସୁରକ୍ଷିତ ଅରିଜିନକୁ ସ୍ୱିଚ କରିବା ପାଇଁ ବିଚାର କରିବା ଉଚିତ। ଅଧିକ ବିବରଣୀ ପାଇଁ https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ ଦେଖନ୍ତୁ।"
@@ -1300,12 +1342,6 @@
   },
   "generated/Deprecation.ts | LocalCSSFileExtensionRejected": {
     "message": "CSS, .css ଫାଇଲ ଏକ୍ସଟେନସନ ସହ ସମାପ୍ତ ନହେବା ପର୍ଯ୍ୟନ୍ତ file: URLଗୁଡ଼ିକରୁ ଏହାକୁ ଲୋଡ କରାଯାଇପାରିବ ନାହିଁ।"
-  },
-  "generated/Deprecation.ts | MediaSourceAbortRemove": {
-    "message": "ସ୍ପେସିଫିକେସନରେ ପରିବର୍ତ୍ତନ ଯୋଗୁଁ, SourceBuffer.abort()କୁ ବ୍ୟବହାର କରି remove()ର ଅସମକାଳୀନ ରେଞ୍ଜ ରିମୁଭାଲକୁ ରଦ୍ଦ କରିବାକୁ ଅସମର୍ଥିତ କରାଯାଇଛି। ଭବିଷ୍ୟତରେ ସମର୍ଥନକୁ କାଢ଼ି ଦିଆଯିବ। ଆପଣ ଏହା ପରିବର୍ତ୍ତେ updateend ଇଭେଣ୍ଟ ଶୁଣିବା ଉଚିତ। abort()ର ଉଦ୍ଦେଶ୍ୟ ହେଉଛି କେବଳ ଏକ ଅସମକାଳୀନ ମିଡିଆର ଯୋଗକୁ ରଦ୍ଦ କରିବା କିମ୍ବା ପାର୍ସର ସ୍ଥିତିକୁ ରିସେଟ କରିବା।"
-  },
-  "generated/Deprecation.ts | MediaSourceDurationTruncatingBuffered": {
-    "message": "ସ୍ପେସିଫିକେସନରେ ପରିବର୍ତ୍ତନ ଯୋଗୁଁ, MediaSource.durationକୁ ଯେ କୌଣସି ବଫର ଥିବା କୋଡଯୁକ୍ତ ଫ୍ରେମର ସର୍ବାଧିକ ପ୍ରେଜେଣ୍ଟେସନ ଟାଇମଷ୍ଟାମ୍ପର ତଳେ ସେଟ କରିବା ଅସମର୍ଥିତ ଅଟେ। ଛୋଟ କରାଯାଇଥିବା ବଫର ଥିବା ମିଡିଆର ଅସ୍ପଷ୍ଟ ରିମୁଭାଲ ପାଇଁ ସମର୍ଥନକୁ ଭବିଷ୍ୟତରେ କାଢ଼ି ଦିଆଯିବ। ଏହା ପରିବର୍ତ୍ତେ, ଯେଉଁଠି newDuration < oldDuration, ସେଠାରେ ଆପଣ ସମସ୍ତ sourceBuffersରେ ସ୍ପଷ୍ଟ ଭାବରେ remove(newDuration, oldDuration) କରିବା ଉଚିତ।"
   },
   "generated/Deprecation.ts | NoSysexWebMIDIWithoutPermission": {
     "message": "MIDIOptionsରେ SysExକୁ ନିର୍ଦ୍ଦିଷ୍ଟ କରାଯାଇନଥିଲେ ମଧ୍ୟ ଏହାକୁ ବ୍ୟବହାର କରିବା ପାଇଁ Web MIDI ଅନୁମତି ମାଗିବ।"
@@ -1364,9 +1400,6 @@
   "generated/Deprecation.ts | PrefixedVideoSupportsFullscreen": {
     "message": "HTMLVideoElement.webkitSupportsFullscreen ଅସମର୍ଥିତ ଅଟେ। ଦୟାକରି ଏହା ପରିବର୍ତ୍ତେ Document.fullscreenEnabled ବ୍ୟବହାର କରନ୍ତୁ।"
   },
-  "generated/Deprecation.ts | PrivacySandboxExtensionsAPI": {
-    "message": "ଆମେ chrome.privacy.websites.privacySandboxEnabled APIକୁ ବନ୍ଦ କରିଦେଉଛୁ, ଯଦିଓ ଏହା M113 ରିଲିଜ ପର୍ଯ୍ୟନ୍ତ ବେକୱାର୍ଡ କମ୍ପାଟିବିଲିଟୀ ପାଇଁ ସକ୍ରିୟ ରହିବ। ଏହା ପରିବର୍ତ୍ତେ, ଦୟାକରି chrome.privacy.websites.topicsEnabled, chrome.privacy.websites.fledgeEnabled ଏବଂ chrome.privacy.websites.adMeasurementEnabled ବ୍ୟବହାର କରନ୍ତୁ। https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled ଦେଖନ୍ତୁ।"
-  },
   "generated/Deprecation.ts | RTCConstraintEnableDtlsSrtpFalse": {
     "message": "ବାଧା DtlsSrtpKeyAgreementକୁ କାଢ଼ି ଦିଆଯାଇଛି। ଆପଣ ଏହି ବାଧା ପାଇଁ ଏକ false ମୂଲ୍ୟ ନିର୍ଦ୍ଦିଷ୍ଟ କରିଛନ୍ତି, ଯାହାକୁ କାଢ଼ି ଦିଆଯାଇଥିବା SDES key negotiation ପଦ୍ଧତିକୁ ବ୍ୟବହାର କରିବାର ଏକ ପ୍ରଚେଷ୍ଟା ଭାବେ ବ୍ଯାଖ୍ୟା କରାଯାଇଛି। ଏହି କାର୍ଯ୍ଯକ୍ଷମତାକୁ କାଢ଼ି ଦିଆଯାଇଛି; ଏହା ପରିବର୍ତ୍ତେ DTLS key negotiationକୁ ସମର୍ଥନ କରୁଥିବା ଏକ ସେବାକୁ ବ୍ୟବହାର କରନ୍ତୁ।"
   },
@@ -1379,6 +1412,9 @@
   "generated/Deprecation.ts | RangeExpand": {
     "message": "Range.expand() ଅସମର୍ଥିତ ଅଟେ। ଦୟାକରି ଏହା ପରିବର୍ତ୍ତେ Selection.modify() ବ୍ୟବହାର କରନ୍ତୁ।"
   },
+  "generated/Deprecation.ts | RelatedWebsiteSets": {
+    "message": "Related Website Setsକୁ ଡେପ୍ରିକେଟ କରାଯାଇଛି ଏବଂ ଏହାକୁ କାଢ଼ି ଦିଆଯିବ। ଅଧିକ ବିବରଣୀ ପାଇଁ https://privacysandbox.com/news/update-on-plans-for-privacy-sandbox-technologies/ ଦେଖନ୍ତୁ।"
+  },
   "generated/Deprecation.ts | RequestedSubresourceWithEmbeddedCredentials": {
     "message": "ଯେଉଁ ସବରିସୋର୍ସ ଅନୁରୋଧଗୁଡ଼ିକର URLଗୁଡ଼ିକରେ ଏମ୍ବେଡ ହୋଇଥିବା କ୍ରେଡେନ୍ସିଆଲଗୁଡ଼ିକ (ଉ.ଦା. https://user:pass@host/) ଅଛି, ସେଗୁଡ଼ିକୁ ବ୍ଲକ କରାଯାଇଛି।"
   },
@@ -1388,8 +1424,17 @@
   "generated/Deprecation.ts | SharedArrayBufferConstructedWithoutIsolation": {
     "message": "SharedArrayBuffer ପାଇଁ କ୍ରସ-ଅରିଜିନ ଆଇସୋଲେସନର ଆବଶ୍ୟକତା ହେବ। ଅଧିକ ବିବରଣୀ ପାଇଁ https://developer.chrome.com/blog/enabling-shared-array-buffer/ ଦେଖନ୍ତୁ।"
   },
+  "generated/Deprecation.ts | SharedStorage": {
+    "message": "ସେୟାର ହୋଇଥିବା ଷ୍ଟୋରେଜ APIକୁ ଡେପ୍ରିକେଟ କରାଯାଇଛି ଏବଂ ଭବିଷ୍ୟତର ଏକ ରିଲିଜରେ ଏହାକୁ କାଢ଼ି ଦିଆଯିବ।"
+  },
+  "generated/Deprecation.ts | StorageAccessAPI_requestStorageAccessFor_Method": {
+    "message": "document.requestStorageAccessForକୁ ଡେପ୍ରିକେଟ କରାଯାଇଛି ଏବଂ ଏହାକୁ କାଢ଼ି ଦିଆଯିବ। ଅଧିକ ବିବରଣୀ ପାଇଁ https://privacysandbox.com/news/update-on-plans-for-privacy-sandbox-technologies/ ଦେଖନ୍ତୁ।"
+  },
   "generated/Deprecation.ts | TextToSpeech_DisallowedByAutoplay": {
     "message": "ଉପଯୋଗକର୍ତ୍ତାଙ୍କ ସକ୍ରିୟକରଣ ବିନା speechSynthesis.speak() ଅସମର୍ଥିତ ଅଟେ ଏବଂ ଏହାକୁ କାଢ଼ି ଦିଆଯିବ।"
+  },
+  "generated/Deprecation.ts | Topics": {
+    "message": "Topics APIକୁ ଡେପ୍ରିକେଟ କରାଯାଇଛି ଏବଂ ଭବିଷ୍ୟତର ଏକ ରିଲିଜରେ ଏହାକୁ କାଢ଼ି ଦିଆଯିବ।"
   },
   "generated/Deprecation.ts | UnloadHandler": {
     "message": "ଅନଲୋଡ ଇଭେଣ୍ଟ ଲିସନର୍ସକୁ ବନ୍ଦ କରିଦିଆଯାଇଛି ଏବଂ ସେଗୁଡ଼ିକୁ କାଢ଼ି ଦିଆଯିବ।"
@@ -1397,11 +1442,17 @@
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "SharedArrayBufferକୁ ବ୍ୟବହାର କରିବା ଜାରି ରଖିବା ପାଇଁ, ଏକ୍ସଟେନସନଗୁଡ଼ିକୁ କ୍ରସ-ଅରିଜିନ ଆଇସୋଲେସନରେ ଅପ୍ଟ ଇନ କରିବା ଉଚିତ। https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/ ଦେଖନ୍ତୁ।"
   },
+  "generated/Deprecation.ts | WebBluetoothRemoteCharacteristicWriteValue": {
+    "message": "BluetoothRemoteGATTCharacteristic.writeValue() ଡେପ୍ରିକେଟ ହୋଇଛି। ଏହା ପରିବର୍ତ୍ତେ writeValueWithResponse() କିମ୍ବା writeValueWithoutResponse() ବ୍ୟବହାର କରନ୍ତୁ।"
+  },
   "generated/Deprecation.ts | XHRJSONEncodingDetection": {
     "message": "XMLHttpRequestରେ ଉତ୍ତର JSON ଦ୍ୱାରା UTF-16 ସମର୍ଥିତ ନୁହେଁ"
   },
   "generated/Deprecation.ts | XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
     "message": "ୟୁଜରଙ୍କ ଅନୁଭୂତି ଉପରେ କ୍ଷତିକାରକ ପ୍ରଭାବ ଯୋଗୁଁ ମୁଖ୍ୟ ଥ୍ରେଡରେ ସମକାଳୀନ XMLHttpRequest ଅସମର୍ଥିତ ଅଟେ। ଅଧିକ ସହାୟତା ପାଇଁ, https://xhr.spec.whatwg.org/ ଦେଖନ୍ତୁ।"
+  },
+  "generated/Deprecation.ts | XSLT": {
+    "message": "XSLTProcessor ଏବଂ XSLT ପ୍ରକ୍ରିୟାକରଣ ନିର୍ଦ୍ଦେଶାବଳୀକୁ ସମସ୍ତ ବ୍ରାଉଜର ଦ୍ୱାରା ଡେପ୍ରିକେଟ କରାଯାଇଛି। ଏହି ଫିଚରଗୁଡ଼ିକୁ ଶୀଘ୍ର ଏହି ବ୍ରାଉଜରରୁ କାଢ଼ି ଦିଆଯିବ।"
   },
   "models/ai_assistance/AiUtils.ts | ageRestricted": {
     "message": "ଏହି ଫିଚର କେବଳ 18 ବର୍ଷ ବା ତା’ଠାରୁ ଅଧିକ ବୟସର ୟୁଜରମାନଙ୍କ ପାଇଁ ଉପଲବ୍ଧ ଅଟେ।"
@@ -1415,23 +1466,14 @@
   "models/ai_assistance/AiUtils.ts | offline": {
     "message": "ଏହି ଫିଚର କେବଳ ଏକ ସକ୍ରିୟ ଇଣ୍ଟର୍ନେଟ କନେକ୍ସନ ସହିତ ଉପଲବ୍ଧ ଅଟେ।"
   },
-  "models/ai_assistance/ConversationHandler.ts | externalRequestReceived": {
-    "message": "DevTools ଏକ ଏକ୍ସଟର୍ନଲ ଅନୁରୋଧ ପାଇଛି"
-  },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "ଏହି ଫାଇଲ୍ ଲୋଡ୍ ହେବାରେ ଅଜଣା ତ୍ରୁଟି ହୋଇଛି"
-  },
-  "models/bindings/DebuggerLanguagePlugins.ts | debugSymbolsIncomplete": {
-    "message": "{PH1} ଫଙ୍କସନ ପାଇଁ ଡିବଗ ସୂଚନା ଅସମ୍ପୂର୍ଣ୍ଣ ଅଛି"
   },
   "models/bindings/DebuggerLanguagePlugins.ts | errorInDebuggerLanguagePlugin": {
     "message": "ଡିବଗର୍ ଭାଷା ପ୍ଲଗଇନରେ ତ୍ରୁଟି: {PH1}"
   },
   "models/bindings/DebuggerLanguagePlugins.ts | failedToLoadDebugSymbolsFor": {
     "message": "[{PH1}] {PH2} ପାଇଁ ଡିବଗ୍ ପ୍ରତୀକ ଲୋଡ୍ କରିବାରେ ବିଫଳ ହୋଇଛି ({PH3})"
-  },
-  "models/bindings/DebuggerLanguagePlugins.ts | failedToLoadDebugSymbolsForFunction": {
-    "message": "\"{PH1}\" ଫଙ୍କସନ ପାଇଁ କୌଣସି ଡିବଗ ସୂଚନା ନାହିଁ"
   },
   "models/bindings/DebuggerLanguagePlugins.ts | loadedDebugSymbolsForButDidnt": {
     "message": "[{PH1}] {PH2} ପାଇଁ ଡିବଗ୍ ପ୍ରତୀକଗୁଡ଼ିକୁ ଲୋଡ୍ କରାଯାଇଛି, କିନ୍ତୁ କୌଣସି ସୋର୍ସ ଫାଇଲ୍ ମିଳିଲା ନାହିଁ"
@@ -1532,9 +1574,6 @@
   "models/issues_manager/CookieIssue.ts | fileCrosSiteRedirectBug": {
     "message": "ଏକ ବଗ ଫାଇଲ କରନ୍ତୁ"
   },
-  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
-    "message": "First-Party Sets ଏବଂ SameParty ଆଟ୍ରିବ୍ୟୁଟ"
-  },
   "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
     "message": "Schemeful Same-Site କିପରି କାର୍ଯ୍ୟ କରେ"
   },
@@ -1546,9 +1585,6 @@
   },
   "models/issues_manager/CorsIssue.ts | corsLocalNetworkAccess": {
     "message": "ସ୍ଥାନୀୟ ନେଟୱାର୍କକୁ ଆକ୍ସେସ"
-  },
-  "models/issues_manager/CorsIssue.ts | corsPrivateNetworkAccess": {
-    "message": "ବ୍ୟକ୍ତିଗତ ନେଟୱାର୍କକୁ ଆକ୍ସେସ"
   },
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | coopAndCoep": {
     "message": "COOP ଏବଂ COEP"
@@ -1576,6 +1612,9 @@
   },
   "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
     "message": "CORB ବ୍ୟାଖ୍ୟାକାରୀ"
+  },
+  "models/issues_manager/GenericIssue.ts | historyManipulationInterventionPageTitle": {
+    "message": "ଇତିହାସ ମେନିପୁଲେସନ ଇଣ୍ଟରଭେନସନ ବ୍ୟାଖ୍ୟାକାରୀ"
   },
   "models/issues_manager/GenericIssue.ts | howDoesAutofillWorkPageTitle": {
     "message": "ଅଟୋଫିଲ କିପରି କାମ କରେ?"
@@ -1685,18 +1724,6 @@
   "models/network_time_calculator/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
     "message": "{PH1}ର ଲାଟେନ୍ସି, {PH2}ର ଡାଉନଲୋଡ୍ (ମୋଟ {PH3})"
   },
-  "models/persistence/EditFileSystemView.ts | enterAPath": {
-    "message": "ଏକ ପାଥ୍ ଲେଖନ୍ତୁ"
-  },
-  "models/persistence/EditFileSystemView.ts | enterAUniquePath": {
-    "message": "ଏକ ସ୍ୱତନ୍ତ୍ର ପାଥ୍ ଲେଖନ୍ତୁ"
-  },
-  "models/persistence/EditFileSystemView.ts | excludedFolders": {
-    "message": "ବାଦ ଦିଆଯାଇଥିବା ସବ-ଫୋଲ୍ଡର"
-  },
-  "models/persistence/EditFileSystemView.ts | url": {
-    "message": "URL"
-  },
   "models/persistence/IsolatedFileSystem.ts | blobCouldNotBeLoaded": {
     "message": "ବ୍ଲବ୍ ଲୋଡ୍ କରାଯାଇପାରିବ ନାହିଁ।"
   },
@@ -1717,39 +1744,6 @@
   },
   "models/persistence/IsolatedFileSystemManager.ts | unableToAddFilesystemS": {
     "message": "ଫାଇଲସିଷ୍ଟମ୍ ଯୋଗ କରିବାକୁ ଅସମର୍ଥ: {PH1}"
-  },
-  "models/persistence/PersistenceActions.ts | openInContainingFolder": {
-    "message": "ଯେଉଁ ଫୋଲ୍ଡରରେ ଅଛି ସେହି ଫୋଲ୍ଡର ଖୋଲନ୍ତୁ"
-  },
-  "models/persistence/PersistenceActions.ts | overrideContent": {
-    "message": "ବିଷୟବସ୍ତୁ ଓଭରରାଇଡ କରନ୍ତୁ"
-  },
-  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
-    "message": "‘{PH1}’ ସୋର୍ସ ଦ୍ୱାରା ମେପ କରାଯାଇଥିବା ଏକ ଫାଇଲ ଅଟେ ଏବଂ ଏହାକୁ ଓଭରରାଇଡ କରାଯାଇପାରିବ ନାହିଁ।"
-  },
-  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileWarning": {
-    "message": "ଏହା ପରିବର୍ତ୍ତେ ‘{PH1}’କୁ ଓଭରରାଇଡ କରିବେ?"
-  },
-  "models/persistence/PersistenceActions.ts | saveAs": {
-    "message": "ଏହି ଭାବେ ସେଭ କରନ୍ତୁ…"
-  },
-  "models/persistence/PersistenceActions.ts | saveFailed": {
-    "message": "ଡିସ୍କରେ ଫାଇଲ ସେଭ କରିବାରେ ବିଫଳ ହୋଇଛି।"
-  },
-  "models/persistence/PersistenceActions.ts | saveImage": {
-    "message": "ଛବି ସେଭ୍ କରନ୍ତୁ"
-  },
-  "models/persistence/PersistenceActions.ts | saveWasmFailed": {
-    "message": "ଡିସ୍କରେ WASM ମଡ୍ୟୁଲ ସେଭ କରିବାରେ ଅସମର୍ଥ। ସମ୍ଭବତଃ ମଡ୍ୟୁଲ ବହୁତ ବଡ଼ ଅଟେ।"
-  },
-  "models/persistence/PersistenceActions.ts | showOverrides": {
-    "message": "ସମସ୍ତ ଓଭରରାଇଡ ଦେଖାନ୍ତୁ"
-  },
-  "models/persistence/PersistenceUtils.ts | linkedToS": {
-    "message": "{PH1}ରେ ଲିଙ୍କ ହୋଇଛି"
-  },
-  "models/persistence/PersistenceUtils.ts | linkedToSourceMapS": {
-    "message": "ସୋର୍ସ ମ୍ୟାପକୁ ଲିଙ୍କ୍ କରାଯାଇଛି: {PH1}"
   },
   "models/persistence/PlatformFileSystem.ts | unableToReadFilesWithThis": {
     "message": "PlatformFileSystem ଫାଇଲଗୁଡ଼ିକୁ ପଢ଼ିପାରିବ ନାହିଁ।"
@@ -1857,7 +1851,7 @@
     "message": "କନସୋଲ ସମୟ"
   },
   "models/trace/Styles.ts | cppGc": {
-    "message": "CPP GC"
+    "message": "C++ GC"
   },
   "models/trace/Styles.ts | createWebsocket": {
     "message": "WebSocket ତିଆରି କରନ୍ତୁ"
@@ -2096,6 +2090,9 @@
   "models/trace/Styles.ts | signReply": {
     "message": "ପ୍ରତ୍ୟୁତ୍ତରରେ ସାଇନ କରନ୍ତୁ"
   },
+  "models/trace/Styles.ts | softLargestContentfulPaint": {
+    "message": "ସଫ୍ଟ ସବୁଠାରୁ ବଡ଼ କଣ୍ଟେଣ୍ଟଫୁଲ ପେଣ୍ଟ"
+  },
   "models/trace/Styles.ts | streamingCompileTask": {
     "message": "କମ୍ପାଇଲ ଟାସ୍କ ଷ୍ଟ୍ରିମ ହେଉଛି"
   },
@@ -2157,7 +2154,7 @@
     "message": "ଆନିମେସନ"
   },
   "models/trace/insights/CLSCulprits.ts | description": {
-    "message": "ୟୁଜର ଇଣ୍ଟରାକ୍ସନ ବିନା ଏଲିମେଣ୍ଟର ସ୍ଥିତି ପରିବର୍ତ୍ତନ ହେଲେ ଲେଆଉଟ ସିଫ୍ଟ ହୁଏ। [ଲେଆଉଟ ସିଫ୍ଟର କାରଣ ବିଷୟରେ ତଦନ୍ତ କରନ୍ତୁ](https://web.dev/articles/optimize-cls), ଯେପରି ପୃଷ୍ଠାଗୁଡ଼ିକ ଲୋଡ ହେବା ସମୟରେ ଉପାଦାନଗୁଡ଼ିକୁ ଯୋଗ କରିବା, ସେଗୁଡ଼ିକୁ କାଢ଼ିବା କିମ୍ବା ସେଗୁଡ଼ିକର ଫଣ୍ଟଗୁଡ଼ିକୁ ପରିବର୍ତ୍ତନ କରିବା।"
+    "message": "ୟୁଜର ଇଣ୍ଟରାକ୍ସନ ବିନା ଏଲିମେଣ୍ଟର ସ୍ଥିତି ପରିବର୍ତ୍ତନ ହେଲେ ଲେଆଉଟ ସିଫ୍ଟ ହୁଏ। [ଲେଆଉଟ ସିଫ୍ଟର କାରଣ ବିଷୟରେ ତଦନ୍ତ କରନ୍ତୁ](https://developer.chrome.com/docs/performance/insights/cls-culprit), ଯେପରି ପୃଷ୍ଠାଗୁଡ଼ିକ ଲୋଡ ହେବା ସମୟରେ ଉପାଦାନଗୁଡ଼ିକୁ ଯୋଗ କରିବା, ସେଗୁଡ଼ିକୁ କାଢ଼ିବା କିମ୍ବା ସେଗୁଡ଼ିକର ଫଣ୍ଟଗୁଡ଼ିକୁ ପରିବର୍ତ୍ତନ କରିବା।"
   },
   "models/trace/insights/CLSCulprits.ts | injectedIframe": {
     "message": "ଇଞ୍ଜେକ୍ଟ କରାଯାଇଥିବା iframe"
@@ -2193,7 +2190,7 @@
     "message": "କେଶେ TTL"
   },
   "models/trace/insights/Cache.ts | description": {
-    "message": "ଏକ ଲମ୍ବା କେଶେ ଲାଇଫଟାଇମ ଆପଣଙ୍କ ପୃଷ୍ଠାକୁ ରିପିଟ ଭିଜିଟ ତ୍ୱରାନ୍ୱିତ କରିପାରିବ। [ଅଧିକ ଜାଣନ୍ତୁ](https://web.dev/uses-long-cache-ttl/)।"
+    "message": "ଏକ ଲମ୍ବା କେଶେ ଲାଇଫଟାଇମ ଆପଣଙ୍କ ପୃଷ୍ଠାକୁ ରିପିଟ ଭିଜିଟ ତ୍ୱରାନ୍ୱିତ କରିପାରିବ। [କେଶେ କରିବା ବିଷୟରେ ଅଧିକ ଜାଣନ୍ତୁ](https://developer.chrome.com/docs/performance/insights/cache)।"
   },
   "models/trace/insights/Cache.ts | noRequestsToCache": {
     "message": "କାର୍ଯ୍ୟକ୍ଷମ ନଥିବା କେଶେ ନୀତିଗୁଡ଼ିକ ସହ କୌଣସି ଅନୁରୋଧ ନାହିଁ"
@@ -2208,7 +2205,7 @@
     "message": "କାର୍ଯ୍ୟକ୍ଷମ କେଶେ ଲାଇଫଟାଇମ ବ୍ୟବହାର କରନ୍ତୁ"
   },
   "models/trace/insights/DOMSize.ts | description": {
-    "message": "ଏକ ବଡ଼ DOM ପୃଷ୍ଠାର ପ୍ରତିକ୍ରିୟାଶୀଳତାକୁ ପ୍ରଭାବିତ କରି ଷ୍ଟାଇଲ କାଲକୁଲେସନ ଏବଂ ଲେଆଉଟ ରିଫ୍ଲୋର ଅବଧିକୁ ବୃଦ୍ଧି କରିପାରେ। ଏକ ବଡ଼ DOM ମେମୋରୀ ବ୍ୟବହାରକୁ ମଧ୍ୟ ବୃଦ୍ଧି କରିବ। [ଏକ ଅତ୍ୟଧିକ DOM ସାଇଜ କିପରି ଏଡ଼ାଇବେ ତାହା ଜାଣନ୍ତୁ](https://developer.chrome.com/docs/lighthouse/performance/dom-size/)।"
+    "message": "ଏକ ବଡ଼ DOM ପୃଷ୍ଠାର ପ୍ରତିକ୍ରିୟାଶୀଳତାକୁ ପ୍ରଭାବିତ କରି ଷ୍ଟାଇଲ କାଲକୁଲେସନ ଏବଂ ଲେଆଉଟ ରିଫ୍ଲୋର ଅବଧିକୁ ବୃଦ୍ଧି କରିପାରେ। ଏକ ବଡ଼ DOM ମେମୋରୀ ବ୍ୟବହାରକୁ ମଧ୍ୟ ବୃଦ୍ଧି କରିବ। [ଏକ ଅତ୍ୟଧିକ DOM ସାଇଜ କିପରି ଏଡ଼ାଇବେ ତାହା ଜାଣନ୍ତୁ](https://developer.chrome.com/docs/performance/insights/dom-size)।"
   },
   "models/trace/insights/DOMSize.ts | duration": {
     "message": "ଅବଧି"
@@ -2244,7 +2241,7 @@
     "message": "ମୂଲ୍ୟ"
   },
   "models/trace/insights/DocumentLatency.ts | description": {
-    "message": "ଆପଣଙ୍କ ପ୍ରଥମ ନେଟୱାର୍କ ଅନୁରୋଧ ସବୁଠାରୁ ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ଅଟେ।  ରିଡାଇରେକ୍ଟକୁ ଏଡ଼ାଇ, ଏକ ଦ୍ରୁତ ସର୍ଭର ଉତ୍ତର ସୁନିଶ୍ଚିତ କରି ଏବଂ ଟେକ୍ସଟ କମ୍ପ୍ରେସନକୁ ସକ୍ଷମ କରି ଏହାର ଲାଟେନ୍ସିକୁ ହ୍ରାସ କରନ୍ତୁ।"
+    "message": "ଆପଣଙ୍କ ପ୍ରଥମ ନେଟୱାର୍କ ଅନୁରୋଧ ସବୁଠାରୁ ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ଅଟେ। ରିଡାଇରେକ୍ଟକୁ ଏଡ଼ାଇ, ଏକ ଦ୍ରୁତ ସର୍ଭର ଉତ୍ତର ସୁନିଶ୍ଚିତ କରି ଏବଂ ଟେକ୍ସଟ କମ୍ପ୍ରେସନକୁ ସକ୍ଷମ କରି [ଏହାର ଲାଟେନ୍ସିକୁ ହ୍ରାସ କରନ୍ତୁ](https://developer.chrome.com/docs/performance/insights/document-latency)।"
   },
   "models/trace/insights/DocumentLatency.ts | failedRedirects": {
     "message": "ରିଡାଇରେକ୍ଟ ଅଛି ({PH1} ରିଡାଇରେକ୍ଟ +{PH2})"
@@ -2283,13 +2280,13 @@
     "message": "ସୋର୍ସ"
   },
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
-    "message": "ନେଟୱାର୍କ କାର୍ଯ୍ୟକଳାପ ଦ୍ୱାରା ବ୍ୟବହୃତ ଅନାବଶ୍ୟକ ବାଇଟଗୁଡ଼ିକୁ ହ୍ରାସ କରିବା ପାଇଁ ବଣ୍ଡଲଗୁଡ଼ିକରୁ ବଡ଼, ଡୁପ୍ଲିକେଟ JavaScript ମଡ୍ୟୁଲଗୁଡ଼ିକୁ କାଢ଼ି ଦିଅନ୍ତୁ।"
+    "message": "ନେଟୱାର୍କ କାର୍ଯ୍ୟକଳାପ ଦ୍ୱାରା ବ୍ୟବହୃତ ଅନାବଶ୍ୟକ ବାଇଟଗୁଡ଼ିକୁ ହ୍ରାସ କରିବା ପାଇଁ ବଣ୍ଡଲଗୁଡ଼ିକରୁ ବଡ଼, [ଡୁପ୍ଲିକେଟ JavaScript ମଡ୍ୟୁଲଗୁଡ଼ିକୁ](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) କାଢ଼ି ଦିଅନ୍ତୁ।"
   },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "ଡୁପ୍ଲିକେଟ କରାଯାଇଥିବା JavaScript"
   },
   "models/trace/insights/FontDisplay.ts | description": {
-    "message": "ଟେକ୍ସଟ ବାଧାରହିତ ଭାବେ ଭିଜିବିଲ ହେଉଥିବା ସୁନିଶ୍ଚିତ କରିବାକୁ [font-display](https://developer.chrome.com/blog/font-display)କୁ swap କିମ୍ବା optionalରେ ସେଟ କରିବାକୁ ବିଚାର କରନ୍ତୁ। [ଫଣ୍ଟ ମେଟ୍ରିକ ଓଭରରାଇଡଗୁଡ଼ିକ](https://developer.chrome.com/blog/font-fallbacks) ସହ ଲେଆଉଟ ସିଫ୍ଟଗୁଡ଼ିକୁ କମ କରିବା ପାଇଁ swapକୁ ଆହୁରି ଅପ୍ଟିମାଇଜ କରାଯାଇପାରିବ।"
+    "message": "ଟେକ୍ସଟ ବାଧାରହିତ ଭାବେ ଭିଜିବିଲ ହେଉଥିବା ସୁନିଶ୍ଚିତ କରିବାକୁ [font-display](https://developer.chrome.com/docs/performance/insights/font-display)କୁ swap କିମ୍ବା optionalରେ ସେଟ କରିବାକୁ ବିଚାର କରନ୍ତୁ। [ଫଣ୍ଟ ମେଟ୍ରିକ ଓଭରରାଇଡଗୁଡ଼ିକ](https://developer.chrome.com/blog/font-fallbacks) ସହ ଲେଆଉଟ ସିଫ୍ଟଗୁଡ଼ିକୁ କମ କରିବା ପାଇଁ swapକୁ ଆହୁରି ଅପ୍ଟିମାଇଜ କରାଯାଇପାରିବ।"
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "ଫଣ୍ଟ"
@@ -2304,10 +2301,10 @@
     "message": "(ବେନାମୀ)"
   },
   "models/trace/insights/ForcedReflow.ts | description": {
-    "message": "DOM ସ୍ଥିତିରେ ଏକ ପରିବର୍ତ୍ତନ ଦ୍ୱାରା ଷ୍ଟାଇଲ ଅବୈଧ ହେବା ପରେ JavaScript ଜ୍ୟାମିତିକ ପ୍ରପର୍ଟି (ଯେପରି offsetWidth)କୁ ପ୍ରଶ୍ନ କଲେ, ବଳପୂର୍ବକ ଭାବେ ରିଫ୍ଲୋ ହୁଏ। ଏହା ଖରାପ ପରଫରମାନ୍ସ କରିପାରେ। [ବଳପୂର୍ବକ ଭାବେ ରିଫ୍ଲୋ କରିବା](https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts) ଏବଂ ସମ୍ଭାବ୍ୟ ମିଟିଗେସନଗୁଡ଼ିକ ବିଷୟରେ ଅଧିକ ଜାଣନ୍ତୁ।"
+    "message": "DOM ସ୍ଥିତିରେ ଏକ ପରିବର୍ତ୍ତନ ଦ୍ୱାରା ଷ୍ଟାଇଲ ଅବୈଧ ହେବା ପରେ JavaScript ଜ୍ୟାମିତିକ ପ୍ରପର୍ଟି (ଯେପରି offsetWidth)କୁ ପ୍ରଶ୍ନ କଲେ, ବଳପୂର୍ବକ ଭାବେ ରିଫ୍ଲୋ ହୁଏ। ଏହା ଖରାପ ପରଫରମାନ୍ସ କରିପାରେ। [ବଳପୂର୍ବକ ଭାବେ ରିଫ୍ଲୋ କରିବା](https://developer.chrome.com/docs/performance/insights/forced-reflow) ଏବଂ ସମ୍ଭାବ୍ୟ ମିଟିଗେସନଗୁଡ଼ିକ ବିଷୟରେ ଅଧିକ ଜାଣନ୍ତୁ।"
   },
-  "models/trace/insights/ForcedReflow.ts | relatedStackTrace": {
-    "message": "ଷ୍ଟାକ ଟ୍ରେସ"
+  "models/trace/insights/ForcedReflow.ts | reflowCallFrames": {
+    "message": "ରିଫ୍ଲୋକୁ ଟ୍ରିଗର କରୁଥିବା ଫ୍ରେମଗୁଡ଼ିକୁ କଲ କରନ୍ତୁ"
   },
   "models/trace/insights/ForcedReflow.ts | title": {
     "message": "ବାଧ୍ୟତାମୂଳକ ଭାବେ ରିଫ୍ଲୋ କରନ୍ତୁ"
@@ -2322,7 +2319,7 @@
     "message": "[unattributed]"
   },
   "models/trace/insights/INPBreakdown.ts | description": {
-    "message": "ସବୁଠାରୁ ଲମ୍ବା ସବପାର୍ଟ ସହିତ ତଦନ୍ତ କରିବା ଆରମ୍ଭ କରନ୍ତୁ। [ବିଳମ୍ବକୁ ମିନିମାଇଜ କରାଯାଇପାରିବ](https://web.dev/articles/optimize-inp#optimize_interactions)। ପ୍ରକ୍ରିୟାକରଣ ଅବଧିକୁ ହ୍ରାସ କରିବା ପାଇଁ [ମୁଖ୍ୟ-ଥ୍ରେଡ ମୂଲ୍ୟକୁ ଅପ୍ଟିମାଇଜ କରନ୍ତୁ](https://web.dev/articles/optimize-long-tasks), ବହୁ ସମୟରେ JS।"
+    "message": "ସବୁଠାରୁ ଲମ୍ବା ସବପାର୍ଟକୁ ଦେଖି [INPକୁ କିପରି ଉନ୍ନତ କରିବେ](https://developer.chrome.com/docs/performance/insights/inp-breakdown) ତାହାର ତଦନ୍ତ କରିବା ଆରମ୍ଭ କରନ୍ତୁ।"
   },
   "models/trace/insights/INPBreakdown.ts | duration": {
     "message": "ଅବଧି"
@@ -2346,7 +2343,7 @@
     "message": "INP ବ୍ରେକଡାଉନ"
   },
   "models/trace/insights/ImageDelivery.ts | description": {
-    "message": "ଇମେଜଗୁଡ଼ିକର ଡାଉନଲୋଡ ସମୟକୁ ହ୍ରାସ କରିବା ପୃଷ୍ଠା ଏବଂ LCPର ପରସିଭ୍ଡ ଲୋଡ ସମୟକୁ ଉନ୍ନତ କରିପାରିବ। [ଇମେଜ ସାଇଜକୁ ଅପ୍ଟିମାଇଜ କରିବା ବିଷୟରେ ଅଧିକ ଜାଣନ୍ତୁ](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
+    "message": "ଇମେଜଗୁଡ଼ିକର ଡାଉନଲୋଡ ସମୟକୁ ହ୍ରାସ କରିବା ପୃଷ୍ଠା ଏବଂ LCPର ପରସିଭ୍ଡ ଲୋଡ ସମୟକୁ ଉନ୍ନତ କରିପାରିବ। [ଇମେଜ ସାଇଜକୁ ଅପ୍ଟିମାଇଜ କରିବା ବିଷୟରେ ଅଧିକ ଜାଣନ୍ତୁ](https://developer.chrome.com/docs/performance/insights/image-delivery)"
   },
   "models/trace/insights/ImageDelivery.ts | estimatedSavings": {
     "message": "{PH1} (ଆନୁମାନିକ {PH2})"
@@ -2376,7 +2373,7 @@
     "message": "GIFଗୁଡ଼ିକ ପରିବର୍ତ୍ତେ ଭିଡିଓ ଫର୍ମାଟଗୁଡ଼ିକୁ ବ୍ୟବହାର କରିବା ଆନିମେଟେଡ ବିଷୟବସ୍ତୁର ଡାଉନଲୋଡ ସାଇଜରେ ଉନ୍ନତି ଆଣିପାରେ।"
   },
   "models/trace/insights/LCPBreakdown.ts | description": {
-    "message": "ପ୍ରତ୍ୟେକ [ସବପାର୍ଟରେ ନିର୍ଦ୍ଦିଷ୍ଟ ଉନ୍ନତି ଷ୍ଟ୍ରାଟେଜୀଗୁଡ଼ିକ](https://web.dev/articles/optimize-lcp#lcp-breakdown) ଅଛି। ଉପଯୁକ୍ତ ଭାବେ, ଅଧିକାଂଶ LCP ସମୟକୁ ରିସୋର୍ସଗୁଡ଼ିକୁ ଲୋଡ କରିବାରେ ଅତିବାହିତ କରାଯିବା ଉଚିତ, ବିଳମ୍ବ ମଧ୍ୟରେ ନୁହେଁ।"
+    "message": "ପ୍ରତ୍ୟେକ [ସବପାର୍ଟରେ ନିର୍ଦ୍ଦିଷ୍ଟ ଉନ୍ନତି ଷ୍ଟ୍ରାଟେଜୀଗୁଡ଼ିକ](https://developer.chrome.com/docs/performance/insights/lcp-breakdown) ଅଛି। ଉପଯୁକ୍ତ ଭାବେ, ଅଧିକାଂଶ LCP ସମୟକୁ ରିସୋର୍ସଗୁଡ଼ିକୁ ଲୋଡ କରିବାରେ ଅତିବାହିତ କରାଯିବା ଉଚିତ, ବିଳମ୍ବ ମଧ୍ୟରେ ନୁହେଁ।"
   },
   "models/trace/insights/LCPBreakdown.ts | duration": {
     "message": "ଅବଧି"
@@ -2406,7 +2403,7 @@
     "message": "LCP ବ୍ରେକଡାଉନ"
   },
   "models/trace/insights/LCPDiscovery.ts | description": {
-    "message": "ତୁରନ୍ତ HTMLରୁ LCP ଇମେଜକୁ [ଖୋଜିପାଇବାଯୋଗ୍ୟ](https://web.dev/articles/optimize-lcp#1_eliminate_resource_load_delay) କରି [ଲେଜି-ଲୋଡିଂକୁ ଏଡ଼ାଇ](https://web.dev/articles/lcp-lazy-loading) LCPକୁ ଅପ୍ଟିମାଇଜ କରନ୍ତୁ"
+    "message": "ତୁରନ୍ତ HTMLରୁ LCP ଇମେଜକୁ ଖୋଜିପାଇବାଯୋଗ୍ୟ କରି ଲେଜି-ଲୋଡିଂକୁ ଏଡ଼ାଇ [LCPକୁ ଅପ୍ଟିମାଇଜ](https://developer.chrome.com/docs/performance/insights/lcp-discovery) କରନ୍ତୁ"
   },
   "models/trace/insights/LCPDiscovery.ts | fetchPriorityApplied": {
     "message": "fetchpriority=high ଲାଗୁ କରାଯାଇଛି"
@@ -2439,13 +2436,13 @@
     "message": "ନଷ୍ଟ ହୋଇଥିବା ବାଇଟ"
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
-    "message": "ନୂଆ JavaScript ଫିଚର ବ୍ୟବହାର କରିବାକୁ ପଲିଫିଲ ଏବଂ ଟ୍ରାନ୍ସଫର୍ମ ପୁରୁଣା ବ୍ରାଉଜରଗୁଡ଼ିକୁ ସକ୍ଷମ କରିଥାଏ। କିନ୍ତୁ, ଆଧୁନିକ ବ୍ରାଉଜର ପାଇଁ ଅନେକ ଆବଶ୍ୟକ ନୁହେଁ। ଆପଣଙ୍କୁ ପୁରୁଣା ବ୍ରାଉଜରଗୁଡ଼ିକୁ ସପୋର୍ଟ କରିବାକୁ ହେବ ବୋଲି ଆପଣ ନଜାଣିବା ପର୍ଯ୍ୟନ୍ତ [ବେସଲାଇନ](https://web.dev/articles/baseline-and-polyfills) ଫିଚରଗୁଡ଼ିକୁ ଟ୍ରାନ୍ସପିଲ ନକରିବା ପାଇଁ ଆପଣଙ୍କର JavaScript ବିଲ୍ଡ ପ୍ରକ୍ରିୟାକୁ ପରିବର୍ତ୍ତନ କରିବା ବିଷୟରେ ବିଚାର କରନ୍ତୁ। [ଅଧିକାଂଶ ସାଇଟ ଟ୍ରାନ୍ସପିଲ ନକରି କାହିଁକି ES6+ କୋଡ କାର୍ଯ୍ୟକାରୀ କରିପାରିବେ ତାହା ଜାଣନ୍ତୁ](https://philipwalton.com/articles/the-state-of-es5-on-the-web/)"
+    "message": "ନୂଆ JavaScript ଫିଚର ବ୍ୟବହାର କରିବାକୁ ପଲିଫିଲ ଏବଂ ଟ୍ରାନ୍ସଫର୍ମ ପୁରୁଣା ବ୍ରାଉଜରଗୁଡ଼ିକୁ ସକ୍ଷମ କରିଥାଏ। କିନ୍ତୁ, ଆଧୁନିକ ବ୍ରାଉଜର ପାଇଁ ଅନେକ ଆବଶ୍ୟକ ନୁହେଁ। ଆପଣଙ୍କୁ ପୁରୁଣା ବ୍ରାଉଜରଗୁଡ଼ିକୁ ସପୋର୍ଟ କରିବାକୁ ହେବ ବୋଲି ଆପଣ ନଜାଣିବା ପର୍ଯ୍ୟନ୍ତ [ବେସଲାଇନ](https://web.dev/articles/baseline-and-polyfills) ଫିଚରଗୁଡ଼ିକୁ ଟ୍ରାନ୍ସପିଲ ନକରିବା ପାଇଁ ଆପଣଙ୍କର JavaScript ବିଲ୍ଡ ପ୍ରକ୍ରିୟାକୁ ପରିବର୍ତ୍ତନ କରିବା ବିଷୟରେ ବିଚାର କରନ୍ତୁ। [ଅଧିକାଂଶ ସାଇଟ ଟ୍ରାନ୍ସପିଲ ନକରି କାହିଁକି ES6+ କୋଡ କାର୍ଯ୍ୟକାରୀ କରିପାରିବେ ତାହା ଜାଣନ୍ତୁ](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "ଲିଗାସୀ JavaScript"
   },
   "models/trace/insights/ModernHTTP.ts | description": {
-    "message": "HTTP/1.1 ତୁଳନାରେ HTTP/2 ଏବଂ HTTP/3 ମଲ୍ଟିପ୍ଲେକ୍ସିଂ ପରି ଅଧିକ ଲାଭ ଅଫର କରନ୍ତି। [ଆଧୁନିକ HTTP ବ୍ୟବହାର ବିଷୟରେ ଅଧିକ ଜାଣନ୍ତୁ](https://developer.chrome.com/docs/lighthouse/best-practices/uses-http2/)।"
+    "message": "HTTP/1.1 ତୁଳନାରେ HTTP/2 ଏବଂ HTTP/3 ମଲ୍ଟିପ୍ଲେକ୍ସିଂ ପରି ଅଧିକ ଲାଭ ଅଫର କରନ୍ତି। [ଆଧୁନିକ HTTP ବ୍ୟବହାର ବିଷୟରେ ଅଧିକ ଜାଣନ୍ତୁ](https://developer.chrome.com/docs/performance/insights/modern-http)।"
   },
   "models/trace/insights/ModernHTTP.ts | noOldProtocolRequests": {
     "message": "କୌଣସି ଅନୁରୋଧରେ HTTP/1.1 ବ୍ୟବହାର କରାଯାଇ ନାହିଁ, କିମ୍ବା ଏହାର ବର୍ତ୍ତମାନର HTTP/1.1 ବ୍ୟବହାର ଏକ ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ଅପ୍ଟିମାଇଜେସନ ସୁଯୋଗ ପ୍ରଦାନ କରେ ନାହିଁ। ଯଦି ଛଅ କିମ୍ବା ଅଧିକ ଷ୍ଟାଟିକ ଆସେଟ ସମାନ ଉତ୍ସରୁ ଉତ୍ପନ୍ନ ହୁଏ ଏବଂ ସେଗୁଡ଼ିକୁ ଏକ ସ୍ଥାନୀୟ ଡେଭେଲପମେଣ୍ଟ ପରିବେଶ କିମ୍ବା ତୃତୀୟ-ପକ୍ଷ ସୋର୍ସରୁ ପରିବେଷଣ କରାଯାଏ ନାହିଁ, ତେବେ କେବଳ HTTP/1.1 ଅନୁରୋଧଗୁଡ଼ିକୁ ଫ୍ଲାଗ କରାଯାଏ।"
@@ -2478,7 +2475,7 @@
     "message": "ଅବ୍ୟବହୃତ ପ୍ରିକନେକ୍ଟ। crossorigin ଆଟ୍ରିବ୍ୟୁଟ ସଠିକ ଭାବେ ବ୍ୟବହୃତ ହୋଇଛି ବୋଲି ଯାଞ୍ଚ କରନ୍ତୁ।"
   },
   "models/trace/insights/NetworkDependencyTree.ts | description": {
-    "message": "ପୃଷ୍ଠା ଲୋଡରେ ଉନ୍ନତି ଆଣିବା ପାଇଁ ଚେନର ଲମ୍ବ ହ୍ରାସ କରିବା, ରିସୋର୍ସଗୁଡ଼ିକର ଡାଉନଲୋଡ ସାଇଜ ହ୍ରାସ କରିବା କିମ୍ବା ଅନାବଶ୍ୟକ ରିସୋର୍ସଗୁଡ଼ିକର ଡାଉନଲୋଡକୁ ବିଳମ୍ବ କରିବା ପାଇଁ [ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ଅନୁରୋଧଗୁଡ଼ିକୁ ଚେନ କରିବାରୁ ଦୂରେଇ ରୁହନ୍ତୁ](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains)।"
+    "message": "ପୃଷ୍ଠା ଲୋଡରେ ଉନ୍ନତି ଆଣିବା ପାଇଁ ଚେନର ଲମ୍ବ ହ୍ରାସ କରିବା, ରିସୋର୍ସଗୁଡ଼ିକର ଡାଉନଲୋଡ ସାଇଜ ହ୍ରାସ କରିବା କିମ୍ବା ଅନାବଶ୍ୟକ ରିସୋର୍ସଗୁଡ଼ିକର ଡାଉନଲୋଡକୁ ବିଳମ୍ବ କରିବା ପାଇଁ [ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ଅନୁରୋଧଗୁଡ଼ିକୁ ଚେନ କରିବାରୁ ଦୂରେଇ ରୁହନ୍ତୁ](https://developer.chrome.com/docs/performance/insights/network-dependency-tree)।"
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableDescription": {
     "message": "ଆପଣଙ୍କର ସବୁଠାରୁ ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ଅରିଜିନଗୁଡ଼ିକରେ [ପ୍ରିକନେକ୍ଟ](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) ହିଣ୍ଟଗୁଡ଼ିକୁ ଯୋଗ କରନ୍ତୁ, କିନ୍ତୁ 4ରୁ ଅଧିକ ବ୍ୟବହାର କରିବାକୁ ଚେଷ୍ଟା କରନ୍ତୁ ନାହିଁ।"
@@ -2517,7 +2514,7 @@
     "message": "ପୃଷ୍ଠା ଲୋଡରେ ଉନ୍ନତି ଆଣିବା ପାଇଁ ଚେନର ଲମ୍ବ ହ୍ରାସ କରିବା, ରିସୋର୍ସଗୁଡ଼ିକର ଡାଉନଲୋଡ ସାଇଜ ହ୍ରାସ କରିବା କିମ୍ବା ଅନାବଶ୍ୟକ ରିସୋର୍ସଗୁଡ଼ିକର ଡାଉନଲୋଡକୁ ବିଳମ୍ବ କରିବା ପାଇଁ ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ଅନୁରୋଧଗୁଡ଼ିକୁ ଚେନ କରିବାରୁ ଦୂରେଇ ରୁହନ୍ତୁ।"
   },
   "models/trace/insights/RenderBlocking.ts | description": {
-    "message": "ଅନୁରୋଧଗୁଡ଼ିକ ପୃଷ୍ଠାର ପ୍ରାରମ୍ଭିକ ରେଣ୍ଡରକୁ ବ୍ଲକ କରୁଛି, ଯାହା ଯୋଗୁଁ LCPକୁ ବିଳମ୍ବ ହୋଇପାରେ। [ବିଳମ୍ବ କରିବା କିମ୍ବା ଇନଲାଇନ କରିବା](https://web.dev/learn/performance/understanding-the-critical-path#render-blocking_resources) ଫଳରେ ଏହି ନେଟୱାର୍କ ଅନୁରୋଧଗୁଡ଼ିକୁ ଏହି ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ପାଥରୁ ମୁଭ କରାଯାଇପାରିବ।"
+    "message": "ଅନୁରୋଧଗୁଡ଼ିକ ପୃଷ୍ଠାର ପ୍ରାରମ୍ଭିକ ରେଣ୍ଡରକୁ ବ୍ଲକ କରୁଛି, ଯାହା ଯୋଗୁଁ LCPକୁ ବିଳମ୍ବ ହୋଇପାରେ। [ବିଳମ୍ବ କରିବା କିମ୍ବା ଇନଲାଇନ କରିବା](https://developer.chrome.com/docs/performance/insights/render-blocking) ଫଳରେ ଏହି ନେଟୱାର୍କ ଅନୁରୋଧଗୁଡ଼ିକୁ ଏହି ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ପାଥରୁ ମୁଭ କରାଯାଇପାରିବ।"
   },
   "models/trace/insights/RenderBlocking.ts | duration": {
     "message": "ଅବଧି"
@@ -2532,7 +2529,7 @@
     "message": "ରେଣ୍ଡର ବ୍ଲକିଂ ଅନୁରୋଧ"
   },
   "models/trace/insights/SlowCSSSelector.ts | description": {
-    "message": "ଯଦି ରିକାଲକୁଲେଟ ଷ୍ଟାଇଲ ମୂଲ୍ୟ ଅଧିକ ରହେ, ତେବେ ଚୟନକାରୀ ଅପ୍ଟିମାଇଜେସନ ସେଗୁଡ଼ିକୁ ହ୍ରାସ ହୋଇପାରେ। ଉଭୟ ଅଧିକ ଅତିବାହିତ ହୋଇଥିବା ସମୟ ଏବଂ ଅଧିକ ସ୍ଲୋ-ପାଥ % ଥିବା [ଚୟନକାରୀଗୁଡ଼ିକୁ ଅପ୍ଟିମାଇଜ କରନ୍ତୁ](https://developer.chrome.com/docs/devtools/performance/selector-stats)। ସମସ୍ତ ସରଳ ଚୟନକାରୀ, କମ ଚୟନକାରୀ, ଏକ ଛୋଟ DOM ଏବଂ ଅଳ୍ପ DOM ମେଚିଂ ମୂଲ୍ୟ ହ୍ରାସ କରିବ।"
+    "message": "ଯଦି ରିକାଲକୁଲେଟ ଷ୍ଟାଇଲ ମୂଲ୍ୟ ଅଧିକ ରହେ, ତେବେ ଚୟନକାରୀ ଅପ୍ଟିମାଇଜେସନ ସେଗୁଡ଼ିକୁ ହ୍ରାସ ହୋଇପାରେ। ଉଭୟ ଅଧିକ ଅତିବାହିତ ହୋଇଥିବା ସମୟ ଏବଂ ଅଧିକ ସ୍ଲୋ-ପାଥ % ଥିବା [ଚୟନକାରୀଗୁଡ଼ିକୁ ଅପ୍ଟିମାଇଜ କରନ୍ତୁ](https://developer.chrome.com/docs/performance/insights/slow-css-selector)। ସମସ୍ତ ସରଳ ଚୟନକାରୀ, କମ ଚୟନକାରୀ, ଏକ ଛୋଟ DOM ଏବଂ ଅଳ୍ପ DOM ମେଚିଂ ମୂଲ୍ୟ ହ୍ରାସ କରିବ।"
   },
   "models/trace/insights/SlowCSSSelector.ts | elapsed": {
     "message": "ଅତିବାହିତ ହୋଇଥିବା ସମୟ"
@@ -2571,7 +2568,7 @@
     "message": "ଟ୍ରାନ୍ସଫରର ସାଇଜ"
   },
   "models/trace/insights/ThirdParties.ts | description": {
-    "message": "3ୟ ପକ୍ଷ କୋଡ ଲୋଡ ପରଫରମାନ୍ସକୁ ଉଲ୍ଲେଖନୀୟ ଭାବେ ପ୍ରଭାବିତ କରିପାରିବ। ଆପଣଙ୍କ ପୃଷ୍ଠାର ବିଷୟବସ୍ତୁକୁ ପ୍ରାଥମିକତା ଦେବା ପାଇଁ [3ୟ ପକ୍ଷ କୋଡର ଲୋଡିଂକୁ ହ୍ରାସ କରି ସ୍ଥଗିତ ରଖନ୍ତୁ](https://web.dev/articles/optimizing-content-efficiency-loading-third-party-javascript/)।"
+    "message": "3ୟ ପକ୍ଷ କୋଡ ଲୋଡ ପରଫରମାନ୍ସକୁ ଉଲ୍ଲେଖନୀୟ ଭାବେ ପ୍ରଭାବିତ କରିପାରିବ। ଆପଣଙ୍କ ପୃଷ୍ଠାର ବିଷୟବସ୍ତୁକୁ ପ୍ରାଥମିକତା ଦେବା ପାଇଁ [3ୟ ପକ୍ଷ କୋଡର ଲୋଡିଂକୁ ହ୍ରାସ କରି ସ୍ଥଗିତ ରଖନ୍ତୁ](https://developer.chrome.com/docs/performance/insights/third-parties)।"
   },
   "models/trace/insights/ThirdParties.ts | noThirdParties": {
     "message": "କୌଣସି ତୃତୀୟ ପକ୍ଷ ମିଳିଲା ନାହିଁ"
@@ -2580,7 +2577,7 @@
     "message": "3ୟ ପକ୍ଷ"
   },
   "models/trace/insights/Viewport.ts | description": {
-    "message": "ଯଦି ମୋବାଇଲ ପାଇଁ ଭ୍ୟୁପୋର୍ଟକୁ ଅପ୍ଟିମାଇଜ କରାଯାଇନାହିଁ, ତେବେ ଇଣ୍ଟରାକ୍ସନରେ ଟାପ କରିବା [300 ms ପର୍ଯ୍ୟନ୍ତ ବିଳମ୍ବିତ ହୋଇପାରେ](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/)।"
+    "message": "ଯଦି ମୋବାଇଲ ପାଇଁ ଭ୍ୟୁପୋର୍ଟକୁ ଅପ୍ଟିମାଇଜ କରାଯାଇନାହିଁ, ତେବେ ଇଣ୍ଟରାକ୍ସନରେ ଟାପ କରିବା [300 ms ପର୍ଯ୍ୟନ୍ତ ବିଳମ୍ବିତ ହୋଇପାରେ](https://developer.chrome.com/docs/performance/insights/viewport)।"
   },
   "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
     "message": "ମୋବାଇଲ ଟାପ ବିଳମ୍ବ"
@@ -2727,7 +2724,7 @@
     "message": "ବିଷୟବସ୍ତୁ"
   },
   "panels/accessibility/AccessibilityStrings.ts | controls": {
-    "message": "ନିୟନ୍ତ୍ରଣ"
+    "message": "ନିୟନ୍ତ୍ରଣଗୁଡ଼ିକ"
   },
   "panels/accessibility/AccessibilityStrings.ts | describedBy": {
     "message": "ଏହା ଦ୍ୱାରା ବର୍ଣ୍ଣନା କରାଯାଇଛି"
@@ -3074,14 +3071,20 @@
   "panels/ai_assistance/ai_assistance-meta.ts | aiAssistance": {
     "message": "AI ସହାୟତା"
   },
-  "panels/ai_assistance/ai_assistance-meta.ts | askAi": {
-    "message": "AIକୁ ପଚାରନ୍ତୁ"
-  },
   "panels/ai_assistance/ai_assistance-meta.ts | debugWithAi": {
     "message": "AI ମାଧ୍ୟମରେ ଡିବଗ କରନ୍ତୁ"
   },
+  "panels/ai_assistance/ai_assistance-meta.ts | debugWithGemini": {
+    "message": "Gemini ମାଧ୍ୟମରେ ଡିବଗ କରନ୍ତୁ"
+  },
   "panels/ai_assistance/ai_assistance-meta.ts | enableAiAssistance": {
     "message": "AI ଆସିଷ୍ଟାଣ୍ଟକୁ ସକ୍ଷମ କରନ୍ତୁ"
+  },
+  "panels/ai_assistance/ai_assistance-meta.ts | enableGemini": {
+    "message": "Geminiକୁ ସକ୍ଷମ କରନ୍ତୁ"
+  },
+  "panels/ai_assistance/ai_assistance-meta.ts | gemini": {
+    "message": "Gemini"
   },
   "panels/ai_assistance/ai_assistance-meta.ts | geoRestricted": {
     "message": "ଆପଣଙ୍କ ଅଞ୍ଚଳରେ ଏହି ଫିଚର ଉପଲବ୍ଧ ନାହିଁ।"
@@ -3092,40 +3095,43 @@
   "panels/ai_assistance/ai_assistance-meta.ts | showAiAssistance": {
     "message": "AI ଆସିଷ୍ଟାନ୍ସ ଦେଖାନ୍ତୁ"
   },
+  "panels/ai_assistance/ai_assistance-meta.ts | showGemini": {
+    "message": "Geminiକୁ ଦେଖାନ୍ତୁ"
+  },
   "panels/ai_assistance/ai_assistance-meta.ts | wrongLocale": {
     "message": "ଏହି ଫିଚରକୁ ବ୍ୟବହାର କରିବା ପାଇଁ DevTools ସେଟିଂସରେ ଆପଣଙ୍କ ପସନ୍ଦର ଭାଷାକୁ ଇଂରାଜୀରେ ସେଟ କରନ୍ତୁ।"
   },
-  "panels/ai_assistance/components/ChatView.ts | inputTextAriaDescription": {
+  "panels/ai_assistance/components/ChatInput.ts | inputTextAriaDescription": {
     "message": "ଆପଣଙ୍କ ବାର୍ତ୍ତାଳାପ ଆରମ୍ଭ କରିବା ପାଇଁ ଆପଣ ଉପରୋକ୍ତ ପ୍ରସ୍ତାବିତ ପ୍ରମ୍ପ୍ଟଗୁଡ଼ିକ ମଧ୍ୟରୁ ଗୋଟିଏକୁ ବ୍ୟବହାର କରିପାରିବେ"
   },
-  "panels/ai_assistance/components/ChatView.ts | learnAbout": {
+  "panels/ai_assistance/components/ChatInput.ts | learnAbout": {
     "message": "DevToolsରେ AI ବିଷୟରେ ଜାଣନ୍ତୁ"
   },
-  "panels/ai_assistance/components/ChatView.ts | notAvailableInIncognitoMode": {
-    "message": "ଇନକଗ୍ନିଟୋ ମୋଡ କିମ୍ବା ଗେଷ୍ଟ ମୋଡରେ AI ସହାୟତା ଉପଲବ୍ଧ ନାହିଁ"
-  },
-  "panels/ai_assistance/components/ChatView.ts | notLoggedIn": {
-    "message": "ଆପଣ ଆପଣଙ୍କ Google ଆକାଉଣ୍ଟ ମାଧ୍ୟମରେ Chromeରେ ସାଇନ ଇନ କଲେ, କେବଳ ଏହି ଫିଚର ଉପଲବ୍ଧ ହୋଇଥାଏ"
-  },
-  "panels/ai_assistance/components/ChatView.ts | offline": {
-    "message": "ଆପଣଙ୍କ ଇଣ୍ଟର୍ନେଟ କନେକ୍ସନ ଯାଞ୍ଚ କରି ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ"
-  },
-  "panels/ai_assistance/components/ChatView.ts | revealContextDescription": {
+  "panels/ai_assistance/components/ChatInput.ts | revealContextDescription": {
     "message": "DevToolsରେ ଚୟନିତ ପ୍ରସଙ୍ଗ ଆଇଟମକୁ ପ୍ରକାଶ କରନ୍ତୁ"
   },
-  "panels/ai_assistance/components/ChatView.ts | settingsLink": {
+  "panels/ai_assistance/components/DisabledWidget.ts | notAvailableInIncognitoMode": {
+    "message": "ଇନକଗ୍ନିଟୋ ମୋଡ କିମ୍ବା ଗେଷ୍ଟ ମୋଡରେ AI ସହାୟତା ଉପଲବ୍ଧ ନାହିଁ"
+  },
+  "panels/ai_assistance/components/DisabledWidget.ts | notLoggedIn": {
+    "message": "ଆପଣ ଆପଣଙ୍କ Google ଆକାଉଣ୍ଟ ମାଧ୍ୟମରେ Chromeରେ ସାଇନ ଇନ କଲେ, କେବଳ ଏହି ଫିଚର ଉପଲବ୍ଧ ହୋଇଥାଏ"
+  },
+  "panels/ai_assistance/components/DisabledWidget.ts | offline": {
+    "message": "ଆପଣଙ୍କ ଇଣ୍ଟର୍ନେଟ କନେକ୍ସନ ଯାଞ୍ଚ କରି ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ"
+  },
+  "panels/ai_assistance/components/DisabledWidget.ts | settingsLink": {
     "message": "ସେଟିଂସରେ AI ଆସିଷ୍ଟାଣ୍ଟ"
   },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStyles": {
+  "panels/ai_assistance/components/DisabledWidget.ts | turnOnForStyles": {
     "message": "CSS ଷ୍ଟାଇଲଗୁଡ଼ିକୁ ବୁଝିବାରେ ସହାୟତା ପାଇବା ପାଇଁ {PH1}କୁ ଚାଲୁ କରନ୍ତୁ"
   },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesAndRequests": {
+  "panels/ai_assistance/components/DisabledWidget.ts | turnOnForStylesAndRequests": {
     "message": "ଷ୍ଟାଇଲ ଏବଂ ନେଟୱାର୍କ ଅନୁରୋଧଗୁଡ଼ିକ ପାଇଁ ସହାୟତା ପାଇବାକୁ {PH1} ଚାଲୁ କରନ୍ତୁ"
   },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsAndFiles": {
+  "panels/ai_assistance/components/DisabledWidget.ts | turnOnForStylesRequestsAndFiles": {
     "message": "ଷ୍ଟାଇଲ, ନେଟୱାର୍କ ଅନୁରୋଧ ଏବଂ ଫାଇଲଗୁଡ଼ିକ ପାଇଁ ସହାୟତା ପାଇବାକୁ {PH1}କୁ ଚାଲୁ କରନ୍ତୁ"
   },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsPerformanceAndFiles": {
+  "panels/ai_assistance/components/DisabledWidget.ts | turnOnForStylesRequestsPerformanceAndFiles": {
     "message": "ଷ୍ଟାଇଲ, ନେଟୱାର୍କ ଅନୁରୋଧ, ପରଫରମାନ୍ସ ଏବଂ ଫାଇଲ୍ସ ପାଇଁ ସହାୟତା ପାଇବାକୁ {PH1}କୁ ଚାଲୁ କରନ୍ତୁ"
   },
   "panels/animation/AnimationTimeline.ts | animationDescription": {
@@ -3209,6 +3215,9 @@
   "panels/application/AppManifestView.ts | appIdNote": {
     "message": "ଧ୍ୟାନ ଦିଅନ୍ତୁ: ମାନିଫେଷ୍ଟରେ idକୁ ନିର୍ଦ୍ଦିଷ୍ଟ କରାଯାଇନାହିଁ, ଏହା ପରିବର୍ତ୍ତେ start_urlକୁ ବ୍ୟବହାର କରାଯାଇଛି। ବର୍ତ୍ତମାନର ପରିଚୟ ସହ ମେଳ ହେଉଥିବା ଏକ ଆପ IDକୁ ନିର୍ଦ୍ଦିଷ୍ଟ କରିବା ପାଇଁ, id ଫିଲ୍ଡକୁ {PH1} {PH2}ରେ ସେଟ କରନ୍ତୁ।"
   },
+  "panels/application/AppManifestView.ts | appManifest": {
+    "message": "ମାନିଫେଷ୍ଟ"
+  },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
     "message": "any maskableର 'purpose' ସହ ଏକ ଆଇକନ ଘୋଷଣା କରିବାକୁ ଉତ୍ସାହିତ କରାଯାଏ ନାହିଁ। ଅତ୍ୟଧିକ କିମ୍ବା ବହୁତ କମ୍ ପେଡିଂ ଯୋଗୁଁ କିଛି ପ୍ଲାଟଫର୍ମରେ ଏହା ଭୁଲ୍ ଦେଖାଯିବାର ସମ୍ଭାବନା ଅଛି।"
   },
@@ -3281,6 +3290,9 @@
   "panels/application/AppManifestView.ts | manifestCouldNotBeFetchedIsEmpty": {
     "message": "ମାନିଫେଷ୍ଟକୁ ଫେଚ୍ କରାଯାଇପାରିବ ନାହିଁ, ଏହା ଖାଲି ଅଛି କିମ୍ବା ଏହାକୁ ପାର୍ସ କରାଯାଇପାରିବ ନାହିଁ"
   },
+  "panels/application/AppManifestView.ts | manifestDescription": {
+    "message": "ଫୋନର ହୋମ ସ୍କ୍ରିନରେ ଆପଣଙ୍କ ଆପ କିପରି ଦେଖାଯାଏ ଏବଂ ଲଞ୍ଚ ସମୟରେ ଆପ କିପରି ଦେଖାଯାଏ ତାହା ଏହି ମାନିଫେଷ୍ଟ ପରିଭାଷିତ କରେ।"
+  },
   "panels/application/AppManifestView.ts | manifestDisplayPropertyMustBeOne": {
     "message": "ମାନିଫେଷ୍ଟ 'display' ପ୍ରୋପର୍ଟି 'standalone', 'fullscreen' କିମ୍ବା 'minimal-ui' ମଧ୍ୟରୁ ଗୋଟିଏ ହୋଇଥିବା ଆବଶ୍ୟକ"
   },
@@ -3305,6 +3317,9 @@
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "ନୂଆ ନୋଟ୍ URL"
   },
+  "panels/application/AppManifestView.ts | noManifestDetected": {
+    "message": "କୌଣସି ମାନିଫେଷ୍ଟ ଚିହ୍ନଟ କରାଯାଇନାହିଁ"
+  },
   "panels/application/AppManifestView.ts | noPlayStoreIdProvided": {
     "message": "କୌଣସି Play store ID ଦିଆଯାଇନାହିଁ"
   },
@@ -3316,6 +3331,9 @@
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
     "message": "ଅତି କମରେ {PH1} ପିକ୍ସେଲ୍ୱ ବର୍ଗର ହୋଇଥିବା, ଉଦ୍ଦେଶ୍ୟ ଆଟ୍ରିବ୍ୟୁଟ୍ ସେଟ୍ କରାଯାଇନଥିବା କିମ୍ବା anyରେ ସେଟ୍ କରାଯାଇଥିବା PNG, SVG ବା WebP ଫର୍ମାଟରେ ପ୍ରଦାନ କରାଯାଇଥିବା କୌଣସି ଆଇକନ୍ ନାହିଁ।"
+  },
+  "panels/application/AppManifestView.ts | onInvokeAlert": {
+    "message": "{PH1}କୁ ସ୍କ୍ରୋଲ କରାଯାଇଛି"
   },
   "panels/application/AppManifestView.ts | orientation": {
     "message": "ଓରିଏଣ୍ଟେସନ୍"
@@ -3446,9 +3464,6 @@
   "panels/application/AppManifestView.ts | windowControlsOverlay": {
     "message": "ୱିଣ୍ଡୋ ନିୟନ୍ତ୍ରଣଗୁଡ଼ିକର ଓଭରଲେ"
   },
-  "panels/application/ApplicationPanelSidebar.ts | appManifest": {
-    "message": "ମାନିଫେଷ୍ଟ"
-  },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "ଆପ୍ଲିକେସନ୍"
   },
@@ -3518,9 +3533,6 @@
   "panels/application/ApplicationPanelSidebar.ts | manifest": {
     "message": "ମାନିଫେଷ୍ଟ"
   },
-  "panels/application/ApplicationPanelSidebar.ts | manifestDescription": {
-    "message": "ଫୋନର ହୋମ ସ୍କ୍ରିନରେ ଆପଣଙ୍କ ଆପ କିପରି ଦେଖାଯାଏ ଏବଂ ଲଞ୍ଚ ସମୟରେ ଆପ କିପରି ଦେଖାଯାଏ ତାହା ଏହି ମାନିଫେଷ୍ଟ ପରିଭାଷିତ କରେ।"
-  },
   "panels/application/ApplicationPanelSidebar.ts | noCookies": {
     "message": "କୌଣସି କୁକୀ ସେଟ କରାଯାଇନାହିଁ"
   },
@@ -3532,9 +3544,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | noLocalStorage": {
     "message": "କୌଣସି ସ୍ଥାନୀୟ ଷ୍ଟୋରେଜ ଡିଟେକ୍ଟ କରାଯାଇନାହିଁ"
-  },
-  "panels/application/ApplicationPanelSidebar.ts | noManifestDetected": {
-    "message": "କୌଣସି ମାନିଫେଷ୍ଟ ଚିହ୍ନଟ କରାଯାଇନାହିଁ"
   },
   "panels/application/ApplicationPanelSidebar.ts | noSessionStorage": {
     "message": "କୌଣସି ସେସନ ଷ୍ଟୋରେଜ ଡିଟେକ୍ଟ କରାଯାଇନାହିଁ"
@@ -3710,11 +3719,554 @@
   "panels/application/DOMStorageItemsView.ts | domStorageItemsCleared": {
     "message": "DOM ଷ୍ଟୋରେଜ ଆଇଟମଗୁଡ଼ିକୁ ଖାଲି କରାଯାଇଛି"
   },
+  "panels/application/DeviceBoundSessionsTreeElement.ts | deviceBoundSessions": {
+    "message": "ଡିଭାଇସ ବାଉଣ୍ଡ ସେସନ"
+  },
+  "panels/application/DeviceBoundSessionsTreeElement.ts | deviceBoundSessionsCategoryDescription": {
+    "message": "ଏହି ପୃଷ୍ଠାରେ ଆପଣ ଡିଭାଇସ ବାଉଣ୍ଡ ସେସନ ଏବଂ ସମ୍ବନ୍ଧିତ ଇଭେଣ୍ଟଗୁଡ଼ିକୁ ଭ୍ୟୁ କରିପାରିବେ"
+  },
+  "panels/application/DeviceBoundSessionsTreeElement.ts | noSession": {
+    "message": "କୌଣସି ସେସନ ନାହିଁ"
+  },
+  "panels/application/DeviceBoundSessionsTreeElement.ts | sessionWithErrors": {
+    "message": "{sessionName}, ସେସନରେ ତ୍ରୁଟି ଅଛି"
+  },
+  "panels/application/DeviceBoundSessionsTreeElement.ts | terminatedSession": {
+    "message": "{sessionName}, ସେସନ ସମାପ୍ତ ହୋଇଛି"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | allowedRefreshInitiators": {
+    "message": "ଅନୁମତି ଦିଆଯାଇଥିବା ରିଫ୍ରେସ ଆରମ୍ଭକାରୀ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | boundCookieSetForbidden": {
+    "message": "ବାଉଣ୍ଡ କୁକୀଗୁଡ଼ିକ ସେଟ କରିପାରୁନଥିବା ଏକ ପ୍ରସଙ୍ଗରେ ପଞ୍ଜିକରଣ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | cachedChallenge": {
+    "message": "କେଚେ ହୋଇଥିବା ଚେଲେଞ୍ଜ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | cantSetBoundCookie": {
+    "message": "ବାଉଣ୍ଡ କୁକୀ ସେଟ କରିବାକୁ ଅନୁମତି ଦିଆଯାଇନାହିଁ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | causedAnyRequestDeferrals": {
+    "message": "କୌଣସି ଅନୁରୋଧକୁ ସ୍ଥଗିତ କରିବାର କାରଣ ହୋଇଛି"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | challenge": {
+    "message": "ଚେଲେଞ୍ଜ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | challengeResult": {
+    "message": "ଚେଲେଞ୍ଜ ଫଳାଫଳ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | clearBrowsingData": {
+    "message": "ୟୁଜର-ଆରମ୍ଭ କରିଥିବା ବ୍ରାଉଜର ଡାଟା କାଢ଼ି ଦେବା"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | cookieCravings": {
+    "message": "କୁକୀ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | creation": {
+    "message": "କ୍ରିଏସନ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | deletionReason": {
+    "message": "ଡିଲିଟ କରିବାର କାରଣ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | doNotClearLogOnPageReload": {
+    "message": "ପୃଷ୍ଠାକୁ ପୁଣି ଲୋଡ/ନାଭିଗେଟ କରିବା ସମୟରେ ଲଗ ଖାଲି କରନ୍ତୁ ନାହିଁ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | emptyScopeSpecificationDomain": {
+    "message": "ଖାଲି ସ୍କୋପ ସ୍ପେସିଫିକେସନ ଡୋମେନ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | emptyScopeSpecificationPath": {
+    "message": "ଖାଲି ସ୍କୋପ ସ୍ପେସିଫିକେସନ ପାଥ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | emptySessionConfig": {
+    "message": "ପଞ୍ଜିକରଣ ପାଇଁ ଖାଲି ସେସନ କନଫିଗରେସନ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | error": {
+    "message": "ତ୍ରୁଟି"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | eventDetails": {
+    "message": "ଇଭେଣ୍ଟ ବିବରଣୀ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | eventResult": {
+    "message": "ଇଭେଣ୍ଟର ଫଳାଫଳ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | events": {
+    "message": "ଇଭେଣ୍ଟ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | expired": {
+    "message": "ମିଆଦ ଶେଷ ହୋଇଛି"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | expiryDate": {
+    "message": "ମିଆଦ ଶେଷ ହେବାର ତାରିଖ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | failedToRestoreKey": {
+    "message": "ଡିସ୍କରୁ କୀ'କୁ ରିଷ୍ଟୋର କରିବାରେ ବିଫଳ ହୋଇଛି"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | failedToUnwrapKey": {
+    "message": "କୀ'କୁ ଅନରାପ କରିବାରେ ବିଫଳ ହୋଇଛି"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | fatalError": {
+    "message": "ଗୁରୁତର ତ୍ରୁଟି"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | federatedKeyThumbprintMismatch": {
+    "message": "ଫେଡେରେଟ ହୋଇଥିବା କୀ'ର ଥମ୍ବପ୍ରିଣ୍ଟ ଭୁଲ ଅଟେ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | federatedNotAuthorizedByProvider": {
+    "message": "ଫେଡେରେଟ ହୋଇଥିବା ସେସନକୁ ପ୍ରଦାନକାରୀ .well-known ଦ୍ୱାରା ଅନୁମତି ଦିଆଯାଇନାହିଁ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | federatedNotAuthorizedByRelyingParty": {
+    "message": "ନିର୍ଭର କରୁଥିବା ପକ୍ଷ .well-known ଦ୍ୱାରା ଫେଡେରେଟ ହୋଇଥିବା ସେସନକୁ ଅନୁମତି ଦେଇନାହିଁ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | fetchResult": {
+    "message": "ଫଳାଫଳ ଫେଚ କରନ୍ତୁ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | includeSite": {
+    "message": "ସାଇଟକୁ ଅନ୍ତର୍ଭୁକ୍ତ କରନ୍ତୁ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | initializedService": {
+    "message": "ସେବା ଆରମ୍ଭ ହୋଇଛି"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidChallenge": {
+    "message": "ଅବୈଧ ଚେଲେଞ୍ଜ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidConfigJson": {
+    "message": "ଅବୈଧ ସେସନ କନଫିଗରେସନ JSON"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidCredentialsConfig": {
+    "message": "ଅବୈଧ କ୍ରେଡେନସିଆଲ କନଫିଗରେସନ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidCredentialsCookie": {
+    "message": "ଅବୈଧ କ୍ରେଡେନସିଆଲ - କୁକୀ ଅବୈଧ ଅଟେ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidCredentialsCookieCreationTime": {
+    "message": "ଅବୈଧ କ୍ରେଡେନସିଆଲ - କୁକୀ କ୍ରିଏସନ ସମୟ ଅବୈଧ ଅଟେ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidCredentialsCookieInvalidDomain": {
+    "message": "ଅବୈଧ କ୍ରେଡେନସିଆଲ - କୁକୀ ଅବୈଧ ଡୋମେନ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidCredentialsCookieName": {
+    "message": "ଅବୈଧ କ୍ରେଡେନସିଆଲ - କୁକୀ ନାମ ଅବୈଧ ଅଟେ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidCredentialsCookieParsing": {
+    "message": "ଅବୈଧ କ୍ରେଡେନସିଆଲ - କୁକୀ ପାର୍ସିଂ ବିଫଳ ହୋଇଛି"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidCredentialsCookiePrefix": {
+    "message": "ଅବୈଧ କ୍ରେଡେନସିଆଲ - କୁକୀ ଅବୈଧ ପ୍ରିଫିକ୍ସ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidCredentialsCookieUnpermittedAttribute": {
+    "message": "ଅବୈଧ କ୍ରେଡେନସିଆଲ - କୁକୀ ଆଟ୍ରିବ୍ୟୁଟକୁ ଅନୁମତି ଦିଆଯାଇନାହିଁ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidCredentialsEmptyName": {
+    "message": "ଅବୈଧ କ୍ରେଡେନସିଆଲ - ଖାଲି ନାମ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidCredentialsType": {
+    "message": "ଅବୈଧ କ୍ରେଡେନସିଆଲ - ଖାଲି କିମ୍ବା ଅଣ-କୁକୀ ପ୍ରକାର"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidFederatedKey": {
+    "message": "ଫେଡେରେଟ ହୋଇଥିବା କୀ ଅବୈଧ ଅଟେ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidFederatedSessionProviderFailedToRestoreKey": {
+    "message": "ସେସନ ପ୍ରଦାନକାରୀ କୀ ରିଷ୍ଟୋର କରିବାରେ ବିଫଳତା ଯୋଗୁଁ ଫେଡେରେଟ ହୋଇଥିବା ସେସନ ଅବୈଧ ଅଟେ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidFederatedSessionProviderSessionMissing": {
+    "message": "ପ୍ରଦାନକାରୀ ସେସନ ମିଳିନଥିବା ଯୋଗୁଁ ଫେଡେରେଟ ହୋଇଥିବା ସେସନ ଅବୈଧ ଅଟେ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidFederatedSessionUrl": {
+    "message": "ଫେଡେରେଟ ହୋଇଥିବା ପ୍ରଦାନକାରୀ URL ବୈଧ ନୁହେଁ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidFederatedSessionWrongProviderOrigin": {
+    "message": "ପ୍ରଦାନକାରୀ ଅରିଜିନ ମିସମେଚ ଯୋଗୁଁ ଫେଡେରେଟ ହୋଇଥିବା ସେସନ ଅବୈଧ ଅଟେ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidFetcherUrl": {
+    "message": "ଅବୈଧ ଫେଚର URL"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidRefreshUrl": {
+    "message": "ଅବୈଧ ରିଫ୍ରେସ URL"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidScopeIncludeSite": {
+    "message": "ସ୍କୋପରେ ଅବୈଧ include_site"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidScopeOrigin": {
+    "message": "ଅବୈଧ ସ୍କୋପ ଅରିଜିନ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidScopeRuleHostPattern": {
+    "message": "ଅବୈଧ ସ୍କୋପ ନିୟମ ହୋଷ୍ଟ ପାଟର୍ନ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidScopeRulePath": {
+    "message": "ଅବୈଧ ସ୍କୋପ ନିୟମ ପାଥ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidScopeSpecification": {
+    "message": "ଅବୈଧ ସ୍କୋପ ନିର୍ଦ୍ଦିଷ୍ଟକରଣ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidScopeSpecificationType": {
+    "message": "ସ୍କୋପ ସ୍ପେସିଫିକେସନ ପ୍ରକାର ଅନ୍ତର୍ଭୁକ୍ତ କିମ୍ବା ବାଦ ଦିଆଯାଇନାହିଁ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidSessionId": {
+    "message": "ଅବୈଧ ସେସନ ID"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | invalidSessionParams": {
+    "message": "ଅବୈଧ ସେସନ ପାରାମିଟର"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | keyError": {
+    "message": "କୀ ତ୍ରୁଟି"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | keyId": {
+    "message": "ID"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | keySite": {
+    "message": "ସାଇଟ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | mismatchedSessionId": {
+    "message": "ସେସନ ID ମେଳ ହେଉନାହିଁ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | missingScope": {
+    "message": "ସ୍କୋପ ଉପଲବ୍ଧ ନାହିଁ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | missingScopeIncludeSite": {
+    "message": "ସ୍କୋପରେ include_site ଉପଲବ୍ଧ ନାହିଁ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | missingScopeSpecificationType": {
+    "message": "ସ୍କୋପ ସ୍ପେସିଫିକେସନର ପ୍ରକାର ଉପଲବ୍ଧ ନାହିଁ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | name": {
+    "message": "ନାମ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | netError": {
+    "message": "ନେଟୱାର୍କ ତ୍ରୁଟି"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | no": {
+    "message": "ନା"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | noCredentials": {
+    "message": "କୌଣସି କ୍ରେଡେନସିଆଲ ନାହିଁ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | noEvents": {
+    "message": "ଏପର୍ଯ୍ୟନ୍ତ କୌଣସି ଇଭେଣ୍ଟ ଲଗ ହୋଇନାହିଁ।"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | noSessionId": {
+    "message": "କୌଣସି ସେସନ ID ନାହିଁ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | noSessionMatch": {
+    "message": "କୌଣସି ମେଳ ହେଉଥିବା ସେସନ ID ନାହିଁ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | origin": {
+    "message": "ଅରିଜିନ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | persistentHttpError": {
+    "message": "ପର୍ସିଷ୍ଟେଣ୍ଟ HTTP ତ୍ରୁଟି"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | preserveLog": {
+    "message": "ଲଗ ସଂରକ୍ଷିତ ରଖନ୍ତୁ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | proxyError": {
+    "message": "ପ୍ରକ୍ସି ତ୍ରୁଟି"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | refresh": {
+    "message": "ରିଫ୍ରେସ କରନ୍ତୁ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | refreshFatalError": {
+    "message": "ରିଫ୍ରେସ କରିବା ସମୟରେ ଗୁରୁତର ତ୍ରୁଟି"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | refreshInitiatorInvalidHostPattern": {
+    "message": "ଅନୁମତି ଦିଆଯାଇଥିବା ରିଫ୍ରେସ ଇନିସିଏଟରଙ୍କର ଅବୈଧ ହୋଷ୍ଟ ପାଟର୍ନ ଅଛି"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | refreshInitiatorNotString": {
+    "message": "ଅନୁମତି ଦିଆଯାଇଥିବା ରିଫ୍ରେସ ଇନିସିଏଟର ଏକ ଷ୍ଟ୍ରିଂ ନୁହେଁ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | refreshQuotaExceeded": {
+    "message": "ରିଫ୍ରେସ କୋଟା ଅତିକ୍ରମ କରିଛି"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | refreshResult": {
+    "message": "ଫଳାଫଳକୁ ରିଫ୍ରେସ କରନ୍ତୁ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | refreshUrl": {
+    "message": "URL ରିଫ୍ରେସ କରନ୍ତୁ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | refreshUrlSameSiteMismatch": {
+    "message": "ସମାନ-ସାଇଟ ମିସମେଚ ରିଫ୍ରେସ URL"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | refreshed": {
+    "message": "ରିଫ୍ରେସ କରାଯାଇଛି"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | registrationAttemptedChallenge": {
+    "message": "ପଞ୍ଜିକରଣ ରିଟର୍ଣ୍ଣ ହୋଇଥିବା ଚେଲେଞ୍ଜ ତ୍ରୁଟି ଉତ୍ତର କୋଡ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | relyingPartyWellKnownHasRelyingOrigins": {
+    "message": "ନିର୍ଭର କରୁଥିବା ପକ୍ଷ .well-known ବିଷୟବସ୍ତୁରେ relying_origins ଅଛି"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | relyingPartyWellKnownMalformed": {
+    "message": "ନିର୍ଭର କରୁଥିବା ପକ୍ଷ .well-known ବିଷୟବସ୍ତୁ ଖରାପ ହୋଇଛି"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | relyingPartyWellKnownUnavailable": {
+    "message": "ନିର୍ଭର କରୁଥିବା ପକ୍ଷ .well-known ଉପଲବ୍ଧ ନାହିଁ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | result": {
+    "message": "ଫଳାଫଳ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | ruleHostPattern": {
+    "message": "ହୋଷ୍ଟ ପାଟର୍ନ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | rulePathPrefix": {
+    "message": "ପାଥ ପ୍ରିଫିକ୍ସ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | ruleType": {
+    "message": "ନିୟମର ପ୍ରକାର"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | ruleTypeExclude": {
+    "message": "ବାଦ ଦିଅନ୍ତୁ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | ruleTypeInclude": {
+    "message": "ଅନ୍ତର୍ଭୁକ୍ତ କରନ୍ତୁ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | scope": {
+    "message": "ସ୍କୋପ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | scopeOriginContainsPath": {
+    "message": "ସ୍କୋପ ଅରିଜିନରେ ଏକ ପାଥ ଅଛି"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | scopeOriginSameSiteMismatch": {
+    "message": "ସମାନ-ସାଇଟ ମିସମେଚ ସ୍କୋପ ଅରିଜିନ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | scopeRuleOriginScopedHostPatternMismatch": {
+    "message": "ହୋଷ୍ଟ ପାଟର୍ନ ଏବଂ ଅରିଜିନ ମଧ୍ୟରେ ଅରିଜିନ-ସ୍କୋପ ହୋଇଥିବା ସେସନରେ ମିସମେଚ ଅଛି"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | scopeRuleSiteScopedHostPatternMismatch": {
+    "message": "ସାଇଟ-ସ୍କୋପ କରାଯାଇଥିବା ସେସନରେ ହୋଷ୍ଟ ପାଟର୍ନ ଏବଂ ସାଇଟ ମଧ୍ୟରେ ମିସମେଚ ଅଛି"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | selectEventToViewDetails": {
+    "message": "ଅଧିକ ବିବରଣୀ ଭ୍ୟୁ କରିବାକୁ ଏକ ଇଭେଣ୍ଟ ଧାଡ଼ି ଚୟନ କରନ୍ତୁ।"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | serverError": {
+    "message": "ଏଣ୍ଡପଏଣ୍ଟ ଟ୍ରାଞ୍ଜିଏଣ୍ଟ ତ୍ରୁଟି"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | serverRequestedTermination": {
+    "message": "ସର୍ଭର ସମାପ୍ତି ପାଇଁ ଅନୁରୋଧ କରିଛି"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | sessionConfig": {
+    "message": "ସେସନ କନଫିଗରେସନ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | sessionDeletedDuringRefresh": {
+    "message": "ରିଫ୍ରେସ କରିବା ସମୟରେ ସେସନ ଡିଲିଟ ହୋଇଯାଇଛି"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | sessionDetails": {
+    "message": "ସେସନ ବିବରଣୀ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | sessionId": {
+    "message": "ସେସନ ID"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | sessionProviderWellKnownHasProviderOrigin": {
+    "message": "ସେସନ ପ୍ରଦାନକାରୀ .well-known ବିଷୟବସ୍ତୁରେ provider_origin ଅଛି"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | sessionProviderWellKnownMalformed": {
+    "message": "ସେସନ ପ୍ରଦାନକାରୀ .well-known ବିଷୟବସ୍ତୁ ଖରାପ ହୋଇଯାଇଛି"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | sessionProviderWellKnownUnavailable": {
+    "message": "ସେସନ ପ୍ରଦାନକାରୀ .well-known ଉପଲବ୍ଧ ନାହିଁ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | signingError": {
+    "message": "ସାଇନ କରିବାରେ ତ୍ରୁଟି"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | signingQuotaExceeded": {
+    "message": "ସାଇନ କରିବାର କୋଟା ଅତିକ୍ରମ କରିଛି"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | storagePartitionCleared": {
+    "message": "ଷ୍ଟୋରେଜ ପାର୍ଟିସନରୁ କାଢ଼ି ଦିଆଯାଇଛି"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | subdomainRegistrationUnauthorized": {
+    "message": ".well-known ଉପଡୋମେନ ଦ୍ୱାରା ପଞ୍ଜିକରଣକୁ ଅନୁମତି ଦେଇନାହିଁ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | subdomainRegistrationWellKnownMalformed": {
+    "message": "ସବଡୋମେନ ପଞ୍ଜିକରଣ .well-known ବିଷୟବସ୍ତୁ ଖରାପ ଭାବେ ତିଆରି ହୋଇଛି"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | subdomainRegistrationWellKnownUnavailable": {
+    "message": "ସବଡୋମେନ ପଞ୍ଜିକରଣ .well-known ଉପଲବ୍ଧ ନାହିଁ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | success": {
+    "message": "ସଫଳ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | termination": {
+    "message": "ସମାପ୍ତି"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | timestamp": {
+    "message": "ତାରିଖ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | tooManyChallenges": {
+    "message": "ଅନେକଗୁଡ଼ିଏ ଚେଲେଞ୍ଜ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | tooManyRelyingOriginLabels": {
+    "message": ".well-knownରେ ଅନେକଗୁଡ଼ିଏ ନିର୍ଭରଯୋଗ୍ୟ ଅରିଜିନ ଲେବଲ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | transientHttpError": {
+    "message": "ଟ୍ରାଞ୍ଜିଏଣ୍ଟ HTTP ତ୍ରୁଟି"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | type": {
+    "message": "ପ୍ରକାର"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | unknown": {
+    "message": "ଅଜଣା"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | unreachable": {
+    "message": "ଏଣ୍ଡପଏଣ୍ଟ ଅପହଞ୍ଚ ଅଟେ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | updatedSessionConfig": {
+    "message": "ଅପଡେଟ କରାଯାଇଥିବା ସେସନ କନଫିଗରେସନ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | yes": {
+    "message": "ହଁ"
+  },
   "panels/application/ExtensionStorageItemsView.ts | extensionStorageItems": {
     "message": "ଏକ୍ସଟେନସନ ଷ୍ଟୋରେଜ ଆଇଟମ"
   },
   "panels/application/ExtensionStorageItemsView.ts | extensionStorageItemsCleared": {
     "message": "ଏକ୍ସଟେନସନ ଷ୍ଟୋରେଜ ଆଇଟମଗୁଡ଼ିକ ଖାଲି କରାଯାଇଛି"
+  },
+  "panels/application/FrameDetailsView.ts | aFrameAncestorIsAnInsecure": {
+    "message": "ଫ୍ରେମ୍ ଆନସେଷ୍ଟର୍ ଏକ ଅସୁରକ୍ଷିତ ପ୍ରସଙ୍ଗ ଅଟେ"
+  },
+  "panels/application/FrameDetailsView.ts | adStatus": {
+    "message": "ବିଜ୍ଞାପନ ସ୍ଥିତି"
+  },
+  "panels/application/FrameDetailsView.ts | additionalInformation": {
+    "message": "ଅତିରିକ୍ତ ସୂଚନା"
+  },
+  "panels/application/FrameDetailsView.ts | apiAvailability": {
+    "message": "API ଉପଲବ୍ଧତା"
+  },
+  "panels/application/FrameDetailsView.ts | availabilityOfCertainApisDepends": {
+    "message": "କିଛି ନିର୍ଦ୍ଦିଷ୍ଟ APIର ଉପଲବ୍ଧତା କ୍ରସ୍-ଅରିଜିନ୍ ଅଲଗା ହେବା ଉପରେ ନିର୍ଭର କରେ।"
+  },
+  "panels/application/FrameDetailsView.ts | available": {
+    "message": "ଉପଲବ୍ଧ ଅଛି"
+  },
+  "panels/application/FrameDetailsView.ts | availableNotTransferable": {
+    "message": "ଉପଲବ୍ଧ ଅଛି, ଟ୍ରାନ୍ସଫର୍ ହୋଇପାରିବ ନାହିଁ"
+  },
+  "panels/application/FrameDetailsView.ts | availableTransferable": {
+    "message": "ଉପଲବ୍ଧ ଅଛି, ଟ୍ରାନ୍ସଫର୍ ହୋଇପାରିବ"
+  },
+  "panels/application/FrameDetailsView.ts | child": {
+    "message": "ଚାଇଲ୍ଡ"
+  },
+  "panels/application/FrameDetailsView.ts | childDescription": {
+    "message": "ଏହି ଫ୍ରେମକୁ ଏକ ବିଜ୍ଞାପନର ଚାଇଲ୍ଡ ଫ୍ରେମ୍ ଭାବରେ ଚିହ୍ନଟ କରାଯାଇଛି"
+  },
+  "panels/application/FrameDetailsView.ts | clickToOpenInNetworkPanel": {
+    "message": "ନେଟୱାର୍କ ପେନେଲରେ ଖୋଲିବାକୁ କ୍ଲିକ କରନ୍ତୁ"
+  },
+  "panels/application/FrameDetailsView.ts | clickToOpenInNetworkPanelMight": {
+    "message": "ନେଟୱାର୍କ ପେନେଲ ଖୋଲିବାକୁ କ୍ଲିକ କରନ୍ତୁ (ପୃଷ୍ଠାକୁ ପୁଣି ଲୋଡ କରିବା ଆବଶ୍ୟକ ହୋଇପାରେ)"
+  },
+  "panels/application/FrameDetailsView.ts | clickToOpenInSourcesPanel": {
+    "message": "ସୋର୍ସଗୁଡ଼ିକର ପେନେଲରେ ଖୋଲିବାକୁ କ୍ଲିକ କରନ୍ତୁ"
+  },
+  "panels/application/FrameDetailsView.ts | contentSecurityPolicy": {
+    "message": "ବିଷୟବସ୍ତୁ ସୁରକ୍ଷା ନୀତି (CSP)"
+  },
+  "panels/application/FrameDetailsView.ts | createdByAdScriptExplanation": {
+    "message": "ଏହି ଫ୍ରେମକୁ ତିଆରି କରାଯିବା ବେଳେ (async) stackରେ ଏକ ବିଜ୍ଞାପନ ସ୍କ୍ରିପ୍ଟ ଥିଲା। ଏହି ଫ୍ରେମର stack trace କ୍ରିଏସନ ପରୀକ୍ଷା କରି ଅଧିକ ଇନସାଇଟ ପ୍ରଦାନ କରାଯାଇପାରେ।"
+  },
+  "panels/application/FrameDetailsView.ts | creationStackTrace": {
+    "message": "ଫ୍ରେମ କ୍ରିଏସନ Stack Trace"
+  },
+  "panels/application/FrameDetailsView.ts | creationStackTraceExplanation": {
+    "message": "ଏହି ଫ୍ରେମକୁ ପ୍ରୋଗ୍ରାମ ସାହାଯ୍ୟରେ ତିଆରି କରାଯାଇଛି। ଏହା କେଉଁଠାରେ ହୋଇଛି, ତାହାstack trace ଦେଖାଏ।"
+  },
+  "panels/application/FrameDetailsView.ts | creatorAdScriptAncestry": {
+    "message": "କ୍ରିଏଟର ବିଜ୍ଞାପନ ସ୍କ୍ରିପ୍ଟ ଆନସେଷ୍ଟ୍ରି"
+  },
+  "panels/application/FrameDetailsView.ts | crossoriginIsolated": {
+    "message": "କ୍ରସ୍-ଅରିଜିନ୍ ଆଇସୋଲେଟେଡ୍"
+  },
+  "panels/application/FrameDetailsView.ts | document": {
+    "message": "ଡକ୍ୟୁମେଣ୍ଟ"
+  },
+  "panels/application/FrameDetailsView.ts | frameId": {
+    "message": "ଫ୍ରେମ୍ ID"
+  },
+  "panels/application/FrameDetailsView.ts | learnMore": {
+    "message": "ଅଧିକ ଜାଣନ୍ତୁ"
+  },
+  "panels/application/FrameDetailsView.ts | localhostIsAlwaysASecureContext": {
+    "message": "Localhost ସର୍ବଦା ଏକ ସୁରକ୍ଷିତ ପ୍ରସଙ୍ଗ ଅଟେ"
+  },
+  "panels/application/FrameDetailsView.ts | matchedBlockingRuleExplanation": {
+    "message": "ଏହି ଫ୍ରେମର ବର୍ତ୍ତମାନର (କିମ୍ବା ପୂର୍ବବର୍ତ୍ତୀ) ମୁଖ୍ୟ ଡକ୍ୟୁମେଣ୍ଟ ଏକ ବିଜ୍ଞାପନ ରିସୋର୍ସ ହୋଇଥିବା ଯୋଗୁଁ ଏହାକୁ ଏକ ବିଜ୍ଞାପନ ଫ୍ରେମ୍ ଭାବେ ବିଚାର କରାଯାଏ।"
+  },
+  "panels/application/FrameDetailsView.ts | measureMemory": {
+    "message": "ମେମୋରୀ ମାପ"
+  },
+  "panels/application/FrameDetailsView.ts | no": {
+    "message": "ନା"
+  },
+  "panels/application/FrameDetailsView.ts | none": {
+    "message": "କିଛି ନାହିଁ"
+  },
+  "panels/application/FrameDetailsView.ts | origin": {
+    "message": "ଅରିଜିନ"
+  },
+  "panels/application/FrameDetailsView.ts | originTrialsExplanation": {
+    "message": "ଅରିଜିନ ଟ୍ରାଏଲ ଆପଣଙ୍କୁ ଏକ ନୂଆ କିମ୍ବା ପରୀକ୍ଷାମୂଳକ ଫିଚରକୁ ଆକ୍ସେସ କରିବାକୁ ଦିଏ।"
+  },
+  "panels/application/FrameDetailsView.ts | ownerElement": {
+    "message": "ମାଲିକ ଉପାଦାନ"
+  },
+  "panels/application/FrameDetailsView.ts | parentIsAdExplanation": {
+    "message": "ଏହି ଫ୍ରେମର ପ୍ୟାରେଣ୍ଟ୍ ଫ୍ରେମ୍ ଏକ ବିଜ୍ଞାପନ ଫ୍ରେମ୍ ହୋଇଥିବା ଯୋଗୁଁ ଏହାକୁ ଏକ ବିଜ୍ଞାପନ ଫ୍ରେମ୍ ଭାବେ ବିଚାର କରାଯାଏ।"
+  },
+  "panels/application/FrameDetailsView.ts | reportingTo": {
+    "message": "ଏହାକୁ ରିପୋର୍ଟ କରେ"
+  },
+  "panels/application/FrameDetailsView.ts | requiresCrossoriginIsolated": {
+    "message": "କ୍ରସ୍-ଅରିଜିନ୍ ଆଇସୋଲେଟେଡ୍ ପ୍ରସଙ୍ଗ ଆବଶ୍ୟକ କରେ"
+  },
+  "panels/application/FrameDetailsView.ts | root": {
+    "message": "ରୁଟ୍"
+  },
+  "panels/application/FrameDetailsView.ts | rootDescription": {
+    "message": "ଏହି ଫ୍ରେମକୁ କୌଣସି ବିଜ୍ଞାପନର ମୂଳ ଫ୍ରେମ୍ ଭାବରେ ଚିହ୍ନଟ କରାଯାଇଛି"
+  },
+  "panels/application/FrameDetailsView.ts | rootScriptFilterlistRule": {
+    "message": "ରୁଟ ସ୍କ୍ରିପ୍ଟ ଫିଲ୍ଟରଲିଷ୍ଟ ନିୟମ"
+  },
+  "panels/application/FrameDetailsView.ts | secureContext": {
+    "message": "ସୁରକ୍ଷିତ ପ୍ରସଙ୍ଗ"
+  },
+  "panels/application/FrameDetailsView.ts | securityIsolation": {
+    "message": "ସୁରକ୍ଷା ଓ ଆଇସୋଲେସନ୍"
+  },
+  "panels/application/FrameDetailsView.ts | sharedarraybufferConstructorIs": {
+    "message": "SharedArrayBuffer କନଷ୍ଟ୍ରକ୍ଟର ଉପଲବ୍ଧ ଅଛି ଏବଂ SABsକୁ postMessage ମାଧ୍ୟମରେ ଟ୍ରାନ୍ସଫର କରାଯାଇପାରିବ"
+  },
+  "panels/application/FrameDetailsView.ts | sharedarraybufferConstructorIsAvailable": {
+    "message": "SharedArrayBuffer କନଷ୍ଟ୍ରକ୍ଟର ଉପଲବ୍ଧ ଅଛି କିନ୍ତୁ SABsକୁ postMessage ମାଧ୍ୟମରେ ଟ୍ରାନ୍ସଫର କରାଯାଇପାରିବ ନାହିଁ"
+  },
+  "panels/application/FrameDetailsView.ts | theFramesSchemeIsInsecure": {
+    "message": "ଫ୍ରେମର ସ୍କିମ୍ ଅସୁରକ୍ଷିତ ଅଟେ"
+  },
+  "panels/application/FrameDetailsView.ts | thePerformanceAPI": {
+    "message": "performance.measureUserAgentSpecificMemory() API ଉପଲବ୍ଧ ଅଛି"
+  },
+  "panels/application/FrameDetailsView.ts | thePerformancemeasureuseragentspecificmemory": {
+    "message": "performance.measureUserAgentSpecificMemory() API ଉପଲବ୍ଧ ନାହିଁ"
+  },
+  "panels/application/FrameDetailsView.ts | thisAdditionalDebugging": {
+    "message": "'ପ୍ରୋଟୋକଲ୍ ମନିଟର' ପରୀକ୍ଷଣ ସକ୍ଷମ ଥିବା ଯୋଗୁଁ ଏହି ଅତିରିକ୍ତ ସୂଚନା (ଡିବଗିଂ) ଦେଖାଯାଉଛି।"
+  },
+  "panels/application/FrameDetailsView.ts | transferRequiresCrossoriginIsolatedPermission": {
+    "message": "SharedArrayBuffer ଟ୍ରାନ୍ସଫର୍ ଏହି ଅନୁମତି ନୀତିକୁ ସକ୍ଷମ କରିବା ଆବଶ୍ୟକ କରେ:"
+  },
+  "panels/application/FrameDetailsView.ts | unavailable": {
+    "message": "ଉପଲବ୍ଧ ନାହିଁ"
+  },
+  "panels/application/FrameDetailsView.ts | unreachableUrl": {
+    "message": "ଅପହଞ୍ଚ URL"
+  },
+  "panels/application/FrameDetailsView.ts | url": {
+    "message": "URL"
+  },
+  "panels/application/FrameDetailsView.ts | willRequireCrossoriginIsolated": {
+    "message": "⚠️ ଭବିଷ୍ୟତରେ କ୍ରସ୍-ଅରିଜିନଠାରୁ ଭିନ୍ନ ପ୍ରସଙ୍ଗ ଆବଶ୍ୟକ କରିବ"
+  },
+  "panels/application/FrameDetailsView.ts | yes": {
+    "message": "ହଁ"
   },
   "panels/application/IndexedDBViews.ts | clearObjectStore": {
     "message": "ଅବଜେକ୍ଟ ଷ୍ଟୋର୍ ଖାଲି କରନ୍ତୁ"
@@ -3877,6 +4429,39 @@
   },
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "ହଁ"
+  },
+  "panels/application/OriginTrialTreeView.ts | expiryTime": {
+    "message": "ମିଆଦ ଶେଷ ହେବାର ସମୟ"
+  },
+  "panels/application/OriginTrialTreeView.ts | isThirdParty": {
+    "message": "ତୃତୀୟ ପକ୍ଷ"
+  },
+  "panels/application/OriginTrialTreeView.ts | matchSubDomains": {
+    "message": "ମେଳ ହେଉଥିବା ସବଡୋମେନ୍"
+  },
+  "panels/application/OriginTrialTreeView.ts | noTrialTokens": {
+    "message": "କୌଣସି ଟ୍ରାଏଲ ଟୋକନ ନାହିଁ"
+  },
+  "panels/application/OriginTrialTreeView.ts | origin": {
+    "message": "ଅରିଜିନ୍"
+  },
+  "panels/application/OriginTrialTreeView.ts | rawTokenText": {
+    "message": "ର ଟୋକନ୍"
+  },
+  "panels/application/OriginTrialTreeView.ts | status": {
+    "message": "ଟୋକନର ସ୍ଥିତି"
+  },
+  "panels/application/OriginTrialTreeView.ts | token": {
+    "message": "ଟୋକନ୍"
+  },
+  "panels/application/OriginTrialTreeView.ts | tokens": {
+    "message": "{PH1}ଟି ଟୋକନ୍"
+  },
+  "panels/application/OriginTrialTreeView.ts | trialName": {
+    "message": "ଟ୍ରାଏଲ ନାମ"
+  },
+  "panels/application/OriginTrialTreeView.ts | usageRestriction": {
+    "message": "ବ୍ୟବହାର ପ୍ରତିବନ୍ଧକ"
   },
   "panels/application/PreloadingTreeElement.ts | rules": {
     "message": "Rules"
@@ -4658,6 +5243,9 @@
   "panels/application/components/BackForwardCacheView.ts | supportPendingExplanation": {
     "message": "ଏହି କାରଣଗୁଡ଼ିକ ପାଇଁ Chrome ସମର୍ଥନ ପେଣ୍ଡିଂ ଅଛି ଅର୍ଥାତ୍ ସେଗୁଡ଼ିକ ପୃଷ୍ଠାଟିକୁ Chromeର ଏକ ଭବିଷ୍ୟତ ସଂସ୍କରଣରେ ବ୍ୟାକ/ଫରୱାର୍ଡ କ୍ୟାଶ ପାଇଁ ଯୋଗ୍ୟ କରିବାରୁ ପ୍ରତିରୋଧ କରିବ ନାହିଁ।"
   },
+  "panels/application/components/BackForwardCacheView.ts | testCompleted": {
+    "message": "ବେକ/ଫରୱାର୍ଡ କେଶ ଟେଷ୍ଟ ସମ୍ପୂର୍ଣ୍ଣ ହୋଇଛି।"
+  },
   "panels/application/components/BackForwardCacheView.ts | unavailable": {
     "message": "ଉପଲବ୍ଧ ନାହିଁ"
   },
@@ -4697,159 +5285,6 @@
   "panels/application/components/EndpointsGrid.ts | noEndpointsToDisplay": {
     "message": "ଡିସପ୍ଲେ କରିବାକୁ କୌଣସି ଏଣ୍ଡପଏଣ୍ଟ ନାହିଁ"
   },
-  "panels/application/components/FrameDetailsView.ts | aFrameAncestorIsAnInsecure": {
-    "message": "ଫ୍ରେମ୍ ଆନସେଷ୍ଟର୍ ଏକ ଅସୁରକ୍ଷିତ ପ୍ରସଙ୍ଗ ଅଟେ"
-  },
-  "panels/application/components/FrameDetailsView.ts | adStatus": {
-    "message": "ବିଜ୍ଞାପନ ସ୍ଥିତି"
-  },
-  "panels/application/components/FrameDetailsView.ts | additionalInformation": {
-    "message": "ଅତିରିକ୍ତ ସୂଚନା"
-  },
-  "panels/application/components/FrameDetailsView.ts | apiAvailability": {
-    "message": "API ଉପଲବ୍ଧତା"
-  },
-  "panels/application/components/FrameDetailsView.ts | availabilityOfCertainApisDepends": {
-    "message": "କିଛି ନିର୍ଦ୍ଦିଷ୍ଟ APIର ଉପଲବ୍ଧତା କ୍ରସ୍-ଅରିଜିନ୍ ଅଲଗା ହେବା ଉପରେ ନିର୍ଭର କରେ।"
-  },
-  "panels/application/components/FrameDetailsView.ts | available": {
-    "message": "ଉପଲବ୍ଧ ଅଛି"
-  },
-  "panels/application/components/FrameDetailsView.ts | availableNotTransferable": {
-    "message": "ଉପଲବ୍ଧ ଅଛି, ଟ୍ରାନ୍ସଫର୍ ହୋଇପାରିବ ନାହିଁ"
-  },
-  "panels/application/components/FrameDetailsView.ts | availableTransferable": {
-    "message": "ଉପଲବ୍ଧ ଅଛି, ଟ୍ରାନ୍ସଫର୍ ହୋଇପାରିବ"
-  },
-  "panels/application/components/FrameDetailsView.ts | child": {
-    "message": "ଚାଇଲ୍ଡ"
-  },
-  "panels/application/components/FrameDetailsView.ts | childDescription": {
-    "message": "ଏହି ଫ୍ରେମକୁ ଏକ ବିଜ୍ଞାପନର ଚାଇଲ୍ଡ ଫ୍ରେମ୍ ଭାବରେ ଚିହ୍ନଟ କରାଯାଇଛି"
-  },
-  "panels/application/components/FrameDetailsView.ts | clickToOpenInElementsPanel": {
-    "message": "ଏଲିମେଣ୍ଟ ପେନେଲରେ ଖୋଲିବାକୁ କ୍ଲିକ କରନ୍ତୁ"
-  },
-  "panels/application/components/FrameDetailsView.ts | clickToOpenInNetworkPanel": {
-    "message": "ନେଟୱାର୍କ ପେନେଲରେ ଖୋଲିବାକୁ କ୍ଲିକ କରନ୍ତୁ"
-  },
-  "panels/application/components/FrameDetailsView.ts | clickToOpenInNetworkPanelMight": {
-    "message": "ନେଟୱାର୍କ ପେନେଲ ଖୋଲିବାକୁ କ୍ଲିକ କରନ୍ତୁ (ପୃଷ୍ଠାକୁ ପୁଣି ଲୋଡ କରିବା ଆବଶ୍ୟକ ହୋଇପାରେ)"
-  },
-  "panels/application/components/FrameDetailsView.ts | clickToOpenInSourcesPanel": {
-    "message": "ସୋର୍ସଗୁଡ଼ିକର ପେନେଲରେ ଖୋଲିବାକୁ କ୍ଲିକ କରନ୍ତୁ"
-  },
-  "panels/application/components/FrameDetailsView.ts | contentSecurityPolicy": {
-    "message": "ବିଷୟବସ୍ତୁ ସୁରକ୍ଷା ନୀତି (CSP)"
-  },
-  "panels/application/components/FrameDetailsView.ts | createdByAdScriptExplanation": {
-    "message": "ଏହି ଫ୍ରେମକୁ ତିଆରି କରାଯିବା ବେଳେ (async) stackରେ ଏକ ବିଜ୍ଞାପନ ସ୍କ୍ରିପ୍ଟ ଥିଲା। ଏହି ଫ୍ରେମର stack trace କ୍ରିଏସନ ପରୀକ୍ଷା କରି ଅଧିକ ଇନସାଇଟ ପ୍ରଦାନ କରାଯାଇପାରେ।"
-  },
-  "panels/application/components/FrameDetailsView.ts | creationStackTrace": {
-    "message": "ଫ୍ରେମ କ୍ରିଏସନ Stack Trace"
-  },
-  "panels/application/components/FrameDetailsView.ts | creationStackTraceExplanation": {
-    "message": "ଏହି ଫ୍ରେମକୁ ପ୍ରୋଗ୍ରାମ ସାହାଯ୍ୟରେ ତିଆରି କରାଯାଇଛି। ଏହା କେଉଁଠାରେ ହୋଇଛି, ତାହାstack trace ଦେଖାଏ।"
-  },
-  "panels/application/components/FrameDetailsView.ts | creatorAdScriptAncestry": {
-    "message": "କ୍ରିଏଟର ବିଜ୍ଞାପନ ସ୍କ୍ରିପ୍ଟ ଆନସେଷ୍ଟ୍ରି"
-  },
-  "panels/application/components/FrameDetailsView.ts | crossoriginIsolated": {
-    "message": "କ୍ରସ୍-ଅରିଜିନ୍ ଆଇସୋଲେଟେଡ୍"
-  },
-  "panels/application/components/FrameDetailsView.ts | document": {
-    "message": "ଡକ୍ୟୁମେଣ୍ଟ"
-  },
-  "panels/application/components/FrameDetailsView.ts | frameId": {
-    "message": "ଫ୍ରେମ୍ ID"
-  },
-  "panels/application/components/FrameDetailsView.ts | learnMore": {
-    "message": "ଅଧିକ ଜାଣନ୍ତୁ"
-  },
-  "panels/application/components/FrameDetailsView.ts | localhostIsAlwaysASecureContext": {
-    "message": "Localhost ସର୍ବଦା ଏକ ସୁରକ୍ଷିତ ପ୍ରସଙ୍ଗ ଅଟେ"
-  },
-  "panels/application/components/FrameDetailsView.ts | matchedBlockingRuleExplanation": {
-    "message": "ଏହି ଫ୍ରେମର ବର୍ତ୍ତମାନର (କିମ୍ବା ପୂର୍ବବର୍ତ୍ତୀ) ମୁଖ୍ୟ ଡକ୍ୟୁମେଣ୍ଟ ଏକ ବିଜ୍ଞାପନ ରିସୋର୍ସ ହୋଇଥିବା ଯୋଗୁଁ ଏହାକୁ ଏକ ବିଜ୍ଞାପନ ଫ୍ରେମ୍ ଭାବେ ବିଚାର କରାଯାଏ।"
-  },
-  "panels/application/components/FrameDetailsView.ts | measureMemory": {
-    "message": "ମେମୋରୀ ମାପ"
-  },
-  "panels/application/components/FrameDetailsView.ts | no": {
-    "message": "ନା"
-  },
-  "panels/application/components/FrameDetailsView.ts | none": {
-    "message": "କିଛି ନାହିଁ"
-  },
-  "panels/application/components/FrameDetailsView.ts | origin": {
-    "message": "ଅରିଜିନ"
-  },
-  "panels/application/components/FrameDetailsView.ts | originTrialsExplanation": {
-    "message": "ଅରିଜିନ ଟ୍ରାଏଲ ଆପଣଙ୍କୁ ଏକ ନୂଆ କିମ୍ବା ପରୀକ୍ଷାମୂଳକ ଫିଚରକୁ ଆକ୍ସେସ କରିବାକୁ ଦିଏ।"
-  },
-  "panels/application/components/FrameDetailsView.ts | ownerElement": {
-    "message": "ମାଲିକ ଉପାଦାନ"
-  },
-  "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
-    "message": "ଏହି ଫ୍ରେମର ପ୍ୟାରେଣ୍ଟ୍ ଫ୍ରେମ୍ ଏକ ବିଜ୍ଞାପନ ଫ୍ରେମ୍ ହୋଇଥିବା ଯୋଗୁଁ ଏହାକୁ ଏକ ବିଜ୍ଞାପନ ଫ୍ରେମ୍ ଭାବେ ବିଚାର କରାଯାଏ।"
-  },
-  "panels/application/components/FrameDetailsView.ts | reportingTo": {
-    "message": "ଏହାକୁ ରିପୋର୍ଟ କରେ"
-  },
-  "panels/application/components/FrameDetailsView.ts | requiresCrossoriginIsolated": {
-    "message": "କ୍ରସ୍-ଅରିଜିନ୍ ଆଇସୋଲେଟେଡ୍ ପ୍ରସଙ୍ଗ ଆବଶ୍ୟକ କରେ"
-  },
-  "panels/application/components/FrameDetailsView.ts | root": {
-    "message": "ରୁଟ୍"
-  },
-  "panels/application/components/FrameDetailsView.ts | rootDescription": {
-    "message": "ଏହି ଫ୍ରେମକୁ କୌଣସି ବିଜ୍ଞାପନର ମୂଳ ଫ୍ରେମ୍ ଭାବରେ ଚିହ୍ନଟ କରାଯାଇଛି"
-  },
-  "panels/application/components/FrameDetailsView.ts | rootScriptFilterlistRule": {
-    "message": "ରୁଟ ସ୍କ୍ରିପ୍ଟ ଫିଲ୍ଟରଲିଷ୍ଟ ନିୟମ"
-  },
-  "panels/application/components/FrameDetailsView.ts | secureContext": {
-    "message": "ସୁରକ୍ଷିତ ପ୍ରସଙ୍ଗ"
-  },
-  "panels/application/components/FrameDetailsView.ts | securityIsolation": {
-    "message": "ସୁରକ୍ଷା ଓ ଆଇସୋଲେସନ୍"
-  },
-  "panels/application/components/FrameDetailsView.ts | sharedarraybufferConstructorIs": {
-    "message": "SharedArrayBuffer କନଷ୍ଟ୍ରକ୍ଟର ଉପଲବ୍ଧ ଅଛି ଏବଂ SABsକୁ postMessage ମାଧ୍ୟମରେ ଟ୍ରାନ୍ସଫର କରାଯାଇପାରିବ"
-  },
-  "panels/application/components/FrameDetailsView.ts | sharedarraybufferConstructorIsAvailable": {
-    "message": "SharedArrayBuffer କନଷ୍ଟ୍ରକ୍ଟର ଉପଲବ୍ଧ ଅଛି କିନ୍ତୁ SABsକୁ postMessage ମାଧ୍ୟମରେ ଟ୍ରାନ୍ସଫର କରାଯାଇପାରିବ ନାହିଁ"
-  },
-  "panels/application/components/FrameDetailsView.ts | theFramesSchemeIsInsecure": {
-    "message": "ଫ୍ରେମର ସ୍କିମ୍ ଅସୁରକ୍ଷିତ ଅଟେ"
-  },
-  "panels/application/components/FrameDetailsView.ts | thePerformanceAPI": {
-    "message": "performance.measureUserAgentSpecificMemory() API ଉପଲବ୍ଧ ଅଛି"
-  },
-  "panels/application/components/FrameDetailsView.ts | thePerformancemeasureuseragentspecificmemory": {
-    "message": "performance.measureUserAgentSpecificMemory() API ଉପଲବ୍ଧ ନାହିଁ"
-  },
-  "panels/application/components/FrameDetailsView.ts | thisAdditionalDebugging": {
-    "message": "'ପ୍ରୋଟୋକଲ୍ ମନିଟର' ପରୀକ୍ଷଣ ସକ୍ଷମ ଥିବା ଯୋଗୁଁ ଏହି ଅତିରିକ୍ତ ସୂଚନା (ଡିବଗିଂ) ଦେଖାଯାଉଛି।"
-  },
-  "panels/application/components/FrameDetailsView.ts | transferRequiresCrossoriginIsolatedPermission": {
-    "message": "SharedArrayBuffer ଟ୍ରାନ୍ସଫର୍ ଏହି ଅନୁମତି ନୀତିକୁ ସକ୍ଷମ କରିବା ଆବଶ୍ୟକ କରେ:"
-  },
-  "panels/application/components/FrameDetailsView.ts | unavailable": {
-    "message": "ଉପଲବ୍ଧ ନାହିଁ"
-  },
-  "panels/application/components/FrameDetailsView.ts | unreachableUrl": {
-    "message": "ଅପହଞ୍ଚ URL"
-  },
-  "panels/application/components/FrameDetailsView.ts | url": {
-    "message": "URL"
-  },
-  "panels/application/components/FrameDetailsView.ts | willRequireCrossoriginIsolated": {
-    "message": "⚠️ ଭବିଷ୍ୟତରେ କ୍ରସ୍-ଅରିଜିନଠାରୁ ଭିନ୍ନ ପ୍ରସଙ୍ଗ ଆବଶ୍ୟକ କରିବ"
-  },
-  "panels/application/components/FrameDetailsView.ts | yes": {
-    "message": "ହଁ"
-  },
   "panels/application/components/InterestGroupAccessGrid.ts | allInterestGroupStorageEvents": {
     "message": "ଆଗ୍ରହ ଥିବା ଗୋଷ୍ଠୀର ସମସ୍ତ ଷ୍ଟୋରେଜ ଇଭେଣ୍ଟ।"
   },
@@ -4870,39 +5305,6 @@
   },
   "panels/application/components/InterestGroupAccessGrid.ts | noEvents": {
     "message": "ସମାନ ରୁଚିଥିବା ଗୋଷ୍ଠୀ ସମ୍ବନ୍ଧିତ କୌଣସି ଇଭେଣ୍ଟ ଚିହ୍ନଟ କରାଯାଇନାହିଁ"
-  },
-  "panels/application/components/OriginTrialTreeView.ts | expiryTime": {
-    "message": "ମିଆଦ ଶେଷ ହେବାର ସମୟ"
-  },
-  "panels/application/components/OriginTrialTreeView.ts | isThirdParty": {
-    "message": "ତୃତୀୟ ପକ୍ଷ"
-  },
-  "panels/application/components/OriginTrialTreeView.ts | matchSubDomains": {
-    "message": "ମେଳ ହେଉଥିବା ସବଡୋମେନ୍"
-  },
-  "panels/application/components/OriginTrialTreeView.ts | noTrialTokens": {
-    "message": "କୌଣସି ଟ୍ରାଏଲ ଟୋକନ ନାହିଁ"
-  },
-  "panels/application/components/OriginTrialTreeView.ts | origin": {
-    "message": "ଅରିଜିନ୍"
-  },
-  "panels/application/components/OriginTrialTreeView.ts | rawTokenText": {
-    "message": "ର ଟୋକନ୍"
-  },
-  "panels/application/components/OriginTrialTreeView.ts | status": {
-    "message": "ଟୋକନର ସ୍ଥିତି"
-  },
-  "panels/application/components/OriginTrialTreeView.ts | token": {
-    "message": "ଟୋକନ୍"
-  },
-  "panels/application/components/OriginTrialTreeView.ts | tokens": {
-    "message": "{PH1}ଟି ଟୋକନ୍"
-  },
-  "panels/application/components/OriginTrialTreeView.ts | trialName": {
-    "message": "ଟ୍ରାଏଲ ନାମ"
-  },
-  "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
-    "message": "ବ୍ୟବହାର ପ୍ରତିବନ୍ଧକ"
   },
   "panels/application/components/PermissionsPolicySection.ts | allowedFeatures": {
     "message": "ଅନୁମତି ଦିଆଯାଇଥିବା ଫିଚରଗୁଡ଼ିକ"
@@ -5032,18 +5434,6 @@
   },
   "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "ସେୟାର ହୋଇଥିବା ଷ୍ଟୋରେଜ"
-  },
-  "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
-    "message": "ଷ୍ଟାକ୍ ଟ୍ରେସକୁ ରେଣ୍ଡର୍ କରାଯାଇପାରିବ ନାହିଁ"
-  },
-  "panels/application/components/StackTrace.ts | creationStackTrace": {
-    "message": "ଫ୍ରେମ କ୍ରିଏସନ Stack Trace"
-  },
-  "panels/application/components/StackTrace.ts | showLess": {
-    "message": "ଅଳ୍ପ ଦେଖାନ୍ତୁ"
-  },
-  "panels/application/components/StackTrace.ts | showSMoreFrames": {
-    "message": "{n,plural, =1{ଅଧିକ #ଟି ଫ୍ରେମ୍ ଦେଖାନ୍ତୁ}other{ଅଧିକ #ଟି ଫ୍ରେମ୍ ଦେଖାନ୍ତୁ}}"
   },
   "panels/application/components/StorageMetadataView.ts | bucketName": {
     "message": "ବକେଟର ନାମ"
@@ -5333,18 +5723,6 @@
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "ସ୍ଥିତି"
   },
-  "panels/application/preloading/components/PreloadingMismatchedHeadersGrid.ts | activationNavigationValue": {
-    "message": "ସକ୍ରିୟକରଣ ନାଭିଗେସନରେ ଭେଲ୍ୟୁ"
-  },
-  "panels/application/preloading/components/PreloadingMismatchedHeadersGrid.ts | headerName": {
-    "message": "ହେଡର୍ ନାମ"
-  },
-  "panels/application/preloading/components/PreloadingMismatchedHeadersGrid.ts | initialNavigationValue": {
-    "message": "ପ୍ରାରମ୍ଭିକ ନାଭିଗେସନରେ ଭେଲ୍ୟୁ"
-  },
-  "panels/application/preloading/components/PreloadingMismatchedHeadersGrid.ts | missing": {
-    "message": "(ଉପଲବ୍ଧ ନାହିଁ)"
-  },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchEvictedAfterBrowsingDataRemoved": {
     "message": "ବ୍ରାଉଜିଂ ଡାଟାକୁ କାଢ଼ି ଦିଆଯାଇଥିବା ଯୋଗୁଁ ପ୍ରିଫେଚକୁ ଖାରଜ କରାଯାଇଛି।"
   },
@@ -5621,6 +5999,9 @@
   "panels/application/preloading/components/RuleSetGrid.ts | status": {
     "message": "ସ୍ଥିତି"
   },
+  "panels/application/preloading/components/UsedPreloadingView.ts | activationNavigationValue": {
+    "message": "ସକ୍ରିୟକରଣ ନାଭିଗେସନରେ ଭେଲ୍ୟୁ"
+  },
   "panels/application/preloading/components/UsedPreloadingView.ts | badgeFailure": {
     "message": "ବିଫଳ ହୋଇଛି"
   },
@@ -5651,11 +6032,20 @@
   "panels/application/preloading/components/UsedPreloadingView.ts | downgradedPrefetchUsed": {
     "message": "ପ୍ରାରମ୍ଭିକ ପୃଷ୍ଠା ଏହି ପୃଷ୍ଠାର URLକୁ ପ୍ରିରେଣ୍ଡର କରିବାକୁ ଚେଷ୍ଟା କରିଛି। ପ୍ରିରେଣ୍ଡର ବିଫଳ ହୋଇଛି, କିନ୍ତୁ ଏହା ଫଳରେ ହୋଇଥିବା ରେସପନ୍ସ ବଡିକୁ ଏବେ ବି ଏକ ପ୍ରିଫେଚ ଭାବେ ବ୍ୟବହାର କରାଯାଉଛି।"
   },
+  "panels/application/preloading/components/UsedPreloadingView.ts | headerName": {
+    "message": "ହେଡର୍ ନାମ"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | initialNavigationValue": {
+    "message": "ପ୍ରାରମ୍ଭିକ ନାଭିଗେସନରେ ଭେଲ୍ୟୁ"
+  },
   "panels/application/preloading/components/UsedPreloadingView.ts | learnMore": {
     "message": "ଅଧିକ ଜାଣନ୍ତୁ: developer.chrome.comରେ ସ୍ପେକ୍ୟୁଲେଟିଭ ଲୋଡିଂ ବିଷୟରେ"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | mismatchedHeadersDetail": {
     "message": "ମେଳ ହେଉନଥିବା HTTP ଅନୁରୋଧ ହେଡରଗୁଡ଼ିକ"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | missing": {
+    "message": "(ଉପଲବ୍ଧ ନାହିଁ)"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | noPreloads": {
     "message": "ପ୍ରାରମ୍ଭିକ ପୃଷ୍ଠା ଏହି ପୃଷ୍ଠାର URLକୁ ସ୍ପେକ୍ୟୁଲେଟିଭ ଭାବେ ଲୋଡ କରିବାକୁ ଚେଷ୍ଟା କଲା ନାହିଁ।"
@@ -5993,11 +6383,11 @@
   "panels/common/BadgeNotification.ts | manageSettings": {
     "message": "ସେଟିଂସ ପରିଚାଳନା କରନ୍ତୁ"
   },
+  "panels/common/BadgeNotification.ts | noThanks": {
+    "message": "ନା, ଧନ୍ୟବାଦ"
+  },
   "panels/common/BadgeNotification.ts | receiveBadges": {
     "message": "ବେଜଗୁଡ଼ିକୁ ଚାଲୁ କରନ୍ତୁ"
-  },
-  "panels/common/BadgeNotification.ts | remindMeLater": {
-    "message": "ମୋତେ ପରେ ରିମାଇଣ୍ଡ କରନ୍ତୁ"
   },
   "panels/common/BadgeNotification.ts | starterBadgeAwardMessageNoGdpProfile": {
     "message": "ଆପଣ {PH2} ପାଇଁ {PH1} ବେଜ ଉପାର୍ଜନ କରିଛନ୍ତି! ଆପଣଙ୍କର ବେଜକୁ ଦାବି କରିବା ପାଇଁ ଏକ ପ୍ରୋଫାଇଲ ତିଆରି କରନ୍ତୁ।"
@@ -6007,6 +6397,12 @@
   },
   "panels/common/BadgeNotification.ts | viewProfile": {
     "message": "ପ୍ରୋଫାଇଲ ଭ୍ୟୁ କରନ୍ତୁ"
+  },
+  "panels/common/CopyChangesToPrompt.ts | responseCopiedToClipboard": {
+    "message": "ଉତ୍ତର କ୍ଲିପବୋର୍ଡକୁ କପି କରାଯାଇଛି"
+  },
+  "panels/common/DOMLinkifier.ts | node": {
+    "message": "<node>"
   },
   "panels/common/FreDialog.ts | cancel": {
     "message": "ବାତିଲ କରନ୍ତୁ"
@@ -6067,6 +6463,33 @@
   },
   "panels/common/GdpSignUpDialog.ts | termsOfService": {
     "message": "ସେବାର ସର୍ତ୍ତାବଳୀ"
+  },
+  "panels/common/GeminiRebrandPromoDialog.ts | detailAiCompanion": {
+    "message": "ୱେବ ଡେଭେଲପମେଣ୍ଟ ପାଇଁ ଆପଣଙ୍କ AI-ପରିଚାଳିତ କମ୍ପାନିୟନ ସହ ସାକ୍ଷାତ କରନ୍ତୁ"
+  },
+  "panels/common/GeminiRebrandPromoDialog.ts | detailConsoleErrors": {
+    "message": "କନସୋଲ ତ୍ରୁଟିଗୁଡ଼ିକ ପାଇଁ ଇନଷ୍ଟାଣ୍ଟ, ସଠିକ ଉତ୍ତର ପାଆନ୍ତୁ"
+  },
+  "panels/common/GeminiRebrandPromoDialog.ts | detailGenerateCode": {
+    "message": "ଶୀଘ୍ର CSS ଏବଂ JS ସ୍ନିପେଟ ଜେନେରେଟ କରନ୍ତୁ"
+  },
+  "panels/common/GeminiRebrandPromoDialog.ts | detailPerformance": {
+    "message": "ପରଫରମାନ୍ସ ଟ୍ରେସରେ ସ୍ୱତଃ ସମସ୍ୟା ଖୋଜନ୍ତୁ"
+  },
+  "panels/common/GeminiRebrandPromoDialog.ts | dialogAriaLabel": {
+    "message": "DevToolsରେ Gemini 3 Flash"
+  },
+  "panels/common/GeminiRebrandPromoDialog.ts | dismiss": {
+    "message": "ଖାରଜ କରନ୍ତୁ"
+  },
+  "panels/common/GeminiRebrandPromoDialog.ts | getStarted": {
+    "message": "ଆରମ୍ଭ କରନ୍ତୁ"
+  },
+  "panels/common/PersistenceUtils.ts | linkedToS": {
+    "message": "{PH1}ରେ ଲିଙ୍କ ହୋଇଛି"
+  },
+  "panels/common/PersistenceUtils.ts | linkedToSourceMapS": {
+    "message": "ସୋର୍ସ ମ୍ୟାପକୁ ଲିଙ୍କ୍ କରାଯାଇଛି: {PH1}"
   },
   "panels/common/common.ts | allow": {
     "message": "ଅନୁମତି ଦିଅନ୍ତୁ"
@@ -6272,9 +6695,6 @@
   "panels/console/ConsoleViewMessage.ts | Mxx": {
     "message": " M<XX>"
   },
-  "panels/console/ConsoleViewMessage.ts | SeeIssueInCookieReport": {
-    "message": "ଗୋପନୀୟତା ଓ ସୁରକ୍ଷା ପେନେଲ ଖୋଲିବାକୁ ଏବଂ ତୃତୀୟ-ପକ୍ଷ କୁକୀ ରିପୋର୍ଟ ଦେଖାଇବାକୁ କ୍ଲିକ କରନ୍ତୁ"
-  },
   "panels/console/ConsoleViewMessage.ts | assertionFailed": {
     "message": "ଆସେର୍ସନ୍ ବିଫଳ ହୋଇଛି: "
   },
@@ -6298,6 +6718,9 @@
   },
   "panels/console/ConsoleViewMessage.ts | deprecationS": {
     "message": "[Deprecation] {PH1}"
+  },
+  "panels/console/ConsoleViewMessage.ts | dots": {
+    "message": "(…)"
   },
   "panels/console/ConsoleViewMessage.ts | error": {
     "message": "ତ୍ରୁଟି"
@@ -6334,6 +6757,9 @@
   },
   "panels/console/ConsoleViewMessage.ts | interventionS": {
     "message": "[Intervention] {PH1}"
+  },
+  "panels/console/ConsoleViewMessage.ts | invokePropertyGetter": {
+    "message": "ପ୍ରୋପର୍ଟି ଗେଟର ଆରମ୍ଭ କରନ୍ତୁ"
   },
   "panels/console/ConsoleViewMessage.ts | logpoint": {
     "message": "ଲଗପଏଣ୍ଟ"
@@ -6434,9 +6860,6 @@
   "panels/console/console-meta.ts | hideTimestamps": {
     "message": "ଟାଇମଷ୍ଟାମ୍ପ୍ ଲୁଚାନ୍ତୁ"
   },
-  "panels/console/console-meta.ts | logXmlhttprequests": {
-    "message": "XMLHttpRequests ଲଗ କରନ୍ତୁ"
-  },
   "panels/console/console-meta.ts | onlyShowMessagesFromTheCurrent": {
     "message": "ବର୍ତ୍ତମାନର ପ୍ରସଙ୍ଗରୁ ମେସେଜଗୁଡ଼ିକୁ କେବଳ ଦେଖାନ୍ତୁ (top, iframe, worker, ଏକ୍ସଟେନସନ୍)"
   },
@@ -6445,6 +6868,9 @@
   },
   "panels/console/console-meta.ts | showConsole": {
     "message": "କନସୋଲ୍ ଦେଖାନ୍ତୁ"
+  },
+  "panels/console/console-meta.ts | showConsoleInsightTeasers": {
+    "message": "କନସୋଲ ମେସେଜଗୁଡ଼ିକ ପାଇଁ AI ସାରାଂଶ ଦେଖାନ୍ତୁ"
   },
   "panels/console/console-meta.ts | showCorsErrorsInConsole": {
     "message": "କନସୋଲରେ CORS ତ୍ରୁଟିଗୁଡ଼ିକୁ ଦେଖାନ୍ତୁ"
@@ -6854,6 +7280,12 @@
   "panels/elements/CSSRuleValidator.ts | fontVariationSettingsWarning": {
     "message": "ଫଣ୍ଟ-ଫ୍ୟାମିଲି “{PH5}” ପାଇଁ, “{PH1}”ସେଟିଂ ନିମନ୍ତେ {PH2} ମୂଲ୍ୟ ସମର୍ଥିତ ରେଞ୍ଜ [{PH3}, {PH4}]ର ବାହାରେ ଅଟେ।"
   },
+  "panels/elements/CSSRuleValidator.ts | invalidAnchorPositioning": {
+    "message": "ଏକ ଆଙ୍କରକୁ ପରିଭାଷିତ କରାଯାଇଛି କିନ୍ତୁ ଏଲିମେଣ୍ଟ ଆଙ୍କର-ପୋଜିସନ ହୋଇନାହିଁ ବରଂ \"{POSITION}\"ରେ ପୋଜିସନ ହୋଇଛି।"
+  },
+  "panels/elements/CSSRuleValidator.ts | invalidAnchorPositioningFix": {
+    "message": "ସ୍ଥିତିକୁ \"ସମାଧାନ ହୋଇଛି\" କିମ୍ବା \"ଆବସୋଲ୍ୟୁଟ\"ରେ ସେଟ କରନ୍ତୁ।"
+  },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
     "message": "ମୂଳ ଉପାଦାନରେ {EXISTING_PARENT_ELEMENT_RULE} ପ୍ରପର୍ଟିକୁ {TARGET_PARENT_ELEMENT_RULE}ରେ ସେଟ କରିବାକୁ ଚେଷ୍ଟା କରନ୍ତୁ।"
   },
@@ -6871,6 +7303,9 @@
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
     "message": "{REASON_PROPERTY_DECLARATION_CODE} ପ୍ରପର୍ଟି ଯୋଗୁଁ {AFFECTED_PROPERTY_DECLARATION_CODE}ର କୌଣସି ଇଫେକ୍ଟ ନାହିଁ।"
+  },
+  "panels/elements/CSSRuleValidator.ts | unusedAnchorPositioning": {
+    "message": "ଏକ ଆଙ୍କରକୁ ପରିଭାଷିତ କରାଯାଇଛି କିନ୍ତୁ ଏଲିମେଣ୍ଟ ଲୁକ୍କାୟିତ ଅଛି।"
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "ନୂଆ କ୍ଲାସ୍ ଯୋଗ କରନ୍ତୁ"
@@ -6890,6 +7325,9 @@
   "panels/elements/ColorSwatchPopoverIcon.ts | openShadowEditor": {
     "message": "ସାଡୋ ଏଡିଟର୍ ଖୋଲନ୍ତୁ"
   },
+  "panels/elements/ComputedStyleWidget.ts | filterUpdateAriaText": {
+    "message": "ଫିଲ୍ଟର ଲାଗୁ କରାଯାଇଛି: {PH1}। ମୋଟ ଫଳାଫଳ: {PH2}"
+  },
   "panels/elements/ComputedStyleWidget.ts | group": {
     "message": "ଗ୍ରୁପ୍ କରନ୍ତୁ"
   },
@@ -6897,16 +7335,13 @@
     "message": "ଚୟନିତ ସୋର୍ସକୁ ନାଭିଗେଟ୍ କରନ୍ତୁ"
   },
   "panels/elements/ComputedStyleWidget.ts | navigateToStyle": {
-    "message": "ଷ୍ଟାଇଲକୁ ନାଭିଗେଟ୍ କରନ୍ତୁ"
+    "message": "ଷ୍ଟାଇଲକୁ ନାଭିଗେଟ କରନ୍ତୁ"
   },
   "panels/elements/ComputedStyleWidget.ts | noMatchingProperty": {
     "message": "ମେଳ ହେଉଥିବା କୌଣସି ପ୍ରପର୍ଟି ନାହିଁ"
   },
   "panels/elements/ComputedStyleWidget.ts | showAll": {
     "message": "ସବୁ ଦେଖାନ୍ତୁ"
-  },
-  "panels/elements/DOMLinkifier.ts | node": {
-    "message": "<node>"
   },
   "panels/elements/ElementIssueUtils.ts | disallowedOptGroupChild": {
     "message": "<optgroup> ମଧ୍ୟରେ ଅବୈଧ ଏଲିମେଣ୍ଟ କିମ୍ବା ଟେକ୍ସଟ ନୋଡ"
@@ -7088,14 +7523,17 @@
   "panels/elements/ElementsTreeElement.ts | deleteElement": {
     "message": "ଉପାଦାନ ଡିଲିଟ୍ କରନ୍ତୁ"
   },
+  "panels/elements/ElementsTreeElement.ts | disableContainer": {
+    "message": "କଣ୍ଟେନର ଓଭରଲେକୁ ଅକ୍ଷମ କରନ୍ତୁ"
+  },
   "panels/elements/ElementsTreeElement.ts | disableFlexMode": {
     "message": "ଫ୍ଲେକ୍ସ ମୋଡ୍ ଅକ୍ଷମ କରନ୍ତୁ"
   },
+  "panels/elements/ElementsTreeElement.ts | disableGridLanesMode": {
+    "message": "ଗ୍ରିଡ-ଲେନ ମୋଡକୁ ଅକ୍ଷମ କରନ୍ତୁ"
+  },
   "panels/elements/ElementsTreeElement.ts | disableGridMode": {
     "message": "ଗ୍ରିଡ୍ ମୋଡ୍ ଅକ୍ଷମ କରନ୍ତୁ"
-  },
-  "panels/elements/ElementsTreeElement.ts | disableMasonryMode": {
-    "message": "ମାସୋନରୀ ମୋଡକୁ ଅକ୍ଷମ କରନ୍ତୁ"
   },
   "panels/elements/ElementsTreeElement.ts | disableScrollSnap": {
     "message": "ସ୍କ୍ରୋଲ୍-ସ୍ନାପ୍ ଓଭରଲେକୁ ଅକ୍ଷମ କରନ୍ତୁ"
@@ -7121,14 +7559,17 @@
   "panels/elements/ElementsTreeElement.ts | elementHasScrollableOverflow": {
     "message": "ଏହି ଏଲିମେଣ୍ଟର ଏକ ସ୍କ୍ରୋଲ କରିହେଉଥିବା ଓଭରଫ୍ଲୋ ଅଛି"
   },
+  "panels/elements/ElementsTreeElement.ts | enableContainer": {
+    "message": "କଣ୍ଟେନର ଓଭରଲେକୁ ସକ୍ଷମ କରନ୍ତୁ"
+  },
   "panels/elements/ElementsTreeElement.ts | enableFlexMode": {
     "message": "ଫ୍ଲେକ୍ସ ମୋଡ୍ ସକ୍ଷମ କରନ୍ତୁ"
   },
+  "panels/elements/ElementsTreeElement.ts | enableGridLanesMode": {
+    "message": "ଗ୍ରିଡ-ଲେନ ମୋଡକୁ ସକ୍ଷମ କରନ୍ତୁ"
+  },
   "panels/elements/ElementsTreeElement.ts | enableGridMode": {
     "message": "ଗ୍ରିଡ୍ ମୋଡ୍ ସକ୍ଷମ କରନ୍ତୁ"
-  },
-  "panels/elements/ElementsTreeElement.ts | enableMasonryMode": {
-    "message": "ମାସୋନରୀ ମୋଡକ ସକ୍ଷମ କରନ୍ତୁ"
   },
   "panels/elements/ElementsTreeElement.ts | enableScrollSnap": {
     "message": "ସ୍କ୍ରୋଲ୍-ସ୍ନାପ୍ ଓଭରଲେକୁ ସକ୍ଷମ କରନ୍ତୁ"
@@ -7184,6 +7625,9 @@
   "panels/elements/ElementsTreeElement.ts | removeScrollbars": {
     "message": "ସ୍କ୍ରୋଲବାର କାଢ଼ି ଦିଅନ୍ତୁ"
   },
+  "panels/elements/ElementsTreeElement.ts | reveal": {
+    "message": "ପ୍ରକାଶ କରନ୍ତୁ"
+  },
   "panels/elements/ElementsTreeElement.ts | scrollIntoView": {
     "message": "ଦେଖାଯିବା ପର୍ଯ୍ୟନ୍ତ ସ୍କ୍ରୋଲ୍ କରନ୍ତୁ"
   },
@@ -7216,6 +7660,9 @@
   },
   "panels/elements/ElementsTreeElement.ts | valueIsTooLargeToEdit": {
     "message": "<ଏଡିଟ୍ କରିବାକୁ ମୂଲ୍ୟଟି ବହୁତ ବଡ଼ ଅଟେ>"
+  },
+  "panels/elements/ElementsTreeElement.ts | viewSourceCode": {
+    "message": "ସୋର୍ସ କୋଡ ଭ୍ୟୁ କରନ୍ତୁ"
   },
   "panels/elements/ElementsTreeElement.ts | wrapTheseItems": {
     "message": "ଏହି ଆଇଟମଗୁଡ଼ିକୁ ରାପ କରନ୍ତୁ"
@@ -7274,17 +7721,17 @@
   "panels/elements/LayoutPane.ts | flexboxOverlays": {
     "message": "ଫ୍ଲେକ୍ସବକ୍ସ ଓଭରଲେ"
   },
-  "panels/elements/LayoutPane.ts | gridOrMasonry": {
-    "message": "ଗ୍ରିଡ / ମାସୋନରୀ"
+  "panels/elements/LayoutPane.ts | gridOrGridLanes": {
+    "message": "ଗ୍ରିଡ / ଗ୍ରିଡ ଲେନ"
   },
-  "panels/elements/LayoutPane.ts | gridOrMasonryOverlays": {
-    "message": "ଗ୍ରିଡ / ମାସୋନରୀ ଓଭରଲେ"
+  "panels/elements/LayoutPane.ts | gridOrGridLanesOverlays": {
+    "message": "ଗ୍ରିଡ / ଗ୍ରିଡ ଲେନ ଓଭରଲେ"
   },
   "panels/elements/LayoutPane.ts | noFlexboxLayoutsFoundOnThisPage": {
     "message": "ଏହି ପୃଷ୍ଠାରେ କୌଣସି ଫ୍ଲେକ୍ସବକ୍ସ ଲେଆଉଟ୍ ମିଳିଲା ନାହିଁ"
   },
-  "panels/elements/LayoutPane.ts | noGridOrMasonryLayoutsFoundOnThisPage": {
-    "message": "ଏହି ପୃଷ୍ଠାରେ କୌଣସି ଗ୍ରିଡ କିମ୍ବା ମାସୋନରୀ ଲେଆଉଟ ମିଳିଲା ନାହିଁ"
+  "panels/elements/LayoutPane.ts | noGridOrGridLanesLayoutsFoundOnThisPage": {
+    "message": "ଏହି ପୃଷ୍ଠାରେ କୌଣସି ଗ୍ରିଡ କିମ୍ବା ଗ୍ରିଡ ଲେନ ଲେଆଉଟ ମିଳିଲା ନାହିଁ"
   },
   "panels/elements/LayoutPane.ts | overlayDisplaySettings": {
     "message": "ଓଭରଲେ ଡିସପ୍ଲେ ସେଟିଂସ୍"
@@ -7406,6 +7853,9 @@
   "panels/elements/StylePropertyTreeElement.ts | gridEditorButton": {
     "message": "grid ଏଡିଟରକୁ ଖୋଲନ୍ତୁ"
   },
+  "panels/elements/StylePropertyTreeElement.ts | gridLanesEditorButton": {
+    "message": "grid-lanes ଏଡିଟରକୁ ଖୋଲନ୍ତୁ"
+  },
   "panels/elements/StylePropertyTreeElement.ts | invalidPropertyValue": {
     "message": "ପ୍ରୋପର୍ଟିର ମୂଲ୍ୟ ଅବୈଧ ଅଟେ"
   },
@@ -7418,11 +7868,17 @@
   "panels/elements/StylePropertyTreeElement.ts | jumpToAnimationsPanel": {
     "message": "ଆନିମେସନ ପେନେଲକୁ ଯାଆନ୍ତୁ"
   },
+  "panels/elements/StylePropertyTreeElement.ts | openAnimationsPanel": {
+    "message": "ଆନିମେସନ ପେନେଲ ଖୋଲନ୍ତୁ"
+  },
   "panels/elements/StylePropertyTreeElement.ts | openColorPickerS": {
     "message": "କଲର୍ ପିକର୍ ଖୋଲନ୍ତୁ। {PH1}"
   },
   "panels/elements/StylePropertyTreeElement.ts | openInSourcesPanel": {
     "message": "ସୋର୍ସ ପେନେଲରେ ଖୋଲନ୍ତୁ"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | overriddenByAnimation": {
+    "message": "ଆନିମେସନ ଷ୍ଟାଇଲ ଦ୍ୱାରା ଓଭରରାଇଡ କରାଯାଇଛି।"
   },
   "panels/elements/StylePropertyTreeElement.ts | sIsNotDefined": {
     "message": "{PH1}କୁ ନିର୍ଦ୍ଧାରଣ କରାଯାଇନାହିଁ"
@@ -7471,9 +7927,6 @@
   },
   "panels/elements/StylesSidebarPane.ts | visibleSelectors": {
     "message": "{n,plural, =1{ଦେଖାଯାଉଥିବା #ଟି ଚୟନକାରୀ ନିମ୍ନରେ ତାଲିକାଭୁକ୍ତ କରାଯାଇଛି}other{ଦେଖାଯାଉଥିବା #ଟି ଚୟନକାରୀ ନିମ୍ନରେ ତାଲିକାଭୁକ୍ତ କରାଯାଇଛି}}"
-  },
-  "panels/elements/TopLayerContainer.ts | reveal": {
-    "message": "ପ୍ରକାଶ କରନ୍ତୁ"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "ଅଣଦେଖା କରାଯାଇଛି"
@@ -7528,6 +7981,9 @@
   },
   "panels/elements/components/ElementsTreeExpandButton.ts | expand": {
     "message": "ବିସ୍ତାର କରନ୍ତୁ"
+  },
+  "panels/elements/components/StylePropertyEditor.ts | denseLabel": {
+    "message": "ଡେନ୍ସ"
   },
   "panels/elements/components/StylePropertyEditor.ts | deselectButton": {
     "message": "{propertyName}କୁ କାଢ଼ି ଦିଅନ୍ତୁ: {propertyValue}"
@@ -7983,7 +8439,7 @@
     "message": "URL"
   },
   "panels/issues/AffectedElementsView.ts | nElements": {
-    "message": "{n,plural, =1{#ଟି ଉପାଦାନ}other{#ଟି ଉପାଦାନ}}"
+    "message": "{n,plural, =1{# ଏଲିମେଣ୍ଟ}other{# ଏଲିମେଣ୍ଟ}}"
   },
   "panels/issues/AffectedElementsWithLowContrastView.ts | contrastRatio": {
     "message": "କଣ୍ଟ୍ରାଷ୍ଟ ଅନୁପାତ"
@@ -8044,6 +8500,9 @@
   },
   "panels/issues/AffectedPartitioningBlobURLView.ts | noBlobURLAvailable": {
     "message": "ଏହି ସମସ୍ୟା ପାଇଁ କୌଣସି ବ୍ଲବ URL ଉପଲବ୍ଧ ନାହିଁ।"
+  },
+  "panels/issues/AffectedPermissionElementsView.ts | nElements": {
+    "message": "{n,plural, =1{# ଏଲିମେଣ୍ଟ}other{# ଏଲିମେଣ୍ଟ}}"
   },
   "panels/issues/AffectedResourcesView.ts | clickToRevealTheFramesDomNodeIn": {
     "message": "ଉପାଦାନ ପ୍ୟାନେଲରେ ଫ୍ରେମର DOM ନୋଡ୍ ଦେଖାଇବାକୁ କ୍ଲିକ୍ କରନ୍ତୁ"
@@ -8296,6 +8755,9 @@
   },
   "panels/issues/IssuesPane.ts | other": {
     "message": "ଅନ୍ୟ"
+  },
+  "panels/issues/IssuesPane.ts | permissionElement": {
+    "message": "PEPC ଏଲିମେଣ୍ଟ"
   },
   "panels/issues/IssuesPane.ts | quirksMode": {
     "message": "Quirks ମୋଡ୍"
@@ -8886,7 +9348,7 @@
     "message": "ଏକ ମିଡିଆ ପ୍ଲେୟାରର ବିବରଣୀ ନିରୀକ୍ଷଣ କରିବା ପାଇଁ ଏହାକୁ ଚୟନ କରନ୍ତୁ।"
   },
   "panels/media/PlayerDetailView.ts | events": {
-    "message": "ଇଭେଣ୍ଟଗୁଡ଼ିକ"
+    "message": "ଇଭେଣ୍ଟ"
   },
   "panels/media/PlayerDetailView.ts | messages": {
     "message": "ମେସେଜଗୁଡ଼ିକ"
@@ -9088,6 +9550,9 @@
   },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | addS": {
     "message": "{PH1} ଯୋଗ କରନ୍ତୁ"
+  },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | blockingGroup": {
+    "message": "ବ୍ଲକ କରାଯାଉଛି"
   },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | custom": {
     "message": "କଷ୍ଟମ୍"
@@ -9335,39 +9800,6 @@
   "panels/network/BinaryResourceView.ts | hexViewer": {
     "message": "Hex ଜଣ ଦର୍ଶକ"
   },
-  "panels/network/BlockedURLsPane.ts | addNetworkRequestBlockingPattern": {
-    "message": "ନେଟୱାର୍କ ଅନୁରୋଧ ବ୍ଲକ୍ କରିବାର ପାର୍ଟନ ଯୋଗ କରନ୍ତୁ"
-  },
-  "panels/network/BlockedURLsPane.ts | addPattern": {
-    "message": "ପାର୍ଟନ ଯୋଗ କରନ୍ତୁ"
-  },
-  "panels/network/BlockedURLsPane.ts | addPatternToBlock": {
-    "message": "\"{PH1}\" ବଟନରେ କ୍ଲିକ କରି ନେଟୱାର୍କ ଅନୁରୋଧକୁ ବ୍ଲକ କରିବା ପାଇଁ ଏକ ପାଟର୍ନ ଯୋଗ କରନ୍ତୁ।"
-  },
-  "panels/network/BlockedURLsPane.ts | dBlocked": {
-    "message": "{PH1}କୁ ବ୍ଲକ୍ କରାଯାଇଛି"
-  },
-  "panels/network/BlockedURLsPane.ts | enableNetworkRequestBlocking": {
-    "message": "ନେଟୱାର୍କ ଅନୁରୋଧ ବ୍ଲକିଂକୁ ସକ୍ଷମ କରନ୍ତୁ"
-  },
-  "panels/network/BlockedURLsPane.ts | itemDeleted": {
-    "message": "ଆଇଟମକୁ ସଫଳତାର ସହ ଡିଲିଟ୍ କରାଯାଇଛି"
-  },
-  "panels/network/BlockedURLsPane.ts | learnMore": {
-    "message": "ଅଧିକ ଜାଣନ୍ତୁ"
-  },
-  "panels/network/BlockedURLsPane.ts | noNetworkRequestsBlocked": {
-    "message": "କୌଣସି ବ୍ଲକ କରାଯାଇଥିବା ନେଟୱାର୍କ ଅନୁରୋଧ ନାହିଁ"
-  },
-  "panels/network/BlockedURLsPane.ts | patternAlreadyExists": {
-    "message": "ପୂର୍ବରୁ ପାର୍ଟନ୍ ଅଛି।"
-  },
-  "panels/network/BlockedURLsPane.ts | patternInputCannotBeEmpty": {
-    "message": "ପାର୍ଟନ୍ ଇନପୁଟକୁ ଖାଲି ଛଡ଼ାଯାଇପାରିବ ନାହିଁ।"
-  },
-  "panels/network/BlockedURLsPane.ts | textPatternToBlockMatching": {
-    "message": "ମେଳ ହେଉଥିବା ଅନୁରୋଧଗୁଡ଼ିକୁ ବ୍ଲକ୍ କରିବା ପାଇଁ ଟେକ୍ସଟ୍ ପାର୍ଟନ; ୱାଇଲ୍ଡକାର୍ଡ ପାଇଁ * ବ୍ୟବହାର କରନ୍ତୁ"
-  },
   "panels/network/EventSourceMessagesView.ts | clearAll": {
     "message": "ସବୁ ଖାଲି କରନ୍ତୁ"
   },
@@ -9437,6 +9869,9 @@
   "panels/network/NetworkDataGridNode.ts | blockeds": {
     "message": "(ବ୍ଲକ୍ କରାଯାଇଛି:{PH1})"
   },
+  "panels/network/NetworkDataGridNode.ts | blocking": {
+    "message": "ବ୍ଲକ କରାଯାଉଛି"
+  },
   "panels/network/NetworkDataGridNode.ts | broken": {
     "message": "Chrome ବ୍ରୋକେନ ଭାବେ ଚିହ୍ନଟ କରାଯାଇଥିବା ଯୋଗୁଁ ଏହା ଏକ HTTP/3 କନେକ୍ସନ ସ୍ଥାପନ ଚେଷ୍ଟା କରିନାହିଁ।"
   },
@@ -9491,6 +9926,9 @@
   "panels/network/NetworkDataGridNode.ts | finished": {
     "message": "ସମ୍ପୂର୍ଣ୍ଣ ହୋଇଛି"
   },
+  "panels/network/NetworkDataGridNode.ts | inBodyParserBlocking": {
+    "message": "ଇନ-ବଡି ପାର୍ସର ବ୍ଲକିଂ"
+  },
   "panels/network/NetworkDataGridNode.ts | initialPriorityToolTip": {
     "message": "{PH1}, ପ୍ରାରମ୍ଭିକ ପ୍ରାଥମିକତା: {PH2}"
   },
@@ -9515,6 +9953,12 @@
   "panels/network/NetworkDataGridNode.ts | memoryCache": {
     "message": "(ମେମୋରୀ କ୍ୟାଶ୍)"
   },
+  "panels/network/NetworkDataGridNode.ts | nonBlocking": {
+    "message": "ଅଣ-ବ୍ଲକିଂ"
+  },
+  "panels/network/NetworkDataGridNode.ts | nonBlockingDynamic": {
+    "message": "ଅଣ-ବ୍ଲକିଂ ଡାଇନାମିକ"
+  },
   "panels/network/NetworkDataGridNode.ts | origin": {
     "message": "ଅରିଜିନ୍"
   },
@@ -9533,6 +9977,9 @@
   "panels/network/NetworkDataGridNode.ts | pendingq": {
     "message": "(ବାକି ଅଛି)"
   },
+  "panels/network/NetworkDataGridNode.ts | potentiallyBlocking": {
+    "message": "ସମ୍ଭାବ୍ୟ ଭାବେ ବ୍ଲକ କରାଯାଉଛି"
+  },
   "panels/network/NetworkDataGridNode.ts | prefetchCache": {
     "message": "(ପ୍ରିଫେଚ୍ କ୍ୟାଶ୍)"
   },
@@ -9547,9 +9994,6 @@
   },
   "panels/network/NetworkDataGridNode.ts | redirect": {
     "message": "ରିଡାଇରେକ୍ଟ"
-  },
-  "panels/network/NetworkDataGridNode.ts | responseIsIpProtectedToolTip": {
-    "message": "ଏହି ଅନୁରୋଧକୁ IP ସୁରକ୍ଷା ପ୍ରକ୍ସି ମାଧ୍ୟମରେ ପଠାଯାଇଛି।"
   },
   "panels/network/NetworkDataGridNode.ts | sPreflight": {
     "message": "{PH1} + Preflight"
@@ -9599,6 +10043,9 @@
   "panels/network/NetworkDataGridNode.ts | unknownExplanation": {
     "message": "ଅନୁରୋଧ ପ୍ରକ୍ରିୟା ଚାଲିଥିବାବେଳେ ଏହାକୁ ପ୍ରଦାନ କରିଥିବା ପୃଷ୍ଠା ଅନଲୋଡ୍ ହୋଇଥିବା ଯୋଗୁଁ ଅନୁରୋଧ ସ୍ଥିତି ଏଠାରେ ପ୍ରଦର୍ଶିତ ହୋଇପାରିବ ନାହିଁ। ଏକ ନେଟୱାର୍କ ଲଗ୍ କ୍ୟାପଚର କରିବାକୁ ଏବଂ ସମସ୍ତ ଅନୁରୋଧର ବିବରଣୀ ଦେଖିବାକୁ ଆପଣ chrome://net-export ବ୍ୟବହାର କରିପାରିବେ।"
   },
+  "panels/network/NetworkDataGridNode.ts | wasThrottled": {
+    "message": "ଅନୁରୋଧକୁ ଥ୍ରୋଟଲ କରାଯାଇଛି ({PH1})"
+  },
   "panels/network/NetworkItemView.ts | connectionInfo": {
     "message": "କନେକ୍ସନ ସୂଚନା"
   },
@@ -9607,6 +10054,9 @@
   },
   "panels/network/NetworkItemView.ts | cookies": {
     "message": "କୁକୀଗୁଡ଼ିକ"
+  },
+  "panels/network/NetworkItemView.ts | deviceBoundSessions": {
+    "message": "ଡିଭାଇସ ବାଉଣ୍ଡ ସେସନ"
   },
   "panels/network/NetworkItemView.ts | directsocketMessages": {
     "message": "DirectSocket ମେସେଜ"
@@ -9682,6 +10132,9 @@
   },
   "panels/network/NetworkLogView.ts | blockRequestUrl": {
     "message": "ଅନୁରୋଧର URLକୁ ବ୍ଲକ୍ କରନ୍ତୁ"
+  },
+  "panels/network/NetworkLogView.ts | blockRequests": {
+    "message": "ଅନୁରୋଧଗୁଡ଼ିକୁ ବ୍ଲକ କରନ୍ତୁ"
   },
   "panels/network/NetworkLogView.ts | blockedRequests": {
     "message": "ବ୍ଲକ କରାଯାଇଥିବା ଅନୁରୋଧଗୁଡ଼ିକ"
@@ -9821,9 +10274,6 @@
   "panels/network/NetworkLogView.ts | invertsFilter": {
     "message": "ସନ୍ଧାନ ଫିଲ୍ଟରକୁ ଇନଭର୍ଟ୍ କରେ"
   },
-  "panels/network/NetworkLogView.ts | ippRequests": {
-    "message": "IP ସୁରକ୍ଷିତ ଅନୁରୋଧ"
-  },
   "panels/network/NetworkLogView.ts | loadS": {
     "message": "ଲୋଡ୍ କରନ୍ତୁ: {PH1}"
   },
@@ -9838,9 +10288,6 @@
   },
   "panels/network/NetworkLogView.ts | onlyShowBlockedRequests": {
     "message": "ବ୍ଲକ କରାଯାଇଥିବା ଅନୁରୋଧଗୁଡ଼ିକୁ କେବଳ ଦେଖାନ୍ତୁ"
-  },
-  "panels/network/NetworkLogView.ts | onlyShowIPProtectedRequests": {
-    "message": "କେବଳ IP ସୁରକ୍ଷା ପ୍ରକ୍ସିଗୁଡ଼ିକୁ ପଠାଯାଇଥିବା ଅନୁରୋଧଗୁଡ଼ିକ ଦେଖାନ୍ତୁ। ରେଗୁଲାର ବ୍ରାଉଜିଂ ଉପରେ ଏହାର କୌଣସି ପ୍ରଭାବ ନାହିଁ।"
   },
   "panels/network/NetworkLogView.ts | onlyShowRequestsWithBlockedCookies": {
     "message": "କେବଳ ବ୍ଲକ କରାଯାଇଥିବା ଉତ୍ତର କୁକୀଗୁଡ଼ିକ ଥିବା ଅନୁରୋଧଗୁଡ଼ିକୁ ଦେଖାନ୍ତୁ"
@@ -9911,8 +10358,20 @@
   "panels/network/NetworkLogView.ts | thirdParty": {
     "message": "3ୟ-ପକ୍ଷ ଅନୁରୋଧଗୁଡ଼ିକ"
   },
+  "panels/network/NetworkLogView.ts | throttleRequestDomain": {
+    "message": "ଅନୁରୋଧ ଡୋମେନକୁ ଥ୍ରୋଟଲ କରନ୍ତୁ"
+  },
+  "panels/network/NetworkLogView.ts | throttleRequestUrl": {
+    "message": "ଅନୁରୋଧ URLକୁ ଥ୍ରୋଟଲ କରନ୍ତୁ"
+  },
+  "panels/network/NetworkLogView.ts | throttleRequests": {
+    "message": "ଥ୍ରୋଟଲ ଅନୁରୋଧ"
+  },
   "panels/network/NetworkLogView.ts | unblockS": {
     "message": "{PH1}କୁ ଅନବ୍ଲକ କରନ୍ତୁ"
+  },
+  "panels/network/NetworkLogView.ts | unthrottleS": {
+    "message": "{PH1}ର ଥ୍ରୋଟଲିଂ ବନ୍ଦ କରନ୍ତୁ"
   },
   "panels/network/NetworkLogViewColumns.ts | connectionId": {
     "message": "ସଂଯୋଗ ID"
@@ -9927,7 +10386,7 @@
     "message": "ଡୋମେନ୍"
   },
   "panels/network/NetworkLogViewColumns.ts | endTime": {
-    "message": "ସମାପ୍ତି ସମୟ"
+    "message": "ଶେଷ ହେବା ସମୟ"
   },
   "panels/network/NetworkLogViewColumns.ts | hasOverrides": {
     "message": "ଏଥିରେ ଓଭରରାଇଡ ଅଛି"
@@ -9936,7 +10395,7 @@
     "message": "ଇନିସିଏଟର୍"
   },
   "panels/network/NetworkLogViewColumns.ts | initiatorAddressSpace": {
-    "message": "ଇନିସିଏଟର୍ ଆଡ୍ରେସ୍ ସ୍ପେସ୍"
+    "message": "ଇନିସିଏଟର ଠିକଣା ସ୍ପେସ"
   },
   "panels/network/NetworkLogViewColumns.ts | isAdRelated": {
     "message": "ବିଜ୍ଞାପନ-ସମ୍ବନ୍ଧିତ ଅଟେ"
@@ -9966,16 +10425,19 @@
     "message": "ପ୍ରୋଟୋକଲ୍"
   },
   "panels/network/NetworkLogViewColumns.ts | remoteAddress": {
-    "message": "ରିମୋଟ୍ ଠିକଣା"
+    "message": "ରିମୋଟ ଠିକଣା"
   },
   "panels/network/NetworkLogViewColumns.ts | remoteAddressSpace": {
-    "message": "ରିମୋଟ୍ ଠିକଣା ସ୍ପେସ୍"
+    "message": "ରିମୋଟ ଠିକଣା ସ୍ପେସ"
+  },
+  "panels/network/NetworkLogViewColumns.ts | renderBlocking": {
+    "message": "ରେଣ୍ଡର ବ୍ଲକିଂ"
   },
   "panels/network/NetworkLogViewColumns.ts | requestHeaders": {
-    "message": "ହେଡର ଅନୁରୋଧ କରନ୍ତୁ"
+    "message": "ଅନୁରୋଧର ହେଡର"
   },
   "panels/network/NetworkLogViewColumns.ts | responseHeaders": {
-    "message": "ଉତ୍ତର ହେଡର୍"
+    "message": "ଉତ୍ତର ହେଡର"
   },
   "panels/network/NetworkLogViewColumns.ts | responseTime": {
     "message": "ଉତ୍ତର ଦେବାର ସମୟ"
@@ -10106,6 +10568,75 @@
   "panels/network/NetworkSearchScope.ts | url": {
     "message": "URL"
   },
+  "panels/network/RequestConditionsDrawer.ts | addPatternLabel": {
+    "message": "ନେଟୱାର୍କ ଅନୁରୋଧ ଥ୍ରୋଟଲିଂ କିମ୍ବା ବ୍ଲକ କରିବା ପାଟର୍ନ ଯୋଗ କରନ୍ତୁ"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addRule": {
+    "message": "ନିୟମ ଯୋଗ କରନ୍ତୁ"
+  },
+  "panels/network/RequestConditionsDrawer.ts | dAffected": {
+    "message": "{PH1} ପ୍ରଭାବିତ ହୋଇଛି"
+  },
+  "panels/network/RequestConditionsDrawer.ts | decreasePriority": {
+    "message": "{PH1}କୁ ତଳକୁ ମୁଭ କରନ୍ତୁ"
+  },
+  "panels/network/RequestConditionsDrawer.ts | editPattern": {
+    "message": "{PH1}କୁ ଏଡିଟ କରନ୍ତୁ"
+  },
+  "panels/network/RequestConditionsDrawer.ts | enableBlockingAndThrottling": {
+    "message": "ବ୍ଲକ କରିବା ଏବଂ ଥ୍ରୋଟଲିଂକୁ ସକ୍ଷମ କରନ୍ତୁ"
+  },
+  "panels/network/RequestConditionsDrawer.ts | enableThrottlingToggleLabel": {
+    "message": "{PH1}କୁ ଥ୍ରଟଲ କିମ୍ବା ବ୍ଲକ କରନ୍ତୁ"
+  },
+  "panels/network/RequestConditionsDrawer.ts | increasePriority": {
+    "message": "{PH1}କୁ ଉପରକୁ ମୁଭ କରନ୍ତୁ"
+  },
+  "panels/network/RequestConditionsDrawer.ts | itemDeleted": {
+    "message": "ଆଇଟମକୁ ସଫଳତାର ସହ ଡିଲିଟ୍ କରାଯାଇଛି"
+  },
+  "panels/network/RequestConditionsDrawer.ts | learnMore": {
+    "message": "ଅଧିକ ଜାଣନ୍ତୁ"
+  },
+  "panels/network/RequestConditionsDrawer.ts | learnMoreLabel": {
+    "message": "URL ପାଟର୍ନ ସିଣ୍ଟାକ୍ସ ବିଷୟରେ ଅଧିକ ଜାଣନ୍ତୁ"
+  },
+  "panels/network/RequestConditionsDrawer.ts | noPattern": {
+    "message": "କିଛି ଥ୍ରୋଟଲ କିମ୍ବା ବ୍ଲକ କରାଯାଇନାହିଁ"
+  },
+  "panels/network/RequestConditionsDrawer.ts | noThrottlingOrBlockingPattern": {
+    "message": "ଏକ ନେଟୱାର୍କ ଅନୁରୋଧକୁ ଥ୍ରୋଟଲ କିମ୍ବା ବ୍ଲକ କରିବା ପାଇଁ ଏଠାରେ ମାନୁଆଲୀ କିମ୍ବା ନେଟୱାର୍କ ପେନେଲର ପ୍ରସଙ୍ଗ ମେନୁ ମାଧ୍ୟମରେ ଏକ ନିୟମ ଯୋଗ କରନ୍ତୁ। {PH1}"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternAlreadyExists": {
+    "message": "ପୂର୍ବରୁ ପାର୍ଟନ୍ ଅଛି।"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternFailedToParse": {
+    "message": "ଏହି ପାଟର୍ନ ଏକ URLPattern ଭାବେ ପାର୍ସ କରିବାରେ ବିଫଳ ହୋଇଛି"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternFailedWithRegExpGroups": {
+    "message": "RegExp ଗ୍ରୁପଗୁଡ଼ିକୁ ଅନୁମତି ଦିଆଯାଏ ନାହିଁ"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternInputCannotBeEmpty": {
+    "message": "ପାର୍ଟନ୍ ଇନପୁଟକୁ ଖାଲି ଛଡ଼ାଯାଇପାରିବ ନାହିଁ।"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternMovedDown": {
+    "message": "URL ପାଟର୍ନକୁ ତଳକୁ ମୁଭ କରାଯାଇଛି"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternMovedUp": {
+    "message": "URL ପାଟର୍ନକୁ ଉପରକୁ ମୁଭ କରାଯାଇଛି"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternWasUpgraded": {
+    "message": "ଏହି ପାଟର୍ନକୁ \"{PH1}\"ରୁ ଅପଗ୍ରେଡ କରାଯାଇଛି"
+  },
+  "panels/network/RequestConditionsDrawer.ts | removePattern": {
+    "message": "{PH1}କୁ କାଢ଼ି ଦିଅନ୍ତୁ"
+  },
+  "panels/network/RequestConditionsDrawer.ts | requestConditionsLabel": {
+    "message": "ଅନୁରୋଧର ସର୍ତ୍ତାବଳୀ"
+  },
+  "panels/network/RequestConditionsDrawer.ts | textEditPattern": {
+    "message": "ମେଳ ହେଉଥିବା ଅନୁରୋଧଗୁଡ଼ିକୁ ବ୍ଲକ କିମ୍ବା ଥ୍ରୋଟଲ କରିବା ପାଇଁ ଟେକ୍ସଟ ପାଟର୍ନ; URL ପାଟର୍ନ ସିଣ୍ଟାକ୍ସ ବ୍ୟବହାର କରନ୍ତୁ।"
+  },
   "panels/network/RequestCookiesView.ts | cookiesThatWereReceivedFromThe": {
     "message": "ଉତ୍ତରର set-cookie ହେଡରରେ ସର୍ଭରରୁ ମିଳିଥିବା କୁକୀଗୁଡ଼ିକ"
   },
@@ -10139,6 +10670,30 @@
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "ଏହି ଅନୁରୋଧରେ କୌଣସି କୁକୀ ନାହିଁ।"
   },
+  "panels/network/RequestDeviceBoundSessionsView.ts | deferralDecision": {
+    "message": "ସ୍ଥଗିତ ରଖିବା ନିଷ୍ପତ୍ତି"
+  },
+  "panels/network/RequestDeviceBoundSessionsView.ts | deferred": {
+    "message": "ସ୍ଥଗିତ କରାଯାଇଛି (ରିଫ୍ରେସ କରନ୍ତୁ)"
+  },
+  "panels/network/RequestDeviceBoundSessionsView.ts | inScopeRefreshNotAllowed": {
+    "message": "ସ୍ଥଗିତ କରାଯାଇନାହିଁ (ଅନୁରୋଧ ସେସନର ସ୍କୋପରେ ଅଛି କିନ୍ତୁ ରିଫ୍ରେସ ଟ୍ରିଗର କରିବାକୁ ଇନିସିଏଟରକୁ ଅନୁମତି ଦିଆଯାଇନାହିଁ)"
+  },
+  "panels/network/RequestDeviceBoundSessionsView.ts | inScopeRefreshNotYetNeeded": {
+    "message": "ସ୍ଥଗିତ କରାଯାଇନାହିଁ (ଅନୁରୋଧ ସେସନର ସ୍କୋପରେ ଅଛି କିନ୍ତୁ କୁକୀଗୁଡ଼ିକ ଏବେ ବି ଉପଲବ୍ଧ ଅଛି)"
+  },
+  "panels/network/RequestDeviceBoundSessionsView.ts | notInScope": {
+    "message": "ସ୍ଥଗିତ କରାଯାଇନାହିଁ (ଅନୁରୋଧ ସେସନର ସ୍କୋପରେ ନାହିଁ)"
+  },
+  "panels/network/RequestDeviceBoundSessionsView.ts | proactiveRefreshAttempted": {
+    "message": "ସ୍ଥଗିତ କରାଯାଇନାହିଁ (ପ୍ରୋଆକ୍ଟିଭ ରିଫ୍ରେସ ଚେଷ୍ଟା କରାଯାଇଛି)"
+  },
+  "panels/network/RequestDeviceBoundSessionsView.ts | proactiveRefreshNotPossible": {
+    "message": "ସ୍ଥଗିତ କରାଯାଇନାହିଁ (ଅନୁରୋଧ ସେସନର ସ୍କୋପରେ ଅଛି କିନ୍ତୁ ପ୍ରୋଆକ୍ଟିଭ ରିଫ୍ରେସ ସମ୍ଭବ ନୁହେଁ)"
+  },
+  "panels/network/RequestDeviceBoundSessionsView.ts | sessionId": {
+    "message": "ସେସନ ID"
+  },
   "panels/network/RequestInitiatorView.ts | noInitiator": {
     "message": "କୌଣସି ଇନିସିଏଟର ଡାଟା ନାହିଁ"
   },
@@ -10165,9 +10720,6 @@
   },
   "panels/network/RequestPayloadView.ts | requestPayload": {
     "message": "ପେଲୋଡର ଅନୁରୋଧ କରନ୍ତୁ"
-  },
-  "panels/network/RequestPayloadView.ts | showMore": {
-    "message": "ଅଧିକ ଦେଖାନ୍ତୁ"
   },
   "panels/network/RequestPayloadView.ts | unableToDecodeValue": {
     "message": "(ମୂଲ୍ୟ ଡିକୋଡ୍ କରିବାରେ ଅକ୍ଷମ)"
@@ -10262,14 +10814,14 @@
   "panels/network/RequestTimingView.ts | receivingPush": {
     "message": "Push ପ୍ରାପ୍ତ କରାଯାଉଛି"
   },
+  "panels/network/RequestTimingView.ts | requestResponse": {
+    "message": "ଅନୁରୋଧ/ଉତ୍ତର"
+  },
   "panels/network/RequestTimingView.ts | requestSent": {
     "message": "ଅନୁରୋଧ ପଠାଯାଇଛି"
   },
   "panels/network/RequestTimingView.ts | requestToServiceworker": {
     "message": "ServiceWorkerର ଅନୁରୋଧ"
-  },
-  "panels/network/RequestTimingView.ts | requestresponse": {
-    "message": "ଅନୁରୋଧ/ଉତ୍ତର"
   },
   "panels/network/RequestTimingView.ts | resourceScheduling": {
     "message": "ରିସୋର୍ସ ସିଡୁଲ୍ କରାଯାଉଛି"
@@ -10333,6 +10885,9 @@
   },
   "panels/network/RequestTimingView.ts | waitingTtfb": {
     "message": "ସର୍ଭରରୁ ଉତ୍ତର ପାଇଁ ଅପେକ୍ଷା କରାଯାଉଛି"
+  },
+  "panels/network/RequestTimingView.ts | wasThrottled": {
+    "message": "ଅନୁରୋଧକୁ ଥ୍ରୋଟଲ କରାଯାଇଛି ({PH1})"
   },
   "panels/network/RequestTimingView.ts | waterfall": {
     "message": "ୱାଟରଫଲ୍"
@@ -10430,6 +10985,9 @@
   "panels/network/ResourceWebSocketFrameView.ts | webSocketFrame": {
     "message": "ୱେବ୍ ସକେଟ୍ ଫ୍ରେମ୍"
   },
+  "panels/network/ShowMoreDetailsWidget.ts | showMore": {
+    "message": "ଅଧିକ ଦେଖାନ୍ତୁ"
+  },
   "panels/network/SignedExchangeInfoView.ts | certificate": {
     "message": "ସାର୍ଟିଫିକେଟ୍"
   },
@@ -10470,7 +11028,7 @@
     "message": "ଉତ୍ତର କୋଡ୍"
   },
   "panels/network/SignedExchangeInfoView.ts | responseHeaders": {
-    "message": "ଉତ୍ତର ହେଡର୍"
+    "message": "ଉତ୍ତର ହେଡର"
   },
   "panels/network/SignedExchangeInfoView.ts | signature": {
     "message": "ଦସ୍ତଖତ"
@@ -10519,6 +11077,9 @@
   },
   "panels/network/components/DirectSocketConnectionView.ts | general": {
     "message": "ସାଧାରଣ"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | joinedMulticastGroups": {
+    "message": "joinedMulticastGroups"
   },
   "panels/network/components/DirectSocketConnectionView.ts | openInfo": {
     "message": "ସୂଚନା ଖୋଲନ୍ତୁ"
@@ -10572,7 +11133,7 @@
     "message": "ଅସ୍ଥାୟୀ ହେଡରଗୁଡ଼ିକ ଦେଖାଯାଉଛି। ସମ୍ପୂର୍ଣ୍ଣ ହେଡର୍ ଦେଖିବା ପାଇଁ କ୍ୟାଶକୁ ଅକ୍ଷମ କରନ୍ତୁ।"
   },
   "panels/network/components/RequestHeadersView.ts | earlyHintsHeaders": {
-    "message": "ଆର୍ଲି ହିଣ୍ଟ୍ସ ହେଡରଗୁଡ଼ିକ"
+    "message": "ଆଗୁଆ ହିଣ୍ଟ୍ସ ହେଡର"
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(ଡିସ୍କ କ୍ୟାଶରୁ)"
@@ -10602,10 +11163,10 @@
     "message": "ରେଫରର୍ ନୀତି"
   },
   "panels/network/components/RequestHeadersView.ts | remoteAddress": {
-    "message": "ରିମୋଟ୍ ଠିକଣା"
+    "message": "ରିମୋଟ ଠିକଣା"
   },
   "panels/network/components/RequestHeadersView.ts | requestHeaders": {
-    "message": "ଅନୁରୋଧର ହେଡରଗୁଡ଼ିକ"
+    "message": "ଅନୁରୋଧର ହେଡର୍"
   },
   "panels/network/components/RequestHeadersView.ts | requestMethod": {
     "message": "ଅନୁରୋଧ ପଦ୍ଧତି"
@@ -10614,7 +11175,7 @@
     "message": "ଅନୁରୋଧ URL"
   },
   "panels/network/components/RequestHeadersView.ts | responseHeaders": {
-    "message": "ଉତ୍ତର ହେଡର୍"
+    "message": "ଉତ୍ତର ହେଡର"
   },
   "panels/network/components/RequestHeadersView.ts | revealHeaderOverrides": {
     "message": "ହେଡର ଓଭରରାଇଡ ସଂଜ୍ଞାଗୁଡ଼ିକୁ ପ୍ରକାଶ କରନ୍ତୁ"
@@ -10706,8 +11267,8 @@
   "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
     "message": "ଏକ ଭିନ୍ନ ସାଇଟରୁ ଏହି ରିସୋର୍ସକୁ ବ୍ୟବହାର କରିବା ପାଇଁ, ସର୍ଭର କ୍ରସ୍-ଅରିଜିନ୍ ରିସୋର୍ସ ନୀତି ଉତ୍ତର ହେଡରକୁ କୋହଳ କରିପାରେ:"
   },
-  "panels/network/network-meta.ts | addNetworkRequestBlockingPattern": {
-    "message": "ନେଟୱାର୍କ ଅନୁରୋଧ ବ୍ଲକ୍ କରିବାର ପାର୍ଟନ ଯୋଗ କରନ୍ତୁ"
+  "panels/network/network-meta.ts | addNetworkRequestBlockingOrThrottlingPattern": {
+    "message": "ନେଟୱାର୍କ ଅନୁରୋଧ ବ୍ଲକ କରିବା କିମ୍ବା ଥ୍ରୋଟଲିଂ ପାଟର୍ନ ଯୋଗ କରନ୍ତୁ"
   },
   "panels/network/network-meta.ts | allowToGenerateHarWithSensitiveData": {
     "message": "ସମ୍ବେଦନଶୀଳ ଡାଟା ସହHAR ଜେନେରେଟ କରିବାକୁ ଅନୁମତି ଦିଅନ୍ତୁ"
@@ -10760,8 +11321,8 @@
   "panels/network/network-meta.ts | networkConditions": {
     "message": "ନେଟୱାର୍କ ସ୍ଥିତି"
   },
-  "panels/network/network-meta.ts | networkRequestBlocking": {
-    "message": "ନେଟୱାର୍କ ଅନୁରୋଧ ବ୍ଲକ୍ କରିବା ଟୁଲ୍"
+  "panels/network/network-meta.ts | networkRequestConditions": {
+    "message": "ଅନୁରୋଧର ସର୍ତ୍ତାବଳୀ"
   },
   "panels/network/network-meta.ts | networkThrottling": {
     "message": "ନେଟୱାର୍କ ଥ୍ରଟଲିଂ"
@@ -10769,8 +11330,8 @@
   "panels/network/network-meta.ts | recordNetworkLog": {
     "message": "ନେଟୱାର୍କ ଲଗ୍ ରେକର୍ଡ କରନ୍ତୁ"
   },
-  "panels/network/network-meta.ts | removeAllNetworkRequestBlockingPatterns": {
-    "message": "ସମସ୍ତ ନେଟୱାର୍କ ଅନୁରୋଧ ବ୍ଲକ କରିବା ପାଟର୍ନକୁ କାଢ଼ି ଦିଅନ୍ତୁ"
+  "panels/network/network-meta.ts | removeAllNetworkRequestBlockingOrThrottlingPatterns": {
+    "message": "ସମସ୍ତ ନେଟୱାର୍କ ଅନୁରୋଧ ବ୍ଲକ କରିବା କିମ୍ବା ଥ୍ରୋଟଲିଂ ପାଟର୍ନକୁ କାଢ଼ି ଦିଅନ୍ତୁ"
   },
   "panels/network/network-meta.ts | resourceType": {
     "message": "ରିସୋର୍ସର ପ୍ରକାର"
@@ -10784,8 +11345,8 @@
   "panels/network/network-meta.ts | showNetworkConditions": {
     "message": "ନେଟୱାର୍କ ସ୍ଥିତି ଟୁଲ୍ ଦେଖାନ୍ତୁ"
   },
-  "panels/network/network-meta.ts | showNetworkRequestBlocking": {
-    "message": "ନେଟୱାର୍କ ଅନୁରୋଧ ବ୍ଲକ୍ କରିବା ଦେଖାନ୍ତୁ"
+  "panels/network/network-meta.ts | showRequestConditions": {
+    "message": "ଅନୁରୋଧ ସର୍ତ୍ତାବଳୀ ଦେଖାନ୍ତୁ"
   },
   "panels/network/network-meta.ts | showSearch": {
     "message": "ସନ୍ଧାନ ଟୁଲ୍ ଦେଖାନ୍ତୁ"
@@ -11146,6 +11707,9 @@
   },
   "panels/profiler/HeapSnapshotView.ts | objectsRetainedByDetachedDomNodes": {
     "message": "ଅଲଗା ହୋଇଥିବା DOM ନୋଡ ଦ୍ୱାରା ରଖାଯାଇଥିବା ଅବଜେକ୍ଟଗୁଡ଼ିକ"
+  },
+  "panels/profiler/HeapSnapshotView.ts | objectsRetainedByEventHandlers": {
+    "message": "ଇଭେଣ୍ଟ ହେଣ୍ଡଲର ଦ୍ୱାରା ରଖାଯାଇଥିବା ଅବଜେକ୍ଟ"
   },
   "panels/profiler/HeapSnapshotView.ts | otherJSObjects": {
     "message": "ଅନ୍ୟ JS ଅବଜେକ୍ଟ"
@@ -11618,8 +12182,17 @@
   "panels/recorder/RecorderController.ts | numberOfRecordings": {
     "message": "ରେକର୍ଡିଂଗୁଡ଼ିକ"
   },
+  "panels/recorder/RecorderController.ts | recordingDeleted": {
+    "message": "ରେକର୍ଡିଂକୁ ଡିଲିଟ କରାଯାଇଛି"
+  },
   "panels/recorder/RecorderController.ts | recordingDescription": {
     "message": "ସ୍ୱତଃ ଏଣ୍ଡ-ଟୁ-ଏଣ୍ଡ ଟେଷ୍ଟ କିମ୍ବା ପରଫରମାନ୍ସ ଟ୍ରେସ ତିଆରି କରିବାକୁ ରେକର୍ଡିଂଗୁଡ଼ିକୁ ବ୍ୟବହାର କରନ୍ତୁ।"
+  },
+  "panels/recorder/RecorderController.ts | recordingExported": {
+    "message": "ରେକର୍ଡିଂ ଏକ୍ସପୋର୍ଟ କରାଯାଇଛି"
+  },
+  "panels/recorder/RecorderController.ts | recordingImported": {
+    "message": "ରେକର୍ଡିଂ ଇମ୍ପୋର୍ଟ କରାଯାଇଛି"
   },
   "panels/recorder/RecorderController.ts | replayRecording": {
     "message": "ରେକର୍ଡିଂକୁ ରିପ୍ଲେ କରନ୍ତୁ"
@@ -11707,6 +12280,12 @@
   },
   "panels/recorder/components/RecordingView.ts | cancelReplay": {
     "message": "ରିପ୍ଲେ ବାତିଲ କରନ୍ତୁ"
+  },
+  "panels/recorder/components/RecordingView.ts | codeSidebarClosed": {
+    "message": "କୋଡ ସାଇଡବାର ବନ୍ଦହୋଇଛି"
+  },
+  "panels/recorder/components/RecordingView.ts | codeSidebarOpened": {
+    "message": "କୋଡ ସାଇଡବାର ଖୋଲାଯାଇଛି"
   },
   "panels/recorder/components/RecordingView.ts | default": {
     "message": "ଡିଫଲ୍ଟ"
@@ -11807,6 +12386,9 @@
   "panels/recorder/components/ReplaySection.ts | speedGroup": {
     "message": "ସ୍ପିଡ"
   },
+  "panels/recorder/components/SelectorPicker.ts | selectorPicker": {
+    "message": "ଚୟନକାରୀ ଅପଡେଟ କରିବା ପାଇଁ ଏକ ଉପାଦାନକୁ ଚୟନ କରନ୍ତୁ"
+  },
   "panels/recorder/components/StepEditor.ts | addAttribute": {
     "message": "{attributeName} ଯୋଗ କରନ୍ତୁ"
   },
@@ -11833,9 +12415,6 @@
   },
   "panels/recorder/components/StepEditor.ts | removeSelectorPart": {
     "message": "ଏକ ଚୟନକାରୀ ଅଂଶ କାଢ଼ି ଦିଅନ୍ତୁ"
-  },
-  "panels/recorder/components/StepEditor.ts | selectorPicker": {
-    "message": "ଚୟନକାରୀ ଅପଡେଟ କରିବା ପାଇଁ ଏକ ଉପାଦାନକୁ ଚୟନ କରନ୍ତୁ"
   },
   "panels/recorder/components/StepEditor.ts | unknownActionType": {
     "message": "ଅଜଣା କାର୍ଯ୍ୟ ପ୍ରକାର।"
@@ -12037,234 +12616,6 @@
   },
   "panels/search/SearchView.ts | typeAndPressSToSearch": {
     "message": "ସର୍ଚ୍ଚ କରିବା ପାଇଁ ଟାଇପ କରି {PH1}କୁ ଦବାନ୍ତୁ"
-  },
-  "panels/security/CookieControlsView.ts | cardDisclaimer": {
-    "message": "କେବଳ DevTools ଖୋଲା ଥିବା ସମୟରେ"
-  },
-  "panels/security/CookieControlsView.ts | cardTitle": {
-    "message": "ତୃତୀୟ-ପକ୍ଷ କୁକୀଗୁଡ଼ିକୁ ଅସ୍ଥାୟୀ ଭାବେ ସୀମିତ କରନ୍ତୁ"
-  },
-  "panels/security/CookieControlsView.ts | enableFlag": {
-    "message": "ଏହାକୁ ବ୍ୟବହାର କରିବା ପାଇଁ {PH1}କୁ ଡିଫଲ୍ଟରେ ସେଟ କରନ୍ତୁ"
-  },
-  "panels/security/CookieControlsView.ts | enrollGracePeriod": {
-    "message": "ଏହାକୁ ବ୍ୟବହାର କରିବା ପାଇଁ ଏହି ସାଇଟ କିମ୍ବା ଏଥିରେ ଏମ୍ବେଡ ହୋଇଥିବା ସାଇଟଗୁଡ଼ିକ {PH1}ରେ ପଞ୍ଜିକରଣ କରନ୍ତୁ"
-  },
-  "panels/security/CookieControlsView.ts | enterpriseDisclaimer": {
-    "message": "ଆପଣଙ୍କ ସଂସ୍ଥା ଏହି ସାଇଟ ପାଇଁ ତୃତୀୟ-ପକ୍ଷ କୁକୀ ଆକ୍ସେସକୁ ପରିଚାଳନା କରେ"
-  },
-  "panels/security/CookieControlsView.ts | enterpriseTooltip": {
-    "message": "ଏହି ସେଟିଂ ଆପଣଙ୍କ ସଂସ୍ଥା ଦ୍ୱାରା ପରିଚାଳିତ ହୁଏ"
-  },
-  "panels/security/CookieControlsView.ts | exceptions": {
-    "message": "ବ୍ୟତିକ୍ରମ"
-  },
-  "panels/security/CookieControlsView.ts | exceptionsExplanation": {
-    "message": "ତୃତୀୟ-ପକ୍ଷ କୁକୀଗୁଡ଼ିକୁ ଆକ୍ସେସ ଦେଉଥିବା ସିନାରିଓ"
-  },
-  "panels/security/CookieControlsView.ts | gracePeriod": {
-    "message": "ଅତିରିକ୍ତ ସମୟ"
-  },
-  "panels/security/CookieControlsView.ts | gracePeriodExplanation": {
-    "message": "ଯଦି ଏହି ସାଇଟ କିମ୍ବା ଏଥିରେ ଏମ୍ବେଡ ହୋଇଥିବା ଏକ ସାଇଟ {PH1}ରେ ପଞ୍ଜିକୃତ ହୋଇଛି, ତେବେ ସାଇଟ ତୃତୀୟ-ପକ୍ଷ କୁକୀଗୁଡ଼ିକୁ ଆକ୍ସେସ କରିପାରିବ"
-  },
-  "panels/security/CookieControlsView.ts | gracePeriodTitle": {
-    "message": "ତୃତୀୟ-ପକ୍ଷ କୁକୀର ଅତିରିକ୍ତ ସମୟ"
-  },
-  "panels/security/CookieControlsView.ts | heuristicExplanation": {
-    "message": "ପପଅପ କିମ୍ବା ରିଡାଇରେକ୍ଟ ପରି {PH1}ରେ, ଏହି ସାଇଟରେ ଏମ୍ବେଡ ହୋଇଥିବା ଏକ ସାଇଟ ତୃତୀୟ-ପକ୍ଷ କୁକୀଗୁଡ଼ିକୁ ଆକ୍ସେସ କରିପାରିବ"
-  },
-  "panels/security/CookieControlsView.ts | heuristicTitle": {
-    "message": "ହ୍ୟୁରିଷ୍ଟିକ୍ସ ଆଧାରିତ ବ୍ୟତିକ୍ରମ"
-  },
-  "panels/security/CookieControlsView.ts | scenarios": {
-    "message": "ପୂର୍ବ ନିର୍ଦ୍ଧାରିତ ସିନାରିଓ"
-  },
-  "panels/security/CookieControlsView.ts | siteReloadMessage": {
-    "message": "ଆପଣଙ୍କର ଅପଡେଟ କରାଯାଇଥିବା ନିୟନ୍ତ୍ରଣଗୁଡ଼ିକୁ ଲାଗୁ କରିବା ପାଇଁ ପୃଷ୍ଠାକୁ ରିଲୋଡ କରନ୍ତୁ"
-  },
-  "panels/security/CookieControlsView.ts | tpcdHeuristicsGrants": {
-    "message": "#tpcd-heuristics-grants"
-  },
-  "panels/security/CookieControlsView.ts | tpcdMetadataGrants": {
-    "message": "#tpcd-metadata-grants"
-  },
-  "panels/security/CookieControlsView.ts | viewDetails": {
-    "message": "ବିବରଣୀ ଭ୍ୟୁ କରନ୍ତୁ"
-  },
-  "panels/security/CookieControlsView.ts | viewExplanation": {
-    "message": "ଯଦି Chromeରେ ତୃତୀୟ ପକ୍ଷ କୁକୀଗୁଡ଼ିକ ସୀମିତ ଥାଏ, ତେବେ ଏହି ସାଇଟ କିପରି ପରଫର୍ମ କରେ ତାହା ପରୀକ୍ଷା କରନ୍ତୁ"
-  },
-  "panels/security/CookieControlsView.ts | viewTitle": {
-    "message": "ନିୟନ୍ତ୍ରଣ"
-  },
-  "panels/security/CookieReportView.ts | adCookieTypeString": {
-    "message": "ବିଜ୍ଞାପନ"
-  },
-  "panels/security/CookieReportView.ts | allowed": {
-    "message": "ଅନୁମତି ଦିଆଯାଇଛି"
-  },
-  "panels/security/CookieReportView.ts | allowedByException": {
-    "message": "ବ୍ୟତିକ୍ରମ ଦ୍ୱାରା ଅନୁମତି ଦିଆଯାଇଛି"
-  },
-  "panels/security/CookieReportView.ts | analyticsCookieTypeString": {
-    "message": "ଆନାଲିଟିକ୍ସ"
-  },
-  "panels/security/CookieReportView.ts | blocked": {
-    "message": "ବ୍ଲକ କରାଯାଇଛି"
-  },
-  "panels/security/CookieReportView.ts | body": {
-    "message": "ଯଦି Chromeରେ ତୃତୀୟ-ପକ୍ଷ କୁକୀ ଏବଂ ଅନ୍ୟ କୁକୀ ସୀମିତ ଅଟେ ତେବେ ଏହି ସାଇଟ କାର୍ଯ୍ୟ କରିନପାରେ।"
-  },
-  "panels/security/CookieReportView.ts | cdnCookieTypeString": {
-    "message": "CDN"
-  },
-  "panels/security/CookieReportView.ts | consentProviderCookieTypeString": {
-    "message": "ସମ୍ମତି ପ୍ରଦାନକାରୀ"
-  },
-  "panels/security/CookieReportView.ts | contentCookieTypeString": {
-    "message": "ବିଷୟବସ୍ତୁ"
-  },
-  "panels/security/CookieReportView.ts | customerSuccessCookieTypeString": {
-    "message": "ସଫଳ ଗ୍ରାହକ"
-  },
-  "panels/security/CookieReportView.ts | domain": {
-    "message": "ଡୋମେନ"
-  },
-  "panels/security/CookieReportView.ts | emptyReport": {
-    "message": "କୌଣସି କ୍ରମ୍ବ ବାକି ନାହିଁ"
-  },
-  "panels/security/CookieReportView.ts | emptyReportExplanation": {
-    "message": "ତୃତୀୟ-ପକ୍ଷ କୁକୀଗୁଡ଼ିକରେ କୌଣସି ସମସ୍ୟା ମିଳିଲା ନାହିଁ"
-  },
-  "panels/security/CookieReportView.ts | gitHubResource": {
-    "message": "ତୃତୀୟ-ପକ୍ଷ ସାଇଟରୁ {PH1}ର ସମୀକ୍ଷା କରନ୍ତୁ"
-  },
-  "panels/security/CookieReportView.ts | gracePeriod": {
-    "message": "{PH1}ର ସମୀକ୍ଷା କରନ୍ତୁ। ଅତିରିକ୍ତ ସମୟ ବ୍ୟତିକ୍ରମ ସକ୍ରିୟ ଅଛି।"
-  },
-  "panels/security/CookieReportView.ts | guidance": {
-    "message": "ମାର୍ଗଦର୍ଶନ"
-  },
-  "panels/security/CookieReportView.ts | heuristics": {
-    "message": "ପରେ ପଦକ୍ଷେପ ନେବା ଆବଶ୍ୟକ। ହ୍ୟୁରିଷ୍ଟିକ୍ସ ଆଧାରିତ ବ୍ୟତିକ୍ରମ ସକ୍ରିୟ ଅଛି।"
-  },
-  "panels/security/CookieReportView.ts | hostingCookieTypeString": {
-    "message": "ହୋଷ୍ଟିଂ"
-  },
-  "panels/security/CookieReportView.ts | learnMoreLink": {
-    "message": "ତୃତୀୟ-ପକ୍ଷ କୁକୀଗୁଡ଼ିକୁ କିପରି ବ୍ୟବହାର କରାଯାଏ ସେ ବିଷୟରେ ଅଧିକ ଜାଣନ୍ତୁ"
-  },
-  "panels/security/CookieReportView.ts | marketingCookieTypeString": {
-    "message": "ମାର୍କେଟିଂ"
-  },
-  "panels/security/CookieReportView.ts | name": {
-    "message": "ନାମ"
-  },
-  "panels/security/CookieReportView.ts | other": {
-    "message": "ଅଧିକ ସୂଚନା ପାଇଁ ତୃତୀୟ-ପକ୍ଷ ସାଇଟ ସହ କଣ୍ଟାକ୍ଟ କରନ୍ତୁ"
-  },
-  "panels/security/CookieReportView.ts | otherCookieTypeString": {
-    "message": "ଅନ୍ୟ"
-  },
-  "panels/security/CookieReportView.ts | platform": {
-    "message": "ପ୍ଲାଟଫର୍ମ"
-  },
-  "panels/security/CookieReportView.ts | recommendation": {
-    "message": "ସୁପାରିଶ"
-  },
-  "panels/security/CookieReportView.ts | report": {
-    "message": "ତୃତୀୟ-ପକ୍ଷ କୁକୀ ରିପୋର୍ଟ"
-  },
-  "panels/security/CookieReportView.ts | reportedIssues": {
-    "message": "ରିପୋର୍ଟ କରାଯାଇଥିବା ସମସ୍ୟା"
-  },
-  "panels/security/CookieReportView.ts | showRequestsWithThisCookie": {
-    "message": "ଏହି କୁକୀଗୁଡ଼ିକ ସହ ଅନୁରୋଧଗୁଡ଼ିକୁ ଦେଖାନ୍ତୁ"
-  },
-  "panels/security/CookieReportView.ts | socialCookieTypeString": {
-    "message": "ସୋସିଆଲ"
-  },
-  "panels/security/CookieReportView.ts | status": {
-    "message": "ସ୍ଥିତି"
-  },
-  "panels/security/CookieReportView.ts | tagManagerCookieTypeString": {
-    "message": "ଟାଗ ମେନେଜର"
-  },
-  "panels/security/CookieReportView.ts | title": {
-    "message": "ତୃତୀୟ-ପକ୍ଷ କୁକୀ"
-  },
-  "panels/security/CookieReportView.ts | type": {
-    "message": "ପ୍ରକାର"
-  },
-  "panels/security/CookieReportView.ts | unknown": {
-    "message": "ଅଜଣା"
-  },
-  "panels/security/CookieReportView.ts | utilityCookieTypeString": {
-    "message": "ୟୁଟିଲିଟି"
-  },
-  "panels/security/CookieReportView.ts | videoCookieTypeString": {
-    "message": "ଭିଡିଓ"
-  },
-  "panels/security/IPProtectionView.ts | AuthTokensUnavailable": {
-    "message": "ପ୍ରମାଣୀକରଣ ଟୋକନର ସୀମା ପହଞ୍ଚିଯାଇଛି। IP ସୁରକ୍ଷାକୁ ବିରତ କରାଯିବ।"
-  },
-  "panels/security/IPProtectionView.ts | Available": {
-    "message": "IP ସୁରକ୍ଷା ସକ୍ଷମ କରାଯାଇଛି ଓ ଏହା ସକ୍ରିୟ ଅଛି।"
-  },
-  "panels/security/IPProtectionView.ts | BypassedByDevTools": {
-    "message": "DevTools ଦ୍ୱାରା IP ସୁରକ୍ଷାକୁ ବାଇପାସ କରାଯାଉଛି।"
-  },
-  "panels/security/IPProtectionView.ts | FeatureNotEnabled": {
-    "message": "IP ସୁରକ୍ଷା ଫିଚର ସକ୍ଷମ କରାଯାଇନାହିଁ।"
-  },
-  "panels/security/IPProtectionView.ts | MaskedDomainListNotEnabled": {
-    "message": "ମାସ୍କ କରାଯାଇଥିବା ଡୋମେନ ତାଲିକା ଫିଚର ସକ୍ଷମ କରାଯାଇନାହିଁ।"
-  },
-  "panels/security/IPProtectionView.ts | MaskedDomainListNotPopulated": {
-    "message": "ମାସ୍କ ହୋଇଥିବା ଡୋମେନ ତାଲିକା ପୂରଣ କରାଯାଇନାହିଁ।"
-  },
-  "panels/security/IPProtectionView.ts | Unavailable": {
-    "message": "IP ସୁରକ୍ଷା ଉପଲବ୍ଧ ନାହିଁ।"
-  },
-  "panels/security/IPProtectionView.ts | bypassDescription": {
-    "message": "ଟେଷ୍ଟ କରିବା ପାଇଁ ଅସ୍ଥାୟୀ ଭାବରେ IP ସୁରକ୍ଷାକୁ ବାଏପାସ କରନ୍ତୁ"
-  },
-  "panels/security/IPProtectionView.ts | bypassTitle": {
-    "message": "IP ସୁରକ୍ଷାକୁ ବାଇପାସ କରିବା"
-  },
-  "panels/security/IPProtectionView.ts | cardTitle": {
-    "message": "IP ସୁରକ୍ଷା ପ୍ରକ୍ସି ସ୍ଥିତି"
-  },
-  "panels/security/IPProtectionView.ts | idColumn": {
-    "message": "ID"
-  },
-  "panels/security/IPProtectionView.ts | methodColumn": {
-    "message": "ପଦ୍ଧତି"
-  },
-  "panels/security/IPProtectionView.ts | notInIncognito": {
-    "message": "IP ପ୍ରକ୍ସି ଉପଲବ୍ଧ ନାହିଁ"
-  },
-  "panels/security/IPProtectionView.ts | openIncognito": {
-    "message": "IP ପ୍ରକ୍ସି କେବଳ ଇନକଗ୍ନିଟୋ ମୋଡ ମଧ୍ୟରେ ଉପଲବ୍ଧ। ଇନକଗ୍ନିଟୋ ମୋଡରେ ସାଇଟକୁ ଖୋଲନ୍ତୁ।"
-  },
-  "panels/security/IPProtectionView.ts | proxyRequests": {
-    "message": "ପ୍ରକ୍ସି ଅନୁରୋଧ"
-  },
-  "panels/security/IPProtectionView.ts | statusColumn": {
-    "message": "ସ୍ଥିତି"
-  },
-  "panels/security/IPProtectionView.ts | statusUnknown": {
-    "message": "ଅଜଣା ସ୍ଥିତି"
-  },
-  "panels/security/IPProtectionView.ts | urlColumn": {
-    "message": "URL"
-  },
-  "panels/security/IPProtectionView.ts | viewExplanation": {
-    "message": "ଯଦି Chromeରେ IP ପ୍ରକ୍ସି ସକ୍ଷମ ଥାଏ, ତେବେ ଏହି ସାଇଟ କିପରି କାର୍ଯ୍ୟ କରିବ ତାହା ଟେଷ୍ଟ କରନ୍ତୁ"
-  },
-  "panels/security/IPProtectionView.ts | viewTitle": {
-    "message": "IP ସୁରକ୍ଷା ପ୍ରକ୍ସି ନିୟନ୍ତ୍ରଣ"
   },
   "panels/security/SecurityModel.ts | cipherWithMAC": {
     "message": "{PH2} ସହ {PH1}"
@@ -12566,15 +12917,6 @@
   "panels/security/SecurityPanel.ts | yourPageRequestedNonsecure": {
     "message": "ଆପଣଙ୍କ ପୃଷ୍ଠା ବ୍ଲକ୍ କରାଯାଇଥିବା ଅସୁରକ୍ଷିତ ରିସୋର୍ସଗୁଡ଼ିକର ଅନୁରୋଧ କରିଛି।"
   },
-  "panels/security/SecurityPanelSidebar.ts | cookieReport": {
-    "message": "ତୃତୀୟ-ପକ୍ଷ କୁକୀ"
-  },
-  "panels/security/SecurityPanelSidebar.ts | flagControls": {
-    "message": "ନିୟନ୍ତ୍ରଣ"
-  },
-  "panels/security/SecurityPanelSidebar.ts | ipProtection": {
-    "message": "IP ସୁରକ୍ଷା"
-  },
   "panels/security/SecurityPanelSidebar.ts | mainOrigin": {
     "message": "ମୁଖ୍ୟ ଅରିଜିନ୍"
   },
@@ -12583,9 +12925,6 @@
   },
   "panels/security/SecurityPanelSidebar.ts | overview": {
     "message": "ଓଭରଭ୍ୟୁ"
-  },
-  "panels/security/SecurityPanelSidebar.ts | privacy": {
-    "message": "ଗୋପନୀୟତା"
   },
   "panels/security/SecurityPanelSidebar.ts | reloadToViewDetails": {
     "message": "ବିବରଣୀ ଦେଖିବାକୁ ପୁଣି ଲୋଡ୍ କରନ୍ତୁ"
@@ -12599,14 +12938,8 @@
   "panels/security/SecurityPanelSidebar.ts | unknownCanceled": {
     "message": "ଅଜଣା / ବାତିଲ୍ କରାଯାଇଛି"
   },
-  "panels/security/security-meta.ts | PrivacyAndSecurity": {
-    "message": "ଗୋପନୀୟତା ଏବଂ ସୁରକ୍ଷା"
-  },
   "panels/security/security-meta.ts | security": {
     "message": "ସୁରକ୍ଷା"
-  },
-  "panels/security/security-meta.ts | showPrivacyAndSecurity": {
-    "message": "ଗୋପନୀୟତା ଏବଂ ସୁରକ୍ଷା ଦେଖାନ୍ତୁ"
   },
   "panels/security/security-meta.ts | showSecurity": {
     "message": "ସୁରକ୍ଷା ପ୍ୟାନେଲ୍ ଦେଖାନ୍ତୁ"
@@ -12863,6 +13196,9 @@
   "panels/settings/AISettingsTab.ts | asYouTypeCodeSuggestions": {
     "message": "ଆପଣ କନସୋଲ କିମ୍ବା ସୋର୍ସ ପେନେଲରେ ଟାଇପ କରିଲେ, ଆପଣ କୋଡ ପରାମର୍ଶ ପାଇବେ। ଗୋଟିଏ ଗ୍ରହଣ କରିବାକୁ ଟାବ ଦବାନ୍ତୁ।"
   },
+  "panels/settings/AISettingsTab.ts | asYouTypeRelevantDataIsBeingSentToGoogle": {
+    "message": "ଆପଣ ଟାଇପ କରିବା ସମୟରେ କୋଡ ପରାମର୍ଶ ଜେନେରେଟ କରିବା ପାଇଁ ପ୍ରାସଙ୍ଗିକ ଡାଟା Googleକୁ ପଠାଯାଉଛି। ଗ୍ରହଣ କରିବାକୁ ଟାବ ଦବାନ୍ତୁ।"
+  },
   "panels/settings/AISettingsTab.ts | boostYourProductivity": {
     "message": "AI ମାଧ୍ୟମରେ ଆପଣଙ୍କ ପ୍ରଡକ୍ଟିଭିଟି ବଢ଼ାନ୍ତୁ"
   },
@@ -12883,6 +13219,12 @@
   },
   "panels/settings/AISettingsTab.ts | dataCollectionNoLogging": {
     "message": "ଆପଣଙ୍କ Google ଆକାଉଣ୍ଟ ପରିଚାଳନା ଏବଂ/କିମ୍ବା ଅଞ୍ଚଳ ଉପରେ ନିର୍ଭର କରି Google ଡାଟା ସଂଗ୍ରହ କରିବାରୁ ଦୂରେଇ ରହିପାରେ"
+  },
+  "panels/settings/AISettingsTab.ts | describeCodeInComment": {
+    "message": "କନସୋଲ କିମ୍ବା ସୋର୍ସରେ, ଆପଣ ଆବଶ୍ୟକ କରୁଥିବା କୋଡକୁ ଏକ ମନ୍ତବ୍ୟରେ ବର୍ଣ୍ଣନା କରନ୍ତୁ, ତା'ପରେ ଏହାକୁ ଜେନେରେଟ କରିବା ପାଇଁ Ctrl+I ଦବାନ୍ତୁ।"
+  },
+  "panels/settings/AISettingsTab.ts | describeCodeInCommentForMacOs": {
+    "message": "କନସୋଲ କିମ୍ବା ସୋର୍ସରେ, ଆପଣଙ୍କୁ ଆବଶ୍ୟକ ହେଉଥିବା କୋଡକୁ ଏକ ମନ୍ତବ୍ୟରେ ବର୍ଣ୍ଣନା କରନ୍ତୁ, ତା'ପରେ ଏହାକୁ ଜେନେରେଟ କରିବା ପାଇଁ Cmd+I ଦବାନ୍ତୁ।"
   },
   "panels/settings/AISettingsTab.ts | enableAiAssistance": {
     "message": "AI ଆସିଷ୍ଟାଣ୍ଟକୁ ସକ୍ଷମ କରନ୍ତୁ"
@@ -12915,10 +13257,10 @@
     "message": "AI-ପରିଚାଳିତ ଇନସାଇଟ୍ସ ମାଧ୍ୟମରେ CSS ଷ୍ଟାଇଲ, ନେଟୱାର୍କ କାର୍ଯ୍ୟକଳାପ, ପରଫରମାନ୍ସ ବୋଟଲନେକ ଏବଂ ଫାଇଲ ଅରିଜିନଗୁଡ଼ିକୁ ବୁଝନ୍ତୁ"
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsData": {
-    "message": "ନିରୀକ୍ଷଣ କରାଯାଇଥିବା ପୃଷ୍ଠା Web API, ନେଟୱାର୍କ ଅନୁରୋଧ, ଫାଇଲ ଏବଂ ପରଫରମାନ୍ସ ଟ୍ରେସଗୁଡ଼ିକ ମାଧ୍ୟମରେ ଆକ୍ସେସ କରିପାରୁଥିବା ଯେ କୌଣସି ୟୁଜର କ୍ୱେରୀ ଏବଂ ଡାଟାକୁ ଏକ୍ସପ୍ଲାନେସନଗୁଡ଼ିକ ଜେନେରେଟ କରିବା ପାଇଁ Googleକୁ ପଠାଯାଏ। ଏହି ଫିଚରକୁ ଉନ୍ନତ କରିବା ପାଇଁ ଏହି ଡାଟାକୁ ମାନବ ରିଭ୍ୟୁଅରମାନଙ୍କ ଦ୍ୱାରା ଦେଖାଯାଇପାରେ। ବ୍ୟକ୍ତିଗତ କିମ୍ବା ସମ୍ବେଦନଶୀଳ ସୂଚନା ଥିବା ପୃଷ୍ଠାଗୁଡ଼ିକୁ ବ୍ୟବହାର କରନ୍ତୁ ନାହିଁ।"
+    "message": "ଏକ୍ସପ୍ଲାନେସନ ଜେନେରେଟ କରିବା ପାଇଁ ଆପଣଙ୍କ ଚାଟ ମେସେଜ, Web API ବ୍ୟବହାର କରି ଯାଞ୍ଚ କରାଯାଇଥିବା ପୃଷ୍ଠା ଦେଖିପାରୁଥିବା ଯେ କୌଣସି ଡାଟା ଏବଂ ଆପଣ ଚୟନ କରିଥିବା ଫାଇଲ, ନେଟୱାର୍କ ଅନୁରୋଧ ଏବଂ ପରଫରମାନ୍ସ ଟ୍ରେସ ପରି ଆଇଟମଗୁଡ଼ିକୁ Googleକୁ ପଠାଯାଏ। ଏହି ଫିଚରକୁ ଉନ୍ନତ କରିବା ପାଇଁ ଏହି ଡାଟାକୁ ମାନବ ରିଭ୍ୟୁଅରମାନଙ୍କ ଦ୍ୱାରା ଦେଖାଯାଇପାରେ। ବ୍ୟକ୍ତିଗତ କିମ୍ବା ସମ୍ବେଦନଶୀଳ ସୂଚନା ଥିବା ପୃଷ୍ଠାଗୁଡ଼ିକୁ ବ୍ୟବହାର କରନ୍ତୁ ନାହିଁ।"
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsDataNoLogging": {
-    "message": "ନିରୀକ୍ଷଣ କରାଯାଇଥିବା ପୃଷ୍ଠା Web API, ନେଟୱାର୍କ ଅନୁରୋଧ, ଫାଇଲ ଏବଂ ପରଫରମାନ୍ସ ଟ୍ରେସଗୁଡ଼ିକ ମାଧ୍ୟମରେ ଆକ୍ସେସ କରିପାରୁଥିବା ଯେ କୌଣସି ୟୁଜର କ୍ୱେରୀ ଏବଂ ଡାଟାକୁ ଏକ୍ସପ୍ଲାନେସନଗୁଡ଼ିକ ଜେନେରେଟ କରିବା ପାଇଁ Googleକୁ ପଠାଯାଏ। Googleର AI ମଡେଲଗୁଡ଼ିକୁ ଉନ୍ନତ କରିବା ପାଇଁ ଏହି ଡାଟାକୁ ବ୍ୟବହାର କରାଯିବ ନାହିଁ। ଆପଣଙ୍କ ସଂସ୍ଥା ଯେ କୌଣସି ସମୟରେ ଏହି ସେଟିଂସକୁ ପରିବର୍ତ୍ତନ କରିପାରେ।"
+    "message": "ଏକ୍ସପ୍ଲାନେସନ ଜେନେରେଟ କରିବା ପାଇଁ ଆପଣଙ୍କ ଚାଟ ମେସେଜ, Web API ବ୍ୟବହାର କରି ଯାଞ୍ଚ କରାଯାଇଥିବା ପୃଷ୍ଠା ଦେଖିପାରୁଥିବା ଯେ କୌଣସି ଡାଟା ଏବଂ ଆପଣ ଚୟନ କରିଥିବା ଫାଇଲ, ନେଟୱାର୍କ ଅନୁରୋଧ ଏବଂ ପରଫରମାନ୍ସ ଟ୍ରେସ ପରି ଆଇଟମଗୁଡ଼ିକୁ Googleକୁ ପଠାଯାଏ। Googleର AI ମଡେଲଗୁଡ଼ିକୁ ଉନ୍ନତ କରିବା ପାଇଁ ଏହି ଡାଟାକୁ ବ୍ୟବହାର କରାଯିବ ନାହିଁ। ଆପଣଙ୍କ ସଂସ୍ଥା ଯେ କୌଣସି ସମୟରେ ଏହି ସେଟିଂସକୁ ପରିବର୍ତ୍ତନ କରିପାରେ।"
   },
   "panels/settings/AISettingsTab.ts | generatedAiAnnotationsSendData": {
     "message": "ଆନୋଟେସନ ପରାମର୍ଶଗୁଡ଼ିକ ଜେନେରେଟ କରିବା ପାଇଁ ଆପଣଙ୍କର ପରଫରମାନ୍ସ ଟ୍ରେସକୁ Googleକୁ ପଠାଯାଏ। ଏହି ଫିଚରକୁ ଉନ୍ନତ କରିବା ପାଇଁ ଏହି ଡାଟାକୁ ମାନବ ରିଭ୍ୟୁଅରମାନଙ୍କ ଦ୍ୱାରା ଦେଖାଯାଇପାରେ।"
@@ -12930,7 +13272,7 @@
     "message": "ସ୍ୱତଃ-ଜେନେରେଟ ହୋଇଥିବା ଲେବଲଗୁଡ଼ିକ ସହିତ ଆପଣଙ୍କର ପରଫରମାନ୍ସ ଟ୍ରେସ ଆନୋଟେଟ କରିବାରେ ଆପଣଙ୍କୁ ସାହାଯ୍ୟ କରେ"
   },
   "panels/settings/AISettingsTab.ts | helpUnderstandCodeSuggestions": {
-    "message": "ଆପଣଙ୍କ କୋଡ ସମ୍ପୂର୍ଣ୍ଣ କରିବାରେ ସାହାଯ୍ୟ ପାଆନ୍ତୁ"
+    "message": "AI-ପରିଚାଳିତ ପରାମର୍ଶଗୁଡ଼ିକ ସହ ଶୀଘ୍ର କୋଡ ଲେଖନ୍ତୁ"
   },
   "panels/settings/AISettingsTab.ts | helpUnderstandConsole": {
     "message": "କନସୋଲ ଚେତାବନୀ ଏବଂ ତ୍ରୁଟିଗୁଡ଼ିକୁ ବୁଝିବା ଏବଂ ଠିକ କରିବାରେ ଆପଣଙ୍କୁ ସାହାଯ୍ୟ କରେ"
@@ -12982,6 +13324,18 @@
   },
   "panels/settings/AISettingsTab.ts | whenOn": {
     "message": "ଯେତେବେଳେ ଏହା ଚାଲୁ ଥାଏ"
+  },
+  "panels/settings/EditFileSystemView.ts | enterAPath": {
+    "message": "ଏକ ପାଥ୍ ଲେଖନ୍ତୁ"
+  },
+  "panels/settings/EditFileSystemView.ts | enterAUniquePath": {
+    "message": "ଏକ ସ୍ୱତନ୍ତ୍ର ପାଥ୍ ଲେଖନ୍ତୁ"
+  },
+  "panels/settings/EditFileSystemView.ts | excludedFolders": {
+    "message": "ବାଦ ଦିଆଯାଇଥିବା ସବ-ଫୋଲ୍ଡର"
+  },
+  "panels/settings/EditFileSystemView.ts | url": {
+    "message": "URL"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "ସ୍କ୍ରିପ୍ଟର URL ପାଇଁ ଏକ ରେଗୁଲାର ଏକ୍ସପ୍ରେସନ ନିୟମ ଯୋଗ କରନ୍ତୁ"
@@ -13064,6 +13418,9 @@
   "panels/settings/KeybindsSettingsTab.ts | noShortcutForAction": {
     "message": "କାର୍ଯ୍ୟ ପାଇଁ କୌଣସି ସର୍ଟକଟ୍ ନାହିଁ"
   },
+  "panels/settings/KeybindsSettingsTab.ts | recordingKeys": {
+    "message": "କୀଗୁଡ଼ିକୁ ପୁଣି କୋଡ କରାଯାଉଛି"
+  },
   "panels/settings/KeybindsSettingsTab.ts | removeShortcut": {
     "message": "ସର୍ଟକଟ୍ କାଢ଼ି ଦିଅନ୍ତୁ"
   },
@@ -13094,14 +13451,17 @@
   "panels/settings/SettingsScreen.ts | experiments": {
     "message": "ଏକ୍ସପେରିମେଣ୍ଟ"
   },
+  "panels/settings/SettingsScreen.ts | experimentsFound": {
+    "message": "{n,plural, =1{# ଏକ୍ସପେରିମେଣ୍ଟ ମିଳିଛି}other{# ଏକ୍ସପେରିମେଣ୍ଟ ମିଳିଛି}}"
+  },
+  "panels/settings/SettingsScreen.ts | greenDevUnstable": {
+    "message": "ଚେତାବନୀ: ଏହି ସମସ୍ତ ଫିଚର ପ୍ରୋଟୋଟାଇପ ଅଟେ ଏବଂ ବହୁତ ଅସ୍ଥିର ଅଟେ। ସେଗୁଡ଼ିକ ୟୁଜର ଟେଷ୍ଟିଂ ପାଇଁ ଉପଲବ୍ଧ ଅଟେ ଏବଂ ନିର୍ଭର କରିବା ପାଇଁ ଡିଜାଇନ କରାଯାଇନାହିଁ।"
+  },
   "panels/settings/SettingsScreen.ts | learnMore": {
     "message": "ଅଧିକ ଜାଣନ୍ତୁ"
   },
   "panels/settings/SettingsScreen.ts | noResults": {
     "message": "କୌଣସି ପରୀକ୍ଷଣ ଫିଲ୍ଟର୍ ସହ ମେଳ ହେଉନାହିଁ"
-  },
-  "panels/settings/SettingsScreen.ts | oneOrMoreSettingsHaveChanged": {
-    "message": "ଗୋଟିଏ କିମ୍ବା ଅଧିକ ସେଟିଂସ ପରିବର୍ତ୍ତନ ହୋଇଛି ଯାହା କାର୍ଯ୍ୟକାରୀ ହେବା ପାଇଁ ରିଲୋଡ ହେବା ଆବଶ୍ୟକ"
   },
   "panels/settings/SettingsScreen.ts | restoreDefaultsAndReload": {
     "message": "ଡିଫଲ୍ଟଗୁଡ଼ିକୁ ରିଷ୍ଟୋର୍ କରି ପୁଣି ଲୋଡ୍ କରନ୍ତୁ"
@@ -13115,17 +13475,14 @@
   "panels/settings/SettingsScreen.ts | settings": {
     "message": "ସେଟିଂସ"
   },
+  "panels/settings/SettingsScreen.ts | settingsChangedReloadDevTools": {
+    "message": "ସେଟିଂସ ପରିବର୍ତ୍ତନ କରାଯାଇଛି। ଲାଗୁ କରିବାକୁ DevTools ରିଲୋଡ କରନ୍ତୁ।"
+  },
   "panels/settings/SettingsScreen.ts | shortcuts": {
     "message": "ସର୍ଟକଟଗୁଡ଼ିକ"
   },
-  "panels/settings/SettingsScreen.ts | theseExperimentsAreParticularly": {
-    "message": "ଚେତାବନୀ: ଏହି ପରୀକ୍ଷଣଗୁଡ଼ିକ ବିଶେଷ ଭାବରେ ଅସ୍ଥିର ଅଟେ। ନିଜ ରିସ୍କରେ ସକ୍ଷମ କରନ୍ତୁ।"
-  },
   "panels/settings/SettingsScreen.ts | theseExperimentsCouldBeUnstable": {
     "message": "ଚେତାବନୀ: ଏହି ପରୀକ୍ଷଣଗୁଡ଼ିକ ଅସ୍ଥିର କିମ୍ବା ଅବିଶ୍ୱସନୀୟ ହୋଇପାରେ।"
-  },
-  "panels/settings/SettingsScreen.ts | unstableExperiments": {
-    "message": "ଅସ୍ଥିର ପରୀକ୍ଷଣ"
   },
   "panels/settings/WorkspaceSettingsTab.ts | addFolder": {
     "message": "ଫୋଲ୍ଡରରେ ଯୋଗ କରନ୍ତୁ"
@@ -13349,6 +13706,9 @@
   "panels/settings/settings-meta.ts | experiments": {
     "message": "ପରୀକ୍ଷାଗୁଡ଼ିକ"
   },
+  "panels/settings/settings-meta.ts | greenDevProtoTypes": {
+    "message": "GreenDev"
+  },
   "panels/settings/settings-meta.ts | ignoreList": {
     "message": "ଅଣଦେଖା ତାଲିକା"
   },
@@ -13366,6 +13726,9 @@
   },
   "panels/settings/settings-meta.ts | showExperiments": {
     "message": "ପରୀକ୍ଷାଗୁଡ଼ିକ ଦେଖାନ୍ତୁ"
+  },
+  "panels/settings/settings-meta.ts | showGreenDev": {
+    "message": "GreenDev ଦେଖାନ୍ତୁ"
   },
   "panels/settings/settings-meta.ts | showIgnoreList": {
     "message": "ଅଣଦେଖା କରନ୍ତୁ ତାଲିକାକୁ ଦେଖାନ୍ତୁ"
@@ -13519,6 +13882,12 @@
   },
   "panels/sources/CallStackSidebarPane.ts | debugFileNotFound": {
     "message": "\"{PH1}\" ଡିବଗ ଫାଇଲ ଲୋଡ କରିବାରେ ବିଫଳ ହୋଇଛି।"
+  },
+  "panels/sources/CallStackSidebarPane.ts | debugSymbolsIncomplete": {
+    "message": "{PH1} ଫଙ୍କସନ ପାଇଁ ଡିବଗ ସୂଚନା ଅସମ୍ପୂର୍ଣ୍ଣ ଅଛି"
+  },
+  "panels/sources/CallStackSidebarPane.ts | failedToLoadDebugSymbolsForFunction": {
+    "message": "\"{PH1}\" ଫଙ୍କସନ ପାଇଁ କୌଣସି ଡିବଗ ସୂଚନା ନାହିଁ"
   },
   "panels/sources/CallStackSidebarPane.ts | notPaused": {
     "message": "ବିରତ କରାଯାଇନାହିଁ"
@@ -13871,6 +14240,33 @@
   "panels/sources/OutlineQuickOpen.ts | openAJavascriptOrCssFileToSee": {
     "message": "ପ୍ରତୀକଗୁଡ଼ିକୁ ଦେଖିବାକୁ ଏକ JavaScript କିମ୍ବା CSS ଫାଇଲକୁ ଖୋଲନ୍ତୁ"
   },
+  "panels/sources/PersistenceActions.ts | openInContainingFolder": {
+    "message": "ଯେଉଁ ଫୋଲ୍ଡରରେ ଅଛି ସେହି ଫୋଲ୍ଡର ଖୋଲନ୍ତୁ"
+  },
+  "panels/sources/PersistenceActions.ts | overrideContent": {
+    "message": "ବିଷୟବସ୍ତୁ ଓଭରରାଇଡ କରନ୍ତୁ"
+  },
+  "panels/sources/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
+    "message": "‘{PH1}’ ସୋର୍ସ ଦ୍ୱାରା ମେପ କରାଯାଇଥିବା ଏକ ଫାଇଲ ଅଟେ ଏବଂ ଏହାକୁ ଓଭରରାଇଡ କରାଯାଇପାରିବ ନାହିଁ।"
+  },
+  "panels/sources/PersistenceActions.ts | overrideSourceMappedFileWarning": {
+    "message": "ଏହା ପରିବର୍ତ୍ତେ ‘{PH1}’କୁ ଓଭରରାଇଡ କରିବେ?"
+  },
+  "panels/sources/PersistenceActions.ts | saveAs": {
+    "message": "ଏହି ଭାବେ ସେଭ କରନ୍ତୁ…"
+  },
+  "panels/sources/PersistenceActions.ts | saveFailed": {
+    "message": "ଡିସ୍କରେ ଫାଇଲ ସେଭ କରିବାରେ ବିଫଳ ହୋଇଛି।"
+  },
+  "panels/sources/PersistenceActions.ts | saveImage": {
+    "message": "ଛବି ସେଭ୍ କରନ୍ତୁ"
+  },
+  "panels/sources/PersistenceActions.ts | saveWasmFailed": {
+    "message": "ଡିସ୍କରେ WASM ମଡ୍ୟୁଲ ସେଭ କରିବାରେ ଅସମର୍ଥ। ସମ୍ଭବତଃ ମଡ୍ୟୁଲ ବହୁତ ବଡ଼ ଅଟେ।"
+  },
+  "panels/sources/PersistenceActions.ts | showOverrides": {
+    "message": "ସମସ୍ତ ଓଭରରାଇଡ ଦେଖାନ୍ତୁ"
+  },
   "panels/sources/ProfilePlugin.ts | kb": {
     "message": "kB"
   },
@@ -14174,9 +14570,6 @@
   "panels/sources/sources-meta.ts | createNewSnippet": {
     "message": "ନୂଆ ସ୍ନିପେଟ୍ ତିଆରି କରନ୍ତୁ"
   },
-  "panels/sources/sources-meta.ts | cssSourceMaps": {
-    "message": "CSS ସୋର୍ସ ମେପ"
-  },
   "panels/sources/sources-meta.ts | deactivateBreakpoints": {
     "message": "ବ୍ରେକପଏଣ୍ଟଗୁଡ଼ିକୁ ନିଷ୍କ୍ରିୟ କରନ୍ତୁ"
   },
@@ -14200,12 +14593,6 @@
   },
   "panels/sources/sources-meta.ts | disableCodeFolding": {
     "message": "କୋଡ୍ ଫୋଲଡିଂ ଅକ୍ଷମ କରନ୍ତୁ"
-  },
-  "panels/sources/sources-meta.ts | disableCssSourceMaps": {
-    "message": "CSS ସୋର୍ସ ମ୍ୟାପକୁ ଅକ୍ଷମ କରନ୍ତୁ"
-  },
-  "panels/sources/sources-meta.ts | disableJavaScriptSourceMaps": {
-    "message": "JavaScript ସୋର୍ସ ମ୍ୟାପଗୁଡ଼ିକୁ ଅକ୍ଷମ କରନ୍ତୁ"
   },
   "panels/sources/sources-meta.ts | disableTabMovesFocus": {
     "message": "ଟାବ୍ ଦ୍ୱାରା ଫୋକସକୁ ମୁଭ୍ କରାଯିବାକୁ ଅକ୍ଷମ କରନ୍ତୁ"
@@ -14252,12 +14639,6 @@
   "panels/sources/sources-meta.ts | enableCodeFolding": {
     "message": "କୋଡ୍ ଫୋଲ୍ଡିଂକୁ ସକ୍ଷମ କରନ୍ତୁ"
   },
-  "panels/sources/sources-meta.ts | enableCssSourceMaps": {
-    "message": "CSS ସୋର୍ସ ମ୍ୟାପକୁ ସକ୍ଷମ କରନ୍ତୁ"
-  },
-  "panels/sources/sources-meta.ts | enableJavaScriptSourceMaps": {
-    "message": "JavaScript ସୋର୍ସ ମ୍ୟାପକୁ ସକ୍ଷମ କରନ୍ତୁ"
-  },
   "panels/sources/sources-meta.ts | enableTabMovesFocus": {
     "message": "ଟାବ୍ ଦ୍ୱାରା ଫୋକସକୁ ମୁଭ୍ କରିବା ସକ୍ଷମ କରନ୍ତୁ"
   },
@@ -14284,9 +14665,6 @@
   },
   "panels/sources/sources-meta.ts | incrementCssUnitBy": {
     "message": "CSS ୟୁନିଟରେ {PH1} ବୃଦ୍ଧି"
-  },
-  "panels/sources/sources-meta.ts | javaScriptSourceMaps": {
-    "message": "JavaScript ସୋର୍ସର ମେପ"
   },
   "panels/sources/sources-meta.ts | jumpToNextEditingLocation": {
     "message": "ପରବର୍ତ୍ତୀ ଏଡିଟିଂ ଲୋକେସନକୁ ଯାଆନ୍ତୁ"
@@ -14343,7 +14721,7 @@
     "message": "ସମସ୍ତ ସେଭ୍ କରନ୍ତୁ"
   },
   "panels/sources/sources-meta.ts | scope": {
-    "message": "ସ୍କୋପ୍"
+    "message": "ସ୍କୋପ"
   },
   "panels/sources/sources-meta.ts | search": {
     "message": "ସନ୍ଧାନ କରନ୍ତୁ"
@@ -14439,7 +14817,10 @@
     "message": "ଟ୍ରେଲିଂ"
   },
   "panels/sources/sources-meta.ts | wasmAutoStepping": {
-    "message": "ଡିବଗ ସୂଚନା ସହ Wasmକୁ ଡିବଗ କରିବା ସମୟରେ, ସମ୍ଭବ ହେଲେ wasm ବାଇଟକୋଡରେ ବିରତ କରନ୍ତୁ ନାହିଁ"
+    "message": "Wasm ସ୍ୱତଃ-ଷ୍ଟେପିଂ ବାଇଟକୋଡ"
+  },
+  "panels/sources/sources-meta.ts | wasmAutoSteppingInfo": {
+    "message": "ଡିବଗ ସୂଚନା ସହ Wasmକୁ ଡିବଗ କରିବା ସମୟରେ, wasm ବାଇଟକୋଡକୁ ବାଦ ଦେବାକୁ ଚେଷ୍ଟା କରନ୍ତୁ"
   },
   "panels/sources/sources-meta.ts | watch": {
     "message": "ଦେଖନ୍ତୁ"
@@ -14627,8 +15008,20 @@
   "panels/timeline/ThreadAppender.ts | workletServiceS": {
     "message": "ଅକ୍ସନ ୱାର୍କଲେଟ ସେବା — {PH1}"
   },
+  "panels/timeline/TimelineController.ts | initializingTracing": {
+    "message": "ଟ୍ରେସିଂ ଆରମ୍ଭ କରାଯାଉଛି…"
+  },
+  "panels/timeline/TimelineController.ts | tracing": {
+    "message": "ଟ୍ରେସ କରାଯାଉଛି…"
+  },
   "panels/timeline/TimelineController.ts | tracingNotSupported": {
     "message": "ଏହି ପ୍ରକାରର ଟାର୍ଗେଟ୍ ପାଇଁ ପରଫରମାନ୍ସ ଟ୍ରେସ୍ ରେକର୍ଡିଂ ସମର୍ଥିତ ନୁହେଁ"
+  },
+  "panels/timeline/TimelineController.ts | waitingForLoadEvent": {
+    "message": "ଲୋଡ ଇଭେଣ୍ଟ ପାଇଁ ଅପେକ୍ଷା କରାଯାଉଛି…"
+  },
+  "panels/timeline/TimelineController.ts | waitingForLoadEventPlus5Seconds": {
+    "message": "ଲୋଡ ଇଭେଣ୍ଟ ପାଇଁ ଅପେକ୍ଷା କରାଯାଉଛି (+5s)…"
   },
   "panels/timeline/TimelineDetailsView.ts | bottomup": {
     "message": "ବଟମ-ଅପ"
@@ -14780,6 +15173,9 @@
   "panels/timeline/TimelinePanel.ts | close": {
     "message": "ବନ୍ଦ କରନ୍ତୁ"
   },
+  "panels/timeline/TimelinePanel.ts | compressingTraceForDownload": {
+    "message": "କମ୍ପ୍ରେସ କରାଯାଉଛି…"
+  },
   "panels/timeline/TimelinePanel.ts | cpu": {
     "message": "CPU:"
   },
@@ -14800,6 +15196,9 @@
   },
   "panels/timeline/TimelinePanel.ts | enableSelectorStats": {
     "message": "CSS ଚୟନକାରୀ ପରିସଂଖ୍ୟାନକୁ ସକ୍ଷମ କରନ୍ତୁ (ସ୍ଲୋ)"
+  },
+  "panels/timeline/TimelinePanel.ts | encodingTraceForDownload": {
+    "message": "ଏନକୋଡିଂ…"
   },
   "panels/timeline/TimelinePanel.ts | eventSelected": {
     "message": "{PH1} ଇଭେଣ୍ଟକୁ ଚୟନ କରାଯାଇଛି"
@@ -14839,6 +15238,9 @@
   },
   "panels/timeline/TimelinePanel.ts | networkConditions": {
     "message": "ନେଟୱାର୍କ ସ୍ଥିତି"
+  },
+  "panels/timeline/TimelinePanel.ts | preparingTraceForDownload": {
+    "message": "ପ୍ରସ୍ତୁତ ହେଉଛି…"
   },
   "panels/timeline/TimelinePanel.ts | processed": {
     "message": "ପ୍ରକ୍ରିୟାନ୍ୱିତ କରାଯାଇଛି"
@@ -15224,9 +15626,6 @@
   "panels/timeline/TimelineUIUtils.ts | layerRoot": {
     "message": "ଲେୟର ରୁଟ"
   },
-  "panels/timeline/TimelineUIUtils.ts | layoutForced": {
-    "message": "ଲେଆଉଟ ବାଧ୍ୟ କରାଯାଇଛି"
-  },
   "panels/timeline/TimelineUIUtils.ts | layoutRoot": {
     "message": "ଲେଆଉଟର ରୁଟ୍"
   },
@@ -15277,9 +15676,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | range": {
     "message": "ରେଞ୍ଜ୍"
-  },
-  "panels/timeline/TimelineUIUtils.ts | recalculationForced": {
-    "message": "ପୁଣି ଗଣନା କରିବା ପାଇଁ ବାଧ୍ୟ କରାଯାଇଛି"
   },
   "panels/timeline/TimelineUIUtils.ts | relatedNode": {
     "message": "ସମ୍ବନ୍ଧିତ ନୋଡ"
@@ -15479,14 +15875,17 @@
   "panels/timeline/components/DetailsView.ts | websocketProtocol": {
     "message": "WebSocket ପ୍ରୋଟୋକଲ"
   },
+  "panels/timeline/components/ExportTraceOptions.ts | explanation": {
+    "message": "ଏକ୍ସପ୍ଲାନେସନ"
+  },
   "panels/timeline/components/ExportTraceOptions.ts | exportTraceOptionsDialogTitle": {
     "message": "ପରଫରମାନ୍ସ ଟ୍ରେସକୁ ସେଭ କରନ୍ତୁ "
   },
   "panels/timeline/components/ExportTraceOptions.ts | includeAnnotations": {
     "message": "ଏନୋଟେସନ ଯୋଗ କରନ୍ତୁ"
   },
-  "panels/timeline/components/ExportTraceOptions.ts | includeScriptContent": {
-    "message": "ସ୍କ୍ରିପ୍ଟ ବିଷୟବସ୍ତୁ ଅନ୍ତର୍ଭୁକ୍ତ କରନ୍ତୁ"
+  "panels/timeline/components/ExportTraceOptions.ts | includeResourceContent": {
+    "message": "ରିସୋର୍ସ ବିଷୟବସ୍ତୁ ଅନ୍ତର୍ଭୁକ୍ତ କରନ୍ତୁ"
   },
   "panels/timeline/components/ExportTraceOptions.ts | includeSourcemap": {
     "message": "ସ୍କ୍ରିପ୍ଟ ସୋର୍ସ ମେପଗୁଡ଼ିକ ଅନ୍ତର୍ଭୁକ୍ତ କରନ୍ତୁ"
@@ -15494,11 +15893,11 @@
   "panels/timeline/components/ExportTraceOptions.ts | moreInfoLabel": {
     "message": "ଅତିରିକ୍ତ ସୂଚନା:"
   },
+  "panels/timeline/components/ExportTraceOptions.ts | resourceContentPrivacyInfo": {
+    "message": "ସମସ୍ତ ଲୋଡ ହୋଇଥିବା HTML, CSS ଏବଂ ସ୍କ୍ରିପ୍ଟର ସମ୍ପୂର୍ଣ୍ଣ ବିଷୟବସ୍ତୁ ଅନ୍ତର୍ଭୁକ୍ତ କରେ (ଏକ୍ସଟେନସନ ବ୍ୟତୀତ)।"
+  },
   "panels/timeline/components/ExportTraceOptions.ts | saveButtonTitle": {
     "message": "ସେଭ କରନ୍ତୁ"
-  },
-  "panels/timeline/components/ExportTraceOptions.ts | scriptContentPrivacyInfo": {
-    "message": "ସମସ୍ତ ଲୋଡ ହୋଇଥିବା ସ୍କ୍ରିପ୍ଟର ସମ୍ପୂର୍ଣ୍ଣ ବିଷୟବସ୍ତୁ ଅନ୍ତର୍ଭୁକ୍ତ କରେ (ଏକ୍ସଟେନସନ ବ୍ୟତୀତ)।"
   },
   "panels/timeline/components/ExportTraceOptions.ts | shouldCompress": {
     "message": "gzip ସହିତ କମ୍ପ୍ରେସ କରନ୍ତୁ"
@@ -15661,6 +16060,12 @@
   },
   "panels/timeline/components/LiveMetricsView.ts | eventLogs": {
     "message": "ଇଣ୍ଟରାକ୍ସନ ଏବଂ ଲେଆଉଟ ସିଫ୍ଟ ଲଗ ବିଭାଗ"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | fieldDataHistoryLink": {
+    "message": "ଇତିହାସ ଭ୍ୟୁ କରନ୍ତୁ"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | fieldDataHistoryTooltip": {
+    "message": "CrUX Visରେ ଫିଲ୍ଡ ଡାଟା ଇତିହାସକୁ ଭ୍ୟୁ କରନ୍ତୁ"
   },
   "panels/timeline/components/LiveMetricsView.ts | fieldMetricsTitle": {
     "message": "ଫିଲ୍ଡ ମେଟ୍ରିକ୍ସ"
@@ -16019,6 +16424,9 @@
   "panels/timeline/components/NetworkRequestTooltip.ts | waitingOnMainThread": {
     "message": "ମୁଖ୍ୟ ଥ୍ରେଡରେ ଅପେକ୍ଷା କରାଯାଉଛି"
   },
+  "panels/timeline/components/NetworkRequestTooltip.ts | wasThrottled": {
+    "message": "ଅନୁରୋଧକୁ ଥ୍ରୋଟଲ କରାଯାଇଛି ({PH1})"
+  },
   "panels/timeline/components/NetworkThrottlingSelector.ts | add": {
     "message": "ଯୋଗ କରନ୍ତୁ…"
   },
@@ -16256,14 +16664,23 @@
   "panels/timeline/utils/IgnoreList.ts | unknown": {
     "message": "ଅଜଣା"
   },
+  "panels/utils/utils.ts | prefetchFailed": {
+    "message": "{PH1} ପ୍ରିଫେଚ ଅନୁରୋଧ ବିଫଳ ହୋଇଛି"
+  },
   "panels/utils/utils.ts | requestContentHeadersOverridden": {
     "message": "ଉଭୟ ଅନୁରୋଧ କରାଯାଇଥିବା ବିଷୟବସ୍ତୁ ଏବଂ ହେଡରଗୁଡ଼ିକୁ ଓଭରରାଇଡ କରାଯାଇଛି"
   },
   "panels/utils/utils.ts | requestContentOverridden": {
     "message": "ଅନୁରୋଧ କରାଯାଇଥିବା ବିଷୟବସ୍ତୁକୁ ଓଭରରାଇଡ କରାଯାଇଛି"
   },
+  "panels/utils/utils.ts | requestFailed": {
+    "message": "{PH1} ଅନୁରୋଧ ବିଫଳ ହୋଇଛି"
+  },
   "panels/utils/utils.ts | requestHeadersOverridden": {
     "message": "ଅନୁରୋଧ ହେଡରଗୁଡ଼ିକ ଓଭରରାଇଡ ହୋଇଛି"
+  },
+  "panels/utils/utils.ts | resourceTypeWithThrottling": {
+    "message": "{PH1} ({PH2}ରେ ଥ୍ରୋଟଲ କରାଯାଇଛି)"
   },
   "panels/utils/utils.ts | thirdPartyPhaseout": {
     "message": "Chrome ଫ୍ଲାଗ କିମ୍ବା ବ୍ରାଉଜରର କନଫିଗରେସନ ଯୋଗୁଁ ଏହି ଅନୁରୋଧ ପାଇଁ କୁକୀଗୁଡ଼ିକୁ ବ୍ଲକ କରାଯାଇଛି। ସମସ୍ୟା ପେନେଲରେ ଅଧିକ ଜାଣନ୍ତୁ।"
@@ -16471,6 +16888,12 @@
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "ଏହି ସମୟରେ ସମସ୍ୟା ଉପଲବ୍ଧ ନାହିଁ"
+  },
+  "ui/components/list/List.ts | edit": {
+    "message": "ଏଡିଟ କରନ୍ତୁ"
+  },
+  "ui/components/list/List.ts | remove": {
+    "message": "କାଢ଼ି ଦିଅନ୍ତୁ"
   },
   "ui/components/markdown_view/CodeBlock.ts | code": {
     "message": "କୋଡ"
@@ -16692,7 +17115,7 @@
     "message": "ଆଇଟମରେ କରାଯାଇଥିବା ପରିବର୍ତ୍ତନଗୁଡ଼ିକୁ ସେଭ କରାଯାଇଛି"
   },
   "ui/legacy/ListWidget.ts | editString": {
-    "message": "ଏଡିଟ୍ କରନ୍ତୁ"
+    "message": "ଏଡିଟ କରନ୍ତୁ"
   },
   "ui/legacy/ListWidget.ts | removeString": {
     "message": "କାଢ଼ି ଦିଅନ୍ତୁ"
@@ -16763,12 +17186,6 @@
   "ui/legacy/SearchableView.ts | useRegularExpression": {
     "message": "ରେଗୁଲାର ଏକ୍ସପ୍ରେସନଗୁଡ଼ିକୁ ବ୍ୟବହାର କରନ୍ତୁ"
   },
-  "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
-    "message": "ଗୋଟିଏ କିମ୍ବା ଅଧିକ ସେଟିଂସ ପରିବର୍ତ୍ତନ ହୋଇଛି ଯାହା କାର୍ଯ୍ୟକାରୀ ହେବା ପାଇଁ ରିଲୋଡ ହେବା ଆବଶ୍ୟକ"
-  },
-  "ui/legacy/SettingsUI.ts | srequiresReload": {
-    "message": "*ପୁଣି ଲୋଡ୍ କରିବା ଆବଶ୍ୟକ କରେ"
-  },
   "ui/legacy/SoftContextMenu.ts | checked": {
     "message": "ଯାଞ୍ଚ କରାଯାଇଛି"
   },
@@ -16816,6 +17233,9 @@
   },
   "ui/legacy/TabbedPane.ts | moveTabRight": {
     "message": "ଡାହାଣକୁ ମୁଭ କରନ୍ତୁ"
+  },
+  "ui/legacy/TabbedPane.ts | panelContainsAnnotation": {
+    "message": "ଏହି ପେନେଲରେ ଗୋଟିଏ କିମ୍ବା ଅଧିକ ଏନୋଟେସନ ଅଛି"
   },
   "ui/legacy/TabbedPane.ts | previewFeature": {
     "message": "ପ୍ରିଭ୍ୟୁ ଫିଚର"
@@ -16931,8 +17351,8 @@
   "ui/legacy/components/color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
     "message": "କମ୍ କଣ୍ଟ୍ରାଷ୍ଟର ସମାଧାନ କରିବାକୁ ପ୍ରସ୍ତାବିତ ରଙ୍ଗ {PH1}କୁ ବ୍ୟବହାର କରନ୍ତୁ"
   },
-  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorClippedTooltipText": {
-    "message": "ଫର୍ମାଟର ଗେମଟ ସହ ମେଳ କରିବା ପାଇଁ ଏହି ରଙ୍ଗକୁ କ୍ଲିପ କରାଯାଇଛି। ପ୍ରକୃତ ଫଳାଫଳ {PH1} ଥିଲା"
+  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorShiftWarning": {
+    "message": "⚠️ ଏକ ନେରୋ ଗାମଟକୁ କନଭର୍ସନ କରିବା ଫଳରେ ରଙ୍ଗ ସିଫ୍ଟ ହେବ"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | addToPalette": {
     "message": "ପ୍ୟାଲେଟରେ ଯୋଗ କରନ୍ତୁ"
@@ -16988,6 +17408,9 @@
   "ui/legacy/components/cookie_table/CookiesTable.ts | cookies": {
     "message": "କୁକୀଗୁଡ଼ିକ"
   },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | domain": {
+    "message": "ଡୋମେନ"
+  },
   "ui/legacy/components/cookie_table/CookiesTable.ts | editableCookies": {
     "message": "ଏଡିଟ୍ କରିହେଉଥିବା କୁକୀଗୁଡ଼ିକ"
   },
@@ -17000,6 +17423,18 @@
   "ui/legacy/components/cookie_table/CookiesTable.ts | opaquePartitionKey": {
     "message": "(ଅସ୍ପଷ୍ଟ)"
   },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | partitionKeySite": {
+    "message": "ପାର୍ଟିସନ କୀ ସାଇଟ"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | path": {
+    "message": "ପାଥ"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | priority": {
+    "message": "ପ୍ରାଥମିକତା"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | secure": {
+    "message": "ସୁରକ୍ଷିତ"
+  },
   "ui/legacy/components/cookie_table/CookiesTable.ts | session": {
     "message": "ସେସନ୍"
   },
@@ -17007,7 +17442,7 @@
     "message": "ଏହି କୁକୀ ସହ ସମ୍ବନ୍ଧିତ ସମସ୍ୟା ଦେଖାନ୍ତୁ"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | showRequestsWithThisCookie": {
-    "message": "ଏହି କୁକୀଗୁଡ଼ିକ ସହ ଅନୁରୋଧଗୁଡ଼ିକୁ ଦେଖାନ୍ତୁ"
+    "message": "ଏହି କୁକୀ ସହ ଅନୁରୋଧଗୁଡ଼ିକୁ ଦେଖାନ୍ତୁ"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | size": {
     "message": "ଆକାର"
@@ -17052,7 +17487,7 @@
     "message": "ବିସ୍ତାର କରାଯାଇଛି"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | headerOptions": {
-    "message": "ହେଡର୍ ବିକଳ୍ପ"
+    "message": "ହେଡର ବିକଳ୍ପ"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | levelS": {
     "message": "ସ୍ତର {PH1}"
@@ -17061,7 +17496,7 @@
     "message": "ରିଫ୍ରେସ୍ କରନ୍ତୁ"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | resetColumns": {
-    "message": "ସ୍ତମ୍ଭଗୁଡ଼ିକୁ ରିସେଟ୍ କରନ୍ତୁ"
+    "message": "ସ୍ତମ୍ଭଗୁଡ଼ିକୁ ରିସେଟ କରନ୍ତୁ"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | rowsS": {
     "message": "ଧାଡ଼ି: {PH1}"
@@ -17073,7 +17508,7 @@
     "message": "{PH1} {PH2}, ଟେବୁଲର ଧାଡ଼ିଗୁଡ଼ିକରେ ନାଭିଗେଟ୍ କରିବାକୁ ଏବଂ ଇଣ୍ଟରାକ୍ଟ କରିବାକୁ ଉପର ଏବଂ ତଳ ତୀର କୀ'ଗୁଡ଼ିକୁ ବ୍ୟବହାର କରନ୍ତୁ; ଗୋଟିଏ ପରେ ଗୋଟିଏ ସେଲର ଡାଟା ପଢ଼ିବା ପାଇଁ ବ୍ରାଉଜ୍ ମୋଡ୍ ବ୍ୟବହାର କରନ୍ତୁ।"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | sortByString": {
-    "message": "ଏହି କ୍ରମରେ ସଜାନ୍ତୁ"
+    "message": "ଏହି ଅନୁସାରେ ସର୍ଟ କରନ୍ତୁ"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | sortableColumn": {
     "message": "ସର୍ଟ କରିହେଉଥିବା ସ୍ତମ୍ଭ। ସର୍ଟିଂ ଫିଲ୍ଟର ଲାଗୁ କରିବାକୁ ଏଣ୍ଟର ଦବାନ୍ତୁ"
@@ -17184,7 +17619,7 @@
     "message": "ମୂଲ୍ୟ କପି କରନ୍ତୁ"
   },
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | dots": {
-    "message": "(...)"
+    "message": "(…)"
   },
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | exceptionS": {
     "message": "[Exception: {PH1}]"
@@ -17193,7 +17628,7 @@
     "message": "ବାରମ୍ବାର ବିସ୍ତାର କରନ୍ତୁ"
   },
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | invokePropertyGetter": {
-    "message": "ପ୍ରୋପର୍ଟି ଗେଟର୍ ଆରମ୍ଭ କରନ୍ତୁ"
+    "message": "ପ୍ରୋପର୍ଟି ଗେଟର ଆରମ୍ଭ କରନ୍ତୁ"
   },
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | longTextWasTruncatedS": {
     "message": "ବଡ଼ ଟେକ୍ସଟକୁ ଛୋଟ କରିଦିଆଯାଇଛି ({PH1})"
@@ -17339,14 +17774,14 @@
   "ui/legacy/components/quick_open/CommandMenu.ts | noCommandsFound": {
     "message": "କୌଣସି କମାଣ୍ଡ ମିଳିଲା ନାହିଁ"
   },
-  "ui/legacy/components/quick_open/CommandMenu.ts | oneOrMoreSettingsHaveChanged": {
-    "message": "ଗୋଟିଏ କିମ୍ବା ଅଧିକ ସେଟିଂସ ପରିବର୍ତ୍ତନ ହୋଇଛି ଯାହା କାର୍ଯ୍ୟକାରୀ ହେବା ପାଇଁ ରିଲୋଡ ହେବା ଆବଶ୍ୟକ"
-  },
   "ui/legacy/components/quick_open/CommandMenu.ts | run": {
     "message": "ଚଲାନ୍ତୁ"
   },
   "ui/legacy/components/quick_open/CommandMenu.ts | runCommand": {
     "message": "କମାଣ୍ଡ ଚଲାନ୍ତୁ"
+  },
+  "ui/legacy/components/quick_open/CommandMenu.ts | settingsChangedReloadDevTools": {
+    "message": "ସେଟିଂସ ପରିବର୍ତ୍ତନ କରାଯାଇଛି। ଲାଗୁ କରିବାକୁ DevTools ରିଲୋଡ କରନ୍ତୁ।"
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | newFeature": {
     "message": "ଏହା ଏକ ନୂଆ ଫିଚର ଅଟେ"
@@ -17371,6 +17806,12 @@
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | runCommand": {
     "message": "କମାଣ୍ଡ ଚଲାନ୍ତୁ"
+  },
+  "ui/legacy/components/settings_ui/SettingsUI.ts | settingsChangedReloadDevTools": {
+    "message": "ସେଟିଂସ ପରିବର୍ତ୍ତନ କରାଯାଇଛି। ଲାଗୁ କରିବାକୁ DevTools ରିଲୋଡ କରନ୍ତୁ।"
+  },
+  "ui/legacy/components/settings_ui/SettingsUI.ts | srequiresReload": {
+    "message": "*ପୁଣି ଲୋଡ୍ କରିବା ଆବଶ୍ୟକ କରେ"
   },
   "ui/legacy/components/source_frame/FontView.ts | font": {
     "message": "ଫଣ୍ଟ"

@@ -50,8 +50,6 @@ export const DEFAULT_VIEW = (input, _output, target) => {
         <ul role="group">
           <li role="treeitem">
             <devtools-widget .widgetConfig=${widgetConfig(Components.JSPresentationUtils.StackTracePreviewContent, {
-            target: input.target,
-            linkifier: input.linkifier,
             options: { tabStops: true },
             stackTrace: input.stackTrace,
         })}></devtools-widget>
@@ -131,13 +129,11 @@ export const DEFAULT_VIEW = (input, _output, target) => {
   `, target);
 };
 export class RequestInitiatorView extends UI.Widget.VBox {
-    linkifier;
     request;
     #view;
     constructor(request, view = DEFAULT_VIEW) {
         super({ jslog: `${VisualLogging.pane('initiator').track({ resize: true })}` });
         this.element.classList.add('request-initiator-view');
-        this.linkifier = new Components.Linkifier.Linkifier();
         this.request = request;
         this.#view = view;
     }
@@ -150,7 +146,8 @@ export class RequestInitiatorView extends UI.Widget.VBox {
         const networkManager = SDK.NetworkManager.NetworkManager.forRequest(request);
         const target = networkManager?.target() ?? targetManager.primaryPageTarget() ?? targetManager.rootTarget();
         let stackTrace = null;
-        const preview = new Components.JSPresentationUtils.StackTracePreviewContent(undefined, target ?? undefined, linkifier, { tabStops: focusableLink });
+        const preview = new Components.JSPresentationUtils.StackTracePreviewContent();
+        preview.options = { tabStops: focusableLink };
         if (target) {
             stackTrace = await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
                 .createStackTraceFromProtocolRuntime(initiator.stack, target);
@@ -173,8 +170,6 @@ export class RequestInitiatorView extends UI.Widget.VBox {
             initiatorGraph,
             stackTrace,
             request: this.request,
-            linkifier: this.linkifier,
-            target: target || undefined,
         };
         this.#view(viewInput, undefined, this.contentElement);
     }

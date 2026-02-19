@@ -18,6 +18,7 @@ import './NodeStackTraceWidget.js';
 import './StylePropertiesSection.js';
 import './StylePropertyHighlighter.js';
 import './StylesSidebarPane.js';
+import './StylesAiCodeCompletionProvider.js';
 import './StylePropertyTreeElement.js';
 import './ComputedStyleWidget.js';
 import './CSSRuleValidator.js';
@@ -56,8 +57,9 @@ import * as StylePropertiesSection from './StylePropertiesSection.js';
 import * as StylePropertyHighlighter from './StylePropertyHighlighter.js';
 import * as StylePropertyTreeElement from './StylePropertyTreeElement.js';
 import * as StylePropertyUtils from './StylePropertyUtils.js';
+import * as StylesAiCodeCompletionProvider from './StylesAiCodeCompletionProvider.js';
 import * as StylesSidebarPane from './StylesSidebarPane.js';
 import * as TopLayerContainer from './TopLayerContainer.js';
 import * as WebCustomData from './WebCustomData.js';
-export { AccessibilityTreeUtils, AccessibilityTreeView, AdoptedStyleSheetTreeElement, ClassesPaneWidget, ColorSwatchPopoverIcon, ComputedStyleWidget, CSSRuleValidator, CSSValueTraceView, DOMPath, ElementsPanel, ElementsSidebarPane, ElementStatePaneWidget, ElementsTreeElement, ElementsTreeOutline, ElementsTreeOutlineRenderer, EventListenersWidget, InspectElementModeController, LayersWidget, LayoutPane, MarkerDecorator, MetricsSidebarPane, NodeStackTraceWidget, PlatformFontsWidget, PropertiesWidget, PropertyRenderer, StyleEditorWidget, StylePropertiesSection, StylePropertyHighlighter, StylePropertyTreeElement, StylePropertyUtils, StylesSidebarPane, TopLayerContainer, WebCustomData, };
+export { AccessibilityTreeUtils, AccessibilityTreeView, AdoptedStyleSheetTreeElement, ClassesPaneWidget, ColorSwatchPopoverIcon, ComputedStyleWidget, CSSRuleValidator, CSSValueTraceView, DOMPath, ElementsPanel, ElementsSidebarPane, ElementStatePaneWidget, ElementsTreeElement, ElementsTreeOutline, ElementsTreeOutlineRenderer, EventListenersWidget, InspectElementModeController, LayersWidget, LayoutPane, MarkerDecorator, MetricsSidebarPane, NodeStackTraceWidget, PlatformFontsWidget, PropertiesWidget, PropertyRenderer, StyleEditorWidget, StylePropertiesSection, StylePropertyHighlighter, StylePropertyTreeElement, StylePropertyUtils, StylesAiCodeCompletionProvider, StylesSidebarPane, TopLayerContainer, WebCustomData, };
 //# sourceMappingURL=elements.prebundle.js.map

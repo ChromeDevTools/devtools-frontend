@@ -3908,8 +3908,6 @@ var DEFAULT_VIEW4 = (input, _output, target) => {
         <ul role="group">
           <li role="treeitem">
             <devtools-widget .widgetConfig=${widgetConfig2(Components2.JSPresentationUtils.StackTracePreviewContent, {
-      target: input.target,
-      linkifier: input.linkifier,
       options: { tabStops: true },
       stackTrace: input.stackTrace
     })}></devtools-widget>
@@ -3987,13 +3985,11 @@ var DEFAULT_VIEW4 = (input, _output, target) => {
   `, target);
 };
 var RequestInitiatorView = class extends UI8.Widget.VBox {
-  linkifier;
   request;
   #view;
   constructor(request, view = DEFAULT_VIEW4) {
     super({ jslog: `${VisualLogging6.pane("initiator").track({ resize: true })}` });
     this.element.classList.add("request-initiator-view");
-    this.linkifier = new Components2.Linkifier.Linkifier();
     this.request = request;
     this.#view = view;
   }
@@ -4006,7 +4002,8 @@ var RequestInitiatorView = class extends UI8.Widget.VBox {
     const networkManager = SDK7.NetworkManager.NetworkManager.forRequest(request);
     const target = networkManager?.target() ?? targetManager.primaryPageTarget() ?? targetManager.rootTarget();
     let stackTrace = null;
-    const preview = new Components2.JSPresentationUtils.StackTracePreviewContent(void 0, target ?? void 0, linkifier, { tabStops: focusableLink });
+    const preview = new Components2.JSPresentationUtils.StackTracePreviewContent();
+    preview.options = { tabStops: focusableLink };
     if (target) {
       stackTrace = await Bindings2.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createStackTraceFromProtocolRuntime(initiator.stack, target);
       preview.stackTrace = stackTrace;
@@ -4026,9 +4023,7 @@ var RequestInitiatorView = class extends UI8.Widget.VBox {
     const viewInput = {
       initiatorGraph,
       stackTrace,
-      request: this.request,
-      linkifier: this.linkifier,
-      target: target || void 0
+      request: this.request
     };
     this.#view(viewInput, void 0, this.contentElement);
   }

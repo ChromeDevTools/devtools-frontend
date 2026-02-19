@@ -47,7 +47,7 @@ import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.j
 import * as CodeHighlighter from '../../ui/components/code_highlighter/code_highlighter.js';
 import * as Highlighting from '../../ui/components/highlighting/highlighting.js';
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
-import { Icon, Link } from '../../ui/kit/kit.js';
+import { Icon } from '../../ui/kit/kit.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
@@ -62,7 +62,7 @@ import { ElementsPanel } from './ElementsPanel.js';
 import { MappedCharToEntity } from './ElementsTreeOutline.js';
 import { ImagePreviewPopover } from './ImagePreviewPopover.js';
 import { getRegisteredDecorators } from './MarkerDecorator.js';
-const { html, nothing, render, Directives: { ref } } = Lit;
+const { html, nothing, render, Directives: { ref, repeat } } = Lit;
 const { animateOn } = UI.UIUtils;
 const UIStrings = {
     /**
@@ -497,121 +497,122 @@ function renderTitle(node, isClosingTag, expanded, isExpandable, isXMLMimeType, 
         }
     }
 }
+// FIXME: find a home for this in SDK.
+function parseSrcset(value) {
+    const result = [];
+    let i = 0;
+    while (value.length) {
+        if (i++ > 0) {
+            result.push({ value: ' ', type: 0 /* SrcsetTokenType.LITERAL */ });
+        }
+        value = value.trim();
+        let url = '';
+        let descriptor = '';
+        const indexOfSpace = value.search(/\s/);
+        if (indexOfSpace === -1) {
+            url = value;
+        }
+        else if (indexOfSpace > 0 && value[indexOfSpace - 1] === ',') {
+            url = value.substring(0, indexOfSpace);
+        }
+        else {
+            url = value.substring(0, indexOfSpace);
+            const indexOfComma = value.indexOf(',', indexOfSpace);
+            if (indexOfComma !== -1) {
+                descriptor = value.substring(indexOfSpace, indexOfComma + 1);
+            }
+            else {
+                descriptor = value.substring(indexOfSpace);
+            }
+        }
+        if (url) {
+            if (url.endsWith(',')) {
+                result.push({ value: url.substring(0, url.length - 1), type: 1 /* SrcsetTokenType.LINK */ });
+                result.push({ type: 0 /* SrcsetTokenType.LITERAL */, value: ',' });
+            }
+            else {
+                result.push({ value: url, type: 1 /* SrcsetTokenType.LINK */ });
+            }
+        }
+        if (descriptor) {
+            result.push({ type: 0 /* SrcsetTokenType.LITERAL */, value: descriptor });
+        }
+        value = value.substring(url.length + descriptor.length);
+    }
+    return result;
+}
+function renderLinkifiedSrcset(tokens, node) {
+    return html `${repeat(tokens, token => {
+        switch (token.type) {
+            case 1 /* SrcsetTokenType.LINK */:
+                return renderLinkifiedValue(token.value, node);
+            case 0 /* SrcsetTokenType.LITERAL */:
+                return token.value;
+        }
+    })}`;
+}
+const closingPunctuationRegex = /[\/;:\)\]\}]/g;
+// FIXME: this should be made declarative next.
+function setValueWithEntities(element, value) {
+    let highlightIndex = 0;
+    let highlightCount = 0;
+    let additionalHighlightOffset = 0;
+    const result = convertUnicodeCharsToHTMLEntities(value);
+    highlightCount = result.entityRanges.length;
+    const newValue = result.text.replace(closingPunctuationRegex, (match, replaceOffset) => {
+        while (highlightIndex < highlightCount && result.entityRanges[highlightIndex].offset < replaceOffset) {
+            result.entityRanges[highlightIndex].offset += additionalHighlightOffset;
+            ++highlightIndex;
+        }
+        additionalHighlightOffset += 1;
+        return match + '\u200B';
+    });
+    while (highlightIndex < highlightCount) {
+        result.entityRanges[highlightIndex].offset += additionalHighlightOffset;
+        ++highlightIndex;
+    }
+    element.setTextContentTruncatedIfNeeded(newValue);
+    Highlighting.highlightRangesWithStyleClass(element, result.entityRanges, 'webkit-html-entity-value');
+}
+function renderLinkifiedValue(value, node) {
+    const rewrittenHref = node ? node.resolveURL(value) : null;
+    if (rewrittenHref === null) {
+        return html `<span ${ref(el => {
+            if (el) {
+                setValueWithEntities(el, value);
+            }
+        })}}></span>`;
+    }
+    value = value.replace(closingPunctuationRegex, '$&\u200B');
+    if (value.startsWith('data:')) {
+        value = Platform.StringUtilities.trimMiddle(value, 60);
+    }
+    const isAnchor = node && node.nodeName().toLowerCase() === 'a';
+    if (isAnchor) {
+        return html `<devtools-link class="devtools-link image-url" href=${rewrittenHref} ${ref(el => {
+            if (el) {
+                ImagePreviewPopover.setImageUrl(el, rewrittenHref);
+            }
+        })}>${Platform.StringUtilities.trimMiddle(value, 150)}</devtools-link>`;
+    }
+    return Components.Linkifier.Linkifier.renderLinkifiedUrl(rewrittenHref, {
+        text: value,
+        preventClick: true,
+        showColumnNumber: false,
+        inlineFrameIndex: 0,
+        onRef: link => {
+            ImagePreviewPopover.setImageUrl(link, rewrittenHref);
+        }
+    });
+}
 function renderAttribute(attr, updateRecord, isDiff, node) {
     const name = attr.name;
     const value = attr.value || '';
     const forceValue = isDiff;
-    const closingPunctuationRegex = /[\/;:\)\]\}]/g;
-    let highlightIndex = 0;
-    let highlightCount = 0;
-    let additionalHighlightOffset = 0;
-    function setValueWithEntities(element, value) {
-        const result = convertUnicodeCharsToHTMLEntities(value);
-        highlightCount = result.entityRanges.length;
-        const newValue = result.text.replace(closingPunctuationRegex, (match, replaceOffset) => {
-            while (highlightIndex < highlightCount && result.entityRanges[highlightIndex].offset < replaceOffset) {
-                result.entityRanges[highlightIndex].offset += additionalHighlightOffset;
-                ++highlightIndex;
-            }
-            additionalHighlightOffset += 1;
-            return match + '\u200B';
-        });
-        while (highlightIndex < highlightCount) {
-            result.entityRanges[highlightIndex].offset += additionalHighlightOffset;
-            ++highlightIndex;
-        }
-        element.setTextContentTruncatedIfNeeded(newValue);
-        Highlighting.highlightRangesWithStyleClass(element, result.entityRanges, 'webkit-html-entity-value');
-    }
     const hasText = (forceValue || value.length > 0);
     const jslog = VisualLogging.value(name === 'style' ? 'style-attribute' : 'attribute').track({
         change: true,
         dblclick: true,
-    });
-    function linkifyValue(value) {
-        const rewrittenHref = node ? node.resolveURL(value) : null;
-        if (rewrittenHref === null) {
-            const span = document.createElement('span');
-            setValueWithEntities(span, value);
-            return span;
-        }
-        value = value.replace(closingPunctuationRegex, '$&\u200B');
-        if (value.startsWith('data:')) {
-            value = Platform.StringUtilities.trimMiddle(value, 60);
-        }
-        const link = node && node.nodeName().toLowerCase() === 'a' ?
-            Link.create(rewrittenHref, value, undefined, 'image-url') :
-            Components.Linkifier.Linkifier.linkifyURL(rewrittenHref, {
-                text: value,
-                preventClick: true,
-                showColumnNumber: false,
-                inlineFrameIndex: 0,
-            });
-        return ImagePreviewPopover.setImageUrl(link, rewrittenHref);
-    }
-    function linkifySrcset(value) {
-        // Splitting normally on commas or spaces will break on valid srcsets "foo 1x,bar 2x" and "data:,foo 1x".
-        const fragment = document.createDocumentFragment();
-        let i = 0;
-        while (value.length) {
-            if (i++ > 0) {
-                UI.UIUtils.createTextChild(fragment, ' ');
-            }
-            value = value.trim();
-            let url = '';
-            let descriptor = '';
-            const indexOfSpace = value.search(/\s/);
-            if (indexOfSpace === -1) {
-                url = value;
-            }
-            else if (indexOfSpace > 0 && value[indexOfSpace - 1] === ',') {
-                url = value.substring(0, indexOfSpace);
-            }
-            else {
-                url = value.substring(0, indexOfSpace);
-                const indexOfComma = value.indexOf(',', indexOfSpace);
-                if (indexOfComma !== -1) {
-                    descriptor = value.substring(indexOfSpace, indexOfComma + 1);
-                }
-                else {
-                    descriptor = value.substring(indexOfSpace);
-                }
-            }
-            if (url) {
-                if (url.endsWith(',')) {
-                    fragment.appendChild(linkifyValue(url.substring(0, url.length - 1)));
-                    UI.UIUtils.createTextChild(fragment, ',');
-                }
-                else {
-                    fragment.appendChild(linkifyValue(url));
-                }
-            }
-            if (descriptor) {
-                UI.UIUtils.createTextChild(fragment, descriptor);
-            }
-            value = value.substring(url.length + descriptor.length);
-        }
-        return fragment;
-    }
-    const nodeName = node ? node.nodeName().toLowerCase() : '';
-    const setAttrValue = ref(el => {
-        if (!el) {
-            return;
-        }
-        const valueElement = el;
-        valueElement.removeChildren();
-        if (nodeName && (name === 'src' || name === 'href') && value) {
-            valueElement.appendChild(linkifyValue(value));
-        }
-        else if ((nodeName === 'img' || nodeName === 'source') && name === 'srcset') {
-            valueElement.appendChild(linkifySrcset(value));
-        }
-        else if (nodeName === 'image' && (name === 'xlink:href' || name === 'href')) {
-            valueElement.appendChild(linkifySrcset(value));
-        }
-        else {
-            setValueWithEntities(valueElement, value);
-        }
     });
     const relationRef = (relation, tooltip) => ref((el) => {
         if (!el) {
@@ -657,9 +658,31 @@ function renderAttribute(attr, updateRecord, isDiff, node) {
             valueRelationRefDirective = relationRef("CommandFor" /* Protocol.DOM.GetElementByRelationRequestRelation.CommandFor */, i18nString(UIStrings.showCommandForTarget));
         }
     }
+    const nodeName = node ? node.nodeName().toLowerCase() : '';
+    let valueType = 0 /* ValueType.UNKNOWN */;
+    if (nodeName && (name === 'src' || name === 'href') && value) {
+        valueType = 1 /* ValueType.SRC */;
+    }
+    else if ((nodeName === 'img' || nodeName === 'source') && name === 'srcset') {
+        valueType = 2 /* ValueType.SRCSET */;
+    }
+    else if (nodeName === 'image' && (name === 'xlink:href' || name === 'href')) {
+        valueType = 2 /* ValueType.SRCSET */;
+    }
+    const withEntitiesRef = valueType === 0 /* ValueType.UNKNOWN */ ? ref(el => {
+        if (el) {
+            setValueWithEntities(el, value);
+        }
+    }) :
+        nothing;
+    // clang-format off
     return html `<span class="webkit-html-attribute" jslog=${jslog}><span class="webkit-html-attribute-name"
-      ${animateOn(Boolean(updateRecord?.isAttributeModified(name) && !hasText), DOM_UPDATE_ANIMATION_CLASS_NAME)} ${relationRefDirective}>${name}</span>${hasText ? html `=\u200B"<span class="webkit-html-attribute-value" ${animateOn(Boolean(updateRecord?.isAttributeModified(name) && hasText), DOM_UPDATE_ANIMATION_CLASS_NAME)} ${setAttrValue} ${valueRelationRefDirective}></span>"` :
+      ${animateOn(Boolean(updateRecord?.isAttributeModified(name) && !hasText), DOM_UPDATE_ANIMATION_CLASS_NAME)} ${relationRefDirective}>${name}</span>${hasText ? html `=\u200B"<span class="webkit-html-attribute-value" ${animateOn(Boolean(updateRecord?.isAttributeModified(name) && hasText), DOM_UPDATE_ANIMATION_CLASS_NAME)} ${valueRelationRefDirective} ${withEntitiesRef}>
+                        ${valueType === 1 /* ValueType.SRC */ ? renderLinkifiedValue(value, node) : nothing}
+                        ${valueType === 2 /* ValueType.SRCSET */ ? renderLinkifiedSrcset(parseSrcset(value), node) : nothing}
+                </span>"` :
         nothing}</span>`;
+    // clang-format on
 }
 function renderTag(node, tagName, isClosingTag, expanded, isDistinctTreeElement, updateRecord) {
     const classMap = {

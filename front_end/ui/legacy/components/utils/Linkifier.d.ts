@@ -8,7 +8,7 @@ import type * as StackTrace from '../../../../models/stack_trace/stack_trace.js'
 import * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import type * as Trace from '../../../../models/trace/trace.js';
 import * as Workspace from '../../../../models/workspace/workspace.js';
-import { type LitTemplate } from '../../../lit/lit.js';
+import { type LitTemplate, type TemplateResult } from '../../../lit/lit.js';
 import * as UI from '../../legacy.js';
 export declare class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements SDK.TargetManager.Observer {
     #private;
@@ -46,7 +46,7 @@ export declare class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventT
     private updateAnchor;
     private static updateAnchorFromUILocation;
     private static updateLinkDecorations;
-    static renderLinkifiedUrl(url: Platform.DevToolsPath.UrlString, options?: LinkifyURLOptions): LitTemplate;
+    static renderLinkifiedUrl(url: Platform.DevToolsPath.UrlString, options?: LinkifyURLOptions): TemplateResult;
     /**
      * @deprecated use renderLinkifiedUrl.
      */
@@ -133,6 +133,7 @@ export interface LinkifyURLOptions {
     userMetric?: Host.UserMetrics.Action;
     jslogContext?: string;
     omitOrigin?: boolean;
+    onRef?: (el: HTMLElement) => void;
 }
 export interface LinkifyOptions {
     className?: string;

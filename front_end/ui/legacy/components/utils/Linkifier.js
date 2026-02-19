@@ -563,6 +563,7 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper {
                 if (!link) {
                     return;
                 }
+                options.onRef?.(link);
                 if (text instanceof HTMLElement) {
                     link.appendChild(text);
                 }

@@ -292,6 +292,16 @@ var AiCodeCompletion = class {
     }
     return Boolean(aidaAvailability.enabled && Root.Runtime.hostConfig.devToolsAiCodeCompletion?.enabled);
   }
+  static isAiCodeCompletionStylesEnabled(locale) {
+    if (!locale.startsWith("en-")) {
+      return false;
+    }
+    const aidaAvailability = Root.Runtime.hostConfig.aidaAvailability;
+    if (!aidaAvailability || aidaAvailability.blockedByGeo || aidaAvailability.blockedByAge || aidaAvailability.blockedByEnterprisePolicy) {
+      return false;
+    }
+    return Boolean(aidaAvailability.enabled && Root.Runtime.hostConfig.devToolsAiCodeCompletionStyles?.enabled);
+  }
 };
 export {
   AiCodeCompletion_exports as AiCodeCompletion,

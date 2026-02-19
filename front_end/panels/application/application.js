@@ -3823,7 +3823,7 @@ function renderDocumentSection(input) {
       ${maybeRenderUnreachableURL(input.frame?.unreachableUrl())}
       ${maybeRenderOrigin(input.frame?.securityOrigin)}
       ${renderOwnerElement(input.linkTargetDOMNode)}
-      ${maybeRenderCreationStacktrace(input.creationStackTrace, input.creationTarget)}
+      ${maybeRenderCreationStacktrace(input.creationStackTrace)}
       ${maybeRenderAdStatus(input.frame?.adFrameType(), input.frame?.adFrameStatus())}
       ${maybeRenderCreatorAdScriptAncestry(input.frame?.adFrameType(), input.target, input.adScriptAncestry)}
       <devtools-report-divider></devtools-report-divider>`;
@@ -3893,12 +3893,12 @@ function renderOwnerElement(linkTargetDOMNode) {
   }
   return nothing3;
 }
-function maybeRenderCreationStacktrace(stackTrace, target) {
-  if (stackTrace && target) {
+function maybeRenderCreationStacktrace(stackTrace) {
+  if (stackTrace) {
     return html3`
         <devtools-report-key title=${i18nString7(UIStrings7.creationStackTraceExplanation)}>${i18nString7(UIStrings7.creationStackTrace)}</devtools-report-key>
         <devtools-report-value jslog=${VisualLogging3.section("frame-creation-stack-trace")}>
-          <devtools-widget .widgetConfig=${UI6.Widget.widgetConfig(Components2.JSPresentationUtils.StackTracePreviewContent, { target, stackTrace, options: { expandable: true } })}>
+          <devtools-widget .widgetConfig=${UI6.Widget.widgetConfig(Components2.JSPresentationUtils.StackTracePreviewContent, { stackTrace, options: { expandable: true } })}>
           </devtools-widget>
         </devtools-report-value>
       `;
@@ -4222,7 +4222,6 @@ var FrameDetailsReportView = class extends UI6.Widget.Widget {
   #frame;
   #target = null;
   #creationStackTrace = null;
-  #creationTarget = null;
   #securityIsolationInfo = null;
   #linkTargetDOMNode = null;
   #trials = null;
@@ -4243,7 +4242,6 @@ var FrameDetailsReportView = class extends UI6.Widget.Widget {
       this.requestUpdate();
     });
     const { creationStackTrace: rawCreationStackTrace, creationStackTraceTarget: creationTarget } = frame.getCreationStackTraceData();
-    this.#creationTarget = creationTarget;
     if (rawCreationStackTrace) {
       void Bindings2.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createStackTraceFromProtocolRuntime(rawCreationStackTrace, creationTarget).then((creationStackTrace) => {
         this.#creationStackTrace = creationStackTrace;
@@ -4285,7 +4283,6 @@ var FrameDetailsReportView = class extends UI6.Widget.Widget {
       frame,
       target: this.#target,
       creationStackTrace: this.#creationStackTrace,
-      creationTarget: this.#creationTarget,
       protocolMonitorExperimentEnabled: this.#protocolMonitorExperimentEnabled,
       permissionsPolicies: this.#permissionsPolicies,
       adScriptAncestry: this.#adScriptAncestry,

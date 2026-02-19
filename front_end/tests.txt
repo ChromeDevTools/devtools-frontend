@@ -431,6 +431,7 @@ panels/elements/StylePropertiesSection.test.js
 panels/elements/StylePropertyHighlighter.test.js
 panels/elements/StylePropertyTreeElement.test.js
 panels/elements/StylePropertyUtils.test.js
+panels/elements/StylesAiCodeCompletionProvider.test.js
 panels/elements/StylesSidebarPane.test.js
 panels/elements/WebCustomData.test.js
 panels/emulation/AdvancedApp.test.js

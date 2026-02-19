@@ -70,6 +70,7 @@
     "../../../../../../front_end/panels/elements/StylePropertyHighlighter.ts",
     "../../../../../../front_end/panels/elements/StylePropertyTreeElement.ts",
     "../../../../../../front_end/panels/elements/StylePropertyUtils.ts",
+    "../../../../../../front_end/panels/elements/StylesAiCodeCompletionProvider.ts",
     "../../../../../../front_end/panels/elements/StylesSidebarPane.ts",
     "../../../../../../front_end/panels/elements/TopLayerContainer.ts",
     "../../../../../../front_end/panels/elements/WebCustomData.ts",

@@ -120,6 +120,18 @@ const DEFAULT_VIEW = (input, output, target) => {
     `, target);
     // clang-format on
 };
+/**
+ * ChatView is a web component for historical reasons and generally should not
+ * exist because it barely has any presenter logic and it is definitely not
+ * re-usable as a custom element. Instead, the template from ChatView should be
+ * embdedded into the AiAssistancePanel (the sole host of chat interfaces) and
+ * the scroll handling logic should be implemented in view functions using refs
+ * or re-usable custom elements. Currently, the ChatView just combines the
+ * interfaces of ChatMessage and ChatInput presenters and passes most of the
+ * properties down to those presenters as-is.
+ *
+ * @deprecated
+ */
 export class ChatView extends HTMLElement {
     #shadow = this.attachShadow({ mode: 'open' });
     #scrollTop;

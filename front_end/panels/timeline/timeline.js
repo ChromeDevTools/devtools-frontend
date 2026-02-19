@@ -12561,16 +12561,14 @@ var TimelineDetailsContentHelper = class {
    * contains any entries, and discards it if it's empty.
    */
   async createChildStackTraceElement(runtimeStackTrace) {
-    if (!this.#linkifier) {
-      return null;
-    }
     const targetManager = SDK8.TargetManager.TargetManager.instance();
     const target = this.target ?? targetManager.primaryPageTarget() ?? targetManager.rootTarget();
     if (!target) {
       return null;
     }
     const stackTrace = await Bindings2.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createStackTraceFromProtocolRuntime(runtimeStackTrace, target);
-    const callFrameContents = new LegacyComponents.JSPresentationUtils.StackTracePreviewContent(void 0, target, this.#linkifier, { tabStops: true, showColumnNumber: true });
+    const callFrameContents = new LegacyComponents.JSPresentationUtils.StackTracePreviewContent();
+    callFrameContents.options = { tabStops: true, showColumnNumber: true };
     callFrameContents.stackTrace = stackTrace;
     await callFrameContents.updateComplete;
     if (!callFrameContents.hasContent()) {

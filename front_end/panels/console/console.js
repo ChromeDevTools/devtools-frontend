@@ -2328,7 +2328,8 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
     const stackTraceElement = contentElement.createChild("div", "hidden-stack-trace");
     const targetManager = SDK3.TargetManager.TargetManager.instance();
     const stackTraceTarget = target ?? targetManager.primaryPageTarget() ?? targetManager.rootTarget();
-    const stackTracePreview = new Components.JSPresentationUtils.StackTracePreviewContent(void 0, stackTraceTarget ?? void 0, this.linkifier, { widthConstrained: true });
+    const stackTracePreview = new Components.JSPresentationUtils.StackTracePreviewContent();
+    stackTracePreview.options = { widthConstrained: true };
     if (stackTraceTarget && stackTrace) {
       const selectableChildIndex = this.selectableChildren.length;
       void Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createStackTraceFromProtocolRuntime(stackTrace, stackTraceTarget).then((stackTrace2) => {

@@ -9,15 +9,6 @@ export default `/*
  * found in the LICENSE file.
  */
 
-:host {
-  display: inline;
-}
-
-:host(.width-constrained) {
-  display: inline-block;
-  width: 100%;
-}
-
 .stack-preview-async-description {
   padding: 3px 0 1px;
   font-weight: bold;

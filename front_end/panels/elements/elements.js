@@ -10979,7 +10979,7 @@ import * as CodeMirror from "./../../third_party/codemirror.next/codemirror.next
 import * as CodeHighlighter3 from "./../../ui/components/code_highlighter/code_highlighter.js";
 import * as Highlighting2 from "./../../ui/components/highlighting/highlighting.js";
 import * as TextEditor from "./../../ui/components/text_editor/text_editor.js";
-import { Icon as Icon3, Link } from "./../../ui/kit/kit.js";
+import { Icon as Icon3 } from "./../../ui/kit/kit.js";
 import * as Components6 from "./../../ui/legacy/components/utils/utils.js";
 import * as UI15 from "./../../ui/legacy/legacy.js";
 import * as Lit6 from "./../../ui/lit/lit.js";
@@ -11320,7 +11320,7 @@ function getRegisteredDecorators() {
 }
 
 // gen/front_end/panels/elements/ElementsTreeElement.js
-var { html: html8, nothing: nothing2, render: render7, Directives: { ref: ref2 } } = Lit6;
+var { html: html8, nothing: nothing2, render: render7, Directives: { ref: ref2, repeat } } = Lit6;
 var { animateOn } = UI15.UIUtils;
 var UIStrings12 = {
   /**
@@ -11753,111 +11753,128 @@ function renderTitle(node, isClosingTag, expanded, isExpandable, isXMLMimeType, 
     }
   }
 }
+function parseSrcset(value5) {
+  const result = [];
+  let i = 0;
+  while (value5.length) {
+    if (i++ > 0) {
+      result.push({
+        value: " ",
+        type: 0
+        /* SrcsetTokenType.LITERAL */
+      });
+    }
+    value5 = value5.trim();
+    let url = "";
+    let descriptor = "";
+    const indexOfSpace = value5.search(/\s/);
+    if (indexOfSpace === -1) {
+      url = value5;
+    } else if (indexOfSpace > 0 && value5[indexOfSpace - 1] === ",") {
+      url = value5.substring(0, indexOfSpace);
+    } else {
+      url = value5.substring(0, indexOfSpace);
+      const indexOfComma = value5.indexOf(",", indexOfSpace);
+      if (indexOfComma !== -1) {
+        descriptor = value5.substring(indexOfSpace, indexOfComma + 1);
+      } else {
+        descriptor = value5.substring(indexOfSpace);
+      }
+    }
+    if (url) {
+      if (url.endsWith(",")) {
+        result.push({
+          value: url.substring(0, url.length - 1),
+          type: 1
+          /* SrcsetTokenType.LINK */
+        });
+        result.push({ type: 0, value: "," });
+      } else {
+        result.push({
+          value: url,
+          type: 1
+          /* SrcsetTokenType.LINK */
+        });
+      }
+    }
+    if (descriptor) {
+      result.push({ type: 0, value: descriptor });
+    }
+    value5 = value5.substring(url.length + descriptor.length);
+  }
+  return result;
+}
+function renderLinkifiedSrcset(tokens, node) {
+  return html8`${repeat(tokens, (token) => {
+    switch (token.type) {
+      case 1:
+        return renderLinkifiedValue(token.value, node);
+      case 0:
+        return token.value;
+    }
+  })}`;
+}
+var closingPunctuationRegex = /[\/;:\)\]\}]/g;
+function setValueWithEntities(element, value5) {
+  let highlightIndex = 0;
+  let highlightCount = 0;
+  let additionalHighlightOffset = 0;
+  const result = convertUnicodeCharsToHTMLEntities(value5);
+  highlightCount = result.entityRanges.length;
+  const newValue = result.text.replace(closingPunctuationRegex, (match, replaceOffset) => {
+    while (highlightIndex < highlightCount && result.entityRanges[highlightIndex].offset < replaceOffset) {
+      result.entityRanges[highlightIndex].offset += additionalHighlightOffset;
+      ++highlightIndex;
+    }
+    additionalHighlightOffset += 1;
+    return match + "\u200B";
+  });
+  while (highlightIndex < highlightCount) {
+    result.entityRanges[highlightIndex].offset += additionalHighlightOffset;
+    ++highlightIndex;
+  }
+  element.setTextContentTruncatedIfNeeded(newValue);
+  Highlighting2.highlightRangesWithStyleClass(element, result.entityRanges, "webkit-html-entity-value");
+}
+function renderLinkifiedValue(value5, node) {
+  const rewrittenHref = node ? node.resolveURL(value5) : null;
+  if (rewrittenHref === null) {
+    return html8`<span ${ref2((el) => {
+      if (el) {
+        setValueWithEntities(el, value5);
+      }
+    })}}></span>`;
+  }
+  value5 = value5.replace(closingPunctuationRegex, "$&\u200B");
+  if (value5.startsWith("data:")) {
+    value5 = Platform7.StringUtilities.trimMiddle(value5, 60);
+  }
+  const isAnchor = node && node.nodeName().toLowerCase() === "a";
+  if (isAnchor) {
+    return html8`<devtools-link class="devtools-link image-url" href=${rewrittenHref} ${ref2((el) => {
+      if (el) {
+        ImagePreviewPopover.setImageUrl(el, rewrittenHref);
+      }
+    })}>${Platform7.StringUtilities.trimMiddle(value5, 150)}</devtools-link>`;
+  }
+  return Components6.Linkifier.Linkifier.renderLinkifiedUrl(rewrittenHref, {
+    text: value5,
+    preventClick: true,
+    showColumnNumber: false,
+    inlineFrameIndex: 0,
+    onRef: (link2) => {
+      ImagePreviewPopover.setImageUrl(link2, rewrittenHref);
+    }
+  });
+}
 function renderAttribute(attr, updateRecord, isDiff, node) {
   const name = attr.name;
   const value5 = attr.value || "";
   const forceValue = isDiff;
-  const closingPunctuationRegex = /[\/;:\)\]\}]/g;
-  let highlightIndex = 0;
-  let highlightCount = 0;
-  let additionalHighlightOffset = 0;
-  function setValueWithEntities(element, value6) {
-    const result = convertUnicodeCharsToHTMLEntities(value6);
-    highlightCount = result.entityRanges.length;
-    const newValue = result.text.replace(closingPunctuationRegex, (match, replaceOffset) => {
-      while (highlightIndex < highlightCount && result.entityRanges[highlightIndex].offset < replaceOffset) {
-        result.entityRanges[highlightIndex].offset += additionalHighlightOffset;
-        ++highlightIndex;
-      }
-      additionalHighlightOffset += 1;
-      return match + "\u200B";
-    });
-    while (highlightIndex < highlightCount) {
-      result.entityRanges[highlightIndex].offset += additionalHighlightOffset;
-      ++highlightIndex;
-    }
-    element.setTextContentTruncatedIfNeeded(newValue);
-    Highlighting2.highlightRangesWithStyleClass(element, result.entityRanges, "webkit-html-entity-value");
-  }
   const hasText = forceValue || value5.length > 0;
   const jslog = VisualLogging8.value(name === "style" ? "style-attribute" : "attribute").track({
     change: true,
     dblclick: true
-  });
-  function linkifyValue(value6) {
-    const rewrittenHref = node ? node.resolveURL(value6) : null;
-    if (rewrittenHref === null) {
-      const span = document.createElement("span");
-      setValueWithEntities(span, value6);
-      return span;
-    }
-    value6 = value6.replace(closingPunctuationRegex, "$&\u200B");
-    if (value6.startsWith("data:")) {
-      value6 = Platform7.StringUtilities.trimMiddle(value6, 60);
-    }
-    const link2 = node && node.nodeName().toLowerCase() === "a" ? Link.create(rewrittenHref, value6, void 0, "image-url") : Components6.Linkifier.Linkifier.linkifyURL(rewrittenHref, {
-      text: value6,
-      preventClick: true,
-      showColumnNumber: false,
-      inlineFrameIndex: 0
-    });
-    return ImagePreviewPopover.setImageUrl(link2, rewrittenHref);
-  }
-  function linkifySrcset(value6) {
-    const fragment = document.createDocumentFragment();
-    let i = 0;
-    while (value6.length) {
-      if (i++ > 0) {
-        UI15.UIUtils.createTextChild(fragment, " ");
-      }
-      value6 = value6.trim();
-      let url = "";
-      let descriptor = "";
-      const indexOfSpace = value6.search(/\s/);
-      if (indexOfSpace === -1) {
-        url = value6;
-      } else if (indexOfSpace > 0 && value6[indexOfSpace - 1] === ",") {
-        url = value6.substring(0, indexOfSpace);
-      } else {
-        url = value6.substring(0, indexOfSpace);
-        const indexOfComma = value6.indexOf(",", indexOfSpace);
-        if (indexOfComma !== -1) {
-          descriptor = value6.substring(indexOfSpace, indexOfComma + 1);
-        } else {
-          descriptor = value6.substring(indexOfSpace);
-        }
-      }
-      if (url) {
-        if (url.endsWith(",")) {
-          fragment.appendChild(linkifyValue(url.substring(0, url.length - 1)));
-          UI15.UIUtils.createTextChild(fragment, ",");
-        } else {
-          fragment.appendChild(linkifyValue(url));
-        }
-      }
-      if (descriptor) {
-        UI15.UIUtils.createTextChild(fragment, descriptor);
-      }
-      value6 = value6.substring(url.length + descriptor.length);
-    }
-    return fragment;
-  }
-  const nodeName = node ? node.nodeName().toLowerCase() : "";
-  const setAttrValue = ref2((el) => {
-    if (!el) {
-      return;
-    }
-    const valueElement = el;
-    valueElement.removeChildren();
-    if (nodeName && (name === "src" || name === "href") && value5) {
-      valueElement.appendChild(linkifyValue(value5));
-    } else if ((nodeName === "img" || nodeName === "source") && name === "srcset") {
-      valueElement.appendChild(linkifySrcset(value5));
-    } else if (nodeName === "image" && (name === "xlink:href" || name === "href")) {
-      valueElement.appendChild(linkifySrcset(value5));
-    } else {
-      setValueWithEntities(valueElement, value5);
-    }
   });
   const relationRef = (relation, tooltip) => ref2((el) => {
     if (!el) {
@@ -11901,8 +11918,25 @@ function renderAttribute(attr, updateRecord, isDiff, node) {
       valueRelationRefDirective = relationRef("CommandFor", i18nString11(UIStrings12.showCommandForTarget));
     }
   }
+  const nodeName = node ? node.nodeName().toLowerCase() : "";
+  let valueType = 0;
+  if (nodeName && (name === "src" || name === "href") && value5) {
+    valueType = 1;
+  } else if ((nodeName === "img" || nodeName === "source") && name === "srcset") {
+    valueType = 2;
+  } else if (nodeName === "image" && (name === "xlink:href" || name === "href")) {
+    valueType = 2;
+  }
+  const withEntitiesRef = valueType === 0 ? ref2((el) => {
+    if (el) {
+      setValueWithEntities(el, value5);
+    }
+  }) : nothing2;
   return html8`<span class="webkit-html-attribute" jslog=${jslog}><span class="webkit-html-attribute-name"
-      ${animateOn(Boolean(updateRecord?.isAttributeModified(name) && !hasText), DOM_UPDATE_ANIMATION_CLASS_NAME)} ${relationRefDirective}>${name}</span>${hasText ? html8`=\u200B"<span class="webkit-html-attribute-value" ${animateOn(Boolean(updateRecord?.isAttributeModified(name) && hasText), DOM_UPDATE_ANIMATION_CLASS_NAME)} ${setAttrValue} ${valueRelationRefDirective}></span>"` : nothing2}</span>`;
+      ${animateOn(Boolean(updateRecord?.isAttributeModified(name) && !hasText), DOM_UPDATE_ANIMATION_CLASS_NAME)} ${relationRefDirective}>${name}</span>${hasText ? html8`=\u200B"<span class="webkit-html-attribute-value" ${animateOn(Boolean(updateRecord?.isAttributeModified(name) && hasText), DOM_UPDATE_ANIMATION_CLASS_NAME)} ${valueRelationRefDirective} ${withEntitiesRef}>
+                        ${valueType === 1 ? renderLinkifiedValue(value5, node) : nothing2}
+                        ${valueType === 2 ? renderLinkifiedSrcset(parseSrcset(value5), node) : nothing2}
+                </span>"` : nothing2}</span>`;
 }
 function renderTag(node, tagName, isClosingTag, expanded, isDistinctTreeElement, updateRecord) {
   const classMap3 = {
@@ -18789,16 +18823,15 @@ var UIStrings19 = {
 var str_19 = i18n37.i18n.registerUIStrings("panels/elements/NodeStackTraceWidget.ts", UIStrings19);
 var i18nString18 = i18n37.i18n.getLocalizedString.bind(void 0, str_19);
 var DEFAULT_VIEW11 = (input, _output, target) => {
-  const { target: sdkTarget, linkifier, stackTrace } = input;
+  const { stackTrace } = input;
   render14(html15`
     <style>${nodeStackTraceWidget_css_default}</style>
     ${target && stackTrace ? html15`<devtools-widget
                 class="stack-trace"
-                .widgetConfig=${UI25.Widget.widgetConfig(Components7.JSPresentationUtils.StackTracePreviewContent, { target: sdkTarget, linkifier, stackTrace })}>
+                .widgetConfig=${UI25.Widget.widgetConfig(Components7.JSPresentationUtils.StackTracePreviewContent, { stackTrace })}>
               </devtools-widget>` : html15`<div class="gray-info-message">${i18nString18(UIStrings19.noStackTraceAvailable)}</div>`}`, target);
 };
 var NodeStackTraceWidget = class extends UI25.Widget.VBox {
-  #linkifier = new Components7.Linkifier.Linkifier(UI25.UIUtils.MaxLengthForDisplayedURLsInConsole);
   #view;
   constructor(view = DEFAULT_VIEW11) {
     super({ useShadowDom: true });
@@ -18818,12 +18851,64 @@ var NodeStackTraceWidget = class extends UI25.Widget.VBox {
     const target = node?.domModel().target();
     const runtimeStackTrace = await node?.creationStackTrace() ?? void 0;
     const stackTrace = runtimeStackTrace && target ? await Bindings5.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createStackTraceFromProtocolRuntime(runtimeStackTrace, target) : void 0;
-    const input = {
-      target,
-      linkifier: this.#linkifier,
-      stackTrace
-    };
-    this.#view(input, {}, this.contentElement);
+    this.#view({ stackTrace }, {}, this.contentElement);
+  }
+};
+
+// gen/front_end/panels/elements/StylesAiCodeCompletionProvider.js
+var StylesAiCodeCompletionProvider_exports = {};
+__export(StylesAiCodeCompletionProvider_exports, {
+  StylesAiCodeCompletionProvider: () => StylesAiCodeCompletionProvider
+});
+import * as Common16 from "./../../core/common/common.js";
+import * as Host7 from "./../../core/host/host.js";
+import * as i18n39 from "./../../core/i18n/i18n.js";
+import * as AiCodeCompletion from "./../../models/ai_code_completion/ai_code_completion.js";
+var StylesAiCodeCompletionProvider = class _StylesAiCodeCompletionProvider {
+  #aidaClient = new Host7.AidaClient.AidaClient();
+  #aiCodeCompletionSetting = Common16.Settings.Settings.instance().createSetting("ai-code-completion-enabled", false);
+  #aiCodeCompletion;
+  #aiCodeCompletionConfig;
+  #boundOnUpdateAiCodeCompletionState = this.#updateAiCodeCompletionState.bind(this);
+  constructor(aiCodeCompletionConfig) {
+    const devtoolsLocale = i18n39.DevToolsLocale.DevToolsLocale.instance();
+    if (!AiCodeCompletion.AiCodeCompletion.AiCodeCompletion.isAiCodeCompletionStylesEnabled(devtoolsLocale.locale)) {
+      throw new Error("AI code completion feature in Styles is not enabled.");
+    }
+    this.#aiCodeCompletionConfig = aiCodeCompletionConfig;
+    Host7.AidaClient.HostConfigTracker.instance().addEventListener("aidaAvailabilityChanged", this.#boundOnUpdateAiCodeCompletionState);
+    this.#aiCodeCompletionSetting.addChangeListener(this.#boundOnUpdateAiCodeCompletionState);
+    void this.#updateAiCodeCompletionState();
+  }
+  static createInstance(aiCodeCompletionConfig) {
+    return new _StylesAiCodeCompletionProvider(aiCodeCompletionConfig);
+  }
+  #setupAiCodeCompletion() {
+    if (!this.#aiCodeCompletionConfig) {
+      return;
+    }
+    if (this.#aiCodeCompletion) {
+      return;
+    }
+    this.#aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion({ aidaClient: this.#aidaClient }, this.#aiCodeCompletionConfig.panel, void 0, this.#aiCodeCompletionConfig.completionContext.stopSequences);
+    this.#aiCodeCompletionConfig.onFeatureEnabled();
+  }
+  #cleanupAiCodeCompletion() {
+    if (!this.#aiCodeCompletion) {
+      return;
+    }
+    this.#aiCodeCompletion = void 0;
+    this.#aiCodeCompletionConfig?.onFeatureDisabled();
+  }
+  async #updateAiCodeCompletionState() {
+    const aidaAvailability = await Host7.AidaClient.AidaClient.checkAccessPreconditions();
+    const isAvailable = aidaAvailability === "available";
+    const isEnabled = this.#aiCodeCompletionSetting.get();
+    if (isAvailable && isEnabled) {
+      this.#setupAiCodeCompletion();
+    } else {
+      this.#cleanupAiCodeCompletion();
+    }
   }
 };
 
@@ -18834,8 +18919,8 @@ __export(ClassesPaneWidget_exports, {
   ClassNamePrompt: () => ClassNamePrompt,
   ClassesPaneWidget: () => ClassesPaneWidget
 });
-import * as Common16 from "./../../core/common/common.js";
-import * as i18n39 from "./../../core/i18n/i18n.js";
+import * as Common17 from "./../../core/common/common.js";
+import * as i18n40 from "./../../core/i18n/i18n.js";
 import * as Platform12 from "./../../core/platform/platform.js";
 import * as SDK23 from "./../../core/sdk/sdk.js";
 import * as UI26 from "./../../ui/legacy/legacy.js";
@@ -18910,8 +18995,8 @@ var UIStrings20 = {
    */
   elementClasses: "Element Classes"
 };
-var str_20 = i18n39.i18n.registerUIStrings("panels/elements/ClassesPaneWidget.ts", UIStrings20);
-var i18nString19 = i18n39.i18n.getLocalizedString.bind(void 0, str_20);
+var str_20 = i18n40.i18n.registerUIStrings("panels/elements/ClassesPaneWidget.ts", UIStrings20);
+var i18nString19 = i18n40.i18n.getLocalizedString.bind(void 0, str_20);
 var ClassesPaneWidget = class extends UI26.Widget.Widget {
   input;
   classesContainer;
@@ -18942,7 +19027,7 @@ var ClassesPaneWidget = class extends UI26.Widget.Widget {
     SDK23.TargetManager.TargetManager.instance().addModelListener(SDK23.DOMModel.DOMModel, SDK23.DOMModel.Events.DOMMutated, this.onDOMMutated, this, { scoped: true });
     this.mutatingNodes = /* @__PURE__ */ new Set();
     this.pendingNodeClasses = /* @__PURE__ */ new Map();
-    this.updateNodeThrottler = new Common16.Throttler.Throttler(0);
+    this.updateNodeThrottler = new Common17.Throttler.Throttler(0);
     this.previousTarget = null;
     UI26.Context.Context.instance().addFlavorChangeListener(SDK23.DOMModel.DOMNode, this.onSelectedNodeChanged, this);
   }
@@ -19204,7 +19289,7 @@ __export(ElementStatePaneWidget_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW12,
   ElementStatePaneWidget: () => ElementStatePaneWidget
 });
-import * as i18n41 from "./../../core/i18n/i18n.js";
+import * as i18n42 from "./../../core/i18n/i18n.js";
 import * as SDK24 from "./../../core/sdk/sdk.js";
 import * as Buttons4 from "./../../ui/components/buttons/buttons.js";
 import * as UIHelpers from "./../../ui/helpers/helpers.js";
@@ -19300,8 +19385,8 @@ var UIStrings21 = {
    */
   learnMore: "Learn more"
 };
-var str_21 = i18n41.i18n.registerUIStrings("panels/elements/ElementStatePaneWidget.ts", UIStrings21);
-var i18nString20 = i18n41.i18n.getLocalizedString.bind(void 0, str_21);
+var str_21 = i18n42.i18n.registerUIStrings("panels/elements/ElementStatePaneWidget.ts", UIStrings21);
+var i18nString20 = i18n42.i18n.getLocalizedString.bind(void 0, str_21);
 var SpecificPseudoStates;
 (function(SpecificPseudoStates2) {
   SpecificPseudoStates2["ENABLED"] = "enabled";
@@ -19717,6 +19802,7 @@ export {
   StylePropertyHighlighter_exports as StylePropertyHighlighter,
   StylePropertyTreeElement_exports as StylePropertyTreeElement,
   StylePropertyUtils_exports as StylePropertyUtils,
+  StylesAiCodeCompletionProvider_exports as StylesAiCodeCompletionProvider,
   StylesSidebarPane_exports as StylesSidebarPane,
   TopLayerContainer_exports as TopLayerContainer,
   WebCustomData_exports as WebCustomData

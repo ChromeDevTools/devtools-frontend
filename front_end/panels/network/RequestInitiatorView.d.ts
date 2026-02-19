@@ -7,14 +7,11 @@ export interface ViewInput {
     initiatorGraph: Logs.NetworkLog.InitiatorGraph;
     stackTrace: StackTrace.StackTrace.StackTrace | null;
     request: SDK.NetworkRequest.NetworkRequest;
-    linkifier: Components.Linkifier.Linkifier;
-    target?: SDK.Target.Target;
 }
 export declare const DEFAULT_VIEW: (input: ViewInput, _output: undefined, target: HTMLElement) => void;
 type View = typeof DEFAULT_VIEW;
 export declare class RequestInitiatorView extends UI.Widget.VBox {
     #private;
-    private readonly linkifier;
     private readonly request;
     constructor(request: SDK.NetworkRequest.NetworkRequest, view?: View);
     static createStackTracePreview(request: SDK.NetworkRequest.NetworkRequest, linkifier: Components.Linkifier.Linkifier, focusableLink?: boolean): Promise<{

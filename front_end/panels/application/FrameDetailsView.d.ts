@@ -14,7 +14,6 @@ interface FrameDetailsViewInput {
     frame: SDK.ResourceTreeModel.ResourceTreeFrame;
     target: SDK.Target.Target | null;
     creationStackTrace: StackTrace.StackTrace.StackTrace | null;
-    creationTarget: SDK.Target.Target | null;
     adScriptAncestry: Protocol.Page.AdScriptAncestry | null;
     linkTargetDOMNode: SDK.DOMModel.DOMNode | null;
     permissionsPolicies: Protocol.Page.PermissionsPolicyFeatureState[] | null;

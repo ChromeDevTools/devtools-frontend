@@ -38,6 +38,7 @@ export declare class AiCodeCompletion {
     }>;
     remove(): void;
     static isAiCodeCompletionEnabled(locale: string): boolean;
+    static isAiCodeCompletionStylesEnabled(locale: string): boolean;
 }
 export declare const enum ContextFlavor {
     CONSOLE = "console",// generated code can contain console specific APIs like `$0`.

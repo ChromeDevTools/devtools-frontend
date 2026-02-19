@@ -17,20 +17,19 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/elements/NodeStackTraceWidget.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export const DEFAULT_VIEW = (input, _output, target) => {
-    const { target: sdkTarget, linkifier, stackTrace } = input;
+    const { stackTrace } = input;
     // clang-format off
     render(html `
     <style>${nodeStackTraceWidgetStyles}</style>
     ${target && stackTrace ?
         html `<devtools-widget
                 class="stack-trace"
-                .widgetConfig=${UI.Widget.widgetConfig(Components.JSPresentationUtils.StackTracePreviewContent, { target: sdkTarget, linkifier, stackTrace })}>
+                .widgetConfig=${UI.Widget.widgetConfig(Components.JSPresentationUtils.StackTracePreviewContent, { stackTrace })}>
               </devtools-widget>` :
         html `<div class="gray-info-message">${i18nString(UIStrings.noStackTraceAvailable)}</div>`}`, target);
     // clang-format on
 };
 export class NodeStackTraceWidget extends UI.Widget.VBox {
-    #linkifier = new Components.Linkifier.Linkifier(UI.UIUtils.MaxLengthForDisplayedURLsInConsole);
     #view;
     constructor(view = DEFAULT_VIEW) {
         super({ useShadowDom: true });
@@ -52,12 +51,7 @@ export class NodeStackTraceWidget extends UI.Widget.VBox {
         const stackTrace = runtimeStackTrace && target ?
             await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createStackTraceFromProtocolRuntime(runtimeStackTrace, target) :
             undefined;
-        const input = {
-            target,
-            linkifier: this.#linkifier,
-            stackTrace,
-        };
-        this.#view(input, {}, this.contentElement);
+        this.#view({ stackTrace }, {}, this.contentElement);
     }
 }
 //# sourceMappingURL=NodeStackTraceWidget.js.map

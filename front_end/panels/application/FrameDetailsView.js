@@ -309,7 +309,7 @@ function renderDocumentSection(input) {
       ${maybeRenderUnreachableURL(input.frame?.unreachableUrl())}
       ${maybeRenderOrigin(input.frame?.securityOrigin)}
       ${renderOwnerElement(input.linkTargetDOMNode)}
-      ${maybeRenderCreationStacktrace(input.creationStackTrace, input.creationTarget)}
+      ${maybeRenderCreationStacktrace(input.creationStackTrace)}
       ${maybeRenderAdStatus(input.frame?.adFrameType(), input.frame?.adFrameStatus())}
       ${maybeRenderCreatorAdScriptAncestry(input.frame?.adFrameType(), input.target, input.adScriptAncestry)}
       <devtools-report-divider></devtools-report-divider>`;
@@ -383,14 +383,14 @@ function renderOwnerElement(linkTargetDOMNode) {
     }
     return nothing;
 }
-function maybeRenderCreationStacktrace(stackTrace, target) {
-    if (stackTrace && target) {
+function maybeRenderCreationStacktrace(stackTrace) {
+    if (stackTrace) {
         // Disabled until https://crbug.com/1079231 is fixed.
         // clang-format off
         return html `
         <devtools-report-key title=${i18nString(UIStrings.creationStackTraceExplanation)}>${i18nString(UIStrings.creationStackTrace)}</devtools-report-key>
         <devtools-report-value jslog=${VisualLogging.section('frame-creation-stack-trace')}>
-          <devtools-widget .widgetConfig=${UI.Widget.widgetConfig(Components.JSPresentationUtils.StackTracePreviewContent, { target, stackTrace, options: { expandable: true } })}>
+          <devtools-widget .widgetConfig=${UI.Widget.widgetConfig(Components.JSPresentationUtils.StackTracePreviewContent, { stackTrace, options: { expandable: true } })}>
           </devtools-widget>
         </devtools-report-value>
       `;
@@ -727,7 +727,6 @@ export class FrameDetailsReportView extends UI.Widget.Widget {
     #frame;
     #target = null;
     #creationStackTrace = null;
-    #creationTarget = null;
     #securityIsolationInfo = null;
     #linkTargetDOMNode = null;
     #trials = null;
@@ -749,7 +748,6 @@ export class FrameDetailsReportView extends UI.Widget.Widget {
             this.requestUpdate();
         });
         const { creationStackTrace: rawCreationStackTrace, creationStackTraceTarget: creationTarget } = frame.getCreationStackTraceData();
-        this.#creationTarget = creationTarget;
         if (rawCreationStackTrace) {
             void Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
                 .createStackTraceFromProtocolRuntime(rawCreationStackTrace, creationTarget)
@@ -799,7 +797,6 @@ export class FrameDetailsReportView extends UI.Widget.Widget {
             frame,
             target: this.#target,
             creationStackTrace: this.#creationStackTrace,
-            creationTarget: this.#creationTarget,
             protocolMonitorExperimentEnabled: this.#protocolMonitorExperimentEnabled,
             permissionsPolicies: this.#permissionsPolicies,
             adScriptAncestry: this.#adScriptAncestry,

@@ -2149,9 +2149,6 @@ export class TimelineDetailsContentHelper {
      * contains any entries, and discards it if it's empty.
      */
     async createChildStackTraceElement(runtimeStackTrace) {
-        if (!this.#linkifier) {
-            return null;
-        }
         // Fallback to the main page/root target. Maybe the main page has a source map we need.
         // Worst case the stack is identity mapped.
         const targetManager = SDK.TargetManager.TargetManager.instance();
@@ -2160,7 +2157,8 @@ export class TimelineDetailsContentHelper {
             return null;
         }
         const stackTrace = await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createStackTraceFromProtocolRuntime(runtimeStackTrace, target);
-        const callFrameContents = new LegacyComponents.JSPresentationUtils.StackTracePreviewContent(undefined, target, this.#linkifier, { tabStops: true, showColumnNumber: true });
+        const callFrameContents = new LegacyComponents.JSPresentationUtils.StackTracePreviewContent();
+        callFrameContents.options = { tabStops: true, showColumnNumber: true };
         callFrameContents.stackTrace = stackTrace;
         await callFrameContents.updateComplete;
         if (!callFrameContents.hasContent()) {

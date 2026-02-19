@@ -1,5 +1,5 @@
 {
   "dependencies": {
-    "ts-morph": "^13.0.1"
+    "ts-morph": "^27.0.2"
   }
 }

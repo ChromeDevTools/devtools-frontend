@@ -118,11 +118,17 @@ var PanelUtils = class _PanelUtils {
     }
     if (type === Common.ResourceType.resourceTypes.Image) {
       return html`<div class="image icon">
-          <img class="image-network-icon-preview"
-               title=${iconTitleForRequest(request)}
-               alt=${iconTitleForRequest(request)}
-               ${ref((e) => request.populateImageSource(e))}>
-        </div>`;
+        <img
+          class="image-network-icon-preview"
+          title=${iconTitleForRequest(request)}
+          alt=${iconTitleForRequest(request)}
+          ${ref((el) => {
+        if (el) {
+          void request.populateImageSource(el);
+        }
+      })}
+        />
+      </div>`;
     }
     if (type !== Common.ResourceType.resourceTypes.Manifest && Common.ResourceType.ResourceType.simplifyContentType(request.mimeType) === "application/json") {
       return html`<devtools-icon

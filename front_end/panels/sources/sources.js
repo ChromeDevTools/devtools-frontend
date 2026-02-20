@@ -11875,13 +11875,11 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI19.View.SimpleV
     }
     let { maxAsyncStackChainDepth } = this;
     let hasMore = false;
-    let previousFragment = this.#stackTrace.syncFragment;
     for (const asyncFragment of this.#stackTrace.asyncFragments) {
-      items.push(Item.createForAsyncHeader(asyncFragment, previousFragment));
+      items.push(Item.createForAsyncHeader(this.#stackTrace, asyncFragment));
       for (const frame of asyncFragment.frames) {
         items.push(Item.createForFrame(frame));
       }
-      previousFragment = asyncFragment;
       if (--maxAsyncStackChainDepth <= 0) {
         hasMore = asyncFragment !== this.#stackTrace.asyncFragments.at(-1);
         break;
@@ -12133,8 +12131,8 @@ var Item = class _Item {
     }
     return item;
   }
-  static createForAsyncHeader(fragment, previousFragment) {
-    const description = UI19.UIUtils.asyncStackTraceLabel(fragment.description, previousFragment.frames.map((f) => ({ functionName: f.name ?? "" })));
+  static createForAsyncHeader(stackTrace, fragment) {
+    const description = UI19.UIUtils.asyncFragmentLabel(stackTrace, fragment);
     const item = new _Item(description);
     item.isAsyncHeader = true;
     return item;

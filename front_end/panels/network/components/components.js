@@ -296,7 +296,7 @@ var DEFAULT_VIEW = (input, _output, target) => {
   function isCategoryOpen(name) {
     return input.openCategories.includes(name);
   }
-  function renderCategory(name, title, content) {
+  function renderCategory2(name, title, content) {
     return html`
         <details
           class="direct-socket-category"
@@ -370,9 +370,9 @@ var DEFAULT_VIEW = (input, _output, target) => {
   render(html`
     <style>${UI.inspectorCommonStyles}</style>
     <style>${RequestHeadersView_css_default}</style>
-    ${renderCategory(CATEGORY_NAME_GENERAL, i18nString(UIStrings.general), generalContent)}
-    ${renderCategory(CATEGORY_NAME_OPTIONS, i18nString(UIStrings.options), optionsContent)}
-    ${socketInfo.openInfo ? renderCategory(CATEGORY_NAME_OPEN_INFO, i18nString(UIStrings.openInfo), openInfoContent) : Lit.nothing}
+    ${renderCategory2(CATEGORY_NAME_GENERAL, i18nString(UIStrings.general), generalContent)}
+    ${renderCategory2(CATEGORY_NAME_OPTIONS, i18nString(UIStrings.options), optionsContent)}
+    ${socketInfo.openInfo ? renderCategory2(CATEGORY_NAME_OPEN_INFO, i18nString(UIStrings.openInfo), openInfoContent) : Lit.nothing}
   `, target);
 };
 var DirectSocketConnectionView = class extends UI.Widget.Widget {
@@ -1335,9 +1335,7 @@ var RequestHeaderSection = class extends UI2.Widget.Widget {
 // gen/front_end/panels/network/components/RequestHeadersView.js
 var RequestHeadersView_exports = {};
 __export(RequestHeadersView_exports, {
-  Category: () => Category,
-  RequestHeadersView: () => RequestHeadersView,
-  ToggleRawHeadersEvent: () => ToggleRawHeadersEvent
+  RequestHeadersView: () => RequestHeadersView
 });
 import "./../../../ui/kit/kit.js";
 import * as Common3 from "./../../../core/common/common.js";
@@ -2063,6 +2061,7 @@ var RequestHeadersView = class extends LegacyWrapper.LegacyWrapper.WrappableComp
     return await RenderCoordinator.write(() => {
       render6(html6`
         <style>${RequestHeadersView_css_default}</style>
+        <style>${Input.checkboxStyles}</style>
         ${this.#renderGeneralSection()}
         ${this.#renderEarlyHintsHeaders()}
         ${this.#renderResponseHeaders()}
@@ -2078,28 +2077,22 @@ var RequestHeadersView = class extends LegacyWrapper.LegacyWrapper.WrappableComp
       this.#showResponseHeadersText = !this.#showResponseHeadersText;
       void this.render();
     };
-    return html6`
-      <devtools-request-headers-category
-        @togglerawevent=${toggleShowRaw}
-        .data=${{
+    return renderCategory({
+      onToggleRawHeaders: toggleShowRaw,
       name: "early-hints-headers",
       title: i18nString5(UIStrings5.earlyHintsHeaders),
       headerCount: this.#request.earlyHintsHeaders.length,
       checked: void 0,
       additionalContent: void 0,
       forceOpen: this.#toReveal?.section === "EarlyHints",
-      loggingContext: "early-hints-headers"
-    }}
-        aria-label=${i18nString5(UIStrings5.earlyHintsHeaders)}
-      >
-        ${this.#showResponseHeadersText ? this.#renderRawHeaders(this.#request.responseHeadersText, true) : html6`
+      loggingContext: "early-hints-headers",
+      contents: this.#showResponseHeadersText ? this.#renderRawHeaders(this.#request.responseHeadersText, true) : html6`
           <devtools-early-hints-header-section .data=${{
-      request: this.#request,
-      toReveal: this.#toReveal
-    }}></devtools-early-hints-header-section>
-        `}
-      </devtools-request-headers-category>
-    `;
+        request: this.#request,
+        toReveal: this.#toReveal
+      }}></devtools-early-hints-header-section>
+        `
+    });
   }
   #renderResponseHeaders() {
     if (!this.#request) {
@@ -2109,28 +2102,22 @@ var RequestHeadersView = class extends LegacyWrapper.LegacyWrapper.WrappableComp
       this.#showResponseHeadersText = !this.#showResponseHeadersText;
       void this.render();
     };
-    return html6`
-      <devtools-request-headers-category
-        @togglerawevent=${toggleShowRaw}
-        .data=${{
+    return renderCategory({
+      onToggleRawHeaders: toggleShowRaw,
       name: "response-headers",
       title: i18nString5(UIStrings5.responseHeaders),
       headerCount: this.#request.sortedResponseHeaders.length,
       checked: this.#request.responseHeadersText ? this.#showResponseHeadersText : void 0,
       additionalContent: this.#renderHeaderOverridesLink(),
       forceOpen: this.#toReveal?.section === "Response",
-      loggingContext: "response-headers"
-    }}
-        aria-label=${i18nString5(UIStrings5.responseHeaders)}
-      >
-        ${this.#showResponseHeadersText ? this.#renderRawHeaders(this.#request.responseHeadersText, true) : html6`
+      loggingContext: "response-headers",
+      contents: this.#showResponseHeadersText ? this.#renderRawHeaders(this.#request.responseHeadersText, true) : html6`
           <devtools-response-header-section .data=${{
-      request: this.#request,
-      toReveal: this.#toReveal
-    }} jslog=${VisualLogging6.section("response-headers")}></devtools-response-header-section>
-        `}
-      </devtools-request-headers-category>
-    `;
+        request: this.#request,
+        toReveal: this.#toReveal
+      }} jslog=${VisualLogging6.section("response-headers")}></devtools-response-header-section>
+        `
+    });
   }
   #renderHeaderOverridesLink() {
     if (!this.#workspace.uiSourceCodeForURL(this.#getHeaderOverridesFileUrl())) {
@@ -2187,27 +2174,20 @@ var RequestHeadersView = class extends LegacyWrapper.LegacyWrapper.WrappableComp
       this.#showRequestHeadersText = !this.#showRequestHeadersText;
       void this.render();
     };
-    return html6`
-      <devtools-request-headers-category
-        @togglerawevent=${toggleShowRaw}
-        .data=${{
+    return renderCategory({
+      onToggleRawHeaders: toggleShowRaw,
       name: "request-headers",
       title: i18nString5(UIStrings5.requestHeaders),
       headerCount: this.#request.requestHeaders().length,
       checked: requestHeadersText ? this.#showRequestHeadersText : void 0,
       forceOpen: this.#toReveal?.section === "Request",
-      loggingContext: "request-headers"
-    }}
-        aria-label=${i18nString5(UIStrings5.requestHeaders)}
-      >
-        ${this.#showRequestHeadersText && requestHeadersText ? this.#renderRawHeaders(requestHeadersText, false) : html6`
+      loggingContext: "request-headers",
+      contents: this.#showRequestHeadersText && requestHeadersText ? this.#renderRawHeaders(requestHeadersText, false) : html6`
           <devtools-widget .widgetConfig=${UI4.Widget.widgetConfig(RequestHeaderSection, {
-      request: this.#request,
-      toReveal: this.#toReveal
-    })} jslog=${VisualLogging6.section("request-headers")}></devtools-widget>
-        `}
-      </devtools-request-headers-category>
-    `;
+        request: this.#request,
+        toReveal: this.#toReveal
+      })} jslog=${VisualLogging6.section("request-headers")}></devtools-widget>`
+    });
   }
   #renderRawHeaders(rawHeadersText, forResponseHeaders) {
     const trimmed = rawHeadersText.trim();
@@ -2286,25 +2266,20 @@ var RequestHeadersView = class extends LegacyWrapper.LegacyWrapper.WrappableComp
       statusClasses.push("status-with-comment");
     }
     const statusText = [this.#request.statusCode, this.#request.getInferredStatusText(), comment].join(" ");
-    return html6`
-      <devtools-request-headers-category
-        .data=${{
+    return renderCategory({
       name: "general",
       title: i18nString5(UIStrings5.general),
       forceOpen: this.#toReveal?.section === "General",
-      loggingContext: "general"
-    }}
-        aria-label=${i18nString5(UIStrings5.general)}
-      >
-      <div jslog=${VisualLogging6.section("general")}>
+      loggingContext: "general",
+      // clang-format off
+      contents: html6`<div jslog=${VisualLogging6.section("general")}>
         ${this.#renderGeneralRow(i18nString5(UIStrings5.requestUrl), this.#request.url(), "request-url")}
         ${this.#request.statusCode ? this.#renderGeneralRow(i18nString5(UIStrings5.requestMethod), this.#request.requestMethod, "request-method") : Lit4.nothing}
         ${this.#request.statusCode ? this.#renderGeneralRow(i18nString5(UIStrings5.statusCode), statusText, "status-code", statusClasses) : Lit4.nothing}
         ${this.#request.remoteAddress() ? this.#renderGeneralRow(i18nString5(UIStrings5.remoteAddress), this.#request.remoteAddress(), "remote-address") : Lit4.nothing}
         ${this.#request.referrerPolicy() ? this.#renderGeneralRow(i18nString5(UIStrings5.referrerPolicy), String(this.#request.referrerPolicy()), "referrer-policy") : Lit4.nothing}
-      </div>
-      </devtools-request-headers-category>
-    `;
+      </div>`
+    });
   }
   #renderGeneralRow(name, value2, id, classNames) {
     const isHighlighted = this.#toReveal?.section === "General" && name.toLowerCase() === this.#toReveal?.header?.toLowerCase();
@@ -2330,64 +2305,34 @@ var RequestHeadersView = class extends LegacyWrapper.LegacyWrapper.WrappableComp
     return null;
   }
 };
-var ToggleRawHeadersEvent = class _ToggleRawHeadersEvent extends Event {
-  static eventName = "togglerawevent";
-  constructor() {
-    super(_ToggleRawHeadersEvent.eventName, {});
-  }
-};
-var Category = class extends HTMLElement {
-  #shadow = this.attachShadow({ mode: "open" });
-  #expandedSetting;
-  #title = Common3.UIString.LocalizedEmptyString;
-  #headerCount = void 0;
-  #checked = void 0;
-  #additionalContent = void 0;
-  #forceOpen = void 0;
-  #loggingContext = "";
-  set data(data) {
-    this.#title = data.title;
-    this.#expandedSetting = Common3.Settings.Settings.instance().createSetting("request-info-" + data.name + "-category-expanded", true);
-    this.#headerCount = data.headerCount;
-    this.#checked = data.checked;
-    this.#additionalContent = data.additionalContent;
-    this.#forceOpen = data.forceOpen;
-    this.#loggingContext = data.loggingContext;
-    this.#render();
-  }
-  #onCheckboxToggle() {
-    this.dispatchEvent(new ToggleRawHeadersEvent());
-  }
-  #render() {
-    const isOpen = (this.#expandedSetting ? this.#expandedSetting.get() : true) || this.#forceOpen;
-    render6(html6`
-      <style>${RequestHeadersView_css_default}</style>
-      <style>${Input.checkboxStyles}</style>
-      <details ?open=${isOpen} @toggle=${this.#onToggle}>
+function renderCategory(data) {
+  const expandedSetting = Common3.Settings.Settings.instance().createSetting("request-info-" + data.name + "-category-expanded", true);
+  const isOpen = (expandedSetting ? expandedSetting.get() : true) || data.forceOpen;
+  return html6`
+      <details ?open=${isOpen} @toggle=${onToggle} aria-label=${data.title}>
         <summary
           class="header"
-          @keydown=${this.#onSummaryKeyDown}
-          jslog=${VisualLogging6.sectionHeader().track({ click: true }).context(this.#loggingContext)}
+          @keydown=${onSummaryKeyDown}
+          jslog=${VisualLogging6.sectionHeader().track({ click: true }).context(data.loggingContext)}
         >
           <div class="header-grid-container">
             <div>
-              ${this.#title}${this.#headerCount !== void 0 ? html6`<span class="header-count"> (${this.#headerCount})</span>` : Lit4.nothing}
+              ${data.title}${data.headerCount !== void 0 ? html6`<span class="header-count"> (${data.headerCount})</span>` : Lit4.nothing}
             </div>
             <div class="hide-when-closed">
-              ${this.#checked !== void 0 ? html6`
-                <devtools-checkbox .checked=${this.#checked} @change=${this.#onCheckboxToggle}
+              ${data.checked !== void 0 ? html6`
+                <devtools-checkbox .checked=${data.checked} @change=${data.onToggleRawHeaders}
                          jslog=${VisualLogging6.toggle("raw-headers").track({ change: true })}>
                   ${i18nString5(UIStrings5.raw)}
               </devtools-checkbox>` : Lit4.nothing}
             </div>
-            <div class="hide-when-closed">${this.#additionalContent}</div>
+            <div class="hide-when-closed">${data.additionalContent}</div>
           </div>
         </summary>
-        <slot></slot>
+        ${data.contents}
       </details>
-    `, this.#shadow, { host: this });
-  }
-  #onSummaryKeyDown(event) {
+    `;
+  function onSummaryKeyDown(event) {
     if (!event.target) {
       return;
     }
@@ -2405,12 +2350,11 @@ var Category = class extends HTMLElement {
         break;
     }
   }
-  #onToggle(event) {
-    this.#expandedSetting?.set(event.target.open);
+  function onToggle(event) {
+    expandedSetting?.set(event.target.open);
   }
-};
+}
 customElements.define("devtools-request-headers", RequestHeadersView);
-customElements.define("devtools-request-headers-category", Category);
 
 // gen/front_end/panels/network/components/RequestTrustTokensView.js
 var RequestTrustTokensView_exports = {};

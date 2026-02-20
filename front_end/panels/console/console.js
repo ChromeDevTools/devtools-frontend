@@ -704,7 +704,7 @@ import * as i18n5 from "./../../core/i18n/i18n.js";
 import * as Root from "./../../core/root/root.js";
 import * as AiAssistanceModel3 from "./../../models/ai_assistance/ai_assistance.js";
 import * as Buttons from "./../../ui/components/buttons/buttons.js";
-import * as UI3 from "./../../ui/legacy/legacy.js";
+import * as UI4 from "./../../ui/legacy/legacy.js";
 import * as Lit2 from "./../../ui/lit/lit.js";
 import * as VisualLogging2 from "./../../ui/visual_logging/visual_logging.js";
 import * as PanelCommon from "./../common/common.js";
@@ -3747,7 +3747,6 @@ __export(PromptBuilder_exports, {
   formatConsoleMessage: () => formatConsoleMessage,
   formatNetworkRequest: () => formatNetworkRequest,
   formatRelatedCode: () => formatRelatedCode,
-  formatStackTrace: () => formatStackTrace,
   lineWhitespace: () => lineWhitespace
 });
 import * as SDK4 from "./../../core/sdk/sdk.js";
@@ -3757,6 +3756,7 @@ import * as Formatter from "./../../models/formatter/formatter.js";
 import * as Logs2 from "./../../models/logs/logs.js";
 import * as TextUtils5 from "./../../models/text_utils/text_utils.js";
 import * as Components2 from "./../../ui/legacy/components/utils/utils.js";
+import * as UI3 from "./../../ui/legacy/legacy.js";
 var MAX_MESSAGE_SIZE = 1e3;
 var MAX_STACK_TRACE_SIZE = 1e3;
 var MAX_CODE_SIZE = 1e3;
@@ -3810,7 +3810,7 @@ var PromptBuilder = class {
     ]);
     const relatedCode = sourceCode?.text ? formatRelatedCode(sourceCode) : "";
     const relatedRequest = request ? formatNetworkRequest(request) : "";
-    const stacktrace = sourcesTypes.includes(SourceType.STACKTRACE) ? formatStackTrace(this.#consoleMessage) : "";
+    const stacktrace = sourcesTypes.includes(SourceType.STACKTRACE) ? await formatStackTrace(this.#consoleMessage) : "";
     const message = formatConsoleMessage(this.#consoleMessage);
     const prompt = this.formatPrompt({
       message: [message, stacktrace].join("\n").trim(),
@@ -3970,12 +3970,17 @@ Response status: ${request.statusCode} ${request.statusText}`;
 function formatConsoleMessage(message) {
   return message.toMessageTextString().substr(0, MAX_MESSAGE_SIZE);
 }
-function formatStackTrace(message) {
+async function formatStackTrace(message) {
   const previewContainer = message.contentElement().querySelector(".stack-preview-container");
   if (!previewContainer) {
     return "";
   }
-  const preview = previewContainer.shadowRoot?.querySelector(".stack-preview-container");
+  const widget = UI3.Widget.Widget.get(previewContainer);
+  if (!widget) {
+    return "";
+  }
+  await widget.updateComplete;
+  const preview = widget.contentElement.querySelector(".stack-preview-container");
   const nodes = preview.childTextNodes();
   const messageContent = nodes.filter((n) => {
     return !n.parentElement?.closest(".show-all-link,.show-less-link,.hidden-row");
@@ -4286,7 +4291,7 @@ var DEFAULT_VIEW2 = (input, output, target) => {
     </devtools-tooltip>
   `, target);
 };
-var ConsoleInsightTeaser = class extends UI3.Widget.Widget {
+var ConsoleInsightTeaser = class extends UI4.Widget.Widget {
   #view;
   #uuid;
   #builtInAi;
@@ -4341,8 +4346,8 @@ var ConsoleInsightTeaser = class extends UI3.Widget.Widget {
     }
   }
   #executeConsoleInsightAction() {
-    UI3.Context.Context.instance().setFlavor(ConsoleViewMessage, this.#consoleViewMessage);
-    const action2 = UI3.ActionRegistry.ActionRegistry.instance().getAction(EXPLAIN_TEASER_ACTION_ID);
+    UI4.Context.Context.instance().setFlavor(ConsoleViewMessage, this.#consoleViewMessage);
+    const action2 = UI4.ActionRegistry.ActionRegistry.instance().getAction(EXPLAIN_TEASER_ACTION_ID);
     void action2.execute();
   }
   #onTellMeMoreClick(event) {
@@ -4397,7 +4402,7 @@ var ConsoleInsightTeaser = class extends UI3.Widget.Widget {
         }
       ],
       onLearnMoreClick: () => {
-        void UI3.ViewManager.ViewManager.instance().showView("chrome-ai");
+        void UI4.ViewManager.ViewManager.instance().showView("chrome-ai");
       },
       ariaLabel: lockedString(UIStringsNotTranslate.freDisclaimerHeader),
       learnMoreButtonText: lockedString(UIStringsNotTranslate.learnMore)
@@ -4550,7 +4555,7 @@ var ConsoleInsightTeaser = class extends UI3.Widget.Widget {
     Common5.Settings.Settings.instance().moduleSetting("console-insight-teasers-enabled").set(showTeasers);
   }
   #hasTellMeMoreButton() {
-    if (!UI3.ActionRegistry.ActionRegistry.instance().hasAction(EXPLAIN_TEASER_ACTION_ID)) {
+    if (!UI4.ActionRegistry.ActionRegistry.instance().hasAction(EXPLAIN_TEASER_ACTION_ID)) {
       return false;
     }
     if (Root.Runtime.hostConfig.aidaAvailability?.blockedByAge || Root.Runtime.hostConfig.isOffTheRecord) {
@@ -4612,7 +4617,7 @@ import * as CodeMirror from "./../../third_party/codemirror.next/codemirror.next
 import * as Buttons2 from "./../../ui/components/buttons/buttons.js";
 import * as TextEditor from "./../../ui/components/text_editor/text_editor.js";
 import * as ObjectUI2 from "./../../ui/legacy/components/object_ui/object_ui.js";
-import * as UI4 from "./../../ui/legacy/legacy.js";
+import * as UI5 from "./../../ui/legacy/legacy.js";
 import { Directives, html as html3, nothing as nothing3, render as render4 } from "./../../ui/lit/lit.js";
 import * as VisualLogging3 from "./../../ui/visual_logging/visual_logging.js";
 
@@ -4738,14 +4743,14 @@ var DEFAULT_PANE_VIEW = (input, _output, target) => {
     <style>${consolePinPane_css_default}</style>
     <div class='console-pins monospace' jslog=${VisualLogging3.pane("console-pins")} @contextmenu=${input.onContextMenu}>
     ${input.pins.map((pin) => html3`
-        <devtools-widget .widgetConfig=${UI4.Widget.widgetConfig(ConsolePinPresenter, {
+        <devtools-widget .widgetConfig=${UI5.Widget.widgetConfig(ConsolePinPresenter, {
     pin,
     focusOut: input.focusOut,
     onRemove: () => input.onRemove(pin)
   })}></devtools-widget>`)}
     </div>`, target);
 };
-var ConsolePinPane = class extends UI4.Widget.VBox {
+var ConsolePinPane = class extends UI5.Widget.VBox {
   #view;
   /** When creating a new pin, we'll focus it after rendering the editor */
   #newPin;
@@ -4762,12 +4767,12 @@ var ConsolePinPane = class extends UI4.Widget.VBox {
     this.#pinModel.stopPeriodicEvaluate();
   }
   contextMenuEventFired(event) {
-    const contextMenu = new UI4.ContextMenu.ContextMenu(event);
-    const target = UI4.UIUtils.deepElementFromEvent(event);
+    const contextMenu = new UI5.ContextMenu.ContextMenu(event);
+    const target = UI5.UIUtils.deepElementFromEvent(event);
     if (target) {
       const targetPinElement = target.enclosingNodeOrSelfWithClass("widget");
       if (targetPinElement) {
-        const targetPin = UI4.Widget.Widget.get(targetPinElement);
+        const targetPin = UI5.Widget.Widget.get(targetPinElement);
         if (targetPin instanceof ConsolePinPresenter) {
           contextMenu.editSection().appendItem(i18nString3(UIStrings3.removeExpression), () => targetPin.pin ? this.removePin(targetPin.pin) : void 0, { jslogContext: "remove-expression" });
           targetPin.appendToContextMenu(contextMenu);
@@ -4879,7 +4884,7 @@ function renderResult(result, isEditing) {
   }
   return renderedPreview;
 }
-var ConsolePinPresenter = class extends UI4.Widget.Widget {
+var ConsolePinPresenter = class extends UI5.Widget.Widget {
   #pin;
   #focusOut;
   #onRemove;
@@ -5100,7 +5105,7 @@ var ConsolePinModel = class {
     if (!this.#active) {
       return;
     }
-    const executionContext = UI4.Context.Context.instance().flavor(SDK5.RuntimeModel.ExecutionContext);
+    const executionContext = UI5.Context.Context.instance().flavor(SDK5.RuntimeModel.ExecutionContext);
     if (executionContext) {
       await Promise.all(this.#pins.values().map((pin) => pin.evaluate(executionContext)));
     }
@@ -5198,7 +5203,7 @@ __export(ConsoleSidebar_exports, {
 import * as Common7 from "./../../core/common/common.js";
 import * as i18n9 from "./../../core/i18n/i18n.js";
 import * as SDK6 from "./../../core/sdk/sdk.js";
-import * as UI5 from "./../../ui/legacy/legacy.js";
+import * as UI6 from "./../../ui/legacy/legacy.js";
 import * as Lit3 from "./../../ui/lit/lit.js";
 import * as VisualLogging4 from "./../../ui/visual_logging/visual_logging.js";
 
@@ -5383,7 +5388,7 @@ var CONSOLE_API_PARSED_FILTERS = [{
   negative: false,
   regex: void 0
 }];
-var ConsoleSidebar = class extends Common7.ObjectWrapper.eventMixin(UI5.Widget.VBox) {
+var ConsoleSidebar = class extends Common7.ObjectWrapper.eventMixin(UI6.Widget.VBox) {
   #view;
   #groups = [
     new ConsoleFilterGroup("message", [], ConsoleFilter.allLevelsFilterValue()),
@@ -5455,7 +5460,7 @@ __export(ConsoleViewport_exports, {
 });
 import * as Platform4 from "./../../core/platform/platform.js";
 import * as Components3 from "./../../ui/legacy/components/utils/utils.js";
-import * as UI6 from "./../../ui/legacy/legacy.js";
+import * as UI7 from "./../../ui/legacy/legacy.js";
 var ConsoleViewport = class {
   element;
   topGapElement;
@@ -5493,8 +5498,8 @@ var ConsoleViewport = class {
     this.bottomGapElementActive = false;
     this.topGapElement.textContent = "\uFEFF";
     this.bottomGapElement.textContent = "\uFEFF";
-    UI6.ARIAUtils.setHidden(this.topGapElement, true);
-    UI6.ARIAUtils.setHidden(this.bottomGapElement, true);
+    UI7.ARIAUtils.setHidden(this.topGapElement, true);
+    UI7.ARIAUtils.setHidden(this.bottomGapElement, true);
     this.provider = provider;
     this.element.addEventListener("scroll", this.onScroll.bind(this), false);
     this.element.addEventListener("copy", this.onCopy.bind(this), false);
@@ -5587,7 +5592,7 @@ var ConsoleViewport = class {
     return true;
   }
   onKeyDown(event) {
-    if (UI6.UIUtils.isEditing() || !this.itemCount || event.shiftKey) {
+    if (UI7.UIUtils.isEditing() || !this.itemCount || event.shiftKey) {
       return;
     }
     let isArrowUp = false;
@@ -5623,7 +5628,7 @@ var ConsoleViewport = class {
   updateFocusedItem(focusLastChild) {
     const selectedElement = this.renderedElementAt(this.virtualSelectedIndex);
     const changed = this.lastSelectedElement !== selectedElement;
-    const containerHasFocus = this.#contentElement === UI6.DOMUtilities.deepActiveElement(this.element.ownerDocument);
+    const containerHasFocus = this.#contentElement === UI7.DOMUtilities.deepActiveElement(this.element.ownerDocument);
     if (this.lastSelectedElement && changed) {
       this.lastSelectedElement.classList.remove("console-selected");
     }
@@ -5631,7 +5636,7 @@ var ConsoleViewport = class {
       selectedElement.classList.add("console-selected");
       const consoleViewMessage = getMessageForElement(selectedElement);
       if (consoleViewMessage) {
-        UI6.Context.Context.instance().setFlavor(ConsoleViewMessage, consoleViewMessage);
+        UI7.Context.Context.instance().setFlavor(ConsoleViewMessage, consoleViewMessage);
       }
       if (focusLastChild) {
         this.setStickToBottom(false);
@@ -6016,7 +6021,7 @@ var ConsoleViewport = class {
     this.setStickToBottom(false);
     this.rebuildCumulativeHeightsIfNeeded();
     this.element.scrollTop = index > 0 ? this.cumulativeHeights[index - 1] : 0;
-    if (UI6.UIUtils.isScrolledToBottom(this.element)) {
+    if (UI7.UIUtils.isScrolledToBottom(this.element)) {
       this.setStickToBottom(true);
     }
     this.refresh();
@@ -6033,7 +6038,7 @@ var ConsoleViewport = class {
     this.setStickToBottom(false);
     this.rebuildCumulativeHeightsIfNeeded();
     this.element.scrollTop = this.cumulativeHeights[index] - this.visibleHeight();
-    if (UI6.UIUtils.isScrolledToBottom(this.element)) {
+    if (UI7.UIUtils.isScrolledToBottom(this.element)) {
       this.setStickToBottom(true);
     }
     this.refresh();
@@ -6067,7 +6072,7 @@ import * as CodeMirror2 from "./../../third_party/codemirror.next/codemirror.nex
 import * as TextEditor2 from "./../../ui/components/text_editor/text_editor.js";
 import { Icon as Icon2 } from "./../../ui/kit/kit.js";
 import * as ObjectUI3 from "./../../ui/legacy/components/object_ui/object_ui.js";
-import * as UI9 from "./../../ui/legacy/legacy.js";
+import * as UI10 from "./../../ui/legacy/legacy.js";
 import * as VisualLogging7 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/console/ConsolePanel.js
@@ -6077,7 +6082,7 @@ __export(ConsolePanel_exports, {
   ConsoleRevealer: () => ConsoleRevealer,
   WrapperView: () => WrapperView
 });
-import * as UI8 from "./../../ui/legacy/legacy.js";
+import * as UI9 from "./../../ui/legacy/legacy.js";
 import * as VisualLogging6 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/console/ConsoleView.js
@@ -6105,7 +6110,7 @@ import * as IssueCounter2 from "./../../ui/components/issue_counter/issue_counte
 import { createIcon as createIcon2 } from "./../../ui/kit/kit.js";
 import * as SettingsUI from "./../../ui/legacy/components/settings_ui/settings_ui.js";
 import * as Components4 from "./../../ui/legacy/components/utils/utils.js";
-import * as UI7 from "./../../ui/legacy/legacy.js";
+import * as UI8 from "./../../ui/legacy/legacy.js";
 import * as VisualLogging5 from "./../../ui/visual_logging/visual_logging.js";
 import { AiCodeCompletionSummaryToolbar } from "./../common/common.js";
 var UIStrings5 = {
@@ -6304,7 +6309,7 @@ var MIN_HISTORY_LENGTH_FOR_DISABLING_SELF_XSS_WARNING = 5;
 var DISCLAIMER_TOOLTIP_ID = "console-ai-code-completion-disclaimer-tooltip";
 var SPINNER_TOOLTIP_ID = "console-ai-code-completion-spinner-tooltip";
 var CITATIONS_TOOLTIP_ID = "console-ai-code-completion-citations-tooltip";
-var ConsoleView = class _ConsoleView extends UI7.Widget.VBox {
+var ConsoleView = class _ConsoleView extends UI8.Widget.VBox {
   #searchableView;
   sidebar;
   isSidebarOpen;
@@ -6369,7 +6374,7 @@ var ConsoleView = class _ConsoleView extends UI7.Widget.VBox {
     super();
     this.setMinimumSize(0, 35);
     this.registerRequiredCSS(consoleView_css_default, objectValue_css_default, CodeHighlighter3.codeHighlighterStyles);
-    this.#searchableView = new UI7.SearchableView.SearchableView(this, null);
+    this.#searchableView = new UI8.SearchableView.SearchableView(this, null);
     this.#searchableView.element.classList.add("console-searchable-view");
     this.#searchableView.setPlaceholder(i18nString5(UIStrings5.findStringInLogs));
     this.#searchableView.setMinimalSearchQuerySize(0);
@@ -6379,7 +6384,7 @@ var ConsoleView = class _ConsoleView extends UI7.Widget.VBox {
     this.filter = new ConsoleViewFilter(this.onFilterChanged.bind(this));
     this.consoleToolbarContainer = this.element.createChild("div", "console-toolbar-container");
     this.consoleToolbarContainer.role = "toolbar";
-    this.splitWidget = new UI7.SplitWidget.SplitWidget(true, false, "console.sidebar.width", 100);
+    this.splitWidget = new UI8.SplitWidget.SplitWidget(true, false, "console.sidebar.width", 100);
     this.splitWidget.setMainWidget(this.#searchableView);
     this.splitWidget.setSidebarWidget(this.sidebar);
     this.splitWidget.show(this.element);
@@ -6412,12 +6417,12 @@ var ConsoleView = class _ConsoleView extends UI7.Widget.VBox {
     this.shortcuts = /* @__PURE__ */ new Map();
     this.regexMatchRanges = [];
     this.consoleContextSelector = new ConsoleContextSelector();
-    this.filterStatusText = new UI7.Toolbar.ToolbarText();
+    this.filterStatusText = new UI8.Toolbar.ToolbarText();
     this.filterStatusText.element.classList.add("dimmed");
     this.showSettingsPaneSetting = Common8.Settings.Settings.instance().createSetting("console-show-settings-toolbar", false);
-    this.showSettingsPaneButton = new UI7.Toolbar.ToolbarSettingToggle(this.showSettingsPaneSetting, "gear", i18nString5(UIStrings5.consoleSettings), "gear-filled");
+    this.showSettingsPaneButton = new UI8.Toolbar.ToolbarSettingToggle(this.showSettingsPaneSetting, "gear", i18nString5(UIStrings5.consoleSettings), "gear-filled");
     this.showSettingsPaneButton.element.setAttribute("jslog", `${VisualLogging5.toggleSubpane("console-settings").track({ click: true })}`);
-    this.progressToolbarItem = new UI7.Toolbar.ToolbarItem(document.createElement("div"));
+    this.progressToolbarItem = new UI8.Toolbar.ToolbarItem(document.createElement("div"));
     this.groupSimilarSetting = Common8.Settings.Settings.instance().moduleSetting("console-group-similar");
     this.groupSimilarSetting.addChangeListener(() => this.updateMessageList());
     this.showCorsErrorsSetting = Common8.Settings.Settings.instance().moduleSetting("console-shows-cors-errors");
@@ -6427,11 +6432,11 @@ var ConsoleView = class _ConsoleView extends UI7.Widget.VBox {
     toolbar2.role = "presentation";
     toolbar2.wrappable = true;
     toolbar2.appendToolbarItem(this.splitWidget.createShowHideSidebarButton(i18nString5(UIStrings5.showConsoleSidebar), i18nString5(UIStrings5.hideConsoleSidebar), i18nString5(UIStrings5.consoleSidebarShown), i18nString5(UIStrings5.consoleSidebarHidden), "console-sidebar"));
-    toolbar2.appendToolbarItem(UI7.Toolbar.Toolbar.createActionButton("console.clear"));
+    toolbar2.appendToolbarItem(UI8.Toolbar.Toolbar.createActionButton("console.clear"));
     toolbar2.appendSeparator();
     toolbar2.appendToolbarItem(this.consoleContextSelector.toolbarItem());
     toolbar2.appendSeparator();
-    const liveExpressionButton = UI7.Toolbar.Toolbar.createActionButton("console.create-pin");
+    const liveExpressionButton = UI8.Toolbar.Toolbar.createActionButton("console.create-pin");
     toolbar2.appendToolbarItem(liveExpressionButton);
     toolbar2.appendSeparator();
     toolbar2.appendToolbarItem(this.filter.textFilterUI);
@@ -6442,14 +6447,14 @@ var ConsoleView = class _ConsoleView extends UI7.Widget.VBox {
     this.issueCounter = new IssueCounter2.IssueCounter.IssueCounter();
     this.issueCounter.id = "console-issues-counter";
     this.issueCounter.setAttribute("jslog", `${VisualLogging5.counter("issues").track({ click: true })}`);
-    const issuesToolbarItem = new UI7.Toolbar.ToolbarItem(this.issueCounter);
+    const issuesToolbarItem = new UI8.Toolbar.ToolbarItem(this.issueCounter);
     this.issueCounter.data = {
       clickHandler: () => {
         Host3.userMetrics.issuesPanelOpenedFrom(
           2
           /* Host.UserMetrics.IssueOpener.STATUS_BAR_ISSUES_COUNTER */
         );
-        void UI7.ViewManager.ViewManager.instance().showView("issues-pane");
+        void UI8.ViewManager.ViewManager.instance().showView("issues-pane");
       },
       issuesManager: IssuesManager.IssuesManager.IssuesManager.instance(),
       accessibleName: i18nString5(UIStrings5.issueToolbarTooltipGeneral),
@@ -6469,8 +6474,8 @@ var ConsoleView = class _ConsoleView extends UI7.Widget.VBox {
       /* Common.Settings.SettingStorageType.SYNCED */
     );
     const settingsPane = this.contentsElement.createChild("div", "console-settings-pane");
-    UI7.ARIAUtils.setLabel(settingsPane, i18nString5(UIStrings5.consoleSettings));
-    UI7.ARIAUtils.markAsGroup(settingsPane);
+    UI8.ARIAUtils.setLabel(settingsPane, i18nString5(UIStrings5.consoleSettings));
+    UI8.ARIAUtils.markAsGroup(settingsPane);
     const consoleEagerEvalSetting = Common8.Settings.Settings.instance().moduleSetting("console-eager-eval");
     const preserveConsoleLogSetting = Common8.Settings.Settings.instance().moduleSetting("preserve-console-log");
     const userActivationEvalSetting = Common8.Settings.Settings.instance().moduleSetting("console-user-activation-eval");
@@ -6495,7 +6500,7 @@ var ConsoleView = class _ConsoleView extends UI7.Widget.VBox {
       this.messagesElement.addEventListener(type, this.messagesPasted.bind(this), true);
     });
     this.messagesCountElement = this.consoleToolbarContainer.createChild("div", "message-count");
-    UI7.ARIAUtils.markAsPoliteLiveRegion(this.messagesCountElement, false);
+    UI8.ARIAUtils.markAsPoliteLiveRegion(this.messagesCountElement, false);
     this.viewportThrottler = new Common8.Throttler.Throttler(viewportThrottlerTimeout);
     this.pendingBatchResize = false;
     this.onMessageResizedBound = (e) => {
@@ -6505,12 +6510,12 @@ var ConsoleView = class _ConsoleView extends UI7.Widget.VBox {
     this.promptElement.id = "console-prompt";
     const selectAllFixer = this.messagesElement.createChild("div", "console-view-fix-select-all");
     selectAllFixer.textContent = ".";
-    UI7.ARIAUtils.setHidden(selectAllFixer, true);
+    UI8.ARIAUtils.setHidden(selectAllFixer, true);
     this.registerShortcuts();
     this.messagesElement.addEventListener("contextmenu", this.handleContextMenuEvent.bind(this), false);
     const throttler = new Common8.Throttler.Throttler(100);
     const refilterMessages = () => throttler.schedule(async () => this.onFilterChanged());
-    this.linkifier = new Components4.Linkifier.Linkifier(UI7.UIUtils.MaxLengthForDisplayedURLsInConsole);
+    this.linkifier = new Components4.Linkifier.Linkifier(UI8.UIUtils.MaxLengthForDisplayedURLsInConsole);
     this.linkifier.addEventListener("liveLocationUpdated", refilterMessages);
     this.consoleMessages = [];
     this.consoleGroupStarts = [];
@@ -6551,7 +6556,7 @@ var ConsoleView = class _ConsoleView extends UI7.Widget.VBox {
     this.updateFilterStatus();
     this.timestampsSetting.addChangeListener(this.consoleTimestampsSettingChanged, this);
     this.registerWithMessageSink();
-    UI7.Context.Context.instance().addFlavorChangeListener(SDK7.RuntimeModel.ExecutionContext, this.executionContextChanged, this);
+    UI8.Context.Context.instance().addFlavorChangeListener(SDK7.RuntimeModel.ExecutionContext, this.executionContextChanged, this);
     this.messagesElement.addEventListener("mousedown", (event) => this.updateStickToBottomOnPointerDown(event.button === 2), false);
     this.messagesElement.addEventListener("mouseup", this.updateStickToBottomOnPointerUp.bind(this), false);
     this.messagesElement.addEventListener("mouseleave", this.updateStickToBottomOnPointerUp.bind(this), false);
@@ -6764,7 +6769,7 @@ var ConsoleView = class _ConsoleView extends UI7.Widget.VBox {
     const issuesTitleGotoIssues = manager.numberOfIssues() === 0 ? i18nString5(UIStrings5.issueToolbarClickToGoToTheIssuesTab) : i18nString5(UIStrings5.issueToolbarClickToView, { issueEnumeration });
     const issuesTitleGeneral = i18nString5(UIStrings5.issueToolbarTooltipGeneral);
     const issuesTitle = `${issuesTitleGeneral} ${issuesTitleGotoIssues}`;
-    UI7.Tooltip.Tooltip.install(this.issueCounter, issuesTitle);
+    UI8.Tooltip.Tooltip.install(this.issueCounter, issuesTitle);
     this.issueCounter.data = {
       ...this.issueCounter.data,
       leadingText: i18nString5(UIStrings5.issuesWithColon, { n: manager.numberOfIssues() }),
@@ -6969,7 +6974,7 @@ var ConsoleView = class _ConsoleView extends UI7.Widget.VBox {
     }
   }
   async onMessageResized(event) {
-    const treeElement = event.data instanceof UI7.TreeOutline.TreeElement ? event.data.treeOutline?.element : event.data;
+    const treeElement = event.data instanceof UI8.TreeOutline.TreeElement ? event.data.treeOutline?.element : event.data;
     if (this.pendingBatchResize || !treeElement) {
       return;
     }
@@ -6982,7 +6987,7 @@ var ConsoleView = class _ConsoleView extends UI7.Widget.VBox {
     this.pendingBatchResize = false;
   }
   getConsoleMessageHistory() {
-    const currentExecutionContext = UI7.Context.Context.instance().flavor(SDK7.RuntimeModel.ExecutionContext);
+    const currentExecutionContext = UI8.Context.Context.instance().flavor(SDK7.RuntimeModel.ExecutionContext);
     let consoleMessages = "";
     if (currentExecutionContext) {
       const consoleModel = currentExecutionContext.target().model(SDK7.ConsoleModel.ConsoleModel);
@@ -7019,10 +7024,10 @@ var ConsoleView = class _ConsoleView extends UI7.Widget.VBox {
     if (hadFocus) {
       this.prompt.focus();
     }
-    UI7.ARIAUtils.LiveAnnouncer.alert(i18nString5(UIStrings5.consoleCleared));
+    UI8.ARIAUtils.LiveAnnouncer.alert(i18nString5(UIStrings5.consoleCleared));
   }
   handleContextMenuEvent(event) {
-    const contextMenu = new UI7.ContextMenu.ContextMenu(event);
+    const contextMenu = new UI8.ContextMenu.ContextMenu(event);
     const eventTarget = event.target;
     if (eventTarget.isSelfOrDescendant(this.promptElement)) {
       void contextMenu.show();
@@ -7032,7 +7037,7 @@ var ConsoleView = class _ConsoleView extends UI7.Widget.VBox {
     const consoleViewMessage = sourceElement && getMessageForElement(sourceElement);
     const consoleMessage = consoleViewMessage ? consoleViewMessage.consoleMessage() : null;
     if (consoleViewMessage) {
-      UI7.Context.Context.instance().setFlavor(ConsoleViewMessage, consoleViewMessage);
+      UI8.Context.Context.instance().setFlavor(ConsoleViewMessage, consoleViewMessage);
     }
     if (consoleMessage && !consoleViewMessage?.element()?.matches(".has-insight") && consoleViewMessage?.shouldShowInsights()) {
       contextMenu.headerSection().appendAction(
@@ -7227,7 +7232,7 @@ var ConsoleView = class _ConsoleView extends UI7.Widget.VBox {
   messagesKeyDown(event) {
     const keyEvent = event;
     const hasActionModifier = keyEvent.ctrlKey || keyEvent.altKey || keyEvent.metaKey;
-    if (hasActionModifier || keyEvent.key.length !== 1 || UI7.UIUtils.isEditing() || this.messagesElement.hasSelection()) {
+    if (hasActionModifier || keyEvent.key.length !== 1 || UI8.UIUtils.isEditing() || this.messagesElement.hasSelection()) {
       return;
     }
     this.prompt.moveCaretToEndOfPrompt();
@@ -7238,13 +7243,13 @@ var ConsoleView = class _ConsoleView extends UI7.Widget.VBox {
       event.preventDefault();
       this.prompt.showSelfXssWarning();
     }
-    if (UI7.UIUtils.isEditing()) {
+    if (UI8.UIUtils.isEditing()) {
       return;
     }
     this.prompt.focus();
   }
   registerShortcuts() {
-    this.shortcuts.set(UI7.KeyboardShortcut.KeyboardShortcut.makeKey("u", UI7.KeyboardShortcut.Modifiers.Ctrl.value), this.clearPromptBackwards.bind(this));
+    this.shortcuts.set(UI8.KeyboardShortcut.KeyboardShortcut.makeKey("u", UI8.KeyboardShortcut.Modifiers.Ctrl.value), this.clearPromptBackwards.bind(this));
   }
   clearPromptBackwards(e) {
     this.prompt.clear();
@@ -7256,7 +7261,7 @@ var ConsoleView = class _ConsoleView extends UI7.Widget.VBox {
       this.updateStickToBottomOnWheel();
       return;
     }
-    const shortcut = UI7.KeyboardShortcut.KeyboardShortcut.makeKeyFromEvent(keyboardEvent);
+    const shortcut = UI8.KeyboardShortcut.KeyboardShortcut.makeKeyFromEvent(keyboardEvent);
     const handler = this.shortcuts.get(shortcut);
     if (handler) {
       handler(keyboardEvent);
@@ -7470,10 +7475,10 @@ var ConsoleViewFilter = class _ConsoleViewFilter {
     this.messageLevelFiltersSetting.addChangeListener(this.onFilterChanged.bind(this));
     this.hideNetworkMessagesSetting.addChangeListener(this.onFilterChanged.bind(this));
     this.filterByExecutionContextSetting.addChangeListener(this.onFilterChanged.bind(this));
-    UI7.Context.Context.instance().addFlavorChangeListener(SDK7.RuntimeModel.ExecutionContext, this.onFilterChanged, this);
+    UI8.Context.Context.instance().addFlavorChangeListener(SDK7.RuntimeModel.ExecutionContext, this.onFilterChanged, this);
     const filterKeys = Object.values(FilterType);
-    this.suggestionBuilder = new UI7.FilterSuggestionBuilder.FilterSuggestionBuilder(filterKeys);
-    this.textFilterUI = new UI7.Toolbar.ToolbarFilter(void 0, 1, 1, i18nString5(UIStrings5.egEventdCdnUrlacom), this.suggestionBuilder.completions.bind(this.suggestionBuilder), true);
+    this.suggestionBuilder = new UI8.FilterSuggestionBuilder.FilterSuggestionBuilder(filterKeys);
+    this.textFilterUI = new UI8.Toolbar.ToolbarFilter(void 0, 1, 1, i18nString5(UIStrings5.egEventdCdnUrlacom), this.suggestionBuilder.completions.bind(this.suggestionBuilder), true);
     this.textFilterSetting = Common8.Settings.Settings.instance().createSetting("console.text-filter", "");
     if (this.textFilterSetting.get()) {
       this.textFilterUI.setValue(this.textFilterSetting.get());
@@ -7491,10 +7496,10 @@ var ConsoleViewFilter = class _ConsoleViewFilter {
       ["warning", i18nString5(UIStrings5.warnings)],
       ["error", i18nString5(UIStrings5.errors)]
     ]);
-    this.levelMenuButton = new UI7.Toolbar.ToolbarMenuButton(this.appendLevelMenuItems.bind(this), void 0, void 0, "log-level");
+    this.levelMenuButton = new UI8.Toolbar.ToolbarMenuButton(this.appendLevelMenuItems.bind(this), void 0, void 0, "log-level");
     const levelMenuButtonInfoIcon = createIcon2("info", "console-sidebar-levels-info");
     levelMenuButtonInfoIcon.title = i18nString5(UIStrings5.overriddenByFilterSidebar);
-    this.levelMenuButtonInfo = new UI7.Toolbar.ToolbarItem(levelMenuButtonInfoIcon);
+    this.levelMenuButtonInfo = new UI8.Toolbar.ToolbarItem(levelMenuButtonInfoIcon);
     this.levelMenuButtonInfo.setVisible(false);
     this.updateLevelMenuButtonText();
     this.messageLevelFiltersSetting.addChangeListener(this.updateLevelMenuButtonText.bind(this));
@@ -7543,7 +7548,7 @@ var ConsoleViewFilter = class _ConsoleViewFilter {
     if (this.hideNetworkMessagesSetting.get()) {
       parsedFilters.push({ key: FilterType.Source, text: "network", negative: true, regex: void 0 });
     }
-    this.currentFilter.executionContext = this.filterByExecutionContextSetting.get() ? UI7.Context.Context.instance().flavor(SDK7.RuntimeModel.ExecutionContext) : null;
+    this.currentFilter.executionContext = this.filterByExecutionContextSetting.get() ? UI8.Context.Context.instance().flavor(SDK7.RuntimeModel.ExecutionContext) : null;
     this.currentFilter.parsedFilters = parsedFilters;
     this.currentFilter.levelsMask = this.messageLevelFiltersSetting.get();
   }
@@ -7621,8 +7626,8 @@ var ActionDelegate = class {
   handleAction(_context, actionId) {
     switch (actionId) {
       case "console.toggle":
-        if (ConsoleView.instance().hasFocus() && UI7.InspectorView.InspectorView.instance().drawerVisible()) {
-          UI7.InspectorView.InspectorView.instance().closeDrawer();
+        if (ConsoleView.instance().hasFocus() && UI8.InspectorView.InspectorView.instance().drawerVisible()) {
+          UI8.InspectorView.InspectorView.instance().closeDrawer();
           return true;
         }
         Host3.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront();
@@ -7651,7 +7656,7 @@ var consoleMessageToViewMessage = /* @__PURE__ */ new WeakMap();
 
 // gen/front_end/panels/console/ConsolePanel.js
 var consolePanelInstance;
-var ConsolePanel = class _ConsolePanel extends UI8.Panel.Panel {
+var ConsolePanel = class _ConsolePanel extends UI9.Panel.Panel {
   view;
   constructor() {
     super("console");
@@ -7666,20 +7671,20 @@ var ConsolePanel = class _ConsolePanel extends UI8.Panel.Panel {
   }
   static updateContextFlavor() {
     const consoleView = _ConsolePanel.instance().view;
-    UI8.Context.Context.instance().setFlavor(ConsoleView, consoleView.isShowing() ? consoleView : null);
+    UI9.Context.Context.instance().setFlavor(ConsoleView, consoleView.isShowing() ? consoleView : null);
   }
   wasShown() {
     super.wasShown();
     const wrapper = wrapperViewInstance;
     if (wrapper?.isShowing()) {
-      UI8.InspectorView.InspectorView.instance().setDrawerMinimized(true);
+      UI9.InspectorView.InspectorView.instance().setDrawerMinimized(true);
     }
     this.view.show(this.element);
     _ConsolePanel.updateContextFlavor();
   }
   willHide() {
     super.willHide();
-    UI8.InspectorView.InspectorView.instance().setDrawerMinimized(false);
+    UI9.InspectorView.InspectorView.instance().setDrawerMinimized(false);
     if (wrapperViewInstance) {
       wrapperViewInstance.showViewInWrapper();
     }
@@ -7690,7 +7695,7 @@ var ConsolePanel = class _ConsolePanel extends UI8.Panel.Panel {
   }
 };
 var wrapperViewInstance = null;
-var WrapperView = class _WrapperView extends UI8.Widget.VBox {
+var WrapperView = class _WrapperView extends UI9.Widget.VBox {
   view;
   constructor() {
     super({ jslog: `${VisualLogging6.panel("console").track({ resize: true })}` });
@@ -7707,13 +7712,13 @@ var WrapperView = class _WrapperView extends UI8.Widget.VBox {
     if (!ConsolePanel.instance().isShowing()) {
       this.showViewInWrapper();
     } else {
-      UI8.InspectorView.InspectorView.instance().setDrawerMinimized(true);
+      UI9.InspectorView.InspectorView.instance().setDrawerMinimized(true);
     }
     ConsolePanel.updateContextFlavor();
   }
   willHide() {
     super.willHide();
-    UI8.InspectorView.InspectorView.instance().setDrawerMinimized(false);
+    UI9.InspectorView.InspectorView.instance().setDrawerMinimized(false);
     ConsolePanel.updateContextFlavor();
   }
   showViewInWrapper() {
@@ -7727,7 +7732,7 @@ var ConsoleRevealer = class {
       consoleView.focus();
       return;
     }
-    await UI8.ViewManager.ViewManager.instance().showView("console-view");
+    await UI9.ViewManager.ViewManager.instance().showView("console-view");
   }
 };
 
@@ -7808,7 +7813,7 @@ var UIStrings6 = {
 };
 var str_6 = i18n13.i18n.registerUIStrings("panels/console/ConsolePrompt.ts", UIStrings6);
 var i18nString6 = i18n13.i18n.getLocalizedString.bind(void 0, str_6);
-var ConsolePrompt = class extends Common9.ObjectWrapper.eventMixin(UI9.Widget.Widget) {
+var ConsolePrompt = class extends Common9.ObjectWrapper.eventMixin(UI10.Widget.Widget) {
   addCompletionsFromHistory;
   #history;
   initialText;
@@ -7958,7 +7963,7 @@ var ConsolePrompt = class extends Common9.ObjectWrapper.eventMixin(UI9.Widget.Wi
   async requestPreview() {
     const id = ++this.requestPreviewCurrent;
     const text = TextEditor2.Config.contentIncludingHint(this.editor.editor).trim();
-    const executionContext = UI9.Context.Context.instance().flavor(SDK8.RuntimeModel.ExecutionContext);
+    const executionContext = UI10.Context.Context.instance().flavor(SDK8.RuntimeModel.ExecutionContext);
     const { preview, result } = await ObjectUI3.JavaScriptREPL.JavaScriptREPL.evaluateAndBuildPreview(
       text,
       true,
@@ -8075,9 +8080,9 @@ var ConsolePrompt = class extends Common9.ObjectWrapper.eventMixin(UI9.Widget.Wi
     if (forceEvaluate || selection.main.head < doc.length) {
       return true;
     }
-    const currentExecutionContext = UI9.Context.Context.instance().flavor(SDK8.RuntimeModel.ExecutionContext);
+    const currentExecutionContext = UI10.Context.Context.instance().flavor(SDK8.RuntimeModel.ExecutionContext);
     const isExpressionComplete = await TextEditor2.JavaScript.isExpressionComplete(doc.toString());
-    if (currentExecutionContext !== UI9.Context.Context.instance().flavor(SDK8.RuntimeModel.ExecutionContext)) {
+    if (currentExecutionContext !== UI10.Context.Context.instance().flavor(SDK8.RuntimeModel.ExecutionContext)) {
       return false;
     }
     return isExpressionComplete;
@@ -8133,7 +8138,7 @@ var ConsolePrompt = class extends Common9.ObjectWrapper.eventMixin(UI9.Widget.Wi
     });
   }
   appendCommand(text, useCommandLineAPI) {
-    const currentExecutionContext = UI9.Context.Context.instance().flavor(SDK8.RuntimeModel.ExecutionContext);
+    const currentExecutionContext = UI10.Context.Context.instance().flavor(SDK8.RuntimeModel.ExecutionContext);
     if (currentExecutionContext) {
       const executionContext = currentExecutionContext;
       const consoleModel = executionContext.target().model(SDK8.ConsoleModel.ConsoleModel);

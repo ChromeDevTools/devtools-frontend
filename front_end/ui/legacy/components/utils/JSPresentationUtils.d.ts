@@ -1,5 +1,16 @@
 import * as StackTrace from '../../../../models/stack_trace/stack_trace.js';
 import * as UI from '../../legacy.js';
+export interface ViewInput {
+    stackTrace?: StackTrace.StackTrace.StackTrace;
+    tabStops?: boolean;
+    widthConstrained?: boolean;
+    showColumnNumber?: boolean;
+    expandable?: boolean;
+}
+export type View = (input: ViewInput, output: {
+    table?: HTMLElement;
+}, target: HTMLElement) => void;
+export declare const DEFAULT_VIEW: View;
 export interface Options {
     tabStops?: boolean;
     widthConstrained?: boolean;
@@ -8,7 +19,7 @@ export interface Options {
 }
 export declare class StackTracePreviewContent extends UI.Widget.Widget {
     #private;
-    constructor(element?: HTMLElement);
+    constructor(element?: HTMLElement, view?: View);
     hasContent(): boolean;
     performUpdate(): void;
     get linkElements(): readonly HTMLElement[];

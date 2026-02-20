@@ -7363,12 +7363,12 @@ ${desc}`,
       if (shouldAddToHistory(data)) {
         void this.addHistoryItem(data);
       }
+      yield data;
       if (data.type === "context-change") {
         this.setContext(data.context);
         yield* this.#runAgent(initialQuery, options);
         return;
       }
-      yield data;
     }
   }
   /**

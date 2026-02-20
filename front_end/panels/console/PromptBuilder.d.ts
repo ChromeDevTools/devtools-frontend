@@ -44,8 +44,3 @@ export declare function formatRelatedCode({ text, columnNumber, lineNumber }: {
 }, maxCodeSize?: number): string;
 export declare function formatNetworkRequest(request: Pick<SDK.NetworkRequest.NetworkRequest, 'url' | 'requestHeaders' | 'responseHeaders' | 'statusCode' | 'statusText'>): string;
 export declare function formatConsoleMessage(message: ConsoleViewMessage): string;
-/**
- * This formats the stacktrace from the console message which might or might not
- * match the content of stacktrace(s) in the console message arguments.
- */
-export declare function formatStackTrace(message: ConsoleViewMessage): string;

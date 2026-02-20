@@ -497,56 +497,12 @@ function renderTitle(node, isClosingTag, expanded, isExpandable, isXMLMimeType, 
         }
     }
 }
-// FIXME: find a home for this in SDK.
-function parseSrcset(value) {
-    const result = [];
-    let i = 0;
-    while (value.length) {
-        if (i++ > 0) {
-            result.push({ value: ' ', type: 0 /* SrcsetTokenType.LITERAL */ });
-        }
-        value = value.trim();
-        let url = '';
-        let descriptor = '';
-        const indexOfSpace = value.search(/\s/);
-        if (indexOfSpace === -1) {
-            url = value;
-        }
-        else if (indexOfSpace > 0 && value[indexOfSpace - 1] === ',') {
-            url = value.substring(0, indexOfSpace);
-        }
-        else {
-            url = value.substring(0, indexOfSpace);
-            const indexOfComma = value.indexOf(',', indexOfSpace);
-            if (indexOfComma !== -1) {
-                descriptor = value.substring(indexOfSpace, indexOfComma + 1);
-            }
-            else {
-                descriptor = value.substring(indexOfSpace);
-            }
-        }
-        if (url) {
-            if (url.endsWith(',')) {
-                result.push({ value: url.substring(0, url.length - 1), type: 1 /* SrcsetTokenType.LINK */ });
-                result.push({ type: 0 /* SrcsetTokenType.LITERAL */, value: ',' });
-            }
-            else {
-                result.push({ value: url, type: 1 /* SrcsetTokenType.LINK */ });
-            }
-        }
-        if (descriptor) {
-            result.push({ type: 0 /* SrcsetTokenType.LITERAL */, value: descriptor });
-        }
-        value = value.substring(url.length + descriptor.length);
-    }
-    return result;
-}
 function renderLinkifiedSrcset(tokens, node) {
     return html `${repeat(tokens, token => {
         switch (token.type) {
-            case 1 /* SrcsetTokenType.LINK */:
+            case 1 /* Common.Srcset.TokenType.URL */:
                 return renderLinkifiedValue(token.value, node);
-            case 0 /* SrcsetTokenType.LITERAL */:
+            case 0 /* Common.Srcset.TokenType.LITERAL */:
                 return token.value;
         }
     })}`;
@@ -679,7 +635,7 @@ function renderAttribute(attr, updateRecord, isDiff, node) {
     return html `<span class="webkit-html-attribute" jslog=${jslog}><span class="webkit-html-attribute-name"
       ${animateOn(Boolean(updateRecord?.isAttributeModified(name) && !hasText), DOM_UPDATE_ANIMATION_CLASS_NAME)} ${relationRefDirective}>${name}</span>${hasText ? html `=\u200B"<span class="webkit-html-attribute-value" ${animateOn(Boolean(updateRecord?.isAttributeModified(name) && hasText), DOM_UPDATE_ANIMATION_CLASS_NAME)} ${valueRelationRefDirective} ${withEntitiesRef}>
                         ${valueType === 1 /* ValueType.SRC */ ? renderLinkifiedValue(value, node) : nothing}
-                        ${valueType === 2 /* ValueType.SRCSET */ ? renderLinkifiedSrcset(parseSrcset(value), node) : nothing}
+                        ${valueType === 2 /* ValueType.SRCSET */ ? renderLinkifiedSrcset(Common.Srcset.parseSrcset(value), node) : nothing}
                 </span>"` :
         nothing}</span>`;
     // clang-format on

@@ -6674,6 +6674,63 @@ var SimpleHistoryManager = class {
   }
 };
 
+// gen/front_end/core/common/Srcset.js
+var Srcset_exports = {};
+__export(Srcset_exports, {
+  parseSrcset: () => parseSrcset
+});
+function parseSrcset(value) {
+  const result = [];
+  let i = 0;
+  while (value.length) {
+    if (i++ > 0) {
+      result.push({
+        value: " ",
+        type: 0
+        /* TokenType.LITERAL */
+      });
+    }
+    value = value.trim();
+    let url = "";
+    let descriptor = "";
+    const indexOfSpace = value.search(/\s/);
+    if (indexOfSpace === -1) {
+      url = value;
+    } else if (indexOfSpace > 0 && value[indexOfSpace - 1] === ",") {
+      url = value.substring(0, indexOfSpace);
+    } else {
+      url = value.substring(0, indexOfSpace);
+      const indexOfComma = value.indexOf(",", indexOfSpace);
+      if (indexOfComma !== -1) {
+        descriptor = value.substring(indexOfSpace, indexOfComma + 1);
+      } else {
+        descriptor = value.substring(indexOfSpace);
+      }
+    }
+    if (url) {
+      if (url.endsWith(",")) {
+        result.push({
+          value: url.substring(0, url.length - 1),
+          type: 1
+          /* TokenType.URL */
+        });
+        result.push({ type: 0, value: "," });
+      } else {
+        result.push({
+          value: url,
+          type: 1
+          /* TokenType.URL */
+        });
+      }
+    }
+    if (descriptor) {
+      result.push({ type: 0, value: descriptor });
+    }
+    value = value.substring(url.length + descriptor.length);
+  }
+  return result;
+}
+
 // gen/front_end/core/common/StringOutputStream.js
 var StringOutputStream_exports = {};
 __export(StringOutputStream_exports, {
@@ -6961,6 +7018,7 @@ export {
   SettingRegistration_exports as SettingRegistration,
   Settings_exports as Settings,
   SimpleHistoryManager_exports as SimpleHistoryManager,
+  Srcset_exports as Srcset,
   StringOutputStream_exports as StringOutputStream,
   TextDictionary_exports as TextDictionary,
   Throttler_exports as Throttler,

@@ -1319,6 +1319,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                         this.#handleConversationContextChange(data.context);
                         step.isLoading = false;
                         commitStep();
+                        step = { isLoading: true };
                         break;
                     }
                 }

@@ -636,7 +636,7 @@ __export(UIUtils_exports, {
   animateFunction: () => animateFunction,
   animateOn: () => animateOn,
   anotherProfilerActiveLabel: () => anotherProfilerActiveLabel,
-  asyncStackTraceLabel: () => asyncStackTraceLabel,
+  asyncFragmentLabel: () => asyncFragmentLabel,
   beautifyFunctionName: () => beautifyFunctionName,
   bindCheckbox: () => bindCheckbox,
   bindCheckboxImpl: () => bindCheckboxImpl,
@@ -14357,22 +14357,33 @@ function copyFileNameLabel() {
 function anotherProfilerActiveLabel() {
   return i18nString11(UIStrings11.anotherProfilerIsAlreadyActive);
 }
-function asyncStackTraceLabel(description, previousCallFrames) {
-  if (description) {
-    if (description === "Promise.resolve") {
-      return i18nString11(UIStrings11.promiseResolvedAsync);
-    }
-    if (description === "Promise.reject") {
-      return i18nString11(UIStrings11.promiseRejectedAsync);
-    }
-    if (description === "await" && previousCallFrames.length !== 0) {
-      const lastPreviousFrame = previousCallFrames[previousCallFrames.length - 1];
-      const lastPreviousFrameName = beautifyFunctionName(lastPreviousFrame.functionName);
-      description = `await in ${lastPreviousFrameName}`;
-    }
-    return description;
+function asyncFragmentLabel(stackTrace, asyncFragment) {
+  const description = asyncFragment.description;
+  if (!description) {
+    return i18nString11(UIStrings11.asyncCall);
   }
-  return i18nString11(UIStrings11.asyncCall);
+  if (description === "Promise.resolve") {
+    return i18nString11(UIStrings11.promiseResolvedAsync);
+  }
+  if (description === "Promise.reject") {
+    return i18nString11(UIStrings11.promiseRejectedAsync);
+  }
+  if (description === "await") {
+    const asyncFragments = stackTrace.asyncFragments;
+    const index = asyncFragments.indexOf(asyncFragment);
+    let previousFragment;
+    if (index === 0) {
+      previousFragment = stackTrace.syncFragment;
+    } else if (index > 0) {
+      previousFragment = asyncFragments[index - 1];
+    }
+    const lastPreviousFrame = previousFragment?.frames.at(-1);
+    if (lastPreviousFrame) {
+      const lastPreviousFrameName = beautifyFunctionName(lastPreviousFrame.name || "");
+      return `await in ${lastPreviousFrameName}`;
+    }
+  }
+  return description;
 }
 function addPlatformClass(element) {
   element.classList.add("platform-" + Host7.Platform.platform());

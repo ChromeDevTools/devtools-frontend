@@ -28,6 +28,7 @@ import * as SegmentedRange from './SegmentedRange.js';
 import * as SettingRegistration from './SettingRegistration.js';
 import * as Settings from './Settings.js';
 import * as SimpleHistoryManager from './SimpleHistoryManager.js';
+import * as Srcset from './Srcset.js';
 import * as StringOutputStream from './StringOutputStream.js';
 import * as TextDictionary from './TextDictionary.js';
 import * as Throttler from './Throttler.js';
@@ -38,5 +39,5 @@ import * as Trie from './Trie.js';
  * update all references to `Common.UIString` to `Platform.UIString`.
  */
 export { UIString } from '../platform/platform.js';
-export { App, AppProvider, Base64, CharacterIdMap, Color, ColorConverter, ColorUtils, Console, Debouncer, EventTarget, Gzip, JavaScriptMetaData, Lazy, MapWithDefault, Mutex, ObjectWrapper, ParsedURL, Progress, ResolverBase, ResourceType, ReturnToPanel, Revealer, Runnable, SegmentedRange, SettingRegistration, Settings, SimpleHistoryManager, StringOutputStream, TextDictionary, Throttler, Trie, };
+export { App, AppProvider, Base64, CharacterIdMap, Color, ColorConverter, ColorUtils, Console, Debouncer, EventTarget, Gzip, JavaScriptMetaData, Lazy, MapWithDefault, Mutex, ObjectWrapper, ParsedURL, Progress, ResolverBase, ResourceType, ReturnToPanel, Revealer, Runnable, SegmentedRange, SettingRegistration, Settings, SimpleHistoryManager, Srcset, StringOutputStream, TextDictionary, Throttler, Trie, };
 //# sourceMappingURL=common.prebundle.js.map

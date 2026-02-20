@@ -53,7 +53,7 @@ export declare class Item {
     frame?: StackTrace.StackTrace.DebuggableFrame;
     static createForDebuggableFrame(frame: StackTrace.StackTrace.DebuggableFrame): Item;
     static createForFrame(frame: StackTrace.StackTrace.Frame): Item;
-    static createForAsyncHeader(fragment: StackTrace.StackTrace.AsyncFragment, previousFragment: StackTrace.StackTrace.Fragment): Item;
+    static createForAsyncHeader(stackTrace: StackTrace.StackTrace.StackTrace, fragment: StackTrace.StackTrace.AsyncFragment): Item;
     private constructor();
 }
 export declare function convertMissingDebugInfo(missingDebugInfo: StackTrace.StackTrace.MissingDebugInfo, functionName: string | undefined): {

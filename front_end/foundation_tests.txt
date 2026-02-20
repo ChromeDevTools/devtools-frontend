@@ -20,6 +20,7 @@ core/common/SegmentedRange.test.js
 core/common/SettingRegistration.test.js
 core/common/Settings.test.js
 core/common/SimpleHistoryManager.test.js
+core/common/Srcset.test.js
 core/common/StringOutputStream.test.js
 core/common/TextDictionary.test.js
 core/common/Throttler.test.js

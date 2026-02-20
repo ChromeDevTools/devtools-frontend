@@ -11753,57 +11753,6 @@ function renderTitle(node, isClosingTag, expanded, isExpandable, isXMLMimeType, 
     }
   }
 }
-function parseSrcset(value5) {
-  const result = [];
-  let i = 0;
-  while (value5.length) {
-    if (i++ > 0) {
-      result.push({
-        value: " ",
-        type: 0
-        /* SrcsetTokenType.LITERAL */
-      });
-    }
-    value5 = value5.trim();
-    let url = "";
-    let descriptor = "";
-    const indexOfSpace = value5.search(/\s/);
-    if (indexOfSpace === -1) {
-      url = value5;
-    } else if (indexOfSpace > 0 && value5[indexOfSpace - 1] === ",") {
-      url = value5.substring(0, indexOfSpace);
-    } else {
-      url = value5.substring(0, indexOfSpace);
-      const indexOfComma = value5.indexOf(",", indexOfSpace);
-      if (indexOfComma !== -1) {
-        descriptor = value5.substring(indexOfSpace, indexOfComma + 1);
-      } else {
-        descriptor = value5.substring(indexOfSpace);
-      }
-    }
-    if (url) {
-      if (url.endsWith(",")) {
-        result.push({
-          value: url.substring(0, url.length - 1),
-          type: 1
-          /* SrcsetTokenType.LINK */
-        });
-        result.push({ type: 0, value: "," });
-      } else {
-        result.push({
-          value: url,
-          type: 1
-          /* SrcsetTokenType.LINK */
-        });
-      }
-    }
-    if (descriptor) {
-      result.push({ type: 0, value: descriptor });
-    }
-    value5 = value5.substring(url.length + descriptor.length);
-  }
-  return result;
-}
 function renderLinkifiedSrcset(tokens, node) {
   return html8`${repeat(tokens, (token) => {
     switch (token.type) {
@@ -11935,7 +11884,7 @@ function renderAttribute(attr, updateRecord, isDiff, node) {
   return html8`<span class="webkit-html-attribute" jslog=${jslog}><span class="webkit-html-attribute-name"
       ${animateOn(Boolean(updateRecord?.isAttributeModified(name) && !hasText), DOM_UPDATE_ANIMATION_CLASS_NAME)} ${relationRefDirective}>${name}</span>${hasText ? html8`=\u200B"<span class="webkit-html-attribute-value" ${animateOn(Boolean(updateRecord?.isAttributeModified(name) && hasText), DOM_UPDATE_ANIMATION_CLASS_NAME)} ${valueRelationRefDirective} ${withEntitiesRef}>
                         ${valueType === 1 ? renderLinkifiedValue(value5, node) : nothing2}
-                        ${valueType === 2 ? renderLinkifiedSrcset(parseSrcset(value5), node) : nothing2}
+                        ${valueType === 2 ? renderLinkifiedSrcset(Common7.Srcset.parseSrcset(value5), node) : nothing2}
                 </span>"` : nothing2}</span>`;
 }
 function renderTag(node, tagName, isClosingTag, expanded, isDistinctTreeElement, updateRecord) {

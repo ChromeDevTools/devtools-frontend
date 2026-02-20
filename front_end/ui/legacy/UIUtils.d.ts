@@ -3,6 +3,7 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Geometry from '../../models/geometry/geometry.js';
+import type * as StackTrace from '../../models/stack_trace/stack_trace.js';
 import * as Buttons from '../components/buttons/buttons.js';
 import { type IconData } from '../kit/kit.js';
 import * as Lit from '../lit/lit.js';
@@ -39,9 +40,7 @@ export declare function openLinkExternallyLabel(): string;
 export declare function copyLinkAddressLabel(): string;
 export declare function copyFileNameLabel(): string;
 export declare function anotherProfilerActiveLabel(): string;
-export declare function asyncStackTraceLabel(description: string | undefined, previousCallFrames: Array<{
-    functionName: string;
-}>): string;
+export declare function asyncFragmentLabel(stackTrace: StackTrace.StackTrace.StackTrace | StackTrace.StackTrace.DebuggableStackTrace, asyncFragment: StackTrace.StackTrace.AsyncFragment): string;
 export declare function addPlatformClass(element: HTMLElement): void;
 export declare function installComponentRootStyles(element: HTMLElement): void;
 export declare class ElementFocusRestorer {

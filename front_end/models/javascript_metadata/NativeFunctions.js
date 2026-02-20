@@ -6622,8 +6622,8 @@ export const NativeFunctions = [
         signatures: [["type", "?eventInitDict"]]
     },
     {
-        name: "setFormControlRange",
-        signatures: [["element", "start", "end"]]
+        name: "getValueRange",
+        signatures: [["start", "end"]]
     },
     {
         name: "getBoxQuads",

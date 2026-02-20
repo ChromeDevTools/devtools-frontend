@@ -5623,6 +5623,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI8.Panel.Panel {
             this.#handleConversationContextChange(data.context);
             step.isLoading = false;
             commitStep();
+            step = { isLoading: true };
             break;
           }
         }

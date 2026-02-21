@@ -35,12 +35,12 @@ import * as i18n from '../../../../core/i18n/i18n.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import * as StackTrace from '../../../../models/stack_trace/stack_trace.js';
 import * as Workspace from '../../../../models/workspace/workspace.js';
-import { Directives, html, render } from '../../../lit/lit.js';
+import { Directives, html, nothing, render } from '../../../lit/lit.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 import jsUtilsStyles from './jsUtils.css.js';
 import { Linkifier } from './Linkifier.js';
-const { classMap, createRef, ref } = Directives;
+const { classMap } = Directives;
 const UIStrings = {
     /**
      * @description Text to stop preventing the debugger from stepping into library code
@@ -78,121 +78,100 @@ function populateContextMenu(link, event) {
     void contextMenu.show();
 }
 export const DEFAULT_VIEW = (input, output, target) => {
+    let renderExpandButton = Boolean(input.expandable);
+    const maybeRenderExpandButton = () => {
+        // clang-format off
+        const result = html `
+      ${renderExpandButton ? html `
+        <button class="arrow-icon-button" jslog=${VisualLogging.expand().track({ click: true })} @click=${input.onExpand}>
+          <span class="arrow-icon"></span>
+        </button>
+      ` : '\n'}`;
+        // clang-format on
+        renderExpandButton = false;
+        return result;
+    };
     const classes = {
         'stack-preview-container': true,
         'width-constrained': Boolean(input.widthConstrained),
+        expandable: Boolean(input.expandable),
+        expanded: Boolean(input.expanded),
+        'show-hidden-rows': Boolean(input.showIgnoreListed),
     };
-    // TODO(crbug.com/483576322): Remove once fully migrated.
-    const tableRef = createRef();
+    const { stackTrace } = input;
     // clang-format off
     render(html `
     <style>${jsUtilsStyles}</style>
-    <table class=${classMap(classes)} ${ref(tableRef)}>
+    <table class=${classMap(classes)}>
+      ${stackTrace ? html `
+        ${[stackTrace.syncFragment, ...stackTrace.asyncFragments].map(fragment => html `
+          <tbody>
+            ${'description' in fragment ? html `
+              <tr class="stack-preview-async-row">
+                <td>${maybeRenderExpandButton()}</td>
+                <td class="stack-preview-async-description">
+                  ${UI.UIUtils.asyncFragmentLabel(stackTrace, fragment)}
+                </td>
+                <td></td>
+                <td></td>
+              </tr>
+            ` : nothing}
+            ${fragment.frames.map((frame, i) => {
+        const previousStackFrameWasBreakpointCondition = i > 0 && [
+            SDK.DebuggerModel.COND_BREAKPOINT_SOURCE_URL,
+            SDK.DebuggerModel.LOGPOINT_SOURCE_URL,
+        ].includes(fragment.frames[i - 1].url ?? '');
+        const link = Linkifier.linkifyStackTraceFrame(frame, {
+            showColumnNumber: Boolean(input.showColumnNumber),
+            tabStop: Boolean(input.tabStops),
+            inlineFrameIndex: 0,
+            revealBreakpoint: previousStackFrameWasBreakpointCondition,
+            maxLength: UI.UIUtils.MaxLengthForDisplayedURLsInConsole,
+        });
+        link.setAttribute('jslog', `${VisualLogging.link('stack-trace').track({ click: true })}`);
+        link.addEventListener('contextmenu', populateContextMenu.bind(null, link));
+        return html `
+                <tr>
+                  <td>${maybeRenderExpandButton()}</td>
+                  <td class="function-name">
+                    ${UI.UIUtils.beautifyFunctionName(frame.name ?? '')}
+                  </td>
+                  <td> @ </td>
+                  <td class="link">${link}</td>
+                </tr>
+            `;
+    })}
+          </tbody>
+        `)}
+        <tfoot>
+          <tr class="show-all-link">
+            <td></td>
+            <td colspan="3">
+              <span class="link" @click=${input.onShowMore}>
+                <span class="css-inserted-text" data-inserted-text=${i18nString(UIStrings.showMoreFrames)}></span>
+              </span>
+            </td>
+          </tr>
+          <tr class="show-less-link">
+            <td></td>
+            <td colspan="3">
+              <span class="link" @click=${input.onShowLess}>
+                <span class="css-inserted-text" data-inserted-text=${i18nString(UIStrings.showLess)}></span>
+              </span>
+            </td>
+          </tr>
+        </tfoot>
+      ` : nothing}
     </table>
   `, target);
     // clang-format on
-    output.table = tableRef.value;
 };
-function renderStackTraceTable(container, parent, stackTrace, options) {
-    container.removeChildren();
-    function buildStackTraceRowsHelper(fragment) {
-        const stackTraceRows = [];
-        if ('description' in fragment) {
-            stackTraceRows.push({ asyncDescription: UI.UIUtils.asyncFragmentLabel(stackTrace, fragment) });
-        }
-        let previousStackFrameWasBreakpointCondition = false;
-        for (const frame of fragment.frames) {
-            const functionName = UI.UIUtils.beautifyFunctionName(frame.name ?? '');
-            const link = Linkifier.linkifyStackTraceFrame(frame, {
-                showColumnNumber: Boolean(options.showColumnNumber),
-                tabStop: Boolean(options.tabStops),
-                inlineFrameIndex: 0,
-                revealBreakpoint: previousStackFrameWasBreakpointCondition,
-                maxLength: UI.UIUtils.MaxLengthForDisplayedURLsInConsole,
-            });
-            link.setAttribute('jslog', `${VisualLogging.link('stack-trace').track({ click: true })}`);
-            link.addEventListener('contextmenu', populateContextMenu.bind(null, link));
-            stackTraceRows.push({ functionName, link });
-            previousStackFrameWasBreakpointCondition = [
-                SDK.DebuggerModel.COND_BREAKPOINT_SOURCE_URL,
-                SDK.DebuggerModel.LOGPOINT_SOURCE_URL,
-            ].includes(frame.url ?? '');
-        }
-        return stackTraceRows;
-    }
-    // The tableSection groups one or more synchronous call frames together.
-    // Wherever there is an asynchronous call, a new section is created.
-    let firstRow = true;
-    for (const fragment of [stackTrace.syncFragment, ...stackTrace.asyncFragments]) {
-        if (fragment.frames.length === 0) {
-            continue;
-        }
-        const stackTraceRows = buildStackTraceRowsHelper(fragment);
-        const tableSection = container.createChild('tbody');
-        for (const item of stackTraceRows) {
-            const row = tableSection.createChild('tr');
-            if (firstRow && options.expandable) {
-                const button = row.createChild('td').createChild('button', 'arrow-icon-button');
-                button.createChild('span', 'arrow-icon');
-                parent.classList.add('expandable');
-                container.classList.add('expandable');
-                button.addEventListener('click', () => {
-                    button.setAttribute('jslog', `${VisualLogging.expand().track({ click: true })}`);
-                    parent.classList.toggle('expanded');
-                    container.classList.toggle('expanded');
-                });
-                firstRow = false;
-            }
-            else {
-                row.createChild('td').textContent = '\n';
-            }
-            if ('asyncDescription' in item) {
-                row.createChild('td', 'stack-preview-async-description').textContent = item.asyncDescription;
-                row.createChild('td');
-                row.createChild('td');
-                row.classList.add('stack-preview-async-row');
-            }
-            else {
-                row.createChild('td', 'function-name').textContent = item.functionName;
-                row.createChild('td').textContent = ' @ ';
-                row.createChild('td', 'link').appendChild(item.link);
-            }
-        }
-    }
-    const tableSection = container.createChild('tfoot');
-    const showAllRow = tableSection.createChild('tr', 'show-all-link');
-    showAllRow.createChild('td');
-    const cell = showAllRow.createChild('td');
-    cell.colSpan = 4;
-    const showAllLink = cell.createChild('span', 'link');
-    // Don't directly put the text of the link in the DOM, as it will likely be
-    // invisible and it may be confusing if it is copied to the clipboard.
-    showAllLink.createChild('span', 'css-inserted-text')
-        .setAttribute('data-inserted-text', i18nString(UIStrings.showMoreFrames));
-    showAllLink.addEventListener('click', () => {
-        container.classList.add('show-hidden-rows');
-        parent.classList.add('show-hidden-rows');
-        // If we are in a popup, this will trigger a re-layout
-        UI.GlassPane.GlassPane.containerMoved(container);
-    }, false);
-    const showLessRow = tableSection.createChild('tr', 'show-less-link');
-    showLessRow.createChild('td');
-    const showLesscell = showLessRow.createChild('td');
-    showLesscell.colSpan = 4;
-    const showLessLink = showLesscell.createChild('span', 'link');
-    showLessLink.createChild('span', 'css-inserted-text')
-        .setAttribute('data-inserted-text', i18nString(UIStrings.showLess));
-    showLessLink.addEventListener('click', () => {
-        container.classList.remove('show-hidden-rows');
-        parent.classList.remove('show-hidden-rows');
-        // If we are in a popup, this will trigger a re-layout
-        UI.GlassPane.GlassPane.containerMoved(container);
-    }, false);
-}
 export class StackTracePreviewContent extends UI.Widget.Widget {
     #view;
     #stackTrace;
     #options = {};
+    #expanded = false;
+    #showIgnoreListed = false;
     constructor(element, view = DEFAULT_VIEW) {
         super(element, { useShadowDom: true, classes: ['monospace', 'stack-preview-container'] });
         this.#view = view;
@@ -205,14 +184,19 @@ export class StackTracePreviewContent extends UI.Widget.Widget {
         return syncFragment.frames.length > 0 || asyncFragments.some(f => f.frames.length > 0);
     }
     performUpdate() {
-        const output = {};
-        this.#view({
+        this.element.classList.toggle('expandable', this.#options.expandable);
+        this.element.classList.toggle('expanded', this.#expanded);
+        this.element.classList.toggle('show-hidden-rows', this.#showIgnoreListed);
+        const input = {
             stackTrace: this.#stackTrace,
             ...this.#options,
-        }, output, this.contentElement);
-        if (this.#stackTrace && output.table) {
-            renderStackTraceTable(output.table, this.element, this.#stackTrace, this.#options);
-        }
+            expanded: this.#expanded,
+            showIgnoreListed: this.#showIgnoreListed,
+            onExpand: this.#onExpand.bind(this),
+            onShowMore: this.#onShowMoreLess.bind(this, true),
+            onShowLess: this.#onShowMoreLess.bind(this, false),
+        };
+        this.#view(input, {}, this.contentElement);
     }
     get linkElements() {
         return [...this.contentElement.querySelectorAll('td.link > .devtools-link')];
@@ -227,6 +211,16 @@ export class StackTracePreviewContent extends UI.Widget.Widget {
         }
         this.#stackTrace = stackTrace;
         this.#stackTrace.addEventListener("UPDATED" /* StackTrace.StackTrace.Events.UPDATED */, this.requestUpdate, this);
+        this.requestUpdate();
+    }
+    #onShowMoreLess(more) {
+        this.#showIgnoreListed = more;
+        this.requestUpdate();
+        // If we are in a popup, this will trigger a re-layout
+        void this.updateComplete.then(() => UI.GlassPane.GlassPane.containerMoved(this.contentElement));
+    }
+    #onExpand() {
+        this.#expanded = !this.#expanded;
         this.requestUpdate();
     }
 }

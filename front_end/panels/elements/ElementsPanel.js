@@ -182,6 +182,7 @@ export class ElementsPanel extends UI.Panel.Panel {
     domTreeButton;
     selectedNodeOnReset;
     hasNonDefaultSelectedNode;
+    #restorationGeneration = 0;
     searchConfig;
     omitDefaultSelection;
     notFirstInspectElement;
@@ -488,6 +489,7 @@ export class ElementsPanel extends UI.Panel.Panel {
         if (focus) {
             this.selectedNodeOnReset = selectedNode;
             this.hasNonDefaultSelectedNode = true;
+            this.#restorationGeneration++;
         }
         const executionContexts = selectedNode.domModel().runtimeModel().executionContexts();
         const nodeFrameId = selectedNode.frameId();
@@ -517,27 +519,109 @@ export class ElementsPanel extends UI.Panel.Panel {
             return;
         }
         const savedSelectedNodeOnReset = this.selectedNodeOnReset;
-        void restoreNode.call(this, domModel, this.selectedNodeOnReset || null);
-        async function restoreNode(domModel, staleNode) {
-            const nodePath = staleNode ? staleNode.path() : null;
-            const restoredNodeId = nodePath ? await domModel.pushNodeByPathToFrontend(nodePath) : null;
+        void this.restoreSelectedNodeAfterUpdate(domModel, this.selectedNodeOnReset || null, savedSelectedNodeOnReset);
+    }
+    /**
+     * Best-effort restoration of the previously focused node after a reload.
+     *
+     * The CDP path-based mechanism works well for stable DOMs, but can be
+     * unreliable for pages that render asynchronously after the initial
+     * document update. To improve reliability we retry a few times, and also
+     * fall back to evaluating a JS path (document.querySelector(...)) when
+     * possible.
+     *
+     * Node resolution (computation) is separated from view state updates:
+     * resolveNode returns a DOMNode|null, and this method handles selection.
+     */
+    async restoreSelectedNodeAfterUpdate(domModel, staleNode, savedSelectedNodeOnReset) {
+        // Fast path: no previous node to restore -- just select the fallback
+        // synchronously so callers that check selection immediately still work.
+        if (!staleNode) {
+            this.trySetFallbackSelection(domModel);
+            return;
+        }
+        const nodePath = staleNode.path();
+        // Keep the panel usable quickly by selecting a reasonable default node as
+        // soon as we can, but continue trying to restore the stale node.
+        let didSetFallbackSelection = false;
+        // Retry with exponential-ish backoff, capping total wait at ~3s.
+        // Most async-rendered pages settle well within this window.
+        const attemptDelaysMs = [0, 250, 500, 1000, 1500];
+        // Capture the restoration generation so any user interaction (node
+        // selection, style editing, node reveal, etc.) cancels pending retries.
+        const restorationGeneration = this.#restorationGeneration;
+        for (let attempt = 0; attempt < attemptDelaysMs.length; ++attempt) {
             if (savedSelectedNodeOnReset !== this.selectedNodeOnReset) {
                 return;
             }
-            let node = domModel.nodeForId(restoredNodeId);
-            if (!node) {
-                const inspectedDocument = domModel.existingDocument();
-                node = inspectedDocument ? inspectedDocument.body || inspectedDocument.documentElement : null;
+            if (this.hasNonDefaultSelectedNode || this.pendingNodeReveal ||
+                restorationGeneration !== this.#restorationGeneration) {
+                return;
             }
-            // If `node` is null here, the document hasn't been transmitted from the backend yet
-            // and isn't in a valid state to have a default-selected node. Another document update
-            // should be forthcoming. In the meantime, don't set the default-selected node or notify
-            // the test that it's ready, because it isn't.
-            if (node) {
-                this.setDefaultSelectedNode(node);
+            if (attemptDelaysMs[attempt]) {
+                await new Promise(resolve => window.setTimeout(resolve, attemptDelaysMs[attempt]));
+            }
+            if (savedSelectedNodeOnReset !== this.selectedNodeOnReset) {
+                return;
+            }
+            if (this.hasNonDefaultSelectedNode || this.pendingNodeReveal ||
+                restorationGeneration !== this.#restorationGeneration) {
+                return;
+            }
+            // Computation: resolve the node without touching view state.
+            const restoredNode = await this.resolveNodeForRestoration(domModel, nodePath);
+            if (restoredNode) {
+                this.setDefaultSelectedNode(restoredNode);
                 this.lastSelectedNodeSelectedForTest();
+                return;
+            }
+            if (!didSetFallbackSelection) {
+                // If we cannot compute a fallback selection yet, the document likely
+                // has not been transmitted from the backend and isn't in a valid state
+                // to have a default-selected node. Another document update should be
+                // forthcoming. In the meantime, don't notify tests that selection is
+                // ready, because it isn't.
+                if (!this.trySetFallbackSelection(domModel)) {
+                    return;
+                }
+                didSetFallbackSelection = true;
             }
         }
+    }
+    /**
+     * Attempts to resolve a DOM node by its CDP path.
+     * Pure computation -- does not modify view state.
+     */
+    async resolveNodeForRestoration(domModel, nodePath) {
+        try {
+            if (nodePath) {
+                const restoredNodeId = await domModel.pushNodeByPathToFrontend(nodePath);
+                const restoredNode = domModel.nodeForId(restoredNodeId);
+                if (restoredNode) {
+                    return restoredNode;
+                }
+            }
+        }
+        catch {
+            // CDP calls (pushNodeByPathToFrontend) can reject when the target or
+            // session is closed, e.g. if the page navigates again while we are
+            // retrying. Safe to swallow: we either retry on the next iteration or
+            // fall through to the fallback node.
+        }
+        return null;
+    }
+    trySetFallbackSelection(domModel) {
+        const inspectedDocument = domModel.existingDocument();
+        const fallbackNode = inspectedDocument ? inspectedDocument.body || inspectedDocument.documentElement : null;
+        if (!fallbackNode) {
+            return false;
+        }
+        this.setDefaultSelectedNode(fallbackNode);
+        this.lastSelectedNodeSelectedForTest();
+        return true;
+    }
+    cancelPendingRestoration() {
+        this.#restorationGeneration++;
     }
     lastSelectedNodeSelectedForTest() {
     }
@@ -1117,6 +1201,7 @@ export class DOMNodeRevealer {
     reveal(node, omitFocus) {
         const panel = ElementsPanel.instance();
         panel.pendingNodeReveal = true;
+        panel.cancelPendingRestoration();
         return (new Promise(revealPromise)).catch((reason) => {
             let message;
             if (Platform.UserVisibleError.isUserVisibleError(reason)) {

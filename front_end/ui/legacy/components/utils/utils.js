@@ -252,7 +252,7 @@ import * as i18n5 from "./../../../../core/i18n/i18n.js";
 import * as SDK3 from "./../../../../core/sdk/sdk.js";
 import * as StackTrace from "./../../../../models/stack_trace/stack_trace.js";
 import * as Workspace3 from "./../../../../models/workspace/workspace.js";
-import { Directives as Directives2, html as html2, render as render2 } from "./../../../lit/lit.js";
+import { Directives as Directives2, html as html2, nothing, render as render2 } from "./../../../lit/lit.js";
 import * as VisualLogging2 from "./../../../visual_logging/visual_logging.js";
 import * as UI2 from "./../../legacy.js";
 
@@ -929,7 +929,7 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
         event.consume(true);
       }
     };
-    const createRef2 = () => {
+    const createRef = () => {
       return ref((link3) => {
         if (!link3) {
           return;
@@ -967,7 +967,7 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
       jslog=${jslog}
       .tabIndex=${tabStop ? 0 : -1}
       role="link"
-      ${createRef2()}></span>` : html`<button
+      ${createRef()}></span>` : html`<button
         @click=${handler}
         @keydown=${handler}
         class=${classMap(classes)}
@@ -976,7 +976,7 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
         jslog=${jslog}
         .tabIndex=${tabStop ? 0 : -1}
         role="link"
-        ${createRef2()}></button>`;
+        ${createRef()}></button>`;
   }
   /**
    * @deprecated use renderLink.
@@ -1302,7 +1302,7 @@ var ScriptLocationLink = class extends UI.Widget.Widget {
 };
 
 // gen/front_end/ui/legacy/components/utils/JSPresentationUtils.js
-var { classMap: classMap2, createRef, ref: ref2 } = Directives2;
+var { classMap: classMap2 } = Directives2;
 var UIStrings3 = {
   /**
    * @description Text to stop preventing the debugger from stepping into library code
@@ -1338,108 +1338,96 @@ function populateContextMenu(link3, event) {
   void contextMenu.show();
 }
 var DEFAULT_VIEW = (input, output, target) => {
+  let renderExpandButton = Boolean(input.expandable);
+  const maybeRenderExpandButton = () => {
+    const result = html2`
+      ${renderExpandButton ? html2`
+        <button class="arrow-icon-button" jslog=${VisualLogging2.expand().track({ click: true })} @click=${input.onExpand}>
+          <span class="arrow-icon"></span>
+        </button>
+      ` : "\n"}`;
+    renderExpandButton = false;
+    return result;
+  };
   const classes = {
     "stack-preview-container": true,
-    "width-constrained": Boolean(input.widthConstrained)
+    "width-constrained": Boolean(input.widthConstrained),
+    expandable: Boolean(input.expandable),
+    expanded: Boolean(input.expanded),
+    "show-hidden-rows": Boolean(input.showIgnoreListed)
   };
-  const tableRef = createRef();
+  const { stackTrace } = input;
   render2(html2`
     <style>${jsUtils_css_default}</style>
-    <table class=${classMap2(classes)} ${ref2(tableRef)}>
+    <table class=${classMap2(classes)}>
+      ${stackTrace ? html2`
+        ${[stackTrace.syncFragment, ...stackTrace.asyncFragments].map((fragment) => html2`
+          <tbody>
+            ${"description" in fragment ? html2`
+              <tr class="stack-preview-async-row">
+                <td>${maybeRenderExpandButton()}</td>
+                <td class="stack-preview-async-description">
+                  ${UI2.UIUtils.asyncFragmentLabel(stackTrace, fragment)}
+                </td>
+                <td></td>
+                <td></td>
+              </tr>
+            ` : nothing}
+            ${fragment.frames.map((frame, i) => {
+    const previousStackFrameWasBreakpointCondition = i > 0 && [
+      SDK3.DebuggerModel.COND_BREAKPOINT_SOURCE_URL,
+      SDK3.DebuggerModel.LOGPOINT_SOURCE_URL
+    ].includes(fragment.frames[i - 1].url ?? "");
+    const link3 = Linkifier.linkifyStackTraceFrame(frame, {
+      showColumnNumber: Boolean(input.showColumnNumber),
+      tabStop: Boolean(input.tabStops),
+      inlineFrameIndex: 0,
+      revealBreakpoint: previousStackFrameWasBreakpointCondition,
+      maxLength: UI2.UIUtils.MaxLengthForDisplayedURLsInConsole
+    });
+    link3.setAttribute("jslog", `${VisualLogging2.link("stack-trace").track({ click: true })}`);
+    link3.addEventListener("contextmenu", populateContextMenu.bind(null, link3));
+    return html2`
+                <tr>
+                  <td>${maybeRenderExpandButton()}</td>
+                  <td class="function-name">
+                    ${UI2.UIUtils.beautifyFunctionName(frame.name ?? "")}
+                  </td>
+                  <td> @ </td>
+                  <td class="link">${link3}</td>
+                </tr>
+            `;
+  })}
+          </tbody>
+        `)}
+        <tfoot>
+          <tr class="show-all-link">
+            <td></td>
+            <td colspan="3">
+              <span class="link" @click=${input.onShowMore}>
+                <span class="css-inserted-text" data-inserted-text=${i18nString3(UIStrings3.showMoreFrames)}></span>
+              </span>
+            </td>
+          </tr>
+          <tr class="show-less-link">
+            <td></td>
+            <td colspan="3">
+              <span class="link" @click=${input.onShowLess}>
+                <span class="css-inserted-text" data-inserted-text=${i18nString3(UIStrings3.showLess)}></span>
+              </span>
+            </td>
+          </tr>
+        </tfoot>
+      ` : nothing}
     </table>
   `, target);
-  output.table = tableRef.value;
 };
-function renderStackTraceTable(container, parent, stackTrace, options) {
-  container.removeChildren();
-  function buildStackTraceRowsHelper(fragment) {
-    const stackTraceRows = [];
-    if ("description" in fragment) {
-      stackTraceRows.push({ asyncDescription: UI2.UIUtils.asyncFragmentLabel(stackTrace, fragment) });
-    }
-    let previousStackFrameWasBreakpointCondition = false;
-    for (const frame of fragment.frames) {
-      const functionName = UI2.UIUtils.beautifyFunctionName(frame.name ?? "");
-      const link3 = Linkifier.linkifyStackTraceFrame(frame, {
-        showColumnNumber: Boolean(options.showColumnNumber),
-        tabStop: Boolean(options.tabStops),
-        inlineFrameIndex: 0,
-        revealBreakpoint: previousStackFrameWasBreakpointCondition,
-        maxLength: UI2.UIUtils.MaxLengthForDisplayedURLsInConsole
-      });
-      link3.setAttribute("jslog", `${VisualLogging2.link("stack-trace").track({ click: true })}`);
-      link3.addEventListener("contextmenu", populateContextMenu.bind(null, link3));
-      stackTraceRows.push({ functionName, link: link3 });
-      previousStackFrameWasBreakpointCondition = [
-        SDK3.DebuggerModel.COND_BREAKPOINT_SOURCE_URL,
-        SDK3.DebuggerModel.LOGPOINT_SOURCE_URL
-      ].includes(frame.url ?? "");
-    }
-    return stackTraceRows;
-  }
-  let firstRow = true;
-  for (const fragment of [stackTrace.syncFragment, ...stackTrace.asyncFragments]) {
-    if (fragment.frames.length === 0) {
-      continue;
-    }
-    const stackTraceRows = buildStackTraceRowsHelper(fragment);
-    const tableSection2 = container.createChild("tbody");
-    for (const item of stackTraceRows) {
-      const row = tableSection2.createChild("tr");
-      if (firstRow && options.expandable) {
-        const button = row.createChild("td").createChild("button", "arrow-icon-button");
-        button.createChild("span", "arrow-icon");
-        parent.classList.add("expandable");
-        container.classList.add("expandable");
-        button.addEventListener("click", () => {
-          button.setAttribute("jslog", `${VisualLogging2.expand().track({ click: true })}`);
-          parent.classList.toggle("expanded");
-          container.classList.toggle("expanded");
-        });
-        firstRow = false;
-      } else {
-        row.createChild("td").textContent = "\n";
-      }
-      if ("asyncDescription" in item) {
-        row.createChild("td", "stack-preview-async-description").textContent = item.asyncDescription;
-        row.createChild("td");
-        row.createChild("td");
-        row.classList.add("stack-preview-async-row");
-      } else {
-        row.createChild("td", "function-name").textContent = item.functionName;
-        row.createChild("td").textContent = " @ ";
-        row.createChild("td", "link").appendChild(item.link);
-      }
-    }
-  }
-  const tableSection = container.createChild("tfoot");
-  const showAllRow = tableSection.createChild("tr", "show-all-link");
-  showAllRow.createChild("td");
-  const cell = showAllRow.createChild("td");
-  cell.colSpan = 4;
-  const showAllLink = cell.createChild("span", "link");
-  showAllLink.createChild("span", "css-inserted-text").setAttribute("data-inserted-text", i18nString3(UIStrings3.showMoreFrames));
-  showAllLink.addEventListener("click", () => {
-    container.classList.add("show-hidden-rows");
-    parent.classList.add("show-hidden-rows");
-    UI2.GlassPane.GlassPane.containerMoved(container);
-  }, false);
-  const showLessRow = tableSection.createChild("tr", "show-less-link");
-  showLessRow.createChild("td");
-  const showLesscell = showLessRow.createChild("td");
-  showLesscell.colSpan = 4;
-  const showLessLink = showLesscell.createChild("span", "link");
-  showLessLink.createChild("span", "css-inserted-text").setAttribute("data-inserted-text", i18nString3(UIStrings3.showLess));
-  showLessLink.addEventListener("click", () => {
-    container.classList.remove("show-hidden-rows");
-    parent.classList.remove("show-hidden-rows");
-    UI2.GlassPane.GlassPane.containerMoved(container);
-  }, false);
-}
 var StackTracePreviewContent = class extends UI2.Widget.Widget {
   #view;
   #stackTrace;
   #options = {};
+  #expanded = false;
+  #showIgnoreListed = false;
   constructor(element, view = DEFAULT_VIEW) {
     super(element, { useShadowDom: true, classes: ["monospace", "stack-preview-container"] });
     this.#view = view;
@@ -1452,14 +1440,19 @@ var StackTracePreviewContent = class extends UI2.Widget.Widget {
     return syncFragment.frames.length > 0 || asyncFragments.some((f) => f.frames.length > 0);
   }
   performUpdate() {
-    const output = {};
-    this.#view({
+    this.element.classList.toggle("expandable", this.#options.expandable);
+    this.element.classList.toggle("expanded", this.#expanded);
+    this.element.classList.toggle("show-hidden-rows", this.#showIgnoreListed);
+    const input = {
       stackTrace: this.#stackTrace,
-      ...this.#options
-    }, output, this.contentElement);
-    if (this.#stackTrace && output.table) {
-      renderStackTraceTable(output.table, this.element, this.#stackTrace, this.#options);
-    }
+      ...this.#options,
+      expanded: this.#expanded,
+      showIgnoreListed: this.#showIgnoreListed,
+      onExpand: this.#onExpand.bind(this),
+      onShowMore: this.#onShowMoreLess.bind(this, true),
+      onShowLess: this.#onShowMoreLess.bind(this, false)
+    };
+    this.#view(input, {}, this.contentElement);
   }
   get linkElements() {
     return [...this.contentElement.querySelectorAll("td.link > .devtools-link")];
@@ -1474,6 +1467,15 @@ var StackTracePreviewContent = class extends UI2.Widget.Widget {
     }
     this.#stackTrace = stackTrace;
     this.#stackTrace.addEventListener("UPDATED", this.requestUpdate, this);
+    this.requestUpdate();
+  }
+  #onShowMoreLess(more) {
+    this.#showIgnoreListed = more;
+    this.requestUpdate();
+    void this.updateComplete.then(() => UI2.GlassPane.GlassPane.containerMoved(this.contentElement));
+  }
+  #onExpand() {
+    this.#expanded = !this.#expanded;
     this.requestUpdate();
   }
 };

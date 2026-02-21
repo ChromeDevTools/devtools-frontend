@@ -6,10 +6,13 @@ export interface ViewInput {
     widthConstrained?: boolean;
     showColumnNumber?: boolean;
     expandable?: boolean;
+    expanded?: boolean;
+    showIgnoreListed?: boolean;
+    onExpand: () => void;
+    onShowMore: () => void;
+    onShowLess: () => void;
 }
-export type View = (input: ViewInput, output: {
-    table?: HTMLElement;
-}, target: HTMLElement) => void;
+export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
 export declare const DEFAULT_VIEW: View;
 export interface Options {
     tabStops?: boolean;

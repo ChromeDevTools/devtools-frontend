@@ -17,6 +17,7 @@ import * as NetworkComponents from './components/components.js';
 import { EventSourceMessagesView } from './EventSourceMessagesView.js';
 import { RequestCookiesView } from './RequestCookiesView.js';
 import { RequestDeviceBoundSessionsView } from './RequestDeviceBoundSessionsView.js';
+import * as RequestHeadersView from './RequestHeadersView.js';
 import { RequestInitiatorView } from './RequestInitiatorView.js';
 import { RequestPayloadView } from './RequestPayloadView.js';
 import { RequestPreviewView } from './RequestPreviewView.js';
@@ -160,7 +161,7 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
         }
         else {
             this.#firstTab = "headers-component" /* NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT */;
-            this.#headersViewComponent = new NetworkComponents.RequestHeadersView.RequestHeadersView(request);
+            this.#headersViewComponent = new RequestHeadersView.RequestHeadersView(request);
             this.appendTab("headers-component" /* NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT */, i18nString(UIStrings.headers), LegacyWrapper.LegacyWrapper.legacyWrapper(UI.Widget.VBox, this.#headersViewComponent), i18nString(UIStrings.headers));
         }
         this.#resourceViewTabSetting =

@@ -12,7 +12,6 @@ import * as LegacyWrapper from '../../ui/components/legacy_wrapper/legacy_wrappe
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
-import * as NetworkComponents from '../network/components/components.js';
 import * as Network from '../network/network.js';
 import * as ApplicationComponents from './components/components.js';
 import serviceWorkerCacheViewsStyles from './serviceWorkerCacheViews.css.js';
@@ -485,7 +484,7 @@ export class RequestView extends UI.Widget.VBox {
         this.tabbedPane.addEventListener(UI.TabbedPane.Events.TabSelected, this.tabSelected, this);
         this.resourceViewTabSetting =
             Common.Settings.Settings.instance().createSetting('cache-storage-view-tab', 'preview');
-        this.tabbedPane.appendTab('headers', i18nString(UIStrings.headers), LegacyWrapper.LegacyWrapper.legacyWrapper(UI.Widget.VBox, new NetworkComponents.RequestHeadersView.RequestHeadersView(request)));
+        this.tabbedPane.appendTab('headers', i18nString(UIStrings.headers), LegacyWrapper.LegacyWrapper.legacyWrapper(UI.Widget.VBox, new Network.RequestHeadersView.RequestHeadersView(request)));
         this.tabbedPane.appendTab('preview', i18nString(UIStrings.preview), new Network.RequestPreviewView.RequestPreviewView(request));
         this.tabbedPane.show(this.element);
     }

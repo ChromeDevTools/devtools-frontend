@@ -17164,6 +17164,7 @@ var ElementsPanel = class _ElementsPanel extends UI21.Panel.Panel {
   domTreeButton;
   selectedNodeOnReset;
   hasNonDefaultSelectedNode;
+  #restorationGeneration = 0;
   searchConfig;
   omitDefaultSelection;
   notFirstInspectElement;
@@ -17451,6 +17452,7 @@ ${node.simpleSelector()} {}`, false);
     if (focus2) {
       this.selectedNodeOnReset = selectedNode;
       this.hasNonDefaultSelectedNode = true;
+      this.#restorationGeneration++;
     }
     const executionContexts = selectedNode.domModel().runtimeModel().executionContexts();
     const nodeFrameId = selectedNode.frameId();
@@ -17480,23 +17482,88 @@ ${node.simpleSelector()} {}`, false);
       return;
     }
     const savedSelectedNodeOnReset = this.selectedNodeOnReset;
-    void restoreNode.call(this, domModel, this.selectedNodeOnReset || null);
-    async function restoreNode(domModel2, staleNode) {
-      const nodePath = staleNode ? staleNode.path() : null;
-      const restoredNodeId = nodePath ? await domModel2.pushNodeByPathToFrontend(nodePath) : null;
+    void this.restoreSelectedNodeAfterUpdate(domModel, this.selectedNodeOnReset || null, savedSelectedNodeOnReset);
+  }
+  /**
+   * Best-effort restoration of the previously focused node after a reload.
+   *
+   * The CDP path-based mechanism works well for stable DOMs, but can be
+   * unreliable for pages that render asynchronously after the initial
+   * document update. To improve reliability we retry a few times, and also
+   * fall back to evaluating a JS path (document.querySelector(...)) when
+   * possible.
+   *
+   * Node resolution (computation) is separated from view state updates:
+   * resolveNode returns a DOMNode|null, and this method handles selection.
+   */
+  async restoreSelectedNodeAfterUpdate(domModel, staleNode, savedSelectedNodeOnReset) {
+    if (!staleNode) {
+      this.trySetFallbackSelection(domModel);
+      return;
+    }
+    const nodePath = staleNode.path();
+    let didSetFallbackSelection = false;
+    const attemptDelaysMs = [0, 250, 500, 1e3, 1500];
+    const restorationGeneration = this.#restorationGeneration;
+    for (let attempt = 0; attempt < attemptDelaysMs.length; ++attempt) {
       if (savedSelectedNodeOnReset !== this.selectedNodeOnReset) {
         return;
       }
-      let node = domModel2.nodeForId(restoredNodeId);
-      if (!node) {
-        const inspectedDocument = domModel2.existingDocument();
-        node = inspectedDocument ? inspectedDocument.body || inspectedDocument.documentElement : null;
+      if (this.hasNonDefaultSelectedNode || this.pendingNodeReveal || restorationGeneration !== this.#restorationGeneration) {
+        return;
       }
-      if (node) {
-        this.setDefaultSelectedNode(node);
+      if (attemptDelaysMs[attempt]) {
+        await new Promise((resolve) => window.setTimeout(resolve, attemptDelaysMs[attempt]));
+      }
+      if (savedSelectedNodeOnReset !== this.selectedNodeOnReset) {
+        return;
+      }
+      if (this.hasNonDefaultSelectedNode || this.pendingNodeReveal || restorationGeneration !== this.#restorationGeneration) {
+        return;
+      }
+      const restoredNode = await this.resolveNodeForRestoration(domModel, nodePath);
+      if (restoredNode) {
+        this.setDefaultSelectedNode(restoredNode);
         this.lastSelectedNodeSelectedForTest();
+        return;
+      }
+      if (!didSetFallbackSelection) {
+        if (!this.trySetFallbackSelection(domModel)) {
+          return;
+        }
+        didSetFallbackSelection = true;
       }
     }
+  }
+  /**
+   * Attempts to resolve a DOM node by its CDP path.
+   * Pure computation -- does not modify view state.
+   */
+  async resolveNodeForRestoration(domModel, nodePath) {
+    try {
+      if (nodePath) {
+        const restoredNodeId = await domModel.pushNodeByPathToFrontend(nodePath);
+        const restoredNode = domModel.nodeForId(restoredNodeId);
+        if (restoredNode) {
+          return restoredNode;
+        }
+      }
+    } catch {
+    }
+    return null;
+  }
+  trySetFallbackSelection(domModel) {
+    const inspectedDocument = domModel.existingDocument();
+    const fallbackNode = inspectedDocument ? inspectedDocument.body || inspectedDocument.documentElement : null;
+    if (!fallbackNode) {
+      return false;
+    }
+    this.setDefaultSelectedNode(fallbackNode);
+    this.lastSelectedNodeSelectedForTest();
+    return true;
+  }
+  cancelPendingRestoration() {
+    this.#restorationGeneration++;
   }
   lastSelectedNodeSelectedForTest() {
   }
@@ -18062,6 +18129,7 @@ var DOMNodeRevealer = class {
   reveal(node, omitFocus) {
     const panel = ElementsPanel.instance();
     panel.pendingNodeReveal = true;
+    panel.cancelPendingRestoration();
     return new Promise(revealPromise).catch((reason) => {
       let message;
       if (Platform10.UserVisibleError.isUserVisibleError(reason)) {

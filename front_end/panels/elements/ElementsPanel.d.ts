@@ -79,6 +79,26 @@ export declare class ElementsPanel extends UI.Panel.Panel implements UI.Searchab
     private selectedNodeChanged;
     private documentUpdatedEvent;
     private documentUpdated;
+    /**
+     * Best-effort restoration of the previously focused node after a reload.
+     *
+     * The CDP path-based mechanism works well for stable DOMs, but can be
+     * unreliable for pages that render asynchronously after the initial
+     * document update. To improve reliability we retry a few times, and also
+     * fall back to evaluating a JS path (document.querySelector(...)) when
+     * possible.
+     *
+     * Node resolution (computation) is separated from view state updates:
+     * resolveNode returns a DOMNode|null, and this method handles selection.
+     */
+    private restoreSelectedNodeAfterUpdate;
+    /**
+     * Attempts to resolve a DOM node by its CDP path.
+     * Pure computation -- does not modify view state.
+     */
+    private resolveNodeForRestoration;
+    private trySetFallbackSelection;
+    cancelPendingRestoration(): void;
     private lastSelectedNodeSelectedForTest;
     private setDefaultSelectedNode;
     onSearchClosed(): void;

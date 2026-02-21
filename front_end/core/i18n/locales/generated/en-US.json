@@ -9902,60 +9902,6 @@
   "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShownDisableCache": {
     "message": "Provisional headers are shown. Disable cache to see full headers."
   },
-  "panels/network/components/RequestHeadersView.ts | earlyHintsHeaders": {
-    "message": "Early hints headers"
-  },
-  "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
-    "message": "(from disk cache)"
-  },
-  "panels/network/components/RequestHeadersView.ts | fromEarlyHints": {
-    "message": "(from early hints)"
-  },
-  "panels/network/components/RequestHeadersView.ts | fromMemoryCache": {
-    "message": "(from memory cache)"
-  },
-  "panels/network/components/RequestHeadersView.ts | fromPrefetchCache": {
-    "message": "(from prefetch cache)"
-  },
-  "panels/network/components/RequestHeadersView.ts | fromServiceWorker": {
-    "message": "(from service worker)"
-  },
-  "panels/network/components/RequestHeadersView.ts | fromSignedexchange": {
-    "message": "(from signed-exchange)"
-  },
-  "panels/network/components/RequestHeadersView.ts | general": {
-    "message": "General"
-  },
-  "panels/network/components/RequestHeadersView.ts | raw": {
-    "message": "Raw"
-  },
-  "panels/network/components/RequestHeadersView.ts | referrerPolicy": {
-    "message": "Referrer Policy"
-  },
-  "panels/network/components/RequestHeadersView.ts | remoteAddress": {
-    "message": "Remote Address"
-  },
-  "panels/network/components/RequestHeadersView.ts | requestHeaders": {
-    "message": "Request Headers"
-  },
-  "panels/network/components/RequestHeadersView.ts | requestMethod": {
-    "message": "Request Method"
-  },
-  "panels/network/components/RequestHeadersView.ts | requestUrl": {
-    "message": "Request URL"
-  },
-  "panels/network/components/RequestHeadersView.ts | responseHeaders": {
-    "message": "Response headers"
-  },
-  "panels/network/components/RequestHeadersView.ts | revealHeaderOverrides": {
-    "message": "Reveal header override definitions"
-  },
-  "panels/network/components/RequestHeadersView.ts | showMore": {
-    "message": "Show more"
-  },
-  "panels/network/components/RequestHeadersView.ts | statusCode": {
-    "message": "Status Code"
-  },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "A client-provided argument was malformed or otherwise invalid."
   },
@@ -11020,6 +10966,60 @@
   },
   "panels/network/RequestDeviceBoundSessionsView.ts | sessionId": {
     "message": "Session ID"
+  },
+  "panels/network/RequestHeadersView.ts | earlyHintsHeaders": {
+    "message": "Early hints headers"
+  },
+  "panels/network/RequestHeadersView.ts | fromDiskCache": {
+    "message": "(from disk cache)"
+  },
+  "panels/network/RequestHeadersView.ts | fromEarlyHints": {
+    "message": "(from early hints)"
+  },
+  "panels/network/RequestHeadersView.ts | fromMemoryCache": {
+    "message": "(from memory cache)"
+  },
+  "panels/network/RequestHeadersView.ts | fromPrefetchCache": {
+    "message": "(from prefetch cache)"
+  },
+  "panels/network/RequestHeadersView.ts | fromServiceWorker": {
+    "message": "(from service worker)"
+  },
+  "panels/network/RequestHeadersView.ts | fromSignedexchange": {
+    "message": "(from signed-exchange)"
+  },
+  "panels/network/RequestHeadersView.ts | general": {
+    "message": "General"
+  },
+  "panels/network/RequestHeadersView.ts | raw": {
+    "message": "Raw"
+  },
+  "panels/network/RequestHeadersView.ts | referrerPolicy": {
+    "message": "Referrer Policy"
+  },
+  "panels/network/RequestHeadersView.ts | remoteAddress": {
+    "message": "Remote Address"
+  },
+  "panels/network/RequestHeadersView.ts | requestHeaders": {
+    "message": "Request Headers"
+  },
+  "panels/network/RequestHeadersView.ts | requestMethod": {
+    "message": "Request Method"
+  },
+  "panels/network/RequestHeadersView.ts | requestUrl": {
+    "message": "Request URL"
+  },
+  "panels/network/RequestHeadersView.ts | responseHeaders": {
+    "message": "Response headers"
+  },
+  "panels/network/RequestHeadersView.ts | revealHeaderOverrides": {
+    "message": "Reveal header override definitions"
+  },
+  "panels/network/RequestHeadersView.ts | showMore": {
+    "message": "Show more"
+  },
+  "panels/network/RequestHeadersView.ts | statusCode": {
+    "message": "Status Code"
   },
   "panels/network/RequestInitiatorView.ts | noInitiator": {
     "message": "No initiator data"

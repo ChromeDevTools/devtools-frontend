@@ -39,7 +39,6 @@
     "../../../../../../../front_end/panels/network/components/EditableSpan.ts",
     "../../../../../../../front_end/panels/network/components/HeaderSectionRow.ts",
     "../../../../../../../front_end/panels/network/components/RequestHeaderSection.ts",
-    "../../../../../../../front_end/panels/network/components/RequestHeadersView.ts",
     "../../../../../../../front_end/panels/network/components/RequestTrustTokensView.ts",
     "../../../../../../../front_end/panels/network/components/ResponseHeaderSection.ts",
     "../../../../../../../front_end/legacy/legacy-defs.d.ts",

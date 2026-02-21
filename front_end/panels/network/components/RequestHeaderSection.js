@@ -9,6 +9,8 @@ import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as NetworkForward from '../forward/forward.js';
 import requestHeaderSectionStyles from './RequestHeaderSection.css.js';
+import requestHeadersViewStyles from './RequestHeadersView.css.js';
+export { requestHeadersViewStyles };
 const { render, html } = Lit;
 const UIStrings = {
     /**

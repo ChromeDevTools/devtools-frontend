@@ -296,7 +296,7 @@ var DEFAULT_VIEW = (input, _output, target) => {
   function isCategoryOpen(name) {
     return input.openCategories.includes(name);
   }
-  function renderCategory2(name, title, content) {
+  function renderCategory(name, title, content) {
     return html`
         <details
           class="direct-socket-category"
@@ -370,9 +370,9 @@ var DEFAULT_VIEW = (input, _output, target) => {
   render(html`
     <style>${UI.inspectorCommonStyles}</style>
     <style>${RequestHeadersView_css_default}</style>
-    ${renderCategory2(CATEGORY_NAME_GENERAL, i18nString(UIStrings.general), generalContent)}
-    ${renderCategory2(CATEGORY_NAME_OPTIONS, i18nString(UIStrings.options), optionsContent)}
-    ${socketInfo.openInfo ? renderCategory2(CATEGORY_NAME_OPEN_INFO, i18nString(UIStrings.openInfo), openInfoContent) : Lit.nothing}
+    ${renderCategory(CATEGORY_NAME_GENERAL, i18nString(UIStrings.general), generalContent)}
+    ${renderCategory(CATEGORY_NAME_OPTIONS, i18nString(UIStrings.options), optionsContent)}
+    ${socketInfo.openInfo ? renderCategory(CATEGORY_NAME_OPEN_INFO, i18nString(UIStrings.openInfo), openInfoContent) : Lit.nothing}
   `, target);
 };
 var DirectSocketConnectionView = class extends UI.Widget.Widget {
@@ -1152,7 +1152,8 @@ customElements.define("devtools-header-section-row", HeaderSectionRow);
 var RequestHeaderSection_exports = {};
 __export(RequestHeaderSection_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW2,
-  RequestHeaderSection: () => RequestHeaderSection
+  RequestHeaderSection: () => RequestHeaderSection,
+  requestHeadersViewStyles: () => RequestHeadersView_css_default
 });
 import "./../../../ui/kit/kit.js";
 import * as i18n5 from "./../../../core/i18n/i18n.js";
@@ -1332,28 +1333,298 @@ var RequestHeaderSection = class extends UI2.Widget.Widget {
   }
 };
 
-// gen/front_end/panels/network/components/RequestHeadersView.js
-var RequestHeadersView_exports = {};
-__export(RequestHeadersView_exports, {
-  RequestHeadersView: () => RequestHeadersView
+// gen/front_end/panels/network/components/RequestTrustTokensView.js
+var RequestTrustTokensView_exports = {};
+__export(RequestTrustTokensView_exports, {
+  DEFAULT_VIEW: () => DEFAULT_VIEW3,
+  RequestTrustTokensView: () => RequestTrustTokensView,
+  statusConsideredSuccess: () => statusConsideredSuccess
 });
+import "./../../../ui/components/report_view/report_view.js";
 import "./../../../ui/kit/kit.js";
-import * as Common3 from "./../../../core/common/common.js";
-import * as Host4 from "./../../../core/host/host.js";
-import * as i18n9 from "./../../../core/i18n/i18n.js";
-import * as Platform4 from "./../../../core/platform/platform.js";
+import * as i18n7 from "./../../../core/i18n/i18n.js";
 import * as SDK3 from "./../../../core/sdk/sdk.js";
-import * as Persistence2 from "./../../../models/persistence/persistence.js";
-import * as Workspace from "./../../../models/workspace/workspace.js";
-import * as NetworkForward3 from "./../forward/forward.js";
-import * as Buttons3 from "./../../../ui/components/buttons/buttons.js";
-import * as Input from "./../../../ui/components/input/input.js";
-import * as LegacyWrapper from "./../../../ui/components/legacy_wrapper/legacy_wrapper.js";
-import * as RenderCoordinator from "./../../../ui/components/render_coordinator/render_coordinator.js";
-import * as UI4 from "./../../../ui/legacy/legacy.js";
+import * as UI3 from "./../../../ui/legacy/legacy.js";
 import * as Lit4 from "./../../../ui/lit/lit.js";
-import * as VisualLogging6 from "./../../../ui/visual_logging/visual_logging.js";
-import * as Sources2 from "./../../sources/sources.js";
+import * as VisualLogging5 from "./../../../ui/visual_logging/visual_logging.js";
+
+// gen/front_end/panels/network/components/RequestTrustTokensView.css.js
+var RequestTrustTokensView_css_default = `/*
+ * Copyright 2021 The Chromium Authors
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+@scope to (devtools-widget > *) {
+  .code {
+    font-family: var(--monospace-font-family);
+    font-size: var(--monospace-font-size);
+  }
+
+  .issuers-list {
+    display: flex;
+    flex-direction: column;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .status-icon {
+    margin: 0 0.3em 2px 0;
+    vertical-align: middle;
+
+    &.failure {
+      color: var(--icon-error);
+    }
+
+    &.success {
+      color: var(--icon-checkmark-green);
+    }
+  }
+}
+
+/*# sourceURL=${import.meta.resolve("./RequestTrustTokensView.css")} */`;
+
+// gen/front_end/panels/network/components/RequestTrustTokensView.js
+var { html: html5, render: render5 } = Lit4;
+var UIStrings4 = {
+  /**
+   * @description Section heading in the Trust Token tab
+   */
+  parameters: "Parameters",
+  /**
+   * @description Text that refers to some types
+   */
+  type: "Type",
+  /**
+   * @description Label for a Trust Token parameter
+   */
+  refreshPolicy: "Refresh policy",
+  /**
+   * @description Label for a list if origins in the Trust Token tab
+   */
+  issuers: "Issuers",
+  /**
+   * @description Label for a report field in the Network panel
+   */
+  topLevelOrigin: "Top level origin",
+  /**
+   * @description Text for the issuer of an item
+   */
+  issuer: "Issuer",
+  /**
+   * @description Heading of a report section in the Network panel
+   */
+  result: "Result",
+  /**
+   * @description Text for the status of something
+   */
+  status: "Status",
+  /**
+   * @description Label for a field in the Network panel
+   */
+  numberOfIssuedTokens: "Number of issued tokens",
+  /**
+   * @description Text for the success status in the Network panel. Refers to the outcome of a network
+   * request which will either be 'Success' or 'Failure'.
+   */
+  success: "Success",
+  /**
+   * @description Text in the network panel for an error status
+   */
+  failure: "Failure",
+  /**
+   * @description Detailed text for a success status in the Network panel
+   */
+  theOperationsResultWasServedFrom: "The operations result was served from cache.",
+  /**
+   * @description Detailed text for a success status in the Network panel
+   */
+  theOperationWasFulfilledLocally: "The operation was fulfilled locally, no request was sent.",
+  /**
+   * @description Text for an error status in the Network panel
+   */
+  theKeysForThisPSTIssuerAreUnavailable: "The keys for this PST issuer are unavailable. The issuer may need to be registered via the Chrome registration process.",
+  /**
+   * @description Text for an error status in the Network panel
+   */
+  aClientprovidedArgumentWas: "A client-provided argument was malformed or otherwise invalid.",
+  /**
+   * @description Text for an error status in the Network panel
+   */
+  eitherNoInputsForThisOperation: "Either no inputs for this operation are available or the output exceeds the operations quota.",
+  /**
+   * @description Text for an error status in the Network panel
+   */
+  theServersResponseWasMalformedOr: "The servers response was malformed or otherwise invalid.",
+  /**
+   * @description Text for an error status in the Network panel
+   */
+  theOperationFailedForAnUnknown: "The operation failed for an unknown reason.",
+  /**
+   * @description Text for an error status in the Network panel
+   */
+  perSiteLimit: "Per-site issuer limit reached."
+};
+var str_4 = i18n7.i18n.registerUIStrings("panels/network/components/RequestTrustTokensView.ts", UIStrings4);
+var i18nString4 = i18n7.i18n.getLocalizedString.bind(void 0, str_4);
+function renderRowIfValuePresent(key, value2, isCode) {
+  if (!value2 || Array.isArray(value2) && value2.length === 0) {
+    return Lit4.nothing;
+  }
+  return html5`
+    <devtools-report-key>${key}</devtools-report-key>
+    <devtools-report-value class=${isCode ? "code" : ""}>
+      ${Array.isArray(value2) ? html5`
+        <ul class="issuers-list">
+            ${value2.map((item3) => html5`<li>${item3}</li>`)}
+        </ul>` : value2}
+    </devtools-report-value>
+  `;
+}
+var renderResultSection = (status, description, issuedTokenCount) => {
+  if (!status) {
+    return Lit4.nothing;
+  }
+  return html5`
+    <devtools-report-section-header>${i18nString4(UIStrings4.result)}</devtools-report-section-header>
+    <devtools-report-key>${i18nString4(UIStrings4.status)}</devtools-report-key>
+    <devtools-report-value>
+      <span>
+        <devtools-icon class="status-icon medium ${status === "Success" ? "success" : "failure"}"
+        name=${status === "Success" ? "check-circle" : "cross-circle-filled"}>
+        </devtools-icon>
+        <strong>${status === "Success" ? i18nString4(UIStrings4.success) : i18nString4(UIStrings4.failure)}</strong>
+        ${description ? html5` ${description}` : Lit4.nothing}
+      </span>
+    </devtools-report-value>
+    ${renderRowIfValuePresent(i18nString4(UIStrings4.numberOfIssuedTokens), issuedTokenCount)}
+    <devtools-report-divider></devtools-report-divider>
+    `;
+};
+var renderParameterSection = (params) => {
+  if (!params || params.length === 0) {
+    return Lit4.nothing;
+  }
+  return html5`
+    <devtools-report-section-header jslog=${VisualLogging5.pane("trust-tokens").track({ resize: true })}>
+      ${i18nString4(UIStrings4.parameters)}
+    </devtools-report-section-header>
+    ${params.map((param) => renderRowIfValuePresent(param.name, param.value, param.isCode))}
+    <devtools-report-divider></devtools-report-divider>
+  `;
+};
+var DEFAULT_VIEW3 = (input, output, target) => {
+  render5(html5`
+    <style>${RequestTrustTokensView_css_default}</style>
+    <devtools-report>
+      ${renderParameterSection(input.params)}
+      ${renderResultSection(input.status, input.description, input.issuedTokenCount)}
+    </devtools-report>
+  `, target);
+};
+var RequestTrustTokensView = class extends UI3.Widget.Widget {
+  #request = null;
+  #view;
+  constructor(element, view = DEFAULT_VIEW3) {
+    super(element);
+    this.#view = view;
+  }
+  get request() {
+    return this.#request;
+  }
+  set request(request) {
+    if (this.#request === request) {
+      return;
+    }
+    this.#unsubscribe();
+    this.#request = request;
+    this.#subscribe();
+    this.requestUpdate();
+  }
+  #subscribe() {
+    if (this.#request && this.isShowing()) {
+      this.#request.addEventListener(SDK3.NetworkRequest.Events.TRUST_TOKEN_RESULT_ADDED, this.requestUpdate, this);
+    }
+  }
+  #unsubscribe() {
+    if (this.#request) {
+      this.#request.removeEventListener(SDK3.NetworkRequest.Events.TRUST_TOKEN_RESULT_ADDED, this.requestUpdate, this);
+    }
+  }
+  wasShown() {
+    super.wasShown();
+    this.#subscribe();
+    this.requestUpdate();
+  }
+  willHide() {
+    super.willHide();
+    this.#unsubscribe();
+  }
+  performUpdate() {
+    if (!this.request) {
+      return;
+    }
+    const trustTokenParams = this.request.trustTokenParams();
+    const trustTokenResult = this.request.trustTokenOperationDoneEvent();
+    const viewInput = {};
+    if (trustTokenParams) {
+      viewInput.params = [
+        { name: i18nString4(UIStrings4.type), value: trustTokenParams.operation.toString(), isCode: true }
+      ];
+      if (trustTokenParams.operation === "Redemption") {
+        viewInput.params.push({
+          name: i18nString4(UIStrings4.refreshPolicy),
+          value: trustTokenParams.refreshPolicy.toString(),
+          isCode: true
+        });
+      }
+      if (trustTokenParams.issuers && trustTokenParams.issuers.length > 0) {
+        viewInput.params.push({ name: i18nString4(UIStrings4.issuers), value: trustTokenParams.issuers });
+      }
+      if (trustTokenResult?.topLevelOrigin) {
+        viewInput.params.push({ name: i18nString4(UIStrings4.topLevelOrigin), value: trustTokenResult.topLevelOrigin });
+      }
+      if (trustTokenResult?.issuerOrigin) {
+        viewInput.params.push({ name: i18nString4(UIStrings4.issuer), value: trustTokenResult.issuerOrigin });
+      }
+    }
+    if (trustTokenResult) {
+      viewInput.status = statusConsideredSuccess(trustTokenResult.status) ? "Success" : "Failure";
+      viewInput.description = getDetailedTextForStatusCode(trustTokenResult.status) ?? void 0;
+      viewInput.issuedTokenCount = trustTokenResult.type === "Issuance" ? trustTokenResult.issuedTokenCount : void 0;
+    }
+    this.#view(viewInput, void 0, this.contentElement);
+  }
+};
+function statusConsideredSuccess(status) {
+  return status === "Ok" || status === "AlreadyExists" || status === "FulfilledLocally";
+}
+function getDetailedTextForStatusCode(status) {
+  switch (status) {
+    case "Ok":
+      return null;
+    case "AlreadyExists":
+      return i18nString4(UIStrings4.theOperationsResultWasServedFrom);
+    case "FulfilledLocally":
+      return i18nString4(UIStrings4.theOperationWasFulfilledLocally);
+    case "InvalidArgument":
+      return i18nString4(UIStrings4.aClientprovidedArgumentWas);
+    case "ResourceExhausted":
+      return i18nString4(UIStrings4.eitherNoInputsForThisOperation);
+    case "BadResponse":
+      return i18nString4(UIStrings4.theServersResponseWasMalformedOr);
+    case "MissingIssuerKeys":
+      return i18nString4(UIStrings4.theKeysForThisPSTIssuerAreUnavailable);
+    case "FailedPrecondition":
+    case "ResourceLimited":
+    case "InternalError":
+    case "Unauthorized":
+    case "UnknownError":
+      return i18nString4(UIStrings4.theOperationFailedForAnUnknown);
+    case "SiteIssuerLimit":
+      return i18nString4(UIStrings4.perSiteLimit);
+  }
+}
 
 // gen/front_end/panels/network/components/ResponseHeaderSection.js
 var ResponseHeaderSection_exports = {};
@@ -1364,7 +1635,7 @@ __export(ResponseHeaderSection_exports, {
 });
 import * as Common2 from "./../../../core/common/common.js";
 import * as Host3 from "./../../../core/host/host.js";
-import * as i18n7 from "./../../../core/i18n/i18n.js";
+import * as i18n9 from "./../../../core/i18n/i18n.js";
 import * as Platform3 from "./../../../core/platform/platform.js";
 import * as IssuesManager from "./../../../models/issues_manager/issues_manager.js";
 import * as Persistence from "./../../../models/persistence/persistence.js";
@@ -1372,9 +1643,9 @@ import * as TextUtils from "./../../../models/text_utils/text_utils.js";
 import * as NetworkForward2 from "./../forward/forward.js";
 import * as Sources from "./../../sources/sources.js";
 import * as Buttons2 from "./../../../ui/components/buttons/buttons.js";
-import * as UI3 from "./../../../ui/legacy/legacy.js";
-import { html as html5, nothing as nothing4, render as render5 } from "./../../../ui/lit/lit.js";
-import * as VisualLogging5 from "./../../../ui/visual_logging/visual_logging.js";
+import * as UI4 from "./../../../ui/legacy/legacy.js";
+import { html as html6, nothing as nothing5, render as render6 } from "./../../../ui/lit/lit.js";
+import * as VisualLogging6 from "./../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/network/components/ResponseHeaderSection.css.js
 var ResponseHeaderSection_css_default = `/*
@@ -1402,7 +1673,7 @@ devtools-header-section-row:first-of-type {
 /*# sourceURL=${import.meta.resolve("./ResponseHeaderSection.css")} */`;
 
 // gen/front_end/panels/network/components/ResponseHeaderSection.js
-var UIStrings4 = {
+var UIStrings5 = {
   /**
    * @description Label for a button which allows adding an HTTP header.
    */
@@ -1436,9 +1707,9 @@ var UIStrings4 = {
    */
   toUseThisResourceFromADifferentSite: "To use this resource from a different site, the server may relax the cross-origin resource policy response header:"
 };
-var str_4 = i18n7.i18n.registerUIStrings("panels/network/components/ResponseHeaderSection.ts", UIStrings4);
-var i18nString4 = i18n7.i18n.getLocalizedString.bind(void 0, str_4);
-var i18nLazyString = i18n7.i18n.getLazilyComputedLocalizedString.bind(void 0, str_4);
+var str_5 = i18n9.i18n.registerUIStrings("panels/network/components/ResponseHeaderSection.ts", UIStrings5);
+var i18nString5 = i18n9.i18n.getLocalizedString.bind(void 0, str_5);
+var i18nLazyString = i18n9.i18n.getLazilyComputedLocalizedString.bind(void 0, str_5);
 var RESPONSE_HEADER_SECTION_DATA_KEY = "ResponseHeaderSection";
 var ResponseHeaderSectionBase = class extends HTMLElement {
   shadow = this.attachShadow({ mode: "open" });
@@ -1472,9 +1743,9 @@ var EarlyHintsHeaderSection = class extends ResponseHeaderSectionBase {
     if (!this.#request) {
       return;
     }
-    render5(html5`
+    render6(html6`
       <style>${ResponseHeaderSection_css_default}</style>
-      ${this.headerDetails.map((header) => html5`
+      ${this.headerDetails.map((header) => html6`
         <devtools-header-section-row .data=${{
       header
     }}></devtools-header-section-row>
@@ -1768,8 +2039,8 @@ var ResponseHeaderSection = class extends ResponseHeaderSectionBase {
   }
   #onAddHeaderClick() {
     this.#headerEditors.push({
-      name: Platform3.StringUtilities.toLowerCaseString(i18n7.i18n.lockedString("header-name")),
-      value: i18n7.i18n.lockedString("header value"),
+      name: Platform3.StringUtilities.toLowerCaseString(i18n9.i18n.lockedString("header-name")),
+      value: i18n9.i18n.lockedString("header value"),
       isOverride: true,
       nameEditable: true,
       valueEditable: 1
@@ -1787,28 +2058,28 @@ var ResponseHeaderSection = class extends ResponseHeaderSectionBase {
       return;
     }
     const headerDescriptors = this.#headerEditors.map((headerEditor, index) => ({ ...this.headerDetails[index], ...headerEditor, isResponseHeader: true }));
-    render5(html5`
+    render6(html6`
       <style>${ResponseHeaderSection_css_default}</style>
-      ${headerDescriptors.map((header, index) => html5`
+      ${headerDescriptors.map((header, index) => html6`
         <devtools-header-section-row
             .data=${{ header }}
             @headeredited=${this.#onHeaderEdited}
             @headerremoved=${this.#onHeaderRemoved}
             @enableheaderediting=${this.#onEnableHeaderEditingClick}
             data-index=${index}
-            jslog=${VisualLogging5.item("response-header")}
+            jslog=${VisualLogging6.item("response-header")}
         ></devtools-header-section-row>
       `)}
-      ${this.#isEditingAllowed === 1 ? html5`
+      ${this.#isEditingAllowed === 1 ? html6`
         <devtools-button
           class="add-header-button"
           .variant=${"outlined"}
           .iconName=${"plus"}
           @click=${this.#onAddHeaderClick}
-          jslog=${VisualLogging5.action("add-header").track({ click: true })}>
-          ${i18nString4(UIStrings4.addHeader)}
+          jslog=${VisualLogging6.action("add-header").track({ click: true })}>
+          ${i18nString5(UIStrings5.addHeader)}
         </devtools-button>
-      ` : nothing4}
+      ` : nothing5}
     `, this.shadow, { host: this });
   }
   async #onEnableHeaderEditingClick() {
@@ -1822,7 +2093,7 @@ var ResponseHeaderSection = class extends ResponseHeaderSectionBase {
       Common2.Settings.Settings.instance().moduleSetting("persistence-network-overrides-enabled").set(true);
       await networkPersistenceManager.getOrCreateHeadersUISourceCodeFromUrl(requestUrl);
     } else {
-      UI3.InspectorView.InspectorView.instance().displaySelectOverrideFolderInfobar(async () => {
+      UI4.InspectorView.InspectorView.instance().displaySelectOverrideFolderInfobar(async () => {
         await Sources.SourcesNavigator.OverridesNavigatorView.instance().setupNewWorkspace();
         await networkPersistenceManager.getOrCreateHeadersUISourceCodeFromUrl(requestUrl);
       });
@@ -1837,7 +2108,7 @@ var BlockedReasonDetails = /* @__PURE__ */ new Map([
       name: Platform3.StringUtilities.toLowerCaseString("cross-origin-embedder-policy"),
       value: null,
       blockedDetails: {
-        explanation: i18nLazyString(UIStrings4.toEmbedThisFrameInYourDocument),
+        explanation: i18nLazyString(UIStrings5.toEmbedThisFrameInYourDocument),
         examples: [{ codeSnippet: "Cross-Origin-Embedder-Policy: require-corp", comment: void 0 }],
         link: { url: "https://web.dev/coop-coep/" }
       }
@@ -1849,15 +2120,15 @@ var BlockedReasonDetails = /* @__PURE__ */ new Map([
       name: Platform3.StringUtilities.toLowerCaseString("cross-origin-resource-policy"),
       value: null,
       blockedDetails: {
-        explanation: i18nLazyString(UIStrings4.toUseThisResourceFromADifferent),
+        explanation: i18nLazyString(UIStrings5.toUseThisResourceFromADifferent),
         examples: [
           {
             codeSnippet: "Cross-Origin-Resource-Policy: same-site",
-            comment: i18nLazyString(UIStrings4.chooseThisOptionIfTheResourceAnd)
+            comment: i18nLazyString(UIStrings5.chooseThisOptionIfTheResourceAnd)
           },
           {
             codeSnippet: "Cross-Origin-Resource-Policy: cross-origin",
-            comment: i18nLazyString(UIStrings4.onlyChooseThisOptionIfAn)
+            comment: i18nLazyString(UIStrings5.onlyChooseThisOptionIfAn)
           }
         ],
         link: { url: "https://web.dev/coop-coep/" }
@@ -1871,7 +2142,7 @@ var BlockedReasonDetails = /* @__PURE__ */ new Map([
       value: null,
       headerValueIncorrect: false,
       blockedDetails: {
-        explanation: i18nLazyString(UIStrings4.thisDocumentWasBlockedFrom),
+        explanation: i18nLazyString(UIStrings5.thisDocumentWasBlockedFrom),
         examples: [],
         link: { url: "https://web.dev/coop-coep/" }
       }
@@ -1884,11 +2155,11 @@ var BlockedReasonDetails = /* @__PURE__ */ new Map([
       value: null,
       headerValueIncorrect: true,
       blockedDetails: {
-        explanation: i18nLazyString(UIStrings4.toUseThisResourceFromADifferentSite),
+        explanation: i18nLazyString(UIStrings5.toUseThisResourceFromADifferentSite),
         examples: [
           {
             codeSnippet: "Cross-Origin-Resource-Policy: cross-origin",
-            comment: i18nLazyString(UIStrings4.onlyChooseThisOptionIfAn)
+            comment: i18nLazyString(UIStrings5.onlyChooseThisOptionIfAn)
           }
         ],
         link: null
@@ -1902,15 +2173,15 @@ var BlockedReasonDetails = /* @__PURE__ */ new Map([
       value: null,
       headerValueIncorrect: true,
       blockedDetails: {
-        explanation: i18nLazyString(UIStrings4.toUseThisResourceFromADifferentOrigin),
+        explanation: i18nLazyString(UIStrings5.toUseThisResourceFromADifferentOrigin),
         examples: [
           {
             codeSnippet: "Cross-Origin-Resource-Policy: same-site",
-            comment: i18nLazyString(UIStrings4.chooseThisOptionIfTheResourceAnd)
+            comment: i18nLazyString(UIStrings5.chooseThisOptionIfTheResourceAnd)
           },
           {
             codeSnippet: "Cross-Origin-Resource-Policy: cross-origin",
-            comment: i18nLazyString(UIStrings4.onlyChooseThisOptionIfAn)
+            comment: i18nLazyString(UIStrings5.onlyChooseThisOptionIfAn)
           }
         ],
         link: null
@@ -1918,742 +2189,11 @@ var BlockedReasonDetails = /* @__PURE__ */ new Map([
     }
   ]
 ]);
-
-// gen/front_end/panels/network/components/RequestHeadersView.js
-var RAW_HEADER_CUTOFF = 3e3;
-var { render: render6, html: html6 } = Lit4;
-var UIStrings5 = {
-  /**
-   * @description Text in Request Headers View of the Network panel
-   */
-  fromDiskCache: "(from disk cache)",
-  /**
-   * @description Text in Request Headers View of the Network panel
-   */
-  fromMemoryCache: "(from memory cache)",
-  /**
-   * @description Text in Request Headers View of the Network panel
-   */
-  fromEarlyHints: "(from early hints)",
-  /**
-   * @description Text in Request Headers View of the Network panel
-   */
-  fromPrefetchCache: "(from prefetch cache)",
-  /**
-   * @description Text in Request Headers View of the Network panel
-   */
-  fromServiceWorker: "(from `service worker`)",
-  /**
-   * @description Text in Request Headers View of the Network panel
-   */
-  fromSignedexchange: "(from signed-exchange)",
-  /**
-   * @description Section header for a list of the main aspects of a http request
-   */
-  general: "General",
-  /**
-   * @description Label for a checkbox to switch between raw and parsed headers
-   */
-  raw: "Raw",
-  /**
-   * @description Text in Request Headers View of the Network panel
-   */
-  referrerPolicy: "Referrer Policy",
-  /**
-   * @description Text in Network Log View Columns of the Network panel
-   */
-  remoteAddress: "Remote Address",
-  /**
-   * @description Text in Request Headers View of the Network panel
-   */
-  requestHeaders: "Request Headers",
-  /**
-   * @description The HTTP method of a request
-   */
-  requestMethod: "Request Method",
-  /**
-   * @description The URL of a request
-   */
-  requestUrl: "Request URL",
-  /**
-   * @description A context menu item in the Network Log View Columns of the Network panel
-   */
-  responseHeaders: "Response headers",
-  /**
-   * @description A context menu item in the Network Log View Columns of the Network panel
-   */
-  earlyHintsHeaders: "Early hints headers",
-  /**
-   * @description Title text for a link to the Sources panel to the file containing the header override definitions
-   */
-  revealHeaderOverrides: "Reveal header override definitions",
-  /**
-   * @description Text to show more content
-   */
-  showMore: "Show more",
-  /**
-   * @description HTTP response code
-   */
-  statusCode: "Status Code"
-};
-var str_5 = i18n9.i18n.registerUIStrings("panels/network/components/RequestHeadersView.ts", UIStrings5);
-var i18nString5 = i18n9.i18n.getLocalizedString.bind(void 0, str_5);
-var RequestHeadersView = class extends LegacyWrapper.LegacyWrapper.WrappableComponent {
-  #request;
-  #shadow = this.attachShadow({ mode: "open" });
-  #showResponseHeadersText = false;
-  #showRequestHeadersText = false;
-  #showResponseHeadersTextFull = false;
-  #showRequestHeadersTextFull = false;
-  #toReveal = void 0;
-  #workspace = Workspace.Workspace.WorkspaceImpl.instance();
-  constructor(request) {
-    super();
-    this.#request = request;
-    this.setAttribute("jslog", `${VisualLogging6.pane("headers").track({ resize: true })}`);
-  }
-  wasShown() {
-    super.wasShown();
-    this.#request.addEventListener(SDK3.NetworkRequest.Events.REMOTE_ADDRESS_CHANGED, this.#refreshHeadersView, this);
-    this.#request.addEventListener(SDK3.NetworkRequest.Events.FINISHED_LOADING, this.#refreshHeadersView, this);
-    this.#request.addEventListener(SDK3.NetworkRequest.Events.REQUEST_HEADERS_CHANGED, this.#refreshHeadersView, this);
-    this.#request.addEventListener(SDK3.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED, this.#resetAndRefreshHeadersView, this);
-    this.#toReveal = void 0;
-    this.#refreshHeadersView();
-  }
-  willHide() {
-    super.willHide();
-    this.#request.removeEventListener(SDK3.NetworkRequest.Events.REMOTE_ADDRESS_CHANGED, this.#refreshHeadersView, this);
-    this.#request.removeEventListener(SDK3.NetworkRequest.Events.FINISHED_LOADING, this.#refreshHeadersView, this);
-    this.#request.removeEventListener(SDK3.NetworkRequest.Events.REQUEST_HEADERS_CHANGED, this.#refreshHeadersView, this);
-    this.#request.removeEventListener(SDK3.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED, this.#resetAndRefreshHeadersView, this);
-  }
-  #resetAndRefreshHeadersView() {
-    this.#request.deleteAssociatedData(RESPONSE_HEADER_SECTION_DATA_KEY);
-    void this.render();
-  }
-  #refreshHeadersView() {
-    void this.render();
-  }
-  revealHeader(section3, header) {
-    this.#toReveal = { section: section3, header };
-    void this.render();
-  }
-  connectedCallback() {
-    this.#workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeAdded, this.#uiSourceCodeAddedOrRemoved, this);
-    this.#workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeRemoved, this.#uiSourceCodeAddedOrRemoved, this);
-    Common3.Settings.Settings.instance().moduleSetting("persistence-network-overrides-enabled").addChangeListener(this.render, this);
-  }
-  disconnectedCallback() {
-    this.#workspace.removeEventListener(Workspace.Workspace.Events.UISourceCodeAdded, this.#uiSourceCodeAddedOrRemoved, this);
-    this.#workspace.removeEventListener(Workspace.Workspace.Events.UISourceCodeRemoved, this.#uiSourceCodeAddedOrRemoved, this);
-    Common3.Settings.Settings.instance().moduleSetting("persistence-network-overrides-enabled").removeChangeListener(this.render, this);
-  }
-  #uiSourceCodeAddedOrRemoved(event) {
-    if (this.#getHeaderOverridesFileUrl() === event.data.url()) {
-      void this.render();
-    }
-  }
-  async render() {
-    if (!this.#request) {
-      return;
-    }
-    return await RenderCoordinator.write(() => {
-      render6(html6`
-        <style>${RequestHeadersView_css_default}</style>
-        <style>${Input.checkboxStyles}</style>
-        ${this.#renderGeneralSection()}
-        ${this.#renderEarlyHintsHeaders()}
-        ${this.#renderResponseHeaders()}
-        ${this.#renderRequestHeaders()}
-      `, this.#shadow, { host: this });
-    });
-  }
-  #renderEarlyHintsHeaders() {
-    if (!this.#request || !this.#request.earlyHintsHeaders || this.#request.earlyHintsHeaders.length === 0) {
-      return Lit4.nothing;
-    }
-    const toggleShowRaw = () => {
-      this.#showResponseHeadersText = !this.#showResponseHeadersText;
-      void this.render();
-    };
-    return renderCategory({
-      onToggleRawHeaders: toggleShowRaw,
-      name: "early-hints-headers",
-      title: i18nString5(UIStrings5.earlyHintsHeaders),
-      headerCount: this.#request.earlyHintsHeaders.length,
-      checked: void 0,
-      additionalContent: void 0,
-      forceOpen: this.#toReveal?.section === "EarlyHints",
-      loggingContext: "early-hints-headers",
-      contents: this.#showResponseHeadersText ? this.#renderRawHeaders(this.#request.responseHeadersText, true) : html6`
-          <devtools-early-hints-header-section .data=${{
-        request: this.#request,
-        toReveal: this.#toReveal
-      }}></devtools-early-hints-header-section>
-        `
-    });
-  }
-  #renderResponseHeaders() {
-    if (!this.#request) {
-      return Lit4.nothing;
-    }
-    const toggleShowRaw = () => {
-      this.#showResponseHeadersText = !this.#showResponseHeadersText;
-      void this.render();
-    };
-    return renderCategory({
-      onToggleRawHeaders: toggleShowRaw,
-      name: "response-headers",
-      title: i18nString5(UIStrings5.responseHeaders),
-      headerCount: this.#request.sortedResponseHeaders.length,
-      checked: this.#request.responseHeadersText ? this.#showResponseHeadersText : void 0,
-      additionalContent: this.#renderHeaderOverridesLink(),
-      forceOpen: this.#toReveal?.section === "Response",
-      loggingContext: "response-headers",
-      contents: this.#showResponseHeadersText ? this.#renderRawHeaders(this.#request.responseHeadersText, true) : html6`
-          <devtools-response-header-section .data=${{
-        request: this.#request,
-        toReveal: this.#toReveal
-      }} jslog=${VisualLogging6.section("response-headers")}></devtools-response-header-section>
-        `
-    });
-  }
-  #renderHeaderOverridesLink() {
-    if (!this.#workspace.uiSourceCodeForURL(this.#getHeaderOverridesFileUrl())) {
-      return Lit4.nothing;
-    }
-    const overridesSetting = Common3.Settings.Settings.instance().moduleSetting("persistence-network-overrides-enabled");
-    const fileIcon = html6`
-      <devtools-icon name="document" class=${"medium" + overridesSetting.get() ? "inline-icon dot purple" : "inline-icon"}>
-      </devtools-icon>`;
-    const revealHeadersFile = (event) => {
-      event.preventDefault();
-      const uiSourceCode = this.#workspace.uiSourceCodeForURL(this.#getHeaderOverridesFileUrl());
-      if (uiSourceCode) {
-        Sources2.SourcesPanel.SourcesPanel.instance().showUISourceCode(uiSourceCode);
-        void Sources2.SourcesPanel.SourcesPanel.instance().revealInNavigator(uiSourceCode);
-      }
-    };
-    return html6`
-      <devtools-link
-          href="https://goo.gle/devtools-override"
-          class="link devtools-link"
-          jslogcontext="devtools-override"
-      >
-        <devtools-icon name="help" class="inline-icon medium">
-        </devtools-icon>
-      </devtools-link>
-      <devtools-link
-          @click=${revealHeadersFile}
-          class="link devtools-link"
-          title=${UIStrings5.revealHeaderOverrides}
-          jslogcontext="reveal-header-overrides"
-      >
-        ${fileIcon}${Persistence2.NetworkPersistenceManager.HEADERS_FILENAME}
-      </devtools-link>
-    `;
-  }
-  #getHeaderOverridesFileUrl() {
-    if (!this.#request) {
-      return Platform4.DevToolsPath.EmptyUrlString;
-    }
-    const fileUrl = Persistence2.NetworkPersistenceManager.NetworkPersistenceManager.instance().fileUrlFromNetworkUrl(
-      this.#request.url(),
-      /* ignoreInactive */
-      true
-    );
-    return fileUrl.substring(0, fileUrl.lastIndexOf("/")) + "/" + Persistence2.NetworkPersistenceManager.HEADERS_FILENAME;
-  }
-  #renderRequestHeaders() {
-    if (!this.#request) {
-      return Lit4.nothing;
-    }
-    const requestHeadersText = this.#request.requestHeadersText();
-    const toggleShowRaw = () => {
-      this.#showRequestHeadersText = !this.#showRequestHeadersText;
-      void this.render();
-    };
-    return renderCategory({
-      onToggleRawHeaders: toggleShowRaw,
-      name: "request-headers",
-      title: i18nString5(UIStrings5.requestHeaders),
-      headerCount: this.#request.requestHeaders().length,
-      checked: requestHeadersText ? this.#showRequestHeadersText : void 0,
-      forceOpen: this.#toReveal?.section === "Request",
-      loggingContext: "request-headers",
-      contents: this.#showRequestHeadersText && requestHeadersText ? this.#renderRawHeaders(requestHeadersText, false) : html6`
-          <devtools-widget .widgetConfig=${UI4.Widget.widgetConfig(RequestHeaderSection, {
-        request: this.#request,
-        toReveal: this.#toReveal
-      })} jslog=${VisualLogging6.section("request-headers")}></devtools-widget>`
-    });
-  }
-  #renderRawHeaders(rawHeadersText, forResponseHeaders) {
-    const trimmed = rawHeadersText.trim();
-    const showFull = forResponseHeaders ? this.#showResponseHeadersTextFull : this.#showRequestHeadersTextFull;
-    const isShortened = !showFull && trimmed.length > RAW_HEADER_CUTOFF;
-    const showMore = () => {
-      if (forResponseHeaders) {
-        this.#showResponseHeadersTextFull = true;
-      } else {
-        this.#showRequestHeadersTextFull = true;
-      }
-      void this.render();
-    };
-    const onContextMenuOpen = (event) => {
-      const showFull2 = forResponseHeaders ? this.#showResponseHeadersTextFull : this.#showRequestHeadersTextFull;
-      if (!showFull2) {
-        const contextMenu = new UI4.ContextMenu.ContextMenu(event);
-        const section3 = contextMenu.newSection();
-        section3.appendItem(i18nString5(UIStrings5.showMore), showMore, { jslogContext: "show-more" });
-        void contextMenu.show();
-      }
-    };
-    return html6`
-      <div
-        class="row raw-headers-row"
-        @contextmenu=${(event) => {
-      if (isShortened) {
-        onContextMenuOpen(event);
-      }
-    }}
-      >
-        <div class="raw-headers">
-          ${isShortened ? trimmed.substring(0, RAW_HEADER_CUTOFF) : trimmed}
-        </div>
-        ${isShortened ? html6`
-              <devtools-button
-                .size=${"SMALL"}
-                .variant=${"outlined"}
-                @click=${showMore}
-                jslog=${VisualLogging6.action("raw-headers-show-more").track({
-      click: true
-    })}
-                >${i18nString5(UIStrings5.showMore)}</devtools-button
-              >
-            ` : Lit4.nothing}
-      </div>
-    `;
-  }
-  #renderGeneralSection() {
-    if (!this.#request) {
-      return Lit4.nothing;
-    }
-    const statusClasses = ["status"];
-    if (this.#request.statusCode < 300 || this.#request.statusCode === 304) {
-      statusClasses.push("green-circle");
-    } else if (this.#request.statusCode < 400) {
-      statusClasses.push("yellow-circle");
-    } else {
-      statusClasses.push("red-circle");
-    }
-    let comment = "";
-    if (this.#request.cachedInMemory()) {
-      comment = i18nString5(UIStrings5.fromMemoryCache);
-    } else if (this.#request.fromEarlyHints()) {
-      comment = i18nString5(UIStrings5.fromEarlyHints);
-    } else if (this.#request.fetchedViaServiceWorker) {
-      comment = i18nString5(UIStrings5.fromServiceWorker);
-    } else if (this.#request.redirectSourceSignedExchangeInfoHasNoErrors()) {
-      comment = i18nString5(UIStrings5.fromSignedexchange);
-    } else if (this.#request.fromPrefetchCache()) {
-      comment = i18nString5(UIStrings5.fromPrefetchCache);
-    } else if (this.#request.cached()) {
-      comment = i18nString5(UIStrings5.fromDiskCache);
-    }
-    if (comment) {
-      statusClasses.push("status-with-comment");
-    }
-    const statusText = [this.#request.statusCode, this.#request.getInferredStatusText(), comment].join(" ");
-    return renderCategory({
-      name: "general",
-      title: i18nString5(UIStrings5.general),
-      forceOpen: this.#toReveal?.section === "General",
-      loggingContext: "general",
-      // clang-format off
-      contents: html6`<div jslog=${VisualLogging6.section("general")}>
-        ${this.#renderGeneralRow(i18nString5(UIStrings5.requestUrl), this.#request.url(), "request-url")}
-        ${this.#request.statusCode ? this.#renderGeneralRow(i18nString5(UIStrings5.requestMethod), this.#request.requestMethod, "request-method") : Lit4.nothing}
-        ${this.#request.statusCode ? this.#renderGeneralRow(i18nString5(UIStrings5.statusCode), statusText, "status-code", statusClasses) : Lit4.nothing}
-        ${this.#request.remoteAddress() ? this.#renderGeneralRow(i18nString5(UIStrings5.remoteAddress), this.#request.remoteAddress(), "remote-address") : Lit4.nothing}
-        ${this.#request.referrerPolicy() ? this.#renderGeneralRow(i18nString5(UIStrings5.referrerPolicy), String(this.#request.referrerPolicy()), "referrer-policy") : Lit4.nothing}
-      </div>`
-    });
-  }
-  #renderGeneralRow(name, value2, id, classNames) {
-    const isHighlighted = this.#toReveal?.section === "General" && name.toLowerCase() === this.#toReveal?.header?.toLowerCase();
-    return html6`
-      <div class="row ${isHighlighted ? "header-highlight" : ""}">
-        <div class="header-name">${name}</div>
-        <div
-          id=${id}
-          class="header-value ${classNames?.join(" ")}"
-          @copy=${() => Host4.userMetrics.actionTaken(Host4.UserMetrics.Action.NetworkPanelCopyValue)}
-        >${value2}</div>
-      </div>
-    `;
-  }
-  getHeaderElementById(id) {
-    const categories = this.#shadow.querySelectorAll("devtools-request-headers-category");
-    for (const category of categories) {
-      const element = category.querySelector(`#${id}`);
-      if (element) {
-        return element;
-      }
-    }
-    return null;
-  }
-};
-function renderCategory(data) {
-  const expandedSetting = Common3.Settings.Settings.instance().createSetting("request-info-" + data.name + "-category-expanded", true);
-  const isOpen = (expandedSetting ? expandedSetting.get() : true) || data.forceOpen;
-  return html6`
-      <details ?open=${isOpen} @toggle=${onToggle} aria-label=${data.title}>
-        <summary
-          class="header"
-          @keydown=${onSummaryKeyDown}
-          jslog=${VisualLogging6.sectionHeader().track({ click: true }).context(data.loggingContext)}
-        >
-          <div class="header-grid-container">
-            <div>
-              ${data.title}${data.headerCount !== void 0 ? html6`<span class="header-count"> (${data.headerCount})</span>` : Lit4.nothing}
-            </div>
-            <div class="hide-when-closed">
-              ${data.checked !== void 0 ? html6`
-                <devtools-checkbox .checked=${data.checked} @change=${data.onToggleRawHeaders}
-                         jslog=${VisualLogging6.toggle("raw-headers").track({ change: true })}>
-                  ${i18nString5(UIStrings5.raw)}
-              </devtools-checkbox>` : Lit4.nothing}
-            </div>
-            <div class="hide-when-closed">${data.additionalContent}</div>
-          </div>
-        </summary>
-        ${data.contents}
-      </details>
-    `;
-  function onSummaryKeyDown(event) {
-    if (!event.target) {
-      return;
-    }
-    const summaryElement = event.target;
-    const detailsElement = summaryElement.parentElement;
-    if (!detailsElement) {
-      throw new Error("<details> element is not found for a <summary> element");
-    }
-    switch (event.key) {
-      case "ArrowLeft":
-        detailsElement.open = false;
-        break;
-      case "ArrowRight":
-        detailsElement.open = true;
-        break;
-    }
-  }
-  function onToggle(event) {
-    expandedSetting?.set(event.target.open);
-  }
-}
-customElements.define("devtools-request-headers", RequestHeadersView);
-
-// gen/front_end/panels/network/components/RequestTrustTokensView.js
-var RequestTrustTokensView_exports = {};
-__export(RequestTrustTokensView_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW3,
-  RequestTrustTokensView: () => RequestTrustTokensView,
-  statusConsideredSuccess: () => statusConsideredSuccess
-});
-import "./../../../ui/components/report_view/report_view.js";
-import "./../../../ui/kit/kit.js";
-import * as i18n11 from "./../../../core/i18n/i18n.js";
-import * as SDK4 from "./../../../core/sdk/sdk.js";
-import * as UI5 from "./../../../ui/legacy/legacy.js";
-import * as Lit5 from "./../../../ui/lit/lit.js";
-import * as VisualLogging7 from "./../../../ui/visual_logging/visual_logging.js";
-
-// gen/front_end/panels/network/components/RequestTrustTokensView.css.js
-var RequestTrustTokensView_css_default = `/*
- * Copyright 2021 The Chromium Authors
- * Use of this source code is governed by a BSD-style license that can be
- * found in the LICENSE file.
- */
-@scope to (devtools-widget > *) {
-  .code {
-    font-family: var(--monospace-font-family);
-    font-size: var(--monospace-font-size);
-  }
-
-  .issuers-list {
-    display: flex;
-    flex-direction: column;
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-  }
-
-  .status-icon {
-    margin: 0 0.3em 2px 0;
-    vertical-align: middle;
-
-    &.failure {
-      color: var(--icon-error);
-    }
-
-    &.success {
-      color: var(--icon-checkmark-green);
-    }
-  }
-}
-
-/*# sourceURL=${import.meta.resolve("./RequestTrustTokensView.css")} */`;
-
-// gen/front_end/panels/network/components/RequestTrustTokensView.js
-var { html: html7, render: render7 } = Lit5;
-var UIStrings6 = {
-  /**
-   * @description Section heading in the Trust Token tab
-   */
-  parameters: "Parameters",
-  /**
-   * @description Text that refers to some types
-   */
-  type: "Type",
-  /**
-   * @description Label for a Trust Token parameter
-   */
-  refreshPolicy: "Refresh policy",
-  /**
-   * @description Label for a list if origins in the Trust Token tab
-   */
-  issuers: "Issuers",
-  /**
-   * @description Label for a report field in the Network panel
-   */
-  topLevelOrigin: "Top level origin",
-  /**
-   * @description Text for the issuer of an item
-   */
-  issuer: "Issuer",
-  /**
-   * @description Heading of a report section in the Network panel
-   */
-  result: "Result",
-  /**
-   * @description Text for the status of something
-   */
-  status: "Status",
-  /**
-   * @description Label for a field in the Network panel
-   */
-  numberOfIssuedTokens: "Number of issued tokens",
-  /**
-   * @description Text for the success status in the Network panel. Refers to the outcome of a network
-   * request which will either be 'Success' or 'Failure'.
-   */
-  success: "Success",
-  /**
-   * @description Text in the network panel for an error status
-   */
-  failure: "Failure",
-  /**
-   * @description Detailed text for a success status in the Network panel
-   */
-  theOperationsResultWasServedFrom: "The operations result was served from cache.",
-  /**
-   * @description Detailed text for a success status in the Network panel
-   */
-  theOperationWasFulfilledLocally: "The operation was fulfilled locally, no request was sent.",
-  /**
-   * @description Text for an error status in the Network panel
-   */
-  theKeysForThisPSTIssuerAreUnavailable: "The keys for this PST issuer are unavailable. The issuer may need to be registered via the Chrome registration process.",
-  /**
-   * @description Text for an error status in the Network panel
-   */
-  aClientprovidedArgumentWas: "A client-provided argument was malformed or otherwise invalid.",
-  /**
-   * @description Text for an error status in the Network panel
-   */
-  eitherNoInputsForThisOperation: "Either no inputs for this operation are available or the output exceeds the operations quota.",
-  /**
-   * @description Text for an error status in the Network panel
-   */
-  theServersResponseWasMalformedOr: "The servers response was malformed or otherwise invalid.",
-  /**
-   * @description Text for an error status in the Network panel
-   */
-  theOperationFailedForAnUnknown: "The operation failed for an unknown reason.",
-  /**
-   * @description Text for an error status in the Network panel
-   */
-  perSiteLimit: "Per-site issuer limit reached."
-};
-var str_6 = i18n11.i18n.registerUIStrings("panels/network/components/RequestTrustTokensView.ts", UIStrings6);
-var i18nString6 = i18n11.i18n.getLocalizedString.bind(void 0, str_6);
-function renderRowIfValuePresent(key, value2, isCode) {
-  if (!value2 || Array.isArray(value2) && value2.length === 0) {
-    return Lit5.nothing;
-  }
-  return html7`
-    <devtools-report-key>${key}</devtools-report-key>
-    <devtools-report-value class=${isCode ? "code" : ""}>
-      ${Array.isArray(value2) ? html7`
-        <ul class="issuers-list">
-            ${value2.map((item3) => html7`<li>${item3}</li>`)}
-        </ul>` : value2}
-    </devtools-report-value>
-  `;
-}
-var renderResultSection = (status, description, issuedTokenCount) => {
-  if (!status) {
-    return Lit5.nothing;
-  }
-  return html7`
-    <devtools-report-section-header>${i18nString6(UIStrings6.result)}</devtools-report-section-header>
-    <devtools-report-key>${i18nString6(UIStrings6.status)}</devtools-report-key>
-    <devtools-report-value>
-      <span>
-        <devtools-icon class="status-icon medium ${status === "Success" ? "success" : "failure"}"
-        name=${status === "Success" ? "check-circle" : "cross-circle-filled"}>
-        </devtools-icon>
-        <strong>${status === "Success" ? i18nString6(UIStrings6.success) : i18nString6(UIStrings6.failure)}</strong>
-        ${description ? html7` ${description}` : Lit5.nothing}
-      </span>
-    </devtools-report-value>
-    ${renderRowIfValuePresent(i18nString6(UIStrings6.numberOfIssuedTokens), issuedTokenCount)}
-    <devtools-report-divider></devtools-report-divider>
-    `;
-};
-var renderParameterSection = (params) => {
-  if (!params || params.length === 0) {
-    return Lit5.nothing;
-  }
-  return html7`
-    <devtools-report-section-header jslog=${VisualLogging7.pane("trust-tokens").track({ resize: true })}>
-      ${i18nString6(UIStrings6.parameters)}
-    </devtools-report-section-header>
-    ${params.map((param) => renderRowIfValuePresent(param.name, param.value, param.isCode))}
-    <devtools-report-divider></devtools-report-divider>
-  `;
-};
-var DEFAULT_VIEW3 = (input, output, target) => {
-  render7(html7`
-    <style>${RequestTrustTokensView_css_default}</style>
-    <devtools-report>
-      ${renderParameterSection(input.params)}
-      ${renderResultSection(input.status, input.description, input.issuedTokenCount)}
-    </devtools-report>
-  `, target);
-};
-var RequestTrustTokensView = class extends UI5.Widget.Widget {
-  #request = null;
-  #view;
-  constructor(element, view = DEFAULT_VIEW3) {
-    super(element);
-    this.#view = view;
-  }
-  get request() {
-    return this.#request;
-  }
-  set request(request) {
-    if (this.#request === request) {
-      return;
-    }
-    this.#unsubscribe();
-    this.#request = request;
-    this.#subscribe();
-    this.requestUpdate();
-  }
-  #subscribe() {
-    if (this.#request && this.isShowing()) {
-      this.#request.addEventListener(SDK4.NetworkRequest.Events.TRUST_TOKEN_RESULT_ADDED, this.requestUpdate, this);
-    }
-  }
-  #unsubscribe() {
-    if (this.#request) {
-      this.#request.removeEventListener(SDK4.NetworkRequest.Events.TRUST_TOKEN_RESULT_ADDED, this.requestUpdate, this);
-    }
-  }
-  wasShown() {
-    super.wasShown();
-    this.#subscribe();
-    this.requestUpdate();
-  }
-  willHide() {
-    super.willHide();
-    this.#unsubscribe();
-  }
-  performUpdate() {
-    if (!this.request) {
-      return;
-    }
-    const trustTokenParams = this.request.trustTokenParams();
-    const trustTokenResult = this.request.trustTokenOperationDoneEvent();
-    const viewInput = {};
-    if (trustTokenParams) {
-      viewInput.params = [
-        { name: i18nString6(UIStrings6.type), value: trustTokenParams.operation.toString(), isCode: true }
-      ];
-      if (trustTokenParams.operation === "Redemption") {
-        viewInput.params.push({
-          name: i18nString6(UIStrings6.refreshPolicy),
-          value: trustTokenParams.refreshPolicy.toString(),
-          isCode: true
-        });
-      }
-      if (trustTokenParams.issuers && trustTokenParams.issuers.length > 0) {
-        viewInput.params.push({ name: i18nString6(UIStrings6.issuers), value: trustTokenParams.issuers });
-      }
-      if (trustTokenResult?.topLevelOrigin) {
-        viewInput.params.push({ name: i18nString6(UIStrings6.topLevelOrigin), value: trustTokenResult.topLevelOrigin });
-      }
-      if (trustTokenResult?.issuerOrigin) {
-        viewInput.params.push({ name: i18nString6(UIStrings6.issuer), value: trustTokenResult.issuerOrigin });
-      }
-    }
-    if (trustTokenResult) {
-      viewInput.status = statusConsideredSuccess(trustTokenResult.status) ? "Success" : "Failure";
-      viewInput.description = getDetailedTextForStatusCode(trustTokenResult.status) ?? void 0;
-      viewInput.issuedTokenCount = trustTokenResult.type === "Issuance" ? trustTokenResult.issuedTokenCount : void 0;
-    }
-    this.#view(viewInput, void 0, this.contentElement);
-  }
-};
-function statusConsideredSuccess(status) {
-  return status === "Ok" || status === "AlreadyExists" || status === "FulfilledLocally";
-}
-function getDetailedTextForStatusCode(status) {
-  switch (status) {
-    case "Ok":
-      return null;
-    case "AlreadyExists":
-      return i18nString6(UIStrings6.theOperationsResultWasServedFrom);
-    case "FulfilledLocally":
-      return i18nString6(UIStrings6.theOperationWasFulfilledLocally);
-    case "InvalidArgument":
-      return i18nString6(UIStrings6.aClientprovidedArgumentWas);
-    case "ResourceExhausted":
-      return i18nString6(UIStrings6.eitherNoInputsForThisOperation);
-    case "BadResponse":
-      return i18nString6(UIStrings6.theServersResponseWasMalformedOr);
-    case "MissingIssuerKeys":
-      return i18nString6(UIStrings6.theKeysForThisPSTIssuerAreUnavailable);
-    case "FailedPrecondition":
-    case "ResourceLimited":
-    case "InternalError":
-    case "Unauthorized":
-    case "UnknownError":
-      return i18nString6(UIStrings6.theOperationFailedForAnUnknown);
-    case "SiteIssuerLimit":
-      return i18nString6(UIStrings6.perSiteLimit);
-  }
-}
 export {
   DirectSocketConnectionView_exports as DirectSocketConnectionView,
   EditableSpan_exports as EditableSpan,
   HeaderSectionRow_exports as HeaderSectionRow,
   RequestHeaderSection_exports as RequestHeaderSection,
-  RequestHeadersView_exports as RequestHeadersView,
   RequestTrustTokensView_exports as RequestTrustTokensView,
   ResponseHeaderSection_exports as ResponseHeaderSection
 };

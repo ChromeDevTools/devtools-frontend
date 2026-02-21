@@ -472,6 +472,7 @@ panels/network/RequestConditionsDrawer.test.js
 panels/network/RequestCookiesView.test.js
 panels/network/RequestDeviceBoundSessionsView.test.js
 panels/network/RequestHTMLView.test.js
+panels/network/RequestHeadersView.test.js
 panels/network/RequestInitiatorView.test.js
 panels/network/RequestPayloadView.test.js
 panels/network/RequestPreviewView.test.js
@@ -482,7 +483,6 @@ panels/network/ShowMoreDetailsWidget.test.js
 panels/network/components/DirectSocketConnectionView.test.js
 panels/network/components/HeaderSectionRow.test.js
 panels/network/components/RequestHeaderSection.test.js
-panels/network/components/RequestHeadersView.test.js
 panels/network/components/RequestTrustTokensView.test.js
 panels/network/components/ResponseHeaderSection.test.js
 panels/performance_monitor/PerformanceMonitor.test.js

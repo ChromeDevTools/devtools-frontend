@@ -18,6 +18,7 @@ import './NetworkSearchScope.js';
 import './NetworkWaterfallColumn.js';
 import './RequestCookiesView.js';
 import './RequestHTMLView.js';
+import './RequestHeadersView.js';
 import './RequestInitiatorView.js';
 import './RequestResponseView.js';
 import './RequestPreviewView.js';
@@ -44,6 +45,7 @@ import * as NetworkWaterfallColumn from './NetworkWaterfallColumn.js';
 import * as RequestConditionsDrawer from './RequestConditionsDrawer.js';
 import * as RequestCookiesView from './RequestCookiesView.js';
 import * as RequestDeviceBoundSessionsView from './RequestDeviceBoundSessionsView.js';
+import * as RequestHeadersView from './RequestHeadersView.js';
 import * as RequestHTMLView from './RequestHTMLView.js';
 import * as RequestInitiatorView from './RequestInitiatorView.js';
 import * as RequestPayloadView from './RequestPayloadView.js';
@@ -72,6 +74,7 @@ export {
   RequestConditionsDrawer,
   RequestCookiesView,
   RequestDeviceBoundSessionsView,
+  RequestHeadersView,
   RequestHTMLView,
   RequestInitiatorView,
   RequestPayloadView,

@@ -3,6 +3,8 @@ import type * as SDK from '../../../core/sdk/sdk.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as NetworkForward from '../forward/forward.js';
 import { type HeaderDescriptor } from './HeaderSectionRow.js';
+import requestHeadersViewStyles from './RequestHeadersView.css.js';
+export { requestHeadersViewStyles };
 export interface ViewInput {
     headers: HeaderDescriptor[];
     isProvisionalHeaders: boolean;

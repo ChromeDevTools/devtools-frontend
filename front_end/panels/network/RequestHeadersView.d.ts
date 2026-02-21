@@ -1,7 +1,7 @@
-import '../../../ui/kit/kit.js';
-import * as SDK from '../../../core/sdk/sdk.js';
-import * as NetworkForward from '../../../panels/network/forward/forward.js';
-import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wrapper.js';
+import '../../ui/kit/kit.js';
+import * as SDK from '../../core/sdk/sdk.js';
+import * as NetworkForward from '../../panels/network/forward/forward.js';
+import * as LegacyWrapper from '../../ui/components/legacy_wrapper/legacy_wrapper.js';
 export declare class RequestHeadersView extends LegacyWrapper.LegacyWrapper.WrappableComponent {
     #private;
     constructor(request: SDK.NetworkRequest.NetworkRequest);

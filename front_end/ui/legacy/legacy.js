@@ -11290,7 +11290,11 @@ var UIStrings10 = {
   /**
    * @description Placeholder for filter bars that shows before the user types in a filter keyword.
    */
-  filter: "Filter"
+  filter: "Filter",
+  /**
+   * @description Tooltip shown when the user hovers over the regex icon to toggle regular-expression filtering.
+   */
+  useRegularExpression: "Use regular expression"
 };
 var str_10 = i18n19.i18n.registerUIStrings("ui/legacy/Toolbar.ts", UIStrings10);
 var i18nString10 = i18n19.i18n.getLocalizedString.bind(void 0, str_10);
@@ -11862,6 +11866,9 @@ var ToolbarInput = class extends ToolbarItem {
     this.element.appendChild(clearButton);
     this.updateEmptyStyles();
   }
+  insertTrailingElement(element) {
+    this.element.appendChild(element);
+  }
   applyEnabledState(enabled) {
     if (enabled) {
       this.element.classList.remove("disabled");
@@ -11908,16 +11915,35 @@ var ToolbarInput = class extends ToolbarItem {
   }
 };
 var ToolbarFilter = class extends ToolbarInput {
-  constructor(filterBy, growFactor, shrinkFactor, tooltip, completions, dynamicCompletions, jslogContext, element) {
+  constructor(filterBy, growFactor, shrinkFactor, tooltip, completions, dynamicCompletions, jslogContext, element, showRegexToggle, onRegexToggle) {
     const filterPlaceholder = filterBy ? filterBy : i18nString10(UIStrings10.filter);
     super(filterPlaceholder, filterPlaceholder, growFactor, shrinkFactor, tooltip, completions, dynamicCompletions, jslogContext || "filter", element);
     const filterIcon = createIcon6("filter");
     this.element.prepend(filterIcon);
     this.element.classList.add("toolbar-filter");
+    if (showRegexToggle) {
+      const regexIconName = "regular-expression";
+      const regexButton = new Buttons5.Button.Button();
+      regexButton.data = {
+        variant: "icon_toggle",
+        size: "SMALL",
+        iconName: regexIconName,
+        toggledIconName: regexIconName,
+        toggleType: "primary-toggle",
+        toggled: false,
+        title: i18nString10(UIStrings10.useRegularExpression),
+        jslogContext: regexIconName
+      };
+      setLabel(regexButton, i18nString10(UIStrings10.useRegularExpression));
+      regexButton.addEventListener("click", () => {
+        onRegexToggle?.();
+      });
+      this.insertTrailingElement(regexButton);
+    }
   }
 };
 var ToolbarInputElement = class extends HTMLElement {
-  static observedAttributes = ["value", "disabled"];
+  static observedAttributes = ["value", "disabled", "regex"];
   item;
   datalist = null;
   #value = void 0;
@@ -11947,7 +11973,9 @@ var ToolbarInputElement = class extends HTMLElement {
         /* dynamicCompletions=*/
         void 0,
         jslogContext || "filter",
-        this
+        this,
+        this.hasAttribute("regex"),
+        this.#onRegexToggle.bind(this)
       );
     } else {
       this.item = new ToolbarInput(
@@ -11980,6 +12008,9 @@ var ToolbarInputElement = class extends HTMLElement {
   }
   focus() {
     this.item?.focus();
+  }
+  #onRegexToggle() {
+    this.dispatchEvent(new CustomEvent("regextoggle"));
   }
   async #onAutocomplete(expression, prefix, force) {
     if (!prefix && !force && expression || !this.datalist) {
@@ -15461,8 +15492,8 @@ var InterceptBindingDirective = class _InterceptBindingDirective extends Lit2.Di
     return this.render(listener);
   }
   /* eslint-disable-next-line @typescript-eslint/no-unsafe-function-type */
-  render(_listener) {
-    return void 0;
+  render(listener) {
+    return listener;
   }
   static setEventListeners(templateElement, renderedElement) {
     const attachedListeners = _InterceptBindingDirective.#attachedBindings.get(renderedElement);
@@ -15512,7 +15543,16 @@ var HTMLElementWithLightDOMTemplate = class _HTMLElementWithLightDOMTemplate ext
     return clone;
   }
   static patchLitTemplate(template) {
-    const wrapper = Lit2.Directive.directive(InterceptBindingDirective);
+    const interceptingWrapper = Lit2.Directive.directive(InterceptBindingDirective);
+    const patchingWrapper = (fn) => {
+      return function(...args) {
+        const result = fn.apply(this, args);
+        if (isLitTemplate(result)) {
+          _HTMLElementWithLightDOMTemplate.patchLitTemplate(result);
+        }
+        return result;
+      };
+    };
     if (template === Lit2.nothing) {
       return;
     }
@@ -15520,16 +15560,33 @@ var HTMLElementWithLightDOMTemplate = class _HTMLElementWithLightDOMTemplate ext
     function isLitTemplate(value) {
       return Boolean(typeof value === "object" && value && "_$litType$" in value && "strings" in value && "values" in value && value["_$litType$"] === 1);
     }
+    function isLitDirective(value) {
+      return Boolean(typeof value === "object" && value && "_$litDirective$" in value && "values" in value);
+    }
+    function isCallable(value) {
+      return typeof value === "function";
+    }
     function patchValue(value) {
-      if (typeof value === "function") {
+      if (isCallable(value)) {
         try {
-          return wrapper(value);
+          return interceptingWrapper(value);
         } catch {
           return value;
         }
       }
       if (isLitTemplate(value)) {
         _HTMLElementWithLightDOMTemplate.patchLitTemplate(value);
+        return value;
+      }
+      if (isLitDirective(value)) {
+        for (let i = 0; i < value.values.length; i++) {
+          const subvalue = value.values[i];
+          if (isCallable(subvalue)) {
+            value.values[i] = patchingWrapper(subvalue);
+          } else {
+            value.values[i] = patchValue(subvalue);
+          }
+        }
         return value;
       }
       if (Array.isArray(value) || value instanceof Iterator) {

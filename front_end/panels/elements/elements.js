@@ -7993,6 +7993,8 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common4.ObjectWrapper.e
   userOperation = false;
   isEditingStyle = false;
   #filterRegex = null;
+  #isRegex = false;
+  #filterText = "";
   isActivePropertyHighlighted = false;
   initialUpdateCompleted = false;
   hasMatchedStyles = false;
@@ -8228,9 +8230,25 @@ ${allDeclarationText}
       return !header.isViaInspector() && !header.isInline && Boolean(header.resourceURL());
     }
   }
+  #buildFilterRegex(text) {
+    if (!text) {
+      return null;
+    }
+    if (this.#isRegex) {
+      try {
+        return new RegExp(text, "i");
+      } catch {
+      }
+    }
+    return new RegExp(Platform5.StringUtilities.escapeForRegExp(text), "i");
+  }
   onFilterChanged(event) {
-    const regex = event.data ? new RegExp(Platform5.StringUtilities.escapeForRegExp(event.data), "i") : null;
-    this.setFilter(regex);
+    this.#filterText = event.data;
+    this.setFilter(this.#buildFilterRegex(event.data));
+  }
+  onRegexToggled() {
+    this.#isRegex = !this.#isRegex;
+    this.setFilter(this.#buildFilterRegex(this.#filterText));
   }
   setFilter(regex) {
     this.lastFilterChange = Date.now();
@@ -8916,7 +8934,19 @@ ${allDeclarationText}
     const hbox = container.createChild("div", "hbox styles-sidebar-pane-toolbar");
     const toolbar2 = hbox.createChild("devtools-toolbar", "styles-pane-toolbar");
     toolbar2.role = "presentation";
-    const filterInput = new UI11.Toolbar.ToolbarFilter(void 0, 1, 1, void 0, void 0, false);
+    const filterInput = new UI11.Toolbar.ToolbarFilter(
+      void 0,
+      1,
+      1,
+      void 0,
+      void 0,
+      false,
+      void 0,
+      void 0,
+      /* showRegexToggle=*/
+      true,
+      this.onRegexToggled.bind(this)
+    );
     filterInput.addEventListener("TextChanged", this.onFilterChanged, this);
     toolbar2.appendToolbarItem(filterInput);
     void toolbar2.appendItemsAtLocation("styles-sidebarpane-toolbar");
@@ -10167,8 +10197,10 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
         <devtools-toolbar-input
           type="filter"
           autofocus
+          ?regex=${true}
           value=${input.filterText}
           @change=${input.onFilterChanged}
+          @regextoggle=${input.onRegexToggled}
         ></devtools-toolbar-input>
         <devtools-checkbox
           title=${i18nString9(UIStrings9.showAll)}
@@ -10198,6 +10230,7 @@ var ComputedStyleWidget = class _ComputedStyleWidget extends UI13.Widget.VBox {
   #treeData;
   #view;
   #filterText = "";
+  #isRegex = false;
   constructor() {
     super({ useShadowDom: true });
     this.#view = DEFAULT_VIEW3;
@@ -10242,7 +10275,8 @@ var ComputedStyleWidget = class _ComputedStyleWidget extends UI13.Widget.VBox {
       showInheritedComputedStylePropertiesSetting: this.showInheritedComputedStylePropertiesSetting,
       groupComputedStylesSetting: this.groupComputedStylesSetting,
       onFilterChanged: this.onFilterChanged.bind(this),
-      filterText: this.#filterText
+      filterText: this.#filterText,
+      onRegexToggled: this.onRegexToggled.bind(this)
     }, null, this.contentElement);
   }
   get nodeStyle() {
@@ -10474,9 +10508,25 @@ var ComputedStyleWidget = class _ComputedStyleWidget extends UI13.Widget.VBox {
     }
     return result;
   }
+  #buildFilterRegex(text) {
+    if (!text) {
+      return null;
+    }
+    if (this.#isRegex) {
+      try {
+        return new RegExp(text, "i");
+      } catch {
+      }
+    }
+    return new RegExp(Platform6.StringUtilities.escapeForRegExp(text), "i");
+  }
+  async onRegexToggled() {
+    this.#isRegex = !this.#isRegex;
+    await this.filterComputedStyles(this.#buildFilterRegex(this.#filterText));
+  }
   async onFilterChanged(event) {
     this.#filterText = event.detail;
-    await this.filterComputedStyles(event.detail ? new RegExp(Platform6.StringUtilities.escapeForRegExp(event.detail), "i") : null);
+    await this.filterComputedStyles(this.#buildFilterRegex(event.detail));
     if (event.detail && this.#computedStylesTree.data && this.#computedStylesTree.data.tree) {
       UI13.ARIAUtils.LiveAnnouncer.alert(i18nString9(UIStrings9.filterUpdateAriaText, { PH1: event.detail, PH2: this.#computedStylesTree.data.tree.length }));
     }
@@ -18677,7 +18727,13 @@ var DEFAULT_VIEW10 = (input, _output, target) => {
     <div jslog=${VisualLogging15.pane("element-properties").track({ resize: true })}>
       <div class="hbox properties-widget-toolbar">
         <devtools-toolbar class="styles-pane-toolbar" role="presentation">
-          <devtools-toolbar-input type="filter" @change=${input.onFilterChanged} style="flex-grow:1; flex-shrink:1"></devtools-toolbar-input>
+          <devtools-toolbar-input
+            type="filter"
+            ?regex=${true}
+            @change=${input.onFilterChanged}
+            @regextoggle=${input.onRegexToggled}
+            style="flex-grow:1; flex-shrink:1"
+          ></devtools-toolbar-input>
           <devtools-checkbox title=${i18nString17(UIStrings18.showAllTooltip)} ${bindToSetting3(getShowAllPropertiesSetting())}>
             ${i18nString17(UIStrings18.showAll)}
           </devtools-checkbox>
@@ -18702,6 +18758,8 @@ var PropertiesWidget = class extends UI24.Widget.VBox {
   lastRequestedNode;
   #view;
   #displayNoMatchingPropertyMessage = false;
+  #isRegex = false;
+  #filterText = "";
   constructor(view = DEFAULT_VIEW10) {
     super({ useShadowDom: true });
     this.registerRequiredCSS(propertiesWidget_css_default);
@@ -18726,9 +18784,28 @@ var PropertiesWidget = class extends UI24.Widget.VBox {
     });
     void this.performUpdate();
   }
+  #buildFilterRegex(text) {
+    if (!text) {
+      return null;
+    }
+    if (this.#isRegex) {
+      try {
+        return new RegExp(text, "i");
+      } catch {
+      }
+    }
+    return new RegExp(Platform11.StringUtilities.escapeForRegExp(text), "i");
+  }
   onFilterChanged(event) {
-    this.filterRegex = event.detail ? new RegExp(Platform11.StringUtilities.escapeForRegExp(event.detail), "i") : null;
+    this.#filterText = event.detail;
+    this.filterRegex = this.#buildFilterRegex(event.detail);
     this.filterAndScheduleUpdate();
+  }
+  onRegexToggled() {
+    this.#isRegex = !this.#isRegex;
+    this.filterRegex = this.#buildFilterRegex(this.#filterText);
+    this.internalFilterProperties();
+    this.#renderView();
   }
   filterAndScheduleUpdate() {
     const previousDisplay = this.#displayNoMatchingPropertyMessage;
@@ -18783,8 +18860,13 @@ var PropertiesWidget = class extends UI24.Widget.VBox {
       );
       this.internalFilterProperties();
     }
+    this.#renderView();
+  }
+  #renderView() {
     this.#view({
       onFilterChanged: this.onFilterChanged.bind(this),
+      onRegexToggled: this.onRegexToggled.bind(this),
+      isRegex: this.#isRegex,
       treeOutlineElement: this.treeOutline.element,
       displayNoMatchingPropertyMessage: this.#displayNoMatchingPropertyMessage
     }, {}, this.contentElement);

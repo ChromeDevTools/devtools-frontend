@@ -2,6 +2,8 @@ import '../../ui/legacy/legacy.js';
 import * as UI from '../../ui/legacy/legacy.js';
 interface PropertiesWidgetInput {
     onFilterChanged: (e: CustomEvent<string>) => void;
+    onRegexToggled: () => void;
+    isRegex: boolean;
     treeOutlineElement: HTMLElement;
     displayNoMatchingPropertyMessage: boolean;
 }
@@ -16,6 +18,7 @@ export declare class PropertiesWidget extends UI.Widget.VBox {
     private lastRequestedNode?;
     constructor(view?: View);
     private onFilterChanged;
+    private onRegexToggled;
     private filterAndScheduleUpdate;
     private internalFilterProperties;
     private setNode;

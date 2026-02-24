@@ -142,7 +142,8 @@ export const DEFAULT_VIEW = (input, _output, target) => {
           jslog=${VisualLogging.link('open-ai-settings').track({
             click: true,
         })}
-          @click=${() => {
+          @click=${(ev) => {
+            ev.preventDefault();
             void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
         }}
         >${lockedString('Relevant data')}</button>&nbsp;${lockedString('is sent to Google')}
@@ -258,41 +259,43 @@ export const DEFAULT_VIEW = (input, _output, target) => {
                           ></devtools-button>`
                     : Lit.nothing}
                       <div
-                        role=button
                         class=${Lit.Directives.classMap({
                     'resource-link': true,
                     'has-picker-behavior': input.conversationType === "freestyler" /* AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING */,
-                    disabled: input.isTextInputDisabled,
                 })}
-                        tabindex=${(input.conversationType === "freestyler" /* AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING */ || input.isTextInputDisabled) ? '-1' : '0'}
-                        @click=${input.onContextClick}
-                        @keydown=${(ev) => {
-                    if (ev.key === 'Enter' || ev.key === ' ') {
-                        void input.onContextClick();
-                    }
-                }}
-                        aria-description=${i18nString(UIStrings.revealContextDescription)}
                       >
-                        ${input.selectedContext instanceof AiAssistanceModel.NetworkAgent.RequestContext ?
-                    PanelUtils.PanelUtils.getIconForNetworkRequest(input.selectedContext.getItem()) :
-                    input.selectedContext instanceof AiAssistanceModel.FileAgent.FileContext ?
-                        PanelUtils.PanelUtils.getIconForSourceFile(input.selectedContext.getItem()) :
-                        input.selectedContext instanceof AiAssistanceModel.PerformanceAgent.PerformanceTraceContext ?
-                            html `<devtools-icon name="performance" title="Performance"></devtools-icon>` :
-                            Lit.nothing}
-                        <span class="title">
-                          ${input.selectedContext instanceof AiAssistanceModel.StylingAgent.NodeContext ?
+                        ${input.selectedContext instanceof AiAssistanceModel.StylingAgent.NodeContext ?
                     html `
-                              <devtools-widget .widgetConfig=${UI.Widget.widgetConfig(PanelsCommon.DOMLinkifier.DOMNodeLink, {
+                              <devtools-widget
+                                class="title"
+                                .widgetConfig=${UI.Widget.widgetConfig(PanelsCommon.DOMLinkifier.DOMNodeLink, {
                         node: input.selectedContext.getItem(),
                         options: {
                             hiddenClassList: input.selectedContext.getItem().classNames().filter(className => className.startsWith(AiAssistanceModel.Injected.AI_ASSISTANCE_CSS_CLASS_NAME)),
-                            disabled: input.isTextInputDisabled,
+                            ariaDescription: i18nString(UIStrings.revealContextDescription),
                         },
-                    })}></devtools-widget>`
-                    :
-                        input.selectedContext.getTitle()}
-                        </span>
+                    })}
+                              ></devtools-widget>` :
+                    html `
+                          ${input.selectedContext instanceof AiAssistanceModel.NetworkAgent.RequestContext ?
+                        PanelUtils.PanelUtils.getIconForNetworkRequest(input.selectedContext.getItem()) :
+                        input.selectedContext instanceof AiAssistanceModel.FileAgent.FileContext ?
+                            PanelUtils.PanelUtils.getIconForSourceFile(input.selectedContext.getItem()) :
+                            input.selectedContext instanceof AiAssistanceModel.PerformanceAgent.PerformanceTraceContext ?
+                                html `<devtools-icon name="performance" title="Performance"></devtools-icon>` :
+                                Lit.nothing}
+                            <span 
+                              role="button"
+                              class="title"
+                              tabindex="0"
+                              @click=${input.onContextClick}
+                              @keydown=${(ev) => {
+                        if (ev.key === 'Enter' || ev.key === ' ') {
+                            void input.onContextClick();
+                        }
+                    }}
+                              aria-description=${i18nString(UIStrings.revealContextDescription)}
+                            >${input.selectedContext.getTitle()}</span>`}
                         ${input.onContextRemoved ? html `
                                   <devtools-button
                                     title=${getContextRemoveLabel(input.selectedContext)}

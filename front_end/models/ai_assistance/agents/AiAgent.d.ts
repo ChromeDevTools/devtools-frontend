@@ -70,6 +70,12 @@ export interface SideEffectResponse {
 }
 export interface ContextChangeResponse {
     type: ResponseType.CONTEXT_CHANGE;
+    /**
+     * Information to pass down what was selected
+     * Use to make the LLM understand the the user
+     * already selected something.
+     */
+    description: string;
     context: ConversationContext<unknown>;
 }
 interface SerializedSideEffectResponse extends Omit<SideEffectResponse, 'confirm'> {
@@ -154,7 +160,8 @@ export type FunctionCallHandlerResult<Result> = {
 } | {
     result: Result;
 } | {
-    context: unknown;
+    context: ConversationContext<unknown>;
+    description: string;
 } | {
     error: string;
 };

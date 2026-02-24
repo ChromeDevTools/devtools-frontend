@@ -25,6 +25,7 @@ interface ComputedStyleWidgetInput {
     groupComputedStylesSetting: Common.Settings.Setting<boolean>;
     onFilterChanged: (event: CustomEvent<string>) => void;
     filterText: string;
+    onRegexToggled: () => void;
 }
 type View = (input: ComputedStyleWidgetInput, output: null, target: HTMLElement) => void;
 export declare const DEFAULT_VIEW: View;
@@ -54,6 +55,7 @@ export declare class ComputedStyleWidget extends UI.Widget.VBox {
     private handleContextMenuEvent;
     private computePropertyTraces;
     private computeNonInheritedProperties;
+    private onRegexToggled;
     private onFilterChanged;
     filterComputedStyles(regex: RegExp | null): Promise<void>;
     setFilterInput(text: string): void;

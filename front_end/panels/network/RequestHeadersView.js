@@ -1,7 +1,6 @@
 // Copyright 2022 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
 import '../../ui/kit/kit.js';
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
@@ -11,16 +10,13 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as NetworkForward from '../../panels/network/forward/forward.js';
-import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as Input from '../../ui/components/input/input.js';
-import * as LegacyWrapper from '../../ui/components/legacy_wrapper/legacy_wrapper.js';
-import * as RenderCoordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as Sources from '../sources/sources.js';
 import * as NetworkComponents from './components/components.js';
-const RAW_HEADER_CUTOFF = 3000;
+import { ShowMoreDetailsWidget } from './ShowMoreDetailsWidget.js';
 const { render, html } = Lit;
 const UIStrings = {
     /**
@@ -88,169 +84,187 @@ const UIStrings = {
      */
     revealHeaderOverrides: 'Reveal header override definitions',
     /**
-     * @description Text to show more content
-     */
-    showMore: 'Show more',
-    /**
      * @description HTTP response code
      */
     statusCode: 'Status Code',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/network/RequestHeadersView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-export class RequestHeadersView extends LegacyWrapper.LegacyWrapper.WrappableComponent {
+export const DEFAULT_VIEW = (input, output, target) => {
+    render(html `
+        <style>${NetworkComponents.RequestHeaderSection.requestHeadersViewStyles}</style>
+        <style>${Input.checkboxStyles}</style>
+        ${renderGeneralSection(input)}
+        ${renderEarlyHintsHeaders(input)}
+        ${renderResponseHeaders(input)}
+        ${renderRequestHeaders(input)}
+      `, target);
+};
+export class RequestHeadersView extends UI.Widget.Widget {
     #request;
-    #shadow = this.attachShadow({ mode: 'open' });
     #showResponseHeadersText = false;
     #showRequestHeadersText = false;
-    #showResponseHeadersTextFull = false;
-    #showRequestHeadersTextFull = false;
     #toReveal = undefined;
     #workspace = Workspace.Workspace.WorkspaceImpl.instance();
-    constructor(request) {
-        super();
-        this.#request = request;
-        this.setAttribute('jslog', `${VisualLogging.pane('headers').track({ resize: true })}`);
+    #view;
+    get request() {
+        return this.#request;
+    }
+    set request(val) {
+        this.#removeEventListeners();
+        this.#request = val;
+        this.#addEventListeners();
+    }
+    constructor(target, view = DEFAULT_VIEW) {
+        super({ jslog: `${VisualLogging.pane('headers').track({ resize: true })}` });
+        this.#view = view;
+    }
+    #addEventListeners() {
+        this.#request?.addEventListener(SDK.NetworkRequest.Events.REMOTE_ADDRESS_CHANGED, this.#refreshHeadersView, this);
+        this.#request?.addEventListener(SDK.NetworkRequest.Events.FINISHED_LOADING, this.#refreshHeadersView, this);
+        this.#request?.addEventListener(SDK.NetworkRequest.Events.REQUEST_HEADERS_CHANGED, this.#refreshHeadersView, this);
+        this.#request?.addEventListener(SDK.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED, this.#resetAndRefreshHeadersView, this);
+        this.#workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeAdded, this.#uiSourceCodeAddedOrRemoved, this);
+        this.#workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeRemoved, this.#uiSourceCodeAddedOrRemoved, this);
+        Common.Settings.Settings.instance()
+            .moduleSetting('persistence-network-overrides-enabled')
+            .addChangeListener(this.requestUpdate, this);
     }
     wasShown() {
         super.wasShown();
-        this.#request.addEventListener(SDK.NetworkRequest.Events.REMOTE_ADDRESS_CHANGED, this.#refreshHeadersView, this);
-        this.#request.addEventListener(SDK.NetworkRequest.Events.FINISHED_LOADING, this.#refreshHeadersView, this);
-        this.#request.addEventListener(SDK.NetworkRequest.Events.REQUEST_HEADERS_CHANGED, this.#refreshHeadersView, this);
-        this.#request.addEventListener(SDK.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED, this.#resetAndRefreshHeadersView, this);
+        this.#addEventListeners();
         this.#toReveal = undefined;
         this.#refreshHeadersView();
     }
     willHide() {
         super.willHide();
-        this.#request.removeEventListener(SDK.NetworkRequest.Events.REMOTE_ADDRESS_CHANGED, this.#refreshHeadersView, this);
-        this.#request.removeEventListener(SDK.NetworkRequest.Events.FINISHED_LOADING, this.#refreshHeadersView, this);
-        this.#request.removeEventListener(SDK.NetworkRequest.Events.REQUEST_HEADERS_CHANGED, this.#refreshHeadersView, this);
-        this.#request.removeEventListener(SDK.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED, this.#resetAndRefreshHeadersView, this);
+        this.#removeEventListeners();
     }
-    #resetAndRefreshHeadersView() {
-        this.#request.deleteAssociatedData(NetworkComponents.ResponseHeaderSection.RESPONSE_HEADER_SECTION_DATA_KEY);
-        void this.render();
-    }
-    #refreshHeadersView() {
-        void this.render();
-    }
-    revealHeader(section, header) {
-        this.#toReveal = { section, header };
-        void this.render();
-    }
-    connectedCallback() {
-        this.#workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeAdded, this.#uiSourceCodeAddedOrRemoved, this);
-        this.#workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeRemoved, this.#uiSourceCodeAddedOrRemoved, this);
-        Common.Settings.Settings.instance()
-            .moduleSetting('persistence-network-overrides-enabled')
-            .addChangeListener(this.render, this);
-    }
-    disconnectedCallback() {
+    #removeEventListeners() {
+        this.#request?.removeEventListener(SDK.NetworkRequest.Events.REMOTE_ADDRESS_CHANGED, this.#refreshHeadersView, this);
+        this.#request?.removeEventListener(SDK.NetworkRequest.Events.FINISHED_LOADING, this.#refreshHeadersView, this);
+        this.#request?.removeEventListener(SDK.NetworkRequest.Events.REQUEST_HEADERS_CHANGED, this.#refreshHeadersView, this);
+        this.#request?.removeEventListener(SDK.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED, this.#resetAndRefreshHeadersView, this);
         this.#workspace.removeEventListener(Workspace.Workspace.Events.UISourceCodeAdded, this.#uiSourceCodeAddedOrRemoved, this);
         this.#workspace.removeEventListener(Workspace.Workspace.Events.UISourceCodeRemoved, this.#uiSourceCodeAddedOrRemoved, this);
         Common.Settings.Settings.instance()
             .moduleSetting('persistence-network-overrides-enabled')
-            .removeChangeListener(this.render, this);
+            .removeChangeListener(this.requestUpdate, this);
+    }
+    #resetAndRefreshHeadersView() {
+        this.#request?.deleteAssociatedData(NetworkComponents.ResponseHeaderSection.RESPONSE_HEADER_SECTION_DATA_KEY);
+        this.requestUpdate();
+    }
+    #refreshHeadersView() {
+        this.requestUpdate();
+    }
+    revealHeader(section, header) {
+        this.#toReveal = { section, header };
+        this.requestUpdate();
     }
     #uiSourceCodeAddedOrRemoved(event) {
         if (this.#getHeaderOverridesFileUrl() === event.data.url()) {
-            void this.render();
+            this.requestUpdate();
         }
     }
-    async render() {
+    performUpdate() {
         if (!this.#request) {
             return;
         }
-        return await RenderCoordinator.write(() => {
-            // Disabled until https://crbug.com/1079231 is fixed.
-            // clang-format off
-            render(html `
-        <style>${NetworkComponents.RequestHeaderSection.requestHeadersViewStyles}</style>
-        <style>${Input.checkboxStyles}</style>
-        ${this.#renderGeneralSection()}
-        ${this.#renderEarlyHintsHeaders()}
-        ${this.#renderResponseHeaders()}
-        ${this.#renderRequestHeaders()}
-      `, this.#shadow, { host: this });
-            // clang-format on
-        });
-    }
-    #renderEarlyHintsHeaders() {
-        if (!this.#request || !this.#request.earlyHintsHeaders || this.#request.earlyHintsHeaders.length === 0) {
-            return Lit.nothing;
-        }
-        const toggleShowRaw = () => {
-            this.#showResponseHeadersText = !this.#showResponseHeadersText;
-            void this.render();
-        };
-        // Disabled until https://crbug.com/1079231 is fixed.
-        return renderCategory({
-            onToggleRawHeaders: toggleShowRaw,
-            name: 'early-hints-headers',
-            title: i18nString(UIStrings.earlyHintsHeaders),
-            headerCount: this.#request.earlyHintsHeaders.length,
-            checked: undefined,
-            additionalContent: undefined,
-            forceOpen: this.#toReveal?.section === "EarlyHints" /* NetworkForward.UIRequestLocation.UIHeaderSection.EARLY_HINTS */,
-            loggingContext: 'early-hints-headers',
-            contents: this.#showResponseHeadersText ? this.#renderRawHeaders(this.#request.responseHeadersText, true) : html `
-          <devtools-early-hints-header-section .data=${{
-                request: this.#request,
-                toReveal: this.#toReveal,
-            }}></devtools-early-hints-header-section>
-        `
-        });
-    }
-    #renderResponseHeaders() {
-        if (!this.#request) {
-            return Lit.nothing;
-        }
-        const toggleShowRaw = () => {
-            this.#showResponseHeadersText = !this.#showResponseHeadersText;
-            void this.render();
-        };
-        return renderCategory({
-            onToggleRawHeaders: toggleShowRaw,
-            name: 'response-headers',
-            title: i18nString(UIStrings.responseHeaders),
-            headerCount: this.#request.sortedResponseHeaders.length,
-            checked: this.#request.responseHeadersText ? this.#showResponseHeadersText : undefined,
-            additionalContent: this.#renderHeaderOverridesLink(),
-            forceOpen: this.#toReveal?.section === "Response" /* NetworkForward.UIRequestLocation.UIHeaderSection.RESPONSE */,
-            loggingContext: 'response-headers',
-            contents: this.#showResponseHeadersText ?
-                this.#renderRawHeaders(this.#request.responseHeadersText, true) :
-                html `
-          <devtools-response-header-section .data=${{
-                    request: this.#request,
-                    toReveal: this.#toReveal,
-                }} jslog=${VisualLogging.section('response-headers')}></devtools-response-header-section>
-        `
-        });
-    }
-    #renderHeaderOverridesLink() {
-        if (!this.#workspace.uiSourceCodeForURL(this.#getHeaderOverridesFileUrl())) {
-            return Lit.nothing;
-        }
-        const overridesSetting = Common.Settings.Settings.instance().moduleSetting('persistence-network-overrides-enabled');
-        // Disabled until https://crbug.com/1079231 is fixed.
-        // clang-format off
-        const fileIcon = html `
-      <devtools-icon name="document" class=${'medium' + overridesSetting.get() ? 'inline-icon dot purple' : 'inline-icon'}>
-      </devtools-icon>`;
-        // clang-format on
-        const revealHeadersFile = (event) => {
-            event.preventDefault();
-            const uiSourceCode = this.#workspace.uiSourceCodeForURL(this.#getHeaderOverridesFileUrl());
-            if (uiSourceCode) {
+        let revealHeadersFile;
+        const uiSourceCode = this.#workspace.uiSourceCodeForURL(this.#getHeaderOverridesFileUrl());
+        if (uiSourceCode) {
+            revealHeadersFile = () => {
                 Sources.SourcesPanel.SourcesPanel.instance().showUISourceCode(uiSourceCode);
                 void Sources.SourcesPanel.SourcesPanel.instance().revealInNavigator(uiSourceCode);
-            }
+            };
+        }
+        const input = {
+            toggleShowRawResponseHeaders: () => {
+                this.#showResponseHeadersText = !this.#showResponseHeadersText;
+                this.requestUpdate();
+            },
+            toggleShowRawRequestHeaders: () => {
+                this.#showRequestHeadersText = !this.#showRequestHeadersText;
+                this.requestUpdate();
+            },
+            revealHeadersFile,
+            request: this.#request,
+            toReveal: this.#toReveal,
+            showResponseHeadersText: this.#showResponseHeadersText,
+            showRequestHeadersText: this.#showRequestHeadersText,
         };
-        // Disabled until https://crbug.com/1079231 is fixed.
-        // clang-format off
-        return html `
+        this.#view(input, {}, this.contentElement);
+    }
+    #getHeaderOverridesFileUrl() {
+        if (!this.#request) {
+            return Platform.DevToolsPath.EmptyUrlString;
+        }
+        const fileUrl = Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().fileUrlFromNetworkUrl(this.#request.url(), /* ignoreInactive */ true);
+        return fileUrl.substring(0, fileUrl.lastIndexOf('/')) + '/' +
+            Persistence.NetworkPersistenceManager.HEADERS_FILENAME;
+    }
+}
+function renderEarlyHintsHeaders(input) {
+    if (!input.request?.earlyHintsHeaders || input.request.earlyHintsHeaders.length === 0) {
+        return Lit.nothing;
+    }
+    // Disabled until https://crbug.com/1079231 is fixed.
+    return renderCategory({
+        onToggleRawHeaders: input.toggleShowRawResponseHeaders,
+        name: 'early-hints-headers',
+        title: i18nString(UIStrings.earlyHintsHeaders),
+        headerCount: input.request.earlyHintsHeaders.length,
+        checked: undefined,
+        additionalContent: undefined,
+        forceOpen: input.toReveal?.section === "EarlyHints" /* NetworkForward.UIRequestLocation.UIHeaderSection.EARLY_HINTS */,
+        loggingContext: 'early-hints-headers',
+        contents: input.showResponseHeadersText ? renderRawHeaders(input.request.responseHeadersText) : html `
+          <devtools-early-hints-header-section .data=${{
+            request: input.request,
+            toReveal: input.toReveal,
+        }}></devtools-early-hints-header-section>
+        `
+    });
+}
+function renderResponseHeaders(input) {
+    return renderCategory({
+        onToggleRawHeaders: input.toggleShowRawResponseHeaders,
+        name: 'response-headers',
+        title: i18nString(UIStrings.responseHeaders),
+        headerCount: input.request.sortedResponseHeaders.length,
+        checked: input.request.responseHeadersText ? input.showResponseHeadersText : undefined,
+        additionalContent: renderHeaderOverridesLink(input),
+        forceOpen: input.toReveal?.section === "Response" /* NetworkForward.UIRequestLocation.UIHeaderSection.RESPONSE */,
+        loggingContext: 'response-headers',
+        contents: input.showResponseHeadersText ?
+            renderRawHeaders(input.request.responseHeadersText) :
+            html `
+          <devtools-response-header-section .data=${{
+                request: input.request,
+                toReveal: input.toReveal,
+            }} jslog=${VisualLogging.section('response-headers')}></devtools-response-header-section>
+        `
+    });
+}
+function renderHeaderOverridesLink(input) {
+    if (!input.revealHeadersFile) {
+        return Lit.nothing;
+    }
+    const revealHeadersFile = (event) => {
+        event.preventDefault();
+        input.revealHeadersFile?.();
+    };
+    const overridesSetting = Common.Settings.Settings.instance().moduleSetting('persistence-network-overrides-enabled');
+    // Disabled until https://crbug.com/1079231 is fixed.
+    // clang-format off
+    const fileIcon = html `
+      <devtools-icon name="document" class=${'medium' + overridesSetting.get() ? 'inline-icon dot purple' : 'inline-icon'}>
+      </devtools-icon>`;
+    // clang-format on
+    // Disabled until https://crbug.com/1079231 is fixed.
+    // clang-format off
+    return html `
       <devtools-link
           href="https://goo.gle/devtools-override"
           class="link devtools-link"
@@ -268,151 +282,82 @@ export class RequestHeadersView extends LegacyWrapper.LegacyWrapper.WrappableCom
         ${fileIcon}${Persistence.NetworkPersistenceManager.HEADERS_FILENAME}
       </devtools-link>
     `;
-        // clang-format on
-    }
-    #getHeaderOverridesFileUrl() {
-        if (!this.#request) {
-            return Platform.DevToolsPath.EmptyUrlString;
-        }
-        const fileUrl = Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().fileUrlFromNetworkUrl(this.#request.url(), /* ignoreInactive */ true);
-        return fileUrl.substring(0, fileUrl.lastIndexOf('/')) + '/' +
-            Persistence.NetworkPersistenceManager.HEADERS_FILENAME;
-    }
-    #renderRequestHeaders() {
-        if (!this.#request) {
-            return Lit.nothing;
-        }
-        const requestHeadersText = this.#request.requestHeadersText();
-        const toggleShowRaw = () => {
-            this.#showRequestHeadersText = !this.#showRequestHeadersText;
-            void this.render();
-        };
-        return renderCategory({
-            onToggleRawHeaders: toggleShowRaw,
-            name: 'request-headers',
-            title: i18nString(UIStrings.requestHeaders),
-            headerCount: this.#request.requestHeaders().length,
-            checked: requestHeadersText ? this.#showRequestHeadersText : undefined,
-            forceOpen: this.#toReveal?.section === "Request" /* NetworkForward.UIRequestLocation.UIHeaderSection.REQUEST */,
-            loggingContext: 'request-headers',
-            contents: (this.#showRequestHeadersText && requestHeadersText) ?
-                this.#renderRawHeaders(requestHeadersText, false) :
-                html `
+    // clang-format on
+}
+function renderRequestHeaders(input) {
+    const requestHeadersText = input.request.requestHeadersText();
+    return renderCategory({
+        onToggleRawHeaders: input.toggleShowRawRequestHeaders,
+        name: 'request-headers',
+        title: i18nString(UIStrings.requestHeaders),
+        headerCount: input.request.requestHeaders().length,
+        checked: requestHeadersText ? input.showRequestHeadersText : undefined,
+        forceOpen: input.toReveal?.section === "Request" /* NetworkForward.UIRequestLocation.UIHeaderSection.REQUEST */,
+        loggingContext: 'request-headers',
+        contents: (input.showRequestHeadersText && requestHeadersText) ?
+            renderRawHeaders(requestHeadersText) :
+            html `
           <devtools-widget .widgetConfig=${UI.Widget.widgetConfig(NetworkComponents.RequestHeaderSection.RequestHeaderSection, {
-                    request: this.#request,
-                    toReveal: this.#toReveal,
-                })} jslog=${VisualLogging.section('request-headers')}></devtools-widget>`
-        });
+                request: input.request,
+                toReveal: input.toReveal,
+            })} jslog=${VisualLogging.section('request-headers')}></devtools-widget>`
+    });
+}
+function renderRawHeaders(text) {
+    return html `<div class="row raw-headers-row"><devtools-widget  class=raw-headers .widgetConfig=${UI.Widget.widgetConfig(ShowMoreDetailsWidget, { text })}></devtools-widget></div>`;
+}
+function renderGeneralSection(input) {
+    const statusClasses = ['status'];
+    if (input.request.statusCode < 300 || input.request.statusCode === 304) {
+        statusClasses.push('green-circle');
     }
-    #renderRawHeaders(rawHeadersText, forResponseHeaders) {
-        const trimmed = rawHeadersText.trim();
-        const showFull = forResponseHeaders ? this.#showResponseHeadersTextFull : this.#showRequestHeadersTextFull;
-        const isShortened = !showFull && trimmed.length > RAW_HEADER_CUTOFF;
-        const showMore = () => {
-            if (forResponseHeaders) {
-                this.#showResponseHeadersTextFull = true;
-            }
-            else {
-                this.#showRequestHeadersTextFull = true;
-            }
-            void this.render();
-        };
-        const onContextMenuOpen = (event) => {
-            const showFull = forResponseHeaders ? this.#showResponseHeadersTextFull : this.#showRequestHeadersTextFull;
-            if (!showFull) {
-                const contextMenu = new UI.ContextMenu.ContextMenu(event);
-                const section = contextMenu.newSection();
-                section.appendItem(i18nString(UIStrings.showMore), showMore, { jslogContext: 'show-more' });
-                void contextMenu.show();
-            }
-        };
-        // Disabled until https://crbug.com/1079231 is fixed.
+    else if (input.request.statusCode < 400) {
+        statusClasses.push('yellow-circle');
+    }
+    else {
+        statusClasses.push('red-circle');
+    }
+    let comment = '';
+    if (input.request.cachedInMemory()) {
+        comment = i18nString(UIStrings.fromMemoryCache);
+    }
+    else if (input.request.fromEarlyHints()) {
+        comment = i18nString(UIStrings.fromEarlyHints);
+    }
+    else if (input.request.fetchedViaServiceWorker) {
+        comment = i18nString(UIStrings.fromServiceWorker);
+    }
+    else if (input.request.redirectSourceSignedExchangeInfoHasNoErrors()) {
+        comment = i18nString(UIStrings.fromSignedexchange);
+    }
+    else if (input.request.fromPrefetchCache()) {
+        comment = i18nString(UIStrings.fromPrefetchCache);
+    }
+    else if (input.request.cached()) {
+        comment = i18nString(UIStrings.fromDiskCache);
+    }
+    if (comment) {
+        statusClasses.push('status-with-comment');
+    }
+    const statusText = [input.request.statusCode, input.request.getInferredStatusText(), comment].join(' ');
+    return renderCategory({
+        name: 'general',
+        title: i18nString(UIStrings.general),
+        forceOpen: input.toReveal?.section === "General" /* NetworkForward.UIRequestLocation.UIHeaderSection.GENERAL */,
+        loggingContext: 'general',
         // clang-format off
-        return html `
-      <div
-        class="row raw-headers-row"
-        @contextmenu=${(event) => {
-            if (isShortened) {
-                onContextMenuOpen(event);
-            }
-        }}
-      >
-        <div class="raw-headers">
-          ${isShortened ? trimmed.substring(0, RAW_HEADER_CUTOFF) : trimmed}
-        </div>
-        ${isShortened
-            ? html `
-              <devtools-button
-                .size=${"SMALL" /* Buttons.Button.Size.SMALL */}
-                .variant=${"outlined" /* Buttons.Button.Variant.OUTLINED */}
-                @click=${showMore}
-                jslog=${VisualLogging.action('raw-headers-show-more').track({
-                click: true,
-            })}
-                >${i18nString(UIStrings.showMore)}</devtools-button
-              >
-            `
-            : Lit.nothing}
-      </div>
-    `;
-        // clang-format on
-    }
-    #renderGeneralSection() {
-        if (!this.#request) {
-            return Lit.nothing;
-        }
-        const statusClasses = ['status'];
-        if (this.#request.statusCode < 300 || this.#request.statusCode === 304) {
-            statusClasses.push('green-circle');
-        }
-        else if (this.#request.statusCode < 400) {
-            statusClasses.push('yellow-circle');
-        }
-        else {
-            statusClasses.push('red-circle');
-        }
-        let comment = '';
-        if (this.#request.cachedInMemory()) {
-            comment = i18nString(UIStrings.fromMemoryCache);
-        }
-        else if (this.#request.fromEarlyHints()) {
-            comment = i18nString(UIStrings.fromEarlyHints);
-        }
-        else if (this.#request.fetchedViaServiceWorker) {
-            comment = i18nString(UIStrings.fromServiceWorker);
-        }
-        else if (this.#request.redirectSourceSignedExchangeInfoHasNoErrors()) {
-            comment = i18nString(UIStrings.fromSignedexchange);
-        }
-        else if (this.#request.fromPrefetchCache()) {
-            comment = i18nString(UIStrings.fromPrefetchCache);
-        }
-        else if (this.#request.cached()) {
-            comment = i18nString(UIStrings.fromDiskCache);
-        }
-        if (comment) {
-            statusClasses.push('status-with-comment');
-        }
-        const statusText = [this.#request.statusCode, this.#request.getInferredStatusText(), comment].join(' ');
-        return renderCategory({
-            name: 'general',
-            title: i18nString(UIStrings.general),
-            forceOpen: this.#toReveal?.section === "General" /* NetworkForward.UIRequestLocation.UIHeaderSection.GENERAL */,
-            loggingContext: 'general',
-            // clang-format off
-            contents: html `<div jslog=${VisualLogging.section('general')}>
-        ${this.#renderGeneralRow(i18nString(UIStrings.requestUrl), this.#request.url(), 'request-url')}
-        ${this.#request.statusCode ? this.#renderGeneralRow(i18nString(UIStrings.requestMethod), this.#request.requestMethod, 'request-method') : Lit.nothing}
-        ${this.#request.statusCode ? this.#renderGeneralRow(i18nString(UIStrings.statusCode), statusText, 'status-code', statusClasses) : Lit.nothing}
-        ${this.#request.remoteAddress() ? this.#renderGeneralRow(i18nString(UIStrings.remoteAddress), this.#request.remoteAddress(), 'remote-address') : Lit.nothing}
-        ${this.#request.referrerPolicy() ? this.#renderGeneralRow(i18nString(UIStrings.referrerPolicy), String(this.#request.referrerPolicy()), 'referrer-policy') : Lit.nothing}
+        contents: html `<div jslog=${VisualLogging.section('general')}>
+        ${renderGeneralRow(i18nString(UIStrings.requestUrl), input.request.url(), 'request-url')}
+        ${input.request.statusCode ? renderGeneralRow(i18nString(UIStrings.requestMethod), input.request.requestMethod, 'request-method') : Lit.nothing}
+        ${input.request.statusCode ? renderGeneralRow(i18nString(UIStrings.statusCode), statusText, 'status-code', statusClasses) : Lit.nothing}
+        ${input.request.remoteAddress() ? renderGeneralRow(i18nString(UIStrings.remoteAddress), input.request.remoteAddress(), 'remote-address') : Lit.nothing}
+        ${input.request.referrerPolicy() ? renderGeneralRow(i18nString(UIStrings.referrerPolicy), String(input.request.referrerPolicy()), 'referrer-policy') : Lit.nothing}
       </div>`
-        });
-        // clang-format on
-    }
-    #renderGeneralRow(name, value, id, classNames) {
-        const isHighlighted = this.#toReveal?.section === "General" /* NetworkForward.UIRequestLocation.UIHeaderSection.GENERAL */ &&
-            name.toLowerCase() === this.#toReveal?.header?.toLowerCase();
+    });
+    // clang-format on
+    function renderGeneralRow(name, value, id, classNames) {
+        const isHighlighted = input.toReveal?.section === "General" /* NetworkForward.UIRequestLocation.UIHeaderSection.GENERAL */ &&
+            name.toLowerCase() === input.toReveal?.header?.toLowerCase();
         return html `
       <div class="row ${isHighlighted ? 'header-highlight' : ''}">
         <div class="header-name">${name}</div>
@@ -424,18 +369,8 @@ export class RequestHeadersView extends LegacyWrapper.LegacyWrapper.WrappableCom
       </div>
     `;
     }
-    getHeaderElementById(id) {
-        const categories = this.#shadow.querySelectorAll('devtools-request-headers-category');
-        for (const category of categories) {
-            const element = category.querySelector(`#${id}`);
-            if (element) {
-                return element;
-            }
-        }
-        return null;
-    }
 }
-function renderCategory(data) {
+export function renderCategory(data) {
     const expandedSetting = Common.Settings.Settings.instance().createSetting('request-info-' + data.name + '-category-expanded', true);
     const isOpen = (expandedSetting ? expandedSetting.get() : true) || data.forceOpen;
     // Disabled until https://crbug.com/1079231 is fixed.
@@ -489,5 +424,4 @@ function renderCategory(data) {
         expandedSetting?.set(event.target.open);
     }
 }
-customElements.define('devtools-request-headers', RequestHeadersView);
 //# sourceMappingURL=RequestHeadersView.js.map

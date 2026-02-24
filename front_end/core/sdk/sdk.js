@@ -18531,6 +18531,9 @@ import * as Formatter from "./../../models/formatter/formatter.js";
 import * as TextUtils15 from "./../../models/text_utils/text_utils.js";
 var scopeTrees = /* @__PURE__ */ new WeakMap();
 function scopeTreeForScript(script) {
+  if (script.isWasm()) {
+    return Promise.resolve(null);
+  }
   let promise = scopeTrees.get(script);
   if (promise === void 0) {
     promise = script.requestContentData().then((content) => {

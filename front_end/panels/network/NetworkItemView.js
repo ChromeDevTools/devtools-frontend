@@ -6,10 +6,7 @@ import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as Annotations from '../../models/annotations/annotations.js';
-import * as PanelCommon from '../../panels/common/common.js';
 import * as NetworkForward from '../../panels/network/forward/forward.js';
-import * as LegacyWrapper from '../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import { Icon } from '../../ui/kit/kit.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -17,7 +14,7 @@ import * as NetworkComponents from './components/components.js';
 import { EventSourceMessagesView } from './EventSourceMessagesView.js';
 import { RequestCookiesView } from './RequestCookiesView.js';
 import { RequestDeviceBoundSessionsView } from './RequestDeviceBoundSessionsView.js';
-import * as RequestHeadersView from './RequestHeadersView.js';
+import { RequestHeadersView } from './RequestHeadersView.js';
 import { RequestInitiatorView } from './RequestInitiatorView.js';
 import { RequestPayloadView } from './RequestPayloadView.js';
 import { RequestPreviewView } from './RequestPreviewView.js';
@@ -161,8 +158,9 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
         }
         else {
             this.#firstTab = "headers-component" /* NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT */;
-            this.#headersViewComponent = new RequestHeadersView.RequestHeadersView(request);
-            this.appendTab("headers-component" /* NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT */, i18nString(UIStrings.headers), LegacyWrapper.LegacyWrapper.legacyWrapper(UI.Widget.VBox, this.#headersViewComponent), i18nString(UIStrings.headers));
+            this.#headersViewComponent = new RequestHeadersView();
+            this.#headersViewComponent.request = request;
+            this.appendTab("headers-component" /* NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT */, i18nString(UIStrings.headers), this.#headersViewComponent, i18nString(UIStrings.headers));
         }
         this.#resourceViewTabSetting =
             Common.Settings.Settings.instance().createSetting('resource-view-tab', this.#firstTab);
@@ -235,10 +233,6 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
             this.#selectTab(this.#initialTab);
             this.#initialTab = undefined;
         }
-        if (Annotations.AnnotationRepository.annotationsEnabled()) {
-            PanelCommon.AnnotationManager.instance().initializePlacementForAnnotationType(Annotations.AnnotationType.NETWORK_REQUEST_SUBPANEL_HEADERS, this.resolveInitialState.bind(this), this.element);
-            void PanelCommon.AnnotationManager.instance().resolveAnnotationsOfType(Annotations.AnnotationType.NETWORK_REQUEST_SUBPANEL_HEADERS);
-        }
     }
     willHide() {
         super.willHide();
@@ -307,28 +301,6 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
                 }
             }, 0);
         }
-    }
-    async resolveInitialState(parentElement, reveal, lookupId, anchor) {
-        const request = anchor;
-        if ((request && request !== this.request()) || (lookupId !== this.request().requestId())) {
-            return null;
-        }
-        if (!this.#headersViewComponent) {
-            return null;
-        }
-        await this.#headersViewComponent.render();
-        const element = this.#headersViewComponent.getHeaderElementById('request-url');
-        if (!element) {
-            return null;
-        }
-        const targetRect = element.getBoundingClientRect();
-        const parentRect = parentElement.getBoundingClientRect();
-        // Adjust the anchor position slightly.
-        const adjustX = 15;
-        const adjustY = -19;
-        const relativeX = targetRect.x - parentRect.x + adjustX;
-        const relativeY = targetRect.y - parentRect.y + adjustY;
-        return { x: relativeX, y: relativeY };
     }
     tabSelected(event) {
         if (!event.data.isUserGesture) {

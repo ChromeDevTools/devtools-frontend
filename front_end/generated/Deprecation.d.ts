@@ -88,6 +88,18 @@ export declare const UIStrings: {
      */
     readonly IntlV8BreakIterator: "`Intl.v8BreakIterator` is deprecated. Please use `Intl.Segmenter` instead.";
     /**
+     * @description Warning for using deprecated 'inputQuota' attribute.
+     */
+    readonly LanguageModel_InputQuota: "LanguageModel.inputQuota is deprecated. Please use LanguageModel.contextWindow instead. This alias is only available in extensions.";
+    /**
+     * @description Warning for using deprecated 'inputUsage' attribute.
+     */
+    readonly LanguageModel_InputUsage: "LanguageModel.inputUsage is deprecated. Please use LanguageModel.contextUsage instead. This alias is only available in extensions.";
+    /**
+     * @description Warning for using deprecated 'measureInputUsage' method.
+     */
+    readonly LanguageModel_MeasureInputUsage: "LanguageModel.measureInputUsage() is deprecated. Please use LanguageModel.measureContextUsage() instead. This alias is only available in extensions.";
+    /**
      * @description Warning message for web developers when they call the deprecated LanguageModel.params() method.
      */
     readonly LanguageModelParams: "LanguageModel.params() is deprecated and now only available in extension contexts. The topK and temperature related fields within its result are also deprecated.";

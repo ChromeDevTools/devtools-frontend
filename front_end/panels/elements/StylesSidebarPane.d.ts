@@ -82,6 +82,7 @@ export declare class StylesSidebarPane extends StylesSidebarPane_base {
     resetFocus(): void;
     onAddButtonLongClick(event: Event): void;
     private onFilterChanged;
+    private onRegexToggled;
     setFilter(regex: RegExp | null): void;
     refreshUpdate(editedSection: StylePropertiesSection, editedTreeElement?: StylePropertyTreeElement): void;
     performUpdate(): Promise<void>;

@@ -1397,9 +1397,9 @@ var chatInput_css_default = `/*
   gap: var(--sys-size-3);
   align-items: center;
 
-  .resource-link,
-  .resource-task {
+  .resource-link {
     display: flex;
+    background-color: var(--sys-color-cdt-base-container);
     align-items: center;
     cursor: pointer;
     padding: var(--sys-size-2) var(--sys-size-3);
@@ -1429,6 +1429,10 @@ var chatInput_css_default = `/*
 
     &.has-picker-behavior {
       overflow: visible;
+
+      .title {
+        overflow: visible;
+      }
     }
 
     &:focus-visible {
@@ -1479,13 +1483,6 @@ var chatInput_css_default = `/*
         max-height: var(--sys-size-7);
       }
     }
-  }
-
-  .resource-link.disabled,
-  .resource-task.disabled {
-    color: var(--sys-color-state-disabled);
-    border-color: var(--sys-color-neutral-outline);
-    pointer-events: none;
   }
 }
 
@@ -1699,7 +1696,8 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
           jslog=${VisualLogging2.link("open-ai-settings").track({
       click: true
     })}
-          @click=${() => {
+          @click=${(ev) => {
+      ev.preventDefault();
       void UI3.ViewManager.ViewManager.instance().showView("chrome-ai");
     }}
         >${lockedString3("Relevant data")}</button>&nbsp;${lockedString3("is sent to Google")}
@@ -1802,32 +1800,35 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
                             @click=${input.onInspectElementClick}
                           ></devtools-button>` : Lit.nothing}
                       <div
-                        role=button
                         class=${Lit.Directives.classMap({
     "resource-link": true,
-    "has-picker-behavior": input.conversationType === "freestyler",
-    disabled: input.isTextInputDisabled
+    "has-picker-behavior": input.conversationType === "freestyler"
   })}
-                        tabindex=${input.conversationType === "freestyler" || input.isTextInputDisabled ? "-1" : "0"}
-                        @click=${input.onContextClick}
-                        @keydown=${(ev) => {
+                      >
+                        ${input.selectedContext instanceof AiAssistanceModel2.StylingAgent.NodeContext ? html3`
+                              <devtools-widget
+                                class="title"
+                                .widgetConfig=${UI3.Widget.widgetConfig(PanelsCommon.DOMLinkifier.DOMNodeLink, {
+    node: input.selectedContext.getItem(),
+    options: {
+      hiddenClassList: input.selectedContext.getItem().classNames().filter((className) => className.startsWith(AiAssistanceModel2.Injected.AI_ASSISTANCE_CSS_CLASS_NAME)),
+      ariaDescription: i18nString(UIStrings.revealContextDescription)
+    }
+  })}
+                              ></devtools-widget>` : html3`
+                          ${input.selectedContext instanceof AiAssistanceModel2.NetworkAgent.RequestContext ? PanelUtils.PanelUtils.getIconForNetworkRequest(input.selectedContext.getItem()) : input.selectedContext instanceof AiAssistanceModel2.FileAgent.FileContext ? PanelUtils.PanelUtils.getIconForSourceFile(input.selectedContext.getItem()) : input.selectedContext instanceof AiAssistanceModel2.PerformanceAgent.PerformanceTraceContext ? html3`<devtools-icon name="performance" title="Performance"></devtools-icon>` : Lit.nothing}
+                            <span 
+                              role="button"
+                              class="title"
+                              tabindex="0"
+                              @click=${input.onContextClick}
+                              @keydown=${(ev) => {
     if (ev.key === "Enter" || ev.key === " ") {
       void input.onContextClick();
     }
   }}
-                        aria-description=${i18nString(UIStrings.revealContextDescription)}
-                      >
-                        ${input.selectedContext instanceof AiAssistanceModel2.NetworkAgent.RequestContext ? PanelUtils.PanelUtils.getIconForNetworkRequest(input.selectedContext.getItem()) : input.selectedContext instanceof AiAssistanceModel2.FileAgent.FileContext ? PanelUtils.PanelUtils.getIconForSourceFile(input.selectedContext.getItem()) : input.selectedContext instanceof AiAssistanceModel2.PerformanceAgent.PerformanceTraceContext ? html3`<devtools-icon name="performance" title="Performance"></devtools-icon>` : Lit.nothing}
-                        <span class="title">
-                          ${input.selectedContext instanceof AiAssistanceModel2.StylingAgent.NodeContext ? html3`
-                              <devtools-widget .widgetConfig=${UI3.Widget.widgetConfig(PanelsCommon.DOMLinkifier.DOMNodeLink, {
-    node: input.selectedContext.getItem(),
-    options: {
-      hiddenClassList: input.selectedContext.getItem().classNames().filter((className) => className.startsWith(AiAssistanceModel2.Injected.AI_ASSISTANCE_CSS_CLASS_NAME)),
-      disabled: input.isTextInputDisabled
-    }
-  })}></devtools-widget>` : input.selectedContext.getTitle()}
-                        </span>
+                              aria-description=${i18nString(UIStrings.revealContextDescription)}
+                            >${input.selectedContext.getTitle()}</span>`}
                         ${input.onContextRemoved ? html3`
                                   <devtools-button
                                     title=${getContextRemoveLabel(input.selectedContext)}
@@ -5458,8 +5459,6 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI8.Panel.Panel {
     }
     this.#cancel();
     const signal = this.#runAbortController.signal;
-    const context = this.#getConversationContext(this.#conversation.type);
-    this.#conversation.setContext(context);
     if (this.#conversation.isBlockedByOrigin) {
       throw new Error("cross-origin context data should not be included");
     }

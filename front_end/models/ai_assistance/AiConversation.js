@@ -342,6 +342,9 @@ Time: ${micros(time)}`;
         }
         yield* this.#runAgent(initialQuery, options);
     }
+    #getQueryAfterSelection(initialQuery, selection) {
+        return `${selection}\nOriginal user query: ${initialQuery}`;
+    }
     async *#runAgent(initialQuery, options = {}) {
         function shouldAddToHistory(data) {
             if (data.type === "context-change" /* ResponseType.CONTEXT_CHANGE */) {
@@ -368,7 +371,7 @@ Time: ${micros(time)}`;
             // requery with the specialized agent.
             if (data.type === "context-change" /* ResponseType.CONTEXT_CHANGE */) {
                 this.setContext(data.context);
-                yield* this.#runAgent(initialQuery, options);
+                yield* this.#runAgent(this.#getQueryAfterSelection(initialQuery, data.description), options);
                 return;
             }
         }

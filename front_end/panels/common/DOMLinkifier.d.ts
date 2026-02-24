@@ -8,6 +8,7 @@ export interface Options {
     isDynamicLink?: boolean;
     hiddenClassList?: string[];
     disabled?: boolean;
+    ariaDescription?: string;
 }
 interface ViewInput {
     dynamic?: boolean;
@@ -17,6 +18,7 @@ interface ViewInput {
     id?: string;
     classes: string[];
     pseudo?: string;
+    ariaDescription?: string;
     onClick: () => void;
     onMouseOver: () => void;
     onMouseLeave: () => void;

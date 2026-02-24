@@ -4713,7 +4713,7 @@ var domLinkifier_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./domLinkifier.css")} */`;
 
 // gen/front_end/panels/common/DOMLinkifier.js
-var { classMap } = Directives4;
+var { classMap, ifDefined: ifDefined2 } = Directives4;
 var UIStrings6 = {
   /**
    * @description Text displayed when trying to create a link to a node in the UI, but the node
@@ -4732,6 +4732,7 @@ var DEFAULT_VIEW8 = (input, _output, target) => {
     "dynamic-link": Boolean(input.dynamic),
     disabled: Boolean(input.disabled)
   })}"
+          aria-description=${ifDefined2(input.ariaDescription)}
           jslog=${VisualLogging7.link("node").track({ click: true, keydown: "Enter" })}
           tabindex=${input.preventKeyboardFocus ? -1 : 0}
           @click=${input.onClick}
@@ -4776,7 +4777,8 @@ var DOMNodeLink = class extends UI14.Widget.Widget {
       preventKeyboardFocus: void 0,
       textContent: void 0,
       isDynamicLink: false,
-      disabled: false
+      disabled: false,
+      ariaDescription: void 0
     };
     const viewInput = {
       dynamic: options.isDynamicLink,
@@ -4793,7 +4795,8 @@ var DOMNodeLink = class extends UI14.Widget.Widget {
       },
       onMouseLeave: () => {
         SDK3.OverlayModel.OverlayModel.hideDOMNodeHighlight();
-      }
+      },
+      ariaDescription: options.ariaDescription
     };
     if (!this.#node) {
       this.#view(viewInput, {}, this.contentElement);

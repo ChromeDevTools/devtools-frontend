@@ -138,6 +138,7 @@ export declare class ToolbarInput extends ToolbarItem<ToolbarInput.EventTypes> {
     private prompt;
     private readonly proxyElement;
     constructor(placeholder: string, accessiblePlaceholder?: string, growFactor?: number, shrinkFactor?: number, tooltip?: string, completions?: ((arg0: string, arg1: string, arg2?: boolean | undefined) => Promise<Suggestion[]>), dynamicCompletions?: boolean, jslogContext?: string, element?: HTMLElement);
+    protected insertTrailingElement(element: Element): void;
     applyEnabledState(enabled: boolean): void;
     setValue(value: string, notify?: boolean): void;
     value(): string;
@@ -149,7 +150,7 @@ export declare class ToolbarInput extends ToolbarItem<ToolbarInput.EventTypes> {
     private updateEmptyStyles;
 }
 export declare class ToolbarFilter extends ToolbarInput {
-    constructor(filterBy?: Common.UIString.LocalizedString, growFactor?: number, shrinkFactor?: number, tooltip?: string, completions?: ((arg0: string, arg1: string, arg2?: boolean | undefined) => Promise<Suggestion[]>), dynamicCompletions?: boolean, jslogContext?: string, element?: HTMLElement);
+    constructor(filterBy?: Common.UIString.LocalizedString, growFactor?: number, shrinkFactor?: number, tooltip?: string, completions?: ((arg0: string, arg1: string, arg2?: boolean | undefined) => Promise<Suggestion[]>), dynamicCompletions?: boolean, jslogContext?: string, element?: HTMLElement, showRegexToggle?: boolean, onRegexToggle?: () => void);
 }
 export declare class ToolbarInputElement extends HTMLElement {
     #private;

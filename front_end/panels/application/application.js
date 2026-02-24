@@ -32,7 +32,7 @@ import * as Platform8 from "./../../core/platform/platform.js";
 import * as Root2 from "./../../core/root/root.js";
 import * as SDK24 from "./../../core/sdk/sdk.js";
 import * as IssuesManager from "./../../models/issues_manager/issues_manager.js";
-import * as LegacyWrapper5 from "./../../ui/components/legacy_wrapper/legacy_wrapper.js";
+import * as LegacyWrapper3 from "./../../ui/components/legacy_wrapper/legacy_wrapper.js";
 import { createIcon as createIcon13 } from "./../../ui/kit/kit.js";
 import * as SourceFrame5 from "./../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI22 from "./../../ui/legacy/legacy.js";
@@ -7568,7 +7568,6 @@ import * as i18n33 from "./../../core/i18n/i18n.js";
 import * as Platform5 from "./../../core/platform/platform.js";
 import * as SDK16 from "./../../core/sdk/sdk.js";
 import * as TextUtils from "./../../models/text_utils/text_utils.js";
-import * as LegacyWrapper from "./../../ui/components/legacy_wrapper/legacy_wrapper.js";
 import * as DataGrid5 from "./../../ui/legacy/components/data_grid/data_grid.js";
 import * as UI12 from "./../../ui/legacy/legacy.js";
 import * as VisualLogging8 from "./../../ui/visual_logging/visual_logging.js";
@@ -8106,7 +8105,9 @@ var RequestView = class extends UI12.Widget.VBox {
     this.tabbedPane.element.setAttribute("jslog", `${VisualLogging8.section("network-item-preview")}`);
     this.tabbedPane.addEventListener(UI12.TabbedPane.Events.TabSelected, this.tabSelected, this);
     this.resourceViewTabSetting = Common10.Settings.Settings.instance().createSetting("cache-storage-view-tab", "preview");
-    this.tabbedPane.appendTab("headers", i18nString17(UIStrings17.headers), LegacyWrapper.LegacyWrapper.legacyWrapper(UI12.Widget.VBox, new Network.RequestHeadersView.RequestHeadersView(request)));
+    const requestHeadersView = new Network.RequestHeadersView.RequestHeadersView();
+    requestHeadersView.request = request;
+    this.tabbedPane.appendTab("headers", i18nString17(UIStrings17.headers), requestHeadersView);
     this.tabbedPane.appendTab("preview", i18nString17(UIStrings17.preview), new Network.RequestPreviewView.RequestPreviewView(request));
     this.tabbedPane.show(this.element);
   }
@@ -10592,7 +10593,7 @@ __export(StorageBucketsTreeElement_exports, {
 });
 import * as i18n51 from "./../../core/i18n/i18n.js";
 import * as SDK22 from "./../../core/sdk/sdk.js";
-import * as LegacyWrapper3 from "./../../ui/components/legacy_wrapper/legacy_wrapper.js";
+import * as LegacyWrapper from "./../../ui/components/legacy_wrapper/legacy_wrapper.js";
 import { createIcon as createIcon11 } from "./../../ui/kit/kit.js";
 import * as UI20 from "./../../ui/legacy/legacy.js";
 import { StorageMetadataView as StorageMetadataView5 } from "./components/components.js";
@@ -10728,7 +10729,7 @@ var StorageBucketsTreeElement = class extends ExpandableApplicationPanelTreeElem
   onselect(selectedByUser) {
     super.onselect(selectedByUser);
     if (!this.view) {
-      this.view = LegacyWrapper3.LegacyWrapper.legacyWrapper(UI20.Widget.Widget, new StorageMetadataView5.StorageMetadataView());
+      this.view = LegacyWrapper.LegacyWrapper.legacyWrapper(UI20.Widget.Widget, new StorageMetadataView5.StorageMetadataView());
       this.view.getComponent().enableStorageBucketControls(this.model);
       this.view.getComponent().setStorageBucket(this.storageBucketInfo);
     }
@@ -12573,7 +12574,7 @@ var IDBDatabaseTreeElement = class extends ApplicationPanelTreeElement {
       return false;
     }
     if (!this.view) {
-      this.view = LegacyWrapper5.LegacyWrapper.legacyWrapper(UI22.Widget.VBox, new IDBDatabaseView(this.model, this.database), "indexeddb-data");
+      this.view = LegacyWrapper3.LegacyWrapper.legacyWrapper(UI22.Widget.VBox, new IDBDatabaseView(this.model, this.database), "indexeddb-data");
     }
     this.showView(this.view);
     Host9.userMetrics.panelShown("indexed-db");

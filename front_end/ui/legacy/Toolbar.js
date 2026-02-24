@@ -34,6 +34,10 @@ const UIStrings = {
      * @description Placeholder for filter bars that shows before the user types in a filter keyword.
      */
     filter: 'Filter',
+    /**
+     * @description Tooltip shown when the user hovers over the regex icon to toggle regular-expression filtering.
+     */
+    useRegularExpression: 'Use regular expression',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/Toolbar.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -632,6 +636,9 @@ export class ToolbarInput extends ToolbarItem {
         this.element.appendChild(clearButton);
         this.updateEmptyStyles();
     }
+    insertTrailingElement(element) {
+        this.element.appendChild(element);
+    }
     applyEnabledState(enabled) {
         if (enabled) {
             this.element.classList.remove('disabled');
@@ -679,16 +686,35 @@ export class ToolbarInput extends ToolbarItem {
     }
 }
 export class ToolbarFilter extends ToolbarInput {
-    constructor(filterBy, growFactor, shrinkFactor, tooltip, completions, dynamicCompletions, jslogContext, element) {
+    constructor(filterBy, growFactor, shrinkFactor, tooltip, completions, dynamicCompletions, jslogContext, element, showRegexToggle, onRegexToggle) {
         const filterPlaceholder = filterBy ? filterBy : i18nString(UIStrings.filter);
         super(filterPlaceholder, filterPlaceholder, growFactor, shrinkFactor, tooltip, completions, dynamicCompletions, jslogContext || 'filter', element);
         const filterIcon = createIcon('filter');
         this.element.prepend(filterIcon);
         this.element.classList.add('toolbar-filter');
+        if (showRegexToggle) {
+            const regexIconName = 'regular-expression';
+            const regexButton = new Buttons.Button.Button();
+            regexButton.data = {
+                variant: "icon_toggle" /* Buttons.Button.Variant.ICON_TOGGLE */,
+                size: "SMALL" /* Buttons.Button.Size.SMALL */,
+                iconName: regexIconName,
+                toggledIconName: regexIconName,
+                toggleType: "primary-toggle" /* Buttons.Button.ToggleType.PRIMARY */,
+                toggled: false,
+                title: i18nString(UIStrings.useRegularExpression),
+                jslogContext: regexIconName,
+            };
+            ARIAUtils.setLabel(regexButton, i18nString(UIStrings.useRegularExpression));
+            regexButton.addEventListener('click', () => {
+                onRegexToggle?.();
+            });
+            this.insertTrailingElement(regexButton);
+        }
     }
 }
 export class ToolbarInputElement extends HTMLElement {
-    static observedAttributes = ['value', 'disabled'];
+    static observedAttributes = ['value', 'disabled', 'regex'];
     item;
     datalist = null;
     #value = undefined;
@@ -709,7 +735,7 @@ export class ToolbarInputElement extends HTMLElement {
         if (isFilter) {
             this.item = new ToolbarFilter(placeholder, /* growFactor=*/ undefined, 
             /* shrinkFactor=*/ undefined, tooltip, this.datalist ? this.#onAutocomplete.bind(this) : undefined, 
-            /* dynamicCompletions=*/ undefined, jslogContext || 'filter', this);
+            /* dynamicCompletions=*/ undefined, jslogContext || 'filter', this, this.hasAttribute('regex'), this.#onRegexToggle.bind(this));
         }
         else {
             this.item = new ToolbarInput(placeholder, accessiblePlaceholder, /* growFactor=*/ undefined, 
@@ -731,6 +757,9 @@ export class ToolbarInputElement extends HTMLElement {
     }
     focus() {
         this.item?.focus();
+    }
+    #onRegexToggle() {
+        this.dispatchEvent(new CustomEvent('regextoggle'));
     }
     async #onAutocomplete(expression, prefix, force) {
         if (!prefix && !force && expression || !this.datalist) {

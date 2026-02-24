@@ -144,6 +144,7 @@ export class ContextSelectionAgent extends AiAgent {
                     const calculator = this.#networkTimeCalculator ?? new NetworkTimeCalculator.NetworkTransferTimeCalculator();
                     return {
                         context: new RequestContext(request, calculator),
+                        description: 'User selected a network request',
                     };
                 }
                 return {
@@ -202,10 +203,13 @@ export class ContextSelectionAgent extends AiAgent {
                     if (file.fullDisplayName() === params.name) {
                         return {
                             context: new FileContext(file),
+                            description: 'User selected a source file',
                         };
                     }
                 }
-                return { error: 'Unable to find file.' };
+                return {
+                    error: 'Unable to find file.',
+                };
             },
         });
         this.declareFunction('performanceRecordAndReload', {
@@ -232,6 +236,7 @@ export class ContextSelectionAgent extends AiAgent {
                 const result = await this.#performanceRecordAndReload();
                 return {
                     context: PerformanceTraceContext.fromParsedTrace(result),
+                    description: 'User recorded a performance trace',
                 };
             }
         });
@@ -258,6 +263,7 @@ export class ContextSelectionAgent extends AiAgent {
                 if (node) {
                     return {
                         context: new NodeContext(node),
+                        description: 'User selected an element',
                     };
                 }
                 return {

@@ -8,7 +8,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import { Directives, html, nothing, render } from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import domLinkifierStyles from './domLinkifier.css.js';
-const { classMap } = Directives;
+const { classMap, ifDefined } = Directives;
 const UIStrings = {
     /**
      * @description Text displayed when trying to create a link to a node in the UI, but the node
@@ -28,6 +28,7 @@ const DEFAULT_VIEW = (input, _output, target) => {
         'dynamic-link': Boolean(input.dynamic),
         disabled: Boolean(input.disabled)
     })}"
+          aria-description=${ifDefined(input.ariaDescription)}
           jslog=${VisualLogging.link('node').track({ click: true, keydown: 'Enter' })}
           tabindex=${input.preventKeyboardFocus ? -1 : 0}
           @click=${input.onClick}
@@ -74,6 +75,7 @@ export class DOMNodeLink extends UI.Widget.Widget {
             textContent: undefined,
             isDynamicLink: false,
             disabled: false,
+            ariaDescription: undefined,
         };
         const viewInput = {
             dynamic: options.isDynamicLink,
@@ -91,6 +93,7 @@ export class DOMNodeLink extends UI.Widget.Widget {
             onMouseLeave: () => {
                 SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
             },
+            ariaDescription: options.ariaDescription,
         };
         if (!this.#node) {
             this.#view(viewInput, {}, this.contentElement);

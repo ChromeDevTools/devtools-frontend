@@ -1717,8 +1717,8 @@ export class InterceptBindingDirective extends Lit.Directive.Directive {
         return this.render(listener);
     }
     /* eslint-disable-next-line @typescript-eslint/no-unsafe-function-type */
-    render(_listener) {
-        return undefined;
+    render(listener) {
+        return listener;
     }
     static setEventListeners(templateElement, renderedElement) {
         const attachedListeners = InterceptBindingDirective.#attachedBindings.get(renderedElement);
@@ -1769,7 +1769,17 @@ export class HTMLElementWithLightDOMTemplate extends HTMLElement {
         return clone;
     }
     static patchLitTemplate(template) {
-        const wrapper = Lit.Directive.directive(InterceptBindingDirective);
+        const interceptingWrapper = Lit.Directive.directive(InterceptBindingDirective);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const patchingWrapper = (fn) => {
+            return function (...args) {
+                const result = fn.apply(this, args);
+                if (isLitTemplate(result)) {
+                    HTMLElementWithLightDOMTemplate.patchLitTemplate(result);
+                }
+                return result;
+            };
+        };
         if (template === Lit.nothing) {
             return;
         }
@@ -1778,10 +1788,17 @@ export class HTMLElementWithLightDOMTemplate extends HTMLElement {
             return Boolean(typeof value === 'object' && value && '_$litType$' in value && 'strings' in value && 'values' in value &&
                 value['_$litType$'] === 1);
         }
+        function isLitDirective(value) {
+            return Boolean(typeof value === 'object' && value && '_$litDirective$' in value && 'values' in value);
+        }
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        function isCallable(value) {
+            return typeof value === 'function';
+        }
         function patchValue(value) {
-            if (typeof value === 'function') {
+            if (isCallable(value)) {
                 try {
-                    return wrapper(value);
+                    return interceptingWrapper(value);
                 }
                 catch {
                     return value;
@@ -1789,6 +1806,18 @@ export class HTMLElementWithLightDOMTemplate extends HTMLElement {
             }
             if (isLitTemplate(value)) {
                 HTMLElementWithLightDOMTemplate.patchLitTemplate(value);
+                return value;
+            }
+            if (isLitDirective(value)) {
+                for (let i = 0; i < value.values.length; i++) {
+                    const subvalue = value.values[i];
+                    if (isCallable(subvalue)) {
+                        value.values[i] = patchingWrapper(subvalue);
+                    }
+                    else {
+                        value.values[i] = patchValue(subvalue);
+                    }
+                }
                 return value;
             }
             if (Array.isArray(value) || value instanceof Iterator) {

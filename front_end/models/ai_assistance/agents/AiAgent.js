@@ -306,6 +306,7 @@ export class AiAgent {
                     if ('context' in result) {
                         yield {
                             type: "context-change" /* ResponseType.CONTEXT_CHANGE */,
+                            description: result.description,
                             context: result.context,
                         };
                         return;

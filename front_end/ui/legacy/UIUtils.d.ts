@@ -291,7 +291,7 @@ type BindingEventListener = (arg: any) => any;
 export declare class InterceptBindingDirective extends Lit.Directive.Directive {
     #private;
     update(part: Lit.Directive.Part, [listener]: [BindingEventListener]): unknown;
-    render(_listener: Function): undefined;
+    render(listener: Function): Function;
     static setEventListeners(templateElement: Element, renderedElement: Element): void;
 }
 export declare const cloneCustomElement: <T extends HTMLElement>(element: T, deep?: boolean) => T;

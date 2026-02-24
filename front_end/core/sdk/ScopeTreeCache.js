@@ -17,6 +17,9 @@ const scopeTrees = new WeakMap();
  * and the text allows conversion from/to line/column numbers.
  */
 export function scopeTreeForScript(script) {
+    if (script.isWasm()) {
+        return Promise.resolve(null);
+    }
     let promise = scopeTrees.get(script);
     if (promise === undefined) {
         promise = script.requestContentData().then(content => {

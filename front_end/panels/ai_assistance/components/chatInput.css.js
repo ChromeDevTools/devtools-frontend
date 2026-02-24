@@ -223,9 +223,9 @@ export default `/*
   gap: var(--sys-size-3);
   align-items: center;
 
-  .resource-link,
-  .resource-task {
+  .resource-link {
     display: flex;
+    background-color: var(--sys-color-cdt-base-container);
     align-items: center;
     cursor: pointer;
     padding: var(--sys-size-2) var(--sys-size-3);
@@ -255,6 +255,10 @@ export default `/*
 
     &.has-picker-behavior {
       overflow: visible;
+
+      .title {
+        overflow: visible;
+      }
     }
 
     &:focus-visible {
@@ -305,13 +309,6 @@ export default `/*
         max-height: var(--sys-size-7);
       }
     }
-  }
-
-  .resource-link.disabled,
-  .resource-task.disabled {
-    color: var(--sys-color-state-disabled);
-    border-color: var(--sys-color-neutral-outline);
-    pointer-events: none;
   }
 }
 

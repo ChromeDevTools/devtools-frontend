@@ -158,6 +158,8 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
     userOperation = false;
     isEditingStyle = false;
     #filterRegex = null;
+    #isRegex = false;
+    #filterText = '';
     isActivePropertyHighlighted = false;
     initialUpdateCompleted = false;
     hasMatchedStyles = false;
@@ -397,9 +399,27 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
             return !header.isViaInspector() && !header.isInline && Boolean(header.resourceURL());
         }
     }
+    #buildFilterRegex(text) {
+        if (!text) {
+            return null;
+        }
+        if (this.#isRegex) {
+            try {
+                return new RegExp(text, 'i');
+            }
+            catch {
+                // Invalid regex: fall through to plain-text matching.
+            }
+        }
+        return new RegExp(Platform.StringUtilities.escapeForRegExp(text), 'i');
+    }
     onFilterChanged(event) {
-        const regex = event.data ? new RegExp(Platform.StringUtilities.escapeForRegExp(event.data), 'i') : null;
-        this.setFilter(regex);
+        this.#filterText = event.data;
+        this.setFilter(this.#buildFilterRegex(event.data));
+    }
+    onRegexToggled() {
+        this.#isRegex = !this.#isRegex;
+        this.setFilter(this.#buildFilterRegex(this.#filterText));
     }
     setFilter(regex) {
         this.lastFilterChange = Date.now();
@@ -1126,7 +1146,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
         const hbox = container.createChild('div', 'hbox styles-sidebar-pane-toolbar');
         const toolbar = hbox.createChild('devtools-toolbar', 'styles-pane-toolbar');
         toolbar.role = 'presentation';
-        const filterInput = new UI.Toolbar.ToolbarFilter(undefined, 1, 1, undefined, undefined, false);
+        const filterInput = new UI.Toolbar.ToolbarFilter(undefined, 1, 1, undefined, undefined, false, undefined, undefined, /* showRegexToggle=*/ true, this.onRegexToggled.bind(this));
         filterInput.addEventListener("TextChanged" /* UI.Toolbar.ToolbarInput.Event.TEXT_CHANGED */, this.onFilterChanged, this);
         toolbar.appendToolbarItem(filterInput);
         void toolbar.appendItemsAtLocation('styles-sidebarpane-toolbar');

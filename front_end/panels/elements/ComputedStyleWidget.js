@@ -222,8 +222,10 @@ export const DEFAULT_VIEW = (input, _output, target) => {
         <devtools-toolbar-input
           type="filter"
           autofocus
+          ?regex=${true}
           value=${input.filterText}
           @change=${input.onFilterChanged}
+          @regextoggle=${input.onRegexToggled}
         ></devtools-toolbar-input>
         <devtools-checkbox
           title=${i18nString(UIStrings.showAll)}
@@ -254,6 +256,7 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
     #treeData;
     #view;
     #filterText = '';
+    #isRegex = false;
     constructor() {
         super({ useShadowDom: true });
         this.#view = DEFAULT_VIEW;
@@ -300,6 +303,7 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
             groupComputedStylesSetting: this.groupComputedStylesSetting,
             onFilterChanged: this.onFilterChanged.bind(this),
             filterText: this.#filterText,
+            onRegexToggled: this.onRegexToggled.bind(this),
         }, null, this.contentElement);
     }
     get nodeStyle() {
@@ -531,9 +535,27 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
         }
         return result;
     }
+    #buildFilterRegex(text) {
+        if (!text) {
+            return null;
+        }
+        if (this.#isRegex) {
+            try {
+                return new RegExp(text, 'i');
+            }
+            catch {
+                // Invalid regex: fall through to plain-text matching.
+            }
+        }
+        return new RegExp(Platform.StringUtilities.escapeForRegExp(text), 'i');
+    }
+    async onRegexToggled() {
+        this.#isRegex = !this.#isRegex;
+        await this.filterComputedStyles(this.#buildFilterRegex(this.#filterText));
+    }
     async onFilterChanged(event) {
         this.#filterText = event.detail;
-        await this.filterComputedStyles(event.detail ? new RegExp(Platform.StringUtilities.escapeForRegExp(event.detail), 'i') : null);
+        await this.filterComputedStyles(this.#buildFilterRegex(event.detail));
         if (event.detail && this.#computedStylesTree.data && this.#computedStylesTree.data.tree) {
             UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.filterUpdateAriaText, { PH1: event.detail, PH2: this.#computedStylesTree.data.tree.length }));
         }

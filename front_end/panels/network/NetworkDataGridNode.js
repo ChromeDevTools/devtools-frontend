@@ -1423,6 +1423,10 @@ export class NetworkRequestNode extends NetworkNode {
                 this.select();
                 void action.execute();
             }, { capture: true });
+            // We need this as else the images get open under it.
+            floatingButton.addEventListener('dblclick', ev => {
+                ev.stopPropagation();
+            }, { capture: true });
             floatingButton.addEventListener('mousedown', ev => {
                 ev.stopPropagation();
             }, { capture: true });

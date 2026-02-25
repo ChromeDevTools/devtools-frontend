@@ -46,10 +46,10 @@ export default `/*
 .style-panes-wrapper {
   overflow: hidden scroll;
   background-color: var(--sys-color-cdt-base-container);
+}
 
-  & > div:not(:last-child) {
+.style-panes-wrapper:not(.computed-styles-pane-wrapper) > div:not(:last-child) {
     border-bottom: 1px solid var(--sys-color-divider);
-  }
 }
 
 #elements-content:not(.elements-wrap) > div {
@@ -85,6 +85,10 @@ devtools-tree-outline {
   z-index: 1;
   border-radius: var(--sys-shape-corner-full);
   box-shadow: var(--sys-elevation-level1);
+}
+
+.computed-styles-wrapper {
+  flex-shrink: 0;
 }
 
 /*# sourceURL=${import.meta.resolve('./elementsPanel.css')} */`;

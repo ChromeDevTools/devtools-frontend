@@ -1936,7 +1936,7 @@ var concatErrorDescriptionAndIssueSummary = (description, issueSummary) => {
   description = `${prefix}. ${issueSummary}${suffix}`;
   return description;
 };
-var defaultConsoleRowHeight = 19;
+var defaultConsoleRowHeight = 18;
 var parameterToRemoteObject = (runtimeModel) => (parameter) => {
   if (parameter instanceof SDK3.RemoteObject.RemoteObject) {
     return parameter;

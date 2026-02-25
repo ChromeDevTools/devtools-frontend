@@ -4381,6 +4381,7 @@ export declare namespace DOM {
         isScrollable?: boolean;
         affectedByStartingStyles?: boolean;
         adoptedStyleSheets?: StyleSheetId[];
+        isAdRelated?: boolean;
     }
     /**
      * A structure to hold the top-level node of a detached tree and an array of its retained descendants.
@@ -5340,6 +5341,19 @@ export declare namespace DOM {
          * If the node is scrollable.
          */
         isScrollable: boolean;
+    }
+    /**
+     * Fired when a node's ad related state changes.
+     */
+    interface AdRelatedStateUpdatedEvent {
+        /**
+         * The id of the node.
+         */
+        nodeId: DOM.NodeId;
+        /**
+         * If the node is ad related.
+         */
+        isAdRelated: boolean;
     }
     /**
      * Fired when a node's starting styles changes.
@@ -10752,6 +10766,29 @@ export declare namespace Network {
         SessionDeletedDuringRefresh = "SessionDeletedDuringRefresh"
     }
     /**
+     * Details about a failed device bound session network request.
+     */
+    interface DeviceBoundSessionFailedRequest {
+        /**
+         * The failed request URL.
+         */
+        requestUrl: string;
+        /**
+         * The net error of the response if it was not OK.
+         */
+        netError?: string;
+        /**
+         * The response code if the net error was OK and the response code was not
+         * 200.
+         */
+        responseError?: integer;
+        /**
+         * The body of the response if the net error was OK, the response code was
+         * not 200, and the response body was not empty.
+         */
+        responseErrorBody?: string;
+    }
+    /**
      * Session event details specific to creation.
      */
     interface CreationEventDetails {
@@ -10764,6 +10801,11 @@ export declare namespace Network {
          * all successful creation events.
          */
         newSession?: DeviceBoundSession;
+        /**
+         * Details about a failed device bound session network request if there was
+         * one.
+         */
+        failedRequest?: DeviceBoundSessionFailedRequest;
     }
     const enum RefreshEventDetailsRefreshResult {
         Refreshed = "Refreshed",
@@ -10795,6 +10837,11 @@ export declare namespace Network {
          * See comments on `net::device_bound_sessions::RefreshEventResult::was_fully_proactive_refresh`.
          */
         wasFullyProactiveRefresh: boolean;
+        /**
+         * Details about a failed device bound session network request if there was
+         * one.
+         */
+        failedRequest?: DeviceBoundSessionFailedRequest;
     }
     const enum TerminationEventDetailsDeletionReason {
         Expired = "Expired",

@@ -1406,6 +1406,11 @@ declare namespace ProtocolProxyApi {
     scrollableFlagUpdated(params: Protocol.DOM.ScrollableFlagUpdatedEvent): void;
 
     /**
+     * Fired when a node's ad related state changes.
+     */
+    adRelatedStateUpdated(params: Protocol.DOM.AdRelatedStateUpdatedEvent): void;
+
+    /**
      * Fired when a node's starting styles changes.
      */
     affectedByStartingStylesFlagUpdated(params: Protocol.DOM.AffectedByStartingStylesFlagUpdatedEvent): void;

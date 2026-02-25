@@ -35,6 +35,18 @@ export class PreloadingModel extends SDKModel {
         TargetManager.instance().removeModelListener(ResourceTreeModel, ResourceTreeModelEvents.PrimaryPageChanged, this.onPrimaryPageChanged, this);
         void this.agent.invoke_disable();
     }
+    reset() {
+        this.documents.clear();
+        this.loaderIds = [];
+        this.targetJustAttached = true;
+        this.dispatchEventToListeners("ModelUpdated" /* Events.MODEL_UPDATED */);
+    }
+    maybeInferLoaderId(loaderId) {
+        if (this.currentLoaderId() === null) {
+            this.loaderIds = [loaderId];
+            this.targetJustAttached = false;
+        }
+    }
     ensureDocumentPreloadingData(loaderId) {
         if (this.documents.get(loaderId) === undefined) {
             this.documents.set(loaderId, new DocumentPreloadingData());
@@ -178,11 +190,7 @@ export class PreloadingModel extends SDKModel {
     onRuleSetUpdated(event) {
         const ruleSet = event.ruleSet;
         const loaderId = ruleSet.loaderId;
-        // Infer current loaderId if DevTools is opned at the current page.
-        if (this.currentLoaderId() === null) {
-            this.loaderIds = [loaderId];
-            this.targetJustAttached = false;
-        }
+        this.maybeInferLoaderId(loaderId);
         this.ensureDocumentPreloadingData(loaderId);
         this.documents.get(loaderId)?.ruleSets.upsert(ruleSet);
         this.dispatchEventToListeners("ModelUpdated" /* Events.MODEL_UPDATED */);

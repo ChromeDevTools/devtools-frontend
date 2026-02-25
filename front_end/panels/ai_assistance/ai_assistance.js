@@ -4611,9 +4611,9 @@ async function getEmptyStateSuggestions(conversation) {
     }
     case "none": {
       return [
-        { title: "How can I use DevTools to debug?", jslogContext: "empty" },
-        { title: "What performance issues exist with my page?", jslogContext: "empty" },
-        { title: "What are the slowest requests on this page?", jslogContext: "empty" }
+        { title: "What can you help me with?", jslogContext: "empty" },
+        { title: "What performance issues exist on the page?", jslogContext: "empty" },
+        { title: "What are the slowest network requests on this page?", jslogContext: "empty" }
       ];
     }
     default:
@@ -4772,7 +4772,6 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI8.Panel.Panel {
   #selectedRequest = null;
   // Messages displayed in the `ChatView` component.
   #messages = [];
-  #isContextAutoSelectionSuspended = false;
   // Whether the UI should show loading or not.
   #isLoading = false;
   // Stores the availability status of the `AidaClient` and the reason for unavailability, if any.
@@ -4923,11 +4922,6 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI8.Panel.Panel {
       return;
     }
     if (this.#conversation && !this.#conversation.isEmpty) {
-      const context = this.#getConversationContext(this.#getDefaultConversationType());
-      if (context && isAiAssistanceContextSelectionAgentEnabled()) {
-        this.#conversation?.setContext(context);
-        this.requestUpdate();
-      }
       return;
     }
     const targetConversationType = this.#getDefaultConversationType();
@@ -4950,10 +4944,16 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI8.Panel.Panel {
         }
       }
       this.#conversation = conversation;
-      this.#isContextAutoSelectionSuspended = false;
     }
-    if (!this.#isContextAutoSelectionSuspended) {
-      this.#conversation?.setContext(this.#getConversationContext(isAiAssistanceContextSelectionAgentEnabled() ? this.#getDefaultConversationType() : this.#conversation?.type ?? null));
+    if (this.#conversation) {
+      if (this.#conversation.isEmpty && isAiAssistanceContextSelectionAgentEnabled()) {
+        this.#conversation.setContext(this.#getConversationContext(this.#getDefaultConversationType()));
+      } else {
+        const context = this.#getConversationContext(this.#conversation.type);
+        if (context || !isAiAssistanceContextSelectionAgentEnabled()) {
+          this.#conversation.setContext(context);
+        }
+      }
     }
     this.requestUpdate();
   }
@@ -5230,11 +5230,9 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI8.Panel.Panel {
   }
   #handleContextRemoved() {
     this.#conversation?.setContext(null);
-    this.#isContextAutoSelectionSuspended = true;
     this.requestUpdate();
   }
   #handleContextAdd() {
-    this.#isContextAutoSelectionSuspended = false;
     this.#conversation?.setContext(this.#getConversationContext(this.#getDefaultConversationType()));
     this.requestUpdate();
   }
@@ -5253,7 +5251,6 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI8.Panel.Panel {
       this.#viewOutput.chatView?.focusTextInput();
       return;
     }
-    this.#isContextAutoSelectionSuspended = false;
     let targetConversationType;
     switch (actionId) {
       case "freestyler.elements-floating-button": {
@@ -5409,7 +5406,6 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI8.Panel.Panel {
     } else if (data instanceof AiAssistanceModel5.PerformanceAgent.PerformanceTraceContext) {
       this.#selectedPerformanceTrace = data;
     }
-    this.#isContextAutoSelectionSuspended = false;
     void VisualLogging6.logFunctionCall(`context-change-${this.#conversation?.type}`);
     this.requestUpdate();
   };

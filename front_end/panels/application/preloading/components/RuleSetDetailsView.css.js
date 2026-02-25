@@ -9,9 +9,17 @@ export default `/*
  * found in the LICENSE file.
  */
 
+:host {
+  height: 100%;
+}
+
 .placeholder {
   display: flex;
   height: 100%;
+}
+
+.ruleset-header-container {
+  flex-shrink: 0;
 }
 
 .ruleset-header {
@@ -24,6 +32,10 @@ export default `/*
 
 .ruleset-header devtools-icon {
   vertical-align: sub;
+}
+
+.text-editor-container {
+  overflow: auto;
 }
 
 /*# sourceURL=${import.meta.resolve('./RuleSetDetailsView.css')} */`;

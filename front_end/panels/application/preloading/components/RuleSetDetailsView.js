@@ -34,7 +34,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
     <style>${UI.inspectorCommonStyles}</style>
     ${input
         ? html `
-        <div class="content">
+        <div class="ruleset-header-container">
           <div class="ruleset-header" id="ruleset-url">${input.url}</div>
           ${input.errorMessage ? html `
             <div class="ruleset-header">
@@ -44,8 +44,8 @@ export const DEFAULT_VIEW = (input, _output, target) => {
             </div>
           ` : nothing}
         </div>
-        <div class="text-ellipsis">
-          <devtools-text-editor .style.flexGrow=${'1'} .state=${input.editorState}></devtools-text-editor>
+        <div class="text-editor-container">
+          <devtools-text-editor .state=${input.editorState}></devtools-text-editor>
         </div>`
         : html `
           <div class="placeholder">

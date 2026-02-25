@@ -215,7 +215,7 @@ export class ColorSwatchPopoverIcon extends Common.ObjectWrapper.ObjectWrapper {
         if (!color) {
             return;
         }
-        this.swatch.color = color;
+        this.swatch.renderColor(color);
         this.dispatchEventToListeners("colorchanged" /* ColorSwatchPopoverIconEvents.COLOR_CHANGED */, color);
     }
     onScroll(_event) {

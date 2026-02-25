@@ -52,6 +52,7 @@ import elementsPanelStyles from './elementsPanel.css.js';
 import { DOMTreeWidget } from './ElementsTreeOutline.js';
 import { LayoutPane } from './LayoutPane.js';
 import { MetricsSidebarPane } from './MetricsSidebarPane.js';
+import { PlatformFontsWidget } from './PlatformFontsWidget.js';
 import { StylesSidebarPane, } from './StylesSidebarPane.js';
 const UIStrings = {
     /**
@@ -250,7 +251,6 @@ export class ElementsPanel extends UI.Panel.Panel {
             this.evaluateTrackingComputedStyleUpdatesForNode();
         });
         UI.Context.Context.instance().addFlavorChangeListener(StylesSidebarPane, this.evaluateTrackingComputedStyleUpdatesForNode, this);
-        UI.Context.Context.instance().addFlavorChangeListener(ComputedStyleWidget, this.evaluateTrackingComputedStyleUpdatesForNode, this);
         this.stylesWidget = new StylesSidebarPane(this.#computedStyleModel);
         this.#computedStyleWidget = new ComputedStyleWidget();
         this.#computedStyleWidget.computedStyleModel = this.#computedStyleModel;
@@ -292,7 +292,7 @@ export class ElementsPanel extends UI.Panel.Panel {
         if (!selectedNode) {
             return;
         }
-        const isComputedStyleWidgetVisible = Boolean(UI.Context.Context.instance().flavor(ComputedStyleWidget));
+        const isComputedStyleWidgetVisible = this.#computedStyleWidget.isShowing();
         const isStylesTabVisible = Boolean(UI.Context.Context.instance().flavor(StylesSidebarPane));
         const shouldTrackComputedStyleUpdates = isComputedStyleWidgetVisible ||
             (isStylesTabVisible && Root.Runtime.hostConfig.devToolsAnimationStylesInStylesTab?.enabled);
@@ -440,12 +440,14 @@ export class ElementsPanel extends UI.Panel.Panel {
         super.wasShown();
         UI.Context.Context.instance().setFlavor(ElementsPanel, this);
         this.#domTreeWidget.show(this.domTreeContainer);
+        this.evaluateTrackingComputedStyleUpdatesForNode();
         if (Annotations.AnnotationRepository.annotationsEnabled()) {
             void PanelCommon.AnnotationManager.instance().resolveAnnotationsOfType(Annotations.AnnotationType.ELEMENT_NODE);
         }
     }
     willHide() {
         SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
+        this.evaluateTrackingComputedStyleUpdatesForNode();
         this.#domTreeWidget.detach();
         super.willHide();
         UI.Context.Context.instance().setFlavor(ElementsPanel, null);
@@ -914,9 +916,14 @@ export class ElementsPanel extends UI.Panel.Panel {
         this.stylesWidget.show(matchedStylePanesWrapper.element);
         this.setupTextSelectionHack(matchedStylePanesWrapper.element);
         const computedStylePanesWrapper = new UI.Widget.VBox();
-        computedStylePanesWrapper.element.classList.add('style-panes-wrapper');
+        computedStylePanesWrapper.element.classList.add('style-panes-wrapper', 'computed-styles-pane-wrapper');
         computedStylePanesWrapper.element.setAttribute('jslog', `${VisualLogging.pane('computed').track({ resize: true })}`);
+        this.#computedStyleWidget.element.classList.add('computed-styles-wrapper');
         this.#computedStyleWidget.show(computedStylePanesWrapper.element);
+        const platformFontsWidget = new PlatformFontsWidget();
+        platformFontsWidget.element.classList.add('platform-fonts-wrapper');
+        platformFontsWidget.sharedModel = this.#computedStyleModel;
+        platformFontsWidget.show(computedStylePanesWrapper.element);
         const stylesSplitWidget = new UI.SplitWidget.SplitWidget(true /* isVertical */, true /* secondIsSidebar */, 'elements.styles.sidebar.width', 100);
         stylesSplitWidget.setMainWidget(matchedStylePanesWrapper);
         stylesSplitWidget.hideSidebar();
@@ -954,6 +961,7 @@ export class ElementsPanel extends UI.Panel.Panel {
         };
         const tabSelected = (event) => {
             const { tabId } = event.data;
+            this.evaluateTrackingComputedStyleUpdatesForNode();
             if (tabId === "computed" /* SidebarPaneTabId.COMPUTED */) {
                 computedStylePanesWrapper.show(computedView.element);
                 showMetricsWidgetInComputedPane();

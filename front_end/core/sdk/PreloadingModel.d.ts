@@ -20,6 +20,8 @@ export declare class PreloadingModel extends SDKModel<EventTypes> {
     private documents;
     constructor(target: Target);
     dispose(): void;
+    reset(): void;
+    private maybeInferLoaderId;
     private ensureDocumentPreloadingData;
     private currentLoaderId;
     private currentDocument;

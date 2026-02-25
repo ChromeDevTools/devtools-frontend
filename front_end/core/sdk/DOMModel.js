@@ -1717,6 +1717,8 @@ class DOMDispatcher {
     affectedByStartingStylesFlagUpdated({ nodeId, affectedByStartingStyles }) {
         this.#domModel.affectedByStartingStylesFlagUpdated(nodeId, affectedByStartingStyles);
     }
+    adRelatedStateUpdated(_) {
+    }
 }
 let domModelUndoStackInstance = null;
 export class DOMModelUndoStack {

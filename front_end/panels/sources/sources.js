@@ -5785,7 +5785,7 @@ var ColorSwatchWidget = class extends CodeMirror3.WidgetType {
   }
   toDOM(view) {
     const swatch = new InlineEditor.ColorSwatch.ColorSwatch(i18nString8(UIStrings9.openColorPicker));
-    swatch.color = this.#color;
+    swatch.renderColor(this.#color);
     const value2 = swatch.createChild("span");
     value2.textContent = this.#text;
     value2.setAttribute("hidden", "true");

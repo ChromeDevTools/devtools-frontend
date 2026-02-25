@@ -1825,6 +1825,20 @@ var generatedProperties = [
   },
   {
     "longhands": [
+      "column-rule-edge-inset-end",
+      "column-rule-interior-inset-end"
+    ],
+    "name": "column-rule-inset-end"
+  },
+  {
+    "longhands": [
+      "column-rule-edge-inset-start",
+      "column-rule-interior-inset-start"
+    ],
+    "name": "column-rule-inset-start"
+  },
+  {
+    "longhands": [
       "column-rule-interior-inset-start",
       "column-rule-interior-inset-end"
     ],
@@ -3872,6 +3886,20 @@ var generatedProperties = [
   },
   {
     "longhands": [
+      "row-rule-edge-inset-end",
+      "row-rule-interior-inset-end"
+    ],
+    "name": "row-rule-inset-end"
+  },
+  {
+    "longhands": [
+      "row-rule-edge-inset-start",
+      "row-rule-interior-inset-start"
+    ],
+    "name": "row-rule-inset-start"
+  },
+  {
+    "longhands": [
       "row-rule-interior-inset-start",
       "row-rule-interior-inset-end"
     ],
@@ -3990,6 +4018,24 @@ var generatedProperties = [
       "column-rule-interior-inset-end"
     ],
     "name": "rule-inset"
+  },
+  {
+    "longhands": [
+      "column-rule-edge-inset-end",
+      "column-rule-interior-inset-end",
+      "row-rule-edge-inset-end",
+      "row-rule-interior-inset-end"
+    ],
+    "name": "rule-inset-end"
+  },
+  {
+    "longhands": [
+      "column-rule-edge-inset-start",
+      "column-rule-interior-inset-start",
+      "row-rule-edge-inset-start",
+      "row-rule-interior-inset-start"
+    ],
+    "name": "rule-inset-start"
   },
   {
     "longhands": [
@@ -26315,6 +26361,8 @@ var DOMDispatcher = class {
   affectedByStartingStylesFlagUpdated({ nodeId, affectedByStartingStyles }) {
     this.#domModel.affectedByStartingStylesFlagUpdated(nodeId, affectedByStartingStyles);
   }
+  adRelatedStateUpdated(_) {
+  }
 };
 var domModelUndoStackInstance = null;
 var DOMModelUndoStack = class _DOMModelUndoStack {
@@ -35167,6 +35215,21 @@ var PreloadingModel = class _PreloadingModel extends SDKModel {
     TargetManager.instance().removeModelListener(ResourceTreeModel, Events3.PrimaryPageChanged, this.onPrimaryPageChanged, this);
     void this.agent.invoke_disable();
   }
+  reset() {
+    this.documents.clear();
+    this.loaderIds = [];
+    this.targetJustAttached = true;
+    this.dispatchEventToListeners(
+      "ModelUpdated"
+      /* Events.MODEL_UPDATED */
+    );
+  }
+  maybeInferLoaderId(loaderId) {
+    if (this.currentLoaderId() === null) {
+      this.loaderIds = [loaderId];
+      this.targetJustAttached = false;
+    }
+  }
   ensureDocumentPreloadingData(loaderId) {
     if (this.documents.get(loaderId) === void 0) {
       this.documents.set(loaderId, new DocumentPreloadingData());
@@ -35306,10 +35369,7 @@ var PreloadingModel = class _PreloadingModel extends SDKModel {
   onRuleSetUpdated(event) {
     const ruleSet = event.ruleSet;
     const loaderId = ruleSet.loaderId;
-    if (this.currentLoaderId() === null) {
-      this.loaderIds = [loaderId];
-      this.targetJustAttached = false;
-    }
+    this.maybeInferLoaderId(loaderId);
     this.ensureDocumentPreloadingData(loaderId);
     this.documents.get(loaderId)?.ruleSets.upsert(ruleSet);
     this.dispatchEventToListeners(

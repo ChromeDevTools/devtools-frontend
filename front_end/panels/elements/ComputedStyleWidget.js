@@ -43,7 +43,6 @@ import * as Lit from '../../ui/lit/lit.js';
 import * as ElementsComponents from './components/components.js';
 import computedStyleWidgetStyles from './computedStyleWidget.css.js';
 import { ImagePreviewPopover } from './ImagePreviewPopover.js';
-import { PlatformFontsWidget } from './PlatformFontsWidget.js';
 import { categorizePropertyName, DefaultCategoryOrder } from './PropertyNameCategories.js';
 import { Renderer, rendererBase, StringRenderer, URLRenderer } from './PropertyRenderer.js';
 import { StylePropertiesSection } from './StylePropertiesSection.js';
@@ -180,8 +179,8 @@ class ColorRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.ColorMatc
             return [document.createTextNode(match.text)];
         }
         const swatch = new InlineEditor.ColorSwatch.ColorSwatch();
-        swatch.readonly = true;
-        swatch.color = color;
+        swatch.setReadonly(true);
+        swatch.renderColor(color);
         const valueElement = document.createElement('span');
         valueElement.textContent = match.text;
         swatch.addEventListener(InlineEditor.ColorSwatch.ColorChangedEvent.eventName, (event) => {
@@ -239,7 +238,6 @@ export const DEFAULT_VIEW = (input, _output, target) => {
     </div>
     ${input.computedStylesTree}
     ${!input.hasMatches ? html `<div class="gray-info-message">${i18nString(UIStrings.noMatchingProperty)}</div>` : ''}
-    ${input.computedStyleModel ? html `<devtools-widget .widgetConfig=${UI.Widget.widgetConfig(PlatformFontsWidget, { sharedModel: input.computedStyleModel })}></devtools-widget>` : ''}
   `, target);
     // clang-format on
 };
@@ -283,14 +281,6 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
         const isNarrow = this.contentElement.offsetWidth < 260;
         this.#computedStylesTree.classList.toggle('computed-narrow', isNarrow);
     }
-    wasShown() {
-        UI.Context.Context.instance().setFlavor(ComputedStyleWidget, this);
-        super.wasShown();
-    }
-    willHide() {
-        super.willHide();
-        UI.Context.Context.instance().setFlavor(ComputedStyleWidget, null);
-    }
     /**
      * @param input.hasMatches Whether any properties matched the current filter (or if any properties exist at all).
      */
@@ -298,7 +288,6 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
         this.#view({
             computedStylesTree: this.#computedStylesTree,
             hasMatches,
-            computedStyleModel: this.#computedStyleModel,
             showInheritedComputedStylePropertiesSetting: this.showInheritedComputedStylePropertiesSetting,
             groupComputedStylesSetting: this.groupComputedStylesSetting,
             onFilterChanged: this.onFilterChanged.bind(this),

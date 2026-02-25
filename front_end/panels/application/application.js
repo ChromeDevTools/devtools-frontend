@@ -6864,6 +6864,7 @@ var PreloadingAttemptView = class extends UI10.Widget.VBox {
   preloadingGrid = new PreloadingComponents.PreloadingGrid.PreloadingGrid();
   preloadingDetails = new PreloadingComponents.PreloadingDetailsReportView.PreloadingDetailsReportView();
   ruleSetSelector;
+  clearButton;
   constructor(model) {
     super({
       jslog: `${VisualLogging6.pane("preloading-speculations")}`,
@@ -6883,6 +6884,16 @@ var PreloadingAttemptView = class extends UI10.Widget.VBox {
     const vbox = new UI10.Widget.VBox();
     const toolbar6 = vbox.contentElement.createChild("devtools-toolbar", "preloading-toolbar");
     toolbar6.setAttribute("jslog", `${VisualLogging6.toolbar()}`);
+    this.clearButton = new UI10.Toolbar.ToolbarButton("Clear speculative loads", "clear", void 0, "clear-speculative-loads");
+    this.clearButton.addEventListener("Click", () => {
+      const model2 = SDK14.TargetManager.TargetManager.instance().scopeTarget()?.model(SDK14.PreloadingModel.PreloadingModel);
+      if (!model2) {
+        return;
+      }
+      model2.reset();
+      this.ruleSetSelector.select(null);
+    });
+    toolbar6.appendToolbarItem(this.clearButton);
     this.ruleSetSelector = new PreloadingRuleSetSelector(() => this.render());
     toolbar6.appendToolbarItem(this.ruleSetSelector.item());
     this.preloadingGrid.onSelect = this.onPreloadingGridCellFocused.bind(this);

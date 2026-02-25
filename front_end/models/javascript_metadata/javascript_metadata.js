@@ -6556,14 +6556,6 @@ var NativeFunctions = [
     signatures: [["milliseconds"]]
   },
   {
-    name: "AttributePart",
-    signatures: [["root", "element", "localName", "?init"]]
-  },
-  {
-    name: "ChildNodePart",
-    signatures: [["root", "previousSibling", "nextSibling", "?init"]]
-  },
-  {
     name: "Comment",
     signatures: [["?data"]]
   },
@@ -6628,10 +6620,6 @@ var NativeFunctions = [
     signatures: [["type", "?eventInitDict"]]
   },
   {
-    name: "getValueRange",
-    signatures: [["start", "end"]]
-  },
-  {
     name: "getBoxQuads",
     signatures: [["?options"]]
   },
@@ -6650,10 +6638,6 @@ var NativeFunctions = [
   {
     name: "MutationObserver",
     signatures: [["callback"]]
-  },
-  {
-    name: "NodePart",
-    signatures: [["root", "node", "?init"]]
   },
   {
     name: "Observable",
@@ -6686,6 +6670,10 @@ var NativeFunctions = [
   {
     name: "last",
     signatures: [["?options"]]
+  },
+  {
+    name: "getValueRange",
+    signatures: [["start", "end"]]
   },
   {
     name: "moveBefore",

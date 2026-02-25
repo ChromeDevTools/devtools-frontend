@@ -3978,14 +3978,100 @@ var UIStrings9 = {
 var str_9 = i18n17.i18n.registerUIStrings("panels/network/RequestHeadersView.ts", UIStrings9);
 var i18nString9 = i18n17.i18n.getLocalizedString.bind(void 0, str_9);
 var DEFAULT_VIEW5 = (input, output, target) => {
-  render6(html5`
+  const requestHeadersText = input.request.requestHeadersText();
+  const statusClasses = ["status"];
+  if (input.request.statusCode < 300 || input.request.statusCode === 304) {
+    statusClasses.push("green-circle");
+  } else if (input.request.statusCode < 400) {
+    statusClasses.push("yellow-circle");
+  } else {
+    statusClasses.push("red-circle");
+  }
+  let comment = "";
+  if (input.request.cachedInMemory()) {
+    comment = i18nString9(UIStrings9.fromMemoryCache);
+  } else if (input.request.fromEarlyHints()) {
+    comment = i18nString9(UIStrings9.fromEarlyHints);
+  } else if (input.request.fetchedViaServiceWorker) {
+    comment = i18nString9(UIStrings9.fromServiceWorker);
+  } else if (input.request.redirectSourceSignedExchangeInfoHasNoErrors()) {
+    comment = i18nString9(UIStrings9.fromSignedexchange);
+  } else if (input.request.fromPrefetchCache()) {
+    comment = i18nString9(UIStrings9.fromPrefetchCache);
+  } else if (input.request.cached()) {
+    comment = i18nString9(UIStrings9.fromDiskCache);
+  }
+  if (comment) {
+    statusClasses.push("status-with-comment");
+  }
+  const statusText = [input.request.statusCode, input.request.getInferredStatusText(), comment].join(" ");
+  render6(
+    html5`
         <style>${NetworkComponents.RequestHeaderSection.requestHeadersViewStyles}</style>
         <style>${Input.checkboxStyles}</style>
-        ${renderGeneralSection(input)}
-        ${renderEarlyHintsHeaders(input)}
-        ${renderResponseHeaders(input)}
-        ${renderRequestHeaders(input)}
-      `, target);
+        ${renderCategory({
+      name: "general",
+      title: i18nString9(UIStrings9.general),
+      forceOpen: input.toReveal?.section === "General",
+      loggingContext: "general",
+      contents: html5`<div jslog=${VisualLogging6.section("general")}>
+            ${renderGeneralRow(input, i18nString9(UIStrings9.requestUrl), input.request.url(), "request-url")}
+            ${input.request.statusCode ? renderGeneralRow(input, i18nString9(UIStrings9.requestMethod), input.request.requestMethod, "request-method") : Lit3.nothing}
+            ${input.request.statusCode ? renderGeneralRow(input, i18nString9(UIStrings9.statusCode), statusText, "status-code", statusClasses) : Lit3.nothing}
+            ${input.request.remoteAddress() ? renderGeneralRow(input, i18nString9(UIStrings9.remoteAddress), input.request.remoteAddress(), "remote-address") : Lit3.nothing}
+            ${input.request.referrerPolicy() ? renderGeneralRow(input, i18nString9(UIStrings9.referrerPolicy), String(input.request.referrerPolicy()), "referrer-policy") : Lit3.nothing}
+            </div>`
+    })}
+        ${!input.request?.earlyHintsHeaders || input.request.earlyHintsHeaders.length === 0 ? Lit3.nothing : renderCategory({
+      name: "early-hints-headers",
+      onToggleRawHeaders: input.toggleShowRawResponseHeaders,
+      title: i18nString9(UIStrings9.earlyHintsHeaders),
+      headerCount: input.request.earlyHintsHeaders.length,
+      checked: void 0,
+      additionalContent: void 0,
+      forceOpen: input.toReveal?.section === "EarlyHints",
+      loggingContext: "early-hints-headers",
+      contents: input.showResponseHeadersText ? renderRawHeaders(input.request.responseHeadersText) : html5`
+            <devtools-early-hints-header-section .data=${{
+        request: input.request,
+        toReveal: input.toReveal
+      }}></devtools-early-hints-header-section>
+              `
+    })}
+        ${renderCategory({
+      name: "response-headers",
+      onToggleRawHeaders: input.toggleShowRawResponseHeaders,
+      title: i18nString9(UIStrings9.responseHeaders),
+      headerCount: input.request.sortedResponseHeaders.length,
+      checked: input.request.responseHeadersText ? input.showResponseHeadersText : void 0,
+      additionalContent: renderHeaderOverridesLink(input),
+      forceOpen: input.toReveal?.section === "Response",
+      loggingContext: "response-headers",
+      contents: input.showResponseHeadersText ? renderRawHeaders(input.request.responseHeadersText) : html5`
+          <devtools-response-header-section .data=${{
+        request: input.request,
+        toReveal: input.toReveal
+      }} jslog=${VisualLogging6.section("response-headers")}></devtools-response-header-section>
+            `
+    })}
+        ${renderCategory({
+      name: "request-headers",
+      onToggleRawHeaders: input.toggleShowRawRequestHeaders,
+      title: i18nString9(UIStrings9.requestHeaders),
+      headerCount: input.request.requestHeaders().length,
+      checked: requestHeadersText ? input.showRequestHeadersText : void 0,
+      forceOpen: input.toReveal?.section === "Request",
+      loggingContext: "request-headers",
+      contents: input.showRequestHeadersText && requestHeadersText ? renderRawHeaders(requestHeadersText) : html5`
+          <devtools-widget .widgetConfig=${UI9.Widget.widgetConfig(NetworkComponents.RequestHeaderSection.RequestHeaderSection, {
+        request: input.request,
+        toReveal: input.toReveal
+      })} jslog=${VisualLogging6.section("request-headers")}></devtools-widget>`
+    })}
+      `,
+    // clang-format on
+    target
+  );
 };
 var RequestHeadersView = class extends UI9.Widget.Widget {
   #request;
@@ -4091,45 +4177,6 @@ var RequestHeadersView = class extends UI9.Widget.Widget {
     return fileUrl.substring(0, fileUrl.lastIndexOf("/")) + "/" + Persistence.NetworkPersistenceManager.HEADERS_FILENAME;
   }
 };
-function renderEarlyHintsHeaders(input) {
-  if (!input.request?.earlyHintsHeaders || input.request.earlyHintsHeaders.length === 0) {
-    return Lit3.nothing;
-  }
-  return renderCategory({
-    onToggleRawHeaders: input.toggleShowRawResponseHeaders,
-    name: "early-hints-headers",
-    title: i18nString9(UIStrings9.earlyHintsHeaders),
-    headerCount: input.request.earlyHintsHeaders.length,
-    checked: void 0,
-    additionalContent: void 0,
-    forceOpen: input.toReveal?.section === "EarlyHints",
-    loggingContext: "early-hints-headers",
-    contents: input.showResponseHeadersText ? renderRawHeaders(input.request.responseHeadersText) : html5`
-          <devtools-early-hints-header-section .data=${{
-      request: input.request,
-      toReveal: input.toReveal
-    }}></devtools-early-hints-header-section>
-        `
-  });
-}
-function renderResponseHeaders(input) {
-  return renderCategory({
-    onToggleRawHeaders: input.toggleShowRawResponseHeaders,
-    name: "response-headers",
-    title: i18nString9(UIStrings9.responseHeaders),
-    headerCount: input.request.sortedResponseHeaders.length,
-    checked: input.request.responseHeadersText ? input.showResponseHeadersText : void 0,
-    additionalContent: renderHeaderOverridesLink(input),
-    forceOpen: input.toReveal?.section === "Response",
-    loggingContext: "response-headers",
-    contents: input.showResponseHeadersText ? renderRawHeaders(input.request.responseHeadersText) : html5`
-          <devtools-response-header-section .data=${{
-      request: input.request,
-      toReveal: input.toReveal
-    }} jslog=${VisualLogging6.section("response-headers")}></devtools-response-header-section>
-        `
-  });
-}
 function renderHeaderOverridesLink(input) {
   if (!input.revealHeadersFile) {
     return Lit3.nothing;
@@ -4161,70 +4208,12 @@ function renderHeaderOverridesLink(input) {
       </devtools-link>
     `;
 }
-function renderRequestHeaders(input) {
-  const requestHeadersText = input.request.requestHeadersText();
-  return renderCategory({
-    onToggleRawHeaders: input.toggleShowRawRequestHeaders,
-    name: "request-headers",
-    title: i18nString9(UIStrings9.requestHeaders),
-    headerCount: input.request.requestHeaders().length,
-    checked: requestHeadersText ? input.showRequestHeadersText : void 0,
-    forceOpen: input.toReveal?.section === "Request",
-    loggingContext: "request-headers",
-    contents: input.showRequestHeadersText && requestHeadersText ? renderRawHeaders(requestHeadersText) : html5`
-          <devtools-widget .widgetConfig=${UI9.Widget.widgetConfig(NetworkComponents.RequestHeaderSection.RequestHeaderSection, {
-      request: input.request,
-      toReveal: input.toReveal
-    })} jslog=${VisualLogging6.section("request-headers")}></devtools-widget>`
-  });
-}
 function renderRawHeaders(text) {
   return html5`<div class="row raw-headers-row"><devtools-widget  class=raw-headers .widgetConfig=${UI9.Widget.widgetConfig(ShowMoreDetailsWidget, { text })}></devtools-widget></div>`;
 }
-function renderGeneralSection(input) {
-  const statusClasses = ["status"];
-  if (input.request.statusCode < 300 || input.request.statusCode === 304) {
-    statusClasses.push("green-circle");
-  } else if (input.request.statusCode < 400) {
-    statusClasses.push("yellow-circle");
-  } else {
-    statusClasses.push("red-circle");
-  }
-  let comment = "";
-  if (input.request.cachedInMemory()) {
-    comment = i18nString9(UIStrings9.fromMemoryCache);
-  } else if (input.request.fromEarlyHints()) {
-    comment = i18nString9(UIStrings9.fromEarlyHints);
-  } else if (input.request.fetchedViaServiceWorker) {
-    comment = i18nString9(UIStrings9.fromServiceWorker);
-  } else if (input.request.redirectSourceSignedExchangeInfoHasNoErrors()) {
-    comment = i18nString9(UIStrings9.fromSignedexchange);
-  } else if (input.request.fromPrefetchCache()) {
-    comment = i18nString9(UIStrings9.fromPrefetchCache);
-  } else if (input.request.cached()) {
-    comment = i18nString9(UIStrings9.fromDiskCache);
-  }
-  if (comment) {
-    statusClasses.push("status-with-comment");
-  }
-  const statusText = [input.request.statusCode, input.request.getInferredStatusText(), comment].join(" ");
-  return renderCategory({
-    name: "general",
-    title: i18nString9(UIStrings9.general),
-    forceOpen: input.toReveal?.section === "General",
-    loggingContext: "general",
-    // clang-format off
-    contents: html5`<div jslog=${VisualLogging6.section("general")}>
-        ${renderGeneralRow(i18nString9(UIStrings9.requestUrl), input.request.url(), "request-url")}
-        ${input.request.statusCode ? renderGeneralRow(i18nString9(UIStrings9.requestMethod), input.request.requestMethod, "request-method") : Lit3.nothing}
-        ${input.request.statusCode ? renderGeneralRow(i18nString9(UIStrings9.statusCode), statusText, "status-code", statusClasses) : Lit3.nothing}
-        ${input.request.remoteAddress() ? renderGeneralRow(i18nString9(UIStrings9.remoteAddress), input.request.remoteAddress(), "remote-address") : Lit3.nothing}
-        ${input.request.referrerPolicy() ? renderGeneralRow(i18nString9(UIStrings9.referrerPolicy), String(input.request.referrerPolicy()), "referrer-policy") : Lit3.nothing}
-      </div>`
-  });
-  function renderGeneralRow(name, value, id, classNames) {
-    const isHighlighted = input.toReveal?.section === "General" && name.toLowerCase() === input.toReveal?.header?.toLowerCase();
-    return html5`
+function renderGeneralRow(input, name, value, id, classNames) {
+  const isHighlighted = input.toReveal?.section === "General" && name.toLowerCase() === input.toReveal?.header?.toLowerCase();
+  return html5`
       <div class="row ${isHighlighted ? "header-highlight" : ""}">
         <div class="header-name">${name}</div>
         <div
@@ -4234,7 +4223,6 @@ function renderGeneralSection(input) {
         >${value}</div>
       </div>
     `;
-  }
 }
 function renderCategory(data) {
   const expandedSetting = Common6.Settings.Settings.instance().createSetting("request-info-" + data.name + "-category-expanded", true);

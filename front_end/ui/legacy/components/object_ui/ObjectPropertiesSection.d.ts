@@ -14,17 +14,26 @@ declare abstract class ObjectTreeNodeBase extends Common.ObjectWrapper.ObjectWra
     #private;
     readonly parent?: ObjectTreeNodeBase | undefined;
     readonly propertiesMode: ObjectPropertiesMode;
+    protected filter: {
+        includeNullOrUndefinedValues: boolean;
+        regex: RegExp | null;
+    } | null;
     protected extraProperties: ObjectTreeNode[];
     expanded: boolean;
     constructor(parent?: ObjectTreeNodeBase | undefined, propertiesMode?: ObjectPropertiesMode);
     expandRecursively(maxDepth: number): Promise<void>;
     collapseRecursively(): void;
+    setFilter(filter: {
+        includeNullOrUndefinedValues: boolean;
+        regex: RegExp | null;
+    } | null): void;
     abstract get object(): SDK.RemoteObject.RemoteObject | undefined;
     removeChildren(): void;
     removeChild(child: ObjectTreeNodeBase): void;
     protected selfOrParentIfInternal(): ObjectTreeNodeBase;
     get children(): NodeChildren | undefined;
     populateChildrenIfNeeded(): Promise<NodeChildren>;
+    protected populateChildrenIfNeededImpl(): Promise<NodeChildren>;
     get hasChildren(): boolean;
     get arrayLength(): number;
     setPropertyValue(name: string | Protocol.Runtime.CallArgument, value: string): Promise<string | undefined>;
@@ -34,11 +43,13 @@ declare abstract class ObjectTreeNodeBase extends Common.ObjectWrapper.ObjectWra
 declare namespace ObjectTreeNodeBase {
     const enum Events {
         VALUE_CHANGED = "value-changed",
-        CHILDREN_CHANGED = "children-changed"
+        CHILDREN_CHANGED = "children-changed",
+        FILTER_CHANGED = "filter-changed"
     }
     interface EventTypes {
         [Events.VALUE_CHANGED]: void;
         [Events.CHILDREN_CHANGED]: void;
+        [Events.FILTER_CHANGED]: void;
     }
 }
 export declare class ObjectTree extends ObjectTreeNodeBase {
@@ -53,7 +64,7 @@ declare class ArrayGroupTreeNode extends ObjectTreeNodeBase {
         toIndex: number;
         count: number;
     }, parent?: ObjectTreeNodeBase, propertiesMode?: ObjectPropertiesMode);
-    populateChildrenIfNeeded(): Promise<NodeChildren>;
+    populateChildrenIfNeededImpl(): Promise<NodeChildren>;
     get singular(): boolean;
     get range(): {
         fromIndex: number;
@@ -68,6 +79,7 @@ export declare class ObjectTreeNode extends ObjectTreeNodeBase {
     readonly nonSyntheticParent?: SDK.RemoteObject.RemoteObject | undefined;
     constructor(property: SDK.RemoteObject.RemoteObjectProperty, propertiesMode?: ObjectPropertiesMode, parent?: ObjectTreeNodeBase, nonSyntheticParent?: SDK.RemoteObject.RemoteObject | undefined);
     get object(): SDK.RemoteObject.RemoteObject | undefined;
+    get isFiltered(): boolean;
     get name(): string;
     get path(): string;
     selfOrParentIfInternal(): ObjectTreeNodeBase;

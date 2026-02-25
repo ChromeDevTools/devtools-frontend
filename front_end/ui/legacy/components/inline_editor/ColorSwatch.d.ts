@@ -19,10 +19,13 @@ export declare class ClickEvent extends Event {
 }
 export declare class ColorSwatch extends HTMLElement {
     #private;
+    private readonly shadow;
+    private tooltip;
+    private readonly;
     constructor(tooltip?: string);
     static isColorSwatch(element: Element): element is ColorSwatch;
-    get readonly(): boolean;
-    set readonly(readonly: boolean);
+    setReadonly(readonly: boolean): void;
+    set color(color: Common.Color.Color);
     get color(): Common.Color.Color | null;
     get anchorBox(): AnchorBox | null;
     getText(): string | undefined;
@@ -30,7 +33,11 @@ export declare class ColorSwatch extends HTMLElement {
      * Render this swatch given a color object or text to be parsed as a color.
      * @param color The color object or string to use for this swatch.
      */
-    set color(color: Common.Color.Color);
+    renderColor(color: Common.Color.Color): void;
+    private onActivate;
+    private consume;
+    setColor(color: Common.Color.Color): void;
+    private showFormatPicker;
 }
 declare global {
     interface HTMLElementTagNameMap {

@@ -630,9 +630,6 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
         if (!Root.Runtime.hostConfig.devToolsAnimationStylesInStylesTab?.enabled) {
             return;
         }
-        if (!UI.ViewManager.ViewManager.instance().isViewVisible('animations')) {
-            return;
-        }
         void this.computedStyleUpdateThrottler.schedule(async () => {
             await this.#updateAnimatedStyles();
             this.handledComputedStyleChangedForTest();
@@ -650,11 +647,19 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
     }
     #scheduleResetUpdateIfNotEditing() {
         this.scheduleResetUpdateIfNotEditingCalledForTest();
+        // Don't schedule if editing; the edit completion will handle the update.
+        if (this.userOperation || this.isEditingStyle) {
+            return;
+        }
         void this.resetUpdateThrottler.schedule(async () => {
             this.#resetUpdateIfNotEditing();
         });
     }
     scheduleResetUpdateIfNotEditingCalledForTest() {
+    }
+    #hasAnimatedStyles(animatedStyles) {
+        return Boolean(animatedStyles.animationStyles?.length || animatedStyles.transitionsStyle?.cssProperties.length ||
+            animatedStyles.inherited?.some(inherited => inherited.animationStyles?.length || inherited.transitionsStyle?.cssProperties.length));
     }
     async #updateAnimatedStyles() {
         if (!this.matchedStyles) {
@@ -666,6 +671,16 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
         }
         const animatedStyles = await this.cssModel()?.getAnimatedStylesForNode(nodeId);
         if (!animatedStyles) {
+            return;
+        }
+        if (!this.#hasAnimatedStyles(animatedStyles)) {
+            // A computed style change that doesn't correspond to any animation is
+            // likely to be a change in the matched styles. In this case, we should
+            // update the matched styles.
+            this.#scheduleResetUpdateIfNotEditing();
+            return;
+        }
+        if (!UI.ViewManager.ViewManager.instance().isViewVisible('animations')) {
             return;
         }
         const updateStyleSection = (currentStyle, newStyle) => {
@@ -1736,7 +1751,7 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
         }
         function colorSwatchRenderer(color) {
             const swatch = new InlineEditor.ColorSwatch.ColorSwatch();
-            swatch.color = color;
+            swatch.renderColor(color);
             swatch.style.pointerEvents = 'none';
             return swatch;
         }

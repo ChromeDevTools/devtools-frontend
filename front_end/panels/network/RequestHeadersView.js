@@ -91,14 +91,114 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/network/RequestHeadersView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export const DEFAULT_VIEW = (input, output, target) => {
+    const requestHeadersText = input.request.requestHeadersText();
+    const statusClasses = ['status'];
+    if (input.request.statusCode < 300 || input.request.statusCode === 304) {
+        statusClasses.push('green-circle');
+    }
+    else if (input.request.statusCode < 400) {
+        statusClasses.push('yellow-circle');
+    }
+    else {
+        statusClasses.push('red-circle');
+    }
+    let comment = '';
+    if (input.request.cachedInMemory()) {
+        comment = i18nString(UIStrings.fromMemoryCache);
+    }
+    else if (input.request.fromEarlyHints()) {
+        comment = i18nString(UIStrings.fromEarlyHints);
+    }
+    else if (input.request.fetchedViaServiceWorker) {
+        comment = i18nString(UIStrings.fromServiceWorker);
+    }
+    else if (input.request.redirectSourceSignedExchangeInfoHasNoErrors()) {
+        comment = i18nString(UIStrings.fromSignedexchange);
+    }
+    else if (input.request.fromPrefetchCache()) {
+        comment = i18nString(UIStrings.fromPrefetchCache);
+    }
+    else if (input.request.cached()) {
+        comment = i18nString(UIStrings.fromDiskCache);
+    }
+    if (comment) {
+        statusClasses.push('status-with-comment');
+    }
+    const statusText = [input.request.statusCode, input.request.getInferredStatusText(), comment].join(' ');
+    // clang-format off
     render(html `
         <style>${NetworkComponents.RequestHeaderSection.requestHeadersViewStyles}</style>
         <style>${Input.checkboxStyles}</style>
-        ${renderGeneralSection(input)}
-        ${renderEarlyHintsHeaders(input)}
-        ${renderResponseHeaders(input)}
-        ${renderRequestHeaders(input)}
-      `, target);
+        ${renderCategory({
+        name: 'general',
+        title: i18nString(UIStrings.general),
+        forceOpen: input.toReveal?.section === "General" /* NetworkForward.UIRequestLocation.UIHeaderSection.GENERAL */,
+        loggingContext: 'general',
+        contents: html `<div jslog=${VisualLogging.section('general')}>
+            ${renderGeneralRow(input, i18nString(UIStrings.requestUrl), input.request.url(), 'request-url')}
+            ${input.request.statusCode ? renderGeneralRow(input, i18nString(UIStrings.requestMethod), input.request.requestMethod, 'request-method') : Lit.nothing}
+            ${input.request.statusCode ? renderGeneralRow(input, i18nString(UIStrings.statusCode), statusText, 'status-code', statusClasses) : Lit.nothing}
+            ${input.request.remoteAddress() ? renderGeneralRow(input, i18nString(UIStrings.remoteAddress), input.request.remoteAddress(), 'remote-address') : Lit.nothing}
+            ${input.request.referrerPolicy() ? renderGeneralRow(input, i18nString(UIStrings.referrerPolicy), String(input.request.referrerPolicy()), 'referrer-policy') : Lit.nothing}
+            </div>`
+    })}
+        ${!input.request?.earlyHintsHeaders || input.request.earlyHintsHeaders.length === 0
+        ? Lit.nothing
+        : renderCategory({
+            name: 'early-hints-headers',
+            onToggleRawHeaders: input.toggleShowRawResponseHeaders,
+            title: i18nString(UIStrings.earlyHintsHeaders),
+            headerCount: input.request.earlyHintsHeaders.length,
+            checked: undefined,
+            additionalContent: undefined,
+            forceOpen: input.toReveal?.section === "EarlyHints" /* NetworkForward.UIRequestLocation.UIHeaderSection.EARLY_HINTS */,
+            loggingContext: 'early-hints-headers',
+            contents: input.showResponseHeadersText ?
+                renderRawHeaders(input.request.responseHeadersText) :
+                html `
+            <devtools-early-hints-header-section .data=${{
+                    request: input.request,
+                    toReveal: input.toReveal,
+                }}></devtools-early-hints-header-section>
+              `
+        })}
+        ${renderCategory({
+        name: 'response-headers',
+        onToggleRawHeaders: input.toggleShowRawResponseHeaders,
+        title: i18nString(UIStrings.responseHeaders),
+        headerCount: input.request.sortedResponseHeaders.length,
+        checked: input.request.responseHeadersText ? input.showResponseHeadersText : undefined,
+        additionalContent: renderHeaderOverridesLink(input),
+        forceOpen: input.toReveal?.section === "Response" /* NetworkForward.UIRequestLocation.UIHeaderSection.RESPONSE */,
+        loggingContext: 'response-headers',
+        contents: input.showResponseHeadersText ?
+            renderRawHeaders(input.request.responseHeadersText) :
+            html `
+          <devtools-response-header-section .data=${{
+                request: input.request,
+                toReveal: input.toReveal,
+            }} jslog=${VisualLogging.section('response-headers')}></devtools-response-header-section>
+            `
+    })}
+        ${renderCategory({
+        name: 'request-headers',
+        onToggleRawHeaders: input.toggleShowRawRequestHeaders,
+        title: i18nString(UIStrings.requestHeaders),
+        headerCount: input.request.requestHeaders().length,
+        checked: requestHeadersText ? input.showRequestHeadersText : undefined,
+        forceOpen: input.toReveal?.section === "Request" /* NetworkForward.UIRequestLocation.UIHeaderSection.REQUEST */,
+        loggingContext: 'request-headers',
+        contents: (input.showRequestHeadersText && requestHeadersText) ?
+            renderRawHeaders(requestHeadersText) :
+            html `
+          <devtools-widget .widgetConfig=${UI.Widget.widgetConfig(NetworkComponents.RequestHeaderSection.RequestHeaderSection, {
+                request: input.request,
+                toReveal: input.toReveal,
+            })} jslog=${VisualLogging.section('request-headers')}></devtools-widget>`
+    })}
+      `, 
+    // clang-format on
+    target);
 };
 export class RequestHeadersView extends UI.Widget.Widget {
     #request;
@@ -205,48 +305,6 @@ export class RequestHeadersView extends UI.Widget.Widget {
             Persistence.NetworkPersistenceManager.HEADERS_FILENAME;
     }
 }
-function renderEarlyHintsHeaders(input) {
-    if (!input.request?.earlyHintsHeaders || input.request.earlyHintsHeaders.length === 0) {
-        return Lit.nothing;
-    }
-    // Disabled until https://crbug.com/1079231 is fixed.
-    return renderCategory({
-        onToggleRawHeaders: input.toggleShowRawResponseHeaders,
-        name: 'early-hints-headers',
-        title: i18nString(UIStrings.earlyHintsHeaders),
-        headerCount: input.request.earlyHintsHeaders.length,
-        checked: undefined,
-        additionalContent: undefined,
-        forceOpen: input.toReveal?.section === "EarlyHints" /* NetworkForward.UIRequestLocation.UIHeaderSection.EARLY_HINTS */,
-        loggingContext: 'early-hints-headers',
-        contents: input.showResponseHeadersText ? renderRawHeaders(input.request.responseHeadersText) : html `
-          <devtools-early-hints-header-section .data=${{
-            request: input.request,
-            toReveal: input.toReveal,
-        }}></devtools-early-hints-header-section>
-        `
-    });
-}
-function renderResponseHeaders(input) {
-    return renderCategory({
-        onToggleRawHeaders: input.toggleShowRawResponseHeaders,
-        name: 'response-headers',
-        title: i18nString(UIStrings.responseHeaders),
-        headerCount: input.request.sortedResponseHeaders.length,
-        checked: input.request.responseHeadersText ? input.showResponseHeadersText : undefined,
-        additionalContent: renderHeaderOverridesLink(input),
-        forceOpen: input.toReveal?.section === "Response" /* NetworkForward.UIRequestLocation.UIHeaderSection.RESPONSE */,
-        loggingContext: 'response-headers',
-        contents: input.showResponseHeadersText ?
-            renderRawHeaders(input.request.responseHeadersText) :
-            html `
-          <devtools-response-header-section .data=${{
-                request: input.request,
-                toReveal: input.toReveal,
-            }} jslog=${VisualLogging.section('response-headers')}></devtools-response-header-section>
-        `
-    });
-}
 function renderHeaderOverridesLink(input) {
     if (!input.revealHeadersFile) {
         return Lit.nothing;
@@ -284,81 +342,13 @@ function renderHeaderOverridesLink(input) {
     `;
     // clang-format on
 }
-function renderRequestHeaders(input) {
-    const requestHeadersText = input.request.requestHeadersText();
-    return renderCategory({
-        onToggleRawHeaders: input.toggleShowRawRequestHeaders,
-        name: 'request-headers',
-        title: i18nString(UIStrings.requestHeaders),
-        headerCount: input.request.requestHeaders().length,
-        checked: requestHeadersText ? input.showRequestHeadersText : undefined,
-        forceOpen: input.toReveal?.section === "Request" /* NetworkForward.UIRequestLocation.UIHeaderSection.REQUEST */,
-        loggingContext: 'request-headers',
-        contents: (input.showRequestHeadersText && requestHeadersText) ?
-            renderRawHeaders(requestHeadersText) :
-            html `
-          <devtools-widget .widgetConfig=${UI.Widget.widgetConfig(NetworkComponents.RequestHeaderSection.RequestHeaderSection, {
-                request: input.request,
-                toReveal: input.toReveal,
-            })} jslog=${VisualLogging.section('request-headers')}></devtools-widget>`
-    });
-}
 function renderRawHeaders(text) {
     return html `<div class="row raw-headers-row"><devtools-widget  class=raw-headers .widgetConfig=${UI.Widget.widgetConfig(ShowMoreDetailsWidget, { text })}></devtools-widget></div>`;
 }
-function renderGeneralSection(input) {
-    const statusClasses = ['status'];
-    if (input.request.statusCode < 300 || input.request.statusCode === 304) {
-        statusClasses.push('green-circle');
-    }
-    else if (input.request.statusCode < 400) {
-        statusClasses.push('yellow-circle');
-    }
-    else {
-        statusClasses.push('red-circle');
-    }
-    let comment = '';
-    if (input.request.cachedInMemory()) {
-        comment = i18nString(UIStrings.fromMemoryCache);
-    }
-    else if (input.request.fromEarlyHints()) {
-        comment = i18nString(UIStrings.fromEarlyHints);
-    }
-    else if (input.request.fetchedViaServiceWorker) {
-        comment = i18nString(UIStrings.fromServiceWorker);
-    }
-    else if (input.request.redirectSourceSignedExchangeInfoHasNoErrors()) {
-        comment = i18nString(UIStrings.fromSignedexchange);
-    }
-    else if (input.request.fromPrefetchCache()) {
-        comment = i18nString(UIStrings.fromPrefetchCache);
-    }
-    else if (input.request.cached()) {
-        comment = i18nString(UIStrings.fromDiskCache);
-    }
-    if (comment) {
-        statusClasses.push('status-with-comment');
-    }
-    const statusText = [input.request.statusCode, input.request.getInferredStatusText(), comment].join(' ');
-    return renderCategory({
-        name: 'general',
-        title: i18nString(UIStrings.general),
-        forceOpen: input.toReveal?.section === "General" /* NetworkForward.UIRequestLocation.UIHeaderSection.GENERAL */,
-        loggingContext: 'general',
-        // clang-format off
-        contents: html `<div jslog=${VisualLogging.section('general')}>
-        ${renderGeneralRow(i18nString(UIStrings.requestUrl), input.request.url(), 'request-url')}
-        ${input.request.statusCode ? renderGeneralRow(i18nString(UIStrings.requestMethod), input.request.requestMethod, 'request-method') : Lit.nothing}
-        ${input.request.statusCode ? renderGeneralRow(i18nString(UIStrings.statusCode), statusText, 'status-code', statusClasses) : Lit.nothing}
-        ${input.request.remoteAddress() ? renderGeneralRow(i18nString(UIStrings.remoteAddress), input.request.remoteAddress(), 'remote-address') : Lit.nothing}
-        ${input.request.referrerPolicy() ? renderGeneralRow(i18nString(UIStrings.referrerPolicy), String(input.request.referrerPolicy()), 'referrer-policy') : Lit.nothing}
-      </div>`
-    });
-    // clang-format on
-    function renderGeneralRow(name, value, id, classNames) {
-        const isHighlighted = input.toReveal?.section === "General" /* NetworkForward.UIRequestLocation.UIHeaderSection.GENERAL */ &&
-            name.toLowerCase() === input.toReveal?.header?.toLowerCase();
-        return html `
+function renderGeneralRow(input, name, value, id, classNames) {
+    const isHighlighted = input.toReveal?.section === "General" /* NetworkForward.UIRequestLocation.UIHeaderSection.GENERAL */ &&
+        name.toLowerCase() === input.toReveal?.header?.toLowerCase();
+    return html `
       <div class="row ${isHighlighted ? 'header-highlight' : ''}">
         <div class="header-name">${name}</div>
         <div
@@ -368,7 +358,6 @@ function renderGeneralSection(input) {
         >${value}</div>
       </div>
     `;
-    }
 }
 export function renderCategory(data) {
     const expandedSetting = Common.Settings.Settings.instance().createSetting('request-info-' + data.name + '-category-expanded', true);

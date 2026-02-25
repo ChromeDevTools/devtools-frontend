@@ -694,12 +694,14 @@ var ObjectTreeNodeBase = class _ObjectTreeNodeBase extends Common.ObjectWrapper.
   parent;
   propertiesMode;
   #children;
+  filter = null;
   extraProperties = [];
   expanded = false;
   constructor(parent, propertiesMode = 1) {
     super();
     this.parent = parent;
     this.propertiesMode = propertiesMode;
+    this.filter = parent?.filter ?? null;
   }
   // Performs a pre-order tree traversal over the populated children. If any children need to be populated, callers must
   // do that while walking (pre-order visitation enables that).
@@ -728,6 +730,20 @@ var ObjectTreeNodeBase = class _ObjectTreeNodeBase extends Common.ObjectWrapper.
     for (const node of this.#walk()) {
       node.expanded = false;
     }
+  }
+  setFilter(filter) {
+    this.filter = filter;
+    this.dispatchEventToListeners(
+      "filter-changed"
+      /* ObjectTreeNodeBase.Events.FILTER_CHANGED */
+    );
+    this.#walk().forEach((c) => {
+      c.filter = filter;
+      c.dispatchEventToListeners(
+        "filter-changed"
+        /* ObjectTreeNodeBase.Events.FILTER_CHANGED */
+      );
+    });
   }
   removeChildren() {
     this.#children = void 0;
@@ -761,9 +777,12 @@ var ObjectTreeNodeBase = class _ObjectTreeNodeBase extends Common.ObjectWrapper.
     return this.#children;
   }
   async populateChildrenIfNeeded() {
-    if (this.#children) {
-      return this.#children;
+    if (!this.#children) {
+      this.#children = await this.populateChildrenIfNeededImpl();
     }
+    return this.#children;
+  }
+  async populateChildrenIfNeededImpl() {
     const object = this.object;
     if (!object) {
       return {};
@@ -858,10 +877,7 @@ var ArrayGroupTreeNode = class _ArrayGroupTreeNode extends ObjectTreeNodeBase {
     this.#object = object;
     this.#range = range;
   }
-  async populateChildrenIfNeeded() {
-    if (this.children) {
-      return this.children;
-    }
+  async populateChildrenIfNeededImpl() {
     if (this.#range.count > ArrayGroupingTreeElement.bucketThreshold) {
       const ranges = await arrayRangeGroups(this.object, this.#range.fromIndex, this.#range.toIndex);
       const arrayRanges = ranges?.ranges.map(([fromIndex, toIndex, count]) => new _ArrayGroupTreeNode(this.object, { fromIndex, toIndex, count }));
@@ -909,6 +925,9 @@ var ObjectTreeNode = class _ObjectTreeNode extends ObjectTreeNodeBase {
   }
   get object() {
     return this.property.value;
+  }
+  get isFiltered() {
+    return Boolean(this.filter && !this.property.match(this.filter));
   }
   get name() {
     return this.property.name;
@@ -1601,8 +1620,10 @@ var ObjectPropertyTreeElement = class _ObjectPropertyTreeElement extends UI2.Tre
     super();
     this.#widget = new ObjectPropertyWidget();
     this.property = property;
+    this.hidden = property.isFiltered;
     this.property.addEventListener("value-changed", this.#updateValue, this);
     this.property.addEventListener("children-changed", this.#updateChildren, this);
+    this.property.addEventListener("filter-changed", this.#updateFilter, this);
     this.toggleOnClick = true;
     this.linkifier = linkifier;
     this.maxNumPropertiesToShow = InitialVisibleChildrenLimit;
@@ -1743,6 +1764,9 @@ var ObjectPropertyTreeElement = class _ObjectPropertyTreeElement extends UI2.Tre
   #updateChildren() {
     this.removeChildren();
     void this.onpopulate();
+  }
+  #updateFilter() {
+    this.hidden = this.property.isFiltered;
   }
   getContextMenu(event) {
     const contextMenu = new UI2.ContextMenu.ContextMenu(event);

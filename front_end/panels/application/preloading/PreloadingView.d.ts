@@ -34,6 +34,7 @@ export declare class PreloadingAttemptView extends UI.Widget.VBox {
     private readonly preloadingGrid;
     private readonly preloadingDetails;
     private readonly ruleSetSelector;
+    private clearButton;
     constructor(model: SDK.PreloadingModel.PreloadingModel);
     wasShown(): void;
     onScopeChange(): void;

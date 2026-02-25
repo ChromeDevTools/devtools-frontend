@@ -1730,9 +1730,17 @@ var RuleSetDetailsView_css_default = `/*
  * found in the LICENSE file.
  */
 
+:host {
+  height: 100%;
+}
+
 .placeholder {
   display: flex;
   height: 100%;
+}
+
+.ruleset-header-container {
+  flex-shrink: 0;
 }
 
 .ruleset-header {
@@ -1745,6 +1753,10 @@ var RuleSetDetailsView_css_default = `/*
 
 .ruleset-header devtools-icon {
   vertical-align: sub;
+}
+
+.text-editor-container {
+  overflow: auto;
 }
 
 /*# sourceURL=${import.meta.resolve("./RuleSetDetailsView.css")} */`;
@@ -1772,7 +1784,7 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
     <style>${RuleSetDetailsView_css_default}</style>
     <style>${UI5.inspectorCommonStyles}</style>
     ${input ? html5`
-        <div class="content">
+        <div class="ruleset-header-container">
           <div class="ruleset-header" id="ruleset-url">${input.url}</div>
           ${input.errorMessage ? html5`
             <div class="ruleset-header">
@@ -1782,8 +1794,8 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
             </div>
           ` : nothing4}
         </div>
-        <div class="text-ellipsis">
-          <devtools-text-editor .style.flexGrow=${"1"} .state=${input.editorState}></devtools-text-editor>
+        <div class="text-editor-container">
+          <devtools-text-editor .state=${input.editorState}></devtools-text-editor>
         </div>` : html5`
           <div class="placeholder">
             <div class="empty-state">

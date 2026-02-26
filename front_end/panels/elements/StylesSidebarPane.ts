@@ -1404,6 +1404,14 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     }
   }
 
+  addStyleUpdateListener(listener: () => void): void {
+    this.addEventListener(Events.STYLES_UPDATE_COMPLETED, listener);
+  }
+
+  removeStyleUpdateListener(listener: () => void): void {
+    this.removeEventListener(Events.STYLES_UPDATE_COMPLETED, listener);
+  }
+
   private startToolbarPaneAnimation(widget: UI.Widget.Widget|null): void {
     if (widget === this.currentToolbarPane) {
       return;

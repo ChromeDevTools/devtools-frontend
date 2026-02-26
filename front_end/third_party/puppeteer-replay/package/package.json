@@ -80,7 +80,7 @@
     "puppeteer": "24.20.0",
     "puppeteer-core": "24.20.0",
     "rimraf": "5.0.5",
-    "rollup": "4.9.6",
+    "rollup": "4.59.0",
     "rollup-plugin-dts": "6.1.0",
     "snap-shot-it": "7.9.10",
     "ts-node": "10.9.2",

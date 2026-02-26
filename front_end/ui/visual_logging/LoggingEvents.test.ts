@@ -243,6 +243,15 @@ describe('LoggingEvents', () => {
     assert.deepEqual(recordResize.firstCall.firstArg, {veid, width: 100, height: 50});
   });
 
+  it('calls UI binding to log a resize event with rounded dimensions', async () => {
+    const recordResize = sinon.stub(
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+        'recordResize',
+    );
+    VisualLogging.LoggingEvents.logResize(element, new DOMRect(0, 0, 100.5, 50.3));
+    assert.deepEqual(recordResize.firstCall.firstArg, {veid, width: 101, height: 50});
+  });
+
   it('calls UI binding to log a setting access event', async () => {
     const recordSettingAccess = sinon.stub(
         Host.InspectorFrontendHost.InspectorFrontendHostInstance,

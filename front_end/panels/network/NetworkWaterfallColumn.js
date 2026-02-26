@@ -70,7 +70,7 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
         this.styleForWaitingResourceType = resourceStyleTuple[0];
         this.styleForDownloadingResourceType = resourceStyleTuple[1];
         const baseLineColor = ThemeSupport.ThemeSupport.instance().getComputedValue('--sys-color-state-disabled');
-        this.wiskerStyle = { borderColor: baseLineColor, lineWidth: 1, fillStyle: undefined };
+        this.wiskerStyle = { borderColor: baseLineColor, lineWidth: 1 };
         this.hoverDetailsStyle = { fillStyle: baseLineColor, lineWidth: 1, borderColor: baseLineColor };
         this.pathForStyle = new Map();
         this.textLayers = [];
@@ -235,7 +235,6 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
                 content.show(popover.contentElement);
                 return true;
             },
-            hide: undefined,
         };
     }
     setHoveredNode(node, highlightInitiatorChain) {

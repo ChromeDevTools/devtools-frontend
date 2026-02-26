@@ -11,11 +11,11 @@ export declare const enum Align {
 }
 export declare class ImagePreview {
     static build(originalImageURL: Platform.DevToolsPath.UrlString, showDimensions: boolean, options?: {
-        precomputedFeatures: (PrecomputedFeatures | undefined);
-        imageAltText: (string | undefined);
         align: Align;
+        precomputedFeatures?: PrecomputedFeatures;
+        imageAltText?: string;
         hideFileData?: boolean;
-    } | undefined): Promise<HTMLDivElement | null>;
+    }): Promise<HTMLDivElement | null>;
     static loadDimensionsForNode(node: SDK.DOMModel.DOMNode): Promise<PrecomputedFeatures | undefined>;
     static defaultAltTextForImageURL(url: Platform.DevToolsPath.UrlString): string;
 }

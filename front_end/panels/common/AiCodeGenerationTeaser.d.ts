@@ -14,6 +14,7 @@ export interface ViewInput {
     noLogging: boolean;
     onManageInSettingsTooltipClick: (event: Event) => void;
     showDataUsageTeaser: boolean;
+    showDiscoveryTeaser: boolean;
     panel?: AiCodeCompletion.AiCodeCompletion.ContextFlavor;
 }
 export interface ViewOutput {
@@ -33,4 +34,5 @@ export declare class AiCodeGenerationTeaser extends UI.Widget.Widget {
     set disclaimerTooltipId(disclaimerTooltipId: string);
     set panel(panel: AiCodeCompletion.AiCodeCompletion.ContextFlavor);
     showTooltip(): void;
+    static setDiscoveryTeaserShownInSessionForTest(value: boolean): void;
 }

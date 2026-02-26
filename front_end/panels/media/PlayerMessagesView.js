@@ -100,42 +100,36 @@ class MessageLevelSelector {
             overwrite: true,
             stringValue: '',
             value: 7 /* MessageLevelBitfield.DEFAULT */,
-            selectable: undefined,
         });
         this.items.insert(this.items.length, {
             title: this.allTitle,
             overwrite: true,
             stringValue: '',
             value: 15 /* MessageLevelBitfield.ALL */,
-            selectable: undefined,
         });
         this.items.insert(this.items.length, {
             title: i18nString(UIStrings.error),
             overwrite: false,
             stringValue: 'error',
             value: 1 /* MessageLevelBitfield.ERROR */,
-            selectable: undefined,
         });
         this.items.insert(this.items.length, {
             title: i18nString(UIStrings.warning),
             overwrite: false,
             stringValue: 'warning',
             value: 2 /* MessageLevelBitfield.WARNING */,
-            selectable: undefined,
         });
         this.items.insert(this.items.length, {
             title: i18nString(UIStrings.info),
             overwrite: false,
             stringValue: 'info',
             value: 4 /* MessageLevelBitfield.INFO */,
-            selectable: undefined,
         });
         this.items.insert(this.items.length, {
             title: i18nString(UIStrings.debug),
             overwrite: false,
             stringValue: 'debug',
             value: 8 /* MessageLevelBitfield.DEBUG */,
-            selectable: undefined,
         });
     }
     updateCheckMarks() {

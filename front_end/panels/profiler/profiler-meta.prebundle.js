@@ -236,7 +236,6 @@ UI.ContextMenu.registerProvider({
         const Profiler = await loadProfilerModule();
         return Profiler.HeapProfilerPanel.HeapProfilerPanel.instance();
     },
-    experiment: undefined,
 });
 UI.ContextMenu.registerItem({
     location: "profilerMenu/default" /* UI.ContextMenu.ItemLocation.PROFILER_MENU_DEFAULT */,

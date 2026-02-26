@@ -167,12 +167,7 @@ function createLanternRequest(parsedTrace, workerThreads, request) {
         priority: request.args.data.priority,
         frameId: request.args.data.frame,
         fromWorker,
-        serverResponseTime: request.args.data.lrServerResponseTime ?? undefined,
-        // Set later.
-        redirects: undefined,
-        redirectSource: undefined,
-        redirectDestination: undefined,
-        initiatorRequest: undefined,
+        serverResponseTime: request.args.data.lrServerResponseTime,
     };
 }
 /**

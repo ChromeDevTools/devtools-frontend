@@ -532,10 +532,7 @@ export function makeZeroBasedCallFrame(callFrame) {
  **/
 function getRawLineAndColumnNumbersForEvent(event) {
     if (!event.args?.data) {
-        return {
-            lineNumber: undefined,
-            columnNumber: undefined,
-        };
+        return {};
     }
     let lineNumber = undefined;
     let columnNumber = undefined;

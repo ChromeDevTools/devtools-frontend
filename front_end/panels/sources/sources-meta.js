@@ -1771,8 +1771,7 @@ UI.ContextMenu.registerProvider({
   async loadProvider() {
     const Sources = await loadSourcesModule();
     return Sources.SourcesPanel.SourcesPanel.instance();
-  },
-  experiment: void 0
+  }
 });
 UI.ContextMenu.registerProvider({
   async loadProvider() {
@@ -1784,8 +1783,7 @@ UI.ContextMenu.registerProvider({
       ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement,
       ...maybeRetrieveContextTypes((Sources) => [Sources.UISourceCodeFrame.UISourceCodeFrame])
     ];
-  },
-  experiment: void 0
+  }
 });
 Common.Revealer.registerRevealer({
   contextTypes() {
@@ -1863,7 +1861,6 @@ Common.Revealer.registerRevealer({
   contextTypes() {
     return maybeRetrieveContextTypes((Sources) => [Sources.SearchSourcesView.SearchSources]);
   },
-  destination: void 0,
   async loadRevealer() {
     const Sources = await loadSourcesModule();
     return new Sources.SearchSourcesView.Revealer();
@@ -1872,10 +1869,7 @@ Common.Revealer.registerRevealer({
 UI.Toolbar.registerToolbarItem({
   actionId: "sources.add-folder-to-workspace",
   location: "files-navigator-toolbar",
-  label: i18nLazyString(UIStrings.addFolderManually),
-  loadItem: void 0,
-  order: void 0,
-  separator: void 0
+  label: i18nLazyString(UIStrings.addFolderManually)
 });
 UI.Context.registerListener({
   contextTypes() {
@@ -1906,13 +1900,11 @@ UI.Context.registerListener({
 });
 UI.ContextMenu.registerItem({
   location: "navigatorMenu/default",
-  actionId: "quick-open.show",
-  order: void 0
+  actionId: "quick-open.show"
 });
 UI.ContextMenu.registerItem({
   location: "mainMenu/default",
-  actionId: "sources.search",
-  order: void 0
+  actionId: "sources.search"
 });
 QuickOpen.FilteredListWidget.registerProvider({
   prefix: "@",
@@ -1961,7 +1953,6 @@ UI.ContextMenu.registerProvider({
   async loadProvider() {
     const Sources = await loadSourcesModule();
     return new Sources.PersistenceActions.ContextMenuProvider();
-  },
-  experiment: void 0
+  }
 });
 //# sourceMappingURL=sources-meta.js.map

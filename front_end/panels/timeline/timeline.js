@@ -3731,9 +3731,7 @@ var TimelineTreeView = class extends Common5.ObjectWrapper.eventMixin(UI2.Widget
     this.populateToolbar(toolbar4);
     this.dataGrid = new DataGrid.SortableDataGrid.SortableDataGrid({
       displayName: i18nString10(UIStrings10.performance),
-      columns,
-      refreshCallback: void 0,
-      deleteCallback: void 0
+      columns
     });
     this.dataGrid.addEventListener("SortingChanged", this.sortingChanged, this);
     this.dataGrid.element.addEventListener("mousemove", this.onMouseMove.bind(this), true);
@@ -4319,13 +4317,13 @@ var AggregatedTimelineTreeView = class _AggregatedTimelineTreeView extends Timel
         const idIsValid = id && Trace14.Styles.stringIsEventCategory(id);
         const category = idIsValid ? categories2[id] || categories2["other"] : { title: unattributed, color: unattributed };
         const color2 = category instanceof Trace14.Styles.TimelineCategory ? ThemeSupport13.ThemeSupport.instance().getComputedValue(category.cssVariable) : category.color;
-        return { name: category.title, color: color2, icon: void 0 };
+        return { name: category.title, color: color2 };
       }
       case _AggregatedTimelineTreeView.GroupBy.Domain:
       case _AggregatedTimelineTreeView.GroupBy.Subdomain:
       case _AggregatedTimelineTreeView.GroupBy.ThirdParties: {
         const domainName = id ? this.beautifyDomainName(id, node) : void 0;
-        return { name: domainName || unattributed, color, icon: void 0 };
+        return { name: domainName || unattributed, color };
       }
       case _AggregatedTimelineTreeView.GroupBy.EventName: {
         if (!node.event) {
@@ -4334,8 +4332,7 @@ var AggregatedTimelineTreeView = class _AggregatedTimelineTreeView extends Timel
         const name = TimelineUIUtils.eventTitle(node.event);
         return {
           name,
-          color,
-          icon: void 0
+          color
         };
       }
       case _AggregatedTimelineTreeView.GroupBy.URL:
@@ -4343,12 +4340,15 @@ var AggregatedTimelineTreeView = class _AggregatedTimelineTreeView extends Timel
       case _AggregatedTimelineTreeView.GroupBy.Frame: {
         const frame = id ? this.parsedTrace()?.data.PageFrames.frames.get(id) : void 0;
         const frameName = frame ? TimelineUIUtils.displayNameForFrame(frame) : i18nString10(UIStrings10.page);
-        return { name: frameName, color, icon: void 0 };
+        return { name: frameName, color };
       }
       default:
         console.assert(false, "Unexpected grouping type");
     }
-    return { name: id || unattributed, color, icon: void 0 };
+    return {
+      name: id || unattributed,
+      color
+    };
   }
   populateToolbar(toolbar4) {
     super.populateToolbar(toolbar4);
@@ -4572,9 +4572,7 @@ var TimelineStackView = class extends Common5.ObjectWrapper.eventMixin(UI2.Widge
     ];
     this.dataGrid = new DataGrid.ViewportDataGrid.ViewportDataGrid({
       displayName: i18nString10(UIStrings10.timelineStack),
-      columns,
-      deleteCallback: void 0,
-      refreshCallback: void 0
+      columns
     });
     this.dataGrid.setResizeMethod(
       "last"
@@ -4789,7 +4787,10 @@ var ThirdPartyTreeViewWidget = class extends TimelineTreeView {
     const unattributed = i18nString11(UIStrings11.unattributed);
     const id = typeof node.id === "symbol" ? void 0 : node.id;
     const domainName = id ? this.entityMapper()?.entityForEvent(node.event)?.name || id : void 0;
-    return { name: domainName || unattributed, color, icon: void 0 };
+    return {
+      name: domainName || unattributed,
+      color
+    };
   }
   nodeIsFirstParty(node) {
     const mapper = this.entityMapper();
@@ -9569,9 +9570,7 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
       {
         description: error,
         buttonText: i18nString20(UIStrings20.close),
-        hideStopButton: false,
-        showProgress: void 0,
-        showTimer: void 0
+        hideStopButton: false
       },
       // When recording failed, we should load null to go back to the landing page.
       async () => {
@@ -9987,10 +9986,7 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
     }
     this.statusDialog = new StatusDialog({
       showProgress: true,
-      showTimer: void 0,
-      hideStopButton: true,
-      buttonText: void 0,
-      description: void 0
+      hideStopButton: true
     }, () => this.cancelLoading());
     this.statusDialog.showPane(this.statusPaneContainer);
     this.statusDialog.updateStatus(i18nString20(UIStrings20.loadingTrace));
@@ -10271,9 +10267,7 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
     this.statusDialog = new StatusDialog({
       showTimer: true,
       showProgress: true,
-      hideStopButton: false,
-      description: void 0,
-      buttonText: void 0
+      hideStopButton: false
     }, () => this.stopRecording());
     this.statusDialog.showPane(this.statusPaneContainer);
     this.statusDialog.updateStatus(i18nString20(UIStrings20.initializingTracing));
@@ -11352,7 +11346,6 @@ var TimelineUIUtils = class _TimelineUIUtils {
         if (url2) {
           previewElement = await LegacyComponents.ImagePreview.ImagePreview.build(url2, false, {
             imageAltText: LegacyComponents.ImagePreview.ImagePreview.defaultAltTextForImageURL(url2),
-            precomputedFeatures: void 0,
             align: "start"
           });
         } else if (Trace25.Types.Events.isPaint(event)) {
@@ -12397,7 +12390,14 @@ var TimelineUIUtils = class _TimelineUIUtils {
   }
   static colorForId(id) {
     if (!colorGenerator) {
-      colorGenerator = new Common11.Color.Generator({ min: 30, max: 330, count: void 0 }, { min: 50, max: 80, count: 3 }, 85);
+      colorGenerator = new Common11.Color.Generator({
+        min: 30,
+        max: 330
+      }, {
+        min: 50,
+        max: 80,
+        count: 3
+      }, 85);
       colorGenerator.setColorForID("", "#f2ecdc");
     }
     return colorGenerator.colorForID(id);
@@ -18420,7 +18420,7 @@ var CompatibilityTracksAppender = class {
     this.#entryData = entryData;
     this.#colorGenerator = new Common17.Color.Generator(
       /* hueSpace= */
-      { min: 30, max: 55, count: void 0 },
+      { min: 30, max: 55 },
       /* satSpace= */
       { min: 70, max: 100, count: 6 },
       /* lightnessSpace= */

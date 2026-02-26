@@ -499,7 +499,9 @@ const BlockedReasonDetails = new Map([
             value: null,
             blockedDetails: {
                 explanation: i18nLazyString(UIStrings.toEmbedThisFrameInYourDocument),
-                examples: [{ codeSnippet: 'Cross-Origin-Embedder-Policy: require-corp', comment: undefined }],
+                examples: [{
+                        codeSnippet: 'Cross-Origin-Embedder-Policy: require-corp',
+                    }],
                 link: { url: 'https://web.dev/coop-coep/' },
             },
         },

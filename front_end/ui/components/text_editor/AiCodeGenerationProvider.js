@@ -32,6 +32,7 @@ export class AiCodeGenerationProvider {
     #aiCodeGenerationEnabledSetting = Common.Settings.Settings.instance().createSetting('ai-code-completion-enabled', false);
     #aiCodeGenerationSettingEnabled = this.#aiCodeGenerationEnabledSetting.get();
     #aiCodeGenerationOnboardingCompletedSetting = Common.Settings.Settings.instance().createSetting('ai-code-generation-onboarding-completed', false);
+    #aiCodeGenerationUsedSetting = Common.Settings.Settings.instance().createSetting('ai-code-generation-used', false);
     #generationTeaserCompartment = new CodeMirror.Compartment();
     #generationTeaser;
     #editor;
@@ -253,6 +254,7 @@ export class AiCodeGenerationProvider {
         if (!this.#editor || !this.#aiCodeGeneration) {
             return;
         }
+        this.#aiCodeGenerationUsedSetting.set(true);
         this.#aiCodeGenerationCitations = [];
         const cursor = this.#editor.state.selection.main.head;
         const commentNodeInfo = AiCodeGenerationParser.extractCommentNodeInfo(this.#editor.state, cursor);
@@ -268,14 +270,16 @@ export class AiCodeGenerationProvider {
         this.#generationTeaser.displayState = PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.LOADING;
         try {
             const startTime = performance.now();
-            this.#aiCodeGenerationConfig?.onRequestTriggered();
+            this.#aiCodeGenerationConfig.onRequestTriggered();
             Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiCodeGenerationRequestTriggered);
-            const generationResponse = await this.#aiCodeGeneration.generateCode(query, AiCodeGeneration.AiCodeGeneration.basePreamble, this.#aiCodeGenerationConfig?.generationContext.inferenceLanguage, options);
+            const preamble = AiCodeGeneration.AiCodeGeneration.basePreamble +
+                this.#aiCodeGenerationConfig.generationContext.additionalPreambleContext;
+            const generationResponse = await this.#aiCodeGeneration.generateCode(query, preamble, this.#aiCodeGenerationConfig.generationContext.inferenceLanguage, options);
             if (this.#generationTeaser) {
                 this.#dismissTeaserAndSuggestion();
             }
             if (!generationResponse || generationResponse.samples.length === 0) {
-                this.#aiCodeGenerationConfig?.onResponseReceived();
+                this.#aiCodeGenerationConfig.onResponseReceived();
                 return;
             }
             const topSample = generationResponse.samples[0];
@@ -305,7 +309,7 @@ export class AiCodeGenerationProvider {
             AiCodeGeneration.debugLog('Suggestion dispatched to the editor', suggestionText);
             const citations = topSample.attributionMetadata?.citations ?? [];
             this.#aiCodeGenerationCitations = citations;
-            this.#aiCodeGenerationConfig?.onResponseReceived();
+            this.#aiCodeGenerationConfig.onResponseReceived();
             return;
         }
         catch (e) {
@@ -314,7 +318,7 @@ export class AiCodeGenerationProvider {
                 return;
             }
             AiCodeGeneration.debugLog('Error while fetching code generation suggestions from AIDA', e);
-            this.#aiCodeGenerationConfig?.onResponseReceived();
+            this.#aiCodeGenerationConfig.onResponseReceived();
             Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiCodeGenerationError);
         }
         if (this.#generationTeaser) {

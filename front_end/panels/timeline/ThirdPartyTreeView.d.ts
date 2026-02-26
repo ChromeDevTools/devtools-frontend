@@ -23,7 +23,7 @@ export declare class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineT
     displayInfoForGroupNode(node: Trace.Extras.TraceTree.Node): {
         name: string;
         color: string;
-        icon: (Element | undefined);
+        icon?: Element;
     };
     nodeIsFirstParty(node: Trace.Extras.TraceTree.Node): boolean;
     nodeIsExtension(node: Trace.Extras.TraceTree.Node): boolean;

@@ -93,20 +93,10 @@ export class LiveHeapProfileView extends UI.Widget.VBox {
         const defaultColumnConfig = {
             id: '',
             title: Common.UIString.LocalizedEmptyString,
-            width: undefined,
             fixedWidth: true,
             sortable: true,
             align: "right" /* DataGrid.DataGrid.Align.RIGHT */,
             sort: DataGrid.DataGrid.Order.Descending,
-            titleDOMFragment: undefined,
-            editable: undefined,
-            nonSelectable: undefined,
-            longText: undefined,
-            disclosure: undefined,
-            weight: undefined,
-            allowInSortByEvenWhenHidden: undefined,
-            dataType: undefined,
-            defaultWeight: undefined,
         };
         const columns = [
             {
@@ -141,8 +131,6 @@ export class LiveHeapProfileView extends UI.Widget.VBox {
         const dataGrid = new DataGrid.SortableDataGrid.SortableDataGrid({
             displayName: i18nString(UIStrings.heapProfile),
             columns,
-            deleteCallback: undefined,
-            refreshCallback: undefined,
         });
         dataGrid.setResizeMethod("last" /* DataGrid.DataGrid.ResizeMethod.LAST */);
         dataGrid.element.classList.add('flex-auto');

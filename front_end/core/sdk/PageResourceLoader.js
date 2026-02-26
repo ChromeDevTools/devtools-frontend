@@ -160,7 +160,13 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper {
             throw new Error('Invalid initiator');
         }
         const key = PageResourceLoader.makeKey(url, initiator);
-        const pageResource = { success: null, size: null, duration: null, errorMessage: undefined, url, initiator };
+        const pageResource = {
+            success: null,
+            size: null,
+            duration: null,
+            url,
+            initiator,
+        };
         this.#pageResources.set(key, pageResource);
         this.dispatchEventToListeners("Update" /* Events.UPDATE */);
         const startTime = performance.now();
@@ -217,7 +223,10 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper {
                         return {
                             success: false,
                             content: '',
-                            errorDescription: { statusCode: 0, netError: undefined, netErrorName: undefined, message: e.message, urlValid: undefined }
+                            errorDescription: {
+                                statusCode: 0,
+                                message: e.message,
+                            }
                         };
                     }
                 }
@@ -280,7 +289,6 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper {
                     netErrorName: resource.netErrorName,
                     message: Host.ResourceLoader.netErrorToMessage(resource.netError, resource.httpStatusCode, resource.netErrorName) ||
                         '',
-                    urlValid: undefined,
                 },
             };
         }

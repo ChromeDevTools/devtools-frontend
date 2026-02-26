@@ -24,7 +24,7 @@ export declare class DebuggerPlugin extends Plugin {
     private muted;
     private initializedMuted;
     private ignoreListInfobar;
-    private refreshBreakpointsTimeout;
+    private refreshBreakpointsTimeout?;
     private activeBreakpointDialog;
     private missingDebugInfoBar;
     private readonly loader;

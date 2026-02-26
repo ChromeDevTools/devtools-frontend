@@ -254,7 +254,7 @@ export interface InspectorFrontendHostAPI {
     /**
      * If you need to alert to the user after copying use {@link UIUtils.copyTextToClipboard}.
      */
-    copyText(text: string | null | undefined): void;
+    copyText(text?: string | null): void;
     inspectedURLChanged(url: Platform.DevToolsPath.UrlString): void;
     isolatedFileSystem(fileSystemId: string, registeredName: string): FileSystem | null;
     loadNetworkResource(url: string, headers: string, streamId: number, callback: (arg0: LoadNetworkResourceResult) => void): void;

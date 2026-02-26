@@ -409,7 +409,7 @@ var DevicesSettingsTab = class extends UI.Widget.VBox {
     UI.UIUtils.createTextChild(uaStringFields.createChild("b"), i18nString(UIStrings.userAgentString));
     const ua = uaStringFields.createChild("div", "hbox");
     ua.appendChild(editor.createInput("user-agent", "text", i18nString(UIStrings.userAgentString), () => {
-      return { valid: true, errorMessage: void 0 };
+      return { valid: true };
     }));
     const uaTypeOptions = [
       "Mobile",
@@ -418,7 +418,7 @@ var DevicesSettingsTab = class extends UI.Widget.VBox {
       "Desktop (touch)"
     ];
     const uaType = editor.createSelect("ua-type", uaTypeOptions, () => {
-      return { valid: true, errorMessage: void 0 };
+      return { valid: true };
     }, i18nString(UIStrings.userAgentType));
     uaType.classList.add("device-edit-fixed");
     ua.appendChild(uaType);

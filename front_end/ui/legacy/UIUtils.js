@@ -1521,10 +1521,7 @@ function focusChanged(event) {
  * @returns the newly created `ShadowRoot`.
  * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/attachShadow
  */
-export function createShadowRootWithCoreStyles(element, options = {
-    delegatesFocus: undefined,
-    cssFile: undefined,
-}) {
+export function createShadowRootWithCoreStyles(element, options = {}) {
     const { cssFile, delegatesFocus } = options;
     const shadowRoot = element.attachShadow({ mode: 'open', delegatesFocus });
     appendStyle(shadowRoot, inspectorCommonStyles, Buttons.textButtonStyles);

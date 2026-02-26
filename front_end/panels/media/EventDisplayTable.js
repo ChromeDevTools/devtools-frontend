@@ -90,8 +90,6 @@ export class PlayerEventsView extends UI.Widget.VBox {
         const datagrid = new DataGrid.DataGrid.DataGridImpl({
             displayName: i18nString(UIStrings.eventDisplay),
             columns: gridColumnDescs,
-            deleteCallback: undefined,
-            refreshCallback: undefined,
         });
         datagrid.asWidget().contentElement.classList.add('no-border-top-datagrid');
         return datagrid;

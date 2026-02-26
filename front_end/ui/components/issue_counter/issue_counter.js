@@ -100,14 +100,14 @@ function getIssueCountsEnumeration(issuesManager, omitEmpty = true) {
 }
 var IssueCounter = class extends HTMLElement {
   #shadow = this.attachShadow({ mode: "open" });
-  #clickHandler = void 0;
-  #tooltipCallback = void 0;
+  #clickHandler;
+  #tooltipCallback;
   #leadingText = "";
   #throttler;
   #counts = [0, 0, 0];
   #displayMode = "OmitEmpty";
-  #issuesManager = void 0;
-  #accessibleName = void 0;
+  #issuesManager;
+  #accessibleName;
   #throttlerTimeout;
   #compact = false;
   scheduleUpdate() {

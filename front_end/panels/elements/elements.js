@@ -912,7 +912,6 @@ var ImagePreviewPopover = class {
     }
     return {
       box: link2.boxInWindow(),
-      hide: void 0,
       show: async (popover) => {
         const node = this.getDOMNode(link2);
         if (!node) {
@@ -920,7 +919,6 @@ var ImagePreviewPopover = class {
         }
         const precomputedFeatures = await Components.ImagePreview.ImagePreview.loadDimensionsForNode(node);
         const preview = await Components.ImagePreview.ImagePreview.build(href, true, {
-          imageAltText: void 0,
           precomputedFeatures,
           align: "center"
         });
@@ -4489,7 +4487,7 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
     } else {
       this.listItemElement.classList.remove("implicit");
     }
-    const hasIgnorableError = !this.property.parsedOk && StylesSidebarPane.ignoreErrorsForProperty(this.property);
+    const hasIgnorableError = !this.property.parsedOk && this.property.ignoreErrors();
     if (hasIgnorableError) {
       this.listItemElement.classList.add("has-ignorable-error");
     } else {
@@ -5035,12 +5033,12 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(this.property.value);
     }, { jslogContext: "copy-value" });
     contextMenu.headerSection().appendItem(i18nString4(UIStrings4.copyRule), () => {
-      const ruleText = StylesSidebarPane.formatLeadingProperties(this.#parentSection).ruleText;
+      const ruleText = this.#parentSection.formatLeadingProperties().ruleText;
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(ruleText);
     }, { jslogContext: "copy-rule" });
     contextMenu.headerSection().appendItem(i18nString4(UIStrings4.copyCssDeclarationAsJs), this.copyCssDeclarationAsJs.bind(this), { jslogContext: "copy-css-declaration-as-js" });
     contextMenu.clipboardSection().appendItem(i18nString4(UIStrings4.copyAllDeclarations), () => {
-      const allDeclarationText = StylesSidebarPane.formatLeadingProperties(this.#parentSection).allDeclarationText;
+      const allDeclarationText = this.#parentSection.formatLeadingProperties().allDeclarationText;
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(allDeclarationText);
     }, { jslogContext: "copy-all-declarations" });
     contextMenu.clipboardSection().appendItem(i18nString4(UIStrings4.copyAllCssDeclarationsAsJs), this.copyAllCssDeclarationAsJs.bind(this), { jslogContext: "copy-all-css-declarations-as-js" });
@@ -6914,14 +6912,35 @@ var StylePropertiesSection = class _StylePropertiesSection {
       Host2.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(selectorText);
     }, { jslogContext: "copy-selector" });
     contextMenu.clipboardSection().appendItem(i18nString5(UIStrings5.copyRule), () => {
-      const ruleText = StylesSidebarPane.formatLeadingProperties(this).ruleText;
+      const ruleText = this.formatLeadingProperties().ruleText;
       Host2.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(ruleText);
     }, { jslogContext: "copy-rule" });
     contextMenu.clipboardSection().appendItem(i18nString5(UIStrings5.copyAllDeclarations), () => {
-      const allDeclarationText = StylesSidebarPane.formatLeadingProperties(this).allDeclarationText;
+      const allDeclarationText = this.formatLeadingProperties().allDeclarationText;
       Host2.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(allDeclarationText);
     }, { jslogContext: "copy-all-declarations" });
     void contextMenu.show();
+  }
+  formatLeadingProperties() {
+    const selectorText = this.headerText();
+    const indent = Common3.Settings.Settings.instance().moduleSetting("text-editor-indent").get();
+    const style = this.style();
+    const lines = [];
+    for (const property of style.leadingProperties()) {
+      if (property.disabled) {
+        lines.push(`${indent}/* ${property.name}: ${property.value}; */`);
+      } else {
+        lines.push(`${indent}${property.name}: ${property.value};`);
+      }
+    }
+    const allDeclarationText = lines.join("\n");
+    const ruleText = `${selectorText} {
+${allDeclarationText}
+}`;
+    return {
+      allDeclarationText,
+      ruleText
+    };
   }
   navigateToSelectorSource(index, focus2) {
     const cssModel = this.parentPane.cssModel();
@@ -7906,53 +7925,6 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common4.ObjectWrapper.e
   }
   setUserOperation(userOperation) {
     this.userOperation = userOperation;
-  }
-  static ignoreErrorsForProperty(property) {
-    function hasUnknownVendorPrefix(string) {
-      return !string.startsWith("-webkit-") && /^[-_][\w\d]+-\w/.test(string);
-    }
-    const name = property.name.toLowerCase();
-    if (name.charAt(0) === "_") {
-      return true;
-    }
-    if (name === "filter") {
-      return true;
-    }
-    if (name.startsWith("scrollbar-")) {
-      return true;
-    }
-    if (hasUnknownVendorPrefix(name)) {
-      return true;
-    }
-    const value5 = property.value.toLowerCase();
-    if (value5.endsWith("\\9")) {
-      return true;
-    }
-    if (hasUnknownVendorPrefix(value5)) {
-      return true;
-    }
-    return false;
-  }
-  static formatLeadingProperties(section3) {
-    const selectorText = section3.headerText();
-    const indent = Common4.Settings.Settings.instance().moduleSetting("text-editor-indent").get();
-    const style = section3.style();
-    const lines = [];
-    for (const property of style.leadingProperties()) {
-      if (property.disabled) {
-        lines.push(`${indent}/* ${property.name}: ${property.value}; */`);
-      } else {
-        lines.push(`${indent}${property.name}: ${property.value};`);
-      }
-    }
-    const allDeclarationText = lines.join("\n");
-    const ruleText = `${selectorText} {
-${allDeclarationText}
-}`;
-    return {
-      allDeclarationText,
-      ruleText
-    };
   }
   revealProperty(cssProperty) {
     void this.decorator.highlightProperty(cssProperty);
@@ -8957,8 +8929,7 @@ var SectionBlock = class _SectionBlock {
     const pseudoTypeString = `${pseudoType}${pseudoArgumentString}`;
     UI10.UIUtils.createTextChild(separatorElement, i18nString6(UIStrings6.inheritedFromSPseudoOf, { PH1: pseudoTypeString }));
     const link2 = PanelsCommon2.DOMLinkifier.Linkifier.instance().linkify(node, {
-      preventKeyboardFocus: true,
-      tooltip: void 0
+      preventKeyboardFocus: true
     });
     separatorElement.appendChild(link2);
     return new _SectionBlock(separatorElement);
@@ -9004,8 +8975,7 @@ var SectionBlock = class _SectionBlock {
     separatorElement.setAttribute("jslog", `${VisualLogging5.sectionHeader("inherited")}`);
     UI10.UIUtils.createTextChild(separatorElement, i18nString6(UIStrings6.inheritedFroms));
     const link2 = PanelsCommon2.DOMLinkifier.Linkifier.instance().linkify(node, {
-      preventKeyboardFocus: true,
-      tooltip: void 0
+      preventKeyboardFocus: true
     });
     separatorElement.appendChild(link2);
     return new _SectionBlock(separatorElement);
@@ -9273,15 +9243,7 @@ var CSSPropertyPrompt = class extends UI10.TextPrompt.TextPrompt {
     const results = prefixResults.concat(anywhereResults);
     if (!this.isEditingName && !results.length && query.length > 1 && "!important".startsWith(lowerQuery)) {
       results.push({
-        text: "!important",
-        title: void 0,
-        subtitle: void 0,
-        priority: void 0,
-        isSecondary: void 0,
-        subtitleRenderer: void 0,
-        selectionRange: void 0,
-        hideGhostText: void 0,
-        iconElement: void 0
+        text: "!important"
       });
     }
     const userEnteredText = query.replace("-", "");
@@ -9342,14 +9304,6 @@ var CSSPropertyPrompt = class extends UI10.TextPrompt.TextPrompt {
       const index = completion.toLowerCase().indexOf(lowerQuery);
       const result = {
         text: completion,
-        title: void 0,
-        subtitle: void 0,
-        priority: void 0,
-        isSecondary: void 0,
-        subtitleRenderer: void 0,
-        selectionRange: void 0,
-        hideGhostText: void 0,
-        iconElement: void 0,
         isCSSVariableColor: false
       };
       if (variable) {
@@ -10050,26 +10004,28 @@ var propertySorter = (propA, propB) => {
 var DEFAULT_VIEW2 = (input, _output, target) => {
   render4(html5`
     <style>${computedStyleWidget_css_default}</style>
-    <div class="styles-sidebar-pane-toolbar">
-      <devtools-toolbar class="styles-pane-toolbar" role="presentation">
-        <devtools-toolbar-input
-          type="filter"
-          autofocus
-          ?regex=${true}
-          value=${input.filterText}
-          @change=${input.onFilterChanged}
-          @regextoggle=${input.onRegexToggled}
-        ></devtools-toolbar-input>
-        <devtools-checkbox
-          title=${i18nString8(UIStrings8.showAll)}
-          ${bindToSetting(input.showInheritedComputedStylePropertiesSetting)}
-        >${i18nString8(UIStrings8.showAll)}</devtools-checkbox>
-        <devtools-checkbox
-          title=${i18nString8(UIStrings8.group)}
-          ${bindToSetting(input.groupComputedStylesSetting)}
-        >${i18nString8(UIStrings8.group)}</devtools-checkbox>
-      </devtools-toolbar>
-    </div>
+    ${input.includeToolbar ? html5`
+      <div class="styles-sidebar-pane-toolbar">
+        <devtools-toolbar class="styles-pane-toolbar" role="presentation">
+          <devtools-toolbar-input
+            type="filter"
+            autofocus
+            ?regex=${true}
+            value=${input.filterText}
+            @change=${input.onFilterChanged}
+            @regextoggle=${input.onRegexToggled}
+          ></devtools-toolbar-input>
+          <devtools-checkbox
+            title=${i18nString8(UIStrings8.showAll)}
+            ${bindToSetting(input.showInheritedComputedStylePropertiesSetting)}
+          >${i18nString8(UIStrings8.showAll)}</devtools-checkbox>
+          <devtools-checkbox
+            title=${i18nString8(UIStrings8.group)}
+            ${bindToSetting(input.groupComputedStylesSetting)}
+          >${i18nString8(UIStrings8.group)}</devtools-checkbox>
+        </devtools-toolbar>
+      </div>
+      ` : Lit5.nothing}
     ${input.computedStylesTree}
     ${!input.hasMatches ? html5`<div class="gray-info-message">${i18nString8(UIStrings8.noMatchingProperty)}</div>` : ""}
   `, target);
@@ -10088,6 +10044,7 @@ var ComputedStyleWidget = class extends UI12.Widget.VBox {
   #view;
   #filterText = "";
   #isRegex = false;
+  #includeToolbar = true;
   constructor() {
     super({ useShadowDom: true });
     this.#view = DEFAULT_VIEW2;
@@ -10113,12 +10070,20 @@ var ComputedStyleWidget = class extends UI12.Widget.VBox {
     const isNarrow = this.contentElement.offsetWidth < 260;
     this.#computedStylesTree.classList.toggle("computed-narrow", isNarrow);
   }
+  get includeToolbar() {
+    return this.#includeToolbar;
+  }
+  set includeToolbar(x) {
+    this.#includeToolbar = x;
+    this.requestUpdate();
+  }
   /**
    * @param input.hasMatches Whether any properties matched the current filter (or if any properties exist at all).
    */
   #updateView({ hasMatches }) {
     this.#view({
       computedStylesTree: this.#computedStylesTree,
+      includeToolbar: this.#includeToolbar,
       hasMatches,
       showInheritedComputedStylePropertiesSetting: this.showInheritedComputedStylePropertiesSetting,
       groupComputedStylesSetting: this.groupComputedStylesSetting,
@@ -10549,7 +10514,7 @@ import * as CodeHighlighter5 from "./../../ui/components/code_highlighter/code_h
 import * as Highlighting3 from "./../../ui/components/highlighting/highlighting.js";
 import * as IssueCounter from "./../../ui/components/issue_counter/issue_counter.js";
 import * as UI17 from "./../../ui/legacy/legacy.js";
-import { html as html9, nothing as nothing3, render as render8 } from "./../../ui/lit/lit.js";
+import { html as html9, nothing as nothing4, render as render8 } from "./../../ui/lit/lit.js";
 import * as VisualLogging9 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/AdoptedStyleSheetTreeElement.js
@@ -11214,15 +11179,13 @@ function getRegisteredDecorators() {
     },
     {
       decorator: PseudoStateMarkerDecorator.instance,
-      marker: "pseudo-state-marker",
-      title: void 0,
-      color: void 0
+      marker: "pseudo-state-marker"
     }
   ];
 }
 
 // gen/front_end/panels/elements/ElementsTreeElement.js
-var { html: html7, nothing: nothing2, render: render6, Directives: { ref: ref2, repeat } } = Lit6;
+var { html: html7, nothing: nothing3, render: render6, Directives: { ref: ref2, repeat } } = Lit6;
 var { animateOn } = UI14.UIUtils;
 var UIStrings11 = {
   /**
@@ -11782,12 +11745,12 @@ function renderAttribute(attr, updateRecord, isDiff, node) {
     if (el) {
       setValueWithEntities(el, value5);
     }
-  }) : nothing2;
+  }) : nothing3;
   return html7`<span class="webkit-html-attribute" jslog=${jslog}><span class="webkit-html-attribute-name"
       ${animateOn(Boolean(updateRecord?.isAttributeModified(name) && !hasText), DOM_UPDATE_ANIMATION_CLASS_NAME)} ${relationRefDirective}>${name}</span>${hasText ? html7`=\u200B"<span class="webkit-html-attribute-value" ${animateOn(Boolean(updateRecord?.isAttributeModified(name) && hasText), DOM_UPDATE_ANIMATION_CLASS_NAME)} ${valueRelationRefDirective} ${withEntitiesRef}>
-                        ${valueType === 1 ? renderLinkifiedValue(value5, node) : nothing2}
-                        ${valueType === 2 ? renderLinkifiedSrcset(Common7.Srcset.parseSrcset(value5), node) : nothing2}
-                </span>"` : nothing2}</span>`;
+                        ${valueType === 1 ? renderLinkifiedValue(value5, node) : nothing3}
+                        ${valueType === 2 ? renderLinkifiedSrcset(Common7.Srcset.parseSrcset(value5), node) : nothing3}
+                </span>"` : nothing3}</span>`;
 }
 function renderTag(node, tagName, isClosingTag, expanded, isDistinctTreeElement, updateRecord) {
   const classMap3 = {
@@ -11810,7 +11773,7 @@ function renderTag(node, tagName, isClosingTag, expanded, isDistinctTreeElement,
   const jslog = !isClosingTag ? VisualLogging8.value("tag-name").track({ change: true, dblclick: true }) : "";
   return html7`<span
       class=${Lit6.Directives.classMap(classMap3)} ${setAriaLabel}
-      >&lt;<span class=${tagNameClass} jslog=${jslog || nothing2} ${animateOn(hasUpdates, DOM_UPDATE_ANIMATION_CLASS_NAME)}>${tagString}</span>${attributes.map((attr) => html7` ${renderAttribute(attr, updateRecord, false, node)}`)}&gt;</span>\u200B`;
+      >&lt;<span class=${tagNameClass} jslog=${jslog || nothing3} ${animateOn(hasUpdates, DOM_UPDATE_ANIMATION_CLASS_NAME)}>${tagString}</span>${attributes.map((attr) => html7` ${renderAttribute(attr, updateRecord, false, node)}`)}&gt;</span>\u200B`;
 }
 var DEFAULT_VIEW3 = (input, output, target) => {
   const hasAdorners = input.showAdAdorner || input.showContainerAdorner || input.showFlexAdorner || input.showGridAdorner || input.showGridLanesAdorner || input.showMediaAdorner || input.showPopoverAdorner || input.showTopLayerAdorner || input.showViewSourceAdorner || input.showScrollAdorner || input.showScrollSnapAdorner || input.showSlotAdorner || input.showStartingStyleAdorner;
@@ -11822,10 +11785,10 @@ var DEFAULT_VIEW3 = (input, output, target) => {
     <div ${ref2((el) => {
     output.contentElement = el;
   })}>
-      ${input.node ? html7`<span class="highlight">${renderTitle(input.node, input.isClosingTag, input.expanded, input.isExpandable, input.isXMLMimeType, input.updateRecord, input.onHighlightSearchResults, input.onExpand)}</span>` : nothing2}
+      ${input.node ? html7`<span class="highlight">${renderTitle(input.node, input.isClosingTag, input.expanded, input.isExpandable, input.isXMLMimeType, input.updateRecord, input.onHighlightSearchResults, input.onExpand)}</span>` : nothing3}
       ${input.isHovered || input.isSelected ? html7`
         <div class="selection fill" style=${`margin-left: ${-input.indent}px`}></div>
-      ` : nothing2}
+      ` : nothing3}
       <div class=${Lit6.Directives.classMap(gutterContainerClasses)}
            style="left: ${-input.indent}px"
            @click=${input.onGutterClick}>
@@ -11835,7 +11798,7 @@ var DEFAULT_VIEW3 = (input, output, target) => {
              title=${input.decorationsTooltip}>
              ${input.decorations.map((d) => html7`<div class="elements-gutter-decoration" style="--decoration-color: ${d.color}"></div>`)}
              ${input.descendantDecorations.map((d) => html7`<div class="elements-gutter-decoration elements-has-decorated-children" style="--decoration-color: ${d.color}"></div>`)}
-        </div>` : nothing2}
+        </div>` : nothing3}
       </div>
       ${hasAdorners ? html7`<div class="adorner-container ${!hasAdorners ? "hidden" : ""}">
         ${input.showAdAdorner ? html7`<devtools-adorner
@@ -11844,7 +11807,7 @@ var DEFAULT_VIEW3 = (input, output, target) => {
           jslog=${VisualLogging8.adorner(ElementsComponents5.AdornerManager.RegisteredAdorners.AD)}
           ${adornerRef()}>
           <span>${ElementsComponents5.AdornerManager.RegisteredAdorners.AD}</span>
-        </devtools-adorner>` : nothing2}
+        </devtools-adorner>` : nothing3}
         ${input.showViewSourceAdorner ? html7`<devtools-adorner
           .name=${ElementsComponents5.AdornerManager.RegisteredAdorners.VIEW_SOURCE}
           jslog=${VisualLogging8.adorner(ElementsComponents5.AdornerManager.RegisteredAdorners.VIEW_SOURCE)}
@@ -11852,7 +11815,7 @@ var DEFAULT_VIEW3 = (input, output, target) => {
           @click=${input.onViewSourceAdornerClick}
           ${adornerRef()}>
           <span>${ElementsComponents5.AdornerManager.RegisteredAdorners.VIEW_SOURCE}</span>
-        </devtools-adorner>` : nothing2}
+        </devtools-adorner>` : nothing3}
         ${input.showContainerAdorner ? html7`<devtools-adorner
           class=clickable
           role=button
@@ -11869,7 +11832,7 @@ var DEFAULT_VIEW3 = (input, output, target) => {
             <devtools-icon name="container"></devtools-icon>
             <span>${input.containerType}</span>
           </span>
-        </devtools-adorner>` : nothing2}
+        </devtools-adorner>` : nothing3}
         ${input.showFlexAdorner ? html7`<devtools-adorner
           class=clickable
           role=button
@@ -11883,7 +11846,7 @@ var DEFAULT_VIEW3 = (input, output, target) => {
           @keydown=${handleAdornerKeydown(input.onFlexAdornerClick)}
           ${adornerRef()}>
           <span>${ElementsComponents5.AdornerManager.RegisteredAdorners.FLEX}</span>
-        </devtools-adorner>` : nothing2}
+        </devtools-adorner>` : nothing3}
         ${input.showGridAdorner ? html7`<devtools-adorner
           class=clickable
           role=button
@@ -11897,7 +11860,7 @@ var DEFAULT_VIEW3 = (input, output, target) => {
           @keydown=${handleAdornerKeydown(input.onGridAdornerClick)}
           ${adornerRef()}>
           <span>${input.isSubgrid ? ElementsComponents5.AdornerManager.RegisteredAdorners.SUBGRID : ElementsComponents5.AdornerManager.RegisteredAdorners.GRID}</span>
-        </devtools-adorner>` : nothing2}
+        </devtools-adorner>` : nothing3}
         ${input.showGridLanesAdorner ? html7`<devtools-adorner
           class=clickable
           role=button
@@ -11911,7 +11874,7 @@ var DEFAULT_VIEW3 = (input, output, target) => {
           @keydown=${handleAdornerKeydown(input.onGridAdornerClick)}
           ${adornerRef()}>
           <span>${ElementsComponents5.AdornerManager.RegisteredAdorners.GRID_LANES}</span>
-        </devtools-adorner>` : nothing2}
+        </devtools-adorner>` : nothing3}
         ${input.showMediaAdorner ? html7`<devtools-adorner
           class=clickable
           role=button
@@ -11925,7 +11888,7 @@ var DEFAULT_VIEW3 = (input, output, target) => {
           <span class="adorner-with-icon">
             ${ElementsComponents5.AdornerManager.RegisteredAdorners.MEDIA}<devtools-icon name="select-element"></devtools-icon>
           </span>
-        </devtools-adorner>` : nothing2}
+        </devtools-adorner>` : nothing3}
         ${input.showPopoverAdorner ? html7`<devtools-adorner
           class=clickable
           role=button
@@ -11939,7 +11902,7 @@ var DEFAULT_VIEW3 = (input, output, target) => {
           @keydown=${handleAdornerKeydown(input.onPopoverAdornerClick)}
           ${adornerRef()}>
           <span>${ElementsComponents5.AdornerManager.RegisteredAdorners.POPOVER}</span>
-        </devtools-adorner>` : nothing2}
+        </devtools-adorner>` : nothing3}
         ${input.showTopLayerAdorner ? html7`<devtools-adorner
           class=clickable
           role=button
@@ -11953,7 +11916,7 @@ var DEFAULT_VIEW3 = (input, output, target) => {
           <span class="adorner-with-icon">
             ${`top-layer (${input.topLayerIndex})`}<devtools-icon name="select-element"></devtools-icon>
           </span>
-        </devtools-adorner>` : nothing2}
+        </devtools-adorner>` : nothing3}
         ${input.showStartingStyleAdorner ? html7`<devtools-adorner
           class="starting-style"
           .name=${ElementsComponents5.AdornerManager.RegisteredAdorners.STARTING_STYLE}
@@ -11965,7 +11928,7 @@ var DEFAULT_VIEW3 = (input, output, target) => {
           @keydown=${handleAdornerKeydown(input.onStartingStyleAdornerClick)}
           ${adornerRef()}>
           <span>${ElementsComponents5.AdornerManager.RegisteredAdorners.STARTING_STYLE}</span>
-        </devtools-adorner>` : nothing2}
+        </devtools-adorner>` : nothing3}
         ${input.showScrollAdorner ? html7`<devtools-adorner
           class="scroll"
           .name=${ElementsComponents5.AdornerManager.RegisteredAdorners.SCROLL}
@@ -11973,7 +11936,7 @@ var DEFAULT_VIEW3 = (input, output, target) => {
           aria-label=${i18nString10(UIStrings11.elementHasScrollableOverflow)}
           ${adornerRef()}>
           <span>${ElementsComponents5.AdornerManager.RegisteredAdorners.SCROLL}</span>
-        </devtools-adorner>` : nothing2}
+        </devtools-adorner>` : nothing3}
         ${input.showSlotAdorner ? html7`<devtools-adorner
           class=clickable
           role=button
@@ -11987,7 +11950,7 @@ var DEFAULT_VIEW3 = (input, output, target) => {
             <devtools-icon name="select-element"></devtools-icon>
             <span>${ElementsComponents5.AdornerManager.RegisteredAdorners.SLOT}</span>
           </span>
-        </devtools-adorner>` : nothing2}
+        </devtools-adorner>` : nothing3}
         ${input.showScrollSnapAdorner ? html7`<devtools-adorner
           class="scroll-snap"
           .name=${ElementsComponents5.AdornerManager.RegisteredAdorners.SCROLL_SNAP}
@@ -11999,11 +11962,11 @@ var DEFAULT_VIEW3 = (input, output, target) => {
           @keydown=${handleAdornerKeydown(input.onScrollSnapAdornerClick)}
           ${adornerRef()}>
           <span>${ElementsComponents5.AdornerManager.RegisteredAdorners.SCROLL_SNAP}</span>
-        </devtools-adorner>` : nothing2}
-      </div>` : nothing2}
+        </devtools-adorner>` : nothing3}
+      </div>` : nothing3}
       ${input.isSelected ? html7`
         <span class="selected-hint" title=${i18nString10(UIStrings11.useSInTheConsoleToReferToThis, { PH1: "$0" })} aria-hidden="true"></span>
-      ` : nothing2}
+      ` : nothing3}
       ${input.showAiButton ? html7`
         <span class="ai-button-container">
           <devtools-floating-button
@@ -12014,7 +11977,7 @@ var DEFAULT_VIEW3 = (input, output, target) => {
             @mousedown=${(e) => e.stopPropagation()}>
           </devtools-floating-button>
         </span>
-      ` : nothing2}
+      ` : nothing3}
     </div>
   `, target);
 };
@@ -12151,7 +12114,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
       onHighlightSearchResults: () => this.#highlightSearchResults(),
       onExpand: () => this.expand(),
       containerAdornerActive: this.#containerAdornerActive,
-      showAdAdorner: this.nodeInternal.isAdFrameNode(),
+      showAdAdorner: this.nodeInternal.isAdRelatedNode(),
       showContainerAdorner: Boolean(this.#layout?.containerType) && !this.isClosingTag(),
       containerType: this.#layout?.containerType,
       showFlexAdorner: Boolean(this.#layout?.isFlex) && !this.isClosingTag(),
@@ -12404,6 +12367,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
       this.treeOutline.treeElementByNode.set(this.nodeInternal, this);
       this.nodeInternal.addEventListener(SDK13.DOMModel.DOMNodeEvents.TOP_LAYER_INDEX_CHANGED, this.onTopLayerIndexChanged, this);
       this.nodeInternal.addEventListener(SDK13.DOMModel.DOMNodeEvents.SCROLLABLE_FLAG_UPDATED, this.#onScrollableFlagUpdated, this);
+      this.nodeInternal.addEventListener(SDK13.DOMModel.DOMNodeEvents.AD_RELATED_STATE_UPDATED, this.#onAdRelatedStateUpdated, this);
       this.nodeInternal.addEventListener(SDK13.DOMModel.DOMNodeEvents.CONTAINER_QUERY_OVERLAY_STATE_CHANGED, this.#onPersistentContainerQueryOverlayStateChanged, this);
       this.nodeInternal.addEventListener(SDK13.DOMModel.DOMNodeEvents.FLEX_CONTAINER_OVERLAY_STATE_CHANGED, this.#onPersistentFlexContainerOverlayStateChanged, this);
       this.nodeInternal.addEventListener(SDK13.DOMModel.DOMNodeEvents.GRID_OVERLAY_STATE_CHANGED, this.#onPersistentGridOverlayStateChanged, this);
@@ -12484,12 +12448,16 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
     }
     this.nodeInternal.removeEventListener(SDK13.DOMModel.DOMNodeEvents.TOP_LAYER_INDEX_CHANGED, this.onTopLayerIndexChanged, this);
     this.nodeInternal.removeEventListener(SDK13.DOMModel.DOMNodeEvents.SCROLLABLE_FLAG_UPDATED, this.#onScrollableFlagUpdated, this);
+    this.nodeInternal.removeEventListener(SDK13.DOMModel.DOMNodeEvents.AD_RELATED_STATE_UPDATED, this.#onAdRelatedStateUpdated, this);
     this.nodeInternal.removeEventListener(SDK13.DOMModel.DOMNodeEvents.CONTAINER_QUERY_OVERLAY_STATE_CHANGED, this.#onPersistentContainerQueryOverlayStateChanged, this);
     this.nodeInternal.removeEventListener(SDK13.DOMModel.DOMNodeEvents.FLEX_CONTAINER_OVERLAY_STATE_CHANGED, this.#onPersistentFlexContainerOverlayStateChanged, this);
     this.nodeInternal.removeEventListener(SDK13.DOMModel.DOMNodeEvents.GRID_OVERLAY_STATE_CHANGED, this.#onPersistentGridOverlayStateChanged, this);
     this.nodeInternal.removeEventListener(SDK13.DOMModel.DOMNodeEvents.SCROLL_SNAP_OVERLAY_STATE_CHANGED, this.#onPersistentScrollSnapOverlayStateChanged, this);
   }
   #onScrollableFlagUpdated() {
+    void this.#updateAdorners();
+  }
+  #onAdRelatedStateUpdated() {
     void this.#updateAdorners();
   }
   #onPersistentContainerQueryOverlayStateChanged(event) {
@@ -14571,7 +14539,7 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common9.ObjectWrapp
               ${issues.map((issue) => {
             const elementIssueDetails = getElementIssueDetails(issue);
             if (!elementIssueDetails) {
-              return nothing3;
+              return nothing4;
             }
             const issueKindIconName = IssueCounter.IssueCounter.getIssueKindIconName(issue.getKind());
             const openIssueEvent = () => Common9.Revealer.reveal(issue);
@@ -16404,7 +16372,7 @@ import * as Common11 from "./../../core/common/common.js";
 import * as Platform9 from "./../../core/platform/platform.js";
 import * as SDK17 from "./../../core/sdk/sdk.js";
 import * as UI19 from "./../../ui/legacy/legacy.js";
-import { Directives as Directives2, html as html11, nothing as nothing4, render as render10 } from "./../../ui/lit/lit.js";
+import { Directives as Directives2, html as html11, nothing as nothing5, render as render10 } from "./../../ui/lit/lit.js";
 import * as VisualLogging11 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/metricsSidebarPane.css.js
@@ -16610,7 +16578,7 @@ var DEFAULT_VIEW7 = (input, output, target) => {
     Common11.Color.Legacy.fromRGBA([0, 0, 0, 0])
   ];
   const boxLabels = ["content", "padding", "border", "margin", "position"];
-  let previousBox = nothing4;
+  let previousBox = nothing5;
   for (let i = 0; i < boxes.length; ++i) {
     const name = boxes[i];
     const display = style.get("display");
@@ -18681,7 +18649,7 @@ import * as Platform11 from "./../../core/platform/platform.js";
 import * as SDK21 from "./../../core/sdk/sdk.js";
 import * as ObjectUI from "./../../ui/legacy/components/object_ui/object_ui.js";
 import * as UI24 from "./../../ui/legacy/legacy.js";
-import { html as html14, nothing as nothing5, render as render13 } from "./../../ui/lit/lit.js";
+import { html as html14, nothing as nothing6, render as render13 } from "./../../ui/lit/lit.js";
 import * as VisualLogging15 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/propertiesWidget.css.js
@@ -18750,7 +18718,7 @@ var DEFAULT_VIEW10 = (input, _output, target) => {
       </div>
       ${input.objectTree && input.allChildrenFiltered ? html14`
         <div class="gray-info-message">${i18nString17(UIStrings18.noMatchingProperty)}</div>
-      ` : nothing5}
+      ` : nothing6}
       ${input.treeOutline.element}
     </div>`, target);
 };

@@ -442,7 +442,7 @@ export class RequestConditionsDrawer extends UI.Widget.VBox {
                 case "has-regexp-groups" /* SDK.NetworkManager.RequestURLPatternValidity.HAS_REGEXP_GROUPS */:
                     return { errorMessage: i18nString(UIStrings.patternFailedWithRegExpGroups), valid: false };
             }
-            return { valid: true, errorMessage: undefined };
+            return { valid: true };
         };
         const urlInput = editor.createInput('url', 'text', '', validator);
         label.htmlFor = urlInput.id = 'editor-url-input';

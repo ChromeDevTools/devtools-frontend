@@ -662,14 +662,11 @@ var FilterParser = class {
         if (this.keys.indexOf(parsedKey) !== -1) {
           parsedFilters.push({
             key: parsedKey,
-            regex: void 0,
             text: parsedValue,
             negative: Boolean(startsWithMinus)
           });
         } else {
           parsedFilters.push({
-            key: void 0,
-            regex: void 0,
             text: `${parsedKey}:${parsedValue}`,
             negative: Boolean(startsWithMinus)
           });
@@ -679,15 +676,11 @@ var FilterParser = class {
         const parsedRegex = captureGroups[1];
         try {
           parsedFilters.push({
-            key: void 0,
             regex: new RegExp(parsedRegex, "im"),
-            text: void 0,
             negative: Boolean(startsWithMinus)
           });
         } catch {
           parsedFilters.push({
-            key: void 0,
-            regex: void 0,
             text: `/${parsedRegex}/`,
             negative: Boolean(startsWithMinus)
           });
@@ -696,8 +689,6 @@ var FilterParser = class {
         const startsWithMinus = captureGroups[0];
         const parsedText = captureGroups[1];
         parsedFilters.push({
-          key: void 0,
-          regex: void 0,
           text: parsedText,
           negative: Boolean(startsWithMinus)
         });

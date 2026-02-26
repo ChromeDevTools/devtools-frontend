@@ -103,7 +103,7 @@ export declare class Lab implements Color {
     readonly b: number;
     readonly alpha: number | null;
     readonly channels: [ColorChannel, ColorChannel, ColorChannel, ColorChannel];
-    constructor(l: number, a: number, b: number, alpha: number | null, authoredText?: string | undefined);
+    constructor(l: number, a: number, b: number, alpha: number | null, authoredText?: string);
     is<T extends Format>(format: T): this is ReturnType<ColorConversions[T]>;
     as<T extends Format>(format: T): ReturnType<ColorConversions[T]>;
     asLegacyColor(): Legacy;
@@ -124,7 +124,7 @@ export declare class LCH implements Color {
     readonly h: number;
     readonly alpha: number | null;
     readonly channels: [ColorChannel, ColorChannel, ColorChannel, ColorChannel];
-    constructor(l: number, c: number, h: number, alpha: number | null, authoredText?: string | undefined);
+    constructor(l: number, c: number, h: number, alpha: number | null, authoredText?: string);
     asLegacyColor(): Legacy;
     is<T extends Format>(format: T): this is ReturnType<ColorConversions[T]>;
     as<T extends Format>(format: T): ReturnType<ColorConversions[T]>;
@@ -146,7 +146,7 @@ export declare class Oklab implements Color {
     readonly b: number;
     readonly alpha: number | null;
     readonly channels: [ColorChannel, ColorChannel, ColorChannel, ColorChannel];
-    constructor(l: number, a: number, b: number, alpha: number | null, authoredText?: string | undefined);
+    constructor(l: number, a: number, b: number, alpha: number | null, authoredText?: string);
     asLegacyColor(): Legacy;
     is<T extends Format>(format: T): this is ReturnType<ColorConversions[T]>;
     as<T extends Format>(format: T): ReturnType<ColorConversions[T]>;
@@ -167,7 +167,7 @@ export declare class Oklch implements Color {
     readonly h: number;
     readonly alpha: number | null;
     readonly channels: [ColorChannel, ColorChannel, ColorChannel, ColorChannel];
-    constructor(l: number, c: number, h: number, alpha: number | null, authoredText?: string | undefined);
+    constructor(l: number, c: number, h: number, alpha: number | null, authoredText?: string);
     asLegacyColor(): Legacy;
     is<T extends Format>(format: T): this is ReturnType<ColorConversions[T]>;
     as<T extends Format>(format: T): ReturnType<ColorConversions[T]>;
@@ -189,7 +189,7 @@ export declare class ColorFunction implements Color {
     readonly alpha: number | null;
     readonly colorSpace: ColorSpace;
     get channels(): [ColorChannel, ColorChannel, ColorChannel, ColorChannel];
-    constructor(colorSpace: ColorSpace, p0: number, p1: number, p2: number, alpha: number | null, authoredText?: string | undefined);
+    constructor(colorSpace: ColorSpace, p0: number, p1: number, p2: number, alpha: number | null, authoredText?: string);
     asLegacyColor(): Legacy;
     is<T extends Format>(format: T): this is ReturnType<ColorConversions[T]>;
     as<T extends Format>(format: T): ReturnType<ColorConversions[T]>;
@@ -223,9 +223,9 @@ export declare class HSL implements Color {
     readonly l: number;
     readonly alpha: number | null;
     readonly channels: [ColorChannel, ColorChannel, ColorChannel, ColorChannel];
-    constructor(h: number, s: number, l: number, alpha: number | null | undefined, authoredText?: string);
+    constructor(h: number, s: number, l: number, alpha?: number | null, authoredText?: string);
     equal(color: Color): boolean;
-    asString(format?: Format | undefined): string;
+    asString(format?: Format): string;
     setAlpha(alpha: number): HSL;
     format(): Format;
     is<T extends Format>(format: T): this is ReturnType<ColorConversions[T]>;
@@ -248,7 +248,7 @@ export declare class HWB implements Color {
     readonly channels: [ColorChannel, ColorChannel, ColorChannel, ColorChannel];
     constructor(h: number, w: number, b: number, alpha: number | null, authoredText?: string);
     equal(color: Color): boolean;
-    asString(format?: Format | undefined): string;
+    asString(format?: Format): string;
     setAlpha(alpha: number): HWB;
     format(): Format;
     is<T extends Format>(format: T): this is ReturnType<ColorConversions[T]>;
@@ -277,13 +277,13 @@ declare abstract class ShortFormatColorBase implements Color {
     getAuthoredText(): string | null;
     getRawParameters(): Color3D;
     isGamutClipped(): boolean;
-    asString(format?: Format | undefined): string;
+    asString(format?: Format): string;
     getAsRawString(format?: Format): string;
     protected abstract stringify(r: number, g: number, b: number): string;
 }
 export declare class ShortHex extends ShortFormatColorBase {
     setAlpha(alpha: number): Color;
-    asString(format?: Format | undefined): string;
+    asString(format?: Format): string;
     protected stringify(r: number, g: number, b: number): string;
 }
 export declare class Nickname extends ShortFormatColorBase {
@@ -291,7 +291,7 @@ export declare class Nickname extends ShortFormatColorBase {
     constructor(nickname: string, color: Legacy);
     static fromName(name: string, text: string): Nickname | null;
     protected stringify(): string;
-    getAsRawString(format?: Format | undefined): string;
+    getAsRawString(format?: Format): string;
 }
 export declare class Legacy implements Color {
     #private;
@@ -302,7 +302,7 @@ export declare class Legacy implements Color {
     shortHex(): ShortHex | null;
     constructor(rgba: Color3D | Color4DOr3D, format: LegacyColor, authoredText?: string);
     static fromHex(hex: string, text: string): Legacy | ShortHex;
-    static fromRGBAFunction(r: string, g: string, b: string, alpha: string | undefined, text: string): Legacy | null;
+    static fromRGBAFunction(r: string, g: string, b: string, alpha: string, text: string): Legacy | null;
     static fromRGBA(rgba: number[], authoredText?: string): Legacy;
     static fromHSVA(hsva: Color4D): Legacy;
     is<T extends Format>(format: T): this is ReturnType<ColorConversions[T]>;
@@ -321,7 +321,7 @@ export declare class Legacy implements Color {
         r: number;
         g: number;
         b: number;
-        a: (number | undefined);
+        a?: number;
     };
     invert(): Legacy;
     /**
@@ -370,7 +370,7 @@ export declare const IsolationModeHighlight: {
 type Space = number | {
     min: number;
     max: number;
-    count: (number | undefined);
+    count?: number;
 };
 export declare class Generator {
     #private;

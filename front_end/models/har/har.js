@@ -576,8 +576,7 @@ var Importer = class _Importer {
     request.setRemoteAddress(entry.serverIPAddress || "", Number(entry.connection) || 80);
     request.setResourceType(_Importer.getResourceType(request, entry, pageLoad));
     const includedRequestCookies = entry.request.cookies.map((cookie) => ({
-      cookie: this.fillCookieFromHARCookie(0, cookie),
-      exemptionReason: void 0
+      cookie: this.fillCookieFromHARCookie(0, cookie)
     }));
     request.setIncludedRequestCookies(includedRequestCookies);
     const responseCookies = entry.response.cookies.map(this.fillCookieFromHARCookie.bind(
@@ -806,15 +805,11 @@ var Entry = class _Entry {
       }
     }
     const entry = {
-      _connectionId: void 0,
-      _fromCache: void 0,
       _initiator: exportedInitiator,
       _priority: harEntry.request.priority(),
       _resourceType: harEntry.request.resourceType().name(),
-      _webSocketMessages: void 0,
       cache: {},
       connection,
-      pageref: void 0,
       request: await harEntry.buildRequest(),
       response: harEntry.buildResponse(),
       // IPv6 address should not have square brackets per (https://tools.ietf.org/html/rfc2373#section-2.2).
@@ -866,8 +861,7 @@ var Entry = class _Entry {
       queryString: this.buildParameters(this.request.queryParameters || []),
       cookies: this.buildCookies(this.request.includedRequestCookies().map((includedRequestCookie) => includedRequestCookie.cookie)),
       headersSize: headersText ? headersText.length : -1,
-      bodySize: await this.requestBodySize(),
-      postData: void 0
+      bodySize: await this.requestBodySize()
     };
     const postData = await this.buildPostData();
     if (postData) {
@@ -902,8 +896,7 @@ var Entry = class _Entry {
   buildContent() {
     const content = {
       size: this.request.resourceSize,
-      mimeType: this.request.mimeType || "x-unknown",
-      compression: void 0
+      mimeType: this.request.mimeType || "x-unknown"
     };
     const compression = this.responseCompression;
     if (typeof compression === "number") {
@@ -925,8 +918,7 @@ var Entry = class _Entry {
       send: 0,
       wait: 0,
       receive: 0,
-      _blocked_queueing: -1,
-      _blocked_proxy: void 0
+      _blocked_queueing: -1
     };
     const queuedTime = issueTime < startTime ? startTime - issueTime : -1;
     result.blocked = _Entry.toMilliseconds(queuedTime);
@@ -1012,9 +1004,7 @@ var Entry = class _Entry {
       domain: cookie.domain(),
       expires: cookie.expiresDate(Log.pseudoWallTime(this.request, this.request.startTime)),
       httpOnly: cookie.httpOnly(),
-      secure: cookie.secure(),
-      sameSite: void 0,
-      partitionKey: void 0
+      secure: cookie.secure()
     };
     if (cookie.sameSite()) {
       c.sameSite = cookie.sameSite();

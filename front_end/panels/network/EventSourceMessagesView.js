@@ -83,8 +83,6 @@ export class EventSourceMessagesView extends UI.Widget.VBox {
         this.dataGrid = new DataGrid.SortableDataGrid.SortableDataGrid({
             displayName: i18nString(UIStrings.eventSource),
             columns,
-            deleteCallback: undefined,
-            refreshCallback: undefined,
         });
         this.dataGrid.setStriped(true);
         this.dataGrid.setEnableAutoScrollToBottom(true);

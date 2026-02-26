@@ -157,7 +157,6 @@ export class SourceMap {
                 sourceURL: this.sourceURLs()[callsite.sourceIndex],
                 sourceLineNumber: callsite.line,
                 sourceColumnNumber: callsite.column,
-                name: undefined,
             };
         }
         const mappings = this.mappings();

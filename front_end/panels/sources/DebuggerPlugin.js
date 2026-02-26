@@ -188,7 +188,7 @@ export class DebuggerPlugin extends Plugin {
     // locations, so breakpoint manipulation is permanently disabled.
     initializedMuted;
     ignoreListInfobar;
-    refreshBreakpointsTimeout = undefined;
+    refreshBreakpointsTimeout;
     activeBreakpointDialog = null;
     #activeBreakpointEditRequest = undefined;
     #scheduledFinishingActiveDialog = false;
@@ -606,10 +606,6 @@ export class DebuggerPlugin extends Plugin {
                     returnByValue: false,
                     generatePreview: false,
                     throwOnSideEffect,
-                    timeout: undefined,
-                    disableBreaks: undefined,
-                    replMode: undefined,
-                    allowUnsafeEvalBlockedByCSP: undefined,
                 });
                 if (!result || 'error' in result || !result.object ||
                     (result.object.type === 'object' && result.object.subtype === 'error')) {

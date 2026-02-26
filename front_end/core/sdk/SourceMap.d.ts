@@ -67,10 +67,10 @@ export declare class SourceMapEntry {
     readonly lineNumber: number;
     readonly columnNumber: number;
     readonly sourceIndex?: number;
-    readonly sourceURL: Platform.DevToolsPath.UrlString | undefined;
+    readonly sourceURL?: Platform.DevToolsPath.UrlString;
     readonly sourceLineNumber: number;
     readonly sourceColumnNumber: number;
-    readonly name: string | undefined;
+    readonly name?: string;
     constructor(lineNumber: number, columnNumber: number, sourceIndex?: number, sourceURL?: Platform.DevToolsPath.UrlString, sourceLineNumber?: number, sourceColumnNumber?: number, name?: string);
     static compare(entry1: SourceMapEntry, entry2: SourceMapEntry): number;
 }

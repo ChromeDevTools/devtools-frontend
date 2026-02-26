@@ -146,7 +146,7 @@ export declare class AggregatedTimelineTreeView extends TimelineTreeView {
     displayInfoForGroupNode(node: Trace.Extras.TraceTree.Node): {
         name: string;
         color: string;
-        icon: (Element | undefined);
+        icon?: Element;
     };
     populateToolbar(toolbar: UI.Toolbar.Toolbar): void;
     private buildHeaviestStack;

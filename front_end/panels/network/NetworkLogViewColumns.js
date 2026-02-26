@@ -251,8 +251,6 @@ export class NetworkLogViewColumns {
         this.#dataGrid = new DataGrid.SortableDataGrid.SortableDataGrid(({
             displayName: i18nString(UIStrings.networkLog),
             columns: this.columns.map(NetworkLogViewColumns.convertToDataGridDescriptor),
-            deleteCallback: undefined,
-            refreshCallback: undefined,
         }));
         this.dataGridScroller = this.#dataGrid.scrollContainer;
         this.updateColumns();

@@ -112,7 +112,7 @@ export class CompatibilityTracksAppender {
         this.#entityMapper = entityMapper;
         this.#entryData = entryData;
         this.#colorGenerator = new Common.Color.Generator(
-        /* hueSpace= */ { min: 30, max: 55, count: undefined }, 
+        /* hueSpace= */ { min: 30, max: 55 }, 
         /* satSpace= */ { min: 70, max: 100, count: 6 }, 
         /* lightnessSpace= */ 50, 
         /* alphaSpace= */ 0.7);

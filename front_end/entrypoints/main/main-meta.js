@@ -818,8 +818,7 @@ UI.ContextMenu.registerProvider({
   },
   async loadProvider() {
     return new Components.Linkifier.ContentProviderContextMenuProvider();
-  },
-  experiment: void 0
+  }
 });
 UI.ContextMenu.registerProvider({
   contextTypes() {
@@ -829,8 +828,7 @@ UI.ContextMenu.registerProvider({
   },
   async loadProvider() {
     return new UI.LinkContextMenuProvider.LinkContextMenuProvider();
-  },
-  experiment: void 0
+  }
 });
 UI.ContextMenu.registerProvider({
   contextTypes() {
@@ -840,8 +838,7 @@ UI.ContextMenu.registerProvider({
   },
   async loadProvider() {
     return new Components.Linkifier.LinkContextMenuProvider();
-  },
-  experiment: void 0
+  }
 });
 UI.Toolbar.registerToolbarItem({
   separator: true,

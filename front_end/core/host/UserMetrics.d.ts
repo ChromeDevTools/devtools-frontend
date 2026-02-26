@@ -13,7 +13,7 @@ export declare class UserMetrics {
     keybindSetSettingChanged(keybindSet: string): void;
     keyboardShortcutFired(actionId: string): void;
     issuesPanelOpenedFrom(issueOpener: IssueOpener): void;
-    issuesPanelIssueExpanded(issueExpandedCategory: string | undefined): void;
+    issuesPanelIssueExpanded(issueExpandedCategory?: string): void;
     issuesPanelResourceOpened(issueCategory: string, type: string): void;
     issueCreated(code: string): void;
     experimentEnabledAtLaunch(experimentId: string): void;

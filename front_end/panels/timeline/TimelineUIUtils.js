@@ -850,7 +850,6 @@ export class TimelineUIUtils {
                 if (url) {
                     previewElement = await LegacyComponents.ImagePreview.ImagePreview.build(url, false, {
                         imageAltText: LegacyComponents.ImagePreview.ImagePreview.defaultAltTextForImageURL(url),
-                        precomputedFeatures: undefined,
                         align: "start" /* LegacyComponents.ImagePreview.Align.START */,
                     });
                 }
@@ -1981,8 +1980,14 @@ export class TimelineUIUtils {
     }
     static colorForId(id) {
         if (!colorGenerator) {
-            colorGenerator =
-                new Common.Color.Generator({ min: 30, max: 330, count: undefined }, { min: 50, max: 80, count: 3 }, 85);
+            colorGenerator = new Common.Color.Generator({
+                min: 30,
+                max: 330,
+            }, {
+                min: 50,
+                max: 80,
+                count: 3,
+            }, 85);
             colorGenerator.setColorForID('', '#f2ecdc');
         }
         return colorGenerator.colorForID(id);

@@ -589,6 +589,7 @@ __export(AiCodeGenerationTeaser_exports, {
   PROMOTION_ID: () => PROMOTION_ID2
 });
 import "./../../ui/components/tooltips/tooltips.js";
+import * as Common2 from "./../../core/common/common.js";
 import * as Host2 from "./../../core/host/host.js";
 import * as i18n5 from "./../../core/i18n/i18n.js";
 import * as Root2 from "./../../core/root/root.js";
@@ -628,6 +629,17 @@ var aiCodeGenerationTeaser_css_default = `/*
 
             devtools-button {
                 --override-button-icon-color: var(--sys-color-token-subtle);
+            }
+        }
+
+        .ai-code-generation-keyboard-action {
+            display: inline-flex;
+            gap: var(--sys-size-2);
+
+            span {
+                border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
+                border-radius: var(--sys-shape-corner-extra-small);
+                padding: 0 var(--sys-size-3);
             }
         }
 
@@ -700,6 +712,10 @@ var UIStringsNotTranslate2 = {
   /**
    * @description Text for teaser to generate code.
    */
+  toGenerateCode: "to generate code",
+  /**
+   * @description Text for teaser to generate code.
+   */
   ctrlItoGenerateCode: "ctrl+i to generate code",
   /**
    * @description Text for teaser to generate code in Mac.
@@ -708,11 +724,7 @@ var UIStringsNotTranslate2 = {
   /**
    * @description Text for teaser to learn how data is being used.
    */
-  ctrlOneTimeDisclaimerToLearnHowYourDataIsBeingUsed: "ctrl+. to learn how your data is being used.",
-  /**
-   * @description Text for teaser to learn how data is being used in Mac.
-   */
-  cmdOneTimeDisclaimerToLearnHowYourDataIsBeingUsed: "cmd+. to learn how your data is being used.",
+  toLearnHowYourDataIsBeingUsed: "to learn how your data is being used.",
   /**
    * @description Aria label for teaser to generate code.
    */
@@ -724,9 +736,13 @@ var UIStringsNotTranslate2 = {
   /**
    * @description Text for teaser when generating suggestion.
    */
-  generating: "Generating... (esc to cancel)",
+  generating: "Generating... (",
   /**
-   * @description Aria label for teaser when generating suggestion.
+   * @description Text for teaser when generating suggestion.
+   */
+  toCancel: " to cancel)",
+  /**
+   * @description Text for teaser when generating suggestion.
    */
   generatingAriaLabel: "Generating. Press escape to cancel.",
   /**
@@ -749,6 +765,26 @@ var UIStringsNotTranslate2 = {
    * @description Text for teaser when suggestion has been generated.
    */
   toAccept: "to accept",
+  /**
+   * @description Text for teaser keys.
+   */
+  ctrl: "ctrl",
+  /**
+   * @description Text for teaser keys.
+   */
+  cmd: "cmd",
+  /**
+   * @description Text for teaser keys.
+   */
+  i: "i",
+  /**
+   * @description Text for teaser keys.
+   */
+  period: ".",
+  /**
+   * @description Text for teaser keys.
+   */
+  esc: "esc",
   /**
    * @description Text for tooltip shown on hovering over "Relevant Data" in the disclaimer text for AI code generation in Console panel.
    */
@@ -803,15 +839,23 @@ var DEFAULT_VIEW2 = (input, output, target) => {
         render3(nothing2, target);
         return;
       }
-      const toGenerateCode = Host2.Platform.isMac() ? lockedString2(UIStringsNotTranslate2.cmdItoGenerateCode) : lockedString2(UIStringsNotTranslate2.ctrlItoGenerateCode);
-      const toLearnHowYourDataIsBeingUsedScreenReaderOnly = Host2.Platform.isMac() ? lockedString2(UIStringsNotTranslate2.pressCmdPeriodToLearnHowYourDataIsBeingUsed) : lockedString2(UIStringsNotTranslate2.pressCtrlPeriodToLearnHowYourDataIsBeingUsed);
-      const toLearnHowYourDataIsBeingUsedVisible = Host2.Platform.isMac() ? lockedString2(UIStringsNotTranslate2.cmdOneTimeDisclaimerToLearnHowYourDataIsBeingUsed) : lockedString2(UIStringsNotTranslate2.ctrlOneTimeDisclaimerToLearnHowYourDataIsBeingUsed);
+      const toLearnHowYourDataIsBeingUsedScreenReaderOnly = Host2.Platform.isMac() ? UIStringsNotTranslate2.pressCmdPeriodToLearnHowYourDataIsBeingUsed : UIStringsNotTranslate2.pressCtrlPeriodToLearnHowYourDataIsBeingUsed;
+      const screenReaderText = (Host2.Platform.isMac() ? UIStringsNotTranslate2.cmdItoGenerateCode : UIStringsNotTranslate2.ctrlItoGenerateCode) + " " + toLearnHowYourDataIsBeingUsedScreenReaderOnly;
+      const cmdOrCtrl = Host2.Platform.isMac() ? lockedString2(UIStringsNotTranslate2.cmd) : lockedString2(UIStringsNotTranslate2.ctrl);
+      const toGenerateCode = html3`<span class="ai-code-generation-keyboard-action">
+          <span>${cmdOrCtrl}</span>
+          <span>${lockedString2(UIStringsNotTranslate2.i)}</span>
+        </span>&nbsp;${lockedString2(UIStringsNotTranslate2.toGenerateCode)}`;
+      const toLearnHowYourDataIsBeingUsedVisible = html3`<span class="ai-code-generation-keyboard-action">
+          <span>${cmdOrCtrl}</span>
+          <span>${lockedString2(UIStringsNotTranslate2.period)}</span>
+        </span>&nbsp;${lockedString2(UIStringsNotTranslate2.toLearnHowYourDataIsBeingUsed)}`;
+      const teaserText = input.showDataUsageTeaser ? html3`${toGenerateCode}.&nbsp;${toLearnHowYourDataIsBeingUsedVisible}` : toGenerateCode;
       const tooltipDisclaimerText = getTooltipDisclaimerText(input.noLogging, input.panel);
       teaserLabel = html3`<div class="ai-code-generation-teaser-trigger">
-        <span aria-atomic="true" aria-live="assertive">${toGenerateCode}</span>
-        ${input.showDataUsageTeaser ? html3`<span aria-hidden="true">${". " + toLearnHowYourDataIsBeingUsedVisible}</span>` : nothing2}
+        <span aria-hidden="true">${teaserText}</span>
         <span class="ai-code-generation-teaser-screen-reader-only" aria-atomic="true" aria-live="assertive">
-          ${toLearnHowYourDataIsBeingUsedScreenReaderOnly}
+          ${lockedString2(screenReaderText)}
         </span>
         &nbsp;<devtools-button
           .data=${{
@@ -855,6 +899,10 @@ var DEFAULT_VIEW2 = (input, output, target) => {
       break;
     }
     case AiCodeGenerationTeaserDisplayState.DISCOVERY: {
+      if (!input.showDiscoveryTeaser) {
+        teaserLabel = nothing2;
+        break;
+      }
       const newBadge = UI3.UIUtils.maybeCreateNewBadge(PROMOTION_ID2);
       teaserLabel = newBadge ? html3`${lockedString2(UIStringsNotTranslate2.writeACommentToGenerateCode)}&nbsp;${newBadge}` : nothing2;
       break;
@@ -863,7 +911,11 @@ var DEFAULT_VIEW2 = (input, output, target) => {
       const teaserAriaLabel = lockedString2(UIStringsNotTranslate2.generatingAriaLabel);
       teaserLabel = html3`
         <div class="ai-code-generation-teaser-screen-reader-only">${teaserAriaLabel}</div>
-        <span class="ai-code-generation-spinner" aria-hidden="true"></span>&nbsp;${lockedString2(UIStringsNotTranslate2.generating)}&nbsp;
+        <span class="ai-code-generation-spinner" aria-hidden="true">
+          &nbsp;${lockedString2(UIStringsNotTranslate2.generating)}
+          <span class="ai-code-generation-keyboard-action"><span>${lockedString2(UIStringsNotTranslate2.esc)}</span></span>
+          ${lockedString2(UIStringsNotTranslate2.toCancel)}&nbsp;
+        </span>
         <span class="ai-code-generation-timer" aria-hidden="true" ${Directives.ref((el) => {
         if (el) {
           output.setTimerText = (text) => {
@@ -901,7 +953,9 @@ var AiCodeGenerationTeaser = class _AiCodeGenerationTeaser extends UI3.Widget.Wi
   #panel;
   #timerIntervalId;
   #loadStartTime;
+  #aiCodeGenerationUsedSetting = Common2.Settings.Settings.instance().createSetting("ai-code-generation-used", false);
   static #showDataUsageTeaser = true;
+  static #discoveryTeaserShownInSession = false;
   constructor(view) {
     super();
     this.markAsExternallyManaged();
@@ -916,6 +970,7 @@ var AiCodeGenerationTeaser = class _AiCodeGenerationTeaser extends UI3.Widget.Wi
       disclaimerTooltipId: this.#disclaimerTooltipId,
       noLogging: this.#noLogging,
       showDataUsageTeaser: _AiCodeGenerationTeaser.#showDataUsageTeaser,
+      showDiscoveryTeaser: !this.#aiCodeGenerationUsedSetting.get() && !_AiCodeGenerationTeaser.#discoveryTeaserShownInSession,
       panel: this.#panel
     }, this.#viewOutput, this.contentElement);
   }
@@ -932,6 +987,9 @@ var AiCodeGenerationTeaser = class _AiCodeGenerationTeaser extends UI3.Widget.Wi
     }
     if (this.#displayState === AiCodeGenerationTeaserDisplayState.TRIGGER) {
       _AiCodeGenerationTeaser.#showDataUsageTeaser = false;
+    }
+    if (this.#displayState === AiCodeGenerationTeaserDisplayState.DISCOVERY) {
+      _AiCodeGenerationTeaser.#discoveryTeaserShownInSession = true;
     }
     this.#displayState = displayState;
     this.requestUpdate();
@@ -977,6 +1035,9 @@ var AiCodeGenerationTeaser = class _AiCodeGenerationTeaser extends UI3.Widget.Wi
   }
   showTooltip() {
     this.#viewOutput.showTooltip?.();
+  }
+  static setDiscoveryTeaserShownInSessionForTest(value) {
+    _AiCodeGenerationTeaser.#discoveryTeaserShownInSession = value;
   }
 };
 
@@ -1497,7 +1558,7 @@ var AnnotationManager = class _AnnotationManager {
 // gen/front_end/panels/common/GdpSignUpDialog.js
 import "./../../ui/components/switch/switch.js";
 import "./../../ui/kit/kit.js";
-import * as Common2 from "./../../core/common/common.js";
+import * as Common3 from "./../../core/common/common.js";
 import * as Host4 from "./../../core/host/host.js";
 import * as i18n9 from "./../../core/i18n/i18n.js";
 import * as Badges from "./../../models/badges/badges.js";
@@ -1781,7 +1842,7 @@ var GdpSignUpDialog = class _GdpSignUpDialog extends UI6.Widget.VBox {
     const emailPreference = this.#keepMeUpdated ? Host4.GdpClient.EmailPreference.ENABLED : Host4.GdpClient.EmailPreference.DISABLED;
     const result = await Host4.GdpClient.GdpClient.instance().createProfile({ user, emailPreference });
     if (result) {
-      Common2.Settings.Settings.instance().moduleSetting("receive-gdp-badges").set(true);
+      Common3.Settings.Settings.instance().moduleSetting("receive-gdp-badges").set(true);
       await Badges.UserBadges.instance().initialize();
       Badges.UserBadges.instance().recordAction(Badges.BadgeAction.GDP_SIGN_UP_COMPLETE);
       this.#onSuccess?.();
@@ -1829,7 +1890,7 @@ var GdpSignUpDialog = class _GdpSignUpDialog extends UI6.Widget.VBox {
 // gen/front_end/panels/common/GeminiRebrandPromoDialog.js
 import "./../../ui/components/switch/switch.js";
 import "./../../ui/kit/kit.js";
-import * as Common3 from "./../../core/common/common.js";
+import * as Common4 from "./../../core/common/common.js";
 import * as Host5 from "./../../core/host/host.js";
 import * as i18n11 from "./../../core/i18n/i18n.js";
 import * as Root3 from "./../../core/root/root.js";
@@ -2026,7 +2087,7 @@ var GeminiRebrandPromoDialog = class _GeminiRebrandPromoDialog extends UI7.Widge
     if (currentAidaAvailability !== "available") {
       return;
     }
-    const setting = Common3.Settings.Settings.instance().createSetting(
+    const setting = Common4.Settings.Settings.instance().createSetting(
       "gemini-promo-dialog-shown",
       false,
       "Synced"
@@ -2552,7 +2613,7 @@ var AiCodeCompletionSummaryToolbar = class extends UI9.Widget.Widget {
 
 // gen/front_end/panels/common/BadgeNotification.js
 import "./../../ui/kit/kit.js";
-import * as Common4 from "./../../core/common/common.js";
+import * as Common5 from "./../../core/common/common.js";
 import * as Host8 from "./../../core/host/host.js";
 import * as i18n17 from "./../../core/i18n/i18n.js";
 import * as Badges2 from "./../../models/badges/badges.js";
@@ -2751,7 +2812,7 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
   `, target);
 };
 function revealBadgeSettings() {
-  void Common4.Revealer.reveal(Common4.Settings.moduleSetting("receive-gdp-badges"));
+  void Common5.Revealer.reveal(Common5.Settings.moduleSetting("receive-gdp-badges"));
 }
 var BadgeNotification = class extends UI10.Widget.Widget {
   jslogContext = "";
@@ -3235,7 +3296,7 @@ __export(ExtensionServer_exports, {
   HostsPolicy: () => HostsPolicy,
   RevealableNetworkRequestFilter: () => RevealableNetworkRequestFilter
 });
-import * as Common5 from "./../../core/common/common.js";
+import * as Common6 from "./../../core/common/common.js";
 import * as Host9 from "./../../core/host/host.js";
 import * as i18n19 from "./../../core/i18n/i18n.js";
 import * as Platform5 from "./../../core/platform/platform.js";
@@ -3334,7 +3395,7 @@ var RevealableNetworkRequestFilter = class {
     this.filter = filter;
   }
 };
-var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.ObjectWrapper {
+var ExtensionServer = class _ExtensionServer extends Common6.ObjectWrapper.ObjectWrapper {
   clientObjects;
   handlers;
   subscribers;
@@ -3608,7 +3669,7 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     if (message.command !== "showNetworkPanel") {
       return this.status.E_BADARG("command", `expected ${"showNetworkPanel"}`);
     }
-    void Common5.Revealer.reveal(new RevealableNetworkRequestFilter(message.filter));
+    void Common6.Revealer.reveal(new RevealableNetworkRequestFilter(message.filter));
     return this.status.OK();
   }
   onCreateRecorderView(message, port) {
@@ -3875,17 +3936,17 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     }
     const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(message.url);
     if (uiSourceCode) {
-      void Common5.Revealer.reveal(uiSourceCode.uiLocation(message.lineNumber, message.columnNumber));
+      void Common6.Revealer.reveal(uiSourceCode.uiLocation(message.lineNumber, message.columnNumber));
       return this.status.OK();
     }
     const resource = Bindings.ResourceUtils.resourceForURL(message.url);
     if (resource) {
-      void Common5.Revealer.reveal(resource);
+      void Common6.Revealer.reveal(resource);
       return this.status.OK();
     }
     const request = Logs.NetworkLog.NetworkLog.instance().requestForURL(message.url);
     if (request) {
-      void Common5.Revealer.reveal(request);
+      void Common6.Revealer.reveal(request);
       return this.status.OK();
     }
     return this.status.E_NOTFOUND(message.url);
@@ -3941,7 +4002,7 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
       isAllowed = this.extensionAllowedOnContentProvider(contentProviderOrUrl, port);
     } else {
       const url = contentProviderOrUrl;
-      resource = { url, type: Common5.ResourceType.resourceTypes.Other.name() };
+      resource = { url, type: Common6.ResourceType.resourceTypes.Other.name() };
       isAllowed = this.extensionAllowedOnURL(url, port);
     }
     if (isAllowed) {
@@ -3967,7 +4028,7 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     if (!(contentProvider instanceof Workspace.UISourceCode.UISourceCode)) {
       return this.extensionAllowedOnURL(contentProvider.contentURL(), port);
     }
-    if (contentProvider.contentType() !== Common5.ResourceType.resourceTypes.Script) {
+    if (contentProvider.contentType() !== Common6.ResourceType.resourceTypes.Script) {
       return this.extensionAllowedOnURL(contentProvider.contentURL(), port);
     }
     const scripts = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().scriptsForUISourceCode(contentProvider);
@@ -4378,7 +4439,7 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
   }
   static expandResourcePath(extensionOrigin, resourcePath) {
     const strippedOrigin = new URL(extensionOrigin).origin;
-    const resourceURL = new URL(Common5.ParsedURL.normalizePath(resourcePath), strippedOrigin);
+    const resourceURL = new URL(Common6.ParsedURL.normalizePath(resourcePath), strippedOrigin);
     if (resourceURL.origin !== strippedOrigin) {
       return void 0;
     }
@@ -4568,7 +4629,7 @@ __export(PersistenceUtils_exports, {
   PersistenceUtils: () => PersistenceUtils
 });
 import "./../../ui/kit/kit.js";
-import * as Common6 from "./../../core/common/common.js";
+import * as Common7 from "./../../core/common/common.js";
 import * as i18n21 from "./../../core/i18n/i18n.js";
 import * as Platform6 from "./../../core/platform/platform.js";
 import * as Persistence from "./../../models/persistence/persistence.js";
@@ -4606,7 +4667,7 @@ var PersistenceUtils = class _PersistenceUtils {
   static iconForUISourceCode(uiSourceCode) {
     const binding = Persistence.Persistence.PersistenceImpl.instance().binding(uiSourceCode);
     if (binding) {
-      if (!Common6.ParsedURL.schemeIs(binding.fileSystem.url(), "file:")) {
+      if (!Common7.ParsedURL.schemeIs(binding.fileSystem.url(), "file:")) {
         return null;
       }
       const dotClass = Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().project() === binding.fileSystem.project() ? "purple" : "green";
@@ -4614,7 +4675,7 @@ var PersistenceUtils = class _PersistenceUtils {
                                  title=${_PersistenceUtils.tooltipForUISourceCode(binding.network)}>
                   </devtools-icon>`;
     }
-    if (uiSourceCode.project().type() !== Workspace3.Workspace.projectTypes.FileSystem || !Common6.ParsedURL.schemeIs(uiSourceCode.url(), "file:")) {
+    if (uiSourceCode.project().type() !== Workspace3.Workspace.projectTypes.FileSystem || !Common7.ParsedURL.schemeIs(uiSourceCode.url(), "file:")) {
       return null;
     }
     if (Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().isActiveHeaderOverrides(uiSourceCode)) {
@@ -4625,7 +4686,7 @@ var PersistenceUtils = class _PersistenceUtils {
                 </devtools-icon>`;
   }
 };
-var LinkDecorator = class extends Common6.ObjectWrapper.ObjectWrapper {
+var LinkDecorator = class extends Common7.ObjectWrapper.ObjectWrapper {
   constructor(persistence) {
     super();
     persistence.addEventListener(Persistence.Persistence.Events.BindingCreated, this.bindingChanged, this);
@@ -4647,7 +4708,7 @@ __export(DOMLinkifier_exports, {
   DeferredDOMNodeLink: () => DeferredDOMNodeLink,
   Linkifier: () => Linkifier2
 });
-import * as Common7 from "./../../core/common/common.js";
+import * as Common8 from "./../../core/common/common.js";
 import * as i18n23 from "./../../core/i18n/i18n.js";
 import * as SDK3 from "./../../core/sdk/sdk.js";
 import * as UI14 from "./../../ui/legacy/legacy.js";
@@ -4786,7 +4847,7 @@ var DOMNodeLink = class extends UI14.Widget.Widget {
       preventKeyboardFocus: options.preventKeyboardFocus,
       classes: [],
       onClick: () => {
-        void Common7.Revealer.reveal(this.#node);
+        void Common8.Revealer.reveal(this.#node);
         void this.#node?.scrollIntoView();
         return false;
       },
@@ -4880,12 +4941,12 @@ var DeferredDOMNodeLink = class extends UI14.Widget.Widget {
           if (node && this.#styleSheetId) {
             for (const adoptedStyle of node.adoptedStyleSheetsForNode) {
               if (adoptedStyle.id === this.#styleSheetId) {
-                void Common7.Revealer.reveal(adoptedStyle);
+                void Common8.Revealer.reveal(adoptedStyle);
                 return;
               }
             }
           }
-          void Common7.Revealer.reveal(node);
+          void Common8.Revealer.reveal(node);
           void node?.scrollIntoView();
         });
       }

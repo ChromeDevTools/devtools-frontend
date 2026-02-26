@@ -4,7 +4,7 @@
 export class Progress {
     totalWork = 0;
     worked = 0;
-    title = undefined;
+    title;
     canceled = false;
     done = false;
 }

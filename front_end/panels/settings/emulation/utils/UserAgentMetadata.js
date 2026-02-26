@@ -68,6 +68,6 @@ export function validateAsStructuredHeadersString(value, errorString) {
     if (parsedResult.kind === 0 /* ResultKind.ERROR */) {
         return { valid: false, errorMessage: errorString };
     }
-    return { valid: true, errorMessage: undefined };
+    return { valid: true };
 }
 //# sourceMappingURL=UserAgentMetadata.js.map

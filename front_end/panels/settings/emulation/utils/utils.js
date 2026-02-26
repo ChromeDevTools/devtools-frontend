@@ -628,7 +628,7 @@ function validateAsStructuredHeadersString(value, errorString) {
   if (parsedResult.kind === 0) {
     return { valid: false, errorMessage: errorString };
   }
-  return { valid: true, errorMessage: void 0 };
+  return { valid: true };
 }
 export {
   StructuredHeaders_exports as StructuredHeaders,

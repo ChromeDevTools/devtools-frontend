@@ -66,7 +66,7 @@ export class ChildTargetManager extends SDKModel {
     }
     dispose() {
         for (const sessionId of this.#childTargetsBySessionId.keys()) {
-            this.detachedFromTarget({ sessionId, targetId: undefined });
+            this.detachedFromTarget({ sessionId });
         }
     }
     targetCreated({ targetInfo }) {

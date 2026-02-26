@@ -366,9 +366,9 @@ export class DebuggerLanguagePluginManager {
         try {
             const object = await plugin.evaluate(expression, location, this.stopIdForCallFrame(callFrame));
             if (object) {
-                return { object: await wrapRemoteObject(callFrame, object, plugin), exceptionDetails: undefined };
+                return { object: await wrapRemoteObject(callFrame, object, plugin) };
             }
-            return { object: new SDK.RemoteObject.LocalJSONObject(undefined), exceptionDetails: undefined };
+            return { object: new SDK.RemoteObject.LocalJSONObject(undefined) };
         }
         catch (error) {
             if (error instanceof FormattingError) {
@@ -636,14 +636,12 @@ export class DebuggerLanguagePluginManager {
             if (uiLocation) {
                 return {
                     uiSourceCode: uiLocation.uiSourceCode,
-                    url: undefined,
                     name,
                     line: uiLocation.lineNumber,
                     column: uiLocation.columnNumber ?? -1,
                 };
             }
             return {
-                uiSourceCode: undefined,
                 url: fallback.url,
                 name: fallback.functionName,
                 line: fallback.lineNumber,

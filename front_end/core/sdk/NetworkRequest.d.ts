@@ -323,7 +323,7 @@ export interface BlockedCookieWithReason {
 }
 export interface IncludedCookieWithReason {
     cookie: Cookie;
-    exemptionReason: Protocol.Network.CookieExemptionReason | undefined;
+    exemptionReason?: Protocol.Network.CookieExemptionReason;
 }
 export interface ExemptedSetCookieWithReason {
     cookie: Cookie;

@@ -771,7 +771,12 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin(UI.Widget.VBox) {
     }
     loadPalettes() {
         this.palettes.set(MaterialPalette.title, MaterialPalette);
-        const defaultCustomPalette = { title: 'Custom', colors: [], colorNames: [], mutable: true, matchUserFormat: undefined };
+        const defaultCustomPalette = {
+            title: 'Custom',
+            colors: [],
+            colorNames: [],
+            mutable: true,
+        };
         this.customPaletteSetting =
             Common.Settings.Settings.instance().createSetting('custom-color-palette', defaultCustomPalette);
         const customPalette = this.customPaletteSetting.get();
@@ -1344,7 +1349,6 @@ export class PaletteGenerator {
             colors: [...paletteColors.keys()].sort(hueComparator),
             colorNames: [],
             mutable: false,
-            matchUserFormat: undefined,
         });
     }
     async processStylesheet(stylesheet) {

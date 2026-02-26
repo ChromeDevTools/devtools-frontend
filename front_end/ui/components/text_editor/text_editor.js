@@ -950,6 +950,7 @@ var AiCodeGenerationProvider = class _AiCodeGenerationProvider {
   #aiCodeGenerationEnabledSetting = Common2.Settings.Settings.instance().createSetting("ai-code-completion-enabled", false);
   #aiCodeGenerationSettingEnabled = this.#aiCodeGenerationEnabledSetting.get();
   #aiCodeGenerationOnboardingCompletedSetting = Common2.Settings.Settings.instance().createSetting("ai-code-generation-onboarding-completed", false);
+  #aiCodeGenerationUsedSetting = Common2.Settings.Settings.instance().createSetting("ai-code-generation-used", false);
   #generationTeaserCompartment = new CodeMirror2.Compartment();
   #generationTeaser;
   #editor;
@@ -1159,6 +1160,7 @@ var AiCodeGenerationProvider = class _AiCodeGenerationProvider {
     if (!this.#editor || !this.#aiCodeGeneration) {
       return;
     }
+    this.#aiCodeGenerationUsedSetting.set(true);
     this.#aiCodeGenerationCitations = [];
     const cursor = this.#editor.state.selection.main.head;
     const commentNodeInfo = AiCodeGenerationParser.extractCommentNodeInfo(this.#editor.state, cursor);
@@ -1173,14 +1175,15 @@ var AiCodeGenerationProvider = class _AiCodeGenerationProvider {
     this.#generationTeaser.displayState = PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.LOADING;
     try {
       const startTime = performance.now();
-      this.#aiCodeGenerationConfig?.onRequestTriggered();
+      this.#aiCodeGenerationConfig.onRequestTriggered();
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiCodeGenerationRequestTriggered);
-      const generationResponse = await this.#aiCodeGeneration.generateCode(query, AiCodeGeneration.AiCodeGeneration.basePreamble, this.#aiCodeGenerationConfig?.generationContext.inferenceLanguage, options);
+      const preamble = AiCodeGeneration.AiCodeGeneration.basePreamble + this.#aiCodeGenerationConfig.generationContext.additionalPreambleContext;
+      const generationResponse = await this.#aiCodeGeneration.generateCode(query, preamble, this.#aiCodeGenerationConfig.generationContext.inferenceLanguage, options);
       if (this.#generationTeaser) {
         this.#dismissTeaserAndSuggestion();
       }
       if (!generationResponse || generationResponse.samples.length === 0) {
-        this.#aiCodeGenerationConfig?.onResponseReceived();
+        this.#aiCodeGenerationConfig.onResponseReceived();
         return;
       }
       const topSample = generationResponse.samples[0];
@@ -1209,14 +1212,14 @@ var AiCodeGenerationProvider = class _AiCodeGenerationProvider {
       AiCodeGeneration.debugLog("Suggestion dispatched to the editor", suggestionText);
       const citations = topSample.attributionMetadata?.citations ?? [];
       this.#aiCodeGenerationCitations = citations;
-      this.#aiCodeGenerationConfig?.onResponseReceived();
+      this.#aiCodeGenerationConfig.onResponseReceived();
       return;
     } catch (e) {
       if (e instanceof Host.DispatchHttpRequestClient.DispatchHttpRequestError && e.type === Host.DispatchHttpRequestClient.ErrorType.ABORT) {
         return;
       }
       AiCodeGeneration.debugLog("Error while fetching code generation suggestions from AIDA", e);
-      this.#aiCodeGenerationConfig?.onResponseReceived();
+      this.#aiCodeGenerationConfig.onResponseReceived();
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiCodeGenerationError);
     }
     if (this.#generationTeaser) {
@@ -1347,7 +1350,8 @@ var AiCodeCompletionProvider = class _AiCodeCompletionProvider {
     if (AiCodeGeneration3.AiCodeGeneration.AiCodeGeneration.isAiCodeGenerationEnabled(devtoolsLocale.locale)) {
       this.#aiCodeGenerationConfig = {
         generationContext: {
-          inferenceLanguage: this.#aiCodeCompletionConfig.completionContext.inferenceLanguage
+          inferenceLanguage: this.#aiCodeCompletionConfig.completionContext.inferenceLanguage,
+          additionalPreambleContext: this.#aiCodeCompletionConfig.generationContext.additionalPreambleContext
         },
         onSuggestionAccepted: this.#aiCodeCompletionConfig.onSuggestionAccepted.bind(this),
         onRequestTriggered: this.#aiCodeCompletionConfig.onRequestTriggered.bind(this),

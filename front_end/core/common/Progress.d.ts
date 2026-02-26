@@ -1,14 +1,14 @@
 export interface Progress {
     totalWork: number;
     worked: number;
-    title: string | undefined;
+    title?: string;
     canceled: boolean;
     done: boolean;
 }
 export declare class Progress implements Progress {
     totalWork: number;
     worked: number;
-    title: string | undefined;
+    title?: string;
     canceled: boolean;
     done: boolean;
 }

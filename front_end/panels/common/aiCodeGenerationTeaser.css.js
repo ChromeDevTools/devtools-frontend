@@ -35,6 +35,17 @@ export default `/*
             }
         }
 
+        .ai-code-generation-keyboard-action {
+            display: inline-flex;
+            gap: var(--sys-size-2);
+
+            span {
+                border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
+                border-radius: var(--sys-shape-corner-extra-small);
+                padding: 0 var(--sys-size-3);
+            }
+        }
+
         .ai-code-generation-teaser-generated {
             display: inline-flex;
             gap: var(--sys-size-2);

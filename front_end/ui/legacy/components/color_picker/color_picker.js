@@ -2518,7 +2518,12 @@ var Spectrum = class extends Common6.ObjectWrapper.eventMixin(UI4.Widget.VBox) {
   }
   loadPalettes() {
     this.palettes.set(MaterialPalette.title, MaterialPalette);
-    const defaultCustomPalette = { title: "Custom", colors: [], colorNames: [], mutable: true, matchUserFormat: void 0 };
+    const defaultCustomPalette = {
+      title: "Custom",
+      colors: [],
+      colorNames: [],
+      mutable: true
+    };
     this.customPaletteSetting = Common6.Settings.Settings.instance().createSetting("custom-color-palette", defaultCustomPalette);
     const customPalette = this.customPaletteSetting.get();
     customPalette.colorNames = customPalette.colorNames || [];
@@ -3049,8 +3054,7 @@ var PaletteGenerator = class {
       title: GeneratedPaletteTitle,
       colors: [...paletteColors.keys()].sort(hueComparator),
       colorNames: [],
-      mutable: false,
-      matchUserFormat: void 0
+      mutable: false
     });
   }
   async processStylesheet(stylesheet) {

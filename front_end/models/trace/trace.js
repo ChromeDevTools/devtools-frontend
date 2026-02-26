@@ -373,12 +373,7 @@ function createLanternRequest(parsedTrace, workerThreads, request) {
     priority: request.args.data.priority,
     frameId: request.args.data.frame,
     fromWorker,
-    serverResponseTime: request.args.data.lrServerResponseTime ?? void 0,
-    // Set later.
-    redirects: void 0,
-    redirectSource: void 0,
-    redirectDestination: void 0,
-    initiatorRequest: void 0
+    serverResponseTime: request.args.data.lrServerResponseTime
   };
 }
 function chooseInitiatorRequest(request, requestsByURL) {

@@ -180,6 +180,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
           jslog=${VisualLogging.section().context('query-string')}
           @contextmenu=${onContextMenu(input.viewQueryParamSource, input.setViewQueryParamSource)}
           @expanded=${(e) => queryStringExpandedSetting.set(e.detail.expanded)}
+          ?open=${queryStringExpandedSetting.get()}
         >
         <div class="selection fill"></div>${i18nString(UIStrings.queryStringParameters)}<span
           class=payload-count>${`\xA0(${input.queryParameters?.length ?? 0})`}</span>${createViewSourceToggle(input.viewQueryParamSource, input.setViewQueryParamSource)}
@@ -191,7 +192,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
             @click=${toggleURLDecoding}>
           ${input.decodeRequestParameters ? i18nString(UIStrings.viewUrlEncoded) : i18nString(UIStrings.viewDecoded)}
         </devtools-button>
-        <ul role=group ?hidden=${!queryStringExpandedSetting.get()}>
+        <ul role=group>
           ${input.viewQueryParamSource ? createSourceText(input.queryString ?? '')
         : createParsedParams(input.queryParameters ?? [])}
         </ul>
@@ -202,6 +203,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
           jslog=${VisualLogging.section().context('form-data')}
           @contextmenu=${onContextMenu(input.viewFormParamSource, input.setViewFormParamSource)}
           @expanded=${(e) => formDataExpandedSetting.set(e.detail.expanded)}
+          ?open=${formDataExpandedSetting.get()}
         >
         <div class="selection fill"></div>${i18nString(UIStrings.formData)}<span
           class=payload-count>${`\xA0(${input.formParameters?.length ?? 0})`}</span>${createViewSourceToggle(input.viewFormParamSource, input.setViewFormParamSource)}
@@ -213,7 +215,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
             @click=${toggleURLDecoding}>
           ${input.decodeRequestParameters ? i18nString(UIStrings.viewUrlEncoded) : i18nString(UIStrings.viewDecoded)}
         </devtools-button>
-        <ul role=group ?hidden=${!formDataExpandedSetting.get()}>>
+        <ul role=group>
           ${input.viewFormParamSource ? createSourceText(input.formData ?? '')
         : createParsedParams(input.formParameters ?? [])}
         </ul>
@@ -225,9 +227,10 @@ export const DEFAULT_VIEW = (input, output, target) => {
           @contextmenu=${onContextMenu(input.viewJSONPayloadSource, input.setViewJSONPayloadSource, 
     /* includeURLDecodingOption*/ false)}
           @expanded=${(e) => requestPayloadExpandedSetting.set(e.detail.expanded)}
+          ?open=${requestPayloadExpandedSetting.get()}
         >
         <div class="selection fill"></div>${i18nString(UIStrings.requestPayload)}${createViewSourceToggle(input.viewJSONPayloadSource, input.setViewJSONPayloadSource)}
-        <ul role=group ?hidden=${!requestPayloadExpandedSetting.get()}>
+        <ul role=group>
           ${!parsedFormData || input.viewJSONPayloadSource ? createSourceText(input.formData ?? '')
         : createPayload(parsedFormData)}
         </ul>

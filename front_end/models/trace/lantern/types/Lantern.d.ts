@@ -100,19 +100,19 @@ export interface NetworkRequest<T = AnyNetworkObject> {
     failed: boolean;
     statusCode: number;
     /** The network request that redirected to this one */
-    redirectSource: NetworkRequest<T> | undefined;
+    redirectSource?: NetworkRequest<T>;
     /** The network request that this one redirected to */
-    redirectDestination: NetworkRequest<T> | undefined;
+    redirectDestination?: NetworkRequest<T>;
     initiator: {
         type: InitiatorType;
         url?: string;
         stack?: CallStack;
     };
-    initiatorRequest: NetworkRequest<T> | undefined;
+    initiatorRequest?: NetworkRequest<T>;
     /** The chain of network requests that redirected to this one */
-    redirects: NetworkRequest[] | undefined;
-    timing: Protocol.Network.ResourceTiming | undefined;
-    resourceType: ResourceType | undefined;
+    redirects?: NetworkRequest[] | undefined;
+    timing?: Protocol.Network.ResourceTiming;
+    resourceType?: ResourceType;
     mimeType: string;
     priority: ResourcePriority;
     frameId: string | undefined;

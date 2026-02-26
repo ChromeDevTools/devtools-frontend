@@ -4,11 +4,11 @@ import { VBox } from './Widget.js';
 interface EmptyWidgetInput {
     header: string;
     text: string;
-    link?: Platform.DevToolsPath.UrlString | undefined | null;
+    link?: Platform.DevToolsPath.UrlString | null;
     extraElements?: Element[];
 }
 interface EmptyWidgetOutput {
-    contentElement: Element | undefined;
+    contentElement?: Element;
 }
 type View = (input: EmptyWidgetInput, output: EmptyWidgetOutput, target: HTMLElement) => void;
 export declare class EmptyWidget extends VBox {

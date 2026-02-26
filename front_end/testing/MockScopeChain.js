@@ -138,12 +138,10 @@ export class MockProtocolBackend {
         const payload = {
             callFrameId: '0',
             functionName: 'test',
-            functionLocation: undefined,
             location: innerScope.startLocation,
             url: scriptObject.sourceURL,
             scopeChain,
             this: { type: 'object' },
-            returnValue: undefined,
             canBeRestarted: false,
         };
         return new SDK.DebuggerModel.CallFrame(debuggerModel, scriptObject, payload, 0);

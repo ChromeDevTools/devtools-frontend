@@ -13,6 +13,7 @@ export declare const ARIA_ATTRIBUTES: Set<string>;
 export declare enum DOMNodeEvents {
     TOP_LAYER_INDEX_CHANGED = "TopLayerIndexChanged",
     SCROLLABLE_FLAG_UPDATED = "ScrollableFlagUpdated",
+    AD_RELATED_STATE_UPDATED = "AdRelatedStateUpdated",
     GRID_OVERLAY_STATE_CHANGED = "GridOverlayStateChanged",
     FLEX_CONTAINER_OVERLAY_STATE_CHANGED = "FlexContainerOverlayStateChanged",
     SCROLL_SNAP_OVERLAY_STATE_CHANGED = "ScrollSnapOverlayStateChanged",
@@ -21,6 +22,7 @@ export declare enum DOMNodeEvents {
 export interface DOMNodeEventTypes {
     [DOMNodeEvents.TOP_LAYER_INDEX_CHANGED]: void;
     [DOMNodeEvents.SCROLLABLE_FLAG_UPDATED]: void;
+    [DOMNodeEvents.AD_RELATED_STATE_UPDATED]: void;
     [DOMNodeEvents.GRID_OVERLAY_STATE_CHANGED]: {
         enabled: boolean;
     };
@@ -71,7 +73,7 @@ export declare class DOMNode extends Common.ObjectWrapper.ObjectWrapper<DOMNodeE
     private requestChildDocument;
     setTopLayerIndex(idx: number): void;
     topLayerIndex(): number;
-    isAdFrameNode(): boolean;
+    isAdRelatedNode(): boolean;
     isRootNode(): boolean;
     isSVGNode(): boolean;
     isScrollable(): boolean;
@@ -85,6 +87,7 @@ export declare class DOMNode extends Common.ObjectWrapper.ObjectWrapper<DOMNodeE
     children(): DOMNode[] | null;
     setChildren(children: DOMNode[]): void;
     setIsScrollable(isScrollable: boolean): void;
+    setIsAdRelated(isAdRelated: boolean): void;
     setAffectedByStartingStyles(affectedByStartingStyles: boolean): void;
     hasAttributes(): boolean;
     childNodeCount(): number;
@@ -254,6 +257,7 @@ export declare class DOMModel extends SDKModel<EventTypes> {
     pseudoElementAdded(parentId: Protocol.DOM.NodeId, pseudoElement: Protocol.DOM.Node): void;
     adoptedStyleSheetsModified(parentId: Protocol.DOM.NodeId, styleSheets: Protocol.DOM.StyleSheetId[]): void;
     scrollableFlagUpdated(nodeId: Protocol.DOM.NodeId, isScrollable: boolean): void;
+    adRelatedStateUpdated(nodeId: Protocol.DOM.NodeId, isAdRelated: boolean): void;
     affectedByStartingStylesFlagUpdated(nodeId: Protocol.DOM.NodeId, affectedByStartingStyles: boolean): void;
     pseudoElementRemoved(parentId: Protocol.DOM.NodeId, pseudoElementId: Protocol.DOM.NodeId): void;
     distributedNodesUpdated(insertionPointId: Protocol.DOM.NodeId, distributedNodes: Protocol.DOM.BackendNode[]): void;

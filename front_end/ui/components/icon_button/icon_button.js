@@ -196,7 +196,7 @@ var iconButton_css_default = `/*
 var { html: html2 } = Lit;
 var IconButton = class extends HTMLElement {
   #shadow = this.attachShadow({ mode: "open" });
-  #clickHandler = void 0;
+  #clickHandler;
   #groups = [];
   #compact = false;
   #leadingText = "";

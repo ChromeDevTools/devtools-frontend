@@ -6488,6 +6488,7 @@ export declare namespace Emulation {
      */
     const enum DisabledImageType {
         Avif = "avif",
+        Jxl = "jxl",
         Webp = "webp"
     }
     interface CanEmulateResponse extends ProtocolResponseWithError {

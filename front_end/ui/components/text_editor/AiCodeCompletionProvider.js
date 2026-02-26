@@ -53,6 +53,7 @@ export class AiCodeCompletionProvider {
             this.#aiCodeGenerationConfig = {
                 generationContext: {
                     inferenceLanguage: this.#aiCodeCompletionConfig.completionContext.inferenceLanguage,
+                    additionalPreambleContext: this.#aiCodeCompletionConfig.generationContext.additionalPreambleContext,
                 },
                 onSuggestionAccepted: this.#aiCodeCompletionConfig.onSuggestionAccepted.bind(this),
                 onRequestTriggered: this.#aiCodeCompletionConfig.onRequestTriggered.bind(this),

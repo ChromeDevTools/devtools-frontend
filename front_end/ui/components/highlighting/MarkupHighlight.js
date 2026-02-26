@@ -50,8 +50,6 @@ export function highlightRangesWithStyleClass(element, resultRanges, styleClass,
             type: 'changed',
             oldText: lastText,
             newText: lastTextNode.textContent,
-            nextSibling: undefined,
-            parent: undefined,
         });
         if (startIndex === endIndex && lastTextNode.parentElement) {
             lastTextNode.parentElement.insertBefore(highlightNode, lastTextNode);
@@ -60,8 +58,6 @@ export function highlightRangesWithStyleClass(element, resultRanges, styleClass,
                 type: 'added',
                 nextSibling: lastTextNode,
                 parent: lastTextNode.parentElement,
-                oldText: undefined,
-                newText: undefined,
             });
             highlightNodes.push(highlightNode);
             const prefixNode = ownerDocument.createTextNode(lastText.substring(0, startOffset - nodeRanges[startIndex].offset));
@@ -71,8 +67,6 @@ export function highlightRangesWithStyleClass(element, resultRanges, styleClass,
                 type: 'added',
                 nextSibling: highlightNode,
                 parent: lastTextNode.parentElement,
-                oldText: undefined,
-                newText: undefined,
             });
         }
         else {
@@ -86,8 +80,6 @@ export function highlightRangesWithStyleClass(element, resultRanges, styleClass,
                     type: 'added',
                     nextSibling: anchorElement || undefined,
                     parent: firstTextNode.parentElement,
-                    oldText: undefined,
-                    newText: undefined,
                 });
                 highlightNodes.push(highlightNode);
             }
@@ -97,8 +89,6 @@ export function highlightRangesWithStyleClass(element, resultRanges, styleClass,
                 type: 'changed',
                 oldText: firstText,
                 newText: firstTextNode.textContent,
-                nextSibling: undefined,
-                parent: undefined,
             });
             for (let j = startIndex + 1; j < endIndex; j++) {
                 const textNode = textNodes[j];
@@ -109,8 +99,6 @@ export function highlightRangesWithStyleClass(element, resultRanges, styleClass,
                     type: 'changed',
                     oldText: text || undefined,
                     newText: textNode.textContent,
-                    nextSibling: undefined,
-                    parent: undefined,
                 });
             }
         }

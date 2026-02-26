@@ -1749,7 +1749,7 @@ export class Legacy {
     }
     toProtocolRGBA() {
         const rgba = this.canonicalRGBA();
-        const result = { r: rgba[0], g: rgba[1], b: rgba[2], a: undefined };
+        const result = { r: rgba[0], g: rgba[1], b: rgba[2] };
         if (rgba[3] !== 1) {
             result.a = rgba[3];
         }
@@ -1994,7 +1994,7 @@ export class Generator {
     #alphaSpace;
     #colors = new Map();
     constructor(hueSpace, satSpace, lightnessSpace, alphaSpace) {
-        this.#hueSpace = hueSpace || { min: 0, max: 360, count: undefined };
+        this.#hueSpace = hueSpace || { min: 0, max: 360 };
         this.#satSpace = satSpace || 67;
         this.#lightnessSpace = lightnessSpace || 80;
         this.#alphaSpace = alphaSpace || 1;

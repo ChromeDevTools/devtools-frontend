@@ -1982,7 +1982,7 @@ var IgnoreListSetting = class _IgnoreListSetting extends UI5.Widget.Widget {
     return Common3.Settings.Settings.instance().moduleSetting("skip-stack-frames-pattern");
   }
   #onNewRegexInputFocus(value) {
-    this.#editingRegexSetting = { pattern: value, disabled: false, disabledForUrl: void 0 };
+    this.#editingRegexSetting = { pattern: value, disabled: false };
     this.#regexPatterns.push(this.#editingRegexSetting);
   }
   #finishEditing() {
@@ -6545,7 +6545,6 @@ async function renderPreviewElement(request, target, previewElementsCache) {
   if (!previewElementsCache.get(request)) {
     const previewOpts = {
       imageAltText: LegacyComponents3.ImagePreview.ImagePreview.defaultAltTextForImageURL(url),
-      precomputedFeatures: void 0,
       align: "start",
       hideFileData: true
     };

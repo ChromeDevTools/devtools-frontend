@@ -279,23 +279,15 @@ export class IDBDataView extends UI.View.SimpleView {
         const columns = [];
         // Create column defaults so that we avoid repetition below.
         const columnDefaults = {
-            title: undefined,
-            titleDOMFragment: undefined,
             sortable: false,
-            sort: undefined,
-            align: undefined,
-            width: undefined,
-            fixedWidth: undefined,
-            editable: undefined,
-            nonSelectable: undefined,
-            longText: undefined,
-            disclosure: undefined,
-            weight: undefined,
-            allowInSortByEvenWhenHidden: undefined,
-            dataType: undefined,
-            defaultWeight: undefined,
         };
-        columns.push({ ...columnDefaults, id: 'number', title: '#', sortable: false, width: '50px' });
+        columns.push({
+            ...columnDefaults,
+            id: 'number',
+            title: '#',
+            sortable: false,
+            width: '50px',
+        });
         columns.push({
             ...columnDefaults,
             id: 'key',
@@ -311,7 +303,12 @@ export class IDBDataView extends UI.View.SimpleView {
             });
         }
         const title = i18nString(UIStrings.valueString);
-        columns.push({ ...columnDefaults, id: 'value', title, sortable: false });
+        columns.push({
+            ...columnDefaults,
+            id: 'value',
+            title,
+            sortable: false,
+        });
         const dataGrid = new DataGrid.DataGrid.DataGridImpl({
             displayName: i18nString(UIStrings.indexedDb),
             columns,

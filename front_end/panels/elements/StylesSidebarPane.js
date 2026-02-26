@@ -226,58 +226,6 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
     setUserOperation(userOperation) {
         this.userOperation = userOperation;
     }
-    static ignoreErrorsForProperty(property) {
-        function hasUnknownVendorPrefix(string) {
-            return !string.startsWith('-webkit-') && /^[-_][\w\d]+-\w/.test(string);
-        }
-        const name = property.name.toLowerCase();
-        // IE hack.
-        if (name.charAt(0) === '_') {
-            return true;
-        }
-        // IE has a different format for this.
-        if (name === 'filter') {
-            return true;
-        }
-        // Common IE-specific property prefix.
-        if (name.startsWith('scrollbar-')) {
-            return true;
-        }
-        if (hasUnknownVendorPrefix(name)) {
-            return true;
-        }
-        const value = property.value.toLowerCase();
-        // IE hack.
-        if (value.endsWith('\\9')) {
-            return true;
-        }
-        if (hasUnknownVendorPrefix(value)) {
-            return true;
-        }
-        return false;
-    }
-    static formatLeadingProperties(section) {
-        const selectorText = section.headerText();
-        const indent = Common.Settings.Settings.instance().moduleSetting('text-editor-indent').get();
-        const style = section.style();
-        const lines = [];
-        // Invalid property should also be copied.
-        // For example: *display: inline.
-        for (const property of style.leadingProperties()) {
-            if (property.disabled) {
-                lines.push(`${indent}/* ${property.name}: ${property.value}; */`);
-            }
-            else {
-                lines.push(`${indent}${property.name}: ${property.value};`);
-            }
-        }
-        const allDeclarationText = lines.join('\n');
-        const ruleText = `${selectorText} {\n${allDeclarationText}\n}`;
-        return {
-            allDeclarationText,
-            ruleText,
-        };
-    }
     revealProperty(cssProperty) {
         void this.decorator.highlightProperty(cssProperty);
         this.lastRevealedProperty = cssProperty;
@@ -1318,7 +1266,6 @@ export class SectionBlock {
         UI.UIUtils.createTextChild(separatorElement, i18nString(UIStrings.inheritedFromSPseudoOf, { PH1: pseudoTypeString }));
         const link = PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(node, {
             preventKeyboardFocus: true,
-            tooltip: undefined,
         });
         separatorElement.appendChild(link);
         return new SectionBlock(separatorElement);
@@ -1365,7 +1312,6 @@ export class SectionBlock {
         UI.UIUtils.createTextChild(separatorElement, i18nString(UIStrings.inheritedFroms));
         const link = PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(node, {
             preventKeyboardFocus: true,
-            tooltip: undefined,
         });
         separatorElement.appendChild(link);
         return new SectionBlock(separatorElement);
@@ -1639,14 +1585,6 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
         if (!this.isEditingName && !results.length && query.length > 1 && '!important'.startsWith(lowerQuery)) {
             results.push({
                 text: '!important',
-                title: undefined,
-                subtitle: undefined,
-                priority: undefined,
-                isSecondary: undefined,
-                subtitleRenderer: undefined,
-                selectionRange: undefined,
-                hideGhostText: undefined,
-                iconElement: undefined,
             });
         }
         const userEnteredText = query.replace('-', '');
@@ -1715,14 +1653,6 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
             const index = completion.toLowerCase().indexOf(lowerQuery);
             const result = {
                 text: completion,
-                title: undefined,
-                subtitle: undefined,
-                priority: undefined,
-                isSecondary: undefined,
-                subtitleRenderer: undefined,
-                selectionRange: undefined,
-                hideGhostText: undefined,
-                iconElement: undefined,
                 isCSSVariableColor: false,
             };
             if (variable) {

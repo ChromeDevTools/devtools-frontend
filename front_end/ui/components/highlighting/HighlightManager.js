@@ -124,7 +124,6 @@ export class HighlightManager {
             state = {
                 activeRanges: [],
                 ranges: [],
-                currentRange: undefined,
             };
             this.#stateByNode.set(node, state);
         }

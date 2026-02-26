@@ -58,7 +58,6 @@ registerProvider({
     provider: jslogContext => Promise.resolve(new HelpQuickOpen(jslogContext)),
     helpTitle: () => 'Help',
     titlePrefix: () => 'Help',
-    titleSuggestion: undefined,
     jslogContext: 'help'
 });
 //# sourceMappingURL=HelpQuickOpen.js.map

@@ -31,7 +31,6 @@ export class ImagePreviewPopover {
         }
         return {
             box: link.boxInWindow(),
-            hide: undefined,
             show: async (popover) => {
                 const node = this.getDOMNode((link));
                 if (!node) {
@@ -39,7 +38,6 @@ export class ImagePreviewPopover {
                 }
                 const precomputedFeatures = await Components.ImagePreview.ImagePreview.loadDimensionsForNode(node);
                 const preview = await Components.ImagePreview.ImagePreview.build(href, true, {
-                    imageAltText: undefined,
                     precomputedFeatures,
                     align: "center" /* Components.ImagePreview.Align.CENTER */,
                 });

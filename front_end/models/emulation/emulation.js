@@ -362,9 +362,7 @@ var EmulatedDevice = class _EmulatedDevice {
         width: orientation.hinge.width,
         height: orientation.hinge.height,
         x: orientation.hinge.x,
-        y: orientation.hinge.y,
-        contentColor: void 0,
-        outlineColor: void 0
+        y: orientation.hinge.y
       };
       if (orientation.hinge.contentColor) {
         json.hinge.contentColor = {
@@ -2321,10 +2319,7 @@ var DeviceModeModel = class _DeviceModeModel extends Common2.ObjectWrapper.Objec
         screenHeight: screenSize.height,
         positionX,
         positionY,
-        dontSetVisibleSize: true,
-        displayFeature: void 0,
-        devicePosture: void 0,
-        screenOrientation: void 0
+        dontSetVisibleSize: true
       };
       if (displayFeature) {
         metrics.displayFeature = displayFeature;

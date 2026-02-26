@@ -5651,23 +5651,13 @@ var CSSFormatter = class {
   constructor(builder) {
     this.#builder = builder;
     this.#lastLine = -1;
-    this.#state = {
-      eatWhitespace: void 0,
-      seenProperty: void 0,
-      inPropertyValue: void 0,
-      afterClosingBrace: void 0
-    };
+    this.#state = {};
   }
   format(text, lineEndings, fromOffset, toOffset) {
     this.#lineEndings = lineEndings;
     this.#fromOffset = fromOffset;
     this.#toOffset = toOffset;
-    this.#state = {
-      eatWhitespace: void 0,
-      seenProperty: void 0,
-      inPropertyValue: void 0,
-      afterClosingBrace: void 0
-    };
+    this.#state = {};
     this.#lastLine = -1;
     const tokenize = createTokenizer("text/css");
     const oldEnforce = this.#builder.setEnforceSpaceBetweenWords(false);

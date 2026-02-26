@@ -1137,11 +1137,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         this.#cancel();
         const signal = this.#runAbortController.signal;
         // If a different context is provided, it must be from the same origin.
-        if (this.#conversation.isBlockedByOrigin) {
-            // This error should not be reached. If it happens, some
-            // invariants do not hold anymore.
-            throw new Error('cross-origin context data should not be included');
-        }
         if (this.#conversation.isEmpty) {
             Badges.UserBadges.instance().recordAction(Badges.BadgeAction.STARTED_AI_CONVERSATION);
         }

@@ -459,11 +459,11 @@ export class Location {
     }
     static accuracyValidator(value) {
         if (!value) {
-            return { valid: true, errorMessage: undefined };
+            return { valid: true };
         }
         const numValue = parseFloat(value);
         const valid = /^([+-]?[\d]+(\.\d+)?|[+-]?\.\d+)$/.test(value) && numValue >= 0;
-        return { valid, errorMessage: undefined };
+        return { valid };
     }
     toSetting() {
         return `${this.latitude}@${this.longitude}:${this.timezoneId}:${this.locale}:${this.unavailable || ''}:${this.accuracy || ''}`;

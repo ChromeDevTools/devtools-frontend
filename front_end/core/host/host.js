@@ -560,21 +560,11 @@ var InspectorFrontendHostStub = class {
     }).then(function(text) {
       streamWrite(streamId, text);
       callback({
-        statusCode: 200,
-        headers: void 0,
-        messageOverride: void 0,
-        netError: void 0,
-        netErrorName: void 0,
-        urlValid: void 0
+        statusCode: 200
       });
     }).catch(function() {
       callback({
-        statusCode: 404,
-        headers: void 0,
-        messageOverride: void 0,
-        netError: void 0,
-        netErrorName: void 0,
-        urlValid: void 0
+        statusCode: 404
       });
     });
   }

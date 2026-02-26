@@ -8,11 +8,10 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import * as Logs from '../../models/logs/logs.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as Lit from '../../ui/lit/lit.js';
+import { html, nothing, render } from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import requestInitiatorViewStyles from './requestInitiatorView.css.js';
 import requestInitiatorViewTreeStyles from './requestInitiatorViewTree.css.js';
-const { html, render, nothing } = Lit;
 const { widgetConfig } = UI.Widget;
 const UIStrings = {
     /**
@@ -45,7 +44,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
             return html `${nothing}`;
         }
         return html `
-      <li role="treeitem" class="request-initiator-view-section-title" aria-expanded="true">
+      <li role="treeitem" class="request-initiator-view-section-title" aria-expanded="true" open>
         ${i18nString(UIStrings.requestCallStack)}
         <ul role="group">
           <li role="treeitem">
@@ -64,15 +63,18 @@ export const DEFAULT_VIEW = (input, _output, target) => {
         }
         const request = initiators[index];
         const isCurrentRequest = (index === initiators.length - 1);
+        const hasFurtherInitiatedNodes = index + 1 < initiators.length;
+        // clang-format off
         return html `
-      <li role="treeitem" ?selected=${isCurrentRequest} aria-expanded="true">
-        <span style=${isCurrentRequest ? 'font-weight: bold' : ''}>${request.url()}</span>
-        <ul role="group">
-          ${renderInitiatorNodes(initiators, index + 1, initiated, visited)}
-          ${isCurrentRequest ? renderInitiatedNodes(initiated, request, visited) : nothing}
-        </ul>
-      </li>
-    `;
+          <li role="treeitem" ?selected=${isCurrentRequest} aria-expanded="true" open>
+            <span style=${isCurrentRequest ? 'font-weight: bold' : ''}>${request.url()}</span>
+            ${hasFurtherInitiatedNodes || isCurrentRequest ? html `
+              <ul role="group">
+                ${renderInitiatorNodes(initiators, index + 1, initiated, visited)}
+                ${isCurrentRequest ? renderInitiatedNodes(initiated, request, visited) : nothing}
+              </ul>` : nothing}
+          </li>`;
+        // clang-format on
     };
     const renderInitiatedNodes = (initiated, parentRequest, visited) => {
         const children = [];
@@ -82,7 +84,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
             }
         }
         if (children.length === 0) {
-            return html `${nothing}`;
+            return nothing;
         }
         return html `
       ${children.map(child => {
@@ -90,10 +92,11 @@ export const DEFAULT_VIEW = (input, _output, target) => {
             if (shouldRecurse) {
                 visited.add(child);
             }
+            const renderedChildren = shouldRecurse ? renderInitiatedNodes(initiated, child, visited) : nothing;
             return html `
-        <li role="treeitem" aria-expanded="true">
+        <li role="treeitem" aria-expanded="true" open>
           <span>${child.url()}</span>
-          ${shouldRecurse ? html `<ul>${renderInitiatedNodes(initiated, child, visited)}</ul>` : nothing}
+          ${renderedChildren !== nothing ? html `<ul role="group">${renderedChildren}</ul>` : nothing}
         </li>
       `;
         })}
@@ -103,30 +106,33 @@ export const DEFAULT_VIEW = (input, _output, target) => {
         const initiators = Array.from(initiatorGraph.initiators).reverse();
         const visited = new Set();
         visited.add(input.request);
+        const hasInitiatorChain = initiators.length > 0;
+        // clang-format off
         return html `
-      <li role="treeitem" class="request-initiator-view-section-title" aria-expanded="true">
+      <li role="treeitem" class="request-initiator-view-section-title" aria-expanded="true" open>
         ${i18nString(UIStrings.requestInitiatorChain)}
-        <ul role="group">
-          ${renderInitiatorNodes(initiators, 0, initiatorGraph.initiated, visited)}
-        </ul>
-      </li>
-    `;
+        ${hasInitiatorChain ? html `
+          <ul role="group">
+            ${renderInitiatorNodes(initiators, 0, initiatorGraph.initiated, visited)}
+          </ul>` : nothing}
+      </li>`;
+        // clang-format on
     };
+    const hasInitiatorChain = input.initiatorGraph.initiators.size > 1 || input.initiatorGraph.initiated.size > 1;
+    // clang-format off
     render(html `
     <div class="request-initiator-view-tree" jslog=${VisualLogging.tree('initiator-tree')}>
       <devtools-tree .template=${html `
-        <style>
-          ${requestInitiatorViewTreeStyles}
-        </style>
-        <ul role="tree">
-           ${renderStackTraceSection()}
-           ${(input.initiatorGraph.initiators.size > 1 || input.initiatorGraph.initiated.size > 1) ?
-        renderInitiatorChain(input.initiatorGraph) :
-        Lit.nothing}
-        </ul>
+        <style>${requestInitiatorViewTreeStyles}</style>
+        ${input.stackTrace || hasInitiatorChain ? html `
+          <ul role="tree">
+            ${renderStackTraceSection()}
+            ${hasInitiatorChain ? renderInitiatorChain(input.initiatorGraph) : nothing}
+          </ul>` : nothing}
       `}></devtools-tree>
     </div>
   `, target);
+    // clang-format on
 };
 export class RequestInitiatorView extends UI.Widget.VBox {
     request;

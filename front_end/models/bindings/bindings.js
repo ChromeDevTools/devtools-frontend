@@ -2302,9 +2302,9 @@ var DebuggerLanguagePluginManager = class {
     try {
       const object = await plugin.evaluate(expression, location, this.stopIdForCallFrame(callFrame));
       if (object) {
-        return { object: await wrapRemoteObject(callFrame, object, plugin), exceptionDetails: void 0 };
+        return { object: await wrapRemoteObject(callFrame, object, plugin) };
       }
-      return { object: new SDK8.RemoteObject.LocalJSONObject(void 0), exceptionDetails: void 0 };
+      return { object: new SDK8.RemoteObject.LocalJSONObject(void 0) };
     } catch (error) {
       if (error instanceof FormattingError) {
         const { exception: object2, exceptionDetails: exceptionDetails2 } = error;
@@ -2567,14 +2567,12 @@ var DebuggerLanguagePluginManager = class {
       if (uiLocation2) {
         return {
           uiSourceCode: uiLocation2.uiSourceCode,
-          url: void 0,
           name,
           line: uiLocation2.lineNumber,
           column: uiLocation2.columnNumber ?? -1
         };
       }
       return {
-        uiSourceCode: void 0,
         url: fallback.url,
         name: fallback.functionName,
         line: fallback.lineNumber,

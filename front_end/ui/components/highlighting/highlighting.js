@@ -131,8 +131,7 @@ var HighlightManager = class _HighlightManager {
     if (!state) {
       state = {
         activeRanges: [],
-        ranges: [],
-        currentRange: void 0
+        ranges: []
       };
       this.#stateByNode.set(node, state);
     }
@@ -205,9 +204,7 @@ function highlightRangesWithStyleClass(element, resultRanges, styleClass, change
       node: lastTextNode,
       type: "changed",
       oldText: lastText,
-      newText: lastTextNode.textContent,
-      nextSibling: void 0,
-      parent: void 0
+      newText: lastTextNode.textContent
     });
     if (startIndex === endIndex && lastTextNode.parentElement) {
       lastTextNode.parentElement.insertBefore(highlightNode, lastTextNode);
@@ -215,9 +212,7 @@ function highlightRangesWithStyleClass(element, resultRanges, styleClass, change
         node: highlightNode,
         type: "added",
         nextSibling: lastTextNode,
-        parent: lastTextNode.parentElement,
-        oldText: void 0,
-        newText: void 0
+        parent: lastTextNode.parentElement
       });
       highlightNodes.push(highlightNode);
       const prefixNode = ownerDocument.createTextNode(lastText.substring(0, startOffset - nodeRanges[startIndex].offset));
@@ -226,9 +221,7 @@ function highlightRangesWithStyleClass(element, resultRanges, styleClass, change
         node: prefixNode,
         type: "added",
         nextSibling: highlightNode,
-        parent: lastTextNode.parentElement,
-        oldText: void 0,
-        newText: void 0
+        parent: lastTextNode.parentElement
       });
     } else {
       const firstTextNode = textNodes[startIndex];
@@ -240,9 +233,7 @@ function highlightRangesWithStyleClass(element, resultRanges, styleClass, change
           node: highlightNode,
           type: "added",
           nextSibling: anchorElement || void 0,
-          parent: firstTextNode.parentElement,
-          oldText: void 0,
-          newText: void 0
+          parent: firstTextNode.parentElement
         });
         highlightNodes.push(highlightNode);
       }
@@ -251,9 +242,7 @@ function highlightRangesWithStyleClass(element, resultRanges, styleClass, change
         node: firstTextNode,
         type: "changed",
         oldText: firstText,
-        newText: firstTextNode.textContent,
-        nextSibling: void 0,
-        parent: void 0
+        newText: firstTextNode.textContent
       });
       for (let j = startIndex + 1; j < endIndex; j++) {
         const textNode = textNodes[j];
@@ -263,9 +252,7 @@ function highlightRangesWithStyleClass(element, resultRanges, styleClass, change
           node: textNode,
           type: "changed",
           oldText: text || void 0,
-          newText: textNode.textContent,
-          nextSibling: void 0,
-          parent: void 0
+          newText: textNode.textContent
         });
       }
     }

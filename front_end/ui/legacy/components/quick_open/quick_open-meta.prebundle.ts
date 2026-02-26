@@ -111,11 +111,9 @@ UI.ActionRegistration.registerActionExtension({
 UI.ContextMenu.registerItem({
   location: UI.ContextMenu.ItemLocation.MAIN_MENU_DEFAULT,
   actionId: 'quick-open.show-command-menu',
-  order: undefined,
 });
 
 UI.ContextMenu.registerItem({
   location: UI.ContextMenu.ItemLocation.MAIN_MENU_DEFAULT,
   actionId: 'quick-open.show',
-  order: undefined,
 });

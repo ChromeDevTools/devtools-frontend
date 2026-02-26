@@ -353,8 +353,7 @@ function makeScriptNode(src, sourceRoot, sourcesData) {
   function newNode(name) {
     return {
       name,
-      resourceBytes: 0,
-      encodedBytes: void 0
+      resourceBytes: 0
     };
   }
   const sourceRootNode = newNode(sourceRoot);
@@ -431,8 +430,7 @@ function createTreemapData(scripts, duplication) {
       const sourcesData = {};
       for (const [source, resourceBytes] of Object.entries(sizes.files)) {
         const sourceData = {
-          resourceBytes,
-          encodedBytes: void 0
+          resourceBytes
         };
         const key = Trace4.Extras.ScriptDuplication.normalizeSource(source);
         if (duplication.has(key)) {
@@ -450,8 +448,7 @@ function createTreemapData(scripts, duplication) {
     } else {
       node = {
         name,
-        resourceBytes: script.content?.length ?? 0,
-        encodedBytes: void 0
+        resourceBytes: script.content?.length ?? 0
       };
     }
     if (script.inline) {
@@ -460,7 +457,6 @@ function createTreemapData(scripts, duplication) {
         htmlNode = {
           name,
           resourceBytes: 0,
-          encodedBytes: void 0,
           children: []
         };
         htmlNodesByFrameId.set(script.frame, htmlNode);

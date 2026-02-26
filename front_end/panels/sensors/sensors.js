@@ -386,7 +386,9 @@ var LocationsSettingsTab = class extends UI.Widget.VBox {
       if (errorMessage) {
         return { valid: false, errorMessage };
       }
-      return { valid: true, errorMessage: void 0 };
+      return {
+        valid: true
+      };
     }
     function latValidator(_item, _index, input) {
       const minLat = -90;
@@ -394,7 +396,9 @@ var LocationsSettingsTab = class extends UI.Widget.VBox {
       const value = input.value.trim();
       const parsedValue = Number(value);
       if (!value) {
-        return { valid: true, errorMessage: void 0 };
+        return {
+          valid: true
+        };
       }
       let errorMessage;
       if (Number.isNaN(parsedValue)) {
@@ -407,7 +411,9 @@ var LocationsSettingsTab = class extends UI.Widget.VBox {
       if (errorMessage) {
         return { valid: false, errorMessage };
       }
-      return { valid: true, errorMessage: void 0 };
+      return {
+        valid: true
+      };
     }
     function longValidator(_item, _index, input) {
       const minLong = -180;
@@ -415,7 +421,9 @@ var LocationsSettingsTab = class extends UI.Widget.VBox {
       const value = input.value.trim();
       const parsedValue = Number(value);
       if (!value) {
-        return { valid: true, errorMessage: void 0 };
+        return {
+          valid: true
+        };
       }
       let errorMessage;
       if (Number.isNaN(parsedValue)) {
@@ -428,12 +436,16 @@ var LocationsSettingsTab = class extends UI.Widget.VBox {
       if (errorMessage) {
         return { valid: false, errorMessage };
       }
-      return { valid: true, errorMessage: void 0 };
+      return {
+        valid: true
+      };
     }
     function timezoneIdValidator(_item, _index, input) {
       const value = input.value.trim();
       if (value === "" || /[a-zA-Z]/.test(value)) {
-        return { valid: true, errorMessage: void 0 };
+        return {
+          valid: true
+        };
       }
       const errorMessage = i18nString(UIStrings.timezoneIdMustContainAlphabetic);
       return { valid: false, errorMessage };
@@ -441,7 +453,9 @@ var LocationsSettingsTab = class extends UI.Widget.VBox {
     function localeValidator(_item, _index, input) {
       const value = input.value.trim();
       if (value === "" || /[a-zA-Z]{2}/.test(value)) {
-        return { valid: true, errorMessage: void 0 };
+        return {
+          valid: true
+        };
       }
       const errorMessage = i18nString(UIStrings.localeMustContainAlphabetic);
       return { valid: false, errorMessage };
@@ -451,7 +465,9 @@ var LocationsSettingsTab = class extends UI.Widget.VBox {
       const value = input.value.trim();
       const parsedValue = Number(value);
       if (!value) {
-        return { valid: true, errorMessage: void 0 };
+        return {
+          valid: true
+        };
       }
       let errorMessage;
       if (Number.isNaN(parsedValue)) {
@@ -462,7 +478,9 @@ var LocationsSettingsTab = class extends UI.Widget.VBox {
       if (errorMessage) {
         return { valid: false, errorMessage };
       }
-      return { valid: true, errorMessage: void 0 };
+      return {
+        valid: true
+      };
     }
   }
 };

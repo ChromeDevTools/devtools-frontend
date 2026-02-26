@@ -294,7 +294,6 @@ Common.Revealer.registerRevealer({
       Root.Runtime.HostExperiment
     ];
   },
-  destination: void 0,
   async loadRevealer() {
     const Settings2 = await loadSettingsModule();
     return new Settings2.SettingsScreen.Revealer();
@@ -302,12 +301,10 @@ Common.Revealer.registerRevealer({
 });
 UI2.ContextMenu.registerItem({
   location: "mainMenu/footer",
-  actionId: "settings.shortcuts",
-  order: void 0
+  actionId: "settings.shortcuts"
 });
 UI2.ContextMenu.registerItem({
   location: "mainMenuHelp/default",
-  actionId: "settings.documentation",
-  order: void 0
+  actionId: "settings.documentation"
 });
 //# sourceMappingURL=settings-meta.js.map

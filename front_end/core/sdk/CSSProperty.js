@@ -309,5 +309,35 @@ export class CSSProperty extends Common.ObjectWrapper.ObjectWrapper {
     getLonghandProperties() {
         return this.#longhandProperties;
     }
+    ignoreErrors() {
+        function hasUnknownVendorPrefix(string) {
+            return !string.startsWith('-webkit-') && /^[-_][\w\d]+-\w/.test(string);
+        }
+        const name = this.name.toLowerCase();
+        // IE hack.
+        if (name.charAt(0) === '_') {
+            return true;
+        }
+        // IE has a different format for this.
+        if (name === 'filter') {
+            return true;
+        }
+        // Common IE-specific property prefix.
+        if (name.startsWith('scrollbar-')) {
+            return true;
+        }
+        if (hasUnknownVendorPrefix(name)) {
+            return true;
+        }
+        const value = this.value.toLowerCase();
+        // IE hack.
+        if (value.endsWith('\\9')) {
+            return true;
+        }
+        if (hasUnknownVendorPrefix(value)) {
+            return true;
+        }
+        return false;
+    }
 }
 //# sourceMappingURL=CSSProperty.js.map

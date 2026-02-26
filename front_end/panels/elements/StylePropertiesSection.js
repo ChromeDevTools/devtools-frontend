@@ -50,7 +50,6 @@ import * as ElementsComponents from './components/components.js';
 import { ElementsPanel } from './ElementsPanel.js';
 import stylePropertiesTreeOutlineStyles from './stylePropertiesTreeOutline.css.js';
 import { StylePropertyTreeElement } from './StylePropertyTreeElement.js';
-import { StylesSidebarPane } from './StylesSidebarPane.js';
 const UIStrings = {
     /**
      * @description Tooltip text that appears when hovering over the largeicon add button in the Styles Sidebar Pane of the Elements panel
@@ -1278,14 +1277,36 @@ export class StylePropertiesSection {
             Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(selectorText);
         }, { jslogContext: 'copy-selector' });
         contextMenu.clipboardSection().appendItem(i18nString(UIStrings.copyRule), () => {
-            const ruleText = StylesSidebarPane.formatLeadingProperties(this).ruleText;
+            const ruleText = this.formatLeadingProperties().ruleText;
             Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(ruleText);
         }, { jslogContext: 'copy-rule' });
         contextMenu.clipboardSection().appendItem(i18nString(UIStrings.copyAllDeclarations), () => {
-            const allDeclarationText = StylesSidebarPane.formatLeadingProperties(this).allDeclarationText;
+            const allDeclarationText = this.formatLeadingProperties().allDeclarationText;
             Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(allDeclarationText);
         }, { jslogContext: 'copy-all-declarations' });
         void contextMenu.show();
+    }
+    formatLeadingProperties() {
+        const selectorText = this.headerText();
+        const indent = Common.Settings.Settings.instance().moduleSetting('text-editor-indent').get();
+        const style = this.style();
+        const lines = [];
+        // Invalid property should also be copied.
+        // For example: *display: inline.
+        for (const property of style.leadingProperties()) {
+            if (property.disabled) {
+                lines.push(`${indent}/* ${property.name}: ${property.value}; */`);
+            }
+            else {
+                lines.push(`${indent}${property.name}: ${property.value};`);
+            }
+        }
+        const allDeclarationText = lines.join('\n');
+        const ruleText = `${selectorText} {\n${allDeclarationText}\n}`;
+        return {
+            allDeclarationText,
+            ruleText,
+        };
     }
     navigateToSelectorSource(index, focus) {
         const cssModel = this.parentPane.cssModel();

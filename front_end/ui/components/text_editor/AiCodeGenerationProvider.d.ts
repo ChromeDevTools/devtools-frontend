@@ -9,6 +9,7 @@ export declare enum AiCodeGenerationTeaserMode {
 export declare const setAiCodeGenerationTeaserMode: CodeMirror.StateEffectType<AiCodeGenerationTeaserMode>;
 export interface AiCodeGenerationConfig {
     generationContext: {
+        additionalPreambleContext?: string;
         inferenceLanguage?: Host.AidaClient.AidaInferenceLanguage;
     };
     onSuggestionAccepted: (citations: Host.AidaClient.Citation[]) => void;

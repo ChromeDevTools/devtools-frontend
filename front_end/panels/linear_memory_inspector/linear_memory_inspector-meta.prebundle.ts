@@ -20,8 +20,7 @@ const UIStrings = {
    */
   showMemoryInspector: 'Show Memory inspector',
 } as const;
-const str_ =
-    i18n.i18n.registerUIStrings('panels/linear_memory_inspector/linear_memory_inspector-meta.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/linear_memory_inspector/linear_memory_inspector-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 let loadedLinearMemoryInspectorModule: (typeof LinearMemoryInspector|undefined);
@@ -51,7 +50,6 @@ UI.ContextMenu.registerProvider({
     const LinearMemoryInspector = await loadLinearMemoryInspectorModule();
     return LinearMemoryInspector.LinearMemoryInspectorController.LinearMemoryInspectorController.instance();
   },
-  experiment: undefined,
   contextTypes() {
     return [
       ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement,

@@ -94,8 +94,6 @@ export class ResourceChunkView extends UI.Widget.VBox {
         this.dataGrid = new DataGrid.SortableDataGrid.SortableDataGrid({
             displayName: dataGridDisplayName,
             columns,
-            deleteCallback: undefined,
-            refreshCallback: undefined,
         });
         this.dataGrid.setRowContextMenuCallback(onRowContextMenu.bind(this));
         this.dataGrid.setEnableAutoScrollToBottom(true);

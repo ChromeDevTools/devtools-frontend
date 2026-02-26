@@ -392,7 +392,7 @@ export declare namespace PrivateAPI {
 declare global {
     interface Window {
         injectedExtensionAPI: (extensionInfo: ExtensionDescriptor, inspectedTabId: string, themeName: string, keysToForward: number[], testHook: (extensionServer: APIImpl.ExtensionServerClient, extensionAPI: APIImpl.InspectorExtensionAPI) => unknown, injectedScriptId: number, targetWindow?: Window) => void;
-        buildExtensionAPIInjectedScript(extensionInfo: ExtensionDescriptor, inspectedTabId: string, themeName: string, keysToForward: number[], testHook: undefined | ((extensionServer: unknown, extensionAPI: unknown) => unknown)): string;
+        buildExtensionAPIInjectedScript(extensionInfo: ExtensionDescriptor, inspectedTabId: string, themeName: string, keysToForward: number[], testHook?: (extensionServer: unknown, extensionAPI: unknown) => unknown): string;
         chrome: PublicAPI.Chrome.DevTools.Chrome;
         webInspector?: APIImpl.InspectorExtensionAPI;
     }
@@ -440,9 +440,9 @@ declare namespace APIImpl {
     interface EventSink<ListenerT extends Callable> extends PublicAPI.Chrome.DevTools.EventSink<ListenerT> {
         _type: string;
         _listeners: ListenerT[];
-        _customDispatch: undefined | ((this: EventSink<ListenerT>, request: {
+        _customDispatch?: (this: EventSink<ListenerT>, request: {
             arguments: unknown[];
-        }) => unknown);
+        }) => unknown;
         _fire(..._vararg: Parameters<ListenerT>): void;
         _dispatch(request: {
             arguments: unknown[];

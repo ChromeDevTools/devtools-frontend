@@ -74,7 +74,7 @@ export class EmptyWidget extends VBox {
             this.#extraElements = [...this.element.children];
             this.#firstUpdate = false;
         }
-        const output = { contentElement: undefined };
+        const output = {};
         this.#view({ header: this.#header, text: this.#text, link: this.#link, extraElements: this.#extraElements }, output, this.element);
         if (output.contentElement) {
             this.contentElement = output.contentElement;

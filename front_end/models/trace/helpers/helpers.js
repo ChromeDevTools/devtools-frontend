@@ -694,10 +694,7 @@ function makeZeroBasedCallFrame(callFrame) {
 }
 function getRawLineAndColumnNumbersForEvent(event) {
   if (!event.args?.data) {
-    return {
-      lineNumber: void 0,
-      columnNumber: void 0
-    };
+    return {};
   }
   let lineNumber = void 0;
   let columnNumber = void 0;

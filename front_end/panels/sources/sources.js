@@ -131,6 +131,7 @@ __export(AiCodeCompletionPlugin_exports, {
 import * as Host from "./../../core/host/host.js";
 import * as i18n3 from "./../../core/i18n/i18n.js";
 import * as AiCodeCompletion from "./../../models/ai_code_completion/ai_code_completion.js";
+import * as AiCodeGeneration from "./../../models/ai_code_generation/ai_code_generation.js";
 import * as TextEditor from "./../../ui/components/text_editor/text_editor.js";
 import * as SourceFrame from "./../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI2 from "./../../ui/legacy/legacy.js";
@@ -205,6 +206,9 @@ var AiCodeCompletionPlugin = class extends Plugin {
           included_reason: Host.AidaClient.Reason.RELATED_FILE
         }] : void 0,
         inferenceLanguage: this.#getInferenceLanguage()
+      },
+      generationContext: {
+        additionalPreambleContext: this.uiSourceCode.url().startsWith("snippet://") ? AiCodeGeneration.AiCodeGeneration.additionalContextForConsole : void 0
       },
       onFeatureEnabled: () => {
         this.#setupAiCodeCompletion();
@@ -6251,7 +6255,7 @@ var DebuggerPlugin = class extends Plugin {
   // locations, so breakpoint manipulation is permanently disabled.
   initializedMuted;
   ignoreListInfobar;
-  refreshBreakpointsTimeout = void 0;
+  refreshBreakpointsTimeout;
   activeBreakpointDialog = null;
   #activeBreakpointEditRequest = void 0;
   #scheduledFinishingActiveDialog = false;
@@ -6654,11 +6658,7 @@ var DebuggerPlugin = class extends Plugin {
           silent: true,
           returnByValue: false,
           generatePreview: false,
-          throwOnSideEffect,
-          timeout: void 0,
-          disableBreaks: void 0,
-          replMode: void 0,
-          allowUnsafeEvalBlockedByCSP: void 0
+          throwOnSideEffect
         });
         if (!result || "error" in result || !result.object || result.object.type === "object" && result.object.subtype === "error") {
           return false;

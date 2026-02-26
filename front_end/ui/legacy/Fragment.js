@@ -60,7 +60,7 @@ export class Fragment {
             if (node.nodeType === Node.ELEMENT_NODE && node.hasAttributes()) {
                 if (node.hasAttribute('$')) {
                     nodesToMark.push(node);
-                    binds.push({ replaceNodeIndex: undefined, attr: undefined, elementId: node.getAttribute('$') || '' });
+                    binds.push({ elementId: node.getAttribute('$') || '' });
                     node.removeAttribute('$');
                 }
                 const attributesToRemove = [];
@@ -79,8 +79,6 @@ export class Fragment {
                     valueIndex += attr.names.length - 1;
                     valueIndex += attr.values.length - 1;
                     const bind = {
-                        elementId: undefined,
-                        replaceNodeIndex: undefined,
                         attr,
                     };
                     binds.push(bind);
@@ -99,7 +97,7 @@ export class Fragment {
                     }
                     const nodeToReplace = document.createElement('span');
                     nodesToMark.push(nodeToReplace);
-                    binds.push({ attr: undefined, elementId: undefined, replaceNodeIndex: valueIndex++ });
+                    binds.push({ replaceNodeIndex: valueIndex++ });
                     parentNode.insertBefore(nodeToReplace, node);
                 }
             }

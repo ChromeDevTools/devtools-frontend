@@ -216,26 +216,28 @@ export const DEFAULT_VIEW = (input, _output, target) => {
     // clang-format off
     render(html `
     <style>${computedStyleWidgetStyles}</style>
-    <div class="styles-sidebar-pane-toolbar">
-      <devtools-toolbar class="styles-pane-toolbar" role="presentation">
-        <devtools-toolbar-input
-          type="filter"
-          autofocus
-          ?regex=${true}
-          value=${input.filterText}
-          @change=${input.onFilterChanged}
-          @regextoggle=${input.onRegexToggled}
-        ></devtools-toolbar-input>
-        <devtools-checkbox
-          title=${i18nString(UIStrings.showAll)}
-          ${bindToSetting(input.showInheritedComputedStylePropertiesSetting)}
-        >${i18nString(UIStrings.showAll)}</devtools-checkbox>
-        <devtools-checkbox
-          title=${i18nString(UIStrings.group)}
-          ${bindToSetting(input.groupComputedStylesSetting)}
-        >${i18nString(UIStrings.group)}</devtools-checkbox>
-      </devtools-toolbar>
-    </div>
+    ${input.includeToolbar ? html `
+      <div class="styles-sidebar-pane-toolbar">
+        <devtools-toolbar class="styles-pane-toolbar" role="presentation">
+          <devtools-toolbar-input
+            type="filter"
+            autofocus
+            ?regex=${true}
+            value=${input.filterText}
+            @change=${input.onFilterChanged}
+            @regextoggle=${input.onRegexToggled}
+          ></devtools-toolbar-input>
+          <devtools-checkbox
+            title=${i18nString(UIStrings.showAll)}
+            ${bindToSetting(input.showInheritedComputedStylePropertiesSetting)}
+          >${i18nString(UIStrings.showAll)}</devtools-checkbox>
+          <devtools-checkbox
+            title=${i18nString(UIStrings.group)}
+            ${bindToSetting(input.groupComputedStylesSetting)}
+          >${i18nString(UIStrings.group)}</devtools-checkbox>
+        </devtools-toolbar>
+      </div>
+      ` : Lit.nothing}
     ${input.computedStylesTree}
     ${!input.hasMatches ? html `<div class="gray-info-message">${i18nString(UIStrings.noMatchingProperty)}</div>` : ''}
   `, target);
@@ -255,6 +257,7 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
     #view;
     #filterText = '';
     #isRegex = false;
+    #includeToolbar = true;
     constructor() {
         super({ useShadowDom: true });
         this.#view = DEFAULT_VIEW;
@@ -281,12 +284,20 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
         const isNarrow = this.contentElement.offsetWidth < 260;
         this.#computedStylesTree.classList.toggle('computed-narrow', isNarrow);
     }
+    get includeToolbar() {
+        return this.#includeToolbar;
+    }
+    set includeToolbar(x) {
+        this.#includeToolbar = x;
+        this.requestUpdate();
+    }
     /**
      * @param input.hasMatches Whether any properties matched the current filter (or if any properties exist at all).
      */
     #updateView({ hasMatches }) {
         this.#view({
             computedStylesTree: this.#computedStylesTree,
+            includeToolbar: this.#includeToolbar,
             hasMatches,
             showInheritedComputedStylePropertiesSetting: this.showInheritedComputedStylePropertiesSetting,
             groupComputedStylesSetting: this.groupComputedStylesSetting,

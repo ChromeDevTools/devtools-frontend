@@ -73,6 +73,7 @@ export var DOMNodeEvents;
 (function (DOMNodeEvents) {
     DOMNodeEvents["TOP_LAYER_INDEX_CHANGED"] = "TopLayerIndexChanged";
     DOMNodeEvents["SCROLLABLE_FLAG_UPDATED"] = "ScrollableFlagUpdated";
+    DOMNodeEvents["AD_RELATED_STATE_UPDATED"] = "AdRelatedStateUpdated";
     DOMNodeEvents["GRID_OVERLAY_STATE_CHANGED"] = "GridOverlayStateChanged";
     DOMNodeEvents["FLEX_CONTAINER_OVERLAY_STATE_CHANGED"] = "FlexContainerOverlayStateChanged";
     DOMNodeEvents["SCROLL_SNAP_OVERLAY_STATE_CHANGED"] = "ScrollSnapOverlayStateChanged";
@@ -137,6 +138,10 @@ export class DOMNode extends Common.ObjectWrapper.ObjectWrapper {
      * for non-backdrop nodes.
      */
     #topLayerIndex = -1;
+    /**
+     * Set if a DOMNode is ad related.
+     */
+    #isAdRelatedInternal = false;
     constructor(domModel) {
         super();
         this.#domModel = domModel;
@@ -218,6 +223,9 @@ export class DOMNode extends Common.ObjectWrapper.ObjectWrapper {
             this.setChildrenPayload(payload.children);
         }
         this.setPseudoElements(payload.pseudoElements);
+        if (payload.isAdRelated) {
+            this.#isAdRelatedInternal = true;
+        }
         if (this.#nodeType === Node.ELEMENT_NODE) {
             // HTML and BODY from internal iframes should not overwrite top-level ones.
             if (this.ownerDocument && !this.ownerDocument.documentElement && this.#nodeName === 'HTML') {
@@ -252,7 +260,12 @@ export class DOMNode extends Common.ObjectWrapper.ObjectWrapper {
     topLayerIndex() {
         return this.#topLayerIndex;
     }
-    isAdFrameNode() {
+    isAdRelatedNode() {
+        // For iframes, we rely on `AdFrameType` to preserve legacy behavior and
+        // prevent regressions.
+        //
+        // TODO(yaoxia): Deprecate the iframe-specific logic and consolidate
+        // everything to use `#isAdRelatedInternal`.
         if (this.isIframe() && this.#frameOwnerFrameId) {
             const frame = FrameManager.instance().getFrame(this.#frameOwnerFrameId);
             if (!frame) {
@@ -260,7 +273,7 @@ export class DOMNode extends Common.ObjectWrapper.ObjectWrapper {
             }
             return frame.adFrameType() !== "none" /* Protocol.Page.AdFrameType.None */;
         }
-        return false;
+        return this.#isAdRelatedInternal;
     }
     isRootNode() {
         if (this.nodeType() === Node.ELEMENT_NODE && this.nodeName() === 'HTML') {
@@ -323,6 +336,10 @@ export class DOMNode extends Common.ObjectWrapper.ObjectWrapper {
             // We show the scroll badge of the document on the <html> element.
             this.ownerDocument?.documentElement?.setIsScrollable(isScrollable);
         }
+    }
+    setIsAdRelated(isAdRelated) {
+        this.#isAdRelatedInternal = isAdRelated;
+        this.dispatchEventToListeners(DOMNodeEvents.AD_RELATED_STATE_UPDATED);
     }
     setAffectedByStartingStyles(affectedByStartingStyles) {
         this.#affectedByStartingStyles = affectedByStartingStyles;
@@ -873,13 +890,17 @@ export class DOMNode extends Common.ObjectWrapper.ObjectWrapper {
         return null;
     }
     highlight(mode) {
-        this.#domModel.overlayModel().highlightInOverlay({ node: this, selectorList: undefined }, mode);
+        this.#domModel.overlayModel().highlightInOverlay({ node: this }, mode);
     }
     highlightForTwoSeconds() {
-        this.#domModel.overlayModel().highlightInOverlayForTwoSeconds({ node: this, selectorList: undefined });
+        this.#domModel.overlayModel().highlightInOverlayForTwoSeconds({ node: this });
     }
     async resolveToObject(objectGroup, executionContextId) {
-        const { object } = await this.#agent.invoke_resolveNode({ nodeId: this.id, backendNodeId: undefined, executionContextId, objectGroup });
+        const { object } = await this.#agent.invoke_resolveNode({
+            nodeId: this.id,
+            executionContextId,
+            objectGroup,
+        });
         return object && this.#domModel.runtimeModelInternal.createRemoteObject(object) || null;
     }
     async boxModel() {
@@ -1429,6 +1450,13 @@ export class DOMModel extends SDKModel {
         }
         node.setIsScrollable(isScrollable);
     }
+    adRelatedStateUpdated(nodeId, isAdRelated) {
+        const node = this.nodeForId(nodeId);
+        if (!node || node.isAdRelatedNode() === isAdRelated) {
+            return;
+        }
+        node.setIsAdRelated(isAdRelated);
+    }
     affectedByStartingStylesFlagUpdated(nodeId, affectedByStartingStyles) {
         const node = this.nodeForId(nodeId);
         if (!node || node.affectedByStartingStyles() === affectedByStartingStyles) {
@@ -1717,7 +1745,8 @@ class DOMDispatcher {
     affectedByStartingStylesFlagUpdated({ nodeId, affectedByStartingStyles }) {
         this.#domModel.affectedByStartingStylesFlagUpdated(nodeId, affectedByStartingStyles);
     }
-    adRelatedStateUpdated(_) {
+    adRelatedStateUpdated({ nodeId, isAdRelated }) {
+        this.#domModel.adRelatedStateUpdated(nodeId, isAdRelated);
     }
 }
 let domModelUndoStackInstance = null;

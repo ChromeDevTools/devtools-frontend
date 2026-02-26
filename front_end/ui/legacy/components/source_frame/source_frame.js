@@ -2182,12 +2182,13 @@ var DEFAULT_VIEW = (input, output, target) => {
     return html`
       <li role="treeitem"
           ?selected=${input.jumpToNextSearchResult?.node === node}
-          @expand=${onExpand}>
+          @expand=${onExpand}
+          ?open=${node.expanded || input.jumpToNextSearchResult?.node === node}>
         <devtools-highlight ranges=${highlights} current-range=${selected}>
           ${htmlView(node)}
         </devtools-highlight>
         ${node.children().length ? html`
-          <ul role="group" ?hidden=${!node.expanded && input.jumpToNextSearchResult?.node !== node}>
+          <ul role="group">
             ${populateSubtrees || input.search ? subtree(node) : Lit.nothing}
           </ul>` : Lit.nothing}
       </li>`;

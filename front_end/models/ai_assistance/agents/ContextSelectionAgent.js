@@ -164,21 +164,24 @@ export class ContextSelectionAgent extends AiAgent {
             displayInfoFromArgs: () => {
                 return {
                     title: lockedString('Listing source requests…'),
-                    action: 'listSourceFile()',
+                    action: 'listSourceFiles()',
                 };
             },
             handler: async () => {
-                const files = [];
+                // We get multiple of the same file name
+                // so we create a set and the pick based
+                // on heuristics in the select function
+                const files = new Set();
                 for (const file of this.#getUISourceCodes()) {
-                    files.push(file.fullDisplayName());
+                    files.add(file.fullDisplayName());
                 }
                 return {
-                    result: files,
+                    result: [...files],
                 };
             },
         });
         this.declareFunction('selectSourceFile', {
-            description: `Selects a source file. Use this when asked about files on the page.`,
+            description: `Selects a source file. Use this when asked about files on the page. Use listSourceFiles if you don't know the full path name.`,
             parameters: {
                 type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
                 description: '',
@@ -187,7 +190,7 @@ export class ContextSelectionAgent extends AiAgent {
                 properties: {
                     name: {
                         type: 1 /* Host.AidaClient.ParametersTypes.STRING */,
-                        description: 'The name of the file you want to select.',
+                        description: 'The full path name of the file you want to select.',
                         nullable: false,
                     },
                 },
@@ -199,16 +202,19 @@ export class ContextSelectionAgent extends AiAgent {
                 };
             },
             handler: async (params) => {
-                for (const file of this.#getUISourceCodes()) {
-                    if (file.fullDisplayName() === params.name) {
-                        return {
-                            context: new FileContext(file),
-                            description: 'User selected a source file',
-                        };
-                    }
+                // In some cases we get multiple files
+                // use the heuristics bellow to pick the better one
+                const files = this.#getUISourceCodes().filter(file => file.fullDisplayName() === params.name);
+                if (files.length === 0) {
+                    return {
+                        error: 'Unable to find file.',
+                    };
                 }
+                // This help us pick the file that is resolved source map.
+                const file = files.find(f => f.contentType().isFromSourceMap()) ?? files[0];
                 return {
-                    error: 'Unable to find file.',
+                    context: new FileContext(file),
+                    description: 'User selected a source file',
                 };
             },
         });
@@ -274,19 +280,13 @@ export class ContextSelectionAgent extends AiAgent {
     }
     #getUISourceCodes = () => {
         const workspace = Workspace.Workspace.WorkspaceImpl.instance();
-        const projects = workspace.projects().filter(project => {
-            switch (project.type()) {
-                case Workspace.Workspace.projectTypes.Network:
-                case Workspace.Workspace.projectTypes.FileSystem:
-                case Workspace.Workspace.projectTypes.ConnectableFileSystem:
-                    return true;
-                default:
-                    return false;
-            }
-        });
+        const projects = workspace.projects().filter(project => project.type() === Workspace.Workspace.projectTypes.Network);
         const uiSourceCodes = [];
         for (const project of projects) {
             for (const uiSourceCode of project.uiSourceCodes()) {
+                if (uiSourceCode.isIgnoreListed()) {
+                    continue;
+                }
                 uiSourceCodes.push(uiSourceCode);
             }
         }

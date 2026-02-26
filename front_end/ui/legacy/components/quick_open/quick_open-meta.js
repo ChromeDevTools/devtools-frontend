@@ -99,12 +99,10 @@ UI.ActionRegistration.registerActionExtension({
 });
 UI.ContextMenu.registerItem({
   location: "mainMenu/default",
-  actionId: "quick-open.show-command-menu",
-  order: void 0
+  actionId: "quick-open.show-command-menu"
 });
 UI.ContextMenu.registerItem({
   location: "mainMenu/default",
-  actionId: "quick-open.show",
-  order: void 0
+  actionId: "quick-open.show"
 });
 //# sourceMappingURL=quick_open-meta.js.map

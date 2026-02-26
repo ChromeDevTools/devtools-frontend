@@ -136,8 +136,6 @@ function isImageResource(resource) {
 }
 var ImagePreview = class {
   static async build(originalImageURL, showDimensions, options = {
-    precomputedFeatures: void 0,
-    imageAltText: void 0,
     align: "center"
     /* Align.CENTER */
   }) {

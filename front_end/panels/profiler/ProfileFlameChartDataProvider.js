@@ -24,7 +24,18 @@ export class ProfileFlameChartDataProvider {
     }
     static colorGenerator() {
         if (!colorGeneratorInstance) {
-            colorGeneratorInstance = new Common.Color.Generator({ min: 30, max: 330, count: undefined }, { min: 50, max: 80, count: 5 }, { min: 80, max: 90, count: 3 });
+            colorGeneratorInstance = new Common.Color.Generator({
+                min: 30,
+                max: 330,
+            }, {
+                min: 50,
+                max: 80,
+                count: 5,
+            }, {
+                min: 80,
+                max: 90,
+                count: 3,
+            });
             colorGeneratorInstance.setColorForID('(idle)', 'hsl(0, 0%, 94%)');
             colorGeneratorInstance.setColorForID('(program)', 'hsl(0, 0%, 80%)');
             colorGeneratorInstance.setColorForID('(garbage collector)', 'hsl(0, 0%, 80%)');

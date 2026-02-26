@@ -62,8 +62,8 @@ export declare class ParsedURL {
     static completeURL(baseURL: Platform.DevToolsPath.UrlString, href: string): Platform.DevToolsPath.UrlString | null;
     static splitLineAndColumn(string: string): {
         url: Platform.DevToolsPath.UrlString;
-        lineNumber: (number | undefined);
-        columnNumber: (number | undefined);
+        lineNumber?: number;
+        columnNumber?: number;
     };
     static removeWasmFunctionInfoFromURL(url: string): Platform.DevToolsPath.UrlString;
     private static beginsWithWindowsDriveLetter;
@@ -74,8 +74,8 @@ export declare class ParsedURL {
     isAboutBlank(): boolean;
     isDataURL(): boolean;
     extractDataUrlMimeType(): {
-        type: string | undefined;
-        subtype: string | undefined;
+        type?: string;
+        subtype?: string | undefined;
     };
     isBlobURL(): boolean;
     lastPathComponentWithFragment(): string;

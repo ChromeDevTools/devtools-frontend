@@ -253,7 +253,7 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox {
             if (!regex) {
                 return { valid: false, errorMessage: i18nString(UIStrings.patternMustBeAValidRegular) };
             }
-            return { valid: true, errorMessage: undefined };
+            return { valid: true };
         }
     }
 }

@@ -50,7 +50,7 @@ function isImageResource(resource) {
     return resource !== null && resource.resourceType() === Common.ResourceType.resourceTypes.Image;
 }
 export class ImagePreview {
-    static async build(originalImageURL, showDimensions, options = { precomputedFeatures: undefined, imageAltText: undefined, align: "center" /* Align.CENTER */ }) {
+    static async build(originalImageURL, showDimensions, options = { align: "center" /* Align.CENTER */ }) {
         const { precomputedFeatures, imageAltText, align } = options;
         let resource = SDK.ResourceTreeModel.ResourceTreeModel.resourceForURL(originalImageURL);
         let imageURL = originalImageURL;

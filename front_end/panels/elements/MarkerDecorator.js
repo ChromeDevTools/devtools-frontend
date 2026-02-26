@@ -52,8 +52,6 @@ export function getRegisteredDecorators() {
         {
             decorator: PseudoStateMarkerDecorator.instance,
             marker: 'pseudo-state-marker',
-            title: undefined,
-            color: undefined,
         },
     ];
 }

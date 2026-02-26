@@ -9,7 +9,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 import { type MatchRenderer, RenderingContext } from './PropertyRenderer.js';
 import type { StylePropertiesSection } from './StylePropertiesSection.js';
-import { StylesSidebarPane } from './StylesSidebarPane.js';
+import { type StylesSidebarPane } from './StylesSidebarPane.js';
 interface StylePropertyTreeElementParams {
     stylesPane: StylesSidebarPane;
     section: StylePropertiesSection;

@@ -193,8 +193,7 @@ async function frameworkEventListeners(object) {
     }
     const result = {
       eventListeners,
-      internalHandlers: internalHandlers.length ? internalHandlers : void 0,
-      errorString: void 0
+      internalHandlers: internalHandlers.length ? internalHandlers : void 0
     };
     if (!result.internalHandlers) {
       delete result.internalHandlers;

@@ -337,8 +337,6 @@ export class EmulatedDevice {
                 height: orientation.hinge.height,
                 x: orientation.hinge.x,
                 y: orientation.hinge.y,
-                contentColor: undefined,
-                outlineColor: undefined,
             };
             if (orientation.hinge.contentColor) {
                 json.hinge.contentColor = {

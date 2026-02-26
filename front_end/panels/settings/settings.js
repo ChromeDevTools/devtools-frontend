@@ -365,7 +365,7 @@ var SettingsScreen = class _SettingsScreen extends UI.Widget.VBox {
     dialog.contentElement.focus();
     return settingsScreen;
   }
-  static async showSettingsScreen(options = { name: void 0, focusTabHeader: void 0 }) {
+  static async showSettingsScreen(options = {}) {
     const { name, focusTabHeader } = options;
     const settingsScreen = _SettingsScreen.revealSettingsScreen();
     settingsScreen.selectTab(name || "preferences");
@@ -2110,7 +2110,7 @@ var FrameworkIgnoreListSettingsTab = class extends UI4.Widget.VBox {
       if (!regex) {
         return { valid: false, errorMessage: i18nString4(UIStrings4.patternMustBeAValidRegular) };
       }
-      return { valid: true, errorMessage: void 0 };
+      return { valid: true };
     }
   }
 };

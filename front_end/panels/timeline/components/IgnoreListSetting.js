@@ -156,7 +156,7 @@ export class IgnoreListSetting extends UI.Widget.Widget {
     }
     #onNewRegexInputFocus(value) {
         // Do not need to trim here because this is a temporary one, we will trim the input when finish editing,
-        this.#editingRegexSetting = { pattern: value, disabled: false, disabledForUrl: undefined };
+        this.#editingRegexSetting = { pattern: value, disabled: false };
         // We need to push the temp regex here to update the flame chart.
         // We are using the "skip-stack-frames-pattern" setting to determine which is rendered on flame chart. And the push
         // here will update the setting's value.

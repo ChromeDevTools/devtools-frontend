@@ -185,10 +185,11 @@ var DEFAULT_VIEW = (input, _output, target) => {
         ${results.map((searchResult) => html`
           <li @expand=${(e) => onExpand(searchResult, e)}
               role="treeitem"
-              class="search-result">
+              class="search-result"
+              ?open=${expandedResults.has(searchResult)}>
             <style>${searchResultsPane_css_default}</style>
             ${renderSearchResult(searchResult)}
-            <ul role="group" ?hidden=${!expandedResults.has(searchResult)}>
+            <ul role="group">
               ${renderSearchMatches(searchResult, matches, onSelectMatch, onShowMoreMatches)}
             </ul>
           </li>`)}

@@ -113,7 +113,7 @@ export class CSSStyleRule extends CSSRule {
         const dummyPayload = {
             selectorList: {
                 text: '',
-                selectors: [{ text: selectorText, value: undefined }],
+                selectors: [{ text: selectorText }],
             },
             style: {
                 styleSheetId: '0',
@@ -199,7 +199,6 @@ export class CSSPropertyRule extends CSSRule {
             origin: payload.origin,
             style: payload.style,
             header: styleSheetHeaderForRule(cssModel, payload),
-            originTreeScopeNodeId: undefined,
         });
         this.#name = new CSSValue(payload.propertyName);
     }
@@ -236,7 +235,6 @@ export class CSSAtRule extends CSSRule {
             origin: payload.origin,
             style: payload.style,
             header: styleSheetHeaderForRule(cssModel, payload),
-            originTreeScopeNodeId: undefined
         });
         this.#name = payload.name ? new CSSValue(payload.name) : null;
         this.#type = payload.type;
@@ -275,7 +273,6 @@ export class CSSKeyframeRule extends CSSRule {
             origin: payload.origin,
             style: payload.style,
             header: styleSheetHeaderForRule(cssModel, payload),
-            originTreeScopeNodeId: undefined
         });
         this.reinitializeKey(payload.keyText);
         this.#parentRuleName = parentRuleName;
@@ -324,7 +321,6 @@ export class CSSPositionTryRule extends CSSRule {
             origin: payload.origin,
             style: payload.style,
             header: styleSheetHeaderForRule(cssModel, payload),
-            originTreeScopeNodeId: undefined
         });
         this.#name = new CSSValue(payload.name);
         this.#active = payload.active;
@@ -345,7 +341,6 @@ export class CSSFunctionRule extends CSSRule {
             origin: payload.origin,
             style: { cssProperties: [], shorthandEntries: [] },
             header: styleSheetHeaderForRule(cssModel, payload),
-            originTreeScopeNodeId: undefined
         });
         this.#name = new CSSValue(payload.name);
         this.#parameters = payload.parameters.map(({ name }) => name);

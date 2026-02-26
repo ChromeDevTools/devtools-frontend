@@ -19,8 +19,8 @@ export declare class CSSRule {
     constructor(cssModel: CSSModel, payload: {
         style: Protocol.CSS.CSSStyle;
         origin: Protocol.CSS.StyleSheetOrigin;
-        originTreeScopeNodeId: Protocol.DOM.BackendNodeId | undefined;
         header: CSSStyleSheetHeader | null;
+        originTreeScopeNodeId?: Protocol.DOM.BackendNodeId;
     });
     get sourceURL(): string | undefined;
     rebase(edit: Edit): void;

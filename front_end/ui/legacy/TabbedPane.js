@@ -249,7 +249,7 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin(VBox) {
         if (tab.shown) {
             this.hideTabElement(tab);
         }
-        const eventData = { prevTabId: undefined, tabId: id, view: tab.view, isUserGesture: userGesture };
+        const eventData = { tabId: id, view: tab.view, isUserGesture: userGesture };
         this.dispatchEventToListeners(Events.TabClosed, eventData);
         return true;
     }
@@ -881,7 +881,7 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin(VBox) {
             --index;
         }
         this.#tabs.splice(index, 0, tab);
-        const eventData = { prevTabId: undefined, tabId: tab.id, view: tab.view, isUserGesture: undefined };
+        const eventData = { tabId: tab.id, view: tab.view };
         this.dispatchEventToListeners(Events.TabOrderChanged, eventData);
     }
     leftToolbar() {

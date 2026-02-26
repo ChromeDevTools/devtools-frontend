@@ -520,9 +520,7 @@ export class ResourceTreeFrame {
     #childFrames = new Set();
     resourcesMap = new Map();
     backForwardCacheDetails = {
-        restoredFromCache: undefined,
         explanations: [],
-        explanationsTree: undefined,
     };
     constructor(model, parentFrame, frameId, payload, creationStackTrace) {
         this.#model = model;
@@ -581,9 +579,7 @@ export class ResourceTreeFrame {
         this.#crossOriginIsolatedContextType = framePayload.crossOriginIsolatedContextType;
         this.#gatedAPIFeatures = framePayload.gatedAPIFeatures;
         this.backForwardCacheDetails = {
-            restoredFromCache: undefined,
             explanations: [],
-            explanationsTree: undefined,
         };
         const mainResource = this.resourcesMap.get(this.#url);
         this.resourcesMap.clear();

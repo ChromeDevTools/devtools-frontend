@@ -4916,7 +4916,7 @@ var TabbedPane = class extends Common8.ObjectWrapper.eventMixin(VBox) {
     if (tab.shown) {
       this.hideTabElement(tab);
     }
-    const eventData = { prevTabId: void 0, tabId: id2, view: tab.view, isUserGesture: userGesture };
+    const eventData = { tabId: id2, view: tab.view, isUserGesture: userGesture };
     this.dispatchEventToListeners(Events.TabClosed, eventData);
     return true;
   }
@@ -5546,7 +5546,7 @@ var TabbedPane = class extends Common8.ObjectWrapper.eventMixin(VBox) {
       --index;
     }
     this.#tabs.splice(index, 0, tab);
-    const eventData = { prevTabId: void 0, tabId: tab.id, view: tab.view, isUserGesture: void 0 };
+    const eventData = { tabId: tab.id, view: tab.view };
     this.dispatchEventToListeners(Events.TabOrderChanged, eventData);
   }
   leftToolbar() {
@@ -8059,13 +8059,7 @@ var SoftContextMenu = class _SoftContextMenu {
     if (item8.tooltip) {
       Tooltip.install(menuItemElement, item8.tooltip);
     }
-    const detailsForElement = {
-      actionId: void 0,
-      isSeparator: void 0,
-      customElement: void 0,
-      subItems: void 0,
-      subMenuTimer: void 0
-    };
+    const detailsForElement = {};
     if (item8.jslogContext && item8.label) {
       if (item8.type === "checkbox") {
         menuItemElement.setAttribute("jslog", `${VisualLogging8.toggle().track({ click: true }).context(item8.jslogContext)}`);
@@ -8126,11 +8120,7 @@ var SoftContextMenu = class _SoftContextMenu {
     menuItemElement.tabIndex = -1;
     markAsMenuItemSubMenu(menuItemElement);
     this.detailsForElementMap.set(menuItemElement, {
-      subItems: item8.subItems,
-      actionId: void 0,
-      isSeparator: void 0,
-      customElement: void 0,
-      subMenuTimer: void 0
+      subItems: item8.subItems
     });
     if (menuContainsCheckbox) {
       const checkMarkElement = createIcon5("checkmark", "checkmark soft-context-menu-item-checkmark");
@@ -8153,11 +8143,7 @@ var SoftContextMenu = class _SoftContextMenu {
     const separatorElement = document.createElement("div");
     separatorElement.classList.add("soft-context-menu-separator");
     this.detailsForElementMap.set(separatorElement, {
-      subItems: void 0,
-      actionId: void 0,
-      isSeparator: true,
-      customElement: void 0,
-      subMenuTimer: void 0
+      isSeparator: true
     });
     separatorElement.createChild("div", "separator-line");
     return separatorElement;
@@ -8481,8 +8467,6 @@ var Item = class {
           label: this.label,
           isExperimentalFeature: this.previewFeature,
           enabled: !this.disabled,
-          checked: void 0,
-          subItems: void 0,
           tooltip: this.#tooltip,
           jslogContext: this.jslogContext,
           featureName: this.featureName
@@ -8503,12 +8487,7 @@ var Item = class {
       }
       case "separator": {
         return {
-          type: "separator",
-          id: void 0,
-          label: void 0,
-          enabled: void 0,
-          checked: void 0,
-          subItems: void 0
+          type: "separator"
         };
       }
       case "checkbox": {
@@ -8519,7 +8498,6 @@ var Item = class {
           checked: Boolean(this.checked),
           isExperimentalFeature: this.previewFeature,
           enabled: !this.disabled,
-          subItems: void 0,
           tooltip: this.#tooltip,
           jslogContext: this.jslogContext
         };
@@ -8805,8 +8783,6 @@ var SubMenu = class extends Item {
       isExperimentalFeature: this.previewFeature,
       enabled: !this.disabled,
       subItems: [],
-      id: void 0,
-      checked: void 0,
       jslogContext: this.jslogContext,
       featureName: this.featureName
     };
@@ -8823,12 +8799,7 @@ var SubMenu = class extends Item {
           result.subItems = [];
         }
         result.subItems.push({
-          type: "separator",
-          id: void 0,
-          subItems: void 0,
-          checked: void 0,
-          enabled: void 0,
-          label: void 0
+          type: "separator"
         });
       }
     }
@@ -9290,7 +9261,7 @@ function registerProvider(registration) {
 async function loadApplicableRegisteredProviders(target) {
   const providers = [];
   for (const providerRegistration of registeredProviders) {
-    if (!Root4.Runtime.Runtime.isDescriptorEnabled({ experiment: providerRegistration.experiment, condition: void 0 })) {
+    if (!Root4.Runtime.Runtime.isDescriptorEnabled({ experiment: providerRegistration.experiment })) {
       continue;
     }
     if (providerRegistration.contextTypes) {
@@ -15304,10 +15275,7 @@ function focusChanged(event) {
   const element = document2 ? deepActiveElement(document2) : null;
   updateWidgetfocusWidgetForNode(element);
 }
-function createShadowRootWithCoreStyles(element, options = {
-  delegatesFocus: void 0,
-  cssFile: void 0
-}) {
+function createShadowRootWithCoreStyles(element, options = {}) {
   const { cssFile, delegatesFocus } = options;
   const shadowRoot = element.attachShadow({ mode: "open", delegatesFocus });
   appendStyle(shadowRoot, inspectorCommon_css_default, Buttons6.textButtonStyles);
@@ -16763,7 +16731,7 @@ var EmptyWidget = class extends VBox {
       this.#extraElements = [...this.element.children];
       this.#firstUpdate = false;
     }
-    const output = { contentElement: void 0 };
+    const output = {};
     this.#view({ header: this.#header, text: this.#text, link: this.#link, extraElements: this.#extraElements }, output, this.element);
     if (output.contentElement) {
       this.contentElement = output.contentElement;
@@ -17536,7 +17504,7 @@ var Fragment = class _Fragment {
       if (node.nodeType === Node.ELEMENT_NODE && node.hasAttributes()) {
         if (node.hasAttribute("$")) {
           nodesToMark.push(node);
-          binds.push({ replaceNodeIndex: void 0, attr: void 0, elementId: node.getAttribute("$") || "" });
+          binds.push({ elementId: node.getAttribute("$") || "" });
           node.removeAttribute("$");
         }
         const attributesToRemove = [];
@@ -17555,8 +17523,6 @@ var Fragment = class _Fragment {
           valueIndex += attr.names.length - 1;
           valueIndex += attr.values.length - 1;
           const bind = {
-            elementId: void 0,
-            replaceNodeIndex: void 0,
             attr
           };
           binds.push(bind);
@@ -17575,7 +17541,7 @@ var Fragment = class _Fragment {
           }
           const nodeToReplace = document.createElement("span");
           nodesToMark.push(nodeToReplace);
-          binds.push({ attr: void 0, elementId: void 0, replaceNodeIndex: valueIndex++ });
+          binds.push({ replaceNodeIndex: valueIndex++ });
           parentNode.insertBefore(nodeToReplace, node);
         }
       }
@@ -22291,7 +22257,7 @@ var TreeViewElement = class _TreeViewElement extends HTMLElementWithLightDOMTemp
     if (subtreeRoot.role !== "group" || !subtreeRoot.parentElement) {
       return null;
     }
-    const expanded = !hasBooleanAttribute(subtreeRoot, "hidden");
+    const expanded = hasBooleanAttribute(subtreeRoot.parentElement, "open");
     const treeElement = TreeViewTreeElement.get(subtreeRoot.parentElement);
     return treeElement ? { expanded, treeElement } : null;
   }
@@ -22311,11 +22277,11 @@ var TreeViewElement = class _TreeViewElement extends HTMLElementWithLightDOMTemp
     if (node === treeNode && attributeName === "selected" && hasBooleanAttribute(treeNode, "selected")) {
       treeElement.revealAndSelect(true);
     }
-    if (attributeName === "hidden" && node instanceof HTMLUListElement && node.role === "group") {
-      if (hasBooleanAttribute(node, "hidden")) {
-        treeElement.collapse();
-      } else {
+    if (node === treeNode && attributeName === "open") {
+      if (hasBooleanAttribute(treeNode, "open")) {
         treeElement.expand();
+      } else {
+        treeElement.collapse();
       }
     }
   }

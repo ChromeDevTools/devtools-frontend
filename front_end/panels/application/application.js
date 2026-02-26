@@ -2094,9 +2094,7 @@ var BackgroundServiceView = class _BackgroundServiceView extends UI3.Widget.VBox
     ];
     const dataGrid = new DataGrid.DataGrid.DataGridImpl({
       displayName: i18nString3(UIStrings3.backgroundServices),
-      columns,
-      refreshCallback: void 0,
-      deleteCallback: void 0
+      columns
     });
     dataGrid.setStriped(true);
     dataGrid.addEventListener("SelectedNode", (event) => this.showPreview(event.data));
@@ -2412,7 +2410,6 @@ var DeviceBoundSessionsModel = class extends Common3.ObjectWrapper.ObjectWrapper
     let sessionAndEvent = sessionIdToSessionMap.get(sessionId);
     if (!sessionAndEvent) {
       sessionAndEvent = {
-        session: void 0,
         isSessionTerminated: false,
         hasErrors: false,
         eventsById: /* @__PURE__ */ new Map()
@@ -3364,7 +3361,7 @@ function renderOriginTrialTree(originTrial) {
         <devtools-adorner class="badge-secondary">
           ${i18nString6(UIStrings6.tokens, { PH1: originTrial.tokensWithStatus.length })}
         </devtools-adorner>` : nothing2}
-      <ul role="group" hidden>
+      <ul role="group">
         ${originTrial.tokensWithStatus.length > 1 ? originTrial.tokensWithStatus.map(renderTokenNode) : renderTokenDetailsNodes(originTrial.tokensWithStatus[0])}
       </ul>
     </li>`;
@@ -3377,7 +3374,7 @@ function renderTokenNode(token) {
       <devtools-adorner class="token-status-badge badge-${success ? "success" : "error"}">
         ${token.status}
       </devtools-adorner>
-      <ul role="group" hidden>
+      <ul role="group">
         ${renderTokenDetailsNodes(token)}
       </ul>
     </li>`;
@@ -3399,7 +3396,7 @@ function renderRawTokenTextNode(tokenText) {
   return html2`
     <li role="treeitem">
       ${i18nString6(UIStrings6.rawTokenText)}
-      <ul role="group" hidden>
+      <ul role="group">
         <li role="treeitem">
           <div style="overflow-wrap: break-word;">
             ${tokenText}
@@ -5170,23 +5167,15 @@ var IDBDataView = class extends UI7.View.SimpleView {
     const keyPath = this.isIndex && this.index ? this.index.keyPath : this.objectStore.keyPath;
     const columns = [];
     const columnDefaults = {
-      title: void 0,
-      titleDOMFragment: void 0,
-      sortable: false,
-      sort: void 0,
-      align: void 0,
-      width: void 0,
-      fixedWidth: void 0,
-      editable: void 0,
-      nonSelectable: void 0,
-      longText: void 0,
-      disclosure: void 0,
-      weight: void 0,
-      allowInSortByEvenWhenHidden: void 0,
-      dataType: void 0,
-      defaultWeight: void 0
+      sortable: false
     };
-    columns.push({ ...columnDefaults, id: "number", title: "#", sortable: false, width: "50px" });
+    columns.push({
+      ...columnDefaults,
+      id: "number",
+      title: "#",
+      sortable: false,
+      width: "50px"
+    });
     columns.push({
       ...columnDefaults,
       id: "key",
@@ -5202,7 +5191,12 @@ var IDBDataView = class extends UI7.View.SimpleView {
       });
     }
     const title = i18nString8(UIStrings8.valueString);
-    columns.push({ ...columnDefaults, id: "value", title, sortable: false });
+    columns.push({
+      ...columnDefaults,
+      id: "value",
+      title,
+      sortable: false
+    });
     const dataGrid = new DataGrid3.DataGrid.DataGridImpl({
       displayName: i18nString8(UIStrings8.indexedDb),
       columns,

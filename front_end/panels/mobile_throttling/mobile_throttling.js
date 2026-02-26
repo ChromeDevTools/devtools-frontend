@@ -1940,7 +1940,9 @@ var ThrottlingSettingsTab = class extends UI4.Widget.VBox {
         const errorMessage = i18nString7(UIStrings7.profileNameCharactersLengthMust, { PH1: maxLength });
         return { valid, errorMessage };
       }
-      return { valid, errorMessage: void 0 };
+      return {
+        valid
+      };
     }
     function throughputValidator(_item, _index, input) {
       const minThroughput = 0;
@@ -1953,7 +1955,9 @@ var ThrottlingSettingsTab = class extends UI4.Widget.VBox {
         const errorMessage = i18nString7(UIStrings7.sMustBeANumberBetweenSkbsToSkbs, { PH1: String(throughput), PH2: minThroughput, PH3: maxThroughput });
         return { valid, errorMessage };
       }
-      return { valid, errorMessage: void 0 };
+      return {
+        valid
+      };
     }
     function latencyValidator(_item, _index, input) {
       const minLatency = 0;
@@ -1965,7 +1969,9 @@ var ThrottlingSettingsTab = class extends UI4.Widget.VBox {
         const errorMessage = i18nString7(UIStrings7.latencyMustBeAnIntegerBetweenSms, { PH1: minLatency, PH2: maxLatency });
         return { valid, errorMessage };
       }
-      return { valid, errorMessage: void 0 };
+      return {
+        valid
+      };
     }
     function packetLossValidator(_item, _index, input) {
       const minPacketLoss = 0;
@@ -1977,7 +1983,9 @@ var ThrottlingSettingsTab = class extends UI4.Widget.VBox {
         const errorMessage = i18nString7(UIStrings7.packetLossMustBeAnIntegerBetweenSpct, { PH1: minPacketLoss, PH2: maxPacketLoss });
         return { valid, errorMessage };
       }
-      return { valid, errorMessage: void 0 };
+      return {
+        valid
+      };
     }
     function packetQueueLengthValidator(_item, _index, input) {
       const minPacketQueueLength = 0;
@@ -1988,10 +1996,14 @@ var ThrottlingSettingsTab = class extends UI4.Widget.VBox {
         const errorMessage = i18nString7(UIStrings7.packetQueueLengthMustBeAnIntegerGreaterOrEqualToZero);
         return { valid, errorMessage };
       }
-      return { valid, errorMessage: void 0 };
+      return {
+        valid
+      };
     }
     function packetReorderingValidator(_item, _index, _input) {
-      return { valid: true, errorMessage: void 0 };
+      return {
+        valid: true
+      };
     }
   }
 };

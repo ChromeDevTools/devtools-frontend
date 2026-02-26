@@ -49,4 +49,5 @@ export declare class CSSProperty extends Common.ObjectWrapper.ObjectWrapper<Even
      */
     getInvalidStringForInvalidProperty(): Common.UIString.LocalizedString | undefined;
     getLonghandProperties(): CSSProperty[];
+    ignoreErrors(): boolean;
 }

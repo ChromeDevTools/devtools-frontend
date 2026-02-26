@@ -4,6 +4,7 @@
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as AiCodeCompletion from '../../models/ai_code_completion/ai_code_completion.js';
+import * as AiCodeGeneration from '../../models/ai_code_generation/ai_code_generation.js';
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -37,6 +38,11 @@ export class AiCodeCompletionPlugin extends Plugin {
                     }] :
                     undefined,
                 inferenceLanguage: this.#getInferenceLanguage()
+            },
+            generationContext: {
+                additionalPreambleContext: this.uiSourceCode.url().startsWith('snippet://') ?
+                    AiCodeGeneration.AiCodeGeneration.additionalContextForConsole :
+                    undefined,
             },
             onFeatureEnabled: () => {
                 this.#setupAiCodeCompletion();

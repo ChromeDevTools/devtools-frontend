@@ -53,7 +53,7 @@ export class AiAgent {
      * change the `context` during an `AiAgent.run()`.
      */
     context;
-    #history = [];
+    #history;
     #facts = new Set();
     constructor(opts) {
         this.#aidaClient = opts.aidaClient;
@@ -66,12 +66,16 @@ export class AiAgent {
         }
         this.#sessionId = opts.sessionId ?? crypto.randomUUID();
         this.confirmSideEffect = opts.confirmSideEffectForTest ?? (() => Promise.withResolvers());
+        this.#history = opts.history ?? [];
     }
     async enhanceQuery(query) {
         return query;
     }
     currentFacts() {
         return this.#facts;
+    }
+    get history() {
+        return [...this.#history];
     }
     /**
      * Add a fact which will be sent for any subsequent requests.

@@ -6,7 +6,7 @@ import type * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ElementsComponents from './components/components.js';
 import { type Context, StylePropertyTreeElement } from './StylePropertyTreeElement.js';
-import { StylesSidebarPane } from './StylesSidebarPane.js';
+import type { StylesSidebarPane } from './StylesSidebarPane.js';
 export declare class StylePropertiesSection {
     #private;
     protected parentPane: StylesSidebarPane;
@@ -117,6 +117,10 @@ export declare class StylePropertiesSection {
     private editingMediaTextCommittedForTest;
     private handleSelectorClick;
     private handleContextMenuEvent;
+    formatLeadingProperties(): {
+        allDeclarationText: string;
+        ruleText: string;
+    };
     private navigateToSelectorSource;
     private static revealSelectorSource;
     private startEditingAtFirstPosition;

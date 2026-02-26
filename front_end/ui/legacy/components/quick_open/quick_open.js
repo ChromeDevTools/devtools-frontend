@@ -935,7 +935,6 @@ var CommandMenu = class _CommandMenu {
       jslogContext: action.id(),
       executeHandler: action.execute.bind(action),
       userActionCode,
-      availableHandler: void 0,
       isPanelOrDrawer: panelOrDrawer
     });
   }
@@ -974,7 +973,6 @@ var CommandMenu = class _CommandMenu {
       jslogContext: id,
       executeHandler,
       userActionCode,
-      availableHandler: void 0,
       isPanelOrDrawer: panelOrDrawer,
       featurePromotionId
     });
@@ -1232,7 +1230,6 @@ registerProvider({
   provider: (jslogContext) => Promise.resolve(new HelpQuickOpen(jslogContext)),
   helpTitle: () => "Help",
   titlePrefix: () => "Help",
-  titleSuggestion: void 0,
   jslogContext: "help"
 });
 export {

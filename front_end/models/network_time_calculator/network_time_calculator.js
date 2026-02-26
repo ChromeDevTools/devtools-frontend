@@ -141,7 +141,10 @@ var NetworkTimeCalculator = class extends Common.ObjectWrapper.ObjectWrapper {
     const hasLatency = request.latency > 0;
     const leftLabel = hasLatency ? i18n.TimeUtilities.secondsToString(request.latency) : rightLabel;
     if (request.timing) {
-      return { left: leftLabel, right: rightLabel, tooltip: void 0 };
+      return {
+        left: leftLabel,
+        right: rightLabel
+      };
     }
     let tooltip;
     if (hasLatency && rightLabel) {

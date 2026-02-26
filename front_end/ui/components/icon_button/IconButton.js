@@ -8,7 +8,7 @@ import iconButtonStyles from './iconButton.css.js';
 const { html } = Lit;
 export class IconButton extends HTMLElement {
     #shadow = this.attachShadow({ mode: 'open' });
-    #clickHandler = undefined;
+    #clickHandler;
     #groups = [];
     #compact = false;
     #leadingText = '';

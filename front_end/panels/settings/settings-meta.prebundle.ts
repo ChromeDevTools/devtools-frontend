@@ -280,7 +280,6 @@ Common.Revealer.registerRevealer({
       Root.Runtime.HostExperiment,
     ];
   },
-  destination: undefined,
   async loadRevealer() {
     const Settings = await loadSettingsModule();
     return new Settings.SettingsScreen.Revealer();
@@ -290,11 +289,9 @@ Common.Revealer.registerRevealer({
 UI.ContextMenu.registerItem({
   location: UI.ContextMenu.ItemLocation.MAIN_MENU_FOOTER,
   actionId: 'settings.shortcuts',
-  order: undefined,
 });
 
 UI.ContextMenu.registerItem({
   location: UI.ContextMenu.ItemLocation.MAIN_MENU_HELP_DEFAULT,
   actionId: 'settings.documentation',
-  order: undefined,
 });

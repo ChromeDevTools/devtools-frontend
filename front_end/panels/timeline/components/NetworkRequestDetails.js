@@ -260,7 +260,6 @@ async function renderPreviewElement(request, target, previewElementsCache) {
     if (!previewElementsCache.get(request)) {
         const previewOpts = {
             imageAltText: LegacyComponents.ImagePreview.ImagePreview.defaultAltTextForImageURL(url),
-            precomputedFeatures: undefined,
             align: "start" /* LegacyComponents.ImagePreview.Align.START */,
             hideFileData: true,
         };

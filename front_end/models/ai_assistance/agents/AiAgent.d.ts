@@ -111,6 +111,7 @@ export interface AgentOptions {
     sessionId?: string;
     confirmSideEffectForTest?: typeof Promise.withResolvers;
     onInspectElement?: () => Promise<SDK.DOMModel.DOMNode | null>;
+    history?: Host.AidaClient.Content[];
 }
 export interface ParsedAnswer {
     answer: string;
@@ -232,6 +233,7 @@ export declare abstract class AiAgent<T> {
     constructor(opts: AgentOptions);
     enhanceQuery(query: string, selected: ConversationContext<T> | null, multimodalInputType?: MultimodalInputType): Promise<string>;
     currentFacts(): ReadonlySet<Host.AidaClient.RequestFact>;
+    get history(): Host.AidaClient.Content[];
     /**
      * Add a fact which will be sent for any subsequent requests.
      * Returns the new list of all facts.

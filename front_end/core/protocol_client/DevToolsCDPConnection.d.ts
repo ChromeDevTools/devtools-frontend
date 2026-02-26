@@ -5,7 +5,7 @@ export declare class DevToolsCDPConnection implements CDPConnection {
     constructor(transport: ConnectionTransport);
     observe(observer: CDPConnectionObserver): void;
     unobserve(observer: CDPConnectionObserver): void;
-    send<T extends Command>(method: T, params: CommandParams<T>, sessionId: string | undefined): Promise<{
+    send<T extends Command>(method: T, params: CommandParams<T>, sessionId?: string): Promise<{
         result: CommandResult<T>;
     } | {
         error: CDPError;

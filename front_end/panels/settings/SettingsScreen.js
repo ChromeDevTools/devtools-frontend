@@ -143,7 +143,7 @@ export class SettingsScreen extends UI.Widget.VBox {
         dialog.contentElement.focus();
         return settingsScreen;
     }
-    static async showSettingsScreen(options = { name: undefined, focusTabHeader: undefined }) {
+    static async showSettingsScreen(options = {}) {
         const { name, focusTabHeader } = options;
         const settingsScreen = SettingsScreen.revealSettingsScreen();
         settingsScreen.selectTab(name || 'preferences');

@@ -5326,7 +5326,7 @@ var DEFAULT_VIEW4 = (input, output, target) => {
     n: group.messageCount
   })}
                   ${group.messageCount === 0 ? nothing4 : html4`
-                  <ul role="group" hidden>
+                  <ul role="group">
                     ${group.urlGroups.values().map((urlGroup) => html4`
                       <li
                         @select=${() => input.onSelectionChanged(urlGroup.filter)}
@@ -6100,6 +6100,7 @@ import * as Platform5 from "./../../core/platform/platform.js";
 import * as Root3 from "./../../core/root/root.js";
 import * as SDK7 from "./../../core/sdk/sdk.js";
 import * as AiCodeCompletion from "./../../models/ai_code_completion/ai_code_completion.js";
+import * as AiCodeGeneration from "./../../models/ai_code_generation/ai_code_generation.js";
 import * as Bindings3 from "./../../models/bindings/bindings.js";
 import * as IssuesManager from "./../../models/issues_manager/issues_manager.js";
 import * as Logs3 from "./../../models/logs/logs.js";
@@ -6529,6 +6530,9 @@ var ConsoleView = class _ConsoleView extends UI8.Widget.VBox {
           included_reason: Host3.AidaClient.Reason.RELATED_FILE
         }],
         stopSequences: ["\n\n"]
+      },
+      generationContext: {
+        additionalPreambleContext: AiCodeGeneration.AiCodeGeneration.additionalContextForConsole
       },
       onFeatureEnabled: () => {
         this.setupAiCodeCompletion();

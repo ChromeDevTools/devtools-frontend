@@ -218,7 +218,6 @@ export async function frameworkEventListeners(object) {
         const result = {
             eventListeners,
             internalHandlers: internalHandlers.length ? internalHandlers : undefined,
-            errorString: undefined,
         };
         // The logic further up seems to expect that if the internalHandlers is set,
         // that it should have a non-empty Array, but TS / Closure also expect the

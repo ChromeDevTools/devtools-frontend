@@ -1771,7 +1771,6 @@ UI.ContextMenu.registerProvider({
         const Sources = await loadSourcesModule();
         return Sources.SourcesPanel.SourcesPanel.instance();
     },
-    experiment: undefined,
 });
 UI.ContextMenu.registerProvider({
     async loadProvider() {
@@ -1784,7 +1783,6 @@ UI.ContextMenu.registerProvider({
             ...maybeRetrieveContextTypes(Sources => [Sources.UISourceCodeFrame.UISourceCodeFrame]),
         ];
     },
-    experiment: undefined,
 });
 Common.Revealer.registerRevealer({
     contextTypes() {
@@ -1862,7 +1860,6 @@ Common.Revealer.registerRevealer({
     contextTypes() {
         return maybeRetrieveContextTypes(Sources => [Sources.SearchSourcesView.SearchSources]);
     },
-    destination: undefined,
     async loadRevealer() {
         const Sources = await loadSourcesModule();
         return new Sources.SearchSourcesView.Revealer();
@@ -1872,9 +1869,6 @@ UI.Toolbar.registerToolbarItem({
     actionId: 'sources.add-folder-to-workspace',
     location: "files-navigator-toolbar" /* UI.Toolbar.ToolbarItemLocation.FILES_NAVIGATION_TOOLBAR */,
     label: i18nLazyString(UIStrings.addFolderManually),
-    loadItem: undefined,
-    order: undefined,
-    separator: undefined,
 });
 UI.Context.registerListener({
     contextTypes() {
@@ -1906,12 +1900,10 @@ UI.Context.registerListener({
 UI.ContextMenu.registerItem({
     location: "navigatorMenu/default" /* UI.ContextMenu.ItemLocation.NAVIGATOR_MENU_DEFAULT */,
     actionId: 'quick-open.show',
-    order: undefined,
 });
 UI.ContextMenu.registerItem({
     location: "mainMenu/default" /* UI.ContextMenu.ItemLocation.MAIN_MENU_DEFAULT */,
     actionId: 'sources.search',
-    order: undefined,
 });
 QuickOpen.FilteredListWidget.registerProvider({
     prefix: '@',
@@ -1961,6 +1953,5 @@ UI.ContextMenu.registerProvider({
         const Sources = await loadSourcesModule();
         return new Sources.PersistenceActions.ContextMenuProvider();
     },
-    experiment: undefined,
 });
 //# sourceMappingURL=sources-meta.prebundle.js.map

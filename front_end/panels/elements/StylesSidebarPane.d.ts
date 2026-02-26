@@ -64,11 +64,6 @@ export declare class StylesSidebarPane extends StylesSidebarPane_base {
     private onScroll;
     swatchPopoverHelper(): InlineEditor.SwatchPopoverHelper.SwatchPopoverHelper;
     setUserOperation(userOperation: boolean): void;
-    static ignoreErrorsForProperty(property: SDK.CSSProperty.CSSProperty): boolean;
-    static formatLeadingProperties(section: StylePropertiesSection): {
-        allDeclarationText: string;
-        ruleText: string;
-    };
     revealProperty(cssProperty: SDK.CSSProperty.CSSProperty): void;
     jumpToProperty(propertyName: string, sectionName?: string, blockName?: string): boolean;
     jumpToDeclaration(valueSource: SDK.CSSMatchedStyles.CSSValueSource): void;

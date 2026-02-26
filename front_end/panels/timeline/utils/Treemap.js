@@ -57,7 +57,6 @@ export function makeScriptNode(src, sourceRoot, sourcesData) {
         return {
             name,
             resourceBytes: 0,
-            encodedBytes: undefined,
         };
     }
     const sourceRootNode = newNode(sourceRoot);
@@ -173,7 +172,6 @@ export function createTreemapData(scripts, duplication) {
             for (const [source, resourceBytes] of Object.entries(sizes.files)) {
                 const sourceData = {
                     resourceBytes,
-                    encodedBytes: undefined,
                 };
                 const key = Trace.Extras.ScriptDuplication.normalizeSource(source);
                 if (duplication.has(key)) {
@@ -194,7 +192,6 @@ export function createTreemapData(scripts, duplication) {
             node = {
                 name,
                 resourceBytes: script.content?.length ?? 0,
-                encodedBytes: undefined,
             };
         }
         // If this is an inline script, place the node inside a top-level (aka depth-one)
@@ -206,7 +203,6 @@ export function createTreemapData(scripts, duplication) {
                 htmlNode = {
                     name,
                     resourceBytes: 0,
-                    encodedBytes: undefined,
                     children: [],
                 };
                 htmlNodesByFrameId.set(script.frame, htmlNode);

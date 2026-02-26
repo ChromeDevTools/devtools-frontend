@@ -1679,8 +1679,6 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
             description: error,
             buttonText: i18nString(UIStrings.close),
             hideStopButton: false,
-            showProgress: undefined,
-            showTimer: undefined,
         }, 
         // When recording failed, we should load null to go back to the landing page.
         async () => {
@@ -2089,10 +2087,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
         }
         this.statusDialog = new StatusDialog({
             showProgress: true,
-            showTimer: undefined,
             hideStopButton: true,
-            buttonText: undefined,
-            description: undefined,
         }, () => this.cancelLoading());
         this.statusDialog.showPane(this.statusPaneContainer);
         this.statusDialog.updateStatus(i18nString(UIStrings.loadingTrace));
@@ -2417,8 +2412,6 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
             showTimer: true,
             showProgress: true,
             hideStopButton: false,
-            description: undefined,
-            buttonText: undefined,
         }, () => this.stopRecording());
         this.statusDialog.showPane(this.statusPaneContainer);
         this.statusDialog.updateStatus(i18nString(UIStrings.initializingTracing));

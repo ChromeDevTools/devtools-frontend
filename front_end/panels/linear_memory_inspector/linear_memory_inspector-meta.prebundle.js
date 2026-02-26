@@ -42,7 +42,6 @@ UI.ContextMenu.registerProvider({
         const LinearMemoryInspector = await loadLinearMemoryInspectorModule();
         return LinearMemoryInspector.LinearMemoryInspectorController.LinearMemoryInspectorController.instance();
     },
-    experiment: undefined,
     contextTypes() {
         return [
             ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement,

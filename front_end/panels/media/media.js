@@ -118,9 +118,7 @@ var PlayerEventsView = class _PlayerEventsView extends UI.Widget.VBox {
     }
     const datagrid = new DataGrid.DataGrid.DataGridImpl({
       displayName: i18nString(UIStrings.eventDisplay),
-      columns: gridColumnDescs,
-      deleteCallback: void 0,
-      refreshCallback: void 0
+      columns: gridColumnDescs
     });
     datagrid.asWidget().contentElement.classList.add("no-border-top-datagrid");
     return datagrid;
@@ -1065,43 +1063,37 @@ var MessageLevelSelector = class {
       title: this.#defaultTitle,
       overwrite: true,
       stringValue: "",
-      value: 7,
-      selectable: void 0
+      value: 7
     });
     this.items.insert(this.items.length, {
       title: this.allTitle,
       overwrite: true,
       stringValue: "",
-      value: 15,
-      selectable: void 0
+      value: 15
     });
     this.items.insert(this.items.length, {
       title: i18nString3(UIStrings3.error),
       overwrite: false,
       stringValue: "error",
-      value: 1,
-      selectable: void 0
+      value: 1
     });
     this.items.insert(this.items.length, {
       title: i18nString3(UIStrings3.warning),
       overwrite: false,
       stringValue: "warning",
-      value: 2,
-      selectable: void 0
+      value: 2
     });
     this.items.insert(this.items.length, {
       title: i18nString3(UIStrings3.info),
       overwrite: false,
       stringValue: "info",
-      value: 4,
-      selectable: void 0
+      value: 4
     });
     this.items.insert(this.items.length, {
       title: i18nString3(UIStrings3.debug),
       overwrite: false,
       stringValue: "debug",
-      value: 8,
-      selectable: void 0
+      value: 8
     });
   }
   updateCheckMarks() {

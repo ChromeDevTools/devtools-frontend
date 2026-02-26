@@ -19,7 +19,7 @@ function registerAppProvider(registration) {
   registeredAppProvider.push(registration);
 }
 function getRegisteredAppProviders() {
-  return registeredAppProvider.filter((provider) => Root.Runtime.Runtime.isDescriptorEnabled({ experiment: void 0, condition: provider.condition })).sort((firstProvider, secondProvider) => {
+  return registeredAppProvider.filter((provider) => Root.Runtime.Runtime.isDescriptorEnabled({ condition: provider.condition })).sort((firstProvider, secondProvider) => {
     const order1 = firstProvider.order || 0;
     const order2 = secondProvider.order || 0;
     return order1 - order2;
@@ -3152,7 +3152,7 @@ var Legacy = class _Legacy {
   }
   toProtocolRGBA() {
     const rgba = this.canonicalRGBA();
-    const result = { r: rgba[0], g: rgba[1], b: rgba[2], a: void 0 };
+    const result = { r: rgba[0], g: rgba[1], b: rgba[2] };
     if (rgba[3] !== 1) {
       result.a = rgba[3];
     }
@@ -3416,7 +3416,7 @@ var Generator = class {
   #alphaSpace;
   #colors = /* @__PURE__ */ new Map();
   constructor(hueSpace, satSpace, lightnessSpace, alphaSpace) {
-    this.#hueSpace = hueSpace || { min: 0, max: 360, count: void 0 };
+    this.#hueSpace = hueSpace || { min: 0, max: 360 };
     this.#satSpace = satSpace || 67;
     this.#lightnessSpace = lightnessSpace || 80;
     this.#alphaSpace = alphaSpace || 1;
@@ -4415,7 +4415,7 @@ __export(Progress_exports, {
 var Progress = class {
   totalWork = 0;
   worked = 0;
-  title = void 0;
+  title;
   canceled = false;
   done = false;
 };

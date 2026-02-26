@@ -3031,9 +3031,7 @@ var HeapDetachedElementsDataGrid = class extends DataGrid3.DataGrid.DataGridImpl
     });
     super({
       displayName: i18nString6(UIStrings6.detachedElementsList),
-      columns,
-      deleteCallback: void 0,
-      refreshCallback: void 0
+      columns
     });
     this.setStriped(true);
   }
@@ -3149,7 +3147,18 @@ var ProfileFlameChartDataProvider = class _ProfileFlameChartDataProvider {
   }
   static colorGenerator() {
     if (!colorGeneratorInstance) {
-      colorGeneratorInstance = new Common5.Color.Generator({ min: 30, max: 330, count: void 0 }, { min: 50, max: 80, count: 5 }, { min: 80, max: 90, count: 3 });
+      colorGeneratorInstance = new Common5.Color.Generator({
+        min: 30,
+        max: 330
+      }, {
+        min: 50,
+        max: 80,
+        count: 5
+      }, {
+        min: 80,
+        max: 90,
+        count: 3
+      });
       colorGeneratorInstance.setColorForID("(idle)", "hsl(0, 0%, 94%)");
       colorGeneratorInstance.setColorForID("(program)", "hsl(0, 0%, 80%)");
       colorGeneratorInstance.setColorForID("(garbage collector)", "hsl(0, 0%, 80%)");
@@ -3672,59 +3681,24 @@ var ProfileView = class extends UI8.View.SimpleView {
       width: "120px",
       fixedWidth: true,
       sortable: true,
-      sort: DataGrid5.DataGrid.Order.Descending,
-      titleDOMFragment: void 0,
-      align: void 0,
-      editable: void 0,
-      nonSelectable: void 0,
-      longText: void 0,
-      disclosure: void 0,
-      weight: void 0,
-      allowInSortByEvenWhenHidden: void 0,
-      dataType: void 0,
-      defaultWeight: void 0
+      sort: DataGrid5.DataGrid.Order.Descending
     });
     columns.push({
       id: "total",
       title: this.columnHeader("total"),
       width: "120px",
       fixedWidth: true,
-      sortable: true,
-      sort: void 0,
-      titleDOMFragment: void 0,
-      align: void 0,
-      editable: void 0,
-      nonSelectable: void 0,
-      longText: void 0,
-      disclosure: void 0,
-      weight: void 0,
-      allowInSortByEvenWhenHidden: void 0,
-      dataType: void 0,
-      defaultWeight: void 0
+      sortable: true
     });
     columns.push({
       id: "function",
       title: i18nString7(UIStrings7.function),
       disclosure: true,
-      sortable: true,
-      sort: void 0,
-      titleDOMFragment: void 0,
-      align: void 0,
-      editable: void 0,
-      nonSelectable: void 0,
-      longText: void 0,
-      weight: void 0,
-      allowInSortByEvenWhenHidden: void 0,
-      dataType: void 0,
-      defaultWeight: void 0,
-      width: void 0,
-      fixedWidth: void 0
+      sortable: true
     });
     this.dataGrid = new DataGrid5.DataGrid.DataGridImpl({
       displayName: i18nString7(UIStrings7.profiler),
-      columns,
-      deleteCallback: void 0,
-      refreshCallback: void 0
+      columns
     });
     this.dataGrid.addEventListener("SortingChanged", this.sortProfile, this);
     this.dataGrid.addEventListener("SelectedNode", this.nodeSelected.bind(this, true));
@@ -9477,20 +9451,10 @@ var LiveHeapProfileView = class _LiveHeapProfileView extends UI16.Widget.VBox {
     const defaultColumnConfig = {
       id: "",
       title: Common14.UIString.LocalizedEmptyString,
-      width: void 0,
       fixedWidth: true,
       sortable: true,
       align: "right",
-      sort: DataGrid12.DataGrid.Order.Descending,
-      titleDOMFragment: void 0,
-      editable: void 0,
-      nonSelectable: void 0,
-      longText: void 0,
-      disclosure: void 0,
-      weight: void 0,
-      allowInSortByEvenWhenHidden: void 0,
-      dataType: void 0,
-      defaultWeight: void 0
+      sort: DataGrid12.DataGrid.Order.Descending
     };
     const columns = [
       {
@@ -9524,9 +9488,7 @@ var LiveHeapProfileView = class _LiveHeapProfileView extends UI16.Widget.VBox {
     ];
     const dataGrid = new DataGrid12.SortableDataGrid.SortableDataGrid({
       displayName: i18nString15(UIStrings16.heapProfile),
-      columns,
-      deleteCallback: void 0,
-      refreshCallback: void 0
+      columns
     });
     dataGrid.setResizeMethod(
       "last"

@@ -135,8 +135,7 @@ var NetworkLog = class _NetworkLog extends Common.ObjectWrapper.ObjectWrapper {
     }
     initiatorInfo = {
       info: null,
-      chain: null,
-      request: void 0
+      chain: null
     };
     this.#initiatorData.set(request, initiatorInfo);
     return initiatorInfo;
@@ -144,8 +143,7 @@ var NetworkLog = class _NetworkLog extends Common.ObjectWrapper.ObjectWrapper {
   static initiatorInfoForRequest(request, existingInitiatorData) {
     const initiatorInfo = existingInitiatorData || {
       info: null,
-      chain: null,
-      request: void 0
+      chain: null
     };
     let type = "other";
     let url = Platform.DevToolsPath.EmptyUrlString;

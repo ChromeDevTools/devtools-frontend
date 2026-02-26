@@ -16,6 +16,9 @@ export interface AiCodeCompletionConfig {
         getPrefix?: () => string;
         stopSequences?: string[];
     };
+    generationContext: {
+        additionalPreambleContext?: string;
+    };
     onFeatureEnabled: () => void;
     onFeatureDisabled: () => void;
     onSuggestionAccepted: (citations: Host.AidaClient.Citation[]) => void;

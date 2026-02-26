@@ -121,9 +121,9 @@ export declare class ResourceTreeFrame {
     crossTargetParentFrameId: string | null;
     resourcesMap: Map<Platform.DevToolsPath.UrlString, Resource>;
     backForwardCacheDetails: {
-        restoredFromCache: boolean | undefined;
         explanations: Protocol.Page.BackForwardCacheNotRestoredExplanation[];
-        explanationsTree: Protocol.Page.BackForwardCacheNotRestoredExplanationTree | undefined;
+        restoredFromCache?: boolean;
+        explanationsTree?: Protocol.Page.BackForwardCacheNotRestoredExplanationTree;
     };
     constructor(model: ResourceTreeModel, parentFrame: ResourceTreeFrame | null, frameId: Protocol.Page.FrameId, payload: Protocol.Page.Frame | null, creationStackTrace: Protocol.Runtime.StackTrace | null);
     isSecureContext(): boolean;

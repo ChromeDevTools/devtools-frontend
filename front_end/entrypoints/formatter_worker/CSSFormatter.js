@@ -18,23 +18,13 @@ export class CSSFormatter {
     constructor(builder) {
         this.#builder = builder;
         this.#lastLine = -1;
-        this.#state = {
-            eatWhitespace: undefined,
-            seenProperty: undefined,
-            inPropertyValue: undefined,
-            afterClosingBrace: undefined,
-        };
+        this.#state = {};
     }
     format(text, lineEndings, fromOffset, toOffset) {
         this.#lineEndings = lineEndings;
         this.#fromOffset = fromOffset;
         this.#toOffset = toOffset;
-        this.#state = {
-            eatWhitespace: undefined,
-            seenProperty: undefined,
-            inPropertyValue: undefined,
-            afterClosingBrace: undefined,
-        };
+        this.#state = {};
         this.#lastLine = -1;
         const tokenize = createTokenizer('text/css');
         const oldEnforce = this.#builder.setEnforceSpaceBetweenWords(false);

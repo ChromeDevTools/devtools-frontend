@@ -639,7 +639,9 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox {
                 const errorMessage = i18nString(UIStrings.profileNameCharactersLengthMust, { PH1: maxLength });
                 return { valid, errorMessage };
             }
-            return { valid, errorMessage: undefined };
+            return {
+                valid,
+            };
         }
         function throughputValidator(_item, _index, input) {
             const minThroughput = 0;
@@ -652,7 +654,9 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox {
                 const errorMessage = i18nString(UIStrings.sMustBeANumberBetweenSkbsToSkbs, { PH1: String(throughput), PH2: minThroughput, PH3: maxThroughput });
                 return { valid, errorMessage };
             }
-            return { valid, errorMessage: undefined };
+            return {
+                valid,
+            };
         }
         function latencyValidator(_item, _index, input) {
             const minLatency = 0;
@@ -664,7 +668,9 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox {
                 const errorMessage = i18nString(UIStrings.latencyMustBeAnIntegerBetweenSms, { PH1: minLatency, PH2: maxLatency });
                 return { valid, errorMessage };
             }
-            return { valid, errorMessage: undefined };
+            return {
+                valid,
+            };
         }
         function packetLossValidator(_item, _index, input) {
             const minPacketLoss = 0;
@@ -676,7 +682,9 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox {
                 const errorMessage = i18nString(UIStrings.packetLossMustBeAnIntegerBetweenSpct, { PH1: minPacketLoss, PH2: maxPacketLoss });
                 return { valid, errorMessage };
             }
-            return { valid, errorMessage: undefined };
+            return {
+                valid,
+            };
         }
         function packetQueueLengthValidator(_item, _index, input) {
             const minPacketQueueLength = 0;
@@ -687,10 +695,14 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox {
                 const errorMessage = i18nString(UIStrings.packetQueueLengthMustBeAnIntegerGreaterOrEqualToZero);
                 return { valid, errorMessage };
             }
-            return { valid, errorMessage: undefined };
+            return {
+                valid,
+            };
         }
         function packetReorderingValidator(_item, _index, _input) {
-            return { valid: true, errorMessage: undefined };
+            return {
+                valid: true,
+            };
         }
     }
 }

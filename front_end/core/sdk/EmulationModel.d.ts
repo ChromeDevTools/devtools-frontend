@@ -55,7 +55,7 @@ export declare class Location {
     static localeValidator(value: string): boolean;
     static accuracyValidator(value: string): {
         valid: boolean;
-        errorMessage: (string | undefined);
+        errorMessage?: string;
     };
     toSetting(): string;
 }

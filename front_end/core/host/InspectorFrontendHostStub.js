@@ -240,21 +240,11 @@ export class InspectorFrontendHostStub {
             resourceLoaderStreamWrite(streamId, text);
             callback({
                 statusCode: 200,
-                headers: undefined,
-                messageOverride: undefined,
-                netError: undefined,
-                netErrorName: undefined,
-                urlValid: undefined,
             });
         })
             .catch(function () {
             callback({
                 statusCode: 404,
-                headers: undefined,
-                messageOverride: undefined,
-                netError: undefined,
-                netErrorName: undefined,
-                urlValid: undefined,
             });
         });
     }

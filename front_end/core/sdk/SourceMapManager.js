@@ -71,7 +71,6 @@ export class SourceMapManager extends Common.ObjectWrapper.ObjectWrapper {
         let clientData = {
             relativeSourceURL,
             relativeSourceMapURL,
-            sourceMap: undefined,
             sourceMapPromise: Promise.resolve(undefined),
         };
         if (this.#isEnabled) {

@@ -226,6 +226,16 @@ export class AiConversation {
             return;
         }
         this.#type = type;
+        // We need to filter out the function calls
+        // as the LLM tries to call the existing ones.
+        const history = this.#agent?.history
+            .map(content => {
+            return {
+                ...content,
+                parts: content.parts.filter(part => !('functionCall' in part) && !('functionResponse' in part)),
+            };
+        })
+            .filter(content => content.parts.length > 0);
         const options = {
             aidaClient: this.#aidaClient,
             serverSideLoggingEnabled: isAiAssistanceServerSideLoggingEnabled(),
@@ -234,6 +244,7 @@ export class AiConversation {
             performanceRecordAndReload: this.#performanceRecordAndReload,
             onInspectElement: this.#onInspectElement,
             networkTimeCalculator: this.#networkTimeCalculator,
+            history,
         };
         switch (type) {
             case "freestyler" /* ConversationType.STYLING */: {
@@ -325,6 +336,11 @@ Time: ${micros(time)}`;
         }
     }
     async *run(initialQuery, options = {}) {
+        if (this.isBlockedByOrigin) {
+            // This error should not be reached. If it happens, some
+            // invariants do not hold anymore.
+            throw new Error('cross-origin context data should not be included');
+        }
         const userQuery = {
             type: "user-query" /* ResponseType.USER_QUERY */,
             query: initialQuery,

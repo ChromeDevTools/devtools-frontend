@@ -99,15 +99,11 @@ export class Entry {
             }
         }
         const entry = {
-            _connectionId: undefined,
-            _fromCache: undefined,
             _initiator: exportedInitiator,
             _priority: harEntry.request.priority(),
             _resourceType: harEntry.request.resourceType().name(),
-            _webSocketMessages: undefined,
             cache: {},
             connection,
-            pageref: undefined,
             request: await harEntry.buildRequest(),
             response: harEntry.buildResponse(),
             // IPv6 address should not have square brackets per (https://tools.ietf.org/html/rfc2373#section-2.2).
@@ -168,7 +164,6 @@ export class Entry {
             cookies: this.buildCookies(this.request.includedRequestCookies().map(includedRequestCookie => includedRequestCookie.cookie)),
             headersSize: headersText ? headersText.length : -1,
             bodySize: await this.requestBodySize(),
-            postData: undefined,
         };
         const postData = await this.buildPostData();
         if (postData) {
@@ -205,7 +200,6 @@ export class Entry {
         const content = {
             size: this.request.resourceSize,
             mimeType: this.request.mimeType || 'x-unknown',
-            compression: undefined,
         };
         const compression = this.responseCompression;
         if (typeof compression === 'number') {
@@ -230,7 +224,6 @@ export class Entry {
             wait: 0,
             receive: 0,
             _blocked_queueing: -1,
-            _blocked_proxy: undefined,
         };
         const queuedTime = (issueTime < startTime) ? startTime - issueTime : -1;
         result.blocked = Entry.toMilliseconds(queuedTime);
@@ -327,8 +320,6 @@ export class Entry {
             expires: cookie.expiresDate(Log.pseudoWallTime(this.request, this.request.startTime)),
             httpOnly: cookie.httpOnly(),
             secure: cookie.secure(),
-            sameSite: undefined,
-            partitionKey: undefined,
         };
         if (cookie.sameSite()) {
             c.sameSite = cookie.sameSite();

@@ -244,8 +244,6 @@ export class TimelineTreeView extends Common.ObjectWrapper.eventMixin(UI.Widget.
         this.dataGrid = new DataGrid.SortableDataGrid.SortableDataGrid({
             displayName: i18nString(UIStrings.performance),
             columns,
-            refreshCallback: undefined,
-            deleteCallback: undefined,
         });
         this.dataGrid.addEventListener("SortingChanged" /* DataGrid.DataGrid.Events.SORTING_CHANGED */, this.sortingChanged, this);
         this.dataGrid.element.addEventListener('mousemove', this.onMouseMove.bind(this), true);
@@ -857,7 +855,7 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
                 const color = category instanceof Trace.Styles.TimelineCategory ?
                     ThemeSupport.ThemeSupport.instance().getComputedValue(category.cssVariable) :
                     category.color;
-                return { name: category.title, color, icon: undefined };
+                return { name: category.title, color };
             }
             case AggregatedTimelineTreeView.GroupBy.Domain:
             case AggregatedTimelineTreeView.GroupBy.Subdomain:
@@ -865,7 +863,7 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
                 // This `undefined` is [unattributed]
                 // TODO(paulirish): Improve attribution to reduce amount of items in [unattributed].
                 const domainName = id ? this.beautifyDomainName(id, node) : undefined;
-                return { name: domainName || unattributed, color, icon: undefined };
+                return { name: domainName || unattributed, color };
             }
             case AggregatedTimelineTreeView.GroupBy.EventName: {
                 if (!node.event) {
@@ -875,7 +873,6 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
                 return {
                     name,
                     color,
-                    icon: undefined,
                 };
             }
             case AggregatedTimelineTreeView.GroupBy.URL:
@@ -883,12 +880,15 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
             case AggregatedTimelineTreeView.GroupBy.Frame: {
                 const frame = id ? this.parsedTrace()?.data.PageFrames.frames.get(id) : undefined;
                 const frameName = frame ? TimelineUIUtils.displayNameForFrame(frame) : i18nString(UIStrings.page);
-                return { name: frameName, color, icon: undefined };
+                return { name: frameName, color };
             }
             default:
                 console.assert(false, 'Unexpected grouping type');
         }
-        return { name: id || unattributed, color, icon: undefined };
+        return {
+            name: id || unattributed,
+            color,
+        };
     }
     populateToolbar(toolbar) {
         super.populateToolbar(toolbar);
@@ -1121,8 +1121,6 @@ export class TimelineStackView extends Common.ObjectWrapper.eventMixin(UI.Widget
         this.dataGrid = new DataGrid.ViewportDataGrid.ViewportDataGrid({
             displayName: i18nString(UIStrings.timelineStack),
             columns,
-            deleteCallback: undefined,
-            refreshCallback: undefined,
         });
         this.dataGrid.setResizeMethod("last" /* DataGrid.DataGrid.ResizeMethod.LAST */);
         this.dataGrid.addEventListener("SelectedNode" /* DataGrid.DataGrid.Events.SELECTED_NODE */, this.onSelectionChanged, this);

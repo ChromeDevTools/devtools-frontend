@@ -559,6 +559,10 @@ export class TargetBase {
     this.registerDispatcher('DOMStorage', dispatcher);
   }
 
+  registerEmulationDispatcher(dispatcher: ProtocolProxyApi.EmulationDispatcher): void {
+    this.registerDispatcher('Emulation', dispatcher);
+  }
+
   registerFetchDispatcher(dispatcher: ProtocolProxyApi.FetchDispatcher): void {
     this.registerDispatcher('Fetch', dispatcher);
   }

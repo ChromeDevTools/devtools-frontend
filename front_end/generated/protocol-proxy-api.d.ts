@@ -1867,6 +1867,13 @@ declare namespace ProtocolProxyApi {
      */
     virtualTimeBudgetExpired(): void;
 
+    /**
+     * Fired when a page calls screen.orientation.lock() or screen.orientation.unlock()
+     * while device emulation is enabled. This allows the DevTools frontend to update the
+     * emulated device orientation accordingly.
+     */
+    screenOrientationLockChanged(params: Protocol.Emulation.ScreenOrientationLockChangedEvent): void;
+
   }
 
   export interface EventBreakpointsApi {

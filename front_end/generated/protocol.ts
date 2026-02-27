@@ -7554,6 +7554,22 @@ export namespace Emulation {
   export interface SetPrimaryScreenRequest {
     screenId: ScreenId;
   }
+
+  /**
+   * Fired when a page calls screen.orientation.lock() or screen.orientation.unlock()
+   * while device emulation is enabled. This allows the DevTools frontend to update the
+   * emulated device orientation accordingly.
+   */
+  export interface ScreenOrientationLockChangedEvent {
+    /**
+     * Whether the screen orientation is currently locked.
+     */
+    locked: boolean;
+    /**
+     * The orientation lock type requested by the page. Only set when locked is true.
+     */
+    orientation?: ScreenOrientation;
+  }
 }
 
 /**

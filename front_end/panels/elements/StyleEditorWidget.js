@@ -11,7 +11,7 @@ let instance = null;
  */
 export class StyleEditorWidget extends UI.Widget.VBox {
     editor;
-    pane;
+    stylesContainer;
     section;
     editorContainer;
     #triggerKey;
@@ -45,8 +45,8 @@ export class StyleEditorWidget extends UI.Widget.VBox {
         await target.applyStyleText('', false);
         await this.render();
     }
-    bindContext(pane, section) {
-        this.pane = pane;
+    bindContext(stylesContainer, section) {
+        this.stylesContainer = stylesContainer;
         this.section = section;
         this.editor?.addEventListener('propertyselected', this.onPropertySelected);
         this.editor?.addEventListener('propertydeselected', this.onPropertyDeselected);
@@ -58,7 +58,7 @@ export class StyleEditorWidget extends UI.Widget.VBox {
         return this.#triggerKey;
     }
     unbindContext() {
-        this.pane = undefined;
+        this.stylesContainer = undefined;
         this.section = undefined;
         this.editor?.removeEventListener('propertyselected', this.onPropertySelected);
         this.editor?.removeEventListener('propertydeselected', this.onPropertyDeselected);
@@ -70,7 +70,7 @@ export class StyleEditorWidget extends UI.Widget.VBox {
         this.editor.data = {
             authoredProperties: this.section ? getAuthoredStyles(this.section, this.editor.getEditableProperties()) :
                 new Map(),
-            computedProperties: this.pane ? await fetchComputedStyles(this.pane) : new Map(),
+            computedProperties: this.stylesContainer ? await fetchComputedStyles(this.stylesContainer) : new Map(),
         };
     }
     static instance() {
@@ -86,17 +86,17 @@ export class StyleEditorWidget extends UI.Widget.VBox {
             this.contentElement.appendChild(this.editor);
         }
     }
-    static createTriggerButton(pane, section, editorClass, buttonTitle, triggerKey) {
+    static createTriggerButton(stylesContainer, section, editorClass, buttonTitle, triggerKey) {
         const triggerButton = createIcon('flex-wrap', 'styles-pane-button');
         triggerButton.title = buttonTitle;
         triggerButton.role = 'button';
         triggerButton.onclick = async (event) => {
             event.stopPropagation();
-            const popoverHelper = pane.swatchPopoverHelper();
+            const popoverHelper = stylesContainer.swatchPopoverHelper();
             const widget = StyleEditorWidget.instance();
             widget.element.classList.toggle('with-padding', true);
             widget.setEditor(editorClass);
-            widget.bindContext(pane, section);
+            widget.bindContext(stylesContainer, section);
             widget.setTriggerKey(triggerKey);
             await widget.render();
             widget.focus();
@@ -130,8 +130,8 @@ function ensureTreeElementForProperty(section, propertyName) {
     newTarget.property.name = propertyName;
     return newTarget;
 }
-async function fetchComputedStyles(pane) {
-    const computedStyleModel = pane.computedStyleModel();
+async function fetchComputedStyles(stylesContainer) {
+    const computedStyleModel = stylesContainer.computedStyleModel();
     const style = await computedStyleModel.fetchComputedStyle();
     return style ? style.computedStyle : new Map();
 }

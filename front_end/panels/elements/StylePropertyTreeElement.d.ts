@@ -9,9 +9,9 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 import { type MatchRenderer, RenderingContext } from './PropertyRenderer.js';
 import type { StylePropertiesSection } from './StylePropertiesSection.js';
-import { type StylesSidebarPane } from './StylesSidebarPane.js';
+import type { StylesContainer } from './StylesContainer.js';
 interface StylePropertyTreeElementParams {
-    stylesPane: StylesSidebarPane;
+    stylesContainer: StylesContainer;
     section: StylePropertiesSection;
     matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles;
     property: SDK.CSSProperty.CSSProperty;
@@ -38,7 +38,7 @@ declare const FlexGridRenderer_base: abstract new () => {
 };
 export declare class FlexGridRenderer extends FlexGridRenderer_base {
     #private;
-    constructor(stylesPane: StylesSidebarPane, treeElement: StylePropertyTreeElement | null);
+    constructor(stylesContainer: StylesContainer, treeElement: StylePropertyTreeElement | null);
     render(match: SDK.CSSPropertyParserMatchers.FlexGridGridLanesMatch, context: RenderingContext): Node[];
 }
 declare const CSSWideKeywordRenderer_base: abstract new () => {
@@ -47,7 +47,7 @@ declare const CSSWideKeywordRenderer_base: abstract new () => {
 };
 export declare class CSSWideKeywordRenderer extends CSSWideKeywordRenderer_base {
     #private;
-    constructor(stylesPane: StylesSidebarPane, treeElement: StylePropertyTreeElement | null);
+    constructor(stylesContainer: StylesContainer, treeElement: StylePropertyTreeElement | null);
     render(match: SDK.CSSPropertyParserMatchers.CSSWideKeywordMatch, context: RenderingContext): Node[];
 }
 declare const VariableRenderer_base: abstract new () => {
@@ -56,7 +56,7 @@ declare const VariableRenderer_base: abstract new () => {
 };
 export declare class VariableRenderer extends VariableRenderer_base {
     #private;
-    constructor(stylesPane: StylesSidebarPane, treeElement: StylePropertyTreeElement | null, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, computedStyles: Map<string, string>, computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields | null);
+    constructor(stylesContainer: StylesContainer, treeElement: StylePropertyTreeElement | null, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, computedStyles: Map<string, string>, computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields | null);
     render(match: SDK.CSSPropertyParserMatchers.VariableMatch, context: RenderingContext): Node[];
 }
 declare const AttributeRenderer_base: abstract new () => {
@@ -65,7 +65,7 @@ declare const AttributeRenderer_base: abstract new () => {
 };
 export declare class AttributeRenderer extends AttributeRenderer_base {
     #private;
-    constructor(stylesPane: StylesSidebarPane, treeElement: StylePropertyTreeElement | null, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, computedStyles: Map<string, string>, computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields | null);
+    constructor(stylesContainer: StylesContainer, treeElement: StylePropertyTreeElement | null, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, computedStyles: Map<string, string>, computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields | null);
     render(match: SDK.CSSPropertyParserMatchers.AttributeMatch, context: RenderingContext): Node[];
 }
 declare const LinearGradientRenderer_base: abstract new () => {
@@ -90,7 +90,7 @@ declare const ColorRenderer_base: abstract new () => {
 };
 export declare class ColorRenderer extends ColorRenderer_base {
     #private;
-    constructor(stylesPane: StylesSidebarPane, treeElement: StylePropertyTreeElement | null);
+    constructor(stylesContainer: StylesContainer, treeElement: StylePropertyTreeElement | null);
     render(match: SDK.CSSPropertyParserMatchers.ColorMatch, context: RenderingContext): Node[];
     renderColorSwatch(color: Common.Color.Color | undefined, valueChild: Node): InlineEditor.ColorSwatch.ColorSwatch;
 }
@@ -100,7 +100,7 @@ declare const LightDarkColorRenderer_base: abstract new () => {
 };
 export declare class LightDarkColorRenderer extends LightDarkColorRenderer_base {
     #private;
-    constructor(stylesPane: StylesSidebarPane, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, treeElement: StylePropertyTreeElement | null);
+    constructor(stylesContainer: StylesContainer, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, treeElement: StylePropertyTreeElement | null);
     render(match: SDK.CSSPropertyParserMatchers.LightDarkColorMatch, context: RenderingContext): Node[];
     applyColorScheme(match: SDK.CSSPropertyParserMatchers.LightDarkColorMatch, context: RenderingContext, colorSwatch: InlineEditor.ColorSwatch.ColorSwatch, light: HTMLSpanElement, dark: HTMLSpanElement, lightControls: SDK.CSSPropertyParser.CSSControlMap, darkControls: SDK.CSSPropertyParser.CSSControlMap): Promise<void>;
 }
@@ -110,7 +110,7 @@ declare const ColorMixRenderer_base: abstract new () => {
 };
 export declare class ColorMixRenderer extends ColorMixRenderer_base {
     #private;
-    constructor(pane: StylesSidebarPane, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, computedStyles: Map<string, string>, computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields | null, treeElement: StylePropertyTreeElement | null);
+    constructor(stylesContainer: StylesContainer, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, computedStyles: Map<string, string>, computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields | null, treeElement: StylePropertyTreeElement | null);
     render(match: SDK.CSSPropertyParserMatchers.ColorMixMatch, context: RenderingContext): Node[];
 }
 declare const AngleRenderer_base: abstract new () => {
@@ -128,7 +128,7 @@ declare const LinkableNameRenderer_base: abstract new () => {
 };
 export declare class LinkableNameRenderer extends LinkableNameRenderer_base {
     #private;
-    constructor(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, stylesSidebarPane: StylesSidebarPane);
+    constructor(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, stylesContainer: StylesContainer);
     render(match: SDK.CSSPropertyParserMatchers.LinkableNameMatch): Node[];
 }
 declare const BezierRenderer_base: abstract new () => {
@@ -218,7 +218,7 @@ declare const LengthRenderer_base: abstract new () => {
 };
 export declare class LengthRenderer extends LengthRenderer_base {
     #private;
-    constructor(stylesPane: StylesSidebarPane, propertyName: string, treeElement: StylePropertyTreeElement | null);
+    constructor(stylesContainer: StylesContainer, propertyName: string, treeElement: StylePropertyTreeElement | null);
     render(match: SDK.CSSPropertyParserMatchers.LengthMatch, context: RenderingContext): Node[];
     getTooltipValue(tooltip: Tooltips.Tooltip.Tooltip, match: SDK.CSSPropertyParser.Match, context: RenderingContext): Promise<void>;
 }
@@ -228,7 +228,7 @@ declare const BaseFunctionRenderer_base: abstract new () => {
 };
 export declare class BaseFunctionRenderer extends BaseFunctionRenderer_base {
     #private;
-    constructor(stylesPane: StylesSidebarPane, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, computedStyles: Map<string, string>, computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields | null, propertyName: string, treeElement: StylePropertyTreeElement | null);
+    constructor(stylesContainer: StylesContainer, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, computedStyles: Map<string, string>, computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields | null, propertyName: string, treeElement: StylePropertyTreeElement | null);
     render(match: SDK.CSSPropertyParserMatchers.BaseFunctionMatch<string>, context: RenderingContext): Node[];
     applyEvaluation(span: HTMLSpanElement, match: SDK.CSSPropertyParserMatchers.BaseFunctionMatch<string>, context: RenderingContext): Promise<boolean>;
     applyMathFunction(renderedArgs: HTMLElement[], match: SDK.CSSPropertyParserMatchers.BaseFunctionMatch<string>, context: RenderingContext): Promise<void>;
@@ -245,11 +245,11 @@ declare const AnchorFunctionRenderer_base: abstract new () => {
 };
 export declare class AnchorFunctionRenderer extends AnchorFunctionRenderer_base {
     #private;
-    static decorateAnchorForAnchorLink(stylesPane: StylesSidebarPane, container: HTMLElement, { identifier, needsSpace }: {
+    static decorateAnchorForAnchorLink(stylesContainer: StylesContainer, container: HTMLElement, { identifier, needsSpace }: {
         identifier?: string;
         needsSpace?: boolean;
     }): Promise<void>;
-    constructor(stylesPane: StylesSidebarPane);
+    constructor(stylesContainer: StylesContainer);
     render(match: SDK.CSSPropertyParserMatchers.AnchorFunctionMatch, context: RenderingContext): Node[];
 }
 declare const PositionAnchorRenderer_base: abstract new () => {
@@ -258,7 +258,7 @@ declare const PositionAnchorRenderer_base: abstract new () => {
 };
 export declare class PositionAnchorRenderer extends PositionAnchorRenderer_base {
     #private;
-    constructor(stylesPane: StylesSidebarPane);
+    constructor(stylesContainer: StylesContainer);
     render(match: SDK.CSSPropertyParserMatchers.PositionAnchorMatch): Node[];
 }
 declare const PositionTryRenderer_base: abstract new () => {
@@ -270,7 +270,7 @@ export declare class PositionTryRenderer extends PositionTryRenderer_base {
     constructor(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles);
     render(match: SDK.CSSPropertyParserMatchers.PositionTryMatch, context: RenderingContext): Node[];
 }
-export declare function getPropertyRenderers(propertyName: string, style: SDK.CSSStyleDeclaration.CSSStyleDeclaration, stylesPane: StylesSidebarPane, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, treeElement: StylePropertyTreeElement | null, computedStyles: Map<string, string>, computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields | null): Array<MatchRenderer<SDK.CSSPropertyParser.Match>>;
+export declare function getPropertyRenderers(propertyName: string, style: SDK.CSSStyleDeclaration.CSSStyleDeclaration, stylesContainer: StylesContainer, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, treeElement: StylePropertyTreeElement | null, computedStyles: Map<string, string>, computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields | null): Array<MatchRenderer<SDK.CSSPropertyParser.Match>>;
 export declare class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     #private;
     private readonly style;
@@ -290,7 +290,7 @@ export declare class StylePropertyTreeElement extends UI.TreeOutline.TreeElement
     private parentsComputedStyles;
     private computedStyleExtraFields;
     private contextForTest;
-    constructor({ stylesPane, section, matchedStyles, property, isShorthand, inherited, overloaded, newProperty }: StylePropertyTreeElementParams);
+    constructor({ stylesContainer, section, matchedStyles, property, isShorthand, inherited, overloaded, newProperty }: StylePropertyTreeElementParams);
     gridNames(): Promise<Set<string>>;
     matchedStyles(): SDK.CSSMatchedStyles.CSSMatchedStyles;
     getLonghand(): StylePropertyTreeElement | null;
@@ -310,7 +310,7 @@ export declare class StylePropertyTreeElement extends UI.TreeOutline.TreeElement
     renderedPropertyText(): string;
     private updateState;
     node(): SDK.DOMModel.DOMNode | null;
-    parentPane(): StylesSidebarPane;
+    stylesContainer(): StylesContainer;
     section(): StylePropertiesSection;
     private updatePane;
     private toggleDisabled;

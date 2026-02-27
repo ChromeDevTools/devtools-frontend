@@ -1,7 +1,7 @@
 import * as UI from '../../ui/legacy/legacy.js';
 import type * as ElementsComponents from './components/components.js';
 import type { StylePropertiesSection } from './StylePropertiesSection.js';
-import type { StylesSidebarPane } from './StylesSidebarPane.js';
+import type { StylesContainer } from './StylesContainer.js';
 type PropertySelectedEvent = ElementsComponents.StylePropertyEditor.PropertySelectedEvent;
 type PropertyDeselectedEvent = ElementsComponents.StylePropertyEditor.PropertyDeselectedEvent;
 interface Editor extends HTMLElement {
@@ -20,14 +20,14 @@ interface Editor extends HTMLElement {
 export declare class StyleEditorWidget extends UI.Widget.VBox {
     #private;
     private editor?;
-    private pane?;
+    private stylesContainer?;
     private section?;
     private editorContainer;
     constructor();
     getSection(): StylePropertiesSection | undefined;
     onPropertySelected(event: PropertySelectedEvent): Promise<void>;
     onPropertyDeselected(event: PropertyDeselectedEvent): Promise<void>;
-    bindContext(pane: StylesSidebarPane, section: StylePropertiesSection): void;
+    bindContext(stylesContainer: StylesContainer, section: StylePropertiesSection): void;
     setTriggerKey(value: string): void;
     getTriggerKey(): string | undefined;
     unbindContext(): void;
@@ -36,7 +36,7 @@ export declare class StyleEditorWidget extends UI.Widget.VBox {
     setEditor(editorClass: {
         new (): Editor;
     }): void;
-    static createTriggerButton(pane: StylesSidebarPane, section: StylePropertiesSection, editorClass: {
+    static createTriggerButton(stylesContainer: StylesContainer, section: StylePropertiesSection, editorClass: {
         new (): Editor;
     }, buttonTitle: string, triggerKey: string): HTMLElement;
 }

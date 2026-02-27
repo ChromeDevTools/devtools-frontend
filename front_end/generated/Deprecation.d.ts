@@ -100,6 +100,10 @@ export declare const UIStrings: {
      */
     readonly LanguageModel_MeasureInputUsage: "LanguageModel.measureInputUsage() is deprecated. Please use LanguageModel.measureContextUsage() instead. This alias is only available in extensions.";
     /**
+     * @description Warning for using deprecated 'onquotaoverflow' event handler.
+     */
+    readonly LanguageModel_OnQuotaOverflow: "LanguageModel.onquotaoverflow is deprecated. Please use LanguageModel.oncontextoverflow instead. The LanguageModel.onquotaoverflow alias is only available in extensions.";
+    /**
      * @description Warning message for web developers when they call the deprecated LanguageModel.params() method.
      */
     readonly LanguageModelParams: "LanguageModel.params() is deprecated and now only available in extension contexts. The topK and temperature related fields within its result are also deprecated.";

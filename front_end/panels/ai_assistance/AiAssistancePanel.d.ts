@@ -10,9 +10,14 @@ interface ToolbarViewInput {
     onExportConversationClick: () => void;
     onHelpClick: () => void;
     onSettingsClick: () => void;
-    isLoading: boolean;
     showChatActions: boolean;
     showActiveConversationActions: boolean;
+    isLoading: boolean;
+    walkthrough: {
+        isExpanded: boolean;
+        isInlined: boolean;
+        onToggle: (isOpen: boolean) => void;
+    };
 }
 export declare const enum ViewState {
     DISABLED_VIEW = "disabled-view",
@@ -44,6 +49,7 @@ export declare class AiAssistancePanel extends UI.Panel.Panel {
         aidaAvailability: Host.AidaClient.AidaAccessPreconditions;
         syncInfo: Host.InspectorFrontendHostAPI.SyncInformation;
     });
+    onResize(): void;
     static instance(opts?: {
         forceNew: boolean | null;
     } | undefined): Promise<AiAssistancePanel>;

@@ -64,14 +64,15 @@ export const DEFAULT_VIEW = (input, _output, target) => {
         const request = initiators[index];
         const isCurrentRequest = (index === initiators.length - 1);
         const hasFurtherInitiatedNodes = index + 1 < initiators.length;
+        const renderedChildren = isCurrentRequest ? renderInitiatedNodes(initiated, request, visited) : nothing;
         // clang-format off
         return html `
           <li role="treeitem" ?selected=${isCurrentRequest} aria-expanded="true" open>
             <span style=${isCurrentRequest ? 'font-weight: bold' : ''}>${request.url()}</span>
-            ${hasFurtherInitiatedNodes || isCurrentRequest ? html `
+            ${hasFurtherInitiatedNodes || renderedChildren !== nothing ? html `
               <ul role="group">
                 ${renderInitiatorNodes(initiators, index + 1, initiated, visited)}
-                ${isCurrentRequest ? renderInitiatedNodes(initiated, request, visited) : nothing}
+                ${renderedChildren}
               </ul>` : nothing}
           </li>`;
         // clang-format on

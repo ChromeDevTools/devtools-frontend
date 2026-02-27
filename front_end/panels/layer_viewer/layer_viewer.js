@@ -1270,7 +1270,7 @@ var Layers3DView = class extends Common5.ObjectWrapper.eventMixin(UI4.Widget.VBo
     this.showPaintsSetting = this.createVisibilitySetting(i18nString5(UIStrings5.paints), "frame-viewer-show-paints", false, this.panelToolbar);
     this.showSlowScrollRectsSetting = this.createVisibilitySetting(i18nString5(UIStrings5.slowScrollRects), "frame-viewer-show-slow-scroll-rects", true, this.panelToolbar);
     this.showPaintsSetting.addChangeListener(this.updatePaints, this);
-    Common5.Settings.Settings.instance().moduleSetting("frame-viewer-hide-chrome-window").addChangeListener(this.updateData, this);
+    Common5.Settings.Settings.instance().moduleSetting("frame-viewer-chrome-window").addChangeListener(this.updateData, this);
     this.performUpdate();
     this.lastSelection = {};
     this.layerTree = null;
@@ -1708,7 +1708,7 @@ var Layers3DView = class extends Common5.ObjectWrapper.eventMixin(UI4.Widget.VBo
     if (!viewport) {
       return;
     }
-    const drawChrome = !Common5.Settings.Settings.instance().moduleSetting("frame-viewer-hide-chrome-window").get() && this.chromeTextures.length >= 3 && this.chromeTextures.indexOf(void 0) < 0;
+    const drawChrome = Common5.Settings.Settings.instance().moduleSetting("frame-viewer-chrome-window").get() && this.chromeTextures.length >= 3 && this.chromeTextures.indexOf(void 0) < 0;
     const z = (this.maxDepth + 1) * LayerSpacing;
     const borderWidth = Math.ceil(ViewportBorderWidth * this.scale);
     let vertices = [viewport.width, 0, z, viewport.width, viewport.height, z, 0, viewport.height, z, 0, 0, z];

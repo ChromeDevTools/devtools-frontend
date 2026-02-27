@@ -1305,6 +1305,9 @@ class TreeViewTreeElement extends TreeElement {
     static CLONED_ATTRIBUTES = SDK.DOMModel.ARIA_ATTRIBUTES.union(new Set(['jslog']));
     #clonedAttributes = new Set();
     #clonedClasses = new Set();
+    #userExpanded = false;
+    #isProcessingAttribute = false;
+    #previousOpenAttributeValue;
     static #elementToTreeElement = new WeakMap();
     configElement;
     constructor(treeOutline, configElement) {
@@ -1313,7 +1316,46 @@ class TreeViewTreeElement extends TreeElement {
         TreeViewTreeElement.#elementToTreeElement.set(configElement, this);
         this.refresh();
     }
+    onexpand() {
+        if (!this.#isProcessingAttribute) {
+            this.#userExpanded = true;
+        }
+    }
+    oncollapse() {
+        if (!this.#isProcessingAttribute) {
+            this.#userExpanded = false;
+        }
+    }
+    updateExpansionFromAttribute() {
+        this.#isProcessingAttribute = true;
+        try {
+            const openAttr = this.configElement.getAttribute('open');
+            if (openAttr === this.#previousOpenAttributeValue) {
+                return;
+            }
+            this.#previousOpenAttributeValue = openAttr;
+            if (openAttr === null) {
+                if (this.#userExpanded) {
+                    this.expand();
+                }
+                else {
+                    this.collapse();
+                }
+            }
+            else if (openAttr === 'false') {
+                this.collapse();
+            }
+            else {
+                this.expand();
+            }
+        }
+        finally {
+            this.#isProcessingAttribute = false;
+        }
+    }
     refresh() {
+        const expandable = Boolean(this.configElement.querySelector('ul[role="group"]'));
+        this.setExpandable(expandable);
         this.titleElement.textContent = '';
         this.#clonedAttributes.forEach(attr => this.listItemElement.attributes.removeNamedItem(attr));
         this.#clonedClasses.forEach(className => this.listItemElement.classList.remove(className));
@@ -1338,13 +1380,14 @@ class TreeViewTreeElement extends TreeElement {
             this.titleElement.appendChild(HTMLElementWithLightDOMTemplate.cloneNode(child));
         }
         this.hidden = hasBooleanAttribute(this.configElement, 'hidden');
+        this.updateExpansionFromAttribute();
         Highlighting.HighlightManager.HighlightManager.instance().apply(this.titleElement);
     }
     static get(configElement) {
         return configElement && TreeViewTreeElement.#elementToTreeElement.get(configElement);
     }
     remove() {
-        removeNode(this);
+        removeNode(this, Boolean(this.parent && this.parent.configElement?.querySelector('ul[role="group"]')));
         TreeViewTreeElement.#elementToTreeElement.delete(this.configElement);
     }
 }
@@ -1378,11 +1421,13 @@ function getStyleElements(nodes) {
         return [];
     });
 }
-function removeNode(node) {
+function removeNode(node, preserveParentExpandable = false) {
     const parent = node.parent;
     if (parent) {
         parent.removeChild(node);
-        parent.setExpandable(parent.children().length > 0);
+        if (!preserveParentExpandable) {
+            parent.setExpandable(parent.children().length > 0);
+        }
     }
 }
 /**
@@ -1493,8 +1538,8 @@ export class TreeViewElement extends HTMLElementWithLightDOMTemplate {
         if (subtreeRoot.role !== 'group' || !subtreeRoot.parentElement) {
             return null;
         }
-        const expanded = hasBooleanAttribute(subtreeRoot.parentElement, 'open');
         const treeElement = TreeViewTreeElement.get(subtreeRoot.parentElement);
+        const expanded = treeElement ? treeElement.expanded : hasBooleanAttribute(subtreeRoot.parentElement, 'open');
         return treeElement ? { expanded, treeElement } : null;
     }
     updateNode(node, attributeName) {
@@ -1514,12 +1559,7 @@ export class TreeViewElement extends HTMLElementWithLightDOMTemplate {
             treeElement.revealAndSelect(true);
         }
         if (node === treeNode && attributeName === 'open') {
-            if (hasBooleanAttribute(treeNode, 'open')) {
-                treeElement.expand();
-            }
-            else {
-                treeElement.collapse();
-            }
+            treeElement.updateExpansionFromAttribute();
         }
     }
     addNodes(nodes, nextSibling) {
@@ -1541,6 +1581,7 @@ export class TreeViewElement extends HTMLElementWithLightDOMTemplate {
                 treeElement = new TreeViewTreeElement(this.#treeOutline, node);
                 const expandable = Boolean(node.querySelector('ul[role="group"]'));
                 treeElement.setExpandable(expandable);
+                treeElement.updateExpansionFromAttribute();
             }
             else {
                 treeElement = node.treeElement;
@@ -1568,7 +1609,8 @@ export class TreeViewElement extends HTMLElementWithLightDOMTemplate {
                 TreeViewTreeElement.get(node)?.remove();
             }
             else if (node.treeElement) {
-                removeNode(node.treeElement);
+                removeNode(node.treeElement, Boolean(node.treeElement.parent &&
+                    node.treeElement.parent.configElement?.querySelector('ul[role="group"]')));
             }
         }
     }

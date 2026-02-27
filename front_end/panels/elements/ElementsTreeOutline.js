@@ -1109,6 +1109,9 @@ export class ElementsTreeOutline extends Common.ObjectWrapper.eventMixin(UI.Tree
         else if (isPseudoElement) {
             treeElement.populatePseudoElementContextMenu(contextMenu);
         }
+        else if (treeElement.node().nodeType() === Node.PROCESSING_INSTRUCTION_NODE) {
+            await treeElement.populateProcessingElementContextMenu(contextMenu);
+        }
         ElementsPanel.instance().populateAdornerSettingsContextMenu(contextMenu);
         contextMenu.appendApplicableItems(treeElement.node());
         void contextMenu.show();

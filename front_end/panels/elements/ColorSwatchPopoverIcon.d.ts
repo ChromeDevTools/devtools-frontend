@@ -4,7 +4,7 @@ import * as ColorPicker from '../../ui/legacy/components/color_picker/color_pick
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import type { StylePropertiesSection } from './StylePropertiesSection.js';
 import type { StylePropertyTreeElement } from './StylePropertyTreeElement.js';
-import type { StylesSidebarPane } from './StylesSidebarPane.js';
+import type { StylesContainer } from './StylesContainer.js';
 interface BezierPopoverIconParams {
     treeElement: StylePropertyTreeElement;
     swatchPopoverHelper: InlineEditor.SwatchPopoverHelper.SwatchPopoverHelper;
@@ -82,7 +82,7 @@ export declare class FontEditorSectionManager {
     private readonly treeElementMap;
     private readonly swatchPopoverHelper;
     private readonly section;
-    private parentPane;
+    private stylesContainer;
     private fontEditor;
     private scrollerElement;
     private readonly boundFontChanged;
@@ -95,7 +95,7 @@ export declare class FontEditorSectionManager {
     private fixIndex;
     private createPropertyValueMap;
     registerFontProperty(treeElement: StylePropertyTreeElement): void;
-    showPopover(iconElement: Element, parentPane: StylesSidebarPane): Promise<void>;
+    showPopover(iconElement: Element, stylesContainer: StylesContainer): Promise<void>;
     private onScroll;
     private onPopoverHidden;
 }

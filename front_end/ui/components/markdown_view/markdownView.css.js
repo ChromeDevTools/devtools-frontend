@@ -23,6 +23,12 @@ export default `/*
   to { height: auto; }
 }
 
+devtools-link {
+  color: var(--sys-color-primary);
+  outline-offset: 2px;
+  text-decoration: underline;
+}
+
 .animating {
   overflow: hidden;
   white-space: nowrap;

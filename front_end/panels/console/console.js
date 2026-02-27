@@ -6179,7 +6179,7 @@ var UIStrings5 = {
   /**
    * @description Text in Console View of the Console panel
    */
-  hideNetwork: "Hide network",
+  networkMessages: "Network messages",
   /**
    * @description Tooltip text that appears on the setting when hovering over it in Console View of the Console panel
    */
@@ -6480,7 +6480,7 @@ var ConsoleView = class _ConsoleView extends UI8.Widget.VBox {
     const consoleEagerEvalSetting = Common8.Settings.Settings.instance().moduleSetting("console-eager-eval");
     const preserveConsoleLogSetting = Common8.Settings.Settings.instance().moduleSetting("preserve-console-log");
     const userActivationEvalSetting = Common8.Settings.Settings.instance().moduleSetting("console-user-activation-eval");
-    settingsPane.append(SettingsUI.SettingsUI.createSettingCheckbox(i18nString5(UIStrings5.hideNetwork), this.filter.hideNetworkMessagesSetting, this.filter.hideNetworkMessagesSetting.title()), SettingsUI.SettingsUI.createSettingCheckbox(i18nString5(UIStrings5.logXMLHttpRequests), monitoringXHREnabledSetting), SettingsUI.SettingsUI.createSettingCheckbox(i18nString5(UIStrings5.preserveLog), preserveConsoleLogSetting, i18nString5(UIStrings5.doNotClearLogOnPageReload)), SettingsUI.SettingsUI.createSettingCheckbox(consoleEagerEvalSetting.title(), consoleEagerEvalSetting, i18nString5(UIStrings5.eagerlyEvaluateTextInThePrompt)), SettingsUI.SettingsUI.createSettingCheckbox(i18nString5(UIStrings5.selectedContextOnly), this.filter.filterByExecutionContextSetting, i18nString5(UIStrings5.onlyShowMessagesFromTheCurrentContext)), SettingsUI.SettingsUI.createSettingCheckbox(this.consoleHistoryAutocompleteSetting.title(), this.consoleHistoryAutocompleteSetting, i18nString5(UIStrings5.autocompleteFromHistory)), SettingsUI.SettingsUI.createSettingCheckbox(this.groupSimilarSetting.title(), this.groupSimilarSetting, i18nString5(UIStrings5.groupSimilarMessagesInConsole)), SettingsUI.SettingsUI.createSettingCheckbox(userActivationEvalSetting.title(), userActivationEvalSetting, i18nString5(UIStrings5.treatEvaluationAsUserActivation)), SettingsUI.SettingsUI.createSettingCheckbox(this.showCorsErrorsSetting.title(), this.showCorsErrorsSetting, i18nString5(UIStrings5.showCorsErrorsInConsole)));
+    settingsPane.append(SettingsUI.SettingsUI.createSettingCheckbox(i18nString5(UIStrings5.networkMessages), this.filter.networkMessagesSetting, this.filter.networkMessagesSetting.title()), SettingsUI.SettingsUI.createSettingCheckbox(i18nString5(UIStrings5.logXMLHttpRequests), monitoringXHREnabledSetting), SettingsUI.SettingsUI.createSettingCheckbox(i18nString5(UIStrings5.preserveLog), preserveConsoleLogSetting, i18nString5(UIStrings5.doNotClearLogOnPageReload)), SettingsUI.SettingsUI.createSettingCheckbox(consoleEagerEvalSetting.title(), consoleEagerEvalSetting, i18nString5(UIStrings5.eagerlyEvaluateTextInThePrompt)), SettingsUI.SettingsUI.createSettingCheckbox(i18nString5(UIStrings5.selectedContextOnly), this.filter.filterByExecutionContextSetting, i18nString5(UIStrings5.onlyShowMessagesFromTheCurrentContext)), SettingsUI.SettingsUI.createSettingCheckbox(this.consoleHistoryAutocompleteSetting.title(), this.consoleHistoryAutocompleteSetting, i18nString5(UIStrings5.autocompleteFromHistory)), SettingsUI.SettingsUI.createSettingCheckbox(this.groupSimilarSetting.title(), this.groupSimilarSetting, i18nString5(UIStrings5.groupSimilarMessagesInConsole)), SettingsUI.SettingsUI.createSettingCheckbox(userActivationEvalSetting.title(), userActivationEvalSetting, i18nString5(UIStrings5.treatEvaluationAsUserActivation)), SettingsUI.SettingsUI.createSettingCheckbox(this.showCorsErrorsSetting.title(), this.showCorsErrorsSetting, i18nString5(UIStrings5.showCorsErrorsInConsole)));
     if (!this.showSettingsPaneSetting.get()) {
       settingsPane.classList.add("hidden");
     }
@@ -7461,7 +7461,7 @@ globalThis.Console.ConsoleView = ConsoleView;
 var ConsoleViewFilter = class _ConsoleViewFilter {
   filterChanged;
   messageLevelFiltersSetting;
-  hideNetworkMessagesSetting;
+  networkMessagesSetting;
   filterByExecutionContextSetting;
   suggestionBuilder;
   textFilterUI;
@@ -7474,10 +7474,10 @@ var ConsoleViewFilter = class _ConsoleViewFilter {
   constructor(filterChangedCallback) {
     this.filterChanged = filterChangedCallback;
     this.messageLevelFiltersSetting = _ConsoleViewFilter.levelFilterSetting();
-    this.hideNetworkMessagesSetting = Common8.Settings.Settings.instance().moduleSetting("hide-network-messages");
+    this.networkMessagesSetting = Common8.Settings.Settings.instance().moduleSetting("network-messages");
     this.filterByExecutionContextSetting = Common8.Settings.Settings.instance().moduleSetting("selected-context-filter-enabled");
     this.messageLevelFiltersSetting.addChangeListener(this.onFilterChanged.bind(this));
-    this.hideNetworkMessagesSetting.addChangeListener(this.onFilterChanged.bind(this));
+    this.networkMessagesSetting.addChangeListener(this.onFilterChanged.bind(this));
     this.filterByExecutionContextSetting.addChangeListener(this.onFilterChanged.bind(this));
     UI8.Context.Context.instance().addFlavorChangeListener(SDK7.RuntimeModel.ExecutionContext, this.onFilterChanged, this);
     const filterKeys = Object.values(FilterType);
@@ -7549,7 +7549,7 @@ var ConsoleViewFilter = class _ConsoleViewFilter {
           break;
       }
     }
-    if (this.hideNetworkMessagesSetting.get()) {
+    if (!this.networkMessagesSetting.get()) {
       parsedFilters.push({ key: FilterType.Source, text: "network", negative: true, regex: void 0 });
     }
     this.currentFilter.executionContext = this.filterByExecutionContextSetting.get() ? UI8.Context.Context.instance().flavor(SDK7.RuntimeModel.ExecutionContext) : null;
@@ -7621,7 +7621,7 @@ var ConsoleViewFilter = class _ConsoleViewFilter {
   reset() {
     this.messageLevelFiltersSetting.set(ConsoleFilter.defaultLevelsFilterValue());
     this.filterByExecutionContextSetting.set(false);
-    this.hideNetworkMessagesSetting.set(false);
+    this.networkMessagesSetting.set(true);
     this.textFilterUI.setValue("");
     this.onFilterChanged();
   }

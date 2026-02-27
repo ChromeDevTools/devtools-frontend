@@ -1899,6 +1899,13 @@ declare namespace ProtocolProxyApi {
     invoke_loadUnpacked(params: Protocol.Extensions.LoadUnpackedRequest): Promise<Protocol.Extensions.LoadUnpackedResponse>;
 
     /**
+     * Gets a list of all unpacked extensions.
+     * Available if the client is connected using the --remote-debugging-pipe flag
+     * and the --enable-unsafe-extension-debugging flag is set.
+     */
+    invoke_getExtensions(): Promise<Protocol.Extensions.GetExtensionsResponse>;
+
+    /**
      * Uninstalls an unpacked extension (others not supported) from the profile.
      * Available if the client is connected using the --remote-debugging-pipe flag
      * and the --enable-unsafe-extension-debugging.

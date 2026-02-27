@@ -4,6 +4,7 @@ import * as Host from '../../../core/host/host.js';
 import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
 import type { MarkdownLitRenderer } from '../../../ui/components/markdown_view/MarkdownView.js';
 import * as UI from '../../../ui/legacy/legacy.js';
+import * as Lit from '../../../ui/lit/lit.js';
 export interface Step {
     isLoading: boolean;
     thought?: string;
@@ -84,9 +85,21 @@ export interface MessageInput {
     onSuggestionClick: (suggestion: string) => void;
     onFeedbackSubmit: (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void;
     onCopyResponseClick: (message: ModelChatMessage) => void;
+    walkthrough: {
+        onOpen: (message: ModelChatMessage) => void;
+        isExpanded: boolean;
+        onToggle: (isOpen: boolean) => void;
+        isInlined: boolean;
+    };
 }
 export declare const DEFAULT_VIEW: (input: ChatMessageViewInput, output: ViewOutput, target: HTMLElement) => void;
 export type View = typeof DEFAULT_VIEW;
+export declare function renderStep({ step, isLoading, markdownRenderer, isLast }: {
+    step: Step;
+    isLoading: boolean;
+    markdownRenderer: MarkdownLitRenderer;
+    isLast: boolean;
+}): Lit.LitTemplate;
 export declare class ChatMessage extends UI.Widget.Widget {
     #private;
     message: Message;
@@ -99,6 +112,7 @@ export declare class ChatMessage extends UI.Widget.Widget {
     onSuggestionClick: (suggestion: string) => void;
     onFeedbackSubmit: (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void;
     onCopyResponseClick: (message: ModelChatMessage) => void;
+    walkthrough: MessageInput['walkthrough'];
     constructor(element?: HTMLElement, view?: View);
     wasShown(): void;
     performUpdate(): Promise<void> | void;

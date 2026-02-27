@@ -30,9 +30,13 @@ var UIStrings = {
   /**
    * @description Title of a setting under the Console category that can be invoked through the Command Menu
    */
+  networkMessages: "Network messages",
+  /**
+   * @description Title of an option under the Console category that can be invoked through the Command Menu
+   */
   hideNetworkMessages: "Hide network messages",
   /**
-   * @description Title of a setting under the Console category that can be invoked through the Command Menu
+   * @description Title of an option under the Console category that can be invoked through the Command Menu
    */
   showNetworkMessages: "Show network messages",
   /**
@@ -229,18 +233,18 @@ UI.ActionRegistration.registerActionExtension({
 Common.Settings.registerSettingExtension({
   category: "CONSOLE",
   storageType: "Synced",
-  title: i18nLazyString(UIStrings.hideNetworkMessages),
-  settingName: "hide-network-messages",
+  title: i18nLazyString(UIStrings.networkMessages),
+  settingName: "network-messages",
   settingType: "boolean",
-  defaultValue: false,
+  defaultValue: true,
   options: [
     {
       value: true,
-      title: i18nLazyString(UIStrings.hideNetworkMessages)
+      title: i18nLazyString(UIStrings.showNetworkMessages)
     },
     {
       value: false,
-      title: i18nLazyString(UIStrings.showNetworkMessages)
+      title: i18nLazyString(UIStrings.hideNetworkMessages)
     }
   ]
 });

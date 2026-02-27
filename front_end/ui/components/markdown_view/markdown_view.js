@@ -432,29 +432,6 @@ var MarkdownImage = class extends HTMLElement {
 };
 customElements.define("devtools-markdown-image", MarkdownImage);
 
-// gen/front_end/ui/components/markdown_view/MarkdownLink.js
-var MarkdownLink_exports = {};
-__export(MarkdownLink_exports, {
-  MarkdownLink: () => MarkdownLink
-});
-import "./../../kit/kit.js";
-import { html as html4, render as render3 } from "./../../lit/lit.js";
-
-// gen/front_end/ui/components/markdown_view/markdownLink.css.js
-var markdownLink_css_default = `/*
- * Copyright 2021 The Chromium Authors
- * Use of this source code is governed by a BSD-style license that can be
- * found in the LICENSE file.
- */
-
-.devtools-link {
-  color: var(--sys-color-primary);
-  outline-offset: 2px;
-  text-decoration: underline;
-}
-
-/*# sourceURL=${import.meta.resolve("./markdownLink.css")} */`;
-
 // gen/front_end/ui/components/markdown_view/MarkdownLinksMap.js
 var MarkdownLinksMap_exports = {};
 __export(MarkdownLinksMap_exports, {
@@ -552,28 +529,6 @@ var getMarkdownLink = (key) => {
   return link3;
 };
 
-// gen/front_end/ui/components/markdown_view/MarkdownLink.js
-var MarkdownLink = class extends HTMLElement {
-  #shadow = this.attachShadow({ mode: "open" });
-  #linkText = "";
-  #linkUrl = "";
-  set data(data) {
-    const { key, title } = data;
-    const markdownLink = getMarkdownLink(key);
-    this.#linkText = title;
-    this.#linkUrl = markdownLink;
-    this.#render();
-  }
-  #render() {
-    const output = html4`
-      <style>${markdownLink_css_default}</style>
-      <devtools-link class="devtools-link" href=${this.#linkUrl}
-      >${this.#linkText}</devtools-link>`;
-    render3(output, this.#shadow, { host: this });
-  }
-};
-customElements.define("devtools-markdown-link", MarkdownLink);
-
 // gen/front_end/ui/components/markdown_view/MarkdownView.js
 var MarkdownView_exports = {};
 __export(MarkdownView_exports, {
@@ -581,6 +536,7 @@ __export(MarkdownView_exports, {
   MarkdownLitRenderer: () => MarkdownLitRenderer,
   MarkdownView: () => MarkdownView
 });
+import "./../../kit/kit.js";
 import * as Lit3 from "./../../lit/lit.js";
 import * as VisualLogging2 from "./../../visual_logging/visual_logging.js";
 
@@ -603,6 +559,12 @@ var markdownView_css_default = `/*
 @keyframes expand {
   from { height: 0; }
   to { height: auto; }
+}
+
+devtools-link {
+  color: var(--sys-color-primary);
+  outline-offset: 2px;
+  text-decoration: underline;
 }
 
 .animating {
@@ -690,8 +652,8 @@ h1.insight, h2.insight, h3.insight, h4.insight, h5.insight, h6.insight {
 /*# sourceURL=${import.meta.resolve("./markdownView.css")} */`;
 
 // gen/front_end/ui/components/markdown_view/MarkdownView.js
-var html6 = Lit3.html;
-var render5 = Lit3.render;
+var html5 = Lit3.html;
+var render4 = Lit3.render;
 var MarkdownView = class extends HTMLElement {
   #shadow = this.attachShadow({ mode: "open" });
   #tokenData = [];
@@ -761,7 +723,7 @@ var MarkdownView = class extends HTMLElement {
     }
   }
   #render() {
-    render5(html6`
+    render4(html5`
       <style>${markdownView_css_default}</style>
       <div class='message'>
         ${this.#tokenData.map((token) => this.#renderer.renderToken(token))}
@@ -817,29 +779,29 @@ var MarkdownLitRenderer = class {
   }
   renderText(token) {
     if ("tokens" in token && token.tokens) {
-      return html6`${this.renderChildTokens(token)}`;
+      return html5`${this.renderChildTokens(token)}`;
     }
-    return html6`${this.unescape("text" in token ? token.text : "")}`;
+    return html5`${this.unescape("text" in token ? token.text : "")}`;
   }
   renderHeading(heading) {
     const customClass = this.customClassMapForToken("heading");
     switch (heading.depth) {
       case 1:
-        return html6`<h1 class=${customClass}>${this.renderText(heading)}</h1>`;
+        return html5`<h1 class=${customClass}>${this.renderText(heading)}</h1>`;
       case 2:
-        return html6`<h2 class=${customClass}>${this.renderText(heading)}</h2>`;
+        return html5`<h2 class=${customClass}>${this.renderText(heading)}</h2>`;
       case 3:
-        return html6`<h3 class=${customClass}>${this.renderText(heading)}</h3>`;
+        return html5`<h3 class=${customClass}>${this.renderText(heading)}</h3>`;
       case 4:
-        return html6`<h4 class=${customClass}>${this.renderText(heading)}</h4>`;
+        return html5`<h4 class=${customClass}>${this.renderText(heading)}</h4>`;
       case 5:
-        return html6`<h5 class=${customClass}>${this.renderText(heading)}</h5>`;
+        return html5`<h5 class=${customClass}>${this.renderText(heading)}</h5>`;
       default:
-        return html6`<h6 class=${customClass}>${this.renderText(heading)}</h6>`;
+        return html5`<h6 class=${customClass}>${this.renderText(heading)}</h6>`;
     }
   }
   renderCodeBlock(token) {
-    return html6`<devtools-code-block
+    return html5`<devtools-code-block
       class=${this.customClassMapForToken("code")}
       .code=${this.unescape(token.text)}
       .codeLang=${token.lang || ""}>
@@ -848,30 +810,28 @@ var MarkdownLitRenderer = class {
   templateForToken(token) {
     switch (token.type) {
       case "paragraph":
-        return html6`<p class=${this.customClassMapForToken("paragraph")}>${this.renderChildTokens(token)}</p>`;
+        return html5`<p class=${this.customClassMapForToken("paragraph")}>${this.renderChildTokens(token)}</p>`;
       case "list":
-        return html6`<ul class=${this.customClassMapForToken("list")}>${token.items.map((token2) => {
+        return html5`<ul class=${this.customClassMapForToken("list")}>${token.items.map((token2) => {
           return this.renderToken(token2);
         })}</ul>`;
       case "list_item":
-        return html6`<li class=${this.customClassMapForToken("list_item")}>${this.renderChildTokens(token)}</li>`;
+        return html5`<li class=${this.customClassMapForToken("list_item")}>${this.renderChildTokens(token)}</li>`;
       case "text":
         return this.renderText(token);
       case "codespan":
-        return html6`<code class=${this.customClassMapForToken("codespan")}>${this.unescape(token.text)}</code>`;
+        return html5`<code class=${this.customClassMapForToken("codespan")}>${this.unescape(token.text)}</code>`;
       case "code":
         return this.renderCodeBlock(token);
       case "space":
         return Lit3.nothing;
       case "link":
-        return html6`<devtools-markdown-link
+        return html5`<devtools-link
         class=${this.customClassMapForToken("link")}
-        .data=${{
-          key: token.href,
-          title: token.text
-        }}></devtools-markdown-link>`;
+        href=${getMarkdownLink(token.href)}
+        >${token.text}</devtools-link>`;
       case "image":
-        return html6`<devtools-markdown-image
+        return html5`<devtools-markdown-image
         class=${this.customClassMapForToken("image")}
         .data=${{
           key: token.href,
@@ -880,9 +840,9 @@ var MarkdownLitRenderer = class {
       case "heading":
         return this.renderHeading(token);
       case "strong":
-        return html6`<strong class=${this.customClassMapForToken("strong")}>${this.renderText(token)}</strong>`;
+        return html5`<strong class=${this.customClassMapForToken("strong")}>${this.renderText(token)}</strong>`;
       case "em":
-        return html6`<em class=${this.customClassMapForToken("em")}>${this.renderText(token)}</em>`;
+        return html5`<em class=${this.customClassMapForToken("em")}>${this.renderText(token)}</em>`;
       default:
         return null;
     }
@@ -906,7 +866,7 @@ var MarkdownInsightRenderer = class extends MarkdownLitRenderer {
   renderToken(token) {
     const template = this.templateForToken(token);
     if (template === null) {
-      return html6`${token.raw}`;
+      return html5`${token.raw}`;
     }
     return template;
   }
@@ -943,10 +903,10 @@ var MarkdownInsightRenderer = class extends MarkdownLitRenderer {
         if (!sanitizedUrl) {
           return null;
         }
-        return html6`${token.text ?? token.href}`;
+        return html5`${token.text ?? token.href}`;
       }
       case "code":
-        return html6`<devtools-code-block
+        return html5`<devtools-code-block
           class=${this.customClassMapForToken("code")}
           .code=${this.unescape(token.text)}
           .codeLang=${this.detectCodeLanguage(token)}
@@ -954,7 +914,7 @@ var MarkdownInsightRenderer = class extends MarkdownLitRenderer {
           .displayNotice=${true}>
         </devtools-code-block>`;
       case "citation":
-        return html6`<sup><button
+        return html5`<sup><button
             class="citation"
             jslog=${VisualLogging2.link("inline-citation").track({ click: true })}
             @click=${this.#citationClickHandler.bind(this, Number(token.linkText))}
@@ -967,7 +927,6 @@ export {
   CodeBlock_exports as CodeBlock,
   MarkdownImage_exports as MarkdownImage,
   MarkdownImagesMap_exports as MarkdownImagesMap,
-  MarkdownLink_exports as MarkdownLink,
   MarkdownLinksMap_exports as MarkdownLinksMap,
   MarkdownView_exports as MarkdownView
 };

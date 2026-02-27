@@ -63,7 +63,7 @@ export class BezierPopoverIcon {
             this.scrollerElement.addEventListener('scroll', this.boundOnScroll, false);
         }
         this.originalPropertyText = this.treeElement.property.propertyText;
-        this.treeElement.parentPane().setEditingStyle(true);
+        this.treeElement.stylesContainer().setEditingStyle(true);
         const uiLocation = Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance().propertyUILocation(this.treeElement.property, false /* forName */);
         if (uiLocation) {
             void Common.Revealer.reveal(uiLocation, true /* omitFocus */);
@@ -86,7 +86,7 @@ export class BezierPopoverIcon {
         this.bezierEditor = undefined;
         const propertyText = commitEdit ? this.treeElement.renderedPropertyText() : this.originalPropertyText || '';
         void this.treeElement.applyStyleText(propertyText, true);
-        this.treeElement.parentPane().setEditingStyle(false);
+        this.treeElement.stylesContainer().setEditingStyle(false);
         delete this.originalPropertyText;
     }
 }
@@ -163,7 +163,7 @@ export class ColorSwatchPopoverIcon extends Common.ObjectWrapper.ObjectWrapper {
             this.scrollerElement.addEventListener('scroll', this.boundOnScroll, false);
         }
         this.originalPropertyText = this.treeElement.property.propertyText;
-        this.treeElement.parentPane().setEditingStyle(true);
+        this.treeElement.stylesContainer().setEditingStyle(true);
         const uiLocation = Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance().propertyUILocation(this.treeElement.property, false /* forName */);
         if (uiLocation) {
             void Common.Revealer.reveal(uiLocation, true /* omitFocus */);
@@ -231,7 +231,7 @@ export class ColorSwatchPopoverIcon extends Common.ObjectWrapper.ObjectWrapper {
         this.spectrum = undefined;
         const propertyText = commitEdit ? this.treeElement.renderedPropertyText() : this.originalPropertyText || '';
         void this.treeElement.applyStyleText(propertyText, true);
-        this.treeElement.parentPane().setEditingStyle(false);
+        this.treeElement.stylesContainer().setEditingStyle(false);
         delete this.originalPropertyText;
         UI.Context.Context.instance().setFlavor(ColorSwatchPopoverIcon, null);
     }
@@ -284,7 +284,7 @@ export class ShadowSwatchPopoverHelper extends Common.ObjectWrapper.ObjectWrappe
             this.scrollerElement.addEventListener('scroll', this.boundOnScroll, false);
         }
         this.originalPropertyText = this.treeElement.property.propertyText;
-        this.treeElement.parentPane().setEditingStyle(true);
+        this.treeElement.stylesContainer().setEditingStyle(true);
         const uiLocation = Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance().propertyUILocation(this.treeElement.property, false /* forName */);
         if (uiLocation) {
             void Common.Revealer.reveal(uiLocation, true /* omitFocus */);
@@ -306,7 +306,7 @@ export class ShadowSwatchPopoverHelper extends Common.ObjectWrapper.ObjectWrappe
         this.cssShadowEditor = undefined;
         const propertyText = commitEdit ? this.treeElement.renderedPropertyText() : this.originalPropertyText || '';
         void this.treeElement.applyStyleText(propertyText, true);
-        this.treeElement.parentPane().setEditingStyle(false);
+        this.treeElement.stylesContainer().setEditingStyle(false);
         delete this.originalPropertyText;
     }
 }
@@ -314,7 +314,7 @@ export class FontEditorSectionManager {
     treeElementMap;
     swatchPopoverHelper;
     section;
-    parentPane;
+    stylesContainer;
     fontEditor;
     scrollerElement;
     boundFontChanged;
@@ -324,7 +324,7 @@ export class FontEditorSectionManager {
         this.treeElementMap = new Map();
         this.swatchPopoverHelper = swatchPopoverHelper;
         this.section = section;
-        this.parentPane = null;
+        this.stylesContainer = null;
         this.fontEditor = null;
         this.scrollerElement = null;
         this.boundFontChanged = this.fontChanged.bind(this);
@@ -408,12 +408,12 @@ export class FontEditorSectionManager {
             this.treeElementMap.set(propertyName, treeElement);
         }
     }
-    async showPopover(iconElement, parentPane) {
+    async showPopover(iconElement, stylesContainer) {
         if (this.swatchPopoverHelper.isShowing()) {
             this.swatchPopoverHelper.hide(true);
             return;
         }
-        this.parentPane = parentPane;
+        this.stylesContainer = stylesContainer;
         const propertyValueMap = this.createPropertyValueMap();
         this.fontEditor = new InlineEditor.FontEditor.FontEditor(propertyValueMap);
         this.fontEditor.addEventListener("FontChanged" /* InlineEditor.FontEditor.Events.FONT_CHANGED */, this.boundFontChanged);
@@ -423,7 +423,7 @@ export class FontEditorSectionManager {
         if (this.scrollerElement) {
             this.scrollerElement.addEventListener('scroll', this.boundOnScroll, false);
         }
-        this.parentPane.setEditingStyle(true);
+        this.stylesContainer.setEditingStyle(true);
     }
     onScroll() {
         this.swatchPopoverHelper.hide(true);
@@ -437,8 +437,8 @@ export class FontEditorSectionManager {
             this.fontEditor.removeEventListener("FontChanged" /* InlineEditor.FontEditor.Events.FONT_CHANGED */, this.boundFontChanged);
         }
         this.fontEditor = null;
-        if (this.parentPane) {
-            this.parentPane.setEditingStyle(false);
+        if (this.stylesContainer) {
+            this.stylesContainer.setEditingStyle(false);
         }
         this.section.resetToolbars();
         this.section.onpopulate();

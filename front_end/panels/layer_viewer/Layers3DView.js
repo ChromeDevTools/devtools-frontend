@@ -152,7 +152,7 @@ export class Layers3DView extends Common.ObjectWrapper.eventMixin(UI.Widget.VBox
         this.showSlowScrollRectsSetting = this.createVisibilitySetting(i18nString(UIStrings.slowScrollRects), 'frame-viewer-show-slow-scroll-rects', true, this.panelToolbar);
         this.showPaintsSetting.addChangeListener(this.updatePaints, this);
         Common.Settings.Settings.instance()
-            .moduleSetting('frame-viewer-hide-chrome-window')
+            .moduleSetting('frame-viewer-chrome-window')
             .addChangeListener(this.updateData, this);
         this.performUpdate();
         this.lastSelection = {};
@@ -610,7 +610,7 @@ export class Layers3DView extends Common.ObjectWrapper.eventMixin(UI.Widget.VBox
         if (!viewport) {
             return;
         }
-        const drawChrome = !Common.Settings.Settings.instance().moduleSetting('frame-viewer-hide-chrome-window').get() &&
+        const drawChrome = Common.Settings.Settings.instance().moduleSetting('frame-viewer-chrome-window').get() &&
             this.chromeTextures.length >= 3 && this.chromeTextures.indexOf(undefined) < 0;
         const z = (this.maxDepth + 1) * LayerSpacing;
         const borderWidth = Math.ceil(ViewportBorderWidth * this.scale);

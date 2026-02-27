@@ -251,7 +251,7 @@ export default `/*
   .step {
     width: fit-content;
     background-color: var(--sys-color-surface3);
-    border-radius: var(--sys-size-6);
+    border-radius: 16px;
     position: relative;
 
     &.empty {
@@ -323,7 +323,7 @@ export default `/*
     }
 
     summary {
-      border-radius: var(--sys-size-6);
+      border-radius: 16px;
     }
 
     .step-details {

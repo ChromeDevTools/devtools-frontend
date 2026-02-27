@@ -8,20 +8,20 @@ var __export = (target, all) => {
 import "./../../ui/kit/kit.js";
 import * as Common5 from "./../../core/common/common.js";
 import * as Host6 from "./../../core/host/host.js";
-import * as i18n15 from "./../../core/i18n/i18n.js";
+import * as i18n17 from "./../../core/i18n/i18n.js";
 import * as Platform4 from "./../../core/platform/platform.js";
-import * as Root5 from "./../../core/root/root.js";
+import * as Root6 from "./../../core/root/root.js";
 import * as SDK3 from "./../../core/sdk/sdk.js";
 import * as AiAssistanceModel5 from "./../../models/ai_assistance/ai_assistance.js";
 import * as Annotations from "./../../models/annotations/annotations.js";
 import * as Badges from "./../../models/badges/badges.js";
 import * as TextUtils from "./../../models/text_utils/text_utils.js";
 import * as Workspace5 from "./../../models/workspace/workspace.js";
-import * as Buttons6 from "./../../ui/components/buttons/buttons.js";
+import * as Buttons7 from "./../../ui/components/buttons/buttons.js";
 import * as Snackbars2 from "./../../ui/components/snackbars/snackbars.js";
 import * as UIHelpers2 from "./../../ui/helpers/helpers.js";
-import * as UI8 from "./../../ui/legacy/legacy.js";
-import * as Lit4 from "./../../ui/lit/lit.js";
+import * as UI9 from "./../../ui/legacy/legacy.js";
+import * as Lit5 from "./../../ui/lit/lit.js";
 import * as VisualLogging6 from "./../../ui/visual_logging/visual_logging.js";
 import * as NetworkForward from "./../network/forward/forward.js";
 import * as NetworkPanel from "./../network/network.js";
@@ -59,6 +59,11 @@ var aiAssistancePanel_css_default = `/*
     align-items: center;
     justify-content: center;
   }
+
+  devtools-split-view {
+    width: 100%;
+    height: 100%;
+  }
 }
 
 .toolbar-feedback-link {
@@ -73,11 +78,11 @@ var aiAssistancePanel_css_default = `/*
 // gen/front_end/panels/ai_assistance/components/ChatView.js
 import "./../../ui/components/spinners/spinners.js";
 import * as Host4 from "./../../core/host/host.js";
-import * as i18n9 from "./../../core/i18n/i18n.js";
+import * as i18n11 from "./../../core/i18n/i18n.js";
 import * as AiAssistanceModel4 from "./../../models/ai_assistance/ai_assistance.js";
-import * as Buttons5 from "./../../ui/components/buttons/buttons.js";
-import * as UI5 from "./../../ui/legacy/legacy.js";
-import { Directives as Directives4, html as html5, nothing as nothing5, render as render5 } from "./../../ui/lit/lit.js";
+import * as Buttons6 from "./../../ui/components/buttons/buttons.js";
+import * as UI6 from "./../../ui/legacy/legacy.js";
+import { Directives as Directives4, html as html6, nothing as nothing6, render as render6 } from "./../../ui/lit/lit.js";
 
 // gen/front_end/panels/ai_assistance/PatchWidget.js
 var PatchWidget_exports = {};
@@ -2180,20 +2185,22 @@ var ChatInput = class extends UI3.Widget.Widget {
 var ChatMessage_exports = {};
 __export(ChatMessage_exports, {
   ChatMessage: () => ChatMessage,
-  DEFAULT_VIEW: () => DEFAULT_VIEW3
+  DEFAULT_VIEW: () => DEFAULT_VIEW4,
+  renderStep: () => renderStep
 });
 import "./../../ui/components/markdown_view/markdown_view.js";
 import "./../../ui/kit/kit.js";
 import * as Common3 from "./../../core/common/common.js";
 import * as Host3 from "./../../core/host/host.js";
-import * as i18n7 from "./../../core/i18n/i18n.js";
+import * as i18n9 from "./../../core/i18n/i18n.js";
+import * as Root3 from "./../../core/root/root.js";
 import * as AiAssistanceModel3 from "./../../models/ai_assistance/ai_assistance.js";
 import * as Marked from "./../../third_party/marked/marked.js";
-import * as Buttons4 from "./../../ui/components/buttons/buttons.js";
-import * as Input2 from "./../../ui/components/input/input.js";
+import * as Buttons5 from "./../../ui/components/buttons/buttons.js";
+import * as Input3 from "./../../ui/components/input/input.js";
 import * as UIHelpers from "./../../ui/helpers/helpers.js";
-import * as UI4 from "./../../ui/legacy/legacy.js";
-import * as Lit2 from "./../../ui/lit/lit.js";
+import * as UI5 from "./../../ui/legacy/legacy.js";
+import * as Lit3 from "./../../ui/lit/lit.js";
 import * as VisualLogging3 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/ai_assistance/components/chatMessage.css.js
@@ -2445,7 +2452,7 @@ var chatMessage_css_default = `/*
   .step {
     width: fit-content;
     background-color: var(--sys-color-surface3);
-    border-radius: var(--sys-size-6);
+    border-radius: 16px;
     position: relative;
 
     &.empty {
@@ -2517,7 +2524,7 @@ var chatMessage_css_default = `/*
     }
 
     summary {
-      border-radius: var(--sys-size-6);
+      border-radius: 16px;
     }
 
     .step-details {
@@ -2551,9 +2558,295 @@ var chatMessage_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("././components/chatMessage.css")} */`;
 
+// gen/front_end/panels/ai_assistance/components/WalkthroughView.js
+var WalkthroughView_exports = {};
+__export(WalkthroughView_exports, {
+  DEFAULT_VIEW: () => DEFAULT_VIEW3,
+  WalkthroughView: () => WalkthroughView
+});
+import * as i18n7 from "./../../core/i18n/i18n.js";
+import * as Buttons4 from "./../../ui/components/buttons/buttons.js";
+import * as Input2 from "./../../ui/components/input/input.js";
+import * as UI4 from "./../../ui/legacy/legacy.js";
+import * as Lit2 from "./../../ui/lit/lit.js";
+
+// gen/front_end/panels/ai_assistance/components/walkthroughView.css.js
+var walkthroughView_css_default = `/*
+ * Copyright 2026 The Chromium Authors
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+@scope (devtools-widget) {
+  .walkthrough-view {
+    height: 100%;
+    background-color: var(--sys-color-cdt-base-container);
+    overflow: auto;
+  }
+}
+
+@scope (devtools-widget > *) {
+  .walkthrough-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 8px;
+    height: 35px;
+    border-bottom: 1px solid var(--sys-color-divider);
+    flex-shrink: 0;
+  }
+
+  .walkthrough-title {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--sys-color-on-surface);
+  }
+
+  .steps-container {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--sys-size-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--sys-size-6);
+  }
+
+  .step-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sys-size-5);
+  }
+
+  .step-container {
+    display: flex;
+    gap: var(--sys-size-5);
+    align-items: flex-start;
+  }
+
+  .step-icon {
+    color: var(--sys-color-on-surface-subtle);
+    width: var(--sys-size-8);
+    height: var(--sys-size-8);
+    flex-shrink: 0;
+    margin-top: var(--sys-size-2);
+  }
+
+  .step-content {
+    flex: 1;
+    font-size: 11px;
+    color: var(--sys-color-on-surface);
+    line-height: 1.4;
+  }
+
+  .empty-state {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    color: var(--sys-color-on-surface-subtle);
+    font-size: 11px;
+  }
+
+  .walkthrough-inline {
+    border-radius: var(--sys-size-5);
+    overflow: hidden;
+    background-color: var(--sys-color-surface1);
+  }
+
+  .walkthrough-inline summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--sys-size-5) var(--sys-size-6);
+    cursor: pointer;
+    background-color: transparent;
+    font-weight: 500;
+    font-size: 11px;
+    user-select: none;
+    list-style: none; /* Hide default triangle */
+  }
+
+  .walkthrough-inline summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .walkthrough-inline summary:hover {
+    background-color: var(--sys-color-state-hover-on-subtle);
+  }
+
+  .walkthrough-inline .steps-container {
+    padding: var(--sys-size-6);
+    max-height: 300px; /* Limit height for inline view */
+    overflow-y: auto;
+    border-top: 1px solid var(--sys-color-divider);
+    background-color: transparent;
+  }
+
+  .walkthrough-inline > summary > devtools-icon {
+    width: var(--sys-size-8);
+    height: var(--sys-size-8);
+    transition: transform 0.2s;
+  }
+
+  .walkthrough-inline[open] > summary > devtools-icon {
+    transform: rotate(180deg);
+  }
+}
+
+/*# sourceURL=${import.meta.resolve("././components/walkthroughView.css")} */`;
+
+// gen/front_end/panels/ai_assistance/components/WalkthroughView.js
+var { html: html4, render: render4 } = Lit2;
+var UIStrings2 = {
+  /**
+   * @description Title for the close button in the walkthrough view.
+   */
+  close: "Close",
+  /**
+   * @description Title for the walkthrough view.
+   */
+  title: "Investigation steps",
+  /**
+   * @description Title for the inline walkthrough view.
+   */
+  inlineTitle: "Show thinking"
+};
+var str_2 = i18n7.i18n.registerUIStrings("panels/ai_assistance/components/WalkthroughView.ts", UIStrings2);
+var i18nString2 = i18n7.i18n.getLocalizedString.bind(void 0, str_2);
+function renderInlineWalkthrough(input, stepsOutput) {
+  if (!input.isInlined) {
+    return Lit2.nothing;
+  }
+  function onToggle(event) {
+    input.onToggle(event.target.open);
+  }
+  return html4`
+    <details class="walkthrough-inline" ?open=${input.isExpanded} @toggle=${onToggle}>
+      <summary>
+        ${i18nString2(UIStrings2.inlineTitle)}
+        <devtools-icon name="chevron-down"></devtools-icon>
+      </summary>
+      ${stepsOutput}
+    </details>
+  `;
+}
+function renderSidebarWalkthrough(input, stepsOutput, stepsCount) {
+  if (input.isInlined) {
+    return Lit2.nothing;
+  }
+  return html4`
+    <div class="walkthrough-view">
+      <div class="walkthrough-header">
+         <div class="walkthrough-title">${i18nString2(UIStrings2.title)}</div>
+         <devtools-button
+          .data=${{
+    variant: "toolbar",
+    iconName: "right-panel-open",
+    title: i18nString2(UIStrings2.close),
+    jslogContext: "close-walkthrough"
+  }}
+          @click=${() => input.onToggle(false)}
+        ></devtools-button>
+      </div>
+      ${stepsOutput}
+      ${stepsCount === 0 ? html4`
+        <div class="empty-state">
+          <p>No walkthrough steps available yet.</p>
+        </div>
+      ` : Lit2.nothing}
+    </div>
+  `;
+}
+var DEFAULT_VIEW3 = (input, _output, target) => {
+  const steps = input.message?.parts.filter((t) => t.type === "step")?.map((p) => p.step) ?? [];
+  const stepsOutput = steps.length > 0 ? html4`
+    <div class="steps-container">
+      ${steps.map((step, index) => html4`
+        <div class="step-wrapper">
+          ${renderStep({
+    step,
+    isLoading: input.isLoading,
+    markdownRenderer: input.markdownRenderer,
+    isLast: index === steps.length - 1
+  })}
+        </div>
+      `)}
+    </div>
+  ` : Lit2.nothing;
+  render4(html4`
+    <style>
+      ${Input2.textInputStyles}
+      ${chatMessage_css_default}
+      ${walkthroughView_css_default}
+    </style>
+    ${input.isInlined ? renderInlineWalkthrough(input, stepsOutput) : renderSidebarWalkthrough(input, stepsOutput, steps.length)}`, target);
+};
+var WalkthroughView = class extends UI4.Widget.Widget {
+  #view;
+  #message = null;
+  // TODO(b/487921187): fix loading state - also unsure if we need this vs
+  // looking at the loading state in the message's steps.
+  #isLoading = false;
+  #markdownRenderer = null;
+  #onToggle = () => {
+  };
+  #isInlined = false;
+  #isExpanded = false;
+  constructor(element, view = DEFAULT_VIEW3) {
+    super(element);
+    this.#view = view;
+  }
+  set isLoading(isLoading) {
+    this.#isLoading = isLoading;
+    this.requestUpdate();
+  }
+  get isLoading() {
+    return this.#isLoading;
+  }
+  get markdownRenderer() {
+    return this.#markdownRenderer;
+  }
+  set markdownRenderer(markdownRenderer) {
+    this.#markdownRenderer = markdownRenderer;
+    this.requestUpdate();
+  }
+  get message() {
+    return this.#message;
+  }
+  set message(message) {
+    this.#message = message;
+    this.requestUpdate();
+  }
+  set onToggle(onToggle) {
+    this.#onToggle = onToggle;
+    this.requestUpdate();
+  }
+  set isInlined(isInlined) {
+    this.#isInlined = isInlined;
+    this.requestUpdate();
+  }
+  set isExpanded(isExpanded) {
+    this.#isExpanded = isExpanded;
+    this.requestUpdate();
+  }
+  performUpdate() {
+    if (!this.#markdownRenderer) {
+      return;
+    }
+    this.#view({
+      isLoading: this.#isLoading,
+      markdownRenderer: this.#markdownRenderer,
+      onToggle: this.#onToggle,
+      isInlined: this.#isInlined,
+      isExpanded: this.#isExpanded,
+      message: this.#message
+    }, null, this.contentElement);
+  }
+};
+
 // gen/front_end/panels/ai_assistance/components/ChatMessage.js
-var { html: html4, Directives: { ref: ref2, ifDefined } } = Lit2;
-var lockedString4 = i18n7.i18n.lockedString;
+var { html: html5, Directives: { ref: ref2, ifDefined } } = Lit3;
+var lockedString4 = i18n9.i18n.lockedString;
 var REPORT_URL = "https://crbug.com/364805393";
 var SCROLL_ROUNDING_OFFSET = 1;
 var UIStringsNotTranslate4 = {
@@ -2684,19 +2977,23 @@ var UIStringsNotTranslate4 = {
   /**
    * @description Alt text for image when it is not available.
    */
-  imageUnavailable: "Image unavailable"
+  imageUnavailable: "Image unavailable",
+  /**
+   * @description Title for the button that shows the thinking process (walkthrough).
+   */
+  showThinking: "Show thinking"
 };
-var DEFAULT_VIEW3 = (input, output, target) => {
+var DEFAULT_VIEW4 = (input, output, target) => {
   const message = input.message;
   if (message.entity === "user") {
     const givenName = AiAssistanceModel3.AiUtils.isGeminiBranding() ? input.userInfo.accountGivenName : "";
     const name = givenName || input.userInfo.accountFullName || lockedString4(UIStringsNotTranslate4.you);
-    const image = input.userInfo.accountImage ? html4`<img src="data:image/png;base64, ${input.userInfo.accountImage}" alt=${UIStringsNotTranslate4.accountAvatar} />` : html4`<devtools-icon
+    const image = input.userInfo.accountImage ? html5`<img src="data:image/png;base64, ${input.userInfo.accountImage}" alt=${UIStringsNotTranslate4.accountAvatar} />` : html5`<devtools-icon
           name="profile"
         ></devtools-icon>`;
-    const imageInput = message.imageInput && "inlineData" in message.imageInput ? renderImageChatMessage(message.imageInput.inlineData) : Lit2.nothing;
-    Lit2.render(html4`
-      <style>${Input2.textInputStyles}</style>
+    const imageInput = message.imageInput && "inlineData" in message.imageInput ? renderImageChatMessage(message.imageInput.inlineData) : Lit3.nothing;
+    Lit3.render(html5`
+      <style>${Input3.textInputStyles}</style>
       <style>${chatMessage_css_default}</style>
       <section
         class="chat-message query ${input.isLastMessage ? "is-last-message" : ""}"
@@ -2714,9 +3011,11 @@ var DEFAULT_VIEW3 = (input, output, target) => {
     `, target);
     return;
   }
+  const steps = message.parts.filter((part) => part.type === "step").map((part) => part.step);
   const icon = AiAssistanceModel3.AiUtils.getIconName();
-  Lit2.render(html4`
-    <style>${Input2.textInputStyles}</style>
+  const aiAssistanceV2 = Root3.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled;
+  Lit3.render(html5`
+    <style>${Input3.textInputStyles}</style>
     <style>${chatMessage_css_default}</style>
     <section
       class="chat-message answer ${input.isLastMessage ? "is-last-message" : ""}"
@@ -2728,20 +3027,24 @@ var DEFAULT_VIEW3 = (input, output, target) => {
           <h2>${AiAssistanceModel3.AiUtils.isGeminiBranding() ? lockedString4(UIStringsNotTranslate4.gemini) : lockedString4(UIStringsNotTranslate4.ai)}</h2>
         </div>
       </div>
-      ${Lit2.Directives.repeat(message.parts, (_, index) => index, (part, index) => {
+      ${aiAssistanceV2 ? renderWalkthroughUI(input, steps) : Lit3.nothing}
+      ${Lit3.Directives.repeat(message.parts, (_, index) => index, (part, index) => {
     const isLastPart = index === message.parts.length - 1;
     if (part.type === "answer") {
-      return html4`<p>${renderTextAsMarkdown(part.text, input.markdownRenderer, { animate: !input.isReadOnly && input.isLoading && isLastPart && input.isLastMessage })}</p>`;
+      return html5`<p>${renderTextAsMarkdown(part.text, input.markdownRenderer, { animate: !input.isReadOnly && input.isLoading && isLastPart && input.isLastMessage })}</p>`;
     }
-    return renderStep({
-      step: part.step,
-      isLoading: input.isLoading,
-      markdownRenderer: input.markdownRenderer,
-      isLast: isLastPart
-    });
+    if (!aiAssistanceV2 && part.type === "step") {
+      return renderStep({
+        step: part.step,
+        isLoading: input.isLoading,
+        markdownRenderer: input.markdownRenderer,
+        isLast: isLastPart
+      });
+    }
+    return Lit3.nothing;
   })}
       ${renderError(message)}
-      ${input.showActions ? renderActions(input, output) : Lit2.nothing}
+      ${input.showActions ? renderActions(input, output) : Lit3.nothing}
     </section>
   `, target);
 };
@@ -2753,24 +3056,24 @@ function renderTextAsMarkdown(text, markdownRenderer, { animate, ref: refFn } = 
       markdownRenderer.renderToken(token);
     }
   } catch {
-    return html4`${text}`;
+    return html5`${text}`;
   }
-  return html4`<devtools-markdown-view
+  return html5`<devtools-markdown-view
     .data=${{ tokens, renderer: markdownRenderer, animationEnabled: animate }}
-    ${refFn ? ref2(refFn) : Lit2.nothing}>
+    ${refFn ? ref2(refFn) : Lit3.nothing}>
   </devtools-markdown-view>`;
 }
 function renderTitle(step) {
-  const paused = step.sideEffect ? html4`<span class="paused">${lockedString4(UIStringsNotTranslate4.paused)}: </span>` : Lit2.nothing;
+  const paused = step.sideEffect ? html5`<span class="paused">${lockedString4(UIStringsNotTranslate4.paused)}: </span>` : Lit3.nothing;
   const actionTitle = step.title ?? `${lockedString4(UIStringsNotTranslate4.investigating)}\u2026`;
-  return html4`<span class="title">${paused}${actionTitle}</span>`;
+  return html5`<span class="title">${paused}${actionTitle}</span>`;
 }
 function renderStepCode(step) {
   if (!step.code && !step.output) {
-    return Lit2.nothing;
+    return Lit3.nothing;
   }
   const codeHeadingText = step.output && !step.canceled ? lockedString4(UIStringsNotTranslate4.codeExecuted) : lockedString4(UIStringsNotTranslate4.codeToExecute);
-  const code = step.code ? html4`<div class="action-result">
+  const code = step.code ? html5`<div class="action-result">
       <devtools-code-block
         .code=${step.code.trim()}
         .codeLang=${"js"}
@@ -2778,8 +3081,8 @@ function renderStepCode(step) {
         .header=${codeHeadingText}
         .showCopyButton=${true}
       ></devtools-code-block>
-  </div>` : Lit2.nothing;
-  const output = step.output ? html4`<div class="js-code-output">
+  </div>` : Lit3.nothing;
+  const output = step.output ? html5`<div class="js-code-output">
     <devtools-code-block
       .code=${step.output}
       .codeLang=${"js"}
@@ -2787,14 +3090,14 @@ function renderStepCode(step) {
       .header=${lockedString4(UIStringsNotTranslate4.dataReturned)}
       .showCopyButton=${false}
     ></devtools-code-block>
-  </div>` : Lit2.nothing;
-  return html4`<div class="step-code">${code}${output}</div>`;
+  </div>` : Lit3.nothing;
+  return html5`<div class="step-code">${code}${output}</div>`;
 }
 function renderStepDetails({ step, markdownRenderer, isLast }) {
-  const sideEffects = isLast && step.sideEffect ? renderSideEffectConfirmationUi(step) : Lit2.nothing;
-  const thought = step.thought ? html4`<p>${renderTextAsMarkdown(step.thought, markdownRenderer)}</p>` : Lit2.nothing;
-  const contextDetails = step.contextDetails ? html4`${Lit2.Directives.repeat(step.contextDetails, (contextDetail) => {
-    return html4`<div class="context-details">
+  const sideEffects = isLast && step.sideEffect ? renderSideEffectConfirmationUi(step) : Lit3.nothing;
+  const thought = step.thought ? html5`<p>${renderTextAsMarkdown(step.thought, markdownRenderer)}</p>` : Lit3.nothing;
+  const contextDetails = step.contextDetails ? html5`${Lit3.Directives.repeat(step.contextDetails, (contextDetail) => {
+    return html5`<div class="context-details">
       <devtools-code-block
         .code=${contextDetail.text}
         .codeLang=${contextDetail.codeLang || ""}
@@ -2803,17 +3106,66 @@ function renderStepDetails({ step, markdownRenderer, isLast }) {
         .showCopyButton=${true}
       ></devtools-code-block>
     </div>`;
-  })}` : Lit2.nothing;
-  return html4`<div class="step-details">
+  })}` : Lit3.nothing;
+  return html5`<div class="step-details">
     ${thought}
     ${renderStepCode(step)}
     ${sideEffects}
     ${contextDetails}
   </div>`;
 }
+function renderWalkthroughUI(input, steps) {
+  if (steps.length === 0) {
+    return Lit3.nothing;
+  }
+  const sideEffectSteps = steps.filter((s) => s.sideEffect);
+  const openWalkThroughSidebarButton = !input.walkthrough.isInlined ? html5`
+      <div class="walkthrough-toggle-container">
+        <devtools-button
+          .variant=${"outlined"}
+          .size=${"SMALL"}
+          .title=${lockedString4(UIStringsNotTranslate4.showThinking)}
+          .jslogContext=${"ai-show-walkthrough"}
+          @click=${() => {
+    if (input.walkthrough.isExpanded) {
+      input.walkthrough.onToggle(false);
+    } else {
+      input.walkthrough.onOpen(input.message);
+    }
+  }}
+        >${lockedString4(UIStringsNotTranslate4.showThinking)}</devtools-button>
+      </div>
+  ` : Lit3.nothing;
+  const sideEffectStepsUI = !input.walkthrough.isInlined && !input.walkthrough.isExpanded && sideEffectSteps.length > 0 ? sideEffectSteps.map((step) => html5`
+    <div class="side-effect-container">
+      ${renderStep({
+    step,
+    isLoading: input.isLoading,
+    markdownRenderer: input.markdownRenderer,
+    isLast: true
+  })}
+    </div> `) : Lit3.nothing;
+  const walkthroughInline = input.walkthrough.isInlined ? html5`
+    <div class="walkthrough-container">
+      <devtools-widget .widgetConfig=${UI5.Widget.widgetConfig(WalkthroughView, {
+    message: input.message,
+    isLoading: input.isLoading && input.isLastMessage,
+    markdownRenderer: input.markdownRenderer,
+    isInlined: true,
+    isExpanded: input.isLastMessage && (input.walkthrough.isExpanded || steps.some((step) => Boolean(step.sideEffect))),
+    onToggle: input.walkthrough.onToggle
+  })}></devtools-widget>
+    </div>
+  ` : Lit3.nothing;
+  return html5`
+    ${openWalkThroughSidebarButton}
+    ${sideEffectStepsUI}
+    ${walkthroughInline}
+  `;
+}
 function renderStepBadge({ step, isLoading, isLast }) {
   if (isLoading && isLast && !step.sideEffect) {
-    return html4`<devtools-spinner></devtools-spinner>`;
+    return html5`<devtools-spinner></devtools-spinner>`;
   }
   let iconName = "checkmark";
   let ariaLabel = lockedString4(UIStringsNotTranslate4.completed);
@@ -2826,7 +3178,7 @@ function renderStepBadge({ step, isLoading, isLast }) {
     ariaLabel = lockedString4(UIStringsNotTranslate4.canceled);
     iconName = "cross";
   }
-  return html4`<devtools-icon
+  return html5`<devtools-icon
       class="indicator"
       role=${ifDefined(role)}
       aria-label=${ifDefined(ariaLabel)}
@@ -2834,13 +3186,13 @@ function renderStepBadge({ step, isLoading, isLast }) {
     ></devtools-icon>`;
 }
 function renderStep({ step, isLoading, markdownRenderer, isLast }) {
-  const stepClasses = Lit2.Directives.classMap({
+  const stepClasses = Lit3.Directives.classMap({
     step: true,
     empty: !step.thought && !step.code && !step.contextDetails && !step.sideEffect,
     paused: Boolean(step.sideEffect),
     canceled: Boolean(step.canceled)
   });
-  return html4`
+  return html5`
     <details class=${stepClasses}
       jslog=${VisualLogging3.section("step")}
       .open=${Boolean(step.sideEffect)}>
@@ -2859,9 +3211,9 @@ function renderStep({ step, isLoading, markdownRenderer, isLast }) {
 }
 function renderSideEffectConfirmationUi(step) {
   if (!step.sideEffect) {
-    return Lit2.nothing;
+    return Lit3.nothing;
   }
-  return html4`<div
+  return html5`<div
     class="side-effect-confirmation"
     jslog=${VisualLogging3.section("side-effect-confirmation")}
   >
@@ -2897,20 +3249,20 @@ function renderError(message) {
         errorMessage = UIStringsNotTranslate4.maxStepsError;
         break;
       case "abort":
-        return html4`<p class="aborted" jslog=${VisualLogging3.section("aborted")}>${lockedString4(UIStringsNotTranslate4.stoppedResponse)}</p>`;
+        return html5`<p class="aborted" jslog=${VisualLogging3.section("aborted")}>${lockedString4(UIStringsNotTranslate4.stoppedResponse)}</p>`;
     }
-    return html4`<p class="error" jslog=${VisualLogging3.section("error")}>${lockedString4(errorMessage)}</p>`;
+    return html5`<p class="error" jslog=${VisualLogging3.section("error")}>${lockedString4(errorMessage)}</p>`;
   }
-  return Lit2.nothing;
+  return Lit3.nothing;
 }
 function renderImageChatMessage(inlineData) {
   if (inlineData.data === AiAssistanceModel3.AiConversation.NOT_FOUND_IMAGE_DATA) {
-    return html4`<div class="unavailable-image" title=${UIStringsNotTranslate4.imageUnavailable}>
+    return html5`<div class="unavailable-image" title=${UIStringsNotTranslate4.imageUnavailable}>
       <devtools-icon name='file-image'></devtools-icon>
     </div>`;
   }
   const imageUrl = `data:${inlineData.mimeType};base64,${inlineData.data}`;
-  return html4`<devtools-link
+  return html5`<devtools-link
       class="image-link" title=${UIStringsNotTranslate4.openImageInNewTab}
       href=${imageUrl}
     >
@@ -2918,10 +3270,10 @@ function renderImageChatMessage(inlineData) {
     </devtools-link>`;
 }
 function renderActions(input, output) {
-  return html4`
+  return html5`
     <div class="ai-assistance-feedback-row">
       <div class="action-buttons">
-        ${input.showRateButtons ? html4`
+        ${input.showRateButtons ? html5`
           <devtools-button
             .data=${{
     variant: "icon",
@@ -2955,7 +3307,7 @@ function renderActions(input, output) {
   )}
           ></devtools-button>
           <div class="vertical-separator"></div>
-        ` : Lit2.nothing}
+        ` : Lit3.nothing}
         <devtools-button
           .data=${{
     variant: "icon",
@@ -2978,7 +3330,7 @@ function renderActions(input, output) {
             aria-label=${lockedString4(UIStringsNotTranslate4.copyResponse)}
             @click=${input.onCopyResponseClick}></devtools-button>
       </div>
-      ${input.suggestions ? html4`<div class="suggestions-container">
+      ${input.suggestions ? html5`<div class="suggestions-container">
         <div class="scroll-button-container left hidden" ${ref2((element) => {
     output.suggestionsLeftScrollButtonContainer = element;
   })}>
@@ -2997,7 +3349,7 @@ function renderActions(input, output) {
         <div class="suggestions-scroll-container" @scroll=${input.onSuggestionsScrollOrResize} ${ref2((element) => {
     output.suggestionsScrollContainer = element;
   })}>
-          ${input.suggestions.map((suggestion) => html4`<devtools-button
+          ${input.suggestions.map((suggestion) => html5`<devtools-button
             class='suggestion'
             .data=${{
     variant: "outlined",
@@ -3022,9 +3374,9 @@ function renderActions(input, output) {
             @click=${() => input.scrollSuggestionsScrollContainer("right")}
           ></devtools-button>
         </div>
-      </div>` : Lit2.nothing}
+      </div>` : Lit3.nothing}
     </div>
-    ${input.isShowingFeedbackForm ? html4`
+    ${input.isShowingFeedbackForm ? html5`
       <form class="feedback-form" @submit=${input.onSubmit}>
         <div class="feedback-header">
           <h4 class="feedback-title">${lockedString4(UIStringsNotTranslate4.whyThisRating)}</h4>
@@ -3063,10 +3415,10 @@ function renderActions(input, output) {
         </div>
       </div>
     </form>
-    ` : Lit2.nothing}
+    ` : Lit3.nothing}
   `;
 }
-var ChatMessage = class extends UI4.Widget.Widget {
+var ChatMessage = class extends UI5.Widget.Widget {
   message = { entity: "user", text: "" };
   isLoading = false;
   isReadOnly = false;
@@ -3080,6 +3432,14 @@ var ChatMessage = class extends UI4.Widget.Widget {
   };
   onCopyResponseClick = () => {
   };
+  walkthrough = {
+    onOpen: () => {
+    },
+    onToggle: () => {
+    },
+    isInlined: false,
+    isExpanded: false
+  };
   #suggestionsResizeObserver = new ResizeObserver(() => this.#handleSuggestionsScrollOrResize());
   #suggestionsEvaluateLayoutThrottler = new Common3.Throttler.Throttler(50);
   #feedbackValue = "";
@@ -3090,7 +3450,7 @@ var ChatMessage = class extends UI4.Widget.Widget {
   #viewOutput = {};
   constructor(element, view) {
     super(element);
-    this.#view = view ?? DEFAULT_VIEW3;
+    this.#view = view ?? DEFAULT_VIEW4;
   }
   wasShown() {
     super.wasShown();
@@ -3129,7 +3489,8 @@ var ChatMessage = class extends UI4.Widget.Widget {
       suggestions: this.isLastMessage && this.message.entity === "model" && !this.isReadOnly && this.message.parts.at(-1)?.type === "answer" ? this.message.parts.at(-1).suggestions : void 0,
       currentRating: this.#currentRating,
       isShowingFeedbackForm: this.#isShowingFeedbackForm,
-      onFeedbackSubmit: this.onFeedbackSubmit
+      onFeedbackSubmit: this.onFeedbackSubmit,
+      walkthrough: this.walkthrough
     }, this.#viewOutput, this.contentElement);
   }
   #handleInputChange(value) {
@@ -3644,9 +4005,9 @@ var UIStringsNotTranslate5 = {
    */
   emptyStateTextGemini: "Where should we start?"
 };
-var lockedString5 = i18n9.i18n.lockedString;
+var lockedString5 = i18n11.i18n.lockedString;
 var SCROLL_ROUNDING_OFFSET2 = 1;
-var DEFAULT_VIEW4 = (input, output, target) => {
+var DEFAULT_VIEW5 = (input, output, target) => {
   const chatUiClasses = classMap({
     "chat-ui": true,
     gemini: AiAssistanceModel4.AiUtils.isGeminiBranding()
@@ -3655,15 +4016,15 @@ var DEFAULT_VIEW4 = (input, output, target) => {
     "chat-input-widget": true,
     sticky: !input.isReadOnly
   });
-  render5(html5`
+  render6(html6`
       <style>${chatView_css_default}</style>
       <div class=${chatUiClasses}>
         <main @scroll=${input.handleScroll} ${ref3((element) => {
     output.mainElement = element;
   })}>
-          ${input.messages.length > 0 ? html5`
+          ${input.messages.length > 0 ? html6`
             <div class="messages-container" ${ref3(input.handleMessageContainerRef)}>
-              ${repeat(input.messages, (message) => html5`<devtools-widget .widgetConfig=${UI5.Widget.widgetConfig(ChatMessage, {
+              ${repeat(input.messages, (message) => html6`<devtools-widget .widgetConfig=${UI6.Widget.widgetConfig(ChatMessage, {
     message,
     isLoading: input.isLoading && input.messages.at(-1) === message,
     isReadOnly: input.isReadOnly,
@@ -3673,16 +4034,19 @@ var DEFAULT_VIEW4 = (input, output, target) => {
     isLastMessage: input.messages.at(-1) === message,
     onSuggestionClick: input.handleSuggestionClick,
     onFeedbackSubmit: input.onFeedbackSubmit,
-    onCopyResponseClick: input.onCopyResponseClick
+    onCopyResponseClick: input.onCopyResponseClick,
+    walkthrough: {
+      ...input.walkthrough
+    }
   })}></devtools-widget>`)}
-              ${input.isLoading ? nothing5 : html5`<devtools-widget
-                .widgetConfig=${UI5.Widget.widgetConfig(PatchWidget, {
+              ${input.isLoading ? nothing6 : html6`<devtools-widget
+                .widgetConfig=${UI6.Widget.widgetConfig(PatchWidget, {
     changeSummary: input.changeSummary ?? "",
     changeManager: input.changeManager
   })}
               ></devtools-widget>`}
             </div>
-          ` : html5`
+          ` : html6`
             <div class="empty-state-container">
               <div class="header">
                 <div class="icon">
@@ -3690,14 +4054,14 @@ var DEFAULT_VIEW4 = (input, output, target) => {
                     name="smart-assistant"
                   ></devtools-icon>
                 </div>
-                ${AiAssistanceModel4.AiUtils.isGeminiBranding() ? html5`
+                ${AiAssistanceModel4.AiUtils.isGeminiBranding() ? html6`
                     <h1 class='greeting'>Hello${input.accountGivenName ? `, ${input.accountGivenName}` : ""}</h1>
                     <p class='cta'>${lockedString5(UIStringsNotTranslate5.emptyStateTextGemini)}</p>
-                  ` : html5`<h1>${lockedString5(UIStringsNotTranslate5.emptyStateText)}</h1>`}
+                  ` : html6`<h1>${lockedString5(UIStringsNotTranslate5.emptyStateText)}</h1>`}
               </div>
               <div class="empty-state-content">
                 ${input.emptyStateSuggestions.map(({ title, jslogContext }) => {
-    return html5`<devtools-button
+    return html6`<devtools-button
                     class="suggestion"
                     @click=${() => input.handleSuggestionClick(title)}
                     .data=${{
@@ -3712,7 +4076,7 @@ var DEFAULT_VIEW4 = (input, output, target) => {
               </div>
             </div>
           `}
-          <devtools-widget class=${inputWidgetClasses} .widgetConfig=${UI5.Widget.widgetConfig(ChatInput, {
+          <devtools-widget class=${inputWidgetClasses} .widgetConfig=${UI6.Widget.widgetConfig(ChatInput, {
     isLoading: input.isLoading,
     blockedByCrossOrigin: input.blockedByCrossOrigin,
     isTextInputDisabled: input.isTextInputDisabled,
@@ -3763,7 +4127,7 @@ var ChatView = class extends HTMLElement {
    */
   #isProgrammaticScroll = false;
   #view;
-  constructor(props, view = DEFAULT_VIEW4) {
+  constructor(props, view = DEFAULT_VIEW5) {
     super();
     this.#props = props;
     this.#view = view;
@@ -3863,15 +4227,15 @@ customElements.define("devtools-ai-chat-view", ChatView);
 // gen/front_end/panels/ai_assistance/components/DisabledWidget.js
 var DisabledWidget_exports = {};
 __export(DisabledWidget_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW5,
+  DEFAULT_VIEW: () => DEFAULT_VIEW6,
   DisabledWidget: () => DisabledWidget
 });
 import * as Host5 from "./../../core/host/host.js";
-import * as i18n11 from "./../../core/i18n/i18n.js";
-import * as Root3 from "./../../core/root/root.js";
+import * as i18n13 from "./../../core/i18n/i18n.js";
+import * as Root4 from "./../../core/root/root.js";
 import * as uiI18n from "./../../ui/i18n/i18n.js";
-import * as UI6 from "./../../ui/legacy/legacy.js";
-import { html as html6, render as render6 } from "./../../ui/lit/lit.js";
+import * as UI7 from "./../../ui/legacy/legacy.js";
+import { html as html7, render as render7 } from "./../../ui/lit/lit.js";
 import * as VisualLogging4 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/ai_assistance/components/disabledWidget.css.js
@@ -3924,7 +4288,7 @@ var disabledWidget_css_default = `/*
 /*# sourceURL=${import.meta.resolve("././components/disabledWidget.css")} */`;
 
 // gen/front_end/panels/ai_assistance/components/DisabledWidget.js
-var UIStrings2 = {
+var UIStrings3 = {
   /**
    * @description The error message when the user is not logged in into Chrome.
    */
@@ -3962,45 +4326,45 @@ var UIStrings2 = {
    */
   notAvailableInIncognitoMode: "AI assistance is not available in Incognito mode or Guest mode"
 };
-var str_2 = i18n11.i18n.registerUIStrings("panels/ai_assistance/components/DisabledWidget.ts", UIStrings2);
-var i18nString2 = i18n11.i18n.getLocalizedString.bind(void 0, str_2);
+var str_3 = i18n13.i18n.registerUIStrings("panels/ai_assistance/components/DisabledWidget.ts", UIStrings3);
+var i18nString3 = i18n13.i18n.getLocalizedString.bind(void 0, str_3);
 function renderAidaUnavailableContents(aidaAvailability) {
   switch (aidaAvailability) {
     case "no-account-email":
     case "sync-is-paused": {
-      return html6`${i18nString2(UIStrings2.notLoggedIn)}`;
+      return html7`${i18nString3(UIStrings3.notLoggedIn)}`;
     }
     case "no-internet": {
-      return html6`${i18nString2(UIStrings2.offline)}`;
+      return html7`${i18nString3(UIStrings3.offline)}`;
     }
   }
 }
 function renderConsentViewContents(hostConfig) {
   if (hostConfig.isOffTheRecord) {
-    return html6`${i18nString2(UIStrings2.notAvailableInIncognitoMode)}`;
+    return html7`${i18nString3(UIStrings3.notAvailableInIncognitoMode)}`;
   }
   const settingsLink = document.createElement("span");
-  settingsLink.textContent = i18nString2(UIStrings2.settingsLink);
+  settingsLink.textContent = i18nString3(UIStrings3.settingsLink);
   settingsLink.classList.add("link");
-  UI6.ARIAUtils.markAsLink(settingsLink);
+  UI7.ARIAUtils.markAsLink(settingsLink);
   settingsLink.addEventListener("click", () => {
-    void UI6.ViewManager.ViewManager.instance().showView("chrome-ai");
+    void UI7.ViewManager.ViewManager.instance().showView("chrome-ai");
   });
   settingsLink.setAttribute("jslog", `${VisualLogging4.action("open-ai-settings").track({ click: true })}`);
   let consentViewContents;
   if (hostConfig.devToolsAiAssistancePerformanceAgent?.enabled) {
-    consentViewContents = uiI18n.getFormatLocalizedString(str_2, UIStrings2.turnOnForStylesRequestsPerformanceAndFiles, { PH1: settingsLink });
+    consentViewContents = uiI18n.getFormatLocalizedString(str_3, UIStrings3.turnOnForStylesRequestsPerformanceAndFiles, { PH1: settingsLink });
   } else if (hostConfig.devToolsAiAssistanceFileAgent?.enabled) {
-    consentViewContents = uiI18n.getFormatLocalizedString(str_2, UIStrings2.turnOnForStylesRequestsAndFiles, { PH1: settingsLink });
+    consentViewContents = uiI18n.getFormatLocalizedString(str_3, UIStrings3.turnOnForStylesRequestsAndFiles, { PH1: settingsLink });
   } else if (hostConfig.devToolsAiAssistanceNetworkAgent?.enabled) {
-    consentViewContents = uiI18n.getFormatLocalizedString(str_2, UIStrings2.turnOnForStylesAndRequests, { PH1: settingsLink });
+    consentViewContents = uiI18n.getFormatLocalizedString(str_3, UIStrings3.turnOnForStylesAndRequests, { PH1: settingsLink });
   } else {
-    consentViewContents = uiI18n.getFormatLocalizedString(str_2, UIStrings2.turnOnForStyles, { PH1: settingsLink });
+    consentViewContents = uiI18n.getFormatLocalizedString(str_3, UIStrings3.turnOnForStyles, { PH1: settingsLink });
   }
-  return html6`${consentViewContents}`;
+  return html7`${consentViewContents}`;
 }
-var DEFAULT_VIEW5 = (input, _output, target) => {
-  render6(html6`
+var DEFAULT_VIEW6 = (input, _output, target) => {
+  render7(html7`
       <style>
         ${disabledWidget_css_default}
       </style>
@@ -4014,10 +4378,10 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
       </div>
     `, target);
 };
-var DisabledWidget = class extends UI6.Widget.Widget {
+var DisabledWidget = class extends UI7.Widget.Widget {
   aidaAvailability = "no-account-email";
   #view;
-  constructor(element, view = DEFAULT_VIEW5) {
+  constructor(element, view = DEFAULT_VIEW6) {
     super(element);
     this.#view = view;
   }
@@ -4026,7 +4390,7 @@ var DisabledWidget = class extends UI6.Widget.Widget {
     void this.requestUpdate();
   }
   performUpdate() {
-    const hostConfig = Root3.Runtime.hostConfig;
+    const hostConfig = Root4.Runtime.hostConfig;
     this.#view({
       aidaAvailability: this.aidaAvailability,
       hostConfig
@@ -4037,13 +4401,13 @@ var DisabledWidget = class extends UI6.Widget.Widget {
 // gen/front_end/panels/ai_assistance/components/ExploreWidget.js
 var ExploreWidget_exports = {};
 __export(ExploreWidget_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW6,
+  DEFAULT_VIEW: () => DEFAULT_VIEW7,
   ExploreWidget: () => ExploreWidget
 });
-import * as i18n13 from "./../../core/i18n/i18n.js";
-import * as Root4 from "./../../core/root/root.js";
-import * as UI7 from "./../../ui/legacy/legacy.js";
-import { html as html7, render as render7 } from "./../../ui/lit/lit.js";
+import * as i18n15 from "./../../core/i18n/i18n.js";
+import * as Root5 from "./../../core/root/root.js";
+import * as UI8 from "./../../ui/legacy/legacy.js";
+import { html as html8, render as render8 } from "./../../ui/lit/lit.js";
 import * as VisualLogging5 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/ai_assistance/components/exploreWidget.css.js
@@ -4196,10 +4560,10 @@ var UIStringsNotTranslate6 = {
    */
   learnAbout: "Learn about AI in DevTools"
 };
-var lockedString6 = i18n13.i18n.lockedString;
-var DEFAULT_VIEW6 = (input, _output, target) => {
+var lockedString6 = i18n15.i18n.lockedString;
+var DEFAULT_VIEW7 = (input, _output, target) => {
   function renderFeatureCardContent(featureCard) {
-    return html7`Open
+    return html8`Open
      <button
        class="link"
        role="link"
@@ -4210,7 +4574,7 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
      >${featureCard.panelName}</button>
      ${featureCard.text}`;
   }
-  render7(html7`
+  render8(html8`
       <style>
         ${exploreWidget_css_default}
       </style>
@@ -4228,14 +4592,14 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
               role="link"
               jslog=${VisualLogging5.link("open-ai-settings").track({ click: true })}
               @click=${() => {
-    void UI7.ViewManager.ViewManager.instance().showView("chrome-ai");
+    void UI8.ViewManager.ViewManager.instance().showView("chrome-ai");
   }}
             >${lockedString6(UIStringsNotTranslate6.learnAbout)}
             </button>
           </p>
         </div>
         <div class="content">
-          ${input.featureCards.map((featureCard) => html7`
+          ${input.featureCards.map((featureCard) => html8`
               <div class="feature-card">
                 <div class="feature-card-icon">
                   <devtools-icon name=${featureCard.icon}></devtools-icon>
@@ -4250,9 +4614,9 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
       </div>
     `, target);
 };
-var ExploreWidget = class extends UI7.Widget.Widget {
+var ExploreWidget = class extends UI8.Widget.Widget {
   #view;
-  constructor(element, view = DEFAULT_VIEW6) {
+  constructor(element, view = DEFAULT_VIEW7) {
     super(element);
     this.#view = view;
   }
@@ -4261,51 +4625,51 @@ var ExploreWidget = class extends UI7.Widget.Widget {
     void this.requestUpdate();
   }
   performUpdate() {
-    const config = Root4.Runtime.hostConfig;
+    const config = Root5.Runtime.hostConfig;
     const featureCards = [];
-    if (config.devToolsFreestyler?.enabled && UI7.ViewManager.ViewManager.instance().hasView("elements")) {
+    if (config.devToolsFreestyler?.enabled && UI8.ViewManager.ViewManager.instance().hasView("elements")) {
       featureCards.push({
         icon: "brush-2",
         heading: "CSS styles",
         jslogContext: "open-elements-panel",
         onClick: () => {
-          void UI7.ViewManager.ViewManager.instance().showView("elements");
+          void UI8.ViewManager.ViewManager.instance().showView("elements");
         },
         panelName: "Elements",
         text: "to ask about CSS styles"
       });
     }
-    if (config.devToolsAiAssistanceNetworkAgent?.enabled && UI7.ViewManager.ViewManager.instance().hasView("network")) {
+    if (config.devToolsAiAssistanceNetworkAgent?.enabled && UI8.ViewManager.ViewManager.instance().hasView("network")) {
       featureCards.push({
         icon: "arrow-up-down",
         heading: "Network",
         jslogContext: "open-network-panel",
         onClick: () => {
-          void UI7.ViewManager.ViewManager.instance().showView("network");
+          void UI8.ViewManager.ViewManager.instance().showView("network");
         },
         panelName: "Network",
         text: "to ask about a request's details"
       });
     }
-    if (config.devToolsAiAssistanceFileAgent?.enabled && UI7.ViewManager.ViewManager.instance().hasView("sources")) {
+    if (config.devToolsAiAssistanceFileAgent?.enabled && UI8.ViewManager.ViewManager.instance().hasView("sources")) {
       featureCards.push({
         icon: "document",
         heading: "Files",
         jslogContext: "open-sources-panel",
         onClick: () => {
-          void UI7.ViewManager.ViewManager.instance().showView("sources");
+          void UI8.ViewManager.ViewManager.instance().showView("sources");
         },
         panelName: "Sources",
         text: "to ask about a file's content"
       });
     }
-    if (config.devToolsAiAssistancePerformanceAgent?.enabled && UI7.ViewManager.ViewManager.instance().hasView("timeline")) {
+    if (config.devToolsAiAssistancePerformanceAgent?.enabled && UI8.ViewManager.ViewManager.instance().hasView("timeline")) {
       featureCards.push({
         icon: "performance",
         heading: "Performance",
         jslogContext: "open-performance-panel",
         onClick: () => {
-          void UI7.ViewManager.ViewManager.instance().showView("timeline");
+          void UI8.ViewManager.ViewManager.instance().showView("timeline");
         },
         panelName: "Performance",
         text: "to ask about a trace item"
@@ -4336,10 +4700,10 @@ var MarkdownRendererWithCodeBlock = class extends MarkdownView.MarkdownView.Mark
 import * as Common4 from "./../../core/common/common.js";
 import * as SDK2 from "./../../core/sdk/sdk.js";
 import * as Trace from "./../../models/trace/trace.js";
-import * as Lit3 from "./../../ui/lit/lit.js";
+import * as Lit4 from "./../../ui/lit/lit.js";
 import * as PanelsCommon2 from "./../common/common.js";
-var { html: html8 } = Lit3.StaticHtml;
-var { ref: ref4, createRef: createRef2 } = Lit3.Directives;
+var { html: html9 } = Lit4.StaticHtml;
+var { ref: ref4, createRef: createRef2 } = Lit4.Directives;
 var PerformanceAgentMarkdownRenderer = class extends MarkdownRendererWithCodeBlock {
   mainFrameId;
   lookupEvent;
@@ -4360,11 +4724,11 @@ var PerformanceAgentMarkdownRenderer = class extends MarkdownRendererWithCodeBlo
           templateRef.value.textContent = "";
           templateRef.value.append(node);
         });
-        return html8`<span ${ref4(templateRef)}>${token.text}</span>`;
+        return html9`<span ${ref4(templateRef)}>${token.text}</span>`;
       }
       const event = this.lookupEvent(token.href.slice(1));
       if (!event) {
-        return html8`${token.text}`;
+        return html9`${token.text}`;
       }
       let label = token.text;
       let title = "";
@@ -4373,7 +4737,7 @@ var PerformanceAgentMarkdownRenderer = class extends MarkdownRendererWithCodeBlo
       } else {
         label += ` (${event.name})`;
       }
-      return html8`<a href="#" draggable=false .title=${title} @click=${(e) => {
+      return html9`<a href="#" draggable=false .title=${title} @click=${(e) => {
         e.stopPropagation();
         void Common4.Revealer.reveal(new SDK2.TraceObject.RevealableEvent(event));
       }}>${label}</a>`;
@@ -4406,10 +4770,12 @@ var PerformanceAgentMarkdownRenderer = class extends MarkdownRendererWithCodeBlo
 };
 
 // gen/front_end/panels/ai_assistance/AiAssistancePanel.js
-var { html: html9 } = Lit4;
+var { html: html10 } = Lit5;
 var AI_ASSISTANCE_SEND_FEEDBACK = "https://crbug.com/364805393";
 var AI_ASSISTANCE_HELP = "https://developer.chrome.com/docs/devtools/ai-assistance";
-var UIStrings3 = {
+var WALKTHROUGH_SIDEBAR_BREAKPOINT = 700;
+var WALKTHROUGH_SIDEBAR_INITIAL_WIDTH = 400;
+var UIStrings4 = {
   /**
    * @description AI assistance UI text creating a new chat.
    */
@@ -4565,9 +4931,9 @@ var UIStringsNotTranslate7 = {
    */
   inputDisclaimerForNoContextEnterpriseNoLogging: "Chat messages, any data the inspected page can see using Web APIs, and the items you select such as files, network requests, and performance traces are sent to Google. This data will not be used to improve Google\u2019s AI models. This is an experimental AI feature and won\u2019t always get it right."
 };
-var str_3 = i18n15.i18n.registerUIStrings("panels/ai_assistance/AiAssistancePanel.ts", UIStrings3);
-var i18nString3 = i18n15.i18n.getLocalizedString.bind(void 0, str_3);
-var lockedString7 = i18n15.i18n.lockedString;
+var str_4 = i18n17.i18n.registerUIStrings("panels/ai_assistance/AiAssistancePanel.ts", UIStrings4);
+var i18nString4 = i18n17.i18n.getLocalizedString.bind(void 0, str_4);
+var lockedString7 = i18n17.i18n.lockedString;
 function selectedElementFilter(maybeNode) {
   if (maybeNode) {
     return maybeNode.nodeType() === Node.ELEMENT_NODE ? maybeNode : null;
@@ -4633,61 +4999,61 @@ function getMarkdownRenderer(conversation) {
   return new MarkdownRendererWithCodeBlock();
 }
 function toolbarView(input) {
-  return html9`
+  return html10`
     <div class="toolbar-container" role="toolbar" jslog=${VisualLogging6.toolbar()}>
       <devtools-toolbar class="freestyler-left-toolbar" role="presentation">
-      ${input.showChatActions ? html9`<devtools-button
-          title=${i18nString3(UIStrings3.newChat)}
-          aria-label=${i18nString3(UIStrings3.newChat)}
+      ${input.showChatActions ? html10`<devtools-button
+          title=${i18nString4(UIStrings4.newChat)}
+          aria-label=${i18nString4(UIStrings4.newChat)}
           .iconName=${"plus"}
           .jslogContext=${"freestyler.new-chat"}
           .variant=${"toolbar"}
           @click=${input.onNewChatClick}></devtools-button>
         <div class="toolbar-divider"></div>
         <devtools-menu-button
-          title=${i18nString3(UIStrings3.history)}
-          aria-label=${i18nString3(UIStrings3.history)}
+          title=${i18nString4(UIStrings4.history)}
+          aria-label=${i18nString4(UIStrings4.history)}
           .iconName=${"history"}
           .jslogContext=${"freestyler.history"}
           .populateMenuCall=${input.populateHistoryMenu}
-        ></devtools-menu-button>` : Lit4.nothing}
-        ${input.showActiveConversationActions ? html9`
+        ></devtools-menu-button>` : Lit5.nothing}
+        ${input.showActiveConversationActions ? html10`
           <devtools-button
-              title=${i18nString3(UIStrings3.deleteChat)}
-              aria-label=${i18nString3(UIStrings3.deleteChat)}
+              title=${i18nString4(UIStrings4.deleteChat)}
+              aria-label=${i18nString4(UIStrings4.deleteChat)}
               .iconName=${"bin"}
               .jslogContext=${"freestyler.delete"}
               .variant=${"toolbar"}
               @click=${input.onDeleteClick}>
           </devtools-button>
           <devtools-button
-            title=${i18nString3(UIStrings3.exportConversation)}
-            aria-label=${i18nString3(UIStrings3.exportConversation)}
+            title=${i18nString4(UIStrings4.exportConversation)}
+            aria-label=${i18nString4(UIStrings4.exportConversation)}
             .iconName=${"download"}
             .disabled=${input.isLoading}
             .jslogContext=${"export-ai-conversation"}
             .variant=${"toolbar"}
             @click=${input.onExportConversationClick}>
-          </devtools-button>` : Lit4.nothing}
+          </devtools-button>` : Lit5.nothing}
       </devtools-toolbar>
       <devtools-toolbar class="freestyler-right-toolbar" role="presentation">
         <devtools-link
           class="toolbar-feedback-link"
-          title=${i18nString3(UIStrings3.sendFeedback)}
+          title=${i18nString4(UIStrings4.sendFeedback)}
           href=${AI_ASSISTANCE_SEND_FEEDBACK}
           jslogcontext=${"freestyler.send-feedback"}
-        >${i18nString3(UIStrings3.sendFeedback)}</devtools-link>
+        >${i18nString4(UIStrings4.sendFeedback)}</devtools-link>
         <div class="toolbar-divider"></div>
         <devtools-button
-          title=${i18nString3(UIStrings3.help)}
-          aria-label=${i18nString3(UIStrings3.help)}
+          title=${i18nString4(UIStrings4.help)}
+          aria-label=${i18nString4(UIStrings4.help)}
           .iconName=${"help"}
           .jslogContext=${"freestyler.help"}
           .variant=${"toolbar"}
           @click=${input.onHelpClick}></devtools-button>
         <devtools-button
-          title=${i18nString3(UIStrings3.settings)}
-          aria-label=${i18nString3(UIStrings3.settings)}
+          title=${i18nString4(UIStrings4.settings)}
+          aria-label=${i18nString4(UIStrings4.settings)}
           .iconName=${"gear"}
           .jslogContext=${"freestyler.settings"}
           .variant=${"toolbar"}
@@ -4700,10 +5066,9 @@ function defaultView(input, output, target) {
   function renderState() {
     switch (input.state) {
       case "chat-view": {
-        return html9`
-        <devtools-ai-chat-view
+        return html10`<devtools-ai-chat-view
           .props=${input.props}
-          ${Lit4.Directives.ref((el) => {
+          ${Lit5.Directives.ref((el) => {
           if (!el || !(el instanceof ChatView)) {
             return;
           }
@@ -4712,21 +5077,50 @@ function defaultView(input, output, target) {
         ></devtools-ai-chat-view>`;
       }
       case "explore-view":
-        return html9`<devtools-widget
+        return html10`<devtools-widget
           class="fill-panel"
-          .widgetConfig=${UI8.Widget.widgetConfig(ExploreWidget)}
+          .widgetConfig=${UI9.Widget.widgetConfig(ExploreWidget)}
         ></devtools-widget>`;
       case "disabled-view":
-        return html9`<devtools-widget
+        return html10`<devtools-widget
           class="fill-panel"
-          .widgetConfig=${UI8.Widget.widgetConfig(DisabledWidget, input.props)}
+          .widgetConfig=${UI9.Widget.widgetConfig(DisabledWidget, input.props)}
         ></devtools-widget>`;
     }
   }
-  Lit4.render(html9`
+  const shouldShowWalkthrough = input.state === "chat-view" && input.walkthrough.isExpanded;
+  if (Root6.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled) {
+    Lit5.render(html10`
+      ${toolbarView(input)}
+      <div class="ai-assistance-view-container">
+        <devtools-split-view
+          name="ai-assistance-split-view-state"
+          direction="column"
+          sidebar-position="second"
+          sidebar-visibility=${shouldShowWalkthrough && !input.walkthrough.isInlined ? "visible" : "hidden"}
+          sidebar-initial-size=${WALKTHROUGH_SIDEBAR_INITIAL_WIDTH}
+        >
+          <div slot="main" class="main-view">
+            ${renderState()}
+          </div>
+          <div slot="sidebar" class="sidebar-view">
+            ${shouldShowWalkthrough ? html10`
+              <devtools-widget .widgetConfig=${UI9.Widget.widgetConfig(WalkthroughView, {
+      message: input.props.walkthrough.activeMessage,
+      isLoading: input.props.isLoading,
+      markdownRenderer: input.props.markdownRenderer,
+      onToggle: input.props.walkthrough.onToggle
+    })}></devtools-widget>` : Lit5.nothing}
+          </div>
+        </devtools-split-view>
+      </div>
+    `, target);
+  } else {
+    Lit5.render(html10`
       ${toolbarView(input)}
       <div class="ai-assistance-view-container">${renderState()}</div>
     `, target);
+  }
 }
 function createNodeContext(node) {
   if (!node) {
@@ -4754,7 +5148,7 @@ function createPerformanceTraceContext(focus) {
   return new AiAssistanceModel5.PerformanceAgent.PerformanceTraceContext(focus);
 }
 var panelInstance;
-var AiAssistancePanel = class _AiAssistancePanel extends UI8.Panel.Panel {
+var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
   view;
   static panelName = "freestyler";
   // NodeJS debugging does not have Elements panel, thus this action might not exist.
@@ -4780,6 +5174,11 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI8.Panel.Panel {
   #userInfo;
   #timelinePanelInstance = null;
   #runAbortController = new AbortController();
+  #walkthrough = {
+    isInlined: false,
+    isExpanded: false,
+    activeMessage: null
+  };
   constructor(view = defaultView, { aidaClient, aidaAvailability, syncInfo }) {
     super(_AiAssistancePanel.panelName);
     this.view = view;
@@ -4792,13 +5191,35 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI8.Panel.Panel {
       accountFullName: syncInfo.accountFullName,
       accountGivenName: syncInfo.accountGivenName
     };
-    if (UI8.ActionRegistry.ActionRegistry.instance().hasAction("elements.toggle-element-search")) {
-      this.#toggleSearchElementAction = UI8.ActionRegistry.ActionRegistry.instance().getAction("elements.toggle-element-search");
+    if (UI9.ActionRegistry.ActionRegistry.instance().hasAction("elements.toggle-element-search")) {
+      this.#toggleSearchElementAction = UI9.ActionRegistry.ActionRegistry.instance().getAction("elements.toggle-element-search");
     }
     AiAssistanceModel5.AiHistoryStorage.AiHistoryStorage.instance().addEventListener("AiHistoryDeleted", this.#onHistoryDeleted, this);
   }
+  #getToolbarInput() {
+    return {
+      isLoading: this.#isLoading,
+      showChatActions: this.#shouldShowChatActions(),
+      showActiveConversationActions: Boolean(this.#conversation && !this.#conversation.isEmpty),
+      onNewChatClick: this.#handleNewChatRequest.bind(this),
+      populateHistoryMenu: this.#populateHistoryMenu.bind(this),
+      onDeleteClick: this.#onDeleteClicked.bind(this),
+      onExportConversationClick: this.#onExportConversationClick.bind(this),
+      onHelpClick: () => {
+        UIHelpers2.openInNewTab(AI_ASSISTANCE_HELP);
+      },
+      onSettingsClick: () => {
+        void UI9.ViewManager.ViewManager.instance().showView("chrome-ai");
+      },
+      walkthrough: {
+        isExpanded: this.#walkthrough.isExpanded,
+        isInlined: this.#walkthrough.isInlined,
+        onToggle: this.#toggleWalkthrough.bind(this)
+      }
+    };
+  }
   async #getPanelViewInput() {
-    const blockedByAge = Root5.Runtime.hostConfig.aidaAvailability?.blockedByAge === true;
+    const blockedByAge = Root6.Runtime.hostConfig.aidaAvailability?.blockedByAge === true;
     if (this.#aidaAvailability !== "available" || !this.#aiAssistanceEnabledSetting?.getIfNotDisabled() || blockedByAge) {
       return {
         state: "disabled-view",
@@ -4847,13 +5268,44 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI8.Panel.Panel {
           onNewConversation: this.#handleNewChatRequest.bind(this),
           onCopyResponseClick: this.#onCopyResponseClick.bind(this),
           onContextRemoved: isAiAssistanceContextSelectionAgentEnabled() ? this.#handleContextRemoved.bind(this) : null,
-          onContextAdd
+          onContextAdd,
+          walkthrough: {
+            onToggle: this.#toggleWalkthrough.bind(this),
+            onOpen: this.#openWalkthrough.bind(this),
+            isExpanded: this.#walkthrough.isExpanded,
+            isInlined: this.#walkthrough.isInlined,
+            activeMessage: this.#walkthrough.activeMessage
+          }
         }
       };
     }
     return {
       state: "explore-view"
     };
+  }
+  // Responsive logic for Walkthrough
+  onResize() {
+    super.onResize();
+    if (Root6.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled) {
+      this.#updateWalkthroughResponsiveness();
+    }
+  }
+  #updateWalkthroughResponsiveness() {
+    const isNarrow = this.contentElement.offsetWidth < WALKTHROUGH_SIDEBAR_BREAKPOINT;
+    if (isNarrow === this.#walkthrough.isInlined) {
+      return;
+    }
+    this.#walkthrough.isInlined = isNarrow;
+    this.requestUpdate();
+  }
+  #openWalkthrough(message) {
+    this.#walkthrough.activeMessage = message;
+    this.#walkthrough.isExpanded = true;
+    this.requestUpdate();
+  }
+  #toggleWalkthrough(isOpen) {
+    this.#walkthrough.isExpanded = isOpen;
+    this.requestUpdate();
   }
   #getAiAssistanceEnabledSetting() {
     try {
@@ -4880,7 +5332,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI8.Panel.Panel {
    * the performance panel but have no trace imported.
    */
   #bindTimelineTraceListener() {
-    const timelinePanel = UI8.Context.Context.instance().flavor(TimelinePanel.TimelinePanel.TimelinePanel);
+    const timelinePanel = UI9.Context.Context.instance().flavor(TimelinePanel.TimelinePanel.TimelinePanel);
     if (timelinePanel === this.#timelinePanelInstance) {
       return;
     }
@@ -4894,8 +5346,8 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI8.Panel.Panel {
     return await TimelinePanel.TimelinePanel.TimelinePanel.executeRecordAndReload();
   }
   #getDefaultConversationType() {
-    const { hostConfig } = Root5.Runtime;
-    const viewManager = UI8.ViewManager.ViewManager.instance();
+    const { hostConfig } = Root6.Runtime;
+    const viewManager = UI9.ViewManager.ViewManager.instance();
     const isElementsPanelVisible = viewManager.isViewVisible("elements");
     const isNetworkPanelVisible = viewManager.isViewVisible("network");
     const isSourcesPanelVisible = viewManager.isViewVisible("sources");
@@ -4962,22 +5414,22 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI8.Panel.Panel {
     this.#viewOutput.chatView?.restoreScrollPosition();
     this.#viewOutput.chatView?.focusTextInput();
     void this.#handleAidaAvailabilityChange();
-    this.#selectedElement = createNodeContext(selectedElementFilter(UI8.Context.Context.instance().flavor(SDK3.DOMModel.DOMNode)));
-    this.#selectedRequest = createRequestContext(UI8.Context.Context.instance().flavor(SDK3.NetworkRequest.NetworkRequest));
-    this.#selectedPerformanceTrace = createPerformanceTraceContext(UI8.Context.Context.instance().flavor(AiAssistanceModel5.AIContext.AgentFocus));
-    this.#selectedFile = createFileContext(UI8.Context.Context.instance().flavor(Workspace5.UISourceCode.UISourceCode));
+    this.#selectedElement = createNodeContext(selectedElementFilter(UI9.Context.Context.instance().flavor(SDK3.DOMModel.DOMNode)));
+    this.#selectedRequest = createRequestContext(UI9.Context.Context.instance().flavor(SDK3.NetworkRequest.NetworkRequest));
+    this.#selectedPerformanceTrace = createPerformanceTraceContext(UI9.Context.Context.instance().flavor(AiAssistanceModel5.AIContext.AgentFocus));
+    this.#selectedFile = createFileContext(UI9.Context.Context.instance().flavor(Workspace5.UISourceCode.UISourceCode));
     this.#updateConversationState(this.#conversation);
     this.#aiAssistanceEnabledSetting?.addChangeListener(this.requestUpdate, this);
     Host6.AidaClient.HostConfigTracker.instance().addEventListener("aidaAvailabilityChanged", this.#handleAidaAvailabilityChange);
     this.#toggleSearchElementAction?.addEventListener("Toggled", this.requestUpdate, this);
-    UI8.Context.Context.instance().addFlavorChangeListener(SDK3.DOMModel.DOMNode, this.#handleDOMNodeFlavorChange);
-    UI8.Context.Context.instance().addFlavorChangeListener(SDK3.NetworkRequest.NetworkRequest, this.#handleNetworkRequestFlavorChange);
-    UI8.Context.Context.instance().addFlavorChangeListener(AiAssistanceModel5.AIContext.AgentFocus, this.#handlePerformanceTraceFlavorChange);
-    UI8.Context.Context.instance().addFlavorChangeListener(Workspace5.UISourceCode.UISourceCode, this.#handleUISourceCodeFlavorChange);
-    UI8.ViewManager.ViewManager.instance().addEventListener("ViewVisibilityChanged", this.#selectDefaultAgentIfNeeded, this);
+    UI9.Context.Context.instance().addFlavorChangeListener(SDK3.DOMModel.DOMNode, this.#handleDOMNodeFlavorChange);
+    UI9.Context.Context.instance().addFlavorChangeListener(SDK3.NetworkRequest.NetworkRequest, this.#handleNetworkRequestFlavorChange);
+    UI9.Context.Context.instance().addFlavorChangeListener(AiAssistanceModel5.AIContext.AgentFocus, this.#handlePerformanceTraceFlavorChange);
+    UI9.Context.Context.instance().addFlavorChangeListener(Workspace5.UISourceCode.UISourceCode, this.#handleUISourceCodeFlavorChange);
+    UI9.ViewManager.ViewManager.instance().addEventListener("ViewVisibilityChanged", this.#selectDefaultAgentIfNeeded, this);
     SDK3.TargetManager.TargetManager.instance().addModelListener(SDK3.DOMModel.DOMModel, SDK3.DOMModel.Events.AttrModified, this.#handleDOMNodeAttrChange, this);
     SDK3.TargetManager.TargetManager.instance().addModelListener(SDK3.DOMModel.DOMModel, SDK3.DOMModel.Events.AttrRemoved, this.#handleDOMNodeAttrChange, this);
-    UI8.Context.Context.instance().addFlavorChangeListener(TimelinePanel.TimelinePanel.TimelinePanel, this.#bindTimelineTraceListener, this);
+    UI9.Context.Context.instance().addFlavorChangeListener(TimelinePanel.TimelinePanel.TimelinePanel, this.#bindTimelineTraceListener, this);
     this.#bindTimelineTraceListener();
     this.#selectDefaultAgentIfNeeded();
     Host6.userMetrics.actionTaken(Host6.UserMetrics.Action.AiAssistancePanelOpened);
@@ -4987,12 +5439,12 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI8.Panel.Panel {
     this.#aiAssistanceEnabledSetting?.removeChangeListener(this.requestUpdate, this);
     Host6.AidaClient.HostConfigTracker.instance().removeEventListener("aidaAvailabilityChanged", this.#handleAidaAvailabilityChange);
     this.#toggleSearchElementAction?.removeEventListener("Toggled", this.requestUpdate, this);
-    UI8.Context.Context.instance().removeFlavorChangeListener(SDK3.DOMModel.DOMNode, this.#handleDOMNodeFlavorChange);
-    UI8.Context.Context.instance().removeFlavorChangeListener(SDK3.NetworkRequest.NetworkRequest, this.#handleNetworkRequestFlavorChange);
-    UI8.Context.Context.instance().removeFlavorChangeListener(AiAssistanceModel5.AIContext.AgentFocus, this.#handlePerformanceTraceFlavorChange);
-    UI8.Context.Context.instance().removeFlavorChangeListener(Workspace5.UISourceCode.UISourceCode, this.#handleUISourceCodeFlavorChange);
-    UI8.ViewManager.ViewManager.instance().removeEventListener("ViewVisibilityChanged", this.#selectDefaultAgentIfNeeded, this);
-    UI8.Context.Context.instance().removeFlavorChangeListener(TimelinePanel.TimelinePanel.TimelinePanel, this.#bindTimelineTraceListener, this);
+    UI9.Context.Context.instance().removeFlavorChangeListener(SDK3.DOMModel.DOMNode, this.#handleDOMNodeFlavorChange);
+    UI9.Context.Context.instance().removeFlavorChangeListener(SDK3.NetworkRequest.NetworkRequest, this.#handleNetworkRequestFlavorChange);
+    UI9.Context.Context.instance().removeFlavorChangeListener(AiAssistanceModel5.AIContext.AgentFocus, this.#handlePerformanceTraceFlavorChange);
+    UI9.Context.Context.instance().removeFlavorChangeListener(Workspace5.UISourceCode.UISourceCode, this.#handleUISourceCodeFlavorChange);
+    UI9.ViewManager.ViewManager.instance().removeEventListener("ViewVisibilityChanged", this.#selectDefaultAgentIfNeeded, this);
+    UI9.Context.Context.instance().removeFlavorChangeListener(TimelinePanel.TimelinePanel.TimelinePanel, this.#bindTimelineTraceListener, this);
     SDK3.TargetManager.TargetManager.instance().removeModelListener(SDK3.DOMModel.DOMModel, SDK3.DOMModel.Events.AttrModified, this.#handleDOMNodeAttrChange, this);
     SDK3.TargetManager.TargetManager.instance().removeModelListener(SDK3.DOMModel.DOMModel, SDK3.DOMModel.Events.AttrRemoved, this.#handleDOMNodeAttrChange, this);
     if (this.#timelinePanelInstance) {
@@ -5064,40 +5516,24 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI8.Panel.Panel {
       true
     );
   }
-  #getToolbarInput() {
-    return {
-      isLoading: this.#isLoading,
-      showChatActions: this.#shouldShowChatActions(),
-      showActiveConversationActions: Boolean(this.#conversation && !this.#conversation.isEmpty),
-      onNewChatClick: this.#handleNewChatRequest.bind(this),
-      populateHistoryMenu: this.#populateHistoryMenu.bind(this),
-      onDeleteClick: this.#onDeleteClicked.bind(this),
-      onExportConversationClick: this.#onExportConversationClick.bind(this),
-      onHelpClick: () => {
-        UIHelpers2.openInNewTab(AI_ASSISTANCE_HELP);
-      },
-      onSettingsClick: () => {
-        void UI8.ViewManager.ViewManager.instance().showView("chrome-ai");
-      }
-    };
-  }
   async performUpdate() {
-    this.view({
+    const viewInput = {
       ...this.#getToolbarInput(),
       ...await this.#getPanelViewInput()
-    }, this.#viewOutput, this.contentElement);
+    };
+    this.view(viewInput, this.#viewOutput, this.contentElement);
   }
   #onCopyResponseClick(message) {
     const markdown = getResponseMarkdown(message);
     if (markdown) {
       Host6.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(markdown);
       Snackbars2.Snackbar.Snackbar.show({
-        message: i18nString3(UIStrings3.responseCopiedToClipboard)
+        message: i18nString4(UIStrings4.responseCopiedToClipboard)
       });
     }
   }
   #handleSelectElementClick() {
-    UI8.Context.Context.instance().setFlavor(Common5.ReturnToPanel.ReturnToPanelFlavor, new Common5.ReturnToPanel.ReturnToPanelFlavor(this.panelName));
+    UI9.Context.Context.instance().setFlavor(Common5.ReturnToPanel.ReturnToPanelFlavor, new Common5.ReturnToPanel.ReturnToPanelFlavor(this.panelName));
     void this.#toggleSearchElementAction?.execute();
   }
   #isTextInputDisabled() {
@@ -5114,7 +5550,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI8.Panel.Panel {
   }
   #shouldShowChatActions() {
     const aiAssistanceSetting = this.#aiAssistanceEnabledSetting?.getIfNotDisabled();
-    const isBlockedByAge = Root5.Runtime.hostConfig.aidaAvailability?.blockedByAge === true;
+    const isBlockedByAge = Root6.Runtime.hostConfig.aidaAvailability?.blockedByAge === true;
     if (!aiAssistanceSetting || isBlockedByAge) {
       return false;
     }
@@ -5125,7 +5561,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI8.Panel.Panel {
   }
   #getChatInputPlaceholder() {
     if (!this.#conversation) {
-      return i18nString3(UIStrings3.followTheSteps);
+      return i18nString4(UIStrings4.followTheSteps);
     }
     if (this.#conversation && this.#conversation.isBlockedByOrigin) {
       return lockedString7(UIStringsNotTranslate7.crossOriginError);
@@ -5138,7 +5574,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI8.Panel.Panel {
       case "drjones-network-request":
         return this.#conversation.selectedContext ? lockedString7(UIStringsNotTranslate7.inputPlaceholderForNetwork) : lockedString7(UIStringsNotTranslate7.inputPlaceholderForNetworkNoContext);
       case "drjones-performance-full": {
-        const perfPanel = UI8.Context.Context.instance().flavor(TimelinePanel.TimelinePanel.TimelinePanel);
+        const perfPanel = UI9.Context.Context.instance().flavor(TimelinePanel.TimelinePanel.TimelinePanel);
         if (perfPanel?.hasActiveTrace()) {
           return this.#conversation.selectedContext ? lockedString7(UIStringsNotTranslate7.inputPlaceholderForPerformanceTrace) : lockedString7(UIStringsNotTranslate7.inputPlaceholderForPerformanceTraceNoContext);
         }
@@ -5153,9 +5589,9 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI8.Panel.Panel {
   }
   #getDisclaimerText() {
     if (!this.#conversation || this.#conversation.isReadOnly) {
-      return i18nString3(UIStrings3.inputDisclaimerForEmptyState);
+      return i18nString4(UIStrings4.inputDisclaimerForEmptyState);
     }
-    const noLogging = Root5.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue === Root5.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING;
+    const noLogging = Root6.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue === Root6.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING;
     switch (this.#conversation.type) {
       case "freestyler":
         if (noLogging) {
@@ -5237,8 +5673,8 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI8.Panel.Panel {
     this.requestUpdate();
   }
   #canExecuteQuery() {
-    const isBrandedBuild = Boolean(Root5.Runtime.hostConfig.aidaAvailability?.enabled);
-    const isBlockedByAge = Boolean(Root5.Runtime.hostConfig.aidaAvailability?.blockedByAge);
+    const isBrandedBuild = Boolean(Root6.Runtime.hostConfig.aidaAvailability?.enabled);
+    const isBlockedByAge = Boolean(Root6.Runtime.hostConfig.aidaAvailability?.blockedByAge);
     const isAidaAvailable = Boolean(
       this.#aidaAvailability === "available"
       /* Host.AidaClient.AidaAccessPreconditions.AVAILABLE */
@@ -5323,12 +5759,12 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI8.Panel.Panel {
     }
     const historyEmpty = contextMenu.defaultSection().items.length === 0;
     if (historyEmpty) {
-      contextMenu.defaultSection().appendItem(i18nString3(UIStrings3.noPastConversations), () => {
+      contextMenu.defaultSection().appendItem(i18nString4(UIStrings4.noPastConversations), () => {
       }, {
         disabled: true
       });
     }
-    contextMenu.footerSection().appendItem(i18nString3(UIStrings3.clearChatHistory), () => {
+    contextMenu.footerSection().appendItem(i18nString4(UIStrings4.clearChatHistory), () => {
       void AiAssistanceModel5.AiHistoryStorage.AiHistoryStorage.instance().deleteAll();
     }, {
       disabled: historyEmpty
@@ -5343,7 +5779,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI8.Panel.Panel {
     }
     void AiAssistanceModel5.AiHistoryStorage.AiHistoryStorage.instance().deleteHistoryEntry(this.#conversation.id);
     this.#updateConversationState();
-    UI8.ARIAUtils.LiveAnnouncer.alert(i18nString3(UIStrings3.chatDeleted));
+    UI9.ARIAUtils.LiveAnnouncer.alert(i18nString4(UIStrings4.chatDeleted));
   }
   async #onExportConversationClick() {
     if (!this.#conversation) {
@@ -5372,7 +5808,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI8.Panel.Panel {
   }
   #handleNewChatRequest() {
     this.#updateConversationState();
-    UI8.ARIAUtils.LiveAnnouncer.alert(i18nString3(UIStrings3.newChatCreated));
+    UI9.ARIAUtils.LiveAnnouncer.alert(i18nString4(UIStrings4.newChatCreated));
     if (Annotations.AnnotationRepository.annotationsEnabled()) {
       Annotations.AnnotationRepository.instance().deleteAllAnnotations();
     }
@@ -5424,16 +5860,16 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI8.Panel.Panel {
       const handleInspectModeToggled = (ev) => {
         if (!ev.data) {
           window.setTimeout(() => {
-            resolve(selectedElementFilter(UI8.Context.Context.instance().flavor(SDK3.DOMModel.DOMNode)));
+            resolve(selectedElementFilter(UI9.Context.Context.instance().flavor(SDK3.DOMModel.DOMNode)));
             removeListeners();
           }, 50);
         }
       };
       const removeListeners = () => {
-        UI8.Context.Context.instance().removeFlavorChangeListener(SDK3.DOMModel.DOMNode, handleDOMNodeFlavorChange);
+        UI9.Context.Context.instance().removeFlavorChangeListener(SDK3.DOMModel.DOMNode, handleDOMNodeFlavorChange);
         this.#toggleSearchElementAction?.removeEventListener("Toggled", handleInspectModeToggled);
       };
-      UI8.Context.Context.instance().addFlavorChangeListener(SDK3.DOMModel.DOMNode, handleDOMNodeFlavorChange);
+      UI9.Context.Context.instance().addFlavorChangeListener(SDK3.DOMModel.DOMNode, handleDOMNodeFlavorChange);
       this.#toggleSearchElementAction?.addEventListener("Toggled", handleInspectModeToggled);
       this.#runAbortController.signal.addEventListener("abort", () => {
         resolve(null);
@@ -5626,15 +6062,15 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI8.Panel.Panel {
           }
           switch (data.type) {
             case "context":
-              UI8.ARIAUtils.LiveAnnouncer.status(data.title);
+              UI9.ARIAUtils.LiveAnnouncer.status(data.title);
               break;
             case "answer": {
               if (!data.complete && !announcedAnswerLoading) {
                 announcedAnswerLoading = true;
-                UI8.ARIAUtils.LiveAnnouncer.status(lockedString7(UIStringsNotTranslate7.answerLoading));
+                UI9.ARIAUtils.LiveAnnouncer.status(lockedString7(UIStringsNotTranslate7.answerLoading));
               } else if (data.complete && !announcedAnswerReady) {
                 announcedAnswerReady = true;
-                UI8.ARIAUtils.LiveAnnouncer.status(lockedString7(UIStringsNotTranslate7.answerReady));
+                UI9.ARIAUtils.LiveAnnouncer.status(lockedString7(UIStringsNotTranslate7.answerReady));
               }
             }
           }
@@ -5693,14 +6129,14 @@ var ActionDelegate = class {
       case "drjones.sources-floating-button":
       case "drjones.sources-panel-context": {
         void (async () => {
-          const view = UI8.ViewManager.ViewManager.instance().view(AiAssistancePanel.panelName);
+          const view = UI9.ViewManager.ViewManager.instance().view(AiAssistancePanel.panelName);
           if (!view) {
             return;
           }
-          await UI8.ViewManager.ViewManager.instance().showView(AiAssistancePanel.panelName);
-          const minDrawerSize = UI8.InspectorView.InspectorView.instance().totalSize() / 4;
-          if (UI8.InspectorView.InspectorView.instance().drawerSize() < minDrawerSize) {
-            UI8.InspectorView.InspectorView.instance().setDrawerSize(minDrawerSize);
+          await UI9.ViewManager.ViewManager.instance().showView(AiAssistancePanel.panelName);
+          const minDrawerSize = UI9.InspectorView.InspectorView.instance().totalSize() / 4;
+          if (UI9.InspectorView.InspectorView.instance().drawerSize() < minDrawerSize) {
+            UI9.InspectorView.InspectorView.instance().setDrawerSize(minDrawerSize);
           }
           const widget = await view.widget();
           void widget.handleAction(actionId, opts);
@@ -5712,16 +6148,16 @@ var ActionDelegate = class {
   }
 };
 function isAiAssistanceMultimodalUploadInputEnabled() {
-  return isAiAssistanceMultimodalInputEnabled() && Boolean(Root5.Runtime.hostConfig.devToolsFreestyler?.multimodalUploadInput);
+  return isAiAssistanceMultimodalInputEnabled() && Boolean(Root6.Runtime.hostConfig.devToolsFreestyler?.multimodalUploadInput);
 }
 function isAiAssistanceMultimodalInputEnabled() {
-  return Boolean(Root5.Runtime.hostConfig.devToolsFreestyler?.multimodal);
+  return Boolean(Root6.Runtime.hostConfig.devToolsFreestyler?.multimodal);
 }
 function isAiAssistanceContextSelectionAgentEnabled() {
-  return Boolean(Root5.Runtime.hostConfig.devToolsAiAssistanceContextSelectionAgent?.enabled);
+  return Boolean(Root6.Runtime.hostConfig.devToolsAiAssistanceContextSelectionAgent?.enabled);
 }
 function isAiAssistanceServerSideLoggingEnabled() {
-  return !Root5.Runtime.hostConfig.aidaAvailability?.disallowLogging;
+  return !Root6.Runtime.hostConfig.aidaAvailability?.disallowLogging;
 }
 export {
   ActionDelegate,
@@ -5735,6 +6171,7 @@ export {
   PatchWidget_exports as PatchWidget,
   SELECT_WORKSPACE_DIALOG_DEFAULT_VIEW,
   SelectWorkspaceDialog,
+  WalkthroughView_exports as WalkthroughView,
   getResponseMarkdown
 };
 //# sourceMappingURL=ai_assistance.js.map

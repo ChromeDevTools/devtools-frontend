@@ -6550,6 +6550,30 @@ export const NativeFunctions = [
         signatures: [["milliseconds"]]
     },
     {
+        name: "beforeHTML",
+        signatures: [["html", "?options"]]
+    },
+    {
+        name: "beforeHTMLUnsafe",
+        signatures: [["html", "?options"]]
+    },
+    {
+        name: "afterHTML",
+        signatures: [["html", "?options"]]
+    },
+    {
+        name: "afterHTMLUnsafe",
+        signatures: [["html", "?options"]]
+    },
+    {
+        name: "replaceWithHTML",
+        signatures: [["html", "?options"]]
+    },
+    {
+        name: "replaceWithHTMLUnsafe",
+        signatures: [["html", "?options"]]
+    },
+    {
         name: "Comment",
         signatures: [["?data"]]
     },
@@ -6596,6 +6620,30 @@ export const NativeFunctions = [
     {
         name: "streamHTMLUnsafe",
         signatures: [["?options"]]
+    },
+    {
+        name: "streamAppendHTML",
+        signatures: [["?options"]]
+    },
+    {
+        name: "streamHTML",
+        signatures: [["?options"]]
+    },
+    {
+        name: "appendHTML",
+        signatures: [["html", "?options"]]
+    },
+    {
+        name: "appendHTMLUnsafe",
+        signatures: [["html", "?options"]]
+    },
+    {
+        name: "prependHTML",
+        signatures: [["html", "?options"]]
+    },
+    {
+        name: "prependHTMLUnsafe",
+        signatures: [["html", "?options"]]
     },
     {
         name: "scrollIntoViewIfNeeded",

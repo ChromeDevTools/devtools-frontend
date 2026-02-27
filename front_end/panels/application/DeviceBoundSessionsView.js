@@ -4,6 +4,7 @@
 import '../../ui/components/report_view/report_view.js';
 import '../../ui/legacy/components/data_grid/data_grid.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { Directives, html, nothing, render } from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -187,6 +188,22 @@ const UIStrings = {
      *@description Label for the reason why a session was deleted.
      */
     deletionReason: 'Deletion reason',
+    /**
+     *@description Label for the URL of a failed network request.
+     */
+    failedRequestUrl: 'Failed request URL',
+    /**
+     *@description Label for the network error of a failed network request.
+     */
+    failedRequestNetError: 'Net error',
+    /**
+     *@description Label for the HTTP response error code of a failed network request.
+     */
+    failedRequestResponseCode: 'Response error code',
+    /**
+     *@description Label for the response body of a failed network request.
+     */
+    failedRequestResponseBody: 'Response body',
     /**
      *@description Explanation for an event outcome. Key refers to a cryptographic key.
      */
@@ -661,6 +678,32 @@ export const DEFAULT_VIEW = (input, _output, target) => {
             </div>
           ` :
         html `<div class="device-bound-session-no-events-wrapper">${i18nString(UIStrings.noEvents)}</div>`}`;
+    const failedRequestDetailsGetter = (failedRequest) => {
+        if (!failedRequest) {
+            return nothing;
+        }
+        return html `${failedRequest.requestUrl && html `
+        <devtools-report-key>${i18nString(UIStrings.failedRequestUrl)}</devtools-report-key>
+        <devtools-report-value>${failedRequest.requestUrl}</devtools-report-value>
+      `}
+      ${failedRequest.netError && html `
+        <devtools-report-key>${i18nString(UIStrings.failedRequestNetError)}</devtools-report-key>
+        <devtools-report-value>${failedRequest.netError}</devtools-report-value>
+      `}
+      ${failedRequest.responseError !== undefined ? html `
+        <devtools-report-key>${i18nString(UIStrings.failedRequestResponseCode)}</devtools-report-key>
+        <devtools-report-value>${failedRequest.responseError}</devtools-report-value>
+      ` :
+            nothing}
+      ${failedRequest.responseErrorBody && html `
+        <devtools-report-key>${i18nString(UIStrings.failedRequestResponseBody)}</devtools-report-key>
+        <devtools-report-value>
+          <devtools-widget .widgetConfig=${UI.Widget.widgetConfig(SourceFrame.JSONView.SearchableJsonView, {
+            jsonObject: tryParseJson(failedRequest.responseErrorBody),
+        })}></devtools-widget>
+        </devtools-report-value>
+      `}`;
+    };
     const creationEventDetails = selectedEvent?.creationEventDetails &&
         html `
           <devtools-report-key>${i18nString(UIStrings.fetchResult)}</devtools-report-key>
@@ -669,7 +712,8 @@ export const DEFAULT_VIEW = (input, _output, target) => {
               <devtools-report-key>${i18nString(UIStrings.updatedSessionConfig)}</devtools-report-key>
               <devtools-report-value>${i18nString(UIStrings.yes)}</devtools-report-value>
             `}
-          `;
+          ${failedRequestDetailsGetter(selectedEvent.creationEventDetails.failedRequest)}
+      `;
     const refreshEventDetails = selectedEvent?.refreshEventDetails &&
         html `
           <devtools-report-key>${i18nString(UIStrings.refreshResult)}</devtools-report-key>
@@ -685,7 +729,8 @@ export const DEFAULT_VIEW = (input, _output, target) => {
               <devtools-report-key>${i18nString(UIStrings.updatedSessionConfig)}</devtools-report-key>
               <devtools-report-value>${i18nString(UIStrings.yes)}</devtools-report-value>
             `}
-          `;
+          ${failedRequestDetailsGetter(selectedEvent.refreshEventDetails.failedRequest)}
+      `;
     const challengeEventDetails = selectedEvent?.challengeEventDetails &&
         html `
           <devtools-report-key>${i18nString(UIStrings.challengeResult)}</devtools-report-key>
@@ -1025,5 +1070,18 @@ function boolToString(bool) {
 }
 function succeededToString(succeeded) {
     return succeeded ? i18nString(UIStrings.success) : i18nString(UIStrings.error);
+}
+function tryParseJson(body) {
+    let parsedBody;
+    try {
+        parsedBody = JSON.parse(body);
+    }
+    catch {
+        return { body };
+    }
+    if (typeof parsedBody === 'object' && parsedBody !== null) {
+        return parsedBody;
+    }
+    return { body: parsedBody };
 }
 //# sourceMappingURL=DeviceBoundSessionsView.js.map

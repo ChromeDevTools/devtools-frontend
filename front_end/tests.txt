@@ -647,7 +647,6 @@ ui/components/linkifier/LinkifierImpl.test.js
 ui/components/list/List.test.js
 ui/components/markdown_view/CodeBlock.test.js
 ui/components/markdown_view/MarkdownImage.test.js
-ui/components/markdown_view/MarkdownLink.test.js
 ui/components/markdown_view/MarkdownView.test.js
 ui/components/menus/SelectMenu.test.js
 ui/components/node_text/NodeText.test.js

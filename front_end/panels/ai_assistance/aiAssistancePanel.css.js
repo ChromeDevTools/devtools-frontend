@@ -34,6 +34,11 @@ export default `/*
     align-items: center;
     justify-content: center;
   }
+
+  devtools-split-view {
+    width: 100%;
+    height: 100%;
+  }
 }
 
 .toolbar-feedback-link {

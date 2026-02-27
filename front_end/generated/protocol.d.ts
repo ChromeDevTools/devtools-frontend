@@ -1431,6 +1431,60 @@ export declare namespace Audits {
         disableReason?: string;
     }
     /**
+     * Metadata about the ad script that was on the stack that caused the current
+     * script in the `AdAncestry` to be considered ad related.
+     */
+    interface AdScriptIdentifier {
+        /**
+         * The script's v8 identifier.
+         */
+        scriptId: Runtime.ScriptId;
+        /**
+         * v8's debugging id for the v8::Context.
+         */
+        debuggerId: Runtime.UniqueDebuggerId;
+        /**
+         * The script's url (or generated name based on id if inline script).
+         */
+        name: string;
+    }
+    /**
+     * Providence about how an ad script was determined to be such. It is an ad
+     * because its url matched a filterlist rule, or because some other ad script
+     * was on the stack when this script was loaded.
+     */
+    interface AdAncestry {
+        /**
+         * The ad-script in the stack when the offending script was loaded. This is
+         * recursive down to the root script that was tagged due to the filterlist
+         * rule.
+         */
+        adAncestryChain: AdScriptIdentifier[];
+        /**
+         * The filterlist rule that caused the root (last) script in
+         * `adAncestry` to be ad-tagged.
+         */
+        rootScriptFilterlistRule?: string;
+    }
+    /**
+     * The issue warns about blocked calls to privacy sensitive APIs via the
+     * Selective Permissions Intervention.
+     */
+    interface SelectivePermissionsInterventionIssueDetails {
+        /**
+         * Which API was intervened on.
+         */
+        apiName: string;
+        /**
+         * Why the ad script using the API is considered an ad.
+         */
+        adAncestry: AdAncestry;
+        /**
+         * The stack trace at the time of the intervention.
+         */
+        stackTrace?: Runtime.StackTrace;
+    }
+    /**
      * A unique identifier for the type of issue. Each type may use one of the
      * optional fields in InspectorIssueDetails to convey more specific
      * information about the kind of issue.
@@ -1464,7 +1518,8 @@ export declare namespace Audits {
         ConnectionAllowlistIssue = "ConnectionAllowlistIssue",
         UserReidentificationIssue = "UserReidentificationIssue",
         PermissionElementIssue = "PermissionElementIssue",
-        PerformanceIssue = "PerformanceIssue"
+        PerformanceIssue = "PerformanceIssue",
+        SelectivePermissionsInterventionIssue = "SelectivePermissionsInterventionIssue"
     }
     /**
      * This struct holds a list of optional fields with additional information
@@ -1504,6 +1559,7 @@ export declare namespace Audits {
         userReidentificationIssueDetails?: UserReidentificationIssueDetails;
         permissionElementIssueDetails?: PermissionElementIssueDetails;
         performanceIssueDetails?: PerformanceIssueDetails;
+        selectivePermissionsInterventionIssueDetails?: SelectivePermissionsInterventionIssueDetails;
     }
     /**
      * A unique id for a DevTools inspector issue. Allows other entities (e.g.
@@ -6526,6 +6582,10 @@ export declare namespace Emulation {
     interface SetSafeAreaInsetsOverrideRequest {
         insets: SafeAreaInsets;
     }
+    const enum SetDeviceMetricsOverrideRequestScrollbarType {
+        Overlay = "overlay",
+        Default = "default"
+    }
     interface SetDeviceMetricsOverrideRequest {
         /**
          * Overriding width value in pixels (minimum 0, maximum 10000000). 0 disables the override.
@@ -6591,6 +6651,10 @@ export declare namespace Emulation {
          * @deprecated
          */
         devicePosture?: DevicePosture;
+        /**
+         * Scrollbar type. Default: `default`.
+         */
+        scrollbarType?: SetDeviceMetricsOverrideRequestScrollbarType;
     }
     interface SetDevicePostureOverrideRequest {
         posture: DevicePosture;
@@ -6931,6 +6995,31 @@ export declare namespace Extensions {
         Sync = "sync",
         Managed = "managed"
     }
+    /**
+     * Detailed information about an extension.
+     */
+    interface ExtensionInfo {
+        /**
+         * Extension id.
+         */
+        id: string;
+        /**
+         * Extension name.
+         */
+        name: string;
+        /**
+         * Extension version.
+         */
+        version: string;
+        /**
+         * The path from which the extension was loaded.
+         */
+        path: string;
+        /**
+         * Extension enabled status.
+         */
+        enabled: boolean;
+    }
     interface TriggerActionRequest {
         /**
          * Extension id.
@@ -6956,6 +7045,9 @@ export declare namespace Extensions {
          * Extension id.
          */
         id: string;
+    }
+    interface GetExtensionsResponse extends ProtocolResponseWithError {
+        extensions: ExtensionInfo[];
     }
     interface UninstallRequest {
         /**

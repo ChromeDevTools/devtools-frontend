@@ -4388,13 +4388,14 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
     const request = initiators[index];
     const isCurrentRequest = index === initiators.length - 1;
     const hasFurtherInitiatedNodes = index + 1 < initiators.length;
+    const renderedChildren = isCurrentRequest ? renderInitiatedNodes(initiated, request, visited) : nothing6;
     return html6`
           <li role="treeitem" ?selected=${isCurrentRequest} aria-expanded="true" open>
             <span style=${isCurrentRequest ? "font-weight: bold" : ""}>${request.url()}</span>
-            ${hasFurtherInitiatedNodes || isCurrentRequest ? html6`
+            ${hasFurtherInitiatedNodes || renderedChildren !== nothing6 ? html6`
               <ul role="group">
                 ${renderInitiatorNodes(initiators, index + 1, initiated, visited)}
-                ${isCurrentRequest ? renderInitiatedNodes(initiated, request, visited) : nothing6}
+                ${renderedChildren}
               </ul>` : nothing6}
           </li>`;
   };

@@ -156,7 +156,7 @@ export declare class ConsoleView extends UI.Widget.VBox implements UI.Searchable
 export declare class ConsoleViewFilter {
     private readonly filterChanged;
     messageLevelFiltersSetting: Common.Settings.Setting<LevelsMask>;
-    hideNetworkMessagesSetting: Common.Settings.Setting<boolean>;
+    networkMessagesSetting: Common.Settings.Setting<boolean>;
     filterByExecutionContextSetting: Common.Settings.Setting<boolean>;
     private readonly suggestionBuilder;
     readonly textFilterUI: UI.Toolbar.ToolbarInput;

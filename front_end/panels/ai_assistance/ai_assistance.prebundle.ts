@@ -11,3 +11,4 @@ export * as ChatMessage from './components/ChatMessage.js';
 export * as ExploreWidget from './components/ExploreWidget.js';
 export * as PatchWidget from './PatchWidget.js';
 export * as DisabledWidget from './components/DisabledWidget.js';
+export * as WalkthroughView from './components/WalkthroughView.js';

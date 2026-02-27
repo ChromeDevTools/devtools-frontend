@@ -127,7 +127,7 @@ const UIStrings = {
     /**
      * @description Text in Console View of the Console panel
      */
-    hideNetwork: 'Hide network',
+    networkMessages: 'Network messages',
     /**
      * @description Tooltip text that appears on the setting when hovering over it in Console View of the Console panel
      */
@@ -429,7 +429,7 @@ export class ConsoleView extends UI.Widget.VBox {
         const consoleEagerEvalSetting = Common.Settings.Settings.instance().moduleSetting('console-eager-eval');
         const preserveConsoleLogSetting = Common.Settings.Settings.instance().moduleSetting('preserve-console-log');
         const userActivationEvalSetting = Common.Settings.Settings.instance().moduleSetting('console-user-activation-eval');
-        settingsPane.append(SettingsUI.SettingsUI.createSettingCheckbox(i18nString(UIStrings.hideNetwork), this.filter.hideNetworkMessagesSetting, this.filter.hideNetworkMessagesSetting.title()), SettingsUI.SettingsUI.createSettingCheckbox(i18nString(UIStrings.logXMLHttpRequests), monitoringXHREnabledSetting), SettingsUI.SettingsUI.createSettingCheckbox(i18nString(UIStrings.preserveLog), preserveConsoleLogSetting, i18nString(UIStrings.doNotClearLogOnPageReload)), SettingsUI.SettingsUI.createSettingCheckbox(consoleEagerEvalSetting.title(), consoleEagerEvalSetting, i18nString(UIStrings.eagerlyEvaluateTextInThePrompt)), SettingsUI.SettingsUI.createSettingCheckbox(i18nString(UIStrings.selectedContextOnly), this.filter.filterByExecutionContextSetting, i18nString(UIStrings.onlyShowMessagesFromTheCurrentContext)), SettingsUI.SettingsUI.createSettingCheckbox(this.consoleHistoryAutocompleteSetting.title(), this.consoleHistoryAutocompleteSetting, i18nString(UIStrings.autocompleteFromHistory)), SettingsUI.SettingsUI.createSettingCheckbox(this.groupSimilarSetting.title(), this.groupSimilarSetting, i18nString(UIStrings.groupSimilarMessagesInConsole)), SettingsUI.SettingsUI.createSettingCheckbox(userActivationEvalSetting.title(), userActivationEvalSetting, i18nString(UIStrings.treatEvaluationAsUserActivation)), SettingsUI.SettingsUI.createSettingCheckbox(this.showCorsErrorsSetting.title(), this.showCorsErrorsSetting, i18nString(UIStrings.showCorsErrorsInConsole)));
+        settingsPane.append(SettingsUI.SettingsUI.createSettingCheckbox(i18nString(UIStrings.networkMessages), this.filter.networkMessagesSetting, this.filter.networkMessagesSetting.title()), SettingsUI.SettingsUI.createSettingCheckbox(i18nString(UIStrings.logXMLHttpRequests), monitoringXHREnabledSetting), SettingsUI.SettingsUI.createSettingCheckbox(i18nString(UIStrings.preserveLog), preserveConsoleLogSetting, i18nString(UIStrings.doNotClearLogOnPageReload)), SettingsUI.SettingsUI.createSettingCheckbox(consoleEagerEvalSetting.title(), consoleEagerEvalSetting, i18nString(UIStrings.eagerlyEvaluateTextInThePrompt)), SettingsUI.SettingsUI.createSettingCheckbox(i18nString(UIStrings.selectedContextOnly), this.filter.filterByExecutionContextSetting, i18nString(UIStrings.onlyShowMessagesFromTheCurrentContext)), SettingsUI.SettingsUI.createSettingCheckbox(this.consoleHistoryAutocompleteSetting.title(), this.consoleHistoryAutocompleteSetting, i18nString(UIStrings.autocompleteFromHistory)), SettingsUI.SettingsUI.createSettingCheckbox(this.groupSimilarSetting.title(), this.groupSimilarSetting, i18nString(UIStrings.groupSimilarMessagesInConsole)), SettingsUI.SettingsUI.createSettingCheckbox(userActivationEvalSetting.title(), userActivationEvalSetting, i18nString(UIStrings.treatEvaluationAsUserActivation)), SettingsUI.SettingsUI.createSettingCheckbox(this.showCorsErrorsSetting.title(), this.showCorsErrorsSetting, i18nString(UIStrings.showCorsErrorsInConsole)));
         if (!this.showSettingsPaneSetting.get()) {
             settingsPane.classList.add('hidden');
         }
@@ -1456,7 +1456,7 @@ globalThis.Console.ConsoleView = ConsoleView;
 export class ConsoleViewFilter {
     filterChanged;
     messageLevelFiltersSetting;
-    hideNetworkMessagesSetting;
+    networkMessagesSetting;
     filterByExecutionContextSetting;
     suggestionBuilder;
     textFilterUI;
@@ -1469,11 +1469,11 @@ export class ConsoleViewFilter {
     constructor(filterChangedCallback) {
         this.filterChanged = filterChangedCallback;
         this.messageLevelFiltersSetting = ConsoleViewFilter.levelFilterSetting();
-        this.hideNetworkMessagesSetting = Common.Settings.Settings.instance().moduleSetting('hide-network-messages');
+        this.networkMessagesSetting = Common.Settings.Settings.instance().moduleSetting('network-messages');
         this.filterByExecutionContextSetting =
             Common.Settings.Settings.instance().moduleSetting('selected-context-filter-enabled');
         this.messageLevelFiltersSetting.addChangeListener(this.onFilterChanged.bind(this));
-        this.hideNetworkMessagesSetting.addChangeListener(this.onFilterChanged.bind(this));
+        this.networkMessagesSetting.addChangeListener(this.onFilterChanged.bind(this));
         this.filterByExecutionContextSetting.addChangeListener(this.onFilterChanged.bind(this));
         UI.Context.Context.instance().addFlavorChangeListener(SDK.RuntimeModel.ExecutionContext, this.onFilterChanged, this);
         const filterKeys = Object.values(FilterType);
@@ -1548,7 +1548,7 @@ export class ConsoleViewFilter {
                     break;
             }
         }
-        if (this.hideNetworkMessagesSetting.get()) {
+        if (!this.networkMessagesSetting.get()) {
             parsedFilters.push({ key: FilterType.Source, text: "network" /* Protocol.Log.LogEntrySource.Network */, negative: true, regex: undefined });
         }
         this.currentFilter.executionContext = this.filterByExecutionContextSetting.get() ?
@@ -1625,7 +1625,7 @@ export class ConsoleViewFilter {
     reset() {
         this.messageLevelFiltersSetting.set(ConsoleFilter.defaultLevelsFilterValue());
         this.filterByExecutionContextSetting.set(false);
-        this.hideNetworkMessagesSetting.set(false);
+        this.networkMessagesSetting.set(true);
         this.textFilterUI.setValue('');
         this.onFilterChanged();
     }

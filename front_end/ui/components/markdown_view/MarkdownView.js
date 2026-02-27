@@ -4,9 +4,10 @@
 /* eslint-disable @devtools/no-lit-render-outside-of-view, @devtools/enforce-custom-element-definitions-location */
 import './CodeBlock.js';
 import './MarkdownImage.js';
-import './MarkdownLink.js';
+import '../../kit/kit.js';
 import * as Lit from '../../lit/lit.js';
 import * as VisualLogging from '../../visual_logging/visual_logging.js';
+import { getMarkdownLink } from './MarkdownLinksMap.js';
 import markdownViewStyles from './markdownView.css.js';
 const html = Lit.html;
 const render = Lit.render;
@@ -194,11 +195,10 @@ export class MarkdownLitRenderer {
             case 'space':
                 return Lit.nothing;
             case 'link':
-                return html `<devtools-markdown-link
+                return html `<devtools-link
         class=${this.customClassMapForToken('link')}
-        .data=${{
-                    key: token.href, title: token.text,
-                }}></devtools-markdown-link>`;
+        href=${getMarkdownLink(token.href)}
+        >${token.text}</devtools-link>`;
             case 'image':
                 return html `<devtools-markdown-image
         class=${this.customClassMapForToken('image')}

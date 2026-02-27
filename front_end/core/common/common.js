@@ -5930,7 +5930,7 @@ var VersionController = class _VersionController {
   static GLOBAL_VERSION_SETTING_NAME = "inspectorVersion";
   static SYNCED_VERSION_SETTING_NAME = "syncedInspectorVersion";
   static LOCAL_VERSION_SETTING_NAME = "localInspectorVersion";
-  static CURRENT_VERSION = 40;
+  static CURRENT_VERSION = 41;
   #settings;
   #globalVersionSetting;
   #syncedVersionSetting;
@@ -6528,6 +6528,46 @@ var VersionController = class _VersionController {
       }
     } finally {
       this.#settings.globalStorage.remove(PREFERRED_NETWORK_COND_SETTING);
+    }
+  }
+  // This migration handles two setting renames that requires inverted logic
+  // (from "Hide X" to "X") and flipped the default values to true.
+  updateVersionFrom40To41() {
+    if (this.#settings.syncedStorage.has("hide-network-messages")) {
+      const oldNetworkSetting = this.#settings.createSetting(
+        "hide-network-messages",
+        false,
+        "Synced"
+        /* SettingStorageType.SYNCED */
+      );
+      if (!this.#settings.syncedStorage.has("network-messages")) {
+        const newNetworkSetting = this.#settings.createSetting(
+          "network-messages",
+          true,
+          "Synced"
+          /* SettingStorageType.SYNCED */
+        );
+        newNetworkSetting.set(!oldNetworkSetting.get());
+      }
+      this.#removeSetting(oldNetworkSetting);
+    }
+    if (this.#settings.syncedStorage.has("frame-viewer-hide-chrome-window")) {
+      const oldChromeFrameSetting = this.#settings.createSetting(
+        "frame-viewer-hide-chrome-window",
+        false,
+        "Synced"
+        /* SettingStorageType.SYNCED */
+      );
+      if (!this.#settings.syncedStorage.has("frame-viewer-chrome-window")) {
+        const newChromeFrameSetting = this.#settings.createSetting(
+          "frame-viewer-chrome-window",
+          true,
+          "Synced"
+          /* SettingStorageType.SYNCED */
+        );
+        newChromeFrameSetting.set(!oldChromeFrameSetting.get());
+      }
+      this.#removeSetting(oldChromeFrameSetting);
     }
   }
   /*

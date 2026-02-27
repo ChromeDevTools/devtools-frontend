@@ -85,29 +85,15 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/elements/ComputedStyleWidget.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-/**
- * Rendering a property's name and value is expensive, and each time we do it
- * it generates a new HTML element. If we call this directly from our Lit
- * components, we will generate a brand new DOM element on each single render.
- * This is very expensive and unnecessary - for the majority of re-renders a
- * property's name and value does not change. So we cache the rest of rendering
- * the name and value in a map, where the key used is a combination of the
- * property's name and value. This ensures that we only re-generate this element
- * if the node itself changes.
- * The resulting Element nodes are inserted into the ComputedStyleProperty
- * component via <slot>s, ensuring that Lit doesn't directly render/re-render
- * the element.
- */
-const propertyContentsCache = new Map();
 function matchProperty(name, value) {
     return SDK.CSSPropertyParser.matchDeclaration(name, value, [
         new SDK.CSSPropertyParserMatchers.ColorMatcher(), new SDK.CSSPropertyParserMatchers.URLMatcher(),
         new SDK.CSSPropertyParserMatchers.StringMatcher()
     ]);
 }
-function renderPropertyContents(node, propertyName, propertyValue) {
+function renderPropertyContents(node, cache, propertyName, propertyValue) {
     const cacheKey = propertyName + ':' + propertyValue;
-    const valueFromCache = propertyContentsCache.get(cacheKey);
+    const valueFromCache = cache.get(cacheKey);
     if (valueFromCache) {
         return valueFromCache;
     }
@@ -117,15 +103,15 @@ function renderPropertyContents(node, propertyName, propertyValue) {
         .renderValueElement({ name: propertyName, value: propertyValue }, matchProperty(propertyName, propertyValue), [new ColorRenderer(), new URLRenderer(null, node), new StringRenderer()])
         .valueElement;
     value.slot = 'value';
-    propertyContentsCache.set(cacheKey, { name, value });
+    cache.set(cacheKey, { name, value });
     return { name, value };
 }
 /**
  * Note: this function is called for each tree node on each render, so we need
  * to ensure nothing expensive runs here, or if it does it is safely cached.
  **/
-const createPropertyElement = (node, propertyName, propertyValue, traceable, inherited, activeProperty, onContextMenu) => {
-    const { name, value } = renderPropertyContents(node, propertyName, propertyValue);
+const createPropertyElement = (node, cache, propertyName, propertyValue, traceable, inherited, activeProperty, onContextMenu) => {
+    const { name, value } = renderPropertyContents(node, cache, propertyName, propertyValue);
     // clang-format off
     return html `<devtools-computed-style-property
         .traceable=${traceable}
@@ -252,6 +238,24 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
     filterRegex;
     linkifier;
     imagePreviewPopover;
+    /**
+     * Rendering a property's name and value is expensive, and each time we do it
+     * it generates a new HTML element. If we call this directly from our Lit
+     * components, we will generate a brand new DOM element on each single render.
+     * This is very expensive and unnecessary - for the majority of re-renders a
+     * property's name and value does not change. So we cache the rest of rendering
+     * the name and value in a map, where the key used is a combination of the
+     * property's name and value. This ensures that we only re-generate this element
+     * if the node itself changes.
+     * The resulting Element nodes are inserted into the ComputedStyleProperty
+     * component via <slot>s, ensuring that Lit doesn't directly render/re-render
+     * the element.
+     * We have to store this cache per widget because it is possible to have
+     * multiple widgets for the same NodeId showing at once. In that case, if we
+     * reuse the same element from the cache, only one of the widgets will be
+     * populated, because an HTML node cannot be in two locations at once.
+     */
+    #propertyElementsCache = new Map();
     #computedStylesTree = new TreeOutline.TreeOutline.TreeOutline();
     #treeData;
     #view;
@@ -452,7 +456,7 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
             if (data.tag === 'property') {
                 const trace = propertyTraces.get(data.propertyName);
                 const activeProperty = trace?.find(property => matchedStyles.propertyState(property) === "Active" /* SDK.CSSMatchedStyles.PropertyState.ACTIVE */);
-                const propertyElement = createPropertyElement(domNode, data.propertyName, data.propertyValue, propertyTraces.has(data.propertyName), data.inherited, activeProperty, event => {
+                const propertyElement = createPropertyElement(domNode, this.#propertyElementsCache, data.propertyName, data.propertyValue, propertyTraces.has(data.propertyName), data.inherited, activeProperty, event => {
                     if (activeProperty) {
                         this.handleContextMenuEvent(matchedStyles, activeProperty, event);
                     }

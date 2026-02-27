@@ -13740,6 +13740,7 @@ __export(DeviceBoundSessionsView_exports, {
 import "./../../ui/components/report_view/report_view.js";
 import "./../../ui/legacy/components/data_grid/data_grid.js";
 import * as i18n61 from "./../../core/i18n/i18n.js";
+import * as SourceFrame6 from "./../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI24 from "./../../ui/legacy/legacy.js";
 import { Directives as Directives4, html as html9, nothing as nothing6, render as render8 } from "./../../ui/lit/lit.js";
 import * as VisualLogging17 from "./../../ui/visual_logging/visual_logging.js";
@@ -13955,6 +13956,22 @@ var UIStrings31 = {
    *@description Label for the reason why a session was deleted.
    */
   deletionReason: "Deletion reason",
+  /**
+   *@description Label for the URL of a failed network request.
+   */
+  failedRequestUrl: "Failed request URL",
+  /**
+   *@description Label for the network error of a failed network request.
+   */
+  failedRequestNetError: "Net error",
+  /**
+   *@description Label for the HTTP response error code of a failed network request.
+   */
+  failedRequestResponseCode: "Response error code",
+  /**
+   *@description Label for the response body of a failed network request.
+   */
+  failedRequestResponseBody: "Response body",
   /**
    *@description Explanation for an event outcome. Key refers to a cryptographic key.
    */
@@ -14423,6 +14440,31 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
               </devtools-data-grid>
             </div>
           ` : html9`<div class="device-bound-session-no-events-wrapper">${i18nString31(UIStrings31.noEvents)}</div>`}`;
+  const failedRequestDetailsGetter = (failedRequest) => {
+    if (!failedRequest) {
+      return nothing6;
+    }
+    return html9`${failedRequest.requestUrl && html9`
+        <devtools-report-key>${i18nString31(UIStrings31.failedRequestUrl)}</devtools-report-key>
+        <devtools-report-value>${failedRequest.requestUrl}</devtools-report-value>
+      `}
+      ${failedRequest.netError && html9`
+        <devtools-report-key>${i18nString31(UIStrings31.failedRequestNetError)}</devtools-report-key>
+        <devtools-report-value>${failedRequest.netError}</devtools-report-value>
+      `}
+      ${failedRequest.responseError !== void 0 ? html9`
+        <devtools-report-key>${i18nString31(UIStrings31.failedRequestResponseCode)}</devtools-report-key>
+        <devtools-report-value>${failedRequest.responseError}</devtools-report-value>
+      ` : nothing6}
+      ${failedRequest.responseErrorBody && html9`
+        <devtools-report-key>${i18nString31(UIStrings31.failedRequestResponseBody)}</devtools-report-key>
+        <devtools-report-value>
+          <devtools-widget .widgetConfig=${UI24.Widget.widgetConfig(SourceFrame6.JSONView.SearchableJsonView, {
+      jsonObject: tryParseJson(failedRequest.responseErrorBody)
+    })}></devtools-widget>
+        </devtools-report-value>
+      `}`;
+  };
   const creationEventDetails = selectedEvent?.creationEventDetails && html9`
           <devtools-report-key>${i18nString31(UIStrings31.fetchResult)}</devtools-report-key>
           <devtools-report-value>${fetchResultToString(selectedEvent.creationEventDetails.fetchResult)}</devtools-report-value>
@@ -14430,7 +14472,8 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
               <devtools-report-key>${i18nString31(UIStrings31.updatedSessionConfig)}</devtools-report-key>
               <devtools-report-value>${i18nString31(UIStrings31.yes)}</devtools-report-value>
             `}
-          `;
+          ${failedRequestDetailsGetter(selectedEvent.creationEventDetails.failedRequest)}
+      `;
   const refreshEventDetails = selectedEvent?.refreshEventDetails && html9`
           <devtools-report-key>${i18nString31(UIStrings31.refreshResult)}</devtools-report-key>
           <devtools-report-value>${refreshResultToString(selectedEvent.refreshEventDetails.refreshResult)}</devtools-report-value>
@@ -14444,7 +14487,8 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
               <devtools-report-key>${i18nString31(UIStrings31.updatedSessionConfig)}</devtools-report-key>
               <devtools-report-value>${i18nString31(UIStrings31.yes)}</devtools-report-value>
             `}
-          `;
+          ${failedRequestDetailsGetter(selectedEvent.refreshEventDetails.failedRequest)}
+      `;
   const challengeEventDetails = selectedEvent?.challengeEventDetails && html9`
           <devtools-report-key>${i18nString31(UIStrings31.challengeResult)}</devtools-report-key>
           <devtools-report-value>${challengeResultToString(selectedEvent.challengeEventDetails.challengeResult)}</devtools-report-value>
@@ -14781,6 +14825,18 @@ function boolToString(bool) {
 function succeededToString(succeeded) {
   return succeeded ? i18nString31(UIStrings31.success) : i18nString31(UIStrings31.error);
 }
+function tryParseJson(body) {
+  let parsedBody;
+  try {
+    parsedBody = JSON.parse(body);
+  } catch {
+    return { body };
+  }
+  if (typeof parsedBody === "object" && parsedBody !== null) {
+    return parsedBody;
+  }
+  return { body: parsedBody };
+}
 
 // gen/front_end/panels/application/DOMStorageItemsView.js
 var DOMStorageItemsView_exports = {};
@@ -14790,7 +14846,7 @@ __export(DOMStorageItemsView_exports, {
 import * as Common19 from "./../../core/common/common.js";
 import * as i18n63 from "./../../core/i18n/i18n.js";
 import * as TextUtils2 from "./../../models/text_utils/text_utils.js";
-import * as SourceFrame6 from "./../../ui/legacy/components/source_frame/source_frame.js";
+import * as SourceFrame7 from "./../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI25 from "./../../ui/legacy/legacy.js";
 import * as VisualLogging18 from "./../../ui/visual_logging/visual_logging.js";
 var UIStrings32 = {
@@ -14828,7 +14884,7 @@ var DOMStorageItemsView = class extends KeyValueStorageItemsView {
     const protocol = this.domStorage.isLocalStorage ? "localstorage" : "sessionstorage";
     const url = `${protocol}://${key}`;
     const provider = TextUtils2.StaticContentProvider.StaticContentProvider.fromString(url, Common19.ResourceType.resourceTypes.XHR, value);
-    return SourceFrame6.PreviewFactory.PreviewFactory.createPreview(provider, "text/plain");
+    return SourceFrame7.PreviewFactory.PreviewFactory.createPreview(provider, "text/plain");
   }
   setStorage(domStorage) {
     Common19.EventTarget.removeEventListeners(this.eventListeners);
@@ -14911,7 +14967,7 @@ import * as Common20 from "./../../core/common/common.js";
 import * as i18n65 from "./../../core/i18n/i18n.js";
 import * as TextUtils3 from "./../../models/text_utils/text_utils.js";
 import * as JSON5 from "./../../third_party/json5/json5.js";
-import * as SourceFrame7 from "./../../ui/legacy/components/source_frame/source_frame.js";
+import * as SourceFrame8 from "./../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI26 from "./../../ui/legacy/legacy.js";
 import * as VisualLogging19 from "./../../ui/visual_logging/visual_logging.js";
 var UIStrings33 = {
@@ -14966,7 +15022,7 @@ var ExtensionStorageItemsView = class extends KeyValueStorageItemsView {
   createPreview(key, value) {
     const url = "extension-storage://" + this.#extensionStorage.extensionId + "/" + this.#extensionStorage.storageArea + "/preview/" + key;
     const provider = TextUtils3.StaticContentProvider.StaticContentProvider.fromString(url, Common20.ResourceType.resourceTypes.XHR, value);
-    return SourceFrame7.PreviewFactory.PreviewFactory.createPreview(provider, "text/plain");
+    return SourceFrame8.PreviewFactory.PreviewFactory.createPreview(provider, "text/plain");
   }
   setStorage(extensionStorage) {
     this.#extensionStorage = extensionStorage;
@@ -15026,7 +15082,7 @@ import "./../../ui/legacy/legacy.js";
 import * as Common21 from "./../../core/common/common.js";
 import * as Platform9 from "./../../core/platform/platform.js";
 import * as SDK26 from "./../../core/sdk/sdk.js";
-import * as SourceFrame8 from "./../../ui/legacy/components/source_frame/source_frame.js";
+import * as SourceFrame9 from "./../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI27 from "./../../ui/legacy/legacy.js";
 import * as VisualLogging20 from "./../../ui/visual_logging/visual_logging.js";
 
@@ -15225,9 +15281,9 @@ var ResourcesPanel = class _ResourcesPanel extends UI27.Panel.PanelWithSidebar {
   }
   static shouldCloseOnReset(view) {
     const viewClassesToClose = [
-      SourceFrame8.ResourceSourceFrame.ResourceSourceFrame,
-      SourceFrame8.ImageView.ImageView,
-      SourceFrame8.FontView.FontView,
+      SourceFrame9.ResourceSourceFrame.ResourceSourceFrame,
+      SourceFrame9.ImageView.ImageView,
+      SourceFrame9.FontView.FontView,
       StorageItemsToolbar
     ];
     return viewClassesToClose.some((type) => view instanceof type);

@@ -6,10 +6,10 @@ import type * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ElementsComponents from './components/components.js';
 import { type Context, StylePropertyTreeElement } from './StylePropertyTreeElement.js';
-import type { StylesSidebarPane } from './StylesSidebarPane.js';
+import type { StylesContainer } from './StylesContainer.js';
 export declare class StylePropertiesSection {
     #private;
-    protected parentPane: StylesSidebarPane;
+    protected stylesContainer: StylesContainer;
     styleInternal: SDK.CSSStyleDeclaration.CSSStyleDeclaration;
     readonly matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles;
     private computedStyles;
@@ -39,7 +39,7 @@ export declare class StylePropertiesSection {
     nextEditorTriggerButtonIdx: number;
     private sectionIdx;
     readonly sectionTooltipIdPrefix: number;
-    constructor(parentPane: StylesSidebarPane, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, style: SDK.CSSStyleDeclaration.CSSStyleDeclaration, sectionIdx: number, computedStyles: Map<string, string> | null, parentsComputedStyles: Map<string, string> | null, computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields | null, customHeaderText?: string);
+    constructor(stylesContainer: StylesContainer, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, style: SDK.CSSStyleDeclaration.CSSStyleDeclaration, sectionIdx: number, computedStyles: Map<string, string> | null, parentsComputedStyles: Map<string, string> | null, computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields | null, customHeaderText?: string);
     setComputedStyles(computedStyles: Map<string, string> | null): void;
     setParentsComputedStyles(parentsComputedStyles: Map<string, string> | null): void;
     setComputedStyleExtraFields(computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields | null): void;
@@ -144,7 +144,7 @@ export declare class BlankStylePropertiesSection extends StylePropertiesSection 
     private normal;
     private readonly ruleLocation;
     private readonly styleSheetHeader;
-    constructor(stylesPane: StylesSidebarPane, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, defaultSelectorText: string, styleSheetHeader: SDK.CSSStyleSheetHeader.CSSStyleSheetHeader, ruleLocation: TextUtils.TextRange.TextRange, insertAfterStyle: SDK.CSSStyleDeclaration.CSSStyleDeclaration, sectionIdx: number);
+    constructor(stylesContainer: StylesContainer, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, defaultSelectorText: string, styleSheetHeader: SDK.CSSStyleSheetHeader.CSSStyleSheetHeader, ruleLocation: TextUtils.TextRange.TextRange, insertAfterStyle: SDK.CSSStyleDeclaration.CSSStyleDeclaration, sectionIdx: number);
     private actualRuleLocation;
     private rulePrefix;
     get isBlank(): boolean;
@@ -153,24 +153,24 @@ export declare class BlankStylePropertiesSection extends StylePropertiesSection 
     private makeNormal;
 }
 export declare class RegisteredPropertiesSection extends StylePropertiesSection {
-    constructor(stylesPane: StylesSidebarPane, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, style: SDK.CSSStyleDeclaration.CSSStyleDeclaration, sectionIdx: number, propertyName: string, expandedByDefault: boolean);
+    constructor(stylesContainer: StylesContainer, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, style: SDK.CSSStyleDeclaration.CSSStyleDeclaration, sectionIdx: number, propertyName: string, expandedByDefault: boolean);
     setHeaderText(rule: SDK.CSSRule.CSSRule, newContent: string): Promise<void>;
     createRuleOriginNode(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, linkifier: Components.Linkifier.Linkifier, rule: SDK.CSSRule.CSSRule | null): Node;
 }
 export declare class FunctionRuleSection extends StylePropertiesSection {
-    constructor(stylesPane: StylesSidebarPane, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, style: SDK.CSSStyleDeclaration.CSSStyleDeclaration, children: SDK.CSSRule.CSSNestedStyle[], sectionIdx: number, functionName: string, expandedByDefault: boolean);
+    constructor(stylesContainer: StylesContainer, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, style: SDK.CSSStyleDeclaration.CSSStyleDeclaration, children: SDK.CSSRule.CSSNestedStyle[], sectionIdx: number, functionName: string, expandedByDefault: boolean);
     createConditionElement(condition: SDK.CSSRule.CSSNestedStyleCondition): HTMLElement | undefined;
     positionNestingElement(element: HTMLElement): HTMLElement;
     addChildren(children: SDK.CSSRule.CSSNestedStyle[], parent: TreeElementParent): void;
 }
 export declare class AtRuleSection extends StylePropertiesSection {
-    constructor(stylesPane: StylesSidebarPane, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, style: SDK.CSSStyleDeclaration.CSSStyleDeclaration, sectionIdx: number, expandedByDefault: boolean);
+    constructor(stylesContainer: StylesContainer, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, style: SDK.CSSStyleDeclaration.CSSStyleDeclaration, sectionIdx: number, expandedByDefault: boolean);
 }
 export declare class PositionTryRuleSection extends StylePropertiesSection {
-    constructor(stylesPane: StylesSidebarPane, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, style: SDK.CSSStyleDeclaration.CSSStyleDeclaration, sectionIdx: number, active: boolean);
+    constructor(stylesContainer: StylesContainer, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, style: SDK.CSSStyleDeclaration.CSSStyleDeclaration, sectionIdx: number, active: boolean);
 }
 export declare class KeyframePropertiesSection extends StylePropertiesSection {
-    constructor(stylesPane: StylesSidebarPane, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, style: SDK.CSSStyleDeclaration.CSSStyleDeclaration, sectionIdx: number);
+    constructor(stylesContainer: StylesContainer, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, style: SDK.CSSStyleDeclaration.CSSStyleDeclaration, sectionIdx: number);
     headerText(): string;
     setHeaderText(rule: SDK.CSSRule.CSSRule, newContent: string): Promise<void>;
     isPropertyInherited(_propertyName: string): boolean;

@@ -1203,6 +1203,7 @@ devtools-toolbar {
   word-break: break-all;
 }
 
+.webkit-html-processing-instruction,
 .webkit-html-tag {
   color: var(--sys-color-token-tag);
 }
@@ -1243,6 +1244,7 @@ devtools-toolbar {
   /* See: crbug.com/1152736 for color variable migration. */
 }
 
+.webkit-html-processing-instruction-value,
 .webkit-html-attribute-name {
   /* Keep this in sync with view-source.css (.webkit-html-attribute-name) */
   color: var(--sys-color-token-attribute);

@@ -1355,6 +1355,9 @@
   "generated/Deprecation.ts | LanguageModel_MeasureInputUsage": {
     "message": "LanguageModel.measureInputUsage() is deprecated. Please use LanguageModel.measureContextUsage() instead. This alias is only available in extensions."
   },
+  "generated/Deprecation.ts | LanguageModel_OnQuotaOverflow": {
+    "message": "LanguageModel.onquotaoverflow is deprecated. Please use LanguageModel.oncontextoverflow instead. The LanguageModel.onquotaoverflow alias is only available in extensions."
+  },
   "generated/Deprecation.ts | LanguageModelParams": {
     "message": "LanguageModel.params() is deprecated and now only available in extension contexts. The topK and temperature related fields within its result are also deprecated."
   },
@@ -3161,6 +3164,15 @@
   "panels/ai_assistance/components/DisabledWidget.ts | turnOnForStylesRequestsPerformanceAndFiles": {
     "message": "Turn on {PH1} to get help with styles, network requests, performance, and files"
   },
+  "panels/ai_assistance/components/WalkthroughView.ts | close": {
+    "message": "Close"
+  },
+  "panels/ai_assistance/components/WalkthroughView.ts | inlineTitle": {
+    "message": "Show thinking"
+  },
+  "panels/ai_assistance/components/WalkthroughView.ts | title": {
+    "message": "Investigation steps"
+  },
   "panels/animation/animation-meta.ts | animations": {
     "message": "Animations"
   },
@@ -4543,6 +4555,18 @@
   },
   "panels/application/DeviceBoundSessionsView.ts | expiryDate": {
     "message": "Expiry date"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | failedRequestNetError": {
+    "message": "Net error"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | failedRequestResponseBody": {
+    "message": "Response body"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | failedRequestResponseCode": {
+    "message": "Response error code"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | failedRequestUrl": {
+    "message": "Failed request URL"
   },
   "panels/application/DeviceBoundSessionsView.ts | failedToRestoreKey": {
     "message": "Failed to restore key from disk"
@@ -6599,6 +6623,9 @@
   "panels/console/console-meta.ts | hideTimestamps": {
     "message": "Hide timestamps"
   },
+  "panels/console/console-meta.ts | networkMessages": {
+    "message": "Network messages"
+  },
   "panels/console/console-meta.ts | onlyShowMessagesFromTheCurrent": {
     "message": "Only show messages from the current context (top, iframe, worker, extension)"
   },
@@ -6758,9 +6785,6 @@
   "panels/console/ConsoleView.ts | hideMessagesFromS": {
     "message": "Hide messages from {PH1}"
   },
-  "panels/console/ConsoleView.ts | hideNetwork": {
-    "message": "Hide network"
-  },
   "panels/console/ConsoleView.ts | info": {
     "message": "Info"
   },
@@ -6781,6 +6805,9 @@
   },
   "panels/console/ConsoleView.ts | logXMLHttpRequests": {
     "message": "Log XMLHttpRequests"
+  },
+  "panels/console/ConsoleView.ts | networkMessages": {
+    "message": "Network messages"
   },
   "panels/console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
     "message": "Only show messages from the current context (top, iframe, worker, extension)"
@@ -7741,6 +7768,9 @@
   },
   "panels/elements/ElementsTreeElement.ts | editAttribute": {
     "message": "Edit attribute"
+  },
+  "panels/elements/ElementsTreeElement.ts | editData": {
+    "message": "Edit data"
   },
   "panels/elements/ElementsTreeElement.ts | editText": {
     "message": "Edit text"
@@ -15833,8 +15863,8 @@
   "panels/timeline/ThreadAppender.ts | workletServiceS": {
     "message": "Auction Worklet service — {PH1}"
   },
-  "panels/timeline/timeline-meta.ts | hideChromeFrameInLayersView": {
-    "message": "Hide chrome frame in Layers view"
+  "panels/timeline/timeline-meta.ts | chromeFrameInLayersView": {
+    "message": "Chrome frame in Layers view"
   },
   "panels/timeline/timeline-meta.ts | loadProfile": {
     "message": "Load profile…"

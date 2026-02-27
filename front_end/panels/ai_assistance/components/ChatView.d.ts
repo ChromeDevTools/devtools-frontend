@@ -40,6 +40,13 @@ export interface Props {
     disclaimerText: Platform.UIString.LocalizedString;
     uploadImageInputEnabled?: boolean;
     markdownRenderer: MarkdownLitRenderer;
+    walkthrough: {
+        onOpen: (message: ModelChatMessage) => void;
+        onToggle: (isOpen: boolean) => void;
+        isExpanded: boolean;
+        isInlined: boolean;
+        activeMessage: ModelChatMessage | null;
+    };
 }
 interface ChatWidgetInput extends Props {
     accountGivenName: string;

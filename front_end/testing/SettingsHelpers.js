@@ -126,7 +126,7 @@ export const DEFAULT_SETTING_REGISTRATIONS_FOR_TEST = [
     createSettingValue("NETWORK" /* Common.Settings.SettingCategory.NETWORK */, 'network-log.preserve-log', true, "boolean" /* Common.Settings.SettingType.BOOLEAN */),
     createSettingValue("NETWORK" /* Common.Settings.SettingCategory.NETWORK */, 'network-log.record-log', true, "boolean" /* Common.Settings.SettingType.BOOLEAN */),
     createSettingValue("SOURCES" /* Common.Settings.SettingCategory.SOURCES */, 'network.enable-remote-file-loading', false, "boolean" /* Common.Settings.SettingType.BOOLEAN */),
-    createSettingValue("CONSOLE" /* Common.Settings.SettingCategory.CONSOLE */, 'hide-network-messages', false, "boolean" /* Common.Settings.SettingType.BOOLEAN */),
+    createSettingValue("CONSOLE" /* Common.Settings.SettingCategory.CONSOLE */, 'network-messages', true, "boolean" /* Common.Settings.SettingType.BOOLEAN */),
     createSettingValue("CONSOLE" /* Common.Settings.SettingCategory.CONSOLE */, 'selected-context-filter-enabled', false, "boolean" /* Common.Settings.SettingType.BOOLEAN */),
     createSettingValue("CONSOLE" /* Common.Settings.SettingCategory.CONSOLE */, 'console-group-similar', false, "boolean" /* Common.Settings.SettingType.BOOLEAN */),
     createSettingValue("CONSOLE" /* Common.Settings.SettingCategory.CONSOLE */, 'console-shows-cors-errors', false, "boolean" /* Common.Settings.SettingType.BOOLEAN */),

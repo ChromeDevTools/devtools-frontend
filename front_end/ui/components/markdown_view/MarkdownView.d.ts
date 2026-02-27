@@ -1,6 +1,6 @@
 import './CodeBlock.js';
 import './MarkdownImage.js';
-import './MarkdownLink.js';
+import '../../kit/kit.js';
 import type * as Marked from '../../../third_party/marked/marked.js';
 import * as Lit from '../../lit/lit.js';
 import type * as Codeblock from './CodeBlock.js';

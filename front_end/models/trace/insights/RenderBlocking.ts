@@ -24,7 +24,7 @@ export const UIStrings = {
   /**
    * @description Title of an insight that provides the user with the list of network requests that blocked and therefore slowed down the page rendering and becoming visible to the user.
    */
-  title: 'Render blocking requests',
+  title: 'Render-blocking requests',
   /**
    * @description Text to describe that there are requests blocking rendering, which may affect LCP.
    */
@@ -42,7 +42,7 @@ export const UIStrings = {
   /**
    * @description Text status indicating that no requests blocked the initial render of a navigation
    */
-  noRenderBlocking: 'No render blocking requests for this navigation',
+  noRenderBlocking: 'No render-blocking requests for this navigation',
 } as const;
 
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/RenderBlocking.ts', UIStrings);
@@ -154,7 +154,7 @@ function computeSavings(
   if (requestIdToWastedMs.size) {
     metricSavings.FCP = estimateSavingsWithGraphs(deferredNodeIds, context.lantern);
 
-    // In most cases, render blocking resources only affect LCP if LCP isn't an image.
+    // In most cases, render-blocking resources only affect LCP if LCP isn't an image.
     if (!hasImageLCP(data, context)) {
       metricSavings.LCP = metricSavings.FCP;
     }
@@ -209,12 +209,12 @@ export function generateInsight(
       continue;
     }
 
-    // If a request is marked `in_body_parser_blocking` it should only be considered render blocking if it is a
+    // If a request is marked `in_body_parser_blocking` it should only be considered render-blocking if it is a
     // high enough priority. Some requests (e.g. scripts) are not marked as high priority if they are fetched
     // after a non-preloaded image. (See "early" definition in https://web.dev/articles/fetch-priority)
     //
     // There are edge cases and exceptions (e.g. priority hints) but this gives us the best approximation
-    // of render blocking resources in the document body.
+    // of render-blocking resources in the document body.
     if (req.args.data.renderBlocking === 'in_body_parser_blocking') {
       const priority = req.args.data.priority;
       const isScript = req.args.data.resourceType === Protocol.Network.ResourceType.Script;

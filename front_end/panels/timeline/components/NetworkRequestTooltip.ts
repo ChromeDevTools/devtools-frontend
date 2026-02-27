@@ -46,9 +46,9 @@ const UIStrings = {
    */
   waitingOnMainThread: 'Waiting on main thread',
   /**
-   * @description Text that refers to a network request is render blocking
+   * @description Text that refers to a network request is render-blocking
    */
-  renderBlocking: 'Render blocking',
+  renderBlocking: 'Render-blocking',
   /**
    * @description Text to refer to the list of redirects.
    */

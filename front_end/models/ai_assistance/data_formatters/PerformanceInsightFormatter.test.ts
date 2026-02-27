@@ -62,8 +62,8 @@ describe('PerformanceInsightFormatter', function() {
     snapshotTester.assert(this, output);
   });
 
-  describe('Render blocking requests', () => {
-    it('tells the LLM if there are no render blocking requests', async function() {
+  describe('Render-blocking requests', () => {
+    it('tells the LLM if there are no render-blocking requests', async function() {
       const parsedTrace = await TraceLoader.traceEngine(this, 'bad-document-request-latency.json.gz', undefined, {
         withTimelinePanel: false,
       });

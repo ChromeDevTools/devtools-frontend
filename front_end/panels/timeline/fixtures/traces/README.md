@@ -196,7 +196,7 @@ This is a trace that includes multiple navigations:
 
 ### multiple-navigations-render-blocking.json.gz
 
-Contains a navigation to a page with a render blocking request `script.js` followed by a page refresh.
+Contains a navigation to a page with a render-blocking request `script.js` followed by a page refresh.
 
 ### multiple-navigations-same-id.json.gz
 
@@ -265,11 +265,11 @@ Contains the following requests in the document body:
 
 ### render-blocking-in-iframe.json.gz
 
-Contains a navigation to a page with a render blocking request `style.css?main` and an iframe. The iframe also contains a render blocking request `style.css?iframe`.
+Contains a navigation to a page with a render-blocking request `style.css?main` and an iframe. The iframe also contains a render-blocking request `style.css?iframe`.
 
 ### render-blocking-requests.json.gz
 
-A page that has a few render blocking requests:
+A page that has a few render-blocking requests:
 
 - jQuery from a CDN
 - a stylesheet
@@ -368,7 +368,7 @@ A trace of https://astro-news-1026410574114.us-central1.run.app/ used to test CL
 
 ### render-blocking-preload
 
-A trace of https://andydavies.github.io/agent-tests/render-blocking/css-preload.html that highlighted a bug where we do not update render blocking status based on PreloadRenderBlockingStatus events (crbug.com/457323832).
+A trace of https://andydavies.github.io/agent-tests/render-blocking/css-preload.html that highlighted a bug where we do not update render-blocking status based on PreloadRenderBlockingStatus events (crbug.com/457323832).
 
 ### soft-navs
 

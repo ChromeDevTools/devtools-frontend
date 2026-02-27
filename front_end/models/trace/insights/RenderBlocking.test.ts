@@ -7,7 +7,7 @@ import {getInsightOrError, processTrace} from '../../../testing/InsightHelpers.j
 import type * as Trace from '../../trace/trace.js';
 
 describeWithEnvironment('RenderBlocking', function() {
-  it('finds render blocking requests', async function() {
+  it('finds render-blocking requests', async function() {
     const {data, insights} = await processTrace(this, 'load-simple.json.gz');
     assert.deepEqual([...insights.keys()], ['NAVIGATION_0']);
     const insight =
@@ -37,7 +37,7 @@ describeWithEnvironment('RenderBlocking', function() {
     const navigations = Array.from(data.Meta.navigationsByNavigationId.values());
     const insight = getInsightOrError('RenderBlocking', insights, navigations[0]);
 
-    assert(insight.renderBlockingRequests.length > 0, 'no render blocking requests found');
+    assert(insight.renderBlockingRequests.length > 0, 'no render-blocking requests found');
 
     assert(
         insight.renderBlockingRequests.every(r => r.args.data.syntheticData.sendStartTime > navigations[0].ts),
@@ -63,7 +63,7 @@ describeWithEnvironment('RenderBlocking', function() {
     const navigations = Array.from(data.Meta.navigationsByNavigationId.values());
     const insight = getInsightOrError('RenderBlocking', insights, navigations[0]);
 
-    assert(insight.renderBlockingRequests.length > 0, 'no render blocking requests found');
+    assert(insight.renderBlockingRequests.length > 0, 'no render-blocking requests found');
 
     assert(
         insight.renderBlockingRequests.every(r => r.args.data.frame === data.Meta.mainFrameId),

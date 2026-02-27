@@ -194,7 +194,7 @@ function isCritical(request: Types.Events.SyntheticNetworkRequest, context: Insi
     return false;
   }
 
-  // Iframes are considered High Priority but they are not render blocking
+  // Iframes are considered High Priority but they are not render-blocking
   const isIframe = request.args.data.resourceType === Protocol.Network.ResourceType.Document &&
       request.args.data.frame !== context.frameId;
 

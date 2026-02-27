@@ -615,8 +615,8 @@ Available insights:
   - insight name: RenderBlocking
     description: Requests are blocking the page's initial render, which may delay LCP. [Deferring or inlining](https://developer.chrome.com/docs/performance/insights/render-blocking) can move these network requests out of the critical path.
     relevant trace bounds: {min: 171608170438, max: 171608877165}
-    example question: Show me the most impactful render blocking requests that I should focus on
-    example question: How can I reduce the number of render blocking requests?
+    example question: Show me the most impactful render-blocking requests that I should focus on
+    example question: How can I reduce the number of render-blocking requests?
 
 ## insight set id: NAVIGATION_1
 
@@ -639,8 +639,8 @@ Available insights:
   - insight name: RenderBlocking
     description: Requests are blocking the page's initial render, which may delay LCP. [Deferring or inlining](https://developer.chrome.com/docs/performance/insights/render-blocking) can move these network requests out of the critical path.
     relevant trace bounds: {min: 171614330544, max: 171615043224}
-    example question: Show me the most impactful render blocking requests that I should focus on
-    example question: How can I reduce the number of render blocking requests?
+    example question: Show me the most impactful render-blocking requests that I should focus on
+    example question: How can I reduce the number of render-blocking requests?
 === end content
 
 Title: PerformanceTraceFormatter formatTraceSummary deals with CrUX manager errors
@@ -1064,7 +1064,7 @@ Status code: 200
 MIME Type: text/html
 Protocol: http/1.1
 Priority: VeryHigh
-Render blocking: No
+Render-blocking: No
 From a service worker: No
 Initiators (root request to the request that directly loaded this one): none
 Response headers
@@ -1094,7 +1094,7 @@ Status code: 200
 MIME Type: text/css
 Protocol: unknown
 Priority: VeryHigh
-Render blocking: Yes
+Render-blocking: Yes
 From a service worker: No
 Initiators (root request to the request that directly loaded this one): https://chromedevtools.github.io/performance-stories/lcp-large-image/index.html
 Response headers
@@ -1134,7 +1134,7 @@ Status code: 200
 MIME Type: text/css
 Protocol: unknown
 Priority: VeryHigh
-Render blocking: Yes
+Render-blocking: Yes
 From a service worker: No
 Initiators (root request to the request that directly loaded this one): https://chromedevtools.github.io/performance-stories/lcp-large-image/index.html
 Response headers

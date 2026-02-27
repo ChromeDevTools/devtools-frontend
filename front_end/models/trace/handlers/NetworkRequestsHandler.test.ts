@@ -497,7 +497,7 @@ describe('NetworkRequestsHandler', function() {
     });
   });
 
-  it('updates render blocking request statuses if they were updated with a preloadRenderBlockingStatusChange event',
+  it('updates render-blocking request statuses if they were updated with a preloadRenderBlockingStatusChange event',
      async function() {
        const traceEvents = await TraceLoader.rawEvents(this, 'render-blocking-preload.json.gz');
        for (const event of traceEvents) {

@@ -25,7 +25,7 @@ Status code: 200
 MIME Type: image/webp
 Protocol: h2
 Priority: High
-Render blocking: No
+Render-blocking: No
 From a service worker: No
 Initiators (root request to the request that directly loaded this one): file:///Users/cjamcl/surge/misc/display-dpr/index.html
 Response headers
@@ -86,7 +86,7 @@ Status code: 200
 MIME Type: image/svg+xml
 Protocol: unknown
 Priority: VeryHigh
-Render blocking: No
+Render-blocking: No
 From a service worker: No
 Initiators (root request to the request that directly loaded this one): none
 
@@ -130,15 +130,15 @@ We can break this time down into the 2 phases that combine to make the LCP time:
 - https://web.dev/articles/optimize-lcp
 === end content
 
-Title: PerformanceInsightFormatter Render blocking requests tells the LLM if there are no render blocking requests
+Title: PerformanceInsightFormatter Render-blocking requests tells the LLM if there are no render-blocking requests
 Content:
-## Insight Title: Render blocking requests
+## Insight Title: Render-blocking requests
 
 ## Insight Summary:
-This insight identifies network requests that were render blocking. Render blocking requests are impactful because they are deemed critical to the page and therefore the browser stops rendering the page until it has dealt with these resources. For this insight make sure you fully inspect the details of each render blocking network request and prioritize your suggestions to the user based on the impact of each render blocking request.
+This insight identifies network requests that were render-blocking. Render-blocking requests are impactful because they are deemed critical to the page and therefore the browser stops rendering the page until it has dealt with these resources. For this insight make sure you fully inspect the details of each render-blocking network request and prioritize your suggestions to the user based on the impact of each render-blocking request.
 
 ## Detailed analysis:
-There are no network requests that are render blocking.
+There are no network requests that are render-blocking.
 
 ## Estimated savings: FCP 0 ms, LCP 0 ms
 
@@ -148,15 +148,15 @@ There are no network requests that are render blocking.
 - https://web.dev/articles/optimize-lcp
 === end content
 
-Title: PerformanceInsightFormatter Render blocking requests serializes the correct details
+Title: PerformanceInsightFormatter Render-blocking requests serializes the correct details
 Content:
-## Insight Title: Render blocking requests
+## Insight Title: Render-blocking requests
 
 ## Insight Summary:
-This insight identifies network requests that were render blocking. Render blocking requests are impactful because they are deemed critical to the page and therefore the browser stops rendering the page until it has dealt with these resources. For this insight make sure you fully inspect the details of each render blocking network request and prioritize your suggestions to the user based on the impact of each render blocking request.
+This insight identifies network requests that were render-blocking. Render-blocking requests are impactful because they are deemed critical to the page and therefore the browser stops rendering the page until it has dealt with these resources. For this insight make sure you fully inspect the details of each render-blocking network request and prioritize your suggestions to the user based on the impact of each render-blocking request.
 
 ## Detailed analysis:
-Here is a list of the network requests that were render blocking on this page and their duration:
+Here is a list of the network requests that were render-blocking on this page and their duration:
 
 
 Network requests data:
@@ -210,7 +210,7 @@ MIME Type: image/jpeg
 Protocol: http/1.1
 Initial priority: Low
 Final priority: High
-Render blocking: No
+Render-blocking: No
 From a service worker: No
 Initiators (root request to the request that directly loaded this one): http://localhost:8787/lcp-discovery-delay/index.html, http://localhost:8787/lcp-discovery-delay/app.js
 Response headers
@@ -276,7 +276,7 @@ Status code: 200
 MIME Type: text/html
 Protocol: http/1.1
 Priority: VeryHigh
-Render blocking: No
+Render-blocking: No
 From a service worker: No
 Initiators (root request to the request that directly loaded this one): none
 Response headers

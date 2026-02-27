@@ -156,7 +156,7 @@ const UIStrings = {
   /**
    * @description Text in Network Log View Columns of the Network panel
    */
-  renderBlocking: 'Render Blocking',
+  renderBlocking: 'Render-blocking',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/network/NetworkLogViewColumns.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

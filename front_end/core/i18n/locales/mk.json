@@ -10431,7 +10431,7 @@
     "message": "Remote address space"
   },
   "panels/network/NetworkLogViewColumns.ts | renderBlocking": {
-    "message": "Render Blocking"
+    "message": "Render-blocking"
   },
   "panels/network/NetworkLogViewColumns.ts | requestHeaders": {
     "message": "Request headers"

@@ -61,7 +61,7 @@ describeWithMockConnection('NetworkRequestDetails', () => {
           {title: 'Decoded body', value: '96 B'},
           {
             title: 'Blocking',
-            value: 'Render blocking',
+            value: 'Render-blocking',
           },
           {title: 'From cache', value: 'Yes'},
           {title: '3rd party', value: 'GitHub'},

@@ -51,8 +51,8 @@ class FirstContentfulPaint extends Metric {
     const cpuNodes: Graph.CPUNode[] = [];
     graph.traverse(node => {
       if (node.type === Graph.BaseNode.types.CPU) {
-        // A task is *possibly* render blocking if it *started* before cutoffTimestamp.
-        // We use startTime here because the paint event can be *inside* the task that was render blocking.
+        // A task is *possibly* render-blocking if it *started* before cutoffTimestamp.
+        // We use startTime here because the paint event can be *inside* the task that was render-blocking.
         if (node.startTime <= cutoffTimestamp) {
           cpuNodes.push(node);
         }
@@ -69,7 +69,7 @@ class FirstContentfulPaint extends Metric {
 
     cpuNodes.sort((a, b) => a.startTime - b.startTime);
 
-    // A script is *possibly* render blocking if it finished loading before cutoffTimestamp.
+    // A script is *possibly* render-blocking if it finished loading before cutoffTimestamp.
     const possiblyRenderBlockingScriptUrls = Metric.getScriptUrls(graph, node => {
       // The optimistic LCP treatNodeAsRenderBlocking fn wants to exclude some images in the graph,
       // but here it only receives scripts to evaluate. It's a no-op in this case, but it will
@@ -77,7 +77,7 @@ class FirstContentfulPaint extends Metric {
       return node.endTime <= cutoffTimestamp && treatNodeAsRenderBlocking(node);
     });
 
-    // A script is *definitely not* render blocking if its EvaluateScript task started after cutoffTimestamp.
+    // A script is *definitely not* render-blocking if its EvaluateScript task started after cutoffTimestamp.
     const definitelyNotRenderBlockingScriptUrls = new Set<string>();
     const renderBlockingCpuNodeIds = new Set<string>();
     for (const url of possiblyRenderBlockingScriptUrls) {
@@ -156,7 +156,7 @@ class FirstContentfulPaint extends Metric {
           return false;
         }
 
-        // Lastly, build up the FCP graph of all nodes we consider render blocking
+        // Lastly, build up the FCP graph of all nodes we consider render-blocking
         return treatNodeAsRenderBlocking(node);
       }
       // If it's a CPU node, just check if it was blocking.
@@ -168,7 +168,7 @@ class FirstContentfulPaint extends Metric {
       dependencyGraph: Graph.Node<T>, processedNavigation: Types.Simulation.ProcessedNavigation): Graph.Node<T> {
     return this.getFirstPaintBasedGraph(dependencyGraph, {
       cutoffTimestamp: processedNavigation.timestamps.firstContentfulPaint,
-      // In the optimistic graph we exclude resources that appeared to be render blocking but were
+      // In the optimistic graph we exclude resources that appeared to be render-blocking but were
       // initiated by a script. While they typically have a very high importance and tend to have a
       // significant impact on the page's content, these resources don't technically block rendering.
       treatNodeAsRenderBlocking: node => node.hasRenderBlockingPriority() && node.initiatorType !== 'script',

@@ -208,8 +208,10 @@ describeWithEnvironment('AidaClient', () => {
   }
 
   it('handles chunked response', async () => {
-    sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'doAidaConversation')
-        .callsFake(async (_, streamId, callback) => {
+    sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'dispatchHttpRequest')
+        .callsFake(async (request, callback) => {
+          assert.isDefined(request.streamId);
+          const streamId = request.streamId;
           const response = JSON.stringify([
             {textChunk: {text: 'hello '}, metadata: {rpcGlobalId: 123}},
             {textChunk: {text: 'brave '}, metadata: {rpcGlobalId: 123}},
@@ -221,7 +223,7 @@ describeWithEnvironment('AidaClient', () => {
             Host.ResourceLoader.streamWrite(streamId, first ? chunk : ',{' + chunk);
             first = false;
           }
-          callback({statusCode: 200});
+          callback({statusCode: 200, response: ''});
         });
 
     const provider = new Host.AidaClient.AidaClient();
@@ -252,14 +254,16 @@ describeWithEnvironment('AidaClient', () => {
   });
 
   it('handles single square bracket as a chunk', async () => {
-    sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'doAidaConversation')
-        .callsFake(async (_, streamId, callback) => {
+    sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'dispatchHttpRequest')
+        .callsFake(async (request, callback) => {
+          assert.isDefined(request.streamId);
+          const streamId = request.streamId;
           const response = ['[', JSON.stringify({textChunk: {text: 'hello world'}, metadata: {rpcGlobalId: 123}}), ']'];
           for (const chunk of response) {
             await new Promise(resolve => setTimeout(resolve, 0));
             Host.ResourceLoader.streamWrite(streamId, chunk);
           }
-          callback({statusCode: 200});
+          callback({statusCode: 200, response: ''});
         });
 
     const provider = new Host.AidaClient.AidaClient();
@@ -280,8 +284,10 @@ describeWithEnvironment('AidaClient', () => {
   });
 
   it('handles chunked response with multiple objects per chunk', async () => {
-    sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'doAidaConversation')
-        .callsFake(async (_, streamId, callback) => {
+    sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'dispatchHttpRequest')
+        .callsFake(async (request, callback) => {
+          assert.isDefined(request.streamId);
+          const streamId = request.streamId;
           const response = JSON.stringify([
             {textChunk: {text: 'Friends, Romans, countrymen, lend me your ears;\n'}, metadata: {rpcGlobalId: 123}},
             {textChunk: {text: 'I come to bury Caesar, not to praise him.\n'}, metadata: {rpcGlobalId: 123}},
@@ -301,7 +307,7 @@ describeWithEnvironment('AidaClient', () => {
           Host.ResourceLoader.streamWrite(streamId, ',{' + chunks[5]);
           await new Promise(resolve => setTimeout(resolve, 0));
           Host.ResourceLoader.streamWrite(streamId, ',{' + chunks[6] + ',{' + chunks[7]);
-          callback({statusCode: 200});
+          callback({statusCode: 200, response: ''});
         });
 
     const provider = new Host.AidaClient.AidaClient();
@@ -361,8 +367,10 @@ describeWithEnvironment('AidaClient', () => {
   });
 
   it('handles attributionMetadata', async () => {
-    sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'doAidaConversation')
-        .callsFake(async (_, streamId, callback) => {
+    sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'dispatchHttpRequest')
+        .callsFake(async (request, callback) => {
+          assert.isDefined(request.streamId);
+          const streamId = request.streamId;
           const response = JSON.stringify([
             {
               textChunk: {text: 'Chunk1\n'},
@@ -381,7 +389,7 @@ describeWithEnvironment('AidaClient', () => {
           await new Promise(resolve => setTimeout(resolve, 0));
           Host.ResourceLoader.streamWrite(streamId, chunks[0] + ',{' + chunks[1]);
           await new Promise(resolve => setTimeout(resolve, 0));
-          callback({statusCode: 200});
+          callback({statusCode: 200, response: ''});
         });
 
     const provider = new Host.AidaClient.AidaClient();
@@ -416,8 +424,10 @@ describeWithEnvironment('AidaClient', () => {
   });
 
   it('throws on attributionAction of "block"', async () => {
-    sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'doAidaConversation')
-        .callsFake(async (_, streamId, callback) => {
+    sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'dispatchHttpRequest')
+        .callsFake(async (request, callback) => {
+          assert.isDefined(request.streamId);
+          const streamId = request.streamId;
           const response = JSON.stringify([
             {
               textChunk: {text: 'Chunk1\n'},
@@ -435,7 +445,7 @@ describeWithEnvironment('AidaClient', () => {
           await new Promise(resolve => setTimeout(resolve, 0));
           Host.ResourceLoader.streamWrite(streamId, chunks[0] + ',{' + chunks[1]);
           await new Promise(resolve => setTimeout(resolve, 0));
-          callback({statusCode: 200});
+          callback({statusCode: 200, response: ''});
         });
 
     const provider = new Host.AidaClient.AidaClient();
@@ -448,8 +458,10 @@ describeWithEnvironment('AidaClient', () => {
   });
 
   it('handles subsequent code chunks', async () => {
-    sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'doAidaConversation')
-        .callsFake(async (_, streamId, callback) => {
+    sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'dispatchHttpRequest')
+        .callsFake(async (request, callback) => {
+          assert.isDefined(request.streamId);
+          const streamId = request.streamId;
           const response = JSON.stringify([
             {textChunk: {text: 'hello '}},
             {codeChunk: {code: 'brave '}},
@@ -459,7 +471,7 @@ describeWithEnvironment('AidaClient', () => {
             await new Promise(resolve => setTimeout(resolve, 0));
             Host.ResourceLoader.streamWrite(streamId, chunk);
           }
-          callback({statusCode: 200});
+          callback({statusCode: 200, response: ''});
         });
 
     const provider = new Host.AidaClient.AidaClient();
@@ -473,8 +485,10 @@ describeWithEnvironment('AidaClient', () => {
   });
 
   it('handles subsequent code chunks with attached language', async () => {
-    sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'doAidaConversation')
-        .callsFake(async (_, streamId, callback) => {
+    sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'dispatchHttpRequest')
+        .callsFake(async (request, callback) => {
+          assert.isDefined(request.streamId);
+          const streamId = request.streamId;
           const response = [
             {textChunk: {text: 'hello '}},
             {codeChunk: {code: 'brave ', inferenceLanguage: 'JAVASCRIPT'}},
@@ -484,7 +498,7 @@ describeWithEnvironment('AidaClient', () => {
             await new Promise(resolve => setTimeout(resolve, 0));
             Host.ResourceLoader.streamWrite(streamId, JSON.stringify(chunk));
           }
-          callback({statusCode: 200});
+          callback({statusCode: 200, response: ''});
         });
 
     const provider = new Host.AidaClient.AidaClient();
@@ -498,7 +512,7 @@ describeWithEnvironment('AidaClient', () => {
   });
 
   it('throws a readable error on 403', async () => {
-    sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'doAidaConversation').callsArgWith(2, {
+    sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'dispatchHttpRequest').callsArgWith(1, {
       statusCode: 403,
     });
     const provider = new Host.AidaClient.AidaClient();
@@ -511,7 +525,7 @@ describeWithEnvironment('AidaClient', () => {
   });
 
   it('throws a timeout error on timeout', async () => {
-    sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'doAidaConversation').callsArgWith(2, {
+    sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'dispatchHttpRequest').callsArgWith(1, {
       netErrorName: 'net::ERR_TIMED_OUT'
     });
     const provider = new Host.AidaClient.AidaClient();
@@ -524,7 +538,7 @@ describeWithEnvironment('AidaClient', () => {
   });
 
   it('throws an error for other codes', async () => {
-    sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'doAidaConversation').callsArgWith(2, {
+    sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'dispatchHttpRequest').callsArgWith(1, {
       statusCode: 418,
     });
     const provider = new Host.AidaClient.AidaClient();
@@ -537,7 +551,7 @@ describeWithEnvironment('AidaClient', () => {
   });
 
   it('throws an error with all details for other failures', async () => {
-    sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'doAidaConversation').callsArgWith(2, {
+    sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'dispatchHttpRequest').callsArgWith(1, {
       error: 'Cannot get OAuth credentials',
       detail: '{\'@type\': \'type.googleapis.com/google.rpc.DebugInfo\', \'detail\': \'DETAILS\'}',
     });

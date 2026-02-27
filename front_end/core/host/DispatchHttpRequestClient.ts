@@ -12,7 +12,7 @@ export enum ErrorType {
 }
 
 export class DispatchHttpRequestError extends Error {
-  constructor(readonly type: ErrorType, options?: ErrorOptions) {
+  constructor(readonly type: ErrorType, readonly response?: DispatchHttpRequestResult, options?: ErrorOptions) {
     super(undefined, options);
   }
 }
@@ -38,18 +38,21 @@ export async function makeHttpRequest<R>(
 
   debugLog({request, response});
   if (response.statusCode === 404) {
-    throw new DispatchHttpRequestError(ErrorType.NOT_FOUND);
+    throw new DispatchHttpRequestError(ErrorType.NOT_FOUND, response);
   }
 
   if ('response' in response && response.statusCode === 200) {
+    if (request.streamId && !response.response) {
+      return null as R;
+    }
     try {
       return JSON.parse(response.response) as R;
     } catch (err) {
-      throw new DispatchHttpRequestError(ErrorType.HTTP_RESPONSE_UNAVAILABLE, {cause: err});
+      throw new DispatchHttpRequestError(ErrorType.HTTP_RESPONSE_UNAVAILABLE, response, {cause: err});
     }
   }
 
-  throw new DispatchHttpRequestError(ErrorType.HTTP_RESPONSE_UNAVAILABLE);
+  throw new DispatchHttpRequestError(ErrorType.HTTP_RESPONSE_UNAVAILABLE, response);
 }
 
 function isDebugMode(): boolean {

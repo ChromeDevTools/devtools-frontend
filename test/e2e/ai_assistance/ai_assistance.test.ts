@@ -67,7 +67,10 @@ describe('AI Assistance', function() {
     });
     await devtoolsPage.evaluate(messages => {
       let call = 0;
-      globalThis.InspectorFrontendHost.doAidaConversation = async (request, streamId, cb) => {
+      globalThis.InspectorFrontendHost.dispatchHttpRequest = async (request, cb) => {
+        if (!request.streamId) {
+          throw new Error('No streamId');
+        }
         const response = JSON.stringify([
           messages[call],
         ]);
@@ -75,10 +78,10 @@ describe('AI Assistance', function() {
         let first = true;
         for (const chunk of response.split(',{')) {
           await new Promise(resolve => setTimeout(resolve, 0));
-          globalThis.InspectorFrontendAPI.streamWrite(streamId, first ? chunk : ',{' + chunk);
+          globalThis.InspectorFrontendAPI.streamWrite(request.streamId, first ? chunk : ',{' + chunk);
           first = false;
         }
-        cb({statusCode: 200});
+        cb({statusCode: 200, response: ''});
       };
     }, messages);
   }

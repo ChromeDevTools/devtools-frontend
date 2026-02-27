@@ -40,21 +40,21 @@ describe('ConsoleInsight', function() {
     });
 
     const aidaOverride = `
-            value.doAidaConversation = (request, streamId, callback) => {
+            value.dispatchHttpRequest = (request, callback) => {
               const response = ${JSON.stringify(effectiveAidaResponse)};
               // We need to delay this a bit to ensure the stream is registered.
               setTimeout(() => {
-                if (window.InspectorFrontendAPI) {
+                if (window.InspectorFrontendAPI && request.streamId) {
                   const parsed = JSON.parse(response);
                   if (Array.isArray(parsed)) {
                     for (const chunk of parsed) {
-                      window.InspectorFrontendAPI.streamWrite(streamId, JSON.stringify(chunk));
+                      window.InspectorFrontendAPI.streamWrite(request.streamId, JSON.stringify(chunk));
                     }
                   } else {
-                    window.InspectorFrontendAPI.streamWrite(streamId, response);
+                    window.InspectorFrontendAPI.streamWrite(request.streamId, response);
                   }
                 }
-                callback({statusCode: 200});
+                callback({statusCode: 200, response: ''});
               }, 0);
             };
       `;

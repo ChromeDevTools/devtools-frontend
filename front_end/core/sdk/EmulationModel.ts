@@ -18,7 +18,7 @@ export const enum DataSaverOverride {
   DISABLED = 'disabled',
 }
 
-export class EmulationModel extends SDKModel<void> {
+export class EmulationModel extends SDKModel<EmulationModelEventTypes> implements ProtocolProxyApi.EmulationDispatcher {
   readonly #emulationAgent: ProtocolProxyApi.EmulationApi;
   readonly #deviceOrientationAgent: ProtocolProxyApi.DeviceOrientationApi;
   #cssModel: CSSModel|null;
@@ -33,11 +33,15 @@ export class EmulationModel extends SDKModel<void> {
     enabled: boolean,
     configuration: Protocol.Emulation.SetEmitTouchEventsForMouseRequestConfiguration,
   };
+  #screenOrientationLocked: boolean;
+  #lockedOrientation: Protocol.Emulation.ScreenOrientation|null;
 
   constructor(target: Target) {
     super(target);
     this.#emulationAgent = target.emulationAgent();
     this.#deviceOrientationAgent = target.deviceOrientationAgent();
+    this.#screenOrientationLocked = false;
+    this.#lockedOrientation = null;
     this.#cssModel = target.model(CSSModel);
     this.#overlayModel = target.model(OverlayModel);
     if (this.#overlayModel) {
@@ -225,6 +229,7 @@ export class EmulationModel extends SDKModel<void> {
       enabled: false,
       configuration: Protocol.Emulation.SetEmitTouchEventsForMouseRequestConfiguration.Mobile,
     };
+    target.registerEmulationDispatcher(this);
   }
 
   setTouchEmulationAllowed(touchEmulationAllowed: boolean): void {
@@ -478,6 +483,41 @@ export class EmulationModel extends SDKModel<void> {
     ];
     return await this.emulateCSSMedia(type, features);
   }
+
+  // ProtocolProxyApi.EmulationDispatcher implementation
+
+  virtualTimeBudgetExpired(): void {
+    // No-op for now; not used by the frontend.
+  }
+
+  screenOrientationLockChanged(event: Protocol.Emulation.ScreenOrientationLockChangedEvent): void {
+    this.#screenOrientationLocked = event.locked;
+    this.#lockedOrientation = event.orientation ?? null;
+    this.dispatchEventToListeners(
+        EmulationModelEvents.SCREEN_ORIENTATION_LOCK_CHANGED,
+        {locked: event.locked, orientation: event.orientation ?? null});
+  }
+
+  isScreenOrientationLocked(): boolean {
+    return this.#screenOrientationLocked;
+  }
+
+  lockedOrientation(): Protocol.Emulation.ScreenOrientation|null {
+    return this.#lockedOrientation;
+  }
+}
+
+export const enum EmulationModelEvents {
+  SCREEN_ORIENTATION_LOCK_CHANGED = 'ScreenOrientationLockChanged',
+}
+
+export interface ScreenOrientationLockChangedEvent {
+  locked: boolean;
+  orientation: Protocol.Emulation.ScreenOrientation|null;
+}
+
+export interface EmulationModelEventTypes {
+  [EmulationModelEvents.SCREEN_ORIENTATION_LOCK_CHANGED]: ScreenOrientationLockChangedEvent;
 }
 
 export class Location {

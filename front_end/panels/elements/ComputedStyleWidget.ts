@@ -333,7 +333,7 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
    */
   #filterText = '';
   #filterIsRegex = false;
-  #includeToolbar = true;
+  #allowUserControl = true;
 
   constructor() {
     super({useShadowDom: true});
@@ -387,12 +387,12 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
     this.requestUpdate();
   }
 
-  get includeToolbar(): boolean {
-    return this.#includeToolbar;
+  get allowUserControl(): boolean {
+    return this.#allowUserControl;
   }
 
-  set includeToolbar(inc: boolean) {
-    this.#includeToolbar = inc;
+  set allowUserControl(inc: boolean) {
+    this.#allowUserControl = inc;
     this.requestUpdate();
   }
 
@@ -403,7 +403,7 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
     this.#view(
         {
           computedStylesTree: this.#computedStylesTree,
-          includeToolbar: this.#includeToolbar,
+          includeToolbar: this.#allowUserControl,
           hasMatches,
           showInheritedComputedStylePropertiesSetting: this.showInheritedComputedStylePropertiesSetting,
           groupComputedStylesSetting: this.groupComputedStylesSetting,
@@ -441,6 +441,14 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
     this.requestUpdate();
   }
 
+  #shouldGroupStyles(): boolean {
+    return this.#allowUserControl && this.groupComputedStylesSetting.get();
+  }
+
+  #shouldShowAllStyles(): boolean {
+    return this.#allowUserControl && this.showInheritedComputedStylePropertiesSetting.get();
+  }
+
   override async performUpdate(): Promise<void> {
     const nodeStyles = this.#nodeStyle;
     const matchedStyles = this.#matchedStyles;
@@ -448,8 +456,7 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
       this.#updateView({hasMatches: false});
       return;
     }
-    const shouldGroupComputedStyles = this.groupComputedStylesSetting.get();
-    if (shouldGroupComputedStyles) {
+    if (this.#shouldGroupStyles()) {
       await this.rebuildGroupedList(nodeStyles, matchedStyles);
     } else {
       await this.rebuildAlphabeticalList(nodeStyles, matchedStyles);
@@ -472,7 +479,7 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
     const node = nodeStyle.node;
     const propertyTraces = this.computePropertyTraces(matchedStyles);
     const nonInheritedProperties = this.computeNonInheritedProperties(matchedStyles);
-    const showInherited = this.showInheritedComputedStylePropertiesSetting.get();
+    const showInherited = this.#shouldShowAllStyles();
     const tree: Array<TreeOutline.TreeOutlineUtils.TreeNode<ComputedStyleData>> = [];
     for (const propertyName of uniqueProperties) {
       const propertyValue = nodeStyle.computedStyle.get(propertyName) || '';

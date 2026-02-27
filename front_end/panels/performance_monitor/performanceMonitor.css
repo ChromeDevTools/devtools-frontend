@@ -7,7 +7,7 @@
 :host {
   overflow: hidden;
 
-  --override-color-perf-monitor-cpu: var(--sys-color-yellow-bright);
+  --override-color-perf-monitor-cpu: var(--ref-palette-yellow40);
   --override-color-perf-monitor-cpu-task-duration: var(--sys-color-neutral-bright);
   --override-color-perf-monitor-cpu-script-duration: var(--sys-color-yellow-bright);
   --override-color-perf-monitor-cpu-layout-duration: var(--sys-color-purple);
@@ -16,16 +16,18 @@
   --override-color-perf-monitor-jsheap-total-size: var(--ref-palette-purple70);
   --override-color-perf-monitor-jsheap-used-size: var(--sys-color-purple-bright);
   --override-color-perf-monitor-dom-nodes: var(--sys-color-green);
-  --override-color-perf-monitor-js-event-listeners: var(--ref-palette-green80);
+  --override-color-perf-monitor-js-event-listeners: var(--ref-palette-green50);
   --override-color-perf-monitor-documents: var(--sys-color-blue);
   --override-color-perf-monitor-document-frames: var(--sys-color-cyan-bright);
-  --override-color-perf-monitor-layout-count: var(--sys-color-pink-bright);
+  --override-color-perf-monitor-layout-count: var(--ref-palette-pink50);
   --override-color-perf-monitor-recalc-style-count: var(--sys-color-pink);
 }
 
 :host-context(.theme-with-dark-background) {
+  --override-color-perf-monitor-cpu: var(--sys-color-yellow-bright);
+  --override-color-perf-monitor-js-event-listeners: var(--ref-palette-green70);
   --override-color-perf-monitor-jsheap-total-size: var(--ref-palette-purple50);
-  --override-color-perf-monitor-js-event-listeners: var(--ref-palette-green50);
+  --override-color-perf-monitor-layout-count: var(--sys-color-pink-bright);
 }
 
 .suspended {

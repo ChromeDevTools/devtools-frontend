@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
@@ -22,6 +23,8 @@ import * as Console from './console.js';
 // The css files aren't exported by the bundle, so we need to import it directly.
 // eslint-disable-next-line @devtools/es-modules-import
 import consoleViewStyles from './consoleView.css.js';
+
+const {urlString} = Platform.DevToolsPath;
 
 describe('ConsoleViewMessage', () => {
   describe('concatErrorDescriptionAndIssueSummary', () => {
@@ -309,7 +312,6 @@ describeWithMockConnection('ConsoleViewMessage', () => {
       shadowElement.appendChild(element);
       renderElementIntoDOM(wrapperElement);
       await raf();
-      await UI.Widget.Widget.allUpdatesComplete;
       assert.isTrue(element.checkVisibility());
       return element;
     }
@@ -380,6 +382,75 @@ describeWithMockConnection('ConsoleViewMessage', () => {
       assertNoLinks(element);
       assert.deepEqual(getStructuredCallFrames(element), EXPANDED_STRUCTURED);
     });
+
+    // Regression test for crbug.com/379788109: when all inline Error frames
+    // are ignore-listed but the structured stack trace (console.error call
+    // stack) has non-ignore-listed frames, the toggle should still appear.
+    it('shows expandable list when all inline frames are ignored but structured trace has non-ignored frames',
+       async () => {
+         const target = createTarget();
+         const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+         const stackTrace = createStackTrace([
+           'USER_ID::userNestedFunction::http://example.com/script.js::40::15',
+           'USER_ID::userFunction::http://example.com/script.js::10::2',
+           'APP_ID::entry::http://example.com/app.js::25::10',
+         ]);
+         const stackTraceMessage = errorMessageForStack(stackTrace);
+         const messageDetails: SDK.ConsoleModel.ConsoleMessageDetails = {
+           type: Protocol.Runtime.ConsoleAPICalledEventType.Error,
+           stackTrace,
+           parameters: [{
+             type: Protocol.Runtime.RemoteObjectType.Object,
+             subtype: Protocol.Runtime.RemoteObjectSubtype.Error,
+             className: 'Error',
+             description: stackTraceMessage,
+           }],
+         };
+         const rawMessage = new SDK.ConsoleModel.ConsoleMessage(
+             runtimeModel, Common.Console.FrontendMessageSource.ConsoleAPI, Protocol.Log.LogEntryLevel.Error,
+             stackTraceMessage, messageDetails);
+         const {message, linkifier} = createConsoleViewMessageWithStubDeps(rawMessage);
+
+         // Inline Error frames: ALL ignore-listed
+         linkifier.linkifyScriptLocation.callsFake((_target, _scriptId, sourceURL, lineNumber, options) => {
+           const link = Components.Linkifier.Linkifier.linkifyURL(sourceURL, {lineNumber, ...options});
+           link.classList.add(IGNORE_LIST_LINK);
+           return link;
+         });
+         // Structured stack trace: only app.js is ignore-listed, script.js is NOT
+         linkifier.maybeLinkifyConsoleCallFrame.callsFake((_target, callFrame, options) => {
+           const link = Components.Linkifier.Linkifier.linkifyURL(
+               urlString`${callFrame.url}`, {lineNumber: callFrame.lineNumber, ...options});
+           if (callFrame.url.includes('/app.js')) {
+             link.classList.add(IGNORE_LIST_LINK);
+           }
+           return link;
+         });
+         const element = message.toMessageElement();
+         await message.formatErrorStackPromiseForTest();
+
+         const wrapperElement = document.createElement('div');
+         const shadowElement = UI.UIUtils.createShadowRootWithCoreStyles(wrapperElement, {cssFile: consoleViewStyles});
+         shadowElement.appendChild(element);
+         renderElementIntoDOM(wrapperElement);
+         await raf();
+         assert.isTrue(element.checkVisibility());
+
+         // All inline frames are ignored, so with the fix they should be hidden
+         // and the "Show ignore-listed frames" toggle should be visible.
+         assertShowAllLink(element);
+         assert.deepEqual(getCallFrames(element), []);
+
+         // Clicking "Show ignore-listed frames" reveals them
+         await expandIgnored(element);
+         assertShowLessLink(element);
+         assert.deepEqual(getCallFrames(element), EXPANDED_UNSTRUCTURED);
+
+         // Collapsing hides them again
+         await collapseIgnored(element);
+         assertShowAllLink(element);
+         assert.deepEqual(getCallFrames(element), []);
+       });
 
     it('shows expandable list when something is ignore listed', async () => {
       const element = await createConsoleMessageWithIgnoreListing(url => url.includes('/app.js'));

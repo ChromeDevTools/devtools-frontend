@@ -36,7 +36,7 @@
     "style-mod": "4.1.0"
   },
   "devDependencies": {
-    "rollup": "4.50.2",
+    "rollup": "4.59.0",
     "rollup-plugin-dts": "6.1.1",
     "typescript": "5.9.2"
   }

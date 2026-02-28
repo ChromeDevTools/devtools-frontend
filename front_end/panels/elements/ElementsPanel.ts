@@ -1030,7 +1030,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     }
 
     if (showPanel) {
-      await UI.ViewManager.ViewManager.instance().showView('elements', false, !focus);
+      await UI.ViewManager.ViewManager.instance().showView('elements', false, !focusNode);
     }
     this.selectDOMNode(node, focusNode);
     delete this.omitDefaultSelection;
@@ -1048,7 +1048,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     this.omitDefaultSelection = true;
 
     if (showPanel) {
-      await UI.ViewManager.ViewManager.instance().showView('elements', false, !focus);
+      await UI.ViewManager.ViewManager.instance().showView('elements', false, !focusNode);
     }
     this.selectDOMNode(nodeToReveal, focusNode);
     delete this.omitDefaultSelection;

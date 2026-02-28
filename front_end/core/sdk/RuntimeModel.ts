@@ -262,7 +262,8 @@ export class RuntimeModel extends SDKModel<EventTypes> {
     }
 
     if (object.isNode()) {
-      void Common.Revealer.reveal(object).then(object.release.bind(object));
+      const omitFocus = hints !== null && typeof hints === 'object' && 'omitFocus' in hints && Boolean(hints.omitFocus);
+      void Common.Revealer.reveal(object, omitFocus).then(object.release.bind(object));
       return;
     }
 

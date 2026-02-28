@@ -72,6 +72,7 @@ export const DEFAULT_SETTING_REGISTRATIONS_FOR_TEST = [
     createSettingValue("PERFORMANCE" /* Common.Settings.SettingCategory.PERFORMANCE */, 'annotations-hidden', false),
     createSettingValue("NETWORK" /* Common.Settings.SettingCategory.NETWORK */, 'cache-disabled', false),
     createSettingValue("RENDERING" /* Common.Settings.SettingCategory.RENDERING */, 'avif-format-disabled', false),
+    createSettingValue("RENDERING" /* Common.Settings.SettingCategory.RENDERING */, 'jpeg-xl-format-disabled', false),
     createSettingValue("RENDERING" /* Common.Settings.SettingCategory.RENDERING */, 'emulated-css-media', '', "enum" /* Common.Settings.SettingType.ENUM */),
     createSettingValue("RENDERING" /* Common.Settings.SettingCategory.RENDERING */, 'emulated-css-media-feature-prefers-color-scheme', '', "enum" /* Common.Settings.SettingType.ENUM */),
     createSettingValue("RENDERING" /* Common.Settings.SettingCategory.RENDERING */, 'emulated-css-media-feature-forced-colors', '', "enum" /* Common.Settings.SettingType.ENUM */),

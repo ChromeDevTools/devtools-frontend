@@ -74,6 +74,7 @@ var ExperimentName;
   ExperimentName2["USE_SOURCE_MAP_SCOPES"] = "use-source-map-scopes";
   ExperimentName2["TIMELINE_SHOW_POST_MESSAGE_EVENTS"] = "timeline-show-postmessage-events";
   ExperimentName2["TIMELINE_DEBUG_MODE"] = "timeline-debug-mode";
+  ExperimentName2["DURABLE_MESSAGES"] = "durable-messages";
 })(ExperimentName || (ExperimentName = {}));
 
 // gen/front_end/core/root/Runtime.js

@@ -524,6 +524,9 @@
   "core/sdk/sdk-meta.ts | disableJavaScriptSourceMaps": {
     "message": "Disable JavaScript source maps"
   },
+  "core/sdk/sdk-meta.ts | disableJpegXlFormat": {
+    "message": "Disable JPEG XL format"
+  },
   "core/sdk/sdk-meta.ts | disableLocalFonts": {
     "message": "Disable local fonts"
   },
@@ -631,6 +634,9 @@
   },
   "core/sdk/sdk-meta.ts | enableJavaScriptSourceMaps": {
     "message": "Enable JavaScript source maps"
+  },
+  "core/sdk/sdk-meta.ts | enableJpegXlFormat": {
+    "message": "Enable JPEG XL format"
   },
   "core/sdk/sdk-meta.ts | enableLocalFonts": {
     "message": "Enable local fonts"
@@ -916,6 +922,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableAvifImageFormat": {
     "message": "Disable AVIF image format"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | disableJpegXlImageFormat": {
+    "message": "Disable JPEG XL image format"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableLocalFonts": {
     "message": "Disable local fonts"

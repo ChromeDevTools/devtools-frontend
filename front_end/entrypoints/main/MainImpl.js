@@ -345,6 +345,13 @@ export class MainImpl {
         // Hide third party code (as determined by ignore lists or source maps)
         Root.Runtime.experiments.register(Root.ExperimentNames.ExperimentName.JUST_MY_CODE, 'Hide ignore-listed code in Sources tree view');
         Root.Runtime.experiments.register(Root.ExperimentNames.ExperimentName.TIMELINE_SHOW_POST_MESSAGE_EVENTS, 'Performance panel: show postMessage dispatch and handling flows');
+        Root.Runtime.experiments.registerHostExperiment({
+            name: Root.ExperimentNames.ExperimentName.DURABLE_MESSAGES,
+            title: 'Durable Messages',
+            aboutFlag: 'devtools-enable-durable-messages',
+            isEnabled: Root.Runtime.hostConfig.devToolsEnableDurableMessages?.enabled ?? false,
+            requiresChromeRestart: false,
+        });
         Root.Runtime.experiments.enableExperimentsByDefault([
             Root.ExperimentNames.ExperimentName.FULL_ACCESSIBILITY_TREE,
             Root.ExperimentNames.ExperimentName.USE_SOURCE_MAP_SCOPES,

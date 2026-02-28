@@ -2089,6 +2089,7 @@ var UIStrings6 = {
 var str_6 = i18n11.i18n.registerUIStrings("ui/legacy/components/source_frame/XMLView.ts", UIStrings6);
 var i18nString6 = i18n11.i18n.getLocalizedString.bind(void 0, str_6);
 var { render, html } = Lit;
+var { ifExpanded } = UI7.TreeOutline;
 function* attributes(element) {
   for (let i = 0; i < element.attributes.length; ++i) {
     const attributeNode = element.attributes.item(i);
@@ -2172,24 +2173,35 @@ var DEFAULT_VIEW = (input, output, target) => {
     }
     return { highlights, selected };
   }
-  function layOutNode(node, populateSubtrees = false) {
+  function layOutNode(node) {
     const onExpand = (event) => input.onExpand(node, event.detail.expanded);
     const { highlights, selected } = highlight(
       node,
       /* closeTag=*/
       false
     );
+    const containsSearchResult = (node2) => {
+      if (node2 === input.jumpToNextSearchResult?.node) {
+        return true;
+      }
+      for (const child of node2.children()) {
+        if (containsSearchResult(child)) {
+          return true;
+        }
+      }
+      return false;
+    };
     return html`
       <li role="treeitem"
           ?selected=${input.jumpToNextSearchResult?.node === node}
           @expand=${onExpand}
-          ?open=${node.expanded || input.jumpToNextSearchResult?.node === node}>
+          ?open=${containsSearchResult(node)}>
         <devtools-highlight ranges=${highlights} current-range=${selected}>
           ${htmlView(node)}
         </devtools-highlight>
         ${node.children().length ? html`
           <ul role="group">
-            ${populateSubtrees || input.search ? subtree(node) : Lit.nothing}
+            ${ifExpanded(subtree(node))}
           </ul>` : Lit.nothing}
       </li>`;
   }
@@ -2204,7 +2216,7 @@ var DEFAULT_VIEW = (input, output, target) => {
       true
     );
     return html`
-      ${children2.map((child) => layOutNode(child, treeNode.expanded))}
+      ${children2.map((child) => layOutNode(child))}
       ${treeNode.node instanceof Element ? html`
         <li role="treeitem">
           <devtools-highlight ranges=${highlights} current-range=${selected}>
@@ -2220,11 +2232,7 @@ var DEFAULT_VIEW = (input, output, target) => {
       class="shadow-xml-view source-code"
       .template=${html`
         <ul role="tree">
-          ${input.xml.children().map((node) => layOutNode(
-      node,
-      /* populateSubtrees=*/
-      true
-    ))}
+          ${input.xml.children().map((node) => layOutNode(node))}
         </ul>`}
       ></devtools-tree>`,
     // clang-format on

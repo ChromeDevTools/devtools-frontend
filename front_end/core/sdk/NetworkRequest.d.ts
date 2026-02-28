@@ -202,6 +202,7 @@ export declare class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<E
     contentType(): Common.ResourceType.ResourceType;
     searchInContent(query: string, caseSensitive: boolean, isRegex: boolean): Promise<TextUtils.ContentProvider.SearchMatch[]>;
     requestContentType(): string | undefined;
+    requestContentEncoding(): string | undefined;
     hasErrorStatusCode(): boolean;
     setInitialPriority(priority: Protocol.Network.ResourcePriority): void;
     initialPriority(): Protocol.Network.ResourcePriority | null;

@@ -6962,6 +6962,9 @@ export declare namespace Emulation {
     interface RemoveScreenRequest {
         screenId: ScreenId;
     }
+    interface SetPrimaryScreenRequest {
+        screenId: ScreenId;
+    }
 }
 /**
  * EventBreakpoints permits setting JavaScript breakpoints on operations and events

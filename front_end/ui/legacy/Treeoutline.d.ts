@@ -305,6 +305,18 @@ export declare namespace TreeViewElement {
         });
     }
 }
+export declare const ifExpanded: (content: Lit.LitTemplate | Iterable<Lit.LitTemplate>) => Lit.DirectiveResult<{
+    new (partInfo: Lit.Directive.PartInfo): {
+        "__#private@#partInfo": {
+            type: Lit.Directive.PartType;
+            startNode: Node;
+        };
+        render(content: Lit.LitTemplate | Iterable<Lit.LitTemplate>): Lit.LitTemplate | Iterable<Lit.LitTemplate>;
+        "__#private@#isInExpandedRow"(element: Node | null | undefined): boolean;
+        get _$isConnected(): boolean;
+        update(_part: Lit.Directive.Part, props: Array<unknown>): unknown;
+    };
+}>;
 export declare class TreeElementWrapper extends HTMLElement {
     #private;
     set treeElement(treeElement: TreeElement);

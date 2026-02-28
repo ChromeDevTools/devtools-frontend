@@ -148,11 +148,15 @@ export class EmulationModel extends SDKModel {
             this.setLocalFontsDisabled(localFontsDisabledSetting.get());
         }
         const avifFormatDisabledSetting = Common.Settings.Settings.instance().moduleSetting('avif-format-disabled');
+        const jpegXlFormatDisabledSetting = Common.Settings.Settings.instance().moduleSetting('jpeg-xl-format-disabled');
         const webpFormatDisabledSetting = Common.Settings.Settings.instance().moduleSetting('webp-format-disabled');
         const updateDisabledImageFormats = () => {
             const types = [];
             if (avifFormatDisabledSetting.get()) {
                 types.push("avif" /* Protocol.Emulation.DisabledImageType.Avif */);
+            }
+            if (jpegXlFormatDisabledSetting.get()) {
+                types.push("jxl" /* Protocol.Emulation.DisabledImageType.Jxl */);
             }
             if (webpFormatDisabledSetting.get()) {
                 types.push("webp" /* Protocol.Emulation.DisabledImageType.Webp */);
@@ -160,8 +164,9 @@ export class EmulationModel extends SDKModel {
             this.setDisabledImageTypes(types);
         };
         avifFormatDisabledSetting.addChangeListener(updateDisabledImageFormats);
+        jpegXlFormatDisabledSetting.addChangeListener(updateDisabledImageFormats);
         webpFormatDisabledSetting.addChangeListener(updateDisabledImageFormats);
-        if (avifFormatDisabledSetting.get() || webpFormatDisabledSetting.get()) {
+        if (avifFormatDisabledSetting.get() || jpegXlFormatDisabledSetting.get() || webpFormatDisabledSetting.get()) {
             updateDisabledImageFormats();
         }
         this.#cpuPressureEnabled = false;

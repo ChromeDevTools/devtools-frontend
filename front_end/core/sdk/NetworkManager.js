@@ -238,12 +238,51 @@ export class NetworkManager extends SDKModel {
             return null;
         }
         try {
-            const { postData } = await manager.#networkAgent.invoke_getRequestPostData({ requestId });
+            const { postData, base64Encoded } = await manager.#networkAgent.invoke_getRequestPostData({ requestId });
+            if (base64Encoded && postData) {
+                // Decode base64 to get raw bytes as an ArrayBuffer.
+                const binaryString = window.atob(postData);
+                const bytes = new Uint8Array(binaryString.length);
+                for (let i = 0; i < binaryString.length; i++) {
+                    bytes[i] = binaryString.charCodeAt(i);
+                }
+                // Extract charset from request Content-Type header, defaulting to utf-8.
+                const requestContentType = request.requestContentType();
+                const charset = requestContentType ? Platform.MimeType.parseContentType(requestContentType).charset ?? 'utf-8' : 'utf-8';
+                // If the request body is compressed, attempt to decompress it.
+                const contentEncoding = request.requestContentEncoding()?.toLowerCase();
+                if (contentEncoding) {
+                    const decompressed = await NetworkManager.#tryDecompressBody(bytes.buffer, contentEncoding, charset);
+                    if (decompressed !== null) {
+                        return decompressed;
+                    }
+                }
+                // Not compressed or decompression not applicable -- decode as text.
+                return new TextDecoder(charset).decode(bytes);
+            }
             return postData;
         }
         catch (e) {
             return e.message;
         }
+    }
+    /**
+     * Attempts to decompress a compressed request body.
+     * Returns the decompressed string, or null if decompression is not applicable.
+     */
+    static async #tryDecompressBody(buffer, encoding, charset) {
+        try {
+            if (encoding.includes('gzip') && Common.Gzip.isGzip(buffer)) {
+                return await Common.Gzip.decompress(buffer, charset);
+            }
+            if (encoding.includes('deflate')) {
+                return await Common.Gzip.decompressDeflate(buffer, charset);
+            }
+        }
+        catch (e) {
+            console.warn('Failed to decompress request body:', e);
+        }
+        return null;
     }
     static connectionType(conditions) {
         if (!conditions.download && !conditions.upload) {
@@ -459,7 +498,11 @@ export class NetworkDispatcher {
     updateNetworkRequestWithRequest(networkRequest, request) {
         networkRequest.requestMethod = request.method;
         networkRequest.setRequestHeaders(this.headersMapToHeadersArray(request.headers));
-        networkRequest.setRequestFormData(Boolean(request.hasPostData), request.postData || null);
+        // If the request body is compressed, discard the inline postData which is
+        // garbled (binary-as-text). The getRequestPostData command will provide
+        // properly base64-encoded data that we can decompress.
+        const isCompressed = Boolean(networkRequest.requestContentEncoding());
+        networkRequest.setRequestFormData(Boolean(request.hasPostData), isCompressed ? null : (request.postData || null));
         networkRequest.setInitialPriority(request.initialPriority);
         networkRequest.mixedContentType = request.mixedContentType || "none" /* Protocol.Security.MixedContentType.None */;
         networkRequest.setReferrerPolicy(request.referrerPolicy);

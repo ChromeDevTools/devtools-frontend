@@ -20601,6 +20601,7 @@ __export(Treeoutline_exports, {
   TreeOutlineInShadow: () => TreeOutlineInShadow,
   TreeSearch: () => TreeSearch,
   TreeViewElement: () => TreeViewElement,
+  ifExpanded: () => ifExpanded,
   treeElementBylistItemNode: () => treeElementBylistItemNode
 });
 import * as Common18 from "./../../core/common/common.js";
@@ -22432,6 +22433,42 @@ var TreeViewElement = class _TreeViewElement extends HTMLElementWithLightDOMTemp
   }
   TreeViewElement2.ExpandEvent = ExpandEvent;
 })(TreeViewElement || (TreeViewElement = {}));
+var ifExpanded = Lit3.Directive.directive(class extends Lit3.Directive.Directive {
+  #partInfo;
+  constructor(partInfo) {
+    if (partInfo.type !== Lit3.Directive.PartType.CHILD) {
+      throw new Error("ifExpanded directive must be used in a child node");
+    }
+    super(partInfo);
+    this.#partInfo = partInfo;
+  }
+  render(content) {
+    return this.#isInExpandedRow(this.#partInfo.startNode) ? content : Lit3.nothing;
+  }
+  #isInExpandedRow(element) {
+    if (!element) {
+      return false;
+    }
+    if (!(element instanceof HTMLElement)) {
+      element = element.parentNode;
+    }
+    if (!(element instanceof HTMLElement)) {
+      return false;
+    }
+    element = element.closest('li[role="treeitem"]') ?? void 0;
+    if (!(element instanceof HTMLLIElement)) {
+      return false;
+    }
+    if (hasBooleanAttribute(element, "open")) {
+      return true;
+    }
+    const node = TreeViewTreeElement.get(element);
+    if (!node) {
+      return false;
+    }
+    return node.expanded;
+  }
+});
 var TreeElementWrapper = class extends HTMLElement {
   #treeElement;
   set treeElement(treeElement) {

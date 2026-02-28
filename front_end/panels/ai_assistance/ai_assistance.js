@@ -2554,6 +2554,12 @@ var chatMessage_css_default = `/*
     display: flex;
     gap: var(--sys-size-4);
   }
+
+  .walkthrough-toggle-container {
+    display: flex;
+    gap: var(--sys-size-4);
+    align-items: center;
+  }
 }
 
 /*# sourceURL=${import.meta.resolve("././components/chatMessage.css")} */`;
@@ -3063,10 +3069,12 @@ function renderTextAsMarkdown(text, markdownRenderer, { animate, ref: refFn } = 
     ${refFn ? ref2(refFn) : Lit3.nothing}>
   </devtools-markdown-view>`;
 }
+function titleForStep(step) {
+  return step.title ?? `${lockedString4(UIStringsNotTranslate4.investigating)}\u2026`;
+}
 function renderTitle(step) {
   const paused = step.sideEffect ? html5`<span class="paused">${lockedString4(UIStringsNotTranslate4.paused)}: </span>` : Lit3.nothing;
-  const actionTitle = step.title ?? `${lockedString4(UIStringsNotTranslate4.investigating)}\u2026`;
-  return html5`<span class="title">${paused}${actionTitle}</span>`;
+  return html5`<span class="title">${paused}${titleForStep(step)}</span>`;
 }
 function renderStepCode(step) {
   if (!step.code && !step.output) {
@@ -3114,28 +3122,39 @@ function renderStepDetails({ step, markdownRenderer, isLast }) {
     ${contextDetails}
   </div>`;
 }
+function renderWalkthroughSidebarButton(input, lastStep) {
+  const { message, walkthrough } = input;
+  if (walkthrough.isInlined) {
+    return Lit3.nothing;
+  }
+  const title = input.isLoading ? titleForStep(lastStep) : lockedString4(UIStringsNotTranslate4.showThinking);
+  return html5`
+    <div class="walkthrough-toggle-container">
+      ${input.isLoading ? html5`<devtools-spinner></devtools-spinner>` : Lit3.nothing}
+      <devtools-button
+        .variant=${"outlined"}
+        .size=${"SMALL"}
+        .title=${lastStep.isLoading ? titleForStep(lastStep) : lockedString4(UIStringsNotTranslate4.showThinking)}
+        .jslogContext=${walkthrough.isExpanded ? "ai-hide-walkthrough-sidebar" : "ai-show-walkthrough-sidebar"}
+        data-show-walkthrough
+        @click=${() => {
+    if (walkthrough.isExpanded) {
+      walkthrough.onToggle(false);
+    } else {
+      walkthrough.onOpen(message);
+    }
+  }}
+      >${title}</devtools-button>
+    </div>
+  `;
+}
 function renderWalkthroughUI(input, steps) {
-  if (steps.length === 0) {
+  const lastStep = steps.at(-1);
+  if (!lastStep) {
     return Lit3.nothing;
   }
   const sideEffectSteps = steps.filter((s) => s.sideEffect);
-  const openWalkThroughSidebarButton = !input.walkthrough.isInlined ? html5`
-      <div class="walkthrough-toggle-container">
-        <devtools-button
-          .variant=${"outlined"}
-          .size=${"SMALL"}
-          .title=${lockedString4(UIStringsNotTranslate4.showThinking)}
-          .jslogContext=${"ai-show-walkthrough"}
-          @click=${() => {
-    if (input.walkthrough.isExpanded) {
-      input.walkthrough.onToggle(false);
-    } else {
-      input.walkthrough.onOpen(input.message);
-    }
-  }}
-        >${lockedString4(UIStringsNotTranslate4.showThinking)}</devtools-button>
-      </div>
-  ` : Lit3.nothing;
+  const openWalkThroughSidebarButton = !input.walkthrough.isInlined ? renderWalkthroughSidebarButton(input, lastStep) : Lit3.nothing;
   const sideEffectStepsUI = !input.walkthrough.isInlined && !input.walkthrough.isExpanded && sideEffectSteps.length > 0 ? sideEffectSteps.map((step) => html5`
     <div class="side-effect-container">
       ${renderStep({

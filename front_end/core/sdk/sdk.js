@@ -10622,11 +10622,45 @@ var NetworkManager = class _NetworkManager extends SDKModel {
       return null;
     }
     try {
-      const { postData } = await manager.#networkAgent.invoke_getRequestPostData({ requestId });
+      const { postData, base64Encoded } = await manager.#networkAgent.invoke_getRequestPostData({ requestId });
+      if (base64Encoded && postData) {
+        const binaryString = window.atob(postData);
+        const bytes = new Uint8Array(binaryString.length);
+        for (let i = 0; i < binaryString.length; i++) {
+          bytes[i] = binaryString.charCodeAt(i);
+        }
+        const requestContentType = request.requestContentType();
+        const charset = requestContentType ? Platform3.MimeType.parseContentType(requestContentType).charset ?? "utf-8" : "utf-8";
+        const contentEncoding = request.requestContentEncoding()?.toLowerCase();
+        if (contentEncoding) {
+          const decompressed = await _NetworkManager.#tryDecompressBody(bytes.buffer, contentEncoding, charset);
+          if (decompressed !== null) {
+            return decompressed;
+          }
+        }
+        return new TextDecoder(charset).decode(bytes);
+      }
       return postData;
     } catch (e) {
       return e.message;
     }
+  }
+  /**
+   * Attempts to decompress a compressed request body.
+   * Returns the decompressed string, or null if decompression is not applicable.
+   */
+  static async #tryDecompressBody(buffer, encoding, charset) {
+    try {
+      if (encoding.includes("gzip") && Common5.Gzip.isGzip(buffer)) {
+        return await Common5.Gzip.decompress(buffer, charset);
+      }
+      if (encoding.includes("deflate")) {
+        return await Common5.Gzip.decompressDeflate(buffer, charset);
+      }
+    } catch (e) {
+      console.warn("Failed to decompress request body:", e);
+    }
+    return null;
   }
   static connectionType(conditions) {
     if (!conditions.download && !conditions.upload) {
@@ -10826,7 +10860,8 @@ var NetworkDispatcher = class {
   updateNetworkRequestWithRequest(networkRequest, request) {
     networkRequest.requestMethod = request.method;
     networkRequest.setRequestHeaders(this.headersMapToHeadersArray(request.headers));
-    networkRequest.setRequestFormData(Boolean(request.hasPostData), request.postData || null);
+    const isCompressed = Boolean(networkRequest.requestContentEncoding());
+    networkRequest.setRequestFormData(Boolean(request.hasPostData), isCompressed ? null : request.postData || null);
     networkRequest.setInitialPriority(request.initialPriority);
     networkRequest.mixedContentType = request.mixedContentType || "none";
     networkRequest.setReferrerPolicy(request.referrerPolicy);
@@ -29507,6 +29542,9 @@ var NetworkRequest = class _NetworkRequest extends Common27.ObjectWrapper.Object
   requestContentType() {
     return this.requestHeaderValue("Content-Type");
   }
+  requestContentEncoding() {
+    return this.requestHeaderValue("Content-Encoding");
+  }
   hasErrorStatusCode() {
     return this.statusCode >= 400;
   }
@@ -33401,6 +33439,7 @@ var EmulationModel = class extends SDKModel {
       this.setLocalFontsDisabled(localFontsDisabledSetting.get());
     }
     const avifFormatDisabledSetting = Common36.Settings.Settings.instance().moduleSetting("avif-format-disabled");
+    const jpegXlFormatDisabledSetting = Common36.Settings.Settings.instance().moduleSetting("jpeg-xl-format-disabled");
     const webpFormatDisabledSetting = Common36.Settings.Settings.instance().moduleSetting("webp-format-disabled");
     const updateDisabledImageFormats = () => {
       const types = [];
@@ -33408,6 +33447,12 @@ var EmulationModel = class extends SDKModel {
         types.push(
           "avif"
           /* Protocol.Emulation.DisabledImageType.Avif */
+        );
+      }
+      if (jpegXlFormatDisabledSetting.get()) {
+        types.push(
+          "jxl"
+          /* Protocol.Emulation.DisabledImageType.Jxl */
         );
       }
       if (webpFormatDisabledSetting.get()) {
@@ -33419,8 +33464,9 @@ var EmulationModel = class extends SDKModel {
       this.setDisabledImageTypes(types);
     };
     avifFormatDisabledSetting.addChangeListener(updateDisabledImageFormats);
+    jpegXlFormatDisabledSetting.addChangeListener(updateDisabledImageFormats);
     webpFormatDisabledSetting.addChangeListener(updateDisabledImageFormats);
-    if (avifFormatDisabledSetting.get() || webpFormatDisabledSetting.get()) {
+    if (avifFormatDisabledSetting.get() || jpegXlFormatDisabledSetting.get() || webpFormatDisabledSetting.get()) {
       updateDisabledImageFormats();
     }
     this.#cpuPressureEnabled = false;

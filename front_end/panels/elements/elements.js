@@ -5060,7 +5060,7 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
     }
     const regex = new RegExp(propertyNamePattern, "i");
     await computedStyleWidget.filterComputedStyles(regex);
-    computedStyleWidget.setFilterInput(this.property.name);
+    computedStyleWidget.filterText = this.property.name;
   }
   copyCssDeclarationAsJs() {
     const cssDeclarationValue = getCssDeclarationAsJavascriptProperty(this.property);
@@ -10035,7 +10035,7 @@ var ComputedStyleWidget = class extends UI12.Widget.VBox {
   #matchedStyles = null;
   showInheritedComputedStylePropertiesSetting;
   groupComputedStylesSetting;
-  filterRegex;
+  filterRegex = null;
   linkifier;
   imagePreviewPopover;
   /**
@@ -10059,8 +10059,14 @@ var ComputedStyleWidget = class extends UI12.Widget.VBox {
   #computedStylesTree = new TreeOutline6.TreeOutline.TreeOutline();
   #treeData;
   #view;
+  /**
+   * TODO(b/407751272): the state here is confusing (3 instance variables relating to filtering).
+   * There is also a bug where the Toolbar Input's regex flag cannot be
+   * controlled, so if you set a regex filter here, the toolbar might not
+   * reflect it.
+   */
   #filterText = "";
-  #isRegex = false;
+  #filterIsRegex = false;
   #includeToolbar = true;
   constructor() {
     super({ useShadowDom: true });
@@ -10087,11 +10093,27 @@ var ComputedStyleWidget = class extends UI12.Widget.VBox {
     const isNarrow = this.contentElement.offsetWidth < 260;
     this.#computedStylesTree.classList.toggle("computed-narrow", isNarrow);
   }
+  get filterText() {
+    return this.#filterText;
+  }
+  get filterIsRegex() {
+    return this.#filterIsRegex;
+  }
+  set filterText(newFilter) {
+    if (typeof newFilter === "string") {
+      this.#filterText = newFilter;
+      this.#filterIsRegex = false;
+    } else {
+      this.#filterText = newFilter.source;
+      this.#filterIsRegex = true;
+    }
+    this.requestUpdate();
+  }
   get includeToolbar() {
     return this.#includeToolbar;
   }
-  set includeToolbar(x) {
-    this.#includeToolbar = x;
+  set includeToolbar(inc) {
+    this.#includeToolbar = inc;
     this.requestUpdate();
   }
   /**
@@ -10342,7 +10364,7 @@ var ComputedStyleWidget = class extends UI12.Widget.VBox {
     if (!text) {
       return null;
     }
-    if (this.#isRegex) {
+    if (this.#filterIsRegex) {
       try {
         return new RegExp(text, "i");
       } catch {
@@ -10351,7 +10373,7 @@ var ComputedStyleWidget = class extends UI12.Widget.VBox {
     return new RegExp(Platform6.StringUtilities.escapeForRegExp(text), "i");
   }
   async onRegexToggled() {
-    this.#isRegex = !this.#isRegex;
+    this.#filterIsRegex = !this.#filterIsRegex;
     await this.filterComputedStyles(this.#buildFilterRegex(this.#filterText));
   }
   async onFilterChanged(event) {
@@ -10367,10 +10389,6 @@ var ComputedStyleWidget = class extends UI12.Widget.VBox {
       return await this.filterGroupLists();
     }
     return this.filterAlphabeticalList();
-  }
-  setFilterInput(text) {
-    this.#filterText = text;
-    this.requestUpdate();
   }
   nodeFilter(node) {
     const regex = this.filterRegex;

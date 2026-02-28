@@ -1664,6 +1664,42 @@ export class TreeViewElement extends HTMLElementWithLightDOMTemplate {
     }
     TreeViewElement.ExpandEvent = ExpandEvent;
 })(TreeViewElement || (TreeViewElement = {}));
+export const ifExpanded = Lit.Directive.directive(class extends Lit.Directive.Directive {
+    #partInfo;
+    constructor(partInfo) {
+        if (partInfo.type !== Lit.Directive.PartType.CHILD) {
+            throw new Error('ifExpanded directive must be used in a child node');
+        }
+        super(partInfo);
+        this.#partInfo = partInfo;
+    }
+    render(content) {
+        return this.#isInExpandedRow(this.#partInfo.startNode) ? content : Lit.nothing;
+    }
+    #isInExpandedRow(element) {
+        if (!element) {
+            return false;
+        }
+        if (!(element instanceof HTMLElement)) {
+            element = element.parentNode;
+        }
+        if (!(element instanceof HTMLElement)) {
+            return false;
+        }
+        element = element.closest('li[role="treeitem"]') ?? undefined;
+        if (!(element instanceof HTMLLIElement)) {
+            return false;
+        }
+        if (hasBooleanAttribute(element, 'open')) {
+            return true;
+        }
+        const node = TreeViewTreeElement.get(element);
+        if (!node) {
+            return false;
+        }
+        return node.expanded;
+    }
+});
 export class TreeElementWrapper extends HTMLElement {
     #treeElement;
     set treeElement(treeElement) {

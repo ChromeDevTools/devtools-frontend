@@ -2253,7 +2253,8 @@ var DevtoolsExperiments;
   DevtoolsExperiments2[DevtoolsExperiments2["use-source-map-scopes"] = 76] = "use-source-map-scopes";
   DevtoolsExperiments2[DevtoolsExperiments2["timeline-show-postmessage-events"] = 86] = "timeline-show-postmessage-events";
   DevtoolsExperiments2[DevtoolsExperiments2["timeline-debug-mode"] = 93] = "timeline-debug-mode";
-  DevtoolsExperiments2[DevtoolsExperiments2["MAX_VALUE"] = 110] = "MAX_VALUE";
+  DevtoolsExperiments2[DevtoolsExperiments2["durable-messages"] = 110] = "durable-messages";
+  DevtoolsExperiments2[DevtoolsExperiments2["MAX_VALUE"] = 111] = "MAX_VALUE";
 })(DevtoolsExperiments || (DevtoolsExperiments = {}));
 var IssueExpanded;
 (function(IssueExpanded2) {

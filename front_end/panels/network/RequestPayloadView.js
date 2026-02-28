@@ -48,6 +48,7 @@ import requestPayloadViewStyles from './requestPayloadView.css.js';
 import { ShowMoreDetailsWidget } from './ShowMoreDetailsWidget.js';
 const { classMap } = Directives;
 const { widgetConfig } = UI.Widget;
+const { ifExpanded } = UI.TreeOutline;
 const UIStrings = {
     /**
      * @description A context menu item Payload View of the Network panel to copy a parsed value.
@@ -193,8 +194,8 @@ export const DEFAULT_VIEW = (input, output, target) => {
           ${input.decodeRequestParameters ? i18nString(UIStrings.viewUrlEncoded) : i18nString(UIStrings.viewDecoded)}
         </devtools-button>
         <ul role=group>
-          ${input.viewQueryParamSource ? createSourceText(input.queryString ?? '')
-        : createParsedParams(input.queryParameters ?? [])}
+          ${ifExpanded(input.viewQueryParamSource ? createSourceText(input.queryString ?? '')
+        : createParsedParams(input.queryParameters ?? []))}
         </ul>
       </li>
       <li
@@ -216,8 +217,8 @@ export const DEFAULT_VIEW = (input, output, target) => {
           ${input.decodeRequestParameters ? i18nString(UIStrings.viewUrlEncoded) : i18nString(UIStrings.viewDecoded)}
         </devtools-button>
         <ul role=group>
-          ${input.viewFormParamSource ? createSourceText(input.formData ?? '')
-        : createParsedParams(input.formParameters ?? [])}
+          ${ifExpanded(input.viewFormParamSource ? createSourceText(input.formData ?? '')
+        : createParsedParams(input.formParameters ?? []))}
         </ul>
       </li>
       <li
@@ -231,8 +232,8 @@ export const DEFAULT_VIEW = (input, output, target) => {
         >
         <div class="selection fill"></div>${i18nString(UIStrings.requestPayload)}${createViewSourceToggle(input.viewJSONPayloadSource, input.setViewJSONPayloadSource)}
         <ul role=group>
-          ${!parsedFormData || input.viewJSONPayloadSource ? createSourceText(input.formData ?? '')
-        : createPayload(parsedFormData)}
+          ${ifExpanded(!parsedFormData || input.viewJSONPayloadSource ? createSourceText(input.formData ?? '')
+        : createPayload(parsedFormData))}
         </ul>
       </li>
      </ul>

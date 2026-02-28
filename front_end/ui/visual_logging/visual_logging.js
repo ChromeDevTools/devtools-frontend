@@ -364,7 +364,8 @@ var knownContextValues = /* @__PURE__ */ new Set([
   "ai-code-generation-upgrade-dialog.manage-in-settings",
   "ai-code-generation-used",
   "ai-explorer",
-  "ai-show-walkthrough",
+  "ai-hide-walkthrough-sidebar",
+  "ai-show-walkthrough-sidebar",
   "ai_assistance",
   "align-content",
   "align-content-center",
@@ -1381,6 +1382,7 @@ var knownContextValues = /* @__PURE__ */ new Set([
   "drjones.sources-panel-context.performance",
   "drjones.sources-panel-context.script",
   "drop",
+  "durable-messages",
   "duration",
   "durationchange",
   "dynamic-local-setting",
@@ -2059,6 +2061,8 @@ var knownContextValues = /* @__PURE__ */ new Set([
   "java-script-disabled-true",
   "javascript",
   "javascript-context",
+  "jpeg-xl-format-disabled",
+  "jpeg-xl-format-disabled-true",
   "jpg-header",
   "js-event-listeners",
   "js-heap-total-size",
@@ -5160,49 +5164,58 @@ ${JSON.stringify(allLogs, null, 2)}
   });
 }
 var numMatchedEvents = 0;
+function recordUnmatchedEvent(pendingExpectation, actualEvent, expectedEvent, matchedImpressions) {
+  const unmatched = { ...actualEvent };
+  if ("impressions" in unmatched && "impressions" in expectedEvent) {
+    unmatched.impressions = unmatched.impressions.filter((impression) => {
+      const matched = expectedEvent.impressions.includes(impression);
+      if (matched) {
+        matchedImpressions.add(impression);
+      }
+      return !matched;
+    });
+  }
+  pendingExpectation.unmatchedEvents.push(unmatched);
+}
+function processMissingEvents(pendingExpectation, expectedEventIndex, matchedImpressions) {
+  pendingExpectation.missingEvents = pendingExpectation.expectedEvents.slice(expectedEventIndex);
+  for (const event of pendingExpectation.missingEvents) {
+    if ("impressions" in event) {
+      event.impressions = event.impressions.filter((impression) => !matchedImpressions.has(impression));
+    }
+  }
+  pendingExpectation.missingEvents = pendingExpectation.missingEvents.filter((event) => !("impressions" in event) || event.impressions.length > 0);
+}
 function checkPendingEventExpectation() {
   if (!pendingEventExpectation) {
     return;
   }
-  const actualEvents = [...veDebugEventsLog];
-  let partialMatch = false;
+  const actualEvents = veDebugEventsLog;
+  let actualEventIndex = 0;
+  let matchStarted = false;
   const matchedImpressions = /* @__PURE__ */ new Set();
   pendingEventExpectation.unmatchedEvents = [];
-  for (let i = 0; i < pendingEventExpectation.expectedEvents.length; ++i) {
-    const expectedEvent = pendingEventExpectation.expectedEvents[i];
-    while (true) {
-      if (actualEvents.length <= i) {
-        pendingEventExpectation.missingEvents = pendingEventExpectation.expectedEvents.slice(i);
-        for (const event of pendingEventExpectation.missingEvents) {
-          if ("impressions" in event) {
-            event.impressions = event.impressions.filter((impression) => !matchedImpressions.has(impression));
-          }
-        }
-        pendingEventExpectation.missingEvents = pendingEventExpectation.missingEvents.filter((event) => !("impressions" in event) || event.impressions.length > 0);
-        return;
-      }
-      if (!compareVeEvents(actualEvents[i], expectedEvent)) {
-        if (partialMatch) {
-          const unmatched = { ...actualEvents[i] };
-          if ("impressions" in unmatched && "impressions" in expectedEvent) {
-            unmatched.impressions = unmatched.impressions.filter((impression) => {
-              const matched = expectedEvent.impressions.includes(impression);
-              if (matched) {
-                matchedImpressions.add(impression);
-              }
-              return !matched;
-            });
-          }
-          pendingEventExpectation.unmatchedEvents.push(unmatched);
-        }
-        actualEvents.splice(i, 1);
-      } else {
-        partialMatch = true;
+  for (let expectedEventIndex = 0; expectedEventIndex < pendingEventExpectation.expectedEvents.length; ++expectedEventIndex) {
+    const expectedEvent = pendingEventExpectation.expectedEvents[expectedEventIndex];
+    let found = false;
+    while (actualEventIndex < actualEvents.length) {
+      if (compareVeEvents(actualEvents[actualEventIndex], expectedEvent)) {
+        found = true;
+        matchStarted = true;
+        actualEventIndex++;
         break;
       }
+      if (matchStarted) {
+        recordUnmatchedEvent(pendingEventExpectation, actualEvents[actualEventIndex], expectedEvent, matchedImpressions);
+      }
+      actualEventIndex++;
+    }
+    if (!found) {
+      processMissingEvents(pendingEventExpectation, expectedEventIndex, matchedImpressions);
+      return;
     }
   }
-  numMatchedEvents = veDebugEventsLog.length - actualEvents.length + pendingEventExpectation.expectedEvents.length;
+  numMatchedEvents = actualEventIndex;
   pendingEventExpectation.success();
 }
 function getUnmatchedVeEvents() {
@@ -5317,7 +5330,11 @@ var logResize = (loggable, size) => {
     return;
   }
   loggingState.size = size;
-  const resizeEvent = { veid: loggingState.veid, width: loggingState.size.width, height: loggingState.size.height };
+  const resizeEvent = {
+    veid: loggingState.veid,
+    width: Math.round(loggingState.size.width),
+    height: Math.round(loggingState.size.height)
+  };
   Host2.InspectorFrontendHost.InspectorFrontendHostInstance.recordResize(resizeEvent);
   processEventForDebugging("Resize", loggingState, { width: Math.round(size.width), height: Math.round(size.height) });
 };

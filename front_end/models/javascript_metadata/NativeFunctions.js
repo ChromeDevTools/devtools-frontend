@@ -6714,7 +6714,7 @@ export const NativeFunctions = [
         signatures: [["?options"]]
     },
     {
-        name: "getValueRange",
+        name: "createValueRange",
         signatures: [["start", "end"]]
     },
     {
@@ -7018,6 +7018,10 @@ export const NativeFunctions = [
     {
         name: "Highlight",
         signatures: [["...initRanges"]]
+    },
+    {
+        name: "CanvasPaintEvent",
+        signatures: [["type", "?eventInitDict"]]
     },
     {
         name: "getElementTransform",

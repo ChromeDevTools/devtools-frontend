@@ -312,6 +312,14 @@ const UIStrings = {
      */
     enableAvifFormat: 'Enable `AVIF` format',
     /**
+     * @description Title of a setting that disables JPEG XL format
+     */
+    disableJpegXlFormat: 'Disable `JPEG XL` format',
+    /**
+     * @description Title of a setting that enables JPEG XL format
+     */
+    enableJpegXlFormat: 'Enable `JPEG XL` format',
+    /**
      * @description Title of a setting that disables WebP format
      */
     disableWebpFormat: 'Disable `WebP` format',
@@ -1033,6 +1041,23 @@ Common.Settings.registerSettingExtension({
         {
             value: false,
             title: i18nLazyString(UIStrings.enableAvifFormat),
+        },
+    ],
+    defaultValue: false,
+});
+Common.Settings.registerSettingExtension({
+    category: "RENDERING" /* Common.Settings.SettingCategory.RENDERING */,
+    settingName: 'jpeg-xl-format-disabled',
+    settingType: "boolean" /* Common.Settings.SettingType.BOOLEAN */,
+    storageType: "Session" /* Common.Settings.SettingStorageType.SESSION */,
+    options: [
+        {
+            value: true,
+            title: i18nLazyString(UIStrings.disableJpegXlFormat),
+        },
+        {
+            value: false,
+            title: i18nLazyString(UIStrings.enableJpegXlFormat),
         },
     ],
     defaultValue: false,

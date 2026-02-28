@@ -353,6 +353,12 @@ export default `/*
     display: flex;
     gap: var(--sys-size-4);
   }
+
+  .walkthrough-toggle-container {
+    display: flex;
+    gap: var(--sys-size-4);
+    align-items: center;
+  }
 }
 
 /*# sourceURL=${import.meta.resolve('././components/chatMessage.css')} */`;

@@ -256,10 +256,12 @@ function renderTextAsMarkdown(text, markdownRenderer, { animate, ref: refFn } = 
   </devtools-markdown-view>`;
     // clang-format on
 }
+function titleForStep(step) {
+    return step.title ?? `${lockedString(UIStringsNotTranslate.investigating)}…`;
+}
 function renderTitle(step) {
     const paused = step.sideEffect ? html `<span class="paused">${lockedString(UIStringsNotTranslate.paused)}: </span>` : Lit.nothing;
-    const actionTitle = step.title ?? `${lockedString(UIStringsNotTranslate.investigating)}…`;
-    return html `<span class="title">${paused}${actionTitle}</span>`;
+    return html `<span class="title">${paused}${titleForStep(step)}</span>`;
 }
 function renderStepCode(step) {
     if (!step.code && !step.output) {
@@ -319,6 +321,38 @@ function renderStepDetails({ step, markdownRenderer, isLast, }) {
   </div>`;
     // clang-format on
 }
+function renderWalkthroughSidebarButton(input, lastStep) {
+    const { message, walkthrough } = input;
+    if (walkthrough.isInlined) {
+        return Lit.nothing;
+    }
+    const title = input.isLoading ? titleForStep(lastStep) : lockedString(UIStringsNotTranslate.showThinking);
+    // clang-format off
+    return html `
+    <div class="walkthrough-toggle-container">
+      ${input.isLoading ? html `<devtools-spinner></devtools-spinner>` : Lit.nothing}
+      <devtools-button
+        .variant=${"outlined" /* Buttons.Button.Variant.OUTLINED */}
+        .size=${"SMALL" /* Buttons.Button.Size.SMALL */}
+        .title=${lastStep.isLoading ? titleForStep(lastStep) : lockedString(UIStringsNotTranslate.showThinking)}
+        .jslogContext=${walkthrough.isExpanded ? 'ai-hide-walkthrough-sidebar' : 'ai-show-walkthrough-sidebar'}
+        data-show-walkthrough
+        @click=${() => {
+        if (walkthrough.isExpanded) {
+            walkthrough.onToggle(false);
+        }
+        else {
+            // Can't just toggle the visibility here; we need to ensure we
+            // update the state with this message as the user could have had
+            // the walkthrough open with an alternative message.
+            walkthrough.onOpen(message);
+        }
+    }}
+      >${title}</devtools-button>
+    </div>
+  `;
+    // clang-format on
+}
 /**
  * Responsible for rendering the AI Walkthrough UI. This can take different
  * shapes and involve different parts depending on if the walkthrough is
@@ -326,35 +360,15 @@ function renderStepDetails({ step, markdownRenderer, isLast, }) {
  * view them.
  */
 function renderWalkthroughUI(input, steps) {
-    if (steps.length === 0) {
+    const lastStep = steps.at(-1);
+    if (!lastStep) {
+        // No steps = no walkthrough UI in the chat view.
         return Lit.nothing;
     }
     const sideEffectSteps = steps.filter(s => s.sideEffect);
     // If the walkthrough is in the sidebar, we render a button into the
     // ChatView to open it.
-    // clang-format off
-    const openWalkThroughSidebarButton = !input.walkthrough.isInlined ? html `
-      <div class="walkthrough-toggle-container">
-        <devtools-button
-          .variant=${"outlined" /* Buttons.Button.Variant.OUTLINED */}
-          .size=${"SMALL" /* Buttons.Button.Size.SMALL */}
-          .title=${lockedString(UIStringsNotTranslate.showThinking)}
-          .jslogContext=${'ai-show-walkthrough'}
-          @click=${() => {
-        if (input.walkthrough.isExpanded) {
-            input.walkthrough.onToggle(false);
-        }
-        else {
-            // Can't just toggle the visibility here; we need to ensure we
-            // update the state with this message as the user could have had
-            // the walkthrough open with an alternative message.
-            input.walkthrough.onOpen(input.message);
-        }
-    }}
-        >${lockedString(UIStringsNotTranslate.showThinking)}</devtools-button>
-      </div>
-  ` : Lit.nothing;
-    // clang-format on
+    const openWalkThroughSidebarButton = !input.walkthrough.isInlined ? renderWalkthroughSidebarButton(input, lastStep) : Lit.nothing;
     // If there are side-effect steps, and the walkthrough is not open, we render
     // those inline so that the user can see them and approve them.
     // Note: this is a temporary approach and needs more UX discussion; b/487921578

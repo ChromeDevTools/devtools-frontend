@@ -235,7 +235,7 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
     #matchedStyles = null;
     showInheritedComputedStylePropertiesSetting;
     groupComputedStylesSetting;
-    filterRegex;
+    filterRegex = null;
     linkifier;
     imagePreviewPopover;
     /**
@@ -259,8 +259,14 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
     #computedStylesTree = new TreeOutline.TreeOutline.TreeOutline();
     #treeData;
     #view;
+    /**
+     * TODO(b/407751272): the state here is confusing (3 instance variables relating to filtering).
+     * There is also a bug where the Toolbar Input's regex flag cannot be
+     * controlled, so if you set a regex filter here, the toolbar might not
+     * reflect it.
+     */
     #filterText = '';
-    #isRegex = false;
+    #filterIsRegex = false;
     #includeToolbar = true;
     constructor() {
         super({ useShadowDom: true });
@@ -288,11 +294,28 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
         const isNarrow = this.contentElement.offsetWidth < 260;
         this.#computedStylesTree.classList.toggle('computed-narrow', isNarrow);
     }
+    get filterText() {
+        return this.#filterText;
+    }
+    get filterIsRegex() {
+        return this.#filterIsRegex;
+    }
+    set filterText(newFilter) {
+        if (typeof newFilter === 'string') {
+            this.#filterText = newFilter;
+            this.#filterIsRegex = false;
+        }
+        else {
+            this.#filterText = newFilter.source;
+            this.#filterIsRegex = true;
+        }
+        this.requestUpdate();
+    }
     get includeToolbar() {
         return this.#includeToolbar;
     }
-    set includeToolbar(x) {
-        this.#includeToolbar = x;
+    set includeToolbar(inc) {
+        this.#includeToolbar = inc;
         this.requestUpdate();
     }
     /**
@@ -543,7 +566,7 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
         if (!text) {
             return null;
         }
-        if (this.#isRegex) {
+        if (this.#filterIsRegex) {
             try {
                 return new RegExp(text, 'i');
             }
@@ -554,7 +577,7 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
         return new RegExp(Platform.StringUtilities.escapeForRegExp(text), 'i');
     }
     async onRegexToggled() {
-        this.#isRegex = !this.#isRegex;
+        this.#filterIsRegex = !this.#filterIsRegex;
         await this.filterComputedStyles(this.#buildFilterRegex(this.#filterText));
     }
     async onFilterChanged(event) {
@@ -570,10 +593,6 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
             return await this.filterGroupLists();
         }
         return this.filterAlphabeticalList();
-    }
-    setFilterInput(text) {
-        this.#filterText = text;
-        this.requestUpdate();
     }
     nodeFilter(node) {
         const regex = this.filterRegex;

@@ -3822,6 +3822,7 @@ __export(Gzip_exports, {
   compressStream: () => compressStream,
   createMonitoredStream: () => createMonitoredStream,
   decompress: () => decompress,
+  decompressDeflate: () => decompressDeflate,
   decompressStream: () => decompressStream,
   fileToString: () => fileToString,
   isGzip: () => isGzip
@@ -3849,10 +3850,19 @@ async function fileToString(file) {
   const str = new TextDecoder("utf-8").decode(arrayBuffer);
   return str;
 }
-async function decompress(gzippedBuffer) {
+async function decompress(gzippedBuffer, charset = "utf-8") {
   const buffer = await gzipCodec(gzippedBuffer, new DecompressionStream("gzip"));
-  const str = new TextDecoder("utf-8").decode(buffer);
+  const str = new TextDecoder(charset).decode(buffer);
   return str;
+}
+async function decompressDeflate(buffer, charset = "utf-8") {
+  let decompressedBuffer;
+  try {
+    decompressedBuffer = await gzipCodec(buffer, new DecompressionStream("deflate"));
+  } catch {
+    decompressedBuffer = await gzipCodec(buffer, new DecompressionStream("deflate-raw"));
+  }
+  return new TextDecoder(charset).decode(decompressedBuffer);
 }
 async function compress(str) {
   const encoded = new TextEncoder().encode(str);

@@ -531,7 +531,8 @@ export declare enum DevtoolsExperiments {
     'use-source-map-scopes' = 76,
     'timeline-show-postmessage-events' = 86,
     'timeline-debug-mode' = 93,
-    MAX_VALUE = 110
+    'durable-messages' = 110,
+    MAX_VALUE = 111
 }
 /** Update DevToolsIssuesPanelIssueExpanded from tools/metrics/histograms/enums.xml if new enum is added. **/
 export declare enum IssueExpanded {

@@ -1852,6 +1852,14 @@ declare namespace ProtocolProxyApi {
      */
     invoke_removeScreen(params: Protocol.Emulation.RemoveScreenRequest): Promise<Protocol.ProtocolResponseWithError>;
 
+    /**
+     * Set primary screen. Only supported in headless mode.
+     * Note that this changes the coordinate system origin to the top-left
+     * of the new primary screen, updating the bounds and work areas
+     * of all existing screens accordingly.
+     */
+    invoke_setPrimaryScreen(params: Protocol.Emulation.SetPrimaryScreenRequest): Promise<Protocol.ProtocolResponseWithError>;
+
   }
   export interface EmulationDispatcher {
     /**

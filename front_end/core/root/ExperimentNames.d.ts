@@ -18,5 +18,6 @@ export declare enum ExperimentName {
     JUST_MY_CODE = "just-my-code",
     USE_SOURCE_MAP_SCOPES = "use-source-map-scopes",
     TIMELINE_SHOW_POST_MESSAGE_EVENTS = "timeline-show-postmessage-events",
-    TIMELINE_DEBUG_MODE = "timeline-debug-mode"
+    TIMELINE_DEBUG_MODE = "timeline-debug-mode",
+    DURABLE_MESSAGES = "durable-messages"
 }

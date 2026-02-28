@@ -13,6 +13,7 @@ __export(RenderingOptions_exports, {
 import * as Common from "./../../core/common/common.js";
 import * as Host from "./../../core/host/host.js";
 import * as i18n from "./../../core/i18n/i18n.js";
+import * as Root from "./../../core/root/root.js";
 import * as SettingsUI from "./../../ui/legacy/components/settings_ui/settings_ui.js";
 import * as UI from "./../../ui/legacy/legacy.js";
 import * as VisualLogging from "./../../ui/visual_logging/visual_logging.js";
@@ -180,10 +181,14 @@ var UIStrings = {
    */
   disableAvifImageFormat: "Disable `AVIF` image format",
   /**
-   * @description Explanation text for both the 'Disable AVIF image format' and 'Disable WebP image
-   * format' settings in the Rendering tool.
+   * @description Explanation text for the image format disabling settings in the Rendering tool.
    */
   requiresAPageReloadToApplyAnd: "Requires a page reload to apply and disables caching for image requests.",
+  /**
+   * @description The name of a checkbox setting in the Rendering tool. This setting disables the
+   * page from loading images with the JPEG XL format.
+   */
+  disableJpegXlImageFormat: "Disable `JPEG XL` image format",
   /**
    * @description The name of a checkbox setting in the Rendering tool. This setting disables the
    * page from loading images with the WebP format.
@@ -208,7 +213,11 @@ var supportsPrefersContrast = () => {
   const query = "not all and (prefers-contrast), (prefers-contrast)";
   return window.matchMedia(query).matches;
 };
+var supportsJpegXl = () => {
+  return Boolean(Root.Runtime.hostConfig.devToolsJpegXlImageFormat?.enabled);
+};
 var RenderingOptionsView = class extends UI.Widget.VBox {
+  #jpegXlCheckboxAdded = false;
   constructor() {
     super({ useShadowDom: true });
     this.registerRequiredCSS(renderingOptions_css_default);
@@ -242,8 +251,12 @@ var RenderingOptionsView = class extends UI.Widget.VBox {
     this.contentElement.createChild("div").classList.add("panel-section-separator");
     this.#appendSelect(i18nString(UIStrings.forcesOsTextScaleEmulation), Common.Settings.Settings.instance().moduleSetting("emulated-os-text-scale"));
     this.contentElement.createChild("div").classList.add("panel-section-separator");
-    this.#appendCheckbox(i18nString(UIStrings.disableAvifImageFormat), i18nString(UIStrings.requiresAPageReloadToApplyAnd), Common.Settings.Settings.instance().moduleSetting("avif-format-disabled"));
-    this.#appendCheckbox(i18nString(UIStrings.disableWebpImageFormat), i18nString(UIStrings.requiresAPageReloadToApplyAnd), Common.Settings.Settings.instance().moduleSetting("webp-format-disabled"));
+    const avifFormatDisabledSetting = Common.Settings.Settings.instance().moduleSetting("avif-format-disabled");
+    const jpegXlFormatDisabledSetting = Common.Settings.Settings.instance().moduleSetting("jpeg-xl-format-disabled");
+    const webpFormatDisabledSetting = Common.Settings.Settings.instance().moduleSetting("webp-format-disabled");
+    this.#appendCheckbox(i18nString(UIStrings.disableAvifImageFormat), i18nString(UIStrings.requiresAPageReloadToApplyAnd), avifFormatDisabledSetting);
+    const webpCheckbox = this.#appendCheckbox(i18nString(UIStrings.disableWebpImageFormat), i18nString(UIStrings.requiresAPageReloadToApplyAnd), webpFormatDisabledSetting);
+    this.#appendJpegXlCheckboxWhenSupported(webpCheckbox, jpegXlFormatDisabledSetting);
     this.contentElement.createChild("div").classList.add("panel-section-separator");
   }
   #appendCheckbox(label, subtitle, setting, metric) {
@@ -251,6 +264,13 @@ var RenderingOptionsView = class extends UI.Widget.VBox {
     UI.UIUtils.bindCheckbox(checkbox, setting, metric);
     this.contentElement.appendChild(checkbox);
     return checkbox;
+  }
+  #appendJpegXlCheckboxWhenSupported(webpCheckbox, jpegXlFormatDisabledSetting) {
+    if (this.#jpegXlCheckboxAdded || !supportsJpegXl()) {
+      return;
+    }
+    this.#jpegXlCheckboxAdded = true;
+    webpCheckbox.before(this.#appendCheckbox(i18nString(UIStrings.disableJpegXlImageFormat), i18nString(UIStrings.requiresAPageReloadToApplyAnd), jpegXlFormatDisabledSetting));
   }
   #appendSelect(label, setting) {
     const control = SettingsUI.SettingsUI.createControlForSetting(setting, label);
@@ -289,7 +309,7 @@ __export(InspectorMain_exports, {
 import * as Common2 from "./../../core/common/common.js";
 import * as Host2 from "./../../core/host/host.js";
 import * as i18n3 from "./../../core/i18n/i18n.js";
-import * as Root from "./../../core/root/root.js";
+import * as Root2 from "./../../core/root/root.js";
 import * as SDK from "./../../core/sdk/sdk.js";
 import * as MobileThrottling from "./../../panels/mobile_throttling/mobile_throttling.js";
 import * as Components from "./../../ui/legacy/components/utils/utils.js";
@@ -359,8 +379,8 @@ var InspectorMainImpl = class {
   async run() {
     let firstCall = true;
     await SDK.Connections.initMainConnection(async () => {
-      const type = Root.Runtime.Runtime.queryParam("v8only") ? SDK.Target.Type.NODE : Root.Runtime.Runtime.queryParam("targetType") === "tab" || Root.Runtime.Runtime.isTraceApp() ? SDK.Target.Type.TAB : SDK.Target.Type.FRAME;
-      const waitForDebuggerInPage = type === SDK.Target.Type.FRAME && Root.Runtime.Runtime.queryParam("panel") === "sources";
+      const type = Root2.Runtime.Runtime.queryParam("v8only") ? SDK.Target.Type.NODE : Root2.Runtime.Runtime.queryParam("targetType") === "tab" || Root2.Runtime.Runtime.isTraceApp() ? SDK.Target.Type.TAB : SDK.Target.Type.FRAME;
+      const waitForDebuggerInPage = type === SDK.Target.Type.FRAME && Root2.Runtime.Runtime.queryParam("panel") === "sources";
       const name = type === SDK.Target.Type.FRAME ? i18nString2(UIStrings2.main) : i18nString2(UIStrings2.tab);
       const target = SDK.TargetManager.TargetManager.instance().createTarget("main", name, type, null, void 0, waitForDebuggerInPage);
       const waitForPrimaryPageTarget = () => {

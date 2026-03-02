@@ -14,7 +14,7 @@ import {openCommandMenu} from './quick_open-helpers.js';
 export async function navigateToLighthouseTab(
     path: string|undefined, devToolsPage: DevToolsPage, inspectedPage: InspectedPage): Promise<ElementHandle<Element>> {
   await openCommandMenu(devToolsPage);
-  await devToolsPage.typeText('Lighthouse');
+  await devToolsPage.pasteText('Lighthouse');
   await devToolsPage.pressKey('Enter');
   await devToolsPage.waitFor('.view-container > .lighthouse');
 

@@ -57,6 +57,11 @@ const UIStringsNotTranslate = {
    */
   writeACommentToGenerateCode: 'Write a comment to generate code',
   /**
+   * @description Text for teaser for discoverability.
+   */
+  writeACommentToGenerateCodeInConsole:
+      'Write a comment to generate code. Try typing: \'// add red borders to all the divs\'.',
+  /**
    * @description Text for teaser when suggestion has been generated.
    */
   tab: 'tab',
@@ -257,9 +262,10 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
         break;
       }
       const newBadge = UI.UIUtils.maybeCreateNewBadge(PROMOTION_ID);
-      teaserLabel = newBadge ?
-          html`${lockedString(UIStringsNotTranslate.writeACommentToGenerateCode)}&nbsp;${newBadge}` :
-          nothing;
+      const teaserText = input.panel === AiCodeCompletion.AiCodeCompletion.ContextFlavor.CONSOLE ?
+          lockedString(UIStringsNotTranslate.writeACommentToGenerateCodeInConsole) :
+          lockedString(UIStringsNotTranslate.writeACommentToGenerateCode);
+      teaserLabel = newBadge ? html`${teaserText}&nbsp;${newBadge}` : nothing;
       break;
     }
 
@@ -310,7 +316,6 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
   // clang-format on
 };
 
-// TODO(b/448063927): Add "Dont show again" for discovery teaser.
 export class AiCodeGenerationTeaser extends UI.Widget.Widget {
   readonly #view: View;
   #viewOutput: ViewOutput = {};

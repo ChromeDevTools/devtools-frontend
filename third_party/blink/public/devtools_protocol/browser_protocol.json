@@ -15514,7 +15514,7 @@
                 },
                 {
                     "id": "RenderBlockingBehavior",
-                    "description": "The render blocking behavior of a resource request.",
+                    "description": "The render-blocking behavior of a resource request.",
                     "experimental": true,
                     "type": "string",
                     "enum": [
@@ -19024,7 +19024,7 @@
                         },
                         {
                             "name": "renderBlockingBehavior",
-                            "description": "The render blocking behavior of the request.",
+                            "description": "The render-blocking behavior of the request.",
                             "experimental": true,
                             "optional": true,
                             "$ref": "RenderBlockingBehavior"

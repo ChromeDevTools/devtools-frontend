@@ -654,7 +654,7 @@ describe('The Network Request view', () => {
 
       await devToolsPage.waitForFunction(async () => {
         const searchStatusText = await devToolsPage.getTextContent('.search-results-matches');
-        if (totalMatches > 0) {
+        if (totalMatches > 0 && searchStatusText) {
           return searchStatusText.endsWith(`of ${totalMatches}`);
         }
         return !searchStatusText;

@@ -153,7 +153,7 @@ export class DevToolsPage extends PageWrapper {
     return element;
   }
 
-  async #maybeHighlight(element: puppeteer.ElementHandle) {
+  async #maybeHighlight(element: puppeteer.ElementHandle|null) {
     if (!TestConfig.debug) {
       return;
     }

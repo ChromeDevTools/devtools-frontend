@@ -28,7 +28,7 @@ describe('The Sources tab', () => {
 
     const scrollLeft = await devToolsPage.waitForFunction(async () => {
       const scroller = await devToolsPage.$('.cm-editor > .cm-scroller');
-      return await scroller.evaluate(e => e.scrollLeft);
+      return await scroller!.evaluate(e => e.scrollLeft);
     });
     assert.isAbove(scrollLeft, 0);
 

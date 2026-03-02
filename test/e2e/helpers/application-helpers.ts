@@ -235,7 +235,7 @@ export async function getStorageItemsData(columns: string[], leastExpected = 1, 
 }
 
 export async function filterStorageItems(filter: string, devToolsPage: DevToolsPage) {
-  const element = await devToolsPage.$('.toolbar-input-prompt');
+  const element = await devToolsPage.waitFor('.toolbar-input-prompt');
   await expectVeEvents(
       [veImpressionsUnder('Panel: resources > Pane: cookies-data > Toolbar', [veImpression('TextField', 'filter')])],
       undefined, devToolsPage);

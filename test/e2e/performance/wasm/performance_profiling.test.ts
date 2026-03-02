@@ -96,33 +96,32 @@ describe('The Performance panel', function() {
 
        await navigateToBottomUpTab(devToolsPage, 'url');
 
-       const timelineTree = await devToolsPage.$<HTMLSelectElement>('.timeline-tree-view');
+       const timelineTree = (await devToolsPage.$<HTMLSelectElement>('.timeline-tree-view'))!;
        const rootActivity = await devToolsPage.waitForElementWithTextContent(expectedActivities[0], timelineTree);
        assert.isOk(rootActivity, `Could not find ${expectedActivities[0]} in DevTools.`);
        await rootActivity.click();
        await expandAndCheckActivityTree(expectedActivities, devToolsPage);
      });
 
-  it(
-      'is able to inspect the call stack for a wasm function from the call tree',
-      async ({devToolsPage, inspectedPage}) => {
-        await setupPerformancePanel(devToolsPage, inspectedPage);
+  it('is able to inspect the call stack for a wasm function from the call tree',
+     async ({devToolsPage, inspectedPage}) => {
+       await setupPerformancePanel(devToolsPage, inspectedPage);
 
-        const expectedActivities = [
-          'Run microtasks',
-          '(anonymous)',
-          'js-to-wasm::i',
-          'mainWasm',
-          'wasm-to-js::l-imports.getTime',
-          'getTime',
-        ];
+       const expectedActivities = [
+         'Run microtasks',
+         '(anonymous)',
+         'js-to-wasm::i',
+         'mainWasm',
+         'wasm-to-js::l-imports.getTime',
+         'getTime',
+       ];
 
-        await navigateToCallTreeTab(devToolsPage);
+       await navigateToCallTreeTab(devToolsPage);
 
-        const timelineTree = await devToolsPage.$<HTMLSelectElement>('.timeline-tree-view');
-        const rootActivity = await devToolsPage.waitForElementWithTextContent(expectedActivities[0], timelineTree);
-        assert.isOk(rootActivity, `Could not find ${expectedActivities[0]} in DevTools.`);
-        await rootActivity.click();
-        await expandAndCheckActivityTree(expectedActivities, devToolsPage);
-      });
+       const timelineTree = (await devToolsPage.$<HTMLSelectElement>('.timeline-tree-view'))!;
+       const rootActivity = await devToolsPage.waitForElementWithTextContent(expectedActivities[0], timelineTree);
+       assert.isOk(rootActivity, `Could not find ${expectedActivities[0]} in DevTools.`);
+       await rootActivity.click();
+       await expandAndCheckActivityTree(expectedActivities, devToolsPage);
+     });
 });

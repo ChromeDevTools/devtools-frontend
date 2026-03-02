@@ -133,7 +133,7 @@ describe('Scope View', () => {
     assert.isNotNull(interpreter);
 
     const oldValueElement = await devToolsPage.$('div + .value-type-cell', interpreter);
-    const oldValue = await oldValueElement.evaluate(e => (e as HTMLElement).innerText);
+    const oldValue = await oldValueElement!.evaluate(e => (e as HTMLElement).innerText);
     const select = await devToolsPage.$('.value-types select', interpreter);
     assert.isNotNull(select);
 
@@ -144,7 +144,7 @@ describe('Scope View', () => {
 
     const newValue = await devToolsPage.waitForFunction(async () => {
       const newValueElement = await devToolsPage.$('div + .value-type-cell', interpreter);
-      const textContent = await newValueElement.evaluate(e => (e as HTMLElement).innerText);
+      const textContent = await newValueElement!.evaluate(e => (e as HTMLElement).innerText);
       if (!textContent.trim().startsWith('0x')) {
         return false;
       }

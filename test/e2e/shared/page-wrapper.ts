@@ -123,7 +123,8 @@ export class PageWrapper {
       selector: Selector, root?: puppeteer.ElementHandle, handler = 'pierce') {
     const rootElement = root ? root : this.page;
     const element = await rootElement.$(`${handler}/${selector}`) as
-        puppeteer.ElementHandle<DeducedElementType<ElementType, Selector>>;
+            puppeteer.ElementHandle<DeducedElementType<ElementType, Selector>>|
+        null;
     return element;
   }
 
@@ -373,7 +374,7 @@ export class PageWrapper {
       selector: Selector, root?: puppeteer.ElementHandle, asyncScope = new AsyncScope(), handler?: string) {
     return await asyncScope.exec(() => this.waitForFunction(async () => {
       const element = await this.$<ElementType, typeof selector>(selector, root, handler);
-      const visible = await element.evaluate(node => node.checkVisibility());
+      const visible = await element?.evaluate(node => node.checkVisibility());
       return visible ? element : undefined;
     }, asyncScope, `Waiting for element matching selector '${handler ? `${handler}/` : ''}${selector}' to be visible`));
   }

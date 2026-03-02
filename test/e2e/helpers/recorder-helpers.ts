@@ -285,7 +285,7 @@ export async function getCurrentRecording(
   const recording = (await controller?.evaluate(
       el => JSON.stringify(el.getUserFlow()),
       ));
-  return JSON.parse(recording);
+  return JSON.parse(recording ?? '');
 }
 
 export async function startOrStopRecordingShortcut(

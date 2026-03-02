@@ -294,7 +294,7 @@ describe('User Metrics', () => {
     await devToolsPage.waitFor('.keybinds-set-select');
 
     const keybindSetSelect = await devToolsPage.$('.keybinds-set-select select');
-    await keybindSetSelect.select('vsCode');
+    await keybindSetSelect!.select('vsCode');
 
     await assertHistogramEventsInclude(
         [

@@ -309,10 +309,15 @@ export async function getSizesFromSelectedRow(devToolsPage: DevToolsPage) {
   return await getSizesFromRow(row, devToolsPage);
 }
 
+export async function getCategoryRow(
+    text: string, wait: true|undefined, devToolsPage: DevToolsPage): ReturnType<DevToolsPage['waitFor']>;
+export async function getCategoryRow(
+    text: string, wait: false, devToolsPage: DevToolsPage): ReturnType<DevToolsPage['$']>;
 export async function getCategoryRow(text: string, wait = true, devToolsPage: DevToolsPage) {
   const selector = `//td[text()="${text}"]/ancestor::tr`;
-  return await (wait ? devToolsPage.waitFor(selector, undefined, undefined, 'xpath') :
-                       devToolsPage.$(selector, undefined, 'xpath'));
+  const row = await (wait ? devToolsPage.waitFor(selector, undefined, undefined, 'xpath') :
+                            devToolsPage.$(selector, undefined, 'xpath'));
+  return row;
 }
 
 export async function getSizesFromCategoryRow(text: string, devToolsPage: DevToolsPage) {

@@ -164,7 +164,7 @@ describe('The Memory Panel', function() {
     const internalNodeSpan = await devToolsPage.waitFor(
         '//span[text()="InternalNode"][ancestor-or-self::tr[preceding-sibling::*[1][//span[text()="Pending activities"]]]]',
         undefined, undefined, 'xpath');
-    const internalNodeRow = await devToolsPage.$('ancestor-or-self::tr', internalNodeSpan, 'xpath');
+    const internalNodeRow = (await devToolsPage.$('ancestor-or-self::tr', internalNodeSpan, 'xpath'))!;
     await devToolsPage.waitForFunction(async () => {
       await devToolsPage.clickElement(internalNodeSpan);
       const res = await internalNodeRow.evaluate(x => x.classList.toString());

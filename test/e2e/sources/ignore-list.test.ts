@@ -92,34 +92,32 @@ describe('Ignore list', function() {
     await scriptEvaluation;
   });
 
-  // Flaking on Mac: crbug.com/488349736
-  it.skipOnPlatforms(
-      ['mac'], '[crbug.com/488349736] skips instrumentation breakpoints', async ({devToolsPage, inspectedPage}) => {
-        await setIgnoreListPattern('thirdparty', devToolsPage);
-        await devToolsPage.installEventListener(DEBUGGER_PAUSED_EVENT);
+  it('skips instrumentation breakpoints', async ({devToolsPage, inspectedPage}) => {
+    await setIgnoreListPattern('thirdparty', devToolsPage);
+    await devToolsPage.installEventListener(DEBUGGER_PAUSED_EVENT);
 
-        await openSourceCodeEditorForFile('multi-files-mycode.js', 'multi-files.html', devToolsPage, inspectedPage);
-        await setEventListenerBreakpoint('Timer', 'setTimeout', devToolsPage);
+    await openSourceCodeEditorForFile('multi-files-mycode.js', 'multi-files.html', devToolsPage, inspectedPage);
+    await setEventListenerBreakpoint('Timer', 'setTimeout', devToolsPage);
 
-        const scriptEvaluation = inspectedPage.evaluate('debugger; timeoutTestCase();');
+    const scriptEvaluation = inspectedPage.evaluate('debugger; timeoutTestCase();');
 
-        await devToolsPage.waitFor(RESUME_BUTTON);
-        await devToolsPage.waitFor(PAUSE_INDICATOR_SELECTOR);
-        await devToolsPage.waitForFunction(async () => await devToolsPage.getPendingEvents(DEBUGGER_PAUSED_EVENT));
-        assert.deepEqual(await getCallFrameNames(devToolsPage), ['(anonymous)']);
+    await devToolsPage.waitFor(RESUME_BUTTON);
+    await devToolsPage.waitFor(PAUSE_INDICATOR_SELECTOR);
+    await devToolsPage.waitForFunction(async () => await devToolsPage.getPendingEvents(DEBUGGER_PAUSED_EVENT));
+    assert.deepEqual(await getCallFrameNames(devToolsPage), ['(anonymous)']);
 
-        await devToolsPage.click(RESUME_BUTTON);
-        await devToolsPage.waitFor('.call-frame-title-text[title="userTimeout"]');
+    await devToolsPage.click(RESUME_BUTTON);
+    await devToolsPage.waitFor('.call-frame-title-text[title="userTimeout"]');
 
-        await devToolsPage.waitFor(RESUME_BUTTON);
-        await devToolsPage.waitFor(PAUSE_INDICATOR_SELECTOR);
-        await devToolsPage.waitForFunction(async () => await devToolsPage.getPendingEvents(DEBUGGER_PAUSED_EVENT));
-        assert.deepEqual(await getCallFrameNames(devToolsPage), ['userTimeout', 'Promise.then', '(anonymous)']);
+    await devToolsPage.waitFor(RESUME_BUTTON);
+    await devToolsPage.waitFor(PAUSE_INDICATOR_SELECTOR);
+    await devToolsPage.waitForFunction(async () => await devToolsPage.getPendingEvents(DEBUGGER_PAUSED_EVENT));
+    assert.deepEqual(await getCallFrameNames(devToolsPage), ['userTimeout', 'Promise.then', '(anonymous)']);
 
-        await devToolsPage.click(RESUME_BUTTON);
+    await devToolsPage.click(RESUME_BUTTON);
 
-        await scriptEvaluation;
-      });
+    await scriptEvaluation;
+  });
 
   it('indicates ignored sources in page source tree', async ({devToolsPage, inspectedPage}) => {
     await setIgnoreListPattern('/sources/', devToolsPage);

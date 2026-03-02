@@ -33,7 +33,7 @@ async function switchToThread(threadIndex: number, devToolsPage: DevToolsPage): 
   await devToolsPage.waitFor(threadSelector + '[aria-selected="true"]');
   // Find the right thread name for this element to de-flake tests
   const threadName = await devToolsPage.getTextContent(threadSelector + ' .thread-item-title');
-  return threadName.trim();
+  return threadName?.trim() ?? '';
 }
 
 describe('The Sources Tab Threads Sidebar Pane', function() {

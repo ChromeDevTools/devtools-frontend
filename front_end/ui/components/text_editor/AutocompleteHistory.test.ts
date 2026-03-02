@@ -61,6 +61,69 @@ describeWithEnvironment('AutocompleteHistory', () => {
       assert.isUndefined(history.previous(''));
     });
 
+    it('supports navigating backwards with empty current text', () => {
+      history.pushHistoryItem('{a:1, b:2}');
+
+      assert.strictEqual(history.previous(''), '{a:1, b:2}');
+    });
+
+    describe('prefix-based history filtering (zsh-style)', () => {
+      it('filters history by prefix when navigating backward', () => {
+        history.pushHistoryItem('console.log("a")');
+        history.pushHistoryItem('alert("hello")');
+        history.pushHistoryItem('console.log("b")');
+        history.pushHistoryItem('document.getElementById("x")');
+        history.pushHistoryItem('console.log("c")');
+
+        // Type "console" and press Up - should only get console.log entries
+        let currentText = 'console';
+        assert.strictEqual(history.previous(currentText), 'console.log("c")');
+        currentText = 'console.log("c")';
+        assert.strictEqual(history.previous(currentText), 'console.log("b")');
+        currentText = 'console.log("b")';
+        assert.strictEqual(history.previous(currentText), 'console.log("a")');
+        currentText = 'console.log("a")';
+        assert.isUndefined(history.previous(currentText));  // No more matches
+      });
+
+      it('returns all entries when prefix is empty', () => {
+        history.pushHistoryItem('console.log("a")');
+        history.pushHistoryItem('alert("hello")');
+        history.pushHistoryItem('console.log("b")');
+
+        // Empty prefix - should get all entries (existing behavior)
+        assert.strictEqual(history.previous(''), 'console.log("b")');
+        assert.strictEqual(history.previous(''), 'alert("hello")');
+        assert.strictEqual(history.previous(''), 'console.log("a")');
+      });
+
+      it('returns all entries when prefix has no matches', () => {
+        history.pushHistoryItem('console.log("a")');
+        history.pushHistoryItem('alert("hello")');
+        history.pushHistoryItem('console.log("b")');
+
+        // No match for prefix - should fall back to unfiltered history navigation.
+        assert.strictEqual(history.previous('nomatch'), 'console.log("b")');
+        assert.strictEqual(history.previous('console.log("b")'), 'alert("hello")');
+        assert.strictEqual(history.previous('alert("hello")'), 'console.log("a")');
+        assert.isUndefined(history.previous('console.log("a")'));
+      });
+
+      it('re-evaluates prefix filtering after commit', () => {
+        history.pushHistoryItem('console.log("a")');
+        history.pushHistoryItem('alert("hello")');
+
+        // Navigate with prefix
+        history.previous('console');
+
+        // Commit a new command
+        history.pushHistoryItem('new command');
+
+        // Uses the new prefix instead of the previous filtered state.
+        assert.strictEqual(history.previous('alert'), 'alert("hello")');
+      });
+    });
+
   });
 
   describe('next', () => {
@@ -85,6 +148,33 @@ describeWithEnvironment('AutocompleteHistory', () => {
       assert.strictEqual(history.next(''), 'entry 1');
       assert.strictEqual(history.next(''), 'entry 2');
     });
+
+    describe('prefix-based history filtering (zsh-style)', () => {
+      it('navigates forward through filtered history', () => {
+        history.pushHistoryItem('console.log("a")');
+        history.pushHistoryItem('alert("hello")');
+        history.pushHistoryItem('console.log("b")');
+
+        // Navigate back with prefix filter
+        assert.strictEqual(history.previous('console'), 'console.log("b")');
+        assert.strictEqual(history.previous('console.log("b")'), 'console.log("a")');
+
+        // Navigate forward - should still be filtered
+        assert.strictEqual(history.next(), 'console.log("b")');
+      });
+
+      it('preserves the typed prefix when returning to start', () => {
+        history.pushHistoryItem('console.log("a")');
+        history.pushHistoryItem('alert("hello")');
+
+        // Type "console" and navigate back
+        assert.strictEqual(history.previous('console'), 'console.log("a")');
+
+        // Navigate forward - should return to the typed prefix
+        assert.strictEqual(history.next(), 'console');
+      });
+    });
+
   });
 
   it('stores the "temporary input" on the first "previous" call with a non-empty history', () => {

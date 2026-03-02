@@ -157,7 +157,6 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
             placeholder='/framework\\.js$'
             .value=${live(newRegexValue)}
             .jslogContext=${'timeline.ignore-list-new-regex.text'}>
-          </input>
         </div>
       </div>
     </devtools-button-dialog>

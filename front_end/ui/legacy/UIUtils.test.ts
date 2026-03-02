@@ -451,7 +451,7 @@ describe('bindToSetting (string)', () => {
     const container = document.createElement('div');
     renderElementIntoDOM(container);
     const inputRef = Lit.Directives.createRef<HTMLInputElement>();
-    Lit.render(html`<input ${Lit.Directives.ref(inputRef)} ${bindToSetting(setting, opts)}></input>`, container);
+    Lit.render(html`<input ${Lit.Directives.ref(inputRef)} ${bindToSetting(setting, opts)}>`, container);
 
     const input = inputRef.value;
     assert.exists(input);

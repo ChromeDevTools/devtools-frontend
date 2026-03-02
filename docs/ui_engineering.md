@@ -611,7 +611,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
       <a href="https://www.google.com" data-some-key="some-value" role="some-role">some-text</a>
       <img src="https://www.google.com/some-image.png" alt="some-alt" draggable="true" height="100"
           hidden="hidden" href="https://www.google.com" id="some-id" name="some-name" rel="some-rel"
-          scope="some-scope"></img>
+          scope="some-scope">
       <input type="text" placeholder="some-placeholder" value="some-value"
           ?disabled=${!this.enabled} checked>
     </div>`,

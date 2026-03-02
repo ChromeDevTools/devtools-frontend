@@ -28,10 +28,10 @@
   </style>
   <details>
     <summary><slot name="summary"></slot></summary>
-      <input type="radio" name="screenshot" id=generated checked tabindex=0></input><label for=generated>Generated</label>
-    <input type="radio" name="screenshot" id=golden></input><label for=golden>Golden</label>
-    <input type="radio" name="screenshot" id=diff></input><label for=diff>Diff</label>
-    <input type="radio" name="screenshot" id=toggle hidden></input><label for=toggle>Toggle</label>
+      <input type="radio" name="screenshot" id=generated checked tabindex=0><label for=generated>Generated</label>
+    <input type="radio" name="screenshot" id=golden><label for=golden>Golden</label>
+    <input type="radio" name="screenshot" id=diff><label for=diff>Diff</label>
+    <input type="radio" name="screenshot" id=toggle hidden><label for=toggle>Toggle</label>
     <section class="generated">
       <slot name="generated"></slot>
     </section>

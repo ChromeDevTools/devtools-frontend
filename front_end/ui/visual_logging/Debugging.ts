@@ -878,6 +878,10 @@ function checkPendingEventExpectation(): void {
     }
     if (!found) {
       processMissingEvents(pendingEventExpectation, expectedEventIndex, matchedImpressions);
+      if (!pendingEventExpectation.missingEvents?.length) {
+        numMatchedEvents = actualEventIndex;
+        pendingEventExpectation.success();
+      }
       return;
     }
   }

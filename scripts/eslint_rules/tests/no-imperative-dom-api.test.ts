@@ -35,6 +35,34 @@ new RuleTester().run('no-imperative-dom-api', rule, {
   invalid: [
     {
       filename: 'front_end/ui/components/component/file.ts',
+      code: `
+class SomeWidget extends UI.Widget.Widget {
+  constructor() {
+    super();
+    this.contentElement.appendChild(document.createElement('br'));
+    this.contentElement.appendChild(document.createElement('hr'));
+  }
+}`,
+      output: `
+
+export const DEFAULT_VIEW = (input, _output, target) => {
+  render(html\`
+    <div>
+      <br>
+      <hr>
+    </div>\`,
+    target, {host: input});
+};
+
+class SomeWidget extends UI.Widget.Widget {
+  constructor() {
+    super();
+  }
+}`,
+      errors: [{messageId: 'preferTemplateLiterals'}],
+    },
+    {
+      filename: 'front_end/ui/components/component/file.ts',
       code: `class SomeWidget extends UI.Widget.Widget {
           constructor() {
             super();
@@ -522,7 +550,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
       <a href="https://www.google.com" data-some-key="some-value" role="some-role">some-text</a>
       <img src="https://www.google.com/some-image.png" alt="some-alt" draggable="true" height="100"
           hidden="hidden" href="https://www.google.com" id="some-id" name="some-name" rel="some-rel"
-          scope="some-scope"></img>
+          scope="some-scope">
       <input type="text" placeholder="some-placeholder" value="some-value"
           ?disabled=\${!this.enabled} checked>
     </div>\`,

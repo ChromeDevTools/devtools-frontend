@@ -16,6 +16,20 @@ type Identifier = TSESTree.Identifier;
 type SourceCode = TSESLint.SourceCode;
 type Scope = TSESLint.Scope.Scope;
 
+const VOID_ELEMENTS = new Set([
+  'area',
+  'br',
+  'col',
+  'embed',
+  'hr',
+  'img',
+  'input',
+  'link',
+  'param',
+  'source',
+  'track',
+]);
+
 const domFragments = new Map<Node|ClassMember|Variable, DomFragment>();
 
 export class DomFragment {
@@ -239,7 +253,7 @@ export class DomFragment {
       }
       components.push(`\n${' '.repeat(indent)}`);
     }
-    if (this.tagName && this.tagName !== 'input') {
+    if (this.tagName && !VOID_ELEMENTS.has(this.tagName)) {
       components.push('</', this.tagName, '>');
     }
     for (const nextSibling of this.nextSiblings) {

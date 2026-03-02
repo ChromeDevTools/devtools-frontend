@@ -27,6 +27,7 @@ import {
   stepThroughTheCode,
   switchToCallFrame,
   THREADS_SELECTOR,
+  waitForStackTopMatch,
 } from '../helpers/sources-helpers.js';
 
 describe('Sources Tab', function() {
@@ -275,7 +276,7 @@ describe('Sources Tab', function() {
 
       await devToolsPage.waitForFunction(async () => await isBreakpointSet('0x06d', devToolsPage));
 
-      let scriptLocation = await retrieveTopCallFrameWithoutResuming(devToolsPage);
+      const scriptLocation = await retrieveTopCallFrameWithoutResuming(devToolsPage);
       assert.deepEqual(scriptLocation, 'stepping-with-state.wasm:0x6d');
 
       selectedThreadElement = await devToolsPage.waitFor(SELECTED_THREAD_SELECTOR);
@@ -303,8 +304,9 @@ describe('Sources Tab', function() {
 
       await devToolsPage.waitForFunction(async () => await isBreakpointSet('0x050', devToolsPage));
 
-      scriptLocation = await retrieveTopCallFrameWithoutResuming(devToolsPage);
-      assert.deepEqual(scriptLocation, 'stepping-with-state.wasm:0x50');
+      // Due to the reload we may catch the last
+      // step though, so make sure DevTools updates.
+      await waitForStackTopMatch(/stepping-with-state.wasm:0x50/, devToolsPage);
 
       selectedThreadElement = await devToolsPage.waitFor(SELECTED_THREAD_SELECTOR);
       selectedThreadName = await selectedThreadElement.evaluate(element => {

@@ -165,20 +165,18 @@ export async function getToolbarText(devToolsPage: DevToolsPage) {
 }
 
 export async function addBreakpointForLine(index: number|string, devToolsPage: DevToolsPage) {
+  await devToolsPage.waitForFunction(async () => !(await isBreakpointSet(index, devToolsPage)));
   const breakpointLine = await getLineNumberElement(index, devToolsPage);
   assert.isOk(breakpointLine);
-
-  await devToolsPage.waitForFunction(async () => !(await isBreakpointSet(index, devToolsPage)));
   await devToolsPage.clickElement(breakpointLine);
 
   await devToolsPage.waitForFunction(async () => await isBreakpointSet(index, devToolsPage));
 }
 
 export async function removeBreakpointForLine(index: number|string, devToolsPage: DevToolsPage) {
+  await devToolsPage.waitForFunction(async () => await isBreakpointSet(index, devToolsPage));
   const breakpointLine = await getLineNumberElement(index, devToolsPage);
   assert.isOk(breakpointLine);
-
-  await devToolsPage.waitForFunction(async () => await isBreakpointSet(index, devToolsPage));
   await devToolsPage.clickElement(breakpointLine);
   await devToolsPage.waitForFunction(async () => !(await isBreakpointSet(index, devToolsPage)));
 }

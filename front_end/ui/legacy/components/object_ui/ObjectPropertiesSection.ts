@@ -148,7 +148,7 @@ interface NodeChildren {
   accessors?: ObjectTreeNode[];
 }
 
-abstract class ObjectTreeNodeBase extends Common.ObjectWrapper.ObjectWrapper<ObjectTreeNodeBase.EventTypes> {
+export abstract class ObjectTreeNodeBase extends Common.ObjectWrapper.ObjectWrapper<ObjectTreeNodeBase.EventTypes> {
   #children?: NodeChildren;
   protected filter: {includeNullOrUndefinedValues: boolean, regex: RegExp|null}|null = null;
   protected extraProperties: ObjectTreeNode[] = [];
@@ -158,6 +158,14 @@ abstract class ObjectTreeNodeBase extends Common.ObjectWrapper.ObjectWrapper<Obj
       readonly propertiesMode: ObjectPropertiesMode = ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED) {
     super();
     this.filter = parent?.filter ?? null;
+  }
+
+  get includeNullOrUndefinedValues(): boolean {
+    return this.filter?.includeNullOrUndefinedValues ?? true;
+  }
+
+  set includeNullOrUndefinedValues(value: boolean) {
+    this.setFilter({includeNullOrUndefinedValues: value, regex: this.filter?.regex ?? null});
   }
 
   // Performs a pre-order tree traversal over the populated children. If any children need to be populated, callers must
@@ -326,7 +334,7 @@ abstract class ObjectTreeNodeBase extends Common.ObjectWrapper.ObjectWrapper<Obj
   }
 }
 
-namespace ObjectTreeNodeBase {
+export namespace ObjectTreeNodeBase {
   export const enum Events {
     VALUE_CHANGED = 'value-changed',
     CHILDREN_CHANGED = 'children-changed',
@@ -513,11 +521,12 @@ export const getObjectPropertiesSectionFrom = (element: Element): ObjectProperti
 };
 
 export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow {
-  private readonly root: ObjectTree;
+  readonly root: ObjectTree;
   readonly editable: boolean;
   readonly #objectTreeElement: RootElement;
   titleElement: Element;
   skipProtoInternal?: boolean;
+
   constructor(
       object: SDK.RemoteObject.RemoteObject, title?: string|Element|null, linkifier?: Components.Linkifier.Linkifier,
       showOverflow?: boolean, editable = true) {
@@ -721,14 +730,15 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
 
   static createPropertyValueWithCustomSupport(
       value: SDK.RemoteObject.RemoteObject, wasThrown: boolean, showPreview: boolean,
-      linkifier?: Components.Linkifier.Linkifier, isSyntheticProperty?: boolean, variableName?: string): HTMLElement {
+      linkifier?: Components.Linkifier.Linkifier, isSyntheticProperty?: boolean, variableName?: string,
+      includeNullOrUndefined?: boolean): HTMLElement {
     if (value.customPreview()) {
       const result = (new CustomPreviewComponent(value)).element;
       result.classList.add('object-properties-section-custom-section');
       return result;
     }
     return ObjectPropertiesSection.createPropertyValue(
-        value, wasThrown, showPreview, linkifier, isSyntheticProperty, variableName);
+        value, wasThrown, showPreview, linkifier, isSyntheticProperty, variableName, includeNullOrUndefined);
   }
 
   static getMemoryIcon(object: SDK.RemoteObject.RemoteObject, expression?: string): LitTemplate {
@@ -757,7 +767,8 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
 
   static createPropertyValue(
       value: SDK.RemoteObject.RemoteObject, wasThrown: boolean, showPreview: boolean,
-      linkifier?: Components.Linkifier.Linkifier, isSyntheticProperty = false, variableName?: string): HTMLElement {
+      linkifier?: Components.Linkifier.Linkifier, isSyntheticProperty = false, variableName?: string,
+      includeNullOrUndefined?: boolean): HTMLElement {
     const propertyValue = document.createDocumentFragment();
     const type = value.type;
     const subtype = value.subtype;
@@ -809,7 +820,7 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
       }
       const hasPreview = value.preview && showPreview;
       return html`<span class="value object-value-${subtype || type}" title=${description}>${
-          hasPreview ? new RemoteObjectPreviewFormatter().renderObjectPreview(value.preview) :
+          hasPreview ? new RemoteObjectPreviewFormatter().renderObjectPreview(value.preview, includeNullOrUndefined) :
                        description}${isSyntheticProperty ? nothing : this.getMemoryIcon(value, variableName)}</span>`;
     };
 
@@ -989,6 +1000,9 @@ export class RootElement extends UI.TreeOutline.TreeElement {
         {jslogContext: 'expand-recursively'});
     contextMenu.viewSection().appendItem(
         i18nString(UIStrings.collapseChildren), this.collapseChildren.bind(this), {jslogContext: 'collapse-children'});
+    contextMenu.viewSection().appendCheckboxItem(i18n.i18n.lockedString('Show all'), () => {
+      this.object.includeNullOrUndefinedValues = !this.object.includeNullOrUndefinedValues;
+    }, {checked: this.object.includeNullOrUndefinedValues, jslogContext: 'show-all'});
     void contextMenu.show();
   }
 
@@ -1059,7 +1073,7 @@ export const OBJECT_PROPERTY_DEFAULT_VIEW: ObjectPropertyView = (input, output, 
       const showPreview = property.name !== '[[Prototype]]';
       const value = ObjectPropertiesSection.createPropertyValueWithCustomSupport(
           property.value, property.wasThrown, showPreview, input.linkifier, property.synthetic,
-          input.node.path /* variableName */);
+          input.node.path /* variableName */, input.node.includeNullOrUndefinedValues);
       output.valueElement = value;
       return value;
     }
@@ -1150,10 +1164,12 @@ export class ObjectPropertyWidget extends UI.Widget.Widget {
     if (this.#property) {
       this.#property.removeEventListener(ObjectTreeNodeBase.Events.VALUE_CHANGED, this.requestUpdate, this);
       this.#property.removeEventListener(ObjectTreeNodeBase.Events.CHILDREN_CHANGED, this.requestUpdate, this);
+      this.#property.removeEventListener(ObjectTreeNodeBase.Events.FILTER_CHANGED, this.requestUpdate, this);
     }
     this.#property = property;
     this.#property.addEventListener(ObjectTreeNodeBase.Events.VALUE_CHANGED, this.requestUpdate, this);
     this.#property.addEventListener(ObjectTreeNodeBase.Events.CHILDREN_CHANGED, this.requestUpdate, this);
+    this.#property.addEventListener(ObjectTreeNodeBase.Events.FILTER_CHANGED, this.requestUpdate, this);
     this.requestUpdate();
   }
 
@@ -1515,6 +1531,13 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
           i18nString(UIStrings.collapseChildren), this.collapseChildren.bind(this),
           {jslogContext: 'collapse-children'});
     }
+    let root: ObjectTreeNodeBase = this.property;
+    while (root.parent) {
+      root = root.parent;
+    }
+    contextMenu.viewSection().appendCheckboxItem(i18n.i18n.lockedString('Show all'), () => {
+      root.includeNullOrUndefinedValues = !root.includeNullOrUndefinedValues;
+    }, {checked: root.includeNullOrUndefinedValues, jslogContext: 'show-all'});
     return contextMenu;
   }
 

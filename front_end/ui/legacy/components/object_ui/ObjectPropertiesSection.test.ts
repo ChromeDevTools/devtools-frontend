@@ -8,12 +8,76 @@ import * as SDK from '../../../../core/sdk/sdk.js';
 import {assertScreenshot, dispatchClickEvent, renderElementIntoDOM} from '../../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../../../testing/ExpectStubCall.js';
-import type * as UI from '../../legacy.js';
+import * as UI from '../../legacy.js';
 
 import * as ObjectUI from './object_ui.js';
 
 describe('ObjectPropertiesSection', () => {
   describeWithEnvironment('ObjectPropertiesSection', () => {
+    it('properties with null and undefined values are shown by default', async () => {
+      const object = SDK.RemoteObject.RemoteObject.fromLocalObject({
+        s: 'string',
+        n: null,
+        u: undefined,
+      });
+      const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection(object, 'title');
+      const rootElement = section.objectTreeElement();
+      await rootElement.onpopulate();
+
+      assert.strictEqual(rootElement.childCount(), 3);
+      const properties = [rootElement.childAt(0)!, rootElement.childAt(1)!, rootElement.childAt(2)!] as
+          ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement[];
+      const n = properties.find(p => p.property.name === 'n')!;
+      const s = properties.find(p => p.property.name === 's')!;
+      const u = properties.find(p => p.property.name === 'u')!;
+
+      assert.isFalse(n.hidden);
+      assert.isFalse(s.hidden);
+      assert.isFalse(u.hidden);
+    });
+
+    it('properties with null and undefined values are hidden when the setting is disabled', async () => {
+      const object = SDK.RemoteObject.RemoteObject.fromLocalObject({
+        s: 'string',
+        n: null,
+        u: undefined,
+      });
+      const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection(object, 'title');
+      section.root.includeNullOrUndefinedValues = false;
+      const rootElement = section.objectTreeElement();
+      await rootElement.onpopulate();
+
+      const properties = [rootElement.childAt(0)!, rootElement.childAt(1)!, rootElement.childAt(2)!].map(
+          x => x as ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement);
+      const n = properties.find(p => p.property.name === 'n')!;
+      const s = properties.find(p => p.property.name === 's')!;
+      const u = properties.find(p => p.property.name === 'u')!;
+
+      assert.isTrue(n.hidden);
+      assert.isFalse(s.hidden);
+      assert.isTrue(u.hidden);
+    });
+
+    it('shows "Show all" in context menu', () => {
+      const object = SDK.RemoteObject.RemoteObject.fromLocalObject({});
+      const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection(object, 'title');
+      const rootElement = section.objectTreeElement();
+      const event = new MouseEvent('contextmenu');
+
+      const showSpy = sinon.stub(UI.ContextMenu.ContextMenu.prototype, 'show').resolves();
+      const appendCheckboxItemSpy = sinon.spy(UI.ContextMenu.Section.prototype, 'appendCheckboxItem');
+
+      (rootElement as unknown as {onContextMenu: (e: Event) => void}).onContextMenu(event);
+
+      sinon.assert.called(appendCheckboxItemSpy);
+      const showAllItem = appendCheckboxItemSpy.args.find(args => args[0] === 'Show all');
+      assert.exists(showAllItem);
+      assert.isTrue(showAllItem[2]?.checked);
+
+      showSpy.restore();
+      appendCheckboxItemSpy.restore();
+    });
+
     describe('appendMemoryIcon', () => {
       it('appends a memory icon for inspectable object types', () => {
         const object = sinon.createStubInstance(SDK.RemoteObject.RemoteObject);

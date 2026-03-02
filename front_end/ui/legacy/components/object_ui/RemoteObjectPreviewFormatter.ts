@@ -63,7 +63,7 @@ export class RemoteObjectPreviewFormatter {
     }
   }
 
-  renderObjectPreview(preview: Protocol.Runtime.ObjectPreview): LitTemplate {
+  renderObjectPreview(preview: Protocol.Runtime.ObjectPreview, includeNullOrUndefined = true): LitTemplate {
     const description = preview.description;
     const subTypesWithoutValuePreview = new Set<Protocol.Runtime.ObjectPreviewSubtype|'internal#entry'|'trustedtype'>([
       Protocol.Runtime.ObjectPreviewSubtype.Arraybuffer,
@@ -97,7 +97,7 @@ export class RemoteObjectPreviewFormatter {
     const items = Array.from(
         preview.entries         ? this.renderEntries(preview) :
             isArrayOrTypedArray ? this.renderArrayProperties(preview) :
-                                  this.renderObjectProperties(preview));
+                                  this.renderObjectProperties(preview, includeNullOrUndefined));
 
     // clang-format off
     const renderName = (name: string): LitTemplate  => html`<span class=name>${
@@ -130,12 +130,19 @@ export class RemoteObjectPreviewFormatter {
     ${isArrayOrTypedArray ? ']' : '}'}</span>`;
   }
 
-  private * renderObjectProperties(preview: Protocol.Runtime.ObjectPreview): Generator<PropertyPreviewValue> {
+  private *
+      renderObjectProperties(preview: Protocol.Runtime.ObjectPreview, includeNullOrUndefined: boolean):
+          Generator<PropertyPreviewValue> {
     const properties = preview.properties.filter(p => p.type !== 'accessor')
                            .sort(RemoteObjectPreviewFormatter.objectPropertyComparator);
     for (let i = 0; i < properties.length; ++i) {
       const property = properties[i];
       const name = property.name;
+      if (!includeNullOrUndefined &&
+          (property.type === 'undefined' || (property.type === 'object' && property.subtype === 'null'))) {
+        continue;
+      }
+
       // Internal properties are given special formatting, e.g. Promises `<rejected>: 123`.
       if (preview.subtype === Protocol.Runtime.ObjectPreviewSubtype.Promise && name === InternalName.PROMISE_STATE) {
         const promiseResult =

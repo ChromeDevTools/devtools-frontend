@@ -864,11 +864,17 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   private formatParameterAsObject(obj: SDK.RemoteObject.RemoteObject, includePreview?: boolean): HTMLElement {
     const titleElement = document.createElement('span');
     titleElement.classList.add('console-object');
+    const renderPreview = (includeNullOrUndefined: boolean): void => {
+      if (obj.preview) {
+        titleElement.classList.add('console-object-preview');
+        /* eslint-disable-next-line  @devtools/no-lit-render-outside-of-view */
+        render(this.previewFormatter.renderObjectPreview(obj.preview, includeNullOrUndefined), titleElement);
+        ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection.appendMemoryIcon(titleElement, obj);
+      }
+    };
+
     if (includePreview && obj.preview) {
-      titleElement.classList.add('console-object-preview');
-      /* eslint-disable-next-line  @devtools/no-lit-render-outside-of-view */
-      render(this.previewFormatter.renderObjectPreview(obj.preview), titleElement);
-      ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection.appendMemoryIcon(titleElement, obj);
+      renderPreview(true);
     } else if (obj.type === 'function') {
       const functionElement = titleElement.createChild('span');
       void ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection.formatObjectAsFunction(obj, functionElement, false);
@@ -898,6 +904,9 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     section.addEventListener(UI.TreeOutline.Events.ElementAttached, this.messageResized);
     section.addEventListener(UI.TreeOutline.Events.ElementExpanded, this.messageResized);
     section.addEventListener(UI.TreeOutline.Events.ElementCollapsed, this.messageResized);
+    section.root.addEventListener(
+        ObjectUI.ObjectPropertiesSection.ObjectTreeNodeBase.Events.FILTER_CHANGED,
+        () => renderPreview(section.root.includeNullOrUndefinedValues));
     return section.element;
   }
 

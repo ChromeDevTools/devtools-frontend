@@ -321,10 +321,7 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTML
                           ></devtools-button>`
                         : Lit.nothing}
                       <div
-                        class=${Lit.Directives.classMap({
-                          'resource-link': true,
-                          'has-picker-behavior': input.conversationType === AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING,
-                        })}
+                        class="resource-link"
                       >
                         ${
                           input.selectedContext instanceof AiAssistanceModel.StylingAgent.NodeContext ?

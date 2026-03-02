@@ -183,26 +183,26 @@ export interface CookiesTableData {
 }
 
 export class CookiesTable extends UI.Widget.VBox {
-  private saveCallback?: ((arg0: SDK.Cookie.Cookie, arg1: SDK.Cookie.Cookie|null) => Promise<boolean>);
-  private readonly refreshCallback?: (() => void);
-  private readonly selectedCallback?: (() => void);
-  private readonly deleteCallback?: ((arg0: SDK.Cookie.Cookie, arg1: () => void) => void);
+  #saveCallback?: ((arg0: SDK.Cookie.Cookie, arg1: SDK.Cookie.Cookie|null) => Promise<boolean>);
+  #refreshCallback?: (() => void);
+  #selectedCallback?: ((arg0: SDK.Cookie.Cookie|null) => void);
+  #deleteCallback?: ((arg0: SDK.Cookie.Cookie, arg1: () => void) => void);
   private lastEditedColumnId: string|null;
   private data: CookieData[] = [];
   private cookies: SDK.Cookie.Cookie[] = [];
-  private cookieDomain: string;
+  #cookieDomain: string;
   private cookieToBlockedReasons: ReadonlyMap<SDK.Cookie.Cookie, SDK.CookieModel.BlockedReason[]>|null;
   private cookieToExemptionReason: ReadonlyMap<SDK.Cookie.Cookie, SDK.CookieModel.ExemptionReason>|null;
   private readonly view: ViewFunction;
   private selectedKey?: string;
-  private readonly editable: boolean;
+  #editable: boolean;
   private renderInline: boolean;
   private readonly schemeBindingEnabled: boolean;
   private readonly portBindingEnabled: boolean;
   constructor(
       element?: HTMLElement, renderInline?: boolean,
       saveCallback?: ((arg0: SDK.Cookie.Cookie, arg1: SDK.Cookie.Cookie|null) => Promise<boolean>),
-      refreshCallback?: (() => void), selectedCallback?: (() => void),
+      refreshCallback?: (() => void), selectedCallback?: ((arg0: SDK.Cookie.Cookie|null) => void),
       deleteCallback?: ((arg0: SDK.Cookie.Cookie, arg1: () => void) => void), view?: ViewFunction) {
     super(element);
     if (!view) {
@@ -302,11 +302,11 @@ export class CookiesTable extends UI.Widget.VBox {
 
     this.element.classList.add('cookies-table');
 
-    this.saveCallback = saveCallback;
-    this.refreshCallback = refreshCallback;
-    this.deleteCallback = deleteCallback;
+    this.#saveCallback = saveCallback;
+    this.#refreshCallback = refreshCallback;
+    this.#deleteCallback = deleteCallback;
 
-    this.editable = Boolean(saveCallback);
+    this.#editable = Boolean(saveCallback);
     const {devToolsEnableOriginBoundCookies} = Root.Runtime.hostConfig;
 
     this.schemeBindingEnabled = Boolean(devToolsEnableOriginBoundCookies?.schemeBindingEnabled);
@@ -316,13 +316,13 @@ export class CookiesTable extends UI.Widget.VBox {
 
     this.renderInline = Boolean(renderInline);
 
-    this.selectedCallback = selectedCallback;
+    this.#selectedCallback = selectedCallback;
 
     this.lastEditedColumnId = null;
 
     this.data = [];
 
-    this.cookieDomain = '';
+    this.#cookieDomain = '';
 
     this.cookieToBlockedReasons = null;
 
@@ -333,6 +333,26 @@ export class CookiesTable extends UI.Widget.VBox {
 
   set cookiesData(data: CookiesTableData) {
     this.setCookies(data.cookies, data.cookieToBlockedReasons, data.cookieToExemptionReason);
+  }
+
+  set saveCallback(callback: (arg0: SDK.Cookie.Cookie, arg1: SDK.Cookie.Cookie|null) => Promise<boolean>) {
+    this.#saveCallback = callback;
+  }
+
+  set refreshCallback(callback: () => void) {
+    this.#refreshCallback = callback;
+  }
+
+  set selectedCallback(callback: (arg0: SDK.Cookie.Cookie|null) => void) {
+    this.#selectedCallback = callback;
+  }
+
+  set deleteCallback(callback: (arg0: SDK.Cookie.Cookie, arg1: () => void) => void) {
+    this.#deleteCallback = callback;
+  }
+
+  set editable(value: boolean) {
+    this.#editable = value;
   }
 
   set inline(value: boolean) {
@@ -357,8 +377,8 @@ export class CookiesTable extends UI.Widget.VBox {
     this.requestUpdate();
   }
 
-  setCookieDomain(cookieDomain: string): void {
-    this.cookieDomain = cookieDomain;
+  set cookieDomain(cookieDomain: string) {
+    this.#cookieDomain = cookieDomain;
   }
 
   selectedCookie(): SDK.Cookie.Cookie|null {
@@ -374,7 +394,7 @@ export class CookiesTable extends UI.Widget.VBox {
     const input: ViewInput = {
       data: this.data,
       selectedKey: this.selectedKey,
-      editable: this.editable,
+      editable: this.#editable,
       renderInline: this.renderInline,
       schemeBindingEnabled: this.schemeBindingEnabled,
       portBindingEnabled: this.portBindingEnabled,
@@ -391,13 +411,13 @@ export class CookiesTable extends UI.Widget.VBox {
 
   private onSelect(key: string|undefined): void {
     this.selectedKey = key;
-    this.selectedCallback?.();
+    this.#selectedCallback?.(this.selectedCookie());
   }
 
   private onDeleteCookie(data: CookieData): void {
     const cookie = this.cookies.find(cookie => cookie.key() === data.key);
-    if (cookie && this.deleteCallback) {
-      this.deleteCallback(cookie, () => this.refresh());
+    if (cookie && this.#deleteCallback) {
+      this.#deleteCallback(cookie, () => this.refresh());
     }
   }
 
@@ -434,7 +454,7 @@ export class CookiesTable extends UI.Widget.VBox {
       data[SDK.Cookie.Attribute.VALUE] = '';
     }
     if (data[SDK.Cookie.Attribute.DOMAIN] === undefined) {
-      data[SDK.Cookie.Attribute.DOMAIN] = this.cookieDomain;
+      data[SDK.Cookie.Attribute.DOMAIN] = this.#cookieDomain;
     }
     if (data[SDK.Cookie.Attribute.PATH] === undefined) {
       data[SDK.Cookie.Attribute.PATH] = '/';
@@ -448,11 +468,11 @@ export class CookiesTable extends UI.Widget.VBox {
   }
 
   private saveCookie(newCookieData: CookieData, oldCookie?: SDK.Cookie.Cookie): void {
-    if (!this.saveCallback) {
+    if (!this.#saveCallback) {
       return;
     }
     const newCookie = this.createCookieFromData(newCookieData);
-    void this.saveCallback(newCookie, oldCookie ?? null).then(success => {
+    void this.#saveCallback(newCookie, oldCookie ?? null).then(success => {
       if (!success) {
         newCookieData.dirty = true;
       }
@@ -591,8 +611,8 @@ export class CookiesTable extends UI.Widget.VBox {
   }
 
   private refresh(): void {
-    if (this.refreshCallback) {
-      this.refreshCallback();
+    if (this.#refreshCallback) {
+      this.#refreshCallback();
     }
   }
 

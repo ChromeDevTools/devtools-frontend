@@ -6,6 +6,7 @@ import * as Host from '../../core/host/host.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Trace from '../../models/trace/trace.js';
+import * as Greendev from '../greendev/greendev.js';
 import * as NetworkTimeCalculator from '../network_time_calculator/network_time_calculator.js';
 
 import {
@@ -17,6 +18,7 @@ import {
   ResponseType,
   type UserQuery
 } from './agents/AiAgent.js';
+import {BreakpointDebuggerAgent} from './agents/BreakpointDebuggerAgent.js';
 import {ContextSelectionAgent} from './agents/ContextSelectionAgent.js';
 import {FileAgent, FileContext} from './agents/FileAgent.js';
 import {NetworkAgent, RequestContext} from './agents/NetworkAgent.js';
@@ -324,6 +326,13 @@ export class AiConversation {
       }
       case ConversationType.PERFORMANCE: {
         this.#agent = new PerformanceAgent(options);
+        break;
+      }
+      case ConversationType.BREAKPOINT: {
+        const breakpointAgentEnabled = Greendev.Prototypes.instance().isEnabled('breakpointDebuggerAgent');
+        if (breakpointAgentEnabled) {
+          this.#agent = new BreakpointDebuggerAgent(options);
+        }
         break;
       }
       case ConversationType.NONE: {

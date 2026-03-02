@@ -5,6 +5,7 @@
 import * as Host from '../../../core/host/host.js';
 import * as Root from '../../../core/root/root.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
+import * as Greendev from '../../greendev/greendev.js';
 import {debugLog, isStructuredLogEnabled} from '../debug.js';
 
 export const enum ResponseType {
@@ -534,7 +535,11 @@ export abstract class AiAgent<T> {
 
     yield* this.handleContextDetails(options.selected);
 
-    for (let i = 0; i < MAX_STEPS; i++) {
+    const breakpointAgentEnabled = Greendev.Prototypes.instance().isEnabled('breakpointDebuggerAgent');
+    const isBreakpointDebuggerAgent = this.constructor.name === 'BreakpointDebuggerAgent';
+    const finalMaxSteps = (isBreakpointDebuggerAgent && breakpointAgentEnabled) ? 1000 : MAX_STEPS;
+
+    for (let i = 0; i < finalMaxSteps; i++) {
       yield {
         type: ResponseType.QUERYING,
       };

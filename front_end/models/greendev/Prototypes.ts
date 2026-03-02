@@ -10,6 +10,7 @@ let instance: Prototypes|null = null;
 export interface GreenDevSettings {
   aiAnnotations: Common.Settings.Setting<boolean>;
   copyToGemini: Common.Settings.Setting<boolean>;
+  breakpointDebuggerAgent: Common.Settings.Setting<boolean>;
 }
 
 export class Prototypes {
@@ -42,7 +43,12 @@ export class Prototypes {
     );
     const copyToGemini =
         settings.createSetting('greendev-copy-to-gemini-enabled', false, Common.Settings.SettingStorageType.LOCAL);
+    const breakpointDebuggerAgent = settings.createSetting(
+        'greendev-breakpoint-debugger-agent-enabled',
+        false,
+        Common.Settings.SettingStorageType.LOCAL,
+    );
 
-    return {aiAnnotations, copyToGemini};
+    return {aiAnnotations, copyToGemini, breakpointDebuggerAgent};
   }
 }

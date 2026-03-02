@@ -33,6 +33,7 @@ devtools_entrypoint("bundle") {
   visibility = [
     ":*",
     "../../entrypoints/main",
+    "../../panels/console/*",
     "../../panels/settings/*",
     "../../panels/sources/*",
     "../../ui/components/linkifier/*",

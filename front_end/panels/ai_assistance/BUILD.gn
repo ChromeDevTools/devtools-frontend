@@ -92,6 +92,7 @@ devtools_entrypoint("bundle") {
     ":*",
     "../../entrypoints/*",
     "../../ui/components/docs/ai_assistance/*",
+    "../console/*",
     "../explain",
   ]
 

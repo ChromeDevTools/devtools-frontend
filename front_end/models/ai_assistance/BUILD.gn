@@ -19,6 +19,7 @@ devtools_module("ai_assistance") {
     "EvaluateAction.ts",
     "ExtensionScope.ts",
     "agents/AiAgent.ts",
+    "agents/BreakpointDebuggerAgent.ts",
     "agents/ContextSelectionAgent.ts",
     "agents/FileAgent.ts",
     "agents/NetworkAgent.ts",

@@ -3721,6 +3721,7 @@ export const knownContextValues = new Set([
   'srgb',
   'stack-trace',
   'stalled',
+  'standalone-styles',
   'standard-emulated-device-list',
   'start',
   'start-conversation-drjones-file',

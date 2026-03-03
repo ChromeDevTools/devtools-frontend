@@ -60,7 +60,7 @@ function renderEndiannessSetting(
         data-endianness="true" @change=${(e: Event) => onEndiannessChanged((e.target as HTMLSelectElement).value as Endianness)}>
         ${[Endianness.LITTLE, Endianness.BIG].map(endianness => {
             return html`<option value=${endianness} .selected=${currentEndiannes === endianness}
-            jslog=${VisualLogging.item(Platform.StringUtilities.toKebabCase(endianness)).track({click: true})}>${
+            jslog=${VisualLogging.item(Platform.StringUtilities.toKebabCase(endianness)).track({click: true, resize: true})}>${
                 i18n.i18n.lockedString(endianness)}</option>`;
         })}
       </select>

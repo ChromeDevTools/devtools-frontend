@@ -499,6 +499,7 @@ export class TreeElement {
     this.listItemNode.setAttribute(
         'jslog', `${VisualLogging.treeItem().parent('parentTreeItem').context(jslogContext).track({
           click: true,
+          resize: true,
           keydown: 'ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Backspace|Delete|Enter|Space|Home|End',
         })}`);
     ARIAUtils.markAsTreeitem(this.listItemNode);

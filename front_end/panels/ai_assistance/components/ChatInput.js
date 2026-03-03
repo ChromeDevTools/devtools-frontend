@@ -259,10 +259,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
                           ></devtools-button>`
                     : Lit.nothing}
                       <div
-                        class=${Lit.Directives.classMap({
-                    'resource-link': true,
-                    'has-picker-behavior': input.conversationType === "freestyler" /* AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING */,
-                })}
+                        class="resource-link"
                       >
                         ${input.selectedContext instanceof AiAssistanceModel.StylingAgent.NodeContext ?
                     html `

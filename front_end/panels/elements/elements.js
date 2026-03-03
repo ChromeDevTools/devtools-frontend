@@ -2653,14 +2653,14 @@ var CSSValueTraceView = class extends UI6.Widget.VBox {
     this.#view = view;
     this.requestUpdate();
   }
-  async showTrace(property, subexpression, matchedStyles, computedStyles, renderers, expandPercentagesInShorthands, shorthandPositionOffset, focus2) {
+  async showTrace(property, subexpression, matchedStyles, computedStyles, renderers, expandPercentagesInShorthands, shorthandPositionOffset, focus) {
     const matchedResult = subexpression === null ? property.parseValue(matchedStyles, computedStyles) : property.parseExpression(subexpression, matchedStyles, computedStyles);
     if (!matchedResult) {
       return void 0;
     }
-    return await this.#showTrace(property, matchedResult, renderers, expandPercentagesInShorthands, shorthandPositionOffset, focus2);
+    return await this.#showTrace(property, matchedResult, renderers, expandPercentagesInShorthands, shorthandPositionOffset, focus);
   }
-  async #showTrace(property, matchedResult, renderers, expandPercentagesInShorthands, shorthandPositionOffset, focus2) {
+  async #showTrace(property, matchedResult, renderers, expandPercentagesInShorthands, shorthandPositionOffset, focus) {
     this.#highlighting = new Highlighting();
     const rendererMap = new Map(renderers.map((r) => [r.matchType, r]));
     const substitutions = [];
@@ -2707,7 +2707,7 @@ var CSSValueTraceView = class extends UI6.Widget.VBox {
       const context = new RenderingContext(matchedResult.ast, property, rendererMap, matchedResult);
       this.#evaluations.push(Renderer.render(matchedResult.ast.tree, context).nodes);
     }
-    this.#pendingFocus = focus2;
+    this.#pendingFocus = focus;
     this.requestUpdate();
   }
   performUpdate() {
@@ -5594,7 +5594,7 @@ var StyleEditorWidget = class _StyleEditorWidget extends UI8.Widget.VBox {
     target.property.value = event.data.value;
     target.updateTitle();
     await target.applyStyleText(target.renderedPropertyText(), false);
-    await this.render();
+    this.requestUpdate();
   }
   async onPropertyDeselected(event) {
     if (!this.section) {
@@ -5602,7 +5602,7 @@ var StyleEditorWidget = class _StyleEditorWidget extends UI8.Widget.VBox {
     }
     const target = ensureTreeElementForProperty(this.section, event.data.name);
     await target.applyStyleText("", false);
-    await this.render();
+    this.requestUpdate();
   }
   bindContext(stylesContainer, section3) {
     this.stylesContainer = stylesContainer;
@@ -5630,6 +5630,10 @@ var StyleEditorWidget = class _StyleEditorWidget extends UI8.Widget.VBox {
       authoredProperties: this.section ? getAuthoredStyles(this.section, this.editor.getEditableProperties()) : /* @__PURE__ */ new Map(),
       computedProperties: this.stylesContainer ? await fetchComputedStyles(this.stylesContainer) : /* @__PURE__ */ new Map()
     };
+  }
+  async performUpdate() {
+    await super.performUpdate();
+    await this.render();
   }
   static instance() {
     if (!instance) {
@@ -5662,11 +5666,14 @@ var StyleEditorWidget = class _StyleEditorWidget extends UI8.Widget.VBox {
       const onScroll = () => {
         popoverHelper.hide(true);
       };
+      const onStylesUpdateCompleted = widget.requestUpdate.bind(widget);
+      stylesContainer.addStyleUpdateListener(onStylesUpdateCompleted);
       popoverHelper.show(widget, triggerButton, () => {
         widget.unbindContext();
         if (scrollerElement) {
           scrollerElement.removeEventListener("scroll", onScroll);
         }
+        stylesContainer.removeStyleUpdateListener(onStylesUpdateCompleted);
       });
       if (scrollerElement) {
         scrollerElement.addEventListener("scroll", onScroll);
@@ -6942,7 +6949,7 @@ ${allDeclarationText}
       ruleText
     };
   }
-  navigateToSelectorSource(index, focus2) {
+  navigateToSelectorSource(index, focus) {
     const cssModel = this.stylesContainer.cssModel();
     if (!cssModel) {
       return;
@@ -6956,12 +6963,12 @@ ${allDeclarationText}
       return;
     }
     const rawLocation = new SDK7.CSSModel.CSSLocation(header, rule.lineNumberInSource(index), rule.columnNumberInSource(index));
-    _StylePropertiesSection.revealSelectorSource(rawLocation, focus2);
+    _StylePropertiesSection.revealSelectorSource(rawLocation, focus);
   }
-  static revealSelectorSource(rawLocation, focus2) {
+  static revealSelectorSource(rawLocation, focus) {
     const uiLocation = Bindings3.CSSWorkspaceBinding.CSSWorkspaceBinding.instance().rawLocationToUILocation(rawLocation);
     if (uiLocation) {
-      void Common3.Revealer.reveal(uiLocation, !focus2);
+      void Common3.Revealer.reveal(uiLocation, !focus);
     }
   }
   startEditingAtFirstPosition() {
@@ -8804,6 +8811,12 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common4.ObjectWrapper.e
       this.toolbar.appendToolbarItem(item2);
     }
   }
+  addStyleUpdateListener(listener) {
+    this.addEventListener("StylesUpdateCompleted", listener);
+  }
+  removeStyleUpdateListener(listener) {
+    this.removeEventListener("StylesUpdateCompleted", listener);
+  }
   startToolbarPaneAnimation(widget) {
     if (widget === this.currentToolbarPane) {
       return;
@@ -10067,7 +10080,7 @@ var ComputedStyleWidget = class extends UI12.Widget.VBox {
    */
   #filterText = "";
   #filterIsRegex = false;
-  #includeToolbar = true;
+  #allowUserControl = true;
   constructor() {
     super({ useShadowDom: true });
     this.#view = DEFAULT_VIEW2;
@@ -10109,11 +10122,11 @@ var ComputedStyleWidget = class extends UI12.Widget.VBox {
     }
     this.requestUpdate();
   }
-  get includeToolbar() {
-    return this.#includeToolbar;
+  get allowUserControl() {
+    return this.#allowUserControl;
   }
-  set includeToolbar(inc) {
-    this.#includeToolbar = inc;
+  set allowUserControl(inc) {
+    this.#allowUserControl = inc;
     this.requestUpdate();
   }
   /**
@@ -10122,7 +10135,7 @@ var ComputedStyleWidget = class extends UI12.Widget.VBox {
   #updateView({ hasMatches }) {
     this.#view({
       computedStylesTree: this.#computedStylesTree,
-      includeToolbar: this.#includeToolbar,
+      includeToolbar: this.#allowUserControl,
       hasMatches,
       showInheritedComputedStylePropertiesSetting: this.showInheritedComputedStylePropertiesSetting,
       groupComputedStylesSetting: this.groupComputedStylesSetting,
@@ -10152,6 +10165,12 @@ var ComputedStyleWidget = class extends UI12.Widget.VBox {
     this.#computedStyleModel = computedStyleModel;
     this.requestUpdate();
   }
+  #shouldGroupStyles() {
+    return this.#allowUserControl && this.groupComputedStylesSetting.get();
+  }
+  #shouldShowAllStyles() {
+    return this.#allowUserControl && this.showInheritedComputedStylePropertiesSetting.get();
+  }
   async performUpdate() {
     const nodeStyles = this.#nodeStyle;
     const matchedStyles = this.#matchedStyles;
@@ -10159,8 +10178,7 @@ var ComputedStyleWidget = class extends UI12.Widget.VBox {
       this.#updateView({ hasMatches: false });
       return;
     }
-    const shouldGroupComputedStyles = this.groupComputedStylesSetting.get();
-    if (shouldGroupComputedStyles) {
+    if (this.#shouldGroupStyles()) {
       await this.rebuildGroupedList(nodeStyles, matchedStyles);
     } else {
       await this.rebuildAlphabeticalList(nodeStyles, matchedStyles);
@@ -10178,7 +10196,7 @@ var ComputedStyleWidget = class extends UI12.Widget.VBox {
     const node = nodeStyle.node;
     const propertyTraces = this.computePropertyTraces(matchedStyles);
     const nonInheritedProperties = this.computeNonInheritedProperties(matchedStyles);
-    const showInherited = this.showInheritedComputedStylePropertiesSetting.get();
+    const showInherited = this.#shouldShowAllStyles();
     const tree3 = [];
     for (const propertyName of uniqueProperties) {
       const propertyValue = nodeStyle.computedStyle.get(propertyName) || "";
@@ -14336,11 +14354,11 @@ var DOMTreeWidget = class extends UI17.Widget.Widget {
     this.#currentHighlightedNode = null;
     this.performUpdate();
   }
-  selectDOMNode(node, focus2) {
+  selectDOMNode(node, focus) {
     if (node instanceof SDK15.DOMModel.AdoptedStyleSheet) {
       this.#viewOutput?.elementsTreeOutline?.highlightAdoptedStyleSheet(node);
     } else {
-      this.#viewOutput?.elementsTreeOutline?.selectDOMNode(node, focus2);
+      this.#viewOutput?.elementsTreeOutline?.selectDOMNode(node, focus);
     }
   }
   highlightNodeAttribute(node, attribute) {
@@ -14856,15 +14874,15 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common9.ObjectWrapp
   selectedDOMNode() {
     return this.selectedDOMNodeInternal;
   }
-  selectDOMNode(node, focus2) {
+  selectDOMNode(node, focus) {
     if (this.selectedDOMNodeInternal === node) {
-      this.revealAndSelectNode(node, !focus2);
+      this.revealAndSelectNode(node, !focus);
       return;
     }
     this.selectedDOMNodeInternal = node;
-    this.revealAndSelectNode(node, !focus2);
+    this.revealAndSelectNode(node, !focus);
     if (this.selectedDOMNodeInternal === node) {
-      this.selectedNodeChanged(Boolean(focus2));
+      this.selectedNodeChanged(Boolean(focus));
     }
   }
   highlightAdoptedStyleSheet(adoptedStyleSheet) {
@@ -14918,8 +14936,8 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common9.ObjectWrapp
       this.revealAndSelectNode(selectedNode, true);
     }
   }
-  selectedNodeChanged(focus2) {
-    this.dispatchEventToListeners(_ElementsTreeOutline.Events.SelectedNodeChanged, { node: this.selectedDOMNodeInternal, focus: focus2 });
+  selectedNodeChanged(focus) {
+    this.dispatchEventToListeners(_ElementsTreeOutline.Events.SelectedNodeChanged, { node: this.selectedDOMNodeInternal, focus });
   }
   fireElementsTreeUpdated(nodes) {
     this.dispatchEventToListeners(_ElementsTreeOutline.Events.ElementsTreeUpdated, nodes);
@@ -17521,7 +17539,7 @@ ${node.simpleSelector()} {}`, false);
     if (selectedNode?.pseudoType() && !selectedNode.parentNode) {
       selectedNode = null;
     }
-    const { focus: focus2 } = event.data;
+    const { focus } = event.data;
     if (!selectedNode) {
       this.#domTreeWidget.selectDOMNode(null);
     }
@@ -17546,7 +17564,7 @@ ${node.simpleSelector()} {}`, false);
       return;
     }
     void selectedNode.setAsInspectedNode();
-    if (focus2) {
+    if (focus) {
       this.selectedNodeOnReset = selectedNode;
       this.hasNonDefaultSelectedNode = true;
       this.#restorationGeneration++;
@@ -17798,8 +17816,8 @@ ${node.simpleSelector()} {}`, false);
   selectedDOMNode() {
     return this.#domTreeWidget.selectedDOMNode();
   }
-  selectDOMNode(node, focus2) {
-    this.#domTreeWidget.selectDOMNode(node, focus2);
+  selectDOMNode(node, focus) {
+    this.#domTreeWidget.selectDOMNode(node, focus);
   }
   highlightNodeAttribute(node, attribute) {
     this.#domTreeWidget.highlightNodeAttribute(node, attribute);
@@ -17861,7 +17879,7 @@ ${node.simpleSelector()} {}`, false);
       void this.accessibilityTreeView.revealAndSelectNode(nodeToReveal);
     }
     if (showPanel) {
-      await UI21.ViewManager.ViewManager.instance().showView("elements", false, !focus);
+      await UI21.ViewManager.ViewManager.instance().showView("elements", false, !focusNode);
     }
     this.selectDOMNode(node, focusNode);
     delete this.omitDefaultSelection;
@@ -17876,7 +17894,7 @@ ${node.simpleSelector()} {}`, false);
     const { showPanel = true, focusNode = false } = opts ?? {};
     this.omitDefaultSelection = true;
     if (showPanel) {
-      await UI21.ViewManager.ViewManager.instance().showView("elements", false, !focus);
+      await UI21.ViewManager.ViewManager.instance().showView("elements", false, !focusNode);
     }
     this.selectDOMNode(nodeToReveal, focusNode);
     delete this.omitDefaultSelection;

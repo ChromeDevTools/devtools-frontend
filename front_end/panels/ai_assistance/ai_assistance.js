@@ -1432,14 +1432,6 @@ var chatInput_css_default = `/*
       vertical-align: middle;
     }
 
-    &.has-picker-behavior {
-      overflow: visible;
-
-      .title {
-        overflow: visible;
-      }
-    }
-
     &:focus-visible {
       outline: 2px solid var(--sys-color-state-focus-ring);
     }
@@ -1805,10 +1797,7 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
                             @click=${input.onInspectElementClick}
                           ></devtools-button>` : Lit.nothing}
                       <div
-                        class=${Lit.Directives.classMap({
-    "resource-link": true,
-    "has-picker-behavior": input.conversationType === "freestyler"
-  })}
+                        class="resource-link"
                       >
                         ${input.selectedContext instanceof AiAssistanceModel2.StylingAgent.NodeContext ? html3`
                               <devtools-widget
@@ -4994,6 +4983,13 @@ async function getEmptyStateSuggestions(conversation) {
         { title: "What performance issues exist with my page?", jslogContext: "performance-default" }
       ];
     }
+    case "breakpoint": {
+      return [
+        { title: "Why did the code pause here?" },
+        { title: "What function does this breakpoint belong to?" },
+        { title: "Why is this error thrown?" }
+      ];
+    }
     case "none": {
       return [
         { title: "What can you help me with?", jslogContext: "empty" },
@@ -5153,6 +5149,12 @@ function createFileContext(file) {
   }
   return new AiAssistanceModel5.FileAgent.FileContext(file);
 }
+function createBreakpointContext(uiLocation) {
+  if (!uiLocation) {
+    return null;
+  }
+  return new AiAssistanceModel5.BreakpointDebuggerAgent.BreakpointContext(uiLocation);
+}
 function createRequestContext(request) {
   if (!request) {
     return null;
@@ -5183,6 +5185,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
   #selectedElement = null;
   #selectedPerformanceTrace = null;
   #selectedRequest = null;
+  #selectedBreakpoint = null;
   // Messages displayed in the `ChatView` component.
   #messages = [];
   // Whether the UI should show loading or not.
@@ -5376,6 +5379,8 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
       targetConversationType = "freestyler";
     } else if (isNetworkPanelVisible && hostConfig.devToolsAiAssistanceNetworkAgent?.enabled) {
       targetConversationType = "drjones-network-request";
+    } else if (isSourcesPanelVisible && this.#conversation?.type === "breakpoint") {
+      targetConversationType = "breakpoint";
     } else if (isSourcesPanelVisible && hostConfig.devToolsAiAssistanceFileAgent?.enabled) {
       targetConversationType = "drjones-file";
     } else if (isPerformancePanelVisible && hostConfig.devToolsAiAssistancePerformanceAgent?.enabled) {
@@ -5428,6 +5433,15 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
     }
     this.requestUpdate();
   }
+  async handleBreakpointConversation(uiLocation) {
+    const context = new AiAssistanceModel5.BreakpointDebuggerAgent.BreakpointContext(uiLocation);
+    this.#selectedBreakpoint = context;
+    const conversation = new AiAssistanceModel5.AiConversation.AiConversation("breakpoint", [], void 0, false, this.#aidaClient, this.#changeManager, false, this.#handlePerformanceRecordAndReload.bind(this), this.#handleInspectElement.bind(this), NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator());
+    this.#updateConversationState(conversation);
+    this.#conversation?.setContext(context);
+    this.requestUpdate();
+    await UI9.ViewManager.ViewManager.instance().showView(_AiAssistancePanel.panelName);
+  }
   wasShown() {
     super.wasShown();
     this.#viewOutput.chatView?.restoreScrollPosition();
@@ -5437,6 +5451,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
     this.#selectedRequest = createRequestContext(UI9.Context.Context.instance().flavor(SDK3.NetworkRequest.NetworkRequest));
     this.#selectedPerformanceTrace = createPerformanceTraceContext(UI9.Context.Context.instance().flavor(AiAssistanceModel5.AIContext.AgentFocus));
     this.#selectedFile = createFileContext(UI9.Context.Context.instance().flavor(Workspace5.UISourceCode.UISourceCode));
+    this.#selectedBreakpoint = createBreakpointContext(UI9.Context.Context.instance().flavor(Workspace5.UISourceCode.UILocation));
     this.#updateConversationState(this.#conversation);
     this.#aiAssistanceEnabledSetting?.addChangeListener(this.requestUpdate, this);
     Host6.AidaClient.HostConfigTracker.instance().addEventListener("aidaAvailabilityChanged", this.#handleAidaAvailabilityChange);
@@ -5445,6 +5460,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
     UI9.Context.Context.instance().addFlavorChangeListener(SDK3.NetworkRequest.NetworkRequest, this.#handleNetworkRequestFlavorChange);
     UI9.Context.Context.instance().addFlavorChangeListener(AiAssistanceModel5.AIContext.AgentFocus, this.#handlePerformanceTraceFlavorChange);
     UI9.Context.Context.instance().addFlavorChangeListener(Workspace5.UISourceCode.UISourceCode, this.#handleUISourceCodeFlavorChange);
+    UI9.Context.Context.instance().addFlavorChangeListener(Workspace5.UISourceCode.UILocation, this.#handleBreakpointFlavorChange);
     UI9.ViewManager.ViewManager.instance().addEventListener("ViewVisibilityChanged", this.#selectDefaultAgentIfNeeded, this);
     SDK3.TargetManager.TargetManager.instance().addModelListener(SDK3.DOMModel.DOMModel, SDK3.DOMModel.Events.AttrModified, this.#handleDOMNodeAttrChange, this);
     SDK3.TargetManager.TargetManager.instance().addModelListener(SDK3.DOMModel.DOMModel, SDK3.DOMModel.Events.AttrRemoved, this.#handleDOMNodeAttrChange, this);
@@ -5525,6 +5541,14 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
     this.#selectedFile = new AiAssistanceModel5.FileAgent.FileContext(ev.data);
     this.#updateConversationState(this.#conversation);
   };
+  #handleBreakpointFlavorChange = (ev) => {
+    const newBreakpoint = ev.data;
+    if (!newBreakpoint || this.#selectedBreakpoint?.getItem() === newBreakpoint) {
+      return;
+    }
+    this.#selectedBreakpoint = new AiAssistanceModel5.BreakpointDebuggerAgent.BreakpointContext(newBreakpoint);
+    this.#updateConversationState(this.#conversation);
+  };
   #getChangeSummary() {
     if (!isAiAssistancePatchingEnabled() || !this.#conversation || this.#conversation?.isReadOnly) {
       return;
@@ -5599,6 +5623,8 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
         }
         return lockedString7(UIStringsNotTranslate7.inputPlaceholderForPerformanceWithNoRecording);
       }
+      case "breakpoint":
+        return lockedString7(UIStringsNotTranslate7.inputPlaceholderForNoContext);
       case "none":
         if (AiAssistanceModel5.AiUtils.isGeminiBranding()) {
           return lockedString7(UIStringsNotTranslate7.inputPlaceholderForNoContextBranded);
@@ -5634,6 +5660,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
           return lockedString7(UIStringsNotTranslate7.inputDisclaimerForPerformanceEnterpriseNoLogging);
         }
         return lockedString7(UIStringsNotTranslate7.inputDisclaimerForPerformance);
+      case "breakpoint":
       case "none":
         if (noLogging) {
           return lockedString7(UIStringsNotTranslate7.inputDisclaimerForNoContextEnterpriseNoLogging);
@@ -5846,6 +5873,8 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
         return this.#selectedRequest;
       case "drjones-performance-full":
         return this.#selectedPerformanceTrace;
+      case "breakpoint":
+        return this.#selectedBreakpoint;
       case "none":
       case void 0:
         return null;
@@ -5860,6 +5889,8 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
       this.#selectedRequest = data;
     } else if (data instanceof AiAssistanceModel5.PerformanceAgent.PerformanceTraceContext) {
       this.#selectedPerformanceTrace = data;
+    } else if (data instanceof AiAssistanceModel5.BreakpointDebuggerAgent.BreakpointContext) {
+      this.#selectedBreakpoint = data;
     }
     void VisualLogging6.logFunctionCall(`context-change-${this.#conversation?.type}`);
     this.requestUpdate();

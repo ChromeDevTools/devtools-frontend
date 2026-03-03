@@ -39,4 +39,6 @@ export interface StylesContainer {
     jumpToFontPaletteDefinition(paletteName: string): void;
     jumpToDeclaration(valueSource: SDK.CSSMatchedStyles.CSSValueSource): void;
     setActiveProperty(treeElement: StylePropertyTreeElement | null): void;
+    addStyleUpdateListener(listener: () => void): void;
+    removeStyleUpdateListener(listener: () => void): void;
 }

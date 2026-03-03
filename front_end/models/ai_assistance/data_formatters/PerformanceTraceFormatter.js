@@ -525,7 +525,7 @@ Status code: ${statusCode}
 MIME Type: ${mimeType}
 Protocol: ${protocol}
 ${priorityLines.join('\n')}
-Render blocking: ${renderBlocking ? 'Yes' : 'No'}
+Render-blocking: ${renderBlocking ? 'Yes' : 'No'}
 From a service worker: ${fromServiceWorker ? 'Yes' : 'No'}
 Initiators (root request to the request that directly loaded this one): ${initiatorUrls.join(', ') || 'none'}
 ${NetworkRequestFormatter.formatHeaders('Response headers', responseHeaders ?? [], true)}`;

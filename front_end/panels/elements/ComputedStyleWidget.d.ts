@@ -41,8 +41,8 @@ export declare class ComputedStyleWidget extends UI.Widget.VBox {
     get filterText(): string;
     get filterIsRegex(): boolean;
     set filterText(newFilter: RegExp | string);
-    get includeToolbar(): boolean;
-    set includeToolbar(inc: boolean);
+    get allowUserControl(): boolean;
+    set allowUserControl(inc: boolean);
     get nodeStyle(): ComputedStyleModule.ComputedStyleModel.ComputedStyle | null;
     set nodeStyle(nodeStyle: ComputedStyleModule.ComputedStyleModel.ComputedStyle | null);
     get matchedStyles(): SDK.CSSMatchedStyles.CSSMatchedStyles | null;

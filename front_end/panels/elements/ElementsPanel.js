@@ -842,7 +842,7 @@ export class ElementsPanel extends UI.Panel.Panel {
             void this.accessibilityTreeView.revealAndSelectNode(nodeToReveal);
         }
         if (showPanel) {
-            await UI.ViewManager.ViewManager.instance().showView('elements', false, !focus);
+            await UI.ViewManager.ViewManager.instance().showView('elements', false, !focusNode);
         }
         this.selectDOMNode(node, focusNode);
         delete this.omitDefaultSelection;
@@ -857,7 +857,7 @@ export class ElementsPanel extends UI.Panel.Panel {
         const { showPanel = true, focusNode = false } = opts ?? {};
         this.omitDefaultSelection = true;
         if (showPanel) {
-            await UI.ViewManager.ViewManager.instance().showView('elements', false, !focus);
+            await UI.ViewManager.ViewManager.instance().showView('elements', false, !focusNode);
         }
         this.selectDOMNode(nodeToReveal, focusNode);
         delete this.omitDefaultSelection;

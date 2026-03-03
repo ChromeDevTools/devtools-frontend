@@ -4,6 +4,7 @@
 
 import * as AgentProject from './AgentProject.js';
 import * as AiAgent from './agents/AiAgent.js';
+import * as BreakpointDebuggerAgent from './agents/BreakpointDebuggerAgent.js';
 import * as ContextSelectionAgent from './agents/ContextSelectionAgent.js';
 import * as FileAgent from './agents/FileAgent.js';
 import * as NetworkAgent from './agents/NetworkAgent.js';
@@ -39,6 +40,7 @@ export {
   AiHistoryStorage,
   AIQueries,
   AiUtils,
+  BreakpointDebuggerAgent,
   BuiltInAi,
   ChangeManager,
   ContextSelectionAgent,

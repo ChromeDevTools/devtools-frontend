@@ -1762,7 +1762,7 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
   )}
                           @change=${input.groupCheckboxToggled.bind(void 0, group)}
                           tabindex=-1
-                          jslog=${VisualLogging3.toggle("breakpoint-group").track({ change: true })}></input>
+                          jslog=${VisualLogging3.toggle("breakpoint-group").track({ change: true })}>
                   </span>
                   <span class='group-header-title' title=${group.url}>
                     ${group.name}
@@ -11805,7 +11805,7 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI19.View.SimpleV
       <div class='ignore-listed-message' ${ref2(ignoreListMessageRef)}>
         <label class='ignore-listed-message-label'>
           <input type='checkbox' tabindex=0 class='ignore-listed-checkbox'
-              @change=${ignoreListCheckboxChanged} ${ref2(ignoreListCheckboxRef)}></input>
+              @change=${ignoreListCheckboxChanged} ${ref2(ignoreListCheckboxRef)} />
           ${i18nString17(UIStrings18.showIgnorelistedFrames)}
         </label>
       </div>

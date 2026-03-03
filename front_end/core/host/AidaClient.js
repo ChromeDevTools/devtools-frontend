@@ -191,8 +191,8 @@ export class AidaClient {
         return "available" /* AidaAccessPreconditions.AVAILABLE */;
     }
     async *doConversation(request, options) {
-        if (!InspectorFrontendHostInstance.doAidaConversation) {
-            throw new Error('doAidaConversation is not available');
+        if (!InspectorFrontendHostInstance.dispatchHttpRequest) {
+            throw new Error('dispatchHttpRequest is not available');
         }
         // Disable logging for now.
         // For context, see b/454563259#comment35.
@@ -220,22 +220,37 @@ export class AidaClient {
             };
         })();
         const streamId = bindOutputStream(stream);
-        InspectorFrontendHostInstance.doAidaConversation(JSON.stringify(request), streamId, result => {
-            if (result.statusCode === 403) {
-                stream.fail(new Error('Server responded: permission denied'));
+        DispatchHttpRequestClient
+            .makeHttpRequest({
+            service: SERVICE_NAME,
+            path: '/v1/aida:doConversation',
+            method: 'POST',
+            body: JSON.stringify(request),
+            streamId,
+        }, options)
+            .then(() => {
+            void stream.close();
+        }, err => {
+            if (err instanceof DispatchHttpRequestClient.DispatchHttpRequestError && err.response) {
+                const result = err.response;
+                if (result.statusCode === 403) {
+                    stream.fail(new Error('Server responded: permission denied'));
+                    return;
+                }
+                if ('error' in result && result.error) {
+                    stream.fail(new Error(`Cannot send request: ${result.error} ${result.detail || ''}`));
+                    return;
+                }
+                if ('netErrorName' in result && result.netErrorName === 'net::ERR_TIMED_OUT') {
+                    stream.fail(new Error('doAidaConversation timed out'));
+                    return;
+                }
+                if (result.statusCode !== 200) {
+                    stream.fail(new Error(`Request failed: ${JSON.stringify(result)}`));
+                    return;
+                }
             }
-            else if (result.error) {
-                stream.fail(new Error(`Cannot send request: ${result.error} ${result.detail || ''}`));
-            }
-            else if (result.netErrorName === 'net::ERR_TIMED_OUT') {
-                stream.fail(new Error('doAidaConversation timed out'));
-            }
-            else if (result.statusCode !== 200) {
-                stream.fail(new Error(`Request failed: ${JSON.stringify(result)}`));
-            }
-            else {
-                void stream.close();
-            }
+            stream.fail(err);
         });
         let chunk;
         const text = [];

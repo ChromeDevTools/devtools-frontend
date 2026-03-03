@@ -153,8 +153,8 @@ export class PerformanceInsightFormatter {
                 return [{ title: 'How do I optimize my network dependency tree?' }];
             case 'RenderBlocking':
                 return [
-                    { title: 'Show me the most impactful render blocking requests that I should focus on' },
-                    { title: 'How can I reduce the number of render blocking requests?' }
+                    { title: 'Show me the most impactful render-blocking requests that I should focus on' },
+                    { title: 'How can I reduce the number of render-blocking requests?' }
                 ];
             case 'SlowCSSSelector':
                 return [{ title: 'How can I optimize my CSS to increase the performance of CSS selectors?' }];
@@ -647,16 +647,16 @@ ${requestSummary}`;
         return output;
     }
     /**
-     * Create an AI prompt string out of the Render Blocking Insight model to use with Ask AI.
-     * @param insight The Render Blocking Model to query.
+     * Create an AI prompt string out of the Render-blocking Insight model to use with Ask AI.
+     * @param insight The Render-blocking Model to query.
      * @returns a string formatted for sending to Ask AI.
      */
     formatRenderBlockingInsight(insight) {
         const requestSummary = this.#traceFormatter.formatNetworkRequests(insight.renderBlockingRequests);
         if (requestSummary.length === 0) {
-            return 'There are no network requests that are render blocking.';
+            return 'There are no network requests that are render-blocking.';
         }
-        return `Here is a list of the network requests that were render blocking on this page and their duration:
+        return `Here is a list of the network requests that were render-blocking on this page and their duration:
 
 ${requestSummary}`;
     }
@@ -962,7 +962,7 @@ It is important that all of these checks pass to minimize the delay between the 
    3. The maximum of 4 preconnects should be respected.
 - Opportunities to add [preconnect] for a faster loading experience.`;
             case 'RenderBlocking':
-                return 'This insight identifies network requests that were render blocking. Render blocking requests are impactful because they are deemed critical to the page and therefore the browser stops rendering the page until it has dealt with these resources. For this insight make sure you fully inspect the details of each render blocking network request and prioritize your suggestions to the user based on the impact of each render blocking request.';
+                return 'This insight identifies network requests that were render-blocking. Render-blocking requests are impactful because they are deemed critical to the page and therefore the browser stops rendering the page until it has dealt with these resources. For this insight make sure you fully inspect the details of each render-blocking network request and prioritize your suggestions to the user based on the impact of each render-blocking request.';
             case 'SlowCSSSelector':
                 return `This insight identifies CSS selectors that are slowing down your page's rendering performance.`;
             case 'ThirdParties':

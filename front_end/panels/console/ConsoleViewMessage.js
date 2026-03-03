@@ -9,6 +9,8 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
 import * as Bindings from '../../models/bindings/bindings.js';
+import * as Breakpoints from '../../models/breakpoints/breakpoints.js';
+import * as Greendev from '../../models/greendev/greendev.js';
 import * as Logs from '../../models/logs/logs.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
@@ -25,6 +27,7 @@ import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { render } from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
+import * as AiAssistancePanel from '../ai_assistance/ai_assistance.js';
 import { format, updateStyle } from './ConsoleFormat.js';
 import { ConsoleInsightTeaser } from './ConsoleInsightTeaser.js';
 import consoleViewStyles from './consoleView.css.js';
@@ -757,11 +760,16 @@ export class ConsoleViewMessage {
     formatParameterAsObject(obj, includePreview) {
         const titleElement = document.createElement('span');
         titleElement.classList.add('console-object');
+        const renderPreview = (includeNullOrUndefined) => {
+            if (obj.preview) {
+                titleElement.classList.add('console-object-preview');
+                /* eslint-disable-next-line  @devtools/no-lit-render-outside-of-view */
+                render(this.previewFormatter.renderObjectPreview(obj.preview, includeNullOrUndefined), titleElement);
+                ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection.appendMemoryIcon(titleElement, obj);
+            }
+        };
         if (includePreview && obj.preview) {
-            titleElement.classList.add('console-object-preview');
-            /* eslint-disable-next-line  @devtools/no-lit-render-outside-of-view */
-            render(this.previewFormatter.renderObjectPreview(obj.preview), titleElement);
-            ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection.appendMemoryIcon(titleElement, obj);
+            renderPreview(true);
         }
         else if (obj.type === 'function') {
             const functionElement = titleElement.createChild('span');
@@ -792,6 +800,7 @@ export class ConsoleViewMessage {
         section.addEventListener(UI.TreeOutline.Events.ElementAttached, this.messageResized);
         section.addEventListener(UI.TreeOutline.Events.ElementExpanded, this.messageResized);
         section.addEventListener(UI.TreeOutline.Events.ElementCollapsed, this.messageResized);
+        section.root.addEventListener("filter-changed" /* ObjectUI.ObjectPropertiesSection.ObjectTreeNodeBase.Events.FILTER_CHANGED */, () => renderPreview(section.root.includeNullOrUndefinedValues));
         return section.element;
     }
     formatParameterAsFunction(originalFunction, includePreview) {
@@ -1319,6 +1328,10 @@ export class ConsoleViewMessage {
             Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightConsoleMessageShown);
             this.consoleRowWrapper.append(this.#createHoverButton());
         }
+        const breakpointAgentEnabled = Greendev.Prototypes.instance().isEnabled('breakpointDebuggerAgent');
+        if (breakpointAgentEnabled && this.message.level === "error" /* Protocol.Log.LogEntryLevel.Error */) {
+            this.consoleRowWrapper.append(this.#createBreakpointButton());
+        }
         if (this.repeatCountInternal > 1) {
             this.showRepeatCountElement();
         }
@@ -1400,6 +1413,72 @@ export class ConsoleViewMessage {
         button.tabIndex = 0;
         button.setAttribute('jslog', `${VisualLogging.action(EXPLAIN_HOVER_ACTION_ID).track({ click: true })}`);
         hoverButtonObserver.observe(button);
+        return button;
+    }
+    #createBreakpointButton() {
+        const button = document.createElement('button');
+        const icon = new Icon();
+        icon.name = 'bug';
+        icon.style.color = 'var(--devtools-icon-color)';
+        icon.classList.add('medium');
+        button.append(icon);
+        const label = document.createElement('div');
+        label.classList.add('button-label');
+        const text = document.createElement('div');
+        text.innerText = 'Debug with breakpoint AI';
+        label.append(text);
+        button.append(label);
+        button.classList.add('hover-button');
+        // Offset the button to the left of the existing one (24px width + 6px right + gap)
+        if (this.shouldShowInsights()) {
+            button.style.right = '36px';
+        }
+        button.ariaLabel = 'Debug with breakpoint AI';
+        button.tabIndex = 0;
+        button.onclick = async (event) => {
+            event.stopPropagation();
+            const runtimeModel = this.message.runtimeModel();
+            if (!runtimeModel) {
+                return;
+            }
+            const debuggerModel = runtimeModel.debuggerModel();
+            const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
+            let uiLocation = null;
+            // 1. Try stack trace latest called line
+            if (this.message.stackTrace?.callFrames.length) {
+                const callFrame = this.message.stackTrace.callFrames[0];
+                if (callFrame.scriptId) {
+                    const script = debuggerModel.scriptForId(callFrame.scriptId);
+                    if (script) {
+                        const rawLocation = new SDK.DebuggerModel.Location(debuggerModel, callFrame.scriptId, callFrame.lineNumber, callFrame.columnNumber);
+                        uiLocation = await debuggerWorkspaceBinding.rawLocationToUILocation(rawLocation);
+                    }
+                }
+            }
+            // 2. Try scriptId on message
+            if (!uiLocation && this.message.scriptId) {
+                const script = debuggerModel.scriptForId(this.message.scriptId);
+                if (script) {
+                    const rawLocation = new SDK.DebuggerModel.Location(debuggerModel, this.message.scriptId, this.message.line, this.message.column);
+                    uiLocation = await debuggerWorkspaceBinding.rawLocationToUILocation(rawLocation);
+                }
+            }
+            // 3. Try URL
+            if (!uiLocation && this.message.url) {
+                const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(this.message.url);
+                if (uiSourceCode) {
+                    uiLocation = uiSourceCode.uiLocation(this.message.line, this.message.column);
+                }
+            }
+            if (uiLocation) {
+                await Common.Revealer.reveal(uiLocation);
+                const breakpointManager = Breakpoints.BreakpointManager.BreakpointManager.instance();
+                await breakpointManager.setBreakpoint(uiLocation.uiSourceCode, uiLocation.lineNumber, uiLocation.columnNumber, Breakpoints.BreakpointManager.EMPTY_BREAKPOINT_CONDITION, /* enabled */ true, 
+                /* isLogpoint */ false, "RESTORED" /* Breakpoints.BreakpointManager.BreakpointOrigin.OTHER */);
+                const aiPanel = await AiAssistancePanel.AiAssistancePanel.instance();
+                void aiPanel.handleBreakpointConversation(uiLocation);
+            }
+        };
         return button;
     }
     shouldRenderAsWarning() {

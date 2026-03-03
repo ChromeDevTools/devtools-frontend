@@ -246,7 +246,7 @@ export class AiCodeGenerationProvider {
             PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.GENERATED) {
             update.view.dispatch({ effects: setAiAutoCompleteSuggestion.of(null) });
             this.#generationTeaser.displayState =
-                PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.TRIGGER;
+                PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.DISCOVERY;
             return;
         }
     }

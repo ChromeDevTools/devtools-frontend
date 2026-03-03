@@ -323,22 +323,22 @@ function renderTutorial() {
     return html `<div class="annotation-tutorial-container">
     ${i18nString(UIStrings.annotationGetStarted)}
       <div class="tutorial-card">
-        <div class="tutorial-image"><img src=${entryLabelImageUrl}></img></div>
+        <div class="tutorial-image"><img src=${entryLabelImageUrl}></div>
         <div class="tutorial-title">${i18nString(UIStrings.entryLabelTutorialTitle)}</div>
         <div class="tutorial-description">${i18nString(UIStrings.entryLabelTutorialDescription)}</div>
       </div>
       <div class="tutorial-card">
-        <div class="tutorial-image"><img src=${diagramImageUrl}></img></div>
+        <div class="tutorial-image"><img src=${diagramImageUrl}></div>
         <div class="tutorial-title">${i18nString(UIStrings.entryLinkTutorialTitle)}</div>
         <div class="tutorial-description">${i18nString(UIStrings.entryLinkTutorialDescription)}</div>
       </div>
       <div class="tutorial-card">
-        <div class="tutorial-image"><img src=${timeRangeImageUrl}></img></div>
+        <div class="tutorial-image"><img src=${timeRangeImageUrl}></div>
         <div class="tutorial-title">${i18nString(UIStrings.timeRangeTutorialTitle)}</div>
         <div class="tutorial-description">${i18nString(UIStrings.timeRangeTutorialDescription)}</div>
       </div>
       <div class="tutorial-card">
-        <div class="tutorial-image"><img src=${deleteAnnotationImageUrl}></img></div>
+        <div class="tutorial-image"><img src=${deleteAnnotationImageUrl}></div>
         <div class="tutorial-title">${i18nString(UIStrings.deleteAnnotationTutorialTitle)}</div>
         <div class="tutorial-description">${i18nString(UIStrings.deleteAnnotationTutorialDescription)}</div>
       </div>

@@ -308,7 +308,7 @@ const UIStrings = {
      */
     initialPriorityToolTip: '{PH1}, Initial priority: {PH2}',
     /**
-     * @description Text in Network Data Grid Node of the Network panel. Noun. Refers to a render blocking resource.
+     * @description Text in Network Data Grid Node of the Network panel. Noun. Refers to a render-blocking resource.
      */
     blocking: 'Blocking',
     /**

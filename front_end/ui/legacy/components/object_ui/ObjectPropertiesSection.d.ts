@@ -10,7 +10,7 @@ interface NodeChildren {
     arrayRanges?: ArrayGroupTreeNode[];
     accessors?: ObjectTreeNode[];
 }
-declare abstract class ObjectTreeNodeBase extends Common.ObjectWrapper.ObjectWrapper<ObjectTreeNodeBase.EventTypes> {
+export declare abstract class ObjectTreeNodeBase extends Common.ObjectWrapper.ObjectWrapper<ObjectTreeNodeBase.EventTypes> {
     #private;
     readonly parent?: ObjectTreeNodeBase | undefined;
     readonly propertiesMode: ObjectPropertiesMode;
@@ -21,6 +21,8 @@ declare abstract class ObjectTreeNodeBase extends Common.ObjectWrapper.ObjectWra
     protected extraProperties: ObjectTreeNode[];
     expanded: boolean;
     constructor(parent?: ObjectTreeNodeBase | undefined, propertiesMode?: ObjectPropertiesMode);
+    get includeNullOrUndefinedValues(): boolean;
+    set includeNullOrUndefinedValues(value: boolean);
     expandRecursively(maxDepth: number): Promise<void>;
     collapseRecursively(): void;
     setFilter(filter: {
@@ -40,7 +42,7 @@ declare abstract class ObjectTreeNodeBase extends Common.ObjectWrapper.ObjectWra
     addExtraProperties(...properties: SDK.RemoteObject.RemoteObjectProperty[]): void;
     static getGettersAndSetters(properties: ObjectTreeNode[]): ObjectTreeNode[];
 }
-declare namespace ObjectTreeNodeBase {
+export declare namespace ObjectTreeNodeBase {
     const enum Events {
         VALUE_CHANGED = "value-changed",
         CHILDREN_CHANGED = "children-changed",
@@ -89,7 +91,7 @@ export declare class ObjectTreeNode extends ObjectTreeNodeBase {
 export declare const getObjectPropertiesSectionFrom: (element: Element) => ObjectPropertiesSection | undefined;
 export declare class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow {
     #private;
-    private readonly root;
+    readonly root: ObjectTree;
     readonly editable: boolean;
     titleElement: Element;
     skipProtoInternal?: boolean;
@@ -99,10 +101,10 @@ export declare class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineI
     static compareProperties(propertyA: ObjectTreeNode | SDK.RemoteObject.RemoteObjectProperty, propertyB: ObjectTreeNode | SDK.RemoteObject.RemoteObjectProperty): number;
     static createNameElement(name: string | null, isPrivate?: boolean): Element;
     static valueElementForFunctionDescription(description?: string, includePreview?: boolean, defaultName?: string, className?: string): LitTemplate;
-    static createPropertyValueWithCustomSupport(value: SDK.RemoteObject.RemoteObject, wasThrown: boolean, showPreview: boolean, linkifier?: Components.Linkifier.Linkifier, isSyntheticProperty?: boolean, variableName?: string): HTMLElement;
+    static createPropertyValueWithCustomSupport(value: SDK.RemoteObject.RemoteObject, wasThrown: boolean, showPreview: boolean, linkifier?: Components.Linkifier.Linkifier, isSyntheticProperty?: boolean, variableName?: string, includeNullOrUndefined?: boolean): HTMLElement;
     static getMemoryIcon(object: SDK.RemoteObject.RemoteObject, expression?: string): LitTemplate;
     static appendMemoryIcon(element: Element, object: SDK.RemoteObject.RemoteObject, expression?: string): void;
-    static createPropertyValue(value: SDK.RemoteObject.RemoteObject, wasThrown: boolean, showPreview: boolean, linkifier?: Components.Linkifier.Linkifier, isSyntheticProperty?: boolean, variableName?: string): HTMLElement;
+    static createPropertyValue(value: SDK.RemoteObject.RemoteObject, wasThrown: boolean, showPreview: boolean, linkifier?: Components.Linkifier.Linkifier, isSyntheticProperty?: boolean, variableName?: string, includeNullOrUndefined?: boolean): HTMLElement;
     static formatObjectAsFunction(func: SDK.RemoteObject.RemoteObject, element: Element, linkify: boolean, includePreview?: boolean): Promise<void>;
     static isDisplayableProperty(property: SDK.RemoteObject.RemoteObjectProperty, parentProperty?: SDK.RemoteObject.RemoteObjectProperty): boolean;
     skipProto(): void;

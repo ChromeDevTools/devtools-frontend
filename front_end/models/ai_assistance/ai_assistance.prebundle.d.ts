@@ -1,5 +1,6 @@
 import * as AgentProject from './AgentProject.js';
 import * as AiAgent from './agents/AiAgent.js';
+import * as BreakpointDebuggerAgent from './agents/BreakpointDebuggerAgent.js';
 import * as ContextSelectionAgent from './agents/ContextSelectionAgent.js';
 import * as FileAgent from './agents/FileAgent.js';
 import * as NetworkAgent from './agents/NetworkAgent.js';
@@ -25,4 +26,4 @@ import * as Injected from './injected.js';
 import * as AICallTree from './performance/AICallTree.js';
 import * as AIContext from './performance/AIContext.js';
 import * as AIQueries from './performance/AIQueries.js';
-export { AgentProject, AiAgent, AICallTree, AIContext, AiConversation, AiHistoryStorage, AIQueries, AiUtils, BuiltInAi, ChangeManager, ContextSelectionAgent, ConversationHandler, Debug, EvaluateAction, ExtensionScope, FileAgent, FileFormatter, Injected, NetworkAgent, NetworkRequestFormatter, PatchAgent, PerformanceAgent, PerformanceAnnotationsAgent, PerformanceInsightFormatter, PerformanceTraceFormatter, StylingAgent, UnitFormatters, };
+export { AgentProject, AiAgent, AICallTree, AIContext, AiConversation, AiHistoryStorage, AIQueries, AiUtils, BreakpointDebuggerAgent, BuiltInAi, ChangeManager, ContextSelectionAgent, ConversationHandler, Debug, EvaluateAction, ExtensionScope, FileAgent, FileFormatter, Injected, NetworkAgent, NetworkRequestFormatter, PatchAgent, PerformanceAgent, PerformanceAnnotationsAgent, PerformanceInsightFormatter, PerformanceTraceFormatter, StylingAgent, UnitFormatters, };

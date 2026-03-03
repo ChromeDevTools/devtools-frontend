@@ -121,7 +121,7 @@ function isCritical(request, context) {
     if (request.args.data.isLinkPreload) {
         return false;
     }
-    // Iframes are considered High Priority but they are not render blocking
+    // Iframes are considered High Priority but they are not render-blocking
     const isIframe = request.args.data.resourceType === "Document" /* Protocol.Network.ResourceType.Document */ &&
         request.args.data.frame !== context.frameId;
     if (nonCriticalResourceTypes.has(request.args.data.resourceType) || isIframe ||

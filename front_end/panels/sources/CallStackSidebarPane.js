@@ -150,7 +150,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView {
       <div class='ignore-listed-message' ${ref(ignoreListMessageRef)}>
         <label class='ignore-listed-message-label'>
           <input type='checkbox' tabindex=0 class='ignore-listed-checkbox'
-              @change=${ignoreListCheckboxChanged} ${ref(ignoreListCheckboxRef)}></input>
+              @change=${ignoreListCheckboxChanged} ${ref(ignoreListCheckboxRef)} />
           ${i18nString(UIStrings.showIgnorelistedFrames)}
         </label>
       </div>

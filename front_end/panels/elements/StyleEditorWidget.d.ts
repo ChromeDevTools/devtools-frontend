@@ -32,6 +32,7 @@ export declare class StyleEditorWidget extends UI.Widget.VBox {
     getTriggerKey(): string | undefined;
     unbindContext(): void;
     render(): Promise<void>;
+    performUpdate(): Promise<void>;
     static instance(): StyleEditorWidget;
     setEditor(editorClass: {
         new (): Editor;

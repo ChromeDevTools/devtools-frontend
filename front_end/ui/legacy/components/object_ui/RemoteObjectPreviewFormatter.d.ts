@@ -3,7 +3,7 @@ import * as Protocol from '../../../../generated/protocol.js';
 import { type LitTemplate } from '../../../lit/lit.js';
 export declare class RemoteObjectPreviewFormatter {
     private static objectPropertyComparator;
-    renderObjectPreview(preview: Protocol.Runtime.ObjectPreview): LitTemplate;
+    renderObjectPreview(preview: Protocol.Runtime.ObjectPreview, includeNullOrUndefined?: boolean): LitTemplate;
     private renderObjectProperties;
     private renderArrayProperties;
     private renderEntries;

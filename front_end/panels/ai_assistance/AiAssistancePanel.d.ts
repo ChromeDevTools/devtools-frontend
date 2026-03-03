@@ -1,5 +1,6 @@
 import '../../ui/kit/kit.js';
 import * as Host from '../../core/host/host.js';
+import * as Workspace from '../../models/workspace/workspace.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { type ModelChatMessage } from './components/ChatMessage.js';
 import { ChatView, type Props as ChatViewProps } from './components/ChatView.js';
@@ -53,6 +54,7 @@ export declare class AiAssistancePanel extends UI.Panel.Panel {
     static instance(opts?: {
         forceNew: boolean | null;
     } | undefined): Promise<AiAssistancePanel>;
+    handleBreakpointConversation(uiLocation: Workspace.UISourceCode.UILocation): Promise<void>;
     wasShown(): void;
     willHide(): void;
     performUpdate(): Promise<void>;

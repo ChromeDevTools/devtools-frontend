@@ -106,8 +106,8 @@ export declare class PerformanceInsightFormatter {
      */
     formatNetworkDependencyTreeInsight(insight: Trace.Insights.Models.NetworkDependencyTree.NetworkDependencyTreeInsightModel): string;
     /**
-     * Create an AI prompt string out of the Render Blocking Insight model to use with Ask AI.
-     * @param insight The Render Blocking Model to query.
+     * Create an AI prompt string out of the Render-blocking Insight model to use with Ask AI.
+     * @param insight The Render-blocking Model to query.
      * @returns a string formatted for sending to Ask AI.
      */
     formatRenderBlockingInsight(insight: Trace.Insights.Models.RenderBlocking.RenderBlockingInsightModel): string;

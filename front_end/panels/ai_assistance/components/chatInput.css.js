@@ -253,14 +253,6 @@ export default `/*
       vertical-align: middle;
     }
 
-    &.has-picker-behavior {
-      overflow: visible;
-
-      .title {
-        overflow: visible;
-      }
-    }
-
     &:focus-visible {
       outline: 2px solid var(--sys-color-state-focus-ring);
     }

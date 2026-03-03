@@ -150,7 +150,7 @@ addElementAnnotation and specify an annotation reason.
 - CRITICAL: Each time you describe a network request as being problematic you MUST call the function
 addNetworkRequestAnnotation and specify an annotation reason.
 - CRITICAL: If you spot ANY of the following problems:
-  - Render blocking elements/network requests.
+  - Render-blocking elements/network requests.
   - Significant long task (especially on main thread).
   - Layout shifts (e.g. due to unsized images).
   ... then you MUST call addNetworkRequestAnnotation for ALL network requests and addaddElementAnnotation for all

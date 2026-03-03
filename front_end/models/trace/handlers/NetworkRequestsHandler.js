@@ -400,9 +400,9 @@ export async function finalize() {
         const parsedUrl = new URL(url);
         const isHttps = parsedUrl.protocol === 'https:';
         const requestingFrameUrl = Helpers.Trace.activeURLForFrameAtTime(frame, finalSendRequest.ts, rendererProcessesByFrame) || '';
-        // A resource that is preloaded (and not marked as render blocking) can
-        // become render blocked later via a PreloadRenderBlockingStatusChange. In
-        // this case, we take the render blocking value of the last
+        // A resource that is preloaded (and not marked as render-blocking) can
+        // become render-blocked later via a PreloadRenderBlockingStatusChange. In
+        // this case, we take the render-blocking value of the last
         // PreloadRenderBlockingStatusChange for this request.
         const preloadRenderBlockingStatusChange = request.preloadRenderBlockingStatusChange?.at(-1)?.args.data.renderBlocking;
         // In the event the property isn't set, assume non-blocking.

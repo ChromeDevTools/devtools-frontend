@@ -35,7 +35,7 @@ export class StyleEditorWidget extends UI.Widget.VBox {
         target.property.value = event.data.value;
         target.updateTitle();
         await target.applyStyleText(target.renderedPropertyText(), false);
-        await this.render();
+        this.requestUpdate();
     }
     async onPropertyDeselected(event) {
         if (!this.section) {
@@ -43,7 +43,7 @@ export class StyleEditorWidget extends UI.Widget.VBox {
         }
         const target = ensureTreeElementForProperty(this.section, event.data.name);
         await target.applyStyleText('', false);
-        await this.render();
+        this.requestUpdate();
     }
     bindContext(stylesContainer, section) {
         this.stylesContainer = stylesContainer;
@@ -72,6 +72,10 @@ export class StyleEditorWidget extends UI.Widget.VBox {
                 new Map(),
             computedProperties: this.stylesContainer ? await fetchComputedStyles(this.stylesContainer) : new Map(),
         };
+    }
+    async performUpdate() {
+        await super.performUpdate();
+        await this.render();
     }
     static instance() {
         if (!instance) {
@@ -104,11 +108,14 @@ export class StyleEditorWidget extends UI.Widget.VBox {
             const onScroll = () => {
                 popoverHelper.hide(true);
             };
+            const onStylesUpdateCompleted = widget.requestUpdate.bind(widget);
+            stylesContainer.addStyleUpdateListener(onStylesUpdateCompleted);
             popoverHelper.show(widget, triggerButton, () => {
                 widget.unbindContext();
                 if (scrollerElement) {
                     scrollerElement.removeEventListener('scroll', onScroll);
                 }
+                stylesContainer.removeStyleUpdateListener(onStylesUpdateCompleted);
             });
             if (scrollerElement) {
                 scrollerElement.addEventListener('scroll', onScroll);

@@ -133,7 +133,7 @@ const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/object_ui/ObjectP
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const EXPANDABLE_MAX_DEPTH = 100;
 const objectPropertiesSectionMap = new WeakMap();
-class ObjectTreeNodeBase extends Common.ObjectWrapper.ObjectWrapper {
+export class ObjectTreeNodeBase extends Common.ObjectWrapper.ObjectWrapper {
     parent;
     propertiesMode;
     #children;
@@ -145,6 +145,12 @@ class ObjectTreeNodeBase extends Common.ObjectWrapper.ObjectWrapper {
         this.parent = parent;
         this.propertiesMode = propertiesMode;
         this.filter = parent?.filter ?? null;
+    }
+    get includeNullOrUndefinedValues() {
+        return this.filter?.includeNullOrUndefinedValues ?? true;
+    }
+    set includeNullOrUndefinedValues(value) {
+        this.setFilter({ includeNullOrUndefinedValues: value, regex: this.filter?.regex ?? null });
     }
     // Performs a pre-order tree traversal over the populated children. If any children need to be populated, callers must
     // do that while walking (pre-order visitation enables that).
@@ -607,13 +613,13 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
             return defaultName + '()';
         }
     }
-    static createPropertyValueWithCustomSupport(value, wasThrown, showPreview, linkifier, isSyntheticProperty, variableName) {
+    static createPropertyValueWithCustomSupport(value, wasThrown, showPreview, linkifier, isSyntheticProperty, variableName, includeNullOrUndefined) {
         if (value.customPreview()) {
             const result = (new CustomPreviewComponent(value)).element;
             result.classList.add('object-properties-section-custom-section');
             return result;
         }
-        return ObjectPropertiesSection.createPropertyValue(value, wasThrown, showPreview, linkifier, isSyntheticProperty, variableName);
+        return ObjectPropertiesSection.createPropertyValue(value, wasThrown, showPreview, linkifier, isSyntheticProperty, variableName, includeNullOrUndefined);
     }
     static getMemoryIcon(object, expression) {
         // Directly set styles on memory icon, so that the memory icon is also
@@ -637,7 +643,7 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
         render(ObjectPropertiesSection.getMemoryIcon(object, expression), fragment);
         element.appendChild(fragment);
     }
-    static createPropertyValue(value, wasThrown, showPreview, linkifier, isSyntheticProperty = false, variableName) {
+    static createPropertyValue(value, wasThrown, showPreview, linkifier, isSyntheticProperty = false, variableName, includeNullOrUndefined) {
         const propertyValue = document.createDocumentFragment();
         const type = value.type;
         const subtype = value.subtype;
@@ -681,7 +687,7 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
           .widgetConfig=${widgetConfig(ExpandableTextPropertyValue, { text: description })}></devtools-widget></span>`;
             }
             const hasPreview = value.preview && showPreview;
-            return html `<span class="value object-value-${subtype || type}" title=${description}>${hasPreview ? new RemoteObjectPreviewFormatter().renderObjectPreview(value.preview) :
+            return html `<span class="value object-value-${subtype || type}" title=${description}>${hasPreview ? new RemoteObjectPreviewFormatter().renderObjectPreview(value.preview, includeNullOrUndefined) :
                 description}${isSyntheticProperty ? nothing : this.getMemoryIcon(value, variableName)}</span>`;
         };
         if (wasThrown) {
@@ -812,6 +818,9 @@ export class RootElement extends UI.TreeOutline.TreeElement {
         }
         contextMenu.viewSection().appendItem(i18nString(UIStrings.expandRecursively), this.expandRecursively.bind(this, EXPANDABLE_MAX_DEPTH), { jslogContext: 'expand-recursively' });
         contextMenu.viewSection().appendItem(i18nString(UIStrings.collapseChildren), this.collapseChildren.bind(this), { jslogContext: 'collapse-children' });
+        contextMenu.viewSection().appendCheckboxItem(i18n.i18n.lockedString('Show all'), () => {
+            this.object.includeNullOrUndefinedValues = !this.object.includeNullOrUndefinedValues;
+        }, { checked: this.object.includeNullOrUndefinedValues, jslogContext: 'show-all' });
         void contextMenu.show();
     }
     async onpopulate() {
@@ -855,7 +864,7 @@ export const OBJECT_PROPERTY_DEFAULT_VIEW = (input, output, target) => {
         }
         if (property.value) {
             const showPreview = property.name !== '[[Prototype]]';
-            const value = ObjectPropertiesSection.createPropertyValueWithCustomSupport(property.value, property.wasThrown, showPreview, input.linkifier, property.synthetic, input.node.path /* variableName */);
+            const value = ObjectPropertiesSection.createPropertyValueWithCustomSupport(property.value, property.wasThrown, showPreview, input.linkifier, property.synthetic, input.node.path /* variableName */, input.node.includeNullOrUndefinedValues);
             output.valueElement = value;
             return value;
         }
@@ -932,10 +941,12 @@ export class ObjectPropertyWidget extends UI.Widget.Widget {
         if (this.#property) {
             this.#property.removeEventListener("value-changed" /* ObjectTreeNodeBase.Events.VALUE_CHANGED */, this.requestUpdate, this);
             this.#property.removeEventListener("children-changed" /* ObjectTreeNodeBase.Events.CHILDREN_CHANGED */, this.requestUpdate, this);
+            this.#property.removeEventListener("filter-changed" /* ObjectTreeNodeBase.Events.FILTER_CHANGED */, this.requestUpdate, this);
         }
         this.#property = property;
         this.#property.addEventListener("value-changed" /* ObjectTreeNodeBase.Events.VALUE_CHANGED */, this.requestUpdate, this);
         this.#property.addEventListener("children-changed" /* ObjectTreeNodeBase.Events.CHILDREN_CHANGED */, this.requestUpdate, this);
+        this.#property.addEventListener("filter-changed" /* ObjectTreeNodeBase.Events.FILTER_CHANGED */, this.requestUpdate, this);
         this.requestUpdate();
     }
     get expanded() {
@@ -1236,6 +1247,13 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
             contextMenu.viewSection().appendItem(i18nString(UIStrings.expandRecursively), this.expandRecursively.bind(this, EXPANDABLE_MAX_DEPTH), { jslogContext: 'expand-recursively' });
             contextMenu.viewSection().appendItem(i18nString(UIStrings.collapseChildren), this.collapseChildren.bind(this), { jslogContext: 'collapse-children' });
         }
+        let root = this.property;
+        while (root.parent) {
+            root = root.parent;
+        }
+        contextMenu.viewSection().appendCheckboxItem(i18n.i18n.lockedString('Show all'), () => {
+            root.includeNullOrUndefinedValues = !root.includeNullOrUndefinedValues;
+        }, { checked: root.includeNullOrUndefinedValues, jslogContext: 'show-all' });
         return contextMenu;
     }
     contextMenuFired(event) {

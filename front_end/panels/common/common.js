@@ -750,6 +750,10 @@ var UIStringsNotTranslate2 = {
    */
   writeACommentToGenerateCode: "Write a comment to generate code",
   /**
+   * @description Text for teaser for discoverability.
+   */
+  writeACommentToGenerateCodeInConsole: "Write a comment to generate code. Try typing: '// add red borders to all the divs'.",
+  /**
    * @description Text for teaser when suggestion has been generated.
    */
   tab: "tab",
@@ -904,7 +908,8 @@ var DEFAULT_VIEW2 = (input, output, target) => {
         break;
       }
       const newBadge = UI3.UIUtils.maybeCreateNewBadge(PROMOTION_ID2);
-      teaserLabel = newBadge ? html3`${lockedString2(UIStringsNotTranslate2.writeACommentToGenerateCode)}&nbsp;${newBadge}` : nothing2;
+      const teaserText = input.panel === "console" ? lockedString2(UIStringsNotTranslate2.writeACommentToGenerateCodeInConsole) : lockedString2(UIStringsNotTranslate2.writeACommentToGenerateCode);
+      teaserLabel = newBadge ? html3`${teaserText}&nbsp;${newBadge}` : nothing2;
       break;
     }
     case AiCodeGenerationTeaserDisplayState.LOADING: {

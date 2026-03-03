@@ -9373,7 +9373,7 @@ export declare namespace Network {
         VeryHigh = "VeryHigh"
     }
     /**
-     * The render blocking behavior of a resource request.
+     * The render-blocking behavior of a resource request.
      */
     const enum RenderBlockingBehavior {
         Blocking = "Blocking",
@@ -11749,7 +11749,7 @@ export declare namespace Network {
          */
         hasUserGesture?: boolean;
         /**
-         * The render blocking behavior of the request.
+         * The render-blocking behavior of the request.
          */
         renderBlockingBehavior?: RenderBlockingBehavior;
     }

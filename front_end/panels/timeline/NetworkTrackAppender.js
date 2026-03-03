@@ -95,7 +95,7 @@ export class NetworkTrackAppender {
         for (let i = 0; i < events.length; ++i) {
             const event = events[i];
             this.#appendEventAtLevel(event, trackStartLevel);
-            // Decorate render blocking
+            // Decorate render-blocking
             if (Trace.Types.Events.isSyntheticNetworkRequest(event) &&
                 Trace.Helpers.Network.isSyntheticNetworkRequestEventRenderBlocking(event)) {
                 addDecorationToEvent(this.#flameChartData, i, {

@@ -166,7 +166,7 @@ var FirstContentfulPaint = class extends Metric {
   static getOptimisticGraph(dependencyGraph, processedNavigation) {
     return this.getFirstPaintBasedGraph(dependencyGraph, {
       cutoffTimestamp: processedNavigation.timestamps.firstContentfulPaint,
-      // In the optimistic graph we exclude resources that appeared to be render blocking but were
+      // In the optimistic graph we exclude resources that appeared to be render-blocking but were
       // initiated by a script. While they typically have a very high importance and tend to have a
       // significant impact on the page's content, these resources don't technically block rendering.
       treatNodeAsRenderBlocking: (node) => node.hasRenderBlockingPriority() && node.initiatorType !== "script"

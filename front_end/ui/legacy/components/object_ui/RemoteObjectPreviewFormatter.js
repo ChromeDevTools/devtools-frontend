@@ -49,7 +49,7 @@ export class RemoteObjectPreviewFormatter {
             return 5;
         }
     }
-    renderObjectPreview(preview) {
+    renderObjectPreview(preview, includeNullOrUndefined = true) {
         const description = preview.description;
         const subTypesWithoutValuePreview = new Set([
             "arraybuffer" /* Protocol.Runtime.ObjectPreviewSubtype.Arraybuffer */,
@@ -82,7 +82,7 @@ export class RemoteObjectPreviewFormatter {
         }
         const items = Array.from(preview.entries ? this.renderEntries(preview) :
             isArrayOrTypedArray ? this.renderArrayProperties(preview) :
-                this.renderObjectProperties(preview));
+                this.renderObjectProperties(preview, includeNullOrUndefined));
         // clang-format off
         const renderName = (name) => html `<span class=name>${/^\s|\s$|^$|\n/.test(name) ? '"' + name.replace(/\n/g, '\u21B5') + '"' : name}</span>`;
         const renderPlaceholder = (placeholder) => html `<span class=object-value-undefined>${placeholder}</span>`;
@@ -97,12 +97,16 @@ export class RemoteObjectPreviewFormatter {
             nothing}<span class=object-properties-preview>${isArrayOrTypedArray ? '[' : '{'}${repeat(items, renderItem)}${preview.overflow ? html `<span>${items.length > 0 ? ',\xA0…' : '…'}</span>` : ''}
     ${isArrayOrTypedArray ? ']' : '}'}</span>`;
     }
-    *renderObjectProperties(preview) {
+    *renderObjectProperties(preview, includeNullOrUndefined) {
         const properties = preview.properties.filter(p => p.type !== 'accessor')
             .sort(RemoteObjectPreviewFormatter.objectPropertyComparator);
         for (let i = 0; i < properties.length; ++i) {
             const property = properties[i];
             const name = property.name;
+            if (!includeNullOrUndefined &&
+                (property.type === 'undefined' || (property.type === 'object' && property.subtype === 'null'))) {
+                continue;
+            }
             // Internal properties are given special formatting, e.g. Promises `<rejected>: 123`.
             if (preview.subtype === "promise" /* Protocol.Runtime.ObjectPreviewSubtype.Promise */ && name === "[[PromiseState]]" /* InternalName.PROMISE_STATE */) {
                 const promiseResult = properties.at(i + 1)?.name === "[[PromiseResult]]" /* InternalName.PROMISE_RESULT */ ? properties.at(i + 1) : undefined;

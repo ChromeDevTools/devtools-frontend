@@ -1953,7 +1953,6 @@ var DEFAULT_VIEW2 = (input, output, target) => {
             placeholder='/framework\\.js$'
             .value=${live(newRegexValue)}
             .jslogContext=${"timeline.ignore-list-new-regex.text"}>
-          </input>
         </div>
       </div>
     </devtools-button-dialog>
@@ -6131,9 +6130,9 @@ var UIStrings15 = {
    */
   waitingOnMainThread: "Waiting on main thread",
   /**
-   * @description Text that refers to a network request is render blocking
+   * @description Text that refers to a network request is render-blocking
    */
-  renderBlocking: "Render blocking",
+  renderBlocking: "Render-blocking",
   /**
    * @description Text to refer to the list of redirects.
    */
@@ -6375,13 +6374,13 @@ var UIStrings16 = {
    */
   blocking: "Blocking",
   /**
-   * @description Text that refers to if the network request is in-body parser render blocking
+   * @description Text that refers to if the network request is in-body parser render-blocking
    */
   inBodyParserBlocking: "In-body parser blocking",
   /**
-   * @description Text that refers to if the network request is render blocking
+   * @description Text that refers to if the network request is render-blocking
    */
-  renderBlocking: "Render blocking",
+  renderBlocking: "Render-blocking",
   /**
    * @description Text to refer to a 3rd Party entity.
    */
@@ -7295,22 +7294,22 @@ function renderTutorial() {
   return html17`<div class="annotation-tutorial-container">
     ${i18nString17(UIStrings18.annotationGetStarted)}
       <div class="tutorial-card">
-        <div class="tutorial-image"><img src=${entryLabelImageUrl}></img></div>
+        <div class="tutorial-image"><img src=${entryLabelImageUrl}></div>
         <div class="tutorial-title">${i18nString17(UIStrings18.entryLabelTutorialTitle)}</div>
         <div class="tutorial-description">${i18nString17(UIStrings18.entryLabelTutorialDescription)}</div>
       </div>
       <div class="tutorial-card">
-        <div class="tutorial-image"><img src=${diagramImageUrl}></img></div>
+        <div class="tutorial-image"><img src=${diagramImageUrl}></div>
         <div class="tutorial-title">${i18nString17(UIStrings18.entryLinkTutorialTitle)}</div>
         <div class="tutorial-description">${i18nString17(UIStrings18.entryLinkTutorialDescription)}</div>
       </div>
       <div class="tutorial-card">
-        <div class="tutorial-image"><img src=${timeRangeImageUrl}></img></div>
+        <div class="tutorial-image"><img src=${timeRangeImageUrl}></div>
         <div class="tutorial-title">${i18nString17(UIStrings18.timeRangeTutorialTitle)}</div>
         <div class="tutorial-description">${i18nString17(UIStrings18.timeRangeTutorialDescription)}</div>
       </div>
       <div class="tutorial-card">
-        <div class="tutorial-image"><img src=${deleteAnnotationImageUrl}></img></div>
+        <div class="tutorial-image"><img src=${deleteAnnotationImageUrl}></div>
         <div class="tutorial-title">${i18nString17(UIStrings18.deleteAnnotationTutorialTitle)}</div>
         <div class="tutorial-description">${i18nString17(UIStrings18.deleteAnnotationTutorialDescription)}</div>
       </div>

@@ -1138,6 +1138,12 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
             this.toolbar.appendToolbarItem(item);
         }
     }
+    addStyleUpdateListener(listener) {
+        this.addEventListener("StylesUpdateCompleted" /* Events.STYLES_UPDATE_COMPLETED */, listener);
+    }
+    removeStyleUpdateListener(listener) {
+        this.removeEventListener("StylesUpdateCompleted" /* Events.STYLES_UPDATE_COMPLETED */, listener);
+    }
     startToolbarPaneAnimation(widget) {
         if (widget === this.currentToolbarPane) {
             return;

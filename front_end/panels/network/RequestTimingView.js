@@ -379,9 +379,9 @@ export const DEFAULT_VIEW = (input, output, target) => {
         resize: true
     })}>
         <colgroup>
-          <col class=labels></col>
-          <col class=bars> </col>
-          <col class=duration></col>
+          <col class=labels>
+          <col class=bars>
+          <col class=duration>
         </colgroup>
         <thead class=network-timing-start>
           <tr>

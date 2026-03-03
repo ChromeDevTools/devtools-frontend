@@ -33,7 +33,13 @@ var Prototypes = class _Prototypes {
       "Local"
       /* Common.Settings.SettingStorageType.LOCAL */
     );
-    return { aiAnnotations, copyToGemini };
+    const breakpointDebuggerAgent = settings.createSetting(
+      "greendev-breakpoint-debugger-agent-enabled",
+      false,
+      "Local"
+      /* Common.Settings.SettingStorageType.LOCAL */
+    );
+    return { aiAnnotations, copyToGemini, breakpointDebuggerAgent };
   }
 };
 export {

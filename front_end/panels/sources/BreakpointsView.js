@@ -457,7 +457,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
                           .checked=${group.breakpointItems.some(item => item.status === "ENABLED" /* BreakpointStatus.ENABLED */)}
                           @change=${input.groupCheckboxToggled.bind(undefined, group)}
                           tabindex=-1
-                          jslog=${VisualLogging.toggle('breakpoint-group').track({ change: true, })}></input>
+                          jslog=${VisualLogging.toggle('breakpoint-group').track({ change: true, })}>
                   </span>
                   <span class='group-header-title' title=${group.url}>
                     ${group.name}

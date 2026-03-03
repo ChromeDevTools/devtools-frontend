@@ -10,9 +10,11 @@ export var ErrorType;
 })(ErrorType || (ErrorType = {}));
 export class DispatchHttpRequestError extends Error {
     type;
-    constructor(type, options) {
+    response;
+    constructor(type, response, options) {
         super(undefined, options);
         this.type = type;
+        this.response = response;
     }
 }
 export async function makeHttpRequest(request, options) {
@@ -32,17 +34,20 @@ export async function makeHttpRequest(request, options) {
     });
     debugLog({ request, response });
     if (response.statusCode === 404) {
-        throw new DispatchHttpRequestError(ErrorType.NOT_FOUND);
+        throw new DispatchHttpRequestError(ErrorType.NOT_FOUND, response);
     }
     if ('response' in response && response.statusCode === 200) {
+        if (request.streamId && !response.response) {
+            return null;
+        }
         try {
             return JSON.parse(response.response);
         }
         catch (err) {
-            throw new DispatchHttpRequestError(ErrorType.HTTP_RESPONSE_UNAVAILABLE, { cause: err });
+            throw new DispatchHttpRequestError(ErrorType.HTTP_RESPONSE_UNAVAILABLE, response, { cause: err });
         }
     }
-    throw new DispatchHttpRequestError(ErrorType.HTTP_RESPONSE_UNAVAILABLE);
+    throw new DispatchHttpRequestError(ErrorType.HTTP_RESPONSE_UNAVAILABLE, response);
 }
 function isDebugMode() {
     return Boolean(localStorage.getItem('debugDispatchHttpRequestEnabled'));

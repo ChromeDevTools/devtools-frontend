@@ -58,6 +58,7 @@ __export(ObjectPropertiesSection_exports, {
   ObjectPropertyWidget: () => ObjectPropertyWidget,
   ObjectTree: () => ObjectTree,
   ObjectTreeNode: () => ObjectTreeNode,
+  ObjectTreeNodeBase: () => ObjectTreeNodeBase,
   Renderer: () => Renderer,
   RootElement: () => RootElement,
   getObjectPropertiesSectionFrom: () => getObjectPropertiesSectionFrom
@@ -139,7 +140,7 @@ var RemoteObjectPreviewFormatter = class _RemoteObjectPreviewFormatter {
       return 5;
     }
   }
-  renderObjectPreview(preview) {
+  renderObjectPreview(preview, includeNullOrUndefined = true) {
     const description = preview.description;
     const subTypesWithoutValuePreview = /* @__PURE__ */ new Set([
       "arraybuffer",
@@ -167,7 +168,7 @@ var RemoteObjectPreviewFormatter = class _RemoteObjectPreviewFormatter {
         objectDescription = hideDescription ? "" : description;
       }
     }
-    const items = Array.from(preview.entries ? this.renderEntries(preview) : isArrayOrTypedArray ? this.renderArrayProperties(preview) : this.renderObjectProperties(preview));
+    const items = Array.from(preview.entries ? this.renderEntries(preview) : isArrayOrTypedArray ? this.renderArrayProperties(preview) : this.renderObjectProperties(preview, includeNullOrUndefined));
     const renderName = (name) => html`<span class=name>${/^\s|\s$|^$|\n/.test(name) ? '"' + name.replace(/\n/g, "\u21B5") + '"' : name}</span>`;
     const renderPlaceholder = (placeholder) => html`<span class=object-value-undefined>${placeholder}</span>`;
     const renderValue = (value) => this.renderPropertyPreview(value.type, value.subtype, value.name, value.value);
@@ -177,11 +178,14 @@ var RemoteObjectPreviewFormatter = class _RemoteObjectPreviewFormatter {
     return html`${objectDescription.length > 0 ? html`<span class=object-description>${objectDescription + "\xA0"}</span>` : nothing}<span class=object-properties-preview>${isArrayOrTypedArray ? "[" : "{"}${repeat(items, renderItem)}${preview.overflow ? html`<span>${items.length > 0 ? ",\xA0\u2026" : "\u2026"}</span>` : ""}
     ${isArrayOrTypedArray ? "]" : "}"}</span>`;
   }
-  *renderObjectProperties(preview) {
+  *renderObjectProperties(preview, includeNullOrUndefined) {
     const properties = preview.properties.filter((p) => p.type !== "accessor").sort(_RemoteObjectPreviewFormatter.objectPropertyComparator);
     for (let i = 0; i < properties.length; ++i) {
       const property = properties[i];
       const name = property.name;
+      if (!includeNullOrUndefined && (property.type === "undefined" || property.type === "object" && property.subtype === "null")) {
+        continue;
+      }
       if (preview.subtype === "promise" && name === "[[PromiseState]]") {
         const promiseResult = properties.at(i + 1)?.name === "[[PromiseResult]]" ? properties.at(i + 1) : void 0;
         if (promiseResult) {
@@ -703,6 +707,12 @@ var ObjectTreeNodeBase = class _ObjectTreeNodeBase extends Common.ObjectWrapper.
     this.propertiesMode = propertiesMode;
     this.filter = parent?.filter ?? null;
   }
+  get includeNullOrUndefinedValues() {
+    return this.filter?.includeNullOrUndefinedValues ?? true;
+  }
+  set includeNullOrUndefinedValues(value) {
+    this.setFilter({ includeNullOrUndefinedValues: value, regex: this.filter?.regex ?? null });
+  }
   // Performs a pre-order tree traversal over the populated children. If any children need to be populated, callers must
   // do that while walking (pre-order visitation enables that).
   *#walk(maxDepth = -1) {
@@ -1189,13 +1199,13 @@ var ObjectPropertiesSection = class _ObjectPropertiesSection extends UI2.TreeOut
       return defaultName + "()";
     }
   }
-  static createPropertyValueWithCustomSupport(value, wasThrown, showPreview, linkifier, isSyntheticProperty, variableName) {
+  static createPropertyValueWithCustomSupport(value, wasThrown, showPreview, linkifier, isSyntheticProperty, variableName, includeNullOrUndefined) {
     if (value.customPreview()) {
       const result = new CustomPreviewComponent(value).element;
       result.classList.add("object-properties-section-custom-section");
       return result;
     }
-    return _ObjectPropertiesSection.createPropertyValue(value, wasThrown, showPreview, linkifier, isSyntheticProperty, variableName);
+    return _ObjectPropertiesSection.createPropertyValue(value, wasThrown, showPreview, linkifier, isSyntheticProperty, variableName, includeNullOrUndefined);
   }
   static getMemoryIcon(object, expression) {
     return !object.isLinearMemoryInspectable() ? nothing2 : html2`<devtools-icon
@@ -1214,7 +1224,7 @@ var ObjectPropertiesSection = class _ObjectPropertiesSection extends UI2.TreeOut
     render2(_ObjectPropertiesSection.getMemoryIcon(object, expression), fragment);
     element.appendChild(fragment);
   }
-  static createPropertyValue(value, wasThrown, showPreview, linkifier, isSyntheticProperty = false, variableName) {
+  static createPropertyValue(value, wasThrown, showPreview, linkifier, isSyntheticProperty = false, variableName, includeNullOrUndefined) {
     const propertyValue = document.createDocumentFragment();
     const type = value.type;
     const subtype = value.subtype;
@@ -1256,7 +1266,7 @@ var ObjectPropertiesSection = class _ObjectPropertiesSection extends UI2.TreeOut
           .widgetConfig=${widgetConfig(ExpandableTextPropertyValue, { text: description })}></devtools-widget></span>`;
       }
       const hasPreview = value.preview && showPreview;
-      return html2`<span class="value object-value-${subtype || type}" title=${description}>${hasPreview ? new RemoteObjectPreviewFormatter().renderObjectPreview(value.preview) : description}${isSyntheticProperty ? nothing2 : this.getMemoryIcon(value, variableName)}</span>`;
+      return html2`<span class="value object-value-${subtype || type}" title=${description}>${hasPreview ? new RemoteObjectPreviewFormatter().renderObjectPreview(value.preview, includeNullOrUndefined) : description}${isSyntheticProperty ? nothing2 : this.getMemoryIcon(value, variableName)}</span>`;
     };
     if (wasThrown) {
       render2(html2`<span class="error value">${uiI18n.getFormatLocalizedStringTemplate(str_2, UIStrings2.exceptionS, { PH1: contents() })}</span>`, propertyValue);
@@ -1380,6 +1390,9 @@ var RootElement = class extends UI2.TreeOutline.TreeElement {
     }
     contextMenu.viewSection().appendItem(i18nString2(UIStrings2.expandRecursively), this.expandRecursively.bind(this, EXPANDABLE_MAX_DEPTH), { jslogContext: "expand-recursively" });
     contextMenu.viewSection().appendItem(i18nString2(UIStrings2.collapseChildren), this.collapseChildren.bind(this), { jslogContext: "collapse-children" });
+    contextMenu.viewSection().appendCheckboxItem(i18n3.i18n.lockedString("Show all"), () => {
+      this.object.includeNullOrUndefinedValues = !this.object.includeNullOrUndefinedValues;
+    }, { checked: this.object.includeNullOrUndefinedValues, jslogContext: "show-all" });
     void contextMenu.show();
   }
   async onpopulate() {
@@ -1417,15 +1430,7 @@ var OBJECT_PROPERTY_DEFAULT_VIEW = (input, output, target) => {
     }
     if (property.value) {
       const showPreview = property.name !== "[[Prototype]]";
-      const value2 = ObjectPropertiesSection.createPropertyValueWithCustomSupport(
-        property.value,
-        property.wasThrown,
-        showPreview,
-        input.linkifier,
-        property.synthetic,
-        input.node.path
-        /* variableName */
-      );
+      const value2 = ObjectPropertiesSection.createPropertyValueWithCustomSupport(property.value, property.wasThrown, showPreview, input.linkifier, property.synthetic, input.node.path, input.node.includeNullOrUndefinedValues);
       output.valueElement = value2;
       return value2;
     }
@@ -1496,10 +1501,12 @@ var ObjectPropertyWidget = class extends UI2.Widget.Widget {
     if (this.#property) {
       this.#property.removeEventListener("value-changed", this.requestUpdate, this);
       this.#property.removeEventListener("children-changed", this.requestUpdate, this);
+      this.#property.removeEventListener("filter-changed", this.requestUpdate, this);
     }
     this.#property = property;
     this.#property.addEventListener("value-changed", this.requestUpdate, this);
     this.#property.addEventListener("children-changed", this.requestUpdate, this);
+    this.#property.addEventListener("filter-changed", this.requestUpdate, this);
     this.requestUpdate();
   }
   get expanded() {
@@ -1794,6 +1801,13 @@ var ObjectPropertyTreeElement = class _ObjectPropertyTreeElement extends UI2.Tre
       contextMenu.viewSection().appendItem(i18nString2(UIStrings2.expandRecursively), this.expandRecursively.bind(this, EXPANDABLE_MAX_DEPTH), { jslogContext: "expand-recursively" });
       contextMenu.viewSection().appendItem(i18nString2(UIStrings2.collapseChildren), this.collapseChildren.bind(this), { jslogContext: "collapse-children" });
     }
+    let root = this.property;
+    while (root.parent) {
+      root = root.parent;
+    }
+    contextMenu.viewSection().appendCheckboxItem(i18n3.i18n.lockedString("Show all"), () => {
+      root.includeNullOrUndefinedValues = !root.includeNullOrUndefinedValues;
+    }, { checked: root.includeNullOrUndefinedValues, jslogContext: "show-all" });
     return contextMenu;
   }
   contextMenuFired(event) {

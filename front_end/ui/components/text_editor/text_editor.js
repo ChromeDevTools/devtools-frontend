@@ -1152,7 +1152,7 @@ var AiCodeGenerationProvider = class _AiCodeGenerationProvider {
     }
     if (this.#generationTeaser.displayState === PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.GENERATED) {
       update.view.dispatch({ effects: setAiAutoCompleteSuggestion.of(null) });
-      this.#generationTeaser.displayState = PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.TRIGGER;
+      this.#generationTeaser.displayState = PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.DISCOVERY;
       return;
     }
   }

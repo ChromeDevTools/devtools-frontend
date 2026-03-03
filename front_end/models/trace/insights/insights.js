@@ -3259,7 +3259,7 @@ var UIStrings15 = {
   /**
    * @description Title of an insight that provides the user with the list of network requests that blocked and therefore slowed down the page rendering and becoming visible to the user.
    */
-  title: "Render blocking requests",
+  title: "Render-blocking requests",
   /**
    * @description Text to describe that there are requests blocking rendering, which may affect LCP.
    */
@@ -3275,7 +3275,7 @@ var UIStrings15 = {
   /**
    * @description Text status indicating that no requests blocked the initial render of a navigation
    */
-  noRenderBlocking: "No render blocking requests for this navigation"
+  noRenderBlocking: "No render-blocking requests for this navigation"
 };
 var str_15 = i18n29.i18n.registerUIStrings("models/trace/insights/RenderBlocking.ts", UIStrings15);
 var i18nString15 = i18n29.i18n.getLocalizedString.bind(void 0, str_15);

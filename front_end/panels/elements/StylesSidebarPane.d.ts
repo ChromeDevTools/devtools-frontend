@@ -117,6 +117,8 @@ export declare class StylesSidebarPane extends StylesSidebarPane_base implements
     private createStylesSidebarToolbar;
     showToolbarPane(widget: UI.Widget.Widget | null, toggle: UI.Toolbar.ToolbarToggle | null): void;
     appendToolbarItem(item: UI.Toolbar.ToolbarItem): void;
+    addStyleUpdateListener(listener: () => void): void;
+    removeStyleUpdateListener(listener: () => void): void;
     private startToolbarPaneAnimation;
     private createRenderingShortcuts;
 }

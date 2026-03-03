@@ -25,7 +25,8 @@ export class Prototypes {
         const settings = Common.Settings.Settings.instance();
         const aiAnnotations = settings.createSetting('greendev-ai-annotations-enabled', false, "Local" /* Common.Settings.SettingStorageType.LOCAL */);
         const copyToGemini = settings.createSetting('greendev-copy-to-gemini-enabled', false, "Local" /* Common.Settings.SettingStorageType.LOCAL */);
-        return { aiAnnotations, copyToGemini };
+        const breakpointDebuggerAgent = settings.createSetting('greendev-breakpoint-debugger-agent-enabled', false, "Local" /* Common.Settings.SettingStorageType.LOCAL */);
+        return { aiAnnotations, copyToGemini, breakpointDebuggerAgent };
     }
 }
 //# sourceMappingURL=Prototypes.js.map

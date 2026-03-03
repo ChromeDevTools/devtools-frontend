@@ -238,6 +238,13 @@ async function getEmptyStateSuggestions(conversation) {
                 { title: 'What performance issues exist with my page?', jslogContext: 'performance-default' },
             ];
         }
+        case "breakpoint" /* AiAssistanceModel.AiHistoryStorage.ConversationType.BREAKPOINT */: {
+            return [
+                { title: 'Why did the code pause here?' },
+                { title: 'What function does this breakpoint belong to?' },
+                { title: 'Why is this error thrown?' },
+            ];
+        }
         case "none" /* AiAssistanceModel.AiHistoryStorage.ConversationType.NONE */: {
             return [
                 { title: 'What can you help me with?', jslogContext: 'empty' },
@@ -407,6 +414,12 @@ function createFileContext(file) {
     }
     return new AiAssistanceModel.FileAgent.FileContext(file);
 }
+function createBreakpointContext(uiLocation) {
+    if (!uiLocation) {
+        return null;
+    }
+    return new AiAssistanceModel.BreakpointDebuggerAgent.BreakpointContext(uiLocation);
+}
 function createRequestContext(request) {
     if (!request) {
         return null;
@@ -437,6 +450,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     #selectedElement = null;
     #selectedPerformanceTrace = null;
     #selectedRequest = null;
+    #selectedBreakpoint = null;
     // Messages displayed in the `ChatView` component.
     #messages = [];
     // Whether the UI should show loading or not.
@@ -640,6 +654,10 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         else if (isNetworkPanelVisible && hostConfig.devToolsAiAssistanceNetworkAgent?.enabled) {
             targetConversationType = "drjones-network-request" /* AiAssistanceModel.AiHistoryStorage.ConversationType.NETWORK */;
         }
+        else if (isSourcesPanelVisible &&
+            this.#conversation?.type === "breakpoint" /* AiAssistanceModel.AiHistoryStorage.ConversationType.BREAKPOINT */) {
+            targetConversationType = "breakpoint" /* AiAssistanceModel.AiHistoryStorage.ConversationType.BREAKPOINT */;
+        }
         else if (isSourcesPanelVisible && hostConfig.devToolsAiAssistanceFileAgent?.enabled) {
             targetConversationType = "drjones-file" /* AiAssistanceModel.AiHistoryStorage.ConversationType.FILE */;
         }
@@ -705,6 +723,15 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         }
         this.requestUpdate();
     }
+    async handleBreakpointConversation(uiLocation) {
+        const context = new AiAssistanceModel.BreakpointDebuggerAgent.BreakpointContext(uiLocation);
+        this.#selectedBreakpoint = context;
+        const conversation = new AiAssistanceModel.AiConversation.AiConversation("breakpoint" /* AiAssistanceModel.AiHistoryStorage.ConversationType.BREAKPOINT */, [], undefined, false, this.#aidaClient, this.#changeManager, false, this.#handlePerformanceRecordAndReload.bind(this), this.#handleInspectElement.bind(this), NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator());
+        this.#updateConversationState(conversation);
+        this.#conversation?.setContext(context);
+        this.requestUpdate();
+        await UI.ViewManager.ViewManager.instance().showView(AiAssistancePanel.panelName);
+    }
     wasShown() {
         super.wasShown();
         this.#viewOutput.chatView?.restoreScrollPosition();
@@ -717,6 +744,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         this.#selectedPerformanceTrace =
             createPerformanceTraceContext(UI.Context.Context.instance().flavor(AiAssistanceModel.AIContext.AgentFocus));
         this.#selectedFile = createFileContext(UI.Context.Context.instance().flavor(Workspace.UISourceCode.UISourceCode));
+        this.#selectedBreakpoint =
+            createBreakpointContext(UI.Context.Context.instance().flavor(Workspace.UISourceCode.UILocation));
         this.#updateConversationState(this.#conversation);
         this.#aiAssistanceEnabledSetting?.addChangeListener(this.requestUpdate, this);
         Host.AidaClient.HostConfigTracker.instance().addEventListener("aidaAvailabilityChanged" /* Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED */, this.#handleAidaAvailabilityChange);
@@ -725,6 +754,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         UI.Context.Context.instance().addFlavorChangeListener(SDK.NetworkRequest.NetworkRequest, this.#handleNetworkRequestFlavorChange);
         UI.Context.Context.instance().addFlavorChangeListener(AiAssistanceModel.AIContext.AgentFocus, this.#handlePerformanceTraceFlavorChange);
         UI.Context.Context.instance().addFlavorChangeListener(Workspace.UISourceCode.UISourceCode, this.#handleUISourceCodeFlavorChange);
+        UI.Context.Context.instance().addFlavorChangeListener(Workspace.UISourceCode.UILocation, this.#handleBreakpointFlavorChange);
         UI.ViewManager.ViewManager.instance().addEventListener("ViewVisibilityChanged" /* UI.ViewManager.Events.VIEW_VISIBILITY_CHANGED */, this.#selectDefaultAgentIfNeeded, this);
         SDK.TargetManager.TargetManager.instance().addModelListener(SDK.DOMModel.DOMModel, SDK.DOMModel.Events.AttrModified, this.#handleDOMNodeAttrChange, this);
         SDK.TargetManager.TargetManager.instance().addModelListener(SDK.DOMModel.DOMModel, SDK.DOMModel.Events.AttrRemoved, this.#handleDOMNodeAttrChange, this);
@@ -810,6 +840,14 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         this.#selectedFile = new AiAssistanceModel.FileAgent.FileContext(ev.data);
         this.#updateConversationState(this.#conversation);
     };
+    #handleBreakpointFlavorChange = (ev) => {
+        const newBreakpoint = ev.data;
+        if (!newBreakpoint || this.#selectedBreakpoint?.getItem() === newBreakpoint) {
+            return;
+        }
+        this.#selectedBreakpoint = new AiAssistanceModel.BreakpointDebuggerAgent.BreakpointContext(newBreakpoint);
+        this.#updateConversationState(this.#conversation);
+    };
     #getChangeSummary() {
         if (!isAiAssistancePatchingEnabled() || !this.#conversation || this.#conversation?.isReadOnly) {
             return;
@@ -891,6 +929,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                 }
                 return lockedString(UIStringsNotTranslate.inputPlaceholderForPerformanceWithNoRecording);
             }
+            case "breakpoint" /* AiAssistanceModel.AiHistoryStorage.ConversationType.BREAKPOINT */:
+                return lockedString(UIStringsNotTranslate.inputPlaceholderForNoContext);
             case "none" /* AiAssistanceModel.AiHistoryStorage.ConversationType.NONE */:
                 if (AiAssistanceModel.AiUtils.isGeminiBranding()) {
                     return lockedString(UIStringsNotTranslate.inputPlaceholderForNoContextBranded);
@@ -927,6 +967,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                     return lockedString(UIStringsNotTranslate.inputDisclaimerForPerformanceEnterpriseNoLogging);
                 }
                 return lockedString(UIStringsNotTranslate.inputDisclaimerForPerformance);
+            case "breakpoint" /* AiAssistanceModel.AiHistoryStorage.ConversationType.BREAKPOINT */:
             case "none" /* AiAssistanceModel.AiHistoryStorage.ConversationType.NONE */:
                 if (noLogging) {
                     return lockedString(UIStringsNotTranslate.inputDisclaimerForNoContextEnterpriseNoLogging);
@@ -1135,6 +1176,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                 return this.#selectedRequest;
             case "drjones-performance-full" /* AiAssistanceModel.AiHistoryStorage.ConversationType.PERFORMANCE */:
                 return this.#selectedPerformanceTrace;
+            case "breakpoint" /* AiAssistanceModel.AiHistoryStorage.ConversationType.BREAKPOINT */:
+                return this.#selectedBreakpoint;
             case "none" /* AiAssistanceModel.AiHistoryStorage.ConversationType.NONE */:
             case undefined:
                 return null;
@@ -1152,6 +1195,9 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         }
         else if (data instanceof AiAssistanceModel.PerformanceAgent.PerformanceTraceContext) {
             this.#selectedPerformanceTrace = data;
+        }
+        else if (data instanceof AiAssistanceModel.BreakpointDebuggerAgent.BreakpointContext) {
+            this.#selectedBreakpoint = data;
         }
         void VisualLogging.logFunctionCall(`context-change-${this.#conversation?.type}`);
         this.requestUpdate();

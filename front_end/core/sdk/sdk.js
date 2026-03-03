@@ -9085,6 +9085,23 @@ var extraPropertyValues = /* @__PURE__ */ new Map([
   ["-webkit-transform-origin-x", /* @__PURE__ */ new Set(["left", "right", "center"])],
   ["-webkit-transform-origin-y", /* @__PURE__ */ new Set(["top", "bottom", "center"])],
   ["width", /* @__PURE__ */ new Set(["-webkit-fill-available", "stretch"])],
+  [
+    "animation-trigger",
+    /* @__PURE__ */ new Set([
+      "play",
+      "pause",
+      "play-once",
+      "play-alternate",
+      "play-forwards",
+      "play-backwards",
+      "play-pause",
+      "replay"
+    ])
+  ],
+  ["timeline-trigger-activation-range-start", /* @__PURE__ */ new Set(["normal"])],
+  ["timeline-trigger-activation-range-end", /* @__PURE__ */ new Set(["normal"])],
+  ["timeline-trigger-active-range-start", /* @__PURE__ */ new Set(["normal"])],
+  ["timeline-trigger-active-range-end", /* @__PURE__ */ new Set(["normal"])],
   ["contain-intrinsic-width", /* @__PURE__ */ new Set(["auto none", "auto 100px"])],
   ["contain-intrinsic-height", /* @__PURE__ */ new Set(["auto none", "auto 100px"])],
   ["contain-intrinsic-size", /* @__PURE__ */ new Set(["auto none", "auto 100px"])],
@@ -21632,7 +21649,8 @@ var RuntimeModel = class extends SDKModel {
       }
     }
     if (object.isNode()) {
-      void Common15.Revealer.reveal(object).then(object.release.bind(object));
+      const omitFocus = hints !== null && typeof hints === "object" && "omitFocus" in hints && Boolean(hints.omitFocus);
+      void Common15.Revealer.reveal(object, omitFocus).then(object.release.bind(object));
       return;
     }
     if (object.type === "function") {

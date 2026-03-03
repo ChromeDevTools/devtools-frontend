@@ -259,6 +259,7 @@ __export(AiAgent_exports, {
 });
 import * as Host from "./../../core/host/host.js";
 import * as Root from "./../../core/root/root.js";
+import * as Greendev from "./../greendev/greendev.js";
 var MAX_STEPS = 10;
 var ConversationContext = class {
   isOriginAllowed(agentOrigin) {
@@ -353,12 +354,12 @@ var AiAgent = class {
     }
     const enableAidaFunctionCalling = declarations.length;
     const userTier = Host.AidaClient.convertToUserTierEnum(this.userTier);
-    const preamble6 = userTier === Host.AidaClient.UserTier.TESTERS ? this.preamble : void 0;
+    const preamble7 = userTier === Host.AidaClient.UserTier.TESTERS ? this.preamble : void 0;
     const facts = Array.from(this.#facts);
     const request = {
       client: Host.AidaClient.CLIENT_NAME,
       current_message: currentMessage,
-      preamble: preamble6,
+      preamble: preamble7,
       historical_contexts: history.length ? history : void 0,
       facts: facts.length ? facts : void 0,
       ...enableAidaFunctionCalling ? { function_declarations: declarations } : {},
@@ -461,7 +462,10 @@ var AiAgent = class {
     query = multimodalInput ? [{ text: enhancedQuery }, multimodalInput.input] : [{ text: enhancedQuery }];
     let request = this.buildRequest(query, Host.AidaClient.Role.USER);
     yield* this.handleContextDetails(options.selected);
-    for (let i = 0; i < MAX_STEPS; i++) {
+    const breakpointAgentEnabled = Greendev.Prototypes.instance().isEnabled("breakpointDebuggerAgent");
+    const isBreakpointDebuggerAgent = this.constructor.name === "BreakpointDebuggerAgent";
+    const finalMaxSteps = isBreakpointDebuggerAgent && breakpointAgentEnabled ? 1e3 : MAX_STEPS;
+    for (let i = 0; i < finalMaxSteps; i++) {
       yield {
         type: "querying"
       };
@@ -721,20 +725,766 @@ var AiAgent = class {
   }
 };
 
+// gen/front_end/models/ai_assistance/agents/BreakpointDebuggerAgent.js
+var BreakpointDebuggerAgent_exports = {};
+__export(BreakpointDebuggerAgent_exports, {
+  BreakpointContext: () => BreakpointContext,
+  BreakpointDebuggerAgent: () => BreakpointDebuggerAgent
+});
+import * as Host2 from "./../../core/host/host.js";
+import * as SDK from "./../../core/sdk/sdk.js";
+import * as Bindings from "./../bindings/bindings.js";
+import * as Breakpoints from "./../breakpoints/breakpoints.js";
+
+// gen/front_end/models/formatter/FormatterWorkerPool.js
+import * as Platform from "./../../core/platform/platform.js";
+var formatterWorkerPoolInstance;
+var FormatterWorkerPool = class _FormatterWorkerPool {
+  taskQueue;
+  workerTasks;
+  entrypointURL;
+  constructor(entrypointURL) {
+    this.taskQueue = [];
+    this.workerTasks = /* @__PURE__ */ new Map();
+    this.entrypointURL = entrypointURL ?? import.meta.resolve("../../entrypoints/formatter_worker/formatter_worker-entrypoint.js");
+  }
+  static instance(opts) {
+    if (!formatterWorkerPoolInstance || opts?.forceNew) {
+      formatterWorkerPoolInstance = new _FormatterWorkerPool(opts?.entrypointURL);
+    }
+    return formatterWorkerPoolInstance;
+  }
+  dispose() {
+    for (const task of this.taskQueue) {
+      console.error("rejecting task");
+      task.errorCallback(new Event("Worker terminated"));
+    }
+    for (const [worker, task] of this.workerTasks.entries()) {
+      task?.errorCallback(new Event("Worker terminated"));
+      worker.terminate(
+        /* immediately=*/
+        true
+      );
+    }
+  }
+  static removeInstance() {
+    formatterWorkerPoolInstance?.dispose();
+    formatterWorkerPoolInstance = void 0;
+  }
+  createWorker() {
+    const worker = Platform.HostRuntime.HOST_RUNTIME.createWorker(this.entrypointURL);
+    worker.onmessage = this.onWorkerMessage.bind(this, worker);
+    worker.onerror = this.onWorkerError.bind(this, worker);
+    return worker;
+  }
+  processNextTask() {
+    const maxWorkers = Math.max(2, navigator.hardwareConcurrency - 1);
+    if (!this.taskQueue.length) {
+      return;
+    }
+    let freeWorker = [...this.workerTasks.keys()].find((worker) => !this.workerTasks.get(worker));
+    if (!freeWorker && this.workerTasks.size < maxWorkers) {
+      freeWorker = this.createWorker();
+    }
+    if (!freeWorker) {
+      return;
+    }
+    const task = this.taskQueue.shift();
+    if (task) {
+      this.workerTasks.set(freeWorker, task);
+      freeWorker.postMessage({ method: task.method, params: task.params });
+    }
+  }
+  onWorkerMessage(worker, event) {
+    const task = this.workerTasks.get(worker);
+    if (!task) {
+      return;
+    }
+    if (task.isChunked && event.data && !event.data["isLastChunk"]) {
+      task.callback(event.data);
+      return;
+    }
+    this.workerTasks.set(worker, null);
+    this.processNextTask();
+    task.callback(event.data ? event.data : null);
+  }
+  onWorkerError(worker, event) {
+    console.error(event);
+    const task = this.workerTasks.get(worker);
+    worker.terminate();
+    this.workerTasks.delete(worker);
+    const newWorker = this.createWorker();
+    this.workerTasks.set(newWorker, null);
+    this.processNextTask();
+    if (task) {
+      task.errorCallback(event);
+    }
+  }
+  runChunkedTask(methodName, params, callback) {
+    const task = new Task(methodName, params, onData, () => onData(null), true);
+    this.taskQueue.push(task);
+    this.processNextTask();
+    function onData(data) {
+      if (!data) {
+        callback(true, null);
+        return;
+      }
+      const isLastChunk = "isLastChunk" in data && Boolean(data["isLastChunk"]);
+      const chunk = "chunk" in data && data["chunk"];
+      callback(isLastChunk, chunk);
+    }
+  }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  runTask(methodName, params) {
+    return new Promise((resolve, reject) => {
+      const task = new Task(methodName, params, resolve, reject, false);
+      this.taskQueue.push(task);
+      this.processNextTask();
+    });
+  }
+  format(mimeType, content, indentString) {
+    const parameters = { mimeType, content, indentString };
+    return this.runTask("format", parameters);
+  }
+  javaScriptSubstitute(expression, mapping) {
+    if (mapping.size === 0) {
+      return Promise.resolve(expression);
+    }
+    return this.runTask("javaScriptSubstitute", { content: expression, mapping }).then((result) => result || "");
+  }
+  javaScriptScopeTree(expression, sourceType = "script") {
+    return this.runTask("javaScriptScopeTree", { content: expression, sourceType }).then((result) => result || null);
+  }
+  parseCSS(content, callback) {
+    this.runChunkedTask("parseCSS", { content }, onDataChunk);
+    function onDataChunk(isLastChunk, data) {
+      const rules = data || [];
+      callback(isLastChunk, rules);
+    }
+  }
+};
+var Task = class {
+  method;
+  params;
+  callback;
+  errorCallback;
+  isChunked;
+  constructor(method, params, callback, errorCallback, isChunked) {
+    this.method = method;
+    this.params = params;
+    this.callback = callback;
+    this.errorCallback = errorCallback;
+    this.isChunked = isChunked;
+  }
+};
+function formatterWorkerPool() {
+  return FormatterWorkerPool.instance();
+}
+
+// gen/front_end/models/ai_assistance/agents/BreakpointDebuggerAgent.js
+import * as SourceMapScopes from "./../source_map_scopes/source_map_scopes.js";
+import * as TextUtils3 from "./../text_utils/text_utils.js";
+import * as Workspace from "./../workspace/workspace.js";
+var preamble = `You are an expert Root Cause Analysis (RCA) specialist.
+Your sole objective is to find the **root cause** of why an error was thrown or why a bug occurred.
+You must not stop at the surface level. You must dig deep to understand the exact sequence of events and state changes that led to the failure.
+
+**Excessively use all available tools** to gather as much information as possible. Do not make assumptions.
+
+You have two modes of operation that you can switch between and control:
+1. **STATIC MODE** (Default): You can read code but cannot see variables. You must analyze the logic to determine where to place breakpoints.
+2. **RUNTIME MODE**: You are paused at a breakpoint. You can inspect variables and the call stack.
+
+**Workflow**:
+1. **Hypothesize**: Read the code ('getFunctionSource', 'getPreviousLines', 'getNextLines') to understand the logic.
+2. **Set Trap**: Identify the critical line where state corruption likely occurred or lines that can lead you to that place. Use 'setBreakpoint' on that line.
+3. **Wait**: Call 'waitForBreakpoint'. This will suspend your execution until the user triggers the breakpoint. You CANNOT proceed until this tool returns.
+4. **Inspect**: Using 'getExecutionLocation' check exactly where you are paused.
+5. **Analyze**: When paused (Runtime Mode), use 'getScopeVariables' and 'getCallStack' to verify your hypothesis. Check variables in multiple scopes and look up the call stack to see where bad data came from.
+6. **Step**: Use 'stepInto' to investigate function calls on the current line. Use 'stepOut' to return to the caller. Use 'stepOver' to move to the next line.
+7. **Trace Back**: If the current function isn't the root cause, use 'getCallStack' to find the caller, and repeat the analysis there.
+8. **Root Cause**: Explain exactly how the runtime state contradicts the expected logic and point to the specific line of code that is the root cause.
+
+**Rules**:
+- **NEVER FINISH** execution until you have found the root cause or answer.
+- **ACTION OVER TALK**: If you need the user to trigger a breakpoint, do NOT just ask them in text. You **MUST** call 'waitForBreakpoint'. This tool will block and wait for the user to act.
+- **STATIC MODE**: If you are in STATIC MODE and need to see variables: 1. 'setBreakpoint', 2. 'waitForBreakpoint'. **DO NOT STOP** to ask the user. Investigate code and set breakpoints to find the root cause.
+- **ALREADY PAUSED?**: If 'setBreakpoint' warns you that you are already paused, **DO NOT** call 'waitForBreakpoint'. Start inspecting immediately. You can set more breakpoints while paused, but to call 'waitForBreakpoint' again you MUST be in static state.
+- **USE TOOLS EXCESSIVELY**: checking one thing is often not enough. Check everything you can thinks of.
+- **CHECK LOCATION**: If you are not sure where you are, call 'getExecutionLocation' after 'waitForBreakpoint' or any step command to confirm where you are.
+
+**Execution Control when you are currently on a breakpoint**:
+- **stepInto**: ESSENTIAL for entering function calls on the current line. Use this heavily when you suspect the issue is inside a called function.
+- **stepOver**: Use to proceed line-by-line. If you are currently on a breakpoint, 'stepOver' will move you to the next line and pause again.
+- **stepOut**: Return to the caller. If you are currently on a breakpoint, 'stepOut' will move you to the caller and pause again. **It often makes sense to 'stepOut' after you have investigated a function with 'stepInto' and verified it is correct.**
+- **stepInto, stepOver, stepOut**: After any step command, always call 'getScopeVariables' to see how the state evolved.
+- **listBreakpoints**: Use this to see all active breakpoints. Do not try to set a breakpoint that is already active.
+`;
+var BreakpointContext = class extends ConversationContext {
+  #focus;
+  constructor(focus) {
+    super();
+    this.#focus = focus;
+  }
+  getOrigin() {
+    return new URL(this.#focus.uiSourceCode.url()).origin;
+  }
+  getItem() {
+    return this.#focus;
+  }
+  getTitle() {
+    return `Breakpoint at ${this.#focus.uiSourceCode.displayName()}:${this.#focus.lineNumber + 1}`;
+  }
+};
+var BreakpointDebuggerAgent = class extends AiAgent {
+  preamble = preamble;
+  // Using file agent as a base for now since it is the closest one logic wise.
+  // Since the user tier is forced to TESTERS, it should not mess up the stats.
+  // If this code is taken to production, we should create a new client feature.
+  clientFeature = Host2.AidaClient.ClientFeature.CHROME_FILE_AGENT;
+  constructor(opts) {
+    super(opts);
+    this.declareFunction("getFunctionSource", {
+      description: "Retrieve the source code of a function given a code line within it.",
+      parameters: {
+        type: 6,
+        description: "The location to find the function source for",
+        properties: {
+          url: {
+            type: 1,
+            description: "The URL of the file"
+          },
+          lineNumber: {
+            type: 3,
+            description: "The 1-based line number of the code to look for"
+          }
+        },
+        required: ["url", "lineNumber"]
+      },
+      handler: async (args) => {
+        const result = await this.#getFunctionSource(args);
+        debugLog("getFunctionSource for ", JSON.stringify(args), "->", JSON.stringify(result));
+        return result;
+      }
+    });
+    this.declareFunction("getCodeLines", {
+      description: "Retrieve the 10 lines of code before or after a specific line.",
+      parameters: {
+        type: 6,
+        description: "The location and direction to look for code",
+        properties: {
+          url: {
+            type: 1,
+            description: "The URL of the file"
+          },
+          lineNumber: {
+            type: 3,
+            description: "The 1-based line number of the code to look for"
+          },
+          direction: {
+            type: 1,
+            description: "The direction to look for code (before or after)"
+          }
+        },
+        required: ["url", "lineNumber", "direction"]
+      },
+      handler: async (args) => {
+        const result = await this.#getCodeLines(args);
+        debugLog("getCodeLines result", JSON.stringify(result));
+        return result;
+      }
+    });
+    this.declareFunction("getCallStack", {
+      description: "Retrieve the current call stack frames. Only call while debugger is paused.",
+      parameters: {
+        type: 6,
+        description: "No parameters required",
+        properties: {},
+        required: []
+      },
+      handler: async () => {
+        const result = await this.#getCallStack();
+        debugLog("getCallStack result", JSON.stringify(result));
+        return result;
+      }
+    });
+    this.declareFunction("getScopeVariables", {
+      description: "Retrieve variables from all frames in the current call stack. Only call while debugger is paused.",
+      parameters: {
+        type: 6,
+        description: "No parameters required",
+        properties: {},
+        required: []
+      },
+      handler: async () => {
+        const result = await this.#getScopeVariables();
+        debugLog("getScopeVariables result", JSON.stringify(result));
+        return result;
+      }
+    });
+    this.declareFunction("listBreakpoints", {
+      description: "List all active breakpoints.",
+      parameters: {
+        type: 6,
+        description: "No parameters required",
+        properties: {},
+        required: []
+      },
+      handler: async () => {
+        const result = await this.#listBreakpoints();
+        debugLog("listBreakpoints result", JSON.stringify(result));
+        return result;
+      }
+    });
+    this.declareFunction("setBreakpoint", {
+      description: "Set a breakpoint at a specific location.",
+      parameters: {
+        type: 6,
+        description: "Location to set the breakpoint",
+        properties: {
+          url: {
+            type: 1,
+            description: "The URL of the file"
+          },
+          lineNumber: {
+            type: 3,
+            description: "The 1-based line number to set the breakpoint on"
+          }
+        },
+        required: ["url", "lineNumber"]
+      },
+      handler: async (args) => {
+        debugLog("setBreakpoint requested", args);
+        const result = await this.#setBreakpoint(args);
+        debugLog("setBreakpoint result", JSON.stringify(result));
+        return result;
+      }
+    });
+    this.declareFunction("resume", {
+      description: "Resume execution until the next breakpoint is hit.",
+      parameters: {
+        type: 6,
+        description: "No parameters required",
+        properties: {},
+        required: []
+      },
+      handler: async () => {
+        const result = await this.#debuggerAction((model) => model.resume());
+        debugLog("resume result", JSON.stringify(result));
+        return result;
+      }
+    });
+    this.declareFunction("stepOver", {
+      description: "Execute the current line and pause at the next line in the same function.",
+      parameters: {
+        type: 6,
+        description: "No parameters required",
+        properties: {},
+        required: []
+      },
+      handler: async () => {
+        const result = await this.#debuggerAction((model) => model.stepOver());
+        debugLog("stepOver result", JSON.stringify(result));
+        return result;
+      }
+    });
+    this.declareFunction("stepInto", {
+      description: "Step into the function call on the current line. REQUIRED when you want to investigate the code inside a function call.",
+      parameters: {
+        type: 6,
+        description: "No parameters required",
+        properties: {},
+        required: []
+      },
+      handler: async () => {
+        const result = await this.#debuggerAction((model) => model.stepInto());
+        debugLog("stepInto result", JSON.stringify(result));
+        return result;
+      }
+    });
+    this.declareFunction("stepOut", {
+      description: "Finish the current function and pause at the caller.",
+      parameters: {
+        type: 6,
+        description: "No parameters required",
+        properties: {},
+        required: []
+      },
+      handler: async () => {
+        const result = await this.#debuggerAction((model) => model.stepOut());
+        debugLog("stepOut result", JSON.stringify(result));
+        return result;
+      }
+    });
+    this.declareFunction("waitForUserActionToTriggerBreakpoint", {
+      description: "Resume execution and wait for the user to trigger a breakpoint.",
+      parameters: {
+        type: 6,
+        description: "No parameters required",
+        properties: {},
+        required: []
+      },
+      displayInfoFromArgs: () => {
+        return {
+          title: "Waiting for user action...",
+          thought: "I am waiting for you to trigger a breakpoint in the application."
+        };
+      },
+      handler: async () => {
+        debugLog("waitForUserActionToTriggerBreakpoint requested");
+        const result = await this.#waitForUserActionToTriggerBreakpoint();
+        debugLog("waitForUserActionToTriggerBreakpoint result", JSON.stringify(result));
+        return result;
+      }
+    });
+    this.declareFunction("getExecutionLocation", {
+      description: "Get the current location (line number, source code line and url) where the debugger is paused.",
+      parameters: {
+        type: 6,
+        description: "No parameters required",
+        properties: {},
+        required: []
+      },
+      handler: async () => {
+        const result = await this.#getExecutionLocation();
+        debugLog("getExecutionLocation ", JSON.stringify(result));
+        return result;
+      }
+    });
+  }
+  async #getFunctionSource(args) {
+    const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(args.url);
+    if (!uiSourceCode) {
+      return { error: `File not found: ${args.url}` };
+    }
+    const contentData = await uiSourceCode.requestContentData();
+    if ("error" in contentData) {
+      return { error: `Could not read content for file: ${args.url}` };
+    }
+    const textContent = contentData.text;
+    const scopeTree = await formatterWorkerPool().javaScriptScopeTree(textContent);
+    if (!scopeTree) {
+      return { error: `Could not parse scope tree for file: ${args.url}` };
+    }
+    const text = new TextUtils3.Text.Text(textContent);
+    const selectedLineIndex = args.lineNumber - 1;
+    if (selectedLineIndex < 0 || selectedLineIndex >= text.lineCount()) {
+      return { error: `Line number ${args.lineNumber} is out of range` };
+    }
+    const selectedOffset = text.offsetFromPosition(selectedLineIndex, 0);
+    let currentNode = scopeTree;
+    let functionNode = scopeTree;
+    while (currentNode) {
+      if (currentNode.kind === 2 || currentNode.kind === 4) {
+        functionNode = currentNode;
+      }
+      const child = currentNode.children.find((c) => c.start <= selectedOffset && c.end > selectedOffset);
+      currentNode = child;
+    }
+    const startLocation = text.positionFromOffset(functionNode.start);
+    const endLocation = text.positionFromOffset(functionNode.end);
+    return { result: { functionSource: this.#formatLines(text, startLocation.lineNumber, endLocation.lineNumber + 1) } };
+  }
+  // Gets 10 lines of code before or after a specific line.
+  async #getCodeLines(args) {
+    const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(args.url);
+    if (!uiSourceCode) {
+      return { error: `File not found: ${args.url}` };
+    }
+    const contentData = await uiSourceCode.requestContentData();
+    if ("error" in contentData) {
+      return { error: `Could not read content for file: ${args.url}` };
+    }
+    const text = new TextUtils3.Text.Text(contentData.text);
+    const lineNumber = args.lineNumber - 1;
+    const count = 10;
+    if (args.direction === "before") {
+      const startLine2 = Math.max(0, lineNumber - count);
+      const endLine2 = Math.max(0, lineNumber);
+      return { result: { codeLines: this.#formatLines(text, startLine2, endLine2) } };
+    }
+    const startLine = Math.min(text.lineCount(), lineNumber + 1);
+    const endLine = Math.min(text.lineCount(), lineNumber + 1 + count);
+    return { result: { codeLines: this.#formatLines(text, startLine, endLine) } };
+  }
+  #formatLines(text, startLine, endLine) {
+    let lines = "";
+    for (let i = startLine; i < endLine; i++) {
+      lines += `${i + 1}: ${text.lineAt(i)}
+`;
+    }
+    return lines;
+  }
+  async *handleContextDetails(selectedBreakpoint) {
+    if (!selectedBreakpoint) {
+      return;
+    }
+    yield {
+      type: "context",
+      title: "Analyzing breakpoint location",
+      details: [{ title: "Location", text: selectedBreakpoint.getTitle() }]
+    };
+  }
+  async #getCallStack() {
+    const targetManager = SDK.TargetManager.TargetManager.instance();
+    const debuggerModel = targetManager.models(SDK.DebuggerModel.DebuggerModel).find((m) => m.isPaused());
+    if (!debuggerModel) {
+      return {
+        error: "Execution is not paused. I cannot access runtime variables or the call stack. I am currently in STATIC MODE. I must set a breakpoint and use waitForBreakpoint to enter RUNTIME MODE."
+      };
+    }
+    const details = debuggerModel.debuggerPausedDetails();
+    if (!details) {
+      return { error: "Internal error: debugger is paused but no details available." };
+    }
+    const stackTrace = await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createStackTraceFromDebuggerPaused(details, debuggerModel.target());
+    const callFrames = stackTrace.syncFragment.frames.map((frame) => {
+      return {
+        functionName: frame.name || frame.sdkFrame.functionName,
+        url: frame.uiSourceCode ? frame.uiSourceCode.url() : frame.url || frame.sdkFrame.script.contentURL(),
+        lineNumber: frame.line + 1,
+        id: frame.sdkFrame.id
+      };
+    });
+    return { result: { callFrames } };
+  }
+  async #getScopeVariables() {
+    const targetManager = SDK.TargetManager.TargetManager.instance();
+    const debuggerModel = targetManager.models(SDK.DebuggerModel.DebuggerModel).find((m) => m.isPaused());
+    if (!debuggerModel) {
+      return {
+        error: "Execution is not paused. I cannot access runtime variables or the call stack. I am currently in STATIC MODE. I must set a breakpoint and use waitForBreakpoint to enter RUNTIME MODE."
+      };
+    }
+    const details = debuggerModel.debuggerPausedDetails();
+    if (!details) {
+      return { error: "Internal error: debugger is paused but no details available." };
+    }
+    const stackTrace = await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createStackTraceFromDebuggerPaused(details, debuggerModel.target());
+    const helperFrames = stackTrace.syncFragment.frames;
+    const frames = [];
+    for (const frame of helperFrames) {
+      const callFrame = frame.sdkFrame;
+      const scopeChain = await SourceMapScopes.NamesResolver.resolveScopeChain(callFrame);
+      const resultScopeChain = [];
+      for (const scope of scopeChain) {
+        const type = scope.type();
+        if (type !== "local" && type !== "closure" && type !== "module" && type !== "block" && type !== "catch") {
+          continue;
+        }
+        const remoteObject = scope.object();
+        const { properties } = await remoteObject.getAllProperties(
+          false,
+          true
+          /* generatePreview */
+        );
+        const variables = {};
+        if (properties) {
+          for (const prop of properties) {
+            if (!prop.name) {
+              continue;
+            }
+            let value = "undefined";
+            if (prop.value) {
+              if (prop.value.type === "string") {
+                value = `"${prop.value.value}"`;
+              } else if (prop.value.value !== void 0) {
+                value = String(prop.value.value);
+              } else if (prop.value.preview) {
+                const props = prop.value.preview.properties.map((p) => `${p.name}: ${p.value}`).join(", ");
+                value = prop.value.subtype === "array" ? `[${props}]` : `{${props}}`;
+              } else {
+                value = prop.value.description ?? prop.value.type;
+              }
+            }
+            variables[prop.name] = value;
+          }
+        }
+        resultScopeChain.push({
+          type,
+          object: variables
+        });
+      }
+      frames.push({
+        functionName: frame.name || frame.sdkFrame.functionName,
+        scopes: resultScopeChain
+      });
+    }
+    return { result: { frames } };
+  }
+  async #listBreakpoints() {
+    const breakpointManager = Breakpoints.BreakpointManager.BreakpointManager.instance();
+    const allBreakpoints = breakpointManager.allBreakpointLocations();
+    const breakpoints = allBreakpoints.map((bp) => {
+      return { url: bp.uiLocation.uiSourceCode.url(), lineNumber: bp.uiLocation.lineNumber + 1 };
+    });
+    return { result: { breakpoints } };
+  }
+  async #setBreakpoint(args) {
+    const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(args.url);
+    if (!uiSourceCode) {
+      return { error: `File not found: ${args.url}` };
+    }
+    const breakpointLocations = Breakpoints.BreakpointManager.BreakpointManager.instance().breakpointLocationsForUISourceCode(uiSourceCode);
+    const alreadyExists = breakpointLocations.some((bp) => bp.uiLocation.lineNumber === args.lineNumber - 1);
+    if (alreadyExists) {
+      return { result: { status: `Breakpoint already exists at ${args.url}:${args.lineNumber}.` } };
+    }
+    const breakpoint = await Breakpoints.BreakpointManager.BreakpointManager.instance().setBreakpoint(
+      uiSourceCode,
+      args.lineNumber - 1,
+      0,
+      Breakpoints.BreakpointManager.EMPTY_BREAKPOINT_CONDITION,
+      true,
+      false,
+      "USER_ACTION"
+      /* Breakpoints.BreakpointManager.BreakpointOrigin.USER_ACTION */
+    );
+    let actualLineNumber = args.lineNumber;
+    if (breakpoint) {
+      const resolvedState = breakpoint.getLastResolvedState();
+      if (resolvedState && resolvedState.length > 0) {
+        actualLineNumber = resolvedState[0].lineNumber + 1;
+      }
+    }
+    const targetManager = SDK.TargetManager.TargetManager.instance();
+    const debuggerModel = targetManager.models(SDK.DebuggerModel.DebuggerModel).find((m) => m.isPaused());
+    let warning = "";
+    if (debuggerModel) {
+      const details = debuggerModel.debuggerPausedDetails();
+      const callFrame = details?.callFrames[0];
+      if (callFrame) {
+        const pausedLoc = `${callFrame.script.contentURL()}:${callFrame.location().lineNumber + 1}`;
+        warning = ` WARNING: You are already PAUSED at ${pausedLoc}. 
+1. If this is where you want to be, call 'getExecutionLocation' and inspect variables. 
+2. If you want to wait for the NEW breakpoint, you MUST call 'waitForBreakpoint' (which will resume execution).`;
+      }
+    }
+    if (actualLineNumber !== args.lineNumber) {
+      return {
+        result: {
+          status: `Breakpoint requested at ${args.url}:${args.lineNumber}, but ACTUALLY resolved to line ${actualLineNumber}.${warning ? "\n" + warning : " You must now call waitForBreakpoint and ask the user to trigger the action."}`
+        }
+      };
+    }
+    return {
+      result: {
+        status: `Breakpoint set at ${args.url}:${args.lineNumber}.${warning ? "\n" + warning : " You must now call waitForBreakpoint and ask the user to trigger the action."}`
+      }
+    };
+  }
+  async #debuggerAction(action) {
+    const targetManager = SDK.TargetManager.TargetManager.instance();
+    const debuggerModel = targetManager.models(SDK.DebuggerModel.DebuggerModel).find((m) => m.isPaused());
+    if (!debuggerModel) {
+      return { error: "Execution is not paused. I cannot step or resume in STATIC MODE." };
+    }
+    return await this.#waitForNextPause(() => action(debuggerModel));
+  }
+  async #waitForUserActionToTriggerBreakpoint() {
+    const targetManager = SDK.TargetManager.TargetManager.instance();
+    const debuggerModels = targetManager.models(SDK.DebuggerModel.DebuggerModel);
+    if (debuggerModels.length === 0) {
+      return { error: "No debugger attached" };
+    }
+    return await this.#waitForNextPause(() => {
+      for (const model of debuggerModels) {
+        if (model.isPaused()) {
+          model.resume();
+        }
+      }
+    });
+  }
+  /**
+   * Helper that waits for the next debugger pause event.
+   * It sets up the listener *before* executing the trigger action to avoid race conditions.
+   *
+   * @param triggerAction Optional action to execute (e.g. resume, step) that is expected to lead to a pause.
+   */
+  async #waitForNextPause(triggerAction = () => {
+  }) {
+    const targetManager = SDK.TargetManager.TargetManager.instance();
+    return await new Promise((resolve) => {
+      const listener = async (event) => {
+        targetManager.removeModelListener(SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerPaused, listener);
+        const model = event.data;
+        const details = model.debuggerPausedDetails();
+        const callFrame = details?.callFrames[0];
+        let location = "unknown location";
+        if (callFrame) {
+          const rawLocation = callFrame.location();
+          const uiLocation = await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().rawLocationToUILocation(rawLocation);
+          if (uiLocation) {
+            location = `${uiLocation.uiSourceCode.url()}:${uiLocation.lineNumber + 1}`;
+          } else {
+            location = `${callFrame.script.contentURL()}:${rawLocation.lineNumber + 1}`;
+          }
+        }
+        resolve({ result: { status: `Paused at ${location}` } });
+      };
+      targetManager.addModelListener(SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerPaused, listener);
+      triggerAction();
+    });
+  }
+  async #getExecutionLocation() {
+    const targetManager = SDK.TargetManager.TargetManager.instance();
+    const debuggerModel = targetManager.models(SDK.DebuggerModel.DebuggerModel).find((m) => m.isPaused());
+    if (!debuggerModel) {
+      return { error: "Execution is not paused. I cannot determine execution location in STATIC MODE." };
+    }
+    const details = debuggerModel.debuggerPausedDetails();
+    if (!details) {
+      return { error: "Internal error: debugger is paused but no details available." };
+    }
+    const stackTrace = await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createStackTraceFromDebuggerPaused(details, debuggerModel.target());
+    const currentFrame = stackTrace.syncFragment.frames[0];
+    if (!currentFrame) {
+      return { error: "Internal error: no frames available." };
+    }
+    const url = currentFrame.uiSourceCode ? currentFrame.uiSourceCode.url() : currentFrame.url || currentFrame.sdkFrame.script.contentURL();
+    const lineNumber = currentFrame.line + 1;
+    let lineContent = "";
+    if (currentFrame.uiSourceCode) {
+      const contentData = await currentFrame.uiSourceCode.requestContentData();
+      if (!("error" in contentData)) {
+        const text = new TextUtils3.Text.Text(contentData.text);
+        lineContent = text.lineAt(lineNumber - 1);
+      }
+    }
+    return { result: { url, lineNumber, lineContent } };
+  }
+  async enhanceQuery(query, selectedBreakpoint) {
+    const item = selectedBreakpoint?.getItem();
+    if (!item) {
+      return query;
+    }
+    const locationPart = `I am investigating a breakpoint that is already set at ${item.uiSourceCode.url()}:${item.lineNumber + 1}${item.columnNumber !== void 0 ? ":" + (item.columnNumber + 1) : ""}. The execution is currently in STATIC MODE.`;
+    return `${locationPart}
+
+${query}`;
+  }
+  get userTier() {
+    return "TESTERS";
+  }
+  get options() {
+    return { temperature: 0, modelId: void 0 };
+  }
+};
+
 // gen/front_end/models/ai_assistance/agents/ContextSelectionAgent.js
 var ContextSelectionAgent_exports = {};
 __export(ContextSelectionAgent_exports, {
   ContextSelectionAgent: () => ContextSelectionAgent
 });
 import * as Common5 from "./../../core/common/common.js";
-import * as Host6 from "./../../core/host/host.js";
+import * as Host7 from "./../../core/host/host.js";
 import * as i18n9 from "./../../core/i18n/i18n.js";
-import * as Platform5 from "./../../core/platform/platform.js";
+import * as Platform6 from "./../../core/platform/platform.js";
 import * as Root6 from "./../../core/root/root.js";
-import * as SDK6 from "./../../core/sdk/sdk.js";
+import * as SDK7 from "./../../core/sdk/sdk.js";
 import * as Logs2 from "./../logs/logs.js";
 import * as NetworkTimeCalculator3 from "./../network_time_calculator/network_time_calculator.js";
-import * as Workspace from "./../workspace/workspace.js";
+import * as Workspace3 from "./../workspace/workspace.js";
 
 // gen/front_end/models/ai_assistance/agents/FileAgent.js
 var FileAgent_exports = {};
@@ -742,7 +1492,7 @@ __export(FileAgent_exports, {
   FileAgent: () => FileAgent,
   FileContext: () => FileContext
 });
-import * as Host2 from "./../../core/host/host.js";
+import * as Host3 from "./../../core/host/host.js";
 import * as i18n from "./../../core/i18n/i18n.js";
 import * as Root2 from "./../../core/root/root.js";
 
@@ -751,7 +1501,7 @@ var FileFormatter_exports = {};
 __export(FileFormatter_exports, {
   FileFormatter: () => FileFormatter
 });
-import * as Bindings from "./../bindings/bindings.js";
+import * as Bindings2 from "./../bindings/bindings.js";
 import * as NetworkTimeCalculator2 from "./../network_time_calculator/network_time_calculator.js";
 
 // gen/front_end/models/ai_assistance/data_formatters/NetworkRequestFormatter.js
@@ -762,7 +1512,7 @@ __export(NetworkRequestFormatter_exports, {
 import * as Annotations from "./../annotations/annotations.js";
 import * as Logs from "./../logs/logs.js";
 import * as NetworkTimeCalculator from "./../network_time_calculator/network_time_calculator.js";
-import * as TextUtils3 from "./../text_utils/text_utils.js";
+import * as TextUtils4 from "./../text_utils/text_utils.js";
 
 // gen/front_end/models/ai_assistance/data_formatters/UnitFormatters.js
 var UnitFormatters_exports = {};
@@ -922,7 +1672,7 @@ var NetworkRequestFormatter = class {
   }
   static async formatBody(title, request, maxBodySize) {
     const data = await request.requestContentData();
-    if (TextUtils3.ContentData.ContentData.isError(data)) {
+    if (TextUtils4.ContentData.ContentData.isError(data)) {
       return "";
     }
     if (data.isEmpty) {
@@ -1247,7 +1997,7 @@ var FileFormatter = class _FileFormatter {
           }
         }
       }
-      for (const originURL of Bindings.SASSSourceMapping.SASSSourceMapping.uiSourceOrigin(selectedFile)) {
+      for (const originURL of Bindings2.SASSSourceMapping.SASSSourceMapping.uiSourceOrigin(selectedFile)) {
         mappedFileUrls.push(originURL);
       }
     } else if (selectedFile.contentType().isScript()) {
@@ -1271,14 +2021,14 @@ var FileFormatter = class _FileFormatter {
     this.#file = file;
   }
   formatFile() {
-    const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
+    const debuggerWorkspaceBinding = Bindings2.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
     const sourceMapDetails = _FileFormatter.formatSourceMapDetails(this.#file, debuggerWorkspaceBinding);
     const lines = [
       `File name: ${this.#file.displayName()}`,
       `URL: ${this.#file.url()}`,
       sourceMapDetails
     ];
-    const resource = Bindings.ResourceUtils.resourceForURL(this.#file.url());
+    const resource = Bindings2.ResourceUtils.resourceForURL(this.#file.url());
     if (resource?.request) {
       const calculator = new NetworkTimeCalculator2.NetworkTransferTimeCalculator();
       calculator.updateBoundaries(resource.request);
@@ -1300,7 +2050,7 @@ ${truncated}
 };
 
 // gen/front_end/models/ai_assistance/agents/FileAgent.js
-var preamble = `You are a highly skilled software engineer with expertise in various programming languages and frameworks.
+var preamble2 = `You are a highly skilled software engineer with expertise in various programming languages and frameworks.
 You are provided with the content of a file from the Chrome DevTools Sources panel. To aid your analysis, you've been given the below links to understand the context of the code and its relationship to other files. When answering questions, prioritize providing these links directly.
 * Source-mapped from: If this code is the source for a mapped file, you'll have a link to that generated file.
 * Source map: If this code has an associated source map, you'll have link to the source map.
@@ -1365,8 +2115,8 @@ var FileContext = class extends ConversationContext {
   }
 };
 var FileAgent = class extends AiAgent {
-  preamble = preamble;
-  clientFeature = Host2.AidaClient.ClientFeature.CHROME_FILE_AGENT;
+  preamble = preamble2;
+  clientFeature = Host3.AidaClient.ClientFeature.CHROME_FILE_AGENT;
   get userTier() {
     return Root2.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.userTier;
   }
@@ -1413,10 +2163,10 @@ __export(NetworkAgent_exports, {
   NetworkAgent: () => NetworkAgent,
   RequestContext: () => RequestContext
 });
-import * as Host3 from "./../../core/host/host.js";
+import * as Host4 from "./../../core/host/host.js";
 import * as i18n3 from "./../../core/i18n/i18n.js";
 import * as Root3 from "./../../core/root/root.js";
-var preamble2 = `You are the most advanced network request debugging assistant integrated into Chrome DevTools.
+var preamble3 = `You are the most advanced network request debugging assistant integrated into Chrome DevTools.
 The user selected a network request in the browser's DevTools Network Panel and sends a query to understand the request.
 Provide a comprehensive analysis of the network request, focusing on areas crucial for a software engineer. Your analysis should include:
 * Briefly explain the purpose of the request based on the URL, method, and any relevant headers or payload.
@@ -1495,8 +2245,8 @@ var RequestContext = class extends ConversationContext {
   }
 };
 var NetworkAgent = class extends AiAgent {
-  preamble = preamble2;
-  clientFeature = Host3.AidaClient.ClientFeature.CHROME_NETWORK_AGENT;
+  preamble = preamble3;
+  clientFeature = Host4.AidaClient.ClientFeature.CHROME_NETWORK_AGENT;
   get userTier() {
     return Root3.Runtime.hostConfig.devToolsAiAssistanceNetworkAgent?.userTier;
   }
@@ -1568,14 +2318,14 @@ __export(PerformanceAgent_exports, {
   PerformanceTraceContext: () => PerformanceTraceContext
 });
 import * as Common2 from "./../../core/common/common.js";
-import * as Host4 from "./../../core/host/host.js";
+import * as Host5 from "./../../core/host/host.js";
 import * as i18n5 from "./../../core/i18n/i18n.js";
-import * as Platform from "./../../core/platform/platform.js";
+import * as Platform2 from "./../../core/platform/platform.js";
 import * as Root4 from "./../../core/root/root.js";
-import * as SDK from "./../../core/sdk/sdk.js";
+import * as SDK2 from "./../../core/sdk/sdk.js";
 import * as Tracing from "./../../services/tracing/tracing.js";
 import * as Annotations3 from "./../annotations/annotations.js";
-import * as SourceMapScopes from "./../source_map_scopes/source_map_scopes.js";
+import * as SourceMapScopes2 from "./../source_map_scopes/source_map_scopes.js";
 import * as Trace6 from "./../trace/trace.js";
 
 // gen/front_end/models/ai_assistance/data_formatters/PerformanceInsightFormatter.js
@@ -2584,7 +3334,7 @@ Status code: ${statusCode}
 MIME Type: ${mimeType}
 Protocol: ${protocol}
 ${priorityLines.join("\n")}
-Render blocking: ${renderBlocking ? "Yes" : "No"}
+Render-blocking: ${renderBlocking ? "Yes" : "No"}
 From a service worker: ${fromServiceWorker ? "Yes" : "No"}
 Initiators (root request to the request that directly loaded this one): ${initiatorUrls.join(", ") || "none"}
 ${NetworkRequestFormatter.formatHeaders("Response headers", responseHeaders ?? [], true)}`;
@@ -2930,8 +3680,8 @@ var PerformanceInsightFormatter = class {
         return [{ title: "How do I optimize my network dependency tree?" }];
       case "RenderBlocking":
         return [
-          { title: "Show me the most impactful render blocking requests that I should focus on" },
-          { title: "How can I reduce the number of render blocking requests?" }
+          { title: "Show me the most impactful render-blocking requests that I should focus on" },
+          { title: "How can I reduce the number of render-blocking requests?" }
         ];
       case "SlowCSSSelector":
         return [{ title: "How can I optimize my CSS to increase the performance of CSS selectors?" }];
@@ -3425,16 +4175,16 @@ Adding [preconnect] to origin '${candidate.origin}' would save ${this.#formatMil
     return output;
   }
   /**
-   * Create an AI prompt string out of the Render Blocking Insight model to use with Ask AI.
-   * @param insight The Render Blocking Model to query.
+   * Create an AI prompt string out of the Render-blocking Insight model to use with Ask AI.
+   * @param insight The Render-blocking Model to query.
    * @returns a string formatted for sending to Ask AI.
    */
   formatRenderBlockingInsight(insight) {
     const requestSummary = this.#traceFormatter.formatNetworkRequests(insight.renderBlockingRequests);
     if (requestSummary.length === 0) {
-      return "There are no network requests that are render blocking.";
+      return "There are no network requests that are render-blocking.";
     }
-    return `Here is a list of the network requests that were render blocking on this page and their duration:
+    return `Here is a list of the network requests that were render-blocking on this page and their duration:
 
 ${requestSummary}`;
   }
@@ -3753,7 +4503,7 @@ It is important that all of these checks pass to minimize the delay between the 
    3. The maximum of 4 preconnects should be respected.
 - Opportunities to add [preconnect] for a faster loading experience.`;
       case "RenderBlocking":
-        return "This insight identifies network requests that were render blocking. Render blocking requests are impactful because they are deemed critical to the page and therefore the browser stops rendering the page until it has dealt with these resources. For this insight make sure you fully inspect the details of each render blocking network request and prioritize your suggestions to the user based on the impact of each render blocking request.";
+        return "This insight identifies network requests that were render-blocking. Render-blocking requests are impactful because they are deemed critical to the page and therefore the browser stops rendering the page until it has dealt with these resources. For this insight make sure you fully inspect the details of each render-blocking network request and prioritize your suggestions to the user based on the impact of each render-blocking request.";
       case "SlowCSSSelector":
         return `This insight identifies CSS selectors that are slowing down your page's rendering performance.`;
       case "ThirdParties":
@@ -4027,7 +4777,7 @@ addElementAnnotation and specify an annotation reason.
 - CRITICAL: Each time you describe a network request as being problematic you MUST call the function
 addNetworkRequestAnnotation and specify an annotation reason.
 - CRITICAL: If you spot ANY of the following problems:
-  - Render blocking elements/network requests.
+  - Render-blocking elements/network requests.
   - Significant long task (especially on main thread).
   - Layout shifts (e.g. due to unsized images).
   ... then you MUST call addNetworkRequestAnnotation for ALL network requests and addaddElementAnnotation for all
@@ -4170,7 +4920,7 @@ var PerformanceAgent = class extends AiAgent {
     return buildPreamble();
   }
   get clientFeature() {
-    return Host4.AidaClient.ClientFeature.CHROME_PERFORMANCE_FULL_AGENT;
+    return Host5.AidaClient.ClientFeature.CHROME_PERFORMANCE_FULL_AGENT;
   }
   get userTier() {
     return Boolean(Root4.Runtime.hostConfig.devToolsGreenDevUi?.enabled) ? "TESTERS" : Root4.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.userTier;
@@ -4389,7 +5139,7 @@ ${text}`, metadata: { source: "devtools", score: ScorePriority.REQUIRED } });
     this.addFact(this.#callFrameDataDescriptionFact);
     this.addFact(this.#networkDataDescriptionFact);
     if (!this.#traceFacts.length) {
-      const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+      const target = SDK2.TargetManager.TargetManager.instance().primaryPageTarget();
       if (!target) {
         throw new Error("missing target");
       }
@@ -4398,7 +5148,7 @@ ${text}`, metadata: { source: "devtools", score: ScorePriority.REQUIRED } });
         if (!target) {
           return null;
         }
-        return await SourceMapScopes.FunctionCodeResolver.getFunctionCodeFromLocation(target, url, line, column, { contextLength: 200, contextLineLength: 5, appendProfileData: true });
+        return await SourceMapScopes2.FunctionCodeResolver.getFunctionCodeFromLocation(target, url, line, column, { contextLength: 200, contextLineLength: 5, appendProfileData: true });
       };
       this.#createFactForTraceSummary();
       await this.#createFactForCriticalRequests();
@@ -4556,8 +5306,8 @@ ${result}`,
             error: "getMainThreadTrackSummary response is too large. Try investigating using other functions, or a more narrow bounds"
           };
         }
-        const byteCount = Platform.StringUtilities.countWtf8Bytes(summary);
-        Host4.userMetrics.performanceAIMainThreadActivityResponseSize(byteCount);
+        const byteCount = Platform2.StringUtilities.countWtf8Bytes(summary);
+        Host5.userMetrics.performanceAIMainThreadActivityResponseSize(byteCount);
         const key = `getMainThreadTrackSummary({min: ${bounds.min}, max: ${bounds.max}})`;
         this.#cacheFunctionResult(focus, key, summary);
         return { result: { summary } };
@@ -4604,8 +5354,8 @@ ${result}`,
             error: "getNetworkTrackSummary response is too large. Try investigating using other functions, or a more narrow bounds"
           };
         }
-        const byteCount = Platform.StringUtilities.countWtf8Bytes(summary);
-        Host4.userMetrics.performanceAINetworkSummaryResponseSize(byteCount);
+        const byteCount = Platform2.StringUtilities.countWtf8Bytes(summary);
+        Host5.userMetrics.performanceAINetworkSummaryResponseSize(byteCount);
         const key = `getNetworkTrackSummary({min: ${bounds.min}, max: ${bounds.max}})`;
         this.#cacheFunctionResult(focus, key, summary);
         return { result: { summary } };
@@ -4741,7 +5491,7 @@ ${result}`,
         if (!this.#formatter) {
           throw new Error("missing formatter");
         }
-        const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+        const target = SDK2.TargetManager.TargetManager.instance().primaryPageTarget();
         if (!target) {
           throw new Error("missing target");
         }
@@ -4784,7 +5534,7 @@ ${result}`,
         if (script?.content !== void 0) {
           content = script.content;
         } else if (isFresh || isTraceApp) {
-          const resource = SDK.ResourceTreeModel.ResourceTreeModel.resourceForURL(url);
+          const resource = SDK2.ResourceTreeModel.ResourceTreeModel.resourceForURL(url);
           if (!resource) {
             return { error: "Resource not found" };
           }
@@ -4826,7 +5576,7 @@ ${result}`,
           if (!event) {
             return { error: "Invalid eventKey" };
           }
-          const revealable = new SDK.TraceObject.RevealableEvent(event);
+          const revealable = new SDK2.TraceObject.RevealableEvent(event);
           await Common2.Revealer.reveal(revealable);
           return { result: { success: true } };
         }
@@ -4870,11 +5620,11 @@ __export(StylingAgent_exports, {
   NodeContext: () => NodeContext,
   StylingAgent: () => StylingAgent
 });
-import * as Host5 from "./../../core/host/host.js";
+import * as Host6 from "./../../core/host/host.js";
 import * as i18n7 from "./../../core/i18n/i18n.js";
-import * as Platform4 from "./../../core/platform/platform.js";
+import * as Platform5 from "./../../core/platform/platform.js";
 import * as Root5 from "./../../core/root/root.js";
-import * as SDK5 from "./../../core/sdk/sdk.js";
+import * as SDK6 from "./../../core/sdk/sdk.js";
 import * as Annotations4 from "./../annotations/annotations.js";
 
 // gen/front_end/models/ai_assistance/ChangeManager.js
@@ -4883,8 +5633,8 @@ __export(ChangeManager_exports, {
   ChangeManager: () => ChangeManager
 });
 import * as Common3 from "./../../core/common/common.js";
-import * as Platform2 from "./../../core/platform/platform.js";
-import * as SDK2 from "./../../core/sdk/sdk.js";
+import * as Platform3 from "./../../core/platform/platform.js";
+import * as SDK3 from "./../../core/sdk/sdk.js";
 function formatStyles(styles, indent = 2) {
   const lines = Object.entries(styles).map(([key, value]) => `${" ".repeat(indent)}${key}: ${value};`);
   return lines.join("\n");
@@ -4895,7 +5645,7 @@ var ChangeManager = class {
   #stylesheetChanges = /* @__PURE__ */ new Map();
   #backupStylesheetChanges = /* @__PURE__ */ new Map();
   constructor() {
-    SDK2.TargetManager.TargetManager.instance().addModelListener(SDK2.ResourceTreeModel.ResourceTreeModel, SDK2.ResourceTreeModel.Events.PrimaryPageChanged, this.clear, this);
+    SDK3.TargetManager.TargetManager.instance().addModelListener(SDK3.ResourceTreeModel.ResourceTreeModel, SDK3.ResourceTreeModel.Events.PrimaryPageChanged, this.clear, this);
   }
   async stashChanges() {
     for (const [cssModel, stylesheetMap] of this.#cssModelToStylesheetId.entries()) {
@@ -4939,7 +5689,7 @@ var ChangeManager = class {
     const stylesheetId = await this.#getStylesheet(cssModel, frameId);
     const changes = this.#stylesheetChanges.get(stylesheetId) || [];
     const existingChange = changes.find((c) => c.className === change.className);
-    const stylesKebab = Platform2.StringUtilities.toKebabCaseKeys(change.styles);
+    const stylesKebab = Platform3.StringUtilities.toKebabCaseKeys(change.styles);
     if (existingChange) {
       Object.assign(existingChange.styles, stylesKebab);
       existingChange.groupId = change.groupId;
@@ -4980,7 +5730,7 @@ ${formatStyles(change.styles)}
       if (!frameToStylesheet) {
         frameToStylesheet = /* @__PURE__ */ new Map();
         this.#cssModelToStylesheetId.set(cssModel, frameToStylesheet);
-        cssModel.addEventListener(SDK2.CSSModel.Events.ModelDisposed, this.#onCssModelDisposed, this);
+        cssModel.addEventListener(SDK3.CSSModel.Events.ModelDisposed, this.#onCssModelDisposed, this);
       }
       let stylesheetId = frameToStylesheet.get(frameId);
       if (!stylesheetId) {
@@ -5001,7 +5751,7 @@ ${formatStyles(change.styles)}
   async #onCssModelDisposed(event) {
     return await this.#stylesheetMutex.run(async () => {
       const cssModel = event.data;
-      cssModel.removeEventListener(SDK2.CSSModel.Events.ModelDisposed, this.#onCssModelDisposed, this);
+      cssModel.removeEventListener(SDK3.CSSModel.Events.ModelDisposed, this.#onCssModelDisposed, this);
       const stylesheetIds = Array.from(this.#cssModelToStylesheetId.get(cssModel)?.values() ?? []);
       const results = await Promise.allSettled(stylesheetIds.map(async (id) => {
         this.#stylesheetChanges.delete(id);
@@ -5027,7 +5777,7 @@ __export(EvaluateAction_exports, {
   stringifyObjectOnThePage: () => stringifyObjectOnThePage,
   stringifyRemoteObject: () => stringifyRemoteObject
 });
-import * as SDK3 from "./../../core/sdk/sdk.js";
+import * as SDK4 from "./../../core/sdk/sdk.js";
 
 // gen/front_end/models/ai_assistance/injected.js
 var injected_exports = {};
@@ -5246,7 +5996,7 @@ var EvaluateAction = class _EvaluateAction {
       }
       if (response.exceptionDetails) {
         const exceptionDescription = response.exceptionDetails.exception?.description;
-        if (SDK3.RuntimeModel.RuntimeModel.isSideEffectFailure(response)) {
+        if (SDK4.RuntimeModel.RuntimeModel.isSideEffectFailure(response)) {
           throw new SideEffectError(exceptionDescription);
         }
         return formatError(exceptionDescription ?? "JS exception");
@@ -5312,9 +6062,9 @@ __export(ExtensionScope_exports, {
   ExtensionScope: () => ExtensionScope
 });
 import * as Common4 from "./../../core/common/common.js";
-import * as Platform3 from "./../../core/platform/platform.js";
-import * as SDK4 from "./../../core/sdk/sdk.js";
-import * as Bindings2 from "./../bindings/bindings.js";
+import * as Platform4 from "./../../core/platform/platform.js";
+import * as SDK5 from "./../../core/sdk/sdk.js";
+import * as Bindings3 from "./../bindings/bindings.js";
 var _a2;
 var ExtensionScope = class {
   #listeners = [];
@@ -5343,14 +6093,14 @@ var ExtensionScope = class {
     if (this.#frameId) {
       return this.#frameId;
     }
-    const resourceTreeModel = this.target.model(SDK4.ResourceTreeModel.ResourceTreeModel);
+    const resourceTreeModel = this.target.model(SDK5.ResourceTreeModel.ResourceTreeModel);
     if (!resourceTreeModel?.mainFrame) {
       throw new Error("Main frame is not found for executing code");
     }
     return resourceTreeModel.mainFrame.id;
   }
   async install() {
-    const runtimeModel = this.target.model(SDK4.RuntimeModel.RuntimeModel);
+    const runtimeModel = this.target.model(SDK5.RuntimeModel.RuntimeModel);
     const pageAgent = this.target.pageAgent();
     const { executionContextId } = await pageAgent.invoke_createIsolatedWorld({ frameId: this.frameId, worldName: FREESTYLER_WORLD_NAME });
     const isolatedWorldContext = runtimeModel?.executionContext(executionContextId);
@@ -5358,7 +6108,7 @@ var ExtensionScope = class {
       throw new Error("Execution context is not found for executing code");
     }
     const handler = this.#bindingCalled.bind(this, isolatedWorldContext);
-    runtimeModel?.addEventListener(SDK4.RuntimeModel.Events.BindingCalled, handler);
+    runtimeModel?.addEventListener(SDK5.RuntimeModel.Events.BindingCalled, handler);
     this.#listeners.push(handler);
     await this.target.runtimeAgent().invoke_addBinding({
       name: FREESTYLER_BINDING_NAME,
@@ -5368,9 +6118,9 @@ var ExtensionScope = class {
     await this.#simpleEval(isolatedWorldContext, injectedFunctions);
   }
   async uninstall() {
-    const runtimeModel = this.target.model(SDK4.RuntimeModel.RuntimeModel);
+    const runtimeModel = this.target.model(SDK5.RuntimeModel.RuntimeModel);
     for (const handler of this.#listeners) {
-      runtimeModel?.removeEventListener(SDK4.RuntimeModel.Events.BindingCalled, handler);
+      runtimeModel?.removeEventListener(SDK5.RuntimeModel.Events.BindingCalled, handler);
     }
     this.#listeners = [];
     await this.target.runtimeAgent().invoke_removeBinding({
@@ -5415,7 +6165,7 @@ var ExtensionScope = class {
       if (rule?.origin === "user-agent") {
         break;
       }
-      if (rule instanceof SDK4.CSSRule.CSSStyleRule) {
+      if (rule instanceof SDK5.CSSRule.CSSStyleRule) {
         if (rule.nestingSelectors?.at(0)?.includes(AI_ASSISTANCE_CSS_CLASS_NAME) || rule.selectors.every((selector) => selector.text.includes(AI_ASSISTANCE_CSS_CLASS_NAME))) {
           continue;
         }
@@ -5475,8 +6225,8 @@ var ExtensionScope = class {
     }
     const lineNumber = styleSheetHeader.lineNumberInSource(range.startLine);
     const columnNumber = styleSheetHeader.columnNumberInSource(range.startLine, range.startColumn);
-    const location = new SDK4.CSSModel.CSSLocation(styleSheetHeader, lineNumber, columnNumber);
-    const uiLocation = Bindings2.CSSWorkspaceBinding.CSSWorkspaceBinding.instance().rawLocationToUILocation(location);
+    const location = new SDK5.CSSModel.CSSLocation(styleSheetHeader, lineNumber, columnNumber);
+    const uiLocation = Bindings3.CSSWorkspaceBinding.CSSWorkspaceBinding.instance().rawLocationToUILocation(location);
     return uiLocation?.linkText(
       /* skipTrim= */
       true,
@@ -5488,11 +6238,11 @@ var ExtensionScope = class {
     if (!remoteObject.objectId) {
       throw new Error("DOMModel is not found");
     }
-    const cssModel = this.target.model(SDK4.CSSModel.CSSModel);
+    const cssModel = this.target.model(SDK5.CSSModel.CSSModel);
     if (!cssModel) {
       throw new Error("CSSModel is not found");
     }
-    const domModel = this.target.model(SDK4.DOMModel.DOMModel);
+    const domModel = this.target.model(SDK5.DOMModel.DOMModel);
     if (!domModel) {
       throw new Error("DOMModel is not found");
     }
@@ -5530,7 +6280,7 @@ var ExtensionScope = class {
       return;
     }
     await this.#bindingMutex.run(async () => {
-      const cssModel = this.target.model(SDK4.CSSModel.CSSModel);
+      const cssModel = this.target.model(SDK5.CSSModel.CSSModel);
       if (!cssModel) {
         throw new Error("CSSModel is not found");
       }
@@ -5574,7 +6324,7 @@ var ExtensionScope = class {
     const cssStyleValue = [];
     const changedStyles = [];
     const styleSheet = new CSSStyleSheet({ disabled: true });
-    const kebabStyles = Platform3.StringUtilities.toKebabCaseKeys(styles);
+    const kebabStyles = Platform4.StringUtilities.toKebabCaseKeys(styles);
     for (const [style, value] of Object.entries(kebabStyles)) {
       cssStyleValue.push(`${style}: ${value};`);
       changedStyles.push(style);
@@ -5612,7 +6362,7 @@ var UIStringsNotTranslate3 = {
   dataUsed: "Data used"
 };
 var lockedString4 = i18n7.i18n.lockedString;
-var preamble3 = `You are the most advanced CSS/DOM/HTML debugging assistant integrated into Chrome DevTools.
+var preamble4 = `You are the most advanced CSS/DOM/HTML debugging assistant integrated into Chrome DevTools.
 You always suggest considering the best web development practices and the newest platform features such as view transitions.
 The user selected a DOM element in the browser's DevTools and sends a query about the page or the selected DOM element.
 First, examine the provided context, then use the functions to gather additional context and resolve the user request.
@@ -5670,12 +6420,12 @@ async function executeJsCode(functionDeclaration, { throwOnSideEffect, contextNo
   if (!target) {
     throw new Error("Target is not found for executing code");
   }
-  const resourceTreeModel = target.model(SDK5.ResourceTreeModel.ResourceTreeModel);
+  const resourceTreeModel = target.model(SDK6.ResourceTreeModel.ResourceTreeModel);
   const frameId = contextNode.frameId() ?? resourceTreeModel?.mainFrame?.id;
   if (!frameId) {
     throw new Error("Main frame is not found for executing code");
   }
-  const runtimeModel = target.model(SDK5.RuntimeModel.RuntimeModel);
+  const runtimeModel = target.model(SDK6.RuntimeModel.RuntimeModel);
   const pageAgent = target.pageAgent();
   const { executionContextId } = await pageAgent.invoke_createIsolatedWorld({ frameId, worldName: FREESTYLER_WORLD_NAME });
   const executionContext = runtimeModel?.executionContext(executionContextId);
@@ -5756,8 +6506,8 @@ var NodeContext = class extends ConversationContext {
   }
 };
 var StylingAgent = class _StylingAgent extends AiAgent {
-  preamble = preamble3;
-  clientFeature = Host5.AidaClient.ClientFeature.CHROME_STYLING_AGENT;
+  preamble = preamble4;
+  clientFeature = Host6.AidaClient.ClientFeature.CHROME_STYLING_AGENT;
   get userTier() {
     return Root5.Runtime.hostConfig.devToolsFreestyler?.userTier;
   }
@@ -5956,8 +6706,8 @@ const data = {
           setTimeout(() => reject(new Error("Script execution exceeded the maximum allowed time.")), OBSERVATION_TIMEOUT);
         })
       ]);
-      const byteCount = Platform4.StringUtilities.countWtf8Bytes(result);
-      Host5.userMetrics.freestylerEvalResponseSize(byteCount);
+      const byteCount = Platform5.StringUtilities.countWtf8Bytes(result);
+      Host6.userMetrics.freestylerEvalResponseSize(byteCount);
       if (byteCount > MAX_OBSERVATION_BYTE_LENGTH) {
         throw new Error("Output exceeded the maximum allowed length.");
       }
@@ -6077,7 +6827,7 @@ const data = {
       if (!selectedNode) {
         return { error: "Error: Could not find the currently selected element." };
       }
-      const node = new SDK5.DOMModel.DeferredDOMNode(selectedNode.domModel().target(), Number(uid));
+      const node = new SDK6.DOMModel.DeferredDOMNode(selectedNode.domModel().target(), Number(uid));
       const resolved = await node.resolvePromise();
       if (!resolved) {
         return { error: "Error: Could not find the element with uid=" + uid };
@@ -6126,7 +6876,7 @@ const data = {
       return { error: "Error: no selected node found." };
     }
     const target = selectedNode.domModel().target();
-    if (target.model(SDK5.DebuggerModel.DebuggerModel)?.selectedCallFrame()) {
+    if (target.model(SDK6.DebuggerModel.DebuggerModel)?.selectedCallFrame()) {
       return {
         error: "Error: Cannot evaluate JavaScript because the execution is paused on a breakpoint."
       };
@@ -6217,7 +6967,7 @@ ${await _StylingAgent.describeElement(selectedElement.getItem())}
 
 // gen/front_end/models/ai_assistance/agents/ContextSelectionAgent.js
 var lockedString5 = i18n9.i18n.lockedString;
-var preamble4 = `
+var preamble5 = `
 You are a Web Development Assistant integrated into Chrome DevTools. Your tone is educational, supportive, and technically precise.
 You aim to help developers of all levels, prioritizing teaching web concepts as the primary entry point for any solution.
 
@@ -6242,8 +6992,8 @@ You aim to help developers of all levels, prioritizing teaching web concepts as 
 * **CRITICAL** You are a debugging assistant in DevTools. NEVER provide answers to questions of unrelated topics such as legal advice, financial advice, personal opinions, medical advice, religion, race, politics, sexuality, gender, or any other non web-development topics. Answer "Sorry, I can't answer that. I'm best at questions about debugging web pages." to such questions.
 `;
 var ContextSelectionAgent = class extends AiAgent {
-  preamble = preamble4;
-  clientFeature = Host6.AidaClient.ClientFeature.CHROME_FILE_AGENT;
+  preamble = preamble5;
+  clientFeature = Host7.AidaClient.ClientFeature.CHROME_FILE_AGENT;
   get userTier() {
     return Root6.Runtime.hostConfig.devToolsFreestyler?.userTier;
   }
@@ -6280,7 +7030,7 @@ var ContextSelectionAgent = class extends AiAgent {
       },
       handler: async () => {
         const requests = [];
-        const target = SDK6.TargetManager.TargetManager.instance().primaryPageTarget();
+        const target = SDK7.TargetManager.TargetManager.instance().primaryPageTarget();
         const inspectedURL = target?.inspectedURL();
         const mainSecurityOrigin = inspectedURL ? new Common5.ParsedURL.ParsedURL(inspectedURL).securityOrigin() : null;
         for (const request of Logs2.NetworkLog.NetworkLog.instance().requests()) {
@@ -6326,7 +7076,7 @@ var ContextSelectionAgent = class extends AiAgent {
       },
       handler: async ({ url }) => {
         const request = Logs2.NetworkLog.NetworkLog.instance().requests().find((req) => {
-          return req.url() === Platform5.DevToolsPath.urlString`${url}` || req.url() === Platform5.DevToolsPath.urlString`${url.slice(0, -1)}` || req.url() === Platform5.DevToolsPath.urlString`${url}/`;
+          return req.url() === Platform6.DevToolsPath.urlString`${url}` || req.url() === Platform6.DevToolsPath.urlString`${url.slice(0, -1)}` || req.url() === Platform6.DevToolsPath.urlString`${url}/`;
         });
         if (request) {
           const calculator = this.#networkTimeCalculator ?? new NetworkTimeCalculator3.NetworkTransferTimeCalculator();
@@ -6461,8 +7211,8 @@ var ContextSelectionAgent = class extends AiAgent {
     });
   }
   #getUISourceCodes = () => {
-    const workspace = Workspace.Workspace.WorkspaceImpl.instance();
-    const projects = workspace.projects().filter((project) => project.type() === Workspace.Workspace.projectTypes.Network);
+    const workspace = Workspace3.Workspace.WorkspaceImpl.instance();
+    const projects = workspace.projects().filter((project) => project.type() === Workspace3.Workspace.projectTypes.Network);
     const uiSourceCodes = [];
     for (const project of projects) {
       for (const uiSourceCode of project.uiSourceCodes()) {
@@ -6487,9 +7237,9 @@ __export(PatchAgent_exports, {
   FileUpdateAgent: () => FileUpdateAgent,
   PatchAgent: () => PatchAgent
 });
-import * as Host7 from "./../../core/host/host.js";
+import * as Host8 from "./../../core/host/host.js";
 import * as Root7 from "./../../core/root/root.js";
-var preamble5 = `You are a highly skilled software engineer with expertise in web development.
+var preamble6 = `You are a highly skilled software engineer with expertise in web development.
 The user asks you to apply changes to a source code folder.
 
 # Considerations
@@ -6525,8 +7275,8 @@ var PatchAgent = class extends AiAgent {
   async *handleContextDetails(_select) {
     return;
   }
-  preamble = preamble5;
-  clientFeature = Host7.AidaClient.ClientFeature.CHROME_PATCH_AGENT;
+  preamble = preamble6;
+  clientFeature = Host8.AidaClient.ClientFeature.CHROME_PATCH_AGENT;
   get userTier() {
     return Root7.Runtime.hostConfig.devToolsFreestyler?.userTier;
   }
@@ -6707,8 +7457,8 @@ var FileUpdateAgent = class extends AiAgent {
   async *handleContextDetails(_select) {
     return;
   }
-  preamble = preamble5;
-  clientFeature = Host7.AidaClient.ClientFeature.CHROME_PATCH_AGENT;
+  preamble = preamble6;
+  clientFeature = Host8.AidaClient.ClientFeature.CHROME_PATCH_AGENT;
   get userTier() {
     return Root7.Runtime.hostConfig.devToolsFreestyler?.userTier;
   }
@@ -6725,7 +7475,7 @@ var PerformanceAnnotationsAgent_exports = {};
 __export(PerformanceAnnotationsAgent_exports, {
   PerformanceAnnotationsAgent: () => PerformanceAnnotationsAgent
 });
-import * as Host8 from "./../../core/host/host.js";
+import * as Host9 from "./../../core/host/host.js";
 import * as i18n11 from "./../../core/i18n/i18n.js";
 import * as Root8 from "./../../core/root/root.js";
 var UIStringsNotTranslated2 = {
@@ -6799,7 +7549,7 @@ Consider optimizing the position calculation logic or reducing the frequency of 
 var PerformanceAnnotationsAgent = class extends AiAgent {
   preamble = callTreePreamble;
   get clientFeature() {
-    return Host8.AidaClient.ClientFeature.CHROME_PERFORMANCE_ANNOTATIONS_AGENT;
+    return Host9.AidaClient.ClientFeature.CHROME_PERFORMANCE_ANNOTATIONS_AGENT;
   }
   get userTier() {
     return Root8.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.userTier;
@@ -6884,10 +7634,11 @@ __export(AiConversation_exports, {
   NOT_FOUND_IMAGE_DATA: () => NOT_FOUND_IMAGE_DATA,
   generateContextDetailsMarkdown: () => generateContextDetailsMarkdown
 });
-import * as Host9 from "./../../core/host/host.js";
+import * as Host10 from "./../../core/host/host.js";
 import * as Root9 from "./../../core/root/root.js";
-import * as SDK7 from "./../../core/sdk/sdk.js";
+import * as SDK8 from "./../../core/sdk/sdk.js";
 import * as Trace7 from "./../trace/trace.js";
+import * as Greendev2 from "./../greendev/greendev.js";
 import * as NetworkTimeCalculator4 from "./../network_time_calculator/network_time_calculator.js";
 
 // gen/front_end/models/ai_assistance/AiHistoryStorage.js
@@ -7040,7 +7791,7 @@ var AiConversation = class _AiConversation {
   #performanceRecordAndReload;
   #onInspectElement;
   #networkTimeCalculator;
-  constructor(type, data = [], id = crypto.randomUUID(), isReadOnly = true, aidaClient = new Host9.AidaClient.AidaClient(), changeManager, isExternal = false, performanceRecordAndReload, onInspectElement, networkTimeCalculator) {
+  constructor(type, data = [], id = crypto.randomUUID(), isReadOnly = true, aidaClient = new Host10.AidaClient.AidaClient(), changeManager, isExternal = false, performanceRecordAndReload, onInspectElement, networkTimeCalculator) {
     this.#changeManager = changeManager;
     this.#aidaClient = aidaClient;
     this.#performanceRecordAndReload = performanceRecordAndReload;
@@ -7268,6 +8019,13 @@ ${item.text.trim()}`);
         this.#agent = new PerformanceAgent(options);
         break;
       }
+      case "breakpoint": {
+        const breakpointAgentEnabled = Greendev2.Prototypes.instance().isEnabled("breakpointDebuggerAgent");
+        if (breakpointAgentEnabled) {
+          this.#agent = new BreakpointDebuggerAgent(options);
+        }
+        break;
+      }
       case "none": {
         this.#agent = new ContextSelectionAgent(options);
         break;
@@ -7282,7 +8040,7 @@ ${item.text.trim()}`);
         this.#agent.addFact(cached);
         continue;
       }
-      if (context instanceof SDK7.DOMModel.DOMNode) {
+      if (context instanceof SDK8.DOMModel.DOMNode) {
         const desc = await StylingAgent.describeElement(context);
         const fact = {
           text: `Relevant HTML element:
@@ -7294,7 +8052,7 @@ ${desc}`,
         };
         this.#factsCache.set(context, fact);
         this.#agent.addFact(fact);
-      } else if (context instanceof SDK7.NetworkRequest.NetworkRequest) {
+      } else if (context instanceof SDK8.NetworkRequest.NetworkRequest) {
         const calculator = new NetworkTimeCalculator4.NetworkTransferTimeCalculator();
         calculator.updateBoundaries(context);
         const formatter = new NetworkRequestFormatter(context, calculator);
@@ -7420,7 +8178,7 @@ __export(AiUtils_exports, {
   isGeminiBranding: () => isGeminiBranding
 });
 import * as Common7 from "./../../core/common/common.js";
-import * as Host10 from "./../../core/host/host.js";
+import * as Host11 from "./../../core/host/host.js";
 import * as i18n13 from "./../../core/i18n/i18n.js";
 import * as Root10 from "./../../core/root/root.js";
 var UIStrings = {
@@ -7478,7 +8236,7 @@ __export(BuiltInAi_exports, {
   BuiltInAi: () => BuiltInAi
 });
 import * as Common8 from "./../../core/common/common.js";
-import * as Host11 from "./../../core/host/host.js";
+import * as Host12 from "./../../core/host/host.js";
 import * as Root11 from "./../../core/root/root.js";
 var builtInAiInstance;
 var BuiltInAi = class _BuiltInAi extends Common8.ObjectWrapper.ObjectWrapper {
@@ -7659,31 +8417,31 @@ Your instructions are as follows:
     if (this.#hasGpu) {
       switch (this.#availability) {
         case "unavailable":
-          Host11.userMetrics.builtInAiAvailability(
+          Host12.userMetrics.builtInAiAvailability(
             0
             /* Host.UserMetrics.BuiltInAiAvailability.UNAVAILABLE_HAS_GPU */
           );
           break;
         case "downloadable":
-          Host11.userMetrics.builtInAiAvailability(
+          Host12.userMetrics.builtInAiAvailability(
             1
             /* Host.UserMetrics.BuiltInAiAvailability.DOWNLOADABLE_HAS_GPU */
           );
           break;
         case "downloading":
-          Host11.userMetrics.builtInAiAvailability(
+          Host12.userMetrics.builtInAiAvailability(
             2
             /* Host.UserMetrics.BuiltInAiAvailability.DOWNLOADING_HAS_GPU */
           );
           break;
         case "available":
-          Host11.userMetrics.builtInAiAvailability(
+          Host12.userMetrics.builtInAiAvailability(
             3
             /* Host.UserMetrics.BuiltInAiAvailability.AVAILABLE_HAS_GPU */
           );
           break;
         case "disabled":
-          Host11.userMetrics.builtInAiAvailability(
+          Host12.userMetrics.builtInAiAvailability(
             4
             /* Host.UserMetrics.BuiltInAiAvailability.DISABLED_HAS_GPU */
           );
@@ -7692,31 +8450,31 @@ Your instructions are as follows:
     } else {
       switch (this.#availability) {
         case "unavailable":
-          Host11.userMetrics.builtInAiAvailability(
+          Host12.userMetrics.builtInAiAvailability(
             5
             /* Host.UserMetrics.BuiltInAiAvailability.UNAVAILABLE_NO_GPU */
           );
           break;
         case "downloadable":
-          Host11.userMetrics.builtInAiAvailability(
+          Host12.userMetrics.builtInAiAvailability(
             6
             /* Host.UserMetrics.BuiltInAiAvailability.DOWNLOADABLE_NO_GPU */
           );
           break;
         case "downloading":
-          Host11.userMetrics.builtInAiAvailability(
+          Host12.userMetrics.builtInAiAvailability(
             7
             /* Host.UserMetrics.BuiltInAiAvailability.DOWNLOADING_NO_GPU */
           );
           break;
         case "available":
-          Host11.userMetrics.builtInAiAvailability(
+          Host12.userMetrics.builtInAiAvailability(
             8
             /* Host.UserMetrics.BuiltInAiAvailability.AVAILABLE_NO_GPU */
           );
           break;
         case "disabled":
-          Host11.userMetrics.builtInAiAvailability(
+          Host12.userMetrics.builtInAiAvailability(
             9
             /* Host.UserMetrics.BuiltInAiAvailability.DISABLED_NO_GPU */
           );
@@ -7732,11 +8490,11 @@ __export(ConversationHandler_exports, {
   ConversationHandler: () => ConversationHandler
 });
 import * as Common9 from "./../../core/common/common.js";
-import * as Host12 from "./../../core/host/host.js";
+import * as Host13 from "./../../core/host/host.js";
 import * as i18n15 from "./../../core/i18n/i18n.js";
-import * as Platform6 from "./../../core/platform/platform.js";
+import * as Platform7 from "./../../core/platform/platform.js";
 import * as Root12 from "./../../core/root/root.js";
-import * as SDK8 from "./../../core/sdk/sdk.js";
+import * as SDK9 from "./../../core/sdk/sdk.js";
 import * as NetworkTimeCalculator5 from "./../network_time_calculator/network_time_calculator.js";
 var UIStringsNotTranslate4 = {
   /**
@@ -7754,7 +8512,7 @@ async function inspectElementBySelector(selector) {
     return null;
   }
   const showUAShadowDOM = Common9.Settings.Settings.instance().moduleSetting("show-ua-shadow-dom").get();
-  const domModels = SDK8.TargetManager.TargetManager.instance().models(SDK8.DOMModel.DOMModel, { scoped: true });
+  const domModels = SDK9.TargetManager.TargetManager.instance().models(SDK9.DOMModel.DOMModel, { scoped: true });
   const performSearchPromises = domModels.map((domModel) => domModel.performSearch(whitespaceTrimmedQuery, showUAShadowDOM));
   const resultCounts = await Promise.all(performSearchPromises);
   const index = resultCounts.findIndex((value) => value > 0);
@@ -7764,13 +8522,13 @@ async function inspectElementBySelector(selector) {
   return null;
 }
 async function inspectNetworkRequestByUrl(selector) {
-  const networkManagers = SDK8.TargetManager.TargetManager.instance().models(SDK8.NetworkManager.NetworkManager, { scoped: true });
+  const networkManagers = SDK9.TargetManager.TargetManager.instance().models(SDK9.NetworkManager.NetworkManager, { scoped: true });
   const results = networkManagers.map((networkManager) => {
-    let request2 = networkManager.requestForURL(Platform6.DevToolsPath.urlString`${selector}`);
+    let request2 = networkManager.requestForURL(Platform7.DevToolsPath.urlString`${selector}`);
     if (!request2 && selector.at(-1) === "/") {
-      request2 = networkManager.requestForURL(Platform6.DevToolsPath.urlString`${selector.slice(0, -1)}`);
+      request2 = networkManager.requestForURL(Platform7.DevToolsPath.urlString`${selector.slice(0, -1)}`);
     } else if (!request2 && selector.at(-1) !== "/") {
-      request2 = networkManager.requestForURL(Platform6.DevToolsPath.urlString`${selector}/`);
+      request2 = networkManager.requestForURL(Platform7.DevToolsPath.urlString`${selector}/`);
     }
     return request2;
   }).filter((req) => !!req);
@@ -7790,7 +8548,7 @@ var ConversationHandler = class _ConversationHandler extends Common9.ObjectWrapp
   }
   static instance(opts) {
     if (opts?.forceNew || conversationHandlerInstance === void 0) {
-      const aidaClient = opts?.aidaClient ?? new Host12.AidaClient.AidaClient();
+      const aidaClient = opts?.aidaClient ?? new Host13.AidaClient.AidaClient();
       conversationHandlerInstance = new _ConversationHandler(aidaClient, opts?.aidaAvailability ?? void 0);
     }
     return conversationHandlerInstance;
@@ -7810,7 +8568,7 @@ var ConversationHandler = class _ConversationHandler extends Common9.ObjectWrapp
   }
   async #getDisabledReasons() {
     if (this.#aidaAvailability === void 0) {
-      this.#aidaAvailability = await Host12.AidaClient.AidaClient.checkAccessPreconditions();
+      this.#aidaAvailability = await Host13.AidaClient.AidaClient.checkAccessPreconditions();
     }
     return getDisabledReasons(this.#aidaAvailability);
   }
@@ -7954,6 +8712,7 @@ export {
   AiConversation_exports as AiConversation,
   AiHistoryStorage_exports as AiHistoryStorage,
   AiUtils_exports as AiUtils,
+  BreakpointDebuggerAgent_exports as BreakpointDebuggerAgent,
   BuiltInAi_exports as BuiltInAi,
   ChangeManager_exports as ChangeManager,
   ContextSelectionAgent_exports as ContextSelectionAgent,

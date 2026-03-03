@@ -2378,7 +2378,7 @@ var UIStrings6 = {
    */
   initialPriorityToolTip: "{PH1}, Initial priority: {PH2}",
   /**
-   * @description Text in Network Data Grid Node of the Network panel. Noun. Refers to a render blocking resource.
+   * @description Text in Network Data Grid Node of the Network panel. Noun. Refers to a render-blocking resource.
    */
   blocking: "Blocking",
   /**
@@ -6493,9 +6493,9 @@ var DEFAULT_VIEW10 = (input, output, target) => {
       resize: true
     })}>
         <colgroup>
-          <col class=labels></col>
-          <col class=bars> </col>
-          <col class=duration></col>
+          <col class=labels>
+          <col class=bars>
+          <col class=duration>
         </colgroup>
         <thead class=network-timing-start>
           <tr>
@@ -9592,7 +9592,7 @@ var UIStrings21 = {
   /**
    * @description Text in Network Log View Columns of the Network panel
    */
-  renderBlocking: "Render Blocking"
+  renderBlocking: "Render-blocking"
 };
 var str_21 = i18n41.i18n.registerUIStrings("panels/network/NetworkLogViewColumns.ts", UIStrings21);
 var i18nString21 = i18n41.i18n.getLocalizedString.bind(void 0, str_21);

@@ -81,13 +81,13 @@ const UIStrings = {
      */
     blocking: 'Blocking',
     /**
-     * @description Text that refers to if the network request is in-body parser render blocking
+     * @description Text that refers to if the network request is in-body parser render-blocking
      */
     inBodyParserBlocking: 'In-body parser blocking',
     /**
-     * @description Text that refers to if the network request is render blocking
+     * @description Text that refers to if the network request is render-blocking
      */
-    renderBlocking: 'Render blocking',
+    renderBlocking: 'Render-blocking',
     /**
      * @description Text to refer to a 3rd Party entity.
      */
@@ -323,7 +323,7 @@ function renderBlockingRow(request) {
             break;
         default:
             // Shouldn't fall to this block, if so, this network request is not
-            // render blocking, so return null.
+            // render-blocking, so return null.
             return Lit.nothing;
     }
     return renderRow(i18nString(UIStrings.blocking), renderBlockingText);

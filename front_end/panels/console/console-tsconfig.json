@@ -90,6 +90,9 @@
       "path": "../../models/bindings/bundle-tsconfig.json"
     },
     {
+      "path": "../../models/breakpoints/bundle-tsconfig.json"
+    },
+    {
       "path": "../../models/formatter/bundle-tsconfig.json"
     },
     {
@@ -109,6 +112,9 @@
     },
     {
       "path": "../../models/workspace/bundle-tsconfig.json"
+    },
+    {
+      "path": "../ai_assistance/bundle-tsconfig.json"
     },
     {
       "path": "../../third_party/codemirror.next/bundle-tsconfig.json"

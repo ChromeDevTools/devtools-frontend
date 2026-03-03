@@ -201,6 +201,7 @@ describeWithMockConnection('ContextSelectionAgent', function() {
               response: {
                 result: [
                   {
+                    id: 'requestId',
                     url: 'https://example.com/',
                     statusCode: 200,
                     duration: '2.00\xA0s',
@@ -274,6 +275,7 @@ describeWithMockConnection('ContextSelectionAgent', function() {
       assert.strictEqual(part.functionResponse.name, 'listNetworkRequests');
       assert.deepEqual(part.functionResponse.response.result, [
         {
+          id: 'requestId1',
           url: `${origin}/foo`,
           statusCode: 200,
           duration: '1.00\xA0s',
@@ -331,7 +333,7 @@ describeWithMockConnection('ContextSelectionAgent', function() {
             functionCalls: [{
               name: 'selectNetworkRequest',
               args: {
-                url: 'https://example.com/',
+                id: 'requestId',
               },
             }],
             explanation: '',
@@ -351,7 +353,7 @@ describeWithMockConnection('ContextSelectionAgent', function() {
 
   describe('selectSourceFile', () => {
     it('selects a source file', async () => {
-      const workspace = Workspace.Workspace.WorkspaceImpl.instance();
+      const workspace = Workspace.Workspace.WorkspaceImpl.instance({forceNew: true});
       const project = {
         id: () => 'test-project',
         type: () => Workspace.Workspace.projectTypes.Network,
@@ -361,14 +363,15 @@ describeWithMockConnection('ContextSelectionAgent', function() {
       const file = new Workspace.UISourceCode.UISourceCode(
           project, urlString`https://example.com/script.js`, Common.ResourceType.resourceTypes.Script);
       sinon.stub(workspace, 'projects').returns([project]);
-
+      // Populate the ID mapping.
+      ContextSelectionAgent.ContextSelectionAgent.uiSourceCodeId.set(file, 1);
       const agent = new ContextSelectionAgent.ContextSelectionAgent({
         aidaClient: mockAidaClient([
           [{
             functionCalls: [{
               name: 'selectSourceFile',
               args: {
-                name: 'script.js',
+                id: 1,
               },
             }],
             explanation: '',

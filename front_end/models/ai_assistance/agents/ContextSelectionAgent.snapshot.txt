@@ -48,12 +48,12 @@ Content:
         "description": "",
         "nullable": true,
         "required": [
-          "url"
+          "id"
         ],
         "properties": {
-          "url": {
+          "id": {
             "type": 1,
-            "description": "The url of the requests",
+            "description": "The id of the network request",
             "nullable": false
           }
         }
@@ -72,18 +72,18 @@ Content:
     },
     {
       "name": "selectSourceFile",
-      "description": "Selects a source file. Use this when asked about files on the page. Use listSourceFiles if you don't know the full path name.",
+      "description": "Selects a source file. Use this when asked about files on the page. Use listSourceFiles to find the file ID.",
       "parameters": {
         "type": 6,
         "description": "",
         "nullable": true,
         "required": [
-          "name"
+          "id"
         ],
         "properties": {
-          "name": {
-            "type": 1,
-            "description": "The full path name of the file you want to select.",
+          "id": {
+            "type": 3,
+            "description": "The id (URL) of the file you want to select.",
             "nullable": false
           }
         }

@@ -159,3 +159,29 @@ export function getMatchedStyles(
     ...payload,
   });
 }
+
+/**
+ * For some unit tests we need a DOM Node but it has to have a "real" DOM
+ * Model and CSS Model attached because code calls those methods and expect
+ * to find the actual models.
+ */
+export function createStubbedDomNodeWithModels(opts: {nodeId: number} = {
+  nodeId: 1
+}): {
+  node: SDK.DOMModel.DOMNode,
+  domModel: SDK.DOMModel.DOMModel,
+  cssModel: SDK.CSSModel.CSSModel,
+} {
+  const target = sinon.createStubInstance(SDK.Target.Target);
+  const cssModel = sinon.createStubInstance(SDK.CSSModel.CSSModel, {
+    target,
+  });
+  const domModel = sinon.createStubInstance(SDK.DOMModel.DOMModel, {
+    cssModel,
+  });
+  const node = sinon.createStubInstance(SDK.DOMModel.DOMNode, {
+    domModel,
+  });
+  node.id = opts.nodeId as Protocol.DOM.NodeId;
+  return {cssModel, domModel, node};
+}

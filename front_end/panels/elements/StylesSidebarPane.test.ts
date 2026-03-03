@@ -14,7 +14,7 @@ import {
 import {expectCall} from '../../testing/ExpectStubCall.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {describeWithMockConnection, setMockConnectionResponseHandler} from '../../testing/MockConnection.js';
-import {getMatchedStyles} from '../../testing/StyleHelpers.js';
+import {createStubbedDomNodeWithModels, getMatchedStyles} from '../../testing/StyleHelpers.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as PanelsCommon from '../common/common.js';
@@ -24,8 +24,7 @@ import * as Elements from './elements.js';
 describe('StylesSidebarPane', () => {
   let node: SDK.DOMModel.DOMNode;
   beforeEach(() => {
-    node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
-    node.id = 1 as Protocol.DOM.NodeId;
+    ({node} = createStubbedDomNodeWithModels({nodeId: 1}));
     UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
   });
 
@@ -412,8 +411,7 @@ describe('StylesSidebarPane', () => {
                 shorthandEntries: [],
               },
             });
-            const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
-            node.id = 1 as Protocol.DOM.NodeId;
+            const {node} = createStubbedDomNodeWithModels({nodeId: 1});
 
             const stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane(
                 new ComputedStyle.ComputedStyleModel.ComputedStyleModel(node));
@@ -446,8 +444,7 @@ describe('StylesSidebarPane', () => {
                 shorthandEntries: [],
               },
             });
-            const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
-            node.id = 1 as Protocol.DOM.NodeId;
+            const {node} = createStubbedDomNodeWithModels({nodeId: 1});
 
             const stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane(
                 new ComputedStyle.ComputedStyleModel.ComputedStyleModel(node));
@@ -495,8 +492,7 @@ describe('StylesSidebarPane', () => {
                 },
               }],
             });
-            const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
-            node.id = 1 as Protocol.DOM.NodeId;
+            const {node} = createStubbedDomNodeWithModels({nodeId: 1});
 
             const stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane(
                 new ComputedStyle.ComputedStyleModel.ComputedStyleModel(node));
@@ -523,8 +519,7 @@ describe('StylesSidebarPane', () => {
             mockGetAnimatedComputedStyles({
               animationStyles: [],
             });
-            const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
-            node.id = 1 as Protocol.DOM.NodeId;
+            const {node} = createStubbedDomNodeWithModels({nodeId: 1});
 
             const stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane(
                 new ComputedStyle.ComputedStyleModel.ComputedStyleModel(node));
@@ -567,8 +562,7 @@ describe('StylesSidebarPane', () => {
                 },
               }],
             });
-            const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
-            node.id = 1 as Protocol.DOM.NodeId;
+            const {node} = createStubbedDomNodeWithModels({nodeId: 1});
 
             const stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane(
                 new ComputedStyle.ComputedStyleModel.ComputedStyleModel(node));
@@ -619,8 +613,7 @@ describe('StylesSidebarPane', () => {
                      },
                    }],
                  });
-                 const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
-                 node.id = 1 as Protocol.DOM.NodeId;
+                 const {node} = createStubbedDomNodeWithModels({nodeId: 1});
                  node.parentNode = sinon.createStubInstance(SDK.DOMModel.DOMNode);
 
                  const stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane(
@@ -656,8 +649,7 @@ describe('StylesSidebarPane', () => {
                      },
                    }],
                  });
-                 const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
-                 node.id = 1 as Protocol.DOM.NodeId;
+                 const {node} = createStubbedDomNodeWithModels({nodeId: 1});
                  node.parentNode = sinon.createStubInstance(SDK.DOMModel.DOMNode);
 
                  const stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane(
@@ -693,8 +685,7 @@ describe('StylesSidebarPane', () => {
                      },
                    }],
                  });
-                 const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
-                 node.id = 1 as Protocol.DOM.NodeId;
+                 const {node} = createStubbedDomNodeWithModels({nodeId: 1});
                  node.parentNode = sinon.createStubInstance(SDK.DOMModel.DOMNode);
 
                  const stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane(

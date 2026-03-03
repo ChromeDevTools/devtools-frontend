@@ -8,6 +8,7 @@ import * as ComputedStyle from '../../models/computed_style/computed_style.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {createStubbedDomNodeWithModels} from '../../testing/StyleHelpers.js';
 import type * as TreeOutline from '../../ui/components/tree_outline/tree_outline.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -32,8 +33,7 @@ function createWidgetWithMultipleProperties(
     ): Elements.ComputedStyleWidget.ComputedStyleWidget {
   Common.Settings.Settings.instance().createSetting('group-computed-styles', false).set(false);
 
-  const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
-  node.id = 1 as Protocol.DOM.NodeId;
+  const {node} = createStubbedDomNodeWithModels({nodeId: 1});
 
   const cssMatchedStyles = sinon.createStubInstance(SDK.CSSMatchedStyles.CSSMatchedStyles, {
     node,
@@ -97,8 +97,7 @@ describeWithMockConnection('ComputedStyleWidget', () => {
     function createComputedStyleWidgetForTest(
         cssStyleDeclarationType: SDK.CSSStyleDeclaration.Type, cssStyleDeclarationName?: string,
         parentRule?: SDK.CSSRule.CSSRule): Elements.ComputedStyleWidget.ComputedStyleWidget {
-      const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
-      node.id = 1 as Protocol.DOM.NodeId;
+      const {node} = createStubbedDomNodeWithModels({nodeId: 1});
 
       const stubCSSStyle = {
         styleSheetId: 'STYLE_SHEET_ID' as Protocol.DOM.StyleSheetId,

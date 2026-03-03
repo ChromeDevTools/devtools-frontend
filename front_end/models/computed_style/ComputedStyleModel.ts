@@ -12,17 +12,18 @@ import * as SDK from '../../core/sdk/sdk.js';
  * Model trackComputedStyleUpdatesForNode method.
  */
 export class ComputedStyleModel extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
-  #node: SDK.DOMModel.DOMNode|null;
-  #cssModel: SDK.CSSModel.CSSModel|null;
-  private eventListeners: Common.EventTarget.EventDescriptor[];
+  #node: SDK.DOMModel.DOMNode|null = null;
+  #cssModel: SDK.CSSModel.CSSModel|null = null;
+  private eventListeners: Common.EventTarget.EventDescriptor[] = [];
   private frameResizedTimer?: number;
   private computedStylePromise?: Promise<ComputedStyle|null>;
 
   constructor(node?: SDK.DOMModel.DOMNode|null) {
     super();
-    this.#cssModel = null;
-    this.eventListeners = [];
-    this.#node = node ?? null;
+    if (node) {
+      // Call the explicit setter to trigger the setup and event binding.
+      this.node = node;
+    }
   }
 
   get node(): SDK.DOMModel.DOMNode|null {
@@ -37,6 +38,21 @@ export class ComputedStyleModel extends Common.ObjectWrapper.ObjectWrapper<Event
 
   cssModel(): SDK.CSSModel.CSSModel|null {
     return this.#cssModel?.isEnabled() ? this.#cssModel : null;
+  }
+
+  /**
+   * Clears all event listeners to ensure the instance can be GC'd without leaking memory.
+   */
+  dispose(): void {
+    Common.EventTarget.removeEventListeners(this.eventListeners);
+    this.eventListeners = [];
+    this.node = null;
+    this.#cssModel = null;
+    this.computedStylePromise = undefined;
+    if (this.frameResizedTimer) {
+      clearTimeout(this.frameResizedTimer);
+      this.frameResizedTimer = undefined;
+    }
   }
 
   private updateModel(cssModel: SDK.CSSModel.CSSModel|null): void {

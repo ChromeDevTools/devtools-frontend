@@ -120,6 +120,11 @@ export class BreakpointDebuggerAgent extends AiAgent<Workspace.UISourceCode.UILo
         },
         required: ['url', 'lineNumber'],
       },
+      displayInfoFromArgs: (args: {url: string, lineNumber: number}) => {
+        return {
+          title: `Reading function source for ${args.url}:${args.lineNumber}`,
+        };
+      },
       handler: async (args: {url: string, lineNumber: number}) => {
         const result = await this.#getFunctionSource(args);
         debugLog('getFunctionSource for ', JSON.stringify(args), '->', JSON.stringify(result));
@@ -149,6 +154,11 @@ export class BreakpointDebuggerAgent extends AiAgent<Workspace.UISourceCode.UILo
         },
         required: ['url', 'lineNumber', 'direction'],
       },
+      displayInfoFromArgs: (args: {url: string, lineNumber: number, direction: 'before'|'after'}) => {
+        return {
+          title: `Reading code ${args.direction} ${args.url}:${args.lineNumber}`,
+        };
+      },
       handler: async (args: {url: string, lineNumber: number, direction: 'before'|'after'}) => {
         const result = await this.#getCodeLines(args);
         debugLog('getCodeLines result', JSON.stringify(result));
@@ -162,6 +172,11 @@ export class BreakpointDebuggerAgent extends AiAgent<Workspace.UISourceCode.UILo
         description: 'No parameters required',
         properties: {},
         required: [],
+      },
+      displayInfoFromArgs: () => {
+        return {
+          title: 'Reading call stack',
+        };
       },
       handler: async () => {
         const result = await this.#getCallStack();
@@ -177,6 +192,11 @@ export class BreakpointDebuggerAgent extends AiAgent<Workspace.UISourceCode.UILo
         properties: {},
         required: [],
       },
+      displayInfoFromArgs: () => {
+        return {
+          title: 'Reading scope variables',
+        };
+      },
       handler: async () => {
         const result = await this.#getScopeVariables();
         debugLog('getScopeVariables result', JSON.stringify(result));
@@ -190,6 +210,11 @@ export class BreakpointDebuggerAgent extends AiAgent<Workspace.UISourceCode.UILo
         description: 'No parameters required',
         properties: {},
         required: [],
+      },
+      displayInfoFromArgs: () => {
+        return {
+          title: 'Listing breakpoints',
+        };
       },
       handler: async () => {
         const result = await this.#listBreakpoints();
@@ -213,6 +238,11 @@ export class BreakpointDebuggerAgent extends AiAgent<Workspace.UISourceCode.UILo
           },
         },
         required: ['url', 'lineNumber'],
+      },
+      displayInfoFromArgs: (args: {url: string, lineNumber: number}) => {
+        return {
+          title: `Setting breakpoint at ${args.url}:${args.lineNumber}`,
+        };
       },
       handler: async (args: {url: string, lineNumber: number}) => {
         debugLog('setBreakpoint requested', args);
@@ -238,6 +268,11 @@ export class BreakpointDebuggerAgent extends AiAgent<Workspace.UISourceCode.UILo
         },
         required: ['url', 'lineNumber'],
       },
+      displayInfoFromArgs: (args: {url: string, lineNumber: number}) => {
+        return {
+          title: `Removing breakpoint at ${args.url}:${args.lineNumber}`,
+        };
+      },
       handler: async (args: {url: string, lineNumber: number}) => {
         debugLog('removeBreakpoint requested', args);
         const result = await this.#removeBreakpoint(args);
@@ -252,6 +287,11 @@ export class BreakpointDebuggerAgent extends AiAgent<Workspace.UISourceCode.UILo
         description: 'No parameters required',
         properties: {},
         required: [],
+      },
+      displayInfoFromArgs: () => {
+        return {
+          title: 'Removing all breakpoints',
+        };
       },
       handler: async () => {
         debugLog('removeAllBreakpoints requested');
@@ -271,6 +311,11 @@ export class BreakpointDebuggerAgent extends AiAgent<Workspace.UISourceCode.UILo
         properties: {},
         required: [],
       },
+      displayInfoFromArgs: () => {
+        return {
+          title: 'Resuming execution',
+        };
+      },
       handler: async () => {
         const targetManager = SDK.TargetManager.TargetManager.instance();
         const debuggerModel = targetManager.models(SDK.DebuggerModel.DebuggerModel).find(m => m.isPaused());
@@ -288,6 +333,11 @@ export class BreakpointDebuggerAgent extends AiAgent<Workspace.UISourceCode.UILo
         properties: {},
         required: [],
       },
+      displayInfoFromArgs: () => {
+        return {
+          title: 'Stepping over',
+        };
+      },
       handler: async () => {
         const result = await this.#debuggerAction(model => model.stepOver());
         debugLog('stepOver result', JSON.stringify(result));
@@ -303,6 +353,11 @@ export class BreakpointDebuggerAgent extends AiAgent<Workspace.UISourceCode.UILo
         properties: {},
         required: [],
       },
+      displayInfoFromArgs: () => {
+        return {
+          title: 'Stepping into',
+        };
+      },
       handler: async () => {
         const result = await this.#debuggerAction(model => model.stepInto());
         debugLog('stepInto result', JSON.stringify(result));
@@ -317,6 +372,11 @@ export class BreakpointDebuggerAgent extends AiAgent<Workspace.UISourceCode.UILo
         description: 'No parameters required',
         properties: {},
         required: [],
+      },
+      displayInfoFromArgs: () => {
+        return {
+          title: 'Stepping out',
+        };
       },
       handler: async () => {
         const result = await this.#debuggerAction(model => model.stepOut());
@@ -354,6 +414,11 @@ export class BreakpointDebuggerAgent extends AiAgent<Workspace.UISourceCode.UILo
         description: 'No parameters required',
         properties: {},
         required: [],
+      },
+      displayInfoFromArgs: () => {
+        return {
+          title: 'Getting execution location',
+        };
       },
       handler: async () => {
         const result = await this.#getExecutionLocation();

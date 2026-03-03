@@ -227,7 +227,7 @@ export namespace NumberWithUnit {
       element.append(lastPart);
     }
 
-    return {text: element.textContent ?? '', element};
+    return {text: element.textContent, element};
   }
 
   export function formatMicroSecondsAsMillisFixed(time: Platform.Timing.MicroSeconds, fractionDigits = 0):
@@ -253,7 +253,7 @@ export namespace NumberWithUnit {
       element.append(lastPart);
     }
 
-    return {text: element.textContent ?? '', element};
+    return {text: element.textContent, element};
   }
 }
 

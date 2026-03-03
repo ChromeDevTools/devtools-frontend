@@ -562,7 +562,7 @@ export class ToolbarText extends ToolbarItem<void, HTMLElement> {
   }
 
   text(): string {
-    return this.element.textContent ?? '';
+    return this.element.textContent;
   }
 
   setText(text: string): void {

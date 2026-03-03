@@ -95,7 +95,7 @@ export function convertRawOutputToEval(opts: RawToEvalOptions): EvalFileOutput {
                 continue;
               }
 
-              const responseText = aidaResponse.explanation?.trim() ?? undefined;
+              const responseText = aidaResponse.explanation?.trim();
 
               const query: ProcessedQuery = {
                 request: {

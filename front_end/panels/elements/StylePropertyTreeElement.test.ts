@@ -2133,7 +2133,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
 
       const args = stylePropertyTreeElement.valueElement?.querySelectorAll('span')
                        .values()
-                       .filter(span => ['a', 'b', 'c'].includes(span.textContent ?? ''))
+                       .filter(span => ['a', 'b', 'c'].includes(span.textContent))
                        .toArray();
       assert.exists(args);
       assert.lengthOf(args, 4);

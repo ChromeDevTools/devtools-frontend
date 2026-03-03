@@ -39,7 +39,7 @@ async function innerForTraceCalculate({recordingStartTime, cruxFieldData}: DataF
   const deviceModeModel = EmulationModel.DeviceModeModel.DeviceModeModel.tryInstance();
   let emulatedDeviceTitle;
   if (deviceModeModel?.type() === EmulationModel.DeviceModeModel.Type.Device) {
-    emulatedDeviceTitle = deviceModeModel.device()?.title ?? undefined;
+    emulatedDeviceTitle = deviceModeModel.device()?.title;
   } else if (deviceModeModel?.type() === EmulationModel.DeviceModeModel.Type.Responsive) {
     emulatedDeviceTitle = 'Responsive';
   }

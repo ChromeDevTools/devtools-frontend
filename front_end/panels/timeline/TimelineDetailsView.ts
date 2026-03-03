@@ -149,7 +149,7 @@ export class TimelineDetailsPane extends
     this.#thirdPartyTree.addEventListener(TimelineTreeView.Events.TREE_ROW_HOVERED, node => {
       // Re-dispatch through 3P event to get 3P dimmer.
       this.dispatchEventToListeners(
-          TimelineTreeView.Events.TREE_ROW_HOVERED, {node: node.data.node, events: node.data.events ?? undefined});
+          TimelineTreeView.Events.TREE_ROW_HOVERED, {node: node.data.node, events: node.data.events});
     });
 
     this.#thirdPartyTree.addEventListener(TimelineTreeView.Events.BOTTOM_UP_BUTTON_CLICKED, node => {
@@ -158,7 +158,7 @@ export class TimelineDetailsPane extends
     this.#thirdPartyTree.addEventListener(TimelineTreeView.Events.TREE_ROW_CLICKED, node => {
       // Re-dispatch through 3P event to get 3P dimmer.
       this.dispatchEventToListeners(
-          TimelineTreeView.Events.TREE_ROW_CLICKED, {node: node.data.node, events: node.data.events ?? undefined});
+          TimelineTreeView.Events.TREE_ROW_CLICKED, {node: node.data.node, events: node.data.events});
     });
 
     this.tabbedPane.addEventListener(UI.TabbedPane.Events.TabSelected, this.tabSelected, this);

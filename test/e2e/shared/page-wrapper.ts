@@ -346,8 +346,7 @@ export class PageWrapper {
   }
 
   async getTextContent<ElementType extends Element = Element>(selector: string, root?: puppeteer.ElementHandle) {
-    const text = await (await this.$<ElementType, typeof selector>(selector, root))?.evaluate(node => node.textContent);
-    return text ?? undefined;
+    return await (await this.$<ElementType, typeof selector>(selector, root))?.evaluate(node => node.textContent);
   }
 
   async getAllTextContents(selector: string, root?: puppeteer.JSHandle, handler = 'pierce'):

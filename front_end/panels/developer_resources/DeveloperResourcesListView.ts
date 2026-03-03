@@ -104,7 +104,7 @@ const DEFAULT_VIEW: View = (input, _output, target) => {
     if (!filter?.regex) {
       return '';
     }
-    const matches = filter.regex.exec(textContent ?? '');
+    const matches = filter.regex.exec(textContent);
     if (!matches?.length) {
       return '';
     }

@@ -108,7 +108,7 @@ export async function waitForSearchResultNumber(results: number, devToolsPage: D
   const findMatch = async () => {
     const currentMatch = await devToolsPage.waitFor('.search-results-matches');
     const currentTextContent = currentMatch && await currentMatch.evaluate(el => el.textContent);
-    if (currentTextContent?.endsWith(` ${results}`)) {
+    if (currentTextContent.endsWith(` ${results}`)) {
       return currentMatch;
     }
     return undefined;
@@ -296,7 +296,7 @@ async function getSizesFromRow(row: puppeteer.ElementHandle<Element>, devToolsPa
   const numericData = await devToolsPage.$$('.numeric-column>.profile-multiple-values>span', row);
   assert.lengthOf(numericData, 4);
   function readNumber(e: Element): string {
-    return e.textContent as string;
+    return e.textContent;
   }
   const shallowSize = parseByteString(await numericData[0].evaluate(readNumber));
   const retainedSize = parseByteString(await numericData[2].evaluate(readNumber));
@@ -328,7 +328,7 @@ export async function getSizesFromCategoryRow(text: string, devToolsPage: DevToo
 export async function getDistanceFromCategoryRow(text: string, devToolsPage: DevToolsPage) {
   const row = await getCategoryRow(text, undefined, devToolsPage);
   const numericColumns = await devToolsPage.$$('.numeric-column', row);
-  return await numericColumns[0].evaluate(e => parseInt(e.textContent as string, 10));
+  return await numericColumns[0].evaluate(e => parseInt(e.textContent, 10));
 }
 
 export async function getCountFromCategoryRowWithName(text: string, devToolsPage: DevToolsPage) {
@@ -338,7 +338,7 @@ export async function getCountFromCategoryRowWithName(text: string, devToolsPage
 
 export async function getCountFromCategoryRow(row: puppeteer.ElementHandle<Element>, devToolsPage: DevToolsPage) {
   const countSpan = await devToolsPage.waitFor('.objects-count', row);
-  return await countSpan.evaluate(e => parseInt((e.textContent ?? '').substring(1), 10));
+  return await countSpan.evaluate(e => parseInt(e.textContent.substring(1), 10));
 }
 
 export async function getAddedCountFromComparisonRowWithName(text: string, devToolsPage: DevToolsPage) {
@@ -349,14 +349,14 @@ export async function getAddedCountFromComparisonRowWithName(text: string, devTo
 export async function getAddedCountFromComparisonRow(
     row: puppeteer.ElementHandle<Element>, devToolsPage: DevToolsPage) {
   const addedCountCell = await devToolsPage.waitFor('.addedCount-column', row);
-  const countText = await addedCountCell.evaluate(e => e.textContent ?? '');
+  const countText = await addedCountCell.evaluate(e => e.textContent);
   return parseByteString(countText);
 }
 
 export async function getRemovedCountFromComparisonRow(
     row: puppeteer.ElementHandle<Element>, devToolsPage: DevToolsPage) {
   const addedCountCell = await devToolsPage.waitFor('.removedCount-column', row);
-  const countText = await addedCountCell.evaluate(e => e.textContent ?? '');
+  const countText = await addedCountCell.evaluate(e => e.textContent);
   return parseByteString(countText);
 }
 

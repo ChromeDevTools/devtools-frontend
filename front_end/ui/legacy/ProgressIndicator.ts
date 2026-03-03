@@ -66,7 +66,7 @@ export class ProgressIndicator extends HTMLElement implements Common.Progress.Pr
   }
 
   override get title(): string {
-    return this.#labelElement.textContent ?? '';
+    return this.#labelElement.textContent;
   }
 
   set totalWork(totalWork: number) {

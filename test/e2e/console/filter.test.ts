@@ -24,7 +24,7 @@ describe('The Console Tab', () => {
     await waitForConsoleMessagesToBeNonEmpty(19, devToolsPage);
 
     const actualMessages = await devToolsPage.evaluate(
-        selector => Array.from(document.querySelectorAll(selector)).map(e => e.textContent ?? ''),
+        selector => Array.from(document.querySelectorAll(selector)).map(e => e.textContent),
         CONSOLE_MESSAGE_TEXT_AND_ANCHOR_SELECTOR);
 
     assert.deepEqual(actualMessages, [

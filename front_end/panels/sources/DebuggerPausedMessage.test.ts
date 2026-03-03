@@ -42,7 +42,7 @@ describeWithEnvironment('DebuggerPausedMessage', () => {
     assert.instanceOf(mainElement, HTMLDivElement);
     const main = mainElement.textContent;
     assert.exists(main);
-    const sub = pausedMessage.element.shadowRoot?.querySelector('.status-sub')?.textContent ?? undefined;
+    const sub = pausedMessage.element.shadowRoot?.querySelector('.status-sub')?.textContent;
     return {main, sub};
   }
 

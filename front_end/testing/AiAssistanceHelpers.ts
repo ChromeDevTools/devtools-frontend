@@ -103,7 +103,7 @@ export async function createUISourceCode(options?: {
         url,
         mimeType: options?.mimeType ?? 'application/javascript',
         resourceType: options?.resourceType ?? Common.ResourceType.resourceTypes.Script,
-        content: options?.content ?? undefined,
+        content: options?.content,
       },
     ],
     target: createTarget(),

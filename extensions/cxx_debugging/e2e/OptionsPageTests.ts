@@ -22,7 +22,7 @@ describe('The options page', () => {
       }
       return await Promise.all(elements.map(async e => {
         const titleElement = await e.$('pierce/.title');
-        const title = await titleElement?.evaluate(e => e.textContent ?? undefined);
+        const title = await titleElement?.evaluate(e => e.textContent);
         return {title};
       }));
     });

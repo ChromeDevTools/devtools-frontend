@@ -418,7 +418,7 @@ export class SourceMapScopesInfo {
    * Returns the authored function name of the function containing the provided generated position.
    */
   findOriginalFunctionName(position: ScopesCodec.Position): string|null {
-    const originalInnerMostScope = this.findOriginalFunctionScope(position)?.scope ?? undefined;
+    const originalInnerMostScope = this.findOriginalFunctionScope(position)?.scope;
     return this.#findFunctionNameInOriginalScopeChain(originalInnerMostScope);
   }
 

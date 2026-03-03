@@ -232,7 +232,7 @@ describeWithMockConnection('ConsoleViewMessage', () => {
       const results = [];
       for (const line of element.querySelectorAll('.formatted-stack-frame,.formatted-builtin-stack-frame')) {
         if (line.checkVisibility()) {
-          results.push(line.textContent ?? 'Error: line was null or undefined');
+          results.push(line.textContent);
         }
       }
       return results;
@@ -242,7 +242,7 @@ describeWithMockConnection('ConsoleViewMessage', () => {
       const results = [];
       for (const line of findStackPreviewContainer(element).querySelectorAll('tbody tr')) {
         if (line.checkVisibility()) {
-          results.push(line.textContent ?? 'Error: line was null or undefined');
+          results.push(line.textContent);
         }
       }
       return results;

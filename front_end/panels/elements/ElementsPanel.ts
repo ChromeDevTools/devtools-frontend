@@ -1227,6 +1227,10 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     this.splitWidget.setSidebarWidget(this.sidebarPaneView.tabbedPane());
   }
 
+  revealComputedStylesPane(): void {
+    this.sidebarPaneView?.tabbedPane().selectTab(SidebarPaneTabId.COMPUTED);
+  }
+
   private updateSidebarPosition(): void {
     if (this.sidebarPaneView?.tabbedPane().shouldHideOnDetach()) {
       return;
@@ -1474,11 +1478,23 @@ export class ContextMenuProvider implements
   }
 }
 
-export class DOMNodeRevealer implements Common.Revealer.Revealer<
-    SDK.DOMModel.DOMNode|SDK.DOMModel.DeferredDOMNode|SDK.RemoteObject.RemoteObject|SDK.DOMModel.AdoptedStyleSheet> {
+/**
+ * Wraps around the Node so we can pass it into the DOMNodeRevealer but
+ * distinguish that we want to reveal the computed styles panel.
+ */
+export class NodeComputedStyles {
+  readonly node: SDK.DOMModel.DOMNode;
+  constructor(node: SDK.DOMModel.DOMNode) {
+    this.node = node;
+  }
+}
+
+export class DOMNodeRevealer implements
+    Common.Revealer.Revealer<SDK.DOMModel.DOMNode|SDK.DOMModel.DeferredDOMNode|SDK.RemoteObject.RemoteObject|
+                             SDK.DOMModel.AdoptedStyleSheet|NodeComputedStyles> {
   reveal(
       node: SDK.DOMModel.DOMNode|SDK.DOMModel.DeferredDOMNode|SDK.RemoteObject.RemoteObject|
-      SDK.DOMModel.AdoptedStyleSheet,
+      SDK.DOMModel.AdoptedStyleSheet|NodeComputedStyles,
       omitFocus?: boolean): Promise<void> {
     const panel = ElementsPanel.instance();
     panel.pendingNodeReveal = true;
@@ -1504,6 +1520,10 @@ export class DOMNodeRevealer implements Common.Revealer.Revealer<
         onNodeResolved((node));
       } else if (node instanceof SDK.DOMModel.DeferredDOMNode) {
         (node).resolve(checkDeferredDOMNodeThenReveal);
+      } else if (node instanceof NodeComputedStyles) {
+        const elements = ElementsPanel.instance();
+        elements.revealComputedStylesPane();
+        onNodeResolved(node.node);
       } else {
         const domModel = node.runtimeModel().target().model(SDK.DOMModel.DOMModel);
         if (domModel) {

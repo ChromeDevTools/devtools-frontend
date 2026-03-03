@@ -8,7 +8,7 @@ import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import type * as Elements from './elements.js';
+import * as Elements from './elements.js';
 
 const UIStrings = {
   /**
@@ -614,10 +614,8 @@ UI.ViewManager.registerLocationResolver({
 Common.Revealer.registerRevealer({
   contextTypes() {
     return [
-      SDK.DOMModel.DOMNode,
-      SDK.DOMModel.DeferredDOMNode,
-      SDK.RemoteObject.RemoteObject,
-      SDK.DOMModel.AdoptedStyleSheet,
+      SDK.DOMModel.DOMNode, SDK.DOMModel.DeferredDOMNode, SDK.RemoteObject.RemoteObject, SDK.DOMModel.AdoptedStyleSheet,
+      Elements.ElementsPanel.NodeComputedStyles
     ];
   },
   destination: Common.Revealer.RevealerDestination.ELEMENTS_PANEL,

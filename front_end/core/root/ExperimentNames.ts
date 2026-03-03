@@ -24,6 +24,7 @@ export enum ExperimentName {
   TIMELINE_SHOW_POST_MESSAGE_EVENTS = 'timeline-show-postmessage-events',
   TIMELINE_DEBUG_MODE = 'timeline-debug-mode',
   DURABLE_MESSAGES = 'durable-messages',
+  JPEG_XL = 'jpeg-xl',
   // Adding or removing an entry from this enum?
   // You will need to update:
   // 1. DevToolsExperiments enum in host/UserMetrics.ts

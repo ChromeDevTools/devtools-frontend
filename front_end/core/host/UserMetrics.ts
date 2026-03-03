@@ -826,10 +826,11 @@ export enum DevtoolsExperiments {
   'timeline-show-postmessage-events' = 86,
   'timeline-debug-mode' = 93,
   'durable-messages' = 110,
+  'jpeg-xl' = 111,
   /* eslint-enable @typescript-eslint/naming-convention */
 
   // Increment this when new experiments are added.
-  MAX_VALUE = 111,
+  MAX_VALUE = 112,
 }
 
 /** Update DevToolsIssuesPanelIssueExpanded from tools/metrics/histograms/enums.xml if new enum is added. **/

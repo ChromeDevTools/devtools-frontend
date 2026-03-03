@@ -431,6 +431,14 @@ export class MainImpl {
       requiresChromeRestart: false,
     });
 
+    Root.Runtime.experiments.registerHostExperiment({
+      name: Root.ExperimentNames.ExperimentName.JPEG_XL,
+      title: 'JPEG XL support',
+      aboutFlag: 'enable-jxl-image-format',
+      isEnabled: Root.Runtime.hostConfig.devToolsJpegXlImageFormat?.enabled ?? false,
+      requiresChromeRestart: true,
+    });
+
     Root.Runtime.experiments.enableExperimentsByDefault([
       Root.ExperimentNames.ExperimentName.FULL_ACCESSIBILITY_TREE,
       Root.ExperimentNames.ExperimentName.USE_SOURCE_MAP_SCOPES,

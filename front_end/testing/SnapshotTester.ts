@@ -105,15 +105,15 @@ class BaseSnapshotTester {
   }
 
   async finish() {
-    let didAnyTestNotRun = false;
+    let notRanTest: string|null = null;
     for (const title of this.#expected.keys()) {
       if (!this.#actual.has(title)) {
-        didAnyTestNotRun = true;
+        notRanTest = title;
         break;
       }
     }
 
-    const hasChanges = this.#anyFailures || didAnyTestNotRun || this.#newTests;
+    const hasChanges = this.#anyFailures || notRanTest || this.#newTests;
     if (!hasChanges) {
       return;
     }
@@ -126,9 +126,9 @@ class BaseSnapshotTester {
 
     // Note: this does not handle test filtering (.only, --grep). Need a reliable way
     // to distinguish a deleted test from a test that was filtered out.
-    if (didAnyTestNotRun) {
-      throw new Error(
-          'Snapshots are out of sync (a test was likely deleted or renamed). Run with `--on-diff=update` to fix.');
+    if (notRanTest) {
+      throw new Error(`Snapshots are out of sync (a test was likely deleted or renamed).\nExpected test:\n${
+          notRanTest}\nRun with '--on-diff=update' to fix.`);
     }
   }
 

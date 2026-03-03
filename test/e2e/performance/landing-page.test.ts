@@ -120,8 +120,8 @@ describe('The Performance panel landing page', function() {
       await waitForLCP();
       await makeTwoLongInteractions(inspectedPage);
 
-      await inspectedPageSession.send('Runtime.enable');
       const executionContextPromise = new Promise(r => inspectedPageSession.once('Runtime.executionContextCreated', r));
+      await inspectedPageSession.send('Runtime.enable');
 
       // Reload DevTools to inject new listeners after content is loaded
       await devToolsPage.reload();
@@ -260,11 +260,8 @@ describe('The Performance panel landing page', function() {
       const interactions = await devToolsPage.$$<HTMLElement>(INTERACTION_SELECTOR);
       assert.isAtLeast(interactions.length, 1);
 
-      // b/40884049
-      // Extra execution contexts can be created sometimes when dealing with iframes.
-      // We try to avoid that if possible.
       const liveMetricContexts = executionContexts.filter(e => e.name === 'DevTools Performance Metrics');
-      assert.lengthOf(liveMetricContexts, 4);
+      assert.lengthOf(liveMetricContexts, 2);
     } finally {
       await inspectedPageSession.detach();
     }

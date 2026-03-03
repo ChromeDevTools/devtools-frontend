@@ -714,6 +714,7 @@ const data = {
 
         return {
           requiresApproval: true,
+          description: lockedString('This code may modify page content. Continue?'),
         };
       }
       if (result.canceled) {

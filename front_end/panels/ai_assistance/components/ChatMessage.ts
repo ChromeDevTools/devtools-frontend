@@ -101,17 +101,13 @@ const UIStringsNotTranslate = {
    */
   stoppedResponse: 'You stopped this response',
   /**
-   * @description Prompt for user to confirm code execution that may affect the page.
-   */
-  sideEffectConfirmationDescription: 'This code may modify page content. Continue?',
-  /**
    * @description Button text that confirm code execution that may affect the page.
    */
-  positiveSideEffectConfirmation: 'Continue',
+  confirmActionRequestApproval: 'Continue',
   /**
    * @description Button text that cancels code execution that may affect the page.
    */
-  negativeSideEffectConfirmation: 'Cancel',
+  declineActionRequestApproval: 'Cancel',
   /**
    * @description The generic name of the AI agent (do not translate)
    */
@@ -187,11 +183,12 @@ export interface Step {
   output?: string;
   widgets?: AiWidget[];
   canceled?: boolean;
-  sideEffect?: ConfirmSideEffectDialog;
+  requestApproval?: ConfirmSideEffectDialog;
   contextDetails?: [AiAssistanceModel.AiAgent.ContextDetail, ...AiAssistanceModel.AiAgent.ContextDetail[]];
 }
 
 export interface ConfirmSideEffectDialog {
+  description: string|null;
   onAnswer: (result: boolean) => void;
 }
 
@@ -401,8 +398,9 @@ function titleForStep(step: Step): string {
 }
 
 function renderTitle(step: Step): Lit.LitTemplate {
-  const paused =
-      step.sideEffect ? html`<span class="paused">${lockedString(UIStringsNotTranslate.paused)}: </span>` : Lit.nothing;
+  const paused = step.requestApproval ?
+      html`<span class="paused">${lockedString(UIStringsNotTranslate.paused)}: </span>` :
+      Lit.nothing;
 
   return html`<span class="title">${paused}${titleForStep(step)}</span>`;
 }
@@ -454,7 +452,7 @@ function renderStepDetails({
   markdownRenderer: MarkdownLitRenderer,
   isLast: boolean,
 }): Lit.LitTemplate {
-  const sideEffects = isLast && step.sideEffect ? renderSideEffectConfirmationUi(step) : Lit.nothing;
+  const sideEffects = isLast && step.requestApproval ? renderSideEffectConfirmationUi(step) : Lit.nothing;
   const thought = step.thought ? html`<p>${renderTextAsMarkdown(step.thought, markdownRenderer)}</p>` : Lit.nothing;
 
   // clang-format off
@@ -530,7 +528,7 @@ function renderWalkthroughUI(input: ChatMessageViewInput, steps: Step[]): Lit.Li
     // No steps = no walkthrough UI in the chat view.
     return Lit.nothing;
   }
-  const sideEffectSteps = steps.filter(s => s.sideEffect);
+  const sideEffectSteps = steps.filter(s => s.requestApproval);
   // If the walkthrough is in the sidebar, we render a button into the
   // ChatView to open it.
   const openWalkThroughSidebarButton =
@@ -562,7 +560,7 @@ function renderWalkthroughUI(input: ChatMessageViewInput, steps: Step[]): Lit.Li
         markdownRenderer: input.markdownRenderer,
         isInlined: true,
         isExpanded: input.isLastMessage &&
-            (input.walkthrough.isExpanded || steps.some(step => Boolean(step.sideEffect))),
+            (input.walkthrough.isExpanded || steps.some(step => Boolean(step.requestApproval))),
         onToggle: input.walkthrough.onToggle,
       })}></devtools-widget>
     </div>
@@ -581,14 +579,14 @@ function renderStepBadge({step, isLoading, isLast}: {
   isLoading: boolean,
   isLast: boolean,
 }): Lit.LitTemplate {
-  if (isLoading && isLast && !step.sideEffect) {
+  if (isLoading && isLast && !step.requestApproval) {
     return html`<devtools-spinner></devtools-spinner>`;
   }
 
   let iconName = 'checkmark';
   let ariaLabel: string|undefined = lockedString(UIStringsNotTranslate.completed);
   let role: 'button'|undefined = 'button';
-  if (isLast && step.sideEffect) {
+  if (isLast && step.requestApproval) {
     role = undefined;
     ariaLabel = undefined;
     iconName = 'pause-circle';
@@ -614,15 +612,15 @@ export function renderStep({step, isLoading, markdownRenderer, isLast}: {
   const shouldRenderWidgets = Boolean(step.widgets?.length && Root.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled);
   const stepClasses = Lit.Directives.classMap({
     step: true,
-    empty: !step.thought && !step.code && !step.contextDetails && !step.sideEffect,
-    paused: Boolean(step.sideEffect),
+    empty: !step.thought && !step.code && !step.contextDetails && !step.requestApproval,
+    paused: Boolean(step.requestApproval),
     canceled: Boolean(step.canceled),
   });
   // clang-format off
   return html`
     <details class=${stepClasses}
       jslog=${VisualLogging.section('step')}
-      .open=${Boolean(step.sideEffect)}>
+      .open=${Boolean(step.requestApproval)}>
       <summary>
         <div class="summary">
           ${renderStepBadge({ step, isLoading, isLast })}
@@ -741,7 +739,7 @@ async function renderStepWidgets(step: Step): Promise<Lit.LitTemplate> {
 }
 
 function renderSideEffectConfirmationUi(step: Step): Lit.LitTemplate {
-  if (!step.sideEffect) {
+  if (!step.requestApproval) {
     return Lit.nothing;
   }
 
@@ -750,7 +748,7 @@ function renderSideEffectConfirmationUi(step: Step): Lit.LitTemplate {
     class="side-effect-confirmation"
     jslog=${VisualLogging.section('side-effect-confirmation')}
   >
-    <p>${lockedString(UIStringsNotTranslate.sideEffectConfirmationDescription)}</p>
+    ${step.requestApproval.description ? html`<p>${step.requestApproval.description}</p>` : Lit.nothing}
     <div class="side-effect-buttons-container">
       <devtools-button
         .data=${
@@ -759,9 +757,9 @@ function renderSideEffectConfirmationUi(step: Step): Lit.LitTemplate {
             jslogContext: 'decline-execute-code',
           } as Buttons.Button.ButtonData
         }
-        @click=${() => step.sideEffect?.onAnswer(false)}
+        @click=${() => step.requestApproval?.onAnswer(false)}
       >${lockedString(
-        UIStringsNotTranslate.negativeSideEffectConfirmation,
+        UIStringsNotTranslate.declineActionRequestApproval,
       )}</devtools-button>
       <devtools-button
         .data=${
@@ -771,9 +769,9 @@ function renderSideEffectConfirmationUi(step: Step): Lit.LitTemplate {
             iconName: 'play',
           } as Buttons.Button.ButtonData
         }
-        @click=${() => step.sideEffect?.onAnswer(true)}
+        @click=${() => step.requestApproval?.onAnswer(true)}
       >${
-          lockedString(UIStringsNotTranslate.positiveSideEffectConfirmation)
+          lockedString(UIStringsNotTranslate.confirmActionRequestApproval)
       }</devtools-button>
     </div>
   </div>`;

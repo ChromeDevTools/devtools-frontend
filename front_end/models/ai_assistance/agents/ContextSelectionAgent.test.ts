@@ -291,6 +291,8 @@ describeWithMockConnection('ContextSelectionAgent', function() {
     it('inspects DOM node', async () => {
       const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
       const onInspectElement = sinon.stub().resolves(node);
+      const sideEffectConfirmationPromise = Promise.withResolvers();
+      sideEffectConfirmationPromise.resolve(true);
       const agent = new ContextSelectionAgent.ContextSelectionAgent({
         aidaClient: mockAidaClient([
           [{
@@ -303,6 +305,7 @@ describeWithMockConnection('ContextSelectionAgent', function() {
           [{explanation: 'Done'}],
         ]),
         onInspectElement,
+        confirmSideEffectForTest: sinon.stub().returns(sideEffectConfirmationPromise)
       });
 
       const responses = await Array.fromAsync(agent.run('test', {selected: null}));

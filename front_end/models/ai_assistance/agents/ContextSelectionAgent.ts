@@ -291,14 +291,23 @@ export class ContextSelectionAgent extends AiAgent<never> {
       },
       displayInfoFromArgs: () => {
         return {
-          title: lockedString('Please select an element on the page…'),
-          action: 'selectElement()',
+          title: lockedString('Select an element on the page or in the Elements panel'),
         };
       },
-      handler: async () => {
+      handler: async (_params, options) => {
         if (!this.#onInspectElement) {
-          return {error: 'The inspect element action is not available.'};
+          return {
+            error: 'The inspect element action is not available.',
+          };
         }
+
+        if (!options?.approved) {
+          return {
+            requiresApproval: true,
+            description: null,
+          };
+        }
+
         const node = await this.#onInspectElement();
         if (node) {
           return {

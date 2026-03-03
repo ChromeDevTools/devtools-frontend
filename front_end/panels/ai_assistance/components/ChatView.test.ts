@@ -68,7 +68,8 @@ describeWithEnvironment('ChatView', () => {
                   title: 'Updating element styles',
                   thought: 'Updating element styles',
                   code: '$0.style.background = "blue";',
-                  sideEffect: {
+                  requestApproval: {
+                    description: null,
                     onAnswer: () => {},
                   },
                 },

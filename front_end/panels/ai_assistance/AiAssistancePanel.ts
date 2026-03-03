@@ -1650,7 +1650,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       let announcedAnswerLoading = false;
       let announcedAnswerReady = false;
       for await (const data of items) {
-        step.sideEffect = undefined;
+        step.requestApproval = undefined;
         switch (data.type) {
           case AiAssistanceModel.AiAgent.ResponseType.USER_QUERY: {
             this.#messages.push({
@@ -1711,10 +1711,11 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           case AiAssistanceModel.AiAgent.ResponseType.SIDE_EFFECT: {
             step.isLoading = false;
             step.code ??= data.code;
-            step.sideEffect = {
+            step.requestApproval = {
+              description: data.description,
               onAnswer: (result: boolean) => {
                 data.confirm(result);
-                step.sideEffect = undefined;
+                step.requestApproval = undefined;
                 this.requestUpdate();
               },
             };

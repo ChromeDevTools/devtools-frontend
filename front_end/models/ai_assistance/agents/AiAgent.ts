@@ -85,6 +85,7 @@ export interface ThoughtResponse {
 
 export interface SideEffectResponse {
   type: ResponseType.SIDE_EFFECT;
+  description: string|null;
   code?: string;
   confirm: (confirm: boolean) => void;
 }
@@ -232,6 +233,11 @@ export type AiWidget = ComputedStyleAiWidget;
 
 export type FunctionCallHandlerResult<Result> = {
   requiresApproval: true,
+  /**
+   * Provides extra description of what the required
+   * approval is requesting.
+   */
+  description: string|null,
 }|{
   result: Result,
   widgets?: AiWidget[],
@@ -275,7 +281,6 @@ export interface FunctionDeclaration<Args extends Record<string, unknown>, Retur
   /**
    * Function implementation that the LLM will try to execute,
    */
-
   handler(args: Args, options?: FunctionHandlerOptions): Promise<FunctionCallHandlerResult<ReturnType>>;
 }
 
@@ -754,6 +759,7 @@ export abstract class AiAgent<T> {
       yield {
         type: ResponseType.SIDE_EFFECT,
         confirm: sideEffectConfirmationPromiseWithResolvers.resolve,
+        description: result.description,
       };
 
       const approvedRun = await sideEffectConfirmationPromiseWithResolvers.promise;

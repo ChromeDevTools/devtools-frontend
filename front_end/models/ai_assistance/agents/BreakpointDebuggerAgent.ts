@@ -20,9 +20,15 @@ import {
   type ContextResponse,
   ConversationContext,
   type FunctionCallHandlerResult,
+  type MultimodalInput,
   type RequestOptions,
+  type ResponseData,
   ResponseType,
 } from './AiAgent.js';
+import {
+  injectOverlay,
+  removeOverlay,
+} from './BreakpointDebuggerAgentOverlay.js';
 
 // This is a temporary agent for a GreenDev prototype.
 // The preamble is not on the server and you should not build on top of this.
@@ -610,14 +616,23 @@ export class BreakpointDebuggerAgent extends AiAgent<Workspace.UISourceCode.UILo
       return {error: 'No debugger attached'};
     }
 
-    return await this.#waitForNextPause(() => {
-      // Resume all paused models before waiting for the next breakpoint
-      for (const model of debuggerModels) {
-        if (model.isPaused()) {
-          model.resume();
+    // While waiting for the user to trigger the breakpoint, show an overlay on top of the page.
+    // This is to make it clear to the user that they need to trigger the
+    // breakpoint for the agent to continue the debugging process.
+    void injectOverlay();
+
+    try {
+      return await this.#waitForNextPause(() => {
+        // Resume all paused models before waiting for the next breakpoint
+        for (const model of debuggerModels) {
+          if (model.isPaused()) {
+            model.resume();
+          }
         }
-      }
-    });
+      });
+    } finally {
+      void removeOverlay();
+    }
   }
 
   /**
@@ -718,5 +733,34 @@ export class BreakpointDebuggerAgent extends AiAgent<Workspace.UISourceCode.UILo
 
   get options(): RequestOptions {
     return {temperature: 0, modelId: undefined};
+  }
+
+  override async *
+      run(
+          initialQuery: string,
+          options: {
+            selected: ConversationContext<Workspace.UISourceCode.UILocation>|null,
+            signal?: AbortSignal,
+          },
+          multimodalInput?: MultimodalInput,
+          ): AsyncGenerator<ResponseData, void, void> {
+    try {
+      yield* super.run(initialQuery, options, multimodalInput);
+    } finally {
+      // When the agent is done, remove all breakpoints and exit paused state.
+      const breakpointManager = Breakpoints.BreakpointManager.BreakpointManager.instance();
+      const allBreakpoints = breakpointManager.allBreakpointLocations();
+      for (const bp of allBreakpoints) {
+        await bp.breakpoint.remove(false);
+      }
+
+      const targetManager = SDK.TargetManager.TargetManager.instance();
+      const debuggerModels = targetManager.models(SDK.DebuggerModel.DebuggerModel);
+      for (const model of debuggerModels) {
+        if (model.isPaused()) {
+          model.resume();
+        }
+      }
+    }
   }
 }

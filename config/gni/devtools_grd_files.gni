@@ -1083,6 +1083,7 @@ grd_files_unbundled_sources = [
   "front_end/models/ai_assistance/ExtensionScope.js",
   "front_end/models/ai_assistance/agents/AiAgent.js",
   "front_end/models/ai_assistance/agents/BreakpointDebuggerAgent.js",
+  "front_end/models/ai_assistance/agents/BreakpointDebuggerAgentOverlay.js",
   "front_end/models/ai_assistance/agents/ContextSelectionAgent.js",
   "front_end/models/ai_assistance/agents/FileAgent.js",
   "front_end/models/ai_assistance/agents/NetworkAgent.js",

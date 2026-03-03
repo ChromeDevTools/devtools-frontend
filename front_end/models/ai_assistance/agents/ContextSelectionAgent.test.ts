@@ -158,6 +158,7 @@ describeWithMockConnection('ContextSelectionAgent', function() {
       );
       request.statusCode = 200;
       request.setIssueTime(0, 0);
+      request.setTransferSize(3000);
       request.endTime = 2;
 
       const networkLog = Logs.NetworkLog.NetworkLog.instance();
@@ -205,6 +206,7 @@ describeWithMockConnection('ContextSelectionAgent', function() {
                     url: 'https://example.com/',
                     statusCode: 200,
                     duration: '2.00\xA0s',
+                    transferSize: '3.0\xA0kB',
                   },
                 ],
               },
@@ -279,6 +281,7 @@ describeWithMockConnection('ContextSelectionAgent', function() {
           url: `${origin}/foo`,
           statusCode: 200,
           duration: '1.00\xA0s',
+          transferSize: '0.0\xA0kB',
         },
       ]);
     });

@@ -123,6 +123,7 @@ export class ContextSelectionAgent extends AiAgent<never> {
             url: request.url(),
             statusCode: request.statusCode,
             duration: i18n.TimeUtilities.secondsToString(request.duration),
+            transferSize: i18n.ByteUtilities.formatBytesToKb(request.transferSize),
           });
         }
 

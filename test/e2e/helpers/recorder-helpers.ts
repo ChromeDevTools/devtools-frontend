@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import type {Page} from 'puppeteer-core';
 
 import type {UserFlow} from '../../../front_end/panels/recorder/models/Schema.js';
 import type * as Recorder from '../../../front_end/panels/recorder/recorder.js';
@@ -19,7 +18,6 @@ const RECORDER_CONTROLLER_TAG_NAME = 'devtools-recorder-controller' as const;
 const TEST_RECORDING_NAME = 'New Recording';
 
 export async function record(devToolsPage: DevToolsPage, inspectedPage: InspectedPage) {
-  await inspectedPage.bringToFront();
   await devToolsPage.bringToFront();
   await devToolsPage.page.waitForSelector('pierce/.settings');
   await inspectedPage.bringToFront();
@@ -149,7 +147,7 @@ export async function startRecording(
 
 export async function stopRecording(devToolsPage: DevToolsPage): Promise<UserFlow> {
   await devToolsPage.bringToFront();
-  await raf(devToolsPage.page);
+  await devToolsPage.raf();
   const onRecordingStopped = onRecordingStateChanged(devToolsPage);
   await devToolsPage.click('aria/End recording');
   return await onRecordingStopped;
@@ -334,10 +332,4 @@ export async function toggleCodeView(
   await devToolsPage.bringToFront();
   await devToolsPage.pressKey('b', {control: true});
   await devToolsPage.drainTaskQueue();
-}
-
-export async function raf(page: Page): Promise<void> {
-  await page.evaluate(() => {
-    return new Promise(resolve => window.requestAnimationFrame(resolve));
-  });
 }

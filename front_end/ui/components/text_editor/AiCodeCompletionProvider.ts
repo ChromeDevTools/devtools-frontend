@@ -56,6 +56,17 @@ export interface AiCodeCompletionConfig {
   onRequestTriggered: () => void;
   onResponseReceived: () => void;
   panel: AiCodeCompletion.AiCodeCompletion.ContextFlavor;
+  getCompletionHint?: () => string | null;
+  getCurrentText?: () => string;
+  setAiAutoCompletion?: (args: {
+    text: string,
+    from: number,
+    startTime: number,
+    onImpression: (rpcGlobalId: Host.AidaClient.RpcGlobalId, latency: number, sampleId?: number) => void,
+    clearCachedRequest: () => void,
+    rpcGlobalId?: Host.AidaClient.RpcGlobalId,
+    sampleId?: number,
+  }|null) => void;
 }
 
 export const DELAY_BEFORE_SHOWING_RESPONSE_MS = 500;
@@ -401,7 +412,7 @@ export class AiCodeCompletionProvider {
       return null;
     }
 
-    const suggestionText = this.#trimSuggestionOverlap(suggestionSample.generationString, suffix);
+    const suggestionText = AiCodeCompletionProvider.trimSuggestionOverlap(suggestionSample.generationString, suffix);
     if (suggestionText.length === 0) {
       return null;
     }
@@ -442,7 +453,7 @@ export class AiCodeCompletionProvider {
   /**
    * Removes the end of a suggestion if it overlaps with the start of the suffix.
    */
-  #trimSuggestionOverlap(generationString: string, suffix?: string): string {
+  static trimSuggestionOverlap(generationString: string, suffix?: string): string {
     if (!suffix) {
       return generationString;
     }

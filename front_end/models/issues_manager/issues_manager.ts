@@ -27,6 +27,7 @@ import * as PermissionElementIssue from './PermissionElementIssue.js';
 import * as PropertyRuleIssue from './PropertyRuleIssue.js';
 import * as QuirksModeIssue from './QuirksModeIssue.js';
 import * as RelatedIssue from './RelatedIssue.js';
+import * as SelectivePermissionsInterventionIssue from './SelectivePermissionsInterventionIssue.js';
 import * as SharedArrayBufferIssue from './SharedArrayBufferIssue.js';
 import * as SharedDictionaryIssue from './SharedDictionaryIssue.js';
 import * as SourceFrameIssuesManager from './SourceFrameIssuesManager.js';
@@ -60,6 +61,7 @@ export {
   PropertyRuleIssue,
   QuirksModeIssue,
   RelatedIssue,
+  SelectivePermissionsInterventionIssue,
   SharedArrayBufferIssue,
   SharedDictionaryIssue,
   SourceFrameIssuesManager,

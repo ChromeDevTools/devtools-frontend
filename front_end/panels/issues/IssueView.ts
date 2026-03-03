@@ -29,6 +29,7 @@ import {AffectedMetadataAllowedSitesView} from './AffectedMetadataAllowedSitesVi
 import {AffectedPartitioningBlobURLView} from './AffectedPartitioningBlobURLView.js';
 import {AffectedPermissionElementsView} from './AffectedPermissionElementsView.js';
 import {AffectedItem, AffectedResourcesView, extractShortPath} from './AffectedResourcesView.js';
+import {AffectedSelectivePermissionsInterventionView} from './AffectedSelectivePermissionsInterventionView.js';
 import {AffectedSharedArrayBufferIssueDetailsView} from './AffectedSharedArrayBufferIssueDetailsView.js';
 import {AffectedSourcesView} from './AffectedSourcesView.js';
 import {AffectedTrackingSitesView} from './AffectedTrackingSitesView.js';
@@ -260,6 +261,7 @@ export class IssueView extends UI.TreeOutline.TreeElement {
       new AffectedDescendantsWithinSelectElementView(this, this.#issue, 'disallowed-select-descendants-details'),
       new AffectedPartitioningBlobURLView(this, this.#issue, 'partitioning-blob-url-details'),
       new AffectedPermissionElementsView(this, this.#issue, 'permission-element-elements'),
+      new AffectedSelectivePermissionsInterventionView(this, this.#issue, 'selective-permissions-intervention-details'),
     ];
     this.#hiddenIssuesMenu = new Components.HideIssuesMenu.HideIssuesMenu();
     this.#aggregatedIssuesCount = null;

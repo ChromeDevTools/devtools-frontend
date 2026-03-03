@@ -52,6 +52,7 @@ export const enum IssueCategory {
   ATTRIBUTION_REPORTING = 'AttributionReporting',
   QUIRKS_MODE = 'QuirksMode',
   PERMISSION_ELEMENT = 'PermissionElement',
+  SELECTIVE_PERMISSIONS_INTERVENTION = 'SelectivePermissionsIntervention',
   OTHER = 'Other',
 }
 

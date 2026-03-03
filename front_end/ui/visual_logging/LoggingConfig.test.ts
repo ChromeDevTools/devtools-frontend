@@ -91,6 +91,12 @@ describe('LoggingConfig', () => {
       const config = VisualLogging.LoggingConfig.getLoggingConfig(element);
       assert.strictEqual(config.context, 'developer-resources');
     });
+
+    it('for Selective Permissions Intervention', () => {
+      element.setAttribute('jslog', 'TreeItem;context:selective-permissions-intervention-details');
+      const config = VisualLogging.LoggingConfig.getLoggingConfig(element);
+      assert.strictEqual(config.context, 'selective-permissions-intervention-details');
+    });
   });
 
   it('can parse parent attribute', () => {

@@ -39,6 +39,7 @@ devtools_module("issues_manager") {
     "QuirksModeIssue.ts",
     "RelatedIssue.ts",
     "SRIMessageSignatureIssue.ts",
+    "SelectivePermissionsInterventionIssue.ts",
     "SharedArrayBufferIssue.ts",
     "SharedDictionaryIssue.ts",
     "SourceFrameIssuesManager.ts",
@@ -216,6 +217,7 @@ devtools_issue_description_files = [
   "selectElementAccessibilityInteractiveContentLegendChild.md",
   "selectElementAccessibilityInteractiveContentOptionChild.md",
   "selectElementAccessibilityNonPhrasingContentOptionChild.md",
+  "selectivePermissionsIntervention.md",
   "summaryElementAccessibilityInteractiveContentSummaryDescendant.md",
   "sharedArrayBuffer.md",
   "stylesheetLateImport.md",
@@ -321,6 +323,7 @@ ts_library("unittests") {
   sources = [
     "CheckFormsIssuesTrigger.test.ts",
     "IssuesManager.test.ts",
+    "SelectivePermissionsInterventionIssue.test.ts",
   ]
 
   deps = [

@@ -3450,6 +3450,7 @@ export const knownContextValues = new Set([
   'selected-context-filter-enabled',
   'selected-context-filter-enabled-true',
   'selected-profile-type',
+  'selective-permissions-intervention-details',
   'selector',
   'selector-aria',
   'selector-attribute',

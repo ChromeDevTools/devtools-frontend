@@ -22,6 +22,7 @@ import {MixedContentIssue} from './MixedContentIssue.js';
 import {PartitioningBlobURLIssue} from './PartitioningBlobURLIssue.js';
 import {PermissionElementIssue} from './PermissionElementIssue.js';
 import {QuirksModeIssue} from './QuirksModeIssue.js';
+import {SelectivePermissionsInterventionIssue} from './SelectivePermissionsInterventionIssue.js';
 import {SharedArrayBufferIssue} from './SharedArrayBufferIssue.js';
 
 export interface IssuesProvider extends Common.EventTarget.EventTarget<IssuesManagerEventsTypes> {
@@ -67,6 +68,7 @@ export class AggregatedIssue extends Issue {
   #mixedContentIssues = new Set<MixedContentIssue>();
   #partitioningBlobURLIssues = new Set<PartitioningBlobURLIssue>();
   #permissionElementIssues = new Set<PermissionElementIssue>();
+  #selectivePermissionsInterventionIssues = new Set<SelectivePermissionsInterventionIssue>();
   #sharedArrayBufferIssues = new Set<SharedArrayBufferIssue>();
   #quirksModeIssues = new Set<QuirksModeIssue>();
   #attributionReportingIssues = new Set<AttributionReportingIssue>();
@@ -142,6 +144,10 @@ export class AggregatedIssue extends Issue {
 
   override requests(): Iterable<Protocol.Audits.AffectedRequest> {
     return this.#affectedRequests.values();
+  }
+
+  getSelectivePermissionsInterventionIssues(): Iterable<SelectivePermissionsInterventionIssue> {
+    return this.#selectivePermissionsInterventionIssues;
   }
 
   getSharedArrayBufferIssues(): Iterable<SharedArrayBufferIssue> {
@@ -281,6 +287,9 @@ export class AggregatedIssue extends Issue {
     }
     if (issue instanceof PermissionElementIssue) {
       this.#permissionElementIssues.add(issue);
+    }
+    if (issue instanceof SelectivePermissionsInterventionIssue) {
+      this.#selectivePermissionsInterventionIssues.add(issue);
     }
   }
 

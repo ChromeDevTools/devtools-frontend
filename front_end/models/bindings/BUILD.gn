@@ -65,6 +65,7 @@ devtools_entrypoint("bundle") {
     "../../panels/coverage/*",
     "../../panels/elements/*",
     "../../panels/emulation/*",
+    "../../panels/issues/*",
     "../../panels/linear_memory_inspector/*",
     "../../panels/network/*",
     "../../panels/profiler/*",

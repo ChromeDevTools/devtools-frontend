@@ -33,24 +33,32 @@ export class MarkdownRendererWithCodeBlock extends MarkdownView.MarkdownView.Mar
     }}>${Platform.StringUtilities.trimEndWithMaxLength(label, 100)}</devtools-link>`;
   }
 
+  #renderLink(href: string): Lit.LitTemplate|null {
+    if (href.startsWith('#req-')) {
+      const request =
+          Logs.NetworkLog.NetworkLog.instance().requests().find(req => req.requestId() === href.substring(5));
+
+      if (request) {
+        return this.#revealableLink(request, request.url());
+      }
+
+    } else if (href.startsWith('#file-')) {
+      const file = AiAssistanceModel.ContextSelectionAgent.ContextSelectionAgent.getUISourceCodes().find(
+          file => AiAssistanceModel.ContextSelectionAgent.ContextSelectionAgent.uiSourceCodeId.get(file) ===
+              Number(href.substring(6)));
+
+      if (file) {
+        return this.#revealableLink(file, file.name());
+      }
+    }
+    return null;
+  }
+
   override templateForToken(token: Marked.Marked.MarkedToken): Lit.LitTemplate|null {
     if (token.type === 'link') {
-      if (token.href.startsWith('#req-')) {
-        const request =
-            Logs.NetworkLog.NetworkLog.instance().requests().find(req => req.requestId() === token.href.substring(5));
-
-        if (request) {
-          return this.#revealableLink(request, request.url());
-        }
-
-      } else if (token.href.startsWith('#file-')) {
-        const file = AiAssistanceModel.ContextSelectionAgent.ContextSelectionAgent.getUISourceCodes().find(
-            file => AiAssistanceModel.ContextSelectionAgent.ContextSelectionAgent.uiSourceCodeId.get(file) ===
-                Number(token.href.substring(6)));
-
-        if (file) {
-          return this.#revealableLink(file, file.name());
-        }
+      const link = this.#renderLink(token.href);
+      if (link) {
+        return link;
       }
     }
 
@@ -59,6 +67,18 @@ export class MarkdownRendererWithCodeBlock extends MarkdownView.MarkdownView.Mar
       if (lines[0]?.trim() === 'css') {
         token.lang = 'css';
         token.text = lines.slice(1).join('\n');
+      }
+    }
+
+    if (token.type === 'codespan') {
+      // LLM likes outputting the link inside a codespan block.
+      // Remove the codespan and render the link directly
+      const matches = token.text.match(/^\[.*\]\((.+)\)$/);
+      if (matches?.[1]) {
+        const link = this.#renderLink(matches[1]);
+        if (link) {
+          return link;
+        }
       }
     }
 

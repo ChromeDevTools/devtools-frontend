@@ -118,6 +118,29 @@ color: red;
         const link = el.querySelector('devtools-link');
         assert.notExists(link);
       });
+
+      it('work for links inside codespan', () => {
+        const request = SDK.NetworkRequest.NetworkRequest.create(
+            'requestId' as Protocol.Network.RequestId,
+            urlString`https://example.com/`,
+            urlString`https://example.com/`,
+            null,
+            null,
+            null,
+        );
+        request.statusCode = 200;
+
+        const networkLog = Logs.NetworkLog.NetworkLog.instance();
+        sinon.stub(networkLog, 'requests').returns([request]);
+
+        const el = renderToElem('`[text](#req-requestId)`');
+
+        const link = el.querySelector('devtools-link');
+        assert.exists(link);
+        // We should be attaching a handler and not
+        // a href.
+        assert.isNull(link.getAttribute('href'));
+      });
     });
 
     describe('stripping', () => {

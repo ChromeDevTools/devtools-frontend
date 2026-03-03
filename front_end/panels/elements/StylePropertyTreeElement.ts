@@ -3543,6 +3543,39 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     return event.target === this.expandElement;
   }
 }
+
+export class GhostStylePropertyTreeElement extends StylePropertyTreeElement {
+  constructor(
+      stylesContainer: StylesContainer, section: StylePropertiesSection,
+      matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, property: SDK.CSSProperty.CSSProperty) {
+    super({
+      stylesContainer,
+      section,
+      matchedStyles,
+      property,
+      isShorthand: false,
+      inherited: false,
+      overloaded: false,
+      newProperty: false,
+    });
+  }
+
+  override onattach(): void {
+    this.listItemElement.classList.add('ghost-row');
+    this.updateTitle();
+  }
+
+  override updateTitle(): void {
+    this.listItemElement.removeChildren();
+    this.nameElement = Renderer.renderNameElement(this.name);
+    this.listItemElement.appendChild(this.nameElement);
+    this.listItemElement.createChild('span', 'styles-name-value-separator').textContent = ': ';
+    this.valueElement = this.listItemElement.createChild('span');
+    this.valueElement.textContent = this.value;
+    this.listItemElement.createChild('span', 'styles-semicolon').textContent = ';';
+  }
+}
+
 export interface Context {
   expanded: boolean;
   hasChildren: boolean;

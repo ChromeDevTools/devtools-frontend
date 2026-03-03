@@ -60,12 +60,12 @@ const UIStrings = {
    */
   moreOptions: 'More options',
   /**
-   * @description A context menu item in the Device Mode Toolbar. This is a command to resize the
-   * webpage preview to fit the current window. The placeholder is the percentage of full-size that
-   * will be displayed after fitting.
+   * @description A menu item in the drop-down box that allows the user to select the zoom level.
+   * Labels the value which corresponds to the 'fit to window' zoom level, represented by the
+   * placeholder, which is a number. In the Device Mode Toolbar.
    * @example {30.0} PH1
    */
-  fitToWindowF: 'Fit to window ({PH1}%)',
+  fitToWindowPercentage: '{PH1}% (fit to window)',
   /**
    * @description A checkbox setting that appears in the context menu for the zoom level, in the
    * Device Mode Toolbar.
@@ -330,6 +330,11 @@ export class DeviceModeToolbar {
     this.scaleItem.turnShrinkable();
     this.scaleItem.setDarkText();
     mainToolbar.appendToolbarItem(this.scaleItem);
+
+    const autoAdjustScaleButton = new UI.Toolbar.ToolbarSettingToggle(
+        this.autoAdjustScaleSetting, 'center-focus-weak', i18nString(UIStrings.autoadjustZoom));
+    mainToolbar.appendToolbarItem(autoAdjustScaleButton);
+
     mainToolbar.appendToolbarItem(new UI.Toolbar.ToolbarItem(this.createEmptyToolbarElement()));
 
     this.deviceScaleItem = new UI.Toolbar.ToolbarMenuButton(
@@ -410,35 +415,39 @@ export class DeviceModeToolbar {
   }
 
   private appendScaleMenuItems(contextMenu: UI.ContextMenu.ContextMenu): void {
+    const values = [0.5, 0.75, 1, 1.25, 1.5, 2];
+    let fitValue: number|null = null;
     if (this.model.type() === EmulationModel.DeviceModeModel.Type.Device) {
-      contextMenu.footerSection().appendItem(
-          i18nString(UIStrings.fitToWindowF, {PH1: this.getPrettyFitZoomPercentage()}),
-          this.onScaleMenuChanged.bind(this, this.model.fitScale()), {jslogContext: 'fit-to-window'});
+      fitValue = this.model.fitScale();
+      const fitValuePct = (fitValue * 100).toFixed(0);
+      let found = false;
+      for (let i = 0; i < values.length; ++i) {
+        if ((values[i] * 100).toFixed(0) === fitValuePct) {
+          found = true;
+          values[i] = fitValue;
+          break;
+        }
+      }
+      if (!found) {
+        values.push(fitValue);
+        values.sort((a, b) => a - b);
+      }
     }
-    contextMenu.footerSection().appendCheckboxItem(
-        i18nString(UIStrings.autoadjustZoom), this.onAutoAdjustScaleChanged.bind(this),
-        {checked: this.autoAdjustScaleSetting.get(), jslogContext: 'auto-adjust-zoom'});
-    const boundAppendScaleItem = appendScaleItem.bind(this);
-    boundAppendScaleItem('50%', 0.5);
-    boundAppendScaleItem('75%', 0.75);
-    boundAppendScaleItem('100%', 1);
-    boundAppendScaleItem('125%', 1.25);
-    boundAppendScaleItem('150%', 1.5);
-    boundAppendScaleItem('200%', 2);
 
-    function appendScaleItem(this: DeviceModeToolbar, title: string, value: number): void {
-      contextMenu.defaultSection().appendCheckboxItem(
-          title, this.onScaleMenuChanged.bind(this, value),
-          {checked: this.model.scaleSetting().get() === value, jslogContext: title});
+    for (const value of values) {
+      let title = (value * 100).toFixed(0) + '%';
+      if (value === fitValue) {
+        title = i18nString(UIStrings.fitToWindowPercentage, {PH1: (value * 100).toFixed(0)});
+      }
+      contextMenu.defaultSection().appendCheckboxItem(title, this.onScaleMenuChanged.bind(this, value), {
+        checked: this.model.scaleSetting().get() === value,
+        jslogContext: value === fitValue ? 'fit-to-window' : title
+      });
     }
   }
 
   private onScaleMenuChanged(value: number): void {
     this.model.scaleSetting().set(value);
-  }
-
-  private onAutoAdjustScaleChanged(): void {
-    this.autoAdjustScaleSetting.set(!this.autoAdjustScaleSetting.get());
   }
 
   private appendDeviceScaleMenuItems(contextMenu: UI.ContextMenu.ContextMenu): void {

@@ -163,9 +163,8 @@ export const getZoom = async (devToolsPage: DevToolsPage) => {
 };
 
 export const toggleAutoAdjustZoom = async (devToolsPage: DevToolsPage) => {
-  await clickZoomDropDown(devToolsPage);
-  await devToolsPage.click(AUTO_AUTO_ADJUST_ZOOM_SELECTOR);
-  await waitForZoomDropDownNotExpanded(devToolsPage);
+  const toolbar = await devToolsPage.waitFor(DEVICE_TOOLBAR_SELECTOR);
+  await devToolsPage.click(AUTO_AUTO_ADJUST_ZOOM_SELECTOR, {root: toolbar});
 };
 
 const IPAD_MENU_ITEM_SELECTOR = '[aria-label*="iPad"]';

@@ -227,13 +227,13 @@ describe('Custom devices', () => {
     // Check fit-to-window text.
     await clickZoomDropDown(devToolsPage);
 
-    const fitButton = await devToolsPage.waitFor('[aria-label*="Fit to window"]');
-    assert.strictEqual(await elementTextContent(fitButton), 'Fit to window (51%)');
+    const fitButton = await devToolsPage.waitFor('[aria-label*="fit to window"]');
+    assert.strictEqual(await elementTextContent(fitButton), '51% (fit to window)');
     assert.strictEqual(await elementTextContent(zoomButton), '51%');
 
     const zoomTo100Button = await devToolsPage.waitFor('[aria-label*="100%"]');
     await devToolsPage.clickElement(zoomTo100Button);
-    assert.strictEqual(await elementTextContent(fitButton), 'Fit to window (51%)');
+    assert.strictEqual(await elementTextContent(fitButton), '51% (fit to window)');
     assert.strictEqual(await elementTextContent(zoomButton), '100%');
   });
 

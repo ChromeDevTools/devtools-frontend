@@ -168,6 +168,24 @@ export class ComputedStyleModel extends Common.ObjectWrapper.ObjectWrapper<Event
     }
     return matchedStyles.node() === this.node ? matchedStyles : null;
   }
+
+  computePropertyTraces(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles):
+      Map<string, SDK.CSSProperty.CSSProperty[]> {
+    const result = new Map<string, SDK.CSSProperty.CSSProperty[]>();
+    for (const style of matchedStyles.nodeStyles()) {
+      const allProperties = style.allProperties();
+      for (const property of allProperties) {
+        if (!property.activeInStyle() || !matchedStyles.propertyState(property)) {
+          continue;
+        }
+
+        const matches = result.get(property.name) ?? [];
+        matches.push(property);
+        result.set(property.name, matches);
+      }
+    }
+    return result;
+  }
 }
 
 export const enum Events {

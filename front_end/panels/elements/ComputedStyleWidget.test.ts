@@ -138,6 +138,7 @@ describeWithMockConnection('ComputedStyleWidget', () => {
       computedStyleWidget.computedStyleModel = computedStyleModel;
       computedStyleWidget.nodeStyle = {node, computedStyle: new Map([['color', 'red']])};
       computedStyleWidget.matchedStyles = cssMatchedStyles;
+      computedStyleWidget.propertyTraces = computedStyleModel.computePropertyTraces(cssMatchedStyles);
 
       return computedStyleWidget;
     }

@@ -385,6 +385,9 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     const matchedCascade = await this.#computedStyleModel.fetchMatchedCascade();
     this.#computedStyleWidget.nodeStyle = computedStyle;
     this.#computedStyleWidget.matchedStyles = matchedCascade;
+    if (matchedCascade) {
+      this.#computedStyleWidget.propertyTraces = this.#computedStyleModel.computePropertyTraces(matchedCascade);
+    }
   }
 
   private handleElementExpanded(): void {

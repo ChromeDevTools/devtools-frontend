@@ -1,10 +1,10 @@
 Name: Puppeteer Core
 Short Name: Puppeteer Core
 URL: https://github.com/puppeteer/puppeteer/tree/main/packages/puppeteer-core
-Version: 24.37.5
+Version: 24.38.0
 License: Apache-2.0
 License File: LICENSE
-Revision: fcb37e3b3a4f6b55b6f81a40811243260bcea16f
+Revision: d3356fac46478974c5b88ba2b26b26954cb741ff
 Security Critical: no
 Shipped: yes
 Update Mechanism: Autoroll

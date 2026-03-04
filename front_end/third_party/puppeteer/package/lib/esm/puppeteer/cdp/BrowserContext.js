@@ -165,7 +165,7 @@ export class CdpBrowserContext extends BrowserContext {
                     }
                     : undefined,
                 // TODO: remove sameParty as it is removed from Chrome.
-                sameParty: cookie.sameParty ?? false,
+                sameParty: false,
             };
         });
     }

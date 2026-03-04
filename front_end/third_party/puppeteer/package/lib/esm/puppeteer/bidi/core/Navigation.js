@@ -102,6 +102,7 @@ let Navigation = (() => {
             for (const eventName of [
                 'browsingContext.domContentLoaded',
                 'browsingContext.load',
+                'browsingContext.navigationCommitted',
             ]) {
                 sessionEmitter.on(eventName, info => {
                     if (info.context !== this.#browsingContext.id ||

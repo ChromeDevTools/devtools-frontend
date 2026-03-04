@@ -48,6 +48,7 @@ devtools_module("ai_assistance") {
     "../../core/root:bundle",
     "../../core/sdk:bundle",
     "../../generated:protocol",
+    "../../models/computed_style:bundle",
     "../../models/network_time_calculator:bundle",
     "../../models/persistence:bundle",
     "../../services/tracing:bundle",

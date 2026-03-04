@@ -56,6 +56,7 @@ describeWithEnvironment('PatchAgent', () => {
       output: '{"files":["example.html"]}',
       canceled: false,
       code: undefined,
+      widgets: undefined,
     });
   });
 
@@ -81,7 +82,8 @@ describeWithEnvironment('PatchAgent', () => {
       type: 'action' as AiAgent.ActionResponse['type'],
       output: '{"matches":[{"filepath":"example.html","lineNumber":0,"columnNumber":0,"matchLength":7}]}',
       canceled: false,
-      code: undefined
+      code: undefined,
+      widgets: undefined,
     });
   });
 
@@ -102,6 +104,7 @@ describeWithEnvironment('PatchAgent', () => {
       type: 'action' as AiAgent.ActionResponse['type'],
       output: '{"success":true}',
       code: undefined,
+      widgets: undefined,
       canceled: false
     });
   });

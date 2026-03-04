@@ -5,6 +5,7 @@
 import * as Host from '../../../core/host/host.js';
 import * as Root from '../../../core/root/root.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
+import type * as Protocol from '../../../generated/protocol.js';
 import * as Greendev from '../../greendev/greendev.js';
 import {debugLog, isStructuredLogEnabled} from '../debug.js';
 
@@ -105,6 +106,7 @@ export interface ActionResponse {
   code?: string;
   output?: string;
   canceled: boolean;
+  widgets?: AiWidget[];
 }
 
 export interface QueryingResponse {
@@ -215,10 +217,24 @@ export abstract class ConversationContext<T> {
   }
 }
 
+export interface ComputedStyleAiWidget {
+  name: 'COMPUTED_STYLES';
+  data: {
+    computedStyles: Map<string, string>,
+    backendNodeId: Protocol.DOM.BackendNodeId,
+    matchedCascade: SDK.CSSMatchedStyles.CSSMatchedStyles,
+    // The subset of CSS properties that the AI looked up.
+    properties: string[],
+  };
+}
+// This type will grow as we add more widgets.
+export type AiWidget = ComputedStyleAiWidget;
+
 export type FunctionCallHandlerResult<Result> = {
   requiresApproval: true,
 }|{
   result: Result,
+  widgets?: AiWidget[],
 }|{
   context: ConversationContext<unknown>,
   description: string,
@@ -764,6 +780,7 @@ export abstract class AiAgent<T> {
         type: ResponseType.ACTION,
         code,
         output: typeof result.result === 'string' ? result.result : JSON.stringify(result.result),
+        widgets: result.widgets,
         canceled: false,
       };
     }

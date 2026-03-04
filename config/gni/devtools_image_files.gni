@@ -291,6 +291,7 @@ devtools_svg_sources = [
   "stop.svg",
   "symbol.svg",
   "sync.svg",
+  "tab-move.svg",
   "table.svg",
   "terminal.svg",
   "text-analysis.svg",

@@ -10,7 +10,10 @@ import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
+import * as SDK from '../../../core/sdk/sdk.js';
+import type {AiWidget, ComputedStyleAiWidget} from '../../../models/ai_assistance/agents/AiAgent.js';
 import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
+import * as ComputedStyle from '../../../models/computed_style/computed_style.js';
 import * as Marked from '../../../third_party/marked/marked.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as Input from '../../../ui/components/input/input.js';
@@ -20,6 +23,7 @@ import * as UIHelpers from '../../../ui/helpers/helpers.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
+import * as Elements from '../../elements/elements.js';
 
 import chatMessageStyles from './chatMessage.css.js';
 import {WalkthroughView} from './WalkthroughView.js';
@@ -168,6 +172,11 @@ const UIStringsNotTranslate = {
    * @description Title for the button that shows the thinking process (walkthrough).
    */
   showThinking: 'Show thinking',
+
+  /**
+   * @description Title for the button that takes the user into other DevTools panels to reveal items the AI references.
+   */
+  reveal: 'Reveal'
 } as const;
 
 export interface Step {
@@ -176,6 +185,7 @@ export interface Step {
   title?: string;
   code?: string;
   output?: string;
+  widgets?: AiWidget[];
   canceled?: boolean;
   sideEffect?: ConfirmSideEffectDialog;
   contextDetails?: [AiAssistanceModel.AiAgent.ContextDetail, ...AiAssistanceModel.AiAgent.ContextDetail[]];
@@ -601,6 +611,7 @@ export function renderStep({step, isLoading, markdownRenderer, isLast}: {
   markdownRenderer: MarkdownLitRenderer,
   isLast: boolean,
 }): Lit.LitTemplate {
+  const shouldRenderWidgets = Boolean(step.widgets?.length && Root.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled);
   const stepClasses = Lit.Directives.classMap({
     step: true,
     empty: !step.thought && !step.code && !step.contextDetails && !step.sideEffect,
@@ -623,8 +634,110 @@ export function renderStep({step, isLoading, markdownRenderer, isLast}: {
         </div>
       </summary>
       ${renderStepDetails({step, markdownRenderer, isLast})}
-    </details>`;
+    </details>
+    ${shouldRenderWidgets ? html`
+      <div class="step-widgets-wrapper">
+        ${Lit.Directives.until(renderStepWidgets(step))}
+      </div>` : Lit.nothing
+     }`;
   // clang-format on
+}
+
+interface WidgetMakerResponse {
+  renderedWidget: Lit.LitTemplate;
+  revealable: unknown;
+}
+
+async function makeComputedStyleWidget(widgetData: ComputedStyleAiWidget): Promise<WidgetMakerResponse|null> {
+  const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+  if (!target) {
+    return null;
+  }
+  const node = new SDK.DOMModel.DeferredDOMNode(
+      target,
+      widgetData.data.backendNodeId,
+  );
+  const resolved = await node.resolvePromise();
+  if (!resolved) {
+    return null;
+  }
+  const model = new ComputedStyle.ComputedStyleModel.ComputedStyleModel(resolved);
+  const styles = new ComputedStyle.ComputedStyleModel.ComputedStyle(resolved, widgetData.data.computedStyles);
+
+  const widgetConfig = UI.Widget.widgetConfig(Elements.ComputedStyleWidget.ComputedStyleWidget, {
+    nodeStyle: styles,
+    matchedStyles: widgetData.data.matchedCascade,
+    // This disables showing the nested traces and detailed information in the widget.
+    propertyTraces: null,
+    computedStyleModel: model,
+    allowUserControl: false,
+    filterText: new RegExp(widgetData.data.properties.join('|'), 'i')
+  });
+
+  // clang-format off
+    const widget = html`<devtools-widget class="computed-styles-widget" .widgetConfig=${widgetConfig}></devtools-widget>`;
+  // clang-format on
+
+  return {renderedWidget: widget, revealable: new Elements.ElementsPanel.NodeComputedStyles(resolved)};
+}
+
+function renderWidgetResponse(response: WidgetMakerResponse|null): Lit.LitTemplate {
+  if (response === null) {
+    return Lit.nothing;
+  }
+
+  function onReveal(): void {
+    if (response === null) {
+      return;
+    }
+    void Common.Revealer.reveal(response?.revealable);
+  }
+
+  // clang-format off
+  return html`
+    <div class="widget-content-container">
+      ${response.renderedWidget}
+    </div>
+    <div class="widget-reveal-container">
+      <devtools-button class="widget-reveal"
+        .iconName=${'tab-move'}
+        .variant=${Buttons.Button.Variant.TEXT}
+        @click=${onReveal}
+      >${lockedString(UIStringsNotTranslate.reveal)}</devtools-button>
+    </div>
+    `;
+  // clang-format on
+}
+
+/**
+ * Renders AI-defined UI widgets within a step.
+ * When a ModelChatMessage contains a WidgetPart, the ChatMessage component
+ * iterates through the `step.widgets` array. For each widget, it determines
+ * the appropriate rendering logic based on the `widgetData.name`.
+ *
+ * Currently, only 'COMPUTED_STYLES' widgets are supported. For these, the
+ * `makeComputedStyleWidget` function is called to construct the necessary
+ * data and configuration for the `Elements.ComputedStyleWidget.ComputedStyleWidget`
+ * component. The widget is then rendered using the `<devtools-widget>`
+ * custom element, which dynamically instantiates and displays the specified
+ * UI.Widget subclass with the provided configuration.
+ *
+ * This allows for a flexible and extensible system where new widget types
+ * can be added to the AI responses and rendered in DevTools by adding
+ * corresponding `make...Widget` functions and handling them here.
+ */
+async function renderStepWidgets(step: Step): Promise<Lit.LitTemplate> {
+  if (!step.widgets || step.widgets.length === 0) {
+    return Lit.nothing;
+  }
+  const ui = await Promise.all(step.widgets.map(async widgetData => {
+    if (widgetData.name === 'COMPUTED_STYLES') {
+      const response = await makeComputedStyleWidget(widgetData);
+      return renderWidgetResponse(response);
+    }
+    return Lit.nothing;
+  }));
+  return html`${ui}`;
 }
 
 function renderSideEffectConfirmationUi(step: Step): Lit.LitTemplate {

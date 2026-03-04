@@ -20,7 +20,11 @@ import chatViewStyles from './chatView.css.js';
 
 export {ChatInput, type ImageInputData} from './ChatInput.js';
 
-const {ref, repeat, classMap} = Directives;
+const {
+  ref,
+  repeat,
+  classMap,
+} = Directives;
 
 /*
 * Strings that don't need to be translated at this time.

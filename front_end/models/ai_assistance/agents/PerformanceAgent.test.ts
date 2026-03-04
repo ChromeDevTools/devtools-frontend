@@ -486,7 +486,8 @@ code
         type: 'action' as AiAgent.ActionResponse['type'],
         output: expectedOutput,
         code: 'getNetworkTrackSummary({min: 658799706428, max: 658804825864})',
-        canceled: false
+        canceled: false,
+        widgets: undefined,
       });
     });
 
@@ -530,7 +531,8 @@ code
         type: 'action' as AiAgent.ActionResponse['type'],
         output: expectedOutput,
         code: 'getMainThreadTrackSummary({min: 197695826524, max: 197698633660})',
-        canceled: false
+        canceled: false,
+        widgets: undefined,
       });
     });
 

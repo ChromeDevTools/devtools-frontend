@@ -83,3 +83,64 @@ The spinner displayed next to a step in the UI is intentionally tied to the **co
 *   **Providing Continuous Feedback**: Using the conversation's `isLoading` ensures a persistent visual indicator that the AI is actively working on the query, even if individual steps are quickly parsed. This prevents the UI from appearing unresponsive.
 *   **Avoiding a "Stuck" Feeling**: If the spinner were tied to `step.isLoading`, it would flicker on and off rapidly, potentially making the user feel that the AI has stopped processing or is stuck.
 *   **Clear Progress Visualization**: The spinner is dynamically moved to the *last* active step in the list as long as the overall conversation is loading. Once a step is completed, it receives a checkmark, and the spinner moves to the next active step.
+
+## AI-Defined UI Widgets
+
+To provide a richer user experience, AI functions can now return data that represents UI widgets. These widgets are then rendered directly within the AI assistance panel, allowing for more interactive and contextual responses.
+
+### Data Structure for Widgets
+
+This is achieved through a new type of `ModelMessagePart`: the `WidgetPart`.
+
+-   **`WidgetPart`**: Represents a UI widget to be rendered. It contains a `widget` object with the following properties:
+    -   `name`: A string identifier for the widget to be rendered (e.g., `'freestyler'`). This name is used by the frontend to select the correct widget component.
+    -   `data`: An object containing the data required by the widget. The structure of this data is specific to each widget.
+
+A `ModelChatMessage` can contain one or more `WidgetPart`s, usually as part of the final answer.
+
+**Example `ModelChatMessage` with a `WidgetPart`:**
+
+```json
+{
+  "entity": "MODEL",
+  "parts": [
+    {
+      "type": "answer",
+      "text": "Here is a widget to help you with CSS."
+    },
+    {
+      "type": "widget",
+      "widget": {
+        "name": "freestyler",
+        "data": {
+          "css": "color: red;"
+        }
+      }
+    }
+  ]
+}
+```
+
+### From AI Function to UI
+
+The process of rendering an AI-defined UI widget begins within the AI function handler itself. AI functions, typically defined in `front_end/models/ai_assistance/agents/AiAgent.js`, can return an `AiWidget` type as part of their response.
+
+1.  **AI Function Output**: An AI function constructs an `AiWidget` object, specifying its `name` (e.g., `'freestyler'` or `'COMPUTED_STYLES'`) and a `data` payload that contains all the necessary information for the widget to render.
+
+2.  **`ModelChatMessage` Integration**: This `AiWidget` is then encapsulated within a `WidgetPart`, which is added to the `parts` array of a `ModelChatMessage`. This `ModelChatMessage` is what the `ChatMessage` UI component receives.
+
+3.  **`ChatMessage` Processing**: In `front_end/panels/ai_assistance/components/ChatMessage.ts`, the `ChatMessage` component is responsible for iterating through the `parts` of a `ModelChatMessage`. When it encounters a `WidgetPart`, it delegates the rendering to the `renderStepWidgets` function.
+
+4.  **`renderStepWidgets` Mapping**: The `renderStepWidgets` function acts as a registry and renderer for different widget types. It reads the `widget.name` from the `WidgetPart` and, based on this name, calls a specific `make...Widget` function (e.g., `makeComputedStyleWidget` for `'COMPUTED_STYLES'` widgets).
+
+5.  **Widget Instantiation and Rendering**: Each `make...Widget` function is responsible for taking the `widget.data` and converting it into a `UI.Widget.widgetConfig` object. This configuration is then used with the `<devtools-widget>` Lit component, which dynamically instantiates the corresponding `UI.Widget` subclass and renders it into the DOM.
+
+This modular approach ensures that new UI widgets can be introduced and managed by AI functions without requiring significant changes to the core messaging or rendering infrastructure.
+
+The `ChatMessage` component is responsible for handling `WidgetPart`s. When it encounters a `WidgetPart`, it will:
+
+1.  Look up the widget name (`widget.name`) in a registry of available widget components.
+2.  Instantiate the corresponding widget component.
+3.  Pass the `widget.data` to the component as properties.
+
+This allows for a flexible system where new widgets can be added to the frontend and then invoked by the AI without requiring changes to the core message handling logic.

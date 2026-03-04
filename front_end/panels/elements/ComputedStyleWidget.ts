@@ -369,7 +369,10 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
     this.#computedStylesTree.classList.toggle('computed-narrow', isNarrow);
   }
 
-  get filterText(): string {
+  get filterText(): RegExp|string {
+    if (this.#filterIsRegex) {
+      return new RegExp(this.#filterText);
+    }
     return this.#filterText;
   }
 
@@ -385,6 +388,7 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
       this.#filterText = newFilter.source;
       this.#filterIsRegex = true;
     }
+    this.filterRegex = this.#buildFilterRegex(this.#filterText);
     this.requestUpdate();
   }
 

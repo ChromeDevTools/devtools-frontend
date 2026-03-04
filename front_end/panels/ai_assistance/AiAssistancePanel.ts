@@ -460,10 +460,10 @@ function defaultView(input: ViewInput, output: PanelViewOutput, target: HTMLElem
     }
   }
 
-  const shouldShowWalkthrough = input.state === ViewState.CHAT_VIEW && input.walkthrough.isExpanded;
-
   if (Root.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled ||
     Greendev.Prototypes.instance().isEnabled('breakpointDebuggerAgent')) {
+  const shouldShowWalkthrough = input.state === ViewState.CHAT_VIEW && input.walkthrough.isExpanded;
+
     Lit.render(html`
       ${toolbarView(input)}
       <div class="ai-assistance-view-container">
@@ -1726,6 +1726,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             step.code ??= data.code;
             step.output ??= data.output;
             step.canceled = data.canceled;
+            step.widgets ??= data.widgets;
             commitStep();
             break;
           }

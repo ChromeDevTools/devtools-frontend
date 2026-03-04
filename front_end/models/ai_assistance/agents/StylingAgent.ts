@@ -18,6 +18,7 @@ import {FREESTYLER_WORLD_NAME} from '../injected.js';
 import {
   type AgentOptions as BaseAgentOptions,
   AiAgent,
+  type ComputedStyleAiWidget,
   type ContextResponse,
   ConversationContext,
   type ConversationSuggestions,
@@ -325,7 +326,7 @@ export class StylingAgent extends AiAgent<SDK.DOMModel.DOMNode> {
         };
       },
       handler: async params => {
-        return await this.getStyles(params.elements, params.styleProperties);
+        return await this.#getStyles(params.elements, params.styleProperties);
       },
     });
 
@@ -606,7 +607,9 @@ const data = {
     return this.context?.getItem() ?? null;
   }
 
-  async getStyles(elements: number[], properties: string[]): Promise<FunctionCallHandlerResult<unknown>> {
+  async #getStyles(elements: number[], properties: string[]): Promise<FunctionCallHandlerResult<unknown>> {
+    const widgets: ComputedStyleAiWidget[] = [];
+
     const result:
         Record<string, {computed: Record<string, string|undefined>, authored: Record<string, string|undefined>}> = {};
     for (const uid of elements) {
@@ -630,6 +633,15 @@ const data = {
       if (!matchedStyles) {
         return {error: 'Error: Could not get authored styles.'};
       }
+      widgets.push({
+        name: 'COMPUTED_STYLES',
+        data: {
+          computedStyles: styles,
+          backendNodeId: node.backendNodeId(),
+          matchedCascade: matchedStyles,
+          properties,
+        }
+      });
       for (const prop of properties) {
         result[uid].computed[prop] = styles.get(prop);
       }
@@ -647,6 +659,7 @@ const data = {
     }
     return {
       result: JSON.stringify(result, null, 2),
+      widgets,
     };
   }
 

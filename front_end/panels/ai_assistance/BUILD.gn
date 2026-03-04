@@ -60,6 +60,7 @@ devtools_ui_module("ai_assistance") {
     "../../models/workspace_diff:bundle",
     "../../panels/changes:bundle",
     "../../panels/common:bundle",
+    "../../panels/elements:bundle",
     "../../panels/network:bundle",
     "../../panels/network/forward:bundle",
     "../../panels/timeline:bundle",

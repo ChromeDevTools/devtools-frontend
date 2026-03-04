@@ -293,6 +293,7 @@ grd_files_bundled_sources = [
   "front_end/Images/stop.svg",
   "front_end/Images/symbol.svg",
   "front_end/Images/sync.svg",
+  "front_end/Images/tab-move.svg",
   "front_end/Images/table.svg",
   "front_end/Images/terminal.svg",
   "front_end/Images/text-analysis.svg",
